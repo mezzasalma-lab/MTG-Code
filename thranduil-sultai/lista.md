@@ -55,7 +55,6 @@
 1 Lathril, Blade of the Elves
 1 Lightning Greaves
 1 Llanowar Elves
-1 Llanowar Wastes
 1 Lluwen, Imperfect Naturalist
 1 Malakir Rebirth
 1 Maralen, Fae Ascendant
@@ -85,6 +84,7 @@
 1 Tyvar the Bellicose
 1 Tyvar, Jubilant Brawler
 1 Tyvar, the Pummeler
+1 Underground River
 1 Undergrowth Stadium
 1 Underrealm Lich
 1 Wastewood Verge

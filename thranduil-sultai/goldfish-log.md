@@ -241,6 +241,34 @@ Roaming Throne em campo: 11,2% | Avg gatilhos dobrados: 4,91
 
 ---
 
+### Fonte de U — Underground River no lugar de Llanowar Wastes (2026-08-21)
+
+Pedido do usuário: fonte de U **destapada** (não tapada) pra engordar azul sem ceder velocidade de mana. Llanowar Wastes (`{T}: Add {C}` / `{T}: Add {B} or {G}. Causa 1 dano a você`) era 1 dos 7 terrenos do deck que só tocam B/G — cor já bem suprida (15 fontes de G, 12 de B contra só 10 de U antes desta troca). Trocado por **Underground River**, a mesma painland exata (sempre destapada, sem condição de ETB), só que B/U (`{T}: Add {U} or {B}. Causa 1 dano a você` — Scryfall, `color_identity: [B, U]`, legal em Commander, `$2,43`).
+
+`DECKLIST_TEXT` e `CARD_DB` do script atualizados (`add("Underground River", 0, {"Land"}, produces={"B", "U"})`), deck volta a bater 99 mainboard + comandante.
+
+**n=2000 (`thranduil_v1_runs_underground_river_2000.jsonl`, seed_base=1500000):**
+
+```
+Avg commander cast turn: 4,44 | por T5: 80,4% | por T6: 86,5%
+Avg remoção conjurada: 0,77 | Avg ramp em campo: 3,22
+Avg finishers ativados: 1,11 | 43,9% dos jogos até T8
+Avg turnos com blue screw: 0,23 | 8,4% das partidas com pelo menos 1 | turno médio do 1º: 4,22
+Roaming Throne em campo: 11,7% | Avg gatilhos dobrados: 4,36
+```
+
+| Métrica | Antes (10 fontes de U) | Depois (11 fontes de U) |
+|---|---|---|
+| Avg turnos com blue screw | 0,32 | **0,23** |
+| % partidas com blue screw | 11,9% | **8,4%** |
+| Turno médio do 1º blue screw | 4,19 | 4,22 |
+| Avg commander cast turn | 4,42 | 4,44 |
+| Avg remoção conjurada | 0,78 | 0,77 |
+
+**Leitura:** melhora real e mensurável no problema de azul — blue screw caiu quase 30% relativo (11,9%→8,4%) com uma única troca 1:1, sem custo de velocidade de mana (painland pra painland, ambas sempre destapadas) nem redução de terrenos totais (37 mantido). O resto do perfil ficou estável, como esperado — a troca não mexeu em nenhuma outra carta. Ainda restam 6 terrenos B/G-only no deck (Gilt-Leaf Palace, Nurturing Peatland, Undergrowth Stadium, Wastewood Verge, Deathcap Glade, Overgrown Tomb) como candidatos a trocas futuras se quiser reduzir o screw ainda mais.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

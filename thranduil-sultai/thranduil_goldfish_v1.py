@@ -91,7 +91,6 @@ DECKLIST_TEXT = """
 1 Lathril, Blade of the Elves
 1 Lightning Greaves
 1 Llanowar Elves
-1 Llanowar Wastes
 1 Lluwen, Imperfect Naturalist
 1 Malakir Rebirth // Malakir Mire
 1 Maralen, Fae Ascendant
@@ -121,6 +120,7 @@ DECKLIST_TEXT = """
 1 Tyvar the Bellicose
 1 Tyvar, Jubilant Brawler
 1 Tyvar, the Pummeler
+1 Underground River
 1 Undergrowth Stadium
 1 Underrealm Lich
 1 Wastewood Verge
@@ -173,6 +173,7 @@ add("Eclipsed Realms", 0, {"Land"}, produces=set())
 add("Elvenking's Halls", 0, {"Land"}, produces={"G", "U"})
 add("Gilt-Leaf Palace", 0, {"Land"}, produces={"B", "G"})
 add("Llanowar Wastes", 0, {"Land"}, produces={"B", "G"})
+add("Underground River", 0, {"Land"}, produces={"B", "U"})
 add("Nurturing Peatland", 0, {"Land"}, produces={"B", "G"})
 add("Overgrown Tomb", 0, {"Land"}, produces={"B", "G"})
 add("Reflecting Pool", 0, {"Land"}, produces={"B", "G", "U"})

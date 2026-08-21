@@ -41,6 +41,8 @@ Identidade de cor confirmada: **B/G/U (Sultai)**.
 - Maralen, Fae Ascendant custa `{2}{B}{G}{U}` (as três cores).
 - Rhystic Study precisa de `{U}` cedo para ser eficiente.
 
+**Correção aplicada — 2026-08-21: Llanowar Wastes trocado por Underground River.** Llanowar Wastes (`{T}: Add {C}` / `{T}: Add {B} or {G}. Causa 1 dano a você`) era 1 dos 7 terrenos do deck que só tocavam B/G, cor já bem suprida. Underground River é a mesma painland (sempre destapada, sem condição), só que B/U (`{T}: Add {U} or {B}. Causa 1 dano a você`) — verificado via Scryfall, legal em Commander, `$2,43`. Fontes de U sobem de 10 pra **11**, sem tirar terreno nenhum do total (37 mantido) nem reduzir B (ainda 12 fontes via as outras 6 duais B/G + Underground River). Confirmado nos 2000 goldfishes: blue screw caiu de **11,9% → 8,4%** das partidas, avg turnos com screw caiu de 0,32 → 0,23 (`goldfish-log.md`, seção "Fonte de U — Underground River no lugar de Llanowar Wastes"). Ainda vale considerar mais 1-2 trocas similares (item 3, seção 12) se quiser reduzir mais.
+
 ---
 
 ## 3. Curva de mana
@@ -167,7 +169,7 @@ Contra o 4: sem fast mana adicional (Mana Crypt/Vault/Chrome Mox), sem tutor de 
 
 1. ~~Reforçar remoção~~ — **aplicado, depois parcialmente revertido**: cortadas Agatha's Soul Cauldron/Oversold Cemetery/Harmonized Crescendo, adicionadas Deadly Rollick/Putrefy/Feed the Swarm (Chaos Warp e Vindicate da versão original nem eram Sultai); Agatha's Soul Cauldron e Oversold Cemetery voltaram depois (leitura errada corrigida); em 2026-08-21, Feed the Swarm e Putrefy foram cortados de novo por decisão direta do usuário, trocados por Devoted Druid/Imperious Perfect/Formidable Speaker — remoção real caiu de 1,11 pra 0,78 conjurada em média, total estático caiu de 9 pra 8 efeitos (ver seção 6 atualizada). Ainda dentro da faixa 8–10, mas no piso.
 2. ~~Adicionar um overrun~~ — **corrigido:** o deck já tem Tyvar the Pummeler, Ezuri Renegade Leader e Elvish Warmaster fazendo esse papel (ver seção 8 revisada). Prioridade real é mais rampa que sustente esses custos de ativação (4-7 mana) no mesmo turno que o board fica largo.
-3. **Engordar fontes de azul** — pelo menos +1 Island básica ou trocar um utility land por algo como Botanical Sanctum ou Tolarian Terror... (considerar um dual U/x adicional); hoje só ~9 fontes hard de U é abaixo do ideal para um pip crítico no próprio comandante.
+3. ~~Engordar fontes de azul~~ — **parcialmente aplicado, 2026-08-21:** Llanowar Wastes (B/G) trocado por Underground River (B/U, mesma painland sempre destapada) — fontes de U sobem de 10 pra 11, blue screw caiu de 11,9% pra 8,4% das partidas (ver seção 2 atualizada). Ainda dá pra ir além: outros 6 terrenos B/G-only continuam no deck (Gilt-Leaf Palace, Nurturing Peatland, Undergrowth Stadium, Wastewood Verge, Deathcap Glade, Overgrown Tomb) — cada um é candidato a virar mais 1 fonte de U se quiser reduzir ainda mais o screw.
 4. Opcional: Deadly Rollick / Fierce Guardianship (força-tarefa de proteção com free-cast, sinergiza com a quantidade de mana verde disponível) se o objetivo é empurrar para Bracket 4.
 
 ---
