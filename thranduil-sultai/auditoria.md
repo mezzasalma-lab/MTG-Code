@@ -2,6 +2,7 @@
 
 Auditoria feita via skill `mtg-commander`, dados em tempo real do Scryfall.
 Data: 2026-08-20
+Última atualização (rebalanceada de remoção/desenvolvimento, seção 6 e 4): 2026-08-21
 
 ---
 
@@ -61,9 +62,9 @@ Curva saudável, pico em 3, topo curto (só 3 cartas acima de CMC 6). Bom para u
 
 ---
 
-## 4. Ramp — 14 peças ✅ (acima do mínimo de 10–12 do Bracket 3)
+## 4. Ramp — 15 peças ✅ (acima do mínimo de 10–12 do Bracket 3)
 
-Arbor Elf, Bloom Tender, Deathbloom Ritualist, Elves of Deep Shadow, Elvish Archdruid, Elvish Mystic, Gwenna Eyes of Gaea, Incubation Druid, Llanowar Elves, Marwyn the Nurturer, Priest of Titania, Selvala Heart of the Wilds, Sol Ring, Wirewood Channeler.
+Arbor Elf, Bloom Tender, Deathbloom Ritualist, **Devoted Druid** (`{1}{G}`, `{T}: Add {G}` + `Put a -1/-1 counter on this creature: Untap this creature` — dork com pseudo-ramp extra em turnos que não precisa atacar, e a habilidade de untap é herdável pelo Thranduil via GY), Elves of Deep Shadow, Elvish Archdruid, Elvish Mystic, Gwenna Eyes of Gaea, Incubation Druid, Llanowar Elves, Marwyn the Nurturer, Priest of Titania, Selvala Heart of the Wilds, Sol Ring, Wirewood Channeler.
 
 Ponto forte real do deck: quase todo dork escala com a quantidade de elfos em campo (Priest of Titania, Elvish Archdruid, Wirewood Channeler), então o ramp cresce exponencialmente conforme a estratégia tribal avança.
 
@@ -88,19 +89,24 @@ Adequado, mas depende bastante de gatilhos (criar criatura, dano de combate) —
   - **Putrefy** (`{1}{B}{G}`): `Destroy target artifact or creature.` — cobre a lacuna de remoção de artefato.
   - **Feed the Swarm** (`{1}{B}`): `Destroy target creature or enchantment an opponent controls. You lose life equal to that permanent's mana value.` — cobre a lacuna de remoção de encantamento.
 
-| Tipo | Cartas | Qtde |
-|---|---|---|
-| Remoção pontual | Assassin's Trophy, Awaken the Honored Dead, Trystan's Command (modal), Deadly Rollick, Putrefy, Feed the Swarm | 6 |
-| Edict repetível | Ruthless Winnower (stax leve, edict toda upkeep) | 1 |
-| Wipe assimétrico | Kindred Dominance (destrói tudo que não é do tipo escolhido), Raise the Palisade (bounce assimétrico) | 2 |
-
-**Total real: 9 efeitos** — dentro da faixa recomendada (8–10) pra Bracket 3–4. Ainda não há remoção dedicada de planeswalker, mas artefato (Putrefy) está coberto. Glissa Sunslayer também cobre encantamento (via modal de dano de combate, condicional) — o que soltou a justificativa original do Feed the Swarm.
-
 **Correção — Agatha's Soul Cauldron e Oversold Cemetery voltaram pro deck.** Os dois foram cortados na versão acima com uma leitura errada: ambos dependiam supostamente do volume de *Elfos* na GY (que é baixo, ~0,7-1,0/partida). Isso está errado nos dois casos:
 - **Agatha's Soul Cauldron** — `"{T}: Exile target card from a graveyard"` não exige que seja SEU cemitério nem que seja Elfo — é hate de cemitério real contra qualquer oponente, independente da densidade de Elfos.
 - **Oversold Cemetery** — `"if you have four or more CREATURE cards in your graveyard"` não exige Elfo, só criaturas (qualquer tipo). Buried Alive sozinho já manda 3 pro cemitério de um golpe.
 
-**Cortes reais que entraram no lugar delas:** Eclipsed Elf (seleção de carta pontual, sem sinergia de GY, sem habilidade herdável pela Thranduil) e Lys Alana Huntmaster (token maker redundante com Elvish Warmaster/Lathril, dominado estritamente por Imperious Perfect se ela entrar — ver seção 12). Total ainda 99 cartas + comandante.
+**Cortes reais que entraram no lugar delas:** Eclipsed Elf (seleção de carta pontual, sem sinergia de GY, sem habilidade herdável pela Thranduil) e Lys Alana Huntmaster (token maker redundante com Elvish Warmaster/Lathril, dominado estritamente por Imperious Perfect — ver seção 12).
+
+**Segunda rebalanceada — 2026-08-21: Feed the Swarm e Putrefy cortados, Devoted Druid/Imperious Perfect/Formidable Speaker entraram no lugar delas + Urza's Incubator.** Pedido direto do usuário, sem correção de leitura errada desta vez — troca deliberada de 2 remoções por 2 peças de desenvolvimento de board e 1 mana dork. Urza's Incubator (artefato redutor de custo, não é remoção) saiu pra abrir a terceira vaga.
+
+| Tipo | Cartas | Qtde |
+|---|---|---|
+| Remoção pontual | Assassin's Trophy, Awaken the Honored Dead, Trystan's Command (modal) | 3 |
+| Edict repetível | Ruthless Winnower (stax leve, edict toda upkeep) | 1 |
+| Wipe assimétrico | Kindred Dominance (destrói tudo que não é do tipo escolhido), Raise the Palisade (bounce assimétrico) | 2 |
+| GY hate (interação, não remoção de ameaça em campo) | Agatha's Soul Cauldron | 1 |
+
+**Total real: 8 efeitos** — ainda dentro da faixa recomendada (8–10) pra Bracket 3–4, mas agora no piso da faixa, não mais no meio dela. Confirmado nos 2000 goldfishes pós-corte: **1,11 → 0,78** remoção conjurada em média (`goldfish-log.md`, seção "Rebalanceada da lista — 3 cortes / 3 adições"). Sem Feed the Swarm, remoção de encantamento fica só com Glissa Sunslayer (condicional, precisa conectar dano de combate) e Awaken cap. I (`destroy target nonland permanent`, cobre qualquer tipo mas é conjuração única). Sem Putrefy, remoção de artefato fica só com Assassin's Trophy (`destroy target permanent`, não restrito a criatura) — cobertura ainda existe, só não é mais redundante.
+
+**Awaken the Honored Dead ({B}{G}{U}) avaliada e mantida** — é a única peça de remoção do deck que pede as 3 cores simultâneas (nenhuma outra passa de 2 cores). Simulação dedicada (n=3000) mostrou B+G+U disponíveis simultaneamente em campo em 75,2% dos jogos até o turno 3 e 85,1% até o turno 5 (modelo otimista — ignora terreno-entra-tapado, ver ressalva no cabeçalho de `thranduil_goldfish_v1.py`). Por ser Saga de conjuração única, atraso não desperdiça valor. Não foi cortada, mas é a peça de interação mais frágil de cor do deck — ligada ao mesmo problema de azul já sinalizado no item 3 da seção 12 (nunca corrigido).
 
 ---
 
@@ -141,6 +147,7 @@ Excelente coesão tribal — não é um goodstuff pile:
 - **~15 Elfos lendários** no deck (Arwen, Dionus, Eladamri, Elrond, Glissa, High Perfect Morcant, Jarad, Lathril, Marwyn, Maralen, Selvala, Thranduil Sindarin Liege, Trystan, Tyvar Bellicose, Tyvar the Pummeler, Prime Speaker Vannifar) — cada um que entra dispara o "draw 2, discard 1" do comandante. Densidade muito acima da média.
 - **Correção (via os 2000 goldfishes com combat_step e draw engines implementados):** esta seção dizia que a habilidade de herdar ativações de Elfos na GY "não é decorativa, é jogável". Os dados não sustentam isso tão bem quanto o texto original sugeria — a simulação mostra **média de ~0,7-1,0 Elfo milhado pro cemitério por partida** (proxy estatístico, não é contagem exata carta-por-carta, mas a ordem de grandeza é clara). As ferramentas de mill existem (Buried Alive, Trystan/Lluwen, Takenuma channel, Silvan Rally), mas o volume real que chega na GY numa partida de 8 turnos é baixo. Não é decorativa, mas também não é um plano B confiável — trate como upside ocasional, não como pilar da estratégia. Não removi as peças de mill (a maioria tem utilidade própria além de encher a GY), mas não priorizaria mais delas em upgrades futuros.
 - Ramp, anthems, geração de tokens e payoffs todos reforçam o mesmo plano — sinergia interna muito forte.
+- **Adições da rebalanceada 2026-08-21** reforçam o mesmo plano: Imperious Perfect (`{2}{G}`, anthem +1/+1 pra Elfos + gera token de Elfo no ETB) e Formidable Speaker (`{2}{G}`, descarta 1 carta da mão pra buscar qualquer criatura no grimório — alimenta o GY e ainda busca peça, tutor real).
 
 **Nonbo leve:** Kindred Dominance/Raise the Palisade/Kindred Summons pedem escolha de "tipo de criatura" — funcionam melhor se o board for consistentemente majoritário Elfo, o que geralmente é o caso aqui, então não chega a ser um problema real.
 
@@ -158,7 +165,7 @@ Contra o 4: sem fast mana adicional (Mana Crypt/Vault/Chrome Mox), sem tutor de 
 
 ## 12. Sugestões de melhoria (prioridade)
 
-1. ~~Reforçar remoção~~ — **aplicado**: cortadas Agatha's Soul Cauldron/Oversold Cemetery/Harmonized Crescendo, adicionadas Deadly Rollick/Putrefy/Feed the Swarm (ver seção 6 revisada — Chaos Warp e Vindicate da versão original nem eram Sultai).
+1. ~~Reforçar remoção~~ — **aplicado, depois parcialmente revertido**: cortadas Agatha's Soul Cauldron/Oversold Cemetery/Harmonized Crescendo, adicionadas Deadly Rollick/Putrefy/Feed the Swarm (Chaos Warp e Vindicate da versão original nem eram Sultai); Agatha's Soul Cauldron e Oversold Cemetery voltaram depois (leitura errada corrigida); em 2026-08-21, Feed the Swarm e Putrefy foram cortados de novo por decisão direta do usuário, trocados por Devoted Druid/Imperious Perfect/Formidable Speaker — remoção real caiu de 1,11 pra 0,78 conjurada em média, total estático caiu de 9 pra 8 efeitos (ver seção 6 atualizada). Ainda dentro da faixa 8–10, mas no piso.
 2. ~~Adicionar um overrun~~ — **corrigido:** o deck já tem Tyvar the Pummeler, Ezuri Renegade Leader e Elvish Warmaster fazendo esse papel (ver seção 8 revisada). Prioridade real é mais rampa que sustente esses custos de ativação (4-7 mana) no mesmo turno que o board fica largo.
 3. **Engordar fontes de azul** — pelo menos +1 Island básica ou trocar um utility land por algo como Botanical Sanctum ou Tolarian Terror... (considerar um dual U/x adicional); hoje só ~9 fontes hard de U é abaixo do ideal para um pip crítico no próprio comandante.
 4. Opcional: Deadly Rollick / Fierce Guardianship (força-tarefa de proteção com free-cast, sinergiza com a quantidade de mana verde disponível) se o objetivo é empurrar para Bracket 4.

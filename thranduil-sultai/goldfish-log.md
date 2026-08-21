@@ -206,6 +206,41 @@ Roaming Throne dobra em média 4,61 gatilhos de criatura por partida (subiu de ~
 
 ---
 
+### Rebalanceada da lista — 3 cortes / 3 adições (2026-08-21)
+
+**Cortes:** Feed the Swarm, Putrefy, Urza's Incubator.
+**Adições:** Devoted Druid, Imperious Perfect, Formidable Speaker.
+
+Antes de rodar, `DECKLIST_TEXT` do script foi atualizado pra bater com `lista.md` (as três cartas cortadas ainda estavam no texto embutido; as três novas já existiam no `CARD_DB` de sessões anteriores, só faltava incluir na decklist). Deck volta a bater 99 mainboard + comandante.
+
+**Awaken the Honored Dead ({B}{G}{U}) mantida** — avaliação separada mostrou que, apesar de ser a única peça de remoção do deck que pede as 3 cores simultâneas (nenhuma outra remoção passa de 2), é Saga de conjuração única (atraso não desperdiça valor) e a simulação de disponibilidade de mana (n=3000, ver conversa) mostrou B+G+U simultâneos disponíveis em 75,2% dos jogos até o turno 3 e 85,1% até o turno 5 — modelo otimista (ignora terreno-entra-tapado), mas não a ponto de justificar corte agora.
+
+**n=2000 (`thranduil_v1_runs_rebalanced_2000.jsonl`, seed_base=1400000), lista pós-rebalanceada:**
+
+```
+Avg commander cast turn: 4,42 | por T5: 79,9% | por T6: 86,0%
+Avg spells cast: 11,23 | Avg extra draws: 10,24
+Avg ramp em campo: 3,19 | Avg remoção conjurada: 0,78
+Avg finishers ativados: 1,10 | 42,8% dos jogos até T8
+Avg turnos com blue screw: 0,32 | 11,9% das partidas com pelo menos 1 | turno médio do 1º: 4,19
+Roaming Throne em campo: 11,2% | Avg gatilhos dobrados: 4,91
+```
+
+**Comparação com o baseline anterior (11-elfos, antes do corte de Feed the Swarm/Putrefy):**
+
+| Métrica | Antes (1,12 remoção) | Depois (rebalanceada) |
+|---|---|---|
+| Avg remoção conjurada | 1,12 | **0,78** |
+| Avg commander cast turn | 4,42 | 4,42 |
+| Commander cast by T5 | 79,1% | 79,9% |
+| Avg finishers ativados | 0,98 | 1,10 |
+| % finisher até T8 | 41,9% | 42,8% |
+| Avg turnos com blue screw | 0,29 | 0,32 |
+
+**Leitura:** a remoção conjurada caiu de verdade (1,12→0,78) porque Feed the Swarm e Putrefy eram remoção real e nenhuma das 3 adições é. Isso é esperado e é a troca deliberada — trocou-se 2 remoções por 2 peças de desenvolvimento de board (Imperious Perfect = anthem + token, Formidable Speaker = seleção de carta que alimenta o GY) e 1 mana dork extra (Devoted Druid). O resto do perfil do deck (velocidade do comandante, taxa de finisher, blue screw) ficou estatisticamente estável — a troca não introduziu nenhum efeito colateral estrutural, só reduziu a densidade de remoção pontual (contagem estática cai de 10 pra 8 efeitos confirmados por oracle_text (Assassin's Trophy, Deadly Rollick, Trystan's Command, Awaken the Honored Dead, Ruthless Winnower, Kindred Dominance, Raise the Palisade, Agatha's Soul Cauldron) — ainda dentro da faixa 8-10 recomendada, mas agora no piso, não mais no meio dela).
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

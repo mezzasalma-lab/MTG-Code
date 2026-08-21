@@ -59,6 +59,7 @@ DECKLIST_TEXT = """
 1 Deadly Rollick
 1 Deathbloom Ritualist
 1 Deathcap Glade
+1 Devoted Druid
 1 Dionus, Elvish Archdruid
 1 Eclipsed Realms
 1 Edric, Spymaster of Trest
@@ -71,8 +72,8 @@ DECKLIST_TEXT = """
 1 Elvish Warmaster
 1 Ezuri, Renegade Leader
 1 Fauna Shaman
-1 Feed the Swarm
 1 Finale of Devastation
+1 Formidable Speaker
 7 Forest
 1 Gilt-Leaf Palace
 1 Glissa Sunslayer
@@ -80,6 +81,7 @@ DECKLIST_TEXT = """
 1 Heroic Intervention
 1 High Perfect Morcant
 1 Immaculate Magistrate
+1 Imperious Perfect
 1 Incubation Druid
 1 Iron-Shield Elf
 1 Island
@@ -99,7 +101,6 @@ DECKLIST_TEXT = """
 1 Oversold Cemetery
 1 Priest of Titania
 1 Prime Speaker Vannifar
-1 Putrefy
 1 Raise the Palisade
 1 Reflecting Pool
 1 Rejuvenating Springs
@@ -122,7 +123,6 @@ DECKLIST_TEXT = """
 1 Tyvar, the Pummeler
 1 Undergrowth Stadium
 1 Underrealm Lich
-1 Urza's Incubator
 1 Wastewood Verge
 1 Waterlogged Grove
 1 Watery Grave
