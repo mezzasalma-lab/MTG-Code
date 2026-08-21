@@ -6,7 +6,6 @@
 
 ## Deck
 
-1 Agatha's Soul Cauldron
 1 Allosaurus Shepherd
 1 Arbor Elf
 1 Arwen, Weaver of Hope
@@ -22,6 +21,7 @@
 1 Command Tower
 1 Deathbloom Ritualist
 1 Deathcap Glade
+1 Deadly Rollick
 1 Dionus, Elvish Archdruid
 1 Eclipsed Elf
 1 Eclipsed Realms
@@ -35,12 +35,12 @@
 1 Elvish Warmaster
 1 Ezuri, Renegade Leader
 1 Fauna Shaman
+1 Feed the Swarm
 1 Finale of Devastation
 7 Forest
 1 Gilt-Leaf Palace
 1 Glissa Sunslayer
 1 Gwenna, Eyes of Gaea
-1 Harmonized Crescendo
 1 Heroic Intervention
 1 High Perfect Morcant
 1 Immaculate Magistrate
@@ -61,9 +61,9 @@
 1 Marwyn, the Nurturer
 1 Nurturing Peatland
 1 Overgrown Tomb
-1 Oversold Cemetery
 1 Priest of Titania
 1 Prime Speaker Vannifar
+1 Putrefy
 1 Raise the Palisade
 1 Reflecting Pool
 1 Rejuvenating Springs

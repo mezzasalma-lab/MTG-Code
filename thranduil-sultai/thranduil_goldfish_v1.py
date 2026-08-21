@@ -42,7 +42,6 @@ from typing import List, Dict, Optional, Set
 COMMANDER = "Thranduil, the Elvenking"
 
 DECKLIST_TEXT = """
-1 Agatha's Soul Cauldron
 1 Allosaurus Shepherd
 1 Arbor Elf
 1 Arwen, Weaver of Hope
@@ -56,6 +55,7 @@ DECKLIST_TEXT = """
 1 Cavern of Souls
 1 Champions of the Perfect
 1 Command Tower
+1 Deadly Rollick
 1 Deathbloom Ritualist
 1 Deathcap Glade
 1 Dionus, Elvish Archdruid
@@ -71,12 +71,12 @@ DECKLIST_TEXT = """
 1 Elvish Warmaster
 1 Ezuri, Renegade Leader
 1 Fauna Shaman
+1 Feed the Swarm
 1 Finale of Devastation
 7 Forest
 1 Gilt-Leaf Palace
 1 Glissa Sunslayer
 1 Gwenna, Eyes of Gaea
-1 Harmonized Crescendo
 1 Heroic Intervention
 1 High Perfect Morcant
 1 Immaculate Magistrate
@@ -97,9 +97,9 @@ DECKLIST_TEXT = """
 1 Marwyn, the Nurturer
 1 Nurturing Peatland
 1 Overgrown Tomb
-1 Oversold Cemetery
 1 Priest of Titania
 1 Prime Speaker Vannifar
+1 Putrefy
 1 Raise the Palisade
 1 Reflecting Pool
 1 Rejuvenating Springs
@@ -229,6 +229,11 @@ add("Trystan's Command", 6, {"Sorcery"}, tags={"removal"}, colors={"B", "G"})
 add("Ruthless Winnower", 5, {"Creature"}, tags={"removal_repeatable", "elf"}, colors={"B"})
 add("Kindred Dominance", 7, {"Sorcery"}, tags={"wipe_asymmetric"}, colors={"B"})
 add("Raise the Palisade", 5, {"Sorcery"}, tags={"bounce_asymmetric"}, colors={"U"})
+# Adicionadas na troca pedida pelo usuario (ver auditoria.md) - cobrem lacunas reais
+# confirmadas pela auditoria: nenhuma remocao dedicada de artefato ou encantamento.
+add("Deadly Rollick", 2, {"Instant"}, tags={"removal", "removal_exile"}, colors={"B"})  # custo real {3}{B}, mas quase sempre paga {1}{B} (controla comandante) - modelado no custo reduzido
+add("Putrefy", 2, {"Instant"}, tags={"removal", "removal_artifact"}, colors={"B", "G"})
+add("Feed the Swarm", 2, {"Instant"}, tags={"removal", "removal_enchantment"}, colors={"B"})
 
 # -------- Protecao --------
 add("Heroic Intervention", 2, {"Instant"}, tags={"protection"}, colors={"G"})
@@ -369,6 +374,16 @@ class GameState:
     edric_last_turn_alive: Optional[int] = None
     edric_death_turn: Optional[int] = None
 
+    # Teto real de mana por turno (corrige a mesma limitacao ja corrigida no Beorn:
+    # antes, cada carta era checada contra total_mana() de forma independente, sem
+    # descontar o que ja tinha sido gasto no mesmo turno).
+    mana_spent_this_turn: int = 0
+
+    # Color screw de azul: quantos turnos o jogador tinha mana total suficiente pra
+    # conjurar o comandante (5) mas nao tinha nenhuma fonte de U disponivel.
+    blue_screw_turns: int = 0
+    first_blue_screw_turn: Optional[int] = None
+
     def draw(self, n=1, source="draw"):
         got = 0
         lich = self.has("Underrealm Lich")
@@ -448,8 +463,11 @@ def color_sources(state: GameState, color: str) -> int:
             n += 1
     return n
 
+def remaining_mana(state: GameState) -> int:
+    return total_mana(state) - state.mana_spent_this_turn
+
 def can_cast(state: GameState, card: str) -> bool:
-    if total_mana(state) < C(card).mv:
+    if remaining_mana(state) < C(card).mv:
         return False
     for color in C(card).colors:
         if color_sources(state, color) < 1:
@@ -572,6 +590,7 @@ def _resolve_cast(state: GameState, card: str, log: List[Dict], from_hand: bool)
         state.hand.remove(card)
     _creature_cast_engines_trigger(state, card, log)
     state.spells_cast += 1
+    state.mana_spent_this_turn += C(card).mv
     state.battlefield.append(card)
     if card == COMMANDER:
         state.commander_in_play = True
@@ -583,6 +602,7 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
     state.hand.remove(card)
     _creature_cast_engines_trigger(state, card, log)
     state.spells_cast += 1
+    state.mana_spent_this_turn += C(card).mv
 
     if "Instant" in C(card).types or "Sorcery" in C(card).types:
         state.graveyard.append(card)
@@ -647,12 +667,14 @@ def activate_finishers(state: GameState, log: List[Dict]):
         cost = C(card).activation_cost
         if cost <= 0:
             continue
-        if has_tag(card, "finisher_repeatable") and total_mana(state) >= cost:
+        if has_tag(card, "finisher_repeatable") and remaining_mana(state) >= cost:
+            state.mana_spent_this_turn += cost
             state.finishers_activated.append(card)
             if state.finisher_turn is None:
                 state.finisher_turn = state.turn
             log.append({"trigger": "finisher_activated", "card": card, "turn": state.turn})
-        elif has_tag(card, "finisher_drain") and card == "Jarad, Golgari Lich Lord" and total_mana(state) >= cost:
+        elif has_tag(card, "finisher_drain") and card == "Jarad, Golgari Lich Lord" and remaining_mana(state) >= cost:
+            state.mana_spent_this_turn += cost
             state.finishers_activated.append(card)
             if state.finisher_turn is None:
                 state.finisher_turn = state.turn
@@ -719,6 +741,7 @@ def apply_rhystic_study(state: GameState, log: List[Dict]):
 def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.turn = turn
     state.land_played = False
+    state.mana_spent_this_turn = 0
 
     log = [{"turn": turn, "phase": "start", "hand_size": len(state.hand),
             "battlefield_count": len(state.battlefield), "mana_est": total_mana(state)}]
@@ -727,6 +750,14 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.draw(1, source="normal")
 
     play_land(state, log)
+
+    # Color screw de azul: mana total ja daria pro comandante, mas falta fonte de U.
+    if not state.commander_in_play and state.turn >= 3 and total_mana(state) >= C(COMMANDER).mv and color_sources(state, "U") < 1:
+        state.blue_screw_turns += 1
+        if state.first_blue_screw_turn is None:
+            state.first_blue_screw_turn = state.turn
+        log.append({"trigger": "blue_screw", "turn": state.turn})
+
     main_phase(state, log)
     combat_step(state, log)
     apply_rhystic_study(state, log)
@@ -797,6 +828,8 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "rhystic_study_denied": state.rhystic_study_denied,
         "edric_was_cast": state.edric_was_cast,
         "edric_death_turn": state.edric_death_turn,
+        "blue_screw_turns": state.blue_screw_turns,
+        "first_blue_screw_turn": state.first_blue_screw_turn,
     }
 
 def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=71000):
@@ -855,6 +888,14 @@ def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=710
     print(f"Avg battlefield final: {avg('battlefield_count'):.2f}")
     print(f"Avg mao final: {avg('hand_size'):.2f}")
     print(f"Avg terrenos jogados: {avg('lands_played_total'):.2f}")
+
+    blue_screwed = [r for r in results if r["blue_screw_turns"] > 0]
+    print()
+    print(f"Avg turnos com 'color screw' de azul (mana total ok, sem fonte de U): {avg('blue_screw_turns'):.2f}")
+    print(f"% de partidas com pelo menos 1 turno de blue screw: {100*len(blue_screwed)/n:.1f}%")
+    if blue_screwed:
+        fbs = [r["first_blue_screw_turn"] for r in blue_screwed]
+        print(f"  Turno medio do 1o blue screw: {statistics.mean(fbs):.2f}")
     print()
     print(f"Logs salvos em: {out_jsonl}")
 

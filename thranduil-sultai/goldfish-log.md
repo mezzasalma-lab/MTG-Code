@@ -79,6 +79,55 @@ O número do Edric caiu de 8,36 pra 2,30 — muito mais compatível com o padrã
 
 ---
 
+### Correção maior — teto real de mana por turno + rastreio de "color screw" de azul
+
+Duas coisas pedidas: (1) parar de checar cada carta contra `total_mana()` de forma independente (o que permitia, na prática, gastar mais mana do que existia no turno — mesmo bug que corrigi no Beorn antes) e (2) medir de verdade quantas vezes a base de mana fraca em azul (~9 fontes hard, sinalizada na auditoria estática) trava o comandante mesmo com mana total sobrando.
+
+**Implementado:**
+- `remaining_mana(state) = total_mana(state) - mana_spent_this_turn`, resetado no início de cada turno. `can_cast()`, o loop de conjuração e `activate_finishers()` agora descontam do total real conforme gastam — antes, cada checagem era independente e podia gastar mais mana do que existia.
+- `blue_screw_turns`: conta turnos em que a mana total já daria pros 5 do comandante, mas não havia nenhuma fonte de `U` em campo.
+
+**Re-execução com n=2000, seed independente:**
+
+| Métrica | Sem teto de mana | Com teto de mana |
+|---|---|---|
+| Avg commander cast turn | 3,96 | **4,46** |
+| Commander cast by T5 | 82,0% | 77,6% |
+| Avg finishers ativados | 2,70 | **1,06** |
+| % finisher ativado até T8 | 58,1% | **42,5%** |
+| Avg turno do 1º finisher | 4,84 | 6,61 |
+| Avg extra draws | 9,11 | 8,58 |
+| Avg cartas descartadas por limite de mão | 1,89 | 1,62 |
+
+**Leitura:** a diferença é grande — sem o teto de mana, o motor estava efetivamente "trapaceando" gastando mais mana do que tinha disponível em boa parte dos turnos, o que inflava tanto a velocidade do comandante quanto a taxa de finisher. Com o teto real, **42,5%** (não mais 58,1%) é o número que confia mais — os 3 overruns repetíveis (Tyvar the Pummeler, Ezuri, Elvish Warmaster) custam 4-7 mana de ativação, e competem por mana no mesmo turno com desenvolver o board, então essa queda faz sentido mecanicamente.
+
+**Color screw de azul (novo, nunca medido antes):**
+
+```
+Avg turnos com blue screw por partida: 0,34
+% de partidas com pelo menos 1 turno de blue screw: 12,3%
+Turno médio do 1º blue screw: 4,30
+```
+
+Confirma quantitativamente a preocupação qualitativa da auditoria: em **~12% das partidas**, há pelo menos um turno em que a mana total já dava pro comandante, mas faltou uma fonte de azul especificamente — e isso costuma acontecer bem cedo (turno ~4,3 em média), atrasando exatamente o motor "elfo lendário entra → compra 2" que depende do Thranduil estar em campo.
+
+### Mudança de deck — mais remoção, cortes de peças de baixo impacto (ver `auditoria.md` seção 6)
+
+Aplicada a troca real de remoção (ver auditoria — Chaos Warp/Vindicate da sugestão original nem eram Sultai, corrigido): cortadas Agatha's Soul Cauldron, Oversold Cemetery e Harmonized Crescendo; adicionadas Deadly Rollick, Putrefy e Feed the Swarm. `lista.md` e o `DECKLIST_TEXT`/`CARD_DB` do simulador atualizados juntos.
+
+**Re-execução com n=2000, seed independente, lista corrigida:**
+
+| Métrica | Antes da troca | Depois da troca |
+|---|---|---|
+| Avg remoção conjurada | 0,52 | **1,11** |
+| % finisher ativado até T8 | 42,5% | 38,4% |
+| Avg battlefield final | 17,14 | 16,71 |
+| Avg turnos com blue screw | 0,34 | 0,31 |
+
+A remoção mais que dobrou (0,52→1,11), como esperado — as 3 cartas cortadas não competiam por essa função. A taxa de finisher caiu um pouco (42,5%→38,4%) porque as peças cortadas tinham algum valor de desenvolvimento/draw que ajudava indiretamente a montar o board mais rápido; é uma troca real (mais interação, um pouco menos de velocidade pra fechar), não um erro de modelagem.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

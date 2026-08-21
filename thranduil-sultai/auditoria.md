@@ -77,18 +77,24 @@ Adequado, mas depende bastante de gatilhos (criar criatura, dano de combate) —
 
 ---
 
-## 6. Remoção — ⚠️ PONTO FRACO DO DECK
+## 6. Remoção — corrigido após validação com os 2000 goldfishes
+
+**Correção do original:** esta seção recomendava trocar cartas por "Beast Within, Chaos Warp, Vindicate, Deadly Rollick". Chaos Warp (`{2}{R}`) e Vindicate (`{1}{W}{B}`) **não são Sultai** — nem sequer legais na identidade de cor B/G/U do Thranduil. Erro do texto original, verificado via `color_identity` do Scryfall antes de aplicar qualquer troca.
+
+**Troca real aplicada** (0,52 → **1,11** remoção conjurada em média, confirmado nos 2000 goldfishes):
+- **Cortadas:** Agatha's Soul Cauldron, Oversold Cemetery, Harmonized Crescendo — as três eram peças de valor lento/condicional com baixo impacto direto, e duas delas dependiam de volume de criaturas na GY que os próprios goldfishes mostraram ser baixo (~1 Elfo milhado por partida em média — ver seção 10 revisada).
+- **Adicionadas** (verificadas via Scryfall, todas legais em B/G/U):
+  - **Deadly Rollick** (`{3}{B}`, ou `{1}{B}` se você controla um comandante — quase sempre o caso): `Exile target creature.`
+  - **Putrefy** (`{1}{B}{G}`): `Destroy target artifact or creature.` — cobre a lacuna de remoção de artefato.
+  - **Feed the Swarm** (`{1}{B}`): `Destroy target creature or enchantment an opponent controls. You lose life equal to that permanent's mana value.` — cobre a lacuna de remoção de encantamento.
 
 | Tipo | Cartas | Qtde |
 |---|---|---|
-| Remoção pontual | Assassin's Trophy, Awaken the Honored Dead, Trystan's Command (modal) | 3 |
+| Remoção pontual | Assassin's Trophy, Awaken the Honored Dead, Trystan's Command (modal), Deadly Rollick, Putrefy, Feed the Swarm | 6 |
 | Edict repetível | Ruthless Winnower (stax leve, edict toda upkeep) | 1 |
 | Wipe assimétrico | Kindred Dominance (destrói tudo que não é do tipo escolhido), Raise the Palisade (bounce assimétrico) | 2 |
 
-**Total real: ~6 efeitos**, abaixo do recomendado (8–10 remoção pontual + 2–3 wipes) para Bracket 3–4. Não há:
-- Remoção dedicada de artefato (fora do catch-all Assassin's Trophy)
-- Remoção dedicada de planeswalker
-- Wipe "limpo" (os dois wipes disponíveis são assimétricos e dependem do seu board ser majoritariamente Elfo)
+**Total real: 9 efeitos** — agora dentro da faixa recomendada (8–10) pra Bracket 3–4. Ainda não há remoção dedicada de planeswalker, mas artefato e encantamento (as duas lacunas mais gritantes) estão cobertos agora.
 
 ---
 
@@ -127,7 +133,7 @@ Fauna Shaman, Buried Alive (setup para reanimação), Finale of Devastation, Pri
 Excelente coesão tribal — não é um goodstuff pile:
 
 - **~15 Elfos lendários** no deck (Arwen, Dionus, Eladamri, Elrond, Glissa, High Perfect Morcant, Jarad, Lathril, Marwyn, Maralen, Selvala, Thranduil Sindarin Liege, Trystan, Tyvar Bellicose, Tyvar the Pummeler, Prime Speaker Vannifar) — cada um que entra dispara o "draw 2, discard 1" do comandante. Densidade muito acima da média.
-- Thranduil também herda **todas as habilidades ativadas de Elfos no seu cemitério** — e o deck tem ferramentas reais para encher a GY de elfos (Buried Alive, Trystan/Lluwen self-mill, Takenuma channel, Eclipsed Elf), então essa segunda metade do texto do comandante não é decorativa, é jogável.
+- **Correção (via os 2000 goldfishes com combat_step e draw engines implementados):** esta seção dizia que a habilidade de herdar ativações de Elfos na GY "não é decorativa, é jogável". Os dados não sustentam isso tão bem quanto o texto original sugeria — a simulação mostra **média de ~0,7-1,0 Elfo milhado pro cemitério por partida** (proxy estatístico, não é contagem exata carta-por-carta, mas a ordem de grandeza é clara). As ferramentas de mill existem (Buried Alive, Trystan/Lluwen, Takenuma channel, Silvan Rally), mas o volume real que chega na GY numa partida de 8 turnos é baixo. Não é decorativa, mas também não é um plano B confiável — trate como upside ocasional, não como pilar da estratégia. Não removi as peças de mill (a maioria tem utilidade própria além de encher a GY), mas não priorizaria mais delas em upgrades futuros.
 - Ramp, anthems, geração de tokens e payoffs todos reforçam o mesmo plano — sinergia interna muito forte.
 
 **Nonbo leve:** Kindred Dominance/Raise the Palisade/Kindred Summons pedem escolha de "tipo de criatura" — funcionam melhor se o board for consistentemente majoritário Elfo, o que geralmente é o caso aqui, então não chega a ser um problema real.
@@ -146,7 +152,7 @@ Contra o 4: sem fast mana adicional (Mana Crypt/Vault/Chrome Mox), sem tutor de 
 
 ## 12. Sugestões de melhoria (prioridade)
 
-1. **Reforçar remoção** — trocar 2-3 cartas fracas por: Beast Within, Chaos Warp, Vindicate, Deadly Rollick (remoção instant/versátil que faltam).
+1. ~~Reforçar remoção~~ — **aplicado**: cortadas Agatha's Soul Cauldron/Oversold Cemetery/Harmonized Crescendo, adicionadas Deadly Rollick/Putrefy/Feed the Swarm (ver seção 6 revisada — Chaos Warp e Vindicate da versão original nem eram Sultai).
 2. ~~Adicionar um overrun~~ — **corrigido:** o deck já tem Tyvar the Pummeler, Ezuri Renegade Leader e Elvish Warmaster fazendo esse papel (ver seção 8 revisada). Prioridade real é mais rampa que sustente esses custos de ativação (4-7 mana) no mesmo turno que o board fica largo.
 3. **Engordar fontes de azul** — pelo menos +1 Island básica ou trocar um utility land por algo como Botanical Sanctum ou Tolarian Terror... (considerar um dual U/x adicional); hoje só ~9 fontes hard de U é abaixo do ideal para um pip crítico no próprio comandante.
 4. Opcional: Deadly Rollick / Fierce Guardianship (força-tarefa de proteção com free-cast, sinergiza com a quantidade de mana verde disponível) se o objetivo é empurrar para Bracket 4.
