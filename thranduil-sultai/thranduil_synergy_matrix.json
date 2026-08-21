@@ -3,21 +3,8 @@
   {
    "name": "Roaming Throne",
    "tags": [
+    "elf",
     "trigger_doubler"
-   ],
-   "edhrec_pct": null,
-   "edhrec_cat": null,
-   "gy_inheritable_ability": false,
-   "gy_inheritable_detail": [],
-   "gy_fuel": false,
-   "triggers_thranduil_etb": false,
-   "protected": [],
-   "is_protected": false
-  },
-  {
-   "name": "Urza's Incubator",
-   "tags": [
-    "cost_reducer"
    ],
    "edhrec_pct": null,
    "edhrec_cat": null,
@@ -43,24 +30,6 @@
    "triggers_thranduil_etb": false,
    "protected": [],
    "is_protected": false
-  },
-  {
-   "name": "Feed the Swarm",
-   "tags": [
-    "removal",
-    "removal_enchantment"
-   ],
-   "edhrec_pct": null,
-   "edhrec_cat": null,
-   "gy_inheritable_ability": false,
-   "gy_inheritable_detail": [],
-   "gy_fuel": false,
-   "triggers_thranduil_etb": false,
-   "protected": [
-    "removal",
-    "removal_enchantment"
-   ],
-   "is_protected": true
   },
   {
    "name": "Gwenna, Eyes of Gaea",
@@ -164,24 +133,6 @@
    "triggers_thranduil_etb": false,
    "protected": [
     "gy_hate"
-   ],
-   "is_protected": true
-  },
-  {
-   "name": "Putrefy",
-   "tags": [
-    "removal",
-    "removal_artifact"
-   ],
-   "edhrec_pct": 9.484380880692509,
-   "edhrec_cat": "instants",
-   "gy_inheritable_ability": false,
-   "gy_inheritable_detail": [],
-   "gy_fuel": false,
-   "triggers_thranduil_etb": false,
-   "protected": [
-    "removal",
-    "removal_artifact"
    ],
    "is_protected": true
   },
@@ -758,6 +709,26 @@
    "is_protected": true
   },
   {
+   "name": "Imperious Perfect",
+   "tags": [
+    "anthem",
+    "elf",
+    "token_maker"
+   ],
+   "edhrec_pct": 49.36018065487392,
+   "edhrec_cat": "topcards",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{G}, {T}: Create a 1/1 green Elf Warrior creature token."
+   ],
+   "gy_fuel": false,
+   "triggers_thranduil_etb": false,
+   "protected": [
+    "gy_inheritable_ability"
+   ],
+   "is_protected": true
+  },
+  {
    "name": "Eladamri, Korvecdal",
    "tags": [
     "elf",
@@ -832,6 +803,28 @@
    "triggers_thranduil_etb": true,
    "protected": [
     "triggers_thranduil_draw"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Formidable Speaker",
+   "tags": [
+    "elf",
+    "gy_fill",
+    "tutor"
+   ],
+   "edhrec_pct": 54.29055325555138,
+   "edhrec_cat": "topcards",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{1}, {T}: Untap another target permanent."
+   ],
+   "gy_fuel": true,
+   "triggers_thranduil_etb": false,
+   "protected": [
+    "gy_fuel",
+    "gy_inheritable_ability",
+    "tutor"
    ],
    "is_protected": true
   },
@@ -994,6 +987,27 @@
    "is_protected": true
   },
   {
+   "name": "Devoted Druid",
+   "tags": [
+    "elf",
+    "ramp"
+   ],
+   "edhrec_pct": 70.66240120436582,
+   "edhrec_cat": "highsynergycards",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{T}: Add {G}.",
+    "Put a -1/-1 counter on this creature: Untap this creature."
+   ],
+   "gy_fuel": false,
+   "triggers_thranduil_etb": false,
+   "protected": [
+    "gy_inheritable_ability",
+    "ramp"
+   ],
+   "is_protected": true
+  },
+  {
    "name": "Buried Alive",
    "tags": [
     "gy_fill",
@@ -1146,6 +1160,7 @@
    "Arbor Elf",
    "Bloom Tender",
    "Deathbloom Ritualist",
+   "Devoted Druid",
    "Elves of Deep Shadow",
    "Elvish Archdruid",
    "Elvish Mystic",
@@ -1169,13 +1184,12 @@
    "Assassin's Trophy",
    "Awaken the Honored Dead",
    "Deadly Rollick",
-   "Feed the Swarm",
-   "Putrefy",
    "Trystan's Command"
   ],
   "gy_fill": [
    "Awaken the Honored Dead",
    "Buried Alive",
+   "Formidable Speaker",
    "Lluwen, Imperfect Naturalist",
    "Tyvar, Jubilant Brawler"
   ],
@@ -1217,7 +1231,8 @@
    "Eladamri, Korvecdal"
   ],
   "anthem": [
-   "Elvish Archdruid"
+   "Elvish Archdruid",
+   "Imperious Perfect"
   ],
   "elf_scaling": [
    "Elvish Archdruid",
@@ -1232,15 +1247,14 @@
   ],
   "token_maker": [
    "Elvish Warmaster",
+   "Imperious Perfect",
    "Lathril, Blade of the Elves"
   ],
   "tutor": [
    "Fauna Shaman",
    "Finale of Devastation",
+   "Formidable Speaker",
    "Prime Speaker Vannifar"
-  ],
-  "removal_enchantment": [
-   "Feed the Swarm"
   ],
   "finisher_xspell": [
    "Finale of Devastation"
@@ -1288,9 +1302,6 @@
   "recursion": [
    "Oversold Cemetery"
   ],
-  "removal_artifact": [
-   "Putrefy"
-  ],
   "bounce_asymmetric": [
    "Raise the Palisade"
   ],
@@ -1317,9 +1328,6 @@
   ],
   "gy_fill_passive": [
    "Underrealm Lich"
-  ],
-  "cost_reducer": [
-   "Urza's Incubator"
   ]
  }
 }
