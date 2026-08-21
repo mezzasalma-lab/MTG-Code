@@ -45,6 +45,7 @@ DECKLIST_TEXT = """
 1 Agatha's Soul Cauldron
 1 Allosaurus Shepherd
 1 Arbor Elf
+1 Arcane Signet
 1 Arwen, Weaver of Hope
 1 Assassin's Trophy
 1 Awaken the Honored Dead
@@ -73,7 +74,6 @@ DECKLIST_TEXT = """
 1 Ezuri, Renegade Leader
 1 Fauna Shaman
 1 Finale of Devastation
-1 Formidable Speaker
 7 Forest
 1 Gilt-Leaf Palace
 1 Glissa Sunslayer
@@ -239,6 +239,7 @@ add("Feed the Swarm", 2, {"Instant"}, tags={"removal", "removal_enchantment"}, c
 # Candidatas a adicao avaliadas depois - ver thranduil_synergy_matrix.py --with-candidates
 add("Devoted Druid", 2, {"Creature"}, tags={"ramp", "elf"}, colors={"G"}, produces={"G"})
 add("Formidable Speaker", 3, {"Creature"}, tags={"tutor", "gy_fill", "elf"}, colors={"G"})
+add("Arcane Signet", 2, {"Artifact"}, tags={"ramp"}, produces={"B", "G", "U"})
 add("Imperious Perfect", 3, {"Creature"}, tags={"anthem", "token_maker", "elf"}, colors={"G"})
 
 # -------- Protecao --------
@@ -536,7 +537,7 @@ def commander_can_be_cast(state: GameState) -> bool:
 # MULLIGAN
 # =========================================================
 
-KEEPERS = {"Sol Ring", "Elvish Mystic", "Llanowar Elves", "Arbor Elf", "Priest of Titania", "Bloom Tender"}
+KEEPERS = {"Sol Ring", "Elvish Mystic", "Llanowar Elves", "Arbor Elf", "Priest of Titania", "Bloom Tender", "Arcane Signet"}
 
 def should_keep(hand: List[str]) -> bool:
     lands = sum(1 for c in hand if is_land(c))

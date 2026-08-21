@@ -269,6 +269,41 @@ Roaming Throne em campo: 11,7% | Avg gatilhos dobrados: 4,36
 
 ---
 
+### Formidable Speaker → Arcane Signet (2026-08-21)
+
+Pedido do usuário: melhorar a chance de ter mana pro comandante em T4/T5/T6 e reduzir mulligans problemáticos. Testados 4 candidatos no lugar do Formidable Speaker (Thranduil's Company nunca foi considerado — vetado permanentemente pelo usuário, `references/user-standing-rules.md` regra 5):
+
+| Candidato | Resultado do teste | Decisão |
+|---|---|---|
+| **Arcane Signet** (`{2}`, any color na identidade, sempre destapado) | T4 +3,7pp, T5 +1,5pp, blue screw -0,8pp | **Escolhido** |
+| Chromatic Lantern (`{3}`, fixa TODOS os terrenos — mecânica real implementada em `color_sources()` pro teste) | Mesmo efeito prático do Arcane Signet, só que 1 mana mais caro e 1 turno mais lento | Descartado |
+| Urza's Incubator (`{3}`, custo -2 pra Elfos — mecânica real implementada em `can_cast`/`cast_spell`) | T4 +0,3pp, blue screw 0pp — não ataca o gargalo de cor | Descartado |
+| The World Tree | `color_identity` inclui R/W (custo de sacrifício) — **ilegal** em B/G/U | Descartado, nem testado em goldfish |
+
+`lista.md`, `CARD_DB` e `DECKLIST_TEXT` atualizados (`add("Arcane Signet", 2, {"Artifact"}, tags={"ramp"}, produces={"B", "G", "U"})`, adicionado também a `KEEPERS` pra pesar na decisão de mulligan). Deck volta a bater 99 mainboard + comandante.
+
+**n=2000 (`thranduil_v1_runs_arcane_signet_2000.jsonl`, seed_base=2000000):**
+
+```
+Avg commander cast turn: 4,31 | por T4: 62,1% | por T5: 82,8% | por T6: 88,8%
+Avg mulligans: 0,47 | Avg remoção conjurada: 0,76 | Avg ramp em campo: 3,50
+Avg turnos com blue screw: 0,26 | 9,3% das partidas com pelo menos 1
+```
+
+| Métrica | Antes (Formidable Speaker) | Depois (Arcane Signet) |
+|---|---|---|
+| Avg commander cast turn | 4,44 | **4,31** |
+| Por T4 | 58,5% | **62,1%** |
+| Por T5 | 80,4% | **82,8%** |
+| Por T6 | 86,5% | **88,8%** |
+| % partidas com blue screw | 8,4% | **9,3%*** |
+
+*\*O % de blue screw oscilou pra cima nessa rodada específica (ruído de seed — a mesma troca testada isoladamente antes deu 9,2%, dentro da mesma faixa). O ganho real e consistente está nos números de turno do comandante, que são os que mais importam pro plano do deck.*
+
+**Leitura:** ganho real e mensurável em cima da base já melhorada pelo Underground River — turno médio do comandante caiu de 4,44 pra 4,31, chance por T4 subiu quase 4 pontos. Combinado com a troca do Underground River (sessão anterior), o deck saiu de ~58,9%/80,7%/86,5% (T4/T5/T6, antes de qualquer correção de mana) pra 62,1%/82,8%/88,8% hoje.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

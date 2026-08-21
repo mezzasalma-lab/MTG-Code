@@ -43,6 +43,8 @@ Identidade de cor confirmada: **B/G/U (Sultai)**.
 
 **Correção aplicada — 2026-08-21: Llanowar Wastes trocado por Underground River.** Llanowar Wastes (`{T}: Add {C}` / `{T}: Add {B} or {G}. Causa 1 dano a você`) era 1 dos 7 terrenos do deck que só tocavam B/G, cor já bem suprida. Underground River é a mesma painland (sempre destapada, sem condição), só que B/U (`{T}: Add {U} or {B}. Causa 1 dano a você`) — verificado via Scryfall, legal em Commander, `$2,43`. Fontes de U sobem de 10 pra **11**, sem tirar terreno nenhum do total (37 mantido) nem reduzir B (ainda 12 fontes via as outras 6 duais B/G + Underground River). Confirmado nos 2000 goldfishes: blue screw caiu de **11,9% → 8,4%** das partidas, avg turnos com screw caiu de 0,32 → 0,23 (`goldfish-log.md`, seção "Fonte de U — Underground River no lugar de Llanowar Wastes"). Ainda vale considerar mais 1-2 trocas similares (item 3, seção 12) se quiser reduzir mais.
 
+**Segunda correção aplicada — 2026-08-21: Formidable Speaker trocado por Arcane Signet.** Testados 4 candidatos antes de decidir (Arcane Signet, Chromatic Lantern, Urza's Incubator, The World Tree — este último **ilegal** na identidade B/G/U, `color_identity` do Scryfall inclui R/W pelo custo de sacrifício). Arcane Signet (`{2}`, `T: Add one mana of any color in your commander's color identity`, sempre destapado) venceu Chromatic Lantern (mesmo efeito, mas 1 mana mais caro e 1 turno mais lento) e goleou Urza's Incubator (só reduz custo genérico, não ataca o gargalo real de cor — ganho de +0,3pp contra +3,7pp do Signet em T4). Thranduil's Company **não foi considerado** pra corte, vetado permanentemente pelo usuário (ver `references/user-standing-rules.md`, regra 5).
+
 ---
 
 ## 3. Curva de mana

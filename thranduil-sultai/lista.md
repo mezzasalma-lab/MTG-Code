@@ -9,6 +9,7 @@
 1 Agatha's Soul Cauldron
 1 Allosaurus Shepherd
 1 Arbor Elf
+1 Arcane Signet
 1 Arwen, Weaver of Hope
 1 Assassin's Trophy
 1 Awaken the Honored Dead
@@ -37,7 +38,6 @@
 1 Ezuri, Renegade Leader
 1 Fauna Shaman
 1 Finale of Devastation
-1 Formidable Speaker
 7 Forest
 1 Gilt-Leaf Palace
 1 Glissa Sunslayer
