@@ -150,14 +150,15 @@ class Card:
     is_legendary_elf: bool = False
     activation_cost: int = 0                                 # custo de ativacao (finishers/engines)
     mill_amount: int = 0                                     # cartas milhadas quando resolve
+    power: int = 0                                           # poder impresso (0 = nao rastreado/irrelevante)
 
 CARD_DB: Dict[str, Card] = {}
 
-def add(name, mv, types, tags=None, colors=None, produces=None, legendary_elf=False, activation_cost=0, mill=0):
+def add(name, mv, types, tags=None, colors=None, produces=None, legendary_elf=False, activation_cost=0, mill=0, power=0):
     CARD_DB[name] = Card(
         name=name, mv=mv, types=set(types), tags=set(tags or []),
         colors=set(colors or []), produces=set(produces or []),
-        is_legendary_elf=legendary_elf, activation_cost=activation_cost, mill_amount=mill,
+        is_legendary_elf=legendary_elf, activation_cost=activation_cost, mill_amount=mill, power=power,
     )
 
 # -------- Lands --------
@@ -284,12 +285,35 @@ add("Oversold Cemetery", 2, {"Enchantment"}, tags={"recursion"}, colors={"B"})  
 add("Agatha's Soul Cauldron", 2, {"Artifact"}, tags={"gy_hate"})  # exila carta de QUALQUER cemiterio, nao so o seu
 add("Allosaurus Shepherd", 1, {"Creature"}, tags={"elf", "protection_counterspell"}, colors={"G"})
 add("Eclipsed Elf", 3, {"Creature"}, tags={"elf", "card_selection"}, colors={"B", "G"})
-add("Roaming Throne", 4, {"Creature"}, tags={"trigger_doubler"})
+add("Roaming Throne", 4, {"Creature"}, tags={"trigger_doubler", "elf"})  # "is the chosen type in addition to its other types" - premissa Elf, entao ela mesma vira Elfo
 add("Urza's Incubator", 3, {"Artifact"}, tags={"cost_reducer"})
 add("Thranduil's Company", 4, {"Creature"}, tags={"elf", "land_ramp", "counter_engine"}, colors={"G", "U"})
 
 # -------- Comandante --------
 add(COMMANDER, 5, {"Creature"}, tags={"elf"}, colors={"B", "G", "U"}, legendary_elf=True)
+
+# -------- Poder impresso (via cache do Scryfall) --------
+# Populado automaticamente pra todas as criaturas, em vez de editar cada add()
+# uma por uma - usado por Selvala (maior poder em campo) e Gwenna (poder >=5).
+import json as _json
+try:
+    _oracle_cache = _json.load(open("/tmp/scryfall_cache/thranduil_full.json"))
+except FileNotFoundError:
+    _oracle_cache = {}
+
+for _name, _card in CARD_DB.items():
+    if "Creature" not in _card.types:
+        continue
+    _o = _oracle_cache.get(_name) or _oracle_cache.get(_name.split(" // ")[0])
+    if not _o:
+        continue
+    _p = _o.get("power")
+    if _p is None and "card_faces" in _o:
+        _p = _o["card_faces"][0].get("power")
+    try:
+        _card.power = int(_p)
+    except (TypeError, ValueError):
+        pass  # poder variavel (ex: "*") ou nao numerico - fica 0
 
 DENSITY_ELF = 15 / 91  # ~15 elfos lendarios + varios outros elfos nao-lendarios entre as 91 nao-terrenos; usado so como proxy de "chance de milhar um elfo"
 
@@ -390,15 +414,29 @@ class GameState:
 
     # Roaming Throne: "If a triggered ability of another creature you control of
     # the chosen type triggers, it triggers an additional time." Premissa: sempre
-    # escolhe Elf (unica escolha sensata nesse deck - todo gatilho de criatura
-    # implementado aqui e de fonte Elfo). Dobra: gatilho da propria Thranduil
-    # (draw2/discard1), Beast Whisperer/Champions of the Perfect (draw ao
-    # conjurar criatura), Edric (draw por dano de combate), Lathril (tokens por
-    # dano de combate). NAO dobra Rhystic Study (nao e criatura).
+    # escolhe Elf (unica escolha sensata nesse deck). So dobra habilidades
+    # GATILHADAS ("Whenever"/"At the beginning of"/"When ... enters") - NUNCA
+    # habilidades ativadas ({custo}: efeito), de nenhuma carta (Selvala, Marwyn,
+    # Elrond etc tem as duas; so a gatilhada dobra).
     roaming_throne_doublings: int = 0
 
     def roaming_throne_active(self) -> bool:
         return self.has("Roaming Throne")
+
+    # -------- Elfos com gatilho proprio implementados a pedido do usuario --------
+    # (todos exceto Selfless Safewright - dobrar hexproof/indestructible nao muda nada)
+    marwyn_counters: int = 0                  # Marwyn: outro Elfo entra -> +1/+1 nela
+    selvala_draws: int = 0                    # Selvala: criatura entra com maior poder -> compra
+    elrond_draws: int = 0                     # Elrond: ativa habilidade de criatura -> compra (1x/turno)
+    elrond_triggered_this_turn: bool = False
+    elvish_warmaster_tokens: int = 0          # Elvish Warmaster: 1+ Elfo entra -> token (1x/turno)
+    elvish_warmaster_triggered_this_turn: bool = False
+    glissa_draws: int = 0                     # Glissa: dano de combate -> modo "compre 1, perca 1 vida" (unico modo com efeito numerico sem oponente real)
+    gwenna_counters: int = 0                  # Gwenna: conjura criatura poder>=5 -> contador+destapa
+    high_perfect_morcant_triggers: int = 0    # blight no oponente - sem consequencia numerica no goldfish solo
+    maralen_triggers: int = 0                 # exila biblioteca do oponente - sem consequencia numerica
+    ruthless_winnower_self_sacs: int = 0      # sacrifica seu proprio nao-Elfo no upkeep - dobrar isso e RUIM pra voce
+    tyvar_bellicose_triggers: int = 0         # deathtouch em combate - sem consequencia numerica (sem bloqueadores modelados)
 
     def draw(self, n=1, source="draw"):
         got = 0
@@ -605,6 +643,79 @@ def _creature_cast_engines_trigger(state: GameState, card: str, log: List[Dict])
     if engines:
         log.append({"trigger": "creature_draw_engine", "card": card, "engines": engines, "turn": state.turn})
 
+    times_rt = 2 if state.roaming_throne_active() else 1
+
+    # Gwenna: "whenever you cast a creature spell with power 5 or greater, put
+    # a +1/+1 counter on Gwenna and untap it." So a parte do contador tem
+    # numero acumulavel (untap repetido nao muda nada).
+    if state.has("Gwenna, Eyes of Gaea") and card != "Gwenna, Eyes of Gaea" and C(card).power >= 5:
+        for i in range(times_rt):
+            state.gwenna_counters += 1
+        if times_rt == 2:
+            state.roaming_throne_doublings += 1
+        log.append({"trigger": "gwenna_counter", "card": card, "times": times_rt, "turn": state.turn})
+
+    # Selvala: "whenever another creature enters, its controller may draw a
+    # card if its power is greater than each other creature's power." Battlefield
+    # aqui ainda NAO tem "card" (hook roda antes do append), entao "outras
+    # criaturas" = state.battlefield no momento desta checagem.
+    if state.has("Selvala, Heart of the Wilds") and card != "Selvala, Heart of the Wilds":
+        others_power = [C(c).power for c in state.battlefield if is_creature(c)]
+        max_other = max(others_power) if others_power else 0
+        if C(card).power > max_other:
+            for i in range(times_rt):
+                state.draw(1, source="Selvala ETB draw" if i == 0 else "Selvala ETB draw (Roaming Throne dobra)")
+                state.selvala_draws += 1
+            if times_rt == 2:
+                state.roaming_throne_doublings += 1
+            log.append({"trigger": "selvala_draw", "card": card, "times": times_rt, "turn": state.turn})
+
+    if is_elf(card):
+        # Marwyn: "whenever another Elf you control enters, put a +1/+1
+        # counter on Marwyn."
+        if state.has("Marwyn, the Nurturer") and card != "Marwyn, the Nurturer":
+            for i in range(times_rt):
+                state.marwyn_counters += 1
+            if times_rt == 2:
+                state.roaming_throne_doublings += 1
+            log.append({"trigger": "marwyn_counter", "card": card, "times": times_rt, "turn": state.turn})
+
+        # Elvish Warmaster: "whenever one or more other Elves you control
+        # enter, create a 1/1 green Elf Warrior creature token. This ability
+        # triggers only once each turn." O "1x/turno" e do proprio texto -
+        # Roaming Throne dispara a instancia que ja aconteceu uma vez a mais,
+        # nao permite burlar o limite fazendo ela checar de novo.
+        if (state.has("Elvish Warmaster") and card != "Elvish Warmaster"
+                and not state.elvish_warmaster_triggered_this_turn):
+            state.elvish_warmaster_triggered_this_turn = True
+            for i in range(times_rt):
+                state.battlefield.append("Elf Warrior Token")
+                state.elvish_warmaster_tokens += 1
+            if times_rt == 2:
+                state.roaming_throne_doublings += 1
+            log.append({"trigger": "elvish_warmaster_token", "card": card, "times": times_rt, "turn": state.turn})
+
+        # High Perfect Morcant: "whenever [ela] ou outro Elfo entra, cada
+        # oponente sofre blight 1." Sem oponente real no goldfish solo - so
+        # contador, sem efeito numerico no proprio estado. Limitacao conhecida:
+        # esse hook roda ANTES da carta entrar em campo, entao a propria
+        # Morcant nao dispara o proprio ETB dela mesma (so o "outro Elfo" e
+        # capturado) - perde 1 disparo possivel por partida, aceitavel.
+        if state.has("High Perfect Morcant"):
+            for i in range(times_rt):
+                state.high_perfect_morcant_triggers += 1
+            if times_rt == 2:
+                state.roaming_throne_doublings += 1
+
+        # Maralen: "whenever [ela] or another Elf or Faerie you control
+        # enters, exile the top two cards of target opponent's library." Sem
+        # oponente real - so contador.
+        if state.has("Maralen, Fae Ascendant"):
+            for i in range(times_rt):
+                state.maralen_triggers += 1
+            if times_rt == 2:
+                state.roaming_throne_doublings += 1
+
 def _resolve_cast(state: GameState, card: str, log: List[Dict], from_hand: bool):
     if from_hand:
         state.hand.remove(card)
@@ -666,10 +777,18 @@ def _apply_etb(state: GameState, card: str, log: List[Dict]):
         state.edric_last_turn_alive = state.turn + lifespan - 1
         log.append({"action": "edric_enters", "turn": state.turn, "assumed_lifespan_turns": lifespan})
 
-    # GY fill (mill)
+    # GY fill (mill). Se a fonte e criatura Elfo (Lluwen: "When Lluwen enters,
+    # mill four cards"), o Roaming Throne dobra o gatilho (mill de novo). Nao
+    # dobra fontes nao-criatura como Awaken the Honored Dead (Saga) ou Buried
+    # Alive (Sorcery) - Roaming Throne so afeta gatilho de CRIATURA.
     if C(card).mill_amount > 0:
         state.mill(C(card).mill_amount)
-        log.append({"trigger": "mill", "card": card, "amount": C(card).mill_amount, "turn": state.turn})
+        times_mill = 1
+        if is_creature(card) and is_elf(card) and state.roaming_throne_active():
+            state.mill(C(card).mill_amount)
+            state.roaming_throne_doublings += 1
+            times_mill = 2
+        log.append({"trigger": "mill", "card": card, "amount": C(card).mill_amount, "times": times_mill, "turn": state.turn})
 
     # Buried Alive: mill dedicado (nao e mill aleatorio, mas modelado como tal pra simplificar)
     if card == "Buried Alive":
@@ -686,6 +805,22 @@ def _apply_etb(state: GameState, card: str, log: List[Dict]):
         if state.finisher_turn is None:
             state.finisher_turn = state.turn
 
+def _elrond_ability_activated(state: GameState, source: str, log: List[Dict]):
+    # Elrond: "Whenever you activate an ability of a creature, draw a card.
+    # This ability triggers only once each turn." Roaming Throne dispara
+    # essa UNICA instancia de novo (nao permite burlar o "1x/turno" da
+    # propria carta gerando um novo disparo por ativacao subsequente).
+    if not state.has("Elrond, Moon-Reader") or state.elrond_triggered_this_turn:
+        return
+    state.elrond_triggered_this_turn = True
+    times_rt = 2 if state.roaming_throne_active() else 1
+    for i in range(times_rt):
+        state.draw(1, source=f"Elrond ({source})" if i == 0 else f"Elrond ({source}, Roaming Throne dobra)")
+        state.elrond_draws += 1
+    if times_rt == 2:
+        state.roaming_throne_doublings += 1
+    log.append({"trigger": "elrond_draw", "source": source, "times": times_rt, "turn": state.turn})
+
 def activate_finishers(state: GameState, log: List[Dict]):
     creatures_in_play = sum(1 for c in state.battlefield if is_creature(c))
     if creatures_in_play == 0:
@@ -700,17 +835,21 @@ def activate_finishers(state: GameState, log: List[Dict]):
             if state.finisher_turn is None:
                 state.finisher_turn = state.turn
             log.append({"trigger": "finisher_activated", "card": card, "turn": state.turn})
+            if is_creature(card):
+                _elrond_ability_activated(state, card, log)
         elif has_tag(card, "finisher_drain") and card == "Jarad, Golgari Lich Lord" and remaining_mana(state) >= cost:
             state.mana_spent_this_turn += cost
             state.finishers_activated.append(card)
             if state.finisher_turn is None:
                 state.finisher_turn = state.turn
+            _elrond_ability_activated(state, card, log)
         elif card == "Lathril, Blade of the Elves":
             elves_untapped_proxy = sum(1 for c in state.battlefield if is_elf(c))
             if elves_untapped_proxy >= 10:
                 state.finishers_activated.append(card)
                 if state.finisher_turn is None:
                     state.finisher_turn = state.turn
+                _elrond_ability_activated(state, card, log)
 
 # =========================================================
 # COMBATE (Edric + tokens do Lathril via dano de combate)
@@ -758,6 +897,29 @@ def combat_step(state: GameState, log: List[Dict]):
             state.lathril_tokens_created += lathril_power
         log.append({"trigger": "lathril_tokens", "turn": state.turn, "amount": lathril_power * times})
 
+    if state.has("Glissa Sunslayer"):
+        # Modal: draw+lose 1 life / destroy enchantment / remove counters.
+        # So o modo "compre 1, perca 1 vida" tem efeito numerico modelavel
+        # num goldfish solo sem permanentes de oponente pra remover/destruir -
+        # os outros dois modos ficam sem alvo real nesse contexto.
+        times_glissa = 2 if state.roaming_throne_active() else 1
+        if times_glissa == 2:
+            state.roaming_throne_doublings += 1
+        for _ in range(times_glissa):
+            state.draw(1, source="Glissa Sunslayer combat damage")
+            state.glissa_draws += 1
+        log.append({"trigger": "glissa_draw", "turn": state.turn, "times": times_glissa})
+
+    if state.has("Tyvar the Bellicose"):
+        # "Whenever one or more Elves you control attack, they gain deathtouch
+        # until end of turn." Sem bloqueadores modelados nesse motor de combate
+        # simplificado - sem efeito numerico, so contador de quantas vezes
+        # disparou.
+        times_tyvar = 2 if state.roaming_throne_active() else 1
+        state.tyvar_bellicose_triggers += times_tyvar
+        if times_tyvar == 2:
+            state.roaming_throne_doublings += 1
+
 # =========================================================
 # RHYSTIC STUDY (depende de spells de oponentes - ver premissas no topo do arquivo)
 # =========================================================
@@ -781,9 +943,28 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.turn = turn
     state.land_played = False
     state.mana_spent_this_turn = 0
+    state.elrond_triggered_this_turn = False
+    state.elvish_warmaster_triggered_this_turn = False
 
     log = [{"turn": turn, "phase": "start", "hand_size": len(state.hand),
             "battlefield_count": len(state.battlefield), "mana_est": total_mana(state)}]
+
+    # Ruthless Winnower: "At the beginning of each player's upkeep, that
+    # player sacrifices a non-Elf creature of their choice." No goldfish solo
+    # so o SEU upkeep e modelado. Roaming Throne dobrar isso e RUIM pra voce
+    # (sacrifica 2 em vez de 1) - flag explicito, nao e um beneficio como os
+    # outros gatilhos.
+    if state.has("Ruthless Winnower"):
+        times_winnower = 2 if state.roaming_throne_active() else 1
+        if times_winnower == 2:
+            state.roaming_throne_doublings += 1
+        for _ in range(times_winnower):
+            non_elves = [c for c in state.battlefield if is_creature(c) and not is_elf(c)]
+            if non_elves:
+                non_elves.sort(key=lambda c: C(c).mv)  # sacrifica o de menor CMC primeiro
+                state.battlefield.remove(non_elves[0])
+                state.ruthless_winnower_self_sacs += 1
+                log.append({"trigger": "ruthless_winnower_self_sac", "sacrificed": non_elves[0], "turn": turn})
 
     # Multiplayer (CR 103.8a): sempre compra, mesmo no T1.
     state.draw(1, source="normal")
@@ -871,6 +1052,16 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "first_blue_screw_turn": state.first_blue_screw_turn,
         "roaming_throne_in_play": state.has("Roaming Throne"),
         "roaming_throne_doublings": state.roaming_throne_doublings,
+        "marwyn_counters": state.marwyn_counters,
+        "selvala_draws": state.selvala_draws,
+        "elrond_draws": state.elrond_draws,
+        "elvish_warmaster_tokens": state.elvish_warmaster_tokens,
+        "glissa_draws": state.glissa_draws,
+        "gwenna_counters": state.gwenna_counters,
+        "high_perfect_morcant_triggers": state.high_perfect_morcant_triggers,
+        "maralen_triggers": state.maralen_triggers,
+        "ruthless_winnower_self_sacs": state.ruthless_winnower_self_sacs,
+        "tyvar_bellicose_triggers": state.tyvar_bellicose_triggers,
     }
 
 def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=71000):
@@ -942,7 +1133,20 @@ def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=710
     if rt_games:
         print()
         print(f"Roaming Throne em campo em {100*len(rt_games)/n:.1f}% dos jogos (tipo escolhido: Elf)")
-        print(f"  Avg gatilhos de criatura Elfo dobrados por partida (Thranduil ETB, Edric, Beast Whisperer/Champions, Lathril): {statistics.mean([r['roaming_throne_doublings'] for r in rt_games]):.2f}")
+        print(f"  Avg gatilhos de criatura Elfo dobrados por partida (total, todas as fontes): {statistics.mean([r['roaming_throne_doublings'] for r in rt_games]):.2f}")
+
+    print()
+    print("--- Elfos com gatilho proprio (novo) ---")
+    print(f"Avg contadores em Marwyn (outro Elfo entra): {avg('marwyn_counters'):.2f}")
+    print(f"Avg compras via Selvala (criatura entra com maior poder): {avg('selvala_draws'):.2f}")
+    print(f"Avg compras via Elrond (ativa habilidade de criatura, 1x/turno): {avg('elrond_draws'):.2f}")
+    print(f"Avg tokens via Elvish Warmaster (1+ Elfo entra, 1x/turno): {avg('elvish_warmaster_tokens'):.2f}")
+    print(f"Avg compras via Glissa Sunslayer (dano de combate, modo compra): {avg('glissa_draws'):.2f}")
+    print(f"Avg contadores em Gwenna (conjura criatura poder>=5): {avg('gwenna_counters'):.2f}")
+    print(f"Avg gatilhos de High Perfect Morcant (blight no oponente - sem efeito numerico modelado): {avg('high_perfect_morcant_triggers'):.2f}")
+    print(f"Avg gatilhos de Maralen (exila biblioteca do oponente - sem efeito numerico modelado): {avg('maralen_triggers'):.2f}")
+    print(f"Avg auto-sacrificios via Ruthless Winnower (upkeep, seu proprio nao-Elfo): {avg('ruthless_winnower_self_sacs'):.2f}")
+    print(f"Avg gatilhos de Tyvar the Bellicose (deathtouch em combate - sem efeito numerico modelado): {avg('tyvar_bellicose_triggers'):.2f}")
 
     print()
     print(f"Logs salvos em: {out_jsonl}")

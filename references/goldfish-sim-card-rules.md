@@ -27,6 +27,22 @@ triggered ability of another creature you control of the chosen type
 triggers, it triggers an additional time."*
 
 **O que implementar:**
+- **Passo 0, obrigatório antes de qualquer coisa:** varredura MECÂNICA (regex
+  em `oracle_text`, não de memória) em toda criatura do tipo escolhido na
+  decklist, procurando linhas que comecem com "Whenever"/"At the beginning
+  of"/"When ... enters". No Thranduil isso achou 16 criaturas do tipo Elf
+  com gatilho próprio - só 4 estavam implementadas antes dessa varredura
+  (as "óbvias": motor de draw do comandante, engines de compra, dano de
+  combate). As outras 12 tinham o gatilho em si nem modelado ainda, então a
+  duplicação delas também estava faltando. **Implementar Roaming Throne sem
+  esse passo 0 sempre vai deixar gatilhos de fora.**
+- Checar também se alguma carta do tipo escolhido **concede** um gatilho a
+  OUTRAS criaturas desse tipo via habilidade estática (ex: Dionus, Elvish
+  Archdruid no Thranduil: "Elves you control have 'whenever this becomes
+  tapped...'"). Cada criatura que recebe essa habilidade concedida também
+  passa a ter um gatilho próprio dobrável - isso multiplica o efeito do
+  Roaming Throne além das cartas nomeadas individualmente. Registrar como
+  limitação conhecida se não for implementado (é um trabalho maior).
 - Rastrear o tipo de criatura escolhido (na prática: o tipo tribal central do
   deck — Elfo, Dragão, Zumbi, etc — é quase sempre a escolha certa; documentar
   a premissa no código se não for óbvio).
@@ -39,7 +55,25 @@ triggers, it triggers an additional time."*
   escolhas que podem variar entre os dois disparos).
 - **Não dobra habilidades ativadas nem estáticas** — só gatilhos ("whenever"),
   e só de criaturas do tipo escolhido. Enchantments/artifacts/instants/sorceries
-  nunca são afetados, mesmo compartilhando o tipo tribal via texto solto.
+  nunca são afetados, mesmo compartilhando o tipo tribal via texto solto. Vale
+  mesmo quando a MESMA carta tem gatilho e ativada juntos (ex: Selvala e
+  Marwyn no Thranduil - a habilidade de mana delas, que é ativada, nunca dobra,
+  só o gatilho de compra/contador).
+- Se o gatilho é do tipo "at least once per turn" ou similar auto-limitado no
+  próprio texto da carta, o Roaming Throne dispara essa mesma instância de
+  novo (não permite burlar o limite gerando um segundo disparo por evento
+  subsequente no mesmo turno) - ex: Elrond e Elvish Warmaster no Thranduil.
+- Alguns gatilhos alvejam o OPONENTE (mill/exile na biblioteca dele, dano,
+  contadores negativos na criatura dele) e não têm efeito numérico modelável
+  num goldfish solo sem oponente real em jogo - nesses casos, implementar
+  como um contador de "disparou X vezes" sem side-effect no `GameState`
+  próprio, e deixar isso documentado explicitamente (não inventar um efeito
+  substituto).
+- Alguns gatilhos são **negativos pro próprio jogador** (ex: Ruthless
+  Winnower no Thranduil - sacrifica sua própria criatura não-Elfo a cada
+  upkeep) - dobrar esses é uma PIORA, não uma melhoria. Sinalizar isso
+  explicitamente ao reportar a métrica, não tratar toda duplicação como
+  benéfica por padrão.
 - Rastrear e reportar uma métrica agregada de "quantos gatilhos foram
   dobrados" pra medir o impacto real nos resultados do goldfish.
 

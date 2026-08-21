@@ -166,6 +166,44 @@ Avg gatilhos de criatura Elfo dobrados por partida: 2,06
 
 Só 11,2% dos jogos (1 carta em 99, compra é aleatória), mas quando ela resolve, dobra em média ~2 gatilhos de criatura por partida — consistente com o que já tinha argumentado sobre ela na discussão de corte (o interação com o próprio gatilho da Thranduil é real, não hipotética).
 
+### Implementados os 11 Elfos restantes com gatilho próprio (exceto Selfless Safewright)
+
+Varredura mecânica em `oracle_text` (não de memória) achou **16 Elfos com gatilho próprio** no deck, incluindo a própria Thranduil. Só 4 estavam implementados (Thranduil, Beast Whisperer/Champions, Edric, Lathril). Implementei os outros 11 a pedido do usuário — todos exceto **Selfless Safewright** (dobrar hexproof/indestructible não muda nada).
+
+**Regra confirmada com o usuário antes de implementar:** Roaming Throne só dobra a parte GATILHADA de cada carta ("Whenever"/"At the beginning of"/"When ... enters"). Nunca dobra habilidade ATIVADA (`{custo}: efeito`), mesmo quando a mesma carta tem as duas (Selvala e Marwyn são exemplos — só o gatilho de contador/compra dobra, a habilidade de mana delas nunca).
+
+**Adicionado:** campo `power` no `Card` dataclass, populado automaticamente do cache do Scryfall pra todas as criaturas (necessário pra Selvala — "maior poder entre as criaturas" — e Gwenna — "criatura poder ≥5").
+
+| Carta | Gatilho implementado | Efeito numérico real no modelo? |
+|---|---|---|
+| Marwyn, the Nurturer | Outro Elfo entra → +1/+1 nela | Sim — contador rastreado |
+| Selvala, Heart of the Wilds | Criatura entra com maior poder que todas as outras → compra | Sim |
+| Elrond, Moon-Reader | Ativa habilidade de criatura (1x/turno) → compra | Sim |
+| Elvish Warmaster | 1+ Elfo entra (1x/turno) → token | Sim |
+| Glissa Sunslayer | Dano de combate → modo "compre 1, perca 1 vida" | Só a compra (vida não é rastreada no state) |
+| Gwenna, Eyes of Gaea | Conjura criatura poder≥5 → contador+destapa | Só o contador |
+| High Perfect Morcant | Ela/outro Elfo entra → blight no oponente | **Não** — sem oponente real, só contador de "disparou" |
+| Maralen, Fae Ascendant | Ela/Elfo/Faerie entra → exila biblioteca do oponente | **Não** — mesma razão, só contador |
+| Ruthless Winnower | Upkeep → sacrifica seu próprio não-Elfo | Sim, mas **achado real:** o deck não tem NENHUMA criatura não-Elfo (Roaming Throne também vira Elfo pela premissa de tipo escolhido) — a auto-punição da carta nunca acontece nesse build |
+| Tyvar the Bellicose | Elfo(s) atacam → deathtouch | **Não** — sem bloqueadores modelados no motor de combate |
+
+**Resultado (n=2000):**
+
+```
+Avg contadores em Marwyn: 1,04
+Avg compras via Selvala: 0,12
+Avg compras via Elrond: 0,12
+Avg tokens via Elvish Warmaster: 0,41
+Avg compras via Glissa Sunslayer: 0,57
+Avg contadores em Gwenna: 0,13
+Avg gatilhos de High Perfect Morcant (sem efeito numérico): 0,32
+Avg gatilhos de Maralen (sem efeito numérico): 0,18
+Avg auto-sacrifícios via Ruthless Winnower: 0,00
+Avg gatilhos de Tyvar the Bellicose (sem efeito numérico): 0,49
+
+Roaming Throne dobra em média 4,61 gatilhos de criatura por partida (subiu de ~2 pra ~4,6 com os 11 novos gatilhos elegíveis pra dobrar)
+```
+
 ---
 
 ## Partida #1 — AAAA-MM-DD
