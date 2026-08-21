@@ -84,7 +84,6 @@
 1 Tyvar, the Pummeler
 1 Undergrowth Stadium
 1 Underrealm Lich
-1 Urza's Incubator
 1 Wastewood Verge
 1 Waterlogged Grove
 1 Watery Grave
