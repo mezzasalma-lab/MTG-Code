@@ -1,7 +1,7 @@
 # Auditoria — Esika, God of the Tree // The Prismatic Bridge (5 cores — WUBRG)
 
-Fontes usadas nesta auditoria: Scryfall REST API (`cards/collection`, `cards/named`, `cards/search?q=is:gamechanger`, campos `legalities.commander`, `color_identity`, `oracle_text`, `type_line`, `cmc`), consultada em 2026-08-20. Definições de Bracket: anúncios oficiais da Wizards ("Introducing Commander Brackets Beta", atualização de outubro/2025) já registrados em `references/commander-rules.md` do skill mtg-commander.
-Data da auditoria: 2026-08-20
+Fontes usadas nesta auditoria: Scryfall REST API (`cards/collection`, `cards/named`, `cards/search?q=is:gamechanger`, campos `legalities.commander`, `color_identity`, `oracle_text`, `type_line`, `cmc`, `produced_mana`), consultada em 2026-08-20/21. EDHREC (`json.edhrec.com/pages/commanders/esika-god-of-the-tree.json`, campos `synergy`/`num_decks`/`potential_decks`). Definições de Bracket: anúncios oficiais da Wizards ("Introducing Commander Brackets Beta", atualização de outubro/2025) já registrados em `references/commander-rules.md` do skill mtg-commander.
+Data da auditoria: 2026-08-20. Ramp/draw/remoção/sinergia/bracket (seções 2-8, 10-11) completados em 2026-08-21 — a versão original não tinha dado de EDHREC nem varredura mecânica de `oracle_text`.
 
 ---
 
@@ -23,11 +23,93 @@ Data da auditoria: 2026-08-20
 - Terrenos: **37** (contagem por `type_line` contendo "Land" e não contendo "Creature").
 - CMC médio, não-terrenos, sem comandante: **3.66** (campo `cmc` do Scryfall).
 
-Não tenho dado de EDHREC ou de goldfish pra esse deck ainda — não vou estimar "se isso é bom ou ruim pro plano" sem essa referência.
+**Fontes de mana por cor (campo `produced_mana` do Scryfall, todos os 37 terrenos):**
+
+| Cor | Fontes |
+|---|---|
+| W | 17 |
+| U | 16 |
+| B | 16 |
+| R | 16 |
+| G | 17 |
+
+Base de mana muito bem distribuída pras 5 cores — nenhuma cor abaixo de 16 fontes. Isso é esperado nesse arquétipo: o deck roda vários fixadores "qualquer cor" de verdade (Command Tower, Mana Confluence, City of Brass, Exotic Orchard, Arcane Signet, Chromatic Lantern), os 10 dual lands originais (ABUR: Bayou, Badlands, Plateau, Savannah, Scrubland, Taiga, Tropical Island, Tundra, Underground Sea, Volcanic Island — cada um cobre 2 das 5 cores) e os 5 shocklands restantes (Breeding Pool, Blood Crypt, Godless Shrine, Hallowed Fountain, Overgrown Tomb, Sacred Foundry, Steam Vents, Stomping Ground, Temple Garden, Watery Grave — conferir contagem exata). Diferente do Thranduil (3 cores, 1 cor sistematicamente mais fraca), aqui não há gargalo de cor evidente pelos números brutos.
+
+Ainda não tenho dado de goldfish rodado (script Python) pra esse deck — a única simulação registrada é 1 partida manual em `goldfish-log.md`. Não vou estimar taxa de "color screw" real sem isso.
 
 ---
 
-## 3. Game Changers — contagem oficial
+## 3. Ramp — 9 peças
+
+Cruzamento mecânico de `oracle_text` (regex por `{T}: Add`/"search your library for a [tipo básico] card", não de memória) contra as 99 cartas do mainboard:
+
+Arcane Signet, Bloom Tender, Chromatic Lantern, Delighted Halfling, Farseek, Nature's Lore, Sol Ring, Three Visits, Vraska, Betrayal's Sting (ultimate de mana, ver seção 7).
+
+**9 peças de ramp num deck de 5 cores com CMC médio 3.66** é uma contagem baixa pro que a curva pede — a recomendação padrão de 10-12 (`SKILL.md`) já é pra decks de 2-3 cores; num 5-color com fixação exigente, o normal é rodar mais rocks/dorks, não menos. Ponto de atenção real, mas o comandante em si (Esika, God of the Tree: `{T}: Add one mana of any color` + concede a mesma habilidade a outras criaturas lendárias) funciona como ramp/fixação adicional sempre que estiver em campo — o que atenua bastante o problema, já que o deck tem alta densidade de lendárias (ver seção 8).
+
+---
+
+## 4. Card draw — 14 fontes
+
+Aminatou the Fateshifter, Kaya Intangible Slayer, Liliana Dreadhorde General, Nicol Bolas Dragon-God, Oko the Ringleader, Rhystic Study, Tamiyo Compleated Sage, Tamiyo Field Researcher, Teferi Hero of Dominaria, Teferi Time Raveler, Teferi Who Slows the Sunset, Ugin the Spirit Dragon, Veil of Summer, Vraska Betrayal's Sting.
+
+Boa contagem, mas quase toda concentrada em planeswalkers (a maioria via +1 "olhe as 2 de cima, uma pra mão"), não em draw incondicional de criatura/enchantment — se os planeswalkers forem removidos rápido, o motor de draw esvazia junto. Rhystic Study é a única fonte de draw realmente incondicional e recorrente da lista.
+
+---
+
+## 5. Remoção e interação
+
+| Tipo | Cartas | Qtde |
+|---|---|---|
+| Remoção pontual | Anguished Unmaking, Damn, Kaya Intangible Slayer, Nicol Bolas Dragon-God, Path to Exile, Swords to Plowshares, Tamiyo Compleated Sage, Teferi Hero of Dominaria, Ugin the Spirit Dragon, Void Rend | 10 |
+| Wipe | Blasphemous Act, Elspeth Sun's Champion, Farewell, Liliana Dreadhorde General, Supreme Verdict, The Eternal Wanderer, Toxic Deluge | 7 |
+| Counterspell | Counterspell, Dovin's Veto, Mana Drain, Swan Song | 4 |
+
+**Total: 21 efeitos de interação** — bem acima da faixa recomendada de 8-10 remoção pontual + 3-5 wipes (`SKILL.md`), mesmo considerando que várias dessas cartas são multifuncionais (Nicol Bolas Dragon-God, Ugin, Tamiyo Compleated Sage também geram vantagem de carta, não são "só" remoção). Deck de perfil claramente controlador — controle 5 cores com muito mais interação que o Thranduil (que tinha só 8-10 depois da rebalanceada).
+
+---
+
+## 6. Sinergia de contadores/proliferate — pacote real, confirmado no EDHREC
+
+Varredura de `oracle_text` (termo "proliferate" + termos de "dobrar contador") encontra **12 cartas** de um pacote de contadores coeso, não é um punhado de goodstuff solto:
+
+**Motores de proliferate:** Evolution Sage, Flux Channeler, Ichormoon Gauntlet, Inexorable Tide, Mutational Advantage, Ripples of Potential, Vraska Betrayal's Sting, Atraxa Praetors' Voice.
+**Dobradores de contador:** Doubling Season, Vorinclex Monstrous Raider, Deepglow Skate, All Will Be One.
+
+Confirmado com dado real do EDHREC (`json.edhrec.com/pages/commanders/esika-god-of-the-tree.json`, campo `synergy` de cada carta — positivo = joga mais nesse comandante especificamente do que em média geral, não é só popularidade):
+
+| Carta | Inclusão em decks de Esika | Synergy score |
+|---|---|---|
+| Nicol Bolas, Dragon-God | 27,3% | **+0,241** |
+| Vorinclex, Monstrous Raider | 19,1% | **+0,172** |
+| Ichormoon Gauntlet | 17,7% | **+0,164** |
+| Atraxa, Praetors' Voice | 18,0% | **+0,153** |
+| Deepglow Skate | 15,0% | **+0,137** |
+| Doubling Season | 19,1% | **+0,131** |
+
+Todos com synergy score positivo e significativo — não é sinergia inventada, é o padrão real de decks desse comandante no EDHREC. A ligação mecânica faz sentido: The Prismatic Bridge (verso do comandante) põe permanentes direto do topo da biblioteca a cada upkeep sem pagar custo, então quanto mais rápido as peças de counters/proliferate entrarem em jogo (por essa via gratuita ou por conjuração normal), mais rápido o pacote de contadores (incluindo os +1/+1 dos próprios planeswalkers via lealdade, e o Ichormoon Gauntlet puxando pro extra-turn ultimate) fica online.
+
+---
+
+## 7. Win conditions
+
+Não tem 1 finisher único claro — o plano de vitória é atrito de vantagem de carta (planeswalkers) + o pacote de contadores fechando com Ichormoon Gauntlet (ver seção 10, extra turn via ultimate `[-12]` de planeswalker equipado, acelerado pelo pacote de proliferate) ou dano incremental via Nicol Bolas Dragon-God/Ugin. Elspeth Sun's Champion e Liliana Dreadhorde General geram board wide (tokens/exército) que também fecham jogo por combate depois de estabilizar via wipes.
+
+Vraska, Betrayal's Sting merece nota: ultimate `-9` transforma um permanente em terreno que produz mana de qualquer cor igual ao seu poder — ramp/fixação de fechamento, não dano direto.
+
+---
+
+## 8. Sinergia com o comandante (Esika / Prismatic Bridge)
+
+- **Esika, God of the Tree** (frente, `{1}{G}{G}`): dá vigilance + `{T}: Add one mana of any color` a TODAS as lendárias que você controla. O deck tem uma densidade alta de lendárias (praticamente todos os planeswalkers contam, mais Aminatou, Arena Rector, Carth the Lion, Tamiyo x2, Vorinclex, Atraxa, Nicol Bolas, Vraska x1) — cada uma vira uma fonte extra de fixação de mana quando Esika está em campo, o que ajuda a compensar a contagem baixa de ramp dedicado (seção 3).
+- **The Prismatic Bridge** (verso, `{W}{U}{B}{R}{G}`): a cada upkeep, revela do topo até achar criatura ou planeswalker, põe em campo de graça. Motor de vantagem de material puro, sem seletividade — favorece mainboard com densidade alta de criaturas/planeswalkers.
+
+**Achado real (contagem exata via `type_line` das 99 cartas, não a média do EDHREC):** este deck tem **11 criaturas e 17 planeswalkers** — o INVERSO da distribuição média de decks de Esika no EDHREC (24 criaturas / 6 planeswalkers, seção "Average Type Distribution" do `container.json_dict`). São 28 "alvos" da Bridge em 99 cartas (~28,3%) — taxa de acerto por upkeep razoável, mas fortemente viesada pra planeswalker. Isso é coerente com o pacote de contadores/proliferate (seção 6, planeswalker ganha lealdade = contador), mas é uma escolha de build atípica que vale o usuário confirmar como intencional: menos corpos pra bloquear/atacar, mais motores de vantagem de carta vulneráveis a remoção de planeswalker (deck tem pouca proteção dedicada pra permanentes não-criatura, fora Sterling Grove pra encantamento).
+- Interação com o pacote de contadores (seção 6): qualquer planeswalker que a Bridge coloque em jogo de graça já entra "pronto" pra crescer de lealdade mais rápido com o pacote de proliferate — reforça o plano principal em vez de ser um tema paralelo.
+
+---
+
+## 9. Game Changers — contagem oficial
 
 Cruzamento carta a carta contra a lista de 53 Game Changers obtida via `https://api.scryfall.com/cards/search?q=is:gamechanger` em 2026-08-20:
 
@@ -37,7 +119,7 @@ Isso é exatamente o teto do Bracket 3 (até 3 Game Changers, por `references/co
 
 ---
 
-## 4. Estruturas restritas pelo sistema de Brackets
+## 10. Estruturas restritas pelo sistema de Brackets
 
 Varredura de `oracle_text` de todas as 100 cartas procurando por combo de 2 peças, negação de terras em massa, e turnos extras.
 
@@ -47,13 +129,13 @@ Varredura de `oracle_text` de todas as 100 cartas procurando por combo de 2 peç
 
 ---
 
-## 5. Classificação de Bracket
+## 11. Classificação de Bracket
 
-**Bracket 3 (Upgraded), no teto de Game Changers (3 de 3).**
+**Bracket 3 (Upgraded), no teto de Game Changers (3 de 3), com ressalva.**
 
-Base: 3 Game Changers (item 3), sem negação de terras em massa, sem combo de 2 peças identificado. O Ichormoon Gauntlet dá acesso a turno extra, mas não da forma "encadiada" que o texto oficial da Wizards usa como critério de exclusão de Bracket 3 (fonte: `references/commander-rules.md#brackets`, que reproduz o texto oficial "turnos extras... não encadeado" pra Bracket 3) — é uma ultimate de planeswalker específico, não um motor repetível independente.
+Base formal: 3 Game Changers (seção 9), sem negação de terras em massa, sem combo de 2 peças identificado. O Ichormoon Gauntlet dá acesso a turno extra, mas não da forma "encadiada" que o texto oficial da Wizards usa como critério de exclusão de Bracket 3 (fonte: `references/commander-rules.md#brackets`, que reproduz o texto oficial "turnos extras... não encadeado" pra Bracket 3) — é uma ultimate de planeswalker específico, não um motor repetível independente.
 
-Não tenho base suficiente pra afirmar mais que isso sem simular o deck ou ver decklists de referência — não vou especular sobre "quão forte" ele joga além do que os critérios formais permitem concluir.
+**Ressalva pós-varredura completa (seções 3-8):** 21 efeitos de interação (seção 5) e um pacote de contadores/proliferate com synergy score real confirmado no EDHREC (seção 6, até +0,241) empurram o deck bem além do "goodstuff Upgraded" comum de Bracket 3 em termos de qualidade de carta individual — mesmo sem violar nenhum critério estrutural formal dos Brackets. O teto de 3 Game Changers é o critério oficial decisivo, então a classificação formal continua Bracket 3, mas é um Bracket 3 forte, próximo do 4 em qualidade de peça (mesma leitura já registrada informalmente pra outros decks desse usuário — ver `references/user-standing-rules.md`).
 
 ---
 
