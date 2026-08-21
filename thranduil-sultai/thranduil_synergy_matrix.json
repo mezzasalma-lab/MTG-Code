@@ -1,0 +1,1238 @@
+{
+ "rows": [
+  {
+   "name": "Eclipsed Elf",
+   "tags": [
+    "card_selection",
+    "elf"
+   ],
+   "edhrec_pct": null,
+   "edhrec_cat": null,
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [],
+   "is_protected": false
+  },
+  {
+   "name": "Lys Alana Huntmaster",
+   "tags": [
+    "elf",
+    "token_maker"
+   ],
+   "edhrec_pct": null,
+   "edhrec_cat": null,
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [],
+   "is_protected": false
+  },
+  {
+   "name": "Roaming Throne",
+   "tags": [
+    "trigger_doubler"
+   ],
+   "edhrec_pct": null,
+   "edhrec_cat": null,
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [],
+   "is_protected": false
+  },
+  {
+   "name": "Urza's Incubator",
+   "tags": [
+    "cost_reducer"
+   ],
+   "edhrec_pct": null,
+   "edhrec_cat": null,
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [],
+   "is_protected": false
+  },
+  {
+   "name": "Arwen, Weaver of Hope",
+   "tags": [
+    "counter_engine",
+    "elf"
+   ],
+   "edhrec_pct": 16.879939781708693,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [],
+   "is_protected": false
+  },
+  {
+   "name": "Tyvar the Bellicose",
+   "tags": [
+    "anthem_combat",
+    "counter_engine",
+    "elf"
+   ],
+   "edhrec_pct": 29.450508091832894,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [],
+   "is_protected": false
+  },
+  {
+   "name": "Maralen, Fae Ascendant",
+   "tags": [
+    "disruption",
+    "elf",
+    "free_cast_engine"
+   ],
+   "edhrec_pct": 38.671433948061726,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [],
+   "is_protected": false
+  },
+  {
+   "name": "Thranduil's Company",
+   "tags": [
+    "counter_engine",
+    "elf",
+    "land_ramp"
+   ],
+   "edhrec_pct": 46.85056472632493,
+   "edhrec_cat": "newcards",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [],
+   "is_protected": false
+  },
+  {
+   "name": "Dionus, Elvish Archdruid",
+   "tags": [
+    "counter_engine",
+    "elf"
+   ],
+   "edhrec_pct": 52.74745954083553,
+   "edhrec_cat": "topcards",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [],
+   "is_protected": false
+  },
+  {
+   "name": "Feed the Swarm",
+   "tags": [
+    "removal",
+    "removal_enchantment"
+   ],
+   "edhrec_pct": null,
+   "edhrec_cat": null,
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "removal",
+    "removal_enchantment"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Gwenna, Eyes of Gaea",
+   "tags": [
+    "elf",
+    "ramp"
+   ],
+   "edhrec_pct": null,
+   "edhrec_cat": null,
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{T}: Add two mana in any combination of colors. Spend this mana only to cast creature spells or activate abilities of creature sources."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability",
+    "ramp"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Kindred Summons",
+   "tags": [
+    "finisher_burst",
+    "reinforcement"
+   ],
+   "edhrec_pct": null,
+   "edhrec_cat": null,
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "finisher_burst"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Ruthless Winnower",
+   "tags": [
+    "elf",
+    "removal_repeatable"
+   ],
+   "edhrec_pct": null,
+   "edhrec_cat": null,
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "removal_repeatable"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Awaken the Honored Dead",
+   "tags": [
+    "gy_fill",
+    "removal"
+   ],
+   "edhrec_pct": 6.30410237109522,
+   "edhrec_cat": "enchantments",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": true,
+   "protected": [
+    "gy_fuel",
+    "removal"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Putrefy",
+   "tags": [
+    "removal",
+    "removal_artifact"
+   ],
+   "edhrec_pct": 9.484380880692509,
+   "edhrec_cat": "instants",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "removal",
+    "removal_artifact"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Trystan's Command",
+   "tags": [
+    "removal"
+   ],
+   "edhrec_pct": 12.307113285660519,
+   "edhrec_cat": "sorceries",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "removal"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Edric, Spymaster of Trest",
+   "tags": [
+    "combat_damage_draw",
+    "draw_engine",
+    "elf"
+   ],
+   "edhrec_pct": 16.051938276251413,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "combat_damage_draw",
+    "draw_engine"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Deadly Rollick",
+   "tags": [
+    "removal",
+    "removal_exile"
+   ],
+   "edhrec_pct": 19.514490026345502,
+   "edhrec_cat": "instants",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "removal",
+    "removal_exile"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Kindred Dominance",
+   "tags": [
+    "wipe_asymmetric"
+   ],
+   "edhrec_pct": 19.514490026345502,
+   "edhrec_cat": "sorceries",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "wipe_asymmetric"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Arbor Elf",
+   "tags": [
+    "elf",
+    "ramp"
+   ],
+   "edhrec_pct": 20.267218667670306,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{T}: Untap target Forest."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability",
+    "ramp"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Wirewood Channeler",
+   "tags": [
+    "elf",
+    "elf_scaling",
+    "ramp"
+   ],
+   "edhrec_pct": 21.528039141889348,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{T}: Add X mana of any one color, where X is the number of Elves on the battlefield."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability",
+    "ramp"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Glissa Sunslayer",
+   "tags": [
+    "draw_conditional",
+    "elf",
+    "removal_combat"
+   ],
+   "edhrec_pct": 22.43131351147911,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "removal_combat"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Iron-Shield Elf",
+   "tags": [
+    "elf",
+    "protection"
+   ],
+   "edhrec_pct": 23.071132856605196,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "Discard a card: This creature gains indestructible until end of turn. Tap it. (Damage and effects that say \"destroy\" don't destroy it. If its toughness is 0 or less, it still dies.)"
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability",
+    "protection"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Rhystic Study",
+   "tags": [
+    "draw_engine",
+    "opponent_dependent"
+   ],
+   "edhrec_pct": 24.04968009032744,
+   "edhrec_cat": "gamechangers",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "draw_engine"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Bloodline Bidding",
+   "tags": [
+    "finisher_burst",
+    "gy_payoff",
+    "reanimation_mass"
+   ],
+   "edhrec_pct": 24.9529544599172,
+   "edhrec_cat": "sorceries",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "finisher_burst"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Allosaurus Shepherd",
+   "tags": [
+    "elf",
+    "protection_counterspell"
+   ],
+   "edhrec_pct": 25.762137749341363,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{4}{G}{G}: Until end of turn, each Elf creature you control has base power and toughness 5/5 and becomes a Dinosaur in addition to its other creature types."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability",
+    "protection_counterspell"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Champions of the Perfect",
+   "tags": [
+    "creature_draw_engine",
+    "draw_engine",
+    "elf"
+   ],
+   "edhrec_pct": 25.875047045540082,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "creature_draw_engine",
+    "draw_engine"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Lluwen, Imperfect Naturalist",
+   "tags": [
+    "elf",
+    "gy_fill"
+   ],
+   "edhrec_pct": 28.471960858110652,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{2}{B/G}{B/G}{B/G}, {T}, Discard a land card: Create a 1/1 black and green Worm creature token for each land card in your graveyard."
+   ],
+   "gy_fuel": true,
+   "protected": [
+    "gy_fuel",
+    "gy_inheritable_ability"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Selfless Safewright",
+   "tags": [
+    "elf",
+    "protection"
+   ],
+   "edhrec_pct": 29.54459917199849,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "protection"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Deathbloom Ritualist",
+   "tags": [
+    "elf",
+    "gy_scaling",
+    "ramp"
+   ],
+   "edhrec_pct": 30.22205494919082,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{T}: Add X mana of any one color, where X is the number of creature cards in your graveyard."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability",
+    "ramp"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Finale of Devastation",
+   "tags": [
+    "finisher_xspell",
+    "tutor"
+   ],
+   "edhrec_pct": 33.421151674821225,
+   "edhrec_cat": "sorceries",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "tutor"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Underrealm Lich",
+   "tags": [
+    "draw_filter",
+    "elf",
+    "gy_fill_passive"
+   ],
+   "edhrec_pct": 34.00451637184795,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "Pay 4 life: This creature gains indestructible until end of turn. Tap it."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Raise the Palisade",
+   "tags": [
+    "bounce_asymmetric"
+   ],
+   "edhrec_pct": 35.942792623259315,
+   "edhrec_cat": "sorceries",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "bounce_asymmetric"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Lightning Greaves",
+   "tags": [
+    "protection"
+   ],
+   "edhrec_pct": 36.65788483251788,
+   "edhrec_cat": "utilityartifacts",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "protection"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Elves of Deep Shadow",
+   "tags": [
+    "elf",
+    "ramp"
+   ],
+   "edhrec_pct": 38.63379751599548,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{T}: Add {B}. This creature deals 1 damage to you."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability",
+    "ramp"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Prime Speaker Vannifar",
+   "tags": [
+    "elf",
+    "sac_outlet",
+    "tutor"
+   ],
+   "edhrec_pct": 43.8088069251035,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{T}, Sacrifice another creature: Search your library for a creature card with mana value equal to 1 plus the sacrificed creature's mana value, put that card onto the battlefield, then shuffle. Activate only as a sorcery."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability",
+    "tutor"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Beast Whisperer",
+   "tags": [
+    "creature_draw_engine",
+    "draw_engine",
+    "elf"
+   ],
+   "edhrec_pct": 45.031990967256306,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "creature_draw_engine",
+    "draw_engine"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Incubation Druid",
+   "tags": [
+    "elf",
+    "ramp"
+   ],
+   "edhrec_pct": 45.42717350395182,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{T}: Add one mana of any type that a land you control could produce. If this creature has a +1/+1 counter on it, add three mana of that type instead.",
+    "{3}{G}{G}: Adapt 3. (If this creature has no +1/+1 counters on it, put three +1/+1 counters on it.)"
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability",
+    "ramp"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Jarad, Golgari Lich Lord",
+   "tags": [
+    "elf",
+    "finisher_drain",
+    "gy_scaling",
+    "sac_outlet"
+   ],
+   "edhrec_pct": 46.53744824990591,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{1}{B}{G}, Sacrifice another creature: Each opponent loses life equal to the sacrificed creature's power.",
+    "Sacrifice a Swamp and a Forest: Return this card from your graveyard to your hand."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "finisher_drain",
+    "gy_inheritable_ability"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Elvish Warmaster",
+   "tags": [
+    "elf",
+    "finisher_repeatable",
+    "token_maker"
+   ],
+   "edhrec_pct": 48.41926985321792,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{5}{G}{G}: Elves you control get +2/+2 and gain deathtouch until end of turn."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "finisher_repeatable",
+    "gy_inheritable_ability"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Heroic Intervention",
+   "tags": [
+    "protection"
+   ],
+   "edhrec_pct": 48.92736168611216,
+   "edhrec_cat": "instants",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "protection"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Selvala, Heart of the Wilds",
+   "tags": [
+    "draw_conditional",
+    "elf",
+    "power_scaling",
+    "ramp"
+   ],
+   "edhrec_pct": 49.28490779074144,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{G}, {T}: Add X mana in any combination of colors, where X is the greatest power among creatures you control."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability",
+    "ramp"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Eladamri, Korvecdal",
+   "tags": [
+    "elf",
+    "tutor_passive"
+   ],
+   "edhrec_pct": 50.05645464809936,
+   "edhrec_cat": "topcards",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{G}, {T}, Tap two untapped creatures you control: Reveal a card from your hand or the top card of your library. If you reveal a creature card this way, put it onto the battlefield. Activate only during your turn."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability",
+    "tutor_passive"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Bloom Tender",
+   "tags": [
+    "elf",
+    "ramp"
+   ],
+   "edhrec_pct": 51.54309371471585,
+   "edhrec_cat": "topcards",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "Vivid — {T}: For each color among permanents you control, add one mana of that color."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability",
+    "ramp"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "High Perfect Morcant",
+   "tags": [
+    "elf",
+    "opponent_disruption"
+   ],
+   "edhrec_pct": 52.67218667670305,
+   "edhrec_cat": "topcards",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "Tap three untapped Elves you control: Proliferate. Activate only as a sorcery. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)"
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Tyvar, Jubilant Brawler",
+   "tags": [
+    "gy_fill"
+   ],
+   "edhrec_pct": 54.7798268724125,
+   "edhrec_cat": "topcards",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": true,
+   "protected": [
+    "gy_fuel"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Assassin's Trophy",
+   "tags": [
+    "removal"
+   ],
+   "edhrec_pct": 55.19382762514113,
+   "edhrec_cat": "topcards",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "removal"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Tyvar, the Pummeler",
+   "tags": [
+    "elf",
+    "finisher_repeatable",
+    "self_protect"
+   ],
+   "edhrec_pct": 56.059465562664656,
+   "edhrec_cat": "topcards",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "Tap another untapped creature you control: Tyvar gains indestructible until end of turn. Tap it.",
+    "{3}{G}{G}: Creatures you control get +X/+X until end of turn, where X is the greatest power among creatures you control."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "finisher_repeatable",
+    "gy_inheritable_ability"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Fauna Shaman",
+   "tags": [
+    "elf",
+    "tutor"
+   ],
+   "edhrec_pct": 58.392924350771544,
+   "edhrec_cat": "topcards",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{G}, {T}, Discard a creature card: Search your library for a creature card, reveal it, put it into your hand, then shuffle."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability",
+    "tutor"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Elrond, Moon-Reader",
+   "tags": [
+    "draw_engine",
+    "elf"
+   ],
+   "edhrec_pct": 59.27738050432819,
+   "edhrec_cat": "newcards",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{5}{U}{U}: Exile up to two other target nonland permanents you control. Return those cards to the battlefield under their owner's control at the beginning of the next end step."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "draw_engine",
+    "gy_inheritable_ability"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Ezuri, Renegade Leader",
+   "tags": [
+    "elf",
+    "finisher_repeatable"
+   ],
+   "edhrec_pct": 59.33383515242755,
+   "edhrec_cat": "highsynergycards",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{G}: Regenerate another target Elf.",
+    "{2}{G}{G}{G}: Elf creatures you control get +3/+3 and gain trample until end of turn."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "finisher_repeatable",
+    "gy_inheritable_ability"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Immaculate Magistrate",
+   "tags": [
+    "counter_engine",
+    "elf",
+    "elf_scaling"
+   ],
+   "edhrec_pct": 62.777568686488515,
+   "edhrec_cat": "highsynergycards",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{T}: Put a +1/+1 counter on target creature for each Elf you control."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Elvish Mystic",
+   "tags": [
+    "elf",
+    "ramp"
+   ],
+   "edhrec_pct": 70.60594655626646,
+   "edhrec_cat": "highsynergycards",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{T}: Add {G}."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability",
+    "ramp"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Buried Alive",
+   "tags": [
+    "gy_fill",
+    "tutor_gy"
+   ],
+   "edhrec_pct": 71.94203989461799,
+   "edhrec_cat": "highsynergycards",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": true,
+   "protected": [
+    "gy_fuel",
+    "tutor_gy"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Marwyn, the Nurturer",
+   "tags": [
+    "elf",
+    "power_scaling",
+    "ramp"
+   ],
+   "edhrec_pct": 74.25668046669176,
+   "edhrec_cat": "highsynergycards",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{T}: Add an amount of {G} equal to Marwyn's power."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability",
+    "ramp"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Lathril, Blade of the Elves",
+   "tags": [
+    "elf",
+    "finisher_drain",
+    "token_maker"
+   ],
+   "edhrec_pct": 75.96913812570568,
+   "edhrec_cat": "highsynergycards",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{T}, Tap ten untapped Elves you control: Each opponent loses 10 life and you gain 10 life."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "finisher_drain",
+    "gy_inheritable_ability"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Priest of Titania",
+   "tags": [
+    "elf",
+    "elf_scaling",
+    "ramp"
+   ],
+   "edhrec_pct": 77.19232216785848,
+   "edhrec_cat": "highsynergycards",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{T}: Add {G} for each Elf on the battlefield."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability",
+    "ramp"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Elvish Archdruid",
+   "tags": [
+    "anthem",
+    "elf",
+    "elf_scaling",
+    "ramp"
+   ],
+   "edhrec_pct": 79.41287165976667,
+   "edhrec_cat": "highsynergycards",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{T}: Add {G} for each Elf you control."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability",
+    "ramp"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Llanowar Elves",
+   "tags": [
+    "elf",
+    "ramp"
+   ],
+   "edhrec_pct": 81.36996612721113,
+   "edhrec_cat": "highsynergycards",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{T}: Add {G}."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability",
+    "ramp"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Sol Ring",
+   "tags": [
+    "ramp"
+   ],
+   "edhrec_pct": 82.32969514490026,
+   "edhrec_cat": "manaartifacts",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "ramp"
+   ],
+   "is_protected": true
+  }
+ ],
+ "clusters": {
+  "protection_counterspell": [
+   "Allosaurus Shepherd"
+  ],
+  "ramp": [
+   "Arbor Elf",
+   "Bloom Tender",
+   "Deathbloom Ritualist",
+   "Elves of Deep Shadow",
+   "Elvish Archdruid",
+   "Elvish Mystic",
+   "Gwenna, Eyes of Gaea",
+   "Incubation Druid",
+   "Llanowar Elves",
+   "Marwyn, the Nurturer",
+   "Priest of Titania",
+   "Selvala, Heart of the Wilds",
+   "Sol Ring",
+   "Wirewood Channeler"
+  ],
+  "counter_engine": [
+   "Arwen, Weaver of Hope",
+   "Dionus, Elvish Archdruid",
+   "Immaculate Magistrate",
+   "Thranduil's Company",
+   "Tyvar the Bellicose"
+  ],
+  "removal": [
+   "Assassin's Trophy",
+   "Awaken the Honored Dead",
+   "Deadly Rollick",
+   "Feed the Swarm",
+   "Putrefy",
+   "Trystan's Command"
+  ],
+  "gy_fill": [
+   "Awaken the Honored Dead",
+   "Buried Alive",
+   "Lluwen, Imperfect Naturalist",
+   "Tyvar, Jubilant Brawler"
+  ],
+  "creature_draw_engine": [
+   "Beast Whisperer",
+   "Champions of the Perfect"
+  ],
+  "draw_engine": [
+   "Beast Whisperer",
+   "Champions of the Perfect",
+   "Edric, Spymaster of Trest",
+   "Elrond, Moon-Reader",
+   "Rhystic Study"
+  ],
+  "finisher_burst": [
+   "Bloodline Bidding",
+   "Kindred Summons"
+  ],
+  "gy_payoff": [
+   "Bloodline Bidding"
+  ],
+  "reanimation_mass": [
+   "Bloodline Bidding"
+  ],
+  "tutor_gy": [
+   "Buried Alive"
+  ],
+  "gy_scaling": [
+   "Deathbloom Ritualist",
+   "Jarad, Golgari Lich Lord"
+  ],
+  "removal_exile": [
+   "Deadly Rollick"
+  ],
+  "card_selection": [
+   "Eclipsed Elf"
+  ],
+  "combat_damage_draw": [
+   "Edric, Spymaster of Trest"
+  ],
+  "tutor_passive": [
+   "Eladamri, Korvecdal"
+  ],
+  "anthem": [
+   "Elvish Archdruid"
+  ],
+  "elf_scaling": [
+   "Elvish Archdruid",
+   "Immaculate Magistrate",
+   "Priest of Titania",
+   "Wirewood Channeler"
+  ],
+  "finisher_repeatable": [
+   "Elvish Warmaster",
+   "Ezuri, Renegade Leader",
+   "Tyvar, the Pummeler"
+  ],
+  "token_maker": [
+   "Elvish Warmaster",
+   "Lathril, Blade of the Elves",
+   "Lys Alana Huntmaster"
+  ],
+  "tutor": [
+   "Fauna Shaman",
+   "Finale of Devastation",
+   "Prime Speaker Vannifar"
+  ],
+  "removal_enchantment": [
+   "Feed the Swarm"
+  ],
+  "finisher_xspell": [
+   "Finale of Devastation"
+  ],
+  "draw_conditional": [
+   "Glissa Sunslayer",
+   "Selvala, Heart of the Wilds"
+  ],
+  "removal_combat": [
+   "Glissa Sunslayer"
+  ],
+  "protection": [
+   "Heroic Intervention",
+   "Iron-Shield Elf",
+   "Lightning Greaves",
+   "Selfless Safewright"
+  ],
+  "opponent_disruption": [
+   "High Perfect Morcant"
+  ],
+  "finisher_drain": [
+   "Jarad, Golgari Lich Lord",
+   "Lathril, Blade of the Elves"
+  ],
+  "sac_outlet": [
+   "Jarad, Golgari Lich Lord",
+   "Prime Speaker Vannifar"
+  ],
+  "wipe_asymmetric": [
+   "Kindred Dominance"
+  ],
+  "reinforcement": [
+   "Kindred Summons"
+  ],
+  "disruption": [
+   "Maralen, Fae Ascendant"
+  ],
+  "free_cast_engine": [
+   "Maralen, Fae Ascendant"
+  ],
+  "power_scaling": [
+   "Marwyn, the Nurturer",
+   "Selvala, Heart of the Wilds"
+  ],
+  "removal_artifact": [
+   "Putrefy"
+  ],
+  "bounce_asymmetric": [
+   "Raise the Palisade"
+  ],
+  "opponent_dependent": [
+   "Rhystic Study"
+  ],
+  "trigger_doubler": [
+   "Roaming Throne"
+  ],
+  "removal_repeatable": [
+   "Ruthless Winnower"
+  ],
+  "land_ramp": [
+   "Thranduil's Company"
+  ],
+  "anthem_combat": [
+   "Tyvar the Bellicose"
+  ],
+  "self_protect": [
+   "Tyvar, the Pummeler"
+  ],
+  "draw_filter": [
+   "Underrealm Lich"
+  ],
+  "gy_fill_passive": [
+   "Underrealm Lich"
+  ],
+  "cost_reducer": [
+   "Urza's Incubator"
+  ]
+ }
+}
