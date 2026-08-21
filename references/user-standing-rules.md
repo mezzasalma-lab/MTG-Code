@@ -66,6 +66,20 @@ CRIAR AQUI TEM QUE SER COPIADA NO GITHUB TB!"*
 - Se as duas cópias divergirem (uma foi atualizada e a outra não),
   atualizar as duas juntas antes de continuar qualquer trabalho.
 
+## 5. Cartas protegidas contra corte, por deck (nunca sugerir cortar, mesmo com baixa sinergia)
+
+Cartas que o usuário vetou explicitamente, independente do que qualquer
+métrica (EDHREC, matriz de sinergia, goldfish) mostrar sobre elas.
+
+**Thranduil, the Elvenking (thranduil-sultai):**
+- **Roaming Throne** e **Maralen, Fae Ascendant** — *"Nem pensar em tirar o
+  trono ou a Maralen"* (stop hook feedback, sessão 2026-08-20/21).
+- **Thranduil's Company** — *"Não vamos tirar o Thranduil's Company em
+  hipótese alguma."* (2026-08-21), mesmo sendo o único card do deck sem
+  nenhuma proteção em nenhuma dimensão da matriz de sinergia
+  (`thranduil_synergy_matrix.py`) — vetada por decisão direta do usuário,
+  não por análise.
+
 ---
 
 <!-- Adicionar novas regras permanentes abaixo conforme o usuário as
