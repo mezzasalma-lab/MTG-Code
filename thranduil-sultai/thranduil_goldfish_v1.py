@@ -278,10 +278,10 @@ add("Maralen, Fae Ascendant", 5, {"Creature"}, tags={"elf", "disruption", "free_
 # -------- GY fill (elfos no cemiterio) --------
 add("Lluwen, Imperfect Naturalist", 2, {"Creature"}, tags={"elf", "gy_fill"}, colors={"B", "G"}, mill=4, legendary_elf=True)
 add("Trystan, Callous Cultivator // Trystan, Penitent Culler", 3, {"Creature"}, tags={"elf", "gy_fill"}, colors=set(), mill=3, legendary_elf=True)
-add("Oversold Cemetery", 2, {"Enchantment"}, tags={"gy_payoff"}, colors={"B"})
+add("Oversold Cemetery", 2, {"Enchantment"}, tags={"recursion"}, colors={"B"})  # 4+ CRIATURAS na GY, sem exigir Elfo
 
 # -------- Diversos / suporte --------
-add("Agatha's Soul Cauldron", 2, {"Artifact"}, tags={"gy_payoff"})
+add("Agatha's Soul Cauldron", 2, {"Artifact"}, tags={"gy_hate"})  # exila carta de QUALQUER cemiterio, nao so o seu
 add("Allosaurus Shepherd", 1, {"Creature"}, tags={"elf", "protection_counterspell"}, colors={"G"})
 add("Eclipsed Elf", 3, {"Creature"}, tags={"elf", "card_selection"}, colors={"B", "G"})
 add("Roaming Throne", 4, {"Creature"}, tags={"trigger_doubler"})

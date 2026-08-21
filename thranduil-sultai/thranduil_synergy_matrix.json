@@ -1,36 +1,6 @@
 {
  "rows": [
   {
-   "name": "Eclipsed Elf",
-   "tags": [
-    "card_selection",
-    "elf"
-   ],
-   "edhrec_pct": null,
-   "edhrec_cat": null,
-   "gy_inheritable_ability": false,
-   "gy_inheritable_detail": [],
-   "gy_fuel": false,
-   "triggers_thranduil_etb": false,
-   "protected": [],
-   "is_protected": false
-  },
-  {
-   "name": "Lys Alana Huntmaster",
-   "tags": [
-    "elf",
-    "token_maker"
-   ],
-   "edhrec_pct": null,
-   "edhrec_cat": null,
-   "gy_inheritable_ability": false,
-   "gy_inheritable_detail": [],
-   "gy_fuel": false,
-   "triggers_thranduil_etb": false,
-   "protected": [],
-   "is_protected": false
-  },
-  {
    "name": "Roaming Throne",
    "tags": [
     "trigger_doubler"
@@ -131,6 +101,22 @@
    "is_protected": true
   },
   {
+   "name": "Oversold Cemetery",
+   "tags": [
+    "recursion"
+   ],
+   "edhrec_pct": null,
+   "edhrec_cat": null,
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "triggers_thranduil_etb": false,
+   "protected": [
+    "recursion"
+   ],
+   "is_protected": true
+  },
+  {
    "name": "Ruthless Winnower",
    "tags": [
     "elf",
@@ -144,24 +130,6 @@
    "triggers_thranduil_etb": false,
    "protected": [
     "removal_repeatable"
-   ],
-   "is_protected": true
-  },
-  {
-   "name": "Feed the Swarm",
-   "tags": [
-    "removal",
-    "removal_enchantment"
-   ],
-   "edhrec_pct": null,
-   "edhrec_cat": null,
-   "gy_inheritable_ability": false,
-   "gy_inheritable_detail": [],
-   "gy_fuel": false,
-   "triggers_thranduil_etb": false,
-   "protected": [
-    "removal",
-    "removal_enchantment"
    ],
    "is_protected": true
   },
@@ -184,20 +152,18 @@
    "is_protected": true
   },
   {
-   "name": "Putrefy",
+   "name": "Agatha's Soul Cauldron",
    "tags": [
-    "removal",
-    "removal_artifact"
+    "gy_hate"
    ],
-   "edhrec_pct": 9.484380880692509,
-   "edhrec_cat": "instants",
+   "edhrec_pct": 8.054196462175387,
+   "edhrec_cat": "utilityartifacts",
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
    "triggers_thranduil_etb": false,
    "protected": [
-    "removal",
-    "removal_artifact"
+    "gy_hate"
    ],
    "is_protected": true
   },
@@ -303,24 +269,6 @@
    "triggers_thranduil_etb": false,
    "protected": [
     "wipe_asymmetric"
-   ],
-   "is_protected": true
-  },
-  {
-   "name": "Deadly Rollick",
-   "tags": [
-    "removal",
-    "removal_exile"
-   ],
-   "edhrec_pct": 19.514490026345502,
-   "edhrec_cat": "instants",
-   "gy_inheritable_ability": false,
-   "gy_inheritable_detail": [],
-   "gy_fuel": false,
-   "triggers_thranduil_etb": false,
-   "protected": [
-    "removal",
-    "removal_exile"
    ],
    "is_protected": true
   },
@@ -810,26 +758,6 @@
    "is_protected": true
   },
   {
-   "name": "Imperious Perfect",
-   "tags": [
-    "anthem",
-    "elf",
-    "token_maker"
-   ],
-   "edhrec_pct": 49.36018065487392,
-   "edhrec_cat": "topcards",
-   "gy_inheritable_ability": true,
-   "gy_inheritable_detail": [
-    "{G}, {T}: Create a 1/1 green Elf Warrior creature token."
-   ],
-   "gy_fuel": false,
-   "triggers_thranduil_etb": false,
-   "protected": [
-    "gy_inheritable_ability"
-   ],
-   "is_protected": true
-  },
-  {
    "name": "Eladamri, Korvecdal",
    "tags": [
     "elf",
@@ -904,28 +832,6 @@
    "triggers_thranduil_etb": true,
    "protected": [
     "triggers_thranduil_draw"
-   ],
-   "is_protected": true
-  },
-  {
-   "name": "Formidable Speaker",
-   "tags": [
-    "elf",
-    "gy_fill",
-    "tutor"
-   ],
-   "edhrec_pct": 54.29055325555138,
-   "edhrec_cat": "topcards",
-   "gy_inheritable_ability": true,
-   "gy_inheritable_detail": [
-    "{1}, {T}: Untap another target permanent."
-   ],
-   "gy_fuel": true,
-   "triggers_thranduil_etb": false,
-   "protected": [
-    "gy_fuel",
-    "gy_inheritable_ability",
-    "tutor"
    ],
    "is_protected": true
   },
@@ -1088,27 +994,6 @@
    "is_protected": true
   },
   {
-   "name": "Devoted Druid",
-   "tags": [
-    "elf",
-    "ramp"
-   ],
-   "edhrec_pct": 70.66240120436582,
-   "edhrec_cat": "highsynergycards",
-   "gy_inheritable_ability": true,
-   "gy_inheritable_detail": [
-    "{T}: Add {G}.",
-    "Put a -1/-1 counter on this creature: Untap this creature."
-   ],
-   "gy_fuel": false,
-   "triggers_thranduil_etb": false,
-   "protected": [
-    "gy_inheritable_ability",
-    "ramp"
-   ],
-   "is_protected": true
-  },
-  {
    "name": "Buried Alive",
    "tags": [
     "gy_fill",
@@ -1251,6 +1136,9 @@
   }
  ],
  "clusters": {
+  "gy_hate": [
+   "Agatha's Soul Cauldron"
+  ],
   "protection_counterspell": [
    "Allosaurus Shepherd"
   ],
@@ -1268,8 +1156,7 @@
    "Priest of Titania",
    "Selvala, Heart of the Wilds",
    "Sol Ring",
-   "Wirewood Channeler",
-   "Devoted Druid"
+   "Wirewood Channeler"
   ],
   "counter_engine": [
    "Arwen, Weaver of Hope",
@@ -1284,17 +1171,13 @@
    "Deadly Rollick",
    "Feed the Swarm",
    "Putrefy",
-   "Trystan's Command",
-   "Deadly Rollick",
-   "Putrefy",
-   "Feed the Swarm"
+   "Trystan's Command"
   ],
   "gy_fill": [
    "Awaken the Honored Dead",
    "Buried Alive",
    "Lluwen, Imperfect Naturalist",
-   "Tyvar, Jubilant Brawler",
-   "Formidable Speaker"
+   "Tyvar, Jubilant Brawler"
   ],
   "creature_draw_engine": [
    "Beast Whisperer",
@@ -1325,11 +1208,7 @@
    "Jarad, Golgari Lich Lord"
   ],
   "removal_exile": [
-   "Deadly Rollick",
    "Deadly Rollick"
-  ],
-  "card_selection": [
-   "Eclipsed Elf"
   ],
   "combat_damage_draw": [
    "Edric, Spymaster of Trest"
@@ -1338,8 +1217,7 @@
    "Eladamri, Korvecdal"
   ],
   "anthem": [
-   "Elvish Archdruid",
-   "Imperious Perfect"
+   "Elvish Archdruid"
   ],
   "elf_scaling": [
    "Elvish Archdruid",
@@ -1354,18 +1232,14 @@
   ],
   "token_maker": [
    "Elvish Warmaster",
-   "Lathril, Blade of the Elves",
-   "Lys Alana Huntmaster",
-   "Imperious Perfect"
+   "Lathril, Blade of the Elves"
   ],
   "tutor": [
    "Fauna Shaman",
    "Finale of Devastation",
-   "Prime Speaker Vannifar",
-   "Formidable Speaker"
+   "Prime Speaker Vannifar"
   ],
   "removal_enchantment": [
-   "Feed the Swarm",
    "Feed the Swarm"
   ],
   "finisher_xspell": [
@@ -1411,8 +1285,10 @@
    "Marwyn, the Nurturer",
    "Selvala, Heart of the Wilds"
   ],
+  "recursion": [
+   "Oversold Cemetery"
+  ],
   "removal_artifact": [
-   "Putrefy",
    "Putrefy"
   ],
   "bounce_asymmetric": [

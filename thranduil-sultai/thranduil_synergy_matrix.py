@@ -41,7 +41,7 @@ PROTECTED_TAGS = {
     "removal_enchantment", "removal_exile", "ramp",
     "finisher_repeatable", "finisher_drain", "finisher_burst",
     "protection", "protection_counterspell", "tutor", "tutor_gy", "tutor_passive",
-    "wipe_asymmetric", "bounce_asymmetric", "gy_fuel",
+    "wipe_asymmetric", "bounce_asymmetric", "gy_fuel", "gy_hate", "recursion",
 }
 
 def load_oracle():
