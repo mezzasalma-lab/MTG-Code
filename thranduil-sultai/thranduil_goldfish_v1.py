@@ -208,13 +208,19 @@ add("Deathbloom Ritualist", 5, {"Creature"}, tags={"ramp", "elf", "gy_scaling"},
 add("Gwenna, Eyes of Gaea", 3, {"Creature"}, tags={"ramp", "elf"}, colors={"G"}, produces={"B", "G", "U"}, legendary_elf=True)
 
 # -------- Card draw --------
-add("Rhystic Study", 3, {"Enchantment"}, tags={"draw_engine"}, colors={"U"})
-add("Beast Whisperer", 4, {"Creature"}, tags={"draw_engine", "elf"}, colors={"G"})
-add("Champions of the Perfect", 4, {"Creature"}, tags={"draw_engine", "elf"}, colors={"G"})
-add("Edric, Spymaster of Trest", 3, {"Creature"}, tags={"draw_engine", "elf"}, colors={"G", "U"}, legendary_elf=True)
+# Rhystic Study: dispara com spells de OPONENTES - premissa explicita, ver ativa_rhystic_study().
+add("Rhystic Study", 3, {"Enchantment"}, tags={"draw_engine", "opponent_dependent"}, colors={"U"})
+# Beast Whisperer / Champions of the Perfect: "whenever you cast a creature spell, draw a card" -
+# rigoroso, sem premissa, ver cast_spell().
+add("Beast Whisperer", 4, {"Creature"}, tags={"draw_engine", "creature_draw_engine", "elf"}, colors={"G"})
+add("Champions of the Perfect", 4, {"Creature"}, tags={"draw_engine", "creature_draw_engine", "elf"}, colors={"G"})
+# Edric: "whenever a creature deals combat damage to a player, its controller may draw" - via combat_step().
+add("Edric, Spymaster of Trest", 3, {"Creature"}, tags={"draw_engine", "combat_damage_draw", "elf"}, colors={"G", "U"}, legendary_elf=True)
 add("Elrond, Moon-Reader", 3, {"Creature"}, tags={"draw_engine", "elf"}, colors={"U"}, legendary_elf=True)
 add("Harmonized Crescendo", 6, {"Instant"}, tags={"draw_burst"}, colors={"U"})
+# Underrealm Lich: substitui TODAS as suas compras por "olhe 3, 1 pra mao, 2 pro cemiterio" - ver GameState.draw().
 add("Underrealm Lich", 5, {"Creature"}, tags={"draw_filter", "elf", "gy_fill_passive"}, colors={"B", "G"})
+add("Elf Warrior Token", 0, {"Creature"}, tags={"elf", "token"})  # token gerado por Lathril em combate
 
 # -------- Removal --------
 add("Assassin's Trophy", 2, {"Instant"}, tags={"removal"}, colors={"B", "G"})
@@ -277,6 +283,11 @@ add("Thranduil's Company", 4, {"Creature"}, tags={"elf", "land_ramp", "counter_e
 add(COMMANDER, 5, {"Creature"}, tags={"elf"}, colors={"B", "G", "U"}, legendary_elf=True)
 
 DENSITY_ELF = 15 / 91  # ~15 elfos lendarios + varios outros elfos nao-lendarios entre as 91 nao-terrenos; usado so como proxy de "chance de milhar um elfo"
+
+# Premissas explicitas pra Rhystic Study (carta depende de spells de OPONENTES, que um goldfish solo
+# nao tem como observar de verdade - mesma limitacao estrutural do Managorger Hydra no Beorn):
+ASSUMED_OPPONENT_SPELLS_PER_TURN = 2   # reaproveitando a mesma premissa que voce ja validou pro Managorger Hydra
+ASSUMED_RHYSTIC_STUDY_PAY_RATE = 0.5   # premissa MINHA, nao validada por voce - fracao das vezes que o oponente paga o {1} pra evitar a compra
 
 def C(name: str) -> Card:
     return CARD_DB[name]
@@ -342,14 +353,39 @@ class GameState:
     finishers_activated: List[str] = field(default_factory=list)
     finisher_turn: Optional[int] = None
 
+    # Engines de draw (ver comentario no topo do arquivo sobre cada uma)
+    creature_engine_draws: int = 0          # Beast Whisperer / Champions of the Perfect
+    combat_damage_draws: int = 0            # Edric, Spymaster of Trest
+    lathril_tokens_created: int = 0         # tokens de Elfo via dano de combate do Lathril
+    rhystic_study_opportunities: int = 0
+    rhystic_study_draws: int = 0
+    rhystic_study_denied: int = 0
+
     def draw(self, n=1, source="draw"):
         got = 0
+        lich = self.has("Underrealm Lich")
         for _ in range(n):
-            if self.library:
+            if not self.library:
+                break
+            if lich:
+                # "If you would draw a card, instead look at top 3, put 1 into hand, rest into graveyard."
+                look = self.library[:3]
+                del self.library[:3]
+                if not look:
+                    break
+                self.hand.append(look[0])
+                got += 1
+                for c in look[1:]:
+                    self.graveyard.append(c)
+                    self.cards_milled_total += 1
+                    if self.rng.random() < DENSITY_ELF:
+                        self.elves_milled_to_gy += 1
+            else:
                 self.hand.append(self.library.pop(0))
                 got += 1
         if source != "normal":
             self.extra_draws += got
+        return got
 
     def mill(self, n=1):
         milled = 0
@@ -511,9 +547,22 @@ def main_phase(state: GameState, log: List[Dict]):
     # Ativa finishers repetiveis se sobrar mana e houver board relevante
     activate_finishers(state, log)
 
+def _creature_cast_engines_trigger(state: GameState, card: str, log: List[Dict]):
+    # Beast Whisperer / Champions of the Perfect: "whenever you cast a creature spell, draw a card".
+    # Checado ANTES de "card" entrar no campo, entao a propria carta nao dispara suas proprias copias.
+    if not is_creature(card):
+        return
+    engines = [c for c in state.battlefield if has_tag(c, "creature_draw_engine")]
+    for eng in engines:
+        state.draw(1, source=f"{eng} (creature cast trigger)")
+        state.creature_engine_draws += 1
+    if engines:
+        log.append({"trigger": "creature_draw_engine", "card": card, "engines": engines, "turn": state.turn})
+
 def _resolve_cast(state: GameState, card: str, log: List[Dict], from_hand: bool):
     if from_hand:
         state.hand.remove(card)
+    _creature_cast_engines_trigger(state, card, log)
     state.spells_cast += 1
     state.battlefield.append(card)
     if card == COMMANDER:
@@ -524,6 +573,7 @@ def _resolve_cast(state: GameState, card: str, log: List[Dict], from_hand: bool)
 
 def cast_spell(state: GameState, card: str, log: List[Dict]):
     state.hand.remove(card)
+    _creature_cast_engines_trigger(state, card, log)
     state.spells_cast += 1
 
     if "Instant" in C(card).types or "Sorcery" in C(card).types:
@@ -586,9 +636,6 @@ def activate_finishers(state: GameState, log: List[Dict]):
                 state.finisher_turn = state.turn
             log.append({"trigger": "finisher_activated", "card": card, "turn": state.turn})
         elif has_tag(card, "finisher_drain") and card == "Jarad, Golgari Lich Lord" and total_mana(state) >= cost:
-            tokens = [c for c in state.battlefield if c in {"Elf Warrior Token"}]
-            if is_creature("Jarad, Golgari Lich Lord"):
-                pass
             state.finishers_activated.append(card)
             if state.finisher_turn is None:
                 state.finisher_turn = state.turn
@@ -598,6 +645,49 @@ def activate_finishers(state: GameState, log: List[Dict]):
                 state.finishers_activated.append(card)
                 if state.finisher_turn is None:
                     state.finisher_turn = state.turn
+
+# =========================================================
+# COMBATE (Edric + tokens do Lathril via dano de combate)
+# Simplificacao: sem doenca de invocacao e sem bloqueadores modelados (mesmo
+# nivel de fidelidade que o combat_step do Beorn) - todas as criaturas em
+# campo sao tratadas como atacando e conectando.
+# =========================================================
+
+def combat_step(state: GameState, log: List[Dict]):
+    creatures = [c for c in state.battlefield if is_creature(c)]
+    if not creatures:
+        return
+
+    if state.has("Edric, Spymaster of Trest"):
+        n = len(creatures)
+        state.draw(n, source="Edric combat damage")
+        state.combat_damage_draws += n
+        log.append({"trigger": "edric_combat_draw", "turn": state.turn, "amount": n})
+
+    if state.has("Lathril, Blade of the Elves"):
+        # Poder da Lathril (base 2) + aproximacao dos anthems de Elfo em campo (Elvish Archdruid,
+        # Thranduil Sindarin Liege) - nao rastreamos +1/+1 counters individuais neste simulador.
+        anthem_bonus = sum(1 for c in state.battlefield if has_tag(c, "anthem"))
+        lathril_power = 2 + anthem_bonus
+        for _ in range(lathril_power):
+            state.battlefield.append("Elf Warrior Token")
+        state.lathril_tokens_created += lathril_power
+        log.append({"trigger": "lathril_tokens", "turn": state.turn, "amount": lathril_power})
+
+# =========================================================
+# RHYSTIC STUDY (depende de spells de oponentes - ver premissas no topo do arquivo)
+# =========================================================
+
+def apply_rhystic_study(state: GameState, log: List[Dict]):
+    if not state.has("Rhystic Study"):
+        return
+    for _ in range(ASSUMED_OPPONENT_SPELLS_PER_TURN):
+        state.rhystic_study_opportunities += 1
+        if state.rng.random() >= ASSUMED_RHYSTIC_STUDY_PAY_RATE:
+            state.draw(1, source="Rhystic Study")
+            state.rhystic_study_draws += 1
+        else:
+            state.rhystic_study_denied += 1
 
 # =========================================================
 # TURN STRUCTURE
@@ -615,6 +705,8 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
 
     play_land(state, log)
     main_phase(state, log)
+    combat_step(state, log)
+    apply_rhystic_study(state, log)
     state.cleanup_hand_size()
 
     log.append({"turn": turn, "phase": "end", "hand_size": len(state.hand),
@@ -674,6 +766,12 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "battlefield_count": len(state.battlefield),
         "hand_size": len(state.hand),
         "lands_played_total": state.lands_played_total,
+        "creature_engine_draws": state.creature_engine_draws,
+        "combat_damage_draws": state.combat_damage_draws,
+        "lathril_tokens_created": state.lathril_tokens_created,
+        "rhystic_study_in_play": state.has("Rhystic Study"),
+        "rhystic_study_draws": state.rhystic_study_draws,
+        "rhystic_study_denied": state.rhystic_study_denied,
     }
 
 def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=71000):
@@ -713,6 +811,15 @@ def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=710
     if fin_turns:
         print(f"Avg turno do 1o finisher ativado: {statistics.mean(fin_turns):.2f}")
         print(f"% de jogos com finisher ativado ate T8: {100*len(fin_turns)/n:.1f}%")
+    print()
+    print(f"Avg compras via Beast Whisperer/Champions of the Perfect (criatura conjurada): {avg('creature_engine_draws'):.2f}")
+    print(f"Avg compras via Edric (dano de combate): {avg('combat_damage_draws'):.2f}")
+    print(f"Avg tokens de Elfo via Lathril (dano de combate): {avg('lathril_tokens_created'):.2f}")
+    rs_games = [r for r in results if r["rhystic_study_in_play"]]
+    if rs_games:
+        print(f"Rhystic Study em campo em {100*len(rs_games)/n:.1f}% dos jogos")
+        print(f"  Avg compras via Rhystic Study (premissa: {ASSUMED_OPPONENT_SPELLS_PER_TURN} spells de oponente/turno, {ASSUMED_RHYSTIC_STUDY_PAY_RATE*100:.0f}% de taxa paga): {statistics.mean([r['rhystic_study_draws'] for r in rs_games]):.2f}")
+        print(f"  Avg vezes que o oponente pagou o {{1}} pra evitar: {statistics.mean([r['rhystic_study_denied'] for r in rs_games]):.2f}")
     print(f"Avg cartas descartadas por limite de mao: {avg('cards_discarded_to_hand_size'):.2f}")
     print(f"Avg battlefield final: {avg('battlefield_count'):.2f}")
     print(f"Avg mao final: {avg('hand_size'):.2f}")
