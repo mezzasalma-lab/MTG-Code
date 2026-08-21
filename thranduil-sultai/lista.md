@@ -23,6 +23,7 @@
 1 Deathbloom Ritualist
 1 Deathcap Glade
 1 Deadly Rollick
+1 Devoted Druid
 1 Dionus, Elvish Archdruid
 1 Eclipsed Realms
 1 Edric, Spymaster of Trest
@@ -36,6 +37,7 @@
 1 Ezuri, Renegade Leader
 1 Fauna Shaman
 1 Finale of Devastation
+1 Formidable Speaker
 7 Forest
 1 Gilt-Leaf Palace
 1 Glissa Sunslayer
@@ -43,6 +45,7 @@
 1 Heroic Intervention
 1 High Perfect Morcant
 1 Immaculate Magistrate
+1 Imperious Perfect
 1 Incubation Druid
 1 Iron-Shield Elf
 1 Island
