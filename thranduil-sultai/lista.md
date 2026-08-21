@@ -62,7 +62,6 @@
 1 Oversold Cemetery
 1 Priest of Titania
 1 Prime Speaker Vannifar
-1 Putrefy
 1 Raise the Palisade
 1 Reflecting Pool
 1 Rejuvenating Springs
