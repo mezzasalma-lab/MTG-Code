@@ -80,6 +80,14 @@ def has_activated_ability(oracle_text: str) -> list:
 def is_elf_type(type_line: str) -> bool:
     return "Elf" in (type_line or "")
 
+def is_legendary_elf_type(type_line: str) -> bool:
+    """Dispara o proprio segundo texto da Thranduil: 'Whenever another legendary
+    Elf you control enters, draw two cards, then discard a card.' Faltou essa
+    dimensao na primeira versao do script - Arwen e legendary Elf e passou
+    batido porque so olhei a habilidade estatica dela."""
+    tl = type_line or ""
+    return "Legendary" in tl and "Elf" in tl
+
 def mills_cards(oracle_text: str) -> bool:
     """'Combustivel de GY' = qualquer efeito que bote cartas SUAS no cemiterio:
     mill classico OU descartar carta(s) da propria mao. Ficou faltando o caso
@@ -111,6 +119,7 @@ def build_matrix(deck_names, oracle_cache, edhrec):
         activated = has_activated_ability(text) if is_elf_type(type_line) else []
         gy_inheritable = bool(activated)
         gy_fuel = mills_cards(text) or card_db.mill_amount > 0
+        triggers_thranduil_etb = is_legendary_elf_type(type_line) and name != sim.COMMANDER
 
         edh_name = name.split(" // ")[0]
         edh_pct, edh_cat = edhrec.get(edh_name, (None, None))
@@ -120,6 +129,8 @@ def build_matrix(deck_names, oracle_cache, edhrec):
             protected.add("gy_inheritable_ability")
         if gy_fuel:
             protected.add("gy_fuel")
+        if triggers_thranduil_etb:
+            protected.add("triggers_thranduil_draw")
 
         rows.append({
             "name": name,
@@ -129,6 +140,7 @@ def build_matrix(deck_names, oracle_cache, edhrec):
             "gy_inheritable_ability": gy_inheritable,
             "gy_inheritable_detail": activated,
             "gy_fuel": gy_fuel,
+            "triggers_thranduil_etb": triggers_thranduil_etb,
             "protected": sorted(protected),
             "is_protected": len(protected) > 0,
         })

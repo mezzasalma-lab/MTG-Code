@@ -11,6 +11,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [],
    "is_protected": false
   },
@@ -25,6 +26,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [],
    "is_protected": false
   },
@@ -38,6 +40,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [],
    "is_protected": false
   },
@@ -51,50 +54,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
-   "protected": [],
-   "is_protected": false
-  },
-  {
-   "name": "Arwen, Weaver of Hope",
-   "tags": [
-    "counter_engine",
-    "elf"
-   ],
-   "edhrec_pct": 16.879939781708693,
-   "edhrec_cat": "creatures",
-   "gy_inheritable_ability": false,
-   "gy_inheritable_detail": [],
-   "gy_fuel": false,
-   "protected": [],
-   "is_protected": false
-  },
-  {
-   "name": "Tyvar the Bellicose",
-   "tags": [
-    "anthem_combat",
-    "counter_engine",
-    "elf"
-   ],
-   "edhrec_pct": 29.450508091832894,
-   "edhrec_cat": "creatures",
-   "gy_inheritable_ability": false,
-   "gy_inheritable_detail": [],
-   "gy_fuel": false,
-   "protected": [],
-   "is_protected": false
-  },
-  {
-   "name": "Maralen, Fae Ascendant",
-   "tags": [
-    "disruption",
-    "elf",
-    "free_cast_engine"
-   ],
-   "edhrec_pct": 38.671433948061726,
-   "edhrec_cat": "creatures",
-   "gy_inheritable_ability": false,
-   "gy_inheritable_detail": [],
-   "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [],
    "is_protected": false
   },
@@ -110,20 +70,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
-   "protected": [],
-   "is_protected": false
-  },
-  {
-   "name": "Dionus, Elvish Archdruid",
-   "tags": [
-    "counter_engine",
-    "elf"
-   ],
-   "edhrec_pct": 52.74745954083553,
-   "edhrec_cat": "topcards",
-   "gy_inheritable_ability": false,
-   "gy_inheritable_detail": [],
-   "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [],
    "is_protected": false
   },
@@ -138,6 +85,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "removal",
     "removal_enchantment"
@@ -157,9 +105,11 @@
     "{T}: Add two mana in any combination of colors. Spend this mana only to cast creature spells or activate abilities of creature sources."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": true,
    "protected": [
     "gy_inheritable_ability",
-    "ramp"
+    "ramp",
+    "triggers_thranduil_draw"
    ],
    "is_protected": true
   },
@@ -174,6 +124,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "finisher_burst"
    ],
@@ -190,6 +141,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "removal_repeatable"
    ],
@@ -206,6 +158,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "removal",
     "removal_enchantment"
@@ -223,6 +176,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": true,
+   "triggers_thranduil_etb": false,
    "protected": [
     "gy_fuel",
     "removal"
@@ -240,6 +194,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "removal",
     "removal_artifact"
@@ -257,6 +212,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "removal",
     "removal_artifact"
@@ -273,6 +229,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "removal"
    ],
@@ -290,9 +247,28 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": true,
    "protected": [
     "combat_damage_draw",
-    "draw_engine"
+    "draw_engine",
+    "triggers_thranduil_draw"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Arwen, Weaver of Hope",
+   "tags": [
+    "counter_engine",
+    "elf"
+   ],
+   "edhrec_pct": 16.879939781708693,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "triggers_thranduil_etb": true,
+   "protected": [
+    "triggers_thranduil_draw"
    ],
    "is_protected": true
   },
@@ -307,6 +283,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "removal",
     "removal_exile"
@@ -323,6 +300,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "wipe_asymmetric"
    ],
@@ -339,6 +317,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "removal",
     "removal_exile"
@@ -358,6 +337,7 @@
     "{T}: Untap target Forest."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "gy_inheritable_ability",
     "ramp"
@@ -378,6 +358,7 @@
     "{T}: Add X mana of any one color, where X is the number of Elves on the battlefield."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "gy_inheritable_ability",
     "ramp"
@@ -396,8 +377,10 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": true,
    "protected": [
-    "removal_combat"
+    "removal_combat",
+    "triggers_thranduil_draw"
    ],
    "is_protected": true
   },
@@ -414,6 +397,7 @@
     "Discard a card: This creature gains indestructible until end of turn. Tap it. (Damage and effects that say \"destroy\" don't destroy it. If its toughness is 0 or less, it still dies.)"
    ],
    "gy_fuel": true,
+   "triggers_thranduil_etb": false,
    "protected": [
     "gy_fuel",
     "gy_inheritable_ability",
@@ -432,6 +416,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "draw_engine"
    ],
@@ -449,6 +434,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "finisher_burst"
    ],
@@ -467,6 +453,7 @@
     "{4}{G}{G}: Until end of turn, each Elf creature you control has base power and toughness 5/5 and becomes a Dinosaur in addition to its other creature types."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "gy_inheritable_ability",
     "protection_counterspell"
@@ -485,6 +472,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "creature_draw_engine",
     "draw_engine"
@@ -504,9 +492,29 @@
     "{2}{B/G}{B/G}{B/G}, {T}, Discard a land card: Create a 1/1 black and green Worm creature token for each land card in your graveyard."
    ],
    "gy_fuel": true,
+   "triggers_thranduil_etb": true,
    "protected": [
     "gy_fuel",
-    "gy_inheritable_ability"
+    "gy_inheritable_ability",
+    "triggers_thranduil_draw"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Tyvar the Bellicose",
+   "tags": [
+    "anthem_combat",
+    "counter_engine",
+    "elf"
+   ],
+   "edhrec_pct": 29.450508091832894,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "triggers_thranduil_etb": true,
+   "protected": [
+    "triggers_thranduil_draw"
    ],
    "is_protected": true
   },
@@ -521,6 +529,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "protection"
    ],
@@ -540,6 +549,7 @@
     "{T}: Add X mana of any one color, where X is the number of creature cards in your graveyard."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "gy_inheritable_ability",
     "ramp"
@@ -557,6 +567,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "tutor"
    ],
@@ -576,6 +587,7 @@
     "Pay 4 life: This creature gains indestructible until end of turn. Tap it."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "gy_inheritable_ability"
    ],
@@ -591,6 +603,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "bounce_asymmetric"
    ],
@@ -606,6 +619,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "protection"
    ],
@@ -624,9 +638,28 @@
     "{T}: Add {B}. This creature deals 1 damage to you."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "gy_inheritable_ability",
     "ramp"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Maralen, Fae Ascendant",
+   "tags": [
+    "disruption",
+    "elf",
+    "free_cast_engine"
+   ],
+   "edhrec_pct": 38.671433948061726,
+   "edhrec_cat": "creatures",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "triggers_thranduil_etb": true,
+   "protected": [
+    "triggers_thranduil_draw"
    ],
    "is_protected": true
   },
@@ -644,8 +677,10 @@
     "{T}, Sacrifice another creature: Search your library for a creature card with mana value equal to 1 plus the sacrificed creature's mana value, put that card onto the battlefield, then shuffle. Activate only as a sorcery."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": true,
    "protected": [
     "gy_inheritable_ability",
+    "triggers_thranduil_draw",
     "tutor"
    ],
    "is_protected": true
@@ -662,6 +697,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "creature_draw_engine",
     "draw_engine"
@@ -682,6 +718,7 @@
     "{3}{G}{G}: Adapt 3. (If this creature has no +1/+1 counters on it, put three +1/+1 counters on it.)"
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "gy_inheritable_ability",
     "ramp"
@@ -704,9 +741,11 @@
     "Sacrifice a Swamp and a Forest: Return this card from your graveyard to your hand."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": true,
    "protected": [
     "finisher_drain",
-    "gy_inheritable_ability"
+    "gy_inheritable_ability",
+    "triggers_thranduil_draw"
    ],
    "is_protected": true
   },
@@ -724,6 +763,7 @@
     "{5}{G}{G}: Elves you control get +2/+2 and gain deathtouch until end of turn."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "finisher_repeatable",
     "gy_inheritable_ability"
@@ -740,6 +780,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "protection"
    ],
@@ -760,9 +801,11 @@
     "{G}, {T}: Add X mana in any combination of colors, where X is the greatest power among creatures you control."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": true,
    "protected": [
     "gy_inheritable_ability",
-    "ramp"
+    "ramp",
+    "triggers_thranduil_draw"
    ],
    "is_protected": true
   },
@@ -780,6 +823,7 @@
     "{G}, {T}: Create a 1/1 green Elf Warrior creature token."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "gy_inheritable_ability"
    ],
@@ -798,8 +842,10 @@
     "{G}, {T}, Tap two untapped creatures you control: Reveal a card from your hand or the top card of your library. If you reveal a creature card this way, put it onto the battlefield. Activate only during your turn."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": true,
    "protected": [
     "gy_inheritable_ability",
+    "triggers_thranduil_draw",
     "tutor_passive"
    ],
    "is_protected": true
@@ -817,6 +863,7 @@
     "Vivid — {T}: For each color among permanents you control, add one mana of that color."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "gy_inheritable_ability",
     "ramp"
@@ -836,8 +883,27 @@
     "Tap three untapped Elves you control: Proliferate. Activate only as a sorcery. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)"
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": true,
    "protected": [
-    "gy_inheritable_ability"
+    "gy_inheritable_ability",
+    "triggers_thranduil_draw"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Dionus, Elvish Archdruid",
+   "tags": [
+    "counter_engine",
+    "elf"
+   ],
+   "edhrec_pct": 52.74745954083553,
+   "edhrec_cat": "topcards",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "triggers_thranduil_etb": true,
+   "protected": [
+    "triggers_thranduil_draw"
    ],
    "is_protected": true
   },
@@ -855,6 +921,7 @@
     "{1}, {T}: Untap another target permanent."
    ],
    "gy_fuel": true,
+   "triggers_thranduil_etb": false,
    "protected": [
     "gy_fuel",
     "gy_inheritable_ability",
@@ -872,6 +939,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": true,
+   "triggers_thranduil_etb": false,
    "protected": [
     "gy_fuel"
    ],
@@ -887,6 +955,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "removal"
    ],
@@ -907,9 +976,11 @@
     "{3}{G}{G}: Creatures you control get +X/+X until end of turn, where X is the greatest power among creatures you control."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": true,
    "protected": [
     "finisher_repeatable",
-    "gy_inheritable_ability"
+    "gy_inheritable_ability",
+    "triggers_thranduil_draw"
    ],
    "is_protected": true
   },
@@ -926,6 +997,7 @@
     "{G}, {T}, Discard a creature card: Search your library for a creature card, reveal it, put it into your hand, then shuffle."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "gy_inheritable_ability",
     "tutor"
@@ -945,9 +1017,11 @@
     "{5}{U}{U}: Exile up to two other target nonland permanents you control. Return those cards to the battlefield under their owner's control at the beginning of the next end step."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": true,
    "protected": [
     "draw_engine",
-    "gy_inheritable_ability"
+    "gy_inheritable_ability",
+    "triggers_thranduil_draw"
    ],
    "is_protected": true
   },
@@ -965,9 +1039,11 @@
     "{2}{G}{G}{G}: Elf creatures you control get +3/+3 and gain trample until end of turn."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": true,
    "protected": [
     "finisher_repeatable",
-    "gy_inheritable_ability"
+    "gy_inheritable_ability",
+    "triggers_thranduil_draw"
    ],
    "is_protected": true
   },
@@ -985,6 +1061,7 @@
     "{T}: Put a +1/+1 counter on target creature for each Elf you control."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "gy_inheritable_ability"
    ],
@@ -1003,6 +1080,7 @@
     "{T}: Add {G}."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "gy_inheritable_ability",
     "ramp"
@@ -1023,6 +1101,7 @@
     "Put a -1/-1 counter on this creature: Untap this creature."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "gy_inheritable_ability",
     "ramp"
@@ -1040,6 +1119,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": true,
+   "triggers_thranduil_etb": false,
    "protected": [
     "gy_fuel",
     "tutor_gy"
@@ -1060,9 +1140,11 @@
     "{T}: Add an amount of {G} equal to Marwyn's power."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": true,
    "protected": [
     "gy_inheritable_ability",
-    "ramp"
+    "ramp",
+    "triggers_thranduil_draw"
    ],
    "is_protected": true
   },
@@ -1080,9 +1162,11 @@
     "{T}, Tap ten untapped Elves you control: Each opponent loses 10 life and you gain 10 life."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": true,
    "protected": [
     "finisher_drain",
-    "gy_inheritable_ability"
+    "gy_inheritable_ability",
+    "triggers_thranduil_draw"
    ],
    "is_protected": true
   },
@@ -1100,6 +1184,7 @@
     "{T}: Add {G} for each Elf on the battlefield."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "gy_inheritable_ability",
     "ramp"
@@ -1121,6 +1206,7 @@
     "{T}: Add {G} for each Elf you control."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "gy_inheritable_ability",
     "ramp"
@@ -1140,6 +1226,7 @@
     "{T}: Add {G}."
    ],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "gy_inheritable_ability",
     "ramp"
@@ -1156,6 +1243,7 @@
    "gy_inheritable_ability": false,
    "gy_inheritable_detail": [],
    "gy_fuel": false,
+   "triggers_thranduil_etb": false,
    "protected": [
     "ramp"
    ],
