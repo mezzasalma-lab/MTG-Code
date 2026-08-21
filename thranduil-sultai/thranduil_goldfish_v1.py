@@ -388,6 +388,18 @@ class GameState:
     blue_screw_turns: int = 0
     first_blue_screw_turn: Optional[int] = None
 
+    # Roaming Throne: "If a triggered ability of another creature you control of
+    # the chosen type triggers, it triggers an additional time." Premissa: sempre
+    # escolhe Elf (unica escolha sensata nesse deck - todo gatilho de criatura
+    # implementado aqui e de fonte Elfo). Dobra: gatilho da propria Thranduil
+    # (draw2/discard1), Beast Whisperer/Champions of the Perfect (draw ao
+    # conjurar criatura), Edric (draw por dano de combate), Lathril (tokens por
+    # dano de combate). NAO dobra Rhystic Study (nao e criatura).
+    roaming_throne_doublings: int = 0
+
+    def roaming_throne_active(self) -> bool:
+        return self.has("Roaming Throne")
+
     def draw(self, n=1, source="draw"):
         got = 0
         lich = self.has("Underrealm Lich")
@@ -586,6 +598,10 @@ def _creature_cast_engines_trigger(state: GameState, card: str, log: List[Dict])
     for eng in engines:
         state.draw(1, source=f"{eng} (creature cast trigger)")
         state.creature_engine_draws += 1
+        if state.roaming_throne_active():
+            state.draw(1, source=f"{eng} (Roaming Throne dobra)")
+            state.creature_engine_draws += 1
+            state.roaming_throne_doublings += 1
     if engines:
         log.append({"trigger": "creature_draw_engine", "card": card, "engines": engines, "turn": state.turn})
 
@@ -622,17 +638,24 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
     log.append({"action": "cast", "card": card, "turn": state.turn})
 
 def _apply_etb(state: GameState, card: str, log: List[Dict]):
-    # Gatilho do proprio Thranduil: elfo lendario entra -> compra 2, descarta 1
+    # Gatilho do proprio Thranduil: elfo lendario entra -> compra 2, descarta 1.
+    # Roaming Throne (Elf escolhido) faz o gatilho disparar uma vez A MAIS -
+    # e um segundo disparo completo (compra 2 + descarta 1 de novo), nao so
+    # dobrar os numeros de um disparo so.
     if state.commander_in_play and card != COMMANDER and C(card).is_legendary_elf:
-        state.draw(2, source="Thranduil ETB")
-        state.thranduil_legendary_elf_triggers += 1
-        if state.hand:
-            state.hand.sort(key=lambda c: -C(c).mv)
-            discarded = state.hand.pop(0)
-            state.graveyard.append(discarded)
-            if is_elf(discarded) and discarded != COMMANDER:
-                pass  # ja rastreado via mill() pra fontes de mill; descarte manual nao conta como "milhado"
-        log.append({"trigger": "thranduil_legendary_elf", "card": card, "turn": state.turn})
+        times = 2 if state.roaming_throne_active() else 1
+        for i in range(times):
+            state.draw(2, source="Thranduil ETB" if i == 0 else "Thranduil ETB (Roaming Throne dobra)")
+            state.thranduil_legendary_elf_triggers += 1
+            if i == 1:
+                state.roaming_throne_doublings += 1
+            if state.hand:
+                state.hand.sort(key=lambda c: -C(c).mv)
+                discarded = state.hand.pop(0)
+                state.graveyard.append(discarded)
+                if is_elf(discarded) and discarded != COMMANDER:
+                    pass  # ja rastreado via mill() pra fontes de mill; descarte manual nao conta como "milhado"
+        log.append({"trigger": "thranduil_legendary_elf", "card": card, "times": times, "turn": state.turn})
 
     if card == "Edric, Spymaster of Trest":
         state.edric_was_cast = True
@@ -702,7 +725,13 @@ def combat_step(state: GameState, log: List[Dict]):
         return
 
     if state.edric_in_play:
+        # Edric e Elfo - Roaming Throne dobra cada instancia do gatilho dele
+        # ("whenever A creature deals combat damage..." dispara 1x por criatura
+        # que conecta; cada disparo individual dispara uma vez a mais).
         n = len(creatures)
+        if state.roaming_throne_active():
+            n *= 2
+            state.roaming_throne_doublings += 1
         state.draw(n, source="Edric combat damage")
         state.combat_damage_draws += n
         log.append({"trigger": "edric_combat_draw", "turn": state.turn, "amount": n})
@@ -718,10 +747,16 @@ def combat_step(state: GameState, log: List[Dict]):
         # Thranduil Sindarin Liege) - nao rastreamos +1/+1 counters individuais neste simulador.
         anthem_bonus = sum(1 for c in state.battlefield if has_tag(c, "anthem"))
         lathril_power = 2 + anthem_bonus
-        for _ in range(lathril_power):
-            state.battlefield.append("Elf Warrior Token")
-        state.lathril_tokens_created += lathril_power
-        log.append({"trigger": "lathril_tokens", "turn": state.turn, "amount": lathril_power})
+        # Lathril e Elfo - Roaming Throne dispara o gatilho dela uma vez a mais
+        # (cria lathril_power tokens de novo, nao so dobra a contagem de uma vez so).
+        times = 2 if state.roaming_throne_active() else 1
+        if times == 2:
+            state.roaming_throne_doublings += 1
+        for _ in range(times):
+            for _ in range(lathril_power):
+                state.battlefield.append("Elf Warrior Token")
+            state.lathril_tokens_created += lathril_power
+        log.append({"trigger": "lathril_tokens", "turn": state.turn, "amount": lathril_power * times})
 
 # =========================================================
 # RHYSTIC STUDY (depende de spells de oponentes - ver premissas no topo do arquivo)
@@ -834,6 +869,8 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "edric_death_turn": state.edric_death_turn,
         "blue_screw_turns": state.blue_screw_turns,
         "first_blue_screw_turn": state.first_blue_screw_turn,
+        "roaming_throne_in_play": state.has("Roaming Throne"),
+        "roaming_throne_doublings": state.roaming_throne_doublings,
     }
 
 def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=71000):
@@ -900,6 +937,13 @@ def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=710
     if blue_screwed:
         fbs = [r["first_blue_screw_turn"] for r in blue_screwed]
         print(f"  Turno medio do 1o blue screw: {statistics.mean(fbs):.2f}")
+
+    rt_games = [r for r in results if r["roaming_throne_in_play"]]
+    if rt_games:
+        print()
+        print(f"Roaming Throne em campo em {100*len(rt_games)/n:.1f}% dos jogos (tipo escolhido: Elf)")
+        print(f"  Avg gatilhos de criatura Elfo dobrados por partida (Thranduil ETB, Edric, Beast Whisperer/Champions, Lathril): {statistics.mean([r['roaming_throne_doublings'] for r in rt_games]):.2f}")
+
     print()
     print(f"Logs salvos em: {out_jsonl}")
 

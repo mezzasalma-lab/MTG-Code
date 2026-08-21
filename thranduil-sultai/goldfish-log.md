@@ -143,6 +143,29 @@ Avg turnos com blue screw: 0,29 | 10,6% das partidas com pelo menos 1
 
 Números estáveis em relação à rodada anterior — a troca dessas 2 cartas específicas não muda o quadro geral, é o ajuste correto de uma leitura equivocada, não uma mudança estrutural.
 
+### Implementado — duplicação de gatilhos do Roaming Throne
+
+Você pediu pra implementar o efeito real do Roaming Throne (`"If a triggered ability of another creature you control of the chosen type triggers, it triggers an additional time"`) em vez de só ter ele como tag decorativa — e pediu que isso vire regra permanente pra qualquer deck futuro com essa carta (documentado em `references/goldfish-sim-card-rules.md` do skill mtg-commander).
+
+**Premissa:** tipo escolhido sempre "Elf" (única escolha sensata nesse deck — todo gatilho de criatura que já modelei tem fonte Elfo).
+
+**Implementado nos 4 gatilhos de criatura já existentes no simulador:**
+- Gatilho da própria Thranduil (elfo lendário entra → compra 2, descarta 1) — dispara uma **segunda vez completa** (compra 2 + descarta 1 de novo), não só dobra os números de um disparo.
+- Beast Whisperer / Champions of the Perfect (draw ao conjurar criatura) — compra dobrada por engine em campo.
+- Edric (draw por dano de combate) — cada instância do gatilho (uma por criatura que conecta) dispara de novo.
+- Lathril (tokens por dano de combate) — cria os tokens uma segunda vez.
+
+**Não dobra Rhystic Study** — não é criatura, então a cláusula do Roaming Throne não se aplica a ela.
+
+**Resultado (n=2000):**
+
+```
+Roaming Throne em campo em 11,2% dos jogos (tipo escolhido: Elf)
+Avg gatilhos de criatura Elfo dobrados por partida: 2,06
+```
+
+Só 11,2% dos jogos (1 carta em 99, compra é aleatória), mas quando ela resolve, dobra em média ~2 gatilhos de criatura por partida — consistente com o que já tinha argumentado sobre ela na discussão de corte (o interação com o próprio gatilho da Thranduil é real, não hipotética).
+
 ---
 
 ## Partida #1 — AAAA-MM-DD
