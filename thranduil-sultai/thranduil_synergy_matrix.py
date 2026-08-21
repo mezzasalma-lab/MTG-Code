@@ -81,7 +81,14 @@ def is_elf_type(type_line: str) -> bool:
     return "Elf" in (type_line or "")
 
 def mills_cards(oracle_text: str) -> bool:
-    return bool(oracle_text) and "mill" in oracle_text.lower()
+    """'Combustivel de GY' = qualquer efeito que bote cartas SUAS no cemiterio:
+    mill classico OU descartar carta(s) da propria mao. Ficou faltando o caso
+    de descarte na primeira versao (Formidable Speaker discarta, nao 'mill',
+    e passou batido)."""
+    if not oracle_text:
+        return False
+    t = oracle_text.lower()
+    return "mill" in t or "discard a card" in t or "discard up to" in t
 
 def build_matrix(deck_names, oracle_cache, edhrec):
     rows = []
@@ -146,10 +153,27 @@ def parse_decklist_names():
             names.append(m.group(1))
     return names
 
+# Candidatas a ADICAO em consideracao - precisam passar pelo MESMO crivo que
+# as cartas ja no deck, senao a avaliacao fica incompleta de novo (ja
+# aconteceu: avaliei o deck todo mas nunca rodei as candidatas por aqui).
+CANDIDATE_ADDITIONS = [
+    "Deadly Rollick", "Putrefy", "Feed the Swarm",
+    "Devoted Druid", "Imperious Perfect", "Formidable Speaker",
+]
+
 def main():
     oracle_cache = load_oracle()
     edhrec = load_edhrec()
     names = parse_decklist_names()
+
+    include_candidates = "--with-candidates" in sys.argv
+    if include_candidates:
+        for n in CANDIDATE_ADDITIONS:
+            if n not in sim.CARD_DB:
+                print(f"AVISO: {n} nao esta no CARD_DB do simulador, pulando (adicione antes de avaliar).")
+                continue
+        names = names + [n for n in CANDIDATE_ADDITIONS if n in sim.CARD_DB]
+
     rows = build_matrix(names, oracle_cache, edhrec)
     clusters = cluster_redundancy(rows)
 

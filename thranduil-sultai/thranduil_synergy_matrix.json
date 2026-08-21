@@ -196,6 +196,23 @@
    "is_protected": true
   },
   {
+   "name": "Feed the Swarm",
+   "tags": [
+    "removal",
+    "removal_enchantment"
+   ],
+   "edhrec_pct": null,
+   "edhrec_cat": null,
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "removal",
+    "removal_enchantment"
+   ],
+   "is_protected": true
+  },
+  {
    "name": "Awaken the Honored Dead",
    "tags": [
     "gy_fill",
@@ -209,6 +226,23 @@
    "protected": [
     "gy_fuel",
     "removal"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Putrefy",
+   "tags": [
+    "removal",
+    "removal_artifact"
+   ],
+   "edhrec_pct": 9.484380880692509,
+   "edhrec_cat": "instants",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "removal",
+    "removal_artifact"
    ],
    "is_protected": true
   },
@@ -295,6 +329,23 @@
    "is_protected": true
   },
   {
+   "name": "Deadly Rollick",
+   "tags": [
+    "removal",
+    "removal_exile"
+   ],
+   "edhrec_pct": 19.514490026345502,
+   "edhrec_cat": "instants",
+   "gy_inheritable_ability": false,
+   "gy_inheritable_detail": [],
+   "gy_fuel": false,
+   "protected": [
+    "removal",
+    "removal_exile"
+   ],
+   "is_protected": true
+  },
+  {
    "name": "Arbor Elf",
    "tags": [
     "elf",
@@ -362,8 +413,9 @@
    "gy_inheritable_detail": [
     "Discard a card: This creature gains indestructible until end of turn. Tap it. (Damage and effects that say \"destroy\" don't destroy it. If its toughness is 0 or less, it still dies.)"
    ],
-   "gy_fuel": false,
+   "gy_fuel": true,
    "protected": [
+    "gy_fuel",
     "gy_inheritable_ability",
     "protection"
    ],
@@ -715,6 +767,25 @@
    "is_protected": true
   },
   {
+   "name": "Imperious Perfect",
+   "tags": [
+    "anthem",
+    "elf",
+    "token_maker"
+   ],
+   "edhrec_pct": 49.36018065487392,
+   "edhrec_cat": "topcards",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{G}, {T}: Create a 1/1 green Elf Warrior creature token."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability"
+   ],
+   "is_protected": true
+  },
+  {
    "name": "Eladamri, Korvecdal",
    "tags": [
     "elf",
@@ -767,6 +838,27 @@
    "gy_fuel": false,
    "protected": [
     "gy_inheritable_ability"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Formidable Speaker",
+   "tags": [
+    "elf",
+    "gy_fill",
+    "tutor"
+   ],
+   "edhrec_pct": 54.29055325555138,
+   "edhrec_cat": "topcards",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{1}, {T}: Untap another target permanent."
+   ],
+   "gy_fuel": true,
+   "protected": [
+    "gy_fuel",
+    "gy_inheritable_ability",
+    "tutor"
    ],
    "is_protected": true
   },
@@ -909,6 +1001,26 @@
    "gy_inheritable_ability": true,
    "gy_inheritable_detail": [
     "{T}: Add {G}."
+   ],
+   "gy_fuel": false,
+   "protected": [
+    "gy_inheritable_ability",
+    "ramp"
+   ],
+   "is_protected": true
+  },
+  {
+   "name": "Devoted Druid",
+   "tags": [
+    "elf",
+    "ramp"
+   ],
+   "edhrec_pct": 70.66240120436582,
+   "edhrec_cat": "highsynergycards",
+   "gy_inheritable_ability": true,
+   "gy_inheritable_detail": [
+    "{T}: Add {G}.",
+    "Put a -1/-1 counter on this creature: Untap this creature."
    ],
    "gy_fuel": false,
    "protected": [
@@ -1068,7 +1180,8 @@
    "Priest of Titania",
    "Selvala, Heart of the Wilds",
    "Sol Ring",
-   "Wirewood Channeler"
+   "Wirewood Channeler",
+   "Devoted Druid"
   ],
   "counter_engine": [
    "Arwen, Weaver of Hope",
@@ -1083,13 +1196,17 @@
    "Deadly Rollick",
    "Feed the Swarm",
    "Putrefy",
-   "Trystan's Command"
+   "Trystan's Command",
+   "Deadly Rollick",
+   "Putrefy",
+   "Feed the Swarm"
   ],
   "gy_fill": [
    "Awaken the Honored Dead",
    "Buried Alive",
    "Lluwen, Imperfect Naturalist",
-   "Tyvar, Jubilant Brawler"
+   "Tyvar, Jubilant Brawler",
+   "Formidable Speaker"
   ],
   "creature_draw_engine": [
    "Beast Whisperer",
@@ -1120,6 +1237,7 @@
    "Jarad, Golgari Lich Lord"
   ],
   "removal_exile": [
+   "Deadly Rollick",
    "Deadly Rollick"
   ],
   "card_selection": [
@@ -1132,7 +1250,8 @@
    "Eladamri, Korvecdal"
   ],
   "anthem": [
-   "Elvish Archdruid"
+   "Elvish Archdruid",
+   "Imperious Perfect"
   ],
   "elf_scaling": [
    "Elvish Archdruid",
@@ -1148,14 +1267,17 @@
   "token_maker": [
    "Elvish Warmaster",
    "Lathril, Blade of the Elves",
-   "Lys Alana Huntmaster"
+   "Lys Alana Huntmaster",
+   "Imperious Perfect"
   ],
   "tutor": [
    "Fauna Shaman",
    "Finale of Devastation",
-   "Prime Speaker Vannifar"
+   "Prime Speaker Vannifar",
+   "Formidable Speaker"
   ],
   "removal_enchantment": [
+   "Feed the Swarm",
    "Feed the Swarm"
   ],
   "finisher_xspell": [
@@ -1202,6 +1324,7 @@
    "Selvala, Heart of the Wilds"
   ],
   "removal_artifact": [
+   "Putrefy",
    "Putrefy"
   ],
   "bounce_asymmetric": [
