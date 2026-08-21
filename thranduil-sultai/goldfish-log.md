@@ -58,6 +58,25 @@ Você perguntou se o Rhystic Study e as outras engines de draw estavam gerando c
 
 **Leitura, com ressalva:** o número do Edric (8,36 compras médias por partida) chama atenção — é alto até pros padrões reais desse card, que já é notoriamente forte em mesas largas. Isso provavelmente está inflado pela falta de bloqueadores/doença de invocação: na simulação, toda criatura conecta todo turno, o que não reflete uma mesa real onde oponentes bloqueiam ou removem o Edric assim que percebem o motor (é um alvo clássico de remoção prioritária). Trato esse número como teto otimista, não estimativa realista — mesma ressalva que já vale pro resto do motor de combate simplificado.
 
+### Correção — premissas validadas por você (Rhystic Study 50%, Edric ~2 turnos de vida)
+
+Você confirmou a taxa de 50% de pagamento do Rhystic Study (`ASSUMED_RHYSTIC_STUDY_PAY_RATE`, sem mudança de código, só deixou de ser "não validada" no comentário) e pediu pra assumir que o **Edric sobrevive em média 2 dos seus turnos** antes de ser removido — mesmo padrão de correção que já tínhamos aplicado no Managorger Hydra do Beorn.
+
+Implementado: quando Edric entra, sorteia um tempo de vida (`randint(1,3)`, média 2) via `ASSUMED_EDRIC_LIFESPAN_TURNS_MEAN = 2`; ao fim do combate do turno em que esse prazo estoura, ele sai do campo e para de gerar compra.
+
+**Re-execução com n=2000, seed independente:**
+
+| Métrica | Sem limite de vida do Edric | Com Edric removido (~2 turnos) |
+|---|---|---|
+| Avg compras via Edric (combate) | 8,36 | **2,30** |
+| Edric conjurada em X% dos jogos | (não rastreado) | 14,9% |
+| Edric removida antes do T8 | — | 88,6% dos jogos em que foi conjurada, turno médio de morte: 4,95 |
+| Avg extra draws (gatilhos, todas as engines somadas) | 14,12 | 9,11 |
+| Avg cartas descartadas por limite de mão | 6,38 | 1,89 |
+| % finisher ativado até T8 | 59,2% | 58,1% |
+
+O número do Edric caiu de 8,36 pra 2,30 — muito mais compatível com o padrão real do card numa mesa que remove agressivamente motores óbvios. A queda também arrastou pra baixo o total de "extra draws" (14,12→9,11) e o descarte por limite de mão (6,38→1,89), já que menos compra sobrando significa menos cartas excedentes.
+
 ---
 
 ## Partida #1 — AAAA-MM-DD

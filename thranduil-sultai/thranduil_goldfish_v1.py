@@ -287,7 +287,8 @@ DENSITY_ELF = 15 / 91  # ~15 elfos lendarios + varios outros elfos nao-lendarios
 # Premissas explicitas pra Rhystic Study (carta depende de spells de OPONENTES, que um goldfish solo
 # nao tem como observar de verdade - mesma limitacao estrutural do Managorger Hydra no Beorn):
 ASSUMED_OPPONENT_SPELLS_PER_TURN = 2   # reaproveitando a mesma premissa que voce ja validou pro Managorger Hydra
-ASSUMED_RHYSTIC_STUDY_PAY_RATE = 0.5   # premissa MINHA, nao validada por voce - fracao das vezes que o oponente paga o {1} pra evitar a compra
+ASSUMED_RHYSTIC_STUDY_PAY_RATE = 0.5   # validada por voce - fracao das vezes que o oponente paga o {1} pra evitar a compra
+ASSUMED_EDRIC_LIFESPAN_TURNS_MEAN = 2  # validada por voce - Edric sobrevive em media 2 dos seus turnos antes de ser removido (randint(1,3))
 
 def C(name: str) -> Card:
     return CARD_DB[name]
@@ -360,6 +361,13 @@ class GameState:
     rhystic_study_opportunities: int = 0
     rhystic_study_draws: int = 0
     rhystic_study_denied: int = 0
+
+    # Edric: alvo obvio de remocao assim que o motor liga - premissa explicita
+    # (pedida por voce): sobrevive em media 2 dos seus turnos antes de ser removido.
+    edric_was_cast: bool = False
+    edric_in_play: bool = False
+    edric_last_turn_alive: Optional[int] = None
+    edric_death_turn: Optional[int] = None
 
     def draw(self, n=1, source="draw"):
         got = 0
@@ -602,6 +610,15 @@ def _apply_etb(state: GameState, card: str, log: List[Dict]):
                 pass  # ja rastreado via mill() pra fontes de mill; descarte manual nao conta como "milhado"
         log.append({"trigger": "thranduil_legendary_elf", "card": card, "turn": state.turn})
 
+    if card == "Edric, Spymaster of Trest":
+        state.edric_was_cast = True
+        state.edric_in_play = True
+        # Premissa explicita (pedida por voce): sobrevive em media 2 dos seus turnos
+        # antes de cair pra remocao pontual - e alvo obvio assim que o motor liga.
+        lifespan = state.rng.randint(1, 2 * ASSUMED_EDRIC_LIFESPAN_TURNS_MEAN - 1)
+        state.edric_last_turn_alive = state.turn + lifespan - 1
+        log.append({"action": "edric_enters", "turn": state.turn, "assumed_lifespan_turns": lifespan})
+
     # GY fill (mill)
     if C(card).mill_amount > 0:
         state.mill(C(card).mill_amount)
@@ -658,11 +675,17 @@ def combat_step(state: GameState, log: List[Dict]):
     if not creatures:
         return
 
-    if state.has("Edric, Spymaster of Trest"):
+    if state.edric_in_play:
         n = len(creatures)
         state.draw(n, source="Edric combat damage")
         state.combat_damage_draws += n
         log.append({"trigger": "edric_combat_draw", "turn": state.turn, "amount": n})
+        if state.turn >= state.edric_last_turn_alive:
+            if "Edric, Spymaster of Trest" in state.battlefield:
+                state.battlefield.remove("Edric, Spymaster of Trest")
+            state.edric_death_turn = state.turn
+            state.edric_in_play = False
+            log.append({"action": "edric_removed", "turn": state.turn})
 
     if state.has("Lathril, Blade of the Elves"):
         # Poder da Lathril (base 2) + aproximacao dos anthems de Elfo em campo (Elvish Archdruid,
@@ -772,6 +795,8 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "rhystic_study_in_play": state.has("Rhystic Study"),
         "rhystic_study_draws": state.rhystic_study_draws,
         "rhystic_study_denied": state.rhystic_study_denied,
+        "edric_was_cast": state.edric_was_cast,
+        "edric_death_turn": state.edric_death_turn,
     }
 
 def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=71000):
@@ -814,6 +839,12 @@ def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=710
     print()
     print(f"Avg compras via Beast Whisperer/Champions of the Perfect (criatura conjurada): {avg('creature_engine_draws'):.2f}")
     print(f"Avg compras via Edric (dano de combate): {avg('combat_damage_draws'):.2f}")
+    edric_cast = [r for r in results if r["edric_was_cast"]]
+    if edric_cast:
+        edric_deaths = [r["edric_death_turn"] for r in edric_cast if r["edric_death_turn"] is not None]
+        print(f"  Edric conjurada em {100*len(edric_cast)/n:.1f}% dos jogos")
+        if edric_deaths:
+            print(f"  Removida por remocao (premissa de ~2 turnos vivos) em {100*len(edric_deaths)/len(edric_cast):.1f}% dos jogos em que foi conjurada, turno medio: {statistics.mean(edric_deaths):.2f}")
     print(f"Avg tokens de Elfo via Lathril (dano de combate): {avg('lathril_tokens_created'):.2f}")
     rs_games = [r for r in results if r["rhystic_study_in_play"]]
     if rs_games:
