@@ -35,7 +35,6 @@
 1 Elvish Warmaster
 1 Ezuri, Renegade Leader
 1 Fauna Shaman
-1 Feed the Swarm
 1 Finale of Devastation
 7 Forest
 1 Gilt-Leaf Palace
