@@ -295,6 +295,16 @@ class GameState:
     managorger_death_turn: Optional[int] = None
     managorger_was_cast: bool = False
 
+    # Roaming Throne: "If a triggered ability of another creature you control of
+    # the chosen type triggers, it triggers an additional time." Premissa: tipo
+    # escolhido sempre "Bear" (unica escolha sensata nesse deck). A propria Beorn
+    # e do tipo Bear (Legendary Creature - Bear Shapeshifter Warrior), entao o
+    # proprio gatilho de combate dela (converte criatura em Urso + checa 3+ Ursos)
+    # dispara uma segunda vez completa quando o Roaming Throne esta em campo.
+    # Regra permanente pra qualquer simulador com essa carta: ver
+    # references/goldfish-sim-card-rules.md
+    roaming_throne_doublings: int = 0
+
     # Germination Practicum: "Put two +1/+1 counters on each creature you control."
     # Paradigm: recast de graca do exilio no inicio de cada primeiro main phase seu, a partir do turno seguinte.
     germination_practicum_active: bool = False
@@ -317,6 +327,9 @@ class GameState:
 
     def has(self, name: str) -> bool:
         return name in self.battlefield
+
+    def roaming_throne_active(self) -> bool:
+        return self.has("Roaming Throne")
 
     def cleanup_hand_size(self):
         if self.has("Reliquary Tower") or self.has("Thought Vessel"):
@@ -594,17 +607,25 @@ def combat_step(state: GameState, log: List[Dict]):
 
     if not state.commander_in_play:
         return
-    creatures_not_bear = [c for c in state.battlefield if is_creature(c) and not (has_tag(c,"bear") or has_tag(c,"bear_type") or has_tag(c,"changeling"))]
-    if creatures_not_bear:
-        target = max(creatures_not_bear, key=lambda c: C(c).mv)
-        state.bear_count += 1
-        state.beorn_combat_triggers += 1
-        log.append({"trigger":"Beorn combat","made_bear":target})
 
-    if state.bear_count >= 3:
-        state.draw(2, source="Beorn 3+ Bears")
-        state.beorn_bear_draws += 1
-        log.append({"trigger":"Beorn draw2","bear_count":state.bear_count})
+    # Beorn e do tipo Bear - Roaming Throne (tipo escolhido: Bear) dispara o
+    # gatilho de combate dela uma segunda vez completa (converte outra criatura
+    # em Urso, recheca 3+ Ursos de novo). Ver references/goldfish-sim-card-rules.md.
+    times = 2 if state.roaming_throne_active() else 1
+    if times == 2:
+        state.roaming_throne_doublings += 1
+    for _ in range(times):
+        creatures_not_bear = [c for c in state.battlefield if is_creature(c) and not (has_tag(c,"bear") or has_tag(c,"bear_type") or has_tag(c,"changeling"))]
+        if creatures_not_bear:
+            target = max(creatures_not_bear, key=lambda c: C(c).mv)
+            state.bear_count += 1
+            state.beorn_combat_triggers += 1
+            log.append({"trigger":"Beorn combat","made_bear":target})
+
+        if state.bear_count >= 3:
+            state.draw(2, source="Beorn 3+ Bears")
+            state.beorn_bear_draws += 1
+            log.append({"trigger":"Beorn draw2","bear_count":state.bear_count})
 
 # =========================================================
 # TURN STRUCTURE
@@ -703,6 +724,8 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "genji_glove_cast": state.genji_glove_in_play,
         "genji_glove_equipped": state.genji_glove_equipped,
         "genji_glove_equipped_turn": state.genji_glove_equipped_turn,
+        "roaming_throne_in_play": state.has("Roaming Throne"),
+        "roaming_throne_doublings": state.roaming_throne_doublings,
     }
 
 def run_batch(n=500, turns=8, out_jsonl="beorn_v1_runs.jsonl", seed_base=91000):
@@ -772,6 +795,13 @@ def run_batch(n=500, turns=8, out_jsonl="beorn_v1_runs.jsonl", seed_base=91000):
 
     print(f"Avg mao final: {avg('hand_size'):.2f}")
     print(f"Avg terrenos jogados: {avg('lands_played_total'):.2f}")
+
+    rt_games = [r for r in results if r["roaming_throne_in_play"]]
+    if rt_games:
+        print()
+        print(f"Roaming Throne em campo em {100*len(rt_games)/n:.1f}% dos jogos (tipo escolhido: Bear)")
+        print(f"  Avg gatilhos de combate da Beorn dobrados por partida: {statistics.mean([r['roaming_throne_doublings'] for r in rt_games]):.2f}")
+
     print()
     print(f"Logs salvos em: {out_jsonl}")
 

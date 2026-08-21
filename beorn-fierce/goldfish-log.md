@@ -334,6 +334,21 @@ Atacantes disponíveis: Beorn, Craterhoof, Toski, token Bear, Birds of Paradise,
 
 ---
 
+### Implementado — duplicação de gatilhos do Roaming Throne (tipo Bear)
+
+Mesma regra permanente aplicada no Thranduil (pedido do usuário: implementar de verdade em qualquer deck com essa carta, documentado em `references/goldfish-sim-card-rules.md`). Roaming Throne estava só com a tag `"double_trigger"`, sem lógica nenhuma.
+
+**Premissa:** tipo escolhido sempre "Bear" — a própria Beorn é `Legendary Creature — Bear Shapeshifter Warrior`, então o próprio gatilho de combate dela (converte criatura em Urso, depois checa 3+ Ursos → compra 2) dispara **uma segunda vez completa** quando o Roaming Throne está em campo: converte outra criatura, recheca a contagem de Ursos de novo (podendo disparar o "compre 2" duas vezes no mesmo combate).
+
+**Resultado (n=2000):**
+
+```
+Roaming Throne em campo em 21,4% dos jogos (tipo escolhido: Bear)
+Avg gatilhos de combate da Beorn dobrados por partida: 3,44
+```
+
+---
+
 <!-- Para novas partidas avulsas, use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

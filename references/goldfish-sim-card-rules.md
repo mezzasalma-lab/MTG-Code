@@ -43,10 +43,18 @@ triggers, it triggers an additional time."*
 - Rastrear e reportar uma métrica agregada de "quantos gatilhos foram
   dobrados" pra medir o impacto real nos resultados do goldfish.
 
-**Referência de implementação:** `thranduil-sultai/thranduil_goldfish_v1.py`
-no repositório de decks do usuário — função `roaming_throne_active()` no
-`GameState`, aplicada em `_apply_etb`, `_creature_cast_engines_trigger` e
-`combat_step`.
+**Referência de implementação:**
+- `thranduil-sultai/thranduil_goldfish_v1.py` (tipo escolhido: Elf) — função
+  `roaming_throne_active()` no `GameState`, aplicada em `_apply_etb`,
+  `_creature_cast_engines_trigger` e `combat_step`.
+- `beorn-fierce/beorn_goldfish_v1.py` (tipo escolhido: Bear, já que a própria
+  Beorn e `Legendary Creature — Bear Shapeshifter Warrior`) — mesmo padrão de
+  `roaming_throne_active()`, aplicado em `combat_step` dobrando o próprio
+  gatilho de combate da Beorn (converte criatura em Urso + checa 3+ Ursos).
+
+**Nota geral:** o tipo escolhido pelo Roaming Throne é sempre o tema tribal
+central do deck (Elf, Bear, o que for) — quase nunca ambíguo na prática.
+Documentar a premissa no código se não for óbvio olhando a decklist.
 
 ---
 
