@@ -126,6 +126,23 @@ Aplicada a troca real de remoção (ver auditoria — Chaos Warp/Vindicate da su
 
 A remoção mais que dobrou (0,52→1,11), como esperado — as 3 cartas cortadas não competiam por essa função. A taxa de finisher caiu um pouco (42,5%→38,4%) porque as peças cortadas tinham algum valor de desenvolvimento/draw que ajudava indiretamente a montar o board mais rápido; é uma troca real (mais interação, um pouco menos de velocidade pra fechar), não um erro de modelagem.
 
+### Correção — Agatha's Soul Cauldron e Oversold Cemetery voltaram (leitura errada sobre GY revertida)
+
+O corte dos dois acima usou uma leitura errada: "dependem do volume de Elfos na GY, que é baixo". Falso nos dois casos — Agatha's Soul Cauldron exila carta de **qualquer** cemitério (hate real, não GY-payoff próprio), e Oversold Cemetery só pede 4+ **criaturas** na GY, não Elfos especificamente (Buried Alive sozinho já bate isso). Detalhe completo em `auditoria.md` seção 6.
+
+Voltaram pro deck no lugar de **Eclipsed Elf** e **Lys Alana Huntmaster** (cortes que sobreviveram a toda a matriz de sinergia mecânica — `thranduil_synergy_matrix.py` — sem nenhuma função protegida, sem habilidade herdável pela Thranduil, sem presença no EDHREC).
+
+**Re-execução com n=2000, lista corrigida (Agatha's Soul Cauldron + Oversold Cemetery de volta, Eclipsed Elf + Lys Alana Huntmaster fora):**
+
+```
+Avg commander cast turn: 4,42 | por T5: 79,1% | por T6: 85,2%
+Avg remoção conjurada: 1,12 | Avg ramp em campo: 2,91
+Avg finishers ativados: 0,98 | 41,9% dos jogos até T8
+Avg turnos com blue screw: 0,29 | 10,6% das partidas com pelo menos 1
+```
+
+Números estáveis em relação à rodada anterior — a troca dessas 2 cartas específicas não muda o quadro geral, é o ajuste correto de uma leitura equivocada, não uma mudança estrutural.
+
 ---
 
 ## Partida #1 — AAAA-MM-DD

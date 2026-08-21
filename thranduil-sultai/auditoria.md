@@ -81,8 +81,8 @@ Adequado, mas depende bastante de gatilhos (criar criatura, dano de combate) —
 
 **Correção do original:** esta seção recomendava trocar cartas por "Beast Within, Chaos Warp, Vindicate, Deadly Rollick". Chaos Warp (`{2}{R}`) e Vindicate (`{1}{W}{B}`) **não são Sultai** — nem sequer legais na identidade de cor B/G/U do Thranduil. Erro do texto original, verificado via `color_identity` do Scryfall antes de aplicar qualquer troca.
 
-**Troca real aplicada** (0,52 → **1,11** remoção conjurada em média, confirmado nos 2000 goldfishes):
-- **Cortadas:** Agatha's Soul Cauldron, Oversold Cemetery, Harmonized Crescendo — as três eram peças de valor lento/condicional com baixo impacto direto, e duas delas dependiam de volume de criaturas na GY que os próprios goldfishes mostraram ser baixo (~1 Elfo milhado por partida em média — ver seção 10 revisada).
+**Troca real aplicada, primeira versão** (0,52 → **1,11** remoção conjurada em média, confirmado nos 2000 goldfishes):
+- **Cortadas:** Agatha's Soul Cauldron, Oversold Cemetery, Harmonized Crescendo.
 - **Adicionadas** (verificadas via Scryfall, todas legais em B/G/U):
   - **Deadly Rollick** (`{3}{B}`, ou `{1}{B}` se você controla um comandante — quase sempre o caso): `Exile target creature.`
   - **Putrefy** (`{1}{B}{G}`): `Destroy target artifact or creature.` — cobre a lacuna de remoção de artefato.
@@ -94,7 +94,13 @@ Adequado, mas depende bastante de gatilhos (criar criatura, dano de combate) —
 | Edict repetível | Ruthless Winnower (stax leve, edict toda upkeep) | 1 |
 | Wipe assimétrico | Kindred Dominance (destrói tudo que não é do tipo escolhido), Raise the Palisade (bounce assimétrico) | 2 |
 
-**Total real: 9 efeitos** — agora dentro da faixa recomendada (8–10) pra Bracket 3–4. Ainda não há remoção dedicada de planeswalker, mas artefato e encantamento (as duas lacunas mais gritantes) estão cobertos agora.
+**Total real: 9 efeitos** — dentro da faixa recomendada (8–10) pra Bracket 3–4. Ainda não há remoção dedicada de planeswalker, mas artefato (Putrefy) está coberto. Glissa Sunslayer também cobre encantamento (via modal de dano de combate, condicional) — o que soltou a justificativa original do Feed the Swarm.
+
+**Correção — Agatha's Soul Cauldron e Oversold Cemetery voltaram pro deck.** Os dois foram cortados na versão acima com uma leitura errada: ambos dependiam supostamente do volume de *Elfos* na GY (que é baixo, ~0,7-1,0/partida). Isso está errado nos dois casos:
+- **Agatha's Soul Cauldron** — `"{T}: Exile target card from a graveyard"` não exige que seja SEU cemitério nem que seja Elfo — é hate de cemitério real contra qualquer oponente, independente da densidade de Elfos.
+- **Oversold Cemetery** — `"if you have four or more CREATURE cards in your graveyard"` não exige Elfo, só criaturas (qualquer tipo). Buried Alive sozinho já manda 3 pro cemitério de um golpe.
+
+**Cortes reais que entraram no lugar delas:** Eclipsed Elf (seleção de carta pontual, sem sinergia de GY, sem habilidade herdável pela Thranduil) e Lys Alana Huntmaster (token maker redundante com Elvish Warmaster/Lathril, dominado estritamente por Imperious Perfect se ela entrar — ver seção 12). Total ainda 99 cartas + comandante.
 
 ---
 

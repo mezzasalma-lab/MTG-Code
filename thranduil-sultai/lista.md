@@ -6,6 +6,7 @@
 
 ## Deck
 
+1 Agatha's Soul Cauldron
 1 Allosaurus Shepherd
 1 Arbor Elf
 1 Arwen, Weaver of Hope
@@ -23,7 +24,6 @@
 1 Deathcap Glade
 1 Deadly Rollick
 1 Dionus, Elvish Archdruid
-1 Eclipsed Elf
 1 Eclipsed Realms
 1 Edric, Spymaster of Trest
 1 Eladamri, Korvecdal
@@ -55,12 +55,12 @@
 1 Llanowar Elves
 1 Llanowar Wastes
 1 Lluwen, Imperfect Naturalist
-1 Lys Alana Huntmaster
 1 Malakir Rebirth
 1 Maralen, Fae Ascendant
 1 Marwyn, the Nurturer
 1 Nurturing Peatland
 1 Overgrown Tomb
+1 Oversold Cemetery
 1 Priest of Titania
 1 Prime Speaker Vannifar
 1 Putrefy
