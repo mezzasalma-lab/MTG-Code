@@ -62,6 +62,42 @@ Earthbend por fonte (soma das 2000 partidas):
 - **Kodama of the East Tree quase nunca encontra o próprio gatilho (0,01/jogo)** — não é bug (conferido manualmente): ele só entra em ~9,6% dos jogos (6 mana, cópia única em 99 cartas) e, quando entra, a política gananciosa do simulador (conjura tudo que dá pra pagar, mais barato primeiro) já costuma ter esvaziado a mão de cartas baratas o bastante pra ele aproveitar. Achado honesto de baixo valor prático dentro do perfil de jogo modelado.
 - **Comandante conjurada em média no turno 2,61** (mediana 2) e só 3,6% dos jogos nunca resolvem ela em 8 turnos — a curva de 3 mana da Toph é rápida de bater mesmo sem ramp dedicado a ela especificamente.
 
+---
+
+### Análise: recorrência/reutilização de artefatos via earthbend (Motor #16) — 2026-08-22
+
+**Pedido do usuário:** avaliar especificamente as recorrências e reutilizações de artefatos pelo earthbend da Toph — o motor central que a auditoria (seção 4, item 16) descreve.
+
+**Achado inicial (batch #1 acima), antes de qualquer mudança:** dos 398 eventos de recorrência via Motor#16 em 2000 partidas, **zero** foram Stasis Coffin, Ichor Wellspring ou Unstable Obelisk — exatamente as 3 cartas que o motor foi desenhado pra reciclar. Rastreei os nomes reais de cada evento: os 398 eram todos terrenos comuns (Forest, Mountain, Inventors' Fair, Urza's Saga, etc.), pegos incidentalmente pelo sacrifício em lote do Planar Engineering (2 terrenos aleatórios da ordem do campo), nunca as 3 cartas-alvo.
+
+**Causa raiz:** `best_earthbend_target()` já priorizava earthbendar essas 3 cartas quando disponíveis, mas o `main_phase` nunca **ativava** de fato as habilidades de sacrifício delas (Unstable Obelisk `{7},{T},Sacrifice: Destroy target permanent`, The Stasis Coffin `{2},{T},Exile: gain protection`, ou sacrificar a Ichor Wellspring via Krark-Clan Ironworks). Earthbendadas, elas só ficavam paradas em campo — sem morrer, o Motor#16 nunca tinha o que reciclar.
+
+**Correção — `RECURRING_ARTIFACT_POLICY`:** implementei `work_recurring_artifact_loop()`, chamada no `main_phase` quando o flag está ativo — ativa o Unstable Obelisk earthbendado se houver `{7}` sobrando, ativa a The Stasis Coffin earthbendada se houver `{2}` sobrando, e sacrifica Ichor Wellspring/Mishra's Bauble earthbendadas pro Krark-Clan Ironworks quando ele está em campo. Testado em 20.000 partidas com timeout antes do batch oficial (0 erros).
+
+**n=2000, mesmas seeds, comparando baseline (passivo) vs política (ativa de verdade):**
+
+| Métrica | Baseline (passivo) | Política (ativa) |
+|---|---|---|
+| Avg recorrências via Motor#16 | 0,199 | **0,738** |
+| % de jogos com pelo menos 1 recorrência | 11,1% | **29,2%** |
+| Stasis Coffin reciclada (total em 2000 jogos) | 0 | **515** |
+| Ichor Wellspring reciclada (total) | 0 | **66** |
+| Unstable Obelisk reciclada (total) | 0 | **430** |
+| Avg ativações do Unstable Obelisk | — | 0,215 |
+| Avg ativações da The Stasis Coffin | — | 0,258 |
+| Avg sacrifícios via Krark-Clan Ironworks | — | 0,068 |
+| Turno médio de conjuração da comandante | 2,608 | 2,608 (idêntico) |
+| Avg aplicações de earthbend | 7,92 | 7,93 (idêntico) |
+| Avg vida ganha | 0,23 | 0,23 (idêntico) |
+| Avg tokens criados | 9,52 | **11,86** |
+| Avg cartas compradas extra | 1,43 | **1,57** |
+| Avg mana extra gerado (landfall + KCI) | 1,15 | **1,42** |
+| Avg realocações via The Ozolith | 0,03 | **0,10** |
+
+**Leitura:** a política deliberada **triplica** a taxa real de recorrência (11,1%→29,2% dos jogos) sem custo medido em nenhuma métrica de curva (turno da comandante e volume de earthbend ficam idênticos — ativar Obelisk/Coffin não compete de forma visível com o resto do plano de jogo). Tem ainda um efeito colateral positivo não óbvio: cada recorrência via Motor#16 é uma nova entrada em campo, ou seja, **dispara landfall de novo** — isso é o que explica os ganhos simultâneos em tokens (+24,6%), draw extra (+9,8%) e mana extra (+23,5%): reciclar um artefato earthbendado realimenta o resto do motor de landfall do deck, não é um ganho isolado.
+
+**Conclusão prática:** o Motor#16 é real e funciona exatamente como a auditoria descreveu, mas **só se o jogador ativamente sacrificar as cartas earthbendadas em vez de guardá-las** — jogar passivo (earthbendar e deixar parado) desperdiça quase toda a sinergia. Isso vira a linha de jogo recomendada pra mesa: earthbend prioriza Stasis Coffin/Ichor Wellspring/Unstable Obelisk quando disponíveis, e a resposta certa depois é **usar a habilidade delas assim que earthbendadas**, não guardar como ameaça. `RECURRING_ARTIFACT_POLICY` foi promovida a default (`True`) no script a partir desta análise.
+
 **Simplificações documentadas no docstring do script** (não inventadas, omissões explícitas): sem combate real contra oponente (nenhuma criatura adversária, nenhum bloqueio — "atacar" só dispara gatilhos de ataque, não há dano/vida de oponente real); Esper Sentinel/Skullclamp/Sword of Feast and Famine/Talon Gates/Krang/Council's Judgment/Lightning Greaves/Heroic Intervention não têm efeito numérico solo simulado (dependem de oponente real); modelo de mana genérico (mana total, não pip a pip — o deck tem fixing extenso e documentado); habilidades de lealdade do Wrenn and Realmbreaker além da estática de fixing não são ativadas automaticamente.
 
 ---

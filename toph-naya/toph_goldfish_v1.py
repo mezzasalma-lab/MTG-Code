@@ -54,6 +54,14 @@ import statistics
 from dataclasses import dataclass, field
 from typing import Optional
 
+# Politica opcional: ativar de verdade as habilidades de sacrificio das
+# cartas earthbend-recorrentes (Motor #16), em vez de so earthbenda-las e
+# deixa-las paradas. Testada contra o baseline passivo em 2026-08-22 (ver
+# goldfish-log.md): triplica a taxa de recorrencia real (11,1%->29,2% dos
+# jogos) sem custo medido em curva/earthbend/vida — default True.
+RECURRING_ARTIFACT_POLICY = True
+RECURRING_TARGETS = ("The Stasis Coffin", "Unstable Obelisk", "Ichor Wellspring", "Mishra's Bauble")
+
 
 # ---------------------------------------------------------------------------
 # Card database
@@ -269,6 +277,9 @@ class GameState:
     ozolith_moves: int = 0
     tokens_created: int = 0
     scute_swarm_cap_hits: int = 0
+    obelisk_activations: int = 0
+    coffin_activations: int = 0
+    kci_sacrifices_of_recurring: int = 0
     commander_cast_turn: Optional[int] = None
     first_pw_ish_turn: Optional[int] = None  # not used, placeholder for parity
 
@@ -816,6 +827,44 @@ def main_phase(state: GameState, log: list):
     if kci:
         pass  # nao usado agressivamente — nao ha spell caro o suficiente pra justificar sacrificar valor
 
+    if RECURRING_ARTIFACT_POLICY:
+        work_recurring_artifact_loop(state, log)
+
+
+def work_recurring_artifact_loop(state: GameState, log: list):
+    """Motor #16 de verdade: earthbenda as cartas-alvo (ja priorizado por
+    best_earthbend_target) E ativa a habilidade de sacrificio delas quando
+    tiver a flag de retorno — sem isso elas so ficam paradas em campo."""
+
+    obelisk = next((p for p in state.battlefield if p.card.name == "Unstable Obelisk"
+                     and not p.tapped and p.earthbend_return), None)
+    if obelisk and remaining_mana(state) >= 7:
+        spend_mana(state, 7)
+        obelisk.tapped = True
+        state.obelisk_activations += 1
+        log.append("  [Unstable Obelisk] ativa (destroy target permanent) e e sacrificada")
+        leave_battlefield(state, obelisk, log)
+
+    coffin = next((p for p in state.battlefield if p.card.name == "The Stasis Coffin"
+                    and not p.tapped and p.earthbend_return), None)
+    if coffin and remaining_mana(state) >= 2:
+        spend_mana(state, 2)
+        coffin.tapped = True
+        state.coffin_activations += 1
+        log.append("  [The Stasis Coffin] ativa (protecao ate o proximo turno) e e exilada")
+        leave_battlefield(state, coffin, log)
+
+    kci = next((p for p in state.battlefield if p.card.name == "Krark-Clan Ironworks" and not p.tapped), None)
+    if kci:
+        sac_target = next((p for p in state.battlefield
+                            if p.card.name in ("Ichor Wellspring", "Mishra's Bauble")
+                            and p.earthbend_return), None)
+        if sac_target:
+            state.kci_sacrifices_of_recurring += 1
+            log.append(f"  [Krark-Clan Ironworks] sacrifica {sac_target.card.name} (earthbendada) por {{C}}{{C}}")
+            leave_battlefield(state, sac_target, log)
+            state.mana_generated_extra += 2
+
 
 def combat_step(state: GameState, log: list):
     attackers = [p for p in state.battlefield if is_creature_type(p, state) and p.entered_turn < state.turn]
@@ -928,8 +977,11 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     ashaya_rate = 100 * sum(1 for s in states if s.ashaya_in_play) / n
     life_gained = avg([s.life_gained for s in states])
     scute_cap = sum(s.scute_swarm_cap_hits for s in states)
+    obelisk_act = avg([s.obelisk_activations for s in states])
+    coffin_act = avg([s.coffin_activations for s in states])
+    kci_sac = avg([s.kci_sacrifices_of_recurring for s in states])
 
-    print(f"n={n}, seed_base={seed_base}, turns={turns}")
+    print(f"n={n}, seed_base={seed_base}, turns={turns}, RECURRING_ARTIFACT_POLICY={RECURRING_ARTIFACT_POLICY}")
     print(f"Avg mulligans: {mulls:.2f}")
     print(f"Turno medio de conjuracao da Toph: {avg(cmd_turn):.2f} | mediana: {statistics.median(cmd_turn) if cmd_turn else float('nan'):.1f}")
     print(f"Nunca conjurada em {turns} turnos: {cmd_never:.1f}%")
@@ -948,6 +1000,9 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"% de jogos com Ashaya em campo: {ashaya_rate:.1f}%")
     print(f"Avg vida ganha (Inventors' Fair/Haywire Mite/Sylvan Library liquido): {life_gained:.2f}")
     print(f"Total de vezes que o cap defensivo da Scute Swarm foi atingido (200+ permanentes): {scute_cap}")
+    print(f"Avg ativacoes do Unstable Obelisk (earthbendado): {obelisk_act:.3f}")
+    print(f"Avg ativacoes do The Stasis Coffin (earthbendado): {coffin_act:.3f}")
+    print(f"Avg sacrificios via Krark-Clan Ironworks de artefato earthbendado: {kci_sac:.3f}")
 
     # breakdown de fontes de earthbend
     combined = {}
