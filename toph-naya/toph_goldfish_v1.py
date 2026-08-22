@@ -62,6 +62,17 @@ from typing import Optional
 RECURRING_ARTIFACT_POLICY = True
 RECURRING_TARGETS = ("The Stasis Coffin", "Unstable Obelisk", "Ichor Wellspring", "Mishra's Bauble")
 
+# Qual permanente o earthbend mira primeiro. "narrow" = so as 4 cartas com
+# habilidade de sacrificio propria valiosa (RECURRING_TARGETS). "broad_artifact"
+# = qualquer um dos 26 artefatos nao-token da lista, ja que QUALQUER artefato
+# earthbendado pode ser sacrificado pro Krark-Clan Ironworks e voltar de graca
+# via Motor #16 (2 mana "gratis" de tempo, sem perder o permanente). "land_only"
+# = earthbend nunca mira artefato, so terreno real (controle/contraste).
+# Testado em 2026-08-22 (goldfish-log.md): broad_artifact domina narrow e
+# land_only em toda metrica (recorrencia, mana extra, draw, tokens) sem custo
+# medido em curva — default.
+EARTHBEND_TARGET_POLICY = "broad_artifact"
+
 
 # ---------------------------------------------------------------------------
 # Card database
@@ -280,6 +291,7 @@ class GameState:
     obelisk_activations: int = 0
     coffin_activations: int = 0
     kci_sacrifices_of_recurring: int = 0
+    kci_sacrifices_broad: int = 0
     commander_cast_turn: Optional[int] = None
     first_pw_ish_turn: Optional[int] = None  # not used, placeholder for parity
 
@@ -513,16 +525,36 @@ def gain_life(state: GameState, n: int, log: list, source: str = ""):
 
 
 def best_earthbend_target(state: GameState) -> Optional[Permanent]:
-    """Prioriza: (1) artefato com gatilho de morte valioso ainda sem a flag
-    de retorno (monta o Motor #16), (2) terreno normal ainda nao earthbendado,
-    (3) qualquer terreno."""
-    priority_names = {"The Stasis Coffin", "Ichor Wellspring", "Unstable Obelisk", "Mishra's Bauble"}
+    """Prioridade depende de EARTHBEND_TARGET_POLICY:
+    - narrow: so RECURRING_TARGETS (4 cartas com ability de sacrificio propria).
+    - broad_artifact: RECURRING_TARGETS primeiro, depois QUALQUER um dos 26
+      artefatos nao-token (podem virar mana via Krark-Clan Ironworks e voltar
+      de graca pelo Motor #16), depois terreno comum.
+    - land_only: nunca mira artefato, so terreno real (controle).
+    Fallback final em qualquer politica: terreno normal ainda nao
+    earthbendado, senao qualquer terreno."""
     candidates = [p for p in state.battlefield if is_land(p, state)]
     if not candidates:
         return None
+
+    if EARTHBEND_TARGET_POLICY == "land_only":
+        real_lands_fresh = [p for p in candidates if p.card.ctype == "land" and not p.earthbent]
+        if real_lands_fresh:
+            return real_lands_fresh[0]
+        fresh = [p for p in candidates if not p.earthbent]
+        return fresh[0] if fresh else candidates[0]
+
     for p in candidates:
-        if p.card.name in priority_names and not p.earthbend_return:
+        if p.card.name in RECURRING_TARGETS and not p.earthbend_return:
             return p
+
+    if EARTHBEND_TARGET_POLICY == "broad_artifact":
+        other_artifacts = [p for p in candidates
+                            if p.card.ctype in ARTIFACT_ISH and not p.is_token
+                            and not p.earthbent and p.card.name not in RECURRING_TARGETS]
+        if other_artifacts:
+            return other_artifacts[0]
+
     fresh = [p for p in candidates if not p.earthbent]
     if fresh:
         return fresh[0]
@@ -859,6 +891,15 @@ def work_recurring_artifact_loop(state: GameState, log: list):
         sac_target = next((p for p in state.battlefield
                             if p.card.name in ("Ichor Wellspring", "Mishra's Bauble")
                             and p.earthbend_return), None)
+        if sac_target is None and EARTHBEND_TARGET_POLICY == "broad_artifact":
+            # Qualquer outro artefato nao-token earthbendado tambem serve —
+            # volta de graca pelo Motor #16, entao virar 2 mana dele nao
+            # custa o permanente de verdade, so tempo (volta tapped).
+            sac_target = next((p for p in state.battlefield
+                                if p.card.ctype in ARTIFACT_ISH and not p.is_token
+                                and p.earthbend_return), None)
+            if sac_target is not None:
+                state.kci_sacrifices_broad += 1
         if sac_target:
             state.kci_sacrifices_of_recurring += 1
             log.append(f"  [Krark-Clan Ironworks] sacrifica {sac_target.card.name} (earthbendada) por {{C}}{{C}}")

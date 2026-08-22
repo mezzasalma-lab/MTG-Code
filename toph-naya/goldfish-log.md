@@ -98,6 +98,66 @@ Earthbend por fonte (soma das 2000 partidas):
 
 **Conclusão prática:** o Motor#16 é real e funciona exatamente como a auditoria descreveu, mas **só se o jogador ativamente sacrificar as cartas earthbendadas em vez de guardá-las** — jogar passivo (earthbendar e deixar parado) desperdiça quase toda a sinergia. Isso vira a linha de jogo recomendada pra mesa: earthbend prioriza Stasis Coffin/Ichor Wellspring/Unstable Obelisk quando disponíveis, e a resposta certa depois é **usar a habilidade delas assim que earthbendadas**, não guardar como ameaça. `RECURRING_ARTIFACT_POLICY` foi promovida a default (`True`) no script a partir desta análise.
 
+---
+
+### Análise: política de earthbend-target em TODOS os 26 artefatos — 2026-08-22
+
+**Pedido do usuário:** a análise anterior só priorizava earthbend em 4 cartas específicas (Stasis Coffin, Unstable Obelisk, Ichor Wellspring, Mishra's Bauble). Testar com **todos os 26 artefatos não-token** da lista como alvo possível, não só essas 4.
+
+**Raciocínio:** qualquer um dos 26 artefatos, uma vez virado terreno pela Toph e earthbendado, pode ser sacrificado pro Krark-Clan Ironworks por `{C}{C}` e voltar de graça pelo Motor #16 — o permanente nunca é perdido de verdade, só volta tapped (perde 1 turno de uso). Isso generaliza o motor #16 muito além das 4 cartas com "gatilho de morte" óbvio.
+
+**Implementação:** `EARTHBEND_TARGET_POLICY` com 3 modos — `narrow` (só as 4 cartas, era o default anterior), `broad_artifact` (as 4 primeiro, depois qualquer um dos 26 artefatos não-token), `land_only` (nunca mira artefato, controle/contraste). `work_recurring_artifact_loop()` estendida: se não há alvo das 4 cartas especiais disponível pro Krark-Clan Ironworks, sacrifica qualquer outro artefato não-token earthbendado. Testado em 20.000 partidas com timeout por política antes do batch oficial (0 erros nas 3).
+
+**n=2000, mesmas seeds, comparando as 3 políticas:**
+
+| Métrica | narrow | **broad_artifact** | land_only |
+|---|---|---|---|
+| Avg recorrências Motor#16 | 0,738 | **0,966** | 0,289 |
+| % jogos com ≥1 recorrência | 29,2% | **35,0%** | 18,5% |
+| Avg mana extra gerado | 1,42 | **2,00** | 1,20 |
+| Avg cartas compradas extra | 1,569 | **1,581** | 1,454 |
+| Avg tokens criados | 11,864 | **12,764** | 9,734 |
+| Cartas distintas recicladas (de 2000 jogos) | 40 | **54** | 39 |
+| Turno médio de conjuração da comandante | 2,608 | 2,608 | 2,608 |
+| Avg aplicações de earthbend | 7,926 | 7,925 | 7,918 |
+| Avg terrenos finais | 10,283 | 10,245 | 10,221 |
+
+**Leitura:** `broad_artifact` domina as outras duas em toda métrica de valor (recorrência, mana, draw, tokens), com **turno de comandante e volume total de earthbend idênticos nas três** — ou seja, mudar o alvo do earthbend não custa curva nenhuma, só adiciona valor. `land_only` (nunca mirar artefato) é estritamente a pior das três, confirmando que earthbendar terreno comum é desperdício de prioridade quando há artefato disponível.
+
+**Quais artefatos entram no loop sob `broad_artifact`** (sacrifícios via Krark-Clan Ironworks em 2000 partidas, além das 4 cartas especiais):
+
+```
+147  Krark-Clan Ironworks (se sacrifica a si mesma)
+ 68  Mishra's Bauble
+ 66  Ichor Wellspring
+ 31  Arcane Signet
+ 31  Esper Sentinel
+ 27  Mox Opal
+ 26  Liquimetal Coating
+ 26  The Ozolith
+ 24  Zuran Orb
+ 22  Lightning Greaves
+ 22  Sol Ring
+ 21  Strionic Resonator
+ 20  Haywire Mite
+ 18  Unstable Obelisk
+ 17  Oblivion Stone / Liquimetal Torque / Crucible of Worlds (cada)
+ 16  Skullclamp
+ 15  Sword of Feast and Famine
+ 12  Ultron, Artificial Malevolence
+ 11  Iron Spider, Stark Upgrade
+ 10  Conduit of Worlds
+  3  Mycosynth Lattice
+  2  The Great Henge
+  1  The Stasis Coffin / Krang, Utrom Warlord (cada)
+```
+
+**Achado interessante:** o próprio Krark-Clan Ironworks é o alvo mais sacrificado (147x) — earthbendada, ela pode se sacrificar a si mesma pela própria habilidade, gerar `{C}{C}`, e voltar de graça no earthbend seguinte. Mox Opal/Sol Ring/Arcane Signet (juntos 80x) também entram no loop — perdem 1 turno de mana ao voltar tapped, mas nunca são perdidos permanentemente.
+
+**Ressalva honesta sobre a política:** a escolha de qual dos artefatos elegíveis sacrificar é "o primeiro encontrado na ordem do campo", **não por valor** — não há lógica de "prefira sacrificar o Sol Ring a sacrificar o Krang". Krang e The Great Henge quase não entraram no loop (1x e 2x), mas isso é mais coincidência de ordem de batalha do que uma decisão inteligente de preservar valor alto. Uma política mais refinada (ranquear por "quão substituível é essa mana/efeito") é uma extensão possível, não implementada aqui.
+
+`EARTHBEND_TARGET_POLICY` promovida a `"broad_artifact"` como default no script a partir desta análise.
+
 **Simplificações documentadas no docstring do script** (não inventadas, omissões explícitas): sem combate real contra oponente (nenhuma criatura adversária, nenhum bloqueio — "atacar" só dispara gatilhos de ataque, não há dano/vida de oponente real); Esper Sentinel/Skullclamp/Sword of Feast and Famine/Talon Gates/Krang/Council's Judgment/Lightning Greaves/Heroic Intervention não têm efeito numérico solo simulado (dependem de oponente real); modelo de mana genérico (mana total, não pip a pip — o deck tem fixing extenso e documentado); habilidades de lealdade do Wrenn and Realmbreaker além da estática de fixing não são ativadas automaticamente.
 
 ---
