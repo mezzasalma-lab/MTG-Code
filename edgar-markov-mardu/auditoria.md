@@ -139,11 +139,15 @@ O critério oficial de Bracket 3 (`references/commander-rules.md#brackets`, cita
 
 ## 12. Classificação de Bracket
 
-**Bracket 4 (Optimized).**
+**Bracket 4 (Optimized) — mas a justificativa original desta seção estava incompleta, corrigida em 2026-08-21.**
 
-Motivo: presença do combo de 2 peças Exquisite Blood + Vito, Thorn of the Dusk Rose, com múltiplos habilitadores redundantes na própria lista (seção 10). Isso desqualifica o deck de Bracket 1-3 pelo critério oficial, independente de a contagem de Game Changers (3) estar dentro do teto do Bracket 3.
+**Correção:** a primeira versão desta seção classificou Bracket 4 pela simples PRESENÇA do combo Exquisite Blood + Vito, Thorn of the Dusk Rose, "independente da frequência real de montagem". Isso não é o critério oficial certo. O texto da Wizards (`references/commander-rules.md#brackets`) desqualifica especificamente **combo de 2 peças ANTES DO TURNO 6** — e o próprio checklist deste skill já registrava que "combos de 2 peças que só ficam online tarde (turno 8+) tendem a ser aceitáveis" pra Bracket 3. Não apliquei essa ressalva na primeira passada.
 
-**Reforço pós-varredura completa (seções 3-8):** além do combo, o deck tem **3 tutores reais** (Vampiric Tutor, Diabolic Intent, e Emeritus of Woe // **Demonic Tutor** no verso — achado novo desta varredura, não estava registrado antes) — densidade de tutor típica de decks que precisam montar peças específicas de combo com consistência, reforçando a leitura de Bracket 4 além do critério formal do combo isolado.
+**Dado real simulado (seção 10):** turno médio em que o combo liga = **7,67** (mediana 8), e só 0,1% das partidas ligam dentro de 8 turnos. Isso é tarde — bem depois do corte de "antes do T6" — se o critério fosse só "quando o combo liga numa partida jogada ao acaso, sem buscar as peças de propósito", esse dado sozinho apontaria pra Bracket 3, não 4.
+
+**Por que Bracket 4 continua sendo o call certo, com a razão certa desta vez:** o simulador não modela um jogador ativamente tutorando pelas peças do combo especificamente — ele só conjura o que está na mão. O deck tem **3 tutores reais e baratos** que podem buscar qualquer carta da lista, incluindo Exquisite Blood ou Vito especificamente: **Vampiric Tutor** (`{B}`, instant), **Diabolic Intent** (`{1}{B}`, sorcery), e **Emeritus of Woe // Demonic Tutor** no verso (achado novo desta auditoria). Um jogador que sabe do combo pode tutorar a 1ª peça faltante assim que tiver a outra em mão, ambos custando 1-2 mana — isso monta o combo bem mais rápido que a taxa de compra ao acaso simulada, plausivelmente antes do turno 6 em muitos jogos. O critério oficial já pede pra avaliar exatamente isso: *"Sempre avaliar: quantos tutores o deck tem para encontrar as peças? (tutores devem ser raros em Bracket 1-3)"* — 3 tutores reais mirando um combo de 2 peças infinito não é raro, é uma estrutura montada pra isso.
+
+**Resumo:** Bracket 4, mas a justificativa é a densidade de tutor apontando pro combo (intenção de montagem consistente), não a mera existência das 2 cartas — o dado de goldfish (turno 7,67/0,1%) mostra o piso de "sorte ao acaso", não o teto de "jogador mirando o combo de propósito com os tutores disponíveis".
 
 ---
 
