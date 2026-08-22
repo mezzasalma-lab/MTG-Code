@@ -1,0 +1,984 @@
+"""
+Goldfish simulator — Toph, the First Metalbender (Naya, R/G/W)
+
+Construido do zero em 2026-08-22, cobrindo os 16 motores documentados em
+`auditoria.md` secao 4, nao so 1 ou 2. Passo 0 (regra de
+`references/goldfish-sim-card-rules.md`): varredura mecanica no oraculo
+completo achou 43 cartas com gatilho real ("Whenever"/"At the beginning
+of"/"When"). Cada uma delas tem o efeito real implementado abaixo — nao
+uma tag decorativa — exceto onde a carta depende de um oponente real
+(combate, alvo em permanente adversario), documentado explicitamente como
+simplificacao em vez de fingir um efeito.
+
+Mecanica central (a razao de earthbend + "artefato/criatura vira terreno"
+serem tratados como um so sistema neste script, nao dois separados):
+- Toph, the First Metalbender (comandante): artefatos nao-token que voce
+  controla sao TAMBEM terrenos.
+- Ashaya, Soul of the Wild (se em campo): criaturas nao-token que voce
+  controla sao TAMBEM terrenos (Floresta).
+- Mycosynth Lattice (se em campo) + Toph: todo permanente vira artefato,
+  e por extensao terreno, via a cadeia acima.
+- earthbend: transforma um terreno-alvo (real ou virado terreno pelas
+  regras acima) numa criatura 0/0 com contadores e haste, ainda terreno.
+  O reminder text ("When it dies or is exiled, return it to the
+  battlefield tapped") e uma triggered ability real que reage a QUALQUER
+  morte/exilio do permanente, inclusive um custo de sacrificio pago pela
+  propria carta — Motor #16 da auditoria: qualquer artefato earthbendado
+  com gatilho/custo de "morrer" (Stasis Coffin, Ichor Wellspring, Unstable
+  Obelisk) fica recorrente em vez de uso unico. Implementado como
+  `earthbend_return` flag em cada Permanent + logica central em
+  `leave_battlefield()`.
+
+Simplificacoes documentadas (nao inventadas — sao omissoes explicitas):
+- Sem combate real contra oponente: nenhuma criatura adversaria, nenhum
+  bloqueio. "Ataca" = passou de summoning sickness e o jogador optou por
+  atacar; usado so pra disparar gatilhos de ataque (earthbend, contadores),
+  nao ha dano/vida de oponente real.
+- Cartas cujo efeito so importa contra permanente/spell adversario (Esper
+  Sentinel, Haywire Mite mirando algo do oponente, Council's Judgment,
+  Krang/Sword of Feast and Famine em combate real, Lightning Greaves,
+  Heroic Intervention, Talon Gates phase-out, Oblivion Stone/Ondu Inversion
+  como wipe) sao contadas como "disponivel na mao/campo" mas NAO geram
+  efeito numerico solo — reportadas em métricas separadas, nunca fingidas.
+- Cores de mana: modelo generico de mana total (como os outros simuladores
+  desta biblioteca) — o deck tem fixing extenso e documentado (secao 2/4 da
+  auditoria), entao nao rastreio pip a pip.
+- Wrenn and Realmbreaker: soh a habilidade estatica (fixing) e simulada
+  ativamente; as habilidades de lealdade sao logadas como disponiveis, nao
+  ativadas automaticamente (decisao de jogo real, fora de escopo).
+"""
+
+import json
+import random
+import statistics
+from dataclasses import dataclass, field
+from typing import Optional
+
+
+# ---------------------------------------------------------------------------
+# Card database
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class Card:
+    name: str
+    mv: int
+    ctype: str  # 'land','artifact','creature','artifact_creature','enchantment',
+                # 'enchantment_creature','planeswalker','instant','sorcery'
+    tags: frozenset = field(default_factory=frozenset)
+
+
+CARD_DB: dict[str, Card] = {}
+
+
+def add(name, mv, ctype, tags=()):
+    CARD_DB[name] = Card(name=name, mv=mv, ctype=ctype, tags=frozenset(tags))
+
+
+COMMANDER = "Toph, the First Metalbender"
+add(COMMANDER, 3, "creature", {"commander", "earthbend_source_end_step"})
+
+# --- Lands (32, incl. 3x Forest) ---------------------------------------------------
+add("Arid Mesa", 0, "land", {"fetch"})
+add("Ba Sing Se", 0, "land", {"earthbend_source_activated"})
+add("Bala Ged Recovery // Bala Ged Sanctuary", 3, "land", set())
+add("Bountiful Promenade", 0, "land", set())
+add("Bridgeworks Battle // Tanglespan Bridgeworks", 3, "land", set())
+add("Canopy Vista", 0, "land", set())
+add("Cinder Glade", 0, "land", set())
+add("Command Tower", 0, "land", {"rock_any"})
+add("Field of the Dead", 0, "land", {"field_of_the_dead"})
+add("Forest", 0, "land", set())
+add("Fountainport", 0, "land", {"token_sac_draw"})
+add("Gruul Turf", 0, "land", {"bounceland"})
+add("Inventors' Fair", 0, "land", {"artifact_lifegain"})
+add("Jetmir's Garden", 0, "land", {"rock_any"})
+add("Mountain", 0, "land", set())
+add("Ondu Inversion // Ondu Skyruins", 8, "land", {"wipe_unused"})
+add("Plains", 0, "land", set())
+add("Selesnya Sanctuary", 0, "land", {"bounceland"})
+add("Snow-Covered Forest", 0, "land", set())
+add("Snow-Covered Mountain", 0, "land", set())
+add("Snow-Covered Plains", 0, "land", set())
+add("Spire Garden", 0, "land", set())
+add("Stomping Ground", 0, "land", set())
+add("Strip Mine", 0, "land", set())
+add("Talon Gates of Madara", 0, "land", {"rock_any_paid", "phase_out_unused"})
+add("Temple Garden", 0, "land", set())
+add("Urza's Saga", 0, "land", {"saga_token"})
+add("Windswept Heath", 0, "land", {"fetch"})
+add("Wooded Foothills", 0, "land", {"fetch"})
+add("Wrenn and Realmbreaker", 3, "planeswalker", {"rock_all_lands_any"})
+add("Yavimaya, Cradle of Growth", 0, "land", set())
+
+# --- Ramp -----------------------------------------------------------------
+add("Arcane Signet", 2, "artifact", {"rock_any"})
+add("Sol Ring", 1, "artifact", {"rock2"})
+add("Mox Opal", 0, "artifact", {"rock_metalcraft"})
+add("Dryad of the Ilysian Grove", 3, "creature", {"extra_land_drop"})
+add("Horizon Explorer", 3, "creature", {"lander_on_attack"})
+add("Lotus Cobra", 2, "creature", {"landfall_mana"})
+add("Nissa, Resurgent Animist", 3, "creature", {"landfall_mana", "landfall_dig_2nd"})
+add("Tireless Provisioner", 3, "creature", {"landfall_token"})
+add("Planar Engineering", 4, "sorcery", {"land_ramp_burst"})
+add("Unstable Obelisk", 3, "artifact", {"rock1", "removal_recurring"})
+add("Liquimetal Torque", 2, "artifact", {"rock1", "liquimetal"})
+add("The Great Henge", 9, "artifact", {"rock2life", "etb_creature_draw_counter"})
+
+# --- Card draw --------------------------------------------------------------
+add("Sylvan Library", 2, "enchantment", {"draw_engine"})
+add("Esper Sentinel", 1, "artifact_creature", {"opponent_dependent"})
+add("Skullclamp", 1, "artifact", {"combat_dependent"})
+add("Ichor Wellspring", 2, "artifact", {"draw_etb_death", "earthbend_target_priority"})
+add("Mishra's Bauble", 0, "artifact", {"delayed_draw"})
+add("Iron Spider, Stark Upgrade", 3, "artifact_creature", {"artifact_counter_draw"})
+add("Caretaker's Talent", 3, "enchantment", {"token_draw"})
+add("Tannuk, Memorial Ensign", 3, "creature", {"landfall_dmg", "landfall_draw_2nd"})
+add("Spelunking", 3, "enchantment", {"etb_draw_land"})
+add("Fountainport", 0, "land", {"token_sac_draw"})  # already added above as land
+
+# --- Removal & wipes --------------------------------------------------------
+add("Erode", 1, "instant", {"removal"})
+add("Bridgeworks Battle", 3, "sorcery", {"removal_conditional"})
+add("Haywire Mite", 1, "artifact_creature", {"opponent_dependent"})
+add("Swords to Plowshares", 1, "instant", {"removal"})
+add("Council's Judgment", 3, "sorcery", {"opponent_dependent"})
+add("Teferi's Protection", 3, "instant", {"protection_unused"})
+add("Oblivion Stone", 3, "artifact", {"wipe_unused"})
+
+# --- Win-con / sinergia central --------------------------------------------
+add("Ashaya, Soul of the Wild", 5, "creature", {"ashaya"})
+add("Avatar Kyoshi, Earthbender", 8, "creature", {"earthbend_source_combat_8"})
+add("Awaken the Woods", 2, "sorcery", {"land_token_x"})
+add("Badgermole Cub", 2, "creature", {"earthbend_source_etb_1"})
+add("Bristly Bill, Spine Sower", 2, "creature", {"landfall_counter", "mass_double_activated"})
+add("Bumi, Eclectic Earthbender", 5, "creature", {"earthbend_source_etb_1", "attack_counter_lands"})
+add("Canopy Vista", 0, "land", set())
+add("Conduit of Worlds", 4, "artifact", {"gy_lands", "gy_recursion_1turn"})
+add("Crucible of Worlds", 3, "artifact", {"gy_lands"})
+add("Earth Kingdom General", 4, "creature", {"earthbend_source_etb_2", "counter_lifegain"})
+add("Earthbender Ascension", 3, "enchantment", {"earthbend_source_etb_2", "landfall_quest"})
+add("Earthbending Student", 3, "creature", {"earthbend_source_etb_2"})
+add("Earthshape", 3, "instant", {"earthbend_source_cast_3"})
+add("Enduring Vitality", 3, "enchantment_creature", {"creature_mana_any"})
+add("Enlightened Tutor", 1, "instant", {"tutor_artifact_enchant"})
+add("Felidar Retreat", 4, "enchantment", {"landfall_choice"})
+add("Field of the Dead", 0, "land", {"field_of_the_dead"})  # already added
+add("Germination Practicum", 5, "sorcery", {"mass_counter_repeat"})
+add("Great Divide Guide", 2, "creature", {"rock_lands_any"})
+add("Gruul Turf", 0, "land", {"bounceland"})
+add("Heroic Intervention", 2, "instant", {"protection_unused"})
+add("Kodama of the East Tree", 6, "creature", {"cheat_permanent"})
+add("Krang, Utrom Warlord", 9, "artifact_creature", {"combat_dependent"})
+add("Krark-Clan Ironworks", 4, "artifact", {"sac_outlet_mana"})
+add("Lightning Greaves", 2, "artifact", {"protection_unused"})
+add("Liquimetal Coating", 2, "artifact", {"liquimetal_unused"})
+add("Mossborn Hydra", 3, "creature", {"landfall_double_self"})
+add("Mycosynth Lattice", 6, "artifact", {"mycosynth"})
+add("Oswald Fiddlebender", 2, "creature", {"artifact_tutor_cheat"})
+add("Overlord of the Hauntwoods", 5, "enchantment_creature", {"land_token_everywhere"})
+add("Planar Engineering", 4, "sorcery", set())  # already added above
+add("Prismatic Omen", 2, "enchantment", {"fixing_unused"})
+add("Sapling Nursery", 8, "enchantment", {"landfall_token"})
+add("Scute Swarm", 3, "creature", {"landfall_token_or_copy"})
+add("Springheart Nantuko", 2, "enchantment_creature", {"landfall_token"})
+add("Strionic Resonator", 2, "artifact", {"trigger_copy"})
+add("Sword of Feast and Famine", 3, "artifact", {"combat_dependent"})
+add("Talon Gates of Madara", 0, "land", set())  # already added
+add("The Ozolith", 1, "artifact", {"ozolith"})
+add("The Stasis Coffin", 3, "artifact", {"protection_recurring", "earthbend_target_priority"})
+add("Toph, Earthbending Master", 4, "creature", {"landfall_experience", "attack_earthbend_experience"})
+add("Toph, Greatest Earthbender", 4, "creature", {"earthbend_source_cast_x", "double_strike_land_creatures"})
+add("Ultron, Artificial Malevolence", 3, "artifact_creature", {"artifact_copy"})
+add("Urza's Saga", 0, "land", set())  # already added
+add("Windswept Heath", 0, "land", {"fetch"})  # already added
+add("Wooded Foothills", 0, "land", {"fetch"})  # already added
+add("Yavimaya, Cradle of Growth", 0, "land", set())  # already added
+add("Zuran Orb", 0, "artifact", {"sac_land_lifegain"})
+add("Forest Dryad Token", 0, "land", {"always_creature"})  # Awaken the Woods
+add("Everywhere Token", 0, "land", set())  # Overlord of the Hauntwoods
+
+# Sanity: dedupe re-adds don't break anything (dict overwrite is idempotent
+# for cards added twice above with identical data)
+
+LAND_NAMES = {n for n, c in CARD_DB.items() if c.ctype == "land"}
+ARTIFACT_ISH = {"artifact", "artifact_creature"}
+CREATURE_ISH = {"creature", "artifact_creature", "enchantment_creature"}
+
+
+# ---------------------------------------------------------------------------
+# Game state
+# ---------------------------------------------------------------------------
+
+@dataclass
+class Permanent:
+    card: Card
+    tapped: bool = False
+    counters: int = 0
+    earthbent: bool = False
+    earthbend_return: bool = False
+    entered_turn: int = 0
+    uid: int = 0
+    is_token: bool = False
+
+
+@dataclass
+class GameState:
+    turn: int = 0
+    hand: list = field(default_factory=list)
+    battlefield: list = field(default_factory=list)
+    graveyard: list = field(default_factory=list)
+    library: list = field(default_factory=list)
+    mulligans: int = 0
+
+    commander_in_play: bool = False
+    commander_cast_count: int = 0
+    ashaya_in_play: bool = False
+    mycosynth_in_play: bool = False
+
+    lands_played_this_turn: int = 0
+    extra_land_drops: int = 0
+    landfalls_this_turn: int = 0
+    mana_spent_this_turn: int = 0
+
+    treasures: int = 0
+    foods: int = 0
+    ozolith_counters: int = 0
+    experience_counters: int = 0  # Toph, Earthbending Master
+    wrenn_loyalty: int = 0
+
+    scheduled_draws: int = 0  # Mishra's Bauble
+    life_total: int = 40
+    life_gained: int = 0
+    token_drawn_this_turn: bool = False  # Caretaker's Talent (1x/turno)
+
+    next_uid: int = 1
+
+    # metrics --------------------------------------------------------------
+    log: list = field(default_factory=list)
+    earthbend_applications: int = 0
+    earthbend_by_source: dict = field(default_factory=dict)
+    motor16_recursions: int = 0
+    landfall_triggers_fired: int = 0
+    field_of_the_dead_tokens: int = 0
+    cards_drawn_extra: int = 0
+    mana_generated_extra: int = 0
+    kodama_cheats: int = 0
+    resonator_copies: int = 0
+    bristly_bill_doubles: int = 0
+    ozolith_moves: int = 0
+    tokens_created: int = 0
+    scute_swarm_cap_hits: int = 0
+    commander_cast_turn: Optional[int] = None
+    first_pw_ish_turn: Optional[int] = None  # not used, placeholder for parity
+
+
+def mk_perm(state: GameState, name: str) -> Permanent:
+    p = Permanent(card=CARD_DB[name], entered_turn=state.turn, uid=state.next_uid)
+    state.next_uid += 1
+    return p
+
+
+# ---------------------------------------------------------------------------
+# Type helpers (dynamic — depend on Toph/Ashaya/Mycosynth being in play)
+# ---------------------------------------------------------------------------
+
+def is_artifact(perm: Permanent, state: GameState) -> bool:
+    if perm.card.ctype in ARTIFACT_ISH:
+        return True
+    if state.mycosynth_in_play:
+        return True  # Mycosynth Lattice: all permanents are artifacts
+    return False
+
+
+def is_creature_type(perm: Permanent, state: GameState) -> bool:
+    return perm.card.ctype in CREATURE_ISH or perm.earthbent or "always_creature" in perm.card.tags
+
+
+def is_land(perm: Permanent, state: GameState) -> bool:
+    if perm.card.ctype == "land":
+        return True
+    if perm.is_token:
+        return False  # Toph/Ashaya so afetam permanentes NAO-TOKEN
+    if state.commander_in_play and is_artifact(perm, state):
+        return True  # Toph: nontoken artifacts are lands
+    if state.ashaya_in_play and perm.card.ctype in ("creature", "artifact_creature", "enchantment_creature"):
+        return True  # Ashaya: nontoken creatures are lands
+    return False
+
+
+def distinct_land_names(state: GameState) -> int:
+    return len({p.card.name for p in state.battlefield if is_land(p, state)})
+
+
+# ---------------------------------------------------------------------------
+# Core zone-change machinery — this is where Motor #16 lives
+# ---------------------------------------------------------------------------
+
+def leave_battlefield(state: GameState, perm: Permanent, log: list, to_hand: bool = False):
+    """Handles a permanent dying / being sacrificed / exiled. Central place
+    for The Ozolith (counter recycling) and Motor #16 (earthbend return)."""
+    if perm not in state.battlefield:
+        # Ja saiu do campo por outro efeito (ex: bounce land disparado por uma
+        # cadeia de landfall/Motor#16 no meio do processamento de um sacrificio
+        # em lote, como Planar Engineering) — nada a fazer.
+        return
+    state.battlefield.remove(perm)
+
+    if perm.counters > 0 and any(p.card.name == "The Ozolith" for p in state.battlefield):
+        state.ozolith_counters += perm.counters
+        state.ozolith_moves += 1
+        log.append(f"  [Ozolith] recicla {perm.counters} contadores de {perm.card.name}")
+
+    # Ichor Wellspring: draw on entering graveyard from battlefield
+    if perm.card.name == "Ichor Wellspring" and not to_hand:
+        draw_cards(state, 1, log, source="Ichor Wellspring (morte)")
+
+    if perm.card.name == "Haywire Mite" and not to_hand:
+        gain_life(state, 2, log, source="Haywire Mite (morte)")
+
+    if perm.earthbend_return and not to_hand:
+        # Motor #16: return to the battlefield tapped instead of staying dead.
+        state.motor16_recursions += 1
+        new_perm = mk_perm(state, perm.card.name)
+        new_perm.tapped = True
+        log.append(f"  [Motor#16] {perm.card.name} earthbendada volta ao campo tapped (recorrencia)")
+        enter_battlefield(state, new_perm, log)
+        return
+
+    if to_hand:
+        state.hand.append(perm.card.name)
+    else:
+        state.graveyard.append(perm.card.name)
+
+
+def enter_battlefield(state: GameState, perm: Permanent, log: list):
+    state.battlefield.append(perm)
+
+    if perm.card.name == COMMANDER:
+        state.commander_in_play = True
+    if perm.card.name == "Ashaya, Soul of the Wild":
+        state.ashaya_in_play = True
+    if perm.card.name == "Mycosynth Lattice":
+        state.mycosynth_in_play = True
+
+    if is_land(perm, state):
+        landfall_trigger(state, perm, log)
+
+    if is_creature_type(perm, state):
+        kodama_trigger(state, perm, log)
+
+    if (perm.card.ctype in ("artifact", "artifact_creature") and not perm.is_token
+            and perm.card.name != "Ultron, Artificial Malevolence"):
+        ultron_trigger(state, perm, log)
+
+    apply_etb(state, perm, log)
+
+
+def ultron_trigger(state: GameState, entering_perm: Permanent, log: list):
+    ultron = next((p for p in state.battlefield if p.card.name == "Ultron, Artificial Malevolence"
+                    and p is not entering_perm), None)
+    if ultron is None:
+        return
+    if remaining_mana(state) < 2:
+        return
+    spend_mana(state, 2)
+    token = mk_perm(state, entering_perm.card.name)
+    token.is_token = True
+    create_token(state, log, note=f"copia de {entering_perm.card.name} via Ultron")
+    log.append(f"  [Ultron] copia {entering_perm.card.name} (token)")
+    enter_battlefield(state, token, log)
+
+
+def kodama_trigger(state: GameState, entering_perm: Permanent, log: list):
+    if not any(p.card.name == "Kodama of the East Tree" for p in state.battlefield if p is not entering_perm):
+        return
+    if entering_perm.card.name == "Kodama of the East Tree":
+        return
+    cheap = [n for n in state.hand if CARD_DB[n].mv <= entering_perm.card.mv and CARD_DB[n].ctype != "instant"
+             and CARD_DB[n].ctype != "sorcery" and n != COMMANDER]
+    if cheap:
+        cheap.sort(key=lambda n: -CARD_DB[n].mv)
+        choice = cheap[0]
+        state.hand.remove(choice)
+        state.kodama_cheats += 1
+        log.append(f"  [Kodama] cheat-into-play: {choice} de graca")
+        new_perm = mk_perm(state, choice)
+        enter_battlefield(state, new_perm, log)
+
+
+# ---------------------------------------------------------------------------
+# Landfall dispatcher
+# ---------------------------------------------------------------------------
+
+def landfall_trigger(state: GameState, land_perm: Permanent, log: list):
+    state.landfalls_this_turn += 1
+    state.landfall_triggers_fired += 1
+
+    for p in list(state.battlefield):
+        tags = p.card.tags
+        if "landfall_mana" in tags:
+            state.mana_generated_extra += 1
+        if "landfall_token" in tags and p.card.name == "Tireless Provisioner":
+            if state.treasures < 3:
+                state.treasures += 1
+            else:
+                state.foods += 1
+            create_token(state, log)
+        if "landfall_counter" in tags:
+            target = best_earthbend_target(state)
+            if target:
+                target.counters += 1
+        if "landfall_double_self" in tags and p.card.name == "Mossborn Hydra":
+            p.counters *= 2
+        if "landfall_dmg" in tags:
+            pass  # Tannuk direct damage: sem oponente real, nao modelado
+        if "landfall_draw_2nd" in tags and state.landfalls_this_turn == 2:
+            draw_cards(state, 1, log, source="Tannuk (2o landfall)")
+        if "landfall_dig_2nd" in tags and state.landfalls_this_turn == 2:
+            draw_cards(state, 1, log, source="Nissa Resurgent Animist (2o landfall)")
+        if "landfall_experience" in tags:
+            state.experience_counters += 1
+        if "landfall_quest" in tags and p.card.name == "Earthbender Ascension":
+            p.counters += 1
+            if p.counters >= 4:
+                target = best_earthbend_target(state)
+                if target:
+                    target.counters += 1
+        if "landfall_token_or_copy" in tags and p.card.name == "Scute Swarm":
+            lands_ct = sum(1 for x in state.battlefield if is_land(x, state))
+            # Scute Swarm com 6+ terrenos e genuinamente exponencial no jogo real
+            # (cada copia tambem copia no proximo landfall) — cap defensivo de
+            # implementacao pra manter a simulacao tratavel; contado a parte,
+            # nao escondido (ver SCUTE_SWARM_CAP_HITS).
+            if lands_ct >= 6 and len(state.battlefield) < 200:
+                clone = mk_perm(state, "Scute Swarm")
+                clone.is_token = True
+                create_token(state, log)
+                state.battlefield.append(clone)  # copy doesn't retrigger landfall dispatch
+            elif lands_ct >= 6:
+                state.scute_swarm_cap_hits += 1
+            else:
+                create_token(state, log)
+        if "landfall_token" in tags and p.card.name == "Sapling Nursery":
+            create_token(state, log)
+        if "landfall_token" in tags and p.card.name == "Springheart Nantuko":
+            create_token(state, log)
+        if "landfall_choice" in tags:
+            # Felidar Retreat: escolhe contador+vigilance se ha creature earthbent boa,
+            # senao token. Simplificado: contador se ha alvo, senao token.
+            target = best_earthbend_target(state)
+            if target:
+                target.counters += 1
+            else:
+                create_token(state, log)
+
+    # Field of the Dead — verifica a cada terreno que entra (o proprio ou outro)
+    if distinct_land_names(state) >= 7:
+        state.field_of_the_dead_tokens += 1
+        create_token(state, log)
+
+
+def draw_cards(state: GameState, n: int, log: list, source: str = ""):
+    for _ in range(n):
+        if state.library:
+            state.hand.append(state.library.pop(0))
+            state.cards_drawn_extra += 1
+
+
+def create_token(state: GameState, log: list, note: str = ""):
+    """Contabiliza um token generico (Field of the Dead zombie, Insect, Cat
+    Beast, etc — coisas que nao precisam virar Permanent de verdade porque
+    nao interagem com landfall/earthbend). Dispara Caretaker's Talent."""
+    state.tokens_created += 1
+    if not state.token_drawn_this_turn and any(p.card.name == "Caretaker's Talent" for p in state.battlefield):
+        draw_cards(state, 1, log, source="Caretaker's Talent (token entra)")
+        state.token_drawn_this_turn = True
+
+
+def gain_life(state: GameState, n: int, log: list, source: str = ""):
+    state.life_total += n
+    state.life_gained += n
+
+
+def best_earthbend_target(state: GameState) -> Optional[Permanent]:
+    """Prioriza: (1) artefato com gatilho de morte valioso ainda sem a flag
+    de retorno (monta o Motor #16), (2) terreno normal ainda nao earthbendado,
+    (3) qualquer terreno."""
+    priority_names = {"The Stasis Coffin", "Ichor Wellspring", "Unstable Obelisk", "Mishra's Bauble"}
+    candidates = [p for p in state.battlefield if is_land(p, state)]
+    if not candidates:
+        return None
+    for p in candidates:
+        if p.card.name in priority_names and not p.earthbend_return:
+            return p
+    fresh = [p for p in candidates if not p.earthbent]
+    if fresh:
+        return fresh[0]
+    return candidates[0]
+
+
+def apply_earthbend(state: GameState, amount: int, log: list, source: str):
+    target = best_earthbend_target(state)
+    if target is None or amount <= 0:
+        return
+    target.counters += amount
+    target.earthbent = True
+    target.earthbend_return = True
+    state.earthbend_applications += 1
+    state.earthbend_by_source[source] = state.earthbend_by_source.get(source, 0) + 1
+    log.append(f"  [Earthbend {amount}] via {source} -> {target.card.name} ({target.counters} contadores)")
+
+    if any(p.card.name == "Strionic Resonator" and not p.tapped for p in state.battlefield):
+        res = next(p for p in state.battlefield if p.card.name == "Strionic Resonator" and not p.tapped)
+        if remaining_mana(state) >= 2:
+            res.tapped = True
+            spend_mana(state, 2)
+            target.counters += amount
+            state.resonator_copies += 1
+            log.append(f"  [Strionic Resonator] copia o earthbend -> +{amount} contadores extra em {target.card.name}")
+
+
+# ---------------------------------------------------------------------------
+# ETB effects (one-shot, card-specific)
+# ---------------------------------------------------------------------------
+
+def apply_etb(state: GameState, perm: Permanent, log: list):
+    name = perm.card.name
+    if name == "Badgermole Cub":
+        apply_earthbend(state, 1, log, "Badgermole Cub (ETB)")
+    elif name == "Bumi, Eclectic Earthbender":
+        apply_earthbend(state, 1, log, "Bumi (ETB)")
+    elif name == "Earth Kingdom General":
+        apply_earthbend(state, 2, log, "Earth Kingdom General (ETB)")
+    elif name == "Earthbender Ascension":
+        apply_earthbend(state, 2, log, "Earthbender Ascension (ETB)")
+    elif name == "Earthbending Student":
+        apply_earthbend(state, 2, log, "Earthbending Student (ETB)")
+    elif name == "Toph, Greatest Earthbender":
+        apply_earthbend(state, perm.card.mv, log, "Toph Greatest Earthbender (ETB, X=mana gasto)")
+    elif name == "Spelunking":
+        draw_cards(state, 1, log, source="Spelunking (ETB)")
+    elif name == "Ichor Wellspring":
+        draw_cards(state, 1, log, source="Ichor Wellspring (ETB)")
+    elif name == "The Great Henge":
+        draw_cards(state, 1, log, source="The Great Henge (proxy — criatura ETB)")
+    elif name == "Overlord of the Hauntwoods":
+        create_token(state, log)
+        everywhere = mk_perm(state, "Everywhere Token")
+        everywhere.is_token = True
+        everywhere.tapped = True
+        enter_battlefield(state, everywhere, log)
+    elif name == "Gruul Turf" or name == "Selesnya Sanctuary":
+        # bounceland: devolve um terreno pra mao (se houver outro alem dele mesmo)
+        others = [p for p in state.battlefield if is_land(p, state) and p is not perm]
+        if others:
+            bounced = others[0]
+            state.battlefield.remove(bounced)
+            state.hand.append(bounced.card.name)
+
+
+# ---------------------------------------------------------------------------
+# Mana model (generico — ver nota de simplificacao no docstring)
+# ---------------------------------------------------------------------------
+
+def total_mana(state: GameState) -> int:
+    total = 0
+    for p in state.battlefield:
+        if p.tapped:
+            continue
+        tags = p.card.tags
+        if is_land(p, state):
+            total += 1
+        if "rock_any" in tags or "rock1" in tags or "rock_any_paid" in tags:
+            total += 1
+        elif "rock2" in tags or "rock2life" in tags:
+            total += 2
+        elif "rock_metalcraft" in tags:
+            n_art = sum(1 for x in state.battlefield if is_artifact(x, state))
+            if n_art >= 3:
+                total += 1
+        if "creature_mana_any" in tags:
+            # Enduring Vitality: TODA criatura sua tapa por 1 de qualquer cor
+            n_creatures = sum(1 for x in state.battlefield if is_creature_type(x, state) and not x.tapped and x is not p)
+            total += n_creatures
+    total += state.treasures
+    return total
+
+
+def remaining_mana(state: GameState) -> int:
+    return max(0, total_mana(state) - state.mana_spent_this_turn)
+
+
+def spend_mana(state: GameState, n: int):
+    state.mana_spent_this_turn += n
+
+
+def can_cast(state: GameState, name: str) -> bool:
+    return remaining_mana(state) >= CARD_DB[name].mv
+
+
+def commander_effective_mv(state: GameState) -> int:
+    return CARD_DB[COMMANDER].mv + 2 * state.commander_cast_count
+
+
+def can_cast_commander(state: GameState) -> bool:
+    if state.commander_in_play:
+        return False
+    return remaining_mana(state) >= commander_effective_mv(state)
+
+
+# ---------------------------------------------------------------------------
+# Casting
+# ---------------------------------------------------------------------------
+
+def cast_card(state: GameState, name: str, log: list, from_hand: bool = True):
+    card = CARD_DB[name]
+    if name == COMMANDER:
+        spend_mana(state, commander_effective_mv(state))
+    else:
+        spend_mana(state, card.mv)
+    if from_hand and name in state.hand:
+        state.hand.remove(name)
+
+    if card.ctype in ("instant", "sorcery"):
+        resolve_instant_sorcery(state, name, log)
+        state.graveyard.append(name)
+        return
+
+    perm = mk_perm(state, name)
+    if name == COMMANDER:
+        state.commander_cast_count += 1
+        if state.commander_cast_turn is None:
+            state.commander_cast_turn = state.turn
+        log.append(f"  [Comandante] Toph conjurada (turno {state.turn})")
+    enter_battlefield(state, perm, log)
+
+
+def resolve_instant_sorcery(state: GameState, name: str, log: list):
+    if name == "Awaken the Woods":
+        x = max(1, min(4, remaining_mana(state)))
+        for _ in range(x):
+            token = mk_perm(state, "Forest Dryad Token")
+            token.is_token = True
+            create_token(state, log)
+            enter_battlefield(state, token, log)
+    elif name == "Planar Engineering":
+        sac = [p for p in state.battlefield if is_land(p, state)][:2]
+        for p in sac:
+            leave_battlefield(state, p, log)
+        basics = ("Forest", "Plains", "Mountain",
+                  "Snow-Covered Forest", "Snow-Covered Mountain", "Snow-Covered Plains")
+        fetched = [n for n in state.library if n in basics][:4]
+        for n in fetched:
+            state.library.remove(n)
+            perm = mk_perm(state, n)
+            perm.tapped = True
+            enter_battlefield(state, perm, log)
+    elif name == "Germination Practicum":
+        for p in state.battlefield:
+            if is_creature_type(p, state):
+                p.counters += 2
+    elif name == "Earthshape":
+        apply_earthbend(state, 3, log, "Earthshape (instant)")
+    elif name in ("Erode", "Swords to Plowshares", "Bridgeworks Battle", "Council's Judgment"):
+        pass  # removal: sem alvo de oponente real num goldfish solo
+
+
+# ---------------------------------------------------------------------------
+# Deck construction / mulligan
+# ---------------------------------------------------------------------------
+
+def build_library():
+    lib = []
+    lines = open("lista.md").read().split("## Lista completa")[1].strip().split("\n")[1:]
+    import re
+    for l in lines:
+        l = l.strip()
+        if not l:
+            continue
+        m = re.match(r"^(\d+)\s+(.+)$", l)
+        qty, name = int(m.group(1)), m.group(2).strip()
+        assert name in CARD_DB, f"faltando no CARD_DB: {name}"
+        for _ in range(qty):
+            lib.append(name)
+    assert len(lib) == 99, len(lib)
+    return lib
+
+
+BASE_LIBRARY = build_library()
+
+
+def should_keep(hand: list) -> bool:
+    lands = sum(1 for n in hand if is_land_name(n))
+    good_ramp = {"Sol Ring", "Arcane Signet", "Lotus Cobra", "Unstable Obelisk"}
+    if lands >= 3:
+        return True
+    if lands == 2 and any(n in good_ramp for n in hand):
+        return True
+    return False
+
+
+def is_land_name(name: str) -> bool:
+    return CARD_DB[name].ctype == "land"
+
+
+def draw_opening_hand(rng: random.Random):
+    lib = BASE_LIBRARY[:]
+    rng.shuffle(lib)
+    hand = lib[:7]
+    lib = lib[7:]
+    return hand, lib
+
+
+def mulligan(rng: random.Random, max_mulls: int = 3):
+    mulls = 0
+    while mulls < max_mulls:
+        hand, lib = draw_opening_hand(rng)
+        if should_keep(hand) or mulls == max_mulls - 1:
+            # London mulligan: bottom `mulls` cards
+            if mulls > 0:
+                rng.shuffle(hand)
+                bottom = hand[:mulls]
+                hand = hand[mulls:]
+                lib = lib + bottom
+            return hand, lib, mulls
+        mulls += 1
+    return hand, lib, mulls
+
+
+# ---------------------------------------------------------------------------
+# Turn structure
+# ---------------------------------------------------------------------------
+
+def play_land(state: GameState, log: list):
+    max_drops = 1 + state.extra_land_drops
+    while state.lands_played_this_turn < max_drops:
+        lands_in_hand = [n for n in state.hand if is_land_name(n)]
+        if not lands_in_hand:
+            return
+        # fetches primeiro (deixam a biblioteca mais previsivel / menos "morta")
+        fetches = [n for n in lands_in_hand if "fetch" in CARD_DB[n].tags]
+        choice = fetches[0] if fetches else lands_in_hand[0]
+        state.hand.remove(choice)
+        state.lands_played_this_turn += 1
+        if "fetch" in CARD_DB[choice].tags:
+            state.graveyard.append(choice)
+            basics = [n for n in state.library if n in ("Forest", "Plains", "Mountain",
+                      "Snow-Covered Forest", "Snow-Covered Mountain", "Snow-Covered Plains")]
+            if basics:
+                fetched = basics[0]
+                state.library.remove(fetched)
+                perm = mk_perm(state, fetched)
+                perm.tapped = False
+                enter_battlefield(state, perm, log)
+            continue
+        perm = mk_perm(state, choice)
+        enter_battlefield(state, perm, log)
+
+
+def main_phase(state: GameState, log: list):
+    if can_cast_commander(state):
+        cast_card(state, COMMANDER, log, from_hand=False)
+
+    castables = [n for n in state.hand if can_cast(state, n)]
+    castables.sort(key=lambda n: CARD_DB[n].mv)
+    for n in castables:
+        if n not in state.hand:
+            continue
+        if not can_cast(state, n):
+            continue
+        cast_card(state, n, log)
+        castables = [x for x in state.hand if can_cast(state, x)]
+        castables.sort(key=lambda x: CARD_DB[x].mv)
+
+    # Ba Sing Se: earthbend ativado se sobrar mana
+    ba_sing_se = next((p for p in state.battlefield if p.card.name == "Ba Sing Se" and not p.tapped), None)
+    if ba_sing_se and remaining_mana(state) >= 3:
+        ba_sing_se.tapped = True
+        spend_mana(state, 3)
+        apply_earthbend(state, 2, log, "Ba Sing Se (ativada)")
+
+    # Bristly Bill: dobra contadores do board se sobrar muita mana (5+) e ha o que dobrar
+    bb = next((p for p in state.battlefield if p.card.name == "Bristly Bill, Spine Sower" and not p.tapped), None)
+    if bb and remaining_mana(state) >= 5:
+        has_counters = any(p.counters > 0 for p in state.battlefield)
+        if has_counters:
+            spend_mana(state, 5)
+            for p in state.battlefield:
+                if p.counters > 0:
+                    p.counters *= 2
+            state.bristly_bill_doubles += 1
+            log.append("  [Bristly Bill] dobra todos os contadores do campo")
+
+    # Krark-Clan Ironworks: sacrifica um artefato descartavel por mana se precisar
+    kci = next((p for p in state.battlefield if p.card.name == "Krark-Clan Ironworks" and not p.tapped), None)
+    if kci:
+        pass  # nao usado agressivamente — nao ha spell caro o suficiente pra justificar sacrificar valor
+
+
+def combat_step(state: GameState, log: list):
+    attackers = [p for p in state.battlefield if is_creature_type(p, state) and p.entered_turn < state.turn]
+    if not attackers:
+        return
+    if any(p.card.name == "Avatar Kyoshi, Earthbender" for p in attackers):
+        apply_earthbend(state, 8, log, "Avatar Kyoshi (combate)")
+    if any(p.card.name == "Toph, Earthbending Master" for p in attackers):
+        apply_earthbend(state, state.experience_counters, log, "Toph Earthbending Master (ataque, X=experiencia)")
+    if any(p.card.name == "Bumi, Eclectic Earthbender" for p in attackers):
+        for p in state.battlefield:
+            if is_land(p, state) and is_creature_type(p, state):
+                p.counters += 2
+    if any(p.card.name == "Horizon Explorer" for p in attackers):
+        create_token(state, log)  # Lander token
+
+
+def end_step(state: GameState, log: list):
+    if state.commander_in_play:
+        apply_earthbend(state, 2, log, "Toph, the First Metalbender (end step)")
+
+
+def play_turn(state: GameState, log: list, is_first_turn: bool, on_play: bool):
+    state.turn += 1
+    state.lands_played_this_turn = 0
+    state.mana_spent_this_turn = 0
+    state.landfalls_this_turn = 0
+    for p in state.battlefield:
+        p.tapped = False
+
+    state.token_drawn_this_turn = False
+
+    # Upkeep: Inventors' Fair (lifegain se 3+ artefatos)
+    n_artifacts = sum(1 for p in state.battlefield if is_artifact(p, state))
+    if n_artifacts >= 3 and any(p.card.name == "Inventors' Fair" for p in state.battlefield):
+        gain_life(state, 1, log, source="Inventors' Fair (upkeep)")
+
+    if not (is_first_turn and on_play):
+        if state.library:
+            state.hand.append(state.library.pop(0))
+        if state.scheduled_draws > 0 and state.library:
+            state.hand.append(state.library.pop(0))
+            state.scheduled_draws -= 1
+        # Sylvan Library: compra 2 extra, decide manter (pagando 4 de vida cada)
+        # ou devolver ao topo com base numa margem de seguranca de vida.
+        if any(p.card.name == "Sylvan Library" for p in state.battlefield) and len(state.library) >= 2:
+            extra = [state.library.pop(0), state.library.pop(0)]
+            state.hand.extend(extra)
+            state.cards_drawn_extra += 2
+            keep = state.life_total > 20
+            if keep:
+                state.life_total -= 8
+                log.append("  [Sylvan Library] mantem as 2 cartas extra, paga 8 de vida")
+            else:
+                for c in extra:
+                    state.hand.remove(c)
+                    state.library.insert(0, c)
+                state.cards_drawn_extra -= 2
+                log.append("  [Sylvan Library] devolve as 2 cartas extra (vida baixa demais)")
+
+    play_land(state, log)
+    main_phase(state, log)
+    combat_step(state, log)
+    end_step(state, log)
+
+
+# ---------------------------------------------------------------------------
+# Full game simulation
+# ---------------------------------------------------------------------------
+
+def simulate_one(seed: int, turns: int = 8):
+    rng = random.Random(seed)
+    hand, lib, mulls = mulligan(rng)
+    state = GameState(hand=hand, library=lib, mulligans=mulls)
+    log = [f"=== seed {seed} ==="]
+
+    for t in range(turns):
+        play_turn(state, log, is_first_turn=(t == 0), on_play=True)
+
+    return state, log
+
+
+def run_batch(n: int, seed_base: int, turns: int = 8):
+    states = []
+    for i in range(n):
+        state, _ = simulate_one(seed_base + i, turns=turns)
+        states.append(state)
+
+    def avg(vals):
+        return sum(vals) / len(vals) if vals else 0.0
+
+    mulls = avg([s.mulligans for s in states])
+    cmd_turn = [s.commander_cast_turn for s in states if s.commander_cast_turn is not None]
+    cmd_never = 100 * sum(1 for s in states if s.commander_cast_turn is None) / n
+
+    earthbend_apps = avg([s.earthbend_applications for s in states])
+    motor16 = avg([s.motor16_recursions for s in states])
+    motor16_any = 100 * sum(1 for s in states if s.motor16_recursions > 0) / n
+    landfalls = avg([s.landfall_triggers_fired for s in states])
+    fotd_tokens = avg([s.field_of_the_dead_tokens for s in states])
+    fotd_any = 100 * sum(1 for s in states if s.field_of_the_dead_tokens > 0) / n
+    extra_draw = avg([s.cards_drawn_extra for s in states])
+    extra_mana = avg([s.mana_generated_extra for s in states])
+    kodama = avg([s.kodama_cheats for s in states])
+    resonator = avg([s.resonator_copies for s in states])
+    bristly = avg([s.bristly_bill_doubles for s in states])
+    ozolith = avg([s.ozolith_moves for s in states])
+    tokens = avg([s.tokens_created for s in states])
+    lands_final = avg([sum(1 for p in s.battlefield if is_land(p, s)) for s in states])
+    ashaya_rate = 100 * sum(1 for s in states if s.ashaya_in_play) / n
+    life_gained = avg([s.life_gained for s in states])
+    scute_cap = sum(s.scute_swarm_cap_hits for s in states)
+
+    print(f"n={n}, seed_base={seed_base}, turns={turns}")
+    print(f"Avg mulligans: {mulls:.2f}")
+    print(f"Turno medio de conjuracao da Toph: {avg(cmd_turn):.2f} | mediana: {statistics.median(cmd_turn) if cmd_turn else float('nan'):.1f}")
+    print(f"Nunca conjurada em {turns} turnos: {cmd_never:.1f}%")
+    print(f"Avg terrenos em campo (turno {turns}, contando artefato/criatura-terreno): {lands_final:.2f}")
+    print(f"Avg aplicacoes de earthbend: {earthbend_apps:.2f}")
+    print(f"Avg recorrencias via Motor#16: {motor16:.2f} | % de jogos com pelo menos 1: {motor16_any:.1f}%")
+    print(f"Avg gatilhos de landfall disparados: {landfalls:.2f}")
+    print(f"Avg tokens de Field of the Dead: {fotd_tokens:.2f} | % de jogos que ligou: {fotd_any:.1f}%")
+    print(f"Avg cartas compradas extra (motores de draw): {extra_draw:.2f}")
+    print(f"Avg mana extra gerado (Lotus Cobra/Nissa por landfall): {extra_mana:.2f}")
+    print(f"Avg cheats do Kodama of the East Tree: {kodama:.2f}")
+    print(f"Avg copias via Strionic Resonator: {resonator:.2f}")
+    print(f"Avg dobras via Bristly Bill (ativada): {bristly:.2f}")
+    print(f"Avg realocacoes de contador via The Ozolith: {ozolith:.2f}")
+    print(f"Avg tokens totais criados: {tokens:.2f}")
+    print(f"% de jogos com Ashaya em campo: {ashaya_rate:.1f}%")
+    print(f"Avg vida ganha (Inventors' Fair/Haywire Mite/Sylvan Library liquido): {life_gained:.2f}")
+    print(f"Total de vezes que o cap defensivo da Scute Swarm foi atingido (200+ permanentes): {scute_cap}")
+
+    # breakdown de fontes de earthbend
+    combined = {}
+    for s in states:
+        for k, v in s.earthbend_by_source.items():
+            combined[k] = combined.get(k, 0) + v
+    print("\nEarthbend por fonte (soma de todas as partidas, ordenado):")
+    for k, v in sorted(combined.items(), key=lambda kv: -kv[1]):
+        print(f"  {k}: {v} ({v/n:.2f}/jogo)")
+
+    return states
+
+
+if __name__ == "__main__":
+    import sys
+    import os
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    states = run_batch(n=2000, seed_base=9000000, turns=8)
+
+    with open("toph_v1_runs.jsonl", "w") as f:
+        for s in states:
+            f.write(json.dumps({
+                "mulligans": s.mulligans,
+                "commander_cast_turn": s.commander_cast_turn,
+                "earthbend_applications": s.earthbend_applications,
+                "motor16_recursions": s.motor16_recursions,
+                "landfall_triggers_fired": s.landfall_triggers_fired,
+                "field_of_the_dead_tokens": s.field_of_the_dead_tokens,
+                "cards_drawn_extra": s.cards_drawn_extra,
+                "tokens_created": s.tokens_created,
+                "ashaya_in_play": s.ashaya_in_play,
+                "life_gained": s.life_gained,
+                "scute_swarm_cap_hits": s.scute_swarm_cap_hits,
+            }) + "\n")

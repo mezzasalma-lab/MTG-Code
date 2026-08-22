@@ -101,6 +101,38 @@ Documentar a premissa no código se não for óbvio olhando a decklist.
 
 ---
 
+## Teste de robustez antes de rodar o batch oficial
+
+Adicionada a partir da sessão do Toph, the First Metalbender (2026-08-22):
+construindo um simulador que cobre 16 motores diferentes (não 1 ou 2),
+5 bugs reais só apareceram rodando um volume grande de partidas com seeds
+aleatórias — nunca nos primeiros testes manuais com 1-2 seeds fixas:
+
+- Estado nunca conjurado por estar numa zona (comando) que a lógica de
+  casting não verificava.
+- Loop infinito por mutar `battlefield`/lista equivalente durante uma
+  iteração `for` sobre ela mesma (clone de token entrando na lista sendo
+  iterada).
+- `ValueError`/crash em efeitos que sacrificam/removem múltiplos
+  permanentes de uma lista pré-computada, quando processar o primeiro
+  dispara uma cadeia que já removeu o segundo por outro caminho.
+- `RecursionError` por um efeito "copiar permanente" não excluir cópias/
+  tokens do próprio gatilho que a criou (a carta real diz "outro
+  permanente **não-token**" — a implementação inicial não tinha essa
+  distinção).
+- `RecursionError` por refatoração via find-and-replace em massa
+  reescrever a própria linha *dentro* da função que estava sendo chamada
+  em todos os outros lugares, criando autorrecursão.
+
+**Prática obrigatória antes de considerar um simulador novo pronto pra
+rodar o batch oficial:** rodar uma amostra grande (10.000-20.000 partidas)
+com seeds sequenciais e um timeout curto por partida (ex:
+`signal.alarm(2)` em Python) capturando exceções e travamentos, **antes**
+de rodar o batch de n= pequeno que vira o resultado reportado. Só reportar
+resultado depois de zero erros/travamentos nessa varredura.
+
+---
+
 <!-- Adicionar novas entradas abaixo conforme surgirem cartas com efeitos
      estruturais que exigem implementação explícita (não só tag) em qualquer
      simulador que as inclua. -->
