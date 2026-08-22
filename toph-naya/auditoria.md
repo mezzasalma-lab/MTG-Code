@@ -19,7 +19,7 @@ legalities.commander: banned
 
 Todas as outras 96 cartas não-terreno da lista foram checadas: **nenhuma outra tem `legalities.commander` diferente de `legal`.** Este é o único problema de legalidade do deck, mas é impeditivo — o deck **não pode ser jogado como está** em mesa que respeite o banlist oficial. Precisa ser substituída antes de qualquer outra consideração.
 
-Como referência de troca (não uma recomendação definitiva, só contexto pra decisão do usuário): o próprio EDHREC lista **Bumi, Unleashed** e **Toph, Hardheaded Teacher** como cartas de sinergia alta (0.592 e 0.578) que ainda não estão na lista — ver seção 9.
+Como referência de troca (não uma recomendação definitiva, só contexto pra decisão do usuário): o próprio EDHREC lista **Bumi, Unleashed** e **Toph, Hardheaded Teacher** como cartas de sinergia alta (0.592 e 0.578) que ainda não estão na lista — ver seção 11.
 
 ---
 
@@ -98,7 +98,37 @@ Essa é a identidade real do deck: um motor de landfall Naya reforçado por arte
 
 ---
 
-## 4. Ramp — 9 peças
+## 4. Motores identificados — 15 interações estruturais reais
+
+Levantamento conjunto (9 identificados pelo usuário + 6 achados nesta revisão adicional do oráculo completo), cada um conferido contra o texto real da Scryfall antes de entrar aqui.
+
+**Os 9 do usuário (revalidados):**
+
+1. **Earthbend trava land-creature independente da Toph continuar em campo** — o texto de reminder do earthbend (`Put X +1/+1 counters on it. When it dies or is exiled, return it to the battlefield tapped`) não tem duração ("until end of turn"), então o efeito é permanente por padrão — a terra continua criatura mesmo se a fonte que a earthbendou sair de campo.
+2. **Artefato não-token entrando com Toph em campo = landfall garantido**, via `Nontoken artifacts you control are lands in addition to their other types` (seção 3).
+3. **Pacote de mana universal:** Prismatic Omen, Dryad of the Ilysian Grove, Wrenn and Realmbreaker, Ashaya (só verde), Overlord of the Hauntwoods (token "Everywhere", todo tipo básico) e Enduring Vitality (`Creatures you control have "{T}: Add one mana of any color."` — conferido ao vivo, ainda não incluída fisicamente).
+4. **Field of the Dead conta nomes de artefato-terreno** — cada artefato virado terreno pela Toph é mais um nome distinto na contagem de "7+ terrenos com nomes diferentes".
+5. **Krang dá flying/trample/indestructible/haste a todo artefato earthbent** — só se aplica quando o terreno earthbent também é um artefato (via Toph transformando um artefato seu em terreno primeiro); land creatures "puras" (não-artefato) não recebem o buff.
+6. **Mycosynth Lattice + Toph = todo permanente seu vira terreno** — Lattice torna tudo artefato, Toph torna todo artefato não-token em terreno.
+7. **Ondu Inversion / Oblivion Stone = wraths quase assimétricos** — `destroy all nonland permanents` (Ondu Inversion) e `destroy each nonland permanent without a fate counter` (Oblivion Stone) preservam terrenos por definição, incluindo os artefatos-terreno da Toph.
+8. **Earthbender Ascension:** confirmando o texto exato — cada landfall poe 1 quest counter; a partir do 4º quest counter acumulado, **cada landfall subsequente também** dá +1/+1 permanente + trample **até o final do turno** (o trample não é permanente, só o counter — pequena correção em relação à formulação original).
+9. **Awaken the Woods + Felidar Retreat + Mossborn Hydra:** Awaken the Woods com X alto cria X tokens de terreno-criatura que entram *simultaneamente*, cada um disparando landfall — com Mossborn Hydra em campo isso é X dobras seguidas dos contadores dela (crescimento geométrico, não aditivo) e X escolhas de Felidar Retreat.
+
+**+6 achados nesta revisão (varredura do oráculo completo das 97 cartas):**
+
+10. **Land creatures ganham double strike + vigilance de graça, empilhando com o buff de artefato do Krang:**
+    - Toph, Greatest Earthbender: `Land creatures you control have double strike.`
+    - Earthbending Student: `Land creatures you control have vigilance.`
+    - Vale pra **todo** terreno earthbent do deck (não só os que viraram artefato primeiro, ao contrário do Krang).
+11. **Ashaya, Soul of the Wild é um segundo motor "permanente vira terreno" — paralelo ao da Toph, e maior em volume.** Texto real: `Nontoken creatures you control are Forest lands in addition to their other types.` A Toph cobre artefatos; a Ashaya cobre **toda criatura não-token**. As duas juntas em campo tornam quase todo spell relevante que você resolve em um trigger de landfall, e reforçam ainda mais o Field of the Dead (item 4).
+12. **The Ozolith recicla os counters de land creatures que morrem** — earthbend devolve a terra "tapped" sem counters quando ela morre/é exilada; o Ozolith intercepta esses counters antes de se perderem (`Whenever a creature you control leaves the battlefield, if it had counters on it, put those counters on The Ozolith`) e permite realocá-los depois. É a proteção real do investimento de earthbend contra remoção/combate.
+13. **A ativada do Bristly Bill (`{3}{G}{G}: Double the number of +1/+1 counters on each creature you control`) dobra o board inteiro, não só a Mossborn Hydra** — é repetível (limitado só por mana), então serve como um segundo modo de crescimento explosivo fora do combo específico do item 9.
+14. **Kodama of the East Tree — cheat-into-play em cadeia a partir de qualquer permanente que entra:** `Whenever another permanent you control enters, if it wasn't put onto the battlefield with this ability, you may put a permanent card with equal or lesser mana value from your hand onto the battlefield.` Dado o volume de entradas de permanente que o deck já gera (landfall, tokens, artefatos), cada uma pode puxar de graça outro permanente mais barato da mão — inclusive encadeando, já que o permanente puxado também conta como "outro permanente que entra" pro próximo gatilho.
+15. **Strionic Resonator — dobrador universal e flexível de gatilho, escolhido a cada ativação:** `{2},{T}: Copy target triggered ability you control.` Ao contrário de um dobrador fixo numa única carta, esse permite escolher qual gatilho copiar a cada turno — o earthbend do comandante, um landfall específico, o dano do Tannuk, etc.
+
+---
+
+## 5. Ramp — 9 peças
 
 Arcane Signet, Sol Ring, Mox Opal (condicional, Metalcraft), Dryad of the Ilysian Grove (terreno extra por turno), Horizon Explorer (Lander token = fetch de terreno básico, terrenos entram destapados), Lotus Cobra, Nissa Resurgent Animist, Tireless Provisioner, Planar Engineering (sacrifica 2 terrenos, busca 4 básicas — ramp líquido de +2 terrenos).
 
@@ -106,13 +136,13 @@ Primeval Titan (banida, ver seção 0) também seria ramp — **não conto ela a
 
 ---
 
-## 5. Card draw — 12 fontes
+## 6. Card draw — 12 fontes
 
 Sylvan Library, Esper Sentinel, Skullclamp, Ichor Wellspring, Mishra's Bauble, Iron Spider Stark Upgrade (remove contadores: puxa carta), Caretaker's Talent (token entra: puxa carta), The Great Henge (criatura não-token entra: contador + puxa carta), Tannuk Memorial Ensign (2º landfall do turno: puxa), Nissa Resurgent Animist (2º landfall do turno: dig até achar Elfo/Elemental), Spelunking (ETB: puxa), Fountainport (sacrifica token: puxa).
 
 ---
 
-## 6. Remoção e interação — 4 peças + 2 wipes (fraqueza real, já identificada pelo usuário)
+## 7. Remoção e interação — 4 peças + 2 wipes (fraqueza real, já identificada pelo usuário)
 
 **Remoção pontual:**
 - Erode — destroy target creature or planeswalker (dá terreno básico ao dono, downside real).
@@ -128,7 +158,7 @@ Sylvan Library, Esper Sentinel, Skullclamp, Ichor Wellspring, Mishra's Bauble, I
 
 ---
 
-## 7. Win conditions
+## 8. Win conditions
 
 Não há um "combo de vitória" dedicado — o plano de jogo é batalha via corpos grandes:
 - **Earthbend em escala:** Avatar Kyoshi (earthbend 8 todo combate) e Toph, Earthbending Master (earthbend X = contadores de experiência acumulados, que só crescem) transformam terrenos em ameaças de combate recorrentes, sem depender de conjurar novas criaturas.
@@ -140,7 +170,7 @@ Nenhuma dessas é um "combo" no sentido do critério de Bracket — são todas a
 
 ---
 
-## 8. Game Changers — contagem oficial (3/3, confirma o cabeçalho da lista)
+## 9. Game Changers — contagem oficial (3/3, confirma o cabeçalho da lista)
 
 Cruzamento ao vivo contra `https://api.scryfall.com/cards/search?q=is:gamechanger` (53 cartas, consultado 2026-08-22):
 
@@ -150,7 +180,7 @@ Confere exatamente com o que o cabeçalho do `lista.md` já declarava ("GC 3/3")
 
 ---
 
-## 9. Varredura de combo e estruturas restritas por Bracket
+## 10. Varredura de combo e estruturas restritas por Bracket
 
 - **Combo de 2 peças:** varredura manual do texto oracle completo das 97 cartas (não é combo detectável por regex simples nesse deck — a categoria de risco aqui seria "mana infinito via sacrifício de artefato", então li Krark-Clan Ironworks, Mycosynth Lattice, Liquimetal Coating/Torque, Ultron, Oswald Fiddlebender e Urza's Saga com atenção). **Não encontrei um loop fechado de 2 peças.** Krark-Clan Ironworks (`Sacrifice an artifact: Add {C}{C}`) combinado com Crucible of Worlds (recompra terreno-artefato do cemitério) gera valor real, mas está limitado a 1 land drop por turno (a menos que Dryad of the Ilysian Grove/Horizon Explorer estejam em campo também — nesse caso vira 3 peças, e ainda assim finito por turno, não um loop infinito).
 - **Negação de terras em massa:** nenhuma encontrada — Strip Mine é destruição de terreno único (não é "mass land denial" pelo critério oficial, que fala de efeitos repetíveis/assimétricos de negar terreno a todos os oponentes).
@@ -162,7 +192,7 @@ Confere exatamente com o que o cabeçalho do `lista.md` já declarava ("GC 3/3")
 
 ---
 
-## 10. Cruzamento com dados reais do EDHREC (sinergia com o comandante)
+## 11. Cruzamento com dados reais do EDHREC (sinergia com o comandante)
 
 Consultado `json.edhrec.com/pages/commanders/toph-the-first-metalbender.json` (2026-08-22). Cartas de **maior sinergia real** com Toph, the First Metalbender segundo o próprio EDHREC (`synergy` = o quanto uma carta aparece mais que a média em decks desse comandante especificamente, não popularidade genérica):
 
@@ -191,7 +221,7 @@ Só como contexto (não é recomendação): os dois cards mais jogados junto com
 
 ---
 
-## 11. Classificação de Bracket
+## 12. Classificação de Bracket
 
 **Bracket 3 (Upgraded), no teto de Game Changers (3 de 3) — condicionado à remoção da Primeval Titan banida (seção 0).**
 
