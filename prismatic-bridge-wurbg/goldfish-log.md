@@ -162,6 +162,30 @@ Avg vezes que a Bridge foi removida: 0,82
 
 ---
 
+### Política "hold-for-flash" implementada e testada — 2026-08-21
+
+**Implementação:** novo flag `HOLD_FOR_FLASH_POLICY` (default `False`, preserva o comportamento cast-ASAP). Quando `True`: se um habilitador de flash (Alchemist's Refuge/Emergence Zone) já está em campo e a Bridge ainda não foi conjurada, o `main_phase` **não** conjura ela normal mesmo se pagável — segura de propósito, reserva mana todo turno, e espera a janela de flash no end step alheio (`can_flash_bridge`, usando `mana_held_back`).
+
+**n=5000, 8 turnos, comparando as duas políticas:**
+
+| Métrica | Cast-ASAP (default) | Hold-for-flash |
+|---|---|---|
+| Conjurada via flash | 0,0% | **9,4%** |
+| Bridge nunca conjurada em 8t | 14,1% | **21,5%** |
+| Turno médio da 1ª conjuração | 4,08 | 4,29 |
+| Avg gatilhos de upkeep/partida | 1,96 | **1,73** |
+| % Bridge em campo no fim | 58,6% | **50,2%** |
+| Avg Bridge removida | 0,78 | **0,69** |
+| 1º acerto de PW até T6 | 40,9% | **36,5%** |
+| 1º acerto de PW até T7 | 48,6% | **43,5%** |
+| 1º acerto de PW até T8 | 55,9% | **50,4%** |
+
+**Leitura:** a troca é real, mas negativa no agregado. Segurar de propósito reduz a remoção média (0,78→0,69 — a proteção contra a janela de exposição funciona de verdade) e ativa a linha de flash em 9,4% das partidas. Mas o custo supera o ganho: como o limiar de mana pra flashar é sempre MAIOR que o limiar pra conjurar normal, esperar por essa condição mais cara e mais rara atrasa (ou em muitos casos impede) a entrada da Bridge em campo — mais partidas nunca chegam a ter a Bridge em campo (14,1%→21,5%), menos gatilhos totais acontecem (1,96→1,73), e todas as métricas de acerto de planeswalker pioram (T6/T7/T8 caem uns 4-5 pontos cada).
+
+**Conclusão prática:** a política ótima, segundo o modelo, não é "sempre segurar pra flashar quando possível" — é conjurar assim que fica pagável (política atual, já é o padrão do simulador). Só vale usar a linha de flash nos casos em que ela já coincide naturalmente com o resto do jogo, não como estratégia deliberada e sistemática.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

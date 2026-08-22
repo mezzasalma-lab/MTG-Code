@@ -36,6 +36,17 @@ COMMANDER = "The Prismatic Bridge"
 N_OPPONENTS = 3
 REMOVAL_CHANCE_PER_OPPONENT = 0.12  # premissa assumida, ver docstring
 
+# Politica de conjuracao da Bridge:
+# False (default) = "cast ASAP" - conjura normal na main phase assim que
+#   fica pagavel, nunca espera pra flashar (comportamento historico).
+# True = "hold for flash" - se um habilitador de flash JA esta em campo,
+#   segura a Bridge de proposito (nao conjura normal, mesmo pagavel) e
+#   espera a janela de flash no end step alheio, especificamente pra
+#   pular a rodada de remocao antes do 1o gatilho de upkeep (o plano de
+#   jogo real do usuario). So muda comportamento nos jogos em que um
+#   habilitador chega a estar em campo (~17% das partidas, ver auditoria).
+HOLD_FOR_FLASH_POLICY = False
+
 DECKLIST_TEXT = """
 1 Alchemist's Refuge
 1 All Will Be One
@@ -533,8 +544,12 @@ def main_phase(state: GameState, log: List[Dict]):
         state.battlefield.append(c)
         log.append({"action": "cast", "card": c, "turn": state.turn})
 
-    # Bridge via main phase normal, se nao foi flashada nesse ciclo
-    if not state.bridge_in_play and can_cast(state, COMMANDER):
+    # Bridge via main phase normal, se nao foi flashada nesse ciclo.
+    # Sob HOLD_FOR_FLASH_POLICY, se um habilitador de flash ja esta em
+    # campo, o jogador segura a Bridge de proposito (nao conjura normal
+    # mesmo pagavel) e espera a janela de flash no end step alheio.
+    skip_normal_cast = HOLD_FOR_FLASH_POLICY and choose_flash_enabler(state) is not None
+    if not state.bridge_in_play and not skip_normal_cast and can_cast(state, COMMANDER):
         cast_bridge(state, log, via_flash=False)
 
     # Se ja tem habilitador de flash em campo e a Bridge ainda nao saiu,
