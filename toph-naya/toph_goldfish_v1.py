@@ -641,6 +641,8 @@ def apply_earthbend(state: GameState, amount: int, log: list, source: str):
 
 def apply_etb(state: GameState, perm: Permanent, log: list):
     name = perm.card.name
+    if name == "Mossborn Hydra":
+        perm.counters += 1
     if name == "Badgermole Cub":
         apply_earthbend(state, 1, log, "Badgermole Cub (ETB)")
     elif name == "Bumi, Eclectic Earthbender":
@@ -765,10 +767,15 @@ def resolve_instant_sorcery(state: GameState, name: str, log: list):
             leave_battlefield(state, p, log)
         basics = ("Forest", "Plains", "Mountain",
                   "Snow-Covered Forest", "Snow-Covered Mountain", "Snow-Covered Plains")
-        fetched = [n for n in state.library if n in basics][:4]
-        for n in fetched:
-            state.library.remove(n)
-            perm = mk_perm(state, n)
+        for _ in range(4):
+            # Reavalia a biblioteca a cada iteracao (nao uma lista congelada) —
+            # um landfall no meio do loop (Tannuk/Nissa 2o gatilho) pode
+            # comprar cartas e mudar o que ainda esta disponivel.
+            found = next((c for c in state.library if c in basics), None)
+            if found is None:
+                break
+            state.library.remove(found)
+            perm = mk_perm(state, found)
             perm.tapped = True
             enter_battlefield(state, perm, log)
     elif name == "Germination Practicum":

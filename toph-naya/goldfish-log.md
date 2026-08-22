@@ -187,6 +187,37 @@ Testado em 20.000 partidas com timeout antes do batch oficial (0 erros).
 
 **Leitura:** a mudança é puramente qualitativa, não quantitativa — o volume total de recorrência/mana extra gerado pelo Motor#16 **não muda** (a política só decide QUEM entra no loop, não QUANTO o loop produz). O ganho real é evitar tapar Krang/Great Henge/Mycosynth Lattice sem necessidade — eles agora só entram como último recurso (1 vez em 2000 jogos cada), contra um número não isolado mas claramente maior sob a política antiga (191 sacrifícios de tier 3 no total, incluindo esses). `SAC_VALUE_PRIORITY_POLICY` promovida a `True` como default.
 
+---
+
+### Levantamento dos 16 motores — taxa de ativação real e 2 bugs novos — 2026-08-22
+
+**Pedido do usuário:** depois de esgotar o Motor #16, avaliar os demais 15 motores da seção 4 da auditoria com o mesmo rigor — taxa de ativação real, não só "está implementado".
+
+**Método:** rodei n=2000 medindo, pra cada motor, a % de jogos em que a condição de ativação (a carta-chave em campo, ou o efeito realmente disparando) acontece até o turno 8.
+
+| Motor (auditoria seção 4) | Condição medida | Taxa |
+|---|---|---|
+| #4 — Field of the Dead conta artefato-terreno | zumbi criado até T8 | **84,5%** |
+| #10 — land creatures 5+ (setup pro double strike/vigilance) | 5+ terrenos earthbendados em campo | **77,5%** |
+| #3 — pacote de mana universal (qualquer uma das 3 peças) | Great Divide Guide/Wrenn/Enduring Vitality em campo | 32,8% |
+| #16 — Motor#16 (earthbend recorrente) | ≥1 recorrência | 35,0% |
+| #15 — Strionic Resonator | ≥1 cópia de gatilho | 14,6% |
+| #9 — combo Awaken the Woods + Felidar Retreat + Mossborn Hydra | as 3 em campo/cemitério juntas | 0,3% (6/2000) |
+| #7 — Oblivion Stone em campo | carta em campo (nunca ativada pela IA) | 12,9% |
+| #8 — Earthbender Ascension com 4+ quest counters | disparou o bônus | 6,1% |
+| #6 — Mycosynth Lattice + Toph (tudo vira terreno) | ambas em campo | 9,4% |
+| #5 — Krang + artefato earthbent em campo junto | condição de setup satisfeita | 6,2% em geral, **mas 100% das vezes que o Krang está em campo** (a política broad_artifact garante isso) |
+| #12 — The Ozolith recicla contador | ≥1 realocação | 5,0% |
+| #13 — Bristly Bill dobra o board (ativada) | ≥1 ativação | 9,5% |
+| #14 — Kodama of the East Tree cheat-into-play | ≥1 cheat | **0,7%** — confirma o achado anterior, é o motor mais fraco na prática dentro do perfil de jogo modelado |
+
+**2 bugs reais encontrados nessa varredura (corrigidos):**
+
+1. **Mossborn Hydra nunca ganhava o `+1/+1` de entrada** — só a duplicação por landfall estava implementada (`landfall_double_self`), então toda partida dobrava **0 por 2 = 0**, pra sempre. A carta estava 100% neutralizada desde o primeiro build. Rastreei os 6 jogos onde o combo do item #9 monta (Awaken the Woods + Felidar Retreat + Mossborn Hydra juntos) e a Hydra tinha **0 contadores nos 6**, o que denunciou o bug. Corrigido adicionando o contador de entrada no `apply_etb`. Depois do fix, os mesmos 6 jogos mostram contadores reais: **2, 8, 16, 64, 128, 256** — confirma que o "combo explosivo" da seção 4 item 9 é genuíno (potências de 2 batendo com dobra por landfall), só estava sendo mascarado pelo bug.
+2. **`ValueError` intermitente no fetch de básicas do Planar Engineering** — a lista de 4 terrenos a buscar era pré-computada uma vez (`fetched = [...][:4]`) e depois removida da biblioteca item a item; se um gatilho de landfall no meio do processo (2º landfall do turno via Tannuk/Nissa) comprasse justamente a última cópia de um dos nomes já "reservados" na lista congelada, o `.remove()` seguinte falhava por a carta já não estar mais lá. Corrigido reavaliando a biblioteca a cada iteração em vez de usar uma lista congelada — mesma categoria de bug do `RecursionError`/`ValueError` documentados na sessão anterior (efeito colateral no meio de um loop que opera sobre um snapshot desatualizado). Achado rodando 20.000-30.000 partidas com timeout, não nos testes manuais.
+
+**Leitura geral sobre os 16 motores:** a maioria dos motores "estruturais" (Field of the Dead, volume de land creatures, o próprio Motor#16) tem taxa de ativação alta (75-85%) porque dependem só da mecânica central (Toph + earthbend), não de uma carta específica rara. Os motores que dependem de uma **carta única em 99** (Kodama, Ozolith, Bristly Bill, Strionic Resonator, o combo de 3 peças do item 9) naturalmente ficam na faixa de 0,3%-15% em 8 turnos — isso não é "os motores são fracos", é a matemática normal de singleton de 99 cartas. Kodama continua sendo a exceção genuína de baixo valor prático (0,7%, mais baixo que sua taxa de estar em campo sozinho de ~9,6% já medida antes — quando entra, raramente encontra o próprio gatilho).
+
 **Simplificações documentadas no docstring do script** (não inventadas, omissões explícitas): sem combate real contra oponente (nenhuma criatura adversária, nenhum bloqueio — "atacar" só dispara gatilhos de ataque, não há dano/vida de oponente real); Esper Sentinel/Skullclamp/Sword of Feast and Famine/Talon Gates/Krang/Council's Judgment/Lightning Greaves/Heroic Intervention não têm efeito numérico solo simulado (dependem de oponente real); modelo de mana genérico (mana total, não pip a pip — o deck tem fixing extenso e documentado); habilidades de lealdade do Wrenn and Realmbreaker além da estática de fixing não são ativadas automaticamente.
 
 ---
