@@ -104,8 +104,25 @@ Vraska, Betrayal's Sting merece nota: ultimate `-9` transforma um permanente em 
 - **Esika, God of the Tree** (frente, `{1}{G}{G}`): dá vigilance + `{T}: Add one mana of any color` a TODAS as lendárias que você controla. O deck tem uma densidade alta de lendárias (praticamente todos os planeswalkers contam, mais Aminatou, Arena Rector, Carth the Lion, Tamiyo x2, Vorinclex, Atraxa, Nicol Bolas, Vraska x1) — cada uma vira uma fonte extra de fixação de mana quando Esika está em campo, o que ajuda a compensar a contagem baixa de ramp dedicado (seção 3).
 - **The Prismatic Bridge** (verso, `{W}{U}{B}{R}{G}`): a cada upkeep, revela do topo até achar criatura ou planeswalker, põe em campo de graça. Motor de vantagem de material puro, sem seletividade — favorece mainboard com densidade alta de criaturas/planeswalkers.
 
-**Achado real (contagem exata via `type_line` das 99 cartas, não a média do EDHREC):** este deck tem **11 criaturas e 17 planeswalkers** — o INVERSO da distribuição média de decks de Esika no EDHREC (24 criaturas / 6 planeswalkers, seção "Average Type Distribution" do `container.json_dict`). São 28 "alvos" da Bridge em 99 cartas (~28,3%) — taxa de acerto por upkeep razoável, mas fortemente viesada pra planeswalker. Isso é coerente com o pacote de contadores/proliferate (seção 6, planeswalker ganha lealdade = contador), mas é uma escolha de build atípica que vale o usuário confirmar como intencional: menos corpos pra bloquear/atacar, mais motores de vantagem de carta vulneráveis a remoção de planeswalker (deck tem pouca proteção dedicada pra permanentes não-criatura, fora Sterling Grove pra encantamento).
+**Achado real (contagem exata via `type_line` das 99 cartas, não a média do EDHREC):** este deck tem **11 criaturas e 17 planeswalkers** — o INVERSO da distribuição média de decks de Esika no EDHREC (24 criaturas / 6 planeswalkers, seção "Average Type Distribution" do `container.json_dict`). **Confirmado pelo usuário como intencional (2026-08-21):** o plano do deck é jogar planeswalkers de graça pela Bridge, proteger a Bridge, e tentar conjurá-la no end step do oponente logo antes do próprio turno pra já garantir 1 gatilho de upkeep. A proporção alta de planeswalkers não é um desvio a corrigir — é o motor central do deck.
 - Interação com o pacote de contadores (seção 6): qualquer planeswalker que a Bridge coloque em jogo de graça já entra "pronto" pra crescer de lealdade mais rápido com o pacote de proliferate — reforça o plano principal em vez de ser um tema paralelo.
+
+### Plano de jogo confirmado: flashar a Bridge no end step do oponente
+
+**Viável com as peças reais do deck** — verificado via `oracle_text`, não é premissa:
+
+- **Alchemist's Refuge** (`{G}{U}, {T}: You may cast spells this turn as though they had flash`) e **Emergence Zone** (`{1}, {T}, Sacrifice this land: You may cast spells this turn as though they had flash`) — os 2 habilitadores de flash do deck. Sem eles, The Prismatic Bridge (Legendary Enchantment, sem flash própria) só pode ser conjurada em velocidade sorcery na sua própria main phase — a linha "end step do oponente" depende de ter 1 desses 2 em campo.
+- Isso é uma janela estreita: só 2 cartas em 99 habilitam a linha. Vale considerar se mais fontes de flash (ex: Vedalken Orrery, outro efeito genérico de "spells as though flash") melhorariam a consistência do plano principal do deck — ainda não testei isso num goldfish.
+
+### Proteção da Bridge — o que já existe
+
+- **Sterling Grove** (`Other enchantments you control have shroud`) — proteção direta e incondicional, a Bridge fica intargetável assim que Sterling Grove está em campo.
+- **Counterspell, Dovin's Veto, Mana Drain, Swan Song** (seção 5) — proteção reativa: contra-atacam remoção/exile mirada na Bridge antes de resolver.
+- **Não encontrei** proteção dedicada adicional pra permanentes não-criatura além dessas (ex: nenhum "hexproof genérico pra encantamentos" fora do Sterling Grove). Se Sterling Grove for removido/nunca chegar, a Bridge fica exposta só à proteção reativa dos counterspells.
+
+### Achado adicional: Paradox Haze pode dobrar o gatilho de upkeep da Bridge
+
+`Paradox Haze` (Aura, `Enchant player` — `At the beginning of enchanted player's first upkeep each turn, that player gets an additional upkeep step after this step`): se encantar o PRÓPRIO jogador, gera um segundo upkeep todo turno — e a Bridge (`At the beginning of your upkeep...`) dispararia **duas vezes por turno**, não uma. Isso não estava registrado na varredura anterior porque a regex de sinergia procurava por "proliferate"/"+1/+1 counter", não por "additional upkeep" — é uma peça de sinergia direta com o motor central do comandante que passou batido na primeira varredura. Vale considerar isso um achado de alta prioridade pra reavaliação de prioridade de cast em jogo.
 
 ---
 
