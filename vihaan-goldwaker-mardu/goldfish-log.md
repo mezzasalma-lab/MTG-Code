@@ -61,6 +61,43 @@ O motor de Treasure é real e funciona, mas em volume bem mais modesto do que o 
 
 ---
 
+---
+
+### Política "maximizar criação e destruição de Treasure" — 2026-08-22
+
+**Pedido do usuário:** priorizar a criação E destruição de Treasures como mecânica principal do goldfish (confirmando antes que Mirkwood Bats está no deck — está — e que "Marionette Apprentice" **não** está — a carta real na lista é **Marionette Master**, diferente: Fabricate 3 em vez de Fabricate 1, drain = poder da criatura em vez de fixo 1).
+
+**Implementação — `TREASURE_MAXIMIZE_POLICY`, duas partes:**
+1. **Criação:** cartas com tag de geração de Treasure ganham prioridade de conjuração sobre outras de mesmo custo (`is_treasure_source()`).
+2. **Destruição — o achado central desta sessão:** se o Vihaan animou os Treasures em criaturas 3/3 outlaw no combate (`At the beginning of combat... Treasures you control become 3/3 Construct Assassin`), sacrificá-los pro **Ashnod's Altar** enquanto ainda são criaturas dispara **três categorias de gatilho ao mesmo tempo** — morte de criatura (Zulaport, Sephiroth, Pitiless Plunderer), morte de artefato (Marionette Master, Agent of the Iron Throne) e token saindo (Nadier's Nightblade, Mirkwood Bats) — porque um Treasure animado É simultaneamente artefato, criatura e token. Sacrificar direto pro Krark-Clan Ironworks (sem animar) só pega artefato+token, perde a categoria de morte de criatura inteira. Implementado em `aggressive_treasure_destruction()`, chamada no fim do `combat_step`; a mana gerada (`{C}{C}` por Treasure, sempre — não só quando o Goldspan Dragon está fora) entra num `bonus_mana_pool` disponível numa segunda passada de main phase pós-combate (adicionada pra aproveitar essa mana ainda no mesmo turno).
+
+**Bug real encontrado e corrigido no processo:** o cálculo de drain da Marionette Master usava um poder chutado de "4" sem checar a carta real — o poder base real dela (Scryfall) é **1/3**, e como a implementação sempre escolhe o modo "3 Servos" do Fabricate 3 (não contadores), o poder nunca sai de 1. Corrigido pra usar o valor real.
+
+Testado em 30.000 partidas com timeout antes do batch oficial (0 erros).
+
+**n=2000, mesmas seeds, baseline (só sacrifica Treasure pra pagar mana) vs política nova:**
+
+| Métrica | Baseline | Maximize | Δ |
+|---|---|---|---|
+| Avg Treasures criados (total) | 4,245 | 6,432 | +51,5% |
+| Avg Treasures sacrificados (total) | 2,179 | 4,123 | +89,3% |
+| Avg mortes de criatura | 0,667 | 1,264 | +89,5% |
+| Avg mortes de artefato | 2,268 | 4,268 | +88,2% |
+| Avg drain/dano agregado (proxy) | 1,327 | 1,764 | +32,9% |
+| Avg vida ganha | 0,558 | 0,718 | +28,7% |
+| Avg cartas compradas extra | 1,198 | 1,371 | +14,4% |
+| Avg mana bonus gerada pós-combate | 0 | 1,323 | (mecânica nova) |
+| Turno médio de conjuração do Vihaan | 3,171 | 3,17 | ~igual |
+| Revel in Riches (10+ Treasures) | 0,25% | 0,25%¹ | ~igual |
+
+¹ No batch de reporte final (seed diferente) saiu 0,2%/0,25% — dentro do ruído normal de amostra, não uma mudança real.
+
+**Leitura:** a política quase **dobra** os gatilhos de aristocratas (mortes de criatura e de artefato) e aumenta drain em quase um terço, **sem custo medido na curva da comandante** — a mana gerada pelos sac outlets no combate compensa a mana que teria vindo dos Treasures se eles tivessem sido só guardados. É um ganho real de valor incremental por turno.
+
+**Ressalva honesta — tensão real com o Revel in Riches:** essa política **compete diretamente** com o wincon alternativo de acumular 10+ Treasures simultâneos (Revel in Riches), porque ela ativamente esvazia o estoque de Treasure toda vez que anima e sacrifica. Nos dados, a taxa de Revel in Riches ficou estatisticamente igual nas duas políticas (a carta já é rara o suficiente — 1 cópia em 99 — que o efeito não apareceu de forma clara na amostra), mas conceitualmente são dois planos de jogo em tensão: se o objetivo prioritário for fechar o jogo via Revel in Riches, "maximizar destruição" não é a política certa — seria o oposto (acumular sem sacrificar). Como o usuário pediu explicitamente "criação e destruição como mecânica principal" (não o wincon do Revel in Riches), mantive `TREASURE_MAXIMIZE_POLICY = True` como default.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

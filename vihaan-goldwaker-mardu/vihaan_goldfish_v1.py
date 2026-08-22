@@ -206,6 +206,37 @@ ARTIFACT_ISH = {"artifact", "artifact_creature"}
 CREATURE_ISH = {"creature", "artifact_creature"}
 LAND_NAMES = {n for n, c in CARD_DB.items() if c.ctype == "land"}
 
+# Politica opcional (2026-08-22, pedido do usuario): maximizar CRIACAO e
+# DESTRUICAO de Treasure como mecanica principal, nao so usa-los como mana
+# reserva. Dois efeitos:
+# 1. Criacao: cartas que geram Treasure ganham prioridade de conjuracao
+#    sobre outras de mesmo custo (ver TREASURE_SOURCE_TAGS/is_treasure_source).
+# 2. Destruicao: no combate, se o Vihaan animou os Treasures em criaturas
+#    3/3 (outlaw) ate o final do turno, sacrifica todos os que sobrarem
+#    depois dos gatilhos de ataque — preferindo o Ashnod's Altar quando
+#    disponivel, porque um Treasure animado sacrificado ali conta como
+#    morte de CRIATURA + morte de ARTEFATO + token saindo AO MESMO TEMPO
+#    (Zulaport/Sephiroth/Pitiless Plunderer + Marionette Master/Agent of
+#    the Iron Throne + Nadier's Nightblade/Mirkwood Bats, tudo no mesmo
+#    evento) — o Krark-Clan Ironworks so pega artefato+token (nao e
+#    criatura fora do combate). Mana gerada entra num pool avulso do
+#    turno (`bonus_mana_pool`), disponivel pro resto do main phase.
+TREASURE_MAXIMIZE_POLICY = True
+
+TREASURE_SOURCE_TAGS = {
+    "goldspan", "treasure_attack", "draw_treasure", "sac_draw_treasure",
+    "impulse_treasure", "modal_treasure", "etb_treasure", "cascade_treasure",
+    "manufactor", "xorn", "token_doubler", "second_spell_treasure",
+    "crime_treasure", "treasure_death_batch", "outlaw_combat_treasure",
+    "combat_treasure_manifest", "creature_death_treasure", "combat_treasure",
+    "impulse_treasure_sac", "play_exile_treasure", "equipment_combat_treasure",
+    "nontoken_death_treasure", "combat_treasure2", "jan_jansen",
+}
+
+
+def is_treasure_source(name: str) -> bool:
+    return bool(CARD_DB[name].tags & TREASURE_SOURCE_TAGS)
+
 
 # ---------------------------------------------------------------------------
 # Game state
@@ -222,6 +253,11 @@ class GameState:
 
     lands_played_this_turn: int = 0
     mana_spent_this_turn: int = 0
+    bonus_mana_pool: int = 0  # mana gerada mid-turn por sac outlets (Ashnod's Altar/KCI)
+    treasures_animated_this_combat: int = 0
+    animated_treasures_sacrificed_total: int = 0
+    bonus_mana_generated_total: int = 0
+    jan_jansen_used_this_turn: bool = False
     spells_cast_this_turn: int = 0
     commits_crime_this_turn: bool = False
     treasure_spent_this_turn: bool = False
@@ -380,7 +416,7 @@ def on_tokens_created(state: GameState, n: int, kind: str):
 # Sacrificio — funcoes centrais (aristocratas reagem aqui)
 # ---------------------------------------------------------------------------
 
-def sacrifice_treasures(state: GameState, n: int, for_mana: bool = False):
+def sacrifice_treasures(state: GameState, n: int, for_mana: bool = False, as_creature: bool = False):
     n = min(n, state.treasures)
     if n <= 0:
         return 0
@@ -388,8 +424,28 @@ def sacrifice_treasures(state: GameState, n: int, for_mana: bool = False):
     state.treasures_sacrificed_total += n
     if for_mana:
         state.treasure_spent_this_turn = True
-    on_permanent_sacrificed(state, n, is_artifact=True, is_creature=False, is_token=True)
+    on_permanent_sacrificed(state, n, is_artifact=True, is_creature=as_creature, is_token=True)
     return n
+
+
+def aggressive_treasure_destruction(state: GameState):
+    """TREASURE_MAXIMIZE_POLICY: sacrifica os Treasures que sobraram do
+    combate pelo melhor outlet disponivel. Se o Vihaan os animou em
+    criaturas ate o final do turno, o Ashnod's Altar pega TODOS os
+    gatilhos de uma vez (criatura+artefato+token); sem animacao ou sem
+    Ashnod's Altar, cai pro Krark-Clan Ironworks (so artefato+token)."""
+    if state.treasures <= 0:
+        return
+    animated = state.treasures_animated_this_combat > 0
+    if animated and "Ashnod's Altar" in state.battlefield:
+        n = sacrifice_treasures(state, state.treasures, as_creature=True)
+        state.bonus_mana_pool += 2 * n
+        state.bonus_mana_generated_total += 2 * n
+        state.animated_treasures_sacrificed_total += n
+    elif "Krark-Clan Ironworks" in state.battlefield:
+        n = sacrifice_treasures(state, state.treasures, as_creature=False)
+        state.bonus_mana_pool += 2 * n
+        state.bonus_mana_generated_total += 2 * n
 
 
 def sacrifice_constructs(state: GameState, n: int):
@@ -462,8 +518,11 @@ def on_artifact_dies(state: GameState, n: int):
     if "Agent of the Iron Throne" in state.battlefield:
         drain(state, n)
     if "Marionette Master" in state.battlefield:
-        power = 4 + (3 if "fabricate_counters" in state.battlefield else 0)  # aproximacao, ver apply_etb
-        drain(state, n * power)
+        # Poder base real (Scryfall): 1/3. Fabricate 3 aqui sempre escolhe
+        # criar 3 Servos (ver resolve_permanent_etb), nao contadores — entao
+        # o poder fica sempre 1, nunca 4 (valor antigo aqui estava chutado
+        # sem checar a carta real, corrigido).
+        drain(state, n * 1)
 
 
 def on_token_leaves(state: GameState, n: int):
@@ -498,7 +557,8 @@ def treasure_value(state: GameState) -> int:
 
 
 def total_mana(state: GameState) -> int:
-    return lands_in_play(state) + rocks_mana(state) + state.treasures * treasure_value(state)
+    return (lands_in_play(state) + rocks_mana(state)
+            + state.treasures * treasure_value(state) + state.bonus_mana_pool)
 
 
 def remaining_mana(state: GameState) -> int:
@@ -783,18 +843,23 @@ def main_phase(state: GameState):
         castables = [n for n in state.hand if n not in LAND_NAMES and can_cast(state, n)]
         if not castables:
             break
-        castables.sort(key=lambda n: CARD_DB[n].mv)
+        if TREASURE_MAXIMIZE_POLICY:
+            castables.sort(key=lambda n: (not is_treasure_source(n), CARD_DB[n].mv))
+        else:
+            castables.sort(key=lambda n: CARD_DB[n].mv)
         cast_card(state, castables[0])
 
     # Jan Jansen: 2 modos, 1x cada por turno (tap) — prioriza Constructs se
     # tiver artefato nao-criatura descartavel, senao Treasure de artefato-criatura.
-    if "Jan Jansen, Chaos Crafter" in state.battlefield:
+    if "Jan Jansen, Chaos Crafter" in state.battlefield and not state.jan_jansen_used_this_turn:
         if state.treasures > 0:
             sacrifice_treasures(state, 1)
             create_constructs(state, 2, source="Jan Jansen")
+            state.jan_jansen_used_this_turn = True
         elif state.constructs > 0:
             sacrifice_constructs(state, 1)
             create_treasures(state, 2, source="Jan Jansen")
+            state.jan_jansen_used_this_turn = True
 
     # Impulse pool: tenta jogar o que der
     while play_from_impulse(state):
@@ -805,6 +870,7 @@ def combat_step(state: GameState):
     animated = 0
     if state.commander_in_play and state.treasures > 0:
         animated = state.treasures  # Vihaan: Treasures viram 3/3 outlaw ate o final do turno
+    state.treasures_animated_this_combat = animated
 
     ready_creatures = [n for n in state.battlefield
                        if is_creature_card(n) and n != COMMANDER
@@ -851,6 +917,9 @@ def combat_step(state: GameState):
         create_other_tokens(state, 1, source="Urabrask's Forge")
         state.other_tokens -= 0  # token e sacrificado no end step, ver end_step
 
+    if TREASURE_MAXIMIZE_POLICY:
+        aggressive_treasure_destruction(state)
+
 
 def end_step(state: GameState):
     if "Mahadi, Emporium Master" in state.battlefield:
@@ -892,6 +961,9 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.cascade_used_this_turn = False
     state.caretaker_drawn_this_turn = False
     state.kambal_drawn_this_turn = False
+    state.bonus_mana_pool = 0
+    state.treasures_animated_this_combat = 0
+    state.jan_jansen_used_this_turn = False
     state.deaths_this_turn = 0
     state.sephiroth_deaths_this_turn = 0
 
@@ -905,6 +977,7 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     play_land(state)
     main_phase(state)
     combat_step(state)
+    main_phase(state)  # pos-combate — usa mana bonus gerada por sac outlets no combate
     end_step(state)
 
 
@@ -942,6 +1015,8 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg cartas compradas extra: {avg([s.cards_drawn_extra for s in states]):.2f}")
     print(f"Avg cascades via Rain of Riches: {avg([s.cascades_triggered for s in states]):.2f}")
     print(f"Avg combates com pelo menos 1 atacante: {avg([s.combat_attacks_total for s in states]):.2f}")
+    print(f"Avg Treasures sacrificados ANIMADOS via Ashnod's Altar (criatura+artefato+token junto): {avg([s.animated_treasures_sacrificed_total for s in states]):.2f}")
+    print(f"Avg mana bonus gerada por sac outlets pos-combate (total no jogo): {avg([s.bonus_mana_generated_total for s in states]):.2f}")
     revel_hits = sum(1 for s in states if s.revel_condition_met_turn is not None)
     print(f"Revel in Riches (10+ Treasures) — condicao satisfeita: {100*revel_hits/n:.1f}% dos jogos"
           f" | turno medio: {avg([s.revel_condition_met_turn for s in states if s.revel_condition_met_turn is not None]):.2f}" if revel_hits else "")
