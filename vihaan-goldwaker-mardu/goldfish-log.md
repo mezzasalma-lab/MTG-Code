@@ -98,6 +98,42 @@ Testado em 30.000 partidas com timeout antes do batch oficial (0 erros).
 
 ---
 
+## Simulação #2 — re-run pós-troca de cartas (Rakdos Signet → Gleaming Splendor, Insatiable Avarice → Smaug the Magnificent) — 2026-08-22
+
+**Mudanças no `CARD_DB` e no motor:**
+- Removido `add("Rakdos Signet", ...)` e sua entrada em `GOOD_KEEP` (não contava mana em `rocks_mana()` de qualquer forma — era filtro, mana líquida 0 — então a remoção não altera a matemática de mana, só a fixação de cor real que a carta dava no jogo físico, registrado na auditoria).
+- Removido `add("Insatiable Avarice", ...)` e seu bloco em `resolve_instant_sorcery`.
+- Adicionado `Gleaming Splendor` com tag `opponent_dependent` — mesma convenção já usada pra Smothering Tithe/Monologue Tax/Mari (gatilho depende de ação real do oponente, não modelado numericamente aqui; carta fica "disponível" mas sem efeito solo na simulação, documentado desde o topo do arquivo).
+- Adicionado `Smaug the Magnificent` com dois gatilhos reais implementados:
+  - Upkeep — `create_treasures(state, 1, ...)` logo no início de `play_turn`, condicionado a já estar em campo (não dispara no turno em que é conjurado, igual à regra real).
+  - Ataque — `drain(state, state.treasures)` no bloco de gatilhos de "ataca" do `combat_step` (mesmo padrão do Captain Lannery Storm/Goldspan Dragon/Kellogg), usando o contador agregado `drain_damage_total` como proxy de "dano igual ao número de Treasures", nunca vida real de oponente.
+  - Tag `upkeep_treasure` adicionada a `TREASURE_SOURCE_TAGS` pra a política de priorização de conjuração (`TREASURE_MAXIMIZE_POLICY`) reconhecer a carta como fonte de Treasure.
+
+**Bug real encontrado e corrigido nesta passada (não relacionado à troca de cartas, achado ao revisar `play_turn` pra decidir onde encaixar o upkeep do Smaug):** o gatilho da Magda (`Whenever you commit a crime, create a tapped Treasure token`) estava sendo checado **logo depois do reset de `commits_crime_this_turn = False`**, ou seja, sempre lia `False` — nenhuma magia do turno atual tinha sido conjurada ainda naquele ponto do código. Resultado: **o gatilho da Magda nunca disparava em nenhuma partida simulada**, apesar da carta estar corretamente implementada em todo o resto (tag `crime_treasure`, contada como fonte na seção 3 da auditoria). Corrigido movendo a checagem pra depois das duas chamadas de `main_phase()` (onde as magias que cometem crime — Path to Exile, Council's Judgment, Deadly Derision, Requisition Raid, Boros Charm, Teferi's Protection — são de fato conjuradas), antes do `end_step()`.
+
+**Teste de robustez** (prática obrigatória documentada em `references/goldfish-sim-card-rules.md`): 15.000 partidas com timeout de 2s/partida via `signal.alarm`, **0 erros, 0 timeouts**.
+
+**Batch oficial: n=3000, seed_base=6000000, turns=8** (substitui o batch anterior de n=2000/seed=5000000):
+
+| Métrica | v1 (n=2000, lista antiga) | v2 (n=3000, lista nova + fix Magda) | Δ |
+|---|---|---|---|
+| Avg Treasures criados (total no jogo) | 6,43 | 6,62 | +3,0% |
+| Avg Treasures em campo no fim | 2,31 | 2,39 | +3,5% |
+| Avg mortes de criatura | 1,26 | 1,13 | −10,3% |
+| Avg drain/dano agregado (proxy) | 1,76 | 2,27 | +28,7% |
+| Avg cartas compradas extra | 1,37 | 0,99 | −27,7% |
+| Revel in Riches (10+ Treasures) | 0,25% | 0,4% | +0,15pp |
+
+**Leitura honesta, sem inventar causa única — a troca mistura vários efeitos ao mesmo tempo, então a leitura é qualitativa:**
+- **Drain/dano subiu bastante (+28,7%)** — soma de dois efeitos reais: o novo gatilho de ataque do Smaug (`dano = Treasures controlados`) e, principalmente, o fix do bug da Magda (mais Treasures reais criados por crime → mais material pro resto da cadeia de aristocratas/drain).
+- **Cartas compradas extra caiu (−27,7%)** — efeito direto e esperado da perda do Insatiable Avarice, que era uma fonte de draw puro (draw 3) e não foi substituída por nada equivalente. Bate com o que já estava registrado na auditoria (seção 6: 8→7 fontes de draw).
+- **Treasures criados subiu só um pouco (+3,0%)**, apesar de ter ganho uma fonte nova (Smaug upkeep) e corrigido o bug da Magda — porque perdeu a fixação de mana do Rakdos Signet (efeito indireto: menos consistência de curva pode atrasar levemente o motor), e porque Gleaming Splendor não contribui numericamente na simulação (opponent-dependent, sem oponente real modelado — na mesa física ela deve contribuir mais do que aparece aqui).
+- **Mortes de criatura caíram (−10,3%)** — dentro do ruído esperado de amostra a amostra (dois seeds diferentes, n diferentes), não atribuo isso a nenhuma das trocas especificamente.
+
+Resultados salvos em `vihaan_v1_runs.jsonl` (sobrescrito com os 3000 jogos novos — o nome do arquivo ficou "v1" porque é a mesma versão do simulador, só re-rodado com a lista atualizada).
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

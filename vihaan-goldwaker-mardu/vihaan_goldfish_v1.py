@@ -125,7 +125,6 @@ add("Treasure Vault", 0, "land", {"treasure_land"})
 # --- Ramp (mana rocks reais) -------------------------------------------------
 add("Arcane Signet", 2, "artifact", {"rock1"})
 add("Sol Ring", 1, "artifact", {"rock2"})
-add("Rakdos Signet", 2, "artifact", set())  # filtro, mana liquida = 0, nao conta como ramp
 
 # --- O motor de Treasures -----------------------------------------------------
 add("Academy Manufactor", 3, "artifact_creature", {"manufactor"})
@@ -153,6 +152,8 @@ add("Professional Face-Breaker", 3, "creature", {"combat_treasure", "impulse_tre
 add("Prosper, Tome-Bound", 4, "creature", {"impulse_end_step", "play_exile_treasure", "outlaw"})
 add("Revel in Riches", 5, "enchantment", {"opponent_dependent", "alt_win"})
 add("The Reaver Cleaver", 3, "artifact", {"equipment_combat_treasure"})
+add("Gleaming Splendor", 2, "enchantment", {"opponent_dependent"})  # trocada por Rakdos Signet
+add("Smaug the Magnificent", 4, "creature", {"upkeep_treasure", "treasure_attack_damage", "haste"})  # trocada por Insatiable Avarice
 
 # --- Aristocratas / drain -----------------------------------------------------
 add("Zulaport Cutthroat", 2, "creature", {"creature_death_drain"})
@@ -175,7 +176,6 @@ add("Jan Jansen, Chaos Crafter", 3, "creature", {"jan_jansen", "outlaw"})
 
 # --- Card draw / interacao -----------------------------------------------
 add("Caretaker's Talent", 3, "enchantment", {"token_draw"})
-add("Insatiable Avarice", 1, "sorcery", {"tutor_draw"})
 add("Path to Exile", 1, "instant", {"removal"})
 add("Shoot the Sheriff", 2, "instant", {"removal"})
 add("Council's Judgment", 3, "sorcery", {"removal"})
@@ -230,7 +230,7 @@ TREASURE_SOURCE_TAGS = {
     "crime_treasure", "treasure_death_batch", "outlaw_combat_treasure",
     "combat_treasure_manifest", "creature_death_treasure", "combat_treasure",
     "impulse_treasure_sac", "play_exile_treasure", "equipment_combat_treasure",
-    "nontoken_death_treasure", "combat_treasure2", "jan_jansen",
+    "nontoken_death_treasure", "combat_treasure2", "jan_jansen", "upkeep_treasure",
 }
 
 
@@ -549,7 +549,7 @@ def rocks_mana(state: GameState) -> int:
         total += 2
     if "Arcane Signet" in state.battlefield:
         total += 1
-    return total  # Rakdos Signet e filtro (mana liquida 0), nao conta aqui
+    return total
 
 
 def treasure_value(state: GameState) -> int:
@@ -624,14 +624,6 @@ def resolve_instant_sorcery(state: GameState, name: str):
     elif name == "Inspired Tinkering":
         pull_impulse(state, 3, deadline_turns=2)
         create_treasures(state, 3, source=name)
-    elif name == "Insatiable Avarice":
-        # Spree: sempre os dois modos se der mana (tutor pro topo + draw3/lose3)
-        if state.library:
-            best = max(state.library, key=lambda n: CARD_DB[n].mv)
-            state.library.remove(best)
-            state.library.insert(0, best)
-        draw_cards(state, 3)
-        state.life -= 3
     elif name == "Blood Money":
         real_creatures = [n for n in state.battlefield if is_creature_card(n) and n != COMMANDER]
         n_dead = len(real_creatures) + state.constructs + state.other_tokens
@@ -789,7 +781,7 @@ def build_library():
 
 BASE_LIBRARY = build_library()
 
-GOOD_KEEP = {"Sol Ring", "Arcane Signet", "Rakdos Signet", "Smothering Tithe", "Big Score"}
+GOOD_KEEP = {"Sol Ring", "Arcane Signet", "Smothering Tithe", "Big Score"}
 
 
 def should_keep(hand: list) -> bool:
@@ -892,6 +884,10 @@ def combat_step(state: GameState):
         create_treasures(state, 1, source="Goldspan Dragon ataca")
     if "Kellogg, Dangerous Mind" in state.battlefield and "Kellogg, Dangerous Mind" in ready_creatures:
         create_treasures(state, 1, source="Kellogg ataca")
+    if "Smaug the Magnificent" in state.battlefield and "Smaug the Magnificent" in ready_creatures:
+        # "he deals damage equal to the number of Treasures you control to any target" —
+        # proxy agregado (drain_damage_total), nunca vida real de oponente.
+        drain(state, state.treasures)
 
     if any_creature_attacking:
         if "Olivia, Opulent Outlaw" in state.battlefield and outlaw_attacking:
@@ -967,17 +963,27 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.deaths_this_turn = 0
     state.sephiroth_deaths_this_turn = 0
 
+    if "Smaug the Magnificent" in state.battlefield:
+        create_treasures(state, 1, source="Smaug the Magnificent (upkeep)")
+
     if not (is_first_turn and on_play):
         if state.library:
             state.hand.append(state.library.pop(0))  # compra normal do turno, nao conta como "extra"
-
-    if "Magda, the Hoardmaster" in state.battlefield and state.commits_crime_this_turn:
-        create_treasures(state, 1, source="Magda (crime)")
 
     play_land(state)
     main_phase(state)
     combat_step(state)
     main_phase(state)  # pos-combate — usa mana bonus gerada por sac outlets no combate
+
+    # Magda: gatilho "whenever you commit a crime" (1x/turno) so pode ser
+    # checado depois das main phases, que e quando as magicas que cometem
+    # crime (Path to Exile, Council's Judgment etc) sao de fato conjuradas.
+    # BUG CORRIGIDO (2026-08-22): antes essa checagem rodava logo apos o
+    # reset de commits_crime_this_turn=False, ou seja, sempre lia False —
+    # o gatilho da Magda nunca disparava em nenhuma partida simulada.
+    if "Magda, the Hoardmaster" in state.battlefield and state.commits_crime_this_turn:
+        create_treasures(state, 1, source="Magda (crime)")
+
     end_step(state)
 
 
@@ -1026,7 +1032,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
 if __name__ == "__main__":
     import os
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    states = run_batch(n=2000, seed_base=5000000, turns=8)
+    states = run_batch(n=3000, seed_base=6000000, turns=8)
 
     with open("vihaan_v1_runs.jsonl", "w") as f:
         for s in states:
