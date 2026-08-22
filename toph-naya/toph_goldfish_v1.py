@@ -1171,7 +1171,7 @@ if __name__ == "__main__":
     import sys
     import os
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    states = run_batch(n=2000, seed_base=9000000, turns=8)
+    states = run_batch(n=3000, seed_base=9000000, turns=8)
 
     with open("toph_v1_runs.jsonl", "w") as f:
         for s in states:

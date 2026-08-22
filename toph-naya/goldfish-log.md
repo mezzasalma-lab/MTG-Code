@@ -256,6 +256,41 @@ Diferente do Kodama, esse **não é ganho de graça** — reservar mana cedo com
 
 Testado tudo (Kodama fix + Bristly Bill) em 30.000 partidas com timeout antes de qualquer conclusão (0 erros).
 
+---
+
+### Validação final — n=3000 com o modelo fechado — 2026-08-22
+
+**Pedido do usuário:** com todos os bugs corrigidos e políticas fechadas (broad_artifact + SAC_VALUE_PRIORITY + KODAMA_HOLD ligados, BRISTLY_BILL_RESERVE desligado), rodar um batch maior (n=3000) e conferir se os números seguram.
+
+Rodei 20.000 partidas com timeout antes do batch oficial (0 erros) — o código não mudou desde a última varredura de robustez, só o tamanho do batch.
+
+**n=3000, seed_base=9000000, 8 turnos — números finais de referência:**
+
+```
+Avg mulligans: 0,77
+Turno medio de conjuracao da Toph: 2,61 | mediana: 2
+Nunca conjurada em 8 turnos: 3,6%
+Avg terrenos em campo (turno 8): 10,26
+Avg aplicacoes de earthbend: 7,95
+Avg recorrencias via Motor#16: 0,98 | % de jogos com pelo menos 1: 34,7%
+Avg gatilhos de landfall disparados: 10,40
+Avg tokens de Field of the Dead: 4,68 | % de jogos que ligou: 84,5%
+Avg cartas compradas extra: 1,59
+Avg mana extra gerado: 1,99
+Avg cheats do Kodama of the East Tree: 0,04
+Avg copias via Strionic Resonator: 0,46
+Avg dobras via Bristly Bill: 0,24
+Avg realocacoes via The Ozolith: 0,12
+Avg tokens totais criados: 12,09
+% de jogos com Ashaya em campo: 11,2%
+Avg vida ganha: 0,26
+Avg ativacoes do Unstable Obelisk: 0,213
+Avg ativacoes do The Stasis Coffin: 0,262
+Avg sacrificios via Krark-Clan Ironworks: 0,341
+```
+
+**Leitura — estabilidade confirmada:** todo número bate dentro da margem de ruído esperada com o batch de n=2000 anterior (ex: Motor#16 0,966→0,98; Field of the Dead 84,5%→84,5% exato; turno da comandante 2,608→2,61; Kodama 0,039→0,04). Nenhuma mudança sistemática — o aumento de amostra só confirma que os resultados já reportados eram estáveis, não ruído de amostra pequena. `toph_v1_runs.jsonl` regravado com as 3000 partidas (era 2000).
+
 **Simplificações documentadas no docstring do script** (não inventadas, omissões explícitas): sem combate real contra oponente (nenhuma criatura adversária, nenhum bloqueio — "atacar" só dispara gatilhos de ataque, não há dano/vida de oponente real); Esper Sentinel/Skullclamp/Sword of Feast and Famine/Talon Gates/Krang/Council's Judgment/Lightning Greaves/Heroic Intervention não têm efeito numérico solo simulado (dependem de oponente real); modelo de mana genérico (mana total, não pip a pip — o deck tem fixing extenso e documentado); habilidades de lealdade do Wrenn and Realmbreaker além da estática de fixing não são ativadas automaticamente.
 
 ---
