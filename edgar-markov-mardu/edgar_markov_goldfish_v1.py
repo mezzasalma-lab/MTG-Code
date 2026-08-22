@@ -48,6 +48,18 @@ from typing import Set, List, Dict, Optional
 
 COMMANDER = "Edgar Markov"
 
+# Politica de "cacar o combo": False (default) = joga generico, so conjura
+# Exquisite Blood/Vito Thorn/os tutores quando calham na mao no ritmo
+# normal do resto do jogo. True = prioriza os 2 tutores rapidos (Vampiric
+# Tutor, Diabolic Intent) especificamente pra buscar a peca do combo que
+# ainda falta, e prioriza conjurar as pecas do combo assim que estao na
+# mao, acima de qualquer outra jogada - pra medir o piso real (nao so o
+# melhor caso teorico) de quando o combo monta se o jogador estiver
+# mirando nisso de proposito. Pedido do usuario pra comprovar a
+# classificacao de Bracket (criterio oficial e "antes do turno 6").
+COMBO_HUNTING_POLICY = False
+COMBO_PIECES = ("Exquisite Blood", "Vito, Thorn of the Dusk Rose")
+
 DECKLIST_TEXT = """
 1 Bartolomé del Presidio
 1 Blood Artist
@@ -330,6 +342,7 @@ class GameState:
 
     combo_active: bool = False
     combo_active_turn: Optional[int] = None
+    both_combo_pieces_turn: Optional[int] = None  # turno em que as 2 pecas ja estao em campo (antes de precisar de um gatilho pra "ligar")
 
     roaming_throne_doublings: int = 0
 
@@ -579,7 +592,59 @@ def combat_step(state: GameState, log: List[Dict]):
 # TURNO
 # =========================================================
 
+def _cast_combo_piece(state: GameState, card: str, log: List[Dict]):
+    state.hand.remove(card)
+    state.mana_spent_this_turn += C(card).mv
+    state.battlefield.append(card)
+    apply_etb(state, card, log)
+    eminence_trigger(state, card, log)
+    log.append({"action": "cast_combo_piece", "card": card, "turn": state.turn})
+    if all(p in state.battlefield for p in COMBO_PIECES) and state.both_combo_pieces_turn is None:
+        state.both_combo_pieces_turn = state.turn
+        log.append({"trigger": "both_combo_pieces_in_play", "turn": state.turn})
+
+def combo_hunt(state: GameState, log: List[Dict]):
+    missing = [p for p in COMBO_PIECES if p not in state.battlefield and p not in state.hand]
+
+    # Diabolic Intent: busca direto pra mao, mas exige sacrificar uma
+    # criatura ja em campo como custo adicional.
+    if missing and "Diabolic Intent" in state.hand and can_cast(state, "Diabolic Intent"):
+        sac_candidates = [c for c in state.battlefield if is_creature(c) and c != COMMANDER]
+        if sac_candidates:
+            state.hand.remove("Diabolic Intent")
+            state.mana_spent_this_turn += C("Diabolic Intent").mv
+            state.graveyard.append("Diabolic Intent")
+            victim = sac_candidates[0]
+            state.battlefield.remove(victim)
+            state.graveyard.append(victim)
+            target = missing[0]
+            state.library.remove(target)
+            state.hand.append(target)
+            log.append({"action": "diabolic_intent", "sacrificed": victim, "found": target, "turn": state.turn})
+            missing = [p for p in COMBO_PIECES if p not in state.battlefield and p not in state.hand]
+
+    # Vampiric Tutor: busca pro topo da biblioteca (nao pra mao direto) -
+    # a proxima compra normal (inicio do proximo turno) pega a carta.
+    if missing and "Vampiric Tutor" in state.hand and can_cast(state, "Vampiric Tutor"):
+        state.hand.remove("Vampiric Tutor")
+        state.mana_spent_this_turn += C("Vampiric Tutor").mv
+        state.graveyard.append("Vampiric Tutor")
+        target = missing[0]
+        state.library.remove(target)
+        state.library.insert(0, target)
+        log.append({"action": "vampiric_tutor", "found": target, "turn": state.turn})
+
+    # Conjura qualquer peca do combo que ja esteja na mao, com prioridade
+    # sobre o resto da mao (loop generico do main_phase abaixo so pega o
+    # que sobrar).
+    for piece in COMBO_PIECES:
+        if piece in state.hand and can_cast(state, piece):
+            _cast_combo_piece(state, piece, log)
+
 def main_phase(state: GameState, log: List[Dict]):
+    if COMBO_HUNTING_POLICY:
+        combo_hunt(state, log)
+
     if not state.commander_in_play and state.commander_cast_count == 0 and can_cast(state, COMMANDER):
         state.mana_spent_this_turn += commander_effective_mv(state)
         state.battlefield.append(COMMANDER)
@@ -603,6 +668,10 @@ def main_phase(state: GameState, log: List[Dict]):
             apply_etb(state, choice, log)
         eminence_trigger(state, choice, log)
         log.append({"action": "cast", "card": choice, "turn": state.turn})
+
+    if all(p in state.battlefield for p in COMBO_PIECES) and state.both_combo_pieces_turn is None:
+        state.both_combo_pieces_turn = state.turn
+        log.append({"trigger": "both_combo_pieces_in_play", "turn": state.turn})
 
 def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.turn = turn
@@ -671,6 +740,7 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "clavileno_triggers": state.clavileno_triggers,
         "combo_active": state.combo_active,
         "combo_active_turn": state.combo_active_turn,
+        "both_combo_pieces_turn": state.both_combo_pieces_turn,
         "roaming_throne_in_play": state.has("Roaming Throne"),
         "roaming_throne_doublings": state.roaming_throne_doublings,
         "lands_played_total": state.lands_played_total,

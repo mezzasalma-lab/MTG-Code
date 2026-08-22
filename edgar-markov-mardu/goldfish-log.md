@@ -61,6 +61,30 @@ Turno médio em que liga, quando acontece: 7,67 | mediana: 8
 
 ---
 
+### Política "caçar o combo" — comprova a classificação de Bracket com dado real — 2026-08-21
+
+**Pedido do usuário:** implementar uma política que prioriza os 2 tutores reais e baratos (Vampiric Tutor `{B}`, Diabolic Intent `{1}{B}`) especificamente pra buscar a peça que falta do combo Exquisite Blood + Vito, Thorn of the Dusk Rose, e conjurar as peças assim que disponíveis — pra medir se o combo consegue ligar antes do turno 6 (o corte oficial de Bracket) quando o jogador está mirando nisso de propósito, não só por sorte.
+
+**Implementação:** novo flag `COMBO_HUNTING_POLICY` (default `False`) + função `combo_hunt()`, chamada no topo do `main_phase`. Diabolic Intent busca a peça faltante direto pra mão (exige sacrificar uma criatura em campo); Vampiric Tutor busca pro topo da biblioteca (pega na próxima compra normal). Novo campo rastreado: `both_combo_pieces_turn` (turno em que as 2 peças já estão em campo, antes de precisar de um gatilho pra "ligar" o loop).
+
+**n=2000, 8 turnos, comparando as duas políticas:**
+
+| Métrica | Genérica (default) | Caçando o combo |
+|---|---|---|
+| 2 peças em campo até T4 | 0,0% | 0,3% |
+| 2 peças em campo até T5 | 0,1% | 1,6% |
+| **2 peças em campo até T6** | **0,1%** | **2,6%** |
+| 2 peças em campo até T8 | 0,7% | 4,6% |
+| Turno médio (quando acontece) | 7,38 | **6,20** |
+| **Combo ligado (gatilho de vida disparou) até T6** | **0,0%** | **0,0%** |
+| Combo ligado, total em 8 turnos | 0,1% | 0,6% |
+
+**Verificação de correção:** rastreei uma partida individual (seed 6000261) onde as peças alinharam rápido — Vampiric Tutor no T1 buscou Exquisite Blood, Vito Thorn veio de compra natural no T3, Exquisite Blood entrou em campo no T5 assim que teve mana (`{4}{B}`). Confirma que a lógica está certa; é só raro de acontecer, não um bug.
+
+**Leitura:** mesmo com o jogador ativamente perseguindo o combo com os 2 tutores reais, a chance dele estar **ligado** antes do turno 6 é **0,0%** em 2000 partidas. O cálculo manual de "melhor caso turno 5" feito antes de rodar essa simulação era otimista demais — assumia mana certa toda hora e nenhuma outra prioridade competindo, cenário que não reflete a realidade de um deck de 99 cartas singleton. Isso muda a classificação de Bracket de volta pra 3 (ver `auditoria.md` seção 12, 2ª correção) — o critério oficial é "antes do turno 6", e mesmo perseguido de propósito o combo não entrega isso de forma confiável.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
