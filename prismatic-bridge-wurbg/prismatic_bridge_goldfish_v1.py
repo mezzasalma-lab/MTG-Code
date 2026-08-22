@@ -294,6 +294,7 @@ class GameState:
     turn: int = 0
     land_played: bool = False
     mana_spent_this_turn: int = 0
+    mana_held_back: int = 0  # mana nao gasta no ultimo turno, disponivel pra flash no end step alheio (untap so acontece no MEU untap step - CR 500.1 - entao isso NAO reseta pra total_mana entre meus turnos)
     lands_played_total: int = 0
 
     bridge_in_play: bool = False
@@ -429,21 +430,55 @@ def bridge_upkeep_trigger(state: GameState, log: List[Dict]):
         state.bridge_no_hit_empty_library += 1
         log.append({"trigger": "bridge_no_hit", "reason": "biblioteca vazia", "turn": state.turn})
 
+# Custo pra ativar cada habilitador de flash (generico, simplificacao - o
+# Alchemist's Refuge exige G+U especificamente, tratado aqui so como 2
+# generico ja que color_sources ja garante que essas cores existem no
+# manabase). Emergence Zone se sacrifica ao ser usado (perde a fonte de
+# mana permanentemente, nao so tapa).
+FLASH_ENABLER_COST = {"Alchemist's Refuge": 2, "Emergence Zone": 1}
+
+def choose_flash_enabler(state: GameState) -> Optional[str]:
+    candidates = [c for c in state.battlefield if has_tag(c, "flash_enabler")]
+    if not candidates:
+        return None
+    # prioriza o mais barato
+    candidates.sort(key=lambda c: FLASH_ENABLER_COST.get(c, 0))
+    return candidates[0]
+
 def can_flash_bridge(state: GameState) -> bool:
     # A Bridge vem da zona de comando, nao precisa estar na mao (mesma
     # convencao do simulador do Thranduil: comandante sempre "disponivel").
+    # IMPORTANTE: untap so acontece no MEU untap step (CR 500.1 - untap,
+    # upkeep, draw). Terrenos ficam tapados do jeito que ficaram no meu
+    # ultimo turno durante os turnos dos oponentes - entao a mana
+    # disponivel pra flashar no end step alheio e o que sobrou NAO GASTO
+    # do meu ultimo turno (state.mana_held_back), nao o total_mana atual.
     if state.bridge_in_play:
         return False
-    has_flash_enabler = any(has_tag(c, "flash_enabler") for c in state.battlefield)
-    if not has_flash_enabler:
+    enabler = choose_flash_enabler(state)
+    if enabler is None:
         return False
-    return can_cast(state, COMMANDER)
+    needed = FLASH_ENABLER_COST[enabler] + bridge_effective_mv(state)
+    if state.mana_held_back < needed:
+        return False
+    for color in C(COMMANDER).colors:
+        if color_sources(state, color) < 1:
+            return False
+    return True
 
 def cast_bridge(state: GameState, log: List[Dict], via_flash: bool):
     if COMMANDER in state.hand:
         state.hand.remove(COMMANDER)
     mv = bridge_effective_mv(state)
-    state.mana_spent_this_turn += mv
+    if via_flash:
+        enabler = choose_flash_enabler(state)
+        cost = FLASH_ENABLER_COST[enabler] + mv
+        state.mana_held_back -= cost
+        if enabler == "Emergence Zone":
+            state.battlefield.remove(enabler)  # se sacrifica ao ativar
+        log.append({"action": "flash_enabler_used", "card": enabler, "turn": state.turn})
+    else:
+        state.mana_spent_this_turn += mv
     state.battlefield.append(COMMANDER)
     state.bridge_in_play = True
     state.bridge_cast_turn = state.turn
@@ -502,9 +537,20 @@ def main_phase(state: GameState, log: List[Dict]):
     if not state.bridge_in_play and can_cast(state, COMMANDER):
         cast_bridge(state, log, via_flash=False)
 
-    # resto da mao, ordem generica por CMC crescente
+    # Se ja tem habilitador de flash em campo e a Bridge ainda nao saiu,
+    # o jogador segura mana de proposito pra linha de flash no end step
+    # alheio (plano de jogo explicito do usuario) - nao gasta tudo no
+    # resto da mao.
+    reserved = 0
+    if not state.bridge_in_play:
+        enabler = choose_flash_enabler(state)
+        if enabler is not None:
+            reserved = FLASH_ENABLER_COST[enabler] + bridge_effective_mv(state)
+
+    # resto da mao, ordem generica por CMC crescente, respeitando a reserva
     for _ in range(8):
-        castables = [c for c in state.hand if c != COMMANDER and can_cast(state, c)]
+        budget = remaining_mana(state) - reserved
+        castables = [c for c in state.hand if c != COMMANDER and can_cast(state, c) and C(c).mv <= budget]
         if not castables:
             break
         castables.sort(key=lambda c: C(c).mv)
@@ -539,6 +585,11 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.draw(1)
     play_land(state, log)
     main_phase(state, log)
+
+    # Mana nao gasta neste turno fica destapada ate o MEU proximo untap
+    # step (CR 500.1) - e a mana real disponivel pra flashar algo no end
+    # step de um oponente antes do meu proximo turno.
+    state.mana_held_back = max(0, total_mana(state) - state.mana_spent_this_turn)
 
     game_log.append(log)
 

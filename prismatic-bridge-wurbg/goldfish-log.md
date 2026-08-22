@@ -140,6 +140,28 @@ Avg vezes que a Bridge foi removida: 0,82
 
 ---
 
+### Correção — mana disponível pra flashar a Bridge (CR 500.1: untap, upkeep, draw) — 2026-08-21
+
+**Bug real identificado pelo usuário:** meu `can_flash_bridge` usava `total_mana`/`remaining_mana` (mana atual do jogador), como se tudo estivesse sempre destapado no momento de flashar a Bridge no end step de um oponente. Isso está errado — o untap step só destapa os permanentes do jogador ativo (CR 500.1). Meus terrenos ficam tapados do jeito que ficaram no MEU último turno durante os turnos dos oponentes; só destapam de novo no MEU próximo untap step. A mana real disponível pra flashar algo no end step alheio é o que sobrou NÃO GASTO do meu último turno, não o total atual.
+
+**Correção aplicada:**
+- Novo campo `state.mana_held_back` — calculado no fim de cada turno (`total_mana - mana_spent_this_turn`), representa o que ficou destapado e disponível até meu próximo untap.
+- `can_flash_bridge` agora checa `mana_held_back` contra o custo do habilitador de flash (`Alchemist's Refuge` = 2, `Emergence Zone` = 1, `Emergence Zone` se sacrifica ao usar) + custo efetivo da Bridge (com taxa de comandante).
+- `main_phase` agora reserva mana de propósito quando um habilitador de flash já está em campo e a Bridge ainda não saiu — não gasta tudo no resto da mão, seguindo mana pra viabilizar a linha de flash no futuro.
+
+**Resultado, n=5000, 8 turnos:**
+
+| Métrica | Antes (bug) | Depois (corrigido) |
+|---|---|---|
+| Conjurada via flash | 3,7% | **0,0%** |
+| 1º acerto de PW até T6 | 42,4% | 40,9% |
+| 1º acerto de PW até T7 | 50,2% | 48,6% |
+| 1º acerto de PW até T8 | 57,7% | 55,9% |
+
+**Achado estrutural, não só um ajuste numérico:** a linha de flash caiu pra ZERO, não só diminuiu. Motivo: no modelo, a Bridge está sempre "disponível" (vem da zona de comando, não depende de estar na mão) — assim que fica pagável, a IA gananciosa conjura ela imediatamente na main phase. O custo de flashar (habilitador + Bridge) é sempre maior que o custo de conjurar normal (só a Bridge). Como o mana total só cresce turno a turno, no momento em que teria mana suficiente pra flashar, já teria tido mana suficiente pra conjurar normal num turno anterior — e a IA já teria feito isso antes de chegar lá. **O modelo atual nunca escolhe segurar a Bridge de propósito só pra flashar**, porque não pesa o benefício real da linha (pular a janela de remoção antes do 1º gatilho) contra abrir mão de 1 turno com a Bridge já em campo. Pra medir esse benefício de verdade, seria preciso modelar uma política diferente (segurar a Bridge deliberadamente quando o habilitador já está em campo, mesmo podendo conjurar normal) — ainda não implementado.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
