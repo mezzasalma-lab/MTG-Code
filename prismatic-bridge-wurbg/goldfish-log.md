@@ -63,6 +63,32 @@ Avg gatilhos de upkeep: 2,94 | acertos: 2305 criatura / 3581 planeswalker
 
 ---
 
+### Simulação #3 — Enlightened Tutor no lugar do Greater Auramancy — 2026-08-21
+
+**Teste de acompanhamento**, pedido do usuário depois do resultado do Greater Auramancy. Enlightened Tutor (`{W}`, Instant, `Search your library for an artifact or enchantment card... put that card on top`) no lugar de The Peregrine Dynamo, buscando Sterling Grove especificamente (lógica adicionada: busca só se Sterling Grove ainda não está em campo e ainda está na biblioteca).
+
+**n=2000, taxa de remoção 12%/oponente/turno:**
+
+```
+Sterling Grove chegou a estar em campo:
+  sem tutor:            14,7%
+  com Enlightened Tutor: 24,3%   (+9,6pp, ~65% de aumento relativo)
+
+% Bridge ainda em campo no fim da simulação:
+  sem tutor:             63,3%
+  com Enlightened Tutor: 63,2%   (~igual)
+
+Avg vezes que a Bridge foi removida por partida:
+  sem tutor:             1,18
+  com Enlightened Tutor: 1,14   (mesma ordem de grandeza do Greater Auramancy)
+```
+
+**Leitura:** o tutor melhora bastante a taxa de ACESSO ao Sterling Grove (quase 2/3 de aumento relativo), mas isso não vira sobrevivência maior da Bridge no fim da partida. Motivo: Sterling Grove não se protege a si mesmo, e Enlightened Tutor é singleton — depois que o Sterling Grove morre (o que ainda acontece com frequência normal), não tem como buscar de novo. O tutor ataca "conseguir a proteção mais cedo", não "a proteção persistir depois que cai" — que é o mesmo problema estrutural de antes, só adiado.
+
+**Nenhuma das duas opções testadas (Greater Auramancy, Enlightened Tutor) resolve o problema de forma decisiva sozinha.** Combinação ainda não testada: Enlightened Tutor + Greater Auramancy juntos (tutor pode buscar qualquer um dos dois, e o segundo protetor serve de reserva se o primeiro cair) — candidato pra um próximo teste.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
