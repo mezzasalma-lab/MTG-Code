@@ -1,25 +1,17 @@
 # Auditoria — Toph, the First Metalbender (Naya — R/G/W)
 
-Fontes usadas nesta auditoria: Scryfall REST API (`cards/collection` para as 97 cartas únicas da lista, `cards/search?q=is:gamechanger`, campos `legalities.commander`, `color_identity`, `oracle_text`, `type_line`, `produced_mana`, `cmc`), consultada em 2026-08-22. EDHREC (`json.edhrec.com/pages/commanders/toph-the-first-metalbender.json`), consultado em 2026-08-22. Definições de Bracket: `references/commander-rules.md#brackets` do skill mtg-commander (fonte primária: anúncios oficiais da Wizards).
-Data da auditoria: 2026-08-22
+Fontes usadas nesta auditoria: Scryfall REST API (`cards/collection`/`cards/named` para as cartas da lista, incluindo as 4 entradas da rodada de fechamento pra 100 — Enduring Vitality, Unstable Obelisk, Swords to Plowshares, Council's Judgment —, `cards/search?q=is:gamechanger`, campos `legalities.commander`, `color_identity`, `oracle_text`, `type_line`, `produced_mana`, `cmc`), consultada em 2026-08-22. EDHREC (`json.edhrec.com/pages/commanders/toph-the-first-metalbender.json`), consultado em 2026-08-22. Definições de Bracket: `references/commander-rules.md#brackets` do skill mtg-commander (fonte primária: anúncios oficiais da Wizards).
+Data da auditoria: 2026-08-22 (revisada na rodada de fechamento pra 100 cartas, mesma data)
 
 ---
 
-## 0. Achado crítico — carta banida em Commander
+## 0. Achados resolvidos nesta sessão (histórico)
 
-**Primeval Titan está BANIDA em Commander.** Confirmado ao vivo via Scryfall (`legalities.commander: "banned"`). É uma das cartas que **entraram** na lista nesta sessão de mudanças (seção "ENTRA" do `lista.md`).
+**Primeval Titan estava BANIDA em Commander** (`legalities.commander: "banned"`, confirmado ao vivo via Scryfall) — tinha entrado na v9 da lista. **Resolvido:** saiu da lista na rodada de fechamento pra 100 cartas (v10), junto com Sylvan Safekeeper e Elvish Reclaimer (fracos por conta própria, não interagem de forma relevante com o motor earthbend-artefato). Entraram no lugar: Enduring Vitality, Unstable Obelisk, Swords to Plowshares e Council's Judgment — ver seções 5 e 7 pros detalhes de cada uma.
 
-```
-Primeval Titan — {4}{G}{G} — Creature — Giant
-Trample
-Whenever this creature enters or attacks, you may search your library
-for up to two land cards, put them onto the battlefield tapped, then shuffle.
-legalities.commander: banned
-```
+**Contagem de cartas estava em 99, 1 abaixo do 100/100 declarado no cabeçalho** — resolvido na mesma rodada (as trocas acima fecharam a conta certinha em 100).
 
-Todas as outras 96 cartas não-terreno da lista foram checadas: **nenhuma outra tem `legalities.commander` diferente de `legal`.** Este é o único problema de legalidade do deck, mas é impeditivo — o deck **não pode ser jogado como está** em mesa que respeite o banlist oficial. Precisa ser substituída antes de qualquer outra consideração.
-
-Como referência de troca (não uma recomendação definitiva, só contexto pra decisão do usuário): o próprio EDHREC lista **Bumi, Unleashed** e **Toph, Hardheaded Teacher** como cartas de sinergia alta (0.592 e 0.578) que ainda não estão na lista — ver seção 11.
+Mantenho esta seção como registro histórico da auditoria original, seguindo o padrão de documentar correções em vez de apagar o rastro.
 
 ---
 
@@ -27,10 +19,10 @@ Como referência de troca (não uma recomendação definitiva, só contexto pra 
 
 | Check | Resultado | Fonte |
 |---|---|---|
-| Total de cartas | **99** (1 comandante + 98 no corpo da lista) — **falta 1 carta pra fechar 100/100**, apesar do cabeçalho do `lista.md` dizer "100/100" | contagem de linhas com quantidade em `lista.md` |
+| Total de cartas | **100** (1 comandante + 99 no corpo da lista) — bate com o cabeçalho | contagem de linhas com quantidade em `lista.md` |
 | Singleton | Sem duplicatas fora de terrenos básicos | checagem de nomes únicos |
-| Identidade de cor (R/G/W) | Sem violação — todas as 97 cartas únicas têm `color_identity` ⊆ {R,G,W} | `color_identity` de cada carta |
-| Legalidade em Commander | **1 problema: Primeval Titan banida** (ver seção 0) | `legalities.commander` |
+| Identidade de cor (R/G/W) | Sem violação — todas as 99 cartas do corpo têm `color_identity` ⊆ {R,G,W} (checado inclusive nas 4 entradas novas: Enduring Vitality é G, Swords to Plowshares e Council's Judgment são W, Unstable Obelisk é incolor) | `color_identity` de cada carta |
+| Legalidade em Commander | **Sem problemas** — Primeval Titan (banida) saiu da lista nesta rodada (seção 0) | `legalities.commander` |
 
 **Comandante:** Toph, the First Metalbender — `{1}{R}{G}{W}` — Legendary Creature — Human Warrior Ally.
 ```
@@ -42,15 +34,15 @@ counters on it. When it dies or is exiled, return it to the battlefield
 tapped.)
 ```
 
-O cabeçalho do `lista.md` diz "100/100" e "GC 3/3" — a contagem de Game Changers está correta (seção 8), mas a contagem de cartas está **1 abaixo do declarado**. Não vou inventar qual carta falta — é uma checagem que só o usuário resolve (ou colando a lista completa de novo, ou confirmando que uma carta específica foi esquecida na hora de copiar/colar).
+O cabeçalho do `lista.md` diz "100/100" e "GC 3/3" — ambos conferem agora (seção 9 pros Game Changers).
 
 ---
 
 ## 2. Terrenos e curva
 
-- Terrenos: **32** (contando as 3 cópias de Forest; varredura de `type_line` em qualquer face, incluindo os MDFCs Bala Ged Sanctuary, Tanglespan Bridgeworks e Ondu Skyruins).
-- Não-terrenos (sem comandante): **66** — CMC médio: **3.05**.
-- Fontes de mana adicionais fora de terrenos: Arcane Signet, Sol Ring, Mox Opal, Lotus Cobra, Tireless Provisioner (Treasure), Talon Gates of Madara (ability paga), Great Divide Guide e Wrenn and Realmbreaker (ambos convertem **todos os terrenos** em fontes de qualquer cor via habilidade estática).
+- Terrenos: **32** (contando as 3 cópias de Forest; varredura de `type_line` em qualquer face, incluindo os MDFCs Bala Ged Sanctuary, Tanglespan Bridgeworks e Ondu Skyruins). Inalterado na rodada de fechamento pra 100 — nenhum terreno novo entrou.
+- Não-terrenos (sem comandante): **67** — CMC médio: **3.03**. (Recalculado após a troca de v9→v10: -3 Primeval Titan/Sylvan Safekeeper/Elvish Reclaimer, +4 Enduring Vitality/Unstable Obelisk/Swords to Plowshares/Council's Judgment.)
+- Fontes de mana adicionais fora de terrenos: Arcane Signet, Sol Ring, Mox Opal, Lotus Cobra, Tireless Provisioner (Treasure), Talon Gates of Madara (ability paga), Enduring Vitality (`Creatures you control have "{T}: Add one mana of any color."`), Great Divide Guide e Wrenn and Realmbreaker (ambos convertem **todos os terrenos** em fontes de qualquer cor via habilidade estática).
 
 **Contagem de fontes de cor nos terrenos (sem contar rocks/criaturas), direto do `produced_mana` da Scryfall** (fetchlands recebem override manual — Scryfall não popula `produced_mana` pra fetches, então usei a cor real que cada uma busca):
 
@@ -66,6 +58,7 @@ Verde é claramente a cor primária (bate com o tema landfall/earthbend), branco
 - Command Tower, Arcane Signet, Mox Opal, Jetmir's Garden, Talon Gates of Madara — fontes de qualquer cor da identidade do comandante, individuais.
 - **Great Divide Guide** (`Each land and Ally you control has "{T}: Add one mana of any color."`) e **Wrenn and Realmbreaker** (`Lands you control have "{T}: Add one mana of any color."`) — cada um sozinho, uma vez em campo, converte **todos os 32 terrenos** em fontes de qualquer cor simultaneamente. É a rede de segurança real contra tela de cor deste deck, não os terrenos duais isolados.
 - Lotus Cobra, Tireless Provisioner, Nissa, Resurgent Animist — mana de qualquer cor via landfall (Lotus Cobra e Nissa direto; Tireless Provisioner via token Treasure).
+- **Enduring Vitality** (nova na v10) — `Creatures you control have "{T}: Add one mana of any color."` Cobre a mesma ideia do Great Divide Guide, mas pela base de criaturas em vez de terrenos/Aliados — não é redundante, é uma fonte paralela (mantida ao lado do Great Divide Guide, não no lugar dele).
 - Yavimaya, Cradle of Growth e Prismatic Omen/Dryad of the Ilysian Grove — fazem todo terreno virar Floresta (e todos os tipos básicos, nos dois últimos casos) — reforça fontes de G especificamente, e viabiliza fetches buscarem qualquer terreno.
 
 ---
@@ -98,9 +91,9 @@ Essa é a identidade real do deck: um motor de landfall Naya reforçado por arte
 
 ---
 
-## 4. Motores identificados — 15 interações estruturais reais
+## 4. Motores identificados — 16 interações estruturais reais
 
-Levantamento conjunto (9 identificados pelo usuário + 6 achados nesta revisão adicional do oráculo completo), cada um conferido contra o texto real da Scryfall antes de entrar aqui.
+Levantamento conjunto (9 identificados pelo usuário + 7 achados em revisões adicionais do oráculo completo), cada um conferido contra o texto real da Scryfall antes de entrar aqui.
 
 **Os 9 do usuário (revalidados):**
 
@@ -114,7 +107,7 @@ Levantamento conjunto (9 identificados pelo usuário + 6 achados nesta revisão 
 8. **Earthbender Ascension:** confirmando o texto exato — cada landfall poe 1 quest counter; a partir do 4º quest counter acumulado, **cada landfall subsequente também** dá +1/+1 permanente + trample **até o final do turno** (o trample não é permanente, só o counter — pequena correção em relação à formulação original).
 9. **Awaken the Woods + Felidar Retreat + Mossborn Hydra:** Awaken the Woods com X alto cria X tokens de terreno-criatura que entram *simultaneamente*, cada um disparando landfall — com Mossborn Hydra em campo isso é X dobras seguidas dos contadores dela (crescimento geométrico, não aditivo) e X escolhas de Felidar Retreat.
 
-**+6 achados nesta revisão (varredura do oráculo completo das 97 cartas):**
+**+7 achados em revisões adicionais do oráculo completo:**
 
 10. **Land creatures ganham double strike + vigilance de graça, empilhando com o buff de artefato do Krang:**
     - Toph, Greatest Earthbender: `Land creatures you control have double strike.`
@@ -125,14 +118,19 @@ Levantamento conjunto (9 identificados pelo usuário + 6 achados nesta revisão 
 13. **A ativada do Bristly Bill (`{3}{G}{G}: Double the number of +1/+1 counters on each creature you control`) dobra o board inteiro, não só a Mossborn Hydra** — é repetível (limitado só por mana), então serve como um segundo modo de crescimento explosivo fora do combo específico do item 9.
 14. **Kodama of the East Tree — cheat-into-play em cadeia a partir de qualquer permanente que entra:** `Whenever another permanent you control enters, if it wasn't put onto the battlefield with this ability, you may put a permanent card with equal or lesser mana value from your hand onto the battlefield.` Dado o volume de entradas de permanente que o deck já gera (landfall, tokens, artefatos), cada uma pode puxar de graça outro permanente mais barato da mão — inclusive encadeando, já que o permanente puxado também conta como "outro permanente que entra" pro próximo gatilho.
 15. **Strionic Resonator — dobrador universal e flexível de gatilho, escolhido a cada ativação:** `{2},{T}: Copy target triggered ability you control.` Ao contrário de um dobrador fixo numa única carta, esse permite escolher qual gatilho copiar a cada turno — o earthbend do comandante, um landfall específico, o dano do Tannuk, etc.
+16. **Earthbend torna recorrente qualquer artefato não-token com gatilho ou custo de "morrer"/ser sacrificado/exilado.** Achado do usuário, generalizado e verificado contra regra 700.4 ("dies" = "put into a graveyard from the battlefield", vale pra qualquer permanente, não só criatura): o reminder text do earthbend (`When it dies or is exiled, return it to the battlefield tapped`) é uma triggered ability própria, não uma substituição — então ela reage a QUALQUER evento real de morte/exílio do terreno-artefato earthbendado, inclusive um custo de sacrifício pago pela própria carta. Exemplos reais na lista:
+    - **The Stasis Coffin** — `{2},{T}, Exile The Stasis Coffin: You gain protection from everything.` A própria habilidade exila a carta como custo; earthbendada primeiro, ela volta tapped em vez de sumir — proteção recorrente, não de uso único.
+    - **Ichor Wellspring** — `...or is put into a graveyard from the battlefield, draw a card.` Sacrificada pro Krark-Clan Ironworks (ou qualquer outsourcing de sacrifício), earthbendada ela puxa a carta E volta ao campo, em vez de só puxar a carta uma vez.
+    - **Unstable Obelisk** (nova na v10, ver seção 5/7) — `{7},{T}, Sacrifice: Destroy target permanent.` Mesmo padrão: sacrificar conta como morrer, earthbendada ela vira remoção recorrente de qualquer permanente em vez de um artefato de uso único.
+    - Vale pra qualquer outro artefato-sacrifício-fodder da lista (Mishra's Bauble, Krark-Clan Ironworks como outlet, etc.) — a ressalva real é que a carta precisa ter sido earthbendada **antes** de morrer pra cláusula valer, e recuperar a cláusula de novo depois exige uma nova aplicação de earthbend (1x por end step via comandante, ou outra fonte da seção 3).
 
 ---
 
-## 5. Ramp — 9 peças
+## 5. Ramp — 10 peças
 
-Arcane Signet, Sol Ring, Mox Opal (condicional, Metalcraft), Dryad of the Ilysian Grove (terreno extra por turno), Horizon Explorer (Lander token = fetch de terreno básico, terrenos entram destapados), Lotus Cobra, Nissa Resurgent Animist, Tireless Provisioner, Planar Engineering (sacrifica 2 terrenos, busca 4 básicas — ramp líquido de +2 terrenos).
+Arcane Signet, Sol Ring, Mox Opal (condicional, Metalcraft), Dryad of the Ilysian Grove (terreno extra por turno), Horizon Explorer (Lander token = fetch de terreno básico, terrenos entram destapados), Lotus Cobra, Nissa Resurgent Animist, Tireless Provisioner, Planar Engineering (sacrifica 2 terrenos, busca 4 básicas — ramp líquido de +2 terrenos), **Unstable Obelisk** (nova na v10 — `{T}: Add {C}`, mana líquido real todo turno; a habilidade de remoção tardia dela conta na seção 7).
 
-Primeval Titan (banida, ver seção 0) também seria ramp — **não conto ela aqui já que precisa sair da lista.**
+Fecha exatamente o piso do modelo de 8 categorias (10–12) — estava em 9 antes da rodada de fechamento pra 100.
 
 ---
 
@@ -142,19 +140,22 @@ Sylvan Library, Esper Sentinel, Skullclamp, Ichor Wellspring, Mishra's Bauble, I
 
 ---
 
-## 7. Remoção e interação — 4 peças + 2 wipes (fraqueza real, já identificada pelo usuário)
+## 7. Remoção e interação — 7 peças dedicadas + 2 wipes (reforçada na v10)
 
-**Remoção pontual:**
+**Remoção pontual (7, era 4 antes da rodada de fechamento):**
 - Erode — destroy target creature or planeswalker (dá terreno básico ao dono, downside real).
 - Bridgeworks Battle (face sorcery do MDFC) — fight, exige criatura própria em campo.
 - Haywire Mite — exile artefato/encantamento não-criatura, exige sacrificar a própria Haywire Mite.
 - Talon Gates of Madara — phase out (temporário, não remove de fato) no ETB do próprio terreno.
+- **Swords to Plowshares** (nova na v10) — `Exile target creature. Its controller gains life equal to its power.` A remoção mais eficiente do formato, `{W}`.
+- **Council's Judgment** (nova na v10) — `Will of the council — ... Exile each permanent with the most votes...` Não precisa de alvo (passa por hexproof/proteção), pega qualquer permanente não-terreno — a única da lista com essa cobertura.
+- **Unstable Obelisk** (nova na v10) — `{7},{T}, Sacrifice: Destroy target permanent.` Cara pra ativar, mas earthbendada primeiro vira **recorrente** via o motor #16 da seção 4 (sacrificar = morrer = earthbend devolve tapped) — é a única peça de remoção do deck com esse caráter de reuso.
 
-**Wipes:**
+**Wipes (2, inalterado):**
 - Ondu Inversion (face sorcery do MDFC) — destroy all nonland permanents (simétrico).
 - Oblivion Stone — wipe assimétrico via fate counters (`{4}` marca, depois `{5}`+sacrifício destrói tudo sem contador).
 
-**Isso é pouco.** Zero remoção instantânea barata e dedicada a criatura (nem Swords to Plowshares nem Path to Exile estão na lista — e são justamente os dois "Top Cards" mais jogados com este comandante no EDHREC, com `num_decks` de 17800/31002 e 15541/31002 respectivamente, apesar de terem sinergia ~0 — ou seja, staples genéricos que a maioria das listas roda por eficiência pura, não por sinergia). Confere com o que o próprio `lista.md` já registrou na seção "Opções salvas": **Weapons Manufacturing** foi cogitada especificamente para "endereçar a fraqueza de interação do deck" — a auditoria concorda com esse diagnóstico com números reais: 4 remoções pontuais (uma delas condicional a ter criatura própria, outra a sacrificar a própria carta) num deck de 98 cartas é abaixo da faixa típica de 8-10 recomendada pra Bracket 3.
+**Antes da rodada de fechamento pra 100, isso era um problema real** — só 4 remoções pontuais (uma condicional a ter criatura própria, outra a sacrificar a própria carta), abaixo da faixa típica de 8-10 do modelo de 8 categorias. Nem Swords to Plowshares nem Path to Exile estavam na lista, apesar de serem os dois "Top Cards" mais jogados com este comandante no EDHREC (`num_decks` 17800/31002 e 15541/31002). Resolvido nesta rodada — 7 dedicadas chega perto do piso, e ainda tem cobertura de tipos que a lista não tinha antes (permanente sem alvo via Council's Judgment, remoção recorrente via Unstable Obelisk+earthbend).
 
 ---
 
@@ -188,6 +189,8 @@ Confere exatamente com o que o cabeçalho do `lista.md` já declarava ("GC 3/3")
 - **Combate adicional/turnos extras encadeados:** nenhum encontrado.
 - **Densidade de tutores:** Enlightened Tutor é o único tutor de carta não-terreno da lista (busca artefato/encantamento pro topo). Os demais "tutores" da lista (Erode, Elvish Reclaimer, Earthbender Ascension, Planar Engineering, Horizon Explorer via Lander) buscam exclusivamente terreno básico — não tutoram peças de combo nem ameaças específicas, e terreno básico redundante não é o tipo de tutor que o critério de Bracket 3 restringe.
 
+**Nota sobre as 4 entradas da v10:** Unstable Obelisk earthbendado é recorrente (motor #16), mas não é infinito nem gratuito — cada ativação custa `{7},{T}` de novo, e recuperar a cláusula de retorno exige uma nova aplicação de earthbend (1x por end step via comandante). Não configura combo de 2 peças pelo critério oficial (não gera loop fechado sem custo). Enduring Vitality, Swords to Plowshares e Council's Judgment não têm nenhuma interação de combo — são efeitos únicos ou fixing simples.
+
 **Nenhuma das quatro restrições estruturais de Bracket 3 é violada.**
 
 ---
@@ -217,15 +220,15 @@ Consultado `json.edhrec.com/pages/commanders/toph-the-first-metalbender.json` (2
 
 **11 de 16 cartas de alta sinergia listadas pelo EDHREC já estão na lista** — forte alinhamento com o build padrão da comunidade pra esse comandante, não é uma lista fora da curva. As 3 ausências relevantes (Bumi, Unleashed / Toph, Hardheaded Teacher / Toph, the Blind Bandit) são só dados — não é uma recomendação de troca, e nenhuma delas resolve o problema de legalidade da seção 0.
 
-Só como contexto (não é recomendação): os dois cards mais jogados junto com este comandante no EDHREC geral são Swords to Plowshares e Path to Exile (`num_decks` 17800/31002 e 15541/31002) — nenhum dos dois está na lista, reforçando o achado da seção 6 sobre a remoção estar abaixo do típico.
+Os dois cards mais jogados junto com este comandante no EDHREC geral são Swords to Plowshares e Path to Exile (`num_decks` 17800/31002 e 15541/31002) — **Swords to Plowshares entrou na lista na rodada de fechamento pra 100 (v10)**; Path to Exile ficou de fora por redundância de função com o Swords (mesma coisa, downside pior pro oponente).
 
 ---
 
 ## 12. Classificação de Bracket
 
-**Bracket 3 (Upgraded), no teto de Game Changers (3 de 3) — condicionado à remoção da Primeval Titan banida (seção 0).**
+**Bracket 3 (Upgraded), no teto de Game Changers (3 de 3). Lista fechada em 100/100, sem cartas banidas.**
 
-Base: 3 Game Changers (teto exato), sem negação de terras em massa, sem turnos extras, sem combo de 2 peças identificado na varredura de texto, densidade de tutores baixa e majoritariamente restrita a terreno básico. A classificação de poder não muda com a remoção da Primeval Titan (ela não era Game Changer nem combo piece, só ramp) — mas o deck **precisa** dessa troca antes de ir pra mesa, independente do bracket.
+Base: 3 Game Changers (teto exato), sem negação de terras em massa, sem turnos extras, sem combo de 2 peças identificado na varredura de texto (as 4 entradas da v10 não mudam isso — seção 10), densidade de tutores baixa e majoritariamente restrita a terreno básico. Classificação estável desde a resolução do problema de legalidade (seção 0) — pronta pro goldfish simulator.
 
 ---
 
