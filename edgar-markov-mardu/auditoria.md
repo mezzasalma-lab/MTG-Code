@@ -109,7 +109,9 @@ Cruzamento contra `https://api.scryfall.com/cards/search?q=is:gamechanger` (53 c
 
 **3 Game Changers: Smothering Tithe, Teferi's Protection, Vampiric Tutor.**
 
-Isso sozinho seria o teto do Bracket 3. Mas a lista tem outro elemento que muda a classificação — ver seção 10.
+Re-verificado ao vivo em 2026-08-21 (o mesmo cruzamento, reconfirmado após uma dúvida do usuário sobre o total): continuam sendo exatamente essas 3. **Emeritus of Woe // Demonic Tutor NÃO conta** — mesmo o verso se chamando "Demonic Tutor" (que está na lista oficial de Game Changers), o objeto de carta MDFC completo (`"Emeritus of Woe // Demonic Tutor"`) não é o mesmo nome que `is:gamechanger` cataloga; confirmado diretamente via Scryfall que essa string não aparece na lista. Isso já estava certo na contagem original — nunca foi somado como 4º Game Changer nesta auditoria.
+
+Isso está dentro do teto do Bracket 3 (até 3 permitidas). Ver seção 10 pra análise do combo de 2 peças — apesar de existir e ter habilitadores redundantes, o dado simulado (seção 10, e a política de "caçar o combo" testada à parte) mostra que ele não desqualifica o deck do critério oficial ("antes do turno 6"). Ver seção 12 pra classificação final.
 
 ---
 
@@ -124,9 +126,16 @@ Com as duas em campo, qualquer perda de vida de um oponente (mesmo 1 ponto) disp
 
 O deck tem múltiplos gatilhos de perda de vida de oponente que poderiam iniciar o loop com as duas peças em campo: Blood Artist, Cruel Celebrant, Zulaport Cutthroat, Sanctum Seeker (todos conferidos via `oracle_text` — cada um causa "each opponent loses X life" em algum gatilho de morte/ataque).
 
-O critério oficial de Bracket 3 (`references/commander-rules.md#brackets`, citando o texto da Wizards) exclui "combo de 2 peças antes do turno 6". Mas a presença de um combo de 2 peças com múltiplos habilitadores redundantes (4 fontes diferentes de "opponent loses life" já contadas) é, pela própria definição oficial, uma estrutura de Bracket 4/5, independente da contagem de Game Changers — a exclusão é sobre a PRESENÇA estrutural, não sobre a frequência real de montagem numa partida qualquer.
+O critério oficial de Bracket 3 (`references/commander-rules.md#brackets`, citando o texto da Wizards) exclui especificamente "combo de 2 peças **antes do turno 6**" — não a presença do combo por si só. Isso importa porque muda a conclusão desta seção (ver histórico completo na seção 12).
 
-**Dado real, simulado (2026-08-21, `edgar_markov_goldfish_v1.py`, n=2000, 8 turnos):** o combo monta E liga em apenas **0,1% das partidas** (2 de 2000) dentro de 8 turnos — turno médio de 7,67 quando acontece. É raro na prática porque exige comprar E conjurar as duas peças específicas na mesma partida (cada uma ~1% de densidade em 99 cartas). Isso não muda a classificação de Bracket (o critério formal continua sendo sobre a presença estrutural do combo), mas responde à pergunta que ficou em aberto na versão original desta seção.
+**Dado real, simulado (2026-08-21, `edgar_markov_goldfish_v1.py`, n=2000, 8 turnos):**
+
+| Política | Combo ligado até T6 | Combo ligado, total em 8 turnos | Turno médio quando liga |
+|---|---|---|---|
+| Genérica (joga o que sai na mão) | 0,0% | 0,1% | 7,67 |
+| Caçando o combo de propósito (prioriza os 2 tutores reais) | **0,0%** | 0,6% | — |
+
+**Mesmo com o jogador priorizando ativamente os 2 tutores reais e baratos (Vampiric Tutor, Diabolic Intent) especificamente pra montar o combo, ele nunca liga antes do turno 6 em 2000 partidas simuladas.** Isso responde à pergunta que ficou em aberto na versão original desta seção ("não simulei pra saber em que turno monta") e é o dado decisivo que reverteu a classificação de Bracket 4 pra 3 (seção 12) — o combo existe e tem habilitadores redundantes, mas não desqualifica o deck pelo critério oficial de timing.
 
 ---
 
