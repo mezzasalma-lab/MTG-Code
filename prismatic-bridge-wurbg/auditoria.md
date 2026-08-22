@@ -180,6 +180,35 @@ Base formal: 3 Game Changers (seção 9), sem negação de terras em massa, sem 
 
 ---
 
+## 12. Guia de mulligan — validado por análise de dados (n=8000)
+
+Análise de correlação real (`prismatic_bridge_goldfish_v1.py`, presença de carta na mão inicial vs turno da 1ª conjuração da Bridge) — não é intuição, são os dados do goldfish.
+
+**Composição da mão (só mãos sem mulligan, n=6468):**
+
+| Composição | Turno médio 1ª conjuração | % nunca conjura |
+|---|---|---|
+| 2 terrenos, 0 rocks | **5,72** | **31,8%** ⚠️ mão ruim |
+| 3 terrenos, 0 rocks | 4,50 | 14,0% |
+| 2 terrenos + 1+ rock | 4,32 | 12,2% |
+| 4 terrenos, 0 rocks | 3,33 | 6,0% |
+| 3 terrenos + 1+ rock | 3,21 | 3,8% |
+
+**Regra prática: manter com 3+ terrenos, OU 2 terrenos + pelo menos 1 rock/dork real** (2 terrenos + 1 rock supera 3 terrenos sozinhos). 2 terrenos sem nenhum rock é mão pra mulligar.
+
+**Cartas que valem manter/priorizar na mão inicial** (ganho real medido, turno médio cai de ~4,1 pra):
+- **Arcane Signet** (3,36t, maior ganho individual)
+- **Sol Ring** (3,18t)
+- **Bloom Tender** (3,50t)
+- **Delighted Halfling** (3,40t)
+- **Chromatic Lantern** (3,82t)
+
+**Não contam como "rock" pra decisão de mulligan** (medido como neutro ou pior pra velocidade, apesar de serem boas cartas em outros momentos do jogo): Farseek, Nature's Lore, Three Visits (tutores de terreno — custam carta+2 mana pra fazer o que 1 land drop já faz de graça), Sterling Grove, Rhystic Study (competem pelo mesmo mana cedo sem acelerar).
+
+`should_keep()` do simulador já reflete essa regra (`FAST_RAMP_ROCKS_DORKS`). Ver `goldfish-log.md` pra a tabela completa e os números antes/depois da correção.
+
+---
+
 ## Links
 
 - EDHREC: https://edhrec.com/commanders/esika-god-of-the-tree

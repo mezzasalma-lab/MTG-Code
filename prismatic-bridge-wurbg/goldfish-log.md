@@ -186,6 +186,56 @@ Avg vezes que a Bridge foi removida: 0,82
 
 ---
 
+### Heurístico de mulligan corrigido com base em dados reais — 2026-08-21
+
+**Análise de correlação** (n=8000 mãos amostradas pós-mulligan, presença de carta na mão inicial vs turno da 1ª conjuração da Bridge), pedida pelo usuário pra responder "3 terrenos ou 2+rock, e quais cartas".
+
+**Comparação de composição de mão (só mãos sem mulligan, n=6468):**
+
+| Composição | Turno médio 1ª conjuração | % nunca conjura |
+|---|---|---|
+| 2 terrenos, 0 rocks | **5,72** | **31,8%** |
+| 3 terrenos, 0 rocks | 4,50 | 14,0% |
+| 2 terrenos + 1+ rock | **4,32** | **12,2%** |
+| 4 terrenos, 0 rocks | 3,33 | 6,0% |
+| 3 terrenos + 1+ rock | 3,21 | 3,8% |
+
+Confirma a hipótese do usuário: **2 terrenos + 1 rock supera 3 terrenos sem rock.** E revela que **2 terrenos sem rock é uma mão ruim de verdade** (5,72t, 31,8% nunca conjura) — o `should_keep()` anterior aceitava isso (só checava 2-5 terrenos, sem considerar rocks).
+
+**Correlação carta-por-carta (n=8000, presença na mão inicial vs turno médio):**
+
+| Carta | Com ela | Sem ela | Efeito |
+|---|---|---|---|
+| Arcane Signet | 3,36t / 4,5% nunca | 4,15t / 14,8% nunca | Maior ganho individual |
+| Sol Ring | 3,18t / 7,1% nunca | 4,16t / 14,6% nunca | Forte |
+| Bloom Tender | 3,50t / 5,6% nunca | 4,13t / 14,7% nunca | Forte |
+| Delighted Halfling | 3,40t / 8,4% nunca | 4,14t / 14,6% nunca | Forte |
+| Chromatic Lantern | 3,82t / 7,3% nunca | 4,11t / 14,6% nunca | Bom |
+| Farseek | 4,32t / 17,9% nunca | 4,08t / 13,9% nunca | Pior (não conta como rock) |
+| Nature's Lore | 4,50t / 15,7% nunca | 4,06t / 14,0% nunca | Pior |
+| Three Visits | 4,48t / 16,9% nunca | 4,07t / 14,0% nunca | Pior |
+| Sterling Grove | 4,43t / 15,7% nunca | 4,06t / 14,0% nunca | Neutro/pior pra velocidade |
+| Rhystic Study | 4,32t / 14,4% nunca | 4,07t / 14,1% nunca | Neutro/pior pra velocidade |
+
+**Correção aplicada em `should_keep()`:** novo conjunto `FAST_RAMP_ROCKS_DORKS = {"Sol Ring", "Arcane Signet", "Chromatic Lantern", "Bloom Tender", "Delighted Halfling"}` — os tutores de terreno (Farseek/Nature's Lore/Three Visits) ficam de fora de propósito, já que pioram a velocidade quando estão na mão inicial. Regra nova: manter se 3+ terrenos, OU 2 terrenos + pelo menos 1 desses 5 rocks/dorks.
+
+**n=5000, 8 turnos, ANTES vs DEPOIS da correção do mulligan:**
+
+| Métrica | Antes (só checava 2-5 terrenos) | Depois (heurístico corrigido) |
+|---|---|---|
+| Avg mulligans | 0,23 | **0,52** |
+| Bridge nunca conjurada em 8t | 14,1% | **10,7%** |
+| Turno médio da 1ª conjuração | 4,08 | **3,78** |
+| Avg gatilhos de upkeep/partida | 1,96 | **2,14** |
+| % Bridge em campo no fim | 58,6% | **60,1%** |
+| 1º acerto de PW até T6 | 40,9% | **45,8%** |
+| 1º acerto de PW até T7 | 48,6% | **53,2%** |
+| 1º acerto de PW até T8 | 55,9% | **59,8%** |
+
+**Leitura:** mulligar mais mãos ruins (0,23→0,52 em média) melhora TODAS as métricas — velocidade, gatilhos totais, e principalmente a métrica que mais importa (acerto de planeswalker por turno, subindo 4-5 pontos em cada checkpoint). Confirma que o heurístico antigo estava deixando passar mãos genuinamente ruins.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
