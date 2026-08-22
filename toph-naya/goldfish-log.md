@@ -218,6 +218,44 @@ Testado em 20.000 partidas com timeout antes do batch oficial (0 erros).
 
 **Leitura geral sobre os 16 motores:** a maioria dos motores "estruturais" (Field of the Dead, volume de land creatures, o próprio Motor#16) tem taxa de ativação alta (75-85%) porque dependem só da mecânica central (Toph + earthbend), não de uma carta específica rara. Os motores que dependem de uma **carta única em 99** (Kodama, Ozolith, Bristly Bill, Strionic Resonator, o combo de 3 peças do item 9) naturalmente ficam na faixa de 0,3%-15% em 8 turnos — isso não é "os motores são fracos", é a matemática normal de singleton de 99 cartas. Kodama continua sendo a exceção genuína de baixo valor prático (0,7%, mais baixo que sua taxa de estar em campo sozinho de ~9,6% já medida antes — quando entra, raramente encontra o próprio gatilho).
 
+---
+
+### Testando políticas pra todos os motores fracos — 2026-08-22
+
+**Pedido do usuário:** "sim, todos eles" — tentar melhorar os 5 motores diagnosticados com folga (Kodama, Ozolith, Bristly Bill) ou confirmar honestamente que não há alavanca (Mycosynth Lattice, Earthbender Ascension, combo de 3 peças).
+
+**Diagnóstico prévio (taxa condicional = disparou ÷ estava em campo):** Kodama 6,2%, Ozolith 31,3%, Bristly Bill 74,2%, Strionic Resonator 93,9% (já no teto).
+
+**1) Kodama of the East Tree — `KODAMA_HOLD_POLICY`.** Primeira tentativa **falhou por um bug de implementação**: eu removia a carta segurada de `state.hand` inteiramente, mas o próprio `kodama_trigger()` procura candidatos em `state.hand` — removendo a carta, ela ficava invisível pro gatilho olhar durante o resto do turno. Resultado da primeira versão: **piorou** (6,2%→3,8% condicional). Corrigido: a carta segurada continua fisicamente em `state.hand` (visível pro Kodama), só é filtrada do loop de conjuração genérico. Resultado real depois do fix:
+
+| | Sem hold | Com hold (corrigido) |
+|---|---|---|
+| Taxa condicional | 6,2% | **33,8%** |
+| Avg kodama cheats | 0,009 | **0,039** |
+| Turno médio comandante | 2,608 | 2,608 (idêntico) |
+
+Ganho de graça — sem custo medido em nenhuma outra métrica. `KODAMA_HOLD_POLICY = True` por padrão.
+
+**2) The Ozolith — testado, revertido, sem alavanca real.** Tentei priorizar sacrificar (via KCI) um artefato COM contador quando o Ozolith está em campo. Resultado: **zero diferença** (31,9% antes e depois, byte a byte igual). Investigando o motivo: `earthbend_return=True` só é setado quando o earthbend adiciona contadores — ou seja, **todo candidato elegível já tem contador>0 por definição**, então "prefira quem tem contador" é um no-op disfarçado, sempre verdadeiro. Removido o código morto. O gargalo real do Ozolith é **timing de compra** (precisa estar em campo antes de um artefato-terreno morrer) — isso não é uma decisão de política de jogo, é probabilidade de compra de carta única em 99. Documentado como limite honesto, não fingido como resolvido.
+
+**3) Bristly Bill, Spine Sower — `BRISTLY_BILL_RESERVE_POLICY`, trade-off real, não adotada por padrão.** A ativada (`{3}{G}{G}=5`, dobra contadores) só checava mana sobrando **depois** do loop ganancioso de conjurar tudo. Testei reservar 5 de mana pra ela **antes** do loop:
+
+| | Sem reserva (antigo) | Com reserva antecipada |
+|---|---|---|
+| Taxa condicional | 74,1% | **89,0%** |
+| Avg dobras | 0,227 | **0,398** |
+| Avg cartas compradas extra | 1,567 | 1,504 (**−4%**) |
+| Avg tokens criados | 12,470 | 11,857 (**−5%**) |
+
+Diferente do Kodama, esse **não é ganho de graça** — reservar mana cedo compete de verdade com o resto do plano de jogo (menos mana sobra pro loop ganancioso conjurar outras cartas, que geram landfall/draw/tokens). Mantido **desligado por padrão** (`False`) porque o custo líquido pro deck como um todo não compensou nos dados — fica disponível como opção pra quem quiser priorizar esse motor especificamente às custas do resto.
+
+**4) Motores sem alavanca real de política (confirmado, não forçado):**
+- **Mycosynth Lattice + Toph:** card único de 6 mana — a taxa de 9,4% é pura probabilidade de compra até o turno 8. Nenhuma decisão de IA muda isso.
+- **Earthbender Ascension (4+ quest counters):** taxa condicional de 48,0% já reflete bem o tempo de jogo restante depois que ela entra — não há uma "jogada melhor" que acumule landfall mais rápido além do que já acontece automaticamente.
+- **Combo Awaken the Woods + Felidar Retreat + Mossborn Hydra (3 peças):** 0,3% é matemática de singleton (3 cartas específicas de 99 juntas) — política de jogo não muda a probabilidade de comprar 3 cartas específicas.
+
+Testado tudo (Kodama fix + Bristly Bill) em 30.000 partidas com timeout antes de qualquer conclusão (0 erros).
+
 **Simplificações documentadas no docstring do script** (não inventadas, omissões explícitas): sem combate real contra oponente (nenhuma criatura adversária, nenhum bloqueio — "atacar" só dispara gatilhos de ataque, não há dano/vida de oponente real); Esper Sentinel/Skullclamp/Sword of Feast and Famine/Talon Gates/Krang/Council's Judgment/Lightning Greaves/Heroic Intervention não têm efeito numérico solo simulado (dependem de oponente real); modelo de mana genérico (mana total, não pip a pip — o deck tem fixing extenso e documentado); habilidades de lealdade do Wrenn and Realmbreaker além da estática de fixing não são ativadas automaticamente.
 
 ---

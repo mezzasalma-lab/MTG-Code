@@ -80,6 +80,33 @@ EARTHBEND_TARGET_POLICY = "broad_artifact"
 # goldfish-log.md.
 SAC_VALUE_PRIORITY_POLICY = True
 
+# Kodama of the East Tree so acha o proprio gatilho se sobrar uma carta
+# barata na mao quando outro permanente entra depois — a politica gananciosa
+# padrao esvazia a mao antes disso acontecer (6,2% de acerto condicional,
+# medido em 2026-08-22). Com o flag ligado, se Kodama estiver em campo,
+# reserva deliberadamente 1 permanente barato na mao em vez de conjura-lo.
+KODAMA_HOLD_POLICY = True
+
+# Bristly Bill's ativada (dobra contadores, {3}{G}{G}=5) so achava mana
+# sobrando DEPOIS do loop ganancioso de conjurar tudo que dava. Testado
+# (2026-08-22) reservar a mana ANTES do loop: melhora a propria ativacao
+# (74,1%->89,0% condicional) mas e um TRADE-OFF real, nao vitoria de graca —
+# compete com o resto do plano (cartas compradas extra -4%, tokens -5%,
+# porque sobra menos mana pro loop ganancioso conjurar outras cartas).
+# Default False (comportamento antigo) porque o custo liquido pro deck como
+# um todo nao compensou nos dados — True fica disponivel pra quem preferir
+# priorizar esse motor especifico.
+BRISTLY_BILL_RESERVE_POLICY = False
+
+# The Ozolith: testado (2026-08-22) priorizar sacrificar um artefato COM
+# contador quando o Ozolith esta em campo — resultado nulo, revertido. Todo
+# artefato com earthbend_return=True ja tem contador>0 por definicao (o
+# proprio earthbend so seta essa flag ao adicionar contadores), entao "prefira
+# quem tem contador" e um no-op: sempre verdadeiro pra todo candidato. O
+# gargalo real do Ozolith (31,9% de acerto condicional) e timing de compra —
+# ele precisa estar em campo ANTES de um artefato-terreno morrer, e isso nao
+# e uma decisao de politica de jogo, e probabilidade de compra de singleton.
+
 # Quanto MENOR o numero, mais descartavel — sacrificada primeiro. O criterio
 # real e "quanto essa carta perde por ficar tapped/fora por um ciclo de
 # earthbend" (o permanente sempre volta via Motor #16, entao a unica perda
@@ -880,11 +907,39 @@ def play_land(state: GameState, log: list):
         enter_battlefield(state, perm, log)
 
 
+def try_bristly_bill_double(state: GameState, log: list) -> bool:
+    bb = next((p for p in state.battlefield if p.card.name == "Bristly Bill, Spine Sower" and not p.tapped), None)
+    if bb and remaining_mana(state) >= 5 and any(p.counters > 0 for p in state.battlefield):
+        spend_mana(state, 5)
+        for p in state.battlefield:
+            if p.counters > 0:
+                p.counters *= 2
+        state.bristly_bill_doubles += 1
+        log.append("  [Bristly Bill] dobra todos os contadores do campo")
+        return True
+    return False
+
+
 def main_phase(state: GameState, log: list):
     if can_cast_commander(state):
         cast_card(state, COMMANDER, log, from_hand=False)
 
-    castables = [n for n in state.hand if can_cast(state, n)]
+    if BRISTLY_BILL_RESERVE_POLICY:
+        try_bristly_bill_double(state, log)
+
+    held_for_kodama = None
+    if KODAMA_HOLD_POLICY and any(p.card.name == "Kodama of the East Tree" for p in state.battlefield):
+        nonland_perms = [n for n in state.hand
+                          if CARD_DB[n].ctype not in ("instant", "sorcery", "land") and n != COMMANDER]
+        if nonland_perms:
+            nonland_perms.sort(key=lambda n: CARD_DB[n].mv)
+            held_for_kodama = nonland_perms[0]
+            # NAO remove da mao — kodama_trigger() procura em state.hand
+            # quando outro permanente entra, entao a carta precisa continuar
+            # la pra ser encontrada. So marca ela como protegida do loop de
+            # casting generico abaixo.
+
+    castables = [n for n in state.hand if can_cast(state, n) and n != held_for_kodama]
     castables.sort(key=lambda n: CARD_DB[n].mv)
     for n in castables:
         if n not in state.hand:
@@ -892,7 +947,7 @@ def main_phase(state: GameState, log: list):
         if not can_cast(state, n):
             continue
         cast_card(state, n, log)
-        castables = [x for x in state.hand if can_cast(state, x)]
+        castables = [x for x in state.hand if can_cast(state, x) and x != held_for_kodama]
         castables.sort(key=lambda x: CARD_DB[x].mv)
 
     # Ba Sing Se: earthbend ativado se sobrar mana
@@ -902,17 +957,10 @@ def main_phase(state: GameState, log: list):
         spend_mana(state, 3)
         apply_earthbend(state, 2, log, "Ba Sing Se (ativada)")
 
-    # Bristly Bill: dobra contadores do board se sobrar muita mana (5+) e ha o que dobrar
-    bb = next((p for p in state.battlefield if p.card.name == "Bristly Bill, Spine Sower" and not p.tapped), None)
-    if bb and remaining_mana(state) >= 5:
-        has_counters = any(p.counters > 0 for p in state.battlefield)
-        if has_counters:
-            spend_mana(state, 5)
-            for p in state.battlefield:
-                if p.counters > 0:
-                    p.counters *= 2
-            state.bristly_bill_doubles += 1
-            log.append("  [Bristly Bill] dobra todos os contadores do campo")
+    # Bristly Bill: se a reserva antecipada estiver desligada, tenta so agora
+    # (comportamento antigo — so com o que sobrou depois do loop ganancioso).
+    if not BRISTLY_BILL_RESERVE_POLICY:
+        try_bristly_bill_double(state, log)
 
     # Krark-Clan Ironworks: sacrifica um artefato descartavel por mana se precisar
     kci = next((p for p in state.battlefield if p.card.name == "Krark-Clan Ironworks" and not p.tapped), None)
