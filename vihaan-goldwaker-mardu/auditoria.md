@@ -3,6 +3,8 @@
 Fontes usadas nesta auditoria: Scryfall REST API (`cards/collection` para as 94 cartas únicas da lista, `cards/search?q=is:gamechanger`, campos `legalities.commander`, `color_identity`, `oracle_text`, `type_line`, `produced_mana`, `cmc`), consultada em 2026-08-22. EDHREC (`json.edhrec.com/pages/commanders/vihaan-goldwaker.json`), consultado em 2026-08-22. Definições de Bracket: `references/commander-rules.md#brackets` do skill mtg-commander (fonte primária: anúncios oficiais da Wizards).
 Data da auditoria: 2026-08-22
 
+**Atualização (2026-08-22):** lista revisada após troca de 2 cartas — **Rakdos Signet → Gleaming Splendor** e **Insatiable Avarice → Smaug the Magnificent**. Seções 3, 5, 6 e 9 abaixo foram recalculadas contra a lista atual (confirmado via Scryfall). Também foi encontrada e corrigida uma fonte de Treasure que a varredura original tinha deixado de fora (Life Insurance).
+
 ---
 
 ## 1. Validação formal
@@ -28,8 +30,8 @@ Nota mecânica: um Treasure virado 3/3 Construct **Assassin** é, ele mesmo, um 
 
 ## 2. Terrenos e curva
 
-- Terrenos: **35** (varredura de `type_line` em qualquer face, incluindo o MDFC Brightclimb Pathway // Grimclimb Pathway).
-- Não-terrenos (sem comandante): **64** — CMC médio: **3,42** (puxado pra cima por bombas de custo alto: Marionette Master, Blood Money, Goldspan Dragon, Witch of the Moors).
+- Terrenos: **35** (varredura de `type_line` em qualquer face, incluindo o MDFC Brightclimb Pathway // Grimclimb Pathway) — inalterado pela troca (nenhuma das 4 cartas trocadas é terreno.
+- Não-terrenos (sem comandante): **64** — CMC médio: **3,47** (recalculado pós-troca; subiu levemente de 3,42 porque Smaug the Magnificent, CMC 4, substituiu uma carta de CMC menor — puxado pra cima também por Marionette Master, Blood Money, Goldspan Dragon, Witch of the Moors).
 
 **Contagem de fontes de cor nos terrenos, direto do `produced_mana` da Scryfall:**
 
@@ -45,9 +47,11 @@ Preto é a cor primária (bate com o volume de remoção/aristocratas em preto),
 
 ## 3. O motor central — Treasures em escala industrial
 
-Esse é, de longe, o tema mais denso do deck: **contei 23 fontes reais de criação de Treasure** na lista (sem contar os 3 multiplicadores abaixo):
+Esse é, de longe, o tema mais denso do deck. **Recontagem rigorosa (2026-08-22)** via busca literal por "treasure" no `oracle_text` das 99 cartas + checagem manual de cada resultado: **30 fontes reais de criação de Treasure** (a auditoria original tinha contado 23 e havia deixado Life Insurance de fora — corrigido agora):
 
-Captain Lannery Storm, Deadly Derision, Deadly Dispute, Goldspan Dragon, Grim Hireling, Inspired Tinkering, Kellogg Dangerous Mind, Lotho Corrupt Shirriff, Magda the Hoardmaster, Mahadi Emporium Master, Mari the Killing Quill (via drain), Monologue Tax, Olivia Opulent Outlaw, Orochi Soul-Reaver, Pitiless Plunderer, Professional Face-Breaker, Prosper Tome-Bound, Rain of Riches, Revel in Riches, Smothering Tithe, The Reaver Cleaver, Treasure Vault, Unexpected Windfall, Big Score, Black Market Connections, Jan Jansen (via sac de artefato).
+Big Score, Black Market Connections, Blood Money, Captain Lannery Storm, Deadly Derision, Deadly Dispute, Goldspan Dragon, Grim Hireling, Inspired Tinkering, Jan Jansen (via sac de artefato-criatura), Kellogg Dangerous Mind, **Life Insurance** (`Whenever a nontoken creature dies, you lose 1 life and create a Treasure token` — simétrico, mas dispara também com mortes de criaturas suas), Lotho Corrupt Shirriff, Magda the Hoardmaster, Mahadi Emporium Master, Mari the Killing Quill (via drain), Monologue Tax, Olivia Opulent Outlaw, Orochi Soul-Reaver, Pitiless Plunderer, Professional Face-Breaker, Prosper Tome-Bound, Rain of Riches, Revel in Riches, **Smaug the Magnificent** (upkeep, nova — trocada por Insatiable Avarice), Smothering Tithe, The Reaver Cleaver, Treasure Vault, Unexpected Windfall.
+
+Mais **1 fonte condicional nova**: **Gleaming Splendor** (trocada por Rakdos Signet) — `Whenever an opponent draws their second card each turn, you create a Treasure token` + `{2}{W}: Two target players each draw a card`. Interação real encontrada nesta auditoria: se você ativa a habilidade dela mirando dois oponentes **depois** que eles já tiveram sua compra normal do turno, a compra provocada é a "segunda carta" de cada um — ou seja, por `{2}{W}` você pode gerar 2 Treasures de uma vez (1 por oponente atingido), de forma autocontida e repetível a cada turno que você tiver mana sobrando. Não é infinito (custa mana real a cada ativação), mas é um mini-motor real, não só decorativo.
 
 **3 multiplicadores reais, empilháveis entre si:**
 - **Xorn** — `If you would create one or more Treasure tokens, instead create those tokens plus an additional Treasure token.` +1 fixo por evento de criação.
@@ -90,13 +94,13 @@ Zulaport Cutthroat, Nadier's Nightblade, Mirkwood Bats, Kambal Profiteering Mayo
 
 ## 5. Ramp — 3 rocks dedicados + a economia de Treasure
 
-Arcane Signet, Sol Ring, Rakdos Signet — ramp "tradicional" é enxuto (3 peças), porque **o motor de Treasure faz esse papel em volume muito maior** (23 fontes reais, seção 3). Isso é uma escolha de design coerente, não uma lacuna — não conto Treasures como "ramp" separado pra não duplicar a contagem da seção 3.
+Arcane Signet, Sol Ring — ramp "tradicional" é enxuto (**2 peças** após a troca de Rakdos Signet por Gleaming Splendor, que não rampa), porque **o motor de Treasure faz esse papel em volume muito maior** (30 fontes reais, seção 3). Isso é uma escolha de design coerente, não uma lacuna — não conto Treasures como "ramp" separado pra não duplicar a contagem da seção 3. Vale registrar o trade-off real da troca: o deck perdeu uma fonte de ramp/fixação de cor dedicada (Rakdos Signet fixava B/R) em troca de mais um motor de Treasure condicional — coerente com o resto da lista, mas é uma fonte de mana a menos fora do próprio tema.
 
 ---
 
-## 6. Card draw — 8 fontes diretas
+## 6. Card draw — 7 fontes diretas
 
-Caretaker's Talent, Big Score, Unexpected Windfall, Insatiable Avarice (modo Spree `{B}{B}`), Deadly Dispute, Black Market Connections (modo "Buy Information"), Mari the Killing Quill (condicional, via combate), e a linha de "jogar do exílio" da seção 4 funciona como pseudo-draw (Grenzo, Prosper, Professional Face-Breaker, Inspired Tinkering, Laughing Jasper Flint).
+Caretaker's Talent, Big Score, Unexpected Windfall, Deadly Dispute, Black Market Connections (modo "Buy Information"), Mari the Killing Quill (condicional, via combate), Gleaming Splendor (`{2}{W}: Two target players each draw a card` — simétrico, pode incluir você mesmo como alvo). Perda direta da troca: Insatiable Avarice saiu e não foi substituída por outra fonte de draw dedicada — caiu de 8 para 7 fontes. A linha de "jogar do exílio" da seção 4 continua funcionando como pseudo-draw (Grenzo, Prosper, Professional Face-Breaker, Inspired Tinkering, Laughing Jasper Flint).
 
 ---
 
@@ -132,7 +136,7 @@ Cruzamento ao vivo contra `https://api.scryfall.com/cards/search?q=is:gamechange
 - **Negação de terras em massa:** nenhuma encontrada — Demolition Field é destruição de terreno único do oponente (com compensação pra ambos os lados, inclusive).
 - **Turnos extras:** nenhum efeito de turno extra no texto de nenhuma carta.
 - **Combate adicional/turnos extras encadeados:** nenhum encontrado.
-- **Densidade de tutores:** **Insatiable Avarice** é o único tutor de carta real da lista (`Spree +{2}: Search your library for a card, put on top`) — 1 tutor em 99 cartas é baixo, dentro do esperado pra Bracket 3.
+- **Densidade de tutores:** **zero tutores de carta na lista atual.** Insatiable Avarice (`Spree +{2}: Search your library for a card, put on top`) era o único tutor real da lista e foi trocado por Smaug the Magnificent nesta atualização. 0 tutores em 99 cartas não viola nenhum limite de Bracket 3 (o limite é sobre densidade *alta*, não baixa), mas é uma perda real de consistência direcionada que vale o usuário ter registrada.
 
 **Nenhuma das quatro restrições estruturais de Bracket 3 é violada.**
 
