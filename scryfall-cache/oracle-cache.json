@@ -2330,6 +2330,60 @@
   "toughness": "1",
   "type_line": "Legendary Creature — Elf Noble"
  },
+ "Ashaya, Soul of the Wild": {
+  "cmc": 5.0,
+  "collector_number": "170",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{3}{G}{G}",
+  "name": "Ashaya, Soul of the Wild",
+  "oracle_text": "Ashaya's power and toughness are each equal to the number of lands you control.\nNontoken creatures you control are Forest lands in addition to their other types. (They're still affected by summoning sickness.)",
+  "power": "*",
+  "prices": {
+   "eur": "16.53",
+   "eur_foil": null,
+   "tix": "0.26",
+   "usd": "16.08",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2024-09-27",
+  "scryfall_uri": "https://scryfall.com/card/dsc/170/ashaya-soul-of-the-wild?utm_source=api",
+  "set": "dsc",
+  "toughness": "*",
+  "type_line": "Legendary Creature — Elemental"
+ },
  "Ashcoat Bear": {
   "cmc": 2.0,
   "collector_number": "190",
@@ -2950,6 +3004,62 @@
   "toughness": "1",
   "type_line": "Creature — Human Monk"
  },
+ "Avatar Kyoshi, Earthbender": {
+  "cmc": 8.0,
+  "collector_number": "130",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [
+   "Earthbend"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{5}{G}{G}{G}",
+  "name": "Avatar Kyoshi, Earthbender",
+  "oracle_text": "During your turn, Avatar Kyoshi has hexproof.\nAt the beginning of combat on your turn, earthbend 8, then untap that land. (Target land you control becomes a 0/0 creature with haste that's still a land. Put eight +1/+1 counters on it. When it dies or is exiled, return it to the battlefield tapped.)",
+  "power": "6",
+  "prices": {
+   "eur": "17.58",
+   "eur_foil": "18.27",
+   "tix": "3.12",
+   "usd": "14.81",
+   "usd_etched": null,
+   "usd_foil": "16.20"
+  },
+  "released_at": "2025-11-21",
+  "scryfall_uri": "https://scryfall.com/card/tle/130/avatar-kyoshi-earthbender?utm_source=api",
+  "set": "tle",
+  "toughness": "6",
+  "type_line": "Legendary Creature — Human Avatar"
+ },
  "Awaken the Honored Dead": {
   "cmc": 3.0,
   "collector_number": "170",
@@ -3009,6 +3119,60 @@
   "set": "tdm",
   "toughness": null,
   "type_line": "Enchantment — Saga"
+ },
+ "Awaken the Woods": {
+  "cmc": 2.0,
+  "collector_number": "170",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{X}{G}{G}",
+  "name": "Awaken the Woods",
+  "oracle_text": "Create X 1/1 green Forest Dryad land creature tokens. (They're affected by summoning sickness.)",
+  "power": null,
+  "prices": {
+   "eur": "12.30",
+   "eur_foil": "11.77",
+   "tix": "0.07",
+   "usd": "13.97",
+   "usd_etched": null,
+   "usd_foil": "19.95"
+  },
+  "released_at": "2022-11-18",
+  "scryfall_uri": "https://scryfall.com/card/bro/170/awaken-the-woods?utm_source=api",
+  "set": "bro",
+  "toughness": null,
+  "type_line": "Sorcery"
  },
  "Ayara, First of Locthwain": {
   "cmc": 3.0,
@@ -3277,6 +3441,62 @@
   "set": "cns",
   "toughness": null,
   "type_line": "Conspiracy"
+ },
+ "Badgermole Cub": {
+  "cmc": 2.0,
+  "collector_number": "167",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [
+   "Earthbend"
+  ],
+  "legalities": {
+   "alchemy": "legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "banned",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "banned",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{1}{G}",
+  "name": "Badgermole Cub",
+  "oracle_text": "When this creature enters, earthbend 1. (Target land you control becomes a 0/0 creature with haste that's still a land. Put a +1/+1 counter on it. When it dies or is exiled, return it to the battlefield tapped.)\nWhenever you tap a creature for mana, add an additional {G}.",
+  "power": "2",
+  "prices": {
+   "eur": "43.99",
+   "eur_foil": "59.28",
+   "tix": "25.95",
+   "usd": "45.69",
+   "usd_etched": null,
+   "usd_foil": "50.43"
+  },
+  "released_at": "2025-11-21",
+  "scryfall_uri": "https://scryfall.com/card/tla/167/badgermole-cub?utm_source=api",
+  "set": "tla",
+  "toughness": "2",
+  "type_line": "Creature — Badger Mole"
  },
  "Badlands": {
   "cmc": 0.0,
@@ -6245,6 +6465,63 @@
   "toughness": null,
   "type_line": "Sorcery // Land"
  },
+ "Bristly Bill, Spine Sower": {
+  "cmc": 2.0,
+  "collector_number": "157",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [
+   "Double",
+   "Landfall"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{1}{G}",
+  "name": "Bristly Bill, Spine Sower",
+  "oracle_text": "Landfall — Whenever a land you control enters, put a +1/+1 counter on target creature.\n{3}{G}{G}: Double the number of +1/+1 counters on each creature you control.",
+  "power": "2",
+  "prices": {
+   "eur": "27.50",
+   "eur_foil": "31.10",
+   "tix": "1.99",
+   "usd": "41.39",
+   "usd_etched": null,
+   "usd_foil": "40.89"
+  },
+  "released_at": "2024-04-19",
+  "scryfall_uri": "https://scryfall.com/card/otj/157/bristly-bill-spine-sower?utm_source=api",
+  "set": "otj",
+  "toughness": "2",
+  "type_line": "Legendary Creature — Plant Druid"
+ },
  "Bronze Tablet": {
   "cmc": 6.0,
   "collector_number": "303",
@@ -6514,6 +6791,62 @@
   "set": "fdn",
   "toughness": null,
   "type_line": "Instant"
+ },
+ "Bumi, Eclectic Earthbender": {
+  "cmc": 5.0,
+  "collector_number": "248",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [
+   "Earthbend"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{3}{G}{G}",
+  "name": "Bumi, Eclectic Earthbender",
+  "oracle_text": "When Bumi enters, earthbend 1. (Target land you control becomes a 0/0 creature with haste that's still a land. Put a +1/+1 counter on it. When it dies or is exiled, return it to the battlefield tapped.)\nWhenever Bumi attacks, put two +1/+1 counters on each land creature you control.",
+  "power": "4",
+  "prices": {
+   "eur": "8.85",
+   "eur_foil": "7.89",
+   "tix": "1.90",
+   "usd": "9.16",
+   "usd_etched": null,
+   "usd_foil": "8.66"
+  },
+  "released_at": "2025-11-21",
+  "scryfall_uri": "https://scryfall.com/card/tle/248/bumi-eclectic-earthbender?utm_source=api",
+  "set": "tle",
+  "toughness": "4",
+  "type_line": "Legendary Creature — Human Noble Ally"
  },
  "Buried Alive": {
   "cmc": 3.0,
@@ -8141,6 +8474,59 @@
   "toughness": null,
   "type_line": "Legendary Artifact"
  },
+ "Cinder Glade": {
+  "cmc": 0.0,
+  "collector_number": "230",
+  "color_identity": [
+   "G",
+   "R"
+  ],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "",
+  "name": "Cinder Glade",
+  "oracle_text": "({T}: Add {R} or {G}.)\nThis land enters tapped unless you control two or more basic lands.",
+  "power": null,
+  "prices": {
+   "eur": "0.21",
+   "eur_foil": null,
+   "tix": "0.02",
+   "usd": "0.27",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2026-06-26",
+  "scryfall_uri": "https://scryfall.com/card/msc/230/cinder-glade?utm_source=api",
+  "set": "msc",
+  "toughness": null,
+  "type_line": "Land — Mountain Forest"
+ },
  "City of Brass": {
   "cmc": 0.0,
   "collector_number": "62",
@@ -8628,6 +9014,60 @@
   "set": "bfz",
   "toughness": "5",
   "type_line": "Creature — Eldrazi"
+ },
+ "Conduit of Worlds": {
+  "cmc": 4.0,
+  "collector_number": "171",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{G}{G}",
+  "name": "Conduit of Worlds",
+  "oracle_text": "You may play lands from your graveyard.\n{T}: Choose target nonland permanent card in your graveyard. If you haven't cast a spell this turn, you may cast that card. If you do, you can't cast additional spells this turn. Activate only as a sorcery.",
+  "power": null,
+  "prices": {
+   "eur": "1.43",
+   "eur_foil": null,
+   "tix": "0.20",
+   "usd": "1.16",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2026-06-26",
+  "scryfall_uri": "https://scryfall.com/card/msc/171/conduit-of-worlds?utm_source=api",
+  "set": "msc",
+  "toughness": null,
+  "type_line": "Artifact"
  },
  "Consecrated Sphinx": {
   "cmc": 6.0,
@@ -9224,6 +9664,56 @@
   "set": "dmr",
   "toughness": null,
   "type_line": "Instant"
+ },
+ "Crucible of Worlds": {
+  "cmc": 3.0,
+  "collector_number": "303",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{3}",
+  "name": "Crucible of Worlds",
+  "oracle_text": "You may play lands from your graveyard.",
+  "power": null,
+  "prices": {
+   "eur": "20.37",
+   "eur_foil": "22.46",
+   "tix": "0.25",
+   "usd": "34.97",
+   "usd_etched": null,
+   "usd_foil": "35.89"
+  },
+  "released_at": "2022-07-08",
+  "scryfall_uri": "https://scryfall.com/card/2x2/303/crucible-of-worlds?utm_source=api",
+  "set": "2x2",
+  "toughness": null,
+  "type_line": "Artifact"
  },
  "Cruel Celebrant": {
   "cmc": 2.0,
@@ -12243,6 +12733,231 @@
   "toughness": "1",
   "type_line": "Legendary Artifact Creature — Construct"
  },
+ "Earth Kingdom General": {
+  "cmc": 4.0,
+  "collector_number": "173",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [
+   "Earthbend"
+  ],
+  "legalities": {
+   "alchemy": "legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{3}{G}",
+  "name": "Earth Kingdom General",
+  "oracle_text": "When this creature enters, earthbend 2. (Target land you control becomes a 0/0 creature with haste that's still a land. Put two +1/+1 counters on it. When it dies or is exiled, return it to the battlefield tapped.)\nWhenever you put one or more +1/+1 counters on a creature, you may gain that much life. Do this only once each turn.",
+  "power": "2",
+  "prices": {
+   "eur": "0.12",
+   "eur_foil": "0.20",
+   "tix": "0.03",
+   "usd": "0.22",
+   "usd_etched": null,
+   "usd_foil": "0.31"
+  },
+  "released_at": "2025-11-21",
+  "scryfall_uri": "https://scryfall.com/card/tla/173/earth-kingdom-general?utm_source=api",
+  "set": "tla",
+  "toughness": "2",
+  "type_line": "Creature — Human Soldier Ally"
+ },
+ "Earthbender Ascension": {
+  "cmc": 3.0,
+  "collector_number": "175",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [
+   "Earthbend",
+   "Landfall"
+  ],
+  "legalities": {
+   "alchemy": "legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{G}",
+  "name": "Earthbender Ascension",
+  "oracle_text": "When this enchantment enters, earthbend 2. Then search your library for a basic land card, put it onto the battlefield tapped, then shuffle.\nLandfall — Whenever a land you control enters, put a quest counter on this enchantment. When you do, if it has four or more quest counters on it, put a +1/+1 counter on target creature you control. It gains trample until end of turn.",
+  "power": null,
+  "prices": {
+   "eur": "2.67",
+   "eur_foil": "3.42",
+   "tix": "0.48",
+   "usd": "2.58",
+   "usd_etched": null,
+   "usd_foil": "2.71"
+  },
+  "released_at": "2025-11-21",
+  "scryfall_uri": "https://scryfall.com/card/tla/175/earthbender-ascension?utm_source=api",
+  "set": "tla",
+  "toughness": null,
+  "type_line": "Enchantment"
+ },
+ "Earthbending Student": {
+  "cmc": 3.0,
+  "collector_number": "249",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [
+   "Earthbend"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{G}",
+  "name": "Earthbending Student",
+  "oracle_text": "When this creature enters, earthbend 2. (Target land you control becomes a 0/0 creature with haste that's still a land. Put two +1/+1 counters on it. When it dies or is exiled, return it to the battlefield tapped.)\nLand creatures you control have vigilance. (Attacking doesn't cause them to tap.)",
+  "power": "1",
+  "prices": {
+   "eur": null,
+   "eur_foil": "20.37",
+   "tix": "0.36",
+   "usd": null,
+   "usd_etched": null,
+   "usd_foil": "24.99"
+  },
+  "released_at": "2025-11-21",
+  "scryfall_uri": "https://scryfall.com/card/tle/249/earthbending-student?utm_source=api",
+  "set": "tle",
+  "toughness": "3",
+  "type_line": "Creature — Human Warrior Ally"
+ },
+ "Earthshape": {
+  "cmc": 3.0,
+  "collector_number": "67",
+  "color_identity": [
+   "W"
+  ],
+  "colors": [
+   "W"
+  ],
+  "keywords": [
+   "Earthbend"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{W}",
+  "name": "Earthshape",
+  "oracle_text": "Earthbend 3. Then each creature you control with power less than or equal to that land's power gains hexproof and indestructible until end of turn. You gain hexproof until end of turn.",
+  "power": null,
+  "prices": {
+   "eur": "5.66",
+   "eur_foil": "4.97",
+   "tix": "3.25",
+   "usd": "6.70",
+   "usd_etched": null,
+   "usd_foil": "6.91"
+  },
+  "released_at": "2025-11-21",
+  "scryfall_uri": "https://scryfall.com/card/tle/67/earthshape?utm_source=api",
+  "set": "tle",
+  "toughness": null,
+  "type_line": "Instant"
+ },
  "Echo of Eons": {
   "cmc": 6.0,
   "collector_number": "46",
@@ -13595,6 +14310,60 @@
   "toughness": "1",
   "type_line": "Creature — Elf Druid"
  },
+ "Elvish Reclaimer": {
+  "cmc": 1.0,
+  "collector_number": "169",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{G}",
+  "name": "Elvish Reclaimer",
+  "oracle_text": "This creature gets +2/+2 as long as there are three or more land cards in your graveyard.\n{2}, {T}, Sacrifice a land: Search your library for a land card, put it onto the battlefield tapped, then shuffle.",
+  "power": "1",
+  "prices": {
+   "eur": "5.73",
+   "eur_foil": "10.95",
+   "tix": "0.10",
+   "usd": "5.06",
+   "usd_etched": null,
+   "usd_foil": "10.44"
+  },
+  "released_at": "2019-07-12",
+  "scryfall_uri": "https://scryfall.com/card/m20/169/elvish-reclaimer?utm_source=api",
+  "set": "m20",
+  "toughness": "2",
+  "type_line": "Creature — Elf Warrior"
+ },
  "Elvish Warmaster": {
   "cmc": 2.0,
   "collector_number": "167",
@@ -14439,6 +15208,60 @@
   "set": "sok",
   "toughness": "1",
   "type_line": "Legendary Creature — Moonfolk Monk // Legendary Enchantment"
+ },
+ "Erode": {
+  "cmc": 1.0,
+  "collector_number": "15",
+  "color_identity": [
+   "W"
+  ],
+  "colors": [
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{W}",
+  "name": "Erode",
+  "oracle_text": "Destroy target creature or planeswalker. Its controller may search their library for a basic land card, put it onto the battlefield tapped, then shuffle.",
+  "power": null,
+  "prices": {
+   "eur": "7.50",
+   "eur_foil": "7.81",
+   "tix": "15.42",
+   "usd": "6.10",
+   "usd_etched": null,
+   "usd_foil": "6.57"
+  },
+  "released_at": "2026-04-24",
+  "scryfall_uri": "https://scryfall.com/card/sos/15/erode?utm_source=api",
+  "set": "sos",
+  "toughness": null,
+  "type_line": "Instant"
  },
  "Esika, God of the Tree // The Prismatic Bridge": {
   "card_faces": [
@@ -15649,6 +16472,62 @@
   "set": "tle",
   "toughness": null,
   "type_line": "Sorcery"
+ },
+ "Felidar Retreat": {
+  "cmc": 4.0,
+  "collector_number": "574",
+  "color_identity": [
+   "W"
+  ],
+  "colors": [
+   "W"
+  ],
+  "keywords": [
+   "Landfall"
+  ],
+  "legalities": {
+   "alchemy": "legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{3}{W}",
+  "name": "Felidar Retreat",
+  "oracle_text": "Landfall — Whenever a land you control enters, choose one —\n• Create a 2/2 white Cat Beast creature token.\n• Put a +1/+1 counter on each creature you control. Those creatures gain vigilance until end of turn.",
+  "power": null,
+  "prices": {
+   "eur": "1.42",
+   "eur_foil": null,
+   "tix": "0.02",
+   "usd": "1.17",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2024-11-15",
+  "scryfall_uri": "https://scryfall.com/card/fdn/574/felidar-retreat?utm_source=api",
+  "set": "fdn",
+  "toughness": null,
+  "type_line": "Enchantment"
  },
  "Fell the Profane // Fell Mire": {
   "card_faces": [
@@ -19211,6 +20090,60 @@
   "toughness": "4",
   "type_line": "Creature — Zombie"
  },
+ "Great Divide Guide": {
+  "cmc": 2.0,
+  "collector_number": "181",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{1}{G}",
+  "name": "Great Divide Guide",
+  "oracle_text": "Each land and Ally you control has \"{T}: Add one mana of any color.\"",
+  "power": "2",
+  "prices": {
+   "eur": "0.97",
+   "eur_foil": "1.52",
+   "tix": "0.02",
+   "usd": "1.05",
+   "usd_etched": null,
+   "usd_foil": "1.41"
+  },
+  "released_at": "2025-11-21",
+  "scryfall_uri": "https://scryfall.com/card/tla/181/great-divide-guide?utm_source=api",
+  "set": "tla",
+  "toughness": "3",
+  "type_line": "Creature — Human Scout Ally"
+ },
  "Greater Auramancy": {
   "cmc": 2.0,
   "collector_number": "7",
@@ -19475,6 +20408,59 @@
   "set": "10e",
   "toughness": "2",
   "type_line": "Creature — Bear"
+ },
+ "Gruul Turf": {
+  "cmc": 0.0,
+  "collector_number": "152",
+  "color_identity": [
+   "G",
+   "R"
+  ],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "legal",
+   "paupercommander": "legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "",
+  "name": "Gruul Turf",
+  "oracle_text": "This land enters tapped.\nWhen this land enters, return a land you control to its owner's hand.\n{T}: Add {R}{G}.",
+  "power": null,
+  "prices": {
+   "eur": "0.19",
+   "eur_foil": null,
+   "tix": "0.28",
+   "usd": "0.35",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2026-01-23",
+  "scryfall_uri": "https://scryfall.com/card/ecc/152/gruul-turf?utm_source=api",
+  "set": "ecc",
+  "toughness": null,
+  "type_line": "Land"
  },
  "Gwenna, Eyes of Gaea": {
   "cmc": 3.0,
@@ -20881,6 +21867,60 @@
   "toughness": null,
   "type_line": "Land"
  },
+ "Horizon Explorer": {
+  "cmc": 3.0,
+  "collector_number": "15",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{G}",
+  "name": "Horizon Explorer",
+  "oracle_text": "Lands you control enter untapped.\nWhenever you attack a player, create a Lander token. (It's an artifact with \"{2}, {T}, Sacrifice this token: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle.\")",
+  "power": "2",
+  "prices": {
+   "eur": "3.20",
+   "eur_foil": null,
+   "tix": "7.16",
+   "usd": "2.47",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2025-08-01",
+  "scryfall_uri": "https://scryfall.com/card/eoc/15/horizon-explorer?utm_source=api",
+  "set": "eoc",
+  "toughness": "4",
+  "type_line": "Creature — Insect Scout"
+ },
  "Hullbreacher": {
   "cmc": 3.0,
   "collector_number": "74",
@@ -21148,6 +22188,56 @@
   "set": "cn2",
   "toughness": null,
   "type_line": "Conspiracy"
+ },
+ "Ichor Wellspring": {
+  "cmc": 2.0,
+  "collector_number": "245",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "legal",
+   "paupercommander": "legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}",
+  "name": "Ichor Wellspring",
+  "oracle_text": "When this artifact enters or is put into a graveyard from the battlefield, draw a card.",
+  "power": null,
+  "prices": {
+   "eur": "0.82",
+   "eur_foil": null,
+   "tix": null,
+   "usd": "1.40",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2021-04-23",
+  "scryfall_uri": "https://scryfall.com/card/c21/245/ichor-wellspring?utm_source=api",
+  "set": "c21",
+  "toughness": null,
+  "type_line": "Artifact"
  },
  "Ichormoon Gauntlet": {
   "cmc": 3.0,
@@ -22021,6 +23111,56 @@
   "toughness": null,
   "type_line": "Instant"
  },
+ "Inventors' Fair": {
+  "cmc": 0.0,
+  "collector_number": "247",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "",
+  "name": "Inventors' Fair",
+  "oracle_text": "At the beginning of your upkeep, if you control three or more artifacts, you gain 1 life.\n{T}: Add {C}.\n{4}, {T}, Sacrifice Inventors' Fair: Search your library for an artifact card, reveal it, put it into your hand, then shuffle. Activate only if you control three or more artifacts.",
+  "power": null,
+  "prices": {
+   "eur": "11.04",
+   "eur_foil": "15.29",
+   "tix": "0.02",
+   "usd": "17.69",
+   "usd_etched": null,
+   "usd_foil": "21.21"
+  },
+  "released_at": "2016-09-30",
+  "scryfall_uri": "https://scryfall.com/card/kld/247/inventors-fair?utm_source=api",
+  "set": "kld",
+  "toughness": null,
+  "type_line": "Legendary Land"
+ },
  "Invigorated Rampage": {
   "cmc": 2.0,
   "collector_number": "86",
@@ -22238,6 +23378,58 @@
   "set": "mm2",
   "toughness": "7",
   "type_line": "Legendary Creature — Angel"
+ },
+ "Iron Spider, Stark Upgrade": {
+  "cmc": 3.0,
+  "collector_number": "166",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [
+   "Vigilance"
+  ],
+  "legalities": {
+   "alchemy": "legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{3}",
+  "name": "Iron Spider, Stark Upgrade",
+  "oracle_text": "Vigilance\n{T}: Put a +1/+1 counter on each artifact creature and/or Vehicle you control.\n{2}, Remove two +1/+1 counters from among artifacts you control: Draw a card.",
+  "power": "2",
+  "prices": {
+   "eur": "0.78",
+   "eur_foil": "1.01",
+   "tix": "0.11",
+   "usd": "1.98",
+   "usd_etched": null,
+   "usd_foil": "2.18"
+  },
+  "released_at": "2025-09-26",
+  "scryfall_uri": "https://scryfall.com/card/spm/166/iron-spider-stark-upgrade?utm_source=api",
+  "set": "spm",
+  "toughness": "3",
+  "type_line": "Legendary Artifact Creature — Spider Hero"
  },
  "Iron-Shield Elf": {
   "cmc": 2.0,
@@ -23568,6 +24760,63 @@
   "toughness": "1",
   "type_line": "Creature — Dryad Knight"
  },
+ "Kodama of the East Tree": {
+  "cmc": 6.0,
+  "collector_number": "239",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [
+   "Reach",
+   "Partner"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{4}{G}{G}",
+  "name": "Kodama of the East Tree",
+  "oracle_text": "Reach\nWhenever another permanent you control enters, if it wasn't put onto the battlefield with this ability, you may put a permanent card with equal or lesser mana value from your hand onto the battlefield.\nPartner (You can have two commanders if both have partner.)",
+  "power": "6",
+  "prices": {
+   "eur": "3.27",
+   "eur_foil": "5.57",
+   "tix": "12.02",
+   "usd": "3.49",
+   "usd_etched": null,
+   "usd_foil": "6.59"
+  },
+  "released_at": "2020-11-20",
+  "scryfall_uri": "https://scryfall.com/card/cmr/239/kodama-of-the-east-tree?utm_source=api",
+  "set": "cmr",
+  "toughness": "6",
+  "type_line": "Legendary Creature — Spirit"
+ },
  "Kodama of the West Tree": {
   "cmc": 3.0,
   "collector_number": "199",
@@ -23887,6 +25136,111 @@
   "set": "cmm",
   "toughness": "12",
   "type_line": "Legendary Creature — Eldrazi"
+ },
+ "Krang, Utrom Warlord": {
+  "cmc": 9.0,
+  "collector_number": "175",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [
+   "Flying",
+   "Indestructible",
+   "Haste",
+   "Trample"
+  ],
+  "legalities": {
+   "alchemy": "legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{9}",
+  "name": "Krang, Utrom Warlord",
+  "oracle_text": "Flying, trample, indestructible, haste\nOther artifact creatures you control have flying, trample, indestructible, and haste.",
+  "power": "9",
+  "prices": {
+   "eur": "14.85",
+   "eur_foil": "16.52",
+   "tix": "0.52",
+   "usd": "21.31",
+   "usd_etched": null,
+   "usd_foil": "21.34"
+  },
+  "released_at": "2026-03-06",
+  "scryfall_uri": "https://scryfall.com/card/tmt/175/krang-utrom-warlord?utm_source=api",
+  "set": "tmt",
+  "toughness": "9",
+  "type_line": "Legendary Artifact Creature — Utrom Robot"
+ },
+ "Krark-Clan Ironworks": {
+  "cmc": 4.0,
+  "collector_number": "134",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "banned",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{4}",
+  "name": "Krark-Clan Ironworks",
+  "oracle_text": "Sacrifice an artifact: Add {C}{C}.",
+  "power": null,
+  "prices": {
+   "eur": "10.70",
+   "eur_foil": "45.79",
+   "tix": "0.04",
+   "usd": "17.16",
+   "usd_etched": null,
+   "usd_foil": "86.17"
+  },
+  "released_at": "2004-06-04",
+  "scryfall_uri": "https://scryfall.com/card/5dn/134/krark-clan-ironworks?utm_source=api",
+  "set": "5dn",
+  "toughness": null,
+  "type_line": "Artifact"
  },
  "Kutzil, Malamet Exemplar": {
   "cmc": 3.0,
@@ -24931,6 +26285,106 @@
   "released_at": "2014-06-16",
   "scryfall_uri": "https://scryfall.com/card/vma/271/lions-eye-diamond?utm_source=api",
   "set": "vma",
+  "toughness": null,
+  "type_line": "Artifact"
+ },
+ "Liquimetal Coating": {
+  "cmc": 2.0,
+  "collector_number": "197",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}",
+  "name": "Liquimetal Coating",
+  "oracle_text": "{T}: Target permanent becomes an artifact in addition to its other types until end of turn.",
+  "power": null,
+  "prices": {
+   "eur": "0.49",
+   "eur_foil": null,
+   "tix": null,
+   "usd": "1.49",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2018-06-08",
+  "scryfall_uri": "https://scryfall.com/card/cm2/197/liquimetal-coating?utm_source=api",
+  "set": "cm2",
+  "toughness": null,
+  "type_line": "Artifact"
+ },
+ "Liquimetal Torque": {
+  "cmc": 2.0,
+  "collector_number": "228",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}",
+  "name": "Liquimetal Torque",
+  "oracle_text": "{T}: Add {C}.\n{T}: Target nonland permanent becomes an artifact in addition to its other types until end of turn.",
+  "power": null,
+  "prices": {
+   "eur": "2.39",
+   "eur_foil": "2.64",
+   "tix": "0.03",
+   "usd": "3.54",
+   "usd_etched": null,
+   "usd_foil": "3.92"
+  },
+  "released_at": "2021-06-18",
+  "scryfall_uri": "https://scryfall.com/card/mh2/228/liquimetal-torque?utm_source=api",
+  "set": "mh2",
   "toughness": null,
   "type_line": "Artifact"
  },
@@ -26843,6 +28297,56 @@
   "toughness": null,
   "type_line": "Artifact"
  },
+ "Mishra's Bauble": {
+  "cmc": 0.0,
+  "collector_number": "274",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "banned",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{0}",
+  "name": "Mishra's Bauble",
+  "oracle_text": "{T}, Sacrifice this artifact: Look at the top card of target player's library. Draw a card at the beginning of the next turn's upkeep.",
+  "power": null,
+  "prices": {
+   "eur": "1.94",
+   "eur_foil": "2.89",
+   "tix": "14.35",
+   "usd": "2.41",
+   "usd_etched": null,
+   "usd_foil": "3.01"
+  },
+  "released_at": "2020-08-07",
+  "scryfall_uri": "https://scryfall.com/card/2xm/274/mishras-bauble?utm_source=api",
+  "set": "2xm",
+  "toughness": null,
+  "type_line": "Artifact"
+ },
  "Mishra's Workshop": {
   "cmc": 0.0,
   "collector_number": "305",
@@ -27106,6 +28610,64 @@
   "set": "cmm",
   "toughness": "6",
   "type_line": "Legendary Creature — Shapeshifter"
+ },
+ "Mossborn Hydra": {
+  "cmc": 3.0,
+  "collector_number": "107",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [
+   "Trample",
+   "Double",
+   "Landfall"
+  ],
+  "legalities": {
+   "alchemy": "legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{G}",
+  "name": "Mossborn Hydra",
+  "oracle_text": "Trample (This creature can deal excess combat damage to the player or planeswalker it's attacking.)\nThis creature enters with a +1/+1 counter on it.\nLandfall — Whenever a land you control enters, double the number of +1/+1 counters on this creature.",
+  "power": "0",
+  "prices": {
+   "eur": "11.18",
+   "eur_foil": "11.31",
+   "tix": "0.26",
+   "usd": "10.98",
+   "usd_etched": null,
+   "usd_foil": "11.57"
+  },
+  "released_at": "2024-11-15",
+  "scryfall_uri": "https://scryfall.com/card/fdn/107/mossborn-hydra?utm_source=api",
+  "set": "fdn",
+  "toughness": "0",
+  "type_line": "Creature — Elemental Hydra"
  },
  "Mosswort Bridge": {
   "cmc": 0.0,
@@ -27842,6 +29404,56 @@
   "set": "cns",
   "toughness": null,
   "type_line": "Conspiracy"
+ },
+ "Mycosynth Lattice": {
+  "cmc": 6.0,
+  "collector_number": "241",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "banned",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "not_legal",
+   "predh": "legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{6}",
+  "name": "Mycosynth Lattice",
+  "oracle_text": "All permanents are artifacts in addition to their other types.\nAll cards that aren't on the battlefield, spells, and permanents are colorless.\nPlayers may spend mana as though it were mana of any color.",
+  "power": null,
+  "prices": {
+   "eur": "18.00",
+   "eur_foil": "22.65",
+   "tix": null,
+   "usd": "36.24",
+   "usd_etched": null,
+   "usd_foil": "57.11"
+  },
+  "released_at": "2018-06-08",
+  "scryfall_uri": "https://scryfall.com/card/bbd/241/mycosynth-lattice?utm_source=api",
+  "set": "bbd",
+  "toughness": null,
+  "type_line": "Artifact"
  },
  "Mystic Forge": {
   "cmc": 4.0,
@@ -28659,6 +30271,62 @@
   "toughness": null,
   "type_line": "Enchantment — Class"
  },
+ "Nissa, Resurgent Animist": {
+  "cmc": 3.0,
+  "collector_number": "22",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [
+   "Landfall"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{G}",
+  "name": "Nissa, Resurgent Animist",
+  "oracle_text": "Landfall — Whenever a land you control enters, add one mana of any color. Then if this is the second time this ability has resolved this turn, reveal cards from the top of your library until you reveal an Elf or Elemental card. Put that card into your hand and the rest on the bottom of your library in a random order.",
+  "power": "3",
+  "prices": {
+   "eur": "23.79",
+   "eur_foil": "24.01",
+   "tix": "0.03",
+   "usd": "26.98",
+   "usd_etched": null,
+   "usd_foil": "26.74"
+  },
+  "released_at": "2023-05-12",
+  "scryfall_uri": "https://scryfall.com/card/mat/22/nissa-resurgent-animist?utm_source=api",
+  "set": "mat",
+  "toughness": "3",
+  "type_line": "Legendary Creature — Elf Scout"
+ },
  "Northern Air Temple": {
   "cmc": 1.0,
   "collector_number": "111",
@@ -29198,6 +30866,56 @@
   "toughness": null,
   "type_line": "Legendary Enchantment"
  },
+ "Oblivion Stone": {
+  "cmc": 3.0,
+  "collector_number": "373",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "not_legal",
+   "predh": "legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{3}",
+  "name": "Oblivion Stone",
+  "oracle_text": "{4}, {T}: Put a fate counter on target permanent.\n{5}, {T}, Sacrifice this artifact: Destroy each nonland permanent without a fate counter on it, then remove all fate counters from all permanents.",
+  "power": null,
+  "prices": {
+   "eur": "0.27",
+   "eur_foil": null,
+   "tix": null,
+   "usd": "0.38",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2022-04-29",
+  "scryfall_uri": "https://scryfall.com/card/ncc/373/oblivion-stone?utm_source=api",
+  "set": "ncc",
+  "toughness": null,
+  "type_line": "Artifact"
+ },
  "Obscuring Haze": {
   "cmc": 3.0,
   "collector_number": "308",
@@ -29491,6 +31209,76 @@
   "set": "afr",
   "toughness": "7",
   "type_line": "Legendary Creature — Dragon"
+ },
+ "Ondu Inversion // Ondu Skyruins": {
+  "card_faces": [
+   {
+    "mana_cost": "{6}{W}{W}",
+    "name": "Ondu Inversion",
+    "oracle_text": "Destroy all nonland permanents.",
+    "power": null,
+    "toughness": null,
+    "type_line": "Sorcery"
+   },
+   {
+    "mana_cost": "",
+    "name": "Ondu Skyruins",
+    "oracle_text": "This land enters tapped.\n{T}: Add {W}.",
+    "power": null,
+    "toughness": null,
+    "type_line": "Land"
+   }
+  ],
+  "cmc": 8.0,
+  "collector_number": "30",
+  "color_identity": [
+   "W"
+  ],
+  "colors": null,
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": null,
+  "name": "Ondu Inversion // Ondu Skyruins",
+  "oracle_text": null,
+  "power": null,
+  "prices": {
+   "eur": "0.99",
+   "eur_foil": "1.30",
+   "tix": "0.02",
+   "usd": "1.26",
+   "usd_etched": null,
+   "usd_foil": "1.84"
+  },
+  "released_at": "2020-09-25",
+  "scryfall_uri": "https://scryfall.com/card/znr/30/ondu-inversion-ondu-skyruins?utm_source=api",
+  "set": "znr",
+  "toughness": null,
+  "type_line": "Sorcery // Land"
  },
  "Opal Palace": {
   "cmc": 0.0,
@@ -29926,6 +31714,60 @@
   "toughness": "2",
   "type_line": "Creature — Brushwagg Mount"
  },
+ "Oswald Fiddlebender": {
+  "cmc": 2.0,
+  "collector_number": "28",
+  "color_identity": [
+   "W"
+  ],
+  "colors": [
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{1}{W}",
+  "name": "Oswald Fiddlebender",
+  "oracle_text": "Magical Tinkering — {W}, {T}, Sacrifice an artifact: Search your library for an artifact card with mana value equal to 1 plus the sacrificed artifact's mana value, put it onto the battlefield, then shuffle. Activate only as a sorcery.",
+  "power": "2",
+  "prices": {
+   "eur": "2.02",
+   "eur_foil": "3.43",
+   "tix": "0.03",
+   "usd": "2.63",
+   "usd_etched": null,
+   "usd_foil": "3.77"
+  },
+  "released_at": "2021-07-23",
+  "scryfall_uri": "https://scryfall.com/card/afr/28/oswald-fiddlebender?utm_source=api",
+  "set": "afr",
+  "toughness": "2",
+  "type_line": "Legendary Creature — Gnome Artificer"
+ },
  "Otawara, Soaring City": {
   "cmc": 0.0,
   "collector_number": "271",
@@ -30139,6 +31981,62 @@
   "set": "trk",
   "toughness": null,
   "type_line": "Land — Swamp Forest"
+ },
+ "Overlord of the Hauntwoods": {
+  "cmc": 5.0,
+  "collector_number": "194",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [
+   "Impending"
+  ],
+  "legalities": {
+   "alchemy": "legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{3}{G}{G}",
+  "name": "Overlord of the Hauntwoods",
+  "oracle_text": "Impending 4—{1}{G}{G} (If you cast this spell for its impending cost, it enters with four time counters and isn't a creature until the last is removed. At the beginning of your end step, remove a time counter from it.)\nWhenever this permanent enters or attacks, create a tapped colorless land token named Everywhere that is every basic land type.",
+  "power": "6",
+  "prices": {
+   "eur": "9.48",
+   "eur_foil": "9.04",
+   "tix": "0.23",
+   "usd": "9.09",
+   "usd_etched": null,
+   "usd_foil": "9.36"
+  },
+  "released_at": "2024-09-27",
+  "scryfall_uri": "https://scryfall.com/card/dsk/194/overlord-of-the-hauntwoods?utm_source=api",
+  "set": "dsk",
+  "toughness": "5",
+  "type_line": "Enchantment Creature — Avatar Horror"
  },
  "Oversold Cemetery": {
   "cmc": 2.0,
@@ -31272,6 +33170,60 @@
   "toughness": null,
   "type_line": "Basic Land — Plains"
  },
+ "Planar Engineering": {
+  "cmc": 4.0,
+  "collector_number": "158",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{3}{G}",
+  "name": "Planar Engineering",
+  "oracle_text": "Sacrifice two lands. Search your library for four basic land cards, put them onto the battlefield tapped, then shuffle.",
+  "power": null,
+  "prices": {
+   "eur": "0.92",
+   "eur_foil": "1.36",
+   "tix": "0.02",
+   "usd": "1.27",
+   "usd_etched": null,
+   "usd_foil": "1.84"
+  },
+  "released_at": "2026-04-24",
+  "scryfall_uri": "https://scryfall.com/card/sos/158/planar-engineering?utm_source=api",
+  "set": "sos",
+  "toughness": null,
+  "type_line": "Sorcery"
+ },
  "Plateau": {
   "cmc": 0.0,
   "collector_number": "308",
@@ -31802,6 +33754,60 @@
   "set": "ima",
   "toughness": "6",
   "type_line": "Creature — Giant"
+ },
+ "Prismatic Omen": {
+  "cmc": 2.0,
+  "collector_number": "126",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "not_legal",
+   "predh": "legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{1}{G}",
+  "name": "Prismatic Omen",
+  "oracle_text": "Lands you control are every basic land type in addition to their other types.",
+  "power": null,
+  "prices": {
+   "eur": "1.86",
+   "eur_foil": "13.25",
+   "tix": "0.02",
+   "usd": "6.65",
+   "usd_etched": null,
+   "usd_foil": "58.50"
+  },
+  "released_at": "2008-05-02",
+  "scryfall_uri": "https://scryfall.com/card/shm/126/prismatic-omen?utm_source=api",
+  "set": "shm",
+  "toughness": null,
+  "type_line": "Enchantment"
  },
  "Propaganda": {
   "cmc": 3.0,
@@ -34815,6 +36821,63 @@
   "toughness": null,
   "type_line": "Land"
  },
+ "Sapling Nursery": {
+  "cmc": 8.0,
+  "collector_number": "192",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [
+   "Affinity",
+   "Landfall"
+  ],
+  "legalities": {
+   "alchemy": "legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{6}{G}{G}",
+  "name": "Sapling Nursery",
+  "oracle_text": "Affinity for Forests (This spell costs {1} less to cast for each Forest you control.)\nLandfall — Whenever a land you control enters, create a 3/4 green Treefolk creature token with reach.\n{1}{G}, Exile this enchantment: Treefolk and Forests you control gain indestructible until end of turn.",
+  "power": null,
+  "prices": {
+   "eur": "1.40",
+   "eur_foil": "1.62",
+   "tix": "0.24",
+   "usd": "1.52",
+   "usd_etched": null,
+   "usd_foil": "2.08"
+  },
+  "released_at": "2026-01-23",
+  "scryfall_uri": "https://scryfall.com/card/ecl/192/sapling-nursery?utm_source=api",
+  "set": "ecl",
+  "toughness": null,
+  "type_line": "Enchantment"
+ },
  "Sarkhan's Triumph": {
   "cmc": 3.0,
   "collector_number": "154",
@@ -35407,6 +37470,62 @@
   "toughness": null,
   "type_line": "Land — Plains Swamp"
  },
+ "Scute Swarm": {
+  "cmc": 3.0,
+  "collector_number": "197",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [
+   "Landfall"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{G}",
+  "name": "Scute Swarm",
+  "oracle_text": "Landfall — Whenever a land you control enters, create a 1/1 green Insect creature token. If you control six or more lands, create a token that's a copy of this creature instead.",
+  "power": "1",
+  "prices": {
+   "eur": "7.37",
+   "eur_foil": null,
+   "tix": "0.51",
+   "usd": "8.63",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2024-09-27",
+  "scryfall_uri": "https://scryfall.com/card/dsc/197/scute-swarm?utm_source=api",
+  "set": "dsc",
+  "toughness": "1",
+  "type_line": "Creature — Insect"
+ },
  "Secluded Courtyard": {
   "cmc": 0.0,
   "collector_number": "265",
@@ -35828,6 +37947,59 @@
   "set": "c21",
   "toughness": null,
   "type_line": "Instant"
+ },
+ "Selesnya Sanctuary": {
+  "cmc": 0.0,
+  "collector_number": "246",
+  "color_identity": [
+   "G",
+   "W"
+  ],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "legal",
+   "paupercommander": "legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "",
+  "name": "Selesnya Sanctuary",
+  "oracle_text": "This land enters tapped.\nWhen this land enters, return a land you control to its owner's hand.\n{T}: Add {G}{W}.",
+  "power": null,
+  "prices": {
+   "eur": "0.18",
+   "eur_foil": null,
+   "tix": "0.01",
+   "usd": "0.32",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2024-02-23",
+  "scryfall_uri": "https://scryfall.com/card/clu/246/selesnya-sanctuary?utm_source=api",
+  "set": "clu",
+  "toughness": null,
+  "type_line": "Land"
  },
  "Selfless Safewright": {
   "cmc": 5.0,
@@ -38176,6 +40348,60 @@
   "toughness": null,
   "type_line": "Land"
  },
+ "Spelunking": {
+  "cmc": 3.0,
+  "collector_number": "213",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{G}",
+  "name": "Spelunking",
+  "oracle_text": "When this enchantment enters, draw a card, then you may put a land card from your hand onto the battlefield. If you put a Cave onto the battlefield this way, you gain 4 life.\nLands you control enter untapped.",
+  "power": null,
+  "prices": {
+   "eur": "3.03",
+   "eur_foil": "3.69",
+   "tix": "0.03",
+   "usd": "4.25",
+   "usd_etched": null,
+   "usd_foil": "4.89"
+  },
+  "released_at": "2023-11-17",
+  "scryfall_uri": "https://scryfall.com/card/lci/213/spelunking?utm_source=api",
+  "set": "lci",
+  "toughness": null,
+  "type_line": "Enchantment"
+ },
  "Sphere Grid": {
   "cmc": 2.0,
   "collector_number": "70",
@@ -38342,6 +40568,59 @@
   "toughness": "6",
   "type_line": "Creature — Sphinx"
  },
+ "Spire Garden": {
+  "cmc": 0.0,
+  "collector_number": "75",
+  "color_identity": [
+   "G",
+   "R"
+  ],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "",
+  "name": "Spire Garden",
+  "oracle_text": "This land enters tapped unless you have two or more opponents.\n{T}: Add {R} or {G}.",
+  "power": null,
+  "prices": {
+   "eur": "4.62",
+   "eur_foil": "3.94",
+   "tix": "2.41",
+   "usd": "6.45",
+   "usd_etched": null,
+   "usd_foil": "2.20"
+  },
+  "released_at": "2026-03-06",
+  "scryfall_uri": "https://scryfall.com/card/tmc/75/spire-garden?utm_source=api",
+  "set": "tmc",
+  "toughness": null,
+  "type_line": "Land"
+ },
  "Spiteful Visions": {
   "cmc": 4.0,
   "collector_number": "233",
@@ -38397,6 +40676,63 @@
   "set": "dsc",
   "toughness": null,
   "type_line": "Enchantment"
+ },
+ "Springheart Nantuko": {
+  "cmc": 2.0,
+  "collector_number": "171",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [
+   "Bestow",
+   "Landfall"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{1}{G}",
+  "name": "Springheart Nantuko",
+  "oracle_text": "Bestow {1}{G}\nEnchanted creature gets +1/+1.\nLandfall — Whenever a land you control enters, you may pay {1}{G} if this permanent is attached to a creature you control. If you do, create a token that's a copy of that creature. If you didn't create a token this way, create a 1/1 green Insect creature token.",
+  "power": "1",
+  "prices": {
+   "eur": "4.19",
+   "eur_foil": "4.92",
+   "tix": "0.02",
+   "usd": "4.97",
+   "usd_etched": null,
+   "usd_foil": "7.05"
+  },
+  "released_at": "2024-06-14",
+  "scryfall_uri": "https://scryfall.com/card/mh3/171/springheart-nantuko?utm_source=api",
+  "set": "mh3",
+  "toughness": "1",
+  "type_line": "Enchantment Creature — Insect Monk"
  },
  "Springleaf Parade": {
   "cmc": 2.0,
@@ -39017,6 +41353,56 @@
   "set": "moc",
   "toughness": null,
   "type_line": "Artifact"
+ },
+ "Strip Mine": {
+  "cmc": 0.0,
+  "collector_number": "316",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "banned",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "banned",
+   "future": "not_legal",
+   "gladiator": "banned",
+   "historic": "banned",
+   "legacy": "banned",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "legal",
+   "premodern": "banned",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "banned",
+   "vintage": "restricted"
+  },
+  "loyalty": null,
+  "mana_cost": "",
+  "name": "Strip Mine",
+  "oracle_text": "{T}: Add {C}.\n{T}, Sacrifice this land: Destroy target land.",
+  "power": null,
+  "prices": {
+   "eur": null,
+   "eur_foil": null,
+   "tix": "1.00",
+   "usd": null,
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2014-06-16",
+  "scryfall_uri": "https://scryfall.com/card/vma/316/strip-mine?utm_source=api",
+  "set": "vma",
+  "toughness": null,
+  "type_line": "Land"
  },
  "Studious First-Year // Rampant Growth": {
   "card_faces": [
@@ -39839,6 +42225,58 @@
   "toughness": null,
   "type_line": "Artifact — Equipment"
  },
+ "Sword of Feast and Famine": {
+  "cmc": 3.0,
+  "collector_number": "296",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [
+   "Equip"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "not_legal",
+   "predh": "legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{3}",
+  "name": "Sword of Feast and Famine",
+  "oracle_text": "Equipped creature gets +2/+2 and has protection from black and from green.\nWhenever equipped creature deals combat damage to a player, that player discards a card and you untap all lands you control.\nEquip {2}",
+  "power": null,
+  "prices": {
+   "eur": "26.89",
+   "eur_foil": "30.18",
+   "tix": "0.31",
+   "usd": "40.82",
+   "usd_etched": null,
+   "usd_foil": "56.02"
+  },
+  "released_at": "2020-08-07",
+  "scryfall_uri": "https://scryfall.com/card/2xm/296/sword-of-feast-and-famine?utm_source=api",
+  "set": "2xm",
+  "toughness": null,
+  "type_line": "Artifact — Equipment"
+ },
  "Swords to Plowshares": {
   "cmc": 1.0,
   "collector_number": "143",
@@ -40002,6 +42440,60 @@
   "set": "gtc",
   "toughness": "8",
   "type_line": "Creature — Avatar"
+ },
+ "Sylvan Safekeeper": {
+  "cmc": 1.0,
+  "collector_number": "287",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "legal",
+   "premodern": "legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{G}",
+  "name": "Sylvan Safekeeper",
+  "oracle_text": "Sacrifice a land: Target creature you control gains shroud until end of turn. (It can't be the target of spells or abilities.)",
+  "power": "1",
+  "prices": {
+   "eur": "7.28",
+   "eur_foil": "8.49",
+   "tix": "0.09",
+   "usd": "5.86",
+   "usd_etched": null,
+   "usd_foil": "5.79"
+  },
+  "released_at": "2024-06-14",
+  "scryfall_uri": "https://scryfall.com/card/mh3/287/sylvan-safekeeper?utm_source=api",
+  "set": "mh3",
+  "toughness": "1",
+  "type_line": "Creature — Human Wizard"
  },
  "Syr Konrad, the Grim": {
   "cmc": 5.0,
@@ -40545,6 +43037,56 @@
   "toughness": null,
   "type_line": "Artifact"
  },
+ "Talon Gates of Madara": {
+  "cmc": 0.0,
+  "collector_number": "82",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "",
+  "name": "Talon Gates of Madara",
+  "oracle_text": "When this land enters, up to one target creature phases out.\n{T}: Add {C}.\n{1}, {T}: Add one mana of any color.\n{4}: Put this card from your hand onto the battlefield.",
+  "power": null,
+  "prices": {
+   "eur": null,
+   "eur_foil": "107.04",
+   "tix": "21.60",
+   "usd": "38.21",
+   "usd_etched": null,
+   "usd_foil": "121.53"
+  },
+  "released_at": "2024-06-14",
+  "scryfall_uri": "https://scryfall.com/card/m3c/82/talon-gates-of-madara?utm_source=api",
+  "set": "m3c",
+  "toughness": null,
+  "type_line": "Land — Gate"
+ },
  "Tamiyo, Compleated Sage": {
   "cmc": 5.0,
   "collector_number": "238",
@@ -40660,6 +43202,64 @@
   "set": "inr",
   "toughness": null,
   "type_line": "Legendary Planeswalker — Tamiyo"
+ },
+ "Tannuk, Memorial Ensign": {
+  "cmc": 3.0,
+  "collector_number": "233",
+  "color_identity": [
+   "G",
+   "R"
+  ],
+  "colors": [
+   "G",
+   "R"
+  ],
+  "keywords": [
+   "Landfall"
+  ],
+  "legalities": {
+   "alchemy": "legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{1}{R}{G}",
+  "name": "Tannuk, Memorial Ensign",
+  "oracle_text": "Landfall — Whenever a land you control enters, Tannuk deals 1 damage to each opponent. If this is the second time this ability has resolved this turn, draw a card.",
+  "power": "2",
+  "prices": {
+   "eur": "0.75",
+   "eur_foil": "0.95",
+   "tix": "0.03",
+   "usd": "0.44",
+   "usd_etched": null,
+   "usd_foil": "0.60"
+  },
+  "released_at": "2025-08-01",
+  "scryfall_uri": "https://scryfall.com/card/eoe/233/tannuk-memorial-ensign?utm_source=api",
+  "set": "eoe",
+  "toughness": "4",
+  "type_line": "Legendary Creature — Kavu Pilot"
  },
  "Teferi's Protection": {
   "cmc": 3.0,
@@ -42300,6 +44900,56 @@
   "toughness": null,
   "type_line": "Legendary Enchantment — Shrine"
  },
+ "The Stasis Coffin": {
+  "cmc": 3.0,
+  "collector_number": "245",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{3}",
+  "name": "The Stasis Coffin",
+  "oracle_text": "{2}, {T}, Exile The Stasis Coffin: You gain protection from everything until your next turn.",
+  "power": null,
+  "prices": {
+   "eur": "0.39",
+   "eur_foil": "0.41",
+   "tix": "0.02",
+   "usd": "1.25",
+   "usd_etched": null,
+   "usd_foil": "1.51"
+  },
+  "released_at": "2022-11-18",
+  "scryfall_uri": "https://scryfall.com/card/bro/245/the-stasis-coffin?utm_source=api",
+  "set": "bro",
+  "toughness": null,
+  "type_line": "Legendary Artifact"
+ },
  "The Tabernacle at Pendrell Vale": {
   "cmc": 0.0,
   "collector_number": "212",
@@ -43626,6 +46276,181 @@
   "toughness": null,
   "type_line": "Legendary Land"
  },
+ "Toph, Earthbending Master": {
+  "cmc": 4.0,
+  "collector_number": "145",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [
+   "Earthbend",
+   "Landfall"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{3}{G}",
+  "name": "Toph, Earthbending Master",
+  "oracle_text": "Landfall — Whenever a land you control enters, you get an experience counter.\nWhenever you attack, earthbend X, where X is the number of experience counters you have. (Target land you control becomes a 0/0 creature with haste that's still a land. Put X +1/+1 counters on it. When it dies or is exiled, return it to the battlefield tapped.)",
+  "power": "2",
+  "prices": {
+   "eur": "37.57",
+   "eur_foil": "38.25",
+   "tix": "4.34",
+   "usd": "38.16",
+   "usd_etched": null,
+   "usd_foil": "38.61"
+  },
+  "released_at": "2025-11-21",
+  "scryfall_uri": "https://scryfall.com/card/tle/145/toph-earthbending-master?utm_source=api",
+  "set": "tle",
+  "toughness": "4",
+  "type_line": "Legendary Creature — Human Warrior Ally"
+ },
+ "Toph, Greatest Earthbender": {
+  "cmc": 4.0,
+  "collector_number": "70",
+  "color_identity": [
+   "G",
+   "R"
+  ],
+  "colors": [
+   "G",
+   "R"
+  ],
+  "keywords": [
+   "Earthbend"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{R}{G}",
+  "name": "Toph, Greatest Earthbender",
+  "oracle_text": "When Toph enters, earthbend X, where X is the amount of mana spent to cast her.\nLand creatures you control have double strike.",
+  "power": "3",
+  "prices": {
+   "eur": "18.36",
+   "eur_foil": "15.27",
+   "tix": "5.38",
+   "usd": "16.32",
+   "usd_etched": null,
+   "usd_foil": "17.91"
+  },
+  "released_at": "2025-11-21",
+  "scryfall_uri": "https://scryfall.com/card/tle/70/toph-greatest-earthbender?utm_source=api",
+  "set": "tle",
+  "toughness": "3",
+  "type_line": "Legendary Creature — Human Warrior Ally"
+ },
+ "Toph, the First Metalbender": {
+  "cmc": 4.0,
+  "collector_number": "247",
+  "color_identity": [
+   "G",
+   "R",
+   "W"
+  ],
+  "colors": [
+   "G",
+   "R",
+   "W"
+  ],
+  "keywords": [
+   "Earthbend"
+  ],
+  "legalities": {
+   "alchemy": "legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{1}{R}{G}{W}",
+  "name": "Toph, the First Metalbender",
+  "oracle_text": "Nontoken artifacts you control are lands in addition to their other types. (They don't gain the ability to {T} for mana.)\nAt the beginning of your end step, earthbend 2. (Target land you control becomes a 0/0 creature with haste that's still a land. Put two +1/+1 counters on it. When it dies or is exiled, return it to the battlefield tapped.)",
+  "power": "3",
+  "prices": {
+   "eur": "0.70",
+   "eur_foil": "1.34",
+   "tix": "0.02",
+   "usd": "1.78",
+   "usd_etched": null,
+   "usd_foil": "1.83"
+  },
+  "released_at": "2025-11-21",
+  "scryfall_uri": "https://scryfall.com/card/tla/247/toph-the-first-metalbender?utm_source=api",
+  "set": "tla",
+  "toughness": "3",
+  "type_line": "Legendary Creature — Human Warrior Ally"
+ },
  "Torrential Gearhulk": {
   "cmc": 6.0,
   "collector_number": "128",
@@ -44894,6 +47719,56 @@
   "set": "2x2",
   "toughness": "10",
   "type_line": "Legendary Creature — Eldrazi"
+ },
+ "Ultron, Artificial Malevolence": {
+  "cmc": 3.0,
+  "collector_number": "252",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{3}",
+  "name": "Ultron, Artificial Malevolence",
+  "oracle_text": "Whenever another nontoken artifact you control enters, you may pay {2}. If you do, create a token that's a copy of it. If the token isn't a creature, it becomes a 2/2 Robot Villain creature in addition to its other types.",
+  "power": "2",
+  "prices": {
+   "eur": "9.78",
+   "eur_foil": "10.20",
+   "tix": "0.14",
+   "usd": "11.66",
+   "usd_etched": null,
+   "usd_foil": "13.57"
+  },
+  "released_at": "2026-06-26",
+  "scryfall_uri": "https://scryfall.com/card/msh/252/ultron-artificial-malevolence?utm_source=api",
+  "set": "msh",
+  "toughness": "4",
+  "type_line": "Legendary Artifact Creature — Robot Villain"
  },
  "Undercity Sewers": {
   "cmc": 0.0,
@@ -49143,6 +52018,62 @@
   "toughness": null,
   "type_line": "Instant"
  },
+ "Wrenn and Realmbreaker": {
+  "cmc": 3.0,
+  "collector_number": "217",
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "keywords": [
+   "Mill"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": "4",
+  "mana_cost": "{1}{G}{G}",
+  "name": "Wrenn and Realmbreaker",
+  "oracle_text": "Lands you control have \"{T}: Add one mana of any color.\"\n+1: Up to one target land you control becomes a 3/3 Elemental creature with vigilance, hexproof, and haste until your next turn. It's still a land.\n−2: Mill three cards. You may put a permanent card from among the milled cards into your hand.\n−7: You get an emblem with \"You may play lands and cast permanent spells from your graveyard.\"",
+  "power": null,
+  "prices": {
+   "eur": "3.85",
+   "eur_foil": "4.33",
+   "tix": "0.02",
+   "usd": "5.35",
+   "usd_etched": null,
+   "usd_foil": "6.27"
+  },
+  "released_at": "2023-04-21",
+  "scryfall_uri": "https://scryfall.com/card/mom/217/wrenn-and-realmbreaker?utm_source=api",
+  "set": "mom",
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Wrenn"
+ },
  "Writhing Chrysalis": {
   "cmc": 4.0,
   "collector_number": "208",
@@ -49681,5 +52612,55 @@
   "set": "soc",
   "toughness": "1",
   "type_line": "Creature — Human Rogue Ally"
+ },
+ "Zuran Orb": {
+  "cmc": 0.0,
+  "collector_number": "300",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "not_legal",
+   "predh": "legal",
+   "premodern": "legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{0}",
+  "name": "Zuran Orb",
+  "oracle_text": "Sacrifice a land: You gain 2 life.",
+  "power": null,
+  "prices": {
+   "eur": "1.85",
+   "eur_foil": "2.33",
+   "tix": "0.03",
+   "usd": "3.29",
+   "usd_etched": "5.75",
+   "usd_foil": "3.86"
+  },
+  "released_at": "2021-06-18",
+  "scryfall_uri": "https://scryfall.com/card/mh2/300/zuran-orb?utm_source=api",
+  "set": "mh2",
+  "toughness": null,
+  "type_line": "Artifact"
  }
 }
