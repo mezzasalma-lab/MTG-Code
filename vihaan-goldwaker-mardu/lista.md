@@ -36,11 +36,11 @@
 1 Dragonskull Summit
 1 Exotic Orchard
 1 Fetid Heath
+1 Gleaming Splendor
 1 Goldspan Dragon
 1 Grenzo, Havoc Raiser
 1 Grim Hireling
 1 High Market
-1 Insatiable Avarice
 1 Inspired Tinkering
 1 Isolated Chapel
 1 Jan Jansen, Chaos Crafter
@@ -72,7 +72,6 @@
 1 Professional Face-Breaker
 1 Prosper, Tome-Bound
 1 Rain of Riches
-1 Rakdos Signet
 1 Requisition Raid
 1 Revel in Riches
 1 Rogue's Passage
@@ -83,6 +82,7 @@
 1 Shadowblood Ridge
 1 Shared Animosity
 1 Shoot the Sheriff
+1 Smaug the Magnificent
 1 Smothering Tithe
 1 Sol Ring
 1 Spectator Seating

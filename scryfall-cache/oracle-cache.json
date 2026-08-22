@@ -19913,6 +19913,61 @@
   "toughness": "2",
   "type_line": "Creature — Eldrazi Drone"
  },
+ "Gleaming Splendor": {
+  "cmc": 2.0,
+  "color_identity": [
+   "W"
+  ],
+  "colors": [
+   "W"
+  ],
+  "keywords": [
+   "Treasure"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{1}{W}",
+  "name": "Gleaming Splendor",
+  "oracle_text": "Whenever an opponent draws their second card each turn, you create a Treasure token.\n{2}{W}: Two target players each draw a card.",
+  "power": null,
+  "prices": {
+   "eur": "27.59",
+   "eur_foil": "28.84",
+   "tix": "0.56",
+   "usd": "50.86",
+   "usd_etched": null,
+   "usd_foil": "62.01"
+  },
+  "released_at": "2026-08-14",
+  "scryfall_uri": "https://scryfall.com/card/hob/15/gleaming-splendor?utm_source=api",
+  "set": "hob",
+  "toughness": null,
+  "type_line": "Enchantment"
+ },
  "Glissa Sunslayer": {
   "cmc": 3.0,
   "collector_number": "122",
@@ -41783,6 +41838,63 @@
   "set": "eoc",
   "toughness": null,
   "type_line": "Sorcery"
+ },
+ "Smaug the Magnificent": {
+  "cmc": 4.0,
+  "color_identity": [
+   "R"
+  ],
+  "colors": [
+   "R"
+  ],
+  "keywords": [
+   "Flying",
+   "Treasure",
+   "Haste"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{R}{R}",
+  "name": "Smaug the Magnificent",
+  "oracle_text": "Flying, haste\nWhenever Smaug attacks, he deals damage equal to the number of Treasures you control to any target.\nAt the beginning of your upkeep, create a Treasure token.",
+  "power": "4",
+  "prices": {
+   "eur": "10.15",
+   "eur_foil": "5.90",
+   "tix": "2.21",
+   "usd": "30.50",
+   "usd_etched": null,
+   "usd_foil": "36.00"
+  },
+  "released_at": "2026-08-14",
+  "scryfall_uri": "https://scryfall.com/card/hob/110/smaug-the-magnificent?utm_source=api",
+  "set": "hob",
+  "toughness": "3",
+  "type_line": "Legendary Creature — Dragon"
  },
  "Smothering Tithe": {
   "cmc": 4.0,
