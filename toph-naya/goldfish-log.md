@@ -158,6 +158,35 @@ Earthbend por fonte (soma das 2000 partidas):
 
 `EARTHBEND_TARGET_POLICY` promovida a `"broad_artifact"` como default no script a partir desta análise.
 
+---
+
+### Priorização por valor no sacrifício via Krark-Clan Ironworks — 2026-08-22
+
+**Pedido do usuário:** implementar a ressalva que ficou registrada na análise anterior — a escolha de qual artefato earthbendado sacrificar pro Krark-Clan Ironworks era "o primeiro na ordem do campo", sem noção de valor. Corrigir pra proteger as bombas (Krang, The Great Henge, Mycosynth Lattice) e priorizar o descartável.
+
+**Implementação:** dicionário `SAC_VALUE` (0 a 3) pra cada um dos 26 artefatos, com o critério real sendo "quanto essa carta perde por ficar tapped/fora um ciclo de earthbend" (o permanente sempre volta via Motor #16 — a única perda de verdade é 1 turno de habilidade ativada, nunca o cartão em si):
+- **0 — descartável:** equipamento desequipado (Lightning Greaves, Skullclamp, Sword of Feast and Famine), peças situacionais (Haywire Mite, Oblivion Stone, Zuran Orb, Liquimetal Coating), redundância entre Conduit/Crucible of Worlds, e as 4 do `RECURRING_TARGETS` (só caem aqui como fallback, já têm tratamento próprio antes).
+- **1 — rocks de mana puros:** Sol Ring, Arcane Signet, Mox Opal, Liquimetal Torque — perdem 1 turno de rampa, nunca o rock.
+- **2 — utilidade ativa por turno:** Iron Spider, Strionic Resonator, Esper Sentinel.
+- **3 — proteger:** motores que o próprio simulador depende (The Ozolith recicla contadores de outras partes, Krark-Clan Ironworks é o próprio sac outlet do loop) ou bombas de impacto contínuo alto (Krang, The Great Henge, Ultron, Mycosynth Lattice) — só sacrificadas se não sobrar mais nenhuma opção de valor mais baixo.
+
+Testado em 20.000 partidas com timeout antes do batch oficial (0 erros).
+
+**n=2000, mesmas seeds, comparando ordem de campo (antigo) vs prioridade por valor (novo):**
+
+| Métrica | Ordem de campo | Prioridade por valor |
+|---|---|---|
+| Avg recorrências Motor#16 | 0,966 | 0,966 (idêntico) |
+| Avg mana extra gerado | 1,998 | 1,998 (idêntico) |
+| Sacrifícios de cartas "protegidas" (tier 3) | 191 | **119** (−38%) |
+| Sacrifícios de cartas "descartáveis" (tier 0) | 320 | **405** (+27%) |
+| Krark-Clan Ironworks sacrifica a si mesma | 147 | **87** |
+| Krang, Utrom Warlord sacrificado | (não isolado) | **1** de 2000 |
+| The Great Henge sacrificado | (não isolado) | **1** de 2000 |
+| Mycosynth Lattice sacrificado | (não isolado) | **1** de 2000 |
+
+**Leitura:** a mudança é puramente qualitativa, não quantitativa — o volume total de recorrência/mana extra gerado pelo Motor#16 **não muda** (a política só decide QUEM entra no loop, não QUANTO o loop produz). O ganho real é evitar tapar Krang/Great Henge/Mycosynth Lattice sem necessidade — eles agora só entram como último recurso (1 vez em 2000 jogos cada), contra um número não isolado mas claramente maior sob a política antiga (191 sacrifícios de tier 3 no total, incluindo esses). `SAC_VALUE_PRIORITY_POLICY` promovida a `True` como default.
+
 **Simplificações documentadas no docstring do script** (não inventadas, omissões explícitas): sem combate real contra oponente (nenhuma criatura adversária, nenhum bloqueio — "atacar" só dispara gatilhos de ataque, não há dano/vida de oponente real); Esper Sentinel/Skullclamp/Sword of Feast and Famine/Talon Gates/Krang/Council's Judgment/Lightning Greaves/Heroic Intervention não têm efeito numérico solo simulado (dependem de oponente real); modelo de mana genérico (mana total, não pip a pip — o deck tem fixing extenso e documentado); habilidades de lealdade do Wrenn and Realmbreaker além da estática de fixing não são ativadas automaticamente.
 
 ---

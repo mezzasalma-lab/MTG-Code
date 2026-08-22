@@ -73,6 +73,59 @@ RECURRING_TARGETS = ("The Stasis Coffin", "Unstable Obelisk", "Ichor Wellspring"
 # medido em curva — default.
 EARTHBEND_TARGET_POLICY = "broad_artifact"
 
+# Ativa a priorizacao por valor (2026-08-22) ao escolher QUAL artefato
+# earthbendado sacrificar pro Krark-Clan Ironworks sob "broad_artifact" —
+# em vez do primeiro elegivel na ordem do campo. False = comportamento
+# antigo (ordem de campo), testado como ponto de comparacao no
+# goldfish-log.md.
+SAC_VALUE_PRIORITY_POLICY = True
+
+# Quanto MENOR o numero, mais descartavel — sacrificada primeiro. O criterio
+# real e "quanto essa carta perde por ficar tapped/fora por um ciclo de
+# earthbend" (o permanente sempre volta via Motor #16, entao a unica perda
+# de verdade e 1 turno de habilidade ativada/mana, nunca o cartao em si):
+#   0 = sem perda relevante — nao tem habilidade ativada por turno que valha
+#       a pena preservar (equipamento desequipado, peca situacional, ou uma
+#       das 4 cartas do RECURRING_TARGETS que ja tem tratamento proprio e so
+#       cairia aqui como fallback).
+#   1 = rocks de mana puros — perde 1 turno de rampa ao voltar tapped, mas
+#       nunca perde o rock de verdade.
+#   2 = utilidade ativa que compete por mana/tap todo turno (Iron Spider,
+#       Strionic Resonator, Esper Sentinel).
+#   3 = proteger — motor que outras partes do proprio simulador dependem
+#       (Ozolith recicla contadores, Krark-Clan Ironworks E o proprio sac
+#       outlet do loop) ou bomba de alto impacto continuo (Krang, The Great
+#       Henge, Ultron, Mycosynth Lattice) — so sacrificada se nao sobrar mais
+#       nenhuma opcao de valor mais baixo.
+SAC_VALUE = {
+    "Lightning Greaves": 0,
+    "Liquimetal Coating": 0,
+    "Skullclamp": 0,
+    "Sword of Feast and Famine": 0,
+    "Haywire Mite": 0,
+    "Oblivion Stone": 0,
+    "Conduit of Worlds": 0,
+    "Crucible of Worlds": 0,
+    "Mishra's Bauble": 0,
+    "Ichor Wellspring": 0,
+    "The Stasis Coffin": 0,
+    "Unstable Obelisk": 0,
+    "Zuran Orb": 0,
+    "Sol Ring": 1,
+    "Arcane Signet": 1,
+    "Mox Opal": 1,
+    "Liquimetal Torque": 1,
+    "Strionic Resonator": 2,
+    "Iron Spider, Stark Upgrade": 2,
+    "Esper Sentinel": 2,
+    "Krark-Clan Ironworks": 3,
+    "The Ozolith": 3,
+    "Krang, Utrom Warlord": 3,
+    "The Great Henge": 3,
+    "Ultron, Artificial Malevolence": 3,
+    "Mycosynth Lattice": 3,
+}
+
 
 # ---------------------------------------------------------------------------
 # Card database
@@ -895,10 +948,12 @@ def work_recurring_artifact_loop(state: GameState, log: list):
             # Qualquer outro artefato nao-token earthbendado tambem serve —
             # volta de graca pelo Motor #16, entao virar 2 mana dele nao
             # custa o permanente de verdade, so tempo (volta tapped).
-            sac_target = next((p for p in state.battlefield
-                                if p.card.ctype in ARTIFACT_ISH and not p.is_token
-                                and p.earthbend_return), None)
-            if sac_target is not None:
+            eligible = [p for p in state.battlefield
+                        if p.card.ctype in ARTIFACT_ISH and not p.is_token and p.earthbend_return]
+            if eligible:
+                if SAC_VALUE_PRIORITY_POLICY:
+                    eligible.sort(key=lambda p: SAC_VALUE.get(p.card.name, 1))
+                sac_target = eligible[0]
                 state.kci_sacrifices_broad += 1
         if sac_target:
             state.kci_sacrifices_of_recurring += 1
