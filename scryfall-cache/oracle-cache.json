@@ -214,6 +214,59 @@
   "toughness": null,
   "type_line": "Instant"
  },
+ "Academy Manufactor": {
+  "cmc": 3.0,
+  "collector_number": "251",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [
+   "Treasure",
+   "Food"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{3}",
+  "name": "Academy Manufactor",
+  "oracle_text": "If you would create a Clue, Food, or Treasure token, instead create one of each.",
+  "power": "1",
+  "prices": {
+   "eur": "5.20",
+   "eur_foil": null,
+   "tix": "0.08",
+   "usd": "7.57",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2024-04-19",
+  "scryfall_uri": "https://scryfall.com/card/otc/251/academy-manufactor?utm_source=api",
+  "set": "otc",
+  "toughness": "3",
+  "type_line": "Artifact Creature — Assembly-Worker"
+ },
  "Ad Nauseam": {
   "cmc": 5.0,
   "collector_number": "76",
@@ -648,6 +701,60 @@
   "set": "tmt",
   "toughness": "2",
   "type_line": "Legendary Creature — Human Soldier"
+ },
+ "Agent of the Iron Throne": {
+  "cmc": 3.0,
+  "collector_number": "107",
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{B}",
+  "name": "Agent of the Iron Throne",
+  "oracle_text": "Commander creatures you own have \"Whenever an artifact or creature you control is put into a graveyard from the battlefield, each opponent loses 1 life.\"",
+  "power": null,
+  "prices": {
+   "eur": "0.71",
+   "eur_foil": "1.05",
+   "tix": "5.33",
+   "usd": "0.51",
+   "usd_etched": null,
+   "usd_foil": "4.85"
+  },
+  "released_at": "2022-06-10",
+  "scryfall_uri": "https://scryfall.com/card/clb/107/agent-of-the-iron-throne?utm_source=api",
+  "set": "clb",
+  "toughness": null,
+  "type_line": "Legendary Enchantment — Background"
  },
  "Akroma's Will": {
   "cmc": 4.0,
@@ -3174,6 +3281,65 @@
   "toughness": null,
   "type_line": "Sorcery"
  },
+ "Aya of Alexandria": {
+  "cmc": 4.0,
+  "collector_number": "48",
+  "color_identity": [
+   "R",
+   "W"
+  ],
+  "colors": [
+   "R",
+   "W"
+  ],
+  "keywords": [
+   "Lifelink",
+   "Menace"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{R}{W}",
+  "name": "Aya of Alexandria",
+  "oracle_text": "Menace, lifelink\nWhenever a historic creature you control deals combat damage to a player, create a 1/1 black Assassin creature token with menace. (Artifacts, legendaries, and Sagas are historic.)",
+  "power": "4",
+  "prices": {
+   "eur": "0.43",
+   "eur_foil": "0.42",
+   "tix": "0.02",
+   "usd": "0.36",
+   "usd_etched": null,
+   "usd_foil": "0.37"
+  },
+  "released_at": "2024-07-05",
+  "scryfall_uri": "https://scryfall.com/card/acr/48/aya-of-alexandria?utm_source=api",
+  "set": "acr",
+  "toughness": "3",
+  "type_line": "Legendary Creature — Human Assassin"
+ },
  "Ayara, First of Locthwain": {
   "cmc": 3.0,
   "collector_number": "75",
@@ -3391,6 +3557,60 @@
   "set": "tla",
   "toughness": null,
   "type_line": "Land"
+ },
+ "Back in Town": {
+  "cmc": 3.0,
+  "collector_number": "18",
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{X}{2}{B}",
+  "name": "Back in Town",
+  "oracle_text": "Return X target outlaw creature cards from your graveyard to the battlefield. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws.)",
+  "power": null,
+  "prices": {
+   "eur": "1.55",
+   "eur_foil": null,
+   "tix": "2.91",
+   "usd": "5.70",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2024-04-19",
+  "scryfall_uri": "https://scryfall.com/card/otc/18/back-in-town?utm_source=api",
+  "set": "otc",
+  "toughness": null,
+  "type_line": "Sorcery"
  },
  "Backup Plan": {
   "cmc": 0.0,
@@ -5298,6 +5518,62 @@
   "toughness": null,
   "type_line": "Land — Swamp Mountain"
  },
+ "Blood Money": {
+  "cmc": 7.0,
+  "collector_number": "183",
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "keywords": [
+   "Treasure"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{5}{B}{B}",
+  "name": "Blood Money",
+  "oracle_text": "Destroy all creatures. For each nontoken creature destroyed this way, you create a tapped Treasure token.",
+  "power": null,
+  "prices": {
+   "eur": "1.73",
+   "eur_foil": null,
+   "tix": "4.34",
+   "usd": "3.09",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2023-11-17",
+  "scryfall_uri": "https://scryfall.com/card/lcc/183/blood-money?utm_source=api",
+  "set": "lcc",
+  "toughness": null,
+  "type_line": "Sorcery"
+ },
  "Bloodchief Ascension": {
   "cmc": 1.0,
   "collector_number": "139",
@@ -5887,6 +6163,62 @@
   "toughness": null,
   "type_line": "Instant"
  },
+ "Boros Charm": {
+  "cmc": 2.0,
+  "collector_number": "721",
+  "color_identity": [
+   "R",
+   "W"
+  ],
+  "colors": [
+   "R",
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{R}{W}",
+  "name": "Boros Charm",
+  "oracle_text": "Choose one —\n• Boros Charm deals 4 damage to target player or planeswalker.\n• Permanents you control gain indestructible until end of turn.\n• Target creature gains double strike until end of turn.",
+  "power": null,
+  "prices": {
+   "eur": null,
+   "eur_foil": "4.20",
+   "tix": "0.02",
+   "usd": null,
+   "usd_etched": null,
+   "usd_foil": "4.40"
+  },
+  "released_at": "2024-11-15",
+  "scryfall_uri": "https://scryfall.com/card/fdn/721/boros-charm?utm_source=api",
+  "set": "fdn",
+  "toughness": null,
+  "type_line": "Instant"
+ },
  "Boseiju, Who Endures": {
   "cmc": 0.0,
   "collector_number": "266",
@@ -6464,6 +6796,77 @@
   "set": "mh3",
   "toughness": null,
   "type_line": "Sorcery // Land"
+ },
+ "Brightclimb Pathway // Grimclimb Pathway": {
+  "card_faces": [
+   {
+    "mana_cost": "",
+    "name": "Brightclimb Pathway",
+    "oracle_text": "{T}: Add {W}.",
+    "power": null,
+    "toughness": null,
+    "type_line": "Land"
+   },
+   {
+    "mana_cost": "",
+    "name": "Grimclimb Pathway",
+    "oracle_text": "{T}: Add {B}.",
+    "power": null,
+    "toughness": null,
+    "type_line": "Land"
+   }
+  ],
+  "cmc": 0.0,
+  "collector_number": "259",
+  "color_identity": [
+   "B",
+   "W"
+  ],
+  "colors": null,
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": null,
+  "name": "Brightclimb Pathway // Grimclimb Pathway",
+  "oracle_text": null,
+  "power": null,
+  "prices": {
+   "eur": "4.27",
+   "eur_foil": "4.42",
+   "tix": "0.03",
+   "usd": "4.56",
+   "usd_etched": null,
+   "usd_foil": "4.90"
+  },
+  "released_at": "2020-09-25",
+  "scryfall_uri": "https://scryfall.com/card/znr/259/brightclimb-pathway-grimclimb-pathway?utm_source=api",
+  "set": "znr",
+  "toughness": null,
+  "type_line": "Land // Land"
  },
  "Bristly Bill, Spine Sower": {
   "cmc": 2.0,
@@ -7118,6 +7521,63 @@
   "set": "msc",
   "toughness": null,
   "type_line": "Land — Forest Plains"
+ },
+ "Captain Lannery Storm": {
+  "cmc": 3.0,
+  "collector_number": "158",
+  "color_identity": [
+   "R"
+  ],
+  "colors": [
+   "R"
+  ],
+  "keywords": [
+   "Treasure",
+   "Haste"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{R}",
+  "name": "Captain Lannery Storm",
+  "oracle_text": "Haste\nWhenever Captain Lannery Storm attacks, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")\nWhenever you sacrifice a Treasure, Captain Lannery Storm gets +1/+0 until end of turn.",
+  "power": "2",
+  "prices": {
+   "eur": "0.27",
+   "eur_foil": null,
+   "tix": "0.02",
+   "usd": "0.36",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2024-04-19",
+  "scryfall_uri": "https://scryfall.com/card/otc/158/captain-lannery-storm?utm_source=api",
+  "set": "otc",
+  "toughness": "2",
+  "type_line": "Legendary Creature — Human Pirate"
  },
  "Caretaker's Talent": {
   "cmc": 3.0,
@@ -8743,6 +9203,59 @@
   "toughness": null,
   "type_line": "Instant"
  },
+ "Clifftop Retreat": {
+  "cmc": 0.0,
+  "collector_number": "231",
+  "color_identity": [
+   "R",
+   "W"
+  ],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "",
+  "name": "Clifftop Retreat",
+  "oracle_text": "This land enters tapped unless you control a Mountain or a Plains.\n{T}: Add {R} or {W}.",
+  "power": null,
+  "prices": {
+   "eur": "0.26",
+   "eur_foil": null,
+   "tix": "0.02",
+   "usd": "0.33",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2026-06-26",
+  "scryfall_uri": "https://scryfall.com/card/msc/231/clifftop-retreat?utm_source=api",
+  "set": "msc",
+  "toughness": null,
+  "type_line": "Land"
+ },
  "Coalition Victory": {
   "cmc": 8.0,
   "collector_number": "91",
@@ -8860,6 +9373,56 @@
   "set": "big",
   "toughness": null,
   "type_line": "Artifact"
+ },
+ "Command Beacon": {
+  "cmc": 0.0,
+  "collector_number": "352",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "",
+  "name": "Command Beacon",
+  "oracle_text": "{T}: Add {C}.\n{T}, Sacrifice this land: Put your commander into your hand from the command zone.",
+  "power": null,
+  "prices": {
+   "eur": "7.52",
+   "eur_foil": null,
+   "tix": "1.74",
+   "usd": "9.35",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2025-04-11",
+  "scryfall_uri": "https://scryfall.com/card/tdc/352/command-beacon?utm_source=api",
+  "set": "tdc",
+  "toughness": null,
+  "type_line": "Land"
  },
  "Command Tower": {
   "cmc": 0.0,
@@ -10753,6 +11316,62 @@
   "toughness": "5",
   "type_line": "Creature — Spirit"
  },
+ "Deadly Derision": {
+  "cmc": 4.0,
+  "collector_number": "99",
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "keywords": [
+   "Treasure"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "legal",
+   "paupercommander": "legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{B}{B}",
+  "name": "Deadly Derision",
+  "oracle_text": "Destroy target creature or planeswalker. Create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "power": null,
+  "prices": {
+   "eur": "0.09",
+   "eur_foil": "0.12",
+   "tix": "0.03",
+   "usd": "0.20",
+   "usd_etched": null,
+   "usd_foil": "0.30"
+  },
+  "released_at": "2023-04-21",
+  "scryfall_uri": "https://scryfall.com/card/mom/99/deadly-derision?utm_source=api",
+  "set": "mom",
+  "toughness": null,
+  "type_line": "Instant"
+ },
  "Deadly Dispute": {
   "cmc": 2.0,
   "collector_number": "794",
@@ -11350,6 +11969,56 @@
   "toughness": null,
   "type_line": "Instant"
  },
+ "Demolition Field": {
+  "cmc": 0.0,
+  "collector_number": "687",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "",
+  "name": "Demolition Field",
+  "oracle_text": "{T}: Add {C}.\n{2}, {T}, Sacrifice this land: Destroy target nonbasic land an opponent controls. That land's controller may search their library for a basic land card, put it onto the battlefield, then shuffle. You may search your library for a basic land card, put it onto the battlefield, then shuffle.",
+  "power": null,
+  "prices": {
+   "eur": "0.30",
+   "eur_foil": null,
+   "tix": "0.02",
+   "usd": "0.23",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2024-11-15",
+  "scryfall_uri": "https://scryfall.com/card/fdn/687/demolition-field?utm_source=api",
+  "set": "fdn",
+  "toughness": null,
+  "type_line": "Land"
+ },
  "Demonic Attorney": {
   "cmc": 3.0,
   "collector_number": "103",
@@ -11457,6 +12126,59 @@
   "set": "cmm",
   "toughness": null,
   "type_line": "Sorcery"
+ },
+ "Desolate Mire": {
+  "cmc": 0.0,
+  "collector_number": "367",
+  "color_identity": [
+   "B",
+   "W"
+  ],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "",
+  "name": "Desolate Mire",
+  "oracle_text": "{1}, {T}: Add {W}{B}.",
+  "power": null,
+  "prices": {
+   "eur": "0.26",
+   "eur_foil": null,
+   "tix": "0.30",
+   "usd": "0.27",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2026-04-24",
+  "scryfall_uri": "https://scryfall.com/card/soc/367/desolate-mire?utm_source=api",
+  "set": "soc",
+  "toughness": null,
+  "type_line": "Land"
  },
  "Destiny Spinner": {
   "cmc": 2.0,
@@ -20254,6 +20976,118 @@
   "toughness": null,
   "type_line": "Enchantment"
  },
+ "Grenzo, Havoc Raiser": {
+  "cmc": 2.0,
+  "collector_number": "216",
+  "color_identity": [
+   "R"
+  ],
+  "colors": [
+   "R"
+  ],
+  "keywords": [
+   "Goad"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{R}{R}",
+  "name": "Grenzo, Havoc Raiser",
+  "oracle_text": "Whenever a creature you control deals combat damage to a player, choose one —\n• Goad target creature that player controls.\n• Exile the top card of that player's library. Until end of turn, you may cast that card and you may spend mana as though it were mana of any color to cast that spell.",
+  "power": "2",
+  "prices": {
+   "eur": "0.27",
+   "eur_foil": null,
+   "tix": "0.49",
+   "usd": "0.39",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2025-04-11",
+  "scryfall_uri": "https://scryfall.com/card/tdc/216/grenzo-havoc-raiser?utm_source=api",
+  "set": "tdc",
+  "toughness": "2",
+  "type_line": "Legendary Creature — Goblin Rogue"
+ },
+ "Grim Hireling": {
+  "cmc": 4.0,
+  "collector_number": "755",
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "keywords": [
+   "Treasure"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{3}{B}",
+  "name": "Grim Hireling",
+  "oracle_text": "Whenever one or more creatures you control deal combat damage to a player, create two Treasure tokens.\n{B}, Sacrifice X Treasures: Target creature gets -X/-X until end of turn. Activate only as a sorcery.",
+  "power": "3",
+  "prices": {
+   "eur": "12.51",
+   "eur_foil": null,
+   "tix": "7.30",
+   "usd": "12.13",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2022-06-10",
+  "scryfall_uri": "https://scryfall.com/card/clb/755/grim-hireling?utm_source=api",
+  "set": "clb",
+  "toughness": "2",
+  "type_line": "Creature — Tiefling Rogue"
+ },
  "Grim Monolith": {
   "cmc": 2.0,
   "collector_number": "126",
@@ -21542,6 +22376,56 @@
   "set": "ecl",
   "toughness": "2",
   "type_line": "Creature — Goblin Sorcerer"
+ },
+ "High Market": {
+  "cmc": 0.0,
+  "collector_number": "380",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "not_legal",
+   "predh": "legal",
+   "premodern": "legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "",
+  "name": "High Market",
+  "oracle_text": "{T}: Add {C}.\n{T}, Sacrifice a creature: You gain 1 life.",
+  "power": null,
+  "prices": {
+   "eur": "0.73",
+   "eur_foil": null,
+   "tix": "0.05",
+   "usd": "0.48",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2026-04-24",
+  "scryfall_uri": "https://scryfall.com/card/soc/380/high-market?utm_source=api",
+  "set": "soc",
+  "toughness": null,
+  "type_line": "Land"
  },
  "High Perfect Morcant": {
   "cmc": 4.0,
@@ -23063,6 +23947,118 @@
   "toughness": null,
   "type_line": "Sorcery"
  },
+ "Insatiable Avarice": {
+  "cmc": 1.0,
+  "collector_number": "91",
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "keywords": [
+   "Spree"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{B}",
+  "name": "Insatiable Avarice",
+  "oracle_text": "Spree (Choose one or more additional costs.)\n+ {2} — Search your library for a card, then shuffle and put that card on top.\n+ {B}{B} — Target player draws three cards and loses 3 life.",
+  "power": null,
+  "prices": {
+   "eur": "5.16",
+   "eur_foil": "6.21",
+   "tix": "0.02",
+   "usd": "4.89",
+   "usd_etched": null,
+   "usd_foil": "5.30"
+  },
+  "released_at": "2024-04-19",
+  "scryfall_uri": "https://scryfall.com/card/otj/91/insatiable-avarice?utm_source=api",
+  "set": "otj",
+  "toughness": null,
+  "type_line": "Sorcery"
+ },
+ "Inspired Tinkering": {
+  "cmc": 5.0,
+  "collector_number": "183",
+  "color_identity": [
+   "R"
+  ],
+  "colors": [
+   "R"
+  ],
+  "keywords": [
+   "Treasure"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{4}{R}",
+  "name": "Inspired Tinkering",
+  "oracle_text": "Exile the top three cards of your library. Until the end of your next turn, you may play those cards.\nCreate three Treasure tokens. (They're artifacts with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "power": null,
+  "prices": {
+   "eur": "1.26",
+   "eur_foil": "1.59",
+   "tix": "6.41",
+   "usd": "1.54",
+   "usd_etched": null,
+   "usd_foil": "7.85"
+  },
+  "released_at": "2022-06-10",
+  "scryfall_uri": "https://scryfall.com/card/clb/183/inspired-tinkering?utm_source=api",
+  "set": "clb",
+  "toughness": null,
+  "type_line": "Sorcery"
+ },
  "Interplanar Beacon": {
   "cmc": 0.0,
   "collector_number": "1004",
@@ -23593,6 +24589,59 @@
   "toughness": null,
   "type_line": "Basic Land — Island"
  },
+ "Isolated Chapel": {
+  "cmc": 0.0,
+  "collector_number": "382",
+  "color_identity": [
+   "B",
+   "W"
+  ],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "",
+  "name": "Isolated Chapel",
+  "oracle_text": "This land enters tapped unless you control a Plains or a Swamp.\n{T}: Add {W} or {B}.",
+  "power": null,
+  "prices": {
+   "eur": "0.51",
+   "eur_foil": null,
+   "tix": "0.07",
+   "usd": "0.40",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2026-04-24",
+  "scryfall_uri": "https://scryfall.com/card/soc/382/isolated-chapel?utm_source=api",
+  "set": "soc",
+  "toughness": null,
+  "type_line": "Land"
+ },
  "It That Heralds the End": {
   "cmc": 2.0,
   "collector_number": "9",
@@ -23748,6 +24797,67 @@
   "set": "c15",
   "toughness": "2",
   "type_line": "Creature — Vedalken Wizard"
+ },
+ "Jan Jansen, Chaos Crafter": {
+  "cmc": 3.0,
+  "collector_number": "277",
+  "color_identity": [
+   "B",
+   "R",
+   "W"
+  ],
+  "colors": [
+   "B",
+   "R",
+   "W"
+  ],
+  "keywords": [
+   "Treasure",
+   "Haste"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{R}{W}{B}",
+  "name": "Jan Jansen, Chaos Crafter",
+  "oracle_text": "Haste\n{T}, Sacrifice an artifact creature: Create two Treasure tokens.\n{T}, Sacrifice a noncreature artifact: Create two 1/1 colorless Construct artifact creature tokens.",
+  "power": "3",
+  "prices": {
+   "eur": "0.29",
+   "eur_foil": "0.47",
+   "tix": "2.37",
+   "usd": "0.39",
+   "usd_etched": null,
+   "usd_foil": "0.42"
+  },
+  "released_at": "2022-06-10",
+  "scryfall_uri": "https://scryfall.com/card/clb/277/jan-jansen-chaos-crafter?utm_source=api",
+  "set": "clb",
+  "toughness": "3",
+  "type_line": "Legendary Creature — Gnome Artificer"
  },
  "Jarad, Golgari Lich Lord": {
   "cmc": 4.0,
@@ -24189,6 +25299,62 @@
   "toughness": null,
   "type_line": "Instant // Land"
  },
+ "Kambal, Profiteering Mayor": {
+  "cmc": 3.0,
+  "collector_number": "211",
+  "color_identity": [
+   "B",
+   "W"
+  ],
+  "colors": [
+   "B",
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{1}{W}{B}",
+  "name": "Kambal, Profiteering Mayor",
+  "oracle_text": "Whenever one or more tokens your opponents control enter, for each of them, create a tapped token that's a copy of it. This ability triggers only once each turn.\nWhenever one or more tokens you control enter, each opponent loses 1 life and you gain 1 life.",
+  "power": "2",
+  "prices": {
+   "eur": "4.60",
+   "eur_foil": "4.78",
+   "tix": "0.02",
+   "usd": "5.20",
+   "usd_etched": null,
+   "usd_foil": "6.05"
+  },
+  "released_at": "2024-04-19",
+  "scryfall_uri": "https://scryfall.com/card/otj/211/kambal-profiteering-mayor?utm_source=api",
+  "set": "otj",
+  "toughness": "4",
+  "type_line": "Legendary Creature — Human Advisor"
+ },
  "Karakas": {
   "cmc": 0.0,
   "collector_number": "244",
@@ -24464,6 +25630,66 @@
   "set": "cmr",
   "toughness": "1",
   "type_line": "Legendary Creature — Elemental Lizard"
+ },
+ "Kellogg, Dangerous Mind": {
+  "cmc": 3.0,
+  "collector_number": "106",
+  "color_identity": [
+   "B",
+   "R"
+  ],
+  "colors": [
+   "B",
+   "R"
+  ],
+  "keywords": [
+   "First strike",
+   "Treasure",
+   "Haste"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{1}{B}{R}",
+  "name": "Kellogg, Dangerous Mind",
+  "oracle_text": "First strike, haste\nWhenever Kellogg attacks, create a Treasure token.\nSacrifice five Treasures: Gain control of target creature for as long as you control Kellogg. Activate only as a sorcery.",
+  "power": "3",
+  "prices": {
+   "eur": "4.80",
+   "eur_foil": "5.34",
+   "tix": "3.18",
+   "usd": "5.33",
+   "usd_etched": null,
+   "usd_foil": "4.51"
+  },
+  "released_at": "2024-03-08",
+  "scryfall_uri": "https://scryfall.com/card/pip/106/kellogg-dangerous-mind?utm_source=api",
+  "set": "pip",
+  "toughness": "2",
+  "type_line": "Legendary Creature — Human Mercenary"
  },
  "Ketria Triome": {
   "cmc": 0.0,
@@ -25576,6 +26802,62 @@
   "toughness": "3",
   "type_line": "Legendary Creature — Elf Noble"
  },
+ "Laughing Jasper Flint": {
+  "cmc": 3.0,
+  "collector_number": "215",
+  "color_identity": [
+   "B",
+   "R"
+  ],
+  "colors": [
+   "B",
+   "R"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{1}{B}{R}",
+  "name": "Laughing Jasper Flint",
+  "oracle_text": "Creatures you control but don't own are Mercenaries in addition to their other types.\nAt the beginning of your upkeep, exile the top X cards of target opponent's library, where X is the number of outlaws you control. Until end of turn, you may cast spells from among those cards, and mana of any type can be spent to cast those spells.",
+  "power": "4",
+  "prices": {
+   "eur": "0.29",
+   "eur_foil": "0.37",
+   "tix": "0.02",
+   "usd": "0.40",
+   "usd_etched": null,
+   "usd_foil": "0.45"
+  },
+  "released_at": "2024-04-19",
+  "scryfall_uri": "https://scryfall.com/card/otj/215/laughing-jasper-flint?utm_source=api",
+  "set": "otj",
+  "toughness": "3",
+  "type_line": "Legendary Creature — Lizard Rogue"
+ },
  "Lava Tubes": {
   "cmc": 0.0,
   "collector_number": "358",
@@ -25969,6 +27251,119 @@
   "set": "vma",
   "toughness": null,
   "type_line": "Land"
+ },
+ "Lich-Knights' Conquest": {
+  "cmc": 5.0,
+  "collector_number": "96",
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{4}{B}",
+  "name": "Lich-Knights' Conquest",
+  "oracle_text": "Sacrifice any number of artifacts, enchantments, and/or tokens. Return that many creature cards from your graveyard to the battlefield.",
+  "power": null,
+  "prices": {
+   "eur": "0.73",
+   "eur_foil": "1.20",
+   "tix": "0.02",
+   "usd": "0.99",
+   "usd_etched": null,
+   "usd_foil": "2.02"
+  },
+  "released_at": "2023-09-08",
+  "scryfall_uri": "https://scryfall.com/card/woe/96/lich-knights-conquest?utm_source=api",
+  "set": "woe",
+  "toughness": null,
+  "type_line": "Sorcery"
+ },
+ "Life Insurance": {
+  "cmc": 5.0,
+  "collector_number": "224",
+  "color_identity": [
+   "B",
+   "W"
+  ],
+  "colors": [
+   "B",
+   "W"
+  ],
+  "keywords": [
+   "Extort",
+   "Treasure"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{3}{W}{B}",
+  "name": "Life Insurance",
+  "oracle_text": "Extort (Whenever you cast a spell, you may pay {W/B}. If you do, each opponent loses 1 life and you gain that much life.)\nWhenever a nontoken creature dies, you lose 1 life and create a Treasure token.",
+  "power": null,
+  "prices": {
+   "eur": "0.21",
+   "eur_foil": null,
+   "tix": "0.08",
+   "usd": "0.26",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2024-09-27",
+  "scryfall_uri": "https://scryfall.com/card/dsc/224/life-insurance?utm_source=api",
+  "set": "dsc",
+  "toughness": null,
+  "type_line": "Enchantment"
  },
  "Lightning Bolt": {
   "cmc": 1.0,
@@ -26769,6 +28164,64 @@
   "toughness": "3",
   "type_line": "Legendary Creature — Rat Noble"
  },
+ "Lotho, Corrupt Shirriff": {
+  "cmc": 2.0,
+  "collector_number": "213",
+  "color_identity": [
+   "B",
+   "W"
+  ],
+  "colors": [
+   "B",
+   "W"
+  ],
+  "keywords": [
+   "Treasure"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{W}{B}",
+  "name": "Lotho, Corrupt Shirriff",
+  "oracle_text": "Whenever a player casts their second spell each turn, you lose 1 life and create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "power": "2",
+  "prices": {
+   "eur": "9.21",
+   "eur_foil": "10.24",
+   "tix": "0.02",
+   "usd": "11.66",
+   "usd_etched": null,
+   "usd_foil": "12.69"
+  },
+  "released_at": "2023-06-23",
+  "scryfall_uri": "https://scryfall.com/card/ltr/213/lotho-corrupt-shirriff?utm_source=api",
+  "set": "ltr",
+  "toughness": "1",
+  "type_line": "Legendary Creature — Halfling Rogue"
+ },
  "Lotus Cobra": {
   "cmc": 2.0,
   "collector_number": "193",
@@ -27210,6 +28663,62 @@
   "toughness": "1",
   "type_line": "Legendary Creature — Dwarf Berserker"
  },
+ "Magda, the Hoardmaster": {
+  "cmc": 2.0,
+  "collector_number": "133",
+  "color_identity": [
+   "R"
+  ],
+  "colors": [
+   "R"
+  ],
+  "keywords": [
+   "Treasure"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{1}{R}",
+  "name": "Magda, the Hoardmaster",
+  "oracle_text": "Whenever you commit a crime, create a tapped Treasure token. This ability triggers only once each turn. (Targeting opponents, anything they control, and/or cards in their graveyards is a crime.)\nSacrifice three Treasures: Create a 4/4 red Scorpion Dragon creature token with flying and haste. Activate only as a sorcery.",
+  "power": "2",
+  "prices": {
+   "eur": "0.71",
+   "eur_foil": "1.01",
+   "tix": "0.02",
+   "usd": "2.90",
+   "usd_etched": null,
+   "usd_foil": "1.10"
+  },
+  "released_at": "2024-04-19",
+  "scryfall_uri": "https://scryfall.com/card/otj/133/magda-the-hoardmaster?utm_source=api",
+  "set": "otj",
+  "toughness": "2",
+  "type_line": "Legendary Creature — Dwarf Berserker"
+ },
  "Magus of the Wheel": {
   "cmc": 3.0,
   "collector_number": "241",
@@ -27263,6 +28772,64 @@
   "set": "cmm",
   "toughness": "3",
   "type_line": "Creature — Human Wizard"
+ },
+ "Mahadi, Emporium Master": {
+  "cmc": 3.0,
+  "collector_number": "282",
+  "color_identity": [
+   "B",
+   "R"
+  ],
+  "colors": [
+   "B",
+   "R"
+  ],
+  "keywords": [
+   "Treasure"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{1}{B}{R}",
+  "name": "Mahadi, Emporium Master",
+  "oracle_text": "At the beginning of your end step, create a Treasure token for each creature that died this turn. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "power": "3",
+  "prices": {
+   "eur": "1.79",
+   "eur_foil": "2.80",
+   "tix": "9.42",
+   "usd": "2.05",
+   "usd_etched": null,
+   "usd_foil": "4.32"
+  },
+  "released_at": "2022-06-10",
+  "scryfall_uri": "https://scryfall.com/card/clb/282/mahadi-emporium-master?utm_source=api",
+  "set": "clb",
+  "toughness": "3",
+  "type_line": "Legendary Creature — Devil"
  },
  "Malakir Rebirth // Malakir Mire": {
   "card_faces": [
@@ -27654,6 +29221,118 @@
   "toughness": "5",
   "type_line": "Legendary Creature — Elf Faerie Noble"
  },
+ "Mari, the Killing Quill": {
+  "cmc": 3.0,
+  "collector_number": "138",
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "keywords": [
+   "Treasure"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{1}{B}{B}",
+  "name": "Mari, the Killing Quill",
+  "oracle_text": "Whenever a creature an opponent controls dies, exile it with a hit counter on it.\nAssassins, Mercenaries, and Rogues you control have deathtouch and \"Whenever this creature deals combat damage to a player, you may remove a hit counter from a card that player owns in exile. If you do, draw a card and create two Treasure tokens.\"",
+  "power": "3",
+  "prices": {
+   "eur": "3.65",
+   "eur_foil": null,
+   "tix": "7.89",
+   "usd": "5.11",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2024-04-19",
+  "scryfall_uri": "https://scryfall.com/card/otc/138/mari-the-killing-quill?utm_source=api",
+  "set": "otc",
+  "toughness": "2",
+  "type_line": "Legendary Creature — Vampire Assassin"
+ },
+ "Marionette Master": {
+  "cmc": 6.0,
+  "collector_number": "102",
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "keywords": [
+   "Fabricate"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{4}{B}{B}",
+  "name": "Marionette Master",
+  "oracle_text": "Fabricate 3 (When this creature enters, put three +1/+1 counters on it or create three 1/1 colorless Servo artifact creature tokens.)\nWhenever an artifact you control is put into a graveyard from the battlefield, target opponent loses life equal to this creature's power.",
+  "power": "1",
+  "prices": {
+   "eur": "2.16",
+   "eur_foil": null,
+   "tix": null,
+   "usd": "3.88",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2021-07-23",
+  "scryfall_uri": "https://scryfall.com/card/afc/102/marionette-master?utm_source=api",
+  "set": "afc",
+  "toughness": "3",
+  "type_line": "Creature — Human Artificer"
+ },
  "Marrow-Gnawer": {
   "cmc": 5.0,
   "collector_number": "124",
@@ -27917,6 +29596,62 @@
   "set": "clb",
   "toughness": null,
   "type_line": "Artifact"
+ },
+ "Mayhem Devil": {
+  "cmc": 3.0,
+  "collector_number": "121",
+  "color_identity": [
+   "B",
+   "R"
+  ],
+  "colors": [
+   "B",
+   "R"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{1}{B}{R}",
+  "name": "Mayhem Devil",
+  "oracle_text": "Whenever a player sacrifices a permanent, this creature deals 1 damage to any target.",
+  "power": "3",
+  "prices": {
+   "eur": "0.36",
+   "eur_foil": null,
+   "tix": "0.08",
+   "usd": "0.31",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2025-08-01",
+  "scryfall_uri": "https://scryfall.com/card/eoc/121/mayhem-devil?utm_source=api",
+  "set": "eoc",
+  "toughness": "3",
+  "type_line": "Creature — Devil"
  },
  "Metastatic Evangel": {
   "cmc": 2.0,
@@ -28353,6 +30088,62 @@
   "toughness": null,
   "type_line": "Artifact"
  },
+ "Mirkwood Bats": {
+  "cmc": 4.0,
+  "collector_number": "95",
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "keywords": [
+   "Flying"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "legal",
+   "paupercommander": "legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{3}{B}",
+  "name": "Mirkwood Bats",
+  "oracle_text": "Flying\nWhenever you create or sacrifice a token, each opponent loses 1 life.",
+  "power": "2",
+  "prices": {
+   "eur": "0.33",
+   "eur_foil": "0.66",
+   "tix": "0.03",
+   "usd": "1.47",
+   "usd_etched": null,
+   "usd_foil": "3.96"
+  },
+  "released_at": "2023-06-23",
+  "scryfall_uri": "https://scryfall.com/card/ltr/95/mirkwood-bats?utm_source=api",
+  "set": "ltr",
+  "toughness": "3",
+  "type_line": "Creature — Bat"
+ },
  "Mishra's Bauble": {
   "cmc": 0.0,
   "collector_number": "274",
@@ -28608,6 +30399,62 @@
   "set": "one",
   "toughness": "4",
   "type_line": "Legendary Creature — Phyrexian Horror"
+ },
+ "Monologue Tax": {
+  "cmc": 3.0,
+  "collector_number": "139",
+  "color_identity": [
+   "W"
+  ],
+  "colors": [
+   "W"
+  ],
+  "keywords": [
+   "Treasure"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{W}",
+  "name": "Monologue Tax",
+  "oracle_text": "Whenever an opponent casts their second spell each turn, you create a Treasure token.",
+  "power": null,
+  "prices": {
+   "eur": "0.97",
+   "eur_foil": null,
+   "tix": "0.26",
+   "usd": "0.86",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2026-06-26",
+  "scryfall_uri": "https://scryfall.com/card/msc/139/monologue-tax?utm_source=api",
+  "set": "msc",
+  "toughness": null,
+  "type_line": "Enchantment"
  },
  "Morophon, the Boundless": {
   "cmc": 7.0,
@@ -29614,6 +31461,60 @@
   "set": "dmr",
   "toughness": null,
   "type_line": "Instant"
+ },
+ "Nadier's Nightblade": {
+  "cmc": 3.0,
+  "collector_number": "275",
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "legal",
+   "paupercommander": "legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{B}",
+  "name": "Nadier's Nightblade",
+  "oracle_text": "Whenever a token you control leaves the battlefield, each opponent loses 1 life and you gain 1 life.",
+  "power": "1",
+  "prices": {
+   "eur": "0.16",
+   "eur_foil": "0.27",
+   "tix": "0.03",
+   "usd": "0.29",
+   "usd_etched": null,
+   "usd_foil": "0.35"
+  },
+  "released_at": "2024-06-14",
+  "scryfall_uri": "https://scryfall.com/card/mh3/275/nadiers-nightblade?utm_source=api",
+  "set": "mh3",
+  "toughness": "3",
+  "type_line": "Creature — Elf Warrior"
  },
  "Nadu, Winged Wisdom": {
   "cmc": 3.0,
@@ -31266,6 +33167,68 @@
   "toughness": "7",
   "type_line": "Legendary Creature — Dragon"
  },
+ "Olivia, Opulent Outlaw": {
+  "cmc": 4.0,
+  "collector_number": "2",
+  "color_identity": [
+   "B",
+   "R",
+   "W"
+  ],
+  "colors": [
+   "B",
+   "R",
+   "W"
+  ],
+  "keywords": [
+   "Flying",
+   "Lifelink",
+   "Treasure"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{1}{R}{W}{B}",
+  "name": "Olivia, Opulent Outlaw",
+  "oracle_text": "Flying, lifelink\nWhenever one or more outlaws you control deal combat damage to a player, create a Treasure token. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws.)\n{3}, Sacrifice two Treasures: Put two +1/+1 counters on each creature you control. Activate only as a sorcery.",
+  "power": "3",
+  "prices": {
+   "eur": "3.21",
+   "eur_foil": "3.87",
+   "tix": "5.50",
+   "usd": "6.12",
+   "usd_etched": null,
+   "usd_foil": "8.23"
+  },
+  "released_at": "2024-04-19",
+  "scryfall_uri": "https://scryfall.com/card/otc/2/olivia-opulent-outlaw?utm_source=api",
+  "set": "otc",
+  "toughness": "3",
+  "type_line": "Legendary Creature — Vampire Assassin"
+ },
  "Ondu Inversion // Ondu Skyruins": {
   "card_faces": [
    {
@@ -31769,6 +33732,64 @@
   "set": "otj",
   "toughness": "2",
   "type_line": "Creature — Brushwagg Mount"
+ },
+ "Orochi Soul-Reaver": {
+  "cmc": 6.0,
+  "collector_number": "22",
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "keywords": [
+   "Manifest",
+   "Treasure",
+   "Ninjutsu"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{5}{B}",
+  "name": "Orochi Soul-Reaver",
+  "oracle_text": "Ninjutsu {3}{B} ({3}{B}, Return an unblocked attacker you control to hand: Put this card onto the battlefield from your hand tapped and attacking.)\nWhenever one or more creatures you control deal combat damage to a player, create a Treasure token and manifest the top card of that player's library. (Put it onto the battlefield face down as a 2/2 creature. Turn it face up any time for its mana cost if it's a creature card.)",
+  "power": "5",
+  "prices": {
+   "eur": "9.37",
+   "eur_foil": null,
+   "tix": "5.30",
+   "usd": "11.34",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2024-04-19",
+  "scryfall_uri": "https://scryfall.com/card/otc/22/orochi-soul-reaver?utm_source=api",
+  "set": "otc",
+  "toughness": "4",
+  "type_line": "Creature — Snake Ninja Rogue"
  },
  "Oswald Fiddlebender": {
   "cmc": 2.0,
@@ -32900,6 +34921,60 @@
   "toughness": null,
   "type_line": "Artifact"
  },
+ "Phyrexian Reclamation": {
+  "cmc": 1.0,
+  "collector_number": "194",
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "legal",
+   "premodern": "legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{B}",
+  "name": "Phyrexian Reclamation",
+  "oracle_text": "{1}{B}, Pay 2 life: Return target creature card from your graveyard to your hand.",
+  "power": null,
+  "prices": {
+   "eur": "2.51",
+   "eur_foil": null,
+   "tix": "1.50",
+   "usd": "2.83",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2025-04-11",
+  "scryfall_uri": "https://scryfall.com/card/tdc/194/phyrexian-reclamation?utm_source=api",
+  "set": "tdc",
+  "toughness": null,
+  "type_line": "Enchantment"
+ },
  "Phyrexian Tower": {
   "cmc": 0.0,
   "collector_number": "303",
@@ -33865,6 +35940,63 @@
   "toughness": null,
   "type_line": "Enchantment"
  },
+ "Professional Face-Breaker": {
+  "cmc": 3.0,
+  "collector_number": "116",
+  "color_identity": [
+   "R"
+  ],
+  "colors": [
+   "R"
+  ],
+  "keywords": [
+   "Treasure",
+   "Menace"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{R}",
+  "name": "Professional Face-Breaker",
+  "oracle_text": "Menace\nWhenever one or more creatures you control deal combat damage to a player, create a Treasure token.\nSacrifice a Treasure: Exile the top card of your library. You may play that card this turn.",
+  "power": "2",
+  "prices": {
+   "eur": "4.25",
+   "eur_foil": "5.36",
+   "tix": "0.02",
+   "usd": "6.91",
+   "usd_etched": null,
+   "usd_foil": "7.93"
+  },
+  "released_at": "2022-04-29",
+  "scryfall_uri": "https://scryfall.com/card/snc/116/professional-face-breaker?utm_source=api",
+  "set": "snc",
+  "toughness": "3",
+  "type_line": "Creature — Human Warrior"
+ },
  "Propaganda": {
   "cmc": 3.0,
   "collector_number": "151",
@@ -33974,6 +36106,65 @@
   "set": "ths",
   "toughness": "3",
   "type_line": "Creature — Human Wizard"
+ },
+ "Prosper, Tome-Bound": {
+  "cmc": 4.0,
+  "collector_number": "2",
+  "color_identity": [
+   "B",
+   "R"
+  ],
+  "colors": [
+   "B",
+   "R"
+  ],
+  "keywords": [
+   "Treasure",
+   "Deathtouch"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{B}{R}",
+  "name": "Prosper, Tome-Bound",
+  "oracle_text": "Deathtouch\nMystic Arcanum — At the beginning of your end step, exile the top card of your library. Until the end of your next turn, you may play that card.\nPact Boon — Whenever you play a card from exile, create a Treasure token.",
+  "power": "1",
+  "prices": {
+   "eur": null,
+   "eur_foil": "9.41",
+   "tix": null,
+   "usd": null,
+   "usd_etched": null,
+   "usd_foil": "6.08"
+  },
+  "released_at": "2021-07-23",
+  "scryfall_uri": "https://scryfall.com/card/afc/2/prosper-tome-bound?utm_source=api",
+  "set": "afc",
+  "toughness": "4",
+  "type_line": "Legendary Creature — Tiefling Warlock"
  },
  "Puca's Covenant": {
   "cmc": 3.0,
@@ -34197,6 +36388,62 @@
   "toughness": "5",
   "type_line": "Creature — Rhino Warrior"
  },
+ "Rain of Riches": {
+  "cmc": 5.0,
+  "collector_number": "177",
+  "color_identity": [
+   "R"
+  ],
+  "colors": [
+   "R"
+  ],
+  "keywords": [
+   "Treasure"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{3}{R}{R}",
+  "name": "Rain of Riches",
+  "oracle_text": "When this enchantment enters, create two Treasure tokens.\nThe first spell you cast each turn that mana from a Treasure was spent to cast has cascade. (When you cast the spell, exile cards from the top of your library until you exile a nonland card that costs less. You may cast it without paying its mana cost. Put the exiled cards on the bottom in a random order.)",
+  "power": null,
+  "prices": {
+   "eur": "6.23",
+   "eur_foil": null,
+   "tix": "2.57",
+   "usd": "10.19",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2024-04-19",
+  "scryfall_uri": "https://scryfall.com/card/otc/177/rain-of-riches?utm_source=api",
+  "set": "otc",
+  "toughness": null,
+  "type_line": "Enchantment"
+ },
  "Raise the Palisade": {
   "cmc": 5.0,
   "collector_number": "23",
@@ -34250,6 +36497,59 @@
   "set": "ltc",
   "toughness": null,
   "type_line": "Sorcery"
+ },
+ "Rakdos Signet": {
+  "cmc": 2.0,
+  "collector_number": "250",
+  "color_identity": [
+   "B",
+   "R"
+  ],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "legal",
+   "paupercommander": "legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}",
+  "name": "Rakdos Signet",
+  "oracle_text": "{1}, {T}: Add {B}{R}.",
+  "power": null,
+  "prices": {
+   "eur": "1.95",
+   "eur_foil": null,
+   "tix": "0.07",
+   "usd": "3.86",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2024-09-27",
+  "scryfall_uri": "https://scryfall.com/card/dsc/250/rakdos-signet?utm_source=api",
+  "set": "dsc",
+  "toughness": null,
+  "type_line": "Artifact"
  },
  "Ram Through": {
   "cmc": 2.0,
@@ -35454,6 +37754,62 @@
   "set": "otj",
   "toughness": null,
   "type_line": "Instant"
+ },
+ "Revel in Riches": {
+  "cmc": 5.0,
+  "collector_number": "117",
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "keywords": [
+   "Treasure"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{4}{B}",
+  "name": "Revel in Riches",
+  "oracle_text": "Whenever a creature an opponent controls dies, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")\nAt the beginning of your upkeep, if you control ten or more Treasures, you win the game.",
+  "power": null,
+  "prices": {
+   "eur": "10.75",
+   "eur_foil": "12.63",
+   "tix": "0.02",
+   "usd": "18.71",
+   "usd_etched": null,
+   "usd_foil": "20.31"
+  },
+  "released_at": "2017-09-29",
+  "scryfall_uri": "https://scryfall.com/card/xln/117/revel-in-riches?utm_source=api",
+  "set": "xln",
+  "toughness": null,
+  "type_line": "Enchantment"
  },
  "Revitalizing Repast // Old-Growth Grove": {
   "card_faces": [
@@ -38268,6 +40624,139 @@
   "toughness": null,
   "type_line": "Conspiracy"
  },
+ "Sentinel Sarah Lyons": {
+  "cmc": 5.0,
+  "collector_number": "118",
+  "color_identity": [
+   "R",
+   "W"
+  ],
+  "colors": [
+   "R",
+   "W"
+  ],
+  "keywords": [
+   "Battalion",
+   "Haste"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{3}{R}{W}",
+  "name": "Sentinel Sarah Lyons",
+  "oracle_text": "Haste\nAs long as an artifact entered the battlefield under your control this turn, creatures you control get +2/+2.\nBattalion — Whenever Sentinel Sarah Lyons and at least two other creatures attack, Sentinel Sarah Lyons deals damage equal to the number of artifacts you control to target player.",
+  "power": "4",
+  "prices": {
+   "eur": "0.21",
+   "eur_foil": "0.46",
+   "tix": "0.29",
+   "usd": "0.29",
+   "usd_etched": null,
+   "usd_foil": "0.64"
+  },
+  "released_at": "2024-03-08",
+  "scryfall_uri": "https://scryfall.com/card/pip/118/sentinel-sarah-lyons?utm_source=api",
+  "set": "pip",
+  "toughness": "4",
+  "type_line": "Legendary Creature — Human Knight"
+ },
+ "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel": {
+  "card_faces": [
+   {
+    "mana_cost": "{2}{B}",
+    "name": "Sephiroth, Fabled SOLDIER",
+    "oracle_text": "Whenever Sephiroth enters or attacks, you may sacrifice another creature. If you do, draw a card.\nWhenever another creature dies, target opponent loses 1 life and you gain 1 life. If this is the fourth time this ability has resolved this turn, transform Sephiroth.",
+    "power": "3",
+    "toughness": "3",
+    "type_line": "Legendary Creature — Human Avatar Soldier"
+   },
+   {
+    "mana_cost": "",
+    "name": "Sephiroth, One-Winged Angel",
+    "oracle_text": "Flying\nSuper Nova — As this creature transforms into Sephiroth, One-Winged Angel, you get an emblem with \"Whenever a creature dies, target opponent loses 1 life and you gain 1 life.\"\nWhenever Sephiroth attacks, you may sacrifice any number of other creatures. If you do, draw that many cards.",
+    "power": "5",
+    "toughness": "5",
+    "type_line": "Legendary Creature — Angel Nightmare Avatar"
+   }
+  ],
+  "cmc": 3.0,
+  "collector_number": "115",
+  "color_identity": [
+   "B"
+  ],
+  "colors": null,
+  "keywords": [
+   "Flying",
+   "Transform",
+   "Super Nova"
+  ],
+  "legalities": {
+   "alchemy": "legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": null,
+  "name": "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel",
+  "oracle_text": null,
+  "power": null,
+  "prices": {
+   "eur": "27.38",
+   "eur_foil": "39.18",
+   "tix": "1.09",
+   "usd": "31.86",
+   "usd_etched": null,
+   "usd_foil": "36.43"
+  },
+  "released_at": "2025-06-13",
+  "scryfall_uri": "https://scryfall.com/card/fin/115/sephiroth-fabled-soldier-sephiroth-one-winged-angel?utm_source=api",
+  "set": "fin",
+  "toughness": null,
+  "type_line": "Legendary Creature — Human Avatar Soldier // Legendary Creature — Angel Nightmare Avatar"
+ },
  "Serra's Sanctum": {
   "cmc": 0.0,
   "collector_number": "325",
@@ -38593,6 +41082,60 @@
   "toughness": null,
   "type_line": "Sorcery"
  },
+ "Shared Animosity": {
+  "cmc": 3.0,
+  "collector_number": "231",
+  "color_identity": [
+   "R"
+  ],
+  "colors": [
+   "R"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "not_legal",
+   "predh": "legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{R}",
+  "name": "Shared Animosity",
+  "oracle_text": "Whenever a creature you control attacks, it gets +1/+0 until end of turn for each other attacking creature that shares a creature type with it.",
+  "power": null,
+  "prices": {
+   "eur": "2.78",
+   "eur_foil": null,
+   "tix": "0.36",
+   "usd": "3.90",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2023-11-17",
+  "scryfall_uri": "https://scryfall.com/card/lcc/231/shared-animosity?utm_source=api",
+  "set": "lcc",
+  "toughness": null,
+  "type_line": "Enchantment"
+ },
  "Sheoldred, the Apocalypse": {
   "cmc": 4.0,
   "collector_number": "107",
@@ -38755,6 +41298,60 @@
   "set": "soc",
   "toughness": null,
   "type_line": "Land"
+ },
+ "Shoot the Sheriff": {
+  "cmc": 2.0,
+  "collector_number": "106",
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "legal",
+   "standardbrawl": "legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{1}{B}",
+  "name": "Shoot the Sheriff",
+  "oracle_text": "Destroy target non-outlaw creature. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws. Everyone else is fair game.)",
+  "power": null,
+  "prices": {
+   "eur": "0.39",
+   "eur_foil": "1.04",
+   "tix": "0.60",
+   "usd": "0.42",
+   "usd_etched": null,
+   "usd_foil": "0.47"
+  },
+  "released_at": "2024-04-19",
+  "scryfall_uri": "https://scryfall.com/card/otj/106/shoot-the-sheriff?utm_source=api",
+  "set": "otj",
+  "toughness": null,
+  "type_line": "Instant"
  },
  "Shrine of the Forsaken Gods": {
   "cmc": 0.0,
@@ -42772,6 +45369,59 @@
   "toughness": null,
   "type_line": "Land — Mountain Forest"
  },
+ "Tainted Peak": {
+  "cmc": 0.0,
+  "collector_number": "304",
+  "color_identity": [
+   "B",
+   "R"
+  ],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "legal",
+   "premodern": "legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "",
+  "name": "Tainted Peak",
+  "oracle_text": "{T}: Add {C}.\n{T}: Add {B} or {R}. Activate only if you control a Swamp.",
+  "power": null,
+  "prices": {
+   "eur": "0.44",
+   "eur_foil": null,
+   "tix": "0.07",
+   "usd": "1.23",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2024-09-27",
+  "scryfall_uri": "https://scryfall.com/card/dsc/304/tainted-peak?utm_source=api",
+  "set": "dsc",
+  "toughness": null,
+  "type_line": "Land"
+ },
  "Takenuma, Abandoned Mire": {
   "cmc": 0.0,
   "collector_number": "278",
@@ -44789,6 +47439,63 @@
   "set": "dmc",
   "toughness": "5",
   "type_line": "Legendary Artifact Creature — Construct"
+ },
+ "The Reaver Cleaver": {
+  "cmc": 3.0,
+  "collector_number": "8",
+  "color_identity": [
+   "R"
+  ],
+  "colors": [
+   "R"
+  ],
+  "keywords": [
+   "Treasure",
+   "Equip"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{R}",
+  "name": "The Reaver Cleaver",
+  "oracle_text": "Equipped creature gets +1/+1 and has trample and \"Whenever this creature deals combat damage to a player or planeswalker, create that many Treasure tokens.\"\nEquip {3}",
+  "power": null,
+  "prices": {
+   "eur": "13.19",
+   "eur_foil": null,
+   "tix": "0.49",
+   "usd": "27.28",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2022-09-09",
+  "scryfall_uri": "https://scryfall.com/card/dmc/8/the-reaver-cleaver?utm_source=api",
+  "set": "dmc",
+  "toughness": null,
+  "type_line": "Legendary Artifact — Equipment"
  },
  "The Skullspore Nexus": {
   "cmc": 8.0,
@@ -46837,6 +49544,58 @@
   "toughness": null,
   "type_line": "Enchantment"
  },
+ "Treasure Vault": {
+  "cmc": 0.0,
+  "collector_number": "261",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [
+   "Treasure"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "",
+  "name": "Treasure Vault",
+  "oracle_text": "{T}: Add {C}.\n{X}{X}, {T}, Sacrifice this land: Create X Treasure tokens.",
+  "power": null,
+  "prices": {
+   "eur": "2.01",
+   "eur_foil": "3.88",
+   "tix": "0.02",
+   "usd": "2.28",
+   "usd_etched": null,
+   "usd_foil": "2.68"
+  },
+  "released_at": "2021-07-23",
+  "scryfall_uri": "https://scryfall.com/card/afr/261/treasure-vault?utm_source=api",
+  "set": "afr",
+  "toughness": null,
+  "type_line": "Artifact Land"
+ },
  "Tribute to the World Tree": {
   "cmc": 3.0,
   "collector_number": "211",
@@ -48654,6 +51413,60 @@
   "toughness": null,
   "type_line": "Sorcery"
  },
+ "Urabrask's Forge": {
+  "cmc": 3.0,
+  "collector_number": "153",
+  "color_identity": [
+   "R"
+  ],
+  "colors": [
+   "R"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{R}",
+  "name": "Urabrask's Forge",
+  "oracle_text": "At the beginning of combat on your turn, put an oil counter on this artifact, then create an X/1 red Phyrexian Horror creature token with trample and haste, where X is the number of oil counters on this artifact. Sacrifice that token at the beginning of the next end step.",
+  "power": null,
+  "prices": {
+   "eur": "1.12",
+   "eur_foil": "2.21",
+   "tix": "0.03",
+   "usd": "1.09",
+   "usd_etched": null,
+   "usd_foil": "1.50"
+  },
+  "released_at": "2023-02-10",
+  "scryfall_uri": "https://scryfall.com/card/one/153/urabrasks-forge?utm_source=api",
+  "set": "one",
+  "toughness": null,
+  "type_line": "Artifact"
+ },
  "Urborg, Tomb of Yawgmoth": {
   "cmc": 0.0,
   "collector_number": "287",
@@ -49532,6 +52345,64 @@
   "set": "soc",
   "toughness": "2",
   "type_line": "Legendary Creature — Efreet Wizard"
+ },
+ "Vihaan, Goldwaker": {
+  "cmc": 3.0,
+  "collector_number": "8",
+  "color_identity": [
+   "B",
+   "R",
+   "W"
+  ],
+  "colors": [
+   "B",
+   "R",
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "not_legal",
+   "commander": "legal",
+   "competitivebrawl": "not_legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "not_legal",
+   "historic": "not_legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "not_legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{R}{W}{B}",
+  "name": "Vihaan, Goldwaker",
+  "oracle_text": "Other outlaws you control have vigilance and haste. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws.)\nAt the beginning of combat on your turn, you may have Treasures you control become 3/3 Construct Assassin artifact creatures in addition to their other types until end of turn.",
+  "power": "3",
+  "prices": {
+   "eur": null,
+   "eur_foil": "0.60",
+   "tix": "1.00",
+   "usd": null,
+   "usd_etched": null,
+   "usd_foil": "2.90"
+  },
+  "released_at": "2024-04-19",
+  "scryfall_uri": "https://scryfall.com/card/otc/8/vihaan-goldwaker?utm_source=api",
+  "set": "otc",
+  "toughness": "3",
+  "type_line": "Legendary Creature — Dwarf Warlock"
  },
  "Vindicate": {
   "cmc": 3.0,
@@ -51861,6 +54732,62 @@
   "toughness": null,
   "type_line": "Creature — Human Warlock // Land"
  },
+ "Witch of the Moors": {
+  "cmc": 5.0,
+  "collector_number": "230",
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "keywords": [
+   "Deathtouch"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "not_legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "not_legal",
+   "pioneer": "not_legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "not_legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{3}{B}{B}",
+  "name": "Witch of the Moors",
+  "oracle_text": "Deathtouch\nAt the beginning of your end step, if you gained life this turn, each opponent sacrifices a creature of their choice and you return up to one target creature card from your graveyard to your hand.",
+  "power": "4",
+  "prices": {
+   "eur": "0.40",
+   "eur_foil": null,
+   "tix": "1.28",
+   "usd": "0.39",
+   "usd_etched": null,
+   "usd_foil": null
+  },
+  "released_at": "2026-04-24",
+  "scryfall_uri": "https://scryfall.com/card/soc/230/witch-of-the-moors?utm_source=api",
+  "set": "soc",
+  "toughness": "4",
+  "type_line": "Creature — Human Warlock"
+ },
  "Withering Torment": {
   "cmc": 3.0,
   "collector_number": "162",
@@ -52291,6 +55218,62 @@
   "set": "snc",
   "toughness": null,
   "type_line": "Land — Island Swamp Mountain"
+ },
+ "Xorn": {
+  "cmc": 3.0,
+  "collector_number": "167",
+  "color_identity": [
+   "R"
+  ],
+  "colors": [
+   "R"
+  ],
+  "keywords": [
+   "Treasure"
+  ],
+  "legalities": {
+   "alchemy": "not_legal",
+   "brawl": "legal",
+   "commander": "legal",
+   "competitivebrawl": "legal",
+   "duel": "legal",
+   "future": "not_legal",
+   "gladiator": "legal",
+   "historic": "legal",
+   "legacy": "legal",
+   "modern": "legal",
+   "oathbreaker": "legal",
+   "oldschool": "not_legal",
+   "pauper": "not_legal",
+   "paupercommander": "not_legal",
+   "penny": "legal",
+   "pioneer": "legal",
+   "predh": "not_legal",
+   "premodern": "not_legal",
+   "standard": "not_legal",
+   "standardbrawl": "not_legal",
+   "timeless": "legal",
+   "tlr": "legal",
+   "vintage": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{2}{R}",
+  "name": "Xorn",
+  "oracle_text": "If you would create one or more Treasure tokens, instead create those tokens plus an additional Treasure token.",
+  "power": "3",
+  "prices": {
+   "eur": "9.01",
+   "eur_foil": "9.21",
+   "tix": "0.02",
+   "usd": "10.66",
+   "usd_etched": null,
+   "usd_foil": "9.50"
+  },
+  "released_at": "2021-07-23",
+  "scryfall_uri": "https://scryfall.com/card/afr/167/xorn?utm_source=api",
+  "set": "afr",
+  "toughness": "2",
+  "type_line": "Creature — Elemental"
  },
  "Yavimaya Coast": {
   "cmc": 0.0,
