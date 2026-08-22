@@ -85,6 +85,15 @@ triggers, it triggers an additional time."*
   Beorn e `Legendary Creature — Bear Shapeshifter Warrior`) — mesmo padrão de
   `roaming_throne_active()`, aplicado em `combat_step` dobrando o próprio
   gatilho de combate da Beorn (converte criatura em Urso + checa 3+ Ursos).
+- `edgar-markov-mardu/edgar_markov_goldfish_v1.py` (tipo escolhido: Vampire) —
+  Passo 0 achou 16 vampiros com gatilho próprio (de 20 + o próprio Edgar
+  Markov). Todos implementados como mecânica real via helper `_times()` +
+  `_log_doubling()`: Eminence do comandante (token por vampiro conjurado),
+  contador de ataque do próprio Edgar, Sanctum Seeker, Champion of Dusk,
+  Welcoming Vampire, Clavileño First of the Blessed, Vito Fanatic de
+  Aclazotz (3 estágios de sacrifício), e o pacote de morte (Blood Artist/
+  Cruel Celebrant/Cordial Vampire/Vindictive Vampire/Vein Ripper) via um
+  loop de sacrifício.
 
 **Nota geral:** o tipo escolhido pelo Roaming Throne é sempre o tema tribal
 central do deck (Elf, Bear, o que for) — quase nunca ambíguo na prática.

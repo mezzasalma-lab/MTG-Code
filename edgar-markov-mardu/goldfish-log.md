@@ -25,6 +25,42 @@
 
 ---
 
+## Simulação #2 — goldfish Python completo (`edgar_markov_goldfish_v1.py`) — 2026-08-21
+
+**Script construído do zero**, CARD_DB gerado via Scryfall `cards/collection` (99 cartas), tags derivadas de `oracle_text` real. Passo 0 (regra de Roaming Throne, `references/goldfish-sim-card-rules.md`): varredura mecânica encontrou **16 vampiros com gatilho próprio** (de 20 + o próprio Edgar) — todos implementados como mecânica real (Eminence, contador de ataque do Edgar, Sanctum Seeker, Champion of Dusk, Welcoming Vampire, Clavileño, Vito Fanatic de Aclazotz em 3 estágios, e o pacote de morte Blood Artist/Cruel Celebrant/Cordial Vampire/Vindictive Vampire/Vein Ripper via um loop de sacrifício limitado a 2 por turno).
+
+**Simplificações documentadas no docstring do script:** sem combate real contra o oponente (assume Edgar sempre ataca livre depois do summoning sickness); drain/lifegain rastreados como contadores agregados, não life totals reais; Ashnod's Altar/Phyrexian Altar não contam pro `total_mana()` automático (exigem sacrifício, só geram mana quando o loop de sacrifício os usa de fato).
+
+**n=2000, 8 turnos:**
+
+```
+Avg mulligans: 0,58
+Turno médio de conjuração do Edgar Markov: 5,90 | mediana: 6
+Nunca conjurado em 8 turnos: 17,1%
+Avg tokens de Vampiro via Eminence: 2,46
+Avg turnos em que Edgar atacou: 1,74
+Avg contadores +1/+1 distribuídos: 5,90
+Avg drain_total (proxy): 0,65 | Avg lifegain_total (proxy): 0,77
+Avg criaturas sacrificadas: 1,09 | Avg gatilhos de morte: 0,58
+Avg compras via Champion of Dusk: 0,22 | via Welcoming Vampire: 0,25
+Avg drains via Sanctum Seeker: 0,16
+Avg Demons via Vito Fanatic (3o estágio): 0,00
+Avg gatilhos de Clavileño (sem efeito extra modelado): 0,21
+```
+
+**Combo Exquisite Blood + Vito, Thorn of the Dusk Rose — resposta à pergunta em aberto da auditoria original ("não simulei o deck pra saber em que turno esse combo tipicamente monta"):**
+
+```
+Partidas em que o combo montou E ligou (até T8): 0,1% (2 de 2000)
+Turno médio em que liga, quando acontece: 7,67 | mediana: 8
+```
+
+**Leitura:** dentro de uma janela normal de 8 turnos, o combo montar e efetivamente ligar é **raríssimo** (0,1%) — exige que as duas peças específicas (Exquisite Blood + Vito, Thorn of the Dusk Rose, cada uma ~1% de densidade em 99 cartas) sejam compradas e conjuradas na mesma partida, o que é uma coincidência dupla rara mesmo com o volume de tutores do deck (Vampiric Tutor, Diabolic Intent, Demonic Tutor via Emeritus of Woe — o simulador atual não modela ativação de tutor pra buscar peça específica, é uma extensão futura). Isso não muda a classificação de Bracket 4 (o critério oficial é sobre a PRESENÇA estrutural do combo com habilitadores redundantes, não sobre a frequência real de montagem em partidas de goldfish) — mas é um dado real que faltava.
+
+**Roaming Throne:** em campo em 10,2% dos jogos, dobrando em média 0,30 gatilhos de Vampiro por partida — número baixo porque a maioria dos 16 gatilhos de vampiro tem densidade individual baixa (cada vampiro é só 1 carta de 99), a mesma dinâmica de baixa coincidência já vista nos outros decks desse usuário.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

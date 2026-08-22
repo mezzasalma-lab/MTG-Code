@@ -124,7 +124,9 @@ Com as duas em campo, qualquer perda de vida de um oponente (mesmo 1 ponto) disp
 
 O deck tem múltiplos gatilhos de perda de vida de oponente que poderiam iniciar o loop com as duas peças em campo: Blood Artist, Cruel Celebrant, Zulaport Cutthroat, Sanctum Seeker (todos conferidos via `oracle_text` — cada um causa "each opponent loses X life" em algum gatilho de morte/ataque).
 
-O critério oficial de Bracket 3 (`references/commander-rules.md#brackets`, citando o texto da Wizards) exclui "combo de 2 peças antes do turno 6". Não simulei o deck pra saber em que turno esse combo tipicamente monta — não tenho esse dado e não vou inventá-lo. Mas a presença de um combo de 2 peças com múltiplos habilitadores redundantes (4 fontes diferentes de "opponent loses life" já contadas) é, pela própria definição oficial, uma estrutura de Bracket 4/5, independente da contagem de Game Changers.
+O critério oficial de Bracket 3 (`references/commander-rules.md#brackets`, citando o texto da Wizards) exclui "combo de 2 peças antes do turno 6". Mas a presença de um combo de 2 peças com múltiplos habilitadores redundantes (4 fontes diferentes de "opponent loses life" já contadas) é, pela própria definição oficial, uma estrutura de Bracket 4/5, independente da contagem de Game Changers — a exclusão é sobre a PRESENÇA estrutural, não sobre a frequência real de montagem numa partida qualquer.
+
+**Dado real, simulado (2026-08-21, `edgar_markov_goldfish_v1.py`, n=2000, 8 turnos):** o combo monta E liga em apenas **0,1% das partidas** (2 de 2000) dentro de 8 turnos — turno médio de 7,67 quando acontece. É raro na prática porque exige comprar E conjurar as duas peças específicas na mesma partida (cada uma ~1% de densidade em 99 cartas). Isso não muda a classificação de Bracket (o critério formal continua sendo sobre a presença estrutural do combo), mas responde à pergunta que ficou em aberto na versão original desta seção.
 
 ---
 
