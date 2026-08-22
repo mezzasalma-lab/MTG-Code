@@ -110,6 +110,36 @@ Bridge removida (média)   1,18           1,17        2,44           2,42
 
 ---
 
+### Simulação #5 — avaliação principal, n=5000: Bridge cast + acerto de planeswalker até T6/T7/T8 — 2026-08-21
+
+**Objetivo pedido pelo usuário:** avaliar o deck pela capacidade real de (a) conjurar a Bridge e (b) ela acertar um planeswalker (não criatura) via gatilho de upkeep, até os turnos 6, 7 e 8. Métrica nova adicionada ao simulador: `first_pw_hit_turn` (turno do primeiro acerto de planeswalker, rastreado em `bridge_upkeep_trigger`).
+
+**Lista atual, sem nenhuma das trocas testadas nas sessões anteriores** (Greater Auramancy/Enlightened Tutor/Hall of Heliod's Generosity não estão na lista real — só foram experimentos). n=5000, 8 turnos, seed_base=4000000.
+
+```
+Avg mulligans: 0,23
+Bridge nunca conjurada em 8 turnos: 12,5%
+Turno médio da 1ª conjuração da Bridge: 4,07 | mediana: 4
+Conjurada via flash (end step anterior): 3,7% das partidas
+Avg gatilhos de upkeep por partida: 2,04
+  Acertos em criatura: 3985 | em planeswalker: 6230 | total: 10215
+% da Bridge ainda em campo no fim (T8): 59,0%
+Avg vezes que a Bridge foi removida: 0,82
+```
+
+**Bridge colocou planeswalker em jogo (1º acerto de PW via gatilho de upkeep):**
+
+| Turno | Chance acumulada |
+|---|---|
+| **T6** | **42,4%** |
+| **T7** | **50,2%** |
+| **T8** | **57,7%** |
+| Nunca em 8 turnos | 42,3% |
+
+**Leitura:** menos da metade das partidas (42,4%) já teve um planeswalker colocado de graça pela Bridge até o turno 6 — o motor central do deck ainda não "ligou" na maioria dos jogos nesse ponto. Só passa de 50% no turno 7. No turno 8, ainda quase 1 em cada 4 partidas (42,3% projetado ao fim de 8 turnos) nunca viu isso acontecer. Isso é consistente com os dados já registrados: turno médio de 1ª conjuração da Bridge é 4,07, e ela só acerta planeswalker em 6230 de 10215 gatilhos totais (61%, já que o deck tem mais planeswalker que criatura — seção 8 da auditoria), então mesmo quando a Bridge está em campo cedo, ainda precisa de outro gatilho de upkeep pra realmente acertar. A tese do deck (jogar PW de graça pela Bridge) é real, mas não é rápida nem garantida — é um plano de médio prazo (turno 7-8 em diante), não um plano de turno 4-5.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

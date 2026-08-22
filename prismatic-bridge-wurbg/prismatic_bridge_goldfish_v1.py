@@ -306,6 +306,7 @@ class GameState:
     bridge_hits_creature: int = 0
     bridge_hits_planeswalker: int = 0
     bridge_no_hit_empty_library: int = 0
+    first_pw_hit_turn: Optional[int] = None
 
     protectors_removed_count: int = 0
     removal_attempts_total: int = 0
@@ -421,6 +422,8 @@ def bridge_upkeep_trigger(state: GameState, log: List[Dict]):
             state.bridge_hits_creature += 1
         else:
             state.bridge_hits_planeswalker += 1
+            if state.first_pw_hit_turn is None:
+                state.first_pw_hit_turn = state.turn
         log.append({"trigger": "bridge_hit", "card": hit, "type": C(hit).type, "turn": state.turn})
     else:
         state.bridge_no_hit_empty_library += 1
@@ -591,6 +594,7 @@ def simulate_one(seed: int, turns: int, with_greater_auramancy: bool) -> Dict:
         "bridge_triggers": state.bridge_triggers,
         "bridge_hits_creature": state.bridge_hits_creature,
         "bridge_hits_planeswalker": state.bridge_hits_planeswalker,
+        "first_pw_hit_turn": state.first_pw_hit_turn,
         "bridge_no_hit": state.bridge_no_hit_empty_library,
         "protectors_removed_count": state.protectors_removed_count,
         "removal_attempts_total": state.removal_attempts_total,
@@ -628,6 +632,16 @@ def run_batch(n=2000, turns=10, with_greater_auramancy=False, seed_base=3000000,
     print(f"Avg vezes que a Bridge foi removida por partida: {avg_removed:.2f}")
     print(f"Avg vezes que um protetor (Sterling Grove/Greater Auramancy) foi removido: {avg_protectors_removed:.2f}")
     print(f"Avg tentativas de remocao do oponente por partida (premissa: {REMOVAL_CHANCE_PER_OPPONENT*100:.0f}%/oponente/turno, {N_OPPONENTS} oponentes): {avg_attempts:.2f}")
+
+    pw_hit_turns = [r["first_pw_hit_turn"] for r in results if r["first_pw_hit_turn"] is not None]
+    from collections import Counter
+    c = Counter(pw_hit_turns)
+    print(f"\n--- Bridge colocou planeswalker em jogo (1o acerto de PW via gatilho de upkeep) ---")
+    for t in [6, 7, 8]:
+        cum = sum(v for k, v in c.items() if k <= t)
+        print(f"  Chance acumulada ate o turno {t}: {100*cum/n:.1f}%")
+    never_pw = n - len(pw_hit_turns)
+    print(f"  Nunca acertou planeswalker em {turns} turnos: {100*never_pw/n:.1f}%")
     print()
     return results
 
