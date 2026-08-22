@@ -85,7 +85,28 @@ Avg vezes que a Bridge foi removida por partida:
 
 **Leitura:** o tutor melhora bastante a taxa de ACESSO ao Sterling Grove (quase 2/3 de aumento relativo), mas isso não vira sobrevivência maior da Bridge no fim da partida. Motivo: Sterling Grove não se protege a si mesmo, e Enlightened Tutor é singleton — depois que o Sterling Grove morre (o que ainda acontece com frequência normal), não tem como buscar de novo. O tutor ataca "conseguir a proteção mais cedo", não "a proteção persistir depois que cai" — que é o mesmo problema estrutural de antes, só adiado.
 
-**Nenhuma das duas opções testadas (Greater Auramancy, Enlightened Tutor) resolve o problema de forma decisiva sozinha.** Combinação ainda não testada: Enlightened Tutor + Greater Auramancy juntos (tutor pode buscar qualquer um dos dois, e o segundo protetor serve de reserva se o primeiro cair) — candidato pra um próximo teste.
+**Nenhuma das duas opções testadas (Greater Auramancy, Enlightened Tutor) resolve o problema de forma decisiva sozinha.**
+
+---
+
+### Simulação #4 — Hall of Heliod's Generosity (recursão repetível) — 2026-08-21
+
+**Diferença do Enlightened Tutor:** Hall of Heliod's Generosity (`{1}{W}, {T}: Put target enchantment card from your graveyard on top of your library`) é um TERRENO — permanente, repetível, não singleton. Testado no lugar de Nesting Grounds, em 10 E 16 turnos (pra dar tempo da cadeia completa: Sterling Grove morrer → Hall em campo → mana disponível → recursão → compra → recast).
+
+**Bug encontrado e corrigido nesse teste:** `resolve_removal_round` fazia a carta removida sumir do jogo em vez de ir pro cemitério — teria feito a recursão nunca achar o alvo. Corrigido em `prismatic_bridge_goldfish_v1.py` (agora `state.graveyard.append(target)` na remoção de protetores).
+
+**n=2000, taxa de remoção 12%/oponente/turno, comparando 10 vs 16 turnos:**
+
+```
+                          Baseline 10t   +Hall 10t   Baseline 16t   +Hall 16t
+Sterling Grove em campo   15,1%          15,1%       21,1%          21,1%
+Bridge em campo no fim    63,3%          63,1%       69,8%          70,0%
+Bridge removida (média)   1,18           1,17        2,44           2,42
+```
+
+**Efeito praticamente zero em qualquer horizonte de turnos.** Instrumentado: só 48 eventos de recursão em 2000 partidas (2,4%) em 10 turnos. Hall of Heliod's Generosity é 1 carta em 37 terrenos (~2,7% de densidade) — só ativa se Sterling Grove já morreu E ela já está em campo E sobra mana, uma cadeia de baixa probabilidade que raramente se completa mesmo dando mais tempo de jogo (16 turnos não muda o resultado vs. o baseline no mesmo horizonte).
+
+**Conclusão consolidada das 3 opções testadas (Greater Auramancy, Enlightened Tutor, Hall of Heliod's Generosity): nenhuma resolve o problema de forma perceptível.** Mesmo motivo nas três — deck de 99 cartas singleton com 1 única peça de proteção dedicada (Sterling Grove), competindo por espaço de compra com as outras 96. Qualquer solução de 1 carta ainda precisa ser puxada primeiro, o que já é raro em 10-16 turnos. Ver `auditoria.md` seção de proteção pra recomendação final.
 
 ---
 

@@ -471,6 +471,7 @@ def resolve_removal_round(state: GameState, log: List[Dict]):
         if prot:
             target = state.rng.choice(prot)
             state.battlefield.remove(target)
+            state.graveyard.append(target)  # simplificacao: remocao = destroy (maioria dos casos reais)
             state.protectors_removed_count += 1
             log.append({"trigger": "removal", "target": target, "turn": state.turn})
         elif state.bridge_in_play:

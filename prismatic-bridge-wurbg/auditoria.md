@@ -126,7 +126,19 @@ Vraska, Betrayal's Sting merece nota: ultimate `-9` transforma um permanente em 
 - **Melhora bem a taxa de conseguir Sterling Grove em campo: 14,7% → 24,3%** (+9,6pp, ~65% de aumento relativo) — ataca o problema real de acesso, diferente do Greater Auramancy.
 - **Mas isso não vira sobrevivência maior da Bridge no fim da partida** (63,3% → 63,2%, Bridge removida 1,18 → 1,14 — mesma ordem de grandeza do Greater Auramancy). Motivo: Sterling Grove continua sendo 1 único ponto de falha (não se protege a si mesmo) e Enlightened Tutor é singleton — depois que o Sterling Grove morre, não tem como buscar de novo. O tutor resolve "conseguir a proteção mais cedo/mais vezes", não "a proteção persistir depois que cai".
 
-**Conclusão combinada:** nenhuma das duas opções testadas (Greater Auramancy, Enlightened Tutor) resolve o problema de forma decisiva sozinha — o gargalo estrutural é que toda a proteção dedicada da Bridge depende de 1 carta frágil (Sterling Grove). Um teste ainda não feito: Enlightened Tutor + Greater Auramancy juntos (o tutor pode buscar qualquer um dos dois, dobrando as chances de achar ALGUM protetor cedo, e mantendo o segundo como reserva se o primeiro cair) — não testei essa combinação ainda, pode ser a próxima pergunta se quiser aprofundar.
+**Testado também: Hall of Heliod's Generosity** (Legendary Land, `{1}{W}, {T}: Put target enchantment card from your graveyard on top of your library`) — recursão repetível, diferente do Enlightened Tutor (spell singleton, uso único). Testado em 10 E 16 turnos (pra dar tempo da cadeia completa: Sterling Grove morrer → Hall em campo → mana disponível → recursão → compra → recast). **Efeito também praticamente zero, em qualquer horizonte:**
+
+| Métrica | Baseline 10t | + Hall 10t | Baseline 16t | + Hall 16t |
+|---|---|---|---|---|
+| Sterling Grove em campo | 15,1% | 15,1% | 21,1% | 21,1% (idêntico) |
+| Bridge em campo no fim | 63,3% | 63,1% | 69,8% | 70,0% |
+| Bridge removida (média) | 1,18 | 1,17 | 2,44 | 2,42 |
+
+Instrumentado: só 48 eventos de recursão em 2000 partidas (2,4%) em 10 turnos — Hall of Heliod's Generosity é 1 carta em 37 terrenos (~2,7% de densidade), só ativa se Sterling Grove já morreu E ela já está em campo E sobra mana. Cadeia de baixa probabilidade que raramente se completa mesmo com mais turnos.
+
+**(Nota técnica: essa iteração corrigiu um bug real no simulador — a rodada de remoção fazia a carta "sumir" do jogo sem passar pelo cemitério, o que teria feito a recursão nunca encontrar o alvo. Corrigido em `resolve_removal_round`.)**
+
+**Conclusão consolidada das 3 opções testadas (Greater Auramancy, Enlightened Tutor, Hall of Heliod's Generosity): nenhuma resolve o problema de forma perceptível.** O motivo é o mesmo nas três — é um deck de 99 cartas singleton com **1 única** peça de proteção dedicada (Sterling Grove) competindo por espaço de compra com as outras 96 cartas; qualquer solução de 1 carta adicional ainda precisa primeiro ser puxada, o que já é raro em 10-16 turnos. Não há uma troca de carta única que resolva isso de forma decisiva — a alternativa realista é aceitar que proteção robusta contra remoção pontual não é o forte desse build (os counterspells da seção 5 seguem sendo a defesa mais confiável), ou investir em várias peças simultaneamente em vez de uma só.
 
 ### Achado adicional: Paradox Haze pode dobrar o gatilho de upkeep da Bridge
 
