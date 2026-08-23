@@ -143,6 +143,9 @@ add("Leyline of Anticipation", 4, "enchantment", {"universal_flash"})
 add("Vedalken Orrery", 4, "artifact", {"universal_flash"})
 add("High Fae Trickster", 4, "creature", {"faerie", "universal_flash"})
 add("Radagast of Rhosgobel", 4, "creature", {"first_creature_discount_flash"})
+# Nao esta na lista atual (saiu na troca por Radagast) -- cadastrada so pra
+# permitir montar a biblioteca da variante de comparacao "sem Radagast".
+add("Elves of Deep Shadow", 1, "creature", {"elf", "dork_flat1"})
 
 # --- Motor de ramp elfico -----------------------------------------------------
 add("Birds of Paradise", 1, "creature", {"dork_flat1"})
@@ -287,6 +290,8 @@ class GameState:
     roaming_throne_doubles_total: int = 0
     cards_drawn_extra: int = 0
     library_emptied: bool = False
+    flash_universal_by_turn: dict = field(default_factory=dict)
+    flash_with_radagast_by_turn: dict = field(default_factory=dict)
 
 
 def draw_cards(state: GameState, n: int):
@@ -791,7 +796,12 @@ def should_keep(hand: list) -> bool:
     return False
 
 
-def build_library():
+def build_library(names_override=None):
+    if names_override is not None:
+        for n in names_override:
+            assert n in CARD_DB, f"faltando no CARD_DB: {n}"
+        assert len(names_override) == 99, len(names_override)
+        return list(names_override)
     lib = []
     lines = open("lista.md").read().split("## Lista completa")[1].strip().split("\n")
     for l in lines:
@@ -809,12 +819,15 @@ def build_library():
 
 BASE_LIBRARY = build_library()
 
+FLASH_SOURCES = {"Leyline of Anticipation", "Vedalken Orrery", "High Fae Trickster", "Alchemist's Refuge"}
 
-def mulligan(rng: random.Random, max_mulls: int = 3):
+
+def mulligan(rng: random.Random, max_mulls: int = 3, library=None):
+    base = library if library is not None else BASE_LIBRARY
     mulls = 0
     hand, lib = [], []
     while mulls < max_mulls:
-        lib = BASE_LIBRARY[:]
+        lib = base[:]
         rng.shuffle(lib)
         hand = lib[:7]
         lib = lib[7:]
@@ -852,10 +865,14 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     main_phase(state)
     end_step(state)
 
+    flash_universal = any(n in state.battlefield for n in FLASH_SOURCES)
+    state.flash_universal_by_turn[state.turn] = flash_universal
+    state.flash_with_radagast_by_turn[state.turn] = flash_universal or ("Radagast of Rhosgobel" in state.battlefield)
 
-def simulate_one(seed: int, turns: int = 8):
+
+def simulate_one(seed: int, turns: int = 8, library=None):
     rng = random.Random(seed)
-    hand, lib, mulls = mulligan(rng)
+    hand, lib, mulls = mulligan(rng, library=library)
     state = GameState(hand=hand, library=lib, mulligans=mulls)
     state.warmaster_used_this_turn = False
     for t in range(turns):

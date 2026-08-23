@@ -57,6 +57,42 @@ Resultados salvos em `maralen_v1_runs.jsonl` (3000 jogos).
 
 ---
 
+### Teste pontual — motor de flash em criaturas, T4-T8, COM vs SEM Radagast of Rhosgobel — 2026-08-23
+
+**Pedido do usuário:** medir a probabilidade real de ter o "motor de flash" online nos turnos 4, 5, 6, 7 e 8, comparando a lista atual (com Radagast) contra a versão anterior (sem Radagast, com Elves of Deep Shadow no lugar), pra decidir se a troca vale a pena.
+
+**Script:** `maralen_flash_radagast_test.py`. Duas métricas rastreadas por turno em `maralen_goldfish_v1.py` (`flash_universal_by_turn`, `flash_with_radagast_by_turn`, populadas no fim de cada `play_turn`):
+- **Motor universal puro**: pelo menos 1 de Leyline of Anticipation / Vedalken Orrery / High Fae Trickster / Alchemist's Refuge em campo.
+- **Motor combinado**: o universal OU Radagast of Rhosgobel em campo (Radagast não dá flash universal — só a 1ª criatura do turno, com desconto de {2} — mas conta como fonte parcial pra essa métrica).
+
+Duas variantes de biblioteca, mesmas 3000 seeds pareadas (comparação direta, não amostras independentes): lista atual (com Radagast) vs. lista revertida (Radagast → Elves of Deep Shadow). Teste de robustez prévio na variante nova (sem Radagast, nunca simulada antes): 5.000 jogos com timeout de 2s, 0 erros.
+
+**Checagem de sanidade — motor universal puro (deveria ser ~igual nas duas listas, já que nenhuma das duas cartas trocadas é fonte de flash universal):**
+
+| Turno | Com Radagast na lista | Sem Radagast na lista |
+|---|---|---|
+| T4 | 14,2% | 14,7% |
+| T5 | 23,0% | 23,6% |
+| T6 | 33,8% | 34,6% |
+| T7 | 42,2% | 43,2% |
+| T8 | 48,4% | 49,3% |
+
+Diferença de ~0,5-1pp entre as duas — dentro do ruído esperado de amostra (mesmas seeds, então nem deveria zerar por completo: a ordem de embaralhamento muda porque a biblioteca tem cartas diferentes num slot). Confirma que a troca não afetou acidentalmente o pacote universal — bom sinal de que a implementação está correta.
+
+**Resultado principal — motor de flash em criaturas disponível (universal + Radagast quando presente):**
+
+| Turno | Com Radagast | Sem Radagast | Δ |
+|---|---|---|---|
+| T4 | 15,3% | 14,7% | +0,7pp |
+| T5 | 26,4% | 23,6% | +2,8pp |
+| T6 | 39,3% | 34,6% | +4,6pp |
+| T7 | 49,6% | 43,2% | +6,4pp |
+| T8 | 56,5% | 49,3% | +7,2pp |
+
+**Leitura:** Radagast adiciona uma cobertura real e crescente ao motor de flash — de +0,7pp no turno 4 (ele mesmo ainda raramente resolvido tão cedo, CMC 4) até +7,2pp no turno 8 (quase 1 em cada 14 partidas a mais tem alguma forma de flash em criaturas só por causa dele). Dito isso, o teto absoluto do motor combinado ainda fica abaixo de 60% mesmo no turno 8 — em mais de 4 de cada 10 partidas, NENHUMA das 5 peças (4 universais + Radagast) está em campo até o fim do jogo, porque cada uma é 1 carta em 99. A contribuição do Radagast é real mas incremental sobre uma base já limitada por densidade de singleton, não uma mudança estrutural na confiabilidade do motor.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
