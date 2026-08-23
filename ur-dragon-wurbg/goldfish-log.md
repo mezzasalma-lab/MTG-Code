@@ -50,6 +50,75 @@ Resultados salvos em `urdragon_v1_runs.jsonl` (3000 jogos).
 
 ---
 
+## Correção #1 — dois bugs reais encontrados por pergunta do usuário — 2026-08-23
+
+O usuário perguntou se eu tinha ignorado, além de rampa e mana dorks, os
+redutores de custo de Dragão. Fui conferir com uma varredura real (regex em
+`oracle_text` de "costs... less to cast" nas 99 cartas): **os 6 redutores de
+Dragão de verdade estavam todos implementados** em `dragon_discount()`
+(Eminence da Ur-Dragon, Dragonlord's Servant, Dragonspeaker Shaman, Sarkhan
+Soul Aflame, Herald's Horn, Urza's Incubator) — nenhum ficou de fora.
+
+Mas a checagem revelou **dois bugs reais e distintos** no mesmo script: tags
+criadas no `CARD_DB` cujo efeito nunca tinha sido de fato ligado no código
+(violação da Regra 3 — tag decorativa em vez de implementação real):
+
+1. **Orb of Dragonkind** — só a 2ª habilidade (sacrifício-tutor: olhar 7,
+   revelar Dragão, pôr na mão) estava implementada. A 1ª habilidade, `{1},
+   {T}: Add two mana in any combination of colors. Spend this mana only to
+   cast Dragon spells or activate abilities of Dragons`, nunca tinha sido
+   modelada — rampa repetível restrita a Dragão, exatamente a categoria que
+   o usuário perguntou. Corrigido com um pool de mana restrito
+   (`dragon_mana_pool`) que só pode ser gasto em cartas de Dragão, e uma
+   função `do_orb_dragonkind()` que escolhe entre as duas habilidades
+   (prioriza a mana se há Dragão na mão pra aproveitar; só sacrifica pelo
+   tutor se não há Dragão nenhum na mão) — as duas são mutuamente
+   exclusivas no mesmo turno porque a segunda destrói o artefato.
+2. **Goldspan Dragon** — a tag `goldspan` existia no `CARD_DB` mas nunca era
+   checada em lugar nenhum. Texto real: `Treasures you control have "{T},
+   Sacrifice this artifact: Add two mana of any one color."` — com Goldspan
+   em campo, todo Treasure do deck (Ancient Copper Dragon, Old Gnawbone, o
+   próprio Goldspan atacando) vale 2 mana, não 1. `create_and_use_treasures()`
+   sempre convertia 1-pra-1. Corrigido: dobra a mana por Treasure quando
+   Goldspan Dragon está em campo.
+
+**Reteste de robustez:** 20.000 partidas com timeout de 2s, **0 erros, 0
+timeouts** — as duas correções não introduziram bug novo.
+
+**n=3000, seed_base=7600000, 8 turnos — resultado oficial após a correção:**
+
+```
+Avg mulligans: 0,48
+Turno medio de conjuracao da Ur-Dragon: 7,07 | mediana: 7,0
+Nunca conjurada em 8 turnos: 70,6%
+Avg contagem de Dragoes em campo (fim de jogo): 3,31
+Avg compras via ataque da Ur-Dragon: 1,36
+Avg permanentes gratis via ataque da Ur-Dragon: 0,43
+Avg dano proxy total (Scourge of Valkas/Dragon Tempest/Terror of the Peaks): 11,67
+Avg eventos de dano-por-Dragao-ETB: 1,00
+Avg Treasures criados: 2,12
+Avg dobras via Roaming Throne: 0,26
+Avg cartas compradas extra (motores de draw): 2,72
+Avg tutores usados: 0,23
+Avg ativacoes da habilidade de mana da Orb of Dragonkind: 0,45
+Avg mao final: 2,48
+```
+
+**Leitura honesta do impacto:** pequeno, não estrutural. "Nunca conjurada em
+8 turnos" caiu de 71,5% pra 70,6% — quase nada, porque tanto a Orb quanto o
+Goldspan são 1 cópia cada em 99 cartas (0,45 ativações médias da mana da Orb
+por partida; o Goldspan multiplica o VALOR do Treasure, não a contagem, então
+"Treasures criados" nem devia mudar muito e não mudou: 2,03→2,12). O achado
+do turno 7,07/71,5% do registro anterior continua válido e não muda de
+natureza — a comandante de 9 mana continua sendo o gargalo real do deck,
+essas duas peças ajudam, mas são pequenas demais pra resolver isso sozinhas.
+Vale como confirmação adicional (não contradição) do achado já registrado
+acima sobre a densidade modesta de rampa do deck.
+
+Resultados atualizados em `urdragon_v1_runs.jsonl` (3000 jogos, sobrescrito).
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

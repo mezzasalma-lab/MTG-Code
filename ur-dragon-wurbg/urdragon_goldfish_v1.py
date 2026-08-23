@@ -222,6 +222,8 @@ class GameState:
     lands_played_this_turn: int = 0
     mana_spent_this_turn: int = 0
     bonus_mana_pool: int = 0
+    dragon_mana_pool: int = 0
+    orb_dragonkind_used_this_turn: bool = False
     dragon_tokens: int = 0
     other_tokens: int = 0
     ramos_counters: int = 0
@@ -240,6 +242,7 @@ class GameState:
     tutors_used_total: int = 0
     urdragon_attack_draws_total: int = 0
     urdragon_free_permanents_total: int = 0
+    orb_mana_activations_total: int = 0
     library_emptied: bool = False
 
 
@@ -342,6 +345,19 @@ def remaining_mana(state: GameState) -> int:
     return max(0, total_mana(state) - state.mana_spent_this_turn)
 
 
+def remaining_mana_for(state: GameState, name: str) -> int:
+    """Mana disponivel considerando o pool restrito da Orb of Dragonkind
+    ('{1}, {T}: Add two mana in any combination of colors. Spend this mana
+    only to cast Dragon spells or activate abilities of Dragons') — soma ao
+    pool generico SO quando a carta em questao e um Dragao. Bug real
+    encontrado em 2026-08-23: essa habilidade da Orb nunca tinha sido
+    modelada (so o sacrificio-tutor dela estava implementado)."""
+    base = remaining_mana(state)
+    if is_dragon(name) and name != COMMANDER:
+        base += state.dragon_mana_pool
+    return base
+
+
 def dragon_discount(state: GameState) -> int:
     d = 0
     if state.commander_in_play:
@@ -361,13 +377,21 @@ def dragon_discount(state: GameState) -> int:
 
 def effective_cost(state: GameState, name: str) -> int:
     mv = CARD_DB[name].mv
+    if name == "The Great Henge":
+        # "This spell costs {X} less to cast, where X is the greatest
+        # power among creatures you control." Bug real encontrado em
+        # 2026-08-23: a tag 'cost_reduce_power' existia mas nunca era
+        # checada — a carta era sempre precificada em {7}{G}{G}=9 cheio.
+        powers = [CARD_DB[n].power for n in state.battlefield if is_creature_card(n)]
+        x = max(powers) if powers else 0
+        return max(0, mv - x)
     if is_dragon(name) and name != COMMANDER:
         return max(0, mv - dragon_discount(state))
     return mv
 
 
 def can_cast(state: GameState, name: str) -> bool:
-    return remaining_mana(state) >= effective_cost(state, name)
+    return remaining_mana_for(state, name) >= effective_cost(state, name)
 
 
 def spend_mana(state: GameState, n: int):
@@ -385,9 +409,15 @@ def create_treasures(state: GameState, n: int):
 
 def create_and_use_treasures(state: GameState, n: int):
     """Cria e imediatamente converte em mana disponivel neste turno —
-    aproximacao real (o deck nao tem motivo pra segurar Treasure parado)."""
+    aproximacao real (o deck nao tem motivo pra segurar Treasure parado).
+    Goldspan Dragon: 'Treasures you control have "{T}, Sacrifice this
+    artifact: Add two mana of any one color."' — com Goldspan em campo,
+    todo Treasure vale 2 mana, nao 1 (bug real encontrado e corrigido em
+    2026-08-23: a tag 'goldspan' existia no CARD_DB mas nunca era checada
+    em lugar nenhum)."""
     state.treasures_created_total += n
-    state.bonus_mana_pool += n
+    per_treasure = 2 if "Goldspan Dragon" in state.battlefield else 1
+    state.bonus_mana_pool += n * per_treasure
 
 
 def resolve_etb(state: GameState, name: str):
@@ -464,20 +494,37 @@ def resolve_instant_sorcery(state: GameState, name: str):
             draw_cards(state, max(powers))
 
 
-def do_dragon_sac_tutor(state: GameState):
-    if "Orb of Dragonkind" not in state.battlefield:
+def do_orb_dragonkind(state: GameState):
+    """Orb of Dragonkind: '{1}, {T}: Add two mana in any combination of
+    colors. Spend this mana only to cast Dragon spells or activate
+    abilities of Dragons.' + '{R}, {T}, Sacrifice this artifact: look at
+    top 7, pode revelar um Dragao e por na mao.' Duas habilidades
+    mutuamente exclusivas no mesmo turno (a segunda sacrifica o artefato).
+    Bug real encontrado e corrigido em 2026-08-23: so a segunda estava
+    implementada antes — a primeira (rampa restrita a Dragao, repetivel)
+    nunca tinha sido modelada. Prioridade: usa a mana se ha Dragao na mao
+    pra aproveitar (repetivel, mais valioso a longo prazo); so sacrifica
+    pelo tutor se nao ha Dragao nenhum na mao."""
+    if "Orb of Dragonkind" not in state.battlefield or state.orb_dragonkind_used_this_turn:
         return
     if remaining_mana(state) < 1:
         return
-    pool = [n for n in state.library if is_dragon(n)]
-    if not pool:
-        return
-    best = max(pool, key=lambda n: CARD_DB[n].mv)
-    state.library.remove(best)
-    state.hand.append(best)
-    spend_mana(state, 1)
-    state.battlefield.remove("Orb of Dragonkind")
-    state.tutors_used_total += 1
+    dragons_in_hand = [n for n in state.hand if is_dragon(n)]
+    if dragons_in_hand:
+        spend_mana(state, 1)
+        state.dragon_mana_pool += 2
+        state.orb_mana_activations_total += 1
+    else:
+        pool = [n for n in state.library if is_dragon(n)]
+        if not pool:
+            return
+        best = max(pool, key=lambda n: CARD_DB[n].mv)
+        state.library.remove(best)
+        state.hand.append(best)
+        spend_mana(state, 1)
+        state.battlefield.remove("Orb of Dragonkind")
+        state.tutors_used_total += 1
+    state.orb_dragonkind_used_this_turn = True
 
 
 def create_permanent(state: GameState, name: str):
@@ -510,6 +557,10 @@ def cast_card(state: GameState, name: str):
     if name == COMMANDER:
         spend_mana(state, card.mv + 2 * state.commander_cast_count)
     else:
+        if is_dragon(name) and state.dragon_mana_pool > 0:
+            use = min(cost, state.dragon_mana_pool)
+            state.dragon_mana_pool -= use
+            cost -= use
         spend_mana(state, cost)
     if name != COMMANDER:
         state.hand.remove(name)
@@ -547,6 +598,8 @@ def main_phase(state: GameState):
     if not state.commander_in_play and can_cast(state, COMMANDER):
         cast_card(state, COMMANDER)
 
+    do_orb_dragonkind(state)
+
     while True:
         castables = [n for n in state.hand if n not in LAND_NAMES and can_cast(state, n)]
         if not castables:
@@ -557,8 +610,6 @@ def main_phase(state: GameState):
             return (group, effective_cost(state, n))
         castables.sort(key=prio)
         cast_card(state, castables[0])
-
-    do_dragon_sac_tutor(state)
 
     if "Ramos, Dragon Engine" in state.battlefield and "Ramos, Dragon Engine" in ready_creatures(state) and state.ramos_counters >= 5:
         state.ramos_counters -= 5
@@ -690,6 +741,8 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.lands_played_this_turn = 0
     state.mana_spent_this_turn = 0
     state.bonus_mana_pool = 0
+    state.dragon_mana_pool = 0
+    state.orb_dragonkind_used_this_turn = False
 
     upkeep_step(state)
     if not (is_first_turn and on_play):
@@ -734,6 +787,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg dobras via Roaming Throne: {avg([s.roaming_throne_doubles_total for s in states]):.2f}")
     print(f"Avg cartas compradas extra (motores de draw): {avg([s.cards_drawn_extra for s in states]):.2f}")
     print(f"Avg tutores usados: {avg([s.tutors_used_total for s in states]):.2f}")
+    print(f"Avg ativacoes da habilidade de mana da Orb of Dragonkind: {avg([s.orb_mana_activations_total for s in states]):.2f}")
     print(f"Avg mao final: {avg([len(s.hand) for s in states]):.2f}")
     return states
 
@@ -753,5 +807,6 @@ if __name__ == "__main__":
                 "urdragon_free_permanents_total": s.urdragon_free_permanents_total,
                 "proxy_damage_total": s.proxy_damage_total,
                 "treasures_created_total": s.treasures_created_total,
+                "orb_mana_activations_total": s.orb_mana_activations_total,
                 "cards_drawn_extra": s.cards_drawn_extra,
             }) + "\n")
