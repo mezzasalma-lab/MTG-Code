@@ -22,7 +22,7 @@
 1 Champions of the Perfect
 1 Command Tower
 1 Deathbloom Ritualist
-1 Deathcap Glade
+1 Botanical Sanctum
 1 Deadly Rollick
 1 Devoted Druid
 1 Dionus, Elvish Archdruid
@@ -85,7 +85,7 @@
 1 Tyvar, Jubilant Brawler
 1 Tyvar, the Pummeler
 1 Underground River
-1 Undergrowth Stadium
+1 Hinterland Harbor
 1 Underrealm Lich
 1 Wastewood Verge
 1 Waterlogged Grove
