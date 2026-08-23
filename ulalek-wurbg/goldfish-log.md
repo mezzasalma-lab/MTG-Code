@@ -4,6 +4,98 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Teste #1 — Radagast of Rhosgobel dentro vs. fora (`ulalek_radagast_test.py`) — 2026-08-23
+
+Pergunta do usuário: "Vale a pena incluir um Radagast no deck do Ulalek?".
+Radagast of Rhosgobel (`{2}{G}{G}`, Legendary Creature — Avatar Wizard,
+colors=['G'] — cor real, NÃO colorless, NÃO Eldrazi): "The first creature
+spell you cast each turn costs {2} less to cast and can be cast as though
+it had flash." Ele NÃO está na `lista.md` hoje — este teste é só uma
+comparação, não uma mudança de deck.
+
+**Ajuste no script principal antes do teste:** ao cadastrar Radagast no
+`CARD_DB` pra permitir o teste, generalizei `eldrazi_cost_discount()` — o
+desconto de "primeira criatura do turno" antes só olhava pra Conduit of
+Ruin (que já está no deck e tem o texto quase idêntico); agora soma -2 por
+cada fonte presente (`FIRST_CREATURE_DISCOUNT_SOURCES`), empilhando de
+verdade se as duas estiverem em campo (mesma criatura, -4 total). Também
+corrigi de passagem uma tag órfã que já existia (`flash_source` em Vedalken
+Orrery/Liberator/Skittering Cicada nunca tinha virado métrica real) e
+adicionei uma métrica causal dedicada (`radagast_flash_grants_total`) em
+vez de reaproveitar `flash_online_turns` pro flash do Radagast — os dois
+NÃO são a mesma coisa: `flash_online_turns` cobre só as 3 fontes de flash
+incondicional (qualquer spell), enquanto o flash do Radagast é condicional
+(só a primeira criatura do turno). Confirmado no próprio teste: o delta de
+`flash_online_turns` (+0,147) bateu quase igual ao de
+`radagast_flash_grants_total` (+0,146) por coincidência de amostra — são
+métricas diferentes, não a mesma coisa medida duas vezes.
+
+**Metodologia:** mesma dos testes pareados anteriores (Maralen flash-vs-
+Radagast, Thranduil mana-fix) — monkeypatch temporário de `BASE_LIBRARY`
+trocando 1 carta por Radagast, mesmas seeds nas duas variantes. Carta
+cortada pro teste: **Null Elemental Blast** (interação de 1 mana bem
+estreita, sem efeito colateral próprio neste simulador sem oponente real —
+escolhida só como parceira de troca pra manter 99 cartas, não é uma
+recomendação de corte real).
+
+**n=3000, seed_base=9900000, mesmas seeds — resultado:**
+
+```
+                                          SEM Radagast   COM Radagast   delta
+Turno medio de conjuracao da Ulalek           4,509          4,497     -0,013
+Nunca conjurada em 8 turnos                    5,00%          6,03%    +1,03pp
+Avg copias pagas da Ulalek (CC)                0,992          1,005    +0,013
+Avg tokens-copia de permanentes                1,100          1,106    +0,006
+Avg cartas compradas extra                     1,593          1,596    +0,003
+Avg descontos "primeira criatura do turno"     0,058          0,209    +0,151
+Avg flash concedido pelo Radagast              0,000          0,146    +0,146
+```
+
+**Checagem de ruído:** o delta de "nunca conjurada em 8 turnos" (+1,03pp)
+parecia sugerir que Radagast piora a chance de resolver a comandante — mas
+troquei o `seed_base` 3 vezes (1M/2M/3M) e o delta ficou +0,60pp / +0,37pp
+/ **-0,73pp**: o sinal INVERTE de lado dependendo da amostra. Isso é ruído
+de reamostragem de um swap de 1 carta só (mesma seed não significa "mesmo
+jogo com uma carta a mais" — muda a posição de TODAS as cartas na mão
+embaralhada), não um efeito real do Radagast. Não uso esse número pra
+concluir nada.
+
+**Leitura honesta:**
+
+- **Não ajuda a conjuração da própria Ulalek** — turno médio praticamente
+  idêntico (4,509→4,497), esperado: Radagast só desconta OUTRAS criaturas
+  cast depois dele, não tem relação direta com o comandante a menos que a
+  Ulalek por acaso seja a primeira criatura do turno.
+- **Não alimenta o motor de cópia da Ulalek** — Radagast não é Eldrazi
+  (Avatar Wizard), então conjurá-lo nunca dispara o gatilho da comandante;
+  as métricas de cópia (`ulalek_copies_avg`, `spell_copies_avg`) ficaram
+  essencialmente inalteradas (+0,013 / +0,006, dentro do ruído normal).
+- **O ganho real é modesto, não transformador.** O desconto de "primeira
+  criatura do turno" mais que triplica (0,058→0,209 eventos/partida) — mas
+  isso soma a contribuição de Conduit sozinho (que já dava 0,058) com
+  Radagast; isolado, Radagast concede flash em média **0,146 vezes por
+  partida** — aproximadamente 1 em cada 7 partidas, ao longo de 8 turnos.
+  Isso é baixo porque Radagast primeiro precisa resolver (4 mana, R{2}{G}{G}
+  — compete por slot com o resto do pacote de rampa/valor) E DEPOIS precisa
+  que outra criatura seja conjurada num turno seguinte pra valer alguma
+  coisa.
+- **Downside estrutural não coberto pelas métricas numéricas acima:**
+  Radagast é um permanente colorido de verdade (`colors=['G']`). Hoje só
+  Defense of the Heart e Rhystic Study são permanentes coloridos na lista
+  inteira de 100 cartas — o que faz All Is Dust ser um wipe quase
+  perfeitamente assimétrico (média de 0,22 sacrificado quando é conjurada,
+  ver Simulação #1 acima). Incluir Radagast adicionaria um 3º alvo real
+  pro próprio All Is Dust sacrificar.
+
+**Conclusão:** vale a pena testar em jogo real se sobrar espaço, mas não é
+um upgrade óbvio — o efeito é pequeno em cima de uma peça (Conduit of Ruin)
+que já faz metade do trabalho, não conecta com o motor central da
+comandante, e introduz o único tipo de fragilidade que este deck evita hoje
+(permanente colorido de verdade, vulnerável ao próprio All Is Dust). Se o
+objetivo é mais flash pro plano de copiar Eldrazi no end step do oponente,
+Vedalken Orrery/Liberator/Skittering Cicada (flash incondicional, qualquer
+spell) continuam sendo a peça mais direta pra isso.
+
 ## Simulação #1 — goldfish Python completo, construído do zero (`ulalek_goldfish_v1.py`) — 2026-08-23
 
 **Script construído do zero, de forma independente.** A `auditoria.md` deste

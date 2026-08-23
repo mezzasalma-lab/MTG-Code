@@ -229,6 +229,14 @@ add("Expedition Map", 1, "artifact", {"colorless", "land_tutor_hand_paid"})
 # --- Eldrazi com cast-trigger real ------------------------------------------
 add("Anticausal Vestige", 6, "creature", {"eldrazi", "colorless", "warp"})
 add("Conduit of Ruin", 6, "creature", {"eldrazi", "colorless", "ct_conduit"})
+# Radagast of Rhosgobel: NAO esta na lista.md (nao faz parte do deck oficial
+# hoje) — cadastrado aqui so pra permitir o teste comparativo com/sem via
+# `ulalek_radagast_test.py`. {2}{G}{G}, verde real (colors=['G'], NAO
+# colorless — importa pra All Is Dust/Echoes/Roaming Throne) e NAO e
+# Eldrazi (Avatar Wizard — nao dispara o gatilho de copia da Ulalek).
+# Oraculo real: "The first creature spell you cast each turn costs {2}
+# less to cast and can be cast as though it had flash."
+add("Radagast of Rhosgobel", 4, "creature", set())
 add("Emrakul, the Promised End", 13, "creature", {"eldrazi", "colorless", "ct_emrakul"})
 add("Flayer of Loyalties", 10, "creature", {"eldrazi", "colorless", "ct_flayer"})
 add("Kozilek, Butcher of Truth", 10, "creature", {"eldrazi", "colorless", "ct_draw4"})
@@ -362,6 +370,9 @@ class GameState:
     all_is_dust_self_sacrificed: int = 0
     one_ring_cards_drawn_total: int = 0
     library_emptied: bool = False
+    flash_online_turns: int = 0
+    first_creature_discount_events_total: int = 0
+    radagast_flash_grants_total: int = 0
 
 
 def draw_cards(state: GameState, n: int):
@@ -562,6 +573,15 @@ def spend_mana(state: GameState, n: int):
     state.mana_spent_this_turn += n
 
 
+# Fontes de "o primeiro creature spell que voce conjura no turno custa {2}
+# a menos" — Conduit of Ruin (na lista) e, opcionalmente pro teste
+# comparativo, Radagast of Rhosgobel (mesmo texto, so muda "and can be cast
+# as though it had flash" no final). Empilham no MESMO gatilho (a mesma
+# criatura, se for a primeira do turno, recebe -2 de cada fonte presente),
+# nao dobram quantas criaturas por turno sao descontadas.
+FIRST_CREATURE_DISCOUNT_SOURCES = ["Conduit of Ruin", "Radagast of Rhosgobel"]
+
+
 def eldrazi_cost_discount(state: GameState, name: str) -> int:
     d = 0
     tags = CARD_DB[name].tags
@@ -575,8 +595,8 @@ def eldrazi_cost_discount(state: GameState, name: str) -> int:
             d += 2
         if "It That Heralds the End" in state.battlefield and CARD_DB[name].mv >= 7:
             d += 1
-    if CARD_DB[name].ctype == "creature" and "Conduit of Ruin" in state.battlefield and not state.conduit_used_this_turn:
-        d += 2
+    if CARD_DB[name].ctype == "creature" and not state.conduit_used_this_turn:
+        d += 2 * sum(1 for s in FIRST_CREATURE_DISCOUNT_SOURCES if s in state.battlefield)
     return d
 
 
@@ -669,7 +689,18 @@ def resolve_cast(state: GameState, name: str, free: bool = False, from_hand: boo
     elif not from_hand and name in state.warp_exile_zone:
         state.warp_exile_zone.remove(name)
 
-    if card.ctype == "creature" and "Conduit of Ruin" in state.battlefield and not state.conduit_used_this_turn:
+    if card.ctype == "creature" and not state.conduit_used_this_turn:
+        sources_in_play = [s for s in FIRST_CREATURE_DISCOUNT_SOURCES if s in state.battlefield]
+        if sources_in_play:
+            state.first_creature_discount_events_total += 1
+        if "Radagast of Rhosgobel" in sources_in_play:
+            # Radagast tambem da flash pra essa conjuracao especifica ("and
+            # can be cast as though it had flash") — metrica direta e causal,
+            # separada de flash_online_turns (que so cobre Vedalken
+            # Orrery/Liberator/Skittering Cicada, cujo flash e incondicional
+            # pra qualquer spell, ao contrario do flash condicional/estreito
+            # do Radagast, restrito a essa unica criatura por turno).
+            state.radagast_flash_grants_total += 1
         state.conduit_used_this_turn = True
 
     # --- Ulalek: pode pagar CC se for Eldrazi ---
@@ -917,6 +948,9 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     main_phase(state)
     end_step(state)
 
+    if any("flash_source" in CARD_DB[n].tags for n in state.battlefield):
+        state.flash_online_turns += 1
+
 
 def simulate_one(seed: int, turns: int = 8):
     rng = random.Random(seed)
@@ -956,6 +990,9 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     if ad_games:
         print(f"  Avg permanentes proprios sacrificados por All Is Dust nesses jogos: {avg([s.all_is_dust_self_sacrificed for s in ad_games]):.2f}")
     print(f"Avg dobras via Roaming Throne (contador direto): {avg([s.roaming_throne_doubles_total for s in states]):.2f}")
+    print(f"Avg turnos com flash online (Vedalken Orrery/Liberator/Skittering Cicada): {avg([s.flash_online_turns for s in states]):.2f}")
+    print(f"Avg descontos de 'primeira criatura do turno' aplicados (Conduit/Radagast): {avg([s.first_creature_discount_events_total for s in states]):.2f}")
+    print(f"Avg flash concedido pelo Radagast (se presente): {avg([s.radagast_flash_grants_total for s in states]):.2f}")
     print(f"Avg mao final: {avg([len(s.hand) for s in states]):.2f}")
     return states
 
