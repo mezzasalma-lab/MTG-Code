@@ -1,0 +1,912 @@
+"""
+Goldfish simulator — Maralen, Fae Ascendant (Sultai, B/G/U)
+
+Construido do zero em 2026-08-23. Passo 0 (regra de
+`references/goldfish-sim-card-rules.md`): varredura mecanica no oraculo
+completo achou os gatilhos reais listados abaixo. Cada um tem o efeito
+real implementado, exceto onde depende de um oponente real (vida/mao/
+biblioteca/permanente alheio) — documentado como simplificacao
+explicita, nunca fingido.
+
+Mecanica central: o proprio gatilho da comandante — "Whenever Maralen
+or another Elf or Faerie you control enters, exile the top two cards
+of target opponent's library. Once each turn, you may cast a spell
+with mana value <= Elfos+Fadas voce controla dentre as cartas exiladas
+com Maralen neste turno sem pagar o custo de mana." Como nao ha
+biblioteca de oponente real num goldfish solo, a exilada vem da PROPRIA
+biblioteca (mesma aproximacao ja usada pro Grenzo/Laughing Jasper Flint
+no simulador do Vihaan) — documentado, nao inventado como se fosse
+"roubo" real.
+
+Roaming Throne: tipo escolhido = **Faerie** (nao Elfo). Motivo: Maralen
+e ela mesma Elf Faerie Noble, entao ela conta como "outra criatura do
+tipo escolhido" pra qualquer um dos dois tipos — o proprio gatilho dela
+dobra de qualquer forma. Faerie foi escolhido porque tem mais criaturas
+com gatilho relevante (Bitterbloom Bearer, Obyra, Tegwyll, Faerie
+Harbinger, Spellstutter Sprite, Mistbind Clique) do que Elfo (so Marwyn
+e Elvish Warmaster tem gatilho de ETB relevante).
+
+Combo real de 2 pecas (documentado na auditoria, secao 4): Umbral
+Mantle (Equip {0}, "{3},{Q}: +2/+2") equipado num dork que produza 4+
+mana por ativacao (Priest of Titania, Elvish Archdruid, Marwyn com
+poder 4+, Circle of Dreams Druid com 4+ criaturas) gera mana verde
+infinita. Staff of Domination converte isso em compra infinita (limite
+defensivo: para de comprar quando a biblioteca fica vazia, sem fingir
+"vencer o jogo" por deck-out) ou exercito infinito de Elfo via
+Imperious Perfect, se disponivel.
+
+Simplificacoes documentadas (nao inventadas — omissoes explicitas):
+- Sem oponente real: Rhystic Study, Mystic Remora, Faerie Mastermind
+  (gatilho passivo), Alela (goad e token por 1a magica no turno do
+  oponente), Bojuka Bog (exila cemiterio de oponente) ficam "disponiveis"
+  mas sem efeito numerico solo.
+- Removal/contra-magica (Pongify, Rapid Hybridization, Reality Shift,
+  Assassin's Trophy, Cyclonic Rift, Toxic Deluge, Counterspell, Arcane
+  Denial, Swan Song, Spellstutter Sprite, Glen Elendra Archmage) sao
+  conjuradas quando ha alvo hipotetico disponivel (mesma convencao dos
+  outros simuladores desta biblioteca), mas nao tem efeito de combate
+  real — so consomem mana e contam como "conjuradas".
+- Bloom Tender: aproximacao documentada — produz mana igual ao numero
+  de cores entre B/G/U que ja tem permanente em campo (nunca mais que
+  3), nao rastreio cor exata de cada permanente.
+- Joraga Treespeaker: nivelado ate o nivel 1 assim que houver mana
+  sobrando (2 mana), raramente alcanca nivel 5 (5 ativacoes = 10 mana
+  total investido) dentro de 8 turnos — nao forcado.
+- Heritage Druid / Birchlore Rangers: aproximacao documentada — a
+  habilidade delas tapa OUTROS Elfos como custo (nao a si mesmas), o
+  que ignora summoning sickness desses Elfos (CR 302.6, tapar como
+  custo de habilidade de OUTRO permanente nao e bloqueado por sickness).
+  Modelado como: se houver Elfos "sick" (recem-conjurados) disponiveis
+  em quantidade suficiente, eles alimentam Heritage Druid/Birchlore
+  Rangers por mana extra que normalmente nao existiria ainda naquele
+  turno — sem duplicar a contagem de mana desses Elfos caso eles NAO
+  estivessem sick (nesse caso already contam via sua propria habilidade).
+- Devoted Druid: self-untap via -1/-1 counter modelado com um teto
+  defensivo de 3 ativacoes extras por turno (toughness base 1, evita
+  looping sem fim — ela morre antes de virar looping infinito sem
+  outra peca de untap).
+- Mistbind Clique (Champion a Faerie): se houver outra Fada em campo
+  pra exilar, ela fica; senao e sacrificada no ETB (Champion falhou).
+  A Fada exilada retorna quando Mistbind sai de campo — nao simulado
+  em detalhe (Mistbind raramente sai de campo neste modelo).
+- Combate: "ataca" = nao esta com summoning sickness. Nenhum bloqueio,
+  nenhum dano/vida de oponente real.
+"""
+
+import json
+import random
+import re
+import signal
+import statistics
+from dataclasses import dataclass, field
+from typing import Optional
+
+
+# ---------------------------------------------------------------------------
+# Card database
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class Card:
+    name: str
+    mv: int
+    ctype: str  # 'land','artifact','creature','artifact_creature','enchantment','sorcery','instant'
+    tags: frozenset = field(default_factory=frozenset)
+
+
+CARD_DB: dict[str, Card] = {}
+
+
+def add(name, mv, ctype, tags=()):
+    CARD_DB[name] = Card(name=name, mv=mv, ctype=ctype, tags=frozenset(tags))
+
+
+COMMANDER = "Maralen, Fae Ascendant"
+add(COMMANDER, 5, "creature", {"commander", "elf", "faerie"})
+
+ROAMING_THRONE_TYPE = "faerie"  # ver docstring — escolhido sobre "elf"
+
+# --- Lands (35) --------------------------------------------------------------
+add("Alchemist's Refuge", 0, "land", {"flash_enabler"})
+add("Bayou", 0, "land", set())
+add("Bojuka Bog", 0, "land", {"etb_tapped"})
+add("Boseiju, Who Endures", 0, "land", set())
+add("Breeding Pool", 0, "land", set())
+add("Cavern of Souls", 0, "land", set())
+add("Command Tower", 0, "land", set())
+add("Darkwater Catacombs", 0, "land", set())
+add("Drowned Catacomb", 0, "land", set())
+add("Exotic Orchard", 0, "land", set())
+add("Gilt-Leaf Palace", 0, "land", set())
+add("Hinterland Harbor", 0, "land", set())
+add("Morphic Pool", 0, "land", set())
+add("Overgrown Tomb", 0, "land", set())
+add("Path of Ancestry", 0, "land", {"etb_tapped"})
+add("Reflecting Pool", 0, "land", set())
+add("Secluded Courtyard", 0, "land", set())
+add("Sunken Hollow", 0, "land", set())
+add("Tropical Island", 0, "land", set())
+add("Undergrowth Stadium", 0, "land", set())
+add("Underground River", 0, "land", set())
+add("Underground Sea", 0, "land", set())
+add("Watery Grave", 0, "land", set())
+add("Wirewood Lodge", 0, "land", set())
+add("Woodland Cemetery", 0, "land", set())
+add("Yavimaya Coast", 0, "land", set())
+add("Zagoth Triome", 0, "land", {"etb_tapped"})
+add("Forest", 0, "land", set())
+add("Island", 0, "land", set())
+add("Swamp", 0, "land", set())
+
+# --- Motor de flash universal ------------------------------------------------
+add("Leyline of Anticipation", 4, "enchantment", {"universal_flash"})
+add("Vedalken Orrery", 4, "artifact", {"universal_flash"})
+add("High Fae Trickster", 4, "creature", {"faerie", "universal_flash"})
+add("Radagast of Rhosgobel", 4, "creature", {"first_creature_discount_flash"})
+
+# --- Motor de ramp elfico -----------------------------------------------------
+add("Birds of Paradise", 1, "creature", {"dork_flat1"})
+add("Bloom Tender", 2, "creature", {"elf", "dork_bloomtender"})
+add("Elvish Mystic", 1, "creature", {"elf", "dork_flat1"})
+add("Llanowar Elves", 1, "creature", {"elf", "dork_flat1"})
+add("Joraga Treespeaker", 1, "creature", {"elf", "dork_joraga"})
+add("Heritage Druid", 1, "creature", {"elf", "dork_heritage"})
+add("Birchlore Rangers", 1, "creature", {"elf", "dork_birchlore"})
+add("Priest of Titania", 2, "creature", {"elf", "dork_per_elf"})
+add("Elvish Archdruid", 3, "creature", {"elf", "dork_per_elf_controlled"})
+add("Marwyn, the Nurturer", 3, "creature", {"elf", "dork_marwyn", "elf_etb_counter"})
+add("Circle of Dreams Druid", 3, "creature", {"elf", "dork_per_creature"})
+add("Devoted Druid", 2, "creature", {"elf", "dork_devoted"})
+add("Elvish Harbinger", 3, "creature", {"elf", "dork_flat1_any", "tutor_elf_top"})
+add("Wirewood Symbiote", 1, "creature", {"bounce_untap"})
+add("Cryptolith Rite", 2, "enchantment", {"mana_any_creature"})
+add("Elven Chorus", 4, "enchantment", {"mana_any_creature", "cast_from_top"})
+add("Arcane Signet", 2, "artifact", {"rock1"})
+add("Sol Ring", 1, "artifact", {"rock2"})
+add("Umbral Mantle", 3, "artifact", {"umbral_mantle"})
+add("Staff of Domination", 3, "artifact", {"staff"})
+add("Roaming Throne", 4, "artifact_creature", {ROAMING_THRONE_TYPE, "roaming_throne"})
+
+# --- Elfo — corpo/utilidade --------------------------------------------------
+add("Allosaurus Shepherd", 1, "creature", {"elf"})
+add("Elvish Warmaster", 2, "creature", {"elf", "elf_etb_token"})
+add("Imperious Perfect", 3, "creature", {"elf", "elf_token_maker"})
+add("Fauna_placeholder_never_used", 0, "creature", set())  # nunca referenciada
+add("Fauna Shaman", 2, "creature", {"elf", "tutor_creature_repeat"})
+add("Formidable Speaker", 3, "creature", {"elf", "tutor_creature_etb"})
+add("Growing Rites of Itlimoc // Itlimoc, Cradle of the Sun", 3, "enchantment", {"itlimoc"})
+add("Green Sun's Zenith", 1, "sorcery", {"gsz"})
+add("Realmwalker", 3, "creature", {"elf", "faerie", "changeling", "cast_from_top"})
+add("Ezuri, Renegade Leader", 3, "creature", {"elf"})
+
+# --- Fada — token e drain -----------------------------------------------------
+add("Alela, Cunning Conqueror", 4, "creature", {"faerie"})
+add("Bitterblossom", 2, "enchantment", {"faerie_token_upkeep"})
+add("Bitterbloom Bearer", 2, "creature", {"faerie", "faerie_token_upkeep"})
+add("Faerie Harbinger", 4, "creature", {"faerie", "tutor_faerie_top"})
+add("Faerie Mastermind", 2, "creature", {"faerie", "opponent_dependent"})
+add("Mistbind Clique", 4, "creature", {"faerie", "champion_faerie"})
+add("Obyra, Dreaming Duelist", 2, "creature", {"faerie", "faerie_etb_drain"})
+add("Spellstutter Sprite", 2, "creature", {"faerie", "etb_counter_unused"})
+add("Tegwyll, Duke of Splendor", 3, "creature", {"faerie", "faerie_death_draw"})
+add("Scryb Ranger", 2, "creature", {"faerie", "bounce_untap"})
+add("Brazen Borrower // Petty Theft", 3, "creature", {"faerie"})
+add("Cloud of Faeries", 2, "creature", {"faerie", "etb_untap_lands"})
+add("Glen Elendra Archmage", 4, "creature", {"faerie"})
+
+# --- Card draw / interacao ---------------------------------------------------
+add("Seedborn Muse", 5, "creature", {"untap_all"})
+add("Wilderness Reclamation", 4, "enchantment", {"untap_lands_endstep"})
+add("Murkfiend Liege", 5, "creature", {"untap_gu"})
+add("Arcane Denial", 2, "instant", {"interaction"})
+add("Counterspell", 2, "instant", {"interaction"})
+add("Swan Song", 1, "instant", {"interaction"})
+add("Pongify", 1, "instant", {"interaction"})
+add("Rapid Hybridization", 1, "instant", {"interaction"})
+add("Reality Shift", 2, "instant", {"interaction"})
+add("Assassin's Trophy", 2, "instant", {"interaction"})
+add("Cyclonic Rift", 2, "instant", {"interaction"})
+add("Toxic Deluge", 3, "sorcery", {"interaction"})
+add("Rhystic Study", 3, "enchantment", {"opponent_dependent"})
+add("Mystic Remora", 1, "enchantment", {"opponent_dependent"})
+add("Heroic Intervention", 2, "instant", {"interaction"})
+add("Black Market Connections", 3, "enchantment", {"modal_treasure_draw"})
+add("Kindred Discovery", 5, "enchantment", {"kindred_discovery"})
+
+del CARD_DB["Fauna_placeholder_never_used"]
+
+ARTIFACT_ISH = {"artifact", "artifact_creature"}
+CREATURE_ISH = {"creature", "artifact_creature"}
+LAND_NAMES = {n for n, c in CARD_DB.items() if c.ctype == "land"}
+
+
+def is_creature_card(name: str) -> bool:
+    return CARD_DB[name].ctype in CREATURE_ISH
+
+
+def is_artifact_card(name: str) -> bool:
+    return CARD_DB[name].ctype in ARTIFACT_ISH
+
+
+def is_elf(name: str) -> bool:
+    return "elf" in CARD_DB[name].tags
+
+
+def is_faerie(name: str) -> bool:
+    return "faerie" in CARD_DB[name].tags
+
+
+def is_roaming_type(name: str) -> bool:
+    return ROAMING_THRONE_TYPE in CARD_DB[name].tags
+
+
+# ---------------------------------------------------------------------------
+# Game state
+# ---------------------------------------------------------------------------
+
+@dataclass
+class GameState:
+    turn: int = 0
+    hand: list = field(default_factory=list)
+    battlefield: list = field(default_factory=list)
+    graveyard: list = field(default_factory=list)
+    library: list = field(default_factory=list)
+    exile_maralen: list = field(default_factory=list)  # limpa a cada turno
+    mulligans: int = 0
+
+    lands_played_this_turn: int = 0
+    mana_spent_this_turn: int = 0
+    maralen_free_cast_used_this_turn: bool = False
+    devoted_druid_extra_untaps: int = 0
+    joraga_level: int = 0
+    marwyn_power: int = 2  # base 2/2
+    fauna_shaman_used_this_turn: bool = False
+    heritage_used_this_turn: bool = False
+    birchlore_used_this_turn: bool = False
+    umbral_equipped_on: Optional[str] = None
+    infinite_mana_this_turn: bool = False
+
+    commander_in_play: bool = False
+    commander_cast_count: int = 0
+    commander_cast_turn: Optional[int] = None
+    creature_cast_turn: dict = field(default_factory=dict)
+
+    other_tokens: int = 0  # tokens Fada + Elfo Warrior genericos
+    other_tokens_sick: int = 0
+    life: int = 40
+
+    # metrics ----------------------------------------------------------------
+    maralen_triggers_total: int = 0
+    maralen_free_casts_total: int = 0
+    cards_exiled_total: int = 0
+    tokens_created_total: int = 0
+    tutors_used_total: int = 0
+    infinite_combo_assembled: bool = False
+    infinite_combo_turn: Optional[int] = None
+    staff_infinite_draws: int = 0
+    roaming_throne_doubles_total: int = 0
+    cards_drawn_extra: int = 0
+    library_emptied: bool = False
+
+
+def draw_cards(state: GameState, n: int):
+    for _ in range(n):
+        if state.library:
+            state.hand.append(state.library.pop(0))
+            state.cards_drawn_extra += 1
+        else:
+            state.library_emptied = True
+
+
+# ---------------------------------------------------------------------------
+# Motor central — Maralen: exila 2 do topo a cada Elfo/Fada que entra,
+# 1x/turno pode conjurar de graca uma exilada com CMV <= Elfos+Fadas
+# ---------------------------------------------------------------------------
+
+def elf_faerie_count(state: GameState) -> int:
+    return sum(1 for n in state.battlefield if is_elf(n) or is_faerie(n))
+
+
+def maralen_trigger(state: GameState, entering_name: str):
+    if not state.commander_in_play:
+        return
+    if entering_name != COMMANDER and not (is_elf(entering_name) or is_faerie(entering_name)):
+        return
+    times = 1
+    if "Roaming Throne" in state.battlefield and is_roaming_type(entering_name) and entering_name != "Roaming Throne":
+        times = 2
+        state.roaming_throne_doubles_total += 1
+    for _ in range(times):
+        state.maralen_triggers_total += 1
+        # Sem biblioteca de oponente real: exila da PROPRIA biblioteca (documentado).
+        for _ in range(2):
+            if state.library:
+                state.exile_maralen.append(state.library.pop(0))
+                state.cards_exiled_total += 1
+
+
+def maralen_try_free_cast(state: GameState):
+    if state.maralen_free_cast_used_this_turn or not state.exile_maralen:
+        return
+    cap = elf_faerie_count(state)
+    candidates = [c for c in state.exile_maralen if CARD_DB[c].mv <= cap and c not in LAND_NAMES]
+    if not candidates:
+        return
+    candidates.sort(key=lambda n: -CARD_DB[n].mv)
+    choice = candidates[0]
+    state.exile_maralen.remove(choice)
+    state.maralen_free_cast_used_this_turn = True
+    state.maralen_free_casts_total += 1
+    resolve_cast(state, choice, free=True)
+
+
+# ---------------------------------------------------------------------------
+# Mana — ramp elfico + rocks + Umbral Mantle
+# ---------------------------------------------------------------------------
+
+def ready_creatures(state: GameState):
+    return [n for n in state.battlefield if is_creature_card(n)
+            and (state.creature_cast_turn.get(n, -1) < state.turn)]
+
+
+def dork_mana(state: GameState) -> int:
+    elves_in_play = sum(1 for n in state.battlefield if is_elf(n))
+    creatures_in_play = sum(1 for n in state.battlefield if is_creature_card(n))
+    ready = set(ready_creatures(state))
+    total = 0
+    best_scaling_output = 0
+    best_scaling_name = None
+
+    for n in state.battlefield:
+        if n not in ready:
+            continue
+        tags = CARD_DB[n].tags
+        if "dork_flat1" in tags:
+            total += 1
+        elif "dork_bloomtender" in tags:
+            total += 2  # aproximacao documentada (2-3 cores em jogo tipicamente)
+        elif "dork_flat1_any" in tags:
+            total += 1
+        elif "dork_joraga" in tags:
+            total += 2 if state.joraga_level >= 1 else 0
+        elif "dork_per_elf" in tags:
+            out = elves_in_play
+            total += out
+            if out > best_scaling_output:
+                best_scaling_output, best_scaling_name = out, n
+        elif "dork_per_elf_controlled" in tags:
+            out = elves_in_play
+            total += out
+            if out > best_scaling_output:
+                best_scaling_output, best_scaling_name = out, n
+        elif "dork_marwyn" in tags:
+            out = state.marwyn_power
+            total += out
+            if out > best_scaling_output:
+                best_scaling_output, best_scaling_name = out, n
+        elif "dork_per_creature" in tags:
+            out = creatures_in_play
+            total += out
+            if out > best_scaling_output:
+                best_scaling_output, best_scaling_name = out, n
+        elif "dork_devoted" in tags:
+            total += 1 + min(3, state.devoted_druid_extra_untaps)
+
+    # Heritage Druid / Birchlore Rangers: convertem elfos "sick" (que ainda nao
+    # contribuiriam nada) em mana extra, tapando-os como custo (CR 302.6 nao
+    # bloqueia isso). Nao duplica elfos ja contados acima.
+    sick_elves = [n for n in state.battlefield
+                  if is_elf(n) and n not in ready and n != "Heritage Druid" and n != "Birchlore Rangers"]
+    if "Heritage Druid" in state.battlefield and "Heritage Druid" in ready and len(sick_elves) >= 3:
+        total += 3
+    if "Birchlore Rangers" in state.battlefield and "Birchlore Rangers" in ready and len(sick_elves) >= 2:
+        total += 1
+
+    # Cryptolith Rite / Elven Chorus: da "T: add 1 any" a toda criatura —
+    # conta so as criaturas que ainda NAO produziram mana pela propria
+    # habilidade acima, pra nao duplicar.
+    if ("Cryptolith Rite" in state.battlefield or "Elven Chorus" in state.battlefield):
+        already_dorks = {n for n in state.battlefield if CARD_DB[n].tags & {
+            "dork_flat1", "dork_bloomtender", "dork_flat1_any", "dork_joraga",
+            "dork_per_elf", "dork_per_elf_controlled", "dork_marwyn",
+            "dork_per_creature", "dork_devoted",
+        }}
+        for n in ready:
+            if is_creature_card(n) and n not in already_dorks:
+                total += 1
+
+    # Umbral Mantle: se equipada num dork escalavel com saida >=4, mana infinita.
+    if state.umbral_equipped_on and state.umbral_equipped_on in ready:
+        if best_scaling_name == state.umbral_equipped_on and best_scaling_output >= 4:
+            state.infinite_mana_this_turn = True
+            if not state.infinite_combo_assembled:
+                state.infinite_combo_assembled = True
+                state.infinite_combo_turn = state.turn
+
+    return total
+
+
+def rocks_mana(state: GameState) -> int:
+    total = 0
+    if "Sol Ring" in state.battlefield:
+        total += 2
+    if "Arcane Signet" in state.battlefield:
+        total += 1
+    return total
+
+
+def total_mana(state: GameState) -> int:
+    lands = sum(1 for n in state.battlefield if n in LAND_NAMES)
+    if state.infinite_mana_this_turn:
+        return 999  # ja confirmado infinito neste turno; nao precisa somar o resto
+    return lands + rocks_mana(state) + dork_mana(state)
+
+
+def remaining_mana(state: GameState) -> int:
+    if state.infinite_mana_this_turn:
+        return 999
+    return max(0, total_mana(state) - state.mana_spent_this_turn)
+
+
+def can_cast(state: GameState, name: str) -> bool:
+    return remaining_mana(state) >= CARD_DB[name].mv
+
+
+def spend_mana(state: GameState, n: int):
+    if not state.infinite_mana_this_turn:
+        state.mana_spent_this_turn += n
+
+
+# ---------------------------------------------------------------------------
+# Resolucao de ETB / cast
+# ---------------------------------------------------------------------------
+
+def resolve_etb(state: GameState, name: str):
+    tags = CARD_DB[name].tags
+
+    if "elf_etb_counter" in tags:
+        pass  # Marwyn nao ganha contador ao entrar ela mesma
+
+    if "tutor_elf_top" in tags:
+        elves = [n for n in state.library if is_elf(n)]
+        if elves:
+            best = max(elves, key=lambda n: CARD_DB[n].mv)
+            state.library.remove(best)
+            state.library.insert(0, best)
+            state.tutors_used_total += 1
+
+    if "tutor_faerie_top" in tags:
+        faeries = [n for n in state.library if is_faerie(n)]
+        if faeries:
+            best = max(faeries, key=lambda n: CARD_DB[n].mv)
+            state.library.remove(best)
+            state.library.insert(0, best)
+            state.tutors_used_total += 1
+
+    if "tutor_creature_etb" in tags:
+        # Formidable Speaker: descarta 1 pra buscar criatura pra mao.
+        discardable = [c for c in state.hand if c != name]
+        if discardable and state.library:
+            worst = min(discardable, key=lambda n: CARD_DB[n].mv)
+            state.hand.remove(worst)
+            state.graveyard.append(worst)
+            creatures = [n for n in state.library if is_creature_card(n)]
+            if creatures:
+                best = best_missing_dork(state, creatures)
+                state.library.remove(best)
+                state.hand.append(best)
+                state.tutors_used_total += 1
+
+    if "etb_untap_lands" in tags:
+        state.mana_spent_this_turn = max(0, state.mana_spent_this_turn - 2)
+
+    if "faerie_etb_drain" in tags:
+        pass  # Obyra: opponent-dependent (perde vida), sem efeito solo
+
+    if "champion_faerie" in tags:
+        other_faeries = [n for n in state.battlefield if is_faerie(n) and n != name]
+        if not other_faeries:
+            leave_battlefield(state, name, to_graveyard=True)
+
+    # Elvish Warmaster: token 1x/turno quando OUTRO elfo entra (checado no caller)
+
+
+def elvish_warmaster_check(state: GameState, entering_name: str):
+    if entering_name == "Elvish Warmaster":
+        return
+    if "Elvish Warmaster" not in state.battlefield:
+        return
+    if not is_elf(entering_name):
+        return
+    if state.warmaster_used_this_turn:
+        return
+    state.warmaster_used_this_turn = True
+    create_token(state, source="Elvish Warmaster")
+
+
+def create_token(state: GameState, source: str = ""):
+    state.other_tokens += 1
+    state.other_tokens_sick += 1
+    state.tokens_created_total += 1
+
+
+def best_missing_dork(state: GameState, pool: list) -> str:
+    priority_names = [
+        "Priest of Titania", "Elvish Archdruid", "Marwyn, the Nurturer",
+        "Circle of Dreams Druid", "Umbral Mantle", "Staff of Domination",
+        "Fauna Shaman", COMMANDER,
+    ]
+    for p in priority_names:
+        if p in pool:
+            return p
+    return min(pool, key=lambda n: CARD_DB[n].mv)
+
+
+def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
+    if from_hand and name in state.hand:
+        state.hand.remove(name)
+    state.battlefield.append(name)
+    if name == COMMANDER:
+        state.commander_in_play = True
+        state.commander_cast_count += 1
+        if state.commander_cast_turn is None:
+            state.commander_cast_turn = state.turn
+    if is_creature_card(name):
+        state.creature_cast_turn[name] = state.turn
+    if "elf_etb_counter" not in CARD_DB[name].tags:
+        pass
+    if is_elf(name) and "Marwyn, the Nurturer" in state.battlefield and name != "Marwyn, the Nurturer":
+        state.marwyn_power += 1
+    resolve_etb(state, name)
+    elvish_warmaster_check(state, name)
+    maralen_trigger(state, name)
+
+
+def leave_battlefield(state: GameState, name: str, to_graveyard: bool = True):
+    if name in state.battlefield:
+        state.battlefield.remove(name)
+    if to_graveyard:
+        state.graveyard.append(name)
+    if is_faerie(name) and "Tegwyll, Duke of Splendor" in state.battlefield and name != "Tegwyll, Duke of Splendor":
+        draw_cards(state, 1)
+    if state.umbral_equipped_on == name:
+        state.umbral_equipped_on = None
+        state.infinite_mana_this_turn = False
+
+
+def resolve_cast(state: GameState, name: str, free: bool = False):
+    if not free and name != COMMANDER:
+        state.hand.remove(name)
+    if name in LAND_NAMES:
+        state.battlefield.append(name)
+        return
+    if CARD_DB[name].ctype == "sorcery" and "gsz" in CARD_DB[name].tags:
+        return  # tratado em cast_green_sun_zenith
+    enter_battlefield(state, name, from_hand=False)
+
+
+# ---------------------------------------------------------------------------
+# Cast principal
+# ---------------------------------------------------------------------------
+
+def cast_green_sun_zenith(state: GameState):
+    """X escolhido pro melhor dork verde ainda nao em campo que a mana bancar."""
+    budget = remaining_mana(state) - 1  # {G} fixo + {X}
+    if budget < 0:
+        return False
+    pool = [n for n in state.library if is_creature_card(n) and "elf" in CARD_DB[n].tags
+            and CARD_DB[n].mv <= (999 if state.infinite_mana_this_turn else budget)]
+    if not pool:
+        return False
+    best = best_missing_dork(state, pool)
+    x = CARD_DB[best].mv
+    spend_mana(state, x + 1)
+    state.hand.remove("Green Sun's Zenith")
+    state.library.remove(best)
+    enter_battlefield(state, best, from_hand=False)
+    state.tutors_used_total += 1
+    return True
+
+
+def cast_fauna_shaman_activation(state: GameState):
+    if "Fauna Shaman" not in state.battlefield or state.fauna_shaman_used_this_turn:
+        return
+    if "Fauna Shaman" not in ready_creatures(state):
+        return
+    if remaining_mana(state) < 1:
+        return
+    discardable = [c for c in state.hand if is_creature_card(c)]
+    if not discardable or not state.library:
+        return
+    worst = min(discardable, key=lambda n: CARD_DB[n].mv)
+    state.hand.remove(worst)
+    state.graveyard.append(worst)
+    creatures = [n for n in state.library if is_creature_card(n)]
+    if not creatures:
+        return
+    best = best_missing_dork(state, creatures)
+    state.library.remove(best)
+    state.hand.append(best)
+    spend_mana(state, 1)
+    state.fauna_shaman_used_this_turn = True
+    state.tutors_used_total += 1
+
+
+def cast_card(state: GameState, name: str):
+    card = CARD_DB[name]
+    if name == COMMANDER:
+        spend_mana(state, card.mv + 2 * state.commander_cast_count)
+    else:
+        spend_mana(state, card.mv)
+    resolve_cast(state, name)
+
+
+def play_land(state: GameState):
+    if state.lands_played_this_turn >= 1:
+        return
+    lands_in_hand = [n for n in state.hand if n in LAND_NAMES]
+    if not lands_in_hand:
+        return
+    choice = lands_in_hand[0]
+    state.hand.remove(choice)
+    state.battlefield.append(choice)
+    state.lands_played_this_turn += 1
+
+
+def equip_umbral_mantle(state: GameState):
+    if "Umbral Mantle" not in state.battlefield:
+        return
+    creatures = ready_creatures(state)
+    if not creatures:
+        return
+    elves_in_play = sum(1 for n in state.battlefield if is_elf(n))
+    creatures_in_play = sum(1 for n in state.battlefield if is_creature_card(n))
+
+    def scaling_output(n):
+        tags = CARD_DB[n].tags
+        if "dork_per_elf" in tags or "dork_per_elf_controlled" in tags:
+            return elves_in_play
+        if "dork_marwyn" in tags:
+            return state.marwyn_power
+        if "dork_per_creature" in tags:
+            return creatures_in_play
+        return 0
+
+    best = max(creatures, key=scaling_output)
+    if scaling_output(best) > 0:
+        state.umbral_equipped_on = best
+
+
+def joraga_level_up(state: GameState):
+    if "Joraga Treespeaker" not in state.battlefield or state.joraga_level >= 1:
+        return
+    if remaining_mana(state) >= 2:
+        spend_mana(state, 2)
+        state.joraga_level = 1
+
+
+def devoted_druid_pump(state: GameState):
+    if "Devoted Druid" not in state.battlefield:
+        return
+    if "Devoted Druid" not in ready_creatures(state):
+        return
+    state.devoted_druid_extra_untaps = min(3, state.devoted_druid_extra_untaps + 3)
+
+
+def use_staff_of_domination_v2(state: GameState):
+    """{1}: destapa. {5},{T}: compra 1. Com mana infinita, repete ate a
+    biblioteca esvaziar (limite defensivo: nunca finge vencer por deck-out,
+    so registra quantas compras aconteceram)."""
+    if "Staff of Domination" not in state.battlefield or not state.infinite_mana_this_turn:
+        return
+    while state.library:
+        card = state.library.pop(0)
+        state.hand.append(card)
+        state.cards_drawn_extra += 1
+        state.staff_infinite_draws += 1
+    if not state.library:
+        state.library_emptied = True
+
+
+def main_phase(state: GameState):
+    if not state.commander_in_play and can_cast(state, COMMANDER):
+        cast_card(state, COMMANDER)
+        maralen_try_free_cast(state)
+
+    joraga_level_up(state)
+    devoted_druid_pump(state)
+    equip_umbral_mantle(state)
+    # reavalia infinito apos equipar (dork_mana ja seta a flag)
+    dork_mana(state)
+
+    while True:
+        castables = [n for n in state.hand if n not in LAND_NAMES
+                     and n != "Green Sun's Zenith" and can_cast(state, n)]
+        if castables:
+            castables.sort(key=lambda n: CARD_DB[n].mv)
+            cast_card(state, castables[0])
+            maralen_try_free_cast(state)
+            equip_umbral_mantle(state)
+            dork_mana(state)
+            continue
+        if "Green Sun's Zenith" in state.hand and cast_green_sun_zenith(state):
+            maralen_try_free_cast(state)
+            equip_umbral_mantle(state)
+            dork_mana(state)
+            continue
+        break
+
+    cast_fauna_shaman_activation(state)
+    if "Imperious Perfect" in state.battlefield and "Imperious Perfect" in ready_creatures(state) and remaining_mana(state) >= 1:
+        spend_mana(state, 1)
+        create_token(state)
+        if state.infinite_mana_this_turn:
+            # mana infinita + Imperious Perfect = exercito infinito (registrado, nao expandido de fato)
+            state.tokens_created_total += 10_000
+            state.other_tokens += 10_000
+
+    use_staff_of_domination_v2(state)
+
+
+def combat_step(state: GameState):
+    pass  # sem oponente real — nenhum gatilho de combate real no deck
+
+
+def end_step(state: GameState):
+    if "Wilderness Reclamation" in state.battlefield:
+        state.mana_spent_this_turn = 0  # untap all lands (aproximado: reseta gasto)
+    if "Bitterblossom" in state.battlefield:
+        state.life -= 1
+        create_token(state)
+        if "Roaming Throne" in state.battlefield:
+            pass  # Bitterblossom e Enchantment, nao Criatura — Roaming Throne nao dobra
+    if state.other_tokens_sick:
+        state.other_tokens_sick = 0
+
+
+def upkeep_step(state: GameState):
+    times = 1
+    if "Bitterbloom Bearer" in state.battlefield:
+        if "Roaming Throne" in state.battlefield and is_roaming_type("Bitterbloom Bearer"):
+            times = 2
+            state.roaming_throne_doubles_total += 1
+        for _ in range(times):
+            state.life -= 1
+            create_token(state)
+    if "Black Market Connections" in state.battlefield:
+        state.life -= 1
+        state.other_tokens += 0  # modo "Sell Contraband" simplificado pra Treasure generico ignorado (sem Treasure no deck)
+        draw_cards(state, 1)
+        state.life -= 2
+
+
+def should_keep(hand: list) -> bool:
+    lands = sum(1 for n in hand if n in LAND_NAMES)
+    good_early = {"Sol Ring", "Arcane Signet", "Elvish Mystic", "Llanowar Elves", "Birds of Paradise",
+                  "Bloom Tender", COMMANDER}
+    if lands >= 3:
+        return True
+    if lands == 2 and any(n in good_early for n in hand):
+        return True
+    return False
+
+
+def build_library():
+    lib = []
+    lines = open("lista.md").read().split("## Lista completa")[1].strip().split("\n")
+    for l in lines:
+        l = l.strip()
+        if not l:
+            continue
+        m = re.match(r"^(\d+)\s+(.+)$", l)
+        qty, name = int(m.group(1)), m.group(2).strip()
+        assert name in CARD_DB, f"faltando no CARD_DB: {name}"
+        for _ in range(qty):
+            lib.append(name)
+    assert len(lib) == 99, len(lib)
+    return lib
+
+
+BASE_LIBRARY = build_library()
+
+
+def mulligan(rng: random.Random, max_mulls: int = 3):
+    mulls = 0
+    hand, lib = [], []
+    while mulls < max_mulls:
+        lib = BASE_LIBRARY[:]
+        rng.shuffle(lib)
+        hand = lib[:7]
+        lib = lib[7:]
+        if should_keep(hand) or mulls == max_mulls - 1:
+            if mulls > 0:
+                rng.shuffle(hand)
+                bottom = hand[:mulls]
+                hand = hand[mulls:]
+                lib = lib + bottom
+            return hand, lib, mulls
+        mulls += 1
+    return hand, lib, mulls
+
+
+def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
+    state.turn += 1
+    state.lands_played_this_turn = 0
+    state.mana_spent_this_turn = 0
+    state.maralen_free_cast_used_this_turn = False
+    state.exile_maralen = []
+    state.fauna_shaman_used_this_turn = False
+    state.warmaster_used_this_turn = False
+    state.infinite_mana_this_turn = False
+
+    if not (is_first_turn and on_play):
+        if state.library:
+            state.hand.append(state.library.pop(0))
+        else:
+            state.library_emptied = True
+
+    upkeep_step(state)
+    play_land(state)
+    main_phase(state)
+    combat_step(state)
+    main_phase(state)
+    end_step(state)
+
+
+def simulate_one(seed: int, turns: int = 8):
+    rng = random.Random(seed)
+    hand, lib, mulls = mulligan(rng)
+    state = GameState(hand=hand, library=lib, mulligans=mulls)
+    state.warmaster_used_this_turn = False
+    for t in range(turns):
+        play_turn(state, is_first_turn=(t == 0), on_play=True)
+        if state.infinite_combo_assembled and state.staff_infinite_draws > 0:
+            break
+    return state
+
+
+def run_batch(n: int, seed_base: int, turns: int = 8):
+    states = [simulate_one(seed_base + i, turns=turns) for i in range(n)]
+
+    def avg(vals):
+        return sum(vals) / len(vals) if vals else 0.0
+
+    print(f"n={n}, seed_base={seed_base}, turns={turns}")
+    print(f"Avg mulligans: {avg([s.mulligans for s in states]):.2f}")
+    cmd_turn = [s.commander_cast_turn for s in states if s.commander_cast_turn is not None]
+    print(f"Turno medio de conjuracao da Maralen: {avg(cmd_turn):.2f} | mediana: {statistics.median(cmd_turn) if cmd_turn else float('nan'):.1f}")
+    print(f"Nunca conjurada em {turns} turnos: {100*sum(1 for s in states if s.commander_cast_turn is None)/n:.1f}%")
+    print(f"Avg gatilhos de Maralen (exila 2): {avg([s.maralen_triggers_total for s in states]):.2f}")
+    print(f"Avg cartas exiladas total: {avg([s.cards_exiled_total for s in states]):.2f}")
+    print(f"Avg casts gratis via Maralen: {avg([s.maralen_free_casts_total for s in states]):.2f}")
+    print(f"Avg tutores usados: {avg([s.tutors_used_total for s in states]):.2f}")
+    print(f"Avg tokens criados (exclui explosao infinita): {avg([min(s.tokens_created_total, 100) for s in states]):.2f}")
+    print(f"Avg dobras via Roaming Throne: {avg([s.roaming_throne_doubles_total for s in states]):.2f}")
+    combo_hits = sum(1 for s in states if s.infinite_combo_assembled)
+    print(f"Combo Umbral Mantle (mana infinita) montado: {100*combo_hits/n:.1f}% dos jogos"
+          + (f" | turno medio: {avg([s.infinite_combo_turn for s in states if s.infinite_combo_turn is not None]):.2f}" if combo_hits else ""))
+    staff_hits = sum(1 for s in states if s.staff_infinite_draws > 0)
+    print(f"Staff of Domination converteu em compra infinita: {100*staff_hits/n:.1f}% dos jogos")
+    print(f"Avg cartas compradas extra (motores de draw, exclui staff infinito): {avg([s.cards_drawn_extra - s.staff_infinite_draws for s in states]):.2f}")
+    print(f"Avg mao final: {avg([len(s.hand) for s in states]):.2f}")
+    return states
+
+
+if __name__ == "__main__":
+    import os
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    states = run_batch(n=3000, seed_base=8000000, turns=8)
+
+    with open("maralen_v1_runs.jsonl", "w") as f:
+        for s in states:
+            f.write(json.dumps({
+                "mulligans": s.mulligans,
+                "commander_cast_turn": s.commander_cast_turn,
+                "maralen_triggers_total": s.maralen_triggers_total,
+                "maralen_free_casts_total": s.maralen_free_casts_total,
+                "tutors_used_total": s.tutors_used_total,
+                "infinite_combo_assembled": s.infinite_combo_assembled,
+                "infinite_combo_turn": s.infinite_combo_turn,
+                "staff_infinite_draws": s.staff_infinite_draws,
+                "cards_drawn_extra": s.cards_drawn_extra,
+            }) + "\n")
