@@ -24,7 +24,7 @@
 1 Cloud of Faeries
 1 Allosaurus Shepherd
 1 Birds of Paradise
-1 Elves of Deep Shadow
+1 Radagast of Rhosgobel
 1 Bloom Tender
 1 Elvish Mystic
 1 Llanowar Elves

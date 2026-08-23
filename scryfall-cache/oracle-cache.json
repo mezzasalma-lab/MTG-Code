@@ -37891,7 +37891,6 @@
  },
  "Radagast of Rhosgobel": {
   "cmc": 4.0,
-  "collector_number": "136",
   "color_identity": [
    "G"
   ],
@@ -37930,12 +37929,12 @@
   "oracle_text": "The first creature spell you cast each turn costs {2} less to cast and can be cast as though it had flash.",
   "power": "2",
   "prices": {
-   "eur": "0.97",
-   "eur_foil": "1.12",
-   "tix": "0.02",
-   "usd": "1.78",
+   "eur": "0.98",
+   "eur_foil": "1.01",
+   "tix": "0.01",
+   "usd": "2.22",
    "usd_etched": null,
-   "usd_foil": "2.64"
+   "usd_foil": "2.60"
   },
   "released_at": "2026-08-14",
   "scryfall_uri": "https://scryfall.com/card/hob/136/radagast-of-rhosgobel?utm_source=api",

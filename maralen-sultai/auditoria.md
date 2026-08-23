@@ -3,6 +3,8 @@
 Fontes usadas nesta auditoria: Scryfall REST API (`cards/collection` para as 92 cartas únicas da lista, `cards/search?q=is:gamechanger`, campos `legalities.commander`, `color_identity`, `oracle_text`, `type_line`, `cmc`), consultada em 2026-08-23. EDHREC (`json.edhrec.com/pages/commanders/maralen-fae-ascendant.json`), consultado em 2026-08-23. Definições de Bracket: `references/commander-rules.md#brackets` do skill mtg-commander.
 Data da auditoria: 2026-08-23
 
+**Atualização (2026-08-23):** troca aplicada — **Elves of Deep Shadow → Radagast of Rhosgobel**. Seções 3, 4 e 7 abaixo foram ajustadas.
+
 ---
 
 ## 1. Validação formal
@@ -32,7 +34,7 @@ Duas cartas de dupla face precisaram do nome completo pra bater com o padrão de
 ## 2. Terrenos e curva
 
 - Terrenos: **35**.
-- Não-terrenos (sem comandante): **64** — CMC médio: **2,47**. Curva muito baixa, consistente com um deck de criaturas mana-dork em massa + combo, não um deck de bombas caras.
+- Não-terrenos (sem comandante): **64** — CMC médio: **2,52** (subiu de 2,47 após trocar Elves of Deep Shadow, CMC 1, por Radagast of Rhosgobel, CMC 4). Curva ainda muito baixa, consistente com um deck de criaturas mana-dork em massa + combo, não um deck de bombas caras.
 - Fontes de cor nos terrenos (contando lands "any color in commander identity" pra todas as 3 cores): **B 22 / G 22 / U 22** — base de mana perfeitamente equilibrada entre as 3 cores, sem cor secundária fraca. Duais reais: Bayou, Breeding Pool, Darkwater Catacombs, Drowned Catacomb, Hinterland Harbor, Overgrown Tomb, Sunken Hollow, Tropical Island, Underground Sea, Watery Grave, Woodland Cemetery, Yavimaya Coast, Underground River, Zagoth Triome (triome) — mais os rocks/lands de qualquer cor da identidade: Command Tower, Arcane Signet, Exotic Orchard, Reflecting Pool, Path of Ancestry, Cavern of Souls, Secluded Courtyard.
 
 ---
@@ -42,17 +44,19 @@ Duas cartas de dupla face precisaram do nome completo pra bater com o padrão de
 O comandante em si é o motor: **todo Elfo ou Fada que entra em campo exila 2 cartas do topo da biblioteca de um oponente**, e uma vez por turno você pode conjurar de graça (até o custo = número de Elfos+Fadas que você controla) uma carta exilada com ela naquele turno. Isso significa que quanto mais larga a base de Elfos/Fadas, mais threat denial (rouba recursos do oponente) E mais teto de custo pra jogar de graça as cartas roubadas.
 
 **Densidade tribal real na lista** (contagem por `type_line`):
-- Elfos: Allosaurus Shepherd, Elves of Deep Shadow, Bloom Tender, Elvish Mystic, Llanowar Elves, Joraga Treespeaker, Heritage Druid, Birchlore Rangers, Priest of Titania, Elvish Archdruid, Marwyn, Circle of Dreams Druid, Devoted Druid, Elvish Harbinger, Elvish Warmaster, Imperious Perfect, Fauna Shaman, Formidable Speaker, Ezuri Renegade Leader — **19 Elfos**.
+- Elfos: Allosaurus Shepherd, Bloom Tender, Elvish Mystic, Llanowar Elves, Joraga Treespeaker, Heritage Druid, Birchlore Rangers, Priest of Titania, Elvish Archdruid, Marwyn, Circle of Dreams Druid, Devoted Druid, Elvish Harbinger, Elvish Warmaster, Imperious Perfect, Fauna Shaman, Formidable Speaker, Ezuri Renegade Leader — **18 Elfos** (Elves of Deep Shadow saiu na troca por Radagast of Rhosgobel — que NÃO é Elfo nem Fada, não dispara Maralen).
 - Fadas: High Fae Trickster, Alela, Bitterbloom Bearer, Faerie Harbinger, Faerie Mastermind, Mistbind Clique, Obyra, Spellstutter Sprite, Tegwyll, Scryb Ranger, Brazen Borrower, Cloud of Faeries, Glen Elendra Archmage — **13 Fadas** (Bitterblossom cria tokens Fada, não é ela mesma uma criatura Fada).
-- **32 criaturas que disparam Maralen diretamente**, sem contar tokens Fada gerados por Bitterblossom/Bitterbloom Bearer/Obyra/Alela/Tegwyll (que TAMBÉM disparam Maralen ao entrar, já que são tokens do tipo Faerie).
+- **31 criaturas que disparam Maralen diretamente**, sem contar tokens Fada gerados por Bitterblossom/Bitterbloom Bearer/Obyra/Alela/Tegwyll (que TAMBÉM disparam Maralen ao entrar, já que são tokens do tipo Faerie).
 
-Grande parte das Fadas tem **Flash** nativo (High Fae Trickster, Bitterbloom Bearer, Faerie Harbinger, Faerie Mastermind, Mistbind Clique, Obyra, Spellstutter Sprite, Scryb Ranger, Glen Elendra Archmage — 8 das 13), e o deck ainda soma **Leyline of Anticipation, Vedalken Orrery e High Fae Trickster** (ela mesma dá flash a tudo) como habilitadores de flash universal — ou seja, o deck pode disparar o gatilho de Maralen na ponta do turno do oponente, maximizando informação antes de decidir o que exilar/jogar de graça.
+Grande parte das Fadas tem **Flash** nativo (High Fae Trickster, Bitterbloom Bearer, Faerie Harbinger, Faerie Mastermind, Mistbind Clique, Obyra, Spellstutter Sprite, Scryb Ranger, Glen Elendra Archmage — 8 das 13), e o deck soma **4 habilitadores de flash universal** — Leyline of Anticipation, Vedalken Orrery, High Fae Trickster (ela mesma dá flash a tudo) e **Alchemist's Refuge** (terreno, `{G}{U},{T}: cast spells this turn as though flash`, repetível — faltou na primeira versão desta auditoria, corrigido aqui). Com essa redundância de 4 peças, o deck pode disparar o gatilho de Maralen na ponta do turno do oponente na maioria das partidas, maximizando informação antes de decidir o que exilar/jogar de graça.
+
+**Radagast of Rhosgobel** (`{2}{G}{G}`, mono-verde) — `The first creature spell you cast each turn costs {2} less to cast and can be cast as though it had flash` — reforça essa mesma linha de jogo (flash em criaturas), mas de forma parcialmente redundante com as 4 peças acima: só a primeira criatura do turno, e a cláusula de flash dele não soma nada nos turnos em que qualquer um dos 4 já está em campo. O valor real e não-duplicado é a redução de custo de até {2} genérico, útil pras criaturas de CMC mais alto do deck (Seedborn Muse, Alela, Glen Elendra Archmage, High Fae Trickster). Não é Elfo nem Fada — não dispara Maralen, não conta pro teto de custo do "cast grátis" dela.
 
 ---
 
 ## 4. Motor de ramp Élfico — extremamente denso, com combo estrutural real
 
-Contei **17 criaturas que produzem mana** entre os Elfos da lista — Elves of Deep Shadow, Bloom Tender, Elvish Mystic, Llanowar Elves, Joraga Treespeaker, Heritage Druid, Birchlore Rangers, Priest of Titania, Elvish Archdruid, Marwyn, Circle of Dreams Druid, Devoted Druid, Elvish Harbinger, Wirewood Symbiote (não produz mana, mas desenrola ativações via bounce-untap), Cryptolith Rite e Elven Chorus (dão habilidade de mana a toda criatura). Isso é ramp em volume muito acima do normal de um deck de 99 cartas.
+Contei **12 criaturas que produzem mana** entre os Elfos da lista — Bloom Tender, Elvish Mystic, Llanowar Elves, Joraga Treespeaker, Heritage Druid, Birchlore Rangers, Priest of Titania, Elvish Archdruid, Marwyn, Circle of Dreams Druid, Devoted Druid, Elvish Harbinger — mais Wirewood Symbiote (não produz mana, mas desenrola ativações via bounce-untap), Cryptolith Rite e Elven Chorus (dão habilidade de mana a toda criatura). Isso é ramp em volume muito acima do normal de um deck de 99 cartas. (Elves of Deep Shadow saiu do deck nesta atualização — era o dork mais fraco: fixava só B com dano a si mesmo, numa base de mana que já tem 22/22/22 de fixação sólida via terrenos.)
 
 ### Combo real de 2 peças encontrado — Umbral Mantle + mana dork escalável
 
