@@ -57,9 +57,9 @@ DECKLIST_TEXT = """
 1 Cavern of Souls
 1 Champions of the Perfect
 1 Command Tower
+1 Botanical Sanctum
 1 Deadly Rollick
 1 Deathbloom Ritualist
-1 Deathcap Glade
 1 Devoted Druid
 1 Dionus, Elvish Archdruid
 1 Eclipsed Realms
@@ -80,6 +80,7 @@ DECKLIST_TEXT = """
 1 Gwenna, Eyes of Gaea
 1 Heroic Intervention
 1 High Perfect Morcant
+1 Hinterland Harbor
 1 Immaculate Magistrate
 1 Imperious Perfect
 1 Incubation Druid
@@ -121,7 +122,6 @@ DECKLIST_TEXT = """
 1 Tyvar, Jubilant Brawler
 1 Tyvar, the Pummeler
 1 Underground River
-1 Undergrowth Stadium
 1 Underrealm Lich
 1 Wastewood Verge
 1 Waterlogged Grove
@@ -168,7 +168,9 @@ add("Swamp", 0, {"Land"}, produces={"B"})
 add("Breeding Pool", 0, {"Land"}, produces={"G", "U"})
 add("Cavern of Souls", 0, {"Land"}, produces=set())  # so incolor pro proposito deste modelo
 add("Command Tower", 0, {"Land"}, produces={"B", "G", "U"})
-add("Deathcap Glade", 0, {"Land"}, produces={"B", "G"})
+add("Deathcap Glade", 0, {"Land"}, produces={"B", "G"})  # nao esta mais na lista (saiu p/ Botanical Sanctum), entrada mantida sem uso
+add("Botanical Sanctum", 0, {"Land"}, produces={"G", "U"})
+add("Hinterland Harbor", 0, {"Land"}, produces={"G", "U"})
 add("Eclipsed Realms", 0, {"Land"}, produces=set())
 add("Elvenking's Halls", 0, {"Land"}, produces={"G", "U"})
 add("Gilt-Leaf Palace", 0, {"Land"}, produces={"B", "G"})

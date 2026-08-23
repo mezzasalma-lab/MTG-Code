@@ -304,6 +304,34 @@ Avg turnos com blue screw: 0,26 | 9,3% das partidas com pelo menos 1
 
 ---
 
+### Deathcap Glade/Undergrowth Stadium → Botanical Sanctum/Hinterland Harbor (2026-08-23)
+
+Terceira rodada de correção de U (depois de Underground River e Arcane Signet), pedida pelo usuário depois da auditoria com a Maralen ter reaproveitado a metodologia de recontagem de fontes de cor e achado a base de mana do Thranduil um pouco desbalanceada ainda: G 22 / B 16 / U 12. Trocados os 2 terrenos B/G puros sem utilidade extra (Deathcap Glade, Undergrowth Stadium — este último ainda com a desvantagem de só destapar com 2+ oponentes) por Botanical Sanctum e Hinterland Harbor, ambos G/U reais e acessíveis (sem precisar de dual original — o usuário não tinha ABUR sobrando).
+
+`DECKLIST_TEXT` e `CARD_DB` atualizados (`add("Botanical Sanctum", 0, {"Land"}, produces={"G", "U"})`, `add("Hinterland Harbor", 0, {"Land"}, produces={"G", "U"})`), deck volta a bater 99 mainboard + comandante. Teste de robustez: 15.000 partidas com timeout de 2s, 0 erros/timeouts.
+
+**Comparação pareada (mesmas 3000 seeds, seed_base=6500000) — antes (revertido via monkeypatch pro `DECKLIST_TEXT` antigo) vs depois:**
+
+| Métrica | Antes (Deathcap Glade + Undergrowth Stadium) | Depois (Botanical Sanctum + Hinterland Harbor) |
+|---|---|---|
+| Avg turnos com blue screw | 0,214 | **0,141** |
+| % partidas com blue screw | 8,1% | **5,6%** |
+| Turno médio do 1º blue screw | 4,23 | 4,29 |
+
+**n=3000 oficial (`thranduil_v1_runs_manafix2.jsonl`, seed_base=6500000) — números completos pós-troca:**
+
+```
+Avg commander cast turn: 4,30 | por T5: 83,9% | por T6: 89,4%
+Avg remoção conjurada: 0,77 | Avg ramp em campo: 3,45
+Avg finishers ativados: 1,13 | 43,5% dos jogos até T8
+Avg turnos com blue screw: 0,14 | 5,6% das partidas com pelo menos 1 | turno médio do 1º: 4,29
+Roaming Throne em campo: 11,5% | Avg gatilhos dobrados: 4,75
+```
+
+**Leitura:** terceira melhora consecutiva e mensurável na mesma métrica — blue screw caiu de 11,9% (base original) → 8,4% (Underground River) → 9,3%/~9,2% (ruído após Arcane Signet, sem regressão real) → **5,6%** agora. Redução relativa de mais de **50%** desde o primeiro fix. Turno médio do comandante ficou estável (4,31→4,30, dentro do ruído), confirmando que a troca não custou velocidade — só resolveu o gargalo de cor. Restam agora só 4 terrenos B/G-only no deck com utilidade própria além da fixação (Gilt-Leaf Palace, Nurturing Peatland, Wastewood Verge, Overgrown Tomb) — não recomendados pra troca a menos que o objetivo mude pra maximizar U além do necessário.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
