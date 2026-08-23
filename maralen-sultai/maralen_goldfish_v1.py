@@ -181,6 +181,8 @@ add("Growing Rites of Itlimoc // Itlimoc, Cradle of the Sun", 3, "enchantment", 
 add("Green Sun's Zenith", 1, "sorcery", {"gsz"})
 add("Realmwalker", 3, "creature", {"elf", "faerie", "changeling", "cast_from_top"})
 add("Ezuri, Renegade Leader", 3, "creature", {"elf"})
+add("Thranduil, Sindarin Liege // Silvan Rally", 4, "creature", {"elf", "landfall_source"})
+add("Thranduil's Company", 4, "creature", {"elf", "landfall_source"})
 
 # --- Fada — token e drain -----------------------------------------------------
 add("Alela, Cunning Conqueror", 4, "creature", {"faerie"})
@@ -258,6 +260,7 @@ class GameState:
     mulligans: int = 0
 
     lands_played_this_turn: int = 0
+    lands_played_total: int = 0
     mana_spent_this_turn: int = 0
     maralen_free_cast_used_this_turn: bool = False
     devoted_druid_extra_untaps: int = 0
@@ -274,8 +277,8 @@ class GameState:
     commander_cast_turn: Optional[int] = None
     creature_cast_turn: dict = field(default_factory=dict)
 
-    other_tokens: int = 0  # tokens Fada + Elfo Warrior genericos
-    other_tokens_sick: int = 0
+    elf_tokens: int = 0
+    faerie_tokens: int = 0
     life: int = 40
 
     # metrics ----------------------------------------------------------------
@@ -288,6 +291,8 @@ class GameState:
     infinite_combo_turn: Optional[int] = None
     staff_infinite_draws: int = 0
     roaming_throne_doubles_total: int = 0
+    landfall_elf_tokens_total: int = 0
+    landfall_counters_total: int = 0
     cards_drawn_extra: int = 0
     library_emptied: bool = False
     flash_universal_by_turn: dict = field(default_factory=dict)
@@ -309,17 +314,15 @@ def draw_cards(state: GameState, n: int):
 # ---------------------------------------------------------------------------
 
 def elf_faerie_count(state: GameState) -> int:
-    return sum(1 for n in state.battlefield if is_elf(n) or is_faerie(n))
+    return (sum(1 for n in state.battlefield if is_elf(n) or is_faerie(n))
+            + state.elf_tokens + state.faerie_tokens)
 
 
-def maralen_trigger(state: GameState, entering_name: str):
+def _maralen_resolve(state: GameState, roaming_match: bool):
     if not state.commander_in_play:
         return
-    if entering_name != COMMANDER and not (is_elf(entering_name) or is_faerie(entering_name)):
-        return
-    times = 1
-    if "Roaming Throne" in state.battlefield and is_roaming_type(entering_name) and entering_name != "Roaming Throne":
-        times = 2
+    times = 2 if ("Roaming Throne" in state.battlefield and roaming_match) else 1
+    if times == 2:
         state.roaming_throne_doubles_total += 1
     for _ in range(times):
         state.maralen_triggers_total += 1
@@ -328,6 +331,21 @@ def maralen_trigger(state: GameState, entering_name: str):
             if state.library:
                 state.exile_maralen.append(state.library.pop(0))
                 state.cards_exiled_total += 1
+
+
+def maralen_trigger(state: GameState, entering_name: str):
+    if entering_name != COMMANDER and not (is_elf(entering_name) or is_faerie(entering_name)):
+        return
+    roaming_match = is_roaming_type(entering_name) and entering_name != "Roaming Throne"
+    _maralen_resolve(state, roaming_match)
+
+
+def maralen_trigger_token(state: GameState, kind: str):
+    """Mesmo gatilho da Maralen, mas pra um TOKEN Elfo/Fada entrando (sem nome
+    de carta — landfall do Sindarin Liege, Elvish Warmaster, Imperious
+    Perfect, Bitterblossom/Bitterbloom Bearer)."""
+    roaming_match = kind == ROAMING_THRONE_TYPE
+    _maralen_resolve(state, roaming_match)
 
 
 def maralen_try_free_cast(state: GameState):
@@ -355,8 +373,9 @@ def ready_creatures(state: GameState):
 
 
 def dork_mana(state: GameState) -> int:
-    elves_in_play = sum(1 for n in state.battlefield if is_elf(n))
-    creatures_in_play = sum(1 for n in state.battlefield if is_creature_card(n))
+    elves_in_play = sum(1 for n in state.battlefield if is_elf(n)) + state.elf_tokens
+    creatures_in_play = (sum(1 for n in state.battlefield if is_creature_card(n))
+                          + state.elf_tokens + state.faerie_tokens)
     ready = set(ready_creatures(state))
     total = 0
     best_scaling_output = 0
@@ -526,13 +545,26 @@ def elvish_warmaster_check(state: GameState, entering_name: str):
     if state.warmaster_used_this_turn:
         return
     state.warmaster_used_this_turn = True
-    create_token(state, source="Elvish Warmaster")
+    create_token(state, "elf", source="Elvish Warmaster")
 
 
-def create_token(state: GameState, source: str = ""):
-    state.other_tokens += 1
-    state.other_tokens_sick += 1
+def create_token(state: GameState, kind: str, source: str = ""):
+    """Token Elfo ou Fada entrando em campo (Elvish Warmaster, Imperious
+    Perfect, Bitterblossom, Bitterbloom Bearer, landfall do Thranduil,
+    Sindarin Liege). Dispara os mesmos efeitos colaterais de uma carta
+    nomeada entrando: gatilho da Maralen, contador da Marwyn, e o proprio
+    Elvish Warmaster (se for outro Elfo entrando, nao ele mesmo)."""
+    if kind == "elf":
+        state.elf_tokens += 1
+    elif kind == "faerie":
+        state.faerie_tokens += 1
     state.tokens_created_total += 1
+    if kind == "elf" and "Marwyn, the Nurturer" in state.battlefield:
+        state.marwyn_power += 1
+    maralen_trigger_token(state, kind)
+    if kind == "elf" and "Elvish Warmaster" in state.battlefield and not state.warmaster_used_this_turn:
+        state.warmaster_used_this_turn = True
+        create_token(state, "elf", source="Elvish Warmaster")
 
 
 def best_missing_dork(state: GameState, pool: list) -> str:
@@ -646,16 +678,38 @@ def cast_card(state: GameState, name: str):
     resolve_cast(state, name)
 
 
+def landfall_trigger(state: GameState):
+    """Dispara toda vez que UM terreno seu entra em campo."""
+    if "Thranduil, Sindarin Liege // Silvan Rally" in state.battlefield:
+        create_token(state, "elf", source="Thranduil, Sindarin Liege (landfall)")
+        state.landfall_elf_tokens_total += 1
+    if "Thranduil's Company" in state.battlefield:
+        # "put two +1/+1 counters on target creature you control" — modelado
+        # quando ha alvo com valor numerico real (Marwyn, cujo poder escala
+        # a propria mana que ela produz); outros alvos nao tem efeito
+        # numerico modelado nesta simulacao (documentado, nao fingido).
+        if "Marwyn, the Nurturer" in state.battlefield:
+            state.marwyn_power += 2
+        state.landfall_counters_total += 1
+
+
 def play_land(state: GameState):
-    if state.lands_played_this_turn >= 1:
-        return
-    lands_in_hand = [n for n in state.hand if n in LAND_NAMES]
-    if not lands_in_hand:
-        return
-    choice = lands_in_hand[0]
-    state.hand.remove(choice)
-    state.battlefield.append(choice)
-    state.lands_played_this_turn += 1
+    max_lands = 1
+    if "Thranduil's Company" in state.battlefield:
+        other_elves = (sum(1 for n in state.battlefield if is_elf(n) and n != "Thranduil's Company")
+                       + state.elf_tokens)
+        if other_elves > 0:
+            max_lands = 2
+    while state.lands_played_this_turn < max_lands:
+        lands_in_hand = [n for n in state.hand if n in LAND_NAMES]
+        if not lands_in_hand:
+            return
+        choice = lands_in_hand[0]
+        state.hand.remove(choice)
+        state.battlefield.append(choice)
+        state.lands_played_this_turn += 1
+        state.lands_played_total += 1
+        landfall_trigger(state)
 
 
 def equip_umbral_mantle(state: GameState):
@@ -664,8 +718,9 @@ def equip_umbral_mantle(state: GameState):
     creatures = ready_creatures(state)
     if not creatures:
         return
-    elves_in_play = sum(1 for n in state.battlefield if is_elf(n))
-    creatures_in_play = sum(1 for n in state.battlefield if is_creature_card(n))
+    elves_in_play = sum(1 for n in state.battlefield if is_elf(n)) + state.elf_tokens
+    creatures_in_play = (sum(1 for n in state.battlefield if is_creature_card(n))
+                          + state.elf_tokens + state.faerie_tokens)
 
     def scaling_output(n):
         tags = CARD_DB[n].tags
@@ -744,11 +799,12 @@ def main_phase(state: GameState):
     cast_fauna_shaman_activation(state)
     if "Imperious Perfect" in state.battlefield and "Imperious Perfect" in ready_creatures(state) and remaining_mana(state) >= 1:
         spend_mana(state, 1)
-        create_token(state)
         if state.infinite_mana_this_turn:
             # mana infinita + Imperious Perfect = exercito infinito (registrado, nao expandido de fato)
             state.tokens_created_total += 10_000
-            state.other_tokens += 10_000
+            state.elf_tokens += 10_000
+        else:
+            create_token(state, "elf", source="Imperious Perfect")
 
     use_staff_of_domination_v2(state)
 
@@ -762,11 +818,8 @@ def end_step(state: GameState):
         state.mana_spent_this_turn = 0  # untap all lands (aproximado: reseta gasto)
     if "Bitterblossom" in state.battlefield:
         state.life -= 1
-        create_token(state)
-        if "Roaming Throne" in state.battlefield:
-            pass  # Bitterblossom e Enchantment, nao Criatura — Roaming Throne nao dobra
-    if state.other_tokens_sick:
-        state.other_tokens_sick = 0
+        create_token(state, "faerie", source="Bitterblossom")
+        # Bitterblossom e Enchantment, nao Criatura — Roaming Throne nao dobra o proprio gatilho dela.
 
 
 def upkeep_step(state: GameState):
@@ -777,10 +830,9 @@ def upkeep_step(state: GameState):
             state.roaming_throne_doubles_total += 1
         for _ in range(times):
             state.life -= 1
-            create_token(state)
+            create_token(state, "faerie", source="Bitterbloom Bearer")
     if "Black Market Connections" in state.battlefield:
-        state.life -= 1
-        state.other_tokens += 0  # modo "Sell Contraband" simplificado pra Treasure generico ignorado (sem Treasure no deck)
+        state.life -= 1  # modo "Sell Contraband" simplificado (sem Treasure no deck, so o custo de vida)
         draw_cards(state, 1)
         state.life -= 2
 
@@ -899,6 +951,9 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg tutores usados: {avg([s.tutors_used_total for s in states]):.2f}")
     print(f"Avg tokens criados (exclui explosao infinita): {avg([min(s.tokens_created_total, 100) for s in states]):.2f}")
     print(f"Avg dobras via Roaming Throne: {avg([s.roaming_throne_doubles_total for s in states]):.2f}")
+    print(f"Avg terrenos jogados (total no jogo, inclui land drop extra do Thranduil's Company): {avg([s.lands_played_total for s in states]):.2f}")
+    print(f"Avg tokens de Elfo via landfall (Thranduil, Sindarin Liege): {avg([s.landfall_elf_tokens_total for s in states]):.2f}")
+    print(f"Avg gatilhos de contadores via landfall (Thranduil's Company): {avg([s.landfall_counters_total for s in states]):.2f}")
     combo_hits = sum(1 for s in states if s.infinite_combo_assembled)
     print(f"Combo Umbral Mantle (mana infinita) montado: {100*combo_hits/n:.1f}% dos jogos"
           + (f" | turno medio: {avg([s.infinite_combo_turn for s in states if s.infinite_combo_turn is not None]):.2f}" if combo_hits else ""))

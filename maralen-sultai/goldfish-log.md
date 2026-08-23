@@ -93,6 +93,40 @@ Diferença de ~0,5-1pp entre as duas — dentro do ruído esperado de amostra (m
 
 ---
 
+## Simulação #2 — implementação do landfall (Thranduil, Sindarin Liege + Thranduil's Company) — 2026-08-23
+
+**Contexto:** a lista trocou Devoted Druid e Cloud of Faeries por Thranduil, Sindarin Liege // Silvan Rally e Thranduil's Company — um subtema de landfall que o script ainda não tinha nenhum gancho pra modelar (nenhum `landfall_trigger()` existia até agora).
+
+**Implementação real (não decorativa):**
+- `play_land()` reescrita: agora suporta até **2 lands por turno** quando Thranduil's Company está em campo E há outro Elfo controlado (`As long as you control another Elf, you may play an additional land on each of your turns` — checado de verdade contra Elfos nomeados + tokens de Elfo, não assumido).
+- Nova função `landfall_trigger(state)`, chamada a cada terreno que entra (land normal ou o extra do Company): se Thranduil, Sindarin Liege está em campo, cria um token de Elfo 1/1 real (`Landfall — ... create a 1/1 green Elf creature token`); se Thranduil's Company está em campo, registra o gatilho de "2 contadores +1/+1 num alvo" — modelado com efeito numérico real quando o alvo de maior valor (Marwyn, the Nurturer) está em campo (a mana dela escala com o próprio poder, então +2 de poder é +2 de mana real), documentado como não-modelado pra outros alvos sem relevância numérica no sim.
+
+**Bug real encontrado e corrigido nesse processo (não é sobre as cartas novas — achado ao mexer em `create_token()` pra ela aceitar o tipo do token):** `create_token()` **nunca disparava o gatilho da Maralen** pra nenhum token — nem os de Elfo Guerreiro do Elvish Warmaster/Imperious Perfect, nem os de Fada do Bitterblossom/Bitterbloom Bearer, que já estavam na lista desde o início. Pelas regras reais, um token Elfo ou Fada entrando em campo DEVE disparar "Whenever Maralen or another Elf or Faerie you control enters" — isso nunca tinha sido implementado, mesmo antes desta atualização. Corrigido: `create_token(state, kind, source)` agora recebe o tipo do token e dispara `maralen_trigger_token()` (mesma lógica de exílio/dobra por Roaming Throne da carta nomeada) pra todo token Elfo ou Fada, além de contar corretamente pra `elf_faerie_count()` (teto de custo do cast grátis), pra a contagem de Elfos que os dorks escaláveis (Priest of Titania/Elvish Archdruid/Circle of Dreams Druid) usam, e pro contador de poder da Marwyn.
+
+**Também separei o contador genérico `other_tokens` em `elf_tokens`/`faerie_tokens`** — necessário pra tokens de Elfo contarem certo nos cálculos de mana escalável (antes, tokens nunca contribuíam pra `elves_in_play`/`creatures_in_play`, subestimando a saída real do Priest of Titania, Elvish Archdruid, Marwyn e Circle of Dreams Druid sempre que havia token de Elfo em campo).
+
+Teste de robustez: 15.000 partidas com timeout de 2s, **0 erros, 0 timeouts**.
+
+**n=3000, seed_base=8000000, 8 turnos — comparação com o batch anterior (antes do landfall + antes do fix de token):**
+
+| Métrica | v1 (sem landfall, bug do token) | v2 (com landfall, token fixo) | Δ |
+|---|---|---|---|
+| Turno médio de conjuração da Maralen | 4,60 | 4,67 | ~igual |
+| Avg gatilhos de Maralen (exila 2) | 5,11 | 7,28 | **+42,5%** |
+| Avg cartas exiladas total | 9,36 | 13,58 | +45,1% |
+| Avg casts grátis via Maralen | 2,24 | 2,40 | +7,1% |
+| Avg dobras via Roaming Throne | 0,21 | 0,35 | +66,7% |
+| Combo Umbral Mantle montado | 7,8% | 7,7% | ~igual |
+| Avg terrenos jogados (total) | (não rastreado) | 5,37 | — |
+| Avg tokens de Elfo via landfall (Sindarin Liege) | — | 0,15 | (mecânica nova) |
+| Avg contadores via landfall (Company) | — | 0,14 | (mecânica nova) |
+
+**Leitura honesta — o salto grande (+42,5% nos gatilhos da Maralen) é majoritariamente o bug corrigido, não as cartas novas.** Os tokens de landfall do Sindarin Liege contribuem pouco em volume absoluto (0,15/partida — CMC 4, 1 cópia em 99, raramente resolve e ainda mais raramente com terreno sobrando na mão pra aproveitar). O grosso do aumento vem de Elvish Warmaster e Imperious Perfect (que já estavam na lista desde o início) finalmente disparando a Maralen quando criam token — um efeito que deveria ter existido desde a Simulação #1 e não existia. Registrado aqui com transparência total, não escondido como se fosse "ganho" das cartas novas. O combo do Umbral Mantle ficou estatisticamente idêntico (7,8% → 7,7%), como esperado — nenhuma das mudanças desta rodada afeta a montagem dele.
+
+Resultados salvos em `maralen_v1_runs.jsonl` (sobrescrito com os 3000 jogos novos).
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
