@@ -1,87 +1,56 @@
 # Goldfish Log — The Ur-Dragon
 
-## Simulação #1 — gerada por Claude (RNG real, não é partida sua)
-
-**Método:** embaralhei a lista de 100 cartas de `lista.md` com `random.shuffle` do Python (sem seed fixa, entropia do sistema) em 2026-08-20. On the play, sem compra no T1. Fetchlands e buscas de biblioteca (Nature's Lore) foram resolvidas removendo a carta buscada da biblioteca simulada e rodando `random.shuffle` de novo nela — igual ao "then shuffle" real das cartas — não escolhi as próximas compras livremente.
-
-**Mão inicial:** Misty Rainforest, Cavern of Souls, Swamp, Orb of Dragonkind, Temple Garden, Bloodstained Mire, Nature's Lore
-
-Mão com 5 terrenos/fontes de mana e nenhum Dragão — jogável, mas sem ameaça na mão de saída.
-
-**T1:** Joga Bloodstained Mire, crackeia na hora buscando Mountain (paga 1 vida, vida 39). Biblioteca reembaralhada.
-
-**T2:** Compra: Rhythm of the Wild. Joga Temple Garden destapado (paga 2 vida, vida 37). Conjura Nature's Lore (`{1}{G}`), busca Forest, coloca destapado em campo. Biblioteca reembaralhada.
-Board: Mountain, Temple Garden, Forest — 3 fontes de mana já no T2.
-
-**T3:** Compra: Roaming Throne. Joga Misty Rainforest, crackeia buscando Island (paga 1 vida, vida 36). Biblioteca reembaralhada.
-Board: Mountain, Temple Garden, Forest, Island — 4 fontes de mana.
-
-**T4:** Compra: Klauth, Unrivaled Ancient (`{4}{R}{R}` = 6 mana — não castável ainda). Joga Cavern of Souls. Conjura Orb of Dragonkind (`{1}{R}`).
-
-**T5:** Compra: Garruk's Uprising. Joga Swamp. Conjura Rhythm of the Wild.
-
-**T6:** Compra: Swords to Plowshares. Sem terreno na mão pra jogar. Conjura Roaming Throne (`{4}`).
-
-**Board final (fim do T6):** Mountain, Temple Garden, Forest, Island, Cavern of Souls, Swamp (6 terrenos) + Orb of Dragonkind, Rhythm of the Wild, Roaming Throne.
-**Mão remanescente:** Klauth Unrivaled Ancient, Garruk's Uprising, Swords to Plowshares.
-**Observação honesta:** nenhum Dragão de verdade resolveu em campo nos 6 turnos simulados — Klauth ficou preso na mão por falta de mana (precisa de 6, o deck só tinha 6 fontes em campo no T6 mas gastas em Roaming Throne). Não é uma afirmação sobre a lista em geral, só o que essa mão/sequência específica produziu.
+Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
 
 ---
 
-## Estudo de evolução V0.5–V1.7.7 — fonte: Google Colab do usuário (não Claude)
+## Simulação #1 — goldfish Python completo (`urdragon_goldfish_v1.py`) — 2026-08-23
 
-**Atribuição:** esta tabela e a análise que a acompanha vêm de simulações estatísticas (1.000 iterações por versão) que o usuário rodou no Google Colab, fora desta sessão, ao longo da evolução do deck. Não foram geradas por mim — não tenho acesso à ferramenta nem posso verificar a lógica interna do simulador. Reproduzo os números e a interpretação como o usuário trouxe, sem validação independente da minha parte.
+**Script construído do zero.** A `auditoria.md` deste deck era curta (sem uma seção de motores detalhada como Toph/Vihaan/Maralen/Nekusar), então a varredura mecânica completa (Passo 0, regex "Whenever"/"At the beginning of"/"When ... enters" em todo `oracle_text`) foi feita aqui pela primeira vez, achando um motor de dano-por-Dragão-em-campo genuinamente rico (Scourge of Valkas, Dragon Tempest), geração de token via cópia (Miirym) e via ataque (Lathliss, Utvara Hellkite), e mana no ataque (Klauth, Savage Ventmaw).
 
-**Nota de consistência:** as versões v0.5–v1.7.4 mencionam Smuggler's Surprise, Dragon's Hoard e Fellwar Stone — nenhuma das três está no `lista.md` atual registrado aqui. Isso bate com a própria narrativa do usuário (o deck foi mudando com base nesses testes): a lista que temos hoje já reflete o resultado desse processo, não uma versão anterior.
+**Roaming Throne — tipo escolhido: Dragon.** Óbvio e central pro tema, documentado mesmo assim. Dobra qualquer gatilho de criatura Dragão, incluindo o próprio gatilho de ataque da Ur-Dragon (ela mesma é um Dragão).
 
-### Tabela comparativa (fonte: Colab do usuário)
+**Motor central implementado com fidelidade real:** o gatilho de ataque da comandante (`Whenever one or more Dragons you control attack, draw that many cards, then you may put a permanent card from your hand onto the battlefield`) + a redução de custo empilhável de Dragões (Eminence da própria comandante, Dragonlord's Servant, Dragonspeaker Shaman, Sarkhan Soul Aflame, Herald's Horn, Urza's Incubator — todas somadas em `dragon_discount()`).
 
-| Versão | Mull. | Ramp T2 | Engine T4 | Dragão T6 | Dragão T8 | Tithe T4 | Hand final | BF final | Tesouros | Dano T8 | Infinite |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| v0.5 – baseline antigo, T6 | 1,04 | 60,2% | 54,8% | 62,8% | — | 3,8% | 2,90 | 8,37 | — | — | — |
-| v1.2 – Oracle, T6 | 1,01 | 58,7% | 57,1% | 63,1% | — | 5,5% | 2,93 | 8,37 | 0,07 | — | — |
-| v1.3 – Oracle, T6 | 1,03 | 60,4% | 48,9% | 62,9% | — | 4,8% | 3,28 | 8,72 | 0,08 | — | — |
-| v1.5 – T8 + novo mulligan | 0,66 | 56,6% | 45,9% | 67,2% | 83,5% | 6,2% | 3,66 | 11,51 | 0,17 | — | — |
-| v1.6.1 – Smuggler modelado | 0,64 | 55,4% | 42,7% | 66,5% | 83,2% | 5,4% | 3,60 | 11,72 | 0,20 | — | — |
-| v1.7.4 baseline – combate/tesouros | 0,65 | 57,7% | 46,7% | 68,7% | 86,0% | 5,4% | 3,59 | 14,52 | 4,36 | 23,4 | 0,7% |
-| v1.7.5 – Smuggler → Delighted | 0,62 | 67,0% | 44,2% | 69,7% | 84,8% | 6,1% | 3,39 | 14,48 | 5,02 | 22,9 | 0,9% |
-| **v1.7.6 – + Birds, −Dragon's Hoard** | 0,59 | 66,8% | 42,5% | 71,3% | 85,3% | 5,5% | 3,48 | 14,97 | 4,89 | 25,2 | 0,6% |
-| v1.7.7 experimental – Horn → Fellwar | 0,58 | 70,8% | 41,9% | 72,7% | 87,7% | 5,1% | 3,36 | 14,61 | 4,97 | 24,5 | 0,9% |
+**Motor de dano escalável (Scourge of Valkas/Dragon Tempest) implementado como dispatch central**, não decorativo: `dragon_enters()` é chamado toda vez que UM Dragão entra (nomeado ou token), calcula X = número de Dragões que você controla NAQUELE momento (incluindo o que acabou de entrar), e dispara o dano proxy. Como Miirym e Lathliss criam mais Dragões ao ETB, isso realimenta a si mesmo — mas sem risco de loop infinito, porque as duas cartas reais exigem "another NONTOKEN Dragon", e a função corretamente não re-dispara Miirym/Lathliss para os tokens que elas mesmas criam (regra real das cartas, não um teto artificial que eu precisei inventar).
 
-**v1.7.6 é a configuração atual** — corresponde ao `lista.md` registrado aqui (Delighted Halfling e Birds of Paradise dentro, Smuggler's Surprise e Dragon's Hoard fora, Herald's Horn mantido). v1.7.7 (Herald's Horn → Fellwar Stone) foi testada mas descartada pelo usuário — fica registrada como teto experimental de velocidade, não como configuração adotada.
+**Bug real encontrado e corrigido no smoke-test** (mesmo padrão já visto nos outros 7 simuladores desta biblioteca): `cast_card()` tentava `state.hand.remove(COMMANDER)` incondicionalmente, mas ela vem da zona de comando, não da mão.
 
-### Interpretação do usuário sobre a evolução (reproduzida, não verificada por mim)
+**Teste de robustez:** 20.000 partidas com timeout de 2s via `signal.alarm`, **0 erros, 0 timeouts**.
 
-- O ganho mais relevante não foi aumentar volume de ramp, foi qualidade: trocar por Delighted Halfling levou Ramp T2 de 57,7% (v1.7.4) para 67,0% (v1.7.5).
-- Dragon's Hoard → Birds of Paradise (v1.7.5 → v1.7.6) não subiu mais o Ramp T2 (já saturado), mas subiu Dragão T6 (69,7% → 71,3%) e Dano T8 (22,9 → 25,2).
-- Engine T4 caiu de 46,7% (v1.7.4) para 42,5% (v1.7.6) — trade-off aceito pelo usuário em troca do ganho em Dragão T6 e Dano T8.
-- v0.5–v1.3 não são comparáveis a v1.5+ (só simulavam 6 turnos, heurísticas diferentes) — o próprio usuário fez essa ressalva metodológica.
+**Achado real, não um bug — verificado antes de aceitar o número:** a taxa de "comandante nunca conjurada em 8 turnos" saiu muito mais alta que nos outros decks já simulados (71,5%, contra 1,8% no Vihaan, 3,6% no Toph, ~5% na Maralen, 12,8% no Nekusar). Investiguei antes de aceitar como resultado válido: rodei uma amostra separada medindo `total_mana()` no turno 8 — deu **9,72 de mana média**, praticamente empatado com o custo de `{4}{W}{U}{B}{R}{G}` = 9 da comandante. Isso não é bug de implementação (o modelo de mana deste script é genérico/total, nem sequer verifica cor — na vida real, com 5 cores pip a pip, seria ainda mais difícil) — é um dado real sobre a lista: **10 peças de rampa dedicadas (Cultivate, Kodama's Reach, Farseek, Nature's Lore, Three Visits, Skyshroud Claim, Birds of Paradise, Delighted Halfling, Arcane Signet, Sol Ring) em 99 cartas é uma densidade modesta pra sustentar um comandante de 9 mana.**
 
----
+**n=3000, seed_base=7600000, 8 turnos — resultado oficial:**
 
-## Goldfish manual do usuário (case study, não misturar estatisticamente com a tabela acima)
+```
+Avg mulligans: 0,48
+Turno medio de conjuracao da Ur-Dragon: 7,07 | mediana: 7,0
+Nunca conjurada em 8 turnos: 71,5%
+Avg contagem de Dragoes em campo (fim de jogo): 3,16
+Avg compras via ataque da Ur-Dragon: 1,28
+Avg permanentes gratis via ataque da Ur-Dragon: 0,42
+Avg dano proxy total (Scourge of Valkas/Dragon Tempest/Terror of the Peaks): 10,44
+Avg eventos de dano-por-Dragao-ETB: 0,94
+Avg Treasures criados: 2,03
+Avg dobras via Roaming Throne: 0,23
+Avg cartas compradas extra (motores de draw): 2,43
+Avg tutores usados: 0,32
+Avg mao final: 2,56
+```
 
-**Fonte:** relatado pelo usuário, partida manual jogada por ele mesmo (não simulação em massa, não simulação minha).
+**Leituras principais:**
 
-Linha de jogo relatada:
-- T1: Command Tower
-- T2: Cavern (of Souls) + Farseek → Bayou
-- T3: Mountain → Sylvan Library + Firdoch Core
-- T4: Lightning Greaves + interação
-- T5: Ramos (Dragon Engine) + Greaves
-- T6: Haven (of the Spirit Dragon) → Return of the Wildspeaker pra 5 cartas
-- T7: desenvolvimento/fetch → Miirym (Sentinel Wyrm)
-- T8-ish: Utvara (Hellkite)/Miirym → Ur-Dragon → avalanche de gatilhos/cartas/permanentes
+- **A comandante em si é o gargalo mais claro que esta biblioteca já mediu.** Quando resolve, é bem tarde (T7,07 médio) e ainda assim quase 3 em cada 4 partidas nunca chegam lá em 8 turnos. Isso não invalida o deck — Dragões individuais continuam entrando e gerando valor (3,16 Dragões em campo no fim, mesmo sem a comandante), mas o motor de ataque específico da Ur-Dragon (draw + permanente grátis) só aparece em minoria clara das partidas.
+- **O motor de dano-por-ETB (Scourge of Valkas/Dragon Tempest) é discreto em volume médio (0,94 eventos/partida)** porque cada peça é 1 carta em 99 — mas quando alguma delas resolve junto com vários Dragões já em campo, o dano escala rápido (dado real: dano proxy médio de 10,44 mesmo com só ~1 evento/partida em média, mostra que os eventos individuais tendem a ser grandes quando acontecem).
+- **Treasures/mana no ataque (Klauth, Savage Ventmaw, Goldspan Dragon, Ancient Copper Dragon, Old Gnawbone) também ficam abaixo do potencial** pela mesma razão — dependem de Dragões específicos resolverem E atacarem, e com a curva pesada deste deck isso raramente acontece cedo.
 
-Resultado relatado: ~16 cartas na mão no fim, board considerado vitória virtual pelo usuário.
+Resultados salvos em `urdragon_v1_runs.jsonl` (3000 jogos).
 
-**Achado do usuário reproduzido aqui:** Sylvan Library + fetchlands + Return of the Wildspeaker resolveram o problema de ficar sem gás; Firdoch Core funcionou no papel híbrido de ramp/fixing que ainda recebe a Eminência do comandante.
+**Simplificações documentadas no docstring do script** (não inventadas — omissões explícitas): fetchlands tratadas como terreno genérico (thinning não modelado); Klauth/Savage Ventmaw aproximam poder-dos-atacantes pelo poder do próprio Dragão atacante (não soma o time inteiro); Ramos, Dragon Engine ganha +1 contador fixo por spell (não por número exato de cores); Sylvan Library sempre escolhe não pagar vida (puro card selection, sem draw líquido extra — decisão conservadora); sem combate real contra oponente, sem contramágica/remoção com efeito de combate real modelado (mesma convenção dos outros simuladores desta biblioteca).
 
 ---
 
-<!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
-
-## Partida #N — AAAA-MM-DD
+## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
 - **Mão inicial (mulligan até):**
@@ -95,3 +64,24 @@ Resultado relatado: ~16 cartas na mão no fim, board considerado vitória virtua
 - **O que funcionou bem:**
 - **O que travou o deck:**
 - **Ajustes a considerar:**
+
+---
+
+## Partida #2 — AAAA-MM-DD
+
+- **Formato do teste:**
+- **Mão inicial (mulligan até):**
+- **Turno da primeira jogada relevante:**
+- **Turno do primeiro ataque/combo:**
+- **Curva de mana observada:**
+- **Bombas/peças-chave puxadas:**
+- **Removals sofridos/enviados:**
+- **Resultado:**
+- **Turno de fim de jogo:**
+- **O que funcionou bem:**
+- **O que travou o deck:**
+- **Ajustes a considerar:**
+
+---
+
+<!-- Copie o bloco acima para cada nova partida -->
