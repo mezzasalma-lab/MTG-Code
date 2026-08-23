@@ -21,7 +21,7 @@
 1 Tegwyll, Duke of Splendor
 1 Scryb Ranger
 1 Brazen Borrower // Petty Theft
-1 Cloud of Faeries
+1 Thranduil's Company
 1 Allosaurus Shepherd
 1 Birds of Paradise
 1 Radagast of Rhosgobel
@@ -35,7 +35,7 @@
 1 Elvish Archdruid
 1 Marwyn, the Nurturer
 1 Circle of Dreams Druid
-1 Devoted Druid
+1 Thranduil, Sindarin Liege // Silvan Rally
 1 Elvish Harbinger
 1 Elvish Warmaster
 1 Imperious Perfect

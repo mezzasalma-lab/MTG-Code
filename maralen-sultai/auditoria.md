@@ -5,6 +5,8 @@ Data da auditoria: 2026-08-23
 
 **Atualização (2026-08-23):** troca aplicada — **Elves of Deep Shadow → Radagast of Rhosgobel**. Seções 3, 4 e 7 abaixo foram ajustadas.
 
+**Atualização 2 (2026-08-23):** segunda troca — **Devoted Druid → Thranduil, Sindarin Liege // Silvan Rally** e **Cloud of Faeries → Thranduil's Company**. Introduz um subtema de landfall que o deck não tinha antes. Seções 2, 3 e 4 abaixo foram ajustadas de novo.
+
 ---
 
 ## 1. Validação formal
@@ -34,7 +36,7 @@ Duas cartas de dupla face precisaram do nome completo pra bater com o padrão de
 ## 2. Terrenos e curva
 
 - Terrenos: **35**.
-- Não-terrenos (sem comandante): **64** — CMC médio: **2,52** (subiu de 2,47 após trocar Elves of Deep Shadow, CMC 1, por Radagast of Rhosgobel, CMC 4). Curva ainda muito baixa, consistente com um deck de criaturas mana-dork em massa + combo, não um deck de bombas caras.
+- Não-terrenos (sem comandante): **64** — CMC médio: **2,58** (subiu de 2,52 após trocar Devoted Druid CMC 2 e Cloud of Faeries CMC 2 pelos dois Thranduil, CMC 4 cada). Curva ainda baixa, consistente com um deck de criaturas mana-dork em massa + combo, não um deck de bombas caras.
 - Fontes de cor nos terrenos (contando lands "any color in commander identity" pra todas as 3 cores): **B 22 / G 22 / U 22** — base de mana perfeitamente equilibrada entre as 3 cores, sem cor secundária fraca. Duais reais: Bayou, Breeding Pool, Darkwater Catacombs, Drowned Catacomb, Hinterland Harbor, Overgrown Tomb, Sunken Hollow, Tropical Island, Underground Sea, Watery Grave, Woodland Cemetery, Yavimaya Coast, Underground River, Zagoth Triome (triome) — mais os rocks/lands de qualquer cor da identidade: Command Tower, Arcane Signet, Exotic Orchard, Reflecting Pool, Path of Ancestry, Cavern of Souls, Secluded Courtyard.
 
 ---
@@ -44,9 +46,9 @@ Duas cartas de dupla face precisaram do nome completo pra bater com o padrão de
 O comandante em si é o motor: **todo Elfo ou Fada que entra em campo exila 2 cartas do topo da biblioteca de um oponente**, e uma vez por turno você pode conjurar de graça (até o custo = número de Elfos+Fadas que você controla) uma carta exilada com ela naquele turno. Isso significa que quanto mais larga a base de Elfos/Fadas, mais threat denial (rouba recursos do oponente) E mais teto de custo pra jogar de graça as cartas roubadas.
 
 **Densidade tribal real na lista** (contagem por `type_line`):
-- Elfos: Allosaurus Shepherd, Bloom Tender, Elvish Mystic, Llanowar Elves, Joraga Treespeaker, Heritage Druid, Birchlore Rangers, Priest of Titania, Elvish Archdruid, Marwyn, Circle of Dreams Druid, Devoted Druid, Elvish Harbinger, Elvish Warmaster, Imperious Perfect, Fauna Shaman, Formidable Speaker, Ezuri Renegade Leader — **18 Elfos** (Elves of Deep Shadow saiu na troca por Radagast of Rhosgobel — que NÃO é Elfo nem Fada, não dispara Maralen).
-- Fadas: High Fae Trickster, Alela, Bitterbloom Bearer, Faerie Harbinger, Faerie Mastermind, Mistbind Clique, Obyra, Spellstutter Sprite, Tegwyll, Scryb Ranger, Brazen Borrower, Cloud of Faeries, Glen Elendra Archmage — **13 Fadas** (Bitterblossom cria tokens Fada, não é ela mesma uma criatura Fada).
-- **31 criaturas que disparam Maralen diretamente**, sem contar tokens Fada gerados por Bitterblossom/Bitterbloom Bearer/Obyra/Alela/Tegwyll (que TAMBÉM disparam Maralen ao entrar, já que são tokens do tipo Faerie).
+- Elfos: Allosaurus Shepherd, Bloom Tender, Elvish Mystic, Llanowar Elves, Joraga Treespeaker, Heritage Druid, Birchlore Rangers, Priest of Titania, Elvish Archdruid, Marwyn, Circle of Dreams Druid, Elvish Harbinger, Elvish Warmaster, Imperious Perfect, Fauna Shaman, Formidable Speaker, Ezuri Renegade Leader, **Thranduil, Sindarin Liege**, **Thranduil's Company** — **19 Elfos** (Devoted Druid saiu; os dois Thranduil que entraram são AMBOS Elf — `Legendary Creature — Elf Noble` e `Creature — Elf Soldier`).
+- Fadas: High Fae Trickster, Alela, Bitterbloom Bearer, Faerie Harbinger, Faerie Mastermind, Mistbind Clique, Obyra, Spellstutter Sprite, Tegwyll, Scryb Ranger, Brazen Borrower, Glen Elendra Archmage — **12 Fadas** (Cloud of Faeries saiu; Bitterblossom cria tokens Fada, não é ela mesma uma criatura Fada).
+- **31 criaturas que disparam Maralen diretamente**, sem contar tokens Fada/Elfo Guerreiro gerados por Bitterblossom/Bitterbloom Bearer/Obyra/Alela/Tegwyll/Elvish Warmaster/Imperious Perfect/**Thranduil, Sindarin Liege** (que TAMBÉM disparam Maralen ao entrar, já que são tokens Elfo ou Fada).
 
 Grande parte das Fadas tem **Flash** nativo (High Fae Trickster, Bitterbloom Bearer, Faerie Harbinger, Faerie Mastermind, Mistbind Clique, Obyra, Spellstutter Sprite, Scryb Ranger, Glen Elendra Archmage — 8 das 13), e o deck soma **4 habilitadores de flash universal** — Leyline of Anticipation, Vedalken Orrery, High Fae Trickster (ela mesma dá flash a tudo) e **Alchemist's Refuge** (terreno, `{G}{U},{T}: cast spells this turn as though flash`, repetível — faltou na primeira versão desta auditoria, corrigido aqui). Com essa redundância de 4 peças, o deck pode disparar o gatilho de Maralen na ponta do turno do oponente na maioria das partidas, maximizando informação antes de decidir o que exilar/jogar de graça.
 
@@ -56,7 +58,15 @@ Grande parte das Fadas tem **Flash** nativo (High Fae Trickster, Bitterbloom Bea
 
 ## 4. Motor de ramp Élfico — extremamente denso, com combo estrutural real
 
-Contei **12 criaturas que produzem mana** entre os Elfos da lista — Bloom Tender, Elvish Mystic, Llanowar Elves, Joraga Treespeaker, Heritage Druid, Birchlore Rangers, Priest of Titania, Elvish Archdruid, Marwyn, Circle of Dreams Druid, Devoted Druid, Elvish Harbinger — mais Wirewood Symbiote (não produz mana, mas desenrola ativações via bounce-untap), Cryptolith Rite e Elven Chorus (dão habilidade de mana a toda criatura). Isso é ramp em volume muito acima do normal de um deck de 99 cartas. (Elves of Deep Shadow saiu do deck nesta atualização — era o dork mais fraco: fixava só B com dano a si mesmo, numa base de mana que já tem 22/22/22 de fixação sólida via terrenos.)
+Contei **11 criaturas que produzem mana** entre os Elfos da lista — Bloom Tender, Elvish Mystic, Llanowar Elves, Joraga Treespeaker, Heritage Druid, Birchlore Rangers, Priest of Titania, Elvish Archdruid, Marwyn, Circle of Dreams Druid, Elvish Harbinger — mais Wirewood Symbiote (não produz mana, mas desenrola ativações via bounce-untap), Cryptolith Rite e Elven Chorus (dão habilidade de mana a toda criatura). Isso é ramp em volume muito acima do normal de um deck de 99 cartas. (Devoted Druid saiu nesta atualização — era o alvo mais fraco pro combo do Umbral Mantle abaixo, e redundante com Elvish Mystic/Llanowar Elves/Birds of Paradise como dork simples.)
+
+**Sinergia real entre Wirewood Symbiote e Formidable Speaker (apontada pelo usuário, verificada e mantida na lista):** `Wirewood Symbiote — Return an Elf you control to its owner's hand: Untap target creature. Activate only once each turn.` pode devolver o Formidable Speaker pra mão; recastando-o (`{2}{G}`), o ETB dispara de novo (`descarta 1, busca criatura pra mão`). Não é infinito (limitado a 1x/turno pelo próprio texto do Wirewood, e cada ciclo custa mana + 1 carta de descarte), mas é um motor de tutoria repetível real ao longo da partida — motivo pelo qual Wirewood Symbiote foi mantido na lista apesar de não ser Elfo nem Fada.
+
+**Novo subtema de landfall (Thranduil, Sindarin Liege + Thranduil's Company), adicionado nesta atualização:**
+- **Thranduil, Sindarin Liege** (`{2}{G/U}{G/U}`, Elf Noble) — `Other Elves you control get +1/+1. Landfall — Whenever a land you control enters, create a 1/1 green Elf creature token.`
+- **Thranduil's Company** (`{2}{G}{U}`, Elf Soldier) — `As long as you control another Elf, you may play an additional land on each of your turns. Landfall — Whenever a land you control enters, put two +1/+1 counters on target creature you control. It gains vigilance until end of turn.`
+
+As duas se empilham de forma real: com 19 Elfos na lista, a condição "controla outro Elfo" do Company está satisfeita na esmagadora maioria das partidas, liberando um **2º terreno por turno** — que dispara o landfall do Sindarin Liege DUAS vezes (2 tokens de Elfo) e o do próprio Company duas vezes (4 contadores +1/+1 no total). Cada token de Elfo criado pelo Sindarin Liege também **dispara Maralen** (é um Elfo entrando) e alimenta a contagem de Elfo que os dorks escaláveis do combo abaixo usam (Priest of Titania, Elvish Archdruid, Circle of Dreams Druid).
 
 ### Combo real de 2 peças encontrado — Umbral Mantle + mana dork escalável
 

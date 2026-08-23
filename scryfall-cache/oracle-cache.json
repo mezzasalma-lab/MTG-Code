@@ -50091,7 +50091,6 @@
  },
  "Thranduil's Company": {
   "cmc": 4.0,
-  "collector_number": "168",
   "color_identity": [
    "G",
    "U"
@@ -50118,7 +50117,7 @@
    "oldschool": "not_legal",
    "pauper": "not_legal",
    "paupercommander": "not_legal",
-   "penny": "not_legal",
+   "penny": "legal",
    "pioneer": "legal",
    "predh": "not_legal",
    "premodern": "not_legal",
@@ -50134,12 +50133,12 @@
   "oracle_text": "As long as you control another Elf, you may play an additional land on each of your turns.\nLandfall — Whenever a land you control enters, put two +1/+1 counters on target creature you control. It gains vigilance until end of turn.",
   "power": "3",
   "prices": {
-   "eur": "0.09",
+   "eur": "0.02",
    "eur_foil": "0.02",
    "tix": "0.01",
-   "usd": "0.37",
+   "usd": "0.40",
    "usd_etched": null,
-   "usd_foil": "0.54"
+   "usd_foil": "0.53"
   },
   "released_at": "2026-08-14",
   "scryfall_uri": "https://scryfall.com/card/hob/168/thranduils-company?utm_source=api",
@@ -50167,7 +50166,6 @@
    }
   ],
   "cmc": 4.0,
-  "collector_number": "166",
   "color_identity": [
    "G",
    "U"
@@ -50195,7 +50193,7 @@
    "oldschool": "not_legal",
    "pauper": "not_legal",
    "paupercommander": "not_legal",
-   "penny": "not_legal",
+   "penny": "legal",
    "pioneer": "legal",
    "predh": "not_legal",
    "premodern": "not_legal",
@@ -50214,9 +50212,9 @@
    "eur": "0.02",
    "eur_foil": "0.02",
    "tix": "0.01",
-   "usd": "0.21",
+   "usd": "0.29",
    "usd_etched": null,
-   "usd_foil": "0.27"
+   "usd_foil": "0.34"
   },
   "released_at": "2026-08-14",
   "scryfall_uri": "https://scryfall.com/card/hob/166/thranduil-sindarin-liege-silvan-rally?utm_source=api",
