@@ -33,6 +33,8 @@ Confirmado carta a carta no Scryfall: todos os 12 "Sanctum/Honden/Temple/Plaza/O
 - **Remoção/dano:** Sanctum of Shattered Heights, Go-Shintai of Hidden Cruelty, Go-Shintai of Ancient Wars
 - **Recursão/utilidade:** Sanctum of All (busca outra Shrine todo turno — motor puxando motor), Go-Shintai of Life's Origin (recorre encantamento + cria token Shrine)
 
+> **Correção (2026-08-24, conferida ao vivo no Scryfall):** Sanctum of All tem uma SEGUNDA habilidade que faltava aqui — oráculo real: *"If a triggered ability of another Shrine you control triggers **while you control six or more Shrines**, that ability triggers an additional time."* É um dobrador de gatilho de Shrine condicional (6+ Shrines em campo), não só o tutor. Empilha com a Elesh Norn (dobra incondicional de qualquer ETB): com as duas em campo e 6+ Shrines, um gatilho de ETB de Shrine (ex: o "compre 1" do Spirit Oasis, o dreno da Northern Air Temple) dispara **3 vezes** — 1 original + Elesh Norn + Sanctum of All. Reforça a leitura de "motor que se realimenta" da seção 6/9, com um multiplicador concreto que faltava. Nota lateral: a dobra da Annie Joins Up ("legendary creature you control") só vale pros 5 Go-Shintai (`Enchantment Creature`), não pelas outras 12 Shrines (só `Enchantment`).
+
 Isso não é um monte de encantamentos aleatórios — é um tribal de verdade em torno de um subtipo raro, com o comandante desenhado especificamente pra buscar a primeira peça (ETB) e depois amplificar todas elas (habilidade ativada conta encantamentos lendários, e virtualmente toda Shrine aqui é lendária).
 
 ---
