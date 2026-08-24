@@ -136,6 +136,169 @@ Resultados atualizados em `urdragon_v1_runs.jsonl` (3000 jogos, sobrescrito).
 
 ---
 
+## Correção #2 — a comandante estava sendo excluída de descontos que o oráculo real não exclui — 2026-08-23
+
+Pergunta do usuário sobre incluir Radagast of Rhosgobel (mesma pergunta já
+respondida pro Ulalek) me fez reler com cuidado o texto real dos 6
+redutores de custo de Dragão antes de montar o teste comparativo — e achei
+que **4 bugs reais, todos do mesmo padrão**, estavam escondidos na Correção
+#1 (que só cobriu Orb of Dragonkind e Goldspan Dragon, sem olhar pra esse
+detalhe específico):
+
+O código sempre excluía a própria Ur-Dragon (`name != COMMANDER`) de TODOS
+os 6 redutores de custo de Dragão e da mana restrita da Orb of Dragonkind.
+Mas conferindo o oráculo real de cada um:
+
+| Fonte | Texto real | Exclui a própria comandante? |
+|---|---|---|
+| Eminence (Ur-Dragon) | "**other** Dragon spells you cast cost {1} less" | SIM — só essa tem "other" |
+| Dragonlord's Servant | "Dragon spells you cast cost {1} less" | NÃO |
+| Dragonspeaker Shaman | "Dragon spells you cast cost {2} less" | NÃO |
+| Sarkhan, Soul Aflame | "Dragon spells you cast cost {1} less" | NÃO |
+| Herald's Horn | "Creature spells you cast of the chosen type cost {1} less" | NÃO |
+| Urza's Incubator | "Creature spells of the chosen type cost {2} less" | NÃO |
+| Orb of Dragonkind (mana) | "Spend this mana only to cast Dragon spells..." | NÃO |
+
+Ou seja: só a Eminence da própria comandante deveria excluí-la (ela nunca
+desconta a si mesma) — as outras 5 fontes de desconto E a mana restrita da
+Orb deveriam valer pra conjurar a própria Ur-Dragon também, e não valiam.
+
+**Bug relacionado, mesma raiz:** a Eminence só ficava ativa depois de
+`state.commander_in_play` virar `True` — mas o texto real diz "as long as
+The Ur-Dragon is in the command zone **or** on the battlefield". Neste
+simulador ela está SEMPRE numa dessas duas zonas (nunca é removida do
+jogo — "ainda não conjurada" já significa "na zona de comando" no modelo),
+então a Eminence deveria estar ativa desde o turno 1, não só depois de
+resolver.
+
+**Bug adicional, achado ao corrigir os anteriores:** `cast_card()` cobrava
+o imposto de comandante (+2 por conjuração anterior) em cima de `card.mv`
+(9 cru), **ignorando completamente** o desconto que `effective_cost()` já
+calculava — `can_cast()` checava a affordability com o custo descontado,
+mas o gasto real cobrava o preço cheio. Corrigido junto.
+
+Refatorado `dragon_discount()` em duas funções: `dragon_discount_self()`
+(as 5 fontes sem "other", vale pra conjurar a própria comandante) e
+`dragon_discount_others()` (as 5 + a Eminence sempre ativa, vale pra
+qualquer OUTRO Dragão).
+
+**Reteste de robustez:** 2 sweeps de 20.000 partidas com timeout de 2s,
+**0 erros, 0 timeouts** nos dois.
+
+**n=3000, seed_base=7600000, 8 turnos — resultado oficial após a correção:**
+
+```
+Avg mulligans: 0,48
+Turno medio de conjuracao da Ur-Dragon: 6,81 | mediana: 7,0
+Nunca conjurada em 8 turnos: 49,5%
+Avg contagem de Dragoes em campo (fim de jogo): 5,28
+Avg compras via ataque da Ur-Dragon: 3,15
+Avg permanentes gratis via ataque da Ur-Dragon: 0,94
+Avg dano proxy total (Scourge of Valkas/Dragon Tempest/Terror of the Peaks): 31,29
+Avg eventos de dano-por-Dragao-ETB: 1,88
+Avg Treasures criados: 3,51
+Avg dobras via Roaming Throne: 0,64
+Avg cartas compradas extra (motores de draw): 5,55
+Avg tutores usados: 0,28
+Avg ativacoes da habilidade de mana da Orb of Dragonkind: 0,40
+Avg mao final: 2,84
+```
+
+**Correção honesta ao achado anterior desta biblioteca:** as duas
+simulações anteriores registraram "comandante é o gargalo mais claro que
+esta biblioteca já mediu" com 71,5% (Simulação #1) e depois 70,6%
+(Correção #1) de "nunca conjurada em 8 turnos". Esse número estava
+sistematicamente inflado por um bug real de implementação, não refletia a
+lista de verdade. **O número correto é 49,5%** — turno médio caiu de 7,07
+pra 6,81, e todas as métricas de motor (Dragões em campo, dano proxy,
+Treasures, compras extra) subiram bastante, porque a comandante resolvendo
+mais cedo/mais vezes alimenta tudo que depende dela estar em campo. A
+comandante continua sendo mais difícil de resolver que em qualquer outro
+deck desta biblioteca (49,5% ainda é o pior "nunca conjurada" registrado),
+mas a magnitude do problema era quase 1,5x maior do que os dados mostravam
+antes desta correção. A causa raiz (densidade modesta de rampa dedicada
+pra um comandante de 9 mana) continua sendo real e válida — só a
+severidade relatada estava errada.
+
+Resultados atualizados em `urdragon_v1_runs.jsonl` (3000 jogos, sobrescrito).
+
+---
+
+## Teste #1 — Radagast of Rhosgobel dentro vs. fora (`urdragon_radagast_test.py`) — 2026-08-23
+
+Mesma pergunta já respondida pro Ulalek, agora pro Ur-Dragon. Radagast of
+Rhosgobel (`{2}{G}{G}`, Legendary Creature — Avatar Wizard, colors=['G']):
+"The first creature spell you cast each turn costs {2} less to cast and
+can be cast as though it had flash." Não está na `lista.md` hoje — teste
+comparativo, não uma mudança real de deck.
+
+**Diferença estrutural em relação ao Ulalek:** aqui o pacote de desconto de
+Dragão já é mais forte E mais amplo do que o "primeira criatura do turno"
+de Radagast — ele desconta TODO Dragão conjurado no turno, não só o
+primeiro. Além disso, quase toda criatura relevante deste deck já É um
+Dragão, então a "primeira criatura do turno" quase sempre coincide com "o
+primeiro Dragão do turno" — Radagast empilharia em cima de um desconto que
+já existe e é mais amplo, ao contrário do Ulalek (onde Conduit of Ruin é a
+única fonte desse tipo). Este deck também não tem nenhum habilitador de
+flash incondicional (tipo Vedalken Orrery no Ulalek) — o flash do Radagast
+aqui seria uma peça isolada, sem sinergia com mais nada na lista.
+
+Implementado no `CARD_DB` (colors=['G'], NÃO é Dragão — não participa de
+`dragon_discount_self`/`dragon_discount_others`, não dispara `dragon_enters()`)
+com o mesmo desconto de "primeira criatura do turno" generalizado (soma
+com qualquer outra fonte igual, mas neste deck não há nenhuma outra fonte
+desse tipo específico — só Radagast, diferente do Conduit of Ruin no
+Ulalek).
+
+**Metodologia:** monkeypatch temporário de `BASE_LIBRARY`, mesmas seeds nas
+duas variantes. Carta cortada pro teste: **Firdoch Core** (mana-dork
+genérico de 3 mana sem sinergia própria de Dragão — parceiro de troca de
+baixa interferência, não é recomendação de corte real).
+
+**n=3000, seed_base=5500000, mesmas seeds — resultado:**
+
+```
+                                          SEM Radagast   COM Radagast   delta
+Turno medio de conjuracao da Ur-Dragon        6,760          6,808     +0,047
+Nunca conjurada em 8 turnos                   51,03%         48,50%    -2,53pp
+Avg contagem de Dragoes em campo (fim)         5,265          5,292    +0,027
+Avg dobras via Roaming Throne                  0,639          0,690    +0,051
+Avg cartas compradas extra                     5,480          5,574    +0,095
+Avg mao final                                  2,818          2,886    +0,068
+```
+
+**Checagem de ruído (mesma prática do teste do Ulalek):** troquei o
+`seed_base` 3 vezes (1M/2M/3M) pra ver se o delta de "nunca conjurada"
+inverte de sinal como aconteceu no Ulalek. Aqui **não inverteu** — ficou
+consistentemente negativo (melhora) nas 4 rodadas: -2,53pp / -4,57pp /
+-4,80pp / -3,00pp. Diferente do Ulalek, este é um efeito real, não ruído
+de reamostragem.
+
+**Leitura honesta:** ao contrário do Ulalek, aqui Radagast tem um efeito
+real e consistente na taxa de "nunca conjurada em 8 turnos" (melhora de
+~3-5pp) — plausível porque este deck é muito mais apertado de mana pra sua
+comandante de 9 (mesmo após a Correção #2, ainda o pior "nunca conjurada"
+desta biblioteca), então qualquer desconto adicional que empilhe com o
+pacote de Dragão já existente tem mais chance real de ser a diferença
+entre "consigo pagar" e "não consigo" do que no Ulalek (comandante de 5,
+já resolve cedo e de forma confiável). O turno médio *entre as partidas
+que resolveram* praticamente não muda (+0,047, dentro do ruído) — o ganho
+aparece na cauda (menos jogos travados de vez), não deslocando a média
+geral pra frente.
+
+**Conclusão:** aqui o cálculo é mais favorável que no Ulalek, mas ainda
+não é um "sim" fácil — o ganho é real só na métrica de "nunca resolve",
+não acelera o caso médio, e o texto do Radagast só desconta a PRIMEIRA
+criatura do turno (geralmente já um Dragão, então o desconto compete de
+fato só quando você teria descartado por 2 mana de diferença). Sem nenhum
+habilitador de flash na lista pra aproveitar a segunda metade do texto
+dele, o valor aqui vem quase todo do desconto, empilhado num deck que já
+tem 5 outras fontes de desconto de Dragão. Vale considerar como uma
+inclusão de nicho pra quem sente na mesa que a comandante trava demais —
+não uma prioridade óbvia sobre o resto da lista.
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**

@@ -158,6 +158,14 @@ add("Dragon Tempest", 2, "enchantment", {"dragon_etb_damage", "haste_flying"})
 add("Magda, Brazen Outlaw", 2, "creature", {"treasure_tutor_dragon"})
 add("Firdoch Core", 3, "artifact", {"dork_flat1_any"})
 
+# Radagast of Rhosgobel: NAO esta na lista.md — cadastrado so pra permitir
+# o teste comparativo `urdragon_radagast_test.py`. {2}{G}{G}, verde real
+# (colors=['G']), NAO e Dragao (Avatar Wizard — nao participa de
+# dragon_discount_self/others nem de dragon_enters()). Oraculo real: "The
+# first creature spell you cast each turn costs {2} less to cast and can
+# be cast as though it had flash."
+add("Radagast of Rhosgobel", 4, "creature", {"first_creature_discount"})
+
 # --- Draw engines de poder / spells caras -----------------------------------------
 add("Elemental Bond", 3, "enchantment", {"power3_draw"})
 add("Garruk's Uprising", 3, "enchantment", {"power4_draw"})
@@ -224,6 +232,8 @@ class GameState:
     bonus_mana_pool: int = 0
     dragon_mana_pool: int = 0
     orb_dragonkind_used_this_turn: bool = False
+    first_creature_used_this_turn: bool = False
+    first_creature_discount_events_total: int = 0
     dragon_tokens: int = 0
     other_tokens: int = 0
     ramos_counters: int = 0
@@ -349,19 +359,30 @@ def remaining_mana_for(state: GameState, name: str) -> int:
     """Mana disponivel considerando o pool restrito da Orb of Dragonkind
     ('{1}, {T}: Add two mana in any combination of colors. Spend this mana
     only to cast Dragon spells or activate abilities of Dragons') — soma ao
-    pool generico SO quando a carta em questao e um Dragao. Bug real
-    encontrado em 2026-08-23: essa habilidade da Orb nunca tinha sido
-    modelada (so o sacrificio-tutor dela estava implementado)."""
+    pool generico SO quando a carta em questao e um Dragao. O texto real NAO
+    tem qualificador 'other', entao vale pra propria Ur-Dragon tambem (ela e
+    Legendary Creature — Dragon Avatar) — bug real corrigido em 2026-08-23
+    junto com dragon_discount_self()/dragon_discount_others() abaixo (essa
+    funcao antes excluia a comandante sem base no oraculo)."""
     base = remaining_mana(state)
-    if is_dragon(name) and name != COMMANDER:
+    if is_dragon(name):
         base += state.dragon_mana_pool
     return base
 
 
-def dragon_discount(state: GameState) -> int:
+def dragon_discount_self(state: GameState) -> int:
+    """Desconto aplicavel a PROPRIA Ur-Dragon sendo conjurada — soma so as
+    fontes cujo oraculo real NAO tem qualificador 'other': Dragonlord's
+    Servant ('Dragon spells you cast cost {1} less'), Dragonspeaker Shaman
+    ('... {2} less'), Sarkhan Soul Aflame ('... {1} less'), Herald's Horn
+    ('Creature spells you cast of the chosen type cost {1} less'),
+    Urza's Incubator ('Creature spells of the chosen type cost {2}
+    less'). NAO inclui a Eminence da propria comandante, que diz
+    explicitamente 'OTHER Dragon spells you cast' — nunca desconta a si
+    mesma. Bug real corrigido em 2026-08-23: o script excluia a comandante
+    de TODOS os 6 redutores (inclusive esses 5 sem 'other' no texto),
+    quando so a Eminence deveria excluir."""
     d = 0
-    if state.commander_in_play:
-        d += 1
     if "Dragonlord's Servant" in state.battlefield:
         d += 1
     if "Dragonspeaker Shaman" in state.battlefield:
@@ -375,6 +396,21 @@ def dragon_discount(state: GameState) -> int:
     return d
 
 
+def dragon_discount_others(state: GameState) -> int:
+    """Desconto aplicavel a QUALQUER outro Dragao (nao a comandante) —
+    tudo de dragon_discount_self() MAIS a Eminence da propria Ur-Dragon
+    ('As long as The Ur-Dragon is in the command zone or on the
+    battlefield, other Dragon spells you cast cost {1} less'). Bug real
+    corrigido em 2026-08-23: a Eminence so estava ativa depois que
+    state.commander_in_play virasse True — mas o oraculo diz 'in the
+    command zone OR on the battlefield', e neste simulador a comandante
+    esta SEMPRE numa dessas duas zonas (ela nunca e removida do jogo, so
+    'ainda nao conjurada' = na zona de comando) — entao a Eminence deveria
+    estar ativa incondicionalmente desde o turno 1, nao so depois dela ser
+    conjurada."""
+    return 1 + dragon_discount_self(state)
+
+
 def effective_cost(state: GameState, name: str) -> int:
     mv = CARD_DB[name].mv
     if name == "The Great Henge":
@@ -385,9 +421,15 @@ def effective_cost(state: GameState, name: str) -> int:
         powers = [CARD_DB[n].power for n in state.battlefield if is_creature_card(n)]
         x = max(powers) if powers else 0
         return max(0, mv - x)
-    if is_dragon(name) and name != COMMANDER:
-        return max(0, mv - dragon_discount(state))
-    return mv
+    first_creature_d = 0
+    if (is_creature_card(name) and "Radagast of Rhosgobel" in state.battlefield
+            and not state.first_creature_used_this_turn):
+        first_creature_d = 2
+    if name == COMMANDER:
+        return max(0, mv - dragon_discount_self(state) - first_creature_d)
+    if is_dragon(name):
+        return max(0, mv - dragon_discount_others(state) - first_creature_d)
+    return max(0, mv - first_creature_d)
 
 
 def can_cast(state: GameState, name: str) -> bool:
@@ -554,8 +596,20 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
 def cast_card(state: GameState, name: str):
     card = CARD_DB[name]
     cost = effective_cost(state, name)
+    if is_creature_card(name) and not state.first_creature_used_this_turn:
+        if "Radagast of Rhosgobel" in state.battlefield:
+            state.first_creature_discount_events_total += 1
+        state.first_creature_used_this_turn = True
     if name == COMMANDER:
-        spend_mana(state, card.mv + 2 * state.commander_cast_count)
+        # Bug real corrigido em 2026-08-23: isso gastava card.mv (9 cru),
+        # ignorando o desconto ja calculado em `cost` — a checagem de
+        # can_cast() usava o custo com desconto, mas o gasto real ignorava
+        # e cobrava o preco cheio + imposto de comandante em cima disso.
+        if state.dragon_mana_pool > 0:
+            use = min(cost, state.dragon_mana_pool)
+            state.dragon_mana_pool -= use
+            cost -= use
+        spend_mana(state, cost + 2 * state.commander_cast_count)
     else:
         if is_dragon(name) and state.dragon_mana_pool > 0:
             use = min(cost, state.dragon_mana_pool)
@@ -743,6 +797,7 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.bonus_mana_pool = 0
     state.dragon_mana_pool = 0
     state.orb_dragonkind_used_this_turn = False
+    state.first_creature_used_this_turn = False
 
     upkeep_step(state)
     if not (is_first_turn and on_play):
