@@ -64,7 +64,15 @@ if __name__ == "__main__":
     import os
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-    CUT = "Firdoch Core"
+    # Firdoch Core NAO e mais um bom parceiro de troca de baixa
+    # interferencia — o usuario apontou (corretamente, corrigido em
+    # 2026-08-23) que ele e Changeling (tem o tipo Dragao em toda zona),
+    # pega desconto de Eminence/etc e dispara dragon_enters() ao entrar. Um
+    # corte dele confundiria o teste. Anguished Unmaking (remoção pontual,
+    # proxy sem efeito colateral proprio neste simulador sem oponente real)
+    # e um parceiro de troca de fato neutro em relacao as metricas medidas
+    # aqui (turno de comandante, contagem de Dragao, motor de ETB).
+    CUT = "Anguished Unmaking"
     ADD = "Radagast of Rhosgobel"
     N = 3000
     SEED_BASE = 5500000

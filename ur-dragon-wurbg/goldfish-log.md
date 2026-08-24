@@ -224,6 +224,75 @@ Resultados atualizados em `urdragon_v1_runs.jsonl` (3000 jogos, sobrescrito).
 
 ---
 
+## Correção #3 — Firdoch Core nunca era tratado como Dragão — 2026-08-23
+
+O usuário corrigiu diretamente algo que eu tinha errado na leitura da
+carta: chamei Firdoch Core de "mana-dork genérico" no Teste #1 (parceiro
+de troca do teste do Radagast). Ele apontou — corretamente — que Firdoch
+Core **entra como Dragão** (Changeling) e com a Eminence da própria
+Ur-Dragon custa só {2}, além de poder disparar habilidades que reagem a
+"um Dragão entrando".
+
+Conferido no oráculo real: `Firdoch Core | {3} | Kindred Artifact —
+Shapeshifter` — `Changeling (This card is every creature type.)`. Changeling
+dá TODOS os tipos de criatura em TODA zona, inclusive como spell na pilha —
+então Firdoch Core é literalmente um "Dragon spell" ao ser conjurado, e um
+"Dragão" permanente depois de resolver, mesmo sendo um Artifact (não
+Creature) até pagar `{4}` pra virar 4/4.
+
+**Bug real confirmado e corrigido:** a carta nunca tinha a tag `"dragon"`
+no `CARD_DB` — então nunca pegava desconto de Eminence/Dragonlord's
+Servant/Dragonspeaker Shaman/Sarkhan Soul Aflame (todas dizem "Dragon
+spells", sem exigir carta de criatura) e nunca disparava `dragon_enters()`
+ao entrar (Scourge of Valkas/Dragon Tempest/Miirym/Lathliss reagem a
+"a Dragon you control enters", também sem exigir criatura).
+
+**Distinção correta que precisei implementar junto:** Herald's Horn e
+Urza's Incubator dizem "**Creature spells**... of the chosen type" — essas
+duas EXIGEM carta de criatura de verdade, e Firdoch Core continua sendo
+Artifact (não Creature) até ser animado (não modelado). Por isso
+`dragon_discount_others()` foi reescrita pra separar os dois grupos: as 4
+fontes "Dragon spell" (sem exigência de criatura, valem pra Firdoch Core)
+sempre se aplicam a qualquer coisa com o tipo Dragão; as 2 fontes
+"Creature spell of type" só se aplicam quando `is_creature_card(name)` é
+verdade (Firdoch Core fica de fora dessas duas, corretamente).
+
+**Reteste de robustez:** 20.000 partidas com timeout de 2s, **0 erros, 0
+timeouts**.
+
+**n=3000, seed_base=7600000, 8 turnos — resultado após a correção:**
+
+```
+Avg mulligans: 0,48
+Turno medio de conjuracao da Ur-Dragon: 6,81 | mediana: 7,0
+Nunca conjurada em 8 turnos: 49,2%
+Avg contagem de Dragoes em campo (fim de jogo): 5,55
+Avg dano proxy total: 35,16
+Avg eventos de dano-por-Dragao-ETB: 1,97
+Avg Treasures criados: 3,54
+Avg dobras via Roaming Throne: 0,68
+Avg cartas compradas extra: 5,60
+Avg mao final: 2,82
+```
+
+Impacto pequeno mas real (1 carta em 99): "nunca conjurada" caiu mais um
+pouco (49,5%→49,2%), Dragões em campo subiu (5,28→5,55), dano proxy subiu
+bastante (31,29→35,16) — consistente com Firdoch Core agora contribuir de
+verdade pro motor de dano-por-ETB, não só ser um mana rock inerte.
+
+**Consequência pro Teste #1 abaixo:** como Firdoch Core tinha sido usado
+como o "parceiro de troca de baixa interferência" no teste comparativo do
+Radagast, e ele NÃO é mais neutro em relação às métricas medidas (turno de
+comandante, contagem de Dragão, motor de ETB), o teste original estava
+confundido — cortar Firdoch Core pra "abrir espaço" pro Radagast também
+removia uma peça de sinergia real. Reexecutado com **Anguished Unmaking**
+(remoção pontual, proxy sem efeito colateral próprio neste simulador) como
+parceiro de troca de verdade neutro. Resultado atualizado abaixo.
+
+Resultados atualizados em `urdragon_v1_runs.jsonl` (3000 jogos, sobrescrito).
+
+---
+
 ## Teste #1 — Radagast of Rhosgobel dentro vs. fora (`urdragon_radagast_test.py`) — 2026-08-23
 
 Mesma pergunta já respondida pro Ulalek, agora pro Ur-Dragon. Radagast of
@@ -251,28 +320,32 @@ desse tipo específico — só Radagast, diferente do Conduit of Ruin no
 Ulalek).
 
 **Metodologia:** monkeypatch temporário de `BASE_LIBRARY`, mesmas seeds nas
-duas variantes. Carta cortada pro teste: **Firdoch Core** (mana-dork
-genérico de 3 mana sem sinergia própria de Dragão — parceiro de troca de
-baixa interferência, não é recomendação de corte real).
+duas variantes. Carta cortada pro teste: **Anguished Unmaking** (remoção
+pontual de 3 mana, sem efeito colateral próprio neste simulador sem
+oponente real — parceiro de troca de baixa interferência, não é
+recomendação de corte real). ~~Firdoch Core~~ foi descartado como parceiro
+de troca depois da Correção #3 acima (o usuário mostrou que ele não é
+neutro — é Dragão de verdade via Changeling e alimenta o motor de ETB).
 
-**n=3000, seed_base=5500000, mesmas seeds — resultado:**
+**n=3000, seed_base=5500000, mesmas seeds — resultado (pós Correção #3):**
 
 ```
                                           SEM Radagast   COM Radagast   delta
-Turno medio de conjuracao da Ur-Dragon        6,760          6,808     +0,047
-Nunca conjurada em 8 turnos                   51,03%         48,50%    -2,53pp
-Avg contagem de Dragoes em campo (fim)         5,265          5,292    +0,027
-Avg dobras via Roaming Throne                  0,639          0,690    +0,051
-Avg cartas compradas extra                     5,480          5,574    +0,095
-Avg mao final                                  2,818          2,886    +0,068
+Turno medio de conjuracao da Ur-Dragon        6,756          6,746     -0,010
+Nunca conjurada em 8 turnos                   50,73%         48,10%    -2,63pp
+Avg contagem de Dragoes em campo (fim)         5,567          5,795    +0,228
+Avg dobras via Roaming Throne                  0,688          0,754    +0,065
+Avg cartas compradas extra                     5,541          5,887    +0,346
+Avg mao final                                  2,809          2,876    +0,068
 ```
 
 **Checagem de ruído (mesma prática do teste do Ulalek):** troquei o
 `seed_base` 3 vezes (1M/2M/3M) pra ver se o delta de "nunca conjurada"
 inverte de sinal como aconteceu no Ulalek. Aqui **não inverteu** — ficou
-consistentemente negativo (melhora) nas 4 rodadas: -2,53pp / -4,57pp /
--4,80pp / -3,00pp. Diferente do Ulalek, este é um efeito real, não ruído
-de reamostragem.
+consistentemente negativo (melhora) nas 4 rodadas: -2,63pp / -4,77pp /
+-3,77pp / -4,33pp. Diferente do Ulalek, este é um efeito real, não ruído
+de reamostragem — e se mantém depois da correção do parceiro de troca,
+então não era um artefato do bug do Firdoch Core.
 
 **Leitura honesta:** ao contrário do Ulalek, aqui Radagast tem um efeito
 real e consistente na taxa de "nunca conjurada em 8 turnos" (melhora de
@@ -282,7 +355,7 @@ desta biblioteca), então qualquer desconto adicional que empilhe com o
 pacote de Dragão já existente tem mais chance real de ser a diferença
 entre "consigo pagar" e "não consigo" do que no Ulalek (comandante de 5,
 já resolve cedo e de forma confiável). O turno médio *entre as partidas
-que resolveram* praticamente não muda (+0,047, dentro do ruído) — o ganho
+que resolveram* praticamente não muda (-0,010, dentro do ruído) — o ganho
 aparece na cauda (menos jogos travados de vez), não deslocando a média
 geral pra frente.
 

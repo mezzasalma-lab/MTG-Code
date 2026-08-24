@@ -156,7 +156,19 @@ add("Utvara Hellkite", 8, "creature", {"dragon", "attack_dragon_token"}, power=6
 # --- Outras criaturas / suporte tribal --------------------------------------------
 add("Dragon Tempest", 2, "enchantment", {"dragon_etb_damage", "haste_flying"})
 add("Magda, Brazen Outlaw", 2, "creature", {"treasure_tutor_dragon"})
-add("Firdoch Core", 3, "artifact", {"dork_flat1_any"})
+# Firdoch Core: Kindred Artifact — Shapeshifter, Changeling ("This card is
+# every creature type") — tem o tipo Dragao em toda zona, inclusive como
+# spell. Bug real corrigido em 2026-08-23 (achado pelo usuario): faltava a
+# tag 'dragon', entao nunca pegava desconto de Eminence/Dragonlord's
+# Servant/Dragonspeaker Shaman/Sarkhan Soul Aflame (todas dizem "Dragon
+# spells", nao exigem carta de criatura) nem disparava dragon_enters()
+# (Scourge of Valkas/Dragon Tempest/Miirym/Lathliss reagem a QUALQUER
+# Dragao entrando, criatura ou nao). Continua sendo Artifact, nao Creature,
+# ate pagar {4} pra animar (nao modelado — ver docstring do arquivo) —
+# entao is_creature_card() continua False pra ele, o que corretamente o
+# exclui de Herald's Horn/Urza's Incubator (essas exigem "Creature
+# spells... of the chosen type" de verdade).
+add("Firdoch Core", 3, "artifact", {"dork_flat1_any", "dragon"})
 
 # Radagast of Rhosgobel: NAO esta na lista.md — cadastrado so pra permitir
 # o teste comparativo `urdragon_radagast_test.py`. {2}{G}{G}, verde real
@@ -396,19 +408,43 @@ def dragon_discount_self(state: GameState) -> int:
     return d
 
 
-def dragon_discount_others(state: GameState) -> int:
-    """Desconto aplicavel a QUALQUER outro Dragao (nao a comandante) —
-    tudo de dragon_discount_self() MAIS a Eminence da propria Ur-Dragon
-    ('As long as The Ur-Dragon is in the command zone or on the
-    battlefield, other Dragon spells you cast cost {1} less'). Bug real
-    corrigido em 2026-08-23: a Eminence so estava ativa depois que
-    state.commander_in_play virasse True — mas o oraculo diz 'in the
+def dragon_discount_others(state: GameState, name: str) -> int:
+    """Desconto aplicavel a QUALQUER outro Dragao (nao a comandante).
+    Eminence da propria Ur-Dragon ('As long as The Ur-Dragon is in the
+    command zone or on the battlefield, other Dragon spells you cast cost
+    {1} less') + Dragonlord's Servant/Dragonspeaker Shaman/Sarkhan Soul
+    Aflame ('Dragon spells you cast cost less') SEMPRE se aplicam a
+    qualquer spell com o tipo de criatura Dragao, seja carta de criatura
+    ou nao (ex: Firdoch Core — Kindred Artifact, Changeling, tem TODOS os
+    tipos de criatura em toda zona, inclusive como spell — bug real
+    corrigido em 2026-08-23, ele nunca tinha sido tratado como Dragao em
+    lugar nenhum antes, apesar do proprio usuario ja saber que com a
+    Eminence ativa ele custa so {2}). Ja Herald's Horn/Urza's Incubator
+    dizem 'Creature spells... of the chosen type' — EXIGEM carta de
+    criatura de verdade, entao so contam se `is_creature_card(name)`
+    (Firdoch Core e Artifact ate ser animado, NAO se beneficia dessas
+    duas).
+
+    Bug real corrigido em 2026-08-23 (Eminence): so ficava ativa depois
+    que state.commander_in_play virasse True — mas o oraculo diz 'in the
     command zone OR on the battlefield', e neste simulador a comandante
     esta SEMPRE numa dessas duas zonas (ela nunca e removida do jogo, so
     'ainda nao conjurada' = na zona de comando) — entao a Eminence deveria
     estar ativa incondicionalmente desde o turno 1, nao so depois dela ser
     conjurada."""
-    return 1 + dragon_discount_self(state)
+    d = 1  # Eminence, sempre ativa
+    if "Dragonlord's Servant" in state.battlefield:
+        d += 1
+    if "Dragonspeaker Shaman" in state.battlefield:
+        d += 2
+    if "Sarkhan, Soul Aflame" in state.battlefield:
+        d += 1
+    if is_creature_card(name):
+        if "Herald's Horn" in state.battlefield:
+            d += 1
+        if "Urza's Incubator" in state.battlefield:
+            d += 2
+    return d
 
 
 def effective_cost(state: GameState, name: str) -> int:
@@ -428,7 +464,7 @@ def effective_cost(state: GameState, name: str) -> int:
     if name == COMMANDER:
         return max(0, mv - dragon_discount_self(state) - first_creature_d)
     if is_dragon(name):
-        return max(0, mv - dragon_discount_others(state) - first_creature_d)
+        return max(0, mv - dragon_discount_others(state, name) - first_creature_d)
     return max(0, mv - first_creature_d)
 
 
