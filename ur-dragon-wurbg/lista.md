@@ -74,6 +74,7 @@
 
 1 Ancient Tomb
 1 Arid Mesa
+1 Battlefield Forge
 1 Bayou
 1 Blood Crypt
 1 Bloodstained Mire
@@ -85,8 +86,8 @@
 1 Godless Shrine
 1 Hallowed Fountain
 1 Haven of the Spirit Dragon
-1 Island
 1 Jetmir's Garden
+1 Karplusan Forest
 1 Ketria Triome
 1 Marsh Flats
 1 Misty Rainforest
@@ -103,7 +104,6 @@
 1 Taiga
 1 Temple Garden
 1 Tropical Island
-1 Watery Grave
 1 Windswept Heath
 1 Wooded Foothills
 1 Zagoth Triome

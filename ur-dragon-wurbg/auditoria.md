@@ -23,6 +23,23 @@ Data da auditoria: 2026-08-20
 - Terrenos: **36** (`type_line`).
 - CMC médio, não-terrenos, sem comandante: **3.9** (`cmc`).
 
+> **Atualização (2026-08-27) — auditoria de pips real:** contagem
+> carta a carta dos pips coloridos de todo o deck (79→96 pips
+> corrigidos conforme recontagem) mostrou vermelho em **42,7% de toda a
+> demanda de pips** do deck, mas só **19,8% das fontes de mana** (gap de
+> +23,0pp — o maior desequilíbrio já medido em qualquer deck desta
+> biblioteca). Verde também sub-representado (+5,5pp), branco moderado
+> (+7,0 a +8,6pp), preto e azul sobre-representados (-10,4pp e -11,2pp).
+> Confirmado de forma independente pelo Commander Template (ferramenta
+> externa, "ADD 8 RED SOURCES") e por uma métrica nova no simulador
+> (`color_screw_turns`): **38-41% das partidas têm pelo menos 1 turno
+> com mana total suficiente mas a cor errada**, começando em média já
+> no turno ~3,7-3,9. Duas trocas aplicadas por causa disso — ver
+> `goldfish-log.md` Teste #2/Correção #5: Watery Grave → Karplusan
+> Forest (R/G) e Island → Battlefield Forge (R/W), ambas testadas em
+> pares de seed antes de aplicar, efeito real mas parcial (não fecha o
+> gap de +23pp sozinho).
+
 ---
 
 ## 3. Game Changers — contagem oficial
@@ -42,7 +59,24 @@ Varredura de `oracle_text` das 100 cartas.
 - **Negação de terras em massa:** nenhuma encontrada.
 - **Turnos extras:** nenhum efeito de turno extra encontrado no texto de nenhuma carta.
 - **Combate adicional:** encontrado em **Hellkite Charger** — texto (Scryfall): *"Whenever this creature attacks, you may pay {5}{R}{R}. If you do, untap all attacking creatures and after this phase, there is an additional combat phase."* Isso é combate adicional, não turno extra — o critério oficial que separa Bracket 2/3 de Bracket 4 fala especificamente de "turnos extras encadeados", não de fases de combate adicionais. Não reclassifico o deck por causa disso, só registro que existe.
-- **Combo de 2 peças:** não identifiquei via varredura de texto. Não é prova de ausência — só não achei com os padrões que busquei (untap livre, copy livre, "infinite"-adjacentes).
+- **Combo de 2 peças:** não identifiquei via varredura de texto na auditoria original. Não era prova de ausência — e de fato existiam.
+
+> **Atualização (2026-08-27) — Commander Spellbook:** consultei a API
+> real (`backend.commanderspellbook.com/find-my-combos`) com a lista
+> completa. Achou **3 combinações reais já montadas com cartas desta
+> lista**: Old Gnawbone + Hellkite Charger (infinito de verdade — fases
+> de combate/Treasure/dano infinitos), Miirym + Bladewing the Risen +
+> Terror of the Peaks (infinito de verdade — ETB/dano infinitos), e
+> Dragon Tempest + Ancient Gold Dragon (dano quase-infinito). **Mas
+> calculei a probabilidade hipergeométrica real de montar cada uma até
+> um turno de referência (Regra 7 de `user-standing-rules.md`,
+> estabelecida por causa deste caso) — sem tutor que busque as peças
+> especificamente, a chance de ter as 2 cartas do combo mais provável
+> na mão até o turno 8 é só 1,9%, e 0,23% pro de 3 cartas.** Não é um
+> combo turno 3-4, é um evento de cauda que não muda a classificação de
+> Bracket na prática (ver critério oficial: precisa ser rápido E
+> provável, não só existir). Registrado aqui como curiosidade de fim de
+> jogo pro grupo saber, não como wincon planejado.
 
 ---
 

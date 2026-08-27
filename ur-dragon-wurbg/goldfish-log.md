@@ -499,6 +499,63 @@ não testados aqui). Vale a troca, mas não é uma bala de prata sozinha.
 
 ---
 
+## Correção #5 — segunda troca B/U aplicada de verdade (Island → Battlefield Forge) — 2026-08-27
+
+Pedido do usuário: cortar uma 2ª fonte B/U. Como Watery Grave já tinha
+sido usada no Teste #2, o próximo candidato "puro" (só toca cores que
+já sobram, não segura nenhuma cor que falta) era uma das duas básicas
+singleton: **Island** (U puro) ou **Swamp** (B puro). U tem o gap pior
+(-11,2pp vs. -10,4pp de B), então testei cortar a Island.
+
+Escolhi **Battlefield Forge** (R/W) como substituta em vez de outra
+R/G — de propósito, pra não empilhar em cima do verde (que já tem o
+menor gap dos 3 sub-representados, +5,5pp) e reforçar R (o maior gap,
++23,0pp) e W (+7,0/+8,6pp) ao mesmo tempo, diversificando com a
+Karplusan Forest já aplicada.
+
+**Teste pareado com as 2 trocas juntas** (`urdragon_doubleswap_test.py`,
+n=3000, seed_base=3300000): o efeito de color screw dobrou de tamanho
+em relação à troca única — checado em 4 rodadas de seed diferentes
+(1M/4M/6M + a original), delta consistentemente negativo em todas:
+-0,212 / -0,215 / -0,185 / -0,192 turnos de color screw por partida.
+O delta de "nunca conjurada" também passou a pender pra melhora na
+maioria das rodadas (-1,73pp / -0,80pp / +0,33pp / +0,27pp) — ainda
+mais ruidoso que o color screw, mas majoritariamente positivo agora
+(diferente da troca única, que tinha ficado sem sinal claro).
+
+**As duas trocas aplicadas de verdade em `lista.md`** (Watery Grave →
+Karplusan Forest, Island → Battlefield Forge). Reteste de robustez:
+20.000 partidas, 0 erros/timeouts.
+
+**n=3000, seed_base=7600000, 8 turnos — resultado oficial após as 2 trocas:**
+
+```
+Avg mulligans: 0,48
+Turno medio de conjuracao da Ur-Dragon: 6,84 | mediana: 7,0
+Nunca conjurada em 8 turnos: 56,6%
+Avg contagem de Dragoes em campo (fim de jogo): 4,76
+Avg dano proxy total: 29,44
+Avg Treasures criados: 2,96
+Avg dobras via Roaming Throne: 0,56
+Avg cartas compradas extra: 4,62
+Avg fetches cracked: 0,90
+Avg turnos com color screw: 1,76
+% de jogos com pelo menos 1 turno de color screw: 38,0% | turno medio do 1o screw: 3,71
+Avg mao final: 3,01
+```
+
+Comparando com a Correção #4 (antes de qualquer troca): "nunca
+conjurada" caiu de 57,8% pra 56,6%, e a taxa de color screw caiu de
+41,2% pra 38,0% das partidas. Confirma a leitura do Teste #2: real,
+consistente, mas ainda não resolve o desequilíbrio de +23pp sozinho —
+faltam mais peças (rocks/dorks de R, ex: Talisman of Impulse, Ruby
+Daring Tracker, ainda não testados) se o objetivo for fechar o gap por
+completo.
+
+Resultados atualizados em `urdragon_v1_runs.jsonl` (3000 jogos, sobrescrito).
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**

@@ -204,6 +204,15 @@ for n, colors in LAND_PRODUCES.items():
 # verdade.
 add("Karplusan Forest", 0, "land", set(), produces={"R", "G"})
 
+# Battlefield Forge: NAO esta na lista.md — cadastrada pra testar o 2o
+# corte de B/U (candidato: Island, U puro, a cor com o pior gap depois
+# de R). Diversifica de proposito em vez de dobrar R/G com a Karplusan —
+# cobre R (o maior gap, +23,0pp) e W (+7,0/+8,6pp), sem inflar mais
+# ainda verde (que ja tem o menor gap dos 3 sub-representados). Oraculo
+# real: "{T}: Add {C}. / {T}: Add {R} or {W}. This land deals 1 damage
+# to you." — sem tapped.
+add("Battlefield Forge", 0, "land", set(), produces={"R", "W"})
+
 # LAND_BASIC_TYPES: tipos basicos reais de cada terreno nao-fetch, usado por
 # crack_fetch() pra achar todo alvo que compartilha um dos 2 tipos buscados
 # pela fetch (nao so as basicas — Regra 6, achado real no Hei Bai: uma fetch
