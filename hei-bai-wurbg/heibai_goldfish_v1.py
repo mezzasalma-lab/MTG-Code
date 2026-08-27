@@ -263,6 +263,14 @@ add("Waterbender's Restoration", 2, "instant", {"blink_x"})
 add("Aang's Journey", 2, "sorcery", {"land_tutor_kicker_shrine"})
 add("Cultivate", 3, "sorcery", {"land_tutor2"})
 add("Farewell", 6, "sorcery", {"interaction"})
+# Aura Shards: NAO esta na lista.md — cadastrada so pra permitir o teste
+# comparativo `heibai_aurashards_test.py`. {1}{G}{W}, Enchantment.
+# Game Changer real (confirmado contra is:gamechanger). Oraculo real:
+# "Whenever a creature you control enters, you may destroy target
+# artifact or enchantment." SEM 'another' (dispara ate na propria
+# criatura entrando, diferente do Purphoros) — efeito real implementado
+# em creature_enters_hook().
+add("Aura Shards", 3, "enchantment", set())
 add("Farseek", 2, "sorcery", {"land_tutor1"})
 add("Idyllic Tutor", 3, "sorcery", {"enchant_tutor_hand"})
 add("Nature's Lore", 2, "sorcery", {"land_tutor1"})
@@ -336,6 +344,7 @@ class GameState:
     shrine_reblinks_total: int = 0
     tutors_used_total: int = 0
     interaction_spells_cast_total: int = 0
+    aura_shards_destroys_total: int = 0
     proxy_life_gained_total: int = 0
     library_emptied: bool = False
 
@@ -488,6 +497,16 @@ def creature_enters_hook(state: GameState, name: str, is_token: bool):
         times = resolve_times(state, "Purphoros, God of the Forge", True, False, False)
         for _ in range(times):
             proxy_damage(state, 2)
+    if "Aura Shards" in state.battlefield:
+        # "Whenever a creature you control enters, you may destroy target
+        # artifact or enchantment." SEM 'another' — dispara ate na propria
+        # criatura entrando (nao e' o caso de Purphoros). Sem oponente
+        # real, tratado como proxy: sempre escolhe usar (e opcional e sem
+        # custo, nenhuma razao pra recusar num goldfish).
+        times = resolve_times(state, "Aura Shards", True, False, False)
+        for _ in range(times):
+            state.aura_shards_destroys_total += 1
+            state.interaction_spells_cast_total += 1
 
 
 # ---------------------------------------------------------------------------
@@ -1011,6 +1030,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg tutores usados: {avg([s.tutors_used_total for s in states]):.2f}")
     print(f"Avg vida ganha proxy: {avg([s.proxy_life_gained_total for s in states]):.2f}")
     print(f"Avg spells de interacao conjurados (proxy): {avg([s.interaction_spells_cast_total for s in states]):.2f}")
+    print(f"Avg destruicoes via Aura Shards (se presente): {avg([s.aura_shards_destroys_total for s in states]):.2f}")
     print(f"Avg mao final: {avg([len(s.hand) for s in states]):.2f}")
     return states
 

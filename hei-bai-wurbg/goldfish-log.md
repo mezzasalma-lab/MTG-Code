@@ -4,6 +4,71 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Teste #1 — Farewell vs. Aura Shards (`heibai_aurashards_test.py`) — 2026-08-24
+
+Pedido do usuário: trocar Farewell POR Aura Shards (não só adicionar) e
+comparar os dois decks resultantes. Aura Shards (`{1}{G}{W}`, Enchantment):
+"Whenever a creature you control enters, you may destroy target artifact
+or enchantment."
+
+**Nota de Bracket:** Farewell e Aura Shards são AMBAS Game Changers reais
+(confirmado ao vivo contra `is:gamechanger`) — essa troca especificamente
+(uma por outra) MANTÉM o deck em 3/3 Game Changers, continua no teto do
+Bracket 3. Isso é diferente de simplesmente adicionar Aura Shards por cima
+da lista atual, que empurraria pra 4/4 e Bracket 4 automaticamente.
+
+Implementada em `CARD_DB` sem "another" no gatilho (dispara até na
+própria criatura entrando, diferente do Purphoros) — sem oponente real,
+tratada como interação proxy disparada por todo ETB de criatura,
+acumulada numa métrica dedicada (`aura_shards_destroys_total`) separada
+do total genérico de interação.
+
+**Metodologia:** monkeypatch temporário de `BASE_LIBRARY`, mesmas seeds
+nas duas variantes.
+
+**n=3000, seed_base=4400000, mesmas seeds — resultado:**
+
+```
+                                              COM Farewell   COM Aura Shards   delta
+Turno medio de conjuracao da Hei Bai              3,760          3,768        +0,007
+Nunca conjurada em 8 turnos                       2,47%          2,50%        +0,03pp
+Avg Shrines em campo (fim)                        4,581          4,587        +0,006
+Avg cartas compradas extra                        9,567          9,627        +0,059
+Avg tokens criados                                7,701          7,670        -0,031
+Avg spells de interacao (proxy, total)             2,563          6,333       +3,770
+Avg destruicoes via Aura Shards                    0,000          3,833       +3,833
+```
+
+**Checagem de ruído:** troquei o `seed_base` 2 vezes (1M/2M) — a métrica
+central (destruições via Aura Shards) ficou estável em 3,39-4,00 por
+partida, e o delta de "nunca conjurada" ficou pequeno e sem sinal
+consistente (-0,27pp / -0,10pp) nas duas rodadas extras — dentro do
+ruído normal de um swap de 1 carta, não um efeito real na comandante.
+
+**Leitura honesta:** a troca é isolada de verdade — turno de comandante,
+contagem de Shrines, draw e tokens praticamente não mudam (tudo dentro do
+ruído de reamostragem), confirmando que Aura Shards não compete por
+recursos com o motor central do deck, só adiciona em cima. O ganho real e
+mensurável: **Aura Shards dispara em média 3,83 vezes por partida em 8
+turnos** — mais que triplicando o volume total de interação do deck
+(2,56 → 6,33 eventos de interação proxy por partida) — contra o único uso
+de Farewell (sorcery, sem gatilho repetível). Isso confirma numericamente
+por que a carta é classificada como Game Changer: o deck já cria token de
+criatura o tempo todo (Honden of Life's Web, Go-Shintai of Shared Purpose,
+Crescent Island Temple, o próprio ativado da Hei Bai, Hallowed Haunting a
+cada encantamento conjurado), e cada um vira uma chance grátis de destruir
+artefato/encantamento do oponente.
+
+**Conclusão:** mecanicamente é um upgrade real e significativo em volume
+de interação repetível, com custo de oportunidade quase zero sobre o
+resto do deck (a troca não desacelera nada que já estava funcionando). A
+decisão real não é sobre poder — é sobre Bracket: essa troca específica
+(1-por-1) mantém o teto de 3 Game Changers, então não muda a classificação
+oficial do deck. Se o grupo já aceita Farewell como um dos 3 GCs do deck,
+não há motivo mecânico pra recusar essa troca.
+
+---
+
 ## Simulação #1 — goldfish Python completo (`heibai_goldfish_v1.py`) — 2026-08-24
 
 **Script construído do zero.** A `auditoria.md` já tinha uma boa categorização
