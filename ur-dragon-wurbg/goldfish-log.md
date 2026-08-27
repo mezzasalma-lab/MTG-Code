@@ -1056,6 +1056,82 @@ simulador. `urdragon_v1_runs.jsonl` sobrescrito.
 
 ---
 
+## Correção #13 — 3 achados reais que eu ainda tinha deixado passar
+
+Usuário, insistindo depois da Correção #12: *"1) Não considerou os
+terrenos 'tribais'; 2) Esqueceu Haunting Voyage; 3) Se duvidar não
+considerou Crux of Fate boardwipe assimétrico: e sabe-se lá quais
+outros erros!"*
+
+1. **Terrenos que entram tapped nunca foram modelados — achado real,
+   novo.** Reauditando a manabase carta a carta, confirmei que Cavern of
+   Souls/Secluded Courtyard/Haven of the Spirit Dragon (as "tribais" de
+   verdade) continuam corretas (testado isoladamente: 1 Cavern em campo
+   dá exatamente 1 fonte de cada cor pra spell de Dragão, 0 pro caso
+   geral). Mas achei outra coisa real no caminho: **nenhum terreno no
+   simulador inteiro jamais entrava tapped**, mesmo os 4 Triomes
+   (Jetmir's Garden, Ketria Triome, Zagoth Triome, Ziatora's Proving
+   Ground) que têm "This land enters tapped." incondicional no oráculo
+   — sem opção de pagar vida como os choques. Corrigido:
+   `ETB_TAPPED_LANDS` + `state.tapped_land_this_turn`, exclui a terra da
+   contagem de mana total/cor no turno em que é jogada (via `play_land`
+   ou `crack_fetch`, se uma fetch buscar um Triome), libera no turno
+   seguinte. Os 8 choques (Blood Crypt etc.) **continuam sempre
+   destravados** — têm escolha real de pagar 2 vida, e vida nunca é
+   recurso rastreado neste simulador, premissa agora documentada
+   explicitamente em vez de implícita.
+2. **Haunting Voyage: o modo foretold ("return ALL") realmente não
+   tinha sido implementado** — eu tinha descartado isso como "fora de
+   escopo" na Correção #11, o que na prática é esquecer metade da
+   carta, não uma simplificação razoável. Implementado de verdade: ação
+   de foretell separada em `main_phase()` ({2} genérico, exila da mão,
+   sem seguir regras normais de conjuração), heurística de conjurar da
+   exilada assim que 7 mana sobrar NUM TURNO POSTERIOR (regra real:
+   "cast it on a later turn" — bug secundário evitado explicitamente,
+   sem isso teria conjurado no mesmo turno do foretell). Modo ALL
+   reaproveita o mesmo helper (`reanimate_dragons_from_graveyard`) do
+   hardcast, sem limite de 2.
+3. **Crux of Fate não é simétrico — e o problema real era maior do que
+   só essa carta.** Crux of Fate escolhe "destruir todos os Dragões" OU
+   "destruir todos os não-Dragões" — claramente favorável pra esse deck
+   (mata só o lixo próprio, mantém as ameaças). Eu tinha ela (e Austere
+   Command) tageadas 'wipe' com tratamento `pass` — mas o problema real
+   não era a rotulagem "simétrica", era que a IA gulosa CONJURAVA essas
+   cartas mesmo sem fazer nada (can_cast só checa mana, não alvo real),
+   desperdiçando carta e mana. Investigando isso achei que o MESMO bug
+   afeta as 10 cartas tageadas 'interaction' (Swords to Plowshares,
+   Assassin's Trophy, Beast Within, Heroic Intervention, Swan Song,
+   Teferi's Protection etc.) — nenhuma tinha tratamento em
+   `resolve_instant_sorcery`, e várias são baratas (Swords to Plowshares
+   {W}=1 mana), competindo por prioridade cedo contra Dragões de
+   verdade. Corrigido de forma ampla: cartas 'interaction'/'wipe'
+   excluídas do loop guloso de auto-cast (ficam na mão, esperando um
+   alvo que este goldfish solo não modela — não fingem que são inúteis,
+   só não fingem um alvo que não existe).
+
+Testado: 300 jogos smoke test, 30.000 jogos de robustez (0 erros).
+
+**Impacto real combinado** (mesma seed_base=7600000, n=3000, 3 mudanças
+juntas — não isolado por mudança, efeitos mistos e parcialmente
+opostos):
+
+| métrica | antes (Correção #12) | depois |
+|---|---|---|
+| nunca conjurada | 41,4% | **39,8%** |
+| color screw (% jogos) | 33,1% | **35,1%** (Triomes tapped são um drag real) |
+| dano proxy médio | 436,51 | 396,75 |
+| Avg mão final | 3,12 | **5,05** (interaction/wipe empilhando na mão, sem alvo) |
+
+Nunca conjurada e dano proxy médio ainda melhoraram no líquido (mais
+mana livre pra ameaças reais > o drag dos Triomes tapped), color screw
+piorou um pouco (correto — os Triomes tapped são um custo real que
+faltava). A mão final maior é esperada e realista: cartas reativas
+seguram até ter alvo, mesmo que este simulador nunca gere um.
+
+`lista.md` não mudou. `urdragon_v1_runs.jsonl` sobrescrito.
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**

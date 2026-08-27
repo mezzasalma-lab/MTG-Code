@@ -218,6 +218,24 @@ for n, colors in LAND_PRODUCES.items():
 # real, o oraculo restringe a "creature spell").
 DRAGON_ANY_COLOR_LANDS = {"Cavern of Souls", "Secluded Courtyard", "Haven of the Spirit Dragon"}
 
+# Achado real 2026-08-27 (revisao pedida pelo usuario): o simulador nunca
+# modelou terreno entrando tapped — todo terreno virava mana disponivel
+# no mesmo turno em que era jogado, mesmo os que o oraculo real diz que
+# NAO entram destravados. Conferido carta a carta via Scryfall:
+#   - Os 4 Triomes (Jetmir's Garden, Ketria Triome, Zagoth Triome,
+#     Ziatora's Proving Ground): "This land enters tapped." Incondicional,
+#     sem opcao de pagar vida — SEMPRE tapped. Contam aqui.
+#   - Os 8 choques (Blood Crypt, Breeding Pool, Godless Shrine, Hallowed
+#     Fountain, Overgrown Tomb, Sacred Foundry, Steam Vents, Stomping
+#     Ground, Temple Garden): "As this land enters, you may pay 2 life. If
+#     you don't, it enters tapped." TEM escolha — como vida nunca e' um
+#     recurso escasso neste simulador (nunca rastreada/ameacada), a
+#     premissa assumida e' que o jogador SEMPRE paga a vida pra destravar
+#     (mesma logica ja usada em outras cartas com custo de vida
+#     documentado). NAO contam aqui — ficam destravados, premissa
+#     explicita, nao invisivel.
+ETB_TAPPED_LANDS = {"Jetmir's Garden", "Ketria Triome", "Zagoth Triome", "Ziatora's Proving Ground"}
+
 # Karplusan Forest: NAO esta na lista.md — cadastrada so pra permitir o
 # teste comparativo de troca de Watery Grave (candidato de corte real,
 # unica terra cujas 2 cores sao as mais sobre-representadas frente a
@@ -432,6 +450,8 @@ class GameState:
     mulligans: int = 0
 
     lands_played_this_turn: int = 0
+    tapped_land_this_turn: str = None
+    haunting_voyage_foretold_turn: int = None
     mana_spent_this_turn: int = 0
     bonus_mana_pool: int = 0
     dragon_mana_pool: int = 0
@@ -615,6 +635,12 @@ def rocks_mana(state: GameState) -> int:
 
 def total_mana(state: GameState) -> int:
     lands = sum(1 for n in state.battlefield if n in LAND_NAMES)
+    if state.tapped_land_this_turn is not None:
+        # Achado real 2026-08-27: Triomes entram tapped incondicionalmente
+        # (oraculo real) — a terra jogada esse turno nao produz mana ainda
+        # se for uma delas. So conta a partir do proximo turno (reset em
+        # play_turn()).
+        lands -= 1
     return lands + rocks_mana(state) + dork_mana(state) + state.bonus_mana_pool
 
 
@@ -640,6 +666,8 @@ def color_sources(state: GameState, color: str, dragon_creature_spell: bool = Fa
         base = card.split(" (copia)")[0]
         if base not in CARD_DB:
             continue
+        if base == state.tapped_land_this_turn:
+            continue  # Triome jogado este turno, ainda tapped (ver ETB_TAPPED_LANDS)
         c = CARD_DB[base]
         produces = set("WUBRG") if (dragon_creature_spell and base in DRAGON_ANY_COLOR_LANDS) else c.produces
         if color not in produces:
@@ -791,6 +819,11 @@ def crack_fetch(state: GameState, fetch_name: str):
     state.library.remove(pick)
     state.battlefield.append(pick)
     state.fetches_cracked_total += 1
+    if pick in ETB_TAPPED_LANDS:
+        # a fetch em si nunca entra tapped, mas se o alvo buscado for um
+        # Triome, ELE entra tapped por texto proprio, independente de
+        # como chegou ao campo.
+        state.tapped_land_this_turn = pick
 
 
 # ---------------------------------------------------------------------------
@@ -869,6 +902,27 @@ def creature_etb_hooks(state: GameState, name: str):
         proxy_drain(state, power)
 
 
+def reanimate_dragons_from_graveyard(state: GameState, limit: int = None):
+    """Compartilhado por Haunting Voyage hardcast (limit=2) e foretold
+    (limit=None, 'return ALL'). Prioriza maior mv primeiro. Bug real
+    corrigido 2026-08-27 (achado em 20k jogos de robustez, seed
+    22401654): se um dos alvos e' a propria Bladewing the Risen, o
+    gatilho de ETB dela ('return target Dragon permanent card from your
+    graveyard') dispara ao entrar via ESTA reanimacao tambem, e pode
+    consumir outro alvo do cemiterio antes deste loop chegar nele —
+    checar presenca no cemiterio antes de cada remocao."""
+    targets = sorted([c for c in state.graveyard if is_dragon(c) and is_creature_card(c)],
+                      key=lambda n: CARD_DB[n].mv, reverse=True)
+    if limit is not None:
+        targets = targets[:limit]
+    for t in targets:
+        if t not in state.graveyard:
+            continue
+        state.graveyard.remove(t)
+        enter_battlefield(state, t, from_hand=False)
+        state.dragons_free_entry_total += 1
+
+
 def resolve_instant_sorcery(state: GameState, name: str):
     tags = CARD_DB[name].tags
     if "land_tutor2" in tags:
@@ -908,30 +962,13 @@ def resolve_instant_sorcery(state: GameState, name: str):
         if powers:
             draw_cards(state, max(powers))
     elif "mass_reanimate" in tags:
-        # Haunting Voyage: "Choose a creature type. Return up to two
-        # creature cards of that type from your graveyard to the
-        # battlefield." (tipo = Dragao, obvio nesse deck). NAO modela o
-        # modo foretold ("return ALL" — custo/timing de 2 turnos
-        # separado, {2} pra exilar + {5}{B}{B} depois — fora de escopo
-        # aqui, mesma simplificacao conservadora documentada de outras
-        # cartas complexas). Achado real 2026-08-27: essa tag nunca tinha
-        # sido checada em lugar nenhum — Haunting Voyage era 6 mana que
-        # nao faziam nada no simulador.
-        targets = sorted([c for c in state.graveyard if is_dragon(c) and is_creature_card(c)],
-                          key=lambda n: CARD_DB[n].mv, reverse=True)[:2]
-        for t in targets:
-            # Bug real corrigido 2026-08-27 (achado em 20k jogos de
-            # robustez, seed 22401654): se um dos 2 alvos e' a propria
-            # Bladewing the Risen, o gatilho de ETB dela ("return target
-            # Dragon permanent card from your graveyard") dispara ao
-            # entrar via ESTA reanimacao tambem, e pode consumir o OUTRO
-            # alvo do cemiterio antes deste loop chegar nele. Checar se
-            # ainda esta no cemiterio antes de tentar remover.
-            if t not in state.graveyard:
-                continue
-            state.graveyard.remove(t)
-            enter_battlefield(state, t, from_hand=False)
-            state.dragons_free_entry_total += 1
+        # Haunting Voyage, modo hardcast: "Choose a creature type. Return
+        # up to two creature cards of that type from your graveyard to
+        # the battlefield." O modo foretold ("return ALL") e' tratado
+        # separadamente em main_phase()/reanimate_dragons_from_graveyard,
+        # ja que tem estrutura de custo/timing propria (foretell {2} +
+        # cast {5}{B}{B} depois, nao e' esta chamada).
+        reanimate_dragons_from_graveyard(state, limit=2)
 
 
 def do_orb_dragonkind(state: GameState):
@@ -1067,6 +1104,8 @@ def play_land(state: GameState):
         crack_fetch(state, choice)
     else:
         state.battlefield.append(choice)
+        if choice in ETB_TAPPED_LANDS:
+            state.tapped_land_this_turn = choice
 
 
 def do_orb_dragonkind_wrapper(state: GameState):
@@ -1093,8 +1132,47 @@ def main_phase(state: GameState):
 
     do_orb_dragonkind(state)
 
+    # Haunting Voyage, modo foretold: "Foretell {5}{B}{B}" — acao especial
+    # (paga {2}, exila a carta da mao virada pra baixo), separada de
+    # conjurar, sem seguir custo/pips normais. Depois, em turno posterior,
+    # pode ser conjurada da exilada por {5}{B}{B} pro modo "return ALL
+    # creature cards" (em vez de so 2 no hardcast). Achado real
+    # 2026-08-27 — eu tinha deixado de fora "por escopo" na Correcao #11;
+    # usuario apontou que isso e' esquecer a carta de verdade, nao uma
+    # simplificacao razoavel. Heuristica: foretell assim que possivel
+    # (custo baixo, {2}), conjura da exilada assim que 7 mana sobrar —
+    # sempre estritamente melhor que o hardcast de 6 mana limitado a 2
+    # alvos.
+    if ("Haunting Voyage" in state.hand and state.haunting_voyage_foretold_turn is None
+            and remaining_mana(state) >= 2):
+        state.hand.remove("Haunting Voyage")
+        state.haunting_voyage_foretold_turn = state.turn
+        spend_mana(state, 2)
+    if (state.haunting_voyage_foretold_turn is not None
+            and state.haunting_voyage_foretold_turn < state.turn  # regra real: "cast it on a LATER turn"
+            and remaining_mana(state) >= 7):
+        state.haunting_voyage_foretold_turn = None
+        spend_mana(state, 7)
+        reanimate_dragons_from_graveyard(state, limit=None)
+
     while True:
-        castables = [n for n in state.hand if n not in LAND_NAMES and can_cast(state, n)]
+        # Achado real 2026-08-27 (revisao pedida pelo usuario): cartas
+        # tageadas 'interaction' (remocao/protecao/contramagia — Swords to
+        # Plowshares, Assassin's Trophy, Beast Within, Heroic
+        # Intervention, Swan Song, Teferi's Protection etc.) e 'wipe'
+        # (Crux of Fate, Austere Command) nunca tinham handling nenhum em
+        # resolve_instant_sorcery — a IA gulosa conjurava mesmo assim
+        # (can_cast so checa mana, nao alvo real), gastando carta+mana
+        # de graca porque nao ha oponente/ameaca real modelada. Pior:
+        # varias sao baratas (Swords to Plowshares {W}=1 mana) e
+        # competiam por prioridade cedo contra Dragoes de verdade,
+        # subestimando a curva real do deck a sessao inteira. Um piloto
+        # de verdade SEGURA essas cartas ate ter alvo — excluidas do
+        # auto-cast guloso, ficam na mao (aproximacao conservadora, nao
+        # finge que sao inuteis, so nao finge um alvo que nao existe).
+        REACTIVE_NO_TARGET = {"interaction", "wipe"}
+        castables = [n for n in state.hand if n not in LAND_NAMES and can_cast(state, n)
+                     and not (CARD_DB[n].tags & REACTIVE_NO_TARGET)]
         if not castables:
             break
         def prio(n):
@@ -1326,6 +1404,7 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.dragon_mana_pool = 0
     state.orb_dragonkind_used_this_turn = False
     state.first_creature_used_this_turn = False
+    state.tapped_land_this_turn = None  # a Triome do turno passado desamarra agora
 
     upkeep_step(state)
     if not (is_first_turn and on_play):

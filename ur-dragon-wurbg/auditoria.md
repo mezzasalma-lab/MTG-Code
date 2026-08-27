@@ -108,6 +108,24 @@ Data da auditoria: 2026-08-20
 > `goldfish-log.md` Correção #12 pra lista completa e detalhes de cada
 > item.
 
+> **Atualização (2026-08-27) — 3 achados reais adicionais (usuário
+> insistiu, com razão):** (1) nenhum terreno jamais entrava tapped no
+> simulador — corrigido pros 4 Triomes, que têm "enters tapped"
+> incondicional (os 8 choques continuam sempre destravados, premissa de
+> "sempre paga vida" agora documentada); Cavern of Souls/Secluded
+> Courtyard/Haven of the Spirit Dragon (as terras "tribais" de verdade)
+> foram reverificadas e confirmadas corretas. (2) Haunting Voyage: modo
+> foretold ("return ALL", não só até 2) implementado de verdade — tinha
+> sido descartado por escopo na Correção #11, correção justa do usuário
+> de que isso é esquecer a carta, não simplificar. (3) Crux of Fate não
+> é simétrico (escolhe Dragão vs. não-Dragão, favorável pro deck) — e
+> investigando isso achei que as 10 cartas 'interaction' (remoção/
+> proteção) tinham o mesmo bug: a IA gulosa conjurava sem alvo real,
+> desperdiçando mana. Corrigido excluindo 'interaction'/'wipe' do
+> auto-cast. Impacto líquido combinado: nunca conjurada 41,4%→**39,8%**,
+> color screw 33,1%→**35,1%** (Triomes tapped são custo real), dano
+> proxy 436,51→396,75. Ver `goldfish-log.md` Correção #13.
+
 ---
 
 ## 3. Game Changers — contagem oficial
