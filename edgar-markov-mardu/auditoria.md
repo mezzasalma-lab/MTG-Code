@@ -83,6 +83,8 @@ Varredura de `oracle_text` (termos "opponent loses life"/"you gain life equal to
 
 Todos com synergy score alto e positivo — confirma que o pacote não é goodstuff solto, é o padrão real de decks desse comandante. **O combo de 2 peças já identificado nesta auditoria (Exquisite Blood + Vito, Thorn of the Dusk Rose, seção 10) tem aqui pelo menos 4 habilitadores redundantes reais** (Blood Artist, Cruel Celebrant, Zulaport Cutthroat, Sanctum Seeker — qualquer "opponent loses life" liga o loop com as duas peças em campo).
 
+**Atualização 2026-08-27 (revisão carta-a-carta do simulador, `goldfish-log.md` Correção #1):** o pacote de drenagem é maior do que os 10 originais desta seção — **Purphoros, God of the Forge** e **Warleader's Call** também drenam (via "creature enters", não morte), e o combo tem **2 habilitadores redundantes de verdade**, não 1: **Bloodthirsty Conqueror** ("whenever an opponent loses life, you gain that much life") forma o mesmo loop infinito com Vito, Thorn of the Dusk Rose que Exquisite Blood forma — a auditoria original só tinha identificado o segundo. Isso reforça a leitura de poder desta seção, não muda a classificação de Bracket (seção 12 continua válida pelo critério de timing).
+
 Reforço adicional: **Ashnod's Altar/Phyrexian Altar** (seção 3) convertem o excesso de tokens de Vampiro (gerados pela Eminence do próprio Edgar Markov, seção 7) em mana ou Treasures, e cada sacrifício aciona os gatilhos de drain acima — o ramp, a geração de token e o drain não são planos separados, é um motor único.
 
 ---

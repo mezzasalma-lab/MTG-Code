@@ -85,6 +85,63 @@ Turno médio em que liga, quando acontece: 7,67 | mediana: 8
 
 ---
 
+## Correção #1 — revisão completa carta-a-carta (usuário: "faça a carta por carta do Markov")
+
+Usuário: *"Repita a auditoria minuciosa com o Edgar Markov"*, seguido de *"Agora faça a carta por carta do Markov"* — o mesmo rigor já aplicado no Ur-Dragon e no Hei Bai, nunca tinha sido feito neste deck (a Simulação #2 e a política de caçar o combo, acima, cobriam o motor central de vampiro/aristocratas, mas nunca uma varredura carta-a-carta contra o oráculo real das 99 cartas).
+
+Conferido `oracle_text` real (Scryfall, `/tmp/scryfall_cache/edgar_markov_full.json`) de toda a lista contra `edgar_markov_goldfish_v1.py`. Achado: bem mais bugs que qualquer rodada do Hei Bai — várias cartas tinham tag mas ZERO implementação de verdade (`has_tag()` só é checado em 2 lugares no código inteiro: `is_vampire`/`ramp` — todo o resto das tags como `drain_aristocrats`/`token_maker`/`draw` eram decorativas, sem nenhum dispatch real por trás).
+
+### Corrigido (achados reais novos)
+
+1. **Funeral Room // Awakening Hall e Unholy Annex // Ritual Chamber tinham `mv` errado.** O código somava o custo dos 2 lados do Room (`2+1+6+2=11` e `2+1+3+2=8`) em vez de usar o custo real de conjurar CADA porta separadamente (Rooms não funcionam assim — você conjura uma porta de cada vez, pelo custo dela). `mv=11`/`mv=8` deixava essas 2 cartas praticamente incastáveis num goldfish de 8 turnos, travando o drain barato e recorrente que ambas oferecem por só `{2}{B}` (mv 3). Corrigido pra `mv=3` nas duas (porta primária/mais barata), e implementado o efeito real de cada uma (ver #7).
+2. **Purphoros, God of the Forge — 100% ausente.** "Whenever another creature you control enters, deals 2 damage to each opponent" nunca era checado em lugar nenhum, apesar de ser um motor de dano central pra um deck que cria token toda hora (Eminence). Implementado via novo dispatch `on_creature_enters()`, chamado em toda entrada de criatura (conjurada ou token).
+3. **Warleader's Call — 100% ausente.** "Whenever a creature you control enters, deals 1 damage to each opponent" — mesmo padrão do Purphoros, mesmo dispatch novo.
+4. **Skullclamp — 100% ausente.** "Equipped creature dies: draw two cards" — o motor clássico de token-pra-carta deste arquétipo nunca tinha nenhum efeito. Modelado equipando o primeiro sacrifício de cada turno (custo real de {1} pra reequipar, já que o Equipment sobrevive à morte da criatura anterior).
+5. **Ophiomancer — 100% ausente.** "At the beginning of each upkeep, if you control no Snakes, create a 1/1 black Snake token with deathtouch" — a única criatura do deck com gatilho de upkeep de verdade, nunca implementada. Novo `do_upkeep()`, chamado no início de cada turno.
+6. **Pitiless Plunderer tinha mecânica ERRADA.** Tageado `ramp` e contribuindo +1 mana genérico automático em `total_mana()` todo turno — mas ele não tem habilidade de mana própria nenhuma; o real é "whenever another creature you control dies, create a Treasure token", condicional a morte de verdade. Corrigido: removida a tag `ramp` errada, implementado o Treasure real dentro do `sac_loop` (só gera valor quando algo morre).
+7. **Zulaport Cutthroat — 100% ausente do pacote de drain**, apesar de tageado `drain_aristocrats` e citado na própria `auditoria.md` (seção 6) como "habilitador redundante" do combo. Texto idêntico ao Blood Artist ("this or another creature you control dies, opponent loses 1, you gain 1") — nunca estava no set `DEATH_PAYOFFS` de verdade. Corrigido, junto com **Bastion of Remembrance** (drain 1/1 + token ETB de Human Soldier, também ausente) e **Funeral Room**/**Unholy Annex** (agora castáveis, com seus efeitos reais: drain do Funeral Room, e o gatilho de end step do Unholy Annex — compra 1 carta, e se controlar um Demon, drena 2/ganha 2).
+8. **The Meathook Massacre estava com a fórmula errada.** Reusava a mesma fórmula "drain 1, gain 1" dos outros payoffs, mas o oráculo real é assimétrico: "whenever a creature you control dies, EACH OPPONENT LOSES 1 life" (sem ganho de vida nessa cláusula — o "you gain 1" dela só dispara quando morre criatura DO OPONENTE, que não existe neste goldfish solo). Corrigido pra `(drain=1, gain=0)`.
+9. **Vito, Thorn of the Dusk Rose — a peça de combo mais famosa da lista tinha ZERO implementação da PRÓPRIA habilidade.** "Whenever you gain life, target opponent loses that much life" só era usado como string-match pra decidir se o combo com Exquisite Blood estava montado — nunca gerava valor real por conta própria (mesmo sem Exquisite Blood em campo, cada vida ganha por QUALQUER fonte deveria drenar o oponente). Corrigido via novos helpers centralizados `gain_life()`/`lose_life_opponent()`, usados por todo o motor (Blood Artist, Cruel Celebrant, Sanctum Seeker, Vito Fanatic, etc.) em vez da lógica duplicada e inconsistente que existia antes.
+10. **Bloodthirsty Conqueror nunca era checado como habilitador ALTERNATIVO do combo infinito.** "Whenever an opponent loses life, you gain that much life" forma o MESMO loop com Vito Thorn que Exquisite Blood forma — só o segundo era detectado. Corrigido: `_check_combo()` agora testa os 2 habilitadores.
+11. **Anointed Procession e Mondrak, Glory Dominus — dobradores de token 100% ausentes**, apesar de tageados `token_maker`. "If one or more tokens would be created, twice that many instead" — mecânica DIFERENTE do Roaming Throne (que dobra o GATILHO, não a contagem de token) — empilham multiplicativamente entre si (2 dobradores = 4x). Novo `token_multiplier()`, aplicado em toda criação de token modelada (Eminence, Ophiomancer, Bastion of Remembrance, Pitiless Plunderer, 3º estágio do Vito Fanatic).
+12. **`_times()` (dobra do Roaming Throne) não checava se a fonte do gatilho era mesmo uma criatura Vampiro.** Por coincidência todos os gatilhos já implementados antes eram Vampiros de verdade, então nunca deu bug visível — mas os gatilhos novos desta rodada (Purphoros, Warleader's Call, Ophiomancer, Skullclamp, Pitiless Plunderer, Zulaport Cutthroat, Meathook Massacre, Bastion of Remembrance, Funeral Room, Unholy Annex) têm fontes que não são criaturas Vampiro — Roaming Throne (que só dobra "outra criatura... do tipo escolhido") nunca deveria dobrar esses. `_times()` ganhou um parâmetro `is_vampire_source`, passado `False` explicitamente nos novos.
+13. **Mana de Ashnod's Altar/Phyrexian Altar (e agora Treasure do Pitiless Plunderer) nunca era realmente gastável.** O `sac_loop()` roda DEPOIS do `main_phase()` — ou seja, a mana bônus gerada por sacrificar tokens só ficava disponível depois que o turno já tinha acabado de conjurar tudo que dava, sendo descartada no reset (`mana_spent_this_turn = 0`) do turno seguinte sem nunca virar spell nenhum. Corrigido extraindo o loop genérico de conjuração pra `cast_available_spells()`, chamado de novo depois do `sac_loop()`.
+14. **Welcoming Vampire tinha a condição de gatilho ERRADA.** "Whenever one or more OTHER creatures you control with power 2 or less enter" — o código antigo checava se um Vampiro tinha sido CONJURADO (condição da Eminence, gatilho diferente), perdendo criaturas não-Vampiro de poder baixo (ex. Ophiomancer, 2/2) e só acertando por coincidência quando a Eminence também disparava. Corrigido dentro do novo `on_creature_enters()`, checando poder real via novo dicionário `CREATURE_POWER`.
+15. **Bug de robustez pego durante o teste desta rodada** (só na política `COMBO_HUNTING_POLICY=True`, não no batch oficial default): o custo adicional do Diabolic Intent dentro de `combo_hunt()` podia sacrificar a PRÓPRIA Vito, Thorn of the Dusk Rose (única peça-criatura do combo) buscando a outra peça — autodestrutivo, e causava crash mais tarde quando o `combo_hunt` rodava de novo achando Vito Thorn "faltando" (foi pro cemitério, não tá mais na biblioteca pra buscar). Corrigido excluindo `COMBO_PIECES` dos candidatos a sacrifício.
+
+Testado: 300 jogos smoke test (0 erros, política default), 25.000 jogos de robustez com timeout de 2s/jogo (0 erros, 0 timeouts, política default) + 15.000 jogos (0 erros, política `COMBO_HUNTING_POLICY=True`, depois do fix #15).
+
+### Deferido (achado, documentado, não implementado)
+
+- MDFCs land-primary (**Ojer Taq, Deepest Foundation // Temple of Civilization**, **Legion's Landing // Adanto, the First Fort**, **Agadeem's Awakening // Agadeem, the Undercrypt**): só o verso Land é jogado — o lado spell (Ojer Taq triplica token de criatura; Legion's Landing cria um Vampiro; Agadeem's Awakening reanima em massa) nunca é conjurado. Modelar escolha dinâmica entre face land/spell exigiria uma reforma arquitetural maior — perda real de valor, documentada em vez de silenciosa.
+- Cordial Vampire (+1/+1 counters) e o gatilho de morte da própria Elenda (X tokens = poder dela): sem payoff numérico modelável — nenhuma criatura NOMEADA morre neste simulador (só tokens, decisão já documentada desde a Simulação #2), então Elenda nunca teria chance real de morrer. O passivo dela ("+1/+1 quando outra criatura morre") agora É rastreado (`elenda_counters`, por transparência de dado, sem payoff numérico adicional).
+- Loyalty abilities (Elspeth Storm Slayer, Sorin), nível 2/3 do Caretaker's Talent, modo escolhido do Black Market Connections, ativada do Mondrak, escolha de tipo do Cavern of Souls: nenhuma engine de "1 ativada por turno"/"escolha modal" existe neste simulador — mesma classe de simplificação já usada nos outros decks desta sessão.
+- Fetch lands: modeladas como duais estáticas de 2 cores, sem sacrifício/busca real — sem efeito na contagem de mana (1 fetch = 1 land = 1 mana), decisão consistente com o resto do simulador (nenhum land search existe aqui).
+
+**Impacto real** (`n=2000`, política default, `seed_base=6000000`):
+
+| métrica | antes | depois |
+|---|---|---|
+| Nunca conjurado em 8 turnos | 17,1% | **16,1%** |
+| Avg tokens de Vampiro via Eminence | 2,46 | 2,68 |
+| Avg drain_total | 0,65 | **2,20 (3,4x)** |
+| Avg lifegain_total | 0,77 | **1,36** |
+| Avg criaturas sacrificadas | 1,09 | 1,39 |
+| Avg gatilhos de morte (death payoffs) | 0,58 | **1,28 (2,2x)** |
+| Combo ligado (Exquisite Blood/Bloodthirsty Conqueror + Vito Thorn) | 0,1% | **0,6% (6x)** |
+| Avg dano via Purphoros (novo) | — | 0,33 |
+| Avg dano via Warleader's Call (novo) | — | 0,42 |
+| Avg Snakes via Ophiomancer (novo) | — | 0,21 |
+| Avg compras via Skullclamp (novo) | — | 0,21 |
+| Avg Treasures via Pitiless Plunderer (novo) | — | 0,04 |
+| Avg compras via Unholy Annex end step (novo) | — | 0,52 |
+
+Salto real, não inflação — a maior parte vem de mecânicas que estavam **completamente ausentes** (Purphoros, Warleader's Call, Skullclamp, Ophiomancer, Zulaport Cutthroat, Vito Thorn), o mesmo padrão que já apareceu no Ur-Dragon e no Hei Bai: este deck estava sendo medido, desde a Simulação #2, como um motor de valor mais fraco do que a lista realmente é. Isso também reforça a leitura de poder da `auditoria.md` (seção 6, "10 cartas de drenagem de vida") — na prática são pelo menos 12 (some Purphoros e Warleader's Call, que drenam via ETB de criatura, não morte) e o combo tem 2 habilitadores redundantes reais em vez de 1 (Exquisite Blood E Bloodthirsty Conqueror, não só o primeiro).
+
+`lista.md` não mudou — puro fix de simulador, carta por carta.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
