@@ -163,6 +163,24 @@ Portanto: **Bracket 3**, no limite superior — é um deck "Upgraded" muito bem 
 
 ---
 
+## 11.5 Revisão completa do simulador (2026-08-27)
+
+Usuário pediu a mesma revisão rigorosa aplicada ao Ur-Dragon nessa
+sessão ("deve ter muitos erros semelhantes") — confirmado: sim. 13
+achados reais corrigidos, incluindo 3 mecânicas 100% ausentes
+(Displacer Kitten, Enduring Vitality, a segunda habilidade ativada da
+própria Hei Bai) e um bug sistêmico no motor de blink inteiro (alvo
+ilegal — Shrines puramente encantamento sendo repiscadas por efeitos
+restritos a "target creature"). Impacto real (mesma seed): dano proxy
+total 10,82→**195,95**, tokens criados 7,51→**59,10**, dobras via Elesh
+Norn 2,87→**89,87**. Ver `goldfish-log.md` Correção #1 (segunda rodada)
+pra lista completa. Não muda a contagem de Game Changers nem a
+classificação de Bracket (correção de simulador, não de decklist) —
+mas confirma que o motor de valor real do deck é significativamente
+mais forte do que qualquer número reportado antes desta revisão.
+
+---
+
 ## 12. Sugestões de melhoria (prioridade)
 
 1. O deck está extremamente bem construído — não há gap estrutural óbvio como nos outros três (nem remoção fraca, nem land count baixo, nem falta de draw).

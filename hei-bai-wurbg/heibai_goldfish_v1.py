@@ -190,6 +190,32 @@ for n in ["Abandoned Air Temple", "Badlands", "Bayou", "City of Brass", "Command
           "Yavimaya, Cradle of Growth", "Forest", "Island", "Mountain", "Plains", "Swamp"]:
     add(n, 0, "land", set())
 
+# Achado real 2026-08-27 (revisao completa pedida pelo usuario, mesma
+# classe de bugs do Ur-Dragon): terreno nunca entrava tapped neste
+# simulador. Indatha Triome e Ketria Triome tem "This land enters
+# tapped." incondicional no oraculo real (conferido via Scryfall) — os
+# outros (originais ABUR, fetches, utilitarios) nao.
+ETB_TAPPED_LANDS = {"Indatha Triome", "Ketria Triome"}
+
+# Tipos basicos reais de cada terreno nao-fetch com subtipo (usado por
+# Farseek/Nature's Lore/Three Visits — real restricao de tipo, achado
+# real: o codigo anterior pegava QUALQUER terreno da biblioteca sem
+# checar tipo nenhum).
+LAND_BASIC_TYPES = {
+    "Badlands": {"Swamp", "Mountain"}, "Bayou": {"Swamp", "Forest"},
+    "Plateau": {"Mountain", "Plains"}, "Savannah": {"Forest", "Plains"},
+    "Scrubland": {"Plains", "Swamp"}, "Taiga": {"Mountain", "Forest"},
+    "Tropical Island": {"Forest", "Island"}, "Tundra": {"Plains", "Island"},
+    "Underground Sea": {"Island", "Swamp"}, "Indatha Triome": {"Plains", "Swamp", "Forest"},
+    "Ketria Triome": {"Forest", "Island", "Mountain"},
+    "Forest": {"Forest"}, "Island": {"Island"}, "Mountain": {"Mountain"},
+    "Plains": {"Plains"}, "Swamp": {"Swamp"},
+}
+
+# Terrenos BASICOS de verdade (usado por Cultivate/Aang's Journey —
+# "search for a basic land CARD", nao alcanca duais/triomes com o tipo).
+BASIC_LAND_NAMES = {"Forest", "Island", "Mountain", "Plains", "Swamp"}
+
 # --- As 17 Shrines -----------------------------------------------------------
 SHRINE_NAMES = {
     "Crescent Island Temple", "Honden of Life's Web", "Honden of Seeing Winds",
@@ -283,13 +309,49 @@ add("Sol Ring", 1, "artifact", {"rock2"})
 add("The Mind Stone", 2, "artifact", {"rock1", "blink_endstep_harnessed"})
 
 # --- Token sintetico -------------------------------------------------------------
-add("Shrine Token", 0, "creature", {"shrine", "token"})
+add("Shrine Token", 0, "enchantment_creature", {"shrine", "token"})
 add("Monk Token", 0, "creature", {"token"})
 add("Spirit Token", 0, "creature", {"token"})
 
 
 LAND_NAMES = {n for n, c in CARD_DB.items() if c.ctype == "land"}
 CREATURE_ISH = {"creature", "enchantment_creature"}
+
+# Cores reais (Scryfall `colors`) de todo permanente nao-terreno do
+# deck — usado por Bloom Tender ("For each color among permanents you
+# control, add one mana of that color"). Achado real 2026-08-27: Bloom
+# Tender estava fixa em 1 mana flat, documentada como aproximacao —
+# um deck 5-cor com Enchantress/Shrines em campo facilmente tem 3-5
+# cores distintas entre os permanentes por volta do turno 5-6,
+# subestimando bastante o valor real da carta.
+CARD_COLORS = {
+    COMMANDER: frozenset({"G"}),
+    "Crescent Island Temple": frozenset({"R"}), "Honden of Life's Web": frozenset({"G"}),
+    "Honden of Seeing Winds": frozenset({"U"}), "Kyoshi Island Plaza": frozenset({"G"}),
+    "Northern Air Temple": frozenset({"B"}), "Sanctum of All": frozenset({"B", "G", "R", "U", "W"}),
+    "Sanctum of Calm Waters": frozenset({"U"}), "Sanctum of Fruitful Harvest": frozenset({"G"}),
+    "Sanctum of Shattered Heights": frozenset({"R"}), "Sanctum of Stone Fangs": frozenset({"B"}),
+    "Southern Air Temple": frozenset({"W"}), "The Spirit Oasis": frozenset({"U"}),
+    "Argothian Enchantress": frozenset({"G"}), "Birds of Paradise": frozenset({"G"}),
+    "Bloom Tender": frozenset({"G"}), "Deadeye Navigator": frozenset({"U"}),
+    "Displacer Kitten": frozenset({"U"}), "Dryad of the Ilysian Grove": frozenset({"G"}),
+    "Elesh Norn, Mother of Machines": frozenset({"W"}), "Enduring Vitality": frozenset({"G"}),
+    "Go-Shintai of Ancient Wars": frozenset({"R"}), "Go-Shintai of Hidden Cruelty": frozenset({"B"}),
+    "Go-Shintai of Life's Origin": frozenset({"G"}), "Go-Shintai of Lost Wisdom": frozenset({"U"}),
+    "Go-Shintai of Shared Purpose": frozenset({"W"}), "Herald of the Pantheon": frozenset({"G"}),
+    "Purphoros, God of the Forge": frozenset({"R"}), "Sanctum Weaver": frozenset({"G"}),
+    "Seedborn Muse": frozenset({"G"}), "Sythis, Harvest's Hand": frozenset({"G", "W"}),
+    "Thassa, Deep-Dwelling": frozenset({"U"}), "Weaver of Harmony": frozenset({"G"}),
+    "Annie Joins Up": frozenset({"G", "R", "W"}), "Destiny Spinner": frozenset({"G"}),
+    "Enchantress's Presence": frozenset({"G"}), "Greater Auramancy": frozenset({"W"}),
+    "Hallowed Haunting": frozenset({"W"}), "In Search of Greatness": frozenset({"G"}),
+    "Skybind": frozenset({"W"}), "Sphere of Safety": frozenset({"W"}),
+    "Sterling Grove": frozenset({"G", "W"}), "Teleportation Circle": frozenset({"W"}),
+    "Aura Shards": frozenset({"G", "W"}), "The Mind Stone": frozenset({"W"}),
+    "Touch the Spirit Realm": frozenset({"W"}),
+    "Monk Token": frozenset({"R"}), "Spirit Token": frozenset(), "Shrine Token": frozenset(),
+    "Arcane Signet": frozenset(), "Sol Ring": frozenset(),
+}
 
 
 def is_creature_card(name: str) -> bool:
@@ -325,6 +387,7 @@ class GameState:
     lands_played_cap: int = 1
     mana_spent_this_turn: int = 0
     bonus_mana_pool: int = 0
+    tapped_lands_this_turn: int = 0
 
     commander_in_play: bool = False
     commander_cast_turn: Optional[int] = None
@@ -418,11 +481,12 @@ def _spirit_tokens(state, n):
 
 def _tutor_basics_tapped(state, n):
     for _ in range(n):
-        candidates = [c for c in state.library if c in {"Forest", "Island", "Mountain", "Plains", "Swamp"}]
+        candidates = [c for c in state.library if c in BASIC_LAND_NAMES]
         if candidates:
             pick = candidates[0]
             state.library.remove(pick)
             state.battlefield.append(pick)
+            state.tapped_lands_this_turn += 1  # Kyoshi Island Plaza: "put onto the battlefield tapped"
 
 
 SHRINE_SELF_ETB = {
@@ -430,7 +494,7 @@ SHRINE_SELF_ETB = {
     "Honden of Life's Web": None,  # gatilho de upkeep, nao de ETB (ver upkeep_step)
     "Honden of Seeing Winds": None,  # idem
     "Kyoshi Island Plaza": lambda state, sc: _tutor_basics_tapped(state, sc),
-    "Northern Air Temple": lambda state, sc: proxy_drain(state, sc),
+    "Northern Air Temple": lambda state, sc: (proxy_drain(state, sc), gain_life(state, sc)),
     "Sanctum of All": None,  # so tem gatilho de upkeep (tutor) + o dobrador estatico
     "Sanctum of Calm Waters": None,  # gatilho de main phase
     "Sanctum of Fruitful Harvest": None,  # gatilho de main phase
@@ -447,7 +511,7 @@ SHRINE_SELF_ETB = {
 SHRINE_OTHER_REACT = {
     "Crescent Island Temple": lambda state: _monk_tokens(state, 1),
     "Kyoshi Island Plaza": lambda state: _tutor_basics_tapped(state, 1),
-    "Northern Air Temple": lambda state: proxy_drain(state, 1),
+    "Northern Air Temple": lambda state: (proxy_drain(state, 1), gain_life(state, 1)),
     "Southern Air Temple": lambda state: None,
     "The Spirit Oasis": lambda state: draw_cards(state, 1),
 }
@@ -533,13 +597,21 @@ def on_cast_enchantment(state: GameState, name: str):
 
 def on_any_enchantment_enters(state: GameState, name: str):
     """Skybind — 'Constellation: whenever this or another enchantment you
-    control ENTERS' (nao 'cast'). Implementado com valor modesto e
-    documentado (ver Simplificacoes no topo do arquivo)."""
+    control enters, exile target NONENCHANTMENT permanent, return at
+    next end step.' Achado real 2026-08-27 (revisao completa): o filtro
+    anterior (`n not in ("token",)`) comparava o NOME da carta com a
+    string literal 'token' — nunca batia com nada de verdade (nenhuma
+    carta se chama assim), entao nao excluia token nenhum, E ainda
+    incluia Shrines-criatura (Go-Shintai, que sao encantamento — alvo
+    ILEGAL pro 'nonenchantment' do oraculo real). Corrigido com o pool de
+    alvo legal de verdade (ver best_nonenchantment_permanent_to_reblink).
+    Dispara em CADA Shrine conjurada (Shrines sao encantamento), entao e'
+    frequente neste deck."""
     if "Skybind" not in state.battlefield:
         return
-    targets = [n for n in state.battlefield if is_creature_card(n) and not is_shrine(n) and n not in ("token",)]
-    if targets:
-        blink_permanent(state, targets[0], source="Skybind")
+    target = best_nonenchantment_permanent_to_reblink(state)
+    if target:
+        blink_permanent(state, target, source="Skybind")
 
 
 # ---------------------------------------------------------------------------
@@ -548,7 +620,15 @@ def on_any_enchantment_enters(state: GameState, name: str):
 
 def best_shrine_to_reblink(state: GameState) -> Optional[str]:
     """Escolhe greedy a Shrine em campo com maior valor esperado de
-    'self ETB' pra repiscar (prioriza as que escalam com shrine_count)."""
+    'self ETB' pra repiscar (prioriza as que escalam com shrine_count).
+    TODAS as Shrines sao encantamentos — so alvo legal pra efeitos 'any
+    nonland permanent' (The Mind Stone harnessed). NAO usar pra efeitos
+    restritos a 'target creature' (ver best_creature_to_reblink) nem
+    'target nonenchantment permanent' (ver
+    best_nonenchantment_permanent_to_reblink) — achado real 2026-08-27,
+    revisao completa: essa funcao era usada indiscriminadamente por TODOS
+    os motores de blink, inclusive os restritos a criatura, fazendo o
+    simulador repiscar alvos ilegais (Shrines puras nao sao criaturas)."""
     candidates = [n for n in state.battlefield if is_shrine(n) and SHRINE_SELF_ETB.get(n) is not None]
     if not candidates:
         return None
@@ -557,6 +637,54 @@ def best_shrine_to_reblink(state: GameState) -> Optional[str]:
         if p in candidates:
             return p
     return candidates[0]
+
+
+def best_creature_to_reblink(state: GameState, exclude: str = None) -> Optional[str]:
+    """Alvos legais pra efeitos 'target creature you control' (Ephemerate,
+    Waterbender's Restoration, Thassa Deep-Dwelling, soulbond do Deadeye
+    Navigator). Das 17 Shrines, so os 5 Go-Shintai sao criaturas — e so
+    Go-Shintai of Life's Origin tem ETB self de valor real (os outros 4
+    so tem habilidade PAGA de end step, sem gatilho de entrada). Se
+    Purphoros ou Aura Shards estiverem em campo, QUALQUER criatura
+    entrando os dispara de novo — vale repiscar qualquer uma disponivel
+    nesse caso, mesmo sem ETB proprio."""
+    creatures = [n for n in state.battlefield if is_creature_card(n) and n != exclude]
+    if not creatures:
+        return None
+    if "Go-Shintai of Life's Origin" in creatures:
+        return "Go-Shintai of Life's Origin"
+    if "Purphoros, God of the Forge" in state.battlefield or "Aura Shards" in state.battlefield:
+        return creatures[0]
+    return None
+
+
+def best_nonland_permanent_to_reblink(state: GameState, exclude: str = None) -> Optional[str]:
+    """The Mind Stone (harnessed): 'one OTHER target nonland permanent' —
+    o unico motor de blink deste deck que alcanca as 12 Shrines puramente
+    encantamento (as outras 5, Go-Shintai, tambem contam como criatura)."""
+    shrine = best_shrine_to_reblink(state)
+    if shrine and shrine != exclude:
+        return shrine
+    return best_creature_to_reblink(state, exclude=exclude)
+
+
+def best_nonenchantment_permanent_to_reblink(state: GameState) -> Optional[str]:
+    """Skybind: 'target NONENCHANTMENT permanent' — exclui as 17 Shrines
+    inteiras (todas sao Legendary Enchantment[ Creature]) e qualquer
+    outra enchantment creature (Shrine Token incluido). So terrenos,
+    artefatos (Sol Ring/Signet/Mind Stone, sem ETB de valor) e criaturas
+    PURAS (ctype == 'creature', nao 'enchantment_creature') sao alvo
+    legal. Achado real 2026-08-27: a versao anterior filtrava por
+    `n not in (\"token\",)` — comparando o NOME da carta com a string
+    literal 'token', que nunca bate com nada (nenhuma carta se chama
+    'token') — o filtro nunca excluia nada de verdade, e ainda incluia
+    Shrines (incluindo Go-Shintai, que sao encantamento) como alvo, o
+    que e' ilegal pelo oraculo real."""
+    pure_creatures = [n for n in state.battlefield if CARD_DB[n].ctype == "creature"]
+    if pure_creatures and ("Purphoros, God of the Forge" in state.battlefield
+                            or "Aura Shards" in state.battlefield):
+        return pure_creatures[0]
+    return None  # terrenos/rocks nao tem ETB de valor nenhum pra justificar o alvo
 
 
 def blink_permanent(state: GameState, name: str, source: str = ""):
@@ -591,19 +719,49 @@ def rocks_mana(state: GameState) -> int:
     return total
 
 
+def bloom_tender_colors(state: GameState) -> int:
+    colors = set()
+    for n in state.battlefield:
+        colors |= CARD_COLORS.get(n, frozenset())
+    return len(colors)
+
+
 def dork_mana(state: GameState) -> int:
     total = 0
+    already_tapped_sources = set()
     if "Birds of Paradise" in state.battlefield:
         total += 1
+        already_tapped_sources.add("Birds of Paradise")
     if "Bloom Tender" in state.battlefield:
-        total += 1  # aproximado: 1 mana (real escala com cores em campo, simplificado)
+        # Achado real 2026-08-27: estava fixa em 1 mana flat, documentada
+        # como aproximacao — oraculo real: "For each color among
+        # permanents you control, add one mana of that color" (nao
+        # aproximado, contagem real de cores distintas em campo).
+        total += max(1, bloom_tender_colors(state))
+        already_tapped_sources.add("Bloom Tender")
     if "Sanctum Weaver" in state.battlefield:
-        total += max(1, enchantment_count(state) // 2)  # aproximacao conservadora (real = enchantment_count exato)
+        # Achado real 2026-08-27: formula errada — "Add X mana... where X
+        # is the number of enchantments you control", sem divisao por 2.
+        # A versao anterior (`// 2`) subestimava pela metade, documentada
+        # como "aproximacao conservadora" quando na verdade era so um
+        # erro de formula.
+        total += enchantment_count(state)
+        already_tapped_sources.add("Sanctum Weaver")
+    if "Enduring Vitality" in state.battlefield:
+        # Achado real 2026-08-27: tag 'creatures_tap_any_color' nunca
+        # implementada — "Creatures you control have '{T}: Add one mana
+        # of any color.'" Cada criatura que ainda nao tem habilidade de
+        # mana propria (Birds/Bloom Tender/Sanctum Weaver ja contadas
+        # acima, sem dobrar) ganha +1 mana.
+        creatures = [n for n in state.battlefield
+                     if is_creature_card(n) and n not in already_tapped_sources]
+        total += len(creatures)
     return total
 
 
 def total_mana(state: GameState) -> int:
     lands = sum(1 for n in state.battlefield if n in LAND_NAMES)
+    lands -= state.tapped_lands_this_turn  # Triomes/tutores "tapped" jogados este turno
     return lands + rocks_mana(state) + dork_mana(state) + state.bonus_mana_pool
 
 
@@ -630,31 +788,55 @@ def spend_mana(state: GameState, n: int):
 # Resolucao de ETB / cast
 # ---------------------------------------------------------------------------
 
+def search_land(state: GameState, eligible_types: set = None, basics_only: bool = False,
+                 force_tapped: bool = False, to_battlefield: bool = True):
+    """Busca real de terreno (achado 2026-08-27, revisao completa: o
+    codigo anterior pegava QUALQUER terreno da biblioteca sem checar tipo
+    — Farseek/Nature's Lore/Three Visits tem restricoes REAIS e
+    diferentes entre si). Como o modelo de mana deste deck e' generico
+    (nao pip a pip), a escolha de QUAL terreno nao muda a mana total —
+    mas o status tapped muda, entao isso ainda importa de verdade."""
+    if basics_only:
+        candidates = [n for n in state.library if n in BASIC_LAND_NAMES]
+    else:
+        candidates = [n for n in state.library if n in LAND_BASIC_TYPES and (LAND_BASIC_TYPES[n] & eligible_types)]
+    if not candidates:
+        return None
+    pick = candidates[0]
+    state.library.remove(pick)
+    if to_battlefield:
+        state.battlefield.append(pick)
+        if force_tapped or pick in ETB_TAPPED_LANDS:
+            state.tapped_lands_this_turn += 1
+    else:
+        state.hand.append(pick)
+    return pick
+
+
 def resolve_instant_sorcery(state: GameState, name: str):
     tags = CARD_DB[name].tags
-    if "land_tutor1" in tags:
-        candidates = [n for n in state.library if n in LAND_NAMES]
-        if candidates:
-            pick = candidates[0]
-            state.library.remove(pick)
-            state.battlefield.append(pick)
-    elif "land_tutor2" in tags:
-        candidates = [n for n in state.library if n in LAND_NAMES]
-        got = 0
-        while candidates and got < 2:
-            pick = candidates.pop(0)
-            state.library.remove(pick)
-            if got == 0:
-                state.battlefield.append(pick)
-            else:
-                state.hand.append(pick)
-            got += 1
+    if name == "Farseek":
+        # "Search for a Plains, Island, Swamp, or Mountain card, put onto
+        # the battlefield TAPPED." Alcanca duais/triomes com um desses 4
+        # tipos, nunca Forest pura.
+        search_land(state, eligible_types={"Plains", "Island", "Swamp", "Mountain"}, force_tapped=True)
+    elif name in ("Nature's Lore", "Three Visits"):
+        # "Search for a Forest card, put onto the battlefield." Sem
+        # 'tapped' no oraculo — mas se o alvo elegivel for um Triome
+        # (Indatha/Ketria, ambos Forest-tipados), ele entra tapped pelo
+        # PROPRIO texto dele, nao pelo da tutora — search_land ja cobre
+        # isso via ETB_TAPPED_LANDS.
+        search_land(state, eligible_types={"Forest"})
+    elif name == "Cultivate":
+        # "Search for up to two BASIC land cards... one battlefield
+        # tapped, other to hand." So basicas de verdade.
+        search_land(state, basics_only=True, force_tapped=True, to_battlefield=True)
+        search_land(state, basics_only=True, to_battlefield=False)
     elif "land_tutor_kicker_shrine" in tags:
-        candidates = [n for n in state.library if n in LAND_NAMES]
-        if candidates:
-            pick = candidates[0]
-            state.library.remove(pick)
-            state.hand.append(pick)
+        # Aang's Journey: "Search for a basic land card... put into
+        # HAND" (nao campo — sem status tapped relevante aqui). So
+        # basicas de verdade (achado real: pegava qualquer terreno).
+        search_land(state, basics_only=True, to_battlefield=False)
         if remaining_mana(state) >= 2:  # kicker
             shrines_in_lib = [n for n in state.library if is_shrine(n)]
             if shrines_in_lib:
@@ -678,9 +860,22 @@ def resolve_instant_sorcery(state: GameState, name: str):
     elif "interaction" in tags:
         state.interaction_spells_cast_total += 1
     elif "blink_x" in tags:
-        target = best_shrine_to_reblink(state)
+        # Waterbender's Restoration: "Exile X target creatures you
+        # control." Alvo restrito a criatura.
+        target = best_creature_to_reblink(state)
         if target:
             blink_permanent(state, target, source=name)
+    elif "blink_rebound" in tags:
+        # Achado real 2026-08-27: Ephemerate estava 100% morta — a tag
+        # 'blink_rebound' nunca era checada em lugar nenhum (nem o blink
+        # imediato do cast, nem o rebound eram implementados, apesar do
+        # docstring do arquivo afirmar o contrario). "Exile target
+        # creature you control, then return it." + Rebound (conjura de
+        # graca no upkeep seguinte).
+        target = best_creature_to_reblink(state)
+        if target:
+            blink_permanent(state, target, source="Ephemerate")
+        state.ephemerate_rebound_pending = True
 
 
 def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
@@ -732,6 +927,17 @@ def cast_card(state: GameState, name: str):
         state.battlefield.append(name)
         return
 
+    # Displacer Kitten (achado real 2026-08-27 — 100% nao implementada
+    # antes): "Whenever you cast a noncreature spell, exile up to one
+    # target NONLAND permanent you control, then return it." Dispara em
+    # QUASE TUDO neste deck (Shrines sao encantamentos = noncreature
+    # spell). Alvo tao amplo quanto The Mind Stone (qualquer permanente
+    # nao-terreno, inclui Shrines puramente encantamento).
+    if card.ctype not in CREATURE_ISH and "Displacer Kitten" in state.battlefield:
+        target = best_nonland_permanent_to_reblink(state, exclude="Displacer Kitten")
+        if target:
+            blink_permanent(state, target, source="Displacer Kitten")
+
     if card.ctype in ("instant", "sorcery"):
         resolve_instant_sorcery(state, name)
         state.graveyard.append(name)
@@ -750,6 +956,8 @@ def play_land(state: GameState):
         state.hand.remove(choice)
         state.battlefield.append(choice)
         state.lands_played_this_turn += 1
+        if choice in ETB_TAPPED_LANDS:
+            state.tapped_lands_this_turn += 1
 
 
 def do_sterling_grove_tutor(state: GameState):
@@ -766,29 +974,77 @@ def do_sterling_grove_tutor(state: GameState):
     state.tutors_used_total += 1
 
 
+OTHER_LEGENDARY_ENCHANTMENTS = {"Sythis, Harvest's Hand", "Purphoros, God of the Forge",
+                                 "Thassa, Deep-Dwelling", "Annie Joins Up"}
+
+
+def legendary_enchantment_count(state: GameState) -> int:
+    return shrine_count(state) + sum(1 for n in OTHER_LEGENDARY_ENCHANTMENTS if n in state.battlefield)
+
+
+def do_hei_bai_activated(state: GameState):
+    """Achado real 2026-08-27 (revisao completa pedida pelo usuario) — a
+    propria Hei Bai tem uma segunda habilidade nunca implementada:
+    '{W}{U}{B}{R}{G}, {T}: For each legendary enchantment you control,
+    create a 1/1 colorless Spirit creature token...' Custo = 5 mana
+    (modelo generico) + tap — so 1x por turno (so tem 1 {T} pra gastar).
+    Precisa nao ter doenca de invocacao (conjurada num turno anterior —
+    esse simulador nao rastreia doenca de invocacao em geral, ja que
+    nada mais usava {T}; aproximado aqui via commander_cast_turn)."""
+    if (not state.commander_in_play or state.commander_cast_turn is None
+            or state.commander_cast_turn >= state.turn):
+        return
+    if remaining_mana(state) < 5:
+        return
+    n = legendary_enchantment_count(state)
+    if n <= 0:
+        return
+    spend_mana(state, 5)
+    create_tokens(state, "Spirit Token", n)
+
+
 def do_deadeye_navigator(state: GameState):
+    """Soulbond: Deadeye precisa estar pareada com OUTRA criatura pra
+    ativar a habilidade em qualquer uma das duas — alvo restrito a
+    criatura (achado real 2026-08-27: usava best_shrine_to_reblink,
+    repiscando Shrines puramente encantamento, alvo ilegal pro soulbond)."""
     if "Deadeye Navigator" not in state.battlefield or remaining_mana(state) < 2:
         return
-    target = best_shrine_to_reblink(state)
+    target = best_creature_to_reblink(state, exclude="Deadeye Navigator")
     if target:
         spend_mana(state, 2)
         blink_permanent(state, target, source="Deadeye Navigator")
 
 
 def do_endstep_blinks(state: GameState):
-    for source, cost in (("Thassa, Deep-Dwelling", 0), ("Teleportation Circle", 0),
-                          ("The Mind Stone", 0)):
-        if source == "The Mind Stone" and not state.mind_stone_harnessed:
-            continue
-        if source in state.battlefield:
-            target = best_shrine_to_reblink(state)
-            if target:
-                blink_permanent(state, target, source=source)
+    # Thassa: "one OTHER target creature you control" — criatura, exclui
+    # a si mesma. Teleportation Circle: "one target artifact or creature"
+    # — artefatos deste deck (Sol Ring/Signet/Mind Stone) nao tem ETB de
+    # valor, entao na pratica e' o mesmo pool de criatura. The Mind Stone
+    # harnessed: "one OTHER target NONLAND permanent" — unico que alcanca
+    # Shrines puramente encantamento. Achado real 2026-08-27: as 3
+    # usavam best_shrine_to_reblink indiscriminadamente.
+    if "Thassa, Deep-Dwelling" in state.battlefield:
+        target = best_creature_to_reblink(state, exclude="Thassa, Deep-Dwelling")
+        if target:
+            blink_permanent(state, target, source="Thassa, Deep-Dwelling")
+    if "Teleportation Circle" in state.battlefield:
+        target = best_creature_to_reblink(state)
+        if target:
+            blink_permanent(state, target, source="Teleportation Circle")
+    if "The Mind Stone" in state.battlefield and state.mind_stone_harnessed:
+        target = best_nonland_permanent_to_reblink(state, exclude="The Mind Stone")
+        if target:
+            blink_permanent(state, target, source="The Mind Stone")
 
 
 def do_ephemerate(state: GameState):
+    """Rebound: 'At the beginning of your NEXT upkeep, you may cast this
+    card from exile without paying its mana cost.' Chamada de
+    upkeep_step() (achado real 2026-08-27: estava em end_step(), turno
+    errado dentro do proprio ciclo). Alvo restrito a criatura."""
     if state.ephemerate_rebound_pending:
-        target = best_shrine_to_reblink(state)
+        target = best_creature_to_reblink(state)
         if target:
             blink_permanent(state, target, source="Ephemerate (rebound)")
         state.ephemerate_rebound_pending = False
@@ -839,6 +1095,7 @@ def do_shrine_mainphase_triggers(state: GameState):
         times = resolve_times(state, "Sanctum of Stone Fangs", False, True, False)
         for _ in range(times):
             proxy_drain(state, sc)
+            gain_life(state, sc)  # achado real 2026-08-27: faltava a metade "you gain X life" do oraculo
 
 
 def do_go_shintai_endstep(state: GameState):
@@ -895,7 +1152,18 @@ def main_phase(state: GameState):
     do_deadeye_navigator(state)
 
     while True:
-        castables = [n for n in state.hand if n not in LAND_NAMES and can_cast(state, n)]
+        # Achado real 2026-08-27 (mesma classe de bug ja corrigida no
+        # Ur-Dragon): cartas 'interaction' (remocao/contramagia/protecao
+        # — sem alvo real neste goldfish solo) eram conjuradas as cegas
+        # pela IA gulosa, gastando carta+mana de graca e competindo por
+        # prioridade cedo contra Enchantress/Shrines de verdade. Um
+        # piloto real segura essas cartas ate ter alvo. EXCECAO: Annie
+        # Joins Up tambem tem 'interaction' (ETB de 5 dano, proxy sem
+        # efeito aqui) mas seu dobrador estatico de gatilho de criatura
+        # lendaria E' real e modelado (resolve_times) — excluir ela
+        # jogaria fora valor real que a carta realmente entrega.
+        castables = [n for n in state.hand if n not in LAND_NAMES and can_cast(state, n)
+                     and ("interaction" not in CARD_DB[n].tags or n == "Annie Joins Up")]
         if not castables:
             break
         def prio(n):
@@ -907,12 +1175,12 @@ def main_phase(state: GameState):
 
     do_sterling_grove_tutor(state)
     do_shrine_mainphase_triggers(state)
+    do_hei_bai_activated(state)
 
 
 def end_step(state: GameState):
     do_go_shintai_endstep(state)
     do_endstep_blinks(state)
-    do_ephemerate(state)
     while len(state.hand) > 7:
         worst = min(state.hand, key=lambda n: effective_cost(state, n) if n not in LAND_NAMES else 0)
         state.hand.remove(worst)
@@ -922,6 +1190,7 @@ def end_step(state: GameState):
 def upkeep_step(state: GameState):
     do_shrine_upkeep_triggers(state)
     do_in_search_of_greatness(state)
+    do_ephemerate(state)
     if "The Mind Stone" in state.battlefield and not state.mind_stone_harnessed and remaining_mana(state) >= 6:
         spend_mana(state, 6)
         state.mind_stone_harnessed = True
@@ -985,6 +1254,7 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.lands_played_this_turn = 0
     state.mana_spent_this_turn = 0
     state.bonus_mana_pool = 0
+    state.tapped_lands_this_turn = 0
 
     upkeep_step(state)
     if not (is_first_turn and on_play):

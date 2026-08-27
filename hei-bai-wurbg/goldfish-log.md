@@ -219,6 +219,138 @@ dos outros 9 simuladores desta biblioteca.
 
 ---
 
+## Correção #1 — revisão completa (pedido do usuário: "deve ter muitos erros semelhantes" ao Ur-Dragon)
+
+Usuário pediu a mesma revisão rigorosa aplicada ao Ur-Dragon. Gerado o
+oráculo real completo (sem truncar) das 94 cartas da lista, cruzado
+carta a carta com o CARD_DB. Achados reais (confirmado: sim, muitos
+erros semelhantes):
+
+### Corrigido
+
+1. **Displacer Kitten — 100% não implementada.** "Whenever you cast a
+   noncreature spell, exile up to one target nonland permanent you
+   control, then return it." Dispara em quase tudo neste deck (Shrines
+   são encantamentos = noncreature spell). Implementado em `cast_card()`.
+2. **Enduring Vitality — 100% não implementada.** "Creatures you control
+   have '{T}: Add one mana of any color.'" Concede habilidade de mana a
+   TODAS as criaturas em campo (menos as que já têm uma própria, pra não
+   dobrar). Implementado em `dork_mana()`.
+3. **A própria Hei Bai tinha uma segunda habilidade nunca implementada.**
+   "{W}{U}{B}{R}{G}, {T}: For each legendary enchantment you control,
+   create a 1/1 colorless Spirit creature token..." — 5 mana + tap,
+   repetível 1x/turno. Implementado (`do_hei_bai_activated`), com gate de
+   doença de invocação (turno de conjuração < turno atual).
+4. **Ephemerate estava 100% morta**, apesar do docstring do arquivo
+   afirmar o contrário — a tag `blink_rebound` nunca era checada em
+   lugar nenhum: nem o blink imediato do cast, nem o rebound (que
+   dependia de uma flag `ephemerate_rebound_pending` que nunca era
+   setada). Corrigido, e movida a checagem do rebound de `end_step()`
+   pra `upkeep_step()` (turno errado dentro do próprio ciclo — "next
+   upkeep", não "this end step").
+5. **Motor de blink inteiro com bug sistêmico de alvo ilegal.**
+   `best_shrine_to_reblink()` (prioriza as 4 Shrines puramente
+   encantamento — Spirit Oasis/Kyoshi/Northern Air Temple/Crescent
+   Island Temple) era usada indiscriminadamente por TODOS os motores de
+   blink, mas cada um tem restrição REAL diferente: Deadeye
+   Navigator/Ephemerate/Waterbender's Restoration/Thassa exigem "target
+   CREATURE" (só os 5 Go-Shintai são criatura entre as Shrines — e só
+   Go-Shintai of Life's Origin tem ETB self de valor real); Teleportation
+   Circle exige "artifact or creature"; The Mind Stone (harnessed) é o
+   ÚNICO que alcança "any nonland permanent" (as 12 Shrines puras
+   inclusas). Corrigido com 4 funções de alvo separadas por legalidade
+   real (`best_creature_to_reblink`, `best_nonland_permanent_to_reblink`,
+   `best_nonenchantment_permanent_to_reblink`, mantendo
+   `best_shrine_to_reblink` só pro Mind Stone).
+6. **Skybind com pool de alvo duplamente errado.** Oráculo real: "exile
+   target NONENCHANTMENT permanent" — exclui TODAS as 17 Shrines
+   (encantamentos). O filtro anterior (`n not in ("token",)`) comparava
+   o NOME da carta com a string literal `"token"` — nunca batia com
+   nada de verdade, então nunca excluía token nenhum de fato, E ainda
+   incluía Go-Shintai (Shrine-criatura, alvo ilegal) na lista. Corrigido
+   com `best_nonenchantment_permanent_to_reblink` (só terrenos,
+   artefatos e criaturas PURAS — Purphoros/Aura Shards precisam estar em
+   campo pra justificar o alvo, já que criaturas puras deste deck não
+   têm ETB próprio de peso).
+7. **Nenhum terreno jamais entrava tapped** (mesma classe de bug do
+   Ur-Dragon). Indatha Triome e Ketria Triome têm "This land enters
+   tapped." incondicional. Corrigido com `tapped_lands_this_turn`
+   (contador, não terreno único — Kyoshi Island Plaza pode buscar vários
+   terrenos tapped na mesma entrada, escalando com Shrine count).
+8. **Os tutores de terreno verde (Farseek, Nature's Lore, Three Visits,
+   Cultivate, Aang's Journey) pegavam qualquer terreno da biblioteca,
+   sem checar tipo real nem o "tapped" que cada um exige.** Corrigido
+   com `search_land()` (mesmo padrão do Ur-Dragon) — Farseek sempre
+   tapped, Cultivate só básica de verdade + 1 tapped no campo + 1 pra
+   mão (era ambas pro campo antes), Aang's Journey só básica pra mão.
+9. **Bloom Tender fixa em 1 mana flat** — oráculo real: "For each color
+   among permanents you control, add one mana of that color" (escala
+   com cores distintas em campo, não aproximado). Corrigido com
+   `bloom_tender_colors()` (cor real de cada permanente, via Scryfall).
+10. **Sanctum Weaver com fórmula errada** (`enchantment_count // 2`,
+    documentada como "aproximação conservadora" quando na real era só um
+    erro de fórmula) — oráculo real: "Add X mana... where X is the
+    number of enchantments you control", sem divisão. Corrigido pro
+    valor exato.
+11. **Northern Air Temple e Sanctum of Stone Fangs só drenavam, sem
+    ganhar a vida** que o próprio oráculo concede junto ("each opponent
+    loses X life AND you gain X life"). Corrigido.
+12. **Shrine Token registrada com ctype errado** ("creature" em vez de
+    "enchantment_creature" — ela é uma cópia real de Shrine, "1/1
+    colorless Shrine enchantment creature token"). Isso a deixava
+    incorretamente elegível como alvo de efeitos "nonenchantment"
+    (Skybind) e não-contada em `is_enchantment_card()`. Corrigido.
+13. **Cartas 'interaction' (remoção/contramágica/proteção) eram
+    conjuradas às cegas pela IA gulosa**, sem alvo real, desperdiçando
+    carta e mana — mesma classe de bug corrigida no Ur-Dragon (Correção
+    #13). Excluídas do loop de auto-cast, com uma exceção: **Annie Joins
+    Up** também é tageada 'interaction' (ETB de 5 dano, proxy) mas seu
+    dobrador estático de gatilho de criatura lendária é real e modelado
+    — excluí-la jogaria fora valor de verdade que ela entrega.
+
+Testado: 300 jogos smoke test, 30.000 jogos de robustez (0 erros).
+
+### Deferido (achado, documentado, não implementado)
+
+- Fetch lands não são "cracked" de verdade (ficam como si mesmas em
+  campo) — ao contrário do Ur-Dragon, aqui o modelo de mana é 100%
+  genérico (sem cor), então qual terreno especificamente é buscado não
+  muda a contagem de mana total — baixa prioridade real neste deck
+  especificamente (diferente do Ur-Dragon, onde importava muito).
+- Sanctum of Shattered Heights (habilidade ativada, paga {1} + descarte)
+  só ativa 1x por turno no código — o oráculo permite múltiplas
+  ativações se houver mana/cartas — mas é uma habilidade de remoção
+  (proxy, sem efeito no nosso lado), então a diferença não muda o board
+  próprio, só o contador de "interação usada".
+- Weaver of Harmony (copiar gatilho/ativada), Destiny Spinner (terreno
+  vira criatura), Sphere of Safety (taxa ataques do oponente) — já
+  documentados como fora de escopo antes desta revisão, confirmados
+  ainda corretos (genuinamente não-modeláveis ou baixo valor
+  determinístico).
+
+### Impacto real (mesma seed_base=9100000, n=3000)
+
+| métrica | antes | depois |
+|---|---|---|
+| nunca conjurada | 3,1% | 2,9% |
+| dano proxy total | 10,82 | **195,95 (+18x)** |
+| tokens criados | 7,51 | **59,10 (+7,9x)** |
+| dobras via Elesh Norn | 2,87 | **89,87 (+31x)** |
+| blinks totais (dos quais em Shrine) | 1,06 (0,78) | **2,54 (1,76)** |
+| destruições via Aura Shards | 3,67 | **91,30 (+25x)** |
+| vida ganha proxy | (não existia) | 37,75 |
+
+Salto grande e real, não inflação — a maior parte vem de mecânicas que
+estavam **completamente ausentes** (Displacer Kitten, Enduring Vitality,
+Ephemerate, a habilidade da própria Hei Bai), não de ajuste fino. Esse
+deck estava sendo medido, a sessão toda desde 24/08, como um motor de
+valor muito mais fraco do que a lista realmente é — o padrão se repete
+do Ur-Dragon.
+
+`lista.md` não mudou. `heibai_v1_runs.jsonl` sobrescrito.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
