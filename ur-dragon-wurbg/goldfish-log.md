@@ -1132,6 +1132,89 @@ seguram até ter alvo, mesmo que este simulador nunca gere um.
 
 ---
 
+## Correção #14 — segunda passada carta a carta completa (pedido do usuário: "revise tudo de novo")
+
+Usuário insistiu de novo (mesma cobrança), depois pediu explicitamente
+uma nova revisão carta a carta completa. Desta vez gerei o oráculo real
+e completo (sem truncar) das 100 cartas da lista (comandante + 63
+não-terrestres + 36 terrenos) lado a lado com as tags do CARD_DB e
+reli cada uma. 3 achados reais novos:
+
+1. **Delighted Halfling superestimava fixação.** Oráculo real: "{T}: Add
+   {C}." + "{T}: Add one mana of any color. Spend this mana only to
+   cast a **legendary spell**." O CARD_DB tinha ela com
+   `produces=set("WUBRG")` incondicional — contava como fonte de
+   qualquer cor pra QUALQUER spell, não só lendários. Levantei as 12
+   permanentes lendárias reais do deck (via `type_line`, não
+   suposição) e corrigido: `color_sources()` ganhou parâmetro
+   `legendary_spell`, só libera Delighted Halfling como fonte de
+   qualquer cor quando a carta sendo conjurada é lendária de verdade.
+   Mesmo padrão já usado pra Cavern of Souls/Secluded Courtyard/Haven of
+   the Spirit Dragon.
+2. **Os 6 tutores de terreno verde nunca respeitavam o tipo real, nem
+   priorizavam a cor mais escassa.** `land_tutor1`/`land_tutor2`/
+   `land_tutor2_direct` eram tags compartilhadas entre cartas com
+   restrições DIFERENTES (Farseek busca Plains/Island/Swamp/Mountain;
+   Nature's Lore/Three Visits só Forest; Cultivate/Kodama's Reach só
+   terreno BÁSICO de verdade, não dual/triome com o tipo) — o código
+   pegava qualquer terreno da biblioteca, sem checar tipo nem
+   priorizar a cor que falta. Isso afeta 6 dos spells mais jogados no
+   early game do deck. Corrigido com `search_land()` (mesmo padrão de
+   pontuação do `crack_fetch()` — prioriza a cor mais escassa entre os
+   elegíveis pro tipo real de cada carta), dispatch por nome em vez de
+   tag genérica. Farseek força tapped (oráculo real), Nature's
+   Lore/Three Visits/Skyshroud Claim destravadas (oráculo real não
+   fala em tapped).
+3. **Hellkite Courser estava sem NENHUMA implementação além da tag
+   'dragon'.** Oráculo real: "When this creature enters, you may put a
+   commander you own from the command zone onto the battlefield. It
+   gains haste. Return it to the command zone at the beginning of the
+   next end step." — bota a Ur-Dragon em campo DE GRAÇA (sem pagar a
+   taxa crescente de recast!), com haste, ataca esse turno, e volta pra
+   zona de comando no final do turno (pode ser conjurada de verdade
+   depois, do zero). Implementado via `enter_battlefield(...,
+   count_as_cast=False)` — novo parâmetro que evita incrementar
+   `commander_cast_count`/marcar `commander_cast_turn` (não é conjurar
+   de verdade), mas dispara todos os gatilhos normais de ETB (Dragon
+   Tempest, Scourge of Valkas, Lathliss, Miirym, Elemental
+   Bond/Garruk's Uprising/Great Henge/Terror of the Peaks). Reversão no
+   `end_step()` do mesmo turno.
+
+Testado: 300 jogos smoke test, 30.000 jogos de robustez (0 erros).
+
+**Achados adicionais, documentados como deferidos (baixo valor/alta
+complexidade, não implementados):**
+- **Cycling {3}** nos 4 Triomes (Jetmir's Garden, Ketria Triome, Zagoth
+  Triome, Ziatora's Proving Ground) — descartar por uma carta quando a
+  mão está flooded de terreno. Exigiria um julgamento de "mão boa vs.
+  ruim" que a IA gulosa atual não modela. Situacional, baixo valor
+  frente ao custo de implementar.
+- **Goldspan Dragon**: "or becomes the target of a spell" (cria Treasure
+  também se alvejada, não só ao atacar) — sem sistema de targeting
+  modelado (nem do oponente nem truques próprios), não modelável aqui.
+- **Ruby, Daring Tracker**: pump de combate ("+2/+2 se controla criatura
+  poder 4+") — não está na lista atual (Magda está no lugar dela), só
+  registrada pra testes antigos. Não prioritário.
+
+**Impacto real combinado** (mesma seed_base=7600000, n=3000):
+
+| métrica | antes (Correção #13) | depois |
+|---|---|---|
+| nunca conjurada | 39,8% | **34,5%** |
+| dano proxy médio | 396,75 | 381,92 |
+| cartas compradas extra | 11,72 | 12,53 |
+| Avg vezes que a Ur-Dragon entra de graça via Hellkite Courser | (não existia) | 0,09 |
+
+"Nunca conjurada" caiu 5,3pp — o maior salto isolado de uma única
+rodada de correções nessa métrica específica desde o começo da sessão,
+vindo majoritariamente da fixação de terreno de verdade (os 6 tutores
+verdes finalmente resolvendo cor de verdade em vez de pegar terreno
+aleatório).
+
+`lista.md` não mudou. `urdragon_v1_runs.jsonl` sobrescrito.
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**

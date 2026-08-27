@@ -126,6 +126,21 @@ Data da auditoria: 2026-08-20
 > color screw 33,1%→**35,1%** (Triomes tapped são custo real), dano
 > proxy 436,51→396,75. Ver `goldfish-log.md` Correção #13.
 
+> **Atualização (2026-08-27) — segunda passada completa, carta a carta,
+> oráculo sem truncar:** 3 achados novos. (1) Delighted Halfling
+> superestimava fixação — "any color" real é restrito a spell lendário,
+> não qualquer spell; corrigido com a mesma lógica das terras
+> Dragão-restritas. (2) Os 6 tutores de terreno verde (Cultivate,
+> Farseek, Kodama's Reach, Nature's Lore, Three Visits, Skyshroud Claim)
+> nunca respeitavam tipo real nem priorizavam cor escassa — pegavam
+> qualquer terreno da biblioteca. Corrigido com busca real por tipo +
+> priorização de cor (mesmo padrão do `crack_fetch`). (3) Hellkite
+> Courser estava sem NENHUMA implementação — bota a Ur-Dragon em campo
+> de graça (sem taxa!), com haste, no turno em que entra. Implementado.
+> **Impacto: nunca conjurada 39,8%→34,5%** — o maior salto isolado
+> dessa métrica na sessão inteira, majoritariamente da fixação real dos
+> tutores verdes. Ver `goldfish-log.md` Correção #14.
+
 ---
 
 ## 3. Game Changers — contagem oficial

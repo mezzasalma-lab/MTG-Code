@@ -236,6 +236,12 @@ DRAGON_ANY_COLOR_LANDS = {"Cavern of Souls", "Secluded Courtyard", "Haven of the
 #     explicita, nao invisivel.
 ETB_TAPPED_LANDS = {"Jetmir's Garden", "Ketria Triome", "Zagoth Triome", "Ziatora's Proving Ground"}
 
+# Terrenos BASICOS de verdade nesta lista — sem Island (a manabase nao
+# roda nenhuma Island basica, so fontes de U vem de duais/triomes/CT).
+# Usado por Cultivate/Kodama's Reach ("search for a basic land CARD" —
+# nao alcanca duais/triomes mesmo com o tipo).
+BASIC_LAND_NAMES = {"Forest", "Mountain", "Plains", "Swamp"}
+
 # Karplusan Forest: NAO esta na lista.md — cadastrada so pra permitir o
 # teste comparativo de troca de Watery Grave (candidato de corte real,
 # unica terra cujas 2 cores sao as mais sobre-representadas frente a
@@ -293,7 +299,7 @@ add("Nature's Lore", 2, "sorcery", {"land_tutor1"}, pips={"G": 1})
 add("Three Visits", 2, "sorcery", {"land_tutor1"}, pips={"G": 1})
 add("Skyshroud Claim", 4, "sorcery", {"land_tutor2_direct"}, pips={"G": 1})
 add("Birds of Paradise", 1, "creature", {"dork_flat1"}, pips={"G": 1}, produces=set("WUBRG"))
-add("Delighted Halfling", 1, "creature", {"dork_flat1"}, produces=set("WUBRG"))
+add("Delighted Halfling", 1, "creature", {"dork_flat1"})  # produces=set() de proposito: "any color" real e' restrito a spell lendario (LEGENDARY_ANY_COLOR_SOURCES), checado a parte
 add("Arcane Signet", 2, "artifact", {"rock1"}, produces=set("WUBRG"))
 add("Sol Ring", 1, "artifact", {"rock2"})  # {C}{C} — sem cor
 
@@ -431,6 +437,23 @@ FLYING_CREATURES = {
     "Utvara Hellkite",
 }
 
+# Achado real 2026-08-27 (revisao pedida pelo usuario, "revise tudo de
+# novo"): Delighted Halfling produz qualquer cor SO pra conjurar spell
+# lendario ("Spend this mana only to cast a legendary spell") — o
+# CARD_DB tinha ela com produces=set("WUBRG") incondicional, superestimando
+# a fixacao dela pra qualquer spell. Lista conferida via type_line real
+# (Scryfall) de toda carta do deck.
+LEGENDARY_SPELLS = {
+    "The Ur-Dragon", "Atarka, World Render", "Bladewing the Risen",
+    "Dragonlord Dromoka", "Klauth, Unrivaled Ancient", "Lathliss, Dragon Queen",
+    "Ruby, Daring Tracker", "Miirym, Sentinel Wyrm", "Old Gnawbone",
+    "Ramos, Dragon Engine", "Sarkhan, Soul Aflame", "The Great Henge",
+}
+
+
+def is_legendary(name: str) -> bool:
+    return name in LEGENDARY_SPELLS
+
 
 def has_flying(name: str) -> bool:
     return name in FLYING_CREATURES
@@ -468,6 +491,8 @@ class GameState:
     commander_in_play: bool = False
     commander_cast_count: int = 0
     commander_cast_turn: Optional[int] = None
+    hellkite_courser_commander_temp: bool = False
+    hellkite_courser_free_commander_total: int = 0
     creature_cast_turn: dict = field(default_factory=dict)
 
     # metrics -------------------------------------------------------------
@@ -648,7 +673,8 @@ def remaining_mana(state: GameState) -> int:
     return max(0, total_mana(state) - state.mana_spent_this_turn)
 
 
-def color_sources(state: GameState, color: str, dragon_creature_spell: bool = False) -> int:
+def color_sources(state: GameState, color: str, dragon_creature_spell: bool = False,
+                   legendary_spell: bool = False) -> int:
     """Conta fontes de mana em campo que produzem `color` — terrenos
     incondicionalmente, rocks/dorks so se prontos (sem doenca de invocacao,
     mesmo gate ja usado em dork_mana). Sol Ring/Ancient Tomb/etc contribuem
@@ -659,7 +685,12 @@ def color_sources(state: GameState, color: str, dragon_creature_spell: bool = Fa
     real 2026-08-27): produces vazio no CARD_DB (correto pro caso geral),
     mas SE `dragon_creature_spell=True` (a carta sendo conjurada e um
     Dragao de verdade) elas contam como fonte de QUALQUER cor — oraculo
-    real, tipo escolhido = Dragao nesse deck."""
+    real, tipo escolhido = Dragao nesse deck.
+
+    Delighted Halfling (achado real 2026-08-27, revisao completa): mesma
+    logica, mas `legendary_spell=True` (a carta sendo conjurada e' um
+    permanente lendario de verdade) — "Spend this mana only to cast a
+    legendary spell"."""
     n = 0
     ready = set(ready_creatures(state))
     for card in state.battlefield:
@@ -669,7 +700,12 @@ def color_sources(state: GameState, color: str, dragon_creature_spell: bool = Fa
         if base == state.tapped_land_this_turn:
             continue  # Triome jogado este turno, ainda tapped (ver ETB_TAPPED_LANDS)
         c = CARD_DB[base]
-        produces = set("WUBRG") if (dragon_creature_spell and base in DRAGON_ANY_COLOR_LANDS) else c.produces
+        if dragon_creature_spell and base in DRAGON_ANY_COLOR_LANDS:
+            produces = set("WUBRG")
+        elif legendary_spell and base == "Delighted Halfling":
+            produces = set("WUBRG")
+        else:
+            produces = c.produces
         if color not in produces:
             continue
         if is_creature_card(base) and card not in ready and base not in LAND_NAMES:
@@ -702,11 +738,15 @@ def has_color_sources_for(state: GameState, name: str) -> bool:
     Passa dragon_creature_spell=True pra color_sources quando `name` e um
     Dragao de verdade (creature, tag dragon) — libera Cavern of
     Souls/Secluded Courtyard/Haven of the Spirit Dragon como fonte de
-    qualquer cor so nesse caso (correcao real 2026-08-27)."""
+    qualquer cor so nesse caso (correcao real 2026-08-27). Passa
+    legendary_spell=True quando `name` e' lendario de verdade — libera
+    Delighted Halfling do mesmo jeito."""
     pips = CARD_DB[name].pips
     dragon_creature = is_dragon(name) and is_creature_card(name)
+    legendary = is_legendary(name)
     for color, needed in pips.items():
-        if color_sources(state, color, dragon_creature_spell=dragon_creature) < needed:
+        if color_sources(state, color, dragon_creature_spell=dragon_creature,
+                          legendary_spell=legendary) < needed:
             return False
     return True
 
@@ -852,6 +892,28 @@ def create_and_use_treasures(state: GameState, n: int):
 def resolve_etb(state: GameState, name: str):
     tags = CARD_DB[name].tags
 
+    if name == "Hellkite Courser" and not state.commander_in_play:
+        # Achado real 2026-08-27 (revisao completa, cartas sem tag
+        # nenhuma alem de 'dragon' passavam batido): "When this creature
+        # enters, you may put a commander you own from the command zone
+        # onto the battlefield. It gains haste. Return it to the command
+        # zone at the beginning of the next end step." Coloca a Ur-Dragon
+        # em campo DE GRACA (nao e' conjurar — nao incrementa
+        # commander_cast_count/taxa, nao marca commander_cast_turn, regra
+        # real). So dispara se ela ainda estiver na zona de comando (nao
+        # conjurada ainda) — se ja esta em campo, a habilidade nao tem
+        # alvo valido. Sai de campo nao no end_step deste MESMO turno
+        # (ela entrou na primeira main_phase(), antes do combate — real:
+        # "at the beginning of the next end step", que e' o fim deste
+        # turno em play_turn()).
+        # Via enter_battlefield() de verdade (nao so append) pra disparar
+        # os mesmos gatilhos de ETB de qualquer entrada real (Dragon
+        # Tempest, Scourge of Valkas, Lathliss, Miirym, Elemental
+        # Bond/Garruk's Uprising/Great Henge/Terror of the Peaks).
+        enter_battlefield(state, COMMANDER, from_hand=False, count_as_cast=False)
+        state.hellkite_courser_commander_temp = True
+        state.hellkite_courser_free_commander_total += 1
+
     if name == "Bladewing the Risen":
         targets = [c for c in state.graveyard if is_dragon(c)]
         if targets:
@@ -923,31 +985,71 @@ def reanimate_dragons_from_graveyard(state: GameState, limit: int = None):
         state.dragons_free_entry_total += 1
 
 
+def search_land(state: GameState, eligible_types: set = None, basics_only: bool = False,
+                 force_tapped: bool = False):
+    """Busca real de terreno (Achado 2026-08-27, revisao completa: o
+    codigo anterior pegava QUALQUER terreno da biblioteca sem checar tipo
+    nenhum — Farseek/Nature's Lore/Three Visits/Skyshroud Claim tem
+    restricoes de tipo REAIS e diferentes entre si, e nenhuma era
+    respeitada. Cultivate/Kodama's Reach so buscam terreno BASICO de
+    verdade, nao dual/triome com aquele tipo).
+
+    eligible_types: tipos basicos aceitos (cruzado contra
+    LAND_BASIC_TYPES, mesma logica de crack_fetch — alcanca duais/triomes
+    com aquele tipo, nao so basicas). basics_only=True restringe a
+    Forest/Mountain/Plains/Swamp de verdade. Prioriza, entre os
+    elegiveis, o que resolve a cor mais escassa agora."""
+    if basics_only:
+        candidates = [n for n in state.library if n in BASIC_LAND_NAMES]
+    else:
+        candidates = [n for n in state.library if n in LAND_BASIC_TYPES and (LAND_BASIC_TYPES[n] & eligible_types)]
+    if not candidates:
+        return None
+
+    def score(land):
+        colors = CARD_DB[land].produces
+        if not colors:
+            return 99
+        return min(color_sources(state, c) for c in colors)
+
+    candidates.sort(key=score)
+    pick = candidates[0]
+    state.library.remove(pick)
+    state.battlefield.append(pick)
+    if force_tapped or pick in ETB_TAPPED_LANDS:
+        state.tapped_land_this_turn = pick
+    return pick
+
+
 def resolve_instant_sorcery(state: GameState, name: str):
     tags = CARD_DB[name].tags
-    if "land_tutor2" in tags:
-        candidates = [n for n in state.library if n in LAND_NAMES]
-        for _ in range(2):
-            if candidates:
-                pick = candidates.pop(0)
-                state.library.remove(pick)
-                if state.lands_played_this_turn == 0 or True:
-                    state.battlefield.append(pick)
-                    if not candidates:
-                        break
-        # simplificado: as duas vao pro campo (real: 1 campo tapped + 1 mao) --
-        # documentado, favorece mana imediata em vez de guardar 1 na mao
-    elif "land_tutor1" in tags:
-        candidates = [n for n in state.library if n in LAND_NAMES]
-        if candidates:
-            pick = candidates[0]
-            state.library.remove(pick)
-            state.battlefield.append(pick)
-    elif "land_tutor2_direct" in tags:
-        candidates = [n for n in state.library if n in LAND_NAMES][:2]
-        for pick in candidates:
-            state.library.remove(pick)
-            state.battlefield.append(pick)
+    if name in ("Cultivate", "Kodama's Reach"):
+        # "Search for up to two BASIC land cards... put one onto the
+        # battlefield tapped and the other into your hand." Simplificado
+        # ha tempo (documentado): as duas vao pro campo em vez de 1 pra
+        # mao, favorece mana imediata. So terrenos BASICOS de verdade
+        # (nao duais/triomes com aquele tipo) — bug real corrigido agora,
+        # buscava qualquer terreno antes. Tapped nao forcado aqui (a
+        # simplificacao de "ambas pro campo" ja documentada torna a
+        # semantica de qual das 2 seria a 'tapped' real ambigua).
+        search_land(state, basics_only=True)
+        search_land(state, basics_only=True)
+    elif name == "Farseek":
+        # "Search for a Plains, Island, Swamp, or Mountain card, put it
+        # onto the battlefield TAPPED." Alcanca qualquer terreno com um
+        # desses 4 tipos (duais/triomes inclusos), nao so basicas — mas
+        # NUNCA Forest pura.
+        search_land(state, eligible_types={"Plains", "Island", "Swamp", "Mountain"}, force_tapped=True)
+    elif name in ("Nature's Lore", "Three Visits"):
+        # "Search for a Forest card, put it onto the battlefield." Sem
+        # 'tapped' no oraculo — destravado. Alcanca qualquer terreno
+        # Forest-tipado (duais/triomes inclusos).
+        search_land(state, eligible_types={"Forest"})
+    elif name == "Skyshroud Claim":
+        # "Search for up to two Forest cards, put them onto the
+        # battlefield." Sem 'tapped' — destravadas, as duas.
+        search_land(state, eligible_types={"Forest"})
+        search_land(state, eligible_types={"Forest"})
     elif "dragon_tutor_hand" in tags:
         pool = [n for n in state.library if is_dragon(n)]
         if pool:
@@ -1006,17 +1108,26 @@ def create_permanent(state: GameState, name: str):
     state.battlefield.append(name)
 
 
-def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
+def enter_battlefield(state: GameState, name: str, from_hand: bool = True, count_as_cast: bool = True):
     if from_hand and name in state.hand:
         state.hand.remove(name)
     state.battlefield.append(name)
     if name == COMMANDER:
         state.commander_in_play = True
-        state.commander_cast_count += 1
-        if state.commander_cast_turn is None:
-            state.commander_cast_turn = state.turn
+        if count_as_cast:
+            # count_as_cast=False: entrada gratis (Hellkite Courser) —
+            # NAO e' conjurar, nao incrementa a taxa nem marca o turno de
+            # "conjuracao" (regra real, essa habilidade poe em campo, nao
+            # conjura).
+            state.commander_cast_count += 1
+            if state.commander_cast_turn is None:
+                state.commander_cast_turn = state.turn
     if is_creature_card(name):
         state.creature_cast_turn[name] = state.turn
+    if name == COMMANDER and not count_as_cast:
+        # "It gains haste" — sem isso ficaria presa por doenca de
+        # invocacao no combate deste mesmo turno.
+        state.creature_cast_turn[name] = state.turn - 1
     if name == "Ramos, Dragon Engine":
         pass
     resolve_etb(state, name)
@@ -1327,6 +1438,18 @@ def combat_step(state: GameState):
 
 
 def end_step(state: GameState):
+    if state.hellkite_courser_commander_temp:
+        # Hellkite Courser: "Return it to the command zone at the
+        # beginning of the next end step." Ela ja atacou (se pronta) no
+        # combate deste turno — agora sai de campo de verdade, volta
+        # 'nao conjurada' (commander_in_play=False) pra poder ser
+        # conjurada normalmente depois, pagando taxa do zero (nao foi
+        # incrementada quando entrou de graca).
+        if COMMANDER in state.battlefield:
+            state.battlefield.remove(COMMANDER)
+        state.commander_in_play = False
+        state.hellkite_courser_commander_temp = False
+
     if "Dragon Broodmother" in state.battlefield:
         state.dragon_tokens += 1
     while len(state.hand) > 7:
@@ -1463,6 +1586,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg fetches cracked: {avg([s.fetches_cracked_total for s in states]):.2f}")
     print(f"Avg tutores via Magda (Treasure sac): {avg([s.magda_tutors_total for s in states]):.2f}")
     print(f"Avg Dragoes que entraram SEM pagar custo (Bladewing/Haunting Voyage/Magda tutor/Ur-Dragon free permanent): {avg([s.dragons_free_entry_total for s in states]):.2f}")
+    print(f"Avg vezes que a Ur-Dragon entrou de graca via Hellkite Courser: {avg([s.hellkite_courser_free_commander_total for s in states]):.2f}")
     print(f"Avg Dragon tokens (Lathliss/Miirym/Broodmother/Utvara): {avg([s.dragon_tokens for s in states]):.2f}")
     print(f"Avg turnos com color screw (mana total ok, cor errada): {avg([s.color_screw_turns for s in states]):.2f}")
     screwed = [s.first_color_screw_turn for s in states if s.first_color_screw_turn is not None]
