@@ -288,7 +288,7 @@ add("Twinflame Tyrant", 5, "creature", {"dragon", "damage_doubler"}, power=4, pi
 add("Utvara Hellkite", 8, "creature", {"dragon", "attack_dragon_token"}, power=6, pips={"R": 2})
 
 # --- Outras criaturas / suporte tribal --------------------------------------------
-add("Dragon Tempest", 2, "enchantment", {"dragon_etb_damage", "haste_flying"}, pips={"R": 1})
+add("Dragon Tempest", 2, "enchantment", {"dragon_etb_damage"}, pips={"R": 1})
 add("Magda, Brazen Outlaw", 2, "creature", {"treasure_tutor_dragon"}, pips={"R": 1})
 # Firdoch Core: Kindred Artifact — Shapeshifter, Changeling ("This card is
 # every creature type") — tem o tipo Dragao em toda zona, inclusive como
@@ -316,7 +316,7 @@ add("Radagast of Rhosgobel", 4, "creature", {"first_creature_discount"}, pips={"
 # --- Draw engines de poder / spells caras -----------------------------------------
 add("Elemental Bond", 3, "enchantment", {"power3_draw"}, pips={"G": 1})
 add("Garruk's Uprising", 3, "enchantment", {"power4_draw"}, pips={"G": 1})
-add("Temur Ascendancy", 3, "enchantment", {"power4_draw_optional", "haste_all"}, pips={"G": 1, "U": 1, "R": 1})
+add("Temur Ascendancy", 3, "enchantment", {"power4_draw_optional"}, pips={"G": 1, "U": 1, "R": 1})
 add("The Great Henge", 9, "artifact", {"nontoken_etb_counter_draw", "cost_reduce_power"}, pips={"G": 2})
 add("Up the Beanstalk", 2, "enchantment", {"bigspell_draw"}, pips={"G": 1})
 add("Return of the Wildspeaker", 5, "instant", {"power_draw_instant"}, pips={"G": 1})
@@ -359,6 +359,32 @@ def is_dragon(name: str) -> bool:
 
 def is_roaming_type(name: str) -> bool:
     return ROAMING_THRONE_TYPE in CARD_DB[name].tags
+
+
+# Achado em 2026-08-27 (mesma classe de bug que a tag morta da Magda):
+# "haste_all" (Temur Ascendancy) e "haste_flying" (Dragon Tempest) existiam
+# como tags decorativas desde que essas cartas entraram no CARD_DB, mas
+# ready_creatures() nunca as checava — so olhava a tag "haste" na propria
+# criatura. Oraculo real conferido via Scryfall:
+#   Temur Ascendancy: "Creatures you control have haste." (estatico, todas)
+#   Dragon Tempest: "Whenever a creature you control with flying enters, it
+#   gains haste until end of turn." (so no turno em que entra, so voadoras)
+# Todos os Dragoes do deck (e Birds of Paradise) tem Flying real — conferido
+# carta a carta via oraculo, nao assumido por serem Dragoes.
+FLYING_CREATURES = {
+    "The Ur-Dragon", "Birds of Paradise", "Ancient Copper Dragon",
+    "Ancient Gold Dragon", "Atarka, World Render", "Balefire Dragon",
+    "Bladewing the Risen", "Dragon Broodmother", "Dragonlord Dromoka",
+    "Goldspan Dragon", "Hellkite Charger", "Hellkite Courser",
+    "Klauth, Unrivaled Ancient", "Lathliss, Dragon Queen",
+    "Miirym, Sentinel Wyrm", "Old Gnawbone", "Savage Ventmaw",
+    "Scourge of Valkas", "Terror of the Peaks", "Twinflame Tyrant",
+    "Utvara Hellkite",
+}
+
+
+def has_flying(name: str) -> bool:
+    return name in FLYING_CREATURES
 
 
 # ---------------------------------------------------------------------------
@@ -480,10 +506,28 @@ def ready_creatures(state: GameState):
     pra atacar quanto pra ativar habilidades de mana, quando o texto real
     remove essa restricao. Criaturas tagueadas 'haste' ignoram o gate de
     turno de conjuracao (real: haste remove summoning sickness tanto pra
-    atacar quanto pra ativar {T})."""
-    return [n for n in state.battlefield if is_creature_card(n)
-            and ("haste" in CARD_DB[n].tags
-                 or state.creature_cast_turn.get(n, -1) < state.turn)]
+    atacar quanto pra ativar {T}).
+
+    Segundo bug real corrigido no mesmo dia (mesma classe da tag morta da
+    Magda): "haste_all" (Temur Ascendancy, estatico pra qualquer criatura)
+    e "haste_flying" (Dragon Tempest, so pras que tem flying, so no turno
+    em que entram) existiam como tags decorativas desde que essas cartas
+    foram registradas — nunca eram checadas aqui."""
+    temur_ascendancy = "Temur Ascendancy" in state.battlefield
+    dragon_tempest = "Dragon Tempest" in state.battlefield
+
+    def is_ready(n):
+        if "haste" in CARD_DB[n].tags:
+            return True
+        if state.creature_cast_turn.get(n, -1) < state.turn:
+            return True
+        if temur_ascendancy:
+            return True
+        if dragon_tempest and has_flying(n) and state.creature_cast_turn.get(n, -1) == state.turn:
+            return True
+        return False
+
+    return [n for n in state.battlefield if is_creature_card(n) and is_ready(n)]
 
 
 def dork_mana(state: GameState) -> int:

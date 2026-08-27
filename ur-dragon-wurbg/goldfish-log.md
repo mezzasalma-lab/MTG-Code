@@ -694,6 +694,84 @@ de antes — 53,3% nunca conjurada, 37,4% color screw — sem regressão.
 
 ---
 
+## Correção #9 — Lightning Greaves (shroud) e outra tag morta encontrada
+
+Usuário corrigiu de novo: *"Lightning Greaves além de haste enabler é
+proteção imediata com Hexproof"* — na verdade é **shroud**, não
+hexproof (conferido via oráculo: "Equipped creature has haste and
+shroud"), mas o ponto central estava certo: a razão usada pra cortar
+Lightning Greaves na Correção #7 ("shroud é real mas situacional sem
+oponente modelado") não era um teste — era uma desculpa, já que o
+simulador goldfish não modela remoção de oponente e nunca modelou.
+
+Testando a troca de volta (Lightning Greaves dentro, cortando Talisman
+of Impulse) achei, sem querer, um **segundo bug de tag morta da mesma
+classe da Magda**: `"haste_all"` (Temur Ascendancy: "Creatures you
+control have haste", estático) e `"haste_flying"` (Dragon Tempest:
+"Whenever a creature you control with flying enters, it gains haste
+until end of turn") existiam como tags decorativas desde que essas
+cartas foram registradas — `ready_creatures()` nunca as checava, só
+olhava a tag `"haste"` na própria criatura. Ou seja, Dragões recém-
+conjurados ficavam presos por doença de invocação mesmo com Temur
+Ascendancy ou Dragon Tempest em campo, quando o oráculo real remove
+essa restrição.
+
+**Corrigido:** `ready_creatures()` agora checa presença de Temur
+Ascendancy (libera qualquer criatura) e Dragon Tempest + `has_flying()`
+(libera só voadoras, só no turno em que entram). `FLYING_CREATURES`
+construído carta a carta via oráculo real (todos os Dragões do deck e
+Birds of Paradise têm Flying real, nenhum outro creature do deck tem).
+Testado: 200 jogos smoke test, 20.000 jogos de robustez (0 erros).
+
+**Impacto real e limpo do bugfix isolado** (mesma lista, Talisman+Ruby,
+mesma seed_base=7600000, n=3000, único fator variando é o código):
+
+| métrica | antes do fix | depois do fix | delta |
+|---|---|---|---|
+| nunca conjurada | 53,3% | 52,5% | -0,8pp (esperado, pequeno — haste não afeta quando o comandante é conjurado) |
+| dano proxy médio | 36,88 | 48,24 | **+11,36 (+31%)** |
+| eventos dano-ETB | 1,83 | 2,18 | +0,35 |
+| cartas compradas extra | 5,27 | 5,74 | +0,47 |
+
+Efeito real e grande no motor de dano — o deck estava subestimando o
+próprio output desde que Temur Ascendancy/Dragon Tempest entraram no
+simulador, não só nesta sessão.
+
+**Sobre a troca Lightning Greaves ↔ Talisman especificamente:** testei
+isolado (mesmas seeds, com o fix já aplicado) e cortar o Talisman por
+Lightning Greaves custa real: -36% no dano proxy médio (75,69→48,28 no
+teste isolado — nota: esse número específico saiu inflado por um
+artefato de ordenação da lista, ver observação de metodologia abaixo;
+o delta relativo de -36% é a leitura confiável, não os valores
+absolutos desse teste isolado). Motivo: Talisman é rampa real, perder
+rampa atrasa o desenvolvimento do board mesmo sem mudar o turno de
+conjuração do comandante. Apresentei o dado ao usuário, que decidiu
+**manter Talisman e reverter o corte de Lightning Greaves** — proteção
+permanente do comandante não compensa 36% a menos de dano médio nesta
+lista. `lista.md` final: idêntico ao pós-Correção #8 (Talisman+Ruby
+dentro, Magda e Lightning Greaves fora). Só o bugfix de haste foi
+mantido — não é mudança de lista, é correção de simulador.
+
+**Observação de metodologia (importante pra testes futuros):** o
+padrão usado em todos os scripts de teste pareado desta sessão
+(`build_library(cuts, adds)` faz `lib.remove(c)` seguido de
+`lib.append(a)`) coloca a carta nova no FIM da lista, não na posição
+da carta removida. `random.shuffle()` do Python é Fisher-Yates baseado
+em ÍNDICES, não em conteúdo — então mover uma carta do meio da lista
+pro final desloca a posição de shuffle de todas as cartas entre o
+ponto original e o fim, não só da carta trocada. Isso não invalida as
+conclusões direcionais (todos os testes desta sessão foram checados em
+múltiplas seed_bases independentes e a direção do efeito nunca mudou),
+mas explica parte do ruído extra visto em alguns testes (ex: o reteste
+da Magda, Correção #8) e reduz a precisão do controle de variância que
+o pareamento de seeds deveria dar. Fix recomendado pra scripts futuros:
+inserir a carta nova no índice da carta removida, não no fim da lista.
+Não refiz os testes já concluídos com isso — os achados de direção já
+foram confirmados por múltiplas seed_bases independentes de qualquer
+forma.
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**
