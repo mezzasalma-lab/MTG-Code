@@ -66,13 +66,21 @@ Re-piscar (exile + return) uma Shrine ja em campo dispara o gatilho
 pareado numa Shrine (soulbond), isso vira `{1}{U}: repisca a Shrine`,
 repetivel enquanto houver mana — nao e' infinito (custa mana), mas e' um
 motor real de escalada. Implementado: `blink_permanent()` remove e
-re-adiciona a permanente, re-chamando `shrine_enters()` se for Shrine
-(sempre como "self", nunca como token). Fontes de blink modeladas com
-efeito real: Deadeye Navigator (soulbond, ativa quando ha mana sobrando),
-Ephemerate (com rebound = 2 usos reais), Waterbender's Restoration,
-Teleportation Circle, The Mind Stone (harnessed), Thassa Deep-Dwelling —
-todas tentam escolher a Shrine com maior "self ETB" de valor disponivel em
-campo (greedy).
+re-adiciona a permanente na hora (atomico), re-chamando `shrine_enters()`
+se for Shrine (sempre como "self", nunca como token). Fontes de blink
+ATOMICO (oraculo diz so "exile, then return", sem timing adiado): Deadeye
+Navigator (soulbond, ativa quando ha mana sobrando), Ephemerate (com
+rebound = 2 usos reais, cada um atomico), Teleportation Circle, The Mind
+Stone (harnessed), Thassa Deep-Dwelling — todas tentam escolher a Shrine
+com maior "self ETB" de valor disponivel em campo (greedy).
+
+Duas fontes tem timing DIFERENTE — oraculo real diz "return that card...
+at the beginning of the NEXT END STEP" (retorno adiado, nao atomico):
+Waterbender's Restoration e Skybind. Ambas exilam na hora mas so
+re-adicionam ao battlefield via `state.pending_end_step_returns`,
+resolvido em `end_step()` (achado real 2026-08-27, corrigido nas 2, na
+mesma sessao — a 2a so foi pega numa revisao pedida explicitamente
+depois da 1a).
 
 ======================================================================
 Motor de conjuracao de encantamento (Enchantress package)
@@ -117,12 +125,13 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas)
   the Spirit Realm, Farewell, Go-Shintai of Hidden Cruelty/Lost Wisdom's
   efeitos contra oponente) — sem alvo real, contadas como interacao usada,
   sem efeito colateral no nosso campo.
-- Skybind: implementado de forma modesta — ao entrar um encantamento,
-  se houver uma criatura NAO-token propria em campo sem Shrine (evita
-  reentrar Shrine com Skybind competindo com o motor de blink dedicado),
-  ela e re-piscada (sem efeito extra relevante, ja que nenhuma criatura
-  nao-Shrine deste deck tem ETB proprio de peso) — documentado como valor
-  quase nulo neste build especifico, nao inflado artificialmente.
+- Skybind: alvo real e' "target nonenchantment permanent" — ve
+  `best_nonenchantment_permanent_to_reblink()`, que so acha valor se
+  houver criatura PURA (ctype=="creature", nunca Shrine — todas sao
+  encantamento) em campo E Purphoros ou Aura Shards tambem em campo (sem
+  isso, nenhuma criatura nao-Shrine deste deck tem ETB proprio de peso).
+  Dispara em CADA encantamento entrando (Shrines inclusas — e' frequente),
+  retorno adiado pro proximo end step (ver secao "Motor de blink" acima).
 - Weaver of Harmony: so o buff estatico (+1/+1 pra outras enchantment
   creatures) e considerado; a habilidade de copiar ativada/disparada de
   fonte de encantamento (`{G}, {T}: copy target...`) NAO e modelada —
@@ -139,6 +148,23 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas)
   "exile enchantments" tecnicamente afetaria nossas proprias Shrines, a
   convencao desta biblioteca e nunca simular decisao simetrica/assimetrica
   sem oponente real, entao e tratada como interacao pura.
+- Seedborn Muse: "Untap all permanents you control during EACH OTHER
+  PLAYER'S untap step" — genuinamente fora de escopo aqui, nao so uma
+  aproximacao: este simulador so avanca os SEUS proprios turnos
+  (`play_turn` num loop de `turns`), nunca modela um untap step de
+  oponente, entao o gatilho real da carta nunca teria uma janela pra
+  disparar neste modelo especifico, mesmo implementado literalmente.
+  Corpo 2/4 vanilla no goldfish. Achado real 2026-08-27 (usuario pediu
+  foco nas cartas ainda nao conferidas ponto a ponto): a tag
+  'untap_all' existia na CARD_DB mas nunca era checada em lugar nenhum —
+  agora documentada aqui como fora de escopo de verdade, nao mais um
+  buraco silencioso.
+- Greater Auramancy / Sterling Grove (metade do shroud): "other
+  enchantments you control have shroud" — protecao pura contra
+  targeting de oponente; como este simulador nao modela NENHUMA acao do
+  oponente contra nosso board (sem remocao/contramagia real vindo do
+  outro lado), shroud nao tem efeito numerico possivel de capturar aqui,
+  fora de escopo pela mesma razao do Seedborn Muse.
 """
 
 import json
@@ -403,7 +429,7 @@ class GameState:
     ephemerate_rebound_pending: bool = False
     mind_stone_harnessed: bool = False
     creature_cast_turn: dict = field(default_factory=dict)
-    waterbenders_pending_return: list = field(default_factory=list)
+    pending_end_step_returns: list = field(default_factory=list)
 
     # metrics -------------------------------------------------------------
     cards_drawn_extra: int = 0
@@ -616,21 +642,32 @@ def on_cast_enchantment(state: GameState, name: str):
 
 def on_any_enchantment_enters(state: GameState, name: str):
     """Skybind — 'Constellation: whenever this or another enchantment you
-    control enters, exile target NONENCHANTMENT permanent, return at
-    next end step.' Achado real 2026-08-27 (revisao completa): o filtro
-    anterior (`n not in ("token",)`) comparava o NOME da carta com a
-    string literal 'token' — nunca batia com nada de verdade (nenhuma
-    carta se chama assim), entao nao excluia token nenhum, E ainda
-    incluia Shrines-criatura (Go-Shintai, que sao encantamento — alvo
-    ILEGAL pro 'nonenchantment' do oraculo real). Corrigido com o pool de
-    alvo legal de verdade (ver best_nonenchantment_permanent_to_reblink).
-    Dispara em CADA Shrine conjurada (Shrines sao encantamento), entao e'
-    frequente neste deck."""
+    control enters, exile target NONENCHANTMENT permanent. Return that
+    card to the battlefield... at the beginning of the NEXT END STEP.'
+    Achado real 2026-08-27 (revisao completa): o filtro anterior (`n not
+    in ("token",)`) comparava o NOME da carta com a string literal
+    'token' — nunca batia com nada de verdade (nenhuma carta se chama
+    assim), entao nao excluia token nenhum, E ainda incluia
+    Shrines-criatura (Go-Shintai, que sao encantamento — alvo ILEGAL pro
+    'nonenchantment' do oraculo real). Corrigido com o pool de alvo legal
+    de verdade (ver best_nonenchantment_permanent_to_reblink). Dispara em
+    CADA Shrine conjurada (Shrines sao encantamento), entao e' frequente
+    neste deck.
+    Achado real 2026-08-27 (2a revisao, mesmo dia — usuario pediu foco
+    nas cartas ainda nao conferidas ponto a ponto): apesar do proprio
+    docstring acima ja dizer "return at next end step", o codigo fazia
+    blink atomico na hora (`blink_permanent()`) — exatamente a MESMA
+    classe de bug ja corrigida no Waterbender's Restoration nesta mesma
+    sessao, so que aqui passou despercebida porque a correcao do
+    Waterbender's nao tinha ido conferir os outros efeitos de blink
+    adiado do deck. Corrigido com o mesmo mecanismo:
+    state.pending_end_step_returns, resolvido em end_step()."""
     if "Skybind" not in state.battlefield:
         return
     target = best_nonenchantment_permanent_to_reblink(state)
-    if target:
-        blink_permanent(state, target, source="Skybind")
+    if target and target in state.battlefield:
+        state.battlefield.remove(target)
+        state.pending_end_step_returns.append(target)
 
 
 # ---------------------------------------------------------------------------
@@ -914,7 +951,7 @@ def resolve_instant_sorcery(state: GameState, name: str):
         target = best_creature_to_reblink(state)
         if target and target in state.battlefield:
             state.battlefield.remove(target)
-            state.waterbenders_pending_return.append(target)
+            state.pending_end_step_returns.append(target)
     elif "blink_rebound" in tags:
         # Achado real 2026-08-27: Ephemerate estava 100% morta — a tag
         # 'blink_rebound' nunca era checada em lugar nenhum (nem o blink
@@ -1272,11 +1309,11 @@ def main_phase(state: GameState):
 def end_step(state: GameState):
     do_go_shintai_endstep(state)
     do_endstep_blinks(state)
-    if state.waterbenders_pending_return:
-        for name in state.waterbenders_pending_return:
+    if state.pending_end_step_returns:
+        for name in state.pending_end_step_returns:
             state.blinks_total += 1
             _reenter_from_blink(state, name)
-        state.waterbenders_pending_return = []
+        state.pending_end_step_returns = []
     while len(state.hand) > 7:
         worst = min(state.hand, key=lambda n: effective_cost(state, n) if n not in LAND_NAMES else 0)
         state.hand.remove(worst)

@@ -582,6 +582,115 @@ mas são contribuições bem menores.
 
 ---
 
+## Correção #5 — varredura das cartas ainda sem pergunta pontual (usuário: "Quero o foco nas próximas carta sim")
+
+Depois da Correção #4, o usuário perguntou se o modelo já estava
+"correto, preciso e coeso". A resposta honesta foi: sem bug conhecido,
+mas várias cartas só tinham passado pela auditoria geral (Correção #1),
+nunca por uma pergunta pontual — e o padrão da sessão inteira é que
+pergunta pontual sempre achava bug que a auditoria geral não pegou.
+Usuário: *"Quero o foco nas próximas carta sim."*
+
+Auditadas contra o oráculo real (Scryfall) nesta rodada: as 12
+Sanctums/Hondens/Temples ainda não conferidas (Crescent Island Temple,
+Honden of Life's Web, Honden of Seeing Winds, Kyoshi Island Plaza,
+Northern Air Temple, Sanctum of All, Sanctum of Calm Waters, Sanctum of
+Fruitful Harvest, Sanctum of Shattered Heights, Sanctum of Stone Fangs,
+Southern Air Temple, The Spirit Oasis), os 3 Go-Shintai restantes
+(Hidden Cruelty, Lost Wisdom, Shared Purpose), Seedborn Muse, Dryad of
+the Ilysian Grove, Argothian Enchantress, Weaver of Harmony, Sterling
+Grove, Greater Auramancy, Hallowed Haunting, Herald of the Pantheon,
+Elesh Norn, Annie Joins Up, Displacer Kitten, Sol Ring, Arcane Signet,
+Idyllic Tutor, Replenish, Cultivate, Farseek, Nature's Lore, Three
+Visits, Enduring Vitality — praticamente o resto da lista.
+
+### Verificado correto (sem mudança)
+
+- Todos os 12 Sanctums/Hondens/Temples: gatilho próprio de ETB (escala
+  com contagem de Shrines no momento em que resolve, já incluindo a si
+  mesma) vs. gatilho "whenever ANOTHER Shrine enters" (fixo, 1 por
+  Shrine, separado corretamente em `SHRINE_SELF_ETB` vs.
+  `SHRINE_OTHER_REACT`) — conferido contra o oráculo carta por carta,
+  os dois gatilhos são realmente distintos no texto real e o código já
+  os trata como duas abilities separadas.
+- Sanctum of All: "search library and/or graveyard" modelado como busca
+  única (biblioteca primeiro, cemitério como fallback) — bate com "a
+  Shrine card" (singular) do oráculo; auto-exclusão do próprio dobrador
+  (6+ Shrines) já confirmada em rodada anterior.
+- Sterling Grove: `{1}, sacrifice: search... put on top` — conferido
+  que o código insere no índice 0 da lista de biblioteca (`insert(0,
+  ...)`) e que `draw_cards`/o resto do motor sempre puxam do índice 0
+  (`pop(0)`) — "topo" é literalmente o próximo a ser comprado, timing
+  certo.
+- Go-Shintai of Hidden Cruelty/Lost Wisdom/Shared Purpose: gatilho
+  pago de end step, cada um seu próprio `{1}` independente — batem com
+  o oráculo; Hidden Cruelty (remoção) e Lost Wisdom (mill de oponente)
+  corretamente tratados como proxy sem efeito no nosso board (mesma
+  convenção de todo o pacote de remoção do deck).
+- Deadeye Navigator, Thassa Deep-Dwelling, Teleportation Circle, The
+  Mind Stone (Harness) — conferido que os 4 são blink ATÔMICO no
+  oráculo real ("exile, then return", sem "next end step"), batendo
+  com `blink_permanent()` direto. Nenhum precisa do mecanismo de
+  retorno adiado.
+- Dryad of the Ilysian Grove, Weaver of Harmony, Greater Auramancy,
+  Sterling Grove (metade do shroud) — estáticos sem efeito numérico
+  possível de capturar num modelo sem combate/sem oponente real, já
+  documentados como fora de escopo.
+
+### Corrigido (achado real novo)
+
+1. **Skybind fazia blink atômico em vez de retorno adiado.** Oráculo
+   real: "exile target nonenchantment permanent. Return that card to
+   the battlefield... **at the beginning of the next end step**" — a
+   MESMA classe de bug do Waterbender's Restoration (Correção #4), só
+   que aqui passou despercebida porque aquela correção não foi conferir
+   os outros efeitos de blink do deck. Como Skybind dispara em CADA
+   encantamento que entra (Shrines inclusas — é frequente neste deck),
+   o impacto é mais visível que o do Waterbender's. Corrigido
+   reaproveitando o mesmo mecanismo: `state.pending_end_step_returns`
+   (renomeado de `waterbenders_pending_return`, agora compartilhado
+   pelas duas fontes), resolvido em `end_step()`.
+
+### Documentado (não era bug, era lacuna de documentação)
+
+- **Seedborn Muse** — a tag `untap_all` existia na `CARD_DB` mas nunca
+  era checada em lugar nenhum do código. Investigado: o gatilho real
+  ("untap all permanents... during EACH OTHER PLAYER'S untap step")
+  não tem nenhuma janela pra disparar neste simulador, que só avança os
+  PRÓPRIOS turnos (nunca simula untap step de oponente) — corpo 2/4
+  vanilla é o resultado correto aqui, não um bug. Documentado
+  explicitamente no cabeçalho do arquivo (antes era um buraco
+  silencioso, sem nem estar na lista de simplificações).
+
+Testado: 300 jogos smoke test (0 erros), 25.000 jogos de robustez com
+timeout de 2s/jogo (0 erros, 0 timeouts).
+
+**Impacto real** (mesma seed_base=9100000, n=3000, só o fix do
+Skybind — as verificações "corretas" não mudam nada):
+
+| métrica | antes (Correção #4) | depois |
+|---|---|---|
+| Shrines em campo (fim) | 6,84 | **6,74** |
+| dano proxy total | 120,56 | **115,33** |
+| dobras via Elesh Norn | 38,65 | 35,95 |
+| dobras via Annie Joins Up | 19,77 | 18,98 |
+| tokens criados | 31,21 | 30,30 |
+| blinks totais | 1,83 | 1,75 |
+| spells de interação (proxy) | 40,67 | 38,37 |
+| destruições via Aura Shards | 39,55 | 37,26 |
+
+Queda modesta e proporcional — bem menor que o salto da Correção #4,
+porque o alvo legal do Skybind já era estreito (só criatura pura +
+Purphoros/Aura Shards em campo), então o efeito de "ETB disponível 1
+turno antes do correto" tinha valor limitado pra começo de conversa.
+Ainda assim, real: qualquer permanente exilado pelo Skybind ficava
+disponível como mana/ETB pros spells seguintes no MESMO main phase
+antes da correção, o que não deveria acontecer.
+
+`lista.md` não mudou. `heibai_v1_runs.jsonl` sobrescrito.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
