@@ -59,6 +59,29 @@ Data da auditoria: 2026-08-20
 > se beneficiar dessas 3 terras) — só não é tão ruim quanto parecia
 > especificamente pra conjurar as próprias ameaças do deck.
 
+> **Atualização (2026-08-27) — correção de metodologia (Regra 8):**
+> usuário apontou que somar todos os pips do deck inteiro como "demanda"
+> superestima a pressão real — não considera que a maioria dos Dragões
+> em campo nunca teve pip pago (token, reanimação, tutor, habilidade da
+> própria Ur-Dragon), nem que o que É conjurado está espalhado ao longo
+> de vários turnos. Medido de verdade: de ~7,85 Dragões em campo no fim
+> de uma partida de 8 turnos, só **44,6% (3,50) foram realmente
+> conjurados pagando mana** — 48,2% eram tokens (Lathliss/Miirym/
+> Broodmother/Utvara), 7,2% entraram de graça (Bladewing/Haunting
+> Voyage/Magda/permanente grátis da Ur-Dragon). Isso dá **0,44 Dragões
+> conjurados por turno em média** — nunca "3 Dragões de pip vermelho no
+> mesmo turno" como cenário típico. A tabela de pips agregados acima
+> segue útil como triagem inicial de desequilíbrio de cor, mas a métrica
+> correta de necessidade real é `color_screw_turns`/
+> `first_color_screw_turn` (turno-a-turno, simulado de verdade): 34,5%
+> dos jogos têm pelo menos 1 turno real de screw, turno médio do
+> primeiro ~3,5. Ver `goldfish-log.md` Correção #11 e Regra 8 de
+> `references/user-standing-rules.md`. No caminho, 3 bugs reais achados
+> e corrigidos (Haunting Voyage nunca implementada; Utvara Hellkite e
+> Old Gnawbone com gatilho auto-referente errado — ambos reagem a
+> QUALQUER Dragão/criatura, não só a si mesmos) — dano proxy médio subiu
+> 59% (57,03→90,79) só com esses fixes, sem trocar carta nenhuma.
+
 ---
 
 ## 3. Game Changers — contagem oficial

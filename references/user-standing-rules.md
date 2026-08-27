@@ -181,6 +181,45 @@ não velocidade):**
   conclusão — pra não repetir o erro de alarmar sobre reclassificação de
   Bracket antes de checar viabilidade real.
 
+## 8. Necessidade real de mana é turno-a-turno, não soma agregada de pips
+
+Citação literal do usuário (2026-08-27), Ur-Dragon: *"Não, quero a
+análise real da necessidade de mana, pq quando vc soma todos os pips,
+não considera que dificilmente eu irei cast 3 dragões que precisam de
+pips vermelho no mesmo turno! Ou eles entram por habilidade do
+Ur-Dragon, ou por outras habilidades!"*
+
+Contexto: a auditoria de pips usada nas Correções #5-#10 (somar todos os
+pips coloridos do deck inteiro e comparar contra fontes de mana
+agregadas) é útil pra saber SE a manabase tem cor suficiente no
+agregado, mas superestima a pressão real — ignora que (a) só uma fração
+do deck é jogada numa partida, (b) parte relevante das ameaças pode
+entrar em campo sem pagar pip nenhum (tokens, reanimação, tutor,
+habilidades como a da própria Ur-Dragon), e (c) mesmo o que é conjurado
+de verdade está espalhado ao longo de vários turnos, não simultâneo.
+Verificado no Ur-Dragon: de ~7,85 Dragões em campo no fim de uma
+partida de 8 turnos, só 44,6% (3,50) foram realmente conjurados pagando
+mana — 48,2% eram tokens, 7,2% entraram de graça por reanimação/tutor.
+
+- **Nunca apresentar a soma agregada de pips vs. fontes agregadas como
+  "a" medida de necessidade de mana.** Ela serve só como triagem inicial
+  (existe desequilíbrio grosseiro de cor no deck?), não como conclusão
+  final sobre pressão de jogo real.
+- **A métrica correta é turno-a-turno**, calculada rodando o goldfish de
+  verdade: `color_screw_turns` / `first_color_screw_turn` (turnos onde a
+  mana total bastava mas a cor certa não estava disponível) — isso já
+  reflete curva real, mão real, e qualquer via de entrada gratuita
+  corretamente implementada no simulador.
+- **Antes de reportar "demanda de X% na cor Y", separar o que é
+  conjurado pagando mana do que entra por outra via** (token, reanimação,
+  tutor pra campo, habilidade de ataque/ETB de outra carta) — a soma de
+  pips do deck inteiro conta ameaças que nunca vão exigir aquele pip na
+  prática.
+- Isso não invalida a auditoria de pips como ferramenta (ainda é o jeito
+  mais rápido de notar "essa cor está claramente sub-representada"), só
+  não deve ser tratada como o número final sem cruzar com dado
+  turno-a-turno do simulador.
+
 ---
 
 <!-- Adicionar novas regras permanentes abaixo conforme o usuário as

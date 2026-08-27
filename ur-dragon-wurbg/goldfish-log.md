@@ -843,6 +843,86 @@ escolhido/fixo), espelhado nas duas cópias (repo + skill canônico).
 
 ---
 
+## Correção #11 — crítica metodológica real do usuário + 3 bugs achados junto
+
+Usuário: *"Não, quero a análise real da necessidade de mana, pq quando vc
+soma todos os pips, não considera que dificilmente eu irei cast 3
+dragões que precisam de pips vermelho no mesmo turno! Ou eles entram
+por habilidade do Ur-Dragon, ou por outras habilidades!"*
+
+Ponto metodológico correto: somar todos os 41 pips de vermelho da lista
+inteira (`pip_total` na auditoria) e comparar contra fontes de mana é
+uma proxy útil mas grosseira — implicitamente assume que toda a demanda
+de pips do deck precisa ser paga "de uma vez", quando na prática (a) só
+uma fração do deck é comprada/jogada numa partida de 8 turnos, (b) boa
+parte dos Dragões que acabam em campo nunca teve pip nenhum pago
+(tokens, reanimação, tutor), e (c) mesmo os que são conjurados de
+verdade estão espalhados ao longo de 8 turnos, não simultâneos.
+
+Investigando isso pra dar uma resposta com número real (não só
+concordar em texto), achei 3 bugs reais adicionais na mesma área:
+
+1. **Haunting Voyage (`mass_reanimate`) nunca tinha sido implementada** —
+   tag morta desde que a carta entrou no CARD_DB. A carta custava 6 mana
+   e não fazia nada no simulador. Oráculo real: "Choose a creature type.
+   Return up to two creature cards of that type from your graveyard to
+   the battlefield." Implementado (modo hardcast só — modo foretold, com
+   custo/timing de 2 turnos separado, não modelado, mesma simplificação
+   conservadora documentada de outras cartas complexas).
+2. **Utvara Hellkite** ("Whenever A Dragon you control attacks...") e
+   **Old Gnawbone** ("Whenever A creature you control deals combat
+   damage...") **NÃO são gatilhos auto-referentes** — ao contrário de
+   Goldspan/Klauth/Savage Ventmaw (que dizem "whenever ~ [esta carta]
+   attacks"), essas 2 disparam pra qualquer Dragão atacando (Utvara) ou
+   qualquer criatura causando dano (Old Gnawbone). O código anterior só
+   checava a tag na própria carta atacante dentro do loop por-dragão —
+   ou seja, só disparavam quando a própria Utvara/Old Gnawbone estava no
+   grupo atacando, e Old Gnawbone criava só 1 treasure por atacante
+   (contagem) em vez de "tantos quanto o poder" (magnitude). Corrigido:
+   checagem de presença em campo (não precisa estar atacando), Utvara
+   escala com `n_attacking`, Old Gnawbone com a soma de poder dos
+   atacantes.
+
+Testado: 300 jogos smoke test, 20.000 jogos de robustez (0 erros) depois
+de cada uma das 2 rodadas de fix.
+
+**Impacto real dos 3 fixes juntos** (mesma seed_base=7600000, n=3000):
+
+| métrica | antes | depois |
+|---|---|---|
+| nunca conjurada | 50,0% | 48,1% |
+| Dragões em campo (fim de jogo) | 5,87 | **8,08** |
+| dano proxy médio | 57,03 | **90,79 (+59%)** |
+| Treasures criados | ~4-5 | **11,01** |
+
+**A resposta real pra pergunta do usuário** (n=4000, seed_base=20200000):
+dos ~7,85 Dragões em campo no fim de uma partida de 8 turnos —
+
+- **48,2%** são tokens (Lathliss/Miirym/Broodmother/Utvara) — nunca
+  tiveram pip nenhum pago.
+- **7,2%** entraram de graça por reanimação/tutor (Bladewing, Haunting
+  Voyage, Magda, permanente grátis da própria Ur-Dragon atacando).
+- **Só 44,6% (3,50 de 7,85) foram realmente conjurados pagando mana** —
+  isso dá **0,44 Dragões conjurados por turno em média**, ao longo de 8
+  turnos. Nunca "3 Dragões de pip vermelho no mesmo turno" como cenário
+  típico — é um evento de cauda, não a norma.
+
+**Conclusão sobre a metodologia:** a tabela de "demanda de pips
+agregada vs. fontes agregadas" (usada nas Correções/auditorias #5-#10)
+é um proxy razoável pra saber SE a manabase tem cor suficiente no
+agregado, mas superestima a pressão real turno-a-turno, e ignora
+completamente as vias de entrada gratuita. A métrica que já existia no
+simulador e É turno-a-turno de verdade — `color_screw_turns` /
+`first_color_screw_turn` (34,5% dos jogos têm pelo menos 1 turno real de
+mana total ok mas cor errada, turno médio do primeiro screw ~3,5) — é a
+correta pra avaliar necessidade real de mana, não a soma de pips. Daqui
+pra frente, ao avaliar necessidade de cor, priorizar essa métrica
+dinâmica sobre a tabela estática de pips agregados.
+
+`lista.md` não mudou. `urdragon_v1_runs.jsonl` sobrescrito.
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**

@@ -302,13 +302,13 @@ add("Hellkite Courser", 6, "creature", {"dragon"}, power=4, pips={"R": 2})
 add("Klauth, Unrivaled Ancient", 7, "creature", {"dragon", "attack_mana_power", "haste"}, power=7, pips={"R": 1, "G": 1})
 add("Lathliss, Dragon Queen", 6, "creature", {"dragon", "dragon_etb_token"}, power=6, pips={"R": 2})
 add("Miirym, Sentinel Wyrm", 6, "creature", {"dragon", "dragon_etb_copy"}, power=3, pips={"G": 1, "U": 1, "R": 1})
-add("Old Gnawbone", 7, "creature", {"dragon", "combat_treasure_all"}, power=7, pips={"G": 2})
+add("Old Gnawbone", 7, "creature", {"dragon"}, power=7, pips={"G": 2})
 add("Ramos, Dragon Engine", 6, "artifact_creature", {"dragon", "ramos_counters"}, power=2)
 add("Savage Ventmaw", 6, "creature", {"dragon", "attack_mana_flat"}, power=5, pips={"R": 1, "G": 1})
 add("Scourge of Valkas", 5, "creature", {"dragon", "dragon_etb_damage"}, power=4, pips={"R": 3})
 add("Terror of the Peaks", 5, "creature", {"creature_etb_damage_power"}, power=4, pips={"R": 2})
 add("Twinflame Tyrant", 5, "creature", {"dragon", "damage_doubler"}, power=4, pips={"R": 2})
-add("Utvara Hellkite", 8, "creature", {"dragon", "attack_dragon_token"}, power=6, pips={"R": 2})
+add("Utvara Hellkite", 8, "creature", {"dragon"}, power=6, pips={"R": 2})
 
 # --- Outras criaturas / suporte tribal --------------------------------------------
 add("Dragon Tempest", 2, "enchantment", {"dragon_etb_damage"}, pips={"R": 1})
@@ -435,6 +435,7 @@ class GameState:
     ramos_counters: int = 0
     magda_treasures: int = 0
     magda_tutors_total: int = 0
+    dragons_free_entry_total: int = 0
 
     commander_in_play: bool = False
     commander_cast_count: int = 0
@@ -786,6 +787,7 @@ def resolve_etb(state: GameState, name: str):
             best = max(targets, key=lambda n: CARD_DB[n].mv)
             state.graveyard.remove(best)
             enter_battlefield(state, best, from_hand=False)
+            state.dragons_free_entry_total += 1
 
     if "nontoken_etb_counter_draw" in tags:
         pass  # e o proprio Great Henge entrando, nao dispara a si mesmo
@@ -849,6 +851,22 @@ def resolve_instant_sorcery(state: GameState, name: str):
         powers = [CARD_DB[n].power for n in state.battlefield if is_creature_card(n)]
         if powers:
             draw_cards(state, max(powers))
+    elif "mass_reanimate" in tags:
+        # Haunting Voyage: "Choose a creature type. Return up to two
+        # creature cards of that type from your graveyard to the
+        # battlefield." (tipo = Dragao, obvio nesse deck). NAO modela o
+        # modo foretold ("return ALL" — custo/timing de 2 turnos
+        # separado, {2} pra exilar + {5}{B}{B} depois — fora de escopo
+        # aqui, mesma simplificacao conservadora documentada de outras
+        # cartas complexas). Achado real 2026-08-27: essa tag nunca tinha
+        # sido checada em lugar nenhum — Haunting Voyage era 6 mana que
+        # nao faziam nada no simulador.
+        targets = sorted([c for c in state.graveyard if is_dragon(c) and is_creature_card(c)],
+                          key=lambda n: CARD_DB[n].mv, reverse=True)[:2]
+        for t in targets:
+            state.graveyard.remove(t)
+            enter_battlefield(state, t, from_hand=False)
+            state.dragons_free_entry_total += 1
 
 
 def do_orb_dragonkind(state: GameState):
@@ -1059,6 +1077,8 @@ def do_magda_treasures(state: GameState):
         enter_battlefield(state, best, from_hand=False)
         state.tutors_used_total += 1
         state.magda_tutors_total += 1
+        if is_dragon(best):
+            state.dragons_free_entry_total += 1
 
 
 def combat_step(state: GameState):
@@ -1084,6 +1104,8 @@ def combat_step(state: GameState):
                         state.battlefield.append(best)
                     else:
                         enter_battlefield(state, best, from_hand=False)
+                        if is_dragon(best):
+                            state.dragons_free_entry_total += 1
                     state.urdragon_free_permanents_total += 1
 
         for n in attacking_dragons:
@@ -1098,18 +1120,38 @@ def combat_step(state: GameState):
             if "combat_token_d20" in tags:
                 for _ in range(times):
                     state.other_tokens += 10
-            if "combat_treasure_all" in tags:
-                for _ in range(times):
-                    create_and_use_treasures(state, max(1, n_attacking))
-            if "attack_dragon_token" in tags:
-                for _ in range(times):
-                    state.dragon_tokens += 1
             if "attack_mana_power" in tags:
                 for _ in range(times):
                     state.bonus_mana_pool += CARD_DB[n].power
             if "attack_mana_flat" in tags:
                 for _ in range(times):
                     state.bonus_mana_pool += 6
+
+        # Correcao real 2026-08-27: Utvara Hellkite ("Whenever A Dragon you
+        # control attacks, create a 6/6...") e Old Gnawbone ("Whenever A
+        # creature you control deals combat damage to a player, create
+        # THAT MANY Treasures") NAO sao gatilhos auto-referentes — ao
+        # contrario de Goldspan/Klauth/Savage Ventmaw/etc ("Whenever ~ [esta
+        # carta] attacks..."), essas 2 disparam pra QUALQUER Dragao
+        # atacando, nao so quando a propria Utvara/Old Gnawbone ataca. O
+        # loop acima (checagem por tag da propria carta atacante) so
+        # cobria o caso self-referente — Utvara/Old Gnawbone ficavam sem
+        # gatilho nenhum se elas mesmas nao estivessem no grupo atacando,
+        # quando o oraculo real nao exige isso (so precisam estar em
+        # campo). Corrigido: checagem de presenca em campo, escala com
+        # `n_attacking` (Utvara, 1 token por Dragao atacando) e com a soma
+        # de poder dos atacantes (Old Gnawbone, "that many" = poder de
+        # cada criatura que causou dano — batching a soma total e
+        # matematicamente equivalente a somar token-a-token).
+        if "Utvara Hellkite" in state.battlefield:
+            utvara_times = 2 if "Roaming Throne" in state.battlefield else 1
+            for _ in range(n_attacking * utvara_times):
+                state.dragon_tokens += 1
+        if "Old Gnawbone" in state.battlefield:
+            total_attack_power = sum(CARD_DB[n].power for n in attacking_dragons)
+            gnawbone_times = 2 if "Roaming Throne" in state.battlefield else 1
+            for _ in range(gnawbone_times):
+                create_and_use_treasures(state, total_attack_power)
 
 
 def end_step(state: GameState):
@@ -1237,6 +1279,8 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg ativacoes da habilidade de mana da Orb of Dragonkind: {avg([s.orb_mana_activations_total for s in states]):.2f}")
     print(f"Avg fetches cracked: {avg([s.fetches_cracked_total for s in states]):.2f}")
     print(f"Avg tutores via Magda (Treasure sac): {avg([s.magda_tutors_total for s in states]):.2f}")
+    print(f"Avg Dragoes que entraram SEM pagar custo (Bladewing/Haunting Voyage/Magda tutor/Ur-Dragon free permanent): {avg([s.dragons_free_entry_total for s in states]):.2f}")
+    print(f"Avg Dragon tokens (Lathliss/Miirym/Broodmother/Utvara): {avg([s.dragon_tokens for s in states]):.2f}")
     print(f"Avg turnos com color screw (mana total ok, cor errada): {avg([s.color_screw_turns for s in states]):.2f}")
     screwed = [s.first_color_screw_turn for s in states if s.first_color_screw_turn is not None]
     print(f"% de jogos com pelo menos 1 turno de color screw: {100*len(screwed)/n:.1f}% | turno medio do 1o screw: {avg(screwed):.2f}" if screwed else "% de jogos com color screw: 0.0%")
