@@ -177,6 +177,13 @@ LEGENDARY_CREATURES = {
     "Go-Shintai of Ancient Wars", "Go-Shintai of Hidden Cruelty",
     "Go-Shintai of Life's Origin", "Go-Shintai of Lost Wisdom",
     "Go-Shintai of Shared Purpose",
+    # Achado real 2026-08-27 (usuario conferindo Thassa/Purphoros
+    # especificamente): ambas sao "Legendary Enchantment Creature — God"
+    # de verdade (Scryfall), mas estavam faltando aqui — o dobrador da
+    # Annie Joins Up ("triggered ability of a legendary creature you
+    # control") nunca se aplicava ao ping de dano da Purphoros nem ao
+    # blink de end step da Thassa.
+    "Purphoros, God of the Forge", "Thassa, Deep-Dwelling",
 }
 
 # --- Terrenos (35) ----------------------------------------------------------
@@ -556,9 +563,14 @@ def shrine_enters(state: GameState, name: str, is_token: bool = False):
 def creature_enters_hook(state: GameState, name: str, is_token: bool):
     """Purphoros: 'Whenever another creature you control enters, deals 2
     damage to each opponent.' Sem condicao de devocao pro gatilho em si
-    (so afeta se a propria Purphoros e criatura, irrelevante aqui)."""
+    (so afeta se a propria Purphoros e criatura, irrelevante aqui).
+    Achado real 2026-08-27 (usuario conferindo especificamente): Purphoros
+    E' 'Legendary Enchantment Creature — God' — o 4o argumento de
+    resolve_times() estava hardcoded False, entao o dobrador da Annie
+    Joins Up nunca se aplicava a esse gatilho, quando deveria (a FONTE do
+    gatilho, Purphoros, e' lendaria — e' exatamente o que Annie checa)."""
     if "Purphoros, God of the Forge" in state.battlefield and name != "Purphoros, God of the Forge":
-        times = resolve_times(state, "Purphoros, God of the Forge", True, False, False)
+        times = resolve_times(state, "Purphoros, God of the Forge", True, False, True)
         for _ in range(times):
             proxy_damage(state, 2)
     if "Aura Shards" in state.battlefield:
@@ -1025,9 +1037,17 @@ def do_endstep_blinks(state: GameState):
     # Shrines puramente encantamento. Achado real 2026-08-27: as 3
     # usavam best_shrine_to_reblink indiscriminadamente.
     if "Thassa, Deep-Dwelling" in state.battlefield:
-        target = best_creature_to_reblink(state, exclude="Thassa, Deep-Dwelling")
-        if target:
-            blink_permanent(state, target, source="Thassa, Deep-Dwelling")
+        # Achado real 2026-08-27 (usuario conferindo especificamente):
+        # Thassa E' "Legendary Enchantment Creature — God" — o proprio
+        # gatilho dela (nao causado por ETB, e' "beginning of your end
+        # step") nunca passava por resolve_times(), entao o dobrador da
+        # Annie Joins Up nunca se aplicava aqui (source lendaria = exatamente
+        # o que Annie checa).
+        times = resolve_times(state, "Thassa, Deep-Dwelling", False, False, True)
+        for _ in range(times):
+            target = best_creature_to_reblink(state, exclude="Thassa, Deep-Dwelling")
+            if target:
+                blink_permanent(state, target, source="Thassa, Deep-Dwelling")
     if "Teleportation Circle" in state.battlefield:
         target = best_creature_to_reblink(state)
         if target:

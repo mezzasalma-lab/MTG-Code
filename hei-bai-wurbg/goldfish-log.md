@@ -351,6 +351,52 @@ do Ur-Dragon.
 
 ---
 
+## Correção #2 — Purphoros e Thassa também são lendárias (usuário perguntou direto)
+
+Usuário: *"Conferiu o blink da Thassa e o ping do Purphoros tb?"*
+
+Reconferindo os dois com o oráculo real: **Purphoros, God of the Forge**
+e **Thassa, Deep-Dwelling** são ambas `Legendary Enchantment Creature —
+God` (Scryfall). O conjunto `LEGENDARY_CREATURES` (usado por
+`resolve_times()` pra saber se o dobrador da Annie Joins Up se aplica)
+não incluía nenhuma das duas — 2 bugs reais:
+
+1. **Ping da Purphoros** ("whenever another creature you control enters,
+   deals 2 damage") — o 4º argumento de `resolve_times()` estava
+   hardcoded `False`. Como a FONTE do gatilho (Purphoros) é lendária, a
+   Annie deveria dobrar esse ping — nunca dobrava.
+2. **Blink de end step da Thassa** ("at the beginning of your end step,
+   exile up to one other target creature...") — nem passava por
+   `resolve_times()` — o blink acontecia direto, sem checar dobra
+   nenhuma (nem da Annie, a única que se aplicaria aqui, já que não é
+   ETB-causado nem Shrine-triggered).
+
+Corrigido: `Purphoros, God of the Forge` e `Thassa, Deep-Dwelling`
+adicionadas a `LEGENDARY_CREATURES`; ping da Purphoros passa `True` pro
+4º argumento; blink da Thassa agora passa por `resolve_times()` antes de
+executar (looping o blink pelo número de vezes resolvido, re-escolhendo
+o melhor alvo a cada iteração — pode mudar depois da 1ª, já que um blink
+em Go-Shintai of Life's Origin cria mais uma Shrine).
+
+Testado: 300 jogos smoke test, 30.000 jogos de robustez (0 erros).
+
+**Impacto real** (mesma seed_base=9100000, n=3000):
+
+| métrica | antes | depois |
+|---|---|---|
+| dobras via Annie Joins Up | 2,49 | **51,17 (+20x)** |
+| dano proxy total | 195,95 | **307,55 (+57%)** |
+| tokens criados | 59,10 | 62,14 |
+| blinks totais (dos quais em Shrine) | 2,54 (1,76) | 2,67 (1,88) |
+
+O achado da Annie Joins Up era real e grande — ela estava presente no
+CARD_DB desde o início mas só dobrava os Go-Shintai e a própria Hei Bai,
+nunca Purphoros/Thassa, apesar de ambas serem lendárias de verdade.
+
+`lista.md` não mudou. `heibai_v1_runs.jsonl` sobrescrito.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
