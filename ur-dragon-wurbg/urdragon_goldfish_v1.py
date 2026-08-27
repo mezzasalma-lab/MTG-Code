@@ -43,17 +43,69 @@ Within, Crux of Fate, Swords to Plowshares) sao conjuradas quando ha
 mana sobrando, sem efeito de combate real modelado (mesma convencao
 dos outros simuladores desta biblioteca).
 
+======================================================================
+MODELO DE MANA POR COR (2026-08-27) — substitui o modelo generico/total
+======================================================================
+Reescrito depois de uma auditoria de pips real mostrar que vermelho e
+42,7% de toda a demanda de pips do deck mas so 19,8% das fontes (gap de
++23,0pp, o maior desequilibrio ja medido nesta biblioteca) — o modelo
+generico anterior era cego a isso (documentado explicitamente como tal
+na versao anterior deste docstring). Arquitetura igual ao
+thranduil_goldfish_v1.py: `Card.pips: dict[str,int]` (custo colorido
+real, INDEPENDENTE de desconto — desconto de custo reduz mana generica,
+nunca pips coloridos, regra real) + `Card.produces: frozenset` (cores
+que aquele terreno/rock/dork produz) + `color_sources(state, color)`
+(conta permanentes em campo cuja `produces` inclui aquela cor) +
+`can_cast()` agora checa TANTO mana total quanto fontes de cada cor
+pip a pip.
+
+**Fetch lands tratadas com o mecanismo real, nao mais como terreno
+generico** (Regra 6 de `references/user-standing-rules.md`, estabelecida
+depois de eu ter cometido esse erro no Hei Bai): ao jogar uma fetch,
+`crack_fetch()` busca de verdade na biblioteca por um terreno com um dos
+2 tipos basicos buscados (cruzando contra `LAND_BASIC_TYPES`, que inclui
+os duais/triomes, nao so as basicas) e poe em campo o que resolve a cor
+mais escassa no momento — a fetch em si nunca fica em `state.battlefield`
+com produces proprio, ela vira o terreno buscado de verdade.
+
+**Fontes tratadas como incolor mesmo tendo "any color"** (mesma
+convencao ja usada no Thranduil pra Cavern of Souls/Three Tree City):
+Cavern of Souls, Secluded Courtyard, Haven of the Spirit Dragon —
+produzem "any color" mas SO pra conjurar criatura do tipo
+escolhido/Dragao, uma restricao real demais pra modelar aqui sem
+inflar artificialmente a fixacao pro resto do deck (Anguished Unmaking,
+Austere Command etc. nao se beneficiam). Tratadas como incolor puro no
+`produces` — simplificacao conservadora documentada, nao inventada.
+Exotic Orchard e dependente de oponente (imprevisivel) — tambem incolor
+aqui, mesma logica de "nao presumir dado nao verificavel" (Regra 1).
+
+**Orb of Dragonkind** ("Add two mana in any combination of colors,
+spend only on Dragon spells") continua contribuindo pro total generico
+via `dragon_mana_pool` quando o alvo e Dragao (ja implementado antes),
+mas NAO conta pra checagem de pip por cor individual — simplificacao
+conservadora documentada: como o pool e compartilhado entre ate 2 mana
+por turno, deixar ele "cobrir" qualquer cor em qualquer checagem
+simultanea inflaria o poder real dele (double-counting entre cores
+diferentes na mesma verificacao). Subestima o Orb, nao superestima.
+
+Roaming Throne: tipo escolhido = **Dragon** (obvio e central pro tema,
+documentado ainda assim). Dobra qualquer gatilho de criatura Dragao —
+inclui o proprio gatilho de ataque da Ur-Dragon (que e ela mesma um
+Dragao), os gatilhos de dano-por-Dragao-em-campo (Scourge of Valkas,
+Dragon Tempest), os de token (Lathliss, Utvara Hellkite, Miirym), e os
+de mana (Klauth, Savage Ventmaw).
+
 Simplificacoes documentadas (nao inventadas — omissoes explicitas):
-- Fetchlands (Arid Mesa, Bloodstained Mire, Marsh Flats, Misty
-  Rainforest, Windswept Heath, Wooded Foothills): tratadas como
-  terreno generico no modelo de mana total (nao pip a pip), thinning
-  nao modelado.
 - Klauth/Savage Ventmaw (mana no ataque): X = poder total dos
   atacantes — aproximado como poder do proprio Dragao que ataca (sem
-  modelar poder exato de toda a equipe), documentado.
+  modelar poder exato de toda a equipe), documentado. A mana gerada
+  entra no pool generico (`bonus_mana_pool`), sem cor especifica
+  atribuida (real: "add X mana in any combination of colors" — aqui
+  simplificado pra generico, nao pip a pip, documentado).
 - Ramos, Dragon Engine: contadores por spell conjurada rastreados de
   forma simplificada (+1 contador fixo por spell, nao por numero de
-  cores exatas de cada uma), pra nao exigir rastrear cores pip a pip.
+  cores exatas de cada uma), pra nao exigir rastrear cores pip a pip
+  de CADA spell conjurada (so das cartas do proprio CARD_DB).
 - Sylvan Library: modelada sempre escolhendo NAO pagar vida (poe as 2
   cartas de volta), i.e., puramente card SELECTION sem draw liquido
   extra — decisao conservadora documentada, nao o uso agressivo real
@@ -75,87 +127,139 @@ from typing import Optional
 # Card database
 # ---------------------------------------------------------------------------
 
-@dataclass(frozen=True)
+@dataclass
 class Card:
     name: str
     mv: int
     ctype: str
     tags: frozenset = field(default_factory=frozenset)
     power: int = 0
+    pips: dict = field(default_factory=dict)          # custo colorido real (nunca reduzido por desconto)
+    produces: frozenset = field(default_factory=frozenset)  # cores que este terreno/rock/dork produz
 
 
 CARD_DB: dict[str, Card] = {}
 
 
-def add(name, mv, ctype, tags=(), power=0):
-    CARD_DB[name] = Card(name=name, mv=mv, ctype=ctype, tags=frozenset(tags), power=power)
+def add(name, mv, ctype, tags=(), power=0, pips=None, produces=None):
+    CARD_DB[name] = Card(name=name, mv=mv, ctype=ctype, tags=frozenset(tags), power=power,
+                          pips=dict(pips or {}), produces=frozenset(produces or ()))
 
 
 COMMANDER = "The Ur-Dragon"
-add(COMMANDER, 9, "creature", {"commander", "dragon", "roaming_throne_type"}, power=9)
+add(COMMANDER, 9, "creature", {"commander", "dragon", "roaming_throne_type"}, power=9,
+    pips={"W": 1, "U": 1, "B": 1, "R": 1, "G": 1})
 
 ROAMING_THRONE_TYPE = "dragon"
 
-# --- Terrenos (36) -------------------------------------------------------------
-FETCH_NAMES = {"Arid Mesa", "Bloodstained Mire", "Marsh Flats", "Misty Rainforest",
-                "Windswept Heath", "Wooded Foothills"}
-for n in FETCH_NAMES:
-    add(n, 0, "land", {"fetch"})
-for n in ["Ancient Tomb", "Bayou", "Blood Crypt", "Breeding Pool", "Cavern of Souls",
-           "Command Tower", "Exotic Orchard", "Godless Shrine", "Hallowed Fountain",
-           "Haven of the Spirit Dragon", "Jetmir's Garden", "Ketria Triome",
-           "Overgrown Tomb", "Path of Ancestry", "Sacred Foundry", "Savannah",
-           "Secluded Courtyard", "Steam Vents", "Stomping Ground", "Taiga",
-           "Temple Garden", "Tropical Island", "Watery Grave", "Zagoth Triome",
-           "Ziatora's Proving Ground", "Forest", "Island", "Swamp", "Mountain", "Plains"]:
-    add(n, 0, "land", set())
+# --- Terrenos (36) — produces real por carta (auditoria de pips 2026-08-27) -----
+FETCH_TARGETS = {
+    "Arid Mesa": {"Mountain", "Plains"},
+    "Bloodstained Mire": {"Swamp", "Mountain"},
+    "Marsh Flats": {"Plains", "Swamp"},
+    "Misty Rainforest": {"Forest", "Island"},
+    "Windswept Heath": {"Forest", "Plains"},
+    "Wooded Foothills": {"Mountain", "Forest"},
+}
+for n in FETCH_TARGETS:
+    add(n, 0, "land", {"fetch"})  # produces vazio de proposito: vira o terreno buscado de verdade (crack_fetch)
+
+LAND_PRODUCES = {
+    "Ancient Tomb": set(),               # incolor (2 mana, sem cor)
+    "Bayou": {"B", "G"},
+    "Blood Crypt": {"B", "R"},
+    "Breeding Pool": {"G", "U"},
+    "Cavern of Souls": set(),            # "any color" restrito a creature spell do tipo escolhido — tratado incolor (ver docstring)
+    "Command Tower": set("WUBRG"),
+    "Exotic Orchard": set(),             # dependente de oponente, nao presumido (Regra 1)
+    "Godless Shrine": {"W", "B"},
+    "Hallowed Fountain": {"W", "U"},
+    "Haven of the Spirit Dragon": set(), # "any color" restrito a Dragon creature spell — tratado incolor (ver docstring)
+    "Jetmir's Garden": {"W", "R", "G"},
+    "Ketria Triome": {"G", "U", "R"},
+    "Overgrown Tomb": {"B", "G"},
+    "Path of Ancestry": set("WUBRG"),
+    "Sacred Foundry": {"R", "W"},
+    "Savannah": {"W", "G"},
+    "Secluded Courtyard": set(),         # "any color" restrito a creature spell do tipo escolhido — tratado incolor
+    "Steam Vents": {"R", "U"},
+    "Stomping Ground": {"R", "G"},
+    "Taiga": {"R", "G"},
+    "Temple Garden": {"W", "G"},
+    "Tropical Island": {"G", "U"},
+    "Watery Grave": {"B", "U"},
+    "Zagoth Triome": {"B", "G", "U"},
+    "Ziatora's Proving Ground": {"B", "R", "G"},
+    "Forest": {"G"}, "Island": {"U"}, "Swamp": {"B"}, "Mountain": {"R"}, "Plains": {"W"},
+}
+for n, colors in LAND_PRODUCES.items():
+    add(n, 0, "land", set(), produces=colors)
+
+# LAND_BASIC_TYPES: tipos basicos reais de cada terreno nao-fetch, usado por
+# crack_fetch() pra achar todo alvo que compartilha um dos 2 tipos buscados
+# pela fetch (nao so as basicas — Regra 6, achado real no Hei Bai: uma fetch
+# alcanca qualquer dual/triome que carregue o tipo, nao so o par nomeado).
+LAND_BASIC_TYPES = {
+    "Bayou": {"Forest", "Swamp"}, "Blood Crypt": {"Mountain", "Swamp"},
+    "Breeding Pool": {"Forest", "Island"}, "Forest": {"Forest"},
+    "Godless Shrine": {"Plains", "Swamp"}, "Hallowed Fountain": {"Plains", "Island"},
+    "Island": {"Island"}, "Jetmir's Garden": {"Plains", "Forest", "Mountain"},
+    "Ketria Triome": {"Island", "Forest", "Mountain"}, "Mountain": {"Mountain"},
+    "Overgrown Tomb": {"Forest", "Swamp"}, "Plains": {"Plains"},
+    "Sacred Foundry": {"Plains", "Mountain"}, "Savannah": {"Plains", "Forest"},
+    "Steam Vents": {"Island", "Mountain"}, "Stomping Ground": {"Forest", "Mountain"},
+    "Swamp": {"Swamp"}, "Taiga": {"Forest", "Mountain"}, "Temple Garden": {"Plains", "Forest"},
+    "Tropical Island": {"Forest", "Island"}, "Watery Grave": {"Island", "Swamp"},
+    "Zagoth Triome": {"Forest", "Island", "Swamp"},
+    "Ziatora's Proving Ground": {"Forest", "Mountain", "Swamp"},
+}
 
 # --- Ramp (busca terreno real) --------------------------------------------------
-add("Cultivate", 3, "sorcery", {"land_tutor2"})
-add("Farseek", 2, "sorcery", {"land_tutor1"})
-add("Kodama's Reach", 3, "sorcery", {"land_tutor2"})
-add("Nature's Lore", 2, "sorcery", {"land_tutor1"})
-add("Three Visits", 2, "sorcery", {"land_tutor1"})
-add("Skyshroud Claim", 4, "sorcery", {"land_tutor2_direct"})
-add("Birds of Paradise", 1, "creature", {"dork_flat1"})
-add("Delighted Halfling", 1, "creature", {"dork_flat1"})
-add("Arcane Signet", 2, "artifact", {"rock1"})
-add("Sol Ring", 1, "artifact", {"rock2"})
+add("Cultivate", 3, "sorcery", {"land_tutor2"}, pips={"G": 1})
+add("Farseek", 2, "sorcery", {"land_tutor1"}, pips={"G": 1})
+add("Kodama's Reach", 3, "sorcery", {"land_tutor2"}, pips={"G": 1})
+add("Nature's Lore", 2, "sorcery", {"land_tutor1"}, pips={"G": 1})
+add("Three Visits", 2, "sorcery", {"land_tutor1"}, pips={"G": 1})
+add("Skyshroud Claim", 4, "sorcery", {"land_tutor2_direct"}, pips={"G": 1})
+add("Birds of Paradise", 1, "creature", {"dork_flat1"}, pips={"G": 1}, produces=set("WUBRG"))
+add("Delighted Halfling", 1, "creature", {"dork_flat1"}, produces=set("WUBRG"))
+add("Arcane Signet", 2, "artifact", {"rock1"}, produces=set("WUBRG"))
+add("Sol Ring", 1, "artifact", {"rock2"})  # {C}{C} — sem cor
 
 # --- Custo de Dragao / tutores -------------------------------------------------
-add("Dragonlord's Servant", 2, "creature", {"dragon_discount1"})
-add("Dragonspeaker Shaman", 3, "creature", {"dragon_discount2"})
-add("Sarkhan, Soul Aflame", 3, "creature", {"dragon_discount1"})
+add("Dragonlord's Servant", 2, "creature", {"dragon_discount1"}, pips={"R": 1})
+add("Dragonspeaker Shaman", 3, "creature", {"dragon_discount2"}, pips={"R": 2})
+add("Sarkhan, Soul Aflame", 3, "creature", {"dragon_discount1"}, pips={"U": 1, "R": 1})
 add("Herald's Horn", 3, "artifact", {"dragon_discount1", "tribal_impulse"})
-add("Sarkhan's Triumph", 3, "instant", {"dragon_tutor_hand"})
-add("Orb of Dragonkind", 2, "artifact", {"dragon_tutor_sac"})
+add("Sarkhan's Triumph", 3, "instant", {"dragon_tutor_hand"}, pips={"R": 1})
+add("Orb of Dragonkind", 2, "artifact", {"dragon_tutor_sac"}, pips={"R": 1})
 add("Urza's Incubator", 3, "artifact", {"dragon_discount2"})
 
 # --- Dragoes com gatilho real ----------------------------------------------------
-add("Ancient Copper Dragon", 6, "creature", {"dragon", "combat_treasure_d20"}, power=6)
-add("Ancient Gold Dragon", 7, "creature", {"dragon", "combat_token_d20"}, power=7)
-add("Atarka, World Render", 7, "creature", {"dragon", "attack_double_strike"}, power=7)
-add("Balefire Dragon", 7, "creature", {"dragon", "combat_wipe_proxy"}, power=6)
-add("Bladewing the Risen", 7, "creature", {"dragon", "reanimate_dragon_etb"}, power=6)
-add("Dragon Broodmother", 6, "creature", {"dragon", "upkeep_dragon_token"}, power=4)
-add("Dragonlord Dromoka", 6, "creature", {"dragon"}, power=4)
-add("Goldspan Dragon", 5, "creature", {"dragon", "attack_treasure", "goldspan"}, power=4)
-add("Hellkite Charger", 6, "creature", {"dragon", "extra_combat_paid"}, power=6)
-add("Hellkite Courser", 6, "creature", {"dragon"}, power=4)
-add("Klauth, Unrivaled Ancient", 7, "creature", {"dragon", "attack_mana_power"}, power=7)
-add("Lathliss, Dragon Queen", 6, "creature", {"dragon", "dragon_etb_token"}, power=6)
-add("Miirym, Sentinel Wyrm", 6, "creature", {"dragon", "dragon_etb_copy"}, power=3)
-add("Old Gnawbone", 7, "creature", {"dragon", "combat_treasure_all"}, power=7)
+add("Ancient Copper Dragon", 6, "creature", {"dragon", "combat_treasure_d20"}, power=6, pips={"R": 2})
+add("Ancient Gold Dragon", 7, "creature", {"dragon", "combat_token_d20"}, power=7, pips={"W": 2})
+add("Atarka, World Render", 7, "creature", {"dragon", "attack_double_strike"}, power=7, pips={"R": 1, "G": 1})
+add("Balefire Dragon", 7, "creature", {"dragon", "combat_wipe_proxy"}, power=6, pips={"R": 2})
+add("Bladewing the Risen", 7, "creature", {"dragon", "reanimate_dragon_etb"}, power=6, pips={"B": 2, "R": 2})
+add("Dragon Broodmother", 6, "creature", {"dragon", "upkeep_dragon_token"}, power=4, pips={"R": 3, "G": 1})
+add("Dragonlord Dromoka", 6, "creature", {"dragon"}, power=4, pips={"G": 1, "W": 1})
+add("Goldspan Dragon", 5, "creature", {"dragon", "attack_treasure", "goldspan"}, power=4, pips={"R": 2})
+add("Hellkite Charger", 6, "creature", {"dragon", "extra_combat_paid"}, power=6, pips={"R": 2})
+add("Hellkite Courser", 6, "creature", {"dragon"}, power=4, pips={"R": 2})
+add("Klauth, Unrivaled Ancient", 7, "creature", {"dragon", "attack_mana_power"}, power=7, pips={"R": 1, "G": 1})
+add("Lathliss, Dragon Queen", 6, "creature", {"dragon", "dragon_etb_token"}, power=6, pips={"R": 2})
+add("Miirym, Sentinel Wyrm", 6, "creature", {"dragon", "dragon_etb_copy"}, power=3, pips={"G": 1, "U": 1, "R": 1})
+add("Old Gnawbone", 7, "creature", {"dragon", "combat_treasure_all"}, power=7, pips={"G": 2})
 add("Ramos, Dragon Engine", 6, "artifact_creature", {"dragon", "ramos_counters"}, power=2)
-add("Savage Ventmaw", 6, "creature", {"dragon", "attack_mana_flat"}, power=5)
-add("Scourge of Valkas", 5, "creature", {"dragon", "dragon_etb_damage"}, power=4)
-add("Terror of the Peaks", 5, "creature", {"creature_etb_damage_power"}, power=4)
-add("Twinflame Tyrant", 5, "creature", {"dragon", "damage_doubler"}, power=4)
-add("Utvara Hellkite", 8, "creature", {"dragon", "attack_dragon_token"}, power=6)
+add("Savage Ventmaw", 6, "creature", {"dragon", "attack_mana_flat"}, power=5, pips={"R": 1, "G": 1})
+add("Scourge of Valkas", 5, "creature", {"dragon", "dragon_etb_damage"}, power=4, pips={"R": 3})
+add("Terror of the Peaks", 5, "creature", {"creature_etb_damage_power"}, power=4, pips={"R": 2})
+add("Twinflame Tyrant", 5, "creature", {"dragon", "damage_doubler"}, power=4, pips={"R": 2})
+add("Utvara Hellkite", 8, "creature", {"dragon", "attack_dragon_token"}, power=6, pips={"R": 2})
 
 # --- Outras criaturas / suporte tribal --------------------------------------------
-add("Dragon Tempest", 2, "enchantment", {"dragon_etb_damage", "haste_flying"})
-add("Magda, Brazen Outlaw", 2, "creature", {"treasure_tutor_dragon"})
+add("Dragon Tempest", 2, "enchantment", {"dragon_etb_damage", "haste_flying"}, pips={"R": 1})
+add("Magda, Brazen Outlaw", 2, "creature", {"treasure_tutor_dragon"}, pips={"R": 1})
 # Firdoch Core: Kindred Artifact — Shapeshifter, Changeling ("This card is
 # every creature type") — tem o tipo Dragao em toda zona, inclusive como
 # spell. Bug real corrigido em 2026-08-23 (achado pelo usuario): faltava a
@@ -167,8 +271,9 @@ add("Magda, Brazen Outlaw", 2, "creature", {"treasure_tutor_dragon"})
 # ate pagar {4} pra animar (nao modelado — ver docstring do arquivo) —
 # entao is_creature_card() continua False pra ele, o que corretamente o
 # exclui de Herald's Horn/Urza's Incubator (essas exigem "Creature
-# spells... of the chosen type" de verdade).
-add("Firdoch Core", 3, "artifact", {"dork_flat1_any", "dragon"})
+# spells... of the chosen type" de verdade). {3} sem pip colorido no custo,
+# real ({T}: Add one mana of any color).
+add("Firdoch Core", 3, "artifact", {"dork_flat1_any", "dragon"}, produces=set("WUBRG"))
 
 # Radagast of Rhosgobel: NAO esta na lista.md — cadastrado so pra permitir
 # o teste comparativo `urdragon_radagast_test.py`. {2}{G}{G}, verde real
@@ -176,33 +281,33 @@ add("Firdoch Core", 3, "artifact", {"dork_flat1_any", "dragon"})
 # dragon_discount_self/others nem de dragon_enters()). Oraculo real: "The
 # first creature spell you cast each turn costs {2} less to cast and can
 # be cast as though it had flash."
-add("Radagast of Rhosgobel", 4, "creature", {"first_creature_discount"})
+add("Radagast of Rhosgobel", 4, "creature", {"first_creature_discount"}, pips={"G": 2})
 
 # --- Draw engines de poder / spells caras -----------------------------------------
-add("Elemental Bond", 3, "enchantment", {"power3_draw"})
-add("Garruk's Uprising", 3, "enchantment", {"power4_draw"})
-add("Temur Ascendancy", 3, "enchantment", {"power4_draw_optional", "haste_all"})
-add("The Great Henge", 9, "artifact", {"nontoken_etb_counter_draw", "cost_reduce_power"})
-add("Up the Beanstalk", 2, "enchantment", {"bigspell_draw"})
-add("Return of the Wildspeaker", 5, "instant", {"power_draw_instant"})
-add("Sylvan Library", 2, "enchantment", {"card_selection"})
+add("Elemental Bond", 3, "enchantment", {"power3_draw"}, pips={"G": 1})
+add("Garruk's Uprising", 3, "enchantment", {"power4_draw"}, pips={"G": 1})
+add("Temur Ascendancy", 3, "enchantment", {"power4_draw_optional", "haste_all"}, pips={"G": 1, "U": 1, "R": 1})
+add("The Great Henge", 9, "artifact", {"nontoken_etb_counter_draw", "cost_reduce_power"}, pips={"G": 2})
+add("Up the Beanstalk", 2, "enchantment", {"bigspell_draw"}, pips={"G": 1})
+add("Return of the Wildspeaker", 5, "instant", {"power_draw_instant"}, pips={"G": 1})
+add("Sylvan Library", 2, "enchantment", {"card_selection"}, pips={"G": 1})
 
 # --- Removal / interacao / protecao -----------------------------------------------
-add("An Offer You Can't Refuse", 2, "instant", {"interaction"})
-add("Anguished Unmaking", 3, "instant", {"interaction"})
-add("Arcane Denial", 2, "instant", {"interaction"})
-add("Assassin's Trophy", 2, "instant", {"interaction"})
-add("Austere Command", 6, "sorcery", {"wipe"})
-add("Beast Within", 3, "instant", {"interaction"})
-add("Crux of Fate", 5, "sorcery", {"wipe"})
-add("Heroic Intervention", 2, "instant", {"interaction"})
+add("An Offer You Can't Refuse", 2, "instant", {"interaction"}, pips={"U": 1})
+add("Anguished Unmaking", 3, "instant", {"interaction"}, pips={"W": 1, "B": 1})
+add("Arcane Denial", 2, "instant", {"interaction"}, pips={"U": 1})
+add("Assassin's Trophy", 2, "instant", {"interaction"}, pips={"B": 1, "G": 1})
+add("Austere Command", 6, "sorcery", {"wipe"}, pips={"W": 2})
+add("Beast Within", 3, "instant", {"interaction"}, pips={"G": 1})
+add("Crux of Fate", 5, "sorcery", {"wipe"}, pips={"B": 2})
+add("Heroic Intervention", 2, "instant", {"interaction"}, pips={"G": 1})
 add("Lightning Greaves", 2, "artifact", {"interaction"})
-add("Rhythm of the Wild", 2, "enchantment", {"riot"})
-add("Smothering Tithe", 4, "enchantment", {"opponent_dependent"})
-add("Swan Song", 1, "instant", {"interaction"})
-add("Swords to Plowshares", 1, "instant", {"interaction"})
-add("Teferi's Protection", 3, "instant", {"interaction"})
-add("Haunting Voyage", 6, "sorcery", {"mass_reanimate"})
+add("Rhythm of the Wild", 2, "enchantment", {"riot"}, pips={"R": 1, "G": 1})
+add("Smothering Tithe", 4, "enchantment", {"opponent_dependent"}, pips={"W": 1})
+add("Swan Song", 1, "instant", {"interaction"}, pips={"U": 1})
+add("Swords to Plowshares", 1, "instant", {"interaction"}, pips={"W": 1})
+add("Teferi's Protection", 3, "instant", {"interaction"}, pips={"W": 1})
+add("Haunting Voyage", 6, "sorcery", {"mass_reanimate"}, pips={"B": 2})
 add("Roaming Throne", 4, "artifact_creature", {ROAMING_THRONE_TYPE, "roaming_throne"})
 
 ARTIFACT_ISH = {"artifact", "artifact_creature"}
@@ -266,6 +371,9 @@ class GameState:
     urdragon_free_permanents_total: int = 0
     orb_mana_activations_total: int = 0
     library_emptied: bool = False
+    color_screw_turns: int = 0          # turnos em que havia mana total mas faltou a cor certa pra algo na mao
+    first_color_screw_turn: Optional[int] = None
+    fetches_cracked_total: int = 0
 
 
 def draw_cards(state: GameState, n: int):
@@ -329,7 +437,7 @@ def dragon_enters(state: GameState, name: str, is_token: bool):
 
 
 # ---------------------------------------------------------------------------
-# Mana
+# Mana — modelo por cor (2026-08-27)
 # ---------------------------------------------------------------------------
 
 def ready_creatures(state: GameState):
@@ -367,6 +475,27 @@ def remaining_mana(state: GameState) -> int:
     return max(0, total_mana(state) - state.mana_spent_this_turn)
 
 
+def color_sources(state: GameState, color: str) -> int:
+    """Conta fontes de mana em campo que produzem `color` — terrenos
+    incondicionalmente, rocks/dorks so se prontos (sem doenca de invocacao,
+    mesmo gate ja usado em dork_mana). Sol Ring/Ancient Tomb/Cavern of
+    Souls/etc contribuem pro total generico mas NUNCA aqui (produces
+    vazio), documentado em cada entrada do CARD_DB."""
+    n = 0
+    ready = set(ready_creatures(state))
+    for card in state.battlefield:
+        base = card.split(" (copia)")[0]
+        if base not in CARD_DB:
+            continue
+        c = CARD_DB[base]
+        if color not in c.produces:
+            continue
+        if is_creature_card(base) and card not in ready and base not in LAND_NAMES:
+            continue
+        n += 1
+    return n
+
+
 def remaining_mana_for(state: GameState, name: str) -> int:
     """Mana disponivel considerando o pool restrito da Orb of Dragonkind
     ('{1}, {T}: Add two mana in any combination of colors. Spend this mana
@@ -380,6 +509,18 @@ def remaining_mana_for(state: GameState, name: str) -> int:
     if is_dragon(name):
         base += state.dragon_mana_pool
     return base
+
+
+def has_color_sources_for(state: GameState, name: str) -> bool:
+    """Checa pips coloridos reais (independentes de desconto de custo —
+    'costs {1} less' reduz mana generica, nunca pip colorido, regra real).
+    Orb of Dragonkind NAO conta aqui por simplificacao conservadora
+    documentada (ver docstring do arquivo)."""
+    pips = CARD_DB[name].pips
+    for color, needed in pips.items():
+        if color_sources(state, color) < needed:
+            return False
+    return True
 
 
 def dragon_discount_self(state: GameState) -> int:
@@ -415,23 +556,8 @@ def dragon_discount_others(state: GameState, name: str) -> int:
     {1} less') + Dragonlord's Servant/Dragonspeaker Shaman/Sarkhan Soul
     Aflame ('Dragon spells you cast cost less') SEMPRE se aplicam a
     qualquer spell com o tipo de criatura Dragao, seja carta de criatura
-    ou nao (ex: Firdoch Core — Kindred Artifact, Changeling, tem TODOS os
-    tipos de criatura em toda zona, inclusive como spell — bug real
-    corrigido em 2026-08-23, ele nunca tinha sido tratado como Dragao em
-    lugar nenhum antes, apesar do proprio usuario ja saber que com a
-    Eminence ativa ele custa so {2}). Ja Herald's Horn/Urza's Incubator
-    dizem 'Creature spells... of the chosen type' — EXIGEM carta de
-    criatura de verdade, entao so contam se `is_creature_card(name)`
-    (Firdoch Core e Artifact ate ser animado, NAO se beneficia dessas
-    duas).
-
-    Bug real corrigido em 2026-08-23 (Eminence): so ficava ativa depois
-    que state.commander_in_play virasse True — mas o oraculo diz 'in the
-    command zone OR on the battlefield', e neste simulador a comandante
-    esta SEMPRE numa dessas duas zonas (ela nunca e removida do jogo, so
-    'ainda nao conjurada' = na zona de comando) — entao a Eminence deveria
-    estar ativa incondicionalmente desde o turno 1, nao so depois dela ser
-    conjurada."""
+    ou nao. Ja Herald's Horn/Urza's Incubator dizem 'Creature spells... of
+    the chosen type' — EXIGEM carta de criatura de verdade."""
     d = 1  # Eminence, sempre ativa
     if "Dragonlord's Servant" in state.battlefield:
         d += 1
@@ -448,12 +574,12 @@ def dragon_discount_others(state: GameState, name: str) -> int:
 
 
 def effective_cost(state: GameState, name: str) -> int:
+    """Custo generico total, JA com desconto — pips coloridos ficam de
+    fora dessa conta de proposito (checados a parte em
+    has_color_sources_for, porque desconto de custo NUNCA reduz pip
+    colorido, so mana generica — regra real)."""
     mv = CARD_DB[name].mv
     if name == "The Great Henge":
-        # "This spell costs {X} less to cast, where X is the greatest
-        # power among creatures you control." Bug real encontrado em
-        # 2026-08-23: a tag 'cost_reduce_power' existia mas nunca era
-        # checada — a carta era sempre precificada em {7}{G}{G}=9 cheio.
         powers = [CARD_DB[n].power for n in state.battlefield if is_creature_card(n)]
         x = max(powers) if powers else 0
         return max(0, mv - x)
@@ -469,11 +595,42 @@ def effective_cost(state: GameState, name: str) -> int:
 
 
 def can_cast(state: GameState, name: str) -> bool:
-    return remaining_mana_for(state, name) >= effective_cost(state, name)
+    if remaining_mana_for(state, name) < effective_cost(state, name):
+        return False
+    return has_color_sources_for(state, name)
 
 
 def spend_mana(state: GameState, n: int):
     state.mana_spent_this_turn += n
+
+
+# ---------------------------------------------------------------------------
+# Fetch lands — mecanismo real (Regra 6)
+# ---------------------------------------------------------------------------
+
+def crack_fetch(state: GameState, fetch_name: str):
+    """Sacrifica a fetch (ja removida da mao em play_land), busca de
+    verdade na biblioteca um terreno com um dos 2 tipos basicos buscados
+    (cruzando contra LAND_BASIC_TYPES — inclui duais/triomes, nao so
+    basicas), poe em campo o que resolve a cor mais escassa AGORA. Sem
+    'tapped' no oraculo real dessas 6 fetches (Arid Mesa etc.), entra
+    destravado."""
+    searched = FETCH_TARGETS[fetch_name]
+    candidates = [n for n in state.library if n in LAND_BASIC_TYPES and (LAND_BASIC_TYPES[n] & searched)]
+    if not candidates:
+        return  # sem alvo (nao deveria acontecer com esta manabase, mas nao trava o jogo)
+
+    def score(land):
+        colors = CARD_DB[land].produces
+        if not colors:
+            return 99
+        return min(color_sources(state, c) for c in colors)
+
+    candidates.sort(key=score)
+    pick = candidates[0]
+    state.library.remove(pick)
+    state.battlefield.append(pick)
+    state.fetches_cracked_total += 1
 
 
 # ---------------------------------------------------------------------------
@@ -490,9 +647,10 @@ def create_and_use_treasures(state: GameState, n: int):
     aproximacao real (o deck nao tem motivo pra segurar Treasure parado).
     Goldspan Dragon: 'Treasures you control have "{T}, Sacrifice this
     artifact: Add two mana of any one color."' — com Goldspan em campo,
-    todo Treasure vale 2 mana, nao 1 (bug real encontrado e corrigido em
-    2026-08-23: a tag 'goldspan' existia no CARD_DB mas nunca era checada
-    em lugar nenhum)."""
+    todo Treasure vale 2 mana, nao 1. Entra no pool generico (a cor do
+    Treasure e escolhida livremente no jogo real, nao modelado pip a pip
+    aqui — simplificacao documentada, mesma logica do Klauth/Savage
+    Ventmaw)."""
     state.treasures_created_total += n
     per_treasure = 2 if "Goldspan Dragon" in state.battlefield else 1
     state.bonus_mana_pool += n * per_treasure
@@ -578,11 +736,9 @@ def do_orb_dragonkind(state: GameState):
     abilities of Dragons.' + '{R}, {T}, Sacrifice this artifact: look at
     top 7, pode revelar um Dragao e por na mao.' Duas habilidades
     mutuamente exclusivas no mesmo turno (a segunda sacrifica o artefato).
-    Bug real encontrado e corrigido em 2026-08-23: so a segunda estava
-    implementada antes — a primeira (rampa restrita a Dragao, repetivel)
-    nunca tinha sido modelada. Prioridade: usa a mana se ha Dragao na mao
-    pra aproveitar (repetivel, mais valioso a longo prazo); so sacrifica
-    pelo tutor se nao ha Dragao nenhum na mao."""
+    Prioridade: usa a mana se ha Dragao na mao pra aproveitar (repetivel,
+    mais valioso a longo prazo); so sacrifica pelo tutor se nao ha Dragao
+    nenhum na mao."""
     if "Orb of Dragonkind" not in state.battlefield or state.orb_dragonkind_used_this_turn:
         return
     if remaining_mana(state) < 1:
@@ -637,10 +793,6 @@ def cast_card(state: GameState, name: str):
             state.first_creature_discount_events_total += 1
         state.first_creature_used_this_turn = True
     if name == COMMANDER:
-        # Bug real corrigido em 2026-08-23: isso gastava card.mv (9 cru),
-        # ignorando o desconto ja calculado em `cost` — a checagem de
-        # can_cast() usava o custo com desconto, mas o gasto real ignorava
-        # e cobrava o preco cheio + imposto de comandante em cima disso.
         if state.dragon_mana_pool > 0:
             use = min(cost, state.dragon_mana_pool)
             state.dragon_mana_pool -= use
@@ -660,8 +812,6 @@ def cast_card(state: GameState, name: str):
 
     if name in LAND_NAMES:
         state.battlefield.append(name)
-        if "fetch" in card.tags:
-            pass
         return
 
     if card.ctype in ("instant", "sorcery"):
@@ -678,10 +828,47 @@ def play_land(state: GameState):
     lands_in_hand = [n for n in state.hand if n in LAND_NAMES]
     if not lands_in_hand:
         return
+
+    # prioriza terreno que resolve a cor mais escassa em campo (mesma
+    # logica do Thranduil) — entre fetches e terrenos diretos, uma fetch
+    # SEMPRE pode alcancar a cor mais escassa (todas as 6 alcancam as 5
+    # cores nesta manabase, auditado em 2026-08-27), entao so desempata
+    # por ordem de mao quando nao ha diferenca clara.
+    def missing_score(card):
+        if card in FETCH_TARGETS:
+            return -1  # fetch e sempre pelo menos tao boa quanto a melhor alternativa
+        score = 0
+        for color in "WUBRG":
+            if color_sources(state, color) == 0 and color in CARD_DB[card].produces:
+                score += 1
+        return -score
+
+    lands_in_hand.sort(key=missing_score)
     choice = lands_in_hand[0]
     state.hand.remove(choice)
-    state.battlefield.append(choice)
     state.lands_played_this_turn += 1
+    if choice in FETCH_TARGETS:
+        crack_fetch(state, choice)
+    else:
+        state.battlefield.append(choice)
+
+
+def do_orb_dragonkind_wrapper(state: GameState):
+    do_orb_dragonkind(state)
+
+
+def check_color_screw(state: GameState):
+    """Metrica nova: havia mana TOTAL suficiente pra algo na mao, mas
+    faltou a cor certa? So conta se sobrou pelo menos 1 carta assim
+    depois do main_phase resolver tudo que dava pra pagar."""
+    for n in state.hand:
+        if n in LAND_NAMES:
+            continue
+        if remaining_mana_for(state, n) >= effective_cost(state, n) and not has_color_sources_for(state, n):
+            state.color_screw_turns += 1
+            if state.first_color_screw_turn is None:
+                state.first_color_screw_turn = state.turn
+            return
 
 
 def main_phase(state: GameState):
@@ -700,6 +887,8 @@ def main_phase(state: GameState):
             return (group, effective_cost(state, n))
         castables.sort(key=prio)
         cast_card(state, castables[0])
+
+    check_color_screw(state)
 
     if "Ramos, Dragon Engine" in state.battlefield and "Ramos, Dragon Engine" in ready_creatures(state) and state.ramos_counters >= 5:
         state.ramos_counters -= 5
@@ -879,6 +1068,10 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg cartas compradas extra (motores de draw): {avg([s.cards_drawn_extra for s in states]):.2f}")
     print(f"Avg tutores usados: {avg([s.tutors_used_total for s in states]):.2f}")
     print(f"Avg ativacoes da habilidade de mana da Orb of Dragonkind: {avg([s.orb_mana_activations_total for s in states]):.2f}")
+    print(f"Avg fetches cracked: {avg([s.fetches_cracked_total for s in states]):.2f}")
+    print(f"Avg turnos com color screw (mana total ok, cor errada): {avg([s.color_screw_turns for s in states]):.2f}")
+    screwed = [s.first_color_screw_turn for s in states if s.first_color_screw_turn is not None]
+    print(f"% de jogos com pelo menos 1 turno de color screw: {100*len(screwed)/n:.1f}% | turno medio do 1o screw: {avg(screwed):.2f}" if screwed else "% de jogos com color screw: 0.0%")
     print(f"Avg mao final: {avg([len(s.hand) for s in states]):.2f}")
     return states
 
@@ -900,4 +1093,7 @@ if __name__ == "__main__":
                 "treasures_created_total": s.treasures_created_total,
                 "orb_mana_activations_total": s.orb_mana_activations_total,
                 "cards_drawn_extra": s.cards_drawn_extra,
+                "fetches_cracked_total": s.fetches_cracked_total,
+                "color_screw_turns": s.color_screw_turns,
+                "first_color_screw_turn": s.first_color_screw_turn,
             }) + "\n")

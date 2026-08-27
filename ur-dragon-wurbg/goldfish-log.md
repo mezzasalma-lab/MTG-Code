@@ -372,6 +372,95 @@ não uma prioridade óbvia sobre o resto da lista.
 
 ---
 
+## Correção #4 — reescrita completa pra modelo de mana por cor — 2026-08-27
+
+Pedido do usuário depois da auditoria de pips (que achou vermelho em
+42,7% dos pips do deck mas só 19,8% das fontes, o maior desequilíbrio já
+medido nesta biblioteca): reescrever o simulador com rastreio de mana
+POR COR, igual ao `thranduil_goldfish_v1.py`, em vez do modelo genérico/
+total usado até aqui (documentado como limitação explícita desde a
+Simulação #1).
+
+**Arquitetura nova**, mesma da Thranduil: `Card.pips: dict[str,int]`
+(custo colorido real de cada carta — computado programaticamente do
+`mana_cost` real via Scryfall, não digitado à mão) + `Card.produces:
+frozenset` (cores que cada terreno/rock/dork produz, também computado
+programaticamente) + `color_sources(state, color)` + `can_cast()` agora
+checa mana total E pip por cor, separadamente (desconto de custo reduz
+mana genérica, nunca pip colorido — regra real, importante não
+confundir).
+
+**Fetch lands implementadas com o mecanismo real** (Regra 6 de
+`user-standing-rules.md`): `crack_fetch()` busca de verdade na
+biblioteca por um terreno com um dos 2 tipos básicos buscados,
+cruzando contra `LAND_BASIC_TYPES` (inclui duais/triomes, não só
+básicas — a fetch nunca fica em campo com "produces" próprio, ela vira
+o terreno buscado de verdade, escolhido pra resolver a cor mais escassa
+no momento).
+
+**Simplificações conservadoras documentadas** (mesma convenção do
+Thranduil): Cavern of Souls, Secluded Courtyard, Haven of the Spirit
+Dragon têm "any color" mas restrito a criatura do tipo escolhido/Dragão
+— tratadas como incolor puro aqui pra não inflar a fixação real pro
+resto do deck. Exotic Orchard (dependente de oponente) também incolor,
+por não ter dado verificável. Orb of Dragonkind's mana "any combination
+of colors" continua contribuindo pro total genérico mas NÃO conta pra
+checagem de pip individual (evita double-counting entre cores diferentes
+com um pool compartilhado de só 2 mana) — subestima a Orb, não
+superestima.
+
+**Métrica nova: color screw.** `check_color_screw()` conta turnos em
+que havia mana TOTAL suficiente pra alguma carta na mão mas faltava a
+cor certa — algo que o modelo genérico anterior não conseguia nem
+detectar, por definição.
+
+**Teste de robustez:** 2 sweeps de 20.000 partidas com timeout de 2s,
+**0 erros, 0 timeouts** nos dois.
+
+**n=3000, seed_base=7600000, 8 turnos — resultado após a reescrita:**
+
+```
+Avg mulligans: 0,48
+Turno medio de conjuracao da Ur-Dragon: 6,88 | mediana: 7,0
+Nunca conjurada em 8 turnos: 57,8%
+Avg contagem de Dragoes em campo (fim de jogo): 4,27
+Avg compras via ataque da Ur-Dragon: 2,23
+Avg permanentes gratis via ataque da Ur-Dragon: 0,72
+Avg dano proxy total: 18,76
+Avg eventos de dano-por-Dragao-ETB: 1,19
+Avg Treasures criados: 2,47
+Avg dobras via Roaming Throne: 0,38
+Avg cartas compradas extra: 4,10
+Avg tutores usados: 0,24
+Avg ativacoes da mana da Orb of Dragonkind: 0,42
+Avg fetches cracked: 0,89
+Avg turnos com color screw: 2,05
+% de jogos com pelo menos 1 turno de color screw: 41,2% | turno medio do 1o screw: 3,87
+Avg mao final: 3,01
+```
+
+**Correção honesta ao histórico desta biblioteca:** o modelo genérico
+(Simulação #1 → Correção #3) reportou "nunca conjurada em 8 turnos"
+caindo progressivamente de 71,5% pra 49,2% conforme bugs reais eram
+corrigidos. Com rastreio de cor de verdade, **o número correto é 57,8%**
+— pior que o último número do modelo genérico, porque aquele modelo era
+literalmente cego pra cor (documentado como limitação desde o início,
+nunca escondido, mas agora quantificado): **41,2% das partidas têm pelo
+menos 1 turno travado por falta da cor certa apesar de ter mana total
+de sobra**, começando em média já no turno 3,87. Isso bate com o
+achado da auditoria de pips (vermelho sub-representado) e explica por
+que a comandante — que precisa de W+U+B+R+G simultâneos — sofre tanto:
+não é só volume de mana, é ter as 5 cores ao mesmo tempo.
+
+Resultados atualizados em `urdragon_v1_runs.jsonl` (3000 jogos,
+sobrescrito). Os testes anteriores desta biblioteca que usavam o modelo
+genérico (Teste #1 do Radagast) continuam válidos nas métricas que não
+dependem de cor (turno de comandante como comparação relativa entre
+variantes, contagem de Dragões, etc.) mas não seriam mais diretamente
+comparáveis em termos absolutos com os números desta correção.
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**
