@@ -114,6 +114,44 @@ resto.
   só o número final — pra não repetir o erro de subestimar (ou
   superestimar) o alcance real da manabase.
 
+## 7. Combo achado no Commander Spellbook: sempre calcular turno/probabilidade real antes de tratar como achado de Bracket
+
+Citação literal do usuário (2026-08-27), depois de eu alarmar sobre 2
+combos infinitos "já montados" no Ur-Dragon sem checar viabilidade: *"Não
+viaja, quando eu consigo executar esses combos? Algum antes do turno
+8?"* — e depois: *"Adicione nas regras a questão do turno dos combos e
+de final do jogo dos brackets na sua análise."*
+
+Contexto: Commander Spellbook (`backend.commanderspellbook.com`) confirma
+se uma combinação de cartas FUNCIONA nas regras, dado que todas estão na
+lista — não diz nada sobre quão rápido ou provável é montá-la numa
+partida real. Achar um combo "included" lá não é, por si só, motivo pra
+reclassificar Bracket. No caso do Ur-Dragon, calculei a probabilidade
+hipergeométrica real de ter as peças específicas na mão (sem tutor
+dedicado buscando as duas juntas) — deu **1,9% até o turno 8** pro combo
+de 2 cartas mais provável, **0,23%** pro de 3 cartas — antes ainda de
+contar mana, haste, e sobreviver a remoção numa mesa real de 4
+jogadores. Não é um "combo turno 3-4", é um evento de cauda.
+
+**Daqui pra frente, sempre que um combo for encontrado via Commander
+Spellbook (ou qualquer fonte que só verifique legalidade/funcionamento,
+não velocidade):**
+- Calcular a probabilidade hipergeométrica real de ter TODAS as peças na
+  mão até um turno de referência (6, 8, 10, 12), considerando o tamanho
+  real do deck e se existe algum tutor que busque especificamente essas
+  peças (o que muda a conta radicalmente).
+- Checar custo de mana de cada peça e se alguma tem haste/enabler de
+  haste já na lista — combos que exigem sobreviver um ciclo de turno
+  sem summoning sickness são mais lentos ainda do que a probabilidade de
+  draw sozinha sugere.
+- Só tratar um combo como relevante pro critério oficial de Bracket
+  ("combo infinito de 2 cartas cedo no jogo") se a análise acima mostrar
+  que ele é rápido E provável — não só "existe" — citando o número
+  calculado, não uma impressão.
+- Registrar esse cálculo explicitamente na auditoria/log, não só a
+  conclusão — pra não repetir o erro de alarmar sobre reclassificação de
+  Bracket antes de checar viabilidade real.
+
 ---
 
 <!-- Adicionar novas regras permanentes abaixo conforme o usuário as
