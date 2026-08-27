@@ -213,6 +213,18 @@ add("Karplusan Forest", 0, "land", set(), produces={"R", "G"})
 # to you." — sem tapped.
 add("Battlefield Forge", 0, "land", set(), produces={"R", "W"})
 
+# Talisman of Impulse: NAO esta na lista.md — cadastrada pra testar corte
+# de rock/dork de R/G (pedido do usuario 2026-08-27, seguindo a auditoria
+# de pips: vermelho +23,0pp, verde +5,5pp). Oraculo real: "{T}: Add {C}.
+# / {T}: Add {R} or {G}. This artifact deals 1 damage to you."
+add("Talisman of Impulse", 2, "artifact", {"rock1"}, produces={"R", "G"})
+
+# Ruby, Daring Tracker: NAO esta na lista.md — mesmo motivo. Oraculo real
+# (Scryfall, 2026-08-27): "{R}{G}, Legendary Creature — Human Scout, 1/2.
+# Haste. Whenever Ruby attacks while you control a creature with power 4
+# or greater, Ruby gets +2/+2 until end of turn. {T}: Add {R} or {G}."
+add("Ruby, Daring Tracker", 2, "creature", {"dork_flat1", "haste"}, pips={"R": 1, "G": 1}, produces={"R", "G"})
+
 # LAND_BASIC_TYPES: tipos basicos reais de cada terreno nao-fetch, usado por
 # crack_fetch() pra achar todo alvo que compartilha um dos 2 tipos buscados
 # pela fetch (nao so as basicas — Regra 6, achado real no Hei Bai: uma fetch
@@ -261,10 +273,10 @@ add("Balefire Dragon", 7, "creature", {"dragon", "combat_wipe_proxy"}, power=6, 
 add("Bladewing the Risen", 7, "creature", {"dragon", "reanimate_dragon_etb"}, power=6, pips={"B": 2, "R": 2})
 add("Dragon Broodmother", 6, "creature", {"dragon", "upkeep_dragon_token"}, power=4, pips={"R": 3, "G": 1})
 add("Dragonlord Dromoka", 6, "creature", {"dragon"}, power=4, pips={"G": 1, "W": 1})
-add("Goldspan Dragon", 5, "creature", {"dragon", "attack_treasure", "goldspan"}, power=4, pips={"R": 2})
-add("Hellkite Charger", 6, "creature", {"dragon", "extra_combat_paid"}, power=6, pips={"R": 2})
+add("Goldspan Dragon", 5, "creature", {"dragon", "attack_treasure", "goldspan", "haste"}, power=4, pips={"R": 2})
+add("Hellkite Charger", 6, "creature", {"dragon", "extra_combat_paid", "haste"}, power=6, pips={"R": 2})
 add("Hellkite Courser", 6, "creature", {"dragon"}, power=4, pips={"R": 2})
-add("Klauth, Unrivaled Ancient", 7, "creature", {"dragon", "attack_mana_power"}, power=7, pips={"R": 1, "G": 1})
+add("Klauth, Unrivaled Ancient", 7, "creature", {"dragon", "attack_mana_power", "haste"}, power=7, pips={"R": 1, "G": 1})
 add("Lathliss, Dragon Queen", 6, "creature", {"dragon", "dragon_etb_token"}, power=6, pips={"R": 2})
 add("Miirym, Sentinel Wyrm", 6, "creature", {"dragon", "dragon_etb_copy"}, power=3, pips={"G": 1, "U": 1, "R": 1})
 add("Old Gnawbone", 7, "creature", {"dragon", "combat_treasure_all"}, power=7, pips={"G": 2})
@@ -459,8 +471,17 @@ def dragon_enters(state: GameState, name: str, is_token: bool):
 # ---------------------------------------------------------------------------
 
 def ready_creatures(state: GameState):
+    """Bug real corrigido em 2026-08-27 (achado ao registrar Ruby, Daring
+    Tracker pra teste, que tem haste real): Hellkite Charger, Klauth e
+    Goldspan Dragon TAMBEM tem 'Flying, haste' no oraculo real, mas nunca
+    tinham sido marcadas — ficavam presas pela doenca de invocacao tanto
+    pra atacar quanto pra ativar habilidades de mana, quando o texto real
+    remove essa restricao. Criaturas tagueadas 'haste' ignoram o gate de
+    turno de conjuracao (real: haste remove summoning sickness tanto pra
+    atacar quanto pra ativar {T})."""
     return [n for n in state.battlefield if is_creature_card(n)
-            and (state.creature_cast_turn.get(n, -1) < state.turn)]
+            and ("haste" in CARD_DB[n].tags
+                 or state.creature_cast_turn.get(n, -1) < state.turn)]
 
 
 def dork_mana(state: GameState) -> int:

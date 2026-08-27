@@ -556,6 +556,33 @@ Resultados atualizados em `urdragon_v1_runs.jsonl` (3000 jogos, sobrescrito).
 
 ---
 
+## Correção #6 — Hellkite Charger/Klauth/Goldspan Dragon tinham haste real nunca modelada — 2026-08-27
+
+Achado ao registrar Ruby, Daring Tracker (que tem haste real) pro teste
+de rock/dork de R/G pedido pelo usuário: `ready_creatures()` travava
+TODA criatura por doença de invocação até o próximo turno, sem checar
+haste — mas Hellkite Charger, Klauth e Goldspan Dragon têm "Flying,
+haste" no oráculo real (conferido no Scryfall), o que remove essa
+restrição tanto pra atacar quanto pra ativar habilidades `{T}`. Nenhuma
+das 3 tinha sido marcada. Corrigido com uma tag `"haste"` checada em
+`ready_creatures()`.
+
+**Reteste de robustez:** 20.000 partidas, 0 erros/timeouts.
+
+**n=3000, seed_base=7600000 — resultado após a correção:**
+
+```
+Nunca conjurada em 8 turnos: 55,6% (era 56,6%)
+Avg contagem de Dragoes em campo (fim de jogo): 4,95 (era 4,76)
+Avg dano proxy total: 34,22 (era 29,44)
+Avg Treasures criados: 3,20 (era 2,96)
+```
+
+Impacto pequeno mas real — as 3 cartas já podiam atacar/gerar valor no
+mesmo turno que resolviam, e o simulador estava subestimando isso.
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**
