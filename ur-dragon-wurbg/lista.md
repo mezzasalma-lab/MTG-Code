@@ -40,8 +40,8 @@
 1 Klauth, Unrivaled Ancient
 1 Kodama's Reach
 1 Lathliss, Dragon Queen
-1 Lightning Greaves
-1 Magda, Brazen Outlaw
+1 Ruby, Daring Tracker
+1 Talisman of Impulse
 1 Miirym, Sentinel Wyrm
 1 Nature's Lore
 1 Old Gnawbone

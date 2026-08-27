@@ -583,6 +583,62 @@ mesmo turno que resolviam, e o simulador estava subestimando isso.
 
 ---
 
+## Correção #7 — rock + dork de R/G aplicados (Talisman of Impulse, Ruby Daring Tracker) — 2026-08-27
+
+Pedido do usuário: testar rocks/dorks de R/G, com sugestão de onde
+cortar. Cortes escolhidos com justificativa (não palpite):
+
+- **Lightning Greaves** → **Talisman of Impulse**: o deck já tem 2
+  fontes de haste grátis (Temur Ascendancy, Dragon Tempest), tornando
+  Lightning Greaves parcialmente redundante como fonte de haste; não
+  produz mana nem vantagem de carta.
+- **Magda, Brazen Outlaw** → **Ruby, Daring Tracker**: Magda só tem 1
+  Dwarf no deck (ela mesma), então "other Dwarves get +1/+0" nunca
+  dispara e o Treasure-por-tap só acontece com ela mesma atacando (no
+  máximo 1/turno); a única habilidade forte dela (tutor ao sacrificar 5
+  Treasures) exige acumular 5 primeiro, lento. Ruby é R/G direto, tem
+  haste real (Correção #6) e ainda ajuda combate.
+
+**Teste pareado com as 4 combinações** (`urdragon_rockdork_test.py`,
+n=3000, seed_base=7100000): Talisman sozinho melhorou color screw
+(-0,175 turnos) mas não moveu "nunca conjurada" (+0,40pp, ruído). Ruby
+sozinha melhorou as duas métricas (-2,07pp nunca conjurada, -0,102
+color screw) — faz sentido, ela também é um corpo real com haste, não
+só uma fonte de mana. **As duas juntas: -4,23pp em "nunca conjurada".**
+Checado em mais 3 rodadas de seed (1,5M/2,5M/5,5M) — delta
+consistentemente negativo em "nunca conjurada" nas 4 rodadas totais
+(-4,23 / -2,00 / -1,23 / -1,90pp) e em color screw também
+(-0,104 / -0,086 / -0,115 / -0,066) — efeito real, não ruído.
+
+**As duas trocas aplicadas de verdade em `lista.md`.** Reteste de
+robustez: 20.000 partidas, 0 erros/timeouts.
+
+**n=3000, seed_base=7600000 — resultado oficial após esta troca:**
+
+```
+Avg mulligans: 0,48
+Turno medio de conjuracao da Ur-Dragon: 6,79 | mediana: 7,0
+Nunca conjurada em 8 turnos: 53,3% (era 55,6%)
+Avg contagem de Dragoes em campo (fim de jogo): 5,22
+Avg dano proxy total: 36,88
+Avg cartas compradas extra: 5,27
+Avg turnos com color screw: 1,69
+% de jogos com pelo menos 1 turno de color screw: 37,4% (era 38,5%)
+Avg mao final: 3,05
+```
+
+**Progresso acumulado nesta biblioteca, do início ao fim desta sessão de
+correções:** "nunca conjurada em 8 turnos" foi de 71,5% (Simulação #1,
+com bugs reais de desconto/comandante) para 53,3% agora — via correção
+de bugs reais (Correções #1-#3, #6) e trocas de manabase/rocks/dorks
+testadas e aplicadas com dado real (Correções #5, #7). Ainda não é um
+deck com comandante confiável — 53% é ainda o pior desta biblioteca —
+mas a melhora é real e documentada passo a passo, não estimada.
+
+Resultados atualizados em `urdragon_v1_runs.jsonl` (3000 jogos, sobrescrito).
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**
