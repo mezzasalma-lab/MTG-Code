@@ -322,6 +322,7 @@ add("Spirit Token", 0, "creature", {"token"})
 
 
 LAND_NAMES = {n for n, c in CARD_DB.items() if c.ctype == "land"}
+TOKEN_NAMES = {"Shrine Token", "Monk Token", "Spirit Token"}
 CREATURE_ISH = {"creature", "enchantment_creature"}
 
 # Cores reais (Scryfall `colors`) de todo permanente nao-terreno do
@@ -401,6 +402,7 @@ class GameState:
 
     ephemerate_rebound_pending: bool = False
     mind_stone_harnessed: bool = False
+    creature_cast_turn: dict = field(default_factory=dict)
 
     # metrics -------------------------------------------------------------
     cards_drawn_extra: int = 0
@@ -536,6 +538,10 @@ def shrine_enters(state: GameState, name: str, is_token: bool = False):
         for _ in range(times):
             fn(state, sc)
 
+    # Nota (revisao carta-a-carta 2026-08-27): iterar sobre `set(...)`
+    # aqui e' seguro porque SHRINE_OTHER_REACT so tem chaves de Shrines
+    # NOMEADAS (singleton neste formato — nunca duplicam), nunca "Shrine
+    # Token"/"Spirit Token"/"Monk Token". Deduplicar nao muda o resultado.
     for reactor in set(state.battlefield):
         if reactor == name:
             continue
@@ -739,19 +745,30 @@ def bloom_tender_colors(state: GameState) -> int:
 
 
 def dork_mana(state: GameState) -> int:
+    """Achado real 2026-08-27 (usuario: "carta por carta, interacao por
+    interacao"): NENHUM dork deste deck respeitava doenca de invocacao —
+    Birds/Bloom Tender/Sanctum Weaver produziam mana no MESMO turno em
+    que eram conjurados, sem haste real. Corrigido via
+    `state.creature_cast_turn` (so pras 3 nomeadas, singleton — tokens
+    ficam de fora dessa checagem especifica porque o battlefield e' uma
+    lista de NOMES, nao de instancias unicas, entao nao da pra rastrear
+    doenca de invocacao por token individual sem uma reforma maior;
+    tratar token como sempre pronta e' um erro bem menor e limitado a 1
+    turno por token, nao o jogo inteiro como era o bug das 3 nomeadas)."""
     total = 0
     already_tapped_sources = set()
-    if "Birds of Paradise" in state.battlefield:
+    ready = lambda n: state.creature_cast_turn.get(n, -1) < state.turn
+    if "Birds of Paradise" in state.battlefield and ready("Birds of Paradise"):
         total += 1
         already_tapped_sources.add("Birds of Paradise")
-    if "Bloom Tender" in state.battlefield:
+    if "Bloom Tender" in state.battlefield and ready("Bloom Tender"):
         # Achado real 2026-08-27: estava fixa em 1 mana flat, documentada
         # como aproximacao — oraculo real: "For each color among
         # permanents you control, add one mana of that color" (nao
         # aproximado, contagem real de cores distintas em campo).
         total += max(1, bloom_tender_colors(state))
         already_tapped_sources.add("Bloom Tender")
-    if "Sanctum Weaver" in state.battlefield:
+    if "Sanctum Weaver" in state.battlefield and ready("Sanctum Weaver"):
         # Achado real 2026-08-27: formula errada — "Add X mana... where X
         # is the number of enchantments you control", sem divisao por 2.
         # A versao anterior (`// 2`) subestimava pela metade, documentada
@@ -764,9 +781,13 @@ def dork_mana(state: GameState) -> int:
         # implementada — "Creatures you control have '{T}: Add one mana
         # of any color.'" Cada criatura que ainda nao tem habilidade de
         # mana propria (Birds/Bloom Tender/Sanctum Weaver ja contadas
-        # acima, sem dobrar) ganha +1 mana.
+        # acima, sem dobrar) ganha +1 mana — nomeadas (singleton) checam
+        # doenca de invocacao real; tokens (nome compartilhado entre
+        # instancias) ficam sempre "prontas", aproximacao conservadora
+        # documentada acima.
         creatures = [n for n in state.battlefield
-                     if is_creature_card(n) and n not in already_tapped_sources]
+                     if is_creature_card(n) and n not in already_tapped_sources
+                     and (n in TOKEN_NAMES or ready(n))]
         total += len(creatures)
     return total
 
@@ -894,6 +915,14 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
     if from_hand and name in state.hand:
         state.hand.remove(name)
     state.battlefield.append(name)
+    if is_creature_card(name):
+        # Achado real 2026-08-27 (usuario: "carta por carta, interacao
+        # por interacao") — nenhum dork deste deck (Birds of
+        # Paradise/Bloom Tender/Sanctum Weaver, e agora Enduring
+        # Vitality) respeitava doenca de invocacao: todos produziam mana
+        # no MESMO turno em que eram conjurados, sem haste real pra
+        # justificar isso. Rastreado aqui, checado em dork_mana().
+        state.creature_cast_turn[name] = state.turn
     if name == COMMANDER:
         state.commander_in_play = True
         if state.commander_cast_turn is None:
@@ -903,17 +932,28 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
         # biblioteca (nao vao pro cemiterio; mesma convencao ja usada
         # nesta biblioteca pra "search... then shuffle": sem RNG real, so
         # devolvidas deterministicamente).
-        revealed = []
-        found_shrine = None
-        while state.library:
-            top = state.library.pop(0)
-            if is_shrine(top):
-                found_shrine = top
-                break
-            revealed.append(top)
-        state.library.extend(revealed)
-        if found_shrine:
-            enter_battlefield(state, found_shrine, from_hand=False)
+        #
+        # Achado real 2026-08-27 (usuario: "reconfira carta por carta e
+        # interacao por interacao"): esse gatilho e' da PROPRIA Hei Bai
+        # (causado por ela mesma entrando) — nunca passava por
+        # resolve_times(). Elesh Norn ("se um permanente entrando causa
+        # um gatilho... dispara mais uma vez") e Annie Joins Up (Hei Bai
+        # e' criatura lendaria) podem dobrar isso se ja estiverem em
+        # campo quando a Hei Bai resolve — cada dobra revela e busca MAIS
+        # uma Shrine do topo da biblioteca.
+        times = resolve_times(state, COMMANDER, True, False, True)
+        for _ in range(times):
+            revealed = []
+            found_shrine = None
+            while state.library:
+                top = state.library.pop(0)
+                if is_shrine(top):
+                    found_shrine = top
+                    break
+                revealed.append(top)
+            state.library.extend(revealed)
+            if found_shrine:
+                enter_battlefield(state, found_shrine, from_hand=False)
     if is_enchantment_card(name):
         on_any_enchantment_enters(state, name)
     if is_shrine(name):

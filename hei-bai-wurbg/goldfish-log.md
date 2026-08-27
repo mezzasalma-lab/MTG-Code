@@ -397,6 +397,79 @@ nunca Purphoros/Thassa, apesar de ambas serem lendárias de verdade.
 
 ---
 
+## Correção #3 — revisão carta-a-carta/interação-a-interação (pedido explícito do usuário)
+
+Usuário: *"Eu quero que vc reconfira o deck todo, carta por carta e
+interação por interação. Vários dos encantamentos shrine são lendários
+tb!"* — depois, em sequência, perguntas pontuais: *"E as dobras do
+Sanctum of all se tiver mais de 6 shrines na mesa (inclusive os tokens
+do Go-Shintai of Life Origin)? E a Enchantress presence não triggar
+quando Hei-Bai coloca shrine na mesa (não é cast)?"* e *"E Sythis
+triggar 2X com Annie Joins Up? Outros lendários?"*
+
+### Verificado com teste real (já estava correto, sem bug)
+
+- **Sanctum of All conta Shrine Tokens no threshold de 6+.** Testado:
+  5 Shrines nomeadas + 1 Shrine Token = `shrine_count()` retorna 6 e o
+  dobrador ativa (`times=2`); com só 5 nomeadas, `times=1`.
+  `shrine_count()` conta qualquer permanente com a tag `shrine`, token
+  incluso — já correto.
+- **Enchantress's Presence não dispara pro ETB da Hei Bai colocando
+  Shrine em campo.** Testado: `cards_drawn_extra` fica em 0 antes e
+  depois da Hei Bai encontrar e colocar uma Shrine via seu próprio ETB
+  — `enter_battlefield()` (usado por "put onto the battlefield") nunca
+  chama `on_cast_enchantment()`, só `cast_card()` chama (conjurar de
+  verdade). Já correto.
+- **Sythis dobra 2x com Annie Joins Up.** Testado: 2 vida + 2 compras
+  com Annie em campo vs. 1/1 sem ela.
+- **Go-Shintai of Ancient Wars dobra 2x com Annie.** Testado: 4 dano
+  (2 Shrines × 2 dobra) vs. 2 sem Annie.
+- **Go-Shintai of Life's Origin dobra 2x com Annie.** Testado: 2 Shrine
+  Tokens criados vs. 1 sem Annie.
+
+### Corrigido (achados reais novos)
+
+1. **O próprio ETB da Hei Bai nunca passava por `resolve_times()`** —
+   "When Hei Bai enters, reveal... until Shrine... put onto the
+   battlefield" é um gatilho da PRÓPRIA Hei Bai (causado por ela mesma
+   entrando). Elesh Norn (causado por ETB) e Annie Joins Up (Hei Bai é
+   lendária) podiam dobrar isso, mas o código nunca checava. Corrigido
+   e testado: com Annie em campo, a Hei Bai agora encontra 2 Shrines em
+   vez de 1.
+2. **Nenhum dork deste deck respeitava doença de invocação.** Birds of
+   Paradise, Bloom Tender, Sanctum Weaver (e agora Enduring Vitality)
+   produziam mana no MESMO turno em que eram conjurados, sem haste
+   real. Corrigido com `state.creature_cast_turn` — as 3 cartas
+   nomeadas (singleton, sem ambiguidade de instância) checam prontidão
+   real; tokens (nome compartilhado entre várias instâncias no
+   battlefield-como-lista) ficam de fora dessa checagem específica —
+   aproximação conservadora documentada, o erro daí é limitado a 1
+   turno por token, não o jogo inteiro como era o bug das 3 nomeadas.
+
+Testado: 300 jogos smoke test, 30.000 jogos de robustez (0 erros) após
+cada uma das 2 correções.
+
+**Impacto real** (mesma seed_base=9100000, n=3000, as 2 correções
+juntas — efeitos em direções opostas, doença de invocação REDUZ o
+motor, ETB dobrável da Hei Bai AUMENTA um pouco):
+
+| métrica | antes (Correção #2) | depois |
+|---|---|---|
+| dano proxy total | 307,55 | **178,74** |
+| tokens criados | 62,14 | **40,72** |
+| dobras via Elesh Norn | 99,75 | 57,35 |
+| dobras via Annie Joins Up | 51,17 | 29,42 |
+| Shrines em campo (fim) | — | 7,80 |
+
+Líquido: queda real, porque restringir doença de invocação nos dorks é
+uma correção mais impactante que o pequeno ganho do ETB dobrável da Hei
+Bai — o motor de mana estava inflado desde o início por essa lacuna, e
+agora reflete uma curva de desenvolvimento mais realista.
+
+`lista.md` não mudou. `heibai_v1_runs.jsonl` sobrescrito.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
