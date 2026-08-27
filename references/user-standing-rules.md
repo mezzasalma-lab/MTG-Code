@@ -80,6 +80,40 @@ métrica (EDHREC, matriz de sinergia, goldfish) mostrar sobre elas.
   (`thranduil_synergy_matrix.py`) — vetada por decisão direta do usuário,
   não por análise.
 
+## 6. Auditoria de manabase: sempre contar Command Tower, fetches, Arcane Signet e outros fixers flexíveis como fontes reais
+
+Citação literal do usuário (2026-08-24): *"Sempre que vc for avaliar a
+manabase, lembre de contar Command Tower, os fixers (fetch lands, arcane
+signet e outros corretores como Dryad) daqui para frente, ok?"*
+
+Contexto: numa auditoria de pips do Hei Bai, um cálculo inicial contou
+fetch lands como fontes de só as 2 cores "nomeadas" no texto delas (ex:
+Arid Mesa = R ou W), subestimando o alcance real. Fetches buscam por
+**tipo** de terreno, não só básica — então também pegam qualquer
+dual/triome que carregue aquele tipo. Testado no Hei Bai: as 8 fetches da
+lista, cada uma, alcançavam as 5 cores, porque a manabase tinha duais/
+triomes multicoloridos suficientes conectando todo tipo básico a todo o
+resto.
+
+- **Command Tower, Arcane Signet** (e qualquer fonte "any color in your
+  commander's color identity") contam como fonte de TODAS as cores da
+  identidade do comandante, não de uma cor só.
+- **Fetch lands**: não contar só as 2 cores nomeadas no texto. Cruzar
+  contra `type_line` de TODO terreno da lista (duais, triomes, básicas)
+  pra achar quais compartilham um dos 2 tipos buscados, e somar a união
+  de cores de todos esses alvos — não só o par nomeado.
+- **Fixers estáticos que mudam terrenos** (ex: Dryad of the Ilysian
+  Grove — "Lands you control are every basic land type"; Yavimaya,
+  Cradle of Growth — "Each land is a Forest in addition to its other
+  land types") contam como fonte real de cada cor que passam a habilitar,
+  uma vez em campo — mas são condicionais (precisam resolver primeiro),
+  então registrar separado da contagem "sempre disponível desde o turno 1"
+  (terrenos básicos, duais, fetches, rocks), não misturado nela.
+- Toda contagem de fonte-por-cor precisa citar de qual das categorias
+  acima veio (fixa incondicional vs. condicional-uma-vez-resolvida), não
+  só o número final — pra não repetir o erro de subestimar (ou
+  superestimar) o alcance real da manabase.
+
 ---
 
 <!-- Adicionar novas regras permanentes abaixo conforme o usuário as
