@@ -384,6 +384,8 @@ class GameState:
     dragon_tokens: int = 0
     other_tokens: int = 0
     ramos_counters: int = 0
+    magda_treasures: int = 0
+    magda_tutors_total: int = 0
 
     commander_in_play: bool = False
     commander_cast_count: int = 0
@@ -934,7 +936,53 @@ def main_phase(state: GameState):
         state.bonus_mana_pool += 10
 
 
+def do_magda_treasures(state: GameState):
+    """Magda, Brazen Outlaw: 'Whenever a Dwarf you control becomes tapped,
+    create a Treasure token.' + 'Sacrifice five Treasures: search library
+    for an artifact or Dragon card, put onto the battlefield.'
+
+    Bug real corrigido em 2026-08-27 (achado pelo usuario): a tag
+    'treasure_tutor_dragon' existia no CARD_DB mas NUNCA tinha sido
+    implementada em lugar nenhum — Magda era um corpo puramente
+    decorativo. Alem disso, Firdoch Core E' um Dwarf de verdade
+    (Changeling: 'This card is every creature type', em toda zona) —
+    quando ele tapa pra mana (dork_flat1_any), isso TAMBEM dispara o
+    gatilho da Magda, nao so ela mesma atacando. As duas fontes de tap
+    contam aqui: a propria Magda (assume que ataca todo turno que esta
+    pronta, mesma abstracao de combate ja usada pros Dragoes) e Firdoch
+    Core (assume que tapa pra mana todo turno que esta pronto, mesma
+    abstracao ja usada em dork_mana()).
+
+    Os Treasures da Magda sao guardados (nao convertidos em mana na
+    hora, ao contrario de create_and_use_treasures) — decisao real: vale
+    mais guardar rumo aos 5 pro tutor gratis de Dragao/artefato do que
+    gastar 1 a 1 em mana."""
+    if "Magda, Brazen Outlaw" not in state.battlefield:
+        return
+    ready = set(ready_creatures(state))
+    taps = 0
+    if "Magda, Brazen Outlaw" in ready:
+        taps += 1
+    if "Firdoch Core" in state.battlefield and "Firdoch Core" in ready:
+        taps += 1
+    if taps == 0:
+        return
+    state.magda_treasures += taps
+    state.treasures_created_total += taps
+    while state.magda_treasures >= 5:
+        state.magda_treasures -= 5
+        pool = [n for n in state.library if is_dragon(n) or is_artifact_card(n)]
+        if not pool:
+            break
+        best = max(pool, key=lambda n: CARD_DB[n].mv)
+        state.library.remove(best)
+        enter_battlefield(state, best, from_hand=False)
+        state.tutors_used_total += 1
+        state.magda_tutors_total += 1
+
+
 def combat_step(state: GameState):
+    do_magda_treasures(state)
     ready = ready_creatures(state)
     ready_dragons = [n for n in ready if is_dragon(n)]
     ur_dragon_attacking = COMMANDER in state.battlefield and COMMANDER in ready
@@ -1108,6 +1156,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg tutores usados: {avg([s.tutors_used_total for s in states]):.2f}")
     print(f"Avg ativacoes da habilidade de mana da Orb of Dragonkind: {avg([s.orb_mana_activations_total for s in states]):.2f}")
     print(f"Avg fetches cracked: {avg([s.fetches_cracked_total for s in states]):.2f}")
+    print(f"Avg tutores via Magda (Treasure sac): {avg([s.magda_tutors_total for s in states]):.2f}")
     print(f"Avg turnos com color screw (mana total ok, cor errada): {avg([s.color_screw_turns for s in states]):.2f}")
     screwed = [s.first_color_screw_turn for s in states if s.first_color_screw_turn is not None]
     print(f"% de jogos com pelo menos 1 turno de color screw: {100*len(screwed)/n:.1f}% | turno medio do 1o screw: {avg(screwed):.2f}" if screwed else "% de jogos com color screw: 0.0%")

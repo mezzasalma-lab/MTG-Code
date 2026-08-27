@@ -639,6 +639,61 @@ Resultados atualizados em `urdragon_v1_runs.jsonl` (3000 jogos, sobrescrito).
 
 ---
 
+## Correção #8 — Magda, Brazen Outlaw: duas falhas reais, corrigidas
+
+O usuário apontou, corretamente, que a análise da Correção #7 (cortar
+Magda por Ruby, Daring Tracker) estava errada: *"Magda cria tesouros
+com ela mesma e com Firdoch Core. Além disso a Magda tutora dragões,
+então ela tem duas funções!"*
+
+Duas falhas reais, não uma:
+
+1. **Sinergia perdida com Firdoch Core.** Firdoch Core tem Changeling
+   ("this card is every creature type"), então é um Dwarf de verdade —
+   dispara "Whenever a Dwarf you control becomes tapped, create a
+   Treasure token" quando ela tapa pra mana, não só quando Magda ataca.
+   Eu tinha tratado Firdoch Core como neutra nessa comparação; não é.
+2. **A tag nunca foi implementada.** `"treasure_tutor_dragon"` existia
+   como tag decorativa em Magda desde que ela entrou no CARD_DB — nunca
+   houve nenhuma função checando essa tag em lugar nenhum do código.
+   Ou seja, Magda era um corpo puramente decorativo na simulação, uma
+   violação real da Regra 3 (efeito estrutural precisa de implementação
+   real) que passou despercebida até agora.
+
+**Corrigido:** implementada `do_magda_treasures(state)` — conta taps
+reais de Dwarves (Magda atacando + Firdoch Core tapando pra mana),
+cria Treasure por tap, e sacrifica 5 Treasures pra tutorar
+artifact/Dragon pro campo quando acumula o suficiente. Testado (200
+jogos smoke test, 20.000 jogos de robustez, seed_base=2200000, 0
+erros/timeouts).
+
+**Reteste pareado Magda (real) vs. Ruby** (`urdragon_magda_retest.py`,
+Talisman fixo nas duas variantes): com a implementação real de Magda,
+ela agora realmente contribui — 0,057 tutores/jogo em média (≈1 tutor
+a cada 17-18 partidas em 8 turnos), algo que Ruby não replica. Mas em
+"nunca conjurada em 8 turnos", Ruby continuou à frente em todas as 4
+rodadas de seed testadas (delta Ruby−Magda): -3,37pp / -2,40pp /
+-0,47pp / -1,13pp. Direção consistente (Ruby sempre melhor), mas
+magnitude bem mais ruidosa do que outros testes desta sessão (que
+tipicamente ficavam bem agrupados, tipo o teste de rock/dork logo
+acima) — sinal de que a diferença real entre as duas é pequena.
+
+**Decisão final:** mantido Ruby, Daring Tracker na lista (não revertido
+para Magda). Motivo: Ruby vence de forma consistente (4/4 rodadas) na
+métrica mais importante — conjurar o comandante — mesmo contando o
+valor real e agora corrigido de Magda. Mas a vantagem é pequena e a
+função de tutor de Magda é única (Ruby não tutora nada); se o baralho
+mudar de direção (menos foco em curva, mais em recursão de
+artifact/Dragon), vale reconsiderar — a implementação de Magda agora
+está correta e pronta para uso, não é mais uma tag morta.
+
+`lista.md` permanece: Ruby, Daring Tracker dentro, Talisman of Impulse
+dentro, Magda, Brazen Outlaw fora (estado idêntico ao pós-Correção #7).
+Reteste oficial (n=3000, seed_base=7600000) confirma os mesmos números
+de antes — 53,3% nunca conjurada, 37,4% color screw — sem regressão.
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**
