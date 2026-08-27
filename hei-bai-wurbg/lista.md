@@ -91,6 +91,7 @@
 
 1 An Offer You Can't Refuse
 1 Arcane Denial
+1 Aura Shards
 1 Dovin's Veto
 1 Ephemerate
 1 Heroic Intervention
@@ -105,7 +106,6 @@
 
 1 Aang's Journey
 1 Cultivate
-1 Farewell
 1 Farseek
 1 Idyllic Tutor
 1 Nature's Lore

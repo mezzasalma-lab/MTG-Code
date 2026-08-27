@@ -67,6 +67,13 @@ decisão real não é sobre poder — é sobre Bracket: essa troca específica
 oficial do deck. Se o grupo já aceita Farewell como um dos 3 GCs do deck,
 não há motivo mecânico pra recusar essa troca.
 
+**Troca aplicada de verdade em `lista.md` (2026-08-24)** — Farewell saiu,
+Aura Shards entrou. `heibai_v1_runs.jsonl` foi regerado com a lista nova
+(reteste de robustez: 20.000 partidas, 0 erros/timeouts). A Simulação #1
+abaixo já reflete o deck ATUAL (com Aura Shards, não Farewell) — os
+números batem com a coluna "COM Aura Shards" do teste acima, dentro do
+esperado pra seeds diferentes.
+
 ---
 
 ## Simulação #1 — goldfish Python completo (`heibai_goldfish_v1.py`) — 2026-08-24
@@ -126,7 +133,7 @@ contra um comprimento que encolhia a cada iteração), reescrita como um
 **Teste de robustez:** 2 sweeps de 20.000 partidas com timeout de 2s via
 `signal.alarm`, **0 erros, 0 timeouts** nos dois.
 
-**n=3000, seed_base=9100000, 8 turnos — resultado oficial:**
+**n=3000, seed_base=9100000, 8 turnos — resultado oficial (versão original, com Farewell):**
 
 ```
 Avg mulligans: 0,58
@@ -146,6 +153,34 @@ Avg vida ganha proxy: 1,97
 Avg spells de interacao conjurados (proxy): 2,53
 Avg mao final: 3,17
 ```
+
+**Atualizado em 2026-08-24 após a troca Farewell → Aura Shards (mesma
+seed_base=9100000, reteste de robustez limpo — 20.000 partidas, 0
+erros/timeouts):**
+
+```
+Avg mulligans: 0,58
+Turno medio de conjuracao da Hei Bai: 3,79 | mediana: 4,0
+Nunca conjurada em 8 turnos: 3,1%
+Avg contagem de Shrines em campo (fim de jogo): 4,46
+Avg cartas compradas extra: 8,84
+Avg drain proxy total: 8,44
+Avg dano proxy total (Purphoros/Go-Shintai Ancient Wars): 10,82
+Avg tokens criados: 7,51
+Avg dobras via Elesh Norn: 2,87
+Avg dobras via Sanctum of All (6+ Shrines): 2,38
+Avg dobras via Annie Joins Up: 0,36
+Avg blinks totais: 1,06 | dos quais em Shrine: 0,78
+Avg tutores usados: 0,85
+Avg vida ganha proxy: 2,08
+Avg spells de interacao conjurados (proxy): 6,14
+Avg destruicoes via Aura Shards: 3,67
+Avg mao final: 3,14
+```
+
+Tudo dentro do esperado do Teste #1 acima — motor central intacto, volume
+de interação mais que dobrou (2,53→6,14/partida). `heibai_v1_runs.jsonl`
+reflete esta versão atualizada.
 
 Resultados salvos em `heibai_v1_runs.jsonl` (3000 jogos).
 

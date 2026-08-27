@@ -94,12 +94,20 @@ Isso é um motor de vantagem de cartas que se realimenta: mais Shrines → mais 
 | An Offer You Can't Refuse | Contramágica não-criatura (paga vida = CMC do oponente) |
 | Arcane Denial, Dovin's Veto | Contramágica dura (Dovin's Veto não pode ser contra-contrado) |
 | Swan Song | Contramágica de encantamento/instantâneo/sorcery — ótima contra outra remoção ou outro deck de encantamento |
-| Farewell | Wipe modal (artefato/criatura/encantamento/cemitério — escolha o que exilar, protegendo suas próprias Shrines) |
+| Aura Shards | Remoção repetível grátis: "whenever a creature you control enters, you may destroy target artifact or enchantment" — com o volume de token deste deck (Honden of Life's Web, Go-Shintai of Shared Purpose, Crescent Island Temple, o ativado da própria Hei Bai, Hallowed Haunting a cada encantamento), dispara ~3,8x/partida em goldfish (ver `goldfish-log.md`, Teste #1) |
 | Touch the Spirit Realm | O-Ring + modo channel instantâneo |
 | Sanctum of Shattered Heights, Go-Shintai of Hidden Cruelty, Go-Shintai of Ancient Wars | Remoção/dano escalando com número de Shrines |
 | Annie Joins Up | 5 de dano a criatura/planeswalker ao entrar, e dobra gatilhos de criaturas lendárias (muitas Shrines são criaturas lendárias) |
 
-**11 efeitos de remoção/contramágica**, cobrindo exile, wipe modal e 3 contramágicas diferentes — é o único dos 4 decks que roda counterspells de verdade, o que sozinho já empurra o nível de interação pra cima dos outros três.
+**11 efeitos de remoção/contramágica**, cobrindo exile, remoção repetível e 3 contramágicas diferentes — é o único dos 4 decks que roda counterspells de verdade, o que sozinho já empurra o nível de interação pra cima dos outros três.
+
+> **Atualização (2026-08-24):** Farewell foi trocada por Aura Shards (pedido
+> do usuário, testado em `goldfish-log.md` Teste #1 antes da troca real —
+> deltas em turno de comandante/Shrines/draw/tokens todos dentro do ruído,
+> a troca é isolada do motor central). Farewell era um wipe modal de 1 uso;
+> Aura Shards é repetível e escala com a alta densidade de token do deck.
+> Ambas são Game Changers reais — a troca 1-por-1 mantém o deck em 3/3,
+> não muda o Bracket.
 
 ---
 
@@ -141,7 +149,7 @@ Não é um deck "combo mata no turno X" — é controle/valor que, se não for p
 **Contagem real de Game Changers no deck: 3**
 - Seedborn Muse
 - Teferi's Protection
-- Farewell
+- Aura Shards *(trocada por Farewell em 2026-08-24 — ambas Game Changers, troca 1-por-1 mantém o teto de 3)*
 
 Isso é **exatamente o teto do Bracket 3** (até 3 Game Changers permitidas). Confirmando os outros critérios:
 - Sem combo de 2 peças que vença cedo no jogo (Deadeye Navigator/Thassa/blink não geram loop infinito sozinhos, todos custam mana por ativação).
