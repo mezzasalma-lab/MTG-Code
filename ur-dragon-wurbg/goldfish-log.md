@@ -1215,6 +1215,74 @@ aleatório).
 
 ---
 
+## Correção #15 — Terror of the Peaks sem tag 'dragon' + 19 poderes errados no CARD_DB inteiro
+
+Usuário pediu revisão completa de novo + pra ver os outros combos do
+Commander Spellbook. Rodando a consulta de novo pra conferir os 3
+combos "included" achei uma inconsistência: o combo Miirym + Bladewing
+the Risen + Terror of the Peaks depende de Terror of the Peaks matar a
+si mesma/aos tokens com dano igual ao PRÓPRIO PODER. Conferindo o P/T
+real (Scryfall) achei que **Terror of the Peaks é Creature — Dragon
+(5/4)**, mas o CARD_DB não tinha a tag `dragon` (invisível pra Eminence,
+`dragon_count()`, tutores de Dragão, Cavern of Souls/Secluded
+Courtyard/Haven of the Spirit Dragon, Roaming Throne, Herald's
+Horn/Urza's Incubator) **e o poder estava registrado como 4 em vez de
+5**.
+
+Isso me fez auditar TODOS os `power=` do CARD_DB contra o P/T real via
+script (Scryfall). Resultado: **19 poderes errados**, incluindo a
+própria Ur-Dragon (9 em vez de 10!) e praticamente todo Dragão grande
+do deck:
+
+| carta | power no sim | power real |
+|---|---|---|
+| The Ur-Dragon | 9 | **10** |
+| Atarka, World Render | 7 | **6** |
+| Bladewing the Risen | 6 | **4** |
+| Dragonlord Dromoka | 4 | **5** |
+| Hellkite Charger | 6 | **5** |
+| Hellkite Courser | 4 | **6** |
+| Klauth, Unrivaled Ancient | 7 | **4** |
+| Miirym, Sentinel Wyrm | 3 | **6** |
+| Ramos, Dragon Engine | 2 | **4** |
+| Savage Ventmaw | 5 | **4** |
+| Twinflame Tyrant | 4 | **3** |
+| Terror of the Peaks | 4 | **5** |
+| Ruby, Daring Tracker | 0 | **1** |
+| Delighted Halfling | 0 | **1** |
+| Dragonlord's Servant | 0 | **1** |
+| Dragonspeaker Shaman | 0 | **2** |
+| Sarkhan, Soul Aflame | 0 | **2** |
+| Magda, Brazen Outlaw | 0 | **2** |
+| Radagast of Rhosgobel | 0 | **2** |
+| Roaming Throne | 0 | **4** |
+
+Isso afeta TUDO que usa poder de criatura: `total_attack_power`
+(Klauth/Old Gnawbone), Terror of the Peaks (dano = poder de quem
+entra), Elemental Bond/Garruk's Uprising/Temur Ascendancy (limiares de
+poder 3/4), The Great Henge (custo = maior poder), Return of the
+Wildspeaker (compra = maior poder). Os dorks com power=0 (deveriam ter
+1-2) nunca bateriam nenhum desses limiares mesmo sendo a maior criatura
+num board vazio cedo de jogo — e Roaming Throne com power=0 em vez de 4
+nunca contava pros gatilhos de poder-4.
+
+Corrigidos os 20 valores (19 + Terror of the Peaks). Testado: 300 jogos
+smoke test, 30.000 jogos de robustez (0 erros).
+
+**Impacto real combinado** (mesma seed_base=7600000, n=3000):
+
+| métrica | antes (Correção #14) | depois |
+|---|---|---|
+| nunca conjurada | 34,5% | **33,8%** |
+| Dragões em campo (fim de jogo) | 12,33 | **13,83** |
+| dano proxy médio | 381,92 | **499,18 (+31%)** |
+| Treasures criados | 23,92 | **27,44** |
+| cartas compradas extra | 12,53 | **13,69** |
+
+`lista.md` não mudou. `urdragon_v1_runs.jsonl` sobrescrito.
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**

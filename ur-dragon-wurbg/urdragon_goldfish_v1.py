@@ -147,7 +147,7 @@ def add(name, mv, ctype, tags=(), power=0, pips=None, produces=None):
 
 
 COMMANDER = "The Ur-Dragon"
-add(COMMANDER, 9, "creature", {"commander", "dragon", "roaming_throne_type"}, power=9,
+add(COMMANDER, 9, "creature", {"commander", "dragon", "roaming_throne_type"}, power=10,
     pips={"W": 1, "U": 1, "B": 1, "R": 1, "G": 1})
 
 ROAMING_THRONE_TYPE = "dragon"
@@ -270,7 +270,7 @@ add("Talisman of Impulse", 2, "artifact", {"rock1"}, produces={"R", "G"})
 # (Scryfall, 2026-08-27): "{R}{G}, Legendary Creature — Human Scout, 1/2.
 # Haste. Whenever Ruby attacks while you control a creature with power 4
 # or greater, Ruby gets +2/+2 until end of turn. {T}: Add {R} or {G}."
-add("Ruby, Daring Tracker", 2, "creature", {"dork_flat1", "haste"}, pips={"R": 1, "G": 1}, produces={"R", "G"})
+add("Ruby, Daring Tracker", 2, "creature", {"dork_flat1", "haste"}, power=1, pips={"R": 1, "G": 1}, produces={"R", "G"})
 
 # LAND_BASIC_TYPES: tipos basicos reais de cada terreno nao-fetch, usado por
 # crack_fetch() pra achar todo alvo que compartilha um dos 2 tipos buscados
@@ -299,14 +299,14 @@ add("Nature's Lore", 2, "sorcery", {"land_tutor1"}, pips={"G": 1})
 add("Three Visits", 2, "sorcery", {"land_tutor1"}, pips={"G": 1})
 add("Skyshroud Claim", 4, "sorcery", {"land_tutor2_direct"}, pips={"G": 1})
 add("Birds of Paradise", 1, "creature", {"dork_flat1"}, pips={"G": 1}, produces=set("WUBRG"))
-add("Delighted Halfling", 1, "creature", {"dork_flat1"})  # produces=set() de proposito: "any color" real e' restrito a spell lendario (LEGENDARY_ANY_COLOR_SOURCES), checado a parte
+add("Delighted Halfling", 1, "creature", {"dork_flat1"}, power=1)  # produces=set() de proposito: "any color" real e' restrito a spell lendario (LEGENDARY_ANY_COLOR_SOURCES), checado a parte
 add("Arcane Signet", 2, "artifact", {"rock1"}, produces=set("WUBRG"))
 add("Sol Ring", 1, "artifact", {"rock2"})  # {C}{C} — sem cor
 
 # --- Custo de Dragao / tutores -------------------------------------------------
-add("Dragonlord's Servant", 2, "creature", {"dragon_discount1"}, pips={"R": 1})
-add("Dragonspeaker Shaman", 3, "creature", {"dragon_discount2"}, pips={"R": 2})
-add("Sarkhan, Soul Aflame", 3, "creature", {"dragon_discount1"}, pips={"U": 1, "R": 1})
+add("Dragonlord's Servant", 2, "creature", {"dragon_discount1"}, power=1, pips={"R": 1})
+add("Dragonspeaker Shaman", 3, "creature", {"dragon_discount2"}, power=2, pips={"R": 2})
+add("Sarkhan, Soul Aflame", 3, "creature", {"dragon_discount1"}, power=2, pips={"U": 1, "R": 1})
 add("Herald's Horn", 3, "artifact", {"dragon_discount1", "tribal_impulse"})
 add("Sarkhan's Triumph", 3, "instant", {"dragon_tutor_hand"}, pips={"R": 1})
 add("Orb of Dragonkind", 2, "artifact", {"dragon_tutor_sac"}, pips={"R": 1})
@@ -315,7 +315,7 @@ add("Urza's Incubator", 3, "artifact", {"dragon_discount2"})
 # --- Dragoes com gatilho real ----------------------------------------------------
 add("Ancient Copper Dragon", 6, "creature", {"dragon", "combat_treasure_d20"}, power=6, pips={"R": 2})
 add("Ancient Gold Dragon", 7, "creature", {"dragon", "combat_token_d20"}, power=7, pips={"W": 2})
-add("Atarka, World Render", 7, "creature", {"dragon"}, power=7, pips={"R": 1, "G": 1})
+add("Atarka, World Render", 7, "creature", {"dragon"}, power=6, pips={"R": 1, "G": 1})
 add("Balefire Dragon", 7, "creature", {"dragon", "interaction"}, power=6, pips={"R": 2})
 # Balefire Dragon: "Whenever this creature deals combat damage to a
 # player, it deals that much damage to each creature that player
@@ -325,26 +325,32 @@ add("Balefire Dragon", 7, "creature", {"dragon", "interaction"}, power=6, pips={
 # 'combat_wipe_proxy' nunca tinha sido checada (achado na revisao
 # completa de 2026-08-27) — renomeado pra 'interaction' pra refletir a
 # razao real de nao ter simulacao, em vez de parecer uma tag esquecida.
-add("Bladewing the Risen", 7, "creature", {"dragon", "reanimate_dragon_etb"}, power=6, pips={"B": 2, "R": 2})
+add("Bladewing the Risen", 7, "creature", {"dragon", "reanimate_dragon_etb"}, power=4, pips={"B": 2, "R": 2})
 add("Dragon Broodmother", 6, "creature", {"dragon", "upkeep_dragon_token"}, power=4, pips={"R": 3, "G": 1})
-add("Dragonlord Dromoka", 6, "creature", {"dragon"}, power=4, pips={"G": 1, "W": 1})
+add("Dragonlord Dromoka", 6, "creature", {"dragon"}, power=5, pips={"G": 1, "W": 1})
 add("Goldspan Dragon", 5, "creature", {"dragon", "attack_treasure", "goldspan", "haste"}, power=4, pips={"R": 2})
-add("Hellkite Charger", 6, "creature", {"dragon", "extra_combat_paid", "haste"}, power=6, pips={"R": 2})
-add("Hellkite Courser", 6, "creature", {"dragon"}, power=4, pips={"R": 2})
-add("Klauth, Unrivaled Ancient", 7, "creature", {"dragon", "attack_mana_power", "haste"}, power=7, pips={"R": 1, "G": 1})
+add("Hellkite Charger", 6, "creature", {"dragon", "extra_combat_paid", "haste"}, power=5, pips={"R": 2})
+add("Hellkite Courser", 6, "creature", {"dragon"}, power=6, pips={"R": 2})
+add("Klauth, Unrivaled Ancient", 7, "creature", {"dragon", "attack_mana_power", "haste"}, power=4, pips={"R": 1, "G": 1})
 add("Lathliss, Dragon Queen", 6, "creature", {"dragon", "dragon_etb_token"}, power=6, pips={"R": 2})
-add("Miirym, Sentinel Wyrm", 6, "creature", {"dragon", "dragon_etb_copy"}, power=3, pips={"G": 1, "U": 1, "R": 1})
+add("Miirym, Sentinel Wyrm", 6, "creature", {"dragon", "dragon_etb_copy"}, power=6, pips={"G": 1, "U": 1, "R": 1})
 add("Old Gnawbone", 7, "creature", {"dragon"}, power=7, pips={"G": 2})
-add("Ramos, Dragon Engine", 6, "artifact_creature", {"dragon", "ramos_counters"}, power=2)
-add("Savage Ventmaw", 6, "creature", {"dragon", "attack_mana_flat"}, power=5, pips={"R": 1, "G": 1})
+add("Ramos, Dragon Engine", 6, "artifact_creature", {"dragon", "ramos_counters"}, power=4)
+add("Savage Ventmaw", 6, "creature", {"dragon", "attack_mana_flat"}, power=4, pips={"R": 1, "G": 1})
 add("Scourge of Valkas", 5, "creature", {"dragon", "dragon_etb_damage"}, power=4, pips={"R": 3})
-add("Terror of the Peaks", 5, "creature", {"creature_etb_damage_power"}, power=4, pips={"R": 2})
-add("Twinflame Tyrant", 5, "creature", {"dragon"}, power=4, pips={"R": 2})
+add("Terror of the Peaks", 5, "creature", {"creature_etb_damage_power", "dragon"}, power=5, pips={"R": 2})
+# Achado real 2026-08-27 (verificando o combo Miirym+Bladewing+Terror of
+# the Peaks do Commander Spellbook): type_line real e' "Creature —
+# Dragon" (P/T 5/4) — faltava a tag 'dragon' (invisivel pra Eminence,
+# dragon_count, tutores, Cavern of Souls/Courtyard/Haven, Roaming
+# Throne, Herald's Horn/Urza's Incubator) e o poder estava errado (4 em
+# vez de 5).
+add("Twinflame Tyrant", 5, "creature", {"dragon"}, power=3, pips={"R": 2})
 add("Utvara Hellkite", 8, "creature", {"dragon"}, power=6, pips={"R": 2})
 
 # --- Outras criaturas / suporte tribal --------------------------------------------
 add("Dragon Tempest", 2, "enchantment", {"dragon_etb_damage"}, pips={"R": 1})
-add("Magda, Brazen Outlaw", 2, "creature", {"treasure_tutor_dragon"}, pips={"R": 1})
+add("Magda, Brazen Outlaw", 2, "creature", {"treasure_tutor_dragon"}, power=2, pips={"R": 1})
 # Firdoch Core: Kindred Artifact — Shapeshifter, Changeling ("This card is
 # every creature type") — tem o tipo Dragao em toda zona, inclusive como
 # spell. Bug real corrigido em 2026-08-23 (achado pelo usuario): faltava a
@@ -366,7 +372,7 @@ add("Firdoch Core", 3, "artifact", {"dork_flat1_any", "dragon"}, produces=set("W
 # dragon_discount_self/others nem de dragon_enters()). Oraculo real: "The
 # first creature spell you cast each turn costs {2} less to cast and can
 # be cast as though it had flash."
-add("Radagast of Rhosgobel", 4, "creature", {"first_creature_discount"}, pips={"G": 2})
+add("Radagast of Rhosgobel", 4, "creature", {"first_creature_discount"}, power=2, pips={"G": 2})
 
 # --- Draw engines de poder / spells caras -----------------------------------------
 add("Elemental Bond", 3, "enchantment", {"power3_draw"}, pips={"G": 1})
@@ -393,7 +399,7 @@ add("Swan Song", 1, "instant", {"interaction"}, pips={"U": 1})
 add("Swords to Plowshares", 1, "instant", {"interaction"}, pips={"W": 1})
 add("Teferi's Protection", 3, "instant", {"interaction"}, pips={"W": 1})
 add("Haunting Voyage", 6, "sorcery", {"mass_reanimate"}, pips={"B": 2})
-add("Roaming Throne", 4, "artifact_creature", {ROAMING_THRONE_TYPE, "roaming_throne"})
+add("Roaming Throne", 4, "artifact_creature", {ROAMING_THRONE_TYPE, "roaming_throne"}, power=4)
 
 ARTIFACT_ISH = {"artifact", "artifact_creature"}
 CREATURE_ISH = {"creature", "artifact_creature"}
