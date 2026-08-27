@@ -403,6 +403,7 @@ class GameState:
     ephemerate_rebound_pending: bool = False
     mind_stone_harnessed: bool = False
     creature_cast_turn: dict = field(default_factory=dict)
+    waterbenders_pending_return: list = field(default_factory=list)
 
     # metrics -------------------------------------------------------------
     cards_drawn_extra: int = 0
@@ -705,17 +706,21 @@ def best_nonenchantment_permanent_to_reblink(state: GameState) -> Optional[str]:
     return None  # terrenos/rocks nao tem ETB de valor nenhum pra justificar o alvo
 
 
-def blink_permanent(state: GameState, name: str, source: str = ""):
-    if name not in state.battlefield:
-        return
-    state.battlefield.remove(name)
-    state.blinks_total += 1
+def _reenter_from_blink(state: GameState, name: str):
     state.battlefield.append(name)
     if is_shrine(name):
         state.shrine_reblinks_total += 1
         shrine_enters(state, name, is_token=False)
     elif is_creature_card(name):
         creature_enters_hook(state, name, is_token=False)
+
+
+def blink_permanent(state: GameState, name: str, source: str = ""):
+    if name not in state.battlefield:
+        return
+    state.battlefield.remove(name)
+    state.blinks_total += 1
+    _reenter_from_blink(state, name)
 
 
 # ---------------------------------------------------------------------------
@@ -870,7 +875,12 @@ def resolve_instant_sorcery(state: GameState, name: str):
         # HAND" (nao campo — sem status tapped relevante aqui). So
         # basicas de verdade (achado real: pegava qualquer terreno).
         search_land(state, basics_only=True, to_battlefield=False)
-        if remaining_mana(state) >= 2:  # kicker
+        if remaining_mana(state) >= 2:  # kicker {2}
+            # Achado real 2026-08-27 (usuario conferindo especificamente):
+            # o kicker nunca era PAGO de verdade — so checava se sobrava
+            # mana, dava o bonus (tutor de Shrine) de graca, sem
+            # `spend_mana`. Corrigido.
+            spend_mana(state, 2)
             shrines_in_lib = [n for n in state.library if is_shrine(n)]
             if shrines_in_lib:
                 pick = shrines_in_lib[0]
@@ -894,10 +904,17 @@ def resolve_instant_sorcery(state: GameState, name: str):
         state.interaction_spells_cast_total += 1
     elif "blink_x" in tags:
         # Waterbender's Restoration: "Exile X target creatures you
-        # control." Alvo restrito a criatura.
+        # control. Return those cards to the battlefield under their
+        # owner's control at the beginning of the NEXT END STEP." Achado
+        # real 2026-08-27 (usuario conferindo especificamente): retorno
+        # e' ADIADO, nao um blink atomico — a versao anterior chamava
+        # blink_permanent() na hora, dando o ETB (e a permanencia em
+        # campo) imediatamente, antes do tempo real. Corrigido: exila
+        # agora, enfileira o retorno pra end_step() resolver depois.
         target = best_creature_to_reblink(state)
-        if target:
-            blink_permanent(state, target, source=name)
+        if target and target in state.battlefield:
+            state.battlefield.remove(target)
+            state.waterbenders_pending_return.append(target)
     elif "blink_rebound" in tags:
         # Achado real 2026-08-27: Ephemerate estava 100% morta — a tag
         # 'blink_rebound' nunca era checada em lugar nenhum (nem o blink
@@ -962,10 +979,11 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
         creature_enters_hook(state, name, is_token=False)
 
 
-def cast_card(state: GameState, name: str):
+def cast_card(state: GameState, name: str, pay_cost: bool = True):
     card = CARD_DB[name]
     cost = effective_cost(state, name)
-    spend_mana(state, cost)
+    if pay_cost:
+        spend_mana(state, cost)
     if name != COMMANDER and name in state.hand:
         state.hand.remove(name)
 
@@ -1192,16 +1210,29 @@ def do_sanctum_shattered_heights(state: GameState):
 
 
 def do_in_search_of_greatness(state: GameState):
+    """Achado real 2026-08-27 (usuario conferindo especificamente): 2 bugs.
+    (1) "greatest mana value among OTHER permanents you control" excluia
+    a PROPRIA In Search of Greatness real — o codigo anterior incluia
+    ela mesma no calculo de highest_mv, superestimando target_mv num
+    board vazio (so ISOG em campo dava target_mv=3 em vez de 1).
+    (2) "you may CAST a permanent spell... without paying its mana cost"
+    — isso E' um cast de verdade (so sem pagar), precisa disparar os
+    gatilhos de conjuracao (Enchantress package se for encantamento,
+    Displacer Kitten se for nao-criatura) — o codigo anterior ia direto
+    pra enter_battlefield(), pulando cast_card() inteiro e perdendo
+    esses gatilhos. Corrigido chamando cast_card(..., pay_cost=False)."""
     if "In Search of Greatness" not in state.battlefield:
         return
-    permanents_on_bf = [n for n in state.battlefield if n not in LAND_NAMES]
+    permanents_on_bf = [n for n in state.battlefield
+                         if n not in LAND_NAMES and n != "In Search of Greatness"]
     highest_mv = max((CARD_DB[n].mv for n in permanents_on_bf), default=0)
     target_mv = highest_mv + 1
-    pool = [n for n in state.hand if n not in LAND_NAMES and CARD_DB[n].mv == target_mv]
+    pool = [n for n in state.hand
+            if n not in LAND_NAMES and CARD_DB[n].ctype not in ("instant", "sorcery")
+            and CARD_DB[n].mv == target_mv]
     if pool:
         pick = pool[0]
-        state.hand.remove(pick)
-        enter_battlefield(state, pick, from_hand=False)
+        cast_card(state, pick, pay_cost=False)
 
 
 def main_phase(state: GameState):
@@ -1241,6 +1272,11 @@ def main_phase(state: GameState):
 def end_step(state: GameState):
     do_go_shintai_endstep(state)
     do_endstep_blinks(state)
+    if state.waterbenders_pending_return:
+        for name in state.waterbenders_pending_return:
+            state.blinks_total += 1
+            _reenter_from_blink(state, name)
+        state.waterbenders_pending_return = []
     while len(state.hand) > 7:
         worst = min(state.hand, key=lambda n: effective_cost(state, n) if n not in LAND_NAMES else 0)
         state.hand.remove(worst)

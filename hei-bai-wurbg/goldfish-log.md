@@ -470,6 +470,118 @@ agora reflete uma curva de desenvolvimento mais realista.
 
 ---
 
+## Correção #4 — perguntas pontuais sobre blink/tutor/free-cast (usuário conferindo carta por carta)
+
+Usuário: *"VC considerou tb o rebound do Ephemerate?"* e, em seguida:
+*"os efeitos de Aang's Journey, Deadeye Navigator, In search of
+Greatness e Teleportation Circle estão corretos no simulador? E
+Waterbender's restoration? Vc colocou no simulador o Harness do The
+Mind Stone?"*
+
+### Verificado com teste real (já estava correto, sem bug)
+
+- **Rebound do Ephemerate.** Testado em 3 passos: blink imediato no
+  cast, rebound real no upkeep seguinte (conjura de graça de novo, 2º
+  blink), e nenhuma repetição no upkeep depois disso —
+  `ephemerate_rebound_pending` é setada e consumida exatamente 1 vez.
+  Único detalhe técnico de zero impacto: o Ephemerate vai pro graveyard
+  no momento do cast (correto), mas nenhuma carta do deck interage com
+  o conteúdo do graveyard de instant/sorcery, então isso não muda
+  nenhuma métrica.
+- **Deadeye Navigator.** `best_creature_to_reblink(state,
+  exclude="Deadeye Navigator")` — soulbond real, não pode ter a si
+  mesmo como alvo do próprio blink repetível. Já correto (fix de uma
+  rodada anterior desta mesma sessão).
+- **Teleportation Circle.** Alvo "artifact or creature" — como
+  artefatos deste deck (Sol Ring/Signet/Mind Stone) não têm ETB de
+  valor nenhum, `best_creature_to_reblink(state)` cobre o universo real
+  de alvos com valor. Já correto.
+- **Harness do The Mind Stone.** Está implementado: custo real de
+  ativação é `{5}{W}` (6 mana total) — o código gasta 6 e seta
+  `state.mind_stone_harnessed`, checado depois em `do_endstep_blinks()`
+  como gate pro efeito de Harness. Simplificação aceita e documentada:
+  a própria mana do Mind Stone não é excluída no turno em que ele é
+  tapado pra pagar o custo de ativação (não existe rastreamento de tap
+  por fonte individual em nenhum lugar deste simulador — nem Sol
+  Ring/Arcane Signet são "esgotados" no turno em que pagam algo; é uma
+  limitação arquitetural consistente, de impacto estreito, não vale um
+  fix isolado só pro Mind Stone).
+
+### Corrigido (achados reais novos)
+
+1. **Kicker do Aang's Journey nunca era pago.** O código checava
+   `remaining_mana(state) >= 2` pra liberar o bônus (tutor de Shrine),
+   mas nunca chamava `spend_mana(state, 2)` — o kicker saía de graça.
+   Corrigido.
+2. **In Search of Greatness — 2 bugs.** (a) "greatest mana value among
+   **OTHER** permanents you control" incluía a própria ISOG no cálculo
+   de `highest_mv`, superestimando `target_mv` num board vazio/inicial
+   (só ISOG em campo dava `target_mv=3` em vez do correto `1`) — na
+   prática isso fazia a ISOG "acertar" um Shrine de 3 mana de graça
+   logo cedo, com muito mais frequência do que deveria. (b) "you may
+   **cast** a permanent spell... without paying its mana cost" é um
+   cast de verdade (só sem pagar) — o código antigo ia direto pra
+   `enter_battlefield()`, pulando `cast_card()` inteiro e perdendo os
+   gatilhos de conjuração (Enchantress package se for encantamento,
+   Displacer Kitten se for não-criatura). Corrigido: `cast_card()`
+   ganhou um parâmetro `pay_cost: bool = True`, e ISOG agora chama
+   `cast_card(state, pick, pay_cost=False)`. De quebra, o pool de
+   candidatos agora exclui instant/sorcery da mão (a carta real é
+   "permanent spell" apenas).
+3. **Waterbender's Restoration resolvia o retorno na hora.** Oráculo
+   real: "Exile X target creatures you control. Return those cards to
+   the battlefield under their owner's control **at the beginning of
+   the next end step**" — um retorno ADIADO, não um blink atômico. O
+   código anterior chamava `blink_permanent()` direto no resolve do
+   instant, dando o ETB (e a permanência em campo) imediatamente.
+   Corrigido: agora exila e enfileira em
+   `state.waterbenders_pending_return`, processado em `end_step()`
+   (mesmo padrão do rebound do Ephemerate). Enquanto exilada, a
+   criatura fica fora do campo pro resto do main phase — correto pelo
+   oráculo, e também significa que ela não conta mais como fonte de
+   mana/ETB pra outros spells conjurados depois dela no mesmo turno.
+
+Testado: 300 jogos smoke test (0 erros), 25.000 jogos de robustez com
+timeout de 2s/jogo via `signal.alarm` (0 erros, 0 timeouts).
+
+**Impacto real** (mesma seed_base=9100000, n=3000, as 3 correções
+juntas):
+
+| métrica | antes (Correção #3) | depois |
+|---|---|---|
+| Shrines em campo (fim) | 7,80 | **6,84** |
+| dano proxy total | 178,74 | **120,56** |
+| drain proxy total | 23,60 | **18,78** |
+| tokens criados | 40,72 | **31,21** |
+| dobras via Elesh Norn | 57,35 | 38,65 |
+| dobras via Sanctum of All | 14,86 | 11,10 |
+| dobras via Annie Joins Up | 29,42 | 19,77 |
+| blinks totais | 1,94 | 1,83 |
+| tutores usados | 0,92 | 0,92 |
+| vida ganha proxy | 27,57 | 22,52 |
+| spells de interação (proxy) | 58,77 | 40,67 |
+| destruições via Aura Shards | 57,61 | 39,55 |
+| cartas compradas extra | 11,52 | 11,28 |
+
+Líquido: queda real e proporcionalmente grande em quase toda métrica —
+mas o driver principal é só o bug (2a) da In Search of Greatness. Antes
+da correção, num board inicial (sem Shrine nenhuma ainda), o
+`target_mv` inflado (3, por contar a própria ISOG) casava direto com
+um Shrine de 3 mana na mão — ISOG "acertava" um Shrine de graça cedo
+com bastante frequência. Corrigido pra `target_mv=1`, ela raramente
+encontra alvo (poucos 1-drops sobram na mão depois que o main phase já
+gastou os óbvios), e como o motor deste deck é multiplicativo (mais
+Shrine → mais gatilho lendário → mais dobra → mais Shrine/token/dano),
+perder aquele "Shrine fantasma" cedo se propaga e amplifica por 8
+turnos. Os fixes do kicker do Aang's Journey e do timing do
+Waterbender's Restoration reforçam a mesma direção (menos mana líquida
+disponível / 1 permanente a menos disponível durante o main phase),
+mas são contribuições bem menores.
+
+`lista.md` não mudou. `heibai_v1_runs.jsonl` sobrescrito.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
