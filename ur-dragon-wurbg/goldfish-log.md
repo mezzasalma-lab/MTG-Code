@@ -461,6 +461,44 @@ comparáveis em termos absolutos com os números desta correção.
 
 ---
 
+## Teste #2 — Watery Grave vs. Karplusan Forest, com mana por cor (`urdragon_karplusan_test.py`) — 2026-08-27
+
+Primeiro teste real usando o simulador reescrito (Correção #4). Watery
+Grave (U/B) é a única terra da lista cujas 2 cores são as mais
+sobre-representadas frente à demanda de pips (U a -11,2pp, B a -10,4pp,
+auditoria 2026-08-24). Karplusan Forest (R/G, sem tapped) cobre
+exatamente as 2 cores mais sub-representadas (R a +23,0pp, G a +5,5pp).
+
+**n=3000, seed_base=2200000, mesmas seeds:**
+
+```
+                                    COM Watery Grave   COM Karplusan   delta
+Turno medio de conjuracao              6,819              6,798       -0,021
+Nunca conjurada em 8 turnos            59,40%             59,50%      +0,10pp
+Avg turnos com color screw              2,070              1,957      -0,112
+% jogos com >=1 turno de color screw   42,47%             41,00%      -1,47pp
+Avg Dragoes em campo (fim)              4,579              4,667      +0,087
+```
+
+**Checagem de ruído:** troquei o `seed_base` 3 vezes (1M/3M/4M). O
+delta de `color_screw_turns` ficou **consistentemente negativo** nas 4
+rodadas (-0,116 / -0,087 / -0,120, mais o -0,112 original) — efeito
+real, não ruído. Já o delta de "nunca conjurada" ficou instável e sem
+sinal claro (+0,10 / -0,50 / -0,17 / +0,00) — dentro do ruído normal de
+trocar 1 carta só.
+
+**Leitura honesta:** a troca melhora de forma real e mensurável a
+métrica que ela deveria melhorar (menos turnos travado pela cor errada,
+menos partidas com pelo menos 1 turno de color screw), mas o efeito é
+pequeno — 1 terra em 36 move a agulha um pouco, não resolve o
+desequilíbrio de +23pp sozinha. Isso é esperado e consistente: pra
+fechar o gap de verdade seria preciso mais de uma troca (por isso a
+sugestão original também incluía cortar uma 2ª fonte B/U e considerar
+rocks/dorks de R/G — Talisman of Impulse, Ruby Daring Tracker — ainda
+não testados aqui). Vale a troca, mas não é uma bala de prata sozinha.
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**

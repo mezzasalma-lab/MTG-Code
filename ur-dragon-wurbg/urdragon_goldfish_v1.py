@@ -195,6 +195,15 @@ LAND_PRODUCES = {
 for n, colors in LAND_PRODUCES.items():
     add(n, 0, "land", set(), produces=colors)
 
+# Karplusan Forest: NAO esta na lista.md — cadastrada so pra permitir o
+# teste comparativo de troca de Watery Grave (candidato de corte real,
+# unica terra cujas 2 cores sao as mais sobre-representadas frente a
+# demanda de pips: U -11,2pp, B -10,4pp) por uma fonte de R/G (as 2 mais
+# sub-representadas). Oraculo real: "{T}: Add {C}. / {T}: Add {R} or
+# {G}. This land deals 1 damage to you." — sem tapped, untapped de
+# verdade.
+add("Karplusan Forest", 0, "land", set(), produces={"R", "G"})
+
 # LAND_BASIC_TYPES: tipos basicos reais de cada terreno nao-fetch, usado por
 # crack_fetch() pra achar todo alvo que compartilha um dos 2 tipos buscados
 # pela fetch (nao so as basicas — Regra 6, achado real no Hei Bai: uma fetch
