@@ -923,6 +923,139 @@ dinâmica sobre a tabela estática de pips agregados.
 
 ---
 
+## Correção #12 — revisão completa do deck e do simulador
+
+Usuário: *"Revise o deck inteiro e o simulador e veja o que mais está
+'de fora' ou errado."*
+
+Metodologia: extraí toda tag usada em `add()` (47 tags únicas, 68
+cartas nomeadas), contei quantas vezes cada tag aparece no arquivo
+inteiro fora da própria linha `add()` — count=1 significa tag nunca
+checada em lugar nenhum. Pra cada uma dessas, conferi se o efeito real
+estava implementado via checagem por NOME (padrão já usado nesta sessão
+pra Magda/Lathliss/Bladewing/etc) antes de concluir "morta de verdade".
+Depois cruzei as 63 cartas não-terrestres da lista contra o oráculo
+real completo (Scryfall), carta a carta.
+
+### Corrigido
+
+1. **Klauth, Unrivaled Ancient** — "X é o poder TOTAL das criaturas
+   atacantes", código usava só o poder da própria Klauth. Corrigido pra
+   usar a soma real.
+2. **Ramos, Dragon Engine** — "+1/+1 counter pra CADA cor" do spell
+   conjurado, código dava +1 flat por spell independente de cor.
+   Corrigido pra `len(pips)` (cores distintas do custo).
+3. **Twinflame Tyrant** — "if a source you control would deal damage...
+   it deals double" — tag `damage_doubler` nunca implementada. Dobrador
+   global de dano completamente ausente do `proxy_damage_total`
+   reportado a sessão inteira. Implementado dentro de `proxy_drain()`
+   (ponto único de entrada de dano no simulador).
+4. **Atarka, World Render** — "whenever a Dragon you control attacks, it
+   gains double strike" — tag `attack_double_strike` nunca implementada.
+   Dobra gatilhos de "deals combat damage" (Ancient Copper/Gold Dragon
+   d20, Old Gnawbone) — não os de "whenever ~ attacks" (Utvara), que
+   disparam 1x mesmo com double strike (regra real: atacar 1x, causar
+   dano 2x).
+5. **The Great Henge** — "{T}: Add {G}{G}. You gain 2 life." — a
+   habilidade de mana repetida nunca tinha sido registrada (só o
+   desconto de custo e o gatilho de +1/+1 contador+compra estavam).
+   Adicionado `produces={"G"}` + 2 mana genérica em `rocks_mana()`
+   (vida não rastreada, mesma simplificação de sempre).
+6. **Garruk's Uprising** — oráculo tem 3 linhas, não 1: faltava a compra
+   única de ETB ("if you control a creature power 4+, draw a card") —
+   só a linha recorrente ("whenever a creature enters...") estava
+   implementada. Adicionada a checagem de ETB único.
+7. **Up the Beanstalk** — tag `bigspell_draw` nunca implementada, carta
+   100% decorativa. Implementado ETB draw + gatilho recorrente (spell
+   MV≥5, usa MV real impresso, não custo com desconto).
+8. **Sylvan Library** — tag `card_selection` nunca implementada, carta
+   100% decorativa apesar de ser um dos motores de seleção mais fortes
+   do formato. Modelado como +1 carta líquida por turno (compra 2
+   extras, devolve 1 pagando 4 vida — vida não rastreada no simulador,
+   linha de jogo mais comum documentada como premissa).
+9. **Rhythm of the Wild** — tag `riot` nunca implementada. Riot = escolha
+   de +1/+1 contador OU haste — modelado sempre escolhendo haste (mesma
+   lógica agressiva já usada no resto do simulador), só criaturas
+   não-token.
+10. **Haunting Voyage** (já corrigida na Correção #11) — bug de crash
+    real achado nos 20k jogos de robustez desta rodada: se um dos 2
+    alvos reanimados é a própria Bladewing the Risen, o gatilho de ETB
+    dela ("return target Dragon permanent from graveyard") dispara ao
+    entrar via ESTA reanimação também, e pode consumir o outro alvo do
+    cemitério antes do loop da Haunting Voyage chegar nele —
+    `list.remove(x): x not in list`. Corrigido checando presença no
+    cemitério antes de cada remoção.
+11. **Balefire Dragon** — tag `combat_wipe_proxy` nunca implementada.
+    Reclassificada como `interaction` (mesma categoria de
+    Assassin's Trophy/Beast Within/etc) — "deals that much damage to
+    each creature that player controls" depende de criaturas de
+    oponente em campo, genuinamente não-modelável num goldfish solo, não
+    é um bug a corrigir, é escopo real do simulador.
+
+Testado após cada rodada: smoke test (200-300 jogos) + robustez (20-30k
+jogos). Um crash real achado e corrigido nos 30k finais (item 10 acima)
+— 0 erros/timeouts na sweep final.
+
+### Deferido (achado, documentado, não implementado — razão explícita)
+
+- **Hellkite Charger** ("pay {5}{R}{R}: untap all attacking creatures,
+  additional combat phase") — real e potencialmente grande, mas uma
+  chamada recursiva de `combat_step()` arrisca disparar de novo efeitos
+  que deveriam ser 1x-por-turno (ex: `do_magda_treasures`, que hoje é
+  gatilhado por chamada de combate, não por turno) — precisa de reforma
+  maior pra separar "1x por turno" de "1x por combate" antes de
+  implementar com segurança. Não implementado pra não introduzir um bug
+  novo sob pressa.
+- **Sarkhan, Soul Aflame** ("may become a copy of a Dragon that
+  enters") — habilidade opcional complexa (troca todas as
+  características até o fim do turno) — função base dele (desconto de
+  Dragão) já está coberta; custo/benefício de implementar a cópia não
+  compensa a complexidade.
+- **Return of the Wildspeaker** — restrição real "non-Human creatures"
+  ignorada (código usa maior poder entre TODAS as criaturas). Só 3
+  criaturas Human no deck, todas dorks de baixo poder — a criatura de
+  maior poder é quase sempre um Dragão de qualquer forma. Impacto
+  desprezível, não vale o custo de rastrear subtipos de criatura só pra
+  isso.
+- **Haven of the Spirit Dragon** ("{2}, T, Sacrifice: return Dragon from
+  graveyard to hand") — situacional (só relevante se um Dragão já
+  morreu, raro nesse simulador sem remoção de oponente modelada), e só
+  devolve pra MÃO (ainda precisa ser conjurado de novo) — baixo valor
+  frente ao custo de sacrificar uma fonte de mana.
+- **Bladewing the Risen** ("{B}{R}: Dragons get +1/+1") e **Scourge of
+  Valkas** ("{R}: +1/+0") — pumps ativados de combate, sem loop de
+  decisão de "gastar mana sobrando em truque de combate" no simulador.
+  Baixo valor pra implementar por 1 ativação/turno.
+- **Smothering Tithe** — já corretamente tratada como dependente de
+  oponente (`opponent_dependent`), não é um bug, confirmado.
+
+### Impacto real acumulado (mesma seed_base=7600000, n=3000)
+
+| métrica | antes desta revisão | depois |
+|---|---|---|
+| nunca conjurada | 48,1% | **41,4%** |
+| Dragões em campo (fim de jogo) | 8,08 | **11,82** |
+| dano proxy médio | 90,79 | **436,51 (+381%)** |
+| Treasures criados | 11,01 | **21,98** |
+| cartas compradas extra | 6,62 | **11,37** |
+| Dragon tokens | 3,94 | 6,59 |
+| color screw (% jogos) | 34,5% | 33,1% |
+
+O salto grande em dano proxy vem de efeitos MULTIPLICATIVOS que nunca
+tinham sido implementados juntos (Twinflame Tyrant dobra tudo, Atarka
+dobra gatilhos de dano-de-combate específicos) empilhando em cima de um
+motor que já estava saindo mais forte (mais Dragões em campo por turno,
+mais mana via Klauth/Great Henge corrigidos, mais Treasures via Old
+Gnawbone/Ramos corrigidos — efeito bola de neve real, não inflação
+artificial). Essa é a correção mais significativa da sessão em termos
+de poder real do motor: o deck estava sendo medido, a sessão inteira,
+como bem mais fraco do que a lista realmente é.
+
+`lista.md` não mudou nenhuma vez nesta revisão — 100% correção de
+simulador. `urdragon_v1_runs.jsonl` sobrescrito.
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**

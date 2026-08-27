@@ -291,8 +291,16 @@ add("Urza's Incubator", 3, "artifact", {"dragon_discount2"})
 # --- Dragoes com gatilho real ----------------------------------------------------
 add("Ancient Copper Dragon", 6, "creature", {"dragon", "combat_treasure_d20"}, power=6, pips={"R": 2})
 add("Ancient Gold Dragon", 7, "creature", {"dragon", "combat_token_d20"}, power=7, pips={"W": 2})
-add("Atarka, World Render", 7, "creature", {"dragon", "attack_double_strike"}, power=7, pips={"R": 1, "G": 1})
-add("Balefire Dragon", 7, "creature", {"dragon", "combat_wipe_proxy"}, power=6, pips={"R": 2})
+add("Atarka, World Render", 7, "creature", {"dragon"}, power=7, pips={"R": 1, "G": 1})
+add("Balefire Dragon", 7, "creature", {"dragon", "interaction"}, power=6, pips={"R": 2})
+# Balefire Dragon: "Whenever this creature deals combat damage to a
+# player, it deals that much damage to each creature that player
+# controls." Removal real, mas depende de criaturas de OPONENTE em
+# campo — igual a Assassin's Trophy/Beast Within/etc (tag 'interaction'),
+# nao modelavel num goldfish solo sem oponente. Tag antiga
+# 'combat_wipe_proxy' nunca tinha sido checada (achado na revisao
+# completa de 2026-08-27) — renomeado pra 'interaction' pra refletir a
+# razao real de nao ter simulacao, em vez de parecer uma tag esquecida.
 add("Bladewing the Risen", 7, "creature", {"dragon", "reanimate_dragon_etb"}, power=6, pips={"B": 2, "R": 2})
 add("Dragon Broodmother", 6, "creature", {"dragon", "upkeep_dragon_token"}, power=4, pips={"R": 3, "G": 1})
 add("Dragonlord Dromoka", 6, "creature", {"dragon"}, power=4, pips={"G": 1, "W": 1})
@@ -307,7 +315,7 @@ add("Ramos, Dragon Engine", 6, "artifact_creature", {"dragon", "ramos_counters"}
 add("Savage Ventmaw", 6, "creature", {"dragon", "attack_mana_flat"}, power=5, pips={"R": 1, "G": 1})
 add("Scourge of Valkas", 5, "creature", {"dragon", "dragon_etb_damage"}, power=4, pips={"R": 3})
 add("Terror of the Peaks", 5, "creature", {"creature_etb_damage_power"}, power=4, pips={"R": 2})
-add("Twinflame Tyrant", 5, "creature", {"dragon", "damage_doubler"}, power=4, pips={"R": 2})
+add("Twinflame Tyrant", 5, "creature", {"dragon"}, power=4, pips={"R": 2})
 add("Utvara Hellkite", 8, "creature", {"dragon"}, power=6, pips={"R": 2})
 
 # --- Outras criaturas / suporte tribal --------------------------------------------
@@ -340,10 +348,10 @@ add("Radagast of Rhosgobel", 4, "creature", {"first_creature_discount"}, pips={"
 add("Elemental Bond", 3, "enchantment", {"power3_draw"}, pips={"G": 1})
 add("Garruk's Uprising", 3, "enchantment", {"power4_draw"}, pips={"G": 1})
 add("Temur Ascendancy", 3, "enchantment", {"power4_draw_optional"}, pips={"G": 1, "U": 1, "R": 1})
-add("The Great Henge", 9, "artifact", {"nontoken_etb_counter_draw", "cost_reduce_power"}, pips={"G": 2})
-add("Up the Beanstalk", 2, "enchantment", {"bigspell_draw"}, pips={"G": 1})
+add("The Great Henge", 9, "artifact", {"nontoken_etb_counter_draw", "cost_reduce_power"}, pips={"G": 2}, produces={"G"})
+add("Up the Beanstalk", 2, "enchantment", set(), pips={"G": 1})
 add("Return of the Wildspeaker", 5, "instant", {"power_draw_instant"}, pips={"G": 1})
-add("Sylvan Library", 2, "enchantment", {"card_selection"}, pips={"G": 1})
+add("Sylvan Library", 2, "enchantment", set(), pips={"G": 1})
 
 # --- Removal / interacao / protecao -----------------------------------------------
 add("An Offer You Can't Refuse", 2, "instant", {"interaction"}, pips={"U": 1})
@@ -355,7 +363,7 @@ add("Beast Within", 3, "instant", {"interaction"}, pips={"G": 1})
 add("Crux of Fate", 5, "sorcery", {"wipe"}, pips={"B": 2})
 add("Heroic Intervention", 2, "instant", {"interaction"}, pips={"G": 1})
 add("Lightning Greaves", 2, "artifact", {"interaction"})
-add("Rhythm of the Wild", 2, "enchantment", {"riot"}, pips={"R": 1, "G": 1})
+add("Rhythm of the Wild", 2, "enchantment", set(), pips={"R": 1, "G": 1})
 add("Smothering Tithe", 4, "enchantment", {"opponent_dependent"}, pips={"W": 1})
 add("Swan Song", 1, "instant", {"interaction"}, pips={"U": 1})
 add("Swords to Plowshares", 1, "instant", {"interaction"}, pips={"W": 1})
@@ -472,6 +480,17 @@ def dragon_count(state: GameState) -> int:
 
 
 def proxy_drain(state: GameState, n: int):
+    """Achado real 2026-08-27 (revisao completa pedida pelo usuario):
+    Twinflame Tyrant ("If a source you control would deal damage to an
+    opponent or a permanent an opponent controls, it deals double that
+    damage instead") tinha a tag 'damage_doubler' nunca checada em lugar
+    nenhum — dobrador global de dano completamente ausente do metric
+    'proxy_damage_total' reportado a sessao inteira. proxy_drain() e o
+    unico ponto de entrada de dano-a-oponente no simulador (Scourge of
+    Valkas, Dragon Tempest, Terror of the Peaks), entao dobrar aqui cobre
+    os 3 corretamente."""
+    if "Twinflame Tyrant" in state.battlefield:
+        n *= 2
     state.proxy_damage_total += n
 
 
@@ -536,9 +555,18 @@ def ready_creatures(state: GameState):
     Magda): "haste_all" (Temur Ascendancy, estatico pra qualquer criatura)
     e "haste_flying" (Dragon Tempest, so pras que tem flying, so no turno
     em que entram) existiam como tags decorativas desde que essas cartas
-    foram registradas — nunca eram checadas aqui."""
+    foram registradas — nunca eram checadas aqui.
+
+    Terceiro bug real corrigido na revisao completa de 2026-08-27: tag
+    'riot' (Rhythm of the Wild, "Nontoken creatures you control have
+    riot" — escolha de +1/+1 counter OU haste na entrada) tambem nunca
+    tinha sido checada. Assumido: escolhe sempre haste (mesma logica
+    agressiva ja usada no resto do simulador — ataca com tudo que esta
+    pronto), nunca o counter. So vale pra criaturas NAO-token (real:
+    "nontoken creatures")."""
     temur_ascendancy = "Temur Ascendancy" in state.battlefield
     dragon_tempest = "Dragon Tempest" in state.battlefield
+    rhythm_of_the_wild = "Rhythm of the Wild" in state.battlefield
 
     def is_ready(n):
         if "haste" in CARD_DB[n].tags:
@@ -548,6 +576,9 @@ def ready_creatures(state: GameState):
         if temur_ascendancy:
             return True
         if dragon_tempest and has_flying(n) and state.creature_cast_turn.get(n, -1) == state.turn:
+            return True
+        if (rhythm_of_the_wild and "(copia)" not in n
+                and state.creature_cast_turn.get(n, -1) == state.turn):
             return True
         return False
 
@@ -572,6 +603,13 @@ def rocks_mana(state: GameState) -> int:
         total += 2
     if "Arcane Signet" in state.battlefield:
         total += 1
+    if "The Great Henge" in state.battlefield:
+        # Achado real 2026-08-27: "{T}: Add {G}{G}. You gain 2 life." nunca
+        # tinha sido implementada — so o desconto de custo (X less) e o
+        # gatilho de +1/+1 contador/compra estavam no codigo. Vida nao e
+        # rastreada no simulador (regra ja documentada em outro lugar),
+        # entao so a mana conta aqui.
+        total += 2
     return total
 
 
@@ -792,8 +830,26 @@ def resolve_etb(state: GameState, name: str):
     if "nontoken_etb_counter_draw" in tags:
         pass  # e o proprio Great Henge entrando, nao dispara a si mesmo
 
+    if name == "Up the Beanstalk":
+        # Achado real 2026-08-27: tag 'bigspell_draw' nunca tinha sido
+        # implementada — carta 100% decorativa. Oraculo: "When this
+        # enchantment enters ... draw a card." (parte do ETB, aqui). O
+        # gatilho recorrente "whenever you cast a spell with mana value 5
+        # or greater" e' tratado em cast_card().
+        draw_cards(state, 1)
+
+    if name == "Garruk's Uprising":
+        # Achado real 2026-08-27: oraculo tem 3 linhas, nao so a
+        # recorrente ("whenever a creature power 4+ enters, draw", ja
+        # coberta em creature_etb_hooks) — faltava a compra unica de ETB
+        # da propria Garruk's Uprising ("When this enchantment enters, if
+        # you control a creature with power 4 or greater, draw a card").
+        if any(is_creature_card(c) and CARD_DB[c].power >= 4
+               for c in state.battlefield if c != name):
+            draw_cards(state, 1)
+
     if "power3_draw" in tags or "power4_draw" in tags:
-        pass  # sao enchantments, o gatilho delas e sobre OUTRAS criaturas entrando (tratado em creature_etb_hooks)
+        pass  # gatilho recorrente delas e sobre OUTRAS criaturas entrando (tratado em creature_etb_hooks)
 
 
 def creature_etb_hooks(state: GameState, name: str):
@@ -864,6 +920,15 @@ def resolve_instant_sorcery(state: GameState, name: str):
         targets = sorted([c for c in state.graveyard if is_dragon(c) and is_creature_card(c)],
                           key=lambda n: CARD_DB[n].mv, reverse=True)[:2]
         for t in targets:
+            # Bug real corrigido 2026-08-27 (achado em 20k jogos de
+            # robustez, seed 22401654): se um dos 2 alvos e' a propria
+            # Bladewing the Risen, o gatilho de ETB dela ("return target
+            # Dragon permanent card from your graveyard") dispara ao
+            # entrar via ESTA reanimacao tambem, e pode consumir o OUTRO
+            # alvo do cemiterio antes deste loop chegar nele. Checar se
+            # ainda esta no cemiterio antes de tentar remover.
+            if t not in state.graveyard:
+                continue
             state.graveyard.remove(t)
             enter_battlefield(state, t, from_hand=False)
             state.dragons_free_entry_total += 1
@@ -947,11 +1012,23 @@ def cast_card(state: GameState, name: str):
         state.hand.remove(name)
 
     if "Ramos, Dragon Engine" in state.battlefield and name != "Ramos, Dragon Engine":
-        state.ramos_counters += 1
+        # Bug real corrigido 2026-08-27: oraculo real e "put a +1/+1
+        # counter on Ramos for EACH of that spell's colors" — nao 1 flat
+        # por spell. len(pips) = numero de cores distintas do custo (ex:
+        # comandante WUBRG = 5, nao 1). Spell incolor (Sol Ring) = 0,
+        # correto (real: sem cor, sem counter).
+        state.ramos_counters += len(CARD_DB[name].pips)
 
     if name in LAND_NAMES:
         state.battlefield.append(name)
         return
+
+    if "Up the Beanstalk" in state.battlefield and card.mv >= 5:
+        # Achado real 2026-08-27: gatilho recorrente de Up the Beanstalk
+        # ("whenever you cast a spell with mana value 5 or greater, draw
+        # a card") — usa mv REAL impresso, nao o custo com desconto (MV
+        # nao muda com desconto de custo, regra real).
+        draw_cards(state, 1)
 
     if card.ctype in ("instant", "sorcery"):
         resolve_instant_sorcery(state, name)
@@ -1091,6 +1168,16 @@ def combat_step(state: GameState):
     if ur_dragon_attacking or any_dragon_attacking:
         attacking_dragons = ready_dragons if ready_dragons else ([COMMANDER] if ur_dragon_attacking else [])
         n_attacking = len(attacking_dragons)
+        total_attack_power = sum(CARD_DB[n].power for n in attacking_dragons)
+        # Atarka, World Render ("Whenever a Dragon you control attacks, it
+        # gains double strike"): so afeta gatilhos de "deals combat
+        # damage" (combat_treasure_d20/combat_token_d20, Old Gnawbone) —
+        # NAO gatilhos de "whenever ~ attacks" (attack_treasure, Utvara),
+        # que disparam 1x independente de double strike (regra real:
+        # atacar acontece 1x, causar dano de combate acontece 2x com
+        # double strike). Achado real 2026-08-27, tag 'attack_double_strike'
+        # nunca tinha sido checada.
+        atarka_double_strike = "Atarka, World Render" in state.battlefield
         if n_attacking > 0 and state.commander_in_play:
             times = 2 if ("Roaming Throne" in state.battlefield and COMMANDER in attacking_dragons) else 1
             for _ in range(times):
@@ -1111,18 +1198,23 @@ def combat_step(state: GameState):
         for n in attacking_dragons:
             tags = CARD_DB[n].tags
             times = 2 if ("Roaming Throne" in state.battlefield and n != "Roaming Throne") else 1
+            dmg_times = times * (2 if atarka_double_strike else 1)
             if "attack_treasure" in tags:
                 for _ in range(times):
                     create_and_use_treasures(state, 1)
             if "combat_treasure_d20" in tags:
-                for _ in range(times):
+                for _ in range(dmg_times):
                     create_and_use_treasures(state, 10)  # d20 esperado ~10.5, arredondado
             if "combat_token_d20" in tags:
-                for _ in range(times):
+                for _ in range(dmg_times):
                     state.other_tokens += 10
             if "attack_mana_power" in tags:
+                # Klauth: "X e' o poder TOTAL das criaturas atacantes", nao
+                # so o proprio poder de Klauth — bug real corrigido
+                # 2026-08-27 (usava CARD_DB[n].power, so o poder da propria
+                # Klauth).
                 for _ in range(times):
-                    state.bonus_mana_pool += CARD_DB[n].power
+                    state.bonus_mana_pool += total_attack_power
             if "attack_mana_flat" in tags:
                 for _ in range(times):
                     state.bonus_mana_pool += 6
@@ -1148,10 +1240,12 @@ def combat_step(state: GameState):
             for _ in range(n_attacking * utvara_times):
                 state.dragon_tokens += 1
         if "Old Gnawbone" in state.battlefield:
-            total_attack_power = sum(CARD_DB[n].power for n in attacking_dragons)
+            # "that many" = dano de combate causado — com Atarka (double
+            # strike) o dano efetivo dobra, entao os Treasures tambem.
+            effective_power = total_attack_power * (2 if atarka_double_strike else 1)
             gnawbone_times = 2 if "Roaming Throne" in state.battlefield else 1
             for _ in range(gnawbone_times):
-                create_and_use_treasures(state, total_attack_power)
+                create_and_use_treasures(state, effective_power)
 
 
 def end_step(state: GameState):
@@ -1239,6 +1333,16 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
             state.hand.append(state.library.pop(0))
         else:
             state.library_emptied = True
+        if "Sylvan Library" in state.battlefield:
+            # Achado real 2026-08-27: tag 'card_selection' nunca tinha sido
+            # implementada — Sylvan Library era 100% decorativa. Oraculo
+            # real: compra 2 extras, escolhe 2 cartas compradas esse turno
+            # pra devolver ao topo (cada uma custa 4 vida se ficar com
+            # ela). Vida nao e rastreada no simulador (mesma
+            # simplificacao documentada em outras cartas) — assumida a
+            # linha mais comum na pratica (paga 4 vida por 1 extra,
+            # devolve a outra): +1 carta liquida por turno, nao +2.
+            draw_cards(state, 1)
 
     play_land(state)
     main_phase(state)

@@ -82,6 +82,32 @@ Data da auditoria: 2026-08-20
 > QUALQUER Dragão/criatura, não só a si mesmos) — dano proxy médio subiu
 > 59% (57,03→90,79) só com esses fixes, sem trocar carta nenhuma.
 
+> **Atualização (2026-08-27) — revisão completa do deck e do
+> simulador:** usuário pediu revisão de tudo que estivesse "de fora ou
+> errado". Auditadas as 47 tags únicas usadas no CARD_DB (68 cartas) e
+> as 63 cartas não-terrestres contra o oráculo real completo. Achados e
+> corrigidos: Klauth (usava só o próprio poder, não o poder total dos
+> atacantes), Ramos (contador flat em vez de por-cor), Twinflame Tyrant
+> (dobrador global de dano nunca implementado — afeta diretamente o
+> `proxy_damage_total`), Atarka (double strike nunca implementado), The
+> Great Henge (habilidade de mana {T}: Add GG nunca registrada), Garruk's
+> Uprising (faltava a compra única de ETB), Up the Beanstalk e Sylvan
+> Library (100% decorativas, nunca implementadas), Rhythm of the Wild
+> (riot/haste nunca implementado), e um crash real (Haunting Voyage ×
+> Bladewing the Risen reanimando o mesmo alvo — achado nos 30k jogos de
+> robustez). 6 itens documentados como deferidos com razão explícita
+> (Hellkite Charger extra combat, Sarkhan cópia, Return of the
+> Wildspeaker non-Human, Haven of the Spirit Dragon reanimação, pumps
+> ativados de Bladewing/Scourge). **Impacto acumulado, mesma
+> seed_base=7600000:** dano proxy médio 90,79→**436,51** (+381%),
+> Dragões em campo 8,08→**11,82**, nunca conjurada 48,1%→**41,4%**. O
+> motor real do deck é substancialmente mais forte do que qualquer
+> número reportado nesta sessão até aqui — efeito bola de neve de
+> multiplicadores (Twinflame Tyrant, Atarka) empilhando sobre motores de
+> mana/Treasure já corrigidos, não inflação artificial. Ver
+> `goldfish-log.md` Correção #12 pra lista completa e detalhes de cada
+> item.
+
 ---
 
 ## 3. Game Changers — contagem oficial
