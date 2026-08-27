@@ -114,6 +114,35 @@ resto.
   só o número final — pra não repetir o erro de subestimar (ou
   superestimar) o alcance real da manabase.
 
+**Adendo (2026-08-27), Ur-Dragon:** citação literal do usuário — *"Vc por
+acaso colocou Cavern of Souls, Haven of the Spirit Dragon e Secluded
+Courtyard como condicionais, mas elas geram mana de qualquer cor para o
+tipo de criatura escolhida (Dragão). Mais um erro importante conceitual e
+prático de sua parte!"* Eu tinha essas 3 terras tratadas como puramente
+incolores no simulador, com a justificativa de que a restrição "só pra
+criatura do tipo escolhido" era real demais pra modelar sem inflar
+fixação pro resto do deck — mas isso ignorou que, num deck com identidade
+tribal clara (comandante do tipo X + várias criaturas do tipo X), o tipo
+escolhido é óbvio e fixo, e essas fontes viram fixação real de qualquer
+cor pra exatamente a fatia de maior demanda de pips do deck. No Ur-Dragon:
+21 criaturas Dragão carregam 49% de todos os pips coloridos (70,7% da
+demanda de vermelho especificamente) — Cavern/Courtyard/Haven cobrem
+integralmente essa fatia.
+
+- **Terrenos "any color" restritos a um tipo de criatura escolhido** (ex:
+  Cavern of Souls, Secluded Courtyard) **ou fixos num tipo** (ex: Haven of
+  the Spirit Dragon): não tratar como incolor só porque a restrição
+  existe. Contar como fonte real de qualquer cor, mas só pro subconjunto
+  de spells daquele tipo — nunca despejar no `produces` geral do resto do
+  deck (isso infla artificialmente a fixação pra spells que não se
+  beneficiam, ex: removal, ramp genérico, artifacts).
+  - Calcular e citar explicitamente que fração da demanda de pips (por
+    cor) vem desse subconjunto de criaturas — se for uma fração grande
+    (tribal focado), o "incolor" está subestimando a manabase real; se for
+    pequena, o tratamento incolor pode seguir sendo a aproximação certa.
+  - Documentar a contagem separada (fontes gerais vs. fontes só-pro-tipo),
+    igual à distinção já feita acima pra fixers condicionais.
+
 ## 7. Combo achado no Commander Spellbook: sempre calcular turno/probabilidade real antes de tratar como achado de Bracket
 
 Citação literal do usuário (2026-08-27), depois de eu alarmar sobre 2

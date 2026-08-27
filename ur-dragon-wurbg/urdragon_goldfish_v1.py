@@ -169,19 +169,19 @@ LAND_PRODUCES = {
     "Bayou": {"B", "G"},
     "Blood Crypt": {"B", "R"},
     "Breeding Pool": {"G", "U"},
-    "Cavern of Souls": set(),            # "any color" restrito a creature spell do tipo escolhido — tratado incolor (ver docstring)
+    "Cavern of Souls": set(),            # produces "base" = incolor; "any color" real pra creature spell Dragao tratado a parte (DRAGON_ANY_COLOR_LANDS, color_sources)
     "Command Tower": set("WUBRG"),
     "Exotic Orchard": set(),             # dependente de oponente, nao presumido (Regra 1)
     "Godless Shrine": {"W", "B"},
     "Hallowed Fountain": {"W", "U"},
-    "Haven of the Spirit Dragon": set(), # "any color" restrito a Dragon creature spell — tratado incolor (ver docstring)
+    "Haven of the Spirit Dragon": set(), # idem Cavern — "any color" real pra Dragon creature spell tratado a parte
     "Jetmir's Garden": {"W", "R", "G"},
     "Ketria Triome": {"G", "U", "R"},
     "Overgrown Tomb": {"B", "G"},
     "Path of Ancestry": set("WUBRG"),
     "Sacred Foundry": {"R", "W"},
     "Savannah": {"W", "G"},
-    "Secluded Courtyard": set(),         # "any color" restrito a creature spell do tipo escolhido — tratado incolor
+    "Secluded Courtyard": set(),         # idem Cavern — "any color" real pra creature spell do tipo escolhido tratado a parte
     "Steam Vents": {"R", "U"},
     "Stomping Ground": {"R", "G"},
     "Taiga": {"R", "G"},
@@ -194,6 +194,29 @@ LAND_PRODUCES = {
 }
 for n, colors in LAND_PRODUCES.items():
     add(n, 0, "land", set(), produces=colors)
+
+# Correcao real 2026-08-27 (usuario apontou: "elas geram mana de qualquer
+# cor para o tipo de criatura escolhida (Dragao)" — eu tinha essas 3
+# tratadas como puramente incolores, um erro de simplificacao real demais.
+# Oraculo conferido via Scryfall:
+#   Cavern of Souls: "As this land enters, choose a creature type. {T}: Add
+#   {C}. {T}: Add one mana of any color. Spend this mana only to cast a
+#   creature spell of the chosen type, and that spell can't be countered."
+#   Secluded Courtyard: mesma estrutura (sem o "can't be countered"), tambem
+#   cobre ativar habilidade de creature source do tipo escolhido.
+#   Haven of the Spirit Dragon: fixo em Dragao, sem escolha: "{T}: Add one
+#   mana of any color. Spend this mana only to cast a Dragon creature
+#   spell."
+# Nesse deck o tipo escolhido em Cavern/Courtyard e obviamente Dragao (comandante
+# e ~20 Dragoes na lista) — nao e generico "qualquer cor pra qualquer spell"
+# (por isso continuam produces=set() acima, correto pro caso geral), mas E
+# real e nada desprezivel: 21 criaturas Dragao no deck carregam 49% de TODOS
+# os pips coloridos do deck (70,7% da demanda de R especificamente). Checado
+# a parte em color_sources()/has_color_sources_for(), nao no produces geral,
+# pra nao inflar fixacao pra spells nao-Dragao (Anguished Unmaking, Austere
+# Command, Farseek, Sol Ring etc. continuam sem se beneficiar dessas 3 —
+# real, o oraculo restringe a "creature spell").
+DRAGON_ANY_COLOR_LANDS = {"Cavern of Souls", "Secluded Courtyard", "Haven of the Spirit Dragon"}
 
 # Karplusan Forest: NAO esta na lista.md — cadastrada so pra permitir o
 # teste comparativo de troca de Watery Grave (candidato de corte real,
@@ -560,12 +583,18 @@ def remaining_mana(state: GameState) -> int:
     return max(0, total_mana(state) - state.mana_spent_this_turn)
 
 
-def color_sources(state: GameState, color: str) -> int:
+def color_sources(state: GameState, color: str, dragon_creature_spell: bool = False) -> int:
     """Conta fontes de mana em campo que produzem `color` — terrenos
     incondicionalmente, rocks/dorks so se prontos (sem doenca de invocacao,
-    mesmo gate ja usado em dork_mana). Sol Ring/Ancient Tomb/Cavern of
-    Souls/etc contribuem pro total generico mas NUNCA aqui (produces
-    vazio), documentado em cada entrada do CARD_DB."""
+    mesmo gate ja usado em dork_mana). Sol Ring/Ancient Tomb/etc contribuem
+    pro total generico mas NUNCA aqui (produces vazio), documentado em cada
+    entrada do CARD_DB.
+
+    Cavern of Souls/Secluded Courtyard/Haven of the Spirit Dragon (correcao
+    real 2026-08-27): produces vazio no CARD_DB (correto pro caso geral),
+    mas SE `dragon_creature_spell=True` (a carta sendo conjurada e um
+    Dragao de verdade) elas contam como fonte de QUALQUER cor — oraculo
+    real, tipo escolhido = Dragao nesse deck."""
     n = 0
     ready = set(ready_creatures(state))
     for card in state.battlefield:
@@ -573,7 +602,8 @@ def color_sources(state: GameState, color: str) -> int:
         if base not in CARD_DB:
             continue
         c = CARD_DB[base]
-        if color not in c.produces:
+        produces = set("WUBRG") if (dragon_creature_spell and base in DRAGON_ANY_COLOR_LANDS) else c.produces
+        if color not in produces:
             continue
         if is_creature_card(base) and card not in ready and base not in LAND_NAMES:
             continue
@@ -600,10 +630,16 @@ def has_color_sources_for(state: GameState, name: str) -> bool:
     """Checa pips coloridos reais (independentes de desconto de custo —
     'costs {1} less' reduz mana generica, nunca pip colorido, regra real).
     Orb of Dragonkind NAO conta aqui por simplificacao conservadora
-    documentada (ver docstring do arquivo)."""
+    documentada (ver docstring do arquivo).
+
+    Passa dragon_creature_spell=True pra color_sources quando `name` e um
+    Dragao de verdade (creature, tag dragon) — libera Cavern of
+    Souls/Secluded Courtyard/Haven of the Spirit Dragon como fonte de
+    qualquer cor so nesse caso (correcao real 2026-08-27)."""
     pips = CARD_DB[name].pips
+    dragon_creature = is_dragon(name) and is_creature_card(name)
     for color, needed in pips.items():
-        if color_sources(state, color) < needed:
+        if color_sources(state, color, dragon_creature_spell=dragon_creature) < needed:
             return False
     return True
 

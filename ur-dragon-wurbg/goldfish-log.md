@@ -772,6 +772,77 @@ forma.
 
 ---
 
+## Correção #10 — Cavern of Souls, Secluded Courtyard e Haven of the Spirit Dragon eram fixação real, não incolor
+
+Usuário: *"Vc por acaso colocou Cavern of Souls, Haven of the Spirit
+Dragon e Secluded Courtyard como condicionais, mas elas geram mana de
+qualquer cor para o tipo de criatura escolhida (Dragão). Mais um erro
+importante conceitual e prático de sua parte!"*
+
+Essas 3 terras estavam com `produces=set()` (incolor) desde antes desta
+sessão — decisão documentada, não um esquecimento cru, mas a
+justificativa ("restrição real demais pra modelar sem inflar fixação pro
+resto do deck") não se sustentava: num deck com identidade tribal clara
+(comandante Dragão + 21 criaturas Dragão na lista), o tipo escolhido em
+Cavern of Souls/Secluded Courtyard é obviamente Dragão, e Haven of the
+Spirit Dragon já é fixo em Dragão por texto. Conferido: essas 21
+criaturas carregam **49% de todos os pips coloridos do deck**, e **70,7%
+da demanda de vermelho especificamente** — exatamente a fatia que mais
+precisa de fixação.
+
+**Corrigido:** `color_sources()` ganhou o parâmetro `dragon_creature_spell`
+— quando a carta sendo checada é um Dragão de verdade (creature + tag
+dragon), essas 3 terras contam como fonte de qualquer uma das 5 cores;
+pra qualquer outra checagem (ramp genérico, removal, fetches decidindo o
+alvo mais escasso) continuam incolores, do jeito documentado antes — não
+infla fixação onde o oráculo real não permite. `has_color_sources_for()`
+repassa esse flag automaticamente. `DRAGON_ANY_COLOR_LANDS` documentado
+com o oráculo completo das 3 cartas.
+
+Testado: 200 jogos smoke test, 20.000 jogos de robustez (0 erros).
+
+**Impacto real e limpo do fix isolado** (mesma lista, mesma
+seed_base=7600000, n=3000, único fator variando é o código — nenhuma
+troca de carta):
+
+| métrica | antes do fix | depois do fix | delta |
+|---|---|---|---|
+| nunca conjurada | 52,5% | 50,0% | **-2,5pp** |
+| color screw (% jogos) | 37,4% | 34,1% | **-3,3pp** |
+| dano proxy médio | 48,24 | 57,03 | **+8,79 (+18%)** |
+| Dragões em campo (fim de jogo) | 5,49 | 5,87 | +0,38 |
+| eventos dano-ETB | 2,18 | 2,50 | +0,32 |
+| cartas compradas extra | 5,74 | 6,19 | +0,45 |
+
+Fontes de mana por cor recalculadas (caso geral vs. conjurando um
+Dragão especificamente):
+
+| cor | fontes (geral) | fontes (pra Dragão) |
+|---|---|---|
+| W | 20 (18,2%) | 23 (18,4%) |
+| U | 18 (16,4%) | 21 (16,8%) |
+| B | 19 (17,3%) | 22 (17,6%) |
+| R | 25 (22,7%) | **28 (22,4%)** |
+| G | 28 (25,5%) | 31 (24,8%)
+
+O vermelho continua sendo a cor mais espremida no caso geral (42,7% de
+demanda de pips vs. 22,7% de fontes), mas especificamente pra conjurar
+Dragões — 70,7% da própria demanda de vermelho — o deck tem 3 fontes a
+mais de vermelho do que a tabela geral mostrava. Isso é diretamente
+relevante pra qualquer avaliação de incluir mais Dragões pesados em R
+(ex: os candidatos Smaug de The Hobbit em discussão) — a real fixação
+disponível pra esse tipo de carta é maior do que a auditoria anterior
+sugeria.
+
+Regra 6 de `references/user-standing-rules.md` recebeu um adendo
+cobrindo esse padrão (terrenos "any color" restritos a tipo de criatura
+escolhido/fixo), espelhado nas duas cópias (repo + skill canônico).
+
+`lista.md` não mudou — correção de simulador, não de decklist.
+`urdragon_v1_runs.jsonl` sobrescrito com os números pós-fix.
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**

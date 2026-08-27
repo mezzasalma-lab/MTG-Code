@@ -40,6 +40,25 @@ Data da auditoria: 2026-08-20
 > pares de seed antes de aplicar, efeito real mas parcial (não fecha o
 > gap de +23pp sozinho).
 
+> **Atualização (2026-08-27) — recontagem pós-trocas + fixação
+> restrita a tipo de criatura:** com as 2 trocas de terreno aplicadas, o
+> gap de vermelho caiu pra **+20,0pp** (25 fontes/22,7% vs. 42,7% de
+> demanda). Usuário apontou um segundo erro conceitual: Cavern of Souls,
+> Secluded Courtyard e Haven of the Spirit Dragon produzem mana de
+> qualquer cor pra criatura do tipo escolhido/fixo (Dragão nesse deck),
+> e eu tinha as 3 tratadas como incolores no simulador. Corrigido —
+> contam agora como fonte real de qualquer cor especificamente pra
+> conjurar Dragões (21 criaturas, 49% de todos os pips do deck, 70,7%
+> da demanda de vermelho). Fontes de vermelho pra conjurar um Dragão
+> especificamente: **28**, não 25 — 3 a mais do que a fixação "geral" do
+> deck sugere. Impacto real medido (mesma seed, só o fix): nunca
+> conjurada -2,5pp, color screw -3,3pp, dano proxy médio +18%. Ver
+> `goldfish-log.md` Correção #10 e Regra 6 de
+> `references/user-standing-rules.md` (adendo). O gap de +20pp segue
+> real pro caso geral (removal, ramp, artifacts não-Dragão continuam sem
+> se beneficiar dessas 3 terras) — só não é tão ruim quanto parecia
+> especificamente pra conjurar as próprias ameaças do deck.
+
 ---
 
 ## 3. Game Changers — contagem oficial
