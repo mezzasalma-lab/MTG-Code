@@ -134,6 +134,79 @@ Resultados salvos em `vihaan_v1_runs.jsonl` (sobrescrito com os 3000 jogos novos
 
 ---
 
+## Correção — checklist obrigatória de mecânica (regra nova pós-Beorn) — 2026-08-28
+
+**Gatilho (usuário):** depois de eu entregar o Beorn sem despacho de landfall
+nenhum, o usuário pediu auditoria da checklist nova (landfall, mana dorks,
+mana rocks, fixing lands, draw engines, ramp engines, ativadas repetíveis,
+combos) em **todos** os decks — última rodada da varredura completa dos 10
+decks com simulador Python. Landfall N/A (0 cartas), dorks N/A (0 mana
+dorks criatura na lista).
+
+**Bugs reais achados (fixing lands + 3 cartas com tag e nenhum gatilho):**
+
+- **Desolate Mire / Shadowblood Ridge**: são *filter lands* — real:
+  `{1},{T}: Add {W}{B}` / `{1},{T}: Add {B}{R}`, **sem NENHUMA habilidade de
+  mana grátis**. `lands_in_play()` contava as duas como +1 incondicional,
+  igual qualquer terreno normal, mesmo sem nenhuma outra fonte de mana em
+  campo pra "semear" o filtro. Corrigido: só contribuem se houver pelo
+  menos 1 outra fonte de mana real presente (mesmo padrão do Fetid
+  Heath/Rugged Prairie corrigido no Edgar Markov nesta sessão).
+- **Bojuka Bog / Path of Ancestry / Clifftop Retreat / Dragonskull Summit /
+  Isolated Chapel / Blackcleave Cliffs**: tags `etb_tapped`/`checkland_*`/
+  `fastland` existiam no `CARD_DB`, nunca lidas em lugar nenhum — todo
+  terreno produzia mana no próprio turno em que era jogado, mesmo os que
+  entram tapped de verdade (incondicional, ou condicionado a controlar um
+  básico do tipo certo, ou condicionado a ter 2 ou menos outros terrenos).
+  Nova infraestrutura `tapped_lands_this_turn` (mesmo padrão de outros
+  decks desta sessão). Blood Crypt (shockland) segue sempre entrando
+  destapada — este arquivo rastreia vida de verdade, mas a convenção já
+  estabelecida é assumir que o custo de vida sempre é pago.
+- **Black Market Connections**: só existia a entrada no `CARD_DB` — **zero
+  gatilho em lugar nenhum**. "At the beginning of your first main phase,
+  choose one or more" (Treasure -1 vida / compra -2 vida / token 3/2 -3
+  vida) — implementado escolhendo os 3 modos todo turno (IA agressiva,
+  vida própria só perdida por fontes auto-infligidas neste sim solo).
+- **Mirkwood Bats**: "Whenever you create **or sacrifice** a token" — só a
+  metade "create" disparava (via `on_tokens_created`); a metade "sacrifice"
+  nunca era checada em `on_token_leaves()`, apesar de ser o motor central
+  de sacrifício do deck (`aggressive_treasure_destruction` dispara isso o
+  jogo inteiro).
+- **Sephiroth, Fabled SOLDIER**: só a metade passiva ("whenever another
+  creature dies, opponent loses 1/you gain 1") estava modelada — a metade
+  ETB/ataque ("you may sacrifice another creature. If you do, draw a
+  card") 100% ausente. Implementada nos dois gatilhos reais (ETB via
+  `resolve_permanent_etb`, ataque via `combat_step`), sacrificando só
+  fodder barato (token genérico ou Construct), nunca uma criatura nomeada.
+
+**Não corrigido (decisão de escopo, não bug):** Demolition Field's
+habilidade paga exige "target nonbasic land an opponent controls" — sem
+alvo legal possível num goldfish solo sem oponente real, a ativação não
+pode acontecer de verdade (Regra 1 — não inventar estado alheio). Diferente
+de Sephiroth/Black Market Connections, que não dependem de alvo do
+oponente.
+
+**Resultado (n=2000, seed_base=5500000, antes → depois):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg Treasures criados (total) | 6,57 | **7,89** |
+| Avg drain/dano agregado (proxy) | 2,54 | **3,63** |
+| Avg vida ganha | 0,73 | **1,00** |
+| Avg cartas compradas extra | 1,03 | **2,00** |
+| Avg mortes de criatura | 1,16 | **1,43** |
+
+Salto grande em quase toda métrica — Black Market Connections e Mirkwood
+Bats eram motores centrais 100%/50% ausentes, então a correção teve
+impacto real e substancial, não marginal.
+
+**Robustez:** sweep de 20.000 jogos (seeds 5500000–5519999, timeout 2s/jogo)
+— 0 erros, 0 timeouts.
+
+`lista.md` não mudou. `vihaan_v1_runs.jsonl` sobrescrito (3000 jogos).
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

@@ -254,6 +254,7 @@ class GameState:
     lands_played_this_turn: int = 0
     mana_spent_this_turn: int = 0
     bonus_mana_pool: int = 0  # mana gerada mid-turn por sac outlets (Ashnod's Altar/KCI)
+    tapped_lands_this_turn: set = field(default_factory=set)  # terrenos "enters tapped" jogados este turno - ver ETB_TAPPED_LANDS
     treasures_animated_this_combat: int = 0
     animated_treasures_sacrificed_total: int = 0
     bonus_mana_generated_total: int = 0
@@ -532,6 +533,14 @@ def on_token_leaves(state: GameState, n: int):
     if "Nadier's Nightblade" in state.battlefield:
         drain(state, n)
         gain_life(state, n)
+    if "Mirkwood Bats" in state.battlefield:
+        # Achado real 2026-08-28 (auditoria de checklist de mecanica):
+        # "Whenever you create OR SACRIFICE a token" - so a metade
+        # "create" (via on_tokens_created) disparava; a metade
+        # "sacrifice"/leaves-the-battlefield nunca era checada aqui,
+        # apesar de ser o motor central de sacrificio do deck
+        # (aggressive_treasure_destruction chama isso toda hora).
+        drain(state, n)
 
 
 # ---------------------------------------------------------------------------
@@ -539,8 +548,23 @@ def on_token_leaves(state: GameState, n: int):
 # script original: land/rock nunca eram descontados entre casts)
 # ---------------------------------------------------------------------------
 
+# Desolate Mire ({1},{T}: Add {W}{B}) e Shadowblood Ridge ({1},{T}: Add
+# {B}{R}) sao FILTER LANDS - sem NENHUMA habilidade de mana gratuita (ao
+# contrario de um terreno normal). So funcionam com uma fonte de mana JA
+# disponivel pra pagar o {1} (liquido +1, igual Fetid Heath/Rugged Prairie
+# no Edgar Markov). Achado real 2026-08-28 (auditoria de checklist de
+# mecanica): eram contadas como +1 gratis incondicional, igual qualquer
+# terreno normal, mesmo sem nenhuma outra fonte de mana em campo.
+FILTER_LANDS = {"Desolate Mire", "Shadowblood Ridge"}
+
+
 def lands_in_play(state: GameState) -> int:
-    return sum(1 for n in state.battlefield if n in LAND_NAMES)
+    total = sum(1 for n in state.battlefield if n in LAND_NAMES)
+    total -= len(state.tapped_lands_this_turn)  # terrenos "enters tapped" jogados este turno
+    filter_count = sum(1 for n in state.battlefield if n in FILTER_LANDS)
+    if filter_count and (total - filter_count) <= 0 and rocks_mana(state) <= 0 and state.treasures <= 0:
+        total -= filter_count  # sem fonte nenhuma pra "semear" o filtro - contribuem 0
+    return total
 
 
 def rocks_mana(state: GameState) -> int:
@@ -589,9 +613,28 @@ def spend_mana(state: GameState, n: int):
 # ETB e gatilhos de conjuracao
 # ---------------------------------------------------------------------------
 
+def try_sephiroth_sac_draw(state: GameState):
+    """"Whenever Sephiroth enters or attacks, you may sacrifice another
+    creature. If you do, draw a card." Achado real 2026-08-28 (auditoria
+    de checklist de mecanica): so' a metade passiva de dano ("whenever
+    another creature dies...") estava modelada - essa metade (ETB/ataque)
+    100% ausente. So sacrifica fodder barato (token generico ou
+    Construct), nunca uma criatura nomeada de verdade."""
+    if "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel" not in state.battlefield:
+        return
+    if state.other_tokens > 0:
+        sacrifice_other_tokens(state, 1)
+        draw_cards(state, 1)
+    elif state.constructs > 0:
+        sacrifice_constructs(state, 1)
+        draw_cards(state, 1)
+
+
 def resolve_permanent_etb(state: GameState, name: str):
     if name == "Rain of Riches":
         create_treasures(state, 2, source="Rain of Riches ETB")
+    elif name == "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel":
+        try_sephiroth_sac_draw(state)
     elif name == "Marionette Master":
         # Fabricate 3: fichas (reforca o motor de artefato-morte) em vez de contadores.
         create_other_tokens(state, 0)  # Servo tokens sao artefato-criatura; tratados como constructs
@@ -815,6 +858,28 @@ def mulligan(rng: random.Random, max_mulls: int = 3):
 # Turno
 # ---------------------------------------------------------------------------
 
+# Achado real 2026-08-28 (auditoria de checklist de mecanica): as tags
+# "etb_tapped"/"checkland_*"/"fastland"/"shockland" existiam no CARD_DB mas
+# nunca eram lidas em lugar nenhum - todo terreno produzia mana no proprio
+# turno em que era jogado, mesmo os que entram tapped de verdade.
+CHECKLAND_TYPES = {
+    "Clifftop Retreat": {"Mountain", "Plains"},
+    "Dragonskull Summit": {"Swamp", "Mountain"},
+    "Isolated Chapel": {"Plains", "Swamp"},
+}
+BASIC_TYPE_LANDS = {
+    "Mountain": {"Mountain", "Blood Crypt"},
+    "Plains": {"Plains"},
+    "Swamp": {"Swamp", "Blood Crypt"},
+}
+FASTLAND_MAX_OTHER_LANDS = {"Blackcleave Cliffs": 2}
+
+
+def _controls_basic_type(state: GameState, basic_type: str) -> bool:
+    carriers = BASIC_TYPE_LANDS.get(basic_type, set())
+    return any(n in carriers for n in state.battlefield)
+
+
 def play_land(state: GameState):
     if state.lands_played_this_turn >= 1:
         return
@@ -823,13 +888,51 @@ def play_land(state: GameState):
         return
     choice = lands_in_hand[0]
     state.hand.remove(choice)
+    other_lands_before = sum(1 for n in state.battlefield if n in LAND_NAMES)
     state.battlefield.append(choice)
     state.lands_played_this_turn += 1
+
+    tags = CARD_DB[choice].tags
+    enters_tapped = False
+    if "etb_tapped" in tags:
+        enters_tapped = True
+    elif choice in CHECKLAND_TYPES:
+        enters_tapped = not any(_controls_basic_type(state, t) for t in CHECKLAND_TYPES[choice])
+    elif "fastland" in tags:
+        enters_tapped = other_lands_before > FASTLAND_MAX_OTHER_LANDS.get(choice, 0)
+    # "shockland" (Blood Crypt): assume sempre paga os 2 de vida, mesma
+    # convencao ja usada nesse arquivo pra outros custos de vida nao
+    # rastreados (sem vida propria modelada) - nunca entra tapped aqui.
+    if enters_tapped:
+        state.tapped_lands_this_turn.add(choice)
+
+
+def try_black_market_connections(state: GameState):
+    """"At the beginning of your first main phase, choose one or more -
+    Sell Contraband (Treasure, -1 life) / Buy Information (draw, -2 life) /
+    Hire a Mercenary (3/2 Shapeshifter changeling token, -3 life)." Achado
+    real 2026-08-28 (auditoria de checklist de mecanica): so' existia a
+    entrada no CARD_DB, NENHUM gatilho real em lugar nenhum. Esse arquivo
+    rastreia vida de verdade (ao contrario de varios outros decks desta
+    sessao) - a IA sempre escolhe os 3 modos (mesma filosofia agressiva ja
+    usada no resto do motor, sem dano de combate real recebido pra punir
+    perder vida)."""
+    if "Black Market Connections" not in state.battlefield:
+        return
+    create_treasures(state, 1, source="Black Market Connections")
+    state.life -= 1
+    draw_cards(state, 1)
+    state.life -= 2
+    state.other_tokens += 1
+    on_tokens_created(state, 1, kind="creature")
+    state.life -= 3
 
 
 def main_phase(state: GameState):
     if not state.commander_in_play and can_cast(state, COMMANDER):
         cast_card(state, COMMANDER)
+
+    try_black_market_connections(state)
 
     while True:
         castables = [n for n in state.hand if n not in LAND_NAMES and can_cast(state, n)]
@@ -877,6 +980,9 @@ def combat_step(state: GameState):
 
     outlaw_attacking = animated > 0 or any(is_outlaw(n) for n in ready_creatures)
     any_creature_attacking = len(ready_creatures) + ready_constructs + ready_other + animated > 0
+
+    if "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel" in ready_creatures:
+        try_sephiroth_sac_draw(state)
 
     if "Captain Lannery Storm" in state.battlefield and "Captain Lannery Storm" in ready_creatures:
         create_treasures(state, 1, source="Captain Lannery Storm ataca")
@@ -951,6 +1057,7 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.turn += 1
     state.lands_played_this_turn = 0
     state.mana_spent_this_turn = 0
+    state.tapped_lands_this_turn = set()
     state.spells_cast_this_turn = 0
     state.commits_crime_this_turn = False
     state.treasure_spent_this_turn = False
