@@ -1536,6 +1536,26 @@ def run_batch(n=500, turns=8, out_jsonl="beorn_v1_runs.jsonl", seed_base=91000):
         print(f"Roaming Throne em campo em {100*len(rt_games)/n:.1f}% dos jogos (tipo escolhido: Bear)")
         print(f"  Avg gatilhos de combate da Beorn dobrados por partida: {statistics.mean([r['roaming_throne_doublings'] for r in rt_games]):.2f}")
 
+    # Achado real 2026-08-28 (usuario: "acrescente a variavel recursao e
+    # interacao a lista de variaveis pra avaliar/medir/registrar em todos
+    # os decks"): Beorn foi concluido ANTES da regra das 5 metricas basicas
+    # obrigatorias (ramp/draw/interaction/recursion/finisher-lethality)
+    # existir - nunca tinha esse bloco resumido, so metricas espalhadas.
+    # Adicionado retroativamente aqui.
+    print()
+    print("--- Metricas basicas (checklist obrigatoria) ---")
+    print(f"RAMP: avg pecas de rampa em campo: {avg('ramp_pieces_in_play'):.2f}")
+    print(f"DRAW: avg compras extras totais (soma de todos os motores): {avg('extra_draws'):.2f}")
+    print(f"INTERACTION: avg remocao conjurada (Beast Within, Song of the Dryads, Ezuri's Predation, "
+          f"Haywire Mite - Archdruid's Charm excluida, nunca remove de verdade nesse motor, so tutora): "
+          f"{avg('removal_cast'):.2f}")
+    recursion_vals = [(1 if r["eternal_witness_returned"] else 0) + r["lumra_lands_returned_total"] for r in results]
+    print(f"RECURSION: avg cartas recuperadas do cemiterio (Eternal Witness -> mao + Lumra -> campo, "
+          f"terrenos): {statistics.mean(recursion_vals):.2f}")
+    print(f"FINISHER/LETHALITY: avg finishers resolvidos {avg('finishers_resolved'):.2f}, "
+          f"{100*len(fin_turns)/n:.1f}% dos jogos com finisher ate T8"
+          + (f", turno medio {statistics.mean(fin_turns):.2f}" if fin_turns else "") + ".")
+
     print()
     print(f"Logs salvos em: {out_jsonl}")
 

@@ -613,6 +613,31 @@ Roaming Throne em campo em 14.0% dos jogos, avg gatilhos dobrados: 2.22
 
 ---
 
+### Correção #6 — recursão vira 5ª métrica básica obrigatória (regra reforçada)
+
+**Gatilho (usuário):** *"Vc precisa acrescentar a variável recursão e
+interação à lista de variáveis para avaliar, medir e registrar em todos os
+decks tb!"* — Beorn foi concluído (Correção #5) antes da regra das 5
+métricas básicas obrigatórias (ramp/draw/interaction/recursion/finisher-
+lethality) existir, então nunca teve o bloco resumido — só métricas
+espalhadas pelo relatório.
+
+**Adicionado:** bloco `--- Métricas básicas (checklist obrigatória) ---` no
+final do `run_batch()`, agregando as 5 categorias a partir de métricas já
+existentes (RAMP = `ramp_pieces_in_play`, DRAW = `extra_draws`, INTERACTION
+= `removal_cast`, FINISHER/LETHALITY = `finishers_resolved`/turno médio) e
+um novo agregado RECURSION = Eternal Witness (retorno pra mão) + Lumra
+(terrenos do cemitério pro campo).
+
+**Resultado:** puramente aditivo — confirmado com n=2000, seed_base=6000000:
+`extra_draws`/`removal_cast`/finisher-até-T8 idênticos aos já reportados na
+Correção #5 (14,39 / 0,69 / 32,9%). RECURSION novo: avg 0,21/partida
+(n=200 de teste).
+
+`lista.md` não mudou.
+
+---
+
 <!-- Para novas partidas avulsas, use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
