@@ -1351,6 +1351,118 @@ mana extra do Firdoch Core/Talisman ao longo do jogo inteiro.
 
 ---
 
+## Teste comparativo — Morophon, the Boundless (avaliação de inclusão, não aplicado ainda) — 2026-08-28
+
+**Gatilho (usuário):** avaliação de incluir Morophon, the Boundless no
+deck (pergunta inicial: "Quero que vc avalie colocar o Morophon no deck
+do Ur-Dragon, se vale a pena ou não?"). Depois de eu sugerir cortes só com
+base em leitura de texto (achado real — regras permanentes 10 e 11 de
+`references/user-standing-rules.md` — o usuário apontou corretamente que
+eu deveria ter rodado o próprio goldfish antes de sugerir: *"Com tudo já
+pronto, vc pode antes de sugerir a troca já rodar a troca no simulador e
+analisar as métricas, me dizendo quais as 3 melhores sugestões de corte
+na ordem e pq cada uma delas, analiticamente, é não apenas baseado no
+texto da carta que vc as vezes só lê o primeiro parágrafo!"*.
+
+**Implementação real de Morophon em `urdragon_goldfish_v1.py`** (cadastrada
+mas NÃO adicionada a `lista.md` ainda — mesmo padrão já usado pro Radagast
+of Rhosgobel, registrada só pra permitir teste comparativo):
+- `add("Morophon, the Boundless", 7, "creature", {"dragon"}, power=6, pips={})`
+  — Changeling real (tag "dragon" cobre todas as zonas, mesmo princípio já
+  usado no Firdoch Core).
+- **Redução de pip colorido, estruturalmente diferente dos outros 5
+  redutores de Dragão do deck** (que reduzem mana GENÉRICA): oráculo real
+  "costs {W}{U}{B}{R}{G} less... reduces only the amount of colored mana
+  you pay" — nova `morophon_pip_discount()`, aplicada em
+  `has_color_sources_for()` (reduz o pip exigido) e somada em
+  `effective_cost()` (reduz o total pago). Sem qualificador "other" —
+  vale pra QUALQUER spell Dragão, inclusive a própria Ur-Dragon.
+- **Anthem "+1/+1 a outras criaturas do tipo escolhido"**: primeiro anthem
+  estático desta decklist — nova `effective_power()`, substituindo os 6
+  usos anteriores de `CARD_DB[name].power` cru (Great Henge, Garruk's
+  Uprising, Elemental Bond/Temur Ascendancy/Terror of the Peaks via
+  `creature_etb_hooks`, Return of the Wildspeaker, mana de ataque do
+  Klauth). Achado um bug de nomeação real no processo: uma variável local
+  pré-existente em `combat_step()` (Old Gnawbone) já se chamava
+  `effective_power`, colidindo com a nova função global — renomeada pra
+  `old_gnawbone_damage`.
+
+**Robustez:** sweep de 20.000 jogos com Morophon na biblioteca (seeds
+5000000–5019999, timeout 3s/jogo) — 0 erros, 0 timeouts.
+
+**Metodologia do teste de corte:** `urdragon_morophon_test.py` — 6
+candidatos de corte diferentes testados contra o baseline real (deck
+atual), n=3000, seed_base=7600000 (mesmo seed oficial do arquivo
+principal, pareado). Candidatos escolhidos pra cobrir teorias diferentes,
+não só "carta mais fraca por leitura de texto": Sarkhan Soul Aflame
+(redundante com Morophon), Ramos Dragon Engine (lento, mas também Dragão —
+contagem neutra), Orb of Dragonkind (mana restrita + tutor redundante),
+Ruby Daring Tracker e Talisman of Impulse (fixação só 2 cores), e Firdoch
+Core como CONTROLE (rock 5 cores real, esperado ser um corte ruim — testar
+se a metodologia distingue sinal real de ruído).
+
+**Resultado (n=3000, seed_base=7600000):**
+
+| Variante | Turno Ur-Dragon | Nunca conjurada | Dragões | Dano proxy | Draw | Screw% |
+|---|---|---|---|---|---|---|
+| BASELINE (sem Morophon) | 6,583 | 30,47% | 18,97 | 805,56 | 16,78 | 35,87% |
+| Corta Sarkhan, Soul Aflame | 6,591 | 30,80% | 21,48 | 1061,27 | 18,20 | 33,93% |
+| Corta Ramos, Dragon Engine | **6,558** | **29,53%** | 21,28 | 967,36 | 18,24 | 34,47% |
+| Corta Orb of Dragonkind | 6,558 | 30,13% | 22,13 | **1106,02** | **18,86** | 34,03% |
+| Corta Ruby, Daring Tracker | 6,601 | 32,00% | 22,16 | 1060,19 | 18,16 | **33,40%** |
+| Corta Talisman of Impulse | 6,604 | 32,23% | 22,17 | 1074,04 | 18,10 | 34,00% |
+| Corta Firdoch Core (controle) | 6,613 | 31,90% | 21,13 | 993,07 | 17,91 | 35,47% |
+
+**Top 3 corte, em ordem, com razão analítica (não só o texto da carta):**
+
+1. **Orb of Dragonkind** — melhor em dano proxy (1106,02) e cartas
+   compradas (18,86), 2º melhor em turno/confiabilidade de conjurar a
+   comandante (empatado com Ramos). A leitura de texto já apontava a
+   habilidade de mana como fraca (`{1},{T}: add 2, só gasta em Dragão` —
+   pior que qualquer rock genérico já na lista) e o modo de sacrifício
+   redundante com Sarkhan's Triumph (tutor de Dragão mais barato e
+   instant-speed) — os números confirmam: é o corte de MENOR custo de
+   oportunidade, então o ganho líquido de trocar por Morophon aparece mais
+   limpo aqui do que em qualquer outro candidato.
+2. **Ramos, Dragon Engine** — melhor turno médio de conjurar a comandante
+   (6,558) E melhor taxa de nunca conjurar (29,53%, a ÚNICA variante que
+   fica MELHOR que o baseline nessa métrica). Confirma a leitura de texto
+   anterior (engine lento, precisa 5 contadores acumulados antes de valer
+   a pena) — E confirma empiricamente o ponto de curva que o usuário
+   levantou: por Ramos também ser Dragão, a contagem de Dragões em campo
+   fica neutra na troca (21,28 vs 22,13 do Orb — não é o maior ganho de
+   Dragões, mas não perde a peça de forma isolada). É o corte mais seguro
+   pra quem prioriza confiabilidade de ter a comandante em campo, mesmo
+   sendo o mais fraco dos 3 em dano/draw.
+3. **Sarkhan, Soul Aflame** — nenhum extremo (nem melhor nem pior em
+   nenhuma métrica), mas consistentemente no meio-alto do grupo em todas
+   (dano 1061, draw 18,20, screw 33,93% — 2º melhor). Redundante com o
+   próprio Morophon por fazer o mesmo trabalho (redutor de custo de
+   Dragão), mas sem o custo de oportunidade tão baixo quanto o Orb nem o
+   ganho de confiabilidade do Ramos — 3º lugar por ausência de fraqueza,
+   não por força específica.
+
+**Validação do controle:** Firdoch Core (rock de 5 cores real + Dragão)
+terminou **pior que os 3 primeiros candidatos em quase toda métrica**
+(pior turno de comandante do grupo inteiro, 6,613; pior contagem de
+Dragões entre os cortes, 21,13; pior taxa de color screw entre os cortes,
+35,47%, quase igual ao baseline) — confirma que a metodologia está
+distinguindo sinal real (Firdoch Core é genuinamente forte, não deveria
+ser cortado) de ruído de seed, não é só variância aleatória.
+
+**Não recomendado, com razão:** Talisman of Impulse e Ruby, Daring Tracker
+pioraram a confiabilidade de conjurar a comandante MAIS que qualquer outro
+candidato (32,23% e 32,00% de "nunca conjurada", ambos piores que o
+próprio baseline sem Morophon) — cortar uma fonte de rampa de 2 mana,
+mesmo restrita a 2 cores, ainda pesa mais na curva do que a leitura de
+texto sugeria isoladamente.
+
+`lista.md` NÃO mudou — Morophon ainda não foi adicionado ao deck oficial,
+esta é uma avaliação comparativa. Scripts: `urdragon_morophon_test.py`
+(novo).
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**

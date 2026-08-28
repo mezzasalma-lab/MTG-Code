@@ -321,6 +321,30 @@ add("Sarkhan's Triumph", 3, "instant", {"dragon_tutor_hand"}, pips={"R": 1})
 add("Orb of Dragonkind", 2, "artifact", {"dragon_tutor_sac"}, pips={"R": 1})
 add("Urza's Incubator", 3, "artifact", {"dragon_discount2"})
 
+# Morophon, the Boundless — NAO esta na lista.md ainda, cadastrada so pra
+# permitir o teste comparativo `urdragon_morophon_test.py` (mesmo padrao
+# ja usado pro Radagast of Rhosgobel abaixo). Oraculo real (Scryfall,
+# conferido 2026-08-28): {7}, Legendary Creature — Shapeshifter, 6/6,
+# Changeling ("This card is every creature type" — em TODA zona, inclusive
+# como spell na pilha, mesmo principio ja usado no Firdoch Core). "As
+# Morophon enters, choose a creature type [Dragon, obvio/central pro
+# tema]. Spells of the chosen type you cast cost {W}{U}{B}{R}{G} less to
+# cast. This effect reduces only the amount of colored mana you pay.
+# Other creatures you control of the chosen type get +1/+1."
+# {7} sem pip colorido nenhum no custo impresso (pips={} correto) — a
+# reducao de {W}{U}{B}{R}{G} e' ESTRUTURALMENTE DIFERENTE dos outros
+# redutores de Dragao acima (Servant/Shaman/Sarkhan/Herald's Horn/Urza's
+# Incubator, todos "custa {N} a menos" generico): reduz especificamente
+# PIP COLORIDO, nunca mana generica (texto real: "reduces only the amount
+# of colored mana you pay") — modelado a parte via `morophon_pip_discount()`,
+# aplicado em `has_color_sources_for()` (menos pip exigido) e somado em
+# `effective_cost()` (o total pago cai na mesma proporcao). O anthem
+# "+1/+1 a outras criaturas do tipo escolhido" e' modelado via
+# `effective_power()`, substituindo os 6 usos anteriores de
+# `CARD_DB[name].power` cru (primeiro anthem estatico desta decklist —
+# nenhuma carta ja registrada dependia de poder DINAMICO antes).
+add("Morophon, the Boundless", 7, "creature", {"dragon"}, power=6, pips={})
+
 # --- Dragoes com gatilho real ----------------------------------------------------
 add("Ancient Copper Dragon", 6, "creature", {"dragon", "combat_treasure_d20"}, power=6, pips={"R": 2})
 add("Ancient Gold Dragon", 7, "creature", {"dragon", "combat_token_d20"}, power=7, pips={"W": 2})
@@ -463,6 +487,7 @@ LEGENDARY_SPELLS = {
     "Dragonlord Dromoka", "Klauth, Unrivaled Ancient", "Lathliss, Dragon Queen",
     "Ruby, Daring Tracker", "Miirym, Sentinel Wyrm", "Old Gnawbone",
     "Ramos, Dragon Engine", "Sarkhan, Soul Aflame", "The Great Henge",
+    "Morophon, the Boundless",
 }
 
 
@@ -538,6 +563,21 @@ def draw_cards(state: GameState, n: int):
 
 def dragon_count(state: GameState) -> int:
     return sum(1 for n in state.battlefield if is_dragon(n)) + state.dragon_tokens
+
+
+def effective_power(state: GameState, name: str) -> int:
+    """Morophon, the Boundless: "Other creatures you control of the chosen
+    type [Dragon] get +1/+1." Primeiro anthem ESTATICO desta decklist —
+    todo lugar que le `CARD_DB[name].power` cru precisa passar por aqui em
+    vez disso (mesmo padrao ja usado noutros simuladores desta sessao pra
+    anthems dinamicos, ex: Caretaker's Talent no Hei Bai). "Other" exclui
+    a propria Morophon do proprio bonus."""
+    power = CARD_DB[name].power
+    base = name.split(" (copia)")[0]
+    if ("Morophon, the Boundless" in state.battlefield and is_dragon(base)
+            and base != "Morophon, the Boundless"):
+        power += 1
+    return power
 
 
 def proxy_drain(state: GameState, n: int):
@@ -760,6 +800,24 @@ def remaining_mana_for(state: GameState, name: str) -> int:
     return base
 
 
+def morophon_pip_discount(state: GameState, name: str) -> dict:
+    """Morophon, the Boundless: 'Spells of the chosen type [Dragon] you
+    cast cost {W}{U}{B}{R}{G} less to cast. This effect reduces only the
+    amount of colored mana you pay.' SEM qualificador 'other' no oraculo
+    real (diferente da Eminence da propria Ur-Dragon) — vale pra QUALQUER
+    spell Dragao, inclusive a propria comandante. Remove ate 1 pip de cada
+    cor W/U/B/R/G presente no custo real da carta (nunca mais que o pip
+    exigido, nunca cores que a carta nao tem). Estruturalmente diferente
+    dos outros redutores de Dragao do deck (que reduzem mana GENERICA) —
+    por isso e' checado a parte aqui (reduz `needed` antes de checar fontes)
+    e somado separadamente em `effective_cost()` (reduz o total pago, nunca
+    mana generica que sobraria pra outra coisa)."""
+    if "Morophon, the Boundless" not in state.battlefield or not is_dragon(name):
+        return {}
+    pips = CARD_DB[name].pips
+    return {c: min(1, pips.get(c, 0)) for c in "WUBRG" if pips.get(c, 0) > 0}
+
+
 def has_color_sources_for(state: GameState, name: str) -> bool:
     """Checa pips coloridos reais (independentes de desconto de custo —
     'costs {1} less' reduz mana generica, nunca pip colorido, regra real).
@@ -773,9 +831,13 @@ def has_color_sources_for(state: GameState, name: str) -> bool:
     legendary_spell=True quando `name` e' lendario de verdade — libera
     Delighted Halfling do mesmo jeito."""
     pips = CARD_DB[name].pips
+    discount = morophon_pip_discount(state, name)
     dragon_creature = is_dragon(name) and is_creature_card(name)
     legendary = is_legendary(name)
     for color, needed in pips.items():
+        needed -= discount.get(color, 0)
+        if needed <= 0:
+            continue
         if color_sources(state, color, dragon_creature_spell=dragon_creature,
                           legendary_spell=legendary) < needed:
             return False
@@ -839,17 +901,18 @@ def effective_cost(state: GameState, name: str) -> int:
     colorido, so mana generica — regra real)."""
     mv = CARD_DB[name].mv
     if name == "The Great Henge":
-        powers = [CARD_DB[n].power for n in state.battlefield if is_creature_card(n)]
+        powers = [effective_power(state, n) for n in state.battlefield if is_creature_card(n)]
         x = max(powers) if powers else 0
         return max(0, mv - x)
     first_creature_d = 0
     if (is_creature_card(name) and "Radagast of Rhosgobel" in state.battlefield
             and not state.first_creature_used_this_turn):
         first_creature_d = 2
+    morophon_d = sum(morophon_pip_discount(state, name).values())
     if name == COMMANDER:
-        return max(0, mv - dragon_discount_self(state) - first_creature_d)
+        return max(0, mv - dragon_discount_self(state) - first_creature_d - morophon_d)
     if is_dragon(name):
-        return max(0, mv - dragon_discount_others(state, name) - first_creature_d)
+        return max(0, mv - dragon_discount_others(state, name) - first_creature_d - morophon_d)
     return max(0, mv - first_creature_d)
 
 
@@ -970,7 +1033,7 @@ def resolve_etb(state: GameState, name: str):
         # coberta em creature_etb_hooks) — faltava a compra unica de ETB
         # da propria Garruk's Uprising ("When this enchantment enters, if
         # you control a creature with power 4 or greater, draw a card").
-        if any(is_creature_card(c) and CARD_DB[c].power >= 4
+        if any(is_creature_card(c) and effective_power(state, c) >= 4
                for c in state.battlefield if c != name):
             draw_cards(state, 1)
 
@@ -982,7 +1045,7 @@ def creature_etb_hooks(state: GameState, name: str):
     """Gatilhos que outras cartas tem sobre QUALQUER criatura sua entrando
     (nao so Dragao) — Elemental Bond, Garruk's Uprising, Temur Ascendancy,
     The Great Henge, Terror of the Peaks."""
-    power = CARD_DB[name].power
+    power = effective_power(state, name)
     if "Elemental Bond" in state.battlefield and power >= 3:
         draw_cards(state, 1)
     if "Garruk's Uprising" in state.battlefield and power >= 4:
@@ -1096,7 +1159,7 @@ def resolve_instant_sorcery(state: GameState, name: str):
         # checklist de mecanica): contava todas as criaturas, incluindo as
         # 3 Humanas do deck (Dragonspeaker Shaman, Ruby Daring Tracker,
         # Sarkhan Soul Aflame).
-        powers = [CARD_DB[n].power for n in state.battlefield
+        powers = [effective_power(state, n) for n in state.battlefield
                   if is_creature_card(n) and n.split(" (copia)")[0] not in HUMAN_CREATURE_NAMES]
         if powers:
             draw_cards(state, max(powers))
@@ -1430,7 +1493,7 @@ def combat_step(state: GameState):
     if ur_dragon_attacking or any_dragon_attacking:
         attacking_dragons = ready_dragons if ready_dragons else ([COMMANDER] if ur_dragon_attacking else [])
         n_attacking = len(attacking_dragons)
-        total_attack_power = sum(CARD_DB[n].power for n in attacking_dragons)
+        total_attack_power = sum(effective_power(state, n) for n in attacking_dragons)
         # Atarka, World Render ("Whenever a Dragon you control attacks, it
         # gains double strike"): so afeta gatilhos de "deals combat
         # damage" (combat_treasure_d20/combat_token_d20, Old Gnawbone) —
@@ -1504,10 +1567,10 @@ def combat_step(state: GameState):
         if "Old Gnawbone" in state.battlefield:
             # "that many" = dano de combate causado — com Atarka (double
             # strike) o dano efetivo dobra, entao os Treasures tambem.
-            effective_power = total_attack_power * (2 if atarka_double_strike else 1)
+            old_gnawbone_damage = total_attack_power * (2 if atarka_double_strike else 1)
             gnawbone_times = 2 if "Roaming Throne" in state.battlefield else 1
             for _ in range(gnawbone_times):
-                create_and_use_treasures(state, effective_power)
+                create_and_use_treasures(state, old_gnawbone_damage)
 
 
 def end_step(state: GameState):
