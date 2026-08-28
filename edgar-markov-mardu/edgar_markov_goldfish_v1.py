@@ -2004,11 +2004,14 @@ def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base
     print()
 
     # Achado real 2026-08-28 (auditoria de checklist - metricas basicas
-    # obrigatorias em TODO simulador: ramp, draw, interaction,
-    # finisher/lethality). As metricas especificas de carta acima ja
-    # cobrem quase tudo isso, mas nunca estavam resumidas nas 4
-    # categorias-base explicitamente - agregando aqui pra deixar
-    # auditavel de relance, sem precisar somar manualmente.
+    # obrigatorias em TODO simulador: ramp, draw, interaction, recursion,
+    # finisher/lethality - "recursion" adicionada por reforco explicito do
+    # usuario apos a Correcao #10: "acrescente a variavel recursao e
+    # interacao a lista de variaveis pra avaliar/medir/registrar em todos
+    # os decks"). As metricas especificas de carta acima ja cobrem quase
+    # tudo isso, mas nunca estavam resumidas nas categorias-base
+    # explicitamente - agregando aqui pra deixar auditavel de relance, sem
+    # precisar somar manualmente.
     print("--- Metricas basicas (checklist obrigatoria) ---")
     print(f"RAMP: avg pecas de rampa conjuradas (Sol Ring/Arcane Signet/Ashnod's Altar/Phyrexian Altar): "
           f"{sum(r['ramp_pieces_cast'] for r in results)/n:.2f}")
@@ -2019,11 +2022,19 @@ def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base
         for r in results)
     print(f"DRAW: avg compras extras totais (soma de todos os motores - Champion of Dusk, Welcoming Vampire, "
           f"Skullclamp, Unholy Annex, Caretaker's Talent, Minas Tirith, Plumb the Forbidden): {total_draw/n:.2f}")
-    print(f"INTERACTION: N/A por arquitetura - este e' um goldfish SOLO sem oponente real pra mirar. "
-          f"6 spells de remocao reais na lista (Anguished Unmaking, Get Lost, Path to Exile, Swords to "
-          f"Plowshares, Vindicate, Rite of Oblivion) ficam em EXCLUDE_BLIND_CAST de proposito - um piloto "
-          f"real segura remocao ate ter alvo, nunca conjura as cegas. So Goblin Bombardment (sac outlet, "
-          f"nao removal de fato neste motor) e' castavel; 0 removal e' o resultado CORRETO, nao um bug.")
+    print(f"INTERACTION: avg remocao conjurada de verdade: 0.00 (N/A por arquitetura - este e' um goldfish "
+          f"SOLO sem oponente real pra mirar. 6 spells de remocao reais na lista (Anguished Unmaking, Get "
+          f"Lost, Path to Exile, Swords to Plowshares, Vindicate, Rite of Oblivion) ficam em "
+          f"EXCLUDE_BLIND_CAST de proposito - um piloto real segura remocao ate ter alvo, nunca conjura as "
+          f"cegas. So Goblin Bombardment, sac outlet nao removal de fato neste motor, e' castavel; 0 e' o "
+          f"resultado CORRETO, nao um bug.)")
+    total_recursion = sum(
+        r["sevinnes_reclamation_returns"] + r["bloodline_bidding_returns"] + r["awakening_hall_reanimated"]
+        for r in results)
+    print(f"RECURSION: avg cartas recuperadas do cemiterio pro campo (soma de Sevinne's Reclamation, "
+          f"Bloodline Bidding, Awakening Hall): {total_recursion/n:.2f}. Tutores de biblioteca (Vampiric "
+          f"Tutor/Diabolic Intent/Emeritus of Woe/Urza's Saga) NAO contam aqui - buscam da biblioteca, nao "
+          f"do cemiterio, categoria diferente por definicao.")
     total_finisher_damage = sum(
         r["drain_total"] + r["purphoros_damage_total"] + r["warleaders_call_damage_total"]
         + r["exsanguinate_x_total"]

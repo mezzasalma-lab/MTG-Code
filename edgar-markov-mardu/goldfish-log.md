@@ -607,6 +607,34 @@ depender de nada mais estar em campo.
 
 ---
 
+## Correção #12 — recursão vira 5ª métrica básica obrigatória (regra reforçada)
+
+**Gatilho (usuário):** *"Vc precisa acrescentar a variável recursão e
+interação à lista de variáveis para avaliar, medir e registrar em todos os
+decks tb!"*
+
+**Ajustado no bloco `--- Metricas basicas ---` já existente (Correção #10):**
+- **INTERACTION** ganhou um número explícito (`0.00`) em vez de só prosa
+  "N/A" — o valor 0 é o resultado correto por arquitetura (goldfish solo),
+  mas agora está registrado como métrica, não só explicado em texto.
+- **RECURSION** (nova, 5ª categoria): soma de Sevinne's Reclamation +
+  Bloodline Bidding + Awakening Hall (as 3 fontes reais de recuperação do
+  cemitério pro campo). Documentado explicitamente que tutores de
+  biblioteca (Vampiric Tutor/Diabolic Intent/Emeritus of Woe/Urza's Saga)
+  NÃO contam aqui — categoria diferente por definição (biblioteca, não
+  cemitério).
+
+**Resultado:** puramente aditivo. Confirmado com n=2000, seed_base=6000000:
+`drain_total` idêntico ao já reportado na Correção #11 (4,65). RECURSION
+novo: 0,00 (consistente com as 3 métricas individuais já reportadas
+separadamente — Sevinne's/Bloodline Bidding/Awakening Hall raramente têm
+alvo, mesma razão já documentada: poucas criaturas nomeadas morrem neste
+motor).
+
+`lista.md` não mudou.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
