@@ -55,6 +55,77 @@ Resultados salvos em `nekusar_v1_runs.jsonl` (3000 jogos).
 
 ---
 
+## Correção — checklist obrigatória de mecânica (regra nova pós-Beorn) — 2026-08-28
+
+**Gatilho (usuário):** depois de eu entregar o Beorn sem despacho de landfall
+nenhum, o usuário pediu auditoria da checklist nova (landfall, mana dorks,
+mana rocks, fixing lands, draw engines, ramp engines, ativadas repetíveis,
+combos) em **todos** os decks. Achado grave nesta rodada: o próprio docstring
+do script afirmava "9 payoffs... 15 fontes de wheel/draw... **todos** com
+efeito real implementado" — falso. **11 das ~15 fontes catalogadas tinham só
+a tag, nenhum gatilho real**:
+
+- **Waste Not / Liliana's Caress** (tag `discard_payoff`): gatilhos por carta
+  DESCARTADA por oponente (evento distinto de "compra", que `wheel_event()`
+  já cobria) — nunca disparavam. Nova função `discard_payoff_total()`,
+  chamada de dentro de `wheel_event()` com um parâmetro de descartes por
+  oponente (premissa documentada: na maioria dos wheels simétricos
+  "descarta a mão, compra N" o descarte tem a mesma ordem de grandeza do
+  redraw). Waste Not modelado com a composição real da decklist (22
+  terrenos/10 criaturas/67 outras de 99) pra dividir entre as 3 cláusulas.
+- **Jace's Archivist / Magus of the Wheel**: wheels reais ({U},{T} repetível
+  1x/turno; sacrifício de um tiro só) — 100% ausentes, implementadas como
+  eventos de wheel de verdade.
+- **Faerie Mastermind**: as DUAS metades ausentes — passiva ("whenever an
+  opponent draws their second card each turn, you draw a card", dispara
+  quando o próprio estático do Nekusar está ativo) e ativada ("{3}{U}: each
+  player draws a card", repetível, teto de 10/turno).
+- **Resonating Lute**: metade "{T}: Draw a card. Activate only if 7+ cards
+  in hand" implementada; a estática de campo (lands ganham mana extra
+  restrita a instant/sorcery) fica de fora — esse motor não restringe mana
+  por tipo de spell, baixo valor pro escopo.
+- **Sensei's Divining Top**: achado extra — o gate usava `ready_creatures()`
+  (lista só de criaturas), mas o Top é um Artifact, nunca aparecia lá.
+  Condição morta por construção, nunca disparava. Corrigido (artefato não
+  tem doença de invocação).
+- **Teferi's Puzzle Box**: tag `wheel_passive` só era lida pra ordenar
+  prioridade de cast, nunca disparava o efeito real ("at the beginning of
+  each player's draw step..."). Implementado 1x por meu turno (premissa:
+  tamanho médio de mão do oponente = 5, representa o ciclo dos 3 turnos-
+  proxy dos oponentes desde meu último turno).
+- **Mikokoro / Geier Reach Sanitarium / Cephalid Coliseum**: 3 terrenos
+  wheel, 100% ausentes — implementados como ativações reais ({2},{T} pra
+  Mikokoro/Geier Reach; Cephalid Coliseum com o gate real de Threshold,
+  7+ cartas no cemitério, sacrifício de um tiro só).
+
+**Resultado (n=2000, seed_base=4000000, antes → depois):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg eventos de wheel | 1,19 | **3,45** |
+| Avg dano/vida proxy total | 81,05 | **404,75** |
+| Avg cartas compradas extra | 16,54 | **25,70** |
+| Avg storm count máximo | 4,06 | **7,33** |
+| Avg recasts via Breach/Flames | 0,53 | **1,18** |
+| Avg vida ganha (Sheoldred) | 1,91 | **9,92** |
+
+Salto grande (5x no dano proxy) — o deck estava significativamente
+subsimulado: quase todo o "motor de wheel secundário" (fora os 4-5 payoffs
+principais já implementados desde a Simulação #1) não existia de verdade.
+Mais cartas compradas por turno também alimenta mais recasts via Underworld
+Breach (fica com mais spells no cemitério pra reciclar), explicando o
+aumento composto em storm count e recasts.
+
+**Robustez:** sweep de 20.000 jogos (seeds 4000000–4019999, timeout 2s/jogo)
+— 0 erros, 0 timeouts.
+
+Docstring do script corrigido (a frase "todos com efeito real implementado"
+era falsa — substituída por uma nota explícita desta correção).
+
+`lista.md` não mudou. `nekusar_v1_runs.jsonl` sobrescrito.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

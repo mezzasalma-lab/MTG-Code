@@ -6,8 +6,16 @@ Construido do zero em 2026-08-23. Passo 0 (regra de
 secoes 5 e 6) ja fez a varredura mecanica completa no oraculo real de
 todas as 99 cartas — reaproveitada aqui integralmente, nao refeita do
 zero. 9 payoffs de dano/perda-de-vida-por-compra e 15 fontes de
-wheel/draw-em-massa catalogados, todos com efeito real implementado
-abaixo.
+wheel/draw-em-massa catalogados.
+
+Achado real 2026-08-28 (auditoria de checklist obrigatoria de mecanica,
+`references/goldfish-sim-card-rules.md`): a frase acima ("todos com
+efeito real implementado abaixo") estava ERRADA — 11 das ~15 fontes de
+wheel/draw catalogadas tinham só a tag, sem nenhum gatilho real
+(Waste Not, Liliana's Caress, Jace's Archivist, Magus of the Wheel,
+Faerie Mastermind, Resonating Lute, Sensei's Divining Top, Teferi's
+Puzzle Box, Mikokoro, Geier Reach Sanitarium, Cephalid Coliseum).
+Corrigido nesta rodada - ver `goldfish-log.md`.
 
 Mecanica central: o comandante ("Whenever an opponent draws a card,
 Nekusar deals 1 damage to that player" + "At the beginning of each
@@ -256,6 +264,14 @@ class GameState:
     mill_proxy_total: int = 0
     reanimator_targets_total: int = 0
     library_emptied: bool = False
+    faerie_mastermind_draws_total: int = 0
+    sensei_top_draws_total: int = 0
+    small_wheel_lands_used_total: int = 0
+    discard_payoff_life_loss_total: int = 0
+    waste_not_draws_total: int = 0
+    puzzle_box_events_total: int = 0
+    cephalid_coliseum_used: bool = False
+    zombie_tokens_total: int = 0
 
 
 def draw_cards(state: GameState, n: int):
@@ -310,11 +326,46 @@ def symmetric_extra_draws_per_player(state: GameState) -> int:
     return n
 
 
-def wheel_event(state: GameState, my_draws: int, opp_draws_each: int, source: str, full_wheel: bool = True):
+def discard_payoff_total(state: GameState, discards_per_opp: int):
+    """Waste Not/Liliana's Caress: gatilhos por CADA carta que um oponente
+    descarta (evento distinto de "compra", que wheel_event ja cobria).
+    Achado real 2026-08-28 (auditoria de checklist de mecanica): as duas
+    cartas tinham tag "discard_payoff" mas nenhum gatilho real disparava.
+
+    Premissa documentada (sem oponente real, sem tipo de carta descartada
+    rastreado): a composicao da mao descartada e aproximada pela
+    composicao REAL desta decklist (22 terrenos, 10 criaturas, ~67
+    outras, de 99 cartas) - usado so pro Waste Not (as 3 clausulas dele
+    dependem do TIPO da carta descartada). Liliana's Caress nao depende
+    de tipo, aplicada a todo descarte."""
+    if discards_per_opp <= 0:
+        return
+    total_discards = discards_per_opp * NUM_OPPONENTS
+    if "Liliana's Caress" in state.battlefield:
+        state.discard_payoff_life_loss_total += 2 * total_discards
+        proxy_drain(state, 2 * total_discards)
+    if "Waste Not" in state.battlefield:
+        land_frac, creature_frac = 22 / 99, 10 / 99
+        other_frac = 1 - land_frac - creature_frac
+        lands_discarded = total_discards * land_frac
+        creatures_discarded = total_discards * creature_frac
+        other_discarded = total_discards * other_frac
+        state.bonus_mana_pool += int(lands_discarded) * 2  # "add {B}{B}" por land descartada
+        state.zombie_tokens_total += int(creatures_discarded)
+        drawn = int(other_discarded)
+        state.waste_not_draws_total += drawn
+        draw_cards(state, drawn)
+
+
+def wheel_event(state: GameState, my_draws: int, opp_draws_each: int, source: str, full_wheel: bool = True,
+                 discards_per_opp: int = None):
     """Um evento de wheel: EU compro `my_draws` cartas de verdade (vantagem
     real de mao); cada um dos NUM_OPPONENTS oponentes-proxy compra
     `opp_draws_each`, cada compra alheia gerando dano real via
-    `damage_per_opponent_draw()`."""
+    `damage_per_opponent_draw()`. `discards_per_opp` (default =
+    opp_draws_each, premissa documentada: na maioria dos wheels simetricos
+    "discard hand, draw N" o descarte e da mesma ordem de grandeza do
+    redraw) alimenta Waste Not/Liliana's Caress via discard_payoff_total."""
     state.wheel_events_total += 1
     if full_wheel:
         state.full_wheels_total += 1
@@ -324,6 +375,7 @@ def wheel_event(state: GameState, my_draws: int, opp_draws_each: int, source: st
     dpd = damage_per_opponent_draw(state)
     total_dmg = dpd * opp_draws_each * NUM_OPPONENTS
     proxy_drain(state, total_dmg)
+    discard_payoff_total(state, opp_draws_each if discards_per_opp is None else discards_per_opp)
     if "Mindcrank" in state.battlefield:
         state.mill_proxy_total += total_dmg
     if "Bloodchief Ascension" in state.battlefield and total_dmg > 0:
@@ -341,6 +393,19 @@ def draw_step(state: GameState):
     # dano proxy pelas compras simetricas dos OPONENTES nesse mesmo draw step
     dpd = damage_per_opponent_draw(state)
     proxy_drain(state, dpd * my_draws * NUM_OPPONENTS)
+
+    # Faerie Mastermind (metade passiva): "Whenever an opponent draws
+    # their second card each turn, you draw a card." Achado real
+    # 2026-08-28: nunca implementada. So' dispara se cada oponente
+    # realmente compra uma 2a carta no proprio turno - isso so' acontece
+    # com o estatico da propria Nekusar ativo (my_draws >= 2, ja que o
+    # mesmo efeito simetrico vale pra todo mundo). Uma vez por MEU turno,
+    # representando os 3 turnos-proxy dos oponentes desde o meu ultimo.
+    if "Faerie Mastermind" in state.battlefield and my_draws >= 2:
+        draw_cards(state, NUM_OPPONENTS)
+        state.faerie_mastermind_draws_total += NUM_OPPONENTS
+
+    try_teferis_puzzle_box(state)
 
 
 def upkeep_step(state: GameState):
@@ -582,8 +647,124 @@ def main_phase(state: GameState):
     if state.underworld_breach_active and remaining_mana(state) > 0:
         work_breach_or_flames_recast(state, mode="escape")
 
-    if "Sensei's Divining Top" in state.battlefield and "Sensei's Divining Top" in ready_creatures(state) and remaining_mana(state) >= 1:
-        pass  # nao consome mana, top e "T: draw" -- simplificado, sem efeito solo real alem do proprio draw ja contado no motor de wheel
+    try_sensei_divining_top(state)
+    try_jaces_archivist(state)
+    try_magus_of_the_wheel(state)
+    try_faerie_mastermind_activated(state)
+    try_resonating_lute_draw(state)
+    try_small_wheel_lands(state)
+
+
+def try_sensei_divining_top(state: GameState):
+    """Achado real 2026-08-28: o codigo checava "Sensei's Divining Top" em
+    ready_creatures() - lista SO de criaturas (is_creature_card()), e o Top
+    e' um Artifact, nunca uma criatura. Condicao morta por construcao,
+    nunca disparava. Artefato nao tem doenca de invocacao (CR 302.6).
+    Oraculo real: "{T}: Draw a card, then put this artifact on top of its
+    owner's library." Premissa documentada: simplificado como +1 carta
+    liquida por turno (assume que o motor de wheels/manipulacao de topo ja
+    presente no deck evita so' redesencavar o proprio Top no draw seguinte)."""
+    if "Sensei's Divining Top" not in state.battlefield:
+        return
+    draw_cards(state, 1)
+    state.sensei_top_draws_total += 1
+
+
+def try_jaces_archivist(state: GameState):
+    """"{U}, {T}: Each player discards their hand, then draws cards equal
+    to the greatest number of cards a player discarded this way." Achado
+    real 2026-08-28: tagueada "wheel_repeatable", nunca despachada. {T} =
+    1 ativacao por turno. Premissa: greatest discard = maior mao entre eu
+    e os oponentes-proxy - usa a MINHA mao (unica rastreada de verdade)
+    como piso conservador."""
+    if "Jace's Archivist" not in state.battlefield or "Jace's Archivist" not in ready_creatures(state):
+        return
+    if remaining_mana(state) < 1:
+        return
+    spend_mana(state, 1)
+    n = max(len(state.hand), 1)
+    wheel_event(state, my_draws=n, opp_draws_each=n, source="Jace's Archivist", full_wheel=False)
+
+
+def try_magus_of_the_wheel(state: GameState):
+    """"{1}{R}, {T}, Sacrifice this creature: Each player discards their
+    hand, then draws seven cards." Achado real 2026-08-28: tagueada
+    "wheel_sac", nunca despachada. Um tiro so' (se sacrifica)."""
+    if "Magus of the Wheel" not in state.battlefield or "Magus of the Wheel" not in ready_creatures(state):
+        return
+    if remaining_mana(state) < 2:
+        return
+    spend_mana(state, 2)
+    state.battlefield.remove("Magus of the Wheel")
+    wheel_event(state, my_draws=7, opp_draws_each=7, source="Magus of the Wheel")
+
+
+def try_faerie_mastermind_activated(state: GameState):
+    """"{3}{U}: Each player draws a card." Sem {T} - repetivel enquanto
+    sobrar mana. Achado real 2026-08-28: tagueada "opponent_dependent",
+    metade ativada nunca despachada. Teto duro de 10 ativacoes/turno
+    (mesma cautela de outros decks desta sessao contra loops sem teto)."""
+    if "Faerie Mastermind" not in state.battlefield:
+        return
+    for _ in range(10):
+        if remaining_mana(state) < 4:
+            break
+        spend_mana(state, 4)
+        wheel_event(state, my_draws=1, opp_draws_each=1, source="Faerie Mastermind (ativada)", full_wheel=False)
+
+
+def try_resonating_lute_draw(state: GameState):
+    """"{T}: Draw a card. Activate only if you have seven or more cards in
+    your hand." Achado real 2026-08-28: tagueada "draw_conditional", nunca
+    despachada. A estatica de campo (lands ganham mana extra restrita a
+    instant/sorcery) NAO foi modelada (esse motor nao restringe mana por
+    tipo de spell - baixo valor pro escopo, documentado)."""
+    if "Resonating Lute" not in state.battlefield:
+        return
+    if len(state.hand) >= 7:
+        draw_cards(state, 1)
+
+
+def try_small_wheel_lands(state: GameState):
+    """Mikokoro/Geier Reach Sanitarium ("{2},{T}: each player draws a
+    card[, then discards a card]") e Cephalid Coliseum ("{U},{T},
+    Sacrifice: target player draws three, discards three. Threshold: 7+
+    no cemiterio"). Achado real 2026-08-28: todas as 3 tageadas
+    "wheel_source_small"/"threshold_wheel", nenhuma despachada. Todas tem
+    {T} - 1 ativacao cada por turno (Cephalid tambem se sacrifica, uma vez
+    na vida)."""
+    if "Mikokoro, Center of the Sea" in state.battlefield and remaining_mana(state) >= 2:
+        spend_mana(state, 2)
+        wheel_event(state, my_draws=1, opp_draws_each=1, source="Mikokoro", full_wheel=False, discards_per_opp=0)
+        state.small_wheel_lands_used_total += 1
+    if "Geier Reach Sanitarium" in state.battlefield and remaining_mana(state) >= 2:
+        spend_mana(state, 2)
+        wheel_event(state, my_draws=1, opp_draws_each=1, source="Geier Reach Sanitarium", full_wheel=False, discards_per_opp=1)
+        state.small_wheel_lands_used_total += 1
+    if ("Cephalid Coliseum" in state.battlefield and not state.cephalid_coliseum_used
+            and len(state.graveyard) >= 7 and remaining_mana(state) >= 1):
+        spend_mana(state, 1)
+        state.battlefield.remove("Cephalid Coliseum")
+        state.cephalid_coliseum_used = True
+        wheel_event(state, my_draws=3, opp_draws_each=0, source="Cephalid Coliseum", full_wheel=False, discards_per_opp=3)
+
+
+def try_teferis_puzzle_box(state: GameState):
+    """"At the beginning of each player's draw step, that player puts the
+    cards in their hand on the bottom of their library in any order, then
+    draws that many cards." Achado real 2026-08-28: tagueada
+    "wheel_passive", so' era lida pra ordenar prioridade de cast, nunca
+    disparava o efeito. Dispara no MEU draw step (hand shuffle, sem ganho
+    liquido de cartas) e nos dos 3 oponentes-proxy (premissa documentada:
+    tamanho medio de mao 5, contribuindo dano via damage_per_opponent_draw
+    pelas ~5 compras extra de cada oponente, uma vez por MEU turno,
+    representando o ciclo completo dos turnos deles ate o meu proximo)."""
+    if "Teferi's Puzzle Box" not in state.battlefield:
+        return
+    state.puzzle_box_events_total += 1
+    AVG_OPP_HAND_SIZE = 5  # premissa documentada, nao dado real
+    dpd = damage_per_opponent_draw(state)
+    proxy_drain(state, dpd * AVG_OPP_HAND_SIZE * NUM_OPPONENTS)
 
 
 def combat_step(state: GameState):
@@ -716,6 +897,10 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg storm count maximo no turno: {avg([s.storm_count_max for s in states]):.2f}")
     print(f"Avg mill proxy total (Mindcrank + Brain Freeze): {avg([s.mill_proxy_total for s in states]):.2f}")
     print(f"Avg reanimados (Animate Dead/Reanimate): {avg([s.reanimator_targets_total for s in states]):.2f}")
+    print(f"Avg compras via Faerie Mastermind (passiva+ativada, agora despachadas): {avg([s.faerie_mastermind_draws_total for s in states]):.2f}")
+    print(f"Avg compras via Sensei's Divining Top (agora despachado): {avg([s.sensei_top_draws_total for s in states]):.2f}")
+    print(f"Avg perda de vida proxy via discard payoffs (Waste Not/Liliana's Caress, agora despachados): {avg([s.discard_payoff_life_loss_total for s in states]):.2f}")
+    print(f"Avg eventos de Teferi's Puzzle Box (agora despachado): {avg([s.puzzle_box_events_total for s in states]):.2f}")
     print(f"Avg mao final: {avg([len(s.hand) for s in states]):.2f}")
     return states
 
