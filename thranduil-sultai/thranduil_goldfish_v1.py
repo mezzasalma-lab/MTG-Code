@@ -10,11 +10,15 @@ Metodologia (igual ao script do Beorn):
   cada cor separadamente (green_sources/black_sources/blue_sources), com base
   na habilidade real de cada terreno. Simplificacoes: land-tapped-conditions
   (ex: "a menos que controle 2+ terrenos") sao ignoradas, igual ja era feito
-  no script do Beorn pra outras condicoes. Command Tower/Reflecting Pool sao
-  tratados como fonte das 3 cores (produzem qualquer cor na identidade / que
-  um terreno seu produza). Cavern of Souls e Three Tree City sao tratados so
-  como fonte de mana incolor (a fixacao de cor deles e condicional demais pra
-  modelar aqui).
+  no script do Beorn pra outras condicoes. Command Tower e' fonte das 3
+  cores. Reflecting Pool e' dinamica (uniao de cores dos OUTROS terrenos em
+  campo, texto real - corrigido 2026-08-28, antes era fixa {B,G,U}). Cavern
+  of Souls e' fonte real de qualquer cor, mas so' pra spells de criatura
+  Elfo (mesma logica ja aplicada no Ur-Dragon/Edgar Markov pra terrenos
+  restritos ao tipo tribal central do deck - corrigido 2026-08-28, antes
+  tratada como incolor). Three Tree City continua so' incolor nesta rodada
+  (a 2a habilidade dele exigiria uma pool de mana colorida que este arquivo
+  nao tem, documentado como decisao de escopo, nao esquecimento).
 - Elfos lendarios (15 no deck) disparam o gatilho do proprio Thranduil
   (compra 2, descarta 1) quando entram.
 - "Elfos no cemiterio" e rastreado somando os efeitos reais de mill/self-GY
@@ -166,7 +170,16 @@ add("Forest", 0, {"Land"}, produces={"G"})
 add("Island", 0, {"Land"}, produces={"U"})
 add("Swamp", 0, {"Land"}, produces={"B"})
 add("Breeding Pool", 0, {"Land"}, produces={"G", "U"})
-add("Cavern of Souls", 0, {"Land"}, produces=set())  # so incolor pro proposito deste modelo
+add("Cavern of Souls", 0, {"Land"}, produces={"B", "G", "U"}, tags={"elf_only_color"})
+# Achado real 2026-08-28 (auditoria de checklist de mecanica): o docstring
+# original tratava isso como "condicional demais pra modelar", mas a mesma
+# situacao no Ur-Dragon (user-standing-rules.md regra #6 adendo) ja
+# estabeleceu que, num deck tribal com tipo escolhido obvio (aqui: Elfo,
+# tema central do deck), a restricao vira fixacao REAL pra esse
+# subconjunto de spells, nao deve ser tratada como incolor. Corrigido:
+# tag "elf_only_color", so conta em color_sources() pra spells de
+# criatura Elfo (mesma logica ja usada na Cavern do Edgar Markov, tipo
+# Vampiro).
 add("Command Tower", 0, {"Land"}, produces={"B", "G", "U"})
 add("Deathcap Glade", 0, {"Land"}, produces={"B", "G"})  # nao esta mais na lista (saiu p/ Botanical Sanctum), entrada mantida sem uso
 add("Botanical Sanctum", 0, {"Land"}, produces={"G", "U"})
@@ -182,6 +195,13 @@ add("Reflecting Pool", 0, {"Land"}, produces={"B", "G", "U"})
 add("Rejuvenating Springs", 0, {"Land"}, produces={"G", "U"})
 add("Takenuma, Abandoned Mire", 0, {"Land"}, produces={"B"}, tags={"gy_engine"})
 add("Three Tree City", 0, {"Land"}, produces=set())
+# {T}: Add {C} incondicional (produces vazio == so' o generico de is_land()
+# em total_mana(), correto). A 2a habilidade real ("{2},{T}: choose a
+# color, add mana of that color equal to creatures of chosen type you
+# control" - Elfo, escalavel) fica DE FORA nesta rodada por decisao de
+# escopo (achado 2026-08-28, auditoria de checklist): exigiria uma pool de
+# mana colorida separada que este arquivo nao tem (ao contrario de outros
+# decks desta sessao), fica pra uma rodada dedicada se o usuario quiser.
 add("Undergrowth Stadium", 0, {"Land"}, produces={"B", "G"})
 add("Wastewood Verge", 0, {"Land"}, produces={"B", "G"})
 add("Waterlogged Grove", 0, {"Land"}, produces={"G", "U"})
@@ -193,7 +213,7 @@ add("Yavimaya, Cradle of Growth", 0, {"Land"}, produces={"G"})
 add("Zagoth Triome", 0, {"Land"}, produces={"B", "G", "U"})
 # MDFCs com verso terreno - tratados como terreno (simplificacao: sempre jogados como land)
 add("Malakir Rebirth // Malakir Mire", 0, {"Land"}, produces={"B"})
-add("Revitalizing Repast // Old-Growth Grove", 0, {"Land"}, produces={"G"})
+add("Revitalizing Repast // Old-Growth Grove", 0, {"Land"}, produces={"B", "G"})  # achado real 2026-08-28: faltava o modo B ("{T}: Add {B} or {G}")
 
 # -------- Ramp / mana dorks --------
 add("Sol Ring", 1, {"Artifact"}, tags={"ramp"})
@@ -371,6 +391,8 @@ class GameState:
 
     turn: int = 0
     land_played: bool = False
+    lands_played_this_turn: int = 0  # Thranduil's Company permite um 2o land drop condicional
+    creature_cast_turn: Dict[str, int] = field(default_factory=dict)  # doenca de invocacao pros mana dorks
     max_hand_size: int = 7
 
     commander_in_play: bool = False
@@ -430,6 +452,9 @@ class GameState:
     # -------- Elfos com gatilho proprio implementados a pedido do usuario --------
     # (todos exceto Selfless Safewright - dobrar hexproof/indestructible nao muda nada)
     marwyn_counters: int = 0                  # Marwyn: outro Elfo entra -> +1/+1 nela
+    landfall_elf_tokens: int = 0              # Thranduil, Sindarin Liege: landfall -> token Elfo 1/1
+    thranduils_company_counters: int = 0      # Thranduil's Company: landfall -> 2 contadores +1/+1
+    imperious_perfect_tokens: int = 0         # Imperious Perfect: {G},{T} -> token Elfo 1/1
     selvala_draws: int = 0                    # Selvala: criatura entra com maior poder -> compra
     elrond_draws: int = 0                     # Elrond: ativa habilidade de criatura -> compra (1x/turno)
     elrond_triggered_this_turn: bool = False
@@ -494,6 +519,9 @@ class GameState:
 # MANA MODEL (tricolor: total + fontes de cada cor)
 # =========================================================
 
+def _dork_ready(state: GameState, card: str) -> bool:
+    return state.creature_cast_turn.get(card, -1) < state.turn
+
 def total_mana(state: GameState) -> int:
     total = 0
     for card in state.battlefield:
@@ -501,9 +529,17 @@ def total_mana(state: GameState) -> int:
             total += 1
         elif card == "Sol Ring":
             total += 2
+        elif "Creature" in C(card).types and not _dork_ready(state, card):
+            continue  # doenca de invocacao (CR 302.6) - achado real 2026-08-28, nunca existia antes
         elif has_tag(card, "elf_scaling"):
             elves = sum(1 for c in state.battlefield if is_elf(c))
             total += max(1, elves)
+        elif card == "Gwenna, Eyes of Gaea":
+            # Achado real 2026-08-28: "{T}: Add TWO mana in any combination
+            # of colors" - tratada como ramp generico (+1) antes. A
+            # restricao "spend only on creature spells/abilities" nao e'
+            # modelada (deck e' quase todo criatura, baixo impacto real).
+            total += 2
         elif has_tag(card, "power_scaling"):
             total += 2  # aproximacao: poder medio do board nesses turnos
         elif has_tag(card, "gy_scaling"):
@@ -512,12 +548,34 @@ def total_mana(state: GameState) -> int:
             total += 1
     return total
 
-def color_sources(state: GameState, color: str) -> int:
+def color_sources(state: GameState, color: str, elf_creature_spell: bool = False) -> int:
     n = 0
+    yavimaya = state.has("Yavimaya, Cradle of Growth")
     for card in state.battlefield:
-        if is_land(card) and color in C(card).produces:
-            n += 1
-        elif not is_land(card) and color in C(card).produces:
+        if is_land(card):
+            # Yavimaya: "Each land is a Forest in addition to its other
+            # land types" - achado real 2026-08-28, nunca implementada.
+            if color == "G" and yavimaya:
+                n += 1
+                continue
+            if card == "Reflecting Pool":
+                # "Add one mana of any type that a land you control could
+                # produce." Achado real 2026-08-28: era fixa {B,G,U},
+                # deveria ser a uniao dinamica dos OUTROS terrenos em campo.
+                others = {c for other in state.battlefield if other != card and is_land(other)
+                          for c in C(other).produces}
+                if color in others:
+                    n += 1
+                continue
+            if color in C(card).produces:
+                n += 1
+        else:
+            if "Creature" in C(card).types and not _dork_ready(state, card):
+                continue
+            if color not in C(card).produces:
+                continue
+            if has_tag(card, "elf_only_color") and not elf_creature_spell:
+                continue
             n += 1
     return n
 
@@ -527,8 +585,9 @@ def remaining_mana(state: GameState) -> int:
 def can_cast(state: GameState, card: str) -> bool:
     if remaining_mana(state) < C(card).mv:
         return False
+    elf_spell = is_elf(card) and "Creature" in C(card).types
     for color in C(card).colors:
-        if color_sources(state, color) < 1:
+        if color_sources(state, color, elf_creature_spell=elf_spell) < 1:
             return False
     return True
 
@@ -570,7 +629,19 @@ def choose_bottom(hand: List[str], n: int) -> List[str]:
 # =========================================================
 
 def play_land(state: GameState, log: List[Dict]):
-    if state.land_played:
+    # Thranduil's Company: "As long as you control another Elf, you may
+    # play an additional land on each of your turns." Achado real
+    # 2026-08-28 (auditoria de checklist de mecanica): o guard
+    # `if state.land_played: return` bloqueava QUALQUER segundo land drop
+    # incondicionalmente, mesmo com o Company em campo. Corrigido: teto de
+    # lands por turno passa a ser 2 se o Company estiver em campo E houver
+    # outro Elfo controlado (checagem real, nao assumida).
+    max_lands = 1
+    if state.has("Thranduil's Company"):
+        other_elves = sum(1 for c in state.battlefield if is_elf(c) and c != "Thranduil's Company")
+        if other_elves > 0:
+            max_lands = 2
+    if state.lands_played_this_turn >= max_lands:
         return
     lands_in_hand = [c for c in state.hand if is_land(c)]
     if not lands_in_hand:
@@ -587,11 +658,27 @@ def play_land(state: GameState, log: List[Dict]):
     state.hand.remove(choice)
     state.battlefield.append(choice)
     state.land_played = True
+    state.lands_played_this_turn += 1
     state.lands_played_total += 1
 
-    # landfall relevante (Thranduil Sindarin Liege / Thranduil's Company)
+    # Thranduil, Sindarin Liege: "Landfall - Whenever a land you control
+    # enters, create a 1/1 green Elf creature token." Achado real
+    # 2026-08-28: so' logava o gatilho, nunca criava o token de verdade.
     if state.has("Thranduil, Sindarin Liege // Silvan Rally"):
-        log.append({"trigger": "landfall_elf_token", "turn": state.turn})
+        times_rt = 2 if (state.roaming_throne_active() and is_elf("Thranduil, Sindarin Liege // Silvan Rally")) else 1
+        for _ in range(times_rt):
+            state.battlefield.append("Elf Warrior Token")
+            state.landfall_elf_tokens += 1
+        log.append({"trigger": "landfall_elf_token", "times": times_rt, "turn": state.turn})
+
+    # Thranduil's Company: "Landfall - ... put two +1/+1 counters on target
+    # creature you control. It gains vigilance until end of turn."
+    # Achado real 2026-08-28: 100% ausente (so' a tag "land_ramp" existia,
+    # nunca lida pra esse efeito). Contador agregado (esse motor nao
+    # rastreia +1/+1 counters por criatura individual, mesma convencao ja
+    # documentada alhures neste arquivo).
+    if state.has("Thranduil's Company") and any(is_creature(c) for c in state.battlefield):
+        state.thranduils_company_counters += 2
 
     log.append({"action": "land", "card": choice, "turn": state.turn})
 
@@ -630,6 +717,7 @@ def main_phase(state: GameState, log: List[Dict]):
 
     # Ativa finishers repetiveis se sobrar mana e houver board relevante
     activate_finishers(state, log)
+    try_imperious_perfect(state, log)
 
 def _creature_cast_engines_trigger(state: GameState, card: str, log: List[Dict]):
     # Beast Whisperer / Champions of the Perfect: "whenever you cast a creature spell, draw a card".
@@ -727,6 +815,8 @@ def _resolve_cast(state: GameState, card: str, log: List[Dict], from_hand: bool)
     state.spells_cast += 1
     state.mana_spent_this_turn += C(card).mv
     state.battlefield.append(card)
+    if "Creature" in C(card).types:
+        state.creature_cast_turn[card] = state.turn
     if card == COMMANDER:
         state.commander_in_play = True
         state.commander_cast_turn = state.turn
@@ -743,6 +833,8 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
         state.graveyard.append(card)
     else:
         state.battlefield.append(card)
+        if "Creature" in C(card).types:
+            state.creature_cast_turn[card] = state.turn
 
     if has_tag(card, "ramp"):
         state.ramp_pieces_in_play += 1
@@ -824,6 +916,26 @@ def _elrond_ability_activated(state: GameState, source: str, log: List[Dict]):
     if times_rt == 2:
         state.roaming_throne_doublings += 1
     log.append({"trigger": "elrond_draw", "source": source, "times": times_rt, "turn": state.turn})
+
+def try_imperious_perfect(state: GameState, log: List[Dict]):
+    """"{G}, {T}: Create a 1/1 green Elf Warrior creature token." Achado
+    real 2026-08-28 (auditoria de checklist de mecanica): tagueada
+    "token_maker" mas activation_cost nunca setado (default 0), e
+    activate_finishers() pula qualquer carta com cost<=0 - nunca
+    disparava. {T} = 1 ativacao por turno."""
+    if "Imperious Perfect" not in state.battlefield:
+        return
+    if not _dork_ready(state, "Imperious Perfect"):
+        return
+    if remaining_mana(state) < 1 or color_sources(state, "G") < 1:
+        return
+    state.mana_spent_this_turn += 1
+    times_rt = 2 if state.roaming_throne_active() and is_elf("Imperious Perfect") else 1
+    for _ in range(times_rt):
+        state.battlefield.append("Elf Warrior Token")
+        state.imperious_perfect_tokens += 1
+    log.append({"trigger": "imperious_perfect_token", "times": times_rt, "turn": state.turn})
+
 
 def activate_finishers(state: GameState, log: List[Dict]):
     creatures_in_play = sum(1 for c in state.battlefield if is_creature(c))
@@ -946,6 +1058,7 @@ def apply_rhystic_study(state: GameState, log: List[Dict]):
 def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.turn = turn
     state.land_played = False
+    state.lands_played_this_turn = 0
     state.mana_spent_this_turn = 0
     state.elrond_triggered_this_turn = False
     state.elvish_warmaster_triggered_this_turn = False
@@ -974,6 +1087,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.draw(1, source="normal")
 
     play_land(state, log)
+    play_land(state, log)  # 2a chamada: no-op a menos que Thranduil's Company habilite o 2o land drop
 
     # Color screw de azul: mana total ja daria pro comandante, mas falta fonte de U.
     if not state.commander_in_play and state.turn >= 3 and total_mana(state) >= C(COMMANDER).mv and color_sources(state, "U") < 1:
@@ -1057,6 +1171,9 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "roaming_throne_in_play": state.has("Roaming Throne"),
         "roaming_throne_doublings": state.roaming_throne_doublings,
         "marwyn_counters": state.marwyn_counters,
+        "landfall_elf_tokens": state.landfall_elf_tokens,
+        "thranduils_company_counters": state.thranduils_company_counters,
+        "imperious_perfect_tokens": state.imperious_perfect_tokens,
         "selvala_draws": state.selvala_draws,
         "elrond_draws": state.elrond_draws,
         "elvish_warmaster_tokens": state.elvish_warmaster_tokens,
@@ -1142,6 +1259,9 @@ def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=710
     print()
     print("--- Elfos com gatilho proprio (novo) ---")
     print(f"Avg contadores em Marwyn (outro Elfo entra): {avg('marwyn_counters'):.2f}")
+    print(f"Avg tokens de Elfo via landfall (Thranduil, Sindarin Liege - agora despachado): {avg('landfall_elf_tokens'):.2f}")
+    print(f"Avg contadores via landfall (Thranduil's Company - agora despachado): {avg('thranduils_company_counters'):.2f}")
+    print(f"Avg tokens de Elfo via Imperious Perfect (agora despachado): {avg('imperious_perfect_tokens'):.2f}")
     print(f"Avg compras via Selvala (criatura entra com maior poder): {avg('selvala_draws'):.2f}")
     print(f"Avg compras via Elrond (ativa habilidade de criatura, 1x/turno): {avg('elrond_draws'):.2f}")
     print(f"Avg tokens via Elvish Warmaster (1+ Elfo entra, 1x/turno): {avg('elvish_warmaster_tokens'):.2f}")

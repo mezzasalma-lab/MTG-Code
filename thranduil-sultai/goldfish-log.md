@@ -332,6 +332,80 @@ Roaming Throne em campo: 11,5% | Avg gatilhos dobrados: 4,75
 
 ---
 
+### Correção — checklist obrigatória de mecânica (regra nova pós-Beorn) — 2026-08-28
+
+**Gatilho (usuário):** depois de eu entregar o Beorn sem despacho de landfall
+nenhum, o usuário pediu auditoria da checklist nova (landfall, mana dorks,
+mana rocks, fixing lands, draw engines, ramp engines, ativadas repetíveis,
+combos) em **todos** os decks.
+
+**Achado mais grave — landfall só logava, nunca criava efeito real:**
+`play_land()` tinha `log.append({"trigger": "landfall_elf_token", ...})`
+pra Thranduil, Sindarin Liege, mas **nenhum token era criado de verdade** —
+o log existia, o efeito não. Thranduil's Company (2 contadores +1/+1 no
+landfall) nem tinha esse log — 100% ausente. E o próprio segundo land drop
+do Company (`As long as you control another Elf, you may play an
+additional land`) estava **hard-bloqueado**: `if state.land_played: return`
+no topo da função impedia qualquer segunda jogada de terreno,
+independente do Company estar em campo.
+
+**Outros bugs reais achados (todos de mana):**
+
+- **13 mana dorks criatura sem doença de invocação nenhuma** — produziam
+  mana no próprio turno em que eram conjurados. Novo
+  `creature_cast_turn`/`_dork_ready()` (mesmo padrão de outros decks desta
+  sessão).
+- **Gwenna, Eyes of Gaea**: "{T}: Add TWO mana" tratada como ramp genérico
+  (+1) — corrigido pra +2 (a restrição "só pra spells/habilidades de
+  criatura" não foi modelada, deck é quase todo criatura).
+- **Cavern of Souls**: o docstring do script já documentava isso como
+  "condicional demais pra modelar" e tratava como incolor — mas a mesma
+  situação no Ur-Dragon (regra #6 adendo, `user-standing-rules.md`) já
+  tinha estabelecido que, num deck tribal com tipo óbvio (aqui: Elfo),
+  vira fixação REAL pro subconjunto de spells daquele tipo. Corrigido com
+  a mesma lógica (tag `elf_only_color`).
+- **Yavimaya, Cradle of Growth**: "Each land is a Forest" nunca
+  implementada — nenhum terreno ganhava G extra por ela.
+- **Reflecting Pool**: fixa em {B,G,U} quando o texto real é "any type
+  that a land you control could produce" (dinâmico, deveria refletir os
+  OUTROS terrenos em campo).
+- **Revitalizing Repast // Old-Growth Grove**: faltava o modo B
+  ("{T}: Add {B} or {G}"), só G estava modelado.
+- **Imperious Perfect**: "{G},{T}: Create a 1/1 Elf Warrior token" —
+  `activation_cost` nunca setado (default 0), e `activate_finishers()`
+  pula qualquer carta com custo ≤0 — nunca disparava.
+
+**Não corrigido nesta rodada (decisão de escopo, documentada):** Three
+Tree City's habilidade de mana colorida escalável (exigiria uma pool de
+mana com cor que este arquivo não tem); Fauna Shaman, Eladamri's dig,
+Prime Speaker Vannifar, Agatha's Soul Cauldron, Jarad's sac-drain — 5
+habilidades ativadas ainda não implementadas de verdade, ficam pra uma
+rodada dedicada; Elrond continua só disparando via ativação de finisher,
+não do gatilho real (qualquer tap de mana dork).
+
+**Resultado (n=2000, seed_base=71000, antes → depois):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg spells cast | 11,62 | **11,20** |
+| Avg finishers ativados | 1,15 | **0,87** |
+| % jogos com finisher até T8 | 46,0% | **40,0%** |
+| Avg tokens via landfall (Sindarin Liege, novo) | — | **0,28** |
+| Avg contadores via landfall (Company, novo) | — | **0,70** |
+| Avg tokens via Imperious Perfect (novo) | — | **0,37** |
+
+Queda moderada nas métricas de desenvolvimento — esperada, já que a
+correção de doença de invocação (13 dorks) desacelera o ramp real mais do
+que os novos motores (landfall/Imperious Perfect) compensam. Direção
+correta: o deck estava sendo simulado com mana rápida demais.
+
+**Robustez:** sweep de 20.000 jogos (seeds 71000–91000, timeout 2s/jogo) —
+0 erros, 0 timeouts.
+
+`lista.md` não mudou.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
