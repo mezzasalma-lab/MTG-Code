@@ -197,14 +197,29 @@ QUALQUER simulador, novo ou já existente. Generalizando: antes de considerar
    lugar relevante, não só onde foi implementada primeiro) — não é
    suficiente ter a tag na definição da carta.
 10. **Métricas básicas do relatório** — todo `run_batch`/resumo de simulador
-    precisa reportar, de forma auditável e separada, pelo menos estas 4
+    precisa reportar, de forma auditável e separada, pelo menos estas 5
     categorias agregadas, mesmo que o deck já tenha métricas específicas de
-    carta: **ramp** (mana disponível/peças de aceleração), **draw**
-    (compra extra além da normal do turno), **interaction** (remoção/
-    proteção/interação com o oponente conjurada), **finisher/lethality**
-    (taxa e turno médio de resolver um fechador de jogo). Se uma dessas 4
-    categorias não existe na decklist, documentar "0 cartas de X, categoria
-    N/A" em vez de simplesmente omitir a métrica do relatório.
+    carta: **ramp** (mana disponível/peças de aceleração), **draw** (compra
+    extra além da normal do turno), **interaction** (remoção/proteção/
+    interação com o oponente conjurada), **recursion** (recuperação de
+    cartas do cemitério — pra mão, campo, ou topo da biblioteca: reanimação,
+    tutor-de-volta, "return target card from your graveyard", etc — ver
+    citação literal do usuário abaixo), **finisher/lethality** (taxa e turno
+    médio de resolver um fechador de jogo). Se uma dessas 5 categorias não
+    existe na decklist, documentar "0 cartas de X, categoria N/A" em vez de
+    simplesmente omitir a métrica do relatório.
+
+    Citação literal do usuário (2026-08-28), depois de eu reportar a
+    checklist ampliada (estáticas + as 4 métricas originais) em Edgar
+    Markov/Hei Bai: *"Vc precisa acrescentar a variável recursão e interação
+    à lista de variáveis para avaliar, medir e registrar em todos os decks
+    tb!"* — **recursão** entra como 5ª categoria de métrica básica (antes
+    não estava na lista original de 4); **interação** já estava na lista,
+    mas o reforço deixa explícito que precisa ser uma métrica agregada de
+    verdade em TODO deck (não só citada como "N/A por arquitetura" sem uma
+    linha própria no relatório) — todo deck com qualquer carta de
+    remoção/proteção precisa de um número reportado pra ela, mesmo que o
+    número seja 0 por design (goldfish solo sem oponente real).
 
 **Prática obrigatória:** antes de declarar QUALQUER simulador (novo ou já
 existente, numa auditoria de revisão) completo, rodar essa checklist e citar

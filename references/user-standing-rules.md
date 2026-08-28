@@ -257,6 +257,27 @@ e auditados SEMPRE!"*
   inclusive decks já auditados anteriormente, que devem ser revisados de novo
   se alguma categoria não tiver sido explicitamente checada e documentada.
 
+**2º reforço (2026-08-28), depois da checklist ampliada aplicada em Edgar
+Markov/Hei Bai:** citação literal do usuário — *"Vc precisa acrescentar a
+variável recursão e interação à lista de variáveis para avaliar, medir e
+registrar em todos os decks tb!"*
+
+- **Recursão** vira a **5ª categoria obrigatória de métrica básica** (antes
+  eram 4: ramp/draw/interaction/finisher-lethality) — ver
+  `references/goldfish-sim-card-rules.md#checklist-obrigatória-de-categorias-de-mecânica-não-só-cartas-individuais`,
+  item 10. Cobre qualquer efeito de recuperar carta do cemitério (pra mão,
+  campo, ou topo da biblioteca): reanimação, "return target card from your
+  graveyard", tutor-de-volta, etc.
+- **Interação** já estava na lista de 4, mas o reforço deixa explícito:
+  precisa de uma métrica agregada de verdade reportada no `run_batch` de
+  TODO deck com pelo menos 1 carta de remoção/proteção/interação — mesmo
+  quando o valor é 0 por decisão de arquitetura (goldfish solo sem oponente
+  real pra mirar), documentar isso como uma linha própria do relatório, não
+  como uma nota de rodapé sem número.
+- Aplica-se retroativamente aos decks já concluídos nesta sessão (Beorn,
+  Edgar Markov, Hei Bai) e a todo deck futuro, desde a auditoria inicial —
+  não é um adendo só pros próximos decks.
+
 ---
 
 <!-- Adicionar novas regras permanentes abaixo conforme o usuário as
