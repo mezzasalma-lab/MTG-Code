@@ -744,6 +744,50 @@ seeds, confirmando que o loop travava de verdade, não só teoricamente).
 
 ---
 
+## Correção #7 — checklist ampliada (habilidades estáticas + métricas básicas)
+
+**Gatilho (usuário):** *"Lembre da regra que criamos: TODA SIMULAÇÃO E DECK
+TEM QUE TER TODAS AS Ativações, gatilhos, habilidades estáticas, combos e
+métricas básicas (ramp, draw, interaction, finisher/lethality) contabilizados
+e auditados SEMPRE!"* — 2 categorias novas na checklist. Hei Bai já tinha
+passado pela checklist original de 8 categorias na Correção #6; esta rodada
+focou nas 2 novas.
+
+**Habilidades estáticas — conferido `oracle_text` de Sphere of Safety, Weaver
+of Harmony, Destiny Spinner, Greater Auramancy, Sterling Grove, Enduring
+Vitality, Elesh Norn contra o código:** todas já corretamente implementadas
+ou corretamente fora de escopo. Único achado real: **Sphere of Safety**
+(tag `"defense"` nunca despachada) tem oráculo puramente defensivo — *"Creatures
+can't attack you... unless their controller pays {X}"* — sem nenhum efeito
+no próprio board/mana/draw; este simulador não modela ataques de oponente
+contra nós, então é fora de escopo de verdade (mesma razão do Seedborn Muse),
+não um buraco silencioso — documentado explicitamente no docstring agora
+(antes só a tag existia, sem explicação). Mesmo achado pra metade
+"retorna como encantamento após morrer" de Enduring Vitality (nunca há
+morte de criatura nomeada neste motor).
+
+**Métricas básicas — novo bloco no `run_batch()`:** RAMP (novo contador
+`ramp_pieces_cast`, nunca existia como métrica agregada — só entrava no
+cálculo turno-a-turno de mana), DRAW (já existia via `cards_drawn_extra`,
+agora rotulada explicitamente), INTERACTION (já existia via
+`interaction_spells_cast_total`, agora rotulada e com nota de que é proxy
+sem alvo real), FINISHER/LETHALITY (este deck não tem combo infinito, ao
+contrário do Edgar Markov — documentado como tal, com o dano/drain agregado
+reportado como proxy de pressão de jogo).
+
+**Resultado:** puramente aditivo — nenhuma lógica de jogo mudou (só
+contadores e o bloco de relatório novos). Confirmado com n=2000,
+seed_base=6000000: `cards_drawn_extra`/`proxy_drain_total`/`proxy_damage_total`
+idênticos byte a byte antes e depois (10,75 / 21,15 / 158,48 nas duas
+rodadas). `ramp_pieces_cast` novo: avg 1,29 por partida.
+
+**Robustez:** sweep de 20.000 jogos (seeds 900000–919999, timeout 2s/jogo) —
+0 erros, 0 timeouts.
+
+`lista.md` não mudou.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

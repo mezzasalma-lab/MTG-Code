@@ -165,6 +165,20 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas)
   oponente contra nosso board (sem remocao/contramagia real vindo do
   outro lado), shroud nao tem efeito numerico possivel de capturar aqui,
   fora de escopo pela mesma razao do Seedborn Muse.
+- Sphere of Safety (auditoria de checklist 2026-08-28, habilidades
+  estaticas): oraculo real e' puramente defensivo — "Creatures can't
+  attack you or planeswalkers you control unless their controller pays
+  {X}..." — sem NENHUM efeito no proprio board/mana/draw. Como este
+  simulador nao modela ataques de oponente contra nos, e' fora de
+  escopo pela mesma razao do Seedborn Muse/shroud, tag "defense" e' so
+  documentacional, corretamente sem dispatch.
+- Enduring Vitality / Enduring Tenacity-style (auditoria de checklist
+  2026-08-28): "When ~ dies, if it was a creature, return it to the
+  battlefield... It's an enchantment" — clausula de resiliencia pos-
+  morte. Este simulador nao mata criaturas nomeadas (sem sacrificio/
+  remocao de permanentes proprios em lugar nenhum), entao essa clausula
+  nunca teria janela real pra disparar — fora de escopo de verdade, nao
+  so uma aproximacao.
 """
 
 import json
@@ -350,6 +364,11 @@ add("Spirit Token", 0, "creature", {"token"})
 LAND_NAMES = {n for n, c in CARD_DB.items() if c.ctype == "land"}
 TOKEN_NAMES = {"Shrine Token", "Monk Token", "Spirit Token"}
 CREATURE_ISH = {"creature", "enchantment_creature"}
+# Achado real 2026-08-28 (auditoria de checklist - metricas basicas
+# obrigatorias: ramp/draw/interaction/finisher). Nao havia nenhuma metrica
+# agregada de RAMP ate agora (rocks/dorks so entravam no calculo turno-a-
+# turno de mana, sem contador cumulativo de quantas pecas foram conjuradas).
+RAMP_TAGS = {"rock1", "rock2", "dork_flat1", "dork_vivid", "dork_scale_enchantments"}
 
 # Cores reais (Scryfall `colors`) de todo permanente nao-terreno do
 # deck — usado por Bloom Tender ("For each color among permanents you
@@ -446,6 +465,7 @@ class GameState:
     aura_shards_destroys_total: int = 0
     proxy_life_gained_total: int = 0
     library_emptied: bool = False
+    ramp_pieces_cast: int = 0
 
 
 def draw_cards(state: GameState, n: int):
@@ -1019,6 +1039,8 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
 def cast_card(state: GameState, name: str, pay_cost: bool = True):
     card = CARD_DB[name]
     cost = effective_cost(state, name)
+    if card.tags & RAMP_TAGS:
+        state.ramp_pieces_cast += 1
     if pay_cost:
         spend_mana(state, cost)
     if name != COMMANDER and name in state.hand:
@@ -1458,6 +1480,27 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg spells de interacao conjurados (proxy): {avg([s.interaction_spells_cast_total for s in states]):.2f}")
     print(f"Avg destruicoes via Aura Shards (se presente): {avg([s.aura_shards_destroys_total for s in states]):.2f}")
     print(f"Avg mao final: {avg([len(s.hand) for s in states]):.2f}")
+    print()
+
+    # Achado real 2026-08-28 (auditoria de checklist - metricas basicas
+    # obrigatorias em TODO simulador: ramp, draw, interaction,
+    # finisher/lethality). Ja existiam metricas equivalentes espalhadas
+    # (cards_drawn_extra, interaction_spells_cast_total, proxy_damage/drain),
+    # mas nunca resumidas nas 4 categorias-base explicitamente.
+    print("--- Metricas basicas (checklist obrigatoria) ---")
+    print(f"RAMP: avg pecas de rampa conjuradas (Sol Ring/Arcane Signet/The Mind Stone/Birds/Bloom Tender/"
+          f"Sanctum Weaver): {avg([s.ramp_pieces_cast for s in states]):.2f}")
+    print(f"DRAW: avg compras extras totais (soma de todos os motores - Shrines, Enchantress package, "
+          f"Sanctum of Calm Waters, etc): {avg([s.cards_drawn_extra for s in states]):.2f}")
+    print(f"INTERACTION: avg spells de interacao conjurados (proxy - Path to Exile, Swords, contramagia, "
+          f"Aura Shards, Go-Shintai of Hidden Cruelty, Sanctum of Shattered Heights): "
+          f"{avg([s.interaction_spells_cast_total for s in states]):.2f}. Sem alvo real neste goldfish solo "
+          f"(mesma convencao de sempre desta biblioteca) - conta uso de carta/mana, sem efeito no board proprio.")
+    total_lethality = avg([s.proxy_damage_total + s.proxy_drain_total for s in states])
+    print(f"FINISHER/LETHALITY: este deck NAO tem pacote de combo infinito (diferente do Edgar Markov) - "
+          f"e' um motor de valor incremental (Shrines escalando + blink). Proxy de 'dano equivalente' "
+          f"agregado (Purphoros + Go-Shintai of Ancient Wars + Northern Air Temple/Sanctum of Stone Fangs "
+          f"drain): {total_lethality:.2f} por partida de {turns} turnos.")
     return states
 
 
