@@ -208,6 +208,36 @@ Queda pequena e proporcional — exatamente o esperado de exigir 2 mana de verda
 
 ---
 
+## Correção #4 — Stensian Sanguinist // Exsanguinate também tinha "prepared" ausente (usuário perguntou direto)
+
+Usuário: *"Vc contou o Exsanguinate preparado do Sanguine Stensian como mana sink e um finalizador potencial?"*
+
+Não — 100% ausente, mesma classe de bug do Emeritus of Woe (Correção #2), só que com gatilho diferente. Conferido o oráculo real: **Stensian Sanguinist** — *"Whenever you attack, target attacking creature gains deathtouch until end of turn. Whenever that creature deals combat damage to a player this combat, this creature becomes prepared."* Verso **Exsanguinate** (`{X}{B}{B}`, Sorcery) — *"Each opponent loses X life. You gain life equal to the life lost this way."* A tag `drain_aristocrats` que ele tinha era decorativa E errada (o gatilho real não é "criatura morre", é combate) — removida.
+
+### Implementado
+
+- `combat_step()`: como este simulador não modela bloqueadores (a premissa inteira do combate aqui já é "Edgar ataca livre, sem oposição"), qualquer ataque conecta — então a condição "dealt combat damage to a player" é praticamente garantida sempre que há combate. Stensian não precisa nem atacar ela mesma, só estar em campo. Fica `stensian_prepared = True`.
+- `try_stensian_prepared_exsanguinate()`: mesma lição já aprendida no Emeritus of Woe — "prepared" não é free-cast, ainda paga o custo real (`{B}{B}` fixo). `X` = toda a mana sobrando menos esse `{B}{B}` (mana sink de verdade — sem custo de oportunidade em gastar mana que sobraria sem uso mesmo). Só conjura se `X > 0`. Como o "torna-se preparado" acontece DENTRO do combate (depois das 2 janelas de conjuração do turno), a cópia só pode ser conjurada a velocidade de sorcery no turno SEGUINTE — mesma limitação de 1 turno de atraso do Emeritus of Woe, pela mesma razão (este simulador não modela uma 2ª main phase pós-combate). Chamado nas 2 mesmas janelas (fim do main_phase inicial + depois da mana extra do sac_loop).
+- O drain/gain do Exsanguinate passa pelos helpers centralizados `lose_life_opponent()`/`gain_life()` — herda de graça a checagem do combo Exquisite Blood/Bloodthirsty Conqueror + Vito Thorn (um X grande de Exsanguinate É um jeito real de ligar o combo se as peças já estiverem em campo).
+
+Testado: 300 jogos smoke test (0 erros, as 2 políticas), 25.000 jogos de robustez política default + 15.000 política `COMBO_HUNTING_POLICY=True` (0 erros/timeouts nas 2).
+
+**Impacto real** (`n=2000`, política default, `seed_base=6000000`, comparado com o estado pós-Correção #3):
+
+| métrica | antes (Correção #3) | depois |
+|---|---|---|
+| Avg Exsanguinate conjurados (novo) | 0,00 | **0,07** |
+| Avg X total do Exsanguinate (novo) | 0,00 | 0,26 |
+| Avg drain_total | 2,14 | **2,42** |
+| Avg lifegain_total | 1,31 | **1,58** |
+| Combo ligado | 0,5% | 0,7% |
+
+Salto real e proporcional ao esperado — Exsanguinate é raro de disparar (precisa de Stensian em campo, sobreviver até o combate, e ter mana sobrando no turno seguinte, numa janela de só 8 turnos simulados), mas quando dispara move `drain_total`/`lifegain_total` de forma visível porque `X` pode ser grande (mana sink de verdade).
+
+`lista.md` não mudou.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

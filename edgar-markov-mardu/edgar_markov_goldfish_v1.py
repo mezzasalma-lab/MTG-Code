@@ -249,7 +249,7 @@ add("Pitiless Plunderer", 4, "Creature", colors={"B"}, produces=set(), tags={"to
 add("Purphoros, God of the Forge", 4, "Creature", colors={"R"}, produces=set(), tags=set())
 add("Roaming Throne", 4, "Creature", colors=set(), produces=set(), tags=set())
 add("Sanctum Seeker", 4, "Creature", colors={"B"}, produces=set(), tags={"drain_aristocrats", "vampire_type"})
-add("Stensian Sanguinist // Exsanguinate", 2, "Creature", colors={"B"}, produces=set(), tags={"drain_aristocrats", "vampire_type"})
+add("Stensian Sanguinist // Exsanguinate", 2, "Creature", colors={"B"}, produces=set(), tags={"vampire_type"})
 add("Vein Ripper", 6, "Creature", colors={"B"}, produces=set(), tags={"drain_aristocrats", "vampire_type"})
 add("Vindictive Vampire", 4, "Creature", colors={"B"}, produces=set(), tags={"vampire_type"})
 add("Viscera Seer", 1, "Creature", colors={"B"}, produces=set(), tags={"vampire_type"})
@@ -494,6 +494,18 @@ class GameState:
     emeritus_of_woe_tutors: int = 0
     emeritus_prepared: bool = False
     creatures_died_this_turn: int = 0
+
+    # Achado real 2026-08-27 (usuario: "Vc contou o Exsanguinate
+    # preparado do Sanguine Stensian como mana sink e um finalizador
+    # potencial?"): Stensian Sanguinist tem a MESMA mecanica "prepared"
+    # do Emeritus of Woe, mas com gatilho diferente - "whenever you
+    # attack, target creature gains deathtouch... whenever that
+    # creature deals combat damage to a player, becomes prepared" (nao
+    # e' morte de criatura - a tag 'drain_aristocrats' antiga era
+    # decorativa E errada, removida). 100% ausente antes.
+    stensian_prepared: bool = False
+    exsanguinate_casts: int = 0
+    exsanguinate_x_total: int = 0
 
     combo_active: bool = False
     combo_active_turn: Optional[int] = None
@@ -994,6 +1006,20 @@ def combat_step(state: GameState, log: List[Dict]):
         _log_doubling(state, times3)
         log.append({"trigger": "clavileno", "times": times3, "turn": state.turn})
 
+    if state.has("Stensian Sanguinist // Exsanguinate"):
+        # "Whenever you attack, target attacking creature gains
+        # deathtouch... whenever THAT creature deals combat damage to
+        # a player, this creature becomes prepared." Achado real
+        # 2026-08-27 (usuario perguntou direto): este simulador nao
+        # modela bloqueadores (goldfish, "Edgar ataca livre" ja e' a
+        # premissa de todo o combat_step) - qualquer criatura atacante
+        # conecta sem oposicao, entao a condicao "dealt combat damage"
+        # e' praticamente garantida sempre que ha combate. Nao precisa
+        # da propria Stensian atacar - so precisa estar em campo quando
+        # o ataque acontece.
+        state.stensian_prepared = True
+        log.append({"trigger": "stensian_sanguinist_prepared", "turn": state.turn})
+
 # =========================================================
 # TURNO
 # =========================================================
@@ -1133,6 +1159,7 @@ def main_phase(state: GameState, log: List[Dict]):
 
     cast_available_spells(state, log)
     try_emeritus_prepared_tutor(state, log)
+    try_stensian_prepared_exsanguinate(state, log)
 
 def try_emeritus_prepared_tutor(state: GameState, log: List[Dict]):
     # Emeritus of Woe "prepared" (setado no do_end_step do turno
@@ -1154,6 +1181,35 @@ def try_emeritus_prepared_tutor(state: GameState, log: List[Dict]):
             log.append({"trigger": "emeritus_of_woe_prepared_tutor", "found": target, "turn": state.turn})
             state.emeritus_prepared = False
 
+def try_stensian_prepared_exsanguinate(state: GameState, log: List[Dict]):
+    # Stensian Sanguinist "prepared" (setado em combat_step do turno
+    # anterior - so fica preparado DEPOIS do combate, entao so pode ser
+    # conjurado a velocidade de sorcery no PROXIMO turno, mesma
+    # limitacao de 1 turno de atraso que o Emeritus of Woe tem aqui,
+    # ja que este simulador nao modela uma 2a main phase pos-combate).
+    # Exsanguinate ({X}{B}{B}, "each opponent loses X life, you gain
+    # life equal") e' um mana sink puro e um finalizador em potencial -
+    # achado real 2026-08-27 (usuario perguntou direto, apos o mesmo
+    # erro ja corrigido no Emeritus of Woe): AINDA paga o custo real
+    # (nao e' free-cast), entao X = mana sobrando menos o {B}{B} fixo.
+    # So' conjura se X>0 (sem custo de oportunidade em gastar mana que
+    # sobraria sem uso mesmo, mesma logica greedy usada no resto do
+    # motor). Chamado nas mesmas 2 janelas do Emeritus of Woe.
+    if not state.stensian_prepared:
+        return
+    if color_sources(state, "B") < 1 or remaining_mana(state) < 2:
+        return
+    x = remaining_mana(state) - 2
+    if x <= 0:
+        return
+    state.mana_spent_this_turn += 2 + x
+    lose_life_opponent(state, x, log, source="exsanguinate")
+    gain_life(state, x, log, source="exsanguinate")
+    state.exsanguinate_casts += 1
+    state.exsanguinate_x_total += x
+    state.stensian_prepared = False
+    log.append({"trigger": "exsanguinate_prepared", "x": x, "turn": state.turn})
+
 def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.turn = turn
     state.land_played = False
@@ -1170,6 +1226,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     sac_loop(state, log)
     cast_available_spells(state, log)  # mana extra de altares/Treasures do sac_loop, ver docstring de cast_available_spells
     try_emeritus_prepared_tutor(state, log)
+    try_stensian_prepared_exsanguinate(state, log)
     welcoming_vampire_check(state, log)
     combat_step(state, log)
     do_end_step(state, log)
@@ -1242,6 +1299,8 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "token_doubler_events": state.token_doubler_events,
         "tutors_used_total": state.tutors_used_total,
         "emeritus_of_woe_tutors": state.emeritus_of_woe_tutors,
+        "exsanguinate_casts": state.exsanguinate_casts,
+        "exsanguinate_x_total": state.exsanguinate_x_total,
     }
 
 def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base=6000000):
@@ -1283,6 +1342,8 @@ def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base
     print(f"Avg eventos de dobra de token (Anointed Procession/Mondrak): {sum(r['token_doubler_events'] for r in results)/n:.2f}")
     print(f"Avg tutores usados no total (Vampiric Tutor/Diabolic Intent/Emeritus of Woe): {sum(r['tutors_used_total'] for r in results)/n:.2f}")
     print(f"Avg tutores via Emeritus of Woe (Demonic Tutor prepared): {sum(r['emeritus_of_woe_tutors'] for r in results)/n:.2f}")
+    print(f"Avg Exsanguinate conjurados (Stensian Sanguinist prepared): {sum(r['exsanguinate_casts'] for r in results)/n:.2f}")
+    print(f"Avg X total do Exsanguinate (drain/gain): {sum(r['exsanguinate_x_total'] for r in results)/n:.2f}")
     print()
     print(f"--- Combo Exquisite Blood/Bloodthirsty Conqueror + Vito, Thorn of the Dusk Rose ---")
     print(f"Partidas em que o combo montou E ligou: {100*len(combo_turns)/n:.1f}%")
