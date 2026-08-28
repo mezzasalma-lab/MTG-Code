@@ -638,6 +638,54 @@ Correção #5 (14,39 / 0,69 / 32,9%). RECURSION novo: avg 0,21/partida
 
 ---
 
+### Correção #7 — Bala Ged Recovery: MDFC verdadeiro, lado Sorcery nunca conjurado
+
+**Gatilho (usuário):** depois do achado de Ojer Taq/Legion's Landing no
+Edgar Markov (jogadas ilegalmente como land, layout "transform"), o usuário
+pediu pra conferir todas as cartas modais/multi-face dos decks trabalhados
+e registrar a regra de verificar o `layout` real (Scryfall) antes de
+assumir qual face é jogável.
+
+**Conferido:** Beorn tem 2 cartas multi-face — `Beorn, Reluctant Host //
+Till and Tend` (layout `adventure`, confirmado) e `Bala Ged Recovery //
+Bala Ged Sanctuary` (layout `modal_dfc`, confirmado). Ao contrário do Edgar
+Markov, nenhuma das duas era um caso de ação ilegal: Adventure sempre
+permite conjurar a criatura direto da mão (o modo "Till and Tend" primeiro
+é só uma opção mais barata, não obrigatória), e MDFC verdadeiro permite
+escolher livremente qual face jogar. Jogar Bala Ged Recovery sempre como o
+lado Land (Sanctuary) é uma escolha **legítima**, não uma lacuna de regras.
+
+**Mas era uma lacuna de valor real:** a frente (`{2}{G}`, *"Return target
+card from your graveyard to your hand"*) nunca era sequer considerada — um
+efeito de recursão real ficava permanentemente desligado. Implementado
+(`try_bala_ged_recovery`, chamada antes do land-drop): só abre mão do land
+se o cemitério tiver uma carta de MV≥3 pra recuperar (senão o land continua
+sendo melhor).
+
+**Resultado (n=2000, seed_base=6000000, antes → depois):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| RECURSION | 0,21 (Eternal Witness + Lumra) | 0,31 |
+| Avg terrenos jogados | 6,54 | 6,50 |
+| % finisher até T8 | 32,9% | 32,4% |
+
+Trade-off pequeno e esperado — às vezes vale mais recuperar uma carta boa
+do cemitério do que jogar mais um terreno, e isso custa uma fração de
+consistência de mana/finisher.
+
+**`Beorn, Reluctant Host // Till and Tend`:** mantido como está (sempre
+conjurada como a criatura 5-mana direto) — decisão de escopo legítima já
+documentada anteriormente, não uma ação ilegal (Adventure não obriga o modo
+barato primeiro).
+
+**Robustez:** sweep de 20.000 jogos (seeds 3000000–3019999, timeout
+2s/jogo) — 0 erros, 0 timeouts.
+
+`lista.md` não mudou.
+
+---
+
 <!-- Para novas partidas avulsas, use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

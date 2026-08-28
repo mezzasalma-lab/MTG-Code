@@ -419,6 +419,13 @@ class GameState:
     nykthos_used_this_turn: bool = False
     nykthos_activations: int = 0
 
+    # Bala Ged Recovery // Bala Ged Sanctuary: MDFC verdadeiro (layout real
+    # "modal_dfc", achado real 2026-08-28, regra nova de conferir layout de
+    # cartas multi-face). Rastreia se o lado Sorcery (recursao) foi
+    # conjurado - nesse caso nunca mais e' jogavel como land no resto do jogo.
+    bala_ged_recovery_cast: bool = False
+    bala_ged_recovery_returned: Optional[str] = None
+
     # Natural Order / Lumra / Titania's Command / Archdruid's Charm / Eternal Witness /
     # Springleaf Parade - contadores de uso pra reportar no batch summary.
     natural_order_cast: bool = False
@@ -707,6 +714,35 @@ def choose_land_to_play(state: GameState) -> Optional[str]:
         if p in lands:
             return p
     return lands[0]
+
+def try_bala_ged_recovery(state: GameState, log: List[Dict]):
+    # Bala Ged Recovery // Bala Ged Sanctuary e' um MDFC verdadeiro (layout
+    # real "modal_dfc", confirmado via API do Scryfall - achado real
+    # 2026-08-28, regra nova de conferir layout de toda carta multi-face
+    # antes de assumir qual face e' jogavel). Jogar sempre como o verso
+    # (Bala Ged Sanctuary, land) e' uma escolha LEGITIMA (nao e' ilegal,
+    # diferente do achado no Edgar Markov com cartas "transform"), mas a
+    # frente ({2}{G}, "Return target card from your graveyard to your
+    # hand") e' um efeito de recursao real que nunca era sequer
+    # considerado. So vale abrir mao do land drop se o cemiterio tiver uma
+    # carta de MV alto o bastante pra compensar.
+    name = "Bala Ged Recovery // Bala Ged Sanctuary"
+    if name not in state.hand or state.bala_ged_recovery_cast:
+        return
+    if not state.graveyard:
+        return
+    best = max(state.graveyard, key=lambda c: C(c).mv)
+    if C(best).mv < 3:
+        return
+    if remaining_mana(state) < 3 or green_sources(state) < 1:
+        return
+    state.hand.remove(name)
+    state.bala_ged_recovery_cast = True
+    state.mana_spent_this_turn += 3
+    state.graveyard.remove(best)
+    state.hand.append(best)
+    state.bala_ged_recovery_returned = best
+    log.append({"action": "bala_ged_recovery_cast", "returned": best, "turn": state.turn})
 
 def play_land(state: GameState, log: List[Dict]):
     card = choose_land_to_play(state)
@@ -1316,6 +1352,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     # comeca (CR 103.8a) so vale em jogos de 2 jogadores. Aqui sempre compra, mesmo no T1.
     state.draw(1, source="normal")
 
+    try_bala_ged_recovery(state, log)
     play_land(state, log)
     main_phase(state, log)
     combat_step(state, log)
@@ -1415,6 +1452,7 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "archdruids_charm_mode": state.archdruids_charm_mode,
         "eternal_witness_returned": state.eternal_witness_returned,
         "springleaf_parade_cast": state.springleaf_parade_cast,
+        "bala_ged_recovery_cast": state.bala_ged_recovery_cast,
     }
 
 def run_batch(n=500, turns=8, out_jsonl="beorn_v1_runs.jsonl", seed_base=91000):
@@ -1549,9 +1587,10 @@ def run_batch(n=500, turns=8, out_jsonl="beorn_v1_runs.jsonl", seed_base=91000):
     print(f"INTERACTION: avg remocao conjurada (Beast Within, Song of the Dryads, Ezuri's Predation, "
           f"Haywire Mite - Archdruid's Charm excluida, nunca remove de verdade nesse motor, so tutora): "
           f"{avg('removal_cast'):.2f}")
-    recursion_vals = [(1 if r["eternal_witness_returned"] else 0) + r["lumra_lands_returned_total"] for r in results]
+    recursion_vals = [(1 if r["eternal_witness_returned"] else 0) + r["lumra_lands_returned_total"]
+                       + (1 if r["bala_ged_recovery_cast"] else 0) for r in results]
     print(f"RECURSION: avg cartas recuperadas do cemiterio (Eternal Witness -> mao + Lumra -> campo, "
-          f"terrenos): {statistics.mean(recursion_vals):.2f}")
+          f"terrenos + Bala Ged Recovery -> mao): {statistics.mean(recursion_vals):.2f}")
     print(f"FINISHER/LETHALITY: avg finishers resolvidos {avg('finishers_resolved'):.2f}, "
           f"{100*len(fin_turns)/n:.1f}% dos jogos com finisher ate T8"
           + (f", turno medio {statistics.mean(fin_turns):.2f}" if fin_turns else "") + ".")
