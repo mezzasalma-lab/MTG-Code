@@ -729,6 +729,50 @@ desligado.
 
 ---
 
+## Correção #14 — Bloodletter of Aclazotz não dobrava o drain do Vito Thorn/Enduring Tenacity
+
+**Gatilho (usuário):** *"NO Markov vc considerou que se o bloodletter
+estiver em campo o dano que eu causo é dobrado?"*
+
+Bloodletter of Aclazotz ("If an opponent would lose life during your turn,
+they lose twice that much life instead") já estava implementado como
+multiplicador universal dentro de `lose_life_opponent()` — mas achei um
+buraco real ao conferir: `gain_life()` (que implementa Vito, Thorn of the
+Dusk Rose / Enduring Tenacity — "whenever you gain life, target opponent
+loses that much life") escrevia **direto** em `state.drain_total`, sem
+passar por `lose_life_opponent()`. Ou seja: o drain do Vito Thorn/Enduring
+Tenacity nunca era dobrado pelo Bloodletter, mesmo sendo exatamente
+"oponente perde vida no seu turno" — a mesma condição que já dobrava
+Purphoros/Sanctum Seeker/Exsanguinate/os death payoffs.
+
+**Corrigido:** o loop de `gain_life()` agora chama `lose_life_opponent()`
+de verdade em vez de somar direto. Verificado que isso não introduz
+recursão infinita — `lose_life_opponent()` nunca chama `gain_life()` de
+volta (o bônus do Bloodthirsty Conqueror é somado direto em
+`lifegain_total`, mesmo padrão "1 hop só" já documentado), então o
+`_check_combo()` continua sendo o único ponto que trata o caso realmente
+infinito (Exquisite Blood/Bloodthirsty Conqueror + Vito Thorn/Enduring
+Tenacity juntos).
+
+**Resultado (n=2000, seed_base=6000000, antes → depois):**
+
+| Métrica | Antes (Correção #13) | Depois (Correção #14) |
+|---|---|---|
+| Avg drain_total | 4,82 | 4,86 |
+| Dano agregado fora do combo | 5,91 | 5,94 |
+| Combo monta e liga | 1,6% | 1,6% (sem mudança — a detecção do combo não depende do valor exato) |
+
+Impacto pequeno (Bloodletter e Vito Thorn/Enduring Tenacity são cada um 1
+carta em 99 — a sobreposição das duas em campo no mesmo jogo é rara), mas
+real e correto.
+
+**Robustez:** sweep de 20.000 jogos (seeds 4000000–4019999, timeout
+2s/jogo) — 0 erros, 0 timeouts.
+
+`lista.md` não mudou.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

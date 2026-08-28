@@ -1166,10 +1166,23 @@ def gain_life(state: GameState, amt: int, log: List[Dict], source: str = ""):
         # ausente. Se as DUAS estiverem em campo, cada uma dispara
         # separadamente (2 fontes independentes do mesmo efeito, regra
         # real de Magic).
+        # Achado real 2026-08-28 (usuario perguntou direto: "considerou
+        # que se o Bloodletter estiver em campo o dano que eu causo e'
+        # dobrado?"): este loop escrevia direto em state.drain_total, SEM
+        # passar por lose_life_opponent() - que e' onde o dobro do
+        # Bloodletter of Aclazotz ("if an opponent would lose life during
+        # your turn, they lose twice that much") esta implementado. O
+        # drain do Vito Thorn/Enduring Tenacity E' "oponente perde vida no
+        # seu turno" - deveria ser dobrado igual a Purphoros/Sanctum
+        # Seeker/Exsanguinate/etc, mas nunca era. Corrigido: chama
+        # lose_life_opponent() de verdade, que tambem ja cuida do
+        # Bloodthirsty Conqueror ("opponent loses life -> you gain that
+        # much") e do _check_combo() sem recursao (lose_life_opponent
+        # nunca chama gain_life() de volta, so escreve direto em
+        # lifegain_total - ver comentario la, "1 hop so").
         for src in GAIN_LIFE_DRAIN_SOURCES:
             if state.has(src):
-                state.drain_total += amt
-                log.append({"trigger": "gain_to_drain", "amt": amt, "enabler": src, "source": source, "turn": state.turn})
+                lose_life_opponent(state, amt, log, source=f"gain_to_drain_{src}")
     _check_combo(state, log)
 
 def lose_life_opponent(state: GameState, amt: int, log: List[Dict], source: str = ""):
