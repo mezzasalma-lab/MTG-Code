@@ -127,6 +127,70 @@ Resultados salvos em `maralen_v1_runs.jsonl` (sobrescrito com os 3000 jogos novo
 
 ---
 
+## Correção — checklist obrigatória de mecânica (regra nova pós-Beorn) — 2026-08-28
+
+**Gatilho (usuário):** depois de eu entregar o Beorn sem despacho de landfall
+nenhum, o usuário pediu auditoria da checklist nova (landfall, mana dorks,
+mana rocks, fixing lands, draw engines, ramp engines, ativadas repetíveis,
+combos) em **todos** os decks. Landfall (Simulação #2 acima) já estava
+correto; os bugs achados nesta rodada foram outros:
+
+- **Devoted Druid**: oráculo real é "Put a -1/-1 counter on this creature:
+  Untap this creature" — sem restrição de quantidade, MAS ela é 0/2 e morre
+  na regra de estado depois do 2º contador. O código dava **+3 ativações
+  extras todo turno, pra sempre**, e nunca a removia do campo — superprodução
+  indefinida. Corrigido: no máximo 2 ativações NA VIDA INTEIRA (usadas de
+  uma vez no primeiro turno em que fica pronta), depois ela morre de
+  verdade e some do campo pro resto do jogo.
+- **Marwyn, the Nurturer**: base inicializada como 2/2 (`marwyn_power = 2`)
+  quando o oráculo real é 1/1. Também nunca refletia o anthem do Elvish
+  Archdruid ("other Elf creatures you control get +1/+1", dinâmico —
+  desaparece se o Archdruid sair de campo, corrigido via
+  `marwyn_effective_power()` em vez de somar direto no contador
+  permanente).
+- **Green Sun's Zenith**: pool de busca filtrava por tag "elf" em vez do
+  texto real ("search for a green creature card") — excluía injustamente
+  Birds of Paradise, Wirewood Symbiote, Realmwalker e Radagast of Rhosgobel
+  (verdes, não-Elfo). Nova tabela `GREEN_CREATURE_NAMES` (28 criaturas
+  verdes reais na lista, cor via Scryfall).
+- **Kindred Discovery**: 100% ausente — tag existia, nenhum gatilho real.
+  Oráculo: "Whenever a creature you control of the chosen type enters or
+  attacks, draw a card" (tipo escolhido: Elfo, mesma convenção da Roaming
+  Throne). Implementadas as duas metades: ETB (hook em `enter_battlefield`/
+  `create_token`) e "attacks" (novo `combat_step` real — o arquivo não
+  tinha NENHUM modelo de combate antes, "sem oponente real, nenhum gatilho
+  de combate real no deck"; implementado com a mesma premissa já usada
+  noutros decks desta sessão: toda criatura pronta ataca desimpedida).
+- **Bojuka Bog / Path of Ancestry / Zagoth Triome**: tag `etb_tapped`
+  existia, nunca era lida — produziam mana no próprio turno em que
+  entravam apesar do "enters tapped" real. Nova infraestrutura
+  `tapped_lands_this_turn` (mesmo padrão de outros decks desta sessão).
+
+**Resultado (n=2000, seed_base=5000000, antes → depois):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg gatilhos de Maralen (exila 2) | 7,20 | **8,20** |
+| Avg cartas exiladas total | 14,01 | **15,38** |
+| Avg tutores usados | 0,65 | **0,73** |
+| Avg tokens criados | 3,82 | **4,42** |
+| Avg dobras via Roaming Throne | 0,33 | **0,45** |
+| Combo Umbral Mantle montado | 7,0% | **9,2%** |
+| Avg cartas compradas extra (draw) | 0,39 | **2,84** |
+
+Salto grande em cartas compradas (0,39→2,84) — quase inteiro vindo do
+Kindred Discovery, que antes contribuía zero. O resto sobe moderadamente
+(GSZ com pool maior, Marwyn com poder correto alimentando mais mana pro
+combo do Umbral Mantle). Devoted Druid puxa levemente pra baixo (menos mana
+de longo prazo), mas os ganhos líquidos superam.
+
+**Robustez:** sweep de 20.000 jogos (seeds 5000000–5019999, timeout 2s/jogo)
+— 0 erros, 0 timeouts.
+
+`lista.md` não mudou. `maralen_v1_runs.jsonl` sobrescrito.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

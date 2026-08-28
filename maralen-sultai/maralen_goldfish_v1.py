@@ -240,6 +240,24 @@ def is_elf(name: str) -> bool:
 def is_faerie(name: str) -> bool:
     return "faerie" in CARD_DB[name].tags
 
+# Criaturas verdes reais na decklist (color, Scryfall) - usado por Green
+# Sun's Zenith ("search for a green creature card"). Achado real
+# 2026-08-28 (auditoria de checklist): o pool anterior filtrava por tag
+# "elf" em vez de cor real, excluindo Birds of Paradise/Wirewood Symbiote/
+# Realmwalker/Radagast of Rhosgobel (verdes, nao-Elfo).
+GREEN_CREATURE_NAMES = {
+    "Radagast of Rhosgobel", "Elves of Deep Shadow", "Birds of Paradise", "Bloom Tender",
+    "Elvish Mystic", "Llanowar Elves", "Joraga Treespeaker", "Heritage Druid", "Birchlore Rangers",
+    "Priest of Titania", "Elvish Archdruid", "Marwyn, the Nurturer", "Circle of Dreams Druid",
+    "Devoted Druid", "Elvish Harbinger", "Wirewood Symbiote", "Allosaurus Shepherd",
+    "Elvish Warmaster", "Imperious Perfect", "Fauna Shaman", "Formidable Speaker", "Realmwalker",
+    "Ezuri, Renegade Leader", "Thranduil, Sindarin Liege // Silvan Rally", "Thranduil's Company",
+    "Scryb Ranger", "Seedborn Muse", "Murkfiend Liege",
+}
+
+def is_green_creature(name: str) -> bool:
+    return name in GREEN_CREATURE_NAMES
+
 
 def is_roaming_type(name: str) -> bool:
     return ROAMING_THRONE_TYPE in CARD_DB[name].tags
@@ -263,9 +281,11 @@ class GameState:
     lands_played_total: int = 0
     mana_spent_this_turn: int = 0
     maralen_free_cast_used_this_turn: bool = False
-    devoted_druid_extra_untaps: int = 0
+    devoted_druid_extra_untaps: int = 0  # so' vale no turno em que foi setado (ver devoted_druid_pump)
+    tapped_lands_this_turn: set = field(default_factory=set)  # Bojuka Bog/Path of Ancestry/Zagoth Triome ("enters tapped"), resetado em play_turn()
+    devoted_druid_counters: int = 0  # -1/-1 counters permanentes, morre ao chegar em 2 (toughness real = 2)
     joraga_level: int = 0
-    marwyn_power: int = 2  # base 2/2
+    marwyn_power: int = 1  # base 1/1 (achado real 2026-08-28: oraculo real e' 1/1, nao 2/2 - contadores permanentes somados aqui a partir da base certa)
     fauna_shaman_used_this_turn: bool = False
     heritage_used_this_turn: bool = False
     birchlore_used_this_turn: bool = False
@@ -372,6 +392,17 @@ def ready_creatures(state: GameState):
             and (state.creature_cast_turn.get(n, -1) < state.turn)]
 
 
+def marwyn_effective_power(state: GameState) -> int:
+    """marwyn_power guarda so' os +1/+1 counters PERMANENTES (um por Elfo
+    que entra, oraculo real). Elvish Archdruid da' +1/+1 a "other Elf
+    creatures you control" - e' uma estatica DINAMICA (some se o Archdruid
+    sair de campo), entao nao pode ser somada direto em marwyn_power (que
+    representa contadores de verdade). Achado real 2026-08-28 (auditoria
+    de checklist): esse bonus nunca era aplicado, subestimando a mana da
+    Marwyn sempre que o Archdruid tambem estava em campo."""
+    bonus = 1 if ("Elvish Archdruid" in state.battlefield and "Marwyn, the Nurturer" in state.battlefield) else 0
+    return state.marwyn_power + bonus
+
 def dork_mana(state: GameState) -> int:
     elves_in_play = sum(1 for n in state.battlefield if is_elf(n)) + state.elf_tokens
     creatures_in_play = (sum(1 for n in state.battlefield if is_creature_card(n))
@@ -404,7 +435,7 @@ def dork_mana(state: GameState) -> int:
             if out > best_scaling_output:
                 best_scaling_output, best_scaling_name = out, n
         elif "dork_marwyn" in tags:
-            out = state.marwyn_power
+            out = marwyn_effective_power(state)
             total += out
             if out > best_scaling_output:
                 best_scaling_output, best_scaling_name = out, n
@@ -414,7 +445,7 @@ def dork_mana(state: GameState) -> int:
             if out > best_scaling_output:
                 best_scaling_output, best_scaling_name = out, n
         elif "dork_devoted" in tags:
-            total += 1 + min(3, state.devoted_druid_extra_untaps)
+            total += 1 + min(2, state.devoted_druid_extra_untaps)
 
     # Heritage Druid / Birchlore Rangers: convertem elfos "sick" (que ainda nao
     # contribuiriam nada) em mana extra, tapando-os como custo (CR 302.6 nao
@@ -460,7 +491,7 @@ def rocks_mana(state: GameState) -> int:
 
 
 def total_mana(state: GameState) -> int:
-    lands = sum(1 for n in state.battlefield if n in LAND_NAMES)
+    lands = sum(1 for n in state.battlefield if n in LAND_NAMES) - len(state.tapped_lands_this_turn)
     if state.infinite_mana_this_turn:
         return 999  # ja confirmado infinito neste turno; nao precisa somar o resto
     return lands + rocks_mana(state) + dork_mana(state)
@@ -561,6 +592,8 @@ def create_token(state: GameState, kind: str, source: str = ""):
     state.tokens_created_total += 1
     if kind == "elf" and "Marwyn, the Nurturer" in state.battlefield:
         state.marwyn_power += 1
+    if kind == "elf" and "Kindred Discovery" in state.battlefield:
+        draw_cards(state, 1)
     maralen_trigger_token(state, kind)
     if kind == "elf" and "Elvish Warmaster" in state.battlefield and not state.warmaster_used_this_turn:
         state.warmaster_used_this_turn = True
@@ -594,6 +627,15 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
         pass
     if is_elf(name) and "Marwyn, the Nurturer" in state.battlefield and name != "Marwyn, the Nurturer":
         state.marwyn_power += 1
+    if is_elf(name) and "Kindred Discovery" in state.battlefield:
+        # Achado real 2026-08-28 (auditoria de checklist de mecanica):
+        # "As this enchantment enters, choose a creature type. Whenever a
+        # creature you control of the chosen type enters or attacks, draw
+        # a card." Tipo escolhido: Elfo (tema tribal central do deck, mesma
+        # convencao ja usada pro Roaming Throne). Tag existia, nunca era
+        # despachada - metade ETB implementada aqui, metade "attacks" em
+        # combat_step().
+        draw_cards(state, 1)
     resolve_etb(state, name)
     elvish_warmaster_check(state, name)
     maralen_trigger(state, name)
@@ -631,7 +673,7 @@ def cast_green_sun_zenith(state: GameState):
     budget = remaining_mana(state) - 1  # {G} fixo + {X}
     if budget < 0:
         return False
-    pool = [n for n in state.library if is_creature_card(n) and "elf" in CARD_DB[n].tags
+    pool = [n for n in state.library if is_creature_card(n) and is_green_creature(n)
             and CARD_DB[n].mv <= (999 if state.infinite_mana_this_turn else budget)]
     if not pool:
         return False
@@ -709,6 +751,12 @@ def play_land(state: GameState):
         state.battlefield.append(choice)
         state.lands_played_this_turn += 1
         state.lands_played_total += 1
+        if "etb_tapped" in CARD_DB[choice].tags:
+            # Achado real 2026-08-28 (auditoria de checklist): Bojuka Bog/
+            # Path of Ancestry/Zagoth Triome tinham a tag mas ela nunca era
+            # lida em lugar nenhum - produziam mana no proprio turno em que
+            # entravam, apesar do "enters tapped" real.
+            state.tapped_lands_this_turn.add(choice)
         landfall_trigger(state)
 
 
@@ -727,7 +775,7 @@ def equip_umbral_mantle(state: GameState):
         if "dork_per_elf" in tags or "dork_per_elf_controlled" in tags:
             return elves_in_play
         if "dork_marwyn" in tags:
-            return state.marwyn_power
+            return marwyn_effective_power(state)
         if "dork_per_creature" in tags:
             return creatures_in_play
         return 0
@@ -746,11 +794,29 @@ def joraga_level_up(state: GameState):
 
 
 def devoted_druid_pump(state: GameState):
+    """Achado real 2026-08-28 (auditoria de checklist de mecanica): oraculo
+    real e' 'Put a -1/-1 counter on this creature: Untap this creature'
+    (SEM restricao de quantas vezes) - mas ela e' 0/2, entao morre (regra
+    de estado, toughness 0) depois do 2o contador. A versao anterior dava
+    +3 ativacoes extras TODO turno pra sempre, sem nunca remover a criatura
+    do campo - superproducao indefinida. Corrigido: maximo 2 ativacoes na
+    vida inteira (contadores permanentes em devoted_druid_counters), usadas
+    de uma vez no primeiro turno em que fica pronta (premissa: maximiza
+    mana imediata, mesma filosofia agressiva ja usada no resto do motor),
+    depois ela morre e some do campo pro resto do jogo."""
     if "Devoted Druid" not in state.battlefield:
+        state.devoted_druid_extra_untaps = 0
+        return
+    if state.devoted_druid_counters >= 2:
+        state.battlefield.remove("Devoted Druid")
+        state.devoted_druid_extra_untaps = 0
         return
     if "Devoted Druid" not in ready_creatures(state):
+        state.devoted_druid_extra_untaps = 0
         return
-    state.devoted_druid_extra_untaps = min(3, state.devoted_druid_extra_untaps + 3)
+    extra = 2 - state.devoted_druid_counters
+    state.devoted_druid_extra_untaps = extra
+    state.devoted_druid_counters += extra
 
 
 def use_staff_of_domination_v2(state: GameState):
@@ -810,7 +876,17 @@ def main_phase(state: GameState):
 
 
 def combat_step(state: GameState):
-    pass  # sem oponente real — nenhum gatilho de combate real no deck
+    # Kindred Discovery: "...or attacks, draw a card." Unico gatilho de
+    # ataque real no deck (achado 2026-08-28) - modelado com a mesma
+    # premissa ja usada noutros decks desta sessao pra combate sem
+    # oponente real: toda criatura pronta (sem summoning sickness) ataca
+    # desimpedida. So' Elfos contam (tipo escolhido).
+    if "Kindred Discovery" in state.battlefield:
+        attacking_elves = [n for n in ready_creatures(state) if is_elf(n)]
+        # elf_tokens e' um contador agregado (sem nome/turno individual por
+        # token) - tratados como sempre prontos, mesma aproximacao ja usada
+        # noutros pontos deste arquivo pra pools de token compartilhados.
+        draw_cards(state, len(attacking_elves) + state.elf_tokens)
 
 
 def end_step(state: GameState):
@@ -898,6 +974,7 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.turn += 1
     state.lands_played_this_turn = 0
     state.mana_spent_this_turn = 0
+    state.tapped_lands_this_turn = set()
     state.maralen_free_cast_used_this_turn = False
     state.exile_maralen = []
     state.fauna_shaman_used_this_turn = False
