@@ -309,6 +309,24 @@ adventures, prepared, etc, para TODOS OS DECKS."*
   carta com "//" no nome em qualquer decklist precisa passar por essa
   verificação antes de ser considerada auditada.
 
+**4º reforço (2026-08-28) — planeswalkers:** depois de eu confirmar que o
+Prismatic Bridge (17 planeswalkers na lista) só rastreava SE a Bridge
+acertava um planeswalker, nunca o que ele fazia depois de entrar em campo
+(nenhuma lealdade, nenhuma ativação, nenhum efeito) — citação literal do
+usuário: *"Preciso que os counters de lealdade e ativações de planeswalker
+sejam sempre contabilizados, a base do Prismatic Bridge é essa! Adicione
+essa regra para tudo, sempre também!"*
+
+- Nova categoria 12 na checklist (`goldfish-sim-card-rules.md`): todo
+  planeswalker em qualquer deck do repositório precisa de lealdade
+  rastreada de verdade, uma decisão real de qual habilidade ativar a cada
+  turno, e o efeito de cada habilidade implementado — não só a tag
+  decorativa `"planeswalker"`.
+- Vale retroativamente pra qualquer deck já auditado que tenha
+  planeswalker e ainda não modele isso (Edgar Markov tem Sorin/Elspeth
+  deferidos por essa mesma razão — precisa ser revisitado) e pra todo deck
+  futuro desde a auditoria inicial.
+
 ---
 
 <!-- Adicionar novas regras permanentes abaixo conforme o usuário as

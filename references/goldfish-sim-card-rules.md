@@ -260,6 +260,29 @@ QUALQUER simulador, novo ou já existente. Generalizando: antes de considerar
     API, que essa é de fato uma face jogável da mão** — isso pode estar
     simulando uma ação ilegal do jogo inteiro, não só uma simplificação.
 
+12. **Counters de lealdade e ativações de planeswalker** — citação literal
+    do usuário (2026-08-28), depois de eu confirmar que o Prismatic Bridge
+    não modelava NENHUMA habilidade individual dos 17 planeswalkers da
+    lista, só rastreava se a Bridge acertou um: *"Preciso que os counters
+    de lealdade e ativações de planeswalker sejam sempre contabilizados, a
+    base do Prismatic Bridge é essa! Adicione essa regra para tudo, sempre
+    também!"* Todo planeswalker em qualquer decklist precisa de:
+    - Um campo de lealdade rastreado de verdade (`state.loyalty[nome]`),
+      com a lealdade inicial real (Scryfall) e cada ativação alterando o
+      valor de verdade — não um contador decorativo.
+    - Uma decisão real de qual habilidade ativar a cada turno em que o
+      planeswalker está em campo (respeitando "só uma ativação por turno,
+      velocidade de feitiço" — CR 606.3), com heurística documentada (ex:
+      prioriza ultimate quando alcançável, senão a habilidade de maior
+      valor sem arriscar morrer à toa).
+    - O efeito de cada habilidade implementado de verdade (draw, remoção
+      proxy, wipe proxy, mana, contadores, tokens — a mesma convenção já
+      usada no resto do simulador pra efeitos sem alvo real de oponente),
+      não só a tag `"planeswalker"` decorativa.
+    - Morte do planeswalker (lealdade chega a 0, ou removido por remoção do
+      oponente se esse simulador já rastreia isso) rastreada e refletida no
+      board.
+
 **Prática obrigatória:** antes de declarar QUALQUER simulador (novo ou já
 existente, numa auditoria de revisão) completo, rodar essa checklist e citar
 explicitamente, por categoria, quantas cartas da decklist se qualificam e se
