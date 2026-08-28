@@ -331,6 +331,56 @@ Salto real e bem maior que qualquer rodada anterior deste deck (fora a Correçã
 
 ---
 
+## Correção #7 — tokens viviam fora do battlefield (achado arquitetural) + terrenos/Class/modal reconferidos (usuário: "terrenos, geradores de tesouro e tokens, etc?")
+
+Usuário: *"Todas as cartas auditadas e contabilizadas de forma correta no simulador? terrenos, geradores de tesouro e tokens, etc?"*
+
+Reconferindo tokens especificamente, achei um bug arquitetural maior que qualquer achado pontual das rodadas anteriores.
+
+### Achado central: tokens nunca entravam em `state.battlefield`
+
+Todo token deste deck (Vampire Token da Eminence, Snake Token do Ophiomancer, Human Soldier Token do Bastion of Remembrance, Vampire Demon Token do Vito Fanatic) só era adicionado a `state.tokens` — um pool separado, usado só como munição de sacrifício pelo `sac_loop`. Nunca ia pra `state.battlefield`, a lista que `is_vampire()`/`is_creature()`/toda contagem de "quantos Vampiros você controla" de fato lê. Confirmado ao vivo:
+
+```python
+state.battlefield = ['Edgar Markov']
+state.tokens = ['Vampire Token', 'Vampire Token', 'Vampire Token']
+sum(1 for c in state.battlefield if is_vampire(c))  # => 1, deveria ser 4
+```
+
+Isso significava que **Champion of Dusk** ("draw X cards where X = Vampires you control") e o gatilho de ataque do **Sanctum Seeker** ("whenever A Vampire you control attacks") nunca contavam os tokens da própria Eminence — o motor mais central do deck estava invisível pra si mesmo. Corrigido: todo token agora entra em `state.battlefield` também (novas entradas em `CARD_DB` — sem isso, `is_vampire()`/`is_creature()` dariam `KeyError`, os nomes não existiam na base). Todo ponto que faz `state.tokens.pop()` agora também remove a MESMA instância de `state.battlefield`. Verificado com invariante ao vivo: 3000 jogos × 8 turnos, 0 divergências entre as duas listas.
+
+De quebra, isso destampou outro bug: **Sanctum Seeker disparava só 1x por combate** (flat), quando o oráculo real é "whenever A Vampire you control attacks" — um gatilho POR vampiro atacante, igual o próprio contador de ataque do Edgar (que já escalava com `vamps_in_play`, mas via a contagem incompleta). Corrigido pra escalar com `vamps_in_play` também — maior salto desta rodada (0,17 → 0,97, quase 6x).
+
+### Outros achados reais (terrenos, Class, modal)
+
+1. **Cabal Coffers tinha mana de graça inventada.** O oráculo real não tem NENHUM `{T}: Add` — a única habilidade é `{2}, {T}: Add B for each Swamp you control`. O código antigo dava +1 (terreno normal) MAIS o bônus de Swamps, sem nunca pagar o `{2}`. Corrigido com `try_cabal_coffers()`, custo real, só ativa se `swamps > 2` (compensa o custo).
+2. **`swamp_count()` comparava substring do NOME** (`"Swamp" in c`) — perdia Blood Crypt e Godless Shrine, que têm o TIPO Swamp de verdade mas não têm "Swamp" no nome. Corrigido com `SWAMP_TYPED_LANDS`.
+3. **Minas Tirith** ("enters tapped unless you control a legendary creature") nunca checava isso — agora integrado ao `tapped_lands_this_turn` já existente, com um novo `LEGENDARY_CREATURE_NAMES`.
+4. **Caretaker's Talent — a habilidade BASE do Class** ("whenever one or more tokens enter, draw a card, once per turn") estava lumped errado como "modal deferido" junto com os níveis 2/3 desde a Correção #1 — mas essa parte NÃO depende de nível nenhum, é ativa desde que a carta resolve. Implementada (níveis 2/3 continuam deferidos).
+5. **Black Market Connections — 100% ausente**, mesmo erro de "modal deferido". Como este simulador não rastreia vida própria real, um jogador greedy escolhe os 3 modos toda vez (Treasure + compra + token Shapeshifter 3/2 changeling) sem custo de verdade neste modelo. Implementado.
+
+Testado: 300+ jogos smoke test (0 erros, as 2 políticas), 25.000 jogos de robustez política default + 15.000 política `COMBO_HUNTING_POLICY=True` (0 erros/timeouts nas 2) + invariante de consistência tokens/battlefield em 3000 jogos completos (0 divergências).
+
+**Impacto real** (`n=2000`, política default, `seed_base=6000000`, comparado com o estado pós-Correção #6):
+
+| métrica | antes (Correção #6) | depois |
+|---|---|---|
+| Avg drains via Sanctum Seeker | 0,17 | **0,97 (5,7x)** |
+| Avg contadores +1/+1 (ataque do Edgar) | 6,27 | **8,75** |
+| Avg drain_total | 4,10 | **5,23** |
+| Avg lifegain_total | 2,71 | **3,54** |
+| Avg compras via Champion of Dusk | 0,28 | 0,37 |
+| Avg compras via Caretaker's Talent (novo) | 0,00 | 0,19 |
+| Avg Treasures via Black Market Connections (novo) | 0,00 | 0,44 |
+| Avg compras via Black Market Connections (novo) | 0,00 | 0,40 |
+| Avg tokens via Black Market Connections (novo) | 0,00 | 0,44 |
+
+Salto real e concentrado no achado central (Sanctum Seeker escalando de verdade) — o resto das correções desta rodada (Cabal Coffers, Minas Tirith, Caretaker's Talent, Black Market Connections) soma valor real mas menor, cada um limitado pela raridade de 1 carta em 99.
+
+`lista.md` não mudou.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

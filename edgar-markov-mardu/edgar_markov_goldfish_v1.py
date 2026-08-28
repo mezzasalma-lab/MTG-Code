@@ -80,11 +80,13 @@ Deferido/documentado (nao implementado, motivo real por carta):
     ("+1/+1 quando OUTRA criatura morre") em si E' rastreado agora
     (state.elenda_counters, so' por transparencia de dado).
   - Loyalty abilities de Elspeth Storm Slayer/Sorin, nivel 2/3 do
-    Caretaker's Talent, modo escolhido do Black Market Connections,
-    ativada do Mondrak (indestructible counter), Cavern of Souls
-    (escolha de tipo): nenhuma engine de "1 ativada por turno" ou
-    "escolha modal" existe neste simulador - mesma classe de
-    simplificacao ja usada nos outros decks desta sessao pra
+    Caretaker's Talent (a habilidade BASE do Class, que nao depende de
+    nivel nenhum, ESTA implementada - achado real 2026-08-27, revisao
+    da revisao: a Correcao #1 tinha lumped ela errado junto com o resto
+    do Class deferido), ativada do Mondrak (indestructible counter),
+    Cavern of Souls (escolha de tipo): nenhuma engine de "1 ativada por
+    turno" existe neste simulador - mesma classe de simplificacao ja
+    usada nos outros decks desta sessao pra
     planeswalkers/Classes.
   - Fetch lands (Arid Mesa/Bloodstained Mire/Marsh Flats): modeladas
     como duais estaticas de 2 cores (produces={cor1,cor2}), sem
@@ -371,6 +373,21 @@ add("Urza's Saga", 0, "Land", colors=set(), produces={"C"}, tags={"token_maker"}
 add("Voldaren Estate", 0, "Land", colors=set(), produces={"B", "C", "G", "R", "U", "W"}, tags={"draw", "token_maker"})
 add("Westvale Abbey // Ormendahl, Profane Prince", 0, "Land", colors={"B"}, produces={"C"}, tags={"token_maker"})
 
+# Achado real 2026-08-27 (usuario: "Todas as cartas auditadas... tokens
+# tb?"): TODOS os tokens deste deck viviam SO em state.tokens (pool
+# separado, usado so como municao de sacrificio) e NUNCA eram
+# adicionados a state.battlefield - ou seja, is_vampire()/is_creature()
+# nem CONSEGUIRIAM ler esses nomes (KeyError em CARD_DB, nao existiam
+# aqui) e qualquer contagem de "quantos Vampiros voce controla"
+# (Champion of Dusk, Sanctum Seeker) NUNCA via os tokens da Eminence.
+# Corrigido - tokens agora tem entrada real e sao adicionados aos DOIS
+# (battlefield E tokens quando servem de fodder de sacrificio).
+add("Vampire Token", 0, "Creature", colors={"B"}, produces=set(), tags={"vampire_type"})
+add("Human Soldier Token", 0, "Creature", colors={"W"}, produces=set(), tags=set())
+add("Snake Token", 0, "Creature", colors={"B"}, produces=set(), tags=set())
+add("Vampire Demon Token", 0, "Creature", colors={"W", "B"}, produces=set(), tags={"vampire_type"})
+add("Shapeshifter Token", 0, "Creature", colors=set(), produces=set(), tags={"vampire_type"})
+
 def C(name: str) -> Card:
     return CARD_DB[name]
 
@@ -403,6 +420,18 @@ def has_tag(card: str, tag: str) -> bool:
 # counter on Bartolome del Presidio") e' um outlet de sacrificio DE
 # GRACA (sem custo de mana, igual Viscera Seer/Goblin Bombardment) que
 # nunca tinha sido incluido aqui.
+# Achado real 2026-08-27 (auditoria de terrenos): Minas Tirith
+# ("enters tapped unless you control a legendary creature") nunca
+# checava isso - conjunto de criaturas lendarias reais deste deck (nao
+# inclui Ojer Taq, so' virar criatura via a face front que este
+# simulador nunca conjura - Land-primary - nem Purphoros, que so e'
+# criatura condicional a devocao, nao rastreada em lugar nenhum).
+LEGENDARY_CREATURE_NAMES = {
+    COMMANDER, "Bartolomé del Presidio", "Clavileño, First of the Blessed",
+    "Elenda, the Dusk Rose", "Mondrak, Glory Dominus",
+    "Vito, Fanatic of Aclazotz", "Vito, Thorn of the Dusk Rose",
+}
+
 SAC_OUTLETS = {"Ashnod's Altar", "Phyrexian Altar", "Viscera Seer", "Goblin Bombardment",
                "Bartolomé del Presidio", "Phyrexian Tower"}
 
@@ -488,6 +517,13 @@ CREATURE_POWER = {
     "Vindictive Vampire": 2, "Viscera Seer": 1, "Vito, Fanatic of Aclazotz": 4,
     "Vito, Thorn of the Dusk Rose": 1, "Welcoming Vampire": 2,
     "Zulaport Cutthroat": 1,
+    # Tokens - poder real de cada um (achado real 2026-08-27: o
+    # fallback generico `1 if "Token" in name else 3` dava poder 1 pra
+    # QUALQUER token, incluindo o Vampire Demon Token 4/3 do Vito
+    # Fanatic - qualificava errado pro gatilho do Welcoming Vampire,
+    # "power 2 or less").
+    "Vampire Token": 1, "Human Soldier Token": 1, "Snake Token": 1,
+    "Vampire Demon Token": 4, "Shapeshifter Token": 3,
 }
 
 # =========================================================
@@ -523,6 +559,19 @@ class GameState:
     champion_of_dusk_draws: int = 0
     welcoming_vampire_draws: int = 0
     welcoming_vampire_trigger_pending: int = 0
+    caretakers_talent_trigger_pending: int = 0
+    caretakers_talent_draws: int = 0
+
+    # Black Market Connections: achado real 2026-08-27 (auditoria do
+    # resto do deck) - "choose one or more" com 3 modos, cada um custa
+    # so vida (nao rastreada aqui) - um jogador greedy real escolhe os
+    # 3 toda vez, de graca neste modelo. 100% ausente antes (lumped
+    # errado em "modal deferido" junto com o Class do Caretaker's
+    # Talent - eram cartas diferentes, achado incorreto na Correcao #1
+    # nunca revisitado ate agora).
+    black_market_treasures: int = 0
+    black_market_draws: int = 0
+    black_market_tokens: int = 0
     sanctum_seeker_drains: int = 0
     vito_fanatic_stage_this_turn: int = 0
     vito_fanatic_demons_created: int = 0
@@ -622,18 +671,33 @@ class GameState:
 # MANA MODEL
 # =========================================================
 
+# Achado real 2026-08-27 (auditoria de terrenos): swamp_count() checava
+# `"Swamp" in c` (substring do NOME) - perde Blood Crypt e Godless
+# Shrine, que tem o TIPO Swamp de verdade (`Land — Swamp Mountain` /
+# `Land — Plains Swamp`) mas nao tem "Swamp" no proprio nome. Cabal
+# Coffers ("Add B for each Swamp you control") ficava subcontando.
+SWAMP_TYPED_LANDS = {"Swamp", "Blood Crypt", "Godless Shrine"}
+
 def swamp_count(state: GameState) -> int:
     if state.has("Urborg, Tomb of Yawgmoth"):
         return sum(1 for c in state.battlefield if is_land(c))
-    return sum(1 for c in state.battlefield if is_land(c) and "Swamp" in c)
+    return sum(1 for c in state.battlefield if c in SWAMP_TYPED_LANDS)
 
 def total_mana(state: GameState) -> int:
     total = 0
     for card in state.battlefield:
+        if card == "Cabal Coffers":
+            # Achado real 2026-08-27 (auditoria de terrenos): Cabal
+            # Coffers NAO tem "{T}: Add" nenhum - a UNICA habilidade
+            # dela e' "{2}, {T}: Add B for each Swamp you control".
+            # A versao anterior dava +1 (como terreno normal) MAIS o
+            # bonus de swamps, de GRACA, sem nunca pagar o {2} real.
+            # Corrigido - ver try_cabal_coffers(), chamada separada
+            # (custo condicional, so vale a pena com Swamps o
+            # suficiente pra compensar).
+            continue
         if is_land(card):
             total += 1
-            if card == "Cabal Coffers":
-                total += swamp_count(state)  # bonus alem da propria terra
         elif card == "Sol Ring":
             total += 2
         elif card in ("Ashnod's Altar", "Phyrexian Altar"):
@@ -641,6 +705,16 @@ def total_mana(state: GameState) -> int:
         elif has_tag(card, "ramp"):
             total += 1
     return total - state.tapped_lands_this_turn
+
+def try_cabal_coffers(state: GameState, log: List[Dict]):
+    if not state.has("Cabal Coffers"):
+        return
+    sc = swamp_count(state)
+    if sc <= 2 or remaining_mana(state) < 2:
+        return  # custa 2 pra ativar - so vale se devolver mais que 2
+    net = sc - 2
+    state.mana_spent_this_turn -= net
+    log.append({"trigger": "cabal_coffers", "swamps": sc, "net": net, "turn": state.turn})
 
 def color_sources(state: GameState, color: str) -> int:
     n = 0
@@ -711,9 +785,11 @@ def play_land(state: GameState, log: List[Dict]):
     state.lands_played_total += 1
 
     other_lands = sum(1 for c in state.battlefield if is_land(c) and c != choice)
+    has_legendary_creature = any(n in state.battlefield for n in LEGENDARY_CREATURE_NAMES)
     if choice == "Savai Triome" or \
             (choice == "Blackcleave Cliffs" and other_lands > 2) or \
-            (choice == "Haunted Ridge" and other_lands < 2):
+            (choice == "Haunted Ridge" and other_lands < 2) or \
+            (choice == "Minas Tirith" and not has_legendary_creature):
         state.tapped_lands_this_turn += 1
     if choice == "Urza's Saga":
         state.urzas_saga_entered_turn = state.turn
@@ -846,6 +922,17 @@ def on_creature_enters(state: GameState, log: List[Dict], name: str, count: int 
         power = CREATURE_POWER.get(name, 1 if "Token" in name else 3)
         if power <= 2:
             state.welcoming_vampire_trigger_pending = 1
+    if state.has("Caretaker's Talent") and "Token" in name:
+        # Achado real 2026-08-27 (auditoria de tokens): a habilidade
+        # BASE do Class (antes de qualquer nivel) - "Whenever one or
+        # more tokens you control enter, draw a card. Triggers only
+        # once each turn" - nao depende de subir de nivel (isso e' so'
+        # pros niveis 2/3, ja deferidos). Estava 100% ausente, lumped
+        # errado junto com o resto do Class deferido. So' cobre tokens
+        # de CRIATURA (os unicos que passam por aqui - Treasure tokens
+        # deste deck sao abstraidos como mana instantanea, nunca viram
+        # entrada real de battlefield).
+        state.caretakers_talent_trigger_pending = 1
 
 def eminence_trigger(state: GameState, card: str, log: List[Dict]):
     # "Whenever you cast another Vampire spell, if Edgar is in the
@@ -861,6 +948,7 @@ def eminence_trigger(state: GameState, card: str, log: List[Dict]):
         n = token_multiplier(state)
         for _ in range(n):
             state.tokens.append("Vampire Token")
+            state.battlefield.append("Vampire Token")
             state.eminence_tokens_created += 1
         on_creature_enters(state, log, "Vampire Token", count=n)
     _log_doubling(state, times)
@@ -882,6 +970,20 @@ def welcoming_vampire_check(state: GameState, log: List[Dict]):
     _log_doubling(state, times)
     log.append({"trigger": "welcoming_vampire", "times": times, "turn": state.turn})
     state.welcoming_vampire_trigger_pending = 0
+
+def caretakers_talent_check(state: GameState, log: List[Dict]):
+    # Habilidade BASE do Class (nao depende de nivel): "Whenever one or
+    # more tokens you control enter, draw a card. Triggers only once
+    # each turn." Fonte nao-criatura (Enchantment - Class) -> sem
+    # dobra do Roaming Throne.
+    if not state.has("Caretaker's Talent"):
+        return
+    if state.caretakers_talent_trigger_pending <= 0:
+        return
+    state.draw(1)
+    state.caretakers_talent_draws += 1
+    log.append({"trigger": "caretakers_talent", "turn": state.turn})
+    state.caretakers_talent_trigger_pending = 0
 
 def _tutor_target(state: GameState) -> Optional[str]:
     # Heuristica generica de "melhor carta disponivel" pra qualquer
@@ -913,7 +1015,8 @@ def _pay_diabolic_intent_cost(state: GameState, log: List[Dict]):
     # verdade - um jogador real sempre prefere isso. So chamar depois
     # de confirmar _diabolic_intent_has_fodder(state).
     if state.tokens:
-        state.tokens.pop()
+        popped = state.tokens.pop()
+        state.battlefield.remove(popped)
         state.creatures_died_this_turn += 1
         log.append({"action": "diabolic_intent_sac", "sacrificed": "token", "turn": state.turn})
         return
@@ -967,6 +1070,7 @@ def apply_etb(state: GameState, card: str, log: List[Dict]):
         n = token_multiplier(state)
         for _ in range(n):
             state.tokens.append("Human Soldier Token")
+            state.battlefield.append("Human Soldier Token")
         state.bastion_of_remembrance_tokens += n
         on_creature_enters(state, log, "Human Soldier Token", count=n)
         log.append({"trigger": "bastion_of_remembrance_etb", "tokens": n, "turn": state.turn})
@@ -1002,10 +1106,11 @@ def do_upkeep(state: GameState, log: List[Dict]):
     # este simulador so avanca os PROPRIOS turnos (mesma limitacao ja
     # documentada pro Seedborn Muse no Hei Bai) - modelado 1x por
     # upkeep proprio, conservador.
-    if state.has("Ophiomancer") and "Snake Token" not in state.tokens:
+    if state.has("Ophiomancer") and "Snake Token" not in state.battlefield:
         n = token_multiplier(state)
         for _ in range(n):
             state.tokens.append("Snake Token")
+            state.battlefield.append("Snake Token")
         state.ophiomancer_snakes_created += n
         on_creature_enters(state, log, "Snake Token", count=n)
         log.append({"trigger": "ophiomancer_upkeep", "tokens": n, "turn": state.turn})
@@ -1097,7 +1202,8 @@ def sac_loop(state: GameState, log: List[Dict]):
                 break
             state.mana_spent_this_turn += 2
             log.append({"action": "indulgent_aristocrat_sac_cost", "turn": state.turn})
-        state.tokens.pop()
+        popped = state.tokens.pop()
+        state.battlefield.remove(popped)
         state.creatures_sacrificed_total += 1
         state.creatures_died_this_turn += 1
         if "Ashnod's Altar" in state.battlefield:
@@ -1147,6 +1253,13 @@ def sac_loop(state: GameState, log: List[Dict]):
                 lose_life_opponent(state, 2, log, source="vito_fanatic")
             elif stage == 3:
                 n = token_multiplier(state)
+                # So' state.battlefield, NAO state.tokens - achado real
+                # 2026-08-27: um 4/3 flying e' o bode fodder ERRADO
+                # (um jogador real prefere sacrificar Vampire Tokens
+                # 1/1, ja disponiveis) - fica fora do pool descartavel
+                # de proposito.
+                for _ in range(n):
+                    state.battlefield.append("Vampire Demon Token")
                 state.vito_fanatic_demons_created += n
                 state.vito_fanatic_stage_this_turn = 0
                 on_creature_enters(state, log, "Vampire Demon Token", count=n)
@@ -1163,13 +1276,24 @@ def combat_step(state: GameState, log: List[Dict]):
     log.append({"trigger": "edgar_attack_counters", "vamps": vamps_in_play, "times": times, "turn": state.turn})
 
     if state.has("Sanctum Seeker"):
+        # Achado real 2026-08-27 (auditoria de tokens): "Whenever A
+        # VAMPIRE you control attacks" - gatilho POR vampiro atacante,
+        # nao um trigger unico por combate. Este simulador assume que
+        # TODOS os vampiros atacam desimpedidos (mesma premissa que ja
+        # escala o contador de ataque do proprio Edgar por
+        # vamps_in_play) - a versao anterior disparava so 1x por
+        # combate, ignorando essa escala (e' o mesmo bug que os tokens
+        # da Eminence nunca contarem pra vamps_in_play - agora que
+        # entram em state.battlefield, isso tambem corrige a contagem
+        # aqui).
         times2 = _times(state)
-        for _ in range(times2):
+        n_triggers = vamps_in_play * times2
+        for _ in range(n_triggers):
             state.sanctum_seeker_drains += 1
             lose_life_opponent(state, 1, log, source="sanctum_seeker")
             gain_life(state, 1, log, source="sanctum_seeker")
         _log_doubling(state, times2)
-        log.append({"trigger": "sanctum_seeker", "times": times2, "turn": state.turn})
+        log.append({"trigger": "sanctum_seeker", "vamps": vamps_in_play, "times": times2, "turn": state.turn})
 
     if state.has("Clavileño, First of the Blessed"):
         times3 = _times(state)
@@ -1317,7 +1441,8 @@ def cast_available_spells(state: GameState, log: List[Dict]):
                 # (Zulaport/Blood Artist/etc), igual o sac_loop.
                 n_sac = len(state.tokens)
                 for _ in range(n_sac):
-                    state.tokens.pop()
+                    popped = state.tokens.pop()
+                    state.battlefield.remove(popped)
                     state.creatures_sacrificed_total += 1
                     state.creatures_died_this_turn += 1
                     _apply_death_payoffs(state, log, source="plumb_the_forbidden")
@@ -1370,7 +1495,30 @@ def cast_available_spells(state: GameState, log: List[Dict]):
         state.both_combo_pieces_turn = state.turn
         log.append({"trigger": "both_combo_pieces_in_play", "turn": state.turn})
 
+def do_black_market_connections(state: GameState, log: List[Dict]):
+    # "At the beginning of your first main phase, choose one or more -
+    # Sell Contraband (Treasure, lose 1 life), Buy Information (draw,
+    # lose 2 life), Hire a Mercenary (3/2 Shapeshifter changeling
+    # token, lose 3 life)." Este simulador nao rastreia vida propria
+    # real (mesma convencao ja documentada pro Champion of
+    # Dusk/Vampiric Tutor) - um jogador greedy real escolhe os 3 modos
+    # toda vez, sem custo de verdade neste modelo.
+    if not state.has("Black Market Connections"):
+        return
+    t = token_multiplier(state)
+    state.mana_spent_this_turn -= t
+    state.black_market_treasures += t
+    state.draw(1)
+    state.black_market_draws += 1
+    n = token_multiplier(state)
+    for _ in range(n):
+        state.battlefield.append("Shapeshifter Token")
+    state.black_market_tokens += n
+    on_creature_enters(state, log, "Shapeshifter Token", count=n)
+    log.append({"trigger": "black_market_connections", "treasures": t, "tokens": n, "turn": state.turn})
+
 def main_phase(state: GameState, log: List[Dict]):
+    do_black_market_connections(state, log)
     if COMBO_HUNTING_POLICY:
         combo_hunt(state, log)
 
@@ -1383,6 +1531,7 @@ def main_phase(state: GameState, log: List[Dict]):
         on_creature_enters(state, log, COMMANDER)
         log.append({"action": "cast_commander", "turn": state.turn})
 
+    try_cabal_coffers(state, log)
     cast_available_spells(state, log)
     try_emeritus_prepared_tutor(state, log)
     try_stensian_prepared_exsanguinate(state, log)
@@ -1446,6 +1595,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.mana_spent_this_turn = 0
     state.vito_fanatic_stage_this_turn = 0
     state.welcoming_vampire_trigger_pending = 0
+    state.caretakers_talent_trigger_pending = 0
     state.creatures_died_this_turn = 0
     state.tapped_lands_this_turn = 0
     log = []
@@ -1460,6 +1610,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     try_emeritus_prepared_tutor(state, log)
     try_stensian_prepared_exsanguinate(state, log)
     welcoming_vampire_check(state, log)
+    caretakers_talent_check(state, log)
     combat_step(state, log)
     # 2a main phase (achado real 2026-08-27, usuario corrigiu de novo:
     # "Os spells preparados que sao preparados no combate podem ser
@@ -1550,6 +1701,10 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "sevinnes_reclamation_returns": state.sevinnes_reclamation_returns,
         "bloodline_bidding_returns": state.bloodline_bidding_returns,
         "urzas_saga_tutors": state.urzas_saga_tutors,
+        "caretakers_talent_draws": state.caretakers_talent_draws,
+        "black_market_treasures": state.black_market_treasures,
+        "black_market_draws": state.black_market_draws,
+        "black_market_tokens": state.black_market_tokens,
     }
 
 def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base=6000000):
@@ -1597,6 +1752,10 @@ def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base
     print(f"Avg reanimacoes via Sevinne's Reclamation: {sum(r['sevinnes_reclamation_returns'] for r in results)/n:.2f}")
     print(f"Avg reanimacoes via Bloodline Bidding: {sum(r['bloodline_bidding_returns'] for r in results)/n:.2f}")
     print(f"Avg tutores via Urza's Saga (capitulo III): {sum(r['urzas_saga_tutors'] for r in results)/n:.2f}")
+    print(f"Avg compras via Caretaker's Talent (base, token ETB): {sum(r['caretakers_talent_draws'] for r in results)/n:.2f}")
+    print(f"Avg Treasures via Black Market Connections: {sum(r['black_market_treasures'] for r in results)/n:.2f}")
+    print(f"Avg compras via Black Market Connections: {sum(r['black_market_draws'] for r in results)/n:.2f}")
+    print(f"Avg tokens via Black Market Connections: {sum(r['black_market_tokens'] for r in results)/n:.2f}")
     print()
     print(f"--- Combo Exquisite Blood/Bloodthirsty Conqueror + Vito, Thorn of the Dusk Rose ---")
     print(f"Partidas em que o combo montou E ligou: {100*len(combo_turns)/n:.1f}%")
