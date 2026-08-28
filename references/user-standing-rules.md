@@ -327,6 +327,29 @@ essa regra para tudo, sempre também!"*
   deferidos por essa mesma razão — precisa ser revisitado) e pra todo deck
   futuro desde a auditoria inicial.
 
+**5º reforço (2026-08-28) — Classes e Sagas ("níveis"):** citação literal
+do usuário — *"Não esqueça de verificar as cartas com 'níveis', como
+classes e sagas. Vc tb precisa criar a regra de verificar e contabilizar
+isso, pq o caretaker's talent se elevado ao nível 3 aumenta todos as token
+creatures e o innkeeper's no Prismatic no nível 3 DOBRA TODOS OS COUNTERS,
+inclusive os de lealdade de PWs ao entrarem no jogo!"*
+
+- Nova categoria 13 na checklist (`goldfish-sim-card-rules.md`): antes de
+  decidir que só a habilidade BASE de uma Class é modelável, ler o texto
+  de TODOS os níveis contra o oráculo real — um nível alto pode ser um
+  efeito de campo inteiro (anthem, dobrador de counter) que muda o valor
+  real da carta por completo. Sagas também entram (capítulos automáticos,
+  não pagos, mas podem conceder habilidade ativada que compete pelo `{T}`
+  da própria mana da carta).
+- **Achado real que motivou a regra:** Innkeeper's Talent (Prismatic
+  Bridge) nível 3 dobra TODOS os counters — incluindo a lealdade inicial
+  de planeswalker ao entrar em campo, uma interação direta com o sistema
+  de lealdade construído na correção anterior, que eu tinha deixado de
+  fora citando "precisa de engine de leveling" sem tentar construir essa
+  engine. Caretaker's Talent (Hei Bai) nível 3 dá +2/+2 a criaturas-token,
+  um anthem de campo inteiro, também deixado de fora.
+- Vale pra **todo deck do repositório** com Class/Saga na lista.
+
 ---
 
 <!-- Adicionar novas regras permanentes abaixo conforme o usuário as

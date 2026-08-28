@@ -283,6 +283,34 @@ QUALQUER simulador, novo ou já existente. Generalizando: antes de considerar
       oponente se esse simulador já rastreia isso) rastreada e refletida no
       board.
 
+13. **Cartas com "níveis" — Classes e Sagas** — citação literal do usuário
+    (2026-08-28), depois de eu deixar Caretaker's Talent (Hei Bai) e
+    Innkeeper's Talent (Prismatic Bridge) só na habilidade base, "nível
+    2/3 fora de escopo" sem checar o texto real de cada nível: *"Não
+    esqueça de verificar as cartas com 'níveis', como classes e sagas. Vc
+    tb precisa criar a regra de verificar e contabilizar isso, pq o
+    caretaker's talent se elevado ao nível 3 aumenta todos as token
+    creatures e o innkeeper's no Prismatic no nível 3 DOBRA TODOS OS
+    COUNTERS, inclusive os de lealdade de PWs ao entrarem no jogo!"*
+    - **Classes**: ganham nível seguinte "as a sorcery" pagando um custo
+      real (`{custo}: Level N`), cada nível adiciona uma habilidade NOVA
+      (não substitui as anteriores — todas ficam ativas simultaneamente).
+      Antes de decidir "só a base é modelada", ler o texto de TODOS os
+      níveis (Scryfall lista cada um) — um nível alto pode ser um efeito
+      de campo inteiro (anthem, dobrador de counter) que muda
+      completamente o valor real da carta, não um extra menor.
+    - **Sagas**: ganham um marcador de lore automaticamente ao entrar e
+      após cada compra própria (não é pago, é automático) — cada capítulo
+      soma uma habilidade nova, sacrifica após o último capítulo. Um
+      capítulo do meio pode conceder uma habilidade ativada que compete
+      pelo mesmo `{T}` da habilidade de mana da carta (ex: Urza's Saga
+      capítulo II) — não pode ser "grátis" ao lado da mana, é uma escolha
+      real por turno.
+    - Vale pra **todo deck do repositório**, não só os 2 que motivaram a
+      regra — qualquer Class/Saga em qualquer decklist precisa ter TODOS
+      os níveis/capítulos conferidos contra o oráculo real antes de
+      decidir o que é modelável.
+
 **Prática obrigatória:** antes de declarar QUALQUER simulador (novo ou já
 existente, numa auditoria de revisão) completo, rodar essa checklist e citar
 explicitamente, por categoria, quantas cartas da decklist se qualificam e se
