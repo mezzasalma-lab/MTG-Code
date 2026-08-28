@@ -265,6 +265,29 @@ Alta real e proporcional — a janela extra na mesma turno captura valor que se 
 
 ---
 
+## Verificação — a linha de finalizador "sacrifica pro Altar → dreno dos payoffs → Exsanguinate grande" está de verdade encadeada (usuário pediu confirmação)
+
+Usuário: *"O grande lance é a multiplicação: Se eu sacrificar tokens para altar gerando mana, com zulaport/blood artist/etc no campo, eu causo dano nos sacs, gero mana, faço um exsanguinate de 10+ e ganho o mesmo em vida! No momento certo pode eliminar um oponente!"*
+
+Confirmado com teste ao vivo (não só releitura de código) — board de teste: Ashnod's Altar + Zulaport Cutthroat + Blood Artist + Stensian Sanguinist (já preparado) + 8 terrenos + 2 tokens de Vampiro disponíveis:
+
+```
+sac_loop() sacrifica os 2 tokens no Ashnod's Altar:
+  +4 mana efetiva (Altar) | drain +4, gain +4 (Zulaport Cutthroat + Blood Artist, cada um 2x — 1 por sacrifício)
+try_stensian_prepared_exsanguinate() usa os 12 mana restantes:
+  X = 10 | drain +10, gain +10
+
+Total do turno: drain_total 0 → 14, lifegain_total 0 → 14
+```
+
+A cadeia está corretamente encadeada de ponta a ponta: sacrificar no Altar gera mana (`sac_loop`, `mana_spent_this_turn -= 2` por uso) **e** dispara os payoffs de morte (`_apply_death_payoffs`, uma vez por sacrifício) simultaneamente — e essa mana extra fica disponível pro Exsanguinate no MESMO turno (via a janela de 2ª main phase da Correção #5). Com um board maior (mais payoffs em campo, mais tokens sacrificados, mais mana disponível) o `X` escala junto.
+
+**Limite honesto do simulador:** não existe life total de oponente real rastreado aqui (só os contadores agregados `drain_total`/`lifegain_total`), então "eliminar um oponente" não é algo que o simulador valida literalmente — mas o pico no `X` do Exsanguinate (visível em `exsanguinate_x_total` no batch oficial) reflete bem o potencial de dano dessa linha quando as peças se encontram.
+
+`lista.md` não mudou.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
