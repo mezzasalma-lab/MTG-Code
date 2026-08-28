@@ -236,6 +236,9 @@ finisher_defs = [
 for name, mv, typ, tags in finisher_defs:
     add(name, mv, typ, tags, g_pips=1)
 
+# -------- Tokens --------
+add("Bear Token", 0, {"Creature"}, {"bear","token"})
+
 # =========================================================
 # PARSING
 # =========================================================
@@ -322,6 +325,18 @@ class GameState:
     # Mapeia nome -> turno de entrada; se turno == state.turn, ainda esta doente.
     dork_entered_turn: Dict[str, int] = field(default_factory=dict)
 
+    # Mana "avulsa" gerada por landfall no proprio turno (Lotus Cobra, Tireless
+    # Provisioner cracker), somada em remaining_mana() e resetada a cada turno.
+    bonus_mana_this_turn: int = 0
+
+    # Selvala, Heart of the Wilds: "its controller may draw a card if its power is
+    # greater than each other creature's power" - rastreia o maior poder ja visto
+    # entrando em campo pra comparar contra a proxima criatura.
+    max_power_seen: int = 0
+
+    # Clues da Tireless Tracker (investigate via landfall), gastos com mana sobrando.
+    clues: int = 0
+
     def draw(self, n=1, source="draw"):
         got = 0
         for _ in range(n):
@@ -380,7 +395,53 @@ def green_sources(state: GameState) -> int:
     return g
 
 def remaining_mana(state: GameState) -> int:
-    return total_mana(state) - state.mana_spent_this_turn
+    return total_mana(state) + state.bonus_mana_this_turn - state.mana_spent_this_turn
+
+# Poder base real (P/T impresso, sem contar +1/+1 counters - o sim so rastreia
+# counters_on_board como um total agregado, nao por criatura). Usado pra Garruk's
+# Uprising, Tribute to the World Tree e Selvala (comparacoes de "poder >= X").
+BASE_POWER: Dict[str, int] = {
+    "Beorn the Fierce": 6, "Ambush Viper": 2, "Ayula, Queen Among Bears": 2,
+    "Beast Whisperer": 2, "Beorn, Reluctant Host": 5, "Birds of Paradise": 0,
+    "Chameleon Colossus": 4, "Craterhoof Behemoth": 5, "Eternal Witness": 2,
+    "Firdoch Core": 4, "Forgotten Ancient": 0, "Lumra, Bellow of the Woods": 0,
+    "Genji Glove": 0, "Ghalta, Primal Hunger": 12, "Gigantic Big Bear": 10,
+    "Goreclaw, Terror of Qal Sisma": 4, "Haywire Mite": 1, "Allosaurus Shepherd": 1,
+    "Little Bear": 3, "Llanowar Elves": 1, "Lotus Cobra": 2, "Managorger Hydra": 1,
+    "Ohran Frostfang": 2, "Radagast of Rhosgobel": 2, "Defiler of Vigor": 6,
+    "Roaming Throne": 4, "Sakura-Tribe Elder": 1, "Selvala, Heart of the Wilds": 2,
+    "Solemn Simulacrum": 2, "Tireless Provisioner": 3, "Tireless Tracker": 3,
+    "Toski, Bearer of Secrets": 1, "Bear Token": 2,
+}
+
+# Toughness base real (P/T impresso, mesma ressalva de nao contar counters).
+# Usado por Last March of the Ents ("greatest toughness among creatures you control").
+BASE_TOUGHNESS: Dict[str, int] = {
+    "Beorn the Fierce": 6, "Ambush Viper": 1, "Ayula, Queen Among Bears": 2,
+    "Beast Whisperer": 3, "Beorn, Reluctant Host": 5, "Birds of Paradise": 1,
+    "Chameleon Colossus": 4, "Craterhoof Behemoth": 5, "Eternal Witness": 1,
+    "Firdoch Core": 4, "Forgotten Ancient": 3, "Lumra, Bellow of the Woods": 0,
+    "Ghalta, Primal Hunger": 12, "Gigantic Big Bear": 7,
+    "Goreclaw, Terror of Qal Sisma": 3, "Haywire Mite": 1, "Allosaurus Shepherd": 1,
+    "Little Bear": 2, "Llanowar Elves": 1, "Lotus Cobra": 1, "Managorger Hydra": 1,
+    "Ohran Frostfang": 6, "Radagast of Rhosgobel": 5, "Defiler of Vigor": 6,
+    "Roaming Throne": 4, "Sakura-Tribe Elder": 1, "Selvala, Heart of the Wilds": 3,
+    "Solemn Simulacrum": 2, "Tireless Provisioner": 2, "Tireless Tracker": 2,
+    "Toski, Bearer of Secrets": 1, "Bear Token": 2,
+}
+
+def is_bear(state: GameState, card: str) -> bool:
+    if has_tag(card, "bear") or has_tag(card, "bear_type") or has_tag(card, "changeling"):
+        return True
+    # Maskwood Nexus: "Creatures you control are every creature type" - Bear incluido.
+    if state.has("Maskwood Nexus") and is_creature(card):
+        return True
+    return False
+
+def is_forest_for_landfall(state: GameState, card: str) -> bool:
+    # Yavimaya, Cradle of Growth: "Each land is a Forest in addition to its other
+    # land types" - qualquer terreno entrando conta como Floresta enquanto ela estiver em campo.
+    return card == "Forest" or state.has("Yavimaya, Cradle of Growth")
 
 def can_cast(state: GameState, card: str) -> bool:
     if remaining_mana(state) < C(card).mv:
@@ -456,6 +517,7 @@ def play_land(state: GameState, log: List[Dict]):
         state.land_played = True
         state.lands_played_total += 1
         log.append({"action":"play_land","card":card})
+        on_land_enters(state, card, log)
 
 # =========================================================
 # CASTING PRIORITY
@@ -498,6 +560,7 @@ def main_phase(state: GameState, log: List[Dict]):
             state.spells_cast += 1
             state.mana_spent_this_turn += C(COMMANDER).mv
             state.battlefield.append(COMMANDER)
+            on_creature_enters(state, COMMANDER, log)
             log.append({"action":"cast_commander","turn":state.turn})
 
     for _ in range(5):
@@ -514,7 +577,14 @@ def main_phase(state: GameState, log: List[Dict]):
             state.spells_cast += 1
             state.mana_spent_this_turn += C(COMMANDER).mv
             state.battlefield.append(COMMANDER)
+            on_creature_enters(state, COMMANDER, log)
             log.append({"action":"cast_commander","turn":state.turn})
+
+    # Ativacoes repetiveis com mana/recursos sobrando, depois de todo o resto ja
+    # conjurado no turno (mesma ordem de prioridade: desenvolver o board primeiro).
+    try_crack_clues(state, log)
+    try_ayula_influence(state, log)
+    try_maskwood_nexus(state, log)
 
     # Genji Glove: Equip {3} e um custo separado do cast ({5}). Agora que o motor rastreia
     # mana gasta no turno (mana_spent_this_turn), equipa assim que sobrar mana suficiente -
@@ -526,7 +596,151 @@ def main_phase(state: GameState, log: List[Dict]):
             state.genji_glove_equipped_turn = state.turn
             log.append({"action": "genji_glove_equipped", "turn": state.turn})
 
+# =========================================================
+# GATILHOS CENTRALIZADOS (ETB de criatura, cast, landfall)
+# =========================================================
+
+def make_bear_token(state: GameState, log: List[Dict], source: str):
+    state.battlefield.append("Bear Token")
+    state.bear_count += 1
+    log.append({"action": "make_bear_token", "source": source, "turn": state.turn})
+    on_creature_enters(state, "Bear Token", log)
+
+def on_creature_enters(state: GameState, card: str, log: List[Dict], nontoken: bool = True):
+    """Gatilhos de 'quando uma criatura entra em campo' que dependem de permanentes
+    ja em campo. Chamado tanto pra criaturas de verdade quanto pra tokens (Bear Token)."""
+    power = BASE_POWER.get(card, 0)
+
+    # Ayula, Queen Among Bears: "Whenever ANOTHER Bear you control enters, choose one -
+    # put two +1/+1 counters on target Bear / fight." So Ayula pra baixo em dano ainda
+    # nao e modelada nesse sim (sem combate criatura-a-criatura fora do turno), entao
+    # a IA sempre escolhe o modo de contadores (mais seguro e sempre relevante).
+    if state.has("Ayula, Queen Among Bears") and card != "Ayula, Queen Among Bears" and is_bear(state, card):
+        state.counters_on_board += 2
+        log.append({"trigger": "ayula_bear_etb", "card": card, "turn": state.turn})
+
+    # Garruk's Uprising: "Whenever a creature you control with power 4+ enters, draw a card."
+    if state.has("Garruk's Uprising") and power >= 4:
+        state.draw(1, source="Garruk's Uprising")
+
+    # Tribute to the World Tree: draw se poder>=3, senao 2 contadores +1/+1.
+    if state.has("Tribute to the World Tree") and card != "Tribute to the World Tree":
+        if power >= 3:
+            state.draw(1, source="Tribute to the World Tree")
+        else:
+            state.counters_on_board += 2
+
+    # The Great Henge: "Whenever a NONTOKEN creature you control enters, put a +1/+1
+    # counter on it and draw a card." Tokens (Bear Token) nao contam.
+    if state.has("The Great Henge") and nontoken and card != "The Great Henge":
+        state.counters_on_board += 1
+        state.draw(1, source="The Great Henge")
+
+    # Selvala, Heart of the Wilds: "its controller may draw a card if its power is
+    # greater than each other creature's power." Aproximacao: compara contra o maior
+    # poder ja visto entrar em campo ate agora.
+    if state.has("Selvala, Heart of the Wilds") and card != "Selvala, Heart of the Wilds":
+        if power > state.max_power_seen:
+            state.draw(1, source="Selvala draw")
+    if power > state.max_power_seen:
+        state.max_power_seen = power
+
+def on_spell_cast_effects(state: GameState, card: str, log: List[Dict]):
+    """Gatilhos de 'quando voce conjura um spell/criatura/spell verde/do tipo X'."""
+    is_creature_spell = "Creature" in C(card).types
+
+    # Beast Whisperer: "Whenever you cast a creature spell, draw a card."
+    if state.has("Beast Whisperer") and is_creature_spell and card != "Beast Whisperer":
+        state.draw(1, source="Beast Whisperer")
+
+    # Necklace of Girion: "Whenever you cast a green spell... put a +1/+1 counter."
+    # Spell verde = tem pip {G} no custo (g_pips >= 1), nao e terreno.
+    if state.has("Necklace of Girion") and C(card).g_pips >= 1 and card != "Necklace of Girion":
+        state.counters_on_board += 1
+
+    # Dancing from Dark to Dawn: "Whenever you cast a creature spell, put X +1/+1
+    # counters on target creature, where X is that spell's mana value."
+    if state.has("Dancing from Dark to Dawn") and is_creature_spell:
+        state.counters_on_board += C(card).mv
+
+    # Chronicle of Victory (tipo escolhido: Bear, mesma convencao da Roaming Throne):
+    # "Whenever you cast a spell of the chosen type, draw a card."
+    if state.has("Chronicle of Victory") and is_bear(state, card):
+        state.draw(1, source="Chronicle of Victory")
+
+    # Forgotten Ancient: "Whenever a player casts a spell, you may put a +1/+1
+    # counter on this creature." Conta os seus proprios casts aqui; casts dos
+    # oponentes usam a mesma premissa agregada da Managorger Hydra (+2/turno no
+    # fim do seu turno, ver play_turn).
+    if state.has("Forgotten Ancient") and card != "Forgotten Ancient":
+        state.counters_on_board += 1
+
+def on_land_enters(state: GameState, card: str, log: List[Dict]):
+    """Landfall - chamado tanto no land-drop normal quanto em terrenos buscados por
+    ramp (Cultivate, Three Visits, Sakura-Tribe Elder, Solemn Simulacrum, Titania's
+    Command), ja que a regra de landfall nao distingue a origem do terreno."""
+    # Lotus Cobra: "Landfall - add one mana of any color." Mana avulsa so nesse turno.
+    if state.has("Lotus Cobra"):
+        state.bonus_mana_this_turn += 1
+
+    # Tireless Provisioner: "Landfall - create a Food or Treasure token." A IA sempre
+    # escolhe Treasure (mais util pra esse deck faminto por mana) e cracka no mesmo
+    # turno - modelado como mana avulsa igual a Lotus Cobra (premissa: sempre crackada
+    # na hora, nunca guardada pra depois).
+    if state.has("Tireless Provisioner"):
+        state.bonus_mana_this_turn += 1
+
+    # Tireless Tracker: "Landfall - investigate." Guarda o Clue pra ser craqueado
+    # depois com mana sobrando (try_crack_clues, chamado no fim do main_phase).
+    if state.has("Tireless Tracker"):
+        state.clues += 1
+
+    # Beorn's Hospitality: "Landfall - put a +1/+1 counter on target creature you
+    # control." So dispara se ha alguma criatura em campo pra receber o contador.
+    if state.has("Beorn's Hospitality") and any(is_creature(c) for c in state.battlefield):
+        state.counters_on_board += 1
+
+    # Dancing from Dark to Dawn: "Landfall - create a 2/2 green Bear creature token."
+    if state.has("Dancing from Dark to Dawn"):
+        make_bear_token(state, log, source="Dancing from Dark to Dawn landfall")
+
+    # Necklace of Girion: "...and whenever a Forest you control enters, put a +1/+1
+    # counter on target creature you control." (Yavimaya faz todo terreno virar Floresta.)
+    if state.has("Necklace of Girion") and is_forest_for_landfall(state, card):
+        state.counters_on_board += 1
+
+def try_crack_clues(state: GameState, log: List[Dict]):
+    while state.clues > 0 and remaining_mana(state) >= 2:
+        state.clues -= 1
+        state.mana_spent_this_turn += 2
+        state.draw(1, source="Tireless Tracker clue")
+        state.counters_on_board += 1
+        log.append({"action": "crack_clue", "turn": state.turn})
+
+def try_ayula_influence(state: GameState, log: List[Dict]):
+    # Ayula's Influence: "Discard a land card: Create a 2/2 green Bear creature
+    # token." Ativa repetivel, sem custo de mana. Premissa conservadora: so ativa
+    # se sobrarem 2+ terrenos na mao (nunca descarta o ultimo terreno na mao).
+    if not state.has("Ayula's Influence"):
+        return
+    while True:
+        lands_in_hand = [c for c in state.hand if is_land(c)]
+        if len(lands_in_hand) < 2:
+            break
+        state.hand.remove(lands_in_hand[0])
+        make_bear_token(state, log, source="Ayula's Influence")
+
+def try_maskwood_nexus(state: GameState, log: List[Dict]):
+    # Maskwood Nexus: "{3}, {T}: Create a 2/2 blue Shapeshifter creature token with
+    # changeling." So ativa uma vez por turno (tem {T} na ativacao) com mana sobrando.
+    if not state.has("Maskwood Nexus"):
+        return
+    if remaining_mana(state) >= 3:
+        state.mana_spent_this_turn += 3
+        make_bear_token(state, log, source="Maskwood Nexus activated")
+
 def cast_spell(state: GameState, card: str, log: List[Dict]):
+    on_spell_cast_effects(state, card, log)
     # Managorger Hydra ja em campo: cresce com QUALQUER spell seu conjurado depois dela
     # (nao conta o proprio cast dela, que ainda nao esta em campo nesse momento).
     if state.managorger_in_play:
@@ -541,6 +755,8 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
             state.graveyard.append(card)
     else:
         state.battlefield.append(card)
+        if is_creature(card):
+            on_creature_enters(state, card, log)
 
     if card == "Managorger Hydra":
         state.managorger_in_play = True
@@ -569,38 +785,62 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
     if has_tag(card, "removal"):
         state.removal_cast += 1
 
-    if has_tag(card, "bear") or has_tag(card, "bear_type") or has_tag(card, "changeling"):
+    if is_bear(state, card):
         state.bear_count += 1
 
+    # Cultivate/Three Visits/Sakura-Tribe Elder/Solemn Simulacrum buscam land basica
+    # de verdade - nesse decklist a UNICA carta basica/Forest e "Forest" (as outras 6
+    # sao terrenos nomeados nao-basicos). Terreno buscado entra em campo -> landfall.
     if card in {"Cultivate", "Three Visits", "Sakura-Tribe Elder"}:
-        target = next((c for c in state.library if is_land(c)), None)
+        target = next((c for c in state.library if c == "Forest"), None)
         if target:
             state.library.remove(target)
             state.battlefield.append(target)
             log.append({"action":"land_ramp_proxy","card":card,"target":target})
+            on_land_enters(state, target, log)
         if card == "Cultivate":
-            target2 = next((c for c in state.library if is_land(c)), None)
+            target2 = next((c for c in state.library if c == "Forest"), None)
             if target2:
                 state.library.remove(target2)
                 state.hand.append(target2)
                 log.append({"action":"land_ramp_proxy_to_hand","card":card,"target":target2})
 
     if card == "Solemn Simulacrum":
-        target = next((c for c in state.library if is_land(c)), None)
+        target = next((c for c in state.library if c == "Forest"), None)
         if target:
             state.library.remove(target)
             state.battlefield.append(target)
+            on_land_enters(state, target, log)
 
-    if card == "The Great Henge" and state.bear_count > 0:
-        state.draw(1, source="Great Henge ETB proxy")
+    if card == "Garruk's Uprising":
+        # ETB proprio (unico, distinto do gatilho recorrente ja tratado em
+        # on_creature_enters pra criaturas que entram DEPOIS dela em campo).
+        if any(BASE_POWER.get(c, 0) >= 4 for c in state.battlefield if is_creature(c) and c != card):
+            state.draw(1, source="Garruk's Uprising ETB")
+
+    if card == "Little Bear":
+        # ETB: "untap another target creature you control. If that creature is a
+        # Bear, put a +1/+1 counter on it." A parte de untap nao tem efeito
+        # modelavel nesse sim (sem rastreio de status tapped por criatura) - so a
+        # parte de contador e representada, condicionada a existir outro Bear em campo.
+        if any(is_bear(state, c) for c in state.battlefield if c != "Little Bear"):
+            state.counters_on_board += 1
 
     if card in {"Return of the Wildspeaker", "Shamanic Revelation"}:
         creatures = sum(1 for c in state.battlefield if is_creature(c))
         state.draw(max(1, creatures), source=card)
 
     if card == "Last March of the Ents":
-        toughness_proxy = 6
-        state.draw(toughness_proxy, source="Last March of the Ents")
+        # "Draw cards equal to the greatest toughness among creatures you control,
+        # then put any number of creature cards from hand onto the battlefield."
+        toughness = max((BASE_TOUGHNESS.get(c, 0) for c in state.battlefield if is_creature(c)), default=0)
+        state.draw(toughness, source="Last March of the Ents")
+        cheated = [c for c in state.hand if is_creature(c)]
+        for c in cheated:
+            state.hand.remove(c)
+            state.battlefield.append(c)
+            log.append({"action": "last_march_free_creature", "card": c, "turn": state.turn})
+            on_creature_enters(state, c, log)
 
     if card != "Genji Glove" and (has_tag(card, "finisher") or card in {"Craterhoof Behemoth", "Ghalta, Primal Hunger"}):
         # Genji Glove nao resolve no cast: precisa ser equipada (Equip {3}, custo separado) e
@@ -635,7 +875,7 @@ def combat_step(state: GameState, log: List[Dict]):
     if times == 2:
         state.roaming_throne_doublings += 1
     for _ in range(times):
-        creatures_not_bear = [c for c in state.battlefield if is_creature(c) and not (has_tag(c,"bear") or has_tag(c,"bear_type") or has_tag(c,"changeling"))]
+        creatures_not_bear = [c for c in state.battlefield if is_creature(c) and not is_bear(state, c)]
         if creatures_not_bear:
             target = max(creatures_not_bear, key=lambda c: C(c).mv)
             state.bear_count += 1
@@ -655,6 +895,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.turn = turn
     state.land_played = False
     state.mana_spent_this_turn = 0
+    state.bonus_mana_this_turn = 0
 
     log = [{"turn": turn, "phase": "start", "hand_size": len(state.hand),
             "battlefield_count": len(state.battlefield), "mana_est": total_mana(state)}]
@@ -667,6 +908,11 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     main_phase(state, log)
     combat_step(state, log)
     state.cleanup_hand_size()
+
+    if state.has("Forgotten Ancient"):
+        # Mesma premissa da Managorger: 2 spells de oponentes por turno em media
+        # tambem colocam contador na Forgotten Ancient (gatilho e "a player", nao "you").
+        state.counters_on_board += 2
 
     if state.managorger_in_play:
         # Premissa explicita (nao e dado real): 2 spells de oponentes por turno em media,

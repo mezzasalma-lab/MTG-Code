@@ -214,7 +214,7 @@ Tudo dentro de 1-2 pontos percentuais entre as duas rodadas — a maior diferen�
 - T1-T2: Forest, Forest
 - T3: Shamanic Revelation comprada; Forest (3º land); joga Beorn's Hospitality
 - T4: Forest (4º land); joga Tireless Provisioner
-- T5: Forest (5º land); joga Garruk's Uprising; gera Treasure via Beorn's Hospitality (landfall); compra Tribute to the World Tree
+- T5: Forest (5º land); joga Garruk's Uprising; landfall gera Treasure via Tireless Provisioner e +1/+1 counter via Beorn's Hospitality (a Hospitality bota contador em criatura, não faz Treasure — ver correção abaixo); compra Tribute to the World Tree
 - T6: Forest (6º land); joga Tribute to the World Tree e Toski, Bearer of Secrets; **Beorn the Fierce entra da command zone** — converte o Toski em Urso com trample
 - T7: joga Archdruid's Charm (comprado), Lightning Greaves, Maskwood Nexus, Allosaurus Shepherd (protegendo magias verdes); Chameleon Colossus e mais um Toski entram
 - T8: joga Ayula Queen Among Bears, Herd Heirloom, Sol Ring, Forgotten Ancient
@@ -405,6 +405,52 @@ Consequência direta da Correção #1: com mana real rastreada, ficou óbvio que
 | Managorger conjurada | 18.9% | 18.6% |
 
 Impacto pequeno e no sentido esperado (menos mana disponível cedo = leve desaceleração). **Robustez:** sweep de 20.000 jogos, 0 erros, 0 timeouts.
+
+---
+
+### Correção #3 — auditoria carta por carta: gatilhos 100% ausentes (ETB, cast, landfall)
+
+**Gatilho (usuário):** "VAMOS REVISAR O BEORN do mesmo modo, carta por carta e o simulador todo"
+
+Comparei o `oracle_text` real de todas as 70 cartas (via Scryfall) contra o código carta por carta. Achado mais grave: **não existia nenhum despacho de landfall** — apesar de 6 cartas do deck dependerem dele (Lotus Cobra, Tireless Tracker, Tireless Provisioner, Beorn's Hospitality, Dancing from Dark to Dawn, Necklace of Girion), nada disparava quando um terreno entrava em campo. Junto com isso, vários gatilhos de "criatura entra"/"conjura um spell" também estavam totalmente ausentes.
+
+**Implementado nesta rodada:**
+- Infraestrutura nova: `on_creature_enters()`, `on_spell_cast_effects()`, `on_land_enters()` — despachantes centralizados chamados em todo lugar que uma criatura/spell/terreno entra em campo (land drop normal, terrenos buscados por rampa, criaturas coladas via cheat-into-play), substituindo os poucos `if card == "X"` soltos que existiam.
+- **Ayula, Queen Among Bears** (0% → implementada): outro Bear entrando põe 2 contadores +1/+1 num Bear (IA sempre escolhe o modo de contador, não o modo de luta, que não é simulável nesse motor).
+- **Ayula's Influence** (0% → implementada): ativação repetível "descarta uma land: cria um Bear 2/2", condicionada a sobrarem 2+ lands na mão.
+- **Maskwood Nexus** (0% → implementada): agora concede o tipo Bear pra TODAS as suas criaturas globalmente (`is_bear()` centralizado, novo helper), e a ativação `{3},{T}: cria Shapeshifter 2/2 changeling` roda com mana sobrando.
+- **Beast Whisperer**: "conjura criatura → compra" agora dispara de verdade (antes só tinha a tag, sem lógica).
+- **Necklace of Girion**: "conjura spell verde" e "Forest entra" (via landfall, considerando Yavimaya) agora dão o contador de verdade.
+- **Dancing from Dark to Dawn**: as DUAS metades agora funcionam — contador X (mv do spell) em criatura conjurada, e token Bear 2/2 via landfall (antes só a tag existia, zero lógica).
+- **Garruk's Uprising**: ETB próprio (compra se já controla poder 4+) e o gatilho recorrente (criatura poder 4+ entra → compra) implementados via `BASE_POWER`.
+- **Tribute to the World Tree**: criatura entra → compra se poder≥3, senão 2 contadores.
+- **The Great Henge**: removido o proxy antigo e **errado** ("compra 1 no próprio cast se bear_count>0", que não é o texto real da carta) — agora é o gatilho de verdade: cada criatura NÃO-token que entra dá 1 contador +1/+1 + compra 1.
+- **Selvala, Heart of the Wilds**: "compra se poder maior que qualquer outra criatura" aproximado via `max_power_seen` rastreado ao longo do jogo.
+- **Forgotten Ancient**: contador em cada spell seu conjurado + heurística de +2/turno pros spells de oponentes (mesmo padrão já usado pra Managorger Hydra).
+- **Little Bear**: metade modelável do ETB implementada (+1/+1 counter se já existe outro Bear em campo); a metade "untap" não tem efeito simulável nesse motor (documentado).
+- **Chronicle of Victory**: "conjura spell do tipo escolhido → compra" implementado (tipo escolhido: Bear, mesma convenção da Roaming Throne).
+- **Last March of the Ents**: era um proxy fixo de "compra 6" hardcoded — agora usa a maior toughness real em campo (`BASE_TOUGHNESS`, tabela nova) E implementa a segunda metade da carta, que estava 100% ausente: colocar criaturas da mão em campo de graça.
+- **Tireless Tracker**: landfall agora gera Clue de verdade (`state.clues`), craqueado com mana sobrando (`try_crack_clues`) por {2}: compra 1 + contador na Tracker.
+- **Bug de fetch**: Cultivate/Three Visits/Sakura-Tribe Elder/Solemn Simulacrum buscavam **qualquer terreno da biblioteca** (incluindo os 6 não-básicos nomeados) — o texto real busca land básica/Forest, e nesse decklist só "Forest" se qualifica. Corrigido, e agora o terreno buscado também dispara landfall (antes não disparava).
+- **Correção de log**: Jogo 3 dizia que o Treasure veio do Beorn's Hospitality (landfall) — a Hospitality bota +1/+1 counter, não faz Treasure; era o Tireless Provisioner (também em campo) que gerou o Treasure. Texto corrigido acima.
+
+**Resultado (n=2000, seed_base=6000000, antes → depois):**
+
+| Métrica | Antes (Correção #2) | Depois (Correção #3) |
+|---|---|---|
+| Avg spells cast | 10.22 | 10.76 |
+| Avg extra draws (gatilhos) | 6.99 | 8.53 |
+| Avg Bear count final | 5.63 | 6.16 |
+| Avg battlefield final | 15.57 | 16.79 |
+| Avg terrenos jogados | 6.39 | 6.51 |
+| Germination Practicum — contadores totais no board | 1.26 | 6.94 |
+| % de jogos com finisher até T8 | 7.2% | 6.8% |
+
+Impacto moderado e no sentido esperado: mais compra (draw engines reais agora funcionando), mais Bears (Ayula's Influence + Dancing from Dark to Dawn landfall + Maskwood), mais contadores no board (Last March colocando criaturas extras em campo pra Germination Practicum's Paradigm buffar). Taxa de finisher ficou estável (~7%), já que os gatilhos implementados nesta rodada são majoritariamente motores de compra/contadores, não finalizadores diretos.
+
+**Não implementado nesta rodada (decisão consciente, mesma convenção de sempre documentar em vez de fingir que não existe):** redução de custo baseada em poder (Ghalta, The Great Henge, Goreclaw, Defiler of Vigor, Radagast, Emerald Medallion) — já é uma limitação conhecida documentada no Jogo 6 deste log. Exigiria rastrear poder por criatura individualmente (esse motor só tem um agregado `counters_on_board`, não por criatura), uma mudança arquitetural maior que fica pra uma próxima rodada se você quiser que eu ataque isso.
+
+**Robustez:** sweep de 20.000 jogos, 0 erros, 0 timeouts.
 
 ---
 
