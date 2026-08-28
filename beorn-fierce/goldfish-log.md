@@ -686,6 +686,20 @@ barato primeiro).
 
 ---
 
+### Correção #8 — verificação de planeswalkers (regra nova pós-Prismatic Bridge)
+
+**Gatilho (usuário):** depois do Prismatic Bridge revelar que nenhum
+simulador do repositório modelava lealdade/ativações de planeswalker, o
+usuário registrou a regra permanente (categoria 12,
+`goldfish-sim-card-rules.md`) — *"Adicione essa regra para tudo, sempre
+também!"*
+
+**Conferido:** `grep -in "Planeswalker" beorn_goldfish_v1.py` não encontra
+nenhuma ocorrência. Beorn não tem nenhum planeswalker na lista — categoria
+12 é **N/A por decklist**. Nenhuma mudança de código necessária.
+
+---
+
 <!-- Para novas partidas avulsas, use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

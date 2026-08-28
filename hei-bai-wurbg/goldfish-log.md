@@ -888,6 +888,22 @@ falta de verificação. Nenhuma mudança de código necessária.
 
 ---
 
+### Correção #11 — verificação de planeswalkers (regra nova pós-Prismatic Bridge)
+
+**Gatilho (usuário):** depois do Prismatic Bridge revelar que nenhum
+simulador do repositório modelava lealdade/ativações de planeswalker, o
+usuário registrou a regra permanente (categoria 12,
+`goldfish-sim-card-rules.md`) — *"Adicione essa regra para tudo, sempre
+também!"*
+
+**Conferido:** `grep -in "Planeswalker" heibai_goldfish_v1.py` só encontra
+a palavra dentro do texto do Sphere of Safety ("attack you or planeswalkers
+you control"), não uma carta do tipo Planeswalker de verdade. Hei Bai não
+tem nenhum planeswalker na lista — categoria 12 é **N/A por decklist**.
+Nenhuma mudança de código necessária.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
