@@ -26,10 +26,15 @@ Metodologia:
   campo depois da Bridge acertar, sem nenhum efeito. Doubling
   Season/Vorinclex (dobradores de counter) e Evolution Sage/Deepglow
   Skate/Vraska (proliferate) agora tem efeito real sobre a lealdade
-  tambem. Ver goldfish-log.md pra detalhe completo e o que ficou
-  deliberadamente deferido (estatico da Nicol Bolas, nivel 3 do
-  Innkeeper's Talent, proliferate de outras 6 fontes que precisam de hooks
-  de cast/end-step que este arquivo ainda nao tem).
+  tambem. Correcao 2026-08-28 (2a rodada, regra nova de Classes/Sagas -
+  "níveis"): Innkeeper's Talent agora sobe de nivel de verdade
+  (try_level_up_innkeepers_talent, custo real {G}/{3}{G}) - nivel 3 dobra
+  TODOS os counters (empilha com Doubling Season/Vorinclex em
+  counter_doubler_multiplier), incluindo lealdade de planeswalker ao
+  entrar. Ver goldfish-log.md pra detalhe completo e o que ficou
+  deliberadamente deferido (estatico da Nicol Bolas, proliferate de outras
+  6 fontes que precisam de hooks de cast/end-step que este arquivo ainda
+  nao tem).
 - NAO modelado (achado 2026-08-28, auditoria de checklist de mecanica -
   decisao consciente de escopo, nao esquecimento silencioso): as 14
   cartas tageadas "draw" que NAO sao planeswalker (Rhystic Study, etc.)
@@ -465,6 +470,13 @@ class GameState:
     pw_activations_total: int = 0
     teferi_sunset_emblem: bool = False  # ultimate: draw extra durante upkeep de cada oponente (ver do_upkeep)
 
+    # Achado real 2026-08-28 (usuario: "verifique as cartas com niveis,
+    # como classes e sagas... o innkeeper's no Prismatic no nivel 3 DOBRA
+    # TODOS OS COUNTERS, inclusive os de lealdade de PWs ao entrarem no
+    # jogo!"): nivel comeca em 1 (habilidade base) ao ser conjurada, sobe
+    # "as a sorcery" pagando o custo real de cada nivel.
+    innkeepers_talent_level: int = 1
+
     def draw(self, n: int = 1):
         for _ in range(n):
             if self.library:
@@ -677,12 +689,29 @@ def counter_doubler_multiplier(state: GameState) -> int:
     # Raider (mesmo efeito pros NOSSOS counters) sao replacement effects
     # reais que dobram lealdade - empilham multiplicativamente (regra real,
     # mesmo padrao ja usado pros dobradores de token no Edgar Markov).
-    # Innkeeper's Talent so' dobra a partir do nivel 3 ({3}{G} pra subir) -
-    # esse simulador nao tem engine de leveling pra Class (mesma
-    # simplificacao ja usada no Caretaker's Talent do Hei Bai, so' a
-    # habilidade base), entao o dobro dela fica de fora aqui, documentado.
+    # Achado real 2026-08-28 (usuario: "verifique as cartas com niveis...
+    # o innkeeper's no Prismatic no nivel 3 DOBRA TODOS OS COUNTERS"):
+    # Innkeeper's Talent nivel 3 ("If you would put one or more counters on
+    # a permanent or player, put twice that many...") e' o MESMO efeito -
+    # engine de leveling implementada (ver try_level_up_innkeepers_talent),
+    # empilha com os outros 2 igual.
     n = sum(1 for c in ("Doubling Season", "Vorinclex, Monstrous Raider") if state.has(c))
+    if "Innkeeper's Talent" in state.battlefield and state.innkeepers_talent_level >= 3:
+        n += 1
     return 2 ** n
+
+INNKEEPERS_TALENT_LEVEL_COST = {2: 1, 3: 4}  # {G}=1 pro nivel 2, {3}{G}=4 pro nivel 3
+
+def try_level_up_innkeepers_talent(state: GameState, log: List[Dict]):
+    if "Innkeeper's Talent" not in state.battlefield or state.innkeepers_talent_level >= 3:
+        return
+    next_level = state.innkeepers_talent_level + 1
+    cost = INNKEEPERS_TALENT_LEVEL_COST[next_level]
+    if remaining_mana(state) < cost or color_sources(state, "G") < 1:
+        return
+    state.mana_spent_this_turn += cost
+    state.innkeepers_talent_level = next_level
+    log.append({"trigger": "innkeepers_talent_level_up", "level": next_level, "turn": state.turn})
 
 def add_loyalty(state: GameState, pw: str, amount: int, log: List[Dict], reason: str = ""):
     """Aplica uma mudanca de lealdade (positiva = ganha counters, negativa =
@@ -1061,6 +1090,13 @@ def activate_planeswalkers(state: GameState, log: List[Dict]):
 # =========================================================
 
 def main_phase(state: GameState, log: List[Dict]):
+    # Subir de nivel a Innkeeper's Talent primeiro (sorcery speed, pilha
+    # vazia) - se alcancar nivel 3 neste turno, o dobro de counter so vale
+    # pra gatilhos QUE AINDA VAO ACONTECER neste turno em diante (nao
+    # retroage sobre o upkeep da Bridge, que ja resolveu antes do main
+    # phase, mesma ordem real do jogo).
+    try_level_up_innkeepers_talent(state, log)
+
     # Ativa a habilidade de lealdade de cada planeswalker em campo primeiro
     # (velocidade de feitico, pilha vazia, mesmo momento real que um
     # jogador faria isso) - qualquer compra/mana disso alimenta o resto do
@@ -1231,6 +1267,8 @@ def simulate_one(seed: int, turns: int, with_greater_auramancy: bool) -> Dict:
         "pw_ultimates_used_total": state.pw_ultimates_used_total,
         "pw_deaths_total": state.pw_deaths_total,
         "planeswalkers_in_play_end": len(state.loyalty),
+        "innkeepers_talent_in_play": "Innkeeper's Talent" in state.battlefield,
+        "innkeepers_talent_level_end": state.innkeepers_talent_level,
     }
 
 def run_batch(n=2000, turns=10, with_greater_auramancy=False, seed_base=3000000, label=""):
@@ -1293,9 +1331,14 @@ def run_batch(n=2000, turns=10, with_greater_auramancy=False, seed_base=3000000,
     print(f"INTERACTION: avg remocao proxy (Ashiok/Ugin, sem alvo real de oponente): "
           f"{sum(r['pw_removal_proxy_total'] for r in results)/n:.2f} | wipe proxy (Elspeth/Liliana ultimate): "
           f"{sum(r['pw_wipe_proxy_total'] for r in results)/n:.2f}")
+    it_in_play = sum(1 for r in results if r["innkeepers_talent_in_play"])
+    if it_in_play:
+        it_lvl3 = sum(1 for r in results if r["innkeepers_talent_level_end"] >= 3)
+        print(f"Innkeeper's Talent em campo em {100*it_in_play/n:.1f}% dos jogos, alcancou nivel 3 "
+              f"(dobra TODOS os counters, inclusive lealdade de planeswalker ao entrar) em "
+              f"{100*it_lvl3/n:.1f}%")
     print(f"Deferido nesta rodada (nao implementado, documentado): estatico da Nicol Bolas ('has all loyalty "
-          f"abilities of all other planeswalkers'); Innkeeper's Talent nivel 3 (dobro de counters, precisa de "
-          f"engine de leveling); Flux Channeler/Ichormoon Gauntlet/Inexorable Tide/Mutational "
+          f"abilities of all other planeswalkers'); Flux Channeler/Ichormoon Gauntlet/Inexorable Tide/Mutational "
           f"Advantage/Ripples of Potential/Atraxa (proliferate de outras fontes alem do Evolution Sage/Vraska - "
           f"precisam de hooks de cast-trigger/end-step que este arquivo ainda nao tem).")
     print()

@@ -399,6 +399,57 @@ finalmente vira valor real simulado, não só um nome parado em campo.
 
 ---
 
+### Correção — Innkeeper's Talent níveis 2 e 3 (regra nova de Classes/Sagas) — 2026-08-28
+
+**Gatilho (usuário):** *"Não esqueça de verificar as cartas com 'níveis',
+como classes e sagas. Vc tb precisa criar a regra de verificar e
+contabilizar isso, pq... o innkeeper's no Prismatic no nível 3 DOBRA TODOS
+OS COUNTERS, inclusive os de lealdade de PWs ao entrarem no jogo!"* Regra
+nova (categoria 13, `goldfish-sim-card-rules.md`).
+
+Na correção anterior (lealdade de planeswalker), eu tinha deixado
+Innkeeper's Talent nível 3 de fora citando "precisa de engine de leveling"
+sem tentar construir essa engine — exatamente o padrão que a nova regra
+proíbe.
+
+**Texto real (Scryfall):** `{G}: Level 2` — *"Permanents you control with
+counters on them have ward {1}"* (defensivo puro, sem efeito numérico
+modelável). `{3}{G}: Level 3` — *"If you would put one or more counters on
+a permanent or player, put twice that many of each of those kinds of
+counters on that permanent or player instead."*
+
+**Implementado:**
+- `try_level_up_innkeepers_talent()` — sobe de nível como sorcery, pagando
+  o custo real ({G}=1 pro nível 2, {3}{G}=4 pro nível 3).
+- `counter_doubler_multiplier()` agora inclui Innkeeper's Talent nível 3
+  junto com Doubling Season/Vorinclex — **dobra a lealdade inicial de
+  qualquer planeswalker que a Bridge acertar depois disso**, e qualquer
+  ganho de lealdade via +1/proliferate.
+- Chamada no início do `main_phase()`, antes de `activate_planeswalkers()`
+  — se o nível 3 é alcançado no MESMO turno que a Bridge acerta um
+  planeswalker, a ordem real do turno (upkeep da Bridge acontece ANTES do
+  main phase) significa que o dobro só vale a partir do próximo acerto,
+  não retroage sobre o turno atual.
+
+**Resultado (n=2000, sem Greater Auramancy):**
+
+```
+Innkeeper's Talent em campo em 18.5% dos jogos, alcancou nivel 3 (dobra
+TODOS os counters, inclusive lealdade de planeswalker ao entrar) em 14.2%
+```
+
+Antes desta correção, esse número era simplesmente inexistente — a carta
+nunca saía do nível 1. 14,2% das partidas (de 18,5% em que a carta aparece)
+alcançam o nível 3, um efeito real e frequente o bastante pra valer a
+correção.
+
+**Robustez:** sweep de 20.000 jogos (seeds 7000000–7019999, timeout
+2s/jogo, alternando com/sem Greater Auramancy) — 0 erros, 0 timeouts.
+
+`lista.md` não mudou.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

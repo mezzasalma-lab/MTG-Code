@@ -98,15 +98,14 @@ junto. Ver goldfish-log.md, Correcao #13, pro antes/depois quantificado.
     Vampire nunca teriam combate pra importar. O passivo de Elenda
     ("+1/+1 quando OUTRA criatura morre") em si E' rastreado agora
     (state.elenda_counters, so' por transparencia de dado).
-  - Loyalty abilities de Elspeth Storm Slayer/Sorin, nivel 2/3 do
-    Caretaker's Talent (a habilidade BASE do Class, que nao depende de
-    nivel nenhum, ESTA implementada - achado real 2026-08-27, revisao
-    da revisao: a Correcao #1 tinha lumped ela errado junto com o resto
-    do Class deferido), ativada do Mondrak (indestructible counter),
-    Cavern of Souls (escolha de tipo): nenhuma engine de "1 ativada por
-    turno" existe neste simulador - mesma classe de simplificacao ja
-    usada nos outros decks desta sessao pra
-    planeswalkers/Classes.
+  - Loyalty abilities de Elspeth Storm Slayer/Sorin: IMPLEMENTADAS na
+    Correcao #15 (regra nova, categoria 12). Niveis 2/3 do Caretaker's
+    Talent: IMPLEMENTADOS na Correcao #16 (regra nova, categoria 13 -
+    "cartas com niveis"). Ainda deferido: ativada do Mondrak
+    (indestructible counter), Cavern of Souls (escolha de tipo) -
+    nenhuma engine de "1 ativada por turno" existe neste simulador pra
+    essas 2 especificamente (mv fixo, sem custo de ativacao paga
+    associado a valor claro o bastante pra justificar agora).
   - Fetch lands (Arid Mesa/Bloodstained Mire/Marsh Flats): modeladas
     como duais estaticas de 2 cores (produces={cor1,cor2}), sem
     sacrificio/busca real - decisao consistente com o resto do
@@ -681,6 +680,14 @@ class GameState:
     pw_counters_distributed_total: int = 0
     pw_free_creature_total: int = 0
     pw_deaths_total: int = 0
+
+    # Achado real 2026-08-28 (usuario: "verifique as cartas com niveis,
+    # como classes e sagas... o caretaker's talent se elevado ao nivel 3
+    # aumenta todos as token creatures"): nivel comeca em 1 (habilidade
+    # base) ao ser conjurada, sobe "as a sorcery" pagando o custo real.
+    caretakers_talent_level: int = 1
+    caretakers_talent_level2_copies: int = 0
+
     sanctum_seeker_drains: int = 0
     vito_fanatic_stage_this_turn: int = 0
     vito_fanatic_demons_created: int = 0
@@ -787,6 +794,14 @@ def effective_power(state: GameState, name: str) -> int:
     base = CREATURE_POWER.get(name, 1 if "Token" in name else 3)
     if state.has("Warleader's Call") and name != "Warleader's Call":
         base += 1
+    # Achado real 2026-08-28 (usuario: "verifique as cartas com niveis...
+    # o caretaker's talent se elevado ao nivel 3 aumenta todos as token
+    # creatures"): "Creature tokens you control get +2/+2" - so' TOKENS,
+    # nao qualquer criatura (diferente do Warleader's Call). Importa MUITO
+    # pro limiar do Welcoming Vampire: Vampire Token 1/1 vira 3/3 (deixa
+    # de qualificar "power 2 or less" assim que o nivel 3 e' alcancado).
+    if "Token" in name and state.has("Caretaker's Talent") and state.caretakers_talent_level >= 3:
+        base += 2
     return base
 
 # =========================================================
@@ -850,6 +865,34 @@ def try_cabal_coffers(state: GameState, log: List[Dict]):
     net = sc - 2
     state.mana_spent_this_turn -= net
     log.append({"trigger": "cabal_coffers", "swamps": sc, "net": net, "turn": state.turn})
+
+CARETAKERS_TALENT_LEVEL_COST = {2: 1, 3: 4}  # {W}=1 pro nivel 2, {3}{W}=4 pro nivel 3
+
+def try_level_up_caretakers_talent(state: GameState, log: List[Dict]):
+    if not state.has("Caretaker's Talent") or state.caretakers_talent_level >= 3:
+        return
+    next_level = state.caretakers_talent_level + 1
+    cost = CARETAKERS_TALENT_LEVEL_COST[next_level]
+    if remaining_mana(state) < cost or color_sources(state, "W") < 1:
+        return
+    state.mana_spent_this_turn += cost
+    state.caretakers_talent_level = next_level
+    log.append({"trigger": "caretakers_talent_level_up", "level": next_level, "turn": state.turn})
+    if next_level == 2:
+        # "When this Class becomes level 2, create a token that's a copy
+        # of target token you control." Efeito de UMA VEZ SO (nao e'
+        # estatico) - escolhe o Vampire Token (o unico token nomeado
+        # criado em volume real neste deck, via Eminence). Sujeito ao
+        # dobrador de token (Anointed Procession/Mondrak/Elspeth), ja que
+        # "create a token" real dispara esse replacement effect.
+        if "Vampire Token" in state.battlefield:
+            n = token_multiplier(state)
+            for _ in range(n):
+                state.tokens.append("Vampire Token")
+                state.battlefield.append("Vampire Token")
+            state.caretakers_talent_level2_copies += n
+            on_creature_enters(state, log, "Vampire Token", count=n)
+            log.append({"trigger": "caretakers_talent_token_copy", "count": n, "turn": state.turn})
 
 def try_adanto(state: GameState, log: List[Dict]):
     # Achado real 2026-08-28 (auditoria de checklist de mecanica): a
@@ -2022,6 +2065,7 @@ def main_phase(state: GameState, log: List[Dict]):
         log.append({"action": "cast_commander", "turn": state.turn})
 
     activate_planeswalkers(state, log)
+    try_level_up_caretakers_talent(state, log)
     try_cabal_coffers(state, log)
     try_adanto(state, log)
     try_unlock_rooms(state, log)
@@ -2218,6 +2262,9 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "pw_deaths_total": state.pw_deaths_total,
         "sorin_in_play": state.has("Sorin, Imperious Bloodlord"),
         "elspeth_in_play": state.has("Elspeth, Storm Slayer"),
+        "caretakers_talent_in_play": state.has("Caretaker's Talent"),
+        "caretakers_talent_level_end": state.caretakers_talent_level,
+        "caretakers_talent_level2_copies": state.caretakers_talent_level2_copies,
     }
 
 def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base=6000000):
@@ -2311,6 +2358,13 @@ def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base
         print(f"Avg tokens criados via Elspeth (+1, sujeito ao proprio dobrador dela): {sum(r['pw_tokens_created_total'] for r in results)/n:.2f}")
         print(f"Avg Vampiros postos em campo de graca via Sorin (-3): {sum(r['pw_free_creature_total'] for r in results)/n:.2f}")
         print(f"Avg mortes de planeswalker (lealdade a 0): {sum(r['pw_deaths_total'] for r in results)/n:.2f}")
+
+    ct_in_play = sum(1 for r in results if r["caretakers_talent_in_play"])
+    if ct_in_play:
+        ct_lvl3 = sum(1 for r in results if r["caretakers_talent_level_end"] >= 3)
+        print(f"Caretaker's Talent em campo em {100*ct_in_play/n:.1f}% dos jogos, alcancou nivel 3 "
+              f"(tokens criatura +2/+2, afeta o limiar do Welcoming Vampire) em {100*ct_lvl3/n:.1f}%, "
+              f"avg copias de token via nivel 2: {sum(r['caretakers_talent_level2_copies'] for r in results)/n:.2f}")
     print()
     print(f"--- Combo Exquisite Blood/Bloodthirsty Conqueror + Vito, Thorn of the Dusk Rose ---")
     print(f"Partidas em que o combo montou E ligou: {100*len(combo_turns)/n:.1f}%")

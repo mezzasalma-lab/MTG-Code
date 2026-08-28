@@ -828,6 +828,54 @@ zero valor antes.
 
 ---
 
+## Correção #16 — Caretaker's Talent níveis 2 e 3 (regra nova de Classes/Sagas)
+
+**Gatilho (usuário):** *"Não esqueça de verificar as cartas com 'níveis',
+como classes e sagas. Vc tb precisa criar a regra de verificar e
+contabilizar isso, pq o caretaker's talent se elevado ao nível 3 aumenta
+todos as token creatures..."* Regra nova (categoria 13,
+`goldfish-sim-card-rules.md`).
+
+Caretaker's Talent estava com só a habilidade BASE implementada desde a
+Correção #1 ("nível 2/3, fora de escopo") — nunca cheguei a ler o texto
+real de cada nível pra confirmar se valia a pena.
+
+**Texto real (Scryfall):** `{W}: Level 2` — *"When this Class becomes
+level 2, create a token that's a copy of target token you control."*
+`{3}{W}: Level 3` — *"Creature tokens you control get +2/+2."*
+
+**Implementado:**
+- `try_level_up_caretakers_talent()` — sobe de nível como sorcery, pagando
+  o custo real ({W}=1 pro nível 2, {3}{W}=4 pro nível 3).
+- Nível 2: cria uma cópia do Vampire Token (única fonte de token nomeada
+  em volume real do deck) — efeito de UMA VEZ SÓ, sujeito ao dobrador de
+  token (Anointed Procession/Mondrak/Elspeth).
+- Nível 3: `effective_power()` agora soma +2 pra qualquer token-criatura
+  quando o nível 3 é alcançado — **importa de verdade pro limiar do
+  Welcoming Vampire** ("power 2 or less"): Vampire Token 1/1 vira 3/3 e
+  deixa de qualificar assim que o nível 3 é atingido.
+
+**Resultado (n=2000, seed_base=6000000, antes → depois):**
+
+| Métrica | Antes (Correção #15) | Depois (Correção #16) |
+|---|---|---|
+| Avg drain_total | 5,25 | 5,12 |
+| Avg compras via Welcoming Vampire | 0,31 | 0,30 |
+| Caretaker's Talent em campo | (sem nível rastreado) | 14,2% dos jogos, nível 3 em 8,8% |
+| Cópias de token via nível 2 | — | avg 0,04/partida |
+
+Pequena queda no drain_total — esperada: mana que iria pra outros spells
+de drain agora às vezes vai pra subir de nível, e o próprio nível 3 reduz
+levemente as compras do Welcoming Vampire (efeito colateral real e
+correto do anthem).
+
+**Robustez:** sweep de 20.000 jogos (seeds 8000000–8019999, timeout
+2s/jogo) — 0 erros, 0 timeouts.
+
+`lista.md` não mudou.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
