@@ -400,6 +400,34 @@ sugestão, não depois de ser cobrada.
   avaliação de card individual isolado — inclui recomendações de corte,
   adição, e resposta a "vale a pena incluir X?".
 
+## 11. Registrar a regra no arquivo não basta — precisa CONSULTAR o arquivo antes de agir, não só depois de errar
+
+Citação literal do usuário (2026-08-28): *"Parece que vc não registra o que
+te peço para fazer depois…"*
+
+Contexto: esse comentário veio logo depois da Regra 10 ser criada — e é o
+mesmo padrão que já tinha se repetido a tarde toda (Edgar Markov sem
+recursão, Ur-Dragon sem loyalty tracking, corte do Morophon sem curva). Em
+todos os casos a regra relevante já existia neste arquivo, mas só foi
+aplicada de verdade depois que o usuário questionou — não antes, por conta
+própria. Escrever a regra no arquivo é necessário mas não suficiente; falta
+o passo de reler o arquivo ANTES de agir, não confiar em lembrar do que já
+foi registrado em sessões (ou até turnos) anteriores.
+
+- **Antes de qualquer trabalho novo num deck deste usuário** — simulador de
+  goldfish, sugestão de corte/adição/troca, auditoria, ou qualquer resposta
+  que envolva avaliar cartas — **ler de verdade**
+  `references/user-standing-rules.md` e (se for trabalho de simulador)
+  `references/goldfish-sim-card-rules.md` primeiro, como um passo explícito
+  da tarefa, não como conhecimento de fundo presumido.
+- Isso vale mesmo dentro da mesma sessão/conversa — uma regra criada há
+  poucos turnos atrás precisa ser reconsultada na próxima tarefa, não só
+  "lembrada" de memória de curto prazo.
+- Se uma regra já registrada aqui não foi aplicada numa resposta minha, isso
+  é falha de execução (não segui meu próprio processo), não falta de regra
+  — a correção certa é reforçar o hábito de consulta, não necessariamente
+  criar mais uma regra nova pro mesmo problema.
+
 ---
 
 <!-- Adicionar novas regras permanentes abaixo conforme o usuário as
