@@ -238,6 +238,33 @@ Salto real e proporcional ao esperado — Exsanguinate é raro de disparar (prec
 
 ---
 
+## Correção #5 — Stensian preparado podia ser usado na 2ª main phase do MESMO turno, não só no seguinte (usuário corrigiu de novo)
+
+Usuário: *"Os spells preparados que são preparados no combate podem ser cast na second main phase, não precisam esperar um turno."*
+
+Achado real — a Correção #4 (rodada anterior, mesmo dia) implementou o custo real do Exsanguinate mas errou o timing: assumiu que "prepared" só liberava a cópia no turno **seguinte**, por analogia direta com o Emeritus of Woe (que de fato só fica preparado no fim do end step, depois da 2ª main phase — aí sim só dá pra usar no turno de novo). Mas um turno de Magic real é `main phase 1 → combate → main phase 2 → end step`, tudo no mesmo turno — Stensian Sanguinist fica prepared **durante** o combate, e ainda sobra uma main phase inteira **no mesmo turno** pra conjurar a cópia a velocidade de sorcery.
+
+### Corrigido
+
+`try_stensian_prepared_exsanguinate()` agora é chamado logo depois do `combat_step()` em `play_turn()` (a 2ª main phase de verdade), além das 2 janelas que já existiam antes do combate (que continuam válidas como fallback pro turno seguinte — "prepared" não expira no fim do turno, o texto de lembrete não diz isso).
+
+Testado: 300 jogos smoke test (0 erros, as 2 políticas), 25.000 jogos de robustez política default + 15.000 política `COMBO_HUNTING_POLICY=True` (0 erros/timeouts nas 2).
+
+**Impacto real** (`n=2000`, política default, `seed_base=6000000`, comparado com o estado pós-Correção #4):
+
+| métrica | antes (Correção #4) | depois |
+|---|---|---|
+| Avg Exsanguinate conjurados | 0,07 | **0,12** |
+| Avg X total do Exsanguinate | 0,26 | 0,37 |
+| Avg drain_total | 2,42 | 2,54 |
+| Avg lifegain_total | 1,58 | 1,70 |
+
+Alta real e proporcional — a janela extra na mesma turno captura valor que se perderia de vez numa simulação de só 8 turnos (mana que sobrava logo depois do combate mas já tinha sido gasta de novo até o início do turno seguinte, ou o próprio jogo acabando antes de chegar lá).
+
+`lista.md` não mudou.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

@@ -1182,19 +1182,23 @@ def try_emeritus_prepared_tutor(state: GameState, log: List[Dict]):
             state.emeritus_prepared = False
 
 def try_stensian_prepared_exsanguinate(state: GameState, log: List[Dict]):
-    # Stensian Sanguinist "prepared" (setado em combat_step do turno
-    # anterior - so fica preparado DEPOIS do combate, entao so pode ser
-    # conjurado a velocidade de sorcery no PROXIMO turno, mesma
-    # limitacao de 1 turno de atraso que o Emeritus of Woe tem aqui,
-    # ja que este simulador nao modela uma 2a main phase pos-combate).
-    # Exsanguinate ({X}{B}{B}, "each opponent loses X life, you gain
-    # life equal") e' um mana sink puro e um finalizador em potencial -
-    # achado real 2026-08-27 (usuario perguntou direto, apos o mesmo
-    # erro ja corrigido no Emeritus of Woe): AINDA paga o custo real
-    # (nao e' free-cast), entao X = mana sobrando menos o {B}{B} fixo.
-    # So' conjura se X>0 (sem custo de oportunidade em gastar mana que
-    # sobraria sem uso mesmo, mesma logica greedy usada no resto do
-    # motor). Chamado nas mesmas 2 janelas do Emeritus of Woe.
+    # Stensian Sanguinist "prepared" (setado em combat_step, ver
+    # acima). Exsanguinate ({X}{B}{B}, "each opponent loses X life, you
+    # gain life equal") e' um mana sink puro e um finalizador em
+    # potencial. 2 achados reais aqui, os 2 apontados pelo usuario:
+    # (1) 2026-08-27 - a copia AINDA paga o custo real (nao e'
+    # free-cast, mesmo erro ja corrigido no Emeritus of Woe), entao
+    # X = mana sobrando menos o {B}{B} fixo, so' conjura se X>0.
+    # (2) 2026-08-27 (correcao seguinte) - a 1a versao so chamava esta
+    # funcao ANTES do combate (achando que "prepared" so' liberava no
+    # turno SEGUINTE, por analogia errada com o Emeritus of Woe, que de
+    # fato so libera no fim do end step). Mas Stensian fica prepared
+    # DURANTE o combate, e Magic real tem uma 2a main phase logo depois
+    # do combate NO MESMO turno - corrigido chamando esta funcao
+    # tambem logo apos combat_step() em play_turn(). "Prepared" nao
+    # expira no fim do turno (texto de lembrete nao diz isso), entao as
+    # chamadas anteriores ao combate continuam validas como fallback
+    # pro turno seguinte se nao sobrar mana nem na 2a main phase.
     if not state.stensian_prepared:
         return
     if color_sources(state, "B") < 1 or remaining_mana(state) < 2:
@@ -1229,6 +1233,19 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     try_stensian_prepared_exsanguinate(state, log)
     welcoming_vampire_check(state, log)
     combat_step(state, log)
+    # 2a main phase (achado real 2026-08-27, usuario corrigiu de novo:
+    # "Os spells preparados que sao preparados no combate podem ser
+    # cast na second main phase, nao precisam esperar um turno") - o
+    # turno de Magic real tem main phase 1 -> combate -> main phase 2
+    # -> end step, TUDO no mesmo turno. Stensian Sanguinist fica
+    # prepared DURANTE o combate (ver combat_step acima) - errado supor
+    # que so' da pra usar no turno seguinte, quando na real ha uma 2a
+    # main phase disponivel na hora, no mesmo turno, com qualquer mana
+    # que ainda estiver sobrando. As chamadas de try_* la em cima (pre
+    # combate) continuam validas como fallback: "prepared" nao expira
+    # no fim do turno (o texto de lembrete nao diz isso), entao se nao
+    # sobrar mana nem aqui, o proximo turno ainda tenta de novo.
+    try_stensian_prepared_exsanguinate(state, log)
     do_end_step(state, log)
 
     game_log.append(log)
