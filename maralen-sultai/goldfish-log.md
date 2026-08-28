@@ -191,6 +191,109 @@ de longo prazo), mas os ganhos líquidos superam.
 
 ---
 
+## Correção #2 — checklist ampliado (13 categorias: layout real de multi-face, planeswalker loyalty, Classes/Sagas) — 2026-08-28
+
+**Gatilho (usuário):** "Sim por favor", continuando a rodada de auditoria
+completa que já tinha achado gaps sérios em Edgar Markov (Ojer Taq/Legion's
+Landing jogados ilegalmente como terreno) e construído o sistema de loyalty
+completo no Prismatic Bridge. Checklist de 13 categorias aplicado à Maralen
+do zero.
+
+**Categoria 11 (multi-face — layout real via Scryfall):** 3 cartas de dupla
+face na lista. `Brazen Borrower // Petty Theft` e `Thranduil, Sindarin Liege
+// Silvan Rally` confirmadas `layout: adventure` — face de criatura é a
+única legalmente conjurável direto da mão, já cadastradas certas (lado
+Instant/Sorcery de Adventure não implementado é decisão de escopo legítima,
+não bug de regra). **`Growing Rites of Itlimoc // Itlimoc, Cradle of the
+Sun` confirmada `layout: transform`** — cadastrada corretamente como a face
+da frente (Enchantment, {2}{G}, mv 3), mas a tag `"itlimoc"` estava **morta,
+referenciada em lugar nenhum do arquivo**: sem ETB, sem gatilho real de
+transformação, sem a habilidade de mana da face de trás. Card 100% inerte
+num deck onde ela é peça real de ramp+seleção.
+
+Oráculo real (via `scryfall-cache/oracle-cache.json`):
+- Frente: *"When Growing Rites of Itlimoc enters, look at the top four
+  cards of your library. You may reveal a creature card from among them
+  and put it into your hand. Put the rest on the bottom of your library in
+  any order. At the beginning of your end step, if you control four or
+  more creatures, transform Growing Rites of Itlimoc."*
+- Trás (Itlimoc, Cradle of the Sun — Legendary Land, sem custo de
+  conjuração): *"{T}: Add {G}. {T}: Add {G} for each creature you
+  control."*
+
+Implementado: ETB real em `resolve_etb()` (olha top 4, leva criatura pra
+mão via `best_missing_dork()`, resto pro fundo da biblioteca —
+`itlimoc_creatures_found_total`); gatilho de transformação real em
+`end_step()` (4+ criaturas → `state.itlimoc_transformed = True`,
+`itlimoc_transform_turn` registrado); habilidade de mana real em nova
+`itlimoc_mana()` (escolha racional entre as duas ativações — sempre
+`max(1, criaturas em campo)` — somada em `total_mana()`), gated pela flag
+de transformação (a carta é `Card` frozen, não dá pra "trocar o tipo" —
+mesmo padrão já usado no Ojer Taq/Deepest Foundation do Edgar Markov).
+
+**Categoria 12 (planeswalker loyalty):** confirmado via grep — 0
+planeswalkers na lista. N/A, documentado.
+
+**Categoria 13 (Classes/Sagas):** confirmado via grep — 0 Classes/Sagas na
+lista. `Joraga Treespeaker` tem "Level Up" (moldura diferente de Classe,
+mecânica pré-existente desta sessão anterior, já documentada no docstring
+como "nivelado só até nível 1, raramente alcança nível 5 — não forçado");
+não é o gatilho da regra 13 (que é sobre Classe/Saga), mas confirmado que a
+implementação já é fiel ao oráculo real (custo de nível 1 = 2 mana, nível 5
+exigiria 10 mana investidos, quase nunca compensa em 8 turnos).
+
+**Bug adicional achado na auditoria de correção do modelo de estado (não
+fazia parte de nenhuma categoria específica, mas apareceu ao ler
+`resolve_cast()` de perto pra decidir onde plugar o ETB do Itlimoc):**
+instantes e feitiçarias (Counterspell, Toxic Deluge, Pongify, etc.) e o
+próprio Green Sun's Zenith resolviam e **ficavam presos em
+`state.battlefield` pra sempre**, nunca indo pro cemitério. Não corrompia
+nenhuma métrica calculada (todos os filtros de `state.battlefield` checam
+tipo/tag via `is_creature_card`/`is_elf`/`is_faerie`/`LAND_NAMES`, e
+nenhum deles casa com Instant/Sorcery), mas era estado incorreto — e este
+deck não tem hoje nenhuma recursão de cemitério (categoria RECURSION = 0,
+N/A, documentado), então um bug futuro nessa área ficaria mascarado até
+alguém adicionar uma carta de recursão. Corrigido: `resolve_cast()` agora
+manda Instant/Sorcery pro cemitério de verdade (`interaction_spells_cast_total`
+incrementado quando a tag é `"interaction"`); GSZ também vai pro cemitério
+depois de resolver.
+
+**Categoria 10 (métricas básicas — bloco explícito):** `run_batch()` não
+tinha o bloco "Métricas básicas (checklist obrigatório)" presente nos
+outros decks já corrigidos nesta sessão (Markov/Hei Bai/Prismatic Bridge).
+Adicionado: RAMP (peças de rampa conjuradas via novo `ramp_pieces_cast_total`,
+incluindo Itlimoc pós-transformação), DRAW (reaproveita
+`cards_drawn_extra - staff_infinite_draws`), INTERACTION (novo
+`interaction_spells_cast_total`), RECURSION (0,00 — N/A, documentado:
+tutores de biblioteca não contam como recursão de cemitério), FINISHER/
+LETHALITY (combo Umbral Mantle + Staff of Domination/Imperious Perfect,
+sem dano de combate real por ser goldfish solo).
+
+**Resultado (n=2000, seed_base=12345, antes → depois):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg tokens criados | 4,08 | **4,18** |
+| Combo Umbral Mantle montado | 9,1% | **9,6%** |
+| Staff of Domination infinito | 2,0% | **2,2%** |
+| Avg cartas compradas extra | 2,72 | **2,84** |
+| Avg mão final | 1,95 | **1,97** |
+| Itlimoc transformou | N/A (inerte) | **19,4%** dos jogos, turno médio 6,38 |
+| Avg criaturas achadas via ETB do Itlimoc | N/A (inerte) | **0,16** |
+
+Ganho moderado e consistente em todas as métricas que dependem de mana
+disponível (Itlimoc pós-transformação alimenta mais ativações de Imperious
+Perfect, mais chance de atingir o threshold de 4+ mana do combo Umbral
+Mantle) — direção esperada de uma peça de ramp que antes contribuía zero.
+
+**Robustez:** sweep de 20.000 jogos (seeds 900000–919999, timeout 2s/jogo)
+— 0 erros, 0 timeouts.
+
+`lista.md` não mudou. `maralen_v1_runs.jsonl` sobrescrito na próxima
+execução de `__main__`.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

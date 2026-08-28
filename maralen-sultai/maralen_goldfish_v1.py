@@ -224,6 +224,15 @@ ARTIFACT_ISH = {"artifact", "artifact_creature"}
 CREATURE_ISH = {"creature", "artifact_creature"}
 LAND_NAMES = {n for n, c in CARD_DB.items() if c.ctype == "land"}
 
+# Usado so' pra metrica RAMP (categoria 10 do checklist) - qualquer permanente
+# que produza mana alem dos terrenos normais.
+RAMP_TAGS = {
+    "dork_flat1", "dork_bloomtender", "dork_flat1_any", "dork_joraga",
+    "dork_heritage", "dork_birchlore", "dork_per_elf", "dork_per_elf_controlled",
+    "dork_marwyn", "dork_per_creature", "dork_devoted", "rock1", "rock2",
+    "mana_any_creature", "itlimoc",
+}
+
 
 def is_creature_card(name: str) -> bool:
     return CARD_DB[name].ctype in CREATURE_ISH
@@ -317,6 +326,17 @@ class GameState:
     library_emptied: bool = False
     flash_universal_by_turn: dict = field(default_factory=dict)
     flash_with_radagast_by_turn: dict = field(default_factory=dict)
+    ramp_pieces_cast_total: int = 0
+    interaction_spells_cast_total: int = 0
+
+    # Growing Rites of Itlimoc // Itlimoc, Cradle of the Sun (achado real
+    # 2026-08-28, auditoria de checklist categoria 11 - layout real
+    # "transform" confirmado via Scryfall: so' a face da frente e' conjuravel
+    # da mao; a carta estava cadastrada com tag morta, sem ETB, sem gatilho
+    # de transformacao e sem a habilidade de mana real da face de tras).
+    itlimoc_transformed: bool = False
+    itlimoc_transform_turn: Optional[int] = None
+    itlimoc_creatures_found_total: int = 0
 
 
 def draw_cards(state: GameState, n: int):
@@ -490,11 +510,25 @@ def rocks_mana(state: GameState) -> int:
     return total
 
 
+def itlimoc_mana(state: GameState) -> int:
+    """Itlimoc, Cradle of the Sun (face de tras, so' ativa apos transformar):
+    real oraculo e' '{T}: Add {G}.' OU '{T}: Add {G} for each creature you
+    control.' — duas habilidades de mana distintas, escolha do jogador a
+    cada ativacao. Um piloto racional sempre escolhe a de maior producao;
+    modelado como max(1, criaturas em campo) pra nunca ficar abaixo da
+    habilidade fixa."""
+    if not state.itlimoc_transformed:
+        return 0
+    creatures_in_play = (sum(1 for n in state.battlefield if is_creature_card(n))
+                          + state.elf_tokens + state.faerie_tokens)
+    return max(1, creatures_in_play)
+
+
 def total_mana(state: GameState) -> int:
     lands = sum(1 for n in state.battlefield if n in LAND_NAMES) - len(state.tapped_lands_this_turn)
     if state.infinite_mana_this_turn:
         return 999  # ja confirmado infinito neste turno; nao precisa somar o resto
-    return lands + rocks_mana(state) + dork_mana(state)
+    return lands + rocks_mana(state) + dork_mana(state) + itlimoc_mana(state)
 
 
 def remaining_mana(state: GameState) -> int:
@@ -563,6 +597,22 @@ def resolve_etb(state: GameState, name: str):
         if not other_faeries:
             leave_battlefield(state, name, to_graveyard=True)
 
+    if "itlimoc" in tags:
+        # Growing Rites of Itlimoc (face da frente) - oraculo real: "When
+        # Growing Rites of Itlimoc enters, look at the top four cards of
+        # your library. You may reveal a creature card from among them and
+        # put it into your hand. Put the rest on the bottom of your library
+        # in any order."
+        top4 = state.library[:4]
+        del state.library[:4]
+        creatures = [c for c in top4 if is_creature_card(c)]
+        if creatures:
+            best = best_missing_dork(state, creatures)
+            top4.remove(best)
+            state.hand.append(best)
+            state.itlimoc_creatures_found_total += 1
+        state.library.extend(top4)
+
     # Elvish Warmaster: token 1x/turno quando OUTRO elfo entra (checado no caller)
 
 
@@ -623,6 +673,8 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
             state.commander_cast_turn = state.turn
     if is_creature_card(name):
         state.creature_cast_turn[name] = state.turn
+    if CARD_DB[name].tags & RAMP_TAGS:
+        state.ramp_pieces_cast_total += 1
     if "elf_etb_counter" not in CARD_DB[name].tags:
         pass
     if is_elf(name) and "Marwyn, the Nurturer" in state.battlefield and name != "Marwyn, the Nurturer":
@@ -661,6 +713,16 @@ def resolve_cast(state: GameState, name: str, free: bool = False):
         return
     if CARD_DB[name].ctype == "sorcery" and "gsz" in CARD_DB[name].tags:
         return  # tratado em cast_green_sun_zenith
+    if CARD_DB[name].ctype in ("instant", "sorcery"):
+        # Achado real 2026-08-28 (auditoria de checklist): instantes e
+        # feiticarias (Counterspell, Toxic Deluge, etc.) resolvem e vao pro
+        # cemiterio - antes ficavam presos em "battlefield" pra sempre
+        # (nunca corrompia is_creature_card/is_elf/is_faerie/LAND_NAMES,
+        # que filtram por tipo/tag, mas era estado incorreto mesmo assim).
+        if "interaction" in CARD_DB[name].tags:
+            state.interaction_spells_cast_total += 1
+        state.graveyard.append(name)
+        return
     enter_battlefield(state, name, from_hand=False)
 
 
@@ -681,6 +743,7 @@ def cast_green_sun_zenith(state: GameState):
     x = CARD_DB[best].mv
     spend_mana(state, x + 1)
     state.hand.remove("Green Sun's Zenith")
+    state.graveyard.append("Green Sun's Zenith")
     state.library.remove(best)
     enter_battlefield(state, best, from_hand=False)
     state.tutors_used_total += 1
@@ -896,6 +959,15 @@ def end_step(state: GameState):
         state.life -= 1
         create_token(state, "faerie", source="Bitterblossom")
         # Bitterblossom e Enchantment, nao Criatura — Roaming Throne nao dobra o proprio gatilho dela.
+    if ("Growing Rites of Itlimoc // Itlimoc, Cradle of the Sun" in state.battlefield
+            and not state.itlimoc_transformed):
+        # Oraculo real: "At the beginning of your end step, if you control
+        # four or more creatures, transform Growing Rites of Itlimoc."
+        creatures_in_play = (sum(1 for n in state.battlefield if is_creature_card(n))
+                              + state.elf_tokens + state.faerie_tokens)
+        if creatures_in_play >= 4:
+            state.itlimoc_transformed = True
+            state.itlimoc_transform_turn = state.turn
 
 
 def upkeep_step(state: GameState):
@@ -1038,6 +1110,31 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Staff of Domination converteu em compra infinita: {100*staff_hits/n:.1f}% dos jogos")
     print(f"Avg cartas compradas extra (motores de draw, exclui staff infinito): {avg([s.cards_drawn_extra - s.staff_infinite_draws for s in states]):.2f}")
     print(f"Avg mao final: {avg([len(s.hand) for s in states]):.2f}")
+
+    itlimoc_hits = sum(1 for s in states if s.itlimoc_transformed)
+    print(f"Growing Rites of Itlimoc transformou em Itlimoc, Cradle of the Sun: {100*itlimoc_hits/n:.1f}% dos jogos"
+          + (f" | turno medio: {avg([s.itlimoc_transform_turn for s in states if s.itlimoc_transform_turn is not None]):.2f}" if itlimoc_hits else ""))
+    print(f"Avg criaturas encontradas via ETB do Growing Rites of Itlimoc: {avg([s.itlimoc_creatures_found_total for s in states]):.2f}")
+
+    # --- Metricas basicas (checklist obrigatorio, categoria 10) --------------
+    # Reportadas explicitamente mesmo quando 0, pra deixar auditavel de
+    # relance sem precisar somar manualmente.
+    print("--- Metricas basicas (checklist obrigatorio) ---")
+    print(f"RAMP: avg pecas de rampa conjuradas (dorks elficos, Sol Ring/Arcane Signet, Cryptolith Rite/"
+          f"Elven Chorus, Itlimoc pos-transformacao): {avg([s.ramp_pieces_cast_total for s in states]):.2f}")
+    print(f"DRAW: avg compras extras totais (Kindred Discovery, Cloud of Faeries, biblioteca via mulligan "
+          f"nao contada aqui - exclui staff infinito): {avg([s.cards_drawn_extra - s.staff_infinite_draws for s in states]):.2f}")
+    print(f"INTERACTION: avg spells de interacao conjurados (Arcane Denial, Counterspell, Swan Song, "
+          f"Pongify, Rapid Hybridization, Reality Shift, Assassin's Trophy, Cyclonic Rift, Toxic Deluge, "
+          f"Heroic Intervention - conjurados quando ha mana sobrando, sem efeito de combate real por ser "
+          f"goldfish solo sem oponente): {avg([s.interaction_spells_cast_total for s in states]):.2f}")
+    print(f"RECURSION: 0.00 (N/A - esta decklist nao tem nenhuma carta que devolva permanente do cemiterio "
+          f"pro campo/mao; Fauna Shaman/Elvish Harbinger/Faerie Harbinger/Formidable Speaker/Green Sun's "
+          f"Zenith sao tutores de BIBLIOTECA, categoria diferente por definicao)")
+    print(f"FINISHER/LETHALITY: combo infinito (Umbral Mantle em dork escalavel 4+) monta em "
+          f"{100*combo_hits/n:.1f}% dos jogos, convertido em compra infinita via Staff of Domination em "
+          f"{100*staff_hits/n:.1f}% ou exercito infinito de Elfo via Imperious Perfect quando disponivel "
+          f"(sem dano de combate real medido - goldfish solo sem oponente/vida alheia)")
     return states
 
 
