@@ -308,7 +308,7 @@ add("Vito, Fanatic of Aclazotz", 4, "Creature", colors={"B", "W"}, produces=set(
 add("Vito, Thorn of the Dusk Rose", 3, "Creature", colors={"B"}, produces=set(), tags={"drain_aristocrats", "vampire_type"})
 add("Welcoming Vampire", 3, "Creature", colors={"W"}, produces=set(), tags={"draw", "vampire_type"})
 add("Zulaport Cutthroat", 2, "Creature", colors={"B"}, produces=set(), tags={"drain_aristocrats"})
-add("Arcane Signet", 2, "Artifact", colors=set(), produces={"B", "G", "R", "U", "W"}, tags={"ramp"})
+add("Arcane Signet", 2, "Artifact", colors=set(), produces={"B", "R", "W"}, tags={"ramp"})
 add("Ashnod's Altar", 3, "Artifact", colors=set(), produces={"C"}, tags={"ramp"})
 add("Phyrexian Altar", 3, "Artifact", colors=set(), produces={"B", "G", "R", "U", "W"}, tags={"ramp"})
 add("Skullclamp", 1, "Artifact", colors=set(), produces=set(), tags={"draw"})
@@ -346,14 +346,14 @@ add("Vindicate", 3, "Sorcery", colors={"B", "W"}, produces=set(), tags={"removal
 add("Arid Mesa", 0, "Land", colors=set(), produces={"R", "W"}, tags=set())  # busca Mountain ou Plains
 add("Battlefield Forge", 0, "Land", colors={"R", "W"}, produces={"C", "R", "W"}, tags=set())
 add("Blackcleave Cliffs", 0, "Land", colors={"B", "R"}, produces={"B", "R"}, tags=set())
-add("Blazemire Verge", 0, "Land", colors={"B", "R"}, produces={"B", "R"}, tags=set())
+add("Blazemire Verge", 0, "Land", colors={"B", "R"}, produces={"B", "R"}, tags={"verge_mountain_gate"})
 add("Blood Crypt", 0, "Land", colors={"B", "R"}, produces={"B", "R"}, tags=set())
 add("Bloodstained Mire", 0, "Land", colors=set(), produces={"B", "R"}, tags=set())  # busca Swamp ou Mountain
 add("Cabal Coffers", 0, "Land", colors={"B"}, produces={"B"}, tags=set())
-add("Cavern of Souls", 0, "Land", colors=set(), produces={"B", "C", "G", "R", "U", "W"}, tags=set())
+add("Cavern of Souls", 0, "Land", colors=set(), produces={"B", "R", "W"}, tags={"vampire_only_color"})
 add("City of Brass", 0, "Land", colors=set(), produces={"B", "G", "R", "U", "W"}, tags=set())
 add("Command Tower", 0, "Land", colors=set(), produces={"B", "G", "R", "U", "W"}, tags=set())
-add("Fetid Heath", 0, "Land", colors={"B", "W"}, produces={"B", "C", "W"}, tags=set())
+add("Fetid Heath", 0, "Land", colors={"B", "W"}, produces={"B", "W"}, tags={"filter_land"})
 add("Fountainport", 0, "Land", colors=set(), produces={"C"}, tags={"draw", "token_maker"})
 add("Godless Shrine", 0, "Land", colors={"B", "W"}, produces={"B", "W"}, tags=set())
 add("Haunted Ridge", 0, "Land", colors={"B", "R"}, produces={"B", "R"}, tags=set())
@@ -363,14 +363,14 @@ add("Marsh Flats", 0, "Land", colors=set(), produces={"W", "B"}, tags=set())  # 
 add("Minas Tirith", 0, "Land", colors={"W"}, produces={"W"}, tags={"draw"})
 add("Plains", 0, "Land", colors={"W"}, produces={"W"}, tags=set())
 add("Phyrexian Tower", 0, "Land", colors={"B"}, produces={"B", "C"}, tags=set())
-add("Rugged Prairie", 0, "Land", colors={"R", "W"}, produces={"C", "R", "W"}, tags=set())
+add("Rugged Prairie", 0, "Land", colors={"R", "W"}, produces={"R", "W"}, tags={"filter_land"})
 add("Savai Triome", 0, "Land", colors={"B", "R", "W"}, produces={"B", "R", "W"}, tags={"draw"})
 add("Spectator Seating", 0, "Land", colors={"R", "W"}, produces={"R", "W"}, tags=set())
 add("Swamp", 0, "Land", colors={"B"}, produces={"B"}, tags=set())
 add("Takenuma, Abandoned Mire", 0, "Land", colors={"B"}, produces={"B"}, tags=set())
 add("Urborg, Tomb of Yawgmoth", 0, "Land", colors=set(), produces={"B"}, tags=set())
 add("Urza's Saga", 0, "Land", colors=set(), produces={"C"}, tags={"token_maker"})
-add("Voldaren Estate", 0, "Land", colors=set(), produces={"B", "C", "G", "R", "U", "W"}, tags={"draw", "token_maker"})
+add("Voldaren Estate", 0, "Land", colors=set(), produces={"B", "R", "W"}, tags={"vampire_only_color", "token_maker"})
 add("Westvale Abbey // Ormendahl, Profane Prince", 0, "Land", colors={"B"}, produces={"C"}, tags={"token_maker"})
 
 # Achado real 2026-08-27 (usuario: "Todas as cartas auditadas... tokens
@@ -559,6 +559,9 @@ class GameState:
     edgar_attack_counters_total: int = 0
     edgar_attack_turns: int = 0
 
+    adanto_tokens_created: int = 0
+    minas_tirith_draws: int = 0
+
     drain_total: int = 0
     lifegain_total: int = 0
     creatures_sacrificed_total: int = 0
@@ -685,6 +688,7 @@ class GameState:
 # `Land — Plains Swamp`) mas nao tem "Swamp" no proprio nome. Cabal
 # Coffers ("Add B for each Swamp you control") ficava subcontando.
 SWAMP_TYPED_LANDS = {"Swamp", "Blood Crypt", "Godless Shrine"}
+MOUNTAIN_TYPED_LANDS = {"Mountain", "Blood Crypt", "Savai Triome"}
 
 def swamp_count(state: GameState) -> int:
     if state.has("Urborg, Tomb of Yawgmoth"):
@@ -724,11 +728,79 @@ def try_cabal_coffers(state: GameState, log: List[Dict]):
     state.mana_spent_this_turn -= net
     log.append({"trigger": "cabal_coffers", "swamps": sc, "net": net, "turn": state.turn})
 
-def color_sources(state: GameState, color: str) -> int:
+def try_adanto(state: GameState, log: List[Dict]):
+    # Achado real 2026-08-28 (auditoria de checklist de mecanica): a
+    # habilidade da Adanto ("{2}{W}, {T}: Create a 1/1 white Vampire
+    # creature token with lifelink") estava so tagueada como
+    # "token_maker", nunca despachada. {T} = uma ativacao por turno.
+    if not state.has("Legion's Landing // Adanto, the First Fort"):
+        return
+    if remaining_mana(state) < 3 or color_sources(state, "W") < 1:
+        return
+    state.mana_spent_this_turn += 3
+    n = token_multiplier(state)
+    for _ in range(n):
+        state.tokens.append("Vampire Token")
+        state.battlefield.append("Vampire Token")
+    state.adanto_tokens_created += n
+    on_creature_enters(state, log, "Vampire Token", count=n)
+    log.append({"trigger": "adanto_token", "count": n, "turn": state.turn})
+
+def try_minas_tirith(state: GameState, log: List[Dict]):
+    # Achado real 2026-08-28 (auditoria de checklist de mecanica): a
+    # habilidade "{1}{W}, {T}: Draw a card. Activate only if you attacked
+    # with two or more creatures this turn" estava so tagueada como
+    # "draw", nunca despachada. Esse motor assume que TODAS as criaturas
+    # atacam desimpedidas a cada combate (mesma premissa ja usada pro
+    # contador de ataque do proprio Edgar) - "atacou com 2+" vira "2+
+    # criaturas em campo no momento do combate". {T} = uma vez por turno,
+    # chamado logo depois de combat_step().
+    if not state.has("Minas Tirith") or not state.commander_in_play:
+        return
+    if state.turn <= state.commander_cast_turn:
+        return  # sem combate ainda nesse turno (mesmo guard do combat_step)
+    n_creatures = sum(1 for c in state.battlefield if is_creature(c))
+    if n_creatures < 2:
+        return
+    if remaining_mana(state) < 2 or color_sources(state, "W") < 1:
+        return
+    state.mana_spent_this_turn += 2
+    state.draw(1)
+    state.minas_tirith_draws += 1
+    log.append({"trigger": "minas_tirith_draw", "attackers_proxy": n_creatures, "turn": state.turn})
+
+def color_sources(state: GameState, color: str, for_vampire: bool = False) -> int:
+    """Conta fontes de mana colorida REAIS pra `color`, respeitando
+    restricoes de uso do oraculo real (achado 2026-08-28, auditoria de
+    checklist de mecanica):
+    - Cavern of Souls / Voldaren Estate (tag "vampire_only_color"): a mana
+      colorida so pode ser gasta pra conjurar um spell de criatura Vampiro
+      (Cavern) / spell Vampiro (Voldaren) - nao vale pra qualquer spell.
+    - Fetid Heath / Rugged Prairie (tag "filter_land"): sao filter lands -
+      precisam de uma fonte de mana colorida JA existente (W/B ou R/W) pra
+      "filtrar", nao produzem cor do nada. Aproximado aqui como: so contam
+      se existir OUTRA fonte real da mesma cor em campo.
+    - Blazemire Verge (tag "verge_mountain_gate"): {T}: Add {B} sempre, mas
+      {T}: Add {R} so se controlar Swamp ou Mountain."""
     n = 0
     for card in state.battlefield:
-        if color in C(card).produces:
-            n += 1
+        if color not in C(card).produces:
+            continue
+        if has_tag(card, "vampire_only_color") and not for_vampire:
+            continue
+        if has_tag(card, "verge_mountain_gate") and color == "R":
+            if swamp_count(state) <= 0 and not any(m in state.battlefield for m in MOUNTAIN_TYPED_LANDS):
+                continue
+        if has_tag(card, "filter_land"):
+            has_other_source = any(
+                other != card and color in C(other).produces
+                and not has_tag(other, "filter_land")
+                and not (has_tag(other, "vampire_only_color") and not for_vampire)
+                for other in state.battlefield
+            )
+            if not has_other_source:
+                continue
+        n += 1
     return n
 
 def remaining_mana(state: GameState) -> int:
@@ -741,8 +813,9 @@ def can_cast(state: GameState, card: str) -> bool:
     mv = commander_effective_mv(state) if card == COMMANDER else C(card).mv
     if remaining_mana(state) < mv:
         return False
+    vamp = is_vampire(card) and C(card).type == "Creature"
     for color in C(card).colors:
-        if color_sources(state, color) < 1:
+        if color_sources(state, color, for_vampire=vamp) < 1:
             return False
     return True
 
@@ -1564,6 +1637,7 @@ def main_phase(state: GameState, log: List[Dict]):
         log.append({"action": "cast_commander", "turn": state.turn})
 
     try_cabal_coffers(state, log)
+    try_adanto(state, log)
     cast_available_spells(state, log)
     try_emeritus_prepared_tutor(state, log)
     try_stensian_prepared_exsanguinate(state, log)
@@ -1644,6 +1718,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     welcoming_vampire_check(state, log)
     caretakers_talent_check(state, log)
     combat_step(state, log)
+    try_minas_tirith(state, log)
     # 2a main phase (achado real 2026-08-27, usuario corrigiu de novo:
     # "Os spells preparados que sao preparados no combate podem ser
     # cast na second main phase, nao precisam esperar um turno") - o
@@ -1698,6 +1773,8 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "mulligans": mulligans,
         "commander_cast_turn": state.commander_cast_turn,
         "eminence_tokens_created": state.eminence_tokens_created,
+        "adanto_tokens_created": state.adanto_tokens_created,
+        "minas_tirith_draws": state.minas_tirith_draws,
         "edgar_attack_counters_total": state.edgar_attack_counters_total,
         "edgar_attack_turns": state.edgar_attack_turns,
         "drain_total": state.drain_total,
@@ -1754,6 +1831,8 @@ def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base
         print(f"Turno medio de conjuracao do Edgar Markov: {statistics.mean(cmd_turns):.2f} | mediana: {statistics.median(cmd_turns)}")
     print(f"Nunca conjurado em {turns} turnos: {100*never/n:.1f}%")
     print(f"Avg tokens de Vampiro via Eminence: {sum(r['eminence_tokens_created'] for r in results)/n:.2f}")
+    print(f"Avg tokens de Vampiro via Adanto (agora despachado): {sum(r['adanto_tokens_created'] for r in results)/n:.2f}")
+    print(f"Avg compras via Minas Tirith (agora despachado): {sum(r['minas_tirith_draws'] for r in results)/n:.2f}")
     print(f"Avg turnos em que Edgar atacou: {sum(r['edgar_attack_turns'] for r in results)/n:.2f}")
     print(f"Avg contadores +1/+1 distribuidos (ataque do Edgar): {sum(r['edgar_attack_counters_total'] for r in results)/n:.2f}")
     print(f"Avg drain_total (proxy de vida perdida pelo oponente): {sum(r['drain_total'] for r in results)/n:.2f}")

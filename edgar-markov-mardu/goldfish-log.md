@@ -412,6 +412,80 @@ Testado: 500 jogos smoke test (0 erros, as 2 políticas), 25.000 jogos de robust
 
 ---
 
+## Correção #9 — checklist obrigatória de mecânica (regra nova pós-Beorn), terrenos de fixação e Minas Tirith/Adanto
+
+**Gatilho (usuário):** depois de eu entregar o Beorn sem despacho de landfall
+nenhum, o usuário pediu auditoria da checklist nova (landfall, mana dorks,
+mana rocks, fixing lands, draw engines, ramp engines, ativadas repetíveis,
+combos) em **todos** os decks — inclusive este, que eu já tinha declarado
+"pronto" antes. Rodada dedicada via agente de auditoria comparando
+`oracle_text` real contra o código.
+
+**Landfall/dorks/draw/ramp:** N/A ou verificados corretos (0 mana dorks no
+deck; landfall N/A, 0 cartas; draw engines já cobertos nas rodadas
+anteriores). **Bugs reais achados em fixing lands/rocks e 2 habilidades
+tagueadas nunca despachadas:**
+
+- **Arcane Signet**: `produces={"B","G","R","U","W"}` — texto real é "any
+  color in your commander's color identity" (Mardu = B/R/W, G/U vazando à
+  toa). Corrigido pra `{"B","R","W"}`.
+- **Cavern of Souls**: modelada como fonte incondicional de qualquer cor.
+  Texto real: `{T}: Add {C}` incondicional, MAS a mana colorida só vale
+  "pra conjurar um creature spell do tipo escolhido" (Vampiro, mesma
+  convenção do Roaming Throne). Corrigido: nova tag `vampire_only_color`,
+  `color_sources()` só conta essa fonte pra spells de criatura Vampiro.
+- **Voldaren Estate**: mesmo padrão — real: `{T}: Add {C}` sempre, `{T},
+  Pay 1 life: Add one mana of any color. Spend this mana only to cast a
+  Vampire spell` (esse sim não rastreia vida própria, custo tratado como
+  sempre pago, mesma convenção já usada noutros decks pra custos de vida
+  não-modelados). Também tinha a tag `"draw"` incorreta — Voldaren não tem
+  nenhuma habilidade de compra no oráculo real, removida.
+- **Fetid Heath / Rugged Prairie**: são *filter lands* — precisam de uma
+  fonte de mana colorida JÁ existente pra filtrar (`{W/B}, {T}: Add
+  WW/WB/BB`), não produzem cor do nada. Modeladas como fonte incondicional
+  antes. Corrigido: nova tag `filter_land`, só conta como fonte real da cor
+  se existir OUTRA fonte real da mesma cor em campo.
+- **Blazemire Verge**: `{T}: Add {B}` sempre, mas `{T}: Add {R}. Activate
+  only if you control a Swamp or a Mountain` — o R estava incondicional.
+  Corrigido: nova tag `verge_mountain_gate` + `MOUNTAIN_TYPED_LANDS` (Blood
+  Crypt, Savai Triome — únicos com o tipo Mountain real nesta lista).
+- **Minas Tirith**: `{1}{W}, {T}: Draw a card. Activate only if you
+  attacked with two or more creatures this turn` — tagueada `"draw"`, nunca
+  despachada. Implementado (`try_minas_tirith`, chamado logo após
+  `combat_step`): esse motor assume que TODAS as criaturas atacam
+  desimpedidas a cada combate (mesma premissa já usada pro contador de
+  ataque do próprio Edgar), então "atacou com 2+" vira "2+ criaturas em
+  campo no momento do combate".
+- **Adanto, the First Fort** (verso de Legion's Landing): `{2}{W}, {T}:
+  Create a 1/1 white Vampire creature token with lifelink` — tagueada
+  `"token_maker"`, nunca despachada. Implementado (`try_adanto`, chamado no
+  `main_phase` junto com `try_cabal_coffers`), respeitando
+  `token_multiplier()` (Anointed Procession/Mondrak/Elspeth).
+
+**Resultado (n=2000, seed_base=6000000, política normal, antes → depois):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg drain_total | 4,86 | 4,44 |
+| Avg lifegain_total | 3,35 | 3,04 |
+| Avg drains via Sanctum Seeker | 0,88 | 0,75 |
+| Avg tokens via Adanto (novo) | — | 0,68 |
+| Avg compras via Minas Tirith (novo) | — | 0,15 |
+
+Queda pequena e no sentido esperado nas métricas de drain/lifegain — os
+terrenos de fixação sobre-generosos (Cavern/Voldaren/Arcane Signet)
+facilitavam levemente mais vampiros em campo cedo; corrigir isso desacelera
+um pouco. Os dois novos motores (Adanto, Minas Tirith) agora contribuem
+valor real que antes ficava zerado.
+
+**Robustez:** sweep de 15.000 jogos em cada política (normal e
+combo-hunting), seeds 6000000–6014999, timeout 2s/jogo — 0 erros, 0
+timeouts nas duas.
+
+`lista.md` não mudou.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
