@@ -487,6 +487,132 @@ Confirma a hipótese do seu Jogo 6: a taxa de finisher estava mesmo subestimada 
 
 ---
 
+### Correção #5 — "TODOS os gatilhos do deck", auditoria final carta por carta
+
+**Gatilho (usuário):** *"Quero TODOS os gatilhos do deck contabilizadoa na simulação. Corrija isso e rode a simulação 5k vezes, me dê os números e explique o seu significado individual."*
+
+Reli o arquivo inteiro (1186 linhas na época) e comparei, carta por carta, os 69 nomes únicos do decklist contra o `oracle_text` real de cada uma (via `scryfall-cache/oracle-cache.json`, nunca por memória). Confirmei primeiro que nenhuma carta do decklist está ausente do `CARD_DB` (69 únicas, 71 entradas incluindo comandante + Bear Token — sem fallback genérico escondido). Depois, gatilho por gatilho, achei 12 gaps reais 100% ausentes ou mecanicamente errados:
+
+1. **The Great Henge** — sua PRÓPRIA habilidade de mana (`{T}: Add {G}{G}. You gain 2 life.`) nunca tinha sido implementada — só o gatilho de ETB (+1/+1 counter e compra) existia. A carta ficava em campo sem nunca produzir a mana que ela deveria.
+2. **Defiler of Vigor** — só a metade de redução de custo existia. A metade que dá valor de verdade, *"Whenever you cast a green permanent spell, put a +1/+1 counter on each creature you control"*, estava 100% ausente.
+3. **Eternal Witness** — ETB *"return target card from your graveyard to your hand"* 100% ausente (a carta só existia como corpo 2/1).
+4. **Sakura-Tribe Elder** — erro mecânico, não só ausência: o código tratava ela como se tivesse ETB igual ao Cultivate, buscando a land E deixando o corpo 1/1 em campo pra sempre. O texto real é uma habilidade de **sacrifício** (*"Sacrifice this creature: Search your library for a basic land card..."*), não ETB — na Magic de verdade você escolhe entre manter o corpo OU sacrificar pela land, nunca os dois. Corrigido pra sacrificar de verdade no turno em que é conjurada (papel de rampa no decklist, tag `ramp`).
+5. **Natural Order** — 100% ausente (sacrifica uma criatura verde, busca uma criatura verde da biblioteca direto pro campo). Implementado com gate em `can_cast()` (só é castável se existir uma criatura verde em campo pra sacrificar) e prioridade de busca pros finishers (Craterhoof Behemoth > Ghalta > Gigantic Big Bear).
+6. **Lumra, Bellow of the Woods** — ETB *"mill four cards, then return all land cards from your graveyard to the battlefield tapped"* 100% ausente.
+7. **Titania's Command** — "Choose two" dos 4 modos reais, 100% ausente. Modelado escolhendo sempre "buscar 2 terrenos" + "criar 2 Bears" (os 2 modos que não dependem de estado do oponente — o modo de exilar cemitério exigiria inventar o cemitério de um oponente).
+8. **Archdruid's Charm** — a carta estava marcada com a tag `"removal"` e contando pro `removal_cast`, mas dos 3 modos reais ("Choose one"), 2 deles (contador+fight numa criatura do oponente; exilar artefato/encantamento do oponente) exigem um alvo que o oponente controla — proibido pela regra permanente de nunca inventar estado do oponente. Só o modo de tutor (criatura ou land) é legítimo nesse motor, então a carta NUNCA executa remoção de verdade aqui — a tag `"removal"` estava contando algo que nunca acontecia. Corrigido: tag trocada pra só `"tutor_modal"`, e o modo de tutor implementado de verdade (busca land se fontes verdes < 4, senão busca criatura verde pra mão).
+9. **Springleaf Parade** — ETB (X tokens Shapeshifter changeling, X=1 pela mesma convenção de mv fixo já usada nesse arquivo pra outras cartas de custo `{X}`) E o estático (*"Creature tokens you control have '{T}: Add one mana of any color'"* — vale pra Bear Token também, não só pro próprio token dela) estavam 100% ausentes.
+10. **Ohran Frostfang / Toski, Bearer of Secrets** — *"Whenever a creature you control deals combat damage to a player, draw a card"* 100% ausente porque não existia NENHUM modelo de combate/ataque genérico nesse arquivo (só o gatilho específico da Beorn). Construído um modelo mínimo: toda criatura apta a atacar (sem doença de invocação) é assumida atacando desimpedida a cada combate — mesma convenção já usada em outros decks da sessão pra esse tipo de gatilho, documentada como premissa (esse motor solo-goldfish não modela bloqueadores do oponente).
+11. **Bug lateral encontrado ao construir o modelo de combate:** o próprio gatilho de ataque da Beorn (*"Whenever Beorn attacks..."*) disparava mesmo no turno em que ela era conjurada — ilegal (CR 302.6, doença de invocação também vale pra atacar, não só pra habilidades de `{T}`). Corrigido junto, gatilho agora gated por `can_attack()`.
+12. **War Room / Nykthos, Shrine to Nyx** — as duas habilidades ativadas dos terrenos (War Room: `{3},{T}`, paga vida = cores na identidade do comandante, compra 1 — mono-verde = 1 vida; Nykthos: `{2},{T}`, adiciona mana = devoção à cor escolhida) estavam 100% ausentes, apesar dos terrenos já estarem em campo contando mana genérica. Implementadas com um limiar de rentabilidade pro Nykthos (só ativa com devoção ≥ 4, já que perde a mana base do terreno + paga {2} adicional).
+
+**Deliberadamente NÃO implementado nesta rodada (documentado, não omitido):**
+- **Bala Ged Recovery** (lado Sorcery, "return card from graveyard to hand") e a Aventura "Till and Tend" da **Beorn, Reluctant Host** (extra land drop) — o motor só modela UM modo de cast por carta; ambas já têm o modo real e completo do lado escolhido (land / criatura) totalmente implementado. Modelar os dois modos exigiria lógica de decisão dupla por carta MDFC/Aventura, desproporcional ao ganho pra 2 cartas — mantido como simplificação de escopo, não como gatilho ausente.
+- **Chameleon Colossus** (pump `{1}{G}: +X/+X`) e **Ezuri's Predation** (exige criaturas do oponente) — exigem estado do oponente que esse motor não modela; consistente com a regra permanente de nunca inventar esse estado.
+- **Scavenger Grounds** (sacrificar um Deserto pra exilar cemitérios) e **Boseiju, Who Endures** (Channel, alvo é permanente do oponente) — mesma razão, valor baixo/dependente de oponente.
+- **Obscuring Haze** (`free_with_commander`) — o fog em si não tem alvo numérico nesse motor sem combate contra oponentes modelado; a isenção de custo condicional foi deixada de fora por ser baixo valor mesmo se implementada.
+
+**Resultado (n=2000, seed_base=6000000, mesmos parâmetros da Correção #4, antes → depois):**
+
+| Métrica | Antes (Correção #4) | Depois (Correção #5) |
+|---|---|---|
+| Avg spells cast | 11.53 | 12.15 |
+| Avg extra draws (gatilhos) | 9.56 | **14.39** |
+| Avg Bear count final | 6.41 | 6.58 |
+| Beorn "draw 2" triggers (3+ Bears) | 3.16 | **2.73** |
+| Beorn combat triggers | 4.25 | **3.50** |
+| Avg finishers resolvidos | 0.23 | 0.37 |
+| **% de jogos com finisher até T8** | **21.6%** | **32.9%** |
+| Avg turno do 1º finisher relevante | 6.71 | 6.59 |
+| Avg contadores +1/+1 totais no board | 8.60 | 10.88 |
+| Avg cartas descartadas por limite de mão | 0.93 | **3.54** |
+| Avg battlefield final | 17.59 | 19.19 |
+| Avg mão final | 6.09 | 7.88 |
+
+Os dois números que caem (gatilhos de combate/compra-2 da Beorn) são a correção do bug lateral (#11) — antes disparavam ilegalmente no turno do próprio cast da Beorn, agora só disparam quando ela pode atacar de verdade. Todo o resto sobe, e a taxa de finisher até T8 sobe de forma grande (21,6% → 32,9%) — a maior parte vem do Natural Order (cheat direto de Craterhoof/Ghalta pro campo, 14,5% dos jogos) e do Great Henge finalmente produzindo a própria mana (acelera tudo que vem depois). O salto de cartas descartadas por limite de mão (0,93 → 3,54) é consequência direta do motor de combate novo do Ohran Frostfang/Toski — com a premissa de "toda criatura apta ataca desimpedida", o total de compras extras quase dobrou (9,56 → 14,39), e a mão frequentemente estoura o limite de 7.
+
+**Robustez:** sweep de 20.000 jogos (seeds 500000–519999, timeout de 2s/jogo) — 0 erros, 0 timeouts.
+
+**Rodada oficial solicitada (n=5000, seed_base=91000 padrão do script):**
+
+```
+=== Beorn the Fierce — Goldfish Summary v1 (simulado por Claude) ===
+Games: 5000 | Turns: 8 | Multiplayer (compra sempre no T1, CR 103.8a)
+
+Avg mulligans: 0.43
+Avg commander cast turn: 4.23
+Commander cast by turn 4: 66.6%
+Commander cast by turn 5: 88.5%
+
+Avg spells cast: 12.13
+Avg extra draws (gatilhos): 14.37
+Avg Bear count final: 6.60
+Avg Beorn 'draw 2' triggers (3+ Bears): 2.67
+Avg Beorn combat triggers (converteu em Bear): 3.42
+Avg ramp pieces em campo: 3.20
+Avg remocao conjurada: 0.68
+Avg finishers resolvidos: 0.37
+Avg turno do 1o finisher relevante: 6.62
+% de jogos com finisher ate T8: 31.8%
+Avg cartas descartadas por limite de mao: 3.45
+Avg battlefield final: 19.29
+
+Managorger Hydra conjurada em 20.5% dos jogos
+  Avg contadores +1/+1 finais: 7.90
+  Removida por remocao (premissa de ~4 turnos vivos) em 39.9% dos jogos, turno medio: 6.62
+
+Germination Practicum conjurada em 7.7% dos jogos
+Avg contadores +1/+1 totais no board (soma de todas as fontes): 11.20
+
+Natural Order conjurada em 14.8% dos jogos
+Lumra: terrenos devolvidos do cemiterio em 4.9% dos jogos, media de 1.72 por jogo em que resolveu
+Titania's Command conjurada em 16.4% dos jogos
+Archdruid's Charm: modos escolhidos {'land': 92, 'creature': 919}
+Eternal Witness devolveu carta do cemiterio em 13.3% dos jogos
+Springleaf Parade conjurada em 20.0% dos jogos
+
+Ohran Frostfang/Toski (dano de combate -> compra) ativo em 37.3% dos jogos, avg compras: 5.14
+War Room ativada em 9.5% dos jogos, avg compras: 0.14
+Nykthos (devocao >= 4) ativada em 11.0% dos jogos, avg ativacoes: 0.20
+
+Genji Glove conjurada em 4.5% dos jogos, equipada em 50.2% dos jogos em que conjurada, turno medio 7.35
+Avg mao final: 7.89 | Avg terrenos jogados: 6.48
+
+Roaming Throne em campo em 14.0% dos jogos, avg gatilhos dobrados: 2.22
+```
+
+**Explicação individual de cada número (pedido explícito do usuário):**
+
+- **Avg mulligans (0.43):** média de vezes que a mão inicial de 7 foi jogada de volta e comprada de novo (regra London, máx. 2 mulligans nesse modelo). Quanto mais baixo, melhor a consistência de mãos iniciais jogáveis.
+- **Avg commander cast turn (4.23) / Commander cast by turn 4-5 (66.6%/88.5%):** em que turno médio a Beorn sai da zona de comando, e em quantos % dos jogos ela já está em campo até o turno 4 ou 5. É a métrica mais importante de "o deck liga a tempo".
+- **Avg spells cast (12.13):** total de spells conjuradas em 8 turnos (inclui a própria Beorn, ramp, removal, etc.) — mede o quanto o motor de mana permite desenvolver o board.
+- **Avg extra draws (14.37):** cartas compradas ALÉM da compra normal de turno — soma de TODOS os motores de compra do deck (Beast Whisperer, Garruk's Uprising, Tribute to the World Tree, Great Henge, Selvala, Chronicle of Victory, clues da Tireless Tracker, Return of the Wildspeaker/Shamanic Revelation, Last March of the Ents, War Room, e agora também Ohran Frostfang/Toski). É o número que mais mudou nesta rodada (9.56→14.39 no comparativo pareado) por causa do motor de dano de combate novo.
+- **Avg Bear count final (6.60):** quantos Ursos (de qualquer origem — criatura real, token, changeling) estão em campo/já contados ao fim do turno 8. Alimenta diretamente o gatilho "3+ Ursos" da própria Beorn.
+- **Avg Beorn 'draw 2' triggers (2.67):** quantas vezes por partida o gatilho "se 3+ Ursos sob seu controle, compre 2" disparou de verdade no combate.
+- **Avg Beorn combat triggers (3.42):** quantas vezes por partida o gatilho de ataque da Beorn converteu outra criatura em Urso (agora corretamente só quando ela pode atacar).
+- **Avg ramp pieces em campo (3.20):** quantidade de peças com a tag `ramp` (dorks, rocks, fetches de land) que chegaram a ser conjuradas.
+- **Avg remocao conjurada (0.68):** spells de remoção de verdade conjurados (Beast Within, Song of the Dryads, Ezuri's Predation, Haywire Mite — não inclui mais Archdruid's Charm, que nunca remove nada de verdade nesse motor, ver gap #8).
+- **Avg finishers resolvidos (0.37) / % com finisher até T8 (31.8%):** quantos "fechadores de jogo" (Craterhoof, Ghalta, Unnatural Growth, Genji Glove equipada, e agora também qualquer finisher trazido pelo Natural Order) foram resolvidos, e em quantos % dos 5000 jogos isso aconteceu até o turno 8. É a métrica-resumo mais importante pra saber se o deck "fecha o jogo" a tempo.
+- **Avg turno do 1º finisher relevante (6.62):** em que turno médio, nos jogos em que aconteceu, o primeiro finisher resolveu.
+- **Avg contadores +1/+1 no board (11.20):** soma agregada de TODOS os contadores +1/+1 distribuídos por qualquer fonte (Ayula, Tribute to the World Tree, Great Henge, Necklace of Girion, Dancing from Dark to Dawn, Little Bear, Forgotten Ancient, Germination Practicum, Beorn's Hospitality, Defiler of Vigor) — não é por criatura individual, é o total da mesa.
+- **Avg cartas descartadas por limite de mão (3.45):** quantas cartas foram descartadas ao fim do turno por estourar o limite de 7 (a menos que Reliquary Tower/Thought Vessel estejam em campo). Alto porque o motor de compra ficou muito mais forte nesta rodada.
+- **Avg battlefield final (19.29):** total de permanentes (terrenos + criaturas + outros) em campo ao fim do turno 8.
+- **Managorger Hydra (20.5% conjurada, 7.90 contadores finais em média):** com que frequência ela é comprada/conjurada em 99 cartas, e quantos contadores +1/+1 acumula (seus spells reais + premissa de 2 spells/turno de oponentes) até morrer pra remoção assumida (~4 turnos de vida útil).
+- **Germination Practicum (7.7% conjurada):** frequência de cast; o Paradigm dela (recast de graça a cada turno) já está incluído no total de contadores acima.
+- **Natural Order (14.8% conjurada):** em quantos % dos 5000 jogos a carta foi conjurada — precisa de mana + uma criatura verde em campo pra sacrificar, então não é sempre castável mesmo quando comprada. As criaturas buscadas mostram a prioridade real (Craterhoof na esmagadora maioria, ver rodada de 5k acima).
+- **Lumra (4.9% dos jogos, 1.72 terrenos devolvidos em média):** com que frequência a ETB dela chegou a devolver pelo menos 1 terreno do cemitério ao mil 4 (nem sempre encontra um terreno entre as 4 cartas milhadas).
+- **Titania's Command (16.4% conjurada):** frequência de cast, sempre nos modos "buscar 2 terrenos + criar 2 Bears".
+- **Archdruid's Charm (modos {'land': 92, 'creature': 919} em 5000 jogos):** de quantas vezes ela foi conjurada, quantas escolheram cada modo — a maioria escolhe buscar criatura (já tem 4+ fontes verdes na maioria dos casos em que é castável).
+- **Eternal Witness (13.3% dos jogos devolveu carta):** com que frequência a ETB dela teve pelo menos uma carta no cemitério pra reaver.
+- **Springleaf Parade (20.0% conjurada):** frequência de cast; sempre cria exatamente 1 token (X=1, premissa de custo mínimo já documentada no código).
+- **Ohran Frostfang/Toski — dano de combate (37.3% dos jogos ativo, avg 5.14 compras):** em quantos % dos jogos pelo menos uma das duas está em campo gerando compra por dano de combate, e a média de cartas compradas por ESSA fonte especificamente (incluída também no "extra draws" geral acima). Número alto porque a premissa é "toda criatura apta ataca desimpedida" — sem bloqueadores de oponente modelados.
+- **War Room (9.5% dos jogos ativada, avg 0.14 compras):** baixo porque compete por mana com o resto da mão praticamente todo turno (custa {3}+{T}, e essa mana quase sempre tem uso melhor).
+- **Nykthos (11.0% dos jogos ativada, avg 0.20 ativações):** só ativa quando compensa (devoção ≥ 4), por isso a frequência baixa — na maior parte dos jogos o board não tem permanentes verdes suficientes pra valer a pena trocar a mana base do terreno por essa ativação.
+- **Genji Glove (4.5% conjurada, 50.2% equipada quando conjurada, turno médio 7.35):** frequência de cast e, dado que foi conjurada, em quantos % o Equip {3} separado também foi pago a tempo dentro dos 8 turnos.
+- **Roaming Throne (14.0% em campo, 2.22 gatilhos dobrados em média):** frequência em campo e quantas vezes por partida ela duplicou o gatilho de combate/compra da própria Beorn (tipo escolhido: Bear).
+
+---
+
 <!-- Para novas partidas avulsas, use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

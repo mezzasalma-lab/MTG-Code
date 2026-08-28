@@ -6,11 +6,19 @@ Tags derivadas de oracle_text real (Scryfall), nao inventadas.
 Modelo de mana simplificado por ser mono-verde: total de fontes de mana (contagem),
 mais uma checagem separada de "fontes verdes" pra cartas com pip GG/GGG/GGGG,
 ja que 4 terrenos do deck (War Room, Scavenger Grounds, Nykthos, Reliquary Tower)
-so produzem incolor a menos que Yavimaya (que faz todo terreno virar Floresta) esteja em campo.
+so produzem incolor como habilidade basica, a menos que Yavimaya (que faz todo
+terreno virar Floresta) esteja em campo - Nykthos tem uma segunda habilidade
+ativada (devocao) e War Room uma ativacao de compra, ambas implementadas a parte.
+Auditoria de gatilhos: toda carta foi conferida contra o oracle_text real
+(scryfall-cache/oracle-cache.json). Gaps conscientemente fora de escopo (exigem
+inventar estado de oponente, ou modelar um 2o modo de cast pra MDFC/Aventura) estao
+documentados inline onde aparecem - ver goldfish-log.md, Correcao #5, pra a lista
+completa.
 """
 
 from __future__ import annotations
 import random, json, statistics
+from collections import Counter
 from dataclasses import dataclass, field
 from typing import Dict, List, Set, Optional
 
@@ -173,7 +181,12 @@ for name, mv, typ, tags in draw_defs:
 removal_defs = [
     ("Beast Within", 3, {"Instant"}, {"removal"}),
     ("Song of the Dryads", 3, {"Enchantment"}, {"removal"}),
-    ("Archdruid's Charm", 3, {"Instant"}, {"removal","tutor_modal"}),
+    # Sem "removal": dos 3 modos reais (tutor criatura/terreno; +1/+1 counter e fight
+    # numa criatura do oponente; exilar artefato/encantamento do oponente), so o modo
+    # tutor nao exige inventar alvo/estado do oponente (regra permanente "nunca
+    # inventar estado do oponente") - e o unico modo que essa IA pode escolher de
+    # forma legitima, entao a carta nunca executa remocao de verdade nesse motor.
+    ("Archdruid's Charm", 3, {"Instant"}, {"tutor_modal"}),
     ("Ezuri's Predation", 8, {"Sorcery"}, {"removal","mass_removal","finisher_adjacent"}),
     ("Haywire Mite", 1, {"Creature"}, {"removal","narrow"}),
 ]
@@ -238,6 +251,12 @@ for name, mv, typ, tags in finisher_defs:
 
 # -------- Tokens --------
 add("Bear Token", 0, {"Creature"}, {"bear","token"})
+# Springleaf Parade: token 1/1 Shapeshifter incolor com changeling (todo tipo de
+# criatura, Bear incluso -> conta como is_bear). A tag "token" e o que faz esse (e
+# qualquer outro token-criatura, como Bear Token) ganhar a habilidade de mana
+# concedida pelo estatico da propria Springleaf Parade quando ela esta em campo
+# (checagem dedicada em total_mana()/green_sources(), nao um tag "ramp" generico).
+add("Springleaf Parade Token", 0, {"Creature"}, {"token","changeling","bear_type"})
 
 # -------- Correcao de g_pips reais --------
 # Os blocos acima (draw_defs, removal_defs, protection_defs, bear_defs,
@@ -377,6 +396,39 @@ class GameState:
     # less." Resetado True a cada turno, consumido no primeiro creature spell pago.
     radagast_discount_available: bool = True
 
+    # Turno em que cada criatura (real ou token) entrou em campo - usado pra doenca
+    # de invocacao de ATAQUE (can_attack), independente do dork_entered_turn (que so
+    # rastreia criaturas com habilidade de mana). Populado em on_creature_enters pra
+    # TODA criatura, cobrindo todos os pontos de ETB do arquivo.
+    creature_entered_turn: Dict[str, int] = field(default_factory=dict)
+
+    # Ohran Frostfang / Toski, Bearer of Secrets: "Whenever a creature you control
+    # deals combat damage to a player, draw a card." Modelado com a mesma convencao
+    # ja usada em outros decks da sessao: assume-se que toda criatura apta a atacar
+    # (nao doente, sem bloqueio de oponente modelado) ataca desimpedida a cada turno.
+    combat_damage_draws: int = 0
+
+    # War Room: "{3}, {T}, pague vida = cores na identidade de cor do comandante:
+    # compre uma carta." Identidade de cor da Beorn = mono-verde = 1 cor = 1 vida.
+    war_room_used_this_turn: bool = False
+    war_room_draws: int = 0
+
+    # Nykthos, Shrine to Nyx: "{2}, {T}: Escolha uma cor, adicione mana igual a sua
+    # devocao aquela cor." So compensa (perde a mana normal de 1 + paga {2}) quando
+    # devocao >= 4.
+    nykthos_used_this_turn: bool = False
+    nykthos_activations: int = 0
+
+    # Natural Order / Lumra / Titania's Command / Archdruid's Charm / Eternal Witness /
+    # Springleaf Parade - contadores de uso pra reportar no batch summary.
+    natural_order_cast: bool = False
+    natural_order_fetched: Optional[str] = None
+    lumra_lands_returned_total: int = 0
+    titanias_command_cast: bool = False
+    archdruids_charm_mode: Optional[str] = None
+    eternal_witness_returned: bool = False
+    springleaf_parade_cast: bool = False
+
     def draw(self, n=1, source="draw"):
         got = 0
         for _ in range(n):
@@ -415,7 +467,22 @@ def total_mana(state: GameState) -> int:
             total += 1
         elif card == "Sol Ring":
             total += 2
+        elif card == "The Great Henge":
+            # "{T}: Add {G}{G}." Artefato, sem doenca de invocacao (CR 302.6 so vale
+            # pra criaturas). Gap 100% ausente ate essa correcao - so a metade
+            # "draw+counter no ETB" estava implementada.
+            total += 2
         elif has_tag(card, "ramp") and not is_land(card):
+            if is_summoning_sick_dork(state, card):
+                continue
+            total += 1
+        elif state.has("Springleaf Parade") and has_tag(card, "token") and is_creature(card):
+            # Springleaf Parade: "Creature tokens you control have '{T}: Add one mana
+            # of any color.'" Vale pra QUALQUER token-criatura (Bear Token incluso,
+            # nao so o proprio token da Springleaf). Aproximacao documentada: doenca de
+            # invocacao rastreada por NOME (dork_entered_turn), entao se um token dessa
+            # mesma carta entrou nesse turno, todas as copias em campo sao tratadas como
+            # doentes ate o proximo turno (subestima levemente, nunca superestima).
             if is_summoning_sick_dork(state, card):
                 continue
             total += 1
@@ -428,7 +495,13 @@ def green_sources(state: GameState) -> int:
         if is_land(card):
             if has_tag(card, "green_source") or yavimaya:
                 g += 1
+        elif card == "The Great Henge":
+            g += 2
         elif has_tag(card, "green_source") or has_tag(card, "green_source_any"):
+            if is_summoning_sick_dork(state, card):
+                continue
+            g += 1
+        elif state.has("Springleaf Parade") and has_tag(card, "token") and is_creature(card):
             if is_summoning_sick_dork(state, card):
                 continue
             g += 1
@@ -451,7 +524,7 @@ BASE_POWER: Dict[str, int] = {
     "Ohran Frostfang": 2, "Radagast of Rhosgobel": 2, "Defiler of Vigor": 6,
     "Roaming Throne": 4, "Sakura-Tribe Elder": 1, "Selvala, Heart of the Wilds": 2,
     "Solemn Simulacrum": 2, "Tireless Provisioner": 3, "Tireless Tracker": 3,
-    "Toski, Bearer of Secrets": 1, "Bear Token": 2,
+    "Toski, Bearer of Secrets": 1, "Bear Token": 2, "Springleaf Parade Token": 1,
 }
 
 # Toughness base real (P/T impresso, mesma ressalva de nao contar counters).
@@ -467,7 +540,7 @@ BASE_TOUGHNESS: Dict[str, int] = {
     "Ohran Frostfang": 6, "Radagast of Rhosgobel": 5, "Defiler of Vigor": 6,
     "Roaming Throne": 4, "Sakura-Tribe Elder": 1, "Selvala, Heart of the Wilds": 3,
     "Solemn Simulacrum": 2, "Tireless Provisioner": 2, "Tireless Tracker": 2,
-    "Toski, Bearer of Secrets": 1, "Bear Token": 2,
+    "Toski, Bearer of Secrets": 1, "Bear Token": 2, "Springleaf Parade Token": 1,
 }
 
 def is_bear(state: GameState, card: str) -> bool:
@@ -482,6 +555,22 @@ def is_forest_for_landfall(state: GameState, card: str) -> bool:
     # Yavimaya, Cradle of Growth: "Each land is a Forest in addition to its other
     # land types" - qualquer terreno entrando conta como Floresta enquanto ela estiver em campo.
     return card == "Forest" or state.has("Yavimaya, Cradle of Growth")
+
+def green_devotion(state: GameState) -> int:
+    # Nykthos, Shrine to Nyx: devocao ao verde = soma de pips {G} no custo de mana
+    # de TODOS os permanentes que voce controla (terrenos tem g_pips=0 por definicao,
+    # entao ja ficam de fora naturalmente, sem precisar filtrar is_land).
+    return sum(C(c).g_pips for c in state.battlefield)
+
+def can_attack(state: GameState, card: str) -> bool:
+    # Doenca de invocacao pra ataque (CR 302.6): criatura so pode atacar se nao
+    # entrou em campo NESSE turno, a menos que tenha haste. Usa creature_entered_turn
+    # (populado em on_creature_enters pra TODA criatura, token ou nao).
+    if not is_creature(card):
+        return False
+    if has_tag(card, "haste"):
+        return True
+    return state.creature_entered_turn.get(card) != state.turn
 
 # =========================================================
 # REDUCAO DE CUSTO (Ghalta, Great Henge, Goreclaw, Defiler of Vigor,
@@ -548,6 +637,12 @@ def effective_cost(state: GameState, card: str) -> int:
     return max(C(card).g_pips, mv - reduction)
 
 def can_cast(state: GameState, card: str) -> bool:
+    if card == "Natural Order":
+        # "As an additional cost to cast this spell, sacrifice a green creature."
+        # Sem uma criatura verde em campo pra sacrificar, a carta e incastavel de
+        # verdade - nao so uma questao de mana.
+        if not any(is_creature(c) for c in state.battlefield if c != card and C(c).g_pips >= 1):
+            return False
     if remaining_mana(state) < effective_cost(state, card):
         return False
     pips = C(card).g_pips
@@ -686,6 +781,10 @@ def main_phase(state: GameState, log: List[Dict]):
 
     # Ativacoes repetiveis com mana/recursos sobrando, depois de todo o resto ja
     # conjurado no turno (mesma ordem de prioridade: desenvolver o board primeiro).
+    # Nykthos primeiro pois gera mana avulsa (bonus_mana_this_turn) que as ativacoes
+    # seguintes podem gastar.
+    try_nykthos(state, log)
+    try_war_room(state, log)
     try_crack_clues(state, log)
     try_ayula_influence(state, log)
     try_maskwood_nexus(state, log)
@@ -707,12 +806,17 @@ def main_phase(state: GameState, log: List[Dict]):
 def make_bear_token(state: GameState, log: List[Dict], source: str):
     state.battlefield.append("Bear Token")
     state.bear_count += 1
+    # Rastreado em dork_entered_turn (nao so creature_entered_turn) pra alimentar a
+    # doenca de invocacao da habilidade de mana que Springleaf Parade concede a
+    # tokens-criatura, se estiver em campo (ver total_mana/green_sources).
+    state.dork_entered_turn["Bear Token"] = state.turn
     log.append({"action": "make_bear_token", "source": source, "turn": state.turn})
     on_creature_enters(state, "Bear Token", log)
 
 def on_creature_enters(state: GameState, card: str, log: List[Dict], nontoken: bool = True):
     """Gatilhos de 'quando uma criatura entra em campo' que dependem de permanentes
     ja em campo. Chamado tanto pra criaturas de verdade quanto pra tokens (Bear Token)."""
+    state.creature_entered_turn[card] = state.turn
     power = BASE_POWER.get(card, 0)
 
     # Ayula, Queen Among Bears: "Whenever ANOTHER Bear you control enters, choose one -
@@ -779,6 +883,17 @@ def on_spell_cast_effects(state: GameState, card: str, log: List[Dict]):
     if state.has("Forgotten Ancient") and card != "Forgotten Ancient":
         state.counters_on_board += 1
 
+    # Defiler of Vigor: "Whenever you cast a green permanent spell, put a +1/+1
+    # counter on each creature you control." Gap 100% ausente ate essa correcao -
+    # so a metade de reducao de custo estava implementada. "Green permanent spell":
+    # tem pip {G} (g_pips>=1) e nao e Instant/Sorcery, mesma checagem ja usada em
+    # effective_cost() pra elegibilidade do desconto. Conta as criaturas ja em campo
+    # ANTES do spell resolver (a nova criatura ainda nao entrou nesse momento).
+    if state.has("Defiler of Vigor") and card != "Defiler of Vigor" and C(card).g_pips >= 1 \
+            and not ({"Instant", "Sorcery"} & C(card).types):
+        creatures_now = sum(1 for c in state.battlefield if is_creature(c))
+        state.counters_on_board += creatures_now
+
 def on_land_enters(state: GameState, card: str, log: List[Dict]):
     """Landfall - chamado tanto no land-drop normal quanto em terrenos buscados por
     ramp (Cultivate, Three Visits, Sakura-Tribe Elder, Solemn Simulacrum, Titania's
@@ -843,6 +958,37 @@ def try_maskwood_nexus(state: GameState, log: List[Dict]):
         state.mana_spent_this_turn += 3
         make_bear_token(state, log, source="Maskwood Nexus activated")
 
+def try_war_room(state: GameState, log: List[Dict]):
+    # War Room: "{3}, {T}, Pay life equal to the number of colors among your
+    # commander's color identity: Draw a card." Beorn e mono-verde -> 1 vida. Gap
+    # 100% ausente ate essa correcao. Esse arquivo nao rastreia vida (mono-verde,
+    # sempre considerada abundante o bastante), entao o custo de vida nao e um
+    # gargalo modelado - so o {3} + {T} importam.
+    if state.war_room_used_this_turn or not state.has("War Room"):
+        return
+    if remaining_mana(state) >= 3:
+        state.mana_spent_this_turn += 3
+        state.war_room_used_this_turn = True
+        state.war_room_draws += 1
+        state.draw(1, source="War Room")
+        log.append({"action": "war_room_draw", "turn": state.turn})
+
+def try_nykthos(state: GameState, log: List[Dict]):
+    # Nykthos, Shrine to Nyx: "{2}, {T}: Choose a color, add mana of that color
+    # equal to your devotion to that color." Escolha sempre verde (mono-verde). Gap
+    # 100% ausente ate essa correcao. So compensa ativar em vez de so usar como
+    # terreno incolor normal quando devocao >= 4 (perde a 1 mana base do terreno +
+    # paga {2} adicional, entao o ganho liquido so e positivo a partir dai).
+    if state.nykthos_used_this_turn or not state.has("Nykthos, Shrine to Nyx"):
+        return
+    devotion = green_devotion(state)
+    if devotion >= 4 and remaining_mana(state) >= 2:
+        state.mana_spent_this_turn += 2
+        state.bonus_mana_this_turn += (devotion - 1)  # -1 = substitui a mana base do terreno, ja contada
+        state.nykthos_used_this_turn = True
+        state.nykthos_activations += 1
+        log.append({"action": "nykthos_devotion", "devotion": devotion, "turn": state.turn})
+
 def cast_spell(state: GameState, card: str, log: List[Dict]):
     on_spell_cast_effects(state, card, log)
     # Managorger Hydra ja em campo: cresce com QUALQUER spell seu conjurado depois dela
@@ -897,10 +1043,10 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
     if is_bear(state, card):
         state.bear_count += 1
 
-    # Cultivate/Three Visits/Sakura-Tribe Elder/Solemn Simulacrum buscam land basica
-    # de verdade - nesse decklist a UNICA carta basica/Forest e "Forest" (as outras 6
-    # sao terrenos nomeados nao-basicos). Terreno buscado entra em campo -> landfall.
-    if card in {"Cultivate", "Three Visits", "Sakura-Tribe Elder"}:
+    # Cultivate/Solemn Simulacrum buscam land basica de verdade - nesse decklist a
+    # UNICA carta basica/Forest e "Forest" (as outras 6 sao terrenos nomeados
+    # nao-basicos). Terreno buscado entra em campo -> landfall.
+    if card in {"Cultivate", "Three Visits"}:
         target = next((c for c in state.library if c == "Forest"), None)
         if target:
             state.library.remove(target)
@@ -913,6 +1059,141 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
                 state.library.remove(target2)
                 state.hand.append(target2)
                 log.append({"action":"land_ramp_proxy_to_hand","card":card,"target":target2})
+
+    if card == "Sakura-Tribe Elder":
+        # Oracle text real: "Sacrifice this creature: Search your library for a
+        # basic land card, put it onto the battlefield tapped." NAO e ETB - e uma
+        # habilidade ativada de sacrificio. O codigo anterior conflava com o ETB do
+        # Cultivate, buscando o terreno E deixando o corpo 1/1 permanente em campo
+        # pra sempre (double-dip irreal - na Magic de verdade voce escolhe manter o
+        # corpo OU sacrificar pelo terreno). Corrigido: como essa carta so entra no
+        # decklist com a tag "ramp" (papel de rampa, nao de bloqueador), a IA
+        # sacrifica imediatamente no mesmo turno em que e conjurada.
+        if "Sakura-Tribe Elder" in state.battlefield:
+            state.battlefield.remove("Sakura-Tribe Elder")
+            state.graveyard.append("Sakura-Tribe Elder")
+        target = next((c for c in state.library if c == "Forest"), None)
+        if target:
+            state.library.remove(target)
+            state.battlefield.append(target)
+            log.append({"action": "sakura_tribe_elder_sac", "target": target, "turn": state.turn})
+            on_land_enters(state, target, log)
+
+    if card == "Eternal Witness":
+        # ETB: "you may return target card from your graveyard to your hand." Gap
+        # 100% ausente ate essa correcao. Heuristica: recupera a carta de maior CMC
+        # no cemiterio (o recurso mais valioso a reaver).
+        if state.graveyard:
+            best = max(state.graveyard, key=lambda c: C(c).mv)
+            state.graveyard.remove(best)
+            state.hand.append(best)
+            state.eternal_witness_returned = True
+            log.append({"action": "eternal_witness_return", "card": best, "turn": state.turn})
+
+    if card == "Natural Order":
+        # "As an additional cost to cast this spell, sacrifice a green creature.
+        # Search your library for a green creature card, put it onto the
+        # battlefield." Gap 100% ausente ate essa correcao. can_cast() ja garante
+        # que existe uma criatura verde em campo pra sacrificar antes de chegar aqui.
+        green_creatures = [c for c in state.battlefield if is_creature(c) and c != card and C(c).g_pips >= 1]
+        if green_creatures:
+            # Sacrifica a de menor poder (perde o menos possivel).
+            sac_target = min(green_creatures, key=lambda c: BASE_POWER.get(c, 0))
+            state.battlefield.remove(sac_target)
+            state.graveyard.append(sac_target)
+            # Busca a melhor criatura verde disponivel - prioriza os finishers.
+            priority_targets = ["Craterhoof Behemoth", "Ghalta, Primal Hunger", "Gigantic Big Bear"]
+            fetched = next((t for t in priority_targets if t in state.library), None)
+            if not fetched:
+                fetched = next((c for c in state.library if is_creature(c) and C(c).g_pips >= 1), None)
+            state.natural_order_cast = True
+            if fetched:
+                state.library.remove(fetched)
+                state.battlefield.append(fetched)
+                state.natural_order_fetched = fetched
+                log.append({"action": "natural_order_fetch", "sacrificed": sac_target,
+                             "fetched": fetched, "turn": state.turn})
+                on_creature_enters(state, fetched, log)
+                if is_bear(state, fetched):
+                    state.bear_count += 1
+                if has_tag(fetched, "finisher") or fetched in {"Craterhoof Behemoth", "Ghalta, Primal Hunger"}:
+                    state.finishers_resolved.append(fetched)
+                    if state.finisher_turn is None and fetched in {"Craterhoof Behemoth", "Ghalta, Primal Hunger", "Unnatural Growth"}:
+                        state.finisher_turn = state.turn
+
+    if card == "Lumra, Bellow of the Woods":
+        # ETB: "mill four cards, then return all land cards from your graveyard to
+        # the battlefield tapped." Gap 100% ausente ate essa correcao. Terrenos
+        # retornados disparam landfall normalmente (regra de landfall nao distingue origem).
+        milled = state.library[:4]
+        state.library = state.library[4:]
+        state.graveyard.extend(milled)
+        lands_returned = [c for c in milled if is_land(c)]
+        for ln in lands_returned:
+            state.graveyard.remove(ln)
+            state.battlefield.append(ln)
+            state.lumra_lands_returned_total += 1
+            log.append({"action": "lumra_land_return", "card": ln, "turn": state.turn})
+            on_land_enters(state, ln, log)
+        log.append({"action": "lumra_mill", "milled": len(milled), "lands_returned": len(lands_returned), "turn": state.turn})
+
+    if card == "Titania's Command":
+        # "Choose two -" dos 4 modos reais (exilar cemiterio de um oponente e ganhar
+        # vida / buscar ate 2 terrenos tapped / criar 2 Bears 2/2 / por 2 contadores
+        # em cada criatura). Premissa explicita: a IA sempre escolhe "buscar 2
+        # terrenos" + "criar 2 Bears" - os 2 modos mais consistentemente uteis
+        # (rampa + board) que nao dependem de estado do oponente (o modo de exilar
+        # cemiterio exigiria inventar o cemiterio de um oponente).
+        state.titanias_command_cast = True
+        for _ in range(2):
+            target = next((c for c in state.library if c == "Forest"), None)
+            if target:
+                state.library.remove(target)
+                state.battlefield.append(target)
+                log.append({"action": "titanias_command_land", "card": target, "turn": state.turn})
+                on_land_enters(state, target, log)
+        make_bear_token(state, log, source="Titania's Command")
+        make_bear_token(state, log, source="Titania's Command")
+
+    if card == "Archdruid's Charm":
+        # "Choose one -" dos 3 modos reais (tutor criatura/terreno; +1/+1 counter +
+        # fight numa criatura do oponente; exilar artefato/encantamento do oponente).
+        # So o modo de tutor nao exige alvo do oponente (ver tags acima). Heuristica:
+        # busca um terreno (Forest, tapped) se ainda tem menos de 4 fontes verdes em
+        # campo (rampa prioritaria no early game), senao busca a melhor criatura verde
+        # disponivel pra mao.
+        if green_sources(state) < 4:
+            target = next((c for c in state.library if c == "Forest"), None)
+        else:
+            target = None
+        if target:
+            state.library.remove(target)
+            state.battlefield.append(target)
+            state.archdruids_charm_mode = "land"
+            log.append({"action": "archdruids_charm_land", "card": target, "turn": state.turn})
+            on_land_enters(state, target, log)
+        else:
+            creature = next((c for c in state.library if is_creature(c) and C(c).g_pips >= 1), None)
+            if creature:
+                state.library.remove(creature)
+                state.hand.append(creature)
+                state.archdruids_charm_mode = "creature"
+                log.append({"action": "archdruids_charm_creature", "card": creature, "turn": state.turn})
+
+    if card == "Springleaf Parade":
+        # ETB: "create X 1/1 colorless Shapeshifter creature tokens with changeling"
+        # onde X = quanto foi pago pelo {X}. Mesma convencao ja usada nesse arquivo
+        # pra mv de cartas com custo {X}: mv=3 ja assume X=1 (custo minimo {G}{G} + X=1).
+        # Estatico: "Creature tokens you control have '{T}: Add one mana of any
+        # color'" - modelado em total_mana()/green_sources() (vale pra Bear Token
+        # tambem, nao so pro proprio token dessa carta).
+        state.springleaf_parade_cast = True
+        state.battlefield.append("Springleaf Parade Token")
+        state.dork_entered_turn["Springleaf Parade Token"] = state.turn
+        log.append({"action": "springleaf_parade_token", "turn": state.turn})
+        on_creature_enters(state, "Springleaf Parade Token", log)
+        if is_bear(state, "Springleaf Parade Token"):
+            state.bear_count += 1
 
     if card == "Solemn Simulacrum":
         target = next((c for c in state.library if c == "Forest"), None)
@@ -974,27 +1255,46 @@ def combat_step(state: GameState, log: List[Dict]):
                 state.finisher_turn = state.turn
         log.append({"trigger": "genji_glove_extra_combat", "turn": state.turn})
 
-    if not state.commander_in_play:
-        return
-
     # Beorn e do tipo Bear - Roaming Throne (tipo escolhido: Bear) dispara o
     # gatilho de combate dela uma segunda vez completa (converte outra criatura
     # em Urso, recheca 3+ Ursos de novo). Ver references/goldfish-sim-card-rules.md.
-    times = 2 if state.roaming_throne_active() else 1
-    if times == 2:
-        state.roaming_throne_doublings += 1
-    for _ in range(times):
-        creatures_not_bear = [c for c in state.battlefield if is_creature(c) and not is_bear(state, c)]
-        if creatures_not_bear:
-            target = max(creatures_not_bear, key=lambda c: C(c).mv)
-            state.bear_count += 1
-            state.beorn_combat_triggers += 1
-            log.append({"trigger":"Beorn combat","made_bear":target})
+    # Gatilho e "Whenever Beorn attacks" - so dispara se a Beorn pode atacar de
+    # verdade (nao doente de invocacao no turno em que foi conjurada). Correcao:
+    # antes disparava mesmo no turno do cast, o que e ilegal (CR 302.6).
+    if state.commander_in_play and can_attack(state, COMMANDER):
+        times = 2 if state.roaming_throne_active() else 1
+        if times == 2:
+            state.roaming_throne_doublings += 1
+        for _ in range(times):
+            creatures_not_bear = [c for c in state.battlefield if is_creature(c) and not is_bear(state, c)]
+            if creatures_not_bear:
+                target = max(creatures_not_bear, key=lambda c: C(c).mv)
+                state.bear_count += 1
+                state.beorn_combat_triggers += 1
+                log.append({"trigger":"Beorn combat","made_bear":target})
 
-        if state.bear_count >= 3:
-            state.draw(2, source="Beorn 3+ Bears")
-            state.beorn_bear_draws += 1
-            log.append({"trigger":"Beorn draw2","bear_count":state.bear_count})
+            if state.bear_count >= 3:
+                state.draw(2, source="Beorn 3+ Bears")
+                state.beorn_bear_draws += 1
+                log.append({"trigger":"Beorn draw2","bear_count":state.bear_count})
+
+    # Ohran Frostfang / Toski, Bearer of Secrets: "Whenever a creature you control
+    # deals combat damage to a player, draw a card." Gap 100% ausente ate essa
+    # correcao (nao existia nenhum modelo generico de combate/ataque nesse arquivo).
+    # Convencao ja usada em outros decks da sessao: toda criatura apta a atacar
+    # (sem doenca de invocacao) ataca desimpedida e conecta - esse motor solo-goldfish
+    # nao modela bloqueadores do oponente. Se Ohran E Toski estao ambos em campo, o
+    # gatilho dispara 2x por criatura atacante (2 fontes independentes do mesmo
+    # gatilho, uma pra cada carta).
+    draw_sources = sum(1 for src in ("Ohran Frostfang", "Toski, Bearer of Secrets") if state.has(src))
+    if draw_sources:
+        attackers = [c for c in state.battlefield if can_attack(state, c)]
+        if attackers:
+            amount = len(attackers) * draw_sources
+            state.draw(amount, source="Ohran Frostfang/Toski combat damage")
+            state.combat_damage_draws += amount
+            log.append({"trigger": "combat_damage_draw", "attackers": len(attackers),
+                        "sources": draw_sources, "turn": state.turn})
 
 # =========================================================
 # TURN STRUCTURE
@@ -1006,6 +1306,8 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.mana_spent_this_turn = 0
     state.bonus_mana_this_turn = 0
     state.radagast_discount_available = True
+    state.war_room_used_this_turn = False
+    state.nykthos_used_this_turn = False
 
     log = [{"turn": turn, "phase": "start", "hand_size": len(state.hand),
             "battlefield_count": len(state.battlefield), "mana_est": total_mana(state)}]
@@ -1103,6 +1405,16 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "genji_glove_equipped_turn": state.genji_glove_equipped_turn,
         "roaming_throne_in_play": state.has("Roaming Throne"),
         "roaming_throne_doublings": state.roaming_throne_doublings,
+        "combat_damage_draws": state.combat_damage_draws,
+        "war_room_draws": state.war_room_draws,
+        "nykthos_activations": state.nykthos_activations,
+        "natural_order_cast": state.natural_order_cast,
+        "natural_order_fetched": state.natural_order_fetched,
+        "lumra_lands_returned_total": state.lumra_lands_returned_total,
+        "titanias_command_cast": state.titanias_command_cast,
+        "archdruids_charm_mode": state.archdruids_charm_mode,
+        "eternal_witness_returned": state.eternal_witness_returned,
+        "springleaf_parade_cast": state.springleaf_parade_cast,
     }
 
 def run_batch(n=500, turns=8, out_jsonl="beorn_v1_runs.jsonl", seed_base=91000):
@@ -1158,7 +1470,52 @@ def run_batch(n=500, turns=8, out_jsonl="beorn_v1_runs.jsonl", seed_base=91000):
     gp_cast = [r for r in results if r["germination_practicum_cast"]]
     print()
     print(f"Germination Practicum conjurada em {100*len(gp_cast)/n:.1f}% dos jogos")
-    print(f"Avg contadores +1/+1 totais no board (Germination Practicum, soma de todos os recasts via Paradigm): {avg('counters_on_board_final'):.2f}")
+    print(f"Avg contadores +1/+1 totais no board (soma de TODAS as fontes: Ayula, Tribute to the World Tree,")
+    print(f"  Great Henge, Necklace of Girion, Dancing from Dark to Dawn, Little Bear, Forgotten Ancient,")
+    print(f"  Germination Practicum, Beorn's Hospitality, Defiler of Vigor): {avg('counters_on_board_final'):.2f}")
+
+    print()
+    no_cast = [r for r in results if r["natural_order_cast"]]
+    print(f"Natural Order conjurada em {100*len(no_cast)/n:.1f}% dos jogos")
+    if no_cast:
+        fetch_counts = Counter(r["natural_order_fetched"] for r in no_cast if r["natural_order_fetched"])
+        print(f"  Criaturas buscadas: {dict(fetch_counts)}")
+
+    lumra_games = [r for r in results if r["lumra_lands_returned_total"] > 0]
+    if lumra_games:
+        lumra_counts = [r["lumra_lands_returned_total"] for r in lumra_games]
+        print(f"Lumra: terrenos devolvidos do cemiterio em {100*len(lumra_games)/n:.1f}% dos jogos, "
+              f"media de {statistics.mean(lumra_counts):.2f} por jogo em que resolveu")
+
+    tc_cast = [r for r in results if r["titanias_command_cast"]]
+    if tc_cast:
+        print(f"Titania's Command conjurada em {100*len(tc_cast)/n:.1f}% dos jogos (modos: buscar 2 terrenos + criar 2 Bears)")
+
+    ac_modes = Counter(r["archdruids_charm_mode"] for r in results if r["archdruids_charm_mode"])
+    if ac_modes:
+        print(f"Archdruid's Charm conjurada: modos escolhidos {dict(ac_modes)}")
+
+    ew_games = [r for r in results if r["eternal_witness_returned"]]
+    if ew_games:
+        print(f"Eternal Witness devolveu carta do cemiterio em {100*len(ew_games)/n:.1f}% dos jogos")
+
+    sp_cast = [r for r in results if r["springleaf_parade_cast"]]
+    if sp_cast:
+        print(f"Springleaf Parade conjurada em {100*len(sp_cast)/n:.1f}% dos jogos (cria 1 token Shapeshifter, X=1)")
+
+    cdd_games = [r for r in results if r["combat_damage_draws"] > 0]
+    if cdd_games:
+        print()
+        print(f"Ohran Frostfang/Toski (dano de combate -> compra) ativo em {100*len(cdd_games)/n:.1f}% dos jogos")
+        print(f"  Avg cartas compradas via dano de combate: {avg('combat_damage_draws'):.2f}")
+
+    wr_games = [r for r in results if r["war_room_draws"] > 0]
+    if wr_games:
+        print(f"War Room ativada em {100*len(wr_games)/n:.1f}% dos jogos, avg compras: {avg('war_room_draws'):.2f}")
+
+    ny_games = [r for r in results if r["nykthos_activations"] > 0]
+    if ny_games:
+        print(f"Nykthos (devocao >= 4) ativada em {100*len(ny_games)/n:.1f}% dos jogos, avg ativacoes: {avg('nykthos_activations'):.2f}")
 
     gg_cast = [r for r in results if r["genji_glove_cast"]]
     gg_equipped = [r for r in results if r["genji_glove_equipped"]]
