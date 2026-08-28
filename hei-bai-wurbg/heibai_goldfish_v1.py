@@ -1114,11 +1114,25 @@ def do_deadeye_navigator(state: GameState):
     """Soulbond: Deadeye precisa estar pareada com OUTRA criatura pra
     ativar a habilidade em qualquer uma das duas — alvo restrito a
     criatura (achado real 2026-08-27: usava best_shrine_to_reblink,
-    repiscando Shrines puramente encantamento, alvo ilegal pro soulbond)."""
-    if "Deadeye Navigator" not in state.battlefield or remaining_mana(state) < 2:
+    repiscando Shrines puramente encantamento, alvo ilegal pro soulbond).
+    Custo real: "{1}{U}: Exile this creature, then return it to the
+    battlefield under its owner's control." Sem {T} - repetivel quantas
+    vezes a mana permitir, nao uma vez so por turno (achado 2026-08-28,
+    auditoria de checklist de mecanica)."""
+    if "Deadeye Navigator" not in state.battlefield:
         return
-    target = best_creature_to_reblink(state, exclude="Deadeye Navigator")
-    if target:
+    # Cap duro: repiscar Go-Shintai of Life's Origin pode criar Shrine Token(s),
+    # que aumentam enchantment_count() e portanto a mana da Sanctum Weaver -
+    # esse motor nao rastreia "ja usei essa fonte de mana este turno" por
+    # permanente (so total_mana() recalculado toda vez), entao um loop sem
+    # teto pode nunca esvaziar remaining_mana em board com essa combinacao.
+    # 20 ativacoes/turno ja e' um valor generoso pra um goldfish heuristico.
+    for _ in range(20):
+        if remaining_mana(state) < 2:
+            break
+        target = best_creature_to_reblink(state, exclude="Deadeye Navigator")
+        if not target:
+            break
         spend_mana(state, 2)
         blink_permanent(state, target, source="Deadeye Navigator")
 
@@ -1233,17 +1247,26 @@ def do_go_shintai_endstep(state: GameState):
 
 
 def do_sanctum_shattered_heights(state: GameState):
-    if "Sanctum of Shattered Heights" not in state.battlefield or remaining_mana(state) < 1:
+    """Custo real: "{1}, Discard a land or Shrine card:" - sem {T},
+    repetivel enquanto sobrar mana E carta descartavel na mao (achado
+    2026-08-28, auditoria de checklist de mecanica - antes ativava so
+    uma vez por turno)."""
+    if "Sanctum of Shattered Heights" not in state.battlefield:
         return
-    discardable = [n for n in state.hand if n in LAND_NAMES or is_shrine(n)]
-    if not discardable:
-        return
-    spend_mana(state, 1)
-    state.hand.remove(discardable[0])
-    state.graveyard.append(discardable[0])
-    times = resolve_times(state, "Sanctum of Shattered Heights", False, True, False)
-    for _ in range(times):
-        state.interaction_spells_cast_total += 1
+    # Bound natural: descartaveis na mao (finito, ~7-10 cartas) - mesmo assim
+    # um teto duro explicito, mesma cautela do Deadeye Navigator acima.
+    for _ in range(20):
+        if remaining_mana(state) < 1:
+            break
+        discardable = [n for n in state.hand if n in LAND_NAMES or is_shrine(n)]
+        if not discardable:
+            break
+        spend_mana(state, 1)
+        state.hand.remove(discardable[0])
+        state.graveyard.append(discardable[0])
+        times = resolve_times(state, "Sanctum of Shattered Heights", False, True, False)
+        for _ in range(times):
+            state.interaction_spells_cast_total += 1
 
 
 def do_in_search_of_greatness(state: GameState):

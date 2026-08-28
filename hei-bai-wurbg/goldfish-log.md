@@ -691,6 +691,59 @@ antes da correção, o que não deveria acontecer.
 
 ---
 
+## Correção #6 — checklist obrigatória de mecânica (regra nova pós-Beorn)
+
+**Gatilho (usuário):** depois de eu entregar o Beorn sem despacho de landfall
+nenhum, o usuário pediu auditoria da mesma checklist (landfall, mana dorks,
+mana rocks, fixing lands, draw engines, ramp engines, ativadas repetíveis,
+combos) em **todos** os decks do repositório. Rodada dedicada a essa
+checklist no Hei Bai (via agente de auditoria, comparando `oracle_text` real
+de todo o `lista.md` contra o código).
+
+**Landfall/dorks/rocks/fixing/draw/ramp:** todos verificados corretos ou N/A
+(0 cartas qualificantes) — esse deck não tem nenhuma carta de landfall, os 4
+mana dorks respeitam doença de invocação (já corrigido em rodada anterior
+desta sessão), Sol Ring/Arcane Signet/Mind Stone corretos, e os 6 motores de
+draw batem com o oráculo real.
+
+**Bug real encontrado (ativadas repetíveis):** `do_deadeye_navigator()` e
+`do_sanctum_shattered_heights()` ativavam **no máximo 1 vez por turno**, mas
+nenhuma das duas cartas tem `{T}` no custo real — Deadeye Navigator
+("{1}{U}: Exile this creature, then return it") e Sanctum of Shattered
+Heights ("{1}, Discard a land or Shrine card:") são repetíveis enquanto
+sobrar mana/recurso. Corrigido pra um loop real, com teto duro de 20
+ativações/turno.
+
+**Achado ao testar o loop:** sem o teto, o Deadeye Navigator trava o jogo
+(timeout) num board com Sanctum Weaver + Go-Shintai of Life's Origin —
+repiscar o Go-Shintai cria um Shrine Token, que aumenta `enchantment_count()`
+e portanto a mana da Sanctum Weaver, então `remaining_mana()` nunca esvazia
+(esse motor não rastreia "fonte já usada este turno" por permanente, só
+recalcula `total_mana()` do zero a cada chamada). Teto de 20 ativações/turno
+resolve sem descaracterizar o valor real da linha (generoso pra um goldfish
+heurístico).
+
+**Resultado (n=3000, seed_base=9100000, antes → depois):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg blinks totais | 1,75 | 2,17 |
+| Avg spells de interação (proxy) | 38,37 | 51,69 |
+| Avg drain proxy total | 18,21 | 21,93 |
+| Avg dano proxy total | 115,33 | 157,14 |
+| Avg tokens criados | 30,30 | 35,57 |
+| Avg vida ganha proxy | 21,84 | 25,32 |
+
+Impacto real e no sentido esperado — as duas cartas eram subutilizadas por um
+fator de várias vezes. **Robustez:** sweep de 20.000 jogos (seeds
+9100000–9119999, timeout 2s/jogo) rodado depois da correção do teto — 0
+erros, 0 timeouts (o teste sem teto tinha ~65+ timeouts nos primeiros 5.500
+seeds, confirmando que o loop travava de verdade, não só teoricamente).
+
+`lista.md` não mudou. `heibai_v1_runs.jsonl` sobrescrito.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
