@@ -635,6 +635,100 @@ motor).
 
 ---
 
+## Correção #13 — Ojer Taq e Legion's Landing eram jogadas ilegalmente como land (layout "transform")
+
+**Gatilho (usuário):** depois de eu reportar RECURSION quase zerada na
+Correção #12, o usuário perguntou direto — citação literal: *"Como Edgar
+Markov não tem recursão? Vc auditou tudo mesmo? E Agadeem's Awakening e
+Bloodline Bidding? Rise of the Dark Realms?"*
+
+Confirmei: **Bloodline Bidding** já estava implementada (0,00 só porque o
+cemitério raramente tem criatura nomeada — não é bug). **Rise of the Dark
+Realms** não está em `lista.md` nem em nenhum arquivo do deck — o usuário
+confirmou que já tinha sido cortada da lista real antes. **Agadeem's
+Awakening** era um achado real (ver abaixo).
+
+O usuário então pediu uma varredura completa: *"verifique mais uma vez
+todas as cartas modais/aventuras/preparadas/dupla face dos dois decks e
+acrescente essa regra de verificar e compilar TODOS OS EFEITOS DAS CARTAS:
+Rooms, battles, mdfcs, adventures, prepared, etc, para TODOS OS DECKS."*
+
+Consultei o campo `layout` real da API do Scryfall (não o formato do nome)
+pras 8 cartas com "//" na lista: **Ojer Taq // Temple of Civilization** e
+**Legion's Landing // Adanto, the First Fort** vieram como `"transform"`,
+NÃO `"modal_dfc"` como eu tinha assumido (junto com Agadeem's Awakening/Fell
+the Profane, que são `modal_dfc` de verdade).
+
+**Diferença crítica:** num `transform`, só a FRENTE é castável da mão — o
+verso só é alcançável via o gatilho real de transformação do próprio jogo
+(morte, ataque com N criaturas, etc). A versão anterior registrava as 2
+cartas DIRETO como o verso Land — isso não era "perder valor", era **simular
+uma ação ilegal do jogo inteiro**, toda vez que essas cartas apareciam: a
+Ojer Taq nunca tinha sido conjurada como a criatura 6/6 real, e a Legion's
+Landing nunca tinha criado o Vampire Token do próprio ETB.
+
+**Corrigido:**
+- **Ojer Taq, Deepest Foundation** registrada como Creature de verdade
+  (`{4}{W}{W}`, 6/6). Estático real (*"If one or more creature tokens would
+  be created under your control, three times that many..."*) implementado
+  em `token_multiplier()` — só pra tokens de CRIATURA (diferente dos outros
+  3 dobradores da lista, que valem pra qualquer token). Gatilho de morte
+  (*"When Ojer Taq dies, return it to the battlefield tapped and
+  transformed"*) implementado em `_pay_diabolic_intent_cost` (o único ponto
+  onde uma criatura nomeada pode morrer de verdade neste motor) — e a IA
+  agora deprioriza sacrificar a Ojer Taq especificamente (perderia o
+  estático), preferindo qualquer outro fodder disponível.
+- **Legion's Landing** registrada como Enchantment de verdade (`{W}`). ETB
+  (*"create a 1/1 white Vampire creature token with lifelink"*) 100%
+  ausente antes, implementado. Transformação (*"When you attack with three
+  or more creatures, transform"*) implementada em `combat_step` (mesma
+  premissa de "todas as criaturas em campo atacam" já usada pro Minas
+  Tirith) — `try_adanto()` agora só ativa depois de transformada de
+  verdade, não só por `state.has()`.
+- **Agadeem's Awakening // Agadeem, the Undercrypt** (MDFC verdadeiro,
+  confirmado `modal_dfc`) — a frente (`{X}{B}{B}{B}`, *"Return from your
+  graveyard to the battlefield any number of target creature cards that
+  each have a different mana value X or less"*) nunca era conjurada, só o
+  verso Land. Implementado (`try_agadeems_awakening`, chamada antes do
+  land-drop): só vale abrir mão do land se houver 2+ alvos de MV distinto
+  no cemitério — com menos que isso, o land continua sendo a escolha
+  melhor.
+- **Fell the Profane // Fell Mire** (MDFC verdadeiro, confirmado) —
+  permanece land-primary **de propósito**: a frente é remoção sem alvo
+  legal neste goldfish solo (mesma convenção do `EXCLUDE_BLIND_CAST`), não
+  é uma lacuna.
+- **Westvale Abbey // Ormendahl** (layout `transform`, confirmado) — a
+  FRENTE real já é o land (Westvale Abbey), então land-primary já estava
+  certo desde o início. Nenhuma mudança necessária.
+- **Achado lateral:** ao mexer em `_pay_diabolic_intent_cost`, notei que a
+  função nunca chamava `_apply_death_payoffs` — sacrificar pro Diabolic
+  Intent é uma morte de criatura de verdade (Zulaport Cutthroat/Blood
+  Artist/Elenda deveriam reagir), mas nunca disparava. Corrigido junto.
+
+**Resultado (n=2000, seed_base=6000000, antes → depois):**
+
+| Métrica | Antes (Correção #12) | Depois (Correção #13) |
+|---|---|---|
+| Avg drain_total | 4,65 | 4,82 |
+| Combo monta e liga | 1,4% dos jogos | 1,6% dos jogos |
+| Dano agregado fora do combo | 5,68 | 5,91 |
+| Ojer Taq conjurada (criatura) | 0% (jogada ilegal como land) | 3,8% dos jogos |
+| Legion's Landing conjurada (encantamento) | 0% (jogada ilegal como land) | 16,5% dos jogos, transformada em 10,8% |
+| Agadeem's Awakening conjurada como Sorcery | 0% (nunca) | não-zero (raro, cemitério pouco populado) |
+| RECURSION | 0,00 | não-zero (n=3000 de teste: 0,01) |
+
+Impacto real e consistentemente positivo — 2 cartas que estavam sendo
+jogadas de forma ilegal agora funcionam de verdade, e um terceiro motor de
+recursão real (Agadeem's Awakening) deixou de estar permanentemente
+desligado.
+
+**Robustez:** sweep de 20.000 jogos (seeds 2000000–2019999, timeout
+2s/jogo) — 0 erros, 0 timeouts.
+
+`lista.md` não mudou.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

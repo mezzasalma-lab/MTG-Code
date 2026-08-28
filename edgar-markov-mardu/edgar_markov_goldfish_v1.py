@@ -60,17 +60,36 @@ ausentes apesar de tageados/citados na auditoria.md. Corrigidos com
 implementacao real, testados (25k+15k jogos de robustez, 0 erros) e
 logados com impacto quantificado.
 
-Deferido/documentado (nao implementado, motivo real por carta):
-  - MDFCs land-primary (Ojer Taq, Legion's Landing, Agadeem's Awakening,
-    Fell the Profane): so o verso Land e' jogado - o lado spell (Ojer
-    Taq triplica token de criatura; Legion's Landing cria Vampiro;
-    Agadeem's Awakening reanima em massa; Fell the Profane e' remocao,
-    ja proxy) nunca e' conjurado. Westvale Abbey e' land-primary DE
-    VERDADE (a maioria dos jogos so joga como terreno mesmo) - os
-    outros 3 sao uma perda real de valor, mas modelar escolha dinamica
-    entre face land/spell exigiria uma reforma arquitetural maior (nao
-    so mais uma carta) - fora de escopo desta rodada, documentado aqui
-    em vez de silencioso.
+Correcao #13 - varredura exaustiva de MDFC/transform/Room/prepared
+(2026-08-28, usuario perguntou direto "e Agadeem's Awakening? Bloodline
+Bidding?" depois de checar a lista completa via API do Scryfall pro campo
+`layout` de cada carta com "//" no nome): achado real GRAVE - Ojer Taq,
+Deepest Foundation // Temple of Civilization e Legion's Landing // Adanto,
+the First Fort tem layout real "transform" (nao "modal_dfc" como Agadeem's
+Awakening/Fell the Profane) - so a FRENTE (Ojer Taq criatura {4}{W}{W};
+Legion's Landing encantamento {W}) pode ser conjurada da mao, o verso Land
+so e' alcancavel via o gatilho de transformacao real do jogo. A versao
+anterior registrava as 2 DIRETO como Land, jogando um verso ilegal sem
+nunca ter conjurado a frente - nao era so "falta de valor", era uma acao
+ilegal simulada toda vez que essas cartas apareciam. Corrigidas: Ojer Taq
+agora e' Creature de verdade (estatico de triplicar token de criatura via
+`token_multiplier`, gatilho de morte-e-retorno-transformado via
+`_pay_diabolic_intent_cost`); Legion's Landing agora e' Enchantment de
+verdade (ETB cria Vampire Token, transforma em Adanto no combate se 3+
+criaturas em campo). **Agadeem's Awakening // Agadeem, the Undercrypt**
+(MDFC verdadeiro) tambem estava so land-primary - a frente ({X}{B}{B}{B},
+reanima criaturas de MV distinto do cemiterio) 100% ausente, agora
+implementada (`try_agadeems_awakening`, so vale a pena com 2+ alvos de MV
+distinto disponiveis). **Fell the Profane // Fell Mire** (MDFC verdadeiro,
+verificado tambem) permanece land-primary DE PROPOSITO - a frente e' um
+spell de remocao sem alvo legal neste goldfish solo (mesma convencao de
+EXCLUDE_BLIND_CAST), land-only e' o resultado CORRETO, nao uma lacuna.
+Westvale Abbey // Ormendahl e' land-primary DE VERDADE tambem (layout
+transform, mas a FRENTE real e' o land) - nenhuma mudanca necessaria ali.
+Achado lateral ao mexer em `_pay_diabolic_intent_cost`: a funcao nunca
+chamava `_apply_death_payoffs` - sacrificio pro Diabolic Intent e' morte
+de criatura de verdade (Zulaport/Blood Artist deveriam reagir), corrigido
+junto. Ver goldfish-log.md, Correcao #13, pro antes/depois quantificado.
   - Cordial Vampire (+1/+1 counters em cada Vampiro) e o gatilho de
     MORTE da propria Elenda (X tokens = poder dela): sem payoff
     numerico modelavel - nenhuma criatura NOMEADA morre neste
@@ -304,7 +323,15 @@ add("Enduring Tenacity", 4, "Creature", colors={"B"}, produces=set(), tags={"dra
 add("Indulgent Aristocrat", 1, "Creature", colors={"B"}, produces=set(), tags={"vampire_type"})
 add("Mondrak, Glory Dominus", 4, "Creature", colors={"W"}, produces=set(), tags=set())
 add("Nullpriest of Oblivion", 2, "Creature", colors={"B"}, produces=set(), tags={"vampire_type"})
-add("Ojer Taq, Deepest Foundation // Temple of Civilization", 6, "Land", colors={"W"}, produces={"W"}, tags=set())
+# Achado real 2026-08-28 (varredura exaustiva de MDFC/transform/Room/prepared
+# pedida pelo usuario apos o achado do Agadeem's Awakening): layout real
+# (Scryfall) e' "transform", NAO "modal_dfc" - so o lado Ojer Taq (frente,
+# criatura) pode ser conjurado da mao; Temple of Civilization (verso, land)
+# so e' alcancavel via o gatilho de transformacao na morte. A versao
+# anterior registrava a carta como Land direto - jogava ilegalmente o
+# VERSO sem nunca ter conjurado a frente. Corrigido: registrada como
+# Creature de verdade (custo/cor real {4}{W}{W}).
+add("Ojer Taq, Deepest Foundation // Temple of Civilization", 6, "Creature", colors={"W"}, produces=set(), tags=set())
 add("Ophiomancer", 3, "Creature", colors={"B"}, produces=set(), tags={"token_maker"})
 add("Pitiless Plunderer", 4, "Creature", colors={"B"}, produces=set(), tags={"token_maker"})
 add("Purphoros, God of the Forge", 4, "Creature", colors={"R"}, produces=set(), tags=set())
@@ -330,7 +357,14 @@ add("Caretaker's Talent", 3, "Enchantment", colors={"W"}, produces=set(), tags={
 add("Exquisite Blood", 5, "Enchantment", colors={"B"}, produces=set(), tags=set())
 add("Funeral Room // Awakening Hall", 3, "Enchantment", colors={"B"}, produces=set(), tags={"drain_aristocrats"})
 add("Goblin Bombardment", 2, "Enchantment", colors={"R"}, produces=set(), tags={"removal"})
-add("Legion's Landing // Adanto, the First Fort", 1, "Land", colors={"W"}, produces={"W"}, tags={"token_maker"})
+# Achado real 2026-08-28 (varredura exaustiva): layout real e' "transform",
+# NAO "modal_dfc" - so o lado Legion's Landing (frente, encantamento {W})
+# pode ser conjurado da mao; Adanto, the First Fort (verso, land) so e'
+# alcancavel via "when you attack with three or more creatures,
+# transform". A versao anterior registrava direto como Land, jogando
+# ilegalmente o verso sem nunca ter conjurado a frente (e sem nunca criar
+# o token de ETB da Legion's Landing de verdade).
+add("Legion's Landing // Adanto, the First Fort", 1, "Enchantment", colors={"W"}, produces=set(), tags={"token_maker"})
 add("Smothering Tithe", 4, "Enchantment", colors={"W"}, produces=set(), tags=set())
 add("The Meathook Massacre", 2, "Enchantment", colors={"B"}, produces=set(), tags={"drain_aristocrats", "wipe"})
 add("Unholy Annex // Ritual Chamber", 3, "Enchantment", colors={"B"}, produces=set(), tags={"drain_aristocrats", "draw"})
@@ -538,6 +572,7 @@ CREATURE_POWER = {
     "Cruel Celebrant": 1, "Elenda, the Dusk Rose": 1,
     "Emeritus of Woe": 5, "Enduring Tenacity": 4, "Indulgent Aristocrat": 1,
     "Mondrak, Glory Dominus": 4, "Nullpriest of Oblivion": 2,
+    "Ojer Taq, Deepest Foundation // Temple of Civilization": 6,
     "Ophiomancer": 2, "Pitiless Plunderer": 1, "Purphoros, God of the Forge": 6,
     "Roaming Throne": 4, "Sanctum Seeker": 3,
     "Stensian Sanguinist // Exsanguinate": 2, "Vein Ripper": 6,
@@ -614,6 +649,19 @@ class GameState:
     awakening_hall_reanimated: int = 0
     ritual_chamber_unlocked: bool = False
     ritual_chamber_demons_created: int = 0
+
+    # Ojer Taq // Temple of Civilization e Legion's Landing // Adanto -
+    # cartas "transform" (layout real, Scryfall), so a frente e' castavel
+    # da mao. True depois que o gatilho de transformacao real dispara.
+    ojer_taq_transformed: bool = False
+    legion_landing_transformed: bool = False
+
+    # Agadeem's Awakening // Agadeem, the Undercrypt - MDFC verdadeiro
+    # (layout modal_dfc), as 2 faces sao alcancaveis independentemente da
+    # mao. Rastreia se o lado Sorcery foi conjurado (consome o card da
+    # mao, entao nunca mais e' jogavel como land depois).
+    agadeems_awakening_cast: bool = False
+    agadeems_awakening_reanimated: int = 0
     sanctum_seeker_drains: int = 0
     vito_fanatic_stage_this_turn: int = 0
     vito_fanatic_demons_created: int = 0
@@ -752,6 +800,18 @@ def total_mana(state: GameState) -> int:
             # (custo condicional, so vale a pena com Swamps o
             # suficiente pra compensar).
             continue
+        if card == "Ojer Taq, Deepest Foundation // Temple of Civilization":
+            # So produz mana depois de transformada (Temple of Civilization,
+            # {T}: Add W) - enquanto e' a criatura Ojer Taq, nao tem
+            # habilidade de mana nenhuma.
+            if state.ojer_taq_transformed:
+                total += 1
+            continue
+        if card == "Legion's Landing // Adanto, the First Fort":
+            # Idem - so produz mana depois de transformada em Adanto.
+            if state.legion_landing_transformed:
+                total += 1
+            continue
         if is_land(card):
             total += 1
         elif card == "Sol Ring":
@@ -777,7 +837,12 @@ def try_adanto(state: GameState, log: List[Dict]):
     # habilidade da Adanto ("{2}{W}, {T}: Create a 1/1 white Vampire
     # creature token with lifelink") estava so tagueada como
     # "token_maker", nunca despachada. {T} = uma ativacao por turno.
-    if not state.has("Legion's Landing // Adanto, the First Fort"):
+    # Achado real 2026-08-28 (varredura exaustiva): a habilidade da Adanto
+    # so existe depois de Legion's Landing transformar de verdade (layout
+    # "transform" - ver comentario no add() da carta) - antes disso, o
+    # permanente em campo E' Legion's Landing (encantamento), sem essa
+    # ativada nem habilidade de mana nenhuma.
+    if not state.has("Legion's Landing // Adanto, the First Fort") or not state.legion_landing_transformed:
         return
     if remaining_mana(state) < 3 or color_sources(state, "W") < 1:
         return
@@ -824,6 +889,44 @@ def try_unlock_rooms(state: GameState, log: List[Dict]):
             on_creature_enters(state, log, "Demon Token")
             log.append({"trigger": "ritual_chamber_unlock", "turn": state.turn})
 
+def try_agadeems_awakening(state: GameState, log: List[Dict]):
+    # Agadeem's Awakening // Agadeem, the Undercrypt e' um MDFC verdadeiro
+    # (layout real "modal_dfc", Scryfall - confirmado numa varredura
+    # exaustiva pedida pelo usuario depois dele perguntar diretamente "e
+    # Agadeem's Awakening?"). A versao anterior so jogava o verso (Land)
+    # direto, nunca considerando conjurar a frente: "{X}{B}{B}{B}, Return
+    # from your graveyard to the battlefield any number of target creature
+    # cards that each have a different mana value X or less." So vale abrir
+    # mao do land drop se houver 2+ alvos de MV distinto no cemiterio -
+    # com menos que isso, o land e' sempre melhor (mana e' recurso mais
+    # escasso que reanimar 1 criatura so). Chamada ANTES de play_land() no
+    # main_phase, pra tirar a carta da mao antes dela virar candidata a land.
+    name = "Agadeem's Awakening // Agadeem, the Undercrypt"
+    if name not in state.hand or state.agadeems_awakening_cast:
+        return
+    by_mv = {}
+    for c in state.graveyard:
+        if is_creature(c) and C(c).mv not in by_mv:
+            by_mv[C(c).mv] = c
+    candidates = sorted(by_mv.items())
+    if len(candidates) < 2:
+        return
+    for x in range(len(candidates), 1, -1):
+        eligible = [(mv, c) for mv, c in candidates if mv <= x]
+        if len(eligible) >= 2 and remaining_mana(state) >= x + 3:
+            state.hand.remove(name)
+            state.agadeems_awakening_cast = True
+            state.mana_spent_this_turn += x + 3
+            for mv, target in eligible:
+                state.graveyard.remove(target)
+                state.battlefield.append(target)
+                apply_etb(state, target, log)
+                on_creature_enters(state, log, target)
+                state.agadeems_awakening_reanimated += 1
+            log.append({"action": "agadeems_awakening_cast", "x": x,
+                         "reanimated": [c for _, c in eligible], "turn": state.turn})
+            return
+
 def try_minas_tirith(state: GameState, log: List[Dict]):
     # Achado real 2026-08-28 (auditoria de checklist de mecanica): a
     # habilidade "{1}{W}, {T}: Draw a card. Activate only if you attacked
@@ -862,6 +965,14 @@ def color_sources(state: GameState, color: str, for_vampire: bool = False) -> in
       {T}: Add {R} so se controlar Swamp ou Mountain."""
     n = 0
     for card in state.battlefield:
+        if card == "Ojer Taq, Deepest Foundation // Temple of Civilization":
+            if color == "W" and state.ojer_taq_transformed:
+                n += 1
+            continue
+        if card == "Legion's Landing // Adanto, the First Fort":
+            if color == "W" and state.legion_landing_transformed:
+                n += 1
+            continue
         if color not in C(card).produces:
             continue
         if has_tag(card, "vampire_only_color") and not for_vampire:
@@ -978,7 +1089,7 @@ def _log_doubling(state: GameState, times: int):
     if times == 2:
         state.roaming_throne_doublings += 1
 
-def token_multiplier(state: GameState) -> int:
+def token_multiplier(state: GameState, creature: bool = True) -> int:
     # Anointed Procession / Mondrak, Glory Dominus: replacement effects
     # reais e INDEPENDENTES do Roaming Throne (que dobra o GATILHO, nao
     # a contagem de token) - cada um "twice that many tokens created
@@ -987,9 +1098,19 @@ def token_multiplier(state: GameState) -> int:
     # controlador). Achado real 2026-08-27: nenhum dos dois era checado
     # em lugar nenhum, apesar de tageados 'token_maker'.
     n = sum(1 for c in TOKEN_DOUBLER_SOURCES if state.has(c))
-    if n:
+    mult = 2 ** n
+    # Ojer Taq, Deepest Foundation (frente, enquanto nao transformada):
+    # "If one or more CREATURE tokens would be created under your
+    # control, three times that many..." - so' criatura, ao contrario dos
+    # 3 acima (que valem pra QUALQUER token, Treasure incluido). Achado
+    # real 2026-08-28 (varredura exaustiva): 100% ausente ate essa
+    # correcao - nem a carta em si podia ser conjurada antes.
+    if creature and state.has("Ojer Taq, Deepest Foundation // Temple of Civilization") \
+            and not state.ojer_taq_transformed:
+        mult *= 3
+    if mult > 1:
         state.token_doubler_events += 1
-    return 2 ** n
+    return mult
 
 def _check_combo(state: GameState, log: List[Dict]):
     if state.combo_active:
@@ -1229,14 +1350,35 @@ def _pay_diabolic_intent_cost(state: GameState, log: List[Dict]):
         state.battlefield.remove(popped)
         state.creatures_died_this_turn += 1
         log.append({"action": "diabolic_intent_sac", "sacrificed": "token", "turn": state.turn})
+        # Achado real 2026-08-28 (varredura exaustiva): esta funcao nunca
+        # chamava _apply_death_payoffs - o sacrificio pro Diabolic Intent
+        # e' uma morte de criatura de verdade (Zulaport Cutthroat/Blood
+        # Artist/etc deveriam disparar), mas nunca disparavam aqui.
+        _apply_death_payoffs(state, log, source="diabolic_intent")
         return
     sac_candidates = [c for c in state.battlefield
                        if is_creature(c) and c != COMMANDER and c not in COMBO_PIECES]
+    # Um jogador real evita sacrificar o Ojer Taq (perde o estatico de
+    # triplicar token de criatura) se houver qualquer outra opcao -
+    # deprioriza ela no lugar de pegar sac_candidates[0] as cegas.
+    sac_candidates.sort(key=lambda c: c == "Ojer Taq, Deepest Foundation // Temple of Civilization")
     victim = sac_candidates[0]
     state.battlefield.remove(victim)
-    state.graveyard.append(victim)
+    if victim == "Ojer Taq, Deepest Foundation // Temple of Civilization":
+        # "When Ojer Taq dies, return it to the battlefield tapped and
+        # transformed under its owner's control." Achado real 2026-08-28
+        # (varredura exaustiva): nao vai pro cemiterio - volta direto como
+        # Temple of Civilization (land), tapped nesse turno (nao produz
+        # mana ate o proximo).
+        state.ojer_taq_transformed = True
+        state.battlefield.append(victim)
+        state.tapped_lands_this_turn += 1
+        log.append({"action": "ojer_taq_death_transform", "turn": state.turn})
+    else:
+        state.graveyard.append(victim)
     state.creatures_died_this_turn += 1
     log.append({"action": "diabolic_intent_sac", "sacrificed": victim, "turn": state.turn})
+    _apply_death_payoffs(state, log, source="diabolic_intent")
 
 def _apply_death_payoffs(state: GameState, log: List[Dict], source: str):
     # Elenda, the Dusk Rose: "Whenever ANOTHER creature dies, put a
@@ -1284,6 +1426,19 @@ def apply_etb(state: GameState, card: str, log: List[Dict]):
         state.bastion_of_remembrance_tokens += n
         on_creature_enters(state, log, "Human Soldier Token", count=n)
         log.append({"trigger": "bastion_of_remembrance_etb", "tokens": n, "turn": state.turn})
+    elif card == "Legion's Landing // Adanto, the First Fort":
+        # "When Legion's Landing enters, create a 1/1 white Vampire
+        # creature token with lifelink." Achado real 2026-08-28 (varredura
+        # exaustiva): 100% ausente ate essa correcao - a carta era
+        # registrada direto como o verso (Adanto, land), pulando o cast e
+        # o ETB reais da frente inteiramente (ver comentario no add()).
+        n = token_multiplier(state)
+        for _ in range(n):
+            state.tokens.append("Vampire Token")
+            state.battlefield.append("Vampire Token")
+        state.eminence_tokens_created += n  # mesmo pool de Vampire Token da Eminence, ver metricas
+        on_creature_enters(state, log, "Vampire Token", count=n)
+        log.append({"trigger": "legions_landing_etb", "tokens": n, "turn": state.turn})
     elif card == "Emeritus of Woe":
         # Achado real 2026-08-27 (usuario: "o Emeritus of Woe tem o
         # Demonic Tutor Prepared, mais um tutor!"): "This creature
@@ -1455,7 +1610,7 @@ def sac_loop(state: GameState, log: List[Dict]):
         # era so' um bonus de mana abstrato), fonte nao-criatura -> sem
         # dobra do Roaming Throne, mas sujeito ao dobrador de token.
         if state.has("Pitiless Plunderer"):
-            t = token_multiplier(state)
+            t = token_multiplier(state, creature=False)
             create_treasure_and_crack(state, log, t, source="pitiless_plunderer")
             state.pitiless_plunderer_treasures += t
         _apply_death_payoffs(state, log, source="sac_loop")
@@ -1483,6 +1638,20 @@ def combat_step(state: GameState, log: List[Dict]):
     if not state.commander_in_play or state.turn <= state.commander_cast_turn:
         return  # summoning sickness no turno em que entrou
     state.edgar_attack_turns += 1
+
+    # Legion's Landing: "When you attack with three or more creatures,
+    # transform Legion's Landing." Achado real 2026-08-28 (varredura
+    # exaustiva): gatilho de transformacao 100% ausente ate essa correcao
+    # (a carta nem podia chegar aqui como Legion's Landing antes, ja que
+    # era registrada direto como o verso). "3+ creatures" e' geral, nao so
+    # Vampiro - mesma premissa ja usada pro Minas Tirith (todas as
+    # criaturas em campo no momento do combate atacam desimpedidas).
+    if state.has("Legion's Landing // Adanto, the First Fort") and not state.legion_landing_transformed:
+        n_creatures_attacking = sum(1 for c in state.battlefield if is_creature(c))
+        if n_creatures_attacking >= 3:
+            state.legion_landing_transformed = True
+            log.append({"trigger": "legions_landing_transform", "turn": state.turn})
+
     vamps_in_play = sum(1 for c in state.battlefield if is_vampire(c))
     times = _times(state)
     for _ in range(times):
@@ -1728,7 +1897,7 @@ def do_black_market_connections(state: GameState, log: List[Dict]):
     # mana abstrato.
     if not state.has("Black Market Connections"):
         return
-    t = token_multiplier(state)
+    t = token_multiplier(state, creature=False)
     create_treasure_and_crack(state, log, t, source="black_market_connections")
     state.black_market_treasures += t
 
@@ -1820,6 +1989,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     do_upkeep(state, log)
     state.draw(1)
     do_urzas_saga_chapter_check(state, log)
+    try_agadeems_awakening(state, log)
     play_land(state, log)
     main_phase(state, log)
     sac_loop(state, log)
@@ -1929,6 +2099,12 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "awakening_hall_reanimated": state.awakening_hall_reanimated,
         "ritual_chamber_unlocked": state.ritual_chamber_unlocked,
         "ritual_chamber_demons_created": state.ritual_chamber_demons_created,
+        "ojer_taq_in_play": state.has("Ojer Taq, Deepest Foundation // Temple of Civilization"),
+        "ojer_taq_transformed": state.ojer_taq_transformed,
+        "legion_landing_in_play": state.has("Legion's Landing // Adanto, the First Fort"),
+        "legion_landing_transformed": state.legion_landing_transformed,
+        "agadeems_awakening_cast": state.agadeems_awakening_cast,
+        "agadeems_awakening_reanimated": state.agadeems_awakening_reanimated,
     }
 
 def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base=6000000):
@@ -1988,6 +2164,24 @@ def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base
     if rc_unlocked:
         print(f"Ritual Chamber destrancada em {100*rc_unlocked/n:.1f}% dos jogos "
               f"(cria o Demon que habilita o bonus do proprio Unholy Annex)")
+
+    ojer_taq_in_play = sum(1 for r in results if r["ojer_taq_in_play"])
+    if ojer_taq_in_play:
+        ojer_taq_transformed = sum(1 for r in results if r["ojer_taq_transformed"])
+        print(f"Ojer Taq, Deepest Foundation conjurada (como criatura 6/6, {{4}}{{W}}{{W}}) em "
+              f"{100*ojer_taq_in_play/n:.1f}% dos jogos, transformada (morreu -> Temple of Civilization) "
+              f"em {100*ojer_taq_transformed/n:.1f}%")
+    legion_landing_in_play = sum(1 for r in results if r["legion_landing_in_play"])
+    if legion_landing_in_play:
+        legion_landing_transformed = sum(1 for r in results if r["legion_landing_transformed"])
+        print(f"Legion's Landing conjurada (como encantamento {{W}}, cria 1 Vampire Token) em "
+              f"{100*legion_landing_in_play/n:.1f}% dos jogos, transformada em Adanto (atacou com 3+) em "
+              f"{100*legion_landing_transformed/n:.1f}%")
+    aa_cast = sum(1 for r in results if r["agadeems_awakening_cast"])
+    if aa_cast:
+        print(f"Agadeem's Awakening conjurada como Sorcery (em vez de land) em {100*aa_cast/n:.1f}% dos "
+              f"jogos, avg criaturas reanimadas quando conjurada: "
+              f"{sum(r['agadeems_awakening_reanimated'] for r in results)/max(aa_cast,1):.2f}")
     print()
     print(f"--- Combo Exquisite Blood/Bloodthirsty Conqueror + Vito, Thorn of the Dusk Rose ---")
     print(f"Partidas em que o combo montou E ligou: {100*len(combo_turns)/n:.1f}%")
@@ -2030,11 +2224,12 @@ def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base
           f"resultado CORRETO, nao um bug.)")
     total_recursion = sum(
         r["sevinnes_reclamation_returns"] + r["bloodline_bidding_returns"] + r["awakening_hall_reanimated"]
+        + r["agadeems_awakening_reanimated"]
         for r in results)
     print(f"RECURSION: avg cartas recuperadas do cemiterio pro campo (soma de Sevinne's Reclamation, "
-          f"Bloodline Bidding, Awakening Hall): {total_recursion/n:.2f}. Tutores de biblioteca (Vampiric "
-          f"Tutor/Diabolic Intent/Emeritus of Woe/Urza's Saga) NAO contam aqui - buscam da biblioteca, nao "
-          f"do cemiterio, categoria diferente por definicao.")
+          f"Bloodline Bidding, Awakening Hall, Agadeem's Awakening): {total_recursion/n:.2f}. Tutores de "
+          f"biblioteca (Vampiric Tutor/Diabolic Intent/Emeritus of Woe/Urza's Saga) NAO contam aqui - buscam "
+          f"da biblioteca, nao do cemiterio, categoria diferente por definicao.")
     total_finisher_damage = sum(
         r["drain_total"] + r["purphoros_damage_total"] + r["warleaders_call_damage_total"]
         + r["exsanguinate_x_total"]
