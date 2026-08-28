@@ -18,6 +18,18 @@ Metodologia:
   criaturas que nao sejam ramp/draw/removal/counter-doubler ja tageados.
   O simulador so joga a carta "The Prismatic Bridge" (verso do MDFC) como
   comandante, direto do zone de comando.
+- NAO modelado (achado 2026-08-28, auditoria de checklist de mecanica -
+  decisao consciente de escopo, nao esquecimento silencioso): as 14
+  cartas tageadas "draw" (Rhystic Study, os Teferis, Tamiyos, etc.) e as
+  8 tageadas "proliferate"/"counter_doubler" (Doubling Season, Atraxa,
+  etc.) tem a tag mas nenhum gatilho real disparado. Draw ficou de fora
+  desta rodada por volume (14 motores, escopo comparavel a montar um
+  goldfish completo) - fica pra uma rodada dedicada se o usuario quiser.
+  Proliferate/counter-doubler ficou de fora porque esse simulador nao
+  rastreia NENHUM sistema de counters/tokens/loyalty (a pergunta central
+  dele - turno de resolucao/taxa de acerto/sobrevivencia da Bridge - nao
+  depende disso), entao nao ha alvo real pra "dobrar" ou "proliferar"
+  nesse estado rastreado.
 - PREMISSA NAO VALIDADA (usuario nao tem dado real, deck nunca jogado):
   taxa de tentativa de remocao por oponente por turno mirando a Bridge ou
   seus protetores. Default usado: 12% por oponente por turno, 3 oponentes
@@ -179,13 +191,28 @@ add("Arena Rector", 4, "Creature", colors={"W"}, produces=set(), tags={"creature
 add("Ashiok, Dream Render", 3, "Planeswalker", colors={"B", "U"}, produces=set(), tags={"planeswalker"})
 add("Atraxa, Praetors' Voice", 4, "Creature", colors={"B", "G", "U", "W"}, produces=set(), tags={"creature", "proliferate"})
 add("Blasphemous Act", 9, "Sorcery", colors={"R"}, produces=set(), tags={"wipe"})
-add("Bloom Tender", 2, "Creature", colors={"G"}, produces={"B", "G", "R", "U", "W"}, tags={"creature", "ramp"})
+add("Bloom Tender", 2, "Creature", colors={"G"}, produces=set(), tags={"creature", "ramp", "bloom_tender"})
+# Achado real 2026-08-28 (auditoria de checklist): oraculo real e' "Vivid -
+# {T}: For each color among permanents you control, add one mana of that
+# color" - escala com cores REAIS em campo, nao 5c fixo. produces=set(),
+# tratada com logica propria em color_sources()/total_mana() via tag
+# "bloom_tender".
 add("Carth the Lion", 4, "Creature", colors={"B", "G"}, produces=set(), tags={"creature"})
-add("Chromatic Lantern", 3, "Artifact", colors=set(), produces={"B", "G", "R", "U", "W"}, tags={"ramp"})
+add("Chromatic Lantern", 3, "Artifact", colors=set(), produces={"B", "G", "R", "U", "W"}, tags={"ramp", "lands_any_color"})
+# Achado real 2026-08-28: alem do proprio {T}: Add any color (produces
+# acima, correto), tem uma estatica de campo inteiro nunca implementada:
+# "Lands you control have '{T}: Add one mana of any color.'" - afeta TODO
+# terreno em campo, nao so ela mesma. Tag "lands_any_color" checada em
+# color_sources().
 add("Counterspell", 2, "Instant", colors={"U"}, produces=set(), tags={"counterspell"})
 add("Damn", 2, "Sorcery", colors={"B", "W"}, produces=set(), tags={"removal"})
 add("Deepglow Skate", 5, "Creature", colors={"U"}, produces=set(), tags={"counter_doubler", "creature"})
-add("Delighted Halfling", 1, "Creature", colors={"G"}, produces={"B", "C", "G", "R", "U", "W"}, tags={"creature", "ramp"})
+add("Delighted Halfling", 1, "Creature", colors={"G"}, produces={"C"}, tags={"creature", "ramp", "legendary_only_color"})
+# Achado real 2026-08-28: "{T}: Add {C}." incondicional (produces acima),
+# mas a mana colorida real e' "{T}: Add one mana of any color. Spend this
+# mana only to cast a legendary spell, and that spell can't be countered" -
+# so' incolor era incondicional. Tag "legendary_only_color" checada em
+# color_sources() (so conta pra spells lendarios de verdade).
 add("Doubling Season", 5, "Enchantment", colors={"G"}, produces=set(), tags={"counter_doubler"})
 add("Dovin's Veto", 2, "Instant", colors={"U", "W"}, produces=set(), tags=set())
 add("Elspeth, Sun's Champion", 6, "Planeswalker", colors={"W"}, produces=set(), tags={"planeswalker", "wipe"})
@@ -226,7 +253,15 @@ add("Teferi, Who Slows the Sunset", 4, "Planeswalker", colors={"U", "W"}, produc
 add("The Chain Veil", 4, "Artifact", colors=set(), produces=set(), tags=set())
 add("The Eternal Wanderer", 6, "Planeswalker", colors={"W"}, produces=set(), tags={"planeswalker", "wipe"})
 add("The Peregrine Dynamo", 3, "Creature", colors=set(), produces=set(), tags={"creature"})
-add("The World Tree", 0, "Land", colors={"B", "G", "R", "U", "W"}, produces={"B", "G", "R", "U", "W"}, tags=set())
+add("The World Tree", 0, "Land", colors={"G"}, produces={"G"}, tags={"world_tree_6lands"})
+# Achado real 2026-08-28: "{T}: Add {G}" incondicional (produces acima),
+# mas o resto do oraculo real e' "This land enters tapped." + "As long as
+# you control six or more lands, lands you control have '{T}: Add one
+# mana of any color.'" (afeta TODO terreno em campo, condicionado a 6+
+# terrenos - nao 5c incondicional desde o turno 1). Tag "world_tree_6lands"
+# checada em color_sources(). NAO modelado (esse arquivo nao rastreia
+# terreno tapped-on-ETB pra nenhuma carta - mesma simplificacao geral ja
+# em uso aqui): o "enters tapped" proprio dela, atraso de 1 turno.
 add("Three Visits", 2, "Sorcery", colors={"G"}, produces=set(), tags={"ramp"})
 add("Toxic Deluge", 3, "Sorcery", colors={"B"}, produces=set(), tags={"wipe"})
 add("Ugin, the Spirit Dragon", 8, "Planeswalker", colors=set(), produces=set(), tags={"draw", "planeswalker", "removal"})
@@ -244,14 +279,33 @@ add("City of Brass", 0, "Land", colors=set(), produces={"B", "G", "R", "U", "W"}
 add("Command Tower", 0, "Land", colors=set(), produces={"B", "G", "R", "U", "W"}, tags=set())
 add("Emergence Zone", 0, "Land", colors=set(), produces={"C"}, tags={"flash_enabler"})
 add("Exotic Orchard", 0, "Land", colors=set(), produces={"B", "G", "R", "U", "W"}, tags=set())
-add("Fabled Passage", 0, "Land", colors=set(), produces={"B", "G", "R", "U", "W"}, tags=set())  # busca qualquer basica
+# Achado real 2026-08-28 (auditoria de checklist): Fabled Passage NAO TEM
+# nenhuma habilidade de mana no oraculo real - so' "{T}, Sacrifice this
+# land: Search your library for a basic land card, put it onto the
+# battlefield tapped, then shuffle. Then if you control four or more
+# lands, untap that land." Estava modelada como fonte incondicional de
+# qualquer cor (nem sequer excluida do +1 generico de is_land()). Corrigido:
+# produces=set() + tag "fabled_passage" (excluida do +1 generico em
+# total_mana(), tem busca real implementada em try_fabled_passage()).
+add("Fabled Passage", 0, "Land", colors=set(), produces=set(), tags={"fabled_passage"})
 add("Godless Shrine", 0, "Land", colors={"B", "W"}, produces={"B", "W"}, tags=set())
 add("Hallowed Fountain", 0, "Land", colors={"U", "W"}, produces={"U", "W"}, tags=set())
-add("Interplanar Beacon", 0, "Land", colors=set(), produces={"B", "C", "G", "R", "U", "W"}, tags=set())
+add("Interplanar Beacon", 0, "Land", colors=set(), produces={"C"}, tags=set())
+# Achado real 2026-08-28: "{T}: Add {C}" incondicional (produces acima) e'
+# a UNICA parte generica real - a mana colorida real ("{1},{T}: Add two
+# mana of different colors") custa mana adicional e so' vale pra conjurar
+# planeswalkers. Modelada como 5c incondicional antes - corrigido pra so'
+# incolor. A metade restrita a planeswalkers nao foi modelada (custo extra
+# de mana + restricao de tipo, baixo valor pro escopo desse sim).
 add("Mana Confluence", 0, "Land", colors=set(), produces={"B", "G", "R", "U", "W"}, tags=set())
 add("Overgrown Tomb", 0, "Land", colors={"B", "G"}, produces={"B", "G"}, tags=set())
 add("Plateau", 0, "Land", colors={"R", "W"}, produces={"R", "W"}, tags=set())
-add("Plaza of Heroes", 0, "Land", colors=set(), produces={"B", "C", "G", "R", "U", "W"}, tags=set())
+add("Plaza of Heroes", 0, "Land", colors=set(), produces={"C"}, tags=set())
+# Achado real 2026-08-28: "{T}: Add {C}" incondicional (produces acima) e'
+# a UNICA parte generica real - as outras 2 habilidades de mana colorida
+# ("Spend only to cast a legendary spell" / "any color among legendary
+# permanents you control") sao restritas, nao modeladas (baixo valor pro
+# escopo desse sim, deck ja tem Delighted Halfling pro caso legendary).
 add("Sacred Foundry", 0, "Land", colors={"R", "W"}, produces={"R", "W"}, tags=set())
 add("Savannah", 0, "Land", colors={"G", "W"}, produces={"G", "W"}, tags=set())
 add("Scrubland", 0, "Land", colors={"B", "W"}, produces={"B", "W"}, tags=set())
@@ -291,6 +345,34 @@ def is_land(card: str) -> bool:
 def has_tag(card: str, tag: str) -> bool:
     return tag in C(card).tags
 
+# Permanentes lendarios de verdade na decklist (type_line real, Scryfall) -
+# usado por Delighted Halfling/Plaza of Heroes ("cast a legendary spell").
+LEGENDARY_CARD_NAMES = {
+    "Aminatou, the Fateshifter", "Ashiok, Dream Render", "Atraxa, Praetors' Voice",
+    "Carth the Lion", "Elspeth, Sun's Champion", "Kaya, Intangible Slayer",
+    "Liliana, Dreadhorde General", "Narset, Parter of Veils", "Nicol Bolas, Dragon-God",
+    "Oath of Nissa", "Oath of Teferi", "Oko, the Ringleader", "Tamiyo, Compleated Sage",
+    "Tamiyo, Field Researcher", "Teferi, Hero of Dominaria", "Teferi, Temporal Archmage",
+    "Teferi, Time Raveler", "Teferi, Who Slows the Sunset", "The Chain Veil",
+    "The Eternal Wanderer", "The Peregrine Dynamo", "Ugin, the Spirit Dragon",
+    "Vorinclex, Monstrous Raider", "Vraska, Betrayal's Sting",
+}
+
+# Achado real 2026-08-28 (auditoria de checklist): Farseek/Nature's
+# Lore/Three Visits eram conjurados como Sorcery generica e iam direto pro
+# cemiterio, sem NENHUMA busca real - puro sink de mana. Pools reais
+# (type_line, Scryfall) de terrenos desta decklist que se qualificam:
+BASIC_LAND_NAMES = {"Snow-Covered Forest", "Snow-Covered Island", "Snow-Covered Mountain",
+                     "Snow-Covered Plains", "Snow-Covered Swamp"}
+FARSEEK_POOL = {"Badlands", "Bayou", "Blood Crypt", "Breeding Pool", "Godless Shrine",
+                 "Hallowed Fountain", "Overgrown Tomb", "Plateau", "Sacred Foundry", "Savannah",
+                 "Scrubland", "Snow-Covered Island", "Snow-Covered Mountain", "Snow-Covered Plains",
+                 "Snow-Covered Swamp", "Steam Vents", "Stomping Ground", "Taiga", "Temple Garden",
+                 "Tropical Island", "Tundra", "Underground Sea", "Volcanic Island", "Watery Grave"}
+FOREST_FETCH_POOL = {"Bayou", "Breeding Pool", "Overgrown Tomb", "Savannah", "Snow-Covered Forest",
+                      "Stomping Ground", "Taiga", "Temple Garden", "Tropical Island"}
+LAND_FETCH_SPELLS = {"Farseek", "Nature's Lore", "Three Visits"}
+
 # =========================================================
 # GAME STATE
 # =========================================================
@@ -305,6 +387,8 @@ class GameState:
     turn: int = 0
     land_played: bool = False
     mana_spent_this_turn: int = 0
+    tapped_lands_this_turn: Set[str] = field(default_factory=set)  # Farseek/Fabled Passage - terreno entra tapped esse turno, resetado em play_turn()
+    evolution_sage_proliferates: int = 0
     mana_held_back: int = 0  # mana nao gasta no ultimo turno, disponivel pra flash no end step alheio (untap so acontece no MEU untap step - CR 500.1 - entao isso NAO reseta pra total_mana entre meus turnos)
     lands_played_total: int = 0
 
@@ -326,6 +410,12 @@ class GameState:
 
     with_greater_auramancy: bool = False
 
+    # Doenca de invocacao pra mana dorks criatura (Bloom Tender, Delighted
+    # Halfling) - achado real 2026-08-28 (auditoria de checklist de
+    # mecanica): nao existia NENHUM rastreio de turno de entrada, entao
+    # ambas produziam mana no proprio turno em que eram conjuradas.
+    creature_cast_turn: Dict[str, int] = field(default_factory=dict)
+
     def draw(self, n: int = 1):
         for _ in range(n):
             if self.library:
@@ -338,22 +428,58 @@ class GameState:
 # MANA MODEL
 # =========================================================
 
+def _dork_ready(state: GameState, card: str) -> bool:
+    return state.creature_cast_turn.get(card, -1) < state.turn
+
 def total_mana(state: GameState) -> int:
     total = 0
     for card in state.battlefield:
+        if has_tag(card, "fabled_passage"):
+            continue  # sem habilidade de mana propria - so' fetch (try_fabled_passage)
         if is_land(card):
+            if card in state.tapped_lands_this_turn:
+                continue  # entrou tapped esse turno (Farseek/Fabled Passage), ainda nao produz
             total += 1
         elif card == "Sol Ring":
             total += 2
-        elif has_tag(card, "ramp"):
+        elif has_tag(card, "bloom_tender"):
+            if _dork_ready(state, card):
+                colors_in_play = set()
+                for c in state.battlefield:
+                    colors_in_play |= C(c).colors
+                total += max(0, len(colors_in_play))
+        elif has_tag(card, "ramp") and card != "Delighted Halfling":
+            if C(card).type == "Creature" and not _dork_ready(state, card):
+                continue  # doenca de invocacao (CR 302.6) - so' pra criatura
             total += 1
+        elif card == "Delighted Halfling":
+            if _dork_ready(state, card):
+                total += 1  # so' o {T}: Add {C} incondicional
     return total
 
-def color_sources(state: GameState, color: str) -> int:
+def color_sources(state: GameState, color: str, legendary_spell: bool = False) -> int:
     n = 0
+    world_tree_active = "The World Tree" in state.battlefield and sum(1 for c in state.battlefield if is_land(c)) >= 6
+    lantern_active = "Chromatic Lantern" in state.battlefield
     for card in state.battlefield:
-        if color in C(card).produces:
+        base_produces = C(card).produces
+        # Chromatic Lantern / The World Tree (6+ terrenos): TODO terreno em
+        # campo ganha "{T}: Add one mana of any color" via efeito estatico.
+        if is_land(card) and (lantern_active or world_tree_active) and card != "Chromatic Lantern":
             n += 1
+            continue
+        if has_tag(card, "bloom_tender"):
+            colors_in_play = {cc for c in state.battlefield for cc in C(c).colors}
+            if _dork_ready(state, card) and color in colors_in_play:
+                n += 1
+            continue
+        if color not in base_produces:
+            continue
+        if has_tag(card, "legendary_only_color") and not legendary_spell:
+            continue
+        if C(card).type == "Creature" and not _dork_ready(state, card):
+            continue
+        n += 1
     return n
 
 def remaining_mana(state: GameState) -> int:
@@ -366,8 +492,9 @@ def can_cast(state: GameState, card: str) -> bool:
     mv = bridge_effective_mv(state) if card == COMMANDER else C(card).mv
     if remaining_mana(state) < mv:
         return False
+    legendary = card == COMMANDER or card in LEGENDARY_CARD_NAMES
     for color in C(card).colors:
-        if color_sources(state, color) < 1:
+        if color_sources(state, color, legendary_spell=legendary) < 1:
             return False
     return True
 
@@ -431,6 +558,64 @@ def play_land(state: GameState, log: List[Dict]):
     state.battlefield.append(choice)
     state.land_played = True
     state.lands_played_total += 1
+    on_land_enters(state, log)
+
+def on_land_enters(state: GameState, log: List[Dict]):
+    # Evolution Sage: "Landfall - Whenever a land you control enters,
+    # proliferate." Achado real 2026-08-28: sem NENHUM despacho de landfall
+    # nesse arquivo, mesma classe do bug do Beorn. So' o disparo em si e'
+    # contado aqui (state.evolution_sage_proliferates) - o efeito de
+    # proliferate nao tem alvo modelavel nesse sim (sem sistema de
+    # counters/loyalty rastreado, ver docstring do arquivo), documentado
+    # como limitacao de escopo, nao um bug adicional.
+    if "Evolution Sage" in state.battlefield:
+        state.evolution_sage_proliferates += 1
+        log.append({"trigger": "evolution_sage_proliferate", "turn": state.turn})
+
+def do_land_fetch_spell(state: GameState, card: str, log: List[Dict]):
+    """Farseek/Nature's Lore/Three Visits - busca real de terreno, corrigindo
+    o achado 2026-08-28: eram Sorcery generica sem NENHUM efeito de board,
+    puro sink de mana."""
+    pool = FARSEEK_POOL if card == "Farseek" else FOREST_FETCH_POOL
+    available = [c for c in state.library if c in pool]
+    if not available:
+        return
+    have_colors = set()
+    for c in state.battlefield:
+        have_colors |= C(c).produces
+    missing = {"W", "U", "B", "R", "G"} - have_colors
+    best = next((c for c in available if C(c).produces & missing), available[0])
+    state.library.remove(best)
+    state.battlefield.append(best)
+    if card == "Farseek":
+        state.tapped_lands_this_turn.add(best)  # "put onto the battlefield tapped"
+    log.append({"action": "land_fetch", "card": card, "target": best, "turn": state.turn})
+    on_land_enters(state, log)
+
+def try_fabled_passage(state: GameState, log: List[Dict]):
+    """Fabled Passage: '{T}, Sacrifice this land: Search your library for a
+    basic land card, put it onto the battlefield tapped, then shuffle. Then
+    if you control four or more lands, untap that land.' Ativa assim que
+    entra (nenhum motivo real pra segurar - vira um basico de verdade, que
+    o resto do motor ja sabe usar pra mana)."""
+    if "Fabled Passage" not in state.battlefield:
+        return
+    available = [c for c in state.library if c in BASIC_LAND_NAMES]
+    if not available:
+        return
+    have_colors = set()
+    for c in state.battlefield:
+        have_colors |= C(c).produces
+    missing = {"W", "U", "B", "R", "G"} - have_colors
+    best = next((c for c in available if C(c).produces & missing), available[0])
+    state.library.remove(best)
+    state.battlefield.remove("Fabled Passage")
+    state.battlefield.append(best)
+    lands_now = sum(1 for c in state.battlefield if is_land(c))
+    if lands_now < 4:
+        state.tapped_lands_this_turn.add(best)  # so' fica tapped se < 4 terrenos
+    log.append({"action": "fabled_passage_crack", "target": best, "turn": state.turn})
+    on_land_enters(state, log)
 
 # =========================================================
 # BRIDGE ENGINE
@@ -564,6 +749,8 @@ def main_phase(state: GameState, log: List[Dict]):
         state.battlefield.append(c)
         log.append({"action": "cast", "card": c, "turn": state.turn})
 
+    try_fabled_passage(state, log)
+
     # Bridge via main phase normal, se nao foi flashada nesse ciclo.
     # Sob HOLD_FOR_FLASH_POLICY, se um habilitador de flash ja esta em
     # campo, o jogador segura a Bridge de proposito (nao conjura normal
@@ -596,12 +783,17 @@ def main_phase(state: GameState, log: List[Dict]):
             state.graveyard.append(choice)
         else:
             state.battlefield.append(choice)
+            if C(choice).type == "Creature":
+                state.creature_cast_turn[choice] = state.turn
+        if choice in LAND_FETCH_SPELLS:
+            do_land_fetch_spell(state, choice, log)
         log.append({"action": "cast", "card": choice, "turn": state.turn})
 
 def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.turn = turn
     state.land_played = False
     state.mana_spent_this_turn = 0
+    state.tapped_lands_this_turn = set()
     log = []
 
     # Linha de flash no end step do oponente anterior (ver docstring: modelado

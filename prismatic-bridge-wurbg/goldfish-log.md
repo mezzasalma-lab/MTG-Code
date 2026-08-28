@@ -236,6 +236,83 @@ Confirma a hipótese do usuário: **2 terrenos + 1 rock supera 3 terrenos sem ro
 
 ---
 
+### Correção — checklist obrigatória de mecânica (regra nova pós-Beorn) — 2026-08-28
+
+**Gatilho (usuário):** depois de eu entregar o Beorn sem despacho de landfall
+nenhum, o usuário pediu auditoria da checklist nova (landfall, mana dorks,
+mana rocks, fixing lands, draw engines, ramp engines, ativadas repetíveis,
+combos) em **todos** os decks. Auditoria via agente comparando `oracle_text`
+real contra o código.
+
+**Achado que explica a Simulação anterior:** a correlação carta-por-carta
+registrada acima já tinha detectado que Farseek/Nature's Lore/Three Visits
+"pioravam a velocidade quando estavam na mão inicial" — a causa raiz era
+esta: eram conjurados como Sorcery genérica e iam direto pro cemitério, **sem
+nenhuma busca de terreno real**, puro sink de mana/carta. Corrigido nesta
+rodada com busca real (pool real por tipo de terreno, Scryfall).
+
+**Outros bugs reais achados (todos na modelagem de mana, que é diretamente
+relevante pra pergunta central deste sim — turno de resolução da Bridge):**
+
+- **Bloom Tender / Delighted Halfling**: sem NENHUM rastreio de doença de
+  invocação — produziam mana no próprio turno em que eram conjurados.
+- **Bloom Tender**: "for each color among permanents you control" modelada
+  como 5c fixo, não escala com as cores reais em campo.
+- **Delighted Halfling**: `{T}: Add {C}` incondicional era real, mas a mana
+  colorida (any color) só vale "pra conjurar um spell lendário" — modelada
+  como 5c incondicional. Corrigido (nova tabela `LEGENDARY_CARD_NAMES`, 24
+  permanentes lendários reais na lista).
+- **Chromatic Lantern**: faltava a estática de campo inteiro ("Lands you
+  control have '{T}: Add one mana of any color.'") — só o próprio `{T}`
+  dela estava certo.
+- **The World Tree**: "as long as you control six or more lands..." — a
+  mesma estática de campo inteiro, condicionada a 6+ terrenos, tratada como
+  5c incondicional desde o turno 1.
+- **Fabled Passage**: não tem NENHUMA habilidade de mana no oráculo real (só
+  sac-fetch) — modelada como fonte incondicional de qualquer cor. Corrigido
+  com a busca real (basic land, tapped se <4 terrenos).
+- **Interplanar Beacon / Plaza of Heroes**: só `{T}: Add {C}` é incondicional
+  no oráculo real — as habilidades coloridas são restritas (planeswalkers
+  only / legendary only). Modeladas como 5c incondicional; corrigidas pra
+  só incolor (as restrições em si não foram modeladas, baixo valor pro
+  escopo, documentado no código).
+- **Evolution Sage**: landfall-proliferate 100% ausente — mesma classe do
+  bug do Beorn (nenhum despacho de landfall existia neste arquivo).
+
+**Explicitamente NÃO corrigido nesta rodada (decisão de escopo, documentada
+no docstring do arquivo, não esquecimento):** as 14 cartas tageadas "draw" e
+as 8 tageadas "proliferate"/"counter_doubler" continuam com a tag mas sem
+gatilho real. Draw fica de fora por volume (comparável a montar um goldfish
+completo); proliferate/counter-doubler fica de fora porque este simulador
+não rastreia nenhum sistema de counters/tokens/loyalty — não há alvo real
+pra dobrar/proliferar no estado rastreado, e a pergunta central do sim
+(turno de resolução/taxa de acerto/sobrevivência da Bridge) não depende
+disso.
+
+**Resultado (n=2000, seed_base=3000000, sem Greater Auramancy, antes → depois):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Bridge nunca conjurada em 10t | 5,8% | **9,6%** |
+| Turno médio da 1ª conjuração | 4,14 | **4,30** |
+| % Bridge em campo no fim | 64,8% | **69,5%** |
+| Acertos totais (criatura+PW) | 6226 | **6331** |
+
+A Bridge ficou levemente mais lenta/menos confiável de conjurar — esperado,
+já que várias fontes "grátis" de 5c incondicional (Fabled Passage,
+Interplanar Beacon, Plaza of Heroes, metade do Delighted Halfling) foram
+corrigidas pra restritas/incolor. Os tutores de terreno agora rampam de
+verdade, o que compensa parcialmente. Recomendação: se o usuário quiser,
+vale re-rodar a correlação carta-a-carta da Simulação anterior (Farseek/
+Nature's Lore/Three Visits devem parar de aparecer como "pior pra
+velocidade" agora que rampam de verdade).
+
+**Robustez:** sweep de 20.000 jogos (seeds 3000000–3019999, timeout 2s/jogo),
+sem Greater Auramancy — 0 erros, 0 timeouts. Smoke test de 500 jogos com
+Greater Auramancy=True também limpo.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
