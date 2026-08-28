@@ -873,6 +873,21 @@ avg 0,21/partida.
 
 ---
 
+### Correção #10 — verificação de cartas multi-face (regra nova pós-Edgar Markov)
+
+**Gatilho (usuário):** depois do achado de Ojer Taq/Legion's Landing no
+Edgar Markov (jogadas ilegalmente como land — layout real "transform", não
+"modal_dfc"), o usuário pediu pra conferir todas as cartas modais/
+Adventure/Room/"Prepared"/dupla face dos dois decks trabalhados e registrar
+a regra de verificar o `layout` real antes de assumir qual face é jogável.
+
+**Conferido:** `grep -c "//" lista.md` = **0**. Hei Bai não tem nenhuma
+carta com nome de face múltipla — categoria 11 da checklist (ver
+`references/goldfish-sim-card-rules.md`) é **N/A por decklist**, não por
+falta de verificação. Nenhuma mudança de código necessária.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
