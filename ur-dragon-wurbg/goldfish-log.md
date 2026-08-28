@@ -1283,6 +1283,74 @@ smoke test, 30.000 jogos de robustez (0 erros).
 
 ---
 
+## Correção #16 — checklist obrigatória de mecânica (regra nova pós-Beorn)
+
+**Gatilho (usuário):** depois de eu entregar o Beorn sem despacho de landfall
+nenhum, o usuário pediu auditoria da checklist nova (landfall, mana dorks,
+mana rocks, fixing lands, draw engines, ramp engines, ativadas repetíveis,
+combos) em **todos** os decks. Rodada dedicada via agente de auditoria,
+mesmo depois de 15 rodadas de correção anteriores neste deck.
+
+**Landfall:** N/A, 0 cartas. **Dorks/rocks/draw/ramp:** majoritariamente
+corretos (Cavern of Souls/Secluded Courtyard/Haven já corrigidos em rodada
+anterior, confirmado presente no código, não só no docstring). **Bugs reais
+achados:**
+
+- **Talisman of Impulse e Firdoch Core contribuíam 0 mana pro total** —
+  Talisman (tag `"rock1"`) nunca era checado em `rocks_mana()` (só Sol
+  Ring/Arcane Signet/Great Henge eram hardcoded por nome); Firdoch Core
+  (Kindred **Artifact**, não criatura) tinha sua mana modelada como
+  `dork_flat1_any`, gated por `ready_creatures()` — que exige
+  `is_creature_card()` — então nunca aparecia "pronta" e nunca contribuía.
+  Doença de invocação só vale pra criaturas (CR 302.6); artefato não é
+  afetado. Corrigidos os dois em `rocks_mana()`, sem gate de prontidão pro
+  Firdoch Core. Mesmo bug corrigido em `do_magda_treasures()` (o tap do
+  Firdoch Core pra disparar Magda também estava gated por `ready`).
+- **Path of Ancestry** ("This land enters tapped", incondicional) faltava
+  em `ETB_TAPPED_LANDS` — produzia mana no turno em que era jogada.
+- **Return of the Wildspeaker** ("greatest power among **non-Human**
+  creatures") contava TODAS as criaturas — as 3 Humanas do deck
+  (Dragonspeaker Shaman, Ruby Daring Tracker, Sarkhan Soul Aflame) entravam
+  no cálculo errado. Nova tabela `HUMAN_CREATURE_NAMES`.
+- **Ramos, Dragon Engine**: "Remove five +1/+1 counters from Ramos: Add
+  {W}{W}{U}{U}{B}{B}{R}{R}{G}{G}" — sem `{T}` no custo real, mas estava
+  gated por `ready_creatures()` mesmo assim, bloqueando a ativação no
+  próprio turno em que Ramos entra com 5+ contadores.
+- **Hellkite Charger**: "Whenever this creature attacks, you may pay
+  {5}{R}{R}. If you do, ... after this phase, there is an additional
+  combat phase" — tagueada `extra_combat_paid`, 100% ausente. Esse é o
+  enabler do combo Old Gnawbone + Hellkite Charger citado em
+  `auditoria.md`, que nunca conseguia encadear de verdade. Implementado
+  (`try_hellkite_charger_extra_combat`, chamado 1x por turno entre os dois
+  `combat_step()` — premissa conservadora deliberada: sem loop recursivo,
+  pra evitar um combate extra sem teto natural nesse motor).
+- Dois comentários desatualizados corrigidos (Talisman of Impulse e Ruby,
+  Daring Tracker diziam "NÃO está na lista.md" — ambas estão, linhas 43-44).
+
+**Resultado (n=2000, seed_base=6000000, antes → depois):**
+
+| métrica | antes (Correção #15) | depois |
+|---|---|---|
+| Dragões em campo (fim de jogo) | 13,78 | **18,48** |
+| dano proxy médio | 574,07 | **848,48** |
+| Treasures criados | 25,71 | **52,94** |
+| cartas compradas extra | 13,69 | **16,57** |
+| Dragões que entraram sem pagar custo | 1,03 | **1,23** |
+| combates extras via Hellkite Charger (novo) | — | **0,18** |
+
+Salto grande — maior que o esperado só pelos 2 rocks corrigidos. A maior
+parte vem do combate extra do Hellkite Charger: quando ele ativa (18% dos
+jogos), TODOS os gatilhos de ataque (Old Gnawbone, Utvara, Klauth, etc.)
+disparam uma segunda vez completa naquele turno, empilhando em cima da
+mana extra do Firdoch Core/Talisman ao longo do jogo inteiro.
+
+**Robustez:** sweep de 20.000 jogos (seeds 6000000–6019999, timeout 2s/jogo)
+— 0 erros, 0 timeouts.
+
+`lista.md` não mudou. `urdragon_v1_runs.jsonl` sobrescrito.
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**

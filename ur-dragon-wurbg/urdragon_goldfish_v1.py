@@ -234,7 +234,12 @@ DRAGON_ANY_COLOR_LANDS = {"Cavern of Souls", "Secluded Courtyard", "Haven of the
 #     (mesma logica ja usada em outras cartas com custo de vida
 #     documentado). NAO contam aqui — ficam destravados, premissa
 #     explicita, nao invisivel.
-ETB_TAPPED_LANDS = {"Jetmir's Garden", "Ketria Triome", "Zagoth Triome", "Ziatora's Proving Ground"}
+ETB_TAPPED_LANDS = {"Jetmir's Garden", "Ketria Triome", "Zagoth Triome", "Ziatora's Proving Ground",
+                     "Path of Ancestry"}  # achado real 2026-08-28 (auditoria de checklist): "This land enters tapped" incondicional, faltava
+
+# Unicas 3 criaturas com o tipo Human na decklist (type_line real, Scryfall) -
+# usado por Return of the Wildspeaker ("non-Human creatures you control").
+HUMAN_CREATURE_NAMES = {"Dragonspeaker Shaman", "Ruby, Daring Tracker", "Sarkhan, Soul Aflame"}
 
 # Terrenos BASICOS de verdade nesta lista — sem Island (a manabase nao
 # roda nenhuma Island basica, so fontes de U vem de duais/triomes/CT).
@@ -260,13 +265,17 @@ add("Karplusan Forest", 0, "land", set(), produces={"R", "G"})
 # to you." — sem tapped.
 add("Battlefield Forge", 0, "land", set(), produces={"R", "W"})
 
-# Talisman of Impulse: NAO esta na lista.md — cadastrada pra testar corte
-# de rock/dork de R/G (pedido do usuario 2026-08-27, seguindo a auditoria
-# de pips: vermelho +23,0pp, verde +5,5pp). Oraculo real: "{T}: Add {C}.
-# / {T}: Add {R} or {G}. This artifact deals 1 damage to you."
+# Talisman of Impulse: ESTA na lista.md (linha 44) - comentario anterior
+# desatualizado. Oraculo real: "{T}: Add {C}. / {T}: Add {R} or {G}. This
+# artifact deals 1 damage to you." Achado real 2026-08-28 (auditoria de
+# checklist de mecanica): tagueada "rock1" mas rocks_mana() so' checava
+# Sol Ring/Arcane Signet/Great Henge por nome - Talisman nunca contribuia
+# mana nenhuma pro total_mana(), so contava pra color_sources(). Corrigido
+# em rocks_mana().
 add("Talisman of Impulse", 2, "artifact", {"rock1"}, produces={"R", "G"})
 
-# Ruby, Daring Tracker: NAO esta na lista.md — mesmo motivo. Oraculo real
+# Ruby, Daring Tracker: ESTA na lista.md (linha 43) - comentario anterior
+# desatualizado (mesmo caso do Talisman of Impulse acima). Oraculo real
 # (Scryfall, 2026-08-27): "{R}{G}, Legendary Creature — Human Scout, 1/2.
 # Haste. Whenever Ruby attacks while you control a creature with power 4
 # or greater, Ruby gets +2/+2 until end of turn. {T}: Add {R} or {G}."
@@ -364,7 +373,7 @@ add("Magda, Brazen Outlaw", 2, "creature", {"treasure_tutor_dragon"}, power=2, p
 # exclui de Herald's Horn/Urza's Incubator (essas exigem "Creature
 # spells... of the chosen type" de verdade). {3} sem pip colorido no custo,
 # real ({T}: Add one mana of any color).
-add("Firdoch Core", 3, "artifact", {"dork_flat1_any", "dragon"}, produces=set("WUBRG"))
+add("Firdoch Core", 3, "artifact", {"rock_any", "dragon"}, produces=set("WUBRG"))
 
 # Radagast of Rhosgobel: NAO esta na lista.md — cadastrado so pra permitir
 # o teste comparativo `urdragon_radagast_test.py`. {2}{G}{G}, verde real
@@ -493,6 +502,7 @@ class GameState:
     magda_treasures: int = 0
     magda_tutors_total: int = 0
     dragons_free_entry_total: int = 0
+    hellkite_charger_extra_combats: int = 0
 
     commander_in_play: bool = False
     commander_cast_count: int = 0
@@ -643,7 +653,7 @@ def dork_mana(state: GameState) -> int:
         if n not in ready:
             continue
         tags = CARD_DB[n].tags
-        if "dork_flat1" in tags or "dork_flat1_any" in tags:
+        if "dork_flat1" in tags:
             total += 1
     return total
 
@@ -653,6 +663,21 @@ def rocks_mana(state: GameState) -> int:
     if "Sol Ring" in state.battlefield:
         total += 2
     if "Arcane Signet" in state.battlefield:
+        total += 1
+    if "Talisman of Impulse" in state.battlefield:
+        # Achado real 2026-08-28 (auditoria de checklist de mecanica):
+        # tagueada "rock1" mas nunca contribuia mana nenhuma - so'
+        # Sol Ring/Arcane Signet/Great Henge eram checados aqui por nome.
+        total += 1
+    if "Firdoch Core" in state.battlefield:
+        # Achado real 2026-08-28: Firdoch Core e' um ARTEFATO (Kindred
+        # Artifact - Shapeshifter), nao uma criatura, a menos que animado
+        # pelo {4}. Doenca de invocacao so vale pra criaturas (CR 302.6) -
+        # a versao anterior tratava a mana dela como "dork_flat1_any",
+        # gated por ready_creatures() (que exige is_creature_card()), entao
+        # nunca contribuia mana nenhuma (nunca aparecia como criatura
+        # "pronta" por default). Corrigido: rock incondicional, disponivel
+        # no mesmo turno em que e' conjurada, igual Sol Ring.
         total += 1
     if "The Great Henge" in state.battlefield:
         # Achado real 2026-08-27: "{T}: Add {G}{G}. You gain 2 life." nunca
@@ -1066,7 +1091,13 @@ def resolve_instant_sorcery(state: GameState, name: str):
     elif "wipe" in tags:
         pass  # sem oponente real, wipe simetrico nao tem alvo alheio modelado
     elif "power_draw_instant" in tags:
-        powers = [CARD_DB[n].power for n in state.battlefield if is_creature_card(n)]
+        # Return of the Wildspeaker: "greatest power among NON-HUMAN
+        # creatures you control" - achado real 2026-08-28 (auditoria de
+        # checklist de mecanica): contava todas as criaturas, incluindo as
+        # 3 Humanas do deck (Dragonspeaker Shaman, Ruby Daring Tracker,
+        # Sarkhan Soul Aflame).
+        powers = [CARD_DB[n].power for n in state.battlefield
+                  if is_creature_card(n) and n.split(" (copia)")[0] not in HUMAN_CREATURE_NAMES]
         if powers:
             draw_cards(state, max(powers))
     elif "mass_reanimate" in tags:
@@ -1294,14 +1325,19 @@ def main_phase(state: GameState):
             break
         def prio(n):
             tags = CARD_DB[n].tags
-            group = 0 if (tags & {"rock1", "rock2", "land_tutor1", "land_tutor2", "land_tutor2_direct", "dork_flat1"}) else 1
+            group = 0 if (tags & {"rock1", "rock2", "rock_any", "land_tutor1", "land_tutor2", "land_tutor2_direct", "dork_flat1"}) else 1
             return (group, effective_cost(state, n))
         castables.sort(key=prio)
         cast_card(state, castables[0])
 
     check_color_screw(state)
 
-    if "Ramos, Dragon Engine" in state.battlefield and "Ramos, Dragon Engine" in ready_creatures(state) and state.ramos_counters >= 5:
+    if "Ramos, Dragon Engine" in state.battlefield and state.ramos_counters >= 5:
+        # Achado real 2026-08-28 (auditoria de checklist): "Remove five
+        # +1/+1 counters from Ramos: Add..." - SEM {T} no custo real. Doenca
+        # de invocacao so afeta habilidades com {T} (CR 302.6); o gate por
+        # ready_creatures() estava errado, bloqueava a ativacao no proprio
+        # turno em que Ramos entra mesmo com 5+ contadores.
         state.ramos_counters -= 5
         state.bonus_mana_pool += 10
 
@@ -1320,8 +1356,9 @@ def do_magda_treasures(state: GameState):
     gatilho da Magda, nao so ela mesma atacando. As duas fontes de tap
     contam aqui: a propria Magda (assume que ataca todo turno que esta
     pronta, mesma abstracao de combate ja usada pros Dragoes) e Firdoch
-    Core (assume que tapa pra mana todo turno que esta pronto, mesma
-    abstracao ja usada em dork_mana()).
+    Core (achado real 2026-08-28: e' artefato, nao criatura - sem doenca
+    de invocacao, tapa pra mana todo turno que esta em campo, sem gate de
+    "ready" - ver rocks_mana()).
 
     Os Treasures da Magda sao guardados (nao convertidos em mana na
     hora, ao contrario de create_and_use_treasures) — decisao real: vale
@@ -1333,7 +1370,10 @@ def do_magda_treasures(state: GameState):
     taps = 0
     if "Magda, Brazen Outlaw" in ready:
         taps += 1
-    if "Firdoch Core" in state.battlefield and "Firdoch Core" in ready:
+    if "Firdoch Core" in state.battlefield:
+        # Achado real 2026-08-28: Firdoch Core e' artefato, nao criatura -
+        # doenca de invocacao nao se aplica (ver rocks_mana()). O gate por
+        # "ready" (creature summoning sickness) estava errado aqui tambem.
         taps += 1
     if taps == 0:
         return
@@ -1351,6 +1391,33 @@ def do_magda_treasures(state: GameState):
         state.magda_tutors_total += 1
         if is_dragon(best):
             state.dragons_free_entry_total += 1
+
+
+def try_hellkite_charger_extra_combat(state: GameState):
+    """Hellkite Charger: 'Whenever this creature attacks, you may pay
+    {5}{R}{R}. If you do, untap all attacking creatures and after this
+    phase, there is an additional combat phase.' Achado real 2026-08-28
+    (auditoria de checklist de mecanica): tagueada 'extra_combat_paid',
+    nunca implementada - Old Gnawbone + Hellkite Charger (combo citado na
+    auditoria.md) nunca conseguia encadear porque o combate extra em si
+    nao existia. Ela tem haste real (sempre pronta pra atacar); a IA
+    sempre paga quando tem mana - todo combate extra so' adiciona valor
+    nesse motor (sem risco/custo de vida modelado). Chamada UMA vez so' por
+    turno (nao recursiva) - premissa conservadora deliberada: o proprio
+    Hellkite Charger poderia re-pagar de novo dentro do combate extra que
+    ele mesmo concedeu, mas isso abriria um loop sem teto natural nesse
+    motor (mana pode crescer via Klauth/etc DURANTE o combate); 1 combate
+    extra por turno ja captura a maior parte do valor real sem risco de
+    runaway."""
+    if "Hellkite Charger" not in state.battlefield:
+        return
+    if "Hellkite Charger" not in ready_creatures(state):
+        return
+    if remaining_mana(state) < 7 or color_sources(state, "R") < 2:
+        return
+    state.mana_spent_this_turn += 7
+    state.hellkite_charger_extra_combats += 1
+    combat_step(state)
 
 
 def combat_step(state: GameState):
@@ -1555,6 +1622,7 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     play_land(state)
     main_phase(state)
     combat_step(state)
+    try_hellkite_charger_extra_combat(state)
     main_phase(state)
     end_step(state)
 
@@ -1594,6 +1662,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg Dragoes que entraram SEM pagar custo (Bladewing/Haunting Voyage/Magda tutor/Ur-Dragon free permanent): {avg([s.dragons_free_entry_total for s in states]):.2f}")
     print(f"Avg vezes que a Ur-Dragon entrou de graca via Hellkite Courser: {avg([s.hellkite_courser_free_commander_total for s in states]):.2f}")
     print(f"Avg Dragon tokens (Lathliss/Miirym/Broodmother/Utvara): {avg([s.dragon_tokens for s in states]):.2f}")
+    print(f"Avg combates extras via Hellkite Charger (agora despachado): {avg([s.hellkite_charger_extra_combats for s in states]):.2f}")
     print(f"Avg turnos com color screw (mana total ok, cor errada): {avg([s.color_screw_turns for s in states]):.2f}")
     screwed = [s.first_color_screw_turn for s in states if s.first_color_screw_turn is not None]
     print(f"% de jogos com pelo menos 1 turno de color screw: {100*len(screwed)/n:.1f}% | turno medio do 1o screw: {avg(screwed):.2f}" if screwed else "% de jogos com color screw: 0.0%")
