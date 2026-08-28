@@ -313,6 +313,92 @@ Greater Auramancy=True também limpo.
 
 ---
 
+### Correção — lealdade e ativações reais dos 17 planeswalkers (regra nova) — 2026-08-28
+
+**Gatilho (usuário):** depois de eu confirmar que este simulador nunca
+modelava as habilidades individuais de nenhum dos 17 planeswalkers (só
+rastreava SE a Bridge acertava um) — citação literal: *"Preciso que os
+counters de lealdade e ativações de planeswalker sejam sempre
+contabilizados, a base do Prismatic Bridge é essa! Adicione essa regra
+para tudo, sempre também!"* Registrada como categoria 12 permanente em
+`references/goldfish-sim-card-rules.md`.
+
+**O que existia antes:** o `docstring` do arquivo já documentava isso
+explicitamente como limitação de escopo ("habilidades individuais de cada
+um dos 17 planeswalkers... NÃO modelado") — não era um buraco silencioso,
+mas era uma lacuna real e grande: um planeswalker acertado pela Bridge
+virava um nome parado em `state.battlefield`, sem lealdade, sem ativação,
+sem efeito.
+
+**Implementado:**
+- `PLANESWALKER_STARTING_LOYALTY` — lealdade inicial real (Scryfall) das 17
+  cartas. `state.loyalty: Dict[str, int]` rastreia lealdade de verdade.
+- `add_loyalty()` — helper central que aplica mudança de lealdade,
+  respeitando os dobradores reais de counter (Doubling Season/Vorinclex,
+  Monstrous Raider — ambos com "put twice that many counters", empilham
+  multiplicativamente) e mata o planeswalker (remove de campo, vai pro
+  cemitério) quando a lealdade chega a 0.
+- **As 17 habilidades reais implementadas** (uma ativação por planeswalker
+  por turno, CR 606.3), cada uma com heurística documentada de qual
+  habilidade usar (prioriza ultimate quando alcançável e não-simétrico,
+  senão a habilidade de maior valor real sem downside pro nosso lado):
+  Aminatou (+1), Ashiok (-1, denial), Elspeth (+1 tokens / -7 ultimate),
+  Kaya (+2 drain), Liliana (+1 token / -9 ultimate), Narset (-2 tutor),
+  Nicol Bolas (+1 draw / -8 ultimate), Oko (-1 token), Tamiyo Compleated
+  Sage (-X recursão real do cemitério, conta pra métrica RECURSION / -7
+  ultimate), Tamiyo Field Researcher (-7 ultimate), Teferi Hero (+1 draw /
+  -8 ultimate), Teferi Temporal Archmage (+1 draw / -10 ultimate), Teferi
+  Time Raveler (-3 draw sem downside), Teferi Who Slows the Sunset (+1
+  vida / -2 draw / -7 ultimate com emblem real — +3 compras/turno depois,
+  mesma premissa de N_OPPONENTS já usada no resto do arquivo), The Eternal
+  Wanderer (0 token, sem custo), Ugin (+2 / -10 ultimate real: ganha 7
+  vida, compra 7, coloca até 7 permanentes da mão em campo de graça, mesmo
+  padrão do Last March of the Ents no Beorn), Vraska (0: draw + proliferate
+  real — agora com alvo de verdade, a lealdade de outros planeswalkers).
+- **Sinergia nova e real:** Evolution Sage (landfall proliferate) e Deepglow
+  Skate (ETB dobra counters) agora têm efeito de verdade — antes eram
+  documentados como "sem alvo modelável" porque não existia nenhum sistema
+  de counters rastreado; agora a lealdade de planeswalker é esse alvo.
+
+**Deliberadamente deferido nesta rodada (documentado, não silenciado):**
+estático da Nicol Bolas ("has all loyalty abilities of all other
+planeswalkers" — exigiria dispatch combinatório, baixo valor esperado já
+que 2+ planeswalkers vivos simultâneos são raros com a Bridge acertando 1
+por vez); Innkeeper's Talent nível 3 (precisa de engine de leveling de
+Class, mesma classe de simplificação já usada no Caretaker's Talent do Hei
+Bai); proliferate de Flux Channeler/Ichormoon Gauntlet/Inexorable
+Tide/Mutational Advantage/Ripples of Potential/Atraxa (precisam de hooks de
+"ao conjurar spell"/"end step" que este arquivo ainda não tem — fica pra
+uma rodada dedicada).
+
+**Resultado (n=2000, turns=10, sem Greater Auramancy):**
+
+```
+--- Planeswalkers (lealdade + ativacoes reais, regra nova) ---
+Avg ativacoes de habilidade de planeswalker por partida: 7.08
+Avg planeswalkers vivos no fim da simulacao: 1.70
+Avg mortes de planeswalker (lealdade a 0) por partida: 0.59
+Avg ultimates usados por partida: 0.83
+RECURSION (via Tamiyo, Compleated Sage -X): 0.09
+DRAW: avg compras via planeswalker: 3.47
+Avg tokens criados via planeswalker: 1.87
+Avg vida ganha via planeswalker: 2.41 | vida perdida do oponente (proxy): 1.58
+INTERACTION: avg remocao proxy (Ashiok/Ugin): 0.72 | wipe proxy (Elspeth/Liliana ultimate): 0.11
+```
+
+Antes desta correção, TODOS esses números eram 0 — não porque os
+planeswalkers não tinham efeito no jogo real, mas porque o simulador
+nunca os deixava agir. 58,6% das partidas acertam pelo menos 1
+planeswalker até o turno 8 (métrica que já existia) — agora isso
+finalmente vira valor real simulado, não só um nome parado em campo.
+
+**Robustez:** sweep de 20.000 jogos (seeds 5000000–5019999, timeout
+2s/jogo, alternando com/sem Greater Auramancy) — 0 erros, 0 timeouts.
+
+`lista.md` não mudou.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

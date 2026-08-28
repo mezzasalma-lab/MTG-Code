@@ -13,23 +13,29 @@ Metodologia:
   Greater Auramancy.
 - NAO modelado (limitacao documentada, nao e um bug): a frente do
   comandante (Esika, God of the Tree) e sua habilidade de conceder mana de
-  qualquer cor a outras lendarias; habilidades individuais de cada um dos
-  17 planeswalkers (loyalty abilities especificas); efeitos dos 11
-  criaturas que nao sejam ramp/draw/removal/counter-doubler ja tageados.
-  O simulador so joga a carta "The Prismatic Bridge" (verso do MDFC) como
-  comandante, direto do zone de comando.
+  qualquer cor a outras lendarias; efeitos dos 11 criaturas que nao sejam
+  ramp/draw/removal/counter-doubler ja tageados. O simulador so joga a
+  carta "The Prismatic Bridge" (verso do MDFC) como comandante, direto do
+  zone de comando.
+- Correcao GRANDE 2026-08-28 (usuario: "Preciso que os counters de
+  lealdade e ativacoes de planeswalker sejam sempre contabilizados, a base
+  do Prismatic Bridge e essa!" - ver regra permanente categoria 12 em
+  references/goldfish-sim-card-rules.md): os 17 planeswalkers da lista
+  AGORA tem lealdade real rastreada (state.loyalty) e ativam uma
+  habilidade real por turno (CR 606.3) - antes eram so um nome parado em
+  campo depois da Bridge acertar, sem nenhum efeito. Doubling
+  Season/Vorinclex (dobradores de counter) e Evolution Sage/Deepglow
+  Skate/Vraska (proliferate) agora tem efeito real sobre a lealdade
+  tambem. Ver goldfish-log.md pra detalhe completo e o que ficou
+  deliberadamente deferido (estatico da Nicol Bolas, nivel 3 do
+  Innkeeper's Talent, proliferate de outras 6 fontes que precisam de hooks
+  de cast/end-step que este arquivo ainda nao tem).
 - NAO modelado (achado 2026-08-28, auditoria de checklist de mecanica -
   decisao consciente de escopo, nao esquecimento silencioso): as 14
-  cartas tageadas "draw" (Rhystic Study, os Teferis, Tamiyos, etc.) e as
-  8 tageadas "proliferate"/"counter_doubler" (Doubling Season, Atraxa,
-  etc.) tem a tag mas nenhum gatilho real disparado. Draw ficou de fora
-  desta rodada por volume (14 motores, escopo comparavel a montar um
-  goldfish completo) - fica pra uma rodada dedicada se o usuario quiser.
-  Proliferate/counter-doubler ficou de fora porque esse simulador nao
-  rastreia NENHUM sistema de counters/tokens/loyalty (a pergunta central
-  dele - turno de resolucao/taxa de acerto/sobrevivencia da Bridge - nao
-  depende disso), entao nao ha alvo real pra "dobrar" ou "proliferar"
-  nesse estado rastreado.
+  cartas tageadas "draw" que NAO sao planeswalker (Rhystic Study, etc.)
+  tem a tag mas nenhum gatilho real disparado. Ficou de fora desta rodada
+  por volume (14 motores, escopo comparavel a montar um goldfish completo)
+  - fica pra uma rodada dedicada se o usuario quiser.
 - PREMISSA NAO VALIDADA (usuario nao tem dado real, deck nunca jogado):
   taxa de tentativa de remocao por oponente por turno mirando a Bridge ou
   seus protetores. Default usado: 12% por oponente por turno, 3 oponentes
@@ -324,6 +330,12 @@ add("Underground Sea", 0, "Land", colors={"B", "U"}, produces={"B", "U"}, tags=s
 add("Volcanic Island", 0, "Land", colors={"R", "U"}, produces={"R", "U"}, tags=set())
 add("Watery Grave", 0, "Land", colors={"B", "U"}, produces={"B", "U"}, tags=set())
 
+# -------- Tokens gerados por habilidades de planeswalker --------
+add("Soldier Token", 0, "Creature", colors={"W"}, produces=set(), tags=set())
+add("Zombie Token", 0, "Creature", colors={"B"}, produces=set(), tags=set())
+add("Elk Token", 0, "Creature", colors={"G"}, produces=set(), tags=set())
+add("Samurai Token", 0, "Creature", colors={"W"}, produces=set(), tags=set())
+
 def C(name: str) -> Card:
     return CARD_DB[name]
 
@@ -373,6 +385,29 @@ FOREST_FETCH_POOL = {"Bayou", "Breeding Pool", "Overgrown Tomb", "Savannah", "Sn
                       "Stomping Ground", "Taiga", "Temple Garden", "Tropical Island"}
 LAND_FETCH_SPELLS = {"Farseek", "Nature's Lore", "Three Visits"}
 
+# Achado real 2026-08-28 (usuario: "Preciso que os counters de lealdade e
+# ativacoes de planeswalker sejam sempre contabilizados, a base do
+# Prismatic Bridge e essa!"): lealdade inicial real (Scryfall) dos 17
+# planeswalkers da lista - nenhum tinha lealdade rastreada antes, so a tag
+# decorativa "planeswalker". Ver regra permanente nova em
+# references/goldfish-sim-card-rules.md, categoria 12.
+PLANESWALKER_STARTING_LOYALTY = {
+    "Aminatou, the Fateshifter": 3, "Ashiok, Dream Render": 5,
+    "Elspeth, Sun's Champion": 4, "Kaya, Intangible Slayer": 6,
+    "Liliana, Dreadhorde General": 6, "Narset, Parter of Veils": 5,
+    "Nicol Bolas, Dragon-God": 4, "Oko, the Ringleader": 3,
+    "Tamiyo, Compleated Sage": 5, "Tamiyo, Field Researcher": 4,
+    "Teferi, Hero of Dominaria": 4, "Teferi, Temporal Archmage": 5,
+    "Teferi, Time Raveler": 4, "Teferi, Who Slows the Sunset": 4,
+    "The Eternal Wanderer": 5, "Ugin, the Spirit Dragon": 7,
+    "Vraska, Betrayal's Sting": 6,
+}
+# Tamiyo, Compleated Sage / Vraska, Betrayal's Sting tem custo "Compleated"
+# (paga 2 vida em vez de mana colorida, entra com 2 lealdade a menos) - so
+# se aplica quando a carta e' CONJURADA pagando o custo. A Bridge poe a
+# carta direto em campo (nao e' um cast), entao a lealdade inicial e'
+# sempre a cheia - nao ha custo alternativo a pagar aqui.
+
 # =========================================================
 # GAME STATE
 # =========================================================
@@ -415,6 +450,20 @@ class GameState:
     # mecanica): nao existia NENHUM rastreio de turno de entrada, entao
     # ambas produziam mana no proprio turno em que eram conjuradas.
     creature_cast_turn: Dict[str, int] = field(default_factory=dict)
+
+    # Lealdade real dos planeswalkers em campo (nome -> lealdade atual).
+    loyalty: Dict[str, int] = field(default_factory=dict)
+    pw_draws_total: int = 0
+    pw_tokens_created_total: int = 0
+    pw_life_gained_total: int = 0
+    pw_life_lost_opponent_total: int = 0
+    pw_removal_proxy_total: int = 0
+    pw_wipe_proxy_total: int = 0
+    pw_recursion_total: int = 0
+    pw_ultimates_used_total: int = 0
+    pw_deaths_total: int = 0
+    pw_activations_total: int = 0
+    teferi_sunset_emblem: bool = False  # ultimate: draw extra durante upkeep de cada oponente (ver do_upkeep)
 
     def draw(self, n: int = 1):
         for _ in range(n):
@@ -563,14 +612,14 @@ def play_land(state: GameState, log: List[Dict]):
 def on_land_enters(state: GameState, log: List[Dict]):
     # Evolution Sage: "Landfall - Whenever a land you control enters,
     # proliferate." Achado real 2026-08-28: sem NENHUM despacho de landfall
-    # nesse arquivo, mesma classe do bug do Beorn. So' o disparo em si e'
-    # contado aqui (state.evolution_sage_proliferates) - o efeito de
-    # proliferate nao tem alvo modelavel nesse sim (sem sistema de
-    # counters/loyalty rastreado, ver docstring do arquivo), documentado
-    # como limitacao de escopo, nao um bug adicional.
+    # nesse arquivo, mesma classe do bug do Beorn. Achado real 2026-08-28
+    # (2a rodada, regra nova de lealdade): agora que a lealdade de
+    # planeswalker E' rastreada de verdade, proliferate tem um alvo real -
+    # aplicado via proliferate_loyalty() (+1 lealdade em cada planeswalker
+    # que controla, dobrado se Doubling Season/Vorinclex em campo).
     if "Evolution Sage" in state.battlefield:
         state.evolution_sage_proliferates += 1
-        log.append({"trigger": "evolution_sage_proliferate", "turn": state.turn})
+        proliferate_loyalty(state, log, source="evolution_sage")
 
 def do_land_fetch_spell(state: GameState, card: str, log: List[Dict]):
     """Farseek/Nature's Lore/Three Visits - busca real de terreno, corrigindo
@@ -620,6 +669,60 @@ def try_fabled_passage(state: GameState, log: List[Dict]):
 # =========================================================
 # BRIDGE ENGINE
 # =========================================================
+# LEALDADE DE PLANESWALKER (regra nova - ver goldfish-sim-card-rules.md #12)
+# =========================================================
+
+def counter_doubler_multiplier(state: GameState) -> int:
+    # Doubling Season ("counters... twice that many") e Vorinclex, Monstrous
+    # Raider (mesmo efeito pros NOSSOS counters) sao replacement effects
+    # reais que dobram lealdade - empilham multiplicativamente (regra real,
+    # mesmo padrao ja usado pros dobradores de token no Edgar Markov).
+    # Innkeeper's Talent so' dobra a partir do nivel 3 ({3}{G} pra subir) -
+    # esse simulador nao tem engine de leveling pra Class (mesma
+    # simplificacao ja usada no Caretaker's Talent do Hei Bai, so' a
+    # habilidade base), entao o dobro dela fica de fora aqui, documentado.
+    n = sum(1 for c in ("Doubling Season", "Vorinclex, Monstrous Raider") if state.has(c))
+    return 2 ** n
+
+def add_loyalty(state: GameState, pw: str, amount: int, log: List[Dict], reason: str = ""):
+    """Aplica uma mudanca de lealdade (positiva = ganha counters, negativa =
+    remove) - so a parte POSITIVA e' dobrada por Doubling Season/Vorinclex
+    (sao "puts counters", nao afetam remocao de lealdade pra pagar uma
+    habilidade). Mata o planeswalker (remove de campo) se a lealdade
+    chegar a 0 ou menos."""
+    if pw not in state.loyalty:
+        return
+    if amount > 0:
+        amount *= counter_doubler_multiplier(state)
+    state.loyalty[pw] += amount
+    log.append({"trigger": "loyalty_change", "pw": pw, "amount": amount,
+                "new_loyalty": state.loyalty[pw], "reason": reason, "turn": state.turn})
+    if state.loyalty[pw] <= 0:
+        if pw in state.battlefield:
+            state.battlefield.remove(pw)
+        state.graveyard.append(pw)
+        del state.loyalty[pw]
+        state.pw_deaths_total += 1
+        log.append({"trigger": "planeswalker_death", "pw": pw, "turn": state.turn})
+
+def proliferate_loyalty(state: GameState, log: List[Dict], source: str = ""):
+    # "Choose any number of permanents/players... give each another counter
+    # of each kind already there." Modelado so pra lealdade de planeswalker
+    # (unico sistema de counters rastreado por este simulador) - sempre
+    # escolhe proliferar TODOS os planeswalkers que controla (nunca ha
+    # razao real pra nao escolher os proprios).
+    for pw in list(state.loyalty.keys()):
+        add_loyalty(state, pw, 1, log, reason=f"proliferate_{source}")
+
+def planeswalker_enters(state: GameState, name: str, log: List[Dict]):
+    base = PLANESWALKER_STARTING_LOYALTY[name]
+    mult = counter_doubler_multiplier(state)
+    state.loyalty[name] = base * mult
+    log.append({"trigger": "planeswalker_enters", "pw": name, "loyalty": state.loyalty[name], "turn": state.turn})
+    # Deepglow Skate: "When this creature enters, double the number of each
+    # kind of counter on any number of target permanents" - ETB de UMA VEZ
+    # SO (nao e' estatico), so' relevante se ela mesma entrar DEPOIS de um
+    # planeswalker ja estar em campo (ver dispatch no cast normal dela).
 
 def bridge_upkeep_trigger(state: GameState, log: List[Dict]):
     state.bridge_triggers += 1
@@ -637,10 +740,13 @@ def bridge_upkeep_trigger(state: GameState, log: List[Dict]):
         state.battlefield.append(hit)
         if C(hit).type == "Creature":
             state.bridge_hits_creature += 1
+            if hit == "Evolution Sage":
+                pass  # landfall dela ja e' tratada em on_land_enters, nao precisa nada aqui
         else:
             state.bridge_hits_planeswalker += 1
             if state.first_pw_hit_turn is None:
                 state.first_pw_hit_turn = state.turn
+            planeswalker_enters(state, hit, log)
         log.append({"trigger": "bridge_hit", "card": hit, "type": C(hit).type, "turn": state.turn})
     else:
         state.bridge_no_hit_empty_library += 1
@@ -737,10 +843,230 @@ def resolve_removal_round(state: GameState, log: List[Dict]):
             state.removal_attempts_wasted += 1
 
 # =========================================================
+# ATIVACAO DE PLANESWALKER (regra nova - ver goldfish-sim-card-rules.md #12)
+# =========================================================
+# Cada planeswalker so ativa UMA habilidade por turno (velocidade de
+# feitico, CR 606.3) - garantido aqui por so' chamar o resolver 1x por PW
+# por turno (activate_planeswalkers, chamada 1x no main_phase). Heuristica
+# geral: prioriza a habilidade de maior valor real e sem downside
+# simetrico (nunca usa uma habilidade que prejudica nosso proprio board
+# sem necessidade); usa o ultimate assim que alcancavel se ele for
+# claramente bom (nao simetrico); helper make_pw_token() reusa o padrao
+# de criacao de token ja usado no resto do arquivo.
+
+def make_pw_token(state: GameState, token_name: str, n: int, log: List[Dict]):
+    for _ in range(n):
+        state.battlefield.append(token_name)
+    state.pw_tokens_created_total += n
+    log.append({"trigger": "pw_token", "token": token_name, "count": n, "turn": state.turn})
+
+def resolve_planeswalker(state: GameState, pw: str, log: List[Dict]):
+    loy = state.loyalty[pw]
+    state.pw_activations_total += 1
+
+    if pw == "Aminatou, the Fateshifter":
+        # +1: draw then put back (filtragem, sem vantagem liquida de cartas
+        # - so registra a ativacao). -1 (blink proprio) e -6 (simetrico,
+        # ajuda oponentes) ficam de fora - sem alvo/valor claro nesse motor.
+        add_loyalty(state, pw, 1, log, reason="aminatou_plus1")
+
+    elif pw == "Ashiok, Dream Render":
+        # -1 e' a UNICA habilidade real - mill 4 + exila cemiterio de um
+        # oponente. Sem efeito numerico no nosso lado (nao ha cemiterio de
+        # oponente rastreado), mas e' denial real - conta como interacao.
+        if loy >= 1:
+            add_loyalty(state, pw, -1, log, reason="ashiok_minus1")
+            state.pw_removal_proxy_total += 1
+
+    elif pw == "Elspeth, Sun's Champion":
+        if loy >= 7:
+            add_loyalty(state, pw, -7, log, reason="elspeth_ultimate")
+            state.pw_ultimates_used_total += 1  # emblem: +2/+2 e voar pras criaturas, estatico
+        else:
+            add_loyalty(state, pw, 1, log, reason="elspeth_plus1")
+            make_pw_token(state, "Soldier Token", 3, log)
+
+    elif pw == "Kaya, Intangible Slayer":
+        # +2 sempre (drenagem real + cresce lealdade, sem downside - nao ha
+        # razao pra preferir o modo "0" de compra, que nao drena).
+        add_loyalty(state, pw, 2, log, reason="kaya_plus2")
+        state.pw_life_lost_opponent_total += 3
+        state.pw_life_gained_total += 3
+
+    elif pw == "Liliana, Dreadhorde General":
+        if loy >= 9:
+            add_loyalty(state, pw, -9, log, reason="liliana_ultimate")
+            state.pw_ultimates_used_total += 1
+            state.pw_wipe_proxy_total += 1  # oponente sacrifica quase tudo
+        else:
+            add_loyalty(state, pw, 1, log, reason="liliana_plus1")
+            make_pw_token(state, "Zombie Token", 1, log)
+
+    elif pw == "Narset, Parter of Veils":
+        # -2: olha 4, pega 1 nao-criatura-nao-terreno - carta real na mao.
+        if loy >= 2:
+            add_loyalty(state, pw, -2, log, reason="narset_minus2")
+            state.draw(1)
+            state.pw_draws_total += 1
+
+    elif pw == "Nicol Bolas, Dragon-God":
+        # Estatico real "has all loyalty abilities of all other
+        # planeswalkers on the battlefield" NAO modelado - exigiria um
+        # dispatch combinatorio (Bolas ganhando as habilidades de QUALQUER
+        # outro PW simultaneamente em campo) desproporcional ao valor real:
+        # a Bridge so acerta 1 permanente por gatilho, entao ter 2+
+        # planeswalkers vivos ao mesmo tempo (nenhum morreu ainda) e' raro
+        # por padrao. Documentado, nao omitido silenciosamente.
+        if loy >= 8:
+            add_loyalty(state, pw, -8, log, reason="bolas_ultimate")
+            state.pw_ultimates_used_total += 1  # oponente sem lendaria perde o jogo - sinal de finisher
+        else:
+            add_loyalty(state, pw, 1, log, reason="bolas_plus1")
+            state.draw(1)
+            state.pw_draws_total += 1
+
+    elif pw == "Oko, the Ringleader":
+        # -1: cria Elk 3/3 real. +1: compra 2 descarta 2 (sem "crime"
+        # rastreado, assume o pior caso - liquido 0 cartas, sem valor
+        # numerico, so mantem a lealdade se -1 nao for pagavel).
+        if loy >= 2:
+            add_loyalty(state, pw, -1, log, reason="oko_minus1")
+            make_pw_token(state, "Elk Token", 1, log)
+        else:
+            add_loyalty(state, pw, 1, log, reason="oko_plus1")
+
+    elif pw == "Tamiyo, Compleated Sage":
+        # -X: exila carta do CEMITERIO com MV=X, cria token copia dela -
+        # recursao real (mesma categoria da regra de RECURSION). Escolhe o
+        # maior X pagavel que tenha alvo real no cemiterio.
+        gy_creatures = [c for c in state.graveyard if C(c).type in ("Creature", "Artifact", "Enchantment", "Planeswalker")]
+        by_mv = {}
+        for c in gy_creatures:
+            if C(c).mv not in by_mv:
+                by_mv[C(c).mv] = c
+        affordable = sorted((mv, c) for mv, c in by_mv.items() if mv <= loy)
+        if affordable:
+            mv, target = affordable[-1]
+            add_loyalty(state, pw, -mv, log, reason="tamiyo_sage_minusX")
+            state.graveyard.remove(target)
+            state.battlefield.append(target)  # token copia - simplificado como o mesmo nome em campo
+            if C(target).type == "Planeswalker":
+                planeswalker_enters(state, target, log)
+            elif C(target).type == "Creature":
+                state.creature_cast_turn[target] = state.turn
+            state.pw_recursion_total += 1
+            log.append({"trigger": "tamiyo_sage_token_copy", "of": target, "turn": state.turn})
+        elif loy >= 7:
+            add_loyalty(state, pw, -7, log, reason="tamiyo_sage_ultimate")
+            state.pw_ultimates_used_total += 1  # Tamiyo's Notebook - sem efeito numerico modelado
+        else:
+            add_loyalty(state, pw, 1, log, reason="tamiyo_sage_plus1")  # sem alvo pro tap, so cresce
+
+    elif pw == "Tamiyo, Field Researcher":
+        if loy >= 7:
+            add_loyalty(state, pw, -7, log, reason="tamiyo_researcher_ultimate")
+            state.pw_ultimates_used_total += 1
+            state.draw(3)
+            state.pw_draws_total += 3  # emblem de cast gratis nao modelado (sem alvo/limite claro)
+        else:
+            add_loyalty(state, pw, 1, log, reason="tamiyo_researcher_plus1")  # gatilho de dano de combate, sem combate modelado
+
+    elif pw == "Teferi, Hero of Dominaria":
+        if loy >= 8:
+            add_loyalty(state, pw, -8, log, reason="teferi_hero_ultimate")
+            state.pw_ultimates_used_total += 1  # emblem exila permanente de oponente ao comprar - sem oponente real
+        else:
+            add_loyalty(state, pw, 1, log, reason="teferi_hero_plus1")
+            state.draw(1)
+            state.pw_draws_total += 1  # untap de 2 lands no proximo end step - sem valor de instant-speed modelado
+
+    elif pw == "Teferi, Temporal Archmage":
+        if loy >= 10:
+            add_loyalty(state, pw, -10, log, reason="teferi_archmage_ultimate")
+            state.pw_ultimates_used_total += 1  # emblem de ativar loyalty a qualquer momento - sem instant-speed modelado
+        else:
+            add_loyalty(state, pw, 1, log, reason="teferi_archmage_plus1")
+            state.draw(1)
+            state.pw_draws_total += 1  # olha 2, fica com 1 - carta real selecionada
+
+    elif pw == "Teferi, Time Raveler":
+        # -3: "up to one target" bounce (opcional) + compra 1 - sempre pode
+        # escolher ZERO alvos e so comprar, sem downside.
+        if loy >= 3:
+            add_loyalty(state, pw, -3, log, reason="teferi_raveler_minus3")
+            state.draw(1)
+            state.pw_draws_total += 1
+        else:
+            add_loyalty(state, pw, 1, log, reason="teferi_raveler_plus1")  # flash pra sorceries - sem valor de instant-speed modelado
+
+    elif pw == "Teferi, Who Slows the Sunset":
+        if loy >= 7:
+            add_loyalty(state, pw, -7, log, reason="teferi_sunset_ultimate")
+            state.pw_ultimates_used_total += 1
+            state.teferi_sunset_emblem = True
+        elif loy >= 2:
+            add_loyalty(state, pw, -2, log, reason="teferi_sunset_minus2")
+            state.draw(1)
+            state.pw_draws_total += 1
+        else:
+            add_loyalty(state, pw, 1, log, reason="teferi_sunset_plus1")
+            state.pw_life_gained_total += 2
+
+    elif pw == "The Eternal Wanderer":
+        # "0" custa 0 lealdade, cria Samurai 2/2 double strike de graca -
+        # sempre a melhor escolha (sem custo, sem risco).
+        add_loyalty(state, pw, 0, log, reason="eternal_wanderer_zero")
+        make_pw_token(state, "Samurai Token", 1, log)
+
+    elif pw == "Ugin, the Spirit Dragon":
+        if loy >= 10:
+            add_loyalty(state, pw, -10, log, reason="ugin_ultimate")
+            state.pw_ultimates_used_total += 1
+            state.pw_life_gained_total += 7
+            state.draw(7)
+            state.pw_draws_total += 7
+            # "put up to seven permanent cards from your hand onto the
+            # battlefield" - mesmo padrao do Last March of the Ents no
+            # Beorn (coloca em campo de graca, sem pagar custo).
+            free_permanents = [c for c in state.hand if C(c).type != "Instant" and C(c).type != "Sorcery"][:7]
+            for c in free_permanents:
+                state.hand.remove(c)
+                state.battlefield.append(c)
+                if C(c).type == "Creature":
+                    state.creature_cast_turn[c] = state.turn
+                elif C(c).type == "Planeswalker":
+                    planeswalker_enters(state, c, log)
+                log.append({"trigger": "ugin_ultimate_free_permanent", "card": c, "turn": state.turn})
+        else:
+            add_loyalty(state, pw, 2, log, reason="ugin_plus2")
+            state.pw_removal_proxy_total += 1  # "3 dano a qualquer alvo" - sem alvo de oponente real
+
+    elif pw == "Vraska, Betrayal's Sting":
+        # "0": compra 1 + proliferate - sempre a melhor escolha (sem custo
+        # de lealdade, e agora proliferate tem alvo real - lealdade dos
+        # OUTROS planeswalkers que controla).
+        add_loyalty(state, pw, 0, log, reason="vraska_zero")
+        state.draw(1)
+        state.pw_draws_total += 1
+        proliferate_loyalty(state, log, source="vraska")
+
+def activate_planeswalkers(state: GameState, log: List[Dict]):
+    for pw in list(state.loyalty.keys()):
+        if pw not in state.battlefield:
+            continue  # morreu por outro efeito nesse meio tempo (Deepglow Skate etc. nao removem, so seguranca)
+        resolve_planeswalker(state, pw, log)
+
+# =========================================================
 # TURNO
 # =========================================================
 
 def main_phase(state: GameState, log: List[Dict]):
+    # Ativa a habilidade de lealdade de cada planeswalker em campo primeiro
+    # (velocidade de feitico, pilha vazia, mesmo momento real que um
+    # jogador faria isso) - qualquer compra/mana disso alimenta o resto do
+    # turno.
+    activate_planeswalkers(state, log)
+
     # protetores primeiro (sao baratos e habilitam a Bridge)
     protection_cards = [c for c in state.hand if has_tag(c, "protection_shroud") and can_cast(state, c)]
     for c in sorted(protection_cards, key=lambda c: C(c).mv):
@@ -785,6 +1111,15 @@ def main_phase(state: GameState, log: List[Dict]):
             state.battlefield.append(choice)
             if C(choice).type == "Creature":
                 state.creature_cast_turn[choice] = state.turn
+                if choice == "Deepglow Skate" and state.loyalty:
+                    # "When this creature enters, double the number of each
+                    # kind of counter on any number of target permanents."
+                    # ETB de UMA VEZ SO (nao e' estatico) - achado real
+                    # 2026-08-28 (regra nova de lealdade): sempre escolhe
+                    # dobrar TODOS os planeswalkers que ja estao em campo
+                    # (nunca ha razao real pra nao escolher).
+                    for pw in list(state.loyalty.keys()):
+                        add_loyalty(state, pw, state.loyalty[pw], log, reason="deepglow_skate_etb")
         if choice in LAND_FETCH_SPELLS:
             do_land_fetch_spell(state, choice, log)
         log.append({"action": "cast", "card": choice, "turn": state.turn})
@@ -810,6 +1145,14 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
             bridge_upkeep_trigger(state, log)
 
     state.draw(1)
+    if state.teferi_sunset_emblem:
+        # Ultimate de Teferi, Who Slows the Sunset: "You draw a card during
+        # each opponent's draw step." Este motor so avanca os PROPRIOS
+        # turnos - modelado como N_OPPONENTS compras extras por ciclo do
+        # nosso turno, mesma premissa/convencao ja usada em
+        # REMOVAL_CHANCE_PER_OPPONENT (ver docstring do arquivo).
+        state.draw(N_OPPONENTS)
+        state.pw_draws_total += N_OPPONENTS
     play_land(state, log)
     main_phase(state, log)
 
@@ -877,6 +1220,17 @@ def simulate_one(seed: int, turns: int, with_greater_auramancy: bool) -> Dict:
         "protectors_removed_count": state.protectors_removed_count,
         "removal_attempts_total": state.removal_attempts_total,
         "lands_played_total": state.lands_played_total,
+        "pw_activations_total": state.pw_activations_total,
+        "pw_draws_total": state.pw_draws_total,
+        "pw_tokens_created_total": state.pw_tokens_created_total,
+        "pw_life_gained_total": state.pw_life_gained_total,
+        "pw_life_lost_opponent_total": state.pw_life_lost_opponent_total,
+        "pw_removal_proxy_total": state.pw_removal_proxy_total,
+        "pw_wipe_proxy_total": state.pw_wipe_proxy_total,
+        "pw_recursion_total": state.pw_recursion_total,
+        "pw_ultimates_used_total": state.pw_ultimates_used_total,
+        "pw_deaths_total": state.pw_deaths_total,
+        "planeswalkers_in_play_end": len(state.loyalty),
     }
 
 def run_batch(n=2000, turns=10, with_greater_auramancy=False, seed_base=3000000, label=""):
@@ -920,6 +1274,30 @@ def run_batch(n=2000, turns=10, with_greater_auramancy=False, seed_base=3000000,
         print(f"  Chance acumulada ate o turno {t}: {100*cum/n:.1f}%")
     never_pw = n - len(pw_hit_turns)
     print(f"  Nunca acertou planeswalker em {turns} turnos: {100*never_pw/n:.1f}%")
+
+    # Achado real 2026-08-28 (usuario: "Preciso que os counters de lealdade
+    # e ativacoes de planeswalker sejam sempre contabilizados") - antes
+    # NENHUMA habilidade de planeswalker era simulada, so se a Bridge
+    # acertava um. Agora os 17 planeswalkers tem lealdade real e ativam
+    # uma habilidade real por turno em campo.
+    print(f"\n--- Planeswalkers (lealdade + ativacoes reais, regra nova) ---")
+    print(f"Avg ativacoes de habilidade de planeswalker por partida: {sum(r['pw_activations_total'] for r in results)/n:.2f}")
+    print(f"Avg planeswalkers vivos no fim da simulacao: {sum(r['planeswalkers_in_play_end'] for r in results)/n:.2f}")
+    print(f"Avg mortes de planeswalker (lealdade a 0) por partida: {sum(r['pw_deaths_total'] for r in results)/n:.2f}")
+    print(f"Avg ultimates usados por partida: {sum(r['pw_ultimates_used_total'] for r in results)/n:.2f}")
+    print(f"RECURSION (via Tamiyo, Compleated Sage -X): {sum(r['pw_recursion_total'] for r in results)/n:.2f}")
+    print(f"DRAW: avg compras via planeswalker: {sum(r['pw_draws_total'] for r in results)/n:.2f}")
+    print(f"Avg tokens criados via planeswalker: {sum(r['pw_tokens_created_total'] for r in results)/n:.2f}")
+    print(f"Avg vida ganha via planeswalker: {sum(r['pw_life_gained_total'] for r in results)/n:.2f} | "
+          f"vida perdida do oponente (proxy): {sum(r['pw_life_lost_opponent_total'] for r in results)/n:.2f}")
+    print(f"INTERACTION: avg remocao proxy (Ashiok/Ugin, sem alvo real de oponente): "
+          f"{sum(r['pw_removal_proxy_total'] for r in results)/n:.2f} | wipe proxy (Elspeth/Liliana ultimate): "
+          f"{sum(r['pw_wipe_proxy_total'] for r in results)/n:.2f}")
+    print(f"Deferido nesta rodada (nao implementado, documentado): estatico da Nicol Bolas ('has all loyalty "
+          f"abilities of all other planeswalkers'); Innkeeper's Talent nivel 3 (dobro de counters, precisa de "
+          f"engine de leveling); Flux Channeler/Ichormoon Gauntlet/Inexorable Tide/Mutational "
+          f"Advantage/Ripples of Potential/Atraxa (proliferate de outras fontes alem do Evolution Sage/Vraska - "
+          f"precisam de hooks de cast-trigger/end-step que este arquivo ainda nao tem).")
     print()
     return results
 
