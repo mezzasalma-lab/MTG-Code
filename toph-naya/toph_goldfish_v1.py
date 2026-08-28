@@ -264,7 +264,16 @@ add("Enlightened Tutor", 1, "instant", {"tutor_artifact_enchant"})
 add("Felidar Retreat", 4, "enchantment", {"landfall_choice"})
 add("Field of the Dead", 0, "land", {"field_of_the_dead"})  # already added
 add("Germination Practicum", 5, "sorcery", {"mass_counter_repeat"})
-add("Great Divide Guide", 2, "creature", {"rock_lands_any"})
+add("Great Divide Guide", 2, "creature", set())
+# Achado real 2026-08-28 (auditoria de checklist de mecanica): tag
+# "rock_lands_any" nunca lida em lugar nenhum (dead tag), removida. Oraculo
+# real: "Each land and Ally you control has '{T}: Add one mana of any
+# color.'" - estatica de FIXACAO de cor pra terrenos ja existentes, nao
+# uma fonte de mana propria adicional. Esse motor nao rastreia cor
+# nenhuma em total_mana() (so' magnitude total) - terrenos ja contam 1
+# cada independente de cor, entao o efeito real dela nao muda o total
+# numerico neste modelo. Documentado como limitacao de arquitetura, nao
+# um bug (nao ha estrutura de cor pra "consertar" aqui).
 add("Gruul Turf", 0, "land", {"bounceland"})
 add("Heroic Intervention", 2, "instant", {"protection_unused"})
 add("Kodama of the East Tree", 6, "creature", {"cheat_permanent"})
@@ -283,7 +292,6 @@ add("Scute Swarm", 3, "creature", {"landfall_token_or_copy"})
 add("Springheart Nantuko", 2, "enchantment_creature", {"landfall_token"})
 add("Strionic Resonator", 2, "artifact", {"trigger_copy"})
 add("Sword of Feast and Famine", 3, "artifact", {"combat_dependent"})
-add("Talon Gates of Madara", 0, "land", set())  # already added
 add("The Ozolith", 1, "artifact", {"ozolith"})
 add("The Stasis Coffin", 3, "artifact", {"protection_recurring", "earthbend_target_priority"})
 add("Toph, Earthbending Master", 4, "creature", {"landfall_experience", "attack_earthbend_experience"})
@@ -713,9 +721,20 @@ def total_mana(state: GameState) -> int:
         if p.tapped:
             continue
         tags = p.card.tags
-        if is_land(p, state):
+        land = is_land(p, state)
+        if land:
+            # Achado real 2026-08-28 (auditoria de checklist de mecanica):
+            # Command Tower/Jetmir's Garden/Talon Gates of Madara sao
+            # terrenos tagueados "rock_any"/"rock_any_paid" - antes ganhavam
+            # +1 aqui E +1 de novo no bloco de rock abaixo (double count,
+            # um unico {T} contando 2x). A habilidade colorida delas E' a
+            # unica habilidade de mana real (Command Tower/Jetmir's Garden)
+            # ou um conversor liquido-zero (Talon Gates: paga {1} extra pra
+            # trocar por qualquer cor - sem ganho de mana total, so' fixacao,
+            # que esse modelo generico nao rastreia por cor de qualquer
+            # forma). Nenhuma delas soma mana ALEM do +1 de terreno normal.
             total += 1
-        if "rock_any" in tags or "rock1" in tags or "rock_any_paid" in tags:
+        elif "rock_any" in tags or "rock1" in tags or "rock_any_paid" in tags:
             total += 1
         elif "rock2" in tags or "rock2life" in tags:
             total += 2
@@ -724,8 +743,13 @@ def total_mana(state: GameState) -> int:
             if n_art >= 3:
                 total += 1
         if "creature_mana_any" in tags:
-            # Enduring Vitality: TODA criatura sua tapa por 1 de qualquer cor
-            n_creatures = sum(1 for x in state.battlefield if is_creature_type(x, state) and not x.tapped and x is not p)
+            # Enduring Vitality: TODA criatura sua tapa por 1 de qualquer cor.
+            # Achado real 2026-08-28 (auditoria de checklist): nunca checava
+            # doenca de invocacao (CR 302.6) - criaturas recem-conjuradas
+            # contribuiam mana no proprio turno em que entravam.
+            n_creatures = sum(1 for x in state.battlefield
+                               if is_creature_type(x, state) and not x.tapped and x is not p
+                               and x.entered_turn < state.turn)
             total += n_creatures
     total += state.treasures
     return total
@@ -881,6 +905,13 @@ def mulligan(rng: random.Random, max_mulls: int = 3):
 # Turn structure
 # ---------------------------------------------------------------------------
 
+# Pools reais de busca por fetch (Scryfall) - achado real 2026-08-28.
+FETCH_POOLS = {
+    "Arid Mesa": ("Mountain", "Plains", "Snow-Covered Mountain", "Snow-Covered Plains"),
+    "Windswept Heath": ("Forest", "Plains", "Snow-Covered Forest", "Snow-Covered Plains"),
+    "Wooded Foothills": ("Mountain", "Forest", "Snow-Covered Mountain", "Snow-Covered Forest"),
+}
+
 def play_land(state: GameState, log: list):
     max_drops = 1 + state.extra_land_drops
     while state.lands_played_this_turn < max_drops:
@@ -894,8 +925,13 @@ def play_land(state: GameState, log: list):
         state.lands_played_this_turn += 1
         if "fetch" in CARD_DB[choice].tags:
             state.graveyard.append(choice)
-            basics = [n for n in state.library if n in ("Forest", "Plains", "Mountain",
-                      "Snow-Covered Forest", "Snow-Covered Mountain", "Snow-Covered Plains")]
+            # Achado real 2026-08-28 (auditoria de checklist de mecanica):
+            # todo fetch buscava dos 6 basicos, ignorando que cada um so'
+            # busca 2 tipos reais (Arid Mesa: Mountain/Plains; Windswept
+            # Heath: Forest/Plains; Wooded Foothills: Mountain/Forest).
+            pool = FETCH_POOLS.get(choice, ("Forest", "Plains", "Mountain",
+                    "Snow-Covered Forest", "Snow-Covered Mountain", "Snow-Covered Plains"))
+            basics = [n for n in state.library if n in pool]
             if basics:
                 fetched = basics[0]
                 state.library.remove(fetched)

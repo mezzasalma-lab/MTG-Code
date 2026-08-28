@@ -295,6 +295,69 @@ Avg sacrificios via Krark-Clan Ironworks: 0,341
 
 ---
 
+### Correção — checklist obrigatória de mecânica (regra nova pós-Beorn) — 2026-08-28
+
+**Gatilho (usuário):** depois de eu entregar o Beorn sem despacho de landfall
+nenhum, o usuário pediu auditoria da checklist nova (landfall, mana dorks,
+mana rocks, fixing lands, draw engines, ramp engines, ativadas repetíveis,
+combos) em **todos** os decks. Landfall (16 motores já auditados em rodadas
+anteriores) confirmado correto; os bugs achados nesta rodada foram na
+mecânica de mana:
+
+- **Command Tower / Jetmir's Garden**: terrenos tagueados "rock_any" —
+  `total_mana()` tinha dois `if` separados (não `elif`) que somavam **+1
+  por ser terreno E +1 de novo por ter a tag "rock_any"** — um único `{T}`
+  contando mana em dobro.
+- **Talon Gates of Madara**: mesmo bug de double-count, **mais** um `add()`
+  duplicado (linha 286 antiga) que sobrescrevia as tags reais dela
+  (`{"rock_any_paid", "phase_out_unused"}`) por um `set()` vazio — as tags
+  reais nunca existiam de fato. Corrigido: removido o `add()` duplicado, e
+  a habilidade colorida dela (paga {1} extra pra trocar por qualquer cor —
+  ganho líquido de mana ZERO, só fixação) não soma nada além do +1 de
+  terreno normal.
+- **Enduring Vitality** ("toda criatura sua tapa por 1 de qualquer cor"):
+  nunca checava doença de invocação — criaturas recém-conjuradas
+  contribuíam mana no próprio turno.
+- **Fetches (Arid Mesa/Windswept Heath/Wooded Foothills)**: todos buscavam
+  dos mesmos 6 básicos, ignorando que cada um só busca 2 tipos reais
+  (Arid Mesa: Mountain/Plains; Windswept Heath: Forest/Plains; Wooded
+  Foothills: Mountain/Forest). Nova tabela `FETCH_POOLS`.
+- **Great Divide Guide** ("each land and Ally you control has '{T}: Add
+  one mana of any color'"): tag "rock_lands_any" nunca lida em lugar
+  nenhum (dead tag). Removida e documentada como limitação de
+  arquitetura, não bug corrigível — esse motor não rastreia cor nenhuma
+  em `total_mana()`, então o efeito real dela (fixação, não mais mana) não
+  muda o total numérico neste modelo generico.
+
+**Não corrigido nesta rodada (decisão de escopo, documentada):** Spelunking's
+ETB land-drop (só o draw estava modelado); Horizon Explorer's Lander token
+nunca cracado; Yavimaya/Dryad of the Ilysian Grove sem tag nenhuma pro
+"every land is/has all basic types"; Iron Spider e Fountainport's habilidades
+ativadas; Krark-Clan Ironworks capado em 1 sac/turno (uncapped no real);
+Mishra's Bauble draw counter nunca incrementado; Great Henge's per-creature
+draw só proxy no próprio ETB.
+
+**Resultado (n=2000, seed_base=8000000, antes → depois):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg terrenos em campo (T8) | 10,39 | **10,14** |
+| Avg tokens totais criados | 13,33 | **11,86** |
+| Avg mana extra gerado | 2,12 | **1,90** |
+| Avg ativações Unstable Obelisk | 0,231 | **0,153** |
+| Avg recorrências Motor#16 | 1,07 | **0,90** |
+
+Queda moderada em todas as métricas de desenvolvimento — esperada, o
+double-count de mana (Command Tower/Jetmir's Garden/Talon Gates, presentes
+quase todo jogo) inflava a mana disponível todo turno.
+
+**Robustez:** sweep de 20.000 jogos (seeds 8000000–8019999, timeout 2s/jogo)
+— 0 erros, 0 timeouts.
+
+`lista.md` não mudou. `toph_v1_runs.jsonl` sobrescrito (3000 jogos).
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
