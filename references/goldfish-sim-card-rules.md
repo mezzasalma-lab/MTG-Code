@@ -221,6 +221,45 @@ QUALQUER simulador, novo ou já existente. Generalizando: antes de considerar
     remoção/proteção precisa de um número reportado pra ela, mesmo que o
     número seja 0 por design (goldfish solo sem oponente real).
 
+11. **Cartas de face múltipla / modal (MDFC, transform, Room, Battle,
+    Adventure, "Prepared")** — antes de registrar QUALQUER carta com "//"
+    no nome (ou qualquer layout multi-face) no `CARD_DB`, consultar o campo
+    `layout` real da API do Scryfall (não adivinhar pelo formato do nome) e
+    verificar qual face é de fato jogável da mão:
+    - **`modal_dfc`** (MDFC verdadeiro, ex: Agadeem's Awakening // Agadeem,
+      the Undercrypt): as duas faces são independentemente jogáveis da mão
+      — quem escolhe é o jogador no momento do cast/land-drop. Modelar as
+      DUAS opções (mesmo que a escolha padrão seja sempre uma delas por
+      falta de alvo real) — nunca registrar só uma face permanentemente sem
+      checar se a outra faria diferença.
+    - **`transform`** (ex: Ojer Taq // Temple of Civilization, Legion's
+      Landing // Adanto): só a FRENTE é castável da mão — o verso só é
+      alcançável via o gatilho real de transformação do jogo. Registrar a
+      carta pela frente (tipo/custo/cor real dela), nunca direto pelo
+      verso — isso seria simular uma ação ilegal (jogar como land/ativar
+      uma carta que nunca foi conjurada), não só "perder valor".
+    - **`split`** com mecânica de "Room" (ex: Funeral Room // Awakening
+      Hall): permite destrancar a segunda porta depois, pagando o custo
+      dela "as a sorcery" — não é um cast novo (não dispara gatilhos de
+      "whenever you cast"), mas é uma ação real que precisa de dispatch.
+    - **`battle`**: side do defensor com contadores de defesa, ataca-lo
+      (do lado do jogador) exige um "attacking player" que esse tipo de
+      simulador solo geralmente não modela — documentar explicitamente por
+      que está fora de escopo, não silenciar.
+    - **`prepare`** (ex: Emeritus of Woe // Demonic Tutor, Stensian
+      Sanguinist // Exsanguinate): a carta entra "prepared" sob uma
+      condição real (ver texto), permitindo conjurar uma cópia do verso
+      SEM ter a carta física (mas ainda pagando o custo real dele, a menos
+      que o texto diga "without paying its mana cost").
+    - **Adventure**: o lado Instant/Sorcery pode ser conjurado primeiro
+      (exila a carta, permite conjurar a criatura depois do exílio) — as
+      duas metades são reais e call cada uma no tempo certo.
+
+    Regra geral: **nunca registrar uma carta de face múltipla direto pela
+    face "mais conveniente" de modelar sem antes confirmar, via `layout` da
+    API, que essa é de fato uma face jogável da mão** — isso pode estar
+    simulando uma ação ilegal do jogo inteiro, não só uma simplificação.
+
 **Prática obrigatória:** antes de declarar QUALQUER simulador (novo ou já
 existente, numa auditoria de revisão) completo, rodar essa checklist e citar
 explicitamente, por categoria, quantas cartas da decklist se qualificam e se

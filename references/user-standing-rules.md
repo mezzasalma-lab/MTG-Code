@@ -278,6 +278,37 @@ registrar em todos os decks tb!"*
   Edgar Markov, Hei Bai) e a todo deck futuro, desde a auditoria inicial —
   não é um adendo só pros próximos decks.
 
+**3º reforço (2026-08-28) — cartas de face múltipla:** depois de eu
+reportar RECURSION quase zerada no Edgar Markov, o usuário perguntou direto
+— citação literal: *"Como Edgar Markov não tem recursão? Vc auditou tudo
+mesmo? E Agadeem's Awakening e Bloodline Bidding? Rise of the Dark
+Realms?"* — e, depois de eu confirmar que Agadeem's Awakening estava
+land-primary por engano (achado real: MDFC verdadeiro nunca conjurado como
+spell) e que Rise of the Dark Realms não está na lista real: *"Então já
+tinha tirado o Rise, verifique mais uma vez todas as cartas modais/
+aventuras/preparadas/dupla face dos dois decks e acrescente essa regra de
+verificar e compilar TODOS OS EFEITOS DAS CARTAS: Rooms, battles, mdfcs,
+adventures, prepared, etc, para TODOS OS DECKS."*
+
+- Nova categoria 11 na checklist (`goldfish-sim-card-rules.md`): antes de
+  registrar QUALQUER carta com "//" no nome (ou layout multi-face), checar
+  o campo `layout` real da API do Scryfall — não adivinhar. `modal_dfc`
+  (2 faces independentes) é diferente de `transform` (só a frente é
+  castável da mão, o verso só chega via gatilho real) é diferente de
+  `split`/Room (destranca a 2ª porta depois) é diferente de `prepare`
+  (Emeritus of Woe/Stensian Sanguinist) é diferente de Adventure é
+  diferente de `battle`.
+- **Achado real que motivou a regra:** Ojer Taq, Deepest Foundation //
+  Temple of Civilization e Legion's Landing // Adanto, the First Fort
+  (Edgar Markov) tinham layout `transform` mas eram registradas DIRETO como
+  Land — isso não era só "perder valor", era simular uma ação ilegal do
+  jogo (jogar um verso que nunca poderia ter sido alcançado sem conjurar a
+  frente primeiro). Corrigido, ver `edgar-markov-mardu/goldfish-log.md`,
+  Correção #13.
+- Vale pra **todo deck do repositório**, não só o Edgar Markov — qualquer
+  carta com "//" no nome em qualquer decklist precisa passar por essa
+  verificação antes de ser considerada auditada.
+
 ---
 
 <!-- Adicionar novas regras permanentes abaixo conforme o usuário as
