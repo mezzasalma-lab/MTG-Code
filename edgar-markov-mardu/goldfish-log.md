@@ -288,6 +288,49 @@ A cadeia está corretamente encadeada de ponta a ponta: sacrificar no Altar gera
 
 ---
 
+## Correção #6 — auditoria do resto do deck (usuário: "Audite o resto do deck")
+
+Depois de 5 rodadas focadas em cartas específicas (o motor de aristocratas/Eminence, os tutores, os 2 "prepared"), o usuário pediu pra varrer o que sobrou. Conferido `oracle_text` real de toda carta ainda não tocada diretamente por uma pergunta pontual.
+
+### Corrigido (achados reais novos)
+
+1. **Removal/proteção nunca era excluída do loop genérico de conjuração** — a MESMA classe de bug já corrigida no Hei Bai/Ur-Dragon (sessão inteira), mas que nunca chegou a ser aplicada aqui apesar de 5 rodadas de correção. Anguished Unmaking, Get Lost, Path to Exile, Swords to Plowshares, Vindicate, Rite of Oblivion (removal sem alvo real), Call the Coppercoats (sempre X=0, conta criaturas de oponente que não existem aqui), Clever Concealment e Teferi's Protection (proteção pura) eram conjuradas às cegas, gastando carta e mana de graça. Novo `EXCLUDE_BLIND_CAST`.
+2. **Plumb the Forbidden, Sevinne's Reclamation e Bloodline Bidding — 100% ausentes**, conjuradas às cegas sem nenhum efeito. Implementadas: Plumb the Forbidden sacrifica todos os tokens disponíveis (cada um dispara os death payoffs) e copia o draw por sacrifício; Sevinne's Reclamation busca o melhor permanente MV≤3 no cemitério; Bloodline Bidding reanima todos os Vampiros do cemitério. Baixo volume (poucas criaturas nomeadas morrem neste simulador), mas real quando acontece — 1 e 5 ocorrências em 2000 jogos, respectivamente, conferido com soma bruta pra confirmar que não é zero-por-bug.
+3. **Bloodletter of Aclazotz — 100% ausente.** "If an opponent would lose life during YOUR TURN, they lose twice that much life instead." Este simulador só simula os PRÓPRIOS turnos — ou seja, essa condição é sempre verdadeira aqui, um multiplicador universal sobre TODO drain do motor (Zulaport, Blood Artist, Purphoros, Warleader's Call, Sanctum Seeker, Exsanguinate, tudo). Implementado como replacement effect dentro de `lose_life_opponent()`.
+4. **Elspeth, Storm Slayer — dobrador de token nunca foi incluído.** Mesmo texto estático do Anointed Procession/Mondrak ("if one or more tokens would be created, twice that many instead"), só citada num comentário antigo, nunca de verdade adicionada em `TOKEN_DOUBLER_SOURCES`.
+5. **Smothering Tithe tinha a MESMA classe de bug do Pitiless Plunderer** (Correção #1): tag `ramp` inventada dando +1 mana automático todo turno. O único gatilho real dela ("whenever an opponent draws a card") exige o OPONENTE comprar carta — nunca acontece neste simulador que só avança os próprios turnos (mesma limitação arquitetural do Seedborn Muse no Hei Bai). Tag e `produces` removidos.
+6. **Bartolomé del Presidio e Phyrexian Tower são sac outlets reais nunca incluídos em `SAC_OUTLETS`.** Bartolomé ("Sacrifice another creature or artifact: put a +1/+1 counter") é de graça, igual Viscera Seer. Phyrexian Tower ("{T}, Sacrifice a creature: Add {B}{B}") é um terreno normal — usar essa habilidade EM VEZ do `{T}: Add C` normal dá ganho líquido de +1 (não +2, já que é o mesmo tap).
+7. **Indulgent Aristocrat** ("{2}, Sacrifice a creature: put a +1/+1 counter on each Vampire") é um outlet de sacrifício real, só que PAGO — agora considerado no `sac_loop` quando não há outlet de graça em campo, gastando os 2 mana de verdade.
+8. **Urza's Saga — 100% ausente**, tratada só como terreno incolor fixo. Implementado o capítulo III (2 turnos depois de jogada): busca um artefato de custo `{0}` ou `{1}` (Sol Ring/Skullclamp) e se sacrifica, exatamente como o oráculo real. Capítulo II (Construct token, exige uma ativação `{2}`+tap por turno) fica deferido — mesma classe de simplificação de "ativada por turno" já usada no resto do motor.
+9. **Nenhum terreno tinha rastreio de "tapado" neste simulador** (diferente do Hei Bai). Savai Triome (sempre tapado) e Blackcleave Cliffs/Haunted Ridge (condicional à quantidade de OUTROS terrenos já em campo) contribuíam mana no mesmo turno em que entravam, sem restrição nenhuma. Novo `tapped_lands_this_turn`, subtraído de `total_mana()`.
+
+### Deferido (achado, documentado, não implementado)
+
+- Charismatic Conqueror: gatilho exige permanente de OPONENTE entrando destapado — nunca teria janela real aqui (mesma classe do Seedborn Muse/Smothering Tithe). Corpo vanilla é o resultado correto.
+- Nullpriest of Oblivion (kicker, reanima da graveyard se kicked): baixo valor esperado, mesma razão do Sevinne's Reclamation/Agadeem's Awakening — pool de reanimação quase sempre vazio.
+- Voldaren Estate / Fountainport (Blood/Fish/Treasure tokens): ativadas caras (mana adicional além do tap), mesma classe de simplificação do Mondrak/Westvale Abbey.
+
+Testado: 300 jogos smoke test (0 erros, as 2 políticas), 25.000 jogos de robustez política default + 15.000 política `COMBO_HUNTING_POLICY=True` (0 erros/timeouts nas 2).
+
+**Impacto real** (`n=2000`, política default, `seed_base=6000000`, comparado com o estado pós-Correção #5):
+
+| métrica | antes (Correção #5) | depois |
+|---|---|---|
+| Avg drain_total | 2,54 | **4,10 (1,6x)** |
+| Avg lifegain_total | 1,70 | **2,71** |
+| Avg criaturas sacrificadas | 1,33 | **2,24** |
+| Avg gatilhos de morte | 1,23 | **2,13** |
+| Avg tutores via Urza's Saga (novo) | 0,00 | 0,14 |
+| Avg compras via Plumb the Forbidden (novo) | 0,00 | 0,22 |
+| Combo ligado | 0,7% | **1,5%** |
+| Nunca conjurado em 8 turnos | 17,1% | 16,3% |
+
+Salto real e bem maior que qualquer rodada anterior deste deck (fora a Correção #1) — o combinado de excluir removal do auto-cast (liberando espaço pra spells reais) + Bloodletter of Aclazotz dobrando tudo + 2 sac outlets novos + Urza's Saga se acumula de forma multiplicativa, não aditiva.
+
+`lista.md` não mudou.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
