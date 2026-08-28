@@ -400,6 +400,28 @@ sugestão, não depois de ser cobrada.
   avaliação de card individual isolado — inclui recomendações de corte,
   adição, e resposta a "vale a pena incluir X?".
 
+**Reforço (2026-08-28)**, logo depois de eu ter aplicado a regra pela
+primeira vez (rodei o goldfish real do Ur-Dragon, testei 6 candidatos de
+corte pro Morophon, entreguei número em vez de opinião) — citação literal
+do usuário: *"A ideia de montarmos esse database com trabalho de corno é
+para usarmos nessas situações, para não vir com 'eu tiro do meu cu que
+essa é a melhor opção!'!"*
+
+- **Se o deck em questão tem um simulador de goldfish no repositório,
+  RODAR ele é obrigatório antes de qualquer recomendação de corte/adição/
+  troca** — não uma opção entre "teorizar sobre curva/sinergia" ou "medir
+  de verdade": as duas coisas, sempre, e a medição empírica (goldfish
+  real, seeds pareadas, robustez) é o critério que desempata quando a
+  análise teórica (curva, texto de carta) não é conclusiva sozinha.
+  Analisar sem rodar o simulador que já existe pra aquele deck é
+  exatamente o "tirar do cu" que essa regra existe pra evitar.
+- Testar **mais de um candidato de corte** (não só o primeiro que parecer
+  óbvio pela leitura de texto) e, quando fizer sentido, incluir pelo menos
+  1 candidato "controle" esperado ser ruim — serve pra confirmar que a
+  metodologia distingue sinal real de ruído de seed antes de confiar no
+  ranking (feito no teste do Morophon: Firdoch Core como controle, saiu
+  pior que os 3 finalistas em quase toda métrica).
+
 ## 11. Registrar a regra no arquivo não basta — precisa CONSULTAR o arquivo antes de agir, não só depois de errar
 
 Citação literal do usuário (2026-08-28): *"Parece que vc não registra o que
