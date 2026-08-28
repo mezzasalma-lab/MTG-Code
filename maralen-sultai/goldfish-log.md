@@ -289,6 +289,45 @@ Mantle) — direção esperada de uma peça de ramp que antes contribuía zero.
 **Robustez:** sweep de 20.000 jogos (seeds 900000–919999, timeout 2s/jogo)
 — 0 erros, 0 timeouts.
 
+**Varredura extra de tags mortas (categoria 9 — estáticas):** depois de
+corrigir o Itlimoc, rodei um script que cruza toda tag registrada em
+`CARD_DB` contra onde ela é lida no resto do arquivo (mesma classe de bug
+que achou o Itlimoc). Achou 2 gaps reais adicionais:
+
+- **Murkfiend Liege**: estático real é *"Other green creatures you control
+  get +1/+1. Other blue creatures you control get +1/+1."* — Marwyn é Elfo
+  E verde, então deveria receber o bônus (mesmo padrão já corrigido pro
+  Elvish Archdruid). Nunca era somado. Corrigido em
+  `marwyn_effective_power()`, ao lado do bônus do Archdruid.
+- **Radagast of Rhosgobel**: oráculo real *"The first creature spell you
+  cast each turn costs {2} less to cast and can be cast as though it had
+  flash."* — só o lado do flash (`flash_with_radagast_by_turn`) estava
+  implementado; o desconto de {2} no custo nunca era aplicado. Implementado
+  em `cast_card()` (aplica no primeiro creature spell do turno, capado em
+  0) e espelhado em `can_cast()` (senão o filtro de castables rejeitava
+  criaturas que na verdade ficavam pagáveis com o desconto).
+
+Também documentados no docstring (decisões de escopo, não bugs): Seedborn
+Muse (untap-step de outro jogador — genuinamente N/A, goldfish solo nunca
+tem "outro jogador"), Spellstutter Sprite (contra-magia real precisa de
+alvo de oponente, mesma convenção já usada pras outras contra-magicas do
+deck) e Wirewood Symbiote/Scryb Ranger (bounce-untap repetível — valor
+esperado baixo o suficiente frente ao risco de reestruturar o motor de
+mana pra rastrear tap individual, decisão de escopo documentada).
+
+**Resultado (n=2000, seed_base=12345, antes do Murkfiend/Radagast → depois):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg tokens criados | 4,18 | **4,28** |
+| Combo Umbral Mantle montado | 9,6% | **9,8%** |
+| Staff of Domination infinito | 2,2% | **2,4%** |
+| Avg cartas compradas extra | 2,84 | **2,86** |
+| Avg mão final | 1,97 | **1,98** |
+
+**Robustez (2ª rodada, com Murkfiend/Radagast):** sweep de 20.000 jogos
+(seeds 910000–929999, timeout 2s/jogo) — 0 erros, 0 timeouts.
+
 `lista.md` não mudou. `maralen_v1_runs.jsonl` sobrescrito na próxima
 execução de `__main__`.
 

@@ -71,6 +71,31 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas):
   em detalhe (Mistbind raramente sai de campo neste modelo).
 - Combate: "ataca" = nao esta com summoning sickness. Nenhum bloqueio,
   nenhum dano/vida de oponente real.
+- Seedborn Muse ("untap all permanents you control during EACH OTHER
+  PLAYER'S untap step"): genuinamente N/A neste modelo - so' os PROPRIOS
+  turnos sao simulados (goldfish solo), nunca ha um "outro jogador" cujo
+  untap step aconteca pra gerar o gatilho. Nao e' omissao, e' ausencia
+  real do evento que a habilidade escuta.
+- Murkfiend Liege: alem do "untap step de outro jogador" (mesmo N/A do
+  Seedborn Muse acima), tem um segundo modo estatico real ("Other green
+  creatures you control get +1/+1. Other blue creatures you control get
+  +1/+1.") que E' modelado (soma em `marwyn_effective_power()`, ja que
+  Marwyn e' Elfo E verde - achado real 2026-08-28).
+- Spellstutter Sprite: "counter target spell with mana value X or less"
+  (X = Faeries) precisa de uma magica real de oponente pra mirar - mesma
+  convencao ja documentada pras outras contra-magicas do deck (Counterspell,
+  Swan Song, Arcane Denial etc.), disponivel mas sem efeito de combate real
+  num goldfish solo.
+- Wirewood Symbiote / Scryb Ranger ("Return an Elf/Forest you control:
+  Untap target creature. Activate only once each turn."): decisao de
+  escopo documentada, nao implementada numericamente. O beneficio real
+  (re-ativar um dork ja tapado) tem custo real de tempo (perder um Elfo ou
+  land drop temporariamente, precisar recomprar depois) que o modelo atual
+  de mana (soma "ready creatures" agregada, sem rastrear tap individual)
+  nao capturaria com fidelidade sem reestruturar o motor de mana inteiro -
+  risco de bug maior que o valor esperado (ambas as pecas + um dork grande
+  + um Elfo/Forest sobrando simultaneamente e' situacao relativamente rara
+  dentro de 8 turnos).
 """
 
 import json
@@ -298,6 +323,7 @@ class GameState:
     fauna_shaman_used_this_turn: bool = False
     heritage_used_this_turn: bool = False
     birchlore_used_this_turn: bool = False
+    radagast_discount_used_this_turn: bool = False
     umbral_equipped_on: Optional[str] = None
     infinite_mana_this_turn: bool = False
 
@@ -415,12 +441,19 @@ def ready_creatures(state: GameState):
 def marwyn_effective_power(state: GameState) -> int:
     """marwyn_power guarda so' os +1/+1 counters PERMANENTES (um por Elfo
     que entra, oraculo real). Elvish Archdruid da' +1/+1 a "other Elf
-    creatures you control" - e' uma estatica DINAMICA (some se o Archdruid
-    sair de campo), entao nao pode ser somada direto em marwyn_power (que
-    representa contadores de verdade). Achado real 2026-08-28 (auditoria
-    de checklist): esse bonus nunca era aplicado, subestimando a mana da
-    Marwyn sempre que o Archdruid tambem estava em campo."""
-    bonus = 1 if ("Elvish Archdruid" in state.battlefield and "Marwyn, the Nurturer" in state.battlefield) else 0
+    creatures you control" e Murkfiend Liege da' +1/+1 a "other green
+    creatures you control" (Marwyn e' Elfo E verde - os dois se somam,
+    "other" so' exclui a propria fonte) - sao estaticas DINAMICAS (somem
+    se a fonte sair de campo), entao nao podem ser somadas direto em
+    marwyn_power (que representa contadores de verdade). Achado real
+    2026-08-28 (auditoria de checklist): esses bonus nunca eram
+    aplicados, subestimando a mana da Marwyn sempre que Archdruid e/ou
+    Murkfiend Liege tambem estavam em campo."""
+    bonus = 0
+    if "Elvish Archdruid" in state.battlefield and "Marwyn, the Nurturer" in state.battlefield:
+        bonus += 1
+    if "Murkfiend Liege" in state.battlefield and "Marwyn, the Nurturer" in state.battlefield:
+        bonus += 1
     return state.marwyn_power + bonus
 
 def dork_mana(state: GameState) -> int:
@@ -538,7 +571,11 @@ def remaining_mana(state: GameState) -> int:
 
 
 def can_cast(state: GameState, name: str) -> bool:
-    return remaining_mana(state) >= CARD_DB[name].mv
+    cost = CARD_DB[name].mv
+    if (is_creature_card(name) and "Radagast of Rhosgobel" in state.battlefield
+            and not state.radagast_discount_used_this_turn):
+        cost = max(0, cost - 2)
+    return remaining_mana(state) >= cost
 
 
 def spend_mana(state: GameState, n: int):
@@ -776,10 +813,17 @@ def cast_fauna_shaman_activation(state: GameState):
 
 def cast_card(state: GameState, name: str):
     card = CARD_DB[name]
-    if name == COMMANDER:
-        spend_mana(state, card.mv + 2 * state.commander_cast_count)
-    else:
-        spend_mana(state, card.mv)
+    cost = card.mv + 2 * state.commander_cast_count if name == COMMANDER else card.mv
+    # Radagast of Rhosgobel (achado real 2026-08-28, auditoria de checklist
+    # categoria 9): oraculo real "The first creature spell you cast each
+    # turn costs {2} less to cast and can be cast as though it had flash."
+    # So' o lado do flash estava implementado (flash_with_radagast_by_turn);
+    # o desconto de custo nunca era aplicado.
+    if (is_creature_card(name) and "Radagast of Rhosgobel" in state.battlefield
+            and not state.radagast_discount_used_this_turn):
+        cost = max(0, cost - 2)
+        state.radagast_discount_used_this_turn = True
+    spend_mana(state, cost)
     resolve_cast(state, name)
 
 
@@ -1052,6 +1096,7 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.fauna_shaman_used_this_turn = False
     state.warmaster_used_this_turn = False
     state.infinite_mana_this_turn = False
+    state.radagast_discount_used_this_turn = False
 
     if not (is_first_turn and on_play):
         if state.library:
