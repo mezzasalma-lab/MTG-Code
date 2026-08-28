@@ -220,6 +220,23 @@ mana — 48,2% eram tokens, 7,2% entraram de graça por reanimação/tutor.
   não deve ser tratada como o número final sem cruzar com dado
   turno-a-turno do simulador.
 
+## 9. Checklist obrigatória de categorias de mecânica em TODO simulador (não só a carta sendo trabalhada no momento)
+
+Citação literal do usuário (2026-08-28), depois de eu entregar o Beorn sem
+nenhum despacho de landfall apesar de 6 cartas do deck dependerem dele: *"Como
+diabos vc criou um simulador que não leva em conta a porra do Landfall???
+[...] acrescente uma maldita regra de conferir TODAS AS MALDITAS INTERAÇÕES,
+ATIVAÇÕES e COMBOS do deck na porra do simulador. Revise gatilhos, tokens,
+motores de draw e ramp, e os mana dorks, mana rocks e lands que geram mana
+fixing em TODOS OS DECKS E SIMULADORES!!!!"*
+
+Checklist completa (landfall, mana dorks/rocks/fixing, draw engines, ramp
+engines, ativadas repetíveis, combos entre peças já na lista) em
+`references/goldfish-sim-card-rules.md#checklist-obrigatória-de-categorias-de-mecânica-não-só-cartas-individuais`.
+Obrigatória antes de declarar **qualquer** simulador (novo ou em revisão)
+completo — inclusive os já existentes, não só o que está sendo escrito no
+momento.
+
 ---
 
 <!-- Adicionar novas regras permanentes abaixo conforme o usuário as

@@ -534,7 +534,12 @@ def effective_cost(state: GameState, card: str) -> int:
             and not ({"Instant", "Sorcery"} & C(card).types):
         reduction += 1
 
-    # Radagast: "The first creature spell you cast each turn costs {2} less."
+    # Radagast: "The first creature spell you cast each turn costs {2} less to
+    # cast AND CAN BE CAST AS THOUGH IT HAD FLASH." So o desconto e modelado
+    # aqui - a metade "flash" nao tem efeito simulavel nesse motor, que so
+    # conjura na main phase do proprio turno e nao modela janelas de
+    # instant-speed/turno do oponente (mesma ressalva ja documentada pro
+    # "untap" do Little Bear). Documentado explicitamente, nao omitido.
     if state.radagast_discount_available and state.has("Radagast of Rhosgobel") \
             and card != "Radagast of Rhosgobel" and is_creature(card):
         reduction += 2

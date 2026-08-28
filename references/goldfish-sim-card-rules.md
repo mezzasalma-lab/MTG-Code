@@ -133,6 +133,72 @@ resultado depois de zero erros/travamentos nessa varredura.
 
 ---
 
+## Checklist obrigatória de categorias de mecânica (não só cartas individuais)
+
+Adicionada por pedido explícito do usuário (sessão do Beorn, 2026-08-28), depois
+de eu entregar um simulador (`beorn_goldfish_v1.py`) que **não tinha nenhum
+despacho de landfall**, apesar de 6 cartas do deck dependerem dele. Citação
+literal: *"Como diabos vc criou um simulador que não leva em conta a porra do
+Landfall??? Por tudo que é mais sagrado, acrescente uma maldita regra de
+conferir TODAS AS MALDITAS INTERAÇÕES, ATIVAÇÕES e COMBOS do deck na porra do
+simulador. Revise gatilhos, tokens, motores de draw e ramp, e os mana dorks,
+mana rocks e lands que geram mana fixing em TODOS OS DECKS E SIMULADORES!!!!"*
+
+O "Passo 0" da seção do Roaming Throne acima (varredura mecânica em
+`oracle_text`, não de memória) já existia mas só era aplicado à carta que
+estava sendo implementada no momento — não como checklist obrigatória pra
+QUALQUER simulador, novo ou já existente. Generalizando: antes de considerar
+**qualquer** simulador (novo ou em revisão) completo, rodar essa varredura pra
+**cada uma** destas categorias, sobre o `oracle_text` real de toda a decklist:
+
+1. **Landfall** — toda carta com "Landfall —" no oracle_text precisa de um
+   despachante real chamado em TODO ponto onde um terreno entra em campo: o
+   land-drop normal E qualquer terreno buscado por rampa (Cultivate, Nature's
+   Lore, Sakura-Tribe Elder, Solemn Simulacrum, etc — a regra de landfall não
+   distingue a origem do terreno).
+2. **Mana dorks** (criaturas com habilidade de `{T}: Adicionar mana`) —
+   conferir (a) se contam pra mana total/fontes coloridas do turno, E (b) se
+   respeitam doença de invocação (não produzem mana no turno em que entram,
+   CR 302.6) — criatura sem haste não usa habilidade de `{T}` no turno da ETB.
+3. **Mana rocks** (artefatos de mana) — não têm doença de invocação (só
+   afeta criaturas), mas conferir se o custo de ativação extra (ex: Cabal
+   Coffers) e restrições de cor estão implementados corretamente, não só um
+   "+1 mana" genérico.
+4. **Lands/efeitos de mana fixing** — terrenos ou permanentes que mudam o tipo
+   de mana disponível (ex: Yavimaya Cradle of Growth virando todo terreno em
+   Floresta, Cavern of Souls/Secluded Courtyard/Haven condicionados a tipo de
+   criatura — ver regra #6 do `user-standing-rules.md`) precisam entrar na
+   contagem real de fontes por cor, não só "incolor" por padrão.
+5. **Motores de draw** ("Whenever you cast/draw/creature enters... draw a
+   card") — cada um precisa de um gatilho real, disparado no evento certo
+   (cast vs. ETB são momentos diferentes; a maioria dos simuladores atuais
+   trata os dois como intercambiáveis, o que é aceitável só se documentado).
+6. **Motores de ramp** — incluindo os que buscam terreno específico (básica
+   vs. Floresta vs. qualquer terreno — conferir contra o oracle_text exato,
+   não assumir "qualquer terreno da lib" quando a carta diz "basic land" ou
+   nomeia um tipo).
+7. **Habilidades ativadas repetíveis** (token makers, sacrifice outlets,
+   descarte-por-valor como Ayula's Influence) — se a carta tem um custo
+   pagável mais de uma vez por turno/jogo, o simulador precisa decidir e
+   documentar uma heurística de quando a IA ativa (não pode ficar de fora só
+   porque "é ativada, não gatilho").
+8. **Combos entre peças que já estão na decklist** — depois do passo 0 por
+   carta individual, checar explicitamente se duas ou mais cartas já
+   implementadas se combinam (ex: sac outlet + payoff de morte + motor de
+   mana, ver o pacote Blood Artist/Zulaport do Edgar Markov) — um simulador
+   pode ter cada carta implementada isoladamente e ainda assim errar a
+   interação entre elas.
+
+**Prática obrigatória:** antes de declarar QUALQUER simulador (novo ou já
+existente, numa auditoria de revisão) completo, rodar essa checklist e citar
+explicitamente, por categoria, quantas cartas da decklist se qualificam e se
+cada uma tem implementação real — não só reportar "achei um bug, corrigi".
+Se uma categoria não se aplica a um deck (ex: deck sem nenhuma carta de
+landfall), documentar isso também ("0 cartas de landfall na lista, categoria
+N/A"), pra deixar claro que a categoria foi checada e não só ignorada.
+
+---
+
 <!-- Adicionar novas entradas abaixo conforme surgirem cartas com efeitos
      estruturais que exigem implementação explícita (não só tag) em qualquer
      simulador que as inclua. -->
