@@ -126,6 +126,119 @@ era falsa — substituída por uma nota explícita desta correção).
 
 ---
 
+## Correção #2 — checklist ampliado (13 categorias: layout real de multi-face, planeswalker loyalty, Classes/Sagas) + varredura de tags mortas — 2026-08-28
+
+**Gatilho (usuário):** continuação de "Sim por favor" (par Maralen + Nekusar).
+Checklist de 13 categorias aplicado do zero.
+
+**Categorias 11/12/13:** confirmado via `lista.md` e grep — 0 cartas de
+dupla face, 0 planeswalkers, 0 Classes/Sagas nesta decklist. N/A,
+documentado.
+
+**Varredura de tags mortas em CARD_DB** (mesma técnica que achou o gap do
+Growing Rites of Itlimoc na Maralen — cruzar toda tag registrada contra
+onde ela é lida no resto do arquivo) achou **6 gaps reais adicionais**,
+além dos 11 já corrigidos na Correção #1:
+
+- **Spark Double** (tag `copy`, 100% inerte): oráculo real *"You may have
+  this creature enter as a copy of a creature or planeswalker you
+  control, except it isn't legendary"* — evita a legend rule ao copiar o
+  próprio Nekusar. Maior gap desta rodada: copiar um payoff de
+  dano-por-compra empilha o motor central inteiro. Implementado
+  `resolve_spark_double_target()` (prioriza Nekusar > Sheoldred >
+  Bowmasters > Razorkin > Scrawling Crawler) + refatoração de
+  `damage_per_opponent_draw()`/`symmetric_extra_draws_per_player()` pra
+  contar cópias (`_copies_of()`/`_commander_copies()`) em vez de só
+  checar presença — decklist é singleton, então isso nunca mudava nada
+  antes do Spark Double existir.
+- **Deflecting Swat** (tag `free_with_commander`, nunca lida): oráculo
+  real *"If you control a commander, you may cast this spell without
+  paying its mana cost."* Pagava o custo cheio ({3}) igual qualquer outra
+  "interaction" genérica. Corrigido em `can_cast()`/`cast_card()`.
+- **Undercity Sewers** (tag mal-rotulada `etb_tapped_filter`, nunca
+  lida): oráculo real *"This land enters tapped. When this land enters,
+  surveil 1."* Nem o enters-tapped nem o surveil eram modelados — nova
+  infraestrutura `tapped_lands_this_turn` (mesmo padrão já usado nos
+  outros simuladores desta sessão) + `do_surveil_1()` (heurística
+  documentada: manda terreno do topo pro cemitério se já há mana
+  suficiente em campo, alimentando Underworld Breach).
+- **Cascade Bluffs**: a mesma tag `etb_tapped_filter` estava nela também,
+  mas o oráculo real dela **não** entra tapped — mislabel puro (tag
+  nunca lida de qualquer forma, então nunca mudou o comportamento, só
+  corrigido o rótulo pra `set()`).
+- **Flashback** (o card, tag genérica `interaction`, nunca despachada
+  além de consumir mana): oráculo real *"Target instant or sorcery card
+  in your graveyard gains flashback until end of turn. The flashback
+  cost is equal to its mana cost."* Distinto da palavra-chave que Past in
+  Flames concede — os dois "Flashback" coexistem nesta decklist.
+  Reaproveitado `work_breach_or_flames_recast()` com novo parâmetro
+  `max_iterations=1` (é um enabler de um tiro só, não um motor
+  repetível).
+- **Orcish Bowmasters** (achado ao reverificar oráculo de todos os
+  payoffs, não uma tag morta): real é *"...whenever an opponent draws a
+  card EXCEPT THE FIRST ONE they draw in each of their draw steps..."* —
+  a versão anterior contava a compra normal do draw step também,
+  **superestimando** o dano dele. Corrigido: `damage_per_opponent_draw()`
+  ganhou parâmetro `count_bowmasters`, e `draw_step()` separa a compra
+  "base" (exclui Bowmasters) das compras "extra" via Nekusar/Spiteful
+  Visions (contam normalmente — não são "a primeira").
+
+**Achado extra, não vindo de tag morta — reverificação de oráculo real de
+todos os payoffs simétricos:** **Spiteful Visions** (*"Whenever A PLAYER
+draws a card..."*) e **Phyrexian Tyranny** (*"Whenever A PLAYER draws a
+card, that player loses 2 life unless they pay {2}"*) dizem **"a
+player"**, não "an opponent" como Nekusar/Underworld Dreams/Razorkin
+Needlehead/Scrawling Crawler — ou seja, **também me acertam quando EU
+compro**. Isso nunca era rastreado, apesar do deck comprar em volume
+extremo (até 7+ cartas por wheel, ~26 cartas extra/partida em média).
+Implementado `self_damage_per_draw()`, aplicado dentro de `draw_cards()`
+(único ponto de entrada de toda compra minha no arquivo, cobre todos os
+motores automaticamente). Premissa documentada: não pago o {2} do
+Phyrexian Tyranny pra evitar (pagar {2} POR CARTA durante um wheel de 7
+compras seria 14 mana, inviável na prática — mesma decisão já assumida
+pro lado do oponente).
+
+**Resultado (n=2000, seed_base=12345, antes → depois):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg dano/vida proxy total | 442,94 | **461,81** |
+| Avg vida ganha (Sheoldred) | 11,09 | **11,52** |
+| Avg cartas compradas extra | 25,86 | **26,09** |
+| Avg recasts via Breach/Flames | 1,24 | **1,44** |
+| Avg storm count máximo | 7,64 | **7,91** |
+| Avg mill proxy total | 111,34 | **123,84** |
+| Avg mão final | 4,71 | **4,70** |
+| Spark Double copiou algo | N/A (inerte) | **9,8%** dos jogos, alvo mais comum: Nekusar |
+| Avg recasts via Flashback (card) | N/A (inerte) | **0,27** |
+| Avg mills via surveil (Undercity Sewers) | N/A (inerte) | **0,03** |
+| **Avg autodano (Spiteful Visions+Tyranny nas MINHAS compras)** | **0 (nunca rastreado)** | **95,34** |
+| **Avg vida final** | **não reportado** | **-55,14** |
+| **Partidas em que os PRÓPRIOS payoffs me derrubam a 0 ou menos** | **não reportado** | **11,4%** |
+
+O achado mais importante desta rodada não é um número que sobe — é um
+número que **nunca existia**: autodano médio de 95,34 por partida, vida
+final média **negativa** (-55,14), e 11,4% das partidas em que os
+próprios payoffs simétricos (Spiteful Visions + Phyrexian Tyranny)
+matariam o piloto antes de qualquer coisa que os oponentes façam. Isso é
+consistente com sabedoria real de deckbuilding do arquétipo (pilotos de
+Nekusar competitivo costumam evitar rodar as duas juntas por esse motivo
+exato), mas o simulador nunca tinha essa informação disponível pra
+reportar — `state.life` existia desde a Simulação #1 mas nunca era
+decrementado por essas duas cartas.
+
+**Robustez:** sweep de 20.000 jogos (seeds 920000–939999, timeout 2s/jogo)
+— 0 erros, 0 timeouts.
+
+Bloco "Métricas básicas (checklist obrigatório)" (RAMP/DRAW/INTERACTION/
+RECURSION/FINISHER-LETHALITY) adicionado ao `run_batch()`, que faltava
+nesta decklist.
+
+`lista.md` não mudou. `nekusar_v1_runs.jsonl` sobrescrito na próxima
+execução de `__main__`.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

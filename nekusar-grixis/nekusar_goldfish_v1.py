@@ -114,7 +114,11 @@ for n in FETCH_NAMES:
     add(n, 0, "land", {"fetch"})
 add("Blood Crypt", 0, "land", set())
 add("Badlands", 0, "land", set())
-add("Cascade Bluffs", 0, "land", {"etb_tapped_filter"})
+# Cascade Bluffs: real oraculo NAO entra tapped ("{T}: Add {C}. {1},{T}: Add
+# {U/R}{U/R}.") - achado real 2026-08-28 (auditoria de checklist): tag
+# "etb_tapped_filter" era um mislabel (nunca lida em lugar nenhum de
+# qualquer forma, mas o nome sugeria um efeito que a carta real nao tem).
+add("Cascade Bluffs", 0, "land", set())
 add("Cephalid Coliseum", 0, "land", {"threshold_wheel"})
 add("City of Brass", 0, "land", set())
 add("Command Tower", 0, "land", set())
@@ -127,7 +131,11 @@ add("Mistrise Village", 0, "land", set())
 add("Otawara, Soaring City", 0, "land", set())
 add("Steam Vents", 0, "land", set())
 add("Underground Sea", 0, "land", set())
-add("Undercity Sewers", 0, "land", {"etb_tapped_filter"})
+# Undercity Sewers: real oraculo *"This land enters tapped. When this land
+# enters, surveil 1."* - achado real 2026-08-28 (auditoria de checklist):
+# tinha uma tag ("etb_tapped_filter") mal-rotulada e nunca lida - nem o
+# "enters tapped" nem o surveil eram modelados.
+add("Undercity Sewers", 0, "land", {"etb_tapped", "surveil_on_etb"})
 add("Volcanic Island", 0, "land", set())
 add("Watery Grave", 0, "land", set())
 add("Xander's Lounge", 0, "land", set())
@@ -245,6 +253,8 @@ class GameState:
     underworld_breach_active: bool = False
     the_one_ring_burden: int = 0
     life: int = 40
+    tapped_lands_this_turn: set = field(default_factory=set)
+    spark_double_copy_target: Optional[str] = None
 
     commander_in_play: bool = False
     commander_cast_count: int = 0
@@ -272,6 +282,30 @@ class GameState:
     puzzle_box_events_total: int = 0
     cephalid_coliseum_used: bool = False
     zombie_tokens_total: int = 0
+    self_damage_total: int = 0
+    flashback_card_recasts_total: int = 0
+    surveil_mills_total: int = 0
+    rituals_cast_total: int = 0
+    interaction_spells_cast_total: int = 0
+
+
+def _copies_of(state: GameState, name: str) -> int:
+    """Conta quantas 'copias' de uma criatura-payoff estao valendo em campo
+    - normalmente 0 ou 1 (decklist singleton de Commander), mas pode virar
+    2 se Spark Double copiou essa criatura (achado real 2026-08-28: Spark
+    Double estava 100% inerte, tag "copy" nunca despachada - copiar um dos
+    proprios payoffs de dano-por-compra e' o efeito de maior valor
+    esperado do deck pra essa carta, ja que empilha o motor central)."""
+    base = 1 if name in state.battlefield else 0
+    copy = 1 if state.spark_double_copy_target == name else 0
+    return base + copy
+
+
+def _commander_copies(state: GameState) -> int:
+    n = 1 if state.commander_in_play else 0
+    if state.spark_double_copy_target == COMMANDER:
+        n += 1
+    return n
 
 
 def draw_cards(state: GameState, n: int):
@@ -281,6 +315,29 @@ def draw_cards(state: GameState, n: int):
             state.cards_drawn_extra += 1
         else:
             state.library_emptied = True
+    dmg = self_damage_per_draw(state) * n
+    if dmg:
+        state.life -= dmg
+        state.self_damage_total += dmg
+
+
+def self_damage_per_draw(state: GameState) -> int:
+    """Achado real 2026-08-28 (auditoria de checklist categoria 9): Spiteful
+    Visions ("Whenever A PLAYER draws a card...") e Phyrexian Tyranny
+    ("Whenever A PLAYER draws a card, that player loses 2 life unless they
+    pay {2}") dizem "a player", NAO "an opponent" como Nekusar/Underworld
+    Dreams/Razorkin Needlehead/Scrawling Crawler - entao tambem me acertam
+    quando EU compro. Nunca era rastreado, apesar do deck comprar em volume
+    extremo (ate 7+ cartas por wheel). Premissa documentada pro Phyrexian
+    Tyranny: nao pago o {2} pra evitar (mesma decisao ja assumida pro lado
+    do oponente - pagar {2} POR CARTA durante um wheel de 7 compras seria
+    14 mana, inviavel na pratica)."""
+    total = 0
+    if "Spiteful Visions" in state.battlefield:
+        total += 1
+    if "Phyrexian Tyranny" in state.battlefield:
+        total += 2
+    return total
 
 
 def proxy_drain(state: GameState, n: int):
@@ -293,34 +350,34 @@ def proxy_drain(state: GameState, n: int):
 # Motor central — payoffs de dano por compra + wheels
 # ---------------------------------------------------------------------------
 
-def damage_per_opponent_draw(state: GameState) -> int:
+def damage_per_opponent_draw(state: GameState, count_bowmasters: bool = True) -> int:
     """Soma quanto dano/perda-de-vida CADA compra de UM oponente causa,
-    somando todos os payoffs ativos (auditoria secao 5.1)."""
+    somando todos os payoffs ativos (auditoria secao 5.1). `count_bowmasters`
+    existe porque o oraculo real de Orcish Bowmasters e' "...whenever an
+    opponent draws a card EXCEPT THE FIRST ONE they draw in each of their
+    draw steps..." (achado real 2026-08-28 - a versao anterior contava
+    TODA compra, inclusive a normal do draw step, superestimando; so'
+    `draw_step()` precisa excluir a compra base - wheels/ativadas fora do
+    draw step disparam Bowmasters normalmente, contam com o default True)."""
     total = 0
-    if state.commander_in_play:
-        total += 1
-    if "Orcish Bowmasters" in state.battlefield:
-        total += 1
-    if "Sheoldred, the Apocalypse" in state.battlefield:
-        total += 2
+    total += _commander_copies(state)
+    if count_bowmasters:
+        total += _copies_of(state, "Orcish Bowmasters")
+    total += 2 * _copies_of(state, "Sheoldred, the Apocalypse")
     if "Underworld Dreams" in state.battlefield:
         total += 1
     if "Spiteful Visions" in state.battlefield:
         total += 1
     if "Phyrexian Tyranny" in state.battlefield:
         total += 2  # premissa: oponente nao paga o {2}, documentado
-    if "Razorkin Needlehead" in state.battlefield:
-        total += 1
-    if "Scrawling Crawler" in state.battlefield:
-        total += 1
+    total += _copies_of(state, "Razorkin Needlehead")
+    total += _copies_of(state, "Scrawling Crawler")
     return total
 
 
 def symmetric_extra_draws_per_player(state: GameState) -> int:
     """Efeitos 'at the beginning of each player's draw step, draws +1'."""
-    n = 0
-    if state.commander_in_play:
-        n += 1
+    n = _commander_copies(state)
     if "Spiteful Visions" in state.battlefield:
         n += 1
     return n
@@ -386,13 +443,20 @@ def wheel_event(state: GameState, my_draws: int, opp_draws_each: int, source: st
 def draw_step(state: GameState):
     extra = symmetric_extra_draws_per_player(state)
     my_draws = 1 + extra
-    draw_cards(state, my_draws)
-    if "Sheoldred, the Apocalypse" in state.battlefield:
-        state.life += 2 * my_draws
-        state.proxy_lifegain_total += 2 * my_draws
-    # dano proxy pelas compras simetricas dos OPONENTES nesse mesmo draw step
-    dpd = damage_per_opponent_draw(state)
-    proxy_drain(state, dpd * my_draws * NUM_OPPONENTS)
+    draw_cards(state, my_draws)  # self_damage_per_draw ja aplicado dentro de draw_cards()
+    sheoldred_copies = _copies_of(state, "Sheoldred, the Apocalypse")
+    if sheoldred_copies:
+        state.life += 2 * my_draws * sheoldred_copies
+        state.proxy_lifegain_total += 2 * my_draws * sheoldred_copies
+    # Dano proxy pelas compras simetricas dos OPONENTES nesse mesmo draw step.
+    # A compra "base" (a 1a de cada draw step) NAO conta pro Bowmasters
+    # (exclusao real do oraculo dele); as extras (Nekusar/Spiteful Visions)
+    # nao sao "a primeira", entao contam normalmente.
+    dpd_baseline = damage_per_opponent_draw(state, count_bowmasters=False)
+    dpd_extra = damage_per_opponent_draw(state, count_bowmasters=True)
+    proxy_drain(state, dpd_baseline * 1 * NUM_OPPONENTS)
+    if extra:
+        proxy_drain(state, dpd_extra * extra * NUM_OPPONENTS)
 
     # Faerie Mastermind (metade passiva): "Whenever an opponent draws
     # their second card each turn, you draw a card." Achado real
@@ -439,7 +503,7 @@ def rocks_mana(state: GameState) -> int:
 
 
 def total_mana(state: GameState) -> int:
-    lands = sum(1 for n in state.battlefield if n in LAND_NAMES)
+    lands = sum(1 for n in state.battlefield if n in LAND_NAMES) - len(state.tapped_lands_this_turn)
     return lands + rocks_mana(state) + state.bonus_mana_pool
 
 
@@ -448,6 +512,12 @@ def remaining_mana(state: GameState) -> int:
 
 
 def can_cast(state: GameState, name: str) -> bool:
+    # Deflecting Swat: "If you control a commander, you may cast this spell
+    # without paying its mana cost." Achado real 2026-08-28 (auditoria de
+    # checklist): tagueada "free_with_commander", nunca despachada - pagava
+    # o custo cheio ({3}) igual a qualquer outra "interaction" generica.
+    if "free_with_commander" in CARD_DB[name].tags and state.commander_in_play:
+        return True
     return remaining_mana(state) >= CARD_DB[name].mv
 
 
@@ -455,17 +525,61 @@ def spend_mana(state: GameState, n: int):
     state.mana_spent_this_turn += n
 
 
+def do_surveil_1(state: GameState):
+    """Undercity Sewers: "When this land enters, surveil 1." Heuristica
+    documentada (nao ha decisao "certa" universal sem saber o resto da
+    mao): se o topo e' um terreno E ja ha mana suficiente em campo (4+),
+    manda pro cemiterio (alimenta o motor central de Underworld Breach/
+    Past in Flames, que reciclam instant/sorcery do cemiterio); senao
+    mantem no topo (guarda pra compra normal)."""
+    if not state.library:
+        return
+    top = state.library[0]
+    if top in LAND_NAMES and total_mana(state) >= 4:
+        state.library.pop(0)
+        state.graveyard.append(top)
+        state.surveil_mills_total += 1
+
+
 # ---------------------------------------------------------------------------
 # Resolucao de gatilhos ETB / cast
 # ---------------------------------------------------------------------------
 
+def resolve_spark_double_target(state: GameState) -> Optional[str]:
+    """Spark Double: "You may have this creature enter as a copy of a
+    creature or planeswalker you control, except it isn't legendary" (evita
+    a legend rule ao copiar o proprio Nekusar). Sem planeswalkers na lista
+    (categoria 12 - N/A, confirmado). Prioriza a criatura em campo que mais
+    empilha o motor central de dano-por-compra: Nekusar (dano + MAIS UMA
+    compra extra simetrica por turno pra todo mundo, efeito composto) >
+    Sheoldred (dano dobrado + ganho de vida dobrado) > Bowmasters/Razorkin/
+    Scrawling Crawler (todos +1 flat)."""
+    priority = [COMMANDER, "Sheoldred, the Apocalypse", "Orcish Bowmasters",
+                "Razorkin Needlehead", "Scrawling Crawler"]
+    for p in priority:
+        if p == COMMANDER:
+            if state.commander_in_play:
+                return p
+        elif p in state.battlefield:
+            return p
+    # fallback: copia qualquer criatura em campo (sem valor numerico extra
+    # modelado - so' um corpo, documentado, nao inventado).
+    creatures = [n for n in state.battlefield if is_creature_card(n) and n != "Spark Double"]
+    return creatures[0] if creatures else None
+
+
 def resolve_etb(state: GameState, name: str):
     tags = CARD_DB[name].tags
     if name == "Orcish Bowmasters":
-        dpd_without_self = damage_per_opponent_draw(state) - 1  # ela mesma ja esta em campo aqui
         proxy_drain(state, 1 * NUM_OPPONENTS)  # gatilho de ETB dela propria (independente de compra)
     if name == "The One Ring":
         state.life += 0  # protecao total, sem efeito numerico modelado (sem oponente real atacando)
+    if name == "Spark Double":
+        target = resolve_spark_double_target(state)
+        state.spark_double_copy_target = target
+        if target == "Orcish Bowmasters":
+            # a copia TAMBEM dispara o "when this creature enters" de Bowmasters.
+            proxy_drain(state, 1 * NUM_OPPONENTS)
     if "ritual" in tags:
         pass  # tratado em resolve_instant
 
@@ -473,6 +587,7 @@ def resolve_etb(state: GameState, name: str):
 def resolve_instant_sorcery(state: GameState, name: str):
     tags = CARD_DB[name].tags
     if "ritual" in tags:
+        state.rituals_cast_total += 1
         if name == "Dark Ritual":
             state.bonus_mana_pool += 3
         elif name == "Cabal Ritual":
@@ -508,6 +623,22 @@ def resolve_instant_sorcery(state: GameState, name: str):
                 state.life -= CARD_DB[best].mv
     elif name == "Past in Flames":
         work_breach_or_flames_recast(state, mode="flashback")
+    elif name == "Flashback":
+        # Oraculo real: "Target instant or sorcery card in your graveyard
+        # gains flashback until end of turn. The flashback cost is equal to
+        # its mana cost." Achado real 2026-08-28: tagueada generica
+        # "interaction", so' conjurada e descartada sem efeito (o card
+        # NAMED "Flashback" e' distinto da palavra-chave que Past in
+        # Flames concede - os dois existem nesta mesma decklist).
+        before = state.breach_recasts_total
+        work_breach_or_flames_recast(state, mode="flashback", max_iterations=1)
+        state.flashback_card_recasts_total += state.breach_recasts_total - before
+    elif "interaction" in tags:
+        # Contramagicas/remocao/protecao: conjuradas quando ha mana sobrando
+        # (documentado no docstring), sem efeito de combate real modelado
+        # por ser goldfish solo sem oponente real pra mirar - so contadas
+        # aqui pra metrica INTERACTION do checklist (categoria 10).
+        state.interaction_spells_cast_total += 1
 
 
 def do_tutor(state: GameState, name: str):
@@ -530,14 +661,20 @@ def do_tutor(state: GameState, name: str):
     state.tutors_used_total += 1
 
 
-def work_breach_or_flames_recast(state: GameState, mode: str):
+def work_breach_or_flames_recast(state: GameState, mode: str, max_iterations: int = 40):
     """Underworld Breach: escape = mana cost + exilar 3 outras do GY.
     Past in Flames (via flashback / resolve_instant_sorcery chamando isso):
     flashback = mana cost, sem exilar. Ambos so recastam INSTANT/SORCERY
     do cemiterio (wheels/rituais), respeitando o custo real — o loop
-    termina sozinho quando faltar mana ou cartas suficientes no GY."""
+    termina sozinho quando faltar mana ou cartas suficientes no GY.
+    `max_iterations=1` reaproveitado pro card "Flashback" (achado real
+    2026-08-28: enabler de UM tiro so, "target instant/sorcery in your
+    graveyard gains flashback... cost = mana cost" - nao e' um motor
+    repetivel como Breach/Past in Flames, mesma mecanica de resolucao
+    (recasta do cemiterio, exila ao resolver - CR 702.32a), so' que
+    limitado a 1 carta)."""
     loop_iterations = 0
-    while loop_iterations < 40:  # teto defensivo (nunca deveria ser atingido de verdade)
+    while loop_iterations < max_iterations:  # teto defensivo (nunca deveria ser atingido de verdade)
         loop_iterations += 1
         castable_gy = [c for c in state.graveyard
                        if CARD_DB[c].ctype in ("instant", "sorcery")
@@ -589,6 +726,8 @@ def cast_card(state: GameState, name: str, from_hand: bool = True):
     card = CARD_DB[name]
     if name == COMMANDER:
         spend_mana(state, card.mv + 2 * state.commander_cast_count)
+    elif "free_with_commander" in card.tags and state.commander_in_play:
+        pass  # Deflecting Swat gratis com comandante em campo (achado real 2026-08-28)
     else:
         spend_mana(state, card.mv)
     if from_hand and name != COMMANDER:
@@ -600,6 +739,10 @@ def cast_card(state: GameState, name: str, from_hand: bool = True):
         state.battlefield.append(name)
         if "fetch" in card.tags:
             state.life -= 1
+        if "etb_tapped" in card.tags:
+            state.tapped_lands_this_turn.add(name)
+        if "surveil_on_etb" in card.tags:
+            do_surveil_1(state)
         return
 
     if card.ctype in ("instant", "sorcery"):
@@ -851,6 +994,7 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.mana_spent_this_turn = 0
     state.bonus_mana_pool = 0
     state.spells_cast_this_turn = 0
+    state.tapped_lands_this_turn = set()
 
     upkeep_step(state)
     if not (is_first_turn and on_play):
@@ -902,6 +1046,39 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg perda de vida proxy via discard payoffs (Waste Not/Liliana's Caress, agora despachados): {avg([s.discard_payoff_life_loss_total for s in states]):.2f}")
     print(f"Avg eventos de Teferi's Puzzle Box (agora despachado): {avg([s.puzzle_box_events_total for s in states]):.2f}")
     print(f"Avg mao final: {avg([len(s.hand) for s in states]):.2f}")
+
+    spark_hits = sum(1 for s in states if s.spark_double_copy_target is not None)
+    print(f"Spark Double copiou algo (agora despachado): {100*spark_hits/n:.1f}% dos jogos"
+          + (f" | alvos: {statistics.mode([s.spark_double_copy_target for s in states if s.spark_double_copy_target])}" if spark_hits else ""))
+    print(f"Avg recasts via Flashback (o card, agora despachado): {avg([s.flashback_card_recasts_total for s in states]):.2f}")
+    print(f"Avg mills via surveil (Undercity Sewers, agora despachado): {avg([s.surveil_mills_total for s in states]):.2f}")
+    print(f"Avg autodano (Spiteful Visions + Phyrexian Tyranny nas MINHAS proprias compras, agora rastreado): {avg([s.self_damage_total for s in states]):.2f}")
+    print(f"Avg vida final: {avg([s.life for s in states]):.2f}")
+    own_payoffs_ko = sum(1 for s in states if s.life <= 0)
+    print(f"Partidas em que os PROPRIOS payoffs simetricos derrubam minha vida a 0 ou menos: {100*own_payoffs_ko/n:.1f}% "
+          f"(risco real de Spiteful Visions/Phyrexian Tyranny simetricos num deck que compra em volume extremo)")
+
+    # --- Metricas basicas (checklist obrigatorio, categoria 10) --------------
+    print("--- Metricas basicas (checklist obrigatorio) ---")
+    rocks_in_play = [sum(1 for c in s.battlefield if CARD_DB[c].tags & {"rock1", "rock2"}) for s in states]
+    print(f"RAMP: avg mana rocks em campo ao fim da partida (Sol Ring/Arcane Signet/Talismas/Mox Opal): "
+          f"{avg(rocks_in_play):.2f} | avg rituais conjurados (Dark Ritual/Cabal Ritual): "
+          f"{avg([s.rituals_cast_total for s in states]):.2f}")
+    print(f"DRAW: avg cartas compradas extras totais (todos os motores - wheels, Sensei's Top, Faerie "
+          f"Mastermind, Resonating Lute, terrenos de wheel, Waste Not): {avg([s.cards_drawn_extra for s in states]):.2f}")
+    print(f"INTERACTION: avg spells de interacao/contramagica conjurados quando ha mana sobrando (Counterspell, "
+          f"Mana Drain, Force of Will, Swan Song, Deflecting Swat -agora gratis com comandante, achado real "
+          f"2026-08-28-, etc.) - sem efeito de combate real por ser goldfish solo sem oponente real pra mirar: "
+          f"{avg([s.interaction_spells_cast_total for s in states]):.2f}")
+    print(f"RECURSION: avg criaturas reanimadas do cemiterio pro campo (Animate Dead/Reanimate): "
+          f"{avg([s.reanimator_targets_total for s in states]):.2f}. Recasts de instant/sorcery via Underworld "
+          f"Breach/Past in Flames/Flashback NAO contam aqui - reciclam do cemiterio pra STACK, nao pro campo, "
+          f"categoria diferente (contados em 'Avg recasts' acima). Tutores (Demonic Tutor etc.) buscam da "
+          f"biblioteca, tambem categoria diferente.")
+    print(f"FINISHER/LETHALITY: sem dano de combate real medido (deck nao ataca) - o 'finisher' real e' o dano "
+          f"proxy agregado por gatilho-de-compra ({avg([s.proxy_damage_total for s in states]):.2f} medio) mais "
+          f"o risco simetrico de autodano ({avg([s.self_damage_total for s in states]):.2f} medio, "
+          f"{100*own_payoffs_ko/n:.1f}% das partidas com risco de vida propria a 0 ou menos)")
     return states
 
 
