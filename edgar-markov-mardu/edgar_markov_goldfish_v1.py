@@ -542,6 +542,17 @@ DEATH_PAYOFFS = set(DEATH_PAYOFF_FORMULAS.keys())
 # achado de "tag existe, dispatch nao" da Correcao #1.
 TOKEN_DOUBLER_SOURCES = ("Anointed Procession", "Mondrak, Glory Dominus", "Elspeth, Storm Slayer")
 
+# Achado real 2026-08-28 (usuario: "Preciso que os counters de lealdade e
+# ativacoes de planeswalker sejam sempre contabilizados... para tudo,
+# sempre tambem!" - regra permanente categoria 12,
+# references/goldfish-sim-card-rules.md). Sorin/Elspeth estavam deferidas
+# desde a Correcao #1 por essa exata razao (loyalty abilities fora de
+# escopo) - revisitado aqui. Nenhum dobrador real de COUNTER existe nesse
+# deck (Anointed Procession/Mondrak/Elspeth so dobram TOKEN, oraculo real
+# confirmado - ver TOKEN_DOUBLER_SOURCES acima), entao a lealdade nao
+# precisa de logica de dobro como no Prismatic Bridge.
+PLANESWALKER_STARTING_LOYALTY = {"Sorin, Imperious Bloodlord": 4, "Elspeth, Storm Slayer": 5}
+
 # Achado real 2026-08-27 (auditoria do resto do deck): removal/protecao
 # sem alvo real neste goldfish solo (mesma convencao ja aplicada no
 # Hei Bai/Ur-Dragon) NUNCA era excluida do loop generico de conjuracao
@@ -662,6 +673,14 @@ class GameState:
     # mao, entao nunca mais e' jogavel como land depois).
     agadeems_awakening_cast: bool = False
     agadeems_awakening_reanimated: int = 0
+
+    # Lealdade real de Sorin/Elspeth (regra nova, ver PLANESWALKER_STARTING_LOYALTY).
+    loyalty: Dict[str, int] = field(default_factory=dict)
+    pw_activations_total: int = 0
+    pw_tokens_created_total: int = 0
+    pw_counters_distributed_total: int = 0
+    pw_free_creature_total: int = 0
+    pw_deaths_total: int = 0
     sanctum_seeker_drains: int = 0
     vito_fanatic_stage_this_turn: int = 0
     vito_fanatic_demons_created: int = 0
@@ -1416,7 +1435,81 @@ def _apply_death_payoffs(state: GameState, log: List[Dict], source: str):
         _log_doubling(state, times)
         log.append({"trigger": "death_payoff", "card": payoff, "source": source, "times": times, "turn": state.turn})
 
+def add_loyalty(state: GameState, pw: str, amount: int, log: List[Dict], reason: str = ""):
+    if pw not in state.loyalty:
+        return
+    state.loyalty[pw] += amount
+    log.append({"trigger": "loyalty_change", "pw": pw, "amount": amount,
+                "new_loyalty": state.loyalty[pw], "reason": reason, "turn": state.turn})
+    if state.loyalty[pw] <= 0:
+        if pw in state.battlefield:
+            state.battlefield.remove(pw)
+        state.graveyard.append(pw)
+        del state.loyalty[pw]
+        state.pw_deaths_total += 1
+        log.append({"trigger": "planeswalker_death", "pw": pw, "turn": state.turn})
+
+def resolve_planeswalker(state: GameState, pw: str, log: List[Dict]):
+    loy = state.loyalty[pw]
+    state.pw_activations_total += 1
+
+    if pw == "Sorin, Imperious Bloodlord":
+        # 2 habilidades de "+1" reais (regra: so uma ativacao/turno no
+        # total, nao uma de cada) - prioriza sacrificar um token da
+        # Eminence (sempre disponivel na maioria dos jogos) por 3 dano +
+        # 3 vida (drena via lose_life_opponent, entao herda o dobro do
+        # Bloodletter of Aclazotz se estiver em campo - mesmo bug ja
+        # corrigido na Correcao #14). Senao, -3 poe um Vampiro da mao em
+        # campo de graca se houver um. Senao, +1 poe contador num Vampiro
+        # (sem alvo real de combate pro deathtouch/lifelink, so o
+        # contador importa).
+        if state.tokens:
+            popped = state.tokens.pop()
+            state.battlefield.remove(popped)
+            state.creatures_died_this_turn += 1
+            add_loyalty(state, pw, 1, log, reason="sorin_plus1_sac")
+            lose_life_opponent(state, 3, log, source="sorin_sac_vampire")
+            gain_life(state, 3, log, source="sorin_sac_vampire")
+        elif loy >= 3:
+            vampire_creatures_in_hand = [c for c in state.hand if is_vampire(c) and is_creature(c)]
+            if vampire_creatures_in_hand:
+                target = vampire_creatures_in_hand[0]
+                add_loyalty(state, pw, -3, log, reason="sorin_minus3")
+                state.hand.remove(target)
+                state.battlefield.append(target)
+                apply_etb(state, target, log)
+                on_creature_enters(state, log, target)
+                state.pw_free_creature_total += 1
+                log.append({"trigger": "sorin_free_vampire", "card": target, "turn": state.turn})
+            else:
+                add_loyalty(state, pw, 1, log, reason="sorin_plus1_counter")
+        else:
+            add_loyalty(state, pw, 1, log, reason="sorin_plus1_counter")
+
+    elif pw == "Elspeth, Storm Slayer":
+        # +1 (token Soldier, sujeito ao proprio dobrador dela - Elspeth e'
+        # uma das TOKEN_DOUBLER_SOURCES) e' repetivel e sem risco -
+        # consistentemente melhor que o "0" (contador de uma vez so, sem
+        # combate pra valer) ou o "-3" (sem alvo real de oponente).
+        n = token_multiplier(state)
+        for _ in range(n):
+            state.tokens.append("Human Soldier Token")  # ja registrada (Bastion of Remembrance) - Soldier, NAO Vampire
+            state.battlefield.append("Human Soldier Token")
+        state.pw_tokens_created_total += n
+        on_creature_enters(state, log, "Human Soldier Token", count=n)
+        add_loyalty(state, pw, 1, log, reason="elspeth_plus1")
+        log.append({"trigger": "elspeth_soldier_tokens", "count": n, "turn": state.turn})
+
+def activate_planeswalkers(state: GameState, log: List[Dict]):
+    for pw in list(state.loyalty.keys()):
+        if pw not in state.battlefield:
+            continue
+        resolve_planeswalker(state, pw, log)
+
 def apply_etb(state: GameState, card: str, log: List[Dict]):
+    if card in PLANESWALKER_STARTING_LOYALTY:
+        state.loyalty[card] = PLANESWALKER_STARTING_LOYALTY[card]
+        log.append({"trigger": "planeswalker_enters", "pw": card, "loyalty": state.loyalty[card], "turn": state.turn})
     if card == "Champion of Dusk":
         vamps = sum(1 for c in state.battlefield if is_vampire(c))
         times = _times(state)
@@ -1928,6 +2021,7 @@ def main_phase(state: GameState, log: List[Dict]):
         on_creature_enters(state, log, COMMANDER)
         log.append({"action": "cast_commander", "turn": state.turn})
 
+    activate_planeswalkers(state, log)
     try_cabal_coffers(state, log)
     try_adanto(state, log)
     try_unlock_rooms(state, log)
@@ -2118,6 +2212,12 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "legion_landing_transformed": state.legion_landing_transformed,
         "agadeems_awakening_cast": state.agadeems_awakening_cast,
         "agadeems_awakening_reanimated": state.agadeems_awakening_reanimated,
+        "pw_activations_total": state.pw_activations_total,
+        "pw_tokens_created_total": state.pw_tokens_created_total,
+        "pw_free_creature_total": state.pw_free_creature_total,
+        "pw_deaths_total": state.pw_deaths_total,
+        "sorin_in_play": state.has("Sorin, Imperious Bloodlord"),
+        "elspeth_in_play": state.has("Elspeth, Storm Slayer"),
     }
 
 def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base=6000000):
@@ -2195,6 +2295,22 @@ def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base
         print(f"Agadeem's Awakening conjurada como Sorcery (em vez de land) em {100*aa_cast/n:.1f}% dos "
               f"jogos, avg criaturas reanimadas quando conjurada: "
               f"{sum(r['agadeems_awakening_reanimated'] for r in results)/max(aa_cast,1):.2f}")
+
+    # Achado real 2026-08-28 (usuario: "Preciso que os counters de lealdade
+    # e ativacoes de planeswalker sejam sempre contabilizados... para tudo,
+    # sempre tambem!") - Sorin/Elspeth estavam deferidas desde a Correcao
+    # #1 por essa razao, revisitado aqui.
+    sorin_in_play = sum(1 for r in results if r["sorin_in_play"])
+    elspeth_in_play = sum(1 for r in results if r["elspeth_in_play"])
+    if sorin_in_play or elspeth_in_play:
+        print()
+        print(f"--- Planeswalkers (lealdade + ativacoes reais, regra nova) ---")
+        print(f"Sorin, Imperious Bloodlord em campo em {100*sorin_in_play/n:.1f}% dos jogos")
+        print(f"Elspeth, Storm Slayer em campo em {100*elspeth_in_play/n:.1f}% dos jogos")
+        print(f"Avg ativacoes de habilidade de planeswalker por partida: {sum(r['pw_activations_total'] for r in results)/n:.2f}")
+        print(f"Avg tokens criados via Elspeth (+1, sujeito ao proprio dobrador dela): {sum(r['pw_tokens_created_total'] for r in results)/n:.2f}")
+        print(f"Avg Vampiros postos em campo de graca via Sorin (-3): {sum(r['pw_free_creature_total'] for r in results)/n:.2f}")
+        print(f"Avg mortes de planeswalker (lealdade a 0): {sum(r['pw_deaths_total'] for r in results)/n:.2f}")
     print()
     print(f"--- Combo Exquisite Blood/Bloodthirsty Conqueror + Vito, Thorn of the Dusk Rose ---")
     print(f"Partidas em que o combo montou E ligou: {100*len(combo_turns)/n:.1f}%")

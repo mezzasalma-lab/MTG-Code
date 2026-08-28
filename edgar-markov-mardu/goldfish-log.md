@@ -773,6 +773,61 @@ real e correto.
 
 ---
 
+## Correção #15 — lealdade e ativações reais de Sorin e Elspeth (regra nova, aplicada retroativamente)
+
+**Gatilho (usuário):** depois de eu confirmar (no Prismatic Bridge) que
+nenhuma habilidade de planeswalker era simulada em lugar nenhum do
+repositório — citação literal: *"Preciso que os counters de lealdade e
+ativações de planeswalker sejam sempre contabilizados, a base do
+Prismatic Bridge é essa! Adicione essa regra para tudo, sempre também!"*
+Regra nova (categoria 12, `goldfish-sim-card-rules.md`) explicitamente
+retroativa — Sorin, Imperious Bloodlord e Elspeth, Storm Slayer estavam
+deferidas desde a Correção #1 por essa exata razão ("loyalty abilities...
+nenhuma engine de 1 ativação por turno existe").
+
+**Implementado:** `state.loyalty` rastreia lealdade real (Sorin=4,
+Elspeth=5, Scryfall). `add_loyalty()` aplica mudanças e mata o planeswalker
+quando a lealdade chega a 0. Nenhum dobrador real de COUNTER existe neste
+deck (Anointed Procession/Mondrak/Elspeth só dobram TOKEN, oráculo
+confirmado), então a lógica é mais simples que a do Prismatic Bridge.
+
+- **Sorin, Imperious Bloodlord**: 2 habilidades "+1" reais — prioriza
+  sacrificar um token da Eminence (sempre disponível na maioria dos jogos)
+  por 3 dano + 3 vida, **roteado por `lose_life_opponent()`/`gain_life()`
+  de verdade** (herda o dobro do Bloodletter of Aclazotz se estiver em
+  campo, mesma correção da #14). Sem token disponível, usa -3 pra colocar
+  um Vampiro da mão em campo de graça se houver um.
+- **Elspeth, Storm Slayer**: sempre +1 (cria Human Soldier Token — token já
+  registrado, reaproveitado do Bastion of Remembrance — e sujeito ao
+  próprio dobrador dela, já que Elspeth é uma das `TOKEN_DOUBLER_SOURCES`).
+  **Achado ao implementar:** minha primeira versão usou "Vampire Token"
+  como placeholder pro Soldier token de Elspeth — errado, teria inflado a
+  contagem de Vampiros artificialmente (afeta Champion of Dusk, Sanctum
+  Seeker, Eminence). Corrigido antes de rodar qualquer batch.
+
+**Resultado (n=2000, seed_base=6000000, antes → depois):**
+
+| Métrica | Antes (Correção #14) | Depois (Correção #15) |
+|---|---|---|
+| Avg drain_total | 4,86 | 5,25 |
+| Dano agregado fora do combo | 5,94 | 6,37 |
+| Sorin em campo | 0% (sem efeito) | 13,0% dos jogos |
+| Elspeth em campo | 0% (sem efeito) | 5,9% dos jogos |
+| Vampiros grátis via Sorin -3 | — | avg 0,09/partida |
+| Tokens via Elspeth +1 | — | avg 0,16/partida |
+
+Impacto real — Sorin sozinho já move o `drain_total` de forma visível
+(0,39 de aumento médio), maior que o impacto da Correção #14 (Bloodletter)
+sozinha, confirmando que essas 2 cartas realmente estavam contribuindo
+zero valor antes.
+
+**Robustez:** sweep de 20.000 jogos (seeds 6000000–6019999, timeout
+2s/jogo) — 0 erros, 0 timeouts.
+
+`lista.md` não mudou.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
