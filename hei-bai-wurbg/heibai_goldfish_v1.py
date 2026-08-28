@@ -466,6 +466,10 @@ class GameState:
     proxy_life_gained_total: int = 0
     library_emptied: bool = False
     ramp_pieces_cast: int = 0
+    # Go-Shintai of Life's Origin / Hall of Heliod's Generosity - ativadas
+    # com {T}, uma vez por turno (ver comentario no dispatch abaixo).
+    life_origin_reanimates_total: int = 0
+    heliods_generosity_returns_total: int = 0
 
 
 def draw_cards(state: GameState, n: int):
@@ -1082,10 +1086,16 @@ def play_land(state: GameState):
     lands_in_hand = [n for n in state.hand if n in LAND_NAMES]
     while lands_in_hand and state.lands_played_this_turn < cap:
         choice = lands_in_hand.pop(0)
+        # Achado real 2026-08-28 (varredura exaustiva de oracle_text das 94
+        # cartas): Abandoned Air Temple ("This land enters tapped unless you
+        # control a basic land") nunca era checada - so Indatha/Ketria
+        # Triome (tapped incondicional) estavam em ETB_TAPPED_LANDS. Checa
+        # o battlefield ANTES desta land entrar (ela mesma nao e' basica).
+        controls_basic = any(n in BASIC_LAND_NAMES for n in state.battlefield)
         state.hand.remove(choice)
         state.battlefield.append(choice)
         state.lands_played_this_turn += 1
-        if choice in ETB_TAPPED_LANDS:
+        if choice in ETB_TAPPED_LANDS or (choice == "Abandoned Air Temple" and not controls_basic):
             state.tapped_lands_this_turn += 1
 
 
@@ -1130,6 +1140,60 @@ def do_hei_bai_activated(state: GameState):
         return
     spend_mana(state, 5)
     create_tokens(state, "Spirit Token", n)
+
+
+def do_life_origin_reanimate(state: GameState):
+    """Go-Shintai of Life's Origin: '{W}{U}{B}{R}{G}, {T}: Return target
+    enchantment card from your graveyard to the battlefield.' Achado real
+    2026-08-28 (varredura exaustiva de oracle_text das 94 cartas, pedido do
+    usuario apos confirmar que a Correcao #7 nao tinha sido exaustiva): 100%
+    ausente - so a ETB (criacao de token) estava implementada, essa segunda
+    habilidade (recursao de encantamento) nunca. Precisa nao ter doenca de
+    invocacao (e' uma criatura de verdade, CR 302.6) - reusa
+    state.creature_cast_turn, ja rastreado genericamente em
+    enter_battlefield() pra QUALQUER criatura. Reanima via enter_battlefield
+    (nao cast_card) - nao e' um cast de spell, entao NAO dispara o pacote
+    Enchantress (que reage a CONJURAR, nao a entrar), so os gatilhos de ETB
+    reais (Skybind, o proprio dispatch de Shrine se o alvo for uma)."""
+    name = "Go-Shintai of Life's Origin"
+    if name not in state.battlefield:
+        return
+    if state.creature_cast_turn.get(name, -1) >= state.turn:
+        return  # doenca de invocacao
+    if remaining_mana(state) < 5:
+        return
+    pool = [n for n in state.graveyard if is_enchantment_card(n)]
+    if not pool:
+        return
+    best = max(pool, key=lambda n: CARD_DB[n].mv)
+    state.graveyard.remove(best)
+    spend_mana(state, 5)
+    enter_battlefield(state, best, from_hand=False)
+    state.life_origin_reanimates_total += 1
+
+
+def do_hall_of_heliods_generosity(state: GameState):
+    """Hall of Heliod's Generosity: '{1}{W}, {T}: Put target enchantment
+    card from your graveyard on top of your library.' Achado real
+    2026-08-28 (varredura exaustiva): 100% ausente - so contava como
+    terreno generico fixo (+1 mana incondicional em total_mana()). Usa o
+    MESMO {T} da habilidade de mana propria dela ('{T}: Add C') - pra nao
+    contar a mana da land 2x no mesmo turno (ela nao pode tap duas vezes),
+    o custo efetivo cobrado aqui e' {1}{W} + 1 (a mana que ela deixaria de
+    produzir usando o {T} nesta ability em vez do tap normal), mesmo
+    padrao ja usado pro Phyrexian Tower no simulador do Edgar Markov."""
+    if "Hall of Heliod's Generosity" not in state.battlefield:
+        return
+    if remaining_mana(state) < 3:
+        return
+    pool = [n for n in state.graveyard if is_enchantment_card(n)]
+    if not pool:
+        return
+    best = max(pool, key=lambda n: CARD_DB[n].mv)
+    state.graveyard.remove(best)
+    state.library.insert(0, best)
+    spend_mana(state, 3)
+    state.heliods_generosity_returns_total += 1
 
 
 def do_deadeye_navigator(state: GameState):
@@ -1349,6 +1413,8 @@ def main_phase(state: GameState):
     do_sterling_grove_tutor(state)
     do_shrine_mainphase_triggers(state)
     do_hei_bai_activated(state)
+    do_life_origin_reanimate(state)
+    do_hall_of_heliods_generosity(state)
 
 
 def end_step(state: GameState):
@@ -1479,6 +1545,8 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg vida ganha proxy: {avg([s.proxy_life_gained_total for s in states]):.2f}")
     print(f"Avg spells de interacao conjurados (proxy): {avg([s.interaction_spells_cast_total for s in states]):.2f}")
     print(f"Avg destruicoes via Aura Shards (se presente): {avg([s.aura_shards_destroys_total for s in states]):.2f}")
+    print(f"Avg reanimacoes via Go-Shintai of Life's Origin (ativada): {avg([s.life_origin_reanimates_total for s in states]):.2f}")
+    print(f"Avg retornos via Hall of Heliod's Generosity (ativada): {avg([s.heliods_generosity_returns_total for s in states]):.2f}")
     print(f"Avg mao final: {avg([len(s.hand) for s in states]):.2f}")
     print()
 

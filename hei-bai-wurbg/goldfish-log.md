@@ -788,6 +788,57 @@ rodadas). `ramp_pieces_cast` novo: avg 1,29 por partida.
 
 ---
 
+## Correção #8 — varredura exaustiva das 94 cartas (usuário: "desde que vc tenha avaliado TUDO dos 2 decks anteriores")
+
+**Gatilho (usuário):** depois da Correção #7, o usuário pediu confirmação
+explícita de que a auditoria tinha sido exaustiva, não uma checagem pontual.
+Refeito: `oracle_text` de **todas as 94 cartas únicas** da lista extraído do
+`scryfall-cache/oracle-cache.json` e comparado linha a linha contra o código
+— toda linha de habilidade que NÃO começa com "Whenever"/"At the beginning"
+(ou seja, ativadas, estáticas e ações especiais) foi conferida uma a uma.
+
+**3 achados reais (100% ausentes em 7 rodadas de correção anteriores):**
+
+1. **Go-Shintai of Life's Origin** tem uma SEGUNDA habilidade além da ETB já
+   implementada: *"{W}{U}{B}{R}{G}, {T}: Return target enchantment card from
+   your graveyard to the battlefield."* Nunca despachada. Implementado
+   (`do_life_origin_reanimate`), respeitando doença de invocação (reusa
+   `state.creature_cast_turn`, já rastreado genericamente pra toda criatura).
+2. **Hall of Heliod's Generosity** — *"{1}{W}, {T}: Put target enchantment
+   card from your graveyard on top of your library."* Só contava como
+   terreno genérico fixo, essa segunda habilidade 100% ausente. Implementado
+   (`do_hall_of_heliods_generosity`) com custo efetivo {1}{W}+1 (a mana que a
+   própria land deixaria de produzir usando o {T} nesta ability em vez do
+   tap normal pra mana) — mesmo padrão já usado pro Phyrexian Tower no
+   simulador do Edgar Markov, pra não contar a mana da land 2x no turno.
+3. **Abandoned Air Temple** — *"This land enters tapped unless you control a
+   basic land."* Nunca era checado (só Indatha/Ketria Triome, tapped
+   incondicional, estavam em `ETB_TAPPED_LANDS`). Corrigido em `play_land()`
+   com checagem real do battlefield no momento do land-drop.
+
+**Resultado (n=2000, seed_base=6000000, antes → depois):**
+
+| Métrica | Antes (Correção #7) | Depois (Correção #8) |
+|---|---|---|
+| Avg cartas compradas extra | 10,75 | 10,71 |
+| Avg dano proxy total | 158,48 | 161,01 |
+| Avg blinks totais | 2,17 | 2,19 |
+| Reanimações via Go-Shintai of Life's Origin | 0% (não existia) | avg 0,01/partida |
+| Retornos via Hall of Heliod's Generosity | 0% (não existia) | avg 0,03/partida |
+
+Impacto pequeno em todas as direções — as 2 ativadas novas raramente têm
+alvo (cemitério de encantamento pouco populado, mesma razão já documentada
+pra Replenish/Sanctum of All), e o Abandoned Air Temple tapado
+condicionalmente puxa levemente pra baixo a mana disponível no turno em que
+entra (esperado, some 1 turno de vantagem de mana num caso raro).
+
+**Robustez:** sweep de 20.000 jogos (seeds 1300000–1319999, timeout 2s/jogo)
+— 0 erros, 0 timeouts.
+
+`lista.md` não mudou.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
