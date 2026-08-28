@@ -381,6 +381,37 @@ Salto real e concentrado no achado central (Sanctum Seeker escalando de verdade)
 
 ---
 
+## Correção #8 — Treasure virou token de verdade + Black Market Connections mais conservador (usuário pediu direto)
+
+Usuário: *"Coloca Black Market connections por default gerando 1 tesouro por 1 vida, para disparar Caretaker's Talent e outros gatilhos de token/artefato."*
+
+### Achado: Treasure nunca era um token de verdade
+
+Tanto o Treasure do **Pitiless Plunderer** quanto o do **Black Market Connections** eram implementados como um bônus de mana abstrato (`mana_spent_this_turn -= t`) — nunca uma entrada real em `state.battlefield`. Isso significava que o Treasure nunca disparava o **Caretaker's Talent** (implementado na Correção #7 — "whenever one or more tokens you control enter") nem qualquer outro gatilho futuro de token/artefato, mesmo sendo literalmente um token.
+
+Corrigido com `create_treasure_and_crack()`: o Treasure agora entra de verdade em `state.battlefield` (dispara `on_token_enters`, novo — extraído de `on_creature_enters` pra também cobrir tokens não-criatura), e só depois é "rachado" pela própria habilidade dele (`T, Sacrifice: Add one mana of any color`) na mesma passada — um jogador greedy sempre cracka na hora. Compartilhado pelas 2 fontes de Treasure do deck (Pitiless Plunderer, Black Market Connections). Verificado com invariante ao vivo (2000 jogos): nenhum Treasure Token nunca fica "esquecido" em campo entre turnos.
+
+### Black Market Connections — modo padrão mais conservador
+
+Junto com o pedido, reconsiderei a Correção #7: por padrão, escolher os 3 modos toda vez (Treasure + compra + token Shapeshifter) só porque vida não é rastreada aqui era otimista demais — perder 6 vida por turno de forma automática não é um piloto realista, mesmo sem um número exato de vida neste modelo. Corrigido pra só o modo pedido (Sell Contraband, 1 Treasure) por padrão; Buy Information e Hire a Mercenary ficam deferidos.
+
+Testado: 500 jogos smoke test (0 erros, as 2 políticas), 25.000 jogos de robustez política default + 15.000 política `COMBO_HUNTING_POLICY=True` (0 erros/timeouts) + invariante de token/battlefield e "nenhum Treasure sobra em campo" em 2000 jogos completos (0 divergências).
+
+**Impacto real** (`n=2000`, política default, `seed_base=6000000`, comparado com o estado pós-Correção #7 — queda esperada, Black Market Connections ficou mais conservador):
+
+| métrica | antes (Correção #7) | depois |
+|---|---|---|
+| Avg drain_total | 5,23 | 4,86 |
+| Avg contadores +1/+1 (ataque do Edgar) | 8,75 | 7,57 |
+| Avg compras via Black Market Connections (removido) | 0,40 | — |
+| Avg tokens via Black Market Connections (removido) | 0,44 | — |
+| Avg Treasures via Black Market Connections | 0,44 | 0,44 (mantido, agora token real) |
+| Avg compras via Caretaker's Talent | 0,19 | 0,18 (mantido — agora também é alimentado pelos Treasures) |
+
+`lista.md` não mudou.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

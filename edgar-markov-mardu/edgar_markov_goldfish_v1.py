@@ -387,6 +387,14 @@ add("Human Soldier Token", 0, "Creature", colors={"W"}, produces=set(), tags=set
 add("Snake Token", 0, "Creature", colors={"B"}, produces=set(), tags=set())
 add("Vampire Demon Token", 0, "Creature", colors={"W", "B"}, produces=set(), tags={"vampire_type"})
 add("Shapeshifter Token", 0, "Creature", colors=set(), produces=set(), tags={"vampire_type"})
+# Achado real 2026-08-27 (usuario: "para disparar Caretaker's Talent e
+# outros gatilhos de token/artefato"): Treasure ("T, Sacrifice: Add
+# one mana of any color") precisa ser um token DE VERDADE (entrar em
+# battlefield) pra disparar "whenever one or more tokens enter" do
+# Caretaker's Talent - antes (Pitiless Plunderer, Black Market
+# Connections) era so' um bonus de mana abstrato, nunca uma entrada
+# real. Ver create_treasure_and_crack().
+add("Treasure Token", 0, "Artifact", colors=set(), produces=set(), tags=set())
 
 def C(name: str) -> Card:
     return CARD_DB[name]
@@ -564,14 +572,14 @@ class GameState:
 
     # Black Market Connections: achado real 2026-08-27 (auditoria do
     # resto do deck) - "choose one or more" com 3 modos, cada um custa
-    # so vida (nao rastreada aqui) - um jogador greedy real escolhe os
-    # 3 toda vez, de graca neste modelo. 100% ausente antes (lumped
-    # errado em "modal deferido" junto com o Class do Caretaker's
-    # Talent - eram cartas diferentes, achado incorreto na Correcao #1
-    # nunca revisitado ate agora).
+    # vida (nao rastreada aqui). 100% ausente antes (lumped errado em
+    # "modal deferido" junto com o Class do Caretaker's Talent - eram
+    # cartas diferentes, achado incorreto na Correcao #1 nunca
+    # revisitado ate agora). Implementado por DEFAULT so' o modo mais
+    # barato (Sell Contraband, 1 Treasure) - Buy Information/Hire a
+    # Mercenary ficam deferidos (o mesmo "greedy pega os 3 de graca"
+    # nao e' um piloto realista so' porque vida nao e' rastreada aqui).
     black_market_treasures: int = 0
-    black_market_draws: int = 0
-    black_market_tokens: int = 0
     sanctum_seeker_drains: int = 0
     vito_fanatic_stage_this_turn: int = 0
     vito_fanatic_demons_created: int = 0
@@ -922,17 +930,44 @@ def on_creature_enters(state: GameState, log: List[Dict], name: str, count: int 
         power = CREATURE_POWER.get(name, 1 if "Token" in name else 3)
         if power <= 2:
             state.welcoming_vampire_trigger_pending = 1
-    if state.has("Caretaker's Talent") and "Token" in name:
-        # Achado real 2026-08-27 (auditoria de tokens): a habilidade
-        # BASE do Class (antes de qualquer nivel) - "Whenever one or
-        # more tokens you control enter, draw a card. Triggers only
-        # once each turn" - nao depende de subir de nivel (isso e' so'
-        # pros niveis 2/3, ja deferidos). Estava 100% ausente, lumped
-        # errado junto com o resto do Class deferido. So' cobre tokens
-        # de CRIATURA (os unicos que passam por aqui - Treasure tokens
-        # deste deck sao abstraidos como mana instantanea, nunca viram
-        # entrada real de battlefield).
+    on_token_enters(state, log, name, count=count)
+
+def on_token_enters(state: GameState, log: List[Dict], name: str, count: int = 1):
+    # Achado real 2026-08-27 (usuario: "para disparar Caretaker's
+    # Talent e outros gatilhos de token/artefato"): extraido de
+    # on_creature_enters() pra tambem cobrir tokens NAO-criatura
+    # (Treasure) - "whenever one or more tokens you control enter" nao
+    # se restringe a criatura no oraculo real. Chamado tanto por
+    # on_creature_enters() (tokens de criatura) quanto direto por
+    # create_treasure_and_crack() (Treasure).
+    if count <= 0 or "Token" not in name:
+        return
+    if state.has("Caretaker's Talent"):
+        # Habilidade BASE do Class (antes de qualquer nivel) -
+        # "Whenever one or more tokens you control enter, draw a card.
+        # Triggers only once each turn" - nao depende de subir de
+        # nivel (isso e' so' pros niveis 2/3, ja deferidos). Estava
+        # 100% ausente, lumped errado junto com o resto do Class
+        # deferido na Correcao #1.
         state.caretakers_talent_trigger_pending = 1
+
+def create_treasure_and_crack(state: GameState, log: List[Dict], count: int, source: str):
+    # Achado real 2026-08-27 (usuario pediu explicitamente): Treasure
+    # ("T, Sacrifice: Add one mana of any color") agora e' um token DE
+    # VERDADE - entra em battlefield (dispara on_token_enters, ex.
+    # Caretaker's Talent), depois um jogador greedy racha na hora pra
+    # mana (mesmo padrao de "usa a mana no mesmo turno" do resto do
+    # motor). Compartilhado entre Pitiless Plunderer e Black Market
+    # Connections - as 2 fontes de Treasure deste deck.
+    if count <= 0:
+        return
+    for _ in range(count):
+        state.battlefield.append("Treasure Token")
+    on_token_enters(state, log, "Treasure Token", count=count)
+    for _ in range(count):
+        state.battlefield.remove("Treasure Token")
+    state.mana_spent_this_turn -= count
+    log.append({"trigger": "treasure_created_and_cracked", "count": count, "source": source, "turn": state.turn})
 
 def eminence_trigger(state: GameState, card: str, log: List[Dict]):
     # "Whenever you cast another Vampire spell, if Edgar is in the
@@ -1233,16 +1268,15 @@ def sac_loop(state: GameState, log: List[Dict]):
         # ANOTHER creature you control dies, create a Treasure token."
         # Nao e' mana automatica (a tag 'ramp' + produces antiga
         # estava ERRADA, ele nao tem habilidade de mana propria) - so
-        # gera valor quando algo MORRE de verdade. Treasure = 1 mana
-        # generico, tratado como bonus imediato pro resto do turno
-        # (mesmo padrao ja usado pros altares acima), fonte
-        # nao-criatura -> sem dobra do Roaming Throne, mas sujeito ao
-        # dobrador de token.
+        # gera valor quando algo MORRE de verdade. Treasure agora e' um
+        # token DE VERDADE (create_treasure_and_crack, achado real
+        # 2026-08-27 seguinte: dispara Caretaker's Talent tambem, antes
+        # era so' um bonus de mana abstrato), fonte nao-criatura -> sem
+        # dobra do Roaming Throne, mas sujeito ao dobrador de token.
         if state.has("Pitiless Plunderer"):
             t = token_multiplier(state)
-            state.mana_spent_this_turn -= t
+            create_treasure_and_crack(state, log, t, source="pitiless_plunderer")
             state.pitiless_plunderer_treasures += t
-            log.append({"trigger": "pitiless_plunderer_treasure", "amt": t, "turn": state.turn})
         _apply_death_payoffs(state, log, source="sac_loop")
         if state.has("Vito, Fanatic of Aclazotz"):
             state.vito_fanatic_stage_this_turn += 1
@@ -1499,23 +1533,21 @@ def do_black_market_connections(state: GameState, log: List[Dict]):
     # "At the beginning of your first main phase, choose one or more -
     # Sell Contraband (Treasure, lose 1 life), Buy Information (draw,
     # lose 2 life), Hire a Mercenary (3/2 Shapeshifter changeling
-    # token, lose 3 life)." Este simulador nao rastreia vida propria
-    # real (mesma convencao ja documentada pro Champion of
-    # Dusk/Vampiric Tutor) - um jogador greedy real escolhe os 3 modos
-    # toda vez, sem custo de verdade neste modelo.
+    # token, lose 3 life)." Achado real 2026-08-27 (usuario pediu
+    # explicitamente): por DEFAULT so' o modo mais barato (Sell
+    # Contraband, 1 Treasure) - a versao anterior escolhia os 3 modos
+    # de graca todo turno so' porque vida nao e' rastreada aqui, o que
+    # e' otimista demais (perder 6 vida/turno de forma automatica nao
+    # e' um piloto realista, mesmo sem numero exato de vida neste
+    # modelo). O Treasure agora e' um token DE VERDADE (ver
+    # create_treasure_and_crack) - dispara Caretaker's Talent e
+    # qualquer outro gatilho de token, em vez de ser so' um bonus de
+    # mana abstrato.
     if not state.has("Black Market Connections"):
         return
     t = token_multiplier(state)
-    state.mana_spent_this_turn -= t
+    create_treasure_and_crack(state, log, t, source="black_market_connections")
     state.black_market_treasures += t
-    state.draw(1)
-    state.black_market_draws += 1
-    n = token_multiplier(state)
-    for _ in range(n):
-        state.battlefield.append("Shapeshifter Token")
-    state.black_market_tokens += n
-    on_creature_enters(state, log, "Shapeshifter Token", count=n)
-    log.append({"trigger": "black_market_connections", "treasures": t, "tokens": n, "turn": state.turn})
 
 def main_phase(state: GameState, log: List[Dict]):
     do_black_market_connections(state, log)
@@ -1703,8 +1735,6 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "urzas_saga_tutors": state.urzas_saga_tutors,
         "caretakers_talent_draws": state.caretakers_talent_draws,
         "black_market_treasures": state.black_market_treasures,
-        "black_market_draws": state.black_market_draws,
-        "black_market_tokens": state.black_market_tokens,
     }
 
 def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base=6000000):
@@ -1754,8 +1784,6 @@ def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base
     print(f"Avg tutores via Urza's Saga (capitulo III): {sum(r['urzas_saga_tutors'] for r in results)/n:.2f}")
     print(f"Avg compras via Caretaker's Talent (base, token ETB): {sum(r['caretakers_talent_draws'] for r in results)/n:.2f}")
     print(f"Avg Treasures via Black Market Connections: {sum(r['black_market_treasures'] for r in results)/n:.2f}")
-    print(f"Avg compras via Black Market Connections: {sum(r['black_market_draws'] for r in results)/n:.2f}")
-    print(f"Avg tokens via Black Market Connections: {sum(r['black_market_tokens'] for r in results)/n:.2f}")
     print()
     print(f"--- Combo Exquisite Blood/Bloodthirsty Conqueror + Vito, Thorn of the Dusk Rose ---")
     print(f"Partidas em que o combo montou E ligou: {100*len(combo_turns)/n:.1f}%")
