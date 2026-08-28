@@ -143,6 +143,16 @@ Deferido/documentado nesta rodada (nao implementado, motivo real):
     exigiria uma engine de "usar a terra pra isso EM VEZ de mana" que
     nao existe neste simulador - so o capitulo III (tutor, maior valor
     e mais simples de modelar corretamente) foi implementado.
+
+Correcao #10 - checklist ampliada (2026-08-28, ver goldfish-log.md): 2
+categorias novas na checklist obrigatoria (habilidades estaticas; metricas
+basicas ramp/draw/interaction/finisher no relatorio). Achado real: Enduring
+Tenacity tem o MESMO texto de Vito, Thorn of the Dusk Rose ("whenever you
+gain life, target opponent loses that much life") - estava tageada
+'drain_aristocrats' e tratada como death payoff (nao e', 100% ausente).
+Corrigida junto com o anthem estatico do Warleader's Call (nunca aplicado a
+nenhum calculo de poder) e um bloco novo de metricas basicas agregadas no
+run_batch().
 """
 
 import random
@@ -583,6 +593,11 @@ class GameState:
     # Mercenary ficam deferidos (o mesmo "greedy pega os 3 de graca"
     # nao e' um piloto realista so' porque vida nao e' rastreada aqui).
     black_market_treasures: int = 0
+    # Achado real 2026-08-28 (auditoria de checklist - metricas basicas
+    # obrigatorias: ramp/draw/interaction/finisher). Nao havia nenhuma
+    # metrica agregada de ramp ate agora (so tags decorativas em Arcane
+    # Signet/Sol Ring/Ashnod's Altar/Phyrexian Altar).
+    ramp_pieces_cast: int = 0
     sanctum_seeker_drains: int = 0
     vito_fanatic_stage_this_turn: int = 0
     vito_fanatic_demons_created: int = 0
@@ -677,6 +692,19 @@ class GameState:
 
     def roaming_throne_active(self) -> bool:
         return self.has("Roaming Throne")
+
+def effective_power(state: GameState, name: str) -> int:
+    # Warleader's Call: "Creatures you control get +1/+1" - habilidade
+    # ESTATICA de anthem, achado real 2026-08-28 (auditoria de checklist -
+    # habilidades estaticas). O gatilho de dano dela ja era modelado
+    # (on_creature_enters), mas o anthem em si nunca era aplicado em
+    # nenhum calculo de poder - importa pro limiar do Welcoming Vampire
+    # ("power 2 or less"): uma criatura de poder 2 (ex. Bloodletter of
+    # Aclazotz) vira poder 3 com o anthem ativo, deixando de qualificar.
+    base = CREATURE_POWER.get(name, 1 if "Token" in name else 3)
+    if state.has("Warleader's Call") and name != "Warleader's Call":
+        base += 1
+    return base
 
 # =========================================================
 # MANA MODEL
@@ -917,24 +945,36 @@ def _check_combo(state: GameState, log: List[Dict]):
     if state.combo_active:
         return
     for enabler in ("Exquisite Blood", "Bloodthirsty Conqueror"):
-        if state.has(enabler) and state.has("Vito, Thorn of the Dusk Rose"):
+        if not state.has(enabler):
+            continue
+        for partner in GAIN_LIFE_DRAIN_SOURCES:
             # Achado real 2026-08-27: so Exquisite Blood era checado
             # como habilitador do combo com Vito, Thorn of the Dusk
             # Rose. Bloodthirsty Conqueror ("whenever an opponent loses
             # life, you gain that much life") forma o MESMO loop
             # infinito com Vito Thorn - e' um habilitador alternativo
             # real que a auditoria original nunca detectou.
-            state.combo_active = True
-            state.combo_active_turn = state.turn
-            state.combo_enabler = enabler
-            log.append({"trigger": "combo_active", "enabler": enabler, "turn": state.turn})
-            return
+            #
+            # Achado real 2026-08-28 (auditoria de checklist - habilidades
+            # estaticas): Enduring Tenacity ("whenever you gain life,
+            # target opponent loses that much life") e' um segundo
+            # habilitador possivel pro MESMO loop (funcionalmente
+            # identico a Vito Thorn pra esse proposito) - fecha o combo
+            # de graca (sem precisar da propria Vito Thorn em campo).
+            if state.has(partner):
+                state.combo_active = True
+                state.combo_active_turn = state.turn
+                state.combo_enabler = f"{enabler}+{partner}"
+                log.append({"trigger": "combo_active", "enabler": state.combo_enabler, "turn": state.turn})
+                return
+
+GAIN_LIFE_DRAIN_SOURCES = ("Vito, Thorn of the Dusk Rose", "Enduring Tenacity")
 
 def gain_life(state: GameState, amt: int, log: List[Dict], source: str = ""):
     if amt <= 0:
         return
     state.lifegain_total += amt
-    if state.has("Vito, Thorn of the Dusk Rose") and not state.combo_active:
+    if not state.combo_active:
         # Achado real 2026-08-27 (usuario: "faca a carta por carta do
         # Markov"): Vito, Thorn of the Dusk Rose - a peca de combo mais
         # famosa da lista - tinha ZERO implementacao da PROPRIA
@@ -945,8 +985,20 @@ def gain_life(state: GameState, amt: int, log: List[Dict], source: str = ""):
         # campo). 1 hop so (nao recursivo) - uma vez que o combo real
         # for detectado (ver _check_combo), o jogo e' tratado como
         # ganho e paramos de somar incrementos individuais infinitos.
-        state.drain_total += amt
-        log.append({"trigger": "vito_thorn_drain", "amt": amt, "source": source, "turn": state.turn})
+        #
+        # Achado real 2026-08-28 (auditoria de checklist - habilidades
+        # estaticas): Enduring Tenacity tem O MESMO texto real de Vito
+        # Thorn ("Whenever you gain life, target opponent loses that
+        # much life") - estava tageada 'drain_aristocrats' e tratada
+        # como se fosse um death payoff (nunca era - essa habilidade nao
+        # tem nada a ver com morte de criatura), entao ficava 100%
+        # ausente. Se as DUAS estiverem em campo, cada uma dispara
+        # separadamente (2 fontes independentes do mesmo efeito, regra
+        # real de Magic).
+        for src in GAIN_LIFE_DRAIN_SOURCES:
+            if state.has(src):
+                state.drain_total += amt
+                log.append({"trigger": "gain_to_drain", "amt": amt, "enabler": src, "source": source, "turn": state.turn})
     _check_combo(state, log)
 
 def lose_life_opponent(state: GameState, amt: int, log: List[Dict], source: str = ""):
@@ -1000,7 +1052,7 @@ def on_creature_enters(state: GameState, log: List[Dict], name: str, count: int 
         # (perdia criaturas nao-Vampiro de poder baixo, ex. Ophiomancer
         # 2/2, e so acertava por coincidencia quando a Eminence tambem
         # disparava).
-        power = CREATURE_POWER.get(name, 1 if "Token" in name else 3)
+        power = effective_power(state, name)
         if power <= 2:
             state.welcoming_vampire_trigger_pending = 1
     on_token_enters(state, log, name, count=count)
@@ -1507,6 +1559,8 @@ def cast_available_spells(state: GameState, log: List[Dict]):
             break
         castables.sort(key=lambda c: C(c).mv)
         choice = castables[0]
+        if has_tag(choice, "ramp"):
+            state.ramp_pieces_cast += 1
         state.hand.remove(choice)
         state.mana_spent_this_turn += C(choice).mv
         if C(choice).type in ("Instant", "Sorcery"):
@@ -1812,6 +1866,7 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "urzas_saga_tutors": state.urzas_saga_tutors,
         "caretakers_talent_draws": state.caretakers_talent_draws,
         "black_market_treasures": state.black_market_treasures,
+        "ramp_pieces_cast": state.ramp_pieces_cast,
     }
 
 def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base=6000000):
@@ -1876,6 +1931,38 @@ def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base
     rt_in_play = sum(1 for r in results if r["roaming_throne_in_play"])
     print(f"Roaming Throne em campo em {100*rt_in_play/n:.1f}% dos jogos (tipo escolhido: Vampire)")
     print(f"Avg gatilhos de Vampiro dobrados por partida: {sum(r['roaming_throne_doublings'] for r in results)/n:.2f}")
+    print()
+
+    # Achado real 2026-08-28 (auditoria de checklist - metricas basicas
+    # obrigatorias em TODO simulador: ramp, draw, interaction,
+    # finisher/lethality). As metricas especificas de carta acima ja
+    # cobrem quase tudo isso, mas nunca estavam resumidas nas 4
+    # categorias-base explicitamente - agregando aqui pra deixar
+    # auditavel de relance, sem precisar somar manualmente.
+    print("--- Metricas basicas (checklist obrigatoria) ---")
+    print(f"RAMP: avg pecas de rampa conjuradas (Sol Ring/Arcane Signet/Ashnod's Altar/Phyrexian Altar): "
+          f"{sum(r['ramp_pieces_cast'] for r in results)/n:.2f}")
+    total_draw = sum(
+        r["champion_of_dusk_draws"] + r["welcoming_vampire_draws"] + r["skullclamp_draws"]
+        + r["unholy_annex_draws"] + r["caretakers_talent_draws"] + r["minas_tirith_draws"]
+        + r["plumb_the_forbidden_draws"]
+        for r in results)
+    print(f"DRAW: avg compras extras totais (soma de todos os motores - Champion of Dusk, Welcoming Vampire, "
+          f"Skullclamp, Unholy Annex, Caretaker's Talent, Minas Tirith, Plumb the Forbidden): {total_draw/n:.2f}")
+    print(f"INTERACTION: N/A por arquitetura - este e' um goldfish SOLO sem oponente real pra mirar. "
+          f"6 spells de remocao reais na lista (Anguished Unmaking, Get Lost, Path to Exile, Swords to "
+          f"Plowshares, Vindicate, Rite of Oblivion) ficam em EXCLUDE_BLIND_CAST de proposito - um piloto "
+          f"real segura remocao ate ter alvo, nunca conjura as cegas. So Goblin Bombardment (sac outlet, "
+          f"nao removal de fato neste motor) e' castavel; 0 removal e' o resultado CORRETO, nao um bug.")
+    total_finisher_damage = sum(
+        r["drain_total"] + r["purphoros_damage_total"] + r["warleaders_call_damage_total"]
+        + r["exsanguinate_x_total"]
+        for r in results)
+    print(f"FINISHER/LETHALITY: combo infinito (Exquisite Blood/Bloodthirsty Conqueror + Vito Thorn/Enduring "
+          f"Tenacity) monta e liga em {100*len(combo_turns)/n:.1f}% dos jogos"
+          + (f", turno medio {statistics.mean(combo_turns):.2f}" if combo_turns else "")
+          + f". Fora do combo, avg 'dano' agregado (drain_total + Purphoros + Warleader's Call + "
+          f"Exsanguinate X) por partida: {total_finisher_damage/n:.2f}.")
     print()
     print(f"Logs salvos em: {out_jsonl}")
     return results

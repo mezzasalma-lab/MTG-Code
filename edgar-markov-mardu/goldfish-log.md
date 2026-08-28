@@ -486,6 +486,72 @@ timeouts nas duas.
 
 ---
 
+## Correção #10 — checklist ampliada (habilidades estáticas + métricas básicas), Enduring Tenacity 100% ausente
+
+**Gatilho (usuário):** *"Lembre da regra que criamos: TODA SIMULAÇÃO E DECK
+TEM QUE TER TODAS AS Ativações, gatilhos, habilidades estáticas, combos e
+métricas básicas (ramp, draw, interaction, finisher/lethality) contabilizados
+e auditados SEMPRE!"* — reforço da checklist (agora com 10 categorias, ver
+`references/goldfish-sim-card-rules.md`), com 2 categorias novas: habilidades
+estáticas, e as 4 métricas básicas obrigatórias no relatório. Edgar Markov já
+tinha passado por 9 rodadas de correção nesta sessão (incluindo a Correção #9,
+a checklist original de 8 categorias) — esta rodada focou especificamente nas
+2 categorias novas.
+
+**Achado real (habilidade estática 100% ausente):** conferido `oracle_text`
+de Mondrak, Vein Ripper, Purphoros, Warleader's Call, Sorin, Elspeth, e
+**Enduring Tenacity** contra o código. Enduring Tenacity tem o texto real
+*"Whenever you gain life, target opponent loses that much life"* — **o MESMO
+texto de Vito, Thorn of the Dusk Rose**, a peça de combo mais importante da
+lista. Estava tageada `drain_aristocrats` e tratada como se fosse um death
+payoff (nunca era — essa habilidade não tem nada a ver com morte de criatura),
+então ficava 100% ausente: nem drenava vida de forma independente, nem era
+reconhecida como um segundo habilitador possível do combo infinito
+Exquisite Blood/Bloodthirsty Conqueror (que só checava Vito Thorn).
+
+**Corrigido:**
+- `gain_life()` agora dispara pra QUALQUER carta em `GAIN_LIFE_DRAIN_SOURCES`
+  (Vito Thorn E Enduring Tenacity, cada uma independente — se as duas
+  estiverem em campo, disparam separadamente, regra real de múltiplas
+  habilidades disparadas).
+- `_check_combo()` agora reconhece Enduring Tenacity como parceiro
+  alternativo de Exquisite Blood/Bloodthirsty Conqueror pro mesmo loop
+  infinito (log agora registra o par exato, ex. `"Bloodthirsty
+  Conqueror+Enduring Tenacity"`).
+- **Warleader's Call** — achado real menor: o texto real tem uma metade
+  ESTÁTICA (*"Creatures you control get +1/+1"*) além do gatilho de dano já
+  implementado. O anthem nunca era aplicado a nenhum cálculo de poder —
+  importa pro limiar do Welcoming Vampire ("power 2 or less"): uma criatura
+  de poder 2 (ex. Bloodletter of Aclazotz) vira poder 3 com o anthem ativo,
+  deixando de qualificar. Novo helper `effective_power()` aplica o +1 antes
+  da checagem.
+- **Métricas básicas**: novo bloco no `run_batch()` resumindo as 4 categorias
+  explicitamente — RAMP (peças de rampa conjuradas, novo contador
+  `ramp_pieces_cast`), DRAW (soma agregada de todos os 7 motores de compra já
+  existentes), INTERACTION (documentado como N/A por arquitetura — goldfish
+  solo sem oponente real, as 6 remoções reais da lista ficam deliberadamente
+  em `EXCLUDE_BLIND_CAST`, não é um buraco silencioso), FINISHER/LETHALITY
+  (taxa e turno do combo infinito + dano agregado fora do combo).
+
+**Resultado (n=2000, seed_base=6000000, antes → depois):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg drain_total | 4,44 | 4,58 |
+| Combo monta e liga | 1,1% dos jogos | 1,4% dos jogos |
+| Habilitadores do combo | só Exquisite Blood / Bloodthirsty Conqueror + Vito Thorn | + Exquisite Blood/Bloodthirsty Conqueror + Enduring Tenacity (7 dos 28 combos ligados na amostra) |
+
+Impacto pequeno mas real — Enduring Tenacity sozinha (sem Vito Thorn) agora
+também soma ao `drain_total` a cada vida ganha, e abre uma segunda via pro
+combo infinito que antes não existia no modelo.
+
+**Robustez:** sweep de 20.000 jogos (seeds 800000–819999, timeout 2s/jogo) —
+0 erros, 0 timeouts.
+
+`lista.md` não mudou.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
