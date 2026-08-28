@@ -552,6 +552,61 @@ combo infinito que antes não existia no modelo.
 
 ---
 
+## Correção #11 — varredura exaustiva das 94 cartas (usuário: "desde que vc tenha avaliado TUDO dos 2 decks anteriores")
+
+**Gatilho (usuário):** depois da Correção #10 (checklist ampliada), o usuário
+pediu confirmação explícita de que a auditoria tinha sido **exaustiva**, não
+uma checagem pontual. Refeito: `oracle_text` de **todas as 94 cartas únicas**
+da lista (via `scryfall-cache/oracle-cache.json` + Scryfall API pra 1 carta
+faltando no cache local, Emeritus of Woe) extraído e comparado linha a linha
+contra o código, procurando especificamente qualquer texto de habilidade
+NÃO-"Whenever"/"At the beginning" ainda sem despacho.
+
+**Achado real (ativação 100% ausente em 2 cartas, 10 rodadas de correção
+anteriores):** **Funeral Room // Awakening Hall** e **Unholy Annex // Ritual
+Chamber** são "Room" cards (mecânica Duskmourn) — depois de conjurar UM lado,
+o oráculo real permite *"As a sorcery, you may pay the mana cost of a locked
+door to unlock it"*, ganhando o efeito do OUTRO lado no MESMO permanente.
+Isso nunca foi modelado — só o lado inicialmente conjurado (Funeral Room /
+Unholy Annex, já corretos) tinha qualquer efeito.
+
+- **Awakening Hall** ({6}{B}{B}=8 mana): *"return all creature cards from
+  your graveyard to the battlefield"* — reanimação em massa.
+- **Ritual Chamber** ({3}{B}{B}=5 mana): *"create a 6/6 black Demon creature
+  token with flying"* — token novo (`Demon Token`), cria um **combo interno
+  de 1 carta**: o próprio Unholy Annex tem *"if you control a Demon, each
+  opponent loses 2, you gain 2"* — e a versão anterior só checava
+  `vito_fanatic_demons_created > 0` (contador cumulativo, dependente de OUTRA
+  carta), nunca considerando que a Ritual Chamber cria o Demon que satisfaz
+  essa condição por si só. Corrigido: novo `controls_a_demon()`, checagem de
+  board real em vez de contador cumulativo.
+
+Não é um cast de spell (não dispara Eminence nem gatilhos de conjuração —
+"pay the mana cost to unlock" é uma ação especial, igual subir de nível de
+Class), implementado como `try_unlock_rooms()`, chamado 2x por turno (mesma
+convenção do `try_emeritus_prepared_tutor`, pra também usar mana sobrando de
+altares/Treasures do `sac_loop`).
+
+**Resultado (n=2000, seed_base=6000000, antes → depois):**
+
+| Métrica | Antes (Correção #10) | Depois (Correção #11) |
+|---|---|---|
+| Avg drain_total | 4,58 | 4,65 |
+| Awakening Hall destrancada | 0% (não existia) | 3,4% dos jogos, avg 0,00 criaturas reanimadas (cemitério quase sempre vazio de criaturas nomeadas, mesma razão já documentada pro Sevinne's Reclamation/Bloodline Bidding) |
+| Ritual Chamber destrancada | 0% (não existia) | 10,0% dos jogos — habilita o bônus do próprio Unholy Annex sem depender do Vito Fanatic |
+
+Impacto pequeno mas real e correto — Awakening Hall corretamente quase nunca
+tem alvo (baixo volume de morte de criatura nomeada, consistente com o resto
+do deck), Ritual Chamber tem impacto mais visível por ser mais barata e não
+depender de nada mais estar em campo.
+
+**Robustez:** sweep de 20.000 jogos (seeds 1200000–1219999, timeout 2s/jogo)
+— 0 erros, 0 timeouts.
+
+`lista.md` não mudou.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

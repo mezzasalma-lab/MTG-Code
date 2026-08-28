@@ -405,6 +405,15 @@ add("Shapeshifter Token", 0, "Creature", colors=set(), produces=set(), tags={"va
 # Connections) era so' um bonus de mana abstrato, nunca uma entrada
 # real. Ver create_treasure_and_crack().
 add("Treasure Token", 0, "Artifact", colors=set(), produces=set(), tags=set())
+# Achado real 2026-08-28 (auditoria de checklist ampliada - varredura
+# exaustiva de oracle_text das 94 cartas): Funeral Room // Awakening Hall e
+# Unholy Annex // Ritual Chamber sao "Room" cards (Duskmourn) - depois de
+# conjurar UM lado, "As a sorcery, you may pay the mana cost of a locked
+# door to unlock it" tambem, ganhando o efeito do OUTRO lado no MESMO
+# permanente. 100% ausente em 10 rodadas de correcao anteriores - so o lado
+# inicialmente conjurado tinha efeito. Ritual Chamber cria um Demon 6/6
+# flying - token novo, precisa de entrada real no CARD_DB.
+add("Demon Token", 0, "Creature", colors={"B"}, produces=set(), tags=set())
 
 def C(name: str) -> Card:
     return CARD_DB[name]
@@ -541,7 +550,7 @@ CREATURE_POWER = {
     # Fanatic - qualificava errado pro gatilho do Welcoming Vampire,
     # "power 2 or less").
     "Vampire Token": 1, "Human Soldier Token": 1, "Snake Token": 1,
-    "Vampire Demon Token": 4, "Shapeshifter Token": 3,
+    "Vampire Demon Token": 4, "Shapeshifter Token": 3, "Demon Token": 6,
 }
 
 # =========================================================
@@ -598,6 +607,13 @@ class GameState:
     # metrica agregada de ramp ate agora (so tags decorativas em Arcane
     # Signet/Sol Ring/Ashnod's Altar/Phyrexian Altar).
     ramp_pieces_cast: int = 0
+
+    # Funeral Room // Awakening Hall e Unholy Annex // Ritual Chamber -
+    # "unlock the other door" (ver comentario no add() do Demon Token acima).
+    awakening_hall_unlocked: bool = False
+    awakening_hall_reanimated: int = 0
+    ritual_chamber_unlocked: bool = False
+    ritual_chamber_demons_created: int = 0
     sanctum_seeker_drains: int = 0
     vito_fanatic_stage_this_turn: int = 0
     vito_fanatic_demons_created: int = 0
@@ -773,6 +789,40 @@ def try_adanto(state: GameState, log: List[Dict]):
     state.adanto_tokens_created += n
     on_creature_enters(state, log, "Vampire Token", count=n)
     log.append({"trigger": "adanto_token", "count": n, "turn": state.turn})
+
+def controls_a_demon(state: GameState) -> bool:
+    return any("Demon" in c for c in state.battlefield)
+
+def try_unlock_rooms(state: GameState, log: List[Dict]):
+    # Achado real 2026-08-28 (auditoria de checklist ampliada): "Room" cards
+    # (Duskmourn) permitem, "as a sorcery", pagar o custo de mana da porta
+    # ainda trancada pra tambem destranca-la no MESMO permanente - nao e' um
+    # cast de spell (nao dispara Eminence/gatilhos de conjuracao), e' uma
+    # acao especial, igual subir de nivel de Class. 100% ausente antes.
+    if state.has("Funeral Room // Awakening Hall") and not state.awakening_hall_unlocked:
+        cost = 8  # Awakening Hall: {6}{B}{B}
+        if remaining_mana(state) >= cost:
+            state.mana_spent_this_turn += cost
+            state.awakening_hall_unlocked = True
+            targets = [c for c in state.graveyard if is_creature(c)]
+            for target in targets:
+                state.graveyard.remove(target)
+                state.battlefield.append(target)
+                apply_etb(state, target, log)
+                on_creature_enters(state, log, target)
+                state.awakening_hall_reanimated += 1
+            log.append({"trigger": "awakening_hall_unlock", "reanimated": targets, "turn": state.turn})
+
+    if state.has("Unholy Annex // Ritual Chamber") and not state.ritual_chamber_unlocked:
+        cost = 5  # Ritual Chamber: {3}{B}{B}
+        if remaining_mana(state) >= cost:
+            state.mana_spent_this_turn += cost
+            state.ritual_chamber_unlocked = True
+            state.tokens.append("Demon Token")
+            state.battlefield.append("Demon Token")
+            state.ritual_chamber_demons_created += 1
+            on_creature_enters(state, log, "Demon Token")
+            log.append({"trigger": "ritual_chamber_unlock", "turn": state.turn})
 
 def try_minas_tirith(state: GameState, log: List[Dict]):
     # Achado real 2026-08-28 (auditoria de checklist de mecanica): a
@@ -1319,7 +1369,13 @@ def do_end_step(state: GameState, log: List[Dict]):
     if state.has("Unholy Annex // Ritual Chamber"):
         state.draw(1)
         state.unholy_annex_draws += 1
-        if state.vito_fanatic_demons_created > 0:
+        # Achado real 2026-08-28 (auditoria de checklist ampliada): a
+        # condicao real e' "if you control a Demon" - a versao anterior so
+        # checava vito_fanatic_demons_created (um contador CUMULATIVO,
+        # nao "controla agora"), ignorando que a propria Ritual Chamber
+        # (ver try_unlock_rooms) cria um Demon de verdade que satisfaz essa
+        # condicao por si so, sem depender do Vito Fanatic.
+        if controls_a_demon(state):
             lose_life_opponent(state, 2, log, source="unholy_annex")
             gain_life(state, 2, log, source="unholy_annex")
         log.append({"trigger": "unholy_annex_endstep", "turn": state.turn})
@@ -1692,6 +1748,7 @@ def main_phase(state: GameState, log: List[Dict]):
 
     try_cabal_coffers(state, log)
     try_adanto(state, log)
+    try_unlock_rooms(state, log)
     cast_available_spells(state, log)
     try_emeritus_prepared_tutor(state, log)
     try_stensian_prepared_exsanguinate(state, log)
@@ -1767,6 +1824,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     main_phase(state, log)
     sac_loop(state, log)
     cast_available_spells(state, log)  # mana extra de altares/Treasures do sac_loop, ver docstring de cast_available_spells
+    try_unlock_rooms(state, log)
     try_emeritus_prepared_tutor(state, log)
     try_stensian_prepared_exsanguinate(state, log)
     welcoming_vampire_check(state, log)
@@ -1867,6 +1925,10 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "caretakers_talent_draws": state.caretakers_talent_draws,
         "black_market_treasures": state.black_market_treasures,
         "ramp_pieces_cast": state.ramp_pieces_cast,
+        "awakening_hall_unlocked": state.awakening_hall_unlocked,
+        "awakening_hall_reanimated": state.awakening_hall_reanimated,
+        "ritual_chamber_unlocked": state.ritual_chamber_unlocked,
+        "ritual_chamber_demons_created": state.ritual_chamber_demons_created,
     }
 
 def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base=6000000):
@@ -1918,6 +1980,14 @@ def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base
     print(f"Avg tutores via Urza's Saga (capitulo III): {sum(r['urzas_saga_tutors'] for r in results)/n:.2f}")
     print(f"Avg compras via Caretaker's Talent (base, token ETB): {sum(r['caretakers_talent_draws'] for r in results)/n:.2f}")
     print(f"Avg Treasures via Black Market Connections: {sum(r['black_market_treasures'] for r in results)/n:.2f}")
+    ah_unlocked = sum(1 for r in results if r["awakening_hall_unlocked"])
+    if ah_unlocked:
+        print(f"Awakening Hall destrancada em {100*ah_unlocked/n:.1f}% dos jogos, "
+              f"avg criaturas reanimadas: {sum(r['awakening_hall_reanimated'] for r in results)/n:.2f}")
+    rc_unlocked = sum(1 for r in results if r["ritual_chamber_unlocked"])
+    if rc_unlocked:
+        print(f"Ritual Chamber destrancada em {100*rc_unlocked/n:.1f}% dos jogos "
+              f"(cria o Demon que habilita o bonus do proprio Unholy Annex)")
     print()
     print(f"--- Combo Exquisite Blood/Bloodthirsty Conqueror + Vito, Thorn of the Dusk Rose ---")
     print(f"Partidas em que o combo montou E ligou: {100*len(combo_turns)/n:.1f}%")
