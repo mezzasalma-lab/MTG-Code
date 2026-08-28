@@ -237,6 +237,26 @@ Obrigatória antes de declarar **qualquer** simulador (novo ou em revisão)
 completo — inclusive os já existentes, não só o que está sendo escrito no
 momento.
 
+**Reforço/ampliação (2026-08-28), depois da rodada final do Beorn:** citação
+literal do usuário — *"Lembre da regra que criamos: TODA SIMULAÇÃO E DECK TEM
+QUE TER TODAS AS Ativações, gatilhos, habilidades estáticas, combos e
+métricas básicas (ramp, draw, interaction, finisher/lethality) contabilizados
+e auditados SEMPRE!"*
+
+- Duas categorias novas na checklist (itens 9 e 10 no `goldfish-sim-card-rules.md`):
+  **habilidades estáticas** (anthems, custo reduzido, "criaturas são do tipo
+  X", mudança de tipo de terreno, restrição/expansão de cor — precisam estar
+  aplicadas em TODO cálculo que afetam, não só onde foram implementadas
+  primeiro) e **métricas básicas obrigatórias no relatório de todo simulador**
+  (ramp, draw, interaction, finisher/lethality — reportadas de forma
+  auditável e separada, mesmo quando o deck já tem métricas específicas por
+  carta).
+- **"SEMPRE" é literal:** essa checklist (10 categorias completas) vale pra
+  **todo deck e todo simulador do repositório, em toda sessão**, não só o
+  deck sendo trabalhado no momento em que a regra foi criada ou reforçada —
+  inclusive decks já auditados anteriormente, que devem ser revisados de novo
+  se alguma categoria não tiver sido explicitamente checada e documentada.
+
 ---
 
 <!-- Adicionar novas regras permanentes abaixo conforme o usuário as

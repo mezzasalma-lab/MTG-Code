@@ -188,6 +188,23 @@ QUALQUER simulador, novo ou já existente. Generalizando: antes de considerar
    mana, ver o pacote Blood Artist/Zulaport do Edgar Markov) — um simulador
    pode ter cada carta implementada isoladamente e ainda assim errar a
    interação entre elas.
+9. **Habilidades estáticas** (não são gatilho nem ativação — valem o tempo
+   todo enquanto o permanente está em campo: anthems, custo reduzido,
+   "criaturas que você controla são do tipo X", terrenos viram outro tipo,
+   restrição/expansão de cor de mana, "não pode ser bloqueada", etc). Cada
+   uma precisa estar aplicada de verdade em todo cálculo que ela afeta (ex:
+   um anthem de +1/+1 tem que entrar em `BASE_POWER`/custo/combate em TODO
+   lugar relevante, não só onde foi implementada primeiro) — não é
+   suficiente ter a tag na definição da carta.
+10. **Métricas básicas do relatório** — todo `run_batch`/resumo de simulador
+    precisa reportar, de forma auditável e separada, pelo menos estas 4
+    categorias agregadas, mesmo que o deck já tenha métricas específicas de
+    carta: **ramp** (mana disponível/peças de aceleração), **draw**
+    (compra extra além da normal do turno), **interaction** (remoção/
+    proteção/interação com o oponente conjurada), **finisher/lethality**
+    (taxa e turno médio de resolver um fechador de jogo). Se uma dessas 4
+    categorias não existe na decklist, documentar "0 cartas de X, categoria
+    N/A" em vez de simplesmente omitir a métrica do relatório.
 
 **Prática obrigatória:** antes de declarar QUALQUER simulador (novo ou já
 existente, numa auditoria de revisão) completo, rodar essa checklist e citar
@@ -195,7 +212,9 @@ explicitamente, por categoria, quantas cartas da decklist se qualificam e se
 cada uma tem implementação real — não só reportar "achei um bug, corrigi".
 Se uma categoria não se aplica a um deck (ex: deck sem nenhuma carta de
 landfall), documentar isso também ("0 cartas de landfall na lista, categoria
-N/A"), pra deixar claro que a categoria foi checada e não só ignorada.
+N/A"), pra deixar claro que a categoria foi checada e não só ignorada. Isso
+vale **sempre**, em qualquer sessão, pra qualquer deck do repositório — não
+só o deck sendo discutido no momento em que a regra foi criada ou reforçada.
 
 ---
 
