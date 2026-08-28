@@ -349,6 +349,46 @@ Avg gatilhos de combate da Beorn dobrados por partida: 3,44
 
 ---
 
+### Correção #1 — mana gasta no turno nunca era rastreada (bug fundamental)
+
+**Gatilho (usuário):** "VAMOS REVISAR O BEORN do mesmo modo, carta por carta e o simulador todo"
+
+Antes de auditar carta por carta, encontrei um bug estrutural que invalidava qualquer contagem de gatilhos por spell: `can_cast()` comparava o custo de cada carta contra `total_mana(state)` — o total de fontes de mana em campo — mas **nada subtraía a mana já gasta em cast anteriores no mesmo turno**. Testei ao vivo: com 6 fontes de mana em campo e Tireless Tracker (3) + Beast Whisperer (4) + Little Bear (3) na mão (10 de custo total), o `main_phase()` conjurava **as três**, usando 6 de mana real pra pagar 10.
+
+Isso inflava artificialmente `spells_cast` (e por tabela: contadores da Managorger Hydra, gatilhos da Roaming Throne, Genji Glove equipando cedo demais, etc.) e acelerava todo o desenvolvimento de board a cada jogo simulado, todo jogo.
+
+**Correção:**
+- Novo campo `mana_spent_this_turn` em `GameState`, resetado no início de cada `play_turn()`.
+- Novo helper `remaining_mana(state) = total_mana(state) - mana_spent_this_turn`.
+- `can_cast()` agora compara contra `remaining_mana()`, não `total_mana()`.
+- `cast_spell()` incrementa `mana_spent_this_turn` pelo `mv` real da carta conjurada; os dois pontos de cast do comandante em `main_phase()` (antes do loop e dentro dele) fazem o mesmo.
+- Genji Glove: a lógica de equipar (Equip {3}, custo separado do cast {5}) usava um teto arbitrário (`total_mana >= 8` no turno do cast, `>= 3` depois) pra compensar a falta de rastreamento — trocada por `remaining_mana(state) >= 3` (que agora funciona corretamente tanto no turno do cast quanto depois), debitando os 3 do Equip do mesmo jeito.
+
+**Resultado (n=2000, seed_base=6000000, antes → depois):**
+
+| Métrica | Antes (bug) | Depois (corrigido) |
+|---|---|---|
+| Avg spells cast | 15.65 | 10.42 |
+| Avg extra draws (gatilhos) | 11.93 | 7.17 |
+| Avg Bear count final | 7.16 | 5.68 |
+| Beorn "draw 2" triggers (3+ Bears) | 4.28 | 3.07 |
+| Beorn combat triggers | 5.53 | 4.50 |
+| Avg finishers resolvidos | 0.64 | 0.09 |
+| **% de jogos com finisher até T8** | **49.6%** | **8.3%** |
+| Avg battlefield final | 19.79 | 15.73 |
+| Managorger conjurada | 23.8% | 18.9% |
+| Managorger avg contadores finais | 10.25 | 7.63 |
+| Germination Practicum conjurada | 23.7% | 8.0% |
+| Genji Glove conjurada | 18.4% | 3.7% |
+| Genji Glove equipada (dado que conjurada) | 99.2% | 58.1% |
+| Roaming Throne em campo | 23.9% | 14.4% |
+
+O impacto é enorme — a taxa de "finisher até T8" caiu de quase metade dos jogos pra menos de 1 em 10. Todo número reportado em qualquer entrada anterior deste log (incluindo os 42,8%/48,4% mencionados no Jogo 6, que já vinham de UMA rodada de 2000 jogos deste mesmo simulador com bug) estava inflado por esse bug — o simulador estava efetivamente jogando com mana infinita dentro de cada turno.
+
+**Robustez:** sweep de 20.000 jogos (seeds 6000000–6019999, timeout de 2s/jogo) rodado após a correção — 0 erros, 0 timeouts.
+
+---
+
 <!-- Para novas partidas avulsas, use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

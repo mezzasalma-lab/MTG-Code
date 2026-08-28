@@ -265,6 +265,7 @@ class GameState:
     turn: int = 0
     land_played: bool = False
     max_hand_size: int = 7
+    mana_spent_this_turn: int = 0
 
     commander_in_play: bool = False
     commander_cast_turn: Optional[int] = None
@@ -366,8 +367,11 @@ def green_sources(state: GameState) -> int:
             g += 1
     return g
 
+def remaining_mana(state: GameState) -> int:
+    return total_mana(state) - state.mana_spent_this_turn
+
 def can_cast(state: GameState, card: str) -> bool:
-    if total_mana(state) < C(card).mv:
+    if remaining_mana(state) < C(card).mv:
         return False
     pips = C(card).g_pips
     if pips >= 2:
@@ -480,6 +484,7 @@ def main_phase(state: GameState, log: List[Dict]):
             state.commander_in_play = True
             state.commander_cast_turn = state.turn
             state.spells_cast += 1
+            state.mana_spent_this_turn += C(COMMANDER).mv
             state.battlefield.append(COMMANDER)
             log.append({"action":"cast_commander","turn":state.turn})
 
@@ -495,16 +500,16 @@ def main_phase(state: GameState, log: List[Dict]):
             state.commander_in_play = True
             state.commander_cast_turn = state.turn
             state.spells_cast += 1
+            state.mana_spent_this_turn += C(COMMANDER).mv
             state.battlefield.append(COMMANDER)
             log.append({"action":"cast_commander","turn":state.turn})
 
-    # Genji Glove: Equip {3} e um custo separado do cast ({5}). O motor nao rastreia mana
-    # gasta ao longo do turno (mesma simplificacao que ja existia pra tudo mais), entao modelamos:
-    # equipa no MESMO turno do cast se total_mana >= 8 (cobre cast+equip juntos sob o teto do modelo),
-    # senao equipa automaticamente no turno seguinte (mana total ja cobre os 3 de equip sozinho).
+    # Genji Glove: Equip {3} e um custo separado do cast ({5}). Agora que o motor rastreia
+    # mana gasta no turno (mana_spent_this_turn), equipa assim que sobrar mana suficiente -
+    # seja no mesmo turno do cast (depois de pagar o cast) ou num turno seguinte.
     if state.genji_glove_in_play and not state.genji_glove_equipped and any(is_creature(c) for c in state.battlefield):
-        cast_this_turn = state.turn == next((e.get("turn") for e in log if e.get("action")=="cast" and e.get("card")=="Genji Glove"), None)
-        if (cast_this_turn and total_mana(state) >= 8) or (not cast_this_turn and total_mana(state) >= 3):
+        if remaining_mana(state) >= 3:
+            state.mana_spent_this_turn += 3
             state.genji_glove_equipped = True
             state.genji_glove_equipped_turn = state.turn
             log.append({"action": "genji_glove_equipped", "turn": state.turn})
@@ -517,6 +522,7 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
 
     state.hand.remove(card)
     state.spells_cast += 1
+    state.mana_spent_this_turn += C(card).mv
 
     if "Instant" in C(card).types or "Sorcery" in C(card).types:
         if card != "Germination Practicum":  # ela e exilada, nao vai pro cemiterio
@@ -634,6 +640,7 @@ def combat_step(state: GameState, log: List[Dict]):
 def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.turn = turn
     state.land_played = False
+    state.mana_spent_this_turn = 0
 
     log = [{"turn": turn, "phase": "start", "hand_size": len(state.hand),
             "battlefield_count": len(state.battlefield), "mana_est": total_mana(state)}]
