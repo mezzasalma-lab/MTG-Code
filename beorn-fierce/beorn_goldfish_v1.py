@@ -239,6 +239,42 @@ for name, mv, typ, tags in finisher_defs:
 # -------- Tokens --------
 add("Bear Token", 0, {"Creature"}, {"bear","token"})
 
+# -------- Correcao de g_pips reais --------
+# Os blocos acima (draw_defs, removal_defs, protection_defs, bear_defs,
+# counters_defs, finisher_defs) davam g_pips=1 pra TODA carta do grupo, sem olhar
+# o custo de mana real - errado tanto pra cartas incolores (Chronicle of Victory
+# {6}, Genji Glove {5}, Roaming Throne {4}, etc, que nao deveriam exigir nenhuma
+# fonte verde) quanto pra cartas GG/GGG/GGGG (Craterhoof {G}{G}{G}, Great Henge
+# {G}{G}, Ghalta {G}{G}, Unnatural Growth {G}{G}{G}{G}, etc, que exigiam so 1
+# fonte verde quando deveriam exigir 2-4). ramp_defs tinha uma formula diferente
+# mas tambem errada pro Radagast (conflava "produz mana verde" com "custa mana
+# verde" - Radagast nao produz mana mas custa {2}{G}{G}). Corrigido aqui com os
+# pips reais de cada carta (contagem de {G} no mana_cost real, Scryfall).
+REAL_G_PIPS = {
+    "Ambush Viper": 1, "Archdruid's Charm": 3, "Ayula, Queen Among Bears": 1,
+    "Ayula's Influence": 3, "Beast Whisperer": 2, "Beast Within": 1,
+    "Beorn, Reluctant Host": 1, "Beorn's Hospitality": 1, "Chameleon Colossus": 2,
+    "Chronicle of Victory": 0, "Cultivate": 1, "Craterhoof Behemoth": 3,
+    "Dancing from Dark to Dawn": 2, "Emerald Medallion": 0, "Eternal Witness": 2,
+    "Ezuri's Predation": 3, "Firdoch Core": 0, "Forgotten Ancient": 1,
+    "Lumra, Bellow of the Woods": 2, "Garruk's Uprising": 1, "Genji Glove": 0,
+    "Germination Practicum": 2, "The Great Henge": 2, "Ghalta, Primal Hunger": 2,
+    "Gigantic Big Bear": 2, "Goreclaw, Terror of Qal Sisma": 1, "Haywire Mite": 0,
+    "Heroic Intervention": 1, "Allosaurus Shepherd": 1, "Last March of the Ents": 2,
+    "Lightning Greaves": 0, "Little Bear": 1, "Llanowar Elves": 1, "Lotus Cobra": 1,
+    "Managorger Hydra": 1, "Maskwood Nexus": 0, "Necklace of Girion": 1,
+    "Natural Order": 2, "Obscuring Haze": 1, "Ohran Frostfang": 2,
+    "Patchwork Banner": 0, "Radagast of Rhosgobel": 2, "Defiler of Vigor": 2,
+    "Return of the Wildspeaker": 1, "Roaming Throne": 0, "Sakura-Tribe Elder": 1,
+    "Selvala, Heart of the Wilds": 2, "Shamanic Revelation": 2, "Sol Ring": 0,
+    "Solemn Simulacrum": 0, "Song of the Dryads": 1, "Thought Vessel": 0,
+    "Springleaf Parade": 2, "Three Visits": 1, "Tireless Provisioner": 1,
+    "Tireless Tracker": 1, "Titania's Command": 2, "Toski, Bearer of Secrets": 1,
+    "Tribute to the World Tree": 3, "Unnatural Growth": 4,
+}
+for _name, _pips in REAL_G_PIPS.items():
+    CARD_DB[_name].g_pips = _pips
+
 # =========================================================
 # PARSING
 # =========================================================
@@ -336,6 +372,10 @@ class GameState:
 
     # Clues da Tireless Tracker (investigate via landfall), gastos com mana sobrando.
     clues: int = 0
+
+    # Radagast of Rhosgobel: "The first creature spell you cast each turn costs {2}
+    # less." Resetado True a cada turno, consumido no primeiro creature spell pago.
+    radagast_discount_available: bool = True
 
     def draw(self, n=1, source="draw"):
         got = 0
@@ -443,8 +483,67 @@ def is_forest_for_landfall(state: GameState, card: str) -> bool:
     # land types" - qualquer terreno entrando conta como Floresta enquanto ela estiver em campo.
     return card == "Forest" or state.has("Yavimaya, Cradle of Growth")
 
+# =========================================================
+# REDUCAO DE CUSTO (Ghalta, Great Henge, Goreclaw, Defiler of Vigor,
+# Radagast, Emerald Medallion)
+# =========================================================
+#
+# Poder total em campo = soma do BASE_POWER de cada criatura + counters_on_board
+# inteiro. Isso e EXATO pra poder total (nao importa em qual criatura o contador
+# esta - a soma e a mesma), entao nao e uma premissa, e so aritmetica.
+#
+# Ja "maior poder em campo" (usado pelo Great Henge) exige saber ONDE os
+# contadores agregados foram parar, o que esse motor nao rastreia por criatura.
+# Premissa explicita (nao e dado real, mas e otimista/realista): assume que todos
+# os contadores dispendidos foram pra sua MAIOR criatura, que e exatamente o que
+# um jogador otimo faria em qualquer gatilho com "target creature you control"
+# (a grande maioria dos geradores de contador desse deck).
+
+def total_power_in_play(state: GameState) -> int:
+    return sum(BASE_POWER.get(c, 0) for c in state.battlefield if is_creature(c)) + state.counters_on_board
+
+def greatest_power_in_play(state: GameState) -> int:
+    creatures = [c for c in state.battlefield if is_creature(c)]
+    if not creatures:
+        return 0
+    return max(BASE_POWER.get(c, 0) for c in creatures) + state.counters_on_board
+
+def effective_cost(state: GameState, card: str) -> int:
+    mv = C(card).mv
+    reduction = 0
+
+    if card == "Ghalta, Primal Hunger":
+        reduction += total_power_in_play(state)
+
+    if card == "The Great Henge":
+        reduction += greatest_power_in_play(state)
+
+    # Goreclaw: "Creature spells you cast with power 4 or greater cost {2} less."
+    if state.has("Goreclaw, Terror of Qal Sisma") and card != "Goreclaw, Terror of Qal Sisma" \
+            and is_creature(card) and BASE_POWER.get(card, 0) >= 4:
+        reduction += 2
+
+    # Emerald Medallion: "Green spells you cast cost {1} less to cast."
+    if state.has("Emerald Medallion") and C(card).g_pips >= 1:
+        reduction += 1
+
+    # Defiler of Vigor: "you may pay 2 life... those spells cost {G} less."
+    # Sim nao rastreia vida - premissa: sempre paga (vida nao e um recurso escasso
+    # nesse modelo), entao green permanent spells sempre levam o desconto.
+    if state.has("Defiler of Vigor") and card != "Defiler of Vigor" and C(card).g_pips >= 1 \
+            and not ({"Instant", "Sorcery"} & C(card).types):
+        reduction += 1
+
+    # Radagast: "The first creature spell you cast each turn costs {2} less."
+    if state.radagast_discount_available and state.has("Radagast of Rhosgobel") \
+            and card != "Radagast of Rhosgobel" and is_creature(card):
+        reduction += 2
+
+    # Reducao generica nunca reduz abaixo dos pips coloridos do custo (CR 601.2f).
+    return max(C(card).g_pips, mv - reduction)
+
 def can_cast(state: GameState, card: str) -> bool:
-    if remaining_mana(state) < C(card).mv:
+    if remaining_mana(state) < effective_cost(state, card):
         return False
     pips = C(card).g_pips
     if pips >= 2:
@@ -558,7 +657,7 @@ def main_phase(state: GameState, log: List[Dict]):
             state.commander_in_play = True
             state.commander_cast_turn = state.turn
             state.spells_cast += 1
-            state.mana_spent_this_turn += C(COMMANDER).mv
+            state.mana_spent_this_turn += effective_cost(state, COMMANDER)
             state.battlefield.append(COMMANDER)
             on_creature_enters(state, COMMANDER, log)
             log.append({"action":"cast_commander","turn":state.turn})
@@ -575,7 +674,7 @@ def main_phase(state: GameState, log: List[Dict]):
             state.commander_in_play = True
             state.commander_cast_turn = state.turn
             state.spells_cast += 1
-            state.mana_spent_this_turn += C(COMMANDER).mv
+            state.mana_spent_this_turn += effective_cost(state, COMMANDER)
             state.battlefield.append(COMMANDER)
             on_creature_enters(state, COMMANDER, log)
             log.append({"action":"cast_commander","turn":state.turn})
@@ -746,9 +845,14 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
     if state.managorger_in_play:
         state.managorger_counters += 1
 
+    cost = effective_cost(state, card)
+    if state.radagast_discount_available and state.has("Radagast of Rhosgobel") \
+            and card != "Radagast of Rhosgobel" and is_creature(card):
+        state.radagast_discount_available = False
+
     state.hand.remove(card)
     state.spells_cast += 1
-    state.mana_spent_this_turn += C(card).mv
+    state.mana_spent_this_turn += cost
 
     if "Instant" in C(card).types or "Sorcery" in C(card).types:
         if card != "Germination Practicum":  # ela e exilada, nao vai pro cemiterio
@@ -896,6 +1000,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.land_played = False
     state.mana_spent_this_turn = 0
     state.bonus_mana_this_turn = 0
+    state.radagast_discount_available = True
 
     log = [{"turn": turn, "phase": "start", "hand_size": len(state.hand),
             "battlefield_count": len(state.battlefield), "mana_est": total_mana(state)}]

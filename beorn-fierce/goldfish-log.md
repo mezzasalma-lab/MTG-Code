@@ -454,6 +454,37 @@ Impacto moderado e no sentido esperado: mais compra (draw engines reais agora fu
 
 ---
 
+### Correção #4 — redução de custo baseada em poder (Ghalta, Great Henge, Goreclaw, Radagast, Emerald Medallion, Defiler of Vigor)
+
+**Gatilho (usuário):** escolha explícita entre as opções de continuação — priorizar a maior peça arquitetural que faltava, já sinalizada como limitação conhecida no Jogo 6 ("a taxa de 42,8%/48,4% provavelmente subestima a taxa real, porque o simulador trata Ghalta e Great Henge como CMC cheio").
+
+**Implementado:**
+- `total_power_in_play(state)` — soma exata (não é aproximação: poder total não depende de qual criatura tem qual contador, só da soma) usada pelo Ghalta ("custa {X} menos, onde X é o poder total das suas criaturas").
+- `greatest_power_in_play(state)` — usado pelo Great Henge ("custa {X} menos, onde X é o maior poder"). Esse **é** uma premissa explícita: como o sim só rastreia `counters_on_board` como total agregado (não por criatura), assume que todos os contadores foram parar na sua maior criatura — é o que um jogador ótimo faria em qualquer gatilho "target creature you control" (a maioria dos geradores de contador do deck), e é a estimativa mais otimista/realista disponível sem reescrever o motor pra rastrear contadores por criatura.
+- `effective_cost(state, card)` centraliza todos os redutores: Ghalta, Great Henge, Goreclaw ("creature spells com poder 4+ custam {2} menos"), Emerald Medallion ("green spells custam {1} menos"), Defiler of Vigor ("pode pagar 2 vida: green permanent spells custam {G} menos" — sim não rastreia vida, então assume que sempre paga), Radagast ("a primeira creature spell no turno custa {2} menos" — nova flag `radagast_discount_available`, resetada a cada turno, consumida no primeiro creature spell pago). Toda redução respeita o piso dos pips coloridos (CR 601.2f: redução genérica nunca reduz abaixo do custo colorido).
+- `can_cast()` e `cast_spell()` agora usam `effective_cost()` em vez do `mv` cru — inclusive nos dois pontos de cast do comandante.
+
+**Achado lateral, corrigido na mesma rodada:** ao montar as tabelas de poder pra isso, notei que `g_pips` (pips de `{G}` no custo, usado pra checar "fontes verdes suficientes") estava errado pra ~40 cartas — os blocos de definição (`draw_defs`, `removal_defs`, `protection_defs`, `bear_defs`, `counters_defs`, `finisher_defs`) davam `g_pips=1` pra **todo mundo do grupo**, sem olhar o custo real. Isso deixava cartas incolores (Chronicle of Victory `{6}`, Genji Glove `{5}`, Roaming Throne `{4}`, Solemn Simulacrum `{4}`, etc.) exigindo 1 fonte verde à toa, e cartas `{G}{G}`/`{G}{G}{G}`/`{G}{G}{G}{G}` (Craterhoof `{G}{G}{G}`, Great Henge `{G}{G}`, Unnatural Growth `{G}{G}{G}{G}`, Tribute to the World Tree `{G}{G}{G}`, Archdruid's Charm `{G}{G}{G}`, Ayula's Influence `{G}{G}{G}`, etc.) exigindo só 1 quando precisam de 2-4. `ramp_defs` tinha uma fórmula própria que também errava o Radagast (conflava "produz mana verde" com "custa mana verde" — Radagast não produz, mas custa `{2}{G}{G}`). Corrigido com uma tabela `REAL_G_PIPS` com os pips reais de cada carta (Scryfall), aplicada sobre o `CARD_DB` depois de todos os `add()`.
+
+**Resultado (n=2000, seed_base=6000000, antes → depois):**
+
+| Métrica | Antes (Correção #3) | Depois (Correção #4) |
+|---|---|---|
+| Avg spells cast | 10.76 | 11.53 |
+| Avg extra draws (gatilhos) | 8.53 | 9.56 |
+| Avg finishers resolvidos | 0.07 | 0.23 |
+| **% de jogos com finisher até T8** | **6.8%** | **21.6%** |
+| Avg turno do 1º finisher relevante | 7.00 | 6.71 |
+| Avg battlefield final | 16.79 | 17.59 |
+
+Confirma a hipótese do seu Jogo 6: a taxa de finisher estava mesmo subestimada por tratar Ghalta/Great Henge/Craterhoof (via Goreclaw/Radagast) como CMC cheio. Com redução de custo real, mais que triplicou (6.8% → 21.6%) — o efeito mais forte de qualquer correção nesta sessão depois do bug de mana do turno.
+
+**Ainda não modelado (documentado, não é bug):** Ghalta/Great Henge não têm floor extra além dos pips coloridos — na prática eles quase sempre viram apenas `{G}{G}` de custo assim que o board tem poder suficiente, o que é o comportamento real da carta. Springleaf Parade (spell `{X}{G}{G}`) continua sem tratamento de X — fica pra uma rodada futura se quiser.
+
+**Robustez:** sweep de 20.000 jogos, 0 erros, 0 timeouts.
+
+---
+
 <!-- Para novas partidas avulsas, use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
