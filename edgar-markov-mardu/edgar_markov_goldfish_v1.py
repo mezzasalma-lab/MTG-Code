@@ -486,9 +486,10 @@ class GameState:
     # de combo_hunt() (gated por COMBO_HUNTING_POLICY=False por
     # padrao) - na politica DEFAULT (o batch oficial), os 2 tutores
     # eram conjurados as cegas sem NENHUM efeito de busca. Emeritus of
-    # Woe (mecanica "prepared": entra ja preparado = 1 Demonic Tutor
-    # de graca na hora, e fica preparado de novo toda vez que 2+
-    # criaturas morrem no turno) era 100% ausente.
+    # Woe (mecanica "prepared": entra ja preparado = permissao de
+    # conjurar 1 copia do Demonic Tutor na hora - AINDA pagando
+    # {1}{B}=2, ver try_emeritus_prepared_tutor - e fica preparado de
+    # novo toda vez que 2+ criaturas morrem no turno) era 100% ausente.
     tutors_used_total: int = 0
     emeritus_of_woe_tutors: int = 0
     emeritus_prepared: bool = False
@@ -845,16 +846,24 @@ def apply_etb(state: GameState, card: str, log: List[Dict]):
         # Achado real 2026-08-27 (usuario: "o Emeritus of Woe tem o
         # Demonic Tutor Prepared, mais um tutor!"): "This creature
         # enters prepared. (While it's prepared, you may cast a copy
-        # of its spell.)" - a copia e' de GRACA (nao paga o {1}{B} do
-        # Demonic Tutor de novo), disponivel na hora que ele entra.
-        # 100% ausente antes - so a tag 'tutor' decorativa existia.
-        target = _tutor_target(state)
-        if target:
-            state.library.remove(target)
-            state.hand.append(target)
-            state.tutors_used_total += 1
-            state.emeritus_of_woe_tutors += 1
-            log.append({"trigger": "emeritus_of_woe_etb_tutor", "found": target, "turn": state.turn})
+        # of its spell.)" - a 1a implementacao tratou a copia como
+        # GRATIS, mas o usuario corrigiu (2a rodada, achado real de
+        # novo): "prepared" so' te DA PERMISSAO de conjurar a copia
+        # (mesmo sem a carta fisica em maos) - o texto de lembrete NAO
+        # diz "without paying its mana cost" (diferente de mecanicas
+        # que sao free-cast de verdade, ex. o kicker do Aang's Journey
+        # no Hei Bai) - ainda paga o custo REAL do Demonic Tutor,
+        # {1}{B} = 2 mana generico neste modelo. So dispara se houver
+        # mana sobrando.
+        if remaining_mana(state) >= 2:
+            target = _tutor_target(state)
+            if target:
+                state.mana_spent_this_turn += 2
+                state.library.remove(target)
+                state.hand.append(target)
+                state.tutors_used_total += 1
+                state.emeritus_of_woe_tutors += 1
+                log.append({"trigger": "emeritus_of_woe_etb_tutor", "found": target, "turn": state.turn})
 
 def do_upkeep(state: GameState, log: List[Dict]):
     # Ophiomancer: "At the beginning of each upkeep, if you control no
@@ -894,10 +903,11 @@ def do_end_step(state: GameState, log: List[Dict]):
 
     # Emeritus of Woe: "At the beginning of your end step, if two or
     # more creatures died this turn, this creature becomes prepared."
-    # A copia de graca do Demonic Tutor e' consumida no INICIO do
-    # proximo main_phase (velocidade de sorcery de verdade), ver
-    # main_phase(). Este deck sacrifica 2 tokens/turno com facilidade
-    # (sac_loop), entao essa condicao e' bem alcancavel.
+    # A copia do Demonic Tutor (ainda pagando {1}{B}=2, ver
+    # try_emeritus_prepared_tutor) e' consumida em ate 2 janelas do
+    # proximo turno (fim do main_phase inicial, e de novo depois da
+    # mana extra do sac_loop). Este deck sacrifica 2 tokens/turno com
+    # facilidade (sac_loop), entao essa condicao e' bem alcancavel.
     if state.has("Emeritus of Woe") and state.creatures_died_this_turn >= 2:
         state.emeritus_prepared = True
         log.append({"trigger": "emeritus_of_woe_prepared", "turn": state.turn})
@@ -1109,19 +1119,6 @@ def cast_available_spells(state: GameState, log: List[Dict]):
         log.append({"trigger": "both_combo_pieces_in_play", "turn": state.turn})
 
 def main_phase(state: GameState, log: List[Dict]):
-    # Emeritus of Woe "prepared" (ver do_end_step do turno anterior):
-    # consumido no INICIO do main_phase, velocidade real de sorcery
-    # (pilha vazia, seu turno).
-    if state.emeritus_prepared:
-        target = _tutor_target(state)
-        if target:
-            state.library.remove(target)
-            state.hand.append(target)
-            state.tutors_used_total += 1
-            state.emeritus_of_woe_tutors += 1
-            log.append({"trigger": "emeritus_of_woe_prepared_tutor", "found": target, "turn": state.turn})
-        state.emeritus_prepared = False
-
     if COMBO_HUNTING_POLICY:
         combo_hunt(state, log)
 
@@ -1135,6 +1132,27 @@ def main_phase(state: GameState, log: List[Dict]):
         log.append({"action": "cast_commander", "turn": state.turn})
 
     cast_available_spells(state, log)
+    try_emeritus_prepared_tutor(state, log)
+
+def try_emeritus_prepared_tutor(state: GameState, log: List[Dict]):
+    # Emeritus of Woe "prepared" (setado no do_end_step do turno
+    # anterior): "you may cast a copy of its spell" - so' PERMISSAO,
+    # ainda paga o custo real do Demonic Tutor ({1}{B}=2, achado real
+    # 2026-08-27, usuario corrigiu: "o tutor... nao e' gratuito, custa
+    # 2cmc pra cast"). Chamado 2x por turno (fim do main_phase E depois
+    # da 2a passada de cast_available_spells no play_turn, ver la) pra
+    # tambem poder usar mana sobrando do sac_loop (Ashnod's/Treasure) -
+    # mesmo padrao ja usado pro resto do motor.
+    if state.emeritus_prepared and remaining_mana(state) >= 2:
+        target = _tutor_target(state)
+        if target:
+            state.mana_spent_this_turn += 2
+            state.library.remove(target)
+            state.hand.append(target)
+            state.tutors_used_total += 1
+            state.emeritus_of_woe_tutors += 1
+            log.append({"trigger": "emeritus_of_woe_prepared_tutor", "found": target, "turn": state.turn})
+            state.emeritus_prepared = False
 
 def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.turn = turn
@@ -1151,6 +1169,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     main_phase(state, log)
     sac_loop(state, log)
     cast_available_spells(state, log)  # mana extra de altares/Treasures do sac_loop, ver docstring de cast_available_spells
+    try_emeritus_prepared_tutor(state, log)
     welcoming_vampire_check(state, log)
     combat_step(state, log)
     do_end_step(state, log)

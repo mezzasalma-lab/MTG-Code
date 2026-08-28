@@ -177,6 +177,37 @@ Impacto líquido pequeno nos agregados de drain/morte (ruído esperado — os tu
 
 ---
 
+## Correção #3 — Firdoch Core (não está na lista) + Emeritus of Woe cobrando mana errado (usuário corrigiu direto)
+
+Usuário: *"E mais uma vez, Firdoch core trigga a eminence do Markov tb!"* — depois, ao pedir confirmação do nome exato: *"Achei que tinha colocado o artefato Firdoch Core neste deck tb, é o mesmo que está no Ur-Dragon"* + *"O tutor do Eminence of Woe não é gratuito, ele custa 2cmc para cast."*
+
+### Verificado — Firdoch Core NÃO é bug de simulador, é ausência real na lista
+
+Conferido `oracle_text` real (Scryfall): **Firdoch Core** é `Kindred Artifact — Shapeshifter`, `{3}`, *"Changeling (This card is every creature type.) {T}: Add one mana of any color. {4}: This artifact becomes a 4/4 artifact creature until end of turn."* Changeling faz ele contar como "Vampire spell" ao ser conjurado (dispararia a Eminence de verdade, igual o usuário lembrava), e ele já está confirmado e implementado no simulador do Ur-Dragon (`ur-dragon-wurbg/goldfish-log.md`, Correção #3, 2026-08-23).
+
+**Mas ele não está em `edgar-markov-mardu/lista.md`** — a lista atual das 99 cartas + comandante não inclui o Firdoch Core. Isso não é um bug de simulador pra corrigir (o simulador está certo em não contar uma carta que não está na lista) — é uma decisão de deckbuilding em aberto: o usuário lembrava de ter colocado, mas a lista real não tem. Fica pendente de confirmação do usuário se quer adicionar (e o que cortar, já que Commander é sempre 100 cartas exatas) — não alterei `lista.md` sem essa decisão.
+
+### Corrigido (achado real novo — usuário corrigiu direto)
+
+**Emeritus of Woe // Demonic Tutor — o tutor via "prepared" estava sendo tratado como grátis, mas não é.** Reconferido o oráculo: *"This creature enters prepared. (While it's prepared, you may cast a copy of its spell. Doing so unprepares it.)"* — o texto de lembrete **não diz "without paying its mana cost"** (diferente de mecânicas que são free-cast de verdade, como o kicker do Aang's Journey no Hei Bai) — "prepared" só dá a PERMISSÃO de conjurar a cópia (mesmo sem a carta física na mão), o custo real do Demonic Tutor (`{1}{B}` = 2 mana) ainda é pago. A implementação da Correção #2 (rodada anterior) tratava como grátis — bug real, corrigido: `try_emeritus_prepared_tutor()` agora só dispara com `remaining_mana(state) >= 2`, gastando os 2 mana de verdade, chamado em 2 janelas por turno (fim do main_phase inicial + depois da mana extra do sac_loop, mesmo padrão já usado pro resto do motor) pra não deixar a "preparação" perdida se não sobrar mana na primeira janela.
+
+Testado: 300 jogos smoke test (0 erros, as 2 políticas), 25.000 jogos de robustez política default + 15.000 política `COMBO_HUNTING_POLICY=True` (0 erros/timeouts nas 2).
+
+**Impacto real** (`n=2000`, política default, `seed_base=6000000`, comparado com o estado pós-Correção #2):
+
+| métrica | antes (Correção #2) | depois |
+|---|---|---|
+| Avg tutores via Emeritus of Woe | 0,11 | **0,05 (quase metade)** |
+| Avg tutores usados no total | 0,40 | 0,34 |
+| Avg drain_total | 2,16 | 2,14 |
+| Combo ligado | 0,7% | 0,5% |
+
+Queda pequena e proporcional — exatamente o esperado de exigir 2 mana de verdade em vez de disparar sempre de graça. Nenhuma outra métrica teve mudança fora do ruído normal de "tutor busca carta diferente, muda ligeiramente a curva do resto do jogo".
+
+`lista.md` não mudou (a questão do Firdoch Core segue em aberto, aguardando decisão do usuário).
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
