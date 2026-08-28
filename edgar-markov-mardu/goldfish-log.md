@@ -142,6 +142,41 @@ Salto real, não inflação — a maior parte vem de mecânicas que estavam **co
 
 ---
 
+## Correção #2 — motor de tutores estava incompleto (usuário perguntou direto)
+
+Usuário: *"Vc contabilizou a eminence do Edgar Markov, certo? Toda vez que Vito (ou qq outro vampiro) entra por cast ele gera um vampiro 1/1 com lifelink que tb pode ser sacrificado para o Diabolic Intent, ou usado pelo Skullclamp, etc… Além disso o Emeritus of Woe tem o Demonic Tutor Prepared, mais um tutor! Vc contabilizou isso tudo?"*
+
+### Verificado com teste real (já estava correto, sem bug)
+
+- **A Eminence em si.** `eminence_trigger()` cria o token corretamente sempre que um Vampiro é conjurado (Edgar em campo ou zona de comando). Correção de detalhe: o token da Eminence do **próprio Edgar Markov** é "1/1 black Vampire creature token" — **sem lifelink** (oráculo real, conferido de novo no Scryfall). Lifelink é do token do **Legion's Landing** ("1/1 white Vampire creature token with lifelink") — cartas diferentes. Não muda nenhuma métrica (este simulador não modela combate/vida própria real), só uma correção de precisão.
+- **Os tokens da Eminence já alimentavam o Skullclamp.** `state.tokens` é a MESMA lista usada pelo `sac_loop()` (que já processa Ashnod's Altar/Phyrexian Altar/Viscera Seer/Goblin Bombardment) e pelo `Skullclamp` (implementado na Correção #1) — o primeiro sacrifício de cada turno já é o mesmo evento que dispara o draw 2 do Skullclamp. Já estava certo.
+
+### Corrigido (achados reais novos — o usuário estava certo em desconfiar)
+
+1. **Diabolic Intent nunca considerava sacrificar um token da Eminence.** O custo adicional dele ("sacrifice a creature") só olhava pra `state.battlefield` (criaturas nomeadas) — nunca pra `state.tokens` (o excedente de Vampiros 1/1 que É literalmente pra isso que servem). Um jogador de verdade sempre sacrifica o token de graça antes de perder uma carta real. Corrigido com `_pay_diabolic_intent_cost()`, compartilhado entre a política default e o `combo_hunt()`.
+2. **Vampiric Tutor e Diabolic Intent só tinham busca de verdade DENTRO do `combo_hunt()`**, que só roda com `COMBO_HUNTING_POLICY=True` — **não é o padrão** (`False`). Isso significa que no batch oficial reportado ao usuário até agora (`n=2000`, política default), os 2 tutores reais do deck eram conjurados às cegas, gastando carta e mana, **sem nenhum efeito de busca**. Corrigido: nova função `_tutor_target()` (prioriza fechar o combo se só falta 1 peça, senão pega o maior mana value disponível na biblioteca — mesma convenção "pega o melhor" usada nos outros decks desta sessão), usada tanto pela política default quanto pelo `combo_hunt()`.
+3. **Emeritus of Woe // Demonic Tutor — 100% ausente**, exatamente como o usuário apontou. "This creature enters prepared" dá 1 cópia de graça do Demonic Tutor (busca real) na hora que ele resolve — sem pagar `{1}{B}` de novo. E "at the beginning of your end step, if two or more creatures died this turn, this creature becomes prepared" o deixa preparado de novo toda vez que 2+ criaturas morrem no turno — bem alcançável neste deck (o `sac_loop` já sacrifica até 2 tokens por turno sozinho). Implementado: tutor de graça no ETB (`apply_etb`), flag `emeritus_prepared` setada em `do_end_step()`, consumida no início do próximo `main_phase()` (velocidade real de sorcery).
+4. **Bug de robustez pego durante o teste desta correção:** com o fix #1 (Diabolic Intent agora podendo ser conjurado na política default, não só dentro do `combo_hunt`), faltava excluir "Diabolic Intent" do loop genérico de conjuração quando não há NENHUM fodder disponível (nem token, nem criatura nomeada) — a magica exige sacrifício como custo adicional obrigatório, sem isso não pode ser conjurada de verdade. Corrigido no filtro de `castables` de `cast_available_spells()`.
+
+Testado: 300 jogos smoke test (0 erros, as 2 políticas), 25.000 jogos de robustez política default + 15.000 política `COMBO_HUNTING_POLICY=True` (0 erros/timeouts nas 2).
+
+**Impacto real** (`n=2000`, política default, `seed_base=6000000`, comparado com o estado pós-Correção #1):
+
+| métrica | antes (Correção #1) | depois |
+|---|---|---|
+| Avg tutores usados no total (novo) | 0,00 | **0,40** |
+| Avg tutores via Emeritus of Woe (novo) | 0,00 | 0,11 |
+| Avg criaturas sacrificadas | 1,39 | 1,34 |
+| Avg gatilhos de morte | 1,28 | 1,24 |
+| Avg drain_total | 2,20 | 2,16 |
+| Combo ligado | 0,6% | 0,7% |
+
+Impacto líquido pequeno nos agregados de drain/morte (ruído esperado — os tutores agora buscam cartas diferentes das que sairiam por compra normal, mudando a curva de jogo sem necessariamente aumentar volume de gatilhos), mas o achado em si é real e relevante: **3 tutores reais do deck (Vampiric Tutor, Diabolic Intent, Demonic Tutor via Emeritus of Woe) foram de zero efeito pra ~0,4 buscas por partida.** Isso é consistência de simulador, não inflação de número — o deck sempre teve esses tutores, só não estavam sendo modelados.
+
+`lista.md` não mudou.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

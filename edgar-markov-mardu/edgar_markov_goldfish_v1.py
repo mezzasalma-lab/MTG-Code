@@ -480,6 +480,20 @@ class GameState:
     bastion_of_remembrance_tokens: int = 0
     token_doubler_events: int = 0
 
+    # Achado real 2026-08-27 (usuario: "Vc contabilizou a eminence... e
+    # o Emeritus of Woe tem o Demonic Tutor Prepared, mais um tutor!"):
+    # Vampiric Tutor/Diabolic Intent so tinham busca de verdade DENTRO
+    # de combo_hunt() (gated por COMBO_HUNTING_POLICY=False por
+    # padrao) - na politica DEFAULT (o batch oficial), os 2 tutores
+    # eram conjurados as cegas sem NENHUM efeito de busca. Emeritus of
+    # Woe (mecanica "prepared": entra ja preparado = 1 Demonic Tutor
+    # de graca na hora, e fica preparado de novo toda vez que 2+
+    # criaturas morrem no turno) era 100% ausente.
+    tutors_used_total: int = 0
+    emeritus_of_woe_tutors: int = 0
+    emeritus_prepared: bool = False
+    creatures_died_this_turn: int = 0
+
     combo_active: bool = False
     combo_active_turn: Optional[int] = None
     combo_enabler: Optional[str] = None
@@ -740,6 +754,48 @@ def welcoming_vampire_check(state: GameState, log: List[Dict]):
     log.append({"trigger": "welcoming_vampire", "times": times, "turn": state.turn})
     state.welcoming_vampire_trigger_pending = 0
 
+def _tutor_target(state: GameState) -> Optional[str]:
+    # Heuristica generica de "melhor carta disponivel" pra qualquer
+    # tutor deste deck (Vampiric Tutor, Diabolic Intent, Demonic Tutor
+    # do Emeritus of Woe). Prioridade 1: fechar o combo se so falta 1
+    # peca e a outra ja esta resolvida/na mao - motivo real: um
+    # jogador de verdade sempre fecha o combo antes de buscar
+    # qualquer outra coisa. Prioridade 2 (fallback generico, mesma
+    # convencao "pega o melhor" usada nos outros decks desta sessao):
+    # maior mana value ainda na biblioteca.
+    have = [p for p in COMBO_PIECES if p in state.battlefield or p in state.hand]
+    missing = [p for p in COMBO_PIECES if p not in state.battlefield and p not in state.hand]
+    if have and missing and missing[0] in state.library:
+        return missing[0]
+    pool = [c for c in state.library if not is_land(c)]
+    if not pool:
+        return None
+    return max(pool, key=lambda c: C(c).mv)
+
+def _diabolic_intent_has_fodder(state: GameState) -> bool:
+    return bool(state.tokens) or any(
+        is_creature(c) and c != COMMANDER and c not in COMBO_PIECES for c in state.battlefield)
+
+def _pay_diabolic_intent_cost(state: GameState, log: List[Dict]):
+    # "As an additional cost to cast this spell, sacrifice a creature."
+    # Achado real 2026-08-27 (usuario: "pode tb ser sacrificado pro
+    # Diabolic Intent"): prioriza um token da Eminence disponivel
+    # (fodder de graca, ja excedente) sobre uma criatura NOMEADA de
+    # verdade - um jogador real sempre prefere isso. So chamar depois
+    # de confirmar _diabolic_intent_has_fodder(state).
+    if state.tokens:
+        state.tokens.pop()
+        state.creatures_died_this_turn += 1
+        log.append({"action": "diabolic_intent_sac", "sacrificed": "token", "turn": state.turn})
+        return
+    sac_candidates = [c for c in state.battlefield
+                       if is_creature(c) and c != COMMANDER and c not in COMBO_PIECES]
+    victim = sac_candidates[0]
+    state.battlefield.remove(victim)
+    state.graveyard.append(victim)
+    state.creatures_died_this_turn += 1
+    log.append({"action": "diabolic_intent_sac", "sacrificed": victim, "turn": state.turn})
+
 def _apply_death_payoffs(state: GameState, log: List[Dict], source: str):
     # Elenda, the Dusk Rose: "Whenever ANOTHER creature dies, put a
     # +1/+1 counter on Elenda." Passivo real dela, independente do set
@@ -785,6 +841,20 @@ def apply_etb(state: GameState, card: str, log: List[Dict]):
         state.bastion_of_remembrance_tokens += n
         on_creature_enters(state, log, "Human Soldier Token", count=n)
         log.append({"trigger": "bastion_of_remembrance_etb", "tokens": n, "turn": state.turn})
+    elif card == "Emeritus of Woe":
+        # Achado real 2026-08-27 (usuario: "o Emeritus of Woe tem o
+        # Demonic Tutor Prepared, mais um tutor!"): "This creature
+        # enters prepared. (While it's prepared, you may cast a copy
+        # of its spell.)" - a copia e' de GRACA (nao paga o {1}{B} do
+        # Demonic Tutor de novo), disponivel na hora que ele entra.
+        # 100% ausente antes - so a tag 'tutor' decorativa existia.
+        target = _tutor_target(state)
+        if target:
+            state.library.remove(target)
+            state.hand.append(target)
+            state.tutors_used_total += 1
+            state.emeritus_of_woe_tutors += 1
+            log.append({"trigger": "emeritus_of_woe_etb_tutor", "found": target, "turn": state.turn})
 
 def do_upkeep(state: GameState, log: List[Dict]):
     # Ophiomancer: "At the beginning of each upkeep, if you control no
@@ -822,6 +892,16 @@ def do_end_step(state: GameState, log: List[Dict]):
             gain_life(state, 2, log, source="unholy_annex")
         log.append({"trigger": "unholy_annex_endstep", "turn": state.turn})
 
+    # Emeritus of Woe: "At the beginning of your end step, if two or
+    # more creatures died this turn, this creature becomes prepared."
+    # A copia de graca do Demonic Tutor e' consumida no INICIO do
+    # proximo main_phase (velocidade de sorcery de verdade), ver
+    # main_phase(). Este deck sacrifica 2 tokens/turno com facilidade
+    # (sac_loop), entao essa condicao e' bem alcancavel.
+    if state.has("Emeritus of Woe") and state.creatures_died_this_turn >= 2:
+        state.emeritus_prepared = True
+        log.append({"trigger": "emeritus_of_woe_prepared", "turn": state.turn})
+
 def sac_loop(state: GameState, log: List[Dict]):
     # Ate 2 sacrificios por turno (ver docstring), consumindo tokens de
     # Vampiro disponiveis, se houver pelo menos 1 sac outlet em campo.
@@ -834,6 +914,7 @@ def sac_loop(state: GameState, log: List[Dict]):
             break
         state.tokens.pop()
         state.creatures_sacrificed_total += 1
+        state.creatures_died_this_turn += 1
         if "Ashnod's Altar" in state.battlefield:
             state.mana_spent_this_turn -= 2  # +2 mana efetivo pro resto do turno
         elif "Phyrexian Altar" in state.battlefield:
@@ -927,28 +1008,24 @@ def combo_hunt(state: GameState, log: List[Dict]):
     # criatura ja em campo como custo adicional. Achado real 2026-08-27
     # (via teste de robustez, so aparece com COMBO_HUNTING_POLICY=True):
     # sac_candidates nao excluia as PROPRIAS pecas do combo - dava pra
-    # sacrificar Vito, Thorn of the Dusk Rose (uma criatura de verdade,
-    # unica peca-criatura do combo) buscando a OUTRA peca, o que e'
-    # autodestrutivo (perde uma peca pra achar a outra) e ainda podia
-    # crashar depois: se o combo_hunt rodasse de novo mais tarde
-    # achando Vito Thorn "faltando" (nem em campo nem na mao - foi pro
-    # cemiterio), tentava dar library.remove() numa carta que nao esta
-    # mais na biblioteca.
-    if missing and "Diabolic Intent" in state.hand and can_cast(state, "Diabolic Intent"):
-        sac_candidates = [c for c in state.battlefield
-                           if is_creature(c) and c != COMMANDER and c not in COMBO_PIECES]
-        if sac_candidates:
-            state.hand.remove("Diabolic Intent")
-            state.mana_spent_this_turn += C("Diabolic Intent").mv
-            state.graveyard.append("Diabolic Intent")
-            victim = sac_candidates[0]
-            state.battlefield.remove(victim)
-            state.graveyard.append(victim)
-            target = missing[0]
-            state.library.remove(target)
-            state.hand.append(target)
-            log.append({"action": "diabolic_intent", "sacrificed": victim, "found": target, "turn": state.turn})
-            missing = [p for p in COMBO_PIECES if p not in state.battlefield and p not in state.hand]
+    # sacrificar Vito, Thorn of the Dusk Rose (unica peca-criatura do
+    # combo) buscando a OUTRA peca, autodestrutivo e causava crash
+    # depois. Corrigido; e' o mesmo `_pay_diabolic_intent_cost()` usado
+    # pela politica default agora (achado real 2026-08-27, usuario:
+    # "pode tb ser sacrificado pro Diabolic Intent" - prioriza token da
+    # Eminence disponivel sobre criatura nomeada de verdade).
+    if missing and "Diabolic Intent" in state.hand and can_cast(state, "Diabolic Intent") \
+            and _diabolic_intent_has_fodder(state):
+        state.hand.remove("Diabolic Intent")
+        state.mana_spent_this_turn += C("Diabolic Intent").mv
+        state.graveyard.append("Diabolic Intent")
+        _pay_diabolic_intent_cost(state, log)
+        target = missing[0]
+        state.library.remove(target)
+        state.hand.append(target)
+        state.tutors_used_total += 1
+        log.append({"action": "diabolic_intent", "found": target, "turn": state.turn})
+        missing = [p for p in COMBO_PIECES if p not in state.battlefield and p not in state.hand]
 
     # Vampiric Tutor: busca pro topo da biblioteca (nao pra mao direto) -
     # a proxima compra normal (inicio do proximo turno) pega a carta.
@@ -959,6 +1036,7 @@ def combo_hunt(state: GameState, log: List[Dict]):
         target = missing[0]
         state.library.remove(target)
         state.library.insert(0, target)
+        state.tutors_used_total += 1
         log.append({"action": "vampiric_tutor", "found": target, "turn": state.turn})
 
     # Conjura qualquer peca do combo que ja esteja na mao, com prioridade
@@ -981,7 +1059,11 @@ def cast_available_spells(state: GameState, log: List[Dict]):
     # sac_loop em play_turn(), pra essa mana extra virar spells de
     # verdade em vez de ser descartada no reset do proximo turno.
     for _ in range(8):
-        castables = [c for c in state.hand if c != COMMANDER and not is_land(c) and can_cast(state, c)]
+        castables = [c for c in state.hand if c != COMMANDER and not is_land(c) and can_cast(state, c)
+                     # Diabolic Intent exige sacrificio como custo
+                     # ADICIONAL obrigatorio - sem fodder disponivel a
+                     # magica nao pode ser conjurada de verdade.
+                     and (c != "Diabolic Intent" or _diabolic_intent_has_fodder(state))]
         if not castables:
             break
         castables.sort(key=lambda c: C(c).mv)
@@ -990,6 +1072,30 @@ def cast_available_spells(state: GameState, log: List[Dict]):
         state.mana_spent_this_turn += C(choice).mv
         if C(choice).type in ("Instant", "Sorcery"):
             state.graveyard.append(choice)
+            # Achado real 2026-08-27 (usuario: "Vc contabilizou a
+            # eminence... o Emeritus of Woe tem o Demonic Tutor
+            # Prepared, mais um tutor!"): reconferindo o resto do
+            # motor de tutor, achei que Vampiric Tutor/Diabolic Intent
+            # SO tinham busca de verdade dentro de combo_hunt() (gated
+            # por COMBO_HUNTING_POLICY=False por padrao) - na politica
+            # DEFAULT (o batch oficial reportado ao usuario), os 2
+            # eram conjurados as cegas sem NENHUM efeito de busca.
+            # Corrigido aqui tambem, pra qualquer politica.
+            if choice == "Vampiric Tutor":
+                target = _tutor_target(state)
+                if target:
+                    state.library.remove(target)
+                    state.library.insert(0, target)
+                    state.tutors_used_total += 1
+                    log.append({"action": "vampiric_tutor", "found": target, "turn": state.turn})
+            elif choice == "Diabolic Intent":
+                _pay_diabolic_intent_cost(state, log)
+                target = _tutor_target(state)
+                if target:
+                    state.library.remove(target)
+                    state.hand.append(target)
+                    state.tutors_used_total += 1
+                    log.append({"action": "diabolic_intent", "found": target, "turn": state.turn})
         else:
             state.battlefield.append(choice)
             apply_etb(state, choice, log)
@@ -1003,6 +1109,19 @@ def cast_available_spells(state: GameState, log: List[Dict]):
         log.append({"trigger": "both_combo_pieces_in_play", "turn": state.turn})
 
 def main_phase(state: GameState, log: List[Dict]):
+    # Emeritus of Woe "prepared" (ver do_end_step do turno anterior):
+    # consumido no INICIO do main_phase, velocidade real de sorcery
+    # (pilha vazia, seu turno).
+    if state.emeritus_prepared:
+        target = _tutor_target(state)
+        if target:
+            state.library.remove(target)
+            state.hand.append(target)
+            state.tutors_used_total += 1
+            state.emeritus_of_woe_tutors += 1
+            log.append({"trigger": "emeritus_of_woe_prepared_tutor", "found": target, "turn": state.turn})
+        state.emeritus_prepared = False
+
     if COMBO_HUNTING_POLICY:
         combo_hunt(state, log)
 
@@ -1023,6 +1142,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.mana_spent_this_turn = 0
     state.vito_fanatic_stage_this_turn = 0
     state.welcoming_vampire_trigger_pending = 0
+    state.creatures_died_this_turn = 0
     log = []
 
     do_upkeep(state, log)
@@ -1101,6 +1221,8 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "bastion_of_remembrance_tokens": state.bastion_of_remembrance_tokens,
         "elenda_counters": state.elenda_counters,
         "token_doubler_events": state.token_doubler_events,
+        "tutors_used_total": state.tutors_used_total,
+        "emeritus_of_woe_tutors": state.emeritus_of_woe_tutors,
     }
 
 def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base=6000000):
@@ -1140,6 +1262,8 @@ def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base
     print(f"Avg tokens via Bastion of Remembrance ETB: {sum(r['bastion_of_remembrance_tokens'] for r in results)/n:.2f}")
     print(f"Avg contadores da Elenda (passivo, sem payoff numerico alem do dado): {sum(r['elenda_counters'] for r in results)/n:.2f}")
     print(f"Avg eventos de dobra de token (Anointed Procession/Mondrak): {sum(r['token_doubler_events'] for r in results)/n:.2f}")
+    print(f"Avg tutores usados no total (Vampiric Tutor/Diabolic Intent/Emeritus of Woe): {sum(r['tutors_used_total'] for r in results)/n:.2f}")
+    print(f"Avg tutores via Emeritus of Woe (Demonic Tutor prepared): {sum(r['emeritus_of_woe_tutors'] for r in results)/n:.2f}")
     print()
     print(f"--- Combo Exquisite Blood/Bloodthirsty Conqueror + Vito, Thorn of the Dusk Rose ---")
     print(f"Partidas em que o combo montou E ligou: {100*len(combo_turns)/n:.1f}%")
