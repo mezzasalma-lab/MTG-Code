@@ -350,6 +350,56 @@ inclusive os de lealdade de PWs ao entrarem no jogo!"*
   um anthem de campo inteiro, também deixado de fora.
 - Vale pra **todo deck do repositório** com Class/Saga na lista.
 
+## 10. Antes de sugerir qualquer alteração de deck (corte, adição, troca), levantar TODA a análise relevante primeiro — não só depois de ser questionado
+
+Citação literal do usuário (2026-08-28), durante a avaliação de adicionar
+Morophon, the Boundless ao Ur-Dragon — depois de eu sugerir cortar Sarkhan,
+Soul Aflame sem checar o impacto na curva, e só ter puxado a curva de mana
+completa quando o usuário perguntou *"Mesmo com uma diferença de cmc tão
+grande?"*: *"Pq vc não analisa tudo isso antes de me sugerir?"* — seguido
+de: *"Tem que levantar tudo, combos, estratégias, custo, curva, etc\nVc faz
+isso com mais precisão do que eu"*.
+
+Contexto: sugeri cortar Sarkhan, Soul Aflame (CMC3) pro Morophon (CMC7)
+citando só "faz o mesmo trabalho, é redundante" — sem checar a curva de
+mana do deck inteiro primeiro. Só depois de ser questionado sobre a
+diferença de CMC é que rodei a distribuição real (CMC1:6, CMC2:14, CMC3:15,
+CMC4:3, CMC5:6, CMC6:11, CMC7:6, CMC8:1, CMC9:1), que mostrou que o corte
+proposto tirava carta do slot mais cheio do deck (CMC3) pra empilhar ainda
+mais um slot já carregado (CMC7) — e que existia um corte estruturalmente
+melhor (Ramos, Dragon Engine, CMC6, também tipo Dragão de verdade, então a
+troca mantém a contagem de Dragões em campo neutra E desloca a curva só
++1 em vez de +4). Essa análise deveria ter vindo ANTES da primeira
+sugestão, não depois de ser cobrada.
+
+- **Toda sugestão de alteração de deck** (cortar carta, adicionar carta,
+  trocar carta por outra, redesenhar um pacote/subtema) precisa vir
+  acompanhada da análise completa relevante, levantada ANTES de eu
+  formular a recomendação — não corrigida reativamente depois que o
+  usuário questiona.
+- Análise completa = no mínimo, conforme o que for relevante pro caso:
+  - **Curva de mana** (distribuição CMC de todo o deck, não só da carta
+    envolvida) — pra saber se a troca está esvaziando um slot já cheio,
+    empilhando um slot já carregado, ou preenchendo um buraco real.
+  - **Combos e sinergias reais** entre a carta proposta/cortada e o resto
+    da lista (não só "combo infinito" — inclui anthems, redutores de
+    custo, contadores de tipo/tribo, motores que dependem de contagem de
+    permanentes de um tipo).
+  - **Contagem estrutural relevante** (ex: quantas criaturas de um tipo
+    tribal ficam em campo antes/depois da troca, se isso afeta gatilhos
+    que escalam com essa contagem).
+  - **Custo de mana e cor** (CMC, pips coloridos, quando isso já não
+    estiver coberto pela curva agregada).
+  - **Estratégia/win condition do deck** — se a troca reforça ou destoa do
+    plano de jogo real (ex: deck de rampa pra bombas vs. deck agressivo de
+    curva baixa).
+- Tudo isso sourced do mesmo jeito que qualquer outro dado (Scryfall real,
+  cálculo real sobre a decklist real) — nunca "impressão" ou generalização
+  de memória, mesma exigência da Regra 1.
+- Vale pra **toda sugestão de alteração em qualquer deck**, não só
+  avaliação de card individual isolado — inclui recomendações de corte,
+  adição, e resposta a "vale a pena incluir X?".
+
 ---
 
 <!-- Adicionar novas regras permanentes abaixo conforme o usuário as
