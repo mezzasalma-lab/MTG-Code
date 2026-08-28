@@ -839,6 +839,40 @@ entra (esperado, some 1 turno de vantagem de mana num caso raro).
 
 ---
 
+## Correção #9 — recursão vira 5ª métrica básica obrigatória (regra reforçada)
+
+**Gatilho (usuário):** *"Vc precisa acrescentar a variável recursão e
+interação à lista de variáveis para avaliar, medir e registrar em todos os
+decks tb!"*
+
+**Achado real ao implementar:** `tutors_used_total` misturava 2 categorias
+diferentes no mesmo contador — o ramo de biblioteca do Sanctum of All
+(*"search your library... for a Shrine card"* = tutor) e o ramo de
+cemitério (*"and/or graveyard"* = recursão) incrementavam o MESMO campo.
+Separado: `sanctum_of_all_graveyard_returns` (recursão) agora distinto de
+`tutors_used_total` (só biblioteca). Também achado: **Replenish** ("return
+all enchantment cards from your graveyard to the battlefield") nunca tinha
+NENHUM contador — só o efeito, sem métrica nenhuma pra reportar.
+
+**Ajustado no bloco `--- Metricas basicas ---` já existente (Correção #7):**
+RECURSION (nova, 5ª categoria) = Replenish + Sanctum of All (ramo cemitério)
++ Go-Shintai of Life's Origin + Hall of Heliod's Generosity.
+
+**Resultado:** puramente aditivo pro jogo em si (nenhuma lógica de
+simulação mudou) — confirmado com n=2000, seed_base=6000000: `drain proxy
+total`/`dano proxy total` idênticos aos já reportados na Correção #8
+(21,19 / 161,01). `tutores usados` cai levemente (a fração que era do
+Sanctum of All via cemitério migrou pra `sanctum_of_all_graveyard_returns`
+— reclassificação de métrica, não mudança de comportamento). RECURSION novo:
+avg 0,21/partida.
+
+**Robustez:** sweep de 20.000 jogos (seeds 1400000–1419999, timeout 2s/jogo)
+— 0 erros, 0 timeouts.
+
+`lista.md` não mudou.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

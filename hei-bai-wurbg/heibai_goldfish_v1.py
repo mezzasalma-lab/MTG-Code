@@ -470,6 +470,14 @@ class GameState:
     # com {T}, uma vez por turno (ver comentario no dispatch abaixo).
     life_origin_reanimates_total: int = 0
     heliods_generosity_returns_total: int = 0
+    # Achado real 2026-08-28 (usuario: "acrescente a variavel recursao...
+    # em todos os decks"): Replenish nunca tinha contador nenhum (so o
+    # efeito, sem metrica); Sanctum of All misturava recursao (ramo do
+    # cemiterio) com tutor (ramo da biblioteca) no MESMO contador
+    # tutors_used_total - categorias diferentes por definicao, separadas
+    # aqui.
+    replenish_returns_total: int = 0
+    sanctum_of_all_graveyard_returns: int = 0
 
 
 def draw_cards(state: GameState, n: int):
@@ -961,6 +969,7 @@ def resolve_instant_sorcery(state: GameState, name: str):
         for n in ench_in_gy:
             state.graveyard.remove(n)
             enter_battlefield(state, n, from_hand=False)
+            state.replenish_returns_total += 1
     elif "interaction" in tags:
         state.interaction_spells_cast_total += 1
     elif "blink_x" in tags:
@@ -1289,7 +1298,7 @@ def do_shrine_upkeep_triggers(state: GameState):
                 pick = pool_gy[0]
                 state.graveyard.remove(pick)
                 enter_battlefield(state, pick, from_hand=False)
-                state.tutors_used_total += 1
+                state.sanctum_of_all_graveyard_returns += 1
 
 
 def do_shrine_mainphase_triggers(state: GameState):
@@ -1551,10 +1560,13 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print()
 
     # Achado real 2026-08-28 (auditoria de checklist - metricas basicas
-    # obrigatorias em TODO simulador: ramp, draw, interaction,
-    # finisher/lethality). Ja existiam metricas equivalentes espalhadas
-    # (cards_drawn_extra, interaction_spells_cast_total, proxy_damage/drain),
-    # mas nunca resumidas nas 4 categorias-base explicitamente.
+    # obrigatorias em TODO simulador: ramp, draw, interaction, recursion,
+    # finisher/lethality - "recursion" adicionada por reforco explicito do
+    # usuario: "acrescente a variavel recursao e interacao a lista de
+    # variaveis pra avaliar/medir/registrar em todos os decks"). Ja
+    # existiam metricas equivalentes espalhadas (cards_drawn_extra,
+    # interaction_spells_cast_total, proxy_damage/drain), mas nunca
+    # resumidas nas categorias-base explicitamente.
     print("--- Metricas basicas (checklist obrigatoria) ---")
     print(f"RAMP: avg pecas de rampa conjuradas (Sol Ring/Arcane Signet/The Mind Stone/Birds/Bloom Tender/"
           f"Sanctum Weaver): {avg([s.ramp_pieces_cast for s in states]):.2f}")
@@ -1564,6 +1576,13 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
           f"Aura Shards, Go-Shintai of Hidden Cruelty, Sanctum of Shattered Heights): "
           f"{avg([s.interaction_spells_cast_total for s in states]):.2f}. Sem alvo real neste goldfish solo "
           f"(mesma convencao de sempre desta biblioteca) - conta uso de carta/mana, sem efeito no board proprio.")
+    total_recursion = avg([s.replenish_returns_total + s.sanctum_of_all_graveyard_returns
+                            + s.life_origin_reanimates_total + s.heliods_generosity_returns_total
+                            for s in states])
+    print(f"RECURSION: avg cartas recuperadas do cemiterio (Replenish -> campo, Sanctum of All -> campo, "
+          f"Go-Shintai of Life's Origin -> campo, Hall of Heliod's Generosity -> topo da biblioteca): "
+          f"{total_recursion:.2f}. Tutores de biblioteca (Idyllic Tutor/Sterling Grove/Aang's Journey "
+          f"kicker/Sanctum of All ramo de biblioteca) NAO contam aqui - categoria diferente por definicao.")
     total_lethality = avg([s.proxy_damage_total + s.proxy_drain_total for s in states])
     print(f"FINISHER/LETHALITY: este deck NAO tem pacote de combo infinito (diferente do Edgar Markov) - "
           f"e' um motor de valor incremental (Shrines escalando + blink). Proxy de 'dano equivalente' "
