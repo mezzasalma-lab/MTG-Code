@@ -144,10 +144,19 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas)
 - Sire of Stagnation: gatilho depende de terreno de OPONENTE entrando —
   nunca dispara (mesmo motivo).
 - Void Grafter (ETB hexproof), Liberator (contador de +1/+1 por spell),
-  Ruins of Oran-Rief (contador em criatura colorless), ativacoes pagas
-  de Urza's Cave/Sanctum of Ugin/Eye of Ugin/Mystic Forge (exilar topo) —
-  presentes na decklist mas sem efeito numerico relevante pro goldfish;
-  omitidos, documentado aqui em vez de fingir que foram implementados.
+  Ruins of Oran-Rief (contador em criatura colorless) — presentes na
+  decklist mas sem efeito numerico relevante pro goldfish; omitidos,
+  documentado aqui em vez de fingir que foram implementados.
+- Achado real 2026-08-28 (auditoria de checklist de mecanica): a linha
+  anterior desta lista tratava Urza's Cave/Sanctum of Ugin/Eye of Ugin
+  como "ativacoes pagas (exilar topo)" — isso e' o texto real de OUTRA
+  carta (Mystic Forge), nao dessas 3. Corrigido: Sanctum of Ugin
+  implementado de verdade (gatilho gratis, tutor pra mao ao conjurar
+  spell colorless MV7+ — ver `on_any_spell_cast_hooks`). Urza's Cave
+  ({3},{T},sac: busca land pro campo) e Eye of Ugin ({7},{T}: busca
+  criatura colorless pra mao, alem do desconto de custo pra Eldrazi
+  colorless) continuam NAO implementados por decisao de escopo (2
+  habilidades ativadas a mais, ficam pra uma rodada dedicada).
 - Mystic Forge: implementado o essencial (pode conjurar do topo da
   biblioteca se for artifact ou colorless) — a habilidade de tap-exilar
   topo por 1 de vida NAO e modelada.
@@ -537,6 +546,25 @@ def on_any_spell_cast_hooks(state: GameState, name: str, colorless: bool, mv: in
             for _ in range(times):
                 draw_cards(state, 3)
 
+    # Sanctum of Ugin: "Whenever you cast a colorless spell with mana
+    # value 7 or greater, you may sacrifice this land. If you do, search
+    # your library for a colorless creature card, reveal it, put it into
+    # your hand." Achado real 2026-08-28 (auditoria de checklist de
+    # mecanica): o docstring do arquivo mischaracterizava isso como
+    # "ativacao paga (exilar topo)" - texto real de OUTRA carta (Mystic
+    # Forge). Sanctum e' um gatilho GRATIS, e esse deck e' centrado em
+    # conjurar spells colorless MV7+ - implementado de verdade (tutor pra
+    # mao). Sempre sacrifica quando disponivel (valor imediato > land drop
+    # perdido, mesma filosofia agressiva ja usada no resto do motor).
+    if "Sanctum of Ugin" in state.battlefield and colorless and mv >= 7:
+        state.battlefield.remove("Sanctum of Ugin")
+        pool = [n for n in state.library if is_creature_card(n) and is_colorless(n)]
+        if pool:
+            best = max(pool, key=lambda n: CARD_DB[n].mv)
+            state.library.remove(best)
+            state.hand.append(best)
+            state.tutors_used_total += 1
+
 
 # ---------------------------------------------------------------------------
 # Mana
@@ -561,8 +589,41 @@ def land_mana(state: GameState) -> int:
     return total
 
 
+# Fontes que realmente tapam por {C} de verdade no oraculo (conferido carta a
+# carta, Scryfall) - a maioria dos 37 terrenos "colorless"-tageados neste
+# arquivo sao painlands/duais ABUR que produzem cor real (a tag so significa
+# "contado genericamente neste modelo", nao "produz {C} de verdade"). Usado
+# so por forsaken_monument_bonus() abaixo, que precisa saber exatamente
+# quais fontes tapam por {C} pra dobrar direito.
+TRUE_C_LANDS = {"Eldrazi Temple", "Cascading Cataracts", "Wastes", "Shrine of the Forsaken Gods",
+                 "Ugin's Labyrinth", "Spawning Bed", "Urza's Cave", "Cavern of Souls",
+                 "Corrupted Crossroads", "Sanctum of Ugin", "Emergence Zone"}
+
+
+def forsaken_monument_bonus(state: GameState) -> int:
+    """Forsaken Monument: "Whenever you tap a permanent for {C}, add an
+    additional {C}." Achado real 2026-08-28 (auditoria de checklist de
+    mecanica): so' a metade "gain 2 life ao conjurar spell colorless" era
+    modelada - essa dobra de mana (a habilidade mais impactante das 3
+    reais da carta) nunca existia. So' aplica a fontes que REALMENTE
+    tapam por {C} (ver TRUE_C_LANDS acima) - a maioria dos terrenos deste
+    deck produz cor real, nao {C}, e nao e' afetada."""
+    if "Forsaken Monument" not in state.battlefield:
+        return 0
+    bonus = sum(1 for n in state.battlefield if n in TRUE_C_LANDS)  # cada uma tapa por 1 {C} -> +1
+    if "Ancient Tomb" in state.battlefield:
+        bonus += 2  # tapa por {C}{C} -> +2
+    if "Sol Ring" in state.battlefield:
+        bonus += 2  # tapa por {C}{C} -> +2
+    if "Thran Dynamo" in state.battlefield:
+        bonus += 3  # tapa por {C}{C}{C} -> +3
+    bonus += sum(1 for n in state.battlefield if n in
+                 ("Talisman of Dominance", "Talisman of Impulse", "Talisman of Resilience"))  # {C} cada -> +1
+    return bonus
+
+
 def total_mana(state: GameState) -> int:
-    return land_mana(state) + rocks_mana(state) + state.bonus_mana_pool
+    return land_mana(state) + rocks_mana(state) + state.bonus_mana_pool + forsaken_monument_bonus(state)
 
 
 def remaining_mana(state: GameState) -> int:
@@ -865,6 +926,21 @@ def end_step(state: GameState):
         # na mao no exato momento; a compra de carta e o efeito principal)
         state.warp_exile_zone.append(name)
     state.warp_pending = []
+
+    # Spawnbed Protector: "At the beginning of your end step, return up to
+    # one target Eldrazi creature card from your graveyard to your hand.
+    # Create two 1/1 colorless Eldrazi Scion creature tokens..." Achado
+    # real 2026-08-28 (auditoria de checklist de mecanica): tagueada
+    # "endstep_recursion", nunca despachada - dead code. Scion tokens
+    # reaproveitam create_spawn_tokens() (mesma habilidade real, "sac:
+    # add {C}", so' nome de token diferente - simplificacao documentada).
+    if "Spawnbed Protector" in state.battlefield:
+        eligible = [n for n in state.graveyard if is_creature_card(n) and is_eldrazi(n)]
+        if eligible:
+            best = max(eligible, key=lambda n: CARD_DB[n].mv)
+            state.graveyard.remove(best)
+            state.hand.append(best)
+        create_spawn_tokens(state, 2)
 
     while len(state.hand) > 7:
         worst = min(state.hand, key=lambda n: effective_cost(state, n) if n not in LAND_NAMES else 0)

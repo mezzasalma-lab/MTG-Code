@@ -378,6 +378,68 @@ v2.2,500,8,True,0.38,4.25,65.4,83.8,10.47,4.38,3.64,2.89,2.89,3.64,2.30,0.75,2.0
 
 ---
 
+### Correção — checklist obrigatória de mecânica (regra nova pós-Beorn) — 2026-08-28
+
+**Gatilho (usuário):** depois de eu entregar o Beorn sem despacho de landfall
+nenhum, o usuário pediu auditoria da checklist nova (landfall, mana dorks,
+mana rocks, fixing lands, draw engines, ramp engines, ativadas repetíveis,
+combos) em **todos** os decks — aplicada aqui ao `ulalek_goldfish_v1.py`
+atual (não confundir com os testes v2.x acima, de um script anterior).
+Landfall N/A (0 cartas), dorks N/A (0 mana dorks criatura na lista).
+
+**Achado mais grave — Forsaken Monument's habilidade mais impactante das 3
+reais 100% ausente:** "Colorless creatures you control get +2/+2. Whenever
+you tap a permanent for {C}, add an additional {C}. Whenever you cast a
+colorless spell, you gain 2 life." Só a 3ª (vida) estava modelada. A 2ª
+(dobra de mana de {C}) nunca existia — significativo, já que o deck é
+literalmente sobre conjurar spells colorless MV7+. Implementado
+`forsaken_monument_bonus()`, mas com cuidado real: dos 37 terrenos
+"colorless"-tageados neste arquivo (tag que só significa "contado
+genericamente neste modelo", não "produz {C} de verdade"), a maioria são
+painlands/duais ABUR que produzem cor REAL (ex: Badlands = B ou R, não
+{C}) — só dobram as fontes que de fato tapam por {C} no oráculo real
+(conferido carta a carta: Eldrazi Temple, Cascading Cataracts, Wastes,
+Shrine of the Forsaken Gods, Ugin's Labyrinth, Spawning Bed, Urza's Cave,
+Cavern of Souls, Corrupted Crossroads, Sanctum of Ugin, Emergence Zone,
+Ancient Tomb, Sol Ring, Thran Dynamo, os 3 Talismãs).
+
+**Docstring mischaracterizava 3 cartas:** a linha "ativações pagas de
+Urza's Cave/Sanctum of Ugin/Eye of Ugin/Mystic Forge (exilar topo)" —
+"exilar topo" é o texto real de **Mystic Forge**, não dessas 3. Sanctum of
+Ugin é na verdade um **gatilho grátis** ("Whenever you cast a colorless
+spell with mana value 7 or greater, you may sacrifice this land... search
+your library for a colorless creature card... to your hand") — implementado
+de verdade (via `on_any_spell_cast_hooks`), já que é exatamente o gameplan
+central do deck. Urza's Cave (busca land) e Eye of Ugin (desconto de custo +
+busca criatura) continuam não implementados por decisão de escopo.
+
+**Spawnbed Protector**: tagueada `endstep_recursion`, nunca despachada —
+"At the beginning of your end step, return up to one Eldrazi creature card
+from graveyard to hand. Create two 1/1 Eldrazi Scion tokens." Implementado
+em `end_step()` (Scion tokens reaproveitam `create_spawn_tokens()`, mesma
+habilidade real de sacrificar por {C}, só nome de token diferente).
+
+**Resultado (n=2000, seed_base=2000000, antes → depois):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg tutores usados | 0,27 | **0,36** |
+| Avg Eldrazi Spawn/Scion tokens criados | 1,17 | **1,44** |
+| Avg vida ganha proxy (Forsaken Monument) | 0,19 | **0,35** |
+| Avg cópias pagas da Ulalek | 0,99 | **1,04** |
+| Avg cartas compradas extra | 1,49 | **1,55** |
+
+Impacto moderado — o deck já tinha bastante mecânica real implementada nas
+rodadas anteriores (v2.x), então esta rodada preencheu gaps específicos
+(Forsaken Monument, Sanctum of Ugin, Spawnbed Protector), não uma reescrita.
+
+**Robustez:** sweep de 20.000 jogos (seeds 2000000–2019999, timeout 2s/jogo)
+— 0 erros, 0 timeouts.
+
+`lista.md` não mudou. `ulalek_v1_runs.jsonl` sobrescrito.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
