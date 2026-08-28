@@ -389,6 +389,25 @@ O impacto é enorme — a taxa de "finisher até T8" caiu de quase metade dos jo
 
 ---
 
+### Correção #2 — doença de invocação pros mana dorks
+
+Consequência direta da Correção #1: com mana real rastreada, ficou óbvio que os mana dorks criatura (Birds of Paradise, Llanowar Elves, Lotus Cobra, Selvala, Heart of the Wilds) estavam contribuindo pra `total_mana()`/`green_sources()` **no próprio turno em que eram conjurados**, o que é ilegal — criatura sem haste não pode usar habilidade de `{T}` no turno em que entra (CR 302.6). Isso não afeta terrenos nem artefatos de mana (Sol Ring, Necklace of Girion, Patchwork Banner, Firdoch Core) — só permanentes do tipo Creature.
+
+**Correção:** novo campo `dork_entered_turn: Dict[str,int]` em `GameState`, populado em `cast_spell()` quando uma criatura com a tag `ramp` entra em campo. `total_mana()`/`green_sources()` agora pulam qualquer dork cujo turno de entrada seja igual ao turno atual.
+
+**Resultado (n=2000, seed_base=6000000):**
+
+| Métrica | Antes (Correção #1) | Depois (Correção #2) |
+|---|---|---|
+| Avg spells cast | 10.42 | 10.22 |
+| % de jogos com finisher até T8 | 8.3% | 7.2% |
+| Avg battlefield final | 15.73 | 15.57 |
+| Managorger conjurada | 18.9% | 18.6% |
+
+Impacto pequeno e no sentido esperado (menos mana disponível cedo = leve desaceleração). **Robustez:** sweep de 20.000 jogos, 0 erros, 0 timeouts.
+
+---
+
 <!-- Para novas partidas avulsas, use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

@@ -317,6 +317,11 @@ class GameState:
     genji_glove_equipped: bool = False
     genji_glove_equipped_turn: Optional[int] = None
 
+    # Doenca de invocacao: criaturas mana-dork (Birds of Paradise, Llanowar Elves,
+    # Lotus Cobra, Selvala) nao podem usar habilidade de {T} no turno em que entram.
+    # Mapeia nome -> turno de entrada; se turno == state.turn, ainda esta doente.
+    dork_entered_turn: Dict[str, int] = field(default_factory=dict)
+
     def draw(self, n=1, source="draw"):
         got = 0
         for _ in range(n):
@@ -345,6 +350,9 @@ class GameState:
 # MANA MODEL (mono-verde: contagem total + contagem de fontes verdes)
 # =========================================================
 
+def is_summoning_sick_dork(state: GameState, card: str) -> bool:
+    return "Creature" in C(card).types and state.dork_entered_turn.get(card) == state.turn
+
 def total_mana(state: GameState) -> int:
     total = 0
     for card in state.battlefield:
@@ -353,6 +361,8 @@ def total_mana(state: GameState) -> int:
         elif card == "Sol Ring":
             total += 2
         elif has_tag(card, "ramp") and not is_land(card):
+            if is_summoning_sick_dork(state, card):
+                continue
             total += 1
     return total
 
@@ -364,6 +374,8 @@ def green_sources(state: GameState) -> int:
             if has_tag(card, "green_source") or yavimaya:
                 g += 1
         elif has_tag(card, "green_source") or has_tag(card, "green_source_any"):
+            if is_summoning_sick_dork(state, card):
+                continue
             g += 1
     return g
 
@@ -551,6 +563,8 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
 
     if has_tag(card, "ramp"):
         state.ramp_pieces_in_play += 1
+        if "Creature" in C(card).types:
+            state.dork_entered_turn[card] = state.turn
 
     if has_tag(card, "removal"):
         state.removal_cast += 1
