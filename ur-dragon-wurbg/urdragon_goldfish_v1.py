@@ -533,7 +533,22 @@ add("Beast Within", 3, "instant", {"interaction"}, pips={"G": 1})
 add("Crux of Fate", 5, "sorcery", {"wipe"}, pips={"B": 2})
 add("Heroic Intervention", 2, "instant", {"interaction"}, pips={"G": 1})
 add("Lightning Greaves", 2, "artifact", {"interaction"})
-add("Rhythm of the Wild", 2, "enchantment", set(), pips={"R": 1, "G": 1})
+# Achado real 2026-08-29 (usuario apontou, ja depois desta carta ter sido
+# cortada da lista.md pra Magda): oraculo real (Scryfall) e "Creature
+# spells you control can't be countered. Nontoken creatures you control
+# have riot." O riot (escolha de +1/+1 counter OU haste - aqui sempre
+# haste, ver ready_creatures()) ja estava modelado, mas a 1a frase
+# ("creature spells cant be countered") nunca tinha sido sequer
+# registrada - nem como tag, nem como N/A documentado, violando a
+# checklist do proprio projeto (categoria 9). Tag 'opponent_dependent'
+# adicionada so pra documentar a existencia da habilidade - sem efeito
+# numerico real no goldfish solo (sem oponente/contramagia modelada,
+# mesma classe ja usada em Smothering Tithe/Scalelord Reckoner). Nao muda
+# nenhum numero ja reportado, mas o corte anterior pra Magda foi
+# justificado citando so' a redundancia do riot/haste - a protecao contra
+# contramagia e' unica no deck (nenhuma outra carta faz isso) e nunca foi
+# pesada na decisao, mesmo nao sendo mensuravel aqui.
+add("Rhythm of the Wild", 2, "enchantment", {"opponent_dependent"}, pips={"R": 1, "G": 1})
 add("Smothering Tithe", 4, "enchantment", {"opponent_dependent"}, pips={"W": 1})
 add("Swan Song", 1, "instant", {"interaction"}, pips={"U": 1})
 add("Swords to Plowshares", 1, "instant", {"interaction"}, pips={"W": 1})
