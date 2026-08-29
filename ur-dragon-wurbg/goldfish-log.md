@@ -1988,6 +1988,25 @@ não resolvida ainda).
 
 ---
 
+## Consolidação #6 — Talisman of Impulse → Sundown Pass, `lista.md` == `lista-fisica.md` — 2026-08-29
+
+**Contexto:** última diferença residual entre `lista.md` e
+`lista-fisica.md`. Testado posicional (5000 seeds, 0 erros): resultado
+dentro do ruído (dano proxy +0,4%, nunca-conjurada −0,5pp, color screw
++0,3pp a favor da Talisman — nenhuma diferença real). Como o deck físico
+já tem a Sundown Pass, fechado nessa direção pra não exigir mais nenhuma
+troca na caixa.
+
+**Batch oficial, n=5000, seed_base=7600000:** Talisman de Impulse 823,72
+dano / 32,52% screw vs. Sundown Pass 827,25 dano / 32,86% screw —
+estatisticamente equivalentes.
+
+**`lista.md` e `lista-fisica.md` agora são idênticas** (confirmado via
+comparação programática, `Counter` de cada arquivo igual). Fim da
+divergência física/digital que motivou boa parte desta sessão.
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**

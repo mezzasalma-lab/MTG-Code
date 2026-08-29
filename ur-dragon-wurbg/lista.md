@@ -41,7 +41,6 @@
 1 Kodama's Reach
 1 Lathliss, Dragon Queen
 1 Sarkhan Unbroken
-1 Talisman of Impulse
 1 Miirym, Sentinel Wyrm
 1 Nature's Lore
 1 Old Gnawbone
@@ -75,6 +74,7 @@
 
 1 Ancient Tomb
 1 Arid Mesa
+1 Sundown Pass
 1 Bayou
 1 Blood Crypt
 1 Bloodstained Mire
