@@ -7,6 +7,7 @@
 ## Deck
 
 1 An Offer You Can't Refuse
+1 Commander's Sphere
 1 Ancient Copper Dragon
 1 Ancient Gold Dragon
 1 Anguished Unmaking

@@ -2,8 +2,13 @@
 
 Atualizada a partir da lista completa que o usuário digitou de cabeça (não mais
 reconstruída só das 6 fotos) — esta é a fonte mais confiável do que está no
-deck físico agora. Falta exatamente 1 carta pra fechar 99+comandante (ver
-`goldfish-log.md`, pendência da 99ª carta ainda em aberto).
+deck físico agora. 99ª carta fechada com Commander's Sphere (testada,
+ver `goldfish-log.md`).
+
+**Pendência aberta:** usuário achou uma Battlefield Forge fisicamente —
+troca por Rhythm of the Wild ainda não aplicada aqui (perde a proteção
+"creature spells can't be countered", ver achado do Rhythm of the Wild no
+log), esperando confirmação.
 
 ## Comandante
 
@@ -12,6 +17,7 @@ deck físico agora. Falta exatamente 1 carta pra fechar 99+comandante (ver
 ## Deck
 
 1 An Offer You Can't Refuse
+1 Commander's Sphere
 1 Ancient Copper Dragon
 1 Ancient Gold Dragon
 1 Anguished Unmaking

@@ -400,6 +400,15 @@ add("Dragonlord's Servant", 2, "creature", {"dragon_discount1"}, power=1, pips={
 add("Dragonspeaker Shaman", 3, "creature", {"dragon_discount2"}, power=2, pips={"R": 2})
 add("Sarkhan, Soul Aflame", 3, "creature", {"dragon_discount1"}, power=2, pips={"U": 1, "R": 1})
 add("Herald's Horn", 3, "artifact", {"dragon_discount1", "tribal_impulse"})
+
+# Commander's Sphere: candidata real pro slot vago (Regra 13, oraculo
+# conferido via curl na API real): "{T}: Add one mana of any color in
+# your commander's color identity. / Sacrifice this artifact: Draw a
+# card." Ur-Dragon e' 5 cores (WUBRG), entao produces = todas as 5, igual
+# Command Tower/Arcane Signet. Habilidade de sacrificar pra comprar
+# NAO modelada (ability secundaria, so relevante quando a mana ja nao faz
+# falta - fora de escopo documentado, nao inventada como draw automatico).
+add("Commander's Sphere", 3, "artifact", {"rock1"}, produces=set("WUBRG"))
 add("Sarkhan's Triumph", 3, "instant", {"dragon_tutor_hand"}, pips={"R": 1})
 add("Orb of Dragonkind", 2, "artifact", {"dragon_tutor_sac"}, pips={"R": 1})
 add("Urza's Incubator", 3, "artifact", {"dragon_discount2"})
@@ -884,6 +893,11 @@ def rocks_mana(state: GameState) -> int:
         # rastreada no simulador (regra ja documentada em outro lugar),
         # entao so a mana conta aqui.
         total += 2
+    if "Commander's Sphere" in state.battlefield:
+        # Mesma classe de bug ja corrigido pro Talisman of Impulse: tag
+        # 'rock1' sozinha nao contribui mana, precisa do check explicito
+        # aqui tambem.
+        total += 1
     return total
 
 

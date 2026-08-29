@@ -1856,6 +1856,59 @@ sessão.
 
 ---
 
+## Consolidação #4 — Kindred Discovery sai, Commander's Sphere fecha a 99ª carta — 2026-08-29
+
+**Contexto:** usuário pediu corte da Kindred Discovery ("acho que
+precisamos de mais ramp e velocidade" — reforçado depois do achado do
+custo real dela, mv=5 pip azul, ter piorado color screw em vez de
+melhorar). Removida sem substituta imediata (deck ficou em 98). Usuário
+listou a coleção real disponível pro slot vago: Fellwar Stone, Chromatic
+Lantern, Dragon's Hoard, Talisman of Curiosity/Hierarchy/Progress, Dimir/
+Izzet/Orzhov/Azorius Signet, The Irencrag, Basalt Monolith, Replicating
+Ring, Commander's Sphere, Sol Talisman, Mind Stone, Chrome Mox, Solar
+Transformer, Battlefield Forge (achada!), Phial of Galadriel, Sonic
+Screwdriver, Talisman of Unity, Darksteel Ingot, Lotus Blossom, Starting
+Town, Thran Dynamo — 26 cartas confirmadas reais via `curl` em lote na
+API da Scryfall (Regra 13), 2 não encontradas (Amber Mox, Ring of the
+Lucid — provável erro de nome).
+
+**Escolhida: Commander's Sphere** ({3}, "{T}: Add one mana of any color
+in your commander's color identity. / Sacrifice this artifact: Draw a
+card.") — fixação de 5 cores real (Ur-Dragon é WUBRG) igual Command
+Tower/Arcane Signet, nunca fica morta tarde no jogo (sacrifica pra
+comprar). Habilidade de sacrifício não modelada (fora de escopo
+documentado). Achado real ao implementar: mesma classe de bug já
+corrigida pro Talisman of Impulse — tag `rock1` sozinha não contribui
+mana em `rocks_mana()`, precisa do check explícito por nome; corrigido
+antes de rodar.
+
+**Robustez:** 20.000 seeds, timeout 3s — 0 erros.
+
+**Batch oficial, n=3000, seed_base=7600000:**
+
+| Métrica | Com Kindred Discovery (custo certo) | Sem ela + Commander's Sphere | Δ |
+|---|---|---|---|
+| Avg dano proxy total | 1030,04 | 822,54 | −20,1% |
+| Avg cartas compradas extra | 19,35 | 17,01 | −12,1% |
+| Nunca conjurada em 8 turnos | 32,1% | **29,7%** | **−2,4pp (melhor de toda a sessão)** |
+| % jogos com color screw | 34,2% | **31,2%** | **−3,0pp** |
+| Turno médio do 1º screw | 3,35 | 3,06 | mais cedo, mas menos jogos afetados no total |
+
+**Leitura:** troca clara de poder bruto por consistência/velocidade —
+exatamente o que foi pedido. Dano/draw caem porque a Kindred Discovery
+(mesmo cara) ainda contribuía valor real quando resolvia; Commander's
+Sphere não substitui esse motor de draw, só fixa mana. Nunca-conjurada e
+color screw melhoram pro melhor resultado registrado nesta sessão inteira
+— a comandante de 9 mana WUBRG é a peça mais sensível a consistência de
+mana do deck, e essa troca ataca exatamente isso.
+
+`lista-fisica.md` também atualizada (Commander's Sphere fecha a 99ª carta
+física). Pendência aberta: trocar Rhythm of the Wild pela Battlefield
+Forge que o usuário encontrou — ainda não aplicada, perde a proteção
+"creature spells can't be countered" (achado documentado à parte).
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**
