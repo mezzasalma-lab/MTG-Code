@@ -1463,6 +1463,120 @@ esta é uma avaliação comparativa. Scripts: `urdragon_morophon_test.py`
 
 ---
 
+## Simulação — lista FÍSICA real (`lista-fisica.md`, `urdragon_goldfish_physical_v1.py`) — 2026-08-29
+
+**Contexto:** usuário mandou 6 fotos do deck físico de verdade (guardado em
+binder). Cruzamento carta a carta contra `lista.md` (feito em 3 turnos
+anteriores desta sessão, com Scryfall real pra cada carta ambígua — "The
+Banyan Tree" = reskin Avatar de The Great Henge, "Dragon of Mount Gulg" =
+reskin Final Fantasy de Ancient Copper Dragon) achou 8 diferenças reais:
+
+- **Fora da caixa física** (estão em `lista.md`, não apareceram em nenhuma
+  das 6 fotos): Birds of Paradise, Delighted Halfling, Ruby, Daring
+  Tracker, Ramos, Dragon Engine, Talisman of Impulse, Battlefield Forge,
+  Karplusan Forest, Taiga.
+- **Dentro da caixa física, fora do `lista.md`**: Lightning Greaves (a
+  troca por Talisman de Impulse foi decidida no goldfish mas nunca
+  aplicada na caixa de verdade), Magda Brazen Outlaw e Scalelord Reckoner
+  (confirmadas pelo usuário como "sempre estiveram" — `lista.md` nasceu
+  incompleto), Dragon's Hoard, Morophon the Boundless e Smuggler's
+  Surprise (extras físicas nunca avaliadas), Island e Watery Grave
+  (terrenos físicos fora da manabase afinada).
+
+Escrita `lista-fisica.md` (99+comandante, conferido `len(lib)==99` e sem
+duplicata) e cópia `urdragon_goldfish_physical_v1.py` do simulador,
+apontando pra ela em vez de `lista.md`. `lista.md` **não foi tocada** —
+continua sendo a lista afinada de referência.
+
+**3 cartas novas implementadas com efeito real (Regra 3), nenhuma so tag:**
+
+- **Scalelord Reckoner** ({3}{W}{W}, Dragão 4/4 voador, C17): "Whenever a
+  Dragon you control becomes the target of a spell or ability an opponent
+  controls, destroy target nonland permanent that player controls."
+  Habilidade própria reativa a ação de OPONENTE real — sem oponente no
+  goldfish solo, nunca dispara (mesma classe de `opponent_dependent` já
+  usada em Smothering Tithe). Ainda assim conta como corpo Dragão real pra
+  `dragon_count()`/`is_dragon()` (alimenta Dragon Tempest, Scourge of
+  Valkas, Lathliss, Miirym, Dragon's Hoard, descontos de Dragão, Roaming
+  Throne).
+- **Dragon's Hoard** ({3}, artefato, M19/AFC/TDC): "Whenever a Dragon you
+  control enters, put a gold counter on this artifact. {T}: Add one mana
+  of any color. {T}, Remove a gold counter: Draw a card." Duas habilidades
+  ativadas competem pelo MESMO {T} — **premissa assumida e documentada
+  (Regra 1, precisa validação do usuário)**: sempre usada como rock de
+  mana (`rocks_mana()`), nunca gasta o contador pra comprar, num deck
+  faminto por fixação 5 cores. Contadores de ouro acumulados SÃO
+  rastreados (`dragon_hoard_gold_counters`, incrementado em
+  `dragon_enters()` — sem "nontoken" no oráculo, mesma leitura já usada
+  em Scourge/Tempest) e reportados como valor NÃO realizado, não
+  inventados como compra automática. Artefato, não criatura — Roaming
+  Throne nunca dobra o próprio gatilho dele (só dobra gatilho de
+  CRIATURA do tipo escolhido), checado e documentado explicitamente.
+- **Smuggler's Surprise** ({G}, instant Spree, OTJ #180/#345): 3 modos
+  combináveis (mill 4 + seleção, cheat até 2 criaturas da mão pro campo,
+  proteção hexproof/indestructible pra poder 4+). **Premissa assumida e
+  documentada (Regra 1)**: só o modo "{4}{G}" (cheat de criaturas) é
+  modelado — o estruturalmente mais forte pro plano do deck, mesma
+  família de Bladewing/Haunting Voyage. Custo total modelado {4}{G}{G}
+  (mv=6, pips G:2). Os outros 2 modos ficam de fora, não inventados como
+  bônus simultâneo. Conta pra `dragons_free_entry_total` quando a
+  criatura colocada é de fato um Dragão.
+
+**Checklist de 13 categorias (`goldfish-sim-card-rules.md`) sobre as 3
+cartas novas:** landfall N/A (nenhuma tem), mana dork N/A (nenhuma é
+criatura com {T} de mana), mana rock — Dragon's Hoard coberto em
+`rocks_mana()`/`color_sources()` (produces=WUBRG, sem doença de invocação,
+artefato), fixing de mana — idem, motor de draw — Dragon's Hoard
+documentado como não-gasto (ver acima), motor de ramp — Smuggler's
+Surprise coberto (cheat de criatura, análogo a ramp-pra-campo), ativada
+repetível N/A (nenhuma), combos com peças já na lista — Scalelord
+Reckoner/Dragon's Hoard entram automaticamente em todo gatilho genérico de
+"Dragão entra" via `is_dragon()`/`dragon_enters()` (Dragon Tempest,
+Scourge of Valkas, Lathliss, Miirym, Herald's Horn, descontos, Roaming
+Throne), estática N/A (nenhuma das 3 tem), métricas básicas — reportadas
+(dragons_free_entry_total, dragon_hoard_gold_counters), recursão N/A
+(nenhuma recupera de cemitério), face múltipla N/A (nenhuma tem "//"),
+planeswalker N/A, Classe/Saga N/A.
+
+**Robustez:** 20.000 partidas, seeds 0–19999, timeout 3s — 0 erros, 0
+timeouts.
+
+**Batch oficial, n=3000, seed_base=7600000 (mesmo par de seeds do último
+teste do `lista.md`, comparação direta):**
+
+| Métrica | `lista.md` (afinada) | `lista-fisica.md` (real) |
+|---|---|---|
+| Avg mulligans | 0,48 | 0,57 |
+| Turno médio Ur-Dragon | 6,58 | 6,71 |
+| Nunca conjurada em 8 turnos | 30,5% | **40,6%** |
+| Avg Dragões em campo (fim) | 18,97 | 16,19 |
+| Avg compras via ataque Ur-Dragon | 10,38 | 8,14 |
+| Avg permanentes grátis via ataque | 1,78 | 1,43 |
+| Avg dano proxy total | 805,56 | 808,40 |
+| Avg Treasures criados | 57,74 | 49,00 |
+| Avg cartas compradas extra | 16,78 | 14,01 |
+| Avg turnos com color screw | 1,62 | 1,89 |
+| % jogos com color screw | 35,9% | **39,8%** |
+| Avg mão final | 5,35 | 5,42 |
+
+**Leitura:** a lista física perde em quase toda métrica-chave, de forma
+consistente com o que já se sabia por decisão testada anteriormente nesta
+sessão — não é ruído: a manabase física ainda tem Island+Watery Grave (U/B,
+as 2 cores já MAIS sobre-representadas frente à demanda de pips do deck,
+ver Regra 6/adendo Ur-Dragon) no lugar de Battlefield Forge+Karplusan
+Forest (R/W e R/G, testados e comprovados melhores exatamente por
+cobrirem os maiores gaps de cor), e ainda carrega Lightning Greaves em vez
+de Talisman de Impulse (rock real vs. equipamento sem produção de mana).
+Isso se reflete direto no color screw (+4pp de jogos afetados) e na taxa
+de "Ur-Dragon nunca conjurada" (+10,1pp) — a comandante de 5 cores é a
+peça mais sensível a fixação de mana do deck inteiro.
+
+`lista.md` não muda a partir deste teste — ele é só uma fotografia do
+que está na caixa hoje. Resultados não salvos em `.jsonl` (rodado só via
+stdout do `run_batch` default do script, `n=3000`).
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**
