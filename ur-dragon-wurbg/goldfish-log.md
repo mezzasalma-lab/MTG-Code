@@ -1786,6 +1786,76 @@ color screw de qualquer troca desta sessão).
 
 ---
 
+## Correção grave #2 — auditoria completa contra API real da Scryfall, achados de custo/cor errados — 2026-08-29
+
+**Contexto:** usuário confrontou diretamente depois do achado de Rhythm of
+the Wild (metade do oráculo faltando): *"QUERO QUE VC USE O TEXTO
+COMPLETO DAS CARTAS, CARALHO! QUANTAS VEZES JÁ PEDI E REFORCEI ISSO? O QUE
+PRECISO FAZER PRA VC INCORPORAR E USAR ESSA MALDITA REGRA???"* Nova Regra
+13 criada (`user-standing-rules.md`): usar `curl` direto na API
+estruturada da Scryfall (`cards/named`, `cards/collection` em lote — até
+75 por chamada) em vez de `WebSearch` (que devolve resumo gerado por
+outro modelo, não o dado real). `curl` funciona neste ambiente mesmo com
+`WebFetch` bloqueado — testado e confirmado.
+
+**Auditoria em lote das 100 cartas do `lista.md`** (`cards/collection`,
+2 chamadas de até 75) contra `mv`/`pips` cadastrados no `CARD_DB`:
+
+- **Kindred Discovery**: cadastrada com mv=3 e pip **VERDE** (G:1) — real
+  é `{3}{U}{U}`, mv=**5**, pip **AZUL** (U:2), zero verde. Erro grave: a
+  carta nem é da cor que eu tinha registrado, e o dado (custo/cor) nunca
+  foi de fato conferido antes de implementar, mesmo tendo sido a carta
+  "vencedora" do teste que decidiu incluí-la no deck.
+- **An Offer You Can't Refuse**: cadastrada mv=2, real é mv=1 ({U}).
+
+Ambas corrigidas. Auditoria de pips (não só mv) rodada de novo depois das
+correções — **0 mismatches restantes** nas outras 98 cartas.
+
+**Achado adicional, auditando oracle_text completo das cartas sem tag**:
+**Haven of the Spirit Dragon** tem uma 3ª habilidade nunca implementada —
+não é cosmética, é recursão real: *"{2}, {T}, Sacrifice this land: Return
+target Dragon creature card or Ugin planeswalker card from your graveyard
+to your hand."* (sem Ugin na lista, só a metade Dragão se aplica).
+Implementada em `try_haven_recursion()`, chamada no fim de `main_phase()`
+— heurística documentada (só ativa com 3+ terrenos em campo e mana
+sobrando, nunca compete com conjurar algo real). Também documentadas como
+fora de escopo (zero efeito numérico, sem oponente modelado): Cavern of
+Souls "and that spell can't be countered", Secluded Courtyard "or
+activate an ability of a creature source of the chosen type" (nenhum
+Dragão da lista tem habilidade ativada com custo colorido de qualquer
+forma).
+
+**Robustez:** 20.000 seeds, timeout 3s — 0 erros.
+
+**Batch oficial, n=3000, seed_base=7600000 — antes vs. depois da
+correção de Kindred Discovery:**
+
+| Métrica | Antes (custo errado) | Depois (custo real) | Δ |
+|---|---|---|---|
+| Avg dano proxy total | 1042,27 | 1030,04 | −1,2% |
+| Avg cartas compradas extra | 20,01 | 19,35 | −3,3% |
+| Nunca conjurada em 8 turnos | 31,6% | 32,1% | +0,5pp |
+| % jogos com color screw | 31,8% | **34,2%** | **+2,4pp** |
+| Avg recursão via Haven | — (não existia) | 0,00 | novo, raro em 8 turnos |
+
+**Leitura honesta:** o custo real mais alto (5 mana, 2 pips azuis num
+deck com fixação de azul mais fraca que verde) torna Kindred Discovery
+bem menos consistente do que o número original reportado sugeria — o
+color screw piora 2,4pp em vez de melhorar, e o ganho de dano/draw que
+motivou a escolha original (+42% no teste isolado) estava calculado em
+cima de uma carta de 3 mana verde que não existe. A carta ainda parece
+positiva no agregado (dano/draw continuam acima do baseline sem ela —
+não re-testado isolado com o custo certo ainda), mas a magnitude e a
+confiabilidade da inclusão precisam ser reavaliadas com um teste novo,
+isolado, usando o custo real.
+
+`lista.md` não muda de conteúdo com esta correção (Kindred Discovery
+continua na lista) — só o código de custo/cor dela foi corrigido. Sinal
+pra reavaliar se ela ainda é a melhor escolha pro slot, ver próxima
+sessão.
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**

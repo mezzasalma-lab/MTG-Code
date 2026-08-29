@@ -218,6 +218,25 @@ for n, colors in LAND_PRODUCES.items():
 # real, o oraculo restringe a "creature spell").
 DRAGON_ANY_COLOR_LANDS = {"Cavern of Souls", "Secluded Courtyard", "Haven of the Spirit Dragon"}
 
+# Auditoria completa 2026-08-29 (Regra 13 - texto INTEIRO de carta via API
+# real da Scryfall, nao resumo de busca): conferindo essas 3 de novo por
+# completo, 2 clausulas menores ficam documentadas como fora de escopo
+# (zero efeito numerico modelavel num goldfish solo, nunca inventadas):
+# - Cavern of Souls: "...and that spell can't be countered" - protecao
+#   contra contramagia de OPONENTE, mesma classe ja documentada em Rhythm
+#   of the Wild/Scalelord Reckoner/Smothering Tithe.
+# - Secluded Courtyard: "...or activate an ability of a creature source of
+#   the chosen type" - nenhum Dragao desta lista tem habilidade ativada
+#   que cobre mana colorida (checado contra a decklist atual), entao essa
+#   clausula extra nunca teria alvo real aqui de qualquer forma.
+# A 3a clausula da Haven of the Spirit Dragon NAO e' cosmetica - e'
+# recursao de verdade, faltando ate 2026-08-29: "{2}, {T}, Sacrifice this
+# land: Return target Dragon creature card or Ugin planeswalker card from
+# your graveyard to your hand." (sem Ugin nesta lista, so' a metade
+# Dragao se aplica). Implementada em `try_haven_recursion()`, chamada no
+# fim de `main_phase()`.
+HAVEN_RECURSION_LAND = "Haven of the Spirit Dragon"
+
 # Achado real 2026-08-27 (revisao pedida pelo usuario): o simulador nunca
 # modelou terreno entrando tapped — todo terreno virava mana disponivel
 # no mesmo turno em que era jogado, mesmo os que o oraculo real diz que
@@ -426,7 +445,17 @@ add("Morophon, the Boundless", 7, "creature", {"dragon"}, power=6, pips={})
 # NAO e' dobrada por Roaming Throne — a habilidade pertence a Kindred
 # Discovery (enchantment), nao a criatura Dragao em si (mesma distincao ja
 # documentada pro Dragon's Hoard).
-add("Kindred Discovery", 3, "enchantment", {"kindred_discovery"}, pips={"G": 1})
+#
+# ERRO REAL corrigido em 2026-08-29 (usuario cobrou uso de texto COMPLETO
+# de carta, achado via auditoria em lote na API real da Scryfall
+# — `curl https://api.scryfall.com/cards/collection` -, nao mais
+# WebSearch): esta carta tinha sido cadastrada com mv=3 e pip VERDE
+# (G:1) - dado inventado/lembrado errado, nunca conferido de verdade. O
+# custo real e' `{3}{U}{U}`, mv=5, cor AZUL (2 pips U), sem nenhum pip
+# verde. Corrigido - isso muda a castabilidade real da carta (precisa de
+# 2 fontes de azul, nao 1 de verde) e exige re-teste de qualquer
+# conclusao anterior que dependia do custo errado.
+add("Kindred Discovery", 5, "enchantment", {"kindred_discovery"}, pips={"U": 2})
 
 # Sarkhan Unbroken — ADICIONADA em 2026-08-29 (troca por Ruby, Daring
 # Tracker, validada no teste `urdragon_primer3_test.py`: +12,8% dano
@@ -524,7 +553,7 @@ add("Return of the Wildspeaker", 5, "instant", {"power_draw_instant"}, pips={"G"
 add("Sylvan Library", 2, "enchantment", set(), pips={"G": 1})
 
 # --- Removal / interacao / protecao -----------------------------------------------
-add("An Offer You Can't Refuse", 2, "instant", {"interaction"}, pips={"U": 1})
+add("An Offer You Can't Refuse", 1, "instant", {"interaction"}, pips={"U": 1})
 add("Anguished Unmaking", 3, "instant", {"interaction"}, pips={"W": 1, "B": 1})
 add("Arcane Denial", 2, "instant", {"interaction"}, pips={"U": 1})
 add("Assassin's Trophy", 2, "instant", {"interaction"}, pips={"B": 1, "G": 1})
@@ -649,6 +678,7 @@ class GameState:
     magda_treasures: int = 0
     magda_tutors_total: int = 0
     dragons_free_entry_total: int = 0
+    haven_recursion_total: int = 0
     hellkite_charger_extra_combats: int = 0
 
     commander_in_play: bool = False
@@ -1566,6 +1596,34 @@ def main_phase(state: GameState):
                 draw_cards(state, 1)
                 state.bonus_mana_pool += 1
 
+    try_haven_recursion(state)
+
+
+def try_haven_recursion(state: GameState):
+    """Haven of the Spirit Dragon, 3a habilidade (achado real 2026-08-29,
+    faltava - ver comentario de HAVEN_RECURSION_LAND): '{2}, {T}, Sacrifice
+    this land: Return target Dragon creature card or Ugin planeswalker
+    card from your graveyard to your hand.' Sem Ugin nesta lista, so' a
+    metade Dragao se aplica. Sacrifica a propria fonte de mana - heuristica
+    documentada (Regra 1, precisa validacao do usuario): so ativa com pelo
+    menos 3 terrenos em campo (nao compromete a manabase basica) E mana
+    sobrando (>=2) depois do resto do main_phase ja ter resolvido - nunca
+    compete com conjurar algo real."""
+    if HAVEN_RECURSION_LAND not in state.battlefield:
+        return
+    targets = [c for c in state.graveyard if is_dragon(c) and is_creature_card(c)]
+    if not targets:
+        return
+    lands_in_play = sum(1 for n in state.battlefield if n in LAND_NAMES)
+    if lands_in_play < 3 or remaining_mana(state) < 2:
+        return
+    spend_mana(state, 2)
+    state.battlefield.remove(HAVEN_RECURSION_LAND)
+    best = max(targets, key=lambda n: CARD_DB[n].mv)
+    state.graveyard.remove(best)
+    state.hand.append(best)
+    state.haven_recursion_total += 1
+
 
 def do_magda_treasures(state: GameState):
     """Magda, Brazen Outlaw: 'Whenever a Dwarf you control becomes tapped,
@@ -1890,6 +1948,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg ativacoes da habilidade de mana da Orb of Dragonkind: {avg([s.orb_mana_activations_total for s in states]):.2f}")
     print(f"Avg fetches cracked: {avg([s.fetches_cracked_total for s in states]):.2f}")
     print(f"Avg tutores via Magda (Treasure sac): {avg([s.magda_tutors_total for s in states]):.2f}")
+    print(f"Avg recursao via Haven of the Spirit Dragon (sacrifica a terra, Dragao do cemiterio pra mao): {avg([s.haven_recursion_total for s in states]):.2f}")
     print(f"Avg Dragoes que entraram SEM pagar custo (Bladewing/Haunting Voyage/Magda tutor/Ur-Dragon free permanent): {avg([s.dragons_free_entry_total for s in states]):.2f}")
     print(f"Avg vezes que a Ur-Dragon entrou de graca via Hellkite Courser: {avg([s.hellkite_courser_free_commander_total for s in states]):.2f}")
     print(f"Avg Dragon tokens (Lathliss/Miirym/Broodmother/Utvara): {avg([s.dragon_tokens for s in states]):.2f}")

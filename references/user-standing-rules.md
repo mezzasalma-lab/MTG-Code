@@ -497,6 +497,64 @@ por conveniência, não por conferência real do oráculo.
   "provavelmente igual a outro terreno parecido" sem conferir o texto
   exato da carta.
 
+## 13. Texto de carta SEMPRE via consulta estruturada real (API Scryfall), nunca resumo de busca nem memória — nem "metade certa"
+
+Citação literal do usuário (2026-08-29), depois do achado de Rhythm of
+the Wild (só riot foi implementado, "creature spells can't be countered"
+nunca sequer registrado) — *"QUERO QUE VC USE O TEXTO COMPLETO DAS
+CARTAS, CARALHO! QUANTAS VEZES JÁ PEDI E REFORCEI ISSO? O QUE PRECISO
+FAZER PRA VC INCORPORAR E USAR ESSA MALDITA REGRA???"*
+
+Contexto: a Regra 1 já dizia "consulta real à API do Scryfall... nunca de
+memória", mas na prática eu vinha usando o `WebSearch`, que devolve um
+RESUMO gerado por outro modelo em cima dos resultados — não o texto
+estruturado real. Isso já tinha causado pelo menos 2 erros reais nesta
+sessão sozinha: (1) Rhythm of the Wild — só a metade do oráculo
+("riot") foi capturada, "creature spells can't be countered" ficou de
+fora inteiro; (2) auditando em lote logo depois desta cobrança,
+descobri que **Kindred Discovery estava cadastrada com mv=3 e pip VERDE
+(G:1)** — o custo real é `{3}{U}{U}`, mv=5, cor AZUL, sem nenhum pip
+verde — e **An Offer You Can't Refuse** com mv=2 em vez do real mv=1
+({U}). Nenhum desses 2 era um texto ambíguo ou obscuro — eram dados
+estruturados simples (mana_cost/cmc) que uma consulta real teria dado
+certo de primeira.
+
+**A partir de agora, o método OBRIGATÓRIO pra qualquer dado de carta
+(custo, cor, oráculo completo, tipo) é a API estruturada real da
+Scryfall via `curl`, não `WebSearch`/`WebFetch`:**
+- Carta única: `curl -s "https://api.scryfall.com/cards/named?exact=<nome
+  com %20 no lugar de espaço>"` — devolve JSON com `mana_cost`, `cmc`,
+  `colors`, `type_line`, `oracle_text` completo e literal, sem resumo.
+- Lote (até 75 por chamada): `POST
+  https://api.scryfall.com/cards/collection` com `{"identifiers":
+  [{"name": "..."}, ...]}` no corpo — usar `curl -X POST ... --data
+  @arquivo.json` (viável neste ambiente: `urllib`/`requests` do Python
+  falharam com 400 aqui, mas `curl` funciona direto, aparentemente por
+  causa do proxy configurado no ambiente — testar `curl` primeiro sempre
+  que uma chamada de API estruturada for necessária).
+- `WebSearch`/`WebFetch` só valem pra informação que a API da Scryfall
+  não tem (ex: artigos de estratégia, decklists de terceiros, preço
+  histórico fora do campo `prices` do próprio Scryfall) — NUNCA pra
+  custo, cor, tipo ou oráculo de uma carta específica quando a API
+  consegue responder direto.
+- **Ler o campo `oracle_text` INTEIRO antes de cadastrar `add()` ou
+  implementar qualquer mecânica** — nunca parar na primeira frase que
+  parece familiar/relevante. Se o texto tem 2+ frases/parágrafos, TODAS
+  precisam estar contempladas (implementadas OU documentadas como fora
+  de escopo, nunca silenciosamente ausentes — mesmo princípio já da
+  checklist de 13 categorias do `goldfish-sim-card-rules.md`, agora
+  extoldo ao próprio texto bruto da carta, não só às categorias de
+  mecânica).
+- Conferir `mana_cost`/`cmc`/`colors` da resposta ANTES de escrever
+  `mv=`/`pips=` no `add()` — nunca preencher esses valores de memória
+  "porque a carta é familiar", mesmo pra cartas muito conhecidas (achado
+  real: Kindred Discovery é uma carta relativamente famosa em decks
+  tribais, e mesmo assim a cor cadastrada estava errada).
+- Vale retroativamente: **qualquer carta já cadastrada em qualquer
+  simulador do repositório merece ser reauditada** contra a API real se
+  houver qualquer dúvida — não é preciso esperar o usuário apontar erro
+  carta por carta.
+
 ---
 
 <!-- Adicionar novas regras permanentes abaixo conforme o usuário as
