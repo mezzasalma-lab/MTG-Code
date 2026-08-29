@@ -406,6 +406,72 @@ correta: o deck estava sendo simulado com mana rápida demais.
 
 ---
 
+### Correção — Oversold Cemetery sem efeito real + bloco de métricas básicas ausente (regra das 5 categorias) — 2026-08-29
+
+**Gatilho:** fechamento da análise comparativa com Ur-Dragon e Beorn — o
+Thranduil nunca tinha recebido o bloco `--- Métricas básicas (checklist
+obrigatória) ---` (RAMP/DRAW/INTERACTION/RECURSION/FINISHER-LETHALITY) que
+a regra permanente da Correção #6 do Beorn exige "para tudo, sempre
+também". Ao montar esse bloco, RECURSION não tinha nenhuma fonte de dado
+real — `Oversold Cemetery` estava cadastrada com `tags={"recursion"}` desde
+a correção pós-Beorn (802258d) mas **nunca teve efeito de jogo implementado
+de verdade**, mesma classe de bug do landfall que só logava sem criar
+efeito (Correção pós-Beorn original).
+
+**Corrigido:** `Oversold Cemetery` — *"At the beginning of your upkeep, if
+there are four or more creature cards in your graveyard, you may return a
+creature card from your graveyard to your hand."* Implementado no início
+do upkeep (`play_turn`, mesma posição do gatilho de Ruthless Winnower):
+conta criaturas no cemitério, se ≥4 devolve a de maior custo de mana pra
+mão (`oversold_cemetery_returns`). Bloco de métricas básicas adicionado ao
+`run_batch()`, RECURSION alimentado por essa nova métrica.
+
+**Robustez:** 20.000 seeds (71000–91000), timeout padrão — 0 erros.
+
+**Batch oficial, n=5000, seed_base=71000 (antes → depois, mesma seed):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg spells cast | 11,16 | 11,25 |
+| Avg extra draws | 10,12 | 10,26 |
+| Oversold Cemetery ativou | — | 5,4% dos jogos, avg 0,08/partida |
+
+**Leitura:** impacto real mas pequeno — Oversold Cemetery raramente acumula
+4+ criaturas no cemitério neste deck (mill é baixo, ~4,5 cartas/partida
+totais, não todas criaturas), então o motor de recursão fica majoritariamente
+dormente. Ainda assim, é um efeito real que antes simplesmente não existia
+— igual à lição do landfall antes desta correção: melhor um gatilho raro
+mas real do que uma tag morta. `lista.md` não muda.
+
+---
+
+### Rodada oficial final pós-checklist de mecânica — 2026-08-29
+
+**n=5000, seed_base=71000 (padrão do script), com todas as correções desta
+sessão aplicadas (landfall, doença de invocação, Oversold Cemetery):**
+
+```
+Avg mulligans: 0,48
+Avg commander cast turn: 4,35 | por T5: 83,7% | por T6: 89,2%
+Avg spells cast: 11,25 | Avg extra draws: 10,26
+Avg finishers ativados: 0,85 | 38,9% dos jogos com finisher até T8
+Avg turnos com blue screw: 0,15 | 6,2% das partidas com pelo menos 1
+
+--- Métricas básicas (checklist obrigatória) ---
+RAMP: 3,45 | DRAW: 10,26 | INTERACTION: 0,73 | RECURSION: 0,08
+FINISHER/LETHALITY: 0,85 ativados, 38,9% até T8, turno médio 6,89
+```
+
+**Leitura:** número de referência oficial atual do deck, com as 5 métricas
+básicas obrigatórias registradas pela primeira vez juntas num único batch
+(paridade com Ur-Dragon e Beorn). RECURSION (0,08) é visivelmente a
+categoria mais fraca do deck — não por bug, mas porque só uma carta
+(`Oversold Cemetery`) provê recursão real e ela raramente encontra a
+condição. Vale nota pra uma futura sessão de deckbuilding (fora do escopo
+desta auditoria de mecânica), não uma mudança de lista agora.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

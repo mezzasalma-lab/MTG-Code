@@ -466,6 +466,7 @@ class GameState:
     maralen_triggers: int = 0                 # exila biblioteca do oponente - sem consequencia numerica
     ruthless_winnower_self_sacs: int = 0      # sacrifica seu proprio nao-Elfo no upkeep - dobrar isso e RUIM pra voce
     tyvar_bellicose_triggers: int = 0         # deathtouch em combate - sem consequencia numerica (sem bloqueadores modelados)
+    oversold_cemetery_returns: int = 0        # Oversold Cemetery: upkeep, 4+ criaturas na GY -> devolve 1 pra mao
 
     def draw(self, n=1, source="draw"):
         got = 0
@@ -1083,6 +1084,21 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
                 state.ruthless_winnower_self_sacs += 1
                 log.append({"trigger": "ruthless_winnower_self_sac", "sacrificed": non_elves[0], "turn": turn})
 
+    # Oversold Cemetery: "At the beginning of your upkeep, if there are four
+    # or more creature cards in your graveyard, you may return a creature
+    # card from your graveyard to your hand." Tag "recursion" existia desde a
+    # Correcao pos-Beorn mas nunca tinha efeito real - so tutora, nunca
+    # devolvia nada (mesma classe de bug do landfall que so logava).
+    if state.has("Oversold Cemetery"):
+        gy_creatures = [c for c in state.graveyard if is_creature(c)]
+        if len(gy_creatures) >= 4:
+            gy_creatures.sort(key=lambda c: -C(c).mv)  # devolve a mais cara (maior valor esperado)
+            best = gy_creatures[0]
+            state.graveyard.remove(best)
+            state.hand.append(best)
+            state.oversold_cemetery_returns += 1
+            log.append({"trigger": "oversold_cemetery_return", "returned": best, "turn": turn})
+
     # Multiplayer (CR 103.8a): sempre compra, mesmo no T1.
     state.draw(1, source="normal")
 
@@ -1183,6 +1199,7 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "maralen_triggers": state.maralen_triggers,
         "ruthless_winnower_self_sacs": state.ruthless_winnower_self_sacs,
         "tyvar_bellicose_triggers": state.tyvar_bellicose_triggers,
+        "oversold_cemetery_returns": state.oversold_cemetery_returns,
     }
 
 def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=71000):
@@ -1271,6 +1288,19 @@ def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=710
     print(f"Avg gatilhos de Maralen (exila biblioteca do oponente - sem efeito numerico modelado): {avg('maralen_triggers'):.2f}")
     print(f"Avg auto-sacrificios via Ruthless Winnower (upkeep, seu proprio nao-Elfo): {avg('ruthless_winnower_self_sacs'):.2f}")
     print(f"Avg gatilhos de Tyvar the Bellicose (deathtouch em combate - sem efeito numerico modelado): {avg('tyvar_bellicose_triggers'):.2f}")
+    oc_games = [r for r in results if r["oversold_cemetery_returns"] > 0]
+    print(f"Oversold Cemetery devolveu criatura pro cemiterio->mao em {100*len(oc_games)/n:.1f}% dos jogos, avg {avg('oversold_cemetery_returns'):.2f} por partida")
+
+    recursion_vals = [r["oversold_cemetery_returns"] for r in results]
+    print()
+    print("--- Metricas basicas (checklist obrigatoria) ---")
+    print(f"RAMP: avg pecas de rampa em campo: {avg('ramp_pieces_in_play'):.2f}")
+    print(f"DRAW: avg compras extras totais (soma de todos os motores): {avg('extra_draws'):.2f}")
+    print(f"INTERACTION: avg remocao conjurada: {avg('removal_cast'):.2f}")
+    print(f"RECURSION: avg cartas devolvidas do cemiterio pra mao (Oversold Cemetery): {statistics.mean(recursion_vals):.2f}")
+    print(f"FINISHER/LETHALITY: avg finishers ativados {avg('finishers_activated'):.2f}, "
+          f"{100*len(fin_turns)/n:.1f}% dos jogos com finisher ate T8"
+          + (f", turno medio {statistics.mean(fin_turns):.2f}" if fin_turns else "") + ".")
 
     print()
     print(f"Logs salvos em: {out_jsonl}")

@@ -700,6 +700,43 @@ nenhuma ocorrência. Beorn não tem nenhum planeswalker na lista — categoria
 
 ---
 
+### Rodada oficial final pós-checklist de mecânica — 2026-08-29
+
+**Contexto:** fechamento da auditoria de mecânica (Correções #1-#8 acima:
+gatilhos ausentes, doença de invocação, Bala Ged Recovery, planeswalkers).
+Nenhuma delas tinha sido consolidada num batch oficial único com TODAS as
+correções juntas — rodado agora pra ter o número de referência atual do
+deck.
+
+**n=5000, seed_base=91000 (padrão do script, mesma convenção da "Rodada
+oficial solicitada" anterior):**
+
+```
+Avg mulligans: 0,43
+Avg commander cast turn: 4,25 | por T4: 66,0% | por T5: 88,2%
+Avg spells cast: 12,11 | Avg extra draws: 14,18
+Avg Bear count final: 6,56 | Avg battlefield final: 19,20
+Avg ramp em campo: 3,21 | Avg remoção conjurada: 0,69
+Avg finishers resolvidos: 0,36 | 31,1% dos jogos com finisher até T8
+
+--- Métricas básicas (checklist obrigatória) ---
+RAMP: 3,21 | DRAW: 14,18 | INTERACTION: 0,69 | RECURSION: 0,31
+FINISHER/LETHALITY: 0,36 resolvidos, 31,1% até T8, turno médio 6,62
+```
+
+**Leitura:** números estáveis frente à última rodada comparável
+(Correção #7, n=2000/seed_base=6000000: commander T4,23, finisher 32,9%→
+32,4%) — a soma de todas as correções de mecânica não moveu o
+comportamento agregado do deck de forma relevante, só corrigiu a
+contabilidade interna (gatilhos que antes eram fantasmas agora são reais).
+Fica como o número de referência oficial atual, sem mudança em `lista.md`.
+
+**Robustez:** herdada dos sweeps de 20.000 jogos já rodados em cada
+correção anterior (0 erros, 0 timeouts) — nenhuma mudança de código nesta
+rodada, só reconsolidação de métricas.
+
+---
+
 <!-- Para novas partidas avulsas, use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
