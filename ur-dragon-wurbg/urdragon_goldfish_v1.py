@@ -321,9 +321,11 @@ add("Sarkhan's Triumph", 3, "instant", {"dragon_tutor_hand"}, pips={"R": 1})
 add("Orb of Dragonkind", 2, "artifact", {"dragon_tutor_sac"}, pips={"R": 1})
 add("Urza's Incubator", 3, "artifact", {"dragon_discount2"})
 
-# Morophon, the Boundless — NAO esta na lista.md ainda, cadastrada so pra
-# permitir o teste comparativo `urdragon_morophon_test.py` (mesmo padrao
-# ja usado pro Radagast of Rhosgobel abaixo). Oraculo real (Scryfall,
+# Morophon, the Boundless — ADICIONADA ao lista.md em 2026-08-29, trocada
+# por Ramos, Dragon Engine (corte validado no teste comparativo
+# `urdragon_morophon_test.py`: Ramos era o corte estruturalmente melhor
+# entre 6 candidatos, mantem contagem de Dragoes neutra e desloca a curva
+# so' +1 CMC). Oraculo real (Scryfall,
 # conferido 2026-08-28): {7}, Legendary Creature — Shapeshifter, 6/6,
 # Changeling ("This card is every creature type" — em TODA zona, inclusive
 # como spell na pilha, mesmo principio ja usado no Firdoch Core). "As
@@ -344,6 +346,47 @@ add("Urza's Incubator", 3, "artifact", {"dragon_discount2"})
 # `CARD_DB[name].power` cru (primeiro anthem estatico desta decklist —
 # nenhuma carta ja registrada dependia de poder DINAMICO antes).
 add("Morophon, the Boundless", 7, "creature", {"dragon"}, power=6, pips={})
+
+# Kindred Discovery — ADICIONADA em 2026-08-29 (troca por Delighted
+# Halfling, validada no teste `urdragon_primer3_test.py`: +42% dano proxy
+# medio sozinha, o maior ganho isolado dos 3 candidatos testados —
+# recomendada tambem pelo artigo draftsim.com sobre Ur-Dragon). Oraculo
+# real (Scryfall, C17/CLB/LCC, conferido 2026-08-29 via WebSearch — a
+# leitura inicial "combat damage to a player" estava ERRADA, corrigida
+# antes de implementar, Regra 1): "As this enchantment enters, choose a
+# creature type. Whenever a creature you control of the chosen type
+# enters or attacks, draw a card." Tipo escolhido = Dragao. Implementado
+# em 2 pontos: `dragon_enters()` (ETB, nomeado ou token, sem "nontoken" no
+# oraculo) e `combat_step()` (1 compra por Dragao atacante, mesmo calculo
+# de `attacking_dragons` ja usado la pro gatilho da propria Ur-Dragon).
+# NAO e' dobrada por Roaming Throne — a habilidade pertence a Kindred
+# Discovery (enchantment), nao a criatura Dragao em si (mesma distincao ja
+# documentada pro Dragon's Hoard).
+add("Kindred Discovery", 3, "enchantment", {"kindred_discovery"}, pips={"G": 1})
+
+# Sarkhan Unbroken — ADICIONADA em 2026-08-29 (troca por Ruby, Daring
+# Tracker, validada no teste `urdragon_primer3_test.py`: +12,8% dano
+# proxy medio sozinha; confirmada em 3 fontes reais independentes — primer
+# original do usuario, decklist do Brian Kibler, artigo draftsim.com).
+# Oraculo real (Scryfall, DTK, conferido 2026-08-29): "{2}{G}{U}{R},
+# Legendary Planeswalker — Sarkhan, lealdade inicial 4. +1: Draw a card,
+# then add one mana of any color. -2: Create a 4/4 red Dragon creature
+# token with flying. -8: Search your library for any number of Dragon
+# creature cards, put them onto the battlefield, then shuffle."
+# Categoria 12 do checklist (`goldfish-sim-card-rules.md`) — lealdade
+# rastreada de verdade via `state.sarkhan_loyalty` (atributo dinamico,
+# GameState e' dataclass sem __slots__), 1 ativacao por turno (guardado
+# por `state.sarkhan_activated_turn`, ja que main_phase() e' chamada 2x
+# por turno). Heuristica documentada, precisa validacao do usuario (Regra
+# 1): sempre +1 ate lealdade >= 8, depois sempre ultimate na primeira
+# chance — nunca usa o -2 (o token unico nao compensa desviar do caminho
+# pro ultimate, que poe TODOS os Dragoes da biblioteca em campo de graca).
+# Com lealdade inicial 4, o ultimate so' fica alcancavel num goldfish de 8
+# turnos se Sarkhan for conjurado ate o turno 4 (4 ativacoes de +1 = turno
+# de cast +4). Morre por regra de estado (lealdade chega a 0) assim que usa
+# o ultimate.
+add("Sarkhan Unbroken", 5, "planeswalker", {"sarkhan_unbroken"},
+    pips={"G": 1, "U": 1, "R": 1})
 
 # --- Dragoes com gatilho real ----------------------------------------------------
 add("Ancient Copper Dragon", 6, "creature", {"dragon", "combat_treasure_d20"}, power=6, pips={"R": 2})
@@ -606,6 +649,12 @@ def dragon_enters(state: GameState, name: str, is_token: bool):
     Lathliss (token 5/5) — essas duas exigem 'another nontoken Dragon' no
     oraculo real, entao tokens NAO as re-disparam (evita loop, por
     construcao das proprias cartas, nao um teto artificial)."""
+    if "Kindred Discovery" in state.battlefield:
+        # "Whenever a creature you control of the chosen type [Dragon]
+        # enters... draw a card." Sem "nontoken" no oraculo - dispara pra
+        # token tambem (Miirym copia, Lathliss token). Nao dobrada por
+        # Roaming Throne (pertence a Kindred Discovery, nao a criatura).
+        draw_cards(state, 1)
     times_scourge = 1
     times_lathliss_miirym = 1
     if "Roaming Throne" in state.battlefield:
@@ -1230,6 +1279,8 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True, count
         state.creature_cast_turn[name] = state.turn - 1
     if name == "Ramos, Dragon Engine":
         pass
+    if name == "Sarkhan Unbroken" and not hasattr(state, "sarkhan_loyalty"):
+        state.sarkhan_loyalty = 4
     resolve_etb(state, name)
     if is_creature_card(name):
         creature_etb_hooks(state, name)
@@ -1404,6 +1455,32 @@ def main_phase(state: GameState):
         state.ramos_counters -= 5
         state.bonus_mana_pool += 10
 
+    if "Sarkhan Unbroken" in state.battlefield:
+        # 1 ativacao por TURNO (CR 606.3) - main_phase() e' chamada 2x por
+        # turno (pre e pos-combate), guardado via sarkhan_activated_turn.
+        # Heuristica documentada (ver comentario do add()): sempre +1 ate
+        # lealdade >= 8, entao sempre ultimate, nunca -2.
+        if getattr(state, "sarkhan_activated_turn", None) != state.turn:
+            state.sarkhan_activated_turn = state.turn
+            loyalty = getattr(state, "sarkhan_loyalty", 4)
+            if loyalty >= 8:
+                state.sarkhan_loyalty = loyalty - 8
+                targets = [n for n in state.library if is_dragon(n) and is_creature_card(n)]
+                for t in targets:
+                    if t not in state.library:
+                        continue
+                    state.library.remove(t)
+                    enter_battlefield(state, t, from_hand=False)
+                    state.dragons_free_entry_total += 1
+                if state.sarkhan_loyalty <= 0:
+                    # Regra de estado: lealdade 0 -> vai pro cemiterio.
+                    state.battlefield.remove("Sarkhan Unbroken")
+                    state.graveyard.append("Sarkhan Unbroken")
+            else:
+                state.sarkhan_loyalty = loyalty + 1
+                draw_cards(state, 1)
+                state.bonus_mana_pool += 1
+
 
 def do_magda_treasures(state: GameState):
     """Magda, Brazen Outlaw: 'Whenever a Dwarf you control becomes tapped,
@@ -1492,6 +1569,12 @@ def combat_step(state: GameState):
 
     if ur_dragon_attacking or any_dragon_attacking:
         attacking_dragons = ready_dragons if ready_dragons else ([COMMANDER] if ur_dragon_attacking else [])
+        if "Kindred Discovery" in state.battlefield:
+            # "...or attacks, draw a card." 1 compra por Dragao atacante -
+            # mesmo calculo de attacking_dragons do gatilho da propria
+            # Ur-Dragon logo abaixo. Nao dobrada por Roaming Throne (ver
+            # comentario do add()).
+            draw_cards(state, len(attacking_dragons))
         n_attacking = len(attacking_dragons)
         total_attack_power = sum(effective_power(state, n) for n in attacking_dragons)
         # Atarka, World Render ("Whenever a Dragon you control attacks, it

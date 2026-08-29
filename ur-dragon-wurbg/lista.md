@@ -21,7 +21,7 @@
 1 Bladewing the Risen
 1 Crux of Fate
 1 Cultivate
-1 Delighted Halfling
+1 Kindred Discovery
 1 Dragon Broodmother
 1 Dragon Tempest
 1 Dragonlord Dromoka
@@ -40,13 +40,13 @@
 1 Klauth, Unrivaled Ancient
 1 Kodama's Reach
 1 Lathliss, Dragon Queen
-1 Ruby, Daring Tracker
+1 Sarkhan Unbroken
 1 Talisman of Impulse
 1 Miirym, Sentinel Wyrm
 1 Nature's Lore
 1 Old Gnawbone
 1 Orb of Dragonkind
-1 Ramos, Dragon Engine
+1 Morophon, the Boundless
 1 Return of the Wildspeaker
 1 Rhythm of the Wild
 1 Roaming Throne

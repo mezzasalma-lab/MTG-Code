@@ -1601,6 +1601,90 @@ ainda mensuravelmente pior que `lista.md`).
 
 ---
 
+## Consolidação #1 — `lista.md` atualizado: Morophon, Kindred Discovery, Sarkhan Unbroken — 2026-08-29
+
+**Contexto:** usuário esclareceu que `lista.md` é o "projeto" (montado com
+ajuda do ChatGPT em outra sessão), não o deck físico — o físico ainda está
+numa versão anterior (`lista-fisica.md`). Isso libera `lista.md` pra
+continuar sendo melhorado com testes reais, independente do que já está
+fisicamente montado.
+
+Aplicadas as 3 trocas já **totalmente validadas por teste** (nenhuma nova,
+só consolidação do que já tinha sido medido em sessões/testes anteriores):
+
+1. **Ramos, Dragon Engine → Morophon, the Boundless** — validado no teste
+   comparativo original (`urdragon_morophon_test.py`, 6 candidatos de
+   corte testados): Ramos era o corte estruturalmente melhor, mantém
+   contagem de Dragões neutra (Ramos também é Dragão) e desloca a curva
+   só +1 CMC (6→7).
+2. **Delighted Halfling → Kindred Discovery** — validado no teste
+   `urdragon_primer3_test.py` (turno anterior): +42% de dano proxy médio
+   sozinha, o maior ganho isolado dos 3 candidatos do primer testados.
+   Também recomendada pelo artigo draftsim.com sobre o Ur-Dragon.
+3. **Ruby, Daring Tracker → Sarkhan Unbroken** — validado no mesmo teste:
+   +12,8% de dano proxy médio sozinha. Confirmada em 3 fontes reais
+   independentes (primer original do usuário, decklist real do Brian
+   Kibler, artigo draftsim.com).
+
+**Mecânica real portada do script de teste pro `urdragon_goldfish_v1.py`
+oficial** (Regra 3 — efeito real, não só tag):
+
+- Morophon: já estava implementada por completo desde o teste original
+  (`morophon_pip_discount()`, `effective_power()`), só faltava entrar na
+  lista.
+- Kindred Discovery: hook em `dragon_enters()` (ETB, nomeado ou token) e
+  em `combat_step()` (1 compra por Dragão atacante, mesmo cálculo de
+  `attacking_dragons` já usado pro gatilho da própria Ur-Dragon). Não
+  dobrada por Roaming Throne (pertence à enchantment, não à criatura).
+- Sarkhan Unbroken: lealdade rastreada de verdade
+  (`state.sarkhan_loyalty`), 1 ativação por turno
+  (`state.sarkhan_activated_turn`, guarda contra `main_phase()` ser
+  chamada 2x/turno). Heurística documentada: sempre +1 até lealdade ≥ 8,
+  depois sempre ultimate (nunca −2). Ultimate implementado de verdade
+  (busca TODOS os Dragões-criatura da biblioteca, põe em campo via
+  `enter_battlefield()` real, disparando todos os gatilhos de ETB
+  normalmente) — morre por regra de estado (lealdade 0) logo depois.
+
+**Robustez:** 20.000 partidas, seeds 0–19999, timeout 3s — 0 erros, 0
+timeouts, com o `lista.md` atualizado.
+
+**Batch oficial, n=3000, seed_base=7600000 (mesmas seeds de sempre):**
+
+| Métrica | Antes (baseline) | Depois (consolidado) | Δ |
+|---|---|---|---|
+| Avg mulligans | 0,48 | 0,51 | +6% |
+| Turno médio Ur-Dragon | 6,58 | 6,63 | +0,05 |
+| Nunca conjurada em 8 turnos | 30,5% | 32,6% | +2,1pp |
+| Avg Dragões em campo (fim) | 18,97 | **21,92** | **+15,5%** |
+| Avg dano proxy total | 805,56 | **1061,50** | **+31,8%** |
+| Avg cartas compradas extra | 16,78 | **19,96** | **+19,0%** |
+| Avg Treasures criados | 57,74 | **80,42** | **+39,3%** |
+| Avg turnos color screw | 1,62 | 1,57 | −3,1% |
+| % jogos com color screw | 35,9% | 34,6% | −1,3pp |
+| Avg mão final | 5,35 | 5,68 | +6,2% |
+
+**Leitura:** ganho líquido claro — dano e draw sobem forte (+32% e +19%),
+com custo pequeno em velocidade bruta (nunca-conjurada +2,1pp, esperado ao
+trocar 3 mana dorks/rocks baratos de CMC1-6 por 3 peças de CMC5-7 mais
+fortes mas mais lentas). Color screw até melhora levemente. Ganho maior
+que a soma dos 2 testes isolados de Kindred+Sarkhan (dano 1000,33 no par)
+porque Morophon entra junto aqui, com desconto de pip colorido + anthem
+`+1/+1` empilhando em cima dos outros 2 motores.
+
+**Pendências que continuam em aberto** (não aplicadas — sem corte
+validado ainda): Magda, Brazen Outlaw + Scalelord Reckoner (confirmadas
+fisicamente "sempre estiveram", `lista.md` segue incompleto nelas),
+Dragon's Hoard (confirmada fisicamente + no primer + no draftsim),
+Chromatic Lantern (ambígua — Kibler não usa, draftsim recomenda, teste
+isolado mostrou ganho marginal e trade-off real de velocidade).
+
+`lista-fisica.md` NÃO muda — continua sendo o retrato fiel do que está
+fisicamente montado hoje, agora mais desatualizado ainda em relação ao
+`lista.md` (mais uma pendência física a resolver quando o `lista.md`
+estiver fechado).
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**
