@@ -2024,7 +2024,177 @@ divergência física/digital que motivou boa parte desta sessão.
 
 ---
 
-## Partida #3 — AAAA-MM-DD
+## Partida #3 — 2026-08-29 (goldfish real, seed 7600001)
+
+- **Formato do teste:** goldfish solo, `urdragon_goldfish_v1.py`, lista.md final, turno a turno, 8 turnos.
+- **Mão inicial (mulligan até):** 0 mulligans. Arcane Denial, Hellkite Charger, Hallowed Fountain, Sarkhan's Triumph, Sarkhan Unbroken, Swamp, Steam Vents.
+- **Turno da primeira jogada relevante:** turnos 1-4 só land drop + Sol Ring (T4). Nenhum corpo em campo até T5.
+- **Turno do primeiro ataque/combo:** turno 5, Magda + Hellkite Charger entram juntos (1º Dragão do jogo).
+- **Curva de mana observada:** lenta nos 4 primeiros turnos (sem nenhum spell relevante resolvido), acelera forte a partir do T5 com Sol Ring já em campo.
+- **Bombas/peças-chave puxadas:** Sarkhan Unbroken (T6), Bladewing the Risen (T7), Utvara Hellkite (T8) — pipeline de Dragões caros bem sequenciado nos últimos 3 turnos.
+- **Removals sofridos/enviados:** N/A — goldfish solo.
+- **Resultado:** Ur-Dragon conjurada no turno 8 (limite), 6 Dragões em campo ao final, 0 color screw a partida inteira.
+- **Turno de fim de jogo:** encerrado no limite de 8 turnos, jogo não fechado — mão final com Ancient Gold Dragon, Assassin's Trophy, Swords to Plowshares ainda por jogar.
+- **O que funcionou bem:** Sol Ring cedo (T4) permitiu 2 land drops de valor efetivo no T5, recuperando o ritmo perdido nos 4 primeiros turnos. Sem screw nenhum apesar da mão inicial não ter cor de sobra.
+- **O que travou o deck:** igual à Partida #2 — ritmo de ação nos turnos 1-4, não escassez de terreno ou cor.
+- **Ajustes a considerar:** nenhum a partir de uma partida isolada.
+
+---
+
+## Partida #4 — 2026-08-29 (goldfish real, seed 7600002)
+
+- **Formato do teste:** goldfish solo, `urdragon_goldfish_v1.py`, lista.md final, turno a turno, 8 turnos.
+- **Mão inicial (mulligan até):** 1 mulligan. Farseek, Path of Ancestry, Hellkite Charger, Hellkite Courser, Sol Ring, Twinflame Tyrant (mão de 6 pós-mulligan).
+- **Turno da primeira jogada relevante:** turno 2 (Sol Ring), turno 3 (Up the Beanstalk).
+- **Turno do primeiro ataque/combo:** turno 4, Roaming Throne entra (1º Dragão).
+- **Curva de mana observada:** ramp decente cedo (Sol Ring T2), mas a mão nunca puxou terreno das 3 cores certas pra fechar a comandante — ficou 2 Dragões em campo o jogo inteiro sem nunca destravar WUBRG.
+- **Bombas/peças-chave puxadas:** Dragon Broodmother e Ancient Copper Dragon na mão final, nunca conjuradas — mv alto demais pra mana disponível.
+- **Removals sofridos/enviados:** N/A.
+- **Resultado:** **Ur-Dragon NUNCA conjurada em 8 turnos.** 2 Dragões em campo, dano proxy 0 (sem Scourge/Tempest em campo), 0 color screw (a mana que tinha era suficiente pro que dava pra pagar, só não tinha as 5 cores da comandante).
+- **Turno de fim de jogo:** 8 turnos, sem pressão nenhuma gerada — pior resultado qualitativo do lote de 10.
+- **O que funcionou bem:** Up the Beanstalk e Twinflame Tyrant deram 2 cartas extra mesmo sem a comandante.
+- **O que travou o deck:** mulligan pra 6 + mão sem fixação de 5 cores real (só Path of Ancestry como fonte "any color") — exatamente o cenário que motivou toda a auditoria de manabase desta sessão. Sem Command Tower/Mana Confluence/Arcane Signet na mão, a comandante fica refém de topdeck.
+- **Ajustes a considerar:** nenhum a partir de 1 partida — mas é o tipo de mão que justifica a taxa de ~30% "nunca conjurada" já medida no agregado, não um outlier.
+
+---
+
+## Partida #5 — 2026-08-29 (goldfish real, seed 7600003)
+
+- **Formato do teste:** goldfish solo, `urdragon_goldfish_v1.py`, lista.md final, turno a turno, 8 turnos.
+- **Mão inicial (mulligan até):** 0 mulligans. Wooded Foothills, Sarkhan Soul Aflame, Assassin's Trophy, Sacred Foundry, Beast Within, Haunting Voyage, Arcane Signet.
+- **Turno da primeira jogada relevante:** turno 3, Arcane Signet + Up the Beanstalk.
+- **Turno do primeiro ataque/combo:** turno 7, Ancient Gold Dragon entra (1º Dragão do jogo, bem tarde).
+- **Curva de mana observada:** mão de interação/utilidade (Assassin's Trophy, Beast Within, Haunting Voyage) sem nenhuma ameaça barata — 6 terrenos jogados antes do 1º corpo relevante.
+- **Bombas/peças-chave puxadas:** Klauth Unrivaled Ancient conjurado junto com a Ur-Dragon no T8.
+- **Removals sofridos/enviados:** N/A.
+- **Resultado:** Ur-Dragon conjurada no turno 8 (limite), só 3 Dragões em campo ao final — a mão de interação sem alvo real (goldfish solo) ficou morta a partida inteira (Assassin's Trophy e Beast Within nunca tiveram uso).
+- **Turno de fim de jogo:** 8 turnos, cemitério vazio (nada morreu, nada foi descartado).
+- **O que funcionou bem:** 0 color screw de novo — 3ª partida seguida sem esse problema.
+- **O que travou o deck:** mão desbalanceada pro formato de teste (muita interação num ambiente sem oponente real pra usar) — não é falha do deck, é limitação conhecida do goldfish solo já documentada no cabeçalho do simulador.
+- **Ajustes a considerar:** nenhum — ilustra a simplificação já documentada (interação sem alvo fica sempre na mão).
+
+---
+
+## Partida #6 — 2026-08-29 (goldfish real, seed 7600004)
+
+- **Formato do teste:** goldfish solo, `urdragon_goldfish_v1.py`, lista.md final, turno a turno, 8 turnos.
+- **Mão inicial (mulligan até):** 0 mulligans. Zagoth Triome, Taiga, Roaming Throne, Ancient Tomb, Command Tower, Windswept Heath, Skyshroud Claim.
+- **Turno da primeira jogada relevante:** turno 3, Roaming Throne (1º Dragão, T3 — o mais cedo do lote de 10).
+- **Turno do primeiro ataque/combo:** turno 6, Scourge of Valkas entra, +2 de dano proxy imediato (X=2 Dragões em campo).
+- **Curva de mana observada:** mão com 5 terrenos incluindo 2 fontes "any color" (Command Tower, Ancient Tomb) — fixação real desde o início, Roaming Throne saindo no T3 é sinal disso.
+- **Bombas/peças-chave puxadas:** Sylvan Library (T6) puxou carta extra logo antes da comandante resolver.
+- **Removals sofridos/enviados:** N/A.
+- **Resultado:** Ur-Dragon no turno 8, dano proxy 8 (Scourge of Valkas x2 gatilhos), 3 Dragões, 0 color screw.
+- **Turno de fim de jogo:** 8 turnos, mão final ainda com Austere Command e Crux of Fate (wipes sem alvo, mesma limitação da Partida #5).
+- **O que funcionou bem:** Roaming Throne saindo cedo (T3) deu o primeiro corpo Dragão bem antes da média (6,65-6,68) — mostra o valor real de puxar fixação de mana cedo.
+- **O que travou o deck:** ainda assim, a comandante de 6+2 pips só resolveu no limite — mesmo com mana boa, o custo de {4}{W}{U}{B}{R}{G} é o gargalo real, não a fixação.
+- **Ajustes a considerar:** nenhum a partir de 1 partida.
+
+---
+
+## Partida #7 — 2026-08-29 (goldfish real, seed 7600005)
+
+- **Formato do teste:** goldfish solo, `urdragon_goldfish_v1.py`, lista.md final, turno a turno, 8 turnos.
+- **Mão inicial (mulligan até):** 1 mulligan. Miirym Sentinel Wyrm, Ketria Triome, Ancient Tomb, Hellkite Charger, Anguished Unmaking, Crux of Fate (mão de 6).
+- **Turno da primeira jogada relevante:** turno 5, Herald's Horn — só a 4ª carta não-terreno jogada em 5 turnos.
+- **Turno do primeiro ataque/combo:** turno 8, Terror of the Peaks entra (único Dragão da partida inteira).
+- **Curva de mana observada:** travada — turnos 3 e 6 sem NENHUM land drop (mão sem terreno suficiente).
+- **Bombas/peças-chave puxadas:** nenhuma resolvida — Miirym, Hellkite Charger, Anguished Unmaking, Crux of Fate todos ainda na mão no T8.
+- **Removals sofridos/enviados:** N/A.
+- **Resultado:** **Ur-Dragon NUNCA conjurada.** Pior partida do lote em color screw: **6 turnos de color screw, começando no turno 3** — mana total ok, mas faltando a cor certa a maior parte do jogo.
+- **Turno de fim de jogo:** 8 turnos, só 1 Dragão em campo (Terror of the Peaks, T8), dano 0.
+- **O que funcionou bem:** nada de relevante — pior resultado do lote.
+- **O que travou o deck:** mulligan pra 6 já sem terreno suficiente, e a mão resultante não puxou terreno rápido o bastante (2 turnos inteiros sem land drop). Exemplo real do risco residual de manabase 5-cor mesmo otimizada — 6 de 8 turnos com screw é o pior caso, não o típico (agregado: ~31% dos jogos têm screw, média de 1,4-1,5 turnos quando acontece — aqui deu 6).
+- **Ajustes a considerar:** nenhum a partir de outlier isolado — mas reforça que a taxa de color screw agregada (~31-32%) não é uniforme: quando acontece feio, acontece feio mesmo.
+
+---
+
+## Partida #8 — 2026-08-29 (goldfish real, seed 7600006)
+
+- **Formato do teste:** goldfish solo, `urdragon_goldfish_v1.py`, lista.md final, turno a turno, 8 turnos.
+- **Mão inicial (mulligan até):** 0 mulligans. Urza's Incubator, Bloodstained Mire, Forest, Magda Brazen Outlaw, An Offer You Can't Refuse, Ziatora's Proving Ground, Herald's Horn.
+- **Turno da primeira jogada relevante:** turno 3, Magda entra em campo.
+- **Turno do primeiro ataque/combo:** turno 6, Miirym + Savage Ventmaw entram juntos — Miirym copia Savage Ventmaw ao ETB (efeito de cópia real), pulando de 0 pra 3 Dragões num turno só.
+- **Curva de mana observada:** Urza's Incubator (T4) + Herald's Horn (T5) empilharam desconto de Dragão antes de qualquer Dragão de verdade estar em campo — pagou dividendo forte no T6-T7.
+- **Bombas/peças-chave puxadas:** Klauth Unrivaled Ancient e The Great Henge compradas via os motores de draw acionados (Sylvan Library T7).
+- **Removals sofridos/enviados:** N/A.
+- **Resultado:** Ur-Dragon conjurada no turno **7** (mais cedo que a média) — 7 Dragões em campo, 5 Treasures criados (Magda + Goldspan-like), 2 turnos de color screw (T2 em diante) mas sem impedir a curva.
+- **Turno de fim de jogo:** 8 turnos, T8 sozinho gerou +6 cartas extra (motores de draw acumulados disparando juntos).
+- **O que funcionou bem:** Miirym copiando Savage Ventmaw ao ETB é o tipo de efeito "2 por 1" que acelera a contagem de Dragões rápido — e os 2 descontos empilhados (Urza's Incubator + Herald's Horn) tornaram Klauth e o resto da mão tarde muito mais baratos.
+- **O que travou o deck:** 2 turnos de color screw cedo (T2-T3) atrasaram um pouco o início, mas o motor de desconto compensou depois.
+- **Ajustes a considerar:** nenhum a partir de 1 partida — mas ilustra bem o valor real de Urza's Incubator/Herald's Horn quando saem ANTES dos Dragões caros, não depois.
+
+---
+
+## Partida #9 — 2026-08-29 (goldfish real, seed 7600007) — OUTLIER, jogo explosivo
+
+- **Formato do teste:** goldfish solo, `urdragon_goldfish_v1.py`, lista.md final, turno a turno, 8 turnos.
+- **Mão inicial (mulligan até):** 0 mulligans. Balefire Dragon, Kodama's Reach, Roaming Throne, Farseek, Breeding Pool, Atarka World Render, Haven of the Spirit Dragon.
+- **Turno da primeira jogada relevante:** turno 4, Roaming Throne (1º Dragão).
+- **Turno do primeiro ataque/combo:** turno 5, Dragon's Hoard + Scourge of Valkas entram — gatilho de dano dispara pela 1ª vez (+2).
+- **Curva de mana observada:** N/A no sentido tradicional — a partir do T6 o jogo deixa de ser "curva" e vira efeito bola de neve puro.
+- **Bombas/peças-chave puxadas:** turno 6 — Hellkite Courser, Balefire Dragon e Utvara Hellkite entram no MESMO turno com Scourge of Valkas + Roaming Throne já em campo: **+38 de dano proxy e +6 Dragon tokens só nesse turno**, contagem de Dragões pula de 2 pra 11. Turno 7 (Ur-Dragon + Atarka World Render): **+50 dano, +10 tokens**, 23 Dragões em campo. Turno 8 (14 permanentes entrando no mesmo turno, incluindo Dragon Tempest, Miirym, Old Gnawbone): **+422 de dano proxy, +14 tokens, +168 Treasures**, fechando em **41 Dragões em campo**.
+- **Removals sofridos/enviados:** N/A.
+- **Resultado:** Ur-Dragon conjurada no turno 7. **Dano proxy final: 512. Draw extra: 33. Treasures: 168. Dragon tokens: 30. 41 Dragões em campo ao final.** De longe o melhor resultado do lote de 10 — e um dos melhores de toda a sessão.
+- **Turno de fim de jogo:** 8 turnos, mão final ainda com 7 cartas incluindo Birds of Paradise e Dragonspeaker Shaman não jogadas — o jogo "quebrou" de tão positivo, sobrou recurso demais pra usar.
+- **O que funcionou bem:** o motor de retroalimentação Scourge of Valkas/Dragon Tempest + Roaming Throne dobrando gatilhos de Dragão + Miirym/Lathliss criando token que reabastece o próprio gatilho — quando as peças certas colidem (Roaming Throne cedo + payoffs de dano em campo antes da avalanche de Dragões caros), o crescimento é composto, não linear. É exatamente o "efeito bola de neve" que a análise teórica do deck sempre previu, agora com número real.
+- **O que travou o deck:** nada — esse é o "melhor caso" ilustrado.
+- **Ajustes a considerar:** nenhum — serve como prova de que a arquitetura de dano escalável (Scourge/Tempest + tokens + Roaming Throne) funciona como projetado quando resolve. Vale registrar como referência de teto do deck, não como expectativa média (a média agregada de 5000 jogos, dano ~824-872, já reflete que isso é exceção, não regra).
+
+---
+
+## Partida #10 — 2026-08-29 (goldfish real, seed 7600008)
+
+- **Formato do teste:** goldfish solo, `urdragon_goldfish_v1.py`, lista.md final, turno a turno, 8 turnos.
+- **Mão inicial (mulligan até):** 0 mulligans. Mana Confluence, Return of the Wildspeaker, Godless Shrine, Sol Ring, Goldspan Dragon, Swamp, Heroic Intervention.
+- **Turno da primeira jogada relevante:** turno 1, Mana Confluence + Sol Ring — abertura de ramp muito forte.
+- **Turno do primeiro ataque/combo:** turno 8, Goldspan Dragon entra (único Dragão da partida).
+- **Curva de mana observada:** ramp excelente no T1 (2 fontes de mana jogadas), mas sem NENHUM Dragão real na mão até o T8 — abertura forte sem payoff pra acompanhar.
+- **Bombas/peças-chave puxadas:** Terror of the Peaks e Klauth Unrivaled Ancient entram junto com a Ur-Dragon no T8, mas tarde demais pra atacar.
+- **Removals sofridos/enviados:** N/A.
+- **Resultado:** Ur-Dragon conjurada no turno 7 — mas **8 turnos de color screw no total, começando no turno 2**, o maior volume de screw do lote de 10 (mesmo tendo Mana Confluence + Sol Ring cedo).
+- **Turno de fim de jogo:** 8 turnos, dano proxy só 4 (nenhum motor de dano escalável em campo).
+- **O que funcionou bem:** ramp cedo garantiu a comandante saindo no T7 apesar do screw.
+- **O que travou o deck:** contraintuitivo — ter rock de mana bom cedo (Mana Confluence, Sol Ring) não impediu 8 turnos de screw, porque o problema não era quantidade de mana, era a MÃO nunca ter puxado a cor específica que faltava em terreno. Mostra que rocks genéricos ajudam quantidade mas não substituem terreno real na cor certa.
+- **Ajustes a considerar:** nenhum a partir de 1 partida — mas é um contraexemplo real e útil pra não assumir "tem rock de 5 cores cedo = sem risco de screw".
+
+---
+
+## Partida #11 — 2026-08-29 (goldfish real, seed 7600009)
+
+- **Formato do teste:** goldfish solo, `urdragon_goldfish_v1.py`, lista.md final, turno a turno, 8 turnos.
+- **Mão inicial (mulligan até):** **2 mulligans** — mão final de 5 cartas: Herald's Horn, Dragon Tempest, Morophon the Boundless, Lathliss Dragon Queen, Cavern of Souls.
+- **Turno da primeira jogada relevante:** turno 5 — só a 3ª carta não-terreno jogada em 5 turnos, mão de 5 cartas deixa pouca margem.
+- **Turno do primeiro ataque/combo:** turno 7, Lathliss Dragon Queen entra (1º Dragão).
+- **Curva de mana observada:** mão de 5 cartas pós-2-mulligans nunca teve chance real — turnos 3 e 4 sem land drop nenhum.
+- **Bombas/peças-chave puxadas:** Morophon the Boundless conjurada no T8, mas sem Dragões suficientes em campo antes pra aproveitar o desconto/anthem dela.
+- **Removals sofridos/enviados:** N/A.
+- **Resultado:** **Ur-Dragon NUNCA conjurada.** 4 Dragões em campo ao final (Lathliss + token + Goldspan + Morophon), 6 turnos de color screw a partir do turno 2.
+- **Turno de fim de jogo:** 8 turnos, mão final com só 1 carta (Swords to Plowshares) — a mão de 2-mulligans nunca se recuperou.
+- **O que funcionou bem:** mesmo com mão reduzida, o deck ainda colocou 4 Dragões em campo até o T8 — resiliência real do plano "qualquer Dragão é uma ameaça", não dependente só da comandante.
+- **O que travou o deck:** 2 mulligans é o pior cenário possível de amostra (mão de 5, sem margem de erro) — combinado com screw real, a partida nunca teve chance. Isso é variância de mulligan, não falha de lista (Avg mulligans do agregado: 0,51-0,55, então 2 é um evento raro de cauda).
+- **Ajustes a considerar:** nenhum — ilustra o pior cenário realista (mulligan duplo + screw), não motivo pra mudar a lista.
+
+---
+
+## Partida #12 — 2026-08-29 (goldfish real, seed 7600010)
+
+- **Formato do teste:** goldfish solo, `urdragon_goldfish_v1.py`, lista.md final, turno a turno, 8 turnos.
+- **Mão inicial (mulligan até):** 1 mulligan. Three Visits, Dragon Broodmother, Sarkhan's Triumph, Return of the Wildspeaker, Dragon Tempest, Steam Vents (mão de 6).
+- **Turno da primeira jogada relevante:** turno 3, Dragon Tempest entra (motor de dano em campo antes de qualquer Dragão).
+- **Turno do primeiro ataque/combo:** turno 5, Terror of the Peaks entra — 1º gatilho de dano (+1, X=poder da criatura que entrou).
+- **Curva de mana observada:** mão pós-mulligan sem ramp real (Three Visits foi o único, T1), mas com Dragon Tempest cedo compensando com valor por Dragão que entra depois.
+- **Bombas/peças-chave puxadas:** Scourge of Valkas (T7) + Dragon Broodmother (T8, gera token de Dragão todo upkeep) — motor de longo prazo montado, mas só nos últimos 2 turnos.
+- **Removals sofridos/enviados:** N/A.
+- **Resultado:** **Ur-Dragon NUNCA conjurada** — mas ainda assim 19 de dano proxy e 4 Dragões em campo, melhor resultado entre as 4 partidas do lote que não resolveram a comandante.
+- **Turno de fim de jogo:** 8 turnos, mão final com Utvara Hellkite e Hellkite Charger ainda por jogar.
+- **O que funcionou bem:** Dragon Tempest cedo (T3) provou que o deck gera valor real mesmo sem a comandante em campo — o motor de dano por Dragão-ETB não depende da Ur-Dragon pra funcionar, só fica mais forte com ela.
+- **O que travou o deck:** falta de ramp na mão (só 1 fonte) atrasou geral, mas sem screw nenhum — foi só falta de mana total, não de cor.
+- **Ajustes a considerar:** nenhum — mais um exemplo real de que "nunca conjurada" não significa "jogo perdido", o deck ainda pressiona via Dragões avulsos.
+
+---
+
+## Partida #13 — AAAA-MM-DD
 
 - **Formato do teste:**
 - **Mão inicial (mulligan até):**
