@@ -450,6 +450,53 @@ foi registrado em sessões (ou até turnos) anteriores.
   — a correção certa é reforçar o hábito de consulta, não necessariamente
   criar mais uma regra nova pro mesmo problema.
 
+## 12. Todo tipo de terreno precisa ter o mecanismo real de entrada verificado e implementado, não presumido
+
+Citação literal do usuário (2026-08-29), Ur-Dragon, depois de perguntar se
+Sundown Pass poderia substituir Battlefield Forge na manabase: *"Sempre
+implemente a verificação de todos os tipos de terrenos: fetch, checked,
+shock, triomas e etc!"*
+
+Contexto: Sundown Pass é um "check land" real (Innistrad: Crimson Vow —
+"This land enters tapped unless you control two or more other lands. {T}:
+Add {R} or {W}.") — um mecanismo de entrada condicional que o simulador do
+Ur-Dragon nunca tinha implementado (só tinha fetch, shock-sempre-destravado
+por premissa documentada, e triome/Path of Ancestry sempre tapped via
+`ETB_TAPPED_LANDS`). Sem esse mecanismo, eu teria simplesmente cadastrado
+Sundown Pass como "sempre destravada" (mesma simplificação incorreta que já
+tinha sido corrigida uma vez pros Triomes, achado real de 2026-08-27/28) só
+por conveniência, não por conferência real do oráculo.
+
+- **Antes de cadastrar QUALQUER terreno num simulador**, identificar o
+  ARQUÉTIPO real dele (via Scryfall, nunca de memória) entre pelo menos:
+  fetch land ("Sacrifice ~: Search your library for a [tipo] card"),
+  shock land ("you may pay 2 life. If you don't, ~ enters tapped"), check
+  land ("~ enters tapped unless you control a [tipo] or [tipo]" ou "two or
+  more other lands"), triome/terreno sempre tapped ("This land enters
+  tapped", sem condição nem opção de vida), pain land ("{T}: Add [cor].
+  This land deals 1 damage to you", nunca tapped), slow land ("~ enters
+  tapped unless you control two or more other lands" — cuidado, MESMO
+  texto de check land em alguns casos recentes, conferir a carta exata),
+  canopy/horizon land (sacrifício + draw), terreno-utilidade de cor
+  condicional (Cavern of Souls/Command Tower/Exotic Orchard — já cobertos
+  pela Regra 6), terreno sem-cor de mana dupla (Ancient Tomb), dual
+  original (sem restrição nenhuma).
+- **Cada arquétipo precisa do mecanismo de entrada REAL modelado**, não só
+  a cor que produz — check lands e slow lands em especial exigem uma
+  condição real (contagem de terrenos/tipos em campo no momento da entrada)
+  que o simulador ainda não tinha antes desta regra; implementar de forma
+  genérica (reutilizável por qualquer terreno do mesmo arquétipo), não
+  hardcoded pra uma carta só.
+- Vale **retroativamente pra toda manabase de todo deck do repositório**,
+  não só pro terreno sendo adicionado no momento — auditar a manabase
+  inteira contra essa lista de arquétipos antes de considerar um simulador
+  completo (mesmo princípio já usado nas Regras 9/10 do
+  `goldfish-sim-card-rules.md` pra mecânicas de carta em geral).
+- Documentar explicitamente, por terreno, qual arquétipo foi identificado e
+  a fonte real (Scryfall) — nunca assumir "provavelmente destravada" ou
+  "provavelmente igual a outro terreno parecido" sem conferir o texto
+  exato da carta.
+
 ---
 
 <!-- Adicionar novas regras permanentes abaixo conforme o usuário as

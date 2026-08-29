@@ -169,6 +169,41 @@ QUALQUER simulador, novo ou já existente. Generalizando: antes de considerar
    Floresta, Cavern of Souls/Secluded Courtyard/Haven condicionados a tipo de
    criatura — ver regra #6 do `user-standing-rules.md`) precisam entrar na
    contagem real de fontes por cor, não só "incolor" por padrão.
+
+   **Arquétipo de entrada de CADA terreno da lista, verificado via Scryfall**
+   (regra #12 do `user-standing-rules.md`, citação literal do usuário depois
+   de perguntar sobre Sundown Pass: *"Sempre implemente a verificação de
+   todos os tipos de terrenos: fetch, checked, shock, triomas e etc!"*) —
+   nunca presumir "provavelmente destravada" por semelhança com outro
+   terreno já cadastrado:
+   - **Fetch** ("Sacrifice ~: Search your library for a [tipo] card") —
+     `crack_fetch()`/`FETCH_TARGETS`, alcança qualquer terreno com o tipo
+     buscado (Regra 6), não só o par nomeado.
+   - **Shock land** ("you may pay 2 life. If you don't, ~ enters tapped") —
+     convenção já documentada nesta sessão: assume que o jogador sempre paga
+     a vida (vida não é recurso rastreado/escasso no simulador), então NUNCA
+     entra tapped — mas isso é premissa explícita, não ausência de checagem.
+   - **Check land** ("~ enters tapped unless you control a [tipo] or
+     [tipo]") e **slow land** ("~ enters tapped unless you control two or
+     more other lands") — exigem uma condição REAL sobre o estado do campo
+     no momento em que o terreno entra (contagem de tipos ou de terrenos já
+     em campo); nenhum desses dois arquétipos tinha suporte genérico no
+     simulador antes de 2026-08-29 (achado real: Sundown Pass, "check land"
+     R/W, ia ser cadastrada como sempre-destravada por conveniência sem essa
+     regra). Implementar de forma reutilizável (função genérica, não
+     hardcoded pra 1 carta), condicionada ao `len(state.battlefield)`
+     filtrado por `LAND_NAMES` no momento da entrada.
+   - **Triome / sempre tapped** ("This land enters tapped", sem condição
+     nem opção de vida) — `ETB_TAPPED_LANDS`, incondicional.
+   - **Pain land** ("{T}: Add [cor]. This land deals 1 damage to you") —
+     nunca tapped; vida não rastreada (mesma premissa dos shocks).
+   - **Canopy/horizon land** (sacrifício + draw), **dual original** (sem
+     restrição nenhuma), **terreno sem-cor de mana dupla** (ex: Ancient
+     Tomb) — conferir o oráculo exato antes de assumir que se encaixa num
+     desses baldes só pelo nome ou aparência.
+   - Aplica-se **retroativamente a toda manabase de todo deck do
+     repositório** — auditar a lista inteira contra esses arquétipos antes
+     de declarar qualquer simulador (novo ou revisado) completo.
 5. **Motores de draw** ("Whenever you cast/draw/creature enters... draw a
    card") — cada um precisa de um gatilho real, disparado no evento certo
    (cast vs. ETB são momentos diferentes; a maioria dos simuladores atuais

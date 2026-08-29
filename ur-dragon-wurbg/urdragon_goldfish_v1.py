@@ -237,6 +237,18 @@ DRAGON_ANY_COLOR_LANDS = {"Cavern of Souls", "Secluded Courtyard", "Haven of the
 ETB_TAPPED_LANDS = {"Jetmir's Garden", "Ketria Triome", "Zagoth Triome", "Ziatora's Proving Ground",
                      "Path of Ancestry"}  # achado real 2026-08-28 (auditoria de checklist): "This land enters tapped" incondicional, faltava
 
+# "Slow lands" (Kaldheim, reimpressas em VOW/DBL/SOS/WHO/INR) — regra #12
+# do user-standing-rules.md, citacao literal do usuario apos perguntar
+# sobre Sundown Pass: "Sempre implemente a verificacao de todos os tipos
+# de terrenos: fetch, checked, shock, triomas e etc!" Oraculo real
+# (Scryfall, conferido 2026-08-29): "This land enters tapped unless you
+# control two or more other lands." Diferente de check land classico
+# (Innistrad 2011, checa TIPO basico de outro terreno, ex: Sunpetal
+# Grove) - slow land checa CONTAGEM de terrenos, nao tipo. Condicao
+# avaliada em play_land() ANTES do terreno entrar (conta os OUTROS
+# terrenos ja em campo, nao inclui a propria entrando).
+SLOW_LANDS = {"Sundown Pass"}
+
 # Unicas 3 criaturas com o tipo Human na decklist (type_line real, Scryfall) -
 # usado por Return of the Wildspeaker ("non-Human creatures you control").
 HUMAN_CREATURE_NAMES = {"Dragonspeaker Shaman", "Ruby, Daring Tracker", "Sarkhan, Soul Aflame"}
@@ -264,6 +276,14 @@ add("Karplusan Forest", 0, "land", set(), produces={"R", "G"})
 # real: "{T}: Add {C}. / {T}: Add {R} or {W}. This land deals 1 damage
 # to you." — sem tapped.
 add("Battlefield Forge", 0, "land", set(), produces={"R", "W"})
+
+# Sundown Pass: candidata real levantada pelo usuario como possivel
+# substituta de Battlefield Forge (mesmas 2 cores, R/W) - NAO esta na
+# lista.md ainda, cadastrada so pra permitir o teste comparativo (mesmo
+# padrao ja usado pro Karplusan Forest/Battlefield Forge/Talisman antes
+# de entrarem). Oraculo real: "{T}: Add {R} or {W}." + slow land (ver
+# SLOW_LANDS acima).
+add("Sundown Pass", 0, "land", set(), produces={"R", "W"})
 
 # Talisman of Impulse: ESTA na lista.md (linha 44) - comentario anterior
 # desatualizado. Oraculo real: "{T}: Add {C}. / {T}: Add {R} or {G}. This
@@ -1365,8 +1385,14 @@ def play_land(state: GameState):
     if choice in FETCH_TARGETS:
         crack_fetch(state, choice)
     else:
+        other_lands_in_play = sum(1 for n in state.battlefield if n in LAND_NAMES)
         state.battlefield.append(choice)
         if choice in ETB_TAPPED_LANDS:
+            state.tapped_land_this_turn = choice
+        elif choice in SLOW_LANDS and other_lands_in_play < 2:
+            # "enters tapped unless you control two or more OTHER lands" -
+            # contagem de terrenos ANTES desta entrar (other_lands_in_play
+            # calculado antes do append acima).
             state.tapped_land_this_turn = choice
 
 
