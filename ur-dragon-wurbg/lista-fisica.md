@@ -1,9 +1,9 @@
-# The Ur-Dragon — lista FÍSICA (as 6 fotos do deck real, 2026-08-29)
+# The Ur-Dragon — lista FÍSICA (o que está de verdade na caixa, 2026-08-29)
 
-Difere da `lista.md` (lista "afinada"/de referência). Esta aqui é o que está
-de verdade dentro da caixa, cruzado carta a carta com as 6 fotos enviadas
-pelo usuário (commander + 99, fotos 1-6 do lote de 2026-08-29). Ver
-`goldfish-log.md` pra detalhe de cada diferença vs. `lista.md`.
+Atualizada a partir da lista completa que o usuário digitou de cabeça (não mais
+reconstruída só das 6 fotos) — esta é a fonte mais confiável do que está no
+deck físico agora. Falta exatamente 1 carta pra fechar 99+comandante (ver
+`goldfish-log.md`, pendência da 99ª carta ainda em aberto).
 
 ## Comandante
 
@@ -22,12 +22,12 @@ pelo usuário (commander + 99, fotos 1-6 do lote de 2026-08-29). Ver
 1 Austere Command
 1 Balefire Dragon
 1 Beast Within
+1 Birds of Paradise
 1 Bladewing the Risen
 1 Crux of Fate
 1 Cultivate
 1 Dragon Broodmother
 1 Dragon Tempest
-1 Dragon's Hoard
 1 Dragonlord Dromoka
 1 Dragonlord's Servant
 1 Dragonspeaker Shaman
@@ -44,7 +44,6 @@ pelo usuário (commander + 99, fotos 1-6 do lote de 2026-08-29). Ver
 1 Klauth, Unrivaled Ancient
 1 Kodama's Reach
 1 Lathliss, Dragon Queen
-1 Lightning Greaves
 1 Magda, Brazen Outlaw
 1 Miirym, Sentinel Wyrm
 1 Morophon, the Boundless
@@ -54,14 +53,13 @@ pelo usuário (commander + 99, fotos 1-6 do lote de 2026-08-29). Ver
 1 Return of the Wildspeaker
 1 Rhythm of the Wild
 1 Roaming Throne
-1 Sarkhan, Soul Aflame
+1 Sarkhan Unbroken
 1 Sarkhan's Triumph
+1 Sarkhan, Soul Aflame
 1 Savage Ventmaw
-1 Scalelord Reckoner
 1 Scourge of Valkas
 1 Skyshroud Claim
 1 Smothering Tithe
-1 Smuggler's Surprise
 1 Sol Ring
 1 Swan Song
 1 Swords to Plowshares
@@ -91,9 +89,9 @@ pelo usuário (commander + 99, fotos 1-6 do lote de 2026-08-29). Ver
 1 Godless Shrine
 1 Hallowed Fountain
 1 Haven of the Spirit Dragon
-1 Island
 1 Jetmir's Garden
 1 Ketria Triome
+1 Mana Confluence
 1 Marsh Flats
 1 Misty Rainforest
 1 Mountain
@@ -105,10 +103,11 @@ pelo usuário (commander + 99, fotos 1-6 do lote de 2026-08-29). Ver
 1 Secluded Courtyard
 1 Steam Vents
 1 Stomping Ground
+1 Sundown Pass
 1 Swamp
+1 Taiga
 1 Temple Garden
 1 Tropical Island
-1 Watery Grave
 1 Windswept Heath
 1 Wooded Foothills
 1 Zagoth Triome
