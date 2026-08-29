@@ -292,6 +292,12 @@ add("Karplusan Forest", 0, "land", set(), produces={"R", "G"})
 # entao o custo real de vida fica invisivel aqui, ja um vies conhecido).
 add("City of Brass", 0, "land", set(), produces=set("WUBRG"))
 
+# Mana Confluence: mesmo arquetipo da City of Brass (Regra 12). Oraculo
+# real (Scryfall): "{T}, Pay 1 life: Add one mana of any color." Nunca
+# tapped, 5 cores, custo de vida por ativacao (nao rastreado, mesma
+# premissa) - matematicamente identica a City of Brass neste simulador.
+add("Mana Confluence", 0, "land", set(), produces=set("WUBRG"))
+
 # Rockfall Vale: slow land R/G (mesmo arquetipo do Sundown Pass, ver
 # SLOW_LANDS acima). Oraculo real (Scryfall, MID/INR/WHO): "This land
 # enters tapped unless you control two or more other lands. {T}: Add {R}
