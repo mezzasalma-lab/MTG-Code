@@ -235,7 +235,22 @@ DRAGON_ANY_COLOR_LANDS = {"Cavern of Souls", "Secluded Courtyard", "Haven of the
 #     documentado). NAO contam aqui — ficam destravados, premissa
 #     explicita, nao invisivel.
 ETB_TAPPED_LANDS = {"Jetmir's Garden", "Ketria Triome", "Zagoth Triome", "Ziatora's Proving Ground",
-                     "Path of Ancestry"}  # achado real 2026-08-28 (auditoria de checklist): "This land enters tapped" incondicional, faltava
+                     "Path of Ancestry",
+                     # Rugged Highlands (achado 2026-08-29, Regra 12): "Rugged
+                     # Highlands enters the battlefield tapped. When Rugged
+                     # Highlands enters the battlefield, you gain 1 life."
+                     # Incondicional, sem opcao de vida pra destravar (vida
+                     # nao rastreada, so a parte "tapped" conta aqui).
+                     "Rugged Highlands",
+                     # Raging Ravine (Worldwake, manland): "Raging Ravine
+                     # enters the battlefield tapped." Incondicional. A
+                     # ativacao "{2}{R}{G}: vira criatura 3/3 que ganha
+                     # +1/+1 a cada ataque" NAO e modelada (fora de escopo
+                     # documentado - decisao de quando ativar um manland
+                     # exige julgamento de ameaca/bloqueio que este
+                     # simulador solo sem oponente real nao tem base pra
+                     # fazer) - conta so como fonte de mana R/G aqui.
+                     "Raging Ravine"}  # achado real 2026-08-28 (auditoria de checklist): "This land enters tapped" incondicional, faltava
 
 # "Slow lands" (Kaldheim, reimpressas em VOW/DBL/SOS/WHO/INR) — regra #12
 # do user-standing-rules.md, citacao literal do usuario apos perguntar
@@ -247,7 +262,7 @@ ETB_TAPPED_LANDS = {"Jetmir's Garden", "Ketria Triome", "Zagoth Triome", "Ziator
 # Grove) - slow land checa CONTAGEM de terrenos, nao tipo. Condicao
 # avaliada em play_land() ANTES do terreno entrar (conta os OUTROS
 # terrenos ja em campo, nao inclui a propria entrando).
-SLOW_LANDS = {"Sundown Pass"}
+SLOW_LANDS = {"Sundown Pass", "Rockfall Vale"}
 
 # Unicas 3 criaturas com o tipo Human na decklist (type_line real, Scryfall) -
 # usado por Return of the Wildspeaker ("non-Human creatures you control").
@@ -267,6 +282,29 @@ BASIC_LAND_NAMES = {"Forest", "Mountain", "Plains", "Swamp"}
 # {G}. This land deals 1 damage to you." — sem tapped, untapped de
 # verdade.
 add("Karplusan Forest", 0, "land", set(), produces={"R", "G"})
+
+# City of Brass: candidata levantada pelo usuario (Regra 12 - arquetipo
+# verificado antes de cadastrar). Oraculo real (Scryfall): "Whenever this
+# land becomes tapped, it deals 1 damage to you." + "{T}: Add one mana of
+# any color." Painland-5-cores: nunca entra tapped, produz QUALQUER cor
+# (nao so R/G como Karplusan) - a mesma premissa ja documentada pros
+# outros painlands/shocks se aplica (vida nao rastreada no simulador,
+# entao o custo real de vida fica invisivel aqui, ja um vies conhecido).
+add("City of Brass", 0, "land", set(), produces=set("WUBRG"))
+
+# Rockfall Vale: slow land R/G (mesmo arquetipo do Sundown Pass, ver
+# SLOW_LANDS acima). Oraculo real (Scryfall, MID/INR/WHO): "This land
+# enters tapped unless you control two or more other lands. {T}: Add {R}
+# or {G}."
+add("Rockfall Vale", 0, "land", set(), produces={"R", "G"})
+
+# Rugged Highlands: tapland R/G incondicional + ganha 1 vida (nao
+# rastreado). Ver ETB_TAPPED_LANDS acima.
+add("Rugged Highlands", 0, "land", set(), produces={"R", "G"})
+
+# Raging Ravine: manland R/G, sempre tapped (ver ETB_TAPPED_LANDS acima).
+# Ativacao de virar criatura fora de escopo, documentado la.
+add("Raging Ravine", 0, "land", set(), produces={"R", "G"})
 
 # Battlefield Forge: NAO esta na lista.md — cadastrada pra testar o 2o
 # corte de B/U (candidato: Island, U puro, a cor com o pior gap depois
