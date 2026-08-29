@@ -2211,7 +2211,24 @@ divergência física/digital que motivou boa parte desta sessão.
 
 ---
 
-## Partida #14 — AAAA-MM-DD
+## Partida #14 — 2026-08-29 (partida REAL, jogada à mão no goldfish do Archidekt)
+
+- **Formato do teste:** **não é simulação automatizada** — jogada manual pelo usuário no modo goldfish do Archidekt, mesma metodologia da Partida #13 (log de estado exportado, decisões reais do jogador).
+- **Mão inicial (mulligan até):** keep na mão de 7 (sem mulligan). Dragonlord Dromoka, Taiga, Rhythm of the Wild, Three Visits, Garruk's Uprising, Exotic Orchard, Tropical Island.
+- **Turno da primeira jogada relevante:** turno 1, Tropical Island. Turno 2: Exotic Orchard + Three Visits busca Ziatora's Proving Ground (ramp em dobro logo cedo).
+- **Turno do primeiro ataque/combo:** Utvara Hellkite resolvido e atacando ao longo de 2 turnos seguidos, gerando Dragon tokens em ambos os combates via riot.
+- **Curva de mana observada:** sequência de terreno muito consistente — Zagoth Triome + Rhythm of the Wild, depois Taiga + Orb of Dragonkind, depois Forest + Dragonlord Dromoka + Birds of Paradise no mesmo turno. Nenhum land drop perdido.
+- **Bombas/peças-chave puxadas:** Utvara Hellkite (riot — usuário escolheu **+1/+1 counter em vez de haste**, decisão real de jogador que contraria a heurística "sempre haste" que a IA gulosa do simulador automatizado assume); Sol Ring, Garruk's Uprising e Scourge of Valkas resolvidos ao longo da partida; Old Gnawbone fechando o jogo com mais uma leva de Dragon tokens; a própria Ur-Dragon saindo do comando no turno final e atacando com o time inteiro.
+- **Removals sofridos/enviados:** não relatado pelo usuário.
+- **Resultado:** excelente — no turno final a Ur-Dragon ataca junto com o time todo e o gatilho de compra ("draw that many cards") puxa tantas cartas que a mão **estourou o limite de 7 e forçou descarte no cleanup** (Sacred Foundry, Secluded Courtyard, Command Tower, Ketria Triome, Haven of the Spirit Dragon descartados — todos terrenos, então sem perda de ação real). Old Gnawbone ainda fecha gerando mais tokens de Dragão depois disso.
+- **Turno de fim de jogo:** não especificado se encerrou o jogo, mas board dominante no fechamento (Ur-Dragon + Utvara Hellkite + Old Gnawbone + múltiplos Dragon tokens).
+- **O que funcionou bem:** curva de mana perfeita via fetch/Triome/dork (Birds of Paradise) sem nenhum land drop perdido; Utvara Hellkite atacando por 2 turnos seguidos criou um motor de tokens autossustentável antes mesmo da comandante resolver; a escolha de +1/+1 counter no riot do Utvara (em vez de haste) mostra uma linha de jogo real que o simulador automatizado não contempla — vale considerar ensinar essa heurística alternativa pro script (priorizar counter permanente quando o board já tem pressão suficiente sem precisar de haste imediato).
+- **O que travou o deck:** nada que tenha custado a partida — o único "problema" foi um problema de excesso, a mão estourar de cartas boas demais (todas descartadas foram terrenos, sem custo real de ação).
+- **Ajustes a considerar:** nenhum de lista. Anotar para o simulador: a escolha riot do Utvara Hellkite não é sempre "haste" — em partidas reais o jogador pondera board state e pode preferir o counter permanente; isso é uma diferença de heurística entre a IA gulosa (`urdragon_goldfish_v1.py`) e decisões humanas reais, vale documentar como limitação conhecida do modelo automatizado.
+
+---
+
+## Partida #15 — AAAA-MM-DD
 
 - **Formato do teste:**
 - **Mão inicial (mulligan até):**
