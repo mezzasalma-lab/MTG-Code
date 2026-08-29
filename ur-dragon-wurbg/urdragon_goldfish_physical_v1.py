@@ -485,18 +485,35 @@ add("Heroic Intervention", 2, "instant", {"interaction"}, pips={"G": 1})
 # + {4}{G} - You may put up to two creature cards from your hand onto the
 # battlefield. + {1} - Creatures you control with power 4 or greater gain
 # hexproof and indestructible until end of turn." 3 modos independentes,
-# combinaveis - simplificacao assumida e documentada (Regra 1, precisa
-# validacao do usuario): so o modo "{4}{G}" e modelado (cheat de ate 2
-# criaturas da MAO pro campo sem pagar custo - mesma familia de
-# Bladewing/Haunting Voyage, o modo estruturalmente mais forte pro plano do
-# deck de colocar Dragoes caros em campo). Custo total modelado = base {G}
-# + adicional {4}{G} = {4}{G}{G}, mv=6, pips G:2. Os outros 2 modos (mill
-# card-selection, protecao hexproof/indestructible) ficam de fora - nao
-# inventados como bonus simultaneo. Sem restricao de tipo no oraculo real
-# ("creature cards", nao "Dragon cards") - qualquer criatura da mao
-# qualifica, dragons_free_entry_total so incrementa se a criatura escolhida
-# for de fato um Dragao (is_dragon()).
-add("Smuggler's Surprise", 6, "instant", {"dragon_cheat_hand"}, pips={"G": 2})
+# combinaveis (Spree = "choose one OR MORE", paga cada custo adicional
+# escolhido junto do base {G}).
+#
+# Achado real 2026-08-29 (usuario apontou depois da 1a implementacao, que so
+# tinha o modo do meio): modelados os 2 modos que o usuario descreveu -
+# "segunda [modo], baixa 2 criaturas da mao como instant" ({4}{G}, cheat) e
+# "ultimo [modo] protege minhas criaturas" ({1}, hexproof+indestructible
+# poder 4+). Um piloto de verdade sempre paga o {1} extra junto do {4}{G}
+# quando ja esta pagando pra colocar criaturas em campo (upside estritamente
+# aditivo, sem trade-off real de mana contra o modo principal) - por isso os
+# 2 ficam sempre juntos aqui, nunca so um dos dois. Custo total modelado =
+# base {G} + {4}{G} + {1} = {5}{G}{G}, mv=7, pips G:2. O modo "+{2}" (mill
+# 4, selecao) fica de fora - nao combinado, documentado como simplificacao
+# separada (Regra 1): dado que Spree exige escolher pelo menos 1 modo mas
+# nao todos, incluir o 3o encareceria o cast sem ganho estrutural adicional
+# pro plano do deck (ja tem land_tutor/Sylvan Library/Up the Beanstalk pra
+# selecao de carta).
+#
+# O modo de protecao NAO tem alvo real modelavel num goldfish solo sem
+# oponente/ameaca (mesma classe ja documentada em Heroic
+# Intervention/Teferi's Protection nesta decklist) - contabilizado via
+# `smugglers_surprise_protect_events_total` (Regra 9: toda ativacao
+# auditada, mesmo com efeito numerico zero), nunca inventado como ganho de
+# vida/dano/card advantage que o oraculo real nao da.
+#
+# Sem restricao de tipo no modo de cheat ("creature cards", nao "Dragon
+# cards") - qualquer criatura da mao qualifica, dragons_free_entry_total so
+# incrementa se a criatura escolhida for de fato um Dragao (is_dragon()).
+add("Smuggler's Surprise", 7, "instant", {"dragon_cheat_hand"}, pips={"G": 2})
 
 add("Lightning Greaves", 2, "artifact", {"interaction"})
 add("Rhythm of the Wild", 2, "enchantment", set(), pips={"R": 1, "G": 1})
@@ -600,6 +617,7 @@ class GameState:
     magda_treasures: int = 0
     magda_tutors_total: int = 0
     dragons_free_entry_total: int = 0
+    smugglers_surprise_protect_events_total: int = 0
     dragon_hoard_gold_counters: int = 0
     hellkite_charger_extra_combats: int = 0
 
@@ -1217,6 +1235,14 @@ def resolve_instant_sorcery(state: GameState, name: str):
             enter_battlefield(state, c, from_hand=True)
             if is_dragon(c):
                 state.dragons_free_entry_total += 1
+        # Modo "+{1}" (pago junto, ver comentario do add()): "Creatures you
+        # control with power 4 or greater gain hexproof and indestructible
+        # until end of turn." Sem oponente/ameaca real modelada nesse
+        # goldfish solo - mesma classe ja documentada em Heroic
+        # Intervention/Teferi's Protection (tag 'interaction') - efeito
+        # numerico real e zero, mas a ativacao E contabilizada (Regra 9),
+        # nunca so silenciada.
+        state.smugglers_surprise_protect_events_total += 1
     if name in ("Cultivate", "Kodama's Reach"):
         # "Search for up to two BASIC land cards... put one onto the
         # battlefield tapped and the other into your hand." Simplificado
@@ -1823,6 +1849,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg fetches cracked: {avg([s.fetches_cracked_total for s in states]):.2f}")
     print(f"Avg tutores via Magda (Treasure sac): {avg([s.magda_tutors_total for s in states]):.2f}")
     print(f"Avg Dragoes que entraram SEM pagar custo (Bladewing/Haunting Voyage/Magda tutor/Ur-Dragon free permanent/Smuggler's Surprise): {avg([s.dragons_free_entry_total for s in states]):.2f}")
+    print(f"Avg vezes que Smuggler's Surprise foi conjurado (modo protecao incluso, sem efeito numerico real - sem oponente modelado): {avg([s.smugglers_surprise_protect_events_total for s in states]):.2f}")
     print(f"Avg contadores de ouro acumulados no Dragon's Hoard (NAO gastos - premissa: rock sempre usado pra mana, nao pra compra, ver add()): {avg([s.dragon_hoard_gold_counters for s in states]):.2f}")
     print(f"Avg vezes que a Ur-Dragon entrou de graca via Hellkite Courser: {avg([s.hellkite_courser_free_commander_total for s in states]):.2f}")
     print(f"Avg Dragon tokens (Lathliss/Miirym/Broodmother/Utvara): {avg([s.dragon_tokens for s in states]):.2f}")

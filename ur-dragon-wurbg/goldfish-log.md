@@ -1575,6 +1575,30 @@ peça mais sensível a fixação de mana do deck inteiro.
 que está na caixa hoje. Resultados não salvos em `.jsonl` (rodado só via
 stdout do `run_batch` default do script, `n=3000`).
 
+**Correção #1 — Smuggler's Surprise, faltava o modo de proteção (2026-08-29):**
+usuário apontou logo depois: *"Lembre que o smugglers surprise tem spree e
+no último modo protege minhas criaturas, na segunda baixa 2 criaturas da
+minha mão como instant!"* A 1a implementação só tinha o modo do meio
+("+{4}{G}", cheat de 2 criaturas da mão — o que o usuário chamou de "a
+segunda", já estava certo). Faltava o modo "+{1}" (o "último": hexproof +
+indestructible pra criaturas poder 4+). Corrigido: os 2 modos agora são
+sempre pagos juntos quando a carta é conjurada (Spree permite combinar,
+upside estritamente aditivo — sem trade-off real contra o modo principal),
+custo total sobe de mv=6 (`{4}{G}{G}`) pra mv=7 (`{5}{G}{G}`). O modo de
+proteção não tem alvo real modelável no goldfish solo (mesma classe já
+documentada em Heroic Intervention/Teferi's Protection), mas agora É
+contabilizado via `smugglers_surprise_protect_events_total` (Regra 9 —
+toda ativação auditada, mesmo com efeito numérico zero), em vez de
+simplesmente ausente do código. Modo "+{2}" (mill/seleção) continua fora,
+documentado como simplificação separada.
+
+Robustez: 20.000 seeds, 0 erros. Batch oficial re-rodado (mesmas seeds
+7600000/n=3000) — números praticamente idênticos ao teste anterior
+(diferença de +1 mana no cast reduz levemente a frequência: 0,15 vezes
+conjurado em média vs. a versão anterior que não isolava essa métrica),
+confirma que o custo mais alto não muda a leitura geral (lista física
+ainda mensuravelmente pior que `lista.md`).
+
 ---
 
 ## Partida #2 — AAAA-MM-DD
