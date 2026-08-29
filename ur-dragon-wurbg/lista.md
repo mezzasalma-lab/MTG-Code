@@ -48,7 +48,7 @@
 1 Orb of Dragonkind
 1 Morophon, the Boundless
 1 Return of the Wildspeaker
-1 Rhythm of the Wild
+1 Magda, Brazen Outlaw
 1 Roaming Throne
 1 Sarkhan, Soul Aflame
 1 Sarkhan's Triumph

@@ -1685,6 +1685,59 @@ estiver fechado).
 
 ---
 
+## Consolidação #2 — Magda entra, Scalelord Reckoner e Dragon's Hoard ficam de fora — 2026-08-29
+
+**Decisão do usuário:** *"Deixa a Magda e tira o Scalelord e o Hoard."*
+Das 3 pendências físicas confirmadas ("sempre estiveram" no deck real,
+`lista.md` nascera incompleto), só Magda, Brazen Outlaw entra oficialmente
+no `lista.md` — Scalelord Reckoner e Dragon's Hoard ficam de fora por
+decisão do usuário (continuam só em `lista-fisica.md`, refletindo a
+realidade física, sem entrar no "projeto").
+
+**Achado real de metodologia durante o teste de corte** (ver nova entrada
+em `references/goldfish-sim-card-rules.md`): o primeiro teste comparativo
+(4 candidatas de corte — Elemental Bond, Garruk's Uprising, Temur
+Ascendancy, Rhythm of the Wild) usou `list.append()` pra inserir Magda, o
+que desalinha o shuffle da mesma seed (Fisher-Yates depende da posição
+original de cada carta, não só do conteúdo). Isso deu um resultado
+inflado pra Rhythm of the Wild (+7,0% de dano proxy, parecia ganho
+claro). Reconstruindo com substituição NA MESMA posição da `lista.md`
+(`str.replace()` na linha exata, reparseado do zero) o resultado real é
+**-1,3% de dano proxy** — ainda a melhor das 4 candidatas testadas (as
+outras 3 pioram 3,4%–10,2%), mas troca de sinal na magnitude reportada.
+Regra nova adicionada pra nunca mais usar `.append()` em teste pareado.
+
+**Corte aplicado:** Rhythm of the Wild → Magda, Brazen Outlaw (mecânica
+já estava implementada por completo desde antes — `do_magda_treasures()`,
+Treasures por tap de Dwarf incluindo ela mesma atacando, tutor por
+sacrifício de 5 Treasures).
+
+**Robustez:** 20.000 partidas, seeds 0–19999, timeout 3s — 0 erros.
+
+**Batch oficial, n=3000, seed_base=7600000 (lendo `lista.md` real via
+`build_library()` — sem o bug de posição, número confiável):**
+
+| Métrica | Antes (Consolidação #1) | Depois (+ Magda) | Δ |
+|---|---|---|---|
+| Turno médio Ur-Dragon | 6,63 | 6,65 | +0,02 |
+| Nunca conjurada em 8 turnos | 32,6% | 31,8% | −0,8pp |
+| Avg Dragões em campo (fim) | 21,92 | 21,78 | −0,6% |
+| Avg dano proxy total | 1061,50 | 1047,30 | −1,3% |
+| Avg cartas compradas extra | 19,96 | 20,09 | +0,7% |
+| Avg Treasures criados | 80,42 | 79,13 | −1,6% |
+| Avg tutores via Magda | 0,00 | 0,08 | novo |
+| % jogos com color screw | 34,6% | 34,4% | −0,2pp |
+
+**Leitura:** efeito líquido praticamente neutro (dano −1,3%, draw +0,7%,
+velocidade de comandante levemente melhor) — Magda não é um power-up
+claro pro goldfish solo (o motor de Treasures dela compete com o resto do
+deck por espaço, e o tutor de 5 Treasures raramente dispara em 8 turnos:
+0,08 em média), mas também não é uma perda relevante, e o usuário já
+confirmou que ela sempre esteve no deck físico por escolha própria — a
+troca reflete isso sem custar quase nada em métrica.
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**

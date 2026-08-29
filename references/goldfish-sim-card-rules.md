@@ -323,6 +323,63 @@ só o deck sendo discutido no momento em que a regra foi criada ou reforçada.
 
 ---
 
+## Teste comparativo pareado: substituir a carta cortada NA MESMA POSIÇÃO da lista, nunca `list.append()` a nova
+
+Achado real (Ur-Dragon, 2026-08-29), durante o teste de qual carta cortar
+pra abrir espaço pra Magda, Brazen Outlaw: o padrão usado em TODOS os
+scripts de teste comparativo desta sessão até aqui
+(`urdragon_morophon_test.py`, `urdragon_primer3_test.py`) constrói a
+variante assim:
+
+```python
+lib = sim.BASE_LIBRARY[:]
+lib.remove(cut_name)
+lib.append(add_name)          # <-- ERRADO: sempre no fim da lista
+```
+
+Isso parece inofensivo (o baralho ainda tem as 99 cartas certas), mas
+**quebra o pareamento de seed**: `rng.shuffle(lib)` é uma permutação de
+Fisher-Yates, cujo resultado exato depende da posição de CADA elemento na
+lista original, não só do conteúdo. Colocar a carta nova sempre no índice
+98 (fim), quando na `lista.md` real ela ocuparia o índice de onde a
+cortada saiu (no meio da lista), faz a MESMA seed embaralhar as duas
+listas de formas diferentes — a mão inicial e a ordem de compra deixam de
+ser comparáveis "tudo igual, exceto a troca", viram efetivamente 2
+amostras semi-independentes.
+
+**Grandeza real do erro medido:** testando Magda no lugar de Rhythm of
+the Wild, o método com `.append()` deu **+7,0% de dano proxy** (1136,21
+vs. baseline 1061,50) — parecia uma troca claramente boa. Reconstruindo a
+`lista.md` com a substituição NA MESMA LINHA/posição (`text.replace("1
+Rhythm of the Wild", "1 Magda, Brazen Outlaw")`, depois reparseando o
+texto inteiro do zero, igual ao `build_library()` real) deu **-1,3% de
+dano proxy** (1047,30) — troca de sinal completo, de "ganho claro" pra
+"levemente pior, mas ainda a melhor entre as candidatas testadas". A
+RANKING relativa entre candidatas testadas no mesmo lote (todas com o
+mesmo bug) tendeu a se manter (Rhythm of the Wild continuou sendo o
+melhor corte mesmo corrigido), mas a MAGNITUDE reportada estava errada, e
+não há garantia de que a ranking sempre sobrevive à correção — precisa
+reverificar, não presumir.
+
+**Prática obrigatória a partir de agora, em qualquer teste comparativo
+pareado (`urdragon_*_test.py` e equivalentes de outros decks):**
+- Construir cada variante a partir do TEXTO da lista real (`lista.md` ou
+  equivalente), com `str.replace()` na linha exata da carta cortada pela
+  carta nova, e só then reparsear com a mesma função que `build_library()`
+  usa de verdade — nunca `list[:] ; .remove() ; .append()`.
+- Rodar o batch oficial (script principal, lendo o arquivo real já
+  editado) é sempre o número final confiável, mesmo que os testes
+  exploratórios de ranking tenham usado o método errado — batches oficiais
+  desta sessão (`python3 urdragon_goldfish_v1.py` lendo `lista.md`
+  diretamente) não tinham esse bug, porque leem o arquivo de verdade via
+  `build_library()`, que preserva a posição real de cada carta.
+- Se uma decisão de troca foi tomada com base só no teste exploratório
+  (`.append()`), reverificar com a reconstrução posicional antes de
+  reportar o número ao usuário como final — a ranking pode sobreviver, a
+  magnitude quase sempre muda.
+
+---
+
 <!-- Adicionar novas entradas abaixo conforme surgirem cartas com efeitos
      estruturais que exigem implementação explícita (não só tag) em qualquer
      simulador que as inclua. -->
