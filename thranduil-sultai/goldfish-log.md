@@ -472,6 +472,66 @@ desta auditoria de mecânica), não uma mudança de lista agora.
 
 ---
 
+### Leva de 200 jogos — análise de melhoria (goldfish instrumentado, n=200, seed_base=8900000) — 2026-08-29
+
+**Contexto:** mesmo pedido do Beorn — leva de 200 jogos pra minerar dados
+reais de melhoria, não só confirmar médias.
+
+**Números (dentro do ruído esperado frente ao batch oficial de 5000):**
+
+```
+Avg commander cast turn: 4,25 | por T5/T6: 88,0%/94,5%
+Avg finishers ativados: 0,96 | 42,0% dos jogos com finisher até T8
+Avg turnos com blue screw: 0,10 | 5,0% das partidas afetadas
+RAMP 3,54 | DRAW 10,67 | INTERACTION 0,65 | RECURSION 0,06
+```
+
+**Diagnóstico (minerado direto do `.jsonl`):**
+
+- **Comandante e mana não são o gargalo:** só 1,0% dos jogos nunca conjuram
+  Thranduil, e só 5,0% têm algum turno de blue screw — a manabase de 3
+  cores segue sólida, confirmando as correções anteriores desta sessão.
+- **RECURSION está estruturalmente morta:** **95,5% dos jogos terminam sem
+  nenhuma ativação de Oversold Cemetery.** Não é mais um bug de
+  implementação (corrigido nesta sessão) — é que o deck não milha o
+  suficiente pra acumular as 4 criaturas na GY que a carta exige: avg de
+  mill total é só 4,5 cartas por partida inteira (nem todas criaturas). A
+  única fonte de recursão real da lista está numa condição que o resto do
+  deck não ajuda a cumprir.
+- **Fechar o jogo também é o gargalo aqui, como no Beorn:** **58,0% dos
+  jogos terminam SEM nenhum finisher ativado** até o turno 8, apesar da
+  lista ter 8 cartas com tag de finisher (Finale of Devastation, Elvish
+  Warmaster, Ezuri, Tyvar the Pummeler, Jarad, Lathril, Kindred Summons,
+  Bloodline Bidding) — mais opções nominais que o Beorn (que tem ~5-6), mas
+  taxa de sucesso parecida. Motivo provável: a maioria dessas é uma
+  habilidade ATIVADA cara (custo 5-7 de mana) que compete por mana no MESMO
+  turno em que já se gastou pra desenvolver o board, em vez de um efeito
+  instantâneo de "ataque agora" — diferente do Craterhoof do Beorn, que
+  resolve e já fecha o combate no mesmo turno sem custo adicional.
+
+**O que podemos melhorar (recomendação, não aplicada — decisão do
+usuário):**
+
+1. **Recursão:** trocar `Oversold Cemetery` (95,5% inativa) por uma peça de
+   recursão que não dependa de um gatilho de 4+ criaturas na GY — ex.
+   `Eternal Witness` (devolve QUALQUER carta do cemitério pra mão, sem
+   pré-requisito, e já está validada e funcionando bem no Beorn nesta
+   mesma sessão) ou `Regrowth`. Ataca a métrica mais fraca (0,06) na raiz.
+2. **Finisher/lethality:** a lista não tem nenhum efeito de "overrun"
+   incondicional (all creatures +X/+X, resolve e ataca no mesmo turno) —
+   só habilidades ativadas caras. Como o deck já vai largo com tokens de
+   Elfo (Imperious Perfect, Elvish Warmaster, Lathril), um efeito desse
+   tipo converteria board width em dano de forma muito mais confiável que
+   as ativações de 5-7 mana atuais. `Craterhoof Behemoth` é verde, já
+   validado como o melhor finisher do Beorn nesta mesma sessão, e encaixa
+   na identidade de cor (Sultai inclui verde) — candidato natural de
+   inclusão se o usuário quiser fechar esse gargalo.
+
+**Robustez:** herdada dos sweeps já rodados nesta sessão — nenhum código
+mudou nesta rodada, só mineração de dados de uma amostra nova.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

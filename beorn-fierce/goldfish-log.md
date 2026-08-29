@@ -737,6 +737,58 @@ rodada, só reconsolidação de métricas.
 
 ---
 
+### Leva de 200 jogos — análise de melhoria (goldfish instrumentado, n=200, seed_base=8800000) — 2026-08-29
+
+**Contexto:** pedido do usuário — rodar uma leva de 200 jogos (amostra
+intermediária, maior que uma partida anedótica mas menor que o batch
+oficial de 5000) e minerar os dados pra achar pontos reais de melhoria,
+não só confirmar as médias já conhecidas.
+
+**Números (dentro do ruído esperado frente ao batch oficial de 5000):**
+
+```
+Avg commander cast turn: 4,22 | por T4/T5: 68,0%/85,0%
+Avg battlefield final: 19,32 | Avg Bear count final: 6,45
+Avg finishers resolvidos: 0,28 | 25,5% dos jogos com finisher até T8
+RAMP 3,35 | DRAW 14,61 | INTERACTION 0,65 | RECURSION 0,32
+```
+
+**Diagnóstico (minerado direto do `.jsonl`, não só do agregado impresso):**
+
+- **Comandante quase nunca é o gargalo:** só 3,5% dos jogos nunca conjuram
+  Beorn (96,5% de sucesso) — mono-verde não tem problema de fixação de mana,
+  como esperado.
+- **A engine de Urso funciona:** só 8,0% dos jogos terminam com menos de 3
+  Ursos em campo (a condição mínima do próprio gatilho "compre 2" da Beorn)
+  — o motor tribal entrega o que promete.
+- **O gargalo real é fechar o jogo:** **74,5% dos jogos terminam SEM
+  nenhum finisher resolvido** (Craterhoof, Ghalta, Unnatural Growth, Genji
+  Glove equipada, ou o que o Natural Order buscar) até o turno 8, mesmo com
+  board médio de 19,3 permanentes. Não é falta de mana nem de corpo em
+  campo — é falta de UMA carta específica entre um punhado pequeno de
+  finishers reais na mão.
+- **Natural Order é o único tutor de finisher da lista, e raramente é
+  conjurado:** só 10,0% dos 200 jogos (vs. 14,5-14,8% no agregado maior —
+  dentro do ruído, mas consistentemente baixo). Ele resolve o problema
+  quando chega à mão, mas nada na lista ajuda a ENCONTRAR o próprio Natural
+  Order (ou os finishers diretamente) — o deck depende de topdeck puro pra
+  esse pedaço do plano.
+
+**O que podemos melhorar (recomendação, não aplicada — decisão do
+usuário):** adicionar 1-2 tutores de criatura baratos e reais (ex.:
+Eladamri's Call, Worldly Tutor, Chord of Calling — este último se
+beneficia diretamente do board largo de Ursos via convoke) pra buscar
+Craterhoof/Ghalta direto na mão sem depender só do Natural Order. Isso
+ataca o gargalo medido (74,5% sem finisher) na raiz — mais consistência de
+achar o fechador, não mais um fechador novo (a lista já tem finishers bons
+o bastante, só faltam com pouca frequência real na mão dentro de 8
+turnos).
+
+**Robustez:** herdada dos sweeps de 20.000 já rodados nesta sessão — nenhum
+código mudou nesta rodada, só mineração de dados de uma amostra nova.
+
+---
+
 <!-- Para novas partidas avulsas, use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
