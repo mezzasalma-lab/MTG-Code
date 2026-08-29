@@ -1738,6 +1738,54 @@ troca reflete isso sem custar quase nada em métrica.
 
 ---
 
+## Consolidação #3 — Karplusan Forest → Mana Confluence — 2026-08-29
+
+**Contexto:** usuário levantou 5 candidatas reais de terreno que possui
+fisicamente (Rockfall Vale, Rugged Highlands, Raging Ravine, Timbercrown
+Pathway, City of Brass, Mana Confluence) pra possivelmente substituir
+Karplusan Forest. Cada arquétipo verificado via Scryfall antes de
+cadastrar (nova Regra 12 do `user-standing-rules.md`, ver commit
+`5b3bbef`): slow land (Rockfall Vale, mesmo mecanismo genérico já
+implementado pro Sundown Pass), tapland incondicional + gain 1 vida
+(Rugged Highlands), manland sempre tapped (Raging Ravine, ativação de
+virar criatura documentada como fora de escopo), MDFC de cor única por
+face (Timbercrown Pathway — descartada, só produz G sozinha, não é dual
+R/G real), e painland 5 cores (City of Brass / Mana Confluence — oráculo
+diferente, `{T}: any color, deals 1 dmg` vs. `{T}, pay 1 life: any color`,
+mas **matematicamente idênticas** no simulador já que vida não é
+rastreada).
+
+**Teste comparativo pareado (posicional, seeds 7600000/n=3000) das 4
+candidatas viáveis contra o baseline:**
+
+| Terreno | Dano proxy | % color screw |
+|---|---|---|
+| Karplusan Forest (baseline) | 1047,30 | 34,43% |
+| City of Brass / Mana Confluence | 1042,27 (−0,5%) | **31,83% (−2,6pp)** |
+| Rockfall Vale | 1042,62 (−0,4%) | 34,27% |
+| Rugged Highlands | 1014,10 (−3,2%) | 34,43% |
+| Raging Ravine | 1014,10 (−3,2%) | 34,43% |
+
+City of Brass/Mana Confluence venceu: dano praticamente neutro, mas
+reduz color screw de verdade (fixa as 5 cores, não só R/G, então ajuda
+em qualquer situação de screw, não só falta de R ou G especificamente).
+
+**Decisão do usuário:** manter só 1 fixadora de 5 cores no lugar da
+Karplusan (Opção A, entre trocar 1 carta ou testar um segundo corte pra
+caber as duas 5-cores) — escolheu **Mana Confluence** especificamente
+(tinha as duas disponíveis, escolha por preferência/coleção, não por
+diferença de métrica — são idênticas no modelo). City of Brass fica
+cadastrada no `CARD_DB` como candidata testada mas não aplicada.
+
+**Robustez:** 20.000 seeds, timeout 3s — 0 erros.
+
+**Batch oficial, n=3000, seed_base=7600000 (lista.md real aplicado):**
+dano proxy 1042,27 (bate exatamente com o teste exploratório, confirma
+consistência), % color screw 31,8% (vs. 34,4% antes — a maior queda de
+color screw de qualquer troca desta sessão).
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**

@@ -87,7 +87,7 @@
 1 Hallowed Fountain
 1 Haven of the Spirit Dragon
 1 Jetmir's Garden
-1 Karplusan Forest
+1 Mana Confluence
 1 Ketria Triome
 1 Marsh Flats
 1 Misty Rainforest
