@@ -2007,7 +2007,24 @@ divergência física/digital que motivou boa parte desta sessão.
 
 ---
 
-## Partida #2 — AAAA-MM-DD
+## Partida #2 — 2026-08-29 (goldfish real, seed 7600000)
+
+- **Formato do teste:** goldfish solo via `urdragon_goldfish_v1.py` (lista.md final desta sessão, 99+comandante), turno a turno instrumentado (não só o agregado do `run_batch`), 8 turnos, mesma seed oficial (7600000) usada em todos os batches desta sessão.
+- **Mão inicial (mulligan até):** 0 mulligans. Mão: Roaming Throne, Skyshroud Claim, Haunting Voyage, Jetmir's Garden, Tropical Island, Terror of the Peaks, Ziatora's Proving Ground — mão pesada em terreno/ramp (3 terrenos + Skyshroud Claim), mas nenhum terreno branco/vermelho pra destravar a comandante cedo.
+- **Turno da primeira jogada relevante:** turno 1, só land drop (Jetmir's Garden, entra tapped). Turnos 1-5 inteiros foram land drop + segurar mão — Skyshroud Claim e Haunting Voyage nunca ficaram com alvo bom (Skyshroud busca só Forest, a mão já tinha bastante verde; Haunting Voyage foretell não compensou tão cedo sem Dragão nenhum no cemitério ainda).
+- **Turno do primeiro ataque/combo:** turno 6 — Roaming Throne resolve (ele mesmo vira um Dragão, pelo próprio texto "this creature is the chosen type in addition to its other types"), primeiro corpo Dragão do jogo.
+- **Curva de mana observada:** muito lenta no início (5 terrenos jogados em 5 turnos sem 1 spell relevante resolvido), destrava tudo de uma vez no turno 6-8 quando a mana de 3 cores finalmente bateu.
+- **Bombas/peças-chave puxadas:** Terror of the Peaks (turno 7), Utvara Hellkite e Old Gnawbone compradas mas só a Hellkite chegou a ser conjurada (turno 8), Lathliss Dragon Queen e Savage Ventmaw compradas mas nunca conjuradas dentro dos 8 turnos.
+- **Removals sofridos/enviados:** N/A — goldfish solo, sem oponente real modelado.
+- **Resultado:** Ur-Dragon conjurada só no turno 8 (limite da simulação) — o pior caso dentro do que já é esperado (turno médio da sessão: 6,65-6,68). Mas quando resolveu, o turno 8 sozinho gerou +16 de dano proxy, +2 cartas extra e +4 Dragon tokens — a "explosão" característica do deck quando a mana finalmente fecha.
+- **Turno de fim de jogo:** partida encerrada no limite de 8 turnos (simulação), sem fechar o jogo — 8 Dragões em campo (nomeados + tokens) ao final, mão ainda com 4 cartas (Savage Ventmaw, Lathliss, Bloodstained Mire, Old Gnawbone).
+- **O que funcionou bem:** 0 color screw a partida inteira (`color_screw_turns=0`) — mesmo land-pesada, a manabase de 5 cores nunca faltou a cor certa quando havia mana total suficiente. Roaming Throne contando como o próprio Dragão dele (ninguém precisa de outro corpo Dragão em campo pra ele valer) segurou a ponte até a comandante chegar.
+- **O que travou o deck:** não foi falta de terreno nem cor errada — foi falta de AÇÃO nos turnos 1-5 (mão cheia de peças situacionais sem alvo bom: Skyshroud Claim/Haunting Voyage seguraram espaço na mão sem contribuir). Reflexo real do gargalo estrutural já documentado: a Ur-Dragon precisa das 5 cores simultâneas, e essa mão específica não tinha ritmo de land drop rápido o bastante nem um plano B barato pra ocupar os turnos 2-5.
+- **Ajustes a considerar:** nenhum ajuste de lista sugerido só a partir de 1 partida (n=1 é anedota, não dado — Regra 1) — mas essa partida ilustra bem por que "nunca conjurada em 8 turnos" ainda está em ~30% mesmo com a manabase já otimizada: às vezes a mão simplesmente não tem ritmo de land drop, independente de qualidade de carta individual.
+
+---
+
+## Partida #3 — AAAA-MM-DD
 
 - **Formato do teste:**
 - **Mão inicial (mulligan até):**
