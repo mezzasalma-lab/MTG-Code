@@ -68,13 +68,13 @@
 1 Twinflame Tyrant
 1 Up the Beanstalk
 1 Urza's Incubator
+1 Rhythm of the Wild
 1 Utvara Hellkite
 
 ## Terrenos
 
 1 Ancient Tomb
 1 Arid Mesa
-1 Battlefield Forge
 1 Bayou
 1 Blood Crypt
 1 Bloodstained Mire

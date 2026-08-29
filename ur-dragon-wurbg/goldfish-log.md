@@ -1960,6 +1960,34 @@ comparativo real primeiro, mesmo quando a lógica teórica parecer óbvia.
 
 ---
 
+## Consolidação #5 — Battlefield Forge → Rhythm of the Wild, `lista.md` alinhado com o físico — 2026-08-29
+
+**Contexto:** usuário pediu pra alinhar de vez `lista.md` com a decisão
+física já tomada ("Rhythm fica" — manter proteção "creature spells can't
+be countered" em vez da fixação extra da Battlefield Forge, que nunca foi
+fisicamente aplicada). Aplicado: Battlefield Forge sai, Rhythm of the
+Wild volta.
+
+**Robustez:** 20.000 seeds, timeout 3s — 0 erros.
+
+**Batch oficial, n=5000, seed_base=7600000:**
+
+| Métrica | Com Battlefield Forge | Com Rhythm of the Wild | Δ |
+|---|---|---|---|
+| Avg dano proxy total | 871,73 | 823,72 | −5,5% |
+| Nunca conjurada em 8 turnos | 29,5% | 32,3% | +2,8pp |
+| % jogos com color screw | 31,3% | 32,5% | +1,2pp |
+
+**Leitura:** custo real de consistência confirmado de novo (Battlefield
+Forge fixa mana, Rhythm of the Wild não fixa nada) — mas essa é a
+decisão certa pra bater com o que está fisicamente na mesa, não uma
+regressão de qualidade da lista. `lista.md` e `lista-fisica.md` ficam
+quase idênticas agora (resta 1 diferença residual: Talisman of Impulse
+no `lista.md` vs. Sundown Pass no `lista-fisica.md`, pendência antiga
+não resolvida ainda).
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**
