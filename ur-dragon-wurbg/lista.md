@@ -21,7 +21,6 @@
 1 Bladewing the Risen
 1 Crux of Fate
 1 Cultivate
-1 Kindred Discovery
 1 Dragon Broodmother
 1 Dragon Tempest
 1 Dragonlord Dromoka
