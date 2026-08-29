@@ -1909,6 +1909,57 @@ Forge que o usuário encontrou — ainda não aplicada, perde a proteção
 
 ---
 
+## Correção #3 — Commander's Sphere → Dragon's Hoard, testado de verdade — 2026-08-29
+
+**Contexto:** usuário questionou diretamente a recomendação da Commander's
+Sphere: *"Vc garante que commander's sphere é melhor que dragon's hoard?
+Hoard é mana fix e card draw, o deck é de dragões e gera tokens de
+dragões!"* — apontamento correto: eu tinha recomendado Commander's Sphere
+por raciocínio ("nunca fica morta tarde"), nunca rodei o teste real contra
+Dragon's Hoard pra essa vaga especificamente, violando a própria Regra 10
+deste projeto (rodar o goldfish é obrigatório antes de qualquer
+recomendação, não teorizar).
+
+**Melhoria de heurística antes de testar (justa pras duas):** a
+implementação anterior de Dragon's Hoard (só na variante física) nunca
+gastava contador de ouro pra comprar — sempre usava o {T} só pra mana,
+subestimando o valor real. Nova heurística em `try_dragon_hoard_draw()`,
+chamada no fim de `main_phase()`: gasta 1 contador pra comprar quando
+`remaining_mana(state) >= 1` (a mana da própria Hoard não fez falta esse
+turno) — sem precisar desfazer nenhum gasto, já que essa mana nunca foi
+de fato usada. Dragon's Hoard portada por completo pro
+`urdragon_goldfish_v1.py` oficial (antes só existia na variante física).
+
+**Robustez:** 20.000 + 5.000 seeds (as duas variantes), timeout 3s — 0
+erros.
+
+**Batch oficial pareado (posicional, seed_base=7600000, n=3000):**
+
+| Métrica | Commander's Sphere | Dragon's Hoard | Δ |
+|---|---|---|---|
+| Avg dano proxy total | 822,54 | **902,61** | **+9,7%** |
+| Avg cartas compradas extra | 17,01 | **18,16** | **+6,8%** |
+| Avg Dragões em campo (fim) | 19,30 | **20,20** | **+4,7%** |
+| Nunca conjurada em 8 turnos | 29,70% | **29,10%** | melhor ainda |
+| % jogos com color screw | 31,20% | 31,20% | igual (ambas 5 cores) |
+| Avg contadores de ouro acumulados | — | 3,11 | — |
+| Avg compras via Dragon's Hoard | — | 0,67 | — |
+
+**Leitura:** Dragon's Hoard vence em toda métrica relevante, não só
+empata. O motivo real é a sinergia que o usuário apontou — os tokens de
+Dragão (Lathliss/Miirym/Broodmother/Utvara) TAMBÉM geram contador de ouro
+(oráculo sem "nontoken"), então esse deck especificamente acumula
+contadores rápido o bastante pra puxar quase 0,7 compra extra por partida
+além da mana, sem nenhum custo de consistência de cor (ambas são fontes
+de 5 cores, screw idêntico). Aplicado no `lista.md` e `lista-fisica.md`.
+
+**Correção de processo:** esse foi um caso real de recomendação sem
+teste — a Regra 10 já existia, só não foi seguida antes de eu falar
+"garanto". Reforço: nunca afirmar "X é melhor que Y" sem rodar o
+comparativo real primeiro, mesmo quando a lógica teórica parecer óbvia.
+
+---
+
 ## Partida #2 — AAAA-MM-DD
 
 - **Formato do teste:**

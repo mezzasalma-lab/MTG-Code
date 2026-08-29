@@ -409,6 +409,24 @@ add("Herald's Horn", 3, "artifact", {"dragon_discount1", "tribal_impulse"})
 # NAO modelada (ability secundaria, so relevante quando a mana ja nao faz
 # falta - fora de escopo documentado, nao inventada como draw automatico).
 add("Commander's Sphere", 3, "artifact", {"rock1"}, produces=set("WUBRG"))
+
+# Dragon's Hoard: candidata concorrente pro mesmo slot (usuario apontou,
+# 2026-08-29: "e' mana fix e card draw, o deck e' de dragoes e gera
+# tokens de dragoes" - argumento real, precisa teste, nao suposicao).
+# Oraculo real (Scryfall, conferido antes na variante fisica): "{3},
+# Artifact. Whenever a Dragon you control enters, put a gold counter on
+# this artifact. {T}: Add one mana of any color. {T}, Remove a gold
+# counter from this artifact: Draw a card." As 2 habilidades ativadas
+# competem pelo MESMO {T} - heuristica MELHORADA nesta rodada (a versao
+# anterior, testada so' na variante fisica, nunca gastava contador pra
+# comprar, subestimando o valor real): ver `try_dragon_hoard_draw()`,
+# chamada no fim de `main_phase()` - gasta 1 contador pra comprar quando
+# sobra mana sem uso no turno (a mana da Hoard nao fez falta, entao vale
+# mais como compra). Gold counters SEM "nontoken" no oraculo - contam
+# tambem em tokens de Dragao (Lathliss/Miirym/Broodmother/Utvara), ver
+# dragon_enters(). Artefato, nao criatura - Roaming Throne nunca dobra
+# esse gatilho (so' dobra gatilho de CRIATURA do tipo escolhido).
+add("Dragon's Hoard", 3, "artifact", {"rock1", "dragon_hoard"}, produces=set("WUBRG"))
 add("Sarkhan's Triumph", 3, "instant", {"dragon_tutor_hand"}, pips={"R": 1})
 add("Orb of Dragonkind", 2, "artifact", {"dragon_tutor_sac"}, pips={"R": 1})
 add("Urza's Incubator", 3, "artifact", {"dragon_discount2"})
@@ -688,6 +706,8 @@ class GameState:
     magda_tutors_total: int = 0
     dragons_free_entry_total: int = 0
     haven_recursion_total: int = 0
+    dragon_hoard_gold_counters: int = 0
+    dragon_hoard_draws_total: int = 0
     hellkite_charger_extra_combats: int = 0
 
     commander_in_play: bool = False
@@ -773,6 +793,11 @@ def dragon_enters(state: GameState, name: str, is_token: bool):
         # token tambem (Miirym copia, Lathliss token). Nao dobrada por
         # Roaming Throne (pertence a Kindred Discovery, nao a criatura).
         draw_cards(state, 1)
+    if "Dragon's Hoard" in state.battlefield:
+        # "Whenever a Dragon you control enters, put a gold counter" -
+        # sem "nontoken", conta token tambem. Artefato, nao dobrado por
+        # Roaming Throne.
+        state.dragon_hoard_gold_counters += 1
     times_scourge = 1
     times_lathliss_miirym = 1
     if "Roaming Throne" in state.battlefield:
@@ -897,6 +922,8 @@ def rocks_mana(state: GameState) -> int:
         # Mesma classe de bug ja corrigido pro Talisman of Impulse: tag
         # 'rock1' sozinha nao contribui mana, precisa do check explicito
         # aqui tambem.
+        total += 1
+    if "Dragon's Hoard" in state.battlefield:
         total += 1
     return total
 
@@ -1611,6 +1638,7 @@ def main_phase(state: GameState):
                 state.bonus_mana_pool += 1
 
     try_haven_recursion(state)
+    try_dragon_hoard_draw(state)
 
 
 def try_haven_recursion(state: GameState):
@@ -1637,6 +1665,30 @@ def try_haven_recursion(state: GameState):
     state.graveyard.remove(best)
     state.hand.append(best)
     state.haven_recursion_total += 1
+
+
+def try_dragon_hoard_draw(state: GameState):
+    """Dragon's Hoard: '{T}, Remove a gold counter: Draw a card.' Compete
+    pelo MESMO {T} da habilidade de mana ('{T}: Add one mana of any
+    color'). Achado real 2026-08-29 (usuario apontou, comparando contra
+    Commander's Sphere): a heuristica anterior (testada so' na variante
+    fisica) nunca gastava contador pra comprar, o que SUBESTIMA o valor
+    real da carta - um piloto de verdade gasta o {T} pra comprar quando a
+    mana dela nao faz falta naquele turno. Heuristica melhorada: chamada
+    no FIM de main_phase() (depois do loop de conjuracao ja ter gastado
+    tudo que dava pra gastar) - se sobrou mana (remaining_mana >= 1) e ha
+    contador de ouro disponivel, a mana da Hoard nao fez falta esse turno,
+    entao vale mais como compra. Nao precisa desfazer nenhum gasto (a mana
+    dela nunca foi de fato usada pra nada, so' contava pro total)."""
+    if "Dragon's Hoard" not in state.battlefield:
+        return
+    if state.dragon_hoard_gold_counters <= 0:
+        return
+    if remaining_mana(state) < 1:
+        return
+    state.dragon_hoard_gold_counters -= 1
+    draw_cards(state, 1)
+    state.dragon_hoard_draws_total += 1
 
 
 def do_magda_treasures(state: GameState):
@@ -1963,6 +2015,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg fetches cracked: {avg([s.fetches_cracked_total for s in states]):.2f}")
     print(f"Avg tutores via Magda (Treasure sac): {avg([s.magda_tutors_total for s in states]):.2f}")
     print(f"Avg recursao via Haven of the Spirit Dragon (sacrifica a terra, Dragao do cemiterio pra mao): {avg([s.haven_recursion_total for s in states]):.2f}")
+    print(f"Avg compras via Dragon's Hoard (gasta contador de ouro quando mana sobra): {avg([s.dragon_hoard_draws_total for s in states]):.2f}")
     print(f"Avg Dragoes que entraram SEM pagar custo (Bladewing/Haunting Voyage/Magda tutor/Ur-Dragon free permanent): {avg([s.dragons_free_entry_total for s in states]):.2f}")
     print(f"Avg vezes que a Ur-Dragon entrou de graca via Hellkite Courser: {avg([s.hellkite_courser_free_commander_total for s in states]):.2f}")
     print(f"Avg Dragon tokens (Lathliss/Miirym/Broodmother/Utvara): {avg([s.dragon_tokens for s in states]):.2f}")
