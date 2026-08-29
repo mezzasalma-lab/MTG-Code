@@ -2194,7 +2194,24 @@ divergência física/digital que motivou boa parte desta sessão.
 
 ---
 
-## Partida #13 — AAAA-MM-DD
+## Partida #13 — 2026-08-29 (partida REAL, jogada à mão no goldfish do Archidekt)
+
+- **Formato do teste:** **não é simulação automatizada** — jogada manual pelo usuário no modo goldfish do Archidekt (log de estado exportado, cartas físicas/decisões reais do jogador, não a IA gulosa do `urdragon_goldfish_v1.py`). Registrada separada das Partidas #2-#12 por isso.
+- **Mão inicial (mulligan até):** keep na mão de 7 (sem mulligan). Jetmir's Garden, Austere Command, Klauth Unrivaled Ancient, Beast Within, Marsh Flats, Plains, Nature's Lore.
+- **Turno da primeira jogada relevante:** turno 1, Jetmir's Garden (entra tapped). Turnos 2-3: Marsh Flats cracada pra Bayou, Nature's Lore busca Ketria Triome (ela tem o tipo Forest, alvo legal — mas Triome entra tapped incondicionalmente mesmo buscada, regra real já documentada nesta sessão).
+- **Turno do primeiro ataque/combo:** por volta do turno 4, Goldspan Dragon resolvido e ataca — Treasure token criado pelo próprio ataque.
+- **Curva de mana observada:** desenvolvimento de mana consistente via fetch + Triome desde o turno 2, sem land drop perdido.
+- **Bombas/peças-chave puxadas:** Dragon Tempest cedo (motor de dano em campo antes da comandante), Smothering Tithe (taxou 2 land drops de oponentes = 2 Treasures reais, confirmado pelo usuário), Roaming Throne (comprado, mas ver "O que travou" abaixo), Utvara Hellkite e a própria Ur-Dragon saindo do comando no fechamento.
+- **Removals sofridos/enviados:** não relatado pelo usuário.
+- **Resultado:** **excelente, nas palavras do usuário — "mesmo sem aceleradores de cast!"** Ur-Dragon resolvida e atacando junto com Utvara Hellkite no turno de fechamento, board com múltiplos tokens de Dragão + permanentes extras via o próprio gatilho de ataque da comandante ("draw that many cards, then put a permanent from hand onto the battlefield").
+- **Turno de fim de jogo:** partida encerrada com o board já dominante (não especificado se fechou o jogo).
+- **O que funcionou bem:** a curva de mana via fetch/Triome nunca falhou; Smothering Tithe gerou valor real contra os oponentes (2 Treasures); o motor de ataque da Ur-Dragon (draw + permanente grátis) fez o board explodir de tamanho no turno de fechamento mesmo sem nenhum rock/dork de aceleração na mão.
+- **O que travou o deck:** **erro de sequenciamento apontado pelo próprio usuário** — Roaming Throne ficou na mão e não foi conjurado ANTES de atacar com a Ur-Dragon. Custo real: Roaming Throne dobra qualquer gatilho de criatura Dragão do tipo escolhido, incluindo o próprio "whenever one or more Dragons you control attack, draw/put permanent" da Ur-Dragon — jogá-lo antes do combate naquele turno teria dobrado o próprio gatilho de ataque (2x a compra, 2x a chance de permanente grátis) no mesmo combate que já estava acontecendo. Lição tática real, não um problema de lista.
+- **Ajustes a considerar:** nenhum de lista — o "erro" foi de sequenciamento de jogada (conjurar peças de valor ANTES de declarar ataques quando possível), não de deckbuilding. Vale como lembrete prático pra próximas partidas reais: sempre conjurar Roaming Throne pré-combate quando já há Dragão pronto pra atacar no mesmo turno.
+
+---
+
+## Partida #14 — AAAA-MM-DD
 
 - **Formato do teste:**
 - **Mão inicial (mulligan até):**
