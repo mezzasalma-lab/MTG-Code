@@ -214,6 +214,13 @@ Avg mao final: 2.87
 
 Resultados salvos em `ulalek_v1_runs.jsonl` (3000 jogos).
 
+**Nota (2026-08-30):** este bloco ficou desatualizado depois de duas
+rodadas de correção no código (checklist de 2026-08-28 mais abaixo, e a
+reanálise de 2026-08-30 no fim deste arquivo) — mantido aqui como registro
+histórico do resultado original, não mais o número vigente. Ver a seção
+"Reanálise do simulador Python" no fim do arquivo pro resultado
+atualizado com a mesma seed.
+
 ### Comparação honesta com o Colab externo do usuário (seção abaixo)
 
 Não são a mesma métrica exata em todos os casos (arquiteturas diferentes —
@@ -492,6 +499,89 @@ com uma exceção pontual (agora corrigida), incluindo a recomendação sobre
 o Radagast — que segue válida como estava: ganho real mas modesto, não
 alimenta o motor de cópia da Ulalek (não é Eldrazi), e adiciona um 3º
 permanente colorido de verdade à lista.
+
+---
+
+### Reanálise do simulador Python (`ulalek_goldfish_v1.py`) — a pedido do usuário — 2026-08-30
+
+**Gatilho:** depois da reconfirmação de oráculo acima, usuário pediu
+explicitamente pra reanalisar o simulador em si "pra ver se não há erros
+como nos outros" (referência às correções feitas em Beorn/Ur-Dragon/etc).
+Passei o código inteiro (1100 linhas) por conferência linha a linha contra
+o `oracle.json` fresco da reconfirmação — comparação sistemática via
+script (tags `colorless`/`eldrazi` de cada carta no `CARD_DB` vs. `colors`/
+`type_line` reais da Scryfall, mv declarado vs. `cmc` real, `ctype`
+declarado vs. `type_line` real) mais leitura manual de cada função central.
+
+**4 achados reais, todos corrigidos:**
+
+1. **Forsaken Monument (`TRUE_C_LANDS`) faltavam os 8 painlands.** O
+   comentário do código afirmava que "a maioria dos terrenos... são
+   painlands/duais ABUR que produzem cor real" (implicando que não tapam
+   por `{C}`) — falso pros 8 painlands da lista (Adarkar Wastes, Brushland,
+   Caves of Koilos, Karplusan Forest, Llanowar Wastes, Shivan Reef,
+   Sulfurous Springs, Yavimaya Coast): todos têm um modo `"{T}: Add {C}."`
+   incondicional e sem custo de vida, além do modo colorido com dano —
+   confirmado carta a carta no oráculo fresco. Só os 10 duais ABUR de
+   verdade não têm modo `{C}`. Os 8 painlands estavam sendo tratados como
+   se nunca dobrassem via Forsaken Monument. Corrigido.
+2. **Glaring Fleshraker tem 2 habilidades reais, só 1 estava implementada
+   e a 2ª nunca foi sequer documentada como omissão.** Oráculo real:
+   "Whenever you cast a colorless spell, create a Spawn token" (1ª, já
+   implementada) **e** "Whenever another colorless creature you control
+   enters, this creature deals 1 damage to each opponent" (2ª — nunca
+   despachada, nem na seção de simplificações documentadas do arquivo).
+   Como o deck cria tokens Spawn/Scion/Manifest o tempo todo, essa 2ª
+   habilidade dispara com frequência real. Implementada como proxy de dano
+   (`glaring_fleshraker_damage_total`, mesma convenção de
+   `proxy_removal_total`), disparando em toda criatura colorless entrando
+   em campo — spells conjurados E tokens sintéticos — com suporte a
+   Echoes of Eternity/Roaming Throne dobrando igual à 1ª habilidade.
+3. **Skittering Cicada sem a tag `colorless`, apesar de ser realmente
+   incolor (`colors: []` na Scryfall, custo genérico `{3}`, sem Devoid
+   necessário).** Sem a tag, o simulador tratava a Cicada como permanente
+   "colorido" — o que a fazia ser sacrificada erroneamente por All Is Dust
+   e ficar fora da elegibilidade de cópia da Echoes of Eternity. Achado
+   por varredura sistemática (script comparando toda tag `colorless` do
+   `CARD_DB` contra o campo `colors` real de cada uma das 100 cartas) —
+   única carta com esse mismatch em toda a lista. Corrigido.
+4. **Emrakul, the Promised End nunca recebia seu próprio desconto de
+   custo real.** Oráculo: "This spell costs {1} less to cast for each
+   card type among cards in your graveyard" — nunca implementado nem
+   citado nas simplificações documentadas; Emrakul ficava sempre travada
+   no custo cheio de 13. Implementado via `graveyard_card_types()`
+   (conta tipos reais distintos no cemitério, `artifact_creature` conta
+   como Artifact E Creature), empilhando com os outros descontos
+   (Eye of Ugin, Urza's Incubator, Ugin the Ineffable, It That Heralds
+   the End) como as regras reais permitem.
+
+**Robustez:** sweep de 20.000 jogos (seeds 3000000–3019999, timeout 2s/
+jogo) — 0 erros, 0 timeouts.
+
+**n=3000, seed_base=8600000, 8 turnos — antes (HEAD anterior a hoje) →
+depois:**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg copias pagas da Ulalek (CC) | 1,03 | 1,05 |
+| Avg tokens-copia de permanentes | 1,13 | 1,16 |
+| Avg cartas compradas extra | 1,50 | 1,54 |
+| Avg Eldrazi Spawn tokens criados | 1,49 | 1,52 |
+| Avg vida ganha proxy (Forsaken Monument) | 0,36 | **0,43** |
+| **Avg permanentes próprios sacrificados por All Is Dust** | 0,22 | **0,12** |
+| Avg dobras via Roaming Throne | 0,04 | **0,16** |
+| Avg dano proxy via Glaring Fleshraker (2ª habilidade) | — (n/a) | **1,17** |
+| Avg mão final | 2,93 | 2,91 |
+
+Leitura: a queda de "permanentes sacrificados por All Is Dust" (0,22→0,12)
+é diretamente a correção da Skittering Cicada (deixou de ser contada como
+alvo colorido). O salto de "dobras via Roaming Throne" (0,04→0,16) é a
+2ª habilidade de Glaring Fleshraker virando um novo gatilho dobrável. O
+aumento geral pequeno em quase todas as outras métricas vem do bônus extra
+de mana do Forsaken Monument (8 painlands agora contando pra dobra) —
+mais mana disponível ao longo do jogo, efeito difuso.
+
+`lista.md` não mudou. `ulalek_v1_runs.jsonl` sobrescrito.
 
 ---
 

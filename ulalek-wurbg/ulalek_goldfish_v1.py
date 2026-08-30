@@ -75,8 +75,9 @@ gatilhos de criatura EM CAMPO — nunca gatilho de conjuracao. Achado real
 documentado no goldfish-log: Roaming Throne e uma peca bem mais fraca
 neste deck do que no Ur-Dragon, porque a maior parte do valor de Ulalek
 e cast-trigger, nao permanente-trigger. Na pratica dobra: Glaring
-Fleshraker (gatilho de "voce conjura colorless" — fonte e o proprio
-Fleshraker EM CAMPO, nao o spell conjurado, entao conta), Chittering
+Fleshraker (as DUAS habilidades reais — "voce conjura colorless: cria
+spawn" E "outra criatura colorless entra: 1 dano proxy" — fonte e o
+proprio Fleshraker EM CAMPO em ambas, entao as duas contam), Chittering
 Dispatcher (leaves-trigger), Spawnbed Protector (end step). NAO dobra
 Liberator, Urza's Battlethopter (tipo Thopter, nao Eldrazi) nem nenhum
 "when you cast this spell" (fonte e spell, nao criatura em campo).
@@ -288,7 +289,7 @@ add("Ugin, the Ineffable", 6, "planeswalker", {"colorless"})
 add("Urza's Incubator", 3, "artifact", {"colorless"})
 add("Vedalken Orrery", 4, "artifact", {"colorless", "flash_source"})
 add("Liberator, Urza's Battlethopter", 3, "artifact_creature", {"colorless", "flash_source"})
-add("Skittering Cicada", 3, "creature", {"flash_source"})
+add("Skittering Cicada", 3, "creature", {"colorless", "flash_source"})
 add("Zhulodok, Void Gorger", 6, "creature", {"eldrazi", "colorless", "cascade_cascade"})
 
 # --- Removal / interacao / protecao (proxy, sem alvo real) -------------------
@@ -382,6 +383,7 @@ class GameState:
     flash_online_turns: int = 0
     first_creature_discount_events_total: int = 0
     radagast_flash_grants_total: int = 0
+    glaring_fleshraker_damage_total: int = 0
 
 
 def draw_cards(state: GameState, n: int):
@@ -400,6 +402,7 @@ def create_spawn_tokens(state: GameState, n: int):
     # tambem existem como corpos 0/1 em campo pra fins de contagem.
     for _ in range(n):
         state.battlefield.append("Eldrazi Spawn Token")
+        on_colorless_creature_etb(state, "Eldrazi Spawn Token")
     state.spawn_tokens_available += n
 
 
@@ -435,6 +438,22 @@ def trigger_times(state: GameState, source_name: str, is_permanent_source: bool)
     return times
 
 
+def on_colorless_creature_etb(state: GameState, name: str):
+    """Glaring Fleshraker, 2a habilidade (real, achada na reconfirmacao de
+    oraculo 2026-08-30): "Whenever another colorless creature you control
+    enters, this creature deals 1 damage to each opponent." So' a 1a
+    habilidade (spawn token ao CONJURAR spell colorless) estava
+    implementada antes - esta e' uma criatura ENTRANDO (qualquer criatura
+    colorless, incluindo Eldrazi Spawn/Scion e Manifest tokens, nao so'
+    spells conjurados), e nunca tinha sido despachada nem documentada como
+    omissao. Sem oponente real (Regra 1), tratada como proxy de dano —
+    mesma convencao de proxy_removal_total."""
+    if ("Glaring Fleshraker" in state.battlefield and name != "Glaring Fleshraker"
+            and name in CARD_DB and is_colorless(name)):
+        times = trigger_times(state, "Glaring Fleshraker", is_permanent_source=True)
+        state.glaring_fleshraker_damage_total += 1 * times
+
+
 # ---------------------------------------------------------------------------
 # Cast-trigger effects ("When you cast this spell")
 # ---------------------------------------------------------------------------
@@ -466,6 +485,7 @@ def ct_manifest2(state: GameState):
     for _ in range(n):
         c = state.hand.pop(0)
         state.battlefield.append("Manifest Token")
+        on_colorless_creature_etb(state, "Manifest Token")
         state.manifest_tokens_created_total += 1
         state.graveyard.append(c) if False else None  # a carta manifestada NAO vai pro cemiterio, fica face-down em campo (Manifest Token representa isso; a carta original "desaparece" do modelo, simplificacao documentada)
     draw_cards(state, n)
@@ -590,14 +610,26 @@ def land_mana(state: GameState) -> int:
 
 
 # Fontes que realmente tapam por {C} de verdade no oraculo (conferido carta a
-# carta, Scryfall) - a maioria dos 37 terrenos "colorless"-tageados neste
-# arquivo sao painlands/duais ABUR que produzem cor real (a tag so significa
-# "contado genericamente neste modelo", nao "produz {C} de verdade"). Usado
-# so por forsaken_monument_bonus() abaixo, que precisa saber exatamente
-# quais fontes tapam por {C} pra dobrar direito.
+# carta, Scryfall) - a tag "colorless" nos 37 terrenos deste arquivo so
+# significa "contado genericamente neste modelo", nao "produz {C} de
+# verdade". Usado so por forsaken_monument_bonus() abaixo, que precisa saber
+# exatamente quais fontes tapam por {C} pra dobrar direito.
+#
+# Correcao 2026-08-30 (reconfirmacao de oraculo pedida pelo usuario): os 10
+# duais ABUR (Badlands, Bayou, Plateau, Savannah, Scrubland, Taiga, Tropical
+# Island, Tundra, Underground Sea, Volcanic Island) de fato NAO tem modo
+# {C} - so produzem as 2 cores nomeadas. MAS os 8 painlands da lista
+# (Adarkar Wastes, Brushland, Caves of Koilos, Karplusan Forest, Llanowar
+# Wastes, Shivan Reef, Sulfurous Springs, Yavimaya Coast) SIM tem um modo
+# "{T}: Add {C}." incondicional e sem custo de vida, alem do modo colorido
+# com dano - confirmado carta a carta via Scryfall fresco, nao por
+# semelhanca com os duais ABUR. Faltavam todos os 8 aqui, subestimando o
+# bonus de Forsaken Monument sempre que algum estava em campo.
 TRUE_C_LANDS = {"Eldrazi Temple", "Cascading Cataracts", "Wastes", "Shrine of the Forsaken Gods",
                  "Ugin's Labyrinth", "Spawning Bed", "Urza's Cave", "Cavern of Souls",
-                 "Corrupted Crossroads", "Sanctum of Ugin", "Emergence Zone"}
+                 "Corrupted Crossroads", "Sanctum of Ugin", "Emergence Zone",
+                 "Adarkar Wastes", "Brushland", "Caves of Koilos", "Karplusan Forest",
+                 "Llanowar Wastes", "Shivan Reef", "Sulfurous Springs", "Yavimaya Coast"}
 
 
 def forsaken_monument_bonus(state: GameState) -> int:
@@ -643,6 +675,22 @@ def spend_mana(state: GameState, n: int):
 FIRST_CREATURE_DISCOUNT_SOURCES = ["Conduit of Ruin", "Radagast of Rhosgobel"]
 
 
+def graveyard_card_types(state: GameState) -> set:
+    """Tipos de carta distintos no cemiterio (regra real de Emrakul, the
+    Promised End abaixo) - artifact_creature conta como Artifact E
+    Creature ao mesmo tempo (tipo real da carta, nao categoria unica do
+    modelo)."""
+    types = set()
+    for n in state.graveyard:
+        ctype = CARD_DB[n].ctype
+        if ctype == "artifact_creature":
+            types.add("artifact")
+            types.add("creature")
+        else:
+            types.add(ctype)
+    return types
+
+
 def eldrazi_cost_discount(state: GameState, name: str) -> int:
     d = 0
     tags = CARD_DB[name].tags
@@ -656,6 +704,16 @@ def eldrazi_cost_discount(state: GameState, name: str) -> int:
             d += 2
         if "It That Heralds the End" in state.battlefield and CARD_DB[name].mv >= 7:
             d += 1
+    if name == "Emrakul, the Promised End":
+        # Achado real 2026-08-30 (reconfirmacao de oraculo pedida pelo
+        # usuario): "This spell costs {1} less to cast for each card type
+        # among cards in your graveyard." Nunca era aplicado - Emrakul
+        # ficava sempre travada no custo cheio de 13, quando na pratica
+        # (ate 7 tipos: creature/artifact/enchantment/instant/sorcery/
+        # planeswalker/land) pode custar bem menos num jogo real com
+        # cemiterio desenvolvido. Empilha com os descontos acima (regras
+        # reais permitem multiplas reducoes de custo simultaneas).
+        d += len(graveyard_card_types(state))
     if CARD_DB[name].ctype == "creature" and not state.conduit_used_this_turn:
         d += 2 * sum(1 for s in FIRST_CREATURE_DISCOUNT_SOURCES if s in state.battlefield)
     return d
@@ -826,6 +884,7 @@ def resolve_cast(state: GameState, name: str, free: bool = False, from_hand: boo
 def creature_etb_hooks(state: GameState, name: str, is_copy: bool):
     if name == "The One Ring" and not is_copy:
         pass
+    on_colorless_creature_etb(state, name)
 
 
 def cast_card(state: GameState, name: str):
@@ -1066,6 +1125,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     if ad_games:
         print(f"  Avg permanentes proprios sacrificados por All Is Dust nesses jogos: {avg([s.all_is_dust_self_sacrificed for s in ad_games]):.2f}")
     print(f"Avg dobras via Roaming Throne (contador direto): {avg([s.roaming_throne_doubles_total for s in states]):.2f}")
+    print(f"Avg dano proxy via Glaring Fleshraker (2a habilidade, criatura colorless entra): {avg([s.glaring_fleshraker_damage_total for s in states]):.2f}")
     print(f"Avg turnos com flash online (Vedalken Orrery/Liberator/Skittering Cicada): {avg([s.flash_online_turns for s in states]):.2f}")
     print(f"Avg descontos de 'primeira criatura do turno' aplicados (Conduit/Radagast): {avg([s.first_creature_discount_events_total for s in states]):.2f}")
     print(f"Avg flash concedido pelo Radagast (se presente): {avg([s.radagast_flash_grants_total for s in states]):.2f}")
@@ -1097,4 +1157,5 @@ if __name__ == "__main__":
                 "proxy_removal_total": s.proxy_removal_total,
                 "all_is_dust_cast": s.all_is_dust_cast,
                 "all_is_dust_self_sacrificed": s.all_is_dust_self_sacrificed,
+                "glaring_fleshraker_damage_total": s.glaring_fleshraker_damage_total,
             }) + "\n")
