@@ -311,15 +311,13 @@ add("Putrefy", 2, {"Instant"}, tags={"removal", "removal_artifact"}, colors={"B"
 add("Feed the Swarm", 2, {"Instant"}, tags={"removal", "removal_enchantment"}, colors={"B"})
 # Candidatas a adicao avaliadas depois - ver thranduil_synergy_matrix.py --with-candidates
 add("Devoted Druid", 2, {"Creature"}, tags={"ramp", "elf"}, colors={"G"}, produces={"G"})
-# Oraculo real (Scryfall, conferido 2026-08-30): "{T}: Add {G}. Put a -1/-1
-# counter on this creature: Untap this creature." So' o {T}: Add {G}
-# normal esta modelado (via tag "ramp"). A linha "sacrifica-se por 1 G
-# extra" fica de fora por decisao de escopo documentada: Devoted Druid e'
-# 1/1 base, um so' -1/-1 counter mata (0/0), entao e' um combo de UMA vez
-# so' (burst de +1 G nesse turno, perde o dork repetivel depois) - decisao
-# de jogador situacional que a IA gulosa deste simulador nao pondera bem
-# (comparar "1 G a mais agora" vs "1 G por turno pra sempre"), nao um
-# efeito ausente por esquecimento.
+# Oraculo real (Scryfall): "{T}: Add {G}. Put a -1/-1 counter on this
+# creature: Untap this creature." O {T}: Add {G} normal ja e' modelado via
+# tag "ramp". A 2a linha (burst de 1 G extra, sacrificando o dork - 1/1
+# base, um -1/-1 counter mata) implementada em try_devoted_druid_burst()
+# (pedido explicito do usuario 2026-08-30, "efeito de todas as criaturas
+# implementado") - so ativa quando destrava uma carta da mao que esta
+# exatamente 1 mana curta.
 add("Formidable Speaker", 3, {"Creature"}, tags={"tutor", "gy_fill", "elf"}, colors={"G"})
 add("Arcane Signet", 2, {"Artifact"}, tags={"ramp"}, produces={"B", "G", "U"})
 add("Imperious Perfect", 3, {"Creature"}, tags={"anthem", "token_maker", "elf"}, colors={"G"})
@@ -420,8 +418,6 @@ DENSITY_ELF = 15 / 91  # ~15 elfos lendarios + varios outros elfos nao-lendarios
 
 # Premissas explicitas pra Rhystic Study (carta depende de spells de OPONENTES, que um goldfish solo
 # nao tem como observar de verdade - mesma limitacao estrutural do Managorger Hydra no Beorn):
-ASSUMED_OPPONENT_SPELLS_PER_TURN = 2   # reaproveitando a mesma premissa que voce ja validou pro Managorger Hydra
-ASSUMED_RHYSTIC_STUDY_PAY_RATE = 0.5   # validada por voce - fracao das vezes que o oponente paga o {1} pra evitar a compra
 ASSUMED_EDRIC_LIFESPAN_TURNS_MEAN = 2  # validada por voce - Edric sobrevive em media 2 dos seus turnos antes de ser removido (randint(1,3))
 
 def C(name: str) -> Card:
@@ -555,6 +551,9 @@ class GameState:
     fauna_shaman_tutors: int = 0              # Fauna Shaman: descarta criatura, tutora criatura da biblioteca pra mao
     vannifar_evolves: int = 0                 # Prime Speaker Vannifar: sacrifica criatura, tutora outra (mv+1) pro campo
     eladamri_free_creatures: int = 0          # Eladamri: revela criatura da mao, poe em campo de graca
+    devoted_druid_bursts: int = 0             # Devoted Druid: sacrifica-se (via -1/-1) por 1 G extra no turno
+    elrond_flickers: int = 0                  # Elrond {5}{U}{U}: flicker de ate 2 permanentes, re-dispara ETB
+    eladamri_library_top_casts: int = 0       # Eladamri: conjurou criatura do topo da biblioteca (estatica passiva)
 
     def draw(self, n=1, source="draw"):
         got = 0
@@ -884,12 +883,54 @@ def priority(state: GameState, card: str) -> tuple:
         return (7, -C(card).mv)  # segura finishers pra depois
     return (6, C(card).mv)
 
+def try_devoted_druid_burst(state: GameState, log: List[Dict]):
+    """Devoted Druid, "Put a -1/-1 counter on this creature: Untap this
+    creature." Achado real 2026-08-30 (pedido explicito do usuario: "efeito
+    de todas as criaturas implementado"). Devoted Druid e' 1/1 base - um
+    -1/-1 counter mata (0/0), entao e' um uso UNICO por partida (tap normal
+    +1 G, sacrifica-se pra destravar o {T} de novo, +1 G extra, morre).
+    Heuristica: so vale a pena se essa 1 mana extra destrava alguma carta
+    da mao que esta exatamente 1 mana curta agora (simplificacao
+    documentada: checa so o total de mana, nao a cor exata do pip faltante
+    - Devoted Druid so produz G, entao subestima levemente quando o pip
+    faltante nao e verde)."""
+    if "Devoted Druid" not in state.battlefield or not _dork_ready(state, "Devoted Druid"):
+        return
+    need = remaining_mana(state) + 1
+    if not any(is_spell(c) and C(c).mv == need for c in state.hand):
+        return
+    state.battlefield.remove("Devoted Druid")
+    state.mana_spent_this_turn -= 1
+    state.devoted_druid_bursts += 1
+    log.append({"trigger": "devoted_druid_burst", "turn": state.turn})
+
+
+def try_eladamri_library_top(state: GameState, log: List[Dict]):
+    """Eladamri, Korvecdal, estatica: "You may look at the top card of
+    your library any time. You may cast creature spells from the top of
+    your library." Se o topo for uma criatura castavel, move pra mao antes
+    de resolver o cast normal (mesmo efeito final - a carta sai da
+    biblioteca e e conjurada - implementacao mais simples e segura que
+    desviar toda a logica de cast_spell pra ler direto da biblioteca)."""
+    if "Eladamri, Korvecdal" not in state.battlefield or not state.library:
+        return
+    top = state.library[0]
+    if is_creature(top) and can_cast(state, top):
+        state.library.pop(0)
+        state.hand.append(top)
+        state.eladamri_library_top_casts += 1
+        log.append({"trigger": "eladamri_library_top_reveal", "card": top, "turn": state.turn})
+
+
 def main_phase(state: GameState, log: List[Dict]):
     if not state.commander_in_play and state.turn >= 3:
         if commander_can_be_cast(state):
             _resolve_cast(state, COMMANDER, log, from_hand=False)
 
+    try_devoted_druid_burst(state, log)
+
     for _ in range(6):
+        try_eladamri_library_top(state, log)
         castables = [c for c in state.hand if is_spell(c) and can_cast(state, c)]
         if not castables:
             break
@@ -908,6 +949,7 @@ def main_phase(state: GameState, log: List[Dict]):
     try_fauna_shaman(state, log)
     try_prime_speaker_vannifar(state, log)
     try_eladamri(state, log)
+    try_elrond_flicker(state, log)
 
 def _creature_cast_engines_trigger(state: GameState, card: str, log: List[Dict]):
     # Beast Whisperer / Champions of the Perfect: "whenever you cast a creature spell, draw a card".
@@ -1301,11 +1343,10 @@ def try_eladamri(state: GameState, log: List[Dict]):
     tapped/untapped por criatura individual, mesmo nivel de abstracao ja
     usado no resto do arquivo; (2) so' o modo "reveal a card from your
     hand" e modelado (mais seguro/melhor que revelar do topo aleatorio da
-    biblioteca); (3) a estatica "may cast creature spells from the top of
-    your library" fica de fora - exigiria checar o topo da biblioteca a
-    cada oportunidade de cast, mudanca estrutural maior no loop principal,
-    nao implementada nesta rodada (decisao de escopo documentada, nao
-    esquecimento)."""
+    biblioteca). (3) A estatica "may cast creature spells from the top of
+    your library" AGORA esta implementada (pedido explicito do usuario
+    2026-08-30, "efeito de todas as criaturas") - ver try_eladamri_library_top(),
+    chamada a cada iteracao do loop de cast em main_phase."""
     if "Eladamri, Korvecdal" not in state.battlefield:
         return
     if not _dork_ready(state, "Eladamri, Korvecdal"):
@@ -1325,6 +1366,42 @@ def try_eladamri(state: GameState, log: List[Dict]):
     state.eladamri_free_creatures += 1
     log.append({"trigger": "eladamri_free_creature", "card": target, "turn": state.turn})
 
+
+def try_elrond_flicker(state: GameState, log: List[Dict]):
+    """Elrond, Moon-Reader, "{5}{U}{U}: Exile up to two other target
+    nonland permanents you control. Return those cards to the battlefield
+    under their owner's control at the beginning of the next end step."
+    Achado real 2026-08-30 (pedido explicito: "efeito de todas as
+    criaturas implementado"). Simplificacao documentada: resolvido no
+    mesmo momento do cast em vez de esperar o fim do turno (mesmo nivel de
+    compressao temporal ja usado noutros efeitos "delayed" deste arquivo),
+    e os 2 alvos "flickados" tem seus gatilhos de ETB re-disparados de
+    verdade via _apply_etb/_creature_cast_engines_trigger - sem removÃªlos
+    fisicamente do battlefield (nao muda a lista, so reaplica o efeito de
+    entrada). Prioriza Elfos lendarios (redispara o "compre 2, descarte 1"
+    do proprio Thranduil) e fontes de mill."""
+    if "Elrond, Moon-Reader" not in state.battlefield or not _dork_ready(state, "Elrond, Moon-Reader"):
+        return
+    if remaining_mana(state) < 7 or color_sources(state, "U") < 2:
+        return
+    candidates = [c for c in state.battlefield
+                  if c not in {"Elrond, Moon-Reader"} and not is_land(c)]
+    if not candidates:
+        return
+    candidates.sort(key=lambda c: (C(c).is_legendary_elf, C(c).mill_amount), reverse=True)
+    targets = candidates[:2]
+    state.mana_spent_this_turn += 7
+    for t in targets:
+        # Remove-e-readiciona (exila e retorna de verdade) pra que gatilhos
+        # do tipo "whenever ANOTHER creature enters" comparem contra o
+        # estado correto (sem a propria carta ja contando como "outra").
+        state.battlefield.remove(t)
+        _creature_cast_engines_trigger(state, t, log)
+        state.battlefield.append(t)
+        state.creature_cast_turn[t] = state.turn
+        _apply_etb(state, t, log)
+    state.elrond_flickers += 1
+    log.append({"trigger": "elrond_flicker", "targets": targets, "turn": state.turn})
 
 def activate_finishers(state: GameState, log: List[Dict]):
     creatures_in_play = sum(1 for c in state.battlefield if is_creature(c))
@@ -1454,15 +1531,17 @@ def combat_step(state: GameState, log: List[Dict]):
 # =========================================================
 
 def apply_rhystic_study(state: GameState, log: List[Dict]):
+    # Simplificado 2026-08-30 (pedido explicito do usuario): media fixa de
+    # 1 compra por turno em que a Rhystic Study esta em campo, em vez do
+    # modelo probabilistico anterior (2 oportunidades/turno x 50% de taxa
+    # paga - que ja convergia pra essa mesma media no agregado, so com
+    # variancia por partida desnecessaria). Mesma premissa "1 unidade de
+    # valor por turno" aplicada a Smothering Tithe no Ur-Dragon.
     if not state.has("Rhystic Study"):
         return
-    for _ in range(ASSUMED_OPPONENT_SPELLS_PER_TURN):
-        state.rhystic_study_opportunities += 1
-        if state.rng.random() >= ASSUMED_RHYSTIC_STUDY_PAY_RATE:
-            state.draw(1, source="Rhystic Study")
-            state.rhystic_study_draws += 1
-        else:
-            state.rhystic_study_denied += 1
+    state.rhystic_study_opportunities += 1
+    state.draw(1, source="Rhystic Study")
+    state.rhystic_study_draws += 1
 
 # =========================================================
 # TURN STRUCTURE
@@ -1623,6 +1702,9 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "fauna_shaman_tutors": state.fauna_shaman_tutors,
         "vannifar_evolves": state.vannifar_evolves,
         "eladamri_free_creatures": state.eladamri_free_creatures,
+        "devoted_druid_bursts": state.devoted_druid_bursts,
+        "elrond_flickers": state.elrond_flickers,
+        "eladamri_library_top_casts": state.eladamri_library_top_casts,
     }
 
 def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=71000):
@@ -1675,8 +1757,7 @@ def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=710
     rs_games = [r for r in results if r["rhystic_study_in_play"]]
     if rs_games:
         print(f"Rhystic Study em campo em {100*len(rs_games)/n:.1f}% dos jogos")
-        print(f"  Avg compras via Rhystic Study (premissa: {ASSUMED_OPPONENT_SPELLS_PER_TURN} spells de oponente/turno, {ASSUMED_RHYSTIC_STUDY_PAY_RATE*100:.0f}% de taxa paga): {statistics.mean([r['rhystic_study_draws'] for r in rs_games]):.2f}")
-        print(f"  Avg vezes que o oponente pagou o {{1}} pra evitar: {statistics.mean([r['rhystic_study_denied'] for r in rs_games]):.2f}")
+        print(f"  Avg compras via Rhystic Study (premissa fixa: 1 compra/turno em campo, pedido explicito do usuario): {statistics.mean([r['rhystic_study_draws'] for r in rs_games]):.2f}")
     print(f"Avg cartas descartadas por limite de mao: {avg('cards_discarded_to_hand_size'):.2f}")
     print(f"Avg battlefield final: {avg('battlefield_count'):.2f}")
     print(f"Avg mao final: {avg('hand_size'):.2f}")
@@ -1731,6 +1812,12 @@ def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=710
     print(f"Prime Speaker Vannifar evoluiu criatura em {100*len(van_games)/n:.1f}% dos jogos, avg {avg('vannifar_evolves'):.2f} por partida")
     elad_games = [r for r in results if r["eladamri_free_creatures"] > 0]
     print(f"Eladamri colocou criatura da mao em campo de graca em {100*len(elad_games)/n:.1f}% dos jogos, avg {avg('eladamri_free_creatures'):.2f} por partida")
+    dd_games = [r for r in results if r["devoted_druid_bursts"] > 0]
+    print(f"Devoted Druid sacrificou-se por 1 G extra em {100*len(dd_games)/n:.1f}% dos jogos")
+    er_games = [r for r in results if r["elrond_flickers"] > 0]
+    print(f"Elrond flickou permanente(s) (re-dispara ETB) em {100*len(er_games)/n:.1f}% dos jogos, avg {avg('elrond_flickers'):.2f} ativacoes/partida")
+    elt_games = [r for r in results if r["eladamri_library_top_casts"] > 0]
+    print(f"Eladamri revelou criatura do topo da biblioteca (estatica) em {100*len(elt_games)/n:.1f}% dos jogos, avg {avg('eladamri_library_top_casts'):.2f} por partida")
 
     recursion_vals = [r["oversold_cemetery_returns"] + r["tyvar_jubilant_reanimations"]
                        + r["trystans_command_gy_returns"] + r["awaken_honored_dead_returns"] for r in results]

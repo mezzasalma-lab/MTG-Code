@@ -2287,6 +2287,57 @@ ser conferida contra o texto real da Scryfall.**
 
 ---
 
+### Correção — pedido explícito: Smothering Tithe (média fixa) + efeito de todas as criaturas — 2026-08-30
+
+**Gatilho (usuário):** mesmo pedido do Thranduil — *"1 tesouro por
+Smothering Tithe... quero o efeito de todas as criaturas implementado."*
+
+**Smothering Tithe implementada:** estava `opponent_dependent` com efeito
+zero desde sempre. Implementada em `upkeep_step()` com a mesma premissa
+fixa da Rhystic Study: **+1 Treasure por turno em que está em campo**
+(criado e imediatamente convertido em mana disponível, mesma convenção já
+usada pros outros Treasures do deck — Goldspan Dragon dobra o valor se
+estiver em campo).
+
+**4 criaturas com habilidade real ainda faltando, agora implementadas:**
+
+1. **Sarkhan, Soul Aflame** — "Whenever a Dragon you control enters, you
+   may have Sarkhan become a copy of it until end of turn." Disparado em
+   `dragon_enters()` pra qualquer Dragão que entrar enquanto ele está em
+   campo. Rastreado como evento real (`sarkhan_soul_aflame_copies`), sem
+   inventar dano/poder extra de combate individual — copiar não re-dispara
+   o ETB do Dragão copiado (regra real), e este simulador não modela
+   combate criatura-a-criatura em nenhum outro lugar.
+2. **Lathliss, Dragon Queen** — "{1}{R}: Dragons you control get +1/+0
+   until end of turn."
+3. **Bladewing the Risen** — "{B}{R}: Dragon creatures get +1/+1 until
+   end of turn."
+4. **Scourge of Valkas** — "{R}: This creature gets +1/+0 until end of
+   turn" (só ela mesma, diferente das outras duas que são pro time todo).
+
+As 3 ativações de pump ficam em `try_dragon_pumps()`, 1x por turno cada,
+gatilhadas quando há mana sobrando e (pra Lathliss/Bladewing) pelo menos
+1 Dragão em campo pra beneficiar. Mesmo tratamento das outras: contador de
+ativação real, não dano de combate inventado.
+
+**Robustez:** 20.000 seeds (7600000+) — 0 erros.
+
+**Batch oficial, n=5000, seed_base=7600000:**
+
+```
+Avg dano proxy total: 906,48 (antes ~886, dentro do esperado com mais mana disponivel)
+Avg Treasures criados: 67,43 (antes 58,37) | via Smothering Tithe: 0,34/partida
+Avg ativacoes de pump: Lathliss 0,52 | Bladewing 0,43 | Scourge (self) 0,74
+Avg vezes que Sarkhan Soul Aflame copiou um Dragao: 2,90
+```
+
+**Leitura:** Smothering Tithe deixa de ser uma carta fantasma (a mesma
+observada gerando valor real numa partida manual registrada nesta sessão,
+Partida #13, mas sempre em 0 no simulador automatizado). `lista.md` não
+muda.
+
+---
+
 ## Partida #15 — AAAA-MM-DD
 
 - **Formato do teste:**

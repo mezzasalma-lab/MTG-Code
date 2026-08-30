@@ -399,13 +399,12 @@ add("Sol Ring", 1, "artifact", {"rock2"})  # {C}{C} — sem cor
 add("Dragonlord's Servant", 2, "creature", {"dragon_discount1"}, power=1, pips={"R": 1})
 add("Dragonspeaker Shaman", 3, "creature", {"dragon_discount2"}, power=2, pips={"R": 2})
 add("Sarkhan, Soul Aflame", 3, "creature", {"dragon_discount1"}, power=2, pips={"U": 1, "R": 1})
-# Achado 2026-08-30 (auditoria completa de oraculo): so' o desconto de
-# custo esta modelado. "Whenever a Dragon you control enters, you may
-# have Sarkhan become a copy of it until end of turn" NAO esta
-# implementado - decisao de escopo documentada: copiar nao re-dispara a
-# habilidade de ETB do Dragao copiado (regra real de copia), o valor real
-# e' so' em combate (Sarkhan vira um corpo maior/com voo por 1 turno) -
-# este simulador nao modela combate individual criatura-a-criatura.
+# "Whenever a Dragon you control enters, you may have Sarkhan become a
+# copy of it until end of turn" implementada em dragon_enters() (pedido
+# explicito do usuario 2026-08-30, "efeito de todas as criaturas") -
+# rastreada como evento real (sarkhan_soul_aflame_copies), sem inventar
+# dano/poder numerico extra pra combate individual, que este simulador
+# nao modela em nenhum outro lugar (copiar nao re-dispara ETB, regra real).
 add("Herald's Horn", 3, "artifact", {"dragon_discount1", "tribal_impulse"})
 
 # Commander's Sphere: candidata real pro slot vago (Regra 13, oraculo
@@ -536,16 +535,14 @@ add("Hellkite Charger", 6, "creature", {"dragon", "extra_combat_paid", "haste"},
 add("Hellkite Courser", 6, "creature", {"dragon"}, power=6, pips={"R": 2})
 add("Klauth, Unrivaled Ancient", 7, "creature", {"dragon", "attack_mana_power", "haste"}, power=4, pips={"R": 1, "G": 1})
 add("Lathliss, Dragon Queen", 6, "creature", {"dragon", "dragon_etb_token"}, power=6, pips={"R": 2})
-# Achado 2026-08-30 (auditoria completa de oraculo): so' o gatilho de
-# token ("whenever another nontoken Dragon enters, create a 5/5 red
-# Dragon token") esta modelado. "{1}{R}: Dragons you control get +1/+0
-# until end of turn" (repetivel) NAO esta implementado - decisao de
-# escopo documentada: este simulador rastreia "dano proxy" agregado, nao
-# poder/vida individual por criatura, entao um +1/+0 disperso por todos
-# os Dragoes nao tem onde plugar sem inventar um sistema de stats
-# individuais que o arquivo inteiro deliberadamente nao tem. Mesma
-# decisao pra Bladewing the Risen ("{B}{R}: Dragons +1/+1") e Scourge of
-# Valkas ("{R}: +1/+0").
+# "{1}{R}: Dragons you control get +1/+0 until end of turn" implementada
+# em try_dragon_pumps() (pedido explicito do usuario 2026-08-30, "efeito
+# de todas as criaturas") - rastreada como ativacao real (lathliss_pumps),
+# 1x/turno quando ha mana sobrando e outros Dragoes em campo pra
+# beneficiar, sem inventar dano de combate extra que este simulador nao
+# calcula por criatura individual em nenhum outro lugar. Mesmo tratamento
+# pra Bladewing the Risen ("{B}{R}: Dragons +1/+1") e Scourge of Valkas
+# ("{R}: this creature +1/+0", so' ela mesma).
 add("Miirym, Sentinel Wyrm", 6, "creature", {"dragon", "dragon_etb_copy"}, power=6, pips={"G": 1, "U": 1, "R": 1})
 add("Old Gnawbone", 7, "creature", {"dragon"}, power=7, pips={"G": 2})
 add("Ramos, Dragon Engine", 6, "artifact_creature", {"dragon", "ramos_counters"}, power=4)
@@ -622,7 +619,10 @@ add("Lightning Greaves", 2, "artifact", {"interaction"})
 # contramagia e' unica no deck (nenhuma outra carta faz isso) e nunca foi
 # pesada na decisao, mesmo nao sendo mensuravel aqui.
 add("Rhythm of the Wild", 2, "enchantment", {"opponent_dependent"}, pips={"R": 1, "G": 1})
-add("Smothering Tithe", 4, "enchantment", {"opponent_dependent"}, pips={"W": 1})
+add("Smothering Tithe", 4, "enchantment", {"treasure_tax"}, pips={"W": 1})
+# Achado 2026-08-30 (pedido explicito do usuario): estava opponent_dependent
+# com zero efeito. Implementada em upkeep_step() com a mesma premissa fixa
+# "1 Treasure por turno" usada na Rhystic Study do Thranduil.
 add("Swan Song", 1, "instant", {"interaction"}, pips={"U": 1})
 add("Swords to Plowshares", 1, "instant", {"interaction"}, pips={"W": 1})
 add("Teferi's Protection", 3, "instant", {"interaction"}, pips={"W": 1})
@@ -737,6 +737,11 @@ class GameState:
     # metrics -------------------------------------------------------------
     proxy_damage_total: int = 0
     treasures_created_total: int = 0
+    smothering_tithe_treasures: int = 0
+    lathliss_pumps: int = 0
+    bladewing_pumps: int = 0
+    scourge_self_pumps: int = 0
+    sarkhan_soul_aflame_copies: int = 0
     dragon_etb_damage_events_total: int = 0
     roaming_throne_doubles_total: int = 0
     cards_drawn_extra: int = 0
@@ -845,6 +850,16 @@ def dragon_enters(state: GameState, name: str, is_token: bool):
             state.other_tokens += 0
         if times_lathliss_miirym == 2:
             state.roaming_throne_doubles_total += 1
+
+    # Sarkhan, Soul Aflame: "Whenever a Dragon you control enters, you may
+    # have Sarkhan become a copy of it until end of turn..." Achado
+    # 2026-08-30 (pedido explicito: "efeito de todas as criaturas
+    # implementado"). Copiar NAO re-dispara o ETB do Dragao copiado (regra
+    # real de copia) - so' conta como evento real (Sarkhan vira aquele
+    # corpo ate o fim do turno), sem inventar dano/poder extra numerico
+    # que este simulador nao calcula por combate individual.
+    if "Sarkhan, Soul Aflame" in state.battlefield and name != "Sarkhan, Soul Aflame":
+        state.sarkhan_soul_aflame_copies += 1
 
 
 # ---------------------------------------------------------------------------
@@ -1656,6 +1671,28 @@ def main_phase(state: GameState):
 
     try_haven_recursion(state)
     try_dragon_hoard_draw(state)
+    try_dragon_pumps(state)
+
+
+def try_dragon_pumps(state: GameState):
+    """3 ativacoes repetiveis de pump de Dragao, achado 2026-08-30 (pedido
+    explicito do usuario: "efeito de todas as criaturas implementado").
+    Cada uma rastreada como sua propria ativacao (nao dano de combate
+    calculado - este simulador nao modela combate individual criatura a
+    criatura em nenhum outro lugar, mesmo tratamento ja usado pros
+    finishers repetiveis de Beorn/Thranduil nesta sessao). 1x/turno cada,
+    quando ha mana sobrando e um alvo real pra beneficiar."""
+    if "Lathliss, Dragon Queen" in state.battlefield and remaining_mana(state) >= 2 and dragon_count(state) >= 1:
+        spend_mana(state, 2)
+        state.lathliss_pumps += 1
+
+    if "Bladewing the Risen" in state.battlefield and remaining_mana(state) >= 2 and dragon_count(state) >= 1:
+        spend_mana(state, 2)
+        state.bladewing_pumps += 1
+
+    if "Scourge of Valkas" in state.battlefield and remaining_mana(state) >= 1:
+        spend_mana(state, 1)
+        state.scourge_self_pumps += 1
 
 
 def try_haven_recursion(state: GameState):
@@ -1910,6 +1947,16 @@ def upkeep_step(state: GameState):
             state.library.pop(0)
             state.hand.append(top)
 
+    # Smothering Tithe: "Whenever an opponent draws a card, that player may
+    # pay {2}. If the player doesn't, you create a Treasure token." Achado
+    # 2026-08-30 (pedido explicito do usuario, mesma premissa da Rhystic
+    # Study no Thranduil): media fixa de 1 Treasure por turno em que a
+    # Smothering Tithe esta em campo (1 oponente falhando em pagar {2} no
+    # draw normal do turno, sem tentar modelar draw extra de oponentes).
+    if "Smothering Tithe" in state.battlefield:
+        create_and_use_treasures(state, 1)
+        state.smothering_tithe_treasures += 1
+
 
 def should_keep(hand: list) -> bool:
     lands = sum(1 for n in hand if n in LAND_NAMES)
@@ -2025,6 +2072,9 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg dano proxy total (Scourge of Valkas/Dragon Tempest/Terror of the Peaks): {avg([s.proxy_damage_total for s in states]):.2f}")
     print(f"Avg eventos de dano-por-Dragao-ETB: {avg([s.dragon_etb_damage_events_total for s in states]):.2f}")
     print(f"Avg Treasures criados: {avg([s.treasures_created_total for s in states]):.2f}")
+    print(f"Avg Treasures via Smothering Tithe (1/turno em campo): {avg([s.smothering_tithe_treasures for s in states]):.2f}")
+    print(f"Avg ativacoes de pump: Lathliss {avg([s.lathliss_pumps for s in states]):.2f} | Bladewing {avg([s.bladewing_pumps for s in states]):.2f} | Scourge of Valkas (self) {avg([s.scourge_self_pumps for s in states]):.2f}")
+    print(f"Avg vezes que Sarkhan Soul Aflame copiou um Dragao: {avg([s.sarkhan_soul_aflame_copies for s in states]):.2f}")
     print(f"Avg dobras via Roaming Throne: {avg([s.roaming_throne_doubles_total for s in states]):.2f}")
     print(f"Avg cartas compradas extra (motores de draw): {avg([s.cards_drawn_extra for s in states]):.2f}")
     print(f"Avg tutores usados: {avg([s.tutors_used_total for s in states]):.2f}")
@@ -2059,6 +2109,11 @@ if __name__ == "__main__":
                 "urdragon_free_permanents_total": s.urdragon_free_permanents_total,
                 "proxy_damage_total": s.proxy_damage_total,
                 "treasures_created_total": s.treasures_created_total,
+                "smothering_tithe_treasures": s.smothering_tithe_treasures,
+                "lathliss_pumps": s.lathliss_pumps,
+                "bladewing_pumps": s.bladewing_pumps,
+                "scourge_self_pumps": s.scourge_self_pumps,
+                "sarkhan_soul_aflame_copies": s.sarkhan_soul_aflame_copies,
                 "orb_mana_activations_total": s.orb_mana_activations_total,
                 "cards_drawn_extra": s.cards_drawn_extra,
                 "fetches_cracked_total": s.fetches_cracked_total,

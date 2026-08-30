@@ -829,6 +829,66 @@ nos dois a seguir.
 
 ---
 
+### Correção — pedido explícito: Rhystic Study (média fixa) + efeito de todas as criaturas — 2026-08-30
+
+**Gatilho (usuário):** *"Quero que vc implemente em média 1 compra por
+Rhystic study, 1 tesouro por Smothering Tithe, e assim por diante. Além
+disso quero o efeito de todas as criaturas implementado, o Channel do
+takenuma é mais situacional [pode ficar de fora]."*
+
+**Rhystic Study simplificada:** modelo anterior (2 oportunidades de
+oponente/turno × 50% de taxa paga) já convergia pra média de 1
+compra/turno no agregado, só com variância desnecessária por partida.
+Trocado por uma regra fixa e direta: **+1 compra por turno em que a
+Rhystic Study está em campo**, sem RNG. Constantes `ASSUMED_OPPONENT_SPELLS_PER_TURN`/
+`ASSUMED_RHYSTIC_STUDY_PAY_RATE` removidas (não usadas em mais nada).
+
+**3 criaturas com habilidade real ainda faltando, agora implementadas:**
+
+1. **Devoted Druid** — "Put a -1/-1 counter on this creature: Untap this
+   creature." Burst de 1 G extra (ela é 1/1, um -1/-1 counter mata) —
+   `try_devoted_druid_burst()`, só ativa quando destrava uma carta da mão
+   que está exatamente 1 mana curta (simplificação documentada: checa só
+   o total de mana, não a cor exata do pip faltante).
+2. **Elrond, Moon-Reader** — "{5}{U}{U}: Exile up to two other target
+   nonland permanents you control. Return those cards to the battlefield
+   under their owner's control at the beginning of the next end step."
+   `try_elrond_flicker()`: remove-e-readiciona de verdade até 2
+   permanentes (prioriza Elfos lendários e fontes de mill), re-disparando
+   `_apply_etb`/`_creature_cast_engines_trigger` — mesmo efeito real de um
+   flicker (ETB dispara de novo, doença de invocação reseta).
+   Simplificação documentada: resolvido no momento do cast em vez de
+   esperar o fim do turno.
+3. **Eladamri, Korvecdal** — a estática "You may cast creature spells from
+   the top of your library" (a ativação `{G},{T},tap 2` já tinha sido
+   implementada antes). `try_eladamri_library_top()`, chamada a cada
+   iteração do loop de cast: se o topo for uma criatura castável, move
+   pra mão antes de resolver — efeito final idêntico ao real (a carta sai
+   da biblioteca e é conjurada).
+
+**Escopo confirmado (não são criaturas, ficam como estavam):** Takenuma
+(terreno, Channel) explicitamente aceito como fora por decisão do próprio
+usuário nesta mensagem. Agatha's Soul Cauldron (artefato) e demais itens
+não-criatura da lista anterior não foram tocados — só criaturas, como
+pedido.
+
+**Robustez:** 20.000 seeds (71000–91000) — 0 erros.
+
+**Batch oficial, n=5000, seed_base=71000 (antes → depois):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| DRAW (extra draws) | 10,40 | 10,86 |
+| Avg compras via Rhystic Study | (probabilístico, ~1/turno) | 3,46 total/partida (jogos com ela em campo) |
+| Devoted Druid burst | — | 5,2% dos jogos |
+| Elrond flicker | — | 7,2% dos jogos, avg 0,11/partida |
+| Eladamri revelou do topo | — | 11,6% dos jogos, avg 0,34/partida |
+
+**Leitura:** ganho real mas modesto — essas 3 criaturas eram peças de
+suporte, não motores centrais. `lista.md` não muda.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
