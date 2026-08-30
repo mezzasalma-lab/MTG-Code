@@ -469,6 +469,7 @@ class GameState:
     oversold_cemetery_returns: int = 0        # Oversold Cemetery: upkeep, 4+ criaturas na GY -> devolve 1 pra mao
     tyvar_jubilant_reanimations: int = 0      # Tyvar, Jubilant Brawler -2: mill 3, devolve criatura mv<=2 da GY pro campo
     agathas_cauldron_counters: int = 0        # Agatha's Soul Cauldron {T}: exila criatura da GY -> +1/+1 num alvo
+    thranduil_gy_ability_borrows: int = 0     # Thranduil comandante: "has all activated abilities of all Elf cards in your graveyard"
 
     def draw(self, n=1, source="draw"):
         got = 0
@@ -995,25 +996,49 @@ def activate_finishers(state: GameState, log: List[Dict]):
     creatures_in_play = sum(1 for c in state.battlefield if is_creature(c))
     if creatures_in_play == 0:
         return
-    for card in state.battlefield:
+
+    # Thranduil, the Elvenking: "Thranduil has all activated abilities of
+    # all Elf cards in your graveyard." Achado real 2026-08-30 (apontado
+    # pelo usuario - faltava por completo, so a ETB "elfo lendario entra"
+    # estava modelada). O corpo original NAO precisa estar vivo - Thranduil
+    # "empresta" a habilidade de qualquer Elfo no seu cemiterio, pagando o
+    # mesmo custo. Cobre as ativadas ja tagueadas (finisher_repeatable/
+    # finisher_drain) achando o CARTAO no cemiterio em vez do battlefield -
+    # ex.: Elvish Warmaster ("{5}{G}{G}: Elves you control get +2/+2 and
+    # gain deathtouch") vira utilizavel via Thranduil mesmo morto/descartado.
+    gy_borrow_sources = set()
+    if state.commander_in_play:
+        gy_borrow_sources = {c for c in state.graveyard if is_elf(c) and C(c).activation_cost > 0}
+
+    for card in list(state.battlefield) + list(gy_borrow_sources):
         cost = C(card).activation_cost
         if cost <= 0:
             continue
+        via_gy = card in gy_borrow_sources and card not in state.battlefield
         if has_tag(card, "finisher_repeatable") and remaining_mana(state) >= cost:
             state.mana_spent_this_turn += cost
             state.finishers_activated.append(card)
             if state.finisher_turn is None:
                 state.finisher_turn = state.turn
-            log.append({"trigger": "finisher_activated", "card": card, "turn": state.turn})
-            if is_creature(card):
-                _elrond_ability_activated(state, card, log)
+            if via_gy:
+                state.thranduil_gy_ability_borrows += 1
+            log.append({"trigger": "finisher_activated", "card": card, "turn": state.turn, "via_thranduil_gy": via_gy})
+            # Elrond ("whenever you activate an ability of a creature, draw a
+            # card"): a habilidade emprestada pertence a Thranduil (que E uma
+            # criatura em campo), nao ao cartao original no cemiterio - dispara
+            # igual, via_gy ou nao (CR 602.5b, habilidade concedida pertence a
+            # quem a ganhou).
+            _elrond_ability_activated(state, card, log)
         elif has_tag(card, "finisher_drain") and card == "Jarad, Golgari Lich Lord" and remaining_mana(state) >= cost:
             state.mana_spent_this_turn += cost
             state.finishers_activated.append(card)
             if state.finisher_turn is None:
                 state.finisher_turn = state.turn
+            if via_gy:
+                state.thranduil_gy_ability_borrows += 1
+            log.append({"trigger": "finisher_activated", "card": card, "turn": state.turn, "via_thranduil_gy": via_gy})
             _elrond_ability_activated(state, card, log)
-        elif card == "Lathril, Blade of the Elves":
+        elif card == "Lathril, Blade of the Elves" and not via_gy:
             elves_untapped_proxy = sum(1 for c in state.battlefield if is_elf(c))
             if elves_untapped_proxy >= 10:
                 state.finishers_activated.append(card)
@@ -1255,6 +1280,7 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "oversold_cemetery_returns": state.oversold_cemetery_returns,
         "tyvar_jubilant_reanimations": state.tyvar_jubilant_reanimations,
         "agathas_cauldron_counters": state.agathas_cauldron_counters,
+        "thranduil_gy_ability_borrows": state.thranduil_gy_ability_borrows,
     }
 
 def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=71000):
@@ -1349,6 +1375,8 @@ def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=710
     print(f"Tyvar, Jubilant Brawler (-2) reanimou criatura mv<=2 em {100*len(tyvar_gy_games)/n:.1f}% dos jogos, avg {avg('tyvar_jubilant_reanimations'):.2f} por partida")
     agatha_games = [r for r in results if r["agathas_cauldron_counters"] > 0]
     print(f"Agatha's Soul Cauldron exilou criatura da GY (+1/+1 em alvo) em {100*len(agatha_games)/n:.1f}% dos jogos, avg {avg('agathas_cauldron_counters'):.2f} exilios/partida")
+    thr_gy_games = [r for r in results if r["thranduil_gy_ability_borrows"] > 0]
+    print(f"Thranduil ativou habilidade emprestada de Elfo no cemiterio em {100*len(thr_gy_games)/n:.1f}% dos jogos, avg {avg('thranduil_gy_ability_borrows'):.2f} ativacoes/partida")
 
     recursion_vals = [r["oversold_cemetery_returns"] + r["tyvar_jubilant_reanimations"] for r in results]
     print()

@@ -632,6 +632,86 @@ o problema era mecânica não implementada, não ausência de cartas.
 
 ---
 
+### Correção grave — a habilidade estática do PRÓPRIO Thranduil nunca foi implementada — 2026-08-30
+
+**Gatilho (usuário):** *"Vc sabe que o Thranduil copia habilidades de
+elfos do cemitério, né? Preciso te lembrar do básico? Tem outro elfo que
+ativa com mana para dar boost em todos os elfos…"* — correção direta
+depois que a rodada anterior implementou Agatha's Soul Cauldron como se
+fosse "a carta que copia atividades do cemitério", sem checar o oráculo do
+próprio comandante primeiro.
+
+**Verificado contra o oráculo real (Scryfall):**
+
+```
+Thranduil, the Elvenking {2}{B}{G}{U}
+Legendary Creature — Elf Noble
+Thranduil has all activated abilities of all Elf cards in your graveyard.
+Whenever another legendary Elf you control enters, draw two cards, then discard a card.
+```
+
+**Erro grave confirmado:** `grep` por "all activated abilities" no
+simulador só batia no texto da Agatha's Soul Cauldron — a linha 1 do
+próprio oráculo do comandante, a metade que dá NOME ao arquétipo do deck,
+**nunca tinha sido implementada**. Só a 2ª linha (gatilho "elfo lendario
+entra -> compra 2, descarta 1") estava modelada. Isso não é uma carta
+qualquer esquecida — é a habilidade estática definidora da própria
+comandante, maior gap desta sessão inteira nos 3 decks.
+
+**O "outro elfo que ativa com mana pra dar boost em todos os elfos"
+apontado pelo usuário:** conferido — `Elvish Warmaster`: `{5}{G}{G}: Elves
+you control get +2/+2 and gain deathtouch until end of turn.` Já estava
+corretamente cadastrada como `finisher_repeatable`, custo 7 — mas só
+disparava enquanto o próprio Elvish Warmaster estivesse VIVO em campo. Com
+a estática do Thranduil implementada, essa mesma habilidade passa a ser
+utilizável mesmo com o Elvish Warmaster morto/descartado no cemitério —
+exatamente a conexão que o usuário estava apontando.
+
+**Corrigido:** `activate_finishers()` agora considera duas fontes de
+ativação, não só o battlefield: quando o comandante está em campo, Elfos
+no cemitério com `activation_cost > 0` entram na mesma lista de
+candidatos (`gy_borrow_sources`), usando a MESMA lógica de custo/tag já
+existente (`finisher_repeatable`, `finisher_drain` do Jarad) — cobre
+Elvish Warmaster, Ezuri Renegade Leader, Tyvar the Pummeler e Jarad, Golgari
+Lich Lord como fontes de cemitério. O gatilho de Elrond ("whenever you
+activate an ability of a creature, draw a card") continua disparando
+mesmo nesses casos — regra real (CR 602.5b): a habilidade emprestada
+pertence a quem a ganhou (Thranduil, uma criatura em campo), não ao cartão
+original no cemitério.
+
+**Escopo desta correção (decisão explícita):** só as habilidades já
+tagueadas `finisher_repeatable`/`finisher_drain` foram estendidas pro
+cemitério — Imperious Perfect (token maker), Selvala/Elrond (suas próprias
+ativadas de mana/flicker) e Immaculate Magistrate (contador) continuam
+modeladas só via battlefield, cada uma com sua própria função dedicada;
+estendê-las também é trabalho real mas separado, não incluído agora.
+Lathril (gatilho de dano de combate, não ativada — `activation_cost=0`)
+corretamente nunca entra em `gy_borrow_sources`.
+
+**Robustez:** 20.000 seeds (71000–91000), timeout padrão — 0 erros.
+
+**Batch oficial, n=5000, seed_base=71000 (antes → depois desta correção):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg finishers ativados | 0,89 | **1,41** (+58%) |
+| % de jogos com finisher até T8 | 40,4% | **54,3%** (+13,9pp) |
+| Thranduil ativou hab. emprestada do cemitério | — | 24,3% dos jogos, avg 0,52/partida |
+| Avg compras via Elrond | 0,11 | 0,18 |
+| Avg battlefield final | 19,12 | 19,13 (~igual) |
+
+**Leitura:** o usuário estava certo e o gap era sério — o relatório da
+rodada anterior ("58% dos jogos sem finisher, recomendo Craterhoof-style
+overrun") estava medindo um Thranduil incompleto, sem a própria habilidade
+que dá nome ao deck. Com ela implementada, FINISHER/LETHALITY sobe de
+40,4% pra **54,3%** — mudança muito maior que qualquer coisa que uma troca
+de carta isolada renderia. A recomendação anterior de "adicionar um
+overrun tipo Craterhoof" fica bem menos urgente: o deck já fecha o jogo
+consideravelmente mais que o medido antes. `lista.md` não muda — isso foi
+100% correção de simulador, nenhuma carta trocada.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
