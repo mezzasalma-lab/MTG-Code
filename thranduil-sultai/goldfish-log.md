@@ -532,6 +532,106 @@ mudou nesta rodada, só mineração de dados de uma amostra nova.
 
 ---
 
+### Correção — Tyvar, Jubilant Brawler nunca auditado (categoria 12) + Agatha's Soul Cauldron sem efeito real — 2026-08-29
+
+**Gatilho (usuário):** apontou que os finishers/peças de valor do Thranduil
+incluem "Tyvar the Pummeler e outros elfos como Jarad, que ele pode copiar
+as atividades do cemitério" — questionando o diagnóstico anterior de que
+RECURSION é fraca "porque só o Oversold Cemetery existe".
+
+**Verificação contra o oráculo real (Scryfall), carta por carta:**
+
+- **Tyvar, the Pummeler** ({1}{G}{G}): confirmado — `{3}{G}{G}: Creatures
+  you control get +X/+X until end of turn, where X is the greatest power
+  among creatures you control.` É um overrun repetível, **sem nenhuma
+  interação com cemitério**. Já estava corretamente modelada como
+  `finisher_repeatable`, custo 5 — nenhuma mudança necessária aqui.
+- **Jarad, Golgari Lich Lord**: tem `Sacrifice a Swamp and a Forest: Return
+  this card from your graveyard to your hand` — recursão real, mas
+  **auditada e confirmada estruturalmente inatingível neste simulador**:
+  Jarad só entra no cemitério se for sacrificado ou morto, e nenhuma fonte
+  do deck sacrifica/mata o próprio Jarad (seu próprio sac-outlet exige
+  "outra" criatura; sem oponente real, nada mais remove criaturas). Fica
+  documentado como N/A por construção do goldfish solo, não implementado
+  (mesma classe de limitação já registrada pra habilidades
+  `opponent_dependent`).
+- **Agatha's Soul Cauldron** ({2}, artefato): **era exatamente o achado
+  real** — `{T}: Exile target card from a graveyard. When a creature card
+  is exiled this way, put a +1/+1 counter on target creature you control.
+  Creatures you control with +1/+1 counters on them have all activated
+  abilities of all creature cards exiled with this.` Cadastrada desde a
+  Correção pós-Beorn só com tag `gy_hate`, **zero efeito implementado**.
+  É literalmente a carta que "copia as atividades do cemitério" que o
+  usuário descreveu.
+- **Tyvar, Jubilant Brawler** (planeswalker, {1}{B}{G}, lealdade 3):
+  achado à parte, mas do mesmo carão — **nunca passou pela auditoria de
+  categoria 12 (regra permanente pós-Prismatic Bridge)** que o Beorn já
+  tinha recebido. Pior: o `mill=3` cadastrado nele estava sendo disparado
+  como se fosse ETB automático (mesmo pipeline genérico de Awaken the
+  Honored Dead/Buried Alive), quando na real é o custo da habilidade **-2**
+  (`Mill three cards, then you may return a creature card with mana value
+  2 or less from your graveyard to the battlefield`) — a metade boa
+  (reanimar) nunca existia.
+
+**Corrigido (3 mudanças):**
+
+1. `Agatha's Soul Cauldron` — nova função `try_agathas_soul_cauldron()`,
+   chamada toda main phase: se houver criatura no seu cemitério, exila a
+   de maior custo e põe +1/+1 num alvo (`agathas_cauldron_counters`). O
+   static de "criaturas com contador ganham as habilidades ativadas das
+   criaturas exiladas" fica documentado como não modelado numericamente
+   (efeito qualitativo demais pro simulador — mesma classe de
+   simplificação já usada em Smuggler's Surprise/Scalelord Reckoner no
+   Beorn).
+2. `Tyvar, Jubilant Brawler` — `mill=3` genérico removido; nova lógica
+   dedicada em `_apply_etb`: sempre ativa o -2 no turno em que resolve
+   (premissa: reanimar um corpo vale mais que guardar lealdade num
+   goldfish solo sem ataques de oponente no PW), mila 3 e devolve a melhor
+   criatura mv≤2 do cemitério pro campo (`tyvar_jubilant_reanimations`). O
+   +1 (untap) fica documentado como não modelado (linha de menor valor,
+   descartada pela mesma premissa greedy já usada em outros
+   planeswalkers/ativadas do repositório).
+3. `_dork_ready()` — estática do Tyvar Jubilant Brawler ("you may activate
+   abilities of creatures you control as though they had haste") agora
+   bypassa a doença de invocação pra mana dorks enquanto ele estiver em
+   campo — achado novo, nunca modelado antes.
+
+**Interação real entre as 3 peças:** Agatha's Soul Cauldron e Tyvar
+Jubilant Brawler competem pelo MESMO recurso (criaturas no cemitério) —
+Agatha exila permanentemente o que o Tyvar poderia reanimar. Isso é
+tensão real do oráculo, não bug — ambas implementadas fielmente ao texto,
+a IA gulosa deste simulador só não arbitra qual delas "vale mais" entre
+turnos (prioriza o que aparece primeiro na ordem do `battlefield`).
+
+**Robustez:** 20.000 seeds (71000-91000), timeout padrão — 0 erros.
+
+**Batch oficial, n=5000, seed_base=71000 (antes → depois):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| RECURSION | 0,08 | **0,15** (quase dobrou) |
+| Avg finishers ativados | 0,85 | 0,89 |
+| % finisher até T8 | 38,9% | 40,4% |
+| Avg battlefield final | 18,92 | 19,12 |
+| Tyvar Jubilant reanimou | — | 8,6% dos jogos, avg 0,09 |
+| Agatha's Cauldron exilou | — | 18,4% dos jogos, avg 0,40 exílios |
+
+**Leitura:** o usuário tinha razão em questionar o diagnóstico anterior —
+RECURSION não era fraca só porque a lista carecia de recursão real, era
+fraca porque **2 peças de recursão/valor real da própria lista nunca
+tinham sido implementadas** (Agatha's Soul Cauldron 100% ausente, Tyvar
+Jubilant Brawler só com a metade errada modelada). Corrigido, RECURSION
+quase dobra (0,08→0,15) e Agatha's Soul Cauldron vira um engine ativo em
+quase 1 a cada 5 jogos — ainda modesto frente ao Beorn (que tem Eternal
+Witness sem pré-requisito), mas real agora, não mais uma tag morta. A
+recomendação anterior de "trocar Oversold Cemetery por Eternal Witness"
+seguia válida por si (Oversold ainda é a mais fraca das 3 fontes), mas a
+lista já tinha mais recursão latente do que o relatório anterior mostrou —
+o problema era mecânica não implementada, não ausência de cartas.
+`lista.md` não muda.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

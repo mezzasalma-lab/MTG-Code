@@ -288,7 +288,7 @@ add("Tyvar, the Pummeler", 3, {"Creature"}, tags={"elf", "finisher_repeatable", 
 add("Ezuri, Renegade Leader", 3, {"Creature"}, tags={"elf", "finisher_repeatable"}, colors={"G"}, legendary_elf=True, activation_cost=5)
 add("Jarad, Golgari Lich Lord", 4, {"Creature"}, tags={"elf", "finisher_drain", "sac_outlet", "gy_scaling"}, colors={"B", "G"}, legendary_elf=True, activation_cost=3)
 add("Tyvar the Bellicose", 4, {"Creature"}, tags={"elf", "anthem_combat", "counter_engine"}, colors={"B", "G"}, legendary_elf=True)
-add("Tyvar, Jubilant Brawler", 3, {"Planeswalker"}, tags={"gy_fill"}, colors={"B", "G"}, mill=3)
+add("Tyvar, Jubilant Brawler", 3, {"Planeswalker"}, tags={"gy_fill", "recursion"}, colors={"B", "G"})
 add("Kindred Summons", 7, {"Instant"}, tags={"finisher_burst", "reinforcement"}, colors={"G"})
 add("Bloodline Bidding", 8, {"Sorcery"}, tags={"finisher_burst", "reanimation_mass", "gy_payoff"}, colors={"B"})
 
@@ -467,6 +467,8 @@ class GameState:
     ruthless_winnower_self_sacs: int = 0      # sacrifica seu proprio nao-Elfo no upkeep - dobrar isso e RUIM pra voce
     tyvar_bellicose_triggers: int = 0         # deathtouch em combate - sem consequencia numerica (sem bloqueadores modelados)
     oversold_cemetery_returns: int = 0        # Oversold Cemetery: upkeep, 4+ criaturas na GY -> devolve 1 pra mao
+    tyvar_jubilant_reanimations: int = 0      # Tyvar, Jubilant Brawler -2: mill 3, devolve criatura mv<=2 da GY pro campo
+    agathas_cauldron_counters: int = 0        # Agatha's Soul Cauldron {T}: exila criatura da GY -> +1/+1 num alvo
 
     def draw(self, n=1, source="draw"):
         got = 0
@@ -521,6 +523,13 @@ class GameState:
 # =========================================================
 
 def _dork_ready(state: GameState, card: str) -> bool:
+    # Tyvar, Jubilant Brawler: "You may activate abilities of creatures you
+    # control as though those creatures had haste." Estatica, sem custo -
+    # bypassa a doenca de invocacao pra qualquer habilidade ativada de
+    # criatura enquanto ele estiver em campo (aqui aplicada ao caso mais
+    # quantificavel: mana dorks). Achado real 2026-08-29, nunca modelado.
+    if state.has("Tyvar, Jubilant Brawler"):
+        return True
     return state.creature_cast_turn.get(card, -1) < state.turn
 
 def total_mana(state: GameState) -> int:
@@ -719,6 +728,7 @@ def main_phase(state: GameState, log: List[Dict]):
     # Ativa finishers repetiveis se sobrar mana e houver board relevante
     activate_finishers(state, log)
     try_imperious_perfect(state, log)
+    try_agathas_soul_cauldron(state, log)
 
 def _creature_cast_engines_trigger(state: GameState, card: str, log: List[Dict]):
     # Beast Whisperer / Champions of the Perfect: "whenever you cast a creature spell, draw a card".
@@ -874,6 +884,26 @@ def _apply_etb(state: GameState, card: str, log: List[Dict]):
         state.edric_last_turn_alive = state.turn + lifespan - 1
         log.append({"action": "edric_enters", "turn": state.turn, "assumed_lifespan_turns": lifespan})
 
+    # Tyvar, Jubilant Brawler: planeswalker, entra com 3 lealdade. Premissa
+    # (mesma classe de "sempre usa a linha de maior valor" ja aplicada a
+    # outros planeswalkers/ativadas neste repositorio): ativa o -2 no
+    # proprio turno que resolve (3-2=1, legal) em vez do +1 (so untap),
+    # porque reanimar um corpo real vale mais que guardar lealdade num
+    # goldfish solo sem ataques de oponente pra remover o PW. "Mill three
+    # cards, then you may return a creature card with mana value 2 or less
+    # from your graveyard to the battlefield."
+    if card == "Tyvar, Jubilant Brawler":
+        state.mill(3)
+        candidates = [c for c in state.graveyard if is_creature(c) and C(c).mv <= 2]
+        if candidates:
+            candidates.sort(key=lambda c: -C(c).mv)  # devolve a mais cara dentro do limite
+            best = candidates[0]
+            state.graveyard.remove(best)
+            state.battlefield.append(best)
+            state.creature_cast_turn[best] = state.turn
+            state.tyvar_jubilant_reanimations += 1
+            log.append({"trigger": "tyvar_jubilant_reanimate", "returned": best, "turn": state.turn})
+
     # GY fill (mill). Se a fonte e criatura Elfo (Lluwen: "When Lluwen enters,
     # mill four cards"), o Roaming Throne dobra o gatilho (mill de novo). Nao
     # dobra fontes nao-criatura como Awaken the Honored Dead (Saga) ou Buried
@@ -936,6 +966,29 @@ def try_imperious_perfect(state: GameState, log: List[Dict]):
         state.battlefield.append("Elf Warrior Token")
         state.imperious_perfect_tokens += 1
     log.append({"trigger": "imperious_perfect_token", "times": times_rt, "turn": state.turn})
+
+
+def try_agathas_soul_cauldron(state: GameState, log: List[Dict]):
+    """Agatha's Soul Cauldron, {T}: "Exile target card from a graveyard.
+    When a creature card is exiled this way, put a +1/+1 counter on target
+    creature you control." Achado real 2026-08-29: cadastrada so com tag
+    "gy_hate", zero efeito implementado. Sua propria GY e o unico alvo real
+    no goldfish solo (sem oponente). O static "creatures you control with
+    +1/+1 counters have all activated abilities of all creature cards
+    exiled with this" NAO e modelado numericamente - efeito qualitativo
+    demais pra esse simulador (mesma classe de simplificacao ja documentada
+    em Smuggler's Surprise/Scalelord Reckoner); so o contador concreto e
+    contabilizado."""
+    if "Agatha's Soul Cauldron" not in state.battlefield:
+        return
+    gy_creatures = [c for c in state.graveyard if is_creature(c)]
+    if not gy_creatures:
+        return
+    gy_creatures.sort(key=lambda c: -C(c).mv)
+    best = gy_creatures[0]
+    state.graveyard.remove(best)
+    state.agathas_cauldron_counters += 1
+    log.append({"trigger": "agathas_cauldron_exile", "exiled": best, "turn": state.turn})
 
 
 def activate_finishers(state: GameState, log: List[Dict]):
@@ -1200,6 +1253,8 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "ruthless_winnower_self_sacs": state.ruthless_winnower_self_sacs,
         "tyvar_bellicose_triggers": state.tyvar_bellicose_triggers,
         "oversold_cemetery_returns": state.oversold_cemetery_returns,
+        "tyvar_jubilant_reanimations": state.tyvar_jubilant_reanimations,
+        "agathas_cauldron_counters": state.agathas_cauldron_counters,
     }
 
 def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=71000):
@@ -1290,14 +1345,18 @@ def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=710
     print(f"Avg gatilhos de Tyvar the Bellicose (deathtouch em combate - sem efeito numerico modelado): {avg('tyvar_bellicose_triggers'):.2f}")
     oc_games = [r for r in results if r["oversold_cemetery_returns"] > 0]
     print(f"Oversold Cemetery devolveu criatura pro cemiterio->mao em {100*len(oc_games)/n:.1f}% dos jogos, avg {avg('oversold_cemetery_returns'):.2f} por partida")
+    tyvar_gy_games = [r for r in results if r["tyvar_jubilant_reanimations"] > 0]
+    print(f"Tyvar, Jubilant Brawler (-2) reanimou criatura mv<=2 em {100*len(tyvar_gy_games)/n:.1f}% dos jogos, avg {avg('tyvar_jubilant_reanimations'):.2f} por partida")
+    agatha_games = [r for r in results if r["agathas_cauldron_counters"] > 0]
+    print(f"Agatha's Soul Cauldron exilou criatura da GY (+1/+1 em alvo) em {100*len(agatha_games)/n:.1f}% dos jogos, avg {avg('agathas_cauldron_counters'):.2f} exilios/partida")
 
-    recursion_vals = [r["oversold_cemetery_returns"] for r in results]
+    recursion_vals = [r["oversold_cemetery_returns"] + r["tyvar_jubilant_reanimations"] for r in results]
     print()
     print("--- Metricas basicas (checklist obrigatoria) ---")
     print(f"RAMP: avg pecas de rampa em campo: {avg('ramp_pieces_in_play'):.2f}")
     print(f"DRAW: avg compras extras totais (soma de todos os motores): {avg('extra_draws'):.2f}")
     print(f"INTERACTION: avg remocao conjurada: {avg('removal_cast'):.2f}")
-    print(f"RECURSION: avg cartas devolvidas do cemiterio pra mao (Oversold Cemetery): {statistics.mean(recursion_vals):.2f}")
+    print(f"RECURSION: avg cartas recuperadas do cemiterio (Oversold Cemetery -> mao + Tyvar Jubilant Brawler -> campo): {statistics.mean(recursion_vals):.2f}")
     print(f"FINISHER/LETHALITY: avg finishers ativados {avg('finishers_activated'):.2f}, "
           f"{100*len(fin_turns)/n:.1f}% dos jogos com finisher ate T8"
           + (f", turno medio {statistics.mean(fin_turns):.2f}" if fin_turns else "") + ".")
