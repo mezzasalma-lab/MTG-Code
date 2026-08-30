@@ -529,74 +529,76 @@
   "type_line": "Conspiracy"
  },
  "Agadeem's Awakening // Agadeem, the Undercrypt": {
-  "card_faces": [
-   {
-    "mana_cost": "{X}{B}{B}{B}",
-    "name": "Agadeem's Awakening",
-    "oracle_text": "Return from your graveyard to the battlefield any number of target creature cards that each have a different mana value X or less.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Sorcery"
-   },
-   {
-    "mana_cost": "",
-    "name": "Agadeem, the Undercrypt",
-    "oracle_text": "As this land enters, you may pay 3 life. If you don't, it enters tapped.\n{T}: Add {B}.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Land"
-   }
-  ],
   "cmc": 3.0,
   "collector_number": "90",
   "color_identity": [
    "B"
   ],
-  "colors": null,
+  "colors": [
+   "B"
+  ],
   "keywords": [],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "not_legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "not_legal",
-   "standardbrawl": "not_legal",
+   "future": "not_legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "{X}{B}{B}{B}",
   "name": "Agadeem's Awakening // Agadeem, the Undercrypt",
-  "oracle_text": null,
+  "oracle_text": "Agadeem's Awakening ({X}{B}{B}{B}): Return from your graveyard to the battlefield any number of target creature cards that each have a different mana value X or less.\n // \nAgadeem, the Undercrypt (): As this land enters, you may pay 3 life. If you don't, it enters tapped.\n{T}: Add {B}.",
   "power": null,
   "prices": {
-   "eur": "24.29",
-   "eur_foil": "25.04",
-   "tix": "1.65",
-   "usd": "28.50",
+   "usd": "27.49",
+   "usd_foil": "31.18",
    "usd_etched": null,
-   "usd_foil": "31.58"
+   "eur": "24.48",
+   "eur_foil": "24.96",
+   "tix": "1.75"
   },
   "released_at": "2020-09-25",
   "scryfall_uri": "https://scryfall.com/card/znr/90/agadeems-awakening-agadeem-the-undercrypt?utm_source=api",
   "set": "znr",
   "toughness": null,
-  "type_line": "Sorcery // Land"
+  "type_line": "Sorcery // Land",
+  "card_faces": [
+   {
+    "name": "Agadeem's Awakening",
+    "mana_cost": "{X}{B}{B}{B}",
+    "type_line": "Sorcery",
+    "oracle_text": "Return from your graveyard to the battlefield any number of target creature cards that each have a different mana value X or less.",
+    "power": null,
+    "toughness": null
+   },
+   {
+    "name": "Agadeem, the Undercrypt",
+    "mana_cost": "",
+    "type_line": "Land",
+    "oracle_text": "As this land enters, you may pay 3 life. If you don't, it enters tapped.\n{T}: Add {B}.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Agatha's Soul Cauldron": {
   "cmc": 2.0,
@@ -3830,74 +3832,76 @@
   "type_line": "Land — Swamp Mountain"
  },
  "Bala Ged Recovery // Bala Ged Sanctuary": {
-  "card_faces": [
-   {
-    "mana_cost": "{2}{G}",
-    "name": "Bala Ged Recovery",
-    "oracle_text": "Return target card from your graveyard to your hand.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Sorcery"
-   },
-   {
-    "mana_cost": "",
-    "name": "Bala Ged Sanctuary",
-    "oracle_text": "This land enters tapped.\n{T}: Add {G}.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Land"
-   }
-  ],
   "cmc": 3.0,
   "collector_number": "180",
   "color_identity": [
    "G"
   ],
-  "colors": null,
+  "colors": [
+   "G"
+  ],
   "keywords": [],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "not_legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "not_legal",
-   "standardbrawl": "not_legal",
+   "future": "not_legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "{2}{G}",
   "name": "Bala Ged Recovery // Bala Ged Sanctuary",
-  "oracle_text": null,
+  "oracle_text": "Bala Ged Recovery ({2}{G}): Return target card from your graveyard to your hand.\n // \nBala Ged Sanctuary (): This land enters tapped.\n{T}: Add {G}.",
   "power": null,
   "prices": {
-   "eur": "5.14",
-   "eur_foil": "6.54",
-   "tix": "0.03",
-   "usd": "6.91",
+   "usd": "7.36",
+   "usd_foil": "8.13",
    "usd_etched": null,
-   "usd_foil": "8.44"
+   "eur": "5.07",
+   "eur_foil": "6.72",
+   "tix": "0.03"
   },
   "released_at": "2020-09-25",
   "scryfall_uri": "https://scryfall.com/card/znr/180/bala-ged-recovery-bala-ged-sanctuary?utm_source=api",
   "set": "znr",
   "toughness": null,
-  "type_line": "Sorcery // Land"
+  "type_line": "Sorcery // Land",
+  "card_faces": [
+   {
+    "name": "Bala Ged Recovery",
+    "mana_cost": "{2}{G}",
+    "type_line": "Sorcery",
+    "oracle_text": "Return target card from your graveyard to your hand.",
+    "power": null,
+    "toughness": null
+   },
+   {
+    "name": "Bala Ged Sanctuary",
+    "mana_cost": "",
+    "type_line": "Land",
+    "oracle_text": "This land enters tapped.\n{T}: Add {G}.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Balance": {
   "cmc": 2.0,
@@ -4611,24 +4615,6 @@
   "type_line": "Enchantment"
  },
  "Beorn, Reluctant Host // Till and Tend": {
-  "card_faces": [
-   {
-    "mana_cost": "{4}{G}",
-    "name": "Beorn, Reluctant Host",
-    "oracle_text": "Trample",
-    "power": "5",
-    "toughness": "5",
-    "type_line": "Legendary Creature — Human Bear Shapeshifter"
-   },
-   {
-    "mana_cost": "{1}{G}",
-    "name": "Till and Tend",
-    "oracle_text": "You may play an additional land this turn. (Then exile this card. You may cast the creature later from exile.)",
-    "power": null,
-    "toughness": null,
-    "type_line": "Sorcery — Adventure"
-   }
-  ],
   "cmc": 5.0,
   "collector_number": "118",
   "color_identity": [
@@ -4641,48 +4627,66 @@
    "Trample"
   ],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "legal",
-   "paupercommander": "legal",
-   "penny": "not_legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "legal",
-   "standardbrawl": "legal",
+   "future": "not_legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "not_legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "legal",
+   "vintage": "legal",
+   "penny": "legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "not_legal"
   },
   "loyalty": null,
   "mana_cost": "{4}{G} // {1}{G}",
   "name": "Beorn, Reluctant Host // Till and Tend",
-  "oracle_text": null,
+  "oracle_text": "Beorn, Reluctant Host ({4}{G}): Trample\n // \nTill and Tend ({1}{G}): You may play an additional land this turn. (Then exile this card. You may cast the creature later from exile.)",
   "power": "5",
   "prices": {
-   "eur": "0.02",
-   "eur_foil": "0.14",
-   "tix": "0.01",
-   "usd": "0.14",
+   "usd": "0.18",
+   "usd_foil": "0.27",
    "usd_etched": null,
-   "usd_foil": "0.22"
+   "eur": "0.02",
+   "eur_foil": "0.09",
+   "tix": "0.01"
   },
   "released_at": "2026-08-14",
   "scryfall_uri": "https://scryfall.com/card/hob/118/beorn-reluctant-host-till-and-tend?utm_source=api",
   "set": "hob",
   "toughness": "5",
-  "type_line": "Legendary Creature — Human Bear Shapeshifter // Sorcery — Adventure"
+  "type_line": "Legendary Creature — Human Bear Shapeshifter // Sorcery — Adventure",
+  "card_faces": [
+   {
+    "name": "Beorn, Reluctant Host",
+    "mana_cost": "{4}{G}",
+    "type_line": "Legendary Creature — Human Bear Shapeshifter",
+    "oracle_text": "Trample",
+    "power": "5",
+    "toughness": "5"
+   },
+   {
+    "name": "Till and Tend",
+    "mana_cost": "{1}{G}",
+    "type_line": "Sorcery — Adventure",
+    "oracle_text": "You may play an additional land this turn. (Then exile this card. You may cast the creature later from exile.)",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Beseech the Mirror": {
   "cmc": 4.0,
@@ -5560,24 +5564,6 @@
   "type_line": "Land"
  },
  "Blazing Firesinger // Seething Song": {
-  "card_faces": [
-   {
-    "mana_cost": "{2}{R}",
-    "name": "Blazing Firesinger",
-    "oracle_text": "This creature enters prepared. (While it's prepared, you may cast a copy of its spell. Doing so unprepares it.)",
-    "power": "2",
-    "toughness": "3",
-    "type_line": "Creature — Dwarf Bard"
-   },
-   {
-    "mana_cost": "{2}{R}",
-    "name": "Seething Song",
-    "oracle_text": "Add {R}{R}{R}{R}{R}.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Instant"
-   }
-  ],
   "cmc": 3.0,
   "collector_number": "109",
   "color_identity": [
@@ -5590,48 +5576,66 @@
    "Prepared"
   ],
   "legalities": {
-   "alchemy": "legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "legal",
-   "standardbrawl": "legal",
+   "future": "legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "legal"
   },
   "loyalty": null,
   "mana_cost": "{2}{R} // {2}{R}",
   "name": "Blazing Firesinger // Seething Song",
-  "oracle_text": null,
+  "oracle_text": "Blazing Firesinger ({2}{R}): This creature enters prepared. (While it's prepared, you may cast a copy of its spell. Doing so unprepares it.)\n // \nSeething Song ({2}{R}): Add {R}{R}{R}{R}{R}.",
   "power": "2",
   "prices": {
-   "eur": "0.20",
-   "eur_foil": "0.29",
-   "tix": "0.03",
-   "usd": "0.29",
+   "usd": "0.33",
+   "usd_foil": "0.39",
    "usd_etched": null,
-   "usd_foil": "0.35"
+   "eur": "0.22",
+   "eur_foil": "0.29",
+   "tix": "0.03"
   },
   "released_at": "2026-04-24",
   "scryfall_uri": "https://scryfall.com/card/sos/109/blazing-firesinger-seething-song?utm_source=api",
   "set": "sos",
   "toughness": "3",
-  "type_line": "Creature — Dwarf Bard // Instant"
+  "type_line": "Creature — Dwarf Bard // Instant",
+  "card_faces": [
+   {
+    "name": "Blazing Firesinger",
+    "mana_cost": "{2}{R}",
+    "type_line": "Creature — Dwarf Bard",
+    "oracle_text": "This creature enters prepared. (While it's prepared, you may cast a copy of its spell. Doing so unprepares it.)",
+    "power": "2",
+    "toughness": "3"
+   },
+   {
+    "name": "Seething Song",
+    "mana_cost": "{2}{R}",
+    "type_line": "Instant",
+    "oracle_text": "Add {R}{R}{R}{R}{R}.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Blood Artist": {
   "cmc": 2.0,
@@ -6876,96 +6880,79 @@
   "type_line": "Enchantment"
  },
  "Branchloft Pathway // Boulderloft Pathway": {
-  "card_faces": [
-   {
-    "mana_cost": "",
-    "name": "Branchloft Pathway",
-    "oracle_text": "{T}: Add {G}.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Land"
-   },
-   {
-    "mana_cost": "",
-    "name": "Boulderloft Pathway",
-    "oracle_text": "{T}: Add {W}.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Land"
-   }
-  ],
   "cmc": 0.0,
   "collector_number": "258",
   "color_identity": [
    "G",
    "W"
   ],
-  "colors": null,
+  "colors": [],
   "keywords": [],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "not_legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "not_legal",
-   "standardbrawl": "not_legal",
+   "future": "not_legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "",
   "name": "Branchloft Pathway // Boulderloft Pathway",
-  "oracle_text": null,
+  "oracle_text": "Branchloft Pathway (): {T}: Add {G}.\n // \nBoulderloft Pathway (): {T}: Add {W}.",
   "power": null,
   "prices": {
-   "eur": "3.31",
-   "eur_foil": "3.29",
-   "tix": "0.03",
-   "usd": "3.08",
+   "usd": "3.52",
+   "usd_foil": "2.90",
    "usd_etched": null,
-   "usd_foil": "2.88"
+   "eur": "3.11",
+   "eur_foil": "3.20",
+   "tix": "0.02"
   },
   "released_at": "2020-09-25",
   "scryfall_uri": "https://scryfall.com/card/znr/258/branchloft-pathway-boulderloft-pathway?utm_source=api",
   "set": "znr",
   "toughness": null,
-  "type_line": "Land // Land"
- },
- "Brazen Borrower // Petty Theft": {
+  "type_line": "Land // Land",
   "card_faces": [
    {
-    "mana_cost": "{1}{U}{U}",
-    "name": "Brazen Borrower",
-    "oracle_text": "Flash\nFlying\nThis creature can block only creatures with flying.",
-    "power": "3",
-    "toughness": "1",
-    "type_line": "Creature — Faerie Rogue"
+    "name": "Branchloft Pathway",
+    "mana_cost": "",
+    "type_line": "Land",
+    "oracle_text": "{T}: Add {G}.",
+    "power": null,
+    "toughness": null
    },
    {
-    "mana_cost": "{1}{U}",
-    "name": "Petty Theft",
-    "oracle_text": "Return target nonland permanent an opponent controls to its owner's hand.",
+    "name": "Boulderloft Pathway",
+    "mana_cost": "",
+    "type_line": "Land",
+    "oracle_text": "{T}: Add {W}.",
     "power": null,
-    "toughness": null,
-    "type_line": "Instant — Adventure"
+    "toughness": null
    }
-  ],
+  ]
+ },
+ "Brazen Borrower // Petty Theft": {
   "cmc": 3.0,
+  "collector_number": "190",
   "color_identity": [
    "U"
   ],
@@ -6977,48 +6964,66 @@
    "Flash"
   ],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "not_legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "not_legal",
-   "standardbrawl": "not_legal",
+   "future": "not_legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "legal"
   },
   "loyalty": null,
   "mana_cost": "{1}{U}{U} // {1}{U}",
   "name": "Brazen Borrower // Petty Theft",
-  "oracle_text": null,
+  "oracle_text": "Brazen Borrower ({1}{U}{U}): Flash\nFlying\nThis creature can block only creatures with flying.\n // \nPetty Theft ({1}{U}): Return target nonland permanent an opponent controls to its owner's hand.",
   "power": "3",
   "prices": {
-   "eur": "1.07",
-   "eur_foil": null,
-   "tix": "0.04",
-   "usd": "0.46",
+   "usd": "0.41",
+   "usd_foil": null,
    "usd_etched": null,
-   "usd_foil": null
+   "eur": "1.05",
+   "eur_foil": null,
+   "tix": "0.04"
   },
   "released_at": "2026-04-24",
   "scryfall_uri": "https://scryfall.com/card/soc/190/brazen-borrower-petty-theft?utm_source=api",
   "set": "soc",
   "toughness": "1",
-  "type_line": "Creature — Faerie Rogue // Instant — Adventure"
+  "type_line": "Creature — Faerie Rogue // Instant — Adventure",
+  "card_faces": [
+   {
+    "name": "Brazen Borrower",
+    "mana_cost": "{1}{U}{U}",
+    "type_line": "Creature — Faerie Rogue",
+    "oracle_text": "Flash\nFlying\nThis creature can block only creatures with flying.",
+    "power": "3",
+    "toughness": "1"
+   },
+   {
+    "name": "Petty Theft",
+    "mana_cost": "{1}{U}",
+    "type_line": "Instant — Adventure",
+    "oracle_text": "Return target nonland permanent an opponent controls to its owner's hand.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Breeding Pool": {
   "cmc": 0.0,
@@ -7074,147 +7079,149 @@
   "type_line": "Land — Forest Island"
  },
  "Bridgeworks Battle // Tanglespan Bridgeworks": {
-  "card_faces": [
-   {
-    "mana_cost": "{2}{G}",
-    "name": "Bridgeworks Battle",
-    "oracle_text": "Target creature you control gets +2/+2 until end of turn. It fights up to one target creature you don't control. (Each deals damage equal to its power to the other.)",
-    "power": null,
-    "toughness": null,
-    "type_line": "Sorcery"
-   },
-   {
-    "mana_cost": "",
-    "name": "Tanglespan Bridgeworks",
-    "oracle_text": "As this land enters, you may pay 3 life. If you don't, it enters tapped.\n{T}: Add {G}.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Land"
-   }
-  ],
   "cmc": 3.0,
   "collector_number": "249",
   "color_identity": [
    "G"
   ],
-  "colors": null,
+  "colors": [
+   "G"
+  ],
   "keywords": [
    "Fight"
   ],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "not_legal",
-   "pioneer": "not_legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "not_legal",
-   "standardbrawl": "not_legal",
+   "future": "not_legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "not_legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "{2}{G}",
   "name": "Bridgeworks Battle // Tanglespan Bridgeworks",
-  "oracle_text": null,
+  "oracle_text": "Bridgeworks Battle ({2}{G}): Target creature you control gets +2/+2 until end of turn. It fights up to one target creature you don't control. (Each deals damage equal to its power to the other.)\n // \nTanglespan Bridgeworks (): As this land enters, you may pay 3 life. If you don't, it enters tapped.\n{T}: Add {G}.",
   "power": null,
   "prices": {
-   "eur": "1.02",
-   "eur_foil": "1.94",
-   "tix": "0.03",
-   "usd": "1.44",
+   "usd": "1.52",
+   "usd_foil": "1.64",
    "usd_etched": null,
-   "usd_foil": "1.98"
+   "eur": "1.01",
+   "eur_foil": "1.62",
+   "tix": "0.03"
   },
   "released_at": "2024-06-14",
   "scryfall_uri": "https://scryfall.com/card/mh3/249/bridgeworks-battle-tanglespan-bridgeworks?utm_source=api",
   "set": "mh3",
   "toughness": null,
-  "type_line": "Sorcery // Land"
- },
- "Brightclimb Pathway // Grimclimb Pathway": {
+  "type_line": "Sorcery // Land",
   "card_faces": [
    {
-    "mana_cost": "",
-    "name": "Brightclimb Pathway",
-    "oracle_text": "{T}: Add {W}.",
+    "name": "Bridgeworks Battle",
+    "mana_cost": "{2}{G}",
+    "type_line": "Sorcery",
+    "oracle_text": "Target creature you control gets +2/+2 until end of turn. It fights up to one target creature you don't control. (Each deals damage equal to its power to the other.)",
     "power": null,
-    "toughness": null,
-    "type_line": "Land"
+    "toughness": null
    },
    {
+    "name": "Tanglespan Bridgeworks",
     "mana_cost": "",
-    "name": "Grimclimb Pathway",
-    "oracle_text": "{T}: Add {B}.",
+    "type_line": "Land",
+    "oracle_text": "As this land enters, you may pay 3 life. If you don't, it enters tapped.\n{T}: Add {G}.",
     "power": null,
-    "toughness": null,
-    "type_line": "Land"
+    "toughness": null
    }
-  ],
+  ]
+ },
+ "Brightclimb Pathway // Grimclimb Pathway": {
   "cmc": 0.0,
   "collector_number": "259",
   "color_identity": [
    "B",
    "W"
   ],
-  "colors": null,
+  "colors": [],
   "keywords": [],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "not_legal",
-   "standardbrawl": "not_legal",
+   "future": "not_legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "",
   "name": "Brightclimb Pathway // Grimclimb Pathway",
-  "oracle_text": null,
+  "oracle_text": "Brightclimb Pathway (): {T}: Add {W}.\n // \nGrimclimb Pathway (): {T}: Add {B}.",
   "power": null,
   "prices": {
-   "eur": "4.27",
-   "eur_foil": "4.42",
-   "tix": "0.03",
    "usd": "4.56",
+   "usd_foil": "4.78",
    "usd_etched": null,
-   "usd_foil": "4.90"
+   "eur": "4.42",
+   "eur_foil": "4.98",
+   "tix": "0.03"
   },
   "released_at": "2020-09-25",
   "scryfall_uri": "https://scryfall.com/card/znr/259/brightclimb-pathway-grimclimb-pathway?utm_source=api",
   "set": "znr",
   "toughness": null,
-  "type_line": "Land // Land"
+  "type_line": "Land // Land",
+  "card_faces": [
+   {
+    "name": "Brightclimb Pathway",
+    "mana_cost": "",
+    "type_line": "Land",
+    "oracle_text": "{T}: Add {W}.",
+    "power": null,
+    "toughness": null
+   },
+   {
+    "name": "Grimclimb Pathway",
+    "mana_cost": "",
+    "type_line": "Land",
+    "oracle_text": "{T}: Add {B}.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Bristly Bill, Spine Sower": {
   "cmc": 2.0,
@@ -8038,78 +8045,80 @@
   "type_line": "Legendary Creature — Human Warrior"
  },
  "Casal, Lurkwood Pathfinder // Casal, Pathbreaker Owlbear": {
-  "card_faces": [
-   {
-    "mana_cost": "{3}{G}",
-    "name": "Casal, Lurkwood Pathfinder",
-    "oracle_text": "Vigilance\nWhen Casal enters, search your library for a Forest card, put it onto the battlefield tapped, then shuffle.\nWhenever Casal attacks, you may pay {1}{G}. If you do, transform her.",
-    "power": "3",
-    "toughness": "3",
-    "type_line": "Legendary Creature — Tiefling Druid"
-   },
-   {
-    "mana_cost": "",
-    "name": "Casal, Pathbreaker Owlbear",
-    "oracle_text": "Vigilance, trample\nWhen this creature transforms into Casal, Pathbreaker Owlbear, other legendary creatures you control get +2/+2 and gain trample until end of turn.\nAt the beginning of your upkeep, transform Casal.",
-    "power": "6",
-    "toughness": "6",
-    "type_line": "Legendary Creature — Bird Bear"
-   }
-  ],
   "cmc": 4.0,
   "collector_number": "29",
   "color_identity": [
    "G"
   ],
-  "colors": null,
+  "colors": [
+   "G"
+  ],
   "keywords": [
    "Vigilance",
    "Transform",
    "Trample"
   ],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "not_legal",
-   "commander": "legal",
-   "competitivebrawl": "not_legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "not_legal",
-   "historic": "not_legal",
-   "legacy": "legal",
-   "modern": "not_legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "not_legal",
-   "pioneer": "not_legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "not_legal",
-   "standardbrawl": "not_legal",
+   "future": "not_legal",
+   "historic": "not_legal",
    "timeless": "not_legal",
-   "tlr": "not_legal",
-   "vintage": "legal"
+   "gladiator": "not_legal",
+   "pioneer": "not_legal",
+   "modern": "not_legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "not_legal",
+   "competitivebrawl": "not_legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "not_legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "{3}{G}",
   "name": "Casal, Lurkwood Pathfinder // Casal, Pathbreaker Owlbear",
-  "oracle_text": null,
-  "power": null,
+  "oracle_text": "Casal, Lurkwood Pathfinder ({3}{G}): Vigilance\nWhen Casal enters, search your library for a Forest card, put it onto the battlefield tapped, then shuffle.\nWhenever Casal attacks, you may pay {1}{G}. If you do, transform her.\n // \nCasal, Pathbreaker Owlbear (): Vigilance, trample\nWhen this creature transforms into Casal, Pathbreaker Owlbear, other legendary creatures you control get +2/+2 and gain trample until end of turn.\nAt the beginning of your upkeep, transform Casal.",
+  "power": "3",
   "prices": {
-   "eur": "9.78",
-   "eur_foil": null,
-   "tix": null,
-   "usd": "15.56",
+   "usd": "17.54",
+   "usd_foil": null,
    "usd_etched": null,
-   "usd_foil": null
+   "eur": "10.82",
+   "eur_foil": null,
+   "tix": null
   },
   "released_at": "2025-04-25",
   "scryfall_uri": "https://scryfall.com/card/slx/29/casal-lurkwood-pathfinder-casal-pathbreaker-owlbear?utm_source=api",
   "set": "slx",
-  "toughness": null,
-  "type_line": "Legendary Creature — Tiefling Druid // Legendary Creature — Bird Bear"
+  "toughness": "3",
+  "type_line": "Legendary Creature — Tiefling Druid // Legendary Creature — Bird Bear",
+  "card_faces": [
+   {
+    "name": "Casal, Lurkwood Pathfinder",
+    "mana_cost": "{3}{G}",
+    "type_line": "Legendary Creature — Tiefling Druid",
+    "oracle_text": "Vigilance\nWhen Casal enters, search your library for a Forest card, put it onto the battlefield tapped, then shuffle.\nWhenever Casal attacks, you may pay {1}{G}. If you do, transform her.",
+    "power": "3",
+    "toughness": "3"
+   },
+   {
+    "name": "Casal, Pathbreaker Owlbear",
+    "mana_cost": "",
+    "type_line": "Legendary Creature — Bird Bear",
+    "oracle_text": "Vigilance, trample\nWhen this creature transforms into Casal, Pathbreaker Owlbear, other legendary creatures you control get +2/+2 and gain trample until end of turn.\nAt the beginning of your upkeep, transform Casal.",
+    "power": "6",
+    "toughness": "6"
+   }
+  ]
  },
  "Cascade Bluffs": {
   "cmc": 0.0,
@@ -12962,74 +12971,76 @@
   "type_line": "Legendary Creature — Elf Druid"
  },
  "Disciple of Freyalise // Garden of Freyalise": {
-  "card_faces": [
-   {
-    "mana_cost": "{3}{G}{G}{G}",
-    "name": "Disciple of Freyalise",
-    "oracle_text": "When this creature enters, you may sacrifice another creature. If you do, you gain X life and draw X cards, where X is that creature's power.",
-    "power": "3",
-    "toughness": "3",
-    "type_line": "Creature — Elf Druid"
-   },
-   {
-    "mana_cost": "",
-    "name": "Garden of Freyalise",
-    "oracle_text": "As this land enters, you may pay 3 life. If you don't, it enters tapped.\n{T}: Add {G}.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Land"
-   }
-  ],
   "cmc": 6.0,
   "collector_number": "250",
   "color_identity": [
    "G"
   ],
-  "colors": null,
+  "colors": [
+   "G"
+  ],
   "keywords": [],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "not_legal",
-   "pioneer": "not_legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "not_legal",
-   "standardbrawl": "not_legal",
+   "future": "not_legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "not_legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "not_legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "not_legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "{3}{G}{G}{G}",
   "name": "Disciple of Freyalise // Garden of Freyalise",
-  "oracle_text": null,
-  "power": null,
+  "oracle_text": "Disciple of Freyalise ({3}{G}{G}{G}): When this creature enters, you may sacrifice another creature. If you do, you gain X life and draw X cards, where X is that creature's power.\n // \nGarden of Freyalise (): As this land enters, you may pay 3 life. If you don't, it enters tapped.\n{T}: Add {G}.",
+  "power": "3",
   "prices": {
-   "eur": "2.47",
-   "eur_foil": "3.75",
-   "tix": "0.21",
-   "usd": "5.11",
+   "usd": "5.99",
+   "usd_foil": "6.98",
    "usd_etched": null,
-   "usd_foil": "5.64"
+   "eur": "2.65",
+   "eur_foil": "4.11",
+   "tix": "0.29"
   },
   "released_at": "2024-06-14",
   "scryfall_uri": "https://scryfall.com/card/mh3/250/disciple-of-freyalise-garden-of-freyalise?utm_source=api",
   "set": "mh3",
-  "toughness": null,
-  "type_line": "Creature — Elf Druid // Land"
+  "toughness": "3",
+  "type_line": "Creature — Elf Druid // Land",
+  "card_faces": [
+   {
+    "name": "Disciple of Freyalise",
+    "mana_cost": "{3}{G}{G}{G}",
+    "type_line": "Creature — Elf Druid",
+    "oracle_text": "When this creature enters, you may sacrifice another creature. If you do, you gain X life and draw X cards, where X is that creature's power.",
+    "power": "3",
+    "toughness": "3"
+   },
+   {
+    "name": "Garden of Freyalise",
+    "mana_cost": "",
+    "type_line": "Land",
+    "oracle_text": "As this land enters, you may pay 3 life. If you don't, it enters tapped.\n{T}: Add {G}.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Displacer Kitten": {
   "cmc": 4.0,
@@ -15966,24 +15977,6 @@
   "type_line": "Land"
  },
  "Emeritus of Woe // Demonic Tutor": {
-  "card_faces": [
-   {
-    "mana_cost": "{3}{B}",
-    "name": "Emeritus of Woe",
-    "oracle_text": "This creature enters prepared. (While it's prepared, you may cast a copy of its spell. Doing so unprepares it.)\nAt the beginning of your end step, if two or more creatures died this turn, this creature becomes prepared.",
-    "power": "5",
-    "toughness": "4",
-    "type_line": "Creature — Vampire Warlock"
-   },
-   {
-    "mana_cost": "{1}{B}",
-    "name": "Demonic Tutor",
-    "oracle_text": "Search your library for a card, put that card into your hand, then shuffle.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Sorcery"
-   }
-  ],
   "cmc": 4.0,
   "collector_number": "80",
   "color_identity": [
@@ -15996,48 +15989,66 @@
    "Prepared"
   ],
   "legalities": {
-   "alchemy": "legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "not_legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "legal",
-   "standardbrawl": "legal",
+   "future": "legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "not_legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "not_legal"
   },
   "loyalty": null,
   "mana_cost": "{3}{B} // {1}{B}",
   "name": "Emeritus of Woe // Demonic Tutor",
-  "oracle_text": null,
+  "oracle_text": "Emeritus of Woe ({3}{B}): This creature enters prepared. (While it's prepared, you may cast a copy of its spell. Doing so unprepares it.)\nAt the beginning of your end step, if two or more creatures died this turn, this creature becomes prepared.\n // \nDemonic Tutor ({1}{B}): Search your library for a card, put that card into your hand, then shuffle.",
   "power": "5",
   "prices": {
-   "eur": "10.22",
-   "eur_foil": "11.45",
-   "tix": "0.97",
-   "usd": "11.43",
+   "usd": "12.38",
+   "usd_foil": "12.70",
    "usd_etched": null,
-   "usd_foil": "12.79"
+   "eur": "10.10",
+   "eur_foil": "12.01",
+   "tix": "1.04"
   },
   "released_at": "2026-04-24",
   "scryfall_uri": "https://scryfall.com/card/sos/80/emeritus-of-woe-demonic-tutor?utm_source=api",
   "set": "sos",
   "toughness": "4",
-  "type_line": "Creature — Vampire Warlock // Sorcery"
+  "type_line": "Creature — Vampire Warlock // Sorcery",
+  "card_faces": [
+   {
+    "name": "Emeritus of Woe",
+    "mana_cost": "{3}{B}",
+    "type_line": "Creature — Vampire Warlock",
+    "oracle_text": "This creature enters prepared. (While it's prepared, you may cast a copy of its spell. Doing so unprepares it.)\nAt the beginning of your end step, if two or more creatures died this turn, this creature becomes prepared.",
+    "power": "5",
+    "toughness": "4"
+   },
+   {
+    "name": "Demonic Tutor",
+    "mana_cost": "{1}{B}",
+    "type_line": "Sorcery",
+    "oracle_text": "Search your library for a card, put that card into your hand, then shuffle.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Emissary's Ploy": {
   "cmc": 0.0,
@@ -16583,24 +16594,6 @@
   "type_line": "Sorcery"
  },
  "Erayo, Soratami Ascendant // Erayo's Essence": {
-  "card_faces": [
-   {
-    "mana_cost": "{1}{U}",
-    "name": "Erayo, Soratami Ascendant",
-    "oracle_text": "Flying\nWhenever the fourth spell of a turn is cast, flip Erayo.",
-    "power": "1",
-    "toughness": "1",
-    "type_line": "Legendary Creature — Moonfolk Monk"
-   },
-   {
-    "mana_cost": "",
-    "name": "Erayo's Essence",
-    "oracle_text": "Whenever an opponent casts their first spell each turn, counter that spell.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Legendary Enchantment"
-   }
-  ],
   "cmc": 2.0,
   "collector_number": "35",
   "color_identity": [
@@ -16613,48 +16606,66 @@
    "Flying"
   ],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "not_legal",
-   "commander": "banned",
-   "competitivebrawl": "not_legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "not_legal",
-   "historic": "not_legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "not_legal",
-   "pioneer": "not_legal",
-   "predh": "banned",
-   "premodern": "not_legal",
    "standard": "not_legal",
-   "standardbrawl": "not_legal",
+   "future": "not_legal",
+   "historic": "not_legal",
    "timeless": "not_legal",
-   "tlr": "restricted",
-   "vintage": "legal"
+   "gladiator": "not_legal",
+   "pioneer": "not_legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "banned",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "not_legal",
+   "competitivebrawl": "not_legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "banned",
+   "tlr": "restricted"
   },
   "loyalty": null,
   "mana_cost": "{1}{U}",
   "name": "Erayo, Soratami Ascendant // Erayo's Essence",
-  "oracle_text": null,
+  "oracle_text": "Erayo, Soratami Ascendant ({1}{U}): Flying\nWhenever the fourth spell of a turn is cast, flip Erayo.\n // \nErayo's Essence (): Whenever an opponent casts their first spell each turn, counter that spell.",
   "power": "1",
   "prices": {
-   "eur": "8.98",
-   "eur_foil": "56.91",
-   "tix": "0.03",
-   "usd": "23.62",
+   "usd": "23.87",
+   "usd_foil": "168.50",
    "usd_etched": null,
-   "usd_foil": "168.50"
+   "eur": "8.80",
+   "eur_foil": "56.91",
+   "tix": "0.07"
   },
   "released_at": "2005-06-03",
   "scryfall_uri": "https://scryfall.com/card/sok/35/erayo-soratami-ascendant-erayos-essence?utm_source=api",
   "set": "sok",
   "toughness": "1",
-  "type_line": "Legendary Creature — Moonfolk Monk // Legendary Enchantment"
+  "type_line": "Legendary Creature — Moonfolk Monk // Legendary Enchantment",
+  "card_faces": [
+   {
+    "name": "Erayo, Soratami Ascendant",
+    "mana_cost": "{1}{U}",
+    "type_line": "Legendary Creature — Moonfolk Monk",
+    "oracle_text": "Flying\nWhenever the fourth spell of a turn is cast, flip Erayo.",
+    "power": "1",
+    "toughness": "1"
+   },
+   {
+    "name": "Erayo's Essence",
+    "mana_cost": "",
+    "type_line": "Legendary Enchantment",
+    "oracle_text": "Whenever an opponent casts their first spell each turn, counter that spell.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Erode": {
   "cmc": 1.0,
@@ -16711,24 +16722,6 @@
   "type_line": "Instant"
  },
  "Esika, God of the Tree // The Prismatic Bridge": {
-  "card_faces": [
-   {
-    "mana_cost": "{1}{G}{G}",
-    "name": "Esika, God of the Tree",
-    "oracle_text": "Vigilance\n{T}: Add one mana of any color.\nOther legendary creatures you control have vigilance and \"{T}: Add one mana of any color.\"",
-    "power": "1",
-    "toughness": "4",
-    "type_line": "Legendary Creature — God"
-   },
-   {
-    "mana_cost": "{W}{U}{B}{R}{G}",
-    "name": "The Prismatic Bridge",
-    "oracle_text": "At the beginning of your upkeep, reveal cards from the top of your library until you reveal a creature or planeswalker card. Put that card onto the battlefield and the rest on the bottom of your library in a random order.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Legendary Enchantment"
-   }
-  ],
   "cmc": 3.0,
   "collector_number": "168",
   "color_identity": [
@@ -16738,53 +16731,73 @@
    "U",
    "W"
   ],
-  "colors": null,
+  "colors": [
+   "G"
+  ],
   "keywords": [
    "Vigilance"
   ],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "not_legal",
-   "standardbrawl": "not_legal",
+   "future": "not_legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "not_legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "not_legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "{1}{G}{G}",
   "name": "Esika, God of the Tree // The Prismatic Bridge",
-  "oracle_text": null,
-  "power": null,
+  "oracle_text": "Esika, God of the Tree ({1}{G}{G}): Vigilance\n{T}: Add one mana of any color.\nOther legendary creatures you control have vigilance and \"{T}: Add one mana of any color.\"\n // \nThe Prismatic Bridge ({W}{U}{B}{R}{G}): At the beginning of your upkeep, reveal cards from the top of your library until you reveal a creature or planeswalker card. Put that card onto the battlefield and the rest on the bottom of your library in a random order.",
+  "power": "1",
   "prices": {
-   "eur": "14.00",
-   "eur_foil": "16.49",
-   "tix": "0.02",
-   "usd": "21.19",
+   "usd": "21.78",
+   "usd_foil": "23.35",
    "usd_etched": null,
-   "usd_foil": "23.22"
+   "eur": "15.55",
+   "eur_foil": "16.21",
+   "tix": "0.02"
   },
   "released_at": "2021-02-05",
   "scryfall_uri": "https://scryfall.com/card/khm/168/esika-god-of-the-tree-the-prismatic-bridge?utm_source=api",
   "set": "khm",
-  "toughness": null,
-  "type_line": "Legendary Creature — God // Legendary Enchantment"
+  "toughness": "4",
+  "type_line": "Legendary Creature — God // Legendary Enchantment",
+  "card_faces": [
+   {
+    "name": "Esika, God of the Tree",
+    "mana_cost": "{1}{G}{G}",
+    "type_line": "Legendary Creature — God",
+    "oracle_text": "Vigilance\n{T}: Add one mana of any color.\nOther legendary creatures you control have vigilance and \"{T}: Add one mana of any color.\"",
+    "power": "1",
+    "toughness": "4"
+   },
+   {
+    "name": "The Prismatic Bridge",
+    "mana_cost": "{W}{U}{B}{R}{G}",
+    "type_line": "Legendary Enchantment",
+    "oracle_text": "At the beginning of your upkeep, reveal cards from the top of your library until you reveal a creature or planeswalker card. Put that card onto the battlefield and the rest on the bottom of your library in a random order.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Esper Sentinel": {
   "cmc": 1.0,
@@ -18033,74 +18046,76 @@
   "type_line": "Enchantment"
  },
  "Fell the Profane // Fell Mire": {
-  "card_faces": [
-   {
-    "mana_cost": "{2}{B}{B}",
-    "name": "Fell the Profane",
-    "oracle_text": "Destroy target creature or planeswalker.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Instant"
-   },
-   {
-    "mana_cost": "",
-    "name": "Fell Mire",
-    "oracle_text": "As this land enters, you may pay 3 life. If you don't, it enters tapped.\n{T}: Add {B}.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Land"
-   }
-  ],
   "cmc": 4.0,
   "collector_number": "244",
   "color_identity": [
    "B"
   ],
-  "colors": null,
+  "colors": [
+   "B"
+  ],
   "keywords": [],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "not_legal",
-   "pioneer": "not_legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "not_legal",
-   "standardbrawl": "not_legal",
+   "future": "not_legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "not_legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "not_legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "not_legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "{2}{B}{B}",
   "name": "Fell the Profane // Fell Mire",
-  "oracle_text": null,
+  "oracle_text": "Fell the Profane ({2}{B}{B}): Destroy target creature or planeswalker.\n // \nFell Mire (): As this land enters, you may pay 3 life. If you don't, it enters tapped.\n{T}: Add {B}.",
   "power": null,
   "prices": {
-   "eur": "4.35",
-   "eur_foil": "5.19",
-   "tix": "0.07",
-   "usd": "3.91",
+   "usd": "4.38",
+   "usd_foil": "5.30",
    "usd_etched": null,
-   "usd_foil": "4.49"
+   "eur": "4.42",
+   "eur_foil": "5.68",
+   "tix": "0.49"
   },
   "released_at": "2024-06-14",
   "scryfall_uri": "https://scryfall.com/card/mh3/244/fell-the-profane-fell-mire?utm_source=api",
   "set": "mh3",
   "toughness": null,
-  "type_line": "Instant // Land"
+  "type_line": "Instant // Land",
+  "card_faces": [
+   {
+    "name": "Fell the Profane",
+    "mana_cost": "{2}{B}{B}",
+    "type_line": "Instant",
+    "oracle_text": "Destroy target creature or planeswalker.",
+    "power": null,
+    "toughness": null
+   },
+   {
+    "name": "Fell Mire",
+    "mana_cost": "",
+    "type_line": "Land",
+    "oracle_text": "As this land enters, you may pay 3 life. If you don't, it enters tapped.\n{T}: Add {B}.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Fetid Heath": {
   "cmc": 0.0,
@@ -19440,24 +19455,6 @@
   "type_line": "Enchantment"
  },
  "Funeral Room // Awakening Hall": {
-  "card_faces": [
-   {
-    "mana_cost": "{2}{B}",
-    "name": "Funeral Room",
-    "oracle_text": "Whenever a creature you control dies, each opponent loses 1 life and you gain 1 life.\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)",
-    "power": null,
-    "toughness": null,
-    "type_line": "Enchantment — Room"
-   },
-   {
-    "mana_cost": "{6}{B}{B}",
-    "name": "Awakening Hall",
-    "oracle_text": "When you unlock this door, return all creature cards from your graveyard to the battlefield.\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)",
-    "power": null,
-    "toughness": null,
-    "type_line": "Enchantment — Room"
-   }
-  ],
   "cmc": 11.0,
   "collector_number": "100",
   "color_identity": [
@@ -19468,48 +19465,66 @@
   ],
   "keywords": [],
   "legalities": {
-   "alchemy": "legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "legal",
-   "standardbrawl": "legal",
+   "future": "legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "not_legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "not_legal"
   },
   "loyalty": null,
   "mana_cost": "{2}{B} // {6}{B}{B}",
   "name": "Funeral Room // Awakening Hall",
-  "oracle_text": null,
+  "oracle_text": "Funeral Room ({2}{B}): Whenever a creature you control dies, each opponent loses 1 life and you gain 1 life.\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)\n // \nAwakening Hall ({6}{B}{B}): When you unlock this door, return all creature cards from your graveyard to the battlefield.\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)",
   "power": null,
   "prices": {
-   "eur": "4.28",
-   "eur_foil": "5.03",
-   "tix": "0.03",
-   "usd": "6.39",
+   "usd": "6.95",
+   "usd_foil": "6.07",
    "usd_etched": null,
-   "usd_foil": "6.54"
+   "eur": "4.28",
+   "eur_foil": "5.16",
+   "tix": "0.03"
   },
   "released_at": "2024-09-27",
   "scryfall_uri": "https://scryfall.com/card/dsk/100/funeral-room-awakening-hall?utm_source=api",
   "set": "dsk",
   "toughness": null,
-  "type_line": "Enchantment — Room // Enchantment — Room"
+  "type_line": "Enchantment — Room // Enchantment — Room",
+  "card_faces": [
+   {
+    "name": "Funeral Room",
+    "mana_cost": "{2}{B}",
+    "type_line": "Enchantment — Room",
+    "oracle_text": "Whenever a creature you control dies, each opponent loses 1 life and you gain 1 life.\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)",
+    "power": null,
+    "toughness": null
+   },
+   {
+    "name": "Awakening Hall",
+    "mana_cost": "{6}{B}{B}",
+    "type_line": "Enchantment — Room",
+    "oracle_text": "When you unlock this door, return all creature cards from your graveyard to the battlefield.\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Fyndhorn Elves": {
   "cmc": 1.0,
@@ -22242,75 +22257,78 @@
   "type_line": "Creature — Bear"
  },
  "Growing Rites of Itlimoc // Itlimoc, Cradle of the Sun": {
-  "card_faces": [
-   {
-    "mana_cost": "{2}{G}",
-    "name": "Growing Rites of Itlimoc",
-    "oracle_text": "When Growing Rites of Itlimoc enters, look at the top four cards of your library. You may reveal a creature card from among them and put it into your hand. Put the rest on the bottom of your library in any order.\nAt the beginning of your end step, if you control four or more creatures, transform Growing Rites of Itlimoc.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Legendary Enchantment"
-   },
-   {
-    "mana_cost": "",
-    "name": "Itlimoc, Cradle of the Sun",
-    "oracle_text": "(Transforms from Growing Rites of Itlimoc.)\n{T}: Add {G}.\n{T}: Add {G} for each creature you control.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Legendary Land"
-   }
-  ],
   "cmc": 3.0,
+  "collector_number": "188",
   "color_identity": [
    "G"
   ],
-  "colors": null,
+  "colors": [
+   "G"
+  ],
   "keywords": [
    "Transform"
   ],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "legal",
-   "standardbrawl": "legal",
+   "future": "legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "{2}{G}",
   "name": "Growing Rites of Itlimoc // Itlimoc, Cradle of the Sun",
-  "oracle_text": null,
+  "oracle_text": "Growing Rites of Itlimoc ({2}{G}): When Growing Rites of Itlimoc enters, look at the top four cards of your library. You may reveal a creature card from among them and put it into your hand. Put the rest on the bottom of your library in any order.\nAt the beginning of your end step, if you control four or more creatures, transform Growing Rites of Itlimoc.\n // \nItlimoc, Cradle of the Sun (): (Transforms from Growing Rites of Itlimoc.)\n{T}: Add {G}.\n{T}: Add {G} for each creature you control.",
   "power": null,
   "prices": {
-   "eur": "6.06",
-   "eur_foil": "6.08",
-   "tix": "0.02",
-   "usd": "8.73",
+   "usd": "9.23",
+   "usd_foil": "10.22",
    "usd_etched": null,
-   "usd_foil": "9.87"
+   "eur": "6.11",
+   "eur_foil": "6.24",
+   "tix": "0.02"
   },
   "released_at": "2023-11-17",
   "scryfall_uri": "https://scryfall.com/card/lci/188/growing-rites-of-itlimoc-itlimoc-cradle-of-the-sun?utm_source=api",
   "set": "lci",
   "toughness": null,
-  "type_line": "Legendary Enchantment // Legendary Land"
+  "type_line": "Legendary Enchantment // Legendary Land",
+  "card_faces": [
+   {
+    "name": "Growing Rites of Itlimoc",
+    "mana_cost": "{2}{G}",
+    "type_line": "Legendary Enchantment",
+    "oracle_text": "When Growing Rites of Itlimoc enters, look at the top four cards of your library. You may reveal a creature card from among them and put it into your hand. Put the rest on the bottom of your library in any order.\nAt the beginning of your end step, if you control four or more creatures, transform Growing Rites of Itlimoc.",
+    "power": null,
+    "toughness": null
+   },
+   {
+    "name": "Itlimoc, Cradle of the Sun",
+    "mana_cost": "",
+    "type_line": "Legendary Land",
+    "oracle_text": "(Transforms from Growing Rites of Itlimoc.)\n{T}: Add {G}.\n{T}: Add {G} for each creature you control.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Gruul Turf": {
   "cmc": 0.0,
@@ -26512,74 +26530,76 @@
   "type_line": "Creature — Elf Druid"
  },
  "Kabira Takedown // Kabira Plateau": {
-  "card_faces": [
-   {
-    "mana_cost": "{1}{W}",
-    "name": "Kabira Takedown",
-    "oracle_text": "Kabira Takedown deals damage equal to the number of creatures you control to target creature or planeswalker.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Instant"
-   },
-   {
-    "mana_cost": "",
-    "name": "Kabira Plateau",
-    "oracle_text": "This land enters tapped.\n{T}: Add {W}.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Land"
-   }
-  ],
   "cmc": 2.0,
   "collector_number": "19",
   "color_identity": [
    "W"
   ],
-  "colors": null,
+  "colors": [
+   "W"
+  ],
   "keywords": [],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "not_legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "not_legal",
-   "standardbrawl": "not_legal",
+   "future": "not_legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "{1}{W}",
   "name": "Kabira Takedown // Kabira Plateau",
-  "oracle_text": null,
+  "oracle_text": "Kabira Takedown ({1}{W}): Kabira Takedown deals damage equal to the number of creatures you control to target creature or planeswalker.\n // \nKabira Plateau (): This land enters tapped.\n{T}: Add {W}.",
   "power": null,
   "prices": {
-   "eur": "0.24",
-   "eur_foil": "0.42",
-   "tix": "0.03",
-   "usd": "0.29",
+   "usd": "0.43",
+   "usd_foil": "0.47",
    "usd_etched": null,
-   "usd_foil": "0.46"
+   "eur": "0.22",
+   "eur_foil": "0.52",
+   "tix": "0.03"
   },
   "released_at": "2020-09-25",
   "scryfall_uri": "https://scryfall.com/card/znr/19/kabira-takedown-kabira-plateau?utm_source=api",
   "set": "znr",
   "toughness": null,
-  "type_line": "Instant // Land"
+  "type_line": "Instant // Land",
+  "card_faces": [
+   {
+    "name": "Kabira Takedown",
+    "mana_cost": "{1}{W}",
+    "type_line": "Instant",
+    "oracle_text": "Kabira Takedown deals damage equal to the number of creatures you control to target creature or planeswalker.",
+    "power": null,
+    "toughness": null
+   },
+   {
+    "name": "Kabira Plateau",
+    "mana_cost": "",
+    "type_line": "Land",
+    "oracle_text": "This land enters tapped.\n{T}: Add {W}.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Kambal, Profiteering Mayor": {
   "cmc": 3.0,
@@ -27030,76 +27050,78 @@
   "type_line": "Land — Forest Island Mountain"
  },
  "Khalni Ambush // Khalni Territory": {
-  "card_faces": [
-   {
-    "mana_cost": "{2}{G}",
-    "name": "Khalni Ambush",
-    "oracle_text": "Target creature you control fights target creature you don't control. (Each deals damage equal to its power to the other.)",
-    "power": null,
-    "toughness": null,
-    "type_line": "Instant"
-   },
-   {
-    "mana_cost": "",
-    "name": "Khalni Territory",
-    "oracle_text": "This land enters tapped.\n{T}: Add {G}.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Land"
-   }
-  ],
   "cmc": 3.0,
   "collector_number": "192",
   "color_identity": [
    "G"
   ],
-  "colors": null,
+  "colors": [
+   "G"
+  ],
   "keywords": [
    "Fight"
   ],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "not_legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "not_legal",
-   "standardbrawl": "not_legal",
+   "future": "not_legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "{2}{G}",
   "name": "Khalni Ambush // Khalni Territory",
-  "oracle_text": null,
+  "oracle_text": "Khalni Ambush ({2}{G}): Target creature you control fights target creature you don't control. (Each deals damage equal to its power to the other.)\n // \nKhalni Territory (): This land enters tapped.\n{T}: Add {G}.",
   "power": null,
   "prices": {
-   "eur": "0.42",
-   "eur_foil": "0.74",
-   "tix": "0.03",
-   "usd": "0.45",
+   "usd": "0.47",
+   "usd_foil": "0.83",
    "usd_etched": null,
-   "usd_foil": "0.79"
+   "eur": "0.41",
+   "eur_foil": "0.63",
+   "tix": "0.03"
   },
   "released_at": "2020-09-25",
   "scryfall_uri": "https://scryfall.com/card/znr/192/khalni-ambush-khalni-territory?utm_source=api",
   "set": "znr",
   "toughness": null,
-  "type_line": "Instant // Land"
+  "type_line": "Instant // Land",
+  "card_faces": [
+   {
+    "name": "Khalni Ambush",
+    "mana_cost": "{2}{G}",
+    "type_line": "Instant",
+    "oracle_text": "Target creature you control fights target creature you don't control. (Each deals damage equal to its power to the other.)",
+    "power": null,
+    "toughness": null
+   },
+   {
+    "name": "Khalni Territory",
+    "mana_cost": "",
+    "type_line": "Land",
+    "oracle_text": "This land enters tapped.\n{T}: Add {G}.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Kindred Discovery": {
   "cmc": 5.0,
@@ -28301,76 +28323,78 @@
   "type_line": "Instant"
  },
  "Legion's Landing // Adanto, the First Fort": {
-  "card_faces": [
-   {
-    "mana_cost": "{W}",
-    "name": "Legion's Landing",
-    "oracle_text": "When Legion's Landing enters, create a 1/1 white Vampire creature token with lifelink.\nWhen you attack with three or more creatures, transform Legion's Landing.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Legendary Enchantment"
-   },
-   {
-    "mana_cost": "",
-    "name": "Adanto, the First Fort",
-    "oracle_text": "(Transforms from Legion's Landing.)\n{T}: Add {W}.\n{2}{W}, {T}: Create a 1/1 white Vampire creature token with lifelink.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Legendary Land"
-   }
-  ],
   "cmc": 1.0,
   "collector_number": "22",
   "color_identity": [
    "W"
   ],
-  "colors": null,
+  "colors": [
+   "W"
+  ],
   "keywords": [
    "Transform"
   ],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "not_legal",
-   "standardbrawl": "not_legal",
+   "future": "not_legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "{W}",
   "name": "Legion's Landing // Adanto, the First Fort",
-  "oracle_text": null,
+  "oracle_text": "Legion's Landing ({W}): When Legion's Landing enters, create a 1/1 white Vampire creature token with lifelink.\nWhen you attack with three or more creatures, transform Legion's Landing.\n // \nAdanto, the First Fort (): (Transforms from Legion's Landing.)\n{T}: Add {W}.\n{2}{W}, {T}: Create a 1/1 white Vampire creature token with lifelink.",
   "power": null,
   "prices": {
-   "eur": "2.75",
-   "eur_foil": "5.86",
-   "tix": "0.02",
-   "usd": "3.22",
+   "usd": "3.09",
+   "usd_foil": "7.13",
    "usd_etched": null,
-   "usd_foil": "7.22"
+   "eur": "2.50",
+   "eur_foil": "5.87",
+   "tix": "0.02"
   },
   "released_at": "2017-09-29",
   "scryfall_uri": "https://scryfall.com/card/xln/22/legions-landing-adanto-the-first-fort?utm_source=api",
   "set": "xln",
   "toughness": null,
-  "type_line": "Legendary Enchantment // Legendary Land"
+  "type_line": "Legendary Enchantment // Legendary Land",
+  "card_faces": [
+   {
+    "name": "Legion's Landing",
+    "mana_cost": "{W}",
+    "type_line": "Legendary Enchantment",
+    "oracle_text": "When Legion's Landing enters, create a 1/1 white Vampire creature token with lifelink.\nWhen you attack with three or more creatures, transform Legion's Landing.",
+    "power": null,
+    "toughness": null
+   },
+   {
+    "name": "Adanto, the First Fort",
+    "mana_cost": "",
+    "type_line": "Legendary Land",
+    "oracle_text": "(Transforms from Legion's Landing.)\n{T}: Add {W}.\n{2}{W}, {T}: Create a 1/1 white Vampire creature token with lifelink.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Leovold, Emissary of Trest": {
   "cmc": 3.0,
@@ -30167,74 +30191,76 @@
   "type_line": "Legendary Creature — Devil"
  },
  "Malakir Rebirth // Malakir Mire": {
-  "card_faces": [
-   {
-    "mana_cost": "{B}",
-    "name": "Malakir Rebirth",
-    "oracle_text": "Choose target creature. You lose 2 life. Until end of turn, that creature gains \"When this creature dies, return it to the battlefield tapped under its owner's control.\"",
-    "power": null,
-    "toughness": null,
-    "type_line": "Instant"
-   },
-   {
-    "mana_cost": "",
-    "name": "Malakir Mire",
-    "oracle_text": "This land enters tapped.\n{T}: Add {B}.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Land"
-   }
-  ],
   "cmc": 1.0,
   "collector_number": "111",
   "color_identity": [
    "B"
   ],
-  "colors": null,
+  "colors": [
+   "B"
+  ],
   "keywords": [],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "not_legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "not_legal",
-   "standardbrawl": "not_legal",
+   "future": "not_legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "{B}",
   "name": "Malakir Rebirth // Malakir Mire",
-  "oracle_text": null,
+  "oracle_text": "Malakir Rebirth ({B}): Choose target creature. You lose 2 life. Until end of turn, that creature gains \"When this creature dies, return it to the battlefield tapped under its owner's control.\"\n // \nMalakir Mire (): This land enters tapped.\n{T}: Add {B}.",
   "power": null,
   "prices": {
-   "eur": "10.45",
-   "eur_foil": "14.71",
-   "tix": "0.03",
-   "usd": "13.32",
+   "usd": "14.23",
+   "usd_foil": "15.65",
    "usd_etched": null,
-   "usd_foil": "15.49"
+   "eur": "10.73",
+   "eur_foil": "14.58",
+   "tix": "0.03"
   },
   "released_at": "2020-09-25",
   "scryfall_uri": "https://scryfall.com/card/znr/111/malakir-rebirth-malakir-mire?utm_source=api",
   "set": "znr",
   "toughness": null,
-  "type_line": "Instant // Land"
+  "type_line": "Instant // Land",
+  "card_faces": [
+   {
+    "name": "Malakir Rebirth",
+    "mana_cost": "{B}",
+    "type_line": "Instant",
+    "oracle_text": "Choose target creature. You lose 2 life. Until end of turn, that creature gains \"When this creature dies, return it to the battlefield tapped under its owner's control.\"",
+    "power": null,
+    "toughness": null
+   },
+   {
+    "name": "Malakir Mire",
+    "mana_cost": "",
+    "type_line": "Land",
+    "oracle_text": "This land enters tapped.\n{T}: Add {B}.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Mana Confluence": {
   "cmc": 0.0,
@@ -34594,77 +34620,79 @@
   "type_line": "Snow Creature — Snake"
  },
  "Ojer Taq, Deepest Foundation // Temple of Civilization": {
-  "card_faces": [
-   {
-    "mana_cost": "{4}{W}{W}",
-    "name": "Ojer Taq, Deepest Foundation",
-    "oracle_text": "Vigilance\nIf one or more creature tokens would be created under your control, three times that many of those tokens are created instead.\nWhen Ojer Taq dies, return it to the battlefield tapped and transformed under its owner's control.",
-    "power": "6",
-    "toughness": "6",
-    "type_line": "Legendary Creature — God"
-   },
-   {
-    "mana_cost": "",
-    "name": "Temple of Civilization",
-    "oracle_text": "(Transforms from Ojer Taq, Deepest Foundation.)\n{T}: Add {W}.\n{2}{W}, {T}: Transform this land. Activate only if you attacked with three or more creatures this turn and only as a sorcery.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Land"
-   }
-  ],
   "cmc": 6.0,
   "collector_number": "26",
   "color_identity": [
    "W"
   ],
-  "colors": null,
+  "colors": [
+   "W"
+  ],
   "keywords": [
    "Vigilance",
    "Transform"
   ],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "not_legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "legal",
-   "standardbrawl": "legal",
+   "future": "legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "not_legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "not_legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "{4}{W}{W}",
   "name": "Ojer Taq, Deepest Foundation // Temple of Civilization",
-  "oracle_text": null,
-  "power": null,
+  "oracle_text": "Ojer Taq, Deepest Foundation ({4}{W}{W}): Vigilance\nIf one or more creature tokens would be created under your control, three times that many of those tokens are created instead.\nWhen Ojer Taq dies, return it to the battlefield tapped and transformed under its owner's control.\n // \nTemple of Civilization (): (Transforms from Ojer Taq, Deepest Foundation.)\n{T}: Add {W}.\n{2}{W}, {T}: Transform this land. Activate only if you attacked with three or more creatures this turn and only as a sorcery.",
+  "power": "6",
   "prices": {
-   "eur": "19.74",
-   "eur_foil": "22.66",
-   "tix": "0.03",
-   "usd": "27.35",
+   "usd": "27.59",
+   "usd_foil": "34.99",
    "usd_etched": null,
-   "usd_foil": "35.17"
+   "eur": "20.23",
+   "eur_foil": "22.61",
+   "tix": "0.07"
   },
   "released_at": "2023-11-17",
   "scryfall_uri": "https://scryfall.com/card/lci/26/ojer-taq-deepest-foundation-temple-of-civilization?utm_source=api",
   "set": "lci",
-  "toughness": null,
-  "type_line": "Legendary Creature — God // Land"
+  "toughness": "6",
+  "type_line": "Legendary Creature — God // Land",
+  "card_faces": [
+   {
+    "name": "Ojer Taq, Deepest Foundation",
+    "mana_cost": "{4}{W}{W}",
+    "type_line": "Legendary Creature — God",
+    "oracle_text": "Vigilance\nIf one or more creature tokens would be created under your control, three times that many of those tokens are created instead.\nWhen Ojer Taq dies, return it to the battlefield tapped and transformed under its owner's control.",
+    "power": "6",
+    "toughness": "6"
+   },
+   {
+    "name": "Temple of Civilization",
+    "mana_cost": "",
+    "type_line": "Land",
+    "oracle_text": "(Transforms from Ojer Taq, Deepest Foundation.)\n{T}: Add {W}.\n{2}{W}, {T}: Transform this land. Activate only if you attacked with three or more creatures this turn and only as a sorcery.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Oko, the Ringleader": {
   "cmc": 4.0,
@@ -34842,74 +34870,76 @@
   "type_line": "Legendary Creature — Vampire Assassin"
  },
  "Ondu Inversion // Ondu Skyruins": {
-  "card_faces": [
-   {
-    "mana_cost": "{6}{W}{W}",
-    "name": "Ondu Inversion",
-    "oracle_text": "Destroy all nonland permanents.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Sorcery"
-   },
-   {
-    "mana_cost": "",
-    "name": "Ondu Skyruins",
-    "oracle_text": "This land enters tapped.\n{T}: Add {W}.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Land"
-   }
-  ],
   "cmc": 8.0,
   "collector_number": "30",
   "color_identity": [
    "W"
   ],
-  "colors": null,
+  "colors": [
+   "W"
+  ],
   "keywords": [],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "not_legal",
-   "standardbrawl": "not_legal",
+   "future": "not_legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "not_legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "not_legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "{6}{W}{W}",
   "name": "Ondu Inversion // Ondu Skyruins",
-  "oracle_text": null,
+  "oracle_text": "Ondu Inversion ({6}{W}{W}): Destroy all nonland permanents.\n // \nOndu Skyruins (): This land enters tapped.\n{T}: Add {W}.",
   "power": null,
   "prices": {
-   "eur": "0.99",
-   "eur_foil": "1.30",
-   "tix": "0.02",
-   "usd": "1.26",
+   "usd": "1.40",
+   "usd_foil": "1.85",
    "usd_etched": null,
-   "usd_foil": "1.84"
+   "eur": "1.01",
+   "eur_foil": "1.20",
+   "tix": "0.02"
   },
   "released_at": "2020-09-25",
   "scryfall_uri": "https://scryfall.com/card/znr/30/ondu-inversion-ondu-skyruins?utm_source=api",
   "set": "znr",
   "toughness": null,
-  "type_line": "Sorcery // Land"
+  "type_line": "Sorcery // Land",
+  "card_faces": [
+   {
+    "name": "Ondu Inversion",
+    "mana_cost": "{6}{W}{W}",
+    "type_line": "Sorcery",
+    "oracle_text": "Destroy all nonland permanents.",
+    "power": null,
+    "toughness": null
+   },
+   {
+    "name": "Ondu Skyruins",
+    "mana_cost": "",
+    "type_line": "Land",
+    "oracle_text": "This land enters tapped.\n{T}: Add {W}.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Opal Palace": {
   "cmc": 0.0,
@@ -39584,75 +39614,78 @@
   "type_line": "Enchantment"
  },
  "Revitalizing Repast // Old-Growth Grove": {
-  "card_faces": [
-   {
-    "mana_cost": "{B/G}",
-    "name": "Revitalizing Repast",
-    "oracle_text": "Put a +1/+1 counter on target creature. It gains indestructible until end of turn.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Instant"
-   },
-   {
-    "mana_cost": "",
-    "name": "Old-Growth Grove",
-    "oracle_text": "This land enters tapped.\n{T}: Add {B} or {G}.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Land"
-   }
-  ],
   "cmc": 1.0,
   "collector_number": "256",
   "color_identity": [
    "B",
    "G"
   ],
-  "colors": null,
+  "colors": [
+   "B",
+   "G"
+  ],
   "keywords": [],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "not_legal",
-   "pioneer": "not_legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "not_legal",
-   "standardbrawl": "not_legal",
+   "future": "not_legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "not_legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "{B/G}",
   "name": "Revitalizing Repast // Old-Growth Grove",
-  "oracle_text": null,
+  "oracle_text": "Revitalizing Repast ({B/G}): Put a +1/+1 counter on target creature. It gains indestructible until end of turn.\n // \nOld-Growth Grove (): This land enters tapped.\n{T}: Add {B} or {G}.",
   "power": null,
   "prices": {
-   "eur": "1.36",
-   "eur_foil": "2.06",
-   "tix": "0.03",
-   "usd": "2.13",
+   "usd": "1.71",
+   "usd_foil": "2.90",
    "usd_etched": null,
-   "usd_foil": "2.62"
+   "eur": "1.46",
+   "eur_foil": "1.80",
+   "tix": "0.03"
   },
   "released_at": "2024-06-14",
   "scryfall_uri": "https://scryfall.com/card/mh3/256/revitalizing-repast-old-growth-grove?utm_source=api",
   "set": "mh3",
   "toughness": null,
-  "type_line": "Instant // Land"
+  "type_line": "Instant // Land",
+  "card_faces": [
+   {
+    "name": "Revitalizing Repast",
+    "mana_cost": "{B/G}",
+    "type_line": "Instant",
+    "oracle_text": "Put a +1/+1 counter on target creature. It gains indestructible until end of turn.",
+    "power": null,
+    "toughness": null
+   },
+   {
+    "name": "Old-Growth Grove",
+    "mana_cost": "",
+    "type_line": "Land",
+    "oracle_text": "This land enters tapped.\n{T}: Add {B} or {G}.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Rhonas the Indomitable": {
   "cmc": 3.0,
@@ -42662,78 +42695,80 @@
   "type_line": "Legendary Creature — Human Knight"
  },
  "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel": {
-  "card_faces": [
-   {
-    "mana_cost": "{2}{B}",
-    "name": "Sephiroth, Fabled SOLDIER",
-    "oracle_text": "Whenever Sephiroth enters or attacks, you may sacrifice another creature. If you do, draw a card.\nWhenever another creature dies, target opponent loses 1 life and you gain 1 life. If this is the fourth time this ability has resolved this turn, transform Sephiroth.",
-    "power": "3",
-    "toughness": "3",
-    "type_line": "Legendary Creature — Human Avatar Soldier"
-   },
-   {
-    "mana_cost": "",
-    "name": "Sephiroth, One-Winged Angel",
-    "oracle_text": "Flying\nSuper Nova — As this creature transforms into Sephiroth, One-Winged Angel, you get an emblem with \"Whenever a creature dies, target opponent loses 1 life and you gain 1 life.\"\nWhenever Sephiroth attacks, you may sacrifice any number of other creatures. If you do, draw that many cards.",
-    "power": "5",
-    "toughness": "5",
-    "type_line": "Legendary Creature — Angel Nightmare Avatar"
-   }
-  ],
   "cmc": 3.0,
   "collector_number": "115",
   "color_identity": [
    "B"
   ],
-  "colors": null,
+  "colors": [
+   "B"
+  ],
   "keywords": [
    "Flying",
    "Transform",
    "Super Nova"
   ],
   "legalities": {
-   "alchemy": "legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "not_legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "legal",
-   "standardbrawl": "legal",
+   "future": "legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "{2}{B}",
   "name": "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel",
-  "oracle_text": null,
-  "power": null,
+  "oracle_text": "Sephiroth, Fabled SOLDIER ({2}{B}): Whenever Sephiroth enters or attacks, you may sacrifice another creature. If you do, draw a card.\nWhenever another creature dies, target opponent loses 1 life and you gain 1 life. If this is the fourth time this ability has resolved this turn, transform Sephiroth.\n // \nSephiroth, One-Winged Angel (): Flying\nSuper Nova — As this creature transforms into Sephiroth, One-Winged Angel, you get an emblem with \"Whenever a creature dies, target opponent loses 1 life and you gain 1 life.\"\nWhenever Sephiroth attacks, you may sacrifice any number of other creatures. If you do, draw that many cards.",
+  "power": "3",
   "prices": {
-   "eur": "27.38",
-   "eur_foil": "39.18",
-   "tix": "1.09",
-   "usd": "31.86",
+   "usd": "29.28",
+   "usd_foil": "37.01",
    "usd_etched": null,
-   "usd_foil": "36.43"
+   "eur": "27.44",
+   "eur_foil": "36.36",
+   "tix": "1.09"
   },
   "released_at": "2025-06-13",
   "scryfall_uri": "https://scryfall.com/card/fin/115/sephiroth-fabled-soldier-sephiroth-one-winged-angel?utm_source=api",
   "set": "fin",
-  "toughness": null,
-  "type_line": "Legendary Creature — Human Avatar Soldier // Legendary Creature — Angel Nightmare Avatar"
+  "toughness": "3",
+  "type_line": "Legendary Creature — Human Avatar Soldier // Legendary Creature — Angel Nightmare Avatar",
+  "card_faces": [
+   {
+    "name": "Sephiroth, Fabled SOLDIER",
+    "mana_cost": "{2}{B}",
+    "type_line": "Legendary Creature — Human Avatar Soldier",
+    "oracle_text": "Whenever Sephiroth enters or attacks, you may sacrifice another creature. If you do, draw a card.\nWhenever another creature dies, target opponent loses 1 life and you gain 1 life. If this is the fourth time this ability has resolved this turn, transform Sephiroth.",
+    "power": "3",
+    "toughness": "3"
+   },
+   {
+    "name": "Sephiroth, One-Winged Angel",
+    "mana_cost": "",
+    "type_line": "Legendary Creature — Angel Nightmare Avatar",
+    "oracle_text": "Flying\nSuper Nova — As this creature transforms into Sephiroth, One-Winged Angel, you get an emblem with \"Whenever a creature dies, target opponent loses 1 life and you gain 1 life.\"\nWhenever Sephiroth attacks, you may sacrifice any number of other creatures. If you do, draw that many cards.",
+    "power": "5",
+    "toughness": "5"
+   }
+  ]
  },
  "Serra's Sanctum": {
   "cmc": 0.0,
@@ -45635,24 +45670,6 @@
   "type_line": "Land — Island Mountain"
  },
  "Stensian Sanguinist // Exsanguinate": {
-  "card_faces": [
-   {
-    "mana_cost": "{1}{B}",
-    "name": "Stensian Sanguinist",
-    "oracle_text": "Whenever you attack, target creature gains deathtouch until end of turn. Whenever that creature deals combat damage to a player this combat, this creature becomes prepared. (While it's prepared, you may cast a copy of its spell. Doing so unprepares it.)",
-    "power": "2",
-    "toughness": "2",
-    "type_line": "Creature — Vampire Cleric"
-   },
-   {
-    "mana_cost": "{X}{B}{B}",
-    "name": "Exsanguinate",
-    "oracle_text": "Each opponent loses X life. You gain life equal to the life lost this way.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Sorcery"
-   }
-  ],
   "cmc": 2.0,
   "collector_number": "29",
   "color_identity": [
@@ -45665,48 +45682,66 @@
    "Prepared"
   ],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "not_legal",
-   "commander": "legal",
-   "competitivebrawl": "not_legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "not_legal",
-   "historic": "not_legal",
-   "legacy": "legal",
-   "modern": "not_legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "not_legal",
-   "pioneer": "not_legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "not_legal",
-   "standardbrawl": "not_legal",
+   "future": "not_legal",
+   "historic": "not_legal",
    "timeless": "not_legal",
-   "tlr": "legal",
-   "vintage": "legal"
+   "gladiator": "not_legal",
+   "pioneer": "not_legal",
+   "modern": "not_legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "not_legal",
+   "competitivebrawl": "not_legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "legal"
   },
   "loyalty": null,
   "mana_cost": "{1}{B} // {X}{B}{B}",
   "name": "Stensian Sanguinist // Exsanguinate",
-  "oracle_text": null,
+  "oracle_text": "Stensian Sanguinist ({1}{B}): Whenever you attack, target creature gains deathtouch until end of turn. Whenever that creature deals combat damage to a player this combat, this creature becomes prepared. (While it's prepared, you may cast a copy of its spell. Doing so unprepares it.)\n // \nExsanguinate ({X}{B}{B}): Each opponent loses X life. You gain life equal to the life lost this way.",
   "power": "2",
   "prices": {
-   "eur": "6.36",
-   "eur_foil": null,
-   "tix": "3.26",
-   "usd": "5.17",
+   "usd": "4.38",
+   "usd_foil": null,
    "usd_etched": null,
-   "usd_foil": null
+   "eur": "6.41",
+   "eur_foil": null,
+   "tix": "3.43"
   },
   "released_at": "2026-04-24",
   "scryfall_uri": "https://scryfall.com/card/soc/29/stensian-sanguinist-exsanguinate?utm_source=api",
   "set": "soc",
   "toughness": "2",
-  "type_line": "Creature — Vampire Cleric // Sorcery"
+  "type_line": "Creature — Vampire Cleric // Sorcery",
+  "card_faces": [
+   {
+    "name": "Stensian Sanguinist",
+    "mana_cost": "{1}{B}",
+    "type_line": "Creature — Vampire Cleric",
+    "oracle_text": "Whenever you attack, target creature gains deathtouch until end of turn. Whenever that creature deals combat damage to a player this combat, this creature becomes prepared. (While it's prepared, you may cast a copy of its spell. Doing so unprepares it.)",
+    "power": "2",
+    "toughness": "2"
+   },
+   {
+    "name": "Exsanguinate",
+    "mana_cost": "{X}{B}{B}",
+    "type_line": "Sorcery",
+    "oracle_text": "Each opponent loses X life. You gain life equal to the life lost this way.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Sterling Grove": {
   "cmc": 2.0,
@@ -46198,24 +46233,6 @@
   "type_line": "Land"
  },
  "Studious First-Year // Rampant Growth": {
-  "card_faces": [
-   {
-    "mana_cost": "{G}",
-    "name": "Studious First-Year",
-    "oracle_text": "This creature enters prepared. (While it's prepared, you may cast a copy of its spell. Doing so unprepares it.)",
-    "power": "1",
-    "toughness": "1",
-    "type_line": "Creature — Bear Wizard"
-   },
-   {
-    "mana_cost": "{1}{G}",
-    "name": "Rampant Growth",
-    "oracle_text": "Search your library for a basic land card, put that card onto the battlefield tapped, then shuffle.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Sorcery"
-   }
-  ],
   "cmc": 1.0,
   "collector_number": "162",
   "color_identity": [
@@ -46228,48 +46245,66 @@
    "Prepared"
   ],
   "legalities": {
-   "alchemy": "legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "legal",
-   "paupercommander": "legal",
-   "penny": "legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "legal",
-   "standardbrawl": "legal",
+   "future": "legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "legal",
+   "paupercommander": "legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "legal"
   },
   "loyalty": null,
   "mana_cost": "{G} // {1}{G}",
   "name": "Studious First-Year // Rampant Growth",
-  "oracle_text": null,
+  "oracle_text": "Studious First-Year ({G}): This creature enters prepared. (While it's prepared, you may cast a copy of its spell. Doing so unprepares it.)\n // \nRampant Growth ({1}{G}): Search your library for a basic land card, put that card onto the battlefield tapped, then shuffle.",
   "power": "1",
   "prices": {
-   "eur": "0.15",
-   "eur_foil": "0.29",
-   "tix": "0.03",
-   "usd": "0.21",
+   "usd": "0.26",
+   "usd_foil": "0.61",
    "usd_etched": null,
-   "usd_foil": "0.65"
+   "eur": "0.14",
+   "eur_foil": "0.23",
+   "tix": "0.03"
   },
   "released_at": "2026-04-24",
   "scryfall_uri": "https://scryfall.com/card/sos/162/studious-first-year-rampant-growth?utm_source=api",
   "set": "sos",
   "toughness": "1",
-  "type_line": "Creature — Bear Wizard // Sorcery"
+  "type_line": "Creature — Bear Wizard // Sorcery",
+  "card_faces": [
+   {
+    "name": "Studious First-Year",
+    "mana_cost": "{G}",
+    "type_line": "Creature — Bear Wizard",
+    "oracle_text": "This creature enters prepared. (While it's prepared, you may cast a copy of its spell. Doing so unprepares it.)",
+    "power": "1",
+    "toughness": "1"
+   },
+   {
+    "name": "Rampant Growth",
+    "mana_cost": "{1}{G}",
+    "type_line": "Sorcery",
+    "oracle_text": "Search your library for a basic land card, put that card onto the battlefield tapped, then shuffle.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Sulfurous Springs": {
   "cmc": 0.0,
@@ -48817,76 +48852,78 @@
   "type_line": "Instant"
  },
  "Tergrid, God of Fright // Tergrid's Lantern": {
-  "card_faces": [
-   {
-    "mana_cost": "{3}{B}{B}",
-    "name": "Tergrid, God of Fright",
-    "oracle_text": "Menace\nWhenever an opponent sacrifices a nontoken permanent or discards a permanent card, you may put that card from a graveyard onto the battlefield under your control.",
-    "power": "4",
-    "toughness": "5",
-    "type_line": "Legendary Creature — God"
-   },
-   {
-    "mana_cost": "{3}{B}",
-    "name": "Tergrid's Lantern",
-    "oracle_text": "{T}: Target player loses 3 life unless they sacrifice a nonland permanent of their choice or discard a card.\n{3}{B}: Untap Tergrid's Lantern.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Legendary Artifact"
-   }
-  ],
   "cmc": 5.0,
   "collector_number": "112",
   "color_identity": [
    "B"
   ],
-  "colors": null,
+  "colors": [
+   "B"
+  ],
   "keywords": [
    "Menace"
   ],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "not_legal",
-   "standardbrawl": "not_legal",
+   "future": "not_legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "not_legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "not_legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "{3}{B}{B}",
   "name": "Tergrid, God of Fright // Tergrid's Lantern",
-  "oracle_text": null,
-  "power": null,
+  "oracle_text": "Tergrid, God of Fright ({3}{B}{B}): Menace\nWhenever an opponent sacrifices a nontoken permanent or discards a permanent card, you may put that card from a graveyard onto the battlefield under your control.\n // \nTergrid's Lantern ({3}{B}): {T}: Target player loses 3 life unless they sacrifice a nonland permanent of their choice or discard a card.\n{3}{B}: Untap Tergrid's Lantern.",
+  "power": "4",
   "prices": {
-   "eur": "14.06",
-   "eur_foil": "16.99",
-   "tix": "0.02",
-   "usd": "18.28",
+   "usd": "19.98",
+   "usd_foil": "18.45",
    "usd_etched": null,
-   "usd_foil": "18.40"
+   "eur": "14.28",
+   "eur_foil": "16.97",
+   "tix": "0.02"
   },
   "released_at": "2021-02-05",
   "scryfall_uri": "https://scryfall.com/card/khm/112/tergrid-god-of-fright-tergrids-lantern?utm_source=api",
   "set": "khm",
-  "toughness": null,
-  "type_line": "Legendary Creature — God // Legendary Artifact"
+  "toughness": "5",
+  "type_line": "Legendary Creature — God // Legendary Artifact",
+  "card_faces": [
+   {
+    "name": "Tergrid, God of Fright",
+    "mana_cost": "{3}{B}{B}",
+    "type_line": "Legendary Creature — God",
+    "oracle_text": "Menace\nWhenever an opponent sacrifices a nontoken permanent or discards a permanent card, you may put that card from a graveyard onto the battlefield under your control.",
+    "power": "4",
+    "toughness": "5"
+   },
+   {
+    "name": "Tergrid's Lantern",
+    "mana_cost": "{3}{B}",
+    "type_line": "Legendary Artifact",
+    "oracle_text": "{T}: Target player loses 3 life unless they sacrifice a nonland permanent of their choice or discard a card.\n{3}{B}: Untap Tergrid's Lantern.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Terrasymbiosis": {
   "cmc": 3.0,
@@ -50348,25 +50385,8 @@
   "type_line": "Creature — Elf Soldier"
  },
  "Thranduil, Sindarin Liege // Silvan Rally": {
-  "card_faces": [
-   {
-    "mana_cost": "{2}{G/U}{G/U}",
-    "name": "Thranduil, Sindarin Liege",
-    "oracle_text": "Other Elves you control get +1/+1.\nLandfall — Whenever a land you control enters, create a 1/1 green Elf creature token.",
-    "power": "2",
-    "toughness": "3",
-    "type_line": "Legendary Creature — Elf Noble"
-   },
-   {
-    "mana_cost": "{1}{G/U}{G/U}",
-    "name": "Silvan Rally",
-    "oracle_text": "Mill four cards, then put up to two land cards from among them into your hand. (Then exile this card. You may cast the creature later from exile.)",
-    "power": null,
-    "toughness": null,
-    "type_line": "Sorcery — Adventure"
-   }
-  ],
   "cmc": 4.0,
+  "collector_number": "166",
   "color_identity": [
    "G",
    "U"
@@ -50380,48 +50400,66 @@
    "Landfall"
   ],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "legal",
-   "standardbrawl": "legal",
+   "future": "not_legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "not_legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "not_legal"
   },
   "loyalty": null,
   "mana_cost": "{2}{G/U}{G/U} // {1}{G/U}{G/U}",
   "name": "Thranduil, Sindarin Liege // Silvan Rally",
-  "oracle_text": null,
+  "oracle_text": "Thranduil, Sindarin Liege ({2}{G/U}{G/U}): Other Elves you control get +1/+1.\nLandfall — Whenever a land you control enters, create a 1/1 green Elf creature token.\n // \nSilvan Rally ({1}{G/U}{G/U}): Mill four cards, then put up to two land cards from among them into your hand. (Then exile this card. You may cast the creature later from exile.)",
   "power": "2",
   "prices": {
+   "usd": "0.27",
+   "usd_foil": "0.34",
+   "usd_etched": null,
    "eur": "0.02",
    "eur_foil": "0.02",
-   "tix": "0.01",
-   "usd": "0.29",
-   "usd_etched": null,
-   "usd_foil": "0.34"
+   "tix": "0.01"
   },
   "released_at": "2026-08-14",
   "scryfall_uri": "https://scryfall.com/card/hob/166/thranduil-sindarin-liege-silvan-rally?utm_source=api",
   "set": "hob",
   "toughness": "3",
-  "type_line": "Legendary Creature — Elf Noble // Sorcery — Adventure"
+  "type_line": "Legendary Creature — Elf Noble // Sorcery — Adventure",
+  "card_faces": [
+   {
+    "name": "Thranduil, Sindarin Liege",
+    "mana_cost": "{2}{G/U}{G/U}",
+    "type_line": "Legendary Creature — Elf Noble",
+    "oracle_text": "Other Elves you control get +1/+1.\nLandfall — Whenever a land you control enters, create a 1/1 green Elf creature token.",
+    "power": "2",
+    "toughness": "3"
+   },
+   {
+    "name": "Silvan Rally",
+    "mana_cost": "{1}{G/U}{G/U}",
+    "type_line": "Sorcery — Adventure",
+    "oracle_text": "Mill four cards, then put up to two land cards from among them into your hand. (Then exile this card. You may cast the creature later from exile.)",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Thranduil, the Elvenking": {
   "cmc": 5.0,
@@ -51956,79 +51994,81 @@
   "type_line": "Kindred Sorcery — Elf"
  },
  "Trystan, Callous Cultivator // Trystan, Penitent Culler": {
-  "card_faces": [
-   {
-    "mana_cost": "{2}{G}",
-    "name": "Trystan, Callous Cultivator",
-    "oracle_text": "Deathtouch\nWhenever this creature enters or transforms into Trystan, Callous Cultivator, mill three cards. Then if there is an Elf card in your graveyard, you gain 2 life.\nAt the beginning of your first main phase, you may pay {B}. If you do, transform Trystan.",
-    "power": "3",
-    "toughness": "4",
-    "type_line": "Legendary Creature — Elf Druid"
-   },
-   {
-    "mana_cost": "",
-    "name": "Trystan, Penitent Culler",
-    "oracle_text": "Deathtouch\nWhenever this creature transforms into Trystan, Penitent Culler, mill three cards, then you may exile an Elf card from your graveyard. If you do, each opponent loses 2 life.\nAt the beginning of your first main phase, you may pay {G}. If you do, transform Trystan.",
-    "power": "3",
-    "toughness": "4",
-    "type_line": "Legendary Creature — Elf Warlock"
-   }
-  ],
   "cmc": 3.0,
   "collector_number": "199",
   "color_identity": [
    "B",
    "G"
   ],
-  "colors": null,
+  "colors": [
+   "G"
+  ],
   "keywords": [
    "Transform",
    "Mill",
    "Deathtouch"
   ],
   "legalities": {
-   "alchemy": "legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "legal",
-   "standardbrawl": "legal",
+   "future": "legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "{2}{G}",
   "name": "Trystan, Callous Cultivator // Trystan, Penitent Culler",
-  "oracle_text": null,
-  "power": null,
+  "oracle_text": "Trystan, Callous Cultivator ({2}{G}): Deathtouch\nWhenever this creature enters or transforms into Trystan, Callous Cultivator, mill three cards. Then if there is an Elf card in your graveyard, you gain 2 life.\nAt the beginning of your first main phase, you may pay {B}. If you do, transform Trystan.\n // \nTrystan, Penitent Culler (): Deathtouch\nWhenever this creature transforms into Trystan, Penitent Culler, mill three cards, then you may exile an Elf card from your graveyard. If you do, each opponent loses 2 life.\nAt the beginning of your first main phase, you may pay {G}. If you do, transform Trystan.",
+  "power": "3",
   "prices": {
-   "eur": "0.24",
-   "eur_foil": "0.49",
-   "tix": "0.02",
-   "usd": "0.31",
+   "usd": "0.34",
+   "usd_foil": "0.68",
    "usd_etched": null,
-   "usd_foil": "0.68"
+   "eur": "0.23",
+   "eur_foil": "0.52",
+   "tix": "0.02"
   },
   "released_at": "2026-01-23",
   "scryfall_uri": "https://scryfall.com/card/ecl/199/trystan-callous-cultivator-trystan-penitent-culler?utm_source=api",
   "set": "ecl",
-  "toughness": null,
-  "type_line": "Legendary Creature — Elf Druid // Legendary Creature — Elf Warlock"
+  "toughness": "4",
+  "type_line": "Legendary Creature — Elf Druid // Legendary Creature — Elf Warlock",
+  "card_faces": [
+   {
+    "name": "Trystan, Callous Cultivator",
+    "mana_cost": "{2}{G}",
+    "type_line": "Legendary Creature — Elf Druid",
+    "oracle_text": "Deathtouch\nWhenever this creature enters or transforms into Trystan, Callous Cultivator, mill three cards. Then if there is an Elf card in your graveyard, you gain 2 life.\nAt the beginning of your first main phase, you may pay {B}. If you do, transform Trystan.",
+    "power": "3",
+    "toughness": "4"
+   },
+   {
+    "name": "Trystan, Penitent Culler",
+    "mana_cost": "",
+    "type_line": "Legendary Creature — Elf Warlock",
+    "oracle_text": "Deathtouch\nWhenever this creature transforms into Trystan, Penitent Culler, mill three cards, then you may exile an Elf card from your graveyard. If you do, each opponent loses 2 life.\nAt the beginning of your first main phase, you may pay {G}. If you do, transform Trystan.",
+    "power": "3",
+    "toughness": "4"
+   }
+  ]
  },
  "Tundra": {
   "cmc": 0.0,
@@ -53319,24 +53359,6 @@
   "type_line": "Instant"
  },
  "Unholy Annex // Ritual Chamber": {
-  "card_faces": [
-   {
-    "mana_cost": "{2}{B}",
-    "name": "Unholy Annex",
-    "oracle_text": "At the beginning of your end step, draw a card. If you control a Demon, each opponent loses 2 life and you gain 2 life. Otherwise, you lose 2 life.\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)",
-    "power": null,
-    "toughness": null,
-    "type_line": "Enchantment — Room"
-   },
-   {
-    "mana_cost": "{3}{B}{B}",
-    "name": "Ritual Chamber",
-    "oracle_text": "When you unlock this door, create a 6/6 black Demon creature token with flying.\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)",
-    "power": null,
-    "toughness": null,
-    "type_line": "Enchantment — Room"
-   }
-  ],
   "cmc": 8.0,
   "collector_number": "118",
   "color_identity": [
@@ -53347,48 +53369,66 @@
   ],
   "keywords": [],
   "legalities": {
-   "alchemy": "legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "not_legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "legal",
-   "standardbrawl": "legal",
+   "future": "legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "not_legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "not_legal"
   },
   "loyalty": null,
   "mana_cost": "{2}{B} // {3}{B}{B}",
   "name": "Unholy Annex // Ritual Chamber",
-  "oracle_text": null,
+  "oracle_text": "Unholy Annex ({2}{B}): At the beginning of your end step, draw a card. If you control a Demon, each opponent loses 2 life and you gain 2 life. Otherwise, you lose 2 life.\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)\n // \nRitual Chamber ({3}{B}{B}): When you unlock this door, create a 6/6 black Demon creature token with flying.\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)",
   "power": null,
   "prices": {
-   "eur": "2.11",
-   "eur_foil": "2.74",
-   "tix": "0.13",
-   "usd": "1.91",
+   "usd": "2.39",
+   "usd_foil": "3.19",
    "usd_etched": null,
-   "usd_foil": "3.11"
+   "eur": "2.27",
+   "eur_foil": "2.86",
+   "tix": "0.12"
   },
   "released_at": "2024-09-27",
   "scryfall_uri": "https://scryfall.com/card/dsk/118/unholy-annex-ritual-chamber?utm_source=api",
   "set": "dsk",
   "toughness": null,
-  "type_line": "Enchantment — Room // Enchantment — Room"
+  "type_line": "Enchantment — Room // Enchantment — Room",
+  "card_faces": [
+   {
+    "name": "Unholy Annex",
+    "mana_cost": "{2}{B}",
+    "type_line": "Enchantment — Room",
+    "oracle_text": "At the beginning of your end step, draw a card. If you control a Demon, each opponent loses 2 life and you gain 2 life. Otherwise, you lose 2 life.\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)",
+    "power": null,
+    "toughness": null
+   },
+   {
+    "name": "Ritual Chamber",
+    "mana_cost": "{3}{B}{B}",
+    "type_line": "Enchantment — Room",
+    "oracle_text": "When you unlock this door, create a 6/6 black Demon creature token with flying.\n(You may cast either half. That door unlocks on the battlefield. As a sorcery, you may pay the mana cost of a locked door to unlock it.)",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Unleash Fury": {
   "cmc": 2.0,
@@ -54249,24 +54289,6 @@
   "type_line": "Instant"
  },
  "Vastlands Scavenger // Bind to Life": {
-  "card_faces": [
-   {
-    "mana_cost": "{1}{G}{G}",
-    "name": "Vastlands Scavenger",
-    "oracle_text": "Deathtouch\nThis creature enters prepared. (While it's prepared, you may cast a copy of its spell. Doing so unprepares it.)",
-    "power": "4",
-    "toughness": "4",
-    "type_line": "Creature — Bear Druid"
-   },
-   {
-    "mana_cost": "{4}{G}",
-    "name": "Bind to Life",
-    "oracle_text": "Mill seven cards. Then put a creature card from among them onto the battlefield.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Instant"
-   }
-  ],
   "cmc": 3.0,
   "collector_number": "166",
   "color_identity": [
@@ -54281,48 +54303,66 @@
    "Deathtouch"
   ],
   "legalities": {
-   "alchemy": "legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "legal",
-   "standardbrawl": "legal",
+   "future": "legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "not_legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "not_legal"
   },
   "loyalty": null,
   "mana_cost": "{1}{G}{G} // {4}{G}",
   "name": "Vastlands Scavenger // Bind to Life",
-  "oracle_text": null,
+  "oracle_text": "Vastlands Scavenger ({1}{G}{G}): Deathtouch\nThis creature enters prepared. (While it's prepared, you may cast a copy of its spell. Doing so unprepares it.)\n // \nBind to Life ({4}{G}): Mill seven cards. Then put a creature card from among them onto the battlefield.",
   "power": "4",
   "prices": {
-   "eur": "0.34",
-   "eur_foil": "0.51",
-   "tix": "0.02",
-   "usd": "0.34",
+   "usd": "0.46",
+   "usd_foil": "0.49",
    "usd_etched": null,
-   "usd_foil": "0.45"
+   "eur": "0.33",
+   "eur_foil": "0.51",
+   "tix": "0.02"
   },
   "released_at": "2026-04-24",
   "scryfall_uri": "https://scryfall.com/card/sos/166/vastlands-scavenger-bind-to-life?utm_source=api",
   "set": "sos",
   "toughness": "4",
-  "type_line": "Creature — Bear Druid // Instant"
+  "type_line": "Creature — Bear Druid // Instant",
+  "card_faces": [
+   {
+    "name": "Vastlands Scavenger",
+    "mana_cost": "{1}{G}{G}",
+    "type_line": "Creature — Bear Druid",
+    "oracle_text": "Deathtouch\nThis creature enters prepared. (While it's prepared, you may cast a copy of its spell. Doing so unprepares it.)",
+    "power": "4",
+    "toughness": "4"
+   },
+   {
+    "name": "Bind to Life",
+    "mana_cost": "{4}{G}",
+    "type_line": "Instant",
+    "oracle_text": "Mill seven cards. Then put a creature card from among them onto the battlefield.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Vedalken Orrery": {
   "cmc": 4.0,
@@ -55899,75 +55939,78 @@
   "type_line": "Land"
  },
  "Waterlogged Teachings // Inundated Archive": {
-  "card_faces": [
-   {
-    "mana_cost": "{3}{U/B}",
-    "name": "Waterlogged Teachings",
-    "oracle_text": "Search your library for an instant card or a card with flash, reveal it, put it into your hand, then shuffle.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Instant"
-   },
-   {
-    "mana_cost": "",
-    "name": "Inundated Archive",
-    "oracle_text": "This land enters tapped.\n{T}: Add {U} or {B}.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Land"
-   }
-  ],
   "cmc": 4.0,
   "collector_number": "261",
   "color_identity": [
    "B",
    "U"
   ],
-  "colors": null,
+  "colors": [
+   "B",
+   "U"
+  ],
   "keywords": [],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "not_legal",
-   "pioneer": "not_legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "not_legal",
-   "standardbrawl": "not_legal",
+   "future": "not_legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "not_legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "not_legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "not_legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "{3}{U/B}",
   "name": "Waterlogged Teachings // Inundated Archive",
-  "oracle_text": null,
+  "oracle_text": "Waterlogged Teachings ({3}{U/B}): Search your library for an instant card or a card with flash, reveal it, put it into your hand, then shuffle.\n // \nInundated Archive (): This land enters tapped.\n{T}: Add {U} or {B}.",
   "power": null,
   "prices": {
-   "eur": "0.52",
-   "eur_foil": "1.02",
-   "tix": "0.03",
-   "usd": "0.44",
+   "usd": "0.52",
+   "usd_foil": "1.50",
    "usd_etched": null,
-   "usd_foil": "1.47"
+   "eur": "0.56",
+   "eur_foil": "0.97",
+   "tix": "0.03"
   },
   "released_at": "2024-06-14",
   "scryfall_uri": "https://scryfall.com/card/mh3/261/waterlogged-teachings-inundated-archive?utm_source=api",
   "set": "mh3",
   "toughness": null,
-  "type_line": "Instant // Land"
+  "type_line": "Instant // Land",
+  "card_faces": [
+   {
+    "name": "Waterlogged Teachings",
+    "mana_cost": "{3}{U/B}",
+    "type_line": "Instant",
+    "oracle_text": "Search your library for an instant card or a card with flash, reveal it, put it into your hand, then shuffle.",
+    "power": null,
+    "toughness": null
+   },
+   {
+    "name": "Inundated Archive",
+    "mana_cost": "",
+    "type_line": "Land",
+    "oracle_text": "This land enters tapped.\n{T}: Add {U} or {B}.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Watery Grave": {
   "cmc": 0.0,
@@ -56295,30 +56338,12 @@
   "type_line": "Creature — Human Bear Druid"
  },
  "Westvale Abbey // Ormendahl, Profane Prince": {
-  "card_faces": [
-   {
-    "mana_cost": "",
-    "name": "Westvale Abbey",
-    "oracle_text": "{T}: Add {C}.\n{5}, {T}, Pay 1 life: Create a 1/1 white and black Human Cleric creature token.\n{5}, {T}, Sacrifice five creatures: Transform this land, then untap it.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Land"
-   },
-   {
-    "mana_cost": "",
-    "name": "Ormendahl, Profane Prince",
-    "oracle_text": "Flying, lifelink, indestructible, haste",
-    "power": "9",
-    "toughness": "7",
-    "type_line": "Legendary Creature — Demon"
-   }
-  ],
   "cmc": 0.0,
   "collector_number": "287",
   "color_identity": [
    "B"
   ],
-  "colors": null,
+  "colors": [],
   "keywords": [
    "Flying",
    "Lifelink",
@@ -56327,48 +56352,66 @@
    "Haste"
   ],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "legal",
-   "pioneer": "legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "not_legal",
-   "standardbrawl": "not_legal",
+   "future": "not_legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "",
   "name": "Westvale Abbey // Ormendahl, Profane Prince",
-  "oracle_text": null,
+  "oracle_text": "Westvale Abbey (): {T}: Add {C}.\n{5}, {T}, Pay 1 life: Create a 1/1 white and black Human Cleric creature token.\n{5}, {T}, Sacrifice five creatures: Transform this land, then untap it.\n // \nOrmendahl, Profane Prince (): Flying, lifelink, indestructible, haste",
   "power": null,
   "prices": {
-   "eur": "1.71",
-   "eur_foil": "1.60",
-   "tix": "0.03",
-   "usd": "3.74",
+   "usd": "3.66",
+   "usd_foil": "3.64",
    "usd_etched": null,
-   "usd_foil": "3.39"
+   "eur": "1.67",
+   "eur_foil": "1.69",
+   "tix": "0.02"
   },
   "released_at": "2025-01-24",
   "scryfall_uri": "https://scryfall.com/card/inr/287/westvale-abbey-ormendahl-profane-prince?utm_source=api",
   "set": "inr",
   "toughness": null,
-  "type_line": "Land // Legendary Creature — Demon"
+  "type_line": "Land // Legendary Creature — Demon",
+  "card_faces": [
+   {
+    "name": "Westvale Abbey",
+    "mana_cost": "",
+    "type_line": "Land",
+    "oracle_text": "{T}: Add {C}.\n{5}, {T}, Pay 1 life: Create a 1/1 white and black Human Cleric creature token.\n{5}, {T}, Sacrifice five creatures: Transform this land, then untap it.",
+    "power": null,
+    "toughness": null
+   },
+   {
+    "name": "Ormendahl, Profane Prince",
+    "mana_cost": "",
+    "type_line": "Legendary Creature — Demon",
+    "oracle_text": "Flying, lifelink, indestructible, haste",
+    "power": "9",
+    "toughness": "7"
+   }
+  ]
  },
  "Wheel and Deal": {
   "cmc": 4.0,
@@ -57016,74 +57059,76 @@
   "type_line": "Creature — Insect"
  },
  "Witch Enchanter // Witch-Blessed Meadow": {
-  "card_faces": [
-   {
-    "mana_cost": "{3}{W}",
-    "name": "Witch Enchanter",
-    "oracle_text": "When this creature enters, destroy target artifact or enchantment an opponent controls.",
-    "power": "2",
-    "toughness": "2",
-    "type_line": "Creature — Human Warlock"
-   },
-   {
-    "mana_cost": "",
-    "name": "Witch-Blessed Meadow",
-    "oracle_text": "As this land enters, you may pay 3 life. If you don't, it enters tapped.\n{T}: Add {W}.",
-    "power": null,
-    "toughness": null,
-    "type_line": "Land"
-   }
-  ],
   "cmc": 4.0,
   "collector_number": "239",
   "color_identity": [
    "W"
   ],
-  "colors": null,
+  "colors": [
+   "W"
+  ],
   "keywords": [],
   "legalities": {
-   "alchemy": "not_legal",
-   "brawl": "legal",
-   "commander": "legal",
-   "competitivebrawl": "legal",
-   "duel": "legal",
-   "future": "not_legal",
-   "gladiator": "legal",
-   "historic": "legal",
-   "legacy": "legal",
-   "modern": "legal",
-   "oathbreaker": "legal",
-   "oldschool": "not_legal",
-   "pauper": "not_legal",
-   "paupercommander": "not_legal",
-   "penny": "not_legal",
-   "pioneer": "not_legal",
-   "predh": "not_legal",
-   "premodern": "not_legal",
    "standard": "not_legal",
-   "standardbrawl": "not_legal",
+   "future": "not_legal",
+   "historic": "legal",
    "timeless": "legal",
-   "tlr": "not_legal",
-   "vintage": "legal"
+   "gladiator": "legal",
+   "pioneer": "not_legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "not_legal"
   },
   "loyalty": null,
-  "mana_cost": null,
+  "mana_cost": "{3}{W}",
   "name": "Witch Enchanter // Witch-Blessed Meadow",
-  "oracle_text": null,
-  "power": null,
+  "oracle_text": "Witch Enchanter ({3}{W}): When this creature enters, destroy target artifact or enchantment an opponent controls.\n // \nWitch-Blessed Meadow (): As this land enters, you may pay 3 life. If you don't, it enters tapped.\n{T}: Add {W}.",
+  "power": "2",
   "prices": {
-   "eur": "4.29",
-   "eur_foil": "5.40",
-   "tix": "0.80",
-   "usd": "4.76",
+   "usd": "5.40",
+   "usd_foil": "7.43",
    "usd_etched": null,
-   "usd_foil": "6.44"
+   "eur": "4.11",
+   "eur_foil": "5.41",
+   "tix": "1.33"
   },
   "released_at": "2024-06-14",
   "scryfall_uri": "https://scryfall.com/card/mh3/239/witch-enchanter-witch-blessed-meadow?utm_source=api",
   "set": "mh3",
-  "toughness": null,
-  "type_line": "Creature — Human Warlock // Land"
+  "toughness": "2",
+  "type_line": "Creature — Human Warlock // Land",
+  "card_faces": [
+   {
+    "name": "Witch Enchanter",
+    "mana_cost": "{3}{W}",
+    "type_line": "Creature — Human Warlock",
+    "oracle_text": "When this creature enters, destroy target artifact or enchantment an opponent controls.",
+    "power": "2",
+    "toughness": "2"
+   },
+   {
+    "name": "Witch-Blessed Meadow",
+    "mana_cost": "",
+    "type_line": "Land",
+    "oracle_text": "As this land enters, you may pay 3 life. If you don't, it enters tapped.\n{T}: Add {W}.",
+    "power": null,
+    "toughness": null
+   }
+  ]
  },
  "Witch of the Moors": {
   "cmc": 5.0,
@@ -58156,5 +58201,166 @@
   "set": "mh2",
   "toughness": null,
   "type_line": "Artifact"
+ },
+ "Dragon's Hoard": {
+  "cmc": 3.0,
+  "collector_number": "317",
+  "color_identity": [],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "standard": "not_legal",
+   "future": "not_legal",
+   "historic": "legal",
+   "timeless": "legal",
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "{3}",
+  "name": "Dragon's Hoard",
+  "oracle_text": "Whenever a Dragon you control enters, put a gold counter on this artifact.\n{T}, Remove a gold counter from this artifact: Draw a card.\n{T}: Add one mana of any color.",
+  "power": null,
+  "prices": {
+   "usd": "0.48",
+   "usd_foil": null,
+   "usd_etched": null,
+   "eur": "0.62",
+   "eur_foil": null,
+   "tix": "0.07"
+  },
+  "released_at": "2025-04-11",
+  "scryfall_uri": "https://scryfall.com/card/tdc/317/dragons-hoard?utm_source=api",
+  "set": "tdc",
+  "toughness": null,
+  "type_line": "Artifact"
+ },
+ "Sarkhan Unbroken": {
+  "cmc": 5.0,
+  "collector_number": "230",
+  "color_identity": [
+   "G",
+   "R",
+   "U"
+  ],
+  "colors": [
+   "G",
+   "R",
+   "U"
+  ],
+  "keywords": [],
+  "legalities": {
+   "standard": "not_legal",
+   "future": "not_legal",
+   "historic": "legal",
+   "timeless": "legal",
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "not_legal"
+  },
+  "loyalty": "4",
+  "mana_cost": "{2}{G}{U}{R}",
+  "name": "Sarkhan Unbroken",
+  "oracle_text": "+1: Draw a card, then add one mana of any color.\n−2: Create a 4/4 red Dragon creature token with flying.\n−8: Search your library for any number of Dragon creature cards, put them onto the battlefield, then shuffle.",
+  "power": null,
+  "prices": {
+   "usd": "20.36",
+   "usd_foil": "25.10",
+   "usd_etched": null,
+   "eur": "9.64",
+   "eur_foil": "12.67",
+   "tix": "0.02"
+  },
+  "released_at": "2015-03-27",
+  "scryfall_uri": "https://scryfall.com/card/dtk/230/sarkhan-unbroken?utm_source=api",
+  "set": "dtk",
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Sarkhan"
+ },
+ "Sundown Pass": {
+  "cmc": 0.0,
+  "collector_number": "264",
+  "color_identity": [
+   "R",
+   "W"
+  ],
+  "colors": [],
+  "keywords": [],
+  "legalities": {
+   "standard": "legal",
+   "future": "legal",
+   "historic": "legal",
+   "timeless": "legal",
+   "gladiator": "legal",
+   "pioneer": "legal",
+   "modern": "legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "legal",
+   "brawl": "legal",
+   "competitivebrawl": "legal",
+   "alchemy": "legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "legal"
+  },
+  "loyalty": null,
+  "mana_cost": "",
+  "name": "Sundown Pass",
+  "oracle_text": "This land enters tapped unless you control two or more other lands.\n{T}: Add {R} or {W}.",
+  "power": null,
+  "prices": {
+   "usd": "2.45",
+   "usd_foil": "2.48",
+   "usd_etched": null,
+   "eur": "1.59",
+   "eur_foil": "1.39",
+   "tix": "0.02"
+  },
+  "released_at": "2026-04-24",
+  "scryfall_uri": "https://scryfall.com/card/sos/264/sundown-pass?utm_source=api",
+  "set": "sos",
+  "toughness": null,
+  "type_line": "Land"
  }
 }

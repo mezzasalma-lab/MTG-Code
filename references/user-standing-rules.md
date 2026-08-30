@@ -555,6 +555,62 @@ Scryfall via `curl`, não `WebSearch`/`WebFetch`:**
   houver qualquer dúvida — não é preciso esperar o usuário apontar erro
   carta por carta.
 
+## 14. `scryfall-cache/oracle-cache.json` é OBRIGATÓRIO consultar primeiro — e manter 100% completo, sem `oracle_text: null`
+
+Citação literal do usuário (2026-08-30), depois de eu ter implementado o
+Thranduil sem a habilidade estática que dá nome ao comandante: *"Quantas
+vezes vou precisar pedir para vc registrar a porra do oráculo completo de
+todas as cartas dos meus decks para consultar sempre que precisar nesta
+merda? Me irrita vc ignorar a habilidade MAIS IMPORTANTE."*
+
+**Achado real que motivou a regra:** o cache (`scryfall-cache/oracle-cache.json`,
+na raiz do repo) **já existia com 1061 cartas**, incluindo o Thranduil, e
+**já tinha o texto correto** ("Thranduil has all activated abilities of
+all Elf cards in your graveyard...") — eu simplesmente não consultei essa
+fonte antes de implementar. Auditoria completa do cache revelou um
+segundo problema estrutural: **34 cartas de face múltipla em todo o
+repositório tinham `oracle_text: null`** (Scryfall retorna `oracle_text`
+vazio no nível superior pra cartas com `card_faces` — quem populou o
+cache original não tratou esse caso), incluindo `Thranduil, Sindarin
+Liege // Silvan Rally`, `Beorn, Reluctant Host // Till and Tend`, `Bala
+Ged Recovery // Bala Ged Sanctuary` e outras 31 cartas de outros decks do
+repositório (Edgar Markov, Hei Bai, etc.) — um "buraco" real e sistêmico,
+não um problema isolado do Thranduil. Corrigido: as 34 entradas agora têm
+`oracle_text` reconstruído (join dos `card_faces`) + um campo `card_faces`
+novo preservando nome/custo/texto de cada face separadamente. 3 cartas do
+Ur-Dragon que faltavam inteiramente no cache (`Dragon's Hoard`, `Sarkhan
+Unbroken`, `Sundown Pass` — adicionadas à lista depois do cache original
+ser montado) também foram adicionadas.
+
+**A partir de agora, ordem OBRIGATÓRIA de consulta pra qualquer dado de
+carta (substitui a Regra 13 como primeiro passo, não a invalida):**
+
+1. **Primeiro**, checar `scryfall-cache/oracle-cache.json` (chave = nome
+   exato da carta, incluindo `"Front // Back"` pra cartas de face
+   múltipla). Se a entrada existe e `oracle_text` não é `null`/vazio, usar
+   esse texto — não fazer uma chamada de API repetida pra uma carta já
+   cacheada.
+2. **Se a carta não estiver no cache, OU estiver com `oracle_text: null`
+   OU vazio**: buscar via API real da Scryfall (Regra 13 — `curl`,
+   `/cards/named` ou `/cards/collection`) e **imediatamente adicionar/
+   corrigir a entrada no cache** antes de continuar o trabalho — nunca
+   deixar o cache desatualizado depois de descobrir uma lacuna. Cartas de
+   face múltipla exigem reconstruir `oracle_text` a partir de
+   `card_faces` (nunca aceitar `null` como "sem texto").
+3. **Nunca implementar uma carta a partir de memória ou impressão "essa
+   eu conheço"** mesmo que ela pareça familiar — sempre passar pelo cache
+   ou pela API, mesmo pra comandantes/cartas centrais do próprio deck
+   sendo trabalhado (esse foi exatamente o erro: Thranduil é a carta MAIS
+   óbvia de checar, e foi a que ficou sem checagem).
+4. Antes de declarar qualquer simulador/auditoria "completo", rodar uma
+   varredura programática comparando a decklist inteira contra o cache
+   (nomes faltando + `oracle_text` nulo) — não confiar em revisão manual
+   carta por carta pra pegar esse tipo de buraco.
+5. Vale retroativamente pra **todo deck do repositório**, não só os 3
+   trabalhados nesta sessão (Thranduil/Beorn/Ur-Dragon) — qualquer deck
+   com carta de face múltipla merece essa mesma varredura antes de
+   confiar no cache pra ele.
+
 ---
 
 <!-- Adicionar novas regras permanentes abaixo conforme o usuário as
