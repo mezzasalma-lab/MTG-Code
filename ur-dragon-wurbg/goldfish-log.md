@@ -2438,11 +2438,12 @@ errado. `lista.md` não muda.
 
 ---
 
-## Partida #15 — AAAA-MM-DD
+## Partida #15 — 2026-08-30 (partida REAL, jogada à mão no goldfish do Archidekt) — EM ANDAMENTO
 
-- **Formato do teste:**
-- **Mão inicial (mulligan até):**
-- **Turno da primeira jogada relevante:**
+- **Formato do teste:** não é simulação automatizada — jogada manual pelo usuário no modo goldfish do Archidekt, mesma metodologia das Partidas #13/#14.
+- **Mão inicial (mulligan até):** keep na mão de 7 (sem mulligan). Sarkhan Unbroken, Smothering Tithe, Crux of Fate, Jetmir's Garden, Rhythm of the Wild, Haven of the Spirit Dragon, Ancient Gold Dragon.
+- **Leitura da mão (antes de qualquer turno jogado):** só **2 terrenos** (Jetmir's Garden, Haven of the Spirit Dragon) e **nenhum ramp** (Sol Ring/Cultivate/Farseek/etc.) — mão pesada em ação (Sarkhan Unbroken, Smothering Tithe, Rhythm of the Wild, Ancient Gold Dragon) mas com risco real de travar em land drop antes delas ficarem castáveis, especialmente num deck de 5 cores. Compensações reais: Haven of the Spirit Dragon fixa qualquer cor pra Dragão (Ancient Gold Dragon incluído) e Jetmir's Garden já cobre 3 das 5 cores (R/G/W) sozinha — então a mão não está tão exposta a color screw quanto pareceria só pela contagem de terrenos, mas ainda depende de puxar mais 2-3 land drops a tempo pra desenvolver.
+- **Turno da primeira jogada relevante:** *(a preencher conforme a partida progride)*
 - **Turno do primeiro ataque/combo:**
 - **Curva de mana observada:**
 - **Bombas/peças-chave puxadas:**
