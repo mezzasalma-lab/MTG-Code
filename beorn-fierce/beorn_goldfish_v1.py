@@ -392,6 +392,7 @@ class GameState:
     # auditoria completa de oraculo). So Bala Ged Sanctuary (lado terreno do
     # MDFC) tem essa condicao real na manabase deste deck.
     tapped_lands_this_turn: Set[str] = field(default_factory=set)
+    opponent_interaction_events: int = 0      # remocao/interacao (ex counterspell) de oponente, premissa fixa 1/3 turnos
 
     # Chameleon Colossus, "{2}{G}{G}: This creature gets +X/+X until end of turn,
     # where X is its power" - achado real 2026-08-30 (auditoria completa de oraculo):
@@ -1425,6 +1426,29 @@ def combat_step(state: GameState, log: List[Dict]):
 # TURN STRUCTURE
 # =========================================================
 
+def apply_opponent_interaction(state: GameState, log: List[Dict]):
+    """Premissa nova (pedido explicito do usuario 2026-08-30): "Assuma
+    tambem o uso de 1 a cada 3 turnos de remocao ou interacao (como
+    counterspell)." Mesma implementacao/documentacao do Thranduil e
+    Ur-Dragon: a cada 3 turnos, remove o permanente nao-terreno de maior
+    custo de mana em campo (exceto o comandante - remocao no comandante
+    vai pra zona de comando, nao cemiterio, nao modelado o retorno).
+    Representa remocao E interacao/counterspell numa unica mecanica -
+    contramagia de verdade exigiria interceptar ANTES da resolucao,
+    mudanca estrutural maior, decisao de escopo documentada."""
+    if state.turn % 3 != 0:
+        return
+    candidates = [c for c in state.battlefield if not is_land(c) and c != COMMANDER]
+    if not candidates:
+        return
+    candidates.sort(key=lambda c: -C(c).mv)
+    target = candidates[0]
+    state.battlefield.remove(target)
+    state.graveyard.append(target)
+    state.opponent_interaction_events += 1
+    log.append({"trigger": "opponent_interaction", "removed": target, "turn": state.turn})
+
+
 def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.turn = turn
     state.land_played = False
@@ -1437,6 +1461,8 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
 
     log = [{"turn": turn, "phase": "start", "hand_size": len(state.hand),
             "battlefield_count": len(state.battlefield), "mana_est": total_mana(state)}]
+
+    apply_opponent_interaction(state, log)
 
     # Commander e sempre multiplayer (3+ jogadores) - a regra que pula a 1a compra de quem
     # comeca (CR 103.8a) so vale em jogos de 2 jogadores. Aqui sempre compra, mesmo no T1.
@@ -1545,6 +1571,7 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "eternal_witness_returned": state.eternal_witness_returned,
         "springleaf_parade_cast": state.springleaf_parade_cast,
         "bala_ged_recovery_cast": state.bala_ged_recovery_cast,
+        "opponent_interaction_events": state.opponent_interaction_events,
     }
 
 def run_batch(n=500, turns=8, out_jsonl="beorn_v1_runs.jsonl", seed_base=91000):
@@ -1661,6 +1688,7 @@ def run_batch(n=500, turns=8, out_jsonl="beorn_v1_runs.jsonl", seed_base=91000):
     print(f"Chameleon Colossus pump ({{2}}{{G}}{{G}}) ativado em {100*len(cc_games)/n:.1f}% dos jogos, avg {avg('chameleon_colossus_activations'):.2f} ativacoes/partida")
     bh_games = [r for r in results if r["beorns_hospitality_animated"]]
     print(f"Beorn's Hospitality animada (vira criatura Bear) em {100*len(bh_games)/n:.1f}% dos jogos")
+    print(f"Avg eventos de interacao de oponente (1/3 turnos, premissa nova): {avg('opponent_interaction_events'):.2f}")
 
     print(f"Avg mao final: {avg('hand_size'):.2f}")
     print(f"Avg terrenos jogados: {avg('lands_played_total'):.2f}")

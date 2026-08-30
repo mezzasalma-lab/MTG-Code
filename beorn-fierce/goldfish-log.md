@@ -855,6 +855,40 @@ varredura completa — próximo da fila.
 
 ---
 
+### Correção — pedido explícito: interação de oponente a cada 3 turnos — 2026-08-30
+
+**Gatilho (usuário):** *"Assuma também o uso de 1 a cada 3 turnos de
+remoção ou interação como counterspell a cada 3 turnos também."* Até
+esta correção, os 3 simuladores desta sessão eram goldfish solo puro —
+zero interação de oponente, premissa documentada desde o início mas que
+o usuário agora pede pra substituir por uma taxa fixa real.
+
+**Implementado** (`apply_opponent_interaction()`, chamada no início de
+`play_turn`): a cada 3 turnos (turno % 3 == 0), remove o permanente
+não-terreno de maior custo de mana em campo, exceto o comandante
+(remoção no comandante vai pra zona de comando, não cemitério — retorno
+não modelado, exclusão documentada). Representa remoção E interação/
+counterspell numa única mecânica — contramagia de verdade exigiria
+interceptar ANTES da resolução (mudança estrutural maior), decisão de
+escopo documentada.
+
+**Robustez:** 20.000 seeds — 0 erros.
+
+**Batch oficial, n=5000, seed_base=91000 (antes → depois):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg commander cast turn | 4,25 | 4,59 |
+| Avg finishers resolvidos | 0,44 | 0,33 |
+| % jogos com finisher até T8 | 36,0% | 28,4% |
+| Avg battlefield final | 19,39 | 15,09 |
+| Avg eventos de interação de oponente | — | 1,61/partida |
+
+**Leitura:** impacto real e esperado — o deck agora enfrenta disrupção de
+verdade em vez de jogar sozinho. `lista.md` não muda.
+
+---
+
 <!-- Para novas partidas avulsas, use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

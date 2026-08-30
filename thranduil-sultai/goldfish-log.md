@@ -889,6 +889,38 @@ suporte, não motores centrais. `lista.md` não muda.
 
 ---
 
+### Correção — pedido explícito: interação de oponente a cada 3 turnos — 2026-08-30
+
+**Gatilho (usuário):** mesmo pedido registrado no Beorn/Ur-Dragon —
+*"Assuma também o uso de 1 a cada 3 turnos de remoção ou interação como
+counterspell a cada 3 turnos também."*
+
+**Implementado** (`apply_opponent_interaction()`, início de `play_turn`):
+a cada 3 turnos, remove o permanente não-terreno de maior custo de mana
+em campo, exceto o comandante (retorno pra zona de comando não modelado,
+exclusão documentada). Mesma mecânica única cobrindo remoção +
+interação/counterspell — ver justificativa completa no log do Beorn/
+Ur-Dragon (idêntica nos 3 decks).
+
+**Robustez:** 20.000 seeds — 0 erros.
+
+**Batch oficial, n=5000, seed_base=71000 (antes → depois):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg commander cast turn | 4,44 | 4,80 |
+| Avg finishers ativados | 1,50 | 0,75 |
+| % jogos com finisher até T8 | 55,0% | 38,1% |
+| DRAW (extra draws) | 10,86 | 6,80 |
+| Avg battlefield final | 19,24 | 15,23 |
+| Avg eventos de interação de oponente | — | 1,64/partida |
+
+**Leitura:** impacto real e grande — a interação de oponente reduz
+finishers quase pela metade, confirmando que boa parte do valor do deck
+vinha de um ambiente sem resistência nenhuma. `lista.md` não muda.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

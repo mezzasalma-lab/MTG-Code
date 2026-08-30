@@ -554,6 +554,7 @@ class GameState:
     devoted_druid_bursts: int = 0             # Devoted Druid: sacrifica-se (via -1/-1) por 1 G extra no turno
     elrond_flickers: int = 0                  # Elrond {5}{U}{U}: flicker de ate 2 permanentes, re-dispara ETB
     eladamri_library_top_casts: int = 0       # Eladamri: conjurou criatura do topo da biblioteca (estatica passiva)
+    opponent_interaction_events: int = 0      # remocao/interacao (ex counterspell) de oponente, premissa fixa 1/3 turnos
 
     def draw(self, n=1, source="draw"):
         got = 0
@@ -1547,6 +1548,39 @@ def apply_rhystic_study(state: GameState, log: List[Dict]):
 # TURN STRUCTURE
 # =========================================================
 
+def apply_opponent_interaction(state: GameState, log: List[Dict]):
+    """Premissa nova (pedido explicito do usuario 2026-08-30): "Assuma
+    tambem o uso de 1 a cada 3 turnos de remocao ou interacao (como
+    counterspell)." Ate esta correcao, TODOS os simuladores desta sessao
+    eram goldfish solo puro - zero interacao de oponente, premissa
+    documentada desde o inicio mas que o usuario agora pede pra
+    substituir por uma taxa fixa e simples.
+
+    Implementacao: a cada 3 turnos (turno % 3 == 0), remove o permanente
+    nao-terreno de maior custo de mana em campo (exceto o comandante -
+    remocao no comandante vai pra zona de comando, nao cemiterio, e
+    nenhum simulador desta sessao modela esse retorno; excluir e' a
+    simplificacao mais segura). Representa numa unica mecanica tanto
+    "remocao" (destroi algo ja resolvido) quanto "interacao/counterspell"
+    (nega o valor de algo que o jogador investiu) - a diferenca de timing
+    exato (antes vs depois de resolver) nao muda o efeito liquido no
+    tabuleiro que este simulador rastreia, e implementar contramagica de
+    verdade (interceptar ANTES da resolucao) exigiria reestruturar o loop
+    de cast - decisao de escopo documentada, nao um mecanismo mais fraco
+    por acidente."""
+    if state.turn % 3 != 0:
+        return
+    candidates = [c for c in state.battlefield if not is_land(c) and c != COMMANDER]
+    if not candidates:
+        return
+    candidates.sort(key=lambda c: -C(c).mv)
+    target = candidates[0]
+    state.battlefield.remove(target)
+    state.graveyard.append(target)
+    state.opponent_interaction_events += 1
+    log.append({"trigger": "opponent_interaction", "removed": target, "turn": state.turn})
+
+
 def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.turn = turn
     state.land_played = False
@@ -1558,6 +1592,8 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
 
     log = [{"turn": turn, "phase": "start", "hand_size": len(state.hand),
             "battlefield_count": len(state.battlefield), "mana_est": total_mana(state)}]
+
+    apply_opponent_interaction(state, log)
 
     # Ruthless Winnower: "At the beginning of each player's upkeep, that
     # player sacrifices a non-Elf creature of their choice." No goldfish solo
@@ -1705,6 +1741,7 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "devoted_druid_bursts": state.devoted_druid_bursts,
         "elrond_flickers": state.elrond_flickers,
         "eladamri_library_top_casts": state.eladamri_library_top_casts,
+        "opponent_interaction_events": state.opponent_interaction_events,
     }
 
 def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=71000):
@@ -1818,6 +1855,7 @@ def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=710
     print(f"Elrond flickou permanente(s) (re-dispara ETB) em {100*len(er_games)/n:.1f}% dos jogos, avg {avg('elrond_flickers'):.2f} ativacoes/partida")
     elt_games = [r for r in results if r["eladamri_library_top_casts"] > 0]
     print(f"Eladamri revelou criatura do topo da biblioteca (estatica) em {100*len(elt_games)/n:.1f}% dos jogos, avg {avg('eladamri_library_top_casts'):.2f} por partida")
+    print(f"Avg eventos de interacao de oponente (1/3 turnos, premissa nova): {avg('opponent_interaction_events'):.2f}")
 
     recursion_vals = [r["oversold_cemetery_returns"] + r["tyvar_jubilant_reanimations"]
                        + r["trystans_command_gy_returns"] + r["awaken_honored_dead_returns"] for r in results]

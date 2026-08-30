@@ -2338,6 +2338,67 @@ muda.
 
 ---
 
+### Correção — pedido explícito: interação de oponente a cada 3 turnos + análise do Sarkhan's Triumph — 2026-08-30
+
+**Gatilho (usuário):** *"Assuma também o uso de 1 a cada 3 turnos de
+remoção ou interação como counterspell a cada 3 turnos também. No
+Ur-Dragon quero que vc levante em quantas vezes % o Tutor de dragões do
+Sarkhan é utilizado, ou seja, quantas mãos ficam sem nenhum dragão com
+ela na mão... custa {2}{R} para tutorar um dragão para a mão!"* — a carta
+é **Sarkhan's Triumph** (`{2}{R}`, "Search your library for a Dragon
+creature card, reveal it, put it into your hand, then shuffle").
+
+**Interação de oponente implementada** (`apply_opponent_interaction()`,
+início de `play_turn`): a cada 3 turnos, remove o permanente não-terreno
+de maior custo de mana em campo, exceto o comandante. Mesma mecânica
+única cobrindo remoção + interação/counterspell, idêntica nos 3 decks
+(justificativa completa no log do Thranduil/Beorn).
+
+**Análise do Sarkhan's Triumph implementada:** nova instrumentação em
+`resolve_instant_sorcery()` — toda vez que a carta é conjurada, verifica
+se a mão JÁ tinha algum Dragão antes de resolver o tutor (o próprio
+Sarkhan's Triumph já foi removido da mão nesse ponto, não atrapalha a
+checagem).
+
+**Robustez:** 20.000 seeds — 0 erros.
+
+**Batch oficial, n=5000, seed_base=7600000:**
+
+```
+Avg commander cast turn: 6,99 (antes 6,68) | Nunca conjurada: 48,0% (antes 31,8%)
+Avg Dragoes em campo (fim): 7,75 (antes 19,93)
+Avg dano proxy total: 231,27 (antes 906,48) - queda de 74,5%
+Avg eventos de interacao de oponente: 1,26/partida
+
+Sarkhan's Triumph conjurada em 20,5% dos jogos (avg 0,20 vezes/partida)
+  Dessas ativacoes, 28,4% aconteceram com a mao SEM nenhum outro Dragao
+  antes de resolver (uso genuinamente necessario)
+```
+
+**Resposta direta à pergunta do usuário:** Sarkhan's Triumph é conjurada
+em **20,5%** dos jogos. Dentro desses jogos em que é conjurada, só
+**28,4%** das vezes a mão estava genuinamente sem nenhum Dragão antes do
+tutor resolver — ou seja, na maioria (**71,6%**) das vezes em que a carta
+é jogada, a mão já tinha pelo menos 1 Dragão, e o tutor foi valor extra,
+não um resgate de mão morta. Isso reflete a lógica de prioridade atual do
+simulador (conjura tutores quando há mana sobrando, sem checar
+especificamente se a mão precisa de um Dragão antes de gastar a carta) —
+não um comportamento "burro" de propósito, mas também não otimizado pra
+guardar a carta só pra emergências.
+
+**Leitura sobre o impacto da interação:** o Ur-Dragon sofre MUITO mais
+que Thranduil (finishers -31pp) ou Beorn (finishers -8pp) com a mesma
+regra de "1 remoção a cada 3 turnos" — dano proxy caiu 74,5% e Dragões em
+campo caíram de ~20 pra ~8. Isso confirma estruturalmente o que a análise
+teórica desta sessão já apontava: o motor de dano do Ur-Dragon é
+**bola de neve composta** (Scourge/Tempest escalam com a CONTAGEM de
+Dragões em campo, não linear) — remover o Dragão de maior custo a cada 3
+turnos quebra a composição antes dela decolar, muito mais destrutivo que
+tirar uma peça de um motor mais distribuído/redundante como o dos outros
+2 decks. `lista.md` não muda.
+
+---
+
 ## Partida #15 — AAAA-MM-DD
 
 - **Formato do teste:**
