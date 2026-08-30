@@ -33,7 +33,7 @@ Nota: o comandante não menciona "flash" no próprio texto — as métricas de "
 
 **Card draw:** Rhystic Study (Game Changer), The One Ring (Game Changer), Anticausal Vestige (draw ao sair do campo), Sire of Stagnation (compra 2 por terreno que oponente joga), Kozilek's Unsealing (compra 3 ao conjurar criatura CMC 7+), Nulldrifter (compra 2 ao conjurar).
 
-**Remoção:** Swords to Plowshares, Beast Within, Toxic Deluge, Ugin's Binding (bounce, depois exílio em massa condicional pelo cemitério), Ugin the Ineffable (-3: destrói permanente CMC 3+), Warping Wail (modal, inclui exílio de criatura pequena), World Breaker (exila artefato/encantamento/terreno ao conjurar), Null Elemental Blast (hate multicolor, estreito).
+**Remoção:** Swords to Plowshares, Beast Within, Toxic Deluge, Ugin's Binding (bounce, depois exílio em massa condicional pelo cemitério), Ugin the Ineffable (-3: destrói permanente que seja uma ou mais cores — sem restrição de CMC, é o mesmo eixo de "cor vs. incolor" do All Is Dust), Warping Wail (modal, inclui exílio de criatura pequena), World Breaker (exila artefato/encantamento/terreno ao conjurar), Null Elemental Blast (hate multicolor, estreito).
 
 **Wipe relevante para esse deck especificamente:** **All Is Dust** — destrói todos os permanentes coloridos. Como praticamente todas as criaturas Eldrazi do deck são Devoid (incolor, confirmado por `oracle_text` — "This card has no color"), esse wipe tende a ser assimétrico a favor de quem o conjura, mantendo o próprio board.
 

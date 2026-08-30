@@ -440,6 +440,61 @@ rodadas anteriores (v2.x), então esta rodada preencheu gaps específicos
 
 ---
 
+### Reconfirmação total de oráculo e interações (a pedido do usuário) — 2026-08-30
+
+**Gatilho:** usuário pediu explicitamente pra confirmar todo o oráculo das
+100 cartas e todas as interações já documentadas neste deck, incluindo o
+teste do Radagast (acima).
+
+**Método:** novo fetch via `cards/collection` da Scryfall (dois lotes de
+70+30, limite de 75 por request) das 100 cartas de `lista.md` — nenhum dado
+reaproveitado do `oracle-cache.json` antigo. Radagast of Rhosgobel buscado
+à parte (não está na lista, só no teste comparativo). Todo texto entre
+aspas na `auditoria.md` e neste log foi conferido contra o `oracle_text`
+fresco, carta a carta.
+
+**Confirmado correto (sem alteração):**
+- 100 cartas, singleton, identidade de cor e legalidade em Commander —
+  todas `legal`, todas dentro de WUBRG.
+- **37 terrenos reais** (contagem por `type_line` contendo "Land") — bate
+  com a auditoria mesmo Spawning Bed e Ugin's Labyrinth estando na seção
+  "Deck" de `lista.md` em vez de "Terrenos" (organização do arquivo, não
+  erro de contagem).
+- **Só Defense of the Heart e Rhystic Study são permanentes com `colors`
+  não-vazio** em toda a lista — confirma exatamente a tese de "All Is Dust
+  quase simétrico a favor de quem conjura".
+- **3 Game Changers exatos:** Ancient Tomb, Rhystic Study, The One Ring
+  (`cards/search?q=is:gamechanger`, 53 cartas no total, cruzado contra as
+  100 da lista).
+- Texto do comandante, Echoes of Eternity (as 2 habilidades), Forsaken
+  Monument (as 3 habilidades), Sanctum of Ugin (gatilho grátis), Zhulodok
+  ("cast... from your hand"), Radagast of Rhosgobel — todos batem
+  literalmente com o `oracle_text` real, inclusive o resultado numérico do
+  teste do Radagast (delta de desconto, flash concedido, ausência de
+  interação com o motor de cópia) continua válido: a leitura mecânica
+  estava certa desde o teste original, não precisou de correção.
+
+**Erro real encontrado e corrigido:** `auditoria.md`, seção 3 (Remoção),
+descrevia Ugin, the Ineffable como "-3: destrói permanente CMC 3+". O
+oráculo real é **"−3: Destroy target permanent that's one or more
+colors"** — não tem restrição de CMC nenhuma, é o mesmo eixo cor-vs-incolor
+do All Is Dust (faz sentido nesse deck: quase todo o board é incolor via
+Devoid, então o -3 também tende a ser assimétrico a favor de quem
+conjura). Corrigido na `auditoria.md`. **Sem impacto no simulador** —
+conferido em `ulalek_goldfish_v1.py` (linha 655): a única coisa modelada
+de Ugin, the Ineffable é o desconto estático de {2} em spells colorless,
+que já estava correto; a habilidade -3 nunca tinha sido implementada como
+remoção específica (fica dentro do proxy genérico de interação), então o
+erro nunca vazou pros números de nenhuma simulação.
+
+**Conclusão:** oráculo e interações documentadas neste deck estão corretos
+com uma exceção pontual (agora corrigida), incluindo a recomendação sobre
+o Radagast — que segue válida como estava: ganho real mas modesto, não
+alimenta o motor de cópia da Ulalek (não é Eldrazi), e adiciona um 3º
+permanente colorido de verdade à lista.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
