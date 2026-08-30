@@ -1102,10 +1102,6 @@ def combat_step(state: GameState):
 def end_step(state: GameState):
     if "Wilderness Reclamation" in state.battlefield:
         state.mana_spent_this_turn = 0  # untap all lands (aproximado: reseta gasto)
-    if "Bitterblossom" in state.battlefield:
-        state.life -= 1
-        create_token(state, "faerie", source="Bitterblossom")
-        # Bitterblossom e Enchantment, nao Criatura — Roaming Throne nao dobra o proprio gatilho dela.
     if ("Growing Rites of Itlimoc // Itlimoc, Cradle of the Sun" in state.battlefield
             and not state.itlimoc_transformed):
         # Oraculo real: "At the beginning of your end step, if you control
@@ -1118,6 +1114,16 @@ def end_step(state: GameState):
 
 
 def upkeep_step(state: GameState):
+    # Achado real 2026-08-30 (pergunta direta do usuario apos a reanalise):
+    # Bitterblossom disparava no end_step() por engano - oraculo real e'
+    # "At the beginning of your upkeep", igual ao Bitterbloom Bearer logo
+    # abaixo (que ja estava no passo certo). Isso atrasava o token de 1
+    # turno inteiro pra fins de elf_faerie_count() (o cap do free-cast da
+    # Maralen durante as main phases do MESMO turno nao via esse token).
+    if "Bitterblossom" in state.battlefield:
+        state.life -= 1
+        create_token(state, "faerie", source="Bitterblossom")
+        # Bitterblossom e Enchantment, nao Criatura — Roaming Throne nao dobra o proprio gatilho dela.
     times = 1
     if "Bitterbloom Bearer" in state.battlefield:
         if "Roaming Throne" in state.battlefield and is_roaming_type("Bitterbloom Bearer"):

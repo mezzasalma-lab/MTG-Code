@@ -417,6 +417,48 @@ existiam antes, não é uma questão de frequência errada.
 
 ---
 
+### Correção — Bitterblossom disparava no end step (achado real, pergunta direta do usuário) — 2026-08-30
+
+**Gatilho:** logo depois da reanálise acima, usuário perguntou diretamente
+"Bitterblossom e Bitterbloom Bearer estão funcionando certo?" — checagem
+revelou que Bitterbloom Bearer estava correta (upkeep), mas Bitterblossom
+disparava em `end_step()`. Oráculo real das duas: *"At the beginning of
+your upkeep, you lose 1 life and create a 1/1 ... Faerie ... token..."*
+— mesma habilidade, mesmo passo do turno, mas só uma estava no lugar
+certo.
+
+**Impacto real:** o token criado tarde demais (fim do turno em vez do
+início) nunca contava pro teto do free-cast da Maralen
+(`elf_faerie_count()`) durante as main phases do MESMO turno em que
+nascia — só passava a contar a partir do turno seguinte. Corrigido:
+movido pro `upkeep_step()`, junto do Bitterbloom Bearer.
+
+**Robustez:** sweep de 20.000 jogos (seeds 7700000–7719999, timeout
+2s/jogo) — 0 erros, 0 timeouts.
+
+**n=3000, seed_base=8000000 — antes (com o bug) → depois:**
+
+| Métrica | Antes (bug) | Depois |
+|---|---|---|
+| Avg casts grátis via Maralen | 2,53 | **2,60** |
+| Avg cartas compradas extra | 2,73 | 2,82 |
+| Avg gatilhos de Maralen (exila 2) | 8,65 | 8,49 |
+| Avg cartas exiladas total | 16,03 | 15,81 |
+| Avg tokens criados | 4,21 | 4,06 |
+| Growing Rites of Itlimoc transformou | 17,8% | 18,4% |
+
+Leitura: o teto de free-cast maior e mais cedo no turno muda qual carta a
+IA escolhe conjurar de graça a cada turno — isso cascata pros totais de
+gatilho/exílio/token ao longo do jogo (às vezes pra baixo, quando a carta
+escolhida não é ela mesma Elfo/Fada e não retrigger a Maralen), não é
+sinal de regressão. O número mais direto e sem ambiguidade de leitura é
+"casts grátis via Maralen" subindo — exatamente o efeito esperado de
+disponibilizar o token 1 fase mais cedo.
+
+`lista.md` não mudou.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
