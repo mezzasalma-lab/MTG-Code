@@ -554,7 +554,7 @@ class GameState:
     devoted_druid_bursts: int = 0             # Devoted Druid: sacrifica-se (via -1/-1) por 1 G extra no turno
     elrond_flickers: int = 0                  # Elrond {5}{U}{U}: flicker de ate 2 permanentes, re-dispara ETB
     eladamri_library_top_casts: int = 0       # Eladamri: conjurou criatura do topo da biblioteca (estatica passiva)
-    opponent_interaction_events: int = 0      # remocao/interacao (ex counterspell) de oponente, premissa fixa 1/3 turnos
+    own_interaction_used: int = 0             # nossa carta de remocao/interacao usada, premissa fixa 1/3 turnos
 
     def draw(self, n=1, source="draw"):
         got = 0
@@ -874,8 +874,8 @@ def priority(state: GameState, card: str) -> tuple:
         return (1, C(card).mv)
     if has_tag(card, "draw_engine") and state.turn <= 5:
         return (3, C(card).mv)
-    if has_tag(card, "removal") and state.turn <= 5:
-        return (4, C(card).mv)
+    # Removal/interacao (INTERACTION_TAGS) nunca chega aqui - filtrado do
+    # loop guloso em main_phase(), so' conjurado via try_use_own_interaction().
     if has_tag(card, "token_maker") or has_tag(card, "anthem") or has_tag(card, "counter_engine"):
         return (5, C(card).mv)
     if has_tag(card, "gy_fill"):
@@ -932,7 +932,13 @@ def main_phase(state: GameState, log: List[Dict]):
 
     for _ in range(6):
         try_eladamri_library_top(state, log)
-        castables = [c for c in state.hand if is_spell(c) and can_cast(state, c)]
+        # Cartas de remocao/interacao ficam de fora do loop guloso normal -
+        # so' sao conjuradas via try_use_own_interaction() (1x/3 turnos,
+        # representando um alvo real aparecendo nesse ritmo). Sem isso, a
+        # IA gulosa competia por prioridade cedo gastando a carta+mana sem
+        # nenhum alvo real (mesmo achado ja documentado no Ur-Dragon).
+        castables = [c for c in state.hand if is_spell(c) and can_cast(state, c)
+                     and not (C(c).tags & INTERACTION_TAGS)]
         if not castables:
             break
         castables.sort(key=lambda c: priority(state, c))
@@ -1548,37 +1554,31 @@ def apply_rhystic_study(state: GameState, log: List[Dict]):
 # TURN STRUCTURE
 # =========================================================
 
-def apply_opponent_interaction(state: GameState, log: List[Dict]):
-    """Premissa nova (pedido explicito do usuario 2026-08-30): "Assuma
-    tambem o uso de 1 a cada 3 turnos de remocao ou interacao (como
-    counterspell)." Ate esta correcao, TODOS os simuladores desta sessao
-    eram goldfish solo puro - zero interacao de oponente, premissa
-    documentada desde o inicio mas que o usuario agora pede pra
-    substituir por uma taxa fixa e simples.
+INTERACTION_TAGS = {"removal", "removal_artifact", "removal_enchantment", "removal_exile"}
 
-    Implementacao: a cada 3 turnos (turno % 3 == 0), remove o permanente
-    nao-terreno de maior custo de mana em campo (exceto o comandante -
-    remocao no comandante vai pra zona de comando, nao cemiterio, e
-    nenhum simulador desta sessao modela esse retorno; excluir e' a
-    simplificacao mais segura). Representa numa unica mecanica tanto
-    "remocao" (destroi algo ja resolvido) quanto "interacao/counterspell"
-    (nega o valor de algo que o jogador investiu) - a diferenca de timing
-    exato (antes vs depois de resolver) nao muda o efeito liquido no
-    tabuleiro que este simulador rastreia, e implementar contramagica de
-    verdade (interceptar ANTES da resolucao) exigiria reestruturar o loop
-    de cast - decisao de escopo documentada, nao um mecanismo mais fraco
-    por acidente."""
+def try_use_own_interaction(state: GameState, log: List[Dict]):
+    """Correcao 2026-08-30 (usuario apontou que eu tinha entendido errado
+    o pedido anterior): "era para o goldfish usar a carta de interacao na
+    NOSSA mao uma vez a cada tres turnos, seja counterspell ou remocao" -
+    nao o oponente removendo NOSSAS permanentes (mecanica anterior,
+    apply_opponent_interaction, removida). A cada 3 turnos, se a mao tiver
+    uma carta de remocao/interacao castavel, ela e conjurada de verdade
+    (via cast_spell - gasta mana, sai da mao, conta em removal_cast) -
+    representa que um alvo real apareceu nesse ritmo, em vez de ficar
+    parada na mao pra sempre (o problema que a Correcao anterior do
+    Ur-Dragon ja tinha documentado: cartas de remocao competindo por
+    prioridade contra ameacas reais sem alvo real pra justificar, ou
+    ficando 100% de fora do cast). Thranduil nao tem counterspell na
+    lista (conferido via oraculo completo) - so remocao mesmo."""
     if state.turn % 3 != 0:
         return
-    candidates = [c for c in state.battlefield if not is_land(c) and c != COMMANDER]
+    candidates = [c for c in state.hand
+                  if (C(c).tags & INTERACTION_TAGS) and can_cast(state, c)]
     if not candidates:
         return
-    candidates.sort(key=lambda c: -C(c).mv)
-    target = candidates[0]
-    state.battlefield.remove(target)
-    state.graveyard.append(target)
-    state.opponent_interaction_events += 1
-    log.append({"trigger": "opponent_interaction", "removed": target, "turn": state.turn})
+    candidates.sort(key=lambda c: C(c).mv)
+    cast_spell(state, candidates[0], log)
+    state.own_interaction_used += 1
 
 
 def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
@@ -1592,8 +1592,6 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
 
     log = [{"turn": turn, "phase": "start", "hand_size": len(state.hand),
             "battlefield_count": len(state.battlefield), "mana_est": total_mana(state)}]
-
-    apply_opponent_interaction(state, log)
 
     # Ruthless Winnower: "At the beginning of each player's upkeep, that
     # player sacrifices a non-Elf creature of their choice." No goldfish solo
@@ -1640,6 +1638,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
             state.first_blue_screw_turn = state.turn
         log.append({"trigger": "blue_screw", "turn": state.turn})
 
+    try_use_own_interaction(state, log)
     main_phase(state, log)
     combat_step(state, log)
     apply_rhystic_study(state, log)
@@ -1741,7 +1740,7 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "devoted_druid_bursts": state.devoted_druid_bursts,
         "elrond_flickers": state.elrond_flickers,
         "eladamri_library_top_casts": state.eladamri_library_top_casts,
-        "opponent_interaction_events": state.opponent_interaction_events,
+        "own_interaction_used": state.own_interaction_used,
     }
 
 def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=71000):
@@ -1855,7 +1854,7 @@ def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=710
     print(f"Elrond flickou permanente(s) (re-dispara ETB) em {100*len(er_games)/n:.1f}% dos jogos, avg {avg('elrond_flickers'):.2f} ativacoes/partida")
     elt_games = [r for r in results if r["eladamri_library_top_casts"] > 0]
     print(f"Eladamri revelou criatura do topo da biblioteca (estatica) em {100*len(elt_games)/n:.1f}% dos jogos, avg {avg('eladamri_library_top_casts'):.2f} por partida")
-    print(f"Avg eventos de interacao de oponente (1/3 turnos, premissa nova): {avg('opponent_interaction_events'):.2f}")
+    print(f"Avg vezes que usamos nossa propria remocao/interacao (1/3 turnos, premissa corrigida): {avg('own_interaction_used'):.2f}")
 
     recursion_vals = [r["oversold_cemetery_returns"] + r["tyvar_jubilant_reanimations"]
                        + r["trystans_command_gy_returns"] + r["awaken_honored_dead_returns"] for r in results]

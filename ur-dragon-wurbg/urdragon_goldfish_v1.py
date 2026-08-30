@@ -736,7 +736,7 @@ class GameState:
 
     # metrics -------------------------------------------------------------
     proxy_damage_total: int = 0
-    opponent_interaction_events: int = 0
+    own_interaction_used: int = 0
     sarkhan_triumph_cast_total: int = 0
     sarkhan_triumph_hand_had_no_dragon: int = 0
     treasures_created_total: int = 0
@@ -2024,26 +2024,33 @@ def mulligan(rng: random.Random, max_mulls: int = 3):
     return hand, lib, mulls
 
 
-def apply_opponent_interaction(state: GameState):
-    """Premissa nova (pedido explicito do usuario 2026-08-30): "Assuma
-    tambem o uso de 1 a cada 3 turnos de remocao ou interacao (como
-    counterspell)." Mesma implementacao/documentacao do Thranduil e Beorn:
-    a cada 3 turnos, remove o permanente nao-terreno de maior custo de
-    mana em campo (exceto o comandante - remocao no comandante vai pra
-    zona de comando, nao cemiterio, retorno nao modelado). Representa
-    remocao E interacao/counterspell numa unica mecanica - contramagia de
-    verdade exigiria interceptar ANTES da resolucao, mudanca estrutural
-    maior, decisao de escopo documentada."""
+# Subconjunto de "interaction" que e' REALMENTE remocao/counterspell (exige
+# alvo do oponente pra valer) - exclui protecao do proprio board (Heroic
+# Intervention, Lightning Greaves, Teferi's Protection, ja tageadas
+# "interaction" mas nao dependem de alvo alheio).
+TRUE_INTERACTION_CARDS = {
+    "An Offer You Can't Refuse", "Anguished Unmaking", "Arcane Denial",
+    "Assassin's Trophy", "Beast Within", "Swan Song", "Swords to Plowshares",
+}
+
+def try_use_own_interaction(state: GameState):
+    """Correcao 2026-08-30 (usuario apontou que eu tinha entendido errado
+    o pedido anterior): "era para o goldfish usar a carta de interacao na
+    NOSSA mao uma vez a cada tres turnos, seja counterspell ou remocao" -
+    nao o oponente removendo NOSSAS permanentes (mecanica anterior,
+    apply_opponent_interaction, removida). A cada 3 turnos, se a mao tiver
+    uma carta de TRUE_INTERACTION_CARDS castavel, ela e conjurada de
+    verdade (via cast_card). O resto do deck ja excluia essas cartas do
+    loop guloso normal (REACTIVE_NO_TARGET, correcao anterior desta
+    sessao) - continuam de fora dali, so' saem da mao aqui."""
     if state.turn % 3 != 0:
         return
-    candidates = [c for c in state.battlefield if c not in LAND_NAMES and c != COMMANDER]
+    candidates = [c for c in state.hand if c in TRUE_INTERACTION_CARDS and can_cast(state, c)]
     if not candidates:
         return
-    candidates.sort(key=lambda c: -CARD_DB[c].mv)
-    target = candidates[0]
-    state.battlefield.remove(target)
-    state.graveyard.append(target)
-    state.opponent_interaction_events += 1
+    candidates.sort(key=lambda c: CARD_DB[c].mv)
+    cast_card(state, candidates[0])
+    state.own_interaction_used += 1
 
 
 def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
@@ -2056,7 +2063,6 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.first_creature_used_this_turn = False
     state.tapped_land_this_turn = None  # a Triome do turno passado desamarra agora
 
-    apply_opponent_interaction(state)
     upkeep_step(state)
     if not (is_first_turn and on_play):
         if state.library:
@@ -2075,6 +2081,7 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
             draw_cards(state, 1)
 
     play_land(state)
+    try_use_own_interaction(state)
     main_phase(state)
     combat_step(state)
     try_hellkite_charger_extra_combat(state)
@@ -2109,7 +2116,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg eventos de dano-por-Dragao-ETB: {avg([s.dragon_etb_damage_events_total for s in states]):.2f}")
     print(f"Avg Treasures criados: {avg([s.treasures_created_total for s in states]):.2f}")
     print(f"Avg Treasures via Smothering Tithe (1/turno em campo): {avg([s.smothering_tithe_treasures for s in states]):.2f}")
-    print(f"Avg eventos de interacao de oponente (1/3 turnos, premissa nova): {avg([s.opponent_interaction_events for s in states]):.2f}")
+    print(f"Avg vezes que usamos nossa propria remocao/interacao (1/3 turnos, premissa corrigida): {avg([s.own_interaction_used for s in states]):.2f}")
     triumph_cast = [s for s in states if s.sarkhan_triumph_cast_total > 0]
     print(f"Sarkhan's Triumph (tutor de Dragao {{2}}{{R}}) conjurada em {100*len(triumph_cast)/n:.1f}% dos jogos, avg {avg([s.sarkhan_triumph_cast_total for s in states]):.2f} vezes/partida")
     if triumph_cast:
@@ -2152,7 +2159,7 @@ if __name__ == "__main__":
                 "proxy_damage_total": s.proxy_damage_total,
                 "treasures_created_total": s.treasures_created_total,
                 "smothering_tithe_treasures": s.smothering_tithe_treasures,
-                "opponent_interaction_events": s.opponent_interaction_events,
+                "own_interaction_used": s.own_interaction_used,
                 "sarkhan_triumph_cast_total": s.sarkhan_triumph_cast_total,
                 "sarkhan_triumph_hand_had_no_dragon": s.sarkhan_triumph_hand_had_no_dragon,
                 "lathliss_pumps": s.lathliss_pumps,

@@ -889,6 +889,35 @@ verdade em vez de jogar sozinho. `lista.md` não muda.
 
 ---
 
+### CORREÇÃO — entendi o pedido anterior errado — 2026-08-30
+
+**Gatilho (usuário):** *"Vc me entendeu errado, era para o goldfish usar
+a carta de interação na nossa mão uma vez a cada três turnos, seja
+counter spell ou remoção!"*
+
+A entrada acima implementou ao **contrário**: oponente removendo NOSSAS
+permanentes. O pedido real: a cada 3 turnos, **nós** usamos nossa própria
+carta de remoção da mão. Revertido `apply_opponent_interaction()`, nova
+`try_use_own_interaction()` — a cada 3 turnos, conjura uma carta tagueada
+`"removal"` da mão (excluindo criaturas com remoção incidental como
+Haywire Mite, e `"mass_removal"` como Ezuri's Predation, que dependem de
+quantas criaturas o oponente controla). Beorn não tem counterspell
+(mono-verde). Remoção também passa a ficar de fora do loop guloso normal
+de cast — só sai da mão via esse mecanismo controlado.
+
+**Robustez:** 20.000 seeds — 0 erros.
+
+**Batch oficial, n=5000, seed_base=91000:**
+
+| Métrica | Errado | Corrigido |
+|---|---|---|
+| % jogos com finisher até T8 | 28,4% | 36,1% (igual ao baseline pré-regra, 36,0%) |
+| Avg battlefield final | 15,09 | 19,18 |
+
+**Leitura:** volta pro baseline, como esperado. `lista.md` não muda.
+
+---
+
 <!-- Para novas partidas avulsas, use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

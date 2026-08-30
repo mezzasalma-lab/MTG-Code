@@ -2399,6 +2399,45 @@ tirar uma peça de um motor mais distribuído/redundante como o dos outros
 
 ---
 
+### CORREÇÃO — entendi o pedido anterior errado — 2026-08-30
+
+**Gatilho (usuário):** *"Vc me entendeu errado, era para o goldfish usar
+a carta de interação na nossa mão uma vez a cada três turnos, seja
+counter spell ou remoção!"*
+
+A entrada acima implementou ao **contrário**: oponente removendo NOSSAS
+permanentes (por isso o dano proxy despencou 74,5% — não era o efeito
+real pedido). O pedido real: a cada 3 turnos, **nós** usamos nossa
+própria carta de remoção/counterspell da mão. Revertido
+`apply_opponent_interaction()`, nova `try_use_own_interaction()` —
+conjura uma carta de `TRUE_INTERACTION_CARDS` (An Offer You Can't
+Refuse, Anguished Unmaking, Arcane Denial, Assassin's Trophy, Beast
+Within, Swan Song, Swords to Plowshares — o subconjunto real de
+remoção/counterspell, excluindo proteção do próprio board como Heroic
+Intervention/Teferi's Protection, que não dependem de alvo alheio). Essas
+cartas já ficavam de fora do loop guloso normal desde uma correção
+anterior desta sessão (`REACTIVE_NO_TARGET`) — continuam de fora, só
+saem da mão via esse mecanismo controlado agora.
+
+**Robustez:** 20.000 seeds — 0 erros.
+
+**Batch oficial, n=5000, seed_base=7600000:**
+
+| Métrica | Errado (oponente nos remove) | Corrigido (nós usamos nossa interação) |
+|---|---|---|
+| Avg dano proxy total | 231,27 | 777,72 (perto do baseline pré-regra, 906,48) |
+| Avg Dragões em campo (fim) | 7,75 | 17,59 |
+| Nunca conjurada em 8 turnos | 48,0% | 34,3% |
+| Avg vezes que usamos nossa interação | — | 0,69/partida |
+
+**Leitura:** confirma a análise anterior sobre fragilidade do motor —
+mas o número certo é 777,72 (queda moderada de ~14% frente ao baseline,
+porque agora as 7 cartas de interação saem da mão e competem por mana em
+vez de ficarem 100% mortas), não o 231,27 catastrófico do mecanismo
+errado. `lista.md` não muda.
+
+---
+
 ## Partida #15 — AAAA-MM-DD
 
 - **Formato do teste:**

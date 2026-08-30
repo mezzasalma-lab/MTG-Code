@@ -392,7 +392,7 @@ class GameState:
     # auditoria completa de oraculo). So Bala Ged Sanctuary (lado terreno do
     # MDFC) tem essa condicao real na manabase deste deck.
     tapped_lands_this_turn: Set[str] = field(default_factory=set)
-    opponent_interaction_events: int = 0      # remocao/interacao (ex counterspell) de oponente, premissa fixa 1/3 turnos
+    own_interaction_used: int = 0             # nossa carta de remocao usada, premissa fixa 1/3 turnos
 
     # Chameleon Colossus, "{2}{G}{G}: This creature gets +X/+X until end of turn,
     # where X is its power" - achado real 2026-08-30 (auditoria completa de oraculo):
@@ -812,8 +812,9 @@ def priority(state: GameState, card: str) -> tuple:
         return (4, C(card).mv)
     if has_tag(card, "bear_maker") or has_tag(card, "bear"):
         return (5, C(card).mv)
-    if has_tag(card, "removal") and state.turn <= 4:
-        return (5, C(card).mv)
+    # Remocao pura (nao mass_removal/nao criatura) nunca chega aqui -
+    # filtrada do loop guloso em main_phase(), so' conjurada via
+    # try_use_own_interaction().
     if has_tag(card, "finisher"):
         return (7, -C(card).mv)  # segura finishers pra depois, prioriza os mais baratos primeiro dentro do grupo
     return (6, C(card).mv)
@@ -840,7 +841,10 @@ def main_phase(state: GameState, log: List[Dict]):
             log.append({"action":"cast_commander","turn":state.turn})
 
     for _ in range(5):
-        castables = [c for c in state.hand if is_spell(c) and can_cast(state, c)]
+        # Remocao fica de fora do loop guloso normal - so' conjurada via
+        # try_use_own_interaction() (1x/3 turnos, alvo real nesse ritmo).
+        castables = [c for c in state.hand if is_spell(c) and can_cast(state, c)
+                     and not (has_tag(c, "removal") and not has_tag(c, "mass_removal") and not is_creature(c))]
         if not castables:
             break
         castables.sort(key=lambda c: priority(state, c))
@@ -1426,27 +1430,31 @@ def combat_step(state: GameState, log: List[Dict]):
 # TURN STRUCTURE
 # =========================================================
 
-def apply_opponent_interaction(state: GameState, log: List[Dict]):
-    """Premissa nova (pedido explicito do usuario 2026-08-30): "Assuma
-    tambem o uso de 1 a cada 3 turnos de remocao ou interacao (como
-    counterspell)." Mesma implementacao/documentacao do Thranduil e
-    Ur-Dragon: a cada 3 turnos, remove o permanente nao-terreno de maior
-    custo de mana em campo (exceto o comandante - remocao no comandante
-    vai pra zona de comando, nao cemiterio, nao modelado o retorno).
-    Representa remocao E interacao/counterspell numa unica mecanica -
-    contramagia de verdade exigiria interceptar ANTES da resolucao,
-    mudanca estrutural maior, decisao de escopo documentada."""
+INTERACTION_TAGS = {"removal"}
+
+def try_use_own_interaction(state: GameState, log: List[Dict]):
+    """Correcao 2026-08-30 (usuario apontou que eu tinha entendido errado
+    o pedido anterior): "era para o goldfish usar a carta de interacao na
+    NOSSA mao uma vez a cada tres turnos, seja counterspell ou remocao" -
+    nao o oponente removendo NOSSAS permanentes (mecanica anterior,
+    apply_opponent_interaction, removida). A cada 3 turnos, se a mao tiver
+    uma carta de remocao castavel, ela e conjurada de verdade (via
+    cast_spell). Beorn nao tem counterspell (mono-verde). Excluidas do
+    pool: criaturas com tag "removal" incidental (Haywire Mite - a
+    remocao real dela e uma habilidade ativada separada, nao o cast) e
+    "mass_removal" (Ezuri's Predation - efeito simetrico que depende de
+    quantas criaturas o OPONENTE controla, zero valor garantido sem
+    modelar isso, diferente de "aqui esta um alvo real")."""
     if state.turn % 3 != 0:
         return
-    candidates = [c for c in state.battlefield if not is_land(c) and c != COMMANDER]
+    candidates = [c for c in state.hand
+                  if (C(c).tags & INTERACTION_TAGS) and not has_tag(c, "mass_removal")
+                  and not is_creature(c) and can_cast(state, c)]
     if not candidates:
         return
-    candidates.sort(key=lambda c: -C(c).mv)
-    target = candidates[0]
-    state.battlefield.remove(target)
-    state.graveyard.append(target)
-    state.opponent_interaction_events += 1
-    log.append({"trigger": "opponent_interaction", "removed": target, "turn": state.turn})
+    candidates.sort(key=lambda c: C(c).mv)
+    cast_spell(state, candidates[0], log)
+    state.own_interaction_used += 1
 
 
 def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
@@ -1462,14 +1470,13 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     log = [{"turn": turn, "phase": "start", "hand_size": len(state.hand),
             "battlefield_count": len(state.battlefield), "mana_est": total_mana(state)}]
 
-    apply_opponent_interaction(state, log)
-
     # Commander e sempre multiplayer (3+ jogadores) - a regra que pula a 1a compra de quem
     # comeca (CR 103.8a) so vale em jogos de 2 jogadores. Aqui sempre compra, mesmo no T1.
     state.draw(1, source="normal")
 
     try_bala_ged_recovery(state, log)
     play_land(state, log)
+    try_use_own_interaction(state, log)
     main_phase(state, log)
     combat_step(state, log)
     state.cleanup_hand_size()
@@ -1571,7 +1578,7 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "eternal_witness_returned": state.eternal_witness_returned,
         "springleaf_parade_cast": state.springleaf_parade_cast,
         "bala_ged_recovery_cast": state.bala_ged_recovery_cast,
-        "opponent_interaction_events": state.opponent_interaction_events,
+        "own_interaction_used": state.own_interaction_used,
     }
 
 def run_batch(n=500, turns=8, out_jsonl="beorn_v1_runs.jsonl", seed_base=91000):
@@ -1688,7 +1695,7 @@ def run_batch(n=500, turns=8, out_jsonl="beorn_v1_runs.jsonl", seed_base=91000):
     print(f"Chameleon Colossus pump ({{2}}{{G}}{{G}}) ativado em {100*len(cc_games)/n:.1f}% dos jogos, avg {avg('chameleon_colossus_activations'):.2f} ativacoes/partida")
     bh_games = [r for r in results if r["beorns_hospitality_animated"]]
     print(f"Beorn's Hospitality animada (vira criatura Bear) em {100*len(bh_games)/n:.1f}% dos jogos")
-    print(f"Avg eventos de interacao de oponente (1/3 turnos, premissa nova): {avg('opponent_interaction_events'):.2f}")
+    print(f"Avg vezes que usamos nossa propria remocao/interacao (1/3 turnos, premissa corrigida): {avg('own_interaction_used'):.2f}")
 
     print(f"Avg mao final: {avg('hand_size'):.2f}")
     print(f"Avg terrenos jogados: {avg('lands_played_total'):.2f}")

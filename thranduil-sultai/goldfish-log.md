@@ -921,6 +921,46 @@ vinha de um ambiente sem resistência nenhuma. `lista.md` não muda.
 
 ---
 
+### CORREÇÃO — entendi o pedido anterior errado — 2026-08-30
+
+**Gatilho (usuário):** *"Vc me entendeu errado, era para o goldfish usar
+a carta de interação na nossa mão uma vez a cada três turnos, seja
+counter spell ou remoção!"*
+
+A entrada acima ("Correção — pedido explícito: interação de oponente a
+cada 3 turnos") implementou o mecanismo **ao contrário**: fazia o
+**oponente** remover **nossas** permanentes a cada 3 turnos. O pedido
+real era o oposto — a **cada 3 turnos, NÓS usamos nossa própria carta de
+remoção/interação da mão**, representando que um alvo real apareceu
+nesse ritmo, em vez dela ficar morta na mão pra sempre.
+
+**Revertido e reimplementado:** `apply_opponent_interaction()` removida.
+Nova `try_use_own_interaction()`: a cada 3 turnos, se a mão tiver uma
+carta de remoção (`INTERACTION_TAGS = {"removal", "removal_artifact",
+"removal_enchantment", "removal_exile"}`) castável, ela é conjurada de
+verdade. Thranduil não tem counterspell na lista (conferido via oráculo
+completo). **Mudança consistente adicional:** cartas de remoção agora
+ficam de fora do loop guloso normal de cast (antes competiam por
+prioridade cedo sem alvo real nenhum — mesmo problema já documentado e
+corrigido no Ur-Dragon antes) — só saem da mão via esse mecanismo
+controlado.
+
+**Robustez:** 20.000 seeds — 0 erros.
+
+**Batch oficial, n=5000, seed_base=71000 (mecanismo errado → corrigido):**
+
+| Métrica | Errado (oponente remove NOSSAS permanentes) | Corrigido (nós usamos nossa remoção) |
+|---|---|---|
+| % jogos com finisher até T8 | 38,1% | 54,6% (próximo do valor pré-regra, 55,0%) |
+| Avg battlefield final | 15,23 | 19,05 |
+| INTERACTION (remoção conjurada) | — | 0,46 (era 0,58-0,67 antes de qualquer regra nova) |
+
+**Leitura:** os números voltam pra perto do baseline anterior à regra
+(como esperado — usar nossa própria interação custa muito menos ao deck
+do que sofrer remoção alheia). `lista.md` não muda.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
