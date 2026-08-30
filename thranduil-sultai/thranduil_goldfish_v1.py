@@ -23,10 +23,13 @@ Metodologia (igual ao script do Beorn):
   (compra 2, descarta 1) quando entram.
 - "Elfos no cemiterio" e rastreado somando os efeitos reais de mill/self-GY
   (Buried Alive, Trystan, Lluwen, Awaken the Honored Dead cap.II, Silvan
-  Rally, Takenuma channel, Tyvar Jubilant Brawler -2, filtragem do Underrealm
-  Lich) - so conta cartas de Elfo entre o que foi de fato milhado/descartado,
-  nao card por card real (proxy: assume que uma fracao das cartas milhadas
-  sao Elfos, proporcional a densidade real de Elfos no deck).
+  Rally, Tyvar Jubilant Brawler -2, filtragem do Underrealm Lich) - so
+  conta cartas de Elfo entre o que foi de fato milhado/descartado, nao
+  card por card real (proxy: assume que uma fracao das cartas milhadas
+  sao Elfos, proporcional a densidade real de Elfos no deck). CORRECAO
+  2026-08-30: "Takenuma channel" estava citado aqui mas NUNCA foi
+  implementado de verdade (achado na auditoria completa de oraculo) -
+  removido da lista ate ser implementado (ver nota no add() do Takenuma).
 - Finishers: os 3 overruns repetiveis (Tyvar the Pummeler, Ezuri Renegade
   Leader, Elvish Warmaster) sao tratados como "finisher ativado" na primeira
   vez que ha mana sobrando pra pagar o custo de ativacao E ha criaturas em
@@ -184,7 +187,16 @@ add("Command Tower", 0, {"Land"}, produces={"B", "G", "U"})
 add("Deathcap Glade", 0, {"Land"}, produces={"B", "G"})  # nao esta mais na lista (saiu p/ Botanical Sanctum), entrada mantida sem uso
 add("Botanical Sanctum", 0, {"Land"}, produces={"G", "U"})
 add("Hinterland Harbor", 0, {"Land"}, produces={"G", "U"})
-add("Eclipsed Realms", 0, {"Land"}, produces=set())
+add("Eclipsed Realms", 0, {"Land"}, produces={"B", "G", "U"}, tags={"elf_only_color"})
+# Achado real 2026-08-30 (auditoria completa de oraculo): "As this land
+# enters, choose [tipo]. {T}: Add one mana of any color. Spend this mana
+# only to cast a spell of the chosen type or activate an ability of a
+# source of the chosen type." Tratada como incolor pura antes - mesma
+# classe de erro ja corrigida na Cavern of Souls (Regra 6 adendo). Escolha
+# obvia = Elfo (tema central do deck). O texto real tambem cobre "ativar
+# habilidade de fonte do tipo escolhido", nao so' spells - simplificacao
+# documentada: so' o lado "cast a creature spell" e modelado (mesmo escopo
+# ja usado pra Cavern), a cobertura de ativadas fica de fora.
 add("Elvenking's Halls", 0, {"Land"}, produces={"G", "U"})
 add("Gilt-Leaf Palace", 0, {"Land"}, produces={"B", "G"})
 add("Llanowar Wastes", 0, {"Land"}, produces={"B", "G"})
@@ -194,6 +206,16 @@ add("Overgrown Tomb", 0, {"Land"}, produces={"B", "G"})
 add("Reflecting Pool", 0, {"Land"}, produces={"B", "G", "U"})
 add("Rejuvenating Springs", 0, {"Land"}, produces={"G", "U"})
 add("Takenuma, Abandoned Mire", 0, {"Land"}, produces={"B"}, tags={"gy_engine"})
+# Achado real 2026-08-30 (auditoria completa de oraculo): "Channel - {3}{B},
+# Discard this card: Mill three cards, then return a creature or
+# planeswalker card from your graveyard to your hand. Costs {1} less for
+# each legendary creature you control." O cabecalho do arquivo CITAVA essa
+# habilidade como contabilizada no proxy de mill - mentira, nunca foi
+# implementada (corrigido a citacao). NAO implementado nesta rodada:
+# exigiria modelar a escolha "descartar da mao pra ativar Channel" vs
+# "jogar como terreno normal" ANTES do land drop do turno (seriam usos
+# mutuamente exclusivos da mesma carta) - decisao de escopo documentada,
+# nao esquecimento. Fica pra uma rodada dedicada.
 add("Three Tree City", 0, {"Land"}, produces=set())
 # {T}: Add {C} incondicional (produces vazio == so' o generico de is_land()
 # em total_mana(), correto). A 2a habilidade real ("{2},{T}: choose a
@@ -241,6 +263,17 @@ add("Champions of the Perfect", 4, {"Creature"}, tags={"draw_engine", "creature_
 # Edric: "whenever a creature deals combat damage to a player, its controller may draw" - via combat_step().
 add("Edric, Spymaster of Trest", 3, {"Creature"}, tags={"draw_engine", "combat_damage_draw", "elf"}, colors={"G", "U"}, legendary_elf=True)
 add("Elrond, Moon-Reader", 3, {"Creature"}, tags={"draw_engine", "elf"}, colors={"U"}, legendary_elf=True)
+# Achado real 2026-08-30 (auditoria completa de oraculo): so' a triggered
+# "whenever you activate an ability of a creature, draw a card" esta
+# modelada (via _elrond_ability_activated). A segunda habilidade real,
+# "{5}{U}{U}: Exile up to two other target nonland permanents you control.
+# Return those cards to the battlefield under their owner's control at the
+# beginning of the next end step", NAO esta implementada - decisao de
+# escopo documentada: reproduziria re-disparar ETBs de outras cartas (um
+# flicker de verdade), exigiria uma segunda passada pela logica de
+# _apply_etb/_creature_cast_engines_trigger no fim do turno, mudanca
+# estrutural maior que o resto das correcoes desta rodada, fica pra uma
+# rodada dedicada.
 add("Harmonized Crescendo", 6, {"Instant"}, tags={"draw_burst"}, colors={"U"})
 # Underrealm Lich: substitui TODAS as suas compras por "olhe 3, 1 pra mao, 2 pro cemiterio" - ver GameState.draw().
 add("Underrealm Lich", 5, {"Creature"}, tags={"draw_filter", "elf", "gy_fill_passive"}, colors={"B", "G"})
@@ -248,8 +281,26 @@ add("Elf Warrior Token", 0, {"Creature"}, tags={"elf", "token"})  # token gerado
 
 # -------- Removal --------
 add("Assassin's Trophy", 2, {"Instant"}, tags={"removal"}, colors={"B", "G"})
-add("Awaken the Honored Dead", 3, {"Enchantment"}, tags={"removal", "gy_fill"}, colors={"B", "G", "U"}, mill=3)
-add("Trystan's Command", 6, {"Sorcery"}, tags={"removal"}, colors={"B", "G"})
+add("Awaken the Honored Dead", 3, {"Enchantment"}, tags={"removal", "gy_fill", "recursion"}, colors={"B", "G", "U"}, mill=3)
+# Achado real 2026-08-30 (auditoria completa de oraculo), Saga de 3
+# capitulos: I - destroy nonland permanent (opponent_dependent, N/A sem
+# oponente real); II - mill three cards (ja coberto por mill=3 generico);
+# III - "You may discard a card. When you do, return target creature or
+# land card from your graveyard to your hand" - RECURSAO REAL, nunca
+# implementada. Simplificacao documentada: os 3 capitulos de verdade
+# resolvem em upkeeps separados (3 dos SEUS turnos), este simulador
+# comprime tudo pro momento do cast (mesmo nivel de simplificacao ja usado
+# noutros efeitos "instantaneos" deste arquivo) - ver _apply_etb.
+add("Trystan's Command", 6, {"Sorcery"}, tags={"modal_command", "recursion"}, colors={"B", "G"})
+# Achado real 2026-08-30 (auditoria completa de oraculo): "Choose two -
+# create a token copy of target Elf you control / return one or two target
+# permanent cards from your graveyard to your hand / destroy target
+# creature or enchantment / creatures target player controls get +3/+3 and
+# untap them." So tinha a tag generica "removal" (1 dos 4 modos, sem alvo
+# real em goldfish solo). Modos "destroy"/"+3/+3 pra oponente" ficam de
+# fora (sem oponente real); implementados os 2 modos com valor real e
+# quantificavel no goldfish solo: copiar Elfo + recursao de permanentes da
+# GY (ver _apply_etb).
 add("Ruthless Winnower", 5, {"Creature"}, tags={"removal_repeatable", "elf"}, colors={"B"})
 add("Kindred Dominance", 7, {"Sorcery"}, tags={"wipe_asymmetric"}, colors={"B"})
 add("Raise the Palisade", 5, {"Sorcery"}, tags={"bounce_asymmetric"}, colors={"U"})
@@ -260,6 +311,15 @@ add("Putrefy", 2, {"Instant"}, tags={"removal", "removal_artifact"}, colors={"B"
 add("Feed the Swarm", 2, {"Instant"}, tags={"removal", "removal_enchantment"}, colors={"B"})
 # Candidatas a adicao avaliadas depois - ver thranduil_synergy_matrix.py --with-candidates
 add("Devoted Druid", 2, {"Creature"}, tags={"ramp", "elf"}, colors={"G"}, produces={"G"})
+# Oraculo real (Scryfall, conferido 2026-08-30): "{T}: Add {G}. Put a -1/-1
+# counter on this creature: Untap this creature." So' o {T}: Add {G}
+# normal esta modelado (via tag "ramp"). A linha "sacrifica-se por 1 G
+# extra" fica de fora por decisao de escopo documentada: Devoted Druid e'
+# 1/1 base, um so' -1/-1 counter mata (0/0), entao e' um combo de UMA vez
+# so' (burst de +1 G nesse turno, perde o dork repetivel depois) - decisao
+# de jogador situacional que a IA gulosa deste simulador nao pondera bem
+# (comparar "1 G a mais agora" vs "1 G por turno pra sempre"), nao um
+# efeito ausente por esquecimento.
 add("Formidable Speaker", 3, {"Creature"}, tags={"tutor", "gy_fill", "elf"}, colors={"G"})
 add("Arcane Signet", 2, {"Artifact"}, tags={"ramp"}, produces={"B", "G", "U"})
 add("Imperious Perfect", 3, {"Creature"}, tags={"anthem", "token_maker", "elf"}, colors={"G"})
@@ -295,7 +355,17 @@ add("Bloodline Bidding", 8, {"Sorcery"}, tags={"finisher_burst", "reanimation_ma
 # -------- Anthems / engines de contador --------
 add("Dionus, Elvish Archdruid", 4, {"Creature"}, tags={"elf", "counter_engine"}, colors={"G"}, legendary_elf=True)
 add("Arwen, Weaver of Hope", 3, {"Creature"}, tags={"elf", "counter_engine"}, colors={"G"}, legendary_elf=True)
-add("Immaculate Magistrate", 4, {"Creature"}, tags={"elf", "counter_engine", "elf_scaling"}, colors={"G"})
+add("Immaculate Magistrate", 4, {"Creature"}, tags={"elf", "counter_engine"}, colors={"G"})
+# BUG GRAVE corrigido 2026-08-30 (auditoria completa de oraculo): estava
+# marcada "elf_scaling", a MESMA tag usada por Priest of Titania/Elvish
+# Archdruid/Wirewood Channeler pra escalar mana mining com contagem de
+# Elfos - mas o oraculo real da Immaculate Magistrate ("{T}: Put a +1/+1
+# counter on target creature for each Elf you control") NAO produz mana
+# nenhuma. total_mana() tratava QUALQUER carta com essa tag como fonte de
+# mana igual aos dorks reais - Immaculate Magistrate estava inflando o
+# mana disponivel todo turno em que resolvia, sem nunca ter essa
+# habilidade de verdade. Tag removida; habilidade real implementada em
+# try_immaculate_magistrate() (ver main_phase).
 add("High Perfect Morcant", 4, {"Creature"}, tags={"elf", "opponent_disruption"}, colors={"B", "G"}, legendary_elf=True)
 add("Glissa Sunslayer", 3, {"Creature"}, tags={"elf", "removal_combat", "draw_conditional"}, colors={"B", "G"}, legendary_elf=True)
 add("Maralen, Fae Ascendant", 5, {"Creature"}, tags={"elf", "disruption", "free_cast_engine"}, colors={"B", "G", "U"}, legendary_elf=True)
@@ -307,7 +377,14 @@ add("Oversold Cemetery", 2, {"Enchantment"}, tags={"recursion"}, colors={"B"})  
 
 # -------- Diversos / suporte --------
 add("Agatha's Soul Cauldron", 2, {"Artifact"}, tags={"gy_hate"})  # exila carta de QUALQUER cemiterio, nao so o seu
-add("Allosaurus Shepherd", 1, {"Creature"}, tags={"elf", "protection_counterspell"}, colors={"G"})
+add("Allosaurus Shepherd", 1, {"Creature"}, tags={"elf", "protection_counterspell", "finisher_repeatable"}, colors={"G"}, activation_cost=6)
+# Achado real 2026-08-30 (auditoria completa de oraculo): so' a estatica de
+# protecao contra counterspell estava modelada. "{4}{G}{G}: Until end of
+# turn, each Elf creature you control has base power and toughness 5/5 and
+# becomes a Dinosaur in addition to its other creature types" nunca tinha
+# sido registrada - e' um overrun real (mesma familia de Tyvar the
+# Pummeler/Ezuri/Elvish Warmaster), agora tratada como finisher_repeatable,
+# custo 6 ({4}{G}{G}).
 add("Eclipsed Elf", 3, {"Creature"}, tags={"elf", "card_selection"}, colors={"B", "G"})
 add("Roaming Throne", 4, {"Creature"}, tags={"trigger_doubler", "elf"})  # "is the chosen type in addition to its other types" - premissa Elf, entao ela mesma vira Elfo
 add("Urza's Incubator", 3, {"Artifact"}, tags={"cost_reducer"})
@@ -392,6 +469,7 @@ class GameState:
     turn: int = 0
     land_played: bool = False
     lands_played_this_turn: int = 0  # Thranduil's Company permite um 2o land drop condicional
+    tapped_lands_this_turn: Set[str] = field(default_factory=set)  # terrenos que entraram tapped ESTE turno - achado real 2026-08-30, nunca modelado (Regra 12)
     creature_cast_turn: Dict[str, int] = field(default_factory=dict)  # doenca de invocacao pros mana dorks
     max_hand_size: int = 7
 
@@ -470,6 +548,13 @@ class GameState:
     tyvar_jubilant_reanimations: int = 0      # Tyvar, Jubilant Brawler -2: mill 3, devolve criatura mv<=2 da GY pro campo
     agathas_cauldron_counters: int = 0        # Agatha's Soul Cauldron {T}: exila criatura da GY -> +1/+1 num alvo
     thranduil_gy_ability_borrows: int = 0     # Thranduil comandante: "has all activated abilities of all Elf cards in your graveyard"
+    immaculate_magistrate_counters: int = 0   # Immaculate Magistrate {T}: +1/+1 num alvo por Elfo controlado
+    trystans_command_copy_tokens: int = 0     # Trystan's Command modo 1: token copia de Elfo nao-lendario
+    trystans_command_gy_returns: int = 0      # Trystan's Command modo 2: ate 2 permanentes da GY pra mao
+    awaken_honored_dead_returns: int = 0      # Awaken the Honored Dead capitulo III: descarta 1, devolve criatura/terreno da GY
+    fauna_shaman_tutors: int = 0              # Fauna Shaman: descarta criatura, tutora criatura da biblioteca pra mao
+    vannifar_evolves: int = 0                 # Prime Speaker Vannifar: sacrifica criatura, tutora outra (mv+1) pro campo
+    eladamri_free_creatures: int = 0          # Eladamri: revela criatura da mao, poe em campo de graca
 
     def draw(self, n=1, source="draw"):
         got = 0
@@ -537,6 +622,8 @@ def total_mana(state: GameState) -> int:
     total = 0
     for card in state.battlefield:
         if is_land(card):
+            if card in state.tapped_lands_this_turn:
+                continue
             total += 1
         elif card == "Sol Ring":
             total += 2
@@ -564,9 +651,26 @@ def color_sources(state: GameState, color: str, elf_creature_spell: bool = False
     yavimaya = state.has("Yavimaya, Cradle of Growth")
     for card in state.battlefield:
         if is_land(card):
+            if card in state.tapped_lands_this_turn:
+                continue
             # Yavimaya: "Each land is a Forest in addition to its other
             # land types" - achado real 2026-08-28, nunca implementada.
             if color == "G" and yavimaya:
+                n += 1
+                continue
+            if card == "Wastewood Verge" and color == "B":
+                # "{T}: Add {B}. Activate only if you control a Swamp or a
+                # Forest." Achado real 2026-08-30: tratada como sempre
+                # destravada antes. G da mesma carta e' incondicional.
+                if not (has_land_subtype(state, "Swamp") or has_land_subtype(state, "Forest")):
+                    continue
+                n += 1
+                continue
+            if card == "Willowrush Verge" and color == "G":
+                # "{T}: Add {G}. Activate only if you control a Forest or
+                # an Island." U da mesma carta e' incondicional.
+                if not (has_land_subtype(state, "Forest") or has_land_subtype(state, "Island")):
+                    continue
                 n += 1
                 continue
             if card == "Reflecting Pool":
@@ -639,6 +743,71 @@ def choose_bottom(hand: List[str], n: int) -> List[str]:
 # LAND DROP / CASTING PRIORITY
 # =========================================================
 
+# Regra 12 (user-standing-rules.md): todo tipo de terreno precisa do
+# mecanismo de entrada REAL verificado no oraculo, nao presumido. Auditoria
+# completa 2026-08-30 (Scryfall, lote via /cards/collection) contra a
+# manabase inteira do Thranduil - achado real: NENHUM terreno tinha
+# condicao de "enters tapped" modelada neste arquivo (o docstring do
+# cabecalho ate documentava isso como simplificacao deliberada, seguindo o
+# Beorn - mas o Beorn e mono-verde sem terrenos condicionais reais, e o
+# Ur-Dragon ja tinha implementado o mecanismo pra sua propria manabase).
+# Classificacao por arquetipo (oraculo real, Scryfall):
+#   - SEMPRE tapped, sem condicao: Elvenking's Halls, Zagoth Triome (Triome
+#     classico), e a face-terreno de Malakir Rebirth//Malakir Mire e
+#     Revitalizing Repast//Old-Growth Grove (MDFCs, "This land enters
+#     tapped" incondicional no verso).
+#   - Fast land (Botanical Sanctum): "enters tapped unless you control two
+#     or fewer other lands" - so' destravada nos primeiros 3 land drops.
+#   - Check land (Hinterland Harbor): "enters tapped unless you control a
+#     Forest or an Island" - precisa checagem real de SUBTIPO de terreno em
+#     campo (ver LAND_SUBTYPES/has_land_subtype abaixo).
+#   - Reveal land (Gilt-Leaf Palace): "you may reveal an Elf card from your
+#     hand. If you don't, this land enters tapped" - checagem real da mao.
+#   - Shock lands (Breeding Pool, Overgrown Tomb, Watery Grave): "pay 2
+#     life. If you don't, it enters tapped" - premissa ja estabelecida
+#     nesta sessao pra outros decks (Ur-Dragon): vida nunca e' um fator
+#     rastreado, sempre paga => sempre destravada. Documentado, nao
+#     silencioso.
+#   - Rejuvenating Springs ("unless you have two or more opponents"): numa
+#     mesa multiplayer real (o proprio cabecalho do simulador assume CR
+#     103.8a multiplayer, 3+ oponentes), a condicao esta SEMPRE satisfeita
+#     => sempre destravada. Documentado, nao silencioso.
+#   - Pain lands / Verges sem condicao de ETB (Underground River, Yavimaya
+#     Coast, Nurturing Peatland, Waterlogged Grove, Wastewood Verge,
+#     Willowrush Verge): nenhuma delas tem "enters tapped" no oraculo -
+#     sempre destravadas, corretamente ja tratadas como tal.
+ALWAYS_TAPPED_LANDS = {
+    "Elvenking's Halls", "Zagoth Triome",
+    "Malakir Rebirth // Malakir Mire", "Revitalizing Repast // Old-Growth Grove",
+}
+
+LAND_SUBTYPES = {
+    "Forest": {"Forest", "Breeding Pool", "Overgrown Tomb", "Zagoth Triome"},
+    "Island": {"Island", "Breeding Pool", "Watery Grave", "Zagoth Triome"},
+    "Swamp": {"Swamp", "Overgrown Tomb", "Watery Grave", "Zagoth Triome"},
+}
+
+def has_land_subtype(state: GameState, subtype: str) -> bool:
+    # Yavimaya, Cradle of Growth: "Each land is a Forest in addition to its
+    # other land types" - estatica real, ja aplicada em color_sources() pra
+    # producao de mana G; aqui estende o MESMO efeito pra qualquer checagem
+    # de subtipo "Forest" (ex: condicao de tapped do Hinterland Harbor).
+    if subtype == "Forest" and state.has("Yavimaya, Cradle of Growth"):
+        return any(is_land(c) for c in state.battlefield)
+    return any(c in LAND_SUBTYPES.get(subtype, set()) for c in state.battlefield)
+
+def _land_enters_tapped(state: GameState, card: str, other_lands_before: int) -> bool:
+    if card in ALWAYS_TAPPED_LANDS:
+        return True
+    if card == "Botanical Sanctum":
+        return other_lands_before > 2
+    if card == "Hinterland Harbor":
+        return not (has_land_subtype(state, "Forest") or has_land_subtype(state, "Island"))
+    if card == "Gilt-Leaf Palace":
+        has_elf_in_hand = any(is_elf(c) for c in state.hand if c != card)
+        return not has_elf_in_hand
+    return False
+
 def play_land(state: GameState, log: List[Dict]):
     # Thranduil's Company: "As long as you control another Elf, you may
     # play an additional land on each of your turns." Achado real
@@ -666,11 +835,16 @@ def play_land(state: GameState, log: List[Dict]):
         return -score
     lands_in_hand.sort(key=missing_score)
     choice = lands_in_hand[0]
+    other_lands_before = sum(1 for c in state.battlefield if is_land(c))
     state.hand.remove(choice)
     state.battlefield.append(choice)
     state.land_played = True
     state.lands_played_this_turn += 1
     state.lands_played_total += 1
+
+    if _land_enters_tapped(state, choice, other_lands_before):
+        state.tapped_lands_this_turn.add(choice)
+        log.append({"trigger": "land_enters_tapped", "card": choice, "turn": state.turn})
 
     # Thranduil, Sindarin Liege: "Landfall - Whenever a land you control
     # enters, create a 1/1 green Elf creature token." Achado real
@@ -730,6 +904,10 @@ def main_phase(state: GameState, log: List[Dict]):
     activate_finishers(state, log)
     try_imperious_perfect(state, log)
     try_agathas_soul_cauldron(state, log)
+    try_immaculate_magistrate(state, log)
+    try_fauna_shaman(state, log)
+    try_prime_speaker_vannifar(state, log)
+    try_eladamri(state, log)
 
 def _creature_cast_engines_trigger(state: GameState, card: str, log: List[Dict]):
     # Beast Whisperer / Champions of the Perfect: "whenever you cast a creature spell, draw a card".
@@ -922,6 +1100,22 @@ def _apply_etb(state: GameState, card: str, log: List[Dict]):
     if card == "Buried Alive":
         pass  # ja coberto por mill_amount acima
 
+    # Awaken the Honored Dead, capitulo III (comprimido pro cast - ver nota
+    # no add()): descarta a pior carta da mao, devolve a melhor
+    # criatura/terreno do cemiterio pra mao.
+    if card == "Awaken the Honored Dead" and state.hand:
+        state.hand.sort(key=lambda c: -C(c).mv)
+        discarded = state.hand.pop(0)
+        state.graveyard.append(discarded)
+        candidates = [c for c in state.graveyard if is_creature(c) or is_land(c)]
+        if candidates:
+            candidates.sort(key=lambda c: -C(c).mv)
+            best = candidates[0]
+            state.graveyard.remove(best)
+            state.hand.append(best)
+            state.awaken_honored_dead_returns += 1
+            log.append({"trigger": "awaken_honored_dead_return", "discarded": discarded, "returned": best, "turn": state.turn})
+
     # Finale of Devastation com X>=10 tratado como finisher burst direto (raro, poucas vezes acontece)
     if card == "Finale of Devastation" and total_mana(state) >= 12:
         state.finishers_activated.append("Finale of Devastation (X>=10)")
@@ -932,6 +1126,28 @@ def _apply_etb(state: GameState, card: str, log: List[Dict]):
         state.finishers_activated.append(card)
         if state.finisher_turn is None:
             state.finisher_turn = state.turn
+
+    # Trystan's Command: "Choose two." Premissa (goldfish solo, sem
+    # oponente): sempre escolhe copiar Elfo + recursao de GY (os 2 modos
+    # com valor real quantificavel sem alvo de oponente).
+    if card == "Trystan's Command":
+        non_legendary_elves = [c for c in state.battlefield
+                                if is_elf(c) and is_creature(c) and not C(c).is_legendary_elf]
+        if non_legendary_elves:
+            non_legendary_elves.sort(key=lambda c: -C(c).mv)
+            copied = non_legendary_elves[0]
+            state.battlefield.append(copied)
+            state.trystans_command_copy_tokens += 1
+            log.append({"trigger": "trystans_command_copy", "copied": copied, "turn": state.turn})
+        gy_permanents = [c for c in state.graveyard if is_creature(c) or is_land(c)]
+        if gy_permanents:
+            gy_permanents.sort(key=lambda c: -C(c).mv)
+            returned = gy_permanents[:2]
+            for c in returned:
+                state.graveyard.remove(c)
+                state.hand.append(c)
+            state.trystans_command_gy_returns += len(returned)
+            log.append({"trigger": "trystans_command_gy_return", "returned": returned, "turn": state.turn})
 
 def _elrond_ability_activated(state: GameState, source: str, log: List[Dict]):
     # Elrond: "Whenever you activate an ability of a creature, draw a card.
@@ -954,7 +1170,12 @@ def try_imperious_perfect(state: GameState, log: List[Dict]):
     real 2026-08-28 (auditoria de checklist de mecanica): tagueada
     "token_maker" mas activation_cost nunca setado (default 0), e
     activate_finishers() pula qualquer carta com cost<=0 - nunca
-    disparava. {T} = 1 ativacao por turno."""
+    disparava. {T} = 1 ativacao por turno.
+    Achado real 2026-08-30 (auditoria completa de oraculo): a dobra de
+    Roaming Throne aplicada aqui estava ERRADA - RT so' dobra habilidade
+    TRIGGERED ("if a triggered ability... triggers, it triggers an
+    additional time"), nunca ativada. Isso e' uma habilidade ativada
+    ({G},{T}: efeito), nunca deveria ter sido dobrada. Removido."""
     if "Imperious Perfect" not in state.battlefield:
         return
     if not _dork_ready(state, "Imperious Perfect"):
@@ -962,11 +1183,9 @@ def try_imperious_perfect(state: GameState, log: List[Dict]):
     if remaining_mana(state) < 1 or color_sources(state, "G") < 1:
         return
     state.mana_spent_this_turn += 1
-    times_rt = 2 if state.roaming_throne_active() and is_elf("Imperious Perfect") else 1
-    for _ in range(times_rt):
-        state.battlefield.append("Elf Warrior Token")
-        state.imperious_perfect_tokens += 1
-    log.append({"trigger": "imperious_perfect_token", "times": times_rt, "turn": state.turn})
+    state.battlefield.append("Elf Warrior Token")
+    state.imperious_perfect_tokens += 1
+    log.append({"trigger": "imperious_perfect_token", "turn": state.turn})
 
 
 def try_agathas_soul_cauldron(state: GameState, log: List[Dict]):
@@ -990,6 +1209,121 @@ def try_agathas_soul_cauldron(state: GameState, log: List[Dict]):
     state.graveyard.remove(best)
     state.agathas_cauldron_counters += 1
     log.append({"trigger": "agathas_cauldron_exile", "exiled": best, "turn": state.turn})
+
+
+def try_immaculate_magistrate(state: GameState, log: List[Dict]):
+    """Immaculate Magistrate, {T}: "Put a +1/+1 counter on target creature
+    for each Elf you control." Achado real 2026-08-30: estava marcada com a
+    tag "elf_scaling" errada (tratada como mana dork, nunca produziu mana
+    de verdade - ver correcao no add()). {T} = 1 ativacao por turno, sem
+    custo de mana. E' habilidade ATIVADA, nao triggered - Roaming Throne
+    nunca dobra (mesmo achado de bug aplicado ao Imperious Perfect, ver
+    try_imperious_perfect())."""
+    if "Immaculate Magistrate" not in state.battlefield:
+        return
+    if not _dork_ready(state, "Immaculate Magistrate"):
+        return
+    elves = sum(1 for c in state.battlefield if is_elf(c))
+    if elves <= 0:
+        return
+    state.immaculate_magistrate_counters += elves
+    log.append({"trigger": "immaculate_magistrate_counters", "amount": elves, "turn": state.turn})
+
+
+def try_fauna_shaman(state: GameState, log: List[Dict]):
+    """Fauna Shaman, {G}, {T}, Discard a creature card: Search your library
+    for a creature card, reveal it, put it into your hand, then shuffle.
+    Achado real 2026-08-30 (auditoria completa de oraculo): tagueada
+    "tutor" mas zero efeito implementado ate agora - mesma classe de tag
+    morta ja corrigida em Imperious Perfect/Immaculate Magistrate."""
+    if "Fauna Shaman" not in state.battlefield:
+        return
+    if not _dork_ready(state, "Fauna Shaman"):
+        return
+    discardable = [c for c in state.hand if is_creature(c)]
+    if not discardable or remaining_mana(state) < 1:
+        return
+    library_creatures = [c for c in state.library if is_creature(c)]
+    if not library_creatures:
+        return
+    discardable.sort(key=lambda c: C(c).mv)  # descarta a pior criatura da mao
+    discarded = discardable[0]
+    state.hand.remove(discarded)
+    state.graveyard.append(discarded)
+    state.mana_spent_this_turn += 1
+    library_creatures.sort(key=lambda c: -C(c).mv)  # tutora a melhor disponivel
+    target = library_creatures[0]
+    state.library.remove(target)
+    state.hand.append(target)
+    state.rng.shuffle(state.library)
+    state.fauna_shaman_tutors += 1
+    log.append({"trigger": "fauna_shaman_tutor", "discarded": discarded, "tutored": target, "turn": state.turn})
+
+
+def try_prime_speaker_vannifar(state: GameState, log: List[Dict]):
+    """Prime Speaker Vannifar, {T}, Sacrifice another creature: Search your
+    library for a creature card with mana value equal to 1 plus the
+    sacrificed creature's mana value, put that card onto the battlefield,
+    then shuffle. Achado real 2026-08-30: tag "tutor"/"sac_outlet" sem
+    nenhum efeito implementado."""
+    if "Prime Speaker Vannifar" not in state.battlefield:
+        return
+    if not _dork_ready(state, "Prime Speaker Vannifar"):
+        return
+    sac_candidates = [c for c in state.battlefield if is_creature(c) and c != "Prime Speaker Vannifar"]
+    if not sac_candidates:
+        return
+    sac_candidates.sort(key=lambda c: C(c).mv)  # sacrifica a de menor valor pra maximizar o alvo buscado
+    sacrificed = sac_candidates[0]
+    target_mv = C(sacrificed).mv + 1
+    library_targets = [c for c in state.library if is_creature(c) and C(c).mv == target_mv]
+    if not library_targets:
+        return
+    state.battlefield.remove(sacrificed)
+    library_targets.sort(key=lambda c: -C(c).mv)
+    target = library_targets[0]
+    state.library.remove(target)
+    state.battlefield.append(target)
+    state.creature_cast_turn[target] = state.turn
+    state.rng.shuffle(state.library)
+    state.vannifar_evolves += 1
+    log.append({"trigger": "vannifar_evolve", "sacrificed": sacrificed, "found": target, "turn": state.turn})
+
+
+def try_eladamri(state: GameState, log: List[Dict]):
+    """Eladamri, Korvecdal, {G}, {T}, Tap two untapped creatures you
+    control: Reveal a card from your hand or the top of your library. If
+    you reveal a creature card this way, put it onto the battlefield.
+    Achado real 2026-08-30: tag "tutor_passive" sem nenhum efeito
+    implementado. Simplificacoes documentadas: (1) o custo real de
+    "tap two untapped creatures" e aproximado por "3+ criaturas em campo
+    (Eladamri + 2 outras)" - este simulador nao rastreia estado
+    tapped/untapped por criatura individual, mesmo nivel de abstracao ja
+    usado no resto do arquivo; (2) so' o modo "reveal a card from your
+    hand" e modelado (mais seguro/melhor que revelar do topo aleatorio da
+    biblioteca); (3) a estatica "may cast creature spells from the top of
+    your library" fica de fora - exigiria checar o topo da biblioteca a
+    cada oportunidade de cast, mudanca estrutural maior no loop principal,
+    nao implementada nesta rodada (decisao de escopo documentada, nao
+    esquecimento)."""
+    if "Eladamri, Korvecdal" not in state.battlefield:
+        return
+    if not _dork_ready(state, "Eladamri, Korvecdal"):
+        return
+    other_creatures = sum(1 for c in state.battlefield if is_creature(c) and c != "Eladamri, Korvecdal")
+    if other_creatures < 2 or remaining_mana(state) < 1:
+        return
+    hand_creatures = [c for c in state.hand if is_creature(c)]
+    if not hand_creatures:
+        return
+    state.mana_spent_this_turn += 1
+    hand_creatures.sort(key=lambda c: -C(c).mv)
+    target = hand_creatures[0]
+    state.hand.remove(target)
+    state.battlefield.append(target)
+    state.creature_cast_turn[target] = state.turn
+    state.eladamri_free_creatures += 1
+    log.append({"trigger": "eladamri_free_creature", "card": target, "turn": state.turn})
 
 
 def activate_finishers(state: GameState, log: List[Dict]):
@@ -1138,6 +1472,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.turn = turn
     state.land_played = False
     state.lands_played_this_turn = 0
+    state.tapped_lands_this_turn = set()  # terreno tapped do turno anterior destrava agora
     state.mana_spent_this_turn = 0
     state.elrond_triggered_this_turn = False
     state.elvish_warmaster_triggered_this_turn = False
@@ -1281,6 +1616,13 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "tyvar_jubilant_reanimations": state.tyvar_jubilant_reanimations,
         "agathas_cauldron_counters": state.agathas_cauldron_counters,
         "thranduil_gy_ability_borrows": state.thranduil_gy_ability_borrows,
+        "immaculate_magistrate_counters": state.immaculate_magistrate_counters,
+        "trystans_command_copy_tokens": state.trystans_command_copy_tokens,
+        "trystans_command_gy_returns": state.trystans_command_gy_returns,
+        "awaken_honored_dead_returns": state.awaken_honored_dead_returns,
+        "fauna_shaman_tutors": state.fauna_shaman_tutors,
+        "vannifar_evolves": state.vannifar_evolves,
+        "eladamri_free_creatures": state.eladamri_free_creatures,
     }
 
 def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=71000):
@@ -1377,14 +1719,27 @@ def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=710
     print(f"Agatha's Soul Cauldron exilou criatura da GY (+1/+1 em alvo) em {100*len(agatha_games)/n:.1f}% dos jogos, avg {avg('agathas_cauldron_counters'):.2f} exilios/partida")
     thr_gy_games = [r for r in results if r["thranduil_gy_ability_borrows"] > 0]
     print(f"Thranduil ativou habilidade emprestada de Elfo no cemiterio em {100*len(thr_gy_games)/n:.1f}% dos jogos, avg {avg('thranduil_gy_ability_borrows'):.2f} ativacoes/partida")
+    im_games = [r for r in results if r["immaculate_magistrate_counters"] > 0]
+    print(f"Immaculate Magistrate distribuiu contadores em {100*len(im_games)/n:.1f}% dos jogos, avg {avg('immaculate_magistrate_counters'):.2f} contadores/partida")
+    tc_games = [r for r in results if r["trystans_command_copy_tokens"] > 0 or r["trystans_command_gy_returns"] > 0]
+    print(f"Trystan's Command (copiar Elfo + recursao de GY) resolveu em {100*len(tc_games)/n:.1f}% dos jogos, avg {avg('trystans_command_copy_tokens'):.2f} copias / {avg('trystans_command_gy_returns'):.2f} recuperados por partida")
+    ahd_games = [r for r in results if r["awaken_honored_dead_returns"] > 0]
+    print(f"Awaken the Honored Dead cap. III devolveu carta da GY em {100*len(ahd_games)/n:.1f}% dos jogos, avg {avg('awaken_honored_dead_returns'):.2f} por partida")
+    fs_games = [r for r in results if r["fauna_shaman_tutors"] > 0]
+    print(f"Fauna Shaman tutorou criatura em {100*len(fs_games)/n:.1f}% dos jogos, avg {avg('fauna_shaman_tutors'):.2f} por partida")
+    van_games = [r for r in results if r["vannifar_evolves"] > 0]
+    print(f"Prime Speaker Vannifar evoluiu criatura em {100*len(van_games)/n:.1f}% dos jogos, avg {avg('vannifar_evolves'):.2f} por partida")
+    elad_games = [r for r in results if r["eladamri_free_creatures"] > 0]
+    print(f"Eladamri colocou criatura da mao em campo de graca em {100*len(elad_games)/n:.1f}% dos jogos, avg {avg('eladamri_free_creatures'):.2f} por partida")
 
-    recursion_vals = [r["oversold_cemetery_returns"] + r["tyvar_jubilant_reanimations"] for r in results]
+    recursion_vals = [r["oversold_cemetery_returns"] + r["tyvar_jubilant_reanimations"]
+                       + r["trystans_command_gy_returns"] + r["awaken_honored_dead_returns"] for r in results]
     print()
     print("--- Metricas basicas (checklist obrigatoria) ---")
     print(f"RAMP: avg pecas de rampa em campo: {avg('ramp_pieces_in_play'):.2f}")
     print(f"DRAW: avg compras extras totais (soma de todos os motores): {avg('extra_draws'):.2f}")
     print(f"INTERACTION: avg remocao conjurada: {avg('removal_cast'):.2f}")
-    print(f"RECURSION: avg cartas recuperadas do cemiterio (Oversold Cemetery -> mao + Tyvar Jubilant Brawler -> campo): {statistics.mean(recursion_vals):.2f}")
+    print(f"RECURSION: avg cartas recuperadas do cemiterio (Oversold Cemetery -> mao + Tyvar Jubilant Brawler -> campo + Trystan's Command -> mao + Awaken the Honored Dead -> mao): {statistics.mean(recursion_vals):.2f}")
     print(f"FINISHER/LETHALITY: avg finishers ativados {avg('finishers_activated'):.2f}, "
           f"{100*len(fin_turns)/n:.1f}% dos jogos com finisher ate T8"
           + (f", turno medio {statistics.mean(fin_turns):.2f}" if fin_turns else "") + ".")

@@ -712,6 +712,123 @@ consideravelmente mais que o medido antes. `lista.md` não muda — isso foi
 
 ---
 
+### Auditoria completa de oráculo — TODAS as 91 cartas (comandante + 90), Scryfall em lote — 2026-08-30
+
+**Gatilho (usuário):** *"Eu já cansei de pedir para vc compilar TODAS as
+habilidades de TODAS as cartas, qual a dificuldade?"* — depois de 3
+rodadas seguidas de achados pontuais (Agatha's Soul Cauldron, depois a
+estática do próprio Thranduil), ficou claro que correção reativa
+carta-a-carta não bastava. Auditoria sistemática de verdade: `POST
+https://api.scryfall.com/cards/collection` em 2 lotes (75+16 cartas),
+oráculo completo de cada uma das 91 cartas da lista salvo e comparado
+linha a linha contra `CARD_DB` e a lógica do simulador (Regra 13).
+
+**11 achados reais, todos corrigidos:**
+
+1. **Terrenos nunca tinham mecanismo de "enters tapped" modelado (violação
+   direta da Regra 12)** — o próprio cabeçalho do arquivo documentava isso
+   como "simplificação deliberada, igual ao Beorn", mas o Beorn é
+   mono-verde sem terrenos condicionais reais; o Ur-Dragon já tinha esse
+   mecanismo. Implementado do zero: `tapped_lands_this_turn` (novo campo),
+   `_land_enters_tapped()`, `has_land_subtype()`/`LAND_SUBTYPES`. Cobertura
+   real por arquétipo: sempre-tapped incondicional (Elvenking's Halls,
+   Zagoth Triome, face-terreno de Malakir Rebirth e Revitalizing Repast),
+   fast land (Botanical Sanctum — tapped a partir do 4º terreno), check
+   land (Hinterland Harbor — precisa Forest ou Island em campo), reveal
+   land (Gilt-Leaf Palace — precisa Elfo na mão). Shocks e Rejuvenating
+   Springs ficam sempre destravados por premissa já estabelecida
+   (vida/multiplayer não rastreados) — documentado explicitamente, não
+   mais silencioso.
+2. **BUG GRAVE — Immaculate Magistrate inflava mana disponível todo
+   turno.** Estava marcada com a tag `elf_scaling`, a MESMA usada por
+   Priest of Titania/Elvish Archdruid/Wirewood Channeler pra escalar mana
+   de dork real — mas o oráculo dela ("{T}: Put a +1/+1 counter on target
+   creature for each Elf you control") não produz mana nenhuma.
+   `total_mana()` tratava qualquer carta com essa tag como fonte de mana.
+   Tag removida; habilidade real implementada em `try_immaculate_magistrate()`.
+3. **BUG — Roaming Throne dobrando habilidade ATIVADA por engano.**
+   `try_imperious_perfect()` aplicava a dobra de Roaming Throne na criação
+   de token — mas RT só dobra habilidade **triggered** ("if a triggered
+   ability... triggers, it triggers an additional time"), nunca ativada
+   ({custo}: efeito). Corrigido (removida a dobra indevida).
+4. **Eclipsed Realms tratada como puramente incolor** — mesma classe de
+   erro já corrigida na Cavern of Souls (Regra 6 adendo): "Spend this mana
+   only to cast a spell of the chosen type" (Elfo, escolha óbvia) vira
+   fixação real pro subconjunto de spells de criatura Elfo. Tag
+   `elf_only_color` aplicada.
+5. **Wastewood Verge/Willowrush Verge tratadas como sempre destravadas nas
+   2 cores** — a 2ª cor de cada uma é condicional ("Activate only if you
+   control a Swamp or a Forest" / "...Forest or an Island"), nunca
+   checada. Implementado via `has_land_subtype()`.
+6. **Allosaurus Shepherd — finisher inteiro faltando.** Só a proteção
+   contra counterspell estava modelada; "{4}{G}{G}: Until end of turn,
+   each Elf creature you control has base power and toughness 5/5..." é um
+   overrun real (mesma família de Tyvar the Pummeler/Ezuri/Elvish
+   Warmaster), nunca cadastrado como finisher. Corrigido (`activation_cost=6`,
+   tag `finisher_repeatable`).
+7. **Trystan's Command — modal sem nenhum modo real implementado.** Só a
+   tag genérica `removal` (1 dos 4 modos, sem alvo real em goldfish solo).
+   Implementados os 2 modos com valor quantificável sem oponente: copiar
+   Elfo não-lendário + devolver até 2 permanentes da GY pra mão (recursão
+   real, nunca contada).
+8. **Awaken the Honored Dead, capítulo III — recursão real ausente.** Só o
+   mill do capítulo II estava capturado (via `mill=3` genérico); "You may
+   discard a card. When you do, return target creature or land card from
+   your graveyard to your hand" nunca foi implementado. Corrigido
+   (simplificação documentada: os 3 capítulos da Saga, que resolvem em 3
+   upkeeps separados, são comprimidos pro momento do cast).
+9. **Fauna Shaman, Prime Speaker Vannifar, Eladamri — 3 tutores/motores
+   com tag mas ZERO efeito implementado**, achados já citados como
+   "deferidos" numa correção anterior (pós-Beorn) mas nunca revisitados
+   pro Thranduil especificamente. Implementados: Fauna Shaman (descarta
+   criatura, tutora criatura da biblioteca pra mão), Prime Speaker
+   Vannifar (sacrifica criatura, busca outra de mv+1 direto pro campo),
+   Eladamri (aproximação documentada do custo "tap 2 criaturas" via
+   contagem — este simulador não rastreia tapped/untapped por criatura —
+   revela criatura da mão e põe em campo de graça).
+10. **Devoted Druid, Elrond (flicker), Takenuma (Channel)** — auditados e
+    **deliberadamente deixados de fora**, cada um com nota explícita no
+    `add()`/comentário do porquê (combo de auto-sacrifício de 1 uso só,
+    flicker exigiria re-disparar ETBs, Channel compete com o land drop da
+    própria carta) — decisão de escopo documentada, não esquecimento
+    silencioso (Regra 13).
+11. **Docstring do cabeçalho mentia sobre Takenuma channel** — citava a
+    habilidade como já contabilizada no proxy de mill de Elfos no
+    cemitério; nunca tinha sido implementada. Corrigida a citação.
+
+**Robustez:** 20.000 seeds (71000–91000) rodadas 3 vezes ao longo da
+correção (após o pacote de bugs de mana, depois após os 3 tutores) — 0
+erros em todas as passadas.
+
+**Batch oficial, n=5000, seed_base=71000 (antes de TODA esta auditoria →
+depois):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg commander cast turn | 4,35 | 4,43 (mais lento, correto — a inflação de mana da Immaculate Magistrate desapareceu) |
+| Commander cast por T5 | 83,9% | 83,4% |
+| Avg finishers ativados | 0,89 | **1,49** |
+| % jogos com finisher até T8 | 40,4% | **55,4%** |
+| RECURSION | 0,08 | **0,40** (5x) |
+| % jogos com blue screw | 6,2% | 5,1% |
+| Avg battlefield final | 19,12 | 18,94 |
+
+**Leitura:** a soma de todos os achados desta rodada (já em cima da
+correção anterior da estática do próprio Thranduil) deixa RECURSION 5x
+maior que o número reportado originalmente nesta sessão e confirma, de
+novo, que os buracos reais do deck eram simulador incompleto, não falta
+de cartas na lista. O turno médio da comandante ficou levemente mais
+lento (4,35→4,43) — isso é uma CORREÇÃO pra baixo, não uma regressão: a
+Immaculate Magistrate estava inflando mana disponível artificialmente
+antes. `lista.md` não muda — 100% correção de simulador.
+
+**Pendência explícita pro usuário:** esta auditoria completa foi feita só
+pro Thranduil até agora. Beorn e Ur-Dragon ainda precisam da mesma
+varredura completa (Scryfall em lote, carta por carta) — vou continuar
+nos dois a seguir.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
