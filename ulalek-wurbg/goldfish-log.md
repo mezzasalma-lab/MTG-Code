@@ -585,20 +585,30 @@ mais mana disponível ao longo do jogo, efeito difuso.
 
 ---
 
-## Partida #1 — AAAA-MM-DD
+## Partida #1 — 2026-08-30 (partida REAL, jogada à mão no goldfish do Archidekt)
 
-- **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
-- **Mão inicial (mulligan até):**
-- **Turno da primeira jogada relevante:**
-- **Turno do primeiro ataque/combo:**
-- **Curva de mana observada:**
-- **Bombas/peças-chave puxadas:**
-- **Removals sofridos/enviados:**
-- **Resultado:** vitória / derrota / sem resolução
-- **Turno de fim de jogo:**
-- **O que funcionou bem:**
-- **O que travou o deck:**
-- **Ajustes a considerar:**
+**Formato do registro:** igual ao método usado nas Partidas #13-15 do Ur-Dragon —
+não é simulação automatizada. Usuário jogou manualmente no modo goldfish do
+Archidekt e colou o log estruturado (JSON) de mudança de zona, turno a
+turno, junto de screenshots da mão inicial. Vários detalhes da linha de
+jogo (turno exato da comandante, quais spells foram copiados, a conta do
+desconto de custo) foram corrigidos pelo usuário e reconferidos contra o
+oráculo real ao longo da conversa antes de fechar este registro — os
+números abaixo já refletem essas correções, não a primeira leitura do log.
+
+- **Mão inicial (mulligan até):** keep na mão de 7 (sem mulligan). Urza's Incubator, Plateau, Kozilek, the Great Distortion, It That Heralds the End, Underground Sea, Shivan Reef, Talisman of Dominance.
+- **Turno 1:** joga Plateau.
+- **Turno 2:** joga Underground Sea (2º terreno). Conjura Talisman of Dominance.
+- **Turno 3:** joga Taiga (3º terreno). Conjura Urza's Incubator, tipo escolhido: Eldrazi.
+- **Turno 4:** joga Shivan Reef (4º terreno). **Conjura a Ulalek, Fused Atrocity** (dentro da média medida pela auditoria, ~4,5 turnos — nesse caso até um pouco antes).
+- **Turno 5:** conjura 2 Eldrazi spells (It That Heralds the End e Chittering Dispatcher) e paga o `{C}{C}` da Ulalek nas duas — cada uma sai com uma cópia-token extra em campo. Fim do turno: 2x It That Heralds the End e 2x Chittering Dispatcher em campo.
+- **Turno 6:** conjura Kozilek, the Great Distortion (`{8}{C}{C}`, 10 de mana base) por só **6 mana** — desconto de -4 confirmado carta a carta: -2 do Urza's Incubator ("creature spells of the chosen type cost {2} less", Eldrazi qualifica) + -1 de cada uma das 2 cópias do It That Heralds the End ("colorless spells... mana value 7 or greater cost {1} less", cada cópia em campo aplica o próprio desconto).
+- **Turnos seguintes (Roaming Throne entra, ataque em massa dos Chittering Dispatchers):** com Roaming Throne (tipo escolhido: Eldrazi) já em campo, os 2 Chittering Dispatchers atacam. Myriad é ele mesmo uma habilidade disparada (fonte = o próprio Chittering, criatura Eldrazi em campo) — então o Throne dobra o Myriad de cada um: em vez de 2 tokens por ataque (mesa de 4 jogadores, 1 token por oponente que não o alvo), cada Chittering gera 4 (2 resoluções × 2 oponentes). Os 2 reais atacando = **8 tokens-cópia do Chittering**. Cada token, ao ser exilado no fim do turno pelo próprio Myriad, dispara seu próprio "when this creature leaves the battlefield, create a Spawn" — também dobrado pelo Throne (fonte = criatura Eldrazi em campo) → 2 Spawns por token. **8 tokens × 2 = 16 Eldrazi Spawn tokens** de um único ataque duplo. Conta verificada passo a passo nessa sessão, bate exatamente com o oráculo do Myriad e do Roaming Throne.
+- **Fim do trecho registrado:** Echoes of Eternity entra em campo — 3º motor de cópia/dobra simultâneo com Ulalek e Roaming Throne já ativos (Kozilek, the Great Distortion também tinha sido copiado ao ser conjurado, mesma mecânica do turno 5).
+- **Resultado:** sem resolução (trecho de goldfish solo, sem oponente real — objetivo era desenvolver o motor, não fechar o jogo).
+- **O que funcionou bem:** curva perfeita (land drop todo turno, nunca travou), Urza's Incubator no T3 descontando tudo dali pra frente, comandante resolvida no T4 (acima da média). A partir do T5 o motor de cópia (Ulalek pagando CC em sequência) e o desconto acumulado de custo (Incubator + 2x It That Heralds) permitiram uma bomba de 10 mana (Kozilek, the Great Distortion) sair por 6 já no T6. O combo Chittering Dispatcher x2 + Myriad + Roaming Throne se mostrou o pico de valor da partida — 16 Spawn tokens de um ataque só, bem acima do que a intuição sugere à primeira vista (o Throne dobra o próprio Myriad, não só o gatilho de saída de campo, e os dois efeitos se multiplicam).
+- **O que travou o deck:** nada — outlier positivo, mesma classificação de partidas de pico já registradas nesse repositório (Ur-Dragon Partida #15, por exemplo). Curva sem nenhum land drop perdido do T1 ao T6+ é o cenário favorável, não o típico.
+- **Ajustes a considerar:** nenhum de lista — reforça que Roaming Throne, apesar de mais fraco nesse deck do que em decks de gatilho-em-campo puro (achado da Simulação #1), ainda é uma bomba real quando combinado com Myriad (Chittering Dispatcher) — os dois juntos multiplicam de forma não-óbvia (dobra o gatilho de ataque E o gatilho de saída de campo, dois pontos de dobra independentes na mesma carta).
 
 ---
 
