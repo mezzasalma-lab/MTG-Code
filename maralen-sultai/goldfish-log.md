@@ -333,6 +333,90 @@ execução de `__main__`.
 
 ---
 
+### Reanálise do simulador Python (`maralen_goldfish_v1.py`) — a pedido do usuário — 2026-08-30
+
+**Gatilho:** usuário pediu explicitamente pra reanalisar o simulador em
+busca de erros, mesmo tratamento dado ao Ulalek nessa sessão. Oráculo
+fresco das 95 cartas únicas via Scryfall (`cards/collection`, mais os 3
+lados de face múltipla — Brazen Borrower, Growing Rites of Itlimoc,
+Thranduil Sindarin Liege — buscados individualmente), comparação
+sistemática de tags contra `colors`/`type_line` real, e leitura manual
+completa das 1204 linhas do simulador.
+
+**6 achados reais, todos corrigidos:**
+
+1. **Mistbind Clique — Champion a Faerie nunca exilava a Fada "campeã".**
+   Oráculo: *"sacrifice it unless you exile another Faerie you
+   control."* Quando havia outra Fada disponível, o código mantinha a
+   Mistbind em campo mas nunca removia a outra Fada — as duas ficavam
+   contando ao mesmo tempo, quando só 1 corpo deveria estar presente até
+   a Mistbind sair de campo. Corrigido: exila de verdade, preferindo um
+   token (menor perda real) a uma carta nomeada, nunca a própria
+   comandante (Maralen também é Fada por tipo).
+2. **Tegwyll, Duke of Splendor — faltava a metade do custo.** Oráculo:
+   *"you draw a card **and you lose 1 life**."* Só a compra estava
+   implementada.
+3. **Black Market Connections — 3 problemas empilhados.** Disparava no
+   upkeep (oráculo real: *"beginning of your first main phase"*);
+   pagava o custo de vida do modo Sell Contraband sem nunca criar o
+   Treasure correspondente (pior que não escolher o modo); e o modo
+   Hire a Mercenary (token 3/2 Changeling — conta como Elfo *e* Fada pra
+   toda sinergia do deck) nunca era modelado. Corrigido: passo certo do
+   turno, Treasure tratado como mana avulsa do próprio turno (mesma
+   convenção do refund do Cloud of Faeries), token de Mercenário
+   implementado de verdade via `enter_battlefield()`.
+4. **Heritage Druid / Birchlore Rangers exigiam a si mesmas "prontas"
+   sem necessidade.** Nenhuma das duas tem `{T}` no próprio custo
+   ("Tap three/two untapped Elves you control: Add...") — CR 302.6 não
+   bloqueia ativar habilidade de outro permanente por doença de
+   invocação própria quando o custo não usa o `{T}` do próprio
+   permanente. O código exigia isso mesmo assim, subestimando a mana
+   disponível no turno em que qualquer uma delas entra.
+5. **Joraga Treespeaker nunca alcançava o nível 5 — 0% estrutural, não
+   "raro".** O comentário antigo dizia "raramente alcança nível 5" como
+   se fosse probabilístico, mas o código só progredia até nível 1
+   (binário 0/1) — o bônus de equipe real do nível 5+ ("Elves you
+   control have '{T}: Add {G}{G}'") nunca existia no modelo. Implementado
+   nível real 0-5, subindo com mana sobrando (movido pra depois do loop
+   principal de conjuração — nivelar não deveria competir por mana com
+   spells de verdade).
+6. **Código morto de 2 cartas cortadas da lista** (`Devoted Druid`,
+   `Cloud of Faeries` — trocadas por Thranduil, Sindarin Liege/Thranduil's
+   Company em sessão anterior) ainda registradas no `CARD_DB` com
+   mecânica completa. Inofensivo (`build_library()` só lê `lista.md`,
+   nunca entram no baralho de verdade), documentado com comentário
+   explícito em vez de removido (evitar risco de corte em múltiplos
+   pontos do arquivo por um problema de baixo risco).
+
+**Robustez:** sweep de 20.000 jogos (seeds 6600000–6619999, timeout
+2s/jogo) — 0 erros, 0 timeouts.
+
+**n=3000, seed_base=8000000, 8 turnos — antes (HEAD anterior a hoje) →
+depois:**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Turno médio de conjuração da Maralen | 4,75 | 4,83 |
+| Avg gatilhos de Maralen (exila 2) | 8,36 | 8,65 |
+| Avg cartas exiladas total | 15,50 | 16,03 |
+| Avg dobras via Roaming Throne | 0,46 | 0,49 |
+| Avg nível final do Joraga Treespeaker | — (sempre 0 ou 1) | **0,92, atinge nível 5 em 16,8% dos jogos** |
+| Avg Fadas exiladas pelo Champion do Mistbind | — (nunca acontecia) | **0,16** |
+| Avg Treasures via Black Market Connections | — (n/a) | **0,39** |
+| Avg Mercenary Tokens via Black Market Connections | — (n/a) | **0,39** |
+| Combo Umbral Mantle montado | 10,4% | 10,7% |
+
+Leitura: os deltas são pequenos e todos rastreáveis às correções
+específicas — nada satura nem explode, consistente com bugs pontuais
+corrigidos, não uma reescrita de mecânica central. O achado mais
+significativo é qualitativo, não numérico: o nível 5 do Joraga (bônus de
+mana pra todos os Elfos) e a exilação real do Mistbind simplesmente não
+existiam antes, não é uma questão de frequência errada.
+
+`lista.md` não mudou. `maralen_v1_runs.jsonl` sobrescrito.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

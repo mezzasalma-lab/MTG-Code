@@ -49,9 +49,12 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas):
 - Bloom Tender: aproximacao documentada — produz mana igual ao numero
   de cores entre B/G/U que ja tem permanente em campo (nunca mais que
   3), nao rastreio cor exata de cada permanente.
-- Joraga Treespeaker: nivelado ate o nivel 1 assim que houver mana
-  sobrando (2 mana), raramente alcanca nivel 5 (5 ativacoes = 10 mana
-  total investido) dentro de 8 turnos — nao forcado.
+- Joraga Treespeaker: nivel real 0-5 implementado (achado real 2026-08-30 -
+  a versao anterior era binaria 0/1 e nunca alcancava o nivel 5 de jeito
+  nenhum, 0% estrutural, nao "raro" como o comentario antigo sugeria).
+  Nivela greedy com mana sobrando (5 ativacoes = 10 mana total investido
+  pro nivel 5, que da' "{T}: Add {G}{G}" pra TODOS os Elfos) — ver
+  `joraga_level_up()`.
 - Heritage Druid / Birchlore Rangers: aproximacao documentada — a
   habilidade delas tapa OUTROS Elfos como custo (nao a si mesmas), o
   que ignora summoning sickness desses Elfos (CR 302.6, tapar como
@@ -184,6 +187,14 @@ add("Priest of Titania", 2, "creature", {"elf", "dork_per_elf"})
 add("Elvish Archdruid", 3, "creature", {"elf", "dork_per_elf_controlled"})
 add("Marwyn, the Nurturer", 3, "creature", {"elf", "dork_marwyn", "elf_etb_counter"})
 add("Circle of Dreams Druid", 3, "creature", {"elf", "dork_per_creature"})
+# Devoted Druid: NAO esta mais em lista.md (achado real 2026-08-30,
+# reanalise pedida pelo usuario - foi trocada por Thranduil, Sindarin
+# Liege/Thranduil's Company, ver goldfish-log.md). Cadastro + toda a
+# mecanica dela (devoted_druid_pump() etc) ficaram no arquivo sem uso -
+# inofensivo (build_library() so' le nomes de lista.md, nunca entra no
+# baralho de verdade), mantido documentado aqui em vez de removido pra
+# nao arriscar quebrar algo tocando em varios pontos do arquivo por um
+# corte de baixo risco.
 add("Devoted Druid", 2, "creature", {"elf", "dork_devoted"})
 add("Elvish Harbinger", 3, "creature", {"elf", "dork_flat1_any", "tutor_elf_top"})
 add("Wirewood Symbiote", 1, "creature", {"bounce_untap"})
@@ -221,6 +232,8 @@ add("Spellstutter Sprite", 2, "creature", {"faerie", "etb_counter_unused"})
 add("Tegwyll, Duke of Splendor", 3, "creature", {"faerie", "faerie_death_draw"})
 add("Scryb Ranger", 2, "creature", {"faerie", "bounce_untap"})
 add("Brazen Borrower // Petty Theft", 3, "creature", {"faerie"})
+# Cloud of Faeries: mesmo caso do Devoted Druid acima - NAO esta mais em
+# lista.md (achado real 2026-08-30), cadastro mantido sem uso, inofensivo.
 add("Cloud of Faeries", 2, "creature", {"faerie", "etb_untap_lands"})
 add("Glen Elendra Archmage", 4, "creature", {"faerie"})
 
@@ -242,6 +255,15 @@ add("Mystic Remora", 1, "enchantment", {"opponent_dependent"})
 add("Heroic Intervention", 2, "instant", {"interaction"})
 add("Black Market Connections", 3, "enchantment", {"modal_treasure_draw"})
 add("Kindred Discovery", 5, "enchantment", {"kindred_discovery"})
+
+# Token sintetico "Hire a Mercenary" do Black Market Connections (achado
+# real 2026-08-30, reanalise pedida pelo usuario) - "Create a 3/2
+# colorless Shapeshifter creature token with changeling" - Changeling
+# significa que ela E' Elfo e Fada ao mesmo tempo pra toda sinergia do
+# deck (gatilho da Maralen, contador da Marwyn, Kindred Discovery,
+# Elvish Warmaster). Nao existe em lista.md, so' e' criada em jogo -
+# mesma convencao dos tokens sinteticos do simulador do Ulalek.
+add("Mercenary Token", 0, "creature", {"elf", "faerie", "changeling"})
 
 del CARD_DB["Fauna_placeholder_never_used"]
 
@@ -319,6 +341,9 @@ class GameState:
     tapped_lands_this_turn: set = field(default_factory=set)  # Bojuka Bog/Path of Ancestry/Zagoth Triome ("enters tapped"), resetado em play_turn()
     devoted_druid_counters: int = 0  # -1/-1 counters permanentes, morre ao chegar em 2 (toughness real = 2)
     joraga_level: int = 0
+    mistbind_exiled: list = field(default_factory=list)  # Fadas exiladas pelo Champion do Mistbind Clique
+    black_market_treasures_total: int = 0
+    black_market_mercenaries_total: int = 0
     marwyn_power: int = 1  # base 1/1 (achado real 2026-08-28: oraculo real e' 1/1, nao 2/2 - contadores permanentes somados aqui a partir da base certa)
     fauna_shaman_used_this_turn: bool = False
     heritage_used_this_turn: bool = False
@@ -503,25 +528,52 @@ def dork_mana(state: GameState) -> int:
     # Heritage Druid / Birchlore Rangers: convertem elfos "sick" (que ainda nao
     # contribuiriam nada) em mana extra, tapando-os como custo (CR 302.6 nao
     # bloqueia isso). Nao duplica elfos ja contados acima.
+    #
+    # Achado real 2026-08-30 (reanalise pedida pelo usuario): a versao
+    # anterior tambem exigia "Heritage Druid"/"Birchlore Rangers" IN
+    # `ready` (nao pode estar com doenca de invocacao) antes de liberar a
+    # propria habilidade - restricao que o oraculo real nao pede. Nenhuma
+    # das duas tem {T} no proprio custo ("Tap three/two untapped Elves you
+    # control: Add..."), so tapam OUTROS elfos - CR 302.6 so bloqueia
+    # ativar habilidade com {T}/{Q} do PROPRIO permanente quando ele esta
+    # sick, entao a doenca de invocacao da propria Heritage Druid/Birchlore
+    # Rangers nao impede ativar essa habilidade especifica no turno em que
+    # ela mesma entra.
     sick_elves = [n for n in state.battlefield
                   if is_elf(n) and n not in ready and n != "Heritage Druid" and n != "Birchlore Rangers"]
-    if "Heritage Druid" in state.battlefield and "Heritage Druid" in ready and len(sick_elves) >= 3:
+    if "Heritage Druid" in state.battlefield and len(sick_elves) >= 3:
         total += 3
-    if "Birchlore Rangers" in state.battlefield and "Birchlore Rangers" in ready and len(sick_elves) >= 2:
+    if "Birchlore Rangers" in state.battlefield and len(sick_elves) >= 2:
         total += 1
 
-    # Cryptolith Rite / Elven Chorus: da "T: add 1 any" a toda criatura —
-    # conta so as criaturas que ainda NAO produziram mana pela propria
-    # habilidade acima, pra nao duplicar.
-    if ("Cryptolith Rite" in state.battlefield or "Elven Chorus" in state.battlefield):
-        already_dorks = {n for n in state.battlefield if CARD_DB[n].tags & {
-            "dork_flat1", "dork_bloomtender", "dork_flat1_any", "dork_joraga",
-            "dork_per_elf", "dork_per_elf_controlled", "dork_marwyn",
-            "dork_per_creature", "dork_devoted",
-        }}
+    # Cryptolith Rite / Elven Chorus: da "T: add 1 any" a toda criatura.
+    # Joraga Treespeaker nivel 5+: "Elves you control have '{T}: Add
+    # {G}{G}.'" (achado real 2026-08-30, reanalise pedida pelo usuario -
+    # nivel 5 nunca era alcancavel na versao anterior, ver
+    # joraga_level_up()). As duas concedem uma habilidade de mana EXTRA a
+    # criaturas que ja tapam por outra coisa - uma criatura so' tapa 1 vez,
+    # entao usa o MAIOR bonus concedido por criatura em vez de somar os
+    # dois (senao seria tapar a mesma criatura duas vezes). So conta
+    # criaturas que ainda NAO produziram mana pela propria habilidade
+    # nomeada acima (dork_* tags), pra nao duplicar.
+    DORK_TAGS = {
+        "dork_flat1", "dork_bloomtender", "dork_flat1_any", "dork_joraga",
+        "dork_per_elf", "dork_per_elf_controlled", "dork_marwyn",
+        "dork_per_creature", "dork_devoted",
+    }
+    already_dorks = {n for n in state.battlefield if CARD_DB[n].tags & DORK_TAGS}
+    cryptolith_active = "Cryptolith Rite" in state.battlefield or "Elven Chorus" in state.battlefield
+    joraga_team_active = state.joraga_level >= 5
+    if cryptolith_active or joraga_team_active:
         for n in ready:
-            if is_creature_card(n) and n not in already_dorks:
-                total += 1
+            if n in already_dorks or not is_creature_card(n):
+                continue
+            granted = 0
+            if cryptolith_active:
+                granted = max(granted, 1)
+            if joraga_team_active and is_elf(n):
+                granted = max(granted, 2)
+            total += granted
 
     # Umbral Mantle: se equipada num dork escalavel com saida >=4, mana infinita.
     if state.umbral_equipped_on and state.umbral_equipped_on in ready:
@@ -630,9 +682,32 @@ def resolve_etb(state: GameState, name: str):
         pass  # Obyra: opponent-dependent (perde vida), sem efeito solo
 
     if "champion_faerie" in tags:
-        other_faeries = [n for n in state.battlefield if is_faerie(n) and n != name]
-        if not other_faeries:
-            leave_battlefield(state, name, to_graveyard=True)
+        # Oraculo real (Mistbind Clique): "Champion a Faerie (When this
+        # enters, sacrifice it unless you exile another Faerie you
+        # control...) When a Faerie is championed with this creature, tap
+        # all lands target player controls." Achado real 2026-08-30
+        # (reanalise pedida pelo usuario): quando havia outra Fada
+        # disponivel, o codigo mantinha a Mistbind em campo mas NUNCA
+        # exilava a Fada "campea" - ela continuava contando em campo junto
+        # com a Mistbind, quando so' 1 corpo deveria estar presente (a
+        # segunda Fada volta so' quando a Mistbind sai de campo -
+        # simplificacao documentada, ela raramente sai de campo neste
+        # modelo). Corrigido: exila de verdade, preferindo um token (menor
+        # perda real) a uma carta nomeada, e nunca a propria comandante
+        # (Maralen tambem e' Fada por tipo). O efeito de "tap all lands"
+        # (mira oponente) continua sem efeito numerico - Regra 1.
+        if state.faerie_tokens > 0:
+            state.faerie_tokens -= 1
+            state.mistbind_exiled.append("Faerie Token")
+        else:
+            other_faeries = [n for n in state.battlefield
+                              if is_faerie(n) and n != name and n != COMMANDER]
+            if other_faeries:
+                cheapest = min(other_faeries, key=lambda n: CARD_DB[n].mv)
+                state.battlefield.remove(cheapest)
+                state.mistbind_exiled.append(cheapest)
+            else:
+                leave_battlefield(state, name, to_graveyard=True)
 
     if "itlimoc" in tags:
         # Growing Rites of Itlimoc (face da frente) - oraculo real: "When
@@ -736,7 +811,11 @@ def leave_battlefield(state: GameState, name: str, to_graveyard: bool = True):
     if to_graveyard:
         state.graveyard.append(name)
     if is_faerie(name) and "Tegwyll, Duke of Splendor" in state.battlefield and name != "Tegwyll, Duke of Splendor":
+        # Oraculo real: "you draw a card AND you lose 1 life" - achado real
+        # 2026-08-30 (reanalise pedida pelo usuario), so' a compra estava
+        # implementada, faltava a perda de vida.
         draw_cards(state, 1)
+        state.life -= 1
     if state.umbral_equipped_on == name:
         state.umbral_equipped_on = None
         state.infinite_mana_this_turn = False
@@ -893,11 +972,23 @@ def equip_umbral_mantle(state: GameState):
 
 
 def joraga_level_up(state: GameState):
-    if "Joraga Treespeaker" not in state.battlefield or state.joraga_level >= 1:
+    """Oraculo real: "Level up {1}{G} (Level up only as a sorcery.) LEVEL
+    1-4: {T}: Add {G}{G}. LEVEL 5+: Elves you control have '{T}: Add
+    {G}{G}.'" Achado real 2026-08-30 (reanalise pedida pelo usuario): a
+    versao anterior era binaria (0 ou 1, nunca progredia mais), e o
+    docstring do arquivo dizia "raramente alcanca nivel 5" como se fosse
+    probabilistico quando na verdade era estruturalmente impossivel (0%,
+    nao raro) - o nivel 5+ (bonus de equipe pra TODOS os Elfos) nunca
+    existia no modelo. Corrigido: nivel real 0-5, sobe quantas vezes a
+    mana sobrando permitir (sem restricao de "1x por turno" no oraculo,
+    so' o custo real de {1}{G} por nivel). Chamado DEPOIS do loop
+    principal de conjuracao (so' usa mana que sobrou - nivelar Joraga
+    nunca deveria competir com conjurar spells de verdade)."""
+    if "Joraga Treespeaker" not in state.battlefield:
         return
-    if remaining_mana(state) >= 2:
+    while state.joraga_level < 5 and remaining_mana(state) >= 2:
         spend_mana(state, 2)
-        state.joraga_level = 1
+        state.joraga_level += 1
 
 
 def devoted_druid_pump(state: GameState):
@@ -941,12 +1032,16 @@ def use_staff_of_domination_v2(state: GameState):
         state.library_emptied = True
 
 
-def main_phase(state: GameState):
+def main_phase(state: GameState, is_first_main: bool = True):
+    if is_first_main:
+        # Oraculo real: "At the beginning of your first main phase" -
+        # achado real 2026-08-30, disparava no upkeep antes (passo errado).
+        black_market_connections_step(state)
+
     if not state.commander_in_play and can_cast(state, COMMANDER):
         cast_card(state, COMMANDER)
         maralen_try_free_cast(state)
 
-    joraga_level_up(state)
     devoted_druid_pump(state)
     equip_umbral_mantle(state)
     # reavalia infinito apos equipar (dork_mana ja seta a flag)
@@ -978,6 +1073,14 @@ def main_phase(state: GameState):
             state.elf_tokens += 10_000
         else:
             create_token(state, "elf", source="Imperious Perfect")
+
+    # Joraga Treespeaker: level up e' "as a sorcery" (qualquer main phase
+    # com prioridade, sem restricao de 1a/2a) - movido pra depois do loop
+    # de conjuracao (achado real 2026-08-30, reanalise pedida pelo
+    # usuario): rodava ANTES do loop principal, competindo por mana com
+    # spells de verdade - agora so' usa mana que sobrou, mesma filosofia
+    # ja aplicada ao Fauna Shaman/Imperious Perfect acima.
+    joraga_level_up(state)
 
     use_staff_of_domination_v2(state)
 
@@ -1023,10 +1126,32 @@ def upkeep_step(state: GameState):
         for _ in range(times):
             state.life -= 1
             create_token(state, "faerie", source="Bitterbloom Bearer")
-    if "Black Market Connections" in state.battlefield:
-        state.life -= 1  # modo "Sell Contraband" simplificado (sem Treasure no deck, so o custo de vida)
-        draw_cards(state, 1)
-        state.life -= 2
+
+def black_market_connections_step(state: GameState):
+    """Oraculo real: "At the beginning of your FIRST MAIN PHASE, choose one
+    or more — Sell Contraband (Treasure, perde 1) / Buy Information
+    (compra 1, perde 2) / Hire a Mercenary (token 3/2 Changeling, perde 3)."
+    Achado real 2026-08-30 (reanalise pedida pelo usuario), 3 problemas
+    empilhados na versao anterior: (1) disparava no upkeep, passo errado;
+    (2) pagava o custo de vida do Sell Contraband SEM criar o Treasure
+    correspondente (pior que nao escolher o modo); (3) Hire a Mercenary
+    nunca era modelado. Corrigido: dispara aqui (1a main phase), escolhe
+    os 3 modos (mesma filosofia agressiva do resto do motor - sem
+    oponente real ameacando a vida, maximizar valor e' sempre a escolha
+    certa). Treasure tratado como mana avulsa disponivel NO PROPRIO
+    TURNO (mesma convencao de refund ja usada pro "etb_untap_lands" do
+    Cloud of Faeries) - simplificacao documentada, nao rastreado como
+    token persistente pra turnos futuros."""
+    if "Black Market Connections" not in state.battlefield:
+        return
+    state.life -= 1
+    state.mana_spent_this_turn = max(0, state.mana_spent_this_turn - 1)
+    state.black_market_treasures_total += 1
+    state.life -= 2
+    draw_cards(state, 1)
+    state.life -= 3
+    enter_battlefield(state, "Mercenary Token", from_hand=False)
+    state.black_market_mercenaries_total += 1
 
 
 def should_keep(hand: list) -> bool:
@@ -1106,9 +1231,9 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
 
     upkeep_step(state)
     play_land(state)
-    main_phase(state)
+    main_phase(state, is_first_main=True)
     combat_step(state)
-    main_phase(state)
+    main_phase(state, is_first_main=False)
     end_step(state)
 
     flash_universal = any(n in state.battlefield for n in FLASH_SOURCES)
@@ -1148,6 +1273,10 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg terrenos jogados (total no jogo, inclui land drop extra do Thranduil's Company): {avg([s.lands_played_total for s in states]):.2f}")
     print(f"Avg tokens de Elfo via landfall (Thranduil, Sindarin Liege): {avg([s.landfall_elf_tokens_total for s in states]):.2f}")
     print(f"Avg gatilhos de contadores via landfall (Thranduil's Company): {avg([s.landfall_counters_total for s in states]):.2f}")
+    print(f"Avg Treasures via Black Market Connections (Sell Contraband): {avg([s.black_market_treasures_total for s in states]):.2f}")
+    print(f"Avg Mercenary Tokens via Black Market Connections (Hire a Mercenary): {avg([s.black_market_mercenaries_total for s in states]):.2f}")
+    print(f"Avg nivel final do Joraga Treespeaker: {avg([s.joraga_level for s in states]):.2f} | atingiu nivel 5: {100*sum(1 for s in states if s.joraga_level >= 5)/n:.1f}%")
+    print(f"Avg Fadas exiladas pelo Champion do Mistbind Clique: {avg([len(s.mistbind_exiled) for s in states]):.2f}")
     combo_hits = sum(1 for s in states if s.infinite_combo_assembled)
     print(f"Combo Umbral Mantle (mana infinita) montado: {100*combo_hits/n:.1f}% dos jogos"
           + (f" | turno medio: {avg([s.infinite_combo_turn for s in states if s.infinite_combo_turn is not None]):.2f}" if combo_hits else ""))
