@@ -2438,21 +2438,33 @@ errado. `lista.md` não muda.
 
 ---
 
-## Partida #15 — 2026-08-30 (partida REAL, jogada à mão no goldfish do Archidekt) — EM ANDAMENTO
+## Partida #15 — 2026-08-30 (partida REAL, jogada à mão no goldfish do Archidekt)
 
-- **Formato do teste:** não é simulação automatizada — jogada manual pelo usuário no modo goldfish do Archidekt, mesma metodologia das Partidas #13/#14.
-- **Mão inicial (mulligan até):** keep na mão de 7 (sem mulligan). Sarkhan Unbroken, Smothering Tithe, Crux of Fate, Jetmir's Garden, Rhythm of the Wild, Haven of the Spirit Dragon, Ancient Gold Dragon.
-- **Leitura da mão (antes de qualquer turno jogado):** só **2 terrenos** (Jetmir's Garden, Haven of the Spirit Dragon) e **nenhum ramp** (Sol Ring/Cultivate/Farseek/etc.) — mão pesada em ação (Sarkhan Unbroken, Smothering Tithe, Rhythm of the Wild, Ancient Gold Dragon) mas com risco real de travar em land drop antes delas ficarem castáveis, especialmente num deck de 5 cores. Compensações reais: Haven of the Spirit Dragon fixa qualquer cor pra Dragão (Ancient Gold Dragon incluído) e Jetmir's Garden já cobre 3 das 5 cores (R/G/W) sozinha — então a mão não está tão exposta a color screw quanto pareceria só pela contagem de terrenos, mas ainda depende de puxar mais 2-3 land drops a tempo pra desenvolver.
-- **Turno da primeira jogada relevante:** *(a preencher conforme a partida progride)*
-- **Turno do primeiro ataque/combo:**
-- **Curva de mana observada:**
-- **Bombas/peças-chave puxadas:**
-- **Removals sofridos/enviados:**
-- **Resultado:**
-- **Turno de fim de jogo:**
-- **O que funcionou bem:**
-- **O que travou o deck:**
-- **Ajustes a considerar:**
+**Nota:** a tentativa anterior registrada com esse número foi apagada pelo
+usuário sem querer ("Desconsidere o Goldfish anterior") — esta entrada
+substitui aquela. Diferente das Partidas #13/#14 (narrativa em texto), o
+usuário mandou o **log estruturado (JSON) de mudança de zona** exportado
+pelo Archidekt, cobrindo os 7 primeiros turnos — reconstrução abaixo feita
+processando esse JSON turno a turno (script em
+`/tmp/.../scratchpad/goldfish_parse/`, não de leitura visual), então mais
+precisa que as partidas anteriores quanto a QUANDO cada carta mudou de
+zona. Onde o log não deixa a causa exata de um gatilho clara (ex: qual
+efeito específico puxou qual carta extra), isso é marcado explicitamente
+como inferência, não fato confirmado.
+
+- **Formato do teste:** não é simulação automatizada — jogada manual pelo usuário no modo goldfish do Archidekt, log de mudança de zona exportado e processado programaticamente.
+- **Mão inicial (mulligan até):** keep na mão de 7 (sem mulligan). Mountain, Sundown Pass, Utvara Hellkite, Up the Beanstalk, Jetmir's Garden, Overgrown Tomb, Lathliss, Dragon Queen.
+- **Turno 1:** compra Savannah (compra normal, CR 103.8a). Joga Jetmir's Garden (tapped, incondicional — Triome).
+- **Turno 2:** compra Temur Ascendancy (normal) + Birds of Paradise (via ETB de Up the Beanstalk, "when this enchantment enters... draw a card"). Joga Savannah (untapped). Conjura Up the Beanstalk.
+- **Turno 3:** compra Sarkhan, Soul Aflame. Joga Sundown Pass — **untapped** (2+ outros terrenos em campo já satisfaz a condição do check land). Conjura Birds of Paradise.
+- **Turno 4:** compra The Great Henge. Joga Mountain. Conjura Temur Ascendancy ({G}{U}{R} — Birds de Paradise supre o U que nenhum terreno em campo ainda produzia).
+- **Turno 5:** compra Dragonspeaker Shaman + Windswept Heath + Sol Ring (2 compras extras além da normal — provavelmente Up the Beanstalk disparando de novo pra Lathliss, mv 6 ≥ 5; a origem exata da 2ª compra extra não fica clara só pelo log de zona). Joga Overgrown Tomb. Conjura Lathliss, Dragon Queen ({4}{R}{R}, com desconto de Eminence −1 mesmo sem a Ur-Dragon conjurada — ela só precisa estar na zona de comando).
+- **Turno 6:** compra 5 cartas (Scourge of Valkas, Command Tower, Zagoth Triome, Tropical Island, e Dragonspeaker Shaman aparece de novo no log — possível particularidade do export, não uma 2ª cópia real). Racha Windswept Heath, busca Ketria Triome (tapped). Conjura Sol Ring. Conjura **The Great Henge por só 3 mana** ({7}{G}{G} − X, X = maior poder em campo = 6, da Lathliss já resolvida). Conjura Scourge of Valkas (mv 5, com Eminence = 4 mana real) — dispara Lathliss ("outro Dragão NÃO-token entra" → cria 1 token de Dragão 5/5) e o próprio ETB de dano do Scourge.
+- **Turno 7:** compra Heroic Intervention, Teferi's Protection, Steam Vents. Joga Tropical Island. Conjura Sarkhan, Soul Aflame (sem desconto de Dragão — ele não é Dragão por tipo). Conjura Utvara Hellkite (mv 8, Eminence = 7 mana real) — dispara Lathliss de novo (2º token). **Ataca com o time inteiro de Dragões** (Lathliss + 2 tokens + Scourge of Valkas + Utvara Hellkite, possivelmente Sarkhan também via a habilidade dele de copiar um Dragão) — Utvara Hellkite ("whenever A Dragon you control attacks, create a 6/6 red Dragon token") dispara **uma vez por Dragão atacando**, criando **mais 6 tokens de Dragão de uma vez só**.
+- **Resultado ao fim do turno 7:** 22 permanentes em campo — 7 terrenos, Sol Ring, Birds of Paradise, The Great Henge, **3 Dragões nomeados (Scourge of Valkas, Lathliss, Utvara Hellkite) + Sarkhan Soul Aflame + 8 Dragon tokens**. **A própria Ur-Dragon nunca saiu da zona de comando** — o motor de Dragão (Lathliss + Utvara Hellkite se retroalimentando) já fecha o jogo sozinho, sem precisar resolver a comandante de 9 mana.
+- **O que funcionou bem:** a curva de mana nunca travou (land drop todo turno) apesar de só 2 terrenos + 0 ramp na mão inicial — Birds de Paradise (T3) supriu a cor que faltava bem cedo. The Great Henge saindo por 3 mana graças à Lathliss já em campo é o tipo de sinergia de custo-reduzido-por-poder que só aparece quando o board já tem um corpo grande — turno de ouro. O loop Lathliss (token ao ETB de Dragão não-token) + Utvara Hellkite (token por Dragão atacando) se retroalimentou tão bem que a Ur-Dragon nem fez falta.
+- **O que travou o deck:** nada — outlier positivo, mesma classe da Partida #9 da leva de 10 (simulada).
+- **Ajustes a considerar:** nenhum de lista — reforça que Lathliss + Utvara Hellkite são um motor autossuficiente de geração de Dragões mesmo sem a comandante, consistente com o que a Regra 8 (necessidade de mana turno-a-turno) já tinha achado sobre tokens/entradas grátis carregarem boa parte da contagem de Dragões numa partida real.
 
 ---
 
