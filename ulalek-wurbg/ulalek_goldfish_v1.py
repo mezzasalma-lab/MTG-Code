@@ -384,6 +384,12 @@ class GameState:
     first_creature_discount_events_total: int = 0
     radagast_flash_grants_total: int = 0
     glaring_fleshraker_damage_total: int = 0
+    ulalek_cc_payments_safe: int = 0
+    ulalek_cc_payments_risky: int = 0
+    ulalek_cc_declined_but_had_true_c: int = 0
+    true_c_capacity_samples: list = field(default_factory=list)
+    total_mana_samples: list = field(default_factory=list)
+    leftover_mana_samples: list = field(default_factory=list)
 
 
 def draw_cards(state: GameState, n: int):
@@ -654,6 +660,36 @@ def forsaken_monument_bonus(state: GameState) -> int:
     return bonus
 
 
+def true_colorless_capacity(state: GameState) -> int:
+    """Quanto mana {C} de VERDADE (nao generico) esta disponivel neste
+    momento, somando so as fontes que realmente tapam por {C} (TRUE_C_LANDS
+    + Ancient Tomb {C}{C} + Sol Ring {C}{C} + Thran Dynamo {C}{C}{C} +
+    Talismans {C} cada + Eldrazi Spawn/Scion tokens disponiveis pra
+    sacrificar por {C}) - NAO inclui Forsaken Monument (esse e' um bonus
+    condicional, ja contado por forsaken_monument_bonus() separadamente).
+    Adicionado 2026-08-30 a pedido do usuario, pra medir se o aperto de
+    mana incolor sentido em jogo real (pra pagar o {C}{C} da Ulalek, ou
+    ativar algo tipo Strionic Resonator/Peter Parker's Camera) e' um
+    problema sistematico do deck ou so' de maos especificas. O modelo
+    principal usa mana generica/fungivel (convencao do repositorio inteiro
+    - nao rastreia pip a pip) - esta funcao e' uma medida PARALELA e
+    aproximada: conta a CAPACIDADE de {C} real que existe em campo,
+    independente de quanto dela ja foi "gasta" genericamente nesse turno
+    (o modelo nao sabe DE QUAL fonte especifica cada gasto saiu). Trate
+    como um teto otimista de {C} disponivel, nao um numero garantido."""
+    total = sum(1 for n in state.battlefield if n in TRUE_C_LANDS)
+    if "Ancient Tomb" in state.battlefield:
+        total += 2
+    if "Sol Ring" in state.battlefield:
+        total += 2
+    if "Thran Dynamo" in state.battlefield:
+        total += 3
+    total += sum(1 for n in state.battlefield if n in
+                 ("Talisman of Dominance", "Talisman of Impulse", "Talisman of Resilience"))
+    total += state.spawn_tokens_available
+    return total
+
+
 def total_mana(state: GameState) -> int:
     return land_mana(state) + rocks_mana(state) + state.bonus_mana_pool + forsaken_monument_bonus(state)
 
@@ -824,10 +860,30 @@ def resolve_cast(state: GameState, name: str, free: bool = False, from_hand: boo
 
     # --- Ulalek: pode pagar CC se for Eldrazi ---
     ulalek_paid = False
-    if eldrazi and COMMANDER in state.battlefield and remaining_mana(state) >= 2:
-        spend_mana(state, 2)
-        ulalek_paid = True
-        state.ulalek_copies_total += 1
+    if eldrazi and COMMANDER in state.battlefield:
+        true_c = true_colorless_capacity(state)
+        if remaining_mana(state) >= 2:
+            spend_mana(state, 2)
+            ulalek_paid = True
+            state.ulalek_copies_total += 1
+            # Medida paralela (2026-08-30, a pedido do usuario): o modelo
+            # principal usa mana generica/fungivel, entao "pagou CC" aqui
+            # so' checa TOTAL >= 2, nao se a mana e' realmente {C}. Marca
+            # como "risky" quando a capacidade REAL de {C} em campo (fontes
+            # que tapam por {C} de verdade + Spawn/Scion disponiveis) e'
+            # menor que 2 no momento do pagamento - sinal de que, numa mesa
+            # real com pips de verdade, esse pagamento pode nao ser legal
+            # dependendo de quais fontes ja foram gastas em outras coisas.
+            if true_c >= 2:
+                state.ulalek_cc_payments_safe += 1
+            else:
+                state.ulalek_cc_payments_risky += 1
+        elif true_c >= 2:
+            # Modelo NAO pagou (mana generica total insuficiente), mas a
+            # capacidade real de {C} ainda estava disponivel - sinal do
+            # sentido oposto: um jogador real, guardando as fontes de {C}
+            # de proposito, poderia ter pago mesmo aqui.
+            state.ulalek_cc_declined_but_had_true_c += 1
 
     # --- Echoes of Eternity: copia incondicional de spell colorless ---
     echoes_spell_copy = ("Echoes of Eternity" in state.battlefield and colorless
@@ -1080,7 +1136,17 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
 
     play_land(state)
     sac_spawns_for_mana(state, state.spawn_tokens_available)
+    # Amostra de mana incolor de verdade vs. mana total, no inicio da fase
+    # principal (antes de gastar) - 1 amostra por turno (2026-08-30, a
+    # pedido do usuario).
+    state.true_c_capacity_samples.append(true_colorless_capacity(state))
+    state.total_mana_samples.append(total_mana(state))
     main_phase(state)
+    # Mana generica (qualquer cor) que sobrou depois do loop guloso de
+    # conjuracao - relevante pra ativacoes de custo generico tipo Strionic
+    # Resonator/Peter Parker's Camera ({2},{T}), diferente da pergunta de
+    # {C} especifico da Ulalek acima (2026-08-30, a pedido do usuario).
+    state.leftover_mana_samples.append(remaining_mana(state))
     end_step(state)
 
     if any("flash_source" in CARD_DB[n].tags for n in state.battlefield):
