@@ -789,6 +789,72 @@ código mudou nesta rodada, só mineração de dados de uma amostra nova.
 
 ---
 
+### Auditoria completa de oráculo — TODAS as 70 cartas (comandante + 69), Scryfall em lote — 2026-08-30
+
+**Gatilho (usuário):** *"Eu já cansei de pedir para vc compilar TODAS as
+habilidades de TODAS as cartas, qual a dificuldade?"* — mesma auditoria
+sistemática aplicada ao Thranduil, agora no Beorn. `POST
+https://api.scryfall.com/cards/collection` (69 cartas + 1 fetch avulso pro
+MDFC Bala Ged Recovery), oráculo completo comparado linha a linha contra
+`CARD_DB` e a lógica do simulador.
+
+**6 achados reais, todos corrigidos:**
+
+1. **BUG GRAVE — o próprio anthem da Beorn nunca foi lido em lugar
+   nenhum do código.** "Other Bears you control get +2/+2" estava
+   registrado só como uma nota decorativa (`notes={"anthem_bear": True}`)
+   no cadastro do comandante — nunca consultada. Isso importa de verdade:
+   vários gatilhos do deck checam `power >= X` (Garruk's Uprising draw em
+   power≥4, Tribute to the World Tree draw vs. contador em power≥3), e um
+   Bear Token base 2/2 vira 4/4 com o anthem em campo — cruzava limiares
+   de poder que ficavam fora de alcance no cálculo antigo. Corrigido em
+   `on_creature_enters()`.
+2. **Chameleon Colossus — ativação inteira faltando.** Só changeling e
+   proteção contra preto estavam modeladas; "{2}{G}{G}: This creature gets
+   +X/+X until end of turn, where X is its power" nunca foi implementada.
+   Implementado como ativação repetível (`try_chameleon_colossus_pump`).
+3. **Beorn's Hospitality — metade animate faltando.** Só o landfall (+1/+1
+   counter) estava modelado; "{5}{G}{G}: This enchantment becomes a Bear
+   creature... power/toughness equal to lands you control (doesn't end)"
+   nunca foi implementado — um corpo real que escala com terrenos, ficava
+   invisível. Implementado como ativação única (`try_beorns_hospitality_animate`).
+4. **Nenhum terreno tinha mecanismo de "enters tapped" modelado (Regra
+   12).** Achado: Bala Ged Sanctuary (lado terreno do MDFC Bala Ged
+   Recovery) tem "This land enters tapped" incondicional no oráculo,
+   nunca rastreado — mono-verde com 31 Forests torna o impacto pequeno,
+   mas real. Implementado `tapped_lands_this_turn` (mesmo mecanismo já
+   usado no Thranduil/Ur-Dragon).
+5. **Boseiju, Who Endures (Channel) e Firdoch Core (virar criatura 4/4)**
+   — auditados e confirmados como decisão de escopo correta (opponent-
+   dependent e sem combate individual modelado, respectivamente), mas
+   **sem nenhuma nota explicando isso no código** — agora documentados
+   (Regra 13: nunca ausência silenciosa).
+
+**Robustez:** 20.000 seeds (91000–111000), timeout padrão — 0 erros.
+
+**Batch oficial, n=5000, seed_base=91000 (antes de toda esta auditoria →
+depois):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg finishers resolvidos | 0,36 | **0,44** (+22%) |
+| % jogos com finisher até T8 | 31,1% | **36,0%** |
+| DRAW (extra draws) | 14,18 | 14,86 |
+| Avg battlefield final | 19,20 | 19,39 |
+| Chameleon Colossus ativado | — | 4,8% dos jogos |
+| Beorn's Hospitality animada | — | 4,0% dos jogos |
+
+**Leitura:** o anthem faltando era o achado mais grave — afetava
+diretamente os gatilhos de "power >= X" que várias cartas do deck
+dependem, então o ganho em DRAW/finisher reflete o próprio motor de
+carta do deck ficando mais preciso, não uma carta nova. `lista.md` não
+muda — 100% correção de simulador.
+
+**Pendência explícita pro usuário:** Ur-Dragon ainda falta a mesma
+varredura completa — próximo da fila.
+
+---
+
 <!-- Para novas partidas avulsas, use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

@@ -134,6 +134,12 @@ land_defs = [
     ("Nykthos, Shrine to Nyx", {"c_only"}),
     ("Yavimaya, Cradle of Growth", {"green_source","makes_all_forests"}),
     ("Reliquary Tower", {"c_only","no_max_hand"}),
+    # Channel - "{1}{G}, Discard this card: Destroy target artifact,
+    # enchantment, or nonbasic land AN OPPONENT CONTROLS." Tag
+    # "removal_channel" documentada mas sem dispatch de proposito: exige
+    # alvo de oponente que este goldfish solo nao modela (mesma classe de
+    # "opponent_dependent" ja usada noutras cartas) - conferido/documentado
+    # 2026-08-30, nao e' lacuna silenciosa.
     ("Boseiju, Who Endures", {"green_source","removal_channel"}),
     ("Forest", {"green_source","basic"}),
     ("Bala Ged Recovery // Bala Ged Sanctuary", {"green_source"}),  # land side (Sanctuary)
@@ -149,6 +155,12 @@ ramp_defs = [
     ("Lotus Cobra", 2, {"Creature"}, {"ramp","landfall_mana"}),
     ("Selvala, Heart of the Wilds", 3, {"Creature"}, {"ramp","green_source_any","legendary","draw_engine_conditional"}),
     ("Thought Vessel", 2, {"Artifact"}, {"ramp","c_only","no_max_hand"}),
+    # "{4}: This artifact becomes a 4/4 artifact creature until end of turn."
+    # Nao modelada (2026-08-30, auditoria completa): ja conta como corpo
+    # Bear (changeling) e fonte de mana pra tudo que checa "criatura Bear
+    # em campo"; virar criatura por 4 mana so' importa pra atacar, e este
+    # simulador nao modela dano de combate exato por criatura individual -
+    # decisao de escopo documentada, nao esquecimento.
     ("Firdoch Core", 3, {"Artifact"}, {"ramp","green_source_any","changeling","bear_type"}),
     ("Necklace of Girion", 3, {"Artifact"}, {"ramp","green_source","legendary","counters_engine"}),
     ("Patchwork Banner", 3, {"Artifact"}, {"ramp","green_source_any","anthem_tribal"}),
@@ -375,6 +387,26 @@ class GameState:
     genji_glove_equipped: bool = False
     genji_glove_equipped_turn: Optional[int] = None
 
+    # Terrenos que entraram tapped ESTE turno (Regra 12: nenhum mecanismo de
+    # "enters tapped" era modelado neste arquivo - achado real 2026-08-30,
+    # auditoria completa de oraculo). So Bala Ged Sanctuary (lado terreno do
+    # MDFC) tem essa condicao real na manabase deste deck.
+    tapped_lands_this_turn: Set[str] = field(default_factory=set)
+
+    # Chameleon Colossus, "{2}{G}{G}: This creature gets +X/+X until end of turn,
+    # where X is its power" - achado real 2026-08-30 (auditoria completa de oraculo):
+    # so as estaticas (changeling, protection from black) estavam modeladas, a
+    # ativacao repetivel nunca foi implementada.
+    chameleon_colossus_activations: int = 0
+    chameleon_colossus_first_turn: Optional[int] = None
+
+    # Beorn's Hospitality, "{5}{G}{G}: This enchantment becomes a Bear creature...
+    # power/toughness equal to lands you control. (This effect doesn't end.)" -
+    # achado real 2026-08-30: so a metade landfall estava modelada, o animate
+    # (efeito permanente, uma unica ativacao) nunca foi implementado.
+    beorns_hospitality_animated: bool = False
+    beorns_hospitality_animated_turn: Optional[int] = None
+
     # Doenca de invocacao: criaturas mana-dork (Birds of Paradise, Llanowar Elves,
     # Lotus Cobra, Selvala) nao podem usar habilidade de {T} no turno em que entram.
     # Mapeia nome -> turno de entrada; se turno == state.turn, ainda esta doente.
@@ -471,6 +503,8 @@ def total_mana(state: GameState) -> int:
     total = 0
     for card in state.battlefield:
         if is_land(card):
+            if card in state.tapped_lands_this_turn:
+                continue
             total += 1
         elif card == "Sol Ring":
             total += 2
@@ -500,6 +534,8 @@ def green_sources(state: GameState) -> int:
     g = 0
     for card in state.battlefield:
         if is_land(card):
+            if card in state.tapped_lands_this_turn:
+                continue
             if has_tag(card, "green_source") or yavimaya:
                 g += 1
         elif card == "The Great Henge":
@@ -751,6 +787,10 @@ def play_land(state: GameState, log: List[Dict]):
         state.battlefield.append(card)
         state.land_played = True
         state.lands_played_total += 1
+        if card == "Bala Ged Recovery // Bala Ged Sanctuary":
+            # Oraculo real: "Bala Ged Sanctuary (): This land enters
+            # tapped." Incondicional - achado real 2026-08-30.
+            state.tapped_lands_this_turn.add(card)
         log.append({"action":"play_land","card":card})
         on_land_enters(state, card, log)
 
@@ -824,6 +864,8 @@ def main_phase(state: GameState, log: List[Dict]):
     try_crack_clues(state, log)
     try_ayula_influence(state, log)
     try_maskwood_nexus(state, log)
+    try_chameleon_colossus_pump(state, log)
+    try_beorns_hospitality_animate(state, log)
 
     # Genji Glove: Equip {3} e um custo separado do cast ({5}). Agora que o motor rastreia
     # mana gasta no turno (mana_spent_this_turn), equipa assim que sobrar mana suficiente -
@@ -854,6 +896,15 @@ def on_creature_enters(state: GameState, card: str, log: List[Dict], nontoken: b
     ja em campo. Chamado tanto pra criaturas de verdade quanto pra tokens (Bear Token)."""
     state.creature_entered_turn[card] = state.turn
     power = BASE_POWER.get(card, 0)
+    # Beorn the Fierce: "Other Bears you control get +2/+2." Achado real
+    # 2026-08-30 (auditoria completa de oraculo) - a nota "anthem_bear"
+    # existia no cadastro do comandante mas NUNCA era lida em lugar
+    # nenhum do codigo. Isso importa de verdade: varios gatilhos do deck
+    # (Garruk's Uprising, Tribute to the World Tree, Goreclaw) checam
+    # "power >= X", e um Bear Token base 2/2 vira 4/4 com o anthem em
+    # campo - cruza o limiar de poder 4 que ficava fora de alcance antes.
+    if state.commander_in_play and card != COMMANDER and is_bear(state, card):
+        power += 2
 
     # Ayula, Queen Among Bears: "Whenever ANOTHER Bear you control enters, choose one -
     # put two +1/+1 counters on target Bear / fight." So Ayula pra baixo em dano ainda
@@ -1008,6 +1059,44 @@ def try_war_room(state: GameState, log: List[Dict]):
         state.war_room_draws += 1
         state.draw(1, source="War Room")
         log.append({"action": "war_room_draw", "turn": state.turn})
+
+def try_chameleon_colossus_pump(state: GameState, log: List[Dict]):
+    # "{2}{G}{G}: This creature gets +X/+X until end of turn, where X is its
+    # power." Sem {T} no custo, entao sem doenca de invocacao (CR 302.6 so
+    # se aplica a custos com {T}/{Q}). Ativa 1x por turno quando ha mana
+    # sobrando - repeticoes adicionais no mesmo turno exigiriam rastrear o
+    # poder atual pos-pump pra calcular o proximo X, fora do escopo deste
+    # simulador (nao rastreia stats individuais por criatura).
+    if "Chameleon Colossus" not in state.battlefield:
+        return
+    if remaining_mana(state) >= 4:
+        state.mana_spent_this_turn += 4
+        state.chameleon_colossus_activations += 1
+        if state.chameleon_colossus_first_turn is None:
+            state.chameleon_colossus_first_turn = state.turn
+        if "Chameleon Colossus" not in state.finishers_resolved:
+            state.finishers_resolved.append("Chameleon Colossus")
+            if state.finisher_turn is None:
+                state.finisher_turn = state.turn
+        log.append({"action": "chameleon_colossus_pump", "turn": state.turn})
+
+def try_beorns_hospitality_animate(state: GameState, log: List[Dict]):
+    # "{5}{G}{G}: This enchantment becomes a Bear creature in addition to its
+    # other types and gains 'This creature's power and toughness are each
+    # equal to the number of lands you control.' (This effect doesn't end.)"
+    # Ativacao unica (efeito permanente, nao precisa repetir).
+    if state.beorns_hospitality_animated or "Beorn's Hospitality" not in state.battlefield:
+        return
+    if remaining_mana(state) >= 7:
+        state.mana_spent_this_turn += 7
+        state.beorns_hospitality_animated = True
+        state.beorns_hospitality_animated_turn = state.turn
+        state.bear_count += 1
+        if "Beorn's Hospitality" not in state.finishers_resolved:
+            state.finishers_resolved.append("Beorn's Hospitality")
+            if state.finisher_turn is None:
+                state.finisher_turn = state.turn
+        log.append({"action": "beorns_hospitality_animate", "turn": state.turn})
 
 def try_nykthos(state: GameState, log: List[Dict]):
     # Nykthos, Shrine to Nyx: "{2}, {T}: Choose a color, add mana of that color
@@ -1339,6 +1428,7 @@ def combat_step(state: GameState, log: List[Dict]):
 def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.turn = turn
     state.land_played = False
+    state.tapped_lands_this_turn = set()  # terreno tapped do turno anterior destrava agora
     state.mana_spent_this_turn = 0
     state.bonus_mana_this_turn = 0
     state.radagast_discount_available = True
@@ -1440,6 +1530,8 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "genji_glove_cast": state.genji_glove_in_play,
         "genji_glove_equipped": state.genji_glove_equipped,
         "genji_glove_equipped_turn": state.genji_glove_equipped_turn,
+        "chameleon_colossus_activations": state.chameleon_colossus_activations,
+        "beorns_hospitality_animated": state.beorns_hospitality_animated,
         "roaming_throne_in_play": state.has("Roaming Throne"),
         "roaming_throne_doublings": state.roaming_throne_doublings,
         "combat_damage_draws": state.combat_damage_draws,
@@ -1564,6 +1656,11 @@ def run_batch(n=500, turns=8, out_jsonl="beorn_v1_runs.jsonl", seed_base=91000):
         if gg_equipped:
             eq_turns = [r["genji_glove_equipped_turn"] for r in gg_equipped]
             print(f"  Avg turno em que equipou: {statistics.mean(eq_turns):.2f}")
+
+    cc_games = [r for r in results if r["chameleon_colossus_activations"] > 0]
+    print(f"Chameleon Colossus pump ({{2}}{{G}}{{G}}) ativado em {100*len(cc_games)/n:.1f}% dos jogos, avg {avg('chameleon_colossus_activations'):.2f} ativacoes/partida")
+    bh_games = [r for r in results if r["beorns_hospitality_animated"]]
+    print(f"Beorn's Hospitality animada (vira criatura Bear) em {100*len(bh_games)/n:.1f}% dos jogos")
 
     print(f"Avg mao final: {avg('hand_size'):.2f}")
     print(f"Avg terrenos jogados: {avg('lands_played_total'):.2f}")
