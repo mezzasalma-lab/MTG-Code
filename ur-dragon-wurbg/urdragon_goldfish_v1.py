@@ -178,7 +178,7 @@ LAND_PRODUCES = {
     "Jetmir's Garden": {"W", "R", "G"},
     "Ketria Triome": {"G", "U", "R"},
     "Overgrown Tomb": {"B", "G"},
-    "Path of Ancestry": set("WUBRG"),
+    "Path of Ancestry": set("WUBRG"),  # scry 1 condicional (mana gasta em criatura que compartilha tipo com o comandante) nao modelado - achado 2026-08-30, valor real baixo demais pra justificar rastrear "qual mana especifica pagou o que" neste simulador
     "Sacred Foundry": {"R", "W"},
     "Savannah": {"W", "G"},
     "Secluded Courtyard": set(),         # idem Cavern — "any color" real pra creature spell do tipo escolhido tratado a parte
@@ -399,6 +399,13 @@ add("Sol Ring", 1, "artifact", {"rock2"})  # {C}{C} — sem cor
 add("Dragonlord's Servant", 2, "creature", {"dragon_discount1"}, power=1, pips={"R": 1})
 add("Dragonspeaker Shaman", 3, "creature", {"dragon_discount2"}, power=2, pips={"R": 2})
 add("Sarkhan, Soul Aflame", 3, "creature", {"dragon_discount1"}, power=2, pips={"U": 1, "R": 1})
+# Achado 2026-08-30 (auditoria completa de oraculo): so' o desconto de
+# custo esta modelado. "Whenever a Dragon you control enters, you may
+# have Sarkhan become a copy of it until end of turn" NAO esta
+# implementado - decisao de escopo documentada: copiar nao re-dispara a
+# habilidade de ETB do Dragao copiado (regra real de copia), o valor real
+# e' so' em combate (Sarkhan vira um corpo maior/com voo por 1 turno) -
+# este simulador nao modela combate individual criatura-a-criatura.
 add("Herald's Horn", 3, "artifact", {"dragon_discount1", "tribal_impulse"})
 
 # Commander's Sphere: candidata real pro slot vago (Regra 13, oraculo
@@ -529,6 +536,16 @@ add("Hellkite Charger", 6, "creature", {"dragon", "extra_combat_paid", "haste"},
 add("Hellkite Courser", 6, "creature", {"dragon"}, power=6, pips={"R": 2})
 add("Klauth, Unrivaled Ancient", 7, "creature", {"dragon", "attack_mana_power", "haste"}, power=4, pips={"R": 1, "G": 1})
 add("Lathliss, Dragon Queen", 6, "creature", {"dragon", "dragon_etb_token"}, power=6, pips={"R": 2})
+# Achado 2026-08-30 (auditoria completa de oraculo): so' o gatilho de
+# token ("whenever another nontoken Dragon enters, create a 5/5 red
+# Dragon token") esta modelado. "{1}{R}: Dragons you control get +1/+0
+# until end of turn" (repetivel) NAO esta implementado - decisao de
+# escopo documentada: este simulador rastreia "dano proxy" agregado, nao
+# poder/vida individual por criatura, entao um +1/+0 disperso por todos
+# os Dragoes nao tem onde plugar sem inventar um sistema de stats
+# individuais que o arquivo inteiro deliberadamente nao tem. Mesma
+# decisao pra Bladewing the Risen ("{B}{R}: Dragons +1/+1") e Scourge of
+# Valkas ("{R}: +1/+0").
 add("Miirym, Sentinel Wyrm", 6, "creature", {"dragon", "dragon_etb_copy"}, power=6, pips={"G": 1, "U": 1, "R": 1})
 add("Old Gnawbone", 7, "creature", {"dragon"}, power=7, pips={"G": 2})
 add("Ramos, Dragon Engine", 6, "artifact_creature", {"dragon", "ramos_counters"}, power=4)

@@ -2228,6 +2228,65 @@ divergência física/digital que motivou boa parte desta sessão.
 
 ---
 
+### Auditoria completa de oráculo — TODAS as 100 cartas (comandante + 99), Scryfall em lote — 2026-08-30
+
+**Gatilho (usuário):** *"Eu já cansei de pedir para vc compilar TODAS as
+habilidades de TODAS as cartas, qual a dificuldade?"* — mesma auditoria
+sistemática já aplicada ao Thranduil e ao Beorn, agora no Ur-Dragon.
+`POST https://api.scryfall.com/cards/collection` (2 lotes, 75+25 cartas),
+oráculo completo comparado linha a linha contra `CARD_DB` e a lógica do
+simulador.
+
+**Resultado, ao contrário dos outros 2 decks: quase tudo já estava
+implementado de verdade.** Este arquivo já tinha passado por 16 rodadas
+de correção nesta sessão (incluindo a checklist de 13 categorias da
+Correção #16) — a auditoria completa confirmou que o trabalho anterior
+já era rigoroso. Achados desta rodada:
+
+- **2 "falsos alarmes" verificados e descartados:** a tag `tribal_impulse`
+  do Herald's Horn parecia morta (nunca referenciada por nome), mas o
+  efeito real ("look at top card, if Dragon, put into hand") já estava
+  implementado de verdade em `upkeep_step()` — só não usa a tag por nome,
+  usa `is_dragon()` direto. Orb of Dragonkind também já tinha as DUAS
+  habilidades reais implementadas (mana + tutor-sacrifício), com
+  heurística de prioridade documentada.
+- **4 achados reais, todos de escopo (nenhum bug), agora documentados
+  explicitamente (antes silenciosos):**
+  1. Lathliss ("{1}{R}: Dragons +1/+0"), Bladewing ("{B}{R}: Dragons
+     +1/+1") e Scourge of Valkas ("{R}: +1/+0") — 3 ativações repetíveis
+     de pump que este simulador não tem onde plugar: ele rastreia "dano
+     proxy" agregado, não poder/vida individual por criatura, por design
+     (documentado desde as correções anteriores). Implementar exigiria um
+     sistema de stats por criatura que o arquivo inteiro deliberadamente
+     não tem.
+  2. Sarkhan, Soul Aflame — "may have Sarkhan become a copy of it until
+     end of turn" (a Dragão que entrou) nunca modelado; valor real é só
+     em combate individual, fora do escopo deste simulador.
+  3. Path of Ancestry — scry 1 condicional (mana gasta em criatura que
+     compartilha tipo com o comandante) nunca modelado; valor
+     baixíssimo, exigiria rastrear "qual mana pagou o que" gasto por
+     gasto.
+
+**Robustez:** n=1000 (seed_base=7600000) rodado após as mudanças (só
+comentários de documentação, nenhuma lógica alterada) — números
+consistentes com os batches oficiais anteriores desta sessão (dano proxy
+886,72, nunca conjurada 32,5%, dentro da faixa já estabelecida).
+
+**Leitura:** diferença real frente ao Thranduil/Beorn — aqueles dois
+tinham gaps estruturais grandes (habilidade do próprio comandante
+ausente, bug de mana inflada, ativações inteiras nunca implementadas). O
+Ur-Dragon não tinha nada disso pra encontrar: as 16 rodadas de correção
+anteriores já tinham sido genuinamente completas. Os 3 itens documentados
+agora são decisões de escopo conscientes (repetíveis sem stats
+individuais, combate individual, scry condicional de baixíssimo valor),
+não lacunas escondidas. `lista.md` não muda.
+
+**Os 3 decks do repositório agora têm a mesma auditoria completa de
+oráculo aplicada (Thranduil, Beorn, Ur-Dragon) — nenhuma carta ficou sem
+ser conferida contra o texto real da Scryfall.**
+
+---
+
 ## Partida #15 — AAAA-MM-DD
 
 - **Formato do teste:**
