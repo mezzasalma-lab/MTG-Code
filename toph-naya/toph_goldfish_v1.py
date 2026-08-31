@@ -114,6 +114,82 @@ Ainda fora de escopo, por decisao explicita (nao omissao):
   comentario no `CARD_DB`.
 - Conduit of Worlds: habilidade ativada de reanimacao (ver acima).
 - Wrenn and Realmbreaker: `+1`/`-7` (ver acima).
+
+Revisao completa do oraculo (2026-09-01, pedida explicitamente pelo
+usuario: "Revise TODAS as cartas da Toph pelo oraculo completo") — as 100
+cartas da lista (99 + comandante) foram buscadas ao vivo via
+`POST /cards/collection` da API do Scryfall (nao por memoria) e cruzadas
+contra `CARD_DB`/dispatch de verdade. Achados reais corrigidos:
+- **Enlightened Tutor** (1 dos 3 Game Changers da lista) estava 100% sem
+  implementacao — so' registrada no CARD_DB, tag sem dispatch. Implementada
+  ("Search... put that card on top" — vai pro topo da biblioteca, nao mao).
+- **Oswald Fiddlebender** tambem 100% sem implementacao (Magical Tinkering
+  — sac artefato, tutora artefato de mv+1 pro campo). Implementada.
+- **4 terrenos com "enters tapped" condicional nunca checado**: Field of
+  the Dead (sempre tapped, sem condicao — faltava a tag inteira), Ba Sing
+  Se ("unless you control a basic land"), Canopy Vista/Cinder Glade
+  ("unless you control two or more basic lands"). Corrigido em `play_land()`.
+- **Stomping Ground/Temple Garden** (shock lands) nunca pagavam o "pay 2
+  life or enters tapped" — entravam destapadas de graca. Corrigido
+  (generalizado o mecanismo ja usado pra Tanglespan Bridgeworks, com custo
+  de vida por carta em `ENTERS_TAPPED_PAYABLE_LIFE`).
+- **Fetches** (Arid Mesa/Windswept Heath/Wooded Foothills) nunca pagavam
+  "Pay 1 life" ao ativar. Corrigido.
+- **Avatar Kyoshi**: gatilho de "beginning of combat" dependia de existir
+  algum atacante elegivel ANTES de checar Kyoshi — nunca disparava se ela
+  mesma tivesse doenca de invocacao e fosse a unica criatura em campo.
+  Faltava tambem o "then untap that land" (mana extra real se o alvo ja
+  estava tapped). Ambos corrigidos.
+- **Toph, Earthbending Master / Horizon Explorer**: "Whenever YOU attack"
+  (gatilho do JOGADOR, com qualquer criatura) estava implementado como se
+  fosse "whenever THIS creature attacks" — exigia a propria carta elegivel
+  pra atacar (sem doenca de invocacao), sub-contando o gatilho. Corrigido
+  pra disparar sempre que o jogador atacou com qualquer coisa.
+- **Bristly Bill / Earthbender Ascension (4o contador)**: "put a +1/+1
+  counter on TARGET CREATURE" mirava `best_earthbend_target()` — que
+  escolhe qualquer TERRENO, nem sempre uma criatura de verdade (alvo
+  ilegal). Nova `best_creature_target()` corrige os dois.
+- **Felidar Retreat**: modal real e' "criar token" OU "contador em CADA
+  criatura", nao "contador em 1 alvo, com token de fallback". Corrigido.
+- **Awaken the Woods**: X forcava minimo 1 (token de graca mesmo com 0
+  mana extra) e nunca deduzia o custo de X da mana disponivel (mana
+  infinita de fato). Corrigido (minimo 0, X pago de verdade).
+- **Earth Kingdom General**: "whenever you put +1/+1 counters on a
+  creature, gain that much life, once each turn" tinha tag sem dispatch
+  nenhum. Implementada via `apply_earthbend()` (cobre a maioria dos
+  caminhos de contador do deck; Bristly Bill/Mossborn Hydra
+  dobrando/Ozolith ficam fora, decisao de escopo documentada na propria
+  funcao).
+- **Badgermole Cub**: segunda habilidade ("whenever you tap a creature for
+  mana, add an additional G") nunca implementada — so' o earthbend do ETB
+  estava. Implementada em `total_mana()` (relevante combinada com Enduring
+  Vitality).
+- **Fountainport**: {2},{T},sac token: draw a card — decisao de escopo de
+  2026-08-28 revertida, implementada agora (as outras 2 habilidades
+  ativadas continuam fora, valor menor).
+- **Dryad of the Ilysian Grove**: `ctype` registrado como "creature", real
+  e' "Enchantment Creature" (zero impacto numerico — `CREATURE_ISH` cobre
+  os dois — mas corrigido por precisao).
+- 6 `add()` duplicados removidos (Canopy Vista/Field of the Dead/Planar
+  Engineering/Windswept Heath/Wooded Foothills/Yavimaya apareciam 2x no
+  CARD_DB com dados identicos — inofensivo mas confuso, mesmo padrao de
+  limpeza ja aplicado a Urza's Saga/Talon Gates/Bridgeworks Battle em
+  rodadas anteriores).
+
+Confirmado correto sem mudanca (verificado contra o oraculo, nao assumido):
+Bumi ("whenever BUMI attacks" — auto-ataque de verdade, gate por
+elegibilidade continua certo), Bountiful Promenade/Spire Garden ("enters
+tapped unless voce tem 2+ oponentes" — sempre verdade numa mesa real de
+Commander, default destapado ja estava certo), Great Divide
+Guide/Prismatic Omen/Yavimaya (fixacao de cor pura, sem efeito numerico
+neste modelo generico — precedente ja estabelecido em 2026-08-28), Strip
+Mine (sacrificio pra destruir terreno e' opponent-dependent, sem razao pra
+mirar o proprio terreno).
+
+Ainda fora de escopo apos esta revisao (achado real, decisao explicita):
+Urza's Saga capitulos ja cobertos; Iron Spider (habilidades ativadas, ja
+documentado 2026-08-28); Talon Gates phase-out (sem bom alvo sem
+oponente); Fountainport (Fish token + Treasure via {4}, valor menor).
 """
 
 import json
@@ -247,7 +323,11 @@ add(COMMANDER, 3, "creature", {"commander", "earthbend_source_end_step"})
 
 # --- Lands (32, incl. 3x Forest) ---------------------------------------------------
 add("Arid Mesa", 0, "land", {"fetch"})
-add("Ba Sing Se", 0, "land", {"earthbend_source_activated"})
+# Ba Sing Se: "This land enters tapped unless you control a basic land."
+# Achado real 2026-09-01 (revisao completa do oraculo) -- essa condicional
+# nunca era checada (entrava sempre destapada). Tag nova, ver
+# `ENTERS_TAPPED_UNLESS_BASIC` em `play_land()`.
+add("Ba Sing Se", 0, "land", {"earthbend_source_activated", "enters_tapped_unless_basic"})
 # Bala Ged Recovery // Bala Ged Sanctuary: MDFC (modal_dfc, Scryfall
 # confirmado). Registrada so' como land (mv=0 -- o "3" antigo aqui era o
 # custo real do lado sorcery {2}{G}, vestigial, mesmo problema ja
@@ -272,10 +352,17 @@ add("Bountiful Promenade", 0, "land", set())
 # life. If you don't, it enters tapped." -- unico dos 3 MDFCs da lista com
 # essa escolha (os outros dois so' entram tapped, sem opcao).
 add("Bridgeworks Battle // Tanglespan Bridgeworks", 0, "land", {"enters_tapped_payable"})
-add("Canopy Vista", 0, "land", set())
-add("Cinder Glade", 0, "land", set())
+# Canopy Vista/Cinder Glade ("battle lands"): "This land enters tapped
+# unless you control two or more basic lands." Achado real 2026-09-01 --
+# condicional nunca checada (entravam sempre destapadas). Tag nova, ver
+# `ENTERS_TAPPED_UNLESS_2_BASICS` em `play_land()`.
+add("Canopy Vista", 0, "land", {"enters_tapped_unless_2_basics"})
+add("Cinder Glade", 0, "land", {"enters_tapped_unless_2_basics"})
 add("Command Tower", 0, "land", {"rock_any"})
-add("Field of the Dead", 0, "land", {"field_of_the_dead"})
+# Field of the Dead: "This land enters tapped." (sem condicional nenhuma,
+# diferente de Ba Sing Se/battle lands). Achado real 2026-09-01 -- faltava
+# a tag `enters_tapped`, mesma classe de bug ja corrigida nos 3 MDFCs.
+add("Field of the Dead", 0, "land", {"field_of_the_dead", "enters_tapped"})
 add("Forest", 0, "land", set())
 add("Fountainport", 0, "land", {"token_sac_draw"})
 add("Gruul Turf", 0, "land", {"bounceland"})
@@ -302,10 +389,15 @@ add("Snow-Covered Forest", 0, "land", set())
 add("Snow-Covered Mountain", 0, "land", set())
 add("Snow-Covered Plains", 0, "land", set())
 add("Spire Garden", 0, "land", set())
-add("Stomping Ground", 0, "land", set())
+# Stomping Ground/Temple Garden (shock lands): "As this land enters, you
+# may pay 2 life. If you don't, it enters tapped." Achado real 2026-09-01
+# -- a escolha nunca era modelada (entravam sempre destapadas de graca,
+# sem custo nenhum). Mesma tag `enters_tapped_payable` das MDFCs, mas com
+# custo de vida diferente (2, nao 3) -- ver `ENTERS_TAPPED_PAYABLE_LIFE`.
+add("Stomping Ground", 0, "land", {"enters_tapped_payable"})
 add("Strip Mine", 0, "land", set())
 add("Talon Gates of Madara", 0, "land", {"rock_any_paid", "phase_out_unused"})
-add("Temple Garden", 0, "land", set())
+add("Temple Garden", 0, "land", {"enters_tapped_payable"})
 # Engine real de capitulo I/II/III implementada 2026-08-31 (ver
 # `urza_saga_advance()`), dispachada por nome (como Bristly Bill/Ba Sing
 # Se/etc), nao por tag -- a tag `saga_token` antiga nunca tinha dispatch
@@ -320,7 +412,10 @@ add("Yavimaya, Cradle of Growth", 0, "land", set())
 add("Arcane Signet", 2, "artifact", {"rock_any"})
 add("Sol Ring", 1, "artifact", {"rock2"})
 add("Mox Opal", 0, "artifact", {"rock_metalcraft"})
-add("Dryad of the Ilysian Grove", 3, "creature", {"extra_land_drop"})
+# Achado real 2026-09-01: type_line real e' "Enchantment Creature", nao so'
+# "Creature" (nao muda nada no modelo -- CREATURE_ISH ja cobre os dois --
+# mas a classificacao errada e' corrigida por precisao).
+add("Dryad of the Ilysian Grove", 3, "enchantment_creature", {"extra_land_drop"})
 add("Horizon Explorer", 3, "creature", {"lander_on_attack"})
 add("Lotus Cobra", 2, "creature", {"landfall_mana"})
 add("Nissa, Resurgent Animist", 3, "creature", {"landfall_mana", "landfall_dig_2nd"})
@@ -361,7 +456,10 @@ add("Awaken the Woods", 2, "sorcery", {"land_token_x"})
 add("Badgermole Cub", 2, "creature", {"earthbend_source_etb_1"})
 add("Bristly Bill, Spine Sower", 2, "creature", {"landfall_counter", "mass_double_activated"})
 add("Bumi, Eclectic Earthbender", 5, "creature", {"earthbend_source_etb_1", "attack_counter_lands"})
-add("Canopy Vista", 0, "land", set())
+# Canopy Vista/Cinder Glade registradas na secao de terrenos (achado real
+# 2026-09-01: "enters tapped unless you control two or more basic lands"
+# corrigido la, ver `ENTERS_TAPPED_UNLESS_2_BASICS`). add() duplicado
+# (dado identico, `set()`) removido daqui.
 add("Conduit of Worlds", 4, "artifact", {"gy_lands", "gy_recursion_1turn"})
 add("Crucible of Worlds", 3, "artifact", {"gy_lands"})
 add("Earth Kingdom General", 4, "creature", {"earthbend_source_etb_2", "counter_lifegain"})
@@ -371,7 +469,8 @@ add("Earthshape", 3, "instant", {"earthbend_source_cast_3"})
 add("Enduring Vitality", 3, "enchantment_creature", {"creature_mana_any"})
 add("Enlightened Tutor", 1, "instant", {"tutor_artifact_enchant"})
 add("Felidar Retreat", 4, "enchantment", {"landfall_choice"})
-add("Field of the Dead", 0, "land", {"field_of_the_dead"})  # already added
+# Field of the Dead registrada na secao de terrenos (com "enters_tapped",
+# achado real 2026-09-01). add() duplicado removido daqui.
 add("Germination Practicum", 5, "sorcery", {"mass_counter_repeat"})
 add("Great Divide Guide", 2, "creature", set())
 # Achado real 2026-08-28 (auditoria de checklist de mecanica): tag
@@ -394,7 +493,7 @@ add("Mossborn Hydra", 3, "creature", {"landfall_double_self"})
 add("Mycosynth Lattice", 6, "artifact", {"mycosynth"})
 add("Oswald Fiddlebender", 2, "creature", {"artifact_tutor_cheat"})
 add("Overlord of the Hauntwoods", 5, "enchantment_creature", {"land_token_everywhere"})
-add("Planar Engineering", 4, "sorcery", set())  # already added above
+# Planar Engineering ja registrada na secao de ramp. add() duplicado removido.
 add("Prismatic Omen", 2, "enchantment", {"fixing_unused"})
 add("Sapling Nursery", 8, "enchantment", {"landfall_token"})
 add("Scute Swarm", 3, "creature", {"landfall_token_or_copy"})
@@ -406,9 +505,8 @@ add("The Stasis Coffin", 3, "artifact", {"protection_recurring", "earthbend_targ
 add("Toph, Earthbending Master", 4, "creature", {"landfall_experience", "attack_earthbend_experience"})
 add("Toph, Greatest Earthbender", 4, "creature", {"earthbend_source_cast_x", "double_strike_land_creatures"})
 add("Ultron, Artificial Malevolence", 3, "artifact_creature", {"artifact_copy"})
-add("Windswept Heath", 0, "land", {"fetch"})  # already added
-add("Wooded Foothills", 0, "land", {"fetch"})  # already added
-add("Yavimaya, Cradle of Growth", 0, "land", set())  # already added
+# Windswept Heath/Wooded Foothills/Yavimaya ja registradas na secao de
+# terrenos. add()s duplicados removidos (dados identicos).
 add("Zuran Orb", 0, "artifact", {"sac_land_lifegain"})
 add("Forest Dryad Token", 0, "land", {"always_creature"})  # Awaken the Woods
 add("Everywhere Token", 0, "land", set())  # Overlord of the Hauntwoods
@@ -490,6 +588,7 @@ class GameState:
     life_total: int = 40
     life_gained: int = 0
     token_drawn_this_turn: bool = False  # Caretaker's Talent (1x/turno)
+    counter_lifegain_this_turn: bool = False  # Earth Kingdom General (1x/turno)
 
     next_uid: int = 1
 
@@ -680,7 +779,10 @@ def landfall_trigger(state: GameState, land_perm: Permanent, log: list):
                 state.foods += 1
             create_token(state, log)
         if "landfall_counter" in tags:
-            target = best_earthbend_target(state)
+            # Bristly Bill: "put a +1/+1 counter on TARGET CREATURE" -- achado
+            # real 2026-09-01, mirava `best_earthbend_target` (qualquer
+            # terreno, nem sempre uma criatura de verdade). Ver `best_creature_target`.
+            target = best_creature_target(state)
             if target:
                 target.counters += 1
         if "landfall_double_self" in tags and p.card.name == "Mossborn Hydra":
@@ -696,7 +798,9 @@ def landfall_trigger(state: GameState, land_perm: Permanent, log: list):
         if "landfall_quest" in tags and p.card.name == "Earthbender Ascension":
             p.counters += 1
             if p.counters >= 4:
-                target = best_earthbend_target(state)
+                # "put a +1/+1 counter on TARGET CREATURE you control" --
+                # mesmo bug de alvo do Bristly Bill, mesmo fix.
+                target = best_creature_target(state)
                 if target:
                     target.counters += 1
         if "landfall_token_or_copy" in tags and p.card.name == "Scute Swarm":
@@ -719,11 +823,21 @@ def landfall_trigger(state: GameState, land_perm: Permanent, log: list):
         if "landfall_token" in tags and p.card.name == "Springheart Nantuko":
             create_token(state, log)
         if "landfall_choice" in tags:
-            # Felidar Retreat: escolhe contador+vigilance se ha creature earthbent boa,
-            # senao token. Simplificado: contador se ha alvo, senao token.
-            target = best_earthbend_target(state)
-            if target:
-                target.counters += 1
+            # Felidar Retreat, modal real: "Create a 2/2 Cat Beast token." OU
+            # "Put a +1/+1 counter on EACH creature you control. Those
+            # creatures gain vigilance until end of turn." Achado real
+            # 2026-09-01: o codigo antigo mirava so' 1 permanente qualquer
+            # (nem sempre criatura de verdade) em vez de TODAS as criaturas,
+            # e nao modelava a escolha como as 2 opcoes reais do modal (so'
+            # tinha 1 modo com fallback condicional). Politica: contador em
+            # todas quando ja existem 2+ criaturas de verdade em campo (mais
+            # valor total, alimenta Bristly Bill/Ozolith); senao token (mais
+            # util com 0-1 criatura). Vigilance nao importa neste modelo
+            # (sem combate real).
+            creatures = [p for p in state.battlefield if is_creature_type(p, state)]
+            if len(creatures) >= 2:
+                for c in creatures:
+                    c.counters += 1
             else:
                 create_token(state, log)
 
@@ -792,16 +906,35 @@ def best_earthbend_target(state: GameState) -> Optional[Permanent]:
     return candidates[0]
 
 
-def apply_earthbend(state: GameState, amount: int, log: list, source: str):
+def best_creature_target(state: GameState) -> Optional[Permanent]:
+    """Achado real 2026-09-01: Bristly Bill ("put a +1/+1 counter on TARGET
+    CREATURE") e Earthbender Ascension 4o contador ("put a +1/+1 counter on
+    TARGET CREATURE you control") miravam `best_earthbend_target()` — que
+    escolhe qualquer TERRENO, nao necessariamente uma criatura de verdade
+    (so vira criatura depois de earthbendado). Um terreno comum, ainda nao
+    earthbendado, nao e' um alvo legal pra "target creature" — bug de
+    legalidade de alvo. Corrigido: prefere o alvo de earthbend se ele ja for
+    uma criatura de verdade, senao cai pra qualquer outra criatura real em
+    campo; sem candidato legal, retorna None (habilidade nao faz nada, como
+    fixaria um jogador real sem alvo)."""
+    eb = best_earthbend_target(state)
+    if eb is not None and is_creature_type(eb, state):
+        return eb
+    creatures = [p for p in state.battlefield if is_creature_type(p, state)]
+    return creatures[0] if creatures else None
+
+
+def apply_earthbend(state: GameState, amount: int, log: list, source: str) -> Optional[Permanent]:
     target = best_earthbend_target(state)
     if target is None or amount <= 0:
-        return
+        return None
     target.counters += amount
     target.earthbent = True
     target.earthbend_return = True
     state.earthbend_applications += 1
     state.earthbend_by_source[source] = state.earthbend_by_source.get(source, 0) + 1
     log.append(f"  [Earthbend {amount}] via {source} -> {target.card.name} ({target.counters} contadores)")
+    maybe_earth_kingdom_general_lifegain(state, log, target, amount)
 
     if any(p.card.name == "Strionic Resonator" and not p.tapped for p in state.battlefield):
         res = next(p for p in state.battlefield if p.card.name == "Strionic Resonator" and not p.tapped)
@@ -811,6 +944,31 @@ def apply_earthbend(state: GameState, amount: int, log: list, source: str):
             target.counters += amount
             state.resonator_copies += 1
             log.append(f"  [Strionic Resonator] copia o earthbend -> +{amount} contadores extra em {target.card.name}")
+    return target
+
+
+def maybe_earth_kingdom_general_lifegain(state: GameState, log: list, target: Permanent, amount: int):
+    """Achado real 2026-09-01: Earth Kingdom General ("Whenever you put one
+    or more +1/+1 counters on a creature, you may gain that much life. Do
+    this only once each turn") tinha a tag `counter_lifegain` sem NENHUM
+    dispatch — nunca implementada. Ligada aqui em `apply_earthbend()`, o
+    caminho central de praticamente toda contagem de +1/+1 counter em
+    criatura neste sim (todos os ETBs de earthbend, Ba Sing Se/Avatar
+    Kyoshi/Toph Earthbending Master em combate, Earthshape). Escopo
+    explicito: NAO ligada em outros caminhos que tambem adicionam counter
+    (dobra do Bristly Bill/Mossborn Hydra landfall, realocacao do Ozolith,
+    contador de quest do Earthbender Ascension) -- cobrir TODOS exigiria
+    instrumentar cada `p.counters +=`/`*=` do arquivo por um ganho de vida
+    secundario de baixo impacto; decisao de escopo, nao omissao silenciosa."""
+    if target is None or amount <= 0 or not is_creature_type(target, state):
+        return
+    if state.counter_lifegain_this_turn:
+        return
+    if not any(p.card.name == "Earth Kingdom General" for p in state.battlefield):
+        return
+    state.counter_lifegain_this_turn = True
+    gain_life(state, amount, log, source="Earth Kingdom General (contadores)")
+    log.append(f"  [Earth Kingdom General] ganha {amount} de vida (contadores em {target.card.name})")
 
 
 # ---------------------------------------------------------------------------
@@ -898,6 +1056,15 @@ def total_mana(state: GameState) -> int:
                                if is_creature_type(x, state) and not x.tapped and x is not p
                                and x.entered_turn < state.turn)
             total += n_creatures
+            # Badgermole Cub: "Whenever you tap a creature for mana, add an
+            # additional {G}." Achado real 2026-09-01 -- essa segunda
+            # habilidade (a primeira, earthbend 1 no ETB, ja era simulada)
+            # nunca tinha dispatch nenhum. So' importa quando algo de fato
+            # tapa criatura por mana neste modelo generico -- ou seja,
+            # combinado com Enduring Vitality (unica fonte de mana-por-
+            # criatura simulada aqui).
+            if n_creatures and any(x.card.name == "Badgermole Cub" for x in state.battlefield):
+                total += n_creatures
     total += state.treasures
     return total
 
@@ -955,12 +1122,42 @@ def cast_card(state: GameState, name: str, log: list, from_hand: bool = True):
 
 def resolve_instant_sorcery(state: GameState, name: str, log: list):
     if name == "Awaken the Woods":
-        x = max(1, min(4, remaining_mana(state)))
+        # Achado real 2026-09-01: "Create X 1/1 ... tokens" com X real
+        # podendo ser 0 (custo base e' so' {G}{G}, `mv=2` no CARD_DB) --
+        # o codigo antigo forcava `max(1, ...)`, criando 1 token de graca
+        # mesmo com 0 mana extra sobrando, E nunca deduzia o custo de X da
+        # mana disponivel (mana infinita de fato). Corrigido: minimo 0,
+        # X realmente pago. Cap de 4 e' decisao de politica pre-existente
+        # (nao relacionada a esse bug), mantido como estava.
+        x = max(0, min(4, remaining_mana(state)))
+        if x > 0:
+            spend_mana(state, x)
         for _ in range(x):
             token = mk_perm(state, "Forest Dryad Token")
             token.is_token = True
             create_token(state, log)
             enter_battlefield(state, token, log)
+    elif name == "Enlightened Tutor":
+        # Achado real 2026-09-01: um dos 3 Game Changers da lista, e
+        # estava 100% sem implementacao (so' registrada no CARD_DB, tag
+        # `tutor_artifact_enchant` sem dispatch nenhum). "Search your
+        # library for an artifact or enchantment card, reveal it, then
+        # shuffle and put that card on top" -- vai pro TOPO da biblioteca,
+        # nao pra mao (proxima compra e' garantida ser essa carta).
+        pool = [n for n in state.library
+                if CARD_DB[n].ctype in ARTIFACT_ISH
+                or CARD_DB[n].ctype in ("enchantment", "enchantment_creature")]
+        if pool:
+            priority = ("Sol Ring", "The Great Henge", "Skullclamp", "Krark-Clan Ironworks",
+                        "Sylvan Library", "Mycosynth Lattice", "Unstable Obelisk", "Mox Opal",
+                        "Arcane Signet", "The Ozolith")
+            found = next((n for n in priority if n in pool), None)
+            if found is None:
+                pool.sort(key=lambda n: -CARD_DB[n].mv)
+                found = pool[0]
+            state.library.remove(found)
+            state.library.insert(0, found)
+            log.append(f"  [Enlightened Tutor] busca {found}, topo da biblioteca")
     elif name == "Planar Engineering":
         sac = [p for p in state.battlefield if is_land(p, state)][:2]
         for p in sac:
@@ -984,8 +1181,12 @@ def resolve_instant_sorcery(state: GameState, name: str, log: list):
                 p.counters += 2
     elif name == "Earthshape":
         apply_earthbend(state, 3, log, "Earthshape (instant)")
-    elif name in ("Erode", "Swords to Plowshares", "Bridgeworks Battle", "Council's Judgment"):
-        pass  # removal: sem alvo de oponente real num goldfish solo
+    elif name in ("Erode", "Swords to Plowshares", "Council's Judgment"):
+        # removal: sem alvo de oponente real num goldfish solo. "Bridgeworks
+        # Battle" (sem "// Tanglespan Bridgeworks") removido daqui 2026-09-01
+        # -- codigo morto, esse MDFC e' registrado so' como land (ctype=="land"),
+        # nunca passa por `cast_card()`/`resolve_instant_sorcery()`.
+        pass
 
 
 # ---------------------------------------------------------------------------
@@ -1065,6 +1266,19 @@ FETCH_POOLS = {
     "Wooded Foothills": ("Mountain", "Forest", "Snow-Covered Mountain", "Snow-Covered Forest"),
 }
 
+BASIC_LAND_NAMES = {"Forest", "Mountain", "Plains",
+                     "Snow-Covered Forest", "Snow-Covered Mountain", "Snow-Covered Plains"}
+
+# Custo de vida real de cada "enters_tapped_payable" (Scryfall confirmado,
+# achado real 2026-09-01) -- nao e' o mesmo pra todas: shock lands
+# (Stomping Ground/Temple Garden) pagam 2, a MDFC Tanglespan Bridgeworks
+# paga 3. Sem entrada aqui = tag mal aplicada (erro de programacao).
+ENTERS_TAPPED_PAYABLE_LIFE = {
+    "Stomping Ground": 2,
+    "Temple Garden": 2,
+    "Bridgeworks Battle // Tanglespan Bridgeworks": 3,
+}
+
 def play_land(state: GameState, log: list):
     # Achado real 2026-08-31: "extra_land_drop" (Dryad of the Ilysian Grove)
     # era uma tag decorativa sem dispatch nenhum -- `state.extra_land_drops`
@@ -1113,6 +1327,11 @@ def play_land(state: GameState, log: list):
 
         if "fetch" in CARD_DB[choice].tags:
             state.graveyard.append(choice)
+            # Achado real 2026-09-01: "{T}, Pay 1 life, Sacrifice this
+            # land" -- o custo de vida nunca era pago. Pago mesmo quando
+            # vindo do cemiterio via Crucible/Conduit (a habilidade e' a
+            # mesma, independente de onde a carta foi jogada de).
+            state.life_total -= 1
             # Achado real 2026-08-28 (auditoria de checklist de mecanica):
             # todo fetch buscava dos 6 basicos, ignorando que cada um so'
             # busca 2 tipos reais (Arid Mesa: Mountain/Plains; Windswept
@@ -1131,21 +1350,38 @@ def play_land(state: GameState, log: list):
         perm = mk_perm(state, choice)
         tags = CARD_DB[choice].tags
         if "enters_tapped" in tags:
-            # Achado real 2026-08-31: os 3 MDFCs da lista (Bala Ged
-            # Recovery/Sanctuary, Ondu Inversion/Skyruins, Bridgeworks
-            # Battle/Tanglespan Bridgeworks) entravam sempre destapados --
-            # as faces land reais entram tapped (Scryfall confirmado).
+            # Achado real 2026-08-31/2026-09-01: MDFCs (Bala Ged
+            # Recovery/Sanctuary, Ondu Inversion/Skyruins) e Field of the
+            # Dead entravam sempre destapados -- as faces/terreno reais
+            # entram tapped, sem condicional nenhuma (Scryfall confirmado).
             perm.tapped = True
         elif "enters_tapped_payable" in tags:
-            # Tanglespan Bridgeworks: "you may pay 3 life. If you don't, it
-            # enters tapped." Piloto real paga (tempo > 3 de 40 de vida
-            # inicial de Commander) enquanto sobrar vida de sobra; guarda
-            # generico consistente com o limiar ja usado pela Sylvan
-            # Library (`life_total > 20`) neste arquivo, aqui mais frouxo
-            # (>10) porque o custo e' fixo e pequeno, nao escalonado.
+            # Stomping Ground/Temple Garden (shock lands, 2 de vida) e
+            # Tanglespan Bridgeworks (MDFC, 3 de vida): "you may pay N
+            # life. If you don't, it enters tapped." Achado real
+            # 2026-09-01: as duas shock lands nunca pagavam nada (entravam
+            # destapadas de graca) -- so' a MDFC tinha o custo certo desde
+            # a rodada anterior. Piloto real paga (tempo > custo fixo e
+            # pequeno de 40 de vida inicial de Commander) enquanto sobrar
+            # vida de sobra; guarda generico consistente com o limiar ja
+            # usado pela Sylvan Library (`life_total > 20`), aqui mais
+            # frouxo (>10) porque o custo nao escalona.
+            cost = ENTERS_TAPPED_PAYABLE_LIFE[choice]
             if state.life_total > 10:
-                state.life_total -= 3
+                state.life_total -= cost
             else:
+                perm.tapped = True
+        elif "enters_tapped_unless_basic" in tags:
+            # Ba Sing Se: "enters tapped unless you control a basic land."
+            if not any(is_land(p, state) and p.card.name in BASIC_LAND_NAMES
+                       for p in state.battlefield):
+                perm.tapped = True
+        elif "enters_tapped_unless_2_basics" in tags:
+            # Canopy Vista/Cinder Glade (battle lands): "enters tapped
+            # unless you control two or more basic lands."
+            n_basics = sum(1 for p in state.battlefield
+                           if is_land(p, state) and p.card.name in BASIC_LAND_NAMES)
+            if n_basics < 2:
                 perm.tapped = True
         enter_battlefield(state, perm, log)
 
@@ -1212,6 +1448,8 @@ def main_phase(state: GameState, log: list):
 
     wrenn_loyalty_ability(state, log)
     caretaker_talent_levelup(state, log)
+    oswald_fiddlebender_tinker(state, log)
+    fountainport_sac_draw(state, log)
 
     if RECURRING_ARTIFACT_POLICY:
         work_recurring_artifact_loop(state, log)
@@ -1378,20 +1616,110 @@ def caretaker_talent_levelup(state: GameState, log: list):
                     "tokens de criatura -- P/T nao rastreado, ver docstring)")
 
 
-def combat_step(state: GameState, log: list):
-    attackers = [p for p in state.battlefield if is_creature_type(p, state) and p.entered_turn < state.turn]
-    if not attackers:
+def oswald_fiddlebender_tinker(state: GameState, log: list):
+    """Achado real 2026-09-01: Oswald Fiddlebender estava 100% sem
+    implementacao (so' registrado no CARD_DB, tag `artifact_tutor_cheat`
+    sem dispatch nenhum) -- nao era so' um item da lista de pendencias, foi
+    achado agora na revisao completa do oraculo. "Magical Tinkering --
+    {W}, {T}, Sacrifice an artifact: Search your library for an artifact
+    card with mana value equal to 1 plus the sacrificed artifact's mana
+    value, put it onto the battlefield, then shuffle. Activate only as a
+    sorcery." Sacrifica o artefato mais descartavel disponivel (mesma
+    prioridade SAC_VALUE ja usada pro Krark-Clan Ironworks) -- so' ativa se
+    existir alvo LEGAL na biblioteca pro valor exato mv+1 (visibilidade
+    total da biblioteca e' o mesmo padrao de decisao "onisciente" ja usado
+    em toda IA deste simulador, ex: Kodama/best_earthbend_target)."""
+    oswald = next((p for p in state.battlefield if p.card.name == "Oswald Fiddlebender" and not p.tapped), None)
+    if oswald is None or remaining_mana(state) < 1:
         return
-    if any(p.card.name == "Avatar Kyoshi, Earthbender" for p in attackers):
-        apply_earthbend(state, 8, log, "Avatar Kyoshi (combate)")
-    if any(p.card.name == "Toph, Earthbending Master" for p in attackers):
+    candidates = [p for p in state.battlefield
+                  if p.card.ctype in ARTIFACT_ISH and not p.is_token and p is not oswald]
+    if not candidates:
+        return
+    if SAC_VALUE_PRIORITY_POLICY:
+        candidates.sort(key=lambda p: SAC_VALUE.get(p.card.name, 1))
+    for sac in candidates:
+        target_mv = sac.card.mv + 1
+        pool = [n for n in state.library if CARD_DB[n].ctype in ARTIFACT_ISH and CARD_DB[n].mv == target_mv]
+        if not pool:
+            continue  # sem alvo legal pra esse valor -- tenta o proximo candidato de sacrificio
+        spend_mana(state, 1)
+        oswald.tapped = True
+        found = pool[0]
+        state.library.remove(found)
+        log.append(f"  [Oswald Fiddlebender] sacrifica {sac.card.name} (mv {sac.card.mv}), busca {found} (mv {target_mv})")
+        leave_battlefield(state, sac, log)
+        new_perm = mk_perm(state, found)
+        enter_battlefield(state, new_perm, log)
+        return
+
+
+def fountainport_sac_draw(state: GameState, log: list):
+    """Achado real 2026-09-01: Fountainport tinha 3 habilidades ativadas
+    ({2},{T},sac token: draw; {3},{T},pay 1 life: Fish 1/1; {4},{T}: cria
+    Treasure) -- decisao de escopo ja documentada na rodada de 2026-08-28
+    ("Iron Spider e Fountainport's habilidades ativadas" ficaram de fora).
+    So' a primeira ({2},{T},sac token: draw a card) e' implementada agora,
+    por ser a de maior valor e mais contida. Limitacao ja conhecida
+    (Caretaker's Talent nivel 2): so' dispara contra um token que seja um
+    Permanent de verdade em campo (maioria dos tokens deste sim e' so' um
+    contador em `create_token()`, sem objeto). As outras 2 habilidades
+    (Fish token, Treasure via {4}) continuam fora de escopo -- valor menor,
+    mesma decisao de 2026-08-28."""
+    fp = next((p for p in state.battlefield if p.card.name == "Fountainport" and not p.tapped), None)
+    if fp is None or remaining_mana(state) < 2:
+        return
+    token = next((p for p in state.battlefield if p.is_token and p is not fp), None)
+    if token is None:
+        return
+    spend_mana(state, 2)
+    fp.tapped = True
+    log.append(f"  [Fountainport] sacrifica token {token.card.name}, compra 1 carta")
+    leave_battlefield(state, token, log)
+    draw_cards(state, 1, log, source="Fountainport (sacrifica token)")
+
+
+def combat_step(state: GameState, log: list):
+    # Achado real 2026-09-01: Avatar Kyoshi ("At the beginning of combat on
+    # your turn, earthbend 8, then untap that land") e' um gatilho de INICIO
+    # DE COMBATE -- dispara todo turno com Kyoshi em campo, mesmo sem NENHUM
+    # atacante elegivel (inclusive se a propria Kyoshi acabou de entrar e
+    # ainda tem doenca de invocacao). O codigo antigo dependia de
+    # `attackers` nao-vazio ANTES de checar Kyoshi, o que a fazia nunca
+    # disparar num turno em que ela mesma fosse a unica criatura em campo e
+    # tivesse acabado de ser conjurada. Corrigido: checado antes/fora do
+    # gate de `attackers`. Tambem faltava o "then untap that land" -- se o
+    # terreno-alvo ja estava tapped (usado por mana), agora ele destapa de
+    # volta (mana extra real).
+    if any(p.card.name == "Avatar Kyoshi, Earthbender" for p in state.battlefield):
+        target = apply_earthbend(state, 8, log, "Avatar Kyoshi (inicio de combate)")
+        if target is not None and target.tapped:
+            target.tapped = False
+            log.append(f"  [Avatar Kyoshi] destapa {target.card.name} de volta")
+
+    attackers = [p for p in state.battlefield if is_creature_type(p, state) and p.entered_turn < state.turn]
+
+    # Toph, Earthbending Master ("Whenever YOU attack, earthbend X") e
+    # Horizon Explorer ("Whenever you attack a player, create a Lander
+    # token") sao gatilhos de "voce ataca" (com QUALQUER criatura), nao
+    # "sempre que ESTA criatura ataca". Achado real 2026-09-01: o codigo
+    # antigo exigia a propria Toph EM/Horizon Explorer estarem na lista de
+    # atacantes elegiveis (ou seja, sem doenca de invocacao) pra disparar,
+    # o que sub-contava o gatilho quando elas estavam sick mas outra
+    # criatura atacava mesmo assim. Corrigido: so' precisa a carta estar em
+    # campo E o jogador ter atacado com ALGO (attackers nao-vazio).
+    if attackers and any(p.card.name == "Toph, Earthbending Master" for p in state.battlefield):
         apply_earthbend(state, state.experience_counters, log, "Toph Earthbending Master (ataque, X=experiencia)")
+    if attackers and any(p.card.name == "Horizon Explorer" for p in state.battlefield):
+        create_token(state, log)  # Lander token
+
+    # Bumi ("Whenever BUMI attacks") e' um gatilho de auto-ataque de
+    # verdade -- corretamente exige Bumi elegivel pra atacar (sem doenca de
+    # invocacao), diferente dos 2 acima.
     if any(p.card.name == "Bumi, Eclectic Earthbender" for p in attackers):
         for p in state.battlefield:
             if is_land(p, state) and is_creature_type(p, state):
                 p.counters += 2
-    if any(p.card.name == "Horizon Explorer" for p in attackers):
-        create_token(state, log)  # Lander token
 
 
 def end_step(state: GameState, log: list):
@@ -1408,6 +1736,7 @@ def play_turn(state: GameState, log: list, is_first_turn: bool, on_play: bool):
         p.tapped = False
 
     state.token_drawn_this_turn = False
+    state.counter_lifegain_this_turn = False
 
     # Upkeep: Inventors' Fair (lifegain se 3+ artefatos)
     n_artifacts = sum(1 for p in state.battlefield if is_artifact(p, state))

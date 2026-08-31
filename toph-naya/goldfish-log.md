@@ -4,6 +4,141 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### Revisão completa do oráculo (100 cartas) — 2026-09-01
+
+**Pedido do usuário:** "Revise TODAS as cartas da Toph pelo oráculo completo."
+Depois de eu confirmar que o avanço de capítulo do Urza's Saga já estava
+correto (não custa mana — Saga, não Classe; a correção do usuário estava
+certa em espírito, mas o código já não tinha esse bug), o pedido virou uma
+auditoria completa: as 100 cartas da lista (99 + comandante) foram
+buscadas ao vivo via `POST /cards/collection` da API do Scryfall (2
+lotes de até 75 + 3 MDFCs por nome individual, já que `//` no nome não
+resolve via esse endpoint) e cruzadas card a card contra `CARD_DB` e o
+dispatch real (não por memória, não por confiança no que já estava
+documentado). Achados reais, todos corrigidos:
+
+**Mecânicas 100% ausentes (não eram nem tag decorativa — zero menção fora do `add()`):**
+- **Enlightened Tutor** — 1 dos 3 Game Changers da lista, sem nenhuma
+  implementação. "Search your library for an artifact or enchantment
+  card... put that card on top" — vai pro topo da biblioteca (garante a
+  próxima compra), não pra mão. Implementado com lista de prioridade
+  (Sol Ring primeiro, depois maior CMV disponível).
+- **Oswald Fiddlebender** — "Magical Tinkering": sacrifica um artefato,
+  busca outro de custo exato sac+1 direto pro campo. Implementado (usa a
+  mesma prioridade `SAC_VALUE` já usada pelo Krark-Clan Ironworks pra
+  escolher o que sacrificar).
+- **Earth Kingdom General** — "whenever you put +1/+1 counters on a
+  creature, gain that much life, once each turn". Implementado via
+  `apply_earthbend()` (cobre a maioria dos caminhos de contador do deck;
+  Bristly Bill/Mossborn Hydra dobrando e realocação do Ozolith ficam de
+  fora — decisão de escopo documentada na própria função).
+- **Badgermole Cub**, segunda habilidade — "whenever you tap a creature
+  for mana, add an additional {G}" (só o earthbend do ETB estava
+  implementado). Relevante combinado com Enduring Vitality.
+- **Fountainport** — `{2},{T},sac token: draw a card` (as outras 2
+  habilidades ativadas — Fish token, Treasure via `{4}` — continuam fora,
+  valor menor; decisão de 2026-08-28 parcialmente revertida).
+
+**"Enters tapped" condicional nunca checado (4 terrenos, fora dos 3 MDFCs
+já corrigidos na rodada anterior):**
+- **Field of the Dead** — "This land enters tapped" SEM condição nenhuma
+  (faltava a tag inteira — bug mais simples e mais grave dos 4, land
+  Game Changer, presente em 82%+ dos jogos).
+- **Ba Sing Se** — "unless you control a basic land".
+- **Canopy Vista / Cinder Glade** (battle lands) — "unless you control
+  two or more basic lands".
+- **Stomping Ground / Temple Garden** (shock lands) — "you may pay 2
+  life. If you don't, it enters tapped" — nunca pagavam nada, entravam
+  destapadas de graça (mesmo padrão do bug já corrigido pra Tanglespan
+  Bridgeworks na rodada anterior, só que essas duas ficaram de fora).
+- **Fetches** (Arid Mesa/Windswept Heath/Wooded Foothills) — "Pay 1 life"
+  nunca era pago ao ativar (nem jogadas da mão, nem replay via
+  Crucible/Conduit).
+
+**Gatilhos com condição errada (bug de timing/escopo, não de dado ausente):**
+- **Avatar Kyoshi, Earthbender** — "At the beginning of combat on your
+  turn" é turn-based, dispara todo turno com ela em campo; o código
+  dependia de existir algum atacante elegível ANTES de checar Kyoshi, o
+  que fazia o gatilho nunca disparar se ela mesma tivesse doença de
+  invocação e fosse a única criatura em campo. Faltava também "then untap
+  that land" (mana extra real se o alvo já estava tapped por outro gasto
+  do turno). Ambos corrigidos.
+- **Toph, Earthbending Master / Horizon Explorer** — "Whenever YOU
+  attack" é gatilho do JOGADOR (com qualquer criatura), estava
+  implementado como "whenever THIS creature attacks" — exigia a própria
+  carta elegível pra atacar, sub-contando o gatilho quando ela estava
+  sick mas outra criatura atacava mesmo assim. Corrigido (Bumi, que É
+  "whenever BUMI attacks" de verdade, ficou como estava — gate correto).
+
+**Alvo ilegal (contador em permanente que não é criatura):**
+- **Bristly Bill, Spine Sower** e o 4º contador do **Earthbender
+  Ascension** — "put a +1/+1 counter on TARGET CREATURE" mirava
+  `best_earthbend_target()`, que escolhe qualquer TERRENO (nem sempre uma
+  criatura de verdade). Nova `best_creature_target()` corrige os dois.
+- **Felidar Retreat** — modal real é "criar token de 2/2" OU "contador em
+  CADA criatura que você controla", não "contador em 1 alvo com fallback
+  pra token". Corrigido pra escolher entre os 2 modos reais (política:
+  contador-em-todas quando já há 2+ criaturas de verdade em campo, senão
+  token).
+
+**Mana fantasma / contabilidade errada:**
+- **Awaken the Woods** — X forçava mínimo 1 (token de graça mesmo com 0
+  mana extra sobrando) e NUNCA deduzia o custo de X da mana disponível —
+  mana infinita de fato. Corrigido (mínimo 0, X pago de verdade; cap de 4
+  mantido como estava, é política pré-existente não relacionada ao bug).
+
+**Cosmético, zero impacto numérico:**
+- Dryad of the Ilysian Grove: `ctype` "creature" → "enchantment_creature"
+  (tipo real, `CREATURE_ISH` já cobria os dois).
+- 6 `add()` duplicados removidos (Canopy Vista/Field of the
+  Dead/Planar Engineering/Windswept Heath/Wooded Foothills/Yavimaya
+  apareciam 2x no `CARD_DB` com dados idênticos).
+- "Bridgeworks Battle" (sem `// Tanglespan Bridgeworks`) removido de um
+  `elif` morto em `resolve_instant_sorcery` — nome que nunca é alcançado,
+  o MDFC é `ctype=="land"`.
+
+**Conferido e confirmado CORRETO (não mudou nada, verificado contra o
+oráculo, não assumido):** Bumi ("whenever BUMI attacks", gate por
+elegibilidade está certo — diferente de Toph EM/Horizon Explorer);
+Bountiful Promenade/Spire Garden ("enters tapped unless you have two or
+more opponents" — sempre verdade numa mesa real de Commander, então
+destapado por padrão já estava certo); Great Divide Guide/Prismatic
+Omen/Yavimaya (fixação de cor pura, sem efeito numérico neste modelo
+genérico, precedente de 2026-08-28); Strip Mine (sacrifício pra destruir
+terreno é opponent-dependent, sem razão pra mirar o próprio terreno).
+
+**Robustez:** 20.000 partidas (seeds 8200000–8219999) + mais 30.000 de
+verificação pontual dos novos gatilhos, 0 erros/timeouts. 0 jogos com
+vida negativa apesar dos novos custos de vida (fetches/shocks/MDFC).
+
+**n=3000, seed_base=9000000 — antes (fim da rodada anterior) → depois:**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Turno médio de conjuração da Toph | 3,52 | 3,61 |
+| Avg terrenos em campo (T8) | 9,74 | 9,96 |
+| Avg aplicações de earthbend | 6,51 | 6,50 |
+| Avg recorrências via Motor#16 | 0,65 | **0,92** |
+| Avg tokens totais criados | 9,69 | **11,55** |
+| Avg vida ganha | 0,22 | **0,88** |
+| Cap defensivo do Scute Swarm atingido | 13.262 | 24.446 |
+
+Leitura: a maior mudança é Motor#16 (0,65→0,92) e earthbend por Avatar
+Kyoshi especificamente (146→317 no total bruto de 3000 jogos) — o fix do
+gatilho de "beginning of combat" (antes preso atrás de "precisa ter
+atacante elegível") passou a disparar de verdade em muito mais jogos.
+Vida ganha sobe principalmente pelo Earth Kingdom General (motor novo,
+capado 1x/turno) compensando os novos custos de vida (fetches -1, shocks
+-2, Tanglespan -3) que também entraram nesta rodada. Nenhuma métrica
+central (terrenos, earthbend total, turno da comandante) se moveu fora da
+faixa de ruído esperada — os bugs corrigidos eram todos de gatilhos raros
+ou condições que já eram majoritariamente verdadeiras (ex: 2+ básicas em
+campo é comum a partir do turno 3).
+
+`lista.md` não mudou. `toph_v1_runs.jsonl` sobrescrito (3000 jogos, código atual).
+
+---
+
 ### Correção — bug real de terrenos "conjurados de graça" + rodada ampliada parcial — 2026-08-31
 
 **Contexto:** rodada ampliada do checklist (categorias 10-13) pedida pelo
