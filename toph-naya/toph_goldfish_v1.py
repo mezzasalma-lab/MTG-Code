@@ -53,12 +53,9 @@ Simplificacoes documentadas (nao inventadas — sao omissoes explicitas):
 
 Achados reais 2026-08-31 (rodada ampliada do checklist, categorias 10-13
 pedidas explicitamente pelo usuario) — ver `goldfish-log.md` pro relato
-completo, incluindo o que foi CORRIGIDO DE VERDADE nesta sessao vs. o
-que ficou so' DIAGNOSTICADO (achado real, mas correcao adiada por falha
-de um agente em background que morreu de rate-limit no meio do
-trabalho — nunca reportado como concluido sem estar):
+completo.
 
-CORRIGIDO nesta sessao:
+CORRIGIDO na sessao de fechamento (2026-08-31, parte 1):
 - **Bug fundamental achado durante a auditoria (nao listado pelo
   usuario, achado nesta varredura):** o loop generico de conjuracao do
   `main_phase()` nao excluia cartas `ctype=="land"` — qualquer terreno
@@ -69,34 +66,54 @@ CORRIGIDO nesta sessao:
   `ctype=="land"` do loop `castables` (as 2 ocorrencias em
   `main_phase()`).
 - Urza's Saga: `add()` duplicado sobrescrevia a tag `saga_token` por um
-  `set()` vazio. Duplicata removida — mas a tag `saga_token` **nunca
-  teve dispatch nenhum em lugar nenhum do arquivo, mesmo antes da
-  duplicata** (capitulos I/II/III da Saga continuam nao-implementados,
-  so' o dano da sobrescrita foi corrigido, nao a mecanica em si).
+  `set()` vazio. Duplicata removida.
 
-DIAGNOSTICADO mas AINDA NAO IMPLEMENTADO (fica pendente pra proxima
-sessao — nao marcar como feito):
-- Urza's Saga: engine real de capitulo I/II/III (token no cap. II,
-  tutor de artefato barato no cap. III).
-- Bala Ged Recovery // Bala Ged Sanctuary, Ondu Inversion // Ondu
-  Skyruins, Bridgeworks Battle // Tanglespan Bridgeworks: MDFCs
-  (`layout: modal_dfc`, confirmado via API Scryfall) registradas so'
-  como land, sem "enters tapped"/custo de vida real, e sem a face
-  sorcery nunca castavel (Bala Ged Recovery em particular e' recursao
-  real de cemiterio).
-- Wrenn and Realmbreaker: so' a estatica de fixing e' simulada; as
-  habilidades de lealdade (+1/-2/-7) nunca sao ativadas (campo
-  `wrenn_loyalty` existe no `GameState` mas nunca e' lido/escrito).
-- Caretaker's Talent: so' o nivel 1 (draw ao entrar token) esta
-  implementado — nivel 2 (copiar token) e nivel 3 (anthem +2/+2 em
-  tokens) ausentes.
-- Crucible of Worlds / Conduit of Worlds ("You may play lands from your
-  graveyard"): tags `gy_lands`/`gy_recursion_1turn` existem no CARD_DB
-  mas nunca sao lidas em lugar nenhum (dead tags) — recursao de terreno
-  do cemiterio nunca acontece.
-- Relatorio (`run_batch`) ainda NAO reporta as 5 metricas basicas
-  obrigatorias (ramp/draw/interaction/recursion/finisher-lethality) como
-  linhas proprias auditaveis.
+IMPLEMENTADO na sessao seguinte (2026-08-31, parte 2 — itens que tinham
+ficado so' DIAGNOSTICADOS na parte 1, agora com codigo real, nao so' tag):
+- **Urza's Saga**: engine real de capitulo I/II/III via `saga_chapter`
+  (campo dedicado em `Permanent`, ver `urza_saga_advance()`). Capitulo II
+  cria Construct 0/0 se sobrar `{2}`; capitulo III busca artefato custo
+  0/1 pra campo e sacrifica a Saga (regra 714).
+- **Bala Ged Recovery/Sanctuary, Ondu Inversion/Skyruins, Bridgeworks
+  Battle/Tanglespan Bridgeworks**: as 3 faces land reais agora entram
+  tapped (`enters_tapped`) — Tanglespan Bridgeworks com a escolha real de
+  pagar 3 de vida pra entrar destapado (`enters_tapped_payable`, ver
+  `play_land()`). MV vestigial da Bala Ged Recovery (3, nunca lido por
+  `ctype=="land"`) corrigido pra 0, igual as outras duas.
+- **Wrenn and Realmbreaker**: `-2` (mill 3, recupera permanente pra mao)
+  implementado de verdade (`wrenn_loyalty_ability()`). `+1` (land vira
+  3/3 ate o proximo turno) nao produz numero neste modelo sem combate/PT
+  — decisao de escopo, nao bug. `-7` nunca e' alcancado sob a politica
+  "-2 todo turno que der" (ver docstring da propria funcao).
+- **Caretaker's Talent**: nivel 2 (copia token) e nivel 3 (anthem +2/+2,
+  so' o nivel em si — sem PT pra modificar) implementados
+  (`caretaker_talent_levelup()`, campo `level` em `Permanent`).
+- **Crucible of Worlds / Conduit of Worlds** (`gy_lands`): terreno do
+  cemiterio (fetch ja craqueado, unica fonte real de terreno morto neste
+  sim) agora pode ser jogado via `play_land()`. A habilidade ATIVADA
+  propria do Conduit (`gy_recursion_1turn` — reanima permanente do
+  cemiterio, mas trava o resto do turno pra 1 spell so') continua fora
+  de escopo: e' uma troca de politica de jogo real (reanimar 1 alvo vs.
+  o loop ganancioso de conjurar tudo que der) que precisaria de dados A/B
+  dedicados, no padrao ja usado pro `BRISTLY_BILL_RESERVE_POLICY` — nao
+  decidida por suposicao.
+- **Extra land drop da Dryad of the Ilysian Grove** (achado real nesta
+  rodada, nao listado pelo usuario): tag `extra_land_drop` nunca tinha
+  dispatch nenhum — `state.extra_land_drops` nunca era incrementado em
+  lugar nenhum do arquivo. Corrigido em `play_land()`.
+- **Metricas obrigatorias #10** (`run_batch`): ramp/draw ja existiam
+  (so' rotuladas agora); interaction, recursion e finisher/lethality sao
+  linhas novas, auditaveis, documentadas como proxy onde o efeito real
+  depende de mecanica fora do escopo do simulador (oponente real /
+  combate real) em vez de omitidas.
+
+Ainda fora de escopo, por decisao explicita (nao omissao):
+- Bala Ged Recovery: face sorcery ("Return target card from your
+  graveyard to your hand") nao depende de oponente mas exigiria dois
+  modos de `ctype` pra uma so' carta — limitacao de arquitetura, ver
+  comentario no `CARD_DB`.
+- Conduit of Worlds: habilidade ativada de reanimacao (ver acima).
+- Wrenn and Realmbreaker: `+1`/`-7` (ver acima).
 """
 
 import json
@@ -231,9 +248,30 @@ add(COMMANDER, 3, "creature", {"commander", "earthbend_source_end_step"})
 # --- Lands (32, incl. 3x Forest) ---------------------------------------------------
 add("Arid Mesa", 0, "land", {"fetch"})
 add("Ba Sing Se", 0, "land", {"earthbend_source_activated"})
-add("Bala Ged Recovery // Bala Ged Sanctuary", 3, "land", set())
+# Bala Ged Recovery // Bala Ged Sanctuary: MDFC (modal_dfc, Scryfall
+# confirmado). Registrada so' como land (mv=0 -- o "3" antigo aqui era o
+# custo real do lado sorcery {2}{G}, vestigial, mesmo problema ja
+# corrigido no Ondu Inversion/Bridgeworks Battle). Lado sorcery ("Return
+# target card from your graveyard to your hand") NAO depende de oponente
+# -- diferente dos outros 2 MDFCs da lista -- mas modela-lo exigiria
+# permitir DOIS modos de conjuracao pra uma unica entrada de CARD_DB
+# (hoje `ctype` e' singular por carta; o loop de `castables` em
+# `main_phase()` ja exclui `ctype=="land"` inteiro). Fora do escopo desta
+# rodada (limitacao de arquitetura, nao omissao) -- decisao documentada
+# 2026-08-31, agravada pelo fato de o deck ja estar no piso de terrenos
+# (lista.md), entao um piloto real quase sempre prefere o lado land aqui
+# de qualquer forma. Face land real: "This land enters tapped."
+add("Bala Ged Recovery // Bala Ged Sanctuary", 0, "land", {"enters_tapped"})
 add("Bountiful Promenade", 0, "land", set())
-add("Bridgeworks Battle // Tanglespan Bridgeworks", 3, "land", set())
+# Bridgeworks Battle // Tanglespan Bridgeworks: MDFC (modal_dfc). So' land
+# (mv=0, mesmo motivo do Ondu Inversion acima). Lado sorcery ("fights up
+# to one target creature you don't control") exige uma criatura de
+# OPONENTE de verdade pra mirar -- impossivel modelar num goldfish solo
+# sem inventar estado alheio (Regra 1). N/A estrutural, nao omissao. Face
+# land real (Tanglespan Bridgeworks): "As this land enters, you may pay 3
+# life. If you don't, it enters tapped." -- unico dos 3 MDFCs da lista com
+# essa escolha (os outros dois so' entram tapped, sem opcao).
+add("Bridgeworks Battle // Tanglespan Bridgeworks", 0, "land", {"enters_tapped_payable"})
 add("Canopy Vista", 0, "land", set())
 add("Cinder Glade", 0, "land", set())
 add("Command Tower", 0, "land", {"rock_any"})
@@ -244,7 +282,20 @@ add("Gruul Turf", 0, "land", {"bounceland"})
 add("Inventors' Fair", 0, "land", {"artifact_lifegain"})
 add("Jetmir's Garden", 0, "land", {"rock_any"})
 add("Mountain", 0, "land", set())
-add("Ondu Inversion // Ondu Skyruins", 8, "land", {"wipe_unused"})
+# Ondu Inversion // Ondu Skyruins: MDFC (modal_dfc, Scryfall confirmado).
+# Registrada so' como land (mv=0, como qualquer outro terreno -- o "8"
+# antigo aqui era o custo real do lado sorcery {6}{W}{W}, vestigial e
+# inflava curva/CMC medio sem nenhum efeito real, ja que ctype=="land"
+# exclui a carta do loop de conjuracao). Decisao documentada (achado real
+# 2026-08-31, fechamento da rodada ampliada): o lado sorcery ("Destroy
+# all nonland permanents") e' um wipe SIMETRICO sem excecao nenhuma --
+# num goldfish solo sem oponente real, conjurar isso so' destruiria o
+# proprio board pra ganho zero (mesmo raciocinio ja aplicado ao Kindred
+# Dominance/Swarmyard Massacre/Damnation no Rat King, Regra 1: nao fingir
+# uma jogada irracional que nenhum piloto real faria). Tag `wipe_unused`
+# (nunca tinha dispatch nenhum) removida. Face land real (Ondu Skyruins):
+# "This land enters tapped."
+add("Ondu Inversion // Ondu Skyruins", 0, "land", {"enters_tapped"})
 add("Plains", 0, "land", set())
 add("Selesnya Sanctuary", 0, "land", {"bounceland"})
 add("Snow-Covered Forest", 0, "land", set())
@@ -255,7 +306,11 @@ add("Stomping Ground", 0, "land", set())
 add("Strip Mine", 0, "land", set())
 add("Talon Gates of Madara", 0, "land", {"rock_any_paid", "phase_out_unused"})
 add("Temple Garden", 0, "land", set())
-add("Urza's Saga", 0, "land", {"saga_token"})
+# Engine real de capitulo I/II/III implementada 2026-08-31 (ver
+# `urza_saga_advance()`), dispachada por nome (como Bristly Bill/Ba Sing
+# Se/etc), nao por tag -- a tag `saga_token` antiga nunca tinha dispatch
+# nenhum e foi removida.
+add("Urza's Saga", 0, "land", set())
 add("Windswept Heath", 0, "land", {"fetch"})
 add("Wooded Foothills", 0, "land", {"fetch"})
 add("Wrenn and Realmbreaker", 3, "planeswalker", {"rock_all_lands_any"})
@@ -289,7 +344,10 @@ add("Fountainport", 0, "land", {"token_sac_draw"})  # already added above as lan
 
 # --- Removal & wipes --------------------------------------------------------
 add("Erode", 1, "instant", {"removal"})
-add("Bridgeworks Battle", 3, "sorcery", {"removal_conditional"})
+# "Bridgeworks Battle" (sem "// Tanglespan Bridgeworks") removido -- codigo
+# morto: o nome real que build_library()/lista.md usam e' o nome completo
+# com "//" (registrado abaixo como land), essa entrada solta nunca era
+# alcancada (achado real 2026-08-31, rodada ampliada de fechamento).
 add("Haywire Mite", 1, "artifact_creature", {"opponent_dependent"})
 add("Swords to Plowshares", 1, "instant", {"removal"})
 add("Council's Judgment", 3, "sorcery", {"opponent_dependent"})
@@ -362,6 +420,28 @@ LAND_NAMES = {n for n, c in CARD_DB.items() if c.ctype == "land"}
 ARTIFACT_ISH = {"artifact", "artifact_creature"}
 CREATURE_ISH = {"creature", "artifact_creature", "enchantment_creature"}
 
+# Metrica obrigatoria #10 (goldfish-sim-card-rules.md secao 10) -- interaction:
+# qualquer carta cujo efeito real dependa de oponente/alvo adversario
+# (removal, protecao, wipe) conta aqui quando conjurada/colocada em campo,
+# mesmo sem efeito numerico solo (documentado em vez de omitido).
+INTERACTION_TAGS = {"removal", "opponent_dependent", "protection_unused", "wipe_unused"}
+
+# Metrica obrigatoria #10 -- finisher/lethality: proxy de "turno em que uma
+# ameaca de vitoria resolve" (secao 8 de auditoria.md: earthbend em escala,
+# wide+counters, Krang, Great Henge). Sem combate real modelado (docstring),
+# NAO e' turno de dano letal de verdade, so' turno de resolucao da peca --
+# documentado explicitamente, nao fingido como taxa de vitoria real.
+FINISHER_CARDS = {
+    "Avatar Kyoshi, Earthbender",
+    "Toph, Earthbending Master",
+    "Krang, Utrom Warlord",
+    "The Great Henge",
+    "Scute Swarm",
+    "Sapling Nursery",
+    "Felidar Retreat",
+    "Mossborn Hydra",
+}
+
 
 # ---------------------------------------------------------------------------
 # Game state
@@ -377,6 +457,8 @@ class Permanent:
     entered_turn: int = 0
     uid: int = 0
     is_token: bool = False
+    saga_chapter: int = 0  # Urza's Saga only
+    level: int = 1  # Class enchantments (Caretaker's Talent) only
 
 
 @dataclass
@@ -432,6 +514,15 @@ class GameState:
     kci_sacrifices_broad: int = 0
     commander_cast_turn: Optional[int] = None
     first_pw_ish_turn: Optional[int] = None  # not used, placeholder for parity
+
+    # Achados 2026-08-31 (rodada de implementacao dos itens diagnosticados-mas-
+    # nao-implementados da rodada anterior) -----------------------------------
+    crucible_land_replays: int = 0  # Crucible/Conduit of Worlds: terreno do cemiterio jogado
+    interaction_plays: int = 0  # metrica obrigatoria #10: remocao/protecao conjurada
+    first_finisher_turn: Optional[int] = None  # metrica obrigatoria #10: finisher/lethality (proxy)
+    wrenn_minus2_activations: int = 0
+    urza_saga_chapter2_tokens: int = 0
+    urza_saga_chapter3_tutors: int = 0
 
 
 def mk_perm(state: GameState, name: str) -> Permanent:
@@ -522,6 +613,8 @@ def enter_battlefield(state: GameState, perm: Permanent, log: list):
         state.ashaya_in_play = True
     if perm.card.name == "Mycosynth Lattice":
         state.mycosynth_in_play = True
+    if perm.card.name in FINISHER_CARDS and state.first_finisher_turn is None:
+        state.first_finisher_turn = state.turn
 
     if is_land(perm, state):
         landfall_trigger(state, perm, log)
@@ -759,6 +852,10 @@ def apply_etb(state: GameState, perm: Permanent, log: list):
             bounced = others[0]
             state.battlefield.remove(bounced)
             state.hand.append(bounced.card.name)
+    elif name == "Wrenn and Realmbreaker":
+        state.wrenn_loyalty = 4  # lealdade inicial real (Scryfall)
+    elif name == "Urza's Saga":
+        perm.saga_chapter = 1  # "as this Saga enters... add a lore counter"
 
 
 # ---------------------------------------------------------------------------
@@ -833,6 +930,8 @@ def can_cast_commander(state: GameState) -> bool:
 
 def cast_card(state: GameState, name: str, log: list, from_hand: bool = True):
     card = CARD_DB[name]
+    if card.tags & INTERACTION_TAGS:
+        state.interaction_plays += 1
     if name == COMMANDER:
         spend_mana(state, commander_effective_mv(state))
     else:
@@ -927,6 +1026,10 @@ def is_land_name(name: str) -> bool:
     return CARD_DB[name].ctype == "land"
 
 
+def has_card(state: GameState, name: str) -> bool:
+    return any(p.card.name == name for p in state.battlefield)
+
+
 def draw_opening_hand(rng: random.Random):
     lib = BASE_LIBRARY[:]
     rng.shuffle(lib)
@@ -963,16 +1066,51 @@ FETCH_POOLS = {
 }
 
 def play_land(state: GameState, log: list):
+    # Achado real 2026-08-31: "extra_land_drop" (Dryad of the Ilysian Grove)
+    # era uma tag decorativa sem dispatch nenhum -- `state.extra_land_drops`
+    # nunca era incrementado em lugar nenhum do arquivo, entao a estatica
+    # "you may play an additional land on each of your turns" nunca fazia
+    # nada. Corrigido como efeito continuo (recalculado a cada chamada, nao
+    # um contador que precisa reset por turno) enquanto a Dryad estiver em
+    # campo. `state.extra_land_drops` continua existindo pra efeitos de UM
+    # turno so' (ex: Wrenn +1 real nao foi implementado -- ver
+    # `wrenn_loyalty_ability` -- mas o campo fica disponivel pra isso).
     max_drops = 1 + state.extra_land_drops
+    if has_card(state, "Dryad of the Ilysian Grove"):
+        max_drops += 1
+
     while state.lands_played_this_turn < max_drops:
         lands_in_hand = [n for n in state.hand if is_land_name(n)]
-        if not lands_in_hand:
+        from_graveyard = False
+        if lands_in_hand:
+            # fetches primeiro (deixam a biblioteca mais previsivel / menos "morta")
+            fetches = [n for n in lands_in_hand if "fetch" in CARD_DB[n].tags]
+            choice = fetches[0] if fetches else lands_in_hand[0]
+        elif has_card(state, "Crucible of Worlds") or has_card(state, "Conduit of Worlds"):
+            # Achado real 2026-08-31: "gy_lands" (Crucible/Conduit of Worlds,
+            # "You may play lands from your graveyard") era uma tag
+            # decorativa sem dispatch nenhum. Fonte real de terreno no
+            # cemiterio neste sim: fetches ja craqueados (unico jeito de um
+            # terreno de verdade morrer aqui -- earthbend/KCI/Obelisk/Coffin
+            # nunca alvejam terreno REAL nao-artefato, so' artefato). Fetch
+            # do cemiterio, jogado de novo, dispara o ETB de fetch de novo
+            # (mais 1 basica pro campo) -- motor de recorrencia real.
+            lands_in_gy = [n for n in state.graveyard if is_land_name(n)]
+            if not lands_in_gy:
+                return
+            fetches = [n for n in lands_in_gy if "fetch" in CARD_DB[n].tags]
+            choice = fetches[0] if fetches else lands_in_gy[0]
+            from_graveyard = True
+        else:
             return
-        # fetches primeiro (deixam a biblioteca mais previsivel / menos "morta")
-        fetches = [n for n in lands_in_hand if "fetch" in CARD_DB[n].tags]
-        choice = fetches[0] if fetches else lands_in_hand[0]
-        state.hand.remove(choice)
+
+        if from_graveyard:
+            state.graveyard.remove(choice)
+            state.crucible_land_replays += 1
+        else:
+            state.hand.remove(choice)
         state.lands_played_this_turn += 1
+
         if "fetch" in CARD_DB[choice].tags:
             state.graveyard.append(choice)
             # Achado real 2026-08-28 (auditoria de checklist de mecanica):
@@ -989,7 +1127,26 @@ def play_land(state: GameState, log: list):
                 perm.tapped = False
                 enter_battlefield(state, perm, log)
             continue
+
         perm = mk_perm(state, choice)
+        tags = CARD_DB[choice].tags
+        if "enters_tapped" in tags:
+            # Achado real 2026-08-31: os 3 MDFCs da lista (Bala Ged
+            # Recovery/Sanctuary, Ondu Inversion/Skyruins, Bridgeworks
+            # Battle/Tanglespan Bridgeworks) entravam sempre destapados --
+            # as faces land reais entram tapped (Scryfall confirmado).
+            perm.tapped = True
+        elif "enters_tapped_payable" in tags:
+            # Tanglespan Bridgeworks: "you may pay 3 life. If you don't, it
+            # enters tapped." Piloto real paga (tempo > 3 de 40 de vida
+            # inicial de Commander) enquanto sobrar vida de sobra; guarda
+            # generico consistente com o limiar ja usado pela Sylvan
+            # Library (`life_total > 20`) neste arquivo, aqui mais frouxo
+            # (>10) porque o custo e' fixo e pequeno, nao escalonado.
+            if state.life_total > 10:
+                state.life_total -= 3
+            else:
+                perm.tapped = True
         enter_battlefield(state, perm, log)
 
 
@@ -1053,6 +1210,9 @@ def main_phase(state: GameState, log: list):
     if kci:
         pass  # nao usado agressivamente — nao ha spell caro o suficiente pra justificar sacrificar valor
 
+    wrenn_loyalty_ability(state, log)
+    caretaker_talent_levelup(state, log)
+
     if RECURRING_ARTIFACT_POLICY:
         work_recurring_artifact_loop(state, log)
 
@@ -1101,6 +1261,121 @@ def work_recurring_artifact_loop(state: GameState, log: list):
             log.append(f"  [Krark-Clan Ironworks] sacrifica {sac_target.card.name} (earthbendada) por {{C}}{{C}}")
             leave_battlefield(state, sac_target, log)
             state.mana_generated_extra += 2
+
+
+def urza_saga_advance(state: GameState, log: list):
+    """Engine real de capitulo I/II/III (achado real 2026-08-31, diagnosticado
+    na rodada anterior e agora implementado). Chamada 1x por turno, apos o
+    passo de compra, antes da main phase -- "as this Saga enters and after
+    your draw step, add a lore counter" (timing real do Scryfall). Capitulo I
+    e' inerte (so' concede a habilidade de mana que o modelo generico ja da
+    a qualquer terreno em campo). Capitulo II concede uma habilidade ATIVADA
+    ({2},{T}: cria Construct 0/0) -- ativada de forma gananciosa se sobrar
+    mana, igual ao padrao ja usado pra Ba Sing Se/Bristly Bill neste arquivo.
+    Capitulo III busca um artefato de custo 0 ou 1 na biblioteca direto pro
+    campo, depois sacrifica a Saga (regra 714 de Saga, nao um custo da
+    propria carta -- ainda assim conta como "morrer" pro Motor #16: se essa
+    copia da Saga tiver sido earthbendada antes, ela volta tapped em vez de
+    ir pro cemiterio, reiniciando o ciclo de capitulos do zero -- correto
+    per o texto reminder do earthbend, que reage a QUALQUER morte)."""
+    saga = next((p for p in state.battlefield if p.card.name == "Urza's Saga"), None)
+    if saga is None or saga.saga_chapter >= 3 or saga.entered_turn >= state.turn:
+        return
+    saga.saga_chapter += 1
+    if saga.saga_chapter == 2:
+        if not saga.tapped and remaining_mana(state) >= 2:
+            spend_mana(state, 2)
+            saga.tapped = True
+            state.urza_saga_chapter2_tokens += 1
+            create_token(state, log, note="Construct 0/0 (Urza's Saga cap. II)")
+            log.append("  [Urza's Saga II] {2},{T}: cria Construct 0/0 (+1/+1 por artefato)")
+    elif saga.saga_chapter == 3:
+        pool = [n for n in state.library if CARD_DB[n].ctype in ARTIFACT_ISH and CARD_DB[n].mv <= 1]
+        if pool:
+            found = pool[0]
+            state.library.remove(found)
+            state.urza_saga_chapter3_tutors += 1
+            new_perm = mk_perm(state, found)
+            log.append(f"  [Urza's Saga III] busca {found} (custo 0/1) direto pro campo")
+            enter_battlefield(state, new_perm, log)
+        leave_battlefield(state, saga, log)
+        log.append("  [Urza's Saga] sacrificada (capitulo III completo, regra 714)")
+
+
+def wrenn_loyalty_ability(state: GameState, log: list):
+    """+1/-2/-7 diagnosticados mas nunca ativados na rodada anterior --
+    implementado 2026-08-31. So' -2 (mill 3, recupera um permanente pra mao)
+    e' modelado: +1 ("terreno alvo vira 3/3 ate seu proximo turno") nao tem
+    efeito numerico neste simulador (sem combate/P-T rastreado, mesma
+    limitacao documentada pro anthem do Caretaker's Talent -- "ainda e'
+    terreno" entao nem mana perde) e -7 (emblema de jogar terrenos/conjurar
+    permanentes do cemiterio) exigiria alcancar lealdade 7+, o que nunca
+    acontece sob a politica -2-todo-turno abaixo. Politica: gastar -2 todo
+    turno que a lealdade permitir (>=2) -- dado que +1 nao produz nenhum
+    numero neste modelo, e' estritamente melhor puxar valor imediato
+    (recursao de permanente) do que guardar lealdade pra um ultimate que
+    nunca seria alcancado de qualquer forma. Uma ativacao por turno (regra
+    real de planeswalker), sem restricao de doenca de invocacao (lealdade
+    pode ser ativada no turno em que entra)."""
+    wrenn = next((p for p in state.battlefield if p.card.name == "Wrenn and Realmbreaker"), None)
+    if wrenn is None or state.wrenn_loyalty < 2:
+        return
+    state.wrenn_loyalty -= 2
+    state.wrenn_minus2_activations += 1
+    milled = []
+    for _ in range(3):
+        if state.library:
+            milled.append(state.library.pop(0))
+    state.graveyard.extend(milled)
+    permanent_ctypes = {"land", "artifact", "creature", "artifact_creature",
+                         "enchantment", "enchantment_creature", "planeswalker"}
+    candidates = [c for c in milled if CARD_DB[c].ctype in permanent_ctypes]
+    if candidates:
+        chosen = candidates[0]
+        state.graveyard.remove(chosen)
+        state.hand.append(chosen)
+        log.append(f"  [Wrenn -2] mill 3, recupera {chosen} pra mao")
+    else:
+        log.append("  [Wrenn -2] mill 3, nenhum permanente entre os milhados")
+    if state.wrenn_loyalty <= 0:
+        leave_battlefield(state, wrenn, log)
+        log.append("  [Wrenn and Realmbreaker] sacrificado (lealdade 0)")
+
+
+def caretaker_talent_levelup(state: GameState, log: list):
+    """Nivel 2 (copia token) e nivel 3 (anthem +2/+2) diagnosticados mas nao
+    implementados na rodada anterior -- implementado 2026-08-31. Nivel 1
+    (draw ao token entrar) ja estava correto (ver `create_token()`). Custo de
+    level up real (Scryfall): {W} pro nivel 2, {3}{W} pro nivel 3 -- pago de
+    forma gananciosa (mesmo padrao de Ba Sing Se/Bristly Bill) apos o loop
+    generico de conjuracao. Nivel 2 copia um token -- so' dispara se existir
+    um Permanent de token DE VERDADE em campo pra mirar: a maioria dos
+    tokens deste simulador (Field of the Dead, Tireless Provisioner,
+    Sapling Nursery etc) e' abstraida como so' um contador em
+    `create_token()`, sem um objeto Permanent real (limitacao de arquitetura
+    documentada, nao nova). Nivel 3 (anthem +2/+2 em tokens de criatura) nao
+    tem numero pra modificar (sem P/T rastreado, docstring) -- so' o nivel em
+    si e' concedido de verdade e reportado como metrica separada em
+    `run_batch`, nunca fingido como dano/poder real."""
+    ct = next((p for p in state.battlefield if p.card.name == "Caretaker's Talent"), None)
+    if ct is None:
+        return
+    if ct.level == 1 and remaining_mana(state) >= 1:
+        spend_mana(state, 1)
+        ct.level = 2
+        log.append("  [Caretaker's Talent] level up -> 2 ({W})")
+        token_target = next((p for p in state.battlefield if p.is_token and p is not ct), None)
+        if token_target is not None:
+            clone = mk_perm(state, token_target.card.name)
+            clone.is_token = True
+            log.append(f"  [Caretaker's Talent II] copia token {token_target.card.name}")
+            create_token(state, log, note="copia via Caretaker's Talent nivel 2")
+            enter_battlefield(state, clone, log)
+    if ct.level == 2 and remaining_mana(state) >= 4:
+        spend_mana(state, 4)
+        ct.level = 3
+        log.append("  [Caretaker's Talent] level up -> 3 ({3}{W}, anthem +2/+2 em "
+                    "tokens de criatura -- P/T nao rastreado, ver docstring)")
 
 
 def combat_step(state: GameState, log: list):
@@ -1162,6 +1437,7 @@ def play_turn(state: GameState, log: list, is_first_turn: bool, on_play: bool):
                 state.cards_drawn_extra -= 2
                 log.append("  [Sylvan Library] devolve as 2 cartas extra (vida baixa demais)")
 
+    urza_saga_advance(state, log)
     play_land(state, log)
     main_phase(state, log)
     combat_step(state, log)
@@ -1218,6 +1494,27 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     coffin_act = avg([s.coffin_activations for s in states])
     kci_sac = avg([s.kci_sacrifices_of_recurring for s in states])
 
+    # --- Metricas obrigatorias #10 (goldfish-sim-card-rules.md secao 10) ---
+    # ramp e draw ja existiam (extra_mana/extra_draw acima); interaction,
+    # recursion e finisher/lethality sao novas (achado real 2026-08-31,
+    # implementadas nesta rodada — antes so' citadas como "N/A" sem linha
+    # propria auditavel no relatorio).
+    interaction = avg([s.interaction_plays for s in states])
+    interaction_any = 100 * sum(1 for s in states if s.interaction_plays > 0) / n
+    crucible_replays = avg([s.crucible_land_replays for s in states])
+    recursion = avg([s.motor16_recursions + s.crucible_land_replays for s in states])
+    finisher_turns = [s.first_finisher_turn for s in states if s.first_finisher_turn is not None]
+    finisher_rate = 100 * len(finisher_turns) / n
+
+    wrenn_minus2 = avg([s.wrenn_minus2_activations for s in states])
+    wrenn_any = 100 * sum(1 for s in states if s.wrenn_minus2_activations > 0) / n
+    caretaker_lv2 = 100 * sum(1 for s in states
+                                if any(p.card.name == "Caretaker's Talent" and p.level >= 2 for p in s.battlefield)) / n
+    caretaker_lv3 = 100 * sum(1 for s in states
+                                if any(p.card.name == "Caretaker's Talent" and p.level >= 3 for p in s.battlefield)) / n
+    saga_ch2 = avg([s.urza_saga_chapter2_tokens for s in states])
+    saga_ch3 = avg([s.urza_saga_chapter3_tutors for s in states])
+
     print(f"n={n}, seed_base={seed_base}, turns={turns}, RECURRING_ARTIFACT_POLICY={RECURRING_ARTIFACT_POLICY}")
     print(f"Avg mulligans: {mulls:.2f}")
     print(f"Turno medio de conjuracao da Toph: {avg(cmd_turn):.2f} | mediana: {statistics.median(cmd_turn) if cmd_turn else float('nan'):.1f}")
@@ -1240,6 +1537,31 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg ativacoes do Unstable Obelisk (earthbendado): {obelisk_act:.3f}")
     print(f"Avg ativacoes do The Stasis Coffin (earthbendado): {coffin_act:.3f}")
     print(f"Avg sacrificios via Krark-Clan Ironworks de artefato earthbendado: {kci_sac:.3f}")
+
+    print("\n--- 5 metricas obrigatorias (goldfish-sim-card-rules.md secao 10) ---")
+    print(f"[1) Ramp] Avg mana extra gerado por rampa (Lotus Cobra/Nissa landfall + KCI sac): {extra_mana:.2f}")
+    print(f"[2) Draw] Avg cartas compradas alem da compra normal do turno: {extra_draw:.2f}")
+    print(f"[3) Interaction] Avg spells/permanentes de interacao conjurados (Swords to Plowshares/"
+          f"Council's Judgment/Erode/Haywire Mite/Heroic Intervention/Lightning Greaves/Teferi's Protection/"
+          f"Oblivion Stone — efeito numerico solo N/A por falta de oponente real, ver docstring): "
+          f"{interaction:.2f} | % de jogos com pelo menos 1: {interaction_any:.1f}%")
+    print(f"[4) Recursion] Avg recorrencia de permanente (Motor#16 earthbend_return + terreno do "
+          f"cemiterio via Crucible/Conduit of Worlds): {recursion:.2f} "
+          f"(Motor#16 {motor16:.2f} + Crucible/Conduit {crucible_replays:.2f})")
+    print(f"[5) Finisher/lethality] Proxy: % de jogos que resolvem >=1 ameaca de vitoria "
+          f"(Avatar Kyoshi/Toph Earthbending Master/Krang/Great Henge/Scute Swarm/Sapling Nursery/"
+          f"Felidar Retreat/Mossborn Hydra) em {turns} turnos: {finisher_rate:.1f}% | "
+          f"turno medio de resolucao: {avg(finisher_turns):.2f} "
+          f"(turno de RESOLUCAO da carta, nao de dano letal real — sem combate modelado, ver docstring)")
+
+    print("\n--- Mecanicas implementadas nesta rodada (2026-08-31) ---")
+    print(f"Avg terrenos replayados do cemiterio via Crucible/Conduit of Worlds: {crucible_replays:.2f}")
+    print(f"Avg ativacoes de Wrenn and Realmbreaker -2 (mill 3 + recupera permanente): {wrenn_minus2:.2f} "
+          f"| % de jogos com pelo menos 1: {wrenn_any:.1f}%")
+    print(f"% de jogos que Caretaker's Talent atinge nivel 2 (copia token): {caretaker_lv2:.1f}%")
+    print(f"% de jogos que Caretaker's Talent atinge nivel 3 (anthem +2/+2, P/T nao rastreado): {caretaker_lv3:.1f}%")
+    print(f"Avg tokens Construct via Urza's Saga capitulo II: {saga_ch2:.3f}")
+    print(f"Avg tutores de artefato custo 0/1 via Urza's Saga capitulo III: {saga_ch3:.3f}")
 
     # breakdown de fontes de earthbend
     combined = {}

@@ -72,6 +72,133 @@ demais por um bug, não por força real da lista.
 
 ---
 
+### Implementação dos itens pendentes (Urza's Saga, MDFCs, Wrenn, Caretaker's Talent, Crucible/Conduit, 5 métricas obrigatórias) — 2026-08-31
+
+**Contexto:** continuação direta da entrada anterior — os 6 itens que
+ficaram "diagnosticados mas não implementados" (docstring de um agente
+que morreu de rate-limit antes de escrever o código de verdade) foram
+implementados nesta sessão, um a um, com oráculo real conferido ao vivo
+via API do Scryfall antes de codar cada um (não por memória):
+
+- **Urza's Saga** — engine real de capítulo I/II/III (`urza_saga_advance()`,
+  campo `saga_chapter` novo em `Permanent`). Capítulo I é inerte (só
+  concede a habilidade de mana que o terreno já tinha por ser `ctype=="land"`).
+  Capítulo II ativa `{2},{T}: cria Construct 0/0` de forma gananciosa se
+  sobrar mana (mesmo padrão do Ba Sing Se/Bristly Bill). Capítulo III
+  busca artefato de custo 0/1 direto pro campo e sacrifica a Saga (regra
+  714 — não é custo da própria carta, mas ainda "morre" pro Motor #16 se
+  essa cópia específica tiver sido earthbendada antes: volta tapped e
+  reinicia os capítulos do zero, correto pelo texto reminder do earthbend
+  que reage a QUALQUER morte).
+- **3 MDFCs (Bala Ged Recovery/Sanctuary, Ondu Inversion/Skyruins,
+  Bridgeworks Battle/Tanglespan Bridgeworks)** — confirmado ao vivo via
+  Scryfall que as 3 faces land reais entram tapped; Tanglespan Bridgeworks
+  é o único caso com escolha real ("pay 3 life or enters tapped" — piloto
+  paga sempre que a vida permitir, `life_total > 10`, quase sempre verdade
+  com 40 de vida inicial de Commander). Bala Ged Recovery tinha `mv=3`
+  vestigial (nunca lido, mesmo problema já corrigido no Ondu Inversion na
+  rodada anterior) — corrigido pra 0. Face sorcery da Bala Ged Recovery
+  ("Return target card from your graveyard to your hand", `{2}{G}`) **não**
+  foi implementada — self-contida (não depende de oponente) mas exigiria
+  dois modos de `ctype` pra uma única carta, o que o modelo atual não
+  suporta sem reestruturar `main_phase()`; decisão de escopo documentada no
+  `CARD_DB`, não omissão.
+- **Wrenn and Realmbreaker** — `-2` implementado de verdade
+  (`wrenn_loyalty_ability()`: mill 3, recupera 1 permanente pra mão).
+  Oráculo real conferido: `+1` é "land alvo vira 3/3 até seu próximo
+  turno" (não "extra land drop + tutor de básica" como eu tinha assumido
+  antes de checar o Scryfall) — sem efeito numérico neste modelo (sem
+  combate/P·T rastreado, land "ainda é terreno" então nem mana perde) —
+  decisão de escopo. `-7` (emblema de jogar terreno/conjurar permanente do
+  cemitério) nunca é alcançado sob a política "-2 todo turno que der",
+  porque puxar valor imediato bate qualquer plano de guardar lealdade pro
+  ultimate quando `+1` não rende nada mensurável neste simulador.
+- **Caretaker's Talent** — nível 2 (`{W}`: copia um token-alvo — só
+  dispara se existir um `Permanent` de token de verdade em campo pra
+  mirar, já que a maioria dos tokens deste simulador é abstraída como só
+  um contador em `create_token()`, limitação de arquitetura preexistente,
+  não nova) e nível 3 (`{3}{W}`: anthem +2/+2 em tokens — sem P/T
+  rastreado, só o nível em si é concedido e reportado, nunca um número de
+  poder fingido) implementados via campo `level` novo em `Permanent`.
+- **Crucible of Worlds / Conduit of Worlds** — `play_land()` agora permite
+  jogar terreno do cemitério quando uma das duas está em campo e não sobra
+  terreno na mão. Única fonte real de terreno no cemitério neste sim:
+  fetch já craqueado (nenhum outro terreno REAL — não-artefato — morre
+  neste simulador; earthbend/KCI/Obelisk/Coffin só alvejam artefato). Fetch
+  replayado do cemitério dispara o ETB de novo (busca outra básica) — motor
+  de recorrência real, não só "mais 1 terreno". A habilidade ATIVADA
+  própria do Conduit (`{T}`: reanima permanente do cemitério, mas trava o
+  resto do turno pra 1 spell só) **não** foi implementada — é uma troca de
+  política de jogo real (abre mão do loop ganancioso de conjurar tudo que
+  dá por 1 reanimação específica) que precisaria de dados A/B dedicados,
+  no padrão já usado pro `BRISTLY_BILL_RESERVE_POLICY`; decisão de escopo.
+- **Achado real não listado pelo usuário, pego durante esta implementação:**
+  `extra_land_drop` (Dryad of the Ilysian Grove, "you may play an
+  additional land on each of your turns") era uma tag decorativa sem
+  NENHUM dispatch — `state.extra_land_drops` nunca era incrementado em
+  lugar nenhum do arquivo antes desta sessão. Corrigido em `play_land()`
+  como efeito contínuo (recalculado a cada chamada) enquanto a Dryad
+  estiver em campo.
+- **5 métricas obrigatórias** (`goldfish-sim-card-rules.md` seção 10) —
+  `run_batch` agora tem um bloco dedicado "5 metricas obrigatorias":
+  ramp e draw reaproveitam métricas que já existiam (só rotuladas
+  explicitamente agora); interaction (spells/permanentes de interação
+  conjurados — `Swords to Plowshares`/`Council's Judgment`/etc, efeito
+  numérico N/A por falta de oponente real, mas o NÚMERO de vezes que
+  foram conjurados agora é reportado, nunca mais implícito), recursion
+  (Motor #16 + replay de terreno via Crucible/Conduit) e finisher/
+  lethality (proxy: % de jogos que resolvem ≥1 ameaça de vitória real —
+  Avatar Kyoshi/Toph Earthbending Master/Krang/Great Henge/Scute
+  Swarm/Sapling Nursery/Felidar Retreat/Mossborn Hydra, ver seção 8 de
+  `auditoria.md` — e turno médio de RESOLUÇÃO, explicitamente rotulado
+  como proxy porque este simulador não modela dano de combate real) são
+  novas.
+
+**Robustez:** 25.000 partidas total nesta rodada (5.000 seeds
+8100000-8104999 + 20.000 seeds 8020000-8039999), 0 erros/timeouts.
+
+**n=3000, seed_base=9000000 — antes (fim da rodada anterior, já sem o bug
+de terreno grátis) → depois (com todos os itens acima implementados):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Turno médio de conjuração da Toph | 3,42 | 3,52 |
+| Nunca conjurada em 8 turnos | 4,0% | 4,6% |
+| Avg terrenos em campo (T8) | 9,56 | 9,74 |
+| Avg aplicações de earthbend | 6,67 | 6,51 |
+| Avg recorrências via Motor#16 | 0,67 | 0,65 |
+| Avg tokens totais criados | 8,95 | **9,69** |
+| Avg cartas compradas extra | 1,40 | 1,42 |
+
+**Novas métricas (sem baseline anterior, motor não existia):**
+
+```
+Avg spells/permanentes de interacao conjurados: 1,17 | jogos com >=1: 72,5%
+Avg recorrencia total (Motor#16 + Crucible/Conduit): 0,77 (0,65 + 0,12)
+Finisher/lethality: 50,2% dos jogos resolvem >=1 ameaca ate o turno 8, turno medio 6,27
+Avg terrenos replayados via Crucible/Conduit: 0,12
+Avg ativacoes de Wrenn -2: 0,20 | jogos com >=1: 11,2%
+Caretaker's Talent nivel 2: 12,0% dos jogos | nivel 3: 6,1% dos jogos
+Avg tokens via Urza's Saga cap. II: 0,136 | avg tutores via cap. III: 0,139
+```
+
+Leitura: números praticamente estáveis (variação de 1-3% na maioria das
+métricas já existentes) — os novos motores competem por uma fatia pequena
+da mesma reserva de mana (Urza's Saga capítulo II custa `{2}`, capítulo
+III é de graça mas sacrifica a própria carta, Caretaker's Talent custa
+`{W}` depois `{3}{W}`), então a queda marginal em earthbend/Motor#16 é
+esperada e pequena, não um sinal de regressão. Tokens totais SOBE (8,95→9,69)
+porque o Construct do capítulo II do Urza's Saga e as cópias de token do
+Caretaker's Talent nível 2 somam à métrica. Nenhuma das 6 mecânicas novas
+é comum o suficiente pra mover o jogo inteiro sozinha (Urza's Saga e
+Caretaker's Talent e Wrenn são singleton numa lista de 99 cartas) — os
+números confirmam isso: nenhuma delas aparece em mais de ~12% dos jogos.
+
+`lista.md` não mudou. `toph_v1_runs.jsonl` sobrescrito (3000 jogos, código
+atual).
+
+---
+
 ## Simulação #1 — goldfish Python completo (`toph_goldfish_v1.py`) — 2026-08-22
 
 **Script construído do zero**, cobrindo as **16 mecânicas/motores documentados na seção 4 da `auditoria.md`**, não só 1 ou 2 (pedido explícito do usuário). Passo 0 (regra de `references/goldfish-sim-card-rules.md`, aplicada de forma mais ampla que só Roaming Throne — esse deck não tem Roaming Throne, mas o princípio de "varredura mecânica antes de codar" vale igual): regex em todo o oráculo achou **43 cartas com gatilho real** ("Whenever"/"At the beginning of"/"When"). Todas as 43 foram checadas contra a lógica implementada; 34 têm efeito real em código, 9 são genuinamente dependentes de oponente/combate (Esper Sentinel, Skullclamp, Sword of Feast and Famine, Talon Gates of Madara, Krang, Haywire Mite como remoção, Council's Judgment, Lightning Greaves, Heroic Intervention) e foram documentadas como tal em vez de fingir um efeito numérico solo.
