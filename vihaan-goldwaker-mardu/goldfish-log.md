@@ -207,6 +207,189 @@ impacto real e substancial, não marginal.
 
 ---
 
+## Correção — rodada ampliada da checklist obrigatória (categorias 10-13) — 2026-08-31
+
+**Contexto:** pedido explícito do usuário pra completar a rodada ampliada do
+`references/goldfish-sim-card-rules.md#checklist-obrigatória-de-categorias-de-mecânica`
+(categorias 10 a 13 — métricas básicas, multi-face, planeswalker, Classes/Sagas)
+neste deck, que só tinha recebido a checklist original (1-9) em 2026-08-28.
+
+**Categoria 12 (planeswalker) — N/A confirmado independentemente:** varredura
+programática de `type_line` no cache pra todas as 94 cartas únicas da lista
+(comandante incluso). Zero cartas com `Planeswalker` no `type_line`. 0
+planeswalkers na lista, categoria N/A.
+
+**Categoria 13 (Classes/Sagas) — 1 carta na lista:** mesma varredura achou
+só `Caretaker's Talent` (`Enchantment — Class`). 0 Sagas.
+
+**Categoria 11 (multi-face) — 2 cartas na lista** (varredura de "//" em
+`lista.md`, confirmado via API real que nenhuma outra carta tem layout
+multi-face): `Brightclimb Pathway // Grimclimb Pathway` e `Sephiroth, Fabled
+SOLDIER // Sephiroth, One-Winged Angel`.
+
+### Bugs reais corrigidos
+
+1. **Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel — o achado
+   central desta rodada.** `layout` real (API Scryfall) = `transform`.
+   `state.sephiroth_transformed` já existia e era SETADO na 4ª morte do
+   turno (linha ~508 antiga), mas **nunca era LIDO em lugar nenhum** — uma
+   tag de estado morta. Oráculo real completo:
+   ```
+   Frente ({2}{B}): Whenever Sephiroth enters or attacks, you may sacrifice
+   another creature. If you do, draw a card.
+   Whenever another creature dies, target opponent loses 1 life and you
+   gain 1 life. If this is the fourth time this ability has resolved this
+   turn, transform Sephiroth.
+   Verso: Flying
+   Super Nova — As this creature transforms into Sephiroth, One-Winged
+   Angel, you get an emblem with "Whenever a creature dies, target
+   opponent loses 1 life and you gain 1 life."
+   Whenever Sephiroth attacks, you may sacrifice any number of other
+   creatures. If you do, draw that many cards.
+   ```
+   3 correções reais:
+   - **Emblem Super Nova** (`state.has_super_nova_emblem`, novo campo) é uma
+     2ª fonte INDEPENDENTE de drain 1/vida 1 por morte — não substitui a
+     habilidade da frente, ela deixa de existir junto com a transformação (o
+     verso não tem mais "whenever another creature dies", só o emblem tem).
+     O emblem drena em QUALQUER morte de criatura (texto "a creature", sem
+     "another" — inclui a morte do próprio Sephiroth) e SEM limite de 4x por
+     turno, permanente pro resto da partida mesmo se Sephiroth sair de campo
+     depois. `on_creature_dies()` reescrita pra checar o emblem primeiro,
+     caindo pra habilidade da frente só antes da transformação.
+   - **Ataque muda de escala:** `try_sephiroth_sac_draw()` sempre usava
+     "sacrifica 1, compra 1" (correto pra frente). Depois de transformado, o
+     verso sacrifica QUALQUER NÚMERO de outras criaturas e compra essa
+     quantidade — corrigido pra sacrificar TODO o fodder disponível
+     (tokens + constructs) de uma vez quando `sephiroth_transformed`.
+   - **Edge case adicional encontrado:** se Sephiroth já transformado morre
+     e é recuperado via Sevinne's Reclamation (mv≤3, alcança ele), a nova
+     cópia física reentra pela FRENTE (transform é do objeto físico, não do
+     jogador) — `enter_battlefield()` agora reseta `sephiroth_transformed`
+     nesse caso (o emblem, sendo independente, NÃO reseta).
+
+2. **Caretaker's Talent — nível 1 só (nível 2/3 ausentes).** Oráculo real:
+   ```
+   Nivel 1: Whenever one or more tokens you control enter, draw a card.
+   This ability triggers only once each turn.
+   {W}: Level 2 — When this Class becomes level 2, create a token that's a
+   copy of target token you control.
+   {3}{W}: Level 3 — Creature tokens you control get +2/+2.
+   ```
+   Implementada `try_level_caretakers_talent()`: sobe de nível pagando como
+   sorcery (mana sobrando depois de conjurar tudo da mão + Phyrexian
+   Reclamation, heurística documentada no código — prioridade baixa em
+   relação a desenvolver board novo, alta em relação a deixar mana parada),
+   nível 2 cria cópia do token de maior valor controlado (Treasure >
+   Construct > outro), nível 3 é cumulativo com 1/2. **O anthem do nível 3
+   não tem onde se aplicar numericamente neste simulador** — nenhum efeito
+   do deck (nem antes, nem depois desta correção) depende de poder de
+   criatura-token; Marionette Master usa o próprio poder DELA, não de
+   token. Decisão de arquitetura honesta (documentada no código, não
+   inventado): reportado como métrica PROXY (tokens em campo × anthem
+   implicado), nunca dano real calculado — mesma convenção já usada pra
+   drain/vida no resto do arquivo.
+
+3. **Brightclimb Pathway // Grimclimb Pathway — sem bug, decisão de
+   arquitetura documentada.** `layout` real = `modal_dfc`. Confirmado: o
+   motor de mana inteiro deste simulador (`lands_in_play`/`rocks_mana`/
+   `total_mana`) nunca rastreou cor por fonte individual em NENHUM dos 35
+   terrenos, antes ou depois desta rodada — só soma mana total agregada.
+   Tratar a Pathway como land genérico de 1 mana é consistente com o resto
+   do arquivo, não uma simplificação nova só pra esta carta. Comentário
+   adicionado no `CARD_DB` explicando a decisão, sem inventar rastreamento
+   de cor pra 1 carta só (nenhuma métrica reportada depende de cor).
+
+4. **Achado extra (fora da lista original do pedido) — Phyrexian
+   Reclamation sem NENHUMA lógica de ativação.** Categoria 7 (ativadas
+   repetíveis) + categoria 10 (métrica RECURSION): só existia a entrada no
+   `CARD_DB` (tag `recursion_repeat`), zero código em qualquer lugar.
+   Oráculo real: `{1}{B}, Pay 2 life: Return target creature card from your
+   graveyard to your hand.` Sem "activate only as sorcery" — repetível
+   livremente. Implementada `try_phyrexian_reclamation()`, ativa quantas
+   vezes mana+cemitério permitirem no main phase, priorizando devolver a
+   criatura de maior mv (heurística documentada).
+
+5. **Achado extra — Witch of the Moors com condição errada.** Oráculo real:
+   "if you gained life THIS TURN" — o código checava
+   `state.life_gained_total` (acumulado do JOGO INTEIRO), então depois de
+   qualquer 1 ponto de vida ganho em qualquer turno anterior, a condição
+   ficava permanentemente satisfeita pro resto da partida (recursão de
+   graça todo turno sem depender de ganhar vida de novo). Corrigido com
+   contador per-turno novo (`life_gained_this_turn`, resetado em
+   `play_turn()`), mesmo padrão já usado noutros flags per-turno do
+   arquivo.
+
+6. **Achado extra — Black Market Connections disparando 2x por turno.**
+   Oráculo real: "At the beginning of your **first** main phase" — só 1x
+   por turno. `main_phase()` é chamada 2x por turno (pré e pós-combate,
+   pra usar a mana bonus dos sac outlets — mecânica adicionada em
+   2026-08-22) e `try_black_market_connections()` não tinha guarda contra a
+   2ª chamada desde a correção de 2026-08-28 que implementou essa carta —
+   dobrando Treasure/draw/token/perda de vida todo turno. Corrigido com
+   flag per-turno (`black_market_connections_triggered_this_turn`), mesmo
+   padrão de `caretaker_drawn_this_turn`/`kambal_drawn_this_turn`.
+
+### Categoria 10 — métricas básicas obrigatórias, agora com linha formal
+
+Antes desta rodada não havia linha "RECURSION"/"INTERACTION" formal no
+relatório (`run_batch`), apesar do deck ter cartas reais de cada categoria.
+Adicionadas 5 linhas explícitas no relatório: `RAMP`, `DRAW`, `INTERACTION`,
+`RECURSION`, `FINISHER/LETHALITY` — cada uma citando as cartas que a
+compõem, não só um número solto.
+
+### Robustez
+
+20.000 partidas (seeds 7000000–7019999, timeout 2s/partida via
+`signal.alarm`) — **0 erros, 0 timeouts**.
+
+### Resultado — batch oficial (n=3000, seed_base=6000000, turns=8), antes vs. depois
+
+**Nota honesta:** a maioria das métricas CAIU, não subiu — o achado extra
+#6 (Black Market Connections disparando 2x/turno desde 2026-08-28) estava
+inflando quase toda métrica de Treasure/draw/drain por um fator real, e sua
+correção domina o delta total mais do que os efeitos NOVOS (Sephiroth
+transform, Caretaker nível 2/3, Phyrexian Reclamation), que são raros o
+suficiente (peças únicas, condições específicas) pra não compensar a queda.
+
+| Métrica | Antes (com bug do BMC 2x) | Depois (corrigido) | Δ |
+|---|---|---|---|
+| Avg Treasures criados (total) | 8,33 | 7,63 | −8,4% |
+| Avg Treasures sacrificados (total) | 5,61 | 5,11 | −8,9% |
+| Avg mortes de criatura | 1,52 | 1,36 | −10,5% |
+| Avg mortes de artefato | 5,76 | 5,26 | −8,7% |
+| Avg drain/dano agregado (proxy) | 3,54 | 3,09 | −12,7% |
+| Avg vida ganha | 1,04 | 0,94 | −9,6% |
+| Avg cartas compradas extra | 2,02 | 1,63 | −19,3% |
+| Revel in Riches (10+ Treasures) | 0,5% | 0,4% | −0,1pp |
+
+**Métricas novas (sem baseline "antes", efeitos recém-implementados):**
+
+| Métrica nova | Valor |
+|---|---|
+| Sephiroth transformado (emblem Super Nova ativo) — % de jogos | 0,5% |
+| Avg cartas compradas via sac do Sephiroth (as 2 faces) | 0,09 |
+| Caretaker's Talent nível 2 alcançado — % de jogos | 10,0% |
+| Caretaker's Talent nível 3 alcançado — % de jogos | 5,4% |
+| RECURSION — avg cartas recuperadas do cemitério/jogo | 0,14 |
+| ...das quais via Phyrexian Reclamation (repetível) | 0,03 |
+| INTERACTION — avg remoção/wipe conjurados/jogo | 0,71 |
+
+**Leitura:** o efeito líquido desta rodada é uma correção pra BAIXO nas
+métricas centrais (o bug do BMC 2x era o maior distorcedor não descoberto
+até agora), compensada só parcialmente pelos efeitos novos genuínos — mas
+raros o suficiente numa lista de 99 cartas singleton (Sephiroth transforma
+em 0,5% dos jogos porque exigir 4 mortes de criatura NO MESMO turno é um
+board state avançado; Caretaker nível 3 exige {2}+{W}+{3}{W}=6 mana extra
+sobrando além de tudo mais que o turno já gastou). Os números "depois" são
+os honestos — nenhuma métrica estava inflada por efeito novo desta rodada,
+só corrigida de uma distorção antiga (dobra do BMC).
+
+`lista.md` não mudou. `vihaan_v1_runs.jsonl` sobrescrito (3000 jogos, mesma
+seed_base=6000000 — script principal não mudou de seed).
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

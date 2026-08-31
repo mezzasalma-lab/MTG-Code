@@ -96,6 +96,22 @@ add("Battlefield Forge", 0, "land", set())
 add("Blackcleave Cliffs", 0, "land", {"fastland"})
 add("Blood Crypt", 0, "land", {"shockland"})
 add("Bojuka Bog", 0, "land", {"etb_tapped", "gy_hate"})
+# Achado real 2026-08-31 (rodada ampliada, categoria 11 - multi-face):
+# `layout` real confirmado via API Scryfall = "modal_dfc" (Brightclimb: "{T}:
+# Add {W}."; Grimclimb: "{T}: Add {B}."). E' um pathway simples - o jogador
+# escolhe UM dos dois lados no momento em que a carta entra, e aquele lado
+# fica sendo o terreno pro resto do jogo (nao pode virar depois).
+# Decisao de arquitetura ja existente neste arquivo (nao inventada agora pra
+# esta carta so): o motor de mana inteiro deste simulador (`lands_in_play`,
+# `rocks_mana`, `total_mana`) NUNCA rastreia cor por fonte individual - so
+# soma mana total agregada, sem distincao de W/U/B/R/G em nenhum terreno,
+# rock ou Treasure. Isso ja era verdade pra TODOS os 35 terrenos da lista
+# antes desta rodada (nenhum "W_sources"/"B_sources" existe no codigo). Por
+# isso a Pathway como land generico de 1 mana (igual qualquer outro terreno)
+# e' consistente com o resto do arquivo, nao uma simplificacao nova so pra
+# esta carta - implementar rastreamento de cor so pra 1 carta quebraria essa
+# consistencia sem mudar o resultado de nenhuma metrica reportada (nenhuma
+# metrica deste simulador depende de cor especifica).
 add("Brightclimb Pathway // Grimclimb Pathway", 0, "land", set())
 add("Caves of Koilos", 0, "land", set())
 add("Clifftop Retreat", 0, "land", {"checkland_rw"})
@@ -206,6 +222,15 @@ ARTIFACT_ISH = {"artifact", "artifact_creature"}
 CREATURE_ISH = {"creature", "artifact_creature"}
 LAND_NAMES = {n for n, c in CARD_DB.items() if c.ctype == "land"}
 
+# Categoria 10 (metricas basicas obrigatorias) — achado real 2026-08-31
+# (rodada ampliada): nao havia linha formal "INTERACTION"/"RECURSION" no
+# relatorio, apesar do deck ter 5 pecas de remocao pontual + 2 wipes (seção
+# 7 da auditoria) e 4 fontes de recursao real (Sevinne's Reclamation,
+# Phyrexian Reclamation, Back in Town, Lich-Knights' Conquest) + Witch of
+# the Moors (recursao condicional). Tags usadas pra contar de forma
+# auditavel em cast_card()/nos pontos de resolucao de cada efeito.
+REMOVAL_TAGS = {"removal", "removal_treasure", "wipe", "wipe_treasure"}
+
 # Politica opcional (2026-08-22, pedido do usuario): maximizar CRIACAO e
 # DESTRUICAO de Treasure como mecanica principal, nao so usa-los como mana
 # reserva. Dois efeitos:
@@ -265,6 +290,8 @@ class GameState:
     cascade_used_this_turn: bool = False
     caretaker_drawn_this_turn: bool = False
     kambal_drawn_this_turn: bool = False
+    black_market_connections_triggered_this_turn: bool = False
+    life_gained_this_turn: int = 0
 
     commander_in_play: bool = False
     commander_cast_count: int = 0
@@ -286,6 +313,12 @@ class GameState:
 
     sephiroth_deaths_this_turn: int = 0
     sephiroth_transformed: bool = False
+    # Achado real 2026-08-31 (rodada ampliada, categoria 11): o emblem Super
+    # Nova e um objeto INDEPENDENTE de Sephiroth (persiste mesmo se a
+    # criatura sair de campo depois) - campo separado do "transformed" da
+    # propria carta, nunca resetado no resto da partida.
+    has_super_nova_emblem: bool = False
+    caretaker_level: int = 1  # Classes sempre entram no nivel 1
 
     # metrics --------------------------------------------------------------
     treasures_created_total: int = 0
@@ -304,6 +337,17 @@ class GameState:
     revel_condition_met_turn: Optional[int] = None
     combat_attacks_total: int = 0
 
+    # Metricas novas — achados reais 2026-08-31 (rodada ampliada, categorias
+    # 10-13): metricas basicas obrigatorias (recursion/interaction) que nao
+    # tinham linha propria no relatorio, mais os efeitos novos implementados.
+    removal_cast_total: int = 0  # categoria "interaction" — remocao/wipe conjurado
+    recursion_events_total: int = 0  # categoria "recursion" — carta recuperada do cemiterio
+    phyrexian_reclamation_activations_total: int = 0
+    sephiroth_sac_draws_total: int = 0  # cartas compradas via sac do Sephiroth (as 2 faces)
+    caretaker_level2_reached: bool = False
+    caretaker_level3_reached: bool = False
+    caretaker_tokens_copied_total: int = 0
+
 
 def draw_cards(state: GameState, n: int):
     for _ in range(n):
@@ -315,6 +359,7 @@ def draw_cards(state: GameState, n: int):
 def gain_life(state: GameState, n: int):
     state.life += n
     state.life_gained_total += n
+    state.life_gained_this_turn += n
 
 
 def drain(state: GameState, n: int):
@@ -500,13 +545,42 @@ def on_creature_dies(state: GameState, n: int, is_token: bool):
         gain_life(state, n)
     if "Pitiless Plunderer" in state.battlefield:
         create_treasures(state, n, source="Pitiless Plunderer")
-    if "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel" in state.battlefield:
-        for _ in range(n):
+
+    # Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel — achado real
+    # 2026-08-31 (rodada ampliada, categoria 11): `state.sephiroth_transformed`
+    # ja existia e era SETADO na 4a morte do turno, mas nunca era LIDO em
+    # lugar nenhum - uma tag morta de estado sem efeito. Oraculo real
+    # (layout `transform`, confirmado via API):
+    #   Frente ({2}{B}): "Whenever another creature dies, target opponent
+    #   loses 1 life and you gain 1 life. If this is the fourth time this
+    #   ability has resolved this turn, transform Sephiroth."
+    #   Verso: "Flying / Super Nova - As this creature transforms..., you
+    #   get an emblem with 'Whenever a creature dies, target opponent loses
+    #   1 life and you gain 1 life.' / Whenever Sephiroth attacks, you may
+    #   sacrifice any number of other creatures. If you do, draw that many
+    #   cards."
+    # 3 coisas corrigidas: (1) o emblem Super Nova e' uma 2a fonte
+    # INDEPENDENTE de drain 1/vida 1 por morte - nao substitui a habilidade
+    # da frente, ela deixa de existir (o VERSO nao tem mais "whenever
+    # another creature dies", so' o emblem tem, com texto "a creature dies"
+    # sem "another" - inclui a morte do proprio Sephiroth). O emblem e'
+    # permanente e independente da carta (drena mesmo se Sephiroth sair de
+    # campo depois). (2) sem limite de 4x/turno depois de transformado (o
+    # limite so' existia na habilidade da FRENTE, pra disparar o transform).
+    # (3) a habilidade de ataque muda de escala - ver try_sephiroth_sac_draw.
+    sephiroth_on_bf = "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel" in state.battlefield
+    for _ in range(n):
+        if state.has_super_nova_emblem:
+            drain(state, 1)
+            gain_life(state, 1)
+        elif sephiroth_on_bf and not state.sephiroth_transformed:
             drain(state, 1)
             gain_life(state, 1)
             state.sephiroth_deaths_this_turn += 1
-            if state.sephiroth_deaths_this_turn == 4 and not state.sephiroth_transformed:
+            if state.sephiroth_deaths_this_turn == 4:
                 state.sephiroth_transformed = True
+                state.has_super_nova_emblem = True
+
     if not is_token and "Life Insurance" in state.battlefield:
         state.life -= 1
         create_treasures(state, 1, source="Life Insurance")
@@ -619,15 +693,66 @@ def try_sephiroth_sac_draw(state: GameState):
     de checklist de mecanica): so' a metade passiva de dano ("whenever
     another creature dies...") estava modelada - essa metade (ETB/ataque)
     100% ausente. So sacrifica fodder barato (token generico ou
-    Construct), nunca uma criatura nomeada de verdade."""
+    Construct), nunca uma criatura nomeada de verdade.
+
+    Achado real 2026-08-31 (rodada ampliada, categoria 11): depois de
+    transformar, o VERSO tem uma habilidade DIFERENTE (so' em ataque, sem
+    ETB - nao teria como, ja estava em campo): "Whenever Sephiroth attacks,
+    you may sacrifice any number of other creatures. If you do, draw that
+    many cards." - mudanca real de escala (1 sacrificio -> QUALQUER NUMERO),
+    nao so' cosmetica. Corrigido pra sacrificar TODO o fodder disponivel
+    (tokens + constructs) de uma vez quando `state.sephiroth_transformed`."""
     if "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel" not in state.battlefield:
         return
-    if state.other_tokens > 0:
-        sacrifice_other_tokens(state, 1)
-        draw_cards(state, 1)
-    elif state.constructs > 0:
-        sacrifice_constructs(state, 1)
-        draw_cards(state, 1)
+    if state.sephiroth_transformed:
+        n = state.other_tokens + state.constructs
+        if n <= 0:
+            return
+        sacrifice_other_tokens(state, state.other_tokens)
+        sacrifice_constructs(state, state.constructs)
+        draw_cards(state, n)
+        state.sephiroth_sac_draws_total += n
+    else:
+        if state.other_tokens > 0:
+            sacrifice_other_tokens(state, 1)
+            draw_cards(state, 1)
+            state.sephiroth_sac_draws_total += 1
+        elif state.constructs > 0:
+            sacrifice_constructs(state, 1)
+            draw_cards(state, 1)
+            state.sephiroth_sac_draws_total += 1
+
+
+def try_phyrexian_reclamation(state: GameState) -> bool:
+    """Achado real 2026-08-31 (rodada ampliada, categoria 7 - ativadas
+    repetiveis / categoria 10 - metrica RECURSION): so' existia a entrada no
+    CARD_DB (tag `recursion_repeat`), ZERO logica de ativacao em lugar
+    nenhum - a UNICA fonte repetivel de recursao do deck ficava sempre de
+    fora do goldfish. Oraculo real (Scryfall): '{1}{B}, Pay 2 life: Return
+    target creature card from your graveyard to your hand.' Sem 'activate
+    only as a sorcery' no texto - repetivel livremente (inclusive em
+    resposta), mas este simulador so' tem timing de main phase, entao ativa
+    quantas vezes mana+material do cemiterio permitirem dentro do main
+    phase. Vida nao e' recurso escasso rastreado neste arquivo pra custos
+    de ativacao (mesma convencao ja usada pros shock/pain lands - so' a
+    mana e o material do cemiterio limitam). Prioriza devolver a criatura
+    de MAIOR mv (mais valor de board por ativacao) - heuristica
+    documentada."""
+    if "Phyrexian Reclamation" not in state.battlefield:
+        return False
+    if remaining_mana(state) < 2:
+        return False
+    creatures_gy = [n for n in state.graveyard if is_creature_card(n)]
+    if not creatures_gy:
+        return False
+    best = max(creatures_gy, key=lambda n: CARD_DB[n].mv)
+    state.graveyard.remove(best)
+    state.life -= 2
+    spend_mana(state, 2)
+    state.hand.append(best)
+    state.phyrexian_reclamation_activations_total += 1
+    state.recursion_events_total += 1
+    return True
 
 
 def resolve_permanent_etb(state: GameState, name: str):
@@ -692,12 +817,14 @@ def resolve_instant_sorcery(state: GameState, name: str):
             best = max(cheap, key=lambda n: CARD_DB[n].mv)
             state.graveyard.remove(best)
             enter_battlefield(state, best)
+            state.recursion_events_total += 1
     elif name == "Back in Town":
         x = min(2, remaining_mana(state))
         outlaws_in_gy = [n for n in state.graveyard if is_outlaw(n) and is_creature_card(n)][:x]
         for n in outlaws_in_gy:
             state.graveyard.remove(n)
             enter_battlefield(state, n)
+            state.recursion_events_total += 1
     elif name == "Lich-Knights' Conquest":
         fodder = state.constructs + state.foods + state.clues
         n_return = min(fodder, len([n for n in state.graveyard if is_creature_card(n)]))
@@ -706,6 +833,7 @@ def resolve_instant_sorcery(state: GameState, name: str):
         for n in creatures_gy:
             state.graveyard.remove(n)
             enter_battlefield(state, n)
+            state.recursion_events_total += 1
 
 
 def pull_impulse(state: GameState, n: int, deadline_turns: int):
@@ -742,6 +870,15 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
             state.commander_cast_turn = state.turn
     if is_creature_card(name):
         state.creature_cast_turn[name] = state.turn
+    if name == "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel":
+        # Achado real 2026-08-31: se esta carta morreu ja transformada e foi
+        # recuperada do cemiterio (Sevinne's Reclamation, mv<=3, alcanca
+        # ela), a copia fisica NOVA que entra em campo e' sempre a FRENTE
+        # (transform e' propriedade do objeto fisico, nao do jogador) - reset
+        # do flag por-carta. O emblem Super Nova (`has_super_nova_emblem`)
+        # NAO reseta - e' um objeto independente, permanente pro resto do
+        # jogo mesmo que Sephiroth morra e volte sem estar transformado.
+        state.sephiroth_transformed = False
     resolve_permanent_etb(state, name)
 
 
@@ -775,6 +912,8 @@ def cast_card(state: GameState, name: str):
         create_treasures(state, 1, source="Lotho (2a magica)")
 
     if is_spell:
+        if card.tags & REMOVAL_TAGS:
+            state.removal_cast_total += 1
         resolve_instant_sorcery(state, name)
 
 
@@ -794,6 +933,8 @@ def do_cascade(state: GameState, mv_cutoff: int):
         exiled.remove(hit)
         enter_battlefield(state, hit, from_hand=False)
         if CARD_DB[hit].ctype in ("instant", "sorcery"):
+            if CARD_DB[hit].tags & REMOVAL_TAGS:
+                state.removal_cast_total += 1
             resolve_instant_sorcery(state, hit)
             state.battlefield.remove(hit)
             state.graveyard.append(hit)
@@ -916,9 +1057,20 @@ def try_black_market_connections(state: GameState):
     rastreia vida de verdade (ao contrario de varios outros decks desta
     sessao) - a IA sempre escolhe os 3 modos (mesma filosofia agressiva ja
     usada no resto do motor, sem dano de combate real recebido pra punir
-    perder vida)."""
+    perder vida).
+
+    Achado real 2026-08-31 (rodada ampliada): oraculo diz "your FIRST main
+    phase" - so' 1x por turno - mas `main_phase()` e' chamada 2x por turno
+    (pre e pos-combate, pra usar mana bonus dos sac outlets) e esta funcao
+    nao tinha nenhuma guarda contra a 2a chamada, dobrando Treasure/draw/
+    token/perda de vida todo turno desde a correcao de 2026-08-28. Corrigido
+    com o mesmo padrao de flag per-turno ja usado em
+    caretaker_drawn_this_turn/kambal_drawn_this_turn."""
     if "Black Market Connections" not in state.battlefield:
         return
+    if state.black_market_connections_triggered_this_turn:
+        return
+    state.black_market_connections_triggered_this_turn = True
     create_treasures(state, 1, source="Black Market Connections")
     state.life -= 1
     draw_cards(state, 1)
@@ -926,6 +1078,64 @@ def try_black_market_connections(state: GameState):
     state.other_tokens += 1
     on_tokens_created(state, 1, kind="creature")
     state.life -= 3
+
+
+def try_level_caretakers_talent(state: GameState):
+    """Achado real 2026-08-31 (rodada ampliada, categoria 13 - Classes):
+    so' o nivel 1 (draw 1x/turno quando token entra) estava implementado.
+    Oraculo real (Scryfall, type_line "Enchantment — Class"):
+      Nivel 1: "Whenever one or more tokens you control enter, draw a
+      card. This ability triggers only once each turn."
+      {W}: Level 2 - "When this Class becomes level 2, create a token
+      that's a copy of target token you control."
+      {3}{W}: Level 3 - "Creature tokens you control get +2/+2."
+    Niveis sao ganhos "as a sorcery" (so' em main phase, pilha vazia - ja'
+    e' onde esta funcao e' chamada) e sao CUMULATIVOS (nivel 3 nao substitui
+    nivel 1/2, todos ficam ativos). Precisa passar por nivel 2 antes do 3
+    (nao da' pra pular).
+
+    Heuristica de gasto de mana (documentada, nao ha' "certo" formal no
+    texto da carta): subir de nivel tem prioridade BAIXA em relacao a
+    conjurar qualquer carta da mao (o main_phase ja gastou tudo que dava
+    antes de chegar aqui) - mas prioridade ALTA sobre so' deixar mana
+    sobrando, porque o nivel 3 e' um anthem de campo inteiro (mesmo padrao
+    do Innkeeper's Talent que motivou a Regra 13 de
+    goldfish-sim-card-rules.md). Chamada no fim de main_phase(), depois do
+    loop de castables e da recursao da Phyrexian Reclamation - so' usa mana
+    que sobrou depois de tudo mais.
+
+    O anthem do nivel 3 (+2/+2 em criaturas-token) NAO tem onde se aplicar
+    numericamente neste simulador especifico: este arquivo nao rastreia
+    poder/resistencia de criatura em NENHUM lugar (nem antes desta correcao,
+    nem depois - nenhum outro efeito do deck depende de poder de token,
+    Marionette Master usa o proprio poder DELA, nao de token, ver
+    on_artifact_dies). Documentar isso como decisao de arquitetura honesta
+    (nao inventar um motor de combate novo so' pra 1 carta) - a metrica
+    reportada em run_batch() e' um PROXY explicito (tokens em campo x
+    anthem), nao dano real calculado."""
+    if "Caretaker's Talent" not in state.battlefield:
+        return
+    if state.caretaker_level == 1 and remaining_mana(state) >= 1:
+        spend_mana(state, 1)
+        state.caretaker_level = 2
+        state.caretaker_level2_reached = True
+        # "create a token that's a copy of target token you control" -
+        # so' aplica se ja' controlamos algum token; prioriza copiar o token
+        # de maior valor (Treasure > Construct > outro), heuristica
+        # documentada (maximiza valor da copia).
+        if state.treasures > 0:
+            create_treasures(state, 1, source="Caretaker's Talent nivel 2 (copia)")
+            state.caretaker_tokens_copied_total += 1
+        elif state.constructs > 0:
+            create_constructs(state, 1, source="Caretaker's Talent nivel 2 (copia)")
+            state.caretaker_tokens_copied_total += 1
+        elif state.other_tokens > 0:
+            create_other_tokens(state, 1, source="Caretaker's Talent nivel 2 (copia)")
+            state.caretaker_tokens_copied_total += 1
+    if state.caretaker_level == 2 and remaining_mana(state) >= 4:
+        spend_mana(state, 4)
+        state.caretaker_level = 3
+        state.caretaker_level3_reached = True
 
 
 def main_phase(state: GameState):
@@ -936,13 +1146,27 @@ def main_phase(state: GameState):
 
     while True:
         castables = [n for n in state.hand if n not in LAND_NAMES and can_cast(state, n)]
-        if not castables:
-            break
-        if TREASURE_MAXIMIZE_POLICY:
-            castables.sort(key=lambda n: (not is_treasure_source(n), CARD_DB[n].mv))
-        else:
-            castables.sort(key=lambda n: CARD_DB[n].mv)
-        cast_card(state, castables[0])
+        if castables:
+            if TREASURE_MAXIMIZE_POLICY:
+                castables.sort(key=lambda n: (not is_treasure_source(n), CARD_DB[n].mv))
+            else:
+                castables.sort(key=lambda n: CARD_DB[n].mv)
+            cast_card(state, castables[0])
+            continue
+        # Achado real 2026-08-31 (rodada ampliada): Phyrexian Reclamation
+        # (recursao repetivel) usa a mana que sobrar depois de tudo
+        # castable na mao - pode devolver uma criatura que vira castable de
+        # novo no proximo giro deste loop (`continue`), por isso entra
+        # dentro do mesmo while.
+        if try_phyrexian_reclamation(state):
+            continue
+        break
+
+    # Achado real 2026-08-31 (rodada ampliada, categoria 13): engine de
+    # nivel do Caretaker's Talent - so' depois de esgotar tudo que da' pra
+    # conjurar/recuperar (heuristica: desenvolver board novo > subir nivel
+    # de uma carta ja' resolvida).
+    try_level_caretakers_talent(state)
 
     # Jan Jansen: 2 modos, 1x cada por turno (tap) — prioriza Constructs se
     # tiver artefato nao-criatura descartavel, senao Treasure de artefato-criatura.
@@ -1034,12 +1258,20 @@ def end_step(state: GameState):
         outlaws = sum(1 for n in state.battlefield if is_outlaw(n))
         pull_impulse(state, outlaws, deadline_turns=0)
 
-    if "Witch of the Moors" in state.battlefield and state.life_gained_total > 0:
+    # Achado real 2026-08-31 (rodada ampliada): oraculo real e' "if you
+    # gained life THIS TURN" - o codigo checava `life_gained_total`
+    # (acumulado do JOGO INTEIRO), entao depois de qualquer 1 ponto de vida
+    # ganho em qualquer turno anterior, a condicao ficava permanentemente
+    # satisfeita pro resto da partida (recursao livre todo turno, sem
+    # depender de ganhar vida DE NOVO). Corrigido pra usar o contador
+    # per-turno (`life_gained_this_turn`, resetado em play_turn()).
+    if "Witch of the Moors" in state.battlefield and state.life_gained_this_turn > 0:
         creatures_gy = [n for n in state.graveyard if is_creature_card(n)]
         if creatures_gy:
             best = max(creatures_gy, key=lambda n: CARD_DB[n].mv)
             state.graveyard.remove(best)
             state.hand.append(best)
+            state.recursion_events_total += 1
 
     if "Urabrask's Forge" in state.battlefield and state.other_tokens > 0:
         sacrifice_other_tokens(state, 1)  # sacrifica o token X/1 do proprio turno
@@ -1064,6 +1296,8 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.cascade_used_this_turn = False
     state.caretaker_drawn_this_turn = False
     state.kambal_drawn_this_turn = False
+    state.black_market_connections_triggered_this_turn = False
+    state.life_gained_this_turn = 0
     state.bonus_mana_pool = 0
     state.treasures_animated_this_combat = 0
     state.jan_jansen_used_this_turn = False
@@ -1130,9 +1364,53 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg combates com pelo menos 1 atacante: {avg([s.combat_attacks_total for s in states]):.2f}")
     print(f"Avg Treasures sacrificados ANIMADOS via Ashnod's Altar (criatura+artefato+token junto): {avg([s.animated_treasures_sacrificed_total for s in states]):.2f}")
     print(f"Avg mana bonus gerada por sac outlets pos-combate (total no jogo): {avg([s.bonus_mana_generated_total for s in states]):.2f}")
+
+    # Achado real 2026-08-31 (rodada ampliada) — Sephiroth transform, agora
+    # que `sephiroth_transformed` e' de fato lido em algum lugar.
+    seph_transform_pct = 100 * sum(1 for s in states if s.sephiroth_transformed) / n
+    print(f"Sephiroth transformado (4 mortes no mesmo turno, emblem Super Nova ativo) — % de jogos: {seph_transform_pct:.1f}%")
+    print(f"Avg cartas compradas via sac do Sephiroth (as 2 faces somadas): {avg([s.sephiroth_sac_draws_total for s in states]):.2f}")
+
+    # Achado real 2026-08-31 (rodada ampliada) — Caretaker's Talent, engine
+    # de nivel nova.
+    car_lvl2_pct = 100 * sum(1 for s in states if s.caretaker_level2_reached) / n
+    car_lvl3_pct = 100 * sum(1 for s in states if s.caretaker_level3_reached) / n
+    print(f"Caretaker's Talent nivel 2 alcancado — % de jogos: {car_lvl2_pct:.1f}% | nivel 3: {car_lvl3_pct:.1f}%")
+    # Proxy explicito (documentado em try_level_caretakers_talent): nao ha'
+    # motor de poder/resistencia de criatura neste simulador pra aplicar o
+    # anthem +2/+2 do nivel 3 numa metrica de dano real - reporta so' o
+    # bonus de poder agregado IMPLICADO (2 * criaturas-token em campo no fim
+    # do jogo, so' nos jogos em que o nivel 3 foi alcancado), nao dano
+    # calculado de fato.
+    anthem_states = [s for s in states if s.caretaker_level3_reached]
+    if anthem_states:
+        avg_tokens_at_lvl3 = avg([s.constructs + s.other_tokens for s in anthem_states])
+        print(f"  Proxy anthem nivel 3 (so' jogos com nivel 3): Avg criaturas-token em campo no fim: {avg_tokens_at_lvl3:.2f}"
+              f" -> bonus agregado implicado: +{2*avg_tokens_at_lvl3:.2f}/+{2*avg_tokens_at_lvl3:.2f} no total do board (NAO dano calculado - proxy)")
+
     revel_hits = sum(1 for s in states if s.revel_condition_met_turn is not None)
-    print(f"Revel in Riches (10+ Treasures) — condicao satisfeita: {100*revel_hits/n:.1f}% dos jogos"
-          f" | turno medio: {avg([s.revel_condition_met_turn for s in states if s.revel_condition_met_turn is not None]):.2f}" if revel_hits else "")
+
+    # -----------------------------------------------------------------
+    # Categoria 10 (goldfish-sim-card-rules.md) — as 5 metricas basicas
+    # obrigatorias, reportadas de forma auditavel e separada. Achado real
+    # 2026-08-31 (rodada ampliada): RECURSION e INTERACTION nao tinham
+    # linha formal propria antes desta correcao (existiam so' como tags
+    # decorativas/efeitos individuais sem contador agregado).
+    # -----------------------------------------------------------------
+    print()
+    print("--- Metricas basicas obrigatorias (categoria 10) ---")
+    rocks_final = avg([sum(1 for c in ("Sol Ring", "Arcane Signet") if c in s.battlefield) for s in states])
+    print(f"RAMP: Avg mana rocks resolvidos no fim (Sol Ring + Arcane Signet, max 2): {rocks_final:.2f}"
+          f" | Avg Treasures criados no jogo (motor de ramp central do deck, ver secao 3/5 da auditoria): {avg([s.treasures_created_total for s in states]):.2f}")
+    print(f"DRAW: Avg cartas compradas extra (alem da compra normal do turno): {avg([s.cards_drawn_extra for s in states]):.2f}")
+    print(f"INTERACTION: Avg remocao/wipe conjurados por jogo (Path to Exile, Shoot the Sheriff, Council's Judgment,"
+          f" Deadly Derision, Requisition Raid, Blasphemous Act, Blood Money): {avg([s.removal_cast_total for s in states]):.2f}")
+    print(f"RECURSION: Avg cartas recuperadas do cemiterio por jogo (Sevinne's Reclamation, Phyrexian Reclamation,"
+          f" Back in Town, Lich-Knights' Conquest, Witch of the Moors): {avg([s.recursion_events_total for s in states]):.2f}"
+          f" | das quais via Phyrexian Reclamation (repetivel): {avg([s.phyrexian_reclamation_activations_total for s in states]):.2f}")
+    print(f"FINISHER/LETHALITY: Revel in Riches (10+ Treasures, alt-win) — condicao satisfeita: {100*revel_hits/n:.1f}% dos jogos"
+          + (f" | turno medio: {avg([s.revel_condition_met_turn for s in states if s.revel_condition_met_turn is not None]):.2f}" if revel_hits else "")
+          + f" | Avg drain/dano agregado proxy (NAO vida real de oponente, sem lethality de combate direta modelada neste sim): {avg([s.drain_damage_total for s in states]):.2f}")
     return states
 
 
