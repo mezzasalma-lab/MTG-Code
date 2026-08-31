@@ -67,7 +67,7 @@
 1 Unleash Fury
 1 Veyran, Voice of Duality
 1 Wash Away
-1 Waterlogged Teachings
+1 Waterlogged Teachings // Inundated Archive
 1 Zada, Hedron Grinder
 
 ## Terrenos
