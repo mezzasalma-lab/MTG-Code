@@ -4,6 +4,62 @@ Compilação de todos os goldfish rodados na sessão. Cada jogo foi registrado t
 
 ---
 
+### Correção — Beorn, Reluctant Host // Till and Tend (nome truncado + mecânica ausente) — 2026-08-31
+
+**Gatilho:** o usuário questionou diretamente se as listas do Beorn e do
+Thranduil estavam 100% auditadas depois de eu ter "fechado" os dois numa
+conversa anterior. Rodei uma varredura de nomes de carta de face múltipla
+em **todo o repositório** (comparando cada `lista.md` contra
+`scryfall-cache/oracle-cache.json`, procurando nome truncado que bate com
+o prefixo de uma entrada real "Nome // Verso") — achado real, categoria
+11 do checklist (regra já existente desde 2026-08-28, não aplicada aqui
+antes de hoje).
+
+**Achado:** "Beorn, Reluctant Host" estava cadastrado (lista.md +
+simulador) sem o verso real — nome completo confirmado via Scryfall:
+**"Beorn, Reluctant Host // Till and Tend"** (`layout: adventure`).
+
+```
+Beorn, Reluctant Host {4}{G} — Legendary Creature — Human Bear Shapeshifter
+  Trample
+Till and Tend {1}{G} — Sorcery — Adventure
+  You may play an additional land this turn.
+```
+
+O lado Till and Tend (land drop extra) nunca existia em lugar nenhum do
+simulador — diferente de outros MDFCs já corrigidos nesta sessão, esse
+nem estava documentado como omissão deliberada, era um buraco puro.
+
+**Corrigido:** nome renomeado em `lista.md` e `DECKLIST_TEXT`/`CARD_DB`
+(`beorn_goldfish_v1.py`). Implementado `try_till_and_tend()` +
+`try_cast_beorn_host_from_exile()`: se o land normal do turno já foi
+jogado E sobra outro terreno na mão E há mana pro custo barato (`{1}{G}`
+= 2), conjura como Till and Tend (vai pro exílio, land drop extra de
+verdade nesse turno); a criatura (`{4}{G}` = 5, custo real, não de graça)
+é conjurada do exílio num turno futuro com mana sobrando. Se as
+condições não valem a pena, a carta é conjurada direto como criatura
+pelo loop genérico (fallback natural, sem precisar de lógica extra).
+
+**Robustez:** 15.000 partidas (seeds 9500000-9514999), 0 erros/timeouts.
+
+**n=3000, seed_base=91000 — antes → depois:**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg terrenos jogados | 6,425 | 6,472 |
+| Avg finishers resolvidos | 0,413 | 0,427 |
+| % jogos com ≥1 finisher | 34,1% | **35,1%** |
+| Avg turno de conjuração da Beorn | 4,450 | 4,437 |
+
+Deltas pequenos e esperados — Till and Tend só dispara sob condição
+específica (land sobrando na mão + land normal já jogado), não é um
+motor de alto volume, mas o land drop extra real ajuda a chegar no
+finisher um pouco mais cedo/mais vezes.
+
+`lista.md` e `beorn_v1_runs.jsonl` atualizados (n=3000, seed_base=91000).
+
+---
+
 ### Correção — Sakura-Tribe Elder trocado por Ram Through — 2026-08-31
 
 **Contexto:** "fechar" o deck (pedido do usuário) — revisão dos itens em

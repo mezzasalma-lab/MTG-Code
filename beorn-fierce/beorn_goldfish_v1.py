@@ -32,7 +32,7 @@ DECKLIST_TEXT = r"""
 1 Bala Ged Recovery // Bala Ged Sanctuary
 1 Beast Whisperer
 1 Beast Within
-1 Beorn, Reluctant Host
+1 Beorn, Reluctant Host // Till and Tend
 1 Beorn's Hospitality
 1 Birds of Paradise
 1 Chameleon Colossus
@@ -230,7 +230,7 @@ for name, mv, typ, tags in protection_defs:
 bear_defs = [
     ("Ayula, Queen Among Bears", 2, {"Creature"}, {"bear","bear_payoff","legendary"}),
     ("Ayula's Influence", 3, {"Enchantment"}, {"bear_maker"}),
-    ("Beorn, Reluctant Host", 5, {"Creature"}, {"bear","legendary"}),
+    ("Beorn, Reluctant Host // Till and Tend", 5, {"Creature"}, {"bear","legendary"}),
     ("Beorn's Hospitality", 2, {"Enchantment"}, {"landfall_counters","bear_late"}),
     ("Chameleon Colossus", 4, {"Creature"}, {"changeling","bear_type"}),
     ("Chronicle of Victory", 6, {"Artifact"}, {"anthem_tribal","draw_engine_conditional"}),
@@ -294,7 +294,7 @@ add("Springleaf Parade Token", 0, {"Creature"}, {"token","changeling","bear_type
 REAL_G_PIPS = {
     "Ambush Viper": 1, "Archdruid's Charm": 3, "Ayula, Queen Among Bears": 1,
     "Ayula's Influence": 3, "Beast Whisperer": 2, "Beast Within": 1,
-    "Beorn, Reluctant Host": 1, "Beorn's Hospitality": 1, "Chameleon Colossus": 2,
+    "Beorn, Reluctant Host // Till and Tend": 1, "Beorn's Hospitality": 1, "Chameleon Colossus": 2,
     "Chronicle of Victory": 0, "Cultivate": 1, "Craterhoof Behemoth": 3,
     "Dancing from Dark to Dawn": 2, "Emerald Medallion": 0, "Eternal Witness": 2,
     "Ezuri's Predation": 3, "Firdoch Core": 0, "Forgotten Ancient": 1,
@@ -344,6 +344,7 @@ class GameState:
 
     turn: int = 0
     land_played: bool = False
+    beorn_host_exiled: bool = False  # Till and Tend conjurada, criatura esperando no exilio
     max_hand_size: int = 7
     mana_spent_this_turn: int = 0
 
@@ -569,7 +570,7 @@ def remaining_mana(state: GameState) -> int:
 # Uprising, Tribute to the World Tree e Selvala (comparacoes de "poder >= X").
 BASE_POWER: Dict[str, int] = {
     "Beorn the Fierce": 6, "Ambush Viper": 2, "Ayula, Queen Among Bears": 2,
-    "Beast Whisperer": 2, "Beorn, Reluctant Host": 5, "Birds of Paradise": 0,
+    "Beast Whisperer": 2, "Beorn, Reluctant Host // Till and Tend": 5, "Birds of Paradise": 0,
     "Chameleon Colossus": 4, "Craterhoof Behemoth": 5, "Eternal Witness": 2,
     "Firdoch Core": 4, "Forgotten Ancient": 0, "Lumra, Bellow of the Woods": 0,
     "Genji Glove": 0, "Ghalta, Primal Hunger": 12, "Gigantic Big Bear": 10,
@@ -585,7 +586,7 @@ BASE_POWER: Dict[str, int] = {
 # Usado por Last March of the Ents ("greatest toughness among creatures you control").
 BASE_TOUGHNESS: Dict[str, int] = {
     "Beorn the Fierce": 6, "Ambush Viper": 1, "Ayula, Queen Among Bears": 2,
-    "Beast Whisperer": 3, "Beorn, Reluctant Host": 5, "Birds of Paradise": 1,
+    "Beast Whisperer": 3, "Beorn, Reluctant Host // Till and Tend": 5, "Birds of Paradise": 1,
     "Chameleon Colossus": 4, "Craterhoof Behemoth": 5, "Eternal Witness": 1,
     "Firdoch Core": 4, "Forgotten Ancient": 3, "Lumra, Bellow of the Woods": 0,
     "Ghalta, Primal Hunger": 12, "Gigantic Big Bear": 7,
@@ -805,6 +806,54 @@ def play_land(state: GameState, log: List[Dict]):
         log.append({"action":"play_land","card":card})
         on_land_enters(state, card, log)
 
+
+def try_till_and_tend(state: GameState, log: List[Dict]):
+    """Beorn, Reluctant Host // Till and Tend (achado real 2026-08-31,
+    varredura de nomes de carta de face multipla no repo inteiro): o nome
+    estava truncado (so' a face criatura registrada) e a metade Adventure
+    nunca existia. Oraculo real: 'Till and Tend {1}{G} Sorcery - Adventure
+    - You may play an additional land this turn.' Heuristica: so' vale a
+    pena conjurar como Till and Tend se ja jogamos o land normal do turno
+    E ha outro terreno sobrando na mao pra aproveitar o drop extra - senao
+    a carta so' entra como a criatura direto (sem passar pelo Adventure),
+    tratado normalmente pelo loop generico de conjuracao."""
+    name = "Beorn, Reluctant Host // Till and Tend"
+    if state.beorn_host_exiled or name not in state.hand:
+        return
+    if not state.land_played:
+        return
+    if not any(is_land(c) for c in state.hand if c != name):
+        return
+    if remaining_mana(state) < 2:
+        return
+    state.hand.remove(name)
+    state.mana_spent_this_turn += 2
+    state.spells_cast += 1
+    if state.managorger_in_play:
+        state.managorger_counters += 1
+    state.beorn_host_exiled = True
+    log.append({"action": "till_and_tend_cast", "turn": state.turn})
+    play_land(state, log)
+
+
+def try_cast_beorn_host_from_exile(state: GameState, log: List[Dict]):
+    """Segunda metade do Adventure: depois de conjurar Till and Tend, a
+    criatura fica disponivel no exilio pra ser conjurada mais tarde (custo
+    real da criatura, {4}{G}=5, nao e' de graca)."""
+    name = "Beorn, Reluctant Host // Till and Tend"
+    if not state.beorn_host_exiled:
+        return
+    if remaining_mana(state) < 5:
+        return
+    state.mana_spent_this_turn += 5
+    state.spells_cast += 1
+    if state.managorger_in_play:
+        state.managorger_counters += 1
+    state.beorn_host_exiled = False
+    state.battlefield.append(name)
+    on_creature_enters(state, name, log)
+    log.append({"action": "cast_from_exile", "card": name, "turn": state.turn})
+
 # =========================================================
 # CASTING PRIORITY
 # =========================================================
@@ -850,6 +899,8 @@ def main_phase(state: GameState, log: List[Dict]):
             on_creature_enters(state, COMMANDER, log)
             log.append({"action":"cast_commander","turn":state.turn})
 
+    try_till_and_tend(state, log)
+
     for _ in range(5):
         # Remocao fica de fora do loop guloso normal - so' conjurada via
         # try_use_own_interaction() (1x/3 turnos, alvo real nesse ritmo).
@@ -869,6 +920,8 @@ def main_phase(state: GameState, log: List[Dict]):
             state.battlefield.append(COMMANDER)
             on_creature_enters(state, COMMANDER, log)
             log.append({"action":"cast_commander","turn":state.turn})
+
+    try_cast_beorn_host_from_exile(state, log)
 
     # Ativacoes repetiveis com mana/recursos sobrando, depois de todo o resto ja
     # conjurado no turno (mesma ordem de prioridade: desenvolver o board primeiro).

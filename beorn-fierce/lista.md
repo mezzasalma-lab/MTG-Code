@@ -13,7 +13,7 @@
 1 Bala Ged Recovery // Bala Ged Sanctuary
 1 Beast Whisperer
 1 Beast Within
-1 Beorn, Reluctant Host
+1 Beorn, Reluctant Host // Till and Tend
 1 Beorn's Hospitality
 1 Birds of Paradise
 1 Chameleon Colossus
