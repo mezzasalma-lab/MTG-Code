@@ -459,6 +459,70 @@ disponibilizar o token 1 fase mais cedo.
 
 ---
 
+### Correção — Roaming Throne dobrava com base no tipo de quem ENTRA, não no tipo de quem TEM a habilidade — 2026-08-31
+
+**Gatilho:** reanálise pedida pelo usuário depois das duas rodadas
+anteriores. Oráculo real do Roaming Throne: *"If a triggered ability of
+**another creature you control of the chosen type** triggers, it
+triggers an additional time."* A condição é sobre o tipo da criatura
+**dona** da habilidade (a fonte do gatilho) — não sobre o tipo do que
+entrou/morreu para causar o gatilho. O próprio docstring do arquivo já
+raciocinava certo sobre isso ("Maralen é ela mesma Elf Faerie Noble... o
+próprio gatilho dela dobra de qualquer forma"), mas o código nunca
+seguia essa lógica.
+
+**3 achados reais:**
+1. **Gatilho da própria Maralen** (`_maralen_resolve`) calculava a dobra
+   a partir de `is_roaming_type(entering_name)` / `kind ==
+   ROAMING_THRONE_TYPE` — ou seja, só dobrava quando uma **Fada**
+   entrava. Todo Elfo entrando (a maioria real dos gatilhos do deck —
+   qualquer dork, Elvish Warmaster, Imperious Perfect, Priest of
+   Titania, Marwyn etc.) nunca dobrava, quando deveria dobrar sempre que
+   o Roaming Throne está em campo, já que a fonte do gatilho é sempre a
+   Maralen (Faerie por tipo, bate com a escolha do Roaming Throne o
+   tempo todo, independente do que entrou).
+2. **Tegwyll, Duke of Splendor** (compra+perda de vida quando outra Fada
+   morre): Tegwyll é ele mesmo Fada, então bate com o tipo escolhido —
+   nunca era dobrado. Corrigido.
+3. **Faerie Harbinger** (tutor de Fada pro topo no ETB): mesmo caso —
+   Faerie Harbinger é Fada, nunca era dobrado. Corrigido (dobrar aqui
+   significa buscar e empilhar uma 2ª Fada no topo).
+
+**Decisão documentada, não corrigida:** Mistbind Clique (Champion) —
+tecnicamente também bate com o tipo escolhido, mas dobrar "sacrifice
+IT unless you exile another Faerie" não tem um efeito de jogo bem
+definido com uma única cópia da carta (ver comentário junto de
+`champion_faerie` em `resolve_etb()`). Risco de modelar errado maior
+que o valor esperado — deixado de fora, igual à convenção já usada pro
+Wirewood Symbiote/Scryb Ranger.
+
+**Robustez:** sweep de 20.000 jogos (seeds 8800000–8819999, timeout
+2s/jogo) — 0 erros, 0 timeouts.
+
+**n=3000, seed_base=8000000 — antes (com o bug) → depois:**
+
+| Métrica | Antes (bug) | Depois |
+|---|---|---|
+| Avg dobras via Roaming Throne | 0,46 | **1,09** |
+| Avg gatilhos de Maralen (exila 2) | 8,49 | 9,08 |
+| Avg cartas exiladas total | 15,81 | 16,83 |
+| Avg casts grátis via Maralen | 2,60 | 2,62 |
+| Avg tutores usados | 0,79 | 0,81 |
+| Avg tokens criados | 4,06 | 4,16 |
+| Avg Fadas exiladas pelo Champion do Mistbind | 0,16 | 0,17 (ruído de RNG a jusante, não tocado) |
+| Combo Umbral Mantle montado | 10,8% | 10,6% (ruído de RNG a jusante) |
+
+Leitura: a dobra do Roaming Throne mais do que dobra de frequência real
+(0,46 → 1,09) — efeito esperado de passar a contar Elfos entrando, que
+são a maioria dos gatilhos reais do deck, não só Fadas. Deltas nas
+outras métricas são pequenos e rastreáveis à mudança de timing/escolha
+de qual carta a IA conjura de graça a cada turno via Maralen, não sinal
+de regressão.
+
+`lista.md` não mudou.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

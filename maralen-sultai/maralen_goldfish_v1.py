@@ -25,6 +25,21 @@ dobra de qualquer forma. Faerie foi escolhido porque tem mais criaturas
 com gatilho relevante (Bitterbloom Bearer, Obyra, Tegwyll, Faerie
 Harbinger, Spellstutter Sprite, Mistbind Clique) do que Elfo (so Marwyn
 e Elvish Warmaster tem gatilho de ETB relevante).
+ATENCAO (achado real 2026-08-31, reanalise pedida pelo usuario): o
+oraculo real e' "If a triggered ability of another creature you control
+OF THE CHOSEN TYPE triggers" — a condicao e' sobre o tipo da criatura
+DONA da habilidade (a fonte do gatilho: Maralen, Tegwyll, Faerie
+Harbinger), nunca sobre o tipo do que entrou/morreu pra causar o
+gatilho. Uma versao anterior deste simulador calculava a dobra a partir
+do tipo do que ENTRAVA (so' dobrava a Maralen quando uma Fada entrava,
+nunca quando um Elfo entrava — a maioria real dos gatilhos do deck,
+todos os dorks/Elvish Warmaster/Imperious Perfect/etc.) — corrigido:
+`_maralen_resolve()` agora dobra sempre que Roaming Throne esta em
+campo, sem depender do que entrou. Tegwyll (dobra ao morrer outra Fada)
+e Faerie Harbinger (dobra o tutor no ETB) tambem foram implementados de
+verdade (existiam so' na lista acima, nunca no codigo). Mistbind Clique
+(Champion) continua fora de proposito — ver comentario junto de
+`champion_faerie` em `resolve_etb()`.
 
 Combo real de 2 pecas (documentado na auditoria, secao 4): Umbral
 Mantle (Equip {0}, "{3},{Q}: +2/+2") equipado num dork que produza 4+
@@ -409,10 +424,25 @@ def elf_faerie_count(state: GameState) -> int:
             + state.elf_tokens + state.faerie_tokens)
 
 
-def _maralen_resolve(state: GameState, roaming_match: bool):
+def _maralen_resolve(state: GameState):
     if not state.commander_in_play:
         return
-    times = 2 if ("Roaming Throne" in state.battlefield and roaming_match) else 1
+    # Achado real 2026-08-31 (reanalise pedida pelo usuario): oraculo real do
+    # Roaming Throne e' "If a triggered ability of ANOTHER CREATURE YOU
+    # CONTROL OF THE CHOSEN TYPE triggers, it triggers an additional time" -
+    # a condicao e' sobre o tipo da criatura DONA da habilidade (a fonte do
+    # gatilho), nao sobre o tipo do que entrou em campo pra causar o
+    # gatilho. A fonte aqui e' sempre a propria Maralen (Elf Faerie Noble),
+    # que bate com o tipo escolhido (Faerie) o tempo todo, independente do
+    # que entrou - exatamente como o docstring do arquivo ja raciocinava
+    # ("o proprio gatilho dela dobra de qualquer forma"), mas a versao
+    # anterior calculava um `roaming_match` a partir do tipo da criatura
+    # ENTRANTE (`is_roaming_type(entering_name)` / `kind == ROAMING_THRONE_TYPE`),
+    # entao so' dobrava quando uma Fada entrava - todo Elfo/token de Elfo
+    # entrando (a maioria dos gatilhos reais do deck: dorks, Elvish
+    # Warmaster, Imperious Perfect, Priest of Titania, etc.) nunca dobrava,
+    # quando deveria sempre dobrar assim que o Roaming Throne resolve.
+    times = 2 if "Roaming Throne" in state.battlefield else 1
     if times == 2:
         state.roaming_throne_doubles_total += 1
     for _ in range(times):
@@ -427,16 +457,14 @@ def _maralen_resolve(state: GameState, roaming_match: bool):
 def maralen_trigger(state: GameState, entering_name: str):
     if entering_name != COMMANDER and not (is_elf(entering_name) or is_faerie(entering_name)):
         return
-    roaming_match = is_roaming_type(entering_name) and entering_name != "Roaming Throne"
-    _maralen_resolve(state, roaming_match)
+    _maralen_resolve(state)
 
 
 def maralen_trigger_token(state: GameState, kind: str):
     """Mesmo gatilho da Maralen, mas pra um TOKEN Elfo/Fada entrando (sem nome
     de carta — landfall do Sindarin Liege, Elvish Warmaster, Imperious
     Perfect, Bitterblossom/Bitterbloom Bearer)."""
-    roaming_match = kind == ROAMING_THRONE_TYPE
-    _maralen_resolve(state, roaming_match)
+    _maralen_resolve(state)
 
 
 def maralen_try_free_cast(state: GameState):
@@ -654,12 +682,20 @@ def resolve_etb(state: GameState, name: str):
             state.tutors_used_total += 1
 
     if "tutor_faerie_top" in tags:
-        faeries = [n for n in state.library if is_faerie(n)]
-        if faeries:
-            best = max(faeries, key=lambda n: CARD_DB[n].mv)
-            state.library.remove(best)
-            state.library.insert(0, best)
-            state.tutors_used_total += 1
+        # Faerie Harbinger e' ela mesma Fada, entao a propria fonte do
+        # gatilho (achado real 2026-08-31, mesmo caso do fix da Maralen
+        # acima) bate com o tipo escolhido do Roaming Throne - dobra a
+        # busca (procura e poe no topo uma 2a vez, empilhando sobre a 1a).
+        times = 2 if ("Roaming Throne" in state.battlefield and is_roaming_type(name)) else 1
+        if times == 2:
+            state.roaming_throne_doubles_total += 1
+        for _ in range(times):
+            faeries = [n for n in state.library if is_faerie(n)]
+            if faeries:
+                best = max(faeries, key=lambda n: CARD_DB[n].mv)
+                state.library.remove(best)
+                state.library.insert(0, best)
+                state.tutors_used_total += 1
 
     if "tutor_creature_etb" in tags:
         # Formidable Speaker: descarta 1 pra buscar criatura pra mao.
@@ -696,6 +732,21 @@ def resolve_etb(state: GameState, name: str):
         # perda real) a uma carta nomeada, e nunca a propria comandante
         # (Maralen tambem e' Fada por tipo). O efeito de "tap all lands"
         # (mira oponente) continua sem efeito numerico - Regra 1.
+        #
+        # Roaming Throne NAO dobra este Champion (decisao documentada,
+        # achado real 2026-08-31, revisado junto do fix de dobra da
+        # Maralen/Tegwyll/Faerie Harbinger acima): Mistbind Clique tambem e'
+        # Fada, entao em tese bateria com o tipo escolhido - mas "sacrifice
+        # IT unless you exile another Faerie" se refere a propria Mistbind
+        # Clique (uma unica permanente); disparar esse gatilho "mais uma
+        # vez" nao tem um efeito de jogo bem definido (nao ha uma 2a copia
+        # da Mistbind pra sacrificar OU deixar de sacrificar de novo -
+        # regra 603.2 trata cada instancia do gatilho como independente,
+        # mas a condicao "unless you exile ANOTHER Faerie" da 2a instancia
+        # exigiria uma 2a Fada disponivel so' pra essa dobra, empilhado
+        # sobre a checagem normal). Risco de modelar errado > valor
+        # esperado (mesma filosofia do Wirewood Symbiote/Scryb Ranger
+        # acima) - deixado de fora, nao fingido.
         if state.faerie_tokens > 0:
             state.faerie_tokens -= 1
             state.mistbind_exiled.append("Faerie Token")
@@ -814,8 +865,16 @@ def leave_battlefield(state: GameState, name: str, to_graveyard: bool = True):
         # Oraculo real: "you draw a card AND you lose 1 life" - achado real
         # 2026-08-30 (reanalise pedida pelo usuario), so' a compra estava
         # implementada, faltava a perda de vida.
-        draw_cards(state, 1)
-        state.life -= 1
+        # Tegwyll e' ele mesmo Fada, entao a fonte do gatilho bate com o
+        # tipo escolhido do Roaming Throne (achado real 2026-08-31, mesmo
+        # caso do fix da Maralen/Faerie Harbinger acima) - dobra compra e
+        # perda de vida quando outra Fada morre com os dois em campo.
+        times = 2 if ("Roaming Throne" in state.battlefield and is_roaming_type("Tegwyll, Duke of Splendor")) else 1
+        if times == 2:
+            state.roaming_throne_doubles_total += 1
+        for _ in range(times):
+            draw_cards(state, 1)
+            state.life -= 1
     if state.umbral_equipped_on == name:
         state.umbral_equipped_on = None
         state.infinite_mana_this_turn = False
