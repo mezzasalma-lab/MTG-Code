@@ -56,7 +56,7 @@
 1 Lightning Greaves
 1 Llanowar Elves
 1 Lluwen, Imperfect Naturalist
-1 Malakir Rebirth
+1 Malakir Rebirth // Malakir Mire
 1 Maralen, Fae Ascendant
 1 Marwyn, the Nurturer
 1 Nurturing Peatland
@@ -67,7 +67,7 @@
 1 Raise the Palisade
 1 Reflecting Pool
 1 Rejuvenating Springs
-1 Revitalizing Repast
+1 Revitalizing Repast // Old-Growth Grove
 1 Rhystic Study
 1 Roaming Throne
 1 Ruthless Winnower
@@ -77,10 +77,10 @@
 4 Swamp
 1 Takenuma, Abandoned Mire
 1 Thranduil's Company
-1 Thranduil, Sindarin Liege
+1 Thranduil, Sindarin Liege // Silvan Rally
 1 Three Tree City
 1 Trystan's Command
-1 Trystan, Callous Cultivator
+1 Trystan, Callous Cultivator // Trystan, Penitent Culler
 1 Tyvar the Bellicose
 1 Tyvar, Jubilant Brawler
 1 Tyvar, the Pummeler

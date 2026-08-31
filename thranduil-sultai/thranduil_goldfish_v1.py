@@ -484,6 +484,11 @@ class GameState:
     elves_milled_to_gy: int = 0          # proxy: fracao de cartas milhadas que seriam Elfos
     cards_milled_total: int = 0
 
+    trystan_transformed: bool = False    # False = Callous Cultivator (frente), True = Penitent Culler (verso)
+    trystan_transforms_total: int = 0
+    trystan_lifegain_events: int = 0
+    trystan_drain_events: int = 0
+
     finishers_activated: List[str] = field(default_factory=list)
     finisher_turn: Optional[int] = None
 
@@ -950,6 +955,7 @@ def main_phase(state: GameState, log: List[Dict]):
 
     # Ativa finishers repetiveis se sobrar mana e houver board relevante
     activate_finishers(state, log)
+    try_trystan_transform(state, log)
     try_imperious_perfect(state, log)
     try_agathas_soul_cauldron(state, log)
     try_immaculate_magistrate(state, log)
@@ -1213,6 +1219,70 @@ def _elrond_ability_activated(state: GameState, source: str, log: List[Dict]):
     if times_rt == 2:
         state.roaming_throne_doublings += 1
     log.append({"trigger": "elrond_draw", "source": source, "times": times_rt, "turn": state.turn})
+
+def try_trystan_transform(state: GameState, log: List[Dict]):
+    """Trystan, Callous Cultivator // Trystan, Penitent Culler (layout
+    `transform`, achado real 2026-08-31 - varredura de nomes de carta
+    multi-face em todo o repositorio, motivada pelo usuario questionando
+    se a lista estava 100% auditada). O nome estava truncado (so' a face
+    da frente cadastrada) e so' o mill-3 do ETB (tag generica `mill`,
+    compartilhada com Lluwen) estava modelado - a habilidade de
+    transformar em si nunca existia. Oraculo real:
+
+    Callous Cultivator (frente): "Whenever this creature enters or
+    transforms into Trystan, Callous Cultivator, mill three cards. Then
+    if there is an Elf card in your graveyard, you gain 2 life. At the
+    beginning of your first main phase, you may pay {B}. If you do,
+    transform Trystan."
+    Penitent Culler (verso): "Whenever this creature transforms into
+    Trystan, Penitent Culler, mill three cards, then you may exile an Elf
+    card from your graveyard. If you do, each opponent loses 2 life. At
+    the beginning of your first main phase, you may pay {G}. If you do,
+    transform Trystan."
+
+    Motor de valor repetivel barato (1 mana colorida por turno) - heuristica
+    "maximiza valor sempre" ja usada no resto do arquivo: transforma toda
+    vez que a cor certa esta disponivel. "Elfo no cemiterio" usa o mesmo
+    proxy estatistico (`elves_milled_to_gy`) ja estabelecido no resto do
+    arquivo pra essa mesma pergunta (nao ha rastreamento carta-a-carta real
+    do cemiterio pra isso). Vida nao e' um total agregado rastreado neste
+    simulador (nenhuma outra carta do deck rastreia isso) - os dois lados
+    contam como EVENTOS (`trystan_lifegain_events`/`trystan_drain_events`),
+    nao como total de vida ganha/perdida.
+    """
+    name = "Trystan, Callous Cultivator // Trystan, Penitent Culler"
+    if not state.has(name):
+        return
+    needed_color = "G" if state.trystan_transformed else "B"
+    if remaining_mana(state) < 1 or color_sources(state, needed_color) < 1:
+        return
+    state.mana_spent_this_turn += 1
+    state.trystan_transformed = not state.trystan_transformed
+    state.trystan_transforms_total += 1
+
+    # "mill three cards" - gatilho triggered de uma criatura Elfo, dobrado
+    # pelo Roaming Throne igual ao mill do ETB (mesma checagem ja usada no
+    # dispatch generico de mill_amount acima).
+    state.mill(3)
+    if state.roaming_throne_active() and is_elf(name):
+        state.mill(3)
+        state.roaming_throne_doublings += 1
+
+    if state.trystan_transformed:
+        # virou Penitent Culler: pode exilar um Elfo do cemiterio pra
+        # cada oponente perder 2 de vida.
+        if state.elves_milled_to_gy > 0:
+            state.trystan_drain_events += 1
+            log.append({"trigger": "trystan_penitent_drain", "turn": state.turn})
+    else:
+        # voltou pra Callous Cultivator: ganha 2 de vida se houver Elfo no cemiterio.
+        if state.elves_milled_to_gy > 0:
+            state.trystan_lifegain_events += 1
+            log.append({"trigger": "trystan_callous_lifegain", "turn": state.turn})
+
+    log.append({"trigger": "trystan_transform", "turn": state.turn,
+                "now": "Penitent Culler" if state.trystan_transformed else "Callous Cultivator"})
+
 
 def try_imperious_perfect(state: GameState, log: List[Dict]):
     """"{G}, {T}: Create a 1/1 green Elf Warrior creature token." Achado
@@ -1696,6 +1766,9 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "thranduil_legendary_elf_triggers": state.thranduil_legendary_elf_triggers,
         "cards_milled_total": state.cards_milled_total,
         "elves_milled_to_gy": state.elves_milled_to_gy,
+        "trystan_transforms_total": state.trystan_transforms_total,
+        "trystan_lifegain_events": state.trystan_lifegain_events,
+        "trystan_drain_events": state.trystan_drain_events,
         "finishers_activated": len(state.finishers_activated),
         "finisher_turn": state.finisher_turn,
         "battlefield_count": len(state.battlefield),
@@ -1776,6 +1849,8 @@ def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=710
     print(f"Avg gatilhos 'elfo lendario entrou' (Thranduil draw2/discard1): {avg('thranduil_legendary_elf_triggers'):.2f}")
     print(f"Avg cartas milhadas (mill total): {avg('cards_milled_total'):.2f}")
     print(f"Avg Elfos milhados pro cemiterio (proxy por densidade): {avg('elves_milled_to_gy'):.2f}")
+    print(f"Avg transformacoes do Trystan (Callous Cultivator <-> Penitent Culler): {avg('trystan_transforms_total'):.2f}"
+          f" | eventos de vida ganha: {avg('trystan_lifegain_events'):.2f} | eventos de dreno: {avg('trystan_drain_events'):.2f}")
     print(f"Avg finishers ativados: {avg('finishers_activated'):.2f}")
     if fin_turns:
         print(f"Avg turno do 1o finisher ativado: {statistics.mean(fin_turns):.2f}")

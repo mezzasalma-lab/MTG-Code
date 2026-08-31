@@ -4,6 +4,70 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### Correção — 4 nomes de carta multi-face truncados + transformação do Trystan ausente — 2026-08-31
+
+**Gatilho:** o usuário questionou diretamente se Beorn e Thranduil
+estavam 100% auditados depois de eu ter "fechado" os dois numa conversa
+anterior. Rodei uma varredura de nomes de carta de face múltipla em
+**todo o repositório** (cada `lista.md` contra
+`scryfall-cache/oracle-cache.json`) — categoria 11 do checklist, regra já
+existente desde 2026-08-28, não reaplicada aqui antes de hoje.
+
+**4 cartas com nome truncado no `lista.md`** (o simulador internamente já
+usava os nomes certos nas 3 primeiras — só o arquivo de referência
+estava desatualizado):
+- `Malakir Rebirth` → **`Malakir Rebirth // Malakir Mire`** (modal_dfc).
+- `Revitalizing Repast` → **`Revitalizing Repast // Old-Growth Grove`** (modal_dfc).
+- `Thranduil, Sindarin Liege` → **`Thranduil, Sindarin Liege // Silvan Rally`** (adventure).
+- `Trystan, Callous Cultivator` → **`Trystan, Callous Cultivator // Trystan, Penitent Culler`** (layout `transform`).
+
+**Achado real — mecânica ausente:** o Trystan estava com nome truncado
+NO simulador também, e só o mill-3 do ETB (tag genérica `mill`,
+compartilhada com Lluwen) existia. A habilidade de transformar nunca
+tinha sido modelada:
+
+```
+Callous Cultivator (frente): "...mill three cards. Then if there is an
+Elf card in your graveyard, you gain 2 life. At the beginning of your
+first main phase, you may pay {B}. If you do, transform Trystan."
+Penitent Culler (verso): "...mill three cards, then you may exile an Elf
+card from your graveyard. If you do, each opponent loses 2 life. At the
+beginning of your first main phase, you may pay {G}. If you do,
+transform Trystan."
+```
+
+**Corrigido:** `try_trystan_transform()` — transforma quando há 1 mana da
+cor certa disponível (motor de valor barato repetível, heurística
+"maximiza valor" já usada no resto do arquivo), mill 3 dobrado por
+Roaming Throne quando aplicável (mesma checagem já usada no mill do
+ETB), "Elfo no cemitério" via o mesmo proxy estatístico
+(`elves_milled_to_gy`) já usado pra essa mesma pergunta em outras cartas
+do arquivo. Vida não é rastreada como total agregado neste simulador —
+os dois lados contam como eventos (`trystan_lifegain_events`/
+`trystan_drain_events`), não total de vida.
+
+**Robustez:** 15.000 partidas (seeds 9600000-9614999), 0 erros/timeouts.
+
+**n=3000, seed_base=71000 — antes → depois:**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg cartas milhadas total | 4,617 | **6,143** |
+| Avg Elfos milhados pro cemitério (proxy) | 0,767 | 1,018 |
+| Avg transformações do Trystan | — (não existia) | **0,46** |
+| Avg eventos de vida ganha (Trystan) | — | 0,16 |
+| Avg eventos de dreno (Trystan) | — | 0,23 |
+
+Leitura: o motor de mill sobe de forma real e rastreável — Trystan
+transformando em média quase 1x a cada 2 jogos, cada transformação
+adicionando 3 cartas milhadas de verdade, o que também alimenta outras
+sinergias de cemitério do deck (Awaken the Honored Dead, Agatha's Soul
+Cauldron, etc.).
+
+`lista.md` e `thranduil_v1_runs.jsonl` atualizados (n=3000, seed_base=71000).
+
+---
+
 ## Simulação estatística v1 — escrita e rodada por Claude (não é dado seu)
 
 **Atribuição:** assim como o simulador do Beorn, este script foi **escrito e executado por mim**, a seu pedido, nos mesmos moldes do `beorn_goldfish_v1.py`. Script completo salvo em `thranduil_goldfish_v1.py` nesta pasta — reproduzível, não é caixa-preta. Metodologia completa (modelo de mana tricolor, proxy estatístico pra "Elfos no cemitério", limitações conhecidas) documentada no docstring do próprio script.
