@@ -21,7 +21,7 @@
 1 Syr Konrad, the Grim
 1 Crypt Ghast
 1 Zulaport Cutthroat
-1 Priest of the Forgotten Gods
+1 Priest of Forgotten Gods
 1 Ayara, First of Locthwain
 1 Emeritus of Woe // Demonic Tutor
 1 Pitiless Plunderer
@@ -48,7 +48,7 @@
 1 Kindred Dominance
 1 Swarmyard Massacre
 1 Plague of Vermin
-1 Fell the Profane
+1 Fell the Profane // Fell Mire
 
 ## Terrenos
 

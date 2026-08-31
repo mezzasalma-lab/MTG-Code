@@ -157,6 +157,23 @@ Cruzei as cartas mais recomendadas pra esse comandante no EDHREC contra a sua li
 
 ---
 
+## 13. Atualização — simulador de goldfish construído + 2 erros de grafia corrigidos (2026-08-31)
+
+Simulador completo criado (`ratking_goldfish_v1.py`, ver `goldfish-log.md`
+pro relatório oficial). Durante o Passo 0 (varredura de oráculo real via
+Scryfall de todas as 53 cartas únicas), 2 erros de grafia adicionais
+foram encontrados em `lista.md` e corrigidos (mesmo padrão do erro já
+achado antes nesta lista pra Emeritus of Woe/Demonic Tutor):
+
+- `Priest of the Forgotten Gods` → `Priest of Forgotten Gods` (nome real
+  não tem "the").
+- `Fell the Profane` → `Fell the Profane // Fell Mire` (MDFC verdadeira,
+  o nome sem o verso não é o nome completo real da carta).
+
+A lista **continua em 99/100 cartas** (nota já existente no topo do
+`lista.md`) — nenhuma carta foi inventada pra completar; o simulador
+reflete os 98 cartas reais de biblioteca que existem hoje.
+
 ## Links
 
 - EDHREC: https://edhrec.com/commanders/rat-king-verminister
