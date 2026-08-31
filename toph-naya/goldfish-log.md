@@ -4,6 +4,74 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### Correção — bug real de terrenos "conjurados de graça" + rodada ampliada parcial — 2026-08-31
+
+**Contexto:** rodada ampliada do checklist (categorias 10-13) pedida pelo
+usuário pra Toph/Ulalek/Vihaan/Megatron, despachada via agente em
+background. O agente do Toph **morreu de rate-limit no meio do trabalho**
+— escreveu um docstring detalhado descrevendo 7 correções como se
+estivessem prontas, mas na hora de conferir o código real, **nenhuma das
+6 correções "de mecânica" tinha sido implementada de fato** (só o
+docstring existia — Urza's Saga continuava com a mesma tag apagada,
+Wrenn/Caretaker's Talent/Crucible/Conduit sem nenhum dispatch novo,
+relatório sem as métricas básicas). Detectado comparando o texto do
+docstring contra uma busca real pelas funções que ele dizia ter criado —
+nenhuma existia. Corrigido aqui: docstring reescrito pra separar
+explicitamente o que FOI corrigido de verdade do que ainda está só
+diagnosticado (fica pendente pra próxima sessão).
+
+**Bug real corrigido — terrenos excedentes conjurados de graça:** o
+`agente` (antes de morrer) encontrou isso via teste empírico, e eu
+confirmei lendo o código: `main_phase()` monta o loop de conjuração com
+`castables = [n for n in state.hand if can_cast(state, n) ...]`, e
+`can_cast()` só checa `remaining_mana(state) >= CARD_DB[name].mv` — como
+todo terreno tem `mv=0`, qualquer terreno que sobrasse na mão depois do
+land-drop normal do turno (1x/turno) era `cast_card()`ado como se fosse
+um spell qualquer, entrando em campo de graça e SEM respeitar o limite
+de 1 terreno/turno. Corrigido excluindo `CARD_DB[n].ctype != "land"` das
+duas ocorrências do loop `castables` em `main_phase()`.
+
+**Bug real corrigido — Urza's Saga com tag apagada:** `add("Urza's Saga",
+0, "land", set())` duplicado sobrescrevia a tag real `{"saga_token"}` do
+registro original. Duplicata removida. **Atenção:** a tag `saga_token`
+nunca teve NENHUM dispatch em lugar nenhum do arquivo, mesmo antes da
+duplicata — os capítulos I/II/III da Saga continuam sem mecânica real
+implementada, só o dano da sobrescrita foi corrigido. Fica pendente.
+
+**Ainda pendente (achado real, não implementado — não marcar como
+feito):** engine de capítulos do Urza's Saga; 3 MDFCs (Bala Ged Recovery
+// Bala Ged Sanctuary, Ondu Inversion // Ondu Skyruins, Bridgeworks
+Battle // Tanglespan Bridgeworks) registradas só como land, sem a face
+de spell nunca castável; lealdade do Wrenn and Realmbreaker (só a
+estática de fixing é simulada); Caretaker's Talent níveis 2/3; Crucible
+of Worlds/Conduit of Worlds (recursão de terreno do cemitério, tags
+mortas `gy_lands`/`gy_recursion_1turn`); bloco de métricas básicas
+(RAMP/DRAW/INTERACTION/RECURSION/FINISHER) no relatório final.
+
+**Robustez:** 20.000 partidas (seeds 8100000-8119999), 0 erros/timeouts.
+
+**n=3000, seed_base=9000000 — antes (com o bug) → depois:**
+
+| Métrica | Antes (bug) | Depois |
+|---|---|---|
+| Turno médio de conjuração da Toph | 2,67 | **3,42** |
+| Avg terrenos em campo (T8) | 9,95 | 9,56 |
+| Avg aplicações de earthbend | 7,68 | **6,67** |
+| Avg tokens totais criados | 10,48 | **8,95** |
+| Cap defensivo do Scute Swarm atingido (de 3000) | 14.276 | **11.867** |
+| Avg gatilhos de landfall | 9,97 | 9,25 |
+
+Leitura: queda real e esperada em quase toda métrica — o bug inflava a
+mana disponível todo turno (terrenos extras "grátis" sempre que
+sobravam na mão), acelerando artificialmente a conjuração da comandante
+e todo o resto do motor. O turno médio de conjuração subir de 2,67 pra
+3,42 é o sinal mais direto: antes disso, o deck estava rodando rápido
+demais por um bug, não por força real da lista.
+
+`lista.md` não mudou. `toph_v1_runs.jsonl` sobrescrito.
+
+---
+
 ## Simulação #1 — goldfish Python completo (`toph_goldfish_v1.py`) — 2026-08-22
 
 **Script construído do zero**, cobrindo as **16 mecânicas/motores documentados na seção 4 da `auditoria.md`**, não só 1 ou 2 (pedido explícito do usuário). Passo 0 (regra de `references/goldfish-sim-card-rules.md`, aplicada de forma mais ampla que só Roaming Throne — esse deck não tem Roaming Throne, mas o princípio de "varredura mecânica antes de codar" vale igual): regex em todo o oráculo achou **43 cartas com gatilho real** ("Whenever"/"At the beginning of"/"When"). Todas as 43 foram checadas contra a lógica implementada; 34 têm efeito real em código, 9 são genuinamente dependentes de oponente/combate (Esper Sentinel, Skullclamp, Sword of Feast and Famine, Talon Gates of Madara, Krang, Haywire Mite como remoção, Council's Judgment, Lightning Greaves, Heroic Intervention) e foram documentadas como tal em vez de fingir um efeito numérico solo.

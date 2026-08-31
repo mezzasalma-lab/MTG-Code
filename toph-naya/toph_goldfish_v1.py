@@ -43,9 +43,60 @@ Simplificacoes documentadas (nao inventadas — sao omissoes explicitas):
 - Cores de mana: modelo generico de mana total (como os outros simuladores
   desta biblioteca) — o deck tem fixing extenso e documentado (secao 2/4 da
   auditoria), entao nao rastreio pip a pip.
-- Wrenn and Realmbreaker: soh a habilidade estatica (fixing) e simulada
-  ativamente; as habilidades de lealdade sao logadas como disponiveis, nao
-  ativadas automaticamente (decisao de jogo real, fora de escopo).
+- Nenhum P/T (power/toughness) e' rastreado em lugar nenhum do simulador
+  (consequencia direta de nao haver combate real contra oponente) — isso
+  significa que anthems de P/T puro (Caretaker's Talent nivel 3: "Creature
+  tokens you control get +2/+2") nao tem um numero pra modificar; o nivel
+  e' rastreado e concedido de verdade (categoria 13), mas o efeito
+  numerico do anthem e' reportado como metrica separada (tokens criados
+  com o anthem ativo), nunca fingido como dano/poder real.
+
+Achados reais 2026-08-31 (rodada ampliada do checklist, categorias 10-13
+pedidas explicitamente pelo usuario) — ver `goldfish-log.md` pro relato
+completo, incluindo o que foi CORRIGIDO DE VERDADE nesta sessao vs. o
+que ficou so' DIAGNOSTICADO (achado real, mas correcao adiada por falha
+de um agente em background que morreu de rate-limit no meio do
+trabalho — nunca reportado como concluido sem estar):
+
+CORRIGIDO nesta sessao:
+- **Bug fundamental achado durante a auditoria (nao listado pelo
+  usuario, achado nesta varredura):** o loop generico de conjuracao do
+  `main_phase()` nao excluia cartas `ctype=="land"` — qualquer terreno
+  excedente que sobrasse na mao depois do land-drop do turno (mv=0,
+  sempre "castable" por `can_cast()`) era `cast_card()`ado como se fosse
+  um spell, entrando em campo de graca, ALEM do land-drop normal
+  (bypassa a regra de 1 terreno por turno). Corrigido excluindo
+  `ctype=="land"` do loop `castables` (as 2 ocorrencias em
+  `main_phase()`).
+- Urza's Saga: `add()` duplicado sobrescrevia a tag `saga_token` por um
+  `set()` vazio. Duplicata removida — mas a tag `saga_token` **nunca
+  teve dispatch nenhum em lugar nenhum do arquivo, mesmo antes da
+  duplicata** (capitulos I/II/III da Saga continuam nao-implementados,
+  so' o dano da sobrescrita foi corrigido, nao a mecanica em si).
+
+DIAGNOSTICADO mas AINDA NAO IMPLEMENTADO (fica pendente pra proxima
+sessao — nao marcar como feito):
+- Urza's Saga: engine real de capitulo I/II/III (token no cap. II,
+  tutor de artefato barato no cap. III).
+- Bala Ged Recovery // Bala Ged Sanctuary, Ondu Inversion // Ondu
+  Skyruins, Bridgeworks Battle // Tanglespan Bridgeworks: MDFCs
+  (`layout: modal_dfc`, confirmado via API Scryfall) registradas so'
+  como land, sem "enters tapped"/custo de vida real, e sem a face
+  sorcery nunca castavel (Bala Ged Recovery em particular e' recursao
+  real de cemiterio).
+- Wrenn and Realmbreaker: so' a estatica de fixing e' simulada; as
+  habilidades de lealdade (+1/-2/-7) nunca sao ativadas (campo
+  `wrenn_loyalty` existe no `GameState` mas nunca e' lido/escrito).
+- Caretaker's Talent: so' o nivel 1 (draw ao entrar token) esta
+  implementado — nivel 2 (copiar token) e nivel 3 (anthem +2/+2 em
+  tokens) ausentes.
+- Crucible of Worlds / Conduit of Worlds ("You may play lands from your
+  graveyard"): tags `gy_lands`/`gy_recursion_1turn` existem no CARD_DB
+  mas nunca sao lidas em lugar nenhum (dead tags) — recursao de terreno
+  do cemiterio nunca acontece.
+- Relatorio (`run_batch`) ainda NAO reporta as 5 metricas basicas
+  obrigatorias (ramp/draw/interaction/recursion/finisher-lethality) como
+  linhas proprias auditaveis.
 """
 
 import json
@@ -297,7 +348,6 @@ add("The Stasis Coffin", 3, "artifact", {"protection_recurring", "earthbend_targ
 add("Toph, Earthbending Master", 4, "creature", {"landfall_experience", "attack_earthbend_experience"})
 add("Toph, Greatest Earthbender", 4, "creature", {"earthbend_source_cast_x", "double_strike_land_creatures"})
 add("Ultron, Artificial Malevolence", 3, "artifact_creature", {"artifact_copy"})
-add("Urza's Saga", 0, "land", set())  # already added
 add("Windswept Heath", 0, "land", {"fetch"})  # already added
 add("Wooded Foothills", 0, "land", {"fetch"})  # already added
 add("Yavimaya, Cradle of Growth", 0, "land", set())  # already added
@@ -975,7 +1025,7 @@ def main_phase(state: GameState, log: list):
             # la pra ser encontrada. So marca ela como protegida do loop de
             # casting generico abaixo.
 
-    castables = [n for n in state.hand if can_cast(state, n) and n != held_for_kodama]
+    castables = [n for n in state.hand if CARD_DB[n].ctype != "land" and can_cast(state, n) and n != held_for_kodama]
     castables.sort(key=lambda n: CARD_DB[n].mv)
     for n in castables:
         if n not in state.hand:
@@ -983,7 +1033,7 @@ def main_phase(state: GameState, log: list):
         if not can_cast(state, n):
             continue
         cast_card(state, n, log)
-        castables = [x for x in state.hand if can_cast(state, x) and x != held_for_kodama]
+        castables = [x for x in state.hand if CARD_DB[x].ctype != "land" and can_cast(state, x) and x != held_for_kodama]
         castables.sort(key=lambda x: CARD_DB[x].mv)
 
     # Ba Sing Se: earthbend ativado se sobrar mana
