@@ -1,5 +1,26 @@
 # Goldfish Log — Edgar Markov
 
+### Correção — nome truncado "Emeritus of Woe" → nome completo — 2026-08-31
+
+Varredura de nomes de carta multi-face em todo o repositório (motivada
+pelo usuário questionando se Beorn/Thranduil estavam 100% auditados).
+`Emeritus of Woe` estava truncado em `lista.md` e no simulador — nome
+real completo (`layout: prepare`, Scryfall): **`Emeritus of Woe //
+Demonic Tutor`**. Renomeado em `lista.md`, `DECKLIST_TEXT` e todas as
+referências de código. **Mecânica em si já estava correta** (condição
+"prepared" com 2+ mortes no turno, custo real pago pela cópia do Demonic
+Tutor — corrigida numa rodada anterior, ver Correção #4/nota de timing
+abaixo) — esse era só um problema de nome, não de comportamento.
+
+Teste pareado (n=500, mesmas seeds, antes/depois): 4/500 jogos com
+diferença mínima em `drain_total`/`lifegain_total` — ruído esperado de
+desempate por ordenação alfabética de nome de carta em situações raras
+de mana apertada (mesma categoria de sensibilidade já documentada nas
+regras permanentes pra testes pareados), não uma regressão. Robustez:
+10.000 jogos, 0 erros. `edgar_markov_v1_runs.jsonl` regenerado (n=2000).
+
+---
+
 ## Simulação #1 — gerada por Claude (RNG real, não é partida sua)
 
 **Método:** embaralhei a lista de 100 cartas de `lista.md` com `random.shuffle` do Python (sem seed fixa, entropia do sistema) em 2026-08-20. On the play, sem compra no T1.

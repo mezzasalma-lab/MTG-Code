@@ -202,7 +202,7 @@ DECKLIST_TEXT = """
 1 Cordial Vampire
 1 Cruel Celebrant
 1 Elenda, the Dusk Rose
-1 Emeritus of Woe
+1 Emeritus of Woe // Demonic Tutor
 1 Enduring Tenacity
 1 Indulgent Aristocrat
 1 Mondrak, Glory Dominus
@@ -317,7 +317,7 @@ add("Clavileño, First of the Blessed", 3, "Creature", colors={"B", "W"}, produc
 add("Cordial Vampire", 2, "Creature", colors={"B"}, produces=set(), tags={"vampire_type"})
 add("Cruel Celebrant", 2, "Creature", colors={"B", "W"}, produces=set(), tags={"drain_aristocrats", "vampire_type"})
 add("Elenda, the Dusk Rose", 4, "Creature", colors={"B", "W"}, produces=set(), tags={"token_maker", "vampire_type"})
-add("Emeritus of Woe", 4, "Creature", colors={"B"}, produces=set(), tags={"tutor", "vampire_type"})
+add("Emeritus of Woe // Demonic Tutor", 4, "Creature", colors={"B"}, produces=set(), tags={"tutor", "vampire_type"})
 add("Enduring Tenacity", 4, "Creature", colors={"B"}, produces=set(), tags={"drain_aristocrats"})
 add("Indulgent Aristocrat", 1, "Creature", colors={"B"}, produces=set(), tags={"vampire_type"})
 add("Mondrak, Glory Dominus", 4, "Creature", colors={"W"}, produces=set(), tags=set())
@@ -580,7 +580,7 @@ CREATURE_POWER = {
     "Champion of Dusk": 4, "Charismatic Conqueror": 2,
     "Clavileño, First of the Blessed": 2, "Cordial Vampire": 1,
     "Cruel Celebrant": 1, "Elenda, the Dusk Rose": 1,
-    "Emeritus of Woe": 5, "Enduring Tenacity": 4, "Indulgent Aristocrat": 1,
+    "Emeritus of Woe // Demonic Tutor": 5, "Enduring Tenacity": 4, "Indulgent Aristocrat": 1,
     "Mondrak, Glory Dominus": 4, "Nullpriest of Oblivion": 2,
     "Ojer Taq, Deepest Foundation // Temple of Civilization": 6,
     "Ophiomancer": 2, "Pitiless Plunderer": 1, "Purphoros, God of the Forge": 6,
@@ -1588,7 +1588,7 @@ def apply_etb(state: GameState, card: str, log: List[Dict]):
         state.eminence_tokens_created += n  # mesmo pool de Vampire Token da Eminence, ver metricas
         on_creature_enters(state, log, "Vampire Token", count=n)
         log.append({"trigger": "legions_landing_etb", "tokens": n, "turn": state.turn})
-    elif card == "Emeritus of Woe":
+    elif card == "Emeritus of Woe // Demonic Tutor":
         # Achado real 2026-08-27 (usuario: "o Emeritus of Woe tem o
         # Demonic Tutor Prepared, mais um tutor!"): "This creature
         # enters prepared. (While it's prepared, you may cast a copy
@@ -1691,7 +1691,7 @@ def do_end_step(state: GameState, log: List[Dict]):
     # proximo turno (fim do main_phase inicial, e de novo depois da
     # mana extra do sac_loop). Este deck sacrifica 2 tokens/turno com
     # facilidade (sac_loop), entao essa condicao e' bem alcancavel.
-    if state.has("Emeritus of Woe") and state.creatures_died_this_turn >= 2:
+    if state.has("Emeritus of Woe // Demonic Tutor") and state.creatures_died_this_turn >= 2:
         state.emeritus_prepared = True
         log.append({"trigger": "emeritus_of_woe_prepared", "turn": state.turn})
 

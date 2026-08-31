@@ -16,7 +16,7 @@
 1 Cordial Vampire
 1 Cruel Celebrant
 1 Elenda, the Dusk Rose
-1 Emeritus of Woe
+1 Emeritus of Woe // Demonic Tutor
 1 Enduring Tenacity
 1 Indulgent Aristocrat
 1 Mondrak, Glory Dominus
