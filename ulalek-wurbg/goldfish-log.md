@@ -585,6 +585,163 @@ mais mana disponível ao longo do jogo, efeito difuso.
 
 ---
 
+### Rodada ampliada — checklist categorias 10-13 (regra ampliada de mecânica) — 2026-08-31
+
+**Gatilho:** pedido explícito do usuário para completar a "rodada ampliada" do
+checklist obrigatório de `references/goldfish-sim-card-rules.md` neste deck —
+as categorias 1-9 já tinham sido auditadas em 2026-08-28, mas as categorias
+10-13 (métricas básicas completas, multi-face, planeswalker, Classe/Saga)
+nunca tinham passado por essa rodada formal aqui.
+
+**Categoria 11 (multi-face) e categoria 13 (Classe/Saga) — N/A confirmado,
+varredura própria independente.** Script cruzando as 100 cartas de
+`lista.md` contra `scryfall-cache/oracle-cache.json` (campo `mana_cost`,
+`oracle_text`, `type_line`) não achou nenhum nome com "//", nenhum
+`card_faces`, e nenhum `type_line` contendo "Class" ou "Saga". Nenhuma
+implementação necessária — só documentação (já estava correta na avaliação
+prévia desta sessão, confirmada de novo aqui de forma independente, não só
+repetida).
+
+**Categoria 12 (planeswalker) — Ugin, the Ineffable, lealdade rastreada de
+verdade.** Oráculo real (Scryfall, `oracle-cache.json`, loyalty inicial 4,
+`type_line`: "Legendary Planeswalker — Ugin"):
+
+```
+Colorless spells you cast cost {2} less to cast.
++1: Exile the top card of your library face down and look at it. Create a
+2/2 colorless Spirit creature token. When that token leaves the
+battlefield, put the exiled card into your hand.
+−3: Destroy target permanent that's one or more colors.
+```
+
+A parte estática (desconto de {2} em colorless) já estava correta havia
+várias rodadas (`eldrazi_cost_discount`). Antes desta correção, **0
+ocorrências de `state.loyalty` em todo o arquivo** — nenhuma lealdade
+rastreada, nenhuma decisão de ativação, nenhum efeito de +1/-3
+implementado. Corrigido via `do_ugin_loyalty()`:
+
+- **Lealdade inicial real (4)** rastreada em `state.loyalty["Ugin, the
+  Ineffable"]`, setada no ETB (`enter_battlefield`).
+- **Decisão real de qual habilidade ativar por turno** (CR 606.3, 1
+  ativação/turno, velocidade de feitiço): heurística documentada — **sempre
+  +1**. O -3 é reativo e só vale a pena com um alvo colorido de oponente
+  real — mas este simulador não modela oponente (Regra 1), e as **únicas 2
+  cartas coloridas de verdade em toda a lista de 100** são NOSSAS (Defense
+  of the Heart, Rhystic Study — mesma checagem já usada pro All Is Dust).
+  Destruir permanente próprio seria uma piora, nunca escolhida por uma
+  heurística greedy. -3 fica "disponível mas sem efeito numérico
+  proveitoso" — mesma convenção já usada em Defense of the Heart/Sire of
+  Stagnation — e contado explicitamente em
+  `ugin_minus3_skipped_no_target_total` pra deixar a decisão auditável, não
+  só omitida.
+- **Efeito do +1 implementado de verdade:** token 2/2 colorless Spirit
+  criado (`ugin_spirit_tokens_created_total`) + topo da biblioteca exilado
+  face-down (`ugin_cards_exiled_stuck_total`). Como o token Spirit não tem
+  sac outlet próprio (só Eldrazi Spawn/Scion têm "sacrifice: add {C}") e
+  este goldfish solo não modela combate/remoção de oponente, o token
+  **nunca sai de campo neste simulador** — então "when that token leaves
+  the battlefield, put the exiled card into your hand" nunca dispara aqui,
+  documentado como omissão explícita (mesma convenção já usada nos outros
+  leaves-the-battlefield triggers do arquivo). A carta exilada fica presa
+  em exílio — perda real, tornada visível pela métrica dedicada em vez de
+  silenciada.
+
+**Achado adicional durante a varredura — legend rule não é aplicada a
+cópias-token de permanentes lendários (limitação conhecida, não corrigida
+nesta rodada):** o motor de cópia (Ulalek/Echoes) não força o sacrifício de
+uma 2ª cópia de um permanente lendário (Kozilek x3, Ulamog x2, Emrakul,
+Zhulodok, Morophon, e agora potencialmente Ugin via Echoes) — CR 704.5j
+exigiria isso numa mesa real. Esse comportamento já existia antes desta
+rodada e já foi documentado/aceito em várias sessões anteriores (ex.: "2
+corpos 10/10 EM CAMPO" pro Kozilek, Butcher of Truth, descrito como correto
+no docstring do arquivo desde 2026-08-23). Corrigir isso agora mudaria
+números do motor central de cópia já validados em múltiplas rodadas sem
+pedido explícito do usuário para essa mudança específica — documentado como
+achado real desta auditoria, não implementado. Fica como candidato pra uma
+rodada dedicada futura.
+
+**Categoria 10 (métricas básicas obrigatórias) — RECURSION, RAMP e
+FINISHER/LETHALITY nunca tinham linha própria no relatório.**
+
+- **RECURSION:** confirmado o que o usuário suspeitava — Spawnbed Protector
+  já retornava carta do cemitério pra mão desde a correção de 2026-08-28,
+  mas **nunca virava uma métrica agregada reportada**, ficava "invisível"
+  no `run_batch`. Corrigido (`recursion_events_total`,
+  `spawnbed_protector_recursion_total`). Durante a varredura, achado um
+  **2º gap real**: **World Breaker** ("{2}{C}, Sacrifice a land: Return
+  this card from your graveyard to your hand.") tinha só o cast-trigger
+  (`ct_removal1`) implementado — a habilidade de recursão (ativada, custo
+  real 3 mana + sacrifício de terreno) estava 100% ausente. Implementada
+  via `do_world_breaker_recursion()`, heurística documentada (só ativa com
+  mana sobrando ≥3, mais de 5 terrenos em campo — piso de segurança pra
+  nunca sacrificar terreno que reduza a manabase abaixo de 5).
+- **RAMP:** nunca teve uma linha agregada própria — os componentes (rocks,
+  land tutors) existiam espalhados sem contador central. Adicionado
+  `ramp_pieces_resolved_total` (incrementado em cada resolução real de
+  mana rock — Sol Ring/Arcane Signet/Talismans/Thran Dynamo — e cada land
+  tutor bem-sucedido — Farseek/Nature's Lore/Three Visits/Sowing
+  Mycospawn/Expedition Map). Achado extra: as amostras de mana por turno
+  (`true_c_capacity_samples`/`total_mana_samples`, coletadas desde
+  2026-08-30 "a pedido do usuário" segundo o próprio comentário do código)
+  **nunca eram impressas em lugar nenhum do relatório** — corrigido,
+  agora aparecem como parte do bloco RAMP.
+- **FINISHER/LETHALITY:** 100% ausente do relatório antes desta correção.
+  Implementado via tag `"finisher"` nas 8 criaturas MV≥9 da lista (mesmo
+  conjunto já citado em `auditoria.md` seção 2: "Kozilek x3, Ulamog x2,
+  Emrakul, Void Winnower, Flayer of Loyalties") — conta reais + cópias
+  (Echoes/Ulalek) + acertos de cascade, já que todos passam por
+  `enter_battlefield()`. Reporta: avg finishers resolvidos, % de jogos com
+  pelo menos 1 finisher resolvido, turno médio/mediano do 1º finisher.
+
+**Robustez:** 2 sweeps de 20.000 jogos cada (seeds 5100000–5119999 e
+5200000–5219999, timeout 2s/jogo via `signal.alarm`) — **0 erros, 0
+timeouts** nos dois, 40.000 jogos totais.
+
+**n=3000, seed_base=8600000, 8 turnos — antes → depois (mesma seed):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg cópias pagas da Ulalek (CC) | 1,05 | 1,04 |
+| Avg cascade cascade disparadas | 0,08 | 0,07 |
+| Avg spells de interação conjurados (proxy) | 1,82 | 1,81 |
+| Avg dobras via Roaming Throne | 0,16 | 0,15 |
+| Avg dano proxy via Glaring Fleshraker | 1,17 | 1,16 |
+| **RECURSION — Avg eventos totais** | *(não reportado)* | **0,0007** |
+| **RECURSION — % de jogos com ≥1 evento** | *(não reportado)* | **0,07%** |
+| **RAMP — Avg peças de ramp resolvidas** | *(não reportado)* | **1,73** |
+| **RAMP — Avg mana total/turno** | *(não reportado)* | **4,68** |
+| **RAMP — Avg capacidade {C} real/turno** | *(não reportado)* | **2,76** |
+| **FINISHER/LETHALITY — Avg finishers resolvidos** | *(não reportado)* | **0,25** |
+| **FINISHER/LETHALITY — % jogos c/ ≥1 finisher** | *(não reportado)* | **15,4%** |
+| **FINISHER/LETHALITY — turno médio do 1º finisher** | *(não reportado)* | **7,36** |
+| **Ugin — Avg ativações de lealdade/partida** | *(não rastreado)* | **0,17** |
+| **Ugin — % de jogos em que resolveu** | *(não rastreado)* | **8,17% (245/3000)** |
+| **Ugin — Avg lealdade final (jogos que resolveram)** | *(não rastreado)* | **6,11** |
+
+**Leitura das 5 pequenas quedas (-0,01 cada) nas métricas pré-existentes:**
+causadas pelo próprio +1 do Ugin passar a exilar o topo da biblioteca
+(mecânica nova, real) — isso desloca a ordem de compra do resto do jogo
+mesmo com a MESMA seed, um efeito colateral esperado e explicado (não um
+bug), da mesma natureza já documentada em correções anteriores deste deck
+quando um novo consumo de biblioteca é introduzido.
+
+**RECURSION é real, mas rara neste deck especificamente** (0,07% dos
+jogos) — não porque a implementação esteja errada, mas porque as duas
+fontes reais de recursão do deck têm pré-condições pouco frequentes num
+goldfish solo de 8 turnos com uma IA proativa: Spawnbed Protector (7 mana)
+precisa que já exista um Eldrazi elegível no cemitério (raro, já que a IA
+não descarta Eldrazi voluntariamente) e World Breaker precisa já estar no
+cemitério (só acontece via mão cheia de 7+ no fim do turno). Confirmado por
+varredura dedicada: Spawnbed Protector chega ao campo em 190/3000 jogos
+(6,3%), mas só 2 desses têm um Eldrazi elegível no cemitério no momento do
+end step.
+
+`lista.md` não mudou. `ulalek_v1_runs.jsonl` sobrescrito com os campos
+novos (`ugin_loyalty_final`, `recursion_events_total`,
+`ramp_pieces_resolved_total`, `finisher_resolved_total`, etc.).
+
+---
+
 ## Partida #1 — 2026-08-30 (partida REAL, jogada à mão no goldfish do Archidekt)
 
 **Formato do registro:** igual ao método usado nas Partidas #13-15 do Ur-Dragon —

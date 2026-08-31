@@ -122,6 +122,52 @@ permanentes, validando a tese da auditoria de "wipe assimetrico" com
 numero real, nao estimado.
 
 ======================================================================
+Rodada ampliada — categorias 10-13 (achado real 2026-08-31)
+======================================================================
+Pedido explicito do usuario: aplicar a checklist ampliada (categorias
+10-13 de `references/goldfish-sim-card-rules.md`) a este deck pela
+primeira vez — as categorias 1-9 ja tinham sido auditadas em 2026-08-28.
+
+- **Categoria 11 (multi-face) e categoria 13 (Classe/Saga): N/A
+  confirmado.** Varredura programatica das 100 cartas de `lista.md`
+  contra `scryfall-cache/oracle-cache.json` (nome exato + campos
+  `mana_cost`/`oracle_text`/`type_line`) nao achou nenhuma carta com "//"
+  no nome, nenhum `card_faces`, e nenhum `type_line` contendo "Class" ou
+  "Saga". Nenhuma implementacao necessaria, so' documentacao.
+- **Categoria 12 (planeswalker): Ugin, the Ineffable.** ZERO
+  `state.loyalty` existia no arquivo antes desta correcao. Implementado
+  de verdade — ver `do_ugin_loyalty()` mais abaixo pra oraculo real,
+  heuristica documentada (sempre +1; -3 disponivel mas sem alvo colorido
+  de oponente real neste goldfish solo) e efeitos (token Spirit 2/2,
+  carta exilada presa em exilio).
+- **Categoria 10 (metricas basicas): RECURSION, RAMP e
+  FINISHER/LETHALITY nunca tinham linha propria no relatorio.**
+  RECURSION existia de fato desde 2026-08-28 (Spawnbed Protector
+  retornando carta do cemiterio pra mao), mas nunca virava metrica
+  reportada — corrigido, e um 2o gap real foi achado durante essa
+  varredura: **World Breaker** ("{2}{C}, Sacrifice a land: Return this
+  card from your graveyard to your hand.") tinha SO' o cast-trigger
+  implementado, a habilidade de recursao 100% ausente — implementada via
+  `do_world_breaker_recursion()`. FINISHER/LETHALITY implementada via
+  tag "finisher" nas 8 criaturas MV>=9 (mesmo conjunto ja citado em
+  `auditoria.md` secao 2). RAMP ganhou uma linha agregada
+  (`ramp_pieces_resolved_total`) e as amostras de mana por turno
+  (`true_c_capacity_samples`/`total_mana_samples`, coletadas desde
+  2026-08-30 mas NUNCA impressas no relatorio) finalmente aparecem no
+  `run_batch()`.
+- **Limitacao conhecida, fora de escopo desta rodada:** o motor de copia
+  (Ulalek/Echoes) nao aplica a "legend rule" a copias-token de
+  permanentes lendarios (Kozilek x3, Ulamog x2, Emrakul, Zhulodok,
+  Morophon, e agora potencialmente Ugin via Echoes) — uma copia de um
+  permanente lendario deveria forcar o sacrificio de um dos dois pela
+  regra real (CR 704.5j). Isso ja era assim antes desta rodada (mesmo
+  comportamento documentado e aceito em multiplas sessoes anteriores,
+  ex: "Kozilek Butcher... 2 corpos 10/10 EM CAMPO" no goldfish-log) —
+  corrigir agora mudaria numeros do motor central ja validados em varias
+  rodadas sem pedido explicito do usuario pra essa mudanca especifica.
+  Documentado aqui como achado real desta auditoria, nao corrigido.
+
+======================================================================
 Simplificacoes documentadas (nao inventadas — omissoes explicitas)
 ======================================================================
 - Modelo de mana GENERICO/TOTAL (mesma convencao de Nekusar/Ur-
@@ -210,6 +256,7 @@ COMMANDER = "Ulalek, Fused Atrocity"
 add(COMMANDER, 5, "creature", {"commander", "eldrazi", "colorless"})
 
 ROAMING_THRONE_TYPE = "eldrazi"
+UGIN_NAME = "Ugin, the Ineffable"
 
 # --- Terrenos (37) ---------------------------------------------------------
 for n in ["Adarkar Wastes", "Badlands", "Bayou", "Brushland", "Cascading Cataracts",
@@ -247,22 +294,34 @@ add("Conduit of Ruin", 6, "creature", {"eldrazi", "colorless", "ct_conduit"})
 # Oraculo real: "The first creature spell you cast each turn costs {2}
 # less to cast and can be cast as though it had flash."
 add("Radagast of Rhosgobel", 4, "creature", set())
-add("Emrakul, the Promised End", 13, "creature", {"eldrazi", "colorless", "ct_emrakul"})
-add("Flayer of Loyalties", 10, "creature", {"eldrazi", "colorless", "ct_flayer"})
-add("Kozilek, Butcher of Truth", 10, "creature", {"eldrazi", "colorless", "ct_draw4"})
-add("Kozilek, the Broken Reality", 9, "creature", {"eldrazi", "colorless", "ct_manifest2"})
-add("Kozilek, the Great Distortion", 10, "creature", {"eldrazi", "colorless", "ct_draw_to7"})
+# Tag "finisher": criaturas MV>=9 desta lista, mesmo conjunto de 8 ja
+# citado em auditoria.md secao 2 ("multiplos Eldrazi de CMC 9-13: Kozilek
+# x3, Ulamog x2, Emrakul, Void Winnower, Flayer of Loyalties") — usado pela
+# nova metrica basica obrigatoria FINISHER/LETHALITY (regra 9, categoria
+# 10), achado real 2026-08-31 (rodada ampliada): nenhuma linha de
+# finisher/lethality existia no relatorio antes desta correcao.
+add("Emrakul, the Promised End", 13, "creature", {"eldrazi", "colorless", "ct_emrakul", "finisher"})
+add("Flayer of Loyalties", 10, "creature", {"eldrazi", "colorless", "ct_flayer", "finisher"})
+add("Kozilek, Butcher of Truth", 10, "creature", {"eldrazi", "colorless", "ct_draw4", "finisher"})
+add("Kozilek, the Broken Reality", 9, "creature", {"eldrazi", "colorless", "ct_manifest2", "finisher"})
+add("Kozilek, the Great Distortion", 10, "creature", {"eldrazi", "colorless", "ct_draw_to7", "finisher"})
 add("Nulldrifter", 7, "creature", {"eldrazi", "colorless", "ct_draw2"})
 add("Sowing Mycospawn", 4, "creature", {"eldrazi", "colorless", "ct_land_tutor"})
-add("Ulamog, the Ceaseless Hunger", 10, "creature", {"eldrazi", "colorless", "ct_removal2"})
-add("Ulamog, the Infinite Gyre", 11, "creature", {"eldrazi", "colorless", "ct_removal1"})
-add("World Breaker", 7, "creature", {"eldrazi", "colorless", "ct_removal1"})
+add("Ulamog, the Ceaseless Hunger", 10, "creature", {"eldrazi", "colorless", "ct_removal2", "finisher"})
+add("Ulamog, the Infinite Gyre", 11, "creature", {"eldrazi", "colorless", "ct_removal1", "finisher"})
+# World Breaker: achado real 2026-08-31 (rodada ampliada, categoria 10 —
+# varredura de recursao). Oraculo real (Scryfall, confirmado via cache):
+# "{2}{C}, Sacrifice a land: Return this card from your graveyard to your
+# hand." — habilidade ativada de recursao 100% ausente ate agora (so' o
+# cast-trigger ct_removal1 estava implementado). Tag "gy_recursion" nova,
+# ver do_world_breaker_recursion() abaixo.
+add("World Breaker", 7, "creature", {"eldrazi", "colorless", "ct_removal1", "gy_recursion"})
 add("Writhing Chrysalis", 4, "creature", {"eldrazi", "colorless", "ct_spawn2"})
 
 # --- Eldrazi sem cast-trigger (corpo / estatico) ----------------------------
 add("Sire of Seven Deaths", 7, "creature", {"eldrazi", "colorless"})
 add("Sire of Stagnation", 6, "creature", {"eldrazi", "colorless"})
-add("Void Winnower", 9, "creature", {"eldrazi", "colorless"})
+add("Void Winnower", 9, "creature", {"eldrazi", "colorless", "finisher"})
 
 # --- Eldrazi Drones com gatilho de permanente em campo ----------------------
 add("Chittering Dispatcher", 3, "creature", {"eldrazi", "colorless", "leaves_spawn"})
@@ -285,7 +344,7 @@ add("Morophon, the Boundless", 7, "creature", {"colorless"})
 add("Mystic Forge", 4, "artifact", {"colorless", "cast_from_top"})
 add("Roaming Throne", 4, "artifact_creature", {ROAMING_THRONE_TYPE, "colorless", "roaming_throne"})
 add("The One Ring", 4, "artifact", {"colorless", "one_ring"})
-add("Ugin, the Ineffable", 6, "planeswalker", {"colorless"})
+add("Ugin, the Ineffable", 6, "planeswalker", {"colorless", "planeswalker_ugin"})
 add("Urza's Incubator", 3, "artifact", {"colorless"})
 add("Vedalken Orrery", 4, "artifact", {"colorless", "flash_source"})
 add("Liberator, Urza's Battlethopter", 3, "artifact_creature", {"colorless", "flash_source"})
@@ -390,6 +449,32 @@ class GameState:
     true_c_capacity_samples: list = field(default_factory=list)
     total_mana_samples: list = field(default_factory=list)
     leftover_mana_samples: list = field(default_factory=list)
+
+    # --- Achado real 2026-08-31 (rodada ampliada, categoria 12 da
+    # checklist) — lealdade de planeswalker rastreada de verdade. Antes
+    # desta correcao, "loyalty" tinha ZERO ocorrencias no arquivo inteiro. ---
+    loyalty: dict = field(default_factory=dict)
+    ugin_activations_total: int = 0
+    ugin_plus1_total: int = 0
+    ugin_minus3_skipped_no_target_total: int = 0
+    ugin_spirit_tokens_created_total: int = 0
+    ugin_cards_exiled_stuck_total: int = 0
+
+    # --- Achado real 2026-08-31 (categoria 10 — metrica basica RECURSION
+    # ausente do relatorio, apesar de Spawnbed Protector ja retornar carta
+    # do cemiterio pra mao desde a correcao de 2026-08-28). ---
+    recursion_events_total: int = 0
+    spawnbed_protector_recursion_total: int = 0
+    world_breaker_recursion_total: int = 0
+
+    # --- Achado real 2026-08-31 (categoria 10 — metrica basica RAMP nunca
+    # tinha uma linha propria/agregada no relatorio). ---
+    ramp_pieces_resolved_total: int = 0
+
+    # --- Achado real 2026-08-31 (categoria 10 — metrica basica
+    # FINISHER/LETHALITY 100% ausente do relatorio). ---
+    finisher_resolved_total: int = 0
+    first_finisher_turn: Optional[int] = None
 
 
 def draw_cards(state: GameState, n: int):
@@ -512,6 +597,7 @@ def ct_land_tutor(state: GameState):
         pick = candidates[0]
         state.library.remove(pick)
         state.battlefield.append(pick)
+        state.ramp_pieces_resolved_total += 1  # RAMP (categoria 10): Sowing Mycospawn
 
 
 def ct_removal2(state: GameState):
@@ -778,6 +864,7 @@ def resolve_instant_sorcery_effect(state: GameState, name: str):
             pick = candidates[0]
             state.library.remove(pick)
             state.battlefield.append(pick)
+            state.ramp_pieces_resolved_total += 1  # RAMP (categoria 10): Farseek/Nature's Lore/Three Visits
     elif "tutor_creature_hand" in tags:
         pool = [n for n in state.library if is_creature_card(n)]
         if pool:
@@ -806,6 +893,34 @@ def enter_battlefield(state: GameState, name: str, is_token: bool = False):
         pass  # tratado quando sair de campo — nunca modelado sem remocao real (ver docstring)
     if name == "The One Ring" and not is_token:
         pass  # protecao ETB sem efeito modelavel
+
+    tags = CARD_DB[name].tags
+    # Ugin, the Ineffable: lealdade inicial real (Scryfall: "loyalty": "4").
+    # Se uma copia (token, via Echoes de Eternity — Ugin e' colorless de
+    # verdade) entrar depois, o dict e' por NOME e simplesmente reseta pra
+    # 4 de novo — mesma convencao ja aceita no resto do arquivo pra copias
+    # de permanentes lendarios (Kozilek/Ulamog/Zhulodok ja documentados nas
+    # rodadas anteriores como "2 corpos em campo", sem enforcement de legend
+    # rule neste modelo — fora de escopo mudar isso agora, mudaria numeros
+    # ja validados em multiplas rodadas anteriores do motor de copia).
+    if "planeswalker_ugin" in tags:
+        state.loyalty[UGIN_NAME] = 4
+
+    # RAMP (categoria 10): mana rocks resolvendo como permanente contam
+    # como peca de ramp real (Sol Ring/Arcane Signet/Talismans/Thran
+    # Dynamo).
+    if tags & {"rock1", "rock2", "rock3"}:
+        state.ramp_pieces_resolved_total += 1
+
+    # FINISHER/LETHALITY (categoria 10): tag "finisher" = 8 criaturas
+    # MV>=9 (Emrakul, Flayer of Loyalties, Kozilek x3, Ulamog x2, Void
+    # Winnower — mesmo conjunto ja citado em auditoria.md secao 2).
+    # Conta reais + copias (spell_token_copies via Echoes/Ulalek) +
+    # cascade hits, ja que todos passam por aqui.
+    if "finisher" in tags:
+        state.finisher_resolved_total += 1
+        if state.first_finisher_turn is None:
+            state.first_finisher_turn = state.turn
 
 
 def do_cascade(state: GameState, x: int, depth: int = 0):
@@ -975,6 +1090,7 @@ def do_expedition_map(state: GameState):
     state.library.remove(pick)
     state.hand.append(pick)
     state.battlefield.remove("Expedition Map")
+    state.ramp_pieces_resolved_total += 1  # RAMP (categoria 10): Expedition Map
 
 
 def do_one_ring(state: GameState):
@@ -984,6 +1100,89 @@ def do_one_ring(state: GameState):
     n = state.one_ring_burden
     draw_cards(state, n)
     state.one_ring_cards_drawn_total += n
+
+
+def do_world_breaker_recursion(state: GameState):
+    """World Breaker: "{2}{C}, Sacrifice a land: Return this card from your
+    graveyard to your hand." Achado real 2026-08-31 (rodada ampliada,
+    categoria 10 — varredura de RECURSAO): habilidade ativada 100% ausente
+    ate agora, so' o cast-trigger (ct_removal1) estava implementado.
+
+    Heuristica documentada: so' ativa quando (a) World Breaker esta no
+    cemiterio e NAO ja na mao/campo, (b) ha mana sobrando >= 3 (custo real
+    {2}{C}, modelo generico), e (c) ha mais de 5 terrenos em campo — piso
+    de seguranca pra nunca sacrificar land que reduza a manabase abaixo de
+    5, mesmo greedy. No maximo 1 ativacao por turno neste modelo (nao ha
+    ganho em ativar 2x sem recastar entre elas, e recastar tira a carta do
+    cemiterio de novo)."""
+    if "World Breaker" not in state.graveyard:
+        return
+    if "World Breaker" in state.hand or "World Breaker" in state.battlefield:
+        return
+    lands_in_play = [n for n in state.battlefield if n in LAND_NAMES]
+    if len(lands_in_play) <= 5:
+        return
+    if remaining_mana(state) < 3:
+        return
+    spend_mana(state, 3)
+    state.battlefield.remove(lands_in_play[0])
+    state.graveyard.remove("World Breaker")
+    state.hand.append("World Breaker")
+    state.recursion_events_total += 1
+    state.world_breaker_recursion_total += 1
+
+
+def do_ugin_loyalty(state: GameState):
+    """Ugin, the Ineffable — CR 606.3 (uma ativacao de lealdade por turno,
+    velocidade de feitiço). Achado real 2026-08-31 (rodada ampliada,
+    categoria 12): nenhum `state.loyalty` existia no arquivo inteiro (0
+    ocorrencias de "loyalty" antes desta correcao), apesar da parte
+    estatica do Ugin (desconto de {2} em spells colorless, ver
+    `eldrazi_cost_discount`) ja estar correta ha varias rodadas.
+
+    Oraculo real (Scryfall, loyalty inicial 4):
+    "Colorless spells you cast cost {2} less to cast.
+    +1: Exile the top card of your library face down and look at it.
+    Create a 2/2 colorless Spirit creature token. When that token leaves
+    the battlefield, put the exiled card into your hand.
+    −3: Destroy target permanent that's one or more colors."
+
+    Heuristica documentada (uma decisao real por turno, nao decorativa):
+    SEMPRE +1. -3 e' reativa e so' vale a pena com um alvo colorido de
+    verdade — mas este simulador nao modela oponente real (Regra 1), e as
+    UNICAS 2 cartas coloridas de verdade em toda a lista de 100 sao NOSSAS
+    (Defense of the Heart, Rhystic Study — ver docstring do topo do
+    arquivo e a checagem carta-a-carta ja feita pro All Is Dust): destruir
+    permanente PROPRIO seria uma piora, nunca escolhido por uma heuristica
+    greedy. -3 fica "disponivel mas sem efeito numerico proveitoso" nesta
+    convencao — mesmo tratamento ja usado pra Defense of the Heart/Sire of
+    Stagnation (condicao de oponente nunca presumida verdadeira) — contada
+    em `ugin_minus3_skipped_no_target_total` pra deixar a decisao auditavel,
+    nao so' omitida.
+
+    Token 2/2 Spirit criado por +1: colorless, sem sac outlet proprio (so'
+    Eldrazi Spawn/Scion tem "sacrifice: add {C}"), sem combate ou remocao
+    de oponente reais neste goldfish solo -> nunca sai de campo neste
+    simulador. "When that token leaves the battlefield, put the exiled
+    card into your hand" portanto NUNCA dispara aqui — documentado como
+    omissao explicita, mesma convencao ja usada pros outros leaves-the-
+    battlefield triggers do arquivo (so' disparam quando o proprio
+    simulador causa a saida, ex: warp da Anticausal Vestige). A carta
+    exilada por +1 fica presa em exilio (nunca volta a mao) — modelado
+    explicitamente via `ugin_cards_exiled_stuck_total` pra tornar essa
+    perda visivel na metrica, em vez de silenciada."""
+    if UGIN_NAME not in state.battlefield:
+        return
+    if state.loyalty.get(UGIN_NAME, 0) <= 0:
+        return
+    state.loyalty[UGIN_NAME] = state.loyalty.get(UGIN_NAME, 4) + 1
+    state.ugin_activations_total += 1
+    state.ugin_plus1_total += 1
+    state.ugin_spirit_tokens_created_total += 1
+    state.ugin_minus3_skipped_no_target_total += 1  # -3 estava disponivel, heuristica sempre prefere +1 (ver docstring)
+    if state.library:
+        state.library.pop(0)  # exilado face down; nunca volta (token nunca sai de campo, ver docstring)
+        state.ugin_cards_exiled_stuck_total += 1
 
 
 def mystic_forge_top_castable(state: GameState) -> Optional[str]:
@@ -1004,6 +1203,8 @@ def main_phase(state: GameState):
         resolve_cast(state, COMMANDER, from_hand=False)
         if COMMANDER in state.hand:
             state.hand.remove(COMMANDER)
+
+    do_world_breaker_recursion(state)
 
     while True:
         castables = [n for n in state.hand if n not in LAND_NAMES and can_cast(state, n)]
@@ -1029,6 +1230,7 @@ def main_phase(state: GameState):
 
     do_expedition_map(state)
     do_one_ring(state)
+    do_ugin_loyalty(state)
 
 
 def end_step(state: GameState):
@@ -1055,6 +1257,12 @@ def end_step(state: GameState):
             best = max(eligible, key=lambda n: CARD_DB[n].mv)
             state.graveyard.remove(best)
             state.hand.append(best)
+            # Achado real 2026-08-31 (rodada ampliada, categoria 10): o
+            # retorno de carta ja era implementado (correcao 2026-08-28),
+            # mas nunca virava uma metrica de RECURSAO agregada e
+            # reportavel — ficava "invisivel" no relatorio final.
+            state.recursion_events_total += 1
+            state.spawnbed_protector_recursion_total += 1
         create_spawn_tokens(state, 2)
 
     while len(state.hand) > 7:
@@ -1196,6 +1404,49 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg descontos de 'primeira criatura do turno' aplicados (Conduit/Radagast): {avg([s.first_creature_discount_events_total for s in states]):.2f}")
     print(f"Avg flash concedido pelo Radagast (se presente): {avg([s.radagast_flash_grants_total for s in states]):.2f}")
     print(f"Avg mao final: {avg([len(s.hand) for s in states]):.2f}")
+
+    # -----------------------------------------------------------------
+    # Achado real 2026-08-31 (rodada ampliada, categoria 12): lealdade e
+    # ativacoes de Ugin, the Ineffable, agora rastreadas de verdade.
+    # -----------------------------------------------------------------
+    print("--- Ugin, the Ineffable (planeswalker, categoria 12) ---")
+    print(f"Avg ativacoes de lealdade (CR 606.3, 1/turno): {avg([s.ugin_activations_total for s in states]):.2f}")
+    print(f"Avg '+1' escolhido (heuristica: sempre): {avg([s.ugin_plus1_total for s in states]):.2f}")
+    print(f"Avg '-3' disponivel mas sem alvo colorido de oponente (nao escolhido): {avg([s.ugin_minus3_skipped_no_target_total for s in states]):.2f}")
+    print(f"Avg Spirit tokens 2/2 criados via +1: {avg([s.ugin_spirit_tokens_created_total for s in states]):.2f}")
+    print(f"Avg cartas exiladas presas via +1 (token nunca sai de campo neste modelo): {avg([s.ugin_cards_exiled_stuck_total for s in states]):.2f}")
+    ugin_games = [s for s in states if UGIN_NAME in s.loyalty]
+    if ugin_games:
+        print(f"Avg lealdade final do Ugin (jogos em que resolveu, n={len(ugin_games)}): {avg([s.loyalty[UGIN_NAME] for s in ugin_games]):.2f}")
+
+    # -----------------------------------------------------------------
+    # Achado real 2026-08-31 (rodada ampliada, categoria 10): as 5
+    # metricas basicas obrigatorias (Regra 9 do user-standing-rules.md),
+    # reportadas aqui como linhas proprias, auditaveis e separadas —
+    # RECURSION e FINISHER/LETHALITY nao existiam nenhuma antes desta
+    # correcao; RAMP nunca tinha uma linha agregada propria (so os
+    # componentes espalhados acima); DRAW e INTERACTION ja existiam
+    # (linhas "cartas compradas extra"/"spells de interacao"), repetidas
+    # aqui com rotulo explicito pra ficarem juntas e auditaveis.
+    # -----------------------------------------------------------------
+    print("--- 5 metricas basicas obrigatorias (Regra 9, categoria 10) ---")
+    print(f"RAMP — Avg pecas de ramp resolvidas (rocks + land tutors, Sol Ring/Signet/Talismans/Dynamo/Farseek/Nature's Lore/Three Visits/Sowing Mycospawn/Expedition Map): {avg([s.ramp_pieces_resolved_total for s in states]):.2f}")
+    print(f"RAMP — Avg mana TOTAL disponivel por turno (amostrado no inicio da main phase): {avg([m for s in states for m in s.total_mana_samples]):.2f}")
+    print(f"RAMP — Avg capacidade de {{C}} real disponivel por turno (fontes que tapam por {{C}} de verdade, ver true_colorless_capacity): {avg([m for s in states for m in s.true_c_capacity_samples]):.2f}")
+    print(f"DRAW — Avg cartas compradas extra (motores de draw, ja reportado acima): {avg([s.cards_drawn_extra for s in states]):.2f}")
+    print(f"INTERACTION — Avg spells de interacao conjurados (proxy, ja reportado acima): {avg([s.interaction_spells_cast_total for s in states]):.2f}")
+    print(f"RECURSION — Avg eventos de recursao total (Spawnbed Protector + World Breaker): {avg([s.recursion_events_total for s in states]):.4f}")
+    print(f"RECURSION — Avg retornos via Spawnbed Protector (cemiterio->mao, end step): {avg([s.spawnbed_protector_recursion_total for s in states]):.4f}")
+    print(f"RECURSION — Avg retornos via World Breaker (ativada {{2}}{{C}}, sac land): {avg([s.world_breaker_recursion_total for s in states]):.4f}")
+    recursion_games = sum(1 for s in states if s.recursion_events_total > 0)
+    print(f"RECURSION — % de jogos com pelo menos 1 evento de recursao: {100*recursion_games/n:.2f}%")
+    print(f"FINISHER/LETHALITY — Avg finishers resolvidos (MV>=9: Emrakul/Flayer/Kozilek x3/Ulamog x2/Void Winnower): {avg([s.finisher_resolved_total for s in states]):.2f}")
+    finisher_games = [s for s in states if s.finisher_resolved_total > 0]
+    print(f"FINISHER/LETHALITY — % de jogos com pelo menos 1 finisher resolvido: {100*len(finisher_games)/n:.1f}%")
+    first_finisher_turns = [s.first_finisher_turn for s in states if s.first_finisher_turn is not None]
+    if first_finisher_turns:
+        print(f"FINISHER/LETHALITY — Avg turno do 1o finisher (entre os jogos que resolveram): {avg(first_finisher_turns):.2f} | mediana: {statistics.median(first_finisher_turns):.1f}")
+
     return states
 
 
@@ -1224,4 +1475,14 @@ if __name__ == "__main__":
                 "all_is_dust_cast": s.all_is_dust_cast,
                 "all_is_dust_self_sacrificed": s.all_is_dust_self_sacrificed,
                 "glaring_fleshraker_damage_total": s.glaring_fleshraker_damage_total,
+                # Achado real 2026-08-31 (rodada ampliada categorias 10-13):
+                "ugin_loyalty_final": s.loyalty.get(UGIN_NAME),
+                "ugin_activations_total": s.ugin_activations_total,
+                "ugin_spirit_tokens_created_total": s.ugin_spirit_tokens_created_total,
+                "recursion_events_total": s.recursion_events_total,
+                "spawnbed_protector_recursion_total": s.spawnbed_protector_recursion_total,
+                "world_breaker_recursion_total": s.world_breaker_recursion_total,
+                "ramp_pieces_resolved_total": s.ramp_pieces_resolved_total,
+                "finisher_resolved_total": s.finisher_resolved_total,
+                "first_finisher_turn": s.first_finisher_turn,
             }) + "\n")
