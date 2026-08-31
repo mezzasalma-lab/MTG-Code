@@ -64680,5 +64680,59 @@
         "toughness": null
       }
     ]
+  },
+  "Damnation": {
+    "cmc": 4.0,
+    "collector_number": "73",
+    "color_identity": [
+      "B"
+    ],
+    "colors": [
+      "B"
+    ],
+    "keywords": [],
+    "legalities": {
+      "standard": "not_legal",
+      "future": "not_legal",
+      "historic": "legal",
+      "timeless": "legal",
+      "gladiator": "legal",
+      "pioneer": "not_legal",
+      "modern": "legal",
+      "legacy": "legal",
+      "pauper": "not_legal",
+      "vintage": "legal",
+      "penny": "not_legal",
+      "commander": "legal",
+      "oathbreaker": "legal",
+      "standardbrawl": "not_legal",
+      "brawl": "legal",
+      "competitivebrawl": "legal",
+      "alchemy": "not_legal",
+      "paupercommander": "not_legal",
+      "duel": "legal",
+      "oldschool": "not_legal",
+      "premodern": "not_legal",
+      "predh": "legal",
+      "tlr": "not_legal"
+    },
+    "loyalty": null,
+    "mana_cost": "{2}{B}{B}",
+    "name": "Damnation",
+    "oracle_text": "Destroy all creatures. They can't be regenerated.",
+    "power": null,
+    "prices": {
+      "usd": "21.71",
+      "usd_foil": "24.33",
+      "usd_etched": null,
+      "eur": "16.56",
+      "eur_foil": "18.78",
+      "tix": "0.24"
+    },
+    "released_at": "2022-07-08",
+    "scryfall_uri": "https://scryfall.com/card/2x2/73/damnation?utm_source=api",
+    "set": "2x2",
+    "toughness": null,
+    "type_line": "Sorcery"
   }
 }
