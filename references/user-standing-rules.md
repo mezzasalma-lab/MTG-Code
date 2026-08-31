@@ -611,6 +611,60 @@ carta (substitui a Regra 13 como primeiro passo, não a invalida):**
    com carta de face múltipla merece essa mesma varredura antes de
    confiar no cache pra ele.
 
+## 15. Salvar o oráculo de TODA carta que o usuário mencionar, não só as que entram num deck/simulador
+
+Citação literal do usuário (2026-08-31): *"Sempre salve o oráculo de TODAS
+AS CARTAS EU MENCIONAR."*
+
+- Toda vez que uma carta for mencionada na conversa — pelo usuário, ou por
+  mim ao responder — checar `scryfall-cache/oracle-cache.json` (Regra 14) e,
+  se a entrada não existir ou tiver `oracle_text` nulo/incompleto, buscar via
+  API real (Regra 13) e salvar a entrada completa no cache imediatamente.
+  Não esperar a carta "entrar" formalmente numa decklist ou simulador pra
+  justificar salvar — a menção sozinha já é o gatilho.
+- Vale pra cartas citadas de passagem, em pergunta hipotética ("e se eu
+  trocasse X por Y"), em comparação, ou mencionadas só de exemplo — qualquer
+  nome de carta na conversa dispara a checagem/gravação no cache.
+
+## 16. Conferir carta por carta, sempre — nunca inventar, inferir ou presumir
+
+Citação literal do usuário (2026-08-31): *"Sempre confira carta por carta,
+sem inventar, inferir ou criar."*
+
+- Reforço explícito das Regras 1 e 13: qualquer afirmação sobre o que uma
+  carta faz vem SEMPRE de consulta real (cache ou API), carta por carta —
+  nunca de memória, de "família de efeito parecido", ou generalizada a
+  partir de outra carta similar.
+- "Inferir" inclui presumir que duas cartas com nome ou tema parecido têm o
+  mesmo oráculo (achados reais já documentados nesta sessão: reskins como
+  "The Banyan Tree"/"Dragon of Mount Gulg" no Ur-Dragon, layouts de face
+  múltipla que pareciam óbvios mas exigiram checagem do campo `layout` real
+  — Regra 9, categoria 11) — cada carta precisa da sua própria consulta,
+  mesmo quando parece familiar ou já foi vista antes nesta mesma sessão.
+
+## 17. Preferência/processo de trabalho aprendido vira memória permanente sem esperar ser pedido de novo
+
+Citação literal do usuário (2026-08-31): *"Se vc já aprendeu como eu quero
+que vc faça o serviço, salve isso na sua memória pq eu odeio me repetir o
+tempo todo."*
+
+- Assim que um padrão de preferência ou processo ficar claro numa sessão —
+  não só quando o usuário diz explicitamente "regra permanente", mas
+  qualquer correção repetida, forma de reportar preferida, ordem de
+  prioridade, convenção de nomenclatura, etc. — registrar aqui como regra
+  nova (e espelhar no GitHub, Regra 4) por conta própria, sem esperar o
+  usuário pedir "salva isso como regra" explicitamente toda vez.
+- Generaliza o padrão já em uso desde a Regra 4 (toda regra permanente é
+  espelhada no GitHub) e a Regra 11 (regra registrada precisa ser
+  CONSULTADA, não só escrita): a exigência de proatividade agora é ela
+  mesma uma regra — capturar preferência de forma proativa, não só reativa
+  quando cobrado.
+- Se surgir dúvida sobre se algo "vale a pena" virar regra permanente
+  (correção pontual de uma sessão vs. preferência de processo que se repete
+  entre sessões), errar pro lado de registrar — o custo de uma entrada a
+  mais neste arquivo é baixo comparado ao custo de repetir a mesma correção
+  numa sessão futura.
+
 ---
 
 <!-- Adicionar novas regras permanentes abaixo conforme o usuário as
