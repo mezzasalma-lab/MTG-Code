@@ -72,7 +72,7 @@ DECKLIST_TEXT = r"""
 1 Defiler of Vigor
 1 Return of the Wildspeaker
 1 Roaming Throne
-1 Sakura-Tribe Elder
+1 Ram Through
 1 Selvala, Heart of the Wilds
 1 Shamanic Revelation
 1 Sol Ring
@@ -193,6 +193,16 @@ for name, mv, typ, tags in draw_defs:
 removal_defs = [
     ("Beast Within", 3, {"Instant"}, {"removal"}),
     ("Song of the Dryads", 3, {"Enchantment"}, {"removal"}),
+    # Ram Through (achado real 2026-08-31, troca pedida pelo usuario no lugar
+    # do Sakura-Tribe Elder - reforca o pacote de remocao, 5->6 efeitos, sem
+    # mudar Bracket): "{1}{G} instant - target creature you control deals
+    # damage equal to its power to target creature you don't control (excesso
+    # vai na cara do oponente se tiver trample)." Encaixe direto no plano do
+    # deck (poder alto via counters/Craterhoof/Ghalta, trample comum via
+    # Beorn/Craterhoof) - mesma convencao "removal" das outras (Regra 1: sem
+    # oponente real, conta como conjurada quando ha mana sobrando, sem efeito
+    # de combate real).
+    ("Ram Through", 2, {"Instant"}, {"removal"}),
     # Sem "removal": dos 3 modos reais (tutor criatura/terreno; +1/+1 counter e fight
     # numa criatura do oponente; exilar artefato/encantamento do oponente), so o modo
     # tutor nao exige inventar alvo/estado do oponente (regra permanente "nunca
@@ -703,7 +713,7 @@ def commander_can_be_cast(state: GameState) -> bool:
 # MULLIGAN
 # =========================================================
 
-KEEPERS = {"Sol Ring", "Llanowar Elves", "Birds of Paradise", "Thought Vessel", "Cultivate", "Three Visits", "Sakura-Tribe Elder"}
+KEEPERS = {"Sol Ring", "Llanowar Elves", "Birds of Paradise", "Thought Vessel", "Cultivate", "Three Visits"}
 
 def should_keep(hand: List[str]) -> bool:
     lands = sum(1 for c in hand if is_land(c))
@@ -1717,7 +1727,7 @@ def run_batch(n=500, turns=8, out_jsonl="beorn_v1_runs.jsonl", seed_base=91000):
     print(f"RAMP: avg pecas de rampa em campo: {avg('ramp_pieces_in_play'):.2f}")
     print(f"DRAW: avg compras extras totais (soma de todos os motores): {avg('extra_draws'):.2f}")
     print(f"INTERACTION: avg remocao conjurada (Beast Within, Song of the Dryads, Ezuri's Predation, "
-          f"Haywire Mite - Archdruid's Charm excluida, nunca remove de verdade nesse motor, so tutora): "
+          f"Haywire Mite, Ram Through - Archdruid's Charm excluida, nunca remove de verdade nesse motor, so tutora): "
           f"{avg('removal_cast'):.2f}")
     recursion_vals = [(1 if r["eternal_witness_returned"] else 0) + r["lumra_lands_returned_total"]
                        + (1 if r["bala_ged_recovery_cast"] else 0) for r in results]

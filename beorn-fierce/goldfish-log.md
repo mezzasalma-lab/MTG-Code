@@ -4,6 +4,49 @@ Compilação de todos os goldfish rodados na sessão. Cada jogo foi registrado t
 
 ---
 
+### Correção — Sakura-Tribe Elder trocado por Ram Through — 2026-08-31
+
+**Contexto:** "fechar" o deck (pedido do usuário) — revisão dos itens em
+aberto da `auditoria.md` (excesso de ramp/terreno, remoção fraca com só 5
+efeitos). Primeira proposta (cortar Necklace of Girion) foi contestada
+pelo usuário — testei de verdade via goldfish pareado (mesma seed, troca
+posicional) em vez de confiar na leitura antiga da auditoria: Necklace
+contribui +1,35 contadores em média (real, não "faz pouco" como o texto
+antigo dizia), então recuei dessa sugestão. Usuário decidiu direto:
+**trocar Sakura-Tribe Elder por Ram Through.**
+
+**Ram Through** (`{1}{G}`, instant): *"Target creature you control deals
+damage equal to its power to target creature you don't control. If the
+creature you control has trample, excess damage is dealt to that
+creature's controller instead."* Encaixe direto no plano de poder alto +
+trample comum do deck. Registrada com a mesma convenção das outras
+remoções (`removal_defs`, tag `"removal"`, conta pra métrica de
+interação, sem efeito de combate real por falta de oponente — Regra 1).
+
+**Custo real medido, não escondido:** teste pareado (n=3000,
+seed_base=91000, mesma seed nas 2 variantes):
+
+| Métrica | Antes (Sakura) | Depois (Ram Through) |
+|---|---|---|
+| Avg remoção conjurada | 0,543 | **0,654** |
+| Avg peças de ramp em campo | 3,22 | 2,84 |
+| Avg Ursos finais | 6,60 | **6,15** |
+| Avg compras extras | 14,48 | **13,26** |
+| % jogos com ≥1 finisher | 36,1% | 34,1% |
+| Avg turno de conjuração da Beorn | 4,35 | 4,45 |
+
+Ganha remoção real (+0,11 em média), mas perde ramp que alimentava draw
+(Tireless Tracker via landfall etc.) e desenvolvimento de board — board
+final menor, finisher sai ~2pp menos vezes. Troca real, não de graça —
+decisão consciente do usuário, não corte "sem custo".
+
+**Robustez:** 15.000 partidas (seeds 8900000-8914999), 0 erros/timeouts.
+
+`lista.md` atualizada (Sakura-Tribe Elder → Ram Through, 100 cartas
+mantidas). `beorn_v1_runs.jsonl` regenerado (n=3000, seed_base=91000).
+
+---
+
 ## Simulação estatística v1 — escrita e rodada por Claude (não é dado seu)
 
 **Atribuição:** ao contrário dos jogos acima (suas partidas reais) e do script do Ulalek (seu script, seu Colab), esta simulação foi **escrita e executada por mim**, a seu pedido, pra ter o mesmo formato do seu simulador do Ulalek. Script completo salvo em `beorn_goldfish_v1.py` nesta pasta — reproduzível, não é caixa-preta.

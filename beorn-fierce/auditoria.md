@@ -126,7 +126,7 @@ Isso não é um goodstuff pile — é um deck tribal real com um payoff (Beorn) 
 |---|---|
 | Beorn chega turnos 4-7 de forma consistente | ✅ CMC 5 do comandante + ~15 peças de ramp tornam isso esperado |
 | Craterhoof fecha jogo quando resolve | ✅ é literalmente a win condition mais direta do deck |
-| Pouco teste de remoção | ✅ confirmado estruturalmente — só 5 cartas de remoção no deck todo, é normal que apareçam pouco em goldfish solo |
+| Pouco teste de remoção | ✅ era 5 cartas, agora **6** (Ram Through adicionado 2026-08-31 no lugar do Sakura-Tribe Elder, ver seção 12) — ainda baixo, mas melhorado |
 | Genji Glove nunca testado | ⚠️ vale simular — é a única linha "combo-ish" do deck e pode ser um fechador mais rápido que esperar por Craterhoof |
 
 ---
@@ -142,10 +142,10 @@ Contra Bracket 4/cEDH: nenhum fast mana além do Sol Ring, sem tutores de combo,
 
 ## 12. Sugestões de melhoria (prioridade)
 
-1. **Adicionar remoção real** — trocar 2-3 peças de ramp redundante (ex: Necklace of Girion) por: Beast Within *(já tem)*, Ranger's Guile-like proteção não conta; sugerir **Pounce**, **Rabid Bite**, **Return to Nature**, ou (se orçamento permitir) **Vindicate**/**Krosan Grip** para artefato/encantamento dedicado.
-2. **Um wipe assimétrico** ajudaria muito — algo como **Roiling Vortex** não é verde; considerar **Beast Within** já cobre parcialmente, mas um efeito tipo **Return of the Wildspeaker**-adjacent que limpe o board sem te prejudicar (ex: **Aftershock**, **Pyroclasm** não são verdes — em mono-verde a opção realista é **Fungal Plots**/**Wrath of the Skies** não existem; a melhor rota mono-verde é dobrar em fight-based removal: **Prey Upon**, **Ram Through**, ou cartas de "destroy target creature with power X or less" via combate).
-3. **Testar a linha do Genji Glove** especificamente — parece a forma mais rápida de fechar jogo via dano de combate dobrado, e está sem dados nos seus goldfishes.
-4. **Considerar cortar 1 terreno** (38→37) já que o ramp é muito denso; útil para encaixar uma peça extra de remoção sem desidratar a curva.
+1. ~~Adicionar remoção real~~ — **aplicado em 2026-08-31.** Testei via goldfish pareado (mesma seed) cortar Necklace of Girion primeiro; usuário contestou e o teste confirmou que ela contribui contadores reais (+1,35 em média) — não foi cortada. **Sakura-Tribe Elder trocado por Ram Through** no lugar (decisão direta do usuário): remoção conjurada sobe de 0,543 para 0,654 em média, mas ramp em campo cai (3,22→2,84), Ursos finais caem (6,60→6,15) e taxa de finisher cai ~2pp (36,1%→34,1%) — troca real, custo documentado em `goldfish-log.md`.
+2. **Um wipe assimétrico** ainda ajudaria — mono-verde não tem opção limpa fácil; considerar mais fight-based removal (Prey Upon é o próximo candidato natural, mesma família do Ram Through) se quiser reforçar ainda mais.
+3. **Testar a linha do Genji Glove** especificamente — parece a forma mais rápida de fechar jogo via dano de combate dobrado, e está sem dados dedicados nos goldfishes.
+4. ~~Considerar cortar 1 terreno (38→37)~~ — **já estava em 37**, não 38 (contagem antiga da auditoria estava desatualizada). Nenhum corte de terreno necessário.
 
 ---
 
