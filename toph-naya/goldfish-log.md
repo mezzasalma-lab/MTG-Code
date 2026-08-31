@@ -4,6 +4,86 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### 2ª passada da revisão do oráculo — "vc fez a checagem completa?" — 2026-09-01
+
+**Contexto:** depois de eu reportar a revisão completa do oráculo (entrada
+abaixo) como pronta, o usuário perguntou de novo "Vou pedir mais uma vez:
+vc fez a checagem completa?" — um sinal direto de ceticismo. Ao invés de
+reafirmar sem verificar, reli o dump do Scryfall (já salvo da rodada
+anterior) **cláusula por clausula** contra o dispatch real, em vez de só
+"a carta tem alguma implementação?" como a 1ª passada tinha feito. Achei
+7 mecânicas reais faltando e 1 lacuna de relatório — a 1ª passada tinha
+sido real, mas não exaustiva no nível de detalhe que o usuário esperava:
+
+- **Earthbender Ascension**: ETB tinha só o earthbend — faltava a 2ª
+  metade da própria habilidade ("search your library for a basic land
+  card, put it onto the battlefield tapped").
+- **Horizon Explorer / Spelunking**: "Lands you control enter untapped"
+  (estática) nunca implementada — isso sobrepõe TODAS as condicionais de
+  enters-tapped corrigidas na entrada anterior (Ba Sing Se, battle lands,
+  shock lands, MDFCs, Field of the Dead). Fatorada uma função só
+  (`resolve_land_enters_tapped()`) reusada em `play_land()` e no ETB do
+  Spelunking.
+- **Spelunking**: ETB tinha só a compra — faltava "then you may put a
+  land card from your hand onto the battlefield" (land extra de graça).
+- **Gruul Turf / Selesnya Sanctuary / Jetmir's Garden**: "This land enters
+  tapped" (sem condição) nunca tinha a tag — entravam destapadas de graça.
+- **Mishra's Bauble**: `scheduled_draws` existia e era lido no passo de
+  compra, mas nunca incrementado — a própria habilidade nunca disparava
+  (já documentado como pendente em 2026-08-28, ainda sem correção até
+  agora).
+- **The Ozolith**: só a metade "reciclagem" estava implementada — a
+  redistribuição ("beginning of combat: move counters onto target
+  creature") nunca tinha dispatch, contadores se acumulavam pra sempre.
+- **Germination Practicum**: "Paradigm" (recast grátis automático todo
+  primeiro main phase a partir do turno seguinte) nunca era modelado.
+- **combat_dependent** (Skullclamp/Krang/Sword of Feast and Famine) não
+  tinha NENHUM número reportado, nem como N/A — adicionado a
+  `INTERACTION_TAGS`.
+
+**Documentado como fora de escopo nesta passada** (achado real, motivo
+explícito, não implementado): Enduring Vitality persist (só alcançável
+via Ashaya+earthbend, interação de 2 replacement effects simultâneos,
+risco > ganho); Ultron copiando artefato não-criatura (não vira criatura
+de verdade, `ctype` é por definição de carta não por instância); 4
+mecanismos de custo alternativo (Impending, Affinity, Bestow, Talon Gates
+`{4}`, Great Henge `X` menos — arquitetura de `mv` fixo por carta, Great
+Henge especificamente exigiria P/T que o simulador deliberadamente não
+rastreia); Liquimetal Coating/Torque (conversão temporária sem mecanismo
+de reverter); Zuran Orb (trocar terreno por 2 de vida é irracional pra
+esse deck, mesmo raciocínio do Ondu Inversion); Strionic Resonator (só
+copia earthbend, não qualquer trigger); Teferi's Protection (vai pro
+cemitério em vez de exilada — zero impacto funcional).
+
+**Robustez:** 30.000 partidas (seeds 8300000–8319999 + 8400000–8409999),
+0 erros/timeouts. As 5 mecânicas novas com efeito de jogo (Earthbender
+Ascension/Spelunking/Mishra's Bauble/Ozolith/Germination Practicum)
+confirmadas disparando via teste direto do log, não só "roda sem erro" —
+e o override "lands enter untapped" testado isoladamente (Field of the
+Dead entra tapped sem Horizon Explorer, destapada com ele em campo).
+
+**n=3000, seed_base=9000000 — antes (fim da 1ª passada) → depois:**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Turno médio de conjuração da Toph | 3,61 | 3,65 |
+| Avg realocações via The Ozolith | 0,14 | **0,25** |
+| Avg interação (com combat_dependent) | 1,16 | **1,45** |
+| Avg terrenos em campo (T8) | 9,96 | 9,97 |
+| Avg tokens totais criados | 11,55 | 11,59 |
+
+Leitura: nenhuma métrica central se moveu fora do ruído — as duas
+mudanças reais são o Ozolith (a redistribuição em si é o efeito, salto
+esperado) e interaction (mudança de relatório, não de jogo: 3 cartas
+passaram a ser contadas). O resto ficou estável porque os fixes de
+"enters tapped"/Mishra's Bauble/Germination Practicum são raros o
+suficiente (cartas específicas, ou condições já majoritariamente
+verdadeiras) pra não mover a média de 3000 jogos de forma visível.
+
+`lista.md` não mudou. `toph_v1_runs.jsonl` sobrescrito (3000 jogos, código atual).
+
+---
+
 ### Revisão completa do oráculo (100 cartas) — 2026-09-01
 
 **Pedido do usuário:** "Revise TODAS as cartas da Toph pelo oráculo completo."
