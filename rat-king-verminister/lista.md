@@ -1,7 +1,5 @@
 # Rat King, Verminister
 
-> ⚠️ **99/100 cartas.** A linha "Demonic Tutor" foi removida por ser o mesmo card físico que Emeritus of Woe // Demonic Tutor (efeito "prepared" da criatura, não uma carta separada). Falta 1 carta pra completar a lista — adicionar quando você decidir qual.
-
 ## Comandante
 
 1 Rat King, Verminister
@@ -49,6 +47,7 @@
 1 Swarmyard Massacre
 1 Plague of Vermin
 1 Fell the Profane // Fell Mire
+1 Damnation
 
 ## Terrenos
 

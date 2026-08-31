@@ -81,6 +81,19 @@ Simplificacoes documentadas (nao inventadas -- omissoes explicitas):
   oponente -- mesma convencao ja usada em todos os outros simuladores
   desta sessao. O GANHO de vida do proprio jogador (Zulaport, Ayara,
   Valley Rotcaller, Gray Merchant) e' real e rastreado.
+- Wipes de campo inteiro (Kindred Dominance, Swarmyard Massacre, Damnation
+  -- achado real 2026-08-31, revisado ao adicionar o Damnation como 100a
+  carta): nenhum dos tres destroi de verdade as proprias criaturas do
+  jogador neste modelo. Diferente de remocao com alvo (que so' "nao tem
+  efeito" por falta de oponente pra mirar), esses tres SAO efeitos de
+  campo inteiro que, sem oponente real, so' teriam algo pra destruir no
+  proprio lado -- e nenhum piloto racional conjura um wipe (simetrico ou
+  assimetrico) sem um board de oponente real pra justificar, ja que
+  destruir o proprio motor de valor pra ganho zero e' estritamente pior
+  que nao fazer nada. Contam pra metrica de interacao (foram "conjurados"
+  de verdade, pagando o custo), mas o efeito destrutivo em si nao e'
+  aplicado ao proprio board. O token de Esquilo do Swarmyard Massacre
+  (beneficio incondicional, nao depende de oponente) continua real.
 - Fell the Profane // Fell Mire: MDFC modal (layout `modal_dfc`, Scryfall
   confirmado) registrada só pelo lado Instant (a face de remocao real,
   {2}{B}{B} destroy creature/planeswalker) -- decisao documentada, nao a
@@ -196,6 +209,7 @@ add("Echoing Return", 1, "sorcery", {"return_all_copies_hand"})
 add("Secret Salvage", 5, "sorcery", {"tutor_all_copies_hand"})
 add("Kindred Dominance", 7, "sorcery", {"wipe_asymmetric_type", "interaction"})
 add("Swarmyard Massacre", 5, "sorcery", {"squirrel_tokens_wipe_asymmetric", "interaction"})
+add("Damnation", 4, "sorcery", {"wipe_symmetric_no_target", "interaction"})
 add("Plague of Vermin", 7, "sorcery", {"life_for_rats"})
 
 # --- Terrenos (35: 11 nao-basicos + 24 Swamp) ---------------------------------
@@ -681,32 +695,46 @@ def resolve_instant_sorcery(state: GameState, name: str):
         state.life -= 2
 
     elif "wipe_asymmetric_type" in tags:  # Kindred Dominance
-        # "Destroy all creatures that aren't of the chosen type (Rat)."
-        # Poupa Rats/tokens de Rat; mata criaturas nao-Rat que voce
-        # controla (esta lista so tem Rats + Species Specialist +
-        # Valley Rotcaller + Gray Merchant/Syr Konrad/etc nao-Rat).
-        non_rats = [n for n in state.battlefield if is_creature_card(n) and not is_rat(n) and n != COMMANDER]
-        for n in non_rats:
-            leave_battlefield(state, n, to_graveyard=True)
-        state.squirrel_tokens = 0  # esquilos nao sao Rat
+        # Achado real 2026-08-31 (revisao ao adicionar o Damnation --
+        # forcou reconsiderar a mesma logica aqui): a versao anterior
+        # desta funcao destruia de verdade as proprias criaturas nao-Rat
+        # do jogador (Ayara, Gray Merchant, Syr Konrad, Species
+        # Specialist etc.) toda vez que a carta era conjurada -- mas
+        # NENHUM oponente real existe neste goldfish solo pra essa
+        # destruicao "limpar" de verdade. Um piloto racional nunca
+        # conjura um wipe (mesmo assimetrico) sem um board de oponente
+        # real pra justificar -- destruir o proprio motor de valor sem
+        # nenhum ganho equivalente e' estritamente pior que nao fazer
+        # nada. Corrigido pra seguir a MESMA convencao ja usada em
+        # Withering Torment/Deadly Rollick (Regra 1): a magica e'
+        # "conjuravel" e conta pra metrica de interacao, mas sem efeito
+        # de destruicao real no proprio board -- documentado, nao
+        # fingido como se limpasse um board de oponente que nao existe.
+        pass
 
     elif "squirrel_tokens_wipe_asymmetric" in tags:  # Swarmyard Massacre
+        # Mesmo achado acima: o token de Esquilo criado e' beneficio real
+        # incondicional (sempre acontece, nao depende de oponente), mas
+        # o "-1/-1 pra criaturas nao-tribais" destruindo o PROPRIO board
+        # sem oponente real pra limpar foi removido pelo mesmo motivo do
+        # Kindred Dominance acima -- nunca seria a escolha racional de um
+        # piloto de verdade.
         create_squirrel_tokens(state, 2, source="Swarmyard Massacre")
-        # "-1/-1 pra cada criatura que NAO seja Insect/Rat/Spider/Squirrel,
-        # por criatura sua que SEJA um desses tipos" -- sem toughness
-        # individual rastreado por criatura neste modelo, aproximado
-        # como remove as criaturas nao-Rat/Squirrel mais fracas quando o
-        # boost e' grande o bastante (Rat_count + Squirrel_count >=
-        # toughness da vitima) -- convencao conservadora: so' remove se
-        # o board de Rats/Squirrels for >= 3 (toughness tipico das
-        # criaturas nao-tribais desta lista).
-        boost = rat_count(state) + state.squirrel_tokens
-        if boost >= 3:
-            non_tribal = [n for n in state.battlefield if is_creature_card(n)
-                          and not is_rat(n) and n != COMMANDER
-                          and CARD_DB[n].ctype == "creature"]
-            for n in non_tribal:
-                leave_battlefield(state, n, to_graveyard=True)
+
+    elif "wipe_symmetric_no_target" in tags:  # Damnation
+        # Achado real 2026-08-31 (adicionado como 100a carta, pedido
+        # direto do usuario -- reforca o pacote de remocao, ver
+        # auditoria.md secao 7/12): "Destroy all creatures. They can't
+        # be regenerated." Sem excecao nenhuma (nem pros proprios Rats),
+        # diferente do Kindred Dominance/Swarmyard Massacre (que ao menos
+        # poupam Rats). Num goldfish solo sem oponente real, conjurar
+        # isso destruiria o proprio board inteiro pra ganho zero -- pior
+        # ainda que os 2 wipes assimetricos acima. Mesma convencao:
+        # conta como "conjuravel"/metrica de interacao, sem destruir o
+        # proprio board (Regra 1 -- nao fingir um oponente que nao
+        # existe, mas tambem nao fingir uma jogada irracional que nenhum
+        # piloto real faria).
+        pass
 
     elif "life_for_rats" in tags:  # Plague of Vermin
         pay = min(10, max(0, state.life - 20))  # paga vida sobrando acima de 20, teto defensivo de 10
@@ -1153,7 +1181,7 @@ def build_library(names_override=None):
     # comandante), nao 99 -- 1 carta faltando por decisao do usuario
     # (ver docstring do arquivo e nota no topo de lista.md). Assert
     # reflete a realidade atual, nao inventa a 100a carta.
-    assert len(lib) == 98, f"esperado 98 (lista incompleta documentada), achou {len(lib)}"
+    assert len(lib) == 99, f"esperado 99 (lista completa desde 2026-08-31, Damnation adicionado), achou {len(lib)}"
     return lib
 
 
@@ -1239,7 +1267,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"DRAW: avg compras extras totais (Skullclamp, Deadly Dispute, Priest of Forgotten Gods, Ayara, "
           f"Black Market Connections, Castle Locthwain, Ripples of Undeath): {avg([s.cards_drawn_extra for s in states]):.2f}")
     print(f"INTERACTION: avg spells de interacao conjurados (Deadly Rollick, Withering Torment, Kindred "
-          f"Dominance, Swarmyard Massacre, Fell the Profane): {avg([s.interaction_spells_cast_total for s in states]):.2f}")
+          f"Dominance, Swarmyard Massacre, Fell the Profane, Damnation): {avg([s.interaction_spells_cast_total for s in states]):.2f}")
     print(f"RECURSION: avg eventos de recursao (Reanimate, Echoing Return, Secret Salvage, Rat King sac-3-Rats, "
           f"Soul Stone harnessed, Ashcoat mill+return, Ninja Teen nivel 3 sneak): {avg([s.recursion_events_total for s in states]):.2f}")
     print(f"FINISHER/LETHALITY: avg dano/dreno proxy total acumulado (Zulaport, Ayara, Bontu's Monument, "

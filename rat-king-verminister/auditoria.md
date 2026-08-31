@@ -9,7 +9,7 @@ Data: 2026-08-20
 
 | Check | Resultado |
 |---|---|
-| Total de cartas | ⚠️ **99** (98 + comandante) — falta 1 carta, ver seção 2 |
+| Total de cartas | ✅ **100** (99 + comandante) — completo desde 2026-08-31, ver seção 13 |
 | Singleton | ✅ respeitado — **Rat Colony (24 cópias)** é a exceção oficial, a própria carta diz "A deck can have any number of cards named Rat Colony" |
 | Identidade de cor (mono-B) | ✅ nenhuma violação |
 | Cartas banidas em Commander | ✅ nenhuma |
@@ -77,11 +77,11 @@ Motor de draw muito bem conectado ao plano de sacrifício/tokens do deck, não �
 
 ---
 
-## 7. Remoção — 6 efeitos, um pouco abaixo do recomendado
+## 7. Remoção — 7 efeitos, dentro do recomendado (atualizado 2026-08-31)
 
-Withering Torment, Deadly Rollick (geralmente de graça com comandante em campo), Fell the Profane (também joga como terreno), Kindred Dominance (wipe assimétrico — mata tudo que não é do tipo escolhido, ótimo com o board cheio de Rats), Dictate of Erebos (edict a cada morte sua), Swarmyard Massacre (-1/-1 em massa pra tudo que não é Insect/Rat/Spider/Squirrel).
+Withering Torment, Deadly Rollick (geralmente de graça com comandante em campo), Fell the Profane (também joga como terreno), Kindred Dominance (wipe assimétrico — mata tudo que não é do tipo escolhido, ótimo com o board cheio de Rats), Dictate of Erebos (edict a cada morte sua), Swarmyard Massacre (-1/-1 em massa pra tudo que não é Insect/Rat/Spider/Squirrel), **Damnation** (wipe total incondicional — cobre o buraco real de "resetar o board inteiro" que os dois wipes assimétricos acima não cobrem, já que os dois poupam os próprios Rats).
 
-**6 efeitos** é abaixo do recomendado (8-10) pra Bracket 3, mas o deck compensa parcialmente com o pacote de aristocrats/drain (seção 9) — controla o jogo por atrito e dreno em vez de só remoção pontual.
+**7 efeitos**, dentro da faixa recomendada (8-10) — o Damnation (100ª carta, escolhido em 2026-08-31) fechou o gap mais citado desta seção: diferente de Toxic Deluge (cogitado primeiro, mas escala com a toughness do alvo — caro/arriscado contra uma ameaça grande de verdade), Damnation mata qualquer coisa por custo fixo `{2}{B}{B}`, sem depender do tamanho do alvo.
 
 ---
 
@@ -170,9 +170,32 @@ achado antes nesta lista pra Emeritus of Woe/Demonic Tutor):
 - `Fell the Profane` → `Fell the Profane // Fell Mire` (MDFC verdadeira,
   o nome sem o verso não é o nome completo real da carta).
 
-A lista **continua em 99/100 cartas** (nota já existente no topo do
-`lista.md`) — nenhuma carta foi inventada pra completar; o simulador
-reflete os 98 cartas reais de biblioteca que existem hoje.
+Na época desta correção a lista continuava em 99/100 (ver seção 14 —
+completada depois).
+
+## 14. Lista completada — Damnation como 100ª carta (2026-08-31)
+
+O usuário mandou 3 versões diferentes da lista pra comparação (uma
+reproduzia o mesmo erro de contar Emeritus of Woe e Demonic Tutor como 2
+cartas — já corrigido antes nesta auditoria; outra trocava Emeritus of
+Woe pelo Demonic Tutor avulso de verdade, `cmm` 150, que **é Game
+Changer** confirmado via API — mais 5 trocas adicionais). O usuário
+confirmou manter Emeritus of Woe // Demonic Tutor como está e não aplicar
+as outras 5 trocas.
+
+**100ª carta escolhida: Damnation** (`{2}{B}{B}`, "Destroy all creatures.
+They can't be regenerated.", confirmado `game_changer: false` via API).
+Sugeri Toxic Deluge primeiro (mais barato, escalável); o usuário
+contrapôs corretamente que Toxic Deluge exige pagar vida igual à
+toughness do alvo — caro/arriscado contra uma ameaça grande de verdade —
+enquanto Damnation mata qualquer coisa por custo fixo, sem escalar com o
+tamanho do alvo. Escolha final: Damnation, cobrindo o gap de "wipe
+simétrico de verdade" já citado na seção 12.
+
+**Bracket confirmado: continua 2 (Core)** — Damnation não é Game Changer,
+nenhum critério de reclassificação foi acionado.
+
+`lista.md` agora tem 100/100 cartas reais.
 
 ## Links
 

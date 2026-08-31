@@ -4,6 +4,66 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### Correção — lista completada com Damnation (100ª carta) + bug real nos wipes — 2026-08-31
+
+**Contexto:** o usuário mandou 3 versões diferentes da lista pra comparar
+(uma delas era a mesma lista com Emeritus of Woe e Demonic Tutor contados
+como 2 cartas por engano — mesmo erro já corrigido em 2026-08-20 — e outra
+trocava Emeritus of Woe por Demonic Tutor avulso + 5 outras cartas). O
+usuário confirmou: manter Emeritus of Woe // Demonic Tutor como está, sem
+aplicar as outras trocas.
+
+**Escolha da 100ª carta:** sugeri Toxic Deluge (wipe escalável, mais barato
+e sinergiza com o motor de vida do deck). O usuário contrapôs — pra
+eliminar ameaças **grandes** de verdade, Toxic Deluge exige pagar vida
+igual ou maior que a toughness do alvo, o que fica caro/arriscado contra
+uma ameaça realmente grande; Damnation mata qualquer coisa por custo fixo,
+sem escalar com o tamanho do alvo. Argumento tecnicamente correto — troquei
+a sugestão. **Damnation adicionado como a 100ª carta.**
+
+**Bug real encontrado ao implementar o Damnation:** ao decidir como modelar
+o "destroy all creatures" dele, percebi que `Kindred Dominance` e
+`Swarmyard Massacre` (já na lista) tinham a mesma falha — a versão anterior
+do simulador destruía de verdade as próprias criaturas não-Rat do jogador
+(Ayara, Gray Merchant, Syr Konrad, Species Specialist etc.) toda vez que
+essas cartas eram conjuradas, mesmo sem nenhum oponente real em campo pra
+justificar o wipe. Isso é estritamente irracional — nenhum piloto de
+verdade sacrifica o próprio motor de valor por zero ganho. Corrigido: os
+3 wipes (Kindred Dominance, Swarmyard Massacre, Damnation) agora contam
+como "conjurados" pra métrica de interação, mas não destroem mais nada do
+próprio board — mesma convenção já usada em Withering Torment/Deadly
+Rollick (paga o custo, sem efeito de combate real por falta de alvo). O
+token de Esquilo do Swarmyard Massacre (benefício incondicional) continua
+real.
+
+**Robustez:** 20.000 partidas (seeds 9400000-9419999, timeout 2s/jogo) —
+0 erros, 0 timeouts.
+
+**n=3000, seed_base=9300000 — antes (98 cartas, wipes destrutivos) →
+depois (100 cartas, Damnation, wipes corrigidos):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg Rats totais em campo (final) | 14,87 | **17,28** |
+| Avg tokens criados | 11,61 | **14,03** |
+| Avg compras via Skullclamp | 0,74 | 0,85 |
+| Avg tutores usados | 0,76 | 0,79 |
+| Avg mão final | 2,85 | 3,00 |
+| DRAW | 2,32 | 2,50 |
+| INTERACTION (agora inclui Damnation) | 0,49 | **0,59** |
+| RECURSION | 3,75 | 3,51 |
+| FINISHER/LETHALITY (dreno proxy) | 4,95 | **5,19** |
+
+Leitura: o board de Rats sobrevive bem mais (14,87→17,28) porque os wipes
+pararam de se autodestruir — Ayara/Gray Merchant/Syr Konrad continuam em
+campo drenando por mais turnos, o que também explica o FINISHER/LETHALITY
+subir. Deltas pequenos e rastreáveis no resto.
+
+`lista.md` agora tem 100/100 cartas — comandante + 99 de biblioteca.
+`ratking_v1_runs.jsonl` sobrescrito (3000 jogos).
+
+---
+
 ### Simulação #1 — goldfish Python completo (`ratking_goldfish_v1.py`) — 2026-08-31
 
 **Contexto:** simulador construído do zero a pedido direto do usuário
