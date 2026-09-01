@@ -4,6 +4,49 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### Correção — Talon Gates of Madara: phase-out como proteção própria — 2026-09-02
+
+**Gatilho:** pergunta direta do usuário sobre Megatron ("The Ten Rings")
+levou a Plaza of Heroes, que por sua vez levou o usuário a lembrar desta
+carta no deck da Toph: *"ela com earthbending no deck da Toph é proteção
+recorrente!"*
+
+O ETB de Talon Gates of Madara ("up to one target creature phases out")
+estava tagueado `phase_out_unused` — a nota do checklist dizia "sem bom
+alvo sem oponente", tratando o efeito só como remoção ofensiva. Mas a
+carta não exige alvo alheio: um piloto real usa isso pra PROTEGER a
+própria criatura mais valiosa (fase fora, some do jogo até o próximo
+untap step). Combinado com earthbend (que transforma o próprio terreno
+numa criatura com "when it dies or is exiled, return it to the
+battlefield tapped" — Motor#16 já implementado desde 2026-09-01), cada
+vez que este terreno volta ao campo o ETB dispara de novo — daí
+"proteção recorrente".
+
+Corrigido em `apply_etb()`: protege a comandante se estiver em campo,
+senão a criatura de maior MV. Contado em `talon_gates_protections`,
+mesma convenção de "protection_unused, contado" já usada pra Teferi's
+Protection/Heroic Intervention/Lightning Greaves nesta mesma lista — sem
+oponente real modelado, não há dano/remoção concreta pra quantificar
+prevenida, mas o evento em si agora é real (antes nem sequer contava).
+
+A magnitude real da recorrência é opponent-dependente (o único jeito de
+uma criatura earthbendada realmente "morrer" pra reciclar via Motor#16,
+neste simulador, seria remoção de oponente — Talon Gates não tem
+habilidade de sacrifício própria nem é artefato pro Krark-Clan
+Ironworks) — documentado, não escondido.
+
+**Validação:** 4 testes unitários isolados (protege a comandante /
+protege a criatura de maior MV sem comandante / não crasha sem nenhuma
+criatura / Motor#16 faz o ETB disparar de novo ao voltar) + regressão de
+20.000 partidas (seed 13000000+, turns=10, 0 exceções) + `run_batch`
+antes/depois (3000 jogos, seed 14000000, turns=10): **única mudança em
+qualquer métrica do relatório inteiro** foi a nova linha "Avg proteções
+via Talon Gates of Madara" (0.156/partida) — confirmado por diff linha a
+linha entre antes/depois, tudo o mais idêntico, fix perfeitamente
+isolado sem efeito colateral em nenhuma outra mecânica.
+
+---
+
 ### Compilação final clausula-a-clausula — 2026-09-01
 
 **Contexto:** depois da Partida manual #2 achar mais um bug (Ultron +

@@ -628,7 +628,28 @@ add("Spire Garden", 0, "land", set())
 # custo de vida diferente (2, nao 3) -- ver `ENTERS_TAPPED_PAYABLE_LIFE`.
 add("Stomping Ground", 0, "land", {"enters_tapped_payable"})
 add("Strip Mine", 0, "land", set())
-add("Talon Gates of Madara", 0, "land", {"rock_any_paid", "phase_out_unused"})
+# Achado real 2026-09-02 (usuario apontou): a tag "phase_out_unused" e a
+# nota do checklist ("sem bom alvo sem oponente") tratavam o ETB SO como
+# remocao ofensiva (precisa de criatura de oponente) -- mas "up to one
+# target creature" NAO exige alvo alheio: um piloto real usa isso pra
+# PROTEGER a propria criatura mais valiosa (fase fora, some do jogo ate
+# o proximo untap step, imune a qualquer coisa nesse intervalo). Com
+# earthbend transformando este proprio terreno numa criatura ("When it
+# dies or is exiled, return it to the battlefield tapped" -- Motor#16 ja
+# implementado), cada vez que Talon Gates volta ao campo (inclusive via
+# essa recorrencia) o ETB dispara de novo, protegendo outra criatura.
+# Implementado como evento REAL contado (tag renomeada pra
+# `phase_out_protect`), mesma convencao ja usada nesta lista pra
+# Teferi's Protection/Heroic Intervention/Lightning Greaves
+# (`protection_unused`, "contado" mas sem valor numerico de HP salvo --
+# sem oponente real, nao ha dano/remocao concreta pra medir prevenida).
+# A MAGNITUDE de quantas vezes isso "recorre" de verdade depende de
+# oponentes reais destruindo a criatura earthbendada (unico jeito de
+# reciclar via Motor#16, ja que Talon Gates nao tem habilidade de
+# sacrificio propria nem e' artefato pro KCI) -- isso e' genuinamente
+# opponent-dependent, mesma classe estrutural de todo o resto da sessao,
+# nao um julgamento de valor sobre a sinergia em si.
+add("Talon Gates of Madara", 0, "land", {"rock_any_paid", "phase_out_protect"})
 add("Temple Garden", 0, "land", {"enters_tapped_payable"})
 # Engine real de capitulo I/II/III implementada 2026-08-31 (ver
 # `urza_saga_advance()`), dispachada por nome (como Bristly Bill/Ba Sing
@@ -861,6 +882,7 @@ class GameState:
     coffin_activations: int = 0
     kci_sacrifices_of_recurring: int = 0
     kci_sacrifices_broad: int = 0
+    talon_gates_protections: int = 0
     commander_cast_turn: Optional[int] = None
     first_pw_ish_turn: Optional[int] = None  # not used, placeholder for parity
 
@@ -1354,6 +1376,23 @@ def apply_etb(state: GameState, perm: Permanent, log: list):
             enter_battlefield(state, land_perm, log)
     elif name == "Earthbending Student":
         apply_earthbend(state, 2, log, "Earthbending Student (ETB)")
+    elif name == "Talon Gates of Madara":
+        # "When this land enters, up to one target creature phases out."
+        # Achado real 2026-09-02: usada pra proteger a PROPRIA criatura
+        # mais valiosa (comandante primeiro, senao a de maior MV), nao so
+        # remocao de oponente. Ver comentario completo no add() acima.
+        protect_target = None
+        commander_perm = next((p for p in state.battlefield if p.card.name == COMMANDER
+                                and is_creature_type(p, state)), None)
+        if commander_perm is not None:
+            protect_target = commander_perm
+        else:
+            own_creatures = [p for p in state.battlefield if is_creature_type(p, state) and p is not perm]
+            if own_creatures:
+                protect_target = max(own_creatures, key=lambda p: p.card.mv)
+        if protect_target is not None:
+            state.talon_gates_protections += 1
+            log.append(f"  [Talon Gates of Madara] fase fora {protect_target.card.name} (protecao)")
     elif name == "Toph, Greatest Earthbender":
         apply_earthbend(state, perm.card.mv, log, "Toph Greatest Earthbender (ETB, X=mana gasto)")
     elif name == "Spelunking":
@@ -2542,6 +2581,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     obelisk_act = avg([s.obelisk_activations for s in states])
     coffin_act = avg([s.coffin_activations for s in states])
     kci_sac = avg([s.kci_sacrifices_of_recurring for s in states])
+    talon_gates_protect = avg([s.talon_gates_protections for s in states])
 
     # --- Metricas obrigatorias #10 (goldfish-sim-card-rules.md secao 10) ---
     # ramp e draw ja existiam (extra_mana/extra_draw acima); interaction,
@@ -2590,6 +2630,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Total de vezes que o cap defensivo da Scute Swarm foi atingido (200+ permanentes): {scute_cap}")
     print(f"Avg ativacoes do Unstable Obelisk (earthbendado): {obelisk_act:.3f}")
     print(f"Avg ativacoes do The Stasis Coffin (earthbendado): {coffin_act:.3f}")
+    print(f"Avg protecoes via Talon Gates of Madara (fase fora criatura propria no ETB): {talon_gates_protect:.3f}")
     print(f"Avg sacrificios via Krark-Clan Ironworks de artefato earthbendado: {kci_sac:.3f}")
 
     print("\n--- 5 metricas obrigatorias (goldfish-sim-card-rules.md secao 10) ---")
@@ -2656,4 +2697,5 @@ if __name__ == "__main__":
                 "ashaya_in_play": s.ashaya_in_play,
                 "life_gained": s.life_gained,
                 "scute_swarm_cap_hits": s.scute_swarm_cap_hits,
+                "talon_gates_protections": s.talon_gates_protections,
             }) + "\n")

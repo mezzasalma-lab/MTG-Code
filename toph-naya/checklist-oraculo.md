@@ -364,7 +364,26 @@ real no Scryfall, N/A por definição.
 
 ## Talon Gates of Madara
 
-1. ETB: phase out em criatura alvo — 📝 sem bom alvo sem oponente (decisão pré-existente).
+1. ETB: phase out em criatura alvo — 🐛 corrigido 2026-09-02 (usuário
+   apontou). A nota anterior ("sem bom alvo sem oponente") só considerava
+   o ETB como remoção ofensiva — mas "up to one target creature" não
+   exige alvo alheio: protege a própria criatura mais valiosa
+   (comandante primeiro, senão a de maior MV). Implementado de verdade
+   em `apply_etb()`, contado em `talon_gates_protections` (mesma
+   convenção de "protection_unused, contado" já usada pra Teferi's
+   Protection/Heroic Intervention/Lightning Greaves — sem oponente real,
+   não há dano/remoção concreta pra medir prevenida, mas o evento em si
+   é real e contado). Combinado com earthbend (Motor#16: "when it dies
+   or is exiled, return it to the battlefield tapped" — se este próprio
+   terreno virar criatura via earthbend e depois for removido, volta e
+   dispara o ETB de novo, protegendo outra criatura) — validado com
+   teste unitário dedicado confirmando a recorrência via `leave_battlefield()`.
+   A MAGNITUDE de quantas vezes isso recorre de verdade é
+   opponent-dependent (só há sac-outlet nesta lista pra artefatos via
+   Krark-Clan Ironworks — Talon Gates não é artefato — então sem um
+   oponente destruindo a criatura earthbendada, o loop não gira sozinho
+   neste goldfish solo; mesma classe estrutural de todo o resto da
+   sessão, não um limite específico desta carta).
 2-3. Mana `{T}`/`{1}{T}` qualquer cor — ✅ tag `rock_any_paid`.
 4. `{4}`: joga da mão sem land-drop (custo alternativo) — 📝 arquitetura de `mv` fixo.
 
