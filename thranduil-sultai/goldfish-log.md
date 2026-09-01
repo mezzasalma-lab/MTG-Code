@@ -4,6 +4,97 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### Auditoria linha-a-linha "compile TUDO" — 2026-09-01
+
+**Gatilho:** pedido direto do usuário ("AGORA FAZ O QUE SEMPRE Te MANDei
+FAZER: COmpila a porra de TODAS AS CARTAS DOS DECKS UMA A UMA... cada
+carta tem que ser lida linha a linha") — mesmo tratamento já aplicado a
+Toph, Beorn, Edgar Markov, Hei Bai, Maralen, Megatron, Nekusar, Prismatic
+Bridge e Rat King nesta sessão. Ver `checklist-oraculo.md` (novo) pra
+detalhamento completo carta-a-carta.
+
+**Método:** detecção automatizada de (a) tags definidas em `add()` que
+nunca aparecem em nenhum `if`/`elif` de despacho e (b) nomes de carta que
+só aparecem na própria linha `add()` + no `DECKLIST_TEXT`, nunca em
+lógica de resolução (este arquivo despacha majoritariamente por NOME, ao
+contrário do Rat King que despacha por tag). Achou 8 candidatos; 2 se
+confirmaram falsos positivos (Allosaurus Shepherd e Tyvar, the Pummeler
+já eram cobertos pelo dispatcher genérico de `finisher_repeatable`) e 6
+eram gaps reais:
+
+1. **Deadly Rollick** — não era uma tag órfã, mas um **julgamento de
+   valor disfarçado de custo**: `CARD_DB` tinha `mv=2` como uma MÉDIA
+   aproximada ("quase sempre paga {1}{B}, controla comandante") em vez de
+   checar a condição real "if you control a commander, cast without
+   paying its mana cost" — exatamente o tipo de aproximação que o pedido
+   do usuário proíbe. Corrigido com `effective_mv()`, custo real dinâmico
+   0 (com comandante) / 4 (sem, custo real {3}{B} confirmado via
+   Scryfall).
+2. **Urza's Incubator** (`cost_reducer`) — "Creature spells of the chosen
+   type cost {2} less to cast" (tipo = Elfo) nunca implementado. Corrigido
+   em `effective_mv()`.
+3. **Eclipsed Elf** (`card_selection`) — ETB "look at top four, reveal an
+   Elf/Swamp/Forest, put into hand" nunca implementado. Corrigido em
+   `_apply_etb()`.
+4. **Harmonized Crescendo** (`draw_burst`) — "Draw a card for each
+   permanent you control of that type" (Elfo) nunca implementado (convoke
+   não modelado — limitação estrutural do motor de mana como um todo,
+   este arquivo não rastreia tap-de-criatura-por-mana em lugar nenhum).
+   Corrigido em `_apply_etb()`.
+5. **Kindred Dominance** (`wipe_asymmetric`) e **Raise the Palisade**
+   (`bounce_asymmetric`) — "destroy/return all creatures that aren't of
+   the chosen type" nunca implementados. Mesma convenção já aplicada
+   consistentemente nesta sessão pros wipes assimétricos do Rat King
+   (Kindred Dominance/Swarmyard Massacre/Damnation): destruiria/devolveria
+   as PRÓPRIAS criaturas não-Elfo sem oponente real pra justificar —
+   conjurável (mana gasta, `removal_cast` incrementado via `cast_spell`),
+   sem o efeito de auto-dano no próprio board (Regra 1).
+6. **Takenuma, Abandoned Mire** (`gy_engine`) — o Channel (mill 3, devolve
+   criatura/planeswalker, custo reduzido por lendária controlada) já
+   estava documentado como deferido desde 2026-08-30 ("decisão de escopo,
+   fica pra uma rodada dedicada"). Implementado agora com
+   `try_takenuma_channel()`, chamada antes de `play_land()` — só descarta
+   o terreno quando sobra OUTRO terreno na mão nesse turno (não perde o
+   land drop). `is_legendary_elf` cobre exatamente "legendary creature"
+   nesta lista (confirmado via Scryfall: as 21 criaturas lendárias do
+   deck são todas Elfos, sem exceção).
+
+**Achado incidental (não um gap, mas documentado pra não confundir
+releituras futuras):** Eclipsed Elf, Harmonized Crescendo e Urza's
+Incubator estão em `CARD_DB` mas **fora da lista atual de 91 cartas**
+(`lista.md`) — entradas órfãs de uma versão anterior da lista, mesmo
+padrão já documentado pra Deathcap Glade/Llanowar Wastes/Putrefy/Feed the
+Swarm/Formidable Speaker/Lys Alana Huntmaster/Undergrowth Stadium
+(confirmado comparando `CARD_DB` contra `lista.md`: 11 entradas nunca
+usadas). As 3 correções acima estão corretas e prontas caso essas cartas
+voltem pra lista, mas são **inertes hoje** (0% de ativação no
+`run_batch`, não porque estejam quebradas, e sim porque nunca são
+compradas). Os outros 4 gaps (Deadly Rollick, Kindred Dominance, Raise
+the Palisade, Takenuma) ESTÃO na lista atual e têm ativação real medida
+abaixo.
+
+**Validação:** 8 testes unitários isolados (todos passando) + regressão
+de 20.000 partidas (seed 2000000+, turns=10, 0 exceções) + `run_batch`
+antes/depois via `importlib` (3000 jogos, seed 5000000, turns=10):
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| RECURSION (cartas recuperadas do cemitério) | 0.68 | 0.92 |
+| Kindred Dominance conjurado | 0% (nem contava) | 4.9% dos jogos |
+| Raise the Palisade conjurado | 0% (nem contava) | 9.0% dos jogos |
+| Takenuma Channel ativado | 0% (nem existia) | 20.8% dos jogos, avg 0.21/partida |
+| Avg spells cast | 14.75 | 15.05 |
+| Avg extra draws | 18.66 | 19.22 |
+
+Todas as métricas relevantes se moveram na direção esperada, sem nenhuma
+outra métrica se mover de forma inexplicável (turno de conjuração do
+comandante, finishers, blue screw ficaram praticamente estáveis, como
+esperado — nenhum dos 6 fixes toca essas mecânicas). `thranduil_v1_runs.jsonl`
+regenerado (3000 jogos, seed_base=71000, turns=8, mesmos parâmetros já
+estabelecidos no `__main__` do arquivo).
+
+---
+
 ### Correção — 4 nomes de carta multi-face truncados + transformação do Trystan ausente — 2026-08-31
 
 **Gatilho:** o usuário questionou diretamente se Beorn e Thranduil

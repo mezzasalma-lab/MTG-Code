@@ -211,11 +211,10 @@ add("Takenuma, Abandoned Mire", 0, {"Land"}, produces={"B"}, tags={"gy_engine"})
 # planeswalker card from your graveyard to your hand. Costs {1} less for
 # each legendary creature you control." O cabecalho do arquivo CITAVA essa
 # habilidade como contabilizada no proxy de mill - mentira, nunca foi
-# implementada (corrigido a citacao). NAO implementado nesta rodada:
-# exigiria modelar a escolha "descartar da mao pra ativar Channel" vs
-# "jogar como terreno normal" ANTES do land drop do turno (seriam usos
-# mutuamente exclusivos da mesma carta) - decisao de escopo documentada,
-# nao esquecimento. Fica pra uma rodada dedicada.
+# implementada (corrigido a citacao). Implementado de verdade em
+# 2026-09-01 (`try_takenuma_channel()`, chamado antes de `play_land()`):
+# so descarta em vez de jogar como terreno quando sobra OUTRO terreno na
+# mao nesse turno, pra nao perder o land drop.
 add("Three Tree City", 0, {"Land"}, produces=set())
 # {T}: Add {C} incondicional (produces vazio == so' o generico de is_land()
 # em total_mana(), correto). A 2a habilidade real ("{2},{T}: choose a
@@ -306,7 +305,7 @@ add("Kindred Dominance", 7, {"Sorcery"}, tags={"wipe_asymmetric"}, colors={"B"})
 add("Raise the Palisade", 5, {"Sorcery"}, tags={"bounce_asymmetric"}, colors={"U"})
 # Adicionadas na troca pedida pelo usuario (ver auditoria.md) - cobrem lacunas reais
 # confirmadas pela auditoria: nenhuma remocao dedicada de artefato ou encantamento.
-add("Deadly Rollick", 2, {"Instant"}, tags={"removal", "removal_exile"}, colors={"B"})  # custo real {3}{B}, mas quase sempre paga {1}{B} (controla comandante) - modelado no custo reduzido
+add("Deadly Rollick", 4, {"Instant"}, tags={"removal", "removal_exile"}, colors={"B"})  # custo real {3}{B}=MV4; free-cast-com-comandante agora dinamico de verdade via effective_mv() (achado real 2026-09-01, ver comentario la)
 add("Putrefy", 2, {"Instant"}, tags={"removal", "removal_artifact"}, colors={"B", "G"})
 add("Feed the Swarm", 2, {"Instant"}, tags={"removal", "removal_enchantment"}, colors={"B"})
 # Candidatas a adicao avaliadas depois - ver thranduil_synergy_matrix.py --with-candidates
@@ -560,6 +559,11 @@ class GameState:
     elrond_flickers: int = 0                  # Elrond {5}{U}{U}: flicker de ate 2 permanentes, re-dispara ETB
     eladamri_library_top_casts: int = 0       # Eladamri: conjurou criatura do topo da biblioteca (estatica passiva)
     own_interaction_used: int = 0             # nossa carta de remocao/interacao usada, premissa fixa 1/3 turnos
+    eclipsed_elf_hits: int = 0                # Eclipsed Elf ETB: look 4, reveal Elf/Swamp/Forest -> mao
+    harmonized_crescendo_draws: int = 0       # Harmonized Crescendo: compra 1 por permanente Elfo controlado
+    kindred_dominance_cast: int = 0           # Kindred Dominance: conjuravel, sem destruir o proprio board (Regra 1)
+    raise_the_palisade_cast: int = 0          # Raise the Palisade: conjuravel, sem devolver o proprio board (Regra 1)
+    takenuma_channel_activations: int = 0     # Takenuma Channel: mill 3 + devolve criatura/planeswalker
 
     def draw(self, n=1, source="draw"):
         got = 0
@@ -702,8 +706,30 @@ def color_sources(state: GameState, color: str, elf_creature_spell: bool = False
 def remaining_mana(state: GameState) -> int:
     return total_mana(state) - state.mana_spent_this_turn
 
+def effective_mv(state: GameState, card: str) -> int:
+    cost = C(card).mv
+    if state.has("Urza's Incubator") and is_elf(card) and is_creature(card):
+        # Achado real 2026-09-01 (leitura linha-a-linha, "compile TUDO"):
+        # oraculo real "As this artifact enters, choose a creature type.
+        # Creature spells of the chosen type cost {2} less to cast." --
+        # tag "cost_reducer" nunca lida em lugar nenhum. Tipo escolhido =
+        # Elfo (tema central do deck).
+        cost = max(0, cost - 2)
+    if card == "Deadly Rollick" and state.commander_in_play:
+        # Achado real 2026-09-01 (leitura linha-a-linha, "compile TUDO"):
+        # oraculo real "If you control a commander, you may cast this
+        # spell without paying its mana cost. Exile target creature."
+        # (custo impresso real {3}{B}, MV4 -- confirmado via Scryfall). A
+        # entrada em CARD_DB tinha mv=2 como uma MEDIA aproximada ("quase
+        # sempre paga {1}{B}, controla comandante") em vez de checar a
+        # condicao de verdade -- exatamente o tipo de julgamento de valor
+        # proibido. Corrigido pra 0/4 dinamico real, condicionado ao
+        # estado real do comandante.
+        return 0
+    return cost
+
 def can_cast(state: GameState, card: str) -> bool:
-    if remaining_mana(state) < C(card).mv:
+    if remaining_mana(state) < effective_mv(state, card):
         return False
     elf_spell = is_elf(card) and "Creature" in C(card).types
     for color in C(card).colors:
@@ -1072,7 +1098,7 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
     state.hand.remove(card)
     _creature_cast_engines_trigger(state, card, log)
     state.spells_cast += 1
-    state.mana_spent_this_turn += C(card).mv
+    state.mana_spent_this_turn += effective_mv(state, card)
 
     if "Instant" in C(card).types or "Sorcery" in C(card).types:
         state.graveyard.append(card)
@@ -1203,6 +1229,60 @@ def _apply_etb(state: GameState, card: str, log: List[Dict]):
                 state.hand.append(c)
             state.trystans_command_gy_returns += len(returned)
             log.append({"trigger": "trystans_command_gy_return", "returned": returned, "turn": state.turn})
+
+    # Achado real 2026-09-01 (leitura linha-a-linha, "compile TUDO"): as 4
+    # tags a seguir (card_selection/draw_burst/wipe_asymmetric/bounce_asymmetric)
+    # so apareciam no proprio add() -- nunca despachadas em lugar nenhum.
+
+    if card == "Eclipsed Elf":
+        # Oraculo real: "When this creature enters, look at the top four
+        # cards of your library. You may reveal an Elf, Swamp, or Forest
+        # card from among them and put it into your hand. Put the rest on
+        # the bottom of your library in a random order."
+        top4 = state.library[:4]
+        del state.library[:4]
+        hit = next((c for c in top4 if is_elf(c) or c in LAND_SUBTYPES["Forest"] or c in LAND_SUBTYPES["Swamp"]), None)
+        if hit:
+            top4.remove(hit)
+            state.hand.append(hit)
+            state.eclipsed_elf_hits += 1
+            log.append({"trigger": "eclipsed_elf_hit", "card": hit, "turn": state.turn})
+        state.rng.shuffle(top4)
+        state.library.extend(top4)
+
+    if card == "Harmonized Crescendo":
+        # Oraculo real: "Convoke. Choose a creature type. Draw a card for
+        # each permanent you control of that type." Tipo escolhido = Elfo
+        # (tema central do deck). Convoke (tap creatures pra ajudar a pagar)
+        # nao e modelado -- este arquivo nao rastreia criaturas tapadas pra
+        # mana em NENHUM outro lugar (limitacao estrutural do motor de mana
+        # como um todo, nao um recorte especifico desta carta); paga o
+        # custo cheio em mana normal, ja coberto por effective_mv/cast_spell.
+        elf_permanents = sum(1 for c in state.battlefield if is_elf(c))
+        if elf_permanents > 0:
+            got = state.draw(elf_permanents, source="Harmonized Crescendo")
+            state.harmonized_crescendo_draws += got
+            log.append({"trigger": "harmonized_crescendo_draw", "n": got, "turn": state.turn})
+
+    if card == "Kindred Dominance":
+        # Oraculo real: "Choose a creature type. Destroy all creatures
+        # that aren't of the chosen type." Tipo escolhido = Elfo. Mesma
+        # convencao ja aplicada consistentemente nesta sessao (Rat King,
+        # Verminister: Kindred Dominance/Swarmyard Massacre/Damnation) pra
+        # wipes assimetricos sem oponente real: destruiria as PROPRIAS
+        # criaturas nao-Elfo sem nenhum ganho equivalente (nenhum piloto
+        # racional faria isso de proposito) -- conta como "conjuravel"
+        # (mana gasta, metrica de interacao via removal_cast ja soma pelo
+        # cast_spell), sem o efeito de destruicao no proprio board.
+        state.kindred_dominance_cast += 1
+
+    if card == "Raise the Palisade":
+        # Oraculo real: "Choose a creature type. Return all creatures that
+        # aren't of the chosen type to their owners' hands." Tipo escolhido
+        # = Elfo. Mesma logica do Kindred Dominance acima (bounce
+        # assimetrico das PROPRIAS criaturas nao-Elfo, sem oponente real
+        # pra justificar) -- conjuravel, sem o efeito no proprio board.
+        state.raise_the_palisade_cast += 1
 
 def _elrond_ability_activated(state: GameState, source: str, log: List[Dict]):
     # Elrond: "Whenever you activate an ability of a creature, draw a card.
@@ -1646,10 +1726,45 @@ def try_use_own_interaction(state: GameState, log: List[Dict]):
                   if (C(c).tags & INTERACTION_TAGS) and can_cast(state, c)]
     if not candidates:
         return
-    candidates.sort(key=lambda c: C(c).mv)
+    candidates.sort(key=lambda c: effective_mv(state, c))
     cast_spell(state, candidates[0], log)
     state.own_interaction_used += 1
 
+
+def try_takenuma_channel(state: GameState, log: List[Dict]):
+    """Achado real 2026-09-01 (leitura linha-a-linha, "compile TUDO"): o
+    proprio cabecalho do add() de Takenuma (achado 2026-08-30) ja
+    documentava a Channel como deferida ("decisao de escopo... fica pra
+    uma rodada dedicada") -- exatamente o tipo de adiamento que o pedido
+    do usuario agora cobre. Oraculo real: "Channel -- {3}{B}, Discard this
+    card: Mill three cards, then return a creature or planeswalker card
+    from your graveyard to your hand. This ability costs {1} less to
+    activate for each legendary creature you control." So vale descartar
+    o terreno em vez de joga-lo (chamada ANTES de play_land) quando sobra
+    OUTRO terreno na mao nesse turno, pra nao perder o land drop.
+    `is_legendary_elf` cobre exatamente "legendary creature voce controla"
+    nesta lista -- conferido via Scryfall: TODAS as 21 criaturas lendarias
+    do deck sao Elfos, sem excecao."""
+    if not state.hand.count("Takenuma, Abandoned Mire"):
+        return
+    other_lands_in_hand = [c for c in state.hand if is_land(c) and c != "Takenuma, Abandoned Mire"]
+    if not other_lands_in_hand:
+        return
+    legendary_ct = sum(1 for c in state.battlefield if C(c).is_legendary_elf)
+    cost = max(0, 4 - legendary_ct)
+    if remaining_mana(state) < cost:
+        return
+    state.hand.remove("Takenuma, Abandoned Mire")
+    state.mana_spent_this_turn += cost
+    state.mill(3)
+    pool = [c for c in state.graveyard if is_creature(c) or "Planeswalker" in C(c).types]
+    if pool:
+        pool.sort(key=lambda c: -C(c).mv)
+        best = pool[0]
+        state.graveyard.remove(best)
+        state.hand.append(best)
+        state.takenuma_channel_activations += 1
+        log.append({"trigger": "takenuma_channel", "returned": best, "cost": cost, "turn": state.turn})
 
 def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.turn = turn
@@ -1698,6 +1813,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     # Multiplayer (CR 103.8a): sempre compra, mesmo no T1.
     state.draw(1, source="normal")
 
+    try_takenuma_channel(state, log)
     play_land(state, log)
     play_land(state, log)  # 2a chamada: no-op a menos que Thranduil's Company habilite o 2o land drop
 
@@ -1814,6 +1930,11 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "elrond_flickers": state.elrond_flickers,
         "eladamri_library_top_casts": state.eladamri_library_top_casts,
         "own_interaction_used": state.own_interaction_used,
+        "eclipsed_elf_hits": state.eclipsed_elf_hits,
+        "harmonized_crescendo_draws": state.harmonized_crescendo_draws,
+        "kindred_dominance_cast": state.kindred_dominance_cast,
+        "raise_the_palisade_cast": state.raise_the_palisade_cast,
+        "takenuma_channel_activations": state.takenuma_channel_activations,
     }
 
 def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=71000):
@@ -1930,15 +2051,23 @@ def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=710
     elt_games = [r for r in results if r["eladamri_library_top_casts"] > 0]
     print(f"Eladamri revelou criatura do topo da biblioteca (estatica) em {100*len(elt_games)/n:.1f}% dos jogos, avg {avg('eladamri_library_top_casts'):.2f} por partida")
     print(f"Avg vezes que usamos nossa propria remocao/interacao (1/3 turnos, premissa corrigida): {avg('own_interaction_used'):.2f}")
+    ee_games = [r for r in results if r["eclipsed_elf_hits"] > 0]
+    print(f"Eclipsed Elf achou Elfo/Swamp/Forest no topo 4 em {100*len(ee_games)/n:.1f}% dos jogos")
+    print(f"Avg compras via Harmonized Crescendo: {avg('harmonized_crescendo_draws'):.2f}")
+    print(f"Kindred Dominance conjurado (sem destruir proprio board, Regra 1) em {100*sum(1 for r in results if r['kindred_dominance_cast']>0)/n:.1f}% dos jogos")
+    print(f"Raise the Palisade conjurado (sem devolver proprio board, Regra 1) em {100*sum(1 for r in results if r['raise_the_palisade_cast']>0)/n:.1f}% dos jogos")
+    tk_games = [r for r in results if r["takenuma_channel_activations"] > 0]
+    print(f"Takenuma Channel ativado em {100*len(tk_games)/n:.1f}% dos jogos, avg {avg('takenuma_channel_activations'):.2f} por partida")
 
     recursion_vals = [r["oversold_cemetery_returns"] + r["tyvar_jubilant_reanimations"]
-                       + r["trystans_command_gy_returns"] + r["awaken_honored_dead_returns"] for r in results]
+                       + r["trystans_command_gy_returns"] + r["awaken_honored_dead_returns"]
+                       + r["takenuma_channel_activations"] for r in results]
     print()
     print("--- Metricas basicas (checklist obrigatoria) ---")
     print(f"RAMP: avg pecas de rampa em campo: {avg('ramp_pieces_in_play'):.2f}")
     print(f"DRAW: avg compras extras totais (soma de todos os motores): {avg('extra_draws'):.2f}")
     print(f"INTERACTION: avg remocao conjurada: {avg('removal_cast'):.2f}")
-    print(f"RECURSION: avg cartas recuperadas do cemiterio (Oversold Cemetery -> mao + Tyvar Jubilant Brawler -> campo + Trystan's Command -> mao + Awaken the Honored Dead -> mao): {statistics.mean(recursion_vals):.2f}")
+    print(f"RECURSION: avg cartas recuperadas do cemiterio (Oversold Cemetery -> mao + Tyvar Jubilant Brawler -> campo + Trystan's Command -> mao + Awaken the Honored Dead -> mao + Takenuma Channel -> mao): {statistics.mean(recursion_vals):.2f}")
     print(f"FINISHER/LETHALITY: avg finishers ativados {avg('finishers_activated'):.2f}, "
           f"{100*len(fin_turns)/n:.1f}% dos jogos com finisher ate T8"
           + (f", turno medio {statistics.mean(fin_turns):.2f}" if fin_turns else "") + ".")
