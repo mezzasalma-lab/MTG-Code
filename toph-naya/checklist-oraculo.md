@@ -116,7 +116,7 @@ real no Scryfall, N/A por definição.
 | Swords to Plowshares | Exile target creature | 📊 | `removal`, contado |
 | Sylvan Library | Draw 2 extra, paga vida ou devolve | ✅ | `play_turn()`, draw step |
 | Yavimaya, Cradle of Growth | Todo terreno é Forest | 📊 | fixação pura (precedente 2026-08-28) |
-| Zuran Orb | Sac terreno: 2 de vida | ✅ | `zuran_orb_activation()` (2026-09-01, 2ª rodada) — ativa quando vida < 10 (cenário real de emergência, não mais "nunca") |
+| Zuran Orb | Sac terreno: 2 de vida | ✅ | `zuran_orb_activation()` (2026-09-01: emergência vida<10; 2026-09-02, usuário apontou: terreno earthbendado com `earthbend_return=True` NÃO é perda real — sacrifica sempre, volta via Motor#16 tapped, retrigger de ETB de graça, ex. Talon Gates of Madara) |
 
 ---
 

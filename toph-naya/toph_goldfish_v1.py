@@ -2392,11 +2392,34 @@ def zuran_orb_activation(state: GameState, log: list):
     perder um terreno permanente por vida faz sentido pra QUALQUER piloto
     -- vida abaixo de 10 aqui vem so' dos custos de vida ja modelados:
     fetches, shock lands, Sylvan Library, Tanglespan Bridgeworks) -- nao
-    "nunca ativa" mais, ativa quando a condicao real pede."""
+    "nunca ativa" mais, ativa quando a condicao real pede.
+
+    Achado real 2026-09-02 (usuario apontou): terreno earthbendado com
+    `earthbend_return=True` (Motor#16 -- "when it dies or is exiled,
+    return it to the battlefield tapped") NAO e' uma perda de verdade ao
+    ser sacrificado -- volta tapped no mesmo `leave_battlefield()` que ja
+    trata a recorrencia. Sacrificar esse tipo de terreno pro Zuran Orb e'
+    put valor liquido positivo (2 de vida de graca) SEMPRE, nao so' em
+    emergencia de vida baixa -- e, se o terreno for Talon Gates of
+    Madara, isso e' exatamente o gatilho que faltava pra proteger de novo
+    (fase fora outra criatura) sem depender de um oponente destruir a
+    criatura earthbendada em combate, que nunca acontece neste goldfish
+    solo. Terrenos reais (nao earthbendados) continuam so' sacrificados
+    na emergencia de vida <10 (perda permanente de verdade, mesma
+    logica de antes)."""
     orb = next((p for p in state.battlefield if p.card.name == "Zuran Orb"), None)
-    if orb is None or state.life_total >= 10:
+    if orb is None:
         return
-    real_lands = [p for p in state.battlefield if p.card.ctype == "land"]
+
+    recurring_lands = [p for p in state.battlefield if p.card.ctype == "land" and p.earthbend_return]
+    for sac in list(recurring_lands):
+        log.append(f"  [Zuran Orb] sacrifica {sac.card.name} earthbendado (volta via Motor#16), ganha 2")
+        leave_battlefield(state, sac, log)
+        gain_life(state, 2, log, source="Zuran Orb (terreno earthbendado, sem perda real)")
+
+    if state.life_total >= 10:
+        return
+    real_lands = [p for p in state.battlefield if p.card.ctype == "land" and not p.earthbend_return]
     if not real_lands:
         return
     sac = real_lands[0]

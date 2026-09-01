@@ -4,6 +4,55 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### Correção — Zuran Orb sacrifica terrenos earthbendados sem perda real — 2026-09-02
+
+**Gatilho:** pergunta direta do usuário — *"Com Zuran Orb eu não dependo
+de Talon Gates morrer em combate"* — logo depois da correção do phase-out
+do Talon Gates (ver entrada acima), que tinha documentado a limitação de
+que a "proteção recorrente" só reciclaria via Motor#16 se um oponente
+destruísse a criatura earthbendada, já que este simulador não tem
+nenhuma outra forma de sacrificar um terreno-criatura.
+
+O usuário identificou exatamente a peça que faltava: Zuran Orb
+("Sacrifice a land: You gain 2 life", {0}, repetível) JÁ estava
+implementado desde 2026-09-01, mas só ativava numa emergência de vida
+baixa (<10) — porque sacrificar um terreno de verdade é uma perda
+permanente real. Só que um terreno earthbendado com
+`earthbend_return=True` NÃO é uma perda de verdade: `leave_battlefield()`
+já trata o retorno via Motor#16 (volta tapped, ETB dispara de novo).
+Sacrificar esse tipo de terreno pro Zuran Orb é valor líquido positivo
+sempre (2 de vida de graça) — e se o terreno for Talon Gates of Madara,
+é exatamente o gatilho que faltava pra reciclar a proteção sem depender
+de oponente algum.
+
+Corrigido em `zuran_orb_activation()`: agora sacrifica TODO terreno
+earthbendado (`earthbend_return=True`) em campo incondicionalmente
+(sem gate de vida), e só depois, se a vida ainda estiver <10, cai pro
+comportamento antigo de sacrificar um terreno real de verdade (perda
+permanente, mesma lógica de emergência de antes).
+
+**Validação:** 5 testes unitários isolados (sacrifica earthbendado com
+vida cheia / o retorno via Motor#16 dispara o ETB do Talon Gates de novo
+/ NÃO sacrifica terreno real com vida cheia / emergência <10 preservada
+pra terreno real / sem Zuran Orb, no-op) + regressão de 20.000 partidas
+(seed 15000000+, turns=10, 0 exceções) + `run_batch` antes/depois (3000
+jogos, seed 14000000, turns=10):
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Recorrências via Motor#16 | 1.98 (57.5% dos jogos) | 2.48 (63.9% dos jogos) |
+| Vida ganha (líquida) | 1.96 | 3.02 |
+| Proteções via Talon Gates of Madara | 0.156 | 0.173 |
+| Gatilhos de landfall disparados | 16.96 | 17.50 |
+| Tokens totais criados | 37.76 | 39.69 |
+
+Todas as métricas relacionadas sobem na direção esperada (mais
+recorrência de terreno = mais landfall/tokens/vida/proteção
+retriggada), sem nenhuma métrica não-relacionada se mover de forma
+inexplicável.
+
+---
+
 ### Correção — Talon Gates of Madara: phase-out como proteção própria — 2026-09-02
 
 **Gatilho:** pergunta direta do usuário sobre Megatron ("The Ten Rings")
