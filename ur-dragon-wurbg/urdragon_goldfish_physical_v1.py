@@ -212,6 +212,19 @@ LAND_PRODUCES = {
 for n, colors in LAND_PRODUCES.items():
     add(n, 0, "land", set(), produces=colors)
 
+# Achado real 2026-09-01 (leitura linha-a-linha, "compile TUDO"): Mana
+# Confluence e Sundown Pass estao em `lista-fisica.md` mas faltavam por
+# completo do CARD_DB (mesma classe do bug do Sarkhan Unbroken acima) —
+# quebrava o simulador. Mana Confluence: "{T}, Pay 1 life: Add one mana
+# of any color" (vida nunca rastreada/ameacada neste simulador, mesma
+# premissa ja usada noutras cartas com custo de vida — sempre paga).
+add("Mana Confluence", 0, "land", set(), produces=set("WUBRG"))
+# Sundown Pass: slow land real ("This land enters tapped unless you
+# control two or more other lands"), {T}: Add {R} or {W} — ver
+# SLOW_LANDS abaixo, mesma logica ja portada do `urdragon_goldfish_v1.py`.
+add("Sundown Pass", 0, "land", set(), produces={"R", "W"})
+SLOW_LANDS = {"Sundown Pass"}
+
 # Correcao real 2026-08-27 (usuario apontou: "elas geram mana de qualquer
 # cor para o tipo de criatura escolhida (Dragao)" — eu tinha essas 3
 # tratadas como puramente incolores, um erro de simplificacao real demais.
@@ -333,6 +346,16 @@ add("Sol Ring", 1, "artifact", {"rock2"})  # {C}{C} — sem cor
 add("Dragonlord's Servant", 2, "creature", {"dragon_discount1"}, power=1, pips={"R": 1})
 add("Dragonspeaker Shaman", 3, "creature", {"dragon_discount2"}, power=2, pips={"R": 2})
 add("Sarkhan, Soul Aflame", 3, "creature", {"dragon_discount1"}, power=2, pips={"U": 1, "R": 1})
+# Achado real 2026-09-01 (leitura linha-a-linha, "compile TUDO"): faltava
+# por completo neste CARD_DB apesar de estar em `lista-fisica.md` (linha
+# 64) -- este simulador quebrava (AssertionError) em qualquer execucao.
+# Oraculo real: {2}{G}{U}{R}, lealdade inicial 4. "+1: Draw a card, then
+# add one mana of any color. -2: Create a 4/4 red Dragon creature token
+# with flying. -8: Search your library for any number of Dragon creature
+# cards, put them onto the battlefield, then shuffle." Lealdade real
+# rastreada via `state.sarkhan_loyalty` (main_phase(), portado do
+# `urdragon_goldfish_v1.py`).
+add("Sarkhan Unbroken", 5, "planeswalker", {"sarkhan_unbroken"}, pips={"G": 1, "U": 1, "R": 1})
 add("Herald's Horn", 3, "artifact", {"dragon_discount1", "tribal_impulse"})
 add("Sarkhan's Triumph", 3, "instant", {"dragon_tutor_hand"}, pips={"R": 1})
 add("Orb of Dragonkind", 2, "artifact", {"dragon_tutor_sac"}, pips={"R": 1})
@@ -627,6 +650,7 @@ class GameState:
     hellkite_courser_commander_temp: bool = False
     hellkite_courser_free_commander_total: int = 0
     creature_cast_turn: dict = field(default_factory=dict)
+    lightning_greaves_equipped_to: Optional[str] = None
 
     # metrics -------------------------------------------------------------
     proxy_damage_total: int = 0
@@ -771,6 +795,10 @@ def ready_creatures(state: GameState):
 
     def is_ready(n):
         if "haste" in CARD_DB[n].tags:
+            return True
+        if n == state.lightning_greaves_equipped_to:
+            # Achado real 2026-09-01 (leitura linha-a-linha, "compile
+            # TUDO"): ver try_lightning_greaves_equip().
             return True
         if state.creature_cast_turn.get(n, -1) < state.turn:
             return True
@@ -1440,8 +1468,14 @@ def play_land(state: GameState):
     if choice in FETCH_TARGETS:
         crack_fetch(state, choice)
     else:
+        other_lands_in_play = sum(1 for n in state.battlefield if n in LAND_NAMES)
         state.battlefield.append(choice)
         if choice in ETB_TAPPED_LANDS:
+            state.tapped_land_this_turn = choice
+        elif choice in SLOW_LANDS and other_lands_in_play < 2:
+            # "enters tapped unless you control two or more OTHER lands" -
+            # contagem de terrenos ANTES desta entrar (achado real
+            # 2026-09-01, portado do urdragon_goldfish_v1.py).
             state.tapped_land_this_turn = choice
 
 
@@ -1529,6 +1563,56 @@ def main_phase(state: GameState):
         # turno em que Ramos entra mesmo com 5+ contadores.
         state.ramos_counters -= 5
         state.bonus_mana_pool += 10
+
+    if "Sarkhan Unbroken" in state.battlefield:
+        # Achado real 2026-09-01 (leitura linha-a-linha, "compile TUDO"):
+        # Sarkhan Unbroken esta em `lista-fisica.md` (linha 64) mas NUNCA
+        # tinha sido registrado no CARD_DB deste arquivo -- este simulador
+        # quebrava (AssertionError) em QUALQUER execucao desde que a
+        # variante fisica existe. Corrigido registrando a carta (add()
+        # abaixo, copiado do `urdragon_goldfish_v1.py`) e portando a
+        # mesma logica de lealdade real (1 ativacao por turno, +1 draw+
+        # mana ate lealdade>=8, entao sempre ultimate -- heuristica de
+        # pilotagem ja documentada e validada no arquivo principal).
+        if getattr(state, "sarkhan_activated_turn", None) != state.turn:
+            state.sarkhan_activated_turn = state.turn
+            loyalty = getattr(state, "sarkhan_loyalty", 4)
+            if loyalty >= 8:
+                state.sarkhan_loyalty = loyalty - 8
+                targets = [n for n in state.library if is_dragon(n) and is_creature_card(n)]
+                for t in targets:
+                    if t not in state.library:
+                        continue
+                    state.library.remove(t)
+                    enter_battlefield(state, t, from_hand=False)
+                    state.dragons_free_entry_total += 1
+                if state.sarkhan_loyalty <= 0:
+                    state.battlefield.remove("Sarkhan Unbroken")
+                    state.graveyard.append("Sarkhan Unbroken")
+            else:
+                state.sarkhan_loyalty = loyalty + 1
+                draw_cards(state, 1)
+                state.bonus_mana_pool += 1
+
+    try_lightning_greaves_equip(state)
+
+
+def try_lightning_greaves_equip(state: GameState):
+    """Achado real 2026-09-01 (mesma auditoria, mesmo bug do arquivo
+    principal): Lightning Greaves esta na caixa fisica (docstring do
+    cabeçalho ja documentava isso) mas so tinha a tag generica
+    'interaction', sem nenhum efeito real -- nem o haste, o ganho mais
+    relevante pra Ur-Dragon (sem haste nativo, motor inteiro depende de
+    atacar). Equip {0} = sem custo real."""
+    if "Lightning Greaves" not in state.battlefield:
+        return
+    if state.lightning_greaves_equipped_to in state.battlefield:
+        return
+    if state.commander_in_play and COMMANDER in state.battlefield:
+        state.lightning_greaves_equipped_to = COMMANDER
+        return
+    targets = [n for n in state.battlefield if is_creature_card(n)]
+    state.lightning_greaves_equipped_to = targets[0] if targets else None
 
 
 def do_magda_treasures(state: GameState):
@@ -1866,7 +1950,11 @@ if __name__ == "__main__":
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
     states = run_batch(n=3000, seed_base=7600000, turns=8)
 
-    with open("urdragon_v1_runs.jsonl", "w") as f:
+    # Achado real 2026-09-01: este arquivo escrevia no MESMO nome de
+    # arquivo do simulador principal ("urdragon_v1_runs.jsonl") -- rodar
+    # qualquer um dos dois por ultimo sobrescrevia silenciosamente o
+    # output do outro. Corrigido pra um nome proprio.
+    with open("urdragon_physical_v1_runs.jsonl", "w") as f:
         for s in states:
             f.write(json.dumps({
                 "mulligans": s.mulligans,

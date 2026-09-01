@@ -733,6 +733,7 @@ class GameState:
     hellkite_courser_commander_temp: bool = False
     hellkite_courser_free_commander_total: int = 0
     creature_cast_turn: dict = field(default_factory=dict)
+    lightning_greaves_equipped_to: Optional[str] = None
 
     # metrics -------------------------------------------------------------
     proxy_damage_total: int = 0
@@ -898,6 +899,15 @@ def ready_creatures(state: GameState):
 
     def is_ready(n):
         if "haste" in CARD_DB[n].tags:
+            return True
+        if n == state.lightning_greaves_equipped_to:
+            # Achado real 2026-09-01 (leitura linha-a-linha, "compile
+            # TUDO"): Lightning Greaves ("Equipped creature has haste and
+            # shroud. Equip {0}") so tinha a tag generica 'interaction',
+            # sem NENHUM efeito real -- nem o haste, o ganho mais
+            # relevante pra Ur-Dragon (comandante sem haste nativo, cujo
+            # motor inteiro depende de atacar). Ver
+            # try_lightning_greaves_equip().
             return True
         if state.creature_cast_turn.get(n, -1) < state.turn:
             return True
@@ -1685,6 +1695,7 @@ def main_phase(state: GameState):
     try_haven_recursion(state)
     try_dragon_hoard_draw(state)
     try_dragon_pumps(state)
+    try_lightning_greaves_equip(state)
 
 
 def try_dragon_pumps(state: GameState):
@@ -1706,6 +1717,28 @@ def try_dragon_pumps(state: GameState):
     if "Scourge of Valkas" in state.battlefield and remaining_mana(state) >= 1:
         spend_mana(state, 1)
         state.scourge_self_pumps += 1
+
+
+def try_lightning_greaves_equip(state: GameState):
+    """Achado real 2026-09-01 (leitura linha-a-linha, "compile TUDO"):
+    Lightning Greaves estava so tageada 'interaction' (bucket generico de
+    protecao do proprio board), sem nenhum efeito real implementado --
+    nem sequer o haste, que e' o ganho mais relevante pra este deck
+    especifico (Ur-Dragon nao tem haste nativo, e o motor inteiro de
+    compra depende de atacar com Dragoes). Equip {0} = sem custo real,
+    reequipa automaticamente todo turno se o alvo anterior saiu de campo.
+    A comandante e' sempre o alvo obvio (maior valor de ataque
+    destravado); "shroud" (protecao contra ser alvo) nao tem efeito
+    modelavel aqui (sem oponente/remocao alheia neste goldfish solo)."""
+    if "Lightning Greaves" not in state.battlefield:
+        return
+    if state.lightning_greaves_equipped_to in state.battlefield:
+        return
+    if state.commander_in_play and COMMANDER in state.battlefield:
+        state.lightning_greaves_equipped_to = COMMANDER
+        return
+    targets = [n for n in state.battlefield if is_creature_card(n)]
+    state.lightning_greaves_equipped_to = targets[0] if targets else None
 
 
 def try_haven_recursion(state: GameState):

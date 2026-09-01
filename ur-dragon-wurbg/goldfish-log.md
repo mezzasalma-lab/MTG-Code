@@ -4,6 +4,65 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### Auditoria linha-a-linha "compile TUDO" + arquivo físico quebrado — 2026-09-01
+
+**Gatilho:** pedido direto do usuário ("AGORA FAZ O QUE SEMPRE Te MANDei
+FAZER: COmpila a porra de TODAS AS CARTAS DOS DECKS UMA A UMA... cada
+carta tem que ser lida linha a linha") — mesmo tratamento já aplicado a
+Toph, Beorn, Edgar Markov, Hei Bai, Maralen, Megatron, Nekusar, Prismatic
+Bridge, Rat King, Thranduil e Ulalek. Ver `checklist-oraculo.md` pra
+detalhamento completo.
+
+**`urdragon_goldfish_v1.py` (arquivo principal):** detecção automatizada
+achou 1 gap real — **Lightning Greaves** tinha só a tag genérica
+`"interaction"`, sem NENHUM efeito real implementado, nem sequer o haste
+(o ganho mais relevante possível pra este deck: a Ur-Dragon não tem
+haste nativo, e o motor inteiro de compra de cartas depende dela
+atacar). Corrigido com `try_lightning_greaves_equip()`. A carta está
+fora da lista atual (`lista.md`) — correta, mas hoje inerte (métricas
+antes/depois idênticas, confirmado via `run_batch`).
+
+**`urdragon_goldfish_physical_v1.py` (variante física): achado muito
+mais sério.** Ao tentar aplicar o mesmo fix do Lightning Greaves nesse
+segundo arquivo (a carta está confirmada na caixa física pelo próprio
+docstring), descobri que **o arquivo inteiro crashava** ao ser importado
+— `AssertionError: faltando no CARD_DB: Sarkhan Unbroken`. Ou seja, este
+simulador não conseguia rodar uma única partida desde que a variante
+física foi criada (2026-08-29) até hoje. Investigando a fundo (todo nome
+de `lista-fisica.md` comparado contra as chaves reais do `CARD_DB`),
+achei 3 cartas realmente ausentes:
+
+1. **Sarkhan Unbroken** — faltava o planeswalker inteiro (nem `add()`,
+   nem lealdade). Corrigido registrando a carta e portando a lógica real
+   de lealdade (+1/-2/-8) do arquivo principal.
+2. **Mana Confluence** — terreno de mana de qualquer cor, ausente.
+3. **Sundown Pass** — slow land ("enters tapped unless 2+ other lands"),
+   ausente. Corrigido junto com a lógica `SLOW_LANDS` no `play_land()`.
+
+**Bug adicional (não relacionado ao crash):** os dois arquivos escreviam
+no MESMO nome de saída (`urdragon_v1_runs.jsonl`) — rodar um por último
+sobrescrevia silenciosamente o output do outro. Corrigido: a física
+agora escreve em `urdragon_physical_v1_runs.jsonl` (arquivo novo).
+
+**Validação:** 4 testes unitários no arquivo principal + 5 no físico
+(incluindo "importa sem crash" e "biblioteca tem 99 cartas") +
+regressão de 200 partidas de sanidade + regressão completa de 20.000
+partidas em CADA um dos 2 arquivos (seed 4000000+/5000000+, turns=10, 0
+exceções nos dois). Como o arquivo físico nunca tinha rodado uma partida
+sequer, não há baseline "antes" pra comparar — a validação real é ele
+passar a rodar de ponta a ponta com números plausíveis e na mesma ordem
+de grandeza do arquivo principal (Dragon tokens médios 12.04 vs 11.64,
+color screw 31.3% vs 31.2% dos jogos).
+
+**Fora de escopo desta rodada, documentado:** uma auditoria linha-a-linha
+COMPLETA da variante física (cobrindo Scalelord Reckoner, Dragon's
+Hoard, Smuggler's Surprise, Firdoch Core — cartas que só existem nela)
+não foi feita — apenas o suficiente pra destravar o crash e portar os 2
+gaps já achados no arquivo principal. Fica como trabalho futuro dedicado,
+mesma categoria dos 4 decks sem simulador nenhum ainda.
+
+---
+
 ## Simulação #1 — goldfish Python completo (`urdragon_goldfish_v1.py`) — 2026-08-23
 
 **Script construído do zero.** A `auditoria.md` deste deck era curta (sem uma seção de motores detalhada como Toph/Vihaan/Maralen/Nekusar), então a varredura mecânica completa (Passo 0, regex "Whenever"/"At the beginning of"/"When ... enters" em todo `oracle_text`) foi feita aqui pela primeira vez, achando um motor de dano-por-Dragão-em-campo genuinamente rico (Scourge of Valkas, Dragon Tempest), geração de token via cópia (Miirym) e via ataque (Lathliss, Utvara Hellkite), e mana no ataque (Klauth, Savage Ventmaw).
