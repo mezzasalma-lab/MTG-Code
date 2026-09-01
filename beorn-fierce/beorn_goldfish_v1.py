@@ -355,7 +355,24 @@ class GameState:
     extra_draws: int = 0
     lands_played_total: int = 0
 
-    bear_count: int = 0
+    # Achado real 2026-09-02 (usuario apontou): `bear_count` era um
+    # acumulador incrementado manualmente (nunca decrementado quando uma
+    # criatura Bear morre/sai de campo - Sakura-Tribe Elder, Wildwood
+    # Rebirth sac_target, Managorger Hydra removido - todos podem levar
+    # embora um Bear sem o contador refletir isso) E, mais grave, o
+    # gatilho de combate da propria Beorn ("It becomes a Bear in addition
+    # to its other types") nunca marcava a criatura convertida de forma
+    # PERSISTENTE - is_bear() so checava tags estaticas do CARD_DB, entao
+    # a criatura convertida nunca contava pros anthems reais (Beorn/
+    # Chronicle of Victory/Patchwork Banner, ver effective_power()) nem
+    # pro escopo maior do Roaming Throne, E o mesmo alvo de maior MV era
+    # re-selecionado turno apos turno (nunca reconhecido como ja Bear).
+    # Corrigido: `converted_to_bear` rastreia de verdade quais criaturas
+    # foram convertidas (persistente, checado em is_bear()), e bear_count
+    # deixa de ser um campo mantido a mao - vira `bears_in_play()`,
+    # calculado ao vivo a partir do battlefield real (elimina as duas
+    # classes de staleness de uma vez).
+    converted_to_bear: set = field(default_factory=set)
     beorn_bear_draws: int = 0          # vezes que o gatilho "3+ Bears -> draw 2" disparou
     beorn_combat_triggers: int = 0     # vezes que Beorn converteu uma criatura em Bear
     counters_on_board: int = 0         # soma aproximada de +1/+1 counters distribuidos
@@ -643,7 +660,28 @@ def is_bear(state: GameState, card: str) -> bool:
     # Maskwood Nexus: "Creatures you control are every creature type" - Bear incluido.
     if state.has("Maskwood Nexus") and is_creature(card):
         return True
+    # Beorn the Fierce: "It becomes a Bear in addition to its other types" -
+    # mudanca de tipo PERMANENTE (nao "until end of turn"), rastreada em
+    # converted_to_bear (ver combat_step). Achado real 2026-09-02.
+    if card in state.converted_to_bear:
+        return True
     return False
+
+
+def bears_in_play(state: GameState) -> int:
+    """Contagem real de Bears em campo, calculada ao vivo (nao um
+    acumulador mantido a mao) - conta toda criatura no battlefield que
+    is_bear() reconhece, incluindo convertidas pela Beorn. Achado real
+    2026-09-02: o campo antigo `bear_count` nunca era decrementado quando
+    um Bear saia de campo (Sakura-Tribe Elder, Wildwood Rebirth sac,
+    Managorger Hydra removido), ficando stale."""
+    n = sum(1 for c in state.battlefield if is_creature(c) and is_bear(state, c))
+    if state.beorns_hospitality_animated and "Beorn's Hospitality" in state.battlefield:
+        # "{5}{G}{G}: This enchantment becomes a Bear creature..." - nao e'
+        # ctype "Creature" no CARD_DB (permanece Enchantment estaticamente),
+        # entao precisa de checagem explicita aqui (ver try_beorns_hospitality_animate).
+        n += 1
+    return n
 
 # Achado real 2026-09-01 (leitura linha-a-linha do oraculo completo): Beorn
 # the Fierce ("Other Bears you control get +2/+2"), The Chronicle of Victory
@@ -1051,7 +1089,6 @@ def main_phase(state: GameState, log: List[Dict]):
 
 def make_bear_token(state: GameState, log: List[Dict], source: str):
     state.battlefield.append("Bear Token")
-    state.bear_count += 1
     # Rastreado em dork_entered_turn (nao so creature_entered_turn) pra alimentar a
     # doenca de invocacao da habilidade de mana que Springleaf Parade concede a
     # tokens-criatura, se estiver em campo (ver total_mana/green_sources).
@@ -1309,7 +1346,6 @@ def try_beorns_hospitality_animate(state: GameState, log: List[Dict]):
         state.mana_spent_this_turn += 7
         state.beorns_hospitality_animated = True
         state.beorns_hospitality_animated_turn = state.turn
-        state.bear_count += 1
         if "Beorn's Hospitality" not in state.finishers_resolved:
             state.finishers_resolved.append("Beorn's Hospitality")
             if state.finisher_turn is None:
@@ -1386,9 +1422,6 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
     if has_tag(card, "removal"):
         state.removal_cast += 1
 
-    if is_bear(state, card):
-        state.bear_count += 1
-
     # Cultivate/Solemn Simulacrum buscam land basica de verdade - nesse decklist a
     # UNICA carta basica/Forest e "Forest" (as outras 6 sao terrenos nomeados
     # nao-basicos). Terreno buscado entra em campo -> landfall.
@@ -1460,8 +1493,6 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
                 log.append({"action": "natural_order_fetch", "sacrificed": sac_target,
                              "fetched": fetched, "turn": state.turn})
                 on_creature_enters(state, fetched, log)
-                if is_bear(state, fetched):
-                    state.bear_count += 1
                 if has_tag(fetched, "finisher") or fetched in {"Craterhoof Behemoth", "Ghalta, Primal Hunger"}:
                     state.finishers_resolved.append(fetched)
                     if state.finisher_turn is None and fetched in {"Craterhoof Behemoth", "Ghalta, Primal Hunger", "Unnatural Growth"}:
@@ -1538,8 +1569,6 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
         state.dork_entered_turn["Springleaf Parade Token"] = state.turn
         log.append({"action": "springleaf_parade_token", "turn": state.turn})
         on_creature_enters(state, "Springleaf Parade Token", log)
-        if is_bear(state, "Springleaf Parade Token"):
-            state.bear_count += 1
 
     if card == "Solemn Simulacrum":
         target = next((c for c in state.library if c == "Forest"), None)
@@ -1624,17 +1653,30 @@ def combat_step(state: GameState, log: List[Dict]):
         if times == 2:
             state.roaming_throne_doublings += 1
         for _ in range(times):
+            # Achado real 2026-09-02 (usuario apontou): "It becomes a Bear
+            # in addition to its other types" e' uma mudanca de tipo
+            # PERMANENTE (nao "until end of turn") - antes so incrementava
+            # um contador abstrato, sem marcar QUAL criatura virou Bear.
+            # Isso tinha 2 efeitos reais perdidos: (1) a criatura convertida
+            # nunca se beneficiava dos anthems reais (Beorn/Chronicle of
+            # Victory/Patchwork Banner, ver effective_power()) nem do
+            # escopo maior de qualquer outra sinergia tribal de Bear
+            # (Roaming Throne incluso); (2) como is_bear() nunca reconhecia
+            # a conversao, a MESMA criatura de maior MV era re-selecionada
+            # como alvo todo combate (nunca "gastava" o alvo de verdade).
+            # Corrigido com `converted_to_bear` (persistente, checado em
+            # is_bear()) - agora cada combate converte uma criatura NOVA.
             creatures_not_bear = [c for c in state.battlefield if is_creature(c) and not is_bear(state, c)]
             if creatures_not_bear:
                 target = max(creatures_not_bear, key=lambda c: C(c).mv)
-                state.bear_count += 1
+                state.converted_to_bear.add(target)
                 state.beorn_combat_triggers += 1
                 log.append({"trigger":"Beorn combat","made_bear":target})
 
-            if state.bear_count >= 3:
+            if bears_in_play(state) >= 3:
                 state.draw(2, source="Beorn 3+ Bears")
                 state.beorn_bear_draws += 1
-                log.append({"trigger":"Beorn draw2","bear_count":state.bear_count})
+                log.append({"trigger":"Beorn draw2","bear_count":bears_in_play(state)})
 
     # Ohran Frostfang / Toski, Bearer of Secrets: "Whenever a creature you control
     # deals combat damage to a player, draw a card." Gap 100% ausente ate essa
@@ -1727,7 +1769,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
             state.managorger_in_play = False
 
     log.append({"turn": turn, "phase": "end", "hand_size": len(state.hand),
-                "battlefield_count": len(state.battlefield), "bear_count": state.bear_count,
+                "battlefield_count": len(state.battlefield), "bear_count": bears_in_play(state),
                 "spells_cast": state.spells_cast, "beorn_bear_draws": state.beorn_bear_draws})
     game_log.append(log)
 
@@ -1772,7 +1814,7 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "commander_cast_turn": state.commander_cast_turn,
         "spells_cast": state.spells_cast,
         "extra_draws": state.extra_draws,
-        "bear_count_final": state.bear_count,
+        "bear_count_final": bears_in_play(state),
         "beorn_bear_draws": state.beorn_bear_draws,
         "beorn_combat_triggers": state.beorn_combat_triggers,
         "ramp_pieces_in_play": state.ramp_pieces_in_play,

@@ -376,3 +376,76 @@ Validado com 7 testes unitários isolados (1 por gap) + regressão de
 
 Nenhuma cláusula ficou sem uma linha nesta tabela. Se algo aqui estiver
 errado, o local citado (`nome_da_funcao()`) é onde conferir.
+
+---
+
+## 🐛 Correção — conversão de Bear pela Beorn nunca era persistente (2026-09-02)
+
+**Gatilho:** pergunta direta do usuário — *"Vc considerou que com o Beorn
+ele transforma as demais cartas em campo em urso, uma por turno,
+ampliando o escopo de efeito do Roaming Throne?"*
+
+Oráculo real de Beorn the Fierce (Scryfall, reconfirmado nesta rodada):
+*"At the beginning of combat on your turn, put a trample counter on up
+to one target creature you control. **It becomes a Bear in addition to
+its other types.** Then if you control three or more Bears, draw two
+cards."* A cláusula "becomes a Bear" é uma **mudança de tipo
+permanente** (não "until end of turn") — a rodada de 2026-09-01 já tinha
+implementado o gatilho de combate (linha `Beorn combat` na tabela acima,
+marcada ✅), mas a resposta ao usuário revelou que essa implementação
+tinha um bug real: `state.bear_count` era só um contador abstrato
+incrementado a cada combate — a criatura-alvo NUNCA era marcada de forma
+persistente em nenhum lugar que `is_bear()` checasse depois.
+
+**2 consequências reais perdidas, confirmadas lendo o código:**
+1. **Anthems não se aplicavam.** `effective_power()` (a função que soma
+   os 3 anthems reais de Bear — Beorn +2/+2, Chronicle of Victory +2/+2,
+   Patchwork Banner +1/+1) chama `is_bear(state, card)` internamente. Uma
+   criatura convertida nunca passava nessa checagem, então nunca recebia
+   os bônus de poder aos quais passou a ter direito.
+2. **A mesma criatura era "reconvertida" todo combate.** `creatures_not_bear`
+   era recalculado via `is_bear()`, que nunca reconhecia conversões
+   anteriores — então o alvo de maior MV era selecionado (e
+   "reconvertido") indefinidamente, turno após turno, em vez de cada
+   combate converter uma criatura NOVA (o que a carta realmente faz: até
+   UMA criatura por combate, esgotando o pool real de alvos elegíveis).
+   Isso também é exatamente o mecanismo que expande o escopo do Roaming
+   Throne perguntado pelo usuário — mais criaturas reais viram Bear ao
+   longo do jogo, então mais delas se beneficiam de qualquer sinergia de
+   Bear (incluindo os gatilhos que o Roaming Throne dobra).
+
+**Corrigido:**
+- Novo campo `state.converted_to_bear: set` — rastreia de verdade quais
+  criaturas foram convertidas pela Beorn, persistente pro resto da
+  partida.
+- `is_bear()` agora também consulta esse conjunto.
+- O campo antigo `bear_count` (nunca decrementado quando um Bear saía de
+  campo — Sakura-Tribe Elder, sacrifício do Wildwood Rebirth, Managorger
+  Hydra removido — outra fonte de staleness achada ao investigar)
+  substituído por `bears_in_play()`, calculado ao vivo a partir do
+  battlefield real a cada checagem, eliminando as duas classes de bug de
+  uma vez.
+
+Validado com 5 testes unitários isolados (conversão persiste em
+`is_bear()`; criatura convertida ganha o anthem real da Beorn; cada
+combate converte uma criatura NOVA, não a mesma; `bears_in_play()`
+recalcula corretamente quando um Bear sai de campo; Roaming Throne dobra
+a conversão pra 2 criaturas no mesmo combate) + regressão de 20.000
+partidas (seed 9500000+, turns=10, 0 exceções) + `run_batch` antes/depois
+via `importlib` (3000 jogos, seed 10000000, turns=10):
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Bear count final (avg) | 14.74 | 15.27 |
+| Beorn "draw 2" triggers (3+ Bears) | 4.82 | 5.32 |
+| Beorn combat triggers (converteu em Bear) | 5.03 | 4.36 |
+| Avg compras extras (draw) | 37.73 | 40.25 |
+| Avg spells conjurados | 19.31 | 19.80 |
+
+Os "combat triggers" caem (5.03→4.36) porque agora o pool de alvos
+elegíveis se esgota de verdade conforme criaturas reais viram Bear —
+comportamento correto (antes o gatilho nunca "secava", convertendo a
+mesma criatura pra sempre). Apesar de menos triggers, o "Bear count
+final" e os draws sobem, porque agora cada conversão é real e
+permanente, alimentando os anthems e o gatilho de 3+ Bears de forma
+consistente com o board de verdade, em vez de um contador desconectado.

@@ -4,6 +4,41 @@ Compilação de todos os goldfish rodados na sessão. Cada jogo foi registrado t
 
 ---
 
+### Correção — conversão de Bear pela Beorn nunca era persistente — 2026-09-02
+
+**Gatilho:** pergunta direta do usuário — *"Vc considerou que com o Beorn
+ele transforma as demais cartas em campo em urso, uma por turno,
+ampliando o escopo de efeito do Roaming Throne?"*
+
+O gatilho de combate da Beorn ("It becomes a Bear in addition to its
+other types") já tinha sido implementado na rodada de 2026-09-01, mas
+só como um contador abstrato (`state.bear_count += 1`) — a criatura-alvo
+nunca era marcada de forma persistente em nenhum lugar que `is_bear()`
+checasse depois. Isso quebrava exatamente o que o usuário perguntou:
+uma criatura convertida (a) nunca recebia os anthems reais de Bear
+(Beorn +2/+2, Chronicle of Victory +2/+2, Patchwork Banner +1/+1 — todos
+via `effective_power()`, que consulta `is_bear()`) e (b) a mesma
+criatura de maior MV era "reconvertida" todo combate em vez de cada
+combate converter uma criatura nova, esgotando o pool real de alvos.
+
+Corrigido com um novo `state.converted_to_bear: set` (persistente,
+checado dentro de `is_bear()`) e `bears_in_play()` — contagem calculada
+ao vivo a partir do battlefield, substituindo o `bear_count` antigo que
+também nunca era decrementado quando um Bear saía de campo (achado
+secundário ao investigar: Sakura-Tribe Elder, sacrifício do Wildwood
+Rebirth e a remoção agendada de Managorger Hydra podiam levar embora um
+Bear sem o contador refletir isso).
+
+**Validação:** 5 testes unitários isolados + regressão de 20.000
+partidas (seed 9500000+, turns=10, 0 exceções) + `run_batch` antes/depois
+(3000 jogos, seed 10000000, turns=10) — ver `checklist-oraculo.md` pra
+tabela completa de métricas. Resumo: Bear count final 14.74→15.27, draw
+2 triggers 4.82→5.32, compras extras 37.73→40.25; combat triggers caem
+5.03→4.36 porque agora o pool de alvos se esgota de verdade (correto —
+antes nunca "secava", reconvertendo a mesma criatura pra sempre).
+
+---
+
 ### Correção — Beorn, Reluctant Host // Till and Tend (nome truncado + mecânica ausente) — 2026-08-31
 
 **Gatilho:** o usuário questionou diretamente se as listas do Beorn e do
