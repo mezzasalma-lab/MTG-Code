@@ -835,20 +835,57 @@ quase todo jogo) inflava a mana disponível todo turno.
 
 ---
 
-## Partida #2 — AAAA-MM-DD
+## Partida #2 — 2026-09-01
 
-- **Formato do teste:**
-- **Mão inicial (mulligan até):**
-- **Turno da primeira jogada relevante:**
-- **Turno do primeiro ataque/combo:**
-- **Curva de mana observada:**
-- **Bombas/peças-chave puxadas:**
-- **Removals sofridos/enviados:**
-- **Resultado:**
-- **Turno de fim de jogo:**
-- **O que funcionou bem:**
-- **O que travou o deck:**
-- **Ajustes a considerar:**
+- **Formato do teste:** goldfish manual (mesmo app de playtest da Partida
+  #1, log de estado turno a turno).
+- **Mão inicial (mulligan até):** keep de 7 direto. Snow-Covered
+  Plains/Mox Opal/Forest/Liquimetal Coating/Sol Ring/Ultron, Artificial
+  Malevolence/Tireless Provisioner — 2 terrenos reais + Sol Ring como
+  fonte de mana extra, mão rápida.
+- **Turno da primeira jogada relevante:** turno 1 — Spire Garden, Sol
+  Ring, Liquimetal Coating.
+- **Turno do primeiro ataque/combo:** turno 3 — Toph resolvida (bem mais
+  cedo que a Partida #1, sem bounceland travando a mão), Mox Opal, e
+  Earthbender Ascension puxando duas coisas de uma vez: earthbend na
+  Spire Garden (G/R) + busca Snow-Covered Mountain tapped. No mesmo
+  turno, Liquimetal Coating virou a própria Toph em artefato e o end
+  step earthbendou a Toph nela mesma (proteção via Motor #16 — se ela
+  "morresse" earthbendada, voltaria tapped em vez de ir pra zona de
+  comando).
+- **Curva de mana observada:** rápida — Toph no turno 3 (bem abaixo da
+  média de 3,72 do `run_batch`), Mycosynth Lattice no turno 4, Ultron +
+  Liquimetal Torque no turno 5.
+- **Bombas/peças-chave puxadas:** Earthbender Ascension (chegou a 7
+  contadores de quest, disparando o bônus de 4+ várias vezes), Mycosynth
+  Lattice (turno 4 — com Toph em campo, todo permanente virou
+  artefato-terreno), Ultron copiando o próprio Liquimetal Torque recém-
+  jogado no turno 5.
+- **Removals sofridos/enviados:** nenhum (goldfish solo).
+- **Resultado:** sem resolução (parada de goldfish).
+- **Turno de fim de jogo:** parou no turno 6, mão vazia (piloto reportou
+  falta de draw sustentado — sem Sylvan Library/Caretaker's Talent nesta
+  mão, ao contrário da Partida #1).
+- **O que funcionou bem:** curva rápida sem bounceland na mão de
+  abertura (contraste direto com a Partida #1); combo Earthbender
+  Ascension liga cedo e sustenta earthbend território após território.
+- **O que travou o deck:** mão sem motor de draw sustentado — Earthbender
+  Ascension/Mycosynth Lattice dão poder de bordo mas não compram carta
+  extra, e a mão esvaziou no turno 6.
+- **Ajustes a considerar / achado pro simulador:** ~~Ultron copiando um
+  artefato NÃO-criatura (Liquimetal Torque, turno 5, visto ao vivo — o
+  app mostrou o token ganhando +2/+2 de offset, confirmando que virou
+  2/2 de verdade) nunca fazia o token virar criatura no simulador~~ —
+  **corrigido na hora** (mesma sessão): campo `forced_creature` por
+  instância em `Permanent`, setado em `ultron_trigger()` quando a carta
+  copiada não é criatura. Já tinha sido diagnosticado como fora de escopo
+  na auditoria de oráculo (2026-09-01, "narrow, 2ª ordem") — a partida
+  real mostrou que não é tão raro assim (Ultron + qualquer um dos ~15
+  artefatos não-criatura da lista). Testado isoladamente (cópia de
+  artefato não-criatura vira criatura; cópia de artifact_creature não
+  seta a flag, controle) e em regressão (20.000 partidas, 0 erros; n=3000
+  praticamente idêntico ao anterior — interação rara o suficiente pra não
+  mover a média).
 
 ---
 

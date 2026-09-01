@@ -288,6 +288,24 @@ da partida), o codigo antigo pulava o bounce inteiro, deixando o terreno
 de graca em campo. Regra real: sem outro candidato, ela devolve A SI
 MESMA (ainda e' "a land you control"). Corrigido em `apply_etb()` com
 fallback pra `perm` quando `others` esta vazio.
+
+Achado real via PARTIDA MANUAL #2 (2026-09-01, goldfish-log.md, turno 5,
+visto ao vivo) — corrigido na hora: Ultron copiando um artefato
+NAO-criatura (Liquimetal Torque, na partida) nunca fazia o token virar
+criatura de verdade. Oraculo real: "If the token isn't a creature, it
+becomes a 2/2 Robot Villain creature in addition to its other types." O
+`ctype` de uma carta e' compartilhado por TODAS as copias (nivel de
+definicao, nao de instancia), entao o token herdava "artifact" sem
+nunca virar criatura -- ja tinha sido diagnosticado na 2a passada da
+auditoria de oraculo (2026-09-01) como fora de escopo por ser "narrow,
+2a ordem", mas apareceu numa partida real, elevando a prioridade.
+Corrigido com campo dedicado por instancia `forced_creature` em
+`Permanent` (mesmo padrao ja usado por `earthbent` em `is_creature_type()`)
+-- setado em `ultron_trigger()` so' quando a carta copiada nao e' criatura
+de verdade. Relevante pra alvo do Bristly Bill/Earthbender Ascension
+(`best_creature_target`) e gatilhos "whenever you attack" -- sem P/T
+rastreado (docstring), o "2/2" em si nao vira um numero manipulavel, so'
+o status de criatura muda.
 """
 
 import json
@@ -668,6 +686,7 @@ class Permanent:
     is_token: bool = False
     saga_chapter: int = 0  # Urza's Saga only
     level: int = 1  # Class enchantments (Caretaker's Talent) only
+    forced_creature: bool = False  # Ultron copiando artefato nao-criatura (vira 2/2 Robot Villain)
 
 
 @dataclass
@@ -755,7 +774,8 @@ def is_artifact(perm: Permanent, state: GameState) -> bool:
 
 
 def is_creature_type(perm: Permanent, state: GameState) -> bool:
-    return perm.card.ctype in CREATURE_ISH or perm.earthbent or "always_creature" in perm.card.tags
+    return (perm.card.ctype in CREATURE_ISH or perm.earthbent
+            or "always_creature" in perm.card.tags or perm.forced_creature)
 
 
 def is_land(perm: Permanent, state: GameState) -> bool:
@@ -850,6 +870,19 @@ def ultron_trigger(state: GameState, entering_perm: Permanent, log: list):
     spend_mana(state, 2)
     token = mk_perm(state, entering_perm.card.name)
     token.is_token = True
+    # Achado real 2026-09-01 (Partida manual #2, turno 5, visto ao vivo:
+    # Ultron copiou Liquimetal Torque): "If the token isn't a creature, it
+    # becomes a 2/2 Robot Villain creature in addition to its other
+    # types." O `ctype` normal e' por definicao de carta (compartilhado
+    # entre todas as copias), entao um campo dedicado por instancia
+    # (`forced_creature`) marca so' esse token especifico como criatura --
+    # relevante pra alvo do Bristly Bill/gatilhos de "whenever you attack"/
+    # etc. Sem P/T rastreado (docstring), o "2/2" em si nao e' um numero
+    # que este simulador modifica em lugar nenhum, so' o status de
+    # criatura muda.
+    if not is_creature_type(token, state):
+        token.forced_creature = True
+        log.append(f"  [Ultron] copia de {entering_perm.card.name} vira 2/2 Robot Villain creature")
     create_token(state, log, note=f"copia de {entering_perm.card.name} via Ultron")
     log.append(f"  [Ultron] copia {entering_perm.card.name} (token)")
     enter_battlefield(state, token, log)
