@@ -4,6 +4,65 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### Compilação final clausula-a-clausula — 2026-09-01
+
+**Contexto:** depois da Partida manual #2 achar mais um bug (Ultron +
+artefato não-criatura) que a auditoria de oráculo já tinha "documentado
+como fora de escopo" sem ter sido de fato conferido a fundo, o usuário
+perguntou direto: *"Pra que eu peço para vc checar tudo se vc ainda não
+compila TODAS AS HABILIDADES?"* — crítica justa: as 2 rodadas de
+auditoria anteriores verificavam "a carta tem dispatch?", não "toda FRASE
+do oráculo tem dispatch?".
+
+**Resposta:** compilação de verdade, não mais uma reafirmação em texto.
+Novo arquivo `checklist-oraculo.md`, persistente e auditável — as 100
+cartas quebradas em 189 cláusulas individuais (uma por frase/parágrafo do
+oráculo real), cada uma com status verificado por leitura/grep do código
+atual (não por memória) e o nome da função onde conferir. Achou mais 2
+bugs reais que as 2 rodadas anteriores tinham deixado passar:
+
+- **Overlord of the Hauntwoods**: "Whenever this permanent enters OR
+  ATTACKS, create a tapped Everywhere land token" — só a metade ETB tinha
+  dispatch; a metade "ou ataca" nunca disparava, apesar de ser um motor
+  de terreno repetível de verdade. Corrigido em `combat_step()`.
+- **Inventors' Fair**: "{4},{T},Sacrifice: Search your library for an
+  artifact card... Activate only if you control three or more artifacts"
+  — a 3ª habilidade da carta (só tinha o upkeep de vida) nunca tinha sido
+  implementada NEM documentada como fora de escopo — lacuna pura, achada
+  só agora. Implementada (`inventors_fair_tutor()`).
+
+Mais 3 lacunas de **documentação** (não de comportamento — já estavam
+corretas) fechadas na mesma passada: Dryad of the Ilysian Grove ("every
+basic land type") não estava na lista de fixações confirmadas; Springheart
+Nantuko não tinha comentário explicando por que sempre cai no fallback de
+1/1 Insect (consequência do Bestow já documentado fora de escopo);
+Jetmir's Garden's Cycling {3} nunca tinha sido mencionado em lugar nenhum
+como mecanismo de custo alternativo fora de escopo.
+
+**Robustez:** 20.000 partidas (seeds 8700000–8719999), 0 erros/timeouts.
+Overlord (ataque) e Inventors' Fair testados isoladamente.
+
+**n=3000, seed_base=9000000 — antes → depois:**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg tokens totais criados | 11,59 | **11,88** |
+| Avg vida ganha | 0,85 | **0,77** |
+| Avg gatilhos de landfall | 10,30 | 10,44 |
+| Avg terrenos em campo (T8) | 9,89 | 9,95 |
+
+Leitura: tokens sobem porque o Overlord agora cria Everywhere token toda
+vez que ataca (não só no ETB) — e cada Everywhere token extra também é
+mais 1 gatilho de landfall. Vida ganha cai porque o Inventors' Fair às
+vezes se sacrifica pelo tutor, perdendo o gatilho de upkeep de vida daí
+pra frente — troca real, não bug.
+
+`lista.md` não mudou. `toph_v1_runs.jsonl` sobrescrito (3000 jogos,
+código atual). Ver `checklist-oraculo.md` pra tabela completa das 189
+cláusulas.
+
+---
+
 ### 2ª passada da revisão do oráculo — "vc fez a checagem completa?" — 2026-09-01
 
 **Contexto:** depois de eu reportar a revisão completa do oráculo (entrada

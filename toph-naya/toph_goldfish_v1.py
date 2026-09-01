@@ -306,6 +306,50 @@ de verdade. Relevante pra alvo do Bristly Bill/Earthbender Ascension
 (`best_creature_target`) e gatilhos "whenever you attack" -- sem P/T
 rastreado (docstring), o "2/2" em si nao vira um numero manipulavel, so'
 o status de criatura muda.
+
+Compilacao final clausula-a-clausula (2026-09-01, pedido direto do
+usuario apos a 2a partida manual: "Pra que eu peco pra vc checar tudo se
+vc ainda nao compila TODAS AS HABILIDADES?") — as 2 rodadas de auditoria
+anteriores comparavam "a carta tem dispatch?", nao "toda FRASE do oraculo
+tem dispatch?". As 100 cartas foram quebradas em 189 clausulas
+individuais (uma por frase/paragrafo do oraculo real) e cada uma
+verificada por grep contra o codigo, nao por memoria -- tabela completa
+em `checklist-oraculo.md` (persistente, nao so' neste docstring). Achou
+mais 2 bugs reais:
+- **Overlord of the Hauntwoods**: "Whenever this permanent enters OR
+  ATTACKS, create a tapped Everywhere land token" -- so' a metade ETB
+  tinha dispatch (`apply_etb`), a metade "ou ataca" nunca disparava
+  nenhuma vez, apesar de ser um motor de terreno repetivel de verdade uma
+  vez a criatura em campo. Corrigido em `combat_step()` (auto-ataque, tipo
+  Bumi -- nao "whenever you attack" do jogador).
+- **Inventors' Fair**: "{4}, {T}, Sacrifice Inventors' Fair: Search your
+  library for an artifact card... Activate only if you control three or
+  more artifacts" -- so' a metade upkeep (lifegain com 3+ artefatos)
+  tinha dispatch; essa 3a habilidade (tutor real, sacrifica o proprio
+  terreno) nunca tinha sido implementada NEM documentada como fora de
+  escopo -- lacuna pura, achada so' agora. Implementada
+  (`inventors_fair_tutor()`, reusa a prioridade do Enlightened Tutor,
+  fatorada em `ARTIFACT_TUTOR_PRIORITY`).
+
+Lacunas de DOCUMENTACAO (nao de comportamento -- ja estavam corretas,
+so' sem comentario explicito) fechadas na mesma passada: Dryad of the
+Ilysian Grove ("every basic land type", fixacao pura, mesmo padrao do
+Great Divide Guide/Prismatic Omen/Yavimaya); Springheart Nantuko (sempre
+cria o Insect 1/1 de fallback, nunca copia a criatura anexada -- 100%
+consequencia do Bestow ja documentado fora de escopo, comentario
+adicionado no dispatch); palavras-chave de combate puras sem numero pra
+modificar (Avatar Kyoshi hexproof, Earthbending Student/Toph Greatest
+Earthbender land creatures vigilance/double strike, Mossborn Hydra
+trample, Kodama reach/partner) -- ja cobertas pela premissa geral "sem
+combate real, sem P/T rastreado" do topo deste docstring, nunca
+precisaram de tratamento individual.
+
+**Robustez desta rodada:** 20.000 partidas (seeds 8700000–8719999), 0
+erros/timeouts. Overlord attack trigger e Inventors' Fair tutor testados
+isoladamente (nao so' "roda sem erro"). n=3000 de validacao: movimento
+pequeno e no sentido esperado (tokens totais 11,59→11,88 pelo Overlord
+atacando mais vezes; vida ganha 0,85→0,77 porque Inventors' Fair as
+vezes se sacrifica, perdendo o gatilho de upkeep).
 """
 
 import json
@@ -669,6 +713,13 @@ FINISHER_CARDS = {
     "Mossborn Hydra",
 }
 
+# Prioridade generica de "melhor artefato disponivel" usada por qualquer
+# tutor de artefato do deck (Enlightened Tutor, Inventors' Fair) -- fatorada
+# 2026-09-01 pra nao duplicar a lista em cada dispatch.
+ARTIFACT_TUTOR_PRIORITY = ("Sol Ring", "The Great Henge", "Skullclamp", "Krark-Clan Ironworks",
+                           "Sylvan Library", "Mycosynth Lattice", "Unstable Obelisk", "Mox Opal",
+                           "Arcane Signet", "The Ozolith")
+
 
 # ---------------------------------------------------------------------------
 # Game state
@@ -966,6 +1017,17 @@ def landfall_trigger(state: GameState, land_perm: Permanent, log: list):
         if "landfall_token" in tags and p.card.name == "Sapling Nursery":
             create_token(state, log)
         if "landfall_token" in tags and p.card.name == "Springheart Nantuko":
+            # Achado real 2026-09-01 (documentacao, sem mudanca de
+            # comportamento): a habilidade real e' um modal -- "you may pay
+            # {1}{G} if this permanent is attached to a creature you
+            # control. If you do, create a token that's a copy of that
+            # creature. If you didn't create a token this way, create a 1/1
+            # Insect." Bestow (o unico jeito de "attached to a creature")
+            # ja e' documentado fora de escopo (mecanismo de custo
+            # alternativo, arquitetura de `mv` fixo por carta) -- entao
+            # essa carta SEMPRE cai no fallback (1/1 Insect), nunca no modo
+            # de copia. Consequencia direta do Bestow nao ser modelado, nao
+            # um bug novo.
             create_token(state, log)
         if "landfall_choice" in tags:
             # Felidar Retreat, modal real: "Create a 2/2 Cat Beast token." OU
@@ -1325,10 +1387,7 @@ def resolve_instant_sorcery(state: GameState, name: str, log: list):
                 if CARD_DB[n].ctype in ARTIFACT_ISH
                 or CARD_DB[n].ctype in ("enchantment", "enchantment_creature")]
         if pool:
-            priority = ("Sol Ring", "The Great Henge", "Skullclamp", "Krark-Clan Ironworks",
-                        "Sylvan Library", "Mycosynth Lattice", "Unstable Obelisk", "Mox Opal",
-                        "Arcane Signet", "The Ozolith")
-            found = next((n for n in priority if n in pool), None)
+            found = next((n for n in ARTIFACT_TUTOR_PRIORITY if n in pool), None)
             if found is None:
                 pool.sort(key=lambda n: -CARD_DB[n].mv)
                 found = pool[0]
@@ -1643,6 +1702,7 @@ def main_phase(state: GameState, log: list):
     caretaker_talent_levelup(state, log)
     oswald_fiddlebender_tinker(state, log)
     fountainport_sac_draw(state, log)
+    inventors_fair_tutor(state, log)
 
     if RECURRING_ARTIFACT_POLICY:
         work_recurring_artifact_loop(state, log)
@@ -1888,6 +1948,37 @@ def fountainport_sac_draw(state: GameState, log: list):
     draw_cards(state, 1, log, source="Fountainport (sacrifica token)")
 
 
+def inventors_fair_tutor(state: GameState, log: list):
+    """Achado real 2026-09-01 (checklist clausula-a-clausula, pos-Partida
+    #2): "{4}, {T}, Sacrifice Inventors' Fair: Search your library for an
+    artifact card, reveal it, put it into your hand, then shuffle. Activate
+    only if you control three or more artifacts." So' a metade upkeep
+    (lifegain com 3+ artefatos) estava implementada -- essa 3a habilidade
+    nunca tinha dispatch nenhum, nem estava documentada como fora de
+    escopo. Sacrifica o proprio terreno (perda real de fonte de mana) --
+    so' vale a pena achando algo bom, reusa a mesma prioridade do
+    Enlightened Tutor."""
+    fair = next((p for p in state.battlefield if p.card.name == "Inventors' Fair" and not p.tapped), None)
+    if fair is None or remaining_mana(state) < 4:
+        return
+    n_artifacts = sum(1 for p in state.battlefield if is_artifact(p, state))
+    if n_artifacts < 3:
+        return
+    pool = [n for n in state.library if CARD_DB[n].ctype in ARTIFACT_ISH]
+    if not pool:
+        return
+    found = next((n for n in ARTIFACT_TUTOR_PRIORITY if n in pool), None)
+    if found is None:
+        pool.sort(key=lambda n: -CARD_DB[n].mv)
+        found = pool[0]
+    spend_mana(state, 4)
+    fair.tapped = True
+    state.library.remove(found)
+    state.hand.append(found)
+    log.append(f"  [Inventors' Fair] sacrifica, busca {found} pra mao")
+    leave_battlefield(state, fair, log)
+
+
 def combat_step(state: GameState, log: list):
     # Achado real 2026-09-01 (2a passada da revisao de oraculo): The
     # Ozolith so' tinha a METADE "reciclagem" implementada (contadores de
@@ -1946,6 +2037,20 @@ def combat_step(state: GameState, log: list):
         for p in state.battlefield:
             if is_land(p, state) and is_creature_type(p, state):
                 p.counters += 2
+
+    # Achado real 2026-09-01 (checklist clausula-a-clausula, pos-Partida #2):
+    # Overlord of the Hauntwoods ("Whenever this permanent enters OR
+    # ATTACKS, create a tapped Everywhere land token") -- so' a metade ETB
+    # estava implementada (`apply_etb`), a metade "ou ataca" nunca disparava
+    # nenhuma vez, mesmo Overlord virando um motor de terreno repetivel de
+    # verdade uma vez em campo. Auto-ataque de verdade (igual Bumi), nao
+    # "whenever you attack" do jogador.
+    if any(p.card.name == "Overlord of the Hauntwoods" for p in attackers):
+        create_token(state, log)
+        everywhere = mk_perm(state, "Everywhere Token")
+        everywhere.is_token = True
+        everywhere.tapped = True
+        enter_battlefield(state, everywhere, log)
 
 
 def end_step(state: GameState, log: list):
