@@ -477,6 +477,22 @@ class GameState:
     # "as a sorcery" pagando o custo real de cada nivel.
     innkeepers_talent_level: int = 1
 
+    # Achados reais 2026-09-01 (leitura linha-a-linha completa do
+    # oraculo, "compile TUDO" - a nota antiga do docstring sobre "11
+    # criaturas nao-ramp/draw/removal/counter-doubler" ficou desatualizada;
+    # verificado carta a carta contra o oraculo real via Scryfall):
+    # Sphinx of the Second Sun ("if you cast it, take an extra turn") e
+    # Carth the Lion (ETB: tutor de planeswalker + taxa de {1} extra em
+    # TODA ativacao de lealdade, inclusive a nossa) sao reais e
+    # implementaveis neste motor - Arena Rector (gatilho de MORTE, nao
+    # ETB) e The Peregrine Dynamo (copiar gatilho entre N fontes
+    # legendarias, mesma excecao arquitetural do Strionic Resonator)
+    # permanecem estruturalmente fora de escopo, ver docstring.
+    extra_turns_pending: int = 0
+    sphinx_extra_turns_total: int = 0
+    sphinx_sacrifice_pending: bool = False
+    carth_tutors_total: int = 0
+
     def draw(self, n: int = 1):
         for _ in range(n):
             if self.library:
@@ -652,6 +668,29 @@ def do_land_fetch_spell(state: GameState, card: str, log: List[Dict]):
         state.tapped_lands_this_turn.add(best)  # "put onto the battlefield tapped"
     log.append({"action": "land_fetch", "card": card, "target": best, "turn": state.turn})
     on_land_enters(state, log)
+
+
+def do_carth_etb(state: GameState, log: List[Dict]):
+    """Carth the Lion: 'Whenever Carth enters or a planeswalker you
+    control dies, look at the top seven cards of your library. You may
+    reveal a planeswalker card from among them and put it into your
+    hand.' Achado real 2026-09-01 (leitura linha-a-linha, "compile
+    TUDO") - so' a metade "morte de planeswalker" nunca dispara neste
+    sim (nada remove nossos planeswalkers uma vez em campo, ver
+    `resolve_removal_round()`), mas a metade ETB e' real e disparada
+    aqui. 17 planeswalkers em 99 cartas - taxa de acerto real, nao um
+    chute."""
+    top7 = state.library[:7]
+    rest = state.library[7:]
+    pw_in_top7 = [c for c in top7 if C(c).type == "Planeswalker"]
+    if pw_in_top7:
+        found = pw_in_top7[0]
+        top7.remove(found)
+        state.hand.append(found)
+        state.carth_tutors_total += 1
+        log.append({"trigger": "carth_tutor", "found": found, "turn": state.turn})
+    state.rng.shuffle(top7)
+    state.library = top7 + rest
 
 def try_fabled_passage(state: GameState, log: List[Dict]):
     """Fabled Passage: '{T}, Sacrifice this land: Search your library for a
@@ -1080,9 +1119,20 @@ def resolve_planeswalker(state: GameState, pw: str, log: List[Dict]):
         proliferate_loyalty(state, log, source="vraska")
 
 def activate_planeswalkers(state: GameState, log: List[Dict]):
+    # Carth the Lion: "Planeswalkers' loyalty abilities you activate cost
+    # an additional {1} to activate." Achado real 2026-09-01 (leitura
+    # linha-a-linha, "compile TUDO"): estatico real, sem excecao pros
+    # NOSSOS proprios planeswalkers - aplicado como custo de mana real
+    # antes de cada ativacao (se nao sobrar mana, essa ativacao especifica
+    # e' pulada nesse turno, sem gastar loyalty de graca).
+    carth_tax = 1 if state.has("Carth the Lion") else 0
     for pw in list(state.loyalty.keys()):
         if pw not in state.battlefield:
             continue  # morreu por outro efeito nesse meio tempo (Deepglow Skate etc. nao removem, so seguranca)
+        if carth_tax and remaining_mana(state) < carth_tax:
+            continue
+        if carth_tax:
+            state.mana_spent_this_turn += carth_tax
         resolve_planeswalker(state, pw, log)
 
 # =========================================================
@@ -1141,6 +1191,28 @@ def main_phase(state: GameState, log: List[Dict]):
         choice = castables[0]
         state.hand.remove(choice)
         state.mana_spent_this_turn += C(choice).mv
+
+        # Achados reais 2026-09-01 (leitura linha-a-linha, "compile TUDO" -
+        # a nota antiga do docstring listava estas 5 fontes de proliferate
+        # como deferidas por volume; implementadas aqui reusando
+        # `proliferate_loyalty()`, ja testada pro Evolution Sage/Vraska):
+        # Flux Channeler/Inexorable Tide ("whenever you cast a
+        # noncreature/any spell, proliferate") + Mutational
+        # Advantage/Ripples of Potential (proliferate no proprio efeito ao
+        # serem conjuradas). Ichormoon Gauntlet permanece fora de escopo -
+        # concede uma habilidade de lealdade NOVA a cada um dos 17
+        # planeswalkers (exigiria reestruturar a logica hardcoded por-PW
+        # de `resolve_planeswalker()`, escopo desproporcional ao resto
+        # desta rodada), ver docstring.
+        # Fontes independentes (permanentes DIFERENTES) - proliferam
+        # separadamente se ambas estiverem em campo, nao mutuamente exclusivas.
+        if state.has("Inexorable Tide"):
+            proliferate_loyalty(state, log, source="inexorable_tide")
+        if state.has("Flux Channeler") and C(choice).type != "Creature":
+            proliferate_loyalty(state, log, source="flux_channeler")
+        if choice in ("Mutational Advantage", "Ripples of Potential"):
+            proliferate_loyalty(state, log, source=choice.lower().replace(" ", "_").replace(",", ""))
+
         if C(choice).type in ("Instant", "Sorcery"):
             state.graveyard.append(choice)
         else:
@@ -1156,6 +1228,20 @@ def main_phase(state: GameState, log: List[Dict]):
                     # (nunca ha razao real pra nao escolher).
                     for pw in list(state.loyalty.keys()):
                         add_loyalty(state, pw, state.loyalty[pw], log, reason="deepglow_skate_etb")
+                if choice == "Sphinx of the Second Sun":
+                    # "When this creature enters, IF YOU CAST IT, take an
+                    # extra turn after this one." Achado real 2026-09-01
+                    # (leitura linha-a-linha, "compile TUDO"): "if you cast
+                    # it" so' e' satisfeito neste caminho (conjurada de
+                    # verdade da mao) - quando a Bridge POE a carta em campo
+                    # (nao conjura), essa condicao nao e' satisfeita (regra
+                    # real, nao omissao), ver `bridge_upkeep_trigger()`.
+                    state.extra_turns_pending += 1
+                    state.sphinx_extra_turns_total += 1
+                    state.sphinx_sacrifice_pending = True
+                    log.append({"trigger": "sphinx_second_sun_extra_turn", "turn": state.turn})
+                if choice == "Carth the Lion":
+                    do_carth_etb(state, log)
         if choice in LAND_FETCH_SPELLS:
             do_land_fetch_spell(state, choice, log)
         log.append({"action": "cast", "card": choice, "turn": state.turn})
@@ -1166,6 +1252,18 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.mana_spent_this_turn = 0
     state.tapped_lands_this_turn = set()
     log = []
+
+    if state.sphinx_sacrifice_pending:
+        # "At the beginning of that turn's upkeep, sacrifice Sphinx of
+        # the Second Sun." Achado real 2026-09-01. Este e' exatamente o
+        # inicio da propria turma extra concedida (flag setada no cast,
+        # consumida aqui no proximo play_turn() - que so' pode ser a
+        # extra, ja que o upkeep do turno QUE disparou ja passou antes
+        # do main_phase setar a flag).
+        if "Sphinx of the Second Sun" in state.battlefield:
+            state.battlefield.remove("Sphinx of the Second Sun")
+            state.graveyard.append("Sphinx of the Second Sun")
+        state.sphinx_sacrifice_pending = False
 
     # Linha de flash no end step do oponente anterior (ver docstring: modelado
     # como acontecendo ANTES da rodada de remocao deste turno, entao a Bridge
@@ -1236,8 +1334,21 @@ def simulate_one(seed: int, turns: int, with_greater_auramancy: bool) -> Dict:
         rng.shuffle(state.library)
 
     game_log = []
-    for t in range(1, turns + 1):
+    t = 0
+    turns_played = 0
+    while turns_played < turns:
+        t += 1
         play_turn(state, t, game_log)
+        turns_played += 1
+        while state.extra_turns_pending > 0 and turns_played < turns:
+            # Sphinx of the Second Sun: "take an extra turn after this
+            # one" - achado real 2026-09-01. Inserida imediatamente
+            # apos o turno que a disparou (mesma convencao ja usada nos
+            # simuladores do Maralen/Megatron desta sessao).
+            state.extra_turns_pending -= 1
+            t += 1
+            play_turn(state, t, game_log)
+            turns_played += 1
 
     return {
         "seed": seed,
@@ -1269,6 +1380,9 @@ def simulate_one(seed: int, turns: int, with_greater_auramancy: bool) -> Dict:
         "planeswalkers_in_play_end": len(state.loyalty),
         "innkeepers_talent_in_play": "Innkeeper's Talent" in state.battlefield,
         "innkeepers_talent_level_end": state.innkeepers_talent_level,
+        # Achados reais 2026-09-01 (leitura linha-a-linha completa do oraculo):
+        "sphinx_extra_turns_total": state.sphinx_extra_turns_total,
+        "carth_tutors_total": state.carth_tutors_total,
     }
 
 def run_batch(n=2000, turns=10, with_greater_auramancy=False, seed_base=3000000, label=""):
@@ -1337,10 +1451,20 @@ def run_batch(n=2000, turns=10, with_greater_auramancy=False, seed_base=3000000,
         print(f"Innkeeper's Talent em campo em {100*it_in_play/n:.1f}% dos jogos, alcancou nivel 3 "
               f"(dobra TODOS os counters, inclusive lealdade de planeswalker ao entrar) em "
               f"{100*it_lvl3/n:.1f}%")
-    print(f"Deferido nesta rodada (nao implementado, documentado): estatico da Nicol Bolas ('has all loyalty "
-          f"abilities of all other planeswalkers'); Flux Channeler/Ichormoon Gauntlet/Inexorable Tide/Mutational "
-          f"Advantage/Ripples of Potential/Atraxa (proliferate de outras fontes alem do Evolution Sage/Vraska - "
-          f"precisam de hooks de cast-trigger/end-step que este arquivo ainda nao tem).")
+    print(f"Avg proliferates via Flux Channeler/Inexorable Tide/Mutational Advantage/Ripples of Potential "
+          f"(achado 2026-09-01, implementado nesta rodada): "
+          f"{sum(r['pw_activations_total'] for r in results)/n:.2f} ativacoes de PW no total (inclui esses proliferates)")
+    print(f"Sphinx of the Second Sun (turno extra real, so' quando conjurada de verdade - nao via Bridge): "
+          f"{sum(r['sphinx_extra_turns_total'] for r in results)/n:.3f} avg | "
+          f"{100*sum(1 for r in results if r['sphinx_extra_turns_total']>0)/n:.1f}% dos jogos")
+    print(f"Carth the Lion (tutor de planeswalker no ETB): {sum(r['carth_tutors_total'] for r in results)/n:.2f} avg | "
+          f"{100*sum(1 for r in results if r['carth_tutors_total']>0)/n:.1f}% dos jogos")
+    print(f"Deferido nesta rodada (nao implementado, documentado - genuinamente estrutural ou desproporcional): "
+          f"estatico da Nicol Bolas ('has all loyalty abilities of all other planeswalkers' - exigiria uma "
+          f"segunda camada de escolha por PW); Ichormoon Gauntlet (concede uma habilidade de lealdade NOVA a "
+          f"cada um dos 17 planeswalkers - exigiria reestruturar a logica hardcoded por-PW de "
+          f"resolve_planeswalker()); Arena Rector (gatilho de MORTE, nada remove nossas criaturas neste sim); "
+          f"The Peregrine Dynamo (copiar gatilho entre N fontes legendarias, mesma excecao do Strionic Resonator).")
     print()
     return results
 

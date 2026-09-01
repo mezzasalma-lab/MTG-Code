@@ -450,6 +450,55 @@ correção.
 
 ---
 
+### Leitura linha-a-linha completa do oráculo (mesma exigência do Toph/Beorn/Edgar Markov/Hei Bai/Maralen/Megatron/Nekusar) — 2026-09-01
+
+**Gatilho (usuário):** *"AGORA FAZ O QUE SEMPRE Te MANDei FAZER: COmpila
+a porra de TODAS AS CARTAS DOS DECKS UMA A UMA... cada carta tem que ser
+lida linha a linha"*.
+
+**Aviso:** este simulador foi construído deliberadamente com escopo
+restrito (foco no motor Bridge + planeswalkers, não curva geral
+completa) — diferente dos outros 6 decks. Apliquei "compile TUDO" às
+lacunas documentadas como deferidas, não expandi o escopo original do
+simulador.
+
+Achado: 5 cartas 100% ausentes apesar de tags existentes — Sphinx of the
+Second Sun (extra turn real, condicionado a "if you cast it" — não
+dispara via Bridge, verificado contra o oráculo real, não suposição),
+Carth the Lion (tutor de planeswalker no ETB + taxa de {1} em ativações
+de lealdade), Flux Channeler/Inexorable Tide (proliferate no cast),
+Mutational Advantage/Ripples of Potential (proliferate no próprio
+efeito). Todos reusam `proliferate_loyalty()`, já testada.
+
+**Reclassificações importantes (correção da minha própria memória, não
+bugs de código):** eu tinha memorizado errado o texto de Arena Rector
+(achei que era ETB "exile+recast", na real é gatilho de MORTE — 📊
+estrutural real, nada remove nossas criaturas neste sim). Verifiquei
+contra Scryfall antes de implementar, não confiei na lembrança.
+
+**Deferido, confirmado genuinamente desproporcional:** Nicol Bolas
+(estático que concede TODAS as habilidades de outros PWs) e Ichormoon
+Gauntlet (concede habilidade nova a cada um dos 17 PWs) exigiriam
+reestruturar a lógica hardcoded por-planeswalker deste arquivo
+especificamente — não julgamento de valor sobre a carta, mas
+desproporção real de escopo vs. o resto desta rodada.
+
+**Robustez:** 6+ testes unitários isolados + 20.000 partidas de
+regressão (0 erros, alternando `with_greater_auramancy`).
+
+**Batch, n=2000, seed_base=1800000 (antes = git HEAD, depois = com os fixes):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg pw_activations_total | 6,72 | 6,73 |
+| Avg planeswalkers_in_play_end | 1,70 | 1,78 |
+| Sphinx extra turn ativado | (não existia) | 4,7% dos jogos |
+| Carth tutor ativado | (não existia) | 11,2% dos jogos |
+
+`checklist-oraculo.md` criado.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
