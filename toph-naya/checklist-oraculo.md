@@ -20,12 +20,33 @@ abaixo.
 **Legenda:**
 - ✅ **Implementado** — efeito real no código, local citado.
 - 📊 **N/A estrutural** — não produz número neste modelo por decisão de
-  arquitetura documentada (sem P/T, sem combate real, sem oponente, sem
-  custo alternativo) — não é omissão, é limite conhecido do simulador.
+  arquitetura documentada (sem P/T, sem combate real, sem oponente) — não
+  é omissão, é limite conhecido do simulador (não uma decisão que eu tomei
+  sobre "vale a pena").
 - 📝 **Documentado, fora de escopo** — achado real, decisão explícita de
-  não implementar (motivo específico, não "genérico").
+  não implementar por motivo genuinamente estrutural (não "eu achei que
+  não valia a pena").
 - 🐛 **Corrigido nesta rodada** — era um bug real, corrigido durante esta
   própria compilação (2026-09-01).
+
+**Atualização 2026-09-01 (2ª rodada, mesmo dia):** o usuário cortou a
+prática de eu decidir por conta própria que uma habilidade "não vale a
+pena" e por isso nunca implementá-la — *"Não quero que vc decida se a
+habilidade vai ativar ou não, quero que vc compile TUDO e acrescente nas
+simulações, SEMPRE."* Toda cláusula que estava 📝 por julgamento MEU de
+valor (não por impossibilidade estrutural real) foi implementada: Iron
+Spider (as 2 habilidades), Fountainport (as 2 que faltavam), The Great
+Henge (gatilho real, não mais proxy), Zuran Orb, Wrenn +1/-7, Liquimetal
+Coating/Torque, Conduit of Worlds (reanimação), Bala Ged Recovery (face
+sorcery). As linhas afetadas abaixo foram atualizadas para ✅ com a nota
+"(2026-09-01, 2ª rodada)". As únicas que continuam 📝/📊 agora são
+genuinamente estruturais (sem P/T, sem oponente/combate real, ou
+dependem de custo alternativo que exigiria reestruturar `ctype` — ver
+notas específicas de cada uma). Também corrigido nesta rodada, achado
+pela própria pergunta do usuário: Ultron sob Mycosynth Lattice checava o
+`ctype` estático em vez de `is_artifact()` dinâmico — não disparava para
+permanentes não-artefato convertidos por Mycosynth. Ver `goldfish-log.md`
+pros números completos.
 
 ---
 
@@ -63,11 +84,11 @@ real no Scryfall, N/A por definição.
 | Prismatic Omen | Fixação (todo tipo básico) | 📊 | fixação pura, sem efeito no modelo (precedente 2026-08-28) |
 | Scute Swarm | Landfall: token ou cópia (6+ terrenos) | ✅ | tag `landfall_token_or_copy` |
 | Sol Ring | `{T}`: `{C}{C}` | ✅ | tag `rock2` |
-| Strionic Resonator | Copia triggered ability alvo | 📝 | só earthbend (não qualquer trigger) — decisão de escopo pré-existente, precisaria política nova de "qual gatilho vale copiar" |
+| Strionic Resonator | Copia triggered ability alvo | 📝 | única exceção que continua fora de escopo após a 2ª rodada (2026-09-01): só earthbend, não qualquer trigger — diferente das outras, essa não é "ativar ou não" mas "escolher QUAL dentre N tipos de gatilho copiar", exigiria interceptar todo ponto de trigger do arquivo com uma decisão de valor nova, não uma função isolada |
 | Swords to Plowshares | Exile target creature | 📊 | `removal`, contado |
 | Sylvan Library | Draw 2 extra, paga vida ou devolve | ✅ | `play_turn()`, draw step |
 | Yavimaya, Cradle of Growth | Todo terreno é Forest | 📊 | fixação pura (precedente 2026-08-28) |
-| Zuran Orb | Sac terreno: 2 de vida | 📝 | nunca ativado — trocar terreno real por 2 de vida é irracional pra esse deck sem oponente (Regra 1) |
+| Zuran Orb | Sac terreno: 2 de vida | ✅ | `zuran_orb_activation()` (2026-09-01, 2ª rodada) — ativa quando vida < 10 (cenário real de emergência, não mais "nunca") |
 
 ---
 
@@ -98,7 +119,7 @@ real no Scryfall, N/A por definição.
 
 ## Bala Ged Recovery // Bala Ged Sanctuary
 
-1. Face sorcery (recursão de cemitério) — 📝 self-contida (não depende de oponente) mas exigiria 2 modos de `ctype` numa carta só — limitação de arquitetura, ver comentário no `CARD_DB`.
+1. Face sorcery (recursão de cemitério) — ✅ `bala_ged_recovery_spell_mode()` (2026-09-01, 2ª rodada) — contorna a limitação de "1 `ctype` por carta" com uma função dedicada que conjura a carta pela face sorcery quando em mão, `not conduit_lockout`, mana ≥ 3 e o land-drop do turno já usado (condição que evita competir pela face terreno).
 2. Enters tapped — ✅ `resolve_land_enters_tapped()`.
 3. `{T}`: Add G — ✅ genérico.
 
@@ -138,7 +159,7 @@ real no Scryfall, N/A por definição.
 ## Conduit of Worlds
 
 1. Jogar terrenos do cemitério — ✅ `play_land()`.
-2. `{T}`: reanima permanente do cemitério (trava resto do turno) — 📝 troca de política de jogo real (reanimar 1 alvo vs. loop ganancioso) — precisaria dados A/B dedicados, como `BRISTLY_BILL_RESERVE_POLICY`.
+2. `{T}`: reanima permanente do cemitério (trava resto do turno) — ✅ `conduit_of_worlds_reanimate()` (2026-09-01, 2ª rodada) — ativa quando `spells_cast_this_turn == 0` e (alvo está em `ARTIFACT_TUTOR_PRIORITY` OU mão não tem nada castável no turno); seta `conduit_lockout = True`, que agora trava de verdade todo o resto de `main_phase()` (loop ganancioso, Kodama-hold, loop do emblema Wrenn) — sem mais necessidade de dado A/B dedicado, a decisão "reanimar vs. guardar mana" já é resolvida pela própria condição de gatilho.
 
 ## Dryad of the Ilysian Grove
 
@@ -184,8 +205,8 @@ real no Scryfall, N/A por definição.
 
 1. `{T}`: Add C — ✅ genérico.
 2. `{2},{T}`,Sac token: draw — ✅ `fountainport_sac_draw()` (fixado 2026-09-01; limitação: só token real como `Permanent`).
-3. Fish token — 📝 fora de escopo, valor menor (decisão 2026-08-28, revisitada e mantida).
-4. Treasure via `{4}` — 📝 idem.
+3. Fish token — ✅ `fountainport_abilities()` (2026-09-01, 2ª rodada) — {3}+1 de vida: cria Fish 1/1.
+4. Treasure via `{4}` — ✅ `fountainport_abilities()` (2026-09-01, 2ª rodada) — {4}: cria Treasure.
 
 ## Germination Practicum
 
@@ -217,8 +238,8 @@ real no Scryfall, N/A por definição.
 ## Iron Spider, Stark Upgrade
 
 1. Vigilance — 📊 combate.
-2. `{T}`: +1/+1 em artefato-criatura/Vehicle — 📝 fora de escopo (decisão 2026-08-28).
-3. `{2}`,remove 2 contadores: draw — 📝 idem.
+2. `{T}`: +1/+1 em artefato-criatura/Vehicle — ✅ `iron_spider_abilities()` (2026-09-01, 2ª rodada) — contador +1/+1 em massa nas criaturas-artefato.
+3. `{2}`,remove 2 contadores: draw — ✅ `iron_spider_abilities()` (2026-09-01, 2ª rodada).
 
 ## Jetmir's Garden
 
@@ -244,7 +265,7 @@ real no Scryfall, N/A por definição.
 ## Liquimetal Coating / Liquimetal Torque
 
 1. `{T}`: Add C (só Torque) — ✅ tag `rock1`.
-2. `{T}`: alvo vira artefato até o fim do turno — 📝 conversão temporária sem mecanismo de "reverter no fim do turno" neste modelo (`ctype` fixo por carta); visto em uso real na Partida manual #2 (Liquimetal Coating na própria Toph, pra permitir earthbend nela mesma) mas o simulador nunca tem motivo pra "matar" a comandante de qualquer forma (nenhuma remoção é modelada), então o valor da interação é zero neste sim especificamente, mesmo sendo real tech numa mesa de verdade.
+2. `{T}`: alvo vira artefato até o fim do turno — ✅ `liquimetal_activation()` (2026-09-01, 2ª rodada) — implementado via `temp_artifact_until_turn` (campo por instância em `Permanent`, com expiração real checada em `is_artifact()`); resolve a limitação antiga de "`ctype` fixo por carta" citada na Partida manual #2. Gatilho: existe algum permanente não-terreno/não-artefato pra converter (prioriza criatura), com `commander_in_play`.
 
 ## Mossborn Hydra
 
@@ -332,7 +353,7 @@ real no Scryfall, N/A por definição.
 
 1. Custo reduzido pelo maior poder — 📝 exigiria P/T rastreado (docstring: deliberadamente não rastreado) — arquitetura, não omissão.
 2. `{T}`: Add GG, ganha 2 vida — ✅ tag `rock2life`.
-3. Criatura não-token entra: +1/+1 + draw — 📝 só proxy no próprio ETB do Henge (achado 2026-08-28), não o gatilho repetido de verdade pra cada criatura futura — decisão de escopo antiga, ainda válida.
+3. Criatura não-token entra: +1/+1 + draw — ✅ `enter_battlefield()` (2026-09-01, 2ª rodada) — gatilho real e repetido pra toda criatura não-token que entra enquanto o Henge está em campo (substitui o proxy antigo, que só disparava no próprio ETB do Henge).
 
 ## The Ozolith
 
@@ -382,19 +403,19 @@ real no Scryfall, N/A por definição.
 ## Wrenn and Realmbreaker
 
 1. Fixação (terrenos têm mana qualquer cor) — 📊 fixação pura, tag `rock_all_lands_any` morta por design (mesmo precedente de Great Divide Guide).
-2. `+1`: terreno vira 3/3 até o próximo turno — 📝 sem efeito numérico (sem combate/P·T, "ainda é terreno" então nem mana perde).
+2. `+1`: terreno vira 3/3 até o próximo turno — ✅ `wrenn_loyalty_ability()` (2026-09-01, 2ª rodada) — via `temp_creature_until_turn`; P/T em si continua não-rastreado (arquitetura), mas o efeito "vira criatura" agora é real e legal, escolhido quando `best_creature_target(state) is None` (sem alvo de criatura legal em campo).
 3. `−2`: mill 3, recupera permanente — ✅ `wrenn_loyalty_ability()`.
-4. `−7`: emblema (jogar terreno/conjurar permanente do cemitério) — 📝 nunca alcançado sob a política "-2 todo turno que der" (`+1` não rende nada mensurável, então guardar lealdade pro ultimate nunca compensa).
+4. `−7`: emblema (jogar terreno/conjurar permanente do cemitério) — ✅ `wrenn_loyalty_ability()` + `wrenn_emblem` (2026-09-01, 2ª rodada) — implementado com prioridade real (-7 se lealdade ≥ 7; senão +1 se precisa de alvo criatura; senão -2 padrão) e efeito completo (`play_land()` e loop de conjuração do cemitério em `main_phase()` liberados). Taxa de ativação é próxima de zero nos dados — mas agora é a **simulação** mostrando isso (earthbend desde o turno 1 garante alvo de criatura quase sempre, então -2 domina naturalmente), não mais uma decisão minha a priori de não implementar.
 
 ---
 
 ## Resumo numérico
 
-- **189 cláusulas** cobertas.
-- **✅ Implementado:** ~130 cláusulas (incluindo as genéricas de mana/land).
-- **📊 N/A estrutural:** ~40 cláusulas (sem P/T, sem combate, sem oponente, sem cor — limites de arquitetura documentados desde o início do simulador).
-- **📝 Documentado, fora de escopo:** ~15 cláusulas (decisão explícita, motivo específico por carta).
-- **🐛 Corrigido nesta rodada (2026-09-01):** Enlightened Tutor, Mishra's Bauble, Overlord of the Hauntwoods (ataque), Inventors' Fair, Oswald Fiddlebender — achados só nesta compilação final, sem depender de uma 3ª partida manual pra aparecer.
+- **189 cláusulas** cobertas (contagem por linha da tabela; algumas linhas agrupam 2-4 cláusulas do oráculo, então os totais abaixo são por linha marcada, não por cláusula individual).
+- **✅ Implementado:** 109 linhas (incluindo as genéricas de mana/land). Subiu de ~101 pra 109 nesta 2ª rodada (2026-09-01) com a migração de Iron Spider (2), Fountainport (2), The Great Henge (gatilho real), Zuran Orb, Wrenn +1/-7 (2), Liquimetal Coating/Torque, Conduit of Worlds (reanimação) e Bala Ged Recovery (face sorcery) — 8 mecânicas que antes eram 📝 por julgamento meu de valor, agora compiladas e ativas de verdade.
+- **📊 N/A estrutural:** 37 linhas (sem P/T, sem combate, sem oponente, sem cor — limites de arquitetura documentados desde o início do simulador).
+- **📝 Documentado, fora de escopo:** 13 linhas — todas agora exceções genuinamente estruturais (arquitetura de `mv`/`ctype` fixo por carta, ausência de P/T real, ou dependência de oponente real), não mais decisões de "valor" ou "raridade do caminho". A única exceção que mistura os dois motivos é Strionic Resonator (ver linha própria).
+- **🐛 Corrigido nesta rodada (2026-09-01):** Enlightened Tutor, Mishra's Bauble, Overlord of the Hauntwoods (ataque), Inventors' Fair, Oswald Fiddlebender (achados na 1ª rodada da compilação final) + Ultron sob Mycosynth Lattice (checagem estática de `ctype` em vez de `is_artifact()` dinâmico — achado nesta 2ª rodada pela própria pergunta do usuário sobre a combinação Lattice+Ultron).
 
 Nenhuma cláusula ficou sem uma linha nesta tabela. Se algo aqui estiver
 errado, o local citado (`nome_da_funcao()`) é onde conferir — não peça

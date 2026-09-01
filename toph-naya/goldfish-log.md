@@ -948,4 +948,100 @@ quase todo jogo) inflava a mana disponível todo turno.
 
 ---
 
+### "Compile TUDO, SEMPRE" — 2ª rodada, mesmo dia (2026-09-01)
+
+**Contexto:** depois de registrar a Partida #2, o usuário perguntou uma
+regra real — *"Lattice transforma tudo que entra em campo em artefato,
+isso quer dizer que com ela e Ultron em campo, qq coisa que eu baixar
+posso pagar 2 e criar uma cópia 2/2 robô vilão artefato criatura?"* —
+e ao investigar pra responder, achei mais um bug: `enter_battlefield()`
+checava `perm.card.ctype in ("artifact", "artifact_creature")` (tipo
+**estático** da carta) pra decidir se disparava Ultron, em vez de
+`is_artifact(perm, state)` (checagem **dinâmica**, que já existia e já
+considerava Mycosynth Lattice). Resultado: sob Lattice, uma criatura ou
+terreno normal entrando NÃO disparava Ultron no simulador, mesmo sendo
+artefato de fato pela regra do Lattice — exatamente o cenário da pergunta
+do usuário. **Resposta à pergunta: sim, é uma combinação real e legal**
+(qualquer permanente que entra vira artefato pelo Lattice, então o
+gatilho "artifact card... enters" do Ultron dispara pra QUALQUER coisa
+que você baixe enquanto os dois estão em campo) — e o bug que impedia
+isso no simulador foi corrigido na mesma resposta.
+
+Junto com o bug, o usuário deu a instrução mais importante da sessão,
+verbatim: *"Não quero que vc decida se a habilidade vai ativar ou não,
+quero que vc compile TUDO e acrescente nas simulações, SEMPRE, PORRA!!!!!"*
+— ou seja: nenhuma habilidade fica de fora por eu julgar que "não seria
+racional pro deck" ou "precisaria de dados A/B antes". Só impossibilidade
+**estrutural** genuína (sem P/T, sem combate real, sem oponente real, ou
+arquitetura de `ctype`/`mv` fixo por carta) continua sendo motivo válido
+pra não implementar.
+
+**Resultado:** 8 mecânicas que estavam 📝 no `checklist-oraculo.md` só por
+julgamento de valor foram implementadas e compiladas na simulação:
+
+- **Iron Spider, Stark Upgrade** — as 2 habilidades ativadas que faltavam
+  (`{T}`: +1/+1 em massa nas criaturas-artefato; `{2}`+remove 2
+  contadores: draw). `iron_spider_abilities()`.
+- **Fountainport** — Fish token (`{3}`+1 de vida) e Treasure (`{4}`), as 2
+  habilidades que faltavam além do sac-token-draw já implementado.
+  `fountainport_abilities()` (renomeada/expandida de
+  `fountainport_sac_draw()`).
+- **The Great Henge** — gatilho real e repetido "criatura não-token
+  entra: +1/+1 + compra" pra qualquer criatura futura, não só um proxy no
+  próprio ETB do Henge. Movido de `apply_etb()` (proxy removido) pra
+  `enter_battlefield()` (gatilho de verdade).
+- **Zuran Orb** — sac terreno por 2 de vida, ativa quando `life_total < 10`
+  (cenário real de emergência, não mais "nunca ativa"). `zuran_orb_activation()`.
+- **Wrenn and Realmbreaker** — `+1` (terreno vira criatura até o próximo
+  turno, via novo campo `temp_creature_until_turn`) e `−7` (emblema:
+  joga terreno/conjura permanente do cemitério, via novo campo
+  `wrenn_emblem`) reescritos com prioridade real (-7 se lealdade ≥ 7;
+  senão +1 se `best_creature_target(state) is None`; senão -2 padrão).
+  `wrenn_loyalty_ability()`.
+- **Liquimetal Coating / Liquimetal Torque** — `{T}`: alvo vira artefato
+  até o fim do turno, via novo campo `temp_artifact_until_turn` (com
+  expiração checada em `is_artifact()`). `liquimetal_activation()`.
+- **Conduit of Worlds** — `{T}`: reanima permanente do cemitério e trava
+  o resto do turno (`conduit_lockout`, agora gatendo de verdade o loop
+  ganancioso, o Kodama-hold e o loop do emblema Wrenn em `main_phase()`).
+  `conduit_of_worlds_reanimate()`.
+- **Bala Ged Recovery // Bala Ged Sanctuary** — face sorcery (recursão de
+  cemitério pra mão), contornando a limitação de "1 `ctype` por carta"
+  com uma função dedicada. `bala_ged_recovery_spell_mode()`.
+
+Mais o bug do Ultron+Mycosynth Lattice acima (checagem estática →
+`is_artifact()` dinâmico).
+
+**Validação:** cada mecânica nova testada isoladamente (cenários mínimos
+de `GameState`/`Permanent` construídos à mão, incluindo os dois erros
+pegos no processo — teste do Wrenn +1 com alvo de criatura real presente
+por engano, corrigido; gate auto-contraditório do Liquimetal Coating,
+corrigido) e depois em regressão de 20.000 partidas, 0 exceções.
+Comparação `run_batch(n=3000, seed_base=9000000, turns=8)` antes/depois:
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Cartas compradas/turno (média) | 1,59 | 3,24 |
+| Terrenos finais (média) | 9,95 | 10,94 |
+| Tokens criados (média) | 11,88 | 14,85 |
+
+(Draw mais que dobrou — Iron Spider draw-engine, Fountainport Fish/
+Treasure alimentando mais permanentes, Conduit reanimando ameaças do
+cemitério. Terrenos e tokens sobem pelo mesmo motivo: mais permanentes em
+jogo, mais gatilhos de landfall/Henge/Iron Spider disparando. Unstable
+Obelisk, Sarcophagus e Strionic Resonator caem de prioridade — mais
+competição por mana com as novas habilidades ativadas.) Taxa de ativação
+do Wrenn `+1`/`−7` ficou perto de zero — não por eu ter decidido isso, mas
+porque o earthbend da Toph desde o turno 1 garante um alvo de criatura
+legal quase sempre, então `−2` domina naturalmente sob a política "ativa
+sempre que puder"; é a simulação mostrando o resultado, não uma escolha
+minha a priori.
+
+`checklist-oraculo.md` atualizado linha a linha (todas as 8 mecânicas
++ Ultron migradas de 📝/bug pra ✅, resumo numérico recalculado: 109 ✅,
+37 📊, 13 📝 — todas as 📝 restantes agora são exceções genuinamente
+estruturais, não mais julgamento de valor).
+
+---
+
 <!-- Copie o bloco acima para cada nova partida -->

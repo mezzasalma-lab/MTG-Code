@@ -350,6 +350,72 @@ isoladamente (nao so' "roda sem erro"). n=3000 de validacao: movimento
 pequeno e no sentido esperado (tokens totais 11,59→11,88 pelo Overlord
 atacando mais vezes; vida ganha 0,85→0,77 porque Inventors' Fair as
 vezes se sacrifica, perdendo o gatilho de upkeep).
+
+"Compile TUDO, SEMPRE" (2026-09-01) -- o usuario cortou explicitamente a
+pratica de eu decidir, por conta propria, que uma habilidade "nao vale a
+pena" e por isso nunca implementa-la. Pergunta real que motivou a virada:
+"com Mycosynth Lattice + Ultron em campo, qq coisa que eu baixar posso
+pagar 2 e criar uma copia 2/2?" -- SIM, e ao confirmar isso achei um bug
+real: `enter_battlefield()` checava o `ctype` ESTATICO da carta
+("artifact"/"artifact_creature") pra decidir se o Ultron dispara, nao
+`is_artifact()` (que ja considera Mycosynth Lattice dinamicamente) --
+entao sob Mycosynth, baixar uma criatura ou terreno comum NAO disparava
+Ultron, quando deveria. Corrigido.
+
+Alem disso, TODAS as clausulas que antes estavam marcadas "📝 fora de
+escopo" na `checklist-oraculo.md` por decisao MINHA de valor (nao por
+impossibilidade estrutural real) foram implementadas:
+- **Iron Spider, Stark Upgrade**: as 2 habilidades ativadas (contador em
+  cada artefato-criatura; remove 2 contadores dentre artefatos: draw) --
+  nao dependiam de oponente nem de P/T, ficaram de fora sem motivo real.
+- **Fountainport**: as 2 habilidades que faltavam (Fish 1/1 via {3}+1 vida;
+  Treasure via {4}) -- prioridade real entre as 3 (draw > Treasure > Fish).
+- **The Great Henge**: o proxy no proprio ETB virou o gatilho de verdade
+  ("whenever a nontoken creature you control enters") -- dispara pra
+  QUALQUER criatura nao-token que entrar depois do Henge, nao so' uma vez.
+- **Zuran Orb**: ativa quando a vida fica perigosamente baixa (<10) --
+  cenario real onde qualquer piloto trocaria terreno por vida, nao mais
+  "nunca".
+- **Wrenn and Realmbreaker +1/-7**: +1 (terreno vira criatura ate o
+  proximo turno, via novo campo `temp_creature_until_turn`) usada quando
+  falta alvo real de criatura pro Bristly Bill/Ozolith; -7 (emblema real:
+  joga terreno E conjura permanente do cemiterio) alcancavel de verdade
+  se a lealdade chegar a 7. Dados honestos: quase nunca disparam nos
+  30.000 jogos de robustez -- NAO por decisao minha, mas porque o proprio
+  earthbend da Toph ja cria uma criatura real desde o turno 1 quase
+  sempre, entao raramente falta alvo. A mecanica esta la, disponivel,
+  testada isoladamente -- e' a simulacao que decide que -2 quase sempre
+  ganha, nao eu.
+- **Liquimetal Coating/Liquimetal Torque**: convertem um permanente
+  real (preferencialmente criatura) em artefato-terreno ate o fim do
+  turno (`temp_artifact_until_turn`) -- amplia o pool de
+  `best_earthbend_target()` pra incluir criaturas reais, soma em
+  contagens de terreno/artefato (Metalcraft, Inventors' Fair, thresholds
+  de N-terrenos). A 1a versao desta funcao tinha um gatilho
+  auto-contraditorio ("falta alvo de criatura" -- mas se falta, tambem
+  nao ha criatura pra converter); corrigida pra ativar sempre que houver
+  alvo real disponivel.
+- **Conduit of Worlds**: reanima permanente do cemiterio (trava o resto
+  do turno pra 1 spell so', regra real) -- politica: so' se o alvo for
+  reconhecido de alto valor OU a mao nao tiver nada castavel de qualquer
+  forma (sem custo de oportunidade real). Novo campo `conduit_lockout`
+  respeitado pelo loop guloso principal E pelo emblema do Wrenn -7 (ambos
+  contam como "cast a spell").
+- **Bala Ged Recovery // Bala Ged Sanctuary**: face sorcery agora
+  despachada por nome quando o land-drop do turno ja foi usado (o deck
+  ainda prefere ela como terreno na maioria dos jogos, "ja abaixo do piso
+  de terrenos") -- a "limitacao de arquitetura" documentada antes nao
+  era motivo pra nunca tentar.
+
+**Robustez:** 20.000 partidas (seeds 8800000–8819999), 0 erros/timeouts.
+Cada mecanica nova testada isoladamente (Mycosynth+Ultron em ambos os
+sentidos, Great Henge, Wrenn +1/-7, Conduit, Bala Ged Recovery, Liquimetal,
+Zuran Orb, Iron Spider). n=3000: movimento grande e no sentido esperado --
+draw quase dobra (1,59→3,24, Great Henge real + Iron Spider + Conduit +
+Bala Ged Recovery), terrenos sobem (9,95→10,94, Liquimetal contando
+conversoes), tokens sobem (11,88→14,85, Fountainport completo); Obelisk/
+Stasis Coffin/Strionic Resonator CAEM (mais mecanicas competindo pela
+mesma mana).
 """
 
 import json
@@ -738,6 +804,8 @@ class Permanent:
     saga_chapter: int = 0  # Urza's Saga only
     level: int = 1  # Class enchantments (Caretaker's Talent) only
     forced_creature: bool = False  # Ultron copiando artefato nao-criatura (vira 2/2 Robot Villain)
+    temp_creature_until_turn: Optional[int] = None  # Wrenn +1: terreno vira criatura ate seu proximo turno
+    temp_artifact_until_turn: Optional[int] = None  # Liquimetal Coating/Torque: vira artefato ate o fim do turno
 
 
 @dataclass
@@ -802,6 +870,12 @@ class GameState:
     interaction_plays: int = 0  # metrica obrigatoria #10: remocao/protecao conjurada
     first_finisher_turn: Optional[int] = None  # metrica obrigatoria #10: finisher/lethality (proxy)
     wrenn_minus2_activations: int = 0
+    wrenn_plus1_activations: int = 0
+    wrenn_ultimate_activations: int = 0
+    wrenn_emblem: bool = False  # -7: play lands/cast permanent spells do cemiterio
+    spells_cast_this_turn: int = 0  # Conduit of Worlds: "if you haven't cast a spell this turn"
+    conduit_lockout: bool = False  # Conduit of Worlds: "can't cast additional spells this turn"
+    conduit_reanimations: int = 0
     urza_saga_chapter2_tokens: int = 0
     urza_saga_chapter3_tutors: int = 0
 
@@ -821,12 +895,20 @@ def is_artifact(perm: Permanent, state: GameState) -> bool:
         return True
     if state.mycosynth_in_play:
         return True  # Mycosynth Lattice: all permanents are artifacts
+    if perm.temp_artifact_until_turn is not None:
+        if state.turn > perm.temp_artifact_until_turn:
+            perm.temp_artifact_until_turn = None  # Liquimetal: "until end of turn", expirou
+        else:
+            return True
     return False
 
 
 def is_creature_type(perm: Permanent, state: GameState) -> bool:
+    if perm.temp_creature_until_turn is not None and state.turn > perm.temp_creature_until_turn:
+        perm.temp_creature_until_turn = None  # Wrenn +1: expirou ("until your next turn")
     return (perm.card.ctype in CREATURE_ISH or perm.earthbent
-            or "always_creature" in perm.card.tags or perm.forced_creature)
+            or "always_creature" in perm.card.tags or perm.forced_creature
+            or perm.temp_creature_until_turn is not None)
 
 
 def is_land(perm: Permanent, state: GameState) -> bool:
@@ -904,8 +986,31 @@ def enter_battlefield(state: GameState, perm: Permanent, log: list):
     if is_creature_type(perm, state):
         kodama_trigger(state, perm, log)
 
-    if (perm.card.ctype in ("artifact", "artifact_creature") and not perm.is_token
-            and perm.card.name != "Ultron, Artificial Malevolence"):
+    # Achado real 2026-09-01 (usuario: "quero que vc compile TUDO... SEMPRE"):
+    # The Great Henge ("Whenever a nontoken creature you control enters,
+    # put a +1/+1 counter on it and draw a card") so' tinha um PROXY no
+    # proprio ETB do Henge (achado de 2026-08-28, nunca corrigido pra
+    # virar o gatilho de verdade). Corrigido pra disparar em QUALQUER
+    # criatura nao-token que entra depois do Henge estar em campo -- o
+    # proprio Henge nunca e' ele mesmo uma criatura neste sim (ctype
+    # "artifact", Ashaya so' converte criatura->terreno, nao o contrario),
+    # entao nao ha risco de auto-disparo.
+    if (is_creature_type(perm, state) and not perm.is_token
+            and any(p.card.name == "The Great Henge" for p in state.battlefield if p is not perm)):
+        perm.counters += 1
+        draw_cards(state, 1, log, source="The Great Henge (criatura nao-token entra)")
+        log.append(f"  [The Great Henge] +1/+1 em {perm.card.name}, compra 1 carta")
+
+    # Achado real 2026-09-01 (pergunta direta do usuario: "com Mycosynth
+    # Lattice + Ultron em campo, qualquer coisa que eu baixar vira copia
+    # 2/2?"): SIM, pela regra real -- mas o codigo checava o `ctype`
+    # ESTATICO da carta ("artifact"/"artifact_creature"), nao se ela e' um
+    # artefato de verdade AGORA (`is_artifact()`, que ja considera
+    # Mycosynth Lattice). Sob Mycosynth, QUALQUER permanente nao-token
+    # (criatura, terreno, o que for) que entra e' tambem um artefato
+    # nao-token de verdade -- Ultron devia disparar nesses casos e nao
+    # disparava. Corrigido pra usar `is_artifact()`.
+    if is_artifact(perm, state) and not perm.is_token and perm.card.name != "Ultron, Artificial Malevolence":
         ultron_trigger(state, perm, log)
 
     apply_etb(state, perm, log)
@@ -1228,8 +1333,6 @@ def apply_etb(state: GameState, perm: Permanent, log: list):
             enter_battlefield(state, land_perm, log)
     elif name == "Ichor Wellspring":
         draw_cards(state, 1, log, source="Ichor Wellspring (ETB)")
-    elif name == "The Great Henge":
-        draw_cards(state, 1, log, source="The Great Henge (proxy — criatura ETB)")
     elif name == "Overlord of the Hauntwoods":
         create_token(state, log)
         everywhere = mk_perm(state, "Everywhere Token")
@@ -1336,6 +1439,7 @@ def can_cast_commander(state: GameState) -> bool:
 
 def cast_card(state: GameState, name: str, log: list, from_hand: bool = True):
     card = CARD_DB[name]
+    state.spells_cast_this_turn += 1
     if card.tags & INTERACTION_TAGS:
         state.interaction_plays += 1
     if name == COMMANDER:
@@ -1577,7 +1681,7 @@ def play_land(state: GameState, log: list):
             # fetches primeiro (deixam a biblioteca mais previsivel / menos "morta")
             fetches = [n for n in lands_in_hand if "fetch" in CARD_DB[n].tags]
             choice = fetches[0] if fetches else lands_in_hand[0]
-        elif has_card(state, "Crucible of Worlds") or has_card(state, "Conduit of Worlds"):
+        elif has_card(state, "Crucible of Worlds") or has_card(state, "Conduit of Worlds") or state.wrenn_emblem:
             # Achado real 2026-08-31: "gy_lands" (Crucible/Conduit of Worlds,
             # "You may play lands from your graveyard") era uma tag
             # decorativa sem dispatch nenhum. Fonte real de terreno no
@@ -1655,11 +1759,13 @@ def main_phase(state: GameState, log: list):
     if can_cast_commander(state):
         cast_card(state, COMMANDER, log, from_hand=False)
 
+    conduit_of_worlds_reanimate(state, log)
+
     if BRISTLY_BILL_RESERVE_POLICY:
         try_bristly_bill_double(state, log)
 
     held_for_kodama = None
-    if KODAMA_HOLD_POLICY and any(p.card.name == "Kodama of the East Tree" for p in state.battlefield):
+    if not state.conduit_lockout and KODAMA_HOLD_POLICY and any(p.card.name == "Kodama of the East Tree" for p in state.battlefield):
         nonland_perms = [n for n in state.hand
                           if CARD_DB[n].ctype not in ("instant", "sorcery", "land") and n != COMMANDER]
         if nonland_perms:
@@ -1670,16 +1776,40 @@ def main_phase(state: GameState, log: list):
             # la pra ser encontrada. So marca ela como protegida do loop de
             # casting generico abaixo.
 
-    castables = [n for n in state.hand if CARD_DB[n].ctype != "land" and can_cast(state, n) and n != held_for_kodama]
-    castables.sort(key=lambda n: CARD_DB[n].mv)
-    for n in castables:
-        if n not in state.hand:
-            continue
-        if not can_cast(state, n):
-            continue
-        cast_card(state, n, log)
-        castables = [x for x in state.hand if CARD_DB[x].ctype != "land" and can_cast(state, x) and x != held_for_kodama]
-        castables.sort(key=lambda x: CARD_DB[x].mv)
+    # `conduit_lockout`: se o Conduit reanimou algo esse turno, "can't cast
+    # additional spells this turn" -- pula o loop guloso principal E o
+    # emblema do Wrenn -7 abaixo (ambos sao "cast a spell").
+    if not state.conduit_lockout:
+        castables = [n for n in state.hand if CARD_DB[n].ctype != "land" and can_cast(state, n) and n != held_for_kodama]
+        castables.sort(key=lambda n: CARD_DB[n].mv)
+        for n in castables:
+            if n not in state.hand:
+                continue
+            if not can_cast(state, n):
+                continue
+            cast_card(state, n, log)
+            castables = [x for x in state.hand if CARD_DB[x].ctype != "land" and can_cast(state, x) and x != held_for_kodama]
+            castables.sort(key=lambda x: CARD_DB[x].mv)
+
+    # Achado real 2026-09-01 (usuario: "compile TUDO"): Wrenn -7 dá um
+    # emblema real ("You may play lands and cast permanent spells from
+    # your graveyard") -- a metade de terreno ja e' tratada junto com
+    # Crucible/Conduit em `play_land()`; aqui a metade "cast permanent
+    # spells" (nao-terreno) do mesmo emblema, mesmo loop guloso do resto
+    # do main_phase (ordenado por mv, o mais barato primeiro).
+    if state.wrenn_emblem and not state.conduit_lockout:
+        gy_castables = [n for n in state.graveyard
+                        if CARD_DB[n].ctype not in ("land", "instant", "sorcery") and can_cast(state, n)]
+        gy_castables.sort(key=lambda n: CARD_DB[n].mv)
+        for n in gy_castables:
+            if n not in state.graveyard or not can_cast(state, n):
+                continue
+            state.graveyard.remove(n)
+            log.append(f"  [Wrenn -7, emblema] conjura {n} do cemiterio")
+            cast_card(state, n, log, from_hand=False)
+            gy_castables = [x for x in state.graveyard
+                            if CARD_DB[x].ctype not in ("land", "instant", "sorcery") and can_cast(state, x)]
+            gy_castables.sort(key=lambda x: CARD_DB[x].mv)
 
     # Ba Sing Se: earthbend ativado se sobrar mana
     ba_sing_se = next((p for p in state.battlefield if p.card.name == "Ba Sing Se" and not p.tapped), None)
@@ -1699,10 +1829,14 @@ def main_phase(state: GameState, log: list):
         pass  # nao usado agressivamente — nao ha spell caro o suficiente pra justificar sacrificar valor
 
     wrenn_loyalty_ability(state, log)
+    liquimetal_activation(state, log)
+    bala_ged_recovery_spell_mode(state, log)
     caretaker_talent_levelup(state, log)
     oswald_fiddlebender_tinker(state, log)
-    fountainport_sac_draw(state, log)
+    fountainport_abilities(state, log)
     inventors_fair_tutor(state, log)
+    iron_spider_abilities(state, log)
+    zuran_orb_activation(state, log)
 
     if RECURRING_ARTIFACT_POLICY:
         work_recurring_artifact_loop(state, log)
@@ -1810,23 +1944,56 @@ def urza_saga_advance(state: GameState, log: list):
 
 
 def wrenn_loyalty_ability(state: GameState, log: list):
-    """+1/-2/-7 diagnosticados mas nunca ativados na rodada anterior --
-    implementado 2026-08-31. So' -2 (mill 3, recupera um permanente pra mao)
-    e' modelado: +1 ("terreno alvo vira 3/3 ate seu proximo turno") nao tem
-    efeito numerico neste simulador (sem combate/P-T rastreado, mesma
-    limitacao documentada pro anthem do Caretaker's Talent -- "ainda e'
-    terreno" entao nem mana perde) e -7 (emblema de jogar terrenos/conjurar
-    permanentes do cemiterio) exigiria alcancar lealdade 7+, o que nunca
-    acontece sob a politica -2-todo-turno abaixo. Politica: gastar -2 todo
-    turno que a lealdade permitir (>=2) -- dado que +1 nao produz nenhum
-    numero neste modelo, e' estritamente melhor puxar valor imediato
-    (recursao de permanente) do que guardar lealdade pra um ultimate que
-    nunca seria alcancado de qualquer forma. Uma ativacao por turno (regra
-    real de planeswalker), sem restricao de doenca de invocacao (lealdade
-    pode ser ativada no turno em que entra)."""
+    """+1/-2/-7 -- achado real 2026-09-01 (usuario: "nao quero que vc
+    decida se a habilidade vai ativar... compile TUDO, SEMPRE"): so' -2
+    estava implementada; +1 e -7 tinham ficado de fora por eu ter
+    decidido, por conta propria, que nunca valeriam a pena. Isso nao era
+    minha decisao. Implementadas as 3, com prioridade real por turno
+    (so' 1 ativacao, regra de planeswalker):
+    1. **-7** (se lealdade >= 7): emblema permanente "play lands and cast
+       permanent spells from your graveyard" -- estritamente melhor que
+       qualquer -2 pontual, sempre usada se disponivel.
+    2. **+1**: "up to one target land you control becomes a 3/3 Elemental
+       ... until your next turn. It's still a land." Sem P/T rastreado
+       (docstring), a estatistica 3/3 em si nao e' um numero que este
+       simulador manipula -- mas "ainda e' terreno E vira criatura" tem
+       efeito real de verdade aqui: land-alvo fica elegivel como "target
+       creature" (Bristly Bill/Ozolith) ate seu proximo turno (campo
+       `temp_creature_until_turn`). Usada quando esse alvo de criatura
+       faz falta (Bristly Bill ou Ozolith-com-contadores-guardados em
+       campo, sem nenhuma criatura real disponivel) OU quando a lealdade
+       ainda nao permite -2 (< 2) -- construir rumo ao -7 organicamente,
+       sem planejamento de varios turnos a frente (mesmo horizonte
+       guloso/imediato do resto do arquivo).
+    3. **-2** (padrao, valor imediato garantido): mill 3, recupera
+       permanente pra mao."""
     wrenn = next((p for p in state.battlefield if p.card.name == "Wrenn and Realmbreaker"), None)
-    if wrenn is None or state.wrenn_loyalty < 2:
+    if wrenn is None:
         return
+
+    if state.wrenn_loyalty >= 7:
+        state.wrenn_emblem = True
+        state.wrenn_ultimate_activations += 1
+        log.append("  [Wrenn -7] emblema: joga terrenos e conjura permanentes do cemiterio")
+        return
+
+    needs_creature_target = (
+        (any(p.card.name == "Bristly Bill, Spine Sower" for p in state.battlefield)
+         or (state.ozolith_counters > 0 and any(p.card.name == "The Ozolith" for p in state.battlefield)))
+        and best_creature_target(state) is None
+    )
+    if needs_creature_target or state.wrenn_loyalty < 2:
+        state.wrenn_loyalty += 1
+        state.wrenn_plus1_activations += 1
+        candidates = [p for p in state.battlefield if is_land(p, state) and not is_creature_type(p, state)]
+        if candidates:
+            target = candidates[0]
+            target.temp_creature_until_turn = state.turn + 1
+            log.append(f"  [Wrenn +1] {target.card.name} vira 3/3 ate o proximo turno")
+        else:
+            log.append("  [Wrenn +1] sem alvo de terreno elegivel, so' ganha lealdade")
+        return
+
     state.wrenn_loyalty -= 2
     state.wrenn_minus2_activations += 1
     milled = []
@@ -1923,29 +2090,43 @@ def oswald_fiddlebender_tinker(state: GameState, log: list):
         return
 
 
-def fountainport_sac_draw(state: GameState, log: list):
-    """Achado real 2026-09-01: Fountainport tinha 3 habilidades ativadas
-    ({2},{T},sac token: draw; {3},{T},pay 1 life: Fish 1/1; {4},{T}: cria
-    Treasure) -- decisao de escopo ja documentada na rodada de 2026-08-28
-    ("Iron Spider e Fountainport's habilidades ativadas" ficaram de fora).
-    So' a primeira ({2},{T},sac token: draw a card) e' implementada agora,
-    por ser a de maior valor e mais contida. Limitacao ja conhecida
-    (Caretaker's Talent nivel 2): so' dispara contra um token que seja um
-    Permanent de verdade em campo (maioria dos tokens deste sim e' so' um
-    contador em `create_token()`, sem objeto). As outras 2 habilidades
-    (Fish token, Treasure via {4}) continuam fora de escopo -- valor menor,
-    mesma decisao de 2026-08-28."""
+def fountainport_abilities(state: GameState, log: list):
+    """Fountainport tem 3 habilidades ativadas, todas com {T} -- so' 1 pode
+    ser usada por turno. Achado real 2026-09-01 (usuario, apos a 2a
+    partida manual: "quero que vc compile TUDO... SEMPRE"): as 2 abaixo
+    (Fish/Treasure) tinham ficado de fora por eu ter julgado "valor
+    menor" -- decisao que nao era minha pra tomar. Implementadas as 3,
+    priorizadas por valor real (draw > mana fixo/flexivel > corpo 1/1
+    sem uso de combate neste sim):
+    1. {2},{T},sac token real: draw a card (limitacao pre-existente: so'
+       dispara contra um token que seja um `Permanent` de verdade em
+       campo, nao os abstraidos como contador em `create_token()`).
+    2. {4},{T}: cria Treasure (mana flexivel, sem custo de vida).
+    3. {3},{T},pay 1 life: cria Fish 1/1 (ultima opcao -- so' conta como
+       corpo/token, sem combate neste sim, e ainda custa vida)."""
     fp = next((p for p in state.battlefield if p.card.name == "Fountainport" and not p.tapped), None)
-    if fp is None or remaining_mana(state) < 2:
+    if fp is None:
         return
     token = next((p for p in state.battlefield if p.is_token and p is not fp), None)
-    if token is None:
+    if token is not None and remaining_mana(state) >= 2:
+        spend_mana(state, 2)
+        fp.tapped = True
+        log.append(f"  [Fountainport] sacrifica token {token.card.name}, compra 1 carta")
+        leave_battlefield(state, token, log)
+        draw_cards(state, 1, log, source="Fountainport (sacrifica token)")
         return
-    spend_mana(state, 2)
-    fp.tapped = True
-    log.append(f"  [Fountainport] sacrifica token {token.card.name}, compra 1 carta")
-    leave_battlefield(state, token, log)
-    draw_cards(state, 1, log, source="Fountainport (sacrifica token)")
+    if remaining_mana(state) >= 4:
+        spend_mana(state, 4)
+        fp.tapped = True
+        state.treasures += 1
+        log.append("  [Fountainport] {4},{T}: cria Treasure")
+        return
+    if remaining_mana(state) >= 3 and state.life_total > 10:
+        spend_mana(state, 3)
+        fp.tapped = True
+        state.life_total -= 1
+        log.append("  [Fountainport] {3},{T},paga 1 vida: cria Fish 1/1")
+        create_token(state, log)
 
 
 def inventors_fair_tutor(state: GameState, log: list):
@@ -1977,6 +2158,172 @@ def inventors_fair_tutor(state: GameState, log: list):
     state.hand.append(found)
     log.append(f"  [Inventors' Fair] sacrifica, busca {found} pra mao")
     leave_battlefield(state, fair, log)
+
+
+def iron_spider_abilities(state: GameState, log: list):
+    """Iron Spider, Stark Upgrade: 2 habilidades ativadas, nenhuma
+    opponent-dependent -- estavam marcadas "fora de escopo" desde
+    2026-08-28 sem motivo real (nao dependem de P/T pra combate, contador
+    e' rastreado de verdade neste sim). Achado real 2026-09-01 (usuario:
+    "quero que vc compile TUDO... SEMPRE") -- implementadas as 2:
+    1. {T}: +1/+1 em cada artefato-criatura que voce controla (nao ha
+       Vehicle nesta lista). Conta pra Ozolith/Earth Kingdom General
+       depois.
+    2. {2}, remove 2 contadores dentre artefatos que voce controla: draw
+       (nao precisa ser do proprio Iron Spider -- "among artifacts you
+       control", qualquer combinacao)."""
+    spider = next((p for p in state.battlefield if p.card.name == "Iron Spider, Stark Upgrade" and not p.tapped), None)
+    if spider is not None:
+        spider.tapped = True
+        targets = [p for p in state.battlefield if is_artifact(p, state) and is_creature_type(p, state)]
+        if targets:
+            for p in targets:
+                p.counters += 1
+            log.append(f"  [Iron Spider] {{T}}: +1/+1 em {len(targets)} artefato-criatura(s)")
+
+    if remaining_mana(state) >= 2:
+        with_counters = [p for p in state.battlefield if is_artifact(p, state) and p.counters > 0]
+        if sum(p.counters for p in with_counters) >= 2:
+            spend_mana(state, 2)
+            to_remove = 2
+            for p in sorted(with_counters, key=lambda x: -x.counters):
+                take = min(p.counters, to_remove)
+                p.counters -= take
+                to_remove -= take
+                if to_remove <= 0:
+                    break
+            draw_cards(state, 1, log, source="Iron Spider (remove 2 contadores)")
+            log.append("  [Iron Spider] remove 2 contadores dentre artefatos, compra 1 carta")
+
+
+def conduit_of_worlds_reanimate(state: GameState, log: list):
+    """Conduit of Worlds: "{T}: Choose target nonland permanent card in
+    your graveyard. If you haven't cast a spell this turn, you may cast
+    that card. If you do, you can't cast additional spells this turn.
+    Activate only as a sorcery." Achado real 2026-09-01 (usuario: "compile
+    TUDO, SEMPRE") -- tinha ficado de fora porque eu julguei que essa
+    troca (abrir mao do loop ganancioso do turno inteiro por 1 reanimacao)
+    precisaria de dados A/B, no padrao do `BRISTLY_BILL_RESERVE_POLICY`.
+    Isso nao era motivo pra nunca implementar -- so' motivo pra escolher
+    uma politica e medir. Politica adotada: so' vale abrir mao do turno se
+    o alvo for um reconhecido de alto valor (`ARTIFACT_TUTOR_PRIORITY`) OU
+    se a mao nao tem NADA castavel esse turno de qualquer forma (sem custo
+    de oportunidade real). Chamada ANTES do loop guloso principal --
+    trava `state.conduit_lockout`, que o loop guloso e o emblema do Wrenn
+    -7 respeitam."""
+    conduit = next((p for p in state.battlefield if p.card.name == "Conduit of Worlds" and not p.tapped), None)
+    if conduit is None or state.spells_cast_this_turn > 0:
+        return
+    pool = [n for n in state.graveyard if CARD_DB[n].ctype != "land"]
+    if not pool:
+        return
+    bomb = next((n for n in ARTIFACT_TUTOR_PRIORITY if n in pool and can_cast(state, n)), None)
+    hand_has_castables = any(CARD_DB[n].ctype != "land" and can_cast(state, n) for n in state.hand)
+    if bomb is None and hand_has_castables:
+        return  # mao ja tem opcoes -- nao vale travar o turno por algo generico
+    target = bomb
+    if target is None:
+        affordable = [n for n in pool if can_cast(state, n)]
+        if not affordable:
+            return
+        target = max(affordable, key=lambda n: CARD_DB[n].mv)
+    conduit.tapped = True
+    state.graveyard.remove(target)
+    state.conduit_reanimations += 1
+    log.append(f"  [Conduit of Worlds] reanima {target} do cemiterio (trava o resto do turno)")
+    cast_card(state, target, log, from_hand=False)
+    state.conduit_lockout = True
+
+
+def liquimetal_activation(state: GameState, log: list):
+    """Liquimetal Coating/Torque: "{T}: Target permanent becomes an
+    artifact ... until end of turn." Achado real 2026-09-01 (usuario:
+    "compile TUDO") -- eu tinha decidido nao implementar (e a 1a versao
+    desta funcao usava um gatilho de "falta alvo de criatura" que se
+    provou auto-contraditorio: `best_creature_target()` ja acha QUALQUER
+    criatura real, land ou nao -- entao "falta alvo" so' acontece quando
+    NAO ha criatura nenhuma, momento em que tambem nao ha criatura nenhuma
+    pra converter). O valor real e' outro: junto com a estatica da Toph
+    ("nontoken artifacts you control are lands"), converter um permanente
+    NAO-terreno em artefato faz ele virar TAMBEM terreno -- isso amplia o
+    pool de `best_earthbend_target()` (que so' considera terrenos) pra
+    incluir uma criatura real de verdade, e soma no total de terrenos
+    (relevante pros gatilhos de "N terrenos" do Field of the Dead/Scute
+    Swarm/battle lands) e na contagem de artefatos (Metalcraft do Mox
+    Opal, "3+ artefatos" do Inventors' Fair). Ativada sempre que houver
+    um alvo real disponivel (nao-terreno, ainda nao-artefato) -- prefere
+    criatura real (amplia earthbend) sobre qualquer outro permanente."""
+    if not state.commander_in_play:
+        return
+    for card_name in ("Liquimetal Coating", "Liquimetal Torque"):
+        source = next((p for p in state.battlefield if p.card.name == card_name and not p.tapped), None)
+        if source is None:
+            continue
+        candidates = [p for p in state.battlefield
+                      if not is_land(p, state) and not is_artifact(p, state) and not p.is_token]
+        if not candidates:
+            continue
+        candidates.sort(key=lambda p: 0 if is_creature_type(p, state) else 1)
+        target = candidates[0]
+        target.temp_artifact_until_turn = state.turn
+        source.tapped = True
+        log.append(f"  [{card_name}] {target.card.name} vira artefato-terreno ate o fim do turno")
+        return
+
+
+def bala_ged_recovery_spell_mode(state: GameState, log: list):
+    """Bala Ged Recovery // Bala Ged Sanctuary: face sorcery ("Return
+    target card from your graveyard to your hand", {2}{G}). Ja documentado
+    como limitacao de arquitetura no `CARD_DB` (a carta e' registrada so'
+    como land, `ctype` unico por carta) -- mas achado real 2026-09-01
+    (usuario: "compile TUDO") mostrou que "limitacao de arquitetura" nao
+    e' desculpa pra nunca tentar: da' pra despachar por nome, igual
+    Conduit/Oswald/Inventors' Fair, sem precisar mudar `ctype`. So' faz
+    sentido quando o land-drop do turno ja foi usado (senao joga como
+    terreno, que o deck quer mais -- "ja abaixo do piso de terrenos")."""
+    # nota: CARD_DB[name].mv == 0 (registrada como land) -- custo real da
+    # face sorcery e' {2}{G} = 3 generico neste modelo, checado direto aqui.
+    name = "Bala Ged Recovery // Bala Ged Sanctuary"
+    if name not in state.hand or state.conduit_lockout or remaining_mana(state) < 3:
+        return
+    max_drops = 1 + state.extra_land_drops + (1 if has_card(state, "Dryad of the Ilysian Grove") else 0)
+    if state.lands_played_this_turn < max_drops:
+        return  # ainda da pra jogar como terreno esse turno -- prioridade real do deck
+    if not state.graveyard:
+        return
+    target = next((n for n in ARTIFACT_TUTOR_PRIORITY if n in state.graveyard), None)
+    if target is None:
+        lands_in_gy = [n for n in state.graveyard if is_land_name(n)]
+        target = lands_in_gy[0] if lands_in_gy else state.graveyard[0]
+    spend_mana(state, 3)
+    state.spells_cast_this_turn += 1
+    state.hand.remove(name)
+    state.graveyard.remove(target)
+    state.hand.append(target)
+    log.append(f"  [Bala Ged Recovery] conjurada como sorcery (terreno ja jogado), devolve {target} pra mao")
+
+
+def zuran_orb_activation(state: GameState, log: list):
+    """Achado real 2026-09-01 (usuario: "nao quero que vc decida se a
+    habilidade vai ativar ou nao... compile TUDO"). "Sacrifice a land: You
+    gain 2 life" nunca era ativado -- eu tinha julgado que trocar um
+    terreno de verdade por 2 de vida e' sempre ruim pra esse deck sem
+    oponente, e decidi por conta propria nunca modelar. Implementada com
+    um gatilho real (emergencia de vida baixa, o unico cenario onde
+    perder um terreno permanente por vida faz sentido pra QUALQUER piloto
+    -- vida abaixo de 10 aqui vem so' dos custos de vida ja modelados:
+    fetches, shock lands, Sylvan Library, Tanglespan Bridgeworks) -- nao
+    "nunca ativa" mais, ativa quando a condicao real pede."""
+    orb = next((p for p in state.battlefield if p.card.name == "Zuran Orb"), None)
+    if orb is None or state.life_total >= 10:
+        return
+    real_lands = [p for p in state.battlefield if p.card.ctype == "land"]
+    if not real_lands:
+        return
+    sac = real_lands[0]
+    log.append(f"  [Zuran Orb] sacrifica {sac.card.name} (vida baixa: {state.life_total}), ganha 2")
+    leave_battlefield(state, sac, log)
+    gain_life(state, 2, log, source="Zuran Orb")
 
 
 def combat_step(state: GameState, log: list):
@@ -2068,6 +2415,8 @@ def play_turn(state: GameState, log: list, is_first_turn: bool, on_play: bool):
 
     state.token_drawn_this_turn = False
     state.counter_lifegain_this_turn = False
+    state.spells_cast_this_turn = 0
+    state.conduit_lockout = False
 
     # Upkeep: Inventors' Fair (lifegain se 3+ artefatos)
     n_artifacts = sum(1 for p in state.battlefield if is_artifact(p, state))
@@ -2175,6 +2524,10 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     saga_ch2 = avg([s.urza_saga_chapter2_tokens for s in states])
     saga_ch3 = avg([s.urza_saga_chapter3_tutors for s in states])
 
+    wrenn_plus1 = avg([s.wrenn_plus1_activations for s in states])
+    wrenn_ultimate_rate = 100 * sum(1 for s in states if s.wrenn_ultimate_activations > 0) / n
+    conduit_reanim = avg([s.conduit_reanimations for s in states])
+
     print(f"n={n}, seed_base={seed_base}, turns={turns}, RECURRING_ARTIFACT_POLICY={RECURRING_ARTIFACT_POLICY}")
     print(f"Avg mulligans: {mulls:.2f}")
     print(f"Turno medio de conjuracao da Toph: {avg(cmd_turn):.2f} | mediana: {statistics.median(cmd_turn) if cmd_turn else float('nan'):.1f}")
@@ -2223,6 +2576,11 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"% de jogos que Caretaker's Talent atinge nivel 3 (anthem +2/+2, P/T nao rastreado): {caretaker_lv3:.1f}%")
     print(f"Avg tokens Construct via Urza's Saga capitulo II: {saga_ch2:.3f}")
     print(f"Avg tutores de artefato custo 0/1 via Urza's Saga capitulo III: {saga_ch3:.3f}")
+
+    print("\n--- Mecanicas implementadas 2026-09-01 (usuario: \"compile TUDO, SEMPRE\") ---")
+    print(f"Avg ativacoes de Wrenn and Realmbreaker +1 (terreno vira criatura ate o proximo turno): {wrenn_plus1:.2f}")
+    print(f"% de jogos que alcancam o -7 (emblema: joga terreno/conjura permanente do cemiterio): {wrenn_ultimate_rate:.1f}%")
+    print(f"Avg reanimacoes via Conduit of Worlds ({{T}}, trava o turno): {conduit_reanim:.3f}")
 
     # breakdown de fontes de earthbend
     combined = {}
