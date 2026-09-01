@@ -447,6 +447,13 @@ add("Treasure Token", 0, "Artifact", colors=set(), produces=set(), tags=set())
 # inicialmente conjurado tinha efeito. Ritual Chamber cria um Demon 6/6
 # flying - token novo, precisa de entrada real no CARD_DB.
 add("Demon Token", 0, "Creature", colors={"B"}, produces=set(), tags=set())
+# Achados reais 2026-09-01 (leitura linha-a-linha completa do oraculo):
+# Urza's Saga capitulo II (Construct token), Fountainport (Fish token) e
+# Voldaren Estate (Blood token) precisam de entrada real no CARD_DB pra
+# poder "entrar em campo" de verdade (mesmo padrao do Demon Token acima).
+add("Construct Token", 0, "Creature", colors=set(), produces=set(), tags=set())
+add("Fish Token", 0, "Creature", colors={"U"}, produces=set(), tags=set())
+add("Blood Token", 0, "Artifact", colors=set(), produces=set(), tags=set())
 
 def C(name: str) -> Card:
     return CARD_DB[name]
@@ -772,6 +779,20 @@ class GameState:
 
     roaming_throne_doublings: int = 0
 
+    # Achados reais 2026-09-01 (leitura linha-a-linha completa do
+    # oraculo, pedida explicitamente pelo usuario apos o mesmo trabalho
+    # no Toph/Beorn): mecanicas que estavam "deferidas" por julgamento de
+    # valor ("baixo valor esperado", "sem engine clara") em vez de
+    # impossibilidade estrutural real, agora compiladas de verdade.
+    urzas_saga_construct_tokens: int = 0
+    nullpriest_kicked_reanimations: int = 0
+    voldaren_estate_blood_tokens: int = 0
+    voldaren_estate_used_this_turn: bool = False
+    fountainport_treasures: int = 0
+    fountainport_fish: int = 0
+    fountainport_draws: int = 0
+    fountainport_used_this_turn: bool = False
+
     def draw(self, n: int = 1):
         for _ in range(n):
             if self.library:
@@ -1011,6 +1032,72 @@ def try_minas_tirith(state: GameState, log: List[Dict]):
     state.draw(1)
     state.minas_tirith_draws += 1
     log.append({"trigger": "minas_tirith_draw", "attackers_proxy": n_creatures, "turn": state.turn})
+
+def try_voldaren_estate_blood(state: GameState, log: List[Dict]):
+    # Achado real 2026-09-01 (leitura linha-a-linha completa do oraculo,
+    # "compile TUDO"): "{5}, {T}: Create a Blood token. This ability costs
+    # {1} less to activate for each Vampire you control" estava deferida
+    # por "baixo valor esperado" (julgamento de valor, nao impossibilidade
+    # estrutural) - corrigido. Custo minimo {1} (nunca fica de graca -
+    # "This ability costs {1} less" nao reduz abaixo de {1} generico por
+    # convencao de regras, CR 601.2f).
+    if not state.has("Voldaren Estate") or state.voldaren_estate_used_this_turn:
+        return
+    vampires = sum(1 for c in state.battlefield if is_vampire(c))
+    cost = max(1, 5 - vampires)
+    if remaining_mana(state) < cost:
+        return
+    state.mana_spent_this_turn += cost
+    state.voldaren_estate_used_this_turn = True
+    state.battlefield.append("Blood Token")
+    state.voldaren_estate_blood_tokens += 1
+    on_token_enters(state, log, "Blood Token", count=1)
+    log.append({"trigger": "voldaren_estate_blood", "cost": cost, "turn": state.turn})
+
+def try_fountainport(state: GameState, log: List[Dict]):
+    # Achado real 2026-09-01 (leitura linha-a-linha completa do oraculo,
+    # "compile TUDO"): as 3 habilidades ativadas ("{2},{T},Sac token: draw"
+    # / "{3},{T},1 vida: Fish 1/1" / "{4},{T}: Treasure") estavam 100%
+    # ausentes, so tratada como terreno incolor fixo - deferida por "baixo
+    # valor esperado". As 3 compartilham {T} (mesmo terreno, so 1 ativacao
+    # por turno) - prioridade: sac-token-draw (melhor taxa, se sobrar token
+    # no pool depois do sac_loop) > Treasure ({4}, rampa futura) > Fish
+    # ({3}+1 vida, corpo 1/1 sem payoff proprio).
+    if not state.has("Fountainport") or state.fountainport_used_this_turn:
+        return
+    if state.tokens and remaining_mana(state) >= 2:
+        state.mana_spent_this_turn += 2
+        state.fountainport_used_this_turn = True
+        popped = state.tokens.pop()
+        state.battlefield.remove(popped)
+        state.creatures_sacrificed_total += 1
+        state.creatures_died_this_turn += 1
+        if state.has("Pitiless Plunderer"):
+            t = token_multiplier(state, creature=False)
+            create_treasure_and_crack(state, log, t, source="pitiless_plunderer_fountainport")
+            state.pitiless_plunderer_treasures += t
+        _apply_death_payoffs(state, log, source="fountainport_sac")
+        state.draw(1)
+        state.fountainport_draws += 1
+        log.append({"trigger": "fountainport_sac_draw", "turn": state.turn})
+        return
+    if remaining_mana(state) >= 4:
+        state.mana_spent_this_turn += 4
+        state.fountainport_used_this_turn = True
+        t = token_multiplier(state, creature=False)
+        create_treasure_and_crack(state, log, t, source="fountainport_treasure")
+        state.fountainport_treasures += t
+        log.append({"trigger": "fountainport_treasure", "turn": state.turn})
+        return
+    if remaining_mana(state) >= 3:
+        state.mana_spent_this_turn += 3
+        state.fountainport_used_this_turn = True
+        n = token_multiplier(state, creature=True)
+        for _ in range(n):
+            state.battlefield.append("Fish Token")
+        state.fountainport_fish += n
+        on_creature_enters(state, log, "Fish Token", count=n)
+        log.append({"trigger": "fountainport_fish", "turn": state.turn})
 
 def color_sources(state: GameState, color: str, for_vampire: bool = False) -> int:
     """Conta fontes de mana colorida REAIS pra `color`, respeitando
@@ -1631,23 +1718,38 @@ def do_upkeep(state: GameState, log: List[Dict]):
 
 def do_urzas_saga_chapter_check(state: GameState, log: List[Dict]):
     # Urza's Saga: "As this Saga enters and after your draw step, add a
-    # lore counter. Sacrifice after III." Capitulo I (na entrada) e II
-    # (proximo draw step) so dao habilidades ativadas de baixo valor
-    # (mana incolor de qualquer jeito, Construct que exige pagar {2}+
-    # tap toda vez - engine de "1 ativada por turno" que este
-    # simulador nao tem em lugar nenhum, deferido). Capitulo III
-    # (2o draw step depois de entrar) e' um tutor real e alto valor:
-    # "Search your library for an artifact card with mana cost {0} or
-    # {1}, put it onto the battlefield, then shuffle" - e' o momento
-    # em que a Saga se sacrifica (para de produzir mana a partir daqui).
-    # Achado real 2026-08-27: 100% ausente, tratada so como terreno
-    # incolor fixo pro resto do jogo (nunca parava de produzir mana,
-    # nunca buscava nada).
+    # lore counter. Sacrifice after III." Capitulo III (2o draw step
+    # depois de entrar) e' um tutor real e alto valor: "Search your
+    # library for an artifact card with mana cost {0} or {1}, put it onto
+    # the battlefield, then shuffle" - e' o momento em que a Saga se
+    # sacrifica (para de produzir mana a partir daqui). Achado real
+    # 2026-08-27: 100% ausente, tratada so como terreno incolor fixo pro
+    # resto do jogo (nunca parava de produzir mana, nunca buscava nada).
     if state.urzas_saga_entered_turn is None:
         return
-    if state.turn != state.urzas_saga_entered_turn + 2:
-        return
     if "Urza's Saga" not in state.battlefield:
+        return
+    if state.turn == state.urzas_saga_entered_turn + 1:
+        # Achado real 2026-09-01 (leitura linha-a-linha do oraculo, "compile
+        # TUDO"): capitulo II ("{2},{T}: Create a 0/0 colorless Construct
+        # artifact creature token with 'This token gets +1/+1 for each
+        # artifact you control'") estava deferido por "julgamento de valor"
+        # ("baixo valor esperado"), nao por impossibilidade estrutural -
+        # corrigido. Ativa quando sobra mana (mesma simplificacao ja usada
+        # em Minas Tirith: gasta o {2} sem modelar exclusividade entre
+        # "produzir mana propria" e "ativar a habilidade" no mesmo turno,
+        # precedente ja estabelecido no resto do arquivo). P/T real do
+        # Construct (escala com artefatos controlados) nao e' rastreado -
+        # mesma limitacao de "sem P/T por criatura" documentada no topo do
+        # arquivo - contado como token real (dispara Purphoros/Warleader's
+        # Call/Welcoming Vampire/Caretaker's Talent normalmente).
+        if remaining_mana(state) >= 2:
+            state.mana_spent_this_turn += 2
+            state.urzas_saga_construct_tokens += 1
+            on_creature_enters(state, log, "Construct Token", count=1)
+            log.append({"trigger": "urzas_saga_chapter2_construct", "turn": state.turn})
+        return
+    if state.turn != state.urzas_saga_entered_turn + 2:
         return
     pool = [c for c in state.library if C(c).type == "Artifact" and C(c).mv <= 1]
     if pool:
@@ -2018,6 +2120,29 @@ def cast_available_spells(state: GameState, log: List[Dict]):
                     state.bloodline_bidding_returns += 1
                 if targets:
                     log.append({"action": "bloodline_bidding", "found": targets, "turn": state.turn})
+        elif choice == "Nullpriest of Oblivion":
+            # Kicker {3}{B}: "When this creature enters, if it was kicked,
+            # return target creature card from your graveyard to the
+            # battlefield." Achado real 2026-09-01 (leitura linha-a-linha,
+            # "compile TUDO"): deferida antes por "baixo valor esperado"
+            # (julgamento de valor, nao impossibilidade estrutural real).
+            # A base ({1}{B}=2) ja foi paga acima (state.mana_spent_this_turn
+            # += C(choice).mv) - so falta o kicker ({3}{B}=4 adicional, total
+            # kicked {4}{B}{B}=6), so pago se houver alvo real de reanimacao
+            # no cemiterio.
+            state.battlefield.append(choice)
+            reanimate_targets = [c for c in state.graveyard if is_creature(c)]
+            if reanimate_targets and remaining_mana(state) >= 4:
+                state.mana_spent_this_turn += 4
+                target = max(reanimate_targets, key=lambda c: C(c).mv)
+                state.graveyard.remove(target)
+                state.battlefield.append(target)
+                state.nullpriest_kicked_reanimations += 1
+                apply_etb(state, target, log)
+                on_creature_enters(state, log, target)
+                log.append({"action": "nullpriest_kicked", "reanimated": target, "turn": state.turn})
+            apply_etb(state, choice, log)
+            on_creature_enters(state, log, choice)
         else:
             state.battlefield.append(choice)
             apply_etb(state, choice, log)
@@ -2135,6 +2260,8 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.caretakers_talent_trigger_pending = 0
     state.creatures_died_this_turn = 0
     state.tapped_lands_this_turn = 0
+    state.voldaren_estate_used_this_turn = False
+    state.fountainport_used_this_turn = False
     log = []
 
     do_upkeep(state, log)
@@ -2144,6 +2271,8 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     play_land(state, log)
     main_phase(state, log)
     sac_loop(state, log)
+    try_fountainport(state, log)  # depois do sac_loop pra poder usar token sobrando no pool
+    try_voldaren_estate_blood(state, log)
     cast_available_spells(state, log)  # mana extra de altares/Treasures do sac_loop, ver docstring de cast_available_spells
     try_unlock_rooms(state, log)
     try_emeritus_prepared_tutor(state, log)
@@ -2265,6 +2394,13 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "caretakers_talent_in_play": state.has("Caretaker's Talent"),
         "caretakers_talent_level_end": state.caretakers_talent_level,
         "caretakers_talent_level2_copies": state.caretakers_talent_level2_copies,
+        # Achados reais 2026-09-01 (leitura linha-a-linha completa do oraculo):
+        "urzas_saga_construct_tokens": state.urzas_saga_construct_tokens,
+        "nullpriest_kicked_reanimations": state.nullpriest_kicked_reanimations,
+        "voldaren_estate_blood_tokens": state.voldaren_estate_blood_tokens,
+        "fountainport_treasures": state.fountainport_treasures,
+        "fountainport_fish": state.fountainport_fish,
+        "fountainport_draws": state.fountainport_draws,
     }
 
 def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base=6000000):
@@ -2314,6 +2450,14 @@ def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base
     print(f"Avg reanimacoes via Sevinne's Reclamation: {sum(r['sevinnes_reclamation_returns'] for r in results)/n:.2f}")
     print(f"Avg reanimacoes via Bloodline Bidding: {sum(r['bloodline_bidding_returns'] for r in results)/n:.2f}")
     print(f"Avg tutores via Urza's Saga (capitulo III): {sum(r['urzas_saga_tutors'] for r in results)/n:.2f}")
+    print()
+    print("--- Achados 2026-09-01 (leitura linha-a-linha completa do oraculo, pedida pelo usuario) ---")
+    print(f"Avg Construct tokens via Urza's Saga (capitulo II): {sum(r['urzas_saga_construct_tokens'] for r in results)/n:.2f}")
+    print(f"Avg reanimacoes via Nullpriest of Oblivion (kicked): {sum(r['nullpriest_kicked_reanimations'] for r in results)/n:.2f}")
+    print(f"Avg Blood tokens via Voldaren Estate: {sum(r['voldaren_estate_blood_tokens'] for r in results)/n:.2f}")
+    print(f"Avg Treasures via Fountainport: {sum(r['fountainport_treasures'] for r in results)/n:.2f}")
+    print(f"Avg Fish tokens via Fountainport: {sum(r['fountainport_fish'] for r in results)/n:.2f}")
+    print(f"Avg compras via Fountainport (sac token): {sum(r['fountainport_draws'] for r in results)/n:.2f}")
     print(f"Avg compras via Caretaker's Talent (base, token ETB): {sum(r['caretakers_talent_draws'] for r in results)/n:.2f}")
     print(f"Avg Treasures via Black Market Connections: {sum(r['black_market_treasures'] for r in results)/n:.2f}")
     ah_unlocked = sum(1 for r in results if r["awakening_hall_unlocked"])

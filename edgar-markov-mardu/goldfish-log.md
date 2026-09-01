@@ -897,6 +897,52 @@ correto do anthem).
 
 ---
 
+### Leitura linha-a-linha completa do oráculo (mesma exigência do Toph/Beorn) — 2026-09-01
+
+**Gatilho (usuário):** *"AGORA FAZ O QUE SEMPRE Te MANDei FAZER: COmpila
+a porra de TODAS AS CARTAS DOS DECKS UMA A UMA COMO EU MANDEI DESDE O
+COMEÇO E VC NUNCA FEZ ATé Ontem!"* — seguido de: *"cada carta tem que ser
+lida linha a linha e isso tudo incorporado aos modelos que já fizemos até
+agora"*.
+
+Edgar Markov já era o deck mais auditado da sessão antes de hoje — 16+
+rodadas de correção documentadas no docstring do próprio arquivo
+(2026-08-27/28). Mesmo assim, a releitura linha-a-linha achou **4 gaps
+reais** que tinham ficado classificados como "deferido por baixo valor
+esperado" — julgamento de valor, não impossibilidade estrutural:
+
+1. **Urza's Saga capítulo II** (Construct token) — só o capítulo III (o
+   tutor) estava implementado. Corrigido em `do_urzas_saga_chapter_check()`.
+2. **Nullpriest of Oblivion** (kicker `{3}{B}`, reanima do cemitério) —
+   100% ausente. Corrigido no loop de `cast_available_spells()`.
+3. **Voldaren Estate** (`{5},{T}`: Blood token, custo -1/Vampiro) — 100%
+   ausente. Corrigido: `try_voldaren_estate_blood()`.
+4. **Fountainport** (as 3 habilidades: sac-token-draw / Fish / Treasure)
+   — mesma carta do Toph, aqui 100% ausente. Corrigido: `try_fountainport()`.
+
+**Robustez:** 20.000 partidas (turns=8 e turns=10), 0 erros.
+
+**Batch oficial, n=3000, seed_base=800000 (antes = git HEAD desta sessão, depois = com os 4 fixes):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg drain_total | 5,24 | 5,18 |
+| Avg tokens (Eminence) | 2,84 | 2,80 |
+| % combo_active | 1,1% | 0,97% |
+
+**Leitura:** variação pequena e dentro do ruído esperado — os 4 fixes são
+utilitários (draw/tokens/mana sink), não tocam diretamente o motor
+principal de drain/combo, então o esperado era estabilidade, não um
+salto. Confirmado: todas as 6 novas métricas disparam de verdade em
+partidas reais (nenhuma ficou em 0 por bug de gate) — Construct tokens
+14,8% dos jogos, Blood tokens 13,7%, Fountainport (soma dos 3 modos)
+~18,5%, Nullpriest kicked ~0,13% (raro mas real, confirmado por dado, não
+suposição).
+
+`checklist-oraculo.md` criado do zero, cobrindo as 92 cartas linha a linha.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
