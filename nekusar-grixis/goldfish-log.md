@@ -273,4 +273,27 @@ execução de `__main__`.
 
 ---
 
+### Leitura linha-a-linha completa do oráculo (mesma exigência do Toph/Beorn/Edgar Markov/Hei Bai/Maralen/Megatron) — 2026-09-01
+
+**Gatilho (usuário):** *"AGORA FAZ O QUE SEMPRE Te MANDei FAZER: COmpila
+a porra de TODAS AS CARTAS DOS DECKS UMA A UMA... cada carta tem que ser
+lida linha a linha"*.
+
+Nekusar já tinha passado por 2 rodadas anteriores (auditoria.md
+2026-08-20, checklist obrigatória 2026-08-28 — achou e corrigiu 11
+fontes de wheel/draw com tag mas sem gatilho real). Varredura
+automatizada desta rodada (toda tag em `add()` comparada contra o resto
+do arquivo, procurando tags mortas) achou 9 candidatas; 8 eram
+dispatchadas por nome literal (tag decorativa, não bug); a única
+genuinamente órfã (`flash_enabler`, Emergence Zone) é 📊 estrutural real
+— este sim não modela timing de instant-speed/stack pra NENHUMA carta,
+consistente em todo o arquivo, não uma exceção seletiva.
+
+**Nenhum bug de comportamento novo achado.** Segundo deck (depois do Hei
+Bai) em que a releitura linha-a-linha confirma trabalho anterior
+completo. `checklist-oraculo.md` criado (99 cartas) documentando a
+verificação.
+
+---
+
 <!-- Copie o bloco acima para cada nova partida -->
