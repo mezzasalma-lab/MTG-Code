@@ -768,20 +768,70 @@ quase todo jogo) inflava a mana disponível todo turno.
 
 ---
 
-## Partida #1 — AAAA-MM-DD
+## Partida #1 — 2026-09-01
 
-- **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
-- **Mão inicial (mulligan até):**
-- **Turno da primeira jogada relevante:**
-- **Turno do primeiro ataque/combo:**
-- **Curva de mana observada:**
-- **Bombas/peças-chave puxadas:**
-- **Removals sofridos/enviados:**
-- **Resultado:** vitória / derrota / sem resolução
-- **Turno de fim de jogo:**
-- **O que funcionou bem:**
-- **O que travou o deck:**
-- **Ajustes a considerar:**
+- **Formato do teste:** goldfish manual (app de playtest solo, log de estado
+  exportado turno a turno — não o `toph_goldfish_v1.py`).
+- **Mão inicial (mulligan até):** mulligan pra 6. Mão de 7 original tinha
+  Snow-Covered Plains/Liquimetal Coating/Tannuk/Strip Mine/Great Divide
+  Guide/Toph Earthbending Master/Field of the Dead — 3 terrenos mas 0 fonte
+  de verde, mulligan correto. Mão de 6 mantida: Caretaker's Talent/Gruul
+  Turf/Germination Practicum/Sylvan Library/Oblivion Stone/Selesnya
+  Sanctuary/Earth Kingdom General (bottom de 1) — **2 dos terrenos eram
+  bouncelands** (Gruul Turf + Selesnya Sanctuary), o que o piloto só notou
+  depois de manter a mão.
+- **Turno da primeira jogada relevante:** turno 1, Selesnya Sanctuary como
+  único terreno — por ser o único terreno em campo, ela devolveu A SI
+  MESMA pra mão (regra real: bounceland tem que devolver um terreno, e se
+  só existe ela mesma, devolve ela mesma). Land-drop efetivamente
+  desperdiçado.
+- **Turno do primeiro ataque/combo:** turno 6, Germination Practicum
+  resolvido — Paradigm ligou o recast automático de +2/+2 em contador por
+  criatura a cada main phase seguinte, de graça, pro resto do jogo.
+- **Curva de mana observada:** lenta no início por causa dos 2 bouncelands
+  na mão de abertura (cada um é land-drop-neutro: joga, tapped, devolve
+  outro terreno). Toph, the First Metalbender só resolveu no **turno 7**
+  (bem acima da média de 3,65 do `run_batch`, mas explicado — mão de
+  abertura com bouncelands é justamente o cenário que mais atrasa,
+  confirma a dinâmica já esperada).
+- **Bombas/peças-chave puxadas:** Germination Practicum (Paradigm) +
+  Scute Swarm (comprado turno 7, jogado turno 8) — combo real, não
+  simulado: com 6+ terrenos em campo (contando Gruul Turf earthbendado
+  como terreno-criatura), toda entrada de terreno OU artefato faz o Scute
+  Swarm (e cada cópia dele) criar mais uma cópia de si mesmo. Motor #16
+  também rodou várias vezes no Mishra's Bauble (earthbendado, morre e
+  volta tapped repetidamente). Toph, Earthbending Master chegou a 3
+  contadores de experiência.
+- **Removals sofridos/enviados:** nenhum (goldfish solo).
+- **Resultado:** sem resolução (parada de goldfish, sem oponente).
+- **Turno de fim de jogo:** parou no turno 10, board com **16 cópias de
+  Scute Swarm** (explosão no turno 10 ao jogar Field of the Dead +
+  Krark-Clan Ironworks com 8+ Scute Swarms já em campo — cada um copia a
+  cada entrada), 1 Zombie (Field of the Dead ligou), Gruul Turf
+  earthbendado com 12 contadores, Toph comandante com 6 contadores.
+- **O que funcionou bem:** exatamente a interação que a auditoria desta
+  sessão tinha acabado de corrigir — o piloto **castou Horizon Explorer no
+  fim pra Field of the Dead entrar destapado** ("Lands you control enter
+  untapped" sobrepondo o "This land enters tapped" do Field of the Dead).
+  Confirma ao vivo que a mecânica implementada em `resolve_land_enters_tapped()`
+  bate com o jogo real. A explosão de Scute Swarm também bate com o motor
+  já modelado em `landfall_trigger()` (tag `landfall_token_or_copy`, cap
+  defensivo em 200 permanentes).
+- **O que travou o deck:** os 2 bouncelands na mão de abertura — perda de
+  tempo real, exatamente o motivo pelo qual a lista já despriorizava
+  bounceland como land-drop ideal quando há alternativa (não há política
+  de "segurar bounceland" no simulador hoje; pode valer testar).
+- **Ajustes a considerar / achado pro simulador:** o simulador
+  (`toph_goldfish_v1.py`) tem um `if others:` guard em `apply_etb()` pras
+  bouncelands (Gruul Turf/Selesnya Sanctuary) que **pula o bounce inteiro
+  se não há outro terreno em campo**, em vez de devolver a própria
+  bettleground como a regra real exige (visto ao vivo nesta partida,
+  turno 1). No sim isso dá um terreno "de graça" nesse cenário específico
+  (bounceland como 1º terreno da mesa); no jogo real ela volta pra mão e o
+  turno é desperdiçado. Efeito pequeno (só quando bounceland é o único
+  terreno em campo) mas é uma discrepância real, achada por teste manual,
+  não pela auditoria de oráculo — fica registrada pra correção numa
+  próxima rodada.
 
 ---
 
