@@ -4,6 +4,79 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### Auditoria linha-a-linha "compile TUDO" — 2026-09-01
+
+**Gatilho:** pedido direto do usuário ("AGORA FAZ O QUE SEMPRE Te MANDei
+FAZER: COmpila a porra de TODAS AS CARTAS DOS DECKS UMA A UMA... cada
+carta tem que ser lida linha a linha") — mesmo tratamento já aplicado a
+Toph, Beorn, Edgar Markov, Hei Bai, Maralen, Megatron, Nekusar, Prismatic
+Bridge, Rat King e Thranduil nesta sessão. Ver `checklist-oraculo.md`
+(novo) pra detalhamento completo carta-a-carta.
+
+**Método:** detecção automatizada de (a) tags órfãs e (b) nomes de carta
+que só aparecem em `add()`+decklist. A maioria dos 9 candidatos de tag e
+~30 candidatos de nome eram falsos positivos — este arquivo já tinha
+passado por 2 rodadas de auditoria completa (2026-08-28, 2026-08-30) e
+dispatcha boa parte por tabela de tag (`ct_*` pros cast-triggers dos
+Eldrazi titãs) ou por checagem de nome direta dentro de funções
+compartilhadas (`eldrazi_cost_discount`, etc) em vez de tag própria — os
+falsos positivos mais notáveis: Kozilek/Ulamog/Emrakul (dispatchados via
+tabela `CT_TRIGGERS`), Urza's Incubator e It That Heralds the End (já
+implementados por nome dentro de `eldrazi_cost_discount`).
+
+**3 gaps reais confirmados**, todos em terrenos que estavam registrados
+genericamente como `add(n, 0, "land", {"colorless"})` dentro de um loop
+de 34 terrenos (só a mana {C} básica coberta) — o próprio docstring do
+cabeçalho já documentava 2 deles como deferidos ("decisão de escopo...
+fica pra uma rodada dedicada"):
+
+1. **Eye of Ugin** — a redução estática de custo ("Colorless Eldrazi
+   spells cost {2} less") já era coberta por nome em
+   `eldrazi_cost_discount()`; faltava a ativada real *"{7}, {T}: Search
+   your library for a colorless creature card... put it into your
+   hand."* Corrigido com `try_eye_of_ugin()`.
+2. **Urza's Cave** — *"{3}, {T}, Sacrifice this land: Search your library
+   for a land card, put it onto the battlefield tapped."* 100% ausente.
+   Corrigido com `try_urzas_cave()` (busca Ancient Tomb se disponível,
+   senão qualquer terreno).
+3. **Ruins of Oran-Rief** — 2ª habilidade real *"{T}: Put a +1/+1 counter
+   on target colorless creature that entered this turn"* (mutuamente
+   exclusiva com a mana {C} básica no mesmo `{T}`) nunca implementada.
+   Corrigido com `try_ruins_oran_rief()`, contador agregado (sem P/T por
+   criatura, mesma convenção já usada no resto do arquivo). Simplificação
+   documentada: só conta criaturas conjuradas via `resolve_cast`, não
+   cobre tokens Spawn/Scion/Manifest criados fora desse fluxo.
+
+**Reclassificação (linguagem de julgamento de valor corrigida, não bug):**
+o comentário do cabeçalho sobre Void Grafter/Liberator/Ruins de Oran-Rief
+dizia "sem efeito numérico relevante pro goldfish" — reescrito pra
+justificativa estrutural real por carta (Void Grafter: sem
+oponente/remoção real; Liberator: exigiria comparar power dele
+contador-a-contador contra cada gasto de mana futuro, mesmo limite de
+"sem P/T por criatura" já documentado alhures; Ruins: implementado nesta
+rodada).
+
+**Validação:** 6 testes unitários isolados (todos passando) + regressão
+de 20.000 partidas (seed 3000000+, turns=10, 0 exceções) + `run_batch`
+antes/depois via `importlib` (3000 jogos, seed 6000000, turns=10):
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Tutores usados (total) | 0.60 | 0.70 |
+| RAMP (peças resolvidas) | 2.33 | 2.52 |
+| Urza's Cave sacrificado | — (nem existia) | 17.0% dos jogos |
+| Ruins of Oran-Rief contadores | — (nem existia) | 0.66 avg/partida |
+| DRAW (compras extras) | 4.12 | 4.26 |
+
+Todas as métricas relevantes subiram na direção esperada, sem nenhuma
+outra métrica se mover de forma inexplicável (turno de conjuração da
+Ulalek, cópias pagas, cascatas, finishers ficaram praticamente estáveis,
+como esperado — nenhum dos 3 fixes toca essas mecânicas).
+`ulalek_v1_runs.jsonl` regenerado (3000 jogos, seed_base=8600000,
+turns=8, mesmos parâmetros já estabelecidos no `__main__` do arquivo).
+
+---
+
 ## Teste #1 — Radagast of Rhosgobel dentro vs. fora (`ulalek_radagast_test.py`) — 2026-08-23
 
 Pergunta do usuário: "Vale a pena incluir um Radagast no deck do Ulalek?".

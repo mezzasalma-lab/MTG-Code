@@ -190,10 +190,18 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas)
   inventar comportamento alheio). Nunca dispara neste simulador.
 - Sire of Stagnation: gatilho depende de terreno de OPONENTE entrando —
   nunca dispara (mesmo motivo).
-- Void Grafter (ETB hexproof), Liberator (contador de +1/+1 por spell),
-  Ruins of Oran-Rief (contador em criatura colorless) — presentes na
-  decklist mas sem efeito numerico relevante pro goldfish; omitidos,
-  documentado aqui em vez de fingir que foram implementados.
+- Void Grafter (ETB hexproof): sem oponente/remocao real modelada pra
+  proteger contra — 📊 estrutural, nao um julgamento de valor.
+- Liberator, Urza's Battlethopter ("+1/+1 counter sempre que voce
+  conjura magia com custo pago > power do Liberator"): exigiria rastrear
+  o power dele contador-a-contador pra comparar contra cada gasto de mana
+  futuro — mesma classe de limite ja documentada (sem P/T por criatura
+  individual neste modelo). NAO implementado por essa razao estrutural,
+  nao por baixo valor esperado.
+- Ruins of Oran-Rief: 2a habilidade (contador +1/+1 em colorless que
+  entrou no turno) implementada em 2026-09-01, ver `try_ruins_oran_rief()`
+  abaixo — contador agregado, nao aplicado a P/T real de nenhuma criatura
+  especifica (mesmo limite estrutural do resto do arquivo).
 - Achado real 2026-08-28 (auditoria de checklist de mecanica): a linha
   anterior desta lista tratava Urza's Cave/Sanctum of Ugin/Eye of Ugin
   como "ativacoes pagas (exilar topo)" — isso e' o texto real de OUTRA
@@ -202,8 +210,17 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas)
   spell colorless MV7+ — ver `on_any_spell_cast_hooks`). Urza's Cave
   ({3},{T},sac: busca land pro campo) e Eye of Ugin ({7},{T}: busca
   criatura colorless pra mao, alem do desconto de custo pra Eldrazi
-  colorless) continuam NAO implementados por decisao de escopo (2
-  habilidades ativadas a mais, ficam pra uma rodada dedicada).
+  colorless) implementados de verdade em 2026-09-01
+  (`try_urzas_cave()`/`try_eye_of_ugin()`, achado na leitura linha-a-linha
+  completa) — o desconto estatico da Eye of Ugin ja era coberto por nome
+  em `eldrazi_cost_discount()` desde antes, so a ativada faltava.
+- Ruins of Oran-Rief tambem tinha uma 2a habilidade real ("{T}: +1/+1 em
+  colorless que entrou este turno", mutuamente exclusiva com a mana {C}
+  basica) nunca implementada — corrigido em `try_ruins_oran_rief()`
+  (2026-09-01), contador agregado, sem P/T por criatura (mesma convencao
+  ja documentada nesta lista). Simplificacao: so conta criaturas
+  conjuradas via `resolve_cast`/`creature_etb_hooks`, nao cobre
+  Spawn/Scion/Manifest tokens criados fora desse fluxo.
 - Mystic Forge: implementado o essencial (pode conjurar do topo da
   biblioteca se for artifact ou colorless) — a habilidade de tap-exilar
   topo por 1 de vida NAO e modelada.
@@ -476,6 +493,21 @@ class GameState:
     finisher_resolved_total: int = 0
     first_finisher_turn: Optional[int] = None
 
+    # --- Achado real 2026-09-01 (leitura linha-a-linha, "compile TUDO"):
+    # Eye of Ugin ({7},{T} tutor), Urza's Cave ({3},{T},sac: busca land) e
+    # Ruins of Oran-Rief (2a habilidade, +1/+1 em colorless que entrou no
+    # turno) estavam entre os 34 terrenos registrados so como
+    # add(n, 0, "land", {"colorless"}) generico -- so a mana {C} basica e a
+    # reducao estatica de custo da Eye of Ugin (ja tratada por nome em
+    # eldrazi_cost_discount) eram cobertas. O proprio docstring do
+    # cabecalho ja documentava isso como "decisao de escopo... fica pra
+    # uma rodada dedicada" pra Urza's Cave/Eye of Ugin. ---
+    eye_of_ugin_used_this_turn: bool = False
+    eye_of_ugin_tutors_total: int = 0
+    urzas_cave_used: bool = False
+    colorless_creature_entered_this_turn: bool = False
+    ruins_oran_rief_counters_total: int = 0
+
 
 def draw_cards(state: GameState, n: int):
     for _ in range(n):
@@ -543,6 +575,10 @@ def on_colorless_creature_etb(state: GameState, name: str):
             and name in CARD_DB and is_colorless(name)):
         times = trigger_times(state, "Glaring Fleshraker", is_permanent_source=True)
         state.glaring_fleshraker_damage_total += 1 * times
+    if name in CARD_DB and is_colorless(name):
+        # Ruins of Oran-Rief: "{T}: Put a +1/+1 counter on target colorless
+        # creature that entered this turn." Ver try_ruins_oran_rief().
+        state.colorless_creature_entered_this_turn = True
 
 
 # ---------------------------------------------------------------------------
@@ -1093,6 +1129,76 @@ def do_expedition_map(state: GameState):
     state.ramp_pieces_resolved_total += 1  # RAMP (categoria 10): Expedition Map
 
 
+def try_eye_of_ugin(state: GameState):
+    """Achado real 2026-09-01 (leitura linha-a-linha, "compile TUDO"): Eye
+    of Ugin estava registrada so como terreno {C} generico (loop de 34
+    terrenos) -- a reducao estatica de custo ("Colorless Eldrazi spells
+    you cast cost {2} less") ja era tratada por nome em
+    eldrazi_cost_discount(), mas a 2a habilidade real, "{7}, {T}: Search
+    your library for a colorless creature card, reveal it, put it into
+    your hand, then shuffle", nunca foi implementada -- o proprio
+    docstring do cabecalho ja documentava isso como "decisao de escopo...
+    fica pra uma rodada dedicada"."""
+    if "Eye of Ugin" not in state.battlefield or state.eye_of_ugin_used_this_turn:
+        return
+    if remaining_mana(state) < 7:
+        return
+    pool = [n for n in state.library if is_creature_card(n) and is_colorless(n)]
+    if not pool:
+        return
+    spend_mana(state, 7)
+    state.eye_of_ugin_used_this_turn = True
+    best = max(pool, key=lambda n: CARD_DB[n].mv)
+    state.library.remove(best)
+    state.hand.append(best)
+    state.eye_of_ugin_tutors_total += 1
+    state.tutors_used_total += 1
+
+
+def try_urzas_cave(state: GameState):
+    """Achado real 2026-09-01 (mesma auditoria acima): Urza's Cave
+    ("{3}, {T}, Sacrifice this land: Search your library for a land card,
+    put it onto the battlefield tapped, then shuffle") nunca foi
+    implementada -- mesmo tratamento do Eye of Ugin acima. Uso unico por
+    partida (a propria habilidade sacrifica o terreno)."""
+    if state.urzas_cave_used or "Urza's Cave" not in state.battlefield:
+        return
+    if remaining_mana(state) < 3:
+        return
+    if "Ancient Tomb" in state.library:
+        fetched = "Ancient Tomb"
+    else:
+        candidates = [n for n in state.library if n in LAND_NAMES]
+        fetched = candidates[0] if candidates else None
+    if fetched is None:
+        return
+    spend_mana(state, 3)
+    state.battlefield.remove("Urza's Cave")
+    state.urzas_cave_used = True
+    state.library.remove(fetched)
+    state.battlefield.append(fetched)  # entra tapped -- ja nao produz mana neste turno (nao somado a total_mana ja calculado)
+    state.ramp_pieces_resolved_total += 1  # RAMP (categoria 10): Urza's Cave
+
+
+def try_ruins_oran_rief(state: GameState):
+    """Achado real 2026-09-01 (mesma auditoria): Ruins of Oran-Rief tem
+    uma 2a habilidade real ("{T}: Put a +1/+1 counter on target colorless
+    creature that entered this turn"), mutuamente exclusiva com a mana
+    {C} basica no mesmo turno (mesmo {T}) -- nunca implementada, so o
+    modo de mana generica era coberto. Simplificacao documentada: so
+    dispara pra criaturas coloridas conjuradas via resolve_cast/
+    creature_etb_hooks nesse turno (nao cobre tokens Spawn/Scion/Manifest
+    criados fora desse fluxo -- este arquivo nao centraliza toda criacao
+    de token num unico ponto de entrada). Contador agregado (este
+    simulador nao rastreia P/T por criatura individual, mesma convencao
+    ja documentada alhures)."""
+    if "Ruins of Oran-Rief" not in state.battlefield:
+        return
+    if not state.colorless_creature_entered_this_turn:
+        return
+    state.ruins_oran_rief_counters_total += 1
+
+
 def do_one_ring(state: GameState):
     if "The One Ring" not in state.battlefield:
         return
@@ -1231,6 +1337,9 @@ def main_phase(state: GameState):
     do_expedition_map(state)
     do_one_ring(state)
     do_ugin_loyalty(state)
+    try_eye_of_ugin(state)
+    try_urzas_cave(state)
+    try_ruins_oran_rief(state)
 
 
 def end_step(state: GameState):
@@ -1334,6 +1443,8 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.mana_spent_this_turn = 0
     state.bonus_mana_pool = 0
     state.conduit_used_this_turn = False
+    state.eye_of_ugin_used_this_turn = False
+    state.colorless_creature_entered_this_turn = False
 
     upkeep_step(state)
     if not (is_first_turn and on_play):
@@ -1404,6 +1515,9 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg descontos de 'primeira criatura do turno' aplicados (Conduit/Radagast): {avg([s.first_creature_discount_events_total for s in states]):.2f}")
     print(f"Avg flash concedido pelo Radagast (se presente): {avg([s.radagast_flash_grants_total for s in states]):.2f}")
     print(f"Avg mao final: {avg([len(s.hand) for s in states]):.2f}")
+    print(f"Avg tutores via Eye of Ugin ({{7}},{{T}}: busca criatura colorless): {avg([s.eye_of_ugin_tutors_total for s in states]):.2f}")
+    print(f"Urza's Cave sacrificado por terreno ({{3}},{{T}},sac): {100*sum(1 for s in states if s.urzas_cave_used)/n:.1f}% dos jogos")
+    print(f"Avg contadores +1/+1 via Ruins of Oran-Rief (agregado, sem P/T por criatura): {avg([s.ruins_oran_rief_counters_total for s in states]):.2f}")
 
     # -----------------------------------------------------------------
     # Achado real 2026-08-31 (rodada ampliada, categoria 12): lealdade e
@@ -1430,7 +1544,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     # aqui com rotulo explicito pra ficarem juntas e auditaveis.
     # -----------------------------------------------------------------
     print("--- 5 metricas basicas obrigatorias (Regra 9, categoria 10) ---")
-    print(f"RAMP — Avg pecas de ramp resolvidas (rocks + land tutors, Sol Ring/Signet/Talismans/Dynamo/Farseek/Nature's Lore/Three Visits/Sowing Mycospawn/Expedition Map): {avg([s.ramp_pieces_resolved_total for s in states]):.2f}")
+    print(f"RAMP — Avg pecas de ramp resolvidas (rocks + land tutors, Sol Ring/Signet/Talismans/Dynamo/Farseek/Nature's Lore/Three Visits/Sowing Mycospawn/Expedition Map/Urza's Cave): {avg([s.ramp_pieces_resolved_total for s in states]):.2f}")
     print(f"RAMP — Avg mana TOTAL disponivel por turno (amostrado no inicio da main phase): {avg([m for s in states for m in s.total_mana_samples]):.2f}")
     print(f"RAMP — Avg capacidade de {{C}} real disponivel por turno (fontes que tapam por {{C}} de verdade, ver true_colorless_capacity): {avg([m for s in states for m in s.true_c_capacity_samples]):.2f}")
     print(f"DRAW — Avg cartas compradas extra (motores de draw, ja reportado acima): {avg([s.cards_drawn_extra for s in states]):.2f}")
@@ -1485,4 +1599,7 @@ if __name__ == "__main__":
                 "ramp_pieces_resolved_total": s.ramp_pieces_resolved_total,
                 "finisher_resolved_total": s.finisher_resolved_total,
                 "first_finisher_turn": s.first_finisher_turn,
+                "eye_of_ugin_tutors_total": s.eye_of_ugin_tutors_total,
+                "urzas_cave_used": s.urzas_cave_used,
+                "ruins_oran_rief_counters_total": s.ruins_oran_rief_counters_total,
             }) + "\n")
