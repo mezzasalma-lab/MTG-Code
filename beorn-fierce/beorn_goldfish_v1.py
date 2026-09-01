@@ -480,6 +480,35 @@ class GameState:
     eternal_witness_returned: bool = False
     springleaf_parade_cast: bool = False
 
+    # Achados reais 2026-09-01 (leitura linha-a-linha completa do oraculo,
+    # pedida explicitamente pelo usuario apos o mesmo trabalho no Toph):
+    # Lightning Greaves nunca era equipada em lugar nenhum (Equip {0}, sem
+    # custo algum, dava haste de graca e nunca era usada); rastreia o nome
+    # da criatura atualmente equipada (unica copia, decklist singleton).
+    lightning_greaves_equipped_to: Optional[str] = None
+    lightning_greaves_equip_count: int = 0
+
+    # Allosaurus Shepherd: "{4}{G}{G}: Until end of turn, each Elf creature
+    # you control has base power/toughness 5/5 and becomes a Dinosaur." Gap
+    # 100% ausente ate esta correcao (so as estaticas "cant be countered"
+    # estavam modeladas). Mesmo tratamento ja usado pro Chameleon Colossus:
+    # rastreado como metrica de ativacao (mana sink real), sem propagar pra
+    # BASE_POWER (buff temporario ate o fim do turno, este sim nao rastreia
+    # P/T por criatura fora do agregado counters_on_board).
+    allosaurus_shepherd_activations: int = 0
+
+    # Return of the Wildspeaker: "Draw cards equal to the greatest power
+    # among NON-HUMAN creatures you control" - achado real 2026-09-01, o
+    # codigo anterior conflava com a formula (bem diferente) da Shamanic
+    # Revelation ("draw a card for each creature", sem filtro de tipo).
+    return_of_wildspeaker_cast: bool = False
+
+    # Obscuring Haze: "If you control a commander, you may cast this spell
+    # WITHOUT PAYING ITS MANA COST." Achado real 2026-09-01 - o sim cobrava
+    # o custo impresso ({2}{G}) sempre, ignorando o alt-cost gratis (quase
+    # sempre disponivel, ja que o comandante fica em campo a maior parte do jogo).
+    obscuring_haze_cast_free: bool = False
+
     def draw(self, n=1, source="draw"):
         got = 0
         for _ in range(n):
@@ -525,6 +554,16 @@ def total_mana(state: GameState) -> int:
             # pra criaturas). Gap 100% ausente ate essa correcao - so a metade
             # "draw+counter no ETB" estava implementada.
             total += 2
+        elif card == "Selvala, Heart of the Wilds":
+            # Achado real 2026-09-01: oraculo real e' "{G}, {T}: Add X mana in any
+            # combination of colors, where X is the greatest power among creatures
+            # you control" - NAO um dork generico de 1 mana. Antes caia no ramo
+            # generico de "ramp" abaixo (+1 fixo), subestimando MUITO o valor real
+            # (X escala com counters_on_board/anthems/finishers, facilmente 4-12+
+            # nesse deck). Ganho liquido = X - 1 (paga 1 verde pra receber X).
+            if is_summoning_sick_dork(state, card):
+                continue
+            total += max(0, greatest_power_in_play(state) - 1)
         elif has_tag(card, "ramp") and not is_land(card):
             if is_summoning_sick_dork(state, card):
                 continue
@@ -606,6 +645,44 @@ def is_bear(state: GameState, card: str) -> bool:
         return True
     return False
 
+# Achado real 2026-09-01 (leitura linha-a-linha do oraculo completo): Beorn
+# the Fierce ("Other Bears you control get +2/+2"), The Chronicle of Victory
+# ("Creatures you control of the chosen type get +2/+2...") e Patchwork
+# Banner ("Creatures you control of the chosen type get +1/+1") sao 3
+# anthems reais que afetam poder de verdade - mas so o anthem da Beorn era
+# somado (localmente, so dentro de on_creature_enters, nunca propagado pra
+# total_power_in_play/greatest_power_in_play/effective_cost). Chronicle of
+# Victory e Patchwork Banner nao tinham NENHUM efeito de poder modelado.
+# Convencao ja usada nesse arquivo pra "tipo escolhido" (Chronicle, Roaming
+# Throne): sempre Bear, unica escolha sensata num deck tribal Bear.
+def effective_power(state: GameState, card: str) -> int:
+    p = BASE_POWER.get(card, 0)
+    if not is_creature(card) or not is_bear(state, card):
+        return p
+    if card != COMMANDER and state.commander_in_play:
+        p += 2  # Beorn the Fierce: Other Bears you control get +2/+2
+    if card != "Chronicle of Victory" and state.has("Chronicle of Victory"):
+        p += 2  # Chronicle of Victory (tipo escolhido Bear): +2/+2
+    if card != "Patchwork Banner" and state.has("Patchwork Banner"):
+        p += 1  # Patchwork Banner (tipo escolhido Bear): +1/+1
+    return p
+
+# Return of the Wildspeaker: "Draw cards equal to the greatest power among
+# NON-HUMAN creatures you control." Tipos reais (Scryfall, nao memoria) das
+# 3 criaturas Humanas do decklist - achado real 2026-09-01, o codigo
+# anterior nao distinguia tipo nenhum (formula errada, ver cast_spell).
+HUMAN_CREATURES = {
+    "Beorn, Reluctant Host // Till and Tend", "Eternal Witness", "Tireless Tracker",
+}
+
+def is_human(state: GameState, card: str) -> bool:
+    # Maskwood Nexus: "Creatures you control are every creature type" - Human incluido,
+    # entao NENHUMA criatura sua conta como "non-Human" pra Return of the Wildspeaker
+    # enquanto ele estiver em campo (interacao real, nao um bug).
+    if state.has("Maskwood Nexus"):
+        return True
+    return card in HUMAN_CREATURES
+
 def is_forest_for_landfall(state: GameState, card: str) -> bool:
     # Yavimaya, Cradle of Growth: "Each land is a Forest in addition to its other
     # land types" - qualquer terreno entrando conta como Floresta enquanto ela estiver em campo.
@@ -624,6 +701,12 @@ def can_attack(state: GameState, card: str) -> bool:
     if not is_creature(card):
         return False
     if has_tag(card, "haste"):
+        return True
+    # Lightning Greaves: "Equipped creature has haste and shroud." Achado real
+    # 2026-09-01 - Equip {0} nunca era ativado em lugar nenhum (ver
+    # try_lightning_greaves_equip), entao o haste que ela concede nunca se
+    # aplicava a NENHUMA criatura, apesar do custo zero.
+    if card == state.lightning_greaves_equipped_to:
         return True
     return state.creature_entered_turn.get(card) != state.turn
 
@@ -644,15 +727,23 @@ def can_attack(state: GameState, card: str) -> bool:
 # (a grande maioria dos geradores de contador desse deck).
 
 def total_power_in_play(state: GameState) -> int:
-    return sum(BASE_POWER.get(c, 0) for c in state.battlefield if is_creature(c)) + state.counters_on_board
+    return sum(effective_power(state, c) for c in state.battlefield if is_creature(c)) + state.counters_on_board
 
 def greatest_power_in_play(state: GameState) -> int:
     creatures = [c for c in state.battlefield if is_creature(c)]
     if not creatures:
         return 0
-    return max(BASE_POWER.get(c, 0) for c in creatures) + state.counters_on_board
+    return max(effective_power(state, c) for c in creatures) + state.counters_on_board
 
 def effective_cost(state: GameState, card: str) -> int:
+    # Obscuring Haze: "If you control a commander, you may cast this spell
+    # WITHOUT PAYING ITS MANA COST." Achado real 2026-09-01 - alt-cost
+    # gratis nunca modelado, o sim cobrava o custo impresso ({2}{G}) sempre.
+    # O comandante fica em campo a maior parte do jogo (turno medio de cast
+    # ~3-4 nesses decks), entao esse alt-cost e' quase sempre o caminho real.
+    if card == "Obscuring Haze" and state.commander_in_play:
+        return 0
+
     mv = C(card).mv
     reduction = 0
 
@@ -663,8 +754,11 @@ def effective_cost(state: GameState, card: str) -> int:
         reduction += greatest_power_in_play(state)
 
     # Goreclaw: "Creature spells you cast with power 4 or greater cost {2} less."
+    # Usa effective_power() (achado 2026-09-01: anthems da Beorn/Chronicle of
+    # Victory/Patchwork Banner ja em campo contam pro poder do spell que ESTA
+    # sendo conjurado, nao so BASE_POWER impresso).
     if state.has("Goreclaw, Terror of Qal Sisma") and card != "Goreclaw, Terror of Qal Sisma" \
-            and is_creature(card) and BASE_POWER.get(card, 0) >= 4:
+            and is_creature(card) and effective_power(state, card) >= 4:
         reduction += 2
 
     # Emerald Medallion: "Green spells you cast cost {1} less to cast."
@@ -692,6 +786,10 @@ def effective_cost(state: GameState, card: str) -> int:
     return max(C(card).g_pips, mv - reduction)
 
 def can_cast(state: GameState, card: str) -> bool:
+    if card == "Obscuring Haze" and state.commander_in_play:
+        # "Without paying its mana cost" ignora tanto o custo total quanto os
+        # pips coloridos (CR 601.2g) - sempre castavel de graca com comandante em campo.
+        return True
     if card == "Natural Order":
         # "As an additional cost to cast this spell, sacrifice a green creature."
         # Sem uma criatura verde em campo pra sacrificar, a carta e incastavel de
@@ -933,7 +1031,9 @@ def main_phase(state: GameState, log: List[Dict]):
     try_ayula_influence(state, log)
     try_maskwood_nexus(state, log)
     try_chameleon_colossus_pump(state, log)
+    try_allosaurus_shepherd_pump(state, log)
     try_beorns_hospitality_animate(state, log)
+    try_lightning_greaves_equip(state, log)
 
     # Genji Glove: Equip {3} e um custo separado do cast ({5}). Agora que o motor rastreia
     # mana gasta no turno (mana_spent_this_turn), equipa assim que sobrar mana suficiente -
@@ -963,24 +1063,28 @@ def on_creature_enters(state: GameState, card: str, log: List[Dict], nontoken: b
     """Gatilhos de 'quando uma criatura entra em campo' que dependem de permanentes
     ja em campo. Chamado tanto pra criaturas de verdade quanto pra tokens (Bear Token)."""
     state.creature_entered_turn[card] = state.turn
-    power = BASE_POWER.get(card, 0)
-    # Beorn the Fierce: "Other Bears you control get +2/+2." Achado real
-    # 2026-08-30 (auditoria completa de oraculo) - a nota "anthem_bear"
-    # existia no cadastro do comandante mas NUNCA era lida em lugar
-    # nenhum do codigo. Isso importa de verdade: varios gatilhos do deck
-    # (Garruk's Uprising, Tribute to the World Tree, Goreclaw) checam
-    # "power >= X", e um Bear Token base 2/2 vira 4/4 com o anthem em
-    # campo - cruza o limiar de poder 4 que ficava fora de alcance antes.
-    if state.commander_in_play and card != COMMANDER and is_bear(state, card):
-        power += 2
+    # power ja inclui os 3 anthems reais de Bear (Beorn +2/+2, Chronicle of
+    # Victory +2/+2, Patchwork Banner +1/+1 - achado real 2026-09-01, ver
+    # effective_power()). Antes so o anthem da Beorn era somado, e so aqui -
+    # nunca propagado pro resto do arquivo (corrigido tambem em
+    # total_power_in_play/greatest_power_in_play/effective_cost).
+    power = effective_power(state, card)
 
     # Ayula, Queen Among Bears: "Whenever ANOTHER Bear you control enters, choose one -
     # put two +1/+1 counters on target Bear / fight." So Ayula pra baixo em dano ainda
     # nao e modelada nesse sim (sem combate criatura-a-criatura fora do turno), entao
     # a IA sempre escolhe o modo de contadores (mais seguro e sempre relevante).
+    # Roaming Throne (achado real 2026-09-01): "If a triggered ability of ANOTHER
+    # creature you control of the chosen type [Bear] triggers, it triggers an
+    # additional time." Ayula e' ela mesma um Bear - o proprio gatilho dela
+    # dobra sob Roaming Throne, exatamente como ja acontecia so' pro combate da
+    # Beorn (unico caso antes coberto).
     if state.has("Ayula, Queen Among Bears") and card != "Ayula, Queen Among Bears" and is_bear(state, card):
-        state.counters_on_board += 2
-        log.append({"trigger": "ayula_bear_etb", "card": card, "turn": state.turn})
+        times = 2 if state.roaming_throne_active() else 1
+        if times == 2:
+            state.roaming_throne_doublings += 1
+        state.counters_on_board += 2 * times
+        log.append({"trigger": "ayula_bear_etb", "card": card, "turn": state.turn, "roaming_throne_x2": times == 2})
 
     # Garruk's Uprising: "Whenever a creature you control with power 4+ enters, draw a card."
     if state.has("Garruk's Uprising") and power >= 4:
@@ -1148,6 +1252,52 @@ def try_chameleon_colossus_pump(state: GameState, log: List[Dict]):
                 state.finisher_turn = state.turn
         log.append({"action": "chameleon_colossus_pump", "turn": state.turn})
 
+ELF_CREATURES = {"Allosaurus Shepherd", "Beast Whisperer", "Llanowar Elves", "Selvala, Heart of the Wilds"}
+
+def try_allosaurus_shepherd_pump(state: GameState, log: List[Dict]):
+    # Achado real 2026-09-01 (leitura linha-a-linha do oraculo completo): "{4}{G}{G}:
+    # Until end of turn, each Elf creature you control has base power and toughness
+    # 5/5 and becomes a Dinosaur in addition to its other creature types." Gap 100%
+    # ausente ate esta correcao - so as estaticas ("can't be countered", proprio e
+    # dos spells verdes) estavam modeladas. Mesmo tratamento ja usado pro Chameleon
+    # Colossus: rastreado como metrica de ativacao (mana sink real, sem {T} no
+    # custo -> sem doenca de invocacao, CR 302.6), sem propagar pra BASE_POWER (buff
+    # temporario ate o fim do turno, fora do escopo de rastreio por criatura deste sim).
+    # So compensa com 2+ Elfos em campo (senao vira 6 mana por +4/+4 numa unica
+    # criatura, pior que qualquer outra linha de jogo disponivel nesse turno).
+    if "Allosaurus Shepherd" not in state.battlefield:
+        return
+    elves_in_play = sum(1 for c in state.battlefield if c in ELF_CREATURES)
+    if elves_in_play < 2:
+        return
+    if remaining_mana(state) >= 6:
+        state.mana_spent_this_turn += 6
+        state.allosaurus_shepherd_activations += 1
+        log.append({"action": "allosaurus_shepherd_pump", "elves_buffed": elves_in_play, "turn": state.turn})
+
+def try_lightning_greaves_equip(state: GameState, log: List[Dict]):
+    # Achado real 2026-09-01 (leitura linha-a-linha completa do oraculo): "Equipped
+    # creature has haste and shroud. Equip {0}." Gap 100% ausente ate esta correcao -
+    # a carta era conjurada (fica em campo) mas NUNCA equipada em nada, entao o
+    # haste que ela concede de graca nunca beneficiava nenhuma criatura (shroud/
+    # protecao contra remocao continua N/A, sem oponente removendo nada nesse sim).
+    # Equip nao tem {T} no custo -> reativavel a cada turno sem limite (CR 301.5c),
+    # sempre pra criatura doente de invocacao mais valiosa (a que mais se beneficia
+    # de atacar no MESMO turno em que entrou - alimenta Ohran/Toski/Beorn/Goreclaw,
+    # todos gatilhos de ataque/combate).
+    if "Lightning Greaves" not in state.battlefield:
+        return
+    sick_creatures = [c for c in state.battlefield if is_creature(c)
+                      and state.creature_entered_turn.get(c) == state.turn
+                      and c != state.lightning_greaves_equipped_to]
+    if not sick_creatures:
+        return
+    sick_creatures.sort(key=lambda c: -effective_power(state, c))
+    target = sick_creatures[0]
+    state.lightning_greaves_equipped_to = target
+    state.lightning_greaves_equip_count += 1
+    log.append({"action": "lightning_greaves_equip", "card": target, "turn": state.turn})
+
 def try_beorns_hospitality_animate(state: GameState, log: List[Dict]):
     # "{5}{G}{G}: This enchantment becomes a Bear creature in addition to its
     # other types and gains 'This creature's power and toughness are each
@@ -1221,6 +1371,9 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
         state.germination_practicum_active = True
         state.germination_practicum_cast_turn = state.turn
         log.append({"action": "germination_practicum_cast", "turn": state.turn, "creatures_buffed": creatures_now})
+
+    if card == "Obscuring Haze" and state.commander_in_play:
+        state.obscuring_haze_cast_free = True
 
     if card == "Genji Glove":
         state.genji_glove_in_play = True
@@ -1409,9 +1562,21 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
         if any(is_bear(state, c) for c in state.battlefield if c != "Little Bear"):
             state.counters_on_board += 1
 
-    if card in {"Return of the Wildspeaker", "Shamanic Revelation"}:
+    if card == "Shamanic Revelation":
         creatures = sum(1 for c in state.battlefield if is_creature(c))
         state.draw(max(1, creatures), source=card)
+
+    if card == "Return of the Wildspeaker":
+        # Achado real 2026-09-01: formula ERRADA ate esta correcao - estava
+        # conflada com a de Shamanic Revelation ("draw per creature"). Oraculo
+        # real: "Draw cards equal to the greatest power among NON-HUMAN
+        # creatures you control" (modo escolhido; o outro modo, +3/+3 ate o
+        # fim do turno, e' um buff temporario de combate - fora de escopo,
+        # mesma familia de Craterhoof/Unnatural Growth/Goreclaw combate).
+        non_human = [c for c in state.battlefield if is_creature(c) and c != card and not is_human(state, c)]
+        amount = max((effective_power(state, c) for c in non_human), default=0)
+        state.return_of_wildspeaker_cast = True
+        state.draw(amount, source=card)
 
     if card == "Last March of the Ents":
         # "Draw cards equal to the greatest toughness among creatures you control,
@@ -1642,6 +1807,11 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "springleaf_parade_cast": state.springleaf_parade_cast,
         "bala_ged_recovery_cast": state.bala_ged_recovery_cast,
         "own_interaction_used": state.own_interaction_used,
+        # Achados reais 2026-09-01 (leitura linha-a-linha completa do oraculo):
+        "lightning_greaves_equip_count": state.lightning_greaves_equip_count,
+        "allosaurus_shepherd_activations": state.allosaurus_shepherd_activations,
+        "return_of_wildspeaker_cast": state.return_of_wildspeaker_cast,
+        "obscuring_haze_cast_free": state.obscuring_haze_cast_free,
     }
 
 def run_batch(n=500, turns=8, out_jsonl="beorn_v1_runs.jsonl", seed_base=91000):
@@ -1760,6 +1930,17 @@ def run_batch(n=500, turns=8, out_jsonl="beorn_v1_runs.jsonl", seed_base=91000):
     print(f"Beorn's Hospitality animada (vira criatura Bear) em {100*len(bh_games)/n:.1f}% dos jogos")
     print(f"Avg vezes que usamos nossa propria remocao/interacao (1/3 turnos, premissa corrigida): {avg('own_interaction_used'):.2f}")
 
+    print()
+    print("--- Achados 2026-09-01 (leitura linha-a-linha completa do oraculo, pedida pelo usuario) ---")
+    lg_games = [r for r in results if r["lightning_greaves_equip_count"] > 0]
+    print(f"Lightning Greaves equipada (Equip {{0}}, concede haste) em {100*len(lg_games)/n:.1f}% dos jogos, avg {avg('lightning_greaves_equip_count'):.2f} equips/partida")
+    as_games = [r for r in results if r["allosaurus_shepherd_activations"] > 0]
+    print(f"Allosaurus Shepherd pump ({{4}}{{G}}{{G}}, 2+ Elfos) ativado em {100*len(as_games)/n:.1f}% dos jogos, avg {avg('allosaurus_shepherd_activations'):.2f} ativacoes/partida")
+    rw_games = [r for r in results if r["return_of_wildspeaker_cast"]]
+    print(f"Return of the Wildspeaker conjurada em {100*len(rw_games)/n:.1f}% dos jogos (formula corrigida: maior poder entre criaturas nao-Humanas, nao mais contagem de criaturas)")
+    oh_games = [r for r in results if r["obscuring_haze_cast_free"]]
+    print(f"Obscuring Haze conjurada de graca (comandante em campo) em {100*len(oh_games)/n:.1f}% dos jogos")
+
     print(f"Avg mao final: {avg('hand_size'):.2f}")
     print(f"Avg terrenos jogados: {avg('lands_played_total'):.2f}")
 
@@ -1767,7 +1948,9 @@ def run_batch(n=500, turns=8, out_jsonl="beorn_v1_runs.jsonl", seed_base=91000):
     if rt_games:
         print()
         print(f"Roaming Throne em campo em {100*len(rt_games)/n:.1f}% dos jogos (tipo escolhido: Bear)")
-        print(f"  Avg gatilhos de combate da Beorn dobrados por partida: {statistics.mean([r['roaming_throne_doublings'] for r in rt_games]):.2f}")
+        print(f"  Avg gatilhos dobrados por partida (combate da Beorn + ETB da Ayula, achado real 2026-09-01"
+              f" -- Ayula tambem e' Bear, seu proprio gatilho dobra igual ao da Beorn): "
+              f"{statistics.mean([r['roaming_throne_doublings'] for r in rt_games]):.2f}")
 
     # Achado real 2026-08-28 (usuario: "acrescente a variavel recursao e
     # interacao a lista de variaveis pra avaliar/medir/registrar em todos

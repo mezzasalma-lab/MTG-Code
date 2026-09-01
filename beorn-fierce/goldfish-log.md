@@ -1017,6 +1017,76 @@ de cast — só sai da mão via esse mecanismo controlado.
 
 ---
 
+### Leitura linha-a-linha completa do oráculo (mesma exigência do Toph) — 2026-09-01
+
+**Gatilho (usuário):** depois de fazer o mesmo trabalho de compilação
+cláusula-a-cláusula no deck do Toph, o usuário exigiu que todos os
+decks recebessem o mesmo tratamento: *"AGORA FAZ O QUE SEMPRE Te MANDei
+FAZER: COmpila a porra de TODAS AS CARTAS DOS DECKS UMA A UMA COMO EU
+MANDEI DESDE O COMEÇO E VC NUNCA FEZ ATé Ontem!"* — seguido de uma
+clarificação: *"cada carta tem que ser lida linha a linha e isso tudo
+incorporado aos modelos que já fizemos até agora"*.
+
+Beorn the Fierce já tinha passado por 2 rodadas de auditoria anteriores
+(2026-08-30 e 2026-08-31), mas a releitura linha-a-linha (oráculo real
+via Scryfall, `POST /cards/collection`, não por memória) achou **7 gaps
+reais** que essas rodadas tinham deixado passar. Registro completo, carta
+por carta, em `checklist-oraculo.md` (novo arquivo, mesmo formato usado
+pro Toph).
+
+**Os 7 gaps:**
+
+1. **Selvala, Heart of the Wilds** — mana ability real é `{G},{T}: Add X
+   mana in any combination of colors, where X is the greatest power among
+   creatures you control`. Estava tratada como dork genérico de 1 mana -
+   subestimava muito (X facilmente 4-12+ nesse deck). Corrigido em
+   `total_mana()`.
+2. **Return of the Wildspeaker** — fórmula errada, conflada com Shamanic
+   Revelation (draw por criatura). Real: draw = maior poder entre
+   criaturas **não-Humanas**. Corrigido com novo helper `is_human()`.
+3. **Obscuring Haze** — "If you control a commander, you may cast this
+   spell without paying its mana cost" nunca modelado. Corrigido em
+   `effective_cost()`/`can_cast()`.
+4. **Lightning Greaves** — Equip {0} nunca era ativado; haste concedida
+   nunca beneficiava ninguém. Corrigido: `try_lightning_greaves_equip()`.
+5. **Allosaurus Shepherd** — `{4}{G}{G}` pump de Elfos 100% ausente, sem
+   nenhuma documentação explicando a ausência. Corrigido:
+   `try_allosaurus_shepherd_pump()`.
+6. **Chronicle of Victory / Patchwork Banner** — anthems reais (+2/+2 e
+   +1/+1 tipo escolhido) nunca tinham efeito de poder modelado. Só o
+   anthem da própria Beorn era somado, e só localmente dentro de
+   `on_creature_enters` — nunca propagado pro resto do arquivo (Goreclaw,
+   Great Henge, Ghalta). Corrigido: novo helper `effective_power()`,
+   usado consistentemente em todo lugar que lê poder de criatura.
+7. **Roaming Throne** só dobrava o gatilho de combate da Beorn — Ayula
+   também é um Bear, seu próprio gatilho de ETB deveria dobrar igual.
+   Corrigido em `on_creature_enters()`.
+
+**Robustez:** 7 testes unitários isolados (1 por gap, valores exatos
+conferidos) + regressão de 20.000 partidas (0 erros, turns=8 e turns=10).
+
+**Batch oficial, n=3000, seed_base=91000 (antes = git HEAD desta sessão, depois = com os 7 fixes):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg cartas compradas extra | 13,78 | 15,37 |
+| Avg Bear count final | 6,30 | 6,74 |
+| Avg finishers resolvidos | 0,40 | 0,54 |
+| % de jogos com finisher até T8 | 33,8% | 40,9% |
+
+**Leitura:** tudo sobe, na direção esperada — Selvala (mana real, muito
+mais alta) e Return of the Wildspeaker (fórmula corrigida, agora
+realmente proporcional ao poder do board) são os maiores contribuintes
+pro salto de draw; os anthems de Chronicle/Patchwork Banner cruzando mais
+thresholds de poder (Garruk's Uprising, Tribute, Goreclaw) explicam o
+resto. Nada caiu — os 7 fixes são estritamente aditivos (mecânicas que
+nunca faziam nada antes, agora fazem algo real).
+
+`checklist-oraculo.md` criado do zero, cobrindo as 69 cartas linha a
+linha. Ver esse arquivo pra tabela completa de status por cláusula.
+
+---
+
 <!-- Para novas partidas avulsas, use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
