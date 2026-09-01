@@ -4,6 +4,69 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### Auditoria linha-a-linha "compile TUDO" — 2026-09-01
+
+**Gatilho:** pedido direto do usuário ("AGORA FAZ O QUE SEMPRE Te MANDei
+FAZER: COmpila a porra de TODAS AS CARTAS DOS DECKS UMA A UMA... cada
+carta tem que ser lida linha a linha") — mesmo tratamento já aplicado a
+Toph, Beorn, Edgar Markov, Hei Bai, Maralen, Megatron, Nekusar, Prismatic
+Bridge, Rat King, Thranduil, Ulalek e Ur-Dragon. Ver `checklist-oraculo.md`
+pra detalhamento completo.
+
+**Método:** detecção automatizada de tags órfãs (37 candidatas) + nomes
+de carta com poucas ocorrências. A esmagadora maioria eram falsos
+positivos (dispatch por nome dentro de funções centralizadas como
+`on_permanent_sacrificed()`/`on_creature_dies()`/`on_token_leaves()` —
+este arquivo já tem uma arquitetura de aristocratas bem centralizada).
+**3 gaps reais confirmados:**
+
+1. **High Market** (`sac_outlet_life`) e **Phyrexian Tower**
+   (`sac_outlet_bb`) — 2 terrenos com habilidade real de sacrifício
+   (`{T}, Sacrifice a creature: gain 1 life` / `Add {B}{B}`) nunca
+   implementados. Corrigidos com `try_sac_land_outlets()`, chamado no
+   início do `end_step()` — só sacrifica TOKENS descartáveis
+   (Constructs/other_tokens), nunca uma criatura nomeada real (trocar um
+   corpo de verdade por 1 vida ou 1 mana extra é claramente mau negócio).
+   Reusa `sacrifice_constructs()`/`sacrifice_other_tokens()`, que já
+   disparam todos os gatilhos reais de morte (Zulaport Cutthroat,
+   Pitiless Plunderer, Mahadi, Sephiroth, Mayhem Devil) — sem duplicar
+   lógica.
+2. **Sentinel Sarah Lyons** (`anthem_artifact`) — 2 habilidades reais: o
+   anthem "+2/+2 se um artefato entrou este turno" é genuinamente 📊
+   (sem P/T por criatura neste modelo, consistente com o resto do
+   arquivo), mas o **Battalion** ("ela e mais 2 criaturas atacam: dano =
+   artefatos que você controla") era um gatilho real e quantificável
+   (proxy de dano, mesma convenção do Smaug the Magnificent) nunca
+   implementado. Corrigido em `combat_step()`, com novo helper
+   `artifacts_in_play()` (conta permanentes nomeados + Treasures +
+   Constructs).
+
+**Reclassificação verificada, não alterada:** o próprio docstring do
+cabeçalho já documentava, de forma transparente, que Grenzo/Laughing
+Jasper Flint "exilam da biblioteca do OPONENTE" na regra real, mas usam a
+PRÓPRIA biblioteca como fonte substituta aproximada — uma decisão
+deliberada e já documentada (não uma omissão silenciosa disfarçada). Não
+alterado nesta rodada por ser uma escolha de design já revisada, não um
+gap novo encontrado.
+
+**Validação:** 9 testes unitários isolados (todos passando) + regressão
+de 20.000 partidas (seed 8000000+, turns=10, 0 exceções) + `run_batch`
+antes/depois via `importlib` (3000 jogos, seed 9000000, turns=10):
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Drain/dano agregado (proxy) | 9.91 | 11.74 |
+| Vida ganha | 2.78 | 3.32 |
+| Mana bônus via sac outlets pós-combate | 5.71 | 6.10 |
+| Revel in Riches (10+ Treasures) | 3.0% | 3.1% |
+
+Todas as métricas relevantes subiram na direção esperada, sem nenhuma
+outra métrica se mover de forma inexplicável. `vihaan_v1_runs.jsonl`
+regenerado (3000 jogos, seed_base=6000000, turns=8, mesmos parâmetros já
+estabelecidos no `__main__` do arquivo).
+
+---
+
 ## Simulação #1 — goldfish Python completo (`vihaan_goldfish_v1.py`) — 2026-08-22
 
 **Contexto:** o usuário trouxe um script pronto gerado por ChatGPT pra essa mesma decklist, com resultado de n=500 já rodado. Antes de reaproveitar, revisei o código inteiro e encontrei **5 problemas reais que invalidavam a maior parte dos números reportados**:

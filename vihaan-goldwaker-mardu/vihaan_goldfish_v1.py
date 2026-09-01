@@ -383,6 +383,17 @@ def is_outlaw(name: str) -> bool:
     return "outlaw" in CARD_DB[name].tags
 
 
+def artifacts_in_play(state: GameState) -> int:
+    """Contagem real de artefatos que o jogador controla -- inclui
+    permanentes nomeados de tipo artifact/artifact_creature, Treasures
+    (tokens de artefato) e Constructs (tokens de artefato-criatura via
+    Jan Jansen)."""
+    n = sum(1 for c in state.battlefield if is_artifact_card(c))
+    n += state.treasures
+    n += state.constructs
+    return n
+
+
 def is_historic(name: str) -> bool:
     """Artefato, lendaria ou Saga."""
     return is_artifact_card(name) or "Legendary" in name or name in (
@@ -1219,6 +1230,22 @@ def combat_step(state: GameState):
         # proxy agregado (drain_damage_total), nunca vida real de oponente.
         drain(state, state.treasures)
 
+    if ("Sentinel Sarah Lyons" in ready_creatures
+            and "Sentinel Sarah Lyons" in state.battlefield
+            and total_attackers >= 3):
+        # Achado real 2026-09-01 (leitura linha-a-linha, "compile TUDO"):
+        # tag "anthem_artifact" nunca lida. Oraculo real tem 2
+        # habilidades: (1) "creatures you control get +2/+2 as long as an
+        # artifact entered this turn" -- estatico numerico sem P/T por
+        # criatura neste modelo (sem combate individual em lugar nenhum
+        # do arquivo) -- 📊 estrutural, consistente com o resto. (2)
+        # "Battalion -- whenever Sarah Lyons and at least two other
+        # creatures attack, she deals damage equal to the number of
+        # artifacts you control to target player" -- gatilho real e
+        # quantificavel (proxy de dano, mesma convencao do Smaug acima),
+        # nunca implementado.
+        drain(state, artifacts_in_play(state))
+
     if any_creature_attacking:
         if "Olivia, Opulent Outlaw" in state.battlefield and outlaw_attacking:
             create_treasures(state, 1, source="Olivia (outlaw dano)")
@@ -1247,7 +1274,41 @@ def combat_step(state: GameState):
         aggressive_treasure_destruction(state)
 
 
+def try_sac_land_outlets(state: GameState):
+    """Achado real 2026-09-01 (leitura linha-a-linha, "compile TUDO"):
+    High Market ({T}, Sacrifice a creature: gain 1 life) e Phyrexian
+    Tower ({T}, Sacrifice a creature: Add {B}{B}) -- 2 terrenos com tags
+    reais (sac_outlet_life/sac_outlet_bb) nunca lidas em lugar nenhum.
+    So sacrifica TOKENS descartaveis (Constructs/other_tokens), nunca uma
+    criatura nomeada real -- trocar uma criatura de verdade por 1 vida ou
+    1 mana extra e' valor claramente ruim, nenhum piloto racional faria
+    isso. Chamado no end_step (depois do combate, quando os tokens do
+    turno ja atacaram e nao tem mais uso pendente) -- reusa
+    sacrifice_constructs()/sacrifice_other_tokens(), que ja disparam
+    todos os gatilhos reais de morte (Zulaport/Pitiless Plunderer/Mahadi/
+    Sephiroth/Mayhem Devil) via on_permanent_sacrificed(), sem duplicar
+    logica."""
+    if "Phyrexian Tower" in state.battlefield:
+        if state.constructs > 0:
+            sacrifice_constructs(state, 1)
+            state.bonus_mana_pool += 1  # BB no lugar do {C} generico normal -> +1 liquido
+            state.bonus_mana_generated_total += 1
+        elif state.other_tokens > 0:
+            sacrifice_other_tokens(state, 1)
+            state.bonus_mana_pool += 1
+            state.bonus_mana_generated_total += 1
+
+    if "High Market" in state.battlefield:
+        if state.constructs > 0:
+            sacrifice_constructs(state, 1)
+            gain_life(state, 1)
+        elif state.other_tokens > 0:
+            sacrifice_other_tokens(state, 1)
+            gain_life(state, 1)
+
+
 def end_step(state: GameState):
+    try_sac_land_outlets(state)
     if "Mahadi, Emporium Master" in state.battlefield:
         create_treasures(state, state.deaths_this_turn, source="Mahadi (fim do turno)")
 
