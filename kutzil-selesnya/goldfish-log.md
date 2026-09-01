@@ -2,6 +2,67 @@
 
 Compilação dos goldfishes rodados com o deck, exportada e organizada a partir dos logs do simulador. Segue convenção estrita de separar **fato registrado** de **interpretação**, e marca explicitamente onde os dados não são recuperáveis — nada foi inventado para preencher lacunas.
 
+---
+
+### Simulador Python construído do zero — `kutzil_goldfish_v1.py` — 2026-09-02
+
+**Gatilho:** pedido direto do usuário ("Pode começar com o Kutzil") — um
+dos 4 decks desta pasta sem simulador nenhum ainda. Os 10 goldfishes
+manuais abaixo (pré-v8/v8, jogados pelo próprio usuário antes de
+qualquer simulador existir) continuam registrados como estavam — este
+simulador é uma ferramenta NOVA e independente, não uma reconstrução
+dos jogos manuais.
+
+**Construção:** oráculo real de todas as 92 cartas (91 não-básicas +
+comandante) buscado ao vivo via Scryfall, arquitetura de objetos
+`Permanent` (necessária pro motor central de +1/+1 counters — ver
+`checklist-oraculo.md` pra detalhamento completo). Depois do primeiro
+rascunho passar na regressão de 20.000 partidas (0 exceções), rodei a
+mesma varredura automatizada de tags órfãs usada nas auditorias dos
+outros 13 decks — achou **12 gaps reais** que o próprio rascunho tinha
+deixado passar (The Great Henge sem redução de custo, Managorger Hydra,
+Walking Ballista, Beast Whisperer, Goldvein Hydra, Puca's Covenant, Tale
+of Katara and Toph, Abandoned Air Temple, Ba Sing Se, Lion Sash, Mosswort
+Bridge, Hushwood Verge) — todos corrigidos antes de considerar o deck
+pronto. Ver `checklist-oraculo.md` pra detalhamento carta-a-carta.
+
+**Validação:** 29 testes unitários isolados (3 baterias, cobrindo o
+motor de multiplicadores de contador, os 4 gatilhos reativos, o gatilho
+de compra da própria Kutzil, a heurística do Damning Verdict, Rancor, e
+os 12 gaps achados na varredura) + regressão de 20.000 partidas repetida
+a cada rodada de correção (seeds 2000000+ a 6000000+, turns=10, 0
+exceções em todas as rodadas).
+
+**Métricas do build final** (3000 jogos, seed_base=1000000, turns=8):
+
+| Métrica | Valor |
+|---|---|
+| Turno médio de conjuração da Kutzil | 3.47 (mediana 3) |
+| Nunca conjurada em 8 turnos | 6.6% |
+| Avg contadores +1/+1 colocados (com multiplicadores) | 38.29 |
+| Avg compras extras (todos os motores) | 12.05 |
+| Avg compras via Kutzil (poder>base em combate) | 3.81 |
+| Avg dano proxy de combate | 96.45 |
+| Craterhoof Behemoth resolvido | 5.4% dos jogos |
+| Damning Verdict conjurada | 1.9% dos jogos |
+
+Achado incidental durante os testes (não um bug — confirmado com
+`time`, sem loop infinito nem travamento): em ~4/20000 sementes, a
+Kutzil terminou com 500+ contadores via um combo real conhecido de papel
+(Ouroboroid — "put X counters on each creature, X = seu próprio poder" —
+realimentando a si mesmo turno após turno com 2+ multiplicadores
+ativos). Crescimento exponencial genuíno da própria carta, não um erro
+de implementação — deixado como está, consistente com o mandato de
+"compilar tudo e deixar os dados revelarem o resultado real".
+
+**Turno médio de conjuração (3.47) e explosividade dos contadores**
+batem com o que a `auditoria.md` (seção 10, cruzamento com os
+goldfishes manuais) já tinha confirmado: T2-T3 consistente e um motor
+genuinamente explosivo quando os multiplicadores se alinham — agora com
+uma amostra de 3000 partidas simuladas em vez de 5-6 goldfishes manuais.
+
+---
+
 ## Convenções
 
 - **KEEP** = mão mantida.
