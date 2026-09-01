@@ -162,4 +162,61 @@ face de feitiçaria.
 
 ---
 
+### Leitura linha-a-linha completa do oráculo (mesma exigência do Toph/Beorn/Edgar Markov/Hei Bai/Maralen) — 2026-09-01
+
+**Gatilho (usuário):** *"AGORA FAZ O QUE SEMPRE Te MANDei FAZER: COmpila
+a porra de TODAS AS CARTAS DOS DECKS UMA A UMA... cada carta tem que ser
+lida linha a linha"*.
+
+Diferente dos outros decks (todos já tinham 1+ rodada de correção
+anterior), Megatron foi construído do zero em 2026-08-29 sem nenhuma
+reanálise prévia — a releitura linha-a-linha achou **6 tags mortas**
+(definidas, nunca lidas em lugar nenhum do dispatch): Scion of Draco
+(`domain_reduce`), Summon: Bahamut (`saga_bahamut`), Cryptolith Fragment
+(`fuel_mana_drain`), Cityscape Leveler (`cast_removal_attack_removal`),
+Retributive Wand (`fuel_ping_death_burst`), Pumpkin Bombs
+(`fuel_fuse_burn`). Todas lacunas puras, sem nenhuma documentação
+explicando a ausência — diferente do padrão dos outros decks desta
+sessão, onde os gaps eram deferidos com justificativa (às vezes válida,
+às vezes julgamento de valor proibido).
+
+**Destaque:** Summon: Bahamut é um finisher de dano REAL (Mega Flare =
+MV total de outros permanentes controlados) que estava inteiramente
+ausente — uma Saga de {9} mana virando efetivamente um vanilla sem
+nenhum dos 4 capítulos.
+
+Implementado: novo `effective_cost()` (Scion of Draco, domínio real
+deste deck sem Forest/Island é máximo 3, não 5); `try_bahamut_saga()`
+(capítulos II/III/IV, chamada no upkeep); `try_cryptolith_fragment()` +
+`try_aurora_of_emrakul_attack()` (mana real + transform aproximado via
+`40 - proxy_damage_total`); `try_cityscape_leveler_attack()`; 
+`try_retributive_wand_ping()`; `try_pumpkin_bombs()` (ativação única
+real — o oráculo tira o artefato do seu controle após o 1º uso, não é
+julgamento de valor meu).
+
+**Robustez:** 6 testes unitários isolados + 20.000 partidas de regressão
+(0 erros).
+
+**Batch, n=3000, seed_base=1400000 (antes = git HEAD, depois = com os 6 fixes):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg proxy_damage_total | 29,10 | 30,33 |
+| Avg cartas compradas extra | 9,51 | 9,84 |
+| Avg interaction_spells_cast_total | 0,00 | 0,03 |
+| Scion of Draco conjurado | 0% (custo fixo {12}) | 2,2% dos jogos |
+
+**Leitura:** tudo sobe, na direção esperada. `interaction_spells_cast_total`
+saindo de 0,00 fixo pra um valor real é o sinal mais claro — antes
+Cityscape Leveler e Summon: Bahamut (capítulos I/II) nunca contribuíam
+NADA pra essa métrica, apesar de serem cartas de interação reais na
+lista. Bahamut chega ao Mega Flare (dano real ~63-133) em partidas mais
+longas (14 turnos: 3,2% dos jogos) — dentro de 8 turnos raramente há
+tempo pra uma Saga de {9} completar 4 capítulos, o que é esperado e
+correto, não um bug.
+
+`checklist-oraculo.md` criado (93 cartas).
+
+---
+
 <!-- Copie o bloco acima para cada nova partida -->

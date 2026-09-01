@@ -345,6 +345,22 @@ class GameState:
     wheels_total: int = 0
     library_emptied: bool = False
 
+    # Achados reais 2026-09-01 (leitura linha-a-linha completa do oraculo,
+    # "compile TUDO"): tags mortas (definidas, nunca lidas em lugar
+    # nenhum) - Summon: Bahamut, Cryptolith Fragment, Cityscape Leveler,
+    # Retributive Wand, Pumpkin Bombs. Deck novo (2026-08-29), sem rodada
+    # de auditoria anterior como os outros desta sessao.
+    bahamut_entered_turn: Optional[int] = None
+    bahamut_chapter: int = 0
+    bahamut_mega_flare_total: int = 0
+    cryptolith_transformed: bool = False
+    cryptolith_activations_total: int = 0
+    cryptolith_entered_turn: Optional[int] = None
+    cityscape_leveler_destroys_total: int = 0
+    retributive_wand_pings_total: int = 0
+    pumpkin_bombs_used: bool = False
+    pumpkin_bombs_draws_total: int = 0
+
 
 def draw_cards(state: GameState, n: int):
     for _ in range(n):
@@ -419,8 +435,27 @@ def has_color_sources_for(state: GameState, name: str) -> bool:
     return True
 
 
+def effective_cost(state: GameState, name: str) -> int:
+    mv = CARD_DB[name].mv
+    if name == "Scion of Draco":
+        # Domain -- "This spell costs {2} less to cast for each basic
+        # land type among lands you control." Achado real 2026-09-01
+        # (leitura linha-a-linha completa do oraculo, "compile TUDO"): a
+        # tag "domain_reduce" nunca era lida em lugar nenhum -- ficava
+        # fixa em {12}, praticamente incastavel numa lista de 93 cartas.
+        # Este deck (Mardu, R/W/B) so' tem 3 tipos basicos possiveis
+        # (Mountain/Plains/Swamp, ver LAND_BASIC_TYPES) -- sem
+        # Forest/Island, dominio maximo real e' 3 (nao 5), reducao
+        # maxima real e' -{6} (custo minimo {6}), nao -{10}.
+        types = set()
+        for n in state.battlefield:
+            types |= LAND_BASIC_TYPES.get(n, set())
+        mv = max(0, mv - 2 * len(types))
+    return mv
+
+
 def can_cast(state: GameState, name: str) -> bool:
-    return remaining_mana(state) >= CARD_DB[name].mv and has_color_sources_for(state, name)
+    return remaining_mana(state) >= effective_cost(state, name) and has_color_sources_for(state, name)
 
 
 def spend_mana(state: GameState, n: int):
@@ -702,6 +737,35 @@ def resolve_etb(state: GameState, name: str):
         # "disponivel quando ha alvo hipotetico", sem efeito numerico solo
         # (mesma convencao de 'interaction' usada no resto do arquivo).
 
+    if "cast_removal_attack_removal" in tags:
+        # Cityscape Leveler: "When you cast this spell AND whenever this
+        # creature attacks, destroy up to one target nonland permanent."
+        # Achado real 2026-09-01 (leitura linha-a-linha, "compile TUDO"):
+        # tag definida mas NUNCA lida em lugar nenhum - nem o cast nem o
+        # ataque contavam como interacao. Mesma convencao de
+        # etb_removal/cast_removal (sem alvo real de oponente, so' conta
+        # como interacao usada) - a metade de ATAQUE fica em
+        # `try_cityscape_leveler_attack()`, chamada no combat_step.
+        state.interaction_spells_cast_total += 1
+
+    if "fuel_mana_drain" in tags:
+        # Cryptolith Fragment: "This artifact enters tapped." Achado real
+        # 2026-09-01 - registra o turno de entrada pra gatear a ativada
+        # (nao e' criatura, entao `creature_cast_turn` nunca a rastreava).
+        state.cryptolith_entered_turn = state.turn
+
+    if "saga_bahamut" in tags:
+        # Summon: Bahamut: Saga de 4 capitulos. Achado real 2026-09-01
+        # (leitura linha-a-linha, "compile TUDO"): tag definida mas nunca
+        # lida - a carta inteira (incluindo o Mega Flare, um finisher real
+        # de dano = MV total dos outros permanentes) estava 100% ausente.
+        # Capitulo I dispara na entrada (contado como interacao, mesma
+        # convencao de destroy sem alvo real); II/III/IV avancam via
+        # `try_bahamut_saga()`, chamada no upkeep.
+        state.bahamut_entered_turn = state.turn
+        state.bahamut_chapter = 1
+        state.interaction_spells_cast_total += 1
+
     if "cast_draw4" in tags:
         draw_cards(state, 4)  # Kozilek: "when you cast this spell, draw four cards"
 
@@ -747,6 +811,128 @@ def try_fire_navy_trebuchet(state: GameState):
     if "Fire Navy Trebuchet" not in state.battlefield or state.fire_navy_used_this_turn:
         return
     state.fire_navy_used_this_turn = True
+
+
+def try_bahamut_saga(state: GameState):
+    """Summon: Bahamut, capitulos II/III/IV (achado real 2026-09-01, ver
+    resolve_etb pro capitulo I). 'As this Saga enters and after your draw
+    step, add a lore counter. Sacrifice after IV.' Capitulo I ja disparou
+    no turno de entrada; II/III/IV disparam nos 3 upkeeps seguintes
+    (aproximacao de timing "draw step" -> "upkeep", mesma convencao ja
+    usada no resto do arquivo pra sagas/capitulos)."""
+    if state.bahamut_entered_turn is None or "Summon: Bahamut" not in state.battlefield:
+        return
+    turns_since = state.turn - state.bahamut_entered_turn
+    if turns_since <= 0 or turns_since > 3 or state.bahamut_chapter >= turns_since + 1:
+        return
+    state.bahamut_chapter = turns_since + 1
+    if state.bahamut_chapter == 2:
+        # II - Destroy up to one target nonland permanent (mesmo proxy de
+        # interacao do capitulo I, sem alvo real).
+        state.interaction_spells_cast_total += 1
+    elif state.bahamut_chapter == 3:
+        draw_cards(state, 2)
+    elif state.bahamut_chapter == 4:
+        # Mega Flare: dano = MV total de OUTROS permanentes que controlo,
+        # a cada oponente - finisher real, calculado no momento (agrega
+        # todo o board, nao so' artefatos/criaturas).
+        mv_total = sum(CARD_DB[n].mv for n in state.battlefield
+                       if n != "Summon: Bahamut" and n in CARD_DB)
+        proxy_drain(state, mv_total * NUM_OPPONENTS)
+        state.bahamut_mega_flare_total += mv_total * NUM_OPPONENTS
+        state.battlefield.remove("Summon: Bahamut")
+        state.graveyard.append("Summon: Bahamut")
+
+
+def try_cityscape_leveler_attack(state: GameState):
+    """Cityscape Leveler: metade de ATAQUE do "cast_removal_attack_removal"
+    (achado real 2026-09-01, ver resolve_etb pra metade de cast). Ataca
+    todo turno em que nao tem doenca de invocacao (mesma convencao de
+    'ataque' usada no resto do arquivo)."""
+    if "Cityscape Leveler" not in state.battlefield:
+        return
+    if state.creature_cast_turn.get("Cityscape Leveler", -1) >= state.turn:
+        return
+    state.interaction_spells_cast_total += 1
+
+
+def try_cryptolith_fragment(state: GameState):
+    """Cryptolith Fragment // Aurora of Emrakul (achado real 2026-09-01,
+    leitura linha-a-linha, "compile TUDO" - tag "fuel_mana_drain" nunca
+    lida em lugar nenhum). Frente: '{T}: Add one mana of any color. Each
+    player loses 1 life.' - mana real com custo real (dano simetrico,
+    aplicado sem excecao pro meu lado, mesma convencao do Descent into
+    Avernus). 'Enters tapped' (achado junto): so ativa a partir do turno
+    seguinte ao que entrou."""
+    if "Cryptolith Fragment" not in state.battlefield or state.cryptolith_transformed:
+        return
+    if state.cryptolith_entered_turn == state.turn:
+        return  # enters tapped -> so' ativa a partir do proximo turno
+    state.bonus_mana_pool += 1
+    self_damage(state, 1)
+    proxy_drain(state, 1 * NUM_OPPONENTS)
+    state.cryptolith_activations_total += 1
+    # "At the beginning of your upkeep, if each player has 10 or less
+    # life, transform." Sem vida real de oponente individual rastreada -
+    # aproximacao documentada: vida de oponente ~= 40 - proxy_damage_total
+    # (dano acumulado desde o inicio da partida, unica leitura disponivel
+    # neste modelo agregado). Apos transformar, vira Aurora of Emrakul
+    # (flying, deathtouch, ataca: cada oponente perde 3) - contada via
+    # `try_cityscape_leveler_attack`-style simplificado abaixo.
+    approx_opponent_life = 40 - state.proxy_damage_total
+    if state.life <= 10 and approx_opponent_life <= 10:
+        state.cryptolith_transformed = True
+
+
+def try_aurora_of_emrakul_attack(state: GameState):
+    """Verso transformado do Cryptolith Fragment: 'Whenever this creature
+    attacks, each opponent loses 3 life.' Achado real 2026-09-01."""
+    if not state.cryptolith_transformed:
+        return
+    if state.cryptolith_entered_turn == state.turn:
+        return
+    proxy_drain(state, 3 * NUM_OPPONENTS)
+
+
+def try_retributive_wand_ping(state: GameState):
+    """Retributive Wand: '{3},{T}: deals 1 damage to any target.' Achado
+    real 2026-09-01 (tag "fuel_ping_death_burst" nunca lida). Repetivel
+    todo turno com mana sobrando (diferente de Brimstone/Unruly, que sao
+    de graca - este custa {3} real). O gatilho de morte ('5 damage')
+    permanece 📊 estrutural: nenhuma remocao/sacrificio involuntario dos
+    PROPRIOS permanentes e' modelada neste sim (mesma razao documentada
+    pra Enduring Vitality/Enduring Tenacity noutros decks da sessao)."""
+    if "Retributive Wand" not in state.battlefield:
+        return
+    if remaining_mana(state) < 3:
+        return
+    spend_mana(state, 3)
+    proxy_drain(state, 1 * NUM_OPPONENTS)
+    state.retributive_wand_pings_total += 1
+
+
+def try_pumpkin_bombs(state: GameState):
+    """Pumpkin Bombs: '{T}, Discard two cards: Draw three cards, then put
+    a fuse counter... deals damage = fuse counters to target opponent.
+    THEY gain control of this artifact.' Achado real 2026-09-01 (tag
+    "fuel_fuse_burn" nunca lida). Ativacao UNICA de verdade (nao um
+    julgamento de valor - o oraculo literalmente tira o artefato do seu
+    controle depois do primeiro uso, "activate only once each turn" nao
+    e' a razao, e' a troca de controle). So' ativa com 2+ cartas
+    descartaveis sobrando na mao (nunca descarta as ultimas 2 cartas uteis)."""
+    if "Pumpkin Bombs" not in state.battlefield or state.pumpkin_bombs_used:
+        return
+    discardable = [c for c in state.hand if c != "Pumpkin Bombs"]
+    if len(discardable) < 3:
+        return  # guarda pelo menos 1 carta na mao depois do descarte
+    for c in discardable[:2]:
+        state.hand.remove(c)
+        state.graveyard.append(c)
+    draw_cards(state, 3)
+    state.pumpkin_bombs_draws_total += 3
+    proxy_drain(state, 1 * NUM_OPPONENTS)  # 1 fuse counter na 1a (e unica) ativacao
+    state.battlefield.remove("Pumpkin Bombs")  # oponente ganha o controle -- sai do meu campo
+    state.pumpkin_bombs_used = True
 
 
 def resolve_instant_sorcery(state: GameState, name: str):
@@ -867,7 +1053,7 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
 
 def cast_card(state: GameState, name: str):
     card = CARD_DB[name]
-    spend_mana(state, card.mv)
+    spend_mana(state, effective_cost(state, name))
     if name in state.hand:
         state.hand.remove(name)
 
@@ -960,9 +1146,12 @@ def upkeep_step(state: GameState):
             enter_battlefield(state, best, from_hand=False)
             state.recursion_events_total += 1
 
+    try_bahamut_saga(state)
+
 
 def main_phase(state: GameState):
     cast_megatron(state)
+    try_cryptolith_fragment(state)
 
     while True:
         castables = [n for n in state.hand if n not in LAND_NAMES and can_cast(state, n)
@@ -974,7 +1163,7 @@ def main_phase(state: GameState):
         def prio(n):
             tags = CARD_DB[n].tags
             group = 0 if (tags & {"rock1", "rock2", "rock3", "rock5"}) else 1
-            return (group, CARD_DB[n].mv)
+            return (group, effective_cost(state, n))
 
         castables.sort(key=prio)
         cast_card(state, castables[0])
@@ -986,6 +1175,8 @@ def main_phase(state: GameState):
     try_mishra_unearth(state)
     try_nexus_of_becoming(state)
     try_losheel_draw_check(state)
+    try_pumpkin_bombs(state)
+    try_retributive_wand_ping(state)
 
 
 def try_nexus_of_becoming(state: GameState):
@@ -1020,6 +1211,8 @@ def creature_etb_hooks(state: GameState, name: str):
 
 def combat_step(state: GameState):
     megatron_combat(state)
+    try_cityscape_leveler_attack(state)
+    try_aurora_of_emrakul_attack(state)
 
 
 def end_step(state: GameState):
@@ -1153,6 +1346,19 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     own_ko = sum(1 for s in states if s.life <= 0)
     print(f"Partidas em que os PROPRIOS efeitos derrubam minha vida a 0 ou menos: {100*own_ko/n:.1f}%")
     print(f"Avg mao final: {avg([len(s.hand) for s in states]):.2f}")
+
+    print()
+    print("--- Achados 2026-09-01 (leitura linha-a-linha completa do oraculo, tags mortas nunca lidas) ---")
+    scion_cast = sum(1 for s in states if "Scion of Draco" in s.battlefield)
+    print(f"Scion of Draco conjurado (custo reduzido por dominio): {100*scion_cast/n:.1f}% dos jogos")
+    bahamut_flare = sum(1 for s in states if s.bahamut_mega_flare_total > 0)
+    print(f"Summon: Bahamut chegou ao capitulo IV (Mega Flare): {100*bahamut_flare/n:.1f}% dos jogos, "
+          f"avg dano quando resolve: {avg([s.bahamut_mega_flare_total for s in states if s.bahamut_mega_flare_total > 0]):.1f}")
+    print(f"Avg ativacoes do Cryptolith Fragment: {avg([s.cryptolith_activations_total for s in states]):.2f} | "
+          f"transformou em Aurora of Emrakul: {100*sum(1 for s in states if s.cryptolith_transformed)/n:.1f}% dos jogos")
+    print(f"Avg pings do Retributive Wand: {avg([s.retributive_wand_pings_total for s in states]):.2f}")
+    print(f"Pumpkin Bombs ativada (1x, depois muda de dono): {100*sum(1 for s in states if s.pumpkin_bombs_used)/n:.1f}% dos jogos, "
+          f"avg cartas compradas quando ativa: {avg([s.pumpkin_bombs_draws_total for s in states if s.pumpkin_bombs_used]):.1f}")
 
     # --- Metricas basicas (checklist obrigatorio, categoria 10) --------------
     print("--- Metricas basicas (checklist obrigatorio) ---")
