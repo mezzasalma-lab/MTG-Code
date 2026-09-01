@@ -1058,6 +1058,8 @@ def ultron_trigger(state: GameState, entering_perm: Permanent, log: list):
     # copia e' zero garantido pela propria regra do lendario -- mesmo
     # principio ja usado em "sem alvo legal, a habilidade nao faz nada".
     if "legendary" in entering_perm.card.tags:
+        log.append(f"  [Ultron] NAO copia {entering_perm.card.name} (lendario -- token morreria de graca "
+                    f"pela regra do lendario, sem ETB/valor nenhum)")
         return
     if remaining_mana(state) < 2:
         return

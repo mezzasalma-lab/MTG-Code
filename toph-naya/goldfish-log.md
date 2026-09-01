@@ -1098,4 +1098,89 @@ no topo do arquivo + resumo numérico).
 
 ---
 
+### Goldfish automatizado (verificação em jogo real) — 2026-09-01
+
+**Importante:** diferente da Partida #1 e #2 (jogadas manualmente pelo
+usuário num app de playtest, com screenshot + JSON de estado), esta NÃO é
+uma partida humana — é uma rodada real do próprio motor de simulação
+(`simulate_one`), pedida pelo usuário como *"Faz um goldfish manual pra
+testar essa correção na prática"*. Registrado aqui com o mesmo rigor:
+seed específica, log completo, resultado final conferido — não uma
+alegação de que "os testes passam", um jogo de verdade rodado do início
+ao fim com o código de produção.
+
+**Objetivo:** achar, dentre partidas reais do deck, um jogo onde Ultron e
+um artefato lendário coexistem em campo — cenário exato que estava
+quebrado antes da correção desta sessão (regra do lendário nunca
+checada) — e confirmar ao vivo que o fix se comporta como esperado.
+
+**Método:** varredura de 20.000 seeds (`50_000_000` a `50_019_999`)
+procurando jogos com Ultron + qualquer um dos 6 artefatos lendários
+copiáveis (Krang, Mox Opal, The Great Henge, Iron Spider, The Ozolith,
+The Stasis Coffin) em campo simultaneamente. 5 seeds encontradas nas
+primeiras 100 testadas (32, 34, 68, 92, 96) — a seed **96**
+(`seed_base=50_000_096`) foi escolhida por ser a mais rica: 3 recusas do
+Ultron na mesma partida, via o loop recorrente de sacrifício/earthbend do
+The Stasis Coffin (earthbend → ativa proteção → exilada → Motor #16
+devolve tapped → "entra" de novo → dispara Ultron de novo).
+
+**Log completo, turno a turno** (`play_turn()` chamado 8x manualmente,
+log fatiado por turno):
+
+```
+Turno 1: (nada notável)
+Turno 2: [Enlightened Tutor] busca Sol Ring, topo da biblioteca
+Turno 3: [Comandante] Toph conjurada (turno 3)
+         [Earthbend 2] via Toph (end step) -> Bala Ged Recovery // Bala Ged Sanctuary
+Turno 4: [Earthbend 2] via Toph (end step) -> The Stasis Coffin
+Turno 5: [Earthbend 2] via Toph (end step) -> Sol Ring
+Turno 6: [Iron Spider] remove 2 contadores dentre artefatos, compra 1 carta
+         [The Stasis Coffin] ativa (proteção até o próximo turno) e é exilada
+         [Motor#16] The Stasis Coffin earthbendada volta ao campo tapped (recorrência)
+         [Ultron] NAO copia The Stasis Coffin (lendário -- token morreria de graça
+                  pela regra do lendário, sem ETB/valor nenhum)
+         [Earthbend 2] via Toph (end step) -> The Stasis Coffin
+Turno 7: (mesmo ciclo -- Iron Spider / Stasis Coffin ativa / Motor#16 volta /
+          Ultron recusa copiar de novo / earthbend de novo)
+Turno 8: [Bala Ged Recovery] conjurada como sorcery, devolve Wooded Foothills pra mão
+         (mesmo ciclo Stasis Coffin/Ultron mais uma vez)
+```
+
+Ultron entrou em campo em algum turno entre o 1º e o 5º sem gerar linha de
+log própria (conjurar uma carta só vira linha de log quando dispara algo
+notável, mesmo padrão do resto do simulador) — mas está confirmado em
+campo no final, e a recusa de copiar The Stasis Coffin só é possível se
+Ultron já estivesse ativo nos turnos 6/7/8.
+
+**Battlefield final (conferido programaticamente, não por leitura visual):**
+
+```
+1x Ashaya, Soul of the Wild
+1x Cinder Glade
+1x Oblivion Stone
+1x Selesnya Sanctuary
+1x Snow-Covered Forest
+1x Sol Ring
+1x Springheart Nantuko
+1x Stomping Ground
+1x The Stasis Coffin      <-- LENDARIO, exatamente 1 copia
+1x Toph, the First Metalbender
+1x Ultron, Artificial Malevolence   <-- LENDARIO, exatamente 1 copia
+```
+
+**Resultado:** exatamente **1 cópia** de The Stasis Coffin em campo apesar
+de Ultron ter tido 3 oportunidades reais de copiá-la (e antes da correção
+desta sessão, teria criado até 3 tokens ilegais duplicados com o mesmo
+nome, todos coexistindo com o original — estado de jogo impossível).
+Nenhum erro na partida completa. Regressão adicional de 5.000 partidas
+com o log ligado, 0 erros.
+
+**Efeito colateral desta verificação:** `ultron_trigger()` ganhou uma
+linha de log explícita na recusa (`[Ultron] NAO copia ... (lendário...)`)
+— antes a recusa era silenciosa (`return` sem log). Passou a logar porque
+essa é exatamente a linha que prova o fix numa partida real, e silêncio
+não é evidência.
+
+---
+
 <!-- Copie o bloco acima para cada nova partida -->
