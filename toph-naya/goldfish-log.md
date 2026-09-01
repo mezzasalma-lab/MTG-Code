@@ -821,17 +821,17 @@ quase todo jogo) inflava a mana disponível todo turno.
   tempo real, exatamente o motivo pelo qual a lista já despriorizava
   bounceland como land-drop ideal quando há alternativa (não há política
   de "segurar bounceland" no simulador hoje; pode valer testar).
-- **Ajustes a considerar / achado pro simulador:** o simulador
-  (`toph_goldfish_v1.py`) tem um `if others:` guard em `apply_etb()` pras
-  bouncelands (Gruul Turf/Selesnya Sanctuary) que **pula o bounce inteiro
-  se não há outro terreno em campo**, em vez de devolver a própria
-  bettleground como a regra real exige (visto ao vivo nesta partida,
-  turno 1). No sim isso dá um terreno "de graça" nesse cenário específico
-  (bounceland como 1º terreno da mesa); no jogo real ela volta pra mão e o
-  turno é desperdiçado. Efeito pequeno (só quando bounceland é o único
-  terreno em campo) mas é uma discrepância real, achada por teste manual,
-  não pela auditoria de oráculo — fica registrada pra correção numa
-  próxima rodada.
+- **Ajustes a considerar / achado pro simulador:** ~~o simulador tinha um
+  `if others:` guard em `apply_etb()` pras bouncelands que pulava o bounce
+  inteiro se não há outro terreno em campo~~ — **corrigido na hora**
+  (mesma sessão): agora, sem outro terreno candidato, a bounceland
+  devolve a si mesma (regra real: "return A LAND you control", mandatório
+  — sem outro candidato, ela mesma serve). Testado isoladamente (cenário
+  exato desta partida, turno 1: Selesnya Sanctuary sozinha em campo →
+  volta pra mão) e em regressão (15.000 partidas, 0 erros; n=3000 de
+  validação: turno médio da Toph sobe de 3,65→3,72, terrenos finais
+  9,97→9,88 — pequeno e no sentido esperado, bounceland como 1º terreno
+  agora é estritamente pior, como deveria ser).
 
 ---
 

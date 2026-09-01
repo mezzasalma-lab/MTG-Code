@@ -278,6 +278,16 @@ sobrou apos os fixes acima):
 **Robustez desta 2a passada:** 20.000 partidas (seeds 8300000–8319999), 0
 erros/timeouts. Todas as 5 mecanicas novas confirmadas disparando via
 teste direto (nao so' "roda sem erro").
+
+Achado real via PARTIDA MANUAL (2026-09-01, Partida #1 no goldfish-log.md,
+nao pela auditoria de oraculo) — corrigido na hora: Gruul Turf/Selesnya
+Sanctuary ("return a land you control to its owner's hand", mandatorio)
+so' devolviam um terreno quando havia OUTRO alem delas mesmas em campo —
+se a bounceland fosse o UNICO terreno na mesa (visto ao vivo no turno 1
+da partida), o codigo antigo pulava o bounce inteiro, deixando o terreno
+de graca em campo. Regra real: sem outro candidato, ela devolve A SI
+MESMA (ainda e' "a land you control"). Corrigido em `apply_etb()` com
+fallback pra `perm` quando `others` esta vazio.
 """
 
 import json
@@ -1132,12 +1142,18 @@ def apply_etb(state: GameState, perm: Permanent, log: list):
         everywhere.tapped = True
         enter_battlefield(state, everywhere, log)
     elif name == "Gruul Turf" or name == "Selesnya Sanctuary":
-        # bounceland: devolve um terreno pra mao (se houver outro alem dele mesmo)
+        # Bounceland: "return a land you control to its owner's hand" --
+        # mandatorio (nao "up to one"). Achado real 2026-09-01 (Partida
+        # manual #1, turno 1, visto ao vivo): se nao ha OUTRO terreno em
+        # campo, a regra real obriga devolver A SI MESMA (ainda e' "a land
+        # you control" -- so' nao existe outro candidato). O codigo antigo
+        # so' devolvia quando havia outro terreno, deixando a bounceland
+        # de graca em campo nesse cenario especifico (bounceland como 1o
+        # terreno da mesa) -- errado, corrigido com fallback pra si mesma.
         others = [p for p in state.battlefield if is_land(p, state) and p is not perm]
-        if others:
-            bounced = others[0]
-            state.battlefield.remove(bounced)
-            state.hand.append(bounced.card.name)
+        bounced = others[0] if others else perm
+        state.battlefield.remove(bounced)
+        state.hand.append(bounced.card.name)
     elif name == "Wrenn and Realmbreaker":
         state.wrenn_loyalty = 4  # lealdade inicial real (Scryfall)
     elif name == "Urza's Saga":
