@@ -228,6 +228,13 @@ add("Swamp", 0, "land", {"swamp_type"})
 ARTIFACT_ISH = {"artifact"}
 CREATURE_ISH = {"creature"}
 LAND_NAMES = {n for n, c in CARD_DB.items() if c.ctype == "land"}
+LEGENDARY_CREATURES = {
+    # Verificado via Scryfall (type_line contendo "Legendary Creature") --
+    # usado so pro custo reduzido do Channel de Takenuma, Abandoned Mire.
+    COMMANDER, "Ashcoat of the Shadow Swarm", "Marrow-Gnawer",
+    "Lord Skitter, Sewer King", "Karumonix, the Rat King",
+    "Syr Konrad, the Grim", "Ayara, First of Locthwain",
+}
 
 
 def is_creature_card(name: str) -> bool:
@@ -437,6 +444,15 @@ def remaining_mana(state: GameState) -> int:
 
 
 def effective_cost(state: GameState, name: str) -> int:
+    if name == "Deadly Rollick" and state.commander_in_play:
+        # Achado real 2026-09-01 (leitura linha-a-linha, "compile TUDO"):
+        # oraculo real "If you control a commander, you may cast this
+        # spell without paying its mana cost. Exile target creature." --
+        # tag "free_removal_commander" nunca lida em lugar nenhum, a
+        # magica sempre pagava o custo cheio {3}{B} antes. Confirmado via
+        # Scryfall que o texto NAO exige alvo atacando/bloqueando (so
+        # "target creature").
+        return 0
     return max(0, CARD_DB[name].mv - cost_reduction(state, name))
 
 
@@ -452,7 +468,7 @@ def spend_mana(state: GameState, n: int):
 # Sacrificio / morte -- ponto central de despacho (aristocrats)
 # ---------------------------------------------------------------------------
 
-def on_creature_dies(state: GameState, n: int = 1, is_token: bool = False):
+def on_creature_dies(state: GameState, n: int = 1, is_token: bool = False, dying_is_rat: bool = True):
     """Disparado toda vez que N criaturas suas morrem (vao pro cemiterio
     a partir do campo). Despacha TODOS os gatilhos de morte reais da
     lista a partir de um unico ponto, pra nao duplicar nem esquecer."""
@@ -474,6 +490,15 @@ def on_creature_dies(state: GameState, n: int = 1, is_token: bool = False):
     if "Dictate of Erebos" in state.battlefield:
         # Edict no oponente -- sem oponente real, so conta o gatilho.
         pass
+    if "Species Specialist" in state.battlefield and dying_is_rat:
+        # Achado real 2026-09-01 (leitura linha-a-linha, "compile TUDO"):
+        # "Whenever a creature of the chosen type dies, you may draw a
+        # card" -- tag "death_draw_type" nunca lida em lugar nenhum, so
+        # o ETB de escolha de tipo (Rat, tema tribal central) estava
+        # documentado. Como a esmagadora maioria das mortes deste deck
+        # E' de Rats (24x Rat Colony + tokens de Rat), isso dispara com
+        # frequencia real.
+        draw_cards(state, n)
 
 
 def leave_battlefield(state: GameState, name: str, to_graveyard: bool = True, is_token: bool = False):
@@ -483,7 +508,7 @@ def leave_battlefield(state: GameState, name: str, to_graveyard: bool = True, is
     if is_creature_card(name) and to_graveyard:
         if not is_token:
             state.graveyard.append(name)
-        on_creature_dies(state, 1, is_token=is_token)
+        on_creature_dies(state, 1, is_token=is_token, dying_is_rat=is_rat(name))
 
 
 def sacrifice_rats(state: GameState, n: int) -> int:
@@ -528,7 +553,7 @@ def sacrifice_any_creature(state: GameState, n: int) -> int:
         if state.squirrel_tokens > 0:
             state.squirrel_tokens -= 1
             state.permanent_left_battlefield_this_turn = True
-            on_creature_dies(state, 1, is_token=True)
+            on_creature_dies(state, 1, is_token=True, dying_is_rat=False)
             done += 1
             continue
         if state.mercenary_tokens > 0:
@@ -789,12 +814,15 @@ def skullclamp_loop(state: GameState):
         spend_mana(state, 1)
         if state.rat_tokens > 0:
             state.rat_tokens -= 1
+            was_rat = True
         elif state.squirrel_tokens > 0:
             state.squirrel_tokens -= 1
+            was_rat = False
         else:
             state.mercenary_tokens -= 1
+            was_rat = True  # changeling -- Mercenary Token e' todo tipo de criatura, Rat incluso
         state.permanent_left_battlefield_this_turn = True
-        on_creature_dies(state, 1, is_token=True)
+        on_creature_dies(state, 1, is_token=True, dying_is_rat=was_rat)
         draw_cards(state, 2)
         state.skullclamp_draws_total += 2
 
@@ -884,6 +912,39 @@ def try_harness_soul_stone(state: GameState):
         state.battlefield.remove(cheapest)  # exilada, nao vai pro cemiterio
     state.permanent_left_battlefield_this_turn = True
     state.soul_stone_harnessed = True
+
+
+def try_takenuma_channel(state: GameState):
+    # Achado real 2026-09-01 (leitura linha-a-linha, "compile TUDO"):
+    # oraculo real "Channel -- {3}{B}, Discard this card: Mill three
+    # cards, then return a creature or planeswalker card from your
+    # graveyard to your hand. This ability costs {1} less to activate for
+    # each legendary creature you control." -- tag "takenuma" nunca lida
+    # em lugar nenhum; so o `{T}: Add {B}` era coberto (generico, via
+    # LAND_NAMES em lands_mana()). So vale descartar o terreno em vez de
+    # jogar (play_land ja rodou antes de main_phase) quando sobra OUTRO
+    # terreno na mao pra nao perder o land drop do turno.
+    if "Takenuma, Abandoned Mire" not in state.hand:
+        return
+    other_lands_in_hand = [n for n in state.hand if n in LAND_NAMES and n != "Takenuma, Abandoned Mire"]
+    if not other_lands_in_hand:
+        return
+    legendary_ct = sum(1 for n in state.battlefield if n in LEGENDARY_CREATURES)
+    cost = max(0, 4 - legendary_ct)
+    if remaining_mana(state) < cost:
+        return
+    state.hand.remove("Takenuma, Abandoned Mire")
+    spend_mana(state, cost)
+    if state.library:
+        milled = state.library[:3]
+        del state.library[:3]
+        state.graveyard.extend(milled)
+    pool = [n for n in state.graveyard if is_creature_card(n) or CARD_DB[n].ctype == "planeswalker"]
+    if pool:
+        best = max(pool, key=lambda n: CARD_DB[n].mv)
+        state.graveyard.remove(best)
+        state.hand.append(best)
+        state.recursion_events_total += 1
 
 
 def soul_stone_upkeep_reanimate(state: GameState):
@@ -1087,6 +1148,7 @@ def main_phase(state: GameState, is_first_main: bool = True):
     ninja_teen_sneak(state)
     rat_king_reanimate(state)
     try_harness_soul_stone(state)
+    try_takenuma_channel(state)
 
 
 def combat_step(state: GameState):
@@ -1269,7 +1331,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"INTERACTION: avg spells de interacao conjurados (Deadly Rollick, Withering Torment, Kindred "
           f"Dominance, Swarmyard Massacre, Fell the Profane, Damnation): {avg([s.interaction_spells_cast_total for s in states]):.2f}")
     print(f"RECURSION: avg eventos de recursao (Reanimate, Echoing Return, Secret Salvage, Rat King sac-3-Rats, "
-          f"Soul Stone harnessed, Ashcoat mill+return, Ninja Teen nivel 3 sneak): {avg([s.recursion_events_total for s in states]):.2f}")
+          f"Soul Stone harnessed, Ashcoat mill+return, Ninja Teen nivel 3 sneak, Takenuma Channel): {avg([s.recursion_events_total for s in states]):.2f}")
     print(f"FINISHER/LETHALITY: avg dano/dreno proxy total acumulado (Zulaport, Ayara, Bontu's Monument, "
           f"Priest of Forgotten Gods, Valley Rotcaller, Syr Konrad -- SEM vida real de oponente, goldfish solo): "
           f"{avg([s.proxy_damage_total for s in states]):.2f}")

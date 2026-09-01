@@ -4,6 +4,68 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### Auditoria linha-a-linha "compile TUDO" — 2026-09-01
+
+**Gatilho:** pedido direto do usuário ("AGORA FAZ O QUE SEMPRE Te MANDei
+FAZER: COmpila a porra de TODAS AS CARTAS DOS DECKS UMA A UMA... cada
+carta tem que ser lida linha a linha") — mesmo tratamento já aplicado a
+Toph, Beorn, Edgar Markov, Hei Bai, Maralen, Megatron, Nekusar e Prismatic
+Bridge nesta sessão. Ver `checklist-oraculo.md` (novo) pra detalhamento
+completo carta-a-carta.
+
+**Método:** detecção automatizada de tags definidas em `add()` que nunca
+aparecem em nenhum `if`/`elif` de despacho no resto do arquivo (esta
+arquivo despacha primariamente por tag, não por nome literal). Achou 3
+gaps reais que a auditoria de construção original (2026-08-31) tinha
+deixado passar:
+
+1. **Species Specialist** (`death_draw_type`) — "Whenever a creature of
+   the chosen type dies, you may draw a card" nunca disparava. Corrigido
+   centralizando em `on_creature_dies()`, que agora recebe
+   `dying_is_rat: bool` propagado pelos 4 pontos reais de morte
+   (`leave_battlefield()`, ramo de esquilo em `sacrifice_any_creature()`,
+   loop de Skullclamp — agora rastreia qual token realmente morreu — e
+   `sacrifice_rats()`, que já só sacrifica Rats reais). Tipo escolhido =
+   Rat, tema tribal central do deck.
+2. **Deadly Rollick** (`free_removal_commander`) — "If you control a
+   commander, you may cast this spell without paying its mana cost."
+   nunca implementado, sempre pagava o custo cheio (MV4, {3}{B}).
+   Corrigido em `effective_cost()`.
+3. **Takenuma, Abandoned Mire** (`takenuma`) — só o `{T}: Add {B}`
+   genérico estava coberto; a habilidade de Channel ("Discard this card:
+   Mill three cards, then return a creature or planeswalker card from
+   your graveyard to your hand", custo reduzido por lendária controlada)
+   nunca implementada. Corrigido com `try_takenuma_channel()` + novo
+   conjunto `LEGENDARY_CREATURES` (7 criaturas, verificadas via
+   Scryfall). Só ativa quando sobra outro terreno na mão nesse turno
+   (não perde o land drop).
+
+**Validação:** 7 testes unitários isolados (todos passando) + regressão
+de 20.000 partidas (seed 1000000+, turns=10, 0 exceções) + `run_batch`
+antes/depois via `importlib` (5000 jogos, seed 4000000, turns=10):
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| DRAW (compras extras) | 6.12 | 8.18 |
+| INTERACTION (spells de interação) | 1.01 | 1.15 |
+| RECURSION (eventos de recursão) | 7.64 | 7.91 |
+| Tokens criados | 223.80 | 239.37 |
+| Vida final média | 59.67 | 63.72 |
+| Mão final média | 4.40 | 5.48 |
+
+Todas as 3 métricas relevantes subiram na direção esperada, sem nenhuma
+outra métrica se mover de forma inexplicável (turno de conjuração do
+comandante, mulligans e Thrumming Stone ripple ficaram praticamente
+estáveis, como esperado — nenhum dos 3 fixes toca essas mecânicas).
+
+Demais cartas: confirmadas ✅ implementadas ou 📊 estruturais de verdade
+(Dictate of Erebos, Kindred Dominance/Swarmyard Massacre/Damnation,
+Piper of the Swarm's steal, Karumonix toxic — todos opponent-dependent
+ou combat-dependent, sem oponente/combate real neste goldfish solo,
+já documentado no código desde 2026-08-31, não achados novos).
+
+---
+
 ### Correção — lista completada com Damnation (100ª carta) + bug real nos wipes — 2026-08-31
 
 **Contexto:** o usuário mandou 3 versões diferentes da lista pra comparar
