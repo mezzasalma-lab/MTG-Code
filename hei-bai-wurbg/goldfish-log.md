@@ -938,4 +938,42 @@ Nenhuma mudança de código necessária.
 
 ---
 
+### Leitura linha-a-linha completa do oráculo (mesma exigência do Toph/Beorn/Edgar Markov) — 2026-09-01
+
+**Gatilho (usuário):** *"AGORA FAZ O QUE SEMPRE Te MANDei FAZER: COmpila
+a porra de TODAS AS CARTAS DOS DECKS UMA A UMA... cada carta tem que ser
+lida linha a linha e isso tudo incorporado aos modelos que já fizemos até
+agora"*.
+
+Diferente do Beorn (7 gaps) e do Edgar Markov (4 gaps), a releitura
+linha-a-linha de Hei Bai **não achou nenhum bug de comportamento novo**.
+As 89 cartas (oráculo real via Scryfall, `checklist-oraculo.md` novo
+criado com a tabela completa) já estavam cobertas por um dispatch central
+bem arquitetado (`shrine_enters()`, 3 dobradores de gatilho distintos,
+motor de blink com timing atômico vs. adiado corretamente diferenciado).
+
+Único achado: 2 comentários no docstring do arquivo usavam a frase
+"baixo valor esperado" (Weaver of Harmony's habilidade de copiar
+gatilho; Destiny Spinner's animação de terreno) — a mesma linguagem de
+julgamento de valor que o usuário proibiu explicitamente no Toph.
+Investigando os dois: ambos são genuinamente estruturais, não julgamento
+de valor disfarçado —
+- Weaver of Harmony exige escolher QUAL dentre 17 tipos de gatilho de
+  Shrine copiar a cada ativação (mesma exceção arquitetural do Strionic
+  Resonator no Toph, não um "vale a pena?").
+- Destiny Spinner cria um atacante/bloqueador TEMPORÁRIO (buff só até o
+  fim do turno) — mesma família estrutural de Craterhoof/Unnatural
+  Growth/Goreclaw (combate real não modelado neste sim).
+
+Reclassificados com a justificativa correta, **sem mudança de
+comportamento no código** (só docstring). Regressão de 5.000 partidas
+pós-edição: 0 erros (esperado, mudança é só documentação).
+
+**Leitura:** nem todo deck vai ter bug novo — reportar "já estava
+correto" é tão parte da exigência do usuário quanto reportar um fix real,
+desde que seja verificado de verdade (Scryfall, não memória) e não uma
+alegação preguiçosa.
+
+---
+
 <!-- Copie o bloco acima para cada nova partida -->

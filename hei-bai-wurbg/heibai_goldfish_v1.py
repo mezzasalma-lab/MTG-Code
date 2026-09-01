@@ -133,12 +133,24 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas)
   Dispara em CADA encantamento entrando (Shrines inclusas — e' frequente),
   retorno adiado pro proximo end step (ver secao "Motor de blink" acima).
 - Weaver of Harmony: so o buff estatico (+1/+1 pra outras enchantment
-  creatures) e considerado; a habilidade de copiar ativada/disparada de
-  fonte de encantamento (`{G}, {T}: copy target...`) NAO e modelada —
-  generica demais pra um efeito de valor claro e deterministico.
+  creatures) e considerado. Reclassificado 2026-09-01 (leitura linha-a-
+  linha completa do oraculo, pedida pelo usuario): a ativada `{G},{T}:
+  copy target activated or triggered ability... from an enchantment
+  source` NAO e' "baixo valor" (julgamento que o usuario proibiu
+  explicitamente) - e' uma excecao estrutural genuina, mesma categoria do
+  Strionic Resonator no deck do Toph: "escolher QUAL dentre N tipos de
+  gatilho/ativada copiar (cada Shrine tem um efeito DIFERENTE, do ETB de
+  contador ao end-step de dano/mill/token)" e' qualitativamente diferente
+  de "ativar ou nao" - exigiria uma decisao de valor nova sobre QUAL alvo
+  copiar a cada ativacao, nao uma funcao isolada de sim/nao.
 - Destiny Spinner: so o "can't be countered" (sem efeito, nao modelamos
-  contra-magica contra nos); a ativada de virar terreno em criatura nao e
-  modelada (baixo valor esperado, land destruction nao existe aqui).
+  contra-magica contra nos); a ativada `{3}{G}: target land becomes an
+  X/X... until end of turn` cria um atacante/bloqueador TEMPORARIO
+  (buff so ate o fim do turno) - reclassificado 2026-09-01: mesma familia
+  estrutural de Craterhoof/Unnatural Growth/Goreclaw noutros decks da
+  sessao (combate real nao modelado, sem P/T por permanente individual
+  fora do agregado), nao "baixo valor" - genuinamente sem consequencia
+  numerica capturavel neste modelo.
 - Devocao a preto pros Go-Shintai (nenhuma tem essa clausula, N/A).
 - Dryad of the Ilysian Grove / Yavimaya Cradle of Growth: fixacao de mana
   tratada via modelo generico total (nao pip a pip), sem efeito numerico
