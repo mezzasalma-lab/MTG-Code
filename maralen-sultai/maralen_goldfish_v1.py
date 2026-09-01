@@ -104,16 +104,22 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas):
   convencao ja documentada pras outras contra-magicas do deck (Counterspell,
   Swan Song, Arcane Denial etc.), disponivel mas sem efeito de combate real
   num goldfish solo.
-- Wirewood Symbiote / Scryb Ranger ("Return an Elf/Forest you control:
-  Untap target creature. Activate only once each turn."): decisao de
-  escopo documentada, nao implementada numericamente. O beneficio real
-  (re-ativar um dork ja tapado) tem custo real de tempo (perder um Elfo ou
-  land drop temporariamente, precisar recomprar depois) que o modelo atual
-  de mana (soma "ready creatures" agregada, sem rastrear tap individual)
-  nao capturaria com fidelidade sem reestruturar o motor de mana inteiro -
-  risco de bug maior que o valor esperado (ambas as pecas + um dork grande
-  + um Elfo/Forest sobrando simultaneamente e' situacao relativamente rara
-  dentro de 8 turnos).
+- Familia "untap target creature/Elf/permanente" (Wirewood Symbiote,
+  Scryb Ranger, Wirewood Lodge, Formidable Speaker) — IMPLEMENTADA (achado
+  real 2026-09-01, leitura linha-a-linha completa do oraculo, pedida pelo
+  usuario apos o mesmo trabalho no Toph). Wirewood Symbiote/Scryb Ranger
+  estavam deferidas com linguagem de julgamento de valor proibida;
+  Wirewood Lodge e Formidable Speaker nem tinham a propria ativada
+  mencionada em lugar nenhum (so' a mana generica do terreno / o ETB de
+  tutor da criatura). Ver `try_untap_effects()`: as 4 somam a saida do
+  melhor dork ESCALAVEL pronto DE NOVO neste turno, cada uma com seu
+  custo real (bounce de Elfo/Forest pras 2 primeiras; {G}+tap do proprio
+  terreno pra Wirewood Lodge, so' se o alvo for um Elfo de verdade;
+  {1}+tap do proprio corpo pra Formidable Speaker). Simplificacoes reais
+  que permanecem: Scryb Ranger so reconhece a basica "Forest" por nome
+  (nao duais com o tipo Forest), consistente com o modelo de mana
+  total/nao pip-a-pip do resto do arquivo; o melhor dork e' calculado
+  uma vez por turno, nao recalculado apos cada ativacao individual.
 """
 
 import json
@@ -367,6 +373,15 @@ class GameState:
     umbral_equipped_on: Optional[str] = None
     infinite_mana_this_turn: bool = False
 
+    # Wirewood Symbiote / Scryb Ranger: "Return an Elf/Forest you control
+    # to its owner's hand: Untap target creature. Activate only once each
+    # turn." Achado real 2026-09-01 (leitura linha-a-linha, "compile
+    # TUDO"): reclassificado de "risco de bug > valor esperado" (julgamento
+    # de valor proibido) pra implementacao real, ver `try_untap_effects()`.
+    bounce_untap_used: dict = field(default_factory=dict)  # nome da fonte -> ja usada neste turno
+    bounce_untap_bonus_this_turn: int = 0
+    bounce_untap_activations_total: int = 0
+
     commander_in_play: bool = False
     commander_cast_count: int = 0
     commander_cast_turn: Optional[int] = None
@@ -614,6 +629,112 @@ def dork_mana(state: GameState) -> int:
     return total
 
 
+def best_scaling_dork_output(state: GameState) -> tuple:
+    """Melhor dork ESCALAVEL (Priest of Titania/Elvish Archdruid/Marwyn/
+    Circle of Dreams Druid) pronto pra ativar, e quanto produz - extraido
+    pra ser reusado por `try_untap_effects()` sem duplicar/arriscar a
+    logica ja testada de `dork_mana()` (achado real 2026-09-01)."""
+    elves_in_play = sum(1 for n in state.battlefield if is_elf(n)) + state.elf_tokens
+    creatures_in_play = (sum(1 for n in state.battlefield if is_creature_card(n))
+                          + state.elf_tokens + state.faerie_tokens)
+    ready = set(ready_creatures(state))
+    best_output, best_name = 0, None
+    for n in state.battlefield:
+        if n not in ready:
+            continue
+        tags = CARD_DB[n].tags
+        out = 0
+        if "dork_per_elf" in tags or "dork_per_elf_controlled" in tags:
+            out = elves_in_play
+        elif "dork_marwyn" in tags:
+            out = marwyn_effective_power(state)
+        elif "dork_per_creature" in tags:
+            out = creatures_in_play
+        if out > best_output:
+            best_output, best_name = out, n
+    return best_name, best_output
+
+
+def try_untap_effects(state: GameState):
+    """Familia de 4 fontes reais de 'untap target creature/Elf/permanente'
+    neste deck - achado real 2026-09-01 (leitura linha-a-linha completa do
+    oraculo, pedida pelo usuario apos o mesmo trabalho no Toph): Wirewood
+    Symbiote/Scryb Ranger estavam deferidas com a justificativa 'risco de
+    bug > valor esperado' (julgamento de valor proibido); Wirewood Lodge
+    e Formidable Speaker nem tinham a propria ativada mencionada em lugar
+    nenhum (so' a mana generica do terreno / o ETB de tutor da criatura).
+    Corrigido: as 4 somam a saida do melhor dork ESCALAVEL pronto DE NOVO
+    neste turno (2a ativacao real da habilidade de mana), cada uma com seu
+    custo real:
+    - Wirewood Symbiote: bounce de outro Elfo (sem custo de mana).
+    - Scryb Ranger: bounce de uma 'Forest' (sem custo de mana;
+      simplificacao documentada - so' reconhece a basica por nome, nao
+      duais com o tipo Forest, mesma convencao de 'so a basica' ja usada
+      noutros simuladores quando o motor de mana nao rastreia terreno
+      pip a pip).
+    - Wirewood Lodge: {G} + tapar o proprio terreno (perde a mana
+      generica normal dele nesse turno) - so' se o alvo for um Elfo de
+      verdade (oraculo real: 'untap target ELF', nao qualquer criatura).
+    - Formidable Speaker: {1} + tapar o proprio corpo (CR 302.6 - {T} e'
+      custo da PROPRIA habilidade aqui, diferente de Heritage
+      Druid/Birchlore Rangers que tapam outros Elfos como custo).
+    Simplificacao: o melhor dork e' calculado UMA vez no topo da funcao,
+    nao recalculado apos cada bounce/tap (bouncar um Elfo pode reduzir
+    levemente a saida real de dorks 'per elf' pras fontes seguintes no
+    mesmo turno) - aproximacao conservadora documentada, nao um bug."""
+    best_name, best_output = best_scaling_dork_output(state)
+    if best_output <= 0:
+        return
+
+    for source, kind in (("Wirewood Symbiote", "elf"), ("Scryb Ranger", "forest")):
+        if source not in state.battlefield or state.bounce_untap_used.get(source):
+            continue
+        # Nao faz sentido devolver pra mao a MESMA criatura que estamos
+        # tentando destapar (perderia o permanente inteiro, nao so'
+        # destaparia) - exclui o alvo do untap do pool de bounce.
+        if kind == "elf":
+            # Achado real 2026-09-01 (debug de hang em seed 2000026): Maralen
+            # e' ela mesma "Elf Faerie Noble" (is_elf == True) - sem excluir
+            # o comandante do pool de bounce, ela podia ser devolvida pra
+            # mao por engano, expondo um bug latente de re-cast do
+            # comandante via o loop generico (nao removia de state.hand
+            # corretamente, board explodia sem fim). Nenhum piloto racional
+            # bounca o proprio comandante de 5 mana com um Elfo de 1 mana
+            # quando ha fodder mais barato disponivel de qualquer forma -
+            # excluido do pool por ser a jogada correta E por seguranca.
+            fodder = [n for n in state.battlefield
+                      if n != source and n != best_name and n != COMMANDER and is_elf(n)]
+        else:
+            fodder = [n for n in state.battlefield if n == "Forest" and n != best_name]
+        if not fodder:
+            continue
+        bounced = fodder[0]
+        state.battlefield.remove(bounced)
+        state.hand.append(bounced)
+        state.bounce_untap_used[source] = True
+        state.bounce_untap_bonus_this_turn += best_output
+        state.bounce_untap_activations_total += 1
+
+    if ("Wirewood Lodge" in state.battlefield and is_elf(best_name)
+            and not state.bounce_untap_used.get("Wirewood Lodge")
+            and "Wirewood Lodge" not in state.tapped_lands_this_turn
+            and remaining_mana(state) >= 1):
+        spend_mana(state, 1)
+        state.tapped_lands_this_turn.add("Wirewood Lodge")
+        state.bounce_untap_used["Wirewood Lodge"] = True
+        state.bounce_untap_bonus_this_turn += best_output
+        state.bounce_untap_activations_total += 1
+
+    ready = set(ready_creatures(state))
+    if ("Formidable Speaker" in state.battlefield and "Formidable Speaker" in ready
+            and not state.bounce_untap_used.get("Formidable Speaker")
+            and remaining_mana(state) >= 1):
+        spend_mana(state, 1)
+        state.bounce_untap_used["Formidable Speaker"] = True
+        state.bounce_untap_bonus_this_turn += best_output
+        state.bounce_untap_activations_total += 1
+
+
 def rocks_mana(state: GameState) -> int:
     total = 0
     if "Sol Ring" in state.battlefield:
@@ -641,7 +762,8 @@ def total_mana(state: GameState) -> int:
     lands = sum(1 for n in state.battlefield if n in LAND_NAMES) - len(state.tapped_lands_this_turn)
     if state.infinite_mana_this_turn:
         return 999  # ja confirmado infinito neste turno; nao precisa somar o resto
-    return lands + rocks_mana(state) + dork_mana(state) + itlimoc_mana(state)
+    return (lands + rocks_mana(state) + dork_mana(state) + itlimoc_mana(state)
+            + state.bounce_untap_bonus_this_turn)
 
 
 def remaining_mana(state: GameState) -> int:
@@ -744,9 +866,12 @@ def resolve_etb(state: GameState, name: str):
         # regra 603.2 trata cada instancia do gatilho como independente,
         # mas a condicao "unless you exile ANOTHER Faerie" da 2a instancia
         # exigiria uma 2a Fada disponivel so' pra essa dobra, empilhado
-        # sobre a checagem normal). Risco de modelar errado > valor
-        # esperado (mesma filosofia do Wirewood Symbiote/Scryb Ranger
-        # acima) - deixado de fora, nao fingido.
+        # sobre a checagem normal). Diferente do Wirewood Symbiote/Scryb
+        # Ranger (implementados 2026-09-01, ver acima) - aqui o obstaculo
+        # nao e' valor esperado baixo, e' a regra em si nao ter um
+        # resultado bem definido pra modelar (nao existe uma "2a Mistbind"
+        # fisica pra aplicar a condicao de novo) - deixado de fora por
+        # ambiguidade de regra genuina, nao fingido.
         if state.faerie_tokens > 0:
             state.faerie_tokens -= 1
             state.mistbind_exiled.append("Faerie Token")
@@ -1103,6 +1228,7 @@ def main_phase(state: GameState, is_first_main: bool = True):
 
     devoted_druid_pump(state)
     equip_umbral_mantle(state)
+    try_untap_effects(state)
     # reavalia infinito apos equipar (dork_mana ja seta a flag)
     dork_mana(state)
 
@@ -1287,6 +1413,8 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.warmaster_used_this_turn = False
     state.infinite_mana_this_turn = False
     state.radagast_discount_used_this_turn = False
+    state.bounce_untap_used = {}
+    state.bounce_untap_bonus_this_turn = 0
 
     if not (is_first_turn and on_play):
         if state.library:
@@ -1342,6 +1470,9 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg Mercenary Tokens via Black Market Connections (Hire a Mercenary): {avg([s.black_market_mercenaries_total for s in states]):.2f}")
     print(f"Avg nivel final do Joraga Treespeaker: {avg([s.joraga_level for s in states]):.2f} | atingiu nivel 5: {100*sum(1 for s in states if s.joraga_level >= 5)/n:.1f}%")
     print(f"Avg Fadas exiladas pelo Champion do Mistbind Clique: {avg([len(s.mistbind_exiled) for s in states]):.2f}")
+    print(f"Avg ativacoes da familia 'untap' (Wirewood Symbiote/Scryb Ranger/Wirewood Lodge/Formidable Speaker, achado 2026-09-01): "
+          f"{avg([s.bounce_untap_activations_total for s in states]):.2f} | % jogos com pelo menos 1: "
+          f"{100*sum(1 for s in states if s.bounce_untap_activations_total > 0)/n:.1f}%")
     combo_hits = sum(1 for s in states if s.infinite_combo_assembled)
     print(f"Combo Umbral Mantle (mana infinita) montado: {100*combo_hits/n:.1f}% dos jogos"
           + (f" | turno medio: {avg([s.infinite_combo_turn for s in states if s.infinite_combo_turn is not None]):.2f}" if combo_hits else ""))

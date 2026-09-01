@@ -557,4 +557,46 @@ de regressão.
 
 ---
 
+### Leitura linha-a-linha completa do oráculo (mesma exigência do Toph/Beorn/Edgar Markov/Hei Bai) — 2026-09-01
+
+**Gatilho (usuário):** *"AGORA FAZ O QUE SEMPRE Te MANDei FAZER: COmpila
+a porra de TODAS AS CARTAS DOS DECKS UMA A UMA... cada carta tem que ser
+lida linha a linha"*.
+
+Achado: 4 cartas (Wirewood Symbiote, Scryb Ranger, Wirewood Lodge,
+Formidable Speaker — todas na família "return an Elf/Forest OU tap:
+untap target creature") estavam deferidas ou nem mencionadas, com
+justificativa de "risco de bug > valor esperado" para as 2 primeiras —
+linguagem de julgamento de valor proibida.
+
+**Implementando a família, achei um bug real:** Maralen (comandante) é
+ela mesma um Elf — sem excluí-la do pool de bounce do Wirewood Symbiote,
+ela podia ser selecionada como fodder, voltando pra mão. Isso expôs um
+hang infinito real: recast descontrolado do comandante via o loop
+genérico de conjuração (nunca removia ela de `state.hand` corretamente
+nesse caminho), battlefield crescendo sem fim. Achado via varredura
+sistemática de timeout (seed 2000026 travava indefinidamente; testei
+range(2000000, 2000050) com print incremental até isolar o seed exato).
+Corrigido excluindo o comandante do pool de fodder — decisão correta de
+qualquer forma (ninguém bounça o próprio comandante de 5 mana com um
+Elfo de 1 mana havendo fodder mais barato).
+
+**Robustez:** seed 2000026 isolado (antes: hang indefinido; depois:
+0,001s) + 20.000 partidas de regressão (0 erros) + varredura de 1000
+seeds sem timeout.
+
+**Batch, n=2000, seed_base=6000000:** nova métrica "família untap" ativa
+em 30,8% dos jogos, avg 0,94 ativações/partida — confirmado real, não
+morto por bug de gate.
+
+**Leitura:** o achado mais importante não foi a habilidade em si — foi
+que implementar uma mecânica antes deferida por julgamento de valor
+revelou um bug pré-existente que nenhuma auditoria anterior podia ter
+achado, porque o caminho de código nunca era alcançado antes. Evidência
+direta de por que "compile TUDO" > filtrar por valor esperado.
+
+`checklist-oraculo.md` criado (92 cartas).
+
+---
+
 <!-- Copie o bloco acima para cada nova partida -->
