@@ -4,6 +4,41 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### Correção — Plaza of Heroes / infraestrutura "legendary" morta — 2026-09-02
+
+**Gatilho:** usuário lembrou "The Ten Rings" (já correta — max hand size
+10 + draw-to-10 no end step). Ao reconferir, achei `is_legendary()`/
+`LEGENDARY_NAMES` (13 permanentes legendários da lista) definidos mas
+nunca chamados em lugar nenhum, o que apontou pra Plaza of Heroes: só o
+modo incolor genérico dela estava implementado — o modo mais valioso
+("Add one mana of any color. Spend this mana only to cast a legendary
+spell") 100% ausente.
+
+Corrigido: `color_sources(state, color, spell_name=name)` agora conta
+Plaza como fonte de qualquer cor faltante quando o spell sendo
+conjurado é legendário. Os outros 2 modos (fixar cor pra ativar
+habilidade de legendário / hexproof+indestructible) ficam de fora por
+razão estrutural real (sem framework genérico de ativação paga / sem
+oponente real modelado), não por julgamento de valor.
+
+**Validação:** 4 testes unitários isolados + regressão de 20.000
+partidas (0 exceções) + `run_batch` antes/depois (3000 jogos): turno
+médio do Megatron 5.02→4.97, "nunca conjurado em 10 turnos" 11.6%→10.8%.
+Ver `checklist-oraculo.md` pra detalhamento completo.
+
+**Achado incidental não corrigido nesta rodada:** Talon Gates of Madara
+também tem 2 modos reais além do incolor genérico já coberto — *"{1},
+{T}: Add one mana of any color"* (filtro pago, não fixação estática
+como a Plaza — exigiria rastrear tap-state por terreno individual, que
+este arquivo não modela em lugar nenhum) e *"{4}: Put this card from
+your hand onto the battlefield"* (hardcast alternativo, bypassa o land
+drop). O 2º modo é limpo de implementar com a infraestrutura atual; não
+implementado ainda porque surgiu como achado incidental fora do escopo
+da pergunta desta rodada, não por decisão de que "não vale a pena" —
+fica marcado aqui pra não ser esquecido.
+
+---
+
 ## Simulação #1 — goldfish Python completo (`megatron_goldfish_v1.py`) — 2026-08-29
 
 **Contexto:** deck montado do zero nesta sessão a partir de (1) um primer

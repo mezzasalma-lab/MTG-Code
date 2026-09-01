@@ -253,7 +253,26 @@ add("Forbidden Orchard", 0, "land", set(), produces={"W", "B", "R"})
 add("Godless Shrine", 0, "land", set(), produces={"W", "B"})
 add("Haunted Ridge", 0, "land", {"etb_tapped_check"}, produces={"B", "R"})
 add("Marsh Flats", 0, "land", set(), produces={"W", "B"})  # fetch-like fixed dual (simplificado, ver docstring)
-add("Plaza of Heroes", 0, "land", set(), produces=set())  # "any color, so legendary" - tratado incolor (simplificacao conservadora)
+# Achado real 2026-09-02 (usuario lembrou de The Ten Rings, o que levou a
+# reconferir toda a infraestrutura de "legendary" do arquivo -- achei
+# `is_legendary()`/`LEGENDARY_NAMES` DEFINIDOS mas NUNCA chamados em
+# lugar nenhum). Oraculo real (Scryfall): "{T}: Add {C}." + "{T}: Add one
+# mana of any color. Spend this mana only to cast a legendary spell." +
+# "{T}: Add one mana of any color among legendary permanents you
+# control." + "{3},{T},Exile: target legendary creature gains hexproof
+# and indestructible until end of turn." Modo 1 (incolor) era o UNICO
+# implementado (via `produces=set()`, equivalente a incolor generico).
+# Corrigido: modo 2 (fixa qualquer cor pra conjurar spell legendario, o
+# uso mais valioso numa lista com 13 permanentes legendarios) agora real
+# via `color_sources(state, color, spell_name=name)`. Modos 3 (fixar cor
+# pra ativar habilidade de legendario) e 4 (hexproof+indestructible)
+# ficam de fora por decisao estrutural real, nao por escopo: modo 3
+# exigiria um framework generico de "ativar habilidade paga de qualquer
+# permanente" que este arquivo nao tem (so trata ativacoes especificas
+# hardcoded caso a caso); modo 4 e' protecao contra remocao de oponente,
+# sem oponente real modelado neste goldfish solo -- 📊 mesma convencao
+# de toda a sessao.
+add("Plaza of Heroes", 0, "land", {"legendary_fixer"}, produces=set())
 add("Sacred Foundry", 0, "land", set(), produces={"R", "W"})
 add("Savai Triome", 0, "land", {"etb_tapped"}, produces={"W", "B", "R"})
 add("Shizo, Death's Storehouse", 0, "land", set(), produces={"B"})
@@ -415,7 +434,7 @@ def remaining_mana(state: GameState) -> int:
     return max(0, total_mana(state) - state.mana_spent_this_turn)
 
 
-def color_sources(state: GameState, color: str) -> int:
+def color_sources(state: GameState, color: str, spell_name: str = None) -> int:
     n = 0
     for card in state.battlefield:
         if card not in CARD_DB:
@@ -425,12 +444,18 @@ def color_sources(state: GameState, color: str) -> int:
         c = CARD_DB[card]
         if color in c.produces:
             n += 1
+        elif ("legendary_fixer" in c.tags and spell_name is not None
+              and is_legendary(spell_name)):
+            # Plaza of Heroes modo 2: "Add one mana of any color. Spend
+            # this mana only to cast a legendary spell." So conta quando
+            # a magica sendo conjurada e' de verdade legendaria.
+            n += 1
     return n
 
 
 def has_color_sources_for(state: GameState, name: str) -> bool:
     for color, needed in CARD_DB[name].pips.items():
-        if color_sources(state, color) < needed:
+        if color_sources(state, color, spell_name=name) < needed:
             return False
     return True
 

@@ -118,3 +118,49 @@ documentadas"). Confirmado nesta rodada, carta por carta:
   Bahamut, Cryptolith Fragment, Cityscape Leveler, Retributive Wand,
   Pumpkin Bombs) — todas lacunas puras, sem documentação prévia alguma,
   não julgamento de valor.
+
+---
+
+## 🐛 Correção — Plaza of Heroes / infraestrutura "legendary" morta (2026-09-02)
+
+**Gatilho:** usuário lembrou "The Ten Rings" (que já estava corretamente
+implementada — maximum hand size 10 + draw-to-10 no end step, ver
+`end_step()`). Ao reconferir, achei `is_legendary()`/`LEGENDARY_NAMES`
+(13 permanentes legendários da lista) **definidos mas nunca chamados em
+lugar nenhum** — sinal de que algo dependente de "legendary" ficou pra
+trás.
+
+**Achado real:** Plaza of Heroes — oráculo completo (Scryfall): *"{T}:
+Add {C}." + "{T}: Add one mana of any color. Spend this mana only to
+cast a legendary spell." + "{T}: Add one mana of any color among
+legendary permanents you control." + "{3}, {T}, Exile this land: Target
+legendary creature gains hexproof and indestructible until end of
+turn."* Só o modo 1 (incolor genérico) estava implementado
+(`produces=set()`) — os outros 3 modos 100% ausentes, incluindo o mais
+valioso numa lista com 13 legendários: fixar qualquer cor pra conjurar
+um spell legendário.
+
+**Corrigido:** modo 2 implementado de verdade —
+`color_sources(state, color, spell_name=name)` agora conta Plaza of
+Heroes como fonte de qualquer cor faltante quando `spell_name` é
+legendário (`is_legendary()`, agora finalmente chamado). Chamadas
+genéricas de `color_sources()` sem contexto de spell continuam
+ignorando Plaza (comportamento antigo preservado onde não se aplica).
+
+**Modos 3 e 4 permanecem 📊/📝, por razão estrutural real (não
+julgamento de valor):**
+- Modo 3 ("fixar cor pra ativar habilidade de legendário") exigiria um
+  framework genérico de "pagar custo de qualquer habilidade ativada",
+  que este arquivo não tem em lugar nenhum (só ativações hardcoded caso
+  a caso).
+- Modo 4 (hexproof+indestructible) é proteção contra remoção de
+  oponente — sem oponente real modelado neste goldfish solo, mesma
+  convenção de toda a sessão.
+
+Validado com 4 testes unitários isolados (bloqueia sem Plaza / libera
+com Plaza pra spell legendário / NÃO libera pra spell não-legendário /
+`color_sources()` genérico ignora Plaza) + regressão de 20.000 partidas
+(seed 11000000+, turns=10, 0 exceções) + `run_batch` antes/depois (3000
+jogos, seed 12000000, turns=10): turno médio de conjuração do Megatron
+5.02→4.97, "nunca conjurado em 10 turnos" 11.6%→10.8% — pequeno mas real
+(fixação de mana ocasional destravando um legendário que faltava a cor).
