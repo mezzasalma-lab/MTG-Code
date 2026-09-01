@@ -643,7 +643,7 @@ add("Yavimaya, Cradle of Growth", 0, "land", set())
 # --- Ramp -----------------------------------------------------------------
 add("Arcane Signet", 2, "artifact", {"rock_any"})
 add("Sol Ring", 1, "artifact", {"rock2"})
-add("Mox Opal", 0, "artifact", {"rock_metalcraft"})
+add("Mox Opal", 0, "artifact", {"rock_metalcraft", "legendary"})
 # Achado real 2026-09-01: type_line real e' "Enchantment Creature", nao so'
 # "Creature" (nao muda nada no modelo -- CREATURE_ISH ja cobre os dois --
 # mas a classificacao errada e' corrigida por precisao).
@@ -658,7 +658,7 @@ add("Tireless Provisioner", 3, "creature", {"landfall_token"})
 add("Planar Engineering", 4, "sorcery", {"land_ramp_burst"})
 add("Unstable Obelisk", 3, "artifact", {"rock1", "removal_recurring"})
 add("Liquimetal Torque", 2, "artifact", {"rock1", "liquimetal"})
-add("The Great Henge", 9, "artifact", {"rock2life", "etb_creature_draw_counter"})
+add("The Great Henge", 9, "artifact", {"rock2life", "etb_creature_draw_counter", "legendary"})
 
 # --- Card draw --------------------------------------------------------------
 add("Sylvan Library", 2, "enchantment", {"draw_engine"})
@@ -666,7 +666,7 @@ add("Esper Sentinel", 1, "artifact_creature", {"opponent_dependent"})
 add("Skullclamp", 1, "artifact", {"combat_dependent"})
 add("Ichor Wellspring", 2, "artifact", {"draw_etb_death", "earthbend_target_priority"})
 add("Mishra's Bauble", 0, "artifact", {"delayed_draw"})
-add("Iron Spider, Stark Upgrade", 3, "artifact_creature", {"artifact_counter_draw"})
+add("Iron Spider, Stark Upgrade", 3, "artifact_creature", {"artifact_counter_draw", "legendary"})
 add("Caretaker's Talent", 3, "enchantment", {"token_draw"})
 add("Tannuk, Memorial Ensign", 3, "creature", {"landfall_dmg", "landfall_draw_2nd"})
 # Mesma estatica "lands enter untapped" do Horizon Explorer, ver ali.
@@ -721,7 +721,7 @@ add("Great Divide Guide", 2, "creature", set())
 # Gruul Turf ja registrada na secao de terrenos. add() duplicado removido.
 add("Heroic Intervention", 2, "instant", {"protection_unused"})
 add("Kodama of the East Tree", 6, "creature", {"cheat_permanent"})
-add("Krang, Utrom Warlord", 9, "artifact_creature", {"combat_dependent"})
+add("Krang, Utrom Warlord", 9, "artifact_creature", {"combat_dependent", "legendary"})
 add("Krark-Clan Ironworks", 4, "artifact", {"sac_outlet_mana"})
 add("Lightning Greaves", 2, "artifact", {"protection_unused"})
 add("Liquimetal Coating", 2, "artifact", {"liquimetal_unused"})
@@ -736,11 +736,11 @@ add("Scute Swarm", 3, "creature", {"landfall_token_or_copy"})
 add("Springheart Nantuko", 2, "enchantment_creature", {"landfall_token"})
 add("Strionic Resonator", 2, "artifact", {"trigger_copy"})
 add("Sword of Feast and Famine", 3, "artifact", {"combat_dependent"})
-add("The Ozolith", 1, "artifact", {"ozolith"})
-add("The Stasis Coffin", 3, "artifact", {"protection_recurring", "earthbend_target_priority"})
+add("The Ozolith", 1, "artifact", {"ozolith", "legendary"})
+add("The Stasis Coffin", 3, "artifact", {"protection_recurring", "earthbend_target_priority", "legendary"})
 add("Toph, Earthbending Master", 4, "creature", {"landfall_experience", "attack_earthbend_experience"})
 add("Toph, Greatest Earthbender", 4, "creature", {"earthbend_source_cast_x", "double_strike_land_creatures"})
-add("Ultron, Artificial Malevolence", 3, "artifact_creature", {"artifact_copy"})
+add("Ultron, Artificial Malevolence", 3, "artifact_creature", {"artifact_copy", "legendary"})
 # Windswept Heath/Wooded Foothills/Yavimaya ja registradas na secao de
 # terrenos. add()s duplicados removidos (dados identicos).
 add("Zuran Orb", 0, "artifact", {"sac_land_lifegain"})
@@ -878,6 +878,7 @@ class GameState:
     conduit_reanimations: int = 0
     urza_saga_chapter2_tokens: int = 0
     urza_saga_chapter3_tutors: int = 0
+    legend_rule_sacrifices: int = 0  # Ultron copiando permanente Legendary -> token sacrificado (regra do lendario)
 
 
 def mk_perm(state: GameState, name: str) -> Permanent:
@@ -1015,11 +1016,48 @@ def enter_battlefield(state: GameState, perm: Permanent, log: list):
 
     apply_etb(state, perm, log)
 
+    # Regra do lendario (achado real 2026-09-01, pergunta direta do usuario
+    # sobre Krang, Utrom Warlord): SBA real de MTG -- se um jogador controla
+    # 2+ permanentes lendarios com o mesmo nome, ele escolhe 1 e sacrifica o
+    # resto. So alcancavel neste sim via Ultron copiando um artefato
+    # lendario nao-token (Krang, Mox Opal, The Great Henge, Iron Spider,
+    # The Ozolith, The Stasis Coffin -- o proprio Ultron nao dispara copia
+    # de si mesmo, ver acima) ou, em tese, Conduit of Worlds reanimando um
+    # lendario do cemiterio enquanto outra copia ja esta em campo. Nenhum
+    # lugar do codigo checava isso antes -- o token ficava em campo lado a
+    # lado com o original, estado de jogo ilegal. Mantem o mais antigo
+    # (menor uid -- o original, que pode ja ter contador/estado acumulado
+    # como Ozolith/Stasis Coffin), sacrifica o(s) mais novo(s).
+    if "legendary" in perm.card.tags:
+        same_name = [p for p in state.battlefield if p.card.name == perm.card.name]
+        if len(same_name) > 1:
+            oldest = min(same_name, key=lambda p: p.uid)
+            for dup in same_name:
+                if dup is not oldest:
+                    state.legend_rule_sacrifices += 1
+                    log.append(f"  [Legend rule] {dup.card.name} sacrificada -- ja havia outro "
+                               f"permanente lendario com esse nome em campo")
+                    leave_battlefield(state, dup, log)
+
 
 def ultron_trigger(state: GameState, entering_perm: Permanent, log: list):
     ultron = next((p for p in state.battlefield if p.card.name == "Ultron, Artificial Malevolence"
                     and p is not entering_perm), None)
     if ultron is None:
+        return
+    # Achado real 2026-09-01 (pergunta do usuario sobre Krang, Utrom
+    # Warlord): copiar um permanente LENDARIO cria um token com o mesmo
+    # nome do original que ja esta em campo -- morre IMEDIATAMENTE pela
+    # regra do lendario (ver checagem em `enter_battlefield()`), sem
+    # nenhum ETB/valor pro token (nenhum dos lendarios copiaveis por
+    # Ultron nesta lista -- Krang, Mox Opal, The Great Henge, Iron Spider,
+    # The Ozolith, The Stasis Coffin -- tem ETB modelado). "You may pay
+    # {2}" e' opcional; nenhum piloto racional paga mana por um token
+    # garantido-morto-ao-nascer. Isso NAO e' julgamento de valor da
+    # habilidade (Regra "compile TUDO"), e' reconhecer que o resultado da
+    # copia e' zero garantido pela propria regra do lendario -- mesmo
+    # principio ja usado em "sem alvo legal, a habilidade nao faz nada".
+    if "legendary" in entering_perm.card.tags:
         return
     if remaining_mana(state) < 2:
         return
@@ -2527,6 +2565,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     wrenn_plus1 = avg([s.wrenn_plus1_activations for s in states])
     wrenn_ultimate_rate = 100 * sum(1 for s in states if s.wrenn_ultimate_activations > 0) / n
     conduit_reanim = avg([s.conduit_reanimations for s in states])
+    legend_sac = avg([s.legend_rule_sacrifices for s in states])
 
     print(f"n={n}, seed_base={seed_base}, turns={turns}, RECURRING_ARTIFACT_POLICY={RECURRING_ARTIFACT_POLICY}")
     print(f"Avg mulligans: {mulls:.2f}")
@@ -2581,6 +2620,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg ativacoes de Wrenn and Realmbreaker +1 (terreno vira criatura ate o proximo turno): {wrenn_plus1:.2f}")
     print(f"% de jogos que alcancam o -7 (emblema: joga terreno/conjura permanente do cemiterio): {wrenn_ultimate_rate:.1f}%")
     print(f"Avg reanimacoes via Conduit of Worlds ({{T}}, trava o turno): {conduit_reanim:.3f}")
+    print(f"Avg sacrificios via regra do lendario (backstop -- Ultron ja recusa copiar lendario antes disso): {legend_sac:.4f}")
 
     # breakdown de fontes de earthbend
     combined = {}

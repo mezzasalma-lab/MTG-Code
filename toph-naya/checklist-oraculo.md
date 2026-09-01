@@ -48,6 +48,34 @@ pela própria pergunta do usuário: Ultron sob Mycosynth Lattice checava o
 permanentes não-artefato convertidos por Mycosynth. Ver `goldfish-log.md`
 pros números completos.
 
+**Atualização 2026-09-01 (3ª rodada, mesmo dia):** usuário perguntou "Krang
+está correto no modelo?". As 2 cláusulas do próprio Krang (voo/atropelar/
+indestrutível/haste, dele e concedido) já estavam corretas (📊, estrutural,
+sem combate real). Mas investigar a pergunta a fundo achou um bug adjacente
+real: **a regra do lendário nunca era checada em lugar nenhum do código**.
+Krang é `Legendary Artifact Creature` de verdade (confirmado via Scryfall,
+não por memória) — junto com mais 6 artefatos não-token da lista (Mox Opal,
+The Great Henge, Iron Spider Stark Upgrade, The Ozolith, The Stasis Coffin,
+o próprio Ultron). Se Ultron copiasse qualquer um desses 7 enquanto o
+original já está em campo, o token ficava em campo lado a lado com o
+original — estado de jogo ilegal (deveria sacrificar um dos dois na hora).
+Corrigido em duas camadas: (1) `ultron_trigger()` agora recusa copiar
+qualquer permanente com a tag `legendary` — nenhum dos 7 tem ETB modelado,
+então o token morreria garantido pela regra do lendário sem nenhum valor,
+e nenhum piloto racional paga `{2}` por isso (mesmo princípio de "sem alvo
+legal, habilidade não faz nada", não julgamento de valor da habilidade em
+si); (2) `enter_battlefield()` ganhou uma checagem genérica de regra do
+lendário como backstop (mantém o permanente mais antigo, sacrifica o(s)
+mais novo(s)) — cobre qualquer outro caminho futuro que possa duplicar um
+nome lendário (ex: Conduit of Worlds reanimando do cemitério). Testado
+isoladamente (3 cenários: Ultron recusa copiar Krang; duplicata forçada é
+corrigida pelo backstop mantendo o original; card não-lendário como
+Liquimetal Torque continua copiável normalmente) e em regressão de 20.000
+partidas (0 erros). `legend_rule_sacrifices` fica em 0,0000 no `run_batch`
+real (n=3000) porque a recusa em `ultron_trigger()` já previne o problema
+antes de precisar do backstop — o próprio dado confirmando que a correção
+funciona, não uma alegação.
+
 ---
 
 ## Terrenos básicos e triviais (sem cláusula não-trivial)
@@ -255,7 +283,7 @@ real no Scryfall, N/A por definição.
 
 ## Krang, Utrom Warlord
 
-1-2. Keywords de combate (voo/trample/indestructible/haste, próprio e concedido) — 📊 combate; tag `combat_dependent` contada em `interaction_plays` (achado 2026-09-01, antes sem número nenhum).
+1-2. Keywords de combate (voo/trample/indestructible/haste, próprio e concedido) — 📊 combate; tag `combat_dependent` contada em `interaction_plays` (achado 2026-09-01, antes sem número nenhum). **Correto e completo em si** — mas investigar essa carta (pergunta direta do usuário) achou um bug adjacente real: Krang é `Legendary Artifact Creature`, e a regra do lendário nunca era checada em lugar nenhum do simulador, então Ultron copiando Krang criava um estado ilegal (2 Krangs em campo). Corrigido em `ultron_trigger()` (recusa copiar lendário) + `enter_battlefield()` (backstop da regra do lendário) — ver "Atualização 2026-09-01 (3ª rodada)" no topo deste arquivo.
 
 ## Lightning Greaves
 
@@ -415,7 +443,7 @@ real no Scryfall, N/A por definição.
 - **✅ Implementado:** 109 linhas (incluindo as genéricas de mana/land). Subiu de ~101 pra 109 nesta 2ª rodada (2026-09-01) com a migração de Iron Spider (2), Fountainport (2), The Great Henge (gatilho real), Zuran Orb, Wrenn +1/-7 (2), Liquimetal Coating/Torque, Conduit of Worlds (reanimação) e Bala Ged Recovery (face sorcery) — 8 mecânicas que antes eram 📝 por julgamento meu de valor, agora compiladas e ativas de verdade.
 - **📊 N/A estrutural:** 37 linhas (sem P/T, sem combate, sem oponente, sem cor — limites de arquitetura documentados desde o início do simulador).
 - **📝 Documentado, fora de escopo:** 13 linhas — todas agora exceções genuinamente estruturais (arquitetura de `mv`/`ctype` fixo por carta, ausência de P/T real, ou dependência de oponente real), não mais decisões de "valor" ou "raridade do caminho". A única exceção que mistura os dois motivos é Strionic Resonator (ver linha própria).
-- **🐛 Corrigido nesta rodada (2026-09-01):** Enlightened Tutor, Mishra's Bauble, Overlord of the Hauntwoods (ataque), Inventors' Fair, Oswald Fiddlebender (achados na 1ª rodada da compilação final) + Ultron sob Mycosynth Lattice (checagem estática de `ctype` em vez de `is_artifact()` dinâmico — achado nesta 2ª rodada pela própria pergunta do usuário sobre a combinação Lattice+Ultron).
+- **🐛 Corrigido nesta rodada (2026-09-01):** Enlightened Tutor, Mishra's Bauble, Overlord of the Hauntwoods (ataque), Inventors' Fair, Oswald Fiddlebender (achados na 1ª rodada da compilação final) + Ultron sob Mycosynth Lattice (checagem estática de `ctype` em vez de `is_artifact()` dinâmico — achado na 2ª rodada pela pergunta do usuário sobre Lattice+Ultron) + regra do lendário nunca checada (Ultron copiando Krang/Mox Opal/The Great Henge/Iron Spider/The Ozolith/The Stasis Coffin criava estado ilegal — achado na 3ª rodada pela pergunta do usuário sobre Krang).
 
 Nenhuma cláusula ficou sem uma linha nesta tabela. Se algo aqui estiver
 errado, o local citado (`nome_da_funcao()`) é onde conferir — não peça

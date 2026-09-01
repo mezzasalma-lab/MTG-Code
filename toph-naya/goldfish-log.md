@@ -1044,4 +1044,58 @@ estruturais, não mais julgamento de valor).
 
 ---
 
+### Regra do lendário — 3ª rodada, mesmo dia (2026-09-01)
+
+**Contexto:** usuário perguntou diretamente: *"Krang está correto no
+modelo?"*. As 2 cláusulas do próprio Krang (voo/atropelar/indestrutível/
+haste, dele e concedido a outras criaturas-artefato) já estavam corretas
+(📊 estrutural — sem combate real modelado, tag `combat_dependent`). Mas
+investigar a fundo achou um bug adjacente real e mais sério: **a regra do
+lendário nunca era checada em lugar nenhum do simulador**.
+
+Krang, Utrom Warlord é `Legendary Artifact Creature` (confirmado via
+Scryfall, não por memória). Verificando o resto da lista de artefatos
+não-token pela mesma via, mais 6 são lendários: Mox Opal, The Great Henge,
+Iron Spider Stark Upgrade, The Ozolith, The Stasis Coffin, e o próprio
+Ultron, Artificial Malevolence. Como Ultron copia qualquer artefato
+não-token que entra, copiar qualquer um desses 7 enquanto o original já
+está em campo criava 2 permanentes lendários com o mesmo nome — estado de
+jogo ilegal (a regra real obrigaria sacrificar um dos dois na hora), e o
+código não tinha absolutamente nenhuma lógica de regra do lendário pra
+pegar isso.
+
+**Correção em duas camadas:**
+1. `ultron_trigger()` agora recusa copiar qualquer permanente com a tag
+   `legendary`. Nenhum dos 7 tem ETB modelado, então o token morreria
+   garantido pela regra do lendário sem nenhum valor — nenhum piloto
+   racional paga `{2}` (opcional, "you may pay") por um token
+   morto-ao-nascer. Isso não é julgamento de valor da HABILIDADE (regra
+   "compile TUDO" continua valendo), é reconhecer que o resultado da
+   cópia é zero garantido pela própria regra do jogo, mesmo princípio já
+   usado em "sem alvo legal, a habilidade não faz nada".
+2. `enter_battlefield()` ganhou uma checagem genérica de regra do
+   lendário como backstop: se dois permanentes com tag `legendary`
+   compartilham o mesmo nome, mantém o mais antigo (menor uid — o
+   original, que pode já ter contadores/estado acumulado, como Ozolith ou
+   Stasis Coffin) e sacrifica o(s) mais novo(s). Cobre qualquer outro
+   caminho que possa duplicar um nome lendário no futuro (ex: Conduit of
+   Worlds reanimando do cemitério enquanto outra cópia já está em campo).
+
+**Validação:** 3 testes isolados (Ultron recusa copiar Krang com o
+original em campo; duplicata forçada manualmente é corrigida pelo
+backstop, mantendo o original; carta não-lendária como Liquimetal Torque
+continua copiável normalmente, sem regressão) + regressão de 20.000
+partidas (0 erros) + `run_batch` n=3000: `legend_rule_sacrifices` fica em
+0,0000 — o próprio dado confirmando que a recusa em `ultron_trigger()` já
+previne o problema antes de precisar do backstop, não uma alegação.
+Métricas gerais praticamente idênticas à rodada anterior (terrenos 10,94→
+10,95, tokens 14,85→14,81 — pequena queda esperada: Ultron agora recusa
+copiar os poucos casos de artefato lendário que antes inflavam o total de
+tokens sem nunca terem sido um estado de jogo legal).
+
+`checklist-oraculo.md` atualizado (linha do Krang + parágrafo "3ª rodada"
+no topo do arquivo + resumo numérico).
+
+---
+
 <!-- Copie o bloco acima para cada nova partida -->
