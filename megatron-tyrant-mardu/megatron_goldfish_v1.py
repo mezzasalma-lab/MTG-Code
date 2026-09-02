@@ -138,16 +138,26 @@ MEGATRON_VEHICLE_COST = 4  # MTMTE
 MEGATRON_VEHICLE_POWER = 4
 MEGATRON_PIPS = {"R": 1, "W": 1, "B": 1}
 
+# Starscream, Power Hungry -- frente {3}{B} mv 4, MTMTE (verso, Seeker
+# Leader) {2}{B} mv 3, ambas faces 2/3. Achado real 2026-09-02
+# (reauditoria linha-a-linha completa): existia so' como nome no CARD_DB
+# (tag generica "artifact", poder 0) -- mecanica inteira de monarquia
+# ausente. Ver `cast_starscream()`/`starscream_combat()`.
+STARSCREAM = "Starscream, Power Hungry"
+STARSCREAM_FRONT_COST = 4
+STARSCREAM_BACK_COST = 3  # MTMTE
+STARSCREAM_POWER = 2
+
 NUM_OPPONENTS = 3  # premissa declarada (mesa de 4), nunca vida real rastreada
 
 # --- Motor de combustivel barato (MV<=3, a base real do plano do primer) -------
 add("Archaeomancer's Map", 3, "artifact", {"land_ramp_etb"}, pips={"W": 1})
 add("Atraxa's Skitterfang", 3, "creature", {"artifact", "combat_pump_oil"}, power=2, pips={})
 add("Bitterthorn, Nissa's Animus", 3, "artifact", {"living_weapon", "attack_land_tutor"}, pips={})
-add("Brimstone Trebuchet", 3, "creature", {"artifact", "fuel_ping"}, power=0, pips={"R": 1})
+add("Brimstone Trebuchet", 3, "creature", {"artifact", "fuel_ping"}, power=1, pips={"R": 1})
 add("Cryptolith Fragment", 3, "artifact", {"fuel_mana_drain"}, pips={})
 add("Cursed Mirror", 3, "artifact", {"fuel_rock1"}, pips={"R": 1}, produces={"R"})
-add("Dauntless Scrapbot", 3, "creature", {"artifact", "fuel_gy_hate_ramp"}, power=1, pips={})
+add("Dauntless Scrapbot", 3, "creature", {"artifact", "fuel_gy_hate_ramp"}, power=3, pips={})
 add("Etched Familiar", 3, "creature", {"artifact", "fuel_death_drain"}, power=2, pips={"B": 1})
 add("Expedition Map", 1, "artifact", {"fuel_land_tutor"}, pips={})
 add("Fire Navy Trebuchet", 3, "creature", {"artifact", "fuel_attack_token"}, power=0, pips={"B": 1})
@@ -178,15 +188,15 @@ add("Nexus of Becoming", 6, "artifact", {"nexus_combat_draw_copy"}, pips={})
 add("Portal to Phyrexia", 9, "artifact", {"portal_phyrexia"}, pips={})
 add("Phyrexian Triniform", 9, "creature", {"artifact", "triniform_death_tokens"}, power=9, pips={})
 add("Rise of the Eldrazi", 12, "sorcery", {"rise_eldrazi"}, pips={})
-add("Sandstone Oracle", 7, "creature", {"artifact", "etb_hand_diff_draw"}, power=0, pips={})
+add("Sandstone Oracle", 7, "creature", {"artifact", "etb_hand_diff_draw"}, power=4, pips={})
 add("Steel Seraph", 6, "creature", {"artifact"}, power=5, pips={"W": 1})
-add("Summon: Bahamut", 9, "creature", {"saga_bahamut"}, power=0, pips={})
+add("Summon: Bahamut", 9, "creature", {"saga_bahamut"}, power=9, pips={})
 add("The Ten Rings", 8, "artifact", {"ten_rings_draw"}, pips={})
 add("Ulamog, the Infinite Gyre", 11, "creature", {"cast_removal"}, power=10, pips={})
 
 # --- Criaturas de valor ---------------------------------------------------------
-add("Starscream, Power Hungry", 4, "creature", {"artifact"}, power=0, pips={"B": 1})
-add("Stensian Sanguinist", 2, "creature", {}, power=0, pips={"B": 1})
+add("Starscream, Power Hungry", 4, "creature", {"artifact"}, power=2, pips={"B": 1})
+add("Stensian Sanguinist", 2, "creature", {"stensian_prepared"}, power=2, pips={"B": 1})
 
 # --- Remocao/interacao (conjurada quando ha mana sobrando, sem alvo real) --------
 add("Crackling Doom", 3, "instant", {"interaction"}, pips={"R": 1, "W": 1, "B": 1})
@@ -197,10 +207,13 @@ add("Sundering Eruption", 3, "sorcery", {"interaction"}, pips={"R": 1})
 add("Boros Charm", 2, "instant", {"boros_charm_burn"}, pips={"R": 1, "W": 1})
 add("Swords to Plowshares", 1, "instant", {"interaction"}, pips={"W": 1})
 add("Path to Exile", 1, "instant", {"interaction"}, pips={"W": 1})
-add("Vandalblast", 2, "sorcery", {"interaction"}, pips={"R": 1})  # modo overload ({4}{R}, destroi
-# TODOS os artefatos dos oponentes) nao modelado separadamente -- mesma
-# convencao ja usada pros outros modais do arquivo (Shatterskull Smashing
-# etc): so' o modo de alvo unico conta como interaction_spells_cast.
+add("Vandalblast", 1, "sorcery", {"interaction"}, pips={"R": 1})  # {R} real (achado
+# 2026-09-02, reauditoria linha-a-linha: eu tinha registrado {1}{R}/mv 2
+# de memoria ao adicionar a carta -- oraculo real e' so' {R}, mv 1).
+# Modo overload ({4}{R}, destroi TODOS os artefatos dos oponentes) nao
+# modelado separadamente -- mesma convencao ja usada pros outros modais
+# do arquivo (Shatterskull Smashing etc): so' o modo de alvo unico conta
+# como interaction_spells_cast.
 add("Blasphemous Act", 9, "sorcery", {"wipe_reduces_creatures"}, pips={"R": 1})
 
 # --- Rampa/mana ------------------------------------------------------------------
@@ -210,10 +223,10 @@ add("Arcane Signet", 2, "artifact", {"rock1"}, produces=set("WUBRG"))
 
 # --- Motor central (cartas confirmadas vistas no oponente real) -----------------
 add("Rakdos, the Muscle", 5, "creature", {"rakdos_sac_creature"}, power=6, pips={"B": 2, "R": 1})
-add("Treasure Nabber", 3, "creature", {"opponent_dependent"}, power=2, pips={"R": 1})
-add("Osgir, the Reconstructor", 4, "creature", {"artifact", "osgir_clone"}, power=3, pips={"R": 1, "W": 1})
+add("Treasure Nabber", 3, "creature", {"opponent_dependent"}, power=3, pips={"R": 1})
+add("Osgir, the Reconstructor", 4, "creature", {"artifact", "osgir_clone"}, power=4, pips={"R": 1, "W": 1})
 add("Goblin Engineer", 2, "creature", {"goblin_engineer"}, power=1, pips={"R": 1})
-add("Mishra, Tamer of Mak Fawa", 5, "creature", {"mishra_unearth_all"}, power=2, pips={"B": 1, "R": 1})
+add("Mishra, Tamer of Mak Fawa", 5, "creature", {"mishra_unearth_all"}, power=4, pips={"B": 1, "R": 1})
 
 # --- Draw / valor geral ----------------------------------------------------------
 add("Solemn Simulacrum", 4, "creature", {"artifact", "solemn"}, power=2, pips={})
@@ -238,10 +251,10 @@ add("Night's Whisper", 2, "sorcery", {"draw2_life2"}, pips={"B": 1})
 add("Sword of the Animist", 2, "artifact", {"sword_of_animist"}, pips={})
 add("Wheel of Fortune", 3, "sorcery", {"wheel_full"}, pips={"R": 1})
 add("Losheel, Clockwork Scholar", 3, "creature", {"losheel"}, power=2, pips={"W": 1})
-add("Scion of Draco", 12, "creature", {"artifact", "domain_reduce"}, power=8, pips={})
-add("Myr Retriever", 2, "creature", {"artifact", "toolbox_recur"}, power=0, pips={})
+add("Scion of Draco", 12, "creature", {"artifact", "domain_reduce"}, power=4, pips={})
+add("Myr Retriever", 2, "creature", {"artifact", "toolbox_recur"}, power=1, pips={})
 add("Workshop Assistant", 3, "creature", {"artifact", "toolbox_recur"}, power=1, pips={})
-add("Junk Diver", 3, "creature", {"artifact", "toolbox_recur"}, power=2, pips={})
+add("Junk Diver", 3, "creature", {"artifact", "toolbox_recur"}, power=1, pips={})
 
 ARTIFACT_ISH_TAGS = {"artifact"}
 CREATURE_ISH = {"creature"}
@@ -251,7 +264,15 @@ LAND_NAMES_SET = set()  # preenchido apos LAND_TYPES abaixo
 # `produces`: cores reais (fixas + condicionais tratadas via ETB_TAPPED_LANDS/
 # DUAL_LAND_COLORS). Fetches tratadas com o mecanismo real (crack_fetch),
 # nao terreno generico (Regra 6 de user-standing-rules.md).
-FETCH_TARGETS = {"Arid Mesa"}
+FETCH_TARGETS = {"Arid Mesa", "Marsh Flats"}
+# Cada fetch real busca so' os tipos basicos do seu proprio texto (Arid
+# Mesa: "Mountain or Plains card"; Marsh Flats: "Plains or Swamp card") --
+# `crack_fetch()` usa este dict pra nao deixar Arid Mesa buscar Swamp
+# nem Marsh Flats buscar Mountain.
+FETCH_ALLOWED_TYPES = {
+    "Arid Mesa": {"Mountain", "Plains"},
+    "Marsh Flats": {"Plains", "Swamp"},
+}
 LAND_BASIC_TYPES = {
     "Blood Crypt": {"Swamp", "Mountain"}, "Godless Shrine": {"Plains", "Swamp"},
     "Sacred Foundry": {"Mountain", "Plains"},
@@ -269,7 +290,13 @@ add("Exotic Orchard", 0, "land", set(), produces={"W", "B", "R"})
 add("Forbidden Orchard", 0, "land", set(), produces={"W", "B", "R"})
 add("Godless Shrine", 0, "land", set(), produces={"W", "B"})
 add("Haunted Ridge", 0, "land", {"etb_tapped_check"}, produces={"B", "R"})
-add("Marsh Flats", 0, "land", set(), produces={"W", "B"})  # fetch-like fixed dual (simplificado, ver docstring)
+add("Marsh Flats", 0, "land", {"fetch"})  # Achado real 2026-09-02 (reauditoria
+# linha-a-linha): era tratada como dual estatico sem custo (produces
+# {"W","B"} direto), citando um "ver docstring" que na verdade nunca
+# existia -- oraculo real e' fetchland de verdade ("{T}, Pay 1 life,
+# Sacrifice this land: search for a Plains or Swamp"), mesmo mecanismo
+# real do Arid Mesa (regra 6 de user-standing-rules.md: fetches usam
+# `crack_fetch`, nao terreno generico). Corrigido junto com Arid Mesa.
 # Achado real 2026-09-02 (usuario lembrou de The Ten Rings, o que levou a
 # reconferir toda a infraestrutura de "legendary" do arquivo -- achei
 # `is_legendary()`/`LEGENDARY_NAMES` DEFINIDOS mas NUNCA chamados em
@@ -318,6 +345,13 @@ def is_legendary(name: str) -> bool:
     return name in LEGENDARY_NAMES
 
 
+def is_historic(name: str) -> bool:
+    # "Artifacts, legendaries, and Sagas are historic." Unico Saga da
+    # lista e' Summon: Bahamut (ctype "creature", nao "artifact" nem
+    # legendaria) -- listado explicitamente aqui por isso.
+    return is_artifact_card(name) or is_legendary(name) or name == "Summon: Bahamut"
+
+
 LEGENDARY_NAMES = {
     "Megatron, Tyrant", "Bitterthorn, Nissa's Animus", "Excalibur, Sword of Eden",
     "Galactus, Devourer of Worlds", "Kozilek, Butcher of Truth", "The Ten Rings",
@@ -326,7 +360,10 @@ LEGENDARY_NAMES = {
     "Losheel, Clockwork Scholar",
 }
 
-FLYING_CREATURES = {"Crystalline Entity", "Galactus, Devourer of Worlds", "Steel Seraph"}
+FLYING_CREATURES = {
+    "Crystalline Entity", "Galactus, Devourer of Worlds", "Steel Seraph",
+    "Rakdos, the Muscle",  # achado 2026-09-02: tambem tem flying (+ trample) real
+}
 
 
 def has_flying(name: str) -> bool:
@@ -365,6 +402,7 @@ class GameState:
     losheel_draw_used_this_turn: bool = False
     nexus_used_this_turn: bool = False
     fire_navy_used_this_turn: bool = False
+    chromatic_orrery_used_this_turn: bool = False
 
     # metrics -----------------------------------------------------------------
     proxy_damage_total: int = 0
@@ -403,12 +441,39 @@ class GameState:
     # redundante do pacote de interacao, ja com 7 outras pecas).
     triniform_tokens_total: int = 0
 
+    # Achados reais 2026-09-02 (reauditoria linha-a-linha completa pedida
+    # pelo usuario apos ele notar que Stensian Sanguinist estava com
+    # poder 0 e nenhuma tag -- varredura achou varios outros fantasmas:
+    # Starscream so' existia como nome no CARD_DB, Excalibur idem,
+    # Stensian nao era MDFC (e' "prepared", mecanica diferente).
+    atraxa_oil_counters: int = 0
+    stensian_prepared: bool = False
+    is_monarch: bool = False
+    starscream_in_play: bool = False
+    starscream_face: Optional[str] = None  # "hunter" (frente) ou "seeker" (verso)
+    starscream_cast_turn: Optional[int] = None
+    rakdos_sac_draws_total: int = 0
+    chromatic_orrery_draws_total: int = 0
+    stensian_exsanguinate_copies_total: int = 0
+    cursed_mirror_clone_attacks_total: int = 0
+
 
 def draw_cards(state: GameState, n: int):
     for _ in range(n):
         if state.library:
             state.hand.append(state.library.pop(0))
             state.cards_drawn_extra += 1
+            if (state.starscream_face == "hunter" and state.is_monarch):
+                # Starscream, Power Hungry (frente): "Whenever you draw a
+                # card, if you're the monarch, target opponent loses 2
+                # life." Achado real 2026-09-02 (reauditoria
+                # linha-a-linha): Starscream so' existia como nome no
+                # CARD_DB (tag `{"artifact"}` generica), mecanica inteira
+                # ausente. Dispara por CARTA comprada (nao por evento de
+                # compra) -- real, single-target (nao multiplicado por
+                # NUM_OPPONENTS, o oraculo diz "target opponent", nao
+                # "each opponent").
+                proxy_drain(state, 2)
         else:
             state.library_emptied = True
 
@@ -501,6 +566,17 @@ def effective_cost(state: GameState, name: str) -> int:
         for n in state.battlefield:
             types |= LAND_BASIC_TYPES.get(n, set())
         mv = max(0, mv - 2 * len(types))
+    elif name == "Excalibur, Sword of Eden":
+        # "This spell costs {X} less to cast, where X is the total mana
+        # value of historic permanents you control." Achado real
+        # 2026-09-02 (reauditoria linha-a-linha completa pedida pelo
+        # usuario): as tags "equipment_big_power"/"cost_reduce_historic"
+        # existiam desde a construcao original mas nunca eram lidas em
+        # lugar nenhum -- {12} fixo, praticamente incastavel. Este deck e'
+        # denso em permanentes historicos (artefatos + legendarios +
+        # Summon: Bahamut), entao a reducao real costuma ser grande.
+        reduction = sum(CARD_DB[n].mv for n in state.battlefield if is_historic(n))
+        mv = max(0, mv - reduction)
     return mv
 
 
@@ -513,7 +589,9 @@ def spend_mana(state: GameState, n: int):
 
 
 def crack_fetch(state: GameState, fetch_name: str):
-    candidates = [n for n in state.library if n in LAND_BASIC_TYPES]
+    allowed = FETCH_ALLOWED_TYPES.get(fetch_name, set())
+    candidates = [n for n in state.library
+                  if LAND_BASIC_TYPES.get(n, set()) & allowed]
     if not candidates:
         state.battlefield.append(fetch_name)  # sem alvo, fica como terreno incolor (raro)
         return
@@ -560,6 +638,56 @@ def cast_megatron(state: GameState):
     state.creature_cast_turn[COMMANDER] = state.turn
 
 
+def cast_starscream(state: GameState):
+    """Starscream, Power Hungry -- segundo DFC `transform` da lista,
+    paralelo ao Megatron (mesmo padrao "More Than Meets the Eye"). Achado
+    real 2026-09-02 (reauditoria linha-a-linha completa pedida pelo
+    usuario): a carta so' existia como nome no CARD_DB (tag generica
+    "artifact", poder 0) -- toda a mecanica de monarquia estava ausente,
+    apesar do checklist de auditoria anterior ter afirmado (erradamente)
+    que ela estava coberta "analoga ao Megatron".
+
+    Prefere o verso (Seeker Leader, MTMTE {2}{B}, 2/3 flying/menace/
+    HASTE) quando pagavel -- tem haste real, entao ja ataca no turno em
+    que entra e persegue a monarquia imediatamente, que e' o unico jeito
+    real desta carta gerar valor num goldfish sem oponente atacando de
+    volta (o gatilho "convert" da frente exige tomar dano de combate,
+    nunca acontece aqui)."""
+    if state.starscream_in_play or STARSCREAM not in state.hand:
+        return
+    if remaining_mana(state) >= STARSCREAM_BACK_COST and has_color_sources_for(state, STARSCREAM):
+        spend_mana(state, STARSCREAM_BACK_COST)
+        state.starscream_face = "seeker"
+    elif remaining_mana(state) >= STARSCREAM_FRONT_COST and has_color_sources_for(state, STARSCREAM):
+        spend_mana(state, STARSCREAM_FRONT_COST)
+        state.starscream_face = "hunter"
+    else:
+        return
+    state.hand.remove(STARSCREAM)
+    state.battlefield.append(STARSCREAM)
+    state.starscream_in_play = True
+    state.starscream_cast_turn = state.turn
+
+
+def starscream_combat(state: GameState):
+    if not state.starscream_in_play or state.starscream_face != "seeker":
+        return
+    proxy_drain(state, STARSCREAM_POWER)
+    stensian_attack_trigger(state)
+    if not state.is_monarch:
+        # "Whenever Starscream deals combat damage to a player, if there
+        # is no monarch, that player becomes the monarch." + "Whenever
+        # you become the monarch, convert Starscream." Uma vez conquistada
+        # a coroa aqui, nunca e' perdida de volta neste simulador -- nao
+        # ha' gatilho de "creature deals combat damage to you" modelado
+        # em lugar nenhum do arquivo (mesma convencao geral: nada ataca
+        # de volta num goldfish solo), entao Starscream fica preso na
+        # frente (Power Hungry) pelo resto da partida, agora como motor
+        # de valor via `draw_cards()`.
+        state.is_monarch = True
+        state.starscream_face = "hunter"
+
+
 def best_fuel_artifact(state: GameState):
     """Escolhe qual artefato sacrificar pro gatilho de ataque do Megatron
     (Destructive Force): 'you may sacrifice another artifact... damage
@@ -593,6 +721,27 @@ def megatron_combat(state: GameState):
             state.graveyard.append(fuel)
             state.megatron_fuel_sacrificed_total += 1
             toolbox_recur_death_trigger(state, fuel)
+            if "Rakdos, the Muscle" in state.battlefield and is_creature_card(fuel):
+                # "Whenever you sacrifice another creature, exile cards
+                # equal to its mana value from the top of target player's
+                # library. Until your next end step, you may play those
+                # cards, and mana of any type can be spent to cast those
+                # spells." Achado real 2026-09-02 (reauditoria
+                # linha-a-linha): tag `rakdos_sac_creature` definida desde
+                # a construcao original, nunca lida em lugar nenhum --
+                # muitas pecas de fuel sao artefatos-criatura, entao esse
+                # gatilho dispara com frequencia real. Alvo = minha
+                # propria biblioteca (maximiza valor pra mim, mesma
+                # premissa ja usada noutros "target player" da lista);
+                # aproximado como impulso de compra direta (mesma
+                # convencao de simplificacao ja usada pra Sandstone
+                # Oracle/Portal to Phyrexia -- nem tudo exilado e'
+                # garantidamente jogavel, mas o motor nao rastreia
+                # exile-and-play parcial em lugar nenhum).
+                fuel_mv = CARD_DB[fuel].mv
+                if fuel_mv > 0:
+                    draw_cards(state, fuel_mv)
+                    state.rakdos_sac_draws_total += fuel_mv
             mv = CARD_DB[fuel].mv
             excess = max(0, mv - 1)  # proxy: alvo de 1 de resistencia (premissa do proprio primer)
             if excess > 0:
@@ -614,7 +763,36 @@ def megatron_combat(state: GameState):
             pick = basics[0]
             state.library.remove(pick)
             state.battlefield.append(pick)
+    if "Excalibur, Sword of Eden" in state.battlefield:
+        # "Equipped creature gets +10/+0 and has vigilance." Equip
+        # legendary creature {2} nao rastreado a parte (mesma
+        # simplificacao do Sword of the Animist -- so' o Megatron ataca
+        # de verdade nesse deck, e e' legendario, entao e' sempre ele quem
+        # equipa). Vigilance sem efeito numerico neste motor (sem
+        # tap-state de criatura rastreado alem de doenca de invocacao).
+        power += 10
+    lifelink_this_combat = False
+    if "Steel Seraph" in state.battlefield:
+        # "At the beginning of combat on your turn, target creature you
+        # control gains your choice of flying, vigilance, or lifelink
+        # until end of turn." Achado real 2026-09-02 (reauditoria
+        # linha-a-linha): 100% ausente antes. Escolhe sempre lifelink --
+        # unica das 3 opcoes com efeito numerico neste motor (sem
+        # bloqueio real modelado pra flying interagir, sem tap-state de
+        # criatura pra vigilance importar).
+        lifelink_this_combat = True
+    if "Atraxa's Skitterfang" in state.battlefield and state.atraxa_oil_counters > 0:
+        # "You may remove an oil counter. When you do, target creature
+        # you control gains your choice of flying, vigilance, deathtouch,
+        # or lifelink." Mesma escolha (lifelink), mas real e' limitada:
+        # gasta 1 dos 3 oil counters com que a carta entra em campo.
+        state.atraxa_oil_counters -= 1
+        lifelink_this_combat = True
     proxy_drain(state, power)
+    if lifelink_this_combat:
+        state.life += power
+        state.proxy_lifegain_total += power
+    stensian_attack_trigger(state)
 
 
 def megatron_postcombat(state: GameState):
@@ -648,7 +826,13 @@ def toolbox_recur_death_trigger(state: GameState, dying_name: str):
        carta): 'When this creature dies, create three 3/3 colorless
        Phyrexian Golem artifact creature tokens.' -- real, incondicional,
        os 3 tokens tambem sao combustivel real pro proximo sacrificio do
-       Megatron (fuel_* via `best_fuel_artifact()`, ja' que sao artefatos)."""
+       Megatron (fuel_* via `best_fuel_artifact()`, ja' que sao artefatos).
+    3. Etched Familiar (achado real 2026-09-02, reauditoria linha-a-linha
+       pedida pelo usuario): 'When this creature dies, each opponent
+       loses 2 life and you gain 2 life.' -- tag `fuel_death_drain`
+       definida desde a construcao original, nunca lida em lugar nenhum.
+       Real, incondicional (a carta e' fuel_rock1-like, MV baixo,
+       candidata frequente a sacrificio do Megatron)."""
     if dying_name == "Phyrexian Triniform":
         token_name = "Phyrexian Golem Token"
         if token_name not in CARD_DB:
@@ -656,6 +840,10 @@ def toolbox_recur_death_trigger(state: GameState, dying_name: str):
         for _ in range(3):
             state.battlefield.append(token_name)
         state.triniform_tokens_total += 3
+    if dying_name == "Etched Familiar":
+        proxy_drain(state, 2 * NUM_OPPONENTS)
+        state.life += 2
+        state.proxy_lifegain_total += 2
     if dying_name not in ("Myr Retriever", "Workshop Assistant", "Junk Diver"):
         return
     pool = [c for c in state.graveyard if c != dying_name and is_artifact_card(c)]
@@ -781,6 +969,32 @@ def try_mishra_unearth(state: GameState):
 
 def resolve_etb(state: GameState, name: str):
     tags = CARD_DB[name].tags
+
+    if name == "Cursed Mirror" and state.commander_in_play and COMMANDER in ready_creatures(state):
+        # "As this artifact enters, you may have it become a copy of any
+        # creature on the battlefield until end of turn, except it has
+        # haste." Achado real 2026-09-02 (reauditoria linha-a-linha): so'
+        # a habilidade de mana (rock) estava implementada. Simplificado:
+        # copia o Megatron (unica criatura que ataca de verdade nesse
+        # deck) e credita uma rajada extra de dano equivalente ao poder
+        # atual dele nesse MESMO turno (o "haste" da copia) -- sem criar
+        # uma segunda criatura persistente, ja que reverte a Cursed
+        # Mirror normal no fim do turno. Imprecisao conhecida: credita a
+        # rajada mesmo se Cursed Mirror for conjurada DEPOIS do combate
+        # desse turno (o arquivo nao rastreia "combate ja aconteceu"),
+        # premissa aceitavel dado que rocks MV baixo tem prioridade de
+        # conjuracao no inicio do turno (ver `prio()` em `main_phase`).
+        power = MEGATRON_TYRANT_POWER if state.megatron_face == "tyrant" else MEGATRON_VEHICLE_POWER
+        proxy_drain(state, power)
+        state.cursed_mirror_clone_attacks_total += 1
+
+    if "combat_pump_oil" in tags:
+        # Atraxa's Skitterfang: "This creature enters with three oil
+        # counters on it." Achado real 2026-09-02 (reauditoria
+        # linha-a-linha): tag definida desde a construcao original mas
+        # nunca lida em lugar nenhum -- a carta era um corpo 2/2 vanilla.
+        # Uso real dos contadores em `megatron_combat()`.
+        state.atraxa_oil_counters = 3
 
     if "land_ramp_etb" in tags:
         # Archaeomancer's Map: "search for up to two basic Plains, put into
@@ -1064,6 +1278,15 @@ def resolve_instant_sorcery(state: GameState, name: str):
         proxy_drain(state, 2 * nonbasics * NUM_OPPONENTS)
     elif "wheel_full" in tags:
         do_wheel(state, my_draws=7)
+    elif "draw2_life2" in tags:
+        # Night's Whisper: "you draw two cards and you lose 2 life."
+        # Achado real 2026-09-02 (reauditoria linha-a-linha completa
+        # pedida pelo usuario): tag definida mas NUNCA lida em lugar
+        # nenhum -- a carta inteira era 100% um fantasma (nunca comprava
+        # nem perdia vida), apesar de ser uma das cartas de draw mais
+        # simples da lista.
+        draw_cards(state, 2)
+        self_damage(state, 2)
     elif "interaction" in tags:
         state.interaction_spells_cast_total += 1
     elif "boros_charm_burn" in tags:
@@ -1227,11 +1450,22 @@ def upkeep_step(state: GameState):
 
 def main_phase(state: GameState):
     cast_megatron(state)
+    cast_starscream(state)
     try_cryptolith_fragment(state)
 
     while True:
         castables = [n for n in state.hand if n not in LAND_NAMES and can_cast(state, n)
                      and "interaction" not in CARD_DB[n].tags
+                     # Blasphemous Act excluida do auto-cast de proposito
+                     # (nao e' julgamento de valor): "destroy all creatures"
+                     # aqui so' mataria as MINHAS proprias criaturas -- sem
+                     # board de oponente real, conjurar sempre seria
+                     # estritamente ruim. A reducao de custo real ("{1}
+                     # less per creature on battlefield") fica
+                     # estruturalmente sem efeito por isso mesmo: a carta
+                     # nunca chega a ser conjurada neste goldfish solo,
+                     # entao nao ha custo a reduzir de verdade (achado
+                     # 2026-09-02, reauditoria linha-a-linha).
                      and n != "Blasphemous Act"]
         if not castables:
             break
@@ -1253,6 +1487,75 @@ def main_phase(state: GameState):
     try_losheel_draw_check(state)
     try_pumpkin_bombs(state)
     try_retributive_wand_ping(state)
+    try_chromatic_orrery_draw(state)
+    try_stensian_exsanguinate_copy(state)
+
+
+def stensian_attack_trigger(state: GameState):
+    """Stensian Sanguinist (frente): 'Whenever you attack, target
+    creature gains deathtouch until end of turn. Whenever that creature
+    deals combat damage to a player this combat, this creature becomes
+    prepared.' Achado real 2026-09-02: usuario apontou que a carta NAO e'
+    MDFC (correcao minha, ela e' "prepared" -- keyword/layout diferente,
+    a carta fisica nunca vira o verso, so' habilita conjurar uma copia do
+    spell do verso). Chamado de todo ponto real de ataque do arquivo
+    (`megatron_combat`/`starscream_combat`) -- "target creature" = quem
+    esta' atacando; deathtouch nao tem efeito numerico aqui (sem bloqueio
+    real modelado pra ninguem no arquivo), mas o dano de combate SEMPRE
+    conecta nesse motor (mesma premissa de goldfish sem bloqueador),
+    entao fica 'prepared' incondicionalmente a cada ataque real."""
+    if "Stensian Sanguinist" in state.battlefield:
+        state.stensian_prepared = True
+
+
+def try_stensian_exsanguinate_copy(state: GameState):
+    """Enquanto 'prepared', pode conjurar uma copia do spell do verso
+    (Exsanguinate, {X}{B}{B} -- 'each opponent loses X life, you gain
+    that much life'). O oraculo NAO diz 'without paying its mana cost',
+    entao a copia ainda e' pagada normalmente (mesma logica de X maximo
+    ja usada pro Exsanguinate real via tag `drain_x_self`). Conjurar
+    'desprepara' (`stensian_prepared = False`)."""
+    if "Stensian Sanguinist" not in state.battlefield or not state.stensian_prepared:
+        return
+    x = max(0, remaining_mana(state) - 2)
+    if x <= 0 or color_sources(state, "B") < 2:
+        return
+    spend_mana(state, x + 2)
+    total = x * NUM_OPPONENTS
+    proxy_drain(state, total)
+    state.life += total
+    state.proxy_lifegain_total += total
+    state.stensian_prepared = False
+    state.stensian_exsanguinate_copies_total += 1
+
+
+def try_chromatic_orrery_draw(state: GameState):
+    """Chromatic Orrery, 2a habilidade: '{5}, {T}: Draw a card for each
+    color among permanents you control.' Achado real 2026-09-02
+    (reauditoria linha-a-linha): tag `orrery_draw` definida desde a
+    construcao original, nunca lida em lugar nenhum -- so' a 1a
+    habilidade (mana) estava implementada. Sem tap-state real de artefato
+    rastreado neste arquivo (so' terrenos tem `tapped_land_this_turn`),
+    entao usar essa habilidade nao remove a mana que o Orrery ja deu esse
+    turno (mesma abstracao ja usada pro resto dos rocks). 'Cor entre
+    permanentes que voce controla' aproximada via as cores de custo
+    (pips) dos permanentes nao-terrestres em campo -- proxy documentado,
+    mais preciso que contar so' terrenos (que nao tem cor)."""
+    if "Chromatic Orrery" not in state.battlefield or state.chromatic_orrery_used_this_turn:
+        return
+    if remaining_mana(state) < 5:
+        return
+    colors = set()
+    for n in state.battlefield:
+        if n in LAND_NAMES:
+            continue
+        colors |= set(CARD_DB[n].pips.keys())
+    if not colors:
+        return
+    state.chromatic_orrery_used_this_turn = True
+    spend_mana(state, 5)
+    draw_cards(state, len(colors))
+    state.chromatic_orrery_draws_total += len(colors)
 
 
 def try_nexus_of_becoming(state: GameState):
@@ -1287,6 +1590,7 @@ def creature_etb_hooks(state: GameState, name: str):
 
 def combat_step(state: GameState):
     megatron_combat(state)
+    starscream_combat(state)
     try_cityscape_leveler_attack(state)
     try_aurora_of_emrakul_attack(state)
 
@@ -1363,13 +1667,10 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.losheel_draw_used_this_turn = False
     state.nexus_used_this_turn = False
     state.fire_navy_used_this_turn = False
+    state.chromatic_orrery_used_this_turn = False
 
     if not (is_first_turn and on_play):
-        if state.library:
-            state.hand.append(state.library.pop(0))
-            state.cards_drawn_extra += 1
-        else:
-            state.library_emptied = True
+        draw_cards(state, 1)
 
     upkeep_step(state)
     play_land(state)
@@ -1435,6 +1736,17 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg pings do Retributive Wand: {avg([s.retributive_wand_pings_total for s in states]):.2f}")
     print(f"Pumpkin Bombs ativada (1x, depois muda de dono): {100*sum(1 for s in states if s.pumpkin_bombs_used)/n:.1f}% dos jogos, "
           f"avg cartas compradas quando ativa: {avg([s.pumpkin_bombs_draws_total for s in states if s.pumpkin_bombs_used]):.1f}")
+
+    print()
+    print("--- Achados 2026-09-02 (reauditoria linha-a-linha completa pos-Bracket 2) ---")
+    starscream_monarch = sum(1 for s in states if s.is_monarch)
+    print(f"Starscream conquistou a monarquia: {100*starscream_monarch/n:.1f}% dos jogos")
+    excalibur_cast = sum(1 for s in states if "Excalibur, Sword of Eden" in s.battlefield)
+    print(f"Excalibur, Sword of Eden conjurada: {100*excalibur_cast/n:.1f}% dos jogos")
+    print(f"Avg copias de Exsanguinate conjuradas via Stensian Sanguinist 'prepared': {avg([s.stensian_exsanguinate_copies_total for s in states]):.2f}")
+    print(f"Avg cartas compradas via Chromatic Orrery: {avg([s.chromatic_orrery_draws_total for s in states]):.2f}")
+    print(f"Avg cartas compradas via Rakdos, the Muscle (sac de criatura-fuel): {avg([s.rakdos_sac_draws_total for s in states]):.2f}")
+    print(f"Cursed Mirror copiou o Megatron pra rajada extra: {100*sum(1 for s in states if s.cursed_mirror_clone_attacks_total > 0)/n:.1f}% dos jogos")
 
     # --- Metricas basicas (checklist obrigatorio, categoria 10) --------------
     print("--- Metricas basicas (checklist obrigatorio) ---")

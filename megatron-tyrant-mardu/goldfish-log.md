@@ -4,6 +4,46 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### Reauditoria linha-a-linha completa das 99 cartas — 2026-09-02
+
+**Gatilho:** o usuário perguntou sobre Stensian Sanguinist e eu respondi
+errado (disse MDFC — na real é a keyword **"prepared"**, mecânica
+diferente). Ele corrigiu e cobrou: *"Eu não mandei vc auditar TODAS as
+cartas linha por linha e uma por uma?"* — sinal de que a rodada de
+2026-09-01 (ver entrada mais abaixo) não tinha sido tão completa quanto
+o checklist afirmava.
+
+Refiz a varredura inteira: oráculo real via Scryfall pras 93 cartas
+não-terreno-básico, cruzado carta por carta contra o código. Achado mais
+grave: **Starscream, Power Hungry** — segundo DFC `transform` da lista,
+paralelo ao Megatron com mecânica própria de monarquia — existia só como
+nome no `CARD_DB` (tag genérica, poder 0), mecânica 100% ausente, apesar
+do checklist anterior ter afirmado (errado) que estava "implementada
+análoga ao Megatron". Mais 10 gaps reais achados e corrigidos na mesma
+rodada: Excalibur (custo/equip), Night's Whisper (carta inteira não
+fazia nada), Rakdos the Muscle (gatilho de sacrifício), Atraxa's
+Skitterfang (oil counters), Etched Familiar (dreno de morte), Steel
+Seraph (grant de keyword), Chromatic Orrery (2ª habilidade), Marsh Flats
+(estava sendo tratada como dual estático em vez de fetchland de
+verdade — e ao corrigir isso achei que `crack_fetch()` também não
+filtrava pelos tipos básicos certos por fetch), Cursed Mirror (ETB de
+clone) e Vandalblast (custo errado — bug meu desta sessão, `{1}{R}` em
+vez do `{R}` real). Mais 12 valores de poder impressos incorretos
+(cosmético — `.power` não é lido em lugar nenhum dentro deste arquivo
+solo, só importaria se plugado no motor de mesa externo).
+
+**Validação:** 11 testes unitários isolados (1 por mecânica nova) + 3
+rodadas de regressão de 20.000 partidas (seeds 9M/12M/14M, turns=10, **0
+exceções, 0 timeouts**) + `run_batch` de 5.000 jogos confirmando sinal
+real de cada mecânica (Starscream monarquia ~13-14% dos jogos, Excalibur
+conjurada ~11-12%, Cursed Mirror copia o Megatron ~9%). Dano proxy médio
+subiu de ~31 pra ~38-39, vida ganha de ~0,5 pra ~3,6-3,8 — mudança real e
+grande, não ruído, coerente com corrigir uma dúzia de mecânicas que
+antes não faziam nada. Detalhamento completo (carta a carta) em
+`checklist-oraculo.md`.
+
+---
+
 ### Bracket 2 — remoção dos 3 Game Changers + troca Rakdos Charm → Phyrexian Triniform — 2026-09-02
 
 **Parte 1 — Phyrexian Triniform:** discutindo Portal to Phyrexia, o

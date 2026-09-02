@@ -227,3 +227,153 @@ cartas removidas somem de `BASE_LIBRARY` e as 3 novas aparecem 1x cada +
 regressão de 5.000 partidas (seed 7000000, turns=8, 0 exceções) — dano
 proxy médio 31,40 (antes 30,61 com só a troca do Triniform), consistente
 com uma troca aproximadamente neutra em poder bruto.
+
+---
+
+## 🐛 Reauditoria linha-a-linha completa das 99 cartas (2026-09-02)
+
+**Gatilho direto do usuário:** perguntando sobre Stensian Sanguinist
+("tem Blasphemous Act no Megatron? por que tem Stensian Sanguinist?"),
+eu respondi errado (disse que Stensian era MDFC — na verdade é
+**"prepared"**, keyword/layout diferente). O usuário corrigiu e cobrou a
+auditoria de verdade: *"Stensian não é MDFC, ela é prepared. Eu não
+mandei vc auditar TODAS as cartas linha por linha e uma por uma?"*
+
+Refeita a varredura completa: oráculo real das 93 cartas não-terreno-
+básico via Scryfall (`POST /cards/collection`, 2 lotes) contra o
+`megatron_goldfish_v1.py` pós-Bracket 2, cruzando CADA `add()` do
+`CARD_DB` (poder, custo, tags) e procurando tags/nomes que nunca são
+lidos em lugar nenhum do dispatch (mesmo método já usado nas rodadas de
+2026-09-01 e na correção da Plaza of Heroes). **Achado central: a
+rodada de auditoria de 2026-09-01 não foi tão completa quanto o
+checklist afirmava** — vários fantasmas (cartas com mecânica 100%
+ausente) sobreviveram àquela rodada, incluindo um que o próprio
+checklist chegou a marcar (erradamente) como "✅ implementado".
+
+### Fantasmas completos (mecânica 100% ausente, nenhuma tag nem nome lido em lugar nenhum)
+
+1. **Starscream, Power Hungry** — o mais grave: existia só como nome no
+   `CARD_DB` (`{"artifact"}` genérica, poder 0). É o **segundo DFC
+   `transform` da lista**, paralelo ao Megatron (mesmo padrão "More Than
+   Meets the Eye"), com mecânica real de **monarquia**: verso (Seeker
+   Leader, flying/menace/**haste**) ataca e reivindica a coroa; frente
+   (Power Hungry) drena 2 de um oponente por CADA carta comprada
+   enquanto for o monarca. O checklist de 2026-09-01 (seção "Cobertura
+   das demais 87 cartas") afirmava — errado — "monarquia/conversão ✅
+   (tratado análogo ao Megatron)". Implementado de verdade em
+   `cast_starscream()`/`starscream_combat()` + hook em `draw_cards()`
+   (dispara em toda carta comprada, normal ou extra — refatorei o draw
+   normal do turno pra passar por `draw_cards()` também, unificando os 2
+   pontos de compra que existiam antes). Monarquia, uma vez conquistada,
+   nunca é perdida neste simulador (sem gatilho de "creature deals
+   combat damage to you" modelado em lugar nenhum — mesma convenção
+   geral de nunca simular dano recebido).
+2. **Excalibur, Sword of Eden** — tags `equipment_big_power`/
+   `cost_reduce_historic` definidas desde a construção original, nunca
+   lidas. Real: "costs {X} less, X = MV total de permanentes históricos
+   você controla" + "+10/+0 e vigilance no equipado". Implementado em
+   `effective_cost()` (nova função `is_historic()` = artifact OR
+   legendary OR Saga) + `+10` direto no `power` do `megatron_combat()`
+   (mesma simplificação do Sword of the Animist: só o Megatron ataca,
+   auto-equipado).
+3. **Night's Whisper** — tag `draw2_life2` definida, **carta inteira**
+   nunca fazia nada (nem comprava nem perdia vida), apesar de ser
+   conjurada normalmente todo turno com mana sobrando (prioridade mais
+   barata da fila). Implementado em `resolve_instant_sorcery()`.
+4. **Rakdos, the Muscle** — tag `rakdos_sac_creature` órfã. Real:
+   "whenever you sacrifice another creature, exile cards = MV do topo da
+   sua biblioteca, pode jogá-las". Várias peças de fuel são
+   artefato-criatura, então o gatilho é real e frequente. Implementado
+   como impulso de compra direta (mesma convenção de simplificação já
+   usada pro Sandstone Oracle/Portal to Phyrexia) dentro do sacrifício de
+   fuel em `megatron_combat()`. 2ª habilidade (sacrifice: indestructible)
+   fica 📊 — sem remoção de oponente real pra proteger contra.
+5. **Atraxa's Skitterfang** — tag `combat_pump_oil` órfã. Real: entra
+   com 3 oil counters; no início do combate pode remover 1 pra dar
+   flying/vigilance/deathtouch/lifelink a uma criatura. Implementado:
+   sempre escolhe lifelink (única opção com efeito numérico nesse motor
+   sem bloqueio real) no Megatron, gastando os contadores reais.
+6. **Etched Familiar** — tag `fuel_death_drain` órfã. "When this dies,
+   each opponent loses 2, you gain 2" nunca disparava mesmo sendo peça
+   de fuel MV baixo (candidata frequente a sacrifício). Implementado em
+   `toolbox_recur_death_trigger()`.
+7. **Steel Seraph** — nenhuma tag pra "at the beginning of combat,
+   target creature gains flying/vigilance/lifelink" (só existia como
+   0/entrada no `FLYING_CREATURES`, ele mesmo nunca lido em lugar
+   nenhum). Implementado igual ao Atraxa (lifelink no Megatron).
+8. **Chromatic Orrery** — 2ª habilidade ("{5},{T}: draw a card for each
+   color among permanents you control") nunca implementada, só a
+   habilidade de mana. Implementado em `try_chromatic_orrery_draw()` —
+   "cor entre permanentes" aproximada via as cores de custo (pips) dos
+   permanentes não-terrestres em campo (proxy documentado).
+9. **Marsh Flats** — tratada como dual estático sem custo
+   (`produces={"W","B"}` direto), citando um "ver docstring" que na
+   verdade **nunca existia**. É um fetchland de verdade, igual Arid Mesa
+   (Regra 6 de `user-standing-rules.md`: fetches usam `crack_fetch`, não
+   terreno genérico). Corrigido — e ao corrigir, achei que `crack_fetch()`
+   também não filtrava candidatos pelos tipos básicos que CADA fetch
+   específico pode buscar (Arid Mesa = Mountain/Plains, Marsh Flats =
+   Plains/Swamp) — com só 1 fetch na lista antes isso nunca importava;
+   agora com 2, corrigido via `FETCH_ALLOWED_TYPES`.
+10. **Cursed Mirror** — ETB "may become a copy of any creature on the
+    battlefield until end of turn, except it has haste" nunca
+    implementado (só a habilidade de mana). Implementado como rajada
+    extra de dano (copia o Megatron se ele já estiver em campo e pronto)
+    em `resolve_etb()` — sem criar uma 2ª criatura persistente, já que a
+    cópia reverte no fim do turno.
+11. **Stensian Sanguinist** — o achado que disparou essa rodada inteira.
+    NÃO é MDFC (correção do usuário) — é **"prepared"**: "whenever you
+    attack, target creature gains deathtouch; whenever that creature
+    deals combat damage, this becomes prepared" + enquanto prepared,
+    pode conjurar uma cópia de Exsanguinate (ainda pagando o custo
+    normal — o oráculo não diz "without paying its mana cost").
+    Implementado via `stensian_attack_trigger()` (chamado de todo ponto
+    real de ataque) + `try_stensian_exsanguinate_copy()`.
+
+### Custo errado (bug meu, desta sessão)
+
+12. **Vandalblast** — eu tinha registrado `{1}{R}` (mv 2) de memória ao
+    adicionar a carta na troca do Bracket 2. Oráculo real: `{R}`, mv 1.
+    Corrigido.
+
+### Poder impresso errado (cosmético — `.power` não é lido em lugar
+nenhum DENTRO deste arquivo solo, só pelo motor de mesa externo
+`pod-simulator/pod_engine_v1.py` via fallback; corrigido mesmo assim por
+precisão de dado, já que decks futuros plugados na mesa vão herdar esses
+valores)
+
+Brimstone Trebuchet 0→1, Dauntless Scrapbot 1→3, Junk Diver 2→1, Mishra
+2→4, Myr Retriever 0→1, Osgir 3→4, Sandstone Oracle 0→4, **Scion of
+Draco 8→4** (o maior desvio — estava com o dobro do poder real), Summon:
+Bahamut 0→9, Starscream 0→2, Stensian Sanguinist 0→2, Treasure Nabber
+2→3. Rakdos, the Muscle ganhou flying (tinha, faltava no
+`FLYING_CREATURES` — também não lido em lugar nenhum, mesma categoria).
+
+### Confirmado como estruturalmente correto (não fantasma)
+
+- **Blasphemous Act**: excluída de propósito do auto-cast (mataria só
+  minhas criaturas sem board de oponente real) — a redução de custo
+  ("{1} less per creature") fica sem efeito por isso mesmo, documentado
+  explicitamente agora em vez de ficar implícito.
+- **`has_flying()`/`FLYING_CREATURES`**: função e set inteiros nunca
+  lidos em lugar nenhum — mas isso é 📊 estrutural genuíno, não bug:
+  nenhum bloqueio é modelado pra ninguém no arquivo (nem os MEUS
+  atacantes são bloqueados), então flying não tem gancho mecânico pra
+  interagir com nada. Diferente do caso da Plaza (onde "legendary"
+  faltava um gancho real) — aqui não há gancho a construir.
+- **Talon Gates of Madara / Eye of Ugin**: modos secundários já
+  documentados como 📝 fora de escopo numa rodada anterior — confirmado,
+  nada novo.
+
+### Validação
+
+11 testes unitários isolados cobrindo cada mecânica nova (Night's
+Whisper, Stensian prepared→Exsanguinate, Starscream monarquia+dreno por
+compra, Excalibur custo+poder, Steel Seraph/Atraxa lifelink, Etched
+Familiar morte, Rakdos sacrifício, Chromatic Orrery, Marsh Flats fetch
+correto) + regressão de 20.000 partidas (seeds 9M/12M/14M, turns=10, **0
+exceções, 0 timeouts**) + `run_batch` 5.000 jogos confirmando sinal real
+de cada mecânica nova (Starscream monarquia ~13-14% dos jogos, Excalibur
+conjurada ~11-12%, Cursed Mirror copia o Megatron ~9%, dano proxy médio
+subiu de ~31 para ~38-39, vida ganha de ~0,5 para ~3,6-3,8 — tudo
+plausível e na direção esperada, nenhum outlier).
