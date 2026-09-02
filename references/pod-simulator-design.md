@@ -1,0 +1,211 @@
+# Design do motor de mesa (pod de 4 jogadores) — Fase 0
+
+Pedido do usuário (2026-09-02): simular uma mesa real de 4 jogadores,
+cada um pilotando um deck diferente, pra análise — não mais goldfish
+solo. Combinado explicitamente que isso seria construído **em fases**,
+cada uma entregando algo testável sozinho, pra não queimar orçamento
+numa coisa grande que não termina em nada usável.
+
+Este documento é só a **Fase 0**: o contrato de estado e as decisões de
+arquitetura. Nenhum motor de turno é escrito aqui — isso é Fase 1.
+
+---
+
+## 1. Por que isso não é "estender os 17 simuladores"
+
+Os simuladores atuais (`*_goldfish_v1.py`, um por deck) são **solo**:
+não existe vida, mão ou board de oponente real. Toda carta que depende
+de oponente (remoção, contramágica, Rhystic Study, Smothering Tithe...)
+está marcada 📊 e nunca executa de verdade — não porque a carta não
+importa, mas porque não há pra quem apontar.
+
+Um motor de mesa real precisa de:
+1. Estado de vida/mão/board **real** pra 4 jogadores simultâneos.
+2. Ordem de turno real entre eles.
+3. Decisão real de alvo (quem cada remoção/contramágica mira), de
+   bloqueio (o defensor decide) e de reação (contramágica/instant em
+   resposta).
+
+Isso é maior que qualquer deck individual já construído nesta sessão —
+por isso a divisão em fases.
+
+---
+
+## 2. Decisão central: **adaptador**, não reescrita
+
+Os 17 decks já têm toda a lógica de carta escrita (`CARD_DB`, ETBs,
+combate, ativadas) — mas em **duas arquiteturas diferentes**:
+
+- **Objetos `Permanent`** (Kutzil, Toph, Captain Storm, Ms. Bumbleflower)
+  — contadores +1/+1 persistentes e equipamentos anexados exigem
+  rastrear estado por permanente específico.
+- **Lista de nomes** (Azula, Megatron, a maioria dos outros) — mais
+  simples, suficiente quando não há contador persistente pra rastrear.
+
+Reescrever os 4 decks pedidos (Kutzil, Bumbleflower, Azula, Captain
+Storm) num motor unificado do zero jogaria fora ~5.000 linhas de lógica
+de carta já testada e validada em 20.000 partidas cada. Em vez disso, a
+Fase 0 define um **adaptador fino**: cada deck continua com seu próprio
+arquivo, `CARD_DB` e funções internas — só ganha uma casca pequena que
+traduz chamadas do motor de mesa ("é sua vez", "escolha um alvo entre
+estes", "você quer bloquear/reagir?") pras funções que o deck já tem,
+substituindo os pontos que hoje são 📊 por decisões reais.
+
+```
+DeckAdapter (protocolo, um por deck):
+    card_db: dict                      # CARD_DB do arquivo original, sem mudança
+    take_turn(table, seat) -> None      # chama a logica de turno que ja existe,
+                                         # mas lendo/escrevendo table.players[seat]
+                                         # em vez de um GameState solo
+    choose_attack_target(table, seat) -> int          # qual oponente atacar
+    choose_block(table, seat, attacker_info) -> perm|None
+    choose_removal_target(table, seat, candidates) -> perm|None
+    react_with_counterspell(table, seat, spell_info) -> bool
+```
+
+Cada deck "vira adaptador" na Fase 4, um de cada vez — o trabalho por
+deck é **religar os pontos 📊 existentes**, não recriar a carta do zero
+(a leitura de oráculo, os testes unitários e a lógica em si já existem
+e já foram validados).
+
+---
+
+## 3. Estado compartilhado
+
+### `PlayerState`
+
+```python
+@dataclass
+class PlayerState:
+    seat: int                       # 0-3
+    deck_id: str                    # "kutzil" | "bumbleflower" | "azula" | "captainstorm"
+    life: int = 40
+    hand: list = field(default_factory=list)
+    battlefield: list = field(default_factory=list)   # list[Permanent] -- ver secao 4
+    graveyard: list = field(default_factory=list)
+    library: list = field(default_factory=list)
+    exile: list = field(default_factory=list)
+
+    commander_in_play: bool = False
+    commander_uid: Optional[int] = None
+    commander_cast_count: int = 0
+
+    lands_played_this_turn: int = 0
+    mana_spent_this_turn: int = 0
+    bonus_mana_pool: int = 0
+
+    eliminated: bool = False        # vida <= 0
+    extra: dict = field(default_factory=dict)   # campos especificos do deck
+                                                  # (ex: state.simic_ascendancy_growth_counters
+                                                  # do Bumbleflower) -- evita um GameState
+                                                  # gigante com campo de TODO deck existente
+    metrics: dict = field(default_factory=dict)  # contadores que hoje sao atributos soltos
+                                                   # em cada GameState viram entradas aqui
+```
+
+`extra` e `metrics` como dicts (em vez de dataclass fields fixos) é
+deliberado: cada deck tem 15-30 campos únicos hoje (ex.:
+`state.storm_grapeshot_max_damage` na Azula, `state.jhoira_ingenuity`
+na Bumbleflower) — forçar todos num `PlayerState` único infla o schema
+compartilhado com campos que só 1 dos 4 decks usa. O adaptador de cada
+deck lê/escreve seu próprio namespace dentro de `extra`/`metrics`.
+
+### `TableState`
+
+```python
+@dataclass
+class TableState:
+    players: list          # 4x PlayerState, indice = seat
+    turn_player: int = 0
+    turn_number: int = 0
+    rng: random.Random = field(default_factory=random.Random)
+    log: list = field(default_factory=list)
+
+    def opponents_of(self, seat: int) -> list[int]:
+        return [p.seat for p in self.players if p.seat != seat and not p.eliminated]
+
+    def alive_players(self) -> list[int]:
+        return [p.seat for p in self.players if not p.eliminated]
+```
+
+---
+
+## 4. Unificando `Permanent` entre os dois padrões
+
+Decks de lista-de-nomes (Azula) tratam o campo como `list[str]`. Decks
+de objeto (Kutzil/Bumbleflower/Captain Storm) usam `Permanent(card,
+uid, tapped, counters, ...)`. Pra Fase 4 não exigir reescrever a Azula
+inteira, a decisão é: **todo `battlefield` do motor de mesa usa
+`Permanent`**, e o adaptador da Azula ganha uma camada de tradução
+mínima (nome↔uid) só nos pontos onde ela precisa saber "quem é esse
+permanente" pra decidir alvo/bloqueio — o resto da lógica interna dela
+(cast, combate, ETBs) continua igual, olhando só pros próprios nomes.
+
+---
+
+## 5. Modelo de prioridade — simplificado de propósito
+
+Não vamos simular passar prioridade item a item como o Magic real (isso
+sozinho é um motor à parte). Em vez disso, pontos de decisão **fixos**:
+
+1. **No turno de um jogador**: só ele age (compra, joga terreno,
+   conjura, ativa, ataca) — os outros 3 não têm janela de resposta
+   espontânea.
+2. **Bloqueio**: quando alguém é atacado, o defensor decide bloqueio via
+   `choose_block()` — heurística, não busca no espaço de jogo.
+3. **Reação a mágica**: antes de uma mágica resolver, cada oponente com
+   contramágica disponível é perguntado via `react_with_counterspell()`
+   — heurística simples (ex.: "tenho mana + o alvo é uma ameaça real? conto
+   como sim"), não blefe nem sequenciamento ótimo.
+
+Isso é uma simplificação deliberada, documentada — não "IA perfeita",
+mas decisão real o suficiente pra interação genuína acontecer (ao
+contrário de hoje, onde ela simplesmente não acontece).
+
+---
+
+## 6. Heurísticas de decisão (assinatura, não implementação ainda)
+
+```python
+def choose_target(table: TableState, acting_seat: int, candidates: list,
+                   criterion: str = "best_value") -> object:
+    """criterion: 'best_value' (maior ameaca), 'lowest_life' (jogador
+    com menos vida), 'largest_board' (mais permanentes)."""
+
+def should_block(table: TableState, defending_seat: int, attacker,
+                  potential_blockers: list) -> Optional[object]:
+    """Bloqueia se algum bloqueador mata o atacante sem perder mais
+    valor do que ganharia deixando passar; senao None (leva o dano)."""
+
+def should_react(table: TableState, seat: int, reaction_options: list) -> Optional[object]:
+    """Usa a reacao disponivel (contramagica/instant) se o alvo/gatilho
+    for avaliado como ameaca real (heuristica de 'valor' generica,
+    reaproveitando o mesmo `creature_power`-like scoring que cada deck
+    ja usa internamente pra escolher alvo proprio)."""
+```
+
+---
+
+## 7. O que fica **fora** desta primeira versão (documentado, não esquecido)
+
+- Blefe / informação oculta real (todo estado é visível pro motor, já
+  que é simulação, não um jogo real entre pessoas).
+- Pilha (stack) completa com respostas encadeadas — só o ponto de
+  reação fixo da seção 5.
+- Escolha de bloqueio múltiplo/otimizada (assume 1 bloqueador por
+  atacante, o "melhor" disponível).
+- Mana pool compartilhado entre passos — cada jogador só gasta na
+  própria janela de ação.
+
+Cada um desses pode virar uma fase futura se a análise pedir mais
+fidelidade depois que a Fase 1-5 estiver rodando.
+
+---
+
+## 8. Próximo passo (Fase 1)
+
+Esqueleto de turno + combate real (vida, ataque escolhendo oponente,
+bloqueio via heurística), validado com 2 dos decks mais simples do
+repositório — ainda sem os 4 decks complicados, só pra provar que a
+arquitetura acima roda sem travar. Escrito depois de confirmação do
+usuário.
