@@ -1,65 +1,81 @@
 # Fase 1 — Log de resultados e limitações
 
-Motor: `pod_engine_v1.py`. Decks: Nekusar-Grixis vs Rat King Verminister
-(escolhidos por serem os 2 simuladores mais simples do repositório, **não**
-fazem parte da mesa alvo — ver `references/pod-simulator-design.md`).
+Motor: `pod_engine_v1.py`. Par padrão atual: **Megatron vs Rat King
+Verminister**. Nenhum dos dois faz parte da mesa alvo (Edgar
+Markov/Ur-Dragon/Toph/Maralen) — ver `references/pod-simulator-design.md`.
 
-## O que foi validado (objetivo real da Fase 1)
+## Histórico: por que trocou de Nekusar pra Megatron
 
-- **Dois simuladores solo totalmente independentes alternam turnos numa
-  mesa compartilhada sem conflito** — cada um mantém seu próprio
-  `GameState` nativo intacto, zero mudança nos 2 arquivos originais.
-- **Vida real (40 cada), dano real entre os dois, eliminação real** —
-  antes disso, "dano" em qualquer simulador desta biblioteca era um
-  número solto sem alvo. Agora existe um oponente de verdade recebendo
-  o dano e podendo ser eliminado.
-- **20.000 partidas, 0 exceções, ~46s** — a arquitetura não trava nem
-  degrada com o volume de jogo.
+A primeira versão usava Nekusar-Grixis vs Rat King. Resultado: Nekusar
+venceu 66,4% em 20.000 partidas — mas isso não media força real, media
+"motor de drenar bem modelado" contra "combate mal modelado": Nekusar
+não tem plano de combate nenhum (`combat_step` dele é literalmente
+`pass`), então toda vitória dele vinha só do lado bem-coberto pelos
+dados (drenar via gatilho de compra). Pedido do usuário (2026-09-02):
+*"Preciso de um modelo que tenha sempre o combate como teste também,
+senão o Nekusar ganha mais mesmo."*
+
+Troquei Nekusar por **Megatron** — tem combate real e central
+(`megatron_combat()`, poder de ataque genuíno rastreado em 22
+criaturas, do próprio comandante a finalizadores como Kozilek/Ulamog/
+Galactus). Nekusar continua importável no motor (não removido), só
+deixou de ser o par padrão.
+
+### Achado real ao fazer a troca: risco de contar dano 2x
+
+O Megatron já modela o próprio combate DENTRO do `play_turn()` dele —
+só o comandante ataca de verdade no desenho do próprio deck (Rakdos the
+Muscle, Steel Seraph, Osgir etc. são peças de valor/combustível, nunca
+atacam). Minha camada genérica de combate (soma o poder de toda
+criatura pronta) teria contado o comandante 2x e inventado ataques que
+o deck nunca faz. Corrigido com `COMBAT_MODELED_INTERNALLY` — decks
+onde o combate já está embutido no `proxy_damage_total` (Megatron)
+zeram a camada genérica; decks sem isso (Nekusar, Rat King) continuam
+usando a camada genérica pra preencher o buraco real.
 
 ## Resultado observado (20.000 partidas, seed 5.000.000+, 10 rodadas, começo alternado)
 
 | | Vitórias | % |
 |---|---|---|
-| Nekusar-Grixis | 13.275 | 66,4% |
-| Rat King Verminister | 5.264 | 26,3% |
-| Sem eliminação em 10 rodadas | 1.461 | 7,3% |
+| Megatron | 1.013 | 5,1% |
+| Rat King Verminister | 11.810 | 59,0% |
+| Sem eliminação em 10 rodadas | 7.177 | 35,9% |
 
-Turno médio de eliminação (quando houve): 9,0.
+Turno médio de eliminação (quando houve): 9,6.
 
-## ⚠️ Por que esse resultado NÃO deve ser lido como "Nekusar é mais forte"
+**Leitura honesta:** isso é plausível, não um bug — Megatron é um motor
+mais lento e dependente de montagem (comandante + combustível de
+artefato), enquanto Rat King ataca com poder pequeno mas consistente
+desde cedo. Numa corrida de 10 rodadas sem remoção nenhuma (Fase 2),
+consistência bate explosão tardia mais vezes do que não. Ainda assim,
+os números de "quem venceria" seguem limitados pelo que falta (ver
+abaixo) — não é uma leitura definitiva de poder relativo.
 
-Achado real ao construir isso (não decidido a priori): **nenhum dos 2
-decks rastreia poder/toughness de criatura de forma completa**:
+## O que foi validado (objetivo real da Fase 1)
 
-- Nekusar não tem plano de combate nenhum (`combat_step` dele é
-  literalmente `pass`) — o oráculo real de "wheel"/drenar-por-compra
-  está corretamente implementado.
-- Rat King tem `base_power` só em algumas cartas (a maioria fica em 0
-  por padrão) — o motor de valor real dele (tokens de Rato, Black
-  Market Connections, sinergias de artefato) não se traduz em "poder de
-  combate" no meu cálculo aproximado (`combat_power_this_turn()`), que
-  hoje só soma `base_power` + 1 por token — um piso capenga, não uma
-  leitura fiel do plano de jogo real do deck.
-
-Ou seja: o placar acima mede **o motor de dano do Nekusar contra uma
-aproximação capenga do combate do Rat King**, não os dois decks em pé
-de igualdade. Essa distorção só desaparece quando o pod tiver decks com
-combate real e P/T rastreado de verdade (Toph, na Fase 4) — até lá,
-qualquer "quem ganha" saído daqui é sobre o motor de teste, não sobre o
-Magic real.
+- Dois simuladores solo totalmente independentes alternam turnos numa
+  mesa compartilhada sem conflito, sem tocar nos arquivos originais.
+- Vida real (40 cada), dano real com alvo real, eliminação real.
+- **Combate real dos dois lados** — o pedido específico desta rodada:
+  nenhum dos dois decks do par padrão tem combate "inventado" nem
+  "ignorado", cada um usa o motor de dano que reflete seu desenho real
+  (Megatron via seu próprio `combat_step`, Rat King via a camada
+  genérica que preenche a ausência real de modelagem de combate lá).
+- 20.000 partidas, 0 exceções, ~34s.
 
 ## Limitações conhecidas (documentadas, não esquecidas)
 
-- **Bloqueio é uma aproximação crua** (`estimate_block_reduction`): "1
-  de dano abatido por criatura em campo do defensor", sem toughness
-  real, sem escolha de QUAL criatura bloqueia. Fase 4 (quando a Toph,
-  que já rastreia toughness em objetos `Permanent`, entrar) é o
-  primeiro ponto natural pra refinar isso de verdade.
-- **Sem interação real ainda** (remoção, contramágica) — isso é Fase 2,
-  não estava no escopo da Fase 1.
-- **`NUM_OPPONENTS` do Nekusar dividido por 3** pra virar "dano a 1
-  oponente" — matematicamente correto pro Nekusar especificamente (ele
-  já assume mesa de 4 e multiplica por 3 em cada efeito), mas é uma
-  correção ad-hoc que só funciona porque eu sei ler o código dele; a
-  Fase 4 vai precisar de um jeito mais sistemático de normalizar isso
-  pros 4 decks novos.
+- **Bloqueio ainda é uma aproximação crua** (`estimate_block_reduction`):
+  sem toughness real rastreada nesses decks, "1 de dano abatido por
+  criatura em campo do defensor" — só decks com objetos `Permanent`
+  (Toph, Fase 4) têm P/T real pra um bloqueio matemático de verdade.
+- **35,9% de jogos sem decisão em 10 rodadas** é alto — pode precisar de
+  mais rodadas pra um sinal mais limpo, ou é genuinamente como esse
+  confronto específico se comporta (motor lento vs grind consistente).
+  Não investigado a fundo ainda, registrado como próximo ponto de
+  atenção se o padrão persistir com outros pares.
+- **Sem interação real ainda** (remoção, contramágica) — Fase 2, fora do
+  escopo daqui.
+- **`NUM_OPPONENTS` dividido por 3** pra Nekusar/Megatron (ambos assumem
+  mesa de 4) — matematicamente correto pra esses 2 especificamente, mas
+  ainda uma correção ad-hoc por deck, não um mecanismo sistemático.

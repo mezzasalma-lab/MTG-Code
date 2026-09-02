@@ -57,14 +57,17 @@ from typing import Optional
 
 NEKUSAR_DIR = os.path.join(os.path.dirname(__file__), "..", "nekusar-grixis")
 RATKING_DIR = os.path.join(os.path.dirname(__file__), "..", "rat-king-verminister")
+MEGATRON_DIR = os.path.join(os.path.dirname(__file__), "..", "megatron-tyrant-mardu")
 sys.path.insert(0, NEKUSAR_DIR)
 sys.path.insert(0, RATKING_DIR)
+sys.path.insert(0, MEGATRON_DIR)
 
-# Achado real: `nekusar_goldfish_v1.py` le' `lista.md` com caminho
-# RELATIVO no import (`build_library()`, nivel de modulo), assumindo que
-# o cwd e' a propria pasta do deck -- verdade quando ele roda sozinho,
-# falso quando importado daqui. Troca de cwd so' durante o import de
-# cada um (nao mexe no cwd do resto do processo).
+# Achado real: `nekusar_goldfish_v1.py` (e o `megatron_goldfish_v1.py`,
+# mesmo padrao) le' `lista.md` com caminho RELATIVO no import
+# (`build_library()`, nivel de modulo), assumindo que o cwd e' a propria
+# pasta do deck -- verdade quando ele roda sozinho, falso quando
+# importado daqui. Troca de cwd so' durante o import de cada um (nao
+# mexe no cwd do resto do processo).
 _original_cwd = os.getcwd()
 os.chdir(NEKUSAR_DIR)
 import nekusar_goldfish_v1 as nekusar  # noqa: E402
@@ -72,10 +75,43 @@ os.chdir(_original_cwd)
 os.chdir(RATKING_DIR)
 import ratking_goldfish_v1 as ratking  # noqa: E402
 os.chdir(_original_cwd)
+os.chdir(MEGATRON_DIR)
+import megatron_goldfish_v1 as megatron  # noqa: E402
+os.chdir(_original_cwd)
 
 MODULES = {
     "nekusar": nekusar,
     "ratking": ratking,
+    "megatron": megatron,
+}
+
+# Achado real (pedido do usuario 2026-09-02): Nekusar nao tem plano de
+# combate NENHUM (ver docstring do topo) -- comparar ele contra o Rat
+# King fazia o placar de vitorias medir "motor de drenar bem modelado"
+# contra "combate mal modelado", nao os 2 decks de verdade. Megatron
+# tem combate real e central (`megatron_combat()`, poder de ataque
+# genuino rastreado em 22 criaturas, do proprio comandante a
+# finalizadores como Kozilek/Ulamog/Galactus) -- par mais justo pra
+# testar o combate do motor. Nekusar continua importavel (nao removido),
+# so' deixou de ser o par padrao do `__main__`.
+DEFAULT_PAIR = ("megatron", "ratking")
+
+# Achado real: `combat_power_this_turn()` (abaixo) soma o poder de TODA
+# criatura pronta como se ela atacasse -- correto pro Nekusar (sem
+# combate nenhum) e pro Rat King (combat_step la' so' checa sinergias
+# pontuais, nunca soma o board todo), mas ERRADO pro Megatron: o
+# combat_step DELE JA' aplica `proxy_drain()` pro ataque real do
+# comandante (unica criatura que ataca no desenho do proprio deck --
+# Rakdos the Muscle, Steel Seraph, Osgir etc sao pecas de valor/
+# combustivel, nunca atacam). Somar o poder de todo o board por cima
+# teria contado o comandante 2x E inventado ataques que o deck nunca
+# faz. Decks com combate real ja' embutido no proprio play_turn (via
+# proxy_damage_total) entram aqui = True, e a camada generica de
+# combate fica zerada pra eles.
+COMBAT_MODELED_INTERNALLY = {
+    "nekusar": False,
+    "ratking": False,
+    "megatron": True,
 }
 
 # Nomes de campos de token conhecidos por deck, com um poder estimado
@@ -85,6 +121,7 @@ MODULES = {
 # grandes de verdade).
 TOKEN_FIELDS = {
     "nekusar": [],
+    "megatron": [],
     "ratking": ["rat_tokens", "squirrel_tokens", "mercenary_tokens"],
 }
 
@@ -164,13 +201,18 @@ def take_turn(table: TableState, player: PlayerState, is_first_turn: bool, on_pl
     num_opponents = getattr(module, "NUM_OPPONENTS", None)
     real_drain = drain_delta // num_opponents if num_opponents else drain_delta
 
-    real_combat = combat_power_this_turn(player)
-
     target = choose_attack_target(table, player.seat)
     if target is None:
         return
 
-    real_combat = max(0, real_combat - estimate_block_reduction(target))
+    if COMBAT_MODELED_INTERNALLY.get(player.deck_id, False):
+        # O proprio play_turn() ja aplicou o combate real no
+        # proxy_damage_total (ja contabilizado em real_drain acima) --
+        # a camada generica ficaria duplicando/inventando ataques.
+        real_combat = 0
+    else:
+        real_combat = combat_power_this_turn(player)
+        real_combat = max(0, real_combat - estimate_block_reduction(target))
 
     total_damage = real_drain + real_combat
     if total_damage <= 0:
@@ -249,4 +291,4 @@ def run_batch(n: int, seed_base: int, deck_ids: tuple, rounds: int = 10):
 
 
 if __name__ == "__main__":
-    run_batch(2000, seed_base=1_000_000, deck_ids=("nekusar", "ratking"), rounds=10)
+    run_batch(2000, seed_base=1_000_000, deck_ids=DEFAULT_PAIR, rounds=10)
