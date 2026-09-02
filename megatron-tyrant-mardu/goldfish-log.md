@@ -4,6 +4,33 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Correção — Shields Up! ainda não foi lançada — 2026-09-02
+
+**Achado do usuário:** "Shields up ainda não foi lançada, só quando
+lançarem star trek". Confirmado via Scryfall: Shields Up! é do set
+**Star Trek**, `released_at: 2026-11-13` — no futuro relativo a hoje
+(2026-09-02), não é legal em Commander. Erro meu: verifiquei o texto da
+carta ao escolhê-la (buscando `t:instant c:w o:hexproof`) mas não
+conferi a data de lançamento — Scryfall indexa cartas ainda não
+lançadas/spoiled.
+
+**Corrigido:** substituída por **Loran's Escape** (The Brothers' War,
+2022, real e legal, mesmo efeito: "target artifact or creature gains
+hexproof and indestructible", só troca o +1/+1 counter por scry 1).
+Aproveitei pra corrigir um desperdício de mana que nem tinha percebido:
+nem Shields Up! nem Blacksmith's Skill tinham dispatch real em
+`resolve_instant_sorcery` (sem alvo real de remoção de oponente pra
+proteger contra, mesma categoria estrutural de Blasphemous Act/Decree of
+Pain), mas nenhuma das duas estava excluída do auto-cast genérico —
+seriam conjuradas todo turno que sobrasse 1 mana, sem efeito nenhum.
+Corrigido: as duas (agora Loran's Escape + Blacksmith's Skill) entraram
+em `NO_SELF_HARM_EXCLUDE`.
+
+Validado: `len(BASE_LIBRARY) == 99` + regressão de 20.000 partidas (0
+exceções).
+
+---
+
 ## Reconstrução completa: shell de weld/cheat/sacrifice — 2026-09-02
 
 **Gatilho:** o usuário conseguiu com o dono real do deck (o oponente

@@ -21,7 +21,13 @@ Cathartic Reunion, Evendo Brushrazer, Coveted Jewel.
 ausentes desta lista "inicial" — upgrades feitos depois): Rakdos, the
 Muscle; Summon: Bahamut; Osgir, the Reconstructor; Wheel of Fortune;
 Phyrexian Triniform; Blasphemous Act. Mais 2 magias de proteção pedidas
-à parte: Shields Up! e Blacksmith's Skill (hexproof+indestructible).
+à parte: Loran's Escape e Blacksmith's Skill (hexproof+indestructible).
+
+**Correção 2026-09-02**: a escolha original pra 1 das 2 magias de
+hexproof (Shields Up!) era do set Star Trek, que só sai em 2026-11-13 —
+ainda não lançado, não é legal em Commander. Usuário pegou o erro.
+Trocada por Loran's Escape (The Brothers' War, 2022, real e legal, mesmo
+efeito).
 
 **Terrenos**: mantida a base dele quase toda, com 2 mudanças pedidas —
 (1) proporção de básicas rebalanceada pelo peso real de pips (R 59,6% /
@@ -90,7 +96,7 @@ mantida.
 1 Sandstone Oracle
 1 Scrap Trawler
 1 Scrap Welder
-1 Shields Up!
+1 Loran's Escape
 1 Skitterbeam Battalion
 1 Sneak Attack
 1 Sol Ring
