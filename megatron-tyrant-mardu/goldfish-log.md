@@ -4,6 +4,45 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### Bracket 2 — remoção dos 3 Game Changers + troca Rakdos Charm → Phyrexian Triniform — 2026-09-02
+
+**Parte 1 — Phyrexian Triniform:** discutindo Portal to Phyrexia, o
+usuário identificou que a carta real com "9/9, quando morre gera 3
+artefatos 3/3" era **Phyrexian Triniform** — já citada no docstring do
+arquivo como "vista ao vivo num oponente real", mas nunca de fato
+incluída nas 99 cartas. Adicionada no lugar de Rakdos Charm (peça de
+interação mais redundante — já havia 7 outras). Gatilho de morte real
+implementado em `toolbox_recur_death_trigger()` (3 tokens 3/3, também
+elegíveis como combustível do Megatron).
+
+**Parte 2 — Bracket 2:** pedido direto do usuário — *"Pode tirar o One
+Ring e o Smothering Tithe" / "Pode tirar os 3 GCs, quero ele B2"*. Os 3
+Game Changers da lista (cross-reference contra `is:gamechanger` do
+Scryfall, feito antes nesta sessão): Smothering Tithe, The One Ring,
+Teferi's Protection — todos removidos.
+
+**Achado ao remover:** o campo `the_one_ring_burden` só era checado no
+upkeep (`self_damage`), **nunca incrementado em lugar nenhum** — The One
+Ring nunca causou autodano de verdade neste simulador, apesar de listado
+como "implementado" numa rodada anterior deste log. Removê-lo não perde
+nenhum dado real de simulação.
+
+Substituídas por Mind Stone (rock + fuel), Sword of the Animist (+1/+1 e
+busca terreno básico a cada ataque do Megatron, implementado de verdade
+em `megatron_combat()`) e Vandalblast (remoção de artefato, tag
+`interaction`) — nenhuma delas é Game Changer.
+
+**Validação:** import + `len(BASE_LIBRARY) == 99` após as duas trocas +
+regressão de 5.000 partidas (seed 7000000, turns=8, 0 exceções). Dano
+proxy médio 31,40 (era 30,61 só com a troca do Triniform, 28,18 na
+baseline original de 2026-08-29) — consistente com uma troca
+aproximadamente neutra em poder bruto, dentro do ruído normal entre
+seeds.
+
+Detalhamento completo em `checklist-oraculo.md`.
+
+---
+
 ### Correção — Plaza of Heroes / infraestrutura "legendary" morta — 2026-09-02
 
 **Gatilho:** usuário lembrou "The Ten Rings" (já correta — max hand size

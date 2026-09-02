@@ -88,12 +88,12 @@ documentadas"). Confirmado nesta rodada, carta por carta:
   (Wheel of Misfortune simplificado — modo de "maior número" não
   simulável sem escolha simultânea de oponente real, documentado).
 - **Removal genérica sem alvo real** (Crackling Doom/Soul Shatter/
-  Shatterskull Smashing/Sundering Eruption/Rakdos Charm/Swords/Path):
+  Shatterskull Smashing/Sundering Eruption/Vandalblast/Swords/Path):
   conjurada quando há mana sobrando, conta como interação — 📊.
 - **Price of Progress**: proxy via contagem de terrenos não-básicos
   próprios — 📝 documentado.
-- **The One Ring / Phyrexian Arena / Descent into Avernus**: draw
-  engines com autodano real, incluindo Descent (dano simétrico) — ✅.
+- **Phyrexian Arena / Descent into Avernus**: draw engines com autodano
+  real, incluindo Descent (dano simétrico) — ✅.
 - **Portal to Phyrexia**: sacrifício de oponente (📊) + reanimação do
   próprio cemitério — ✅.
 - **Talon Gates of Madara**: `{T}: Add C` genérico coberto — ✅; upgrade
@@ -164,3 +164,66 @@ com Plaza pra spell legendário / NÃO libera pra spell não-legendário /
 jogos, seed 12000000, turns=10): turno médio de conjuração do Megatron
 5.02→4.97, "nunca conjurado em 10 turnos" 11.6%→10.8% — pequeno mas real
 (fixação de mana ocasional destravando um legendário que faltava a cor).
+
+---
+
+## Troca — Rakdos Charm → Phyrexian Triniform (2026-09-02)
+
+**Gatilho:** usuário perguntou sobre Portal to Phyrexia ("outro artefato
+9/9 que quando morre gera 3 artefatos 3/3") — a descrição não batia com o
+oráculo real do Portal (não é criatura, sem P/T). Investigando, o
+usuário identificou a carta certa: **Phyrexian Triniform**, já citada no
+docstring do topo do arquivo como "confirmada vista ao vivo num
+oponente real", mas nunca tinha entrado de fato nas 99 cartas da lista.
+
+**Corrigido:** adicionada ao `CARD_DB` (`{9}`, artifact creature 9/9),
+no lugar de Rakdos Charm (peça de interação mais redundante do pacote —
+já havia 7 outras). Gatilho de morte real ("When this creature dies,
+create three 3/3 colorless Phyrexian Golem artifact creature tokens")
+implementado em `toolbox_recur_death_trigger()`, o dispatch central já
+usado nos 5 pontos reais de morte do arquivo — os 3 tokens também
+contam como combustível real pro próximo sacrifício do Megatron (são
+artefatos). Novo campo `triniform_tokens_total` pra métrica.
+
+Validado: import + `len(BASE_LIBRARY) == 99` + teste unitário isolado do
+gatilho de morte (3 tokens criados, métrica incrementada) + regressão de
+20.000 partidas (seed 5000000, turns=8, 0 exceções).
+
+---
+
+## Bracket 2 — remoção dos 3 Game Changers (2026-09-02)
+
+**Pedido direto do usuário:** *"Pode tirar o One Ring e o Smothering
+Tithe" / "Pode tirar os 3 GCs, quero ele B2"*. Cross-reference contra
+`is:gamechanger` do Scryfall (53 cartas) já tinha identificado
+exatamente 3 Game Changers na lista: **Smothering Tithe**, **The One
+Ring**, **Teferi's Protection**.
+
+**Removidas do `CARD_DB`** (nenhuma tinha efeito redondo modelado que se
+perdesse de verdade: Smothering Tithe só rendia treasure via
+`NUM_OPPONENTS` em wheels próprios; The One Ring tinha o campo
+`the_one_ring_burden` só verificado no upkeep, **nunca incrementado em
+lugar nenhum** — dano zero na prática, achado ao investigar a remoção;
+Teferi's Protection era só uma tag `protection` nunca lida em nenhum
+dispatch). Substituídas por 3 cartas sem status de Game Changer,
+mantendo o tema de artefato/combustível do deck:
+
+1. **Mind Stone** (rock, +1 mana em `rocks_mana()`, tag `fuel_rock1` —
+   elegível como combustível do Megatron igual Cursed Mirror). Ativada
+   própria (`{1},T,Sacrifice: draw a card`) não modelada a parte — sempre
+   sacrificada pelo motor de fuel do Megatron primeiro (payoff maior).
+2. **Sword of the Animist** (`+1/+1` no portador + busca terreno básico
+   pro campo tapped a cada ataque) — implementada de verdade em
+   `megatron_combat()`: `power += 1` e busca real na `state.library`
+   (mesmo padrão já usado em Dauntless Scrapbot). Equip {2} não rastreado
+   a parte (simplificação: só o Megatron ataca nesse deck).
+3. **Vandalblast** (`{1}{R}`, destroy target artifact) — tag `interaction`,
+   mesma convenção das outras remoções sem alvo real. Modo overload
+   (`{4}{R}`, destrói todos os artefatos dos oponentes) não modelado
+   separadamente, mesma convenção dos outros modais do arquivo.
+
+Validado: import + `len(BASE_LIBRARY) == 99` + confirmação de que as 3
+cartas removidas somem de `BASE_LIBRARY` e as 3 novas aparecem 1x cada +
+regressão de 5.000 partidas (seed 7000000, turns=8, 0 exceções) — dano
+proxy médio 31,40 (antes 30,61 com só a troca do Triniform), consistente
+com uma troca aproximadamente neutra em poder bruto.

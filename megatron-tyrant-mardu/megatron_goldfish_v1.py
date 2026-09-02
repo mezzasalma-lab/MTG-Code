@@ -73,9 +73,9 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas):
 - Annihilator 4 (Kozilek/Ulamog): nao modelado numericamente (sacrificio
   de permanente de oponente, sem board real de oponente).
 - Removal generica sem alvo real (Crackling Doom, Soul Shatter,
-  Shatterskull Smashing, Sundering Eruption, Rakdos Charm) e' conjurada
-  quando ha mana sobrando, mesma convencao de "interaction" ja usada em
-  todos os outros simuladores desta sessao.
+  Shatterskull Smashing, Sundering Eruption) e' conjurada quando ha mana
+  sobrando, mesma convencao de "interaction" ja usada em todos os outros
+  simuladores desta sessao.
 - Price of Progress: sem terrenos de oponente reais pra contar - proxy
   documentado, usa a mesma contagem de terrenos nao-basicos QUE EU
   controlo como estimativa (premissa: composicao de manabase similar
@@ -176,6 +176,7 @@ add("Kozilek, Butcher of Truth", 10, "creature", {"cast_draw4"}, power=12, pips=
 add("Memory Jar", 5, "artifact", {"memory_jar_sac"}, pips={})
 add("Nexus of Becoming", 6, "artifact", {"nexus_combat_draw_copy"}, pips={})
 add("Portal to Phyrexia", 9, "artifact", {"portal_phyrexia"}, pips={})
+add("Phyrexian Triniform", 9, "creature", {"artifact", "triniform_death_tokens"}, power=9, pips={})
 add("Rise of the Eldrazi", 12, "sorcery", {"rise_eldrazi"}, pips={})
 add("Sandstone Oracle", 7, "creature", {"artifact", "etb_hand_diff_draw"}, power=0, pips={})
 add("Steel Seraph", 6, "creature", {"artifact"}, power=5, pips={"W": 1})
@@ -193,10 +194,13 @@ add("Descent into Avernus", 3, "enchantment", {"descent_avernus"}, pips={"R": 1}
 add("Soul Shatter", 3, "instant", {"interaction"}, pips={"B": 1})
 add("Shatterskull Smashing", 3, "sorcery", {"interaction"}, pips={"R": 2})
 add("Sundering Eruption", 3, "sorcery", {"interaction"}, pips={"R": 1})
-add("Rakdos Charm", 2, "instant", {"interaction"}, pips={"B": 1, "R": 1})
 add("Boros Charm", 2, "instant", {"boros_charm_burn"}, pips={"R": 1, "W": 1})
 add("Swords to Plowshares", 1, "instant", {"interaction"}, pips={"W": 1})
 add("Path to Exile", 1, "instant", {"interaction"}, pips={"W": 1})
+add("Vandalblast", 2, "sorcery", {"interaction"}, pips={"R": 1})  # modo overload ({4}{R}, destroi
+# TODOS os artefatos dos oponentes) nao modelado separadamente -- mesma
+# convencao ja usada pros outros modais do arquivo (Shatterskull Smashing
+# etc): so' o modo de alvo unico conta como interaction_spells_cast.
 add("Blasphemous Act", 9, "sorcery", {"wipe_reduces_creatures"}, pips={"R": 1})
 
 # --- Rampa/mana ------------------------------------------------------------------
@@ -214,11 +218,24 @@ add("Mishra, Tamer of Mak Fawa", 5, "creature", {"mishra_unearth_all"}, power=2,
 # --- Draw / valor geral ----------------------------------------------------------
 add("Solemn Simulacrum", 4, "creature", {"artifact", "solemn"}, power=2, pips={})
 add("Esper Sentinel", 1, "creature", {"opponent_dependent"}, power=1, pips={"W": 1})
-add("Smothering Tithe", 3, "enchantment", {"smothering_tithe"}, pips={"W": 1})
-add("The One Ring", 4, "artifact", {"the_one_ring"}, pips={})
+# Bracket 2 (2026-09-02, pedido do usuario): removidos os 3 Game Changers
+# da lista (Smothering Tithe, The One Ring, Teferi's Protection) --
+# substituidos por Mind Stone, Sword of the Animist (abaixo) e Vandalblast
+# (na secao de interacao). Nenhuma das 3 originais tinha efeito redondo
+# demais pro goldfish solo (Smothering Tithe so' rendia treasure em wheels
+# proprios via NUM_OPPONENTS, The One Ring nunca chegou a acumular burden
+# de verdade no simulador -- campo existia mas nunca era incrementado --
+# entao a troca e' zero perda de dado real, so' sai do território GC).
+add("Mind Stone", 2, "artifact", {"fuel_rock1"}, pips={})  # sua propria
+# ativada ("{1},T,Sacrifice: draw a card") nao modelada a parte -- quando
+# sacrificada, e' sempre pelo motor de fuel do Megatron mesmo (dano
+# proporcional ao MV, ja contado em `megatron_combat`), payoff maior do
+# que 1 carta; a peca so' teria a ativada propria escolhida se sobrasse
+# mana ocioso, cenario nao modelado no goldfish (mesma convencao do
+# resto do arquivo pra ativadas secundarias de pecas de fuel).
 add("Phyrexian Arena", 3, "enchantment", {"draw_upkeep_pay_life"}, pips={"B": 1})
 add("Night's Whisper", 2, "sorcery", {"draw2_life2"}, pips={"B": 1})
-add("Teferi's Protection", 3, "instant", {"protection"}, pips={"W": 1})
+add("Sword of the Animist", 2, "artifact", {"sword_of_animist"}, pips={})
 add("Wheel of Fortune", 3, "sorcery", {"wheel_full"}, pips={"R": 1})
 add("Losheel, Clockwork Scholar", 3, "creature", {"losheel"}, power=2, pips={"W": 1})
 add("Scion of Draco", 12, "creature", {"artifact", "domain_reduce"}, power=8, pips={})
@@ -342,7 +359,6 @@ class GameState:
     megatron_face: Optional[str] = None  # "vehicle" ou "tyrant"
     life_lost_by_opponents_this_turn: int = 0
     life: int = 40
-    the_one_ring_burden: int = 0
     descent_counters: int = 0
     unruly_catapult_ready: bool = True
     scrawling_crawler_no_effect: bool = False
@@ -379,6 +395,13 @@ class GameState:
     retributive_wand_pings_total: int = 0
     pumpkin_bombs_used: bool = False
     pumpkin_bombs_draws_total: int = 0
+
+    # Achado real 2026-09-02: usuario lembrou de Phyrexian Triniform
+    # (citada no docstring do topo como carta "confirmada vista ao vivo
+    # num oponente real", mas nunca tinha entrado de fato nas 99 cartas
+    # da lista) -- adicionada no lugar de Rakdos Charm (remocao mais
+    # redundante do pacote de interacao, ja com 7 outras pecas).
+    triniform_tokens_total: int = 0
 
 
 def draw_cards(state: GameState, n: int):
@@ -419,6 +442,8 @@ def rocks_mana(state: GameState) -> int:
     if "Chromatic Orrery" in state.battlefield:
         total += 5
     if "Cursed Mirror" in state.battlefield:
+        total += 1
+    if "Mind Stone" in state.battlefield:
         total += 1
     return total
 
@@ -576,6 +601,19 @@ def megatron_combat(state: GameState):
             state.megatron_conversions_total += 1
 
     power = MEGATRON_TYRANT_POWER if state.megatron_face == "tyrant" else MEGATRON_VEHICLE_POWER
+    if "Sword of the Animist" in state.battlefield:
+        # "Equipped creature gets +1/+1." Equip {2} nao rastreado a parte
+        # (simplificacao ja usada pro resto de equipment-like do arquivo
+        # -- so' o Megatron ataca de verdade nesse deck, entao e' sempre
+        # ele quem porta). "Whenever equipped creature attacks, you may
+        # search your library for a basic land card, put it onto the
+        # battlefield tapped, then shuffle." Real, dispara em todo ataque.
+        power += 1
+        basics = [n for n in state.library if n in ("Mountain", "Plains", "Swamp")]
+        if basics:
+            pick = basics[0]
+            state.library.remove(pick)
+            state.battlefield.append(pick)
     proxy_drain(state, power)
 
 
@@ -596,12 +634,28 @@ def megatron_postcombat(state: GameState):
 # ---------------------------------------------------------------------------
 
 def toolbox_recur_death_trigger(state: GameState, dying_name: str):
-    """'When this creature dies, return another target artifact card in
-    your graveyard to your hand.' Dispara pras 3 pecas do toolbox
-    (Myr Retriever/Workshop Assistant/Junk Diver) - acabaram de ir pro
-    cemiterio (adicionado pelo caller antes de chamar isso), busca OUTRO
-    artefato la' (idealmente outra peca do proprio toolbox, fechando o
-    loop) e devolve pra mao."""
+    """Dispatch central de "quando isso morre" -- chamado em todo ponto
+    real do arquivo onde uma criatura/artefato vai pro cemiterio (fuel do
+    Megatron, ativacao do Goblin Engineer, exile do Osgir, unearth do
+    Mishra, ETB-wipe da Crystalline Entity). Cobre 2 gatilhos reais:
+
+    1. 'When this creature dies, return another target artifact card in
+       your graveyard to your hand.' -- as 3 pecas do toolbox (Myr
+       Retriever/Workshop Assistant/Junk Diver), busca OUTRO artefato no
+       cemiterio (idealmente outra peca do proprio toolbox, fechando o
+       loop) e devolve pra mao.
+    2. Phyrexian Triniform (achado real 2026-09-02, usuario lembrou da
+       carta): 'When this creature dies, create three 3/3 colorless
+       Phyrexian Golem artifact creature tokens.' -- real, incondicional,
+       os 3 tokens tambem sao combustivel real pro proximo sacrificio do
+       Megatron (fuel_* via `best_fuel_artifact()`, ja' que sao artefatos)."""
+    if dying_name == "Phyrexian Triniform":
+        token_name = "Phyrexian Golem Token"
+        if token_name not in CARD_DB:
+            add(token_name, 0, "creature", {"artifact"}, power=3)
+        for _ in range(3):
+            state.battlefield.append(token_name)
+        state.triniform_tokens_total += 3
     if dying_name not in ("Myr Retriever", "Workshop Assistant", "Junk Diver"):
         return
     pool = [c for c in state.graveyard if c != dying_name and is_artifact_card(c)]
@@ -1009,7 +1063,7 @@ def resolve_instant_sorcery(state: GameState, name: str):
         nonbasics = sum(1 for n in state.battlefield if n in LAND_NAMES and n not in ("Mountain", "Plains", "Swamp"))
         proxy_drain(state, 2 * nonbasics * NUM_OPPONENTS)
     elif "wheel_full" in tags:
-        do_wheel(state, my_draws=7, opp_draws_each=7)
+        do_wheel(state, my_draws=7)
     elif "interaction" in tags:
         state.interaction_spells_cast_total += 1
     elif "boros_charm_burn" in tags:
@@ -1025,7 +1079,11 @@ def resolve_instant_sorcery(state: GameState, name: str):
         state.extra_turns_pending += 1
 
 
-def do_wheel(state: GameState, my_draws: int, opp_draws_each: int):
+def do_wheel(state: GameState, my_draws: int):
+    # "Each player discards their hand, then draws seven cards." Cada
+    # oponente tambem compra 7 (real, so' sem payoff proprio numerico
+    # ligado a isso desde a saida de Smothering Tithe -- Bracket 2,
+    # 2026-09-02).
     state.wheels_total += 1
     discard_n = len(state.hand)
     for c in state.hand[:]:
@@ -1033,10 +1091,6 @@ def do_wheel(state: GameState, my_draws: int, opp_draws_each: int):
     state.hand = []
     draw_cards(state, my_draws)
     dpd = 1 if "Scrawling Crawler" in state.battlefield else 0  # payoff generico de opp-draw (ver upkeep)
-    if "Smothering Tithe" in state.battlefield:
-        # "whenever an opponent draws a card, they may pay {2}. If they
-        # don't, create a Treasure." Premissa: oponentes nao pagam.
-        state.bonus_mana_pool += opp_draws_each * NUM_OPPONENTS
 
 
 def do_sandstone_oracle(state: GameState):
@@ -1138,9 +1192,6 @@ def upkeep_step(state: GameState):
         # ja contado em do_wheel via 'dpd'; aqui so' a metade simetrica).
         draw_cards(state, 1)
         proxy_drain(state, 1 * NUM_OPPONENTS)
-
-    if "The One Ring" in state.battlefield and state.the_one_ring_burden > 0:
-        self_damage(state, state.the_one_ring_burden)
 
     if "Phyrexian Arena" in state.battlefield:
         draw_cards(state, 1)
@@ -1367,7 +1418,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg wheels conjurados: {avg([s.wheels_total for s in states]):.2f}")
     print(f"Avg tutores usados: {avg([s.tutors_used_total for s in states]):.2f}")
     print(f"Avg eventos de recursao/valor (toolbox, Osgir, Mishra, Portal to Phyrexia): {avg([s.recursion_events_total for s in states]):.2f}")
-    print(f"Avg vida final (autodano de Flame Rift/Damnable Pact/Descent into Avernus/The One Ring): {avg([s.life for s in states]):.2f}")
+    print(f"Avg vida final (autodano de Flame Rift/Damnable Pact/Descent into Avernus): {avg([s.life for s in states]):.2f}")
     own_ko = sum(1 for s in states if s.life <= 0)
     print(f"Partidas em que os PROPRIOS efeitos derrubam minha vida a 0 ou menos: {100*own_ko/n:.1f}%")
     print(f"Avg mao final: {avg([len(s.hand) for s in states]):.2f}")

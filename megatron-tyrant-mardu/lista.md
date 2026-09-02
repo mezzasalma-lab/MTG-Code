@@ -5,6 +5,12 @@ adicionais (Moxfield/Archidekt) cruzadas por frequência + cartas confirmadas
 vistas num oponente real em partida. Ver conversa/registro para o histórico
 completo de decisão carta a carta.
 
+**Bracket 2** (2026-09-02): os 3 Game Changers que a lista tinha (Smothering
+Tithe, The One Ring, Teferi's Protection) foram removidos a pedido do usuário
+para trazer o deck pra Bracket 2 — substituídos por Mind Stone, Sword of the
+Animist e Vandalblast (nenhuma delas é Game Changer, mantêm o tema de
+artefato/combustível do deck).
+
 ## Comandante
 
 1 Megatron, Tyrant
@@ -63,20 +69,20 @@ completo de decisão carta a carta.
 1 Mishra, Tamer of Mak Fawa
 1 Solemn Simulacrum
 1 Esper Sentinel
-1 Smothering Tithe
-1 The One Ring
+1 Mind Stone
+1 Sword of the Animist
 1 Phyrexian Arena
 1 Night's Whisper
 1 Sol Ring
 1 Arcane Signet
 1 Swords to Plowshares
 1 Path to Exile
-1 Teferi's Protection
+1 Vandalblast
 1 Wheel of Fortune
 1 Losheel, Clockwork Scholar
 1 Scion of Draco
 1 Boros Charm
-1 Rakdos Charm
+1 Phyrexian Triniform
 1 Myr Retriever
 1 Workshop Assistant
 1 Junk Diver
