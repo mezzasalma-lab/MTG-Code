@@ -6,6 +6,15 @@ solo. Combinado explicitamente que isso seria construído **em fases**,
 cada uma entregando algo testável sozinho, pra não queimar orçamento
 numa coisa grande que não termina em nada usável.
 
+**Mesa alvo (confirmada 2026-09-02):** Edgar Markov vs Ur-Dragon vs Toph
+vs Maralen. São os 4 simuladores mais complexos do repositório inteiro
+(Toph 2.724 linhas, Edgar Markov 2.575, Ur-Dragon 2.207, Maralen 1.528 —
+maiores que qualquer um dos exemplos usados nas seções abaixo), o que
+torna a Fase 4 (plugar esses 4 de verdade) a etapa mais trabalhosa do
+projeto. Por isso a Fase 1 (prova de conceito do encanamento) usa 2
+decks bem mais simples só pra validar a arquitetura barato antes de
+investir nos 4 grandes — ver seção 8.
+
 Este documento é só a **Fase 0**: o contrato de estado e as decisões de
 arquitetura. Nenhum motor de turno é escrito aqui — isso é Fase 1.
 
@@ -36,15 +45,19 @@ por isso a divisão em fases.
 Os 17 decks já têm toda a lógica de carta escrita (`CARD_DB`, ETBs,
 combate, ativadas) — mas em **duas arquiteturas diferentes**:
 
-- **Objetos `Permanent`** (Kutzil, Toph, Captain Storm, Ms. Bumbleflower)
+- **Objetos `Permanent`** (Toph, Kutzil, Captain Storm, Ms. Bumbleflower)
   — contadores +1/+1 persistentes e equipamentos anexados exigem
-  rastrear estado por permanente específico.
-- **Lista de nomes** (Azula, Megatron, a maioria dos outros) — mais
-  simples, suficiente quando não há contador persistente pra rastrear.
+  rastrear estado por permanente específico. Da mesa alvo, só a **Toph**
+  usa esse padrão.
+- **Lista de nomes** (Edgar Markov, Ur-Dragon, Maralen, Azula, Megatron,
+  a maioria dos outros) — mais simples, suficiente quando não há
+  contador persistente pra rastrear. Os outros 3 da mesa alvo (Edgar
+  Markov, Ur-Dragon, Maralen) usam esse padrão.
 
-Reescrever os 4 decks pedidos (Kutzil, Bumbleflower, Azula, Captain
-Storm) num motor unificado do zero jogaria fora ~5.000 linhas de lógica
-de carta já testada e validada em 20.000 partidas cada. Em vez disso, a
+Reescrever os 4 decks pedidos (Edgar Markov, Ur-Dragon, Toph, Maralen —
+juntos, ~9.400 linhas) num motor unificado do zero jogaria fora toda a
+lógica de carta já testada e validada em 20.000 partidas cada. Em vez
+disso, a
 Fase 0 define um **adaptador fino**: cada deck continua com seu próprio
 arquivo, `CARD_DB` e funções internas — só ganha uma casca pequena que
 traduz chamadas do motor de mesa ("é sua vez", "escolha um alvo entre
@@ -78,7 +91,7 @@ e já foram validados).
 @dataclass
 class PlayerState:
     seat: int                       # 0-3
-    deck_id: str                    # "kutzil" | "bumbleflower" | "azula" | "captainstorm"
+    deck_id: str                    # "edgar_markov" | "ur_dragon" | "toph" | "maralen"
     life: int = 40
     hand: list = field(default_factory=list)
     battlefield: list = field(default_factory=list)   # list[Permanent] -- ver secao 4
@@ -96,19 +109,21 @@ class PlayerState:
 
     eliminated: bool = False        # vida <= 0
     extra: dict = field(default_factory=dict)   # campos especificos do deck
-                                                  # (ex: state.simic_ascendancy_growth_counters
-                                                  # do Bumbleflower) -- evita um GameState
-                                                  # gigante com campo de TODO deck existente
+                                                  # (ex: state.tokens do Edgar Markov)
+                                                  # -- evita um GameState gigante com
+                                                  # campo de TODO deck existente
     metrics: dict = field(default_factory=dict)  # contadores que hoje sao atributos soltos
                                                    # em cada GameState viram entradas aqui
 ```
 
 `extra` e `metrics` como dicts (em vez de dataclass fields fixos) é
-deliberado: cada deck tem 15-30 campos únicos hoje (ex.:
-`state.storm_grapeshot_max_damage` na Azula, `state.jhoira_ingenuity`
-na Bumbleflower) — forçar todos num `PlayerState` único infla o schema
-compartilhado com campos que só 1 dos 4 decks usa. O adaptador de cada
-deck lê/escreve seu próprio namespace dentro de `extra`/`metrics`.
+deliberado: cada deck tem 15-30 campos únicos hoje no seu `GameState`
+solo (ex.: o Edgar Markov já rastreia `tokens: List[str]` à parte pros
+Vampiros 1/1 da Eminence) — forçar todos num `PlayerState` único infla
+o schema compartilhado com campos que só 1 dos 4 decks usa. O adaptador
+de cada deck lê/escreve seu próprio namespace dentro de `extra`/`metrics`,
+e campos genuinamente específicos (como esse `tokens` do Edgar Markov)
+continuam existindo do jeito que já existem, só dentro de `extra`.
 
 ### `TableState`
 
@@ -132,14 +147,15 @@ class TableState:
 
 ## 4. Unificando `Permanent` entre os dois padrões
 
-Decks de lista-de-nomes (Azula) tratam o campo como `list[str]`. Decks
-de objeto (Kutzil/Bumbleflower/Captain Storm) usam `Permanent(card,
-uid, tapped, counters, ...)`. Pra Fase 4 não exigir reescrever a Azula
-inteira, a decisão é: **todo `battlefield` do motor de mesa usa
-`Permanent`**, e o adaptador da Azula ganha uma camada de tradução
-mínima (nome↔uid) só nos pontos onde ela precisa saber "quem é esse
-permanente" pra decidir alvo/bloqueio — o resto da lógica interna dela
-(cast, combate, ETBs) continua igual, olhando só pros próprios nomes.
+Da mesa alvo, 3 decks (Edgar Markov, Ur-Dragon, Maralen) tratam o campo
+como `list[str]`; só a Toph usa objeto (`Permanent(card, uid, tapped,
+counters, ...)`). Pra Fase 4 não exigir reescrever os 3 de lista-de-nomes
+inteiros, a decisão é: **todo `battlefield` do motor de mesa usa
+`Permanent`**, e o adaptador de cada deck de lista-de-nomes ganha uma
+camada de tradução mínima (nome↔uid) só nos pontos onde ele precisa
+saber "quem é esse permanente" pra decidir alvo/bloqueio — o resto da
+lógica interna de cada um (cast, combate, ETBs) continua igual, olhando
+só pros próprios nomes.
 
 ---
 
@@ -205,7 +221,9 @@ fidelidade depois que a Fase 1-5 estiver rodando.
 ## 8. Próximo passo (Fase 1)
 
 Esqueleto de turno + combate real (vida, ataque escolhendo oponente,
-bloqueio via heurística), validado com 2 dos decks mais simples do
-repositório — ainda sem os 4 decks complicados, só pra provar que a
-arquitetura acima roda sem travar. Escrito depois de confirmação do
-usuário.
+bloqueio via heurística), validado com **Nekusar-Grixis (1.102 linhas)
+e Rat King Verminister (1.357 linhas)** — os 2 simuladores mais simples
+do repositório, ambos de lista-de-nomes, nenhum dos dois faz parte da
+mesa alvo. Ainda sem Edgar Markov/Ur-Dragon/Toph/Maralen — só pra provar
+que a arquitetura acima roda sem travar antes de investir nos 4 grandes
+(seção 1). Escrito depois de confirmação do usuário.
