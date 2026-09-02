@@ -33,23 +33,46 @@ onde o combate já está embutido no `proxy_damage_total` (Megatron)
 zeram a camada genérica; decks sem isso (Nekusar, Rat King) continuam
 usando a camada genérica pra preencher o buraco real.
 
-## Resultado observado (20.000 partidas, seed 5.000.000+, 10 rodadas, começo alternado)
+### Achado real #2: poder dinâmico do Rat Colony nunca era usado (pedido do usuário 2026-09-02)
+
+Pergunta do usuário: *"Como Rat king tem pouquíssimo poder de criatura,
+se cada Rat Colony ganha +1/0 por rato em campo?"* — motivo real: o
+arquivo do Rat King já tem `rat_colony_power(state)` calculando certo
+("2 + 1 por cada OUTRO Rat que você controla"), mas essa função **nunca
+era chamada em lugar nenhum** — nem no simulador solo original (decisão
+documentada e válida lá: "sem combate real, sem oponente" — não há pra
+quem atacar mesmo) nem no meu `creature_power()` do motor de mesa, que
+usava só o poder impresso estático (2) — um bug real aqui, já que agora
+EXISTE um oponente pra atacar.
+
+Rat Colony é carta de **cópias ilimitadas** (24x na lista) — com N
+cópias em campo, o poder total delas sozinhas é `N × (2 + N - 1)`,
+crescimento quadrático. Confirmado numa partida de teste: **23 cópias
+de Rat Colony simultâneas em campo**, board genuinamente enorme.
+Corrigido com uma tabela de overrides de poder dinâmico por carta
+(`DYNAMIC_POWER_OVERRIDES`), extensível pra outras cartas parecidas que
+os 4 decks da mesa alvo devem ter.
+
+## Resultado observado (20.000 partidas, seed 5.000.000+, 10 rodadas, começo alternado, POS fix do Rat Colony)
 
 | | Vitórias | % |
 |---|---|---|
-| Megatron | 1.013 | 5,1% |
-| Rat King Verminister | 11.810 | 59,0% |
-| Sem eliminação em 10 rodadas | 7.177 | 35,9% |
+| Megatron | 632 | 3,2% |
+| Rat King Verminister | 16.344 | 81,7% |
+| Sem eliminação em 10 rodadas | 3.024 | 15,1% |
 
-Turno médio de eliminação (quando houve): 9,6.
+Turno médio de eliminação (quando houve): 9,0. Dano de combate médio do
+Rat King por partida: 57,2 (mediana 45,0, máximo observado 3.623 numa
+partida com board de Rat Colony saindo do controle).
 
-**Leitura honesta:** isso é plausível, não um bug — Megatron é um motor
-mais lento e dependente de montagem (comandante + combustível de
-artefato), enquanto Rat King ataca com poder pequeno mas consistente
-desde cedo. Numa corrida de 10 rodadas sem remoção nenhuma (Fase 2),
-consistência bate explosão tardia mais vezes do que não. Ainda assim,
-os números de "quem venceria" seguem limitados pelo que falta (ver
-abaixo) — não é uma leitura definitiva de poder relativo.
+**Leitura honesta:** o fix mudou o resultado de forma real e grande (Rat
+King foi de 59,0% pra 81,7%) — não é ruído, é a diferença entre usar o
+poder real de uma carta central do deck vs um valor estático errado.
+Megatron continua perdendo a maioria por ser um motor mais lento e
+dependente de montagem; Rat King, além de consistente, agora tem seu
+verdadeiro teto de poder de combate refletido. Ainda assim, os números
+seguem limitados pelo que falta (bloqueio aproximado, sem interação
+real) — não é uma leitura definitiva de poder relativo entre os 2.
 
 ## O que foi validado (objetivo real da Fase 1)
 

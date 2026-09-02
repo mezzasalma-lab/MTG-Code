@@ -158,14 +158,38 @@ class TableState:
         return alive[0] if len(alive) == 1 else None
 
 
-def creature_power(module, name: str) -> int:
+# Achado real (pedido do usuario 2026-09-02): "Rat Colony" tem poder
+# DINAMICO ("+1/+0 pra cada OUTRO Rat que voce controla") e e' carta de
+# copias ILIMITADAS (24x na lista) -- com N copias em campo, o poder
+# total delas sozinhas e' N * (2 + N - 1), crescimento quadratico, nao
+# linear. O proprio arquivo do Rat King ja tem `rat_colony_power(state)`
+# calculando isso certo, mas a funcao nunca era chamada em lugar nenhum
+# -- nem no simulador solo original (documentado la' como decisao
+# valida: "sem combate/PT por criatura, sem oponente real" -- faz
+# sentido pra um goldfish solo) nem no motor de mesa (que TEM oponente
+# real, entao a omissao aqui era um bug de verdade, nao uma decisao).
+# Generalizado como tabela de overrides por deck em vez de um
+# `if name == "Rat Colony"` hardcoded -- outros decks da mesa alvo
+# (Fase 4) provavelmente tem cartas parecidas (P/T que escala com o
+# board), esta e' a forma extensivel de plugar cada uma quando aparecer.
+DYNAMIC_POWER_OVERRIDES = {
+    "ratking": {
+        "Rat Colony": lambda module, state: module.rat_colony_power(state),
+    },
+}
+
+
+def creature_power(module, state, deck_id: str, name: str) -> int:
+    override = DYNAMIC_POWER_OVERRIDES.get(deck_id, {}).get(name)
+    if override is not None:
+        return override(module, state)
     card = module.CARD_DB[name]
     return getattr(card, "power", None) or getattr(card, "base_power", 0) or 0
 
 
 def combat_power_this_turn(player: PlayerState) -> int:
     module, state = player.module, player.native_state
-    total = sum(creature_power(module, n) for n in module.ready_creatures(state))
+    total = sum(creature_power(module, state, player.deck_id, n) for n in module.ready_creatures(state))
     for field_name in TOKEN_FIELDS.get(player.deck_id, []):
         total += getattr(state, field_name, 0) * 1  # piso de 1 poder por token, ver docstring
     return total
