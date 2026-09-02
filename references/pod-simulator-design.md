@@ -218,12 +218,30 @@ fidelidade depois que a Fase 1-5 estiver rodando.
 
 ---
 
-## 8. Próximo passo (Fase 1)
+## 8. Fase 1 — ✅ concluída (2026-09-02)
 
-Esqueleto de turno + combate real (vida, ataque escolhendo oponente,
-bloqueio via heurística), validado com **Nekusar-Grixis (1.102 linhas)
-e Rat King Verminister (1.357 linhas)** — os 2 simuladores mais simples
-do repositório, ambos de lista-de-nomes, nenhum dos dois faz parte da
-mesa alvo. Ainda sem Edgar Markov/Ur-Dragon/Toph/Maralen — só pra provar
-que a arquitetura acima roda sem travar antes de investir nos 4 grandes
-(seção 1). Escrito depois de confirmação do usuário.
+Esqueleto de turno + combate real escrito em `pod-simulator/pod_engine_v1.py`,
+validado com Nekusar-Grixis vs Rat King Verminister (os 2 simuladores
+mais simples do repositório, nenhum dos dois faz parte da mesa alvo).
+20.000 partidas, 0 exceções, ~46s. Resultados e limitações completas em
+`pod-simulator/fase1-log.md` — resumo: a arquitetura funciona (vida
+real, turno alternado, dano real com eliminação), mas **nenhum dos 2
+decks de teste rastreia poder/toughness de criatura de forma
+completa**, então o placar de "quem venceria" ali não deve ser lido
+como sinal de força real — só como prova de que o encanamento roda.
+Isso muda na Fase 4, quando decks com combate/P/T real entrarem
+(Toph, que já rastreia toughness em objetos `Permanent`).
+
+**Fase 1 foi deliberadamente mais simples que o schema `PlayerState`/
+`TableState` rico descrito nas seções 3-6**: cada jogador manteve seu
+`GameState` nativo intacto (zero risco de regressão), e o motor só
+somou por cima vida real + roteamento de dano. O schema rico completo
+(battlefield unificado em `Permanent`, adaptador por carta pra
+remoção/contramágica mirando oponente real) é trabalho da Fase 2+.
+
+## 9. Próximo passo (Fase 2)
+
+Interação real (remoção, contramágica) entre os mesmos 2 decks de
+teste — reconectar os pontos hoje 📊 pra mirar o oponente de verdade
+usando o motor da Fase 1 como base. Escrito depois de confirmação do
+usuário.
