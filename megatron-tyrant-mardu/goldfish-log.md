@@ -4,6 +4,74 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Reconstrução completa: shell de weld/cheat/sacrifice — 2026-09-02
+
+**Gatilho:** o usuário conseguiu com o dono real do deck (o oponente
+citado nas partidas presenciadas) a lista inicial dele. Comparando com o
+que tínhamos (montado por frequência entre decklists públicas + primer),
+ficou claro que o plano de jogo real é outro: solda/recupera artefato
+(Goblin Welder/Trash for Treasure/Scrap Welder/Scrap Trawler/Daretti x2)
++ cheat pra campo (Sneak Attack/Anrakyr the Traveller/Feldon of the
+Third Path) + Warstorm Surge como motor de dano — não "Megatron
+sacrifica combustível barato todo turno".
+
+**Decisão da lista final** (ver `lista.md` pro detalhamento completo):
+lista real do dono (100 cartas, já vinha pronta) menos 8 cortes fracos/
+redundantes (Sojourner's Companion, Frogmyr Enforcer, Psychotic Fury,
+Temur Battle Rage, Seize the Spotlight, Cathartic Reunion, Evendo
+Brushrazer, Coveted Jewel) mais 8 adições confirmadas pelo usuário
+(Rakdos the Muscle, Summon: Bahamut, Osgir the Reconstructor, Wheel of
+Fortune, Phyrexian Triniform, Blasphemous Act — vistas ao vivo, ausentes
+dessa lista "inicial" — mais Shields Up! e Blacksmith's Skill, pedidas à
+parte). Terrenos rebalanceados por peso real de pips (R 59,6%/B 28,8%/
+W 11,5% dos símbolos coloridos — branco é a cor mais leve, nenhum custo
+duplo-branco na lista inteira) e upgradados pra base premium ABUR
+(Plateau/Scrubland/Badlands no lugar das 3 painlands, budget liberado
+pra proxy) + Adagia, Windswept Bastion (Planet land que duplica
+artefato) no lugar de 1 Plains.
+
+**`megatron_goldfish_v1.py` reescrito do zero.** Oráculo das 76 cartas
+não-terrenas confirmado via Scryfall antes de qualquer código. Motor
+novo: `creature_enters()` como ponto único de ETB de criatura (dispara
+Warstorm Surge sempre, real poder dinâmico via `get_power()` pro Daretti
+Rocketeer Engineer), `sacrifice()` como ponto único de sacrifício
+(dispara Scrap Trawler/toolbox/Triniform/Rakdos automaticamente), fodder
+escolhido via `best_weld_fodder()`/`best_payoff_fodder()` (nunca
+sacrifica board real por payoff puro — só fodder temporário "grátis").
+
+**4 classes de bug real achadas e corrigidas durante os testes** (não
+hipotéticas — cada uma reproduzida e confirmada antes do fix):
+1. `cast_megatron` checava "está na mão", mas o comandante corretamente
+   nunca entra na mão (zona de comando) — Megatron nunca era conjurado
+   em partida NENHUMA (100% de 2.000 jogos testados antes do fix).
+2. Heurística de "pior carta pra descartar" usava só menor MV, então
+   Looting/Laughing Mad descartavam os próprios terrenos da mão antes de
+   conseguirem ser jogados — travava o desenvolvimento de mana da
+   partida inteira. Corrigido com `worst_discard_target()` (protege
+   terrenos até 6 em campo).
+3. Recursão infinita real: Mirrorworks/Skitterbeam Battalion copiando a
+   si mesmos via token, porque a checagem "if you cast it"/"nontoken"
+   real do oráculo não excluía tokens — corrigido propagando um
+   parâmetro `token` por `creature_enters`/`resolve_etb`/`artifact_etb_hooks`.
+4. `ValueError` real em 5 pontos de solda: escolher alvo no cemitério
+   ANTES de sacrificar o fodder cria uma janela onde o próprio
+   sacrifício (gatilho de morte do toolbox) pode consumir o mesmo alvo —
+   corrigido com guardas defensivas em Goblin Welder/Scrap Welder/Trash
+   for Treasure/Goblin Engineer/Daretti/Metalwork Colossus.
+
+**Validação:** 11 testes unitários isolados + 3 rodadas de 20.000
+partidas (seeds 1M/2M, turns=10, **0 exceções, 0 timeouts**) +
+comparação turns=8 vs turns=14 (3.000 jogos cada) confirmando que o
+motor escala de forma real com mais turnos (Daretti chega ao -10 em
+3,4%→11,7%, Ayara transforma em 1,5%→10,9%, artefatos sacrificados
+2,78→8,90) — consistente com um motor de valor que precisa de tempo pra
+montar, não um bug. Turno médio de conjuração do Megatron: 4,27-5,02.
+Dano proxy médio: 26,5 (turns=8) / 83,3 (turns=14).
+
+Detalhamento completo carta a carta em `checklist-oraculo.md`.
+
+---
+
 ### Reauditoria linha-a-linha completa das 99 cartas — 2026-09-02
 
 **Gatilho:** o usuário perguntou sobre Stensian Sanguinist e eu respondi
