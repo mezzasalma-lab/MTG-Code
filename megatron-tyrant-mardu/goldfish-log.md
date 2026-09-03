@@ -4,6 +4,56 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Motor de combate expandido: todo mundo ataca — 2026-09-02
+
+**Gatilho — primeiro goldfish real do usuário no Archidekt:** jogando de
+verdade, ele reportou: *"Os dois geraram mana, ataquei 2 jogadores
+diferentes e gerei 17 de mana incolor"*. Achado real: Metalwork Colossus
+atacou um oponente DIFERENTE do que o Megatron atacou, e o dano de
+combate dele também alimentou o gatilho pós-combate do Megatron — porque
+`life your opponents have lost THIS TURN` é um pool **compartilhado**
+(qualquer fonte de dano conta), não exclusivo do Megatron.
+
+Até esse ponto o motor só modelava o Megatron (+ Anrakyr, pela própria
+habilidade dele exigir atacar) atacando de verdade — os outros
+finalizadores grandes (Metalwork Colossus, Bygone Colossus, Skitterbeam
+Battalion, os 2 Gearhulks, Ironsoul Enforcer, Ayara, Daretti Rocketeer
+Engineer, Ragavan, Treasure Nabber) nunca atacavam, só geravam valor via
+ETB/sacrifício. Cobrança direta do usuário: *"Eu já NÃO MANDEI MODELAR
+TUDO NOS SIMULADORES?"*
+
+**Corrigido — `all_attackers_combat()`:** toda criatura pronta (sem
+doença de invocação) com poder > 0 ataca de verdade agora, cada uma
+contribuindo pro mesmo pool de dano via `proxy_drain()` — sem bloqueio
+real modelado pra ninguém (mesma convenção de sempre), então atacar com
+tudo é sempre a jogada correta nesse motor sem oponente real.
+
+**2 gatilhos de ataque que ficaram fantasmas até agora, por causa dessa
+mesma limitação, corrigidos junto:**
+- **Ragavan, Nimble Pilferer** — "whenever Ragavan deals combat damage
+  to a player, create a Treasure and exile the top card of that
+  player's library, you may cast it." Nunca atacava, tag nunca lida.
+- **Daretti, Rocketeer Engineer** — "whenever Daretti enters OR
+  ATTACKS, choose target artifact in your graveyard, may sacrifice an
+  artifact to return it." Nem a metade de ETB nem a de ataque tinham
+  dispatch nenhum — só o poder dinâmico (`get_power`) estava
+  implementado.
+
+**Ironsoul Enforcer ("attacks alone") agora reflete a realidade**: com
+todo mundo atacando, esse gatilho passa a disparar só quando genuinamente
+sobra 1 criatura pronta (early game ou board reduzido) — antes disparava
+sempre que só Megatron/Anrakyr estavam prontos, inflado artificialmente.
+
+**Validado:** 6 testes unitários isolados (combate múltiplo alimentando
+o pool compartilhado do Megatron, Ironsoul não dispara com 3+ atacantes
+mas dispara sozinho, Ragavan, Daretti Rocketeer ETB) + regressão de
+20.000 partidas (seeds 5M/7M, turns=10, **0 exceções**) + `run_batch`
+antes/depois (10 turnos): dano proxy médio 44,3→66,2, mana gerada pela
+conversão do Megatron 37,5→51,4 — mudança real e grande, consistente com
+o board inteiro atacando em vez de só 1-2 criaturas.
+
+---
+
 ## Correção — Shields Up! ainda não foi lançada — 2026-09-02
 
 **Achado do usuário:** "Shields up ainda não foi lançada, só quando

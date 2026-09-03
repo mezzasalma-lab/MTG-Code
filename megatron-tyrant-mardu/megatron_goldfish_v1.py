@@ -316,6 +316,7 @@ class GameState:
     susur_secundi_used_this_turn: bool = False
     god_pharaoh_statue_pinged_this_turn: bool = False
     attackers_this_combat: int = 0
+    attackers_total_all_turns: int = 0  # soma de todos os combates, pra metrica de run_batch
     charge_counters: dict = field(default_factory=dict)  # nome do Planet -> contadores
     bygone_colossus_exiled_warp: bool = False
     daretti_rocketeer_mv_seen: int = 0
@@ -721,6 +722,16 @@ def resolve_etb(state: GameState, name: str, token: bool = False):
         # Premissa: descarta 0 (mantem a mao), compra so' o +1 garantido
         # -- sem avaliacao real de quais cartas valem descartar.
         draw_cards(state, 1)
+
+    if "daretti_rocketeer" in tags:
+        # "Whenever Daretti enters or attacks, choose target artifact
+        # card in your graveyard. You may sacrifice an artifact. If you
+        # do, return the chosen card to the battlefield." Metade de ETB
+        # -- achado real 2026-09-02 (reauditoria pos-jogo real do
+        # usuario): nunca tinha dispatch nenhum, nem essa nem a de
+        # ataque (`daretti_rocketeer_attack_ability`, chamada em
+        # `all_attackers_combat`).
+        daretti_rocketeer_attack_ability(state)
 
     if "altar_wretched" in tags:
         # "When this artifact enters, you may sacrifice a nontoken
@@ -1181,17 +1192,15 @@ def daretti_ultimate_recursion_check(state: GameState, dying_artifact_name: str)
         state.daretti_emblem_pending_return.append(dying_artifact_name)
 
 
-def anrakyr_combat(state: GameState):
+def anrakyr_attack_ability(state: GameState):
     """'Whenever Anrakyr the Traveller attacks, you may cast an artifact
     spell from your hand or graveyard by paying life equal to its mana
-    value rather than paying its mana cost.' So' faz sentido Anrakyr
-    atacar de verdade nesse motor (ver docstring do topo do arquivo --
-    excecao documentada a 'so o Megatron ataca', ja que essa habilidade
-    inteira depende de ATACAR)."""
-    if "Anrakyr the Traveller" not in state.battlefield or "Anrakyr the Traveller" not in ready_creatures(state):
-        return
-    state.attackers_this_combat += 1
-    proxy_drain(state, get_power(state, "Anrakyr the Traveller"))
+    value rather than paying its mana cost.' O dano de combate dele em si
+    ja' e' contado por `all_attackers_combat` (achado real do usuario
+    jogando 2026-09-02: TODO mundo ataca agora, nao so' Megatron/Anrakyr
+    -- ver essa funcao pra a mudanca completa) -- aqui so' o efeito extra
+    exclusivo de Anrakyr, disparado de dentro do loop generico quando ele
+    e' quem esta' atacando."""
     pool = [c for c in (state.hand + state.graveyard) if is_artifact_card(c) and c != COMMANDER]
     if not pool:
         return
@@ -1596,12 +1605,105 @@ def main_phase(state: GameState):
     cast_kickable_chalice(state)
 
 
+def ragavan_attack_ability(state: GameState):
+    """'Whenever Ragavan deals combat damage to a player, create a
+    Treasure token and exile the top card of that player's library.
+    Until end of turn, you may cast that card.' Achado real 2026-09-02:
+    a tag "ragavan" nunca foi lida em lugar nenhum, porque ate' agora so'
+    Megatron/Anrakyr atacavam de verdade -- agora que todo mundo ataca
+    (ver `all_attackers_combat`), o gatilho fica real. Alvo = minha
+    propria biblioteca (premissa documentada, mesma convencao de "target
+    player" usada pro Rakdos the Muscle/Sandstone Oracle/etc); a
+    Treasure vira +1 de mana solta, e a carta exilada e' conjurada na
+    hora se der pra pagar (senao fica perdida, mesma simplificacao de
+    nao rastrear "mao exilada temporaria" usada pro Rakdos)."""
+    state.bonus_mana_pool += 1
+    if not state.library:
+        return
+    exiled = state.library.pop(0)
+    state.exile.append(exiled)
+    if exiled not in CARD_DB or exiled in LAND_NAMES:
+        return
+    if effective_cost(state, exiled) > remaining_mana(state) or not has_color_sources_for(state, exiled):
+        return
+    spend_mana(state, effective_cost(state, exiled))
+    state.exile.remove(exiled)
+    if is_creature_card(exiled):
+        creature_enters(state, exiled, from_hand=False)
+    else:
+        state.battlefield.append(exiled)
+        resolve_etb(state, exiled)
+    state.creatures_cheated_in_total += 1
+
+
+def daretti_rocketeer_attack_ability(state: GameState):
+    """'Whenever Daretti enters or attacks, choose target artifact card
+    in your graveyard. You may sacrifice an artifact. If you do, return
+    the chosen card to the battlefield.' Achado real 2026-09-02: nem a
+    metade de ETB nem a de ataque tinham dispatch nenhum (so' o poder
+    dinamico estava implementado) -- mesmo padrao de "so Megatron/Anrakyr
+    atacam" escondendo o gatilho de ataque; a de ETB nao tinha nem essa
+    desculpa, era fantasma puro. Corrigido as 2 aqui (chamada tanto do
+    ETB quanto do loop de ataque generico)."""
+    gy_artifacts = [c for c in state.graveyard if is_artifact_card(c)]
+    if not gy_artifacts:
+        return
+    target = max(gy_artifacts, key=lambda n: CARD_DB[n].mv)
+    fodder = best_weld_fodder(state)
+    if fodder is None or CARD_DB[fodder].mv >= CARD_DB[target].mv:
+        return
+    sacrifice(state, fodder)
+    if target not in state.graveyard:
+        return
+    state.graveyard.remove(target)
+    if is_creature_card(target):
+        creature_enters(state, target, from_hand=False)
+    else:
+        state.battlefield.append(target)
+        resolve_etb(state, target)
+    state.weld_activations_total += 1
+
+
+def all_attackers_combat(state: GameState):
+    """Achado real 2026-09-02 (usuario jogou no Archidekt e reportou:
+    "Os dois geraram mana, ataquei 2 jogadores diferentes e gerei 17 de
+    mana incolor" -- Metalwork Colossus atacou um oponente DIFERENTE do
+    que o Megatron, e o dano dele TAMBEM alimentou o gatilho pos-combate
+    do Megatron via `state.life_lost_by_opponents_this_turn`, que e' um
+    pool COMPARTILHADO -- o oraculo diz "life your opponents have lost
+    THIS TURN", nao "life lost to Megatron"). Ate' aqui o motor so'
+    modelava Megatron (+ Anrakyr, pela propria habilidade dele) atacando
+    de verdade -- os outros finalizadores grandes (Metalwork Colossus,
+    Bygone Colossus, Skitterbeam Battalion, os Gearhulks, Ironsoul
+    Enforcer, Ayara, Daretti Rocketeer, Ragavan, Treasure Nabber) nunca
+    atacavam. Corrigido: TODA criatura pronta (sem doenca de invocacao)
+    com poder > 0 ataca de verdade, cada uma contribuindo pro mesmo pool
+    de dano/vida-perdida via `proxy_drain()` -- sem bloqueio real
+    modelado pra ninguem (mesma convencao de sempre), entao atacar com
+    tudo e' sempre a jogada correta aqui."""
+    for name in ready_creatures(state):
+        if name == COMMANDER:
+            continue  # ja' tratado em megatron_combat (fuel/conversao propria)
+        power = get_power(state, name)
+        if power <= 0:
+            continue
+        state.attackers_this_combat += 1
+        proxy_drain(state, power)
+        if name == "Anrakyr the Traveller":
+            anrakyr_attack_ability(state)
+        elif name == "Ragavan, Nimble Pilferer":
+            ragavan_attack_ability(state)
+        elif name == "Daretti, Rocketeer Engineer":
+            daretti_rocketeer_attack_ability(state)
+
+
 def combat_step(state: GameState):
     state.attackers_this_combat = 0
     try_ayara_flip_reanimate(state)
     megatron_combat(state)
-    anrakyr_combat(state)
+    all_attackers_combat(state)
     ironsoul_enforcer_trigger(state)
+    state.attackers_total_all_turns += state.attackers_this_combat
 
 
 def end_step(state: GameState):
@@ -1731,6 +1833,8 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
           f"{avg([s.proxy_damage_total for s in states]):.2f}")
     print(f"  -- dos quais via Warstorm Surge: {avg([s.warstorm_surge_damage_total for s in states]):.2f} "
           f"({avg([s.warstorm_surge_triggers_total for s in states]):.2f} gatilhos/partida)")
+    print(f"Avg atacantes por partida (soma de todos os combates -- Megatron + todo o resto do "
+          f"board pronto, achado real 2026-09-02): {avg([s.attackers_total_all_turns for s in states]):.2f}")
     print(f"Avg vida ganha: {avg([s.proxy_lifegain_total for s in states]):.2f}")
     print(f"Avg cartas compradas extra: {avg([s.cards_drawn_extra for s in states]):.2f}")
     print(f"Avg ativacoes de solda (Welder/Scrap Welder/Trash for Treasure/Engineer/Osgir/Daretti): "

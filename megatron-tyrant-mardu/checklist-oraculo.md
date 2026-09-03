@@ -42,11 +42,21 @@ ser escrito — nenhuma mecânica implementada de memória.
 - **Cheat pra campo**: Sneak Attack (`try_sneak_attack`, repetível — sem
   limite de 1x/turno no oráculo real, ativa em loop enquanto houver mana
   E criatura na mão), Feldon of the Third Path (`try_feldon` — token
-  hasty do cemitério), Anrakyr the Traveller (`anrakyr_combat` — segunda
-  criatura que ataca de verdade nesse motor, EXCEÇÃO documentada à regra
-  "só o Megatron ataca", já que a habilidade inteira de Anrakyr depende
-  de atacar), Ayara flip/Furnace Queen (`try_ayara_flip_reanimate`),
-  Bygone Colossus Warp (`try_bygone_colossus_warp`, repetível).
+  hasty do cemitério), Anrakyr the Traveller (gatilho próprio via
+  `anrakyr_attack_ability`, chamado de dentro de `all_attackers_combat`),
+  Ayara flip/Furnace Queen (`try_ayara_flip_reanimate`), Bygone Colossus
+  Warp (`try_bygone_colossus_warp`, repetível).
+- **Combate expandido (2026-09-02, achado real de goldfish no
+  Archidekt)**: `all_attackers_combat()` — toda criatura pronta com
+  poder > 0 ataca de verdade agora (não só o Megatron/Anrakyr como na
+  versão original desta reconstrução), cada uma somando no mesmo pool
+  compartilhado de "vida perdida pelos oponentes esse turno" que
+  alimenta o pós-combate do Megatron. Ragavan, Nimble Pilferer
+  (`ragavan_attack_ability`) e Daretti, Rocketeer Engineer
+  (`daretti_rocketeer_attack_ability`, chamada tanto do ETB quanto do
+  ataque) eram fantasmas até essa correção — as tags existiam desde a
+  construção original mas nunca tinham dispatch, porque até então nada
+  além de Megatron/Anrakyr atacava de verdade.
 - **Sacrifício central**: `sacrifice()` é o único ponto real do arquivo
   onde algo vai pro cemitério por escolha própria — dispara Scrap
   Trawler, toolbox (Myr Retriever/Junk Diver), Phyrexian Triniform,
@@ -67,7 +77,8 @@ ser escrito — nenhuma mecânica implementada de memória.
   encantamento) e `try_susur_secundi` (12+, sacrifica criatura por
   compra) consomem os contadores.
 - **Ironsoul Enforcer**: "attacks alone" real via `state.attackers_this_combat`
-  — dispara quando só o Megatron ataca no turno (Anrakyr não atacou).
+  — agora que todo mundo pode atacar, só dispara quando genuinamente
+  sobra 1 criatura pronta no combate (early game ou board reduzido).
 - **Fetch/land abilities**: Ash Barrens landcycling (`try_ash_barrens_cycle`),
   Smoldering Marsh condicional (`etb_tapped_check`), Susur Secundi sempre
   tapa (`etb_tapped`).
@@ -79,10 +90,13 @@ ser escrito — nenhuma mecânica implementada de memória.
   o oráculo diz "each opponent"; valor único quando diz "target opponent"
   (ex: Starscream-like — aqui não se aplica, mas Warstorm Surge e a
   maioria dos gatilhos de dano ATÉ oponente único não multiplicam).
-- **Só o Megatron ataca de verdade em combate**, com a exceção
-  documentada de Anrakyr (a habilidade dele só existe se ele atacar). O
-  motor de dano principal do deck é Warstorm Surge (ETB), não combate
-  múltiplo — decisão de escopo, não limite do oráculo.
+- **Combate real de verdade pra todo mundo** (revisado 2026-09-02 —
+  antes só o Megatron/Anrakyr atacavam, decisão de escopo que um
+  goldfish real no Archidekt mostrou estar incompleta: o dano de outros
+  atacantes tambem alimenta o pós-combate do Megatron via oráculo
+  real, "life your opponents have lost THIS TURN"). Sem bloqueio real
+  modelado pra ninguém (nenhum oponente de verdade), então atacar com
+  tudo é sempre a jogada correta neste motor.
 - **`NO_SELF_HARM_EXCLUDE`**: Blasphemous Act, Decree of Pain, Heartless
   Conscription, Chandra's Ignition — excluídas do auto-cast de propósito
   (mesma convenção já usada pro Blasphemous Act em toda a sessão): sem
