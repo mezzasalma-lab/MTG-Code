@@ -29,6 +29,18 @@ em `NO_SELF_HARM_EXCLUDE`.
 Validado: `len(BASE_LIBRARY) == 99` + regressão de 20.000 partidas (0
 exceções).
 
+**Segunda troca, mesma rodada:** usuário perguntou "Loran's Escape ou
+Clever Concealment?" — comparei as duas: Loran's Escape protege só 1
+permanente (hexproof+indestructible), Clever Concealment (Marvel Super
+Heroes Commander, 2026-06-26, real e legal — conferido `released_at`
+desta vez) protege **qualquer número** de permanentes não-terrestres
+("phase out" via Convoke) — melhor pra esse deck, já que protege o board
+inteiro contra wrath, não só 1 peça, e o Convoke fica barato tapando
+fodder que já ia ser sacrificado no fim do turno mesmo. Trocada de novo.
+Mesma exclusão de auto-cast que Blacksmith's Skill (sem wrath real de
+oponente pra proteger contra neste goldfish solo). Validado: 99 cartas +
+regressão de 20.000 partidas (0 exceções).
+
 ---
 
 ## Reconstrução completa: shell de weld/cheat/sacrifice — 2026-09-02

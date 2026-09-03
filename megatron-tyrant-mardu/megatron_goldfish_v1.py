@@ -176,12 +176,16 @@ add("Chandra's Ignition", 5, "sorcery", {"chandras_ignition"}, pips={"R": 2})
 # --- Protecao / equipment --------------------------------------------------------
 add("Lightning Greaves", 2, "artifact", {"haste_shroud_equip"}, pips={})
 add("Swiftfoot Boots", 2, "artifact", {"hexproof_haste_equip"}, pips={})
-add("Loran's Escape", 1, "instant", {"loran_escape"}, pips={"W": 1})  # Achado real
+add("Clever Concealment", 4, "instant", {"clever_concealment"}, pips={"W": 2})  # Achado real
 # 2026-09-02: Shields Up! e' do set Star Trek, lancamento 2026-11-13 --
 # usuario apontou que ainda nao foi lancada (nao e' legal em Commander
-# ainda). Substituida por Loran's Escape (The Brothers' War, 2022, legal,
-# mesmo efeito real -- "target artifact or creature gains hexproof and
-# indestructible", so' troca o +1/+1 counter por scry 1).
+# ainda). Substituida primeiro por Loran's Escape (protege so' 1
+# permanente), depois trocada de novo por pedido direto do usuario pra
+# Clever Concealment (Marvel Super Heroes Commander, 2026-06-26, real e
+# legal): "{2}{W}{W}, Convoke -- any number of target nonland permanents
+# you control phase out." Protege o board INTEIRO contra wrath (nao so'
+# 1 peca), custo efetivo baixo na pratica ja' que Convoke tapa fodder que
+# ia ser sacrificado no fim do turno mesmo (Sneak Attack/Feldon).
 add("Blacksmith's Skill", 1, "instant", {"blacksmiths_skill"}, pips={"W": 1})
 
 # --- Ataque solo -------------------------------------------------------------
@@ -1355,13 +1359,13 @@ NO_SELF_HARM_EXCLUDE = {
     # oponente real pra tambem atingir, nunca vale a pena conjurar
     # (mesma convencao ja usada pro Blasphemous Act em toda a sessao).
     "Blasphemous Act", "Decree of Pain", "Heartless Conscription", "Chandra's Ignition",
-    # Protecao (hexproof/indestructible) sem remocao real de oponente pra
-    # proteger contra -- conjurar so' desperdicaria mana (achado real ao
-    # testar: sem essa exclusao, Blacksmith's Skill/Loran's Escape eram
-    # auto-conjuradas todo turno que sobrava 1 mana, sem efeito nenhum,
+    # Protecao (hexproof/indestructible/phase out) sem remocao/wrath real
+    # de oponente pra proteger contra -- conjurar so' desperdicaria mana
+    # (achado real ao testar: sem essa exclusao, Blacksmith's Skill era
+    # auto-conjurada todo turno que sobrava 1 mana, sem efeito nenhum,
     # mesma categoria de simplificacao estrutural de sempre, nao e'
     # fantasma -- a tag continua definida e documentada).
-    "Blacksmith's Skill", "Loran's Escape",
+    "Blacksmith's Skill", "Clever Concealment",
 }
 
 
