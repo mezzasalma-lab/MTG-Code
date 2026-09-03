@@ -4,6 +4,73 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Correção de draw: +Phyrexian Arena / +Florian / +Cosmic Cube — 2026-09-03
+
+**Gatilho:** usuário reportou *"Estou com a impressão de que falta draw
+no deck"*. Validado com dados reais do `run_batch` (2000 jogos): mão
+final média ~2,9-3,05 cartas, só 6 fontes de draw repetível na lista
+inteira, nenhum motor recorrente de compra além do Rakdos/Susur Secundi
+(que dependem de sacrifício). Usuário comparou uma 3ª decklist real do
+arquétipo (~100 cartas) e confirmou 3 adições: **Phyrexian Arena**
+(draw incondicional todo upkeep, -1 vida), **Florian, Voldaren Scion**
+(lê o mesmo pool `life_lost_by_opponents_this_turn` do Megatron pra
+exilar/jogar carta no pós-combate) e **Cosmic Cube** (conjuração grátis
+no ataque, escalando com o maior poder em combate).
+
+**Decisão Skullclamp vs. Phyrexian Arena:** usuário ficou em dúvida entre
+os dois, mas já trouxe o argumento certo — *"O Skullclamp só me dá draw
+se eu conseguir sacrificar criaturas, o que neste deck não acontece
+rápido"*. Confirmado pelos próprios números do simulador: `Avg criaturas
+sacrificadas` fica na casa de ~1,1-1,8/partida contra `Avg artefatos
+sacrificados` de ~2,5-3,1/partida — o motor de sacrifício do deck
+(Megatron/Ayara/Susur Secundi) é majoritariamente de ARTEFATOS, não de
+criaturas. Skullclamp dependeria de um outlet que o deck não tem de
+sobra; Phyrexian Arena não depende de sacrifício nenhum. Recomendado e
+confirmado Phyrexian Arena no lugar do Skullclamp.
+
+**Cortes pra abrir espaço** (lista fixa em 99, 3 adições = 3 cortes):
+Everflowing Chalice (rampa redundante, a lista já tinha 8 peças de rampa
+fixa antes dela), Myr Retriever (recursão "MV≤2 do cemitério pra mão ao
+morrer" duplicada — Junk Diver já cobre o mesmo efeito) e Sandstone
+Oracle (7 mana por draw condicional/inconsistente, obsoleto com draw
+melhor entrando).
+
+**Verificação Scryfall** (`released_at`, checando a lição do Shields
+Up!): Phyrexian Arena 2001-06-04, Florian, Voldaren Scion 2021-09-24,
+Cosmic Cube 2026-06-26 — os 3 já lançados e legais em Commander.
+
+**Implementado:** `try_phyrexian_arena_upkeep()` (draw 1 + `self_damage`
+1, chamada no início de `play_turn`, antes do draw normal — upkeep real
+acontece mesmo no turno 1 na frente), `try_florian_postcombat()` (exila
+top X = `life_lost_by_opponents_this_turn`, escolhe a carta mais cara
+castável e conjura via `cast_card` pagando o custo normal, resto some
+pro fundo da biblioteca — mesma convenção de "sem embaralhamento real"
+já usada em Combustible Gearhulk/Saheeli's Directive; chamada entre
+`combat_step` e o segundo `main_phase`, igual ao pós-combate real),
+`try_cosmic_cube_attack_trigger()` (1x por combate, usa o novo
+`state.max_attacker_power_this_combat` — acumulado tanto por
+`megatron_combat` quanto por `all_attackers_combat`, já que aqui todo
+mundo ataca de verdade — conjuração SEM `spend_mana`, já que é "without
+paying its mana cost"; chamada no fim de `combat_step`).
+
+**Validado:** unit smoke test (`CARD_DB`/`BASE_LIBRARY` == 99 cartas, 0
+nomes desconhecidos, 0 duplicatas fora de básicas) + `run_batch` de 2000
+jogos (0 exceções, novos contadores aparecendo: draws via Phyrexian
+Arena, cartas jogadas via Florian, conjurações grátis via Cosmic Cube,
+todos > 0) + regressão de 20.000 partidas (seed 2M, turns=8, 0 exceções).
+
+**Achado ao editar `lista.md`:** o parágrafo de changelog inicial tinha
+2 linhas começando com dígito solto ("3 trocas: ..." / "8 peças de
+rampa..."), e `build_library()` usa a regex `^(\d+)\s+(.+)$` em QUALQUER
+linha do arquivo (só pula a seção "## Comandante" explicitamente, não
+distingue "ainda não chegou em nenhuma seção" de "estou numa seção de
+cartas") — isso criava 11 cartas fantasmas (`BASE_LIBRARY` foi de 99 pra
+110 sem eu ter mudado a contagem real). Pego antes de rodar qualquer
+simulação de verdade (smoke test de tamanho/nomes desconhecidos), texto
+reescrito pra nenhuma linha do changelog começar com dígito.
+
+---
+
 ## Correção — Megatron sacrificava o fuel ERRADO — 2026-09-02
 
 **Gatilho:** segundo goldfish real do usuário no Archidekt — ele

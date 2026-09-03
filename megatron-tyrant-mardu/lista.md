@@ -33,6 +33,41 @@ e legal): protege o board inteiro contra wrath ("any number of target
 nonland permanents you control phase out"), com Convoke reduzindo o
 custo efetivo tapando fodder que já ia ser sacrificado no fim do turno.
 
+**Correção de draw 2026-09-03**: usuário relatou "impressão de que falta
+draw" — confirmado pelos números reais do simulador (mão final média
+~2,9-3,05 cartas em várias rodadas de 2000+ jogos, só 6 fontes de draw
+repetível na lista de 99, nenhum motor recorrente de compra). Comparando
+com uma 3ª lista real do arquétipo (~100 cartas, artifact-matters/combo),
+foram feitas 3 trocas: **-1 Everflowing Chalice** (rampa redundante — a
+lista já tem Sol Ring/Arcane Signet/Mind Stone/Fellwar Stone/Gilded
+Lotus/3 Talismans, oito peças de rampa fixa antes dela; Chalice é a mais
+fraca, nunca compra carta nenhuma), **-1 Myr Retriever** (recursão
+"devolve artefato MV≤2 do
+cemitério pra mão ao morrer" duplicada — Junk Diver já cobre exatamente
+o mesmo efeito, e a lista já tem Scrap Trawler/Goblin Welder/Scrap
+Welder/Osgir/Trash for Treasure de sobra pra recursão), **-1 Sandstone
+Oracle** (7 mana por um draw condicional e inconsistente, obsoleta com
+draw melhor entrando) → **+1 Phyrexian Arena** ({1}{B}{B}, "at the
+beginning of your upkeep, draw a card and lose 1 life" — draw repetível
+de verdade, todo turno, sem depender de sacrifício), **+1 Florian,
+Voldaren Scion** ({1}{B}{R}, 3/3 first strike, "at the beginning of each
+of your postcombat main phases, look at the top X cards of your library,
+where X is the total life your opponents lost this turn... exile one,
+may play it this turn" — lê o MESMO pool `life_lost_by_opponents_this_turn`
+que o Megatron já usa, escala com o próprio motor de dano do deck),
+**+1 Cosmic Cube** ({5}, Ward {2}, "whenever you attack, look at the top
+six cards of your library, may cast a spell with mana value ≤ greatest
+power among attacking creatures without paying its mana cost" — motor de
+valor gratuito que também escala com os finalizadores grandes já em
+campo, usuário pediu especificamente essa depois de comparar as 2 listas).
+Skullclamp descartado por pedido do próprio usuário: o motor de sacrifício
+do deck é majoritariamente de ARTEFATOS (Megatron/Ayara/Susur Secundi),
+não de criaturas — Skullclamp não teria outlet rápido o suficiente pra
+ser confiável aqui, ao contrário de Phyrexian Arena/Florian que não
+dependem de sacrifício nenhum. Todos os 3 verificados reais/legais em
+Commander via Scryfall (`released_at`: 2001-06-04, 2021-09-24 e
+2026-06-26 — os 3 já lançados, nenhum caso tipo Shields Up!).
+
 **Terrenos**: mantida a base dele quase toda, com 2 mudanças pedidas —
 (1) proporção de básicas rebalanceada pelo peso real de pips (R 59,6% /
 B 28,8% / W 11,5% dos símbolos coloridos da lista final — branco é
@@ -64,16 +99,17 @@ mantida.
 1 Chandra's Ignition
 1 Chaos Warp
 1 Combustible Gearhulk
+1 Cosmic Cube
 1 Cursed Mirror
 1 Daretti, Rocketeer Engineer
 1 Daretti, Scrap Savant
 1 Decree of Pain
 1 Demand Answers
 1 Demonic Junker
-1 Everflowing Chalice
 1 Faithless Looting
 1 Feldon of the Third Path
 1 Fellwar Stone
+1 Florian, Voldaren Scion
 1 Gilded Lotus
 1 Goblin Engineer
 1 Goblin Welder
@@ -87,17 +123,16 @@ mantida.
 1 Mind Stone
 1 Mirrorworks
 1 Mishra, Tamer of Mak Fawa
-1 Myr Retriever
 1 Nexus of Becoming
 1 Noxious Gearhulk
 1 Osgir, the Reconstructor
 1 Path to Exile
+1 Phyrexian Arena
 1 Phyrexian Triniform
 1 Portal to Phyrexia
 1 Ragavan, Nimble Pilferer
 1 Rakdos, the Muscle
 1 Saheeli's Directive
-1 Sandstone Oracle
 1 Scrap Trawler
 1 Scrap Welder
 1 Clever Concealment

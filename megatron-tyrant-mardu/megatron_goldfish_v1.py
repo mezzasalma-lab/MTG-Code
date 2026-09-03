@@ -98,7 +98,6 @@ MEGATRON_PIPS = {"R": 1, "W": 1, "B": 1}
 NUM_OPPONENTS = 3  # premissa declarada (mesa de 4), nunca vida real rastreada
 
 # --- Mana / rampa ------------------------------------------------------------
-add("Everflowing Chalice", 0, "artifact", {"chalice_kicker"}, pips={})
 add("Sol Ring", 1, "artifact", {"rock2"})
 add("Arcane Signet", 2, "artifact", {"rock1"}, produces=set("WUBRG"))
 add("Fellwar Stone", 2, "artifact", {"rock1"}, produces=set("WUBRG"))
@@ -112,7 +111,6 @@ add("The Eternity Elevator", 5, "artifact", {"rock3", "station"}, pips={})
 # --- Motor central: solda / recuperacao de artefato --------------------------
 add("Goblin Welder", 1, "creature", {"welder"}, power=1, toughness=1, pips={"R": 1})
 add("Goblin Engineer", 2, "creature", {"goblin_engineer"}, power=1, toughness=2, pips={"R": 1})
-add("Myr Retriever", 2, "creature", {"artifact", "toolbox_recur"}, power=1, toughness=1, pips={})
 add("Junk Diver", 3, "creature", {"artifact", "toolbox_recur"}, power=1, toughness=1, pips={})
 add("Scrap Trawler", 3, "creature", {"artifact", "scrap_trawler"}, power=3, toughness=2, pips={})
 add("Scrap Welder", 3, "creature", {"scrap_welder"}, power=3, toughness=3, pips={"R": 1})
@@ -140,7 +138,6 @@ add("Combustible Gearhulk", 6, "creature", {"artifact", "combustible_gearhulk"},
 add("Noxious Gearhulk", 6, "creature", {"artifact", "noxious_gearhulk"}, power=5, toughness=4, pips={"B": 2})
 add("Steel Seraph", 6, "creature", {"artifact", "steel_seraph"}, power=5, toughness=4, pips={"W": 1})
 add("Demonic Junker", 7, "creature", {"artifact", "demonic_junker"}, power=4, toughness=3, pips={"B": 1})
-add("Sandstone Oracle", 7, "creature", {"artifact", "etb_hand_diff_draw"}, power=4, toughness=4, pips={})
 add("Bygone Colossus", 9, "creature", {"artifact", "warp3"}, power=9, toughness=9, pips={})
 add("Phyrexian Triniform", 9, "creature", {"artifact", "triniform_death_tokens"}, power=9, toughness=9, pips={})
 add("Skitterbeam Battalion", 9, "creature", {"artifact", "skitterbeam"}, power=4, toughness=4, pips={})
@@ -154,6 +151,7 @@ add("Mirrorworks", 5, "artifact", {"mirrorworks"}, pips={})
 add("Portal to Phyrexia", 9, "artifact", {"portal_phyrexia"}, pips={})
 add("Warstorm Surge", 6, "enchantment", {"warstorm_surge"}, pips={"R": 1})
 add("Brass's Tunnel-Grinder", 3, "artifact", {"tunnel_grinder"}, pips={"R": 1})
+add("Cosmic Cube", 5, "artifact", {"cosmic_cube"}, pips={})  # Achado real 2026-09-03
 
 # --- Draw / filtragem ----------------------------------------------------------
 add("Faithless Looting", 1, "sorcery", {"loot2_2_flashback"}, pips={"R": 1})
@@ -162,6 +160,8 @@ add("Laughing Mad", 3, "instant", {"loot1_2_flashback"}, pips={"R": 1})
 add("Wheel of Fortune", 3, "sorcery", {"wheel_full"}, pips={"R": 1})
 add("Black Market Connections", 3, "enchantment", {"black_market"}, pips={"B": 1})
 add("Saheeli's Directive", 3, "sorcery", {"saheeli_directive"}, pips={"R": 3})
+add("Phyrexian Arena", 3, "enchantment", {"phyrexian_arena"}, pips={"B": 2})  # Achado real 2026-09-03
+add("Florian, Voldaren Scion", 3, "creature", {"florian"}, power=3, toughness=3, pips={"B": 1, "R": 1})  # idem
 
 # --- Removal / interacao (sem alvo real de oponente) ---------------------------
 add("Path to Exile", 1, "instant", {"interaction"}, pips={"W": 1})
@@ -230,6 +230,7 @@ LEGENDARY_NAMES = {
     "Mishra, Tamer of Mak Fawa", "Osgir, the Reconstructor", "Rakdos, the Muscle",
     "Brass's Tunnel-Grinder", "God-Pharaoh's Statue", "The Eternity Elevator",
     "Ragavan, Nimble Pilferer", "Adagia, Windswept Bastion", "Susur Secundi, Void Altar",
+    "Florian, Voldaren Scion",
 }
 
 
@@ -317,6 +318,7 @@ class GameState:
     god_pharaoh_statue_pinged_this_turn: bool = False
     attackers_this_combat: int = 0
     attackers_total_all_turns: int = 0  # soma de todos os combates, pra metrica de run_batch
+    max_attacker_power_this_combat: int = 0  # pro gatilho do Cosmic Cube
     charge_counters: dict = field(default_factory=dict)  # nome do Planet -> contadores
     bygone_colossus_exiled_warp: bool = False
     daretti_rocketeer_mv_seen: int = 0
@@ -347,6 +349,9 @@ class GameState:
     artifacts_sacrificed_total: int = 0
     creatures_sacrificed_total: int = 0
     daretti_savant_minus10_active: bool = False
+    florian_cards_played_total: int = 0
+    cosmic_cube_free_casts_total: int = 0
+    phyrexian_arena_life_lost_total: int = 0
 
 
 def draw_cards(state: GameState, n: int):
@@ -404,7 +409,6 @@ def rocks_mana(state: GameState) -> int:
         total += 3
     if "Cursed Mirror" in state.battlefield:
         total += 1
-    total += state.charge_counters.get("Everflowing Chalice", 0)
     if "The Eternity Elevator" in state.battlefield:
         total += 3
     return total
@@ -501,8 +505,8 @@ def creature_enters(state: GameState, name: str, from_hand: bool = True, token: 
 def sacrifice(state: GameState, name: str):
     """Ponto central de TODO sacrificio do arquivo -- remove de
     battlefield, poe no graveyard, dispara os gatilhos reais de morte
-    (Scrap Trawler, toolbox Myr Retriever/Junk Diver, Phyrexian
-    Triniform, Solemn Simulacrum) e os payoffs que disparam em QUALQUER
+    (Scrap Trawler, toolbox Junk Diver, Phyrexian Triniform, Solemn
+    Simulacrum) e os payoffs que disparam em QUALQUER
     sacrificio de criatura (Rakdos, the Muscle -- 'whenever you sacrifice
     another creature', gatilho automatico, nao e' escolha)."""
     if name not in state.battlefield:
@@ -569,7 +573,7 @@ def death_trigger(state: GameState, dying_name: str):
         state.triniform_tokens_total += 3
     if dying_name == "Solemn Simulacrum":
         draw_cards(state, 1)
-    if dying_name in ("Myr Retriever", "Junk Diver"):
+    if dying_name == "Junk Diver":
         pool = [c for c in state.graveyard if c != dying_name and is_artifact_card(c)]
         if pool:
             best = max(pool, key=lambda n: CARD_DB[n].mv)
@@ -667,14 +671,6 @@ def make_token_copy_name(base_name: str) -> str:
 
 def resolve_etb(state: GameState, name: str, token: bool = False):
     tags = CARD_DB[name].tags
-
-    if "etb_hand_diff_draw" in tags:
-        # Sandstone Oracle: "choose an opponent. If that player has more
-        # cards in hand than you, draw cards equal to the difference."
-        # Premissa documentada: mao media de oponente ~5 cartas.
-        diff = max(0, 5 - len(state.hand))
-        if diff > 0:
-            draw_cards(state, diff)
 
     if "combustible_gearhulk" in tags:
         # "target opponent may have you draw three cards. If the player
@@ -1305,6 +1301,92 @@ def cast_megatron(state: GameState):
     state.creature_cast_turn[COMMANDER] = state.turn
 
 
+def try_phyrexian_arena_upkeep(state: GameState):
+    """Phyrexian Arena: 'At the beginning of your upkeep, you draw a card
+    and you lose 1 life.' Achado real 2026-09-03 (usuario: 'impressao de
+    que falta draw no deck') -- unico draw incondicional/repetivel todo
+    turno da lista inteira, sem depender de sacrificio nem de combate."""
+    if "Phyrexian Arena" not in state.battlefield:
+        return
+    draw_cards(state, 1)
+    self_damage(state, 1)
+    state.phyrexian_arena_life_lost_total += 1
+
+
+def try_florian_postcombat(state: GameState):
+    """Florian, Voldaren Scion: 'At the beginning of each of your
+    postcombat main phases, look at the top X cards of your library,
+    where X is the total amount of life your opponents lost this turn.
+    Exile one of those cards and put the rest on the bottom of your
+    library in a random order. You may play the exiled card this turn.'
+    X reaproveita o MESMO pool compartilhado que o Megatron le'
+    (`life_lost_by_opponents_this_turn`, ver `all_attackers_combat`) --
+    qualquer atacante que gera proxy_drain alimenta os dois gatilhos.
+    Escolhe a carta mais cara castavel do topo pra exilar e conjurar na
+    hora via `cast_card` (paga o custo normal -- 'may play', nao 'without
+    paying'; mesma convencao ja usada pro Ragavan: perdida se nao der pra
+    pagar). Resto some pro fundo da biblioteca preservando ordem (sem
+    embaralhamento real modelado -- mesma simplificacao ja documentada
+    nos reveals/mills de Combustible Gearhulk/Saheeli's Directive)."""
+    if "Florian, Voldaren Scion" not in state.battlefield:
+        return
+    x = state.life_lost_by_opponents_this_turn
+    if x <= 0 or not state.library:
+        return
+    top = state.library[:x]
+    state.library = state.library[x:]
+    castable = [c for c in top if c in CARD_DB and c not in LAND_NAMES
+                and c not in NO_SELF_HARM_EXCLUDE and can_cast(state, c)]
+    if castable:
+        chosen = max(castable, key=lambda n: effective_cost(state, n))
+        top.remove(chosen)
+        state.hand.append(chosen)
+        cast_card(state, chosen)
+        state.florian_cards_played_total += 1
+    state.library.extend(top)
+
+
+def try_cosmic_cube_attack_trigger(state: GameState):
+    """Cosmic Cube: 'Whenever you attack, look at the top six cards of
+    your library. You may cast a spell from among them with mana value
+    less than or equal to the greatest power among attacking creatures
+    you control without paying its mana cost. Put the rest on the bottom
+    of your library in a random order.' Dispara 1x por combate (nao por
+    atacante), usando `state.max_attacker_power_this_combat` (acumulado
+    por Megatron + `all_attackers_combat`, ja' que aqui TODO mundo ataca
+    de verdade). 'Without paying its mana cost' -- sem gate de mana/cor
+    nenhum, dispatch direto igual `cast_card` mas sem `spend_mana`. Mesma
+    simplificacao de nao embaralhar o resto ja documentada pro Florian."""
+    if "Cosmic Cube" not in state.battlefield:
+        return
+    max_power = state.max_attacker_power_this_combat
+    if max_power <= 0 or not state.library:
+        return
+    top = state.library[:6]
+    state.library = state.library[6:]
+    castable = [c for c in top if c in CARD_DB and c not in LAND_NAMES
+                and c not in NO_SELF_HARM_EXCLUDE and CARD_DB[c].mv <= max_power]
+    if castable:
+        chosen = max(castable, key=lambda n: CARD_DB[n].mv)
+        top.remove(chosen)
+        if is_creature_card(chosen):
+            creature_enters(state, chosen, from_hand=False)
+        elif CARD_DB[chosen].ctype in ("instant", "sorcery"):
+            resolve_instant_sorcery(state, chosen)
+            state.graveyard.append(chosen)
+        elif CARD_DB[chosen].ctype == "planeswalker":
+            state.battlefield.append(chosen)
+            state.daretti_savant_loyalty = DARETTI_SAVANT_STARTING_LOYALTY
+        else:
+            state.battlefield.append(chosen)
+            resolve_etb(state, chosen)
+            if is_artifact_card(chosen):
+                artifact_etb_hooks(state, chosen)
+        state.cosmic_cube_free_casts_total += 1
+        state.recursion_events_total += 1
+    state.library.extend(top)
+
+
 def megatron_combat(state: GameState):
     if not state.commander_in_play or state.megatron_face is None:
         return
@@ -1327,6 +1409,7 @@ def megatron_combat(state: GameState):
     power = MEGATRON_TYRANT_POWER if state.megatron_face == "tyrant" else MEGATRON_VEHICLE_POWER
     lifelink_this_combat = steel_seraph_combat(state)
     proxy_drain(state, power)
+    state.max_attacker_power_this_combat = max(state.max_attacker_power_this_combat, power)
     if lifelink_this_combat:
         gain_life(state, power)
 
@@ -1470,19 +1553,6 @@ def try_cast_flashback(state: GameState, name: str, flashback_cost: int):
     state.exile.append(name)
 
 
-def cast_kickable_chalice(state: GameState):
-    """Everflowing Chalice: '{0}. Multikicker {2}.' Kicka o maximo
-    pagavel (mana ociosa vira contadores de carga permanentes)."""
-    if "Everflowing Chalice" not in state.hand:
-        return
-    kicks = remaining_mana(state) // 2
-    spend_mana(state, kicks * 2)
-    state.hand.remove("Everflowing Chalice")
-    state.battlefield.append("Everflowing Chalice")
-    state.charge_counters["Everflowing Chalice"] = kicks
-    state.ramp_pieces_cast_total += 1
-
-
 def cast_card(state: GameState, name: str):
     card = CARD_DB[name]
     spend_mana(state, effective_cost(state, name))
@@ -1595,7 +1665,7 @@ def main_phase(state: GameState):
 
     while True:
         castables = [n for n in state.hand if n not in LAND_NAMES and can_cast(state, n)
-                     and n not in NO_SELF_HARM_EXCLUDE and n != "Everflowing Chalice"]
+                     and n not in NO_SELF_HARM_EXCLUDE]
         if not castables:
             break
 
@@ -1624,7 +1694,6 @@ def main_phase(state: GameState):
     try_bygone_colossus_warp(state)
     try_cast_flashback(state, "Faithless Looting", 3)
     try_cast_flashback(state, "Laughing Mad", 4)
-    cast_kickable_chalice(state)
 
 
 def ragavan_attack_ability(state: GameState):
@@ -1711,6 +1780,7 @@ def all_attackers_combat(state: GameState):
             continue
         state.attackers_this_combat += 1
         proxy_drain(state, power)
+        state.max_attacker_power_this_combat = max(state.max_attacker_power_this_combat, power)
         if name == "Anrakyr the Traveller":
             anrakyr_attack_ability(state)
         elif name == "Ragavan, Nimble Pilferer":
@@ -1721,10 +1791,12 @@ def all_attackers_combat(state: GameState):
 
 def combat_step(state: GameState):
     state.attackers_this_combat = 0
+    state.max_attacker_power_this_combat = 0
     try_ayara_flip_reanimate(state)
     megatron_combat(state)
     all_attackers_combat(state)
     ironsoul_enforcer_trigger(state)
+    try_cosmic_cube_attack_trigger(state)
     state.attackers_total_all_turns += state.attackers_this_combat
 
 
@@ -1779,12 +1851,14 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.adagia_copy_used_this_turn = False
     state.susur_secundi_used_this_turn = False
 
+    try_phyrexian_arena_upkeep(state)
     if not (is_first_turn and on_play):
         draw_cards(state, 1)
 
     play_land(state)
     main_phase(state)
     combat_step(state)
+    try_florian_postcombat(state)
     main_phase(state)
     end_step(state)
 
@@ -1859,6 +1933,10 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
           f"board pronto, achado real 2026-09-02): {avg([s.attackers_total_all_turns for s in states]):.2f}")
     print(f"Avg vida ganha: {avg([s.proxy_lifegain_total for s in states]):.2f}")
     print(f"Avg cartas compradas extra: {avg([s.cards_drawn_extra for s in states]):.2f}")
+    print(f"  -- dos quais via Phyrexian Arena: {avg([s.phyrexian_arena_life_lost_total for s in states]):.2f} "
+          f"draws/partida ({avg([s.phyrexian_arena_life_lost_total for s in states]):.2f} vida perdida)")
+    print(f"Avg cartas jogadas via Florian, Voldaren Scion: {avg([s.florian_cards_played_total for s in states]):.2f}")
+    print(f"Avg conjuracoes gratis via Cosmic Cube: {avg([s.cosmic_cube_free_casts_total for s in states]):.2f}")
     print(f"Avg ativacoes de solda (Welder/Scrap Welder/Trash for Treasure/Engineer/Osgir/Daretti): "
           f"{avg([s.weld_activations_total for s in states]):.2f}")
     print(f"Avg criaturas cheatadas pra campo (Sneak Attack/Feldon/Anrakyr/Bygone Colossus warp): "
