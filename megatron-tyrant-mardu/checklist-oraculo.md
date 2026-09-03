@@ -22,6 +22,11 @@ ser escrito — nenhuma mecânica implementada de memória.
   idêntica à versão anterior (já verificada), reaproveitada: conversão
   de face, dano por sacrifício de artefato como fuel, geração de mana
   pós-combate. `cast_megatron()`/`megatron_combat()`/`megatron_postcombat()`.
+  Fuel escolhido via `best_megatron_fuel()` — sempre o MAIOR MV
+  disponível (achado real 2026-09-02: por engano estava reaproveitando
+  `best_weld_fodder()`, que faz o oposto de propósito pro seu uso real
+  de solda — corrigido depois de conferir um goldfish real do usuário
+  onde ele sacrificou o maior artefato em campo como fuel).
 - **Warstorm Surge** — "whenever a creature you control enters, it deals
   damage equal to its power to any target." Implementado como o ÚNICO
   ponto real de entrada de criatura no arquivo inteiro: `creature_enters()`,

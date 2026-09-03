@@ -4,6 +4,32 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Correção — Megatron sacrificava o fuel ERRADO — 2026-09-02
+
+**Gatilho:** segundo goldfish real do usuário no Archidekt — ele
+narrou: *"Baixei o Pharaoh com o mana gratuito do Megatron... Depois
+sacrifiquei ele pro Megatron tb"* — ou seja, sacrificou o God-Pharaoh's
+Statue (MV 6, o maior artefato em campo) como fuel, maximizando o dano
+do Destructive Force. Revendo o log contra o código, achei que
+`megatron_combat()` estava reaproveitando `best_weld_fodder()` — função
+que faz o OPOSTO de propósito (pega o MENOR MV disponível, pra sobrar os
+grandes em campo pra solda) — pro **próprio** sacrifício de fuel do
+Megatron, que deveria ser o inverso: "deals damage equal to the
+sacrificed artifact's mana value" quer o MAIOR MV possível, exatamente
+como o primer real do deck manda ("prioriza o artefato de maior custo de
+mana").
+
+**Corrigido:** `best_megatron_fuel()`, seleção própria descendente (só
+pro fuel do Megatron), separada de `best_weld_fodder()` (que continua
+ascendente, correta pro seu uso real de solda). Validado com teste
+unitário isolado (Megatron sacrifica God-Pharaoh's Statue MV 6 em vez de
+Mind Stone MV 2, com ambos em campo) + regressão de 20.000 partidas
+(seed 10M, turns=10, 0 exceções) + `run_batch` antes/depois: mana gerada
+pela conversão do Megatron subiu de 51,4 pra 56,3, dano proxy total de
+66,2 pra 68,0 — mudança real, direção certa.
+
+---
+
 ## Motor de combate expandido: todo mundo ataca — 2026-09-02
 
 **Gatilho — primeiro goldfish real do usuário no Archidekt:** jogando de

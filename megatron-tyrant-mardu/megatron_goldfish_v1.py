@@ -599,6 +599,28 @@ def best_weld_fodder(state: GameState, min_mv: int = 0):
     return candidates[0]
 
 
+def best_megatron_fuel(state: GameState):
+    """Escolha de qual artefato o proprio Megatron sacrifica como fuel
+    (Destructive Force: 'deals damage equal to the sacrificed artifact's
+    mana value'). Achado real 2026-09-02 (revendo o log de goldfish real
+    do usuario -- ele sacrificou o God-Pharaoh's Statue, MV 6, o maior
+    artefato disponivel, maximizando o dano): `megatron_combat()` estava
+    reaproveitando `best_weld_fodder()`, que faz o OPOSTO de proposito
+    (pega o MENOR MV, pra sobrar os grandes em campo pra solda) --
+    fazendo o Megatron sacrificar sempre o artefato MAIS FRACO como fuel,
+    ao contrario da estrategia real do primer ("prioriza o artefato de
+    MAIOR custo de mana"). Corrigido com selecao propria, descendente."""
+    for n in state.temp_creatures_pending_sacrifice:
+        if n in state.battlefield and is_artifact_card(n):
+            return n
+    KEEP_ALWAYS = {COMMANDER, "Warstorm Surge", "Sneak Attack", "Daretti, Scrap Savant"}
+    candidates = [n for n in state.battlefield if n not in KEEP_ALWAYS and is_artifact_card(n)]
+    if not candidates:
+        return None
+    candidates.sort(key=lambda n: -CARD_DB[n].mv)
+    return candidates[0]
+
+
 def best_payoff_fodder(state: GameState):
     """Fodder pros payoffs de sacrificio 'livres' (Ayara, Susur Secundi,
     Altar of the Wretched) -- so' consome criaturas temporarias que iam
@@ -1291,8 +1313,8 @@ def megatron_combat(state: GameState):
     state.attackers_this_combat += 1
 
     if state.megatron_face == "vehicle":
-        fuel = best_weld_fodder(state, min_mv=1)
-        if fuel is not None and fuel != "Cursed Mirror":
+        fuel = best_megatron_fuel(state)
+        if fuel is not None:
             mv = CARD_DB[fuel].mv
             sacrifice(state, fuel)
             state.megatron_fuel_sacrificed_total += 1
