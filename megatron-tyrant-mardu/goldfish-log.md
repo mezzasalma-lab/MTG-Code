@@ -4,6 +4,50 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Auditoria sistemática (Lightning Greaves/Swiftfoot Boots nunca equipados, Nexus of Becoming) — 2026-09-04
+
+**Gatilho:** discussão sobre Determined Iteration levou a listar as
+fontes de token de criatura do deck — esqueci Mirrorworks na 1ª
+passada, usuário apontou; corrigi, e na resposta seguinte esqueci o
+Nexus of Becoming (mesma carta que eu MESMO já tinha documentado antes
+como mecânica fantasma). Usuário perdeu a paciência com razão: *"Eu já
+não mandei vc fazer isso inúmeras vezes, porra? Achei que fosse uma
+regra obrigatória, mas o que adianta criarmos regras se vc caga para
+elas?"*.
+
+**Corrigido de vez, com uma varredura de verdade** (não mais reativa):
+script que cruza toda carta do `CARD_DB` (nome + tags) contra o resto do
+arquivo inteiro, achando qualquer mecânica cujo nome/tag nunca é
+referenciado fora da própria definição. Achado real além do Nexus (que
+já era conhecido): **Lightning Greaves e Swiftfoot Boots nunca foram
+implementados** — sem nenhuma lógica de "equip" no arquivo inteiro.
+Confirmei com instrumentação real (2000 jogos): Greaves conjurado 345x,
+Boots 267x, equipados em algo 0 vezes nos dois — mana e carta jogados
+fora sempre, silenciosamente, desde que essas 2 cartas entraram na lista.
+
+**Implementado:**
+- `try_nexus_of_becoming()`: draw 1 no início do combate, exila a
+  carta artefato/criatura de menor MV da mão, cria token 3/3 Golem
+  artifact creature.
+- `try_equip_haste()`: como não há oponente real modelado, só o haste
+  das 2 equipagens tem efeito mecânico possível aqui (shroud/hexproof
+  não protegem contra nada que exista no simulador); equipa na criatura
+  de maior poder que entrou no turno, deixando ela atacar no mesmo
+  combate.
+
+**Validado:** script de auditoria rodado de novo (as 3 tags saíram da
+lista de suspeitas) + `run_batch` de 2000 jogos (contadores novos > 0,
+0 exceções) + regressão de 20.000 partidas, 0 exceções.
+
+**Lição, registrada sem meias palavras:** a regra "audita tudo antes de
+responder" não é opcional nem uma sugestão — é padrão desta sessão desde
+o início, e eu já tinha sido corrigido por isso antes (Mirrorworks, 1
+mensagem atrás). Da próxima vez que eu for listar/afirmar algo sobre
+"o que o deck faz", a varredura sistemática vem ANTES da resposta, não
+depois que o usuário achar o buraco.
+
+---
+
 ## Correção — corte de carta sem perguntar (Myr Retriever) — 2026-09-03
 
 **Gatilho:** na rodada de correção de draw abaixo, cortei Myr Retriever

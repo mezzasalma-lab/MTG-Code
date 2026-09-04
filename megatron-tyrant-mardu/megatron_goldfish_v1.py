@@ -350,6 +350,8 @@ class GameState:
     daretti_savant_minus10_active: bool = False
     cosmic_cube_free_casts_total: int = 0
     phyrexian_arena_life_lost_total: int = 0
+    nexus_tokens_created_total: int = 0
+    equip_haste_activations_total: int = 0
 
 
 def draw_cards(state: GameState, n: int):
@@ -1311,6 +1313,68 @@ def try_phyrexian_arena_upkeep(state: GameState):
     state.phyrexian_arena_life_lost_total += 1
 
 
+def try_nexus_of_becoming(state: GameState):
+    """Nexus of Becoming: 'At the beginning of combat on your turn, draw
+    a card. Then you may exile an artifact or creature card from your
+    hand. If you do, create a token that's a copy of the exiled card,
+    except it's a 3/3 Golem artifact creature in addition to its other
+    types.' Achado real 2026-09-04 (auditoria sistematica pedida pelo
+    usuario depois de eu ter esquecido esta carta 2x): a tag
+    `nexus_combat_draw_copy` nunca foi lida em lugar nenhum do arquivo --
+    mecanica fantasma pura, igual Ragavan/Daretti Rocketeer antes dela.
+    Exila sempre a carta artefato/criatura de MENOR MV da mao (perder a
+    mais barata e' sempre lucro liquido por um corpo 3/3 gratis + gatilho
+    do Warstorm Surge). Simplificacao documentada: o token nao herda os
+    'outros tipos' do card original (mesma convencao ja usada pro
+    Phyrexian Golem Token/Shapeshifter Token)."""
+    if "Nexus of Becoming" not in state.battlefield:
+        return
+    draw_cards(state, 1)
+    candidates = [c for c in state.hand if c in CARD_DB and (is_artifact_card(c) or is_creature_card(c))]
+    if not candidates:
+        return
+    exiled = min(candidates, key=lambda n: CARD_DB[n].mv)
+    state.hand.remove(exiled)
+    state.exile.append(exiled)
+    token_name = "Nexus Golem Token"
+    if token_name not in CARD_DB:
+        add(token_name, 0, "creature", {"artifact"}, power=3, toughness=3)
+    creature_enters(state, token_name, from_hand=False, token=True)
+    state.nexus_tokens_created_total += 1
+
+
+def try_equip_haste(state: GameState):
+    """Lightning Greaves ('equipped creature has haste and shroud') e
+    Swiftfoot Boots ('equipped creature has hexproof and haste') --
+    achado real 2026-09-04 (mesma auditoria): as 2 sao conjuradas
+    normalmente (confirmado com instrumentacao: 345x e 267x em 2000
+    jogos) mas NUNCA equipadas em nada -- nenhuma logica de equip existia
+    no arquivo inteiro, mana e carta gastos por zero efeito. A metade de
+    protecao (shroud/hexproof) nao tem efeito mecanico possivel aqui
+    (sem oponente real com remocao pra proteger contra -- mesma convencao
+    ja documentada pra Clever Concealment/Blacksmith's Skill). A metade
+    que TEM efeito real e' o haste: uma criatura com doenca de invocacao
+    nao ataca esse turno em `ready_creatures()`. Equipa na criatura de
+    maior poder que entrou esse turno e ainda nao tem haste -- gratuito
+    pro Greaves (Equip {0}), custa 1 mana pro Boots (Equip {1}, so' se
+    sobrar mana)."""
+    equip_cost = 0 if "Lightning Greaves" in state.battlefield else (
+        1 if "Swiftfoot Boots" in state.battlefield else None)
+    if equip_cost is None:
+        return
+    if equip_cost > 0 and remaining_mana(state) < equip_cost:
+        return
+    sick = [n for n in state.battlefield if is_creature_card(n) and n != COMMANDER
+            and state.creature_cast_turn.get(n, -1) == state.turn and get_power(state, n) > 0]
+    if not sick:
+        return
+    target = max(sick, key=lambda n: get_power(state, n))
+    if equip_cost > 0:
+        spend_mana(state, equip_cost)
+    state.creature_cast_turn[target] = state.turn - 1
+    state.equip_haste_activations_total += 1
+
+
 def try_cosmic_cube_attack_trigger(state: GameState):
     """Cosmic Cube: 'Whenever you attack, look at the top six cards of
     your library. You may cast a spell from among them with mana value
@@ -1758,6 +1822,7 @@ def all_attackers_combat(state: GameState):
 def combat_step(state: GameState):
     state.attackers_this_combat = 0
     state.max_attacker_power_this_combat = 0
+    try_nexus_of_becoming(state)
     try_ayara_flip_reanimate(state)
     megatron_combat(state)
     all_attackers_combat(state)
@@ -1823,6 +1888,7 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
 
     play_land(state)
     main_phase(state)
+    try_equip_haste(state)
     combat_step(state)
     main_phase(state)
     end_step(state)
@@ -1901,6 +1967,9 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"  -- dos quais via Phyrexian Arena: {avg([s.phyrexian_arena_life_lost_total for s in states]):.2f} "
           f"draws/partida ({avg([s.phyrexian_arena_life_lost_total for s in states]):.2f} vida perdida)")
     print(f"Avg conjuracoes gratis via Cosmic Cube: {avg([s.cosmic_cube_free_casts_total for s in states]):.2f}")
+    print(f"Avg tokens 3/3 criados via Nexus of Becoming: {avg([s.nexus_tokens_created_total for s in states]):.2f}")
+    print(f"Avg ativacoes de haste via Lightning Greaves/Swiftfoot Boots: "
+          f"{avg([s.equip_haste_activations_total for s in states]):.2f}")
     print(f"Avg ativacoes de solda (Welder/Scrap Welder/Trash for Treasure/Engineer/Osgir/Daretti): "
           f"{avg([s.weld_activations_total for s in states]):.2f}")
     print(f"Avg criaturas cheatadas pra campo (Sneak Attack/Feldon/Anrakyr/Bygone Colossus warp): "

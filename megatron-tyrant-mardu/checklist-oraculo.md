@@ -1,5 +1,74 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Auditoria sistemática de mecânicas fantasma 2026-09-04
+
+**Gatilho:** usuário, com razão, cobrou uma varredura completa depois de
+eu ter esquecido cartas repetidamente (Mirrorworks, Nexus of Becoming
+2x) em respostas incrementais/reativas em vez de fazer a checagem
+completa que ele já tinha pedido antes.
+
+**Método:** script (`/tmp/.../scratchpad/audit_ghosts2.py`) que pega
+toda carta definida via `add()` no `megatron_goldfish_v1.py` (70 no
+total) e verifica se o NOME da carta OU alguma tag dela aparece em
+QUALQUER outro lugar do arquivo, fora da própria linha do `add()`. Isso
+cobre tanto dispatch por tag quanto por nome literal (a maioria das
+mecânicas do arquivo é despachada checando `if "Nome" in
+state.battlefield`, não só por tag) — não dá falso-negativo por causa do
+estilo de código.
+
+**Resultado:** 4 suspeitos brutos, 3 confirmados reais:
+
+- **Nexus of Becoming** — `nexus_combat_draw_copy` nunca lido (já
+  documentado antes, agora corrigido de vez).
+- **Lightning Greaves** — `haste_shroud_equip` nunca lido, e não existia
+  NENHUMA lógica de equip no arquivo inteiro. Confirmado com
+  instrumentação real (patch em `cast_card` + 2000 jogos): conjurado 345
+  vezes, equipado 0 vezes — mana e carta gastos por zero efeito, sempre.
+- **Swiftfoot Boots** — mesma situação, `hexproof_haste_equip` nunca
+  lido. Conjurado 267 vezes em 2000 jogos, equipado 0 vezes.
+- **Treasure Nabber** — apareceu na varredura mas checado manualmente e
+  NÃO é bug: o corpo dele ataca normal via `all_attackers_combat()`
+  (poder 3, já corrigido junto com os outros finalizadores no combate
+  expandido de 2026-09-02). Só a habilidade "whenever an opponent taps
+  an artifact for mana, gain control of that artifact" fica de fora —
+  estruturalmente correto, precisa de tabuleiro real de oponente
+  (mesma convenção documentada em toda a sessão pra esse tipo de efeito).
+
+Todas as outras 66 cartas do `CARD_DB` passaram — nome ou tag
+referenciados em algum outro ponto do arquivo.
+
+**Corrigido:**
+
+- `try_nexus_of_becoming()` — oráculo real: "At the beginning of combat
+  on your turn, draw a card. Then you may exile an artifact or creature
+  card from your hand. If you do, create a token that's a copy of the
+  exiled card, except it's a 3/3 Golem artifact creature in addition to
+  its other types." Chamada no início de `combat_step()` (antes até do
+  ataque, já que o gatilho é "beginning of combat"). Exila sempre a
+  carta artefato/criatura de MENOR MV da mão (perder a mais barata é
+  sempre lucro líquido por um corpo 3/3 grátis + gatilho do Warstorm
+  Surge). Simplificação: o token não herda os "outros tipos" do card
+  original (mesma convenção do Phyrexian Golem Token/Shapeshifter
+  Token).
+- `try_equip_haste()` — Lightning Greaves/Swiftfoot Boots. Como não há
+  oponente real modelado, a metade de proteção (shroud/hexproof) não
+  tem efeito mecânico possível aqui (mesma convenção já documentada pra
+  Clever Concealment/Blacksmith's Skill). A metade real é o haste: uma
+  criatura com doença de invocação não ataca esse turno em
+  `ready_creatures()`. Equipa na criatura de maior poder que entrou esse
+  turno e ainda não tem haste — grátis pro Greaves (Equip {0}), custa 1
+  mana pro Boots (Equip {1}, só ativa se sobrar mana). Chamada em
+  `play_turn()`, depois do primeiro `main_phase()` (criaturas já
+  conjuradas) e antes de `combat_step()`.
+
+**Validado:** rodei o script de auditoria de novo depois da correção —
+as 3 tags pararam de aparecer como suspeitas (só Treasure Nabber, que já
+é esperado). `run_batch` de 2000 jogos confirmou os 3 contadores novos
+disparando (`nexus_tokens_created_total`, `equip_haste_activations_total`
+> 0) + regressão de 20.000 partidas, 0 exceções.
+
+---
+
 ## Correção de draw 2026-09-03 — +2 draw/valor, -2 redundantes
 
 Oráculo confirmado via Scryfall `cards/search?order=released&dir=asc&unique=prints`
