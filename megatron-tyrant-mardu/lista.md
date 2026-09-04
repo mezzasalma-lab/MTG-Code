@@ -38,35 +38,37 @@ draw" — confirmado pelos números reais do simulador (mão final média
 ~2,9-3,05 cartas em várias rodadas de 2000+ jogos, só 6 fontes de draw
 repetível na lista de 99, nenhum motor recorrente de compra). Comparando
 com uma 3ª lista real do arquétipo (~100 cartas, artifact-matters/combo),
-foram feitas 3 trocas: **-1 Everflowing Chalice** (rampa redundante — a
+foram feitas 2 trocas: **-1 Everflowing Chalice** (rampa redundante — a
 lista já tem Sol Ring/Arcane Signet/Mind Stone/Fellwar Stone/Gilded
 Lotus/3 Talismans, oito peças de rampa fixa antes dela; Chalice é a mais
-fraca, nunca compra carta nenhuma), **-1 Myr Retriever** (recursão
-"devolve artefato MV≤2 do
-cemitério pra mão ao morrer" duplicada — Junk Diver já cobre exatamente
-o mesmo efeito, e a lista já tem Scrap Trawler/Goblin Welder/Scrap
-Welder/Osgir/Trash for Treasure de sobra pra recursão), **-1 Sandstone
-Oracle** (7 mana por um draw condicional e inconsistente, obsoleta com
-draw melhor entrando) → **+1 Phyrexian Arena** ({1}{B}{B}, "at the
-beginning of your upkeep, draw a card and lose 1 life" — draw repetível
-de verdade, todo turno, sem depender de sacrifício), **+1 Florian,
-Voldaren Scion** ({1}{B}{R}, 3/3 first strike, "at the beginning of each
-of your postcombat main phases, look at the top X cards of your library,
-where X is the total life your opponents lost this turn... exile one,
-may play it this turn" — lê o MESMO pool `life_lost_by_opponents_this_turn`
-que o Megatron já usa, escala com o próprio motor de dano do deck),
-**+1 Cosmic Cube** ({5}, Ward {2}, "whenever you attack, look at the top
-six cards of your library, may cast a spell with mana value ≤ greatest
-power among attacking creatures without paying its mana cost" — motor de
-valor gratuito que também escala com os finalizadores grandes já em
-campo, usuário pediu especificamente essa depois de comparar as 2 listas).
-Skullclamp descartado por pedido do próprio usuário: o motor de sacrifício
-do deck é majoritariamente de ARTEFATOS (Megatron/Ayara/Susur Secundi),
-não de criaturas — Skullclamp não teria outlet rápido o suficiente pra
-ser confiável aqui, ao contrário de Phyrexian Arena/Florian que não
-dependem de sacrifício nenhum. Todos os 3 verificados reais/legais em
-Commander via Scryfall (`released_at`: 2001-06-04, 2021-09-24 e
-2026-06-26 — os 3 já lançados, nenhum caso tipo Shields Up!).
+fraca, nunca compra carta nenhuma), **-1 Sandstone Oracle** (7 mana por
+um draw condicional e inconsistente, obsoleta com draw melhor entrando)
+→ **+1 Phyrexian Arena** ({1}{B}{B}, "at the beginning of your upkeep,
+draw a card and lose 1 life" — draw repetível de verdade, todo turno,
+sem depender de sacrifício), **+1 Cosmic Cube** ({5}, Ward {2}, "whenever
+you attack, look at the top six cards of your library, may cast a spell
+with mana value ≤ greatest power among attacking creatures without
+paying its mana cost" — motor de valor gratuito que também escala com os
+finalizadores grandes já em campo, usuário pediu especificamente essa
+depois de comparar as 2 listas). Skullclamp descartado por pedido do
+próprio usuário: o motor de sacrifício do deck é majoritariamente de
+ARTEFATOS (Megatron/Ayara/Susur Secundi), não de criaturas — Skullclamp
+não teria outlet rápido o suficiente pra ser confiável aqui, ao contrário
+de Phyrexian Arena que não depende de sacrifício nenhum. Ambos
+verificados reais/legais em Commander via Scryfall (`released_at`:
+2001-06-04 e 2026-06-26 — os 2 já lançados, nenhum caso tipo Shields
+Up!).
+
+**Correção 2026-09-03 (2)**: primeira proposta desta rodada cortava
+também **Myr Retriever** (achando a recursão duplicada com Junk Diver) e
+adicionava **Florian, Voldaren Scion** no lugar do 3º slot — mas o corte
+foi feito sem perguntar. Usuário reclamou direto: *"Myr retriever nao
+pode sair. Pq vc cortou sem me perguntar?"*. Myr Retriever voltou pra
+lista; como resultado, coube só uma adição a menos — usuário escolheu
+tirar **Florian, Voldaren Scion** (não o Myr Retriever) pra fechar as
+contas em 99 cartas de novo, mantendo Phyrexian Arena e Cosmic Cube.
+Lição: cortes de carta precisam de confirmação explícita antes de
+implementar, não só as adições.
 
 **Terrenos**: mantida a base dele quase toda, com 2 mudanças pedidas —
 (1) proporção de básicas rebalanceada pelo peso real de pips (R 59,6% /
@@ -109,7 +111,6 @@ mantida.
 1 Faithless Looting
 1 Feldon of the Third Path
 1 Fellwar Stone
-1 Florian, Voldaren Scion
 1 Gilded Lotus
 1 Goblin Engineer
 1 Goblin Welder
@@ -123,6 +124,7 @@ mantida.
 1 Mind Stone
 1 Mirrorworks
 1 Mishra, Tamer of Mak Fawa
+1 Myr Retriever
 1 Nexus of Becoming
 1 Noxious Gearhulk
 1 Osgir, the Reconstructor

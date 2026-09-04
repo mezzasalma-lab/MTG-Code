@@ -1,33 +1,16 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
-## Correção de draw 2026-09-03 — +3 draw/valor, -3 redundantes
+## Correção de draw 2026-09-03 — +2 draw/valor, -2 redundantes
 
 Oráculo confirmado via Scryfall `cards/search?order=released&dir=asc&unique=prints`
 (earliest printing, não `cards/named?exact=`) antes de escrever qualquer
-código — os 3 checados por `released_at` pra não repetir o erro do
-Shields Up!:
+código — checados por `released_at` pra não repetir o erro do Shields Up!:
 
 - **Phyrexian Arena** ({1}{B}{B}, enchantment, `released_at: 2001-06-04`)
   — "At the beginning of your upkeep, you draw a card and you lose 1
   life." Implementado literal: `try_phyrexian_arena_upkeep()`, chamado
   no início de `play_turn()` (upkeep acontece todo turno, inclusive
   turno 1 na frente — só o draw normal é pulado nesse caso).
-- **Florian, Voldaren Scion** ({1}{B}{R}, 3/3 first strike, legendary,
-  `released_at: 2021-09-24`) — "At the beginning of each of your
-  postcombat main phases, look at the top X cards of your library,
-  where X is the total amount of life your opponents lost this turn.
-  Exile one of those cards and put the rest on the bottom of your
-  library in a random order. You may play the exiled card this turn."
-  X reaproveita `state.life_lost_by_opponents_this_turn` — o MESMO pool
-  que `megatron_postcombat()` já lê, já que é "life your opponents have
-  lost THIS TURN", não exclusivo do Megatron (mesma lição do combate
-  expandido, ver seção de 2026-09-02 abaixo). Implementado em
-  `try_florian_postcombat()`: exila a carta mais cara castável do topo e
-  conjura via `cast_card()` pagando o custo normal ("may play", não
-  "without paying"); resto some pro fundo da biblioteca sem
-  embaralhamento real modelado (mesma simplificação já documentada nos
-  reveals de Combustible Gearhulk/Saheeli's Directive). Chamada entre
-  `combat_step()` e o segundo `main_phase()`.
 - **Cosmic Cube** ({5}, artifact, Ward {2} — não modelado, sem remoção
   real de oponente pra ele proteger contra, `released_at: 2026-06-26`) —
   "Whenever you attack, look at the top six cards of your library. You
@@ -40,14 +23,27 @@ Shields Up!:
   todo mundo ataca de verdade). Conjuração SEM `spend_mana` (é "without
   paying its mana cost" de verdade, não "may play").
 
-**Cortes** (lista fixa em 99 — 3 adições exigem 3 cortes): Everflowing
+**Cortes** (lista fixa em 99 — 2 adições exigem 2 cortes): Everflowing
 Chalice (rampa redundante — 8 peças de rampa fixa já na lista antes
-dela), Myr Retriever (recursão "MV≤2 do cemitério pra mão ao morrer"
-duplicada com Junk Diver — mesmo efeito exato, cortada a mais fraca das
-2), Sandstone Oracle (7 mana por draw condicional, obsoleto com draw
+dela), Sandstone Oracle (7 mana por draw condicional, obsoleto com draw
 melhor entrando). `cast_kickable_chalice()` e o bloco `etb_hand_diff_draw`
 removidos do código junto com as cartas (não fantasmas — as cartas
 deixaram de existir na lista de verdade).
+
+**Erro real cometido e corrigido nesta rodada:** a primeira versão desta
+troca também cortava Myr Retriever (achando a recursão duplicada com
+Junk Diver) pra abrir espaço pra uma 3ª adição, **Florian, Voldaren
+Scion** — SEM perguntar antes. Usuário reclamou direto: *"Myr retriever
+nao pode sair. Pq vc cortou sem me perguntar?"*. Corrigido: Myr Retriever
+voltou pra `CARD_DB`/`lista.md` (linha `add("Myr Retriever", ...)` e o
+`dying_name in ("Myr Retriever", "Junk Diver")` no `death_trigger`
+restaurados); usuário escolheu cortar Florian em vez disso pra fechar as
+contas em 99 — toda a implementação do Florian (`try_florian_postcombat()`,
+o campo `florian_cards_played_total`, a entrada em `LEGENDARY_NAMES`, a
+chamada em `play_turn()` e a linha de print em `run_batch()`) foi
+removida por completo do arquivo. Lição registrada: cortes de carta
+precisam da MESMA confirmação explícita que adições — decidir um corte
+sozinho e só avisar depois não é a mesma coisa que perguntar antes.
 
 **Decisão Skullclamp vs. Phyrexian Arena** (usuário ficou em dúvida entre
 os 2): confirmado com os próprios números do simulador que o motor de
@@ -60,7 +56,8 @@ Phyrexian Arena é incondicional. Detalhe completo em `goldfish-log.md`.
 **Validado:** smoke test (`len(BASE_LIBRARY) == 99`, 0 nomes
 desconhecidos em `CARD_DB`, 0 duplicatas fora de básicas) + `run_batch`
 de 2000 jogos (0 exceções) + regressão de 20.000 partidas (seed 2M,
-turns=8, 0 exceções).
+turns=8, 0 exceções) — rodados de novo depois da correção do Myr
+Retriever/Florian.
 
 ---
 

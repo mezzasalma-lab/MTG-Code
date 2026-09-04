@@ -111,6 +111,7 @@ add("The Eternity Elevator", 5, "artifact", {"rock3", "station"}, pips={})
 # --- Motor central: solda / recuperacao de artefato --------------------------
 add("Goblin Welder", 1, "creature", {"welder"}, power=1, toughness=1, pips={"R": 1})
 add("Goblin Engineer", 2, "creature", {"goblin_engineer"}, power=1, toughness=2, pips={"R": 1})
+add("Myr Retriever", 2, "creature", {"artifact", "toolbox_recur"}, power=1, toughness=1, pips={})
 add("Junk Diver", 3, "creature", {"artifact", "toolbox_recur"}, power=1, toughness=1, pips={})
 add("Scrap Trawler", 3, "creature", {"artifact", "scrap_trawler"}, power=3, toughness=2, pips={})
 add("Scrap Welder", 3, "creature", {"scrap_welder"}, power=3, toughness=3, pips={"R": 1})
@@ -161,7 +162,6 @@ add("Wheel of Fortune", 3, "sorcery", {"wheel_full"}, pips={"R": 1})
 add("Black Market Connections", 3, "enchantment", {"black_market"}, pips={"B": 1})
 add("Saheeli's Directive", 3, "sorcery", {"saheeli_directive"}, pips={"R": 3})
 add("Phyrexian Arena", 3, "enchantment", {"phyrexian_arena"}, pips={"B": 2})  # Achado real 2026-09-03
-add("Florian, Voldaren Scion", 3, "creature", {"florian"}, power=3, toughness=3, pips={"B": 1, "R": 1})  # idem
 
 # --- Removal / interacao (sem alvo real de oponente) ---------------------------
 add("Path to Exile", 1, "instant", {"interaction"}, pips={"W": 1})
@@ -230,7 +230,6 @@ LEGENDARY_NAMES = {
     "Mishra, Tamer of Mak Fawa", "Osgir, the Reconstructor", "Rakdos, the Muscle",
     "Brass's Tunnel-Grinder", "God-Pharaoh's Statue", "The Eternity Elevator",
     "Ragavan, Nimble Pilferer", "Adagia, Windswept Bastion", "Susur Secundi, Void Altar",
-    "Florian, Voldaren Scion",
 }
 
 
@@ -349,7 +348,6 @@ class GameState:
     artifacts_sacrificed_total: int = 0
     creatures_sacrificed_total: int = 0
     daretti_savant_minus10_active: bool = False
-    florian_cards_played_total: int = 0
     cosmic_cube_free_casts_total: int = 0
     phyrexian_arena_life_lost_total: int = 0
 
@@ -573,7 +571,7 @@ def death_trigger(state: GameState, dying_name: str):
         state.triniform_tokens_total += 3
     if dying_name == "Solemn Simulacrum":
         draw_cards(state, 1)
-    if dying_name == "Junk Diver":
+    if dying_name in ("Myr Retriever", "Junk Diver"):
         pool = [c for c in state.graveyard if c != dying_name and is_artifact_card(c)]
         if pool:
             best = max(pool, key=lambda n: CARD_DB[n].mv)
@@ -1313,39 +1311,6 @@ def try_phyrexian_arena_upkeep(state: GameState):
     state.phyrexian_arena_life_lost_total += 1
 
 
-def try_florian_postcombat(state: GameState):
-    """Florian, Voldaren Scion: 'At the beginning of each of your
-    postcombat main phases, look at the top X cards of your library,
-    where X is the total amount of life your opponents lost this turn.
-    Exile one of those cards and put the rest on the bottom of your
-    library in a random order. You may play the exiled card this turn.'
-    X reaproveita o MESMO pool compartilhado que o Megatron le'
-    (`life_lost_by_opponents_this_turn`, ver `all_attackers_combat`) --
-    qualquer atacante que gera proxy_drain alimenta os dois gatilhos.
-    Escolhe a carta mais cara castavel do topo pra exilar e conjurar na
-    hora via `cast_card` (paga o custo normal -- 'may play', nao 'without
-    paying'; mesma convencao ja usada pro Ragavan: perdida se nao der pra
-    pagar). Resto some pro fundo da biblioteca preservando ordem (sem
-    embaralhamento real modelado -- mesma simplificacao ja documentada
-    nos reveals/mills de Combustible Gearhulk/Saheeli's Directive)."""
-    if "Florian, Voldaren Scion" not in state.battlefield:
-        return
-    x = state.life_lost_by_opponents_this_turn
-    if x <= 0 or not state.library:
-        return
-    top = state.library[:x]
-    state.library = state.library[x:]
-    castable = [c for c in top if c in CARD_DB and c not in LAND_NAMES
-                and c not in NO_SELF_HARM_EXCLUDE and can_cast(state, c)]
-    if castable:
-        chosen = max(castable, key=lambda n: effective_cost(state, n))
-        top.remove(chosen)
-        state.hand.append(chosen)
-        cast_card(state, chosen)
-        state.florian_cards_played_total += 1
-    state.library.extend(top)
-
-
 def try_cosmic_cube_attack_trigger(state: GameState):
     """Cosmic Cube: 'Whenever you attack, look at the top six cards of
     your library. You may cast a spell from among them with mana value
@@ -1356,7 +1321,8 @@ def try_cosmic_cube_attack_trigger(state: GameState):
     por Megatron + `all_attackers_combat`, ja' que aqui TODO mundo ataca
     de verdade). 'Without paying its mana cost' -- sem gate de mana/cor
     nenhum, dispatch direto igual `cast_card` mas sem `spend_mana`. Mesma
-    simplificacao de nao embaralhar o resto ja documentada pro Florian."""
+    simplificacao de nao embaralhar o resto ja documentada nos reveals de
+    Combustible Gearhulk/Saheeli's Directive."""
     if "Cosmic Cube" not in state.battlefield:
         return
     max_power = state.max_attacker_power_this_combat
@@ -1858,7 +1824,6 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     play_land(state)
     main_phase(state)
     combat_step(state)
-    try_florian_postcombat(state)
     main_phase(state)
     end_step(state)
 
@@ -1935,7 +1900,6 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg cartas compradas extra: {avg([s.cards_drawn_extra for s in states]):.2f}")
     print(f"  -- dos quais via Phyrexian Arena: {avg([s.phyrexian_arena_life_lost_total for s in states]):.2f} "
           f"draws/partida ({avg([s.phyrexian_arena_life_lost_total for s in states]):.2f} vida perdida)")
-    print(f"Avg cartas jogadas via Florian, Voldaren Scion: {avg([s.florian_cards_played_total for s in states]):.2f}")
     print(f"Avg conjuracoes gratis via Cosmic Cube: {avg([s.cosmic_cube_free_casts_total for s in states]):.2f}")
     print(f"Avg ativacoes de solda (Welder/Scrap Welder/Trash for Treasure/Engineer/Osgir/Daretti): "
           f"{avg([s.weld_activations_total for s in states]):.2f}")

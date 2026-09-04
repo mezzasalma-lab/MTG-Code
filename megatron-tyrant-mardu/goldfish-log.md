@@ -4,7 +4,38 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
-## Correção de draw: +Phyrexian Arena / +Florian / +Cosmic Cube — 2026-09-03
+## Correção — corte de carta sem perguntar (Myr Retriever) — 2026-09-03
+
+**Gatilho:** na rodada de correção de draw abaixo, cortei Myr Retriever
+sem perguntar antes (decidi sozinho que era redundante com Junk Diver e
+já apliquei o corte + informei depois). Usuário reagiu direto: *"Myr
+retriever nao pode sair. Pq vc cortou sem me perguntar?"*.
+
+**Corrigido:** Myr Retriever restaurado em `lista.md` e `megatron_goldfish_v1.py`
+(`add("Myr Retriever", ...)` de volta no `CARD_DB`, `dying_name in
+("Myr Retriever", "Junk Diver")` de volta no `death_trigger`). Como isso
+deixava a lista em 100 cartas (2 cortes reais pra 3 adições), perguntei
+via `AskUserQuestion` o que cortar no lugar em vez de decidir sozinho de
+novo — usuário escolheu cortar **Florian, Voldaren Scion** (a 3ª adição
+desta rodada) em vez de qualquer outra carta da lista. Florian removido
+por completo: `try_florian_postcombat()`, o campo
+`florian_cards_played_total`, a entrada em `LEGENDARY_NAMES` e as
+chamadas em `play_turn()`/`run_batch()`. Resultado final desta rodada:
+**+2 (Phyrexian Arena, Cosmic Cube) / -2 (Everflowing Chalice, Sandstone
+Oracle)**, Myr Retriever mantido, Florian não entrou.
+
+**Lição:** pedido de adição já vinha sendo tratado com confirmação
+explícita (`AskUserQuestion` pro Skullclamp vs. Phyrexian Arena); corte
+de carta precisa do mesmo tratamento — decidir e só informar depois não
+é a mesma coisa que perguntar antes, mesmo quando a razão técnica
+(redundância real com Junk Diver) parece óbvia de dentro do código.
+
+**Revalidado:** smoke test (99 cartas, 0 desconhecidas, 0 duplicatas) +
+`run_batch` de 2000 jogos (0 exceções).
+
+---
+
+## Correção de draw: +Phyrexian Arena / +Cosmic Cube (proposta inicial incluía Florian) — 2026-09-03
 
 **Gatilho:** usuário reportou *"Estou com a impressão de que falta draw
 no deck"*. Validado com dados reais do `run_batch` (2000 jogos): mão
