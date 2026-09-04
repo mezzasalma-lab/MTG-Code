@@ -70,6 +70,22 @@ contas em 99 cartas de novo, mantendo Phyrexian Arena e Cosmic Cube.
 Lição: cortes de carta precisam de confirmação explícita antes de
 implementar, não só as adições.
 
+**Correção 2026-09-04 — validação real via EDHREC**: usuário perguntou
+como o Determined Iteration performa no EDHREC pro Megatron — não
+aparece em nenhuma das 13 categorias da página (5.333 decks
+rastreados). Em compensação, achamos o **Pia's Revolution** como a
+enchantment MAIS jogada com esse comandante (41,6% dos decks, muito à
+frente do resto). Oráculo: "whenever a nontoken artifact is put into
+your graveyard from the battlefield, return that card to your hand
+unless target opponent has this enchantment deal 3 damage to them" —
+seguro de vida direto pro motor de sacrifício de artefato (fuel do
+Megatron, fodder de solda). Corte: cruzamos nossas 66 cartas contra
+TODAS as listas do EDHREC pro Megatron pra achar candidatos objetivos
+(sem aparecer em lugar nenhum lá E sem histórico de partida real);
+usuário escolheu **-1 Altar of the Wretched** (ETB único, sem
+repetição) e deixou explícito que Treasure Nabber não sai em hipótese
+alguma.
+
 **Terrenos**: mantida a base dele quase toda, com 2 mudanças pedidas —
 (1) proporção de básicas rebalanceada pelo peso real de pips (R 59,6% /
 B 28,8% / W 11,5% dos símbolos coloridos da lista final — branco é
@@ -89,7 +105,6 @@ mantida.
 
 ## Deck
 
-1 Altar of the Wretched
 1 Anrakyr the Traveller
 1 Arcane Signet
 1 Ayara, Widow of the Realm
@@ -131,6 +146,7 @@ mantida.
 1 Path to Exile
 1 Phyrexian Arena
 1 Phyrexian Triniform
+1 Pia's Revolution
 1 Portal to Phyrexia
 1 Ragavan, Nimble Pilferer
 1 Rakdos, the Muscle

@@ -128,8 +128,8 @@ add("Sneak Attack", 4, "enchantment", {"sneak_attack"}, pips={"R": 1})
 
 # --- Sacrificio / payoff -------------------------------------------------------
 add("Ayara, Widow of the Realm", 3, "creature", {"ayara"}, power=3, toughness=3, pips={"B": 2})
-add("Altar of the Wretched", 3, "artifact", {"altar_wretched"}, pips={"B": 1})
 add("Rakdos, the Muscle", 5, "creature", {"rakdos_sac_creature"}, power=6, toughness=5, pips={"B": 2, "R": 1})
+add("Pia's Revolution", 3, "enchantment", {"pia_revolution"}, pips={"R": 1})  # Achado real 2026-09-04 (EDHREC)
 
 # --- Corpo grande / finalizadores (fodder real pro motor de solda/cheat) ------
 add("Cursed Mirror", 3, "artifact", {"fuel_rock1", "cursed_mirror_clone"}, pips={"R": 1}, produces={"R"})
@@ -352,6 +352,7 @@ class GameState:
     phyrexian_arena_life_lost_total: int = 0
     nexus_tokens_created_total: int = 0
     equip_haste_activations_total: int = 0
+    pia_revolution_returns_total: int = 0
 
 
 def draw_cards(state: GameState, n: int):
@@ -521,11 +522,34 @@ def sacrifice(state: GameState, name: str):
         state.artifacts_sacrificed_total += 1
         scrap_trawler_trigger(state, name)
         daretti_ultimate_recursion_check(state, name)
+        pia_revolution_trigger(state, name)
     if was_creature:
         state.creatures_sacrificed_total += 1
     death_trigger(state, name)
     if was_creature and name != "Rakdos, the Muscle" and "Rakdos, the Muscle" in state.battlefield:
         rakdos_muscle_trigger(state, name)
+
+
+def pia_revolution_trigger(state: GameState, dying_name: str):
+    """Pia's Revolution: 'Whenever a nontoken artifact is put into your
+    graveyard from the battlefield, return that card to your hand unless
+    target opponent has this enchantment deal 3 damage to them.' Achado
+    real 2026-09-04 (EDHREC: card mais jogado com o Megatron entre as
+    enchantments, 41,6% dos decks -- validado por dado real de jogadores,
+    nao so' por oraculo). Sempre escolhe devolver pra mao: vantagem de
+    cartas > 3 de dano proxy aqui, ja que o deck reaproveita fartamente
+    artefato reciclado (fuel do Megatron/fodder de solda de novo), e o
+    combate ja alimenta `life_lost_by_opponents_this_turn` de sobra sem
+    precisar desses 3 pontos extras. So' dispara pra artefato NAO-token
+    (token deixa de existir ao mudar de zona pelas regras reais -- ver
+    `is_token_name`)."""
+    if "Pia's Revolution" not in state.battlefield or is_token_name(dying_name):
+        return
+    if dying_name not in state.graveyard:
+        return
+    state.graveyard.remove(dying_name)
+    state.hand.append(dying_name)
+    state.pia_revolution_returns_total += 1
 
 
 def scrap_trawler_trigger(state: GameState, dying_name: str):
@@ -669,6 +693,17 @@ def make_token_copy_name(base_name: str) -> str:
     return token_name
 
 
+TOKEN_FIXED_NAMES = {"Phyrexian Golem Token", "Nexus Golem Token", "Shapeshifter Token"}
+
+
+def is_token_name(name: str) -> bool:
+    """Distingue token de carta real -- necessario pro Pia's Revolution
+    ('nontoken artifact'). Cobre tanto os tokens-copia dinamicos
+    (`make_token_copy_name`, sufixo ' (copia)') quanto os tokens de nome
+    fixo (Phyrexian Golem/Nexus Golem/Shapeshifter)."""
+    return name.endswith(" (copia)") or name in TOKEN_FIXED_NAMES
+
+
 def resolve_etb(state: GameState, name: str, token: bool = False):
     tags = CARD_DB[name].tags
 
@@ -750,21 +785,6 @@ def resolve_etb(state: GameState, name: str, token: bool = False):
         # ataque (`daretti_rocketeer_attack_ability`, chamada em
         # `all_attackers_combat`).
         daretti_rocketeer_attack_ability(state)
-
-    if "altar_wretched" in tags:
-        # "When this artifact enters, you may sacrifice a nontoken
-        # creature. If you do, draw X cards, then mill X cards, where X
-        # is that creature's power." So' sacrifica fodder que ia morrer
-        # de qualquer jeito (mesma logica de `best_payoff_fodder`).
-        fodder = best_payoff_fodder(state)
-        if fodder is not None and is_creature_card(fodder):
-            power = get_power(state, fodder)
-            if power > 0:
-                sacrifice(state, fodder)
-                draw_cards(state, power)
-                millable = state.library[:power]
-                state.library = state.library[power:]
-                state.graveyard.extend(millable)
 
 
 # ---------------------------------------------------------------------------
@@ -1970,6 +1990,8 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg tokens 3/3 criados via Nexus of Becoming: {avg([s.nexus_tokens_created_total for s in states]):.2f}")
     print(f"Avg ativacoes de haste via Lightning Greaves/Swiftfoot Boots: "
           f"{avg([s.equip_haste_activations_total for s in states]):.2f}")
+    print(f"Avg artefatos devolvidos pra mao via Pia's Revolution: "
+          f"{avg([s.pia_revolution_returns_total for s in states]):.2f}")
     print(f"Avg ativacoes de solda (Welder/Scrap Welder/Trash for Treasure/Engineer/Osgir/Daretti): "
           f"{avg([s.weld_activations_total for s in states]):.2f}")
     print(f"Avg criaturas cheatadas pra campo (Sneak Attack/Feldon/Anrakyr/Bygone Colossus warp): "

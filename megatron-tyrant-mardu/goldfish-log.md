@@ -4,6 +4,47 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## +Pia's Revolution / -Altar of the Wretched — 2026-09-04
+
+**Gatilho:** usuário perguntou como o Determined Iteration performa no
+EDHREC pro Megatron, Tyrant. Baixei o payload de dados da página real
+(`edhrec.com/commanders/megatron-tyrant`, 5.333 decks rastreados) —
+Determined Iteration não aparece em NENHUMA das 13 categorias de carta
+da página. Em compensação, achei o **Pia's Revolution** como a
+enchantment mais jogada com esse comandante (41,6% dos decks, de longe a
+1ª colocada — Sneak Attack vem em 2º com 23,9%, ambas já na nossa
+lista). Oráculo real: "Whenever a nontoken artifact is put into your
+graveyard from the battlefield, return that card to your hand unless
+target opponent has this enchantment deal 3 damage to them." Encaixe
+óbvio: seguro de vida direto pro motor de sacrifício de artefato que já
+roda (fuel do Megatron, fodder de solda, payoff do Ayara/Rakdos).
+
+**Corte:** perguntei via `AskUserQuestion` (dessa vez cruzando nossas 66
+cartas contra TODAS as listas do EDHREC pro Megatron, não uma lista
+subjetiva minha) — 4 candidatos que não aparecem em lugar nenhum lá e
+sem histórico de partida real: Altar of the Wretched, Decree of Pain,
+Laughing Mad, Treasure Nabber. Usuário escolheu **Altar of the
+Wretched** e deixou claro que **Treasure Nabber não pode sair em
+hipótese alguma**.
+
+**Implementado:** `pia_revolution_trigger()`, chamada de dentro de
+`sacrifice()` (mesmo ponto central de todo sacrifício de artefato do
+arquivo) — sempre escolhe devolver o artefato pra mão (vantagem de
+cartas > 3 de dano proxy aqui, já que o deck reaproveita fartamente
+artefato reciclado, e o combate já alimenta `life_lost_by_opponents_this_turn`
+de sobra). Só dispara pra artefato NÃO-token — novo helper
+`is_token_name()` cobre os 2 padrões de nome de token do arquivo (sufixo
+" (copia)" e os 3 nomes fixos). Bloco `altar_wretched` removido de
+`resolve_etb()` junto com a carta.
+
+**Validado:** smoke test (99 cartas, 0 desconhecidas, 0 duplicatas) +
+script de auditoria de mecânica fantasma (só Treasure Nabber, esperado)
++ `run_batch` de 2000 jogos (contador novo disparando, 0,32
+artefatos/partida devolvidos) + regressão de 20.000 partidas, 0
+exceções.
+
+---
+
 ## Correção — Osgir marcado como artefato no CARD_DB, sem ser — 2026-09-04
 
 **Gatilho:** expliquei a sobreposição Ultron/Nexus/Determined Iteration
