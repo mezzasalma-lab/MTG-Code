@@ -4,6 +4,48 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Correção — Osgir marcado como artefato no CARD_DB, sem ser — 2026-09-04
+
+**Gatilho:** expliquei a sobreposição Ultron/Nexus/Determined Iteration
+citando Osgir, the Reconstructor como exemplo de "artefato grande" que o
+Ultron poderia copiar. Usuário perguntou direto: *"Pq vc diz que Osgir é
+artefato? Vc está consultando o banco de dados que montamos nessa
+porra?"*. Resposta honesta: sim, consultei o `CARD_DB` — só que o
+`CARD_DB` estava errado. Osgir tinha a tag `"artifact"` na definição
+(`add("Osgir, the Reconstructor", 4, "creature", {"artifact",
+"osgir_clone"}, ...)`), mas o tipo real da carta é **"Legendary Creature
+— Giant Artificer"** — não é artefato, só cuida de artefato (sacrifica
+artefato pra buff, exila carta de artefato do cemitério).
+
+**Verificação completa:** não corrigi só o Osgir isolado — cruzei as 26
+criaturas do `CARD_DB` inteiro contra o `type_line` real via Scryfall
+(`cards/collection`, 2 lotes): das 15 marcadas `artifact`, só o Osgir
+estava errado (as outras 14, incluindo Demonic Junker como Vehicle, são
+artefato de verdade); das 11 SEM a tag, nenhuma deveria ter (Goblin
+Welder/Engineer, Scrap Welder, Feldon, Daretti Rocketeer, Mishra, Ayara,
+Rakdos, Bahamut, Ragavan, Treasure Nabber — todas "Creature" puro,
+conferido). Erro isolado, não padrão sistêmico.
+
+**Corrigido:** removida a tag `"artifact"` da definição do Osgir. Isso
+afeta de verdade vários pontos do arquivo que checam `is_artifact_card()`:
+`best_weld_fodder`/`best_megatron_fuel` (Osgir não podia mais ser
+escolhido como fuel/fodder de solda — real, já que Destructive Force e
+os efeitos de solda exigem "sacrifice/return an ARTIFACT"),
+`try_metalwork_colossus_recursion` (não sacrifica mais o Osgir sem
+querer como um dos 2 artefatos baratos), `try_adagia_copy` (não copia
+mais o Osgir como se fosse artefato/encantamento), `artifact_etb_hooks`
+(entrada do Osgir não dispara mais o Mirrorworks), redução de custo do
+Demonic Junker (Affinity só conta artefato de verdade agora), e o
+contador `artifacts_sacrificed_total` (não soma mais se o Osgir morrer
+por outro efeito de sacrifício de criatura).
+
+**Validado:** smoke test (99 cartas, 0 desconhecidas, 0 duplicatas,
+`is_artifact_card("Osgir...") == False`, `is_historic(...) == True` via
+`LEGENDARY_NAMES`, que já incluía ele) + `run_batch` de 2000 jogos +
+regressão de 20.000 partidas, 0 exceções.
+
+---
+
 ## Auditoria sistemática (Lightning Greaves/Swiftfoot Boots nunca equipados, Nexus of Becoming) — 2026-09-04
 
 **Gatilho:** discussão sobre Determined Iteration levou a listar as

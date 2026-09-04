@@ -121,7 +121,7 @@ add("Daretti, Scrap Savant", 4, "planeswalker", {"daretti_savant"}, pips={"R": 1
 add("Anrakyr the Traveller", 5, "creature", {"artifact", "anrakyr"}, power=4, toughness=4, pips={"B": 1})
 add("Daretti, Rocketeer Engineer", 5, "creature", {"daretti_rocketeer"}, power=0, toughness=5, pips={"R": 1})
 add("Mishra, Tamer of Mak Fawa", 5, "creature", {"mishra_unearth_all"}, power=4, toughness=4, pips={"B": 1, "R": 1})
-add("Osgir, the Reconstructor", 4, "creature", {"artifact", "osgir_clone"}, power=4, toughness=4, pips={"R": 1, "W": 1})
+add("Osgir, the Reconstructor", 4, "creature", {"osgir_clone"}, power=4, toughness=4, pips={"R": 1, "W": 1})  # Achado real 2026-09-04: NAO e' artefato (Legendary Creature -- Giant Artificer), so' cuida de artefato
 
 # --- Cheat pra campo -----------------------------------------------------------
 add("Sneak Attack", 4, "enchantment", {"sneak_attack"}, pips={"R": 1})
