@@ -99,6 +99,33 @@ artefato quando "estacionada", ótimo com Metalwork Colossus/Bygone
 Colossus/Gearhulks). Susur Secundi, Void Altar já vinha na lista dele,
 mantida.
 
+**Correção 2026-09-04 — básicas rebalanceadas de novo**: usuário
+perguntou como o deck está de exigência de pips de cor. Recalculado do
+zero a partir do `CARD_DB` real (não da análise antiga): pips atuais
+R 55,9% / B 28,8% / W 15,3% (a lista mudou bastante desde o
+rebalanceamento anterior). Comparado contra as fontes de cor REAIS do
+manabase (terrenos + rocks fixas), o vermelho estava 11,1 pontos abaixo
+do que a demanda pede (44,8% de fontes vs 55,9% de pips), branco 7,1
+pontos acima (22,4% vs 15,3%). Usuário pediu ajuste só nas básicas.
+
+Primeira tentativa (**18 Mountain/1 Plains/4 Swamp**, batendo o mais
+perto possível do alvo matemático de pips) parecia ótima no papel — mas
+testando de verdade no simulador (A/B controlado, mesmas seeds, 20.000
+jogos cada) o "nunca conjurado o Megatron em 8 turnos" PIOROU de 11,7%
+pra 14,6%. Causa real: Megatron precisa de W+B+R **ao mesmo tempo**
+(so' 1 pip de cada), não de "proporção agregada de pips" — cortar
+Plains de 2 pra 1 criou um gargalo bem maior do que a análise por peso
+de pips sugeria, porque branco já tinha poucas fontes fixas mesmo
+sobrando na conta agregada. Testado um grid de combinações mantendo
+Plains fixo em 2 (não mexer nele é o que mais protege a castabilidade
+do comandante) e variando só Mountain/Swamp: escolhida **16 Mountain/2
+Plains/5 Swamp** — sobe o vermelho real (44,8%→48,3% de fontes, gap cai
+de -11,1 pra -7,6) com custo pequeno e validado de castabilidade
+("nunca conjurado" sobe só 12,3%→12,9%, contra 12,3%→14,6% da tentativa
+anterior). Branco continua acima do ideal matemático (as fontes fixas
+dos duais/rocks já superam sozinhas os 15,3% de demanda) — não dá pra
+corrigir mais isso sem tocar nos terrenos não-básicos.
+
 ## Comandante
 
 1 Megatron, Tyrant
@@ -180,10 +207,10 @@ mantida.
 1 Command Tower
 1 Exotic Orchard
 1 Forbidden Orchard
-14 Mountain
+16 Mountain
 2 Plains
 1 Plateau
 1 Scrubland
 1 Smoldering Marsh
 1 Susur Secundi, Void Altar
-7 Swamp
+5 Swamp

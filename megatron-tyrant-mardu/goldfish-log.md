@@ -4,6 +4,45 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Rebalanceamento de básicas (v2, com A/B test real) — 2026-09-04
+
+**Gatilho:** usuário pediu análise de exigência de pips de cor.
+Recalculado do zero via `CARD_DB`: R 55,9%/B 28,8%/W 15,3% dos pips,
+contra fontes reais de manabase em R 44,8%/B 32,8%/W 22,4% — vermelho
+11,1 pontos abaixo do ideal. Usuário pediu ajuste só nas básicas.
+
+**Primeira tentativa (errada) — 18 Mountain/1 Plains/4 Swamp:** batia
+quase exato no alvo matemático de proporção de fontes por pip. Rodei um
+A/B controlado (mesmas seeds, 20.000 jogos cada, só a manabase mudando)
+antes de finalizar — **e o "Megatron nunca conjurado em 8 turnos"
+piorou de 11,7% pra 14,6%**. Causa: a análise por peso agregado de pips
+mede "proporção de símbolos de cor no deck inteiro", mas o Megatron
+especificamente só precisa de 1 pip de CADA cor ao mesmo tempo — cortar
+Plains de 2 pra 1 criou um gargalo de castabilidade que a métrica
+agregada não capturava (branco já tinha poucas fontes fixas mesmo
+"sobrando" na conta agregada).
+
+**Corrigido antes de entregar:** testei um grid mantendo Plains fixo em
+2 (isso é o que mais protege a castabilidade tripla-cor do comandante),
+variando só Mountain/Swamp. Escolhida **16 Mountain/2 Plains/5 Swamp**:
+vermelho sobe de 44,8% pra 48,3% de fontes (gap cai de -11,1 pra -7,6
+pontos) com custo de castabilidade pequeno e validado (nunca-conjurado
+sobe só 12,3%→12,9%, era 12,3%→14,6% na tentativa errada).
+
+**Lição:** rebalanceamento de manabase por peso agregado de pips
+(Karsten-style) é um bom ponto de partida, mas não substitui validar no
+simulador de verdade quando o deck tem uma peça específica (o próprio
+comandante) que exige múltiplas cores simultaneamente — a métrica
+agregada pode sugerir um corte que parece ótimo no papel e ativamente
+piora a taxa de conjuração real. Testado e pego ANTES de entregar pro
+usuário desta vez (não depois, via reclamação).
+
+**Validado:** smoke test (99 cartas) + `run_batch` de 2000 jogos +
+regressão de 20.000 partidas, 0 exceções + os 2 A/B tests de 20.000
+partidas cada documentados acima.
+
+---
+
 ## +Pia's Revolution / -Altar of the Wretched — 2026-09-04
 
 **Gatilho:** usuário perguntou como o Determined Iteration performa no
