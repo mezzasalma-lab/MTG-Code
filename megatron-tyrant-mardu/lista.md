@@ -144,6 +144,39 @@ histórico de partida real/pedido explícito/peça central do motor) →
 usuário escolheu **Ragavan, Nimble Pilferer** (ataque solo isolado, não
 escala com o resto do motor).
 
+**Correção 2026-09-09 (2) — +Fountainport / +Tarrian's Journal /
+-God-Pharaoh's Statue / -Laughing Mad**: usuário pediu as duas cartas como
+draw engines + criação de tokens. Verificado o oráculo real via Scryfall
+(inclusive `card_faces` do Tarrian's Journal, um MDFC):
+
+- **Fountainport** (terreno, Bloomburrow 2024): `{T}: Add {C}.` + 3
+  habilidades 100% genéricas competindo pelo mesmo tap (`{2}` sacrifica
+  um token pra puxar carta / `{3}`+1 vida cria Fish 1/1 / `{4}` cria
+  Treasure). Usuário apontou corretamente que o mana incolor do Megatron
+  paga qualquer uma delas (nenhuma tem pip colorido). Entrou como 34º
+  terreno (não substituiu terreno colorido nenhum, preservando o
+  rebalanceamento de básicas já validado por A/B test).
+- **Tarrian's Journal** (artefato, {1}{B}, Lost Caverns of Ixalan 2023):
+  usuário inicialmente descreveu como "criação de tokens" — oráculo real
+  mostrou que NÃO cria token nenhum (nem a face de trás, que é
+  reanimação, não token). Mas usuário corrigiu a intenção real: usar os
+  tokens do PRÓPRIO deck (Myr do Genesis Chamber, Fish do Fountainport)
+  como combustível descartável pro `{T}, Sacrifice another artifact or
+  creature: Draw a card` — draw essencialmente de graça, diferente do
+  Skullport Merchant/Village Rites rejeitados antes porque aqui o
+  "custo" é um token que o próprio deck já gera de sobra. Face de trás
+  (transformar, custa descartar a mão inteira) fica fora do modelo —
+  custo proibitivo pra qualquer heurística simples.
+- Corrigido de brinde: `TOKEN_FIXED_NAMES`/`is_token_name` não incluía
+  "Myr Token" (Genesis Chamber) — gap real que faria Pia's Revolution
+  disparar errado ("nontoken artifact") se um Myr Token fosse
+  sacrificado como fodder em qualquer lugar do arquivo.
+- Corte: cruzado de novo contra o EDHREC (13 candidatos sem aparecer em
+  lugar nenhum, menos protegidos por histórico real/pedido
+  explícito/peça central do motor) → usuário escolheu **God-Pharaoh's
+  Statue** (stax simétrico, não avança nosso próprio plano) e **Laughing
+  Mad** (looting redundante, já tínhamos Faithless Looting igual).
+
 ## Comandante
 
 1 Megatron, Tyrant
@@ -175,11 +208,9 @@ escala com o resto do motor).
 1 Gilded Lotus
 1 Goblin Engineer
 1 Goblin Welder
-1 God-Pharaoh's Statue
 1 Heartless Conscription
 1 Ironsoul Enforcer
 1 Junk Diver
-1 Laughing Mad
 1 Lightning Greaves
 1 Metalwork Colossus
 1 Mind Stone
@@ -210,6 +241,7 @@ escala com o resto do motor).
 1 Talisman of Conviction
 1 Talisman of Hierarchy
 1 Talisman of Indulgence
+1 Tarrian's Journal
 1 The Eternity Elevator
 1 Trash for Treasure
 1 Treasure Nabber
@@ -225,6 +257,7 @@ escala com o resto do motor).
 1 Command Tower
 1 Exotic Orchard
 1 Forbidden Orchard
+1 Fountainport
 16 Mountain
 2 Plains
 1 Plateau

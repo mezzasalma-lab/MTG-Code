@@ -147,18 +147,17 @@ add("Metalwork Colossus", 11, "creature", {"artifact", "metalwork_colossus"}, po
 
 # --- Artefatos de valor continuo ----------------------------------------------
 add("Nexus of Becoming", 6, "artifact", {"nexus_combat_draw_copy"}, pips={})
-add("God-Pharaoh's Statue", 6, "artifact", {"god_pharaoh_statue"}, pips={})
 add("Mirrorworks", 5, "artifact", {"mirrorworks"}, pips={})
 add("Portal to Phyrexia", 9, "artifact", {"portal_phyrexia"}, pips={})
 add("Warstorm Surge", 6, "enchantment", {"warstorm_surge"}, pips={"R": 1})
 add("Brass's Tunnel-Grinder", 3, "artifact", {"tunnel_grinder"}, pips={"R": 1})
 add("Cosmic Cube", 5, "artifact", {"cosmic_cube"}, pips={})  # Achado real 2026-09-03
 add("Genesis Chamber", 2, "artifact", {"genesis_chamber"}, pips={})  # Achado real 2026-09-09
+add("Tarrian's Journal", 2, "artifact", {"tarrians_journal"}, pips={"B": 1})  # Achado real 2026-09-09
 
 # --- Draw / filtragem ----------------------------------------------------------
 add("Faithless Looting", 1, "sorcery", {"loot2_2_flashback"}, pips={"R": 1})
 add("Demand Answers", 2, "instant", {"demand_answers"}, pips={"R": 1})
-add("Laughing Mad", 3, "instant", {"loot1_2_flashback"}, pips={"R": 1})
 add("Wheel of Fortune", 3, "sorcery", {"wheel_full"}, pips={"R": 1})
 add("Black Market Connections", 3, "enchantment", {"black_market"}, pips={"B": 1})
 add("Saheeli's Directive", 3, "sorcery", {"saheeli_directive"}, pips={"R": 3})
@@ -204,6 +203,7 @@ add("Badlands", 0, "land", set(), produces={"B", "R"})
 add("Command Tower", 0, "land", set(), produces={"W", "B", "R"})
 add("Exotic Orchard", 0, "land", set(), produces={"W", "B", "R"})
 add("Forbidden Orchard", 0, "land", set(), produces={"W", "B", "R"})
+add("Fountainport", 0, "land", {"fountainport"}, produces=set())  # Achado real 2026-09-09: so' produz {C}, nao fixa W/B/R
 add("Plateau", 0, "land", set(), produces={"R", "W"})
 add("Scrubland", 0, "land", set(), produces={"W", "B"})
 add("Smoldering Marsh", 0, "land", {"etb_tapped_check"}, produces={"B", "R"})
@@ -228,7 +228,7 @@ LEGENDARY_NAMES = {
     "Megatron, Tyrant", "Ayara, Widow of the Realm", "Feldon of the Third Path",
     "Daretti, Scrap Savant", "Daretti, Rocketeer Engineer", "Anrakyr the Traveller",
     "Mishra, Tamer of Mak Fawa", "Osgir, the Reconstructor", "Rakdos, the Muscle",
-    "Brass's Tunnel-Grinder", "God-Pharaoh's Statue", "The Eternity Elevator",
+    "Brass's Tunnel-Grinder", "The Eternity Elevator", "Tarrian's Journal",
     "Adagia, Windswept Bastion", "Susur Secundi, Void Altar",
 }
 
@@ -314,7 +314,8 @@ class GameState:
     losheel_draw_used_this_turn: bool = False
     adagia_copy_used_this_turn: bool = False
     susur_secundi_used_this_turn: bool = False
-    god_pharaoh_statue_pinged_this_turn: bool = False
+    fountainport_used_this_turn: bool = False
+    tarrians_journal_used_this_turn: bool = False
     attackers_this_combat: int = 0
     attackers_total_all_turns: int = 0  # soma de todos os combates, pra metrica de run_batch
     max_attacker_power_this_combat: int = 0  # pro gatilho do Cosmic Cube
@@ -354,6 +355,9 @@ class GameState:
     equip_haste_activations_total: int = 0
     pia_revolution_returns_total: int = 0
     genesis_chamber_tokens_total: int = 0
+    fountainport_draws_total: int = 0
+    fountainport_tokens_total: int = 0
+    tarrians_journal_draws_total: int = 0
 
 
 def draw_cards(state: GameState, n: int):
@@ -380,8 +384,8 @@ def gain_life(state: GameState, n: int):
 
 
 def worst_discard_target(state: GameState, pool: list = None):
-    """Escolhe a pior carta pra descartar (Faithless Looting/Laughing Mad/
-    limite de mao no fim do turno). Achado real ao testar: escolher so'
+    """Escolhe a pior carta pra descartar (Faithless Looting/Wheel de
+    filtragem/limite de mao no fim do turno). Achado real ao testar: escolher so'
     por MENOR mana value (como o resto do arquivo faz em varios lugares)
     tratava terrenos (MV 0) como sempre "a pior carta" -- looting
     descartava os proprios terrenos da mao antes de conseguirem ser
@@ -719,14 +723,20 @@ def make_token_copy_name(base_name: str) -> str:
     return token_name
 
 
-TOKEN_FIXED_NAMES = {"Phyrexian Golem Token", "Nexus Golem Token", "Shapeshifter Token"}
+TOKEN_FIXED_NAMES = {"Phyrexian Golem Token", "Nexus Golem Token", "Shapeshifter Token",
+                     "Myr Token", "Fish Token"}
+# Correcao 2026-09-09: "Myr Token" (Genesis Chamber) faltava aqui -- gap
+# real, pia_revolution_trigger() teria disparado errado ('nontoken
+# artifact') se um Myr Token artefato fosse sacrificado como fodder em
+# qualquer lugar do arquivo. "Fish Token" (Fountainport) adicionado junto
+# ja' na criacao, pra nao nascer com o mesmo gap.
 
 
 def is_token_name(name: str) -> bool:
     """Distingue token de carta real -- necessario pro Pia's Revolution
     ('nontoken artifact'). Cobre tanto os tokens-copia dinamicos
     (`make_token_copy_name`, sufixo ' (copia)') quanto os tokens de nome
-    fixo (Phyrexian Golem/Nexus Golem/Shapeshifter)."""
+    fixo (Phyrexian Golem/Nexus Golem/Shapeshifter/Myr/Fish)."""
     return name.endswith(" (copia)") or name in TOKEN_FIXED_NAMES
 
 
@@ -1121,13 +1131,6 @@ def try_ayara_transform(state: GameState):
     state.ayara_transformed = True
 
 
-def try_altar_of_the_wretched(state: GameState):
-    """ETB: 'you may sacrifice a nontoken creature. If you do, draw X
-    cards, then mill X cards, where X is that creature's power.' So'
-    dispara no momento em que ela entra -- ver `resolve_etb`."""
-    pass
-
-
 def try_susur_secundi(state: GameState):
     """'12+ | {1}{B}, {T}, Pay 2 life, Sacrifice a creature: Draw cards
     equal to the sacrificed creature's power.' So' liga com 12+ contadores
@@ -1150,6 +1153,66 @@ def try_susur_secundi(state: GameState):
     sacrifice(state, fodder)
     draw_cards(state, power)
     state.sacrifice_payoff_draws_total += power
+
+
+def try_fountainport(state: GameState):
+    """Fountainport: '{T}: Add {C}.' terreno generico normal, ja contado
+    no total_mana() agregado como qualquer outro terreno (produces=set()
+    porque {C} nao fixa W/B/R). As 3 habilidades abaixo competem pelo
+    MESMO tap (cada uma tem seu proprio '{T}' no oraculo real), entao so'
+    1 por turno; todo custo de mana e' 100% generico -- o mana incolor do
+    Megatron paga qualquer uma (achado real do usuario 2026-09-09).
+    Prioriza draw (sacrifica um token disponivel) > Fish token > Treasure,
+    na ordem de valor real pro deck:
+    {2}, {T}, Sacrifice a token: Draw a card.
+    {3}, {T}, Pay 1 life: Create a 1/1 blue Fish creature token.
+    {4}, {T}: Create a Treasure token."""
+    if "Fountainport" not in state.battlefield or state.fountainport_used_this_turn:
+        return
+    tokens = [n for n in state.battlefield if is_token_name(n)]
+    if tokens and remaining_mana(state) >= 2:
+        state.fountainport_used_this_turn = True
+        spend_mana(state, 2)
+        sacrifice(state, tokens[0])
+        draw_cards(state, 1)
+        state.fountainport_draws_total += 1
+    elif remaining_mana(state) >= 3 and state.life > 3:
+        state.fountainport_used_this_turn = True
+        spend_mana(state, 3)
+        self_damage(state, 1)
+        if "Fish Token" not in CARD_DB:
+            add("Fish Token", 0, "creature", set(), power=1, toughness=1)
+        creature_enters(state, "Fish Token", from_hand=False, token=True)
+        state.fountainport_tokens_total += 1
+    elif remaining_mana(state) >= 4:
+        state.fountainport_used_this_turn = True
+        spend_mana(state, 4)
+        state.bonus_mana_pool += 1  # Treasure: convencao ja usada pelo Black Market Connections
+
+
+def try_tarrians_journal(state: GameState):
+    """Tarrian's Journal: '{T}, Sacrifice another artifact or creature:
+    Draw a card. Activate only as a sorcery.' Sem custo de mana, so' tap
+    + sacrificio -- prioriza SEMPRE sacrificar um token disponivel (Myr
+    do Genesis Chamber, Fish do Fountainport, copia do Adagia, etc; achado
+    do usuario 2026-09-09: 'sacrifica Myr, fish token e qq criatura ou
+    artefato pra gerar draw'), ja que sacrificar carta real seria so'
+    troca 1-por-1 sem ganho liquido. So' 1 ativacao por turno (tap real).
+    O verso '{2}, {T}, Discard your hand: Transform Tarrian's Journal' /
+    'The Tomb of Aclazotz' (land, {T}: Add {B}. / reanima criatura do
+    cemiterio) fica FORA -- custo de descartar a mao inteira e'
+    proibitivo pra qualquer heuristica simples de IA, nunca seria a
+    jogada certa no automatico (simplificacao documentada, mesma
+    convencao do arquivo inteiro: nunca ghost silencioso)."""
+    if "Tarrian's Journal" not in state.battlefield or state.tarrians_journal_used_this_turn:
+        return
+    tokens = [n for n in state.battlefield if is_token_name(n)]
+    if not tokens:
+        return
+    state.tarrians_journal_used_this_turn = True
+    sacrifice(state, tokens[0])
+    draw_cards(state, 1)
+    state.tarrians_journal_draws_total += 1
 
 
 def try_station_lands(state: GameState):
@@ -1570,13 +1633,6 @@ def resolve_instant_sorcery(state: GameState, name: str):
             worst = worst_discard_target(state)
             state.hand.remove(worst)
             state.graveyard.append(worst)
-    elif "loot1_2_flashback" in tags:
-        # Laughing Mad: "discard a card. Draw two cards."
-        if state.hand:
-            worst = worst_discard_target(state)
-            state.hand.remove(worst)
-            state.graveyard.append(worst)
-        draw_cards(state, 2)
     elif "demand_answers" in tags:
         # "As an additional cost, sacrifice an artifact or discard a
         # card. Draw two cards." Prefere sacrificar fodder gratis; senao
@@ -1619,8 +1675,8 @@ def resolve_instant_sorcery(state: GameState, name: str):
 
 
 def try_cast_flashback(state: GameState, name: str, flashback_cost: int):
-    """Faithless Looting {2}{R} / Laughing Mad {3}{R} flashback, do
-    cemiterio, exilada depois de resolver."""
+    """Faithless Looting {2}{R} flashback, do cemiterio, exilada depois
+    de resolver."""
     if name not in state.graveyard or remaining_mana(state) < flashback_cost:
         return
     spend_mana(state, flashback_cost)
@@ -1768,8 +1824,9 @@ def main_phase(state: GameState):
     try_susur_secundi(state)
     try_adagia_copy(state)
     try_bygone_colossus_warp(state)
+    try_fountainport(state)
+    try_tarrians_journal(state)
     try_cast_flashback(state, "Faithless Looting", 3)
-    try_cast_flashback(state, "Laughing Mad", 4)
 
 
 def daretti_rocketeer_attack_ability(state: GameState):
@@ -1846,8 +1903,6 @@ def combat_step(state: GameState):
 
 def end_step(state: GameState):
     megatron_postcombat(state)
-    if "God-Pharaoh's Statue" in state.battlefield:
-        proxy_drain(state, 1 * NUM_OPPONENTS)
 
     for n in state.temp_creatures_pending_sacrifice[:]:
         if n in state.battlefield:
@@ -1894,6 +1949,8 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.black_market_used_this_turn = False
     state.adagia_copy_used_this_turn = False
     state.susur_secundi_used_this_turn = False
+    state.fountainport_used_this_turn = False
+    state.tarrians_journal_used_this_turn = False
 
     try_phyrexian_arena_upkeep(state)
     if not (is_first_turn and on_play):
@@ -1998,6 +2055,9 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
           f"{avg([s.sacrifice_payoff_draws_total for s in states]):.2f}")
     print(f"Avg wheels conjurados: {avg([s.wheels_total for s in states]):.2f}")
     print(f"Avg tokens Myr via Genesis Chamber: {avg([s.genesis_chamber_tokens_total for s in states]):.2f}")
+    print(f"Avg compras via Fountainport: {avg([s.fountainport_draws_total for s in states]):.2f} | "
+          f"Avg Fish tokens via Fountainport: {avg([s.fountainport_tokens_total for s in states]):.2f}")
+    print(f"Avg compras via Tarrian's Journal: {avg([s.tarrians_journal_draws_total for s in states]):.2f}")
     print(f"Avg vida final: {avg([s.life for s in states]):.2f}")
     own_ko = sum(1 for s in states if s.life <= 0)
     print(f"Partidas em que os PROPRIOS efeitos derrubam minha vida a 0 ou menos: {100*own_ko/n:.1f}%")

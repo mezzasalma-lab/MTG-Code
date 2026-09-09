@@ -4,6 +4,60 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## +Fountainport / +Tarrian's Journal / -God-Pharaoh's Statue / -Laughing Mad — 2026-09-09
+
+**Gatilho:** usuário pediu Fountainport e Tarrian's Journal como "draw
+engines e criação de tokens", notando que Fountainport ainda serve pra
+usar o mana incolor gerado pelo Megatron.
+
+**Verificação real (Scryfall, incluindo `card_faces` do MDFC):**
+
+- **Fountainport** (terreno, Bloomburrow, `released_at` 2024-08-02,
+  reprint: false): `{T}: Add {C}.` + `{2},{T},Sacrifice a token: Draw a
+  card.` / `{3},{T},Pay 1 life: Create a 1/1 blue Fish creature token.`
+  / `{4},{T}: Create a Treasure token.` As 3 habilidades competem pelo
+  mesmo tap (só 1 por turno) e são 100% custo genérico — confirmado que
+  o mana incolor do Megatron paga qualquer uma, exatamente como o
+  usuário apontou.
+- **Tarrian's Journal // The Tomb of Aclazotz** (artefato, {1}{B}, Lost
+  Caverns of Ixalan, `released_at` 2023-11-17, reprint: false): frente
+  `{T}, Sacrifice another artifact or creature: Draw a card. Activate
+  only as a sorcery.` + `{2},{T}, Discard your hand: Transform`; verso
+  (land) `{T}: Add {B}.` + reanima criatura do cemitério. Correção: NÃO
+  cria token nenhum, ao contrário do que o usuário assumiu inicialmente
+  — mas o usuário corrigiu a própria intenção em seguida: "Tarrian
+  journal sacrifica Myr 1/1 token, fish token e qq criatura ou artefato
+  para gerar draw!" — ou seja, usar os TOKENS que o próprio deck já gera
+  (Genesis Chamber/Fountainport) como combustível descartável pro
+  sacrifício, tornando o draw essencialmente de graça (diferente do
+  Skullport Merchant/Village Rites, rejeitados antes por custarem
+  sacrifício de algo que se queria manter).
+
+**Corte:** cruzado de novo contra o EDHREC (13 candidatos sem aparecer
+em lugar nenhum, tirando os protegidos — histórico real/pedido
+explícito/peça central do motor); usuário escolheu **God-Pharaoh's
+Statue** (stax simétrico que não avança nosso próprio plano) e
+**Laughing Mad** (looting redundante com Faithless Looting).
+
+**Implementado:** `try_fountainport()` e `try_tarrians_journal()`,
+chamadas no `main_phase()`. Fountainport prioriza draw (sacrifica token)
+> Fish token > Treasure; Tarrian's Journal sacrifica sempre um token
+disponível pro draw, sem custo de mana. O lado "transformar" do
+Tarrian's Journal (custa descartar a mão inteira) fica fora do modelo —
+custo proibitivo pra qualquer heurística simples de IA, documentado como
+simplificação. Corrigido de brinde: `TOKEN_FIXED_NAMES` não incluía "Myr
+Token" (gap real que faria Pia's Revolution disparar errado se um Myr
+Token fosse sacrificado como fodder); "Fish Token" adicionado junto.
+
+**Validação:** smoke test (99 cartas, 0 nomes desconhecidos, 0
+duplicatas), `audit_ghosts2.py` limpo (só o Treasure Nabber esperado),
+batch de 2000 + regressão de 20.000 partidas sem exceções. Fountainport
+e Tarrian's Journal disparam de verdade (0,14 draws + 0,15 Fish tokens
+via Fountainport, 0,07 draws via Tarrian's Journal por partida em
+20.000 jogos) — mão final média subiu de ~3,05 pra ~3,18-3,20.
+
+---
+
 ## +Genesis Chamber / -Ragavan, Nimble Pilferer — 2026-09-09
 
 **Gatilho:** usuário perguntou como o Genesis Chamber performa no
