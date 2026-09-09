@@ -153,6 +153,7 @@ add("Portal to Phyrexia", 9, "artifact", {"portal_phyrexia"}, pips={})
 add("Warstorm Surge", 6, "enchantment", {"warstorm_surge"}, pips={"R": 1})
 add("Brass's Tunnel-Grinder", 3, "artifact", {"tunnel_grinder"}, pips={"R": 1})
 add("Cosmic Cube", 5, "artifact", {"cosmic_cube"}, pips={})  # Achado real 2026-09-03
+add("Genesis Chamber", 2, "artifact", {"genesis_chamber"}, pips={})  # Achado real 2026-09-09
 
 # --- Draw / filtragem ----------------------------------------------------------
 add("Faithless Looting", 1, "sorcery", {"loot2_2_flashback"}, pips={"R": 1})
@@ -189,7 +190,6 @@ add("Clever Concealment", 4, "instant", {"clever_concealment"}, pips={"W": 2})  
 add("Blacksmith's Skill", 1, "instant", {"blacksmiths_skill"}, pips={"W": 1})
 
 # --- Ataque solo -------------------------------------------------------------
-add("Ragavan, Nimble Pilferer", 1, "creature", {"ragavan"}, power=2, toughness=1, pips={"R": 1})
 add("Treasure Nabber", 3, "creature", {"opponent_dependent"}, power=3, toughness=2, pips={"R": 1})
 
 # --- Terrenos --------------------------------------------------------------------
@@ -229,7 +229,7 @@ LEGENDARY_NAMES = {
     "Daretti, Scrap Savant", "Daretti, Rocketeer Engineer", "Anrakyr the Traveller",
     "Mishra, Tamer of Mak Fawa", "Osgir, the Reconstructor", "Rakdos, the Muscle",
     "Brass's Tunnel-Grinder", "God-Pharaoh's Statue", "The Eternity Elevator",
-    "Ragavan, Nimble Pilferer", "Adagia, Windswept Bastion", "Susur Secundi, Void Altar",
+    "Adagia, Windswept Bastion", "Susur Secundi, Void Altar",
 }
 
 
@@ -353,6 +353,7 @@ class GameState:
     nexus_tokens_created_total: int = 0
     equip_haste_activations_total: int = 0
     pia_revolution_returns_total: int = 0
+    genesis_chamber_tokens_total: int = 0
 
 
 def draw_cards(state: GameState, n: int):
@@ -501,6 +502,31 @@ def creature_enters(state: GameState, name: str, from_hand: bool = True, token: 
     resolve_etb(state, name, token=token)
     if is_artifact_card(name):
         artifact_etb_hooks(state, name, token=token)
+    try_genesis_chamber_token(state, token)
+
+
+def try_genesis_chamber_token(state: GameState, entering_was_token: bool):
+    """Genesis Chamber: 'Whenever a nontoken creature enters, if this
+    artifact is untapped, that creature's controller creates a 1/1
+    colorless Myr artifact creature token.' Achado real 2026-09-09
+    (usuario notou que o token 1/1 vira alvo perfeito pro excesso de
+    dano do Destructive Force -- ver `megatron_combat`, que ja assume
+    por premissa um alvo de 1 de resistencia sempre disponivel; Genesis
+    Chamber torna essa premissa real de verdade em vez de assumida).
+    So' modela o lado 'eu mesmo conjuro/reanimo/cheat uma criatura' --
+    a metade simetrica (oponente tambem ganha token quando ELE conjura)
+    fica fora, estruturalmente (sem oponente real modelado, mesma
+    convencao de Treasure Nabber/Noxious Gearhulk). Sem tap real
+    modelado pro Genesis Chamber em lugar nenhum do arquivo, ele fica
+    sempre destapado. `token=True` (a propria entrada e' de um token)
+    nunca dispara de novo -- oraculo real e' 'nontoken creature enters'."""
+    if entering_was_token or "Genesis Chamber" not in state.battlefield:
+        return
+    token_name = "Myr Token"
+    if token_name not in CARD_DB:
+        add(token_name, 0, "creature", {"artifact"}, power=1, toughness=1)
+    creature_enters(state, token_name, from_hand=False, token=True)
+    state.genesis_chamber_tokens_total += 1
 
 
 def sacrifice(state: GameState, name: str):
@@ -1746,37 +1772,6 @@ def main_phase(state: GameState):
     try_cast_flashback(state, "Laughing Mad", 4)
 
 
-def ragavan_attack_ability(state: GameState):
-    """'Whenever Ragavan deals combat damage to a player, create a
-    Treasure token and exile the top card of that player's library.
-    Until end of turn, you may cast that card.' Achado real 2026-09-02:
-    a tag "ragavan" nunca foi lida em lugar nenhum, porque ate' agora so'
-    Megatron/Anrakyr atacavam de verdade -- agora que todo mundo ataca
-    (ver `all_attackers_combat`), o gatilho fica real. Alvo = minha
-    propria biblioteca (premissa documentada, mesma convencao de "target
-    player" usada pro Rakdos the Muscle/Sandstone Oracle/etc); a
-    Treasure vira +1 de mana solta, e a carta exilada e' conjurada na
-    hora se der pra pagar (senao fica perdida, mesma simplificacao de
-    nao rastrear "mao exilada temporaria" usada pro Rakdos)."""
-    state.bonus_mana_pool += 1
-    if not state.library:
-        return
-    exiled = state.library.pop(0)
-    state.exile.append(exiled)
-    if exiled not in CARD_DB or exiled in LAND_NAMES:
-        return
-    if effective_cost(state, exiled) > remaining_mana(state) or not has_color_sources_for(state, exiled):
-        return
-    spend_mana(state, effective_cost(state, exiled))
-    state.exile.remove(exiled)
-    if is_creature_card(exiled):
-        creature_enters(state, exiled, from_hand=False)
-    else:
-        state.battlefield.append(exiled)
-        resolve_etb(state, exiled)
-    state.creatures_cheated_in_total += 1
-
-
 def daretti_rocketeer_attack_ability(state: GameState):
     """'Whenever Daretti enters or attacks, choose target artifact card
     in your graveyard. You may sacrifice an artifact. If you do, return
@@ -1833,8 +1828,6 @@ def all_attackers_combat(state: GameState):
         state.max_attacker_power_this_combat = max(state.max_attacker_power_this_combat, power)
         if name == "Anrakyr the Traveller":
             anrakyr_attack_ability(state)
-        elif name == "Ragavan, Nimble Pilferer":
-            ragavan_attack_ability(state)
         elif name == "Daretti, Rocketeer Engineer":
             daretti_rocketeer_attack_ability(state)
 
@@ -2004,6 +1997,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg compras via payoff de sacrificio (Rakdos/Susur Secundi): "
           f"{avg([s.sacrifice_payoff_draws_total for s in states]):.2f}")
     print(f"Avg wheels conjurados: {avg([s.wheels_total for s in states]):.2f}")
+    print(f"Avg tokens Myr via Genesis Chamber: {avg([s.genesis_chamber_tokens_total for s in states]):.2f}")
     print(f"Avg vida final: {avg([s.life for s in states]):.2f}")
     own_ko = sum(1 for s in states if s.life <= 0)
     print(f"Partidas em que os PROPRIOS efeitos derrubam minha vida a 0 ou menos: {100*own_ko/n:.1f}%")

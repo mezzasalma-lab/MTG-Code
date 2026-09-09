@@ -126,6 +126,24 @@ anterior). Branco continua acima do ideal matemático (as fontes fixas
 dos duais/rocks já superam sozinhas os 15,3% de demanda) — não dá pra
 corrigir mais isso sem tocar nos terrenos não-básicos.
 
+**Correção 2026-09-09 — +Genesis Chamber / -Ragavan, Nimble Pilferer**:
+usuário perguntou como o Genesis Chamber ({2}, artifact, 2004, legal)
+performa no EDHREC pro Megatron — não aparece em nenhuma das 13
+categorias da página, igual o Determined Iteration antes. Mas o usuário
+identificou uma sinergia real por conta própria: "Whenever a nontoken
+creature enters, if this artifact is untapped, that creature's
+controller creates a 1/1 colorless Myr artifact creature token" — esse
+token 1/1 é o alvo perfeito pro excesso de dano do Destructive Force do
+Megatron (`megatron_combat` já assumia por premissa documentada um
+alvo de 1 de resistência sempre disponível; Genesis Chamber torna essa
+premissa real de verdade em vez de assumida). Efeito é simétrico
+(oponente também ganha token quando ELE conjura), mas usuário decidiu
+incluir mesmo assim. Corte: cruzado de novo contra o EDHREC (13
+candidatos sem aparecer em lugar nenhum, menos os já protegidos por
+histórico de partida real/pedido explícito/peça central do motor) →
+usuário escolheu **Ragavan, Nimble Pilferer** (ataque solo isolado, não
+escala com o resto do motor).
+
 ## Comandante
 
 1 Megatron, Tyrant
@@ -153,6 +171,7 @@ corrigir mais isso sem tocar nos terrenos não-básicos.
 1 Faithless Looting
 1 Feldon of the Third Path
 1 Fellwar Stone
+1 Genesis Chamber
 1 Gilded Lotus
 1 Goblin Engineer
 1 Goblin Welder
@@ -175,7 +194,6 @@ corrigir mais isso sem tocar nos terrenos não-básicos.
 1 Phyrexian Triniform
 1 Pia's Revolution
 1 Portal to Phyrexia
-1 Ragavan, Nimble Pilferer
 1 Rakdos, the Muscle
 1 Saheeli's Directive
 1 Scrap Trawler

@@ -4,6 +4,45 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## +Genesis Chamber / -Ragavan, Nimble Pilferer — 2026-09-09
+
+**Gatilho:** usuário perguntou como o Genesis Chamber performa no
+EDHREC pro Megatron — não aparece em nenhuma das 13 categorias da
+página (5.333 decks), igual o Determined Iteration antes. Mas o próprio
+usuário identificou a sinergia real: "quando esse artefato está em
+campo, toda vez que qq jogador cast uma criatura ele cria um token 1/1,
+que vira alvo pra habilidade do Megatron de causar dano em excesso e
+flipar todo turno!". Confirmado: oráculo real ({2} artifact, 2004,
+legal) — "whenever a nontoken creature enters, if this artifact is
+untapped, that creature's controller creates a 1/1 colorless Myr
+artifact creature token." O token 1/1 é alvo perfeito pro "excess
+damage" do Destructive Force (`megatron_combat()` já assumia essa
+premissa como dada, documentada há sessões: "proxy: alvo de 1 de
+resistencia, premissa do próprio primer" — Genesis Chamber torna real
+o que já era assumido).
+
+**Corte:** cruzado de novo contra o EDHREC (13 candidatos sem aparecer
+em lugar nenhum, tirando os já protegidos — histórico de partida real,
+pedido explícito, peça central do motor); usuário escolheu **Ragavan,
+Nimble Pilferer** entre os 3 restantes (Decree of Pain, Laughing Mad,
+Ragavan).
+
+**Implementado:** `try_genesis_chamber_token()`, chamada no fim de
+`creature_enters()` (ponto central de toda criatura entrando) — cria
+um Myr Token 1/1 sempre que uma criatura NÃO-token entra sob nosso
+controle, guardado contra recursão (a própria entrada do token não
+dispara de novo). Metade simétrica (oponente também ganharia token
+quando ELE conjura) fica fora, estruturalmente — sem oponente real
+modelado, mesma convenção de Treasure Nabber/Noxious Gearhulk. Ragavan
+removido por completo: `ragavan_attack_ability()`, tag no `CARD_DB`,
+`LEGENDARY_NAMES`, dispatch em `all_attackers_combat()`.
+
+**Validado:** script de auditoria de mecânica fantasma (só Treasure
+Nabber, esperado) + `run_batch` de 2000 jogos (contador novo disparando,
+0,18 tokens/partida) + regressão de 20.000 partidas, 0 exceções.
+
+---
+
 ## Rebalanceamento de básicas (v2, com A/B test real) — 2026-09-04
 
 **Gatilho:** usuário pediu análise de exigência de pips de cor.
