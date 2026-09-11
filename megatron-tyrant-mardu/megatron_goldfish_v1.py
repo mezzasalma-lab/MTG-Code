@@ -113,6 +113,7 @@ add("Goblin Welder", 1, "creature", {"welder"}, power=1, toughness=1, pips={"R":
 add("Goblin Engineer", 2, "creature", {"goblin_engineer"}, power=1, toughness=2, pips={"R": 1})
 add("Myr Retriever", 2, "creature", {"artifact", "toolbox_recur"}, power=1, toughness=1, pips={})
 add("Junk Diver", 3, "creature", {"artifact", "toolbox_recur"}, power=1, toughness=1, pips={})
+add("Scarecrone", 3, "creature", {"artifact", "scarecrone"}, power=1, toughness=2, pips={})  # Achado real 2026-09-11
 add("Scrap Trawler", 3, "creature", {"artifact", "scrap_trawler"}, power=3, toughness=2, pips={})
 add("Scrap Welder", 3, "creature", {"scrap_welder"}, power=3, toughness=3, pips={"R": 1})
 add("Feldon of the Third Path", 3, "creature", {"feldon"}, power=2, toughness=3, pips={"R": 2})
@@ -133,7 +134,6 @@ add("Pia's Revolution", 3, "enchantment", {"pia_revolution"}, pips={"R": 1})  # 
 
 # --- Corpo grande / finalizadores (fodder real pro motor de solda/cheat) ------
 add("Cursed Mirror", 3, "artifact", {"fuel_rock1", "cursed_mirror_clone"}, pips={"R": 1}, produces={"R"})
-add("Solemn Simulacrum", 4, "creature", {"artifact", "solemn"}, power=2, toughness=2, pips={})
 add("Ironsoul Enforcer", 5, "creature", {"artifact", "ironsoul"}, power=4, toughness=4, pips={"W": 1})
 add("Combustible Gearhulk", 6, "creature", {"artifact", "combustible_gearhulk"}, power=6, toughness=6, pips={"R": 2})
 add("Noxious Gearhulk", 6, "creature", {"artifact", "noxious_gearhulk"}, power=5, toughness=4, pips={"B": 2})
@@ -144,6 +144,16 @@ add("Phyrexian Triniform", 9, "creature", {"artifact", "triniform_death_tokens"}
 add("Skitterbeam Battalion", 9, "creature", {"artifact", "skitterbeam"}, power=4, toughness=4, pips={})
 add("Summon: Bahamut", 9, "creature", {"saga_bahamut"}, power=9, toughness=9, pips={})
 add("Metalwork Colossus", 11, "creature", {"artifact", "metalwork_colossus"}, power=10, toughness=10, pips={})
+# Cityscape Leveler: gatilho real ("when you cast this spell and whenever
+# this creature attacks, destroy up to one target nonland permanent...")
+# so' teria alvo valido no OPONENTE (nunca no nosso proprio board) -- sem
+# oponente real modelado, fica de fora (mesma convencao de Genesis
+# Chamber/Treasure Nabber pro lado simetrico/dependente de oponente).
+# "Up to one" ja' cobre o caso de zero alvos, sem whiff. Unearth {8}
+# tambem fora -- caro igual ao hardcast, sem ganho real de modelar
+# separado (documentado, mesma convencao do lado "transformar" do
+# Tarrian's Journal). Fica so' como corpo 8/8 trample colorless.
+add("Cityscape Leveler", 8, "creature", {"artifact"}, power=8, toughness=8, pips={})  # Achado real 2026-09-11
 
 # --- Artefatos de valor continuo ----------------------------------------------
 add("Nexus of Becoming", 6, "artifact", {"nexus_combat_draw_copy"}, pips={})
@@ -158,7 +168,6 @@ add("Tarrian's Journal", 2, "artifact", {"tarrians_journal"}, pips={"B": 1})  # 
 # --- Draw / filtragem ----------------------------------------------------------
 add("Faithless Looting", 1, "sorcery", {"loot2_2_flashback"}, pips={"R": 1})
 add("Demand Answers", 2, "instant", {"demand_answers"}, pips={"R": 1})
-add("Wheel of Fortune", 3, "sorcery", {"wheel_full"}, pips={"R": 1})
 add("Black Market Connections", 3, "enchantment", {"black_market"}, pips={"B": 1})
 add("Saheeli's Directive", 3, "sorcery", {"saheeli_directive"}, pips={"R": 3})
 add("Phyrexian Arena", 3, "enchantment", {"phyrexian_arena"}, pips={"B": 2})  # Achado real 2026-09-03
@@ -168,6 +177,7 @@ add("Path to Exile", 1, "instant", {"interaction"}, pips={"W": 1})
 add("Swords to Plowshares", 1, "instant", {"interaction"}, pips={"W": 1})
 add("Vandalblast", 1, "sorcery", {"interaction"}, pips={"R": 1})
 add("Chaos Warp", 3, "instant", {"interaction"}, pips={"R": 1})
+add("Generous Gift", 3, "instant", {"interaction"}, pips={"W": 1})  # Achado real 2026-09-11
 add("Decree of Pain", 8, "sorcery", {"decree_of_pain"}, pips={"B": 2})
 add("Heartless Conscription", 8, "sorcery", {"heartless_conscription"}, pips={"B": 2})
 add("Blasphemous Act", 9, "sorcery", {"wipe_reduces_creatures"}, pips={"R": 1})
@@ -175,7 +185,6 @@ add("Chandra's Ignition", 5, "sorcery", {"chandras_ignition"}, pips={"R": 2})
 
 # --- Protecao / equipment --------------------------------------------------------
 add("Lightning Greaves", 2, "artifact", {"haste_shroud_equip"}, pips={})
-add("Swiftfoot Boots", 2, "artifact", {"hexproof_haste_equip"}, pips={})
 add("Clever Concealment", 4, "instant", {"clever_concealment"}, pips={"W": 2})  # Achado real
 # 2026-09-02: Shields Up! e' do set Star Trek, lancamento 2026-11-13 --
 # usuario apontou que ainda nao foi lancada (nao e' legal em Commander
@@ -331,6 +340,7 @@ class GameState:
     sneak_attack_used_this_turn: bool = False
     anrakyr_attack_used_this_turn: bool = False
     goblin_engineer_used_this_turn: bool = False
+    scarecrone_used_this_turn: bool = False
     mishra_unearth_used_this_turn: bool = False
     osgir_used_this_turn: bool = False
     nexus_used_this_turn: bool = False
@@ -361,7 +371,6 @@ class GameState:
     megatron_conversions_total: int = 0
     megatron_mana_generated_total: int = 0
     megatron_fuel_sacrificed_total: int = 0
-    wheels_total: int = 0
     library_emptied: bool = False
     warstorm_surge_damage_total: int = 0
     warstorm_surge_triggers_total: int = 0
@@ -559,8 +568,8 @@ def try_genesis_chamber_token(state: GameState, entering_was_token: bool):
 def sacrifice(state: GameState, name: str):
     """Ponto central de TODO sacrificio do arquivo -- remove de
     battlefield, poe no graveyard, dispara os gatilhos reais de morte
-    (Scrap Trawler, toolbox Junk Diver, Phyrexian Triniform, Solemn
-    Simulacrum) e os payoffs que disparam em QUALQUER
+    (Scrap Trawler, toolbox Myr Retriever/Junk Diver, Phyrexian
+    Triniform) e os payoffs que disparam em QUALQUER
     sacrificio de criatura (Rakdos, the Muscle -- 'whenever you sacrifice
     another creature', gatilho automatico, nao e' escolha)."""
     if name not in state.battlefield:
@@ -648,8 +657,6 @@ def death_trigger(state: GameState, dying_name: str):
         for _ in range(3):
             creature_enters(state, token_name, from_hand=False, token=True)
         state.triniform_tokens_total += 3
-    if dying_name == "Solemn Simulacrum":
-        draw_cards(state, 1)
     if dying_name in ("Myr Retriever", "Junk Diver"):
         pool = [c for c in state.graveyard if c != dying_name and is_artifact_card(c)]
         if pool:
@@ -960,6 +967,31 @@ def try_metalwork_colossus_recursion(state: GameState):
         return  # um dos sacrificios (ex: morte do toolbox) ja devolveu ela pra mao
     state.graveyard.remove("Metalwork Colossus")
     state.hand.append("Metalwork Colossus")
+    state.recursion_events_total += 1
+
+
+def try_scarecrone(state: GameState):
+    """Scarecrone: '{4}, {T}: Return target artifact creature card from
+    your graveyard to the battlefield.' Sempre pega a criatura-artefato
+    de maior MV disponivel no cemiterio. So' 1 ativacao por turno (tap
+    real). A outra habilidade ('{1}, Sacrifice a Scarecrow: Draw a
+    card' -- so' ela mesma, unico Scarecrow do deck) fica fora do
+    modelo: sacrificar um motor de recursao repetivel por 1 carta avulsa
+    raramente e' a jogada certa pra uma heuristica simples (mesma
+    convencao de simplificacao do lado 'transformar' do Tarrian's
+    Journal)."""
+    if "Scarecrone" not in state.battlefield or "Scarecrone" not in ready_creatures(state):
+        return
+    if state.scarecrone_used_this_turn or remaining_mana(state) < 4:
+        return
+    candidates = [c for c in state.graveyard if is_artifact_card(c) and is_creature_card(c)]
+    if not candidates:
+        return
+    best = max(candidates, key=lambda n: CARD_DB[n].mv)
+    state.scarecrone_used_this_turn = True
+    spend_mana(state, 4)
+    state.graveyard.remove(best)
+    creature_enters(state, best, from_hand=False)
     state.recursion_events_total += 1
 
 
@@ -1449,33 +1481,24 @@ def try_nexus_of_becoming(state: GameState):
 
 
 def try_equip_haste(state: GameState):
-    """Lightning Greaves ('equipped creature has haste and shroud') e
-    Swiftfoot Boots ('equipped creature has hexproof and haste') --
-    achado real 2026-09-04 (mesma auditoria): as 2 sao conjuradas
-    normalmente (confirmado com instrumentacao: 345x e 267x em 2000
-    jogos) mas NUNCA equipadas em nada -- nenhuma logica de equip existia
-    no arquivo inteiro, mana e carta gastos por zero efeito. A metade de
-    protecao (shroud/hexproof) nao tem efeito mecanico possivel aqui
-    (sem oponente real com remocao pra proteger contra -- mesma convencao
-    ja documentada pra Clever Concealment/Blacksmith's Skill). A metade
-    que TEM efeito real e' o haste: uma criatura com doenca de invocacao
-    nao ataca esse turno em `ready_creatures()`. Equipa na criatura de
-    maior poder que entrou esse turno e ainda nao tem haste -- gratuito
-    pro Greaves (Equip {0}), custa 1 mana pro Boots (Equip {1}, so' se
-    sobrar mana)."""
-    equip_cost = 0 if "Lightning Greaves" in state.battlefield else (
-        1 if "Swiftfoot Boots" in state.battlefield else None)
-    if equip_cost is None:
-        return
-    if equip_cost > 0 and remaining_mana(state) < equip_cost:
+    """Lightning Greaves ('equipped creature has haste and shroud') --
+    achado real 2026-09-04 (auditoria de fantasmas): era conjurada
+    normalmente (confirmado com instrumentacao: 345x em 2000 jogos) mas
+    NUNCA equipada em nada -- nenhuma logica de equip existia no arquivo
+    inteiro, mana e carta gastos por zero efeito. A metade de protecao
+    (shroud) nao tem efeito mecanico possivel aqui (sem oponente real com
+    remocao pra proteger contra -- mesma convencao ja documentada pra
+    Clever Concealment/Blacksmith's Skill). A metade que TEM efeito real
+    e' o haste: uma criatura com doenca de invocacao nao ataca esse turno
+    em `ready_creatures()`. Equipa (Equip {0}, gratis) na criatura de
+    maior poder que entrou esse turno e ainda nao tem haste."""
+    if "Lightning Greaves" not in state.battlefield:
         return
     sick = [n for n in state.battlefield if is_creature_card(n) and n != COMMANDER
             and state.creature_cast_turn.get(n, -1) == state.turn and get_power(state, n) > 0]
     if not sick:
         return
     target = max(sick, key=lambda n: get_power(state, n))
-    if equip_cost > 0:
-        spend_mana(state, equip_cost)
     state.creature_cast_turn[target] = state.turn - 1
     state.equip_haste_activations_total += 1
 
@@ -1641,12 +1664,6 @@ def resolve_instant_sorcery(state: GameState, name: str):
             state.hand.remove(worst)
             state.graveyard.append(worst)
         draw_cards(state, 2)
-    elif "wheel_full" in tags:
-        state.wheels_total += 1
-        for c in state.hand[:]:
-            state.graveyard.append(c)
-        state.hand = []
-        draw_cards(state, 7)
     elif "saheeli_directive" in tags:
         # "Improvise. Reveal the top X cards of your library. You may put
         # any number of artifact cards with mana value X or less from
@@ -1787,6 +1804,7 @@ def main_phase(state: GameState):
     try_scrap_welder(state)
     try_trash_for_treasure(state)
     try_goblin_engineer_activation(state)
+    try_scarecrone(state)
     try_mishra_unearth(state)
     try_osgir_activation(state)
     try_metalwork_colossus_recursion(state)
@@ -1917,6 +1935,7 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.scrap_welder_used_this_turn = False
     state.feldon_used_this_turn = False
     state.goblin_engineer_used_this_turn = False
+    state.scarecrone_used_this_turn = False
     state.mishra_unearth_used_this_turn = False
     state.osgir_used_this_turn = False
     state.black_market_used_this_turn = False
@@ -2010,7 +2029,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
           f"draws/partida ({avg([s.phyrexian_arena_life_lost_total for s in states]):.2f} vida perdida)")
     print(f"Avg conjuracoes gratis via Cosmic Cube: {avg([s.cosmic_cube_free_casts_total for s in states]):.2f}")
     print(f"Avg tokens 3/3 criados via Nexus of Becoming: {avg([s.nexus_tokens_created_total for s in states]):.2f}")
-    print(f"Avg ativacoes de haste via Lightning Greaves/Swiftfoot Boots: "
+    print(f"Avg ativacoes de haste via Lightning Greaves: "
           f"{avg([s.equip_haste_activations_total for s in states]):.2f}")
     print(f"Avg artefatos devolvidos pra mao via Pia's Revolution: "
           f"{avg([s.pia_revolution_returns_total for s in states]):.2f}")
@@ -2025,7 +2044,6 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
           f"{avg([s.sacrifice_payoff_damage_total for s in states]):.2f}")
     print(f"Avg compras via payoff de sacrificio (Rakdos/Susur Secundi): "
           f"{avg([s.sacrifice_payoff_draws_total for s in states]):.2f}")
-    print(f"Avg wheels conjurados: {avg([s.wheels_total for s in states]):.2f}")
     print(f"Avg tokens Myr via Genesis Chamber: {avg([s.genesis_chamber_tokens_total for s in states]):.2f}")
     print(f"Avg compras via Fountainport: {avg([s.fountainport_draws_total for s in states]):.2f} | "
           f"Avg Fish tokens via Fountainport: {avg([s.fountainport_tokens_total for s in states]):.2f}")

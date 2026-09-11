@@ -4,6 +4,47 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## +Cityscape Leveler / +Scarecrone / +Generous Gift / -Solemn Simulacrum / -Swiftfoot Boots / -Wheel of Fortune — 2026-09-11
+
+**Gatilho:** usuário pediu 3 dos upgrades sugeridos na comparação com o
+DeckTechsforDecks, explicitamente sem Game Changers ("Não quero GCs no
+deck, então sem Smothering Tithe ou Jeska's Will").
+
+**Verificação real (oráculo + impressão mais antiga via Scryfall):**
+Cityscape Leveler (The Brothers' War 2022), Scarecrone (Eventide 2008) e
+Generous Gift (Modern Horizons 2019) — todas reais, antigas, legais.
+
+**Corte:** o cruzamento EDHREC só tinha 3 candidatos objetivos e
+desprotegidos sobrando (Decree of Pain/Heartless Conscription/Daretti,
+Rocketeer Engineer). Usuário não gostou de nenhum, pediu a lista
+completa das 65 cartas e escolheu manualmente **Solemn Simulacrum**,
+**Swiftfoot Boots** e **Wheel of Fortune** (esse último já tinha sido
+confirmado por histórico de partida real antes — corte consciente, não
+um erro meu).
+
+**Implementado:** Cityscape Leveler entra só como corpo 8/8 trample
+colorless (o gatilho de destruir permanente só teria alvo válido no
+oponente, sem oponente real modelado); Scarecrone ganhou
+`try_scarecrone()` — reanima a criatura-artefato de maior MV do
+cemitério direto pro campo por `{4},{T}` (diferente do Myr
+Retriever/Junk Diver, que voltam pra mão); Generous Gift entra na
+categoria "interação sem alvo real". Removido: death trigger do Solemn
+Simulacrum, dispatch `wheel_full`/campo `wheels_total`, e a metade do
+Swiftfoot Boots dentro de `try_equip_haste` (Lightning Greaves continua
+com equip de haste grátis).
+
+**Validação:** smoke test (99 cartas, 0 duplicatas), `audit_ghosts2.py`
+com só os 2 falsos-positivos esperados (Treasure Nabber + Cityscape
+Leveler, ambos corpo puro sem mecânica extra documentada), batch de
+2000 + regressão de 20.000 sem exceções. Instrumentado à parte:
+Scarecrone reanima de verdade (15 vezes em 2000 jogos — baixo mas real,
+exige Scarecrone em campo + criatura-artefato no cemitério + 4 de mana
+livre ao mesmo tempo). "Nunca conjurado" subiu de 5,8% pra 6,1% (perda
+esperada do Wheel of Fortune como fonte de draw/land bem OK pro corte
+consciente do usuário).
+
+---
+
 ## Manabase trocada pela do DeckTechsforDecks — 2026-09-11
 
 **Gatilho:** usuário comparou nosso deck contra 2 listas reais publicadas

@@ -213,6 +213,44 @@ equilibrada que a base antiga (W8/B12/R22, deliberadamente puxada pro
 vermelho pelo peso de pips, mas vulnerável ao gargalo real de precisar
 W+B+R ao mesmo tempo).
 
+**Correção 2026-09-11 (2) — +Cityscape Leveler / +Scarecrone /
++Generous Gift / -Solemn Simulacrum / -Swiftfoot Boots / -Wheel of
+Fortune**: usuário pediu 3 upgrades vistos na comparação com o
+DeckTechsforDecks, explicitamente SEM Game Changers (Smothering
+Tithe/Jeska's Will ficaram de fora por isso). Verificado oráculo real +
+impressão mais antiga via Scryfall — todas reais e antigas, sem caso
+tipo "Shields Up!":
+
+- **Cityscape Leveler** ({8}, artifact creature 8/8 trample, The
+  Brothers' War 2022): o gatilho de destruir permanente (cast/ataque) só
+  teria alvo válido no oponente — sem oponente real modelado, fica de
+  fora (mesma convenção do Genesis Chamber). Unearth {8} também fora
+  (caro igual ao hardcast, sem ganho de modelar separado). Fica só como
+  corpo grande colorless.
+- **Scarecrone** ({3}, artifact creature 1/2, Eventide 2008): nova
+  função `try_scarecrone()` — `{4},{T}`: reanima a criatura-artefato de
+  maior MV do cemitério pro campo direto (diferente do Myr
+  Retriever/Junk Diver, que devolvem pra MÃO). Encaixa direto no toolbox
+  de solda já existente. A outra habilidade (sacrificar a si mesma por 1
+  carta) fica fora — raramente é a jogada certa sacrificar um motor
+  repetível por um card avulso.
+- **Generous Gift** ({2}{W}, instant, Modern Horizons 2019): entra na
+  categoria "interação sem alvo real de oponente", igual Path/Swords/
+  Chaos Warp/Vandalblast.
+
+Corte: EDHREC só tinha 3 candidatos objetivos e desprotegidos sobrando
+(Decree of Pain/Heartless Conscription/Daretti Rocketeer Engineer,
+todos com zero ativação real no simulador ou gatilho isolado) — usuário
+não gostou de nenhum e escolheu cortar manualmente **Solemn
+Simulacrum**, **Swiftfoot Boots** (já era um "conjura e esquece"
+documentado, igual o Lightning Greaves antes do fix de haste) e **Wheel
+of Fortune** (esse já tinha sido confirmado por histórico de partida
+real — corte consciente do usuário, não um erro). Código morto
+removido: o death trigger do Solemn Simulacrum, o dispatch
+`wheel_full`/`wheels_total`, e a metade do Swiftfoot Boots dentro de
+`try_equip_haste` (Lightning Greaves continua com equip de haste
+grátis).
+
 ## Comandante
 
 1 Megatron, Tyrant
@@ -229,6 +267,7 @@ W+B+R ao mesmo tempo).
 1 Bygone Colossus
 1 Chandra's Ignition
 1 Chaos Warp
+1 Cityscape Leveler
 1 Combustible Gearhulk
 1 Cosmic Cube
 1 Cursed Mirror
@@ -240,6 +279,7 @@ W+B+R ao mesmo tempo).
 1 Faithless Looting
 1 Feldon of the Third Path
 1 Fellwar Stone
+1 Generous Gift
 1 Genesis Chamber
 1 Gilded Lotus
 1 Goblin Engineer
@@ -263,16 +303,15 @@ W+B+R ao mesmo tempo).
 1 Portal to Phyrexia
 1 Rakdos, the Muscle
 1 Saheeli's Directive
+1 Scarecrone
 1 Scrap Trawler
 1 Scrap Welder
 1 Clever Concealment
 1 Skitterbeam Battalion
 1 Sneak Attack
 1 Sol Ring
-1 Solemn Simulacrum
 1 Steel Seraph
 1 Summon: Bahamut
-1 Swiftfoot Boots
 1 Swords to Plowshares
 1 Talisman of Conviction
 1 Talisman of Hierarchy
@@ -283,7 +322,6 @@ W+B+R ao mesmo tempo).
 1 Treasure Nabber
 1 Vandalblast
 1 Warstorm Surge
-1 Wheel of Fortune
 
 ## Terrenos
 
