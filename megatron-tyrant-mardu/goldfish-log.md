@@ -4,6 +4,58 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Manabase trocada pela do DeckTechsforDecks — 2026-09-11
+
+**Gatilho:** usuário comparou nosso deck contra 2 listas reais publicadas
+para o Megatron (Josh Lee Kwai/Archidekt e DeckTechsforDecks, colada
+direto) e perguntou se a base de mana do DeckTechsforDecks era melhor
+que a nossa.
+
+**Comparação real (oráculo Scryfall pra cada terreno, incluindo
+confirmar que Shadowblood Ridge é real desde Odyssey 2001 e Geothermal
+Bog desde Dominaria United 2022):** a base deles (35 terrenos) é mais
+equilibrada entre W/B/R (14/17/15 contra nossos 8/12/22, deliberadamente
+puxado pro vermelho pelo peso de pips) e tem 1 tri-land extra (Nomad
+Outpost) + 3 fetches reais (Evolving Wilds/Terramorphic Expanse/Rocky
+Tar Pit) que a nossa base não tinha nenhum — em troca de mais terrenos
+tapped (8 contra 1) e, na versão original deles, 3 painlands com dano
+(Battlefield Forge/Caves of Koilos/Sulfurous Springs).
+
+**Teste real (A/B, 20.000 jogos, mesmas seeds, só a manabase variando,
+painlands já trocadas pelos duais ABUR equivalentes):**
+
+| | Nossa base antiga (34) | Base DTFD (35) | Base DTFD ajustada (34) |
+|---|---|---|---|
+| Megatron nunca conjurado em 8 turnos | 12,9% | 5,1% | 5,7% |
+| Turno médio de conjuração | 4,28 | 4,22 | 4,25 |
+
+Melhora se mantém em ambas as contagens de terreno — não é só "1 terreno
+extra", é a fixação real (mais tri-land + fetches).
+
+**Implementado:** usuário pediu pra adotar a base deles mantendo só o
+Susur Secundi (não a Adagia) como utilidade extra, e preservando o
+Fountainport (motor de draw recém-adicionado, ausente da lista deles) —
+cortando 1 Plains e o Geothermal Bog (redundante com Smoldering
+Marsh/Shadowblood Ridge no par B/R) da base deles pra caber os 2 e
+manter as 34 casas de terreno. Saem: Adagia, Windswept Bastion (perde a
+duplicação de artefato/encantamento) e Ash Barrens. Entram: Evolving
+Wilds, Myriad Landscape, Nomad Outpost, Rocky Tar Pit, Shadowblood
+Ridge, Sunlit Marsh, Terramorphic Expanse — todos modelados como fonte
+de cor fixa + sempre tapped (fetches simplificados, sem simular
+busca/embaralhamento real, mesma convenção já usada pra Exotic/Forbidden
+Orchard). `try_adagia_copy()`/`adagia_copy_used_this_turn` e
+`try_ash_barrens_cycle()` removidos por completo (cartas não fazem mais
+parte do deck); `try_station_lands()` perdeu a Adagia da lista de
+terrenos-estação (Susur Secundi/Eternity Elevator continuam).
+
+**Validação:** smoke test (99 cartas, 0 nomes desconhecidos, 0
+duplicatas), `audit_ghosts2.py` limpo (só o Treasure Nabber esperado),
+batch de 2000 + regressão de 20.000 partidas sem exceções. Resultado
+final na lista real (34 terrenos, com Fountainport): "nunca conjurado"
+5,8% — bate com o teste A/B.
+
+---
+
 ## +Fountainport / +Tarrian's Journal / -God-Pharaoh's Statue / -Laughing Mad — 2026-09-09
 
 **Gatilho:** usuário pediu Fountainport e Tarrian's Journal como "draw

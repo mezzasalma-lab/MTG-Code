@@ -197,8 +197,6 @@ LAND_BASIC_TYPES = {
     "Smoldering Marsh": {"Swamp", "Mountain"},
     "Mountain": {"Mountain"}, "Plains": {"Plains"}, "Swamp": {"Swamp"},
 }
-add("Adagia, Windswept Bastion", 0, "land", {"station", "adagia_copy"}, produces={"W"})
-add("Ash Barrens", 0, "land", {"ash_barrens"}, produces=set())
 add("Badlands", 0, "land", set(), produces={"B", "R"})
 add("Command Tower", 0, "land", set(), produces={"W", "B", "R"})
 add("Exotic Orchard", 0, "land", set(), produces={"W", "B", "R"})
@@ -212,8 +210,34 @@ add("Mountain", 0, "land", set(), produces={"R"})
 add("Plains", 0, "land", set(), produces={"W"})
 add("Swamp", 0, "land", set(), produces={"B"})
 
+# --- Manabase DeckTechsforDecks (achado real 2026-09-11) ---------------------
+# Usuario testou empiricamente (A/B, 20.000 jogos, mesmas seeds) a manabase
+# publicada do DeckTechsforDecks (com as 3 painlands trocadas pelos duais
+# ABUR equivalentes, mesmo upgrade que ja tinhamos feito na nossa) contra a
+# nossa: "Megatron nunca conjurado em 8 turnos" caiu de 12,9% pra 5,1-5,7%
+# (validado tanto com a contagem original de 35 terrenos quanto ajustada pra
+# 34, igualando a nossa -- a melhora e' real, nao so' "1 terreno extra").
+# Motivo real: mais tri-lands (Nomad Outpost) + 2 fetches reais (Evolving
+# Wilds/Terramorphic Expanse) que a nossa base nao tinha nenhum. Adotada
+# como nova manabase (Adagia/Ash Barrens saem; Susur Secundi e Fountainport
+# ficam, unicos "extras" mantidos por pedido explicito do usuario).
+# Fetches/tapped-duals simplificados como fontes fixas + sempre tapped (mesma
+# convencao ja usada pra Exotic/Forbidden Orchard -- sem simular
+# busca/embaralhamento real).
+add("Evolving Wilds", 0, "land", set(), produces={"W", "B", "R"})
+add("Terramorphic Expanse", 0, "land", set(), produces={"W", "B", "R"})
+add("Rocky Tar Pit", 0, "land", set(), produces={"B", "R"})
+add("Nomad Outpost", 0, "land", set(), produces={"W", "B", "R"})
+add("Sunlit Marsh", 0, "land", set(), produces={"W", "B"})
+add("Myriad Landscape", 0, "land", set(), produces=set())  # so' rampa incolor no modelo simplificado
+add("Shadowblood Ridge", 0, "land", set(), produces={"B", "R"})  # untapped real (custo extra de {1} pras 2 cores juntas nao rastreado, mesma convencao do arquivo)
+
 LAND_NAMES = {n for n, c in CARD_DB.items() if c.ctype == "land"}
-ETB_TAPPED_LANDS = {"Smoldering Marsh", "Susur Secundi, Void Altar"}  # Smoldering so' se <2 terrenos; Susur sempre
+ETB_TAPPED_LANDS = {
+    "Smoldering Marsh", "Susur Secundi, Void Altar",  # Smoldering so' se <2 terrenos; Susur sempre
+    "Evolving Wilds", "Terramorphic Expanse", "Rocky Tar Pit", "Nomad Outpost",
+    "Sunlit Marsh", "Myriad Landscape",  # todos sempre tapped no oraculo real
+}
 
 
 def is_creature_card(name: str) -> bool:
@@ -229,7 +253,7 @@ LEGENDARY_NAMES = {
     "Daretti, Scrap Savant", "Daretti, Rocketeer Engineer", "Anrakyr the Traveller",
     "Mishra, Tamer of Mak Fawa", "Osgir, the Reconstructor", "Rakdos, the Muscle",
     "Brass's Tunnel-Grinder", "The Eternity Elevator", "Tarrian's Journal",
-    "Adagia, Windswept Bastion", "Susur Secundi, Void Altar",
+    "Susur Secundi, Void Altar",
 }
 
 
@@ -312,7 +336,6 @@ class GameState:
     nexus_used_this_turn: bool = False
     black_market_used_this_turn: bool = False
     losheel_draw_used_this_turn: bool = False
-    adagia_copy_used_this_turn: bool = False
     susur_secundi_used_this_turn: bool = False
     fountainport_used_this_turn: bool = False
     tarrians_journal_used_this_turn: bool = False
@@ -1194,7 +1217,7 @@ def try_tarrians_journal(state: GameState):
     """Tarrian's Journal: '{T}, Sacrifice another artifact or creature:
     Draw a card. Activate only as a sorcery.' Sem custo de mana, so' tap
     + sacrificio -- prioriza SEMPRE sacrificar um token disponivel (Myr
-    do Genesis Chamber, Fish do Fountainport, copia do Adagia, etc; achado
+    do Genesis Chamber, Fish do Fountainport, Shapeshifter do Black Market, etc; achado
     do usuario 2026-09-09: 'sacrifica Myr, fish token e qq criatura ou
     artefato pra gerar draw'), ja que sacrificar carta real seria so'
     troca 1-por-1 sem ganho liquido. So' 1 ativacao por turno (tap real).
@@ -1216,13 +1239,12 @@ def try_tarrians_journal(state: GameState):
 
 
 def try_station_lands(state: GameState):
-    """Station (Adagia, Windswept Bastion / Susur Secundi, Void Altar /
-    The Eternity Elevator): 'Tap another creature you control: Put charge
-    counters equal to its power on this [Planet/Spacecraft]. Station only
-    as a sorcery.' Estaciona com a MAIOR criatura pronta disponivel que
-    nao seja essencial pro combate desse turno (nunca o Megatron -- ele
-    precisa atacar)."""
-    for land_name in ("Adagia, Windswept Bastion", "Susur Secundi, Void Altar", "The Eternity Elevator"):
+    """Station (Susur Secundi, Void Altar / The Eternity Elevator): 'Tap
+    another creature you control: Put charge counters equal to its power
+    on this [Planet/Spacecraft]. Station only as a sorcery.' Estaciona
+    com a MAIOR criatura pronta disponivel que nao seja essencial pro
+    combate desse turno (nunca o Megatron -- ele precisa atacar)."""
+    for land_name in ("Susur Secundi, Void Altar", "The Eternity Elevator"):
         if land_name not in state.battlefield:
             continue
         candidates = [n for n in ready_creatures(state) if n != COMMANDER and get_power(state, n) > 0]
@@ -1231,32 +1253,6 @@ def try_station_lands(state: GameState):
         best = max(candidates, key=lambda n: get_power(state, n))
         state.charge_counters[land_name] = state.charge_counters.get(land_name, 0) + get_power(state, best)
         state.creature_cast_turn[best] = state.turn  # simplificacao: "tapped" ~ nao ataca esse turno
-
-
-def try_adagia_copy(state: GameState):
-    """Adagia, Windswept Bastion: '12+ | {3}{W}, {T}: Create a token
-    that's a copy of target artifact or enchantment you control, except
-    it's legendary.' Copia sempre o artefato de maior MV em campo
-    (retrigger real do Warstorm Surge se for criatura)."""
-    if "Adagia, Windswept Bastion" not in state.battlefield:
-        return
-    if state.charge_counters.get("Adagia, Windswept Bastion", 0) < 12:
-        return
-    if state.adagia_copy_used_this_turn or remaining_mana(state) < 4 or color_sources(state, "W") < 1:
-        return
-    candidates = [n for n in state.battlefield if (is_artifact_card(n) or CARD_DB[n].ctype == "enchantment") and n != COMMANDER]
-    if not candidates:
-        return
-    target = max(candidates, key=lambda n: CARD_DB[n].mv)
-    state.adagia_copy_used_this_turn = True
-    spend_mana(state, 4)
-    token_name = make_token_copy_name(target)
-    if is_creature_card(target):
-        creature_enters(state, token_name, from_hand=False, token=True)
-    else:
-        state.battlefield.append(token_name)
-        resolve_etb(state, token_name)
-    state.recursion_events_total += 1
 
 
 # ---------------------------------------------------------------------------
@@ -1742,27 +1738,6 @@ def play_land(state: GameState):
             state.tapped_land_this_turn = choice
 
 
-def try_ash_barrens_cycle(state: GameState):
-    """'Basic landcycling {1} ({1}, Discard this card: Search your
-    library for a basic land card, put it into your hand.)' So' cicla se
-    ja' joguei terreno esse turno E tenho mana sobrando (senao e' melhor
-    so' jogar ela normal como terreno incolor)."""
-    if "Ash Barrens" not in state.hand or state.lands_played_this_turn == 0:
-        return
-    if remaining_mana(state) < 1:
-        return
-    basics = [n for n in state.library if n in ("Mountain", "Plains", "Swamp")]
-    if not basics:
-        return
-    spend_mana(state, 1)
-    state.hand.remove("Ash Barrens")
-    state.graveyard.append("Ash Barrens")
-    pick = basics[0]
-    state.library.remove(pick)
-    state.hand.append(pick)
-    state.tutors_used_total += 1
-
-
 # ---------------------------------------------------------------------------
 # Loop de turno
 # ---------------------------------------------------------------------------
@@ -1793,7 +1768,6 @@ def main_phase(state: GameState):
         try_black_market_connections(state)
 
     try_station_lands(state)
-    try_ash_barrens_cycle(state)
 
     while True:
         castables = [n for n in state.hand if n not in LAND_NAMES and can_cast(state, n)
@@ -1822,7 +1796,6 @@ def main_phase(state: GameState):
     try_ayara(state)
     try_ayara_transform(state)
     try_susur_secundi(state)
-    try_adagia_copy(state)
     try_bygone_colossus_warp(state)
     try_fountainport(state)
     try_tarrians_journal(state)
@@ -1947,7 +1920,6 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.mishra_unearth_used_this_turn = False
     state.osgir_used_this_turn = False
     state.black_market_used_this_turn = False
-    state.adagia_copy_used_this_turn = False
     state.susur_secundi_used_this_turn = False
     state.fountainport_used_this_turn = False
     state.tarrians_journal_used_this_turn = False

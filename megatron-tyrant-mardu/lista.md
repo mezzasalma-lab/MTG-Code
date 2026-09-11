@@ -177,6 +177,42 @@ draw engines + criação de tokens. Verificado o oráculo real via Scryfall
   Statue** (stax simétrico, não avança nosso próprio plano) e **Laughing
   Mad** (looting redundante, já tínhamos Faithless Looting igual).
 
+**Correção 2026-09-11 — manabase trocada pela do DeckTechsforDecks**:
+usuário comparou nosso deck contra 2 listas reais publicadas (Josh Lee
+Kwai/Archidekt e DeckTechsforDecks/lista colada direto) e perguntou se a
+base de mana do DeckTechsforDecks era melhor. Testado empiricamente (A/B,
+20.000 jogos, mesmas seeds, só a manabase variando): com as 3 painlands
+deles (Battlefield Forge/Caves of Koilos/Sulfurous Springs) já trocadas
+pelos duais ABUR equivalentes (mesmo upgrade que já tínhamos feito na
+nossa), "Megatron nunca conjurado em 8 turnos" caiu de **12,9% pra
+5,1%** (35 terrenos) ou **5,7%** (34 terrenos, testado também ajustado
+pra igualar nossa contagem — confirma que a melhora é real, não só "1
+terreno extra"). Motivo: mais um tri-land (Nomad Outpost, ao lado de
+Command Tower/Exotic Orchard/Forbidden Orchard) e 2 fetches reais
+(Evolving Wilds/Terramorphic Expanse) que a nossa base não tinha nenhum.
+
+Usuário pediu pra adotar a base deles mantendo só o Susur Secundi (não
+Adagia) como terreno-utilidade extra, e manteve o Fountainport (motor de
+draw recém-adicionado, ausente da lista deles) — cortando 2 terrenos da
+base deles pra caber (1 Plains a menos e o Geothermal Bog, redundante
+com Smoldering Marsh/Shadowblood Ridge no par B/R) e preservar as 34
+casas de terreno. Saem **Adagia, Windswept Bastion** (perde a habilidade
+de duplicar artefato/encantamento, mas o gargalo de cor era prioridade)
+e **Ash Barrens** (landcycling perde valor com uma base já bem mais
+fixada). Entram: Evolving Wilds, Geothermal Bog*, Myriad Landscape,
+Nomad Outpost, Rocky Tar Pit, Shadowblood Ridge, Sunlit Marsh,
+Terramorphic Expanse (*Geothermal Bog acabou cortado de novo no ajuste
+final pra caber o Fountainport — ver acima). Fetches/duais tapped
+modelados de forma simplificada (fonte de cor fixa + sempre tapped, sem
+simular busca/embaralhamento real — mesma convenção já usada pra Exotic
+Orchard/Forbidden Orchard no arquivo).
+
+Nova composição de fontes de cor (34 terrenos): W 15 / B 19 / R 17 (+2
+puramente incolores — Fountainport e Myriad Landscape) — bem mais
+equilibrada que a base antiga (W8/B12/R22, deliberadamente puxada pro
+vermelho pelo peso de pips, mas vulnerável ao gargalo real de precisar
+W+B+R ao mesmo tempo).
+
 ## Comandante
 
 1 Megatron, Tyrant
@@ -251,17 +287,22 @@ draw engines + criação de tokens. Verificado o oráculo real via Scryfall
 
 ## Terrenos
 
-1 Adagia, Windswept Bastion
-1 Ash Barrens
 1 Badlands
 1 Command Tower
+1 Evolving Wilds
 1 Exotic Orchard
 1 Forbidden Orchard
 1 Fountainport
-16 Mountain
-2 Plains
+1 Myriad Landscape
+6 Mountain
+1 Nomad Outpost
+6 Plains
 1 Plateau
+1 Rocky Tar Pit
 1 Scrubland
+1 Shadowblood Ridge
 1 Smoldering Marsh
+1 Sunlit Marsh
 1 Susur Secundi, Void Altar
-5 Swamp
+6 Swamp
+1 Terramorphic Expanse
