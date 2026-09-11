@@ -157,7 +157,18 @@ add("Cityscape Leveler", 8, "creature", {"artifact"}, power=8, toughness=8, pips
 
 # --- Artefatos de valor continuo ----------------------------------------------
 add("Nexus of Becoming", 6, "artifact", {"nexus_combat_draw_copy"}, pips={})
-add("Mirrorworks", 5, "artifact", {"mirrorworks"}, pips={})
+# Achado real 2026-09-11: trocada por Ultron, Artificial Malevolence
+# (Marvel Super Heroes, 2026-06-26, legal) -- mesmo gatilho/custo real
+# ("whenever another nontoken artifact you control enters, pay {2}:
+# create a copy token" -- MESMO {2} flat do Mirrorworks, nao X=MV),
+# mas Ultron E' criatura (2/4 colorless) -- participa de combate e
+# dispara Warstorm Surge na propria entrada (ao contrario do Mirrorworks,
+# artefato puro). Simplificacao documentada: a clausula extra do Ultron
+# ("se o token copiado NAO for criatura, ele se torna 2/2 Robot Villain
+# tambem") fica fora -- token continua exatamente igual ao original via
+# `make_token_copy_name`, mesma convencao ja usada pra todo copy-effect
+# do arquivo (Cursed Mirror/Adagia/etc).
+add("Ultron, Artificial Malevolence", 3, "creature", {"artifact"}, power=2, toughness=4, pips={})
 add("Portal to Phyrexia", 9, "artifact", {"portal_phyrexia"}, pips={})
 add("Warstorm Surge", 6, "enchantment", {"warstorm_surge"}, pips={"R": 1})
 add("Brass's Tunnel-Grinder", 3, "artifact", {"tunnel_grinder"}, pips={"R": 1})
@@ -262,7 +273,7 @@ LEGENDARY_NAMES = {
     "Daretti, Scrap Savant", "Daretti, Rocketeer Engineer", "Anrakyr the Traveller",
     "Mishra, Tamer of Mak Fawa", "Osgir, the Reconstructor", "Rakdos, the Muscle",
     "Brass's Tunnel-Grinder", "The Eternity Elevator", "Tarrian's Journal",
-    "Susur Secundi, Void Altar",
+    "Susur Secundi, Void Altar", "Ultron, Artificial Malevolence",
 }
 
 
@@ -722,15 +733,16 @@ def best_payoff_fodder(state: GameState):
 
 
 def artifact_etb_hooks(state: GameState, name: str, token: bool = False):
-    """Mirrorworks: 'whenever another NONTOKEN artifact you control
-    enters, you may pay {2}. If you do, create a token that's a copy of
-    that artifact.' Escolhe pagar sempre que sobra mana e o artefato tem
-    valor real de copia (MV>=3 -- nao vale a pena copiar coisa barata tipo
-    Sol Ring/talisman por 2 mana). `token=True` (a propria entrada e' de
-    um token, ex: copia do Mirrorworks/Osgir/Feldon/Skitterbeam) precisa
-    ficar de fora -- senao um token de MV alto copiando a si mesmo via
-    Mirrorworks entra em recursao infinita (achado real ao testar)."""
-    if token or name == "Mirrorworks" or "Mirrorworks" not in state.battlefield:
+    """Ultron, Artificial Malevolence: 'whenever another nontoken
+    artifact you control enters, you may pay {2}. If you do, create a
+    token that's a copy of it.' Escolhe pagar sempre que sobra mana e o
+    artefato tem valor real de copia (MV>=3 -- nao vale a pena copiar
+    coisa barata tipo Sol Ring/talisman por 2 mana). `token=True` (a
+    propria entrada e' de um token, ex: copia do Ultron/Osgir/Feldon/
+    Skitterbeam) precisa ficar de fora -- senao um token de MV alto
+    copiando a si mesmo via Ultron entra em recursao infinita (achado
+    real ao testar)."""
+    if token or name == "Ultron, Artificial Malevolence" or "Ultron, Artificial Malevolence" not in state.battlefield:
         return
     if CARD_DB[name].mv < 3:
         return
@@ -805,7 +817,8 @@ def resolve_etb(state: GameState, name: str, token: bool = False):
         # you cast it" e' real e importante: um TOKEN copia de Skitterbeam
         # (por Mirrorworks/Osgir/Feldon/etc) nao foi CONJURADO, entao nao
         # dispara de novo -- sem o `and not token` aqui, um token copiando
-        # a si mesmo entra em recursao infinita (achado real ao testar).
+        # a si mesmo entra em recursao infinita (achado real ao testar,
+        # Ultron/Osgir/Feldon incluidos).
         # Premissa: sempre conjurado pelo custo cheio ({9}), nunca a
         # versao Prototype barata ({3}{R}{R}, 2/2) -- mesma convencao de
         # 'escolhe sempre a linha de maior valor' ja usada pro Boros

@@ -251,6 +251,24 @@ removido: o death trigger do Solemn Simulacrum, o dispatch
 `try_equip_haste` (Lightning Greaves continua com equip de haste
 grátis).
 
+**Correção 2026-09-11 (3) — +Ultron, Artificial Malevolence /
+-Mirrorworks**: essa troca já tinha sido discutida ("Vale a pena trocar
+o Mirrorworks pelo Ultron?") e o usuário já vinha testando com Ultron no
+lugar de Mirrorworks nos goldfish reais dele, mas nunca tinha sido
+confirmada/implementada de verdade na lista/simulador — usuário
+perguntou e pediu pra fazer agora. Oráculo real verificado (Marvel Super
+Heroes, 2026-06-26, legal): "Whenever another nontoken artifact you
+control enters, you may pay {2}. If you do, create a token that's a
+copy of it. If the token isn't a creature, it becomes a 2/2 Robot
+Villain creature in addition to its other types." Mesmo gatilho/custo
+flat de {2} do Mirrorworks — troca 1-por-1, sem corte adicional. Única
+diferença real: Ultron É criatura (2/4 colorless), participa de combate
+e dispara Warstorm Surge na própria entrada (Mirrorworks era artefato
+puro). A cláusula "token não-criatura se torna 2/2 também" fica de fora
+do modelo — simplificação documentada, mesma convenção de todo
+copy-effect do arquivo (token copiado fica exatamente igual ao
+original).
+
 ## Comandante
 
 1 Megatron, Tyrant
@@ -290,7 +308,6 @@ grátis).
 1 Lightning Greaves
 1 Metalwork Colossus
 1 Mind Stone
-1 Mirrorworks
 1 Mishra, Tamer of Mak Fawa
 1 Myr Retriever
 1 Nexus of Becoming
@@ -320,6 +337,7 @@ grátis).
 1 The Eternity Elevator
 1 Trash for Treasure
 1 Treasure Nabber
+1 Ultron, Artificial Malevolence
 1 Vandalblast
 1 Warstorm Surge
 

@@ -4,6 +4,38 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## +Ultron, Artificial Malevolence / -Mirrorworks — 2026-09-11
+
+**Gatilho:** um goldfish manual real (mão inicial em foto) trouxe de
+volta a discussão antiga sobre trocar o Mirrorworks pelo Ultron — o
+usuário perguntou "Não tínhamos já feito essa troca?" e a resposta foi
+não: tinha sido só discutida ("Vale a pena trocar o Mirrorworks pelo
+Ultron?") e o usuário já vinha jogando com Ultron nos goldfish reais
+dele, mas nunca foi confirmada/implementada de verdade na lista.
+
+**Verificação real:** Ultron, Artificial Malevolence (Marvel Super
+Heroes, 2026-06-26, legal) — "Whenever another nontoken artifact you
+control enters, you may pay {2}. If you do, create a token that's a
+copy of it. If the token isn't a creature, it becomes a 2/2 Robot
+Villain creature in addition to its other types." Mesmo gatilho e
+mesmo custo flat de {2} do Mirrorworks (não X=MV) — troca 1-por-1 sem
+corte adicional. Diferença real: Ultron é criatura (2/4 colorless),
+participa de combate e dispara Warstorm Surge na própria entrada.
+
+**Implementado:** `artifact_etb_hooks()` generalizada de "Mirrorworks"
+pra "Ultron, Artificial Malevolence" (mesmo dispatch, mesma lógica de
+decisão — só copia artefato com MV≥3 se sobrar {2}). Cláusula extra do
+Ultron (token não-criatura também virar 2/2) fica fora do modelo —
+simplificação documentada, mesma convenção de todo copy-effect do
+arquivo.
+
+**Validação:** smoke test (99 cartas, 0 duplicatas), `audit_ghosts2.py`
+limpo (só os 2 falsos-positivos esperados), batch de 2000 + regressão
+de 20.000 sem exceções. Instrumentado à parte: o gatilho de cópia
+disparou 56 vezes em 2000 jogos — funcionando de verdade, não fantasma.
+
+---
+
 ## +Cityscape Leveler / +Scarecrone / +Generous Gift / -Solemn Simulacrum / -Swiftfoot Boots / -Wheel of Fortune — 2026-09-11
 
 **Gatilho:** usuário pediu 3 dos upgrades sugeridos na comparação com o
