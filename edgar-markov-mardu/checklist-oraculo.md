@@ -1,5 +1,135 @@
 # Checklist cláusula-a-cláusula — Edgar Markov
 
+## Auditoria oráculo-por-oráculo completa — 2026-09-13
+
+Extensão pra este deck da mesma auditoria já feita no Azula/Beorn/Captain
+Storm: oráculo real via Scryfall pras 92 cartas não-terreno + comandante +
+28 terrenos (batch de `POST /cards/collection`, 68 cartas de uma vez, 0
+`not_found`, + `/cards/named?fuzzy=` individual pros 9 MDFC/Room/prepared),
+comparado cláusula-por-cláusula contra o `edgar_markov_goldfish_v1.py`
+atual. Este já era o deck mais auditado da sessão (16+ rodadas anteriores,
+incluindo uma leitura linha-a-linha completa em 2026-09-01, ver seção
+abaixo) — mesmo assim, focar especificamente na cascata de "sacrifício →
+todos os payoffs disparam exatamente uma vez cada" (pedido explícito desta
+rodada) achou **6 gaps reais**, todos na categoria mais difícil
+("implementação parcial" — a tag/carta já tinha código real, só cobria
+PARTE dos pontos onde deveria disparar).
+
+**Achado principal — sistêmico, mesma classe do bug do Captain Storm
+(Equip nunca cobrado): a cascata de sacrifício não disparava por completo
+em 4 dos 5 pontos reais de sacrifício de criatura deste deck.**
+
+O motor tinha um sacrifício "canônico" bem implementado dentro de
+`sac_loop()` (Pitiless Plunderer cria Treasure + `_apply_death_payoffs`
+dispara Blood Artist/Zulaport/etc + Vito, Fanatic of Aclazotz avança de
+estágio) — mas esses 3 efeitos estavam **inline dentro do próprio
+`sac_loop()`**, nunca extraídos pra um helper compartilhado. Os outros 4
+pontos reais de sacrifício de criatura da lista (`_pay_diabolic_intent_cost`
+— custo do Diabolic Intent; `try_fountainport` — sac-token da própria
+habilidade; o sacrifício opcional do Plumb the Forbidden; e o **+1** de
+Sorin, Imperious Bloodlord, "you may sacrifice a Vampire") cada um só
+chamava PARTE dessa cascata (ou nenhuma parte, no caso do Sorin):
+
+1. **Sorin, Imperious Bloodlord (+1, "sacrifice a Vampire": 3 dano + 3
+   vida) não disparava NENHUM payoff de morte.** Sacrificar um Vampire
+   Token pra essa habilidade é uma morte de criatura de verdade — Blood
+   Artist, Cruel Celebrant, Zulaport Cutthroat, Vindictive Vampire,
+   Bastion of Remembrance, Vein Ripper, Funeral Room, The Meathook
+   Massacre, Pitiless Plunderer (Treasure) e Vito, Fanatic of Aclazotz
+   deveriam TODOS reagir, mas nenhum reagia — o código só incrementava
+   `creatures_died_this_turn` e seguia direto pro dano/vida da própria
+   habilidade do Sorin, sem tocar em `_apply_death_payoffs` nem em
+   qualquer outra parte da cascata.
+2. **Diabolic Intent** (custo "sacrifice a creature") só chamava
+   `_apply_death_payoffs` — Pitiless Plunderer e Vito Fanatic ficavam
+   mudos, e `creatures_sacrificed_total` nunca era incrementado (métrica
+   subcontava).
+3. **Plumb the Forbidden** (custo opcional "sacrifice one or more
+   creatures... copy this spell for each") — mesmo gap do Diabolic Intent:
+   só `_apply_death_payoffs`, sem Pitiless Plunderer nem Vito Fanatic.
+4. **Fountainport** (sac-token da própria habilidade `{2},{T},Sacrifice a
+   token: Draw a card`) já chamava Pitiless Plunderer + death payoffs, mas
+   não Vito Fanatic.
+5. **Vito, Fanatic of Aclazotz em si** ("Whenever you sacrifice ANOTHER
+   PERMANENT" — confirmado no oráculo real via Scryfall, não é só
+   criatura) nunca disparava ao cracar um Treasure. Isso é relevante
+   porque Treasure É sacrificado de verdade neste motor
+   (`create_treasure_and_crack`, "T, Sacrifice this token: Add...") — as
+   3 fontes de Treasure do deck (Pitiless Plunderer, Black Market
+   Connections, Fountainport) cracam na hora, cada crack é um segundo
+   evento de sacrifício real, separado da morte da criatura que o
+   originou. Confirmado o impacto real: `vito_fanatic_demons_created`
+   (o 3º estágio, token 4/3 voador) estava em **0,0 em 2.000 partidas**
+   antes do fix — o motor nunca acumulava 3 sacrifícios reais no mesmo
+   turno pela via estreita do `sac_loop()` sozinho.
+
+**Corrigido:** extraídos 2 helpers compartilhados —
+`_vito_fanatic_sacrifice_trigger()` (só a progressão de estágio) e
+`_creature_sacrificed()` (a cascata completa: contador +
+Pitiless Plunderer + `_apply_death_payoffs` + Vito Fanatic) — chamados
+agora dos 5 pontos reais de sacrifício de criatura (`sac_loop`,
+`_pay_diabolic_intent_cost` nos 2 ramos, `try_fountainport`, o sac do
+Plumb the Forbidden, e o novo `+1` do Sorin), mais uma chamada direta de
+`_vito_fanatic_sacrifice_trigger()` dentro de `create_treasure_and_crack()`
+pra cobrir o sacrifício do próprio Treasure. Skullclamp foi deixado DE
+FORA de propósito (fica só no `sac_loop`, onde a maioria dos sacrifícios
+acontece de fato) — generalizar o reequipe de Equipment pra todo ponto
+arriscaria contagem dupla do custo sem ganho real de precisão, decisão
+documentada inline no código.
+
+**Achado lateral, mesma categoria ("implementação parcial"): Cruel
+Celebrant.** Oráculo real confirmado via Scryfall: "Whenever this creature
+or another creature **or planeswalker** you control dies..." — é a ÚNICA
+carta do `DEATH_PAYOFF_FORMULAS` com essa cláusula extra (as outras 8 —
+Blood Artist/Zulaport/Vindictive Vampire/Bastion of Remembrance/Funeral
+Room/Vein Ripper/The Meathook Massacre/Cordial Vampire — são
+criatura-only, conferido uma por uma). Sorin, Imperious Bloodlord PODE
+morrer de verdade neste motor (a habilidade `−3` reduz a lealdade a 0 se
+ativada com lealdade == 3) — `add_loyalty()` já tinha um contador
+`pw_deaths_total` funcionando pra isso, mas nunca chamava nenhum payoff de
+morte. Corrigido: extraído o corpo de "disparar 1 payoff de morte" pra um
+helper `_fire_death_payoff()` (reutilizado tanto por `_apply_death_payoffs`
+quanto pela chamada nova em `add_loyalty`, só pra Cruel Celebrant, na
+morte de planeswalker) — não reusa `_apply_death_payoffs` inteira ali, o
+que disparia Blood Artist/Zulaport/etc errado pra morte de planeswalker
+(são criatura-only de verdade).
+
+**Não é um gap — verificado e descartado:** Elspeth, Storm Slayer tem uma
+habilidade "0" real ("Put a +1/+1 counter on each creature you control.
+Those creatures gain flying until your next turn") 100% ausente do código,
+e existe até um campo morto (`pw_counters_distributed_total`, nunca
+incrementado) que parecia sugerir um esquecimento. Investigado: o código
+já tem um comentário explícito e correto, de uma rodada anterior,
+explicando por que o `+1` (token Soldier, dobrado pelo próprio estático
+dela) é escolhido sempre em vez do "0" — mais corpos de Vampiro/token
+alimentam Eminence/Edgar attack counter/Sanctum Seeker/Welcoming
+Vampire/Caretaker's Talent, e o "0" não alimenta nenhum outro sistema
+rastreado neste motor (sem P/T por criatura, sem combate com bloqueio).
+Decisão de heurística já documentada e defensável — não uma lacuna real,
+o campo morto fica como está (mesmo padrão do `elenda_death_tokens`, já
+documentado como "travado em 0 de propósito").
+
+**Validação:** smoke test (104 nomes no `CARD_DB` — 99 de deck + comandante
++ 5 tokens extras já existentes, `BASE_LIBRARY` com 99 cartas, 0
+desconhecidas, 0 duplicatas) + 2.000 partidas antes/depois (mesma seed
+6000000) + 20.000 partidas de regressão (seeds 9000000-9019999, turns=10),
+0 exceções em todas. Testes unitários dirigidos confirmaram cada uma das 4
+correções isoladamente: Cruel Celebrant dispara drain 1/gain 1 numa morte
+de planeswalker forçada (Sorin de lealdade 3 pra 0); o `+1` de Sorin
+sacrificando um Vampire Token agora dispara Blood Artist + Pitiless
+Plunderer + soma `creatures_sacrificed_total` (todos 0 antes); um crack de
+Treasure sozinho (sem nenhuma criatura envolvida) avança o estágio do Vito
+Fanatic (0 antes, 1 depois); o custo do Diabolic Intent agora soma
+`creatures_sacrificed_total` e cria Treasure via Pitiless Plunderer (ambos
+0 antes). Impacto agregado em 2.000 partidas (antes → depois, mesma seed):
+`vito_fanatic_demons_created` 0,00 → 0,0145 (era **completamente morto**
+antes — o 3º estágio nunca disparava); `creatures_sacrificed_total` 2,28 →
+2,51; `death_trigger_events` 2,15 → 2,23; `drain_total` 5,04 → 5,15;
+`lifegain_total` 3,38 → 3,48; `pitiless_plunderer_treasures` 0,112 →
+0,116. Movimento pequeno e na direção esperada (mais cascatas de
+sacrifício disparando = mais valor agregado), consistente com correções
+cirúrgicas num arquivo já maduro, não uma mudança de comportamento típico.
+
 Pedido direto do usuário (2026-09-01): *"AGORA FAZ O QUE SEMPRE Te MANDei
 FAZER: COmpila a porra de TODAS AS CARTAS DOS DECKS UMA A UMA... cada
 carta tem que ser lida linha a linha e isso tudo incorporado aos modelos

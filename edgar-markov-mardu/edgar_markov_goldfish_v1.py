@@ -1070,13 +1070,10 @@ def try_fountainport(state: GameState, log: List[Dict]):
         state.fountainport_used_this_turn = True
         popped = state.tokens.pop()
         state.battlefield.remove(popped)
-        state.creatures_sacrificed_total += 1
-        state.creatures_died_this_turn += 1
-        if state.has("Pitiless Plunderer"):
-            t = token_multiplier(state, creature=False)
-            create_treasure_and_crack(state, log, t, source="pitiless_plunderer_fountainport")
-            state.pitiless_plunderer_treasures += t
-        _apply_death_payoffs(state, log, source="fountainport_sac")
+        # Achado real 2026-09-13: Pitiless Plunderer/Vito Fanatic
+        # extraidos pra _creature_sacrificed (ver comentario la) - antes
+        # so os death payoffs disparavam aqui, Vito Fanatic nunca.
+        _creature_sacrificed(state, log, source="fountainport_sac")
         state.draw(1)
         state.fountainport_draws += 1
         log.append({"trigger": "fountainport_sac_draw", "turn": state.turn})
@@ -1424,6 +1421,14 @@ def create_treasure_and_crack(state: GameState, log: List[Dict], count: int, sou
     on_token_enters(state, log, "Treasure Token", count=count)
     for _ in range(count):
         state.battlefield.remove("Treasure Token")
+        # Vito, Fanatic of Aclazotz: "Whenever you sacrifice ANOTHER
+        # PERMANENT" - achado real 2026-09-13, cracar um Treasure ("{T},
+        # Sacrifice this token: Add...") e' um sacrificio de permanente
+        # de verdade, mesmo sem nenhuma criatura envolvida neste evento
+        # especifico. Chamada aqui cobre as 3 fontes de Treasure do
+        # deck (Pitiless Plunderer, Black Market Connections,
+        # Fountainport) de uma vez so.
+        _vito_fanatic_sacrifice_trigger(state, log)
     state.mana_spent_this_turn -= count
     log.append({"trigger": "treasure_created_and_cracked", "count": count, "source": source, "turn": state.turn})
 
@@ -1510,13 +1515,16 @@ def _pay_diabolic_intent_cost(state: GameState, log: List[Dict]):
     if state.tokens:
         popped = state.tokens.pop()
         state.battlefield.remove(popped)
-        state.creatures_died_this_turn += 1
         log.append({"action": "diabolic_intent_sac", "sacrificed": "token", "turn": state.turn})
         # Achado real 2026-08-28 (varredura exaustiva): esta funcao nunca
         # chamava _apply_death_payoffs - o sacrificio pro Diabolic Intent
         # e' uma morte de criatura de verdade (Zulaport Cutthroat/Blood
         # Artist/etc deveriam disparar), mas nunca disparavam aqui.
-        _apply_death_payoffs(state, log, source="diabolic_intent")
+        # Achado real 2026-09-13: so' os death payoffs disparavam - nao
+        # Pitiless Plunderer nem Vito Fanatic, tambem cascatas reais de
+        # sacrificio de criatura. Corrigido via _creature_sacrificed
+        # (que tambem soma creatures_sacrificed_total, ausente antes).
+        _creature_sacrificed(state, log, source="diabolic_intent")
         return
     sac_candidates = [c for c in state.battlefield
                        if is_creature(c) and c != COMMANDER and c not in COMBO_PIECES]
@@ -1538,9 +1546,32 @@ def _pay_diabolic_intent_cost(state: GameState, log: List[Dict]):
         log.append({"action": "ojer_taq_death_transform", "turn": state.turn})
     else:
         state.graveyard.append(victim)
-    state.creatures_died_this_turn += 1
     log.append({"action": "diabolic_intent_sac", "sacrificed": victim, "turn": state.turn})
-    _apply_death_payoffs(state, log, source="diabolic_intent")
+    _creature_sacrificed(state, log, source="diabolic_intent")
+
+def _fire_death_payoff(state: GameState, log: List[Dict], payoff: str, source: str):
+    # Corpo de UM payoff de morte (extraido de _apply_death_payoffs,
+    # achado real 2026-09-13): agora reutilizavel tambem pro caso
+    # estreito da Cruel Celebrant, a UNICA carta do DEATH_PAYOFF_FORMULAS
+    # cujo oraculo real diz "creature OR PLANESWALKER you control dies"
+    # (as outras 8 - Blood Artist/Zulaport/Vindictive Vampire/Bastion of
+    # Remembrance/Funeral Room/Vein Ripper/Meathook Massacre/Cordial
+    # Vampire - sao criatura-only, confirmado via Scryfall). add_loyalty()
+    # chama isto direto (so pra Cruel Celebrant) quando um planeswalker
+    # morre - nao pode reusar _apply_death_payoffs() inteira ali, isso
+    # dispararia Blood Artist/Zulaport/etc errado pra morte de
+    # planeswalker.
+    is_vamp_source = is_vampire(payoff)
+    times = _times(state, is_vampire_source=is_vamp_source)
+    drain_amt, gain_amt = DEATH_PAYOFF_FORMULAS[payoff]
+    for _ in range(times):
+        state.death_trigger_events += 1
+        if drain_amt:
+            lose_life_opponent(state, drain_amt, log, source=payoff)
+        if gain_amt:
+            gain_life(state, gain_amt, log, source=payoff)
+    _log_doubling(state, times)
+    log.append({"trigger": "death_payoff", "card": payoff, "source": source, "times": times, "turn": state.turn})
 
 def _apply_death_payoffs(state: GameState, log: List[Dict], source: str):
     # Elenda, the Dusk Rose: "Whenever ANOTHER creature dies, put a
@@ -1553,17 +1584,62 @@ def _apply_death_payoffs(state: GameState, log: List[Dict], source: str):
     for payoff in DEATH_PAYOFFS:
         if not state.has(payoff):
             continue
-        is_vamp_source = is_vampire(payoff)
-        times = _times(state, is_vampire_source=is_vamp_source)
-        drain_amt, gain_amt = DEATH_PAYOFF_FORMULAS[payoff]
-        for _ in range(times):
-            state.death_trigger_events += 1
-            if drain_amt:
-                lose_life_opponent(state, drain_amt, log, source=payoff)
-            if gain_amt:
-                gain_life(state, gain_amt, log, source=payoff)
-        _log_doubling(state, times)
-        log.append({"trigger": "death_payoff", "card": payoff, "source": source, "times": times, "turn": state.turn})
+        _fire_death_payoff(state, log, payoff, source)
+
+def _vito_fanatic_sacrifice_trigger(state: GameState, log: List[Dict]):
+    # Vito, Fanatic of Aclazotz: "Whenever you sacrifice ANOTHER
+    # PERMANENT..." - nao e' so' criatura, e' QUALQUER permanente.
+    # Achado real 2026-09-13 (auditoria oraculo-por-oraculo): esta
+    # cascata so disparava dentro do sac_loop() principal antes -
+    # extraida pra helper compartilhado, agora chamada de todo ponto
+    # real de sacrificio deste deck (ver _creature_sacrificed abaixo e
+    # create_treasure_and_crack, que tambem sacrifica um permanente de
+    # verdade ao cracar o Treasure).
+    if not state.has("Vito, Fanatic of Aclazotz"):
+        return
+    state.vito_fanatic_stage_this_turn += 1
+    stage = state.vito_fanatic_stage_this_turn
+    if stage == 1:
+        gain_life(state, 2, log, source="vito_fanatic")
+    elif stage == 2:
+        lose_life_opponent(state, 2, log, source="vito_fanatic")
+    elif stage == 3:
+        n = token_multiplier(state)
+        # So' state.battlefield, NAO state.tokens - achado real
+        # 2026-08-27: um 4/3 flying e' o bode fodder ERRADO (um jogador
+        # real prefere sacrificar Vampire Tokens 1/1, ja disponiveis) -
+        # fica fora do pool descartavel de proposito.
+        for _ in range(n):
+            state.battlefield.append("Vampire Demon Token")
+        state.vito_fanatic_demons_created += n
+        state.vito_fanatic_stage_this_turn = 0
+        on_creature_enters(state, log, "Vampire Demon Token", count=n)
+
+def _creature_sacrificed(state: GameState, log: List[Dict], source: str):
+    # Cascata compartilhada de "uma criatura sua acabou de ser
+    # sacrificada" (Pitiless Plunderer + death payoffs + Vito Fanatic).
+    # Achado real 2026-09-13: antes desta rodada, so' o sac_loop()
+    # principal chamava os 3 juntos - os outros 4 pontos reais de
+    # sacrificio de criatura do deck (custo do Diabolic Intent, custo
+    # opcional do Plumb the Forbidden, sac-token do Fountainport, +1
+    # "sac a Vampire" do Sorin) chamavam so' PARTE da cascata (Diabolic
+    # Intent/Fountainport so death payoffs, sem Pitiless Plunderer/Vito
+    # Fanatic; Plumb the Forbidden e Sorin nao chamavam NADA disso alem
+    # dos death payoffs - Sorin nao chamava nem isso). Extraido pra um
+    # helper unico, chamado de todo lugar que sacrifica uma criatura de
+    # verdade. Skullclamp fica de fora de proposito (fica so' no
+    # sac_loop, onde a maioria dos sacrificios acontece de fato) - e'
+    # uma unica peca fisica de Equipment por turno, generalizar o
+    # reequipe pra todo ponto arriscaria contagem dupla sem ganho real
+    # de precisao.
+    state.creatures_sacrificed_total += 1
+    state.creatures_died_this_turn += 1
+    if state.has("Pitiless Plunderer"):
+        t = token_multiplier(state, creature=False)
+        create_treasure_and_crack(state, log, t, source=f"pitiless_plunderer_{source}")
+        state.pitiless_plunderer_treasures += t
+    _apply_death_payoffs(state, log, source=source)
+    _vito_fanatic_sacrifice_trigger(state, log)
 
 def add_loyalty(state: GameState, pw: str, amount: int, log: List[Dict], reason: str = ""):
     if pw not in state.loyalty:
@@ -1578,6 +1654,17 @@ def add_loyalty(state: GameState, pw: str, amount: int, log: List[Dict], reason:
         del state.loyalty[pw]
         state.pw_deaths_total += 1
         log.append({"trigger": "planeswalker_death", "pw": pw, "turn": state.turn})
+        # Cruel Celebrant: "Whenever this creature or another creature OR
+        # PLANESWALKER you control dies..." - achado real 2026-09-13
+        # (auditoria oraculo-por-oraculo): Sorin, Imperious Bloodlord
+        # PODE morrer de verdade aqui (-3 com lealdade == 3), e essa
+        # clausula nunca disparava - so DEATH_PAYOFFS de criatura eram
+        # cobertos. E' a UNICA carta desta lista com essa clausula extra
+        # (confirmado via Scryfall - Blood Artist/Zulaport/Vindictive
+        # Vampire/Bastion/Funeral Room/Vein Ripper/Meathook/Cordial sao
+        # todas criatura-only).
+        if state.has("Cruel Celebrant"):
+            _fire_death_payoff(state, log, "Cruel Celebrant", source="planeswalker_death")
 
 def resolve_planeswalker(state: GameState, pw: str, log: List[Dict]):
     loy = state.loyalty[pw]
@@ -1596,7 +1683,14 @@ def resolve_planeswalker(state: GameState, pw: str, log: List[Dict]):
         if state.tokens:
             popped = state.tokens.pop()
             state.battlefield.remove(popped)
-            state.creatures_died_this_turn += 1
+            # Achado real 2026-09-13 (auditoria oraculo-por-oraculo): este
+            # e' um sacrificio de criatura de verdade ("You may sacrifice
+            # a Vampire") - antes so incrementava creatures_died_this_turn
+            # sem passar pela cascata real de sacrificio (Blood Artist/
+            # Zulaport/Cruel Celebrant/etc, Pitiless Plunderer, Vito
+            # Fanatic ficavam TODOS mudos aqui, mesmo em campo). Corrigido
+            # via _creature_sacrificed, mesmo helper do sac_loop.
+            _creature_sacrificed(state, log, source="sorin_sac_vampire")
             add_loyalty(state, pw, 1, log, reason="sorin_plus1_sac")
             lose_life_opponent(state, 3, log, source="sorin_sac_vampire")
             gain_life(state, 3, log, source="sorin_sac_vampire")
@@ -1826,8 +1920,6 @@ def sac_loop(state: GameState, log: List[Dict]):
             log.append({"action": "indulgent_aristocrat_sac_cost", "turn": state.turn})
         popped = state.tokens.pop()
         state.battlefield.remove(popped)
-        state.creatures_sacrificed_total += 1
-        state.creatures_died_this_turn += 1
         if "Ashnod's Altar" in state.battlefield:
             state.mana_spent_this_turn -= 2  # +2 mana efetivo pro resto do turno
         elif "Phyrexian Altar" in state.battlefield:
@@ -1851,39 +1943,11 @@ def sac_loop(state: GameState, log: List[Dict]):
             state.draw(2)
             state.skullclamp_draws += 2
             log.append({"trigger": "skullclamp_draw", "turn": state.turn})
-        # Pitiless Plunderer: achado real 2026-08-27 - "Whenever
-        # ANOTHER creature you control dies, create a Treasure token."
-        # Nao e' mana automatica (a tag 'ramp' + produces antiga
-        # estava ERRADA, ele nao tem habilidade de mana propria) - so
-        # gera valor quando algo MORRE de verdade. Treasure agora e' um
-        # token DE VERDADE (create_treasure_and_crack, achado real
-        # 2026-08-27 seguinte: dispara Caretaker's Talent tambem, antes
-        # era so' um bonus de mana abstrato), fonte nao-criatura -> sem
-        # dobra do Roaming Throne, mas sujeito ao dobrador de token.
-        if state.has("Pitiless Plunderer"):
-            t = token_multiplier(state, creature=False)
-            create_treasure_and_crack(state, log, t, source="pitiless_plunderer")
-            state.pitiless_plunderer_treasures += t
-        _apply_death_payoffs(state, log, source="sac_loop")
-        if state.has("Vito, Fanatic of Aclazotz"):
-            state.vito_fanatic_stage_this_turn += 1
-            stage = state.vito_fanatic_stage_this_turn
-            if stage == 1:
-                gain_life(state, 2, log, source="vito_fanatic")
-            elif stage == 2:
-                lose_life_opponent(state, 2, log, source="vito_fanatic")
-            elif stage == 3:
-                n = token_multiplier(state)
-                # So' state.battlefield, NAO state.tokens - achado real
-                # 2026-08-27: um 4/3 flying e' o bode fodder ERRADO
-                # (um jogador real prefere sacrificar Vampire Tokens
-                # 1/1, ja disponiveis) - fica fora do pool descartavel
-                # de proposito.
-                for _ in range(n):
-                    state.battlefield.append("Vampire Demon Token")
-                state.vito_fanatic_demons_created += n
-                state.vito_fanatic_stage_this_turn = 0
-                on_creature_enters(state, log, "Vampire Demon Token", count=n)
+        # Pitiless Plunderer/death payoffs/Vito Fanatic: extraidos pra
+        # _creature_sacrificed() (achado real 2026-09-13, ver comentario
+        # la) - mesmo efeito de antes, agora compartilhado com os outros
+        # 4 pontos reais de sacrificio de criatura do deck.
+        _creature_sacrificed(state, log, source="sac_loop")
 
 def combat_step(state: GameState, log: List[Dict]):
     if not state.commander_in_play or state.turn <= state.commander_cast_turn:
@@ -2075,14 +2139,17 @@ def cast_available_spells(state: GameState, log: List[Dict]):
                 # cegas sem nenhum efeito. Sacrifica TODOS os tokens
                 # disponiveis (greedy, mesma logica do resto do motor)
                 # - cada sacrificio TAMBEM dispara os death payoffs
-                # (Zulaport/Blood Artist/etc), igual o sac_loop.
+                # (Zulaport/Blood Artist/etc), igual o sac_loop. Achado
+                # real 2026-09-13: so os death payoffs disparavam aqui -
+                # Pitiless Plunderer e Vito Fanatic (tambem cascatas
+                # reais de sacrificio de criatura) nunca disparavam.
+                # Corrigido via _creature_sacrificed (mesmo helper
+                # compartilhado do sac_loop/Diabolic Intent/Fountainport).
                 n_sac = len(state.tokens)
                 for _ in range(n_sac):
                     popped = state.tokens.pop()
                     state.battlefield.remove(popped)
-                    state.creatures_sacrificed_total += 1
-                    state.creatures_died_this_turn += 1
-                    _apply_death_payoffs(state, log, source="plumb_the_forbidden")
+                    _creature_sacrificed(state, log, source="plumb_the_forbidden")
                 state.draw(1 + n_sac)
                 state.plumb_the_forbidden_draws += 1 + n_sac
                 log.append({"action": "plumb_the_forbidden", "sacrificed": n_sac, "drew": 1 + n_sac, "turn": state.turn})

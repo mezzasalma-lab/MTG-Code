@@ -943,6 +943,56 @@ suposição).
 
 ---
 
+## Auditoria oráculo-por-oráculo completa — 2026-09-13
+
+Extensão pra este deck da mesma auditoria já feita no Azula/Beorn/Captain
+Storm. Detalhamento completo em `checklist-oraculo.md` (seção no topo).
+Achado principal: a cascata de "uma criatura sua foi sacrificada" (Pitiless
+Plunderer cria Treasure + Blood Artist/Zulaport/etc drenam + Vito, Fanatic
+of Aclazotz avança de estágio) só disparava POR COMPLETO dentro do
+`sac_loop()` principal — os outros 4 pontos reais de sacrifício de
+criatura do deck (custo do Diabolic Intent, custo opcional do Plumb the
+Forbidden, sac-token do Fountainport, e o `+1` "sac a Vampire" de Sorin,
+Imperious Bloodlord) cada um chamava só PARTE dessa cascata, e o `+1` do
+Sorin não chamava NENHUMA parte dela. Extraídos 2 helpers compartilhados
+(`_creature_sacrificed`/`_vito_fanatic_sacrifice_trigger`), chamados agora
+dos 5 pontos reais. Achado lateral: Cruel Celebrant ("...or planeswalker
+you control dies...", confirmado via Scryfall) nunca disparava quando
+Sorin morre de verdade (lealdade a 0 via `−3`) — corrigido em
+`add_loyalty()`.
+
+### Métricas antes/depois (2.000 partidas, seed 6.000.000, turns=8, 0 exceções em ambas)
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| `vito_fanatic_demons_created` (3º estágio, token 4/3 voador) | 0,000 | 0,0145 |
+| `creatures_sacrificed_total` | 2,28 | 2,51 |
+| `death_trigger_events` | 2,15 | 2,23 |
+| `drain_total` (proxy) | 5,04 | 5,15 |
+| `lifegain_total` (proxy) | 3,38 | 3,48 |
+| `pitiless_plunderer_treasures` | 0,112 | 0,116 |
+| `pw_deaths_total` (controle, não deveria mudar) | 0,0145 | 0,0145 |
+
+**Leitura:** o achado mais notável é `vito_fanatic_demons_created`
+**completamente morto (0,000) em 2.000 partidas antes do fix** — o 3º
+estágio da Vito, Fanatic of Aclazotz (o token 4/3 voador) nunca tinha
+disparado NENHUMA VEZ numa amostra de 2.000 jogos, porque o único caminho
+de sacrifício que alimentava o contador de estágio (`sac_loop`, limitado a
+2 sacrifícios/turno) raramente acumulava 3 no mesmo turno sozinho. Depois
+do fix (Treasures cracados também contam como sacrifício de permanente pro
+Vito Fanatic, mais os 4 pontos de sacrifício de criatura antes órfãos),
+passa a disparar em ~1,45% dos jogos — pequeno em termos absolutos, mas é
+a diferença entre "mecânica impressa na carta nunca alcançável" e "rara
+mas real", o mesmo padrão de honestidade de dado já usado noutras partes
+deste arquivo (ex. Nullpriest kicked, ~0,13%). O resto das métricas move
+pouco e na direção esperada (mais cascatas disparando = um pouco mais de
+drain/gain/sacrifício contado) — consistente com correções cirúrgicas num
+arquivo já maduro (16+ rodadas de auditoria anteriores), não uma mudança
+de comportamento típico. Regressão de 20.000 partidas (seeds
+9.000.000-9.019.999, turns=10) rodada depois do fix: 0 exceções.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
