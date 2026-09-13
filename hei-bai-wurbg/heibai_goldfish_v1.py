@@ -993,10 +993,23 @@ def resolve_instant_sorcery(state: GameState, name: str):
         # blink_permanent() na hora, dando o ETB (e a permanencia em
         # campo) imediatamente, antes do tempo real. Corrigido: exila
         # agora, enfileira o retorno pra end_step() resolver depois.
-        target = best_creature_to_reblink(state)
-        if target and target in state.battlefield:
-            state.battlefield.remove(target)
-            state.pending_end_step_returns.append(target)
+        # Achado real 2026-09-13 (auditoria oraculo-por-oraculo): X e'
+        # pago tapando artefatos/criaturas ("waterbend X"), nao mana - sem
+        # ataque/bloqueio modelado aqui, tapar criaturas nao tem custo real
+        # nenhum, entao X escala com quantas criaturas valem a pena
+        # exilar. Antes X ficava hardcoded em 1 (so a de maior valor),
+        # perdendo o caso em que Purphoros/Aura Shards estao em campo - ai
+        # CADA criatura reentrando dispara o gatilho delas de novo, entao
+        # exilar todas de uma vez multiplica valor real (nao so 1).
+        if "Purphoros, God of the Forge" in state.battlefield or "Aura Shards" in state.battlefield:
+            targets = [n for n in state.battlefield if is_creature_card(n)]
+        else:
+            single = best_creature_to_reblink(state)
+            targets = [single] if single else []
+        for target in targets:
+            if target in state.battlefield:
+                state.battlefield.remove(target)
+                state.pending_end_step_returns.append(target)
     elif "blink_rebound" in tags:
         # Achado real 2026-08-27: Ephemerate estava 100% morta — a tag
         # 'blink_rebound' nunca era checada em lugar nenhum (nem o blink
@@ -1055,6 +1068,34 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
                 enter_battlefield(state, found_shrine, from_hand=False)
     if is_enchantment_card(name):
         on_any_enchantment_enters(state, name)
+    if name == "Touch the Spirit Realm":
+        # Achado real 2026-09-13 (auditoria oraculo-por-oraculo): "When
+        # this enchantment enters, exile up to ONE target artifact or
+        # creature until this leaves the battlefield" - "up to one" =
+        # alvo opcional, diferente das outras cartas 'interaction' deste
+        # deck (contramagia/remocao pura, que exigem alvo real pra
+        # produzir qualquer valor e por isso ficam seguras na mao, nunca
+        # conjuradas - ver excecao ja existente da Annie Joins Up no loop
+        # de castables). Touch the Spirit Realm e' um ENCANTAMENTO
+        # permanente que vale a pena conjurar mesmo SEM alvo (dispara o
+        # pacote Enchantress/Sythis/Herald/Hallowed Haunting, conta pra
+        # enchantment_count() da Sanctum Weaver) - so a clausula de exilar
+        # e' proxy sem efeito de tabuleiro. Contado aqui como interacao
+        # usada, mesma convencao das outras Go-Shintai/Aura Shards.
+        state.interaction_spells_cast_total += 1
+    if name == "Annie Joins Up":
+        # Achado real 2026-09-13 (auditoria oraculo-por-oraculo): "When
+        # Annie Joins Up enters, it deals 5 damage to target creature or
+        # planeswalker an opponent controls" nunca disparava em lugar
+        # nenhum - so o dobrador estatico dela (legendary_creature_doubler)
+        # estava implementado. Proxy sem alvo real (regra 1 da sessao),
+        # mas precisa ao menos contar como interacao usada - Elesh Norn
+        # pode dobrar (causado por permanente entrando), Annie NAO dobra
+        # a si mesma (fonte e' Annie, um Enchantment, nao uma criatura
+        # lendaria - so aplicaria se a FONTE do gatilho fosse criatura).
+        times = resolve_times(state, "Annie Joins Up", True, False, False)
+        for _ in range(times):
+            state.interaction_spells_cast_total += 1
     if is_shrine(name):
         shrine_enters(state, name, is_token=False)
     elif is_creature_card(name):
@@ -1348,7 +1389,15 @@ def do_go_shintai_endstep(state: GameState):
             elif name == "Go-Shintai of Hidden Cruelty":
                 state.interaction_spells_cast_total += 1
             elif name == "Go-Shintai of Lost Wisdom":
-                pass  # mill de oponente, proxy sem efeito no nosso lado
+                # Achado real 2026-09-13 (auditoria oraculo-por-oraculo):
+                # mill de oponente, sem efeito no nosso lado - mas as
+                # outras 2 ativadas de Go-Shintai que tambem exigem alvo
+                # de oponente (Hidden Cruelty, "destroy target creature";
+                # Shattered Heights, dano) contam pra
+                # interaction_spells_cast_total (mesma convencao "Regra 1"
+                # documentada na sessao inteira); esta ficava de fora por
+                # inconsistencia, nao por decisao deliberada. Corrigido.
+                state.interaction_spells_cast_total += 1
             elif name == "Go-Shintai of Shared Purpose":
                 create_tokens(state, "Spirit Token", sc)
 
@@ -1420,13 +1469,30 @@ def main_phase(state: GameState):
         # efeito aqui) mas seu dobrador estatico de gatilho de criatura
         # lendaria E' real e modelado (resolve_times) — excluir ela
         # jogaria fora valor real que a carta realmente entrega.
+        # Achado real 2026-09-13 (auditoria oraculo-por-oraculo): mesma
+        # excecao se aplica a Touch the Spirit Realm - e' um Enchantment
+        # PERMANENTE com "up to one" (alvo opcional) na propria remocao,
+        # entao vale a pena conjurar so pelo corpo (Enchantress package +
+        # enchantment_count), diferente das reativas puras (Path to
+        # Exile, contramagia, etc) que so tem valor COM alvo real.
         castables = [n for n in state.hand if n not in LAND_NAMES and can_cast(state, n)
-                     and ("interaction" not in CARD_DB[n].tags or n == "Annie Joins Up")]
+                     and ("interaction" not in CARD_DB[n].tags
+                          or n in ("Annie Joins Up", "Touch the Spirit Realm"))]
         if not castables:
             break
         def prio(n):
             tags = CARD_DB[n].tags
-            group = 0 if (tags & {"rock1", "rock2", "land_tutor1", "land_tutor2", "dork_flat1"}) else 1
+            if tags & {"rock1", "rock2", "land_tutor1", "land_tutor2", "dork_flat1"}:
+                group = 0
+            elif n == "Touch the Spirit Realm":
+                # Achado real 2026-09-13: agora castable (ver excecao acima),
+                # mas so vale MENOS que o motor real de Shrines/encantamentos
+                # (sem alvo real pra remocao, so o corpo + gatilho de
+                # conjuracao) - um piloto real prioriza Shrine/engine e so
+                # gasta mana sobrando nela, nao compete por custo igual.
+                group = 2
+            else:
+                group = 1
             return (group, effective_cost(state, n))
         castables.sort(key=prio)
         cast_card(state, castables[0])
@@ -1456,8 +1522,16 @@ def upkeep_step(state: GameState):
     do_shrine_upkeep_triggers(state)
     do_in_search_of_greatness(state)
     do_ephemerate(state)
-    if "The Mind Stone" in state.battlefield and not state.mind_stone_harnessed and remaining_mana(state) >= 6:
-        spend_mana(state, 6)
+    # Achado real 2026-09-13 (auditoria oraculo-por-oraculo): custo real
+    # e' "{5}{W}, {T}: Harness" = 6 mana generico + o proprio {T}. Como
+    # rocks_mana() sempre credita +1 de mana pra The Mind Stone (seu "{T}:
+    # Add {W}"), gastar o MESMO {T} pra ativar o harness sem cobrar esse
+    # +1 extra dava mana fantasma no turno da ativacao (ela nao pode tap
+    # duas vezes) - mesma classe de bug ja corrigida aqui pra Hall of
+    # Heliod's Generosity (custo efetivo = custo real + 1, mesmo padrao
+    # documentado la, herdado do Phyrexian Tower no Edgar Markov).
+    if "The Mind Stone" in state.battlefield and not state.mind_stone_harnessed and remaining_mana(state) >= 7:
+        spend_mana(state, 7)
         state.mind_stone_harnessed = True
 
 

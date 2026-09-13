@@ -976,4 +976,77 @@ alegação preguiçosa.
 
 ---
 
+## Auditoria oráculo-por-oráculo completa — 2026-09-13
+
+Extensão pra este deck da mesma auditoria já feita no Megatron/Azula/
+Beorn/Captain Storm (detalhes completos em `checklist-oraculo.md`, seção
+no topo). Diferente do Captain Storm (achado sistêmico grande, Equip
+nunca pago), este deck já tinha passado por 3 rodadas de auditoria
+anteriores (2026-08-27, 2026-08-28, 2026-09-01 — a última, linha-a-linha
+completa, não achou nada). Mesmo assim esta rodada achou **5 gaps reais**,
+todos sutis: (1) The Mind Stone cobrava só 6 mana pro harness quando o
+custo real é 6 + o `{T}` que ela perde de usar pra mana normal (= 7
+efetivo, mesmo padrão já usado pra Hall of Heliod's Generosity neste
+arquivo); (2) Waterbender's Restoration sempre exilava X=1 criatura, sem
+nunca escalar mesmo quando Purphoros/Aura Shards em campo tornariam
+exilar MAIS criaturas de uma vez genuinamente mais valioso (cada
+reentrada dispara o gatilho delas separadamente); (3) Touch the Spirit
+Realm nunca era conjurada (excluída do loop guloso junto com toda carta
+"interaction"-tagged, decisão correta pra reativas puras mas errada pra
+ela — tem alvo OPCIONAL, vale a pena só pelo corpo/gatilho de conjuração)
+e mesmo se fosse, seu ETB nunca contava nada (tag "interaction" só lida
+pra instant/sorcery, ela é enchantment); (4) Annie Joins Up — o próprio
+ETB de 5 dano nunca disparava/contava, só o dobrador estático dela
+estava implementado; (5) Go-Shintai of Lost Wisdom — mill de oponente
+nunca contava como interação usada, inconsistente com as outras 2
+ativadas de Go-Shintai que dependem do mesmo tipo de alvo de oponente.
+
+### Métricas antes/depois (2.000 partidas, seed 7.700.000, turns=8, mesma seed)
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Shrines em campo (fim, média) | 7,20 | 7,16 |
+| Cartas compradas extra (média) | 10,41 | 10,38 |
+| Drain proxy total (média) | 19,41 | 17,29 |
+| Dano proxy total (média) | 125,70 | 98,66 |
+| Tokens criados (média) | 32,06 | 27,82 |
+| Dobras via Elesh Norn (média) | 41,24 | 32,30 |
+| Dobras via Sanctum of All (média) | 12,66 | 11,08 |
+| Dobras via Annie Joins Up (média) | 20,24 | 15,75 |
+| Blinks totais (média) | 2,10 | 3,24 |
+| Vida ganha proxy (média) | 22,61 | 20,27 |
+| Interação usada — proxy (média) | 41,03 | 35,15 |
+| Destruições via Aura Shards (média) | 39,69 | 32,69 |
+
+**Leitura:** a maioria das métricas caiu, mesmo com 3 dos 5 fixes
+adicionando NOVAS fontes de contagem de interação (Annie, Touch the
+Spirit Realm, Go-Shintai of Lost Wisdom) — o driver dominante é o fix #1
+(Mind Stone). O harness custando 7 em vez de 6 atrasa quando (e em
+quantos dos 8 turnos) o motor `∞` de blink repetível fica ativo, e como
+esse motor re-dispara ETBs de Shrine/criatura repetidamente a cada end
+step, mesmo 1 turno de atraso composto ao longo de 8 turnos derruba
+bastante os totais acumulados de gatilhos (Elesh Norn doubles, Aura
+Shards, dano/drain proxy) — eram números inflados por mana fantasma, não
+um efeito colateral estranho. O fix #2 (Waterbender's X) puxa na direção
+oposta e é visível isoladamente (blinks totais **subiu** de 2,10 para
+3,24, apesar de tudo o resto caindo), mas é 1 única cópia na lista —
+insuficiente pra compensar o efeito cascata do harness ao longo da
+partida inteira. Mesmo padrão já documentado nesta sessão pro Captain
+Storm: corrigir mana fantasma/custo não pago tende a REDUZIR médias
+(remove valor que nunca deveria ter existido), diferente de corrigir uma
+habilidade 100% ausente (que tende a subir) — aqui os dois tipos de fix
+aconteceram juntos, e o primeiro pesa mais no agregado de 8 turnos.
+
+**Validação:** smoke test (98 nomes no `CARD_DB`, 99 cartas na
+`BASE_LIBRARY`) + 2.000 partidas antes/depois (tabela acima) + 20.000
+partidas de regressão (seed 5.000.000+, turns=10): **0 exceções,
+240,38s**. Testes unitários dirigidos confirmaram cada uma das 5
+correções isoladamente (Mind Stone recusa harness com 6 mana e harnessa
+com 7; Waterbender's exila 4 criaturas com Purphoros em campo vs. 1 sem
+ele; Touch the Spirit Realm aparece em `castables` e conta interação ao
+resolver; Annie Joins Up conta interação ao entrar, dobra 1→2 via Elesh
+Norn; Go-Shintai of Lost Wisdom conta interação ao ativar).
+
+---
+
 <!-- Copie o bloco acima para cada nova partida -->

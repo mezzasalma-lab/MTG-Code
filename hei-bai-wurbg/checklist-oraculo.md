@@ -1,5 +1,161 @@
 # Checklist cláusula-a-cláusula — Hei Bai, Forest Guardian
 
+## Auditoria oráculo-por-oráculo completa — 2026-09-13
+
+Extensão pra este deck da mesma auditoria já feita no Megatron/Azula/
+Beorn/Captain Storm: oráculo real via Scryfall pras 90 cartas
+não-terreno-básico + comandante (`POST /cards/collection`, 2 lotes, 0
+`not_found` — sem MDFC/split neste deck), comparado cláusula-por-cláusula
+contra o `heibai_goldfish_v1.py` atual.
+
+**Contexto importante:** este deck já tinha passado por 3 rodadas de
+auditoria anteriores (2026-08-27, 2026-08-28, e uma releitura linha-a-
+linha completa em 2026-09-01 que não achou NENHUM bug de comportamento
+novo — ver seção abaixo). Era, de longe, o simulador mais maduro desta
+sessão até agora. Mesmo assim, esta rodada achou **5 gaps reais**, todos
+sutis o bastante pra terem escapado das 3 rodadas anteriores — a maioria
+em cantos que as rodadas passadas não cobriram diretamente (contabilidade
+de custo de habilidade ativada que compartilha `{T}` com a própria
+habilidade de mana da fonte, e cartas "interaction"-tagged cujo próprio
+gatilho nunca era despachado por serem do `ctype` errado pro dispatch
+genérico existente).
+
+**5 gaps reais encontrados e corrigidos** (nenhum exigiu adicionar/cortar
+carta, só corrigir como habilidades já presentes são modeladas):
+
+1. **The Mind Stone — custo do harness nunca pagava a mana fantasma
+   perdida.** Oráculo real: `"{5}{W}, {T}: Harness The Mind Stone."` — o
+   próprio `{T}` do harness é O MESMO `{T}` da habilidade de mana dela
+   (`{T}: Add {W}`), então ativar o harness custa, na prática, os 6 mana
+   do custo impresso MAIS a mana que ela deixaria de produzir usando o
+   `{T}` no harness em vez do tap normal (exatamente o mesmo padrão já
+   documentado e corrigido pra Hall of Heliod's Generosity neste mesmo
+   arquivo, herdado do Phyrexian Tower no Edgar Markov). O código
+   cobrava só os 6 mana impressos (`remaining_mana(state) >= 6`), dando
+   mana fantasma toda vez que harnessava. Corrigido: custo efetivo agora
+   é 7 (`>= 7`, `spend_mana(state, 7)`). Este é o achado com maior efeito
+   cascata na simulação — atrasa quando (e quantos turnos) o motor `∞`
+   de blink repetível fica ativo, reduzindo bastante gatilhos de ETB
+   repetidos (Elesh Norn doubles, Aura Shards, Purphoros) ao longo da
+   partida — queda esperada, não um efeito colateral acidental (ver
+   métricas abaixo).
+2. **Waterbender's Restoration — X sempre tratado como 1.** Oráculo
+   real: `"waterbend {X}... Exile X target creatures you control."` — X é
+   pago TAPANDO artefatos/criaturas (não mana), e como este simulador não
+   modela ataque/bloqueio, tapar criaturas pra pagar não tem custo real
+   nenhum algum aqui. O código anterior sempre exilava exatamente 1
+   criatura (a de maior valor), mesmo quando X poderia escalar pra
+   exilar TODAS as criaturas em campo de uma vez — o que importa de
+   verdade quando Purphoros ou Aura Shards estão em campo, porque CADA
+   criatura reentrando dispara o gatilho delas separadamente (multiplica
+   valor real, não só X cosmético). Corrigido: se Purphoros ou Aura
+   Shards estiver em campo, X = todas as criaturas controladas; senão, X
+   continua 1 (só a de maior valor de ETB próprio, mesmo comportamento de
+   antes — sem esses 2 multiplicadores, exilar mais de uma criatura não
+   agrega valor real neste modelo).
+3. **Touch the Spirit Realm — nunca era conjurada, e mesmo se fosse, seu
+   próprio ETB nunca era contado.** Duplo problema: (a) a carta é um
+   `Enchantment` (não instant/sorcery), mas estava marcada com a tag
+   genérica `"interaction"`, que só é lida dentro de
+   `resolve_instant_sorcery()` — nunca despachada pra cartas de
+   `ctype == "enchantment"`, então mesmo que fosse conjurada, seu próprio
+   "When this enchantment enters, exile up to one target artifact or
+   creature" nunca disparava/contava nada; (b) o loop guloso do
+   `main_phase()` exclui TODA carta "interaction"-tagged do pool de
+   `castables` (decisão deliberada de uma rodada anterior — "um piloto
+   real segura essas cartas até ter alvo", correta pras reativas puras
+   tipo Path to Exile/contramagia), mas Touch the Spirit Realm tem
+   "up to one" (alvo OPCIONAL) — ao contrário das reativas puras, vale a
+   pena conjurar só pelo CORPO (dispara o pacote Enchantress/Sythis/
+   Herald/Hallowed Haunting, conta pra `enchantment_count()` da Sanctum
+   Weaver), mesma classe de exceção já reconhecida pra Annie Joins Up
+   (que também é "interaction"-tagged mas tem um efeito estático real
+   modelado). Corrigido: adicionada à mesma exceção da Annie Joins Up no
+   filtro de `castables` (mas em grupo de prioridade MAIS BAIXO que o
+   motor real de Shrines/encantamentos — um piloto racional não compete
+   por mana com Shrines só pra jogar uma remoção sem alvo, só gasta mana
+   sobrando nela), e seu próprio ETB agora conta em
+   `interaction_spells_cast_total` via `enter_battlefield()`.
+4. **Annie Joins Up — o próprio ETB de 5 dano nunca disparava.** Oráculo
+   real: `"When Annie Joins Up enters, it deals 5 damage to target
+   creature or planeswalker an opponent controls."` Só o dobrador
+   estático dela (`legendary_creature_doubler`) estava implementado; a
+   ETB em si — mesmo como proxy de interação sem efeito de tabuleiro
+   (regra 1 da sessão, sem oponente real) — nunca era sequer CONTADA em
+   lugar nenhum, porque Annie é um `Enchantment` (não Shrine, não
+   criatura) e `enter_battlefield()` não tinha nenhum dispatch específico
+   pra ela. Corrigido: novo hook em `enter_battlefield()`, incrementa
+   `interaction_spells_cast_total` passando por `resolve_times()` (Elesh
+   Norn pode dobrar — "permanente entrando causa gatilho" é genérico o
+   bastante pra cobrir; a própria Annie NÃO dobra a si mesma, porque seu
+   dobrador exige que a FONTE do gatilho seja uma criatura lendária, e
+   Annie é enchantment puro, não criatura).
+5. **Go-Shintai of Lost Wisdom — mill de oponente nunca contava como
+   interação usada.** As outras 2 habilidades pagas de end step dos
+   Go-Shintai que também dependem de alvo de oponente (Hidden Cruelty,
+   "destroy target creature"; e a ativada de Sanctum of Shattered
+   Heights, dano a criatura/planeswalker) já incrementavam
+   `interaction_spells_cast_total` como proxy — só o mill de Lost Wisdom
+   (`"target player mills X cards"`) fazia `pass`, sem contar nada,
+   apesar de pagar o MESMO custo `{1}` real todo turno junto com as
+   outras 3. Inconsistência de contabilidade, não intencional (o
+   comentário só documentava "sem efeito no nosso lado", não justificava
+   a omissão da métrica). Corrigido pra contar, mesma convenção das
+   outras 3.
+
+**Validação:** smoke test (98 nomes no `CARD_DB`, 99 cartas na
+`BASE_LIBRARY`, 0 desconhecidas) + 2.000 partidas antes/depois (mesma
+seed) + 20.000 partidas de regressão (seed 5.000.000+, turns=10), 0
+exceções. Testes unitários dirigidos (1 script combinando as 5 correções)
+confirmaram cada uma disparando: Mind Stone harness recusa com 6 mana
+disponível e só harnessa com 7; Waterbender's Restoration exila as 4
+criaturas em campo quando Purphoros está presente (vs. 1 sem ele);
+Touch the Spirit Realm aparece em `castables` e conta interação ao ser
+conjurada; Annie Joins Up conta interação ao entrar (e dobra via Elesh
+Norn: 1→2); Go-Shintai of Lost Wisdom conta interação ao ativar.
+
+**Leitura das métricas antes/depois (ver `goldfish-log.md`):** a maioria
+caiu, não subiu — driver dominante é o fix #1 (Mind Stone harness), que
+remove mana fantasma que estava acelerando o motor de blink repetível
+mais do que deveria; o fix #2 (Waterbender's X) puxa pro lado contrário
+(mais blinks) mas é um evento único por partida (1 cópia na lista),
+insuficiente pra compensar o efeito cascata do #1 ao longo de 8 turnos.
+Padrão consistente com o já documentado nesta sessão (Azula, Captain
+Storm): corrigir mana fantasma/custo não-pago tende a REDUZIR médias,
+diferente de corrigir uma habilidade 100% ausente (que tende a subir).
+
+---
+
+## Reconfirmado sem gaps novos (3ª+4ª rodada de releitura, além da de 2026-09-01)
+
+Todo o resto do oráculo das 90 cartas + comandante foi conferido
+cláusula-a-cláusula de novo contra o código atual — nenhum outro desvio
+encontrado além dos 5 acima. Alguns pontos verificados especificamente
+por serem os mais fáceis de esconder um bug sutil:
+- Todos os 90 custos de mana (`mv` no `CARD_DB`) batem exatamente com o
+  `mana_cost` real do Scryfall — conferido carta a carta, não amostrado.
+- `FETCH_NAMES` (tag `"fetch"`) segue genuinamente sem uso fora do
+  cadastro — não é bug: no modelo de mana TOTAL (não pip-a-pip) deste
+  deck, um fetch land parado em campo já conta como 1 mana genérico
+  igual a qualquer terreno buscado por ele, então "buscar de verdade"
+  não muda o total (já documentado como correto no checklist anterior,
+  reconfirmado aqui).
+- O anthem estático da Weaver of Harmony ("Other enchantment creatures
+  you control get +1/+1") **não tem nenhum código associado** — o
+  checklist anterior (2026-08-24) marcava isso como "✅ implementado",
+  o que é impreciso: como este simulador não modela P/T por permanente
+  individual nem combate real (mesma razão estrutural de Southern Air
+  Temple/Purphoros pump/Destiny Spinner), um anthem de +1/+1 não tem
+  efeito numérico capturável aqui — é 📊 estrutural, não ✅. Correção de
+  documentação, sem mudança de código (o comportamento sempre foi
+  "sem efeito", só a legenda no checklist antigo estava errada).
+- `Waterbender's Restoration`/`Skybind`/`The Mind Stone` (∞): timing
+  adiado (`pending_end_step_returns`) continua correto nos 3, sem
+  regressão do fix do item 2 acima (só mudou QUANTAS criaturas entram na
+  fila, não QUANDO elas voltam).
+
+---
+
 Pedido direto do usuário (2026-09-01): *"AGORA FAZ O QUE SEMPRE Te MANDei
 FAZER: COmpila a porra de TODAS AS CARTAS DOS DECKS UMA A UMA... cada
 carta tem que ser lida linha a linha"* — mesmo tratamento já aplicado ao
