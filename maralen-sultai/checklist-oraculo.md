@@ -1,5 +1,96 @@
 # Checklist cláusula-a-cláusula — Maralen, Fae Ascendant
 
+## Auditoria oráculo-por-oráculo completa — 2026-09-13
+
+Extensão pra este deck da mesma auditoria já feita no Azula/Beorn/Captain
+Storm/Edgar Markov/Hei Bai nesta sessão: oráculo real via Scryfall pras 88
+cartas não-terreno/não-MDFC + 3 MDFC/Adventure + comandante (2 lotes de
+`POST /cards/collection` + `/cards/named?fuzzy=` pros 3 multi-face),
+comparado cláusula-por-cláusula contra o `maralen_goldfish_v1.py` atual —
+já o deck mais auditado da sessão (6+ rodadas anteriores, ver seções
+abaixo). Mesmo assim, **4 gaps reais encontrados e corrigidos**:
+
+1. **`marwyn_effective_power()` faltava 2 dos 4 anthems reais de Elfo.**
+   A função já tinha sido corrigida numa rodada anterior (2026-08-28) pra
+   somar o bônus de Elvish Archdruid e Murkfiend Liege — mas **Imperious
+   Perfect** ("Other Elves you control get +1/+1") e **Thranduil, Sindarin
+   Liege** ("Other Elves you control get +1/+1") têm a MESMA cláusula
+   estática, e Marwyn é Elfo — deveriam somar +1/+1 cada uma também, mas
+   nenhuma das duas era checada. Mesma classe de bug já achada no Beorn
+   nesta sessão (estática aplicada num lugar, nunca propagada pra toda
+   função que lê poder de criatura) — aqui a função já existia e já tinha
+   2 dos 4 anthems reais corretos, só faltavam estas 2. Corrigido somando
+   os 2 bônus que faltavam em `marwyn_effective_power()`, que já é
+   reutilizada por `dork_mana()`, `equip_umbral_mantle()` e
+   `best_scaling_dork_output()` — a correção se propaga automaticamente
+   pro cálculo de mana da Marwyn, pro threshold do combo do Umbral Mantle
+   e pra família "untap" sem precisar tocar em mais nenhum lugar.
+2. **Faerie Mastermind — carta inteira ignorada por causa de UMA das 2
+   habilidades reais dela ser opponent-dependent.** Oráculo real: *"Whenever
+   an opponent draws their second card each turn, you draw a card. {3}{U}:
+   Each player draws a card."* A primeira é passiva e genuinamente
+   opponent-dependent (já documentada como N/A em rodadas anteriores) —
+   mas a segunda é uma habilidade ATIVADA, sem `{T}` no custo, que te dá 1
+   compra real e garantida só por pagar mana, sem depender de nada do
+   oponente. A carta inteira estava rotulada `opponent_dependent` no
+   `CARD_DB` e 100% ignorada no código — só metade merecia esse rótulo.
+   Corrigido com nova função `try_faerie_mastermind()`.
+3. **Staff of Domination ficava 100% inerte fora do combo infinito.** Só
+   o ramo `infinite_mana_this_turn` existia em `use_staff_of_domination_v2()`
+   — o motor de compra NORMAL do próprio oráculo (*"{5},{T}: Draw a card"*
+   + *"{1}: Untap this artifact"* pra repetir, 6 mana por compra extra a
+   partir da 2ª) nunca disparava com mana finita, mesmo num deck com ramp
+   pesado onde sobrar 5+ mana num turno normal é comum sem montar o combo
+   Umbral Mantle. Corrigido: fora do combo infinito, com 5+ mana sobrando,
+   Staff agora compra de verdade (1ª compra por 5, cada compra extra por
+   6) — é literalmente o texto impresso da carta, não uma invenção.
+4. **Elven Chorus / Realmwalker — tag `"cast_from_top"` 100% morta desde a
+   criação do arquivo.** Ambas têm *"You may cast creature spells [do tipo
+   escolhido] from the top of your library"* no oráculo real — cadastradas
+   com essa tag desde o início (`add()`), mas nunca despachada em lugar
+   nenhum do arquivo. Ghost tag genuína que escapou da varredura
+   automática de tags mortas desta rodada por aparecer 2x como literal de
+   string (uma vez por carta, nunca por ser lida de verdade). Corrigido
+   com `can_cast_from_top()`/`do_cast_from_top()`, plugadas no loop
+   principal de conjuração do `main_phase()`. Realmwalker escolhe Elfo
+   como tipo (heurística documentada inline no código, espelhando a
+   escolha de Faerie já feita pro Roaming Throne — cobre o outro lado da
+   tribal, 19 Elfos vs 12 Fadas).
+
+**Confirmado e descartado, não é bug:** Tegwyll, Duke of Splendor tem um
+segundo anthem real (*"Other Faeries you control get +1/+1"*) sem nenhum
+hook numérico no motor — nenhuma mecânica de Fada escala por poder
+individual neste simulador (ao contrário do caso da Marwyn/Elfo acima,
+onde o poder alimenta diretamente a produção de mana) — N/A genuíno,
+mesma classe do Ezuri/Allosaurus Shepherd (bônus de combate sem combate
+modelado). Wirewood Lodge (*"{G},{T}: Untap target Elf"* + *"{T}: Add
+{C}"* — 2 habilidades com `{T}` se sobrepondo, exatamente a classe de bug
+achada no Hei Bai) foi relido linha a linha de novo com essa suspeita
+específica e confirmado CORRETO: o custo real já é pago via
+`tapped_lands_this_turn` (remove a própria mana do land do pool geral) +
+`spend_mana(1)` (paga o `{G}` do resto do pool) — sem dupla contagem.
+
+**Validação:** smoke test (`CARD_DB` 99 nomes, `BASE_LIBRARY` 99 cartas,
+sem duplicata/desconhecida) + 2.000 partidas antes/depois (mesma seed
+5555000) + 20.000 partidas de regressão (seeds 9500000–9519999, timeout
+2s/jogo), 0 exceções/timeouts em todas. Testes unitários dirigidos
+confirmaram cada correção isoladamente: Marwyn com os 4 anthems reais em
+campo soma poder efetivo 5 (era 3 antes, só Archdruid+Murkfiend); Faerie
+Mastermind com 9 mana disponível compra 2 cartas (era sempre 0 antes —
+carta inteira ignorada); Staff of Domination com 11 mana fora do combo
+infinito compra 2 cartas (era sempre 0 fora do combo antes); um Llanowar
+Elves no topo da biblioteca com Elven Chorus em campo é conjurado de
+verdade via `cast_from_top_total` (tag existia desde a criação do
+arquivo, nunca lida em lugar nenhum antes). Impacto agregado em 2.000
+partidas (antes → depois, mesma seed): `maralen_triggers_total` 9,62 →
+10,51; `cards_drawn_extra` 3,23 → 4,52 (salto grande — quase inteiro dos
+2 motores de compra novos); `combo Umbral Mantle montado` 11,0% → 12,2%
+(efeito direto do fix da Marwyn); `Staff infinito` 2,7% → 3,2%; `mão
+final` 2,23 → 3,08. Movimento consistente e rastreável a cada correção
+específica, nada satura ou explode.
+
+---
+
 Pedido direto do usuário (2026-09-01): *"AGORA FAZ O QUE SEMPRE Te MANDei
 FAZER: COmpila a porra de TODAS AS CARTAS DOS DECKS UMA A UMA... cada
 carta tem que ser lida linha a linha"* — mesmo tratamento já aplicado ao

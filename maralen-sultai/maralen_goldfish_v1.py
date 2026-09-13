@@ -120,6 +120,58 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas):
   (nao duais com o tipo Forest), consistente com o modelo de mana
   total/nao pip-a-pip do resto do arquivo; o melhor dork e' calculado
   uma vez por turno, nao recalculado apos cada ativacao individual.
+
+Auditoria oraculo-por-oraculo completa (2026-09-13): oraculo real das 88
+cartas nao-terreno/nao-MDFC + 3 MDFC/Adventure + comandante buscado ao
+vivo via Scryfall (2 lotes de POST /cards/collection + /cards/named?fuzzy=
+pros 3 multi-face), comparado clausula a clausula contra este arquivo (ja
+o deck mais auditado da sessao - 6+ rodadas anteriores, ver
+checklist-oraculo.md e goldfish-log.md). 4 gaps reais encontrados e
+corrigidos, apesar da maturidade do arquivo:
+
+1. **marwyn_effective_power() faltava 2 dos 4 anthems reais de Elfo.**
+   Imperious Perfect e Thranduil, Sindarin Liege TEM a mesma clausula
+   estatica ja corrigida pro Elvish Archdruid numa rodada anterior
+   ("Other Elves you control get +1/+1") - Marwyn e' Elfo, deveria receber
+   +1/+1 de cada uma tambem. So' Archdruid e Murkfiend Liege eram
+   somados. Mesma classe de bug ja achada no Beorn (estatica aplicada
+   nalgum lugar, nao propagada pra toda funcao que le poder de criatura) -
+   aqui a funcao ja existia e ja tinha 2/4 anthems certos.
+2. **Faerie Mastermind: so' a metade opponent-dependent estava sequer
+   considerada.** Oraculo real tem 2 habilidades - a passiva ("whenever
+   an opponent draws their second card...") genuinamente N/A (ja
+   documentado), MAS TAMBEM "{3}{U}: Each player draws a card" (ativada,
+   repetivel, sem {T}) - te da' 1 compra real garantida so' por pagar
+   mana, sem depender do oponente. A carta inteira estava rotulada
+   'opponent_dependent' e ignorada por completo; so' metade merecia isso.
+3. **Staff of Domination 100% inerte fora do combo infinito.** So' o
+   ramo `infinite_mana_this_turn` existia - o motor de compra NORMAL
+   ("{5},{T}: Draw a card" + "{1}: Untap this artifact" pra repetir, 6
+   mana por compra extra a partir da 2a) nunca disparava com mana finita,
+   mesmo num deck com ramp pesado onde 5+ mana sobrando e' comum sem
+   montar o combo.
+4. **Elven Chorus / Realmwalker: tag 'cast_from_top' 100% morta desde a
+   criacao do arquivo.** Ambas tem "You may cast creature spells [do tipo
+   escolhido] from the top of your library" no oraculo real - cadastradas
+   com a tag desde o inicio, nunca despachada em lugar nenhum (ghost tag
+   genuina, escapou da varredura automatica por aparecer 2x como literal
+   de string). Realmwalker escolhe Elfo (heuristica documentada no
+   codigo, espelhando a escolha de Faerie ja feita pro Roaming Throne).
+
+Confirmado sem gap adicional (checado e descartado, nao e' bug): Tegwyll
+tem um segundo anthem real ("Other Faeries you control get +1/+1") sem
+nenhum hook numerico no motor (nenhuma mecanica de Fada escala por
+poder, ao contrario do caso da Marwyn/Elfo acima) - N/A genuino, mesma
+classe do Ezuri/Allosaurus Shepherd (bonus de combate sem combate
+modelado). Wirewood Lodge ("{G},{T}: Untap target Elf" + "{T}: Add {C}"
+- 2 habilidades com {T} sobrepondo, mesma classe de bug ja achada no Hei
+Bai) foi lido linha a linha de novo e confirmado CORRETO - o custo real
+ja e' pago via `tapped_lands_this_turn` (remove a propria mana do land)
++ `spend_mana(1)` (paga o {G} do resto do pool), sem dupla contagem.
+
+**Validacao:** smoke test (CARD_DB/BASE_LIBRARY sem duplicata/desconhecida)
++ 2.000 partidas antes/depois (mesma seed 5555000) + 20.000 partidas de
+regressao, 0 excecoes em todas.
 """
 
 import json
@@ -419,6 +471,13 @@ class GameState:
     itlimoc_transform_turn: Optional[int] = None
     itlimoc_creatures_found_total: int = 0
 
+    # Achados reais da auditoria 2026-09-13 (ver docstring do topo do
+    # arquivo): 3 mecanicas com clausula real 100% ausente do codigo ate
+    # agora, cada uma com metrica propria pra auditar o impacto.
+    staff_finite_draws_total: int = 0
+    faerie_mastermind_draws_total: int = 0
+    cast_from_top_total: int = 0
+
 
 def draw_cards(state: GameState, n: int):
     for _ in range(n):
@@ -517,10 +576,23 @@ def marwyn_effective_power(state: GameState) -> int:
     2026-08-28 (auditoria de checklist): esses bonus nunca eram
     aplicados, subestimando a mana da Marwyn sempre que Archdruid e/ou
     Murkfiend Liege tambem estavam em campo."""
+    # Achado real (auditoria 2026-09-13): Imperious Perfect ("Other Elves
+    # you control get +1/+1") e Thranduil, Sindarin Liege ("Other Elves you
+    # control get +1/+1") tem a MESMA clausula estatica do Elvish Archdruid
+    # ja tratado acima, e Marwyn e' Elfo - deveriam somar +1/+1 cada uma
+    # tambem, mas nenhuma das duas era checada aqui (mesma classe de bug ja
+    # achada no Beorn nesta sessao - estatica aplicada num lugar, nunca
+    # propagada pra toda funcao que le poder de criatura; aqui a funcao ja
+    # tinha 2 dos 4 anthems reais corretos, faltavam estas 2).
     bonus = 0
     if "Elvish Archdruid" in state.battlefield and "Marwyn, the Nurturer" in state.battlefield:
         bonus += 1
     if "Murkfiend Liege" in state.battlefield and "Marwyn, the Nurturer" in state.battlefield:
+        bonus += 1
+    if "Imperious Perfect" in state.battlefield and "Marwyn, the Nurturer" in state.battlefield:
+        bonus += 1
+    if ("Thranduil, Sindarin Liege // Silvan Rally" in state.battlefield
+            and "Marwyn, the Nurturer" in state.battlefield):
         bonus += 1
     return state.marwyn_power + bonus
 
@@ -1204,16 +1276,99 @@ def devoted_druid_pump(state: GameState):
 def use_staff_of_domination_v2(state: GameState):
     """{1}: destapa. {5},{T}: compra 1. Com mana infinita, repete ate a
     biblioteca esvaziar (limite defensivo: nunca finge vencer por deck-out,
-    so registra quantas compras aconteceram)."""
-    if "Staff of Domination" not in state.battlefield or not state.infinite_mana_this_turn:
+    so registra quantas compras aconteceram).
+
+    Achado real (auditoria 2026-09-13): fora do combo infinito, o Staff
+    ficava 100% inerte - so' o ramo `infinite_mana_this_turn` existia. Mas
+    o oraculo real e' um motor de compra REPETIVEL mesmo com mana finita:
+    {5},{T}: Draw a card (1a compra) + {1}: Untap this artifact (destapa,
+    permite pagar {5},{T} de novo - 6 mana por compra extra a partir da
+    2a). Staff e' artefato nao-criatura, sem doenca de invocacao pro seu
+    {T}. Corrigido: fora do combo infinito, com 5+ mana sobrando, compra
+    real acontece (1a compra por 5, cada compra extra por 6), sem inventar
+    nada - e' literalmente o texto impresso da carta."""
+    if "Staff of Domination" not in state.battlefield:
         return
-    while state.library:
-        card = state.library.pop(0)
-        state.hand.append(card)
-        state.cards_drawn_extra += 1
-        state.staff_infinite_draws += 1
+    if state.infinite_mana_this_turn:
+        while state.library:
+            card = state.library.pop(0)
+            state.hand.append(card)
+            state.cards_drawn_extra += 1
+            state.staff_infinite_draws += 1
+        if not state.library:
+            state.library_emptied = True
+        return
+    if remaining_mana(state) < 5:
+        return
+    spend_mana(state, 5)
+    draw_cards(state, 1)
+    state.staff_finite_draws_total += 1
+    while remaining_mana(state) >= 6:
+        spend_mana(state, 6)
+        draw_cards(state, 1)
+        state.staff_finite_draws_total += 1
+
+
+def try_faerie_mastermind(state: GameState):
+    """Achado real (auditoria 2026-09-13): oraculo real tem DUAS habilidades
+    - "Whenever an opponent draws their second card each turn, you draw a
+    card" (passiva, opponent-dependent, ja documentada como N/A) E
+    "{3}{U}: Each player draws a card" (ativada). A carta inteira estava
+    rotulada com a tag 'opponent_dependent' e 100% ignorada no codigo, mas
+    so' a passiva de fato depende do oponente - a ativada te da' 1 compra
+    real e garantida so' por pagar mana, symmetric mas com beneficio real
+    pro seu lado (mesma convencao ja usada noutras cartas simetricas desta
+    sessao: modela seu proprio ganho, nao o do oponente que nao existe
+    neste goldfish). Sem {T} no custo - repetivel, sem limite no oraculo."""
+    if "Faerie Mastermind" not in state.battlefield:
+        return
+    if state.infinite_mana_this_turn:
+        return  # evita loop infinito de verdade - ja convertido via Staff
+    while remaining_mana(state) >= 4:
+        spend_mana(state, 4)
+        draw_cards(state, 1)
+        state.faerie_mastermind_draws_total += 1
+
+
+def can_cast_from_top(state: GameState) -> Optional[str]:
+    """Elven Chorus ("You may cast creature spells from the top of your
+    library") / Realmwalker ("...of the chosen type...") - achado real
+    (auditoria 2026-09-13): a tag 'cast_from_top' estava cadastrada nas 2
+    cartas desde a criacao do arquivo, mas NUNCA era lida em lugar nenhum -
+    ghost tag genuina (escapou da varredura automatica de tags mortas por
+    aparecer 2x como literal de string, 1x por carta, mas nunca
+    DESPACHADA). Realmwalker escolhe o tipo ao entrar - sem um 2o alvo de
+    valor bem definido pra Roaming Throne (que ja escolheu Faerie, ver
+    docstring do topo), Elfo foi escolhido aqui pra cobrir o outro lado da
+    tribal (19 Elfos vs 12 Fadas - mais chance real de bater no topo), a
+    mesma logica de heuristica defensavel ja documentada pro Roaming
+    Throne, so' que pro lado Elfo."""
     if not state.library:
-        state.library_emptied = True
+        return None
+    top = state.library[0]
+    if not is_creature_card(top):
+        return None
+    if "Elven Chorus" in state.battlefield:
+        pass
+    elif "Realmwalker" in state.battlefield and is_elf(top):
+        pass
+    else:
+        return None
+    if not can_cast(state, top):
+        return None
+    return top
+
+
+def do_cast_from_top(state: GameState, name: str):
+    cost = CARD_DB[name].mv
+    if (is_creature_card(name) and "Radagast of Rhosgobel" in state.battlefield
+            and not state.radagast_discount_used_this_turn):
+        cost = max(0, cost - 2)
+        state.radagast_discount_used_this_turn = True
+    spend_mana(state, cost)
+    state.library.pop(0)
+    enter_battlefield(state, name, from_hand=False)
+    state.cast_from_top_total += 1
 
 
 def main_phase(state: GameState, is_first_main: bool = True):
@@ -1247,6 +1402,13 @@ def main_phase(state: GameState, is_first_main: bool = True):
             equip_umbral_mantle(state)
             dork_mana(state)
             continue
+        top_castable = can_cast_from_top(state)
+        if top_castable:
+            do_cast_from_top(state, top_castable)
+            maralen_try_free_cast(state)
+            equip_umbral_mantle(state)
+            dork_mana(state)
+            continue
         break
 
     cast_fauna_shaman_activation(state)
@@ -1267,6 +1429,11 @@ def main_phase(state: GameState, is_first_main: bool = True):
     # ja aplicada ao Fauna Shaman/Imperious Perfect acima.
     joraga_level_up(state)
 
+    # Ordem: Faerie Mastermind (4 mana/compra) antes do Staff (5-6
+    # mana/compra) - maximiza total de compras pro mesmo orcamento de mana
+    # sobrando, heuristica gulosa simples (mesma filosofia "usa o que sobrou"
+    # ja aplicada ao Joraga/Imperious Perfect acima).
+    try_faerie_mastermind(state)
     use_staff_of_domination_v2(state)
 
 
@@ -1486,14 +1653,19 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
           + (f" | turno medio: {avg([s.itlimoc_transform_turn for s in states if s.itlimoc_transform_turn is not None]):.2f}" if itlimoc_hits else ""))
     print(f"Avg criaturas encontradas via ETB do Growing Rites of Itlimoc: {avg([s.itlimoc_creatures_found_total for s in states]):.2f}")
 
+    print(f"Avg compras via Staff of Domination modo finito (achado 2026-09-13, {{5}},{{T}} + {{1}} untap fora do combo infinito): {avg([s.staff_finite_draws_total for s in states]):.2f}")
+    print(f"Avg compras via Faerie Mastermind ativado (achado 2026-09-13, {{3}}{{U}}: each player draws): {avg([s.faerie_mastermind_draws_total for s in states]):.2f}")
+    print(f"Avg criaturas conjuradas do topo da biblioteca (achado 2026-09-13, Elven Chorus/Realmwalker): {avg([s.cast_from_top_total for s in states]):.2f}")
+
     # --- Metricas basicas (checklist obrigatorio, categoria 10) --------------
     # Reportadas explicitamente mesmo quando 0, pra deixar auditavel de
     # relance sem precisar somar manualmente.
     print("--- Metricas basicas (checklist obrigatorio) ---")
     print(f"RAMP: avg pecas de rampa conjuradas (dorks elficos, Sol Ring/Arcane Signet, Cryptolith Rite/"
           f"Elven Chorus, Itlimoc pos-transformacao): {avg([s.ramp_pieces_cast_total for s in states]):.2f}")
-    print(f"DRAW: avg compras extras totais (Kindred Discovery, Cloud of Faeries, biblioteca via mulligan "
-          f"nao contada aqui - exclui staff infinito): {avg([s.cards_drawn_extra - s.staff_infinite_draws for s in states]):.2f}")
+    print(f"DRAW: avg compras extras totais (Kindred Discovery, Cloud of Faeries, Staff modo finito, Faerie "
+          f"Mastermind ativado, biblioteca via mulligan nao contada aqui - exclui staff infinito): "
+          f"{avg([s.cards_drawn_extra - s.staff_infinite_draws for s in states]):.2f}")
     print(f"INTERACTION: avg spells de interacao conjurados (Arcane Denial, Counterspell, Swan Song, "
           f"Pongify, Rapid Hybridization, Reality Shift, Assassin's Trophy, Cyclonic Rift, Toxic Deluge, "
           f"Heroic Intervention - conjurados quando ha mana sobrando, sem efeito de combate real por ser "

@@ -4,6 +4,66 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### Auditoria oráculo-por-oráculo completa (extensão da sessão de 6 decks) — 2026-09-13
+
+**Gatilho:** continuação da auditoria "compile TUDO" aplicada a Azula/
+Beorn/Captain Storm/Edgar Markov/Hei Bai nesta mesma sessão — mesmo
+tratamento pra Maralen, já o deck mais auditado da biblioteca (6+ rodadas
+anteriores documentadas acima). Oráculo fresco via Scryfall pras 88 cartas
++ 3 MDFC/Adventure + comandante, releitura completa das ~1580 linhas do
+simulador. **4 gaps reais encontrados e corrigidos** (detalhe completo em
+`checklist-oraculo.md`):
+
+1. `marwyn_effective_power()` faltava os anthems reais de Imperious
+   Perfect e Thranduil, Sindarin Liege (mesma cláusula "Other Elves you
+   control get +1/+1" já corrigida pro Elvish Archdruid numa rodada
+   anterior, nunca estendida pras outras 2 fontes idênticas).
+2. Faerie Mastermind: a habilidade ativada real (*"{3}{U}: Each player
+   draws a card"*) nunca disparava — a carta inteira tinha sido descartada
+   como "opponent_dependent" por causa da OUTRA metade (passiva).
+3. Staff of Domination: o motor de compra normal (*"{5},{T}: Draw a
+   card"* + *"{1}: Untap"* pra repetir) só existia dentro do combo
+   infinito — 100% inerte com mana finita, mesmo sobrando 5+ mana.
+4. Elven Chorus / Realmwalker: tag `cast_from_top` cadastrada desde a
+   criação do arquivo, nunca despachada — "cast creature spells from the
+   top of your library" 100% ausente.
+
+**Robustez:** 20.000 partidas de regressão (seeds 9500000–9519999,
+timeout 2s/jogo) — 0 erros, 0 timeouts.
+
+**n=2000, seed_base=5555000, 8 turnos — antes → depois:**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg gatilhos de Maralen (exila 2) | 9,62 | **10,51** |
+| Avg cartas exiladas total | 17,77 | **19,10** |
+| Avg casts grátis via Maralen | 2,71 | 2,81 |
+| Avg tutores usados | 0,86 | 0,92 |
+| Avg tokens criados | 4,44 | 4,71 |
+| Avg dobras via Roaming Throne | 1,19 | 1,40 |
+| Avg nível final do Joraga Treespeaker | 0,86 | 0,96 |
+| Combo Umbral Mantle montado | 11,0% | **12,2%** |
+| Staff of Domination infinito | 2,7% | 3,2% |
+| Avg cartas compradas extra (draw) | 3,23 | **4,52** |
+| Avg mão final | 2,23 | **3,08** |
+| Avg compras via Staff modo finito (novo) | — | **0,62** |
+| Avg compras via Faerie Mastermind ativado (novo) | — | **0,88** |
+| Avg criaturas conjuradas do topo (Elven Chorus/Realmwalker, novo) | — | **0,33** |
+
+**Leitura:** o salto mais visível é em compra de carta (3,23 → 4,52,
+quase inteiro vindo dos 2 motores de draw que antes eram 100% inertes —
+Staff modo finito e Faerie Mastermind ativado), refletido diretamente na
+mão final maior (2,23 → 3,08). O combo do Umbral Mantle sobe de forma
+mensurável (11,0% → 12,2%) como efeito direto do fix da Marwyn (mais
+fontes de anthem = mais chance de cruzar o threshold de 4+ mana por
+ativação). Os demais deltas (gatilhos de Maralen, dobras via Roaming
+Throne, nível do Joraga) sobem moderadamente como efeito indireto de
+mais mana/cartas disponíveis mudando quais spells a IA prioriza a cada
+turno — nada satura ou explode, consistente com correções pontuais num
+arquivo já maduro.
+
+---
+
 ## Simulação #1 — goldfish Python completo (`maralen_goldfish_v1.py`) — 2026-08-23
 
 **Script construído do zero**, seguindo a arquitetura já estabelecida nos outros 6 simuladores desta biblioteca (`Card`/`GameState` dataclasses, `total_mana()`/`remaining_mana()`/`spend_mana()` com gasto real rastreado por turno). Passo 0 (regra de `references/goldfish-sim-card-rules.md`): varredura mecânica no oráculo completo das 99 cartas achou os gatilhos reais listados no docstring do script. Todos com efeito real implementado, exceto os explicitamente dependentes de oponente real (Rhystic Study, Mystic Remora, Faerie Mastermind passivo, Alela, Bojuka Bog) — documentados como "disponíveis mas sem efeito numérico solo", nunca fingidos.
