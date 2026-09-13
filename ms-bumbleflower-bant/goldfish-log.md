@@ -1,5 +1,73 @@
 # Goldfish Log — Ms. Bumbleflower
 
+## Auditoria oráculo-por-oráculo completa — 2026-09-13
+
+Extensão pra este deck da mesma auditoria já feita no
+Megatron/Azula/Beorn/Captain Storm/Edgar Markov/Hei Bai/Maralen/Kutzil.
+Detalhes carta-a-carta completos em `checklist-oraculo.md` (seção no
+topo) — **12 gaps reais** encontrados, mesmo depois da rodada de
+construção original já ter corrigido 8 outros + 1 bug crítico (comandante
+nunca em campo). Achado principal: Heliod, Sun-Crowned tratado como
+criatura o tempo todo, sem o gate real de devoção ao branco (`>=5`),
+afetando 5 pontos do motor (combate, contador, mana do Rishkar, Ozolith).
+Mais 11 gaps: 2 habilidades de Heliod incompletas/ausentes (gatilho de
+vida só via combate, `{1}{W}` de lifelink 100% ausente); Deepglow Skate
+só dobrava 1 alvo em vez de "any number"; Jolrael's `{4}{G}{G}` overdrive
+100% ausente; Swiftfoot Boots' Equip {1} nunca cobrado (mesma classe do
+bug sistêmico do Captain Storm); Slip Out the Back's "phases out" 100%
+ignorado (alvo continuava atacando); Tamiyo Seasoned Scholar's −7 100%
+ausente; Walking Ballista's "remove counter: 1 dano" 100% ausente; Twenty
+-Toed Toad's limite de mão (20, não infinito) misturado com as fontes
+verdadeiramente ilimitadas; Flooded Grove subcontada como 0 mana junto
+com 3 filter lands que são genuinamente líquido-0 (ela não é, tem `{T}:
+Add {C}` de graça); Oakhollow Village esquecia Twenty-Toed Toad (Frog) do
+próprio set de tipos elegíveis.
+
+### Métricas antes/depois (2.000 partidas, seed 7.000.000, turns=10, mesma seed)
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Dano proxy médio | 187,8 | 199,0 |
+| Dano proxy mediano | 126,5 | 133,0 |
+| Cartas compradas extra (média) | 24,5 | 25,9 |
+| Compras forçadas do oponente (média) | 17,3 | 18,1 |
+| Treasures criados (média) | 2,6 | 2,8 |
+| Contadores colocados (média) | 72,5 | 79,9 |
+| Vida ganha (média) | 2,5 | 17,3 |
+| Interação jogada (média) | 3,4 | 3,5 |
+| Vitórias via Simic Ascendancy | 419/2000 (21,0%) | 440/2000 (22,0%) |
+| Vitórias via Twenty-Toed Toad | 61/2000 (3,1%) | 73/2000 (3,7%) |
+| Biblioteca esgotada | 0/2000 | 1/2000 |
+
+**Leitura:** todas as métricas se movem pra CIMA, na direção esperada de
+uma rodada que só corrigiu implementações ausentes/parciais (nenhum fix
+removeu valor de nenhuma carta). O salto mais chamativo é vida ganha
+(2,5→17,3, ~7x) — driver principal é o achado #3 (Heliod's `{1}{W}:
+lifelink noutra criatura`, ramo antes 100% ausente): antes, Heliod só
+ganhava vida via lifelink de combate nativo (raro nesta lista — só
+Mangara tem lifelink impresso); agora, sempre que Heliod está em campo
+com mana sobrando, ele ativamente converte o poder do melhor atacante em
+vida ganha TODO turno, o que também retrigger o próprio Heliod (mais
+contadores) — efeito composto real, não um bug (mana-gated a 1 ativação
+por turno, sem loop). Dano proxy subiu ~6% (187,8→199,0) — soma de vários
+fixes menores na mesma direção (Deepglow dobrando múltiplos alvos,
+Jolrael overdrive, Ballista convertendo contadores em dano no último
+turno, Flooded Grove destravando 1 mana extra). Contadores colocados
+subiu ~10% (mesma causa: Deepglow multi-alvo + Oakhollow incluindo o Toad
++ fasear ainda coloca o contador do Slip Out). As 2 condições de vitória
+alternativa também sobem levemente (mais contadores = growth counters da
+Ascendancy sobem mais rápido; Toad se beneficia do próprio ajuste de Frog
+no Oakhollow) — nenhuma métrica se moveu de forma inexplicável ou na
+direção errada.
+
+**Validação:** smoke test (94 cartas no `CARD_DB`, 99 na `BASE_LIBRARY`,
+0 desconhecidas/duplicadas fora das básicas) + 2.000 partidas antes/depois
+(tabela acima) + 20.000 partidas de regressão (seed 9.500.000+, turns=10,
+**0 exceções**, ~40s) + 23 checagens dirigidas (1 arquivo, uma por gap,
+todas passando).
+
+---
+
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
 
 ---

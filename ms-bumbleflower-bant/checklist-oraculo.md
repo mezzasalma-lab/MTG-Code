@@ -1,5 +1,151 @@
 # Checklist cláusula-a-cláusula — Ms. Bumbleflower (Bant, G/W/U)
 
+## Auditoria oráculo-por-oráculo completa — 2026-09-13
+
+Extensão pra este deck da mesma auditoria já feita no Megatron/Azula/
+Beorn/Captain Storm/Edgar Markov/Hei Bai/Maralen/Kutzil (detalhes de cada
+um no topo dos respectivos `checklist-oraculo.md`). Este deck já tinha
+passado por 1 rodada de auditoria na própria construção (8 gaps achados
+por varredura de tags órfãs + 1 bug crítico do comandante, ver seções
+abaixo) — mesmo assim esta 2ª rodada, linha-a-linha contra o oráculo real
+via Scryfall (94 cartas não-básicas + comandante, 2 lotes de
+`/cards/collection` + 3 `/cards/named?fuzzy=` pros MDFCs), achou **12
+gaps reais novos**.
+
+**Achado principal — Heliod, Sun-Crowned tratado como criatura o tempo
+todo, incondicionalmente:** o oráculo real diz "As long as your devotion
+to white is less than five, Heliod isn't a creature" — mas a carta era
+adicionada com `ctype="creature"` fixo (nunca condicionado a nada), então
+sempre contava poder de ataque, sempre era um alvo válido de
+contador/mana do Rishkar, e suas próprias +1/+1 counters sempre iam pro
+Ozolith ao sair de campo, mesmo com devoção baixa (early game). Mesma
+classe de bug do "gate faltando na função central" já visto no Kutzil
+(lá era `place_counters()`; aqui é `creatures_in_play()`). Corrigido com
+`devotion_to_white()` (soma de pips `{W}` de todo permanente controlado)
++ `is_creature_now(state, perm)` (só Heliod é condicional; todo resto
+continua usando `is_creature_card`, baseado no type line que nunca muda)
+— threaded por `creatures_in_play()`, `put_counters()`, `rocks_mana()`,
+`color_sources()` e o check do Ozolith em `leave_battlefield()` (este
+último lido ANTES de remover o permanente, já que a devoção de Heliod no
+instante de sair ainda inclui ele mesmo).
+
+**12 gaps reais encontrados e corrigidos:**
+
+1. **Heliod, Sun-Crowned — gate de devoção ausente** (ver acima), afetando
+   5 pontos reais do motor.
+2. **Heliod — "Whenever you gain life, put a +1/+1 counter..." só estava
+   ligado ao lifelink de combate.** Kwain, Itinerant Meddler também
+   ganha 1 de vida real ("...each player who drew a card this way gains 1
+   life") e nunca disparava o Heliod. Centralizado dentro do próprio
+   `gain_life()` (único ponto real de "você ganha vida" do arquivo, mesmo
+   padrão do `put_counters()`), cobrindo QUALQUER fonte.
+3. **Heliod — "{1}{W}: Another target creature gains lifelink until end
+   of turn." 100% ausente** (só o gatilho de ganho de vida existia, nunca
+   a fonte que o alimenta além do combate normal). Implementado como
+   sink de mana em `try_activated_abilities()`, alvo = melhor atacante
+   real sem lifelink ainda — converte o próprio dano de combate dele em
+   vida ganha, retriggerando o próprio Heliod.
+4. **Deepglow Skate — ETB só dobrava contadores do MELHOR alvo, não de
+   "any number of target permanents" (plural, oráculo real).** Sem
+   nenhuma desvantagem em escolher todos os elegíveis, corrigido pra
+   dobrar TODO permanente com contadores >0 — inclusive os growth
+   counters do próprio Simic Ascendancy (rastreados à parte por não
+   serem +1/+1 counters), que também dobram corretamente agora.
+5. **Jolrael, Mwonvuli Recluse — "{4}{G}{G}: creatures you control have
+   base power and toughness X/X" 100% ausente** (só o gatilho de compra
+   da 2ª carta estava implementado, tag `jolrael` órfã pro resto). Único
+   modo real da carta inteiramente sem dispatch. Implementado com um
+   flag `jolrael_overdrive_active` lido em `creature_power()` (layer 7b,
+   sobrescreve o base ANTES dos +1/+1 counters somarem por cima, como
+   nas regras reais) — só ativa quando X (cartas na mão) é maior que o
+   melhor poder atual do time, senão seria um downgrade.
+6. **Swiftfoot Boots — Equip {1} nunca cobrado.** Mesma classe de bug já
+   vista no Captain Storm (lá, 11 peças de Equipment; aqui, só 1 — Lightning
+   Greaves é Equip {0} de verdade, então não tinha impacto nela).
+   `try_equip()` não gastava mana nenhuma em lugar algum. Corrigido com
+   `EQUIP_COST` real por carta, checando `remaining_mana()` antes de
+   anexar (se não sobrar mana, fica desanexada até um turno futuro).
+7. **Slip Out the Back — "It phases out" completamente ignorado.** O alvo
+   continuava atacando normalmente no mesmo turno, quando na verdade
+   fasear = "tratado como se não existisse" (CR 702.26e) até o próximo
+   turno do controlador. Corrigido com `phased_out_until` checado dentro
+   de `creatures_in_play()` (ponto central, cascade automático pro
+   combate/mana/alvos) — e o heurístico de alvo agora prefere uma
+   criatura com doença de invocação (fasear ela não custa NENHUM dano de
+   combate real), só caindo pro melhor alvo geral quando todas já podem
+   atacar.
+8. **Tamiyo, Seasoned Scholar — ultimate (−7, "draw cards equal to half
+   your library, emblem no max hand size") 100% ausente**, só +2/−3
+   estavam implementados. Mesmo padrão do −7 da Tamiyo Field Researcher
+   (já implementado antes), só faltava o da Scholar. Corrigido com
+   prioridade sobre o −3 quando disponível.
+9. **Walking Ballista — "Remove a +1/+1 counter: deals 1 damage to any
+   target" 100% ausente** (só a entrada com X counters e o `{4}:` de
+   crescer estavam implementados). Como o alvo pode ser o oponente
+   diretamente, e a simulação roda um número fixo de turnos, implementado
+   como conversão no ÚLTIMO turno simulado (`is_last_turn`, threaded por
+   `run_turn`/`simulate_one`): sem mais turnos pra atacar de novo,
+   contadores parados não geram mais dano nenhum — convertê-los em dano
+   direto no fim maximiza o dano real medido (nos turnos anteriores,
+   manter os contadores pra atacar repetidamente continua sendo
+   estritamente melhor, por isso só converte no último turno).
+10. **Twenty-Toed Toad — "your maximum hand size is TWENTY" (número fixo)
+    jogado no mesmo balde `no_max_hand` de Reliquary Tower/Thought
+    Vessel/Wizard Class (esses sim, sem limite nenhum).** Sem nenhuma
+    dessas 3 fontes verdadeiras em campo, o Toad sozinho deveria limitar
+    a mão em 20, não em 99. Nunca prejudicou nenhuma métrica pra baixo
+    (99>20 só significa reter cartas A MAIS), mas não batia com o
+    oráculo real. Corrigido com `max_hand_size()` separando as 2
+    categorias; `hand_size_no_max` agora reservado só pras fontes
+    verdadeiramente ilimitadas + o emblema da Seasoned Scholar (achado
+    #8).
+11. **Flooded Grove contava como mana ZERO, junto com Overflowing
+    Basin/Skycloud Expanse/Sungrass Prairie.** Esses 3 últimos são
+    corretos (só têm o modo filtro "{1},{T}: Add 2 mana coloridas",
+    líquido 0 extra) — mas Flooded Grove tem TAMBÉM um "{T}: Add {C}" de
+    graça no oráculo real, que as outras 3 não têm. Agrupada no mesmo
+    balde, subcontava 1 mana toda vez que estava em campo. Corrigido
+    removendo-a do conjunto zerado em `lands_available()`.
+12. **Oakhollow Village — "put a +1/+1 counter on each Frog, Rabbit,
+    Raccoon, or Squirrel you control that entered this turn" esquecia
+    Twenty-Toed Toad** (Frog Wizard, tipo de criatura real desta lista
+    exata) do set `RABBIT_LIKE` — só Bumbleflower/Kwain/Rabbit Token
+    estavam nele. Corrigido incluindo Twenty-Toed Toad.
+
+**Considerado e deliberadamente NÃO implementado (decisão de design
+documentada, não gap deixado pra trás):**
+- **Ms. Bumbleflower — "It gains flying until end of turn"** (parte do
+  próprio gatilho do comandante): sem bloqueio nenhum modelado neste
+  goldfish, evasão temporária não tem nenhum valor numérico capturável —
+  mesma classe de "sem janela real pra manifestar valor" do Wilderness
+  Reclamation/Drumbellower já documentados.
+- **Tamiyo, Field Researcher −2** ("tap up to two target nonland
+  permanents") — só tem uso real contra permanentes de OPONENTE; nos
+  nossos próprios, só atrapalha. O código já nunca escolhe essa linha
+  (sempre +1 ou −7), mas isso não estava documentado explicitamente antes
+  desta auditoria.
+- **Fellwar Stone** — não tem entrada dedicada nenhuma no `rocks_mana()`
+  (produz 0 mana). Confirmado que segue a MESMA convenção já usada no
+  Captain Storm/Azula pra esta carta exata ("add mana of a color a land
+  an OPPONENT controls could produce" — sem oponente modelado, 0 mana
+  real, não um gap novo).
+- **Peerless Recycling — modo "Gift"** (prometer uma carta ao oponente
+  pra trocar 1 alvo por 2): precisa de um oponente real pra receber o
+  presente. Sem ele, o modo base (1 alvo) é o único genuinamente
+  disponível — mesma lógica já usada pra Long River's Pull/Peerless
+  Recycling's Gift em outros decks da sessão.
+- **Ponder** — "look at top 3, put back in any order" não afeta o valor
+  numérico aqui (biblioteca já embaralhada aleatoriamente, sem heurística
+  de "board need" modelada pra reordenar de propósito); só a compra base
+  é capturada, consistente com o resto do arquivo.
+
+Validado com 23 checagens dirigidas (1 arquivo, uma por gap, todas
+passando) + 2.000 partidas antes/depois (mesma seed, ver `goldfish-log.md`
+pra tabela) + regressão de 20.000 partidas (seed 9.500.000+, turns=10, 0
+exceções, ~40s).
+
+---
+
 Pedido direto do usuário (2026-09-02): lista completa colada ao vivo
 nesta conversa, em resposta a "Preciso que você mande a lista de cartas
 dele" (o `lista.md` estava vazio, sem decklist alguma). Último dos 4

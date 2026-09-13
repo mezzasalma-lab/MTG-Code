@@ -239,6 +239,28 @@ def is_creature_card(name: str) -> bool:
     return CARD_DB[name].ctype == "creature"
 
 
+def devotion_to_white(state: "GameState") -> int:
+    # Devocao ao branco = soma de simbolos {W} nos custos de mana dos
+    # PERMANENTES que voce controla (nao inclui magicas na mao/pilha).
+    return sum(CARD_DB[p.card].pips.get("W", 0) for p in state.battlefield)
+
+
+def is_creature_now(state: "GameState", perm: "Permanent") -> bool:
+    # Heliod, Sun-Crowned: "As long as your devotion to white is less than
+    # five, Heliod isn't a creature." Achado real: a carta era adicionada
+    # com ctype="creature" incondicional (type line real e' "Enchantment
+    # Creature", mas a habilidade estatica remove o tipo criatura do jogo
+    # enquanto devocao < 5) -- unico permanente desta lista com essa
+    # habilidade condicional, entao e' o unico caso especial aqui; todo
+    # resto usa is_creature_card (baseado so' no type line, que nunca
+    # muda). Sem este gate, Heliod contava poder de ataque, ocupava vaga
+    # de alvo de contador/mana do Rishkar e saida-de-campo pro Ozolith
+    # mesmo com devocao baixa.
+    if perm.card == "Heliod, Sun-Crowned":
+        return devotion_to_white(state) >= 5
+    return is_creature_card(perm.card)
+
+
 def is_artifact_card(name: str) -> bool:
     return CARD_DB[name].ctype == "artifact"
 
@@ -257,6 +279,8 @@ class Permanent:
     equipped_to: Optional[int] = None
     is_token: bool = False
     tapped_for_mana_this_turn: bool = False
+    temp_lifelink: bool = False  # Heliod {1}{W}: "another target creature gains lifelink until end of turn"
+    phased_out_until: int = 0  # Slip Out the Back -- "it phases out" (nao existe ate o turno indicado)
 
 
 @dataclass
@@ -290,6 +314,8 @@ class GameState:
     won_via_toad: bool = False
     cards_drawn_this_turn: int = 0
     tamiyo_emblem_free_cast: bool = False
+    jolrael_overdrive_active: bool = False  # {4}{G}{G}: criaturas viram X/X (X = mao) ate o fim do turno
+    jolrael_overdrive_x: int = 0
 
     treasures: int = 0
     clues: int = 0
@@ -321,8 +347,26 @@ def proxy_burn(state: GameState, n: int):
     state.proxy_damage_total += n
 
 
-def gain_life(state: GameState, n: int):
+def gain_life(state: GameState, n: int, log: list = None):
+    if n <= 0:
+        return
     state.life_gained_total += n
+    # Heliod, Sun-Crowned: "Whenever you gain life, put a +1/+1 counter on
+    # target creature or enchantment you control." Achado real: so' estava
+    # ligado ao lifelink de combate -- Kwain ("...each player gains 1
+    # life") tambem e' ganho de vida real e nao disparava. Centralizado
+    # aqui (unico ponto real de "voce ganha vida" do arquivo) pra cobrir
+    # QUALQUER fonte, mesmo padrao do put_counters(). Alvo sempre uma
+    # criatura (nunca um enchantment) -- estritamente melhor aqui (nenhum
+    # enchantment desta lista ganha valor de +1/+1 counter).
+    # Nota: este gatilho NAO depende de devocao -- "isn't a creature"
+    # (devocao < 5) so' remove o TIPO criatura e P/T de Heliod, nao as
+    # outras habilidades do enchantment, entao dispara so' por ele estar
+    # em campo (qualquer devocao).
+    if any(p.card == "Heliod, Sun-Crowned" for p in state.battlefield):
+        target = best_counter_target(state)
+        if target is not None:
+            put_counters(state, target, 1, log or [], source="Heliod (ganho de vida)")
 
 
 def new_uid(state: GameState) -> int:
@@ -336,7 +380,10 @@ def find_perm(state: GameState, uid: int) -> Optional[Permanent]:
 
 
 def creatures_in_play(state: GameState):
-    return [p for p in state.battlefield if is_creature_card(p.card)]
+    # phased_out_until: Slip Out the Back -- enquanto fase fora, "trate
+    # como se nao existisse" (CR 702.26e) -- nao ataca, nao e' alvo,
+    # nao produz mana, ate o inicio do proximo turno do controlador.
+    return [p for p in state.battlefield if is_creature_now(state, p) and p.phased_out_until <= state.turn]
 
 
 # ---------------------------------------------------------------------------
@@ -352,10 +399,10 @@ def put_counters(state: GameState, perm: Permanent, n: int, log: list, source: s
 
     if perm.uid not in state.first_counter_this_turn:
         state.first_counter_this_turn.add(perm.uid)
-        if any(p.card == "Danny Pink" for p in state.battlefield) and is_creature_card(perm.card):
+        if any(p.card == "Danny Pink" for p in state.battlefield) and is_creature_now(state, perm):
             draw_cards(state, 1)
 
-    if any(p.card == "Simic Ascendancy" for p in state.battlefield) and is_creature_card(perm.card):
+    if any(p.card == "Simic Ascendancy" for p in state.battlefield) and is_creature_now(state, perm):
         state.simic_ascendancy_growth_counters += n
         if state.simic_ascendancy_growth_counters >= 20:
             state.won_via_ascendancy = True
@@ -409,6 +456,13 @@ def creature_power(state: GameState, perm: Permanent) -> int:
         base = perm.counters + faeburrow_colors(state)
     if perm.card == "Psychosis Crawler":
         base = len(state.hand)
+    if state.jolrael_overdrive_active:
+        # Jolrael: "creatures you control have base power and toughness
+        # X/X" -- layer 7b (set P/T), aplica DEPOIS de qualquer efeito de
+        # definicao de caracteristica (7a, os 3 casos acima) e sobrescreve
+        # o base deles -- +1/+1 counters continuam somando por cima
+        # (layer 7d, depois de 7b).
+        base = state.jolrael_overdrive_x + perm.counters
     return max(0, base)
 
 
@@ -458,7 +512,7 @@ def rocks_mana(state: GameState) -> int:
             total += faeburrow_colors(state)
     # Rishkar: "each creature you control with a counter on it has {T}: Add G."
     if any(p.card == "Rishkar, Peema Renegade" for p in state.battlefield):
-        total += sum(1 for p in state.battlefield if is_creature_card(p.card) and p.counters > 0
+        total += sum(1 for p in state.battlefield if is_creature_now(state, p) and p.counters > 0
                      and p.entered_turn < state.turn and p.card not in ("Birds of Paradise", "Elvish Mystic",
                                                                           "Devoted Druid", "Faeburrow Elder"))
     if any(p.card == "Oakhollow Village" for p in state.battlefield):
@@ -470,8 +524,14 @@ def lands_available(state: GameState) -> int:
     lands = sum(1 for p in state.battlefield if p.card in LAND_NAMES)
     if state.tapped_land_this_turn is not None:
         lands -= 1
+    # Achado real: Overflowing Basin/Skycloud Expanse/Sungrass Prairie SO'
+    # tem o modo filtro ("{1},{T}: Add 2 mana coloridas" -- liquido 0
+    # extra, so' fixa cor), corretamente zerados aqui. Flooded Grove e'
+    # DIFERENTE (oraculo real: tambem tem "{T}: Add {C}" de graca, sem
+    # custo) -- estava jogado no mesmo balde e zerado incorretamente,
+    # subcontando 1 mana toda vez que ela esta em campo.
     filter_lands = sum(1 for p in state.battlefield
-                        if p.card in ("Flooded Grove", "Overflowing Basin", "Skycloud Expanse", "Sungrass Prairie"))
+                        if p.card in ("Overflowing Basin", "Skycloud Expanse", "Sungrass Prairie"))
     return lands - filter_lands  # filtros consomem 1 mana de entrada pra virar 2 -- liquido 0 extra, ver color_sources
 
 
@@ -496,7 +556,7 @@ def color_sources(state: GameState, color: str) -> int:
         elif p.card == "Birds of Paradise" and p.entered_turn < state.turn:
             n += 1  # qualquer cor
         elif color == "G" and any(p.card == "Rishkar, Peema Renegade" for p in state.battlefield) \
-                and is_creature_card(p.card) and p.counters > 0 and p.entered_turn < state.turn:
+                and is_creature_now(state, p) and p.counters > 0 and p.entered_turn < state.turn:
             n += 1
         elif color == "G" and p.card in ("Elvish Mystic", "Devoted Druid", "Oakhollow Village") \
                 and p.entered_turn < state.turn:
@@ -592,10 +652,20 @@ def resolve_etb(state: GameState, perm: Permanent, log: list):
         put_counters(state, perm, 4, log, source="Kalonian Hydra ETB")
 
     if "deepglow_etb" in tags:
-        candidates = [p for p in state.battlefield if p.counters > 0]
-        if candidates:
-            best = max(candidates, key=lambda p: p.counters)
-            put_counters(state, best, best.counters, log, source="Deepglow Skate ETB (dobra)")
+        # Achado real: oraculo diz "double... on ANY NUMBER of target
+        # permanents" (plural) -- so' dobrava o MELHOR alvo, sem motivo
+        # pra nao escolher TODOS os elegiveis (sem desvantagem nenhuma).
+        # Dobra +1/+1 counters de qualquer permanente (via put_counters,
+        # que retrigger Danny Pink/Ascendancy corretamente) E os growth
+        # counters do proprio Simic Ascendancy (rastreados a parte, ja
+        # que nao sao +1/+1 counters).
+        for p in [x for x in state.battlefield if x.counters > 0]:
+            put_counters(state, p, p.counters, log, source="Deepglow Skate ETB (dobra)")
+        ascendancy = next((p for p in state.battlefield if p.card == "Simic Ascendancy"), None)
+        if ascendancy is not None and state.simic_ascendancy_growth_counters > 0:
+            state.simic_ascendancy_growth_counters *= 2
+            if state.simic_ascendancy_growth_counters >= 20:
+                state.won_via_ascendancy = True
 
     if "coiling_oracle" in tags:
         if state.library:
@@ -642,10 +712,13 @@ def enter_battlefield(state: GameState, name: str, log: list, tapped: bool = Fal
 
 
 def leave_battlefield(state: GameState, perm: Permanent, log: list, to_graveyard: bool = True):
+    # is_creature_now precisa ser lido ANTES de remover (devocao ao
+    # branco de Heliod inclui ele mesmo no instante anterior a sair).
+    was_creature = is_creature_now(state, perm)
     if perm in state.battlefield:
         state.battlefield.remove(perm)
     ozolith = next((p for p in state.battlefield if p.card == "The Ozolith"), None)
-    if ozolith is not None and perm.counters > 0 and is_creature_card(perm.card):
+    if ozolith is not None and perm.counters > 0 and was_creature:
         ozolith.counters += perm.counters
         perm.counters = 0
     if perm.card == "Chasm Skulker" and perm.counters > 0:
@@ -699,12 +772,23 @@ def try_cast_commander(state: GameState, log: list):
         state.commander_cast_turn = state.turn
 
 
+EQUIP_COST = {"Lightning Greaves": 0, "Swiftfoot Boots": 1}
+
+
 def try_equip(state: GameState, eq_perm: Permanent, log: list):
+    # Achado real: o custo de Equip nunca era cobrado -- Lightning Greaves
+    # e' Equip {0} de verdade (sem impacto), mas Swiftfoot Boots e' Equip
+    # {1} e equipava de graca. Mesma classe de bug ja vista no Captain
+    # Storm (11 equipamentos com Equip nunca cobrado).
     creatures = creatures_in_play(state)
     if not creatures:
         return
+    cost = EQUIP_COST.get(eq_perm.card, 0)
+    if remaining_mana(state) < cost:
+        return  # sem mana pra pagar Equip agora -- tenta de novo turno que vem
     target = next((p for p in creatures if p.card == COMMANDER), None) or max(
         creatures, key=lambda p: creature_power(state, p))
+    spend_mana(state, cost)
     eq_perm.equipped_to = target.uid
 
 
@@ -762,9 +846,20 @@ def cast_instant_sorcery(state: GameState, name: str, log: list):
             state.recursion_events_total += 1
 
     elif "slip_out" in tags:
-        target = best_counter_target(state)
+        # "It phases out" -- achado real: clausula ignorada, o alvo
+        # continuava atacando normalmente no mesmo turno (CR 702.26e:
+        # tratado como se nao existisse ate o proximo turno do
+        # controlador). Alvo ideal e' uma criatura com doenca de invocacao
+        # (ainda nao ia atacar mesmo) -- fasear ela custa 0 dano de
+        # combate real e ainda ganha o contador/gatilho; so' cai pro
+        # melhor alvo geral se todas ja puderem atacar (unico caso em que
+        # fasear custa dano de verdade).
+        sick = [p for p in creatures_in_play(state)
+                if p.entered_turn == state.turn and "haste" not in CARD_DB[p.card].tags]
+        target = sick[0] if sick else best_counter_target(state)
         if target is not None:
             put_counters(state, target, 1, log, source="Slip Out the Back")
+            target.phased_out_until = state.turn + 1
 
     elif "interaction" in tags or "interaction_counter" in tags or "interaction_free_own_commander" in tags:
         state.interaction_plays += 1
@@ -840,7 +935,7 @@ def combat_step(state: GameState, log: list):
     for p in attackers:
         power = creature_power(state, p)
         total_power += power
-        if "lifelink" in CARD_DB[p.card].tags:
+        if "lifelink" in CARD_DB[p.card].tags or p.temp_lifelink:
             lifelink_gain += power
 
     kodama_in_play = any(p.card == "Kodama of the West Tree" for p in state.battlefield)
@@ -856,11 +951,7 @@ def combat_step(state: GameState, log: list):
 
     proxy_burn(state, total_power)
     if lifelink_gain > 0:
-        gain_life(state, lifelink_gain)
-        if any(p.card == "Heliod, Sun-Crowned" for p in state.battlefield):
-            target = best_counter_target(state)
-            if target is not None:
-                put_counters(state, target, 1, log, source="Heliod (ganho de vida)")
+        gain_life(state, lifelink_gain, log)
 
     if "Twenty-Toed Toad" in [p.card for p in attackers]:
         toad = next(p for p in attackers if p.card == "Twenty-Toed Toad")
@@ -884,7 +975,7 @@ def force_opponent_draw(state: GameState):
 # Ativacoes
 # ---------------------------------------------------------------------------
 
-RABBIT_LIKE = {"Ms. Bumbleflower", "Kwain, Itinerant Meddler", "Rabbit Token"}
+RABBIT_LIKE = {"Ms. Bumbleflower", "Kwain, Itinerant Meddler", "Rabbit Token", "Twenty-Toed Toad"}
 
 
 def try_activated_abilities(state: GameState, log: list):
@@ -900,7 +991,7 @@ def try_activated_abilities(state: GameState, log: list):
     if kwain is not None:
         kwain.tapped = True
         draw_cards(state, 1)
-        gain_life(state, 1)
+        gain_life(state, 1, log)
         force_opponent_draw(state)
 
     loran = next((p for p in state.battlefield if p.card == "Loran of the Third Path" and not p.tapped
@@ -944,6 +1035,37 @@ def try_activated_abilities(state: GameState, log: list):
     for eq_name in EQUIPMENT_NAMES:
         for perm in [p for p in state.battlefield if p.card == eq_name and p.equipped_to is None]:
             try_equip(state, perm, log)
+
+    # Heliod, Sun-Crowned: "{1}{W}: Another target creature gains lifelink
+    # until end of turn." Achado real: ramo 100% ausente (so' o gatilho de
+    # ganho de vida existia). Alvo = melhor atacante real sem lifelink
+    # ainda -- converte o proprio dano de combate dele em vida ganha, que
+    # por sua vez retrigger o proprio Heliod (contador extra).
+    if "Heliod, Sun-Crowned" in names and remaining_mana(state) >= 2 and color_sources(state, "W") >= 1:
+        eligible = [p for p in creatures_in_play(state)
+                    if p.card != "Heliod, Sun-Crowned" and not p.temp_lifelink
+                    and "lifelink" not in CARD_DB[p.card].tags
+                    and (p.entered_turn < state.turn or "haste" in CARD_DB[p.card].tags)]
+        if eligible:
+            target = max(eligible, key=lambda p: creature_power(state, p))
+            spend_mana(state, 2)
+            target.temp_lifelink = True
+
+    # Jolrael, Mwonvuli Recluse: "{4}{G}{G}: Until end of turn, creatures
+    # you control have base power and toughness X/X, X = cards in hand."
+    # Achado real: ramo 100% ausente (so' o gatilho de compra da 2a carta
+    # estava implementado). So' ativa quando realmente aumenta o time
+    # (X > o maior poder atual) -- senao e' um downgrade (substitui base
+    # power, contadores continuam somando por cima).
+    jolrael = next((p for p in state.battlefield if p.card == "Jolrael, Mwonvuli Recluse"), None)
+    if (jolrael is not None and not state.jolrael_overdrive_active
+            and remaining_mana(state) >= 6 and color_sources(state, "G") >= 2):
+        x = len(state.hand)
+        current_best = max((creature_power(state, p) for p in creatures_in_play(state)), default=0)
+        if x > current_best:
+            spend_mana(state, 6)
+            state.jolrael_overdrive_active = True
+            state.jolrael_overdrive_x = x
 
     ballista = next((p for p in state.battlefield if p.card == "Walking Ballista"), None)
     if ballista is not None:
@@ -1092,6 +1214,18 @@ def try_tamiyo_seasoned_scholar(state: GameState, log: list):
     scholar = next((p for p in state.battlefield if p.card == "Tamiyo, Seasoned Scholar (transformada)"), None)
     if scholar is None:
         return
+    # -7: "Draw cards equal to half the number of cards in your library,
+    # rounded up. You get an emblem with 'You have no maximum hand size.'"
+    # Achado real: ramo 100% ausente (so' -3/+2 existiam) -- mesmo padrao
+    # do -7 da Tamiyo Field Researcher (que ja era implementado), so'
+    # faltava este. Prioridade sobre o -3 quando disponivel (draw de
+    # metade da biblioteca > 1 carta de recursao pontual).
+    if scholar.counters >= 7:
+        scholar.counters -= 7
+        n = -(-len(state.library) // 2)  # ceil(len/2)
+        draw_cards(state, n)
+        state.hand_size_no_max = True  # emblema permanente, mesmo se Tamiyo sair de campo depois
+        return
     pool = [c for c in state.graveyard if c in CARD_DB and CARD_DB[c].ctype in ("instant", "sorcery")]
     if pool and scholar.counters >= 3:
         best = max(pool, key=lambda n: CARD_DB[n].mv)
@@ -1166,7 +1300,7 @@ def try_cast_loop(state: GameState, log: list):
         changed = True
 
 
-def run_turn(state: GameState, log: list):
+def run_turn(state: GameState, log: list, is_last_turn: bool = False):
     state.turn += 1
     state.lands_played_this_turn = 0
     state.tapped_land_this_turn = None
@@ -1176,8 +1310,10 @@ def run_turn(state: GameState, log: list):
     state.bumbleflower_triggers_this_turn = 0
     state.first_counter_this_turn = set()
     state.cards_drawn_this_turn = 0
+    state.jolrael_overdrive_active = False  # "ate o fim do turno" -- reseta a cada turno
     for p in state.battlefield:
         p.tapped = False
+        p.temp_lifelink = False  # "ate o fim do turno" (Heliod)
 
     try_upkeep(state, log)
     draw_cards(state, 1)
@@ -1197,9 +1333,33 @@ def run_turn(state: GameState, log: list):
     try_cast_loop(state, log)
     try_tamiyo_student_transform(state, log)
 
-    if any("no_max_hand" in CARD_DB[p.card].tags for p in state.battlefield):
+    if is_last_turn:
+        # Walking Ballista: "Remove a +1/+1 counter from this creature: It
+        # deals 1 damage to any target." Achado real: ramo 100% ausente
+        # (so' a entrada com X contadores e o {4}: por contador estavam
+        # implementados). Sem mais turnos pra atacar de novo, converter os
+        # contadores restantes em dano direto (oponente e' "any target"
+        # valido) maximiza o dano real medido em vez de deixa-los parados
+        # sem uso no fim da simulacao -- nos turnos anteriores manter os
+        # contadores pra atacar repetidamente e' estritamente melhor
+        # (mais dano ao longo de varios turnos), entao so' converte aqui.
+        ballista = next((p for p in state.battlefield if p.card == "Walking Ballista"), None)
+        if ballista is not None and ballista.counters > 0:
+            proxy_burn(state, ballista.counters)
+            ballista.counters = 0
+
+    # Achado real: Twenty-Toed Toad diz "your maximum hand size is
+    # TWENTY" (um numero fixo, nao "sem maximo") mas estava jogado no
+    # mesmo balde "no_max_hand" de Reliquary Tower/Thought Vessel/Wizard
+    # Class (essas sim, literalmente sem maximo) -- sem essas 3 fontes
+    # verdadeiras em campo, o Toad sozinho deveria limitar a mao em 20,
+    # nao em 99 (nunca prejudicou nenhuma metrica pra baixo, mas nao
+    # batia com o oraculo real).
+    if any(p.card in ("Reliquary Tower", "Thought Vessel", "Wizard Class") for p in state.battlefield):
         state.hand_size_no_max = True
-    while len(state.hand) > (99 if state.hand_size_no_max else 7):
+    max_hand = 99 if state.hand_size_no_max else (
+        20 if any(p.card == "Twenty-Toed Toad" for p in state.battlefield) else 7)
+    while len(state.hand) > max_hand:
         worst = min(state.hand, key=lambda c: CARD_DB[c].mv if c in CARD_DB else 0)
         state.hand.remove(worst)
         state.graveyard.append(worst)
@@ -1378,8 +1538,8 @@ def simulate_one(seed: int, turns: int = 10) -> GameState:
     mulligan(state)
 
     log = []
-    for _ in range(turns):
-        run_turn(state, log)
+    for i in range(turns):
+        run_turn(state, log, is_last_turn=(i == turns - 1))
         if state.won_via_ascendancy or state.won_via_toad:
             break
     return state
