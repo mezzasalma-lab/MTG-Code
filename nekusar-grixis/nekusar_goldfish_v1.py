@@ -17,6 +17,24 @@ Faerie Mastermind, Resonating Lute, Sensei's Divining Top, Teferi's
 Puzzle Box, Mikokoro, Geier Reach Sanitarium, Cephalid Coliseum).
 Corrigido nesta rodada - ver `goldfish-log.md`.
 
+Auditoria oraculo-por-oraculo completa 2026-09-13 (releitura linha-a-
+linha contra o oraculo real via Scryfall de todas as 92 cartas +
+comandante - ver `checklist-oraculo.md`): 11 gaps reais adicionais, a
+maioria de propagacao (um efeito correto numa funcao, nunca propagado
+pras outras funcoes que geram o MESMO evento real) - Sheoldred
+("whenever you draw, gain 2 life") so contava em draw_step(), nao em
+draw_cards() (o VERDADEIRO ponto central de toda compra); Mindcrank/
+Bloodchief Ascension so contavam dentro de wheel_event(), nao em
+proxy_drain() (o VERDADEIRO ponto central de "oponente perde vida").
+Tambem: The One Ring 100% inerte (a habilidade principal, {T}: burden+
+draw, nunca implementada); Underworld Breach restrito a instant/sorcery
+quando o oraculo real cobre qualquer nao-terreno; Orcish Bowmasters ETB
+overcounted 3x; 4 gatilhos de discard falso-positivos (Winds of Change/
+Echo of Eons sao shuffle, nao discard); 3 terrenos-choque e 2 terrenos
+tapped nunca modelados; Imperial Seal/Vampiric Tutor sem a perda de 2
+vida; Lightning Greaves 100% inerte. Ambos corrigidos - ver
+`goldfish-log.md` pra tabela antes/depois.
+
 Mecanica central: o comandante ("Whenever an opponent draws a card,
 Nekusar deals 1 damage to that player" + "At the beginning of each
 player's draw step, that player draws an additional card") empilha com
@@ -112,7 +130,14 @@ FETCH_NAMES = {"Arid Mesa", "Bloodstained Mire", "Flooded Strand", "Marsh Flats"
                 "Wooded Foothills"}
 for n in FETCH_NAMES:
     add(n, 0, "land", {"fetch"})
-add("Blood Crypt", 0, "land", set())
+# Blood Crypt/Steam Vents/Watery Grave (achado real 2026-09-13): oraculo
+# real *"As this land enters, you may pay 2 life. If you don't, it enters
+# tapped."* - nunca modelado, tratadas como terreno generico gratis e
+# sempre destapado. Premissa documentada (consistente com a mesma decisao
+# ja tomada pras fetches, que tambem pagam vida por eficiencia): sempre
+# pagar os 2 de vida, ja que este e' um deck de storm/combo que quer mana
+# disponivel no MESMO turno - tag "shock".
+add("Blood Crypt", 0, "land", {"shock"})
 add("Badlands", 0, "land", set())
 # Cascade Bluffs: real oraculo NAO entra tapped ("{T}: Add {C}. {1},{T}: Add
 # {U/R}{U/R}.") - achado real 2026-08-28 (auditoria de checklist): tag
@@ -127,9 +152,15 @@ add("Exotic Orchard", 0, "land", set())
 add("Geier Reach Sanitarium", 0, "land", {"wheel_source_small"})
 add("Gemstone Caverns", 0, "land", set())
 add("Mikokoro, Center of the Sea", 0, "land", {"wheel_source_small"})
-add("Mistrise Village", 0, "land", set())
+# Mistrise Village (achado real 2026-09-13): oraculo real *"This land
+# enters tapped unless you control a Mountain or a Forest."* Sem Forest
+# nesta lista (Grixis), so a metade "Mountain" importa - checado
+# dinamicamente contra MOUNTAIN_TYPE_LANDS no momento do land drop
+# (`cast_card`), nao um tag estatico (unico caso condicional do arquivo).
+add("Mistrise Village", 0, "land", {"etb_tapped_conditional"})
 add("Otawara, Soaring City", 0, "land", set())
-add("Steam Vents", 0, "land", set())
+# Steam Vents: mesmo "pay 2 life or enters tapped" do Blood Crypt/Watery Grave.
+add("Steam Vents", 0, "land", {"shock"})
 add("Underground Sea", 0, "land", set())
 # Undercity Sewers: real oraculo *"This land enters tapped. When this land
 # enters, surveil 1."* - achado real 2026-08-28 (auditoria de checklist):
@@ -137,8 +168,16 @@ add("Underground Sea", 0, "land", set())
 # "enters tapped" nem o surveil eram modelados.
 add("Undercity Sewers", 0, "land", {"etb_tapped", "surveil_on_etb"})
 add("Volcanic Island", 0, "land", set())
-add("Watery Grave", 0, "land", set())
-add("Xander's Lounge", 0, "land", set())
+# Watery Grave: mesmo "pay 2 life or enters tapped" do Blood Crypt/Steam Vents.
+add("Watery Grave", 0, "land", {"shock"})
+# Xander's Lounge (achado real 2026-09-13): oraculo real *"This land
+# enters tapped."* (incondicional, diferente de Undercity Sewers que TAMBEM
+# faz surveil 1 - Xander's Lounge nao) + Cycling {3} (modo alternativo
+# descartavel, nao modelado - mesma classe de simplificacao ja aplicada a
+# outros modos discricionarios do arquivo, ex: Wheel of Misfortune).
+# Sem tag nenhuma antes = tratada como terreno instantaneo destapado, o
+# que superestimava mana disponivel no turno em que entra.
+add("Xander's Lounge", 0, "land", {"etb_tapped"})
 add("Island", 0, "land", set())
 add("Mountain", 0, "land", set())
 add("Swamp", 0, "land", set())
@@ -223,6 +262,12 @@ add("The One Ring", 4, "artifact", {"the_one_ring"})
 ARTIFACT_ISH = {"artifact", "artifact_creature"}
 CREATURE_ISH = {"creature", "artifact_creature"}
 LAND_NAMES = {n for n, c in CARD_DB.items() if c.ctype == "land"}
+
+# Mistrise Village ("...unless you control a Mountain or a Forest" - sem
+# Forest nesta decklist Grixis): terrenos reais com o tipo Mountain na
+# type line (checado no Scryfall, nao inventado).
+MOUNTAIN_TYPE_LANDS = {"Badlands", "Blood Crypt", "Steam Vents", "Volcanic Island",
+                        "Xander's Lounge", "Mountain"}
 
 
 def is_creature_card(name: str) -> bool:
@@ -309,16 +354,34 @@ def _commander_copies(state: GameState) -> int:
 
 
 def draw_cards(state: GameState, n: int):
+    actually_drawn = 0
     for _ in range(n):
         if state.library:
             state.hand.append(state.library.pop(0))
             state.cards_drawn_extra += 1
+            actually_drawn += 1
         else:
             state.library_emptied = True
-    dmg = self_damage_per_draw(state) * n
+    # achado real 2026-09-13: usava `n` (pedido) em vez de `actually_drawn`
+    # (efetivo) pro dano/vida proprios - so importa se a biblioteca esgota
+    # no meio de uma compra (raro com 99 cartas/8 turnos, mas real).
+    dmg = self_damage_per_draw(state) * actually_drawn
     if dmg:
         state.life -= dmg
         state.self_damage_total += dmg
+    # Sheoldred, the Apocalypse: "Whenever YOU draw a card, you gain 2
+    # life." Achado real 2026-09-13: so' estava cravada dentro de
+    # `draw_step()` (a compra normal do meu turno) - toda compra vinda de
+    # QUALQUER outro motor (wheels, Sensei's Top, Waste Not, Resonating
+    # Lute, Cephalid Coliseum, tutores nao) NUNCA disparava o ganho de
+    # vida, apesar de `draw_cards()` ja ser o unico ponto de entrada real
+    # de toda compra do arquivo (mesmo padrao usado pro autodano acima).
+    # Centralizado aqui, removido o calculo duplicado de draw_step().
+    sheoldred_copies = _copies_of(state, "Sheoldred, the Apocalypse")
+    if sheoldred_copies and actually_drawn:
+        gain = 2 * actually_drawn * sheoldred_copies
+        state.life += gain
+        state.proxy_lifegain_total += gain
 
 
 def self_damage_per_draw(state: GameState) -> int:
@@ -342,8 +405,27 @@ def self_damage_per_draw(state: GameState) -> int:
 
 def proxy_drain(state: GameState, n: int):
     """Dano/perda-de-vida agregada dos PROXY opponents — nunca vida real de
-    ninguem, so um contador de output teorico dos payoffs."""
+    ninguem, so um contador de output teorico dos payoffs.
+
+    Achado real 2026-09-13: Mindcrank ("Whenever an opponent LOSES LIFE,
+    mill that many") e Bloodchief Ascension (aproximacao ja documentada:
+    todo evento de dano real conta como "oponente perdeu 2+" o suficiente
+    vezes) so estavam checados dentro de `wheel_event()`, usando o
+    `total_dmg` local em vez de passar por esta funcao - que e' o
+    VERDADEIRO ponto central de "oponente perde vida" no arquivo inteiro
+    (chamado tambem por draw_step, upkeep_step/Scrawling Crawler,
+    try_teferis_puzzle_box e o ETB do Orcish Bowmasters). Esses 4 outros
+    pontos reais nunca disparavam Mindcrank nem Bloodchief Ascension -
+    mesma classe de bug de "gatilho cravado num so' dos varios pontos
+    reais" ja vista no Edgar Markov (cascata de sacrificio). Centralizado
+    aqui; a checagem duplicada dentro de wheel_event foi removida."""
     state.proxy_damage_total += n
+    if n <= 0:
+        return
+    if "Mindcrank" in state.battlefield:
+        state.mill_proxy_total += n
+    if "Bloodchief Ascension" in state.battlefield:
+        state.proxy_lifegain_total += min(NUM_OPPONENTS, n // 2) * 2
 
 
 # ---------------------------------------------------------------------------
@@ -431,23 +513,17 @@ def wheel_event(state: GameState, my_draws: int, opp_draws_each: int, source: st
         pass  # meu proprio draw ja processado acima; dano por MINHA compra tratado a parte no draw_step
     dpd = damage_per_opponent_draw(state)
     total_dmg = dpd * opp_draws_each * NUM_OPPONENTS
-    proxy_drain(state, total_dmg)
+    proxy_drain(state, total_dmg)  # Mindcrank/Bloodchief Ascension ja aplicados dentro (centralizado, achado real 2026-09-13)
     discard_payoff_total(state, opp_draws_each if discards_per_opp is None else discards_per_opp)
-    if "Mindcrank" in state.battlefield:
-        state.mill_proxy_total += total_dmg
-    if "Bloodchief Ascension" in state.battlefield and total_dmg > 0:
-        # aproxima: cada evento com dano real conta como "oponente perdeu 2+" o suficiente vezes
-        state.proxy_lifegain_total += min(NUM_OPPONENTS, total_dmg // 2) * 2
 
 
 def draw_step(state: GameState):
     extra = symmetric_extra_draws_per_player(state)
     my_draws = 1 + extra
-    draw_cards(state, my_draws)  # self_damage_per_draw ja aplicado dentro de draw_cards()
-    sheoldred_copies = _copies_of(state, "Sheoldred, the Apocalypse")
-    if sheoldred_copies:
-        state.life += 2 * my_draws * sheoldred_copies
-        state.proxy_lifegain_total += 2 * my_draws * sheoldred_copies
+    # self_damage_per_draw E o ganho de vida da Sheoldred ("whenever you
+    # draw a card, gain 2 life") ja aplicados dentro de draw_cards()
+    # (centralizado - achado real 2026-09-13, ver comentario na funcao).
+    draw_cards(state, my_draws)
     # Dano proxy pelas compras simetricas dos OPONENTES nesse mesmo draw step.
     # A compra "base" (a 1a de cada draw step) NAO conta pro Bowmasters
     # (exclusao real do oraculo dele); as extras (Nekusar/Spiteful Visions)
@@ -486,6 +562,17 @@ def upkeep_step(state: GameState):
 # ---------------------------------------------------------------------------
 
 def ready_creatures(state: GameState):
+    # Lightning Greaves (achado real 2026-09-13): "Equipped creature has
+    # haste" + "Equip {0}" - a carta inteira estava 100% inerte (nem
+    # tagueada, nunca referenciada fora do add()). Equipar custa 0 mana e
+    # nao usa {T}, entao e' efetivamente gratis mover pra qualquer criatura
+    # que precise de haste no turno em que entra - simplificado como "toda
+    # criatura esta pronta" enquanto Greaves esta em campo (so' 2 criaturas
+    # da lista tem habilidade ativada com {T} que se importam: Jace's
+    # Archivist, Magus of the Wheel - dificilmente as duas entram no mesmo
+    # turno, entao a simplificacao de "cobre qualquer uma" e' segura).
+    if "Lightning Greaves" in state.battlefield:
+        return [n for n in state.battlefield if is_creature_card(n)]
     return [n for n in state.battlefield if is_creature_card(n)
             and (state.creature_cast_turn.get(n, -1) < state.turn)]
 
@@ -571,15 +658,21 @@ def resolve_spark_double_target(state: GameState) -> Optional[str]:
 def resolve_etb(state: GameState, name: str):
     tags = CARD_DB[name].tags
     if name == "Orcish Bowmasters":
-        proxy_drain(state, 1 * NUM_OPPONENTS)  # gatilho de ETB dela propria (independente de compra)
+        # Achado real 2026-09-13: oraculo real e' "...deals 1 damage to ANY
+        # TARGET" (um alvo so', 1 dano total) - nao "each opponent". O
+        # codigo original multiplicava por NUM_OPPONENTS (3x overcounting).
+        # Corrigido pra 1 dano so' (premissa: sempre mira um oponente-proxy,
+        # a jogada obviamente correta).
+        proxy_drain(state, 1)  # gatilho de ETB dela propria (independente de compra), amass Orcs 1 fora de escopo (sem combate modelado)
     if name == "The One Ring":
-        state.life += 0  # protecao total, sem efeito numerico modelado (sem oponente real atacando)
+        state.life += 0  # protecao total (ETB), sem efeito numerico modelado (sem oponente real atacando/removendo)
     if name == "Spark Double":
         target = resolve_spark_double_target(state)
         state.spark_double_copy_target = target
         if target == "Orcish Bowmasters":
-            # a copia TAMBEM dispara o "when this creature enters" de Bowmasters.
-            proxy_drain(state, 1 * NUM_OPPONENTS)
+            # a copia TAMBEM dispara o "when this creature enters" de
+            # Bowmasters - 1 dano so' (mesma correcao acima, achado real 2026-09-13).
+            proxy_drain(state, 1)
     if "ritual" in tags:
         pass  # tratado em resolve_instant
 
@@ -599,10 +692,16 @@ def resolve_instant_sorcery(state: GameState, name: str):
             discard_n = len(state.hand)
             wheel_event(state, my_draws=max(discard_n, 1), opp_draws_each=max(discard_n, 1), source=name)
         elif name == "Winds of Change":
+            # Achado real 2026-09-13: oraculo real "shuffles the cards from
+            # their hand into their library" - NAO e' um discard (Waste
+            # Not/Liliana's Caress exigem "discards" especificamente).
+            # discards_per_opp=0 corrige o default (que herdava opp_draws_each).
             n = len(state.hand)
-            wheel_event(state, my_draws=n, opp_draws_each=n, source=name)
+            wheel_event(state, my_draws=n, opp_draws_each=n, source=name, discards_per_opp=0)
         elif name == "Echo of Eons":
-            wheel_event(state, my_draws=7, opp_draws_each=7, source=name)
+            # Mesmo achado: "shuffles their hand AND graveyard into their
+            # library" - tambem nao e' discard.
+            wheel_event(state, my_draws=7, opp_draws_each=7, source=name, discards_per_opp=0)
         elif name == "Wheel and Deal":
             wheel_event(state, my_draws=1, opp_draws_each=7, source=name)
         elif name == "Wheel of Misfortune":
@@ -656,6 +755,12 @@ def do_tutor(state: GameState, name: str):
     state.library.remove(choice)
     if "tutor_top" in CARD_DB[name].tags:
         state.library.insert(0, choice)
+        # Achado real 2026-09-13: Imperial Seal e Vampiric Tutor (as 2
+        # cartas com a tag "tutor_top") dizem os dois, no oraculo real,
+        # "...put that card on top. YOU LOSE 2 LIFE." - clausula nunca
+        # modelada (Demonic Tutor/Solve the Equation/Beseech the Mirror nao
+        # tem esse custo, corretamente sem essa linha).
+        state.life -= 2
     else:
         state.hand.append(choice)
     state.tutors_used_total += 1
@@ -664,20 +769,35 @@ def do_tutor(state: GameState, name: str):
 def work_breach_or_flames_recast(state: GameState, mode: str, max_iterations: int = 40):
     """Underworld Breach: escape = mana cost + exilar 3 outras do GY.
     Past in Flames (via flashback / resolve_instant_sorcery chamando isso):
-    flashback = mana cost, sem exilar. Ambos so recastam INSTANT/SORCERY
-    do cemiterio (wheels/rituais), respeitando o custo real — o loop
-    termina sozinho quando faltar mana ou cartas suficientes no GY.
+    flashback = mana cost, sem exilar. Past in Flames diz explicitamente
+    "Each INSTANT and SORCERY card in your graveyard gains flashback" -
+    restrito a esses 2 tipos, mantido assim pro modo "flashback".
+
+    Underworld Breach, porem, diz *"Each NONLAND card in your graveyard
+    has escape"* - achado real 2026-09-13: o codigo original restringia o
+    modo "escape" tambem so a instant/sorcery, mas o oraculo real cobre
+    QUALQUER carta nao-terreno, inclusive criaturas/artefatos/encantamentos
+    (varios dos proprios payoffs de dano-por-compra desta lista podem
+    parar no cemiterio via wheels que descartam a mao, ou via
+    `cleanup_discard`, e ficavam presos la sem poder voltar). Corrigido:
+    permanentes escapados VAO PRO CAMPO (`enter_battlefield`), nao voltam
+    pro cemiterio (diferente de instant/sorcery, que resolvem e voltam pro
+    GY normalmente sob escape - escape em si nao exila a carta).
+
+    O loop termina sozinho quando faltar mana ou cartas suficientes no GY.
     `max_iterations=1` reaproveitado pro card "Flashback" (achado real
     2026-08-28: enabler de UM tiro so, "target instant/sorcery in your
     graveyard gains flashback... cost = mana cost" - nao e' um motor
     repetivel como Breach/Past in Flames, mesma mecanica de resolucao
     (recasta do cemiterio, exila ao resolver - CR 702.32a), so' que
     limitado a 1 carta)."""
+    escape_types = ("instant", "sorcery", "creature", "artifact", "artifact_creature", "enchantment")
+    allowed_types = ("instant", "sorcery") if mode == "flashback" else escape_types
     loop_iterations = 0
     while loop_iterations < max_iterations:  # teto defensivo (nunca deveria ser atingido de verdade)
         loop_iterations += 1
         castable_gy = [c for c in state.graveyard
-                       if CARD_DB[c].ctype in ("instant", "sorcery")
+                       if CARD_DB[c].ctype in allowed_types
                        and CARD_DB[c].mv <= remaining_mana(state)]
         if mode == "escape":
             castable_gy = [c for c in castable_gy if len(state.graveyard) - 1 >= 3]
@@ -685,6 +805,7 @@ def work_breach_or_flames_recast(state: GameState, mode: str, max_iterations: in
             break
         castable_gy.sort(key=lambda n: CARD_DB[n].mv)
         choice = castable_gy[0]
+        is_permanent = CARD_DB[choice].ctype not in ("instant", "sorcery")
         spend_mana(state, CARD_DB[choice].mv)
         state.graveyard.remove(choice)
         if mode == "escape":
@@ -693,12 +814,17 @@ def work_breach_or_flames_recast(state: GameState, mode: str, max_iterations: in
                 state.graveyard.remove(c)
         state.spells_cast_this_turn += 1
         state.breach_recasts_total += 1
-        resolve_instant_sorcery(state, choice)
-        if mode == "escape":
-            state.graveyard.append(choice)  # escape nao exila a propria carta (so o custo de 3 outras)
-        # mode == "flashback": a carta e EXILADA ao resolver (regra real de flashback,
-        # CR 702.32a) -- nao volta pro cemiterio. Sem isso o loop nunca convergia
-        # (bug real encontrado no smoke-test: storm ficava preso no teto de 40).
+        if is_permanent:
+            # criatura/artefato/encantamento escapado: resolve como permanente
+            # normal, vai pro campo (nao volta pro cemiterio).
+            enter_battlefield(state, choice, from_hand=False)
+        else:
+            resolve_instant_sorcery(state, choice)
+            if mode == "escape":
+                state.graveyard.append(choice)  # escape nao exila a propria carta (so o custo de 3 outras)
+            # mode == "flashback": a carta e EXILADA ao resolver (regra real de flashback,
+            # CR 702.32a) -- nao volta pro cemiterio. Sem isso o loop nunca convergia
+            # (bug real encontrado no smoke-test: storm ficava preso no teto de 40).
     if loop_iterations > 1:
         state.breach_loops_total += 1
     state.storm_count_max = max(state.storm_count_max, state.spells_cast_this_turn)
@@ -741,6 +867,18 @@ def cast_card(state: GameState, name: str, from_hand: bool = True):
             state.life -= 1
         if "etb_tapped" in card.tags:
             state.tapped_lands_this_turn.add(name)
+        if "shock" in card.tags:
+            # Blood Crypt/Steam Vents/Watery Grave (achado real 2026-09-13):
+            # "you may pay 2 life. If you don't, it enters tapped." Sempre
+            # paga (premissa documentada: deck de storm/combo quer mana no
+            # mesmo turno, mesma logica ja usada pras fetches).
+            state.life -= 2
+        if "etb_tapped_conditional" in card.tags:
+            # Mistrise Village (achado real 2026-09-13): "enters tapped
+            # unless you control a Mountain or a Forest" - checado contra o
+            # board real no momento do land drop.
+            if not any(n in MOUNTAIN_TYPE_LANDS for n in state.battlefield):
+                state.tapped_lands_this_turn.add(name)
         if "surveil_on_etb" in card.tags:
             do_surveil_1(state)
         return
@@ -796,6 +934,7 @@ def main_phase(state: GameState):
     try_faerie_mastermind_activated(state)
     try_resonating_lute_draw(state)
     try_small_wheel_lands(state)
+    try_the_one_ring(state)
 
 
 def try_sensei_divining_top(state: GameState):
@@ -853,7 +992,11 @@ def try_faerie_mastermind_activated(state: GameState):
         if remaining_mana(state) < 4:
             break
         spend_mana(state, 4)
-        wheel_event(state, my_draws=1, opp_draws_each=1, source="Faerie Mastermind (ativada)", full_wheel=False)
+        # Achado real 2026-09-13: "Each player draws a card" - sem NENHUMA
+        # clausula de discard. discards_per_opp=0 corrige o default (que
+        # herdava opp_draws_each=1 e disparava Waste Not/Liliana's Caress
+        # indevidamente).
+        wheel_event(state, my_draws=1, opp_draws_each=1, source="Faerie Mastermind (ativada)", full_wheel=False, discards_per_opp=0)
 
 
 def try_resonating_lute_draw(state: GameState):
@@ -866,6 +1009,22 @@ def try_resonating_lute_draw(state: GameState):
         return
     if len(state.hand) >= 7:
         draw_cards(state, 1)
+
+
+def try_the_one_ring(state: GameState):
+    """The One Ring: "{T}: Put a burden counter on The One Ring, then draw
+    a card for each burden counter on The One Ring." Achado real
+    2026-09-13: essa era a habilidade PRINCIPAL da carta (motor de compra
+    escalonado, uma das mais fortes do formato) e estava 100% ausente - so
+    o gatilho de upkeep ("lose 1 life per burden counter") existia no
+    codigo, mas `the_one_ring_burden` nunca era incrementado em lugar
+    nenhum, entao aquele gatilho tambem nunca disparava de verdade (efeito
+    morto por construcao). {T} = 1 ativacao por turno; artefato, sem
+    doenca de invocacao (CR 302.6), pode ativar no turno em que entra."""
+    if "The One Ring" not in state.battlefield:
+        return
+    state.the_one_ring_burden += 1
+    draw_cards(state, state.the_one_ring_burden)
 
 
 def try_small_wheel_lands(state: GameState):
@@ -889,7 +1048,14 @@ def try_small_wheel_lands(state: GameState):
         spend_mana(state, 1)
         state.battlefield.remove("Cephalid Coliseum")
         state.cephalid_coliseum_used = True
-        wheel_event(state, my_draws=3, opp_draws_each=0, source="Cephalid Coliseum", full_wheel=False, discards_per_opp=3)
+        # Achado real 2026-09-13: "target player draws three, discards
+        # three" - modelado como alvo EU MESMO (premissa ja estabelecida:
+        # my_draws=3/opp_draws_each=0), mas o discards_per_opp=3 anterior
+        # creditava Waste Not/Liliana's Caress (que exigem "an OPPONENT
+        # discards") pro MEU proprio descarte, multiplicado por
+        # NUM_OPPONENTS dentro de discard_payoff_total - nunca deveria
+        # disparar aqui de jeito nenhum. Corrigido pra 0.
+        wheel_event(state, my_draws=3, opp_draws_each=0, source="Cephalid Coliseum", full_wheel=False, discards_per_opp=0)
 
 
 def try_teferis_puzzle_box(state: GameState):

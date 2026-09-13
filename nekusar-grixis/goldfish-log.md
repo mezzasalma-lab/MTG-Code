@@ -4,6 +4,63 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Auditoria oráculo-por-oráculo completa — 2026-09-13
+
+Ver `checklist-oraculo.md` pra lista completa dos 11 gaps reais achados e
+corrigidos nesta rodada (releitura linha-a-linha contra o oráculo real de
+todas as 92 cartas + comandante via Scryfall).
+
+**Resultado (n=2000, seed_base=5550000, turns=8, antes → depois):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg eventos de wheel | 3,60 | **2,81** |
+| Avg dano/vida proxy total | 453,31 | **345,59** |
+| Avg vida ganha (Sheoldred/Bloodchief) | 11,05 | **16,86** |
+| Avg storm count máximo | 7,79 | **6,54** |
+| Avg recasts via Breach/Flames | 1,41 | **1,12** |
+| Avg autodano (Spiteful Visions+Tyranny) | 91,00 | **11,26** |
+| Avg vida final | -50,79 | **30,32** |
+| Partidas em que payoffs próprios me derrubam a 0- | 11,8% | **8,9%** |
+
+**Leitura das quedas (eventos de wheel, dano proxy, storm count, recasts):**
+o achado mais impactante numericamente não foi um dos 11 gaps "de
+adição" (Sheoldred/Mindcrank/Bloodchief centralizados, The One Ring, etc.
+— todos esses SOBEM valor), foi um bug de **overcounting** achado
+incidentalmente ao validar os outros: `draw_cards()` cobrava autodano
+(Spiteful Visions/Phyrexian Tyranny) usando a quantidade de compra
+PEDIDA em vez da REALMENTE feita — em jogos que batem no loop profundo
+de storm (Underworld Breach/Past in Flames recastando wheels
+repetidamente), a biblioteca podia esgotar no meio da sequência, e cada
+pedido de compra "fantasma" subsequente ainda cobrava autodano cheio.
+Comparando as mesmas 2000 seeds carta a carta, um jogo isolado tinha
+`self_damage_total` **2.787** (contra dezenas esperadas) só por causa
+desse bug — outliers assim distorciam a média pra cima e, como
+consequência colateral (menos autodano = menos vida perdida = jogos
+convergem menos vezes em `life <= 0`, que MUDA A TRAJETÓRIA de RNG
+subsequente via `bonus_mana_pool`/tutores/etc, já que tudo compartilha o
+mesmo `random.Random(seed)`), explicam a maior parte da queda observada
+em eventos-de-wheel/storm/recasts nesta comparação de médias (efeito de
+cauda longa em ~2000 jogos, não uma regressão real de nenhuma mecânica -
+confirmado pelos 9 snippets standalone no checklist, que isolam cada
+correção controlando o resto do estado). "Avg cartas compradas extra"
+ficou praticamente igual (26,13 → 26,04), confirmando que o VOLUME de
+compra não mudou - só o autodano cobrado por compras que nunca
+aconteceram de verdade.
+
+**Vida ganha (Sheoldred) subindo 11,05 → 16,86** é o efeito direto e
+esperado da centralização real (item 1 do checklist): agora conta em
+TODAS as fontes de compra, não só `draw_step()`.
+
+**Robustez:** 20.000 partidas de regressão (seed_base=9500000, turns=8,
+timeout 2s via `signal.alarm`) — **0 exceções, 0 timeouts**.
+
+`lista.md` não mudou (trabalho só de implementação, nenhuma carta
+adicionada/removida). `nekusar_v1_runs.jsonl` sobrescrito na próxima
+execução de `__main__`.
+
+---
+
 ## Simulação #1 — goldfish Python completo (`nekusar_goldfish_v1.py`) — 2026-08-23
 
 **Script construído do zero**, reaproveitando a varredura mecânica já feita na auditoria (`auditoria.md` seções 5 e 6, que já tinha catalogado os 9 payoffs reais de dano-por-compra e as 15 fontes de wheel/draw em massa carta a carta com oracle_text exato) em vez de refazer o Passo 0 do zero — a auditoria já tinha esse trabalho pronto e correto.
