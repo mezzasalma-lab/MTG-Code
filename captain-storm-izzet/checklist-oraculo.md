@@ -1,5 +1,86 @@
 # Checklist cláusula-a-cláusula — Captain Storm, Cosmium Raider (Izzet, U/R)
 
+## Auditoria oráculo-por-oráculo completa — 2026-09-13
+
+Extensão pra este deck da mesma auditoria já feita no Megatron/Azula/
+Beorn: oráculo real via Scryfall pras 73 cartas + comandante, comparado
+cláusula-por-cláusula contra o código já existente.
+
+**Achado principal — sistêmico, afeta as 11 peças de Equipment:**
+`try_equip()` nunca cobrava NENHUM custo de Equip, em lugar nenhum do
+arquivo — toda peça anexava de graça, tanto ao ser conjurada quanto ao
+ser re-anexada depois. O parâmetro `free: bool` da função nem era lido
+no corpo dela (dead parameter). Isso inflava sistematicamente a
+eficiência de mana do pacote inteiro de Equipment (Equip custa de {0} a
+{4} nas 11 peças). Oráculo real: só **Twin Blades** e **Embercleave**
+têm "When this Equipment enters, attach it to target creature you
+control" — só essas 2 (das 11) genuinamente anexam de graça na primeira
+vez. As outras 9 exigem a habilidade de Equip normal (ativada, `{custo}:
+Attach to target creature you control. Equip only as a sorcery`) tanto
+na primeira vez quanto em qualquer re-anexação.
+
+**Corrigido:** `try_equip()` virou 2 funções — `try_equip_free()` (só
+pras Auras Curious Inquiry/Rune of Flight, que anexam ao resolver o
+próprio cast sem custo de Equip separado, e pro ETB real de Twin
+Blades/Embercleave) e `try_equip_paid()` (as outras 9 peças, cobrando o
+`EQUIP_COST` real de cada uma, com o desconto dinâmico do Dragonfire
+Blade — "{1} less for each color of the creature it targets" —
+calculado contra o alvo já escolhido). `cast_permanent()` só chama o
+attach de graça pras 2 exceções reais; as outras 9 ficam desanexadas até
+`try_activated_abilities()` pagar o Equip de verdade (mesmo turno, se
+sobrar mana, ou num turno futuro).
+
+**Mais 6 gaps reais encontrados e corrigidos:**
+
+1. **Two-Handed Axe // Sweeping Cleave** ("whenever equipped creature
+   attacks, double its power") nunca disparava — as 2 comparações no
+   combate usavam o nome curto `"Two-Handed Axe"`, mas o `CARD_DB` (e
+   `p.card` em qualquer permanente real) usa o nome completo do MDFC
+   `"Two-Handed Axe // Sweeping Cleave"` — nunca batiam, dobro de poder
+   100% inerte desde a construção original.
+2. **Enterprising Scallywag** ("you descended if a permanent card was
+   put into your graveyard from ANYWHERE") só checava o descarte por
+   limite de mão no fim do turno — ignorava toda sacrifício/morte real
+   de carta (Lotus Petal, Izzet Locket, criaturas que morrem), a fonte
+   muito mais frequente de "descended" num deck denso em Treasure/
+   sacrifício. Corrigido centralizando a flag em `leave_battlefield()`
+   (todo permanente REAL, não-token, que vai pro cemitério a partir do
+   campo).
+3. **Izzet Locket** (sacrifício por 2 cartas) e **Lotus Petal**
+   (sacrifício por mana) usavam `battlefield.remove()` cru — nunca iam
+   pro cemitério de verdade, nunca disparavam Gleaming Geardrake
+   ("whenever you sacrifice an artifact") nem Tarrian's Soulcleaver
+   ("...put into a graveyard from the battlefield"). Roteados por
+   `leave_battlefield()` + novo helper `on_sacrifice_artifact()`.
+4. **Trickster's Talisman** (sacrifício pra copiar a criatura equipada)
+   tinha o mesmo problema — mesma correção.
+5. **Oaken Siren** ("{T}: Add U, spend only on artifact spell/ability")
+   nunca contribuía NENHUMA mana — é o único mana-dork de CRIATURA da
+   lista (os outros 7 rocks são artefatos), então também é o único que
+   precisa de checagem de doença de invocação, ausente até agora.
+   Corrigido como mana genérica (mesma convenção de restrição-não-
+   rastreada já usada nesta sessão, ex.: Tablet of Discovery no Azula) —
+   não conta como fonte de cor (não seria gasta em não-artefatos na
+   restrição real).
+6. **Curious Inquiry / Rune of Flight** (Auras "Enchant creature")
+   podiam ser conjuradas mesmo sem nenhuma criatura em campo — regra
+   601.2c exige alvo legal pra sequer conjurar uma Aura; sem essa
+   guarda, o loop guloso podia gastar mana numa Aura que entraria
+   desanexada e iria pro cemitério na hora por SBA (704.5n), sem efeito
+   algum. Guarda adicionada em `can_cast()`.
+
+**Validação:** smoke test (75 nomes no `CARD_DB`, 98 cartas na
+`BASE_LIBRARY`, 0 desconhecidas) + 2.000 partidas antes/depois (mesma
+seed) + 20.000 partidas de regressão, 0 exceções em todas. Testes
+unitários dirigidos confirmaram cada correção: Equipment comum
+(Goldvein Pick) entra desanexado e só anexa depois de `spend_mana`
+real; Twin Blades continua anexando de graça no cast; Two-Handed Axe
+agora dobra o dano de combate de verdade; "descended" dispara num
+sacrifício real (Lotus Petal) sem precisar do descarte por limite de
+mão; Geardrake + Soulcleaver disparam ambos, sem duplicar, num único
+sacrifício de Treasure.
+
+
 Pedido direto do usuário (2026-09-01): *"Quais decks faltam para fecharmos?"*
 → *"Pode começar com o Kutzil"* (feito) → Azula (feito) → Captain Storm é o
 terceiro dos 4 decks sem simulador desta sessão. Construção do zero, mesma

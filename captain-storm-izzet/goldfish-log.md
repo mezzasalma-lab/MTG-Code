@@ -101,3 +101,47 @@ Manufactor + os 2 dobradores de ETB + Bloodforged Battle-Axe
 simultâneos) puxa a média pra cima em poucas partidas muito boas, sem
 mudar o "jogo típico" (mediana).
 
+---
+
+## Auditoria oráculo-por-oráculo completa — 2026-09-13
+
+Achado principal (detalhes completos em `checklist-oraculo.md`, seção no
+topo): `try_equip()` nunca cobrava NENHUM custo de Equip em nenhuma das
+11 peças de Equipment — todas anexavam de graça sempre, quando o
+oráculo real só concede isso de graça (ETB) pras 2 com essa cláusula
+explícita (Twin Blades, Embercleave); as outras 9 exigem pagar o Equip
+normal. Mais 6 gaps: Two-Handed Axe nunca dobrava poder de combate (bug
+de nome — comparava contra "Two-Handed Axe" mas o card real se chama
+"Two-Handed Axe // Sweeping Cleave"); Enterprising Scallywag só
+detectava "descended" pelo descarte de limite de mão, ignorando
+sacrifícios reais; Izzet Locket/Lotus Petal/Trickster's Talisman
+sacrificavam sem passar pelo cemitério nem disparar Geardrake/
+Soulcleaver; Oaken Siren (único mana-dork de criatura da lista) nunca
+contribuía mana nenhuma; Auras podiam ser conjuradas sem criatura em
+campo pra enfeitiçar.
+
+### Métricas antes/depois (20.000 partidas, seed 5.000.000, turns=10, 0 exceções)
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Dano proxy médio | 325.9 | 201.3 |
+| Dano proxy mediano | 163.0 | 158.0 |
+| Cartas compradas extra (média) | 21.4 | 20.7 |
+| Treasures criados (média) | 5.4 | 5.3 |
+| Contadores colocados pela Captain Storm (média) | 62.8 | 28.2 |
+| Gatilhos extra via dobradores de ETB (média) | 16.3 | 6.7 |
+| Equip/attach ativados (média) | 15.6 | 3.6 |
+| Biblioteca esgotada | 999/20000 (5.0%) | 681/20000 (3.4%) |
+
+A queda grande em "Equip/attach ativados" (15.6→3.6) e nos "Contadores
+da Captain Storm" (62.8→28.2) é exatamente o efeito esperado de corrigir
+o bug do Equip de graça: antes, toda peça de Equipment conjurada também
+"ativava" instantaneamente sem custo, inflando a contagem de ativações
+e, indiretamente, o ritmo geral do motor (mais mana livre = mais
+artefatos conjurados = mais contadores da Captain Storm). A mediana caiu
+pouco (163→158, ~3%) porque o "jogo típico" não dependia tanto do
+Equipment quanto a cauda explosiva dependia — a média caiu bem mais
+(325.9→201.3) porque a correção do Equip atinge justamente os jogos em
+que múltiplas peças caras (Embercleave, Sword of Once and Future,
+Dragonfire Blade) estavam sendo empilhadas de graça.
+

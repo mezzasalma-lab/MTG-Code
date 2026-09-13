@@ -333,6 +333,38 @@ EQUIPMENT_STATIC_BONUS = {
     "Curious Inquiry": (1, 1),
 }
 
+# Achado real (auditoria oraculo-por-oraculo): `try_equip()` nunca cobrava
+# NENHUM custo de Equip -- toda peca anexava de graca, tanto ao ser
+# conjurada quanto ao ser re-anexada depois. O custo real de Equip varia
+# por carta (0 a 4 mana) e e' uma habilidade ativada SEPARADA do cast.
+# So' Twin Blades e Embercleave tem "When this Equipment enters, attach it
+# to target creature you control" no oraculo real -- essas 2 (e so' essas)
+# realmente anexam de graca na primeira vez (ETB), mas ainda cobram o
+# Equip normal se ficarem desanexadas depois (criatura morreu) e
+# precisarem ser re-equipadas.
+EQUIP_COST = {
+    "Bloodforged Battle-Axe": 2,
+    "Cloak of the Bat": 2,
+    "Dragonfire Blade": 4,  # reduzido em {1} por cor da criatura-alvo, ver try_equip_paid
+    "Embercleave": 3,
+    "Goldvein Pick": 1,
+    "Swiftfoot Boots": 1,
+    "Sword of Once and Future": 2,
+    "Tarrian's Soulcleaver": 2,
+    "Trickster's Talisman": 2,
+    "Twin Blades": 2,
+    "Two-Handed Axe // Sweeping Cleave": 2,  # Equip {1}{R} -- tratado como custo generico total
+}
+FREE_ETB_ATTACH_EQUIPMENT = {"Twin Blades", "Embercleave"}
+
+
+def card_colors(name: str) -> set:
+    colors = set()
+    if name in CARD_DB:
+        for k in CARD_DB[name].pips:
+            colors.update(k.split("/"))
+    return colors
+
 
 def equipment_on(state: GameState, uid: int):
     return [p for p in state.battlefield if p.equipped_to == uid]
@@ -381,6 +413,19 @@ def rocks_mana(state: GameState) -> int:
         total += 1
     if state.storm_vault_transformed:
         total += sum(1 for n in names if is_artifact_card(n))  # Vault of Catlacan: {T}: Add U per artifact
+    oaken = next((p for p in state.battlefield if p.card == "Oaken Siren"), None)
+    if oaken is not None and oaken.entered_turn < state.turn:
+        # Achado real: Oaken Siren ("T: Add U. Spend this mana only to cast
+        # an artifact spell or activate an ability of an artifact source")
+        # nunca contribuia NENHUMA mana neste sim -- e' o unico mana-dork
+        # de CRIATURA da lista (por isso a checagem de doenca de invocacao
+        # dedicada aqui, ausente no resto de `rocks_mana`, que so' tem
+        # artefatos sem sickness). Tratado como mana generica (mesma
+        # convencao de outras restricoes de mana nao rastreadas nesta
+        # sessao, ex.: Tablet of Discovery no Azula) -- aproximacao
+        # razoavel dado quao denso em artefatos este deck e', mas nao conta
+        # como fonte U em `color_sources()` (nao gasta em nao-artefatos).
+        total += 1
     return total
 
 
@@ -433,7 +478,17 @@ def effective_cost(state: GameState, name: str) -> int:
     return mv
 
 
+AURA_NAMES = {"Curious Inquiry", "Rune of Flight"}
+
+
 def can_cast(state: GameState, name: str) -> bool:
+    if name in AURA_NAMES and not creatures_in_play(state):
+        # Achado real: "Enchant creature" exige alvo legal pra sequer ser
+        # conjurada (regra 601.2c) -- sem nenhuma criatura em campo, a
+        # Aura simplesmente nao pode ser conjurada. Sem essa guarda, o
+        # loop guloso podia gastar mana numa Aura que entraria desanexada
+        # e iria pro cemiterio na hora por SBA (704.5n), sem efeito algum.
+        return False
     return remaining_mana(state) >= effective_cost(state, name) and has_color_sources_for(state, name)
 
 
@@ -508,6 +563,22 @@ def create_tokens(state: GameState, log: list, treasure: int = 0, clue: int = 0,
             on_artifact_enters(state, log)
 
 
+def on_sacrifice_artifact(state: GameState, log: list):
+    """Gleaming Geardrake: 'whenever you sacrifice an artifact, put a
+    +1/+1 counter on this creature.' Centralizado porque precisa disparar
+    em TODO ponto do arquivo que sacrifica um artefato de verdade (Treasure,
+    Izzet Locket, Lotus Petal, Trickster's Talisman) -- achado real: so'
+    Treasure tinha essa checagem antes. Tarrian's Soulcleaver ('...put into
+    a graveyard from the battlefield') NAO mora aqui -- ja e' tratada
+    dentro de `leave_battlefield()` pra qualquer permanente (token
+    incluso, regra 111.7), entao todo sacrificio real deve passar por
+    `leave_battlefield()` pra pegar as duas coisas sem duplicar."""
+    geardrake = next((q for q in state.battlefield if q.card == "Gleaming Geardrake"), None)
+    if geardrake is not None:
+        geardrake.counters += 1
+        state.counters_placed_total += 1
+
+
 def sac_treasures(state: GameState, n: int) -> int:
     """Sacrifica ate `n` Treasures em campo por 1 mana cada (mana de
     qualquer cor -- ja contado via `bonus_mana_pool`/`color_sources`).
@@ -515,7 +586,7 @@ def sac_treasures(state: GameState, n: int) -> int:
     treasures = [p for p in state.battlefield if p.card == "Treasure Token"]
     n = min(n, len(treasures))
     for p in treasures[:n]:
-        state.battlefield.remove(p)
+        leave_battlefield(state, p, [], to_graveyard=True)
         if "Captain Lannery Storm" in [q.card for q in state.battlefield]:
             lannery = next(q for q in state.battlefield if q.card == "Captain Lannery Storm")
             # "Whenever you sacrifice a Treasure, gets +1/+0 until end of
@@ -524,12 +595,7 @@ def sac_treasures(state: GameState, n: int) -> int:
             # aqui); documentado como leve superestimativa de duracao,
             # zerado no cleanup do turno via `state.temp_pumps`.
             state.temp_pumps[lannery.uid] = state.temp_pumps.get(lannery.uid, 0) + 1
-        geardrake = next((q for q in state.battlefield if q.card == "Gleaming Geardrake"), None)
-        if geardrake is not None:
-            # "Whenever you sacrifice an artifact, put a +1/+1 counter on
-            # this creature." Treasure e' um artefato -- dispara aqui.
-            geardrake.counters += 1
-            state.counters_placed_total += 1
+        on_sacrifice_artifact(state, [])
     state.bonus_mana_pool += n
     return n
 
@@ -616,6 +682,15 @@ def leave_battlefield(state: GameState, perm: Permanent, log: list, to_graveyard
             equipped.counters += 1
             state.counters_placed_total += 1
     if to_graveyard and not perm.is_token:
+        # Enterprising Scallywag: "you descended if a permanent CARD was
+        # put into your graveyard from ANYWHERE" -- exige CARTA de verdade
+        # (token nao conta, por isso o `not perm.is_token`, igual a
+        # condicao ja usada pro proprio append no cemiterio). Achado real:
+        # antes so' o descarte por limite de mao (fim de `run_turn`) setava
+        # essa flag, ignorando toda sacrificio/morte real de carta (Lotus
+        # Petal, Izzet Locket, Trickster's Talisman, criaturas reais que
+        # morrem, etc.).
+        state.descended_this_turn = True
         state.graveyard.append(perm.card)
 
 
@@ -630,9 +705,13 @@ def cast_permanent(state: GameState, name: str, log: list):
     perm = enter_battlefield(state, name, log, tapped=tapped)
     tags = CARD_DB[name].tags
     if "equipment" in tags:
-        try_equip(state, perm, log, free=True)
+        if name in FREE_ETB_ATTACH_EQUIPMENT:
+            try_equip_free(state, perm, log)
+        # senao (9 das 11 pecas): fica desanexada ao ser conjurada -- so'
+        # anexa de verdade quando `try_activated_abilities()` pagar o
+        # Equip real depois (mesmo turno, se sobrar mana, ou num futuro).
     elif "aura_pump_investigate" in tags or "aura_draw_flying" in tags:
-        try_equip(state, perm, log, free=True)  # reaproveita equipped_to pra rastrear o alvo do Aura
+        try_equip_free(state, perm, log)  # Aura nao tem custo de Equip -- anexa ao resolver o cast
         if "aura_draw_flying" in tags:
             draw_cards(state, 1)  # Rune of Flight: "when this Aura enters, draw a card"
     state.spells_cast_this_turn += 1
@@ -662,22 +741,49 @@ def try_malcolm_clue(state: GameState, log: list):
         create_tokens(state, log, clue=1)
 
 
-def try_equip(state: GameState, eq_perm: Permanent, log: list, free: bool = False):
-    """Anexa um Equipment recem-conjurado (ou ja em campo, via ativacao
-    paga) na melhor criatura disponivel -- heuristica racional: prioriza
-    o comandante (fonte do motor de contadores), senao o Pirata de maior
-    poder atual."""
+def _best_equip_target(state: GameState) -> Optional[Permanent]:
+    """Heuristica racional: prioriza o comandante (fonte do motor de
+    contadores), senao o Pirata/criatura de maior poder atual."""
     creatures = creatures_in_play(state)
     if not creatures:
-        return
-    target = next((p for p in creatures if p.card == COMMANDER), None) or max(
+        return None
+    return next((p for p in creatures if p.card == COMMANDER), None) or max(
         creatures, key=lambda p: creature_power(state, p))
+
+
+def try_equip_free(state: GameState, eq_perm: Permanent, log: list):
+    """Anexa de graca -- so' pra Auras (Curious Inquiry/Rune of Flight, que
+    anexam como parte da resolucao do proprio cast, sem custo de Equip
+    separado) e pro ETB REAL de Twin Blades/Embercleave ('When this
+    Equipment enters, attach it to target creature you control'), as
+    UNICAS 2 pecas de Equipment com essa clausula no oraculo real."""
+    target = _best_equip_target(state)
+    if target is None:
+        return
     eq_perm.equipped_to = target.uid
     state.equip_activations_total += 1
     tags = CARD_DB[eq_perm.card].tags
     if "eq_etb_double_strike" in tags:
-        state.temp_pumps[target.uid] = state.temp_pumps.get(target.uid, 0)  # so' documenta o double strike no combate
         state.double_strike_this_turn.add(target.uid)
+
+
+def try_equip_paid(state: GameState, eq_perm: Permanent, log: list):
+    """Anexa pagando o custo real de Equip -- achado real (auditoria
+    oraculo-por-oraculo): `try_equip()` nunca cobrava NENHUM custo,
+    fazendo toda peca de Equipment anexar de graca sempre. Dragonfire
+    Blade reduz {1} por cor da criatura-alvo (oraculo real), calculado
+    contra o alvo ja escolhido."""
+    target = _best_equip_target(state)
+    if target is None:
+        return
+    cost = EQUIP_COST.get(eq_perm.card, 0)
+    if eq_perm.card == "Dragonfire Blade":
+        cost = max(0, cost - len(card_colors(target.card)))
+    if remaining_mana(state) < cost:
+        return
+    spend_mana(state, cost)
+    eq_perm.equipped_to = target.uid
+    state.equip_activations_total += 1
 
 
 def cast_instant_sorcery(state: GameState, name: str, log: list):
@@ -790,8 +896,17 @@ def equipment_combat_damage_triggers(state: GameState, attacker: Permanent, log:
                 state.graveyard.remove(pick)
                 cast_instant_sorcery_free(state, pick, log)
         elif "eq_dmg_token_copy_creature" in tags:
+            # Trickster's Talisman: "you may sacrifice [it]. If you do,
+            # create a token copy of THIS CREATURE [equipada]." Achado
+            # real: a remocao era um `battlefield.remove()` cru -- nao
+            # passava pelo cemiterio nem contava como sacrificio de
+            # artefato de verdade, entao Tarrian's Soulcleaver ("another
+            # artifact/creature is put into a graveyard") e Gleaming
+            # Geardrake ("whenever you sacrifice an artifact", +1/+1
+            # counter) nunca disparavam por essa sacrificio.
             new_perm = enter_battlefield(state, attacker.card, log, is_token=True)
-            state.battlefield.remove(eq)
+            leave_battlefield(state, eq, log, to_graveyard=True)
+            on_sacrifice_artifact(state, log)
             state.recursion_events_total += 1
         elif "aura_pump_investigate" in tags:
             create_tokens(state, log, clue=1)  # Curious Inquiry: investigate ao causar dano de combate
@@ -842,9 +957,12 @@ def combat_step(state: GameState, log: list, second_phase: bool = False, exclude
     port_razer_connected = False
     for p in attackers:
         power = creature_power(state, p)
-        if p.card == "Two-Handed Axe":
-            continue
-        if any(eq.card == "Two-Handed Axe" for eq in equipment_on(state, p.uid)):
+        # Achado real: o CARD_DB desta carta e' registrado com o nome
+        # completo do MDFC ("Two-Handed Axe // Sweeping Cleave"), mas essas
+        # 2 comparacoes usavam so' "Two-Handed Axe" -- NUNCA batiam (p.card
+        # nunca e' esse nome curto), entao "double its power until end of
+        # turn" (a habilidade real da carta ao atacar) nunca disparava.
+        if any(eq.card == "Two-Handed Axe // Sweeping Cleave" for eq in equipment_on(state, p.uid)):
             power *= 2
         if p.uid in state.double_strike_this_turn or any(
                 eq.card in ("Twin Blades", "Embercleave") and eq.equipped_to == p.uid for eq in state.battlefield):
@@ -924,18 +1042,23 @@ def try_activated_abilities(state: GameState, log: list):
     if "Izzet Locket" in names and remaining_mana(state) >= 4:
         top = next(p for p in state.battlefield if p.card == "Izzet Locket")
         spend_mana(state, 4)
-        state.battlefield.remove(top)
+        leave_battlefield(state, top, log, to_graveyard=True)
+        on_sacrifice_artifact(state, log)
         draw_cards(state, 2)
 
     if "Lotus Petal" in names:
         petal = next(p for p in state.battlefield if p.card == "Lotus Petal")
-        state.battlefield.remove(petal)
+        leave_battlefield(state, petal, log, to_graveyard=True)
+        on_sacrifice_artifact(state, log)
         state.bonus_mana_pool += 1
 
-    for eq_name, static_bonus in list(EQUIPMENT_STATIC_BONUS.items()) + [
-            ("Cloak of the Bat", None), ("Swiftfoot Boots", None), ("Tarrian's Soulcleaver", None)]:
+    for eq_name in EQUIP_COST:
+        # Achado real: "Two-Handed Axe // Sweeping Cleave" faltava desta
+        # lista (nao esta' em EQUIPMENT_STATIC_BONUS por nao ter bonus
+        # estatico, so' o dobro-de-poder-ao-atacar) -- se ficasse
+        # desanexada (criatura-alvo morre) nunca seria re-equipada.
         for perm in [p for p in state.battlefield if p.card == eq_name and p.equipped_to is None]:
-            try_equip(state, perm, log)
+            try_equip_paid(state, perm, log)
 
 
 def try_storm_vault_transform(state: GameState):
