@@ -1,5 +1,162 @@
 # Checklist cláusula-a-cláusula — Kutzil, Malamet Exemplar
 
+## Auditoria oráculo-por-oráculo completa — 2026-09-13
+
+Extensão pra este deck da mesma auditoria já feita no Megatron/Azula/
+Beorn/Captain Storm/Edgar Markov/Hei Bai (detalhes de cada um no topo dos
+respectivos `checklist-oraculo.md`). Kutzil foi um dos primeiros
+simuladores construídos do zero nesta sessão (antes de Azula/Captain
+Storm) e já tinha passado por 1 rodada de auditoria na própria construção
+(12 gaps achados por varredura de tags órfãs, ver seção abaixo) — mesmo
+assim esta rodada, linha-a-linha contra o oráculo real via Scryfall (91
+cartas não-básicas + comandante, 1 lote de `/cards/collection` + 4
+`/cards/named?fuzzy=` pros MDFCs), achou **11 gaps reais novos**, a
+maioria no próprio motor central de contadores (`place_counters()`) e no
+modelo de mana — exatamente o tipo de coisa que só aparece numa 2ª
+passada depois que o motor já está "estável" e ninguém mais olha pra ele
+com ceticismo.
+
+**Achado principal — o próprio motor central de contadores tinha um gap
+de gating:** Hardened Scales / Michelangelo / Branching Evolution / The
+Earth Crystal dizem todos "...put on a **creature** you control"
+(restrito), mas "Ozolith, the Shattered Spire" diz "an **artifact or
+creature** you control" (mais amplo) — o código original aplicava os 4
+efeitos restritos sem checar se o alvo (`perm`) era de fato uma criatura.
+Nunca deu errado até agora porque todo alvo real de `place_counters()`
+sempre foi uma criatura — mas o 2º achado abaixo (transferência de
+contadores pro próprio "The Ozolith") introduz o primeiro alvo real
+não-criatura, e sem o gate os 4 efeitos restritos vazariam pra ele
+incorretamente. Corrigido com `is_creature(perm)` / "artifact or
+creature" checados explicitamente dentro do motor.
+
+**11 gaps reais encontrados e corrigidos:**
+
+1. **"The Ozolith" (a carta separada, distinta de "Ozolith, the
+   Shattered Spire" — as duas estão na lista) recebia contadores de
+   criaturas que morrem via atribuição direta (`+=`), sem passar pelo
+   motor central `place_counters()`.** Oráculo real: "put those
+   counters on The Ozolith" É um evento de "put a counter" (CR 616),
+   sujeito aos MESMOS efeitos de substituição de qualquer outro —
+   inclusive a própria estática de "Ozolith, the Shattered Spire" (que
+   vale pra si mesma, já que é "artifact or creature") e o Innkeeper's
+   Talent nível 3. Passava direto reto, sem nenhum multiplicador.
+   Mesmo bug no gatilho equivalente de **Broodguard Elite** ("When this
+   creature leaves the battlefield, put its counters on target creature
+   you control"). Corrigido roteando ambos por `place_counters()`
+   (com o gating do achado principal acima pra não vazar Hardened
+   Scales/Michelangelo indevidamente).
+2. **O mesmo bloco só disparava com `to_graveyard=True`** — mas o
+   oráculo real de ambas as cartas diz "leaves the battlefield" (não
+   "dies"), então deveria disparar em QUALQUER saída de campo, inclusive
+   exílio (relevante agora que o Warp de Broodguard Elite — achado #8 —
+   exila a própria criatura no end step). Corrigido junto com o #1.
+3. **Wakka, Devoted Guardian — "Blitzball Captain" ("at the beginning of
+   your end step, if a counter was put on Wakka this turn...")** só
+   disparava se o contador viesse especificamente do gatilho de dano de
+   combate da própria Wakka — qualquer OUTRA fonte real de contador
+   (Ozolith movendo pra ela, Luminarch Aspirant mirando nela, Requisition
+   Raid acertando todo o board) não setava a flag. Centralizado dentro
+   do próprio `place_counters()` (único ponto real de "put a counter on
+   Wakka"), cobrindo QUALQUER fonte — mesma classe de bug do Edgar
+   Markov (cascata de gatilho só ligada num dos vários pontos reais).
+4. **Kodama of the West Tree — "modified creature" (CR 400.7 = tem
+   Equipment, Aura OU contador)** só checava `p.counters > 0`, ignorando
+   Rancor (a única Aura real desta lista). Uma criatura só com Rancor (0
+   contadores) também é "modified" e deveria disparar a busca de
+   terreno básico no dano de combate. Corrigido incluindo
+   `p.has_rancor`.
+5. **District Mascot — "Whenever this creature attacks while saddled,
+   put a +1/+1 counter on it."** 100% ausente — `try_saddle()` já
+   marcava `.saddled=True`, mas nada no combate lia isso pra aplicar o
+   bônus. Tag `saddle1_attack_counter` confirmada órfã (varredura
+   automatizada). Corrigido no loop de atacantes de `combat_step()`.
+6. **Ornery Tumblewagg — "Whenever this creature attacks while saddled,
+   double the number of +1/+1 counters on target creature."** Mesmo
+   padrão, 100% ausente (tag `saddle2_attack_double` órfã). Ruling real:
+   "double the number of counters" conta como "put a counter" pra
+   efeitos de substituição — implementado via `place_counters()` com
+   `base_amount` = contadores já presentes no alvo (sujeito aos mesmos
+   multiplicadores de novo, corretamente).
+7. **Requisition Raid — Spree, custo real cobrado errado.** O `mv`
+   registrado (1, só o `{W}` base impresso) estava sendo usado como o
+   custo INTEIRO da conjuração, mas o único modo escolhido de verdade
+   (`+ {1} — put a +1/+1 counter on each creature target player
+   controls`, o único com valor real sem oponente) cobra `{1}`
+   ADICIONAL por modo — custo real é `{W}+{1}=2`, não `{W}=1`. Corrigido
+   em `effective_cost()`.
+8. **Broodguard Elite — Warp {X}{G} 100% ausente.** Só o hardcast
+   normal (`{X}{G}{G}`) funcionava (campo `warp_pending` órfão, tag
+   `warp` órfã, `exile_warp` nunca populado). Warp é estritamente melhor
+   aqui: custa 1 pip a menos E — ao entrar de novo depois de exilada e
+   reconjurada num turno futuro — redispara TODOS os ETBs reais de novo
+   (The Great Henge, Railway Brawler, Champion of Lambholt, Selvala).
+   Implementado com o mesmo critério de prioridade já usado pro Plot do
+   Railway Brawler (hardcast normal tem prioridade se a mana alcançar;
+   Warp só entra com a sobra) — `try_warp_broodguard()` +
+   `try_recast_warp_exile()` (essa última paga o custo NORMAL de novo,
+   diferente do Plot que é de graça).
+9. **Restoration Seminar — Paradigm ("After you first resolve a spell
+   with this name, you may cast a copy of it from exile without paying
+   its mana cost at the beginning of each of your first main phases")
+   100% ausente.** Só a 1ª resolução (paga, `{5}{W}{W}`) existia — o
+   motor de recorrência GRÁTIS a cada turno seguinte, que é o ponto real
+   da carta, nunca disparava. Corrigido com uma flag
+   `restoration_seminar_active` + chamada no início de `main_phase()`
+   a partir do turno seguinte à 1ª resolução real.
+10. **Selvala, Heart of the Wilds — "{G}, {T}: Add X mana..."** o `{T}`
+    já era pago (`selvala.tapped=True`), mas o pip `{G}` do próprio
+    custo de ativação nunca era debitado — ela rendia X mana LÍQUIDO em
+    vez de X-1. Mesma classe de bug do Hei Bai (custo real de uma
+    habilidade nunca cobrado). Corrigido debitando 1 de
+    `mana_spent_this_turn` ao usá-la.
+11. **7 habilidades ativadas com pip colorido no custo nunca checavam a
+    COR disponível, só o total genérico de mana** — District Mascot
+    (`{1}{G}`), Hopeful Initiate (`{2}{W}`), Maester Seymour
+    (`{3}{G}{G}`), Lion Sash (`{W}`), Ozolith activated (`{1}{G}`) e os
+    2 níveis do Innkeeper's Talent (`{G}` / `{3}{G}`) — todas ativavam
+    mesmo sem nenhuma fonte verde/branca real disponível, desde que
+    houvesse mana genérica suficiente. Baixo impacto prático (deck é
+    G/W denso em fontes de cor), mas real — corrigido com
+    `color_sources(state, "G"/"W")` em cada uma.
+
+**Rishkar, Peema Renegade — 2 correções relacionadas no modelo de
+mana** (não contadas nos 11 acima, tratadas junto por serem a mesma
+carta): (a) a mana que suas criaturas-com-contador produzem
+(`"{T}: Add {G}"`) já era contada no total genérico (`total_mana()`),
+mas NUNCA no requisito de cor verde (`color_sources`/`green_sources`) —
+um board só com criaturas-Rishkar destapadas (sem land verde nenhuma)
+não conseguia pagar um pip `{G}` de verdade mesmo tendo mana verde
+disponível de fato; (b) o cálculo original contava TODA criatura com
+contador, inclusive as que já têm sua PRÓPRIA habilidade de mana
+(Llanowar Elves, Fyndhorn Elves, Avacyn's Pilgrim, Birds, Biophagus,
+Delighted Halfling) — um permanente só tem 1 `{T}`, não pode pagar as 2
+habilidades ao mesmo tempo, então isso inflava `total_mana()`. Ambas
+corrigidas em `rishkar_mana_bonus()` / `green_sources()`.
+
+**Considerado e deliberadamente NÃO implementado (decisão de design
+documentada, não gap deixado pra trás):** Lion Sash — Reconfigure `{2}`
++ "Equipped creature gets +1/+1 for each +1/+1 counter on this
+Equipment." Reconfigurar só MOVE o mesmo poder total de Lion Sash
+(criatura) pra outra criatura (equipada) — neste goldfish sem remoção de
+oponente modelada, o dano proxy total de combate é idêntico dos dois
+jeitos, mas ficar DESANEXADA mantém Lion Sash como um corpo atacante A
+MAIS (nunca pior). Ficar sempre desanexada é a linha estritamente ≥
+melhor aqui — documentado inline em `activate_abilities()`.
+
+**Validação:** smoke test (99 nomes no `CARD_DB`, 99 cartas na
+`BASE_LIBRARY`, 0 desconhecidas/duplicadas) + 2.000 partidas antes/depois
+(mesma seed, ver `goldfish-log.md` pra tabela) + 20.000 partidas de
+regressão (2 rodadas, seeds 9.000.000+ e 4.200.000+, turns=10): **0
+exceções em ambas**. 20 testes unitários dirigidos (1 arquivo,
+`kutzil_fix_tests.py`) confirmaram cada uma das 11 correções
+isoladamente — inclusive o caso sutil de que "The Ozolith" e "Ozolith,
+the Shattered Spire" são 2 cartas DIFERENTES na lista (a transferência
+de contadores é uma, o dobrador estático é a outra), e que Hardened
+Scales corretamente NÃO vaza pro artefato "The Ozolith" mas continua
+aplicando normal a criaturas.
+
+---
+
 Pedido direto do usuário (2026-09-02): *"Pode começar com o Kutzil"* —
 um dos 4 decks desta pasta sem simulador nenhum ainda (construção do
 zero, não auditoria de um arquivo existente). Mesma disciplina de

@@ -1,5 +1,69 @@
 # Goldfish Compilado — Kutzil, Malamet Exemplar
 
+## Auditoria oráculo-por-oráculo completa — 2026-09-13
+
+Extensão pra este deck da mesma auditoria já feita no Megatron/Azula/
+Beorn/Captain Storm/Edgar Markov/Hei Bai. Detalhes carta-a-carta completos
+em `checklist-oraculo.md` (seção no topo) — **11 gaps reais** encontrados
+mesmo depois da rodada de construção original já ter corrigido 12 outros
+via varredura de tags órfãs. Resumo dos achados: transferência de
+contadores pro "The Ozolith" e movimentação do Broodguard Elite bypassavam
+o motor central `place_counters()` (perdendo a própria estática do
+"Ozolith, the Shattered Spire" e o gate creature-only de Hardened
+Scales/Michelangelo); Wakka's "Blitzball Captain" só disparava via
+combate, não via qualquer fonte de contador; Kodama ignorava Rancor como
+"modified"; District Mascot e Ornery Tumblewagg tinham os próprios
+gatilhos "attacks while saddled" 100% ausentes; Requisition Raid cobrava
+1 mana a menos que o custo real (Spree); Broodguard Elite's Warp e
+Restoration Seminar's Paradigm (recast grátis recorrente) estavam 100%
+ausentes; Selvala nunca pagava o próprio `{G}` de ativação; 7 habilidades
+ativadas nunca checavam a cor do pip no custo (só o total genérico); e
+Rishkar tinha 2 bugs relacionados no modelo de mana (mana dele nunca
+contava pro requisito de cor verde + double-counting de dorks que já têm
+sua própria habilidade).
+
+### Métricas antes/depois (2.000 partidas, seed 555.000, turns=8, mesma seed)
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Turno médio de conjuração da Kutzil | 3,45 | 3,45 |
+| Avg dano proxy total de combate | 95,43 | 100,97 |
+| Avg compras via Kutzil (poder>base) | 3,90 | 3,87 |
+| Avg contadores +1/+1 colocados (com multiplicadores) | 38,97 | 45,53 |
+| Avg cartas compradas extra (todos os motores) | 12,17 | 12,16 |
+| Avg spells de interação conjurados | 0,95 | 1,00 |
+| Avg ativações de saddle | 0,84 | 0,84 |
+| Avg Plot/Warp custo-alternativo | 0,00 | 0,06 |
+| Avg eventos de recursão | 0,01 | 0,05 |
+| Craterhoof Behemoth resolvido | 4,9% | 4,9% |
+| Damning Verdict conjurada | 2,0% | 2,1% |
+| Avg vida final | 39,76 | 39,75 |
+
+**Leitura:** os contadores totais subiram ~17% (38,97→45,53) — driver
+principal são os 2 gatilhos "attacks while saddled" (achados #5/#6, District
+Mascot e Ornery Tumblewagg) somados ao roteamento do Ozolith/Broodguard
+pelo motor central de multiplicadores (achado #1/#2), que agora captura
+corretamente a própria estática do "Ozolith, the Shattered Spire" nessas
+transferências. O dano proxy subiu ~5,8% na mesma direção (mais
+contadores = criaturas maiores). Eventos de recursão saltaram 5x
+(0,01→0,05) — baixo em termos absolutos porque tanto Restoration Seminar
+(7 mana) quanto o ciclo completo de Warp do Broodguard exigem bastante
+mana disponível num goldfish de 8 turnos, mas a direção é a esperada (as
+2 cartas antes contribuíam quase nada, agora contribuem algo real). As
+métricas de mana "corrigida pra baixo" (Selvala perdendo 1 mana líquida
+por ativação, Requisition Raid custando 1 a mais, os 7 gates de cor)
+puxam na direção oposta mas em volume pequeno frente ao ganho líquido dos
+gatilhos de contador reais — resultado agregado positivo e plausível,
+sem nenhuma métrica se movendo de forma inexplicável.
+
+**Validação:** smoke test (99/99, 0 desconhecidas) + 2.000 partidas
+antes/depois (tabela acima) + 20.000 partidas de regressão (2 rodadas,
+seeds 9.000.000+ e 4.200.000+, turns=10): **0 exceções em ambas**. 20
+testes unitários dirigidos (`kutzil_fix_tests.py`) confirmaram cada
+correção isoladamente.
+
+---
+
 Compilação dos goldfishes rodados com o deck, exportada e organizada a partir dos logs do simulador. Segue convenção estrita de separar **fato registrado** de **interpretação**, e marca explicitamente onde os dados não são recuperáveis — nada foi inventado para preencher lacunas.
 
 ---

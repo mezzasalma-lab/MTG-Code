@@ -285,7 +285,8 @@ class Permanent:
     warp_pending: bool = False   # Broodguard Elite
     plot_pending: bool = False   # Railway Brawler
     exile_return_turn: Optional[int] = None
-    equipped_to: Optional[int] = None  # Lion Sash reconfigure -> uid do alvo
+    equipped_to: Optional[int] = None  # nao usado -- Lion Sash reconfigure ficou como desanexada de proposito (ver comentario em activate_abilities)
+    is_warped: bool = False       # Broodguard Elite: entrou via Warp, sera exilada no proprio end step
 
 
 @dataclass
@@ -295,7 +296,7 @@ class GameState:
     battlefield: list = field(default_factory=list)   # list[Permanent]
     graveyard: list = field(default_factory=list)      # list[str]
     library: list = field(default_factory=list)        # list[str]
-    exile_warp: list = field(default_factory=list)     # list[Permanent] exiladas por warp/plot/hideaway, esperando recast
+    exile_warp: list = field(default_factory=list)     # list[(nome, turno_exilado)] -- Broodguard Elite via Warp, esperando recast em turno futuro
     hideaway_cards: dict = field(default_factory=dict)  # uid_do_permanente_com_hideaway -> nome da carta exilada
     mulligans: int = 0
 
@@ -344,6 +345,7 @@ class GameState:
     plot_exile: dict = field(default_factory=dict)   # turno-em-que-plotou -> [nomes] (Railway Brawler)
     pucas_covenant_triggered_this_turn: bool = False  # Puca's Covenant: "once each turn"
     tale_katara_toph_first_tap_this_turn: set = field(default_factory=set)  # uids ja tapados (1a vez) este turno
+    restoration_seminar_active: bool = False  # Paradigm: copia gratis a cada 1o main phase, apos a 1a resolucao real
 
 
 def mk_perm(state: GameState, name: str, is_token: bool = False) -> Permanent:
@@ -411,6 +413,13 @@ def green_sources(state: GameState) -> int:
             continue
         if "G" in p.card.produces:
             n += 1
+    # Rishkar, Peema Renegade: "Each creature you control with a counter on
+    # it has '{T}: Add {G}.'" -- e' mana especificamente VERDE, nao so'
+    # generica. Achado real 2026-09-13: ja contava pro total de mana
+    # (total_mana()) mas nunca pro requisito de COR -- um board so' com
+    # criaturas-Rishkar destapadas (sem land G nenhum) nunca conseguia
+    # pagar um pip {G} de verdade, mesmo tendo mana verde real disponivel.
+    n += rishkar_mana_bonus(state)
     return n
 
 
@@ -454,10 +463,23 @@ def rishkar_mana_bonus(state: GameState) -> int:
     """Rishkar, Peema Renegade: 'Each creature you control with a counter on
     it has "{T}: Add {G}."' -- so' conta criaturas destapadas com >=1
     contador (nao inclui a propria Rishkar salvo se ela mesma tiver
-    contador)."""
+    contador). Achado real 2026-09-13: contava TODA criatura com contador,
+    inclusive as que ja tem sua PROPRIA habilidade de mana (Llanowar Elves,
+    Fyndhorn Elves, Avacyn's Pilgrim, Birds, Biophagus, Delighted
+    Halfling) -- um permanente so' tem 1 {T}, nao pode pagar as 2
+    habilidades ao mesmo tempo. Excluidos os dorks (ja contados via
+    dorks_flat em total_mana())."""
     if not any(p.card.name == "Rishkar, Peema Renegade" for p in state.battlefield):
         return 0
-    return sum(1 for p in state.battlefield if is_creature(p) and not p.tapped and p.counters > 0)
+    n = 0
+    for p in state.battlefield:
+        if not (is_creature(p) and not p.tapped and p.counters > 0):
+            continue
+        if (has_tag(p.card.name, "dork_flat1_g") or has_tag(p.card.name, "dork_flat1_w")
+                or has_tag(p.card.name, "dork_flatX")):
+            continue
+        n += 1
+    return n
 
 
 def total_mana(state: GameState) -> int:
@@ -499,6 +521,17 @@ def legendary_creatures_count(state: GameState) -> int:
 def effective_cost(state: GameState, name: str) -> int:
     mv = CARD_DB[name].mv
     d = 0
+    s = 0
+    if name == "Requisition Raid":
+        # Spree: "Choose one or more additional costs" -- o codigo so'
+        # escolhe o modo 3 ("+1/+1 counter em cada criatura que o alvo
+        # controla", o unico com valor real sem oponente -- ver
+        # resolve_instant_sorcery). Achado real 2026-09-13: mv registrado
+        # (1={W}) e' so' o custo BASE impresso; cada modo escolhido cobra
+        # {1} ADICIONAL -- o codigo cobrava so' o base, nunca a sobretaxa
+        # real do modo (efetivamente conjurando de graca 1 mana a menos
+        # que o custo real de {W}+{1}=2).
+        s += 1
     if any(p.card.name == "The Earth Crystal" for p in state.battlefield) and "G" in CARD_DB[name].pips:
         d += 1  # "Green spells you cast cost {1} less to cast."
     if name == "The Great Henge":
@@ -512,7 +545,7 @@ def effective_cost(state: GameState, name: str) -> int:
         creatures = [p for p in state.battlefield if is_creature(p)]
         if creatures:
             d += max(effective_power(p) for p in creatures)
-    return max(0, mv - d)
+    return max(0, mv - d + s)
 
 
 def can_cast(state: GameState, name: str) -> bool:
@@ -540,16 +573,29 @@ def place_counters(state: GameState, perm: Permanent, base_amount: int, log: lis
     if base_amount <= 0:
         return 0
     total = base_amount
-    if any(p.card.name == "Hardened Scales" for p in state.battlefield):
+    # Achado real 2026-09-13 (auditoria oraculo-por-oraculo): Hardened
+    # Scales / Michelangelo / Branching Evolution / The Earth Crystal
+    # dizem todos "...put on a CREATURE you control" (restrito) -- Ozolith
+    # diz "an ARTIFACT OR creature you control" (mais amplo) e Innkeeper's
+    # Talent nivel 3 diz "a PERMANENT OR PLAYER" (mais amplo ainda). O
+    # codigo original aplicava os 3 aditivos e os 2 doubladores restritos
+    # sem checar se `perm` era de fato uma criatura -- nunca deu errado
+    # ate agora porque todo alvo real de place_counters() sempre foi uma
+    # criatura, mas passa a importar de verdade com o fix abaixo que roteia
+    # a transferencia de contadores pro proprio Ozolith (um artefato, nao
+    # criatura) por este motor central.
+    target_is_creature = is_creature(perm)
+    target_is_artifact_or_creature = target_is_creature or perm.card.ctype == "artifact"
+    if target_is_creature and any(p.card.name == "Hardened Scales" for p in state.battlefield):
         total += 1
-    if any(p.card.name == "Michelangelo, Weirdness to 11" for p in state.battlefield):
+    if target_is_creature and any(p.card.name == "Michelangelo, Weirdness to 11" for p in state.battlefield):
         total += 1
-    if any(p.card.name == "Ozolith, the Shattered Spire" for p in state.battlefield):
+    if target_is_artifact_or_creature and any(p.card.name == "Ozolith, the Shattered Spire" for p in state.battlefield):
         total += 1
     doublers = 0
-    if any(p.card.name == "Branching Evolution" for p in state.battlefield):
+    if target_is_creature and any(p.card.name == "Branching Evolution" for p in state.battlefield):
         doublers += 1
-    if any(p.card.name == "The Earth Crystal" for p in state.battlefield):
+    if target_is_creature and any(p.card.name == "The Earth Crystal" for p in state.battlefield):
         doublers += 1
     talent = next((p for p in state.battlefield if p.card.name == "Innkeeper's Talent"), None)
     if talent is not None and talent.level >= 3:
@@ -560,6 +606,17 @@ def place_counters(state: GameState, perm: Permanent, base_amount: int, log: lis
     perm.counters += total
     state.counters_placed_total += total
     log.append(f"  [+{total} counters] {perm.card.name} ({before}->{perm.counters}) via {source}")
+
+    # Wakka, Devoted Guardian: "Blitzball Captain -- at the beginning of
+    # your end step, if a counter was put on Wakka THIS TURN..." Achado
+    # real 2026-09-13: o codigo so marcava essa flag dentro do gatilho de
+    # dano de combate de Wakka -- qualquer OUTRA fonte de contador (Ozolith
+    # movendo, Requisition Raid, Luminarch Aspirant mirando nela, etc.)
+    # nao acionava o "Blitzball Captain" no fim do turno. Centralizado aqui
+    # (unico ponto real de "put a counter on Wakka") pra cobrir QUALQUER
+    # fonte, nao so' o combate.
+    if perm.card.name == "Wakka, Devoted Guardian" and total > 0:
+        state.wakka_counter_this_turn = True
 
     # Botanical Brawler: "Whenever one or more +1/+1 counters are put on
     # ANOTHER permanent you control, if it's the FIRST time this turn,
@@ -871,9 +928,15 @@ def cast_card(state: GameState, name: str, log: list):
     if use_selvala:
         selvala = next((p for p in state.battlefield if p.card.name == "Selvala, Heart of the Wilds" and not p.tapped), None)
         if selvala is not None:
+            bonus = selvala_mana_available(state)
             selvala.tapped = True
-            state.bonus_mana_pool += selvala_mana_available(state)
-            log.append(f"  [Selvala] tapa por {state.bonus_mana_pool} mana bonus")
+            state.bonus_mana_pool += bonus
+            # Achado real 2026-09-13: a propria habilidade custa "{G}, {T}:
+            # Add X mana..." -- o {G} nunca era cobrado, entao a Selvala
+            # rendia X mana LIQUIDO em vez de X-1 (o {T} ja' era pago via
+            # `selvala.tapped=True`, mas o pip {G} nao).
+            state.mana_spent_this_turn += 1
+            log.append(f"  [Selvala] tapa por {bonus} mana bonus (paga {{G}} da propria ativacao)")
 
     spend_mana(state, cost)
     if name in state.hand:
@@ -984,11 +1047,20 @@ def leave_battlefield(state: GameState, perm: Permanent, log: list, to_graveyard
             state.recursion_events_total += 1
             log.append(f"  [Puca's Covenant] {perm.card.name} morreu ({perm.counters} contadores) -> devolve {best} pra mao")
 
-    if perm.counters > 0 and to_graveyard:
+    # The Ozolith / Broodguard Elite: ambos dizem "...creature LEAVES THE
+    # BATTLEFIELD..." (nao "dies") -- disparam em QUALQUER saida de campo
+    # com contadores (exilio via Warp incluso), nao so' quando vai pro
+    # cemiterio. Achado real 2026-09-13: 2 bugs no mesmo bloco --
+    # (1) estava gated por `to_graveyard`, entao exilio nunca disparava;
+    # (2) a transferencia pro Ozolith ia direto (`+=`), sem passar por
+    # place_counters() -- perdia a PROPRIA estatica do Ozolith ("+1", pois
+    # e' "an artifact or creature you control", vale pra si mesmo) e o
+    # Innkeeper's Talent nivel 3 (dobra "permanent or player"). Corrigido
+    # roteando pelo motor central (ver gating creature/artifact la' dentro).
+    if perm.counters > 0:
         ozolith = next((p for p in state.battlefield if p.card.name == "The Ozolith"), None)
         if ozolith is not None:
-            ozolith.counters += perm.counters
-            log.append(f"  [The Ozolith] recebe {perm.counters} contadores de {perm.card.name}")
+            place_counters(state, ozolith, perm.counters, log, source=f"The Ozolith (recebe de {perm.card.name})")
         elif perm.card.name == "Broodguard Elite":
             # so move via a propria habilidade se o Ozolith nao ja tiver
             # capturado os contadores (mesmo pool fisico, so uma das duas
@@ -997,8 +1069,25 @@ def leave_battlefield(state: GameState, perm: Permanent, log: list, to_graveyard
             # liquido (ambas so realocam pra outro permanente proprio).
             target = best_counter_target(state, exclude_uid=None)
             if target is not None:
-                target.counters += perm.counters
-                log.append(f"  [Broodguard Elite] move {perm.counters} contadores pra {target.card.name}")
+                place_counters(state, target, perm.counters, log, source="Broodguard Elite (move contadores)")
+
+
+def do_restoration_seminar_effect(state: GameState, log: list, source: str):
+    """Efeito real de Restoration Seminar ('Return target nonland permanent
+    card from your graveyard to the battlefield'), fatorado pra ser
+    chamado tanto na 1a resolucao paga quanto nas copias gratis do
+    Paradigm (ver resolve_instant_sorcery / main_phase)."""
+    pool = [n for n in state.graveyard if n != "Restoration Seminar" and (is_creature_card(n) or CARD_DB[n].ctype in ("artifact", "enchantment"))]
+    if pool:
+        best = max(pool, key=lambda n: CARD_DB[n].mv)
+        state.graveyard.remove(best)
+        if is_creature_card(best):
+            resolve_permanent(state, best, log)
+        else:
+            perm = mk_perm(state, best)
+            enter_battlefield(state, perm, log)
+        state.recursion_events_total += 1
+        log.append(f"  [{source}] reanima {best}")
 
 
 def resolve_instant_sorcery(state: GameState, name: str, log: list):
@@ -1041,17 +1130,15 @@ def resolve_instant_sorcery(state: GameState, name: str, log: list):
         state.interaction_plays += 1
 
     if name == "Restoration Seminar":
-        pool = [n for n in state.graveyard if n != name and (is_creature_card(n) or CARD_DB[n].ctype in ("artifact", "enchantment"))]
-        if pool:
-            best = max(pool, key=lambda n: CARD_DB[n].mv)
-            state.graveyard.remove(best)
-            if is_creature_card(best):
-                resolve_permanent(state, best, log)
-            else:
-                perm = mk_perm(state, best)
-                enter_battlefield(state, perm, log)
-            state.recursion_events_total += 1
-            log.append(f"  [Restoration Seminar] reanima {best}")
+        # Paradigm: "Exile this spell. After you first resolve a spell with
+        # this name, you may cast a copy of it from exile without paying
+        # its mana cost at the beginning of each of your first main
+        # phases." Achado real 2026-09-13: so' a 1a resolucao (a paga)
+        # existia -- o motor de recorrencia GRATIS todo turno seguinte
+        # (o ponto real da carta, ver `restoration_seminar_active` +
+        # chamada em main_phase()) estava 100% ausente.
+        state.restoration_seminar_active = True
+        do_restoration_seminar_effect(state, log, source="Restoration Seminar")
 
 
 # =========================================================
@@ -1212,6 +1299,26 @@ def combat_step(state: GameState, log: list):
             # esquecido).
             state.tale_katara_toph_first_tap_this_turn.add(p.uid)
             place_counters(state, p, 1, log, source="Tale of Katara and Toph (1a vez tapada, ataque)")
+
+        # District Mascot: "Whenever this creature attacks while saddled,
+        # put a +1/+1 counter on it." Achado real 2026-09-13: tag
+        # `saddle1_attack_counter` ficou orfa desde a construcao original
+        # -- try_saddle() marcava `.saddled=True` mas nada lia isso durante
+        # o combate.
+        if p.card.name == "District Mascot" and p.saddled:
+            place_counters(state, p, 1, log, source="District Mascot (ataca saddled)")
+        # Ornery Tumblewagg: "Whenever this creature attacks while
+        # saddled, double the number of +1/+1 counters on target
+        # creature." CR/ruling real: "double the number of counters" e'
+        # tratado como "put a counter" pra efeitos de replacement (mesmo
+        # motor de place_counters(), base_amount = contadores ja' presentes
+        # no alvo). Achado real 2026-09-13: mesma tag orfa (`saddle2_attack_double`).
+        if p.card.name == "Ornery Tumblewagg" and p.saddled:
+            dbl_target = best_counter_target(state, exclude_uid=None)
+            if dbl_target is not None and dbl_target.counters > 0:
+                place_counters(state, dbl_target, dbl_target.counters, log,
+                                source="Ornery Tumblewagg (ataca saddled, dobra contadores)")
+
         dmg = effective_power(p)
         if p.uid == urdnan_bonus_uid:
             dmg *= 2
@@ -1224,8 +1331,15 @@ def combat_step(state: GameState, log: list):
         if p.card.name == "Wakka, Devoted Guardian":
             place_counters(state, p, 1, log, source="Wakka, Devoted Guardian (dano de combate)")
             state.interaction_plays += 1  # destroy artifact -- sem alvo real
-            state.wakka_counter_this_turn = True
-        if p.counters > 0 and any(q.card.name == "Kodama of the West Tree" for q in state.battlefield):
+            # wakka_counter_this_turn agora e' setada dentro do proprio
+            # place_counters() (cobre QUALQUER fonte de contador em Wakka,
+            # nao so' este gatilho de combate -- ver comentario la).
+        # Kodama of the West Tree: "modified creature" = tem Equipment,
+        # Aura ou contador (CR 400.7). Achado real 2026-09-13: so checava
+        # `p.counters > 0`, ignorando Rancor (unica Aura real desta lista,
+        # via aura_power/has_rancor) -- uma criatura so' com Rancor (0
+        # contadores) tambem e' "modified" e deveria disparar a busca.
+        if (p.counters > 0 or p.has_rancor) and any(q.card.name == "Kodama of the West Tree" for q in state.battlefield):
             basics = [c for c in state.library if c in BASIC_LAND_NAMES]
             if basics:
                 found = basics[0]
@@ -1339,13 +1453,22 @@ def activate_abilities(state: GameState, log: list):
     # (preserva os melhores alvos de recursao pro Restoration Seminar/
     # Puca's Covenant).
     lion_sash = next((p for p in state.battlefield if p.card.name == "Lion Sash"), None)
-    if lion_sash is not None and remaining_mana(state) >= 1 and state.graveyard:
+    if lion_sash is not None and remaining_mana(state) >= 1 and color_sources(state, "W") >= 1 and state.graveyard:
         permanent_cards = [c for c in state.graveyard if CARD_DB[c].ctype in ("creature", "artifact", "enchantment", "land", "aura")]
         if permanent_cards:
             worst = min(permanent_cards, key=lambda c: CARD_DB[c].mv)
             spend_mana(state, 1)
             state.graveyard.remove(worst)
             place_counters(state, lion_sash, 1, log, source=f"Lion Sash (exila {worst} do proprio cemiterio)")
+    # Lion Sash: Reconfigure {2} ("Equipped creature gets +1/+1 for each
+    # +1/+1 counter on this Equipment") -- decisao de design documentada
+    # (2026-09-13), nao um gap deixado pra tras: reconfigurar so' MOVE o
+    # mesmo total de poder de Lion Sash (criatura) pra outra criatura
+    # (equipada) -- neste goldfish sem remocao de oponente modelada, o
+    # dano proxy total de combate e' o mesmo dos dois jeitos, mas ficar
+    # DESANEXADA mantem Lion Sash como um corpo atacante A MAIS (nunca
+    # pior). Ficar sempre desanexada e' a linha estritamente >= melhor
+    # aqui -- Reconfigure nao implementado de proposito.
 
     # Mosswort Bridge: Hideaway 4 (ETB, ver apply_etb) + "{G}, {T}: You may
     # play the exiled card without paying its mana cost if creatures you
@@ -1391,21 +1514,24 @@ def activate_abilities(state: GameState, log: list):
     # Innkeeper's Talent: sobe de nivel como sorcery, {G} pro nivel 2,
     # {3}{G} pro nivel 3 -- sempre vale a pena assim que sobrar mana,
     # ja que ambos os niveis sao estritamente bons pro motor de contador.
+    # Achado real 2026-09-13: os 2 niveis exigem pip {G} de verdade ({G} e
+    # {3}{G}), so' checavam mana TOTAL, nunca fonte verde -- corrigido.
     talent = next((p for p in state.battlefield if p.card.name == "Innkeeper's Talent"), None)
     if talent is not None:
-        if talent.level == 1 and remaining_mana(state) >= 1:
+        if talent.level == 1 and remaining_mana(state) >= 1 and color_sources(state, "G") >= 1:
             spend_mana(state, 1)
             talent.level = 2
             log.append("  [Innkeeper's Talent] sobe pro nivel 2 (ward 1 em permanentes com contador)")
-        elif talent.level == 2 and remaining_mana(state) >= 4:
+        elif talent.level == 2 and remaining_mana(state) >= 4 and color_sources(state, "G") >= 1:
             spend_mana(state, 4)
             talent.level = 3
             log.append("  [Innkeeper's Talent] sobe pro nivel 3 (dobra contadores)")
 
     # Ozolith, the Shattered Spire: "{1}{G}, {T}: Put a +1/+1 counter on
     # target artifact or creature you control. Activate only as a sorcery."
+    # Achado real 2026-09-13: nao checava fonte verde pro pip {G} do custo.
     ozolith = next((p for p in state.battlefield if p.card.name == "Ozolith, the Shattered Spire" and not p.tapped), None)
-    if ozolith is not None and remaining_mana(state) >= 2:
+    if ozolith is not None and remaining_mana(state) >= 2 and color_sources(state, "G") >= 1:
         target = best_counter_target(state, exclude_uid=None)
         if target is not None:
             spend_mana(state, 2)
@@ -1418,8 +1544,10 @@ def activate_abilities(state: GameState, log: list):
     # Maester Seymour: "{3}{G}{G}: Monstrosity X, X = numero de contadores
     # entre criaturas que voce controla." Uso unico (so' pode ficar
     # "monstrous" 1x). So vale quando ha um X real pra ganhar.
+    # Achado real 2026-09-13: {3}{G}{G} precisa de 2 fontes verdes, so'
+    # checava mana total.
     seymour = next((p for p in state.battlefield if p.card.name == "Maester Seymour" and not p.monstrous), None)
-    if seymour is not None and remaining_mana(state) >= 5:
+    if seymour is not None and remaining_mana(state) >= 5 and color_sources(state, "G") >= 2:
         x = sum(q.counters for q in state.battlefield if is_creature(q))
         if x > 0:
             spend_mana(state, 5)
@@ -1479,17 +1607,21 @@ def activate_abilities(state: GameState, log: list):
     # District Mascot: "{1}{G}, remove 2 counters: Destroy target
     # artifact." Sem oponente real -- so conta como interacao quando ha
     # 2+ contadores sobrando (nao vale tirar counters uteis por nada).
+    # Achado real 2026-09-13: {1}{G} precisa de fonte verde, so' checava
+    # mana total.
     mascot = next((p for p in state.battlefield if p.card.name == "District Mascot" and p.counters >= 4), None)
-    if mascot is not None and remaining_mana(state) >= 2:
+    if mascot is not None and remaining_mana(state) >= 2 and color_sources(state, "G") >= 1:
         spend_mana(state, 2)
         mascot.counters -= 2
         state.interaction_plays += 1
 
     # Hopeful Initiate: "{2}{W}, remove 2 counters from among creatures
     # you control: Destroy target artifact or enchantment." Mesma logica.
+    # Achado real 2026-09-13: {2}{W} precisa de fonte branca, so' checava
+    # mana total.
     initiate = next((p for p in state.battlefield if p.card.name == "Hopeful Initiate"), None)
     total_counters_pool = sum(q.counters for q in state.battlefield if is_creature(q))
-    if initiate is not None and remaining_mana(state) >= 3 and total_counters_pool >= 4:
+    if initiate is not None and remaining_mana(state) >= 3 and color_sources(state, "W") >= 1 and total_counters_pool >= 4:
         spend_mana(state, 3)
         removed = 0
         for q in state.battlefield:
@@ -1554,6 +1686,60 @@ def resolve_plotted_cards(state: GameState, log: list):
 
 
 # =========================================================
+# WARP (Broodguard Elite)
+# =========================================================
+
+def try_warp_broodguard(state: GameState, log: list):
+    """Warp {X}{G} ('You may cast this card from your hand for its warp
+    cost. Exile this creature at the beginning of the next end step, then
+    you may cast it from exile on a later turn.') Achado real 2026-09-13:
+    100% ausente -- so' o hardcast normal ({X}{G}{G}) funcionava, perdendo
+    o motor real da carta (Warp custa 1 pip a menos E dispara o ETB de
+    novo a cada recast futuro -- The Great Henge, Railway Brawler,
+    Champion of Lambholt etc. todos relem quando Broodguard reentra).
+    Mesmo criterio de prioridade do Plot (try_plot_railway_brawler):
+    hardcast normal (fila de conjuracao no main_phase) tem prioridade se
+    houver mana pra isso; Warp so' e' usado com a mana que sobra, como
+    alternativa MAIS BARATA (1 pip a menos) quando o hardcast nao coube."""
+    if "Broodguard Elite" not in state.hand:
+        return
+    if remaining_mana(state) < 1 or color_sources(state, "G") < 1:
+        return
+    discount = 1 if any(p.card.name == "The Earth Crystal" for p in state.battlefield) else 0
+    avail = remaining_mana(state)
+    x = max(0, avail - max(0, 1 - discount))
+    x = min(x, 12)
+    cost = max(0, x + 1 - discount)
+    if remaining_mana(state) < cost:
+        return
+    on_spell_cast(state, "Broodguard Elite", log)
+    spend_mana(state, cost)
+    state.hand.remove("Broodguard Elite")
+    state.pending_x = x
+    perm = mk_perm(state, "Broodguard Elite")
+    perm.is_warped = True
+    enter_battlefield(state, perm, log)
+    state.pending_x = 0
+    state.warp_plot_free_casts_total += 1
+    log.append(f"  [Warp] Broodguard Elite entra por Warp (X={x}), sera exilada no end step")
+
+
+def try_recast_warp_exile(state: GameState, log: list):
+    """'...cast it from exile on a later turn' -- ao contrario do Plot, NAO
+    e' de graca (paga o custo normal de novo). So' vale em turno POSTERIOR
+    ao que foi exilada."""
+    for entry in list(state.exile_warp):
+        name, exiled_turn = entry
+        if exiled_turn >= state.turn:
+            continue
+        if can_cast(state, name):
+            state.exile_warp.remove(entry)
+            cast_card(state, name, log)
+            state.recursion_events_total += 1
+            log.append(f"  [Warp] reconjura {name} da exile pelo custo normal")
+
+
+# =========================================================
 # HEURISTICAS DE PRIORIDADE / GATES
 # =========================================================
 
@@ -1591,6 +1777,14 @@ def main_phase(state: GameState, log: list):
     try_windswept_heath(state, log)
     resolve_plotted_cards(state, log)
 
+    # Restoration Seminar (Paradigm): copia gratis "at the beginning of
+    # each of your first main phases", so' a partir do turno SEGUINTE ao
+    # que resolveu de verdade (a flag so' vira True DEPOIS da 1a resolucao
+    # -- ver resolve_instant_sorcery). Gratis, entao vai antes da fila de
+    # conjuracao normal (mesmo criterio de resolve_plotted_cards acima).
+    if state.restoration_seminar_active:
+        do_restoration_seminar_effect(state, log, source="Restoration Seminar (Paradigm, copia gratis)")
+
     while True:
         castables = [n for n in state.hand if not is_land_card(n) and can_cast(state, n)]
         castables = [n for n in castables if n != "Damning Verdict" or should_cast_damning_verdict(state)]
@@ -1600,6 +1794,8 @@ def main_phase(state: GameState, log: list):
         cast_card(state, castables[0], log)
 
     try_plot_railway_brawler(state, log)
+    try_recast_warp_exile(state, log)
+    try_warp_broodguard(state, log)
     activate_abilities(state, log)
 
 
@@ -1620,6 +1816,14 @@ def end_step(state: GameState, log: list):
             for q in list(state.battlefield):
                 if is_creature(q) and q.uid != wakka.uid:
                     place_counters(state, q, 1, log, source="Wakka, Devoted Guardian (Blitzball Captain)")
+
+    # Warp: "Exile this creature at the beginning of the next end step."
+    for p in list(state.battlefield):
+        if p.is_warped:
+            wname = p.card.name
+            leave_battlefield(state, p, log, to_graveyard=False)
+            state.exile_warp.append((wname, state.turn))
+            log.append(f"  [Warp] {wname} exilada no end step (recastavel em turno futuro)")
 
 
 def cleanup_turn(state: GameState):
@@ -1855,7 +2059,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg spells de interacao conjurados (proxy, sem alvo real): {avg([s.interaction_plays for s in states]):.2f}")
     print(f"Damning Verdict conjurada em {100*sum(1 for s in states if s.damning_verdict_cast_total>0)/n:.1f}% dos jogos")
     print(f"Avg ativacoes de saddle: {avg([s.saddle_activations_total for s in states]):.2f}")
-    print(f"Avg Plot->free cast (Railway Brawler): {avg([s.warp_plot_free_casts_total for s in states]):.2f}")
+    print(f"Avg Plot/Warp custo-alternativo (Railway Brawler + Broodguard Elite): {avg([s.warp_plot_free_casts_total for s in states]):.2f}")
     print(f"Craterhoof Behemoth resolvido em {100*sum(1 for s in states if s.craterhoof_cast)/n:.1f}% dos jogos")
     finisher_turns = [s.first_finisher_turn for s in states if s.first_finisher_turn is not None]
     if finisher_turns:
