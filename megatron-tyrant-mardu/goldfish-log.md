@@ -4,6 +4,23 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Auditoria oráculo-por-oráculo completa (6 mecânicas fantasma) — 2026-09-13
+
+**Gatilho:** goldfish real com Ultron copiando o Portal to Phyrexia 2x
+("foi Overpowered!") revelou que faltava metade da carta (reanimação
+repetível todo upkeep). Corrigido esse, mas usuário pediu auditoria
+completa em todas as 65 cartas não-terreno — detalhes cláusula-a-cláusula
+em `checklist-oraculo.md`. Resumo dos 6 gaps reais encontrados e
+corrigidos: Portal to Phyrexia (upkeep reanimation), Goblin Engineer (ETB
+tutor pro cemitério), Mind Stone (sacrifício por carta), Osgir (habilidade
+de bombar +2/+0), Summon: Bahamut (capítulos II/III/IV da saga, incluindo
+o Mega Flare do IV), Brass's Tunnel-Grinder (transformação pro Tecutlan,
+the Searing Rift). Validado: batch de 2000 + regressão de 20.000 sem
+exceções, todos os 6 confirmados disparando de verdade via instrumentação
+(não fantasmas novos).
+
+---
+
 ## +Ultron, Artificial Malevolence / -Mirrorworks — 2026-09-11
 
 **Gatilho:** um goldfish manual real (mão inicial em foto) trouxe de

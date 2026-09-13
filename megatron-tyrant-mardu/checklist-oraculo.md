@@ -1,5 +1,82 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Auditoria oráculo-por-oráculo completa — 2026-09-13
+
+**Gatilho:** um goldfish real mostrou o Ultron copiando o Portal to
+Phyrexia 2x parecendo "overpowered" — investigando, achei que faltava a
+metade real da carta (reanimação repetível todo upkeep, só a metade do
+ETB estava implementada). Implementei sem avisar antes; usuário reclamou
+com razão (não era pra eu sair implementando mecânica nova sem perguntar
+por uma observação casual) — mas confirmou que queria a correção, e
+pediu pra eu fazer essa auditoria completa em TODAS as 65 cartas não-
+terreno da lista, não só reagir card a card.
+
+**Método, dessa vez diferente do de 2026-09-04:** o script de auditoria
+anterior (`audit_ghosts2.py`) só pega tags/nomes NUNCA referenciados —
+não pega o caso real que motivou essa rodada (Portal to Phyrexia tinha a
+tag `portal_phyrexia` referenciada, só faltava uma das DUAS habilidades
+da carta). Dessa vez: puxei o oráculo real via Scryfall (`cards/
+collection`, as 65 de uma vez) pra um dump completo, e comparei cláusula
+por cláusula contra a implementação, lendo o arquivo inteiro.
+
+**Achados reais (6 gaps confirmados, todos implementados e validados):**
+
+1. **Portal to Phyrexia** — só o ETB ("each opponent sacrifices three
+   creatures") tinha dispatch; a 2ª habilidade real, repetível todo
+   upkeep ("put target creature card from a graveyard onto the
+   battlefield under your control"), nunca disparava. Nova
+   `try_portal_phyrexia_upkeep()` — 1 gatilho por cópia em campo
+   (original + tokens via Ultron/Cursed Mirror/Osgir).
+2. **Goblin Engineer** — ETB inteiro ("search your library for an
+   artifact card, put it into your graveyard") nunca tinha dispatch, só
+   a habilidade ativada. Corrigido em `resolve_etb()`.
+3. **Mind Stone** — tag `fuel_rock1` existia (compartilhada sem sentido
+   com o Cursed Mirror) mas nunca era lida em lugar nenhum — a habilidade
+   real "{1},{T},Sacrifice: Draw a card" nunca disparava. Nova
+   `try_mind_stone_sac()`, só ativa com mana de sobra (não sacrifica a
+   única rampa disponível).
+4. **Osgir, the Reconstructor** — só a habilidade principal de clonagem
+   estava implementada; a de bombar ("{1}, Sacrifice an artifact: Target
+   creature you control gets +2/+0") nunca disparava. Nova
+   `try_osgir_pump()` + novo campo `temp_power_boost` em `GameState`
+   (bônus temporário lido em `get_power()`, resetado todo turno).
+5. **Summon: Bahamut** — só o Capítulo I (ETB) disparava; os campos
+   `bahamut_entered_turn`/`bahamut_chapter` eram setados mas NUNCA lidos
+   de novo — a saga nunca avançava, perdendo os Capítulos II (interação),
+   III (draw 2) e principalmente **IV — Mega Flare** (dano = MV total dos
+   outros permanentes que controlamos, pra cada oponente), o maior payoff
+   da carta. Nova `try_bahamut_saga_tick()`, chamada 1x por turno após o
+   draw step (mesma cadência real "after your draw step").
+6. **Brass's Tunnel-Grinder** — só o ETB (looter) tinha dispatch; a
+   habilidade de "descended" + bore counters + transformação pro verso
+   **Tecutlan, the Searing Rift** (terreno, {T}: Add {R}) nunca existia.
+   Nova `try_tunnel_grinder_transform()`, com "descended" aproximado
+   comparando a contagem de permanentes no cemitério no início do turno
+   vs no fim (sem instrumentar as dezenas de `state.graveyard.append`
+   espalhadas pelo arquivo). Cláusula de "discover X" do verso fica de
+   fora — estruturalmente impossível de rastrear sem saber qual fonte de
+   mana específica pagou cada gasto (mesma limitação que já impede
+   modelar o dano das Talismans).
+
+**Achado de brinde (não é carta, é bug de código):** duas definições
+duplicadas de `effective_cost()`/`can_cast()` no arquivo — a primeira
+(mais simples, sem os descontos do Metalwork Colossus/Demonic Junker)
+era 100% código morto, sempre sobrescrita pela segunda antes de qualquer
+chamada real acontecer. As cartas já usavam a versão certa (os descontos
+já funcionavam), mas a duplicata sobrando era uma armadilha real pra
+qualquer edição futura. Removida.
+
+**Validação:** smoke test (99 cartas inalteradas, é tudo mudança de
+código), `audit_ghosts2.py` limpo (só os 2 falsos-positivos esperados),
+batch de 2000 + regressão de 20.000 sem exceções. Instrumentado à parte
+em 20.000 jogos pra confirmar que cada mecanismo dispara de verdade (não
+é fantasma novo): Goblin Engineer ETB 2.526x, Mind Stone sac 1.551x,
+Osgir pump 2.066x, Tunnel-Grinder transformou 45x, Bahamut Mega Flare 2x
+(raro mas real — exige sobreviver 3+ turnos depois de conjurar uma
+criatura de 9 mana).
+
+---
+
 ## Auditoria sistemática de mecânicas fantasma 2026-09-04
 
 **Gatilho:** usuário, com razão, cobrou uma varredura completa depois de

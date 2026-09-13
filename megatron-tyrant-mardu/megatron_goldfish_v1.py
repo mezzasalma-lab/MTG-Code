@@ -172,6 +172,13 @@ add("Ultron, Artificial Malevolence", 3, "creature", {"artifact"}, power=2, toug
 add("Portal to Phyrexia", 9, "artifact", {"portal_phyrexia"}, pips={})
 add("Warstorm Surge", 6, "enchantment", {"warstorm_surge"}, pips={"R": 1})
 add("Brass's Tunnel-Grinder", 3, "artifact", {"tunnel_grinder"}, pips={"R": 1})
+# Tecutlan, the Searing Rift: verso apos transformar (land). "Whenever
+# you cast a permanent spell using mana produced by Tecutlan, discover
+# X" fica fora do modelo -- nao rastreamos qual fonte de mana especifica
+# pagou cada gasto em lugar nenhum do arquivo (mesma limitacao
+# estrutural que ja impede modelar o dano das Talismans). Fica so' como
+# terreno R normal apos transformar.
+add("Tecutlan, the Searing Rift", 0, "land", set(), produces={"R"})
 add("Cosmic Cube", 5, "artifact", {"cosmic_cube"}, pips={})  # Achado real 2026-09-03
 add("Genesis Chamber", 2, "artifact", {"genesis_chamber"}, pips={})  # Achado real 2026-09-09
 add("Tarrian's Journal", 2, "artifact", {"tarrians_journal"}, pips={"B": 1})  # Achado real 2026-09-09
@@ -364,12 +371,18 @@ class GameState:
     attackers_total_all_turns: int = 0  # soma de todos os combates, pra metrica de run_batch
     max_attacker_power_this_combat: int = 0  # pro gatilho do Cosmic Cube
     charge_counters: dict = field(default_factory=dict)  # nome do Planet -> contadores
+    temp_power_boost: dict = field(default_factory=dict)  # nome -> bonus de poder ate' o fim do turno (Osgir)
     bygone_colossus_exiled_warp: bool = False
     daretti_rocketeer_mv_seen: int = 0
     temp_creatures_pending_sacrifice: list = field(default_factory=list)
     temp_creatures_pending_exile: list = field(default_factory=list)
     daretti_emblem_pending_return: list = field(default_factory=list)
     triniform_tokens_total: int = 0
+    bahamut_entered_turn: Optional[int] = None
+    bahamut_chapter: int = 0
+    bahamut_mega_flare_total: int = 0
+    tunnel_grinder_bore_counters: int = 0
+    turn_start_gy_permanents: int = 0
 
     # metrics -----------------------------------------------------------------
     proxy_damage_total: int = 0
@@ -395,6 +408,7 @@ class GameState:
     cosmic_cube_free_casts_total: int = 0
     phyrexian_arena_life_lost_total: int = 0
     portal_phyrexia_reanimations_total: int = 0
+    tunnel_grinder_transforms_total: int = 0
     nexus_tokens_created_total: int = 0
     equip_haste_activations_total: int = 0
     pia_revolution_returns_total: int = 0
@@ -495,15 +509,6 @@ def has_color_sources_for(state: GameState, name: str) -> bool:
     return True
 
 
-def effective_cost(state: GameState, name: str) -> int:
-    mv = CARD_DB[name].mv
-    return mv
-
-
-def can_cast(state: GameState, name: str) -> bool:
-    return remaining_mana(state) >= effective_cost(state, name) and has_color_sources_for(state, name)
-
-
 def spend_mana(state: GameState, n: int):
     state.mana_spent_this_turn += n
 
@@ -521,11 +526,12 @@ def ready_creatures(state: GameState):
 def get_power(state: GameState, name: str) -> int:
     """Poder real de uma criatura, com override pras dinamicas (Daretti,
     Rocketeer Engineer: 'power is equal to the greatest mana value among
-    artifacts you control')."""
+    artifacts you control') e bonus temporario (Osgir: '+2/+0 until end
+    of turn')."""
     if name == "Daretti, Rocketeer Engineer":
         mvs = [CARD_DB[n].mv for n in state.battlefield if is_artifact_card(n) and n != name]
-        return max(mvs, default=0)
-    return CARD_DB[name].power
+        return max(mvs, default=0) + state.temp_power_boost.get(name, 0)
+    return CARD_DB[name].power + state.temp_power_boost.get(name, 0)
 
 
 def creature_enters(state: GameState, name: str, from_hand: bool = True, token: bool = False):
@@ -786,6 +792,20 @@ def is_token_name(name: str) -> bool:
 def resolve_etb(state: GameState, name: str, token: bool = False):
     tags = CARD_DB[name].tags
 
+    if "goblin_engineer" in tags:
+        # "When this creature enters, you may search your library for an
+        # artifact card, put it into your graveyard, then shuffle."
+        # Achado real 2026-09-13 (auditoria completa oraculo-por-oraculo):
+        # a tag existia so' pra categorizacao, o ETB nunca foi despachado
+        # -- fantasma real. Sempre busca a de maior MV (alimenta o motor
+        # de solda/recuperacao com o melhor alvo disponivel)."""
+        gy_targets = [c for c in state.library if is_artifact_card(c)]
+        if gy_targets:
+            target = max(gy_targets, key=lambda n: CARD_DB[n].mv)
+            state.library.remove(target)
+            state.graveyard.append(target)
+            state.tutors_used_total += 1
+
     if "combustible_gearhulk" in tags:
         # "target opponent may have you draw three cards. If the player
         # doesn't, you mill three cards, then this deals damage = total MV
@@ -824,14 +844,27 @@ def resolve_etb(state: GameState, name: str, token: bool = False):
         # versao Prototype barata ({3}{R}{R}, 2/2) -- mesma convencao de
         # 'escolhe sempre a linha de maior valor' ja usada pro Boros
         # Charm/etc no arquivo anterior.
+        # Achado real 2026-09-13 (auditoria completa): tokens sao copias
+        # de Skitterbeam Battalion, que TEM "Trample, haste" real -- sem
+        # marcar `creature_cast_turn` no turno anterior, os tokens
+        # ficavam com doenca de invocacao e nao atacavam no turno que
+        # entravam, fantasma parcial na propria mecanica ja existente.
         for _ in range(2):
-            creature_enters(state, make_token_copy_name(name), from_hand=False, token=True)
+            token_name = make_token_copy_name(name)
+            creature_enters(state, token_name, from_hand=False, token=True)
+            state.creature_cast_turn[token_name] = state.turn - 1
 
     if "saga_bahamut" in tags:
         state.bahamut_entered_turn = state.turn
         state.bahamut_chapter = 1
         # Capitulo I: destroy up to one target nonland permanent -- sem
         # alvo real de oponente, conta como interacao (mesma convencao).
+        # Capitulos II/III/IV disparam em `try_bahamut_saga_tick`, um por
+        # turno apos o draw step -- achado real 2026-09-13 (auditoria
+        # completa): so' o capitulo I (ETB) tinha dispatch, os campos
+        # `bahamut_entered_turn`/`bahamut_chapter` eram setados mas nunca
+        # lidos de novo -- a saga nunca avancava, fantasma real (perdia o
+        # Mega Flare do capitulo IV, o maior payoff da carta).
         state.interaction_spells_cast_total += 1
 
     if "portal_phyrexia" in tags:
@@ -1012,6 +1045,22 @@ def try_scarecrone(state: GameState):
     state.recursion_events_total += 1
 
 
+def try_mind_stone_sac(state: GameState):
+    """Mind Stone: '{1}, {T}, Sacrifice this artifact: Draw a card.'
+    Achado real 2026-09-13 (auditoria completa oraculo-por-oraculo): a
+    tag `fuel_rock1` existia mas nunca era despachada em lugar nenhum --
+    fantasma real. So' vale a pena trocar rampa permanente por 1 carta
+    quando ja' sobra bastante mana de outras fontes (nunca sacrifica a
+    unica rampa disponivel)."""
+    if "Mind Stone" not in state.battlefield:
+        return
+    if remaining_mana(state) < 1 or total_mana(state) < 7:
+        return
+    spend_mana(state, 1)
+    sacrifice(state, "Mind Stone")
+    draw_cards(state, 1)
+
+
 def try_goblin_engineer_activation(state: GameState):
     """'{R}, {T}, Sacrifice an artifact: Return target artifact card with
     mana value 3 or less from your graveyard to the battlefield.'"""
@@ -1093,6 +1142,27 @@ def try_osgir_activation(state: GameState):
             state.battlefield.append(token_name)
             resolve_etb(state, token_name)
     state.recursion_events_total += 1
+
+
+def try_osgir_pump(state: GameState):
+    """Osgir, the Reconstructor: '{1}, Sacrifice an artifact: Target
+    creature you control gets +2/+0 until end of turn.' Achado real
+    2026-09-13 (auditoria completa): so' a habilidade principal de
+    clonagem estava implementada. Sem 'activate only once' no oraculo,
+    mas limitada a 1x por turno aqui pra nao canibalizar fodder que
+    outros efeitos (Welder/Scrap Welder/Daretti) usam melhor -- so' ativa
+    depois de todos eles ja terem rodado nesse main_phase."""
+    if "Osgir, the Reconstructor" not in state.battlefield or remaining_mana(state) < 1:
+        return
+    target = next((n for n in ready_creatures(state) if n != COMMANDER), None)
+    if target is None:
+        return
+    fodder = best_weld_fodder(state)
+    if fodder is None:
+        return
+    spend_mana(state, 1)
+    sacrifice(state, fodder)
+    state.temp_power_boost[target] = state.temp_power_boost.get(target, 0) + 2
 
 
 # ---------------------------------------------------------------------------
@@ -1491,6 +1561,66 @@ def try_portal_phyrexia_upkeep(state: GameState):
         state.portal_phyrexia_reanimations_total += 1
 
 
+def count_permanent_cards(cards: list) -> int:
+    """Conta cartas de permanente (tudo exceto instant/sorcery) numa
+    zona -- usado pra aproximar 'descended' do Brass's Tunnel-Grinder
+    sem precisar instrumentar cada `state.graveyard.append(...)` do
+    arquivo inteiro (dezenas de lugares diferentes)."""
+    return sum(1 for c in cards if c in CARD_DB and CARD_DB[c].ctype not in ("instant", "sorcery"))
+
+
+def try_tunnel_grinder_transform(state: GameState):
+    """Brass's Tunnel-Grinder: 'At the beginning of your end step, if
+    you descended this turn, put a bore counter on it. Then if there
+    are three or more bore counters, remove those counters and
+    transform it.' Achado real 2026-09-13 (auditoria completa): so' o
+    ETB (looter) tinha dispatch -- essa 2a habilidade, e a transformacao
+    inteira pro verso Tecutlan (terreno R), nunca disparava. 'Descended'
+    aproximado comparando a contagem de permanentes no cemiterio no
+    inicio do turno vs agora (mesmo efeito de rastrear toda vez que algo
+    entra no cemiterio, sem precisar instrumentar cada ponto do arquivo
+    que ja faz `state.graveyard.append`)."""
+    if "Brass's Tunnel-Grinder" not in state.battlefield:
+        return
+    descended = count_permanent_cards(state.graveyard) > state.turn_start_gy_permanents
+    if not descended:
+        return
+    state.tunnel_grinder_bore_counters += 1
+    if state.tunnel_grinder_bore_counters >= 3:
+        state.tunnel_grinder_bore_counters = 0
+        state.battlefield.remove("Brass's Tunnel-Grinder")
+        state.battlefield.append("Tecutlan, the Searing Rift")
+        state.tunnel_grinder_transforms_total += 1
+
+
+def try_bahamut_saga_tick(state: GameState):
+    """Summon: Bahamut (Saga -- Enchantment Creature): 'As this Saga
+    enters and after your draw step, add a lore counter.' Capitulo I
+    (ETB) ja disparado em `resolve_etb`. Aqui, um turno depois do que
+    entrou (o proprio turno de entrada nao conta -- o draw step ja
+    passou antes dela ser conjurada), avanca 1 capitulo por turno:
+    II -- 'Destroy up to one target nonland permanent' (mesma interacao
+    do capitulo I, sem alvo real de oponente). III -- 'Draw two cards'
+    (ganho real, sem sacrificio). IV -- 'Mega Flare: deals damage equal
+    to the total mana value of other permanents you control to EACH
+    opponent' (dano multiplicado por NUM_OPPONENTS, mesma convencao de
+    todo efeito 'each opponent' do arquivo), depois sacrifica (dispara
+    Rakdos, the Muscle se estiver em campo, via `sacrifice()` normal)."""
+    if "Summon: Bahamut" not in state.battlefield or state.bahamut_entered_turn == state.turn:
+        return
+    state.bahamut_chapter += 1
+    if state.bahamut_chapter == 2:
+        state.interaction_spells_cast_total += 1
+    elif state.bahamut_chapter == 3:
+        draw_cards(state, 2)
+    elif state.bahamut_chapter >= 4:
+        other_mv = sum(CARD_DB[n].mv for n in state.battlefield if n != "Summon: Bahamut")
+        if other_mv > 0:
+            proxy_drain(state, other_mv * NUM_OPPONENTS)
+        sacrifice(state, "Summon: Bahamut")
+        state.bahamut_mega_flare_total += 1
+
+
 def try_nexus_of_becoming(state: GameState):
     """Nexus of Becoming: 'At the beginning of combat on your turn, draw
     a card. Then you may exile an artifact or creature card from your
@@ -1848,6 +1978,7 @@ def main_phase(state: GameState):
     try_scarecrone(state)
     try_mishra_unearth(state)
     try_osgir_activation(state)
+    try_osgir_pump(state)
     try_metalwork_colossus_recursion(state)
     try_daretti_savant(state)
     try_feldon(state)
@@ -1859,6 +1990,7 @@ def main_phase(state: GameState):
     try_fountainport(state)
     try_tarrians_journal(state)
     try_cast_flashback(state, "Faithless Looting", 3)
+    try_mind_stone_sac(state)
 
 
 def daretti_rocketeer_attack_ability(state: GameState):
@@ -1934,6 +2066,7 @@ def combat_step(state: GameState):
 
 
 def end_step(state: GameState):
+    try_tunnel_grinder_transform(state)
     megatron_postcombat(state)
 
     for n in state.temp_creatures_pending_sacrifice[:]:
@@ -1966,9 +2099,11 @@ def end_step(state: GameState):
 
 def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.turn += 1
+    state.turn_start_gy_permanents = count_permanent_cards(state.graveyard)
     state.lands_played_this_turn = 0
     state.mana_spent_this_turn = 0
     state.bonus_mana_pool = 0
+    state.temp_power_boost = {}
     state.tapped_land_this_turn = None
     state.life_lost_by_opponents_this_turn = 0
     state.ayara_recur_used_this_turn = False
@@ -1988,6 +2123,7 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     try_portal_phyrexia_upkeep(state)
     if not (is_first_turn and on_play):
         draw_cards(state, 1)
+    try_bahamut_saga_tick(state)
 
     play_land(state)
     main_phase(state)
@@ -2082,6 +2218,10 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg eventos de recursao/valor totais: {avg([s.recursion_events_total for s in states]):.2f}")
     print(f"Avg reanimacoes via Portal to Phyrexia (upkeep): "
           f"{avg([s.portal_phyrexia_reanimations_total for s in states]):.2f}")
+    print(f"Avg Mega Flares do Summon: Bahamut (capitulo IV): "
+          f"{avg([s.bahamut_mega_flare_total for s in states]):.2f}")
+    bore = sum(1 for s in states if s.tunnel_grinder_transforms_total > 0)
+    print(f"Partidas em que o Brass's Tunnel-Grinder transformou em Tecutlan: {100*bore/n:.1f}%")
     print(f"Avg artefatos sacrificados: {avg([s.artifacts_sacrificed_total for s in states]):.2f} | "
           f"Avg criaturas sacrificadas: {avg([s.creatures_sacrificed_total for s in states]):.2f}")
     print(f"Avg dano via payoff de sacrificio (Ayara/Susur Secundi): "
