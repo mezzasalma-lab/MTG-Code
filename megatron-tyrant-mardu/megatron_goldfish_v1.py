@@ -394,6 +394,7 @@ class GameState:
     daretti_savant_minus10_active: bool = False
     cosmic_cube_free_casts_total: int = 0
     phyrexian_arena_life_lost_total: int = 0
+    portal_phyrexia_reanimations_total: int = 0
     nexus_tokens_created_total: int = 0
     equip_haste_activations_total: int = 0
     pia_revolution_returns_total: int = 0
@@ -834,9 +835,12 @@ def resolve_etb(state: GameState, name: str, token: bool = False):
         state.interaction_spells_cast_total += 1
 
     if "portal_phyrexia" in tags:
-        # "each opponent sacrifices three creatures" -- sem board real de
-        # oponente, conta como valor de bordo destruido (recursion_events,
-        # nao dano numerico, mesma convencao ja usada nesta sessao).
+        # ETB: "each opponent sacrifices three creatures of their
+        # choice" -- sem board real de oponente, conta como valor de
+        # bordo destruido (recursion_events, nao dano numerico, mesma
+        # convencao ja usada nesta sessao). A 2a habilidade real da
+        # carta (reanimacao repetivel todo upkeep) fica em
+        # `try_portal_phyrexia_upkeep`, achado real 2026-09-13.
         state.recursion_events_total += 1
 
     if "cursed_mirror_clone" in tags:
@@ -1463,6 +1467,30 @@ def try_phyrexian_arena_upkeep(state: GameState):
     state.phyrexian_arena_life_lost_total += 1
 
 
+def try_portal_phyrexia_upkeep(state: GameState):
+    """Portal to Phyrexia: 'At the beginning of your upkeep, put target
+    creature card from a graveyard onto the battlefield under your
+    control. It's a Phyrexian in addition to its other types.' Achado
+    real 2026-09-13 (usuario notou que 2 copias via Ultron pareciam
+    'overpowered' -- a metade ETB ('each opponent sacrifices three
+    creatures') ja' era modelada, mas essa 2a habilidade, repetivel todo
+    upkeep, tinha ficado de fora inteira -- mecanica fantasma real, nao
+    so' impressao). Cada copia em campo (original + tokens via Ultron/
+    Cursed Mirror/Osgir) da' um gatilho SEPARADO -- reanima sempre a
+    criatura de maior MV do nosso cemiterio (sem cemiterio de oponente
+    real modelado, mesma convencao de sempre)."""
+    count = sum(1 for n in state.battlefield
+                if n == "Portal to Phyrexia" or n.startswith("Portal to Phyrexia (copia"))
+    for _ in range(count):
+        candidates = [c for c in state.graveyard if is_creature_card(c)]
+        if not candidates:
+            return
+        target = max(candidates, key=lambda n: CARD_DB[n].mv)
+        state.graveyard.remove(target)
+        creature_enters(state, target, from_hand=False)
+        state.portal_phyrexia_reanimations_total += 1
+
+
 def try_nexus_of_becoming(state: GameState):
     """Nexus of Becoming: 'At the beginning of combat on your turn, draw
     a card. Then you may exile an artifact or creature card from your
@@ -1957,6 +1985,7 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.tarrians_journal_used_this_turn = False
 
     try_phyrexian_arena_upkeep(state)
+    try_portal_phyrexia_upkeep(state)
     if not (is_first_turn and on_play):
         draw_cards(state, 1)
 
@@ -2051,6 +2080,8 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg criaturas cheatadas pra campo (Sneak Attack/Feldon/Anrakyr/Bygone Colossus warp): "
           f"{avg([s.creatures_cheated_in_total for s in states]):.2f}")
     print(f"Avg eventos de recursao/valor totais: {avg([s.recursion_events_total for s in states]):.2f}")
+    print(f"Avg reanimacoes via Portal to Phyrexia (upkeep): "
+          f"{avg([s.portal_phyrexia_reanimations_total for s in states]):.2f}")
     print(f"Avg artefatos sacrificados: {avg([s.artifacts_sacrificed_total for s in states]):.2f} | "
           f"Avg criaturas sacrificadas: {avg([s.creatures_sacrificed_total for s in states]):.2f}")
     print(f"Avg dano via payoff de sacrificio (Ayara/Susur Secundi): "
