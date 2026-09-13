@@ -310,6 +310,7 @@ class GameState:
     haste_grants_this_turn: set = field(default_factory=set)
     reiterate_used_this_turn: bool = False
     narset_used_this_turn: bool = False
+    cards_drawn_this_turn: int = 0  # Fists of Flame: "+1/+0 for each card you've drawn this turn"
 
     # metrics -----------------------------------------------------------------
     proxy_damage_total: int = 0
@@ -334,6 +335,7 @@ def draw_cards(state: GameState, n: int):
         if state.library:
             state.hand.append(state.library.pop(0))
             state.cards_drawn_extra += 1
+            state.cards_drawn_this_turn += 1
         else:
             state.library_emptied = True
 
@@ -400,6 +402,13 @@ def color_sources(state: GameState, color: str) -> int:
             n += 1  # Shadowblood Ridge
         elif "filter_identity_opal" in c.tags and color in ("U", "B", "R"):
             n += 1  # Opal Palace: {1},{T}: qualquer cor da identidade do comandante
+        elif "rock_identity" in c.tags and color in ("U", "B", "R"):
+            n += 1  # Achado real: Arcane Signet produz qualquer cor da identidade, mas
+            # nunca contava como fonte colorida (so' engordava o mana total generico)
+        elif "rock_pain_ub" in c.tags and color in ("U", "B"):
+            n += 1  # Achado real: Talisman of Dominance produz U ou B, mesma omissao
+        elif "rock_r_or_rr_instsorc" in c.tags and color == "R":
+            n += 1  # Achado real: Tablet of Discovery produz R (ou RR pra instant/sorcery)
     if state.treasures > 0 or state.bonus_mana_pool > 0:
         n += 1  # Treasure/mana flutuante fixam qualquer cor
     return n
@@ -427,8 +436,13 @@ def cost_reduction(state: GameState, name: str) -> int:
         if reducer in state.battlefield:
             reduce += 1
     if "Nightscape Familiar" in state.battlefield:
+        # "Blue spells and red spells you cast cost {1} less" -- so' reduz
+        # magicas que SAO azuis ou vermelhas (pip U, R ou hibrida com U/R);
+        # nenhuma magica desta lista e' realmente incolor, mas a leitura
+        # literal do oraculo nao inclui incolores (achado real: "or not
+        # colors" reduzia incolores tambem, o que nunca era o oraculo real).
         colors = set(c.pips.keys())
-        if colors & {"U", "R", "U/R"} or not colors:
+        if colors & {"U", "R", "U/R"}:
             reduce += 1
     return reduce
 
@@ -437,7 +451,18 @@ def effective_cost(state: GameState, name: str) -> int:
     return max(0, CARD_DB[name].mv - cost_reduction(state, name))
 
 
+ADDITIONAL_COST_DISCARD_TAGS = {
+    "discard_cost_draw2_treasure2", "discard_cost_draw2", "discard_cost_draw2_gift",
+    "sac_artifact_or_discard_draw2",
+}
+
+
 def can_cast(state: GameState, name: str) -> bool:
+    if CARD_DB[name].tags & ADDITIONAL_COST_DISCARD_TAGS and len(state.hand) < 2:
+        # Achado real: "as an additional cost to cast this spell, discard a
+        # card" e' um custo OBRIGATORIO -- se a magica e' a UNICA carta na
+        # mao, o custo nao pode ser pago e a magica nao pode ser conjurada.
+        return False
     return remaining_mana(state) >= effective_cost(state, name) and has_color_sources_for(state, name)
 
 
@@ -481,8 +506,6 @@ def land_enters_tapped(state: GameState, name: str) -> bool:
     if "basicland_tapped" in tags:
         return not any(n in ("Island", "Mountain", "Swamp") for n in state.battlefield)
     if "shockland_ub" in tags:
-        if state.life if hasattr(state, "life") else True:
-            pass
         return False  # sempre paga 2 de vida por entrar destapado (premissa: velocidade > vida, mesma de outros sims)
     return False
 
@@ -579,7 +602,12 @@ def resolve_single_target_effect(state: GameState, name: str, target: str, log: 
     if "single_target_pump_33" in tags:
         add_pump(state, target, add=3)
     if "single_target_trample_scaling" in tags:
-        add_pump(state, target, add=1)  # aproximado: +1/0 por carta comprada este turno, ver docstring do topo
+        # Fists of Flame: "Draw a card. ... gets +1/+0 for each card you've
+        # drawn this turn." Achado real: estava fixo em +1, ignorando o
+        # "for each" -- o cantrip_draw acima ja incrementou
+        # `cards_drawn_this_turn` antes deste ponto, entao o valor reflete
+        # o total real (incluindo o proprio draw desta magica/copia).
+        add_pump(state, target, add=state.cards_drawn_this_turn)
     if "attack_trick_pump_22_trample" in tags:
         add_pump(state, target, add=2)
     if "attack_trick_pump_33_trample" in tags:
@@ -626,7 +654,15 @@ def cast_single_target_spell(state: GameState, name: str, log: list, prefer_zada
     can_target_zada = has_zada and others > 0 and not attack_only  # Zada nao ataca (sem tag de ataque valido aqui)
 
     mult = veyran_multiplier(state)
-    x_value = max(0, remaining_mana(state)) if "single_target_pump_x_fs" in CARD_DB[name].tags else None
+    if "single_target_pump_x_fs" in CARD_DB[name].tags:
+        # Achado real: X era calculado a partir do mana restante mas NUNCA
+        # gasto -- a magica "pagava" {X}{R} so' na parte fixa {R}
+        # (`effective_cost` acima), deixando o X flutuando disponivel de
+        # graca pro resto do turno (mana fantasma reaproveitavel).
+        x_value = max(0, remaining_mana(state))
+        spend_mana(state, x_value)
+    else:
+        x_value = None
     if prefer_zada and can_target_zada:
         target = "Zada, Hedron Grinder"
         resolve_single_target_effect(state, name, target, log, x_value=x_value)
@@ -762,7 +798,11 @@ def cast_free_instant_sorcery(state: GameState, name: str, log: list):
         has_zada = "Zada, Hedron Grinder" in state.battlefield
         others = other_creatures_count(state, "Zada, Hedron Grinder")
         mult = veyran_multiplier(state)
-        x_value = max(0, remaining_mana(state)) if "single_target_pump_x_fs" in tags else None
+        # Regra 601.2b: quando uma magica com {X} e' conjurada sem pagar seu
+        # custo de mana, X = 0 (a menos que outro efeito diga o contrario) --
+        # achado real: aqui X ainda lia `remaining_mana`, dando pump de graca
+        # tambem num cast que ja e' de graca.
+        x_value = 0 if "single_target_pump_x_fs" in tags else None
         if has_zada and others > 0:
             resolve_single_target_effect(state, name, "Zada, Hedron Grinder", log, x_value=x_value)
             other_names = [n for n in state.battlefield if is_creature_card(n) and n != "Zada, Hedron Grinder"]
@@ -813,21 +853,31 @@ def resolve_instant_sorcery(state: GameState, name: str, log: list, free: bool =
         discard_worst_and_draw(state, discard_n=1, draw_n=2)
 
     elif "discard_cost_draw2_gift" in tags:
-        # Sazacap's Brew: descarta 1, compra 2 (gift recusado por padrao -- dar
-        # um Fish 1/1 tapped ao oponente por +2/0 nosso e' 📊, sem oponente real
-        # pra receber o token nem pra medir a troca).
+        # Sazacap's Brew: descarta 1, compra 2. Achado real: o gift era
+        # recusado por padrao, perdendo o +2/0 condicional -- mas este motor
+        # nao modela NENHUMA desvantagem de dar um Fish 1/1 tapped ao
+        # oponente (sem bloqueio, sem tabuleiro de oponente relevante em
+        # lugar nenhum do arquivo), entao e' estritamente melhor prometer o
+        # gift e sempre ganhar o bonus (nao ha' custo real a medir aqui).
         discard_worst_and_draw(state, discard_n=1, draw_n=2)
+        t = best_pump_target(state)
+        if t:
+            add_pump(state, t, add=2)
 
     elif "draw2_discard2_untap3" in tags:
         # Frantic Search: compra 2, descarta 2 (liquido zero em cartas), destapa
         # ate 3 terrenos -- ganho real e' MANA (reembolsa ate 3 do custo gasto).
-        for _ in range(2):
-            if state.library:
-                state.hand.append(state.library.pop(0))
+        # Achados reais: (1) os 2 draws faziam append direto na mao, sem passar
+        # por `draw_cards()` -- nunca contavam em `cards_drawn_extra` nem no
+        # novo `cards_drawn_this_turn` (sinergia com Fists of Flame). (2) o
+        # descarte escolhia as 2 cartas de MAIOR mv (`-mv` ordenado ascendente
+        # bota o mv mais alto primeiro), invertido em relacao a convencao do
+        # resto do arquivo ("worst" = menor mv, ver `discard_worst_and_draw`).
+        draw_cards(state, 2)
         untap_refund = min(3, lands_available(state))
         state.mana_spent_this_turn = max(0, state.mana_spent_this_turn - untap_refund)
         if len(state.hand) >= 2:
-            worst = sorted(state.hand, key=lambda c: -CARD_DB[c].mv if c in CARD_DB else 0)[:2]
+            worst = sorted(state.hand, key=lambda c: CARD_DB[c].mv if c in CARD_DB else 0)[:2]
             for c in worst:
                 state.hand.remove(c)
                 state.graveyard.append(c)
@@ -961,7 +1011,11 @@ def cast_via_flashback(state: GameState, name: str, log: list):
         has_zada = "Zada, Hedron Grinder" in state.battlefield
         others = other_creatures_count(state, "Zada, Hedron Grinder")
         mult = veyran_multiplier(state)
-        x_value = max(0, remaining_mana(state)) if "single_target_pump_x_fs" in tags else None
+        if "single_target_pump_x_fs" in tags:
+            x_value = max(0, remaining_mana(state))
+            spend_mana(state, x_value)  # achado real: mesmo bug do X nunca gasto, ver cast_single_target_spell
+        else:
+            x_value = None
         if has_zada and others > 0:
             resolve_single_target_effect(state, name, "Zada, Hedron Grinder", log, x_value=x_value)
             other_names = [n for n in state.battlefield if is_creature_card(n) and n != "Zada, Hedron Grinder"]
@@ -1057,7 +1111,18 @@ def play_land(state: GameState, log: list):
         state.tapped_land_this_turn = pick
         return
     if "sac_fetch_ubr" in CARD_DB[pick].tags:
-        crack_fetch(state)
+        if pick == "Grixis Panorama":
+            # Achado real: Grixis Panorama cracka por "{1}, T, Sacrifice" (custo
+            # extra de 1 mana), diferente de Seething Landscape ("T, Sacrifice",
+            # sem custo extra) -- as duas compartilhavam a mesma tag e nenhuma
+            # pagava o {1}. Sem mana sobrando, fica em campo batendo por {C}.
+            if remaining_mana(state) >= 1:
+                spend_mana(state, 1)
+                crack_fetch(state)
+            else:
+                state.battlefield.append(pick)
+        else:
+            crack_fetch(state)
         return
     tapped = land_enters_tapped(state, pick)
     state.battlefield.append(pick)
@@ -1167,8 +1232,18 @@ def combat_step(state: GameState, log: list):
         return
     state.azula_attacking_this_combat = COMMANDER in attackers
 
+    for n in attackers:
+        # Achado real: o token do Firebender Ascension carrega a tag
+        # "firebending1" (so' usada ate' agora pra contar quest counters),
+        # mas nunca gerava o {R} que "whenever this attacks, add R" concede
+        # de verdade -- Firebending 2 (Azula) generalizado pro mesmo loop.
+        atk_tags = CARD_DB[n].tags
+        if "firebending1" in atk_tags:
+            state.bonus_mana_pool += 1
+        if "firebending2" in atk_tags:
+            state.bonus_mana_pool += 2
+
     if state.azula_attacking_this_combat:
-        state.bonus_mana_pool += 2  # Firebending 2
         if ("Fire Nation Palace" in state.battlefield and remaining_mana(state) >= 2
                 and color_sources(state, "R") >= 1):
             spend_mana(state, 2)
@@ -1296,6 +1371,7 @@ def run_turn(state: GameState, log: list):
     state.haste_grants_this_turn = set()
     state.reiterate_used_this_turn = False
     state.narset_used_this_turn = False
+    state.cards_drawn_this_turn = 0
 
     draw_cards(state, 1)
     play_land(state, log)

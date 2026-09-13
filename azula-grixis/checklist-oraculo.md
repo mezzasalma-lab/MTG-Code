@@ -1,5 +1,91 @@
 # Checklist cláusula-a-cláusula — Fire Lord Azula (Grixis, U/B/R)
 
+## Auditoria oráculo-por-oráculo completa — 2026-09-13
+
+Pedido direto do usuário, extensão pra todos os decks do repositório de
+uma auditoria já feita no Megatron: reler o oráculo real (Scryfall) de
+TODAS as 63 cartas não-terreno + 20 terrenos + comandante, comparar
+cláusula-por-cláusula contra o código já existente (que já tinha passado
+por uma varredura na própria construção — ver seção acima), e corrigir
+qualquer implementação parcial. Diferente da varredura original (que
+pegava so' tags/nomes NUNCA referenciados em lugar nenhum), esta passa
+pega também tags que SÃO referenciadas mas cuja implementação cobre só
+PARTE do oráculo real da carta.
+
+**9 gaps reais encontrados e corrigidos** (nenhum exigiu adicionar/cortar
+carta, só corrigir como habilidades já presentes são modeladas):
+
+1. **Arcane Signet / Talisman of Dominance / Tablet of Discovery** —
+   as 3 produzem mana colorida real (identidade do comandante / U-B /
+   R), mas só entravam em `rocks_mana()` (mana genérica total) — nunca
+   em `color_sources()`. Resultado: o motor podia recusar conjurar uma
+   mágica colorida (ex.: Counterspell `UU`) mesmo com mana suficiente
+   via rocks pra pagar. Corrigido em `color_sources()`.
+2. **Grixis Panorama** — oráculo real é `{1}, T, Sacrifice: busca...`
+   (custo extra de 1 mana), mas compartilhava a mesma tag
+   `sac_fetch_ubr` da Seething Landscape (`T, Sacrifice`, sem custo
+   extra) e nunca pagava o `{1}`. Corrigido: crackeia só se sobrar 1
+   mana; senão fica em campo batendo por `{C}`.
+3. **Big Score / Unexpected Windfall / Thrill of Possibility / Sazacap's
+   Brew / Demand Answers** — todas têm "as an additional cost to cast
+   this spell, discard a card" (custo obrigatório, não efeito). O motor
+   deixava conjurar mesmo com a mágica sendo a ÚNICA carta na mão (custo
+   impossível de pagar = mágica não pode ser conjurada). Corrigido com
+   guarda em `can_cast()`.
+4. **Fists of Flame** — já documentado como limitação conhecida na
+   seção "Aproximações documentadas" abaixo (+1/0 fixo em vez de "+1/0
+   pra cada carta comprada este turno"). Corrigido de verdade agora:
+   novo campo `cards_drawn_this_turn` (resetado por turno, incrementado
+   em `draw_cards()`), usado no lugar do fixo `add=1`.
+5. **Frantic Search** — os 2 draws faziam `append` direto na mão sem
+   passar por `draw_cards()` (undercounta `cards_drawn_extra` e o novo
+   `cards_drawn_this_turn`, quebrando a sinergia com o Fists of Flame
+   acima). Corrigido pra usar `draw_cards()`.
+6. **Frantic Search (descarte)** — o sort do descarte usava `-mv`
+   ascendente, que descarta as 2 cartas de MAIOR custo, invertido em
+   relação à convenção do resto do arquivo ("pior" = menor mv, ver
+   `discard_worst_and_draw`). Corrigido pra descartar as de menor mv.
+7. **Firebender Ascension** (token Soldado com Firebending 1) — a tag
+   `firebending1` só contava pra quest counters, nunca gerava o {R} que
+   o próprio "whenever this attacks, add R" concede de verdade.
+   Generalizado o bônus de mana de combate (antes só hardcoded pra
+   Firebending 2 da Azula) pra qualquer atacante com firebending1/2.
+8. **Sazacap's Brew** (gift) — o gift era recusado por padrão pra evitar
+   dar um Fish 1/1 tapped ao oponente. Mas este motor não modela NENHUMA
+   desvantagem de tabuleiro de oponente (sem bloqueio, sem interação
+   deles em lugar nenhum do arquivo) — dar o Fish é estritamente melhor
+   (ganha +2/0 de graça, sem custo real mensurável aqui). Corrigido pra
+   sempre prometer o gift.
+9. **Lunar Frenzy** (`{X}{R}`, regra 706.10/601.2b) — X era calculado
+   como `remaining_mana(state)` pro tamanho do pump, mas NUNCA
+   deduzido do mana disponível — o pump saía de graça, deixando o X
+   "reaproveitável" pro resto do turno (mana fantasma). Corrigido: X é
+   gasto de verdade nos casts pagos (`cast_single_target_spell`,
+   `cast_via_flashback`); e X = 0 (regra 601.2b) nos casts de graça
+   (`cast_free_instant_sorcery`, ex.: Torrential Gearhulk puxando ele do
+   cemitério).
+
+Mais 1 correção de precisão sem efeito prático no pool atual: a redução
+de custo do Nightscape Familiar ("blue spells and red spells") incluía
+`or not colors` (reduziria magia incolor também) — nenhuma carta desta
+lista é incolor, então era inerte, mas incorreta por leitura literal do
+oráculo; removida.
+
+**Validação:** smoke test (87 nomes no `CARD_DB`, 99 cartas na
+`BASE_LIBRARY`, 0 desconhecidas, 0 duplicatas) + 2.000 partidas + 20.000
+partidas de regressão, 0 exceções em ambas. Testes unitários dirigidos
+confirmaram cada uma das 9 correções disparando (rocks contam como fonte
+colorida, Panorama fica em campo sem mana e crackeia com 1 sobrando,
+`can_cast` recusa custo-de-descarte com mão vazia, Lunar Frenzy zera o
+mana restante ao pagar X, Fists of Flame escala com `cards_drawn_this_turn`
+real). Distribuição de dano ficou mais alta na cauda extrema (média subiu
+de 506.7→1875.3 em 2.000 partidas, mediana estável ~40-43) — esperado,
+já que os gaps corrigidos (mais mana colorida disponível, X realmente
+pago, Fists escalando) alimentam ainda mais o combo real Zada+Veyran+
+Storm-Kiln Artist já documentado abaixo, não uma mudança de comportamento
+típico.
+
+
 Pedido direto do usuário (2026-09-01): *"Quais decks faltam para fecharmos?"*
 → *"Pode começar com o Kutzil"* (feito) → continuação natural pros outros 3
 decks sem simulador desta pasta. Azula é o segundo (construção do zero,
@@ -171,10 +257,10 @@ inclusive uma sweep final de 20.000 partidas, ~18.5s, 0 exceções).
   Firebending que ataca conta 1 quest counter; ao acumular 4, "copia" um
   desses gatilhos ≈ +2 de dano proxy. Mesmo padrão de aproximação
   documentada do Ba Sing Se no Kutzil.
-- **Fists of Flame** (+1/0 por carta comprada este turno) — aproximado
-  como +1/0 fixo (o total real varia com quantas cartas já foram
-  compradas no turno até aquele ponto, não rastreado por carta
-  individual neste modelo agregado).
+- ~~**Fists of Flame** (+1/0 por carta comprada este turno) — aproximado
+  como +1/0 fixo~~ — **corrigido** na auditoria oráculo-por-oráculo de
+  2026-09-13 (ver seção no topo do arquivo): agora escala de verdade com
+  `cards_drawn_this_turn`.
 - **Reiterate / Narset's Reversal** — usados só como finalizador do
   Grapeshot (copiam o storm burn já resolvido uma vez cada, no fim do
   turno) — não generalizados como copiadores de qualquer spell nem com

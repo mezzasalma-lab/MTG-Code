@@ -95,3 +95,41 @@ travamento) e determinístico por seed. Mesmo tratamento dado ao outlier
 do Ouroboroid no Kutzil: documentado como achado real, não suprimido
 artificialmente.
 
+---
+
+## Auditoria oráculo-por-oráculo completa — 2026-09-13
+
+Extensão pra este deck da mesma auditoria já feita no Megatron: oráculo
+real via Scryfall pras 63 cartas + 20 terrenos + comandante, comparação
+cláusula-por-cláusula contra o código, 9 gaps reais corrigidos (detalhes
+completos em `checklist-oraculo.md`, seção no topo): mana colorida das 3
+rocks (Signet/Talisman/Tablet) não contava pra checagem de cor; Grixis
+Panorama crackeava de graça (devia custar `{1}`); 5 mágicas com "discard
+a card" como custo adicional obrigatório podiam ser conjuradas com a mão
+vazia; Fists of Flame tinha o pump fixo em +1/0 em vez de escalar com
+cartas compradas no turno; Frantic Search não passava seus draws por
+`draw_cards()` (undercounting de métricas) e descartava as cartas
+ERRADAS (maior custo, não menor); o token do Firebender Ascension nunca
+gerava o próprio mana de Firebending 1 ao atacar; Sazacap's Brew recusava
+o gift sem necessidade (sem desvantagem real modelada pra dar o token ao
+oponente); e Lunar Frenzy calculava o pump de X mas nunca gastava esse
+mana de verdade (bug de mana fantasma reaproveitável).
+
+### Métricas antes/depois (20.000 partidas, seed 5.000.000, turns=10, 0 exceções)
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Dano proxy médio | 1586.2 | 2931.9 |
+| Dano proxy mediano | 70.0 | 75.0 |
+| Cartas compradas extra (média) | 28.0 | 30.4 |
+| Treasures criados (média) | 12.4 | 15.8 |
+| Cópias via Azula atacando (média) | 1.7 | 1.8 |
+| Dobras via Veyran (média) | 8.9 | 10.7 |
+| Biblioteca esgotada | 2695/20000 (13.5%) | 3207/20000 (16.0%) |
+
+A mediana subiu pouco (~7%, o jogo "típico" mudou pouco) — a média subiu
+bem mais porque os gaps corrigidos (mais mana colorida real disponível
+via rocks, X realmente pago, Fists escalando de verdade) alimentam ainda
+mais a cauda extrema do combo Zada+Veyran+Storm-Kiln Artist já documentado
+acima, não porque o comportamento típico do deck mudou de categoria.
+
