@@ -1,5 +1,80 @@
 # Checklist cláusula-a-cláusula — Beorn the Fierce
 
+## Auditoria oráculo-por-oráculo completa — 2026-09-13
+
+Extensão pra este deck da mesma auditoria já feita no Megatron/Azula:
+pedido do usuário pra revisar TODOS os decks do repositório, cláusula a
+cláusula contra o oráculo real (Scryfall), atrás de implementações
+parciais que passaram pelas varreduras anteriores (este deck já tinha
+sido auditado de forma muito completa em 2026-08-28 até 2026-09-02, com
+vários "achado real" documentados acima — esta é mais uma passada em
+cima de um arquivo já maduro).
+
+**8 gaps reais encontrados e corrigidos:**
+
+1. **Cultivate/Sakura-Tribe Elder/Solemn Simulacrum/Titania's Command/
+   Archdruid's Charm (modo terreno)/Lumra (retorno de terrenos)** — todos
+   os 6 têm oráculo real "put/return onto the battlefield **tapped**",
+   mas NENHUM marcava o terreno buscado como tapped — o terreno produzia
+   mana de graça no turno em que entrava (mana fantasma, tempo mais
+   rápido do que o real). Corrigido com um contador novo
+   (`tapped_basics_this_turn`/`tapped_green_this_turn`, não o `set`
+   `tapped_lands_this_turn` já existente — esse é indexado por NOME e só
+   funciona pra terrenos singleton como Bala Ged Sanctuary; "Forest" tem
+   31 cópias no decklist, então marcar "Forest" nesse set zeraria a mana
+   de TODAS as cópias em campo, não só a buscada).
+2. **Ezuri's Predation** (`mass_removal`) só era excluída do loop de
+   interação dedicado (`try_use_own_interaction`), não do loop guloso
+   principal — podia ser conjurada por lá mesmo sem nenhum efeito real
+   possível (cria 0 tokens sem criaturas de oponente modeladas).
+   Corrigido: excluída dos dois loops, nunca mais conjurada de graça (8
+   mana por zero efeito, correto pra esse motor solo).
+3. **Gigantic Big Bear** — oráculo real é "Hexproof, **haste**", mas a
+   tag `haste` nunca tinha sido atribuída (só Craterhoof tinha) — o motor
+   tratava essa criatura de 10 mana como doente de invocação no turno em
+   que entra, atrasando os gatilhos de combate (Ohran/Toski/Beorn) em 1
+   turno inteiro.
+4. **Shamanic Revelation** — "draw a card for each creature you control"
+   tinha um piso artificial `max(1, creatures)`, garantindo 1 compra
+   mesmo com 0 criaturas em campo (o oráculo real não tem esse piso).
+5. **Lumra, Bellow of the Woods** — "Lumra's power and toughness are each
+   equal to the number of lands you control" é uma CDA real, mas
+   `BASE_POWER`/`BASE_TOUGHNESS` tinham ela hardcoded em 0 — zerando ela
+   em TODO cálculo que usa esses dicts (Garruk's Uprising/Tribute to the
+   World Tree "power >= X", redução de custo do Goreclaw, maior poder do
+   Great Henge/Selvala, Last March of the Ents), apesar dela ser
+   normalmente um dos maiores corpos do deck (8-15+ de poder/resistência).
+   Corrigido com `lands_in_play(state)` calculado ao vivo.
+6. **Toughness nunca recebia os 3 anthems reais de Bear** (Beorn +2/+2,
+   Chronicle of Victory +2/+2, Patchwork Banner +1/+1) — já corrigidos
+   pro PODER numa rodada anterior (`effective_power()`), mas a
+   TOUGHNESS (usada só por Last March of the Ents, "greatest toughness
+   among creatures you control") lia o `BASE_TOUGHNESS` bruto. Nova
+   função `effective_toughness()` espelhando `effective_power()`, com a
+   mesma premissa já documentada pra `greatest_power_in_play()` de somar
+   `counters_on_board` ao maior valor (assume que os contadores foram
+   pra maior criatura).
+7. **Natural Order** escolhia qual criatura verde sacrificar usando
+   `BASE_POWER.get(c, 0)` bruto (não `effective_power()`) — podia
+   escolher errado (Lumra aparecendo como poder 0, ou um Bear com anthem
+   real parecendo mais fraco do que é).
+8. **Garruk's Uprising** (ETB "if you control a creature with power 4 or
+   greater, draw a card") tinha a mesma imprecisão — comparava contra
+   `BASE_POWER` bruto em vez de `effective_power()`.
+
+**Validação:** smoke test (73 nomes no `CARD_DB`, 99 cartas na
+`BASE_LIBRARY`, 0 desconhecidas) + 2.000 partidas antes/depois (mesma
+seed) + 20.000 partidas de regressão, 0 exceções em todas. Testes
+unitários dirigidos confirmaram cada uma das 8 correções: Cultivate
+zera a mana do turno da mesma forma que Three Visits NÃO zera (correto,
+Three Visits não tem "tapped" no oráculo); Gigantic Big Bear ataca no
+turno em que entra; Lumra com 7 Forests em campo tem poder/resistência
+7; Ezuri's Predation nunca aparece nos candidatos de nenhum dos 2 loops
+de conjuração; Shamanic Revelation com 0 criaturas compra 0; Last March
+of the Ents com um Bear sob o anthem da Beorn usa a toughness já somada
+(2 base + 2 anthem = 4), não a bruta.
+
+
 Pedido direto do usuário (2026-09-01), o mesmo trabalho já feito pro Toph
 agora exigido pra **todos os decks**: *"AGORA FAZ O QUE SEMPRE Te MANDei
 FAZER: COmpila a porra de TODAS AS CARTAS DOS DECKS UMA A UMA COMO EU

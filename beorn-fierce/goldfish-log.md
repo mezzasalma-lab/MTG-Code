@@ -1122,6 +1122,46 @@ linha. Ver esse arquivo pra tabela completa de status por cláusula.
 
 ---
 
+## Auditoria oráculo-por-oráculo completa — 2026-09-13
+
+Extensão pra este deck da mesma auditoria já feita no Megatron/Azula.
+8 gaps reais encontrados e corrigidos (detalhes completos em
+`checklist-oraculo.md`, seção no topo): 6 efeitos "put onto the
+battlefield tapped" (Cultivate, Sakura-Tribe Elder, Solemn Simulacrum,
+Titania's Command, Archdruid's Charm modo terreno, retorno de terrenos
+da Lumra) nunca marcavam o terreno buscado como tapped, dando mana de
+graça no turno em que entra; Ezuri's Predation podia ser conjurada sem
+efeito real pelo loop guloso principal; Gigantic Big Bear não tinha a
+tag de haste apesar do oráculo real dizer "Hexproof, haste"; Shamanic
+Revelation tinha um piso artificial de 1 compra mesmo com 0 criaturas;
+Lumra (CDA "power/toughness = terrenos que você controla") estava
+hardcoded em 0 poder/resistência em vez de calculada ao vivo; a
+toughness nunca recebia os 3 anthems reais de Bear (só o poder recebia,
+de uma correção anterior); e 2 lugares (Natural Order, Garruk's Uprising)
+comparavam poder bruto (`BASE_POWER`) em vez do poder efetivo com
+anthems.
+
+### Métricas antes/depois (2.000 partidas, seed 91000, turns=8, 0 exceções)
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg spells conjurados | 12.42 | 12.27 |
+| Avg compras extras (draw) | 17.00 | 17.27 |
+| Avg Bear count final | 7.38 | 7.46 |
+| Avg finishers resolvidos | 0.54 | 0.53 |
+| Managorger: avg contadores finais | 8.01 | 7.80 |
+| Avg contadores +1/+1 no board | 13.53 | 13.89 |
+| Avg mão final | 8.49 | 8.71 |
+
+Diferenças pequenas e nos dois sentidos (esperado: os fixes de "mana
+tapped" atrasam levemente o tempo de jogo em 1 terreno por efeito usado,
+enquanto Lumra/toughness/Shamanic Revelation corrigem tanto pra cima
+quanto pra baixo dependendo do jogo) — nenhuma mudança de categoria no
+comportamento típico do deck, confirmando que os gaps eram imprecisões
+reais, não bugs que inflavam ou destruíam a curva inteira.
+
+---
+
 <!-- Para novas partidas avulsas, use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

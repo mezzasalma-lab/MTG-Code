@@ -220,7 +220,12 @@ protection_defs = [
     ("Heroic Intervention", 2, {"Instant"}, {"protection"}),
     ("Lightning Greaves", 2, {"Artifact"}, {"protection","c_only"}),
     ("Obscuring Haze", 3, {"Instant"}, {"protection","fog","free_with_commander"}),
-    ("Gigantic Big Bear", 7, {"Creature"}, {"protection_self","hexproof","bear"}),
+    # Achado real: oraculo real e' "Hexproof, HASTE" -- a tag "haste" nunca
+    # tinha sido atribuida (so' Craterhoof tinha), entao can_attack() tratava
+    # essa criatura de 10 mana como doente de invocacao no turno em que
+    # entra, atrasando incorretamente os gatilhos de combate (Ohran/Toski/
+    # Beorn) em 1 turno inteiro.
+    ("Gigantic Big Bear", 7, {"Creature"}, {"protection_self","hexproof","bear","haste"}),
     ("Allosaurus Shepherd", 1, {"Creature"}, {"protection_spells"}),
 ]
 for name, mv, typ, tags in protection_defs:
@@ -422,6 +427,27 @@ class GameState:
     tapped_lands_this_turn: Set[str] = field(default_factory=set)
     own_interaction_used: int = 0             # nossa carta de remocao usada, premissa fixa 1/3 turnos
 
+    # Contador (nao set por nome) de terrenos buscados/retornados que
+    # entraram tapped este turno -- achado real: Cultivate, Titania's
+    # Command, Archdruid's Charm (modo terreno), Solemn Simulacrum,
+    # Sakura-Tribe Elder e o retorno de terrenos da Lumra todos tem oraculo
+    # real "put/return onto the battlefield tapped", mas nenhum marcava
+    # isso. A maioria busca "Forest" (31 copias no decklist) -- um set por
+    # nome (como `tapped_lands_this_turn`, usado so' pro singleton Bala Ged
+    # Sanctuary) marcaria TODAS as copias como tapped de uma vez; a Lumra
+    # tambem pode devolver terrenos nao-basicos do cemiterio, entao um
+    # contador generico (sem distinguir por nome) cobre os 2 casos sem
+    # risco de colisao, subtraido em `total_mana()`. Separado de
+    # `tapped_green_this_turn` porque a Lumra pode devolver terrenos
+    # NAO-verdes do cemiterio (War Room, Boseiju, etc.) -- subtrair o mesmo
+    # contador de `green_sources()` contaria uma fonte verde a menos do
+    # que devia sempre que um desses terrenos incolores fosse um dos
+    # "tapped" (a Forest, Sakura-Tribe Elder, Solemn Simulacrum, Titania's
+    # Command e Archdruid's Charm so' buscam Forest, entao sempre incrementam
+    # os 2 juntos).
+    tapped_basics_this_turn: int = 0
+    tapped_green_this_turn: int = 0
+
     # Chameleon Colossus, "{2}{G}{G}: This creature gets +X/+X until end of turn,
     # where X is its power" - achado real 2026-08-30 (auditoria completa de oraculo):
     # so as estaticas (changeling, protection from black) estavam modeladas, a
@@ -595,6 +621,7 @@ def total_mana(state: GameState) -> int:
             if is_summoning_sick_dork(state, card):
                 continue
             total += 1
+    total -= state.tapped_basics_this_turn
     return total
 
 def green_sources(state: GameState) -> int:
@@ -616,6 +643,7 @@ def green_sources(state: GameState) -> int:
             if is_summoning_sick_dork(state, card):
                 continue
             g += 1
+    g -= state.tapped_green_this_turn
     return g
 
 def remaining_mana(state: GameState) -> int:
@@ -693,8 +721,22 @@ def bears_in_play(state: GameState) -> int:
 # Victory e Patchwork Banner nao tinham NENHUM efeito de poder modelado.
 # Convencao ja usada nesse arquivo pra "tipo escolhido" (Chronicle, Roaming
 # Throne): sempre Bear, unica escolha sensata num deck tribal Bear.
+def lands_in_play(state: GameState) -> int:
+    return sum(1 for c in state.battlefield if is_land(c))
+
 def effective_power(state: GameState, card: str) -> int:
-    p = BASE_POWER.get(card, 0)
+    # Achado real: Lumra, Bellow of the Woods tem uma CDA real ("Lumra's
+    # power and toughness are each equal to the number of lands you
+    # control"), nao um P/T impresso fixo -- BASE_POWER tinha ela hardcoded
+    # em 0, zerando ela em TODO calculo que usa effective_power (Garruk's
+    # Uprising/Tribute to the World Tree power>=X, Goreclaw cost reduction,
+    # Great Henge/Selvala greatest-power, total_power_in_play), apesar dela
+    # normalmente ser um dos maiores corpos do deck (poder = terrenos em
+    # campo, frequentemente 8-15+).
+    if card == "Lumra, Bellow of the Woods":
+        p = lands_in_play(state)
+    else:
+        p = BASE_POWER.get(card, 0)
     if not is_creature(card) or not is_bear(state, card):
         return p
     if card != COMMANDER and state.commander_in_play:
@@ -704,6 +746,28 @@ def effective_power(state: GameState, card: str) -> int:
     if card != "Patchwork Banner" and state.has("Patchwork Banner"):
         p += 1  # Patchwork Banner (tipo escolhido Bear): +1/+1
     return p
+
+# Achado real: os 3 anthems reais (Beorn +2/+2, Chronicle of Victory +2/+2,
+# Patchwork Banner +1/+1) ja eram propagados pro PODER via effective_power()
+# (ver comentario acima), mas a TOUGHNESS ficava de fora - usada so' por Last
+# March of the Ents ("greatest toughness among creatures you control"), que
+# lia BASE_TOUGHNESS bruto sem nenhum anthem nem os +1/+1 counters agregados
+# (mesma premissa ja documentada em greatest_power_in_play: assume que os
+# contadores foram pra maior criatura).
+def effective_toughness(state: GameState, card: str) -> int:
+    if card == "Lumra, Bellow of the Woods":
+        t = lands_in_play(state)
+    else:
+        t = BASE_TOUGHNESS.get(card, 0)
+    if not is_creature(card) or not is_bear(state, card):
+        return t
+    if card != COMMANDER and state.commander_in_play:
+        t += 2
+    if card != "Chronicle of Victory" and state.has("Chronicle of Victory"):
+        t += 2
+    if card != "Patchwork Banner" and state.has("Patchwork Banner"):
+        t += 1
+    return t
 
 # Return of the Wildspeaker: "Draw cards equal to the greatest power among
 # NON-HUMAN creatures you control." Tipos reais (Scryfall, nao memoria) das
@@ -1040,8 +1104,15 @@ def main_phase(state: GameState, log: List[Dict]):
     for _ in range(5):
         # Remocao fica de fora do loop guloso normal - so' conjurada via
         # try_use_own_interaction() (1x/3 turnos, alvo real nesse ritmo).
+        # Achado real: "mass_removal" (Ezuri's Predation, "for each creature
+        # your opponents control...") NAO era excluida daqui - so' da
+        # try_use_own_interaction() - entao o loop guloso normal podia
+        # conjura-la de qualquer jeito. Sem oponente modelado ela sempre
+        # cria 0 tokens e nao faz NADA (literal: 0 criaturas do oponente =
+        # 0 tokens), entao 8 mana eram desperdicados sem efeito real algum.
         castables = [c for c in state.hand if is_spell(c) and can_cast(state, c)
-                     and not (has_tag(c, "removal") and not has_tag(c, "mass_removal") and not is_creature(c))]
+                     and not has_tag(c, "mass_removal")
+                     and not (has_tag(c, "removal") and not is_creature(c))]
         if not castables:
             break
         castables.sort(key=lambda c: priority(state, c))
@@ -1430,6 +1501,18 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
         if target:
             state.library.remove(target)
             state.battlefield.append(target)
+            if card == "Cultivate":
+                # Achado real: Cultivate diz "put one onto the battlefield
+                # TAPPED" -- Three Visits NAO tem essa clausula ("put it onto
+                # the battlefield", sem "tapped"). As 2 compartilhavam este
+                # bloco e nenhuma marcava o terreno buscado como tapped,
+                # deixando ele produzir mana de graca no turno em que entra
+                # (mana fantasma). Usa `tapped_basics_this_turn` (contador,
+                # nao o set `tapped_lands_this_turn` por NOME) porque "Forest"
+                # tem 31 copias no decklist -- um set por nome marcaria TODAS
+                # como tapped, nao so a buscada.
+                state.tapped_basics_this_turn += 1
+                state.tapped_green_this_turn += 1  # Forest e' sempre fonte verde
             log.append({"action":"land_ramp_proxy","card":card,"target":target})
             on_land_enters(state, target, log)
         if card == "Cultivate":
@@ -1455,6 +1538,8 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
         if target:
             state.library.remove(target)
             state.battlefield.append(target)
+            state.tapped_basics_this_turn += 1  # oraculo real: "put it onto the battlefield tapped"
+            state.tapped_green_this_turn += 1
             log.append({"action": "sakura_tribe_elder_sac", "target": target, "turn": state.turn})
             on_land_enters(state, target, log)
 
@@ -1476,8 +1561,10 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
         # que existe uma criatura verde em campo pra sacrificar antes de chegar aqui.
         green_creatures = [c for c in state.battlefield if is_creature(c) and c != card and C(c).g_pips >= 1]
         if green_creatures:
-            # Sacrifica a de menor poder (perde o menos possivel).
-            sac_target = min(green_creatures, key=lambda c: BASE_POWER.get(c, 0))
+            # Sacrifica a de menor poder (perde o menos possivel). Usa
+            # effective_power() (achado real: BASE_POWER bruto ignorava a
+            # CDA da Lumra e os 3 anthems de Bear, podendo escolher errado).
+            sac_target = min(green_creatures, key=lambda c: effective_power(state, c))
             state.battlefield.remove(sac_target)
             state.graveyard.append(sac_target)
             # Busca a melhor criatura verde disponivel - prioriza os finishers.
@@ -1509,6 +1596,9 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
         for ln in lands_returned:
             state.graveyard.remove(ln)
             state.battlefield.append(ln)
+            state.tapped_basics_this_turn += 1  # oraculo real: "onto the battlefield tapped"
+            if has_tag(ln, "green_source") or state.has("Yavimaya, Cradle of Growth"):
+                state.tapped_green_this_turn += 1
             state.lumra_lands_returned_total += 1
             log.append({"action": "lumra_land_return", "card": ln, "turn": state.turn})
             on_land_enters(state, ln, log)
@@ -1527,6 +1617,8 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
             if target:
                 state.library.remove(target)
                 state.battlefield.append(target)
+                state.tapped_basics_this_turn += 1  # oraculo real: "put them onto the battlefield tapped"
+                state.tapped_green_this_turn += 1
                 log.append({"action": "titanias_command_land", "card": target, "turn": state.turn})
                 on_land_enters(state, target, log)
         make_bear_token(state, log, source="Titania's Command")
@@ -1546,6 +1638,8 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
         if target:
             state.library.remove(target)
             state.battlefield.append(target)
+            state.tapped_basics_this_turn += 1  # oraculo real: "put it onto the battlefield tapped if it's a land card"
+            state.tapped_green_this_turn += 1
             state.archdruids_charm_mode = "land"
             log.append({"action": "archdruids_charm_land", "card": target, "turn": state.turn})
             on_land_enters(state, target, log)
@@ -1575,12 +1669,16 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
         if target:
             state.library.remove(target)
             state.battlefield.append(target)
+            state.tapped_basics_this_turn += 1  # oraculo real: "put that card onto the battlefield tapped"
+            state.tapped_green_this_turn += 1
             on_land_enters(state, target, log)
 
     if card == "Garruk's Uprising":
         # ETB proprio (unico, distinto do gatilho recorrente ja tratado em
         # on_creature_enters pra criaturas que entram DEPOIS dela em campo).
-        if any(BASE_POWER.get(c, 0) >= 4 for c in state.battlefield if is_creature(c) and c != card):
+        # Usa effective_power() (achado real: BASE_POWER bruto ignorava a
+        # CDA da Lumra e os 3 anthems de Bear).
+        if any(effective_power(state, c) >= 4 for c in state.battlefield if is_creature(c) and c != card):
             state.draw(1, source="Garruk's Uprising ETB")
 
     if card == "Little Bear":
@@ -1592,8 +1690,11 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
             state.counters_on_board += 1
 
     if card == "Shamanic Revelation":
+        # Achado real: oraculo literal e' "draw a card for each creature you
+        # control" -- sem piso de 1. O `max(1, ...)` dava uma carta de graca
+        # mesmo com 0 criaturas em campo (cenario raro mas incorreto).
         creatures = sum(1 for c in state.battlefield if is_creature(c))
-        state.draw(max(1, creatures), source=card)
+        state.draw(creatures, source=card)
 
     if card == "Return of the Wildspeaker":
         # Achado real 2026-09-01: formula ERRADA ate esta correcao - estava
@@ -1610,7 +1711,13 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
     if card == "Last March of the Ents":
         # "Draw cards equal to the greatest toughness among creatures you control,
         # then put any number of creature cards from hand onto the battlefield."
-        toughness = max((BASE_TOUGHNESS.get(c, 0) for c in state.battlefield if is_creature(c)), default=0)
+        # Achado real: usa effective_toughness() (anthems reais de Bear) +
+        # counters_on_board (mesma premissa ja usada em greatest_power_in_play:
+        # assume que os contadores foram pra maior criatura) em vez do
+        # BASE_TOUGHNESS bruto, que ignorava os 2.
+        creatures_now = [c for c in state.battlefield if is_creature(c)]
+        toughness = (max((effective_toughness(state, c) for c in creatures_now), default=0)
+                     + (state.counters_on_board if creatures_now else 0))
         state.draw(toughness, source="Last March of the Ents")
         cheated = [c for c in state.hand if is_creature(c)]
         for c in cheated:
@@ -1731,6 +1838,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.turn = turn
     state.land_played = False
     state.tapped_lands_this_turn = set()  # terreno tapped do turno anterior destrava agora
+    state.tapped_basics_this_turn = 0
     state.mana_spent_this_turn = 0
     state.bonus_mana_this_turn = 0
     state.radagast_discount_available = True
