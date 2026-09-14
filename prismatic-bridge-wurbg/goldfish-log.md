@@ -499,6 +499,45 @@ regressão (0 erros, alternando `with_greater_auramancy`).
 
 ---
 
+### Auditoria oráculo-por-oráculo completa — 2026-09-13/14
+
+Extensão pra este deck da mesma auditoria já feita no Megatron/Azula/
+Beorn/Captain Storm/Edgar Markov/Hei Bai/Maralen/Kutzil/Nekusar/Ms.
+Bumbleflower/Rat King. Achado principal (detalhes completos em
+`checklist-oraculo.md`, seção no topo): 3 fontes reais de "ativar
+lealdade de planeswalker mais de 1x por turno" nunca implementadas
+(Oath of Teferi — estático, sempre 2x; The Chain Veil — pago, {4}{T};
+Urza Assembles the Titans capítulo III — 2x só naquele turno), num deck
+com 17 planeswalkers. Também: Urza's Saga inteira (capítulos I e II)
+100% ausente, e 11 cartas de interação (Counterspell, Mana Drain, Path
+to Exile, Swords to Plowshares, Anguished Unmaking, Damn, Void Rend,
+Toxic Deluge, Blasphemous Act, Supreme Verdict, Farewell) nunca
+contavam pra métrica agregada apesar de terem as tags reais desde a
+construção original.
+
+**Batch, n=2000, seed_base=3000000 (antes = git HEAD, depois = com os fixes):**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg ativações de planeswalker por partida | 7.01 | 8.65 |
+| Avg ultimates usados por partida | 1.18 | 1.48 |
+| Avg compras via planeswalker | 3.87 | 4.66 |
+| Avg tokens criados via planeswalker | 1.74 | 2.24 |
+| Avg mortes de planeswalker por partida | 0.52 | 0.63 |
+| Avg vida ganha via planeswalker | 2.67 | 3.37 |
+| INTERACTION (11 cartas, antes não existia) | 0 | 2.45 |
+
+Regressão de 20.000 partidas (seed 7000000, turns=8): 0 exceções. Chain
+Veil ativado em 6.8% dos jogos, Urza conjurada em 7.9% e alcançou
+capítulo III (dobra de lealdade) em 51.2% desses. Subida generalizada
+mas moderada em todas as métricas de planeswalker — esperado, já que os
+3 multiplicadores de ativação corrigidos afetam TODOS os 17
+planeswalkers da lista, não uma carta isolada, mas cada fonte
+individual (Oath of Teferi/Chain Veil/Urza) só aparece numa fração
+minoritária dos jogos.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

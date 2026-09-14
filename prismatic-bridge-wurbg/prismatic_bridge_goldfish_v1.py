@@ -243,7 +243,13 @@ add("Nature's Lore", 2, "Sorcery", colors={"G"}, produces=set(), tags={"ramp"})
 add("Nesting Grounds", 0, "Land", colors=set(), produces={"C"}, tags=set())
 add("Nicol Bolas, Dragon-God", 5, "Planeswalker", colors={"B", "R", "U"}, produces=set(), tags={"draw", "planeswalker", "removal"})
 add("Oath of Nissa", 1, "Enchantment", colors={"G"}, produces=set(), tags=set())
-add("Oath of Teferi", 5, "Enchantment", colors={"U", "W"}, produces=set(), tags=set())
+# Achado real (auditoria oraculo-por-oraculo): "You may activate the
+# loyalty abilities of planeswalkers you control TWICE each turn rather
+# than only once" -- estatico, sempre ligado enquanto em campo, nunca
+# implementado (so a metade de ETB-flicker, de baixo valor, ficaria de
+# fora mesmo). Com 17 planeswalkers na lista, e' um dos maiores
+# multiplicadores de valor do deck. Ver extra_pw_activation_sources().
+add("Oath of Teferi", 5, "Enchantment", colors={"U", "W"}, produces=set(), tags={"double_pw_activation"})
 add("Oko, the Ringleader", 4, "Planeswalker", colors={"G", "U"}, produces=set(), tags={"draw", "planeswalker"})
 add("Paradox Haze", 3, "Enchantment", colors={"U"}, produces=set(), tags={"extra_upkeep"})
 add("Path to Exile", 1, "Instant", colors={"W"}, produces=set(), tags={"removal"})
@@ -261,7 +267,13 @@ add("Teferi, Hero of Dominaria", 5, "Planeswalker", colors={"U", "W"}, produces=
 add("Teferi, Temporal Archmage", 6, "Planeswalker", colors={"U"}, produces=set(), tags={"planeswalker"})
 add("Teferi, Time Raveler", 3, "Planeswalker", colors={"U", "W"}, produces=set(), tags={"draw", "planeswalker"})
 add("Teferi, Who Slows the Sunset", 4, "Planeswalker", colors={"U", "W"}, produces=set(), tags={"draw", "planeswalker"})
-add("The Chain Veil", 4, "Artifact", colors=set(), produces=set(), tags=set())
+# Achado real (auditoria oraculo-por-oraculo): "{4},{T}: For each
+# planeswalker you control, you may activate one of its loyalty
+# abilities once this turn as though none of its loyalty abilities have
+# been activated this turn" -- habilidade ativada real, paga, nunca
+# implementada (so' o downside de vida, sem rastreio de vida neste
+# arquivo, ficaria de fora mesmo). Ver try_chain_veil_activation().
+add("The Chain Veil", 4, "Artifact", colors=set(), produces=set(), tags={"chain_veil"})
 add("The Eternal Wanderer", 6, "Planeswalker", colors={"W"}, produces=set(), tags={"planeswalker", "wipe"})
 add("The Peregrine Dynamo", 3, "Creature", colors=set(), produces=set(), tags={"creature"})
 add("The World Tree", 0, "Land", colors={"G"}, produces={"G"}, tags={"world_tree_6lands"})
@@ -276,7 +288,13 @@ add("The World Tree", 0, "Land", colors={"G"}, produces={"G"}, tags={"world_tree
 add("Three Visits", 2, "Sorcery", colors={"G"}, produces=set(), tags={"ramp"})
 add("Toxic Deluge", 3, "Sorcery", colors={"B"}, produces=set(), tags={"wipe"})
 add("Ugin, the Spirit Dragon", 8, "Planeswalker", colors=set(), produces=set(), tags={"draw", "planeswalker", "removal"})
-add("Urza Assembles the Titans", 5, "Enchantment", colors={"W"}, produces=set(), tags=set())
+# Achado real (auditoria oraculo-por-oraculo): Saga real (Read ahead) 100%
+# ausente -- I: scry 4 (nao modelado, sem infra de scry neste arquivo,
+# mesma convencao de omissao ja usada noutros decks) + revela o topo, se
+# for planeswalker vai pra mao; II: pode botar um planeswalker MV<=6 da
+# mao em campo de graca; III: ativa lealdade 2x so' neste turno. Ver
+# try_urza_saga_tick().
+add("Urza Assembles the Titans", 5, "Enchantment", colors={"W"}, produces=set(), tags={"urza_saga"})
 add("Veil of Summer", 1, "Instant", colors={"G"}, produces=set(), tags={"draw"})
 add("Void Rend", 3, "Instant", colors={"B", "U", "W"}, produces=set(), tags={"removal"})
 add("Vorinclex, Monstrous Raider", 6, "Creature", colors={"G"}, produces=set(), tags={"counter_doubler", "creature"})
@@ -492,6 +510,32 @@ class GameState:
     sphinx_extra_turns_total: int = 0
     sphinx_sacrifice_pending: bool = False
     carth_tutors_total: int = 0
+
+    # Achado real (auditoria oraculo-por-oraculo): "removal"/"counterspell"/
+    # "wipe" nas 11 cartas nao-planeswalker (Anguished Unmaking, Blasphemous
+    # Act, Counterspell, Damn, Farewell, Mana Drain, Path to Exile, Supreme
+    # Verdict, Swords to Plowshares, Toxic Deluge, Void Rend) nunca eram
+    # lidas em lugar nenhum -- as cartas eram conjuradas pelo loop generico
+    # (corretamente sem efeito de bordo real, Regra 1: sem oponente real, um
+    # wipe/remocao sem alvo nao faz nada), mas nem sequer contavam pra
+    # metrica de interacao, ao contrario de TODOS os outros decks desta
+    # sessao (que tem esse contador pras 5 metricas basicas).
+    interaction_spells_cast_total: int = 0
+
+    # Achado real: 3 fontes reais de "ative habilidades de lealdade mais de
+    # 1x por turno" nunca implementadas -- Oath of Teferi (estatico,
+    # "twice each turn rather than only once"), The Chain Veil ({4},{T}:
+    # mais 1x pra CADA planeswalker) e Urza Assembles the Titans capitulo
+    # III (2x so' no turno em que resolve). Com 17 planeswalkers na lista,
+    # sao os maiores multiplicadores de valor do deck inteiro fora da
+    # propria Bridge -- nenhum estava implementado.
+    chain_veil_activated_this_turn: bool = False
+    urza_chapter: int = 0
+    urza_last_ticked_turn: int = -1
+    urza_chapter_iii_this_turn: bool = False
+    chain_veil_activations_total: int = 0
+    urza_pw_cheated_total: int = 0
+    urza_pw_tutored_total: int = 0
 
     def draw(self, n: int = 1):
         for _ in range(n):
@@ -1118,22 +1162,91 @@ def resolve_planeswalker(state: GameState, pw: str, log: List[Dict]):
         state.pw_draws_total += 1
         proliferate_loyalty(state, log, source="vraska")
 
+def try_chain_veil_activation(state: GameState, log: List[Dict]):
+    """Achado real: '{4}, {T}: For each planeswalker you control, you
+    may activate one of its loyalty abilities once this turn as though
+    none of its loyalty abilities have been activated this turn.'
+    Habilidade ativada real, paga -- nunca era conjurada com efeito
+    algum (so' entrava em campo). So' vale pagar se ha' planeswalker
+    real em campo pra se beneficiar."""
+    if "The Chain Veil" not in state.battlefield or state.chain_veil_activated_this_turn:
+        return
+    if not state.loyalty:
+        return
+    if remaining_mana(state) < 4:
+        return
+    state.mana_spent_this_turn += 4
+    state.chain_veil_activated_this_turn = True
+    state.chain_veil_activations_total += 1
+    log.append({"trigger": "chain_veil_activation", "turn": state.turn})
+
+def try_urza_saga_tick(state: GameState, log: List[Dict]):
+    """Achado real: Saga real (Read ahead) 100% ausente. Capitulo I:
+    scry 4 (nao modelado, sem infra de scry neste arquivo) + revela o
+    topo, planeswalker vai pra mao. Capitulo II: planeswalker MV<=6 da
+    mao pra campo de graca. Capitulo III: libera ativacao dupla de
+    lealdade so' neste turno (via extra_pw_activation_sources()), depois
+    sacrifica (regra real de Saga: 'Sacrifice after III')."""
+    if "Urza Assembles the Titans" not in state.battlefield:
+        return
+    if state.urza_last_ticked_turn == state.turn:
+        return
+    state.urza_last_ticked_turn = state.turn
+    state.urza_chapter += 1
+    ch = state.urza_chapter
+    if ch == 1:
+        if state.library and C(state.library[0]).type == "Planeswalker":
+            state.hand.append(state.library.pop(0))
+            state.urza_pw_tutored_total += 1
+    elif ch == 2:
+        pw_in_hand = [c for c in state.hand if C(c).type == "Planeswalker" and C(c).mv <= 6]
+        if pw_in_hand:
+            best = max(pw_in_hand, key=lambda c: C(c).mv)
+            state.hand.remove(best)
+            state.battlefield.append(best)
+            planeswalker_enters(state, best, log)
+            state.urza_pw_cheated_total += 1
+    elif ch == 3:
+        state.urza_chapter_iii_this_turn = True
+    if ch >= 3 and "Urza Assembles the Titans" in state.battlefield:
+        state.battlefield.remove("Urza Assembles the Titans")
+        state.graveyard.append("Urza Assembles the Titans")
+    log.append({"trigger": "urza_saga_chapter", "chapter": ch, "turn": state.turn})
+
+def extra_pw_activation_sources(state: GameState) -> int:
+    """Achado real: 3 fontes reais e distintas de ativar lealdade mais de
+    1x por turno, todas aditivas (cada uma concede 'mais uma' ativacao,
+    nao se sobrepoe): Oath of Teferi (estatico, sempre liga enquanto em
+    campo), The Chain Veil (pago neste turno, {4},{T}) e Urza Assembles
+    the Titans capitulo III (so' no turno em que resolve)."""
+    extra = 0
+    if state.has("Oath of Teferi"):
+        extra += 1
+    if state.chain_veil_activated_this_turn:
+        extra += 1
+    if state.urza_chapter_iii_this_turn:
+        extra += 1
+    return extra
+
 def activate_planeswalkers(state: GameState, log: List[Dict]):
     # Carth the Lion: "Planeswalkers' loyalty abilities you activate cost
     # an additional {1} to activate." Achado real 2026-09-01 (leitura
     # linha-a-linha, "compile TUDO"): estatico real, sem excecao pros
     # NOSSOS proprios planeswalkers - aplicado como custo de mana real
-    # antes de cada ativacao (se nao sobrar mana, essa ativacao especifica
-    # e' pulada nesse turno, sem gastar loyalty de graca).
+    # antes de CADA ativacao (inclusive as extras, se sobrar mana), se
+    # nao sobrar mana, essa ativacao especifica e' pulada nesse turno,
+    # sem gastar loyalty de graca.
     carth_tax = 1 if state.has("Carth the Lion") else 0
+    extra = extra_pw_activation_sources(state)
     for pw in list(state.loyalty.keys()):
-        if pw not in state.battlefield:
-            continue  # morreu por outro efeito nesse meio tempo (Deepglow Skate etc. nao removem, so seguranca)
-        if carth_tax and remaining_mana(state) < carth_tax:
-            continue
-        if carth_tax:
-            state.mana_spent_this_turn += carth_tax
-        resolve_planeswalker(state, pw, log)
+        for _ in range(1 + extra):
+            if pw not in state.battlefield:
+                break  # morreu por outro efeito nesse meio tempo (Deepglow Skate etc. nao removem, so seguranca)
+            if carth_tax and remaining_mana(state) < carth_tax:
+                break
+            if carth_tax:
+                state.mana_spent_this_turn += carth_tax
+            resolve_planeswalker(state, pw, log)
 
 # =========================================================
 # TURNO
@@ -1146,6 +1259,13 @@ def main_phase(state: GameState, log: List[Dict]):
     # retroage sobre o upkeep da Bridge, que ja resolveu antes do main
     # phase, mesma ordem real do jogo).
     try_level_up_innkeepers_talent(state, log)
+
+    # Urza (se ja estava em campo de um turno anterior) e Chain Veil (pago)
+    # precisam resolver ANTES da ativacao de lealdade, pra que a 2a/3a
+    # ativacao por planeswalker (extra_pw_activation_sources) ja valha
+    # neste mesmo turno.
+    try_urza_saga_tick(state, log)
+    try_chain_veil_activation(state, log)
 
     # Ativa a habilidade de lealdade de cada planeswalker em campo primeiro
     # (velocidade de feitico, pilha vazia, mesmo momento real que um
@@ -1213,10 +1333,20 @@ def main_phase(state: GameState, log: List[Dict]):
         if choice in ("Mutational Advantage", "Ripples of Potential"):
             proliferate_loyalty(state, log, source=choice.lower().replace(" ", "_").replace(",", ""))
 
+        if has_tag(choice, "removal") or has_tag(choice, "counterspell") or has_tag(choice, "wipe"):
+            # Achado real: essas 11 cartas nunca contavam pra metrica de
+            # interacao (Regra 1 ja corretamente nao aplica o efeito
+            # destrutivo/de contramagia sem alvo/spell de oponente real,
+            # mas nem o "foi conjurada" era contado, ao contrario de todos
+            # os outros decks desta sessao).
+            state.interaction_spells_cast_total += 1
+
         if C(choice).type in ("Instant", "Sorcery"):
             state.graveyard.append(choice)
         else:
             state.battlefield.append(choice)
+            if choice == "Urza Assembles the Titans":
+                try_urza_saga_tick(state, log)  # capitulo I dispara no proprio turno do cast
             if C(choice).type == "Creature":
                 state.creature_cast_turn[choice] = state.turn
                 if choice == "Deepglow Skate" and state.loyalty:
@@ -1251,6 +1381,8 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.land_played = False
     state.mana_spent_this_turn = 0
     state.tapped_lands_this_turn = set()
+    state.chain_veil_activated_this_turn = False
+    state.urza_chapter_iii_this_turn = False
     log = []
 
     if state.sphinx_sacrifice_pending:
@@ -1383,6 +1515,12 @@ def simulate_one(seed: int, turns: int, with_greater_auramancy: bool) -> Dict:
         # Achados reais 2026-09-01 (leitura linha-a-linha completa do oraculo):
         "sphinx_extra_turns_total": state.sphinx_extra_turns_total,
         "carth_tutors_total": state.carth_tutors_total,
+        # Achados reais da auditoria oraculo-por-oraculo 2026-09-13/14:
+        "interaction_spells_cast_total": state.interaction_spells_cast_total,
+        "chain_veil_activations_total": state.chain_veil_activations_total,
+        "urza_pw_tutored_total": state.urza_pw_tutored_total,
+        "urza_pw_cheated_total": state.urza_pw_cheated_total,
+        "urza_chapter_end": state.urza_chapter,
     }
 
 def run_batch(n=2000, turns=10, with_greater_auramancy=False, seed_base=3000000, label=""):
@@ -1459,6 +1597,19 @@ def run_batch(n=2000, turns=10, with_greater_auramancy=False, seed_base=3000000,
           f"{100*sum(1 for r in results if r['sphinx_extra_turns_total']>0)/n:.1f}% dos jogos")
     print(f"Carth the Lion (tutor de planeswalker no ETB): {sum(r['carth_tutors_total'] for r in results)/n:.2f} avg | "
           f"{100*sum(1 for r in results if r['carth_tutors_total']>0)/n:.1f}% dos jogos")
+    print(f"\n--- Auditoria oraculo-por-oraculo 2026-09-13/14 (achados novos) ---")
+    print(f"INTERACTION (Counterspell/Mana Drain/Path/Swords/Anguished Unmaking/Damn/Void Rend/Toxic Deluge/"
+          f"Blasphemous Act/Supreme Verdict/Farewell, so' contadas - Regra 1, sem efeito de bordo real): "
+          f"{sum(r['interaction_spells_cast_total'] for r in results)/n:.2f} avg")
+    print(f"Chain Veil ativado (dobra lealdade de TODOS os planeswalkers naquele turno): "
+          f"{sum(r['chain_veil_activations_total'] for r in results)/n:.2f} avg | "
+          f"{100*sum(1 for r in results if r['chain_veil_activations_total']>0)/n:.1f}% dos jogos")
+    urza_cast_games = [r for r in results if r["urza_chapter_end"] >= 1]
+    print(f"Urza Assembles the Titans: planeswalker tutorado (cap. I) {sum(r['urza_pw_tutored_total'] for r in results)/n:.2f} avg | "
+          f"planeswalker colocado de graca (cap. II) {sum(r['urza_pw_cheated_total'] for r in results)/n:.2f} avg | "
+          f"conjurada em {100*len(urza_cast_games)/n:.1f}% dos jogos, alcancou cap. III (dobra lealdade naquele "
+          f"turno) em {100*sum(1 for r in urza_cast_games if r['urza_chapter_end']>=3)/len(urza_cast_games):.1f}% "
+          f"desses" if urza_cast_games else "Urza Assembles the Titans: nunca conjurada nesta amostra")
     print(f"Deferido nesta rodada (nao implementado, documentado - genuinamente estrutural ou desproporcional): "
           f"estatico da Nicol Bolas ('has all loyalty abilities of all other planeswalkers' - exigiria uma "
           f"segunda camada de escolha por PW); Ichormoon Gauntlet (concede uma habilidade de lealdade NOVA a "

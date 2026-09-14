@@ -1,5 +1,72 @@
 # Checklist cláusula-a-cláusula — Esika // The Prismatic Bridge
 
+## Auditoria oráculo-por-oráculo completa — 2026-09-13/14
+
+Extensão pra este deck da mesma auditoria já feita no Megatron/Azula/
+Beorn/Captain Storm/Edgar Markov/Hei Bai/Maralen/Kutzil/Nekusar/Ms.
+Bumbleflower/Rat King. Oráculo real via Scryfall pras 65 cartas + 29
+terrenos + comandante (MDFC modal, layout `modal_dfc` confirmado —
+Esika, God of the Tree {1}{G}{G} / The Prismatic Bridge {W}{U}{B}{R}{G}),
+comparado cláusula-por-cláusula contra o código já existente (que já
+tinha passado por 3 rodadas anteriores — 2026-08-21, 08-28, 09-01 — e é
+um dos arquivos mais maduros e documentados do repositório).
+
+**Achado principal — 3 fontes reais de "ativar lealdade mais de 1x por
+turno" nunca implementadas, num deck com 17 planeswalkers:**
+
+1. **Oath of Teferi** — "You may activate the loyalty abilities of
+   planeswalkers you control **twice each turn** rather than only
+   once." Estático, sempre ligado enquanto em campo — a carta inteira
+   tinha `tags=set()` (nem fantasma, tag nenhuma).
+2. **The Chain Veil** — "{4}, {T}: For each planeswalker you control,
+   you may activate one of its loyalty abilities **once this turn** as
+   though none of its loyalty abilities have been activated this
+   turn." Habilidade ativada real, paga — também `tags=set()`.
+3. **Urza Assembles the Titans** — Saga (Read ahead) 100% ausente:
+   capítulo I (revela o topo, planeswalker vai pra mão — scry 4 não
+   modelado, sem infra de scry neste arquivo), capítulo II (planeswalker
+   MV≤6 da mão pra campo de graça), capítulo III (dobra ativação de
+   lealdade só naquele turno, depois sacrifica).
+
+Com 17 planeswalkers na lista, esses 3 multiplicadores de ativação são
+provavelmente o maior bloco de valor real do deck fora da própria Bridge
+— nenhum estava implementado. Corrigido com uma função central
+`extra_pw_activation_sources()` (as 3 fontes são aditivas, não mutuamente
+exclusivas — Oath of Teferi permite 2x, Chain Veil/Urza cap. III cada
+um concede "mais uma" em cima disso), consumida por
+`activate_planeswalkers()` (que já ativava 1x por planeswalker por
+turno, CR 606.3 — agora ativa `1 + extras` vezes, respeitando a taxa do
+Carth the Lion em CADA ativação individual, inclusive as extras).
+
+**Achado secundário — 11 cartas de interação nunca contavam pra métrica,
+ao contrário de todos os outros decks da sessão:** Counterspell, Mana
+Drain, Path to Exile, Swords to Plowshares, Anguished Unmaking, Damn,
+Void Rend, Toxic Deluge, Blasphemous Act, Supreme Verdict e Farewell
+tinham as tags reais (`removal`/`counterspell`/`wipe`) desde a
+construção original, mas essas tags nunca eram lidas em lugar nenhum —
+as cartas eram conjuradas pelo loop genérico (corretamente sem efeito
+de bordo real, Regra 1: sem oponente/spell real pra mirar, e nenhum
+wipe destrói o próprio board sem motivo), mas nem sequer contavam como
+"interação conjurada" na métrica agregada, inconsistente com a
+convenção das 5 métricas básicas usada em todos os outros decks
+auditados nesta sessão. Corrigido com `interaction_spells_cast_total`.
+
+**Validação:** smoke test (105 nomes no `CARD_DB`, 99 cartas na
+decklist, 0 desconhecidas) + 2.000 partidas antes/depois (mesma seed
+3000000) + 20.000 partidas de regressão (seed 7000000), 0 exceções em
+ambas. Testes unitários dirigidos confirmaram cada correção: Oath of
+Teferi e The Chain Veil dobram as ativações reais de um planeswalker no
+mesmo turno; Urza dispara os 3 capítulos corretamente (tutora
+planeswalker no I, coloca em campo de graça no II, marca a flag de
+dobra no III e se sacrifica); Swords to Plowshares agora conta pra
+`interaction_spells_cast_total` ao ser conjurada. Métricas de 2.000
+partidas subiram como esperado: ativações de planeswalker por partida
+7.01→8.65, ultimates usados 1.18→1.48, draws via planeswalker
+3.87→4.66 — nenhuma mudança de categoria no comportamento típico do
+deck, só o motor de superfriends ficando mais completo.
+
+---
+
 Pedido direto do usuário (2026-09-01): *"AGORA FAZ O QUE SEMPRE Te MANDei
 FAZER: COmpila a porra de TODAS AS CARTAS DOS DECKS UMA A UMA... cada
 carta tem que ser lida linha a linha"* — mesmo tratamento já aplicado ao
