@@ -4,6 +4,56 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### Auditoria oráculo-por-oráculo (nova rodada, além das 3 de 2026-09-01/02) — 2026-09-14
+
+**Contexto:** auditoria geral do repositório (autorização do usuário pra
+implementar toda habilidade faltando/parcial em todo deck) — este deck já
+tinha as 189 cláusulas do oráculo compiladas cláusula-a-cláusula em
+2026-09-01/02 (`checklist-oraculo.md`). Releitura completa do arquivo
+(2724 linhas) mais o oráculo real via Scryfall achou **2 gaps reais** que
+tinham passado pelas rodadas anteriores:
+
+1. **Skullclamp** tinha o oráculo desatualizado no código (tag
+   `combat_dependent`, refletindo a habilidade ativada pré-errata de
+   2023). Oráculo atual: `Equipped creature gets +1/-1. Whenever equipped
+   creature dies, draw two cards. Equip {1}` — gatilho de morte, sem
+   exigir combate. Implementado como engine real via `earthbend_return` +
+   Motor#16 (equipar um terreno-criatura 1/1 earthbendado mata na hora
+   pela SBA, compra 2, o terreno volta tapped de graça).
+2. **Field of the Dead** disparava seu próprio gatilho ("7+ terrenos com
+   nomes diferentes → Zombie") mesmo em jogos onde a carta nunca tinha
+   sido comprada — a checagem estava fora do loop que exige o permanente
+   real em campo (diferente de todo outro efeito de landfall do arquivo).
+   Corrigido com `has_card()`.
+
+**Validação:** script dedicado (4 asserções) confirma os 2 comportamentos
+corrigidos e reproduz a falha real contra o código anterior (`git stash`)
+antes de aplicar as correções. Regressão de 20.000 partidas (seeds
+9600000–9619999), 0 exceções.
+
+**n=2000, seed_base=9500000, turns=8 — antes → depois:**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg tokens de Field of the Dead | 5,55 (83,0% dos jogos) | **0,84 (14,1% dos jogos)** |
+| Avg tokens totais criados | 15,47 | **10,77** |
+| Avg cartas compradas extra | 3,19 | 3,14 |
+| Avg compras via Skullclamp | 0,00 (tag inexistente) | **0,027 (2,6% dos jogos)** |
+| Avg interaction_plays | 1,57 (81,5% dos jogos) | 1,41 (78,3% dos jogos) |
+| Avg aplicações de earthbend | 6,37 | 6,37 (inalterado) |
+| Avg recorrências via Motor#16 | 1,09 (43,9%) | 1,10 (44,4%) |
+
+Leitura: Field of the Dead caiu pra uma taxa consistente com a chance real
+de comprar uma carta singleton em 8 turnos (não mais um falso positivo
+generalizado) — a queda em tokens totais reflete exatamente esse excesso
+removido, não perda de mecânica real. `interaction_plays` cai porque
+Skullclamp saiu dessa métrica (não é mais opponent/combat-dependent) e
+passou a ter sua própria métrica de compra real. Earthbend/Motor#16
+praticamente inalterados (mudança isolada, sem efeito colateral em
+mecânicas não relacionadas).
+
+---
+
 ### Correção — Zuran Orb sacrifica terrenos earthbendados sem perda real — 2026-09-02
 
 **Gatilho:** pergunta direta do usuário — *"Com Zuran Orb eu não dependo

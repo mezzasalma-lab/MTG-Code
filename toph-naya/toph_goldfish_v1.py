@@ -416,6 +416,39 @@ Bala Ged Recovery), terrenos sobem (9,95→10,94, Liquimetal contando
 conversoes), tokens sobem (11,88→14,85, Fountainport completo); Obelisk/
 Stasis Coffin/Strionic Resonator CAEM (mais mecanicas competindo pela
 mesma mana).
+
+Auditoria oraculo-por-oraculo NOVA rodada (2026-09-14) -- apos as rodadas
+anteriores ja terem quebrado as 100 cartas em 189 clausulas individuais
+(`checklist-oraculo.md`), essa rodada procurou GAPS que passaram pelas
+rodadas anteriores (mesmo criterio "carta tem dispatch?" x "toda clausula
+do oraculo real tem dispatch?"). Achados reais, ambos corrigidos:
+- **Skullclamp**: so tinha a tag `combat_dependent` (contada em
+  `interaction_plays`, sem efeito numerico) -- mas o oraculo ATUAL da
+  Scryfall ("Equipped creature gets +1/-1. Whenever equipped creature
+  dies, draw two cards. Equip {1}") NAO exige combate: e' um gatilho de
+  morte puro, e a antiga habilidade ativada "{T}, Sacrifice: draw 2" que
+  motivou a tag original ja nao existe mais (errata de 2023). Implementado
+  como um engine real (`skullclamp_activation()`): equipa de preferencia
+  um terreno-criatura earthbendado com 1 contador (o +1/-1 derruba a
+  resistencia pra 0, SBA mata na hora, compra 2, o Motor#16 devolve o
+  terreno tapped de graca no mesmo evento) -- reequipa a cada main phase
+  em que o alvo anterior sumiu do campo.
+- **Field of the Dead**: o gatilho "7+ terrenos com nomes diferentes ->
+  Zombie 2/2" em `landfall_trigger()` era checado INCONDICIONALMENTE
+  (fora do loop `for p in battlefield: if p.card.name == ...` que gate
+  TODO outro efeito de landfall na mesma funcao) -- criava Zombies mesmo
+  em partidas onde Field of the Dead nunca tinha entrado em campo, so por
+  causa da contagem geral de nomes distintos de terreno (facil de bater
+  com artefatos-terreno da Toph). Corrigido com `has_card(state, "Field
+  of the Dead")`, mesmo padrao ja usado por Horizon Explorer/Spelunking.
+
+**Robustez desta rodada:** 20.000 partidas (seeds 9600000-9619999), 0
+erros/timeouts. Skullclamp (equipa alvo de 1 contador, SBA mata, compra 2,
+Motor#16 devolve) e Field of the Dead (nao dispara sem a carta em campo,
+dispara normalmente com ela) testados isoladamente. n=3000, seed 9500000:
+draw sobe (Skullclamp real), tokens de Field of the Dead caem levemente
+(deixou de disparar em jogos onde a carta nunca chegou ao campo -- correcao
+de um falso positivo, nao perda de mecanica real).
 """
 
 import json
@@ -684,7 +717,14 @@ add("The Great Henge", 9, "artifact", {"rock2life", "etb_creature_draw_counter",
 # --- Card draw --------------------------------------------------------------
 add("Sylvan Library", 2, "enchantment", {"draw_engine"})
 add("Esper Sentinel", 1, "artifact_creature", {"opponent_dependent"})
-add("Skullclamp", 1, "artifact", {"combat_dependent"})
+# Achado real 2026-09-14: oraculo atual (Scryfall, ja com a errata de
+# 2023) e' "Equipped creature gets +1/-1. Whenever equipped creature
+# dies, draw two cards. Equip {1}" -- um GATILHO DE MORTE, nao mais a
+# antiga habilidade ativada "{T}, Sacrifice: draw 2" que motivou a tag
+# `combat_dependent` original (a carta nunca precisou de dano de combate
+# pra valer -- so precisa que a criatura equipada morra, por QUALQUER
+# motivo). Ver `skullclamp_activation()`/`leave_battlefield()`.
+add("Skullclamp", 1, "artifact", {"equip_death_draw"})
 add("Ichor Wellspring", 2, "artifact", {"draw_etb_death", "earthbend_target_priority"})
 add("Mishra's Bauble", 0, "artifact", {"delayed_draw"})
 add("Iron Spider, Stark Upgrade", 3, "artifact_creature", {"artifact_counter_draw", "legendary"})
@@ -779,9 +819,11 @@ CREATURE_ISH = {"creature", "artifact_creature", "enchantment_creature"}
 # qualquer carta cujo efeito real dependa de oponente/alvo adversario
 # (removal, protecao, wipe, valor so' relevante em combate real) conta aqui
 # quando conjurada/colocada em campo, mesmo sem efeito numerico solo
-# (documentado em vez de omitido). "combat_dependent" (Skullclamp/Krang/
-# Sword of Feast and Famine) incluida 2026-09-01 -- essas 3 cartas nao
-# tinham NENHUM numero reportado antes, nem como N/A.
+# (documentado em vez de omitido). "combat_dependent" (Krang/Sword of Feast
+# and Famine) incluida 2026-09-01 -- essas cartas nao tinham NENHUM numero
+# reportado antes, nem como N/A. Skullclamp SAIU desta tag em 2026-09-14
+# (achado real: o oraculo atual e' um gatilho de morte, nao exige combate
+# nenhum -- ver `skullclamp_activation()` e `add()` da carta).
 INTERACTION_TAGS = {"removal", "opponent_dependent", "protection_unused", "wipe_unused", "combat_dependent"}
 
 # Metrica obrigatoria #10 -- finisher/lethality: proxy de "turno em que uma
@@ -902,6 +944,13 @@ class GameState:
     urza_saga_chapter3_tutors: int = 0
     legend_rule_sacrifices: int = 0  # Ultron copiando permanente Legendary -> token sacrificado (regra do lendario)
 
+    # Achado real 2026-09-14: Skullclamp era so' `combat_dependent` -- o
+    # oraculo atual e' "Whenever equipped creature dies, draw two cards",
+    # sem exigir combate. Ver `skullclamp_activation()`.
+    skullclamp_equipped_uid: Optional[int] = None
+    skullclamp_equip_count: int = 0
+    skullclamp_draws: int = 0
+
 
 def mk_perm(state: GameState, name: str) -> Permanent:
     p = Permanent(card=CARD_DB[name], entered_turn=state.turn, uid=state.next_uid)
@@ -975,6 +1024,18 @@ def leave_battlefield(state: GameState, perm: Permanent, log: list, to_hand: boo
 
     if perm.card.name == "Haywire Mite" and not to_hand:
         gain_life(state, 2, log, source="Haywire Mite (morte)")
+
+    # Skullclamp: "Whenever equipped creature dies, draw two cards." Achado
+    # real 2026-09-14 -- checado ANTES do retorno via Motor#16 (que tambem
+    # conta como "morrer": sacrificio/SBA/exilio, regra 700.4), porque o
+    # gatilho de morte e' real independente do que acontece depois com o
+    # permanente. Limpa o alvo rastreado -- `skullclamp_activation()`
+    # reequipa em outro alvo no proximo main phase.
+    if perm.uid == state.skullclamp_equipped_uid and not to_hand:
+        state.skullclamp_equipped_uid = None
+        state.skullclamp_draws += 1
+        log.append(f"  [Skullclamp] {perm.card.name} (equipada) morre -- compra 2 cartas")
+        draw_cards(state, 2, log, source="Skullclamp (equipada morre)")
 
     if perm.earthbend_return and not to_hand:
         # Motor #16: return to the battlefield tapped instead of staying dead.
@@ -1215,8 +1276,20 @@ def landfall_trigger(state: GameState, land_perm: Permanent, log: list):
             else:
                 create_token(state, log)
 
-    # Field of the Dead — verifica a cada terreno que entra (o proprio ou outro)
-    if distinct_land_names(state) >= 7:
+    # Field of the Dead — verifica a cada terreno que entra (o proprio ou outro).
+    # Achado real 2026-09-14: essa e' a PROPRIA habilidade do permanente
+    # Field of the Dead ("Whenever a land enters the battlefield under your
+    # control, if you control seven or more lands with different names,
+    # create a 2/2 black Zombie") -- mas o codigo antigo checava o limiar
+    # de 7+ nomes distintos INCONDICIONALMENTE, sem exigir que o proprio
+    # Field of the Dead estivesse em campo (diferente de TODO outro efeito
+    # deste loop, que so dispara dentro do `for p in ...: if p.card.name ==
+    # ...`). Isso criava Zombies mesmo em jogos onde Field of the Dead
+    # ainda nao tinha sido comprado/jogado, so por causa da contagem gral
+    # de nomes distintos de terreno (facil de bater com artefatos-terreno
+    # da Toph). Corrigido com `has_card()`, mesmo padrao usado por
+    # Horizon Explorer/Spelunking/Crucible/Conduit.
+    if has_card(state, "Field of the Dead") and distinct_land_names(state) >= 7:
         state.field_of_the_dead_tokens += 1
         create_token(state, log)
 
@@ -1915,6 +1988,7 @@ def main_phase(state: GameState, log: list):
     fountainport_abilities(state, log)
     inventors_fair_tutor(state, log)
     iron_spider_abilities(state, log)
+    skullclamp_activation(state, log)
     zuran_orb_activation(state, log)
 
     if RECURRING_ARTIFACT_POLICY:
@@ -2382,6 +2456,60 @@ def bala_ged_recovery_spell_mode(state: GameState, log: list):
     log.append(f"  [Bala Ged Recovery] conjurada como sorcery (terreno ja jogado), devolve {target} pra mao")
 
 
+def skullclamp_activation(state: GameState, log: list):
+    """Skullclamp: "Equipped creature gets +1/-1. Whenever equipped
+    creature dies, draw two cards. Equip {1}." Achado real 2026-09-14: a
+    carta so tinha a tag `combat_dependent` (contada so em
+    `interaction_plays`, sem efeito numerico) -- mas o oraculo ATUAL
+    (Scryfall, ja com a errata de 2023 que trocou a antiga habilidade
+    ativada "{T}, Sacrifice: draw 2" por um gatilho de morte) nao exige
+    combate nenhum: so precisa que a criatura equipada morra, por
+    QUALQUER motivo. Este simulador ja tem uma fonte de morte barata sem
+    oponente: um terreno earthbendado com `earthbend_return=True` sempre
+    volta tapped via Motor#16 quando morre (`leave_battlefield()`) --
+    earthbend 1 (Badgermole Cub/Bumi ETB) da um terreno-criatura 1/1;
+    equipar Skullclamp nele (+1/-1 -> 2/0) mata pela SBA de resistencia 0
+    na hora, dispara o gatilho (compra 2) e o terreno volta de graca no
+    mesmo evento -- reequipavel no proximo main phase por {1} de novo.
+    Terrenos earthbendados com 2+ contadores sobrevivem ao equip (ficam
+    3/1 ou mais) mas continuam "equipados": se Zuran Orb estiver em campo
+    (sacrifica TODO terreno earthbendado incondicionalmente, ja
+    implementado), o mesmo alvo tambem morre mais tarde no mesmo turno e
+    dispara o Skullclamp entao. So reequipa quando o alvo atual sumiu do
+    campo (equip so muda a targeting a velocidade de sorcery, uma vez por
+    turno neste modelo guloso)."""
+    clamp = next((p for p in state.battlefield if p.card.name == "Skullclamp"), None)
+    if clamp is None:
+        return
+    current = next((p for p in state.battlefield if p.uid == state.skullclamp_equipped_uid), None)
+    if current is not None:
+        return
+    if remaining_mana(state) < 1:
+        return
+    candidates = [p for p in state.battlefield if is_creature_type(p, state) and p is not clamp]
+    if not candidates:
+        return
+    # Prioridade: earthbend_return com exatamente 1 contador (SBA mata na
+    # hora, compra 2 de graca, volta via Motor#16) > qualquer outro
+    # earthbend_return (morre mais tarde, ex. via Zuran Orb) > criatura
+    # real comum (perda de verdade -- ultima opcao).
+    def priority(p):
+        if p.earthbend_return and p.counters == 1:
+            return 0
+        if p.earthbend_return:
+            return 1
+        return 2
+    candidates.sort(key=priority)
+    target = candidates[0]
+    spend_mana(state, 1)
+    state.skullclamp_equipped_uid = target.uid
+    state.skullclamp_equip_count += 1
+    log.append(f"  [Skullclamp] equipa {target.card.name} ({{1}})")
+    if target.counters == 1:
+        log.append(f"  [Skullclamp] {target.card.name} vai a 0 de resistencia (+1/-1, SBA), morre na hora")
+        leave_battlefield(state, target, log)
+
+
 def zuran_orb_activation(state: GameState, log: list):
     """Achado real 2026-09-01 (usuario: "nao quero que vc decida se a
     habilidade vai ativar ou nao... compile TUDO"). "Sacrifice a land: You
@@ -2631,6 +2759,8 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     wrenn_ultimate_rate = 100 * sum(1 for s in states if s.wrenn_ultimate_activations > 0) / n
     conduit_reanim = avg([s.conduit_reanimations for s in states])
     legend_sac = avg([s.legend_rule_sacrifices for s in states])
+    skullclamp_draws = avg([s.skullclamp_draws for s in states])
+    skullclamp_any = 100 * sum(1 for s in states if s.skullclamp_draws > 0) / n
 
     print(f"n={n}, seed_base={seed_base}, turns={turns}, RECURRING_ARTIFACT_POLICY={RECURRING_ARTIFACT_POLICY}")
     print(f"Avg mulligans: {mulls:.2f}")
@@ -2655,13 +2785,14 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg ativacoes do The Stasis Coffin (earthbendado): {coffin_act:.3f}")
     print(f"Avg protecoes via Talon Gates of Madara (fase fora criatura propria no ETB): {talon_gates_protect:.3f}")
     print(f"Avg sacrificios via Krark-Clan Ironworks de artefato earthbendado: {kci_sac:.3f}")
+    print(f"Avg compras via Skullclamp (criatura equipada morre): {skullclamp_draws:.3f} | % de jogos com pelo menos 1: {skullclamp_any:.1f}%")
 
     print("\n--- 5 metricas obrigatorias (goldfish-sim-card-rules.md secao 10) ---")
     print(f"[1) Ramp] Avg mana extra gerado por rampa (Lotus Cobra/Nissa landfall + KCI sac): {extra_mana:.2f}")
     print(f"[2) Draw] Avg cartas compradas alem da compra normal do turno: {extra_draw:.2f}")
     print(f"[3) Interaction] Avg spells/permanentes de interacao conjurados (Swords to Plowshares/"
           f"Council's Judgment/Erode/Haywire Mite/Heroic Intervention/Lightning Greaves/Teferi's Protection/"
-          f"Oblivion Stone/Skullclamp/Krang/Sword of Feast and Famine (combat_dependent, achado real "
+          f"Oblivion Stone/Krang/Sword of Feast and Famine (combat_dependent, achado real "
           f"2026-09-01) — efeito numerico solo N/A por falta de oponente/combate real, ver docstring): "
           f"{interaction:.2f} | % de jogos com pelo menos 1: {interaction_any:.1f}%")
     print(f"[4) Recursion] Avg recorrencia de permanente (Motor#16 earthbend_return + terreno do "

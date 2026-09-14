@@ -1,3 +1,79 @@
+## Auditoria oráculo-por-oráculo completa — 2026-09-14
+
+Nova rodada de auditoria, no mesmo padrão das já concluídas em outros 11
+decks nesta sessão (autorização geral do usuário para implementar TODAS
+as habilidades faltando/parciais em todo deck do repositório). Este deck
+já tinha passado por 3 rodadas de auditoria cláusula-a-cláusula em
+2026-09-01/02 (ver seção abaixo, "Compilação final" e `goldfish-log.md`)
+— as 189 cláusulas do oráculo real já tinham sido conferidas uma a uma.
+Esta rodada procurou especificamente os 2 padrões de bug mais comuns
+achados nos outros 11 decks desta sessão (tag fantasma sem dispatch, e
+implementação PARCIAL — só metade do oráculo real da carta tem código) em
+vez de repetir a compilação clausula-a-clausula já feita. Lendo o arquivo
+inteiro (2724 linhas) e comparando contra o oráculo real via Scryfall
+(`cards/named?fuzzy=`), achei **2 gaps reais** que as 3 rodadas anteriores
+tinham deixado passar:
+
+1. **Skullclamp estava com o oráculo ERRADO no código.** O comentário e a
+   tag (`combat_dependent`) refletiam a antiga habilidade ativada
+   ("{T}, Sacrifice: Draw two cards") — mas a Wizards deu errata nessa
+   carta em 2023: o oráculo ATUAL (confirmado ao vivo via Scryfall) é
+   `Equipped creature gets +1/-1. Whenever equipped creature dies, draw
+   two cards. Equip {1}` — um **gatilho de morte**, que não exige combate
+   nenhum, só que a criatura equipada morra por qualquer motivo. Isso é
+   exatamente o tipo de "morte barata sem oponente" que este simulador já
+   sabe modelar muito bem via Motor #16 (terreno earthbendado com
+   `earthbend_return=True` sempre volta tapped quando morre) — earthbend
+   de 1 (Badgermole Cub/Bumi ETB) dá um terreno-criatura 1/1; equipar
+   Skullclamp nele (+1/-1 → 2/0) mata pela SBA de resistência 0 na hora,
+   dispara o gatilho (compra 2 cartas) e o terreno volta de graça no
+   mesmo evento. Implementado em `skullclamp_activation()` (chamada em
+   `main_phase()`) + hook de morte em `leave_battlefield()`. Terrenos com
+   2+ contadores sobrevivem ao equip mas continuam "equipados" — se Zuran
+   Orb estiver em campo (sacrifica todo terreno earthbendado
+   incondicionalmente, já implementado), o mesmo alvo morre mais tarde no
+   turno e dispara o Skullclamp também. Removida a tag `combat_dependent`
+   de Skullclamp (substituída por `equip_death_draw`, decorativa como o
+   resto do arquivo — dispatch por nome) e do texto do metric #10 em
+   `run_batch()`, já que a carta deixou de ser opponent/combat-dependent
+   de verdade.
+2. **Field of the Dead disparava sem a própria carta estar em campo.**
+   Em `landfall_trigger()`, TODO outro efeito de landfall do arquivo está
+   dentro do loop `for p in battlefield: if p.card.name == "X": ...`
+   (exige o permanente real em campo) — menos o gatilho "7+ terrenos com
+   nomes diferentes → Zombie 2/2", que era checado **incondicionalmente**
+   fora desse loop, só olhando `distinct_land_names(state) >= 7` sem
+   checar se Field of the Dead (a própria fonte da habilidade) estava na
+   mesa. Resultado real medido: **83% dos jogos "ligavam" o gatilho e
+   criavam Zombies mesmo em partidas onde Field of the Dead nunca tinha
+   sido comprado** (fácil bater 7 nomes distintos de terreno com os
+   artefatos-terreno da própria Toph). Corrigido com
+   `has_card(state, "Field of the Dead")` como guarda, mesmo padrão já
+   usado por Horizon Explorer/Spelunking para suas próprias estáticas.
+
+**Validação:** script dedicado (`test_fixes.py`, arquivado no scratchpad
+da sessão) prova as 4 asserções — Field of the Dead não dispara sem estar
+em campo (e dispara normalmente quando entra), Skullclamp mata um alvo de
+1 contador e compra 2 (com o Motor#16 devolvendo o terreno tapped),
+Skullclamp num alvo de 2+ contadores sobrevive ao equip mas ainda dispara
+quando o Zuran Orb sacrifica esse mesmo alvo depois, e a tag de Skullclamp
+não conta mais como `combat_dependent`. Rodado contra o código ANTES da
+correção (`git stash`): o teste do Field of the Dead falha exatamente como
+esperado (`AssertionError: BUG: fired without Field of the Dead in play`),
+confirmando que o bug era real e não uma alegação. Regressão de 20.000
+partidas (seeds 9600000–9619999), 0 exceções. `n=2000`, seed 9500000,
+antes→depois (ver `goldfish-log.md` para a tabela completa): tokens de
+Field of the Dead caem de 5,55/jogo (83% dos jogos) para 0,84/jogo (14,1%
+dos jogos) — a taxa correta bate com a chance real de comprar essa carta
+singleton em 8 turnos; tokens totais caem de 15,47 para 10,77 (removendo o
+excesso fabricado); Skullclamp passa a contribuir 0,027 compras/jogo (2,6%
+dos jogos) que antes eram zero.
+
+Nenhuma outra clausula das 189 já auditadas mudou de status nesta rodada
+— os 2 achados acima são adicionais, não substituições.
+
+---
+
 # Checklist cláusula-a-cláusula — Toph, the First Metalbender
 
 Pedido direto do usuário (2026-09-01), depois da 2ª partida manual achar mais
