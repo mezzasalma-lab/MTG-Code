@@ -1,5 +1,37 @@
 # Checklist cláusula-a-cláusula — Ulalek, Fused Atrocity
 
+## Achado real 2026-09-14 (usuário perguntou se Roaming Throne está certa em todos os decks onde aparece)
+
+Mesma varredura pedida depois dos fixes no Beorn/Edgar Markov/Ur-Dragon.
+Este deck (tribal Eldrazi, `ROAMING_THRONE_TYPE = "eldrazi"`) já tinha a
+dobra do gatilho corretamente implementada como função central
+(checando o tipo da FONTE do gatilho, não do que entrou — mesmo padrão
+certo do Ur-Dragon/Maralen). Achado real: **Spawnbed Protector** ("At the
+beginning of your end step, return up to one target **Eldrazi creature
+card** from your graveyard to your hand") aceitava Roaming Throne como
+alvo válido se ela estivesse no cemitério — mas o tipo Eldrazi que ela
+ganha ("as this creature enters, choose a creature type") é um efeito de
+ETB, não uma característica que persiste em outras zonas (diferente de
+Changeling) — uma Roaming Throne morta no cemitério não é mais "an
+Eldrazi creature card".
+
+**Corrigido:** novo helper `is_eldrazi_card(name)` (= `is_eldrazi(name)
+and name != "Roaming Throne"`), usado só no Spawnbed Protector.
+`is_eldrazi()` puro continua correto pras checagens de battlefield
+(inalterado).
+
+**Validação:** 2 testes unitários dirigidos (Spawnbed Protector recupera
+um Eldrazi real do cemitério ignorando Roaming Throne; sem Eldrazi real
+no cemitério, não recupera Roaming Throne como substituto) — passando.
+Batch de 2.000 partidas: `spawnbed_protector_recursion_total` já estava
+em 0,0 na seed testada antes E depois (evento raro o bastante — Spawnbed
+Protector em campo + Eldrazi real no cemitério simultaneamente — pra não
+aparecer em 2.000 jogos nessa seed específica; a correção é real e
+comprovada pelos testes unitários, só não muda a média agregada aqui).
+20.000 partidas de regressão (seed 8200000+), **0 exceções**.
+
+---
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-14
 
 Extensão pra este deck da mesma auditoria já feita em Beorn/Captain

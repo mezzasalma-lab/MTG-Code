@@ -464,6 +464,19 @@ def is_eldrazi(name: str) -> bool:
     return "eldrazi" in CARD_DB[name].tags
 
 
+def is_eldrazi_card(name: str) -> bool:
+    """Achado real 2026-09-14 (mesma classe de bug encontrada e corrigida
+    hoje no Beorn/Edgar Markov/Maralen/Ur-Dragon pra Roaming Throne):
+    is_eldrazi() reconhece Roaming Throne como Eldrazi porque "as this
+    creature enters, choose a creature type" e' um efeito de ETB - correto
+    pra checagens de BATALHA (a propria dobra do gatilho, contagem de
+    Eldrazi em campo), mas ERRADO fora dela: o tipo concedido nao segue a
+    carta pro cemiterio (nao e' Changeling, que vale em toda zona). Usado
+    no unico ponto real de recursao fora do campo (Spawnbed Protector,
+    "return an Eldrazi creature card from your graveyard")."""
+    return is_eldrazi(name) and name != "Roaming Throne"
+
+
 def is_colorless(name: str) -> bool:
     return "colorless" in CARD_DB[name].tags
 
@@ -1531,7 +1544,7 @@ def end_step(state: GameState):
     # reaproveitam create_spawn_tokens() (mesma habilidade real, "sac:
     # add {C}", so' nome de token diferente - simplificacao documentada).
     if "Spawnbed Protector" in state.battlefield:
-        eligible = [n for n in state.graveyard if is_creature_card(n) and is_eldrazi(n)]
+        eligible = [n for n in state.graveyard if is_creature_card(n) and is_eldrazi_card(n)]
         if eligible:
             best = max(eligible, key=lambda n: CARD_DB[n].mv)
             state.graveyard.remove(best)

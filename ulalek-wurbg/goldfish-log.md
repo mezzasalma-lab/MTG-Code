@@ -867,6 +867,21 @@ novos (`ugin_loyalty_final`, `recursion_events_total`,
 
 ---
 
+## Achado real 2026-09-14 — Spawnbed Protector podia recuperar Roaming Throne do cemitério como se fosse Eldrazi
+
+Usuário perguntou se o bug do Roaming Throne achado no Beorn se repetia
+em outros decks. Sim — ver `checklist-oraculo.md` (Spawnbed Protector
+aceitava Roaming Throne morta no cemitério como "an Eldrazi creature
+card", mas o tipo que ela ganha é efeito de ETB, não persiste em outras
+zonas). Corrigido com `is_eldrazi_card()`. Dado o achado anterior (2/3000
+jogos têm sequer um Eldrazi elegível no cemitério nesse ponto — evento já
+raro por natureza), o batch de 2.000 partidas não mostrou movimento
+numérico (0,0 antes e depois na seed testada) — a correção foi provada
+com 2 testes unitários dirigidos, não pela média agregada. 20.000
+partidas de regressão (seed 8200000+), 0 exceções.
+
+---
+
 ## Partida #1 — 2026-08-30 (partida REAL, jogada à mão no goldfish do Archidekt)
 
 **Formato do registro:** igual ao método usado nas Partidas #13-15 do Ur-Dragon —
