@@ -479,6 +479,26 @@ def is_creature(card: str) -> bool:
 def is_vampire(card: str) -> bool:
     return has_tag(card, "vampire_type") or card == COMMANDER
 
+def is_vampire_in_play(card: str) -> bool:
+    """Achado real 2026-09-14 (mesma classe do bug encontrado no
+    Beorn/Firdoch Core): Roaming Throne - "As this creature enters,
+    choose a creature type. This creature is the chosen type in
+    addition to its other types" - a convencao deste deck (unica
+    escolha sensata, tribal Vampiro) e' sempre escolher Vampire, e ela
+    passa a SER um Vampiro enquanto estiver na batalha. `is_vampire()`
+    puro (tag "vampire_type") nao reconhece Roaming Throne porque essa
+    e' uma caracteristica GANHA ao entrar, nao impressa - correto pra
+    checagens de mao/cemiterio/casting (Sorin -3 "put a Vampire creature
+    CARD from your hand" nao deveria aceitar Roaming Throne ainda na
+    mao, ela so ganha o tipo ao entrar; Eminence "cast another Vampire
+    SPELL" tambem nao deveria contar o proprio cast dela, a escolha so'
+    acontece na resolucao) - mas ERRADO pras 3 contagens reais de
+    "quantos Vampiros voce controla" (Voldaren Estate desconto,
+    Champion of Dusk draw, gatilho de ataque da propria Edgar), que
+    olham o BATTLEFIELD, onde ela ja e' um Vampiro de verdade. Este
+    helper separado e' usado so' nesses 3 loops sobre state.battlefield."""
+    return is_vampire(card) or card == "Roaming Throne"
+
 def has_tag(card: str, tag: str) -> bool:
     return tag in C(card).tags
 
@@ -1043,7 +1063,7 @@ def try_voldaren_estate_blood(state: GameState, log: List[Dict]):
     # convencao de regras, CR 601.2f).
     if not state.has("Voldaren Estate") or state.voldaren_estate_used_this_turn:
         return
-    vampires = sum(1 for c in state.battlefield if is_vampire(c))
+    vampires = sum(1 for c in state.battlefield if is_vampire_in_play(c))
     cost = max(1, 5 - vampires)
     if remaining_mana(state) < cost:
         return
@@ -1735,7 +1755,7 @@ def apply_etb(state: GameState, card: str, log: List[Dict]):
         state.loyalty[card] = PLANESWALKER_STARTING_LOYALTY[card]
         log.append({"trigger": "planeswalker_enters", "pw": card, "loyalty": state.loyalty[card], "turn": state.turn})
     if card == "Champion of Dusk":
-        vamps = sum(1 for c in state.battlefield if is_vampire(c))
+        vamps = sum(1 for c in state.battlefield if is_vampire_in_play(c))
         times = _times(state)
         for _ in range(times):
             state.draw(vamps)
@@ -1967,7 +1987,7 @@ def combat_step(state: GameState, log: List[Dict]):
             state.legion_landing_transformed = True
             log.append({"trigger": "legions_landing_transform", "turn": state.turn})
 
-    vamps_in_play = sum(1 for c in state.battlefield if is_vampire(c))
+    vamps_in_play = sum(1 for c in state.battlefield if is_vampire_in_play(c))
     times = _times(state)
     for _ in range(times):
         state.edgar_attack_counters_total += vamps_in_play

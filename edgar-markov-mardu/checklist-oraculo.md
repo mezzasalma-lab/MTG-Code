@@ -1,5 +1,52 @@
 # Checklist cláusula-a-cláusula — Edgar Markov
 
+## Achado real 2026-09-14 (usuário perguntou se Roaming Throne está certa em todos os decks onde aparece)
+
+Depois de achar e corrigir uma classe de bug no Beorn (Roaming Throne
+nunca contava como o próprio tipo escolhido pra fins de "controle N
+criaturas do tipo X"), o usuário pediu pra verificar os outros decks.
+Este deck tinha o **mesmo bug**, num lugar diferente.
+
+Oráculo real: *"As this creature enters, choose a creature type. This
+creature is the chosen type in addition to its other types."* — a
+convenção deste deck (única escolha sensata, tribal Vampiro) é sempre
+escolher Vampire. `is_vampire(card)` só reconhecia a tag `"vampire_type"`
+(ou o próprio comandante) — Roaming Throne, sem essa tag, nunca contava
+como Vampiro pras 3 contagens reais de "quantos Vampiros você controla"
+em campo: desconto de custo do **Voldaren Estate**, compra do **Champion
+of Dusk**, e os contadores +1/+1 distribuídos pelo próprio **gatilho de
+ataque da Edgar**.
+
+**Cuidado que ISSO NÃO é o mesmo fix do Beorn (não dá pra copiar e
+colar):** diferente do Firdoch Core (Changeling, que vale em qualquer
+zona), o tipo que a Roaming Throne ganha é uma característica **só
+enquanto ela está na batalha** ("as this enters, choose..." — não é uma
+CDA como Changeling). Isso significa que marcar Roaming Throne como
+Vampiro incondicionalmente (a mesma tag estática usada pra outras
+cartas) teria corrigido os 3 bugs reais acima mas **criado 2 bugs
+novos**: Sorin, Imperious Bloodlord (−3, "put a Vampire creature **card**
+from your hand") passaria a poder cheat a Roaming Throne pra campo
+direto da mão (ela ainda não escolheu tipo nenhum enquanto é só uma
+carta na mão); e o Eminence da própria Edgar ("whenever you cast
+another Vampire **spell**") passaria a disparar ao conjurar a própria
+Roaming Throne (a escolha só acontece na resolução, não durante o cast).
+
+**Corrigido com um helper separado**, `is_vampire_in_play(card)`,
+usado só nos 3 loops que iteram `state.battlefield` (onde ela já é um
+Vampiro de verdade) — `is_vampire()` puro continua sem reconhecer
+Roaming Throne, preservando o comportamento correto em mão/cemitério/
+cast.
+
+**Validação:** 2 testes unitários dirigidos (`is_vampire` puro fica
+False pra Roaming Throne; `is_vampire_in_play` fica True) — passando.
+Batch de 2.000 partidas antes/depois (mesma seed 7100000, turns=10):
+`edgar_attack_counters_total` 17,33→18,11; `champion_of_dusk_draws`
+0,570→0,594; `voldaren_estate_blood_tokens` 0,577→0,581 — movimento
+pequeno e real (Roaming Throne só está em campo em 15% dos jogos, seed
+usada). 20.000 partidas de regressão (seed 7300000+), **0 exceções**.
+
+---
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-13
 
 Extensão pra este deck da mesma auditoria já feita no Azula/Beorn/Captain

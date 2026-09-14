@@ -993,6 +993,24 @@ de comportamento típico. Regressão de 20.000 partidas (seeds
 
 ---
 
+## Achado real 2026-09-14 — Roaming Throne não contava como Vampiro em campo
+
+Usuário perguntou se o bug do Roaming Throne achado no Beorn se repetia
+em outros decks. Sim — ver `checklist-oraculo.md` pro achado completo
+(inclusive por que o fix teve que ser diferente do Beorn, não é
+Changeling). Resumo numérico (2.000 partidas, mesma seed 7100000,
+turns=10):
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg contadores +1/+1 via ataque da Edgar | 17,3325 | 18,1085 |
+| Avg compras via Champion of Dusk | 0,570 | 0,594 |
+| Avg Blood tokens via Voldaren Estate | 0,5765 | 0,581 |
+
+20.000 partidas de regressão (seed 7300000+), 0 exceções.
+
+---
+
 <!-- Para novas partidas (reais ou novas simulações), use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD
