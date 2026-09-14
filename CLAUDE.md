@@ -120,3 +120,38 @@ via `/cards/search?q="Nome Exato"` — se vier um resultado com `flavor_name`
 igual ao nome buscado, o campo `name` da resposta é a carta real; resolver
 pra esse nome antes de qualquer julgamento. Só depois dessa checagem
 concluir que uma carta genuinamente saiu da lista.
+
+## Regra #3 (obrigatória): habilidade "implementada" não basta — os CONCEITOS COMPARTILHADOS que ela usa (o que é "Urso", "criatura", "controla X") também têm que estar certos pra TODA carta que os lê
+
+Achado real em 2026-09-14 (deck Beorn, reportado pelo usuário na própria
+mesa): a habilidade do comandante ("if you control three or more Bears,
+draw two cards") JÁ tinha código, JÁ disparava, JÁ contava Ursos — e ainda
+assim estava errada, porque a função central `bears_in_play()` (usada por
+essa E por outras cartas) exigia `is_creature(c)` antes de reconhecer um
+Urso, excluindo Firdoch Core (artefato com Changeling, raramente animado)
+da contagem. A ruling oficial do Firdoch Core no Scryfall confirma:
+Changeling concede o tipo de criatura **mesmo fora de criatura** ("Kindred
+is a card type that allows noncreature cards to have creature types").
+
+**A lição não é "faltou 1 carta" — é que a auditoria clausula-a-clausula
+("essa carta tem código?") não pega esse tipo de bug**, porque a carta
+com a habilidade (Beorn) e a carta com o problema real (Firdoch Core) são
+DIFERENTES. O bug mora numa função auxiliar compartilhada, não na carta
+auditada. Isso só aparece auditando o CONCEITO (tudo que responde "o que
+conta como X"), não a carta isoladamente.
+
+**Daqui pra frente, além de clausula-a-clausula por carta:**
+1. Pra toda função central que define um conceito compartilhado (`is_bear`,
+   `is_creature`, `color_sources`, `ready_creatures`, etc.) — listar TODA
+   carta do deck que esse conceito toca, não só a que "dá nome" à função.
+2. Pra toda carta com Changeling, Kindred, ou qualquer estático que redefina
+   tipo/característica de permanente (ex.: "this is every creature type",
+   "treat this as a X") — buscar a **ruling** no Scryfall (`rulings_uri`,
+   não só `oracle_text`) ANTES de decidir se ela conta ou não pra outras
+   cartas do deck que fazem type-checking ("Bears you control", "creatures
+   you control that are X"). Oracle text sozinho geralmente não deixa claro
+   se o efeito vale fora de criatura — a ruling geralmente deixa.
+3. Ao corrigir uma função central, sempre grepar TODOS os call sites dela
+   no arquivo antes de mudar (ver caso do Springleaf Parade nesse mesmo
+   commit: quase criei um bug novo removendo o filtro errado, se não
+   tivesse checado todos os outros usos primeiro).
