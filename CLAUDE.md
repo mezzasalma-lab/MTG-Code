@@ -98,3 +98,25 @@ qualquer cláusula extra além da primeira frase do oráculo.
 
 Esta regra vale pra QUALQUER trabalho futuro neste repositório, incluindo
 decks totalmente novos, não só correções em decks existentes.
+
+## Regra #2 (obrigatória): nunca marcar uma carta como ausente/desconhecida sem checar `flavor_name` no Scryfall
+
+Achado real em 2026-09-14 (deck Beorn/Thranduil): vários decks deste
+repositório usam cartas impressas em produtos "Universes Beyond" (Secret
+Lair Drop de Avatar/Final Fantasy, Marvel Universe, Tales of Middle-earth)
+com nome de capa diferente do nome real da carta — ex.: "Huu's Reach" é a
+impressão Avatar de **Kodama's Reach**; "Aerith's Curaga Magic" é a
+impressão Final Fantasy de **Heroic Intervention**; "Doom Variant" é a
+impressão Marvel de **Roaming Throne**; "The Party Tree"/"Fangorn Forest"
+são impressões Tales of Middle-earth de **The Great Henge**/**Yavimaya,
+Cradle of Growth**. Nomes assim NÃO batem com o `oracle_id` real por texto
+literal, e se o usuário mandar uma lista com esses nomes, uma comparação
+ingênua de string vai apontar a carta como "removida"/"desconhecida"
+quando ela pode estar lá o tempo todo sob o nome real.
+
+**Antes de marcar qualquer carta como ausente, trocada ou desconhecida ao
+comparar listas ou validar o `CARD_DB`:** buscar o nome exato no Scryfall
+via `/cards/search?q="Nome Exato"` — se vier um resultado com `flavor_name`
+igual ao nome buscado, o campo `name` da resposta é a carta real; resolver
+pra esse nome antes de qualquer julgamento. Só depois dessa checagem
+concluir que uma carta genuinamente saiu da lista.
