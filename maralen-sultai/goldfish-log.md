@@ -583,6 +583,21 @@ de regressão.
 
 ---
 
+## Achado real 2026-09-14 — Faerie Harbinger tutorava Roaming Throne + hang de verdade achado na Faerie Mastermind
+
+Usuário perguntou se o bug do Roaming Throne achado no Beorn se repetia
+em outros decks. Achado real (Faerie Harbinger tutorando Roaming Throne
+da biblioteca) + um bug bem mais grave achado incidentalmente ao validar
+com a regressão de 20.000: um hang de verdade, pré-existente, sem
+relação com a Roaming Throne — `try_faerie_mastermind()` podia entrar
+num loop infinito se o combo do Umbral Mantle fosse detectado no meio do
+próprio loop de compra dela. Ver `checklist-oraculo.md` pro detalhe
+completo. Antes do fix, a regressão de 20.000 partidas TRAVAVA por
+completo por volta da partida #13500 (nunca terminava); depois, 0
+exceções, termina normalmente. `Avg tutors_used_total` 0,925→0,905.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

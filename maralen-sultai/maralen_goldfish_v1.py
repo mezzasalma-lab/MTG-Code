@@ -884,7 +884,18 @@ def resolve_etb(state: GameState, name: str):
         if times == 2:
             state.roaming_throne_doubles_total += 1
         for _ in range(times):
-            faeries = [n for n in state.library if is_faerie(n)]
+            # Achado real 2026-09-14: Roaming Throne so' E' Faerie enquanto
+            # esta na BATALHA ("as this creature enters, choose a creature
+            # type" - a escolha e' um efeito de ETB, nao uma caracteristica
+            # impressa como Changeling, que valeria em qualquer zona). A tag
+            # ROAMING_THRONE_TYPE fica cravada em CARD_DB pra facilitar as
+            # checagens de battlefield (elf_faerie_count, Mistbind Clique,
+            # Tegwyll), mas isso faz is_faerie() achar Roaming Throne mesmo
+            # parada na biblioteca - "search for a Faerie card" nao deveria
+            # achar ela ali (ainda nao escolheu tipo nenhum). Excluida
+            # explicitamente desta busca (a unica library-scoped que usa
+            # is_faerie no arquivo).
+            faeries = [n for n in state.library if is_faerie(n) and n != "Roaming Throne"]
             if faeries:
                 best = max(faeries, key=lambda n: CARD_DB[n].mv)
                 state.library.remove(best)
@@ -1324,7 +1335,21 @@ def try_faerie_mastermind(state: GameState):
         return
     if state.infinite_mana_this_turn:
         return  # evita loop infinito de verdade - ja convertido via Staff
-    while remaining_mana(state) >= 4:
+    # Achado real 2026-09-14 (bug de hang de verdade, achado validando a
+    # correcao da Roaming Throne - confirmado pre-existente via git stash,
+    # nao introduzido por ela): dork_mana() (chamada por total_mana() a
+    # cada remaining_mana()) tem um EFEITO COLATERAL - ela seta
+    # state.infinite_mana_this_turn = True assim que detecta o combo do
+    # Umbral Mantle pronto, so' de ser CONSULTADA (nao precisa de nada ser
+    # de fato ativado). Isso pode acontecer no MEIO deste loop (entre uma
+    # iteracao e outra, sem nada externo mudar): a partir dai
+    # remaining_mana() trava em 999 pra sempre e spend_mana() vira no-op
+    # (guardado pelo mesmo flag) - o loop nunca mais termina, sempre
+    # tentando comprar a biblioteca inteira infinitamente. Reproduzido de
+    # forma isolada e determinstica na seed 6713530 (trava em <10ms real,
+    # mas o `while` puro nunca sai). Corrigido rechecando o flag a cada
+    # iteracao, nao so' na entrada da funcao.
+    while remaining_mana(state) >= 4 and not state.infinite_mana_this_turn:
         spend_mana(state, 4)
         draw_cards(state, 1)
         state.faerie_mastermind_draws_total += 1

@@ -1,5 +1,50 @@
 # Checklist cláusula-a-cláusula — Maralen, Fae Ascendant
 
+## Achado real 2026-09-14 (usuário perguntou se Roaming Throne está certa em todos os decks onde aparece) + bug de hang de verdade achado ao validar
+
+Este deck já tinha a arquitetura mais madura da sessão pra Roaming
+Throne (tag do próprio tipo escolhido cravada no `CARD_DB`, dobra de
+gatilho já checando a FONTE corretamente em 3 sites diferentes, com
+comentários já documentando o mesmo raciocínio que apliquei hoje nos
+outros decks). Achei **1 gap real**: **Faerie Harbinger** ("search your
+library for a Faerie card, put it on top") aceitava Roaming Throne como
+alvo válido de busca na biblioteca — mas o tipo Faerie que ela ganha é
+efeito de ETB, não persiste em zonas fora da batalha (mesma classe de
+achado nos outros 4 decks hoje). Corrigido excluindo `"Roaming Throne"`
+explicitamente dessa busca (única library-scoped do arquivo usando
+`is_faerie`).
+
+**Achado incidental bem mais grave, ao validar com a regressão de
+20.000 partidas: um HANG DE VERDADE (loop infinito), pré-existente,
+sem relação com a Roaming Throne.** `try_faerie_mastermind()` tem um
+`while remaining_mana(state) >= 4:` que gasta mana e compra 1 carta por
+iteração — mas `remaining_mana()` chama `total_mana()` que chama
+`dork_mana()`, e `dork_mana()` tem um EFEITO COLATERAL: ela seta
+`state.infinite_mana_this_turn = True` assim que detecta o combo do
+Umbral Mantle pronto (dork escalável equipado, saída ≥4) — só de ser
+CONSULTADA, sem precisar de nada externo acontecer. Se isso disparar no
+MEIO do loop da Faerie Mastermind (entre uma iteração e a próxima, sem
+nenhuma mudança de board real), `remaining_mana()` passa a retornar 999
+pra sempre e `spend_mana()` vira no-op (mesmo guard) — o loop nunca mais
+termina, comprando a biblioteca inteira em loop. Confirmado
+determinístico e reproduzível isoladamente na seed 6713530 (e
+confirmado **pré-existente**, não causado pela minha correção — reproduz
+igual com `git stash` no código original). Corrigido rechecando o flag
+`infinite_mana_this_turn` a cada iteração do `while`, não só na entrada
+da função (que já tinha o guard certo, só não bastava).
+
+**Validação:** teste unitário direto (seed 6713530, antes travava
+indefinidamente, depois termina normalmente). 20.000 partidas de
+regressão (seed 6700000+) — **antes deste fix, travava por completo
+entre a partida ~13400 e ~13600 (nunca chegava a terminar as 20.000);
+depois, 0 exceções, termina em segundos**. `Avg tutors_used_total`:
+0,925→0,905 (Faerie Harbinger, movimento pequeno, cenário raro de
+Roaming Throne ser a "Fada" candidata). `Avg
+faerie_mastermind_draws_total`: 1,19 (máximo numa única partida: 135 —
+bounded, sem sinal de loop restante).
+
+---
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-13
 
 Extensão pra este deck da mesma auditoria já feita no Azula/Beorn/Captain
