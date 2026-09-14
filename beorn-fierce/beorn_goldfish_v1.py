@@ -1071,6 +1071,11 @@ def try_cast_beorn_host_from_exile(state: GameState, log: List[Dict]):
     state.spells_cast += 1
     if state.managorger_in_play:
         state.managorger_counters += 1
+    # Achado real 2026-09-14: conjurar a criatura do exilio (metade Adventure)
+    # e' um cast de spell de criatura verde de verdade - faltava disparar Beast
+    # Whisperer/Necklace of Girion/Dancing from Dark to Dawn, so' Managorger
+    # (acima) ja estava coberto. Mesmo hook central usado em cast_spell().
+    on_spell_cast_effects(state, name, log)
     state.beorn_host_exiled = False
     state.battlefield.append(name)
     on_creature_enters(state, name, log)
@@ -1109,6 +1114,12 @@ def main_phase(state: GameState, log: List[Dict]):
         state.spells_cast += 1  # e uma copia sendo conjurada de verdade, conta pra Managorger etc.
         if state.managorger_in_play:
             state.managorger_counters += 1
+        # Achado real 2026-09-14: Germination Practicum e' Sorcery {3}{G}{G} - nao
+        # dispara Beast Whisperer/Dancing (nao e' criatura, on_spell_cast_effects
+        # ja filtra certo por dentro), mas E' um spell verde real - deveria disparar
+        # Necklace of Girion ("whenever you cast a green spell") toda vez que a
+        # copia gratis via Paradigm e' conjurada, nao so' no cast original.
+        on_spell_cast_effects(state, "Germination Practicum", log)
         log.append({"trigger": "germination_practicum_paradigm", "turn": state.turn, "creatures_buffed": creatures_now})
 
     if not state.commander_in_play and state.turn >= 3:
@@ -1118,6 +1129,17 @@ def main_phase(state: GameState, log: List[Dict]):
             state.spells_cast += 1
             state.mana_spent_this_turn += effective_cost(state, COMMANDER)
             state.battlefield.append(COMMANDER)
+            # Achado real 2026-09-14 (usuario apontou Beast Whisperer + Beorn na
+            # mesma mesa): conjurar a PROPRIA Beorn e' conjurar um spell de criatura
+            # verde {3}{G}{G} - deveria disparar Beast Whisperer ("whenever you
+            # cast a creature spell, draw a card") e Necklace of Girion ("whenever
+            # you cast a green spell") se ja estiverem em campo, alem de contar pra
+            # Managorger Hydra - nenhum dos 3 disparava aqui, so' em cast_spell()
+            # (que so' cobre cartas conjuradas da mao pelo loop guloso, nao o cast
+            # dedicado do comandante). Corrigido chamando o mesmo hook central.
+            on_spell_cast_effects(state, COMMANDER, log)
+            if state.managorger_in_play:
+                state.managorger_counters += 1
             on_creature_enters(state, COMMANDER, log)
             log.append({"action":"cast_commander","turn":state.turn})
 
@@ -1147,6 +1169,12 @@ def main_phase(state: GameState, log: List[Dict]):
             state.spells_cast += 1
             state.mana_spent_this_turn += effective_cost(state, COMMANDER)
             state.battlefield.append(COMMANDER)
+            # Mesmo achado real 2026-09-14 do outro ponto de cast do comandante
+            # (ver comentario acima) - esse 2o ponto (depois do loop guloso ja ter
+            # conjurado algo) tinha o MESMO gap.
+            on_spell_cast_effects(state, COMMANDER, log)
+            if state.managorger_in_play:
+                state.managorger_counters += 1
             on_creature_enters(state, COMMANDER, log)
             log.append({"action":"cast_commander","turn":state.turn})
 

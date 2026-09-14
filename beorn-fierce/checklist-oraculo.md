@@ -1,5 +1,52 @@
 # Checklist cláusula-a-cláusula — Beorn the Fierce
 
+## Achado real 2026-09-14 (usuário apontou Beorn + Beast Whisperer somando muita carta na mesa): 3 pontos de cast de criatura pulavam o hook de "quando você conjura um spell"
+
+**Contexto:** usuário relatou descartar 2 cartas por turno na mesa por
+causa da soma de Beorn + Beast Whisperer, e perguntou se a soma dos
+efeitos de draw batia com o que o simulador mostrava.
+
+Investigando: `on_spell_cast_effects()` é a função central que despacha
+Beast Whisperer ("whenever you cast a creature spell, draw a card"),
+Necklace of Girion ("whenever you cast a green spell, +1/+1 counter") e
+Dancing from Dark to Dawn (contadores = MV do spell de criatura). Só que
+ela só era chamada de **1 lugar** (`cast_spell()`, usada pelo loop guloso
+de conjurar cartas da mão) — existem **3 outros pontos reais** do arquivo
+que conjuram uma carta de verdade (aumentam `spells_cast`, cobram mana) e
+nenhum deles chamava esse hook:
+
+1. **Cast do próprio comandante** (2 blocos em `main_phase()` — um antes
+   do loop guloso, outro depois) — conjurar Beorn é conjurar um spell de
+   criatura verde real (`{3}{G}{G}`). Beast Whisperer/Necklace of
+   Girion/Dancing from Dark to Dawn nunca disparavam nesse cast — nem
+   Managorger Hydra (que também estava faltando nos 2 blocos).
+2. **Beorn, Reluctant Host // Till and Tend conjurado do exílio**
+   (`try_cast_beorn_host_from_exile`, 2ª metade do Adventure) — é um cast
+   de criatura verde real (`{4}{G}`), Managorger já disparava mas Beast
+   Whisperer/Necklace of Girion/Dancing from Dark to Dawn não.
+3. **Germination Practicum via Paradigm** (recast grátis da cópia do
+   exílio todo turno) — é `Sorcery {3}{G}{G}`, não dispara Beast
+   Whisperer/Dancing (corretamente, `on_spell_cast_effects()` já filtra
+   por `is_creature_spell`), mas É um spell verde real — Necklace of
+   Girion deveria disparar em CADA recast, não só no cast original.
+
+**Corrigido:** chamada de `on_spell_cast_effects()` adicionada nos 3
+pontos (mais o incremento de Managorger que faltava nos 2 blocos do
+comandante).
+
+**Validação:** 3 testes unitários dirigidos (cast do comandante com Beast
+Whisperer+Necklace+Managorger em campo; cast do Beorn Host do exílio com
+Beast Whisperer+Necklace; recast do Germination Practicum via Paradigm
+soma o Necklace mas não dispara Beast Whisperer) — todos passando. Batch
+de 2.000 partidas antes/depois (mesma seed 9950000): `extra_draws`
+17,322→17,412, `mão final` 8,934→8,966, `spells_cast` 12,384→12,403 —
+movimento pequeno e real (esses 3 pontos disparam quase sempre 1x por
+partida cada, não são motores repetíveis como o gatilho de combate da
+própria Beorn). 20.000 partidas de regressão (seed 9960000+), **0
+exceções**.
+
+---
+
 ## Achado real 2026-09-14 (reportado pelo usuário na própria mesa): Firdoch Core conta como Urso mesmo sem estar animado
 
 **Contexto:** usuário notou que na mesa física ele termina com muito mais

@@ -1162,6 +1162,24 @@ reais, não bugs que inflavam ou destruíam a curva inteira.
 
 ---
 
+## Achado real 2026-09-14 — 3 pontos de cast de criatura pulavam Beast Whisperer/Necklace of Girion/Managorger (reportado pelo usuário)
+
+Ver `checklist-oraculo.md` pro achado completo (cast do comandante em 2
+blocos + Beorn Reluctant Host do exílio + recast do Germination Practicum
+via Paradigm, nenhum chamava o hook central `on_spell_cast_effects()`).
+Resumo numérico antes/depois (2.000 partidas, mesma seed 9950000, turns=8):
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg compras extras totais/partida | 17,322 | 17,412 |
+| Avg mão final | 8,934 | 8,966 |
+| Avg spells_cast/partida | 12,384 | 12,403 |
+
+20.000 partidas de regressão (seed 9960000+), 0 exceções. 3 testes
+unitários dirigidos, todos passando.
+
+---
+
 ## Achado real 2026-09-14 — Firdoch Core conta como Urso mesmo sem animar (reportado pelo usuário)
 
 Ver `checklist-oraculo.md` pro achado completo. Resumo numérico do
