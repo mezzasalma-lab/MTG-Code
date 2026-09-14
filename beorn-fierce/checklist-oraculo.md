@@ -1,5 +1,72 @@
 # Checklist cláusula-a-cláusula — Beorn the Fierce
 
+## Achado real 2026-09-14 (reportado pelo usuário na própria mesa): Firdoch Core conta como Urso mesmo sem estar animado
+
+**Contexto:** usuário notou que na mesa física ele termina com muito mais
+cartas do que o simulador mostrava, e apontou especificamente: "toda vez
+que eu tiver com três ursos... incluindo o Firdoch Core como o artefato
+que ele também é urso, no início do combate eu compro duas cartas."
+
+Oráculo real da Beorn (Scryfall, confirmado ao vivo): *"Trample. Other
+Bears you control get +2/+2. At the beginning of combat on your turn, put
+a trample counter on up to one target creature you control. It becomes a
+Bear in addition to its other types. Then if you control three or more
+Bears, draw two cards."* — a cláusula final não exige que os "Bears"
+sejam **criaturas**, só que você os controle.
+
+Firdoch Core (`Kindred Artifact — Shapeshifter`, tem Changeling: *"This
+card is every creature type"*) raramente é animado (custa {4} pra virar
+4/4 até o fim do turno) — na prática, fica em campo o jogo inteiro como
+rock de mana, nunca criatura. Ruling oficial do Scryfall pro Firdoch Core
+confirma que isso não importa: *"Kindred is a card type that allows
+noncreature cards to have creature types... [ex.] is an Elf (although not
+a creature) while on the battlefield."* Ou seja, Firdoch Core **é um Urso
+o tempo todo**, animado ou não.
+
+**Bug real:** `bears_in_play()` (a função central que o gatilho da Beorn
+usa pra contar "controle 3+ Bears") exigia `is_creature(c)` ANTES de
+checar `is_bear(state, c)` — excluindo Firdoch Core da contagem sempre que
+ele não estava animado, ou seja, na prática quase sempre. Isso fazia o
+motor de compra principal do deck (o próprio gatilho da Beorn, ~3 vezes
+por partida em média) disparar mais tarde e com menos frequência do que
+na mesa real.
+
+**Achado colateral ao investigar (não reportado pelo usuário, achado
+verificando a própria função):** a tag `"changeling"` estava na carta
+errada — no encantamento **Springleaf Parade** em si (`{"token_maker",
+"changeling"}`), quando o oráculo real diz *"create X 1/1 ... Shapeshifter
+creature tokens **with changeling**"* — é o TOKEN que tem Changeling, não
+o encantamento (que nunca é criatura, e por isso nunca deveria contar como
+Urso). Isso teria virado um bug NOVO e oposto (contar Springleaf Parade
+demais) no momento em que eu removesse o filtro `is_creature()` de
+`bears_in_play()` pra corrigir o Firdoch Core — corrigido junto, a tag de
+changeling ficou só no `"Springleaf Parade Token"` (que já tinha sua
+própria entrada correta).
+
+**Corrigido:** removido o filtro `is_creature(c)` de `bears_in_play()` —
+agora conta qualquer permanente que `is_bear()` reconheça, criatura ou
+não (a própria `is_bear()` já trata corretamente os outros casos: Maskwood
+Nexus só afeta criatura de verdade, `converted_to_bear` só se aplica a algo
+que já era criatura quando convertido pela própria Beorn).
+
+**Validação:** 4 testes unitários dirigidos (Firdoch Core sozinho conta
+como Urso mesmo não-animado; sem ele a contagem cai 1; Springleaf Parade
+o encantamento NÃO conta; o Springleaf Parade Token conta) — todos
+passando. 20.000 partidas de regressão (seed 9900000+), **0 exceções**.
+Batch de 2.000 partidas antes/depois (mesma seed 9800000): gatilho "3+
+Bears, draw 2" médio por partida 2,998→3,107; % de jogos que dispararam
+esse gatilho no turno 4 4,9%→6,0%, no turno 5 28,0%→32,6%, no turno 6
+63,9%→67,1%; turno médio do 1º disparo (entre os jogos que dispararam)
+6,03→5,93; % de jogos que NUNCA dispararam em 8 turnos 8,4%→7,8%; compras
+extras totais médias por partida 17,44→17,89. Movimento real, consistente
+com a queixa do usuário (motor de compra dispara mais cedo e com mais
+frequência) — não é dramático porque Firdoch Core só "destrava" o gatilho
+nos jogos em que os outros 2 Ursos já estavam perto de 3, mas é
+sistemático (afeta toda partida em que Firdoch Core está em campo, que é
+a maioria).
+
+---
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-13
 
 Extensão pra este deck da mesma auditoria já feita no Megatron/Azula:

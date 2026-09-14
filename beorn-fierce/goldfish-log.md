@@ -1162,6 +1162,29 @@ reais, não bugs que inflavam ou destruíam a curva inteira.
 
 ---
 
+## Achado real 2026-09-14 — Firdoch Core conta como Urso mesmo sem animar (reportado pelo usuário)
+
+Ver `checklist-oraculo.md` pro achado completo. Resumo numérico do
+antes/depois (2.000 partidas, mesma seed 9800000, turns=8):
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Gatilho "3+ Bears, draw 2" médio/partida | 2,998 | 3,107 |
+| % dispara no turno 4 | 4,9% | 6,0% |
+| % dispara no turno 5 | 28,0% | 32,6% |
+| % dispara no turno 6 | 63,9% | 67,1% |
+| % dispara no turno 7 | 83,5% | 84,8% |
+| % dispara no turno 8 | 91,4% | 92,0% |
+| Turno médio do 1º disparo (entre os que dispararam) | 6,03 | 5,93 |
+| % de jogos que NUNCA disparam em 8 turnos | 8,4% | 7,8% |
+| Avg compras extras totais/partida | 17,44 | 17,89 |
+| Avg contagem final de Ursos em campo | 7,39 | 7,73 |
+
+20.000 partidas de regressão (seed 9900000+), 0 exceções. 4 testes
+unitários dirigidos, todos passando.
+
+---
+
 <!-- Para novas partidas avulsas, use o formato abaixo -->
 
 ## Partida #N — AAAA-MM-DD

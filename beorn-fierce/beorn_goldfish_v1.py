@@ -243,7 +243,14 @@ bear_defs = [
     ("Little Bear", 3, {"Creature"}, {"bear","counters_engine","untap"}),
     ("Maskwood Nexus", 4, {"Artifact"}, {"changeling_global","token_maker"}),
     ("Roaming Throne", 4, {"Artifact"}, {"anthem_tribal","double_trigger"}),
-    ("Springleaf Parade", 3, {"Enchantment"}, {"token_maker","changeling"}),
+    # Achado real 2026-09-14: "changeling" pertence aos TOKENS que ela cria
+    # ("...tokens with changeling"), nao ao proprio encantamento (que nunca
+    # e' criatura) - a tag estava na carta errada, o que fazia is_bear()
+    # contar o proprio Springleaf Parade como Urso incorretamente (ver
+    # bears_in_play() e a correcao do Firdoch Core no mesmo commit). O token
+    # ja tem sua propria entrada correta em "Springleaf Parade Token" (linha
+    # ~286), com "changeling"/"bear_type".
+    ("Springleaf Parade", 3, {"Enchantment"}, {"token_maker"}),
     ("Titania's Command", 6, {"Sorcery"}, {"bear_maker","counters_engine","land_ramp","graveyard_hate"}),
     ("Tribute to the World Tree", 4, {"Enchantment"}, {"counters_engine","draw_engine_conditional"}),
     ("Tireless Provisioner", 3, {"Creature"}, {"landfall","treasure"}),
@@ -698,12 +705,27 @@ def is_bear(state: GameState, card: str) -> bool:
 
 def bears_in_play(state: GameState) -> int:
     """Contagem real de Bears em campo, calculada ao vivo (nao um
-    acumulador mantido a mao) - conta toda criatura no battlefield que
+    acumulador mantido a mao) - conta todo PERMANENTE no battlefield que
     is_bear() reconhece, incluindo convertidas pela Beorn. Achado real
     2026-09-02: o campo antigo `bear_count` nunca era decrementado quando
     um Bear saia de campo (Sakura-Tribe Elder, Wildwood Rebirth sac,
-    Managorger Hydra removido), ficando stale."""
-    n = sum(1 for c in state.battlefield if is_creature(c) and is_bear(state, c))
+    Managorger Hydra removido), ficando stale.
+
+    Achado real 2026-09-14 (usuario apontou na propria mesa): o oraculo da
+    Beorn diz "if you control three or more Bears" - SEM exigir que sejam
+    criaturas. Firdoch Core tem Changeling ("This card is every creature
+    type") e a ruling oficial confirma que isso vale mesmo fora de
+    criatura ("Kindred is a card type that allows noncreature cards to
+    have creature types... an Elf (although not a creature) while on the
+    battlefield" - ruling real do Firdoch Core via Scryfall). Ou seja,
+    Firdoch Core E' um Urso o tempo todo, mesmo so' como rock de mana
+    (raramente pago o {4} pra animar) - a checagem antiga exigia
+    is_creature(c) ANTES de is_bear(), excluindo Firdoch Core do
+    "controle 3+ Ursos" sempre que nao animado. is_bear() ja trata
+    corretamente os outros casos (Maskwood Nexus so' afeta criatura,
+    converted_to_bear so' se aplica a algo que ja era criatura ao ser
+    convertido) - remover o filtro extra aqui e' seguro."""
+    n = sum(1 for c in state.battlefield if is_bear(state, c))
     if state.beorns_hospitality_animated and "Beorn's Hospitality" in state.battlefield:
         # "{5}{G}{G}: This enchantment becomes a Bear creature..." - nao e'
         # ctype "Creature" no CARD_DB (permanece Enchantment estaticamente),
