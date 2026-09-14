@@ -153,6 +153,14 @@ add(COMMANDER, 2, "creature", {"commander", "rat", "disappear_engine"}, pips_b=1
 
 # --- Rats / corpo tribal -------------------------------------------------
 add("Rat Colony", 2, "creature", {"rat", "rat_colony"}, pips_b=1, base_power=2)
+# "ashcoat_pump" ("attacks or blocks: other Rats get +X/+X until EOT") e'
+# 📊 N/A estrutural, nao esquecimento: este arquivo nao soma poder de
+# ataque cru como dano proxy em NENHUM lugar (a lista inteira de gatilhos
+# de "proxy_damage_total" e' so' os drenos reais -- Zulaport/Ayara/Bontu's
+# Monument/Priest/Valley Rotcaller/Syr Konrad, ver docstring do
+# `run_batch`), entao um pump temporario de combate nao tem onde
+# manifestar numericamente aqui, mesma classe de N/A ja documentada pro
+# toxic do Karumonix e o "steal" do Piper of the Swarm.
 add("Ashcoat of the Shadow Swarm", 4, "creature", {"rat", "ashcoat_pump", "mill_return"}, pips_b=1, base_power=3)
 add("Marrow-Gnawer", 5, "creature", {"rat", "fear_granter", "rat_army_sac"}, pips_b=2, base_power=2)
 add("Lord Skitter, Sewer King", 3, "creature", {"rat", "rat_etb_exile", "combat_token"}, pips_b=1, base_power=3)
@@ -298,6 +306,12 @@ class GameState:
     soul_stone_harnessed: bool = False
 
     piper_used_this_turn: bool = False
+    # Achado real 2026-09-13: main_phase() roda 2x por turno (pre- e
+    # pos-combate), entao qualquer habilidade "{T}: ..." sem essa guarda
+    # ativava 2x por turno. Rastreia quais criaturas com custo {T} ja
+    # foram ativadas neste turno (Marrow-Gnawer, Ayara, Priest of
+    # Forgotten Gods, Rat King reanimate).
+    tapped_creatures_this_turn: set = field(default_factory=set)
     warmaster_placeholder: bool = False  # nao usado, mantido por simetria de outros arquivos
 
     # metrics -------------------------------------------------------------
@@ -499,6 +513,30 @@ def on_creature_dies(state: GameState, n: int = 1, is_token: bool = False, dying
         # E' de Rats (24x Rat Colony + tokens de Rat), isso dispara com
         # frequencia real.
         draw_cards(state, n)
+
+
+def konrad_gy_entered(state: GameState, card_name: str):
+    """Syr Konrad, the Grim, clausula 2 de 3: '...or a creature card is put
+    into a graveyard from anywhere OTHER THAN THE BATTLEFIELD, Syr Konrad
+    deals 1 damage to each opponent.' Achado real (auditoria oraculo-por-
+    oraculo): so' a clausula 1 (criatura morre, `on_creature_dies`) estava
+    implementada -- esta e a clausula 3 (`konrad_gy_left`) nunca
+    disparavam em lugar nenhum, apesar do deck ter mill pesado (Ashcoat,
+    Ripples of Undeath, Takenuma) e recursao pesada (Reanimate, Echoing
+    Return, Secret Salvage, Rat King, Ninja Teen, Soul Stone). So' chamar
+    em cartas indo pra cemiterio via MILL/DESCARTE (biblioteca/mao -> GY),
+    nunca em mortes de campo (isso e' a clausula 1, ja coberta)."""
+    if "Syr Konrad, the Grim" in state.battlefield and is_creature_card(card_name):
+        state.proxy_damage_total += 1
+
+
+def konrad_gy_left(state: GameState, n: int = 1):
+    """Syr Konrad, the Grim, clausula 3 de 3: '...or a creature card
+    leaves your graveyard, Syr Konrad deals 1 damage to each opponent.'
+    Chamado de todo ponto que remove carta(s) de criatura do cemiterio pra
+    qualquer OUTRA zona (mao, campo, exilio)."""
+    if n > 0 and "Syr Konrad, the Grim" in state.battlefield:
+        state.proxy_damage_total += n
 
 
 def leave_battlefield(state: GameState, name: str, to_graveyard: bool = True, is_token: bool = False):
@@ -776,6 +814,7 @@ def resolve_instant_sorcery(state: GameState, name: str):
             state.life -= CARD_DB[best].mv
             enter_battlefield(state, best, from_hand=False)
             state.recursion_events_total += 1
+            konrad_gy_left(state, 1)
 
     elif "return_all_copies_hand" in tags:  # Echoing Return
         pool = [n for n in state.graveyard if is_creature_card(n)]
@@ -786,12 +825,18 @@ def resolve_instant_sorcery(state: GameState, name: str):
                 state.graveyard.remove(c)
                 state.hand.append(c)
             state.recursion_events_total += len(copies)
+            konrad_gy_left(state, len(copies))
 
     elif "tutor_all_copies_hand" in tags:  # Secret Salvage
         pool = state.graveyard[:]
         if pool:
             target = max(pool, key=lambda n: state.library.count(n) + (1 if n == "Rat Colony" else 0))
             state.graveyard.remove(target)
+            # So o `target` sai do cemiterio de verdade (as copias vem da
+            # BIBLIOTECA via busca, nao do cemiterio) -- Konrad so' conta
+            # se o proprio `target` exilado for carta de criatura.
+            if is_creature_card(target):
+                konrad_gy_left(state, 1)
             copies = [n for n in state.library if n == target]
             for c in copies:
                 state.library.remove(c)
@@ -861,6 +906,7 @@ def ninja_teen_sneak(state: GameState):
         state.graveyard.remove(best)
         enter_battlefield(state, best, from_hand=False)
         state.recursion_events_total += 1
+        konrad_gy_left(state, 1)
         pool = [n for n in state.graveyard if is_creature_card(n)]
 
 
@@ -869,7 +915,17 @@ def ninja_teen_sneak(state: GameState):
 # ---------------------------------------------------------------------------
 
 def rat_king_reanimate(state: GameState):
-    if not state.commander_in_play or rat_count(state) < 3:
+    # Achados reais: (1) "{T}, Sacrifice three Rats: ..." tem {T} no
+    # custo -- precisa nao estar com doenca de invocacao (nunca era
+    # checado, o Rat King podia reanimar no mesmo turno em que era
+    # conjurado) E so' pode ativar 1x por turno (mesma classe de bug do
+    # Ayara/Marrow-Gnawer/Priest acima). (2) linha morta
+    # `state.tapped_lands_this_turn` (leitura sem efeito) removida.
+    if not state.commander_in_play or COMMANDER not in ready_creatures(state):
+        return
+    if COMMANDER in state.tapped_creatures_this_turn:
+        return
+    if rat_count(state) < 3:
         return
     pool = [n for n in state.graveyard if is_creature_card(n)]
     if not pool:
@@ -882,7 +938,8 @@ def rat_king_reanimate(state: GameState):
     for c in copies:
         state.graveyard.remove(c)
         enter_battlefield(state, c, from_hand=False)
-    state.tapped_lands_this_turn  # no-op, so pra manter o padrao de leitura acima
+    konrad_gy_left(state, len(copies))
+    state.tapped_creatures_this_turn.add(COMMANDER)
     state.rat_king_reanimations_total += len(copies)
     state.recursion_events_total += len(copies)
 
@@ -939,12 +996,16 @@ def try_takenuma_channel(state: GameState):
         milled = state.library[:3]
         del state.library[:3]
         state.graveyard.extend(milled)
+        for m in milled:
+            konrad_gy_entered(state, m)
     pool = [n for n in state.graveyard if is_creature_card(n) or CARD_DB[n].ctype == "planeswalker"]
     if pool:
         best = max(pool, key=lambda n: CARD_DB[n].mv)
         state.graveyard.remove(best)
         state.hand.append(best)
         state.recursion_events_total += 1
+        if is_creature_card(best):
+            konrad_gy_left(state, 1)
 
 
 def soul_stone_upkeep_reanimate(state: GameState):
@@ -957,6 +1018,7 @@ def soul_stone_upkeep_reanimate(state: GameState):
     state.graveyard.remove(best)
     enter_battlefield(state, best, from_hand=False)
     state.recursion_events_total += 1
+    konrad_gy_left(state, 1)
 
 
 # ---------------------------------------------------------------------------
@@ -978,13 +1040,27 @@ def cast_rituals(state: GameState):
 
 
 def piper_activations(state: GameState):
+    # Achado real: oraculo tem {T} no custo ("{1}{B}, {T}: Create a Rat
+    # token" / "{2}{B}{B}, {T}, Sacrifice three Rats: Gain control of
+    # target creature") -- as 2 habilidades competem pelo MESMO tap, entao
+    # so uma pode ser ativada por turno, uma unica vez (nao um loop
+    # repetivel gastando mana toda vez que sobra 2). O `while` anterior
+    # criava tokens ilimitados por turno enquanto houvesse mana, o que
+    # nunca foi legal (mesma classe de bug ja documentada em
+    # `tapped_creatures_this_turn` pra Ayara/Marrow-Gnawer/Priest/Rat King).
     if "Piper of the Swarm" not in state.battlefield:
         return
     if "Piper of the Swarm" not in ready_creatures(state):
         return
-    while remaining_mana(state) >= 2:
+    if "Piper of the Swarm" in state.tapped_creatures_this_turn:
+        return
+    # Modo "roubar criatura" (2BB, sac 3 Rats) precisa de alvo do oponente
+    # -- 📊 estrutural (Regra 1), nunca a escolha real disponivel aqui.
+    # Sobra so' o modo de token, ativado no maximo 1x por turno.
+    if remaining_mana(state) >= 2:
         spend_mana(state, 2)
         create_rat_token(state, source="Piper of the Swarm")
+        state.tapped_creatures_this_turn.add("Piper of the Swarm")
 
 
 def ready_creatures(state: GameState):
@@ -992,10 +1068,35 @@ def ready_creatures(state: GameState):
             and state.creature_cast_turn.get(n, -1) < state.turn]
 
 
+def syr_konrad_mill_activation(state: GameState):
+    """Achado real: Syr Konrad tem uma 2a habilidade real, "{1}{B}: Each
+    player mills a card" -- a tag "mill_activated" existia no `add()` mas
+    nunca era despachada em lugar nenhum (fantasma completo). SEM {T} no
+    custo -- genuinamente repetivel varias vezes por turno enquanto sobrar
+    mana (regra real, nao aproximacao). "Each player" modelado so' pra nos
+    mesmos (unico jogador real neste goldfish solo, mesma convencao do
+    Storm Fleet Negotiator/Parley noutros decks). Cada carta de criatura
+    minada dessa forma dispara a propria clausula 2 do Konrad
+    (`konrad_gy_entered`, "put into a graveyard from anywhere other than
+    the battlefield") -- sinergia real com sua propria segunda ativacao."""
+    if "Syr Konrad, the Grim" not in state.battlefield:
+        return
+    while remaining_mana(state) >= 2 and state.library:
+        spend_mana(state, 2)
+        milled = state.library.pop(0)
+        state.graveyard.append(milled)
+        konrad_gy_entered(state, milled)
+
+
 def priest_activation(state: GameState):
+    # Achado real: "{T}, Sacrifice two other creatures: ..." tem {T} no
+    # custo -- so' pode ativar 1x por turno (main_phase roda 2x, antes e
+    # depois do combate, e nada impedia a 2a chamada de ativar de novo).
     if "Priest of Forgotten Gods" not in state.battlefield:
         return
     if "Priest of Forgotten Gods" not in ready_creatures(state):
+        return
+    if "Priest of Forgotten Gods" in state.tapped_creatures_this_turn:
         return
     if creature_count(state) - 1 < 2:  # precisa de 2 OUTRAS criaturas
         return
@@ -1004,24 +1105,32 @@ def priest_activation(state: GameState):
     draw_cards(state, 1)
     state.life -= 2
     state.proxy_damage_total += 2
+    state.tapped_creatures_this_turn.add("Priest of Forgotten Gods")
 
 
 def ayara_activation(state: GameState):
+    # Achado real: mesma classe de bug -- "{T}, Sacrifice another black
+    # creature: Draw a card" tem {T} no custo, so' 1x por turno.
     if "Ayara, First of Locthwain" not in state.battlefield:
         return
     if "Ayara, First of Locthwain" not in ready_creatures(state):
         return
+    if "Ayara, First of Locthwain" in state.tapped_creatures_this_turn:
+        return
     other_black = [n for n in state.battlefield if is_black_creature(n) and n != "Ayara, First of Locthwain" and n != COMMANDER]
-    while other_black:
+    if other_black:
         cheapest = min(other_black, key=lambda n: CARD_DB[n].mv)
         leave_battlefield(state, cheapest, to_graveyard=True)
         draw_cards(state, 1)
-        other_black = [n for n in state.battlefield if is_black_creature(n) and n != "Ayara, First of Locthwain" and n != COMMANDER]
-        break  # so 1x por turno (heuristica conservadora -- nao esvaziar o board todo)
+        state.tapped_creatures_this_turn.add("Ayara, First of Locthwain")
 
 
 def marrow_gnawer_activation(state: GameState):
+    # Achado real: mesma classe de bug -- "{T}, Sacrifice a Rat: ..." tem
+    # {T} no custo, so' 1x por turno.
     if "Marrow-Gnawer" not in state.battlefield or "Marrow-Gnawer" not in ready_creatures(state):
+        return
+    if "Marrow-Gnawer" in state.tapped_creatures_this_turn:
         return
     if rat_count(state) < 2:
         return
@@ -1029,6 +1138,7 @@ def marrow_gnawer_activation(state: GameState):
     sacrifice_rats(state, 1)
     for _ in range(x):
         create_rat_token(state, source="Marrow-Gnawer")
+    state.tapped_creatures_this_turn.add("Marrow-Gnawer")
 
 
 def castle_locthwain_activation(state: GameState):
@@ -1039,6 +1149,24 @@ def castle_locthwain_activation(state: GameState):
         draw_cards(state, 1)
         state.life -= len(state.hand)
         state.tapped_lands_this_turn.add("Castle Locthwain")
+
+
+def big_apple_activation(state: GameState):
+    # Achado real: "{5}, {T}: Create a 1/1 black Rat for each opponent you
+    # have" so' era checado dentro de `play_land()`, ou seja, so' no
+    # PROPRIO turno em que a carta era jogada -- nunca mais de novo em
+    # nenhum turno seguinte (bug real, terreno repetivel tratado como
+    # ativacao unica). Corrigido pra checar toda vez que `main_phase` roda
+    # com mana sobrando, igual a Castle Locthwain/Nykthos. "For each
+    # opponent" modelado como 1 token por ativacao (mesma convencao de
+    # proxy de oponente unico ja usada nesta sessao pra efeitos
+    # beneficios que dependem de contagem de oponentes nao modelada).
+    if "Big Apple, 3 a.m." not in state.battlefield or "Big Apple, 3 a.m." in state.tapped_lands_this_turn:
+        return
+    if remaining_mana(state) >= 5:
+        spend_mana(state, 5)
+        create_rat_token(state, source="Big Apple, 3 a.m.")
+        state.tapped_lands_this_turn.add("Big Apple, 3 a.m.")
 
 
 def black_market_connections_step(state: GameState):
@@ -1060,12 +1188,16 @@ def ripples_of_undeath_step(state: GameState):
     milled = state.library[:3]
     del state.library[:3]
     state.graveyard.extend(milled)
+    for m in milled:
+        konrad_gy_entered(state, m)
     if milled and remaining_mana(state) >= 1 and state.life > 3:
         best = max(milled, key=lambda n: CARD_DB[n].mv)
         state.graveyard.remove(best)
         state.hand.append(best)
         spend_mana(state, 1)
         state.life -= 3
+        if is_creature_card(best):
+            konrad_gy_left(state, 1)
 
 
 def ashcoat_end_step(state: GameState):
@@ -1074,6 +1206,8 @@ def ashcoat_end_step(state: GameState):
     milled = state.library[:4]
     del state.library[:4]
     state.graveyard.extend(milled)
+    for m in milled:
+        konrad_gy_entered(state, m)
     rats_in_gy = [n for n in state.graveyard if is_rat(n)]
     returned = rats_in_gy[:2]
     for r in returned:
@@ -1081,6 +1215,7 @@ def ashcoat_end_step(state: GameState):
         state.hand.append(r)
     if returned:
         state.recursion_events_total += len(returned)
+        konrad_gy_left(state, len(returned))  # todo Rat e' carta de criatura
 
 
 def lord_skitter_combat_token(state: GameState):
@@ -1144,11 +1279,13 @@ def main_phase(state: GameState, is_first_main: bool = True):
     ayara_activation(state)
     marrow_gnawer_activation(state)
     castle_locthwain_activation(state)
+    big_apple_activation(state)
     ninja_teen_level_up(state)
     ninja_teen_sneak(state)
     rat_king_reanimate(state)
     try_harness_soul_stone(state)
     try_takenuma_channel(state)
+    syr_konrad_mill_activation(state)
 
 
 def combat_step(state: GameState):
@@ -1180,8 +1317,6 @@ def play_land(state: GameState):
         state.tapped_lands_this_turn.add(choice)
     elif choice == "Castle Locthwain" and "Swamp" not in state.battlefield and not urborg_in_play(state):
         state.tapped_lands_this_turn.add(choice)
-    if choice == "Big Apple, 3 a.m." and state.turn >= 6 and remaining_mana(state) >= 5:
-        state.rat_tokens += 1
         state.tokens_created_total += 1
 
 
@@ -1275,6 +1410,7 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.lands_played_this_turn = 0
     state.mana_spent_this_turn = 0
     state.tapped_lands_this_turn = set()
+    state.tapped_creatures_this_turn = set()
     state.permanent_left_battlefield_this_turn = False
     state.creatures_died_this_turn = 0
 

@@ -1,5 +1,100 @@
 # Checklist cláusula-a-cláusula — Rat King, Verminister
 
+## Auditoria oráculo-por-oráculo completa — 2026-09-13/14
+
+Extensão pra este deck da mesma auditoria já feita no Megatron/Azula/
+Beorn/Captain Storm/Edgar Markov/Hei Bai/Maralen/Kutzil/Nekusar/Ms.
+Bumbleflower. Oráculo real via Scryfall pras 53 cartas únicas + terrenos,
+comparado cláusula-por-cláusula contra o código já existente (que já
+tinha passado por uma rodada anterior, ver seção abaixo — esta é mais
+uma passada em cima de um arquivo já maduro).
+
+**Achado principal — sistêmico, 4 habilidades ativadas de criatura sem
+guarda de "1x por turno":** `main_phase()` roda 2x por turno (antes e
+depois do combate). Ayara ("{T}, Sacrifice another black creature: Draw
+a card"), Marrow-Gnawer ("{T}, Sacrifice a Rat: Create X tokens..."),
+Priest of Forgotten Gods ("{T}, Sacrifice two other creatures: ...") e a
+própria reanimação do Rat King ("{T}, Sacrifice three Rats: ...") têm
+todas `{T}` no custo real — só podem ativar 1x por turno (o mesmo
+permanente não pode ser tapado 2x sem desatapar no meio). Nenhuma tinha
+essa guarda; a 2ª chamada de `main_phase()` no mesmo turno podia ativar
+de novo se as condições (mana/criaturas pra sacrificar) ainda
+estivessem satisfeitas. Corrigido com um novo campo
+`state.tapped_creatures_this_turn` (resetado a cada turno), checado e
+marcado nas 4 funções. O Rat King também ganhou a checagem de doença de
+invocação que faltava inteiramente (podia reanimar no mesmo turno em
+que era conjurado, ilegal pra uma habilidade com `{T}`).
+
+**Achado ainda maior no mesmo padrão — Piper of the Swarm:** a versão
+anterior modelava `{1}{B}, {T}: Create a Rat token` como um `while
+remaining_mana(state) >= 2:` — um LOOP criando tokens ilimitados por
+turno enquanto sobrasse mana, quando o `{T}` no custo real limita a
+ativação a **no máximo 1 por turno** (e ainda compete pelo mesmo tap com
+a 2ª habilidade da carta, "Sacrifice three Rats: Gain control of target
+creature"). Esse era o maior gerador de "mana fantasma" do arquivo: com
+Cabal Coffers/Crypt Ghast tardios gerando dezenas de mana, o Piper podia
+sozinho inflar `tokens_created_total`/`rat_count` de forma completamente
+irreal. Corrigido pra ativar no máximo 1x por turno (mesma guarda
+`tapped_creatures_this_turn`).
+
+**Syr Konrad, the Grim — 2 das 3 cláusulas reais do motor de dano nunca
+implementadas:** o oráculo real é "Whenever another creature dies, **or
+a creature card is put into a graveyard from anywhere other than the
+battlefield, or a creature card leaves your graveyard**, Syr Konrad
+deals 1 damage to each opponent." Só a 1ª cláusula (morte, via
+`on_creature_dies()`) estava implementada. As outras 2 nunca disparavam
+em NENHUM dos vários pontos de mill/recursão do deck (Reanimate, Echoing
+Return, Secret Salvage, Rat King sac-3-Rats, Ashcoat mill+return, Soul
+Stone upkeep, Ninja Teen sneak, Ripples of Undeath, Takenuma Channel) —
+um deck pesado em recursão/mill como este deveria disparar essas 2
+cláusulas com bastante frequência. Corrigido com 2 novos helpers
+centralizados (`konrad_gy_entered`/`konrad_gy_left`), chamados de todos
+os 9 pontos reais de mill/remoção-do-cemitério do arquivo.
+
+**Syr Konrad também tinha uma 2ª habilidade real 100% ausente:** "{1}{B}:
+Each player mills a card" (tag `mill_activated` já existia no `add()`
+desde a construção original, nunca despachada em lugar nenhum — fantasma
+completo). Sem `{T}` no custo, genuinamente repetível várias vezes por
+turno com mana sobrando (não é o mesmo bug de tap-guard dos outros).
+Implementada como `syr_konrad_mill_activation()`, com cada criatura
+minada dessa forma também disparando a cláusula 2 do próprio Konrad
+(sinergia real entre as 2 habilidades da mesma carta).
+
+**Big Apple, 3 a.m. — ativação repetível tratada como ativação única:**
+"{5}, {T}: Create a 1/1 black Rat creature token for each opponent you
+have" só era checada dentro de `play_land()`, ou seja, só no PRÓPRIO
+turno em que o terreno era jogado — nunca mais em nenhum turno seguinte.
+Corrigido com uma função dedicada (`big_apple_activation()`), chamada a
+cada `main_phase()` com a mesma guarda de tap-por-turno dos terrenos
+utilitários já existentes (Castle Locthwain/Nykthos).
+
+Também confirmado (não achado novo, checagem de precisão): "Ashcoat of
+the Shadow Swarm" (`ashcoat_pump`, "attacks or blocks: other Rats get
++X/+X until EOT") é 📊 estrutural de verdade — este arquivo nunca soma
+poder de ataque cru como dano proxy em lugar nenhum (todo
+`proxy_damage_total` vem só dos drenos reais nomeados), então um pump
+temporário de combate não tem onde se manifestar numericamente aqui,
+mesma classe de N/A já documentada pro toxic do Karumonix/steal do
+Piper.
+
+**Validação:** smoke test (54 nomes no `CARD_DB`, 99 cartas na
+`BASE_LIBRARY`, 0 desconhecidas) + 2.000 partidas antes/depois (mesma
+seed 9300000) + 20.000 partidas de regressão (seed 9500000), 0 exceções
+em ambas. Testes unitários dirigidos confirmaram cada correção: Piper
+cria exatamente 1 token por turno mesmo com mana "infinita" e chamado 2x
+no mesmo turno; Marrow-Gnawer não duplica ao ser chamado 2x no mesmo
+turno; Konrad dispara +1 dano ao minar uma criatura (não ao minar uma
+não-criatura) e ao reanimar uma criatura do cemitério; Big Apple cria 1
+token por turno em turnos DIFERENTES (antes: só no turno em que foi
+jogado). Distribuição mudou como esperado: `tokens_created_total` médio
+caiu de 13.55→4.76 (2.000 partidas, mesma seed) — o Piper sozinho era
+responsável pela maior parte da inflação, já que gerava tokens
+ilimitados com mana sobrando; `avg Rats totais em campo` e `avg
+reanimações via Rat King` caem proporcionalmente (menos Rats
+disponíveis pra alimentar o sac-3-Rats), consistente com a causa raiz
+corrigida, não uma regressão nova.
+
+
 Pedido direto do usuário (2026-09-01): *"AGORA FAZ O QUE SEMPRE Te MANDei
 FAZER: COmpila a porra de TODAS AS CARTAS DOS DECKS UMA A UMA... cada
 carta tem que ser lida linha a linha"* — mesmo tratamento já aplicado ao

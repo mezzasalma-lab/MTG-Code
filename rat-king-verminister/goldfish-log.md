@@ -4,6 +4,47 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### Auditoria oráculo-por-oráculo completa — 2026-09-13/14
+
+Extensão pra este deck da mesma auditoria já feita no Megatron/Azula/
+Beorn/Captain Storm/Edgar Markov/Hei Bai/Maralen/Kutzil/Nekusar/Ms.
+Bumbleflower. Achado principal (detalhes completos em
+`checklist-oraculo.md`, seção no topo): 4 habilidades de criatura com
+`{T}` no custo real (Ayara, Marrow-Gnawer, Priest of Forgotten Gods, Rat
+King) podiam ativar 2x por turno (`main_phase()` roda antes e depois do
+combate, sem guarda de "já tapei esta criatura"); Piper of the Swarm era
+pior ainda — um `while` loop criava tokens ILIMITADOS por turno com mana
+sobrando, quando o `{T}` no custo real limita a 1 ativação por turno (o
+maior gerador de "mana fantasma" do arquivo); Syr Konrad, the Grim tinha
+2 das suas 3 cláusulas de dano nunca implementadas ("creature card put
+into graveyard from anywhere other than battlefield" / "creature card
+leaves your graveyard") e uma 2ª habilidade inteira ("{1}{B}: each
+player mills a card") 100% ausente apesar da tag já existir desde a
+construção original; Big Apple, 3 a.m. só ativava no turno em que era
+jogado, nunca de novo depois.
+
+### Métricas antes/depois (2.000 partidas, seed 9300000, turns=8, 0 exceções)
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg Rats totais em campo (final) | 16.89 | 8.46 |
+| Avg tokens criados | 13.55 | 4.76 |
+| Avg reanimações via Rat King (sac 3 Rats) | 3.17 | 2.23 |
+| Avg compras via Skullclamp | 0.93 | 0.82 |
+| Avg eventos de recursão | 3.58 | 2.66 |
+| Avg dano/dreno proxy total (finisher) | 5.75 | 4.89 |
+| Avg mão final | 3.32 | 2.93 |
+
+Regressão de 20.000 partidas (seed 9500000, turns=8): 0 exceções,
+métricas estáveis com a amostra de 2.000 (Rats finais 8.73, dreno proxy
+4.90). A queda grande em quase todas as métricas é o efeito esperado de
+corrigir o bug do Piper of the Swarm (loop de tokens ilimitado) — ele
+sozinho inflava tokens/Rats/reanimações/recursão de forma irreal; mesmo
+com Syr Konrad ganhando 2 cláusulas novas de dano, o dreno total ainda
+caiu porque a base de Rats disponível pra alimentar o motor de
+sacrifício (Ayara/Zulaport/aristocrats) ficou muito menor sem a
+inflação do Piper.
+
 ### Auditoria linha-a-linha "compile TUDO" — 2026-09-01
 
 **Gatilho:** pedido direto do usuário ("AGORA FAZ O QUE SEMPRE Te MANDei
