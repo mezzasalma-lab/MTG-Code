@@ -1,5 +1,47 @@
 # Checklist cláusula-a-cláusula — Thranduil, the Elvenking
 
+## Achado real 2026-09-14 (usuário perguntou se Roaming Throne está certa em todos os decks onde aparece)
+
+Mesma varredura pedida depois dos fixes no Beorn/Edgar Markov/Ur-Dragon/
+Ulalek. Este deck (tribal Elfo) tagueia Roaming Throne direto como
+`"elf"` no `CARD_DB`. Achados **2 pontos reais** onde isso deixava
+Roaming Throne contar como "an Elf card" fora do campo de batalha, o que
+o oráculo não permite (o tipo é ganho só ao entrar, não persiste em
+mão/cemitério):
+
+1. **Champions of the Perfect** — custo adicional real *"exile an Elf
+   you control or an Elf card from your hand"*. Se Roaming Throne fosse
+   a única "Elfo" na mão, `_champions_of_the_perfect_exile_candidate()`
+   a devolvia como alvo válido — o jogo pagaria o custo exilando a
+   Roaming Throne direto da mão, sem ela nunca ter chegado a resolver.
+2. **Gilt-Leaf Palace** — *"As this land enters, you may reveal an Elf
+   card from your hand. If you don't, this land enters tapped."*
+   Roaming Throne na mão contava como esse "Elf card", destravando o
+   terreno (mana no mesmo turno) sem ter revelado um Elfo de verdade.
+
+Confirmado como já correto (não precisou de fix): a 3ª ocorrência de
+`is_elf()` fora de battlefield (`gy_borrow_sources`, habilidade
+emprestada do cemitério via Thranduil) já exige `activation_cost > 0` —
+Roaming Throne não tem habilidade ativada nenhuma (`activation_cost ==
+0`), então já era excluída corretamente por acidente arquitetural, sem
+precisar do fix.
+
+**Corrigido:** novo helper `is_elf_card(name)` (= `is_elf(name) and name
+!= "Roaming Throne"`), usado nos 2 pontos reais acima. `is_elf()` puro
+continua correto pras checagens de battlefield (candidato de exílio EM
+CAMPO do Champions of the Perfect, contagem de Elfos, etc. — inalterado).
+
+**Validação:** 3 testes unitários dirigidos (Gilt-Leaf Palace entra
+tapped com só Roaming Throne na mão; entra destapada com um Elfo real
+na mão; Champions of the Perfect não acha candidato de exílio com só
+Roaming Throne na mão e nenhum Elfo em campo) — todos passando. Batch
+de 2.000 partidas: `champions_of_the_perfect_costs_paid` 0,1405→0,1405
+(sem movimento na seed testada — cenário raro; a correção real é
+comprovada pelos testes unitários). 20.000 partidas de regressão (seed
+8400000+), **0 exceções**.
+
+---
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-14
 
 Extensão pra este deck da mesma auditoria já feita em Beorn/Captain

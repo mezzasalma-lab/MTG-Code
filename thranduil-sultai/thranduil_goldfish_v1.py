@@ -461,6 +461,18 @@ def has_tag(card: str, tag: str) -> bool:
 def is_elf(card: str) -> bool:
     return has_tag(card, "elf") or card == COMMANDER
 
+def is_elf_card(card: str) -> bool:
+    """Achado real 2026-09-14 (mesma classe de bug encontrada e corrigida
+    hoje no Beorn/Edgar Markov/Ur-Dragon/Ulalek pra Roaming Throne):
+    is_elf() reconhece Roaming Throne como Elfo porque "as this creature
+    enters, choose a creature type" e' um efeito de ETB - correto pra
+    checagens de BATALHA, mas ERRADO fora dela: uma carta na mao/cemiterio
+    ainda nao resolveu, ainda nao escolheu tipo nenhum (nao e' Changeling,
+    que valeria em qualquer zona). Usado nos pontos reais que exigem "an
+    Elf CARD" fora do campo (custo adicional de Champions of the Perfect,
+    revelar Elfo pro Gilt-Leaf Palace nao entrar tapped)."""
+    return is_elf(card) and card != "Roaming Throne"
+
 # =========================================================
 # GAME STATE
 # =========================================================
@@ -856,7 +868,7 @@ def _champions_of_the_perfect_exile_candidate(state: GameState) -> Optional[str]
     # Elfo exigido). Preferencia: exila da MAO (nao gasta um corpo em
     # campo) se houver outro Elfo la, senao exila o Elfo mais fraco em
     # campo (token/dork, nao um lendario).
-    hand_elf = next((c for c in state.hand if is_elf(c) and c != "Champions of the Perfect"), None)
+    hand_elf = next((c for c in state.hand if is_elf_card(c) and c != "Champions of the Perfect"), None)
     if hand_elf:
         return hand_elf
     bf_elves = [c for c in state.battlefield if is_elf(c) and is_creature(c)]
@@ -974,7 +986,7 @@ def _land_enters_tapped(state: GameState, card: str, other_lands_before: int) ->
     if card == "Hinterland Harbor":
         return not (has_land_subtype(state, "Forest") or has_land_subtype(state, "Island"))
     if card == "Gilt-Leaf Palace":
-        has_elf_in_hand = any(is_elf(c) for c in state.hand if c != card)
+        has_elf_in_hand = any(is_elf_card(c) for c in state.hand if c != card)
         return not has_elf_in_hand
     return False
 

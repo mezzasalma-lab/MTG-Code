@@ -1180,6 +1180,19 @@ do que sofrer remoção alheia). `lista.md` não muda.
 
 ---
 
+## Achado real 2026-09-14 — Roaming Throne contava como Elfo fora do campo (custo do Champions of the Perfect, Gilt-Leaf Palace)
+
+Usuário perguntou se o bug do Roaming Throne achado no Beorn se repetia
+em outros decks. Sim — ver `checklist-oraculo.md` (2 pontos: custo
+adicional do Champions of the Perfect podia exilar Roaming Throne direto
+da mão; Gilt-Leaf Palace destravava com Roaming Throne na mão sem revelar
+Elfo real). Corrigido com `is_elf_card()`. Batch de 2.000 partidas (mesma
+seed 8300000): `champions_of_the_perfect_costs_paid` 0,1405→0,1405 (sem
+movimento — cenário raro, correção comprovada pelos 3 testes unitários
+dirigidos). 20.000 partidas de regressão (seed 8400000+), 0 exceções.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
