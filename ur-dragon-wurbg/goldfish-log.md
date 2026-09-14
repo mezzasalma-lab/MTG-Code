@@ -4,6 +4,77 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### Auditoria oráculo-por-oráculo completa — 2026-09-14
+
+**Gatilho:** extensão da auditoria "oráculo-por-oráculo" pra todos os
+decks do repositório (mesmo pedido já aplicado a Beorn/Captain Storm/Rat
+King/Prismatic Bridge/Toph/Edgar Markov/Hei Bai/Maralen/Megatron/
+Nekusar/Thranduil nesta sessão). Ver `checklist-oraculo.md` pra
+detalhamento completo carta-a-carta. **2 gaps reais** encontrados, apesar
+de este já ser um dos simuladores mais auditados da sessão (4 rodadas
+anteriores: 2026-08-27, 2026-08-29, 2026-08-30, 2026-09-01):
+
+1. **Roaming Throne dobrava a fonte errada em `dragon_enters()`** —
+   Dragon Tempest (encantamento) era dobrado sempre que Roaming Throne
+   estava em campo, quando NUNCA deveria ser (a Roaming Throne só dobra
+   gatilho de OUTRA CRIATURA do tipo escolhido); Scourge of Valkas
+   (criatura Dragão de verdade) deixava de dobrar exatamente quando ela
+   mesma era o Dragão entrando, quando DEVERIA dobrar (a condição real é
+   sobre a fonte não ser a própria Roaming Throne, não sobre qual Dragão
+   disparou o gatilho). Corrigido separando as duas fontes de dano.
+2. **The Great Henge — só a metade "draw a card" do gatilho recorrente
+   estava implementada, nunca o "+1/+1 counter".** Contador real que
+   aumenta poder da criatura pro resto do jogo, nunca rastreado —
+   subestimava poder em todo gatilho power-dependente do arquivo
+   (Elemental Bond, Garruk's Uprising, Temur Ascendancy, Terror of the
+   Peaks, Klauth, Return of the Wildspeaker). Corrigido com
+   `state.great_henge_counters`, somado em `effective_power()`.
+
+**Validação:** smoke test (116 nomes `CARD_DB` — 99 da lista afinada + 8
+registradas só pra testes comparativos + comandante + 8 terrenos extra de
+teste, 99 cartas `BASE_LIBRARY`, 0 desconhecidas/duplicadas) + `run_batch`
+antes/depois via `git stash` (2.000 jogos, mesma seed 5000000) +
+regressão de 20.000 partidas (seed 4000000+, turns=10), **0 exceções** em
+ambas + 2 scripts de prova isolados (1 por correção, ver abaixo):
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg dano proxy total (Scourge/Dragon Tempest/Terror of the Peaks) | 782.08 | 634.50 |
+| Avg eventos de dano-por-Dragão-ETB | 9.62 | 8.04 |
+| Avg dobras via Roaming Throne | 4.40 | 4.00 |
+| Avg Treasures criados | 50.33 | 53.04 |
+| Avg cartas compradas extra (motores de draw) | 15.67 | 15.68 |
+| Avg contagem de Dragões em campo (fim de jogo) | 17.01 | 17.03 |
+| Avg turno de conjuração da Ur-Dragon | 6.81 | 6.81 |
+| Avg contadores reais do Great Henge/partida | 0 (não existia) | 2.19 |
+
+O dano proxy total caiu (782→635) — esperado: o bug de Dragon Tempest
+sendo dobrado incorretamente em TODO evento de Dragão entrando (não um
+caso raro) tinha um efeito muito maior do que o under-count pontual de
+Scourge (só quando ela mesma entra), então a correção líquida reduz dano.
+Avg dobras via Roaming Throne caiu de 4.40 pra 4.00 (Dragon Tempest
+parou de contar como dobra falsa). Treasures/cartas extras subiram
+ligeiramente (mais poder real via os novos contadores do Great Henge
+empurra mais gatilhos de threshold — Elemental Bond/Garruk's
+Uprising/Temur Ascendancy/Old Gnawbone via mais poder de ataque). Contagem
+de Dragões e turno de conjuração da comandante ficaram estáveis — nenhum
+dos 2 fixes toca essas mecânicas, como esperado. Nenhuma métrica moveu de
+forma inexplicável.
+
+**Scripts de prova isolados** (1 por correção, rodados sobre o arquivo já
+corrigido):
+```
+Cenario A (Dragon Tempest + Roaming Throne, sem Scourge): dano = 2 (esperado = dragon_count, SEM dobra)
+Cenario B (Scourge entra com Roaming Throne ja em campo): dano = 4 (esperado = 2x dragon_count, DEVE dobrar)
+Great Henge: poder de Scourge antes=4, depois de 1 ETB com Henge em campo=5 (esperado +1)
+Poder depois de uma 2a criatura ETB (mesmo nome, acumula)=6
+```
+(Cenário A tem `dragon_count=2` porque a própria Roaming Throne carrega o
+tipo Dragão escolhido — comportamento já correto e preexistente do
+arquivo, não um artefato do teste.)
+
+---
+
 ### Auditoria linha-a-linha "compile TUDO" + arquivo físico quebrado — 2026-09-01
 
 **Gatilho:** pedido direto do usuário ("AGORA FAZ O QUE SEMPRE Te MANDei

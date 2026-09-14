@@ -1,5 +1,138 @@
 # Checklist cláusula-a-cláusula — The Ur-Dragon (`urdragon_goldfish_v1.py`)
 
+## Auditoria oráculo-por-oráculo completa — 2026-09-14
+
+Extensão pra este deck da mesma auditoria já feita em Beorn/Captain
+Storm/Rat King/Prismatic Bridge/Toph/Edgar Markov/Hei Bai/Maralen/
+Megatron/Nekusar/Thranduil nesta sessão. Este já era um dos simuladores
+mais auditados da sessão (rodadas em 2026-08-27, 2026-08-29, 2026-08-30 e
+2026-09-01, ver seção abaixo com o gap daquela última rodada — Lightning
+Greaves). Mesmo assim, a releitura clause-by-clause do oráculo real
+(Scryfall `/cards/collection`, 100 nomes — comandante + 71 cartas de
+deck + 36 terrenos incluindo as 8 registradas só pra teste comparativo,
+0 `not_found`) contra o `CARD_DB`/dispatch real achou **2 gaps reais
+adicionais**, ambos em mecânicas centrais do tema tribal (escala por
+contagem de Dragão / dobra de Roaming Throne), a mesma classe de bug já
+achada em Beorn (anthem estático não propagado) e Rat King (contagem de
+tribo mal disparada).
+
+**Método:** (a) detecção automatizada de tags órfãs (definidas em `add()`,
+nunca lidas fora dele) — achou 20 candidatos, **todos falsos positivos**
+confirmados lendo o dispatch real (por nome, dentro de funções
+compartilhadas como `dragon_enters()`/`creature_etb_hooks()`/
+`try_dragon_pumps()` — este arquivo já é maduro o bastante pra ter várias
+dessas, mesmo padrão já documentado na rodada de 2026-09-01); (b)
+releitura completa do oráculo de cada carta com gatilho "whenever a
+Dragon enters/attacks" ou anthem/contador estático, comparando contra
+TODAS as funções que leem `power`/dano/contagem de Dragão (não só a
+primeira que aparece), atrás do padrão "efeito estático aplicado em UMA
+função mas não propagado pras outras que leem o mesmo dado" (mesma classe
+do Beorn) e "cascata de gatilho compartilhada só parcialmente
+correta" (mesma classe do Rat King/Prismatic Bridge).
+
+### 🐛 Os 2 gaps reais corrigidos nesta rodada
+
+1. **Roaming Throne dobrava a fonte ERRADA de dano em `dragon_enters()`
+   — Dragon Tempest sendo dobrado quando NUNCA deveria, Scourge of Valkas
+   deixando de dobrar exatamente quando deveria.** Oráculo real da
+   Roaming Throne: *"If a triggered ability of ANOTHER CREATURE you
+   control of the chosen type triggers, it triggers an additional
+   time."* A restrição é sobre a FONTE da habilidade ser uma criatura
+   (diferente da própria Roaming Throne) — não tem nada a ver com QUAL
+   Dragão causou o gatilho disparar. O código anterior tratava Scourge of
+   Valkas (`"Whenever this creature or another Dragon you control
+   enters... X damage"`, criatura Dragão) e Dragon Tempest (`"Whenever a
+   Dragon you control enters... X damage"`, **encantamento**, não
+   criatura) como UMA única fonte combinada (`dmg_sources`), com o mesmo
+   multiplicador `total_times = times_scourge if (name !=
+   "Scourge of Valkas") else 1` — comparando contra o NOME DO DRAGÃO QUE
+   ENTROU, não contra a fonte da habilidade. Isso já contradizia o padrão
+   correto usado no próprio arquivo em `combat_step()` pros gatilhos de
+   ataque (`times = 2 if (Roaming Throne in battlefield and n !=
+   Roaming Throne) else 1`, que compara a FONTE). Dois erros reais na
+   direção oposta:
+   - **Dragon Tempest era dobrado sempre que Roaming Throne estava em
+     campo** (superestimando dano em TODO evento de Dragão entrando, não
+     um caso raro — o efeito mais impactante dos dois), quando o texto
+     real da Roaming Throne nunca alcança um encantamento.
+   - **Scourge of Valkas deixava de dobrar exatamente quando ELA MESMA
+     era o Dragão entrando** (subestimando dano nesse caso específico —
+     o "another" da Roaming Throne se refere a Scourge não ser a própria
+     Roaming Throne, não ao Dragão que disparou o gatilho).
+   Corrigido separando as duas fontes: Scourge dobra com Roaming Throne
+   em campo (independente de qual Dragão entrou); Dragon Tempest nunca
+   dobra (independente de Roaming Throne). Validado isoladamente (ver
+   `goldfish-log.md`) — cenário só-Dragon-Tempest+Roaming-Throne não
+   dobra mais; cenário só-Scourge+Roaming-Throne, com a própria Scourge
+   entrando, agora dobra.
+
+2. **The Great Henge — só metade do gatilho recorrente estava
+   implementada (o draw, nunca o contador).** Oráculo real: *"Whenever a
+   nontoken creature you control enters, put a +1/+1 counter on it AND
+   draw a card."* `creature_etb_hooks()` já tinha o draw desde a rodada
+   de 2026-08-27 (registrado no `goldfish-log.md` como correção da carta
+   inteira), mas o `+1/+1 counter` real — que aumenta o PODER daquela
+   criatura pelo resto do jogo — nunca tinha sido rastreado em lugar
+   nenhum. Isso subestimava poder em TODO gatilho power-dependente do
+   arquivo que usa `effective_power()`: Elemental Bond/Garruk's
+   Uprising/Temur Ascendancy (thresholds de poder pra compra), Terror of
+   the Peaks (dano = poder da criatura que entrou), Klauth (soma do poder
+   de todos os Dragões atacantes), Return of the Wildspeaker (maior poder
+   entre não-Humanos), e o próprio custo dinâmico da Great Henge pra
+   qualquer avaliação futura de "maior poder em campo". Corrigido com
+   `state.great_henge_counters` (dict por nome, mesmo padrão de
+   contadores agregados já usado pra Marwyn/Immaculate Magistrate no
+   arquivo irmão `thranduil_goldfish_v1.py`) — incrementado em
+   `creature_etb_hooks()` junto do draw já existente, lido em
+   `effective_power()` (que já centralizava o anthem estático da
+   Morophon, agora soma os dois). ~2.19 contadores/partida em média — não
+   é um efeito marginal.
+
+### Falsos positivos descartados (tags órfãs, 20 candidatos, 0 gaps reais)
+
+Todas as 20 tags reportadas pela detecção automatizada (`tribal_impulse`,
+`dragon_hoard`, `dragon_tutor_sac`, `kindred_discovery`,
+`sarkhan_unbroken`, `reanimate_dragon_etb`, `upkeep_dragon_token`,
+`goldspan`, `extra_combat_paid`, `dragon_etb_token`, `dragon_etb_copy`,
+`ramos_counters`, `creature_etb_damage_power`, `treasure_tutor_dragon`,
+`first_creature_discount`, `power4_draw_optional`, `cost_reduce_power`,
+`opponent_dependent`, `treasure_tax`, `roaming_throne`) são rótulos
+descritivos — a carta correspondente é despachada de verdade por
+checagem de NOME dentro de uma função compartilhada (`dragon_enters()`,
+`creature_etb_hooks()`, `resolve_etb()`, `combat_step()`,
+`try_dragon_pumps()`, `try_dragon_hoard_draw()`, `try_haven_recursion()`,
+`do_magda_treasures()`, `do_orb_dragonkind()`, `main_phase()`,
+`upkeep_step()`, `effective_cost()`/`rocks_mana()`), não pela tag em si —
+confirmado lendo cada dispatcher, não só contando ocorrências de string
+(mesmo cuidado documentado na rodada de 2026-09-01).
+
+### Dragonlord Dromoka — clásula confirmada 📊 (não é gap novo)
+
+*"Your opponents can't cast spells during your turn"* — puramente
+dependente de oponente real (sem contramagia/timing de oponente
+modelado neste goldfish solo), mesma classe já documentada pra Cavern of
+Souls ("can't be countered")/Balefire Dragon (limpeza de board de
+oponente)/Rhythm of the Wild (creature spells can't be countered).
+Flying/lifelink já cobertos pela abstração de combate existente (lifelink
+não numérico — vida não é rastreada no simulador, mesma premissa de
+sempre).
+
+---
+
+## Resumo numérico (rodada 2026-09-14)
+
+- **99 cartas na lista afinada** (`lista.md`) + comandante, mais 8
+  cartas registradas só pra testes comparativos fora da lista atual.
+- **🐛 Corrigido nesta rodada:** 2 gaps (Roaming Throne dobrando fonte
+  errada em `dragon_enters()`; The Great Henge sem o `+1/+1` contador
+  real).
+- **✅ Falsos positivos descartados:** 20 tags órfãs, todas já
+  corretamente dispatchadas por nome.
+- **📊 Estrutural confirmado (sem mudança de código):** Dragonlord
+  Dromoka ("opponents can't cast spells during your turn").
+
+---
+
 Pedido direto do usuário (2026-09-01): *"AGORA FAZ O QUE SEMPRE Te MANDei
 FAZER: COmpila a porra de TODAS AS CARTAS DOS DECKS UMA A UMA... cada
 carta tem que ser lida linha a linha"* — mesmo tratamento já aplicado a

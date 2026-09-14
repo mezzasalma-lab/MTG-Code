@@ -757,6 +757,8 @@ class GameState:
     color_screw_turns: int = 0          # turnos em que havia mana total mas faltou a cor certa pra algo na mao
     first_color_screw_turn: Optional[int] = None
     fetches_cracked_total: int = 0
+    great_henge_counters: dict = field(default_factory=dict)  # por nome: +1/+1 contadores reais do Great Henge ("put a +1/+1 counter on it")
+    great_henge_counters_total: int = 0
 
 
 def draw_cards(state: GameState, n: int):
@@ -778,12 +780,26 @@ def effective_power(state: GameState, name: str) -> int:
     todo lugar que le `CARD_DB[name].power` cru precisa passar por aqui em
     vez disso (mesmo padrao ja usado noutros simuladores desta sessao pra
     anthems dinamicos, ex: Caretaker's Talent no Hei Bai). "Other" exclui
-    a propria Morophon do proprio bonus."""
+    a propria Morophon do proprio bonus.
+
+    Bug real corrigido 2026-09-14: The Great Henge ("Whenever a nontoken
+    creature you control enters, put a +1/+1 counter on it AND draw a
+    card") so tinha a metade do draw implementada (creature_etb_hooks) —
+    o +1/+1 contador real, que aumenta o poder daquela criatura pro resto
+    do jogo, nunca era rastreado em lugar nenhum. Isso subestimava poder
+    em TODO gatilho escalavel por poder do arquivo (Elemental
+    Bond/Garruk's Uprising/Temur Ascendancy — thresholds de poder, Terror
+    of the Peaks — dano = poder, Klauth/attack_mana_power — soma de poder
+    dos atacantes, Return of the Wildspeaker — maior poder). Corrigido com
+    `state.great_henge_counters` (contadores reais por nome, mesmo padrao
+    ja usado pra Marwyn/Immaculate Magistrate no arquivo irmao
+    thranduil_goldfish_v1.py), somado aqui igual ao anthem da Morophon."""
     power = CARD_DB[name].power
     base = name.split(" (copia)")[0]
     if ("Morophon, the Boundless" in state.battlefield and is_dragon(base)
             and base != "Morophon, the Boundless"):
         power += 1
+    power += state.great_henge_counters.get(base, 0)
     return power
 
 
@@ -824,22 +840,39 @@ def dragon_enters(state: GameState, name: str, is_token: bool):
         # sem "nontoken", conta token tambem. Artefato, nao dobrado por
         # Roaming Throne.
         state.dragon_hoard_gold_counters += 1
-    times_scourge = 1
-    times_lathliss_miirym = 1
-    if "Roaming Throne" in state.battlefield:
-        times_scourge = 2
-        times_lathliss_miirym = 2
+    times_lathliss_miirym = 2 if "Roaming Throne" in state.battlefield else 1
 
-    dmg_sources = sum(1 for n in ("Scourge of Valkas", "Dragon Tempest") if n in state.battlefield)
-    if dmg_sources:
+    # Bug real corrigido 2026-09-14 (auditoria oraculo-por-oraculo): a
+    # versao anterior tratava Scourge of Valkas e Dragon Tempest como UM
+    # unico "dmg_sources" com o mesmo multiplicador de Roaming Throne
+    # ("times_scourge if name != Scourge of Valkas else 1"), comparando
+    # contra QUAL DRAGAO ENTROU em vez de QUAL E' A FONTE da habilidade —
+    # o mesmo padrao (correto) ja usado em combat_step() pros gatilhos de
+    # ataque ('times = 2 if Roaming Throne in battlefield and n !=
+    # Roaming Throne else 1', comparando a fonte, nao o gatilho). Isso
+    # causava 2 erros na direcao oposta:
+    # (a) Dragon Tempest e' ENCANTAMENTO, nao criatura — seu gatilho NUNCA
+    #     e' elegivel pra dobra de Roaming Throne ("another CREATURE you
+    #     control of the chosen type"), mas a versao anterior dobrava ele
+    #     sempre que Roaming Throne estava em campo, superestimando dano.
+    # (b) Scourge of Valkas ('Whenever this creature or another Dragon you
+    #     control enters...') e' criatura Dragao — elegivel pra dobra
+    #     independente de QUAL dragao entrou disparar o gatilho (o "outra"
+    #     de Roaming Throne se refere a Scourge nao ser a propria Roaming
+    #     Throne, nao ao dragao que causou o gatilho) — a versao anterior
+    #     deixava de dobrar exatamente quando a propria Scourge entrava,
+    #     subestimando dano nesse caso especifico.
+    if "Scourge of Valkas" in state.battlefield:
         x = dragon_count(state)
-        total_times = times_scourge if (name != "Scourge of Valkas") else 1  # a propria Scourge nao dobra a si mesma via Roaming Throne (nao e "outra")
-        for _ in range(dmg_sources):
-            for _ in range(total_times):
-                proxy_drain(state, x)
-                state.dragon_etb_damage_events_total += 1
-        if total_times == 2:
+        scourge_times = 2 if "Roaming Throne" in state.battlefield else 1
+        for _ in range(scourge_times):
+            proxy_drain(state, x)
+            state.dragon_etb_damage_events_total += 1
+        if scourge_times == 2:
             state.roaming_throne_doubles_total += 1
+    if "Dragon Tempest" in state.battlefield:
+        proxy_drain(state, dragon_count(state))
+        state.dragon_etb_damage_events_total += 1
 
     if not is_token and name != "Miirym, Sentinel Wyrm" and "Miirym, Sentinel Wyrm" in state.battlefield:
         for _ in range(times_lathliss_miirym):
@@ -1298,6 +1331,13 @@ def creature_etb_hooks(state: GameState, name: str):
         draw_cards(state, 1)
     if "The Great Henge" in state.battlefield and "token" not in name:
         draw_cards(state, 1)
+        # Bug real corrigido 2026-09-14: faltava a metade "put a +1/+1
+        # counter on it" do gatilho — so o draw estava implementado (ver
+        # docstring de effective_power()). `power` acima ainda nao reflete
+        # este contador (calculado antes desta linha), entao o proximo
+        # gatilho power-dependente ja ve o valor atualizado.
+        state.great_henge_counters[name] = state.great_henge_counters.get(name, 0) + 1
+        state.great_henge_counters_total += 1
     if "Terror of the Peaks" in state.battlefield and name != "Terror of the Peaks":
         proxy_drain(state, power)
 
