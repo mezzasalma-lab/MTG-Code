@@ -1,5 +1,64 @@
 # Checklist cláusula-a-cláusula — Beorn the Fierce
 
+## Achado real 2026-09-14 (usuário apontou os demais motores de draw: Great Henge, Selvala, Toski, Tribute to the World Tree)
+
+Usuário pediu confirmação de que esses 4 também estão certos, além de
+Beorn/Beast Whisperer. Reli o oráculo real (Scryfall) clausula a clausula
+contra o código pros 4:
+
+- **The Great Henge** — `{T}: Add {G}{G}` ✅ (`total_mana()`/`green_sources()`,
+  2 mana, fonte verde dupla). ETB "put a +1/+1 counter... and draw a card"
+  ✅ (`on_creature_enters()`). A cláusula "You gain 2 life" da habilidade
+  de mana fica de fora — mas esse arquivo **não rastreia vida em lugar
+  nenhum, pra nenhuma carta** (War Room paga vida, Defiler of Vigor paga
+  vida — ambos já documentados como N/A pela mesma razão estrutural desde
+  antes desta rodada). Não é um julgamento de valor sobre o Great Henge
+  especificamente, é uma omissão consistente do arquivo inteiro.
+- **Toski, Bearer of Secrets / Ohran Frostfang** — "whenever a creature
+  you control deals combat damage to a player, draw a card" ✅, e já
+  escala corretamente por atacante × fonte (`len(attackers) * draw_sources`
+  em `combat_step()` — 2 cartas em campo = 2 draws por atacante que
+  conecta, não 1 fixo). Confirmado certo.
+- **Tribute to the World Tree** — "draw if power>=3, else 2 counters" ✅,
+  usa `effective_power()` (com anthems), não o poder impresso bruto.
+  Confirmado certo.
+- **Selvala, Heart of the Wilds (2ª habilidade, a de draw — não a de
+  mana)** — 🐛 **bug real encontrado**. Oráculo: *"Whenever another
+  creature enters, its controller may draw a card if its power is
+  greater than each **other** creature's power."* — compara contra as
+  outras criaturas **atualmente** em campo. O código usava um acumulador
+  `max_power_seen` que só subia, nunca descia, mesmo quando a
+  criatura-recorde saía de campo (morte, bounce, Managorger removido pela
+  premissa de lifespan). Isso tornava o gatilho artificialmente mais
+  difícil de disparar depois que a maior criatura do jogo já tivesse
+  saído — o oposto de "compra demais", uma imprecisão real na direção
+  contrária à queixa do usuário, mas ainda uma imprecisão.
+
+**Corrigido:** removido `max_power_seen` (campo morto depois da correção),
+substituído por comparação ao vivo contra `max(effective_power(state, c)
+for c in battlefield if is_creature(c) and c != card)` a cada entrada de
+criatura.
+
+**Validação:** 2 testes unitários dirigidos (Ghalta poder 12 entra e sai
+de campo, depois Little Bear poder 3 com só Selvala poder 2 restando —
+dispara corretamente, o que o bug antigo bloquearia pelo recorde
+histórico de 12; com Ghalta ainda em campo, a mesma Little Bear
+corretamente NÃO dispara) — ambos passando. 20.000 partidas de regressão
+(seed 9980000+), 0 exceções. Batch de 2.000 partidas antes/depois (mesma
+seed 9970000) instrumentado especificamente na fonte "Selvala draw":
+0,1975→0,1815 compras/partida em média (**caiu**, não subiu — explicação:
+a versão nova recalcula `effective_power` das outras criaturas AO VIVO a
+cada comparação, então uma vez que os anthems tribais de Bear (Beorn/
+Chronicle of Victory/Patchwork Banner) entram em campo, TODAS as outras
+Bears ficam mais fortes retroativamente na comparação — o código antigo
+congelava o poder de cada criatura no momento em que ela entrou, nunca
+reavaliando sob anthems que vieram depois, então ficava artificialmente
+mais fácil de bater um "recorde" desatualizado e mais baixo. A versão
+nova é mais fiel ao sistema de camadas real do jogo — P/T é sempre
+característica atual, não congelada no momento do ETB).
+
+---
+
 ## Achado real 2026-09-14 (usuário apontou Beorn + Beast Whisperer somando muita carta na mesa): 3 pontos de cast de criatura pulavam o hook de "quando você conjura um spell"
 
 **Contexto:** usuário relatou descartar 2 cartas por turno na mesa por

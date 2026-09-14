@@ -478,10 +478,6 @@ class GameState:
     # Provisioner cracker), somada em remaining_mana() e resetada a cada turno.
     bonus_mana_this_turn: int = 0
 
-    # Selvala, Heart of the Wilds: "its controller may draw a card if its power is
-    # greater than each other creature's power" - rastreia o maior poder ja visto
-    # entrando em campo pra comparar contra a proxima criatura.
-    max_power_seen: int = 0
 
     # Clues da Tireless Tracker (investigate via landfall), gastos com mana sobrando.
     clues: int = 0
@@ -1262,13 +1258,22 @@ def on_creature_enters(state: GameState, card: str, log: List[Dict], nontoken: b
         state.draw(1, source="The Great Henge")
 
     # Selvala, Heart of the Wilds: "its controller may draw a card if its power is
-    # greater than each other creature's power." Aproximacao: compara contra o maior
-    # poder ja visto entrar em campo ate agora.
+    # greater than each other creature's power." Achado real 2026-09-14: o oraculo
+    # compara contra as OUTRAS criaturas ATUALMENTE em campo, nao um "maior poder ja
+    # visto" historico - a versao anterior usava um acumulador monotonico
+    # (`max_power_seen`) que nunca diminuia quando a criatura-recorde saia de campo
+    # (morte/bounce/exilio), tornando o gatilho artificialmente mais dificil de
+    # disparar depois que a maior criatura do jogo ja tivesse saido. Corrigido
+    # comparando ao vivo contra o maior effective_power entre as OUTRAS criaturas
+    # (mesma convencao de counters_on_board nao-atribuido por criatura ja
+    # documentada em greatest_power_in_play() - nao somamos o agregado aqui pra nao
+    # fabricar uma atribuicao que nao temos como saber se pertence a criatura certa).
     if state.has("Selvala, Heart of the Wilds") and card != "Selvala, Heart of the Wilds":
-        if power > state.max_power_seen:
+        others_power = [effective_power(state, c) for c in state.battlefield
+                        if is_creature(c) and c != card]
+        others_max = max(others_power) if others_power else 0
+        if power > others_max:
             state.draw(1, source="Selvala draw")
-    if power > state.max_power_seen:
-        state.max_power_seen = power
 
 def on_spell_cast_effects(state: GameState, card: str, log: List[Dict]):
     """Gatilhos de 'quando voce conjura um spell/criatura/spell verde/do tipo X'."""

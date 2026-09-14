@@ -1162,6 +1162,26 @@ reais, não bugs que inflavam ou destruíam a curva inteira.
 
 ---
 
+## Achado real 2026-09-14 — Selvala comparava contra recorde histórico, não contra as outras criaturas atuais
+
+Usuário pediu confirmação dos demais motores de draw (Great Henge,
+Selvala, Toski, Tribute to the World Tree). Great Henge/Toski/Tribute
+confirmados corretos. Selvala tinha bug real — ver `checklist-oraculo.md`.
+Instrumentado especificamente na fonte "Selvala draw" (2.000 partidas,
+mesma seed 9970000):
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg draws via Selvala/partida | 0,1975 | 0,1815 |
+| % de jogos com pelo menos 1 draw via Selvala | 14,2% | 13,5% |
+
+Caiu, não subiu — a versão corrigida reavalia poder das outras Bears AO
+VIVO (incluindo anthems que entraram depois), tornando a comparação mais
+rigorosa no fim de jogo. 20.000 partidas de regressão (seed 9980000+), 0
+exceções. 2 testes unitários dirigidos, ambos passando.
+
+---
+
 ## Achado real 2026-09-14 — 3 pontos de cast de criatura pulavam Beast Whisperer/Necklace of Girion/Managorger (reportado pelo usuário)
 
 Ver `checklist-oraculo.md` pro achado completo (cast do comandante em 2
