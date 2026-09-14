@@ -4,6 +4,68 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### Auditoria oráculo-por-oráculo completa — 2026-09-14
+
+Última das 16 decks desta campanha. Releitura clause-by-clause do oráculo
+real (Scryfall, todas as 91 cartas) achou **16 gaps reais** — detalhe
+completo em `checklist-oraculo.md`. Resumo dos principais:
+
+- 9 tags `outlaw`/`haste` erradas (7 faltando, 2 sobrando) verificadas
+  via `type_line` real, afetando Back in Town, Olivia, Laughing Jasper
+  Flint.
+- **2ª habilidade real do próprio Vihaan** ("Other outlaws you control
+  have vigilance and haste") nunca propagada — outlaws sem haste impressa
+  perdiam o ataque no turno em que entravam mesmo com o comandante em
+  campo.
+- **Laughing Jasper Flint** disparava na fase errada (end_step em vez de
+  upkeep) — 0% de valor gerado desde sempre, mesma classe de bug já
+  documentada pro Mahadi na criação do arquivo.
+- **Urabrask's Forge** criava o token DEPOIS do snapshot de atacantes do
+  combate — nunca contava como atacante no próprio combate, apesar de
+  ter haste real.
+- **Magda, the Hoardmaster** (Scorpion Dragon) e **Professional
+  Face-Breaker** (2ª habilidade) — 100% ausentes, nunca implementadas.
+- **Agent of the Iron Throne** só cobria metade artefato do "artifact OR
+  CREATURE" real.
+- **Extort** (Life Insurance) e **Flashback** (Sevinne's Reclamation) —
+  habilidades reais 100% ausentes.
+- **Back in Town** — MV errado no CARD_DB (6 em vez do real 3) + custo X
+  nunca pago.
+- **Lich-Knights' Conquest** — fodder ignorava Treasures/other_tokens (o
+  maior reservatório do deck).
+- **The Reaver Cleaver** — Equip {3} nunca pago, bônus de combate de
+  graça.
+- Aya of Alexandria / Grenzo, Havoc Raiser — gatilhos "por criatura"
+  (sem "one or more" no oráculo) achatados pra 1 fixo.
+
+**Validação:** smoke test (CARD_DB 94, BASE_LIBRARY 99, 0 desconhecidas,
+0 duplicatas) + 38 testes unitários isolados (1 por correção) + regressão
+de 20.000 partidas (seed 9500000+, turns=10, 0 exceções) + antes/depois
+via `git stash` (2.000 jogos, seed 7500000, turns=8):
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg Treasures em campo no fim | 2,60 | 2,06 |
+| Avg Treasures sacrificados (total) | 4,83 | 5,37 |
+| Avg outros tokens criados | 0,83 | 1,61 |
+| Avg mortes de artefato | 5,05 | 5,57 |
+| Avg drain/dano agregado (proxy) | 3,34 | 3,93 |
+| Avg vida ganha | 1,09 | 1,33 |
+| Avg combates com ≥1 atacante | 4,04 | 4,31 |
+| RECURSION avg/jogo | 0,13 | 0,14 |
+| Avg Scorpion Dragons da Magda (novo) | — | 0,09 |
+| Avg impulsos Face-Breaker (novo) | — | 0,37 |
+| Avg Extort pago (novo) | — | 0,17 |
+| Avg flashbacks Sevinne's (novo) | — | 0,01 |
+
+Todas as métricas se moveram na direção esperada (mais atacantes hasty
+contando combates, mais sinks reais de Treasure drenando o pool mais
+rápido, mais drain/vida via Extort+Agent of the Iron Throne+escala real
+da Aya/Grenzo), nenhuma explodiu. `lista.md` não mudou — auditoria
+implementation-only, nenhuma carta adicionada/removida.
+
+---
+
 ### Auditoria linha-a-linha "compile TUDO" — 2026-09-01
 
 **Gatilho:** pedido direto do usuário ("AGORA FAZ O QUE SEMPRE Te MANDei

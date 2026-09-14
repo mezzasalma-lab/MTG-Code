@@ -146,8 +146,17 @@ add("Sol Ring", 1, "artifact", {"rock2"})
 add("Academy Manufactor", 3, "artifact_creature", {"manufactor"})
 add("Anointed Procession", 4, "enchantment", {"token_doubler"})
 add("Xorn", 3, "creature", {"xorn"})
-add("Goldspan Dragon", 5, "creature", {"goldspan", "treasure_attack"})
-add("Captain Lannery Storm", 3, "creature", {"treasure_attack", "haste"})
+# Achado real 2026-09-14 (leitura clausula-a-clausula, ronda final da
+# campanha): "Flying, haste" no oraculo real (Scryfall) - tag "haste"
+# faltava, o Dragon nao conseguia atacar/disparar seu proprio gatilho de
+# Treasure no turno em que entrava em campo.
+add("Goldspan Dragon", 5, "creature", {"goldspan", "treasure_attack", "haste"})
+# Achado real 2026-09-14: tipo real "Human Pirate" (Scryfall) - Pirate e'
+# um outlaw type (OUTLAW_TYPES), mas a tag "outlaw" nunca tinha sido
+# aplicada aqui. Afeta Back in Town (alvo em pilha), o gatilho da Olivia
+# ("um ou mais outlaws causam dano"), o X do Laughing Jasper Flint e o
+# novo anthem de haste do Vihaan (ver combat_step).
+add("Captain Lannery Storm", 3, "creature", {"treasure_attack", "haste", "outlaw"})
 add("Smothering Tithe", 4, "enchantment", {"opponent_dependent"})
 add("Big Score", 4, "instant", {"draw_treasure"})
 add("Unexpected Windfall", 4, "instant", {"draw_treasure"})
@@ -158,12 +167,19 @@ add("Monologue Tax", 3, "enchantment", {"opponent_dependent"})
 add("Rain of Riches", 5, "enchantment", {"etb_treasure", "cascade_treasure"})
 add("Treasure Vault", 0, "land", {"treasure_land"})  # ja adicionada acima
 add("Kellogg, Dangerous Mind", 3, "creature", {"treasure_attack", "haste", "outlaw", "sac_steal_unused"})
-add("Lotho, Corrupt Shirriff", 2, "creature", {"second_spell_treasure"})
-add("Magda, the Hoardmaster", 2, "creature", {"crime_treasure", "outlaw"})
+# Achado real 2026-09-14: "Halfling Rogue" - Rogue e' outlaw type, tag
+# faltava.
+add("Lotho, Corrupt Shirriff", 2, "creature", {"second_spell_treasure", "outlaw"})
+# Achado real 2026-09-14: "Dwarf Berserker" (Scryfall) - Berserker NAO
+# e' outlaw type. Tag "outlaw" estava presente por engano (mesma classe
+# de bug de Jan Jansen acima).
+add("Magda, the Hoardmaster", 2, "creature", {"crime_treasure"})
 add("Mahadi, Emporium Master", 3, "creature", {"treasure_death_batch"})
 add("Olivia, Opulent Outlaw", 4, "creature", {"outlaw_combat_treasure", "outlaw"})
 add("Orochi Soul-Reaver", 4, "creature", {"combat_treasure_manifest", "outlaw"})
-add("Pitiless Plunderer", 4, "creature", {"creature_death_treasure"})
+# Achado real 2026-09-14: "Human Pirate" - Pirate e' outlaw type, tag
+# faltava (mesma classe de bug do Captain Lannery Storm acima).
+add("Pitiless Plunderer", 4, "creature", {"creature_death_treasure", "outlaw"})
 add("Professional Face-Breaker", 3, "creature", {"combat_treasure", "impulse_treasure_sac"})
 add("Prosper, Tome-Bound", 4, "creature", {"impulse_end_step", "play_exile_treasure", "outlaw"})
 add("Revel in Riches", 5, "enchantment", {"opponent_dependent", "alt_win"})
@@ -172,23 +188,37 @@ add("Gleaming Splendor", 2, "enchantment", {"opponent_dependent"})  # trocada po
 add("Smaug the Magnificent", 4, "creature", {"upkeep_treasure", "treasure_attack_damage", "haste"})  # trocada por Insatiable Avarice
 
 # --- Aristocratas / drain -----------------------------------------------------
-add("Zulaport Cutthroat", 2, "creature", {"creature_death_drain"})
+# Achado real 2026-09-14: "Human Rogue Ally" - Rogue e' outlaw type, tag
+# faltava.
+add("Zulaport Cutthroat", 2, "creature", {"creature_death_drain", "outlaw"})
 add("Nadier's Nightblade", 3, "creature", {"token_leave_drain"})
 add("Mirkwood Bats", 4, "creature", {"token_create_or_sac_drain"})
 add("Kambal, Profiteering Mayor", 3, "creature", {"token_etb_drain"})
 add("Agent of the Iron Throne", 3, "enchantment", {"death_drain_background"})
 add("Dictate of Erebos", 5, "enchantment", {"death_edict_unused"})
 add("Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel", 3, "creature", {"death_drain_transform", "sac_draw"})
-add("Witch of the Moors", 5, "creature", {"lifegain_recursion"})
+# Achado real 2026-09-14: "Human Warlock" - Warlock e' outlaw type, tag
+# faltava.
+add("Witch of the Moors", 5, "creature", {"lifegain_recursion", "outlaw"})
 add("Marionette Master", 6, "creature", {"artifact_death_drain", "fabricate3"})
 add("Mayhem Devil", 3, "creature", {"sac_damage"})
 add("Life Insurance", 5, "enchantment", {"nontoken_death_treasure", "extort"})
-add("Mari, the Killing Quill", 3, "creature", {"opponent_dependent"})
+# Achado real 2026-09-14: "Vampire Assassin" - Assassin e' outlaw type,
+# tag faltava.
+add("Mari, the Killing Quill", 3, "creature", {"opponent_dependent", "outlaw"})
 
 # --- Sac outlets ---------------------------------------------------------
 add("Ashnod's Altar", 3, "artifact", {"sac_outlet_cc"})
 add("Krark-Clan Ironworks", 4, "artifact", {"sac_outlet_artifact_cc"})
-add("Jan Jansen, Chaos Crafter", 3, "creature", {"jan_jansen", "outlaw"})
+# Achado real 2026-09-14: tipo real "Gnome Artificer" (Scryfall) -
+# Artificer NAO e' outlaw type (OUTLAW_TYPES = Assassin/Mercenary/
+# Pirate/Rogue/Warlock) - tag "outlaw" estava presente por engano,
+# fazendo Jan Jansen contar erroneamente pro X do Laughing Jasper
+# Flint, pro gatilho da Olivia e pro anthem de haste do Vihaan. Ao
+# mesmo tempo faltava a tag "haste" real dela ("Haste" no oraculo,
+# primeira linha) - sem ela Jan Jansen nao conseguia usar nenhuma das
+# 2 habilidades de {T} no turno em que entrava.
+add("Jan Jansen, Chaos Crafter", 3, "creature", {"jan_jansen", "haste"})
 
 # --- Card draw / interacao -----------------------------------------------
 add("Caretaker's Talent", 3, "enchantment", {"token_draw"})
@@ -206,17 +236,26 @@ add("Teferi's Protection", 3, "instant", {"protection_unused"})
 # --- Recursao / exilar e jogar ---------------------------------------------
 add("Sevinne's Reclamation", 3, "sorcery", {"recursion"})
 add("Phyrexian Reclamation", 1, "enchantment", {"recursion_repeat"})
-add("Back in Town", 6, "sorcery", {"recursion_x"})
+# Achado real 2026-09-14: mv=6 estava ERRADO - custo real (Scryfall) e'
+# {X}{2}{B}, cmc=3 (X conta 0 pra CMC, regra padrao). O custo fixo real
+# e' so' {2}{B}=3, nao 6 - ver resolve_instant_sorcery pro X pago de
+# verdade (era tratado como gratis, capado arbitrariamente em 2).
+add("Back in Town", 3, "sorcery", {"recursion_x"})
 add("Lich-Knights' Conquest", 5, "sorcery", {"recursion_sac"})
 add("Grenzo, Havoc Raiser", 2, "creature", {"combat_impulse", "outlaw"})
 add("Laughing Jasper Flint", 3, "creature", {"upkeep_impulse", "outlaw"})
 
 # --- Combate / anthem / outros ---------------------------------------------
 add("Aya of Alexandria", 4, "creature", {"historic_combat_token", "outlaw"})
-add("Sentinel Sarah Lyons", 5, "creature", {"anthem_artifact"})
+# Achado real 2026-09-14: primeira linha do oraculo real e' "Haste" -
+# tag faltava, impedindo o Battalion (ja implementado em combat_step)
+# de disparar no turno em que ela entrava em campo.
+add("Sentinel Sarah Lyons", 5, "creature", {"anthem_artifact", "haste"})
 add("Shared Animosity", 3, "enchantment", {"anthem_tribal"})
 add("Urabrask's Forge", 3, "artifact", {"forge_token"})
-add("Grim Hireling", 4, "creature", {"combat_treasure2", "sac_debuff_unused"})
+# Achado real 2026-09-14: tipo real "Tiefling Rogue" (Scryfall) - Rogue
+# e' outlaw type, tag faltava.
+add("Grim Hireling", 4, "creature", {"combat_treasure2", "sac_debuff_unused", "outlaw"})
 
 ARTIFACT_ISH = {"artifact", "artifact_creature"}
 CREATURE_ISH = {"creature", "artifact_creature"}
@@ -292,6 +331,9 @@ class GameState:
     kambal_drawn_this_turn: bool = False
     black_market_connections_triggered_this_turn: bool = False
     life_gained_this_turn: int = 0
+    face_breaker_used_this_turn: bool = False
+    forge_tokens_this_turn: int = 0  # quantos tokens do Urabrask's Forge nasceram este turno (p/ sac exato no end_step)
+    reaver_cleaver_equipped: bool = False
 
     commander_in_play: bool = False
     commander_cast_count: int = 0
@@ -347,6 +389,10 @@ class GameState:
     caretaker_level2_reached: bool = False
     caretaker_level3_reached: bool = False
     caretaker_tokens_copied_total: int = 0
+    magda_dragons_created_total: int = 0
+    face_breaker_impulse_total: int = 0
+    extort_paid_total: int = 0
+    sevinne_flashback_total: int = 0
 
 
 def draw_cards(state: GameState, n: int):
@@ -445,14 +491,20 @@ def create_constructs(state: GameState, n: int, source: str = ""):
     on_tokens_created(state, total, kind="construct")
 
 
-def create_other_tokens(state: GameState, n: int, source: str = ""):
+def create_other_tokens(state: GameState, n: int, source: str = "", haste: bool = False):
+    """`haste=True`: achado real 2026-09-14 (Urabrask's Forge/Magda's
+    Scorpion Dragon token, ambos com "haste" impresso de verdade) - sem
+    isso o token nascia sempre com doenca de invocacao, mesmo tendo
+    haste real, e nunca conseguia atacar no turno em que era criado."""
     if n <= 0:
-        return
+        return 0
     total = n * (2 if "Anointed Procession" in state.battlefield else 1)
     state.other_tokens += total
-    state.other_tokens_sick += total
+    if not haste:
+        state.other_tokens_sick += total
     state.other_tokens_created_total += total
     on_tokens_created(state, total, kind="creature")
+    return total
 
 
 def on_tokens_created(state: GameState, n: int, kind: str):
@@ -551,6 +603,17 @@ def on_creature_dies(state: GameState, n: int, is_token: bool):
         return
     state.creature_deaths_total += n
     state.deaths_this_turn += n
+    # Achado real 2026-09-14: oraculo real da Agent of the Iron Throne
+    # (Background) e' "Commander creatures you own have 'Whenever an
+    # ARTIFACT OR CREATURE you control is put into a graveyard from the
+    # battlefield, each opponent loses 1 life.'" - so' a metade artefato
+    # estava coberta (on_artifact_dies); a metade CRIATURA (provavelmente
+    # a mais comum das duas neste deck aristocrata) nunca disparava. A
+    # habilidade e' concedida ao proprio Vihaan (a unica criatura-
+    # comandante deste deck) - so' existe enquanto ele estiver em campo
+    # (`state.commander_in_play`), igual ao texto real.
+    if state.commander_in_play and "Agent of the Iron Throne" in state.battlefield:
+        drain(state, n)
     if "Zulaport Cutthroat" in state.battlefield:
         drain(state, n)
         gain_life(state, n)
@@ -601,7 +664,7 @@ def on_artifact_dies(state: GameState, n: int):
     if n <= 0:
         return
     state.artifact_deaths_total += n
-    if "Agent of the Iron Throne" in state.battlefield:
+    if state.commander_in_play and "Agent of the Iron Throne" in state.battlefield:
         drain(state, n)
     if "Marionette Master" in state.battlefield:
         # Poder base real (Scryfall): 1/3. Fabricate 3 aqui sempre escolhe
@@ -766,6 +829,78 @@ def try_phyrexian_reclamation(state: GameState) -> bool:
     return True
 
 
+def try_sevinne_flashback(state: GameState) -> bool:
+    """Achado real 2026-09-14: 'Flashback {4}{W}' (Scryfall, MV5 - custo
+    alternativo pra conjurar do cemiterio, depois exila) 100% ausente -
+    so' o cast normal da mao estava implementado. Oraculo completo:
+    'Return target permanent card with mana value 3 or less from your
+    graveyard to the battlefield. If this spell was cast from a
+    graveyard, you may copy this spell and may choose a new target for
+    the copy.' - uma ativacao via flashback resolve DUAS vezes (original
+    + copia, cada uma podendo escolher um alvo MV<=3 diferente), nao so'
+    uma. Mesma heuristica de alvo (maior mv<=3, nao-terreno) ja usada no
+    cast normal."""
+    if "Sevinne's Reclamation" not in state.graveyard:
+        return False
+    if remaining_mana(state) < 5:
+        return False
+    spend_mana(state, 5)
+    state.graveyard.remove("Sevinne's Reclamation")
+    for _ in range(2):  # original + copia real (a copia nao existiria sem o flashback)
+        cheap = [n for n in state.graveyard if CARD_DB[n].mv <= 3 and CARD_DB[n].ctype != "land"]
+        if not cheap:
+            continue
+        best = max(cheap, key=lambda n: CARD_DB[n].mv)
+        state.graveyard.remove(best)
+        enter_battlefield(state, best)
+        state.recursion_events_total += 1
+    state.sevinne_flashback_total += 1
+    return True
+
+
+def try_face_breaker_impulse(state: GameState) -> bool:
+    """Achado real 2026-09-14: 'Sacrifice a Treasure: Exile the top card
+    of your library. You may play that card this turn.' (Scryfall) -
+    tag `impulse_treasure_sac` nunca lida, 100% ausente. Sem {T}/'as a
+    sorcery' no oraculo real (repetivel livremente), mas heuristica
+    conservadora aqui: 1x/turno (mesmo padrao ja usado pra Jan Jansen),
+    pra nao brigar demais pelas Treasures que o proprio Vihaan anima em
+    combate e que Ashnod's Altar/KCI consomem depois (TREASURE_MAXIMIZE_
+    POLICY)."""
+    if "Professional Face-Breaker" not in state.battlefield:
+        return False
+    if state.face_breaker_used_this_turn:
+        return False
+    if state.treasures <= 0:
+        return False
+    sacrifice_treasures(state, 1)
+    pull_impulse(state, 1, deadline_turns=0)
+    state.face_breaker_used_this_turn = True
+    state.face_breaker_impulse_total += 1
+    return True
+
+
+def try_equip_reaver_cleaver(state: GameState):
+    """Achado real 2026-09-14: 'Equip {3}' (Scryfall) - custo real nunca
+    pago; o bonus de combate ('Whenever this creature deals combat
+    damage..., create that many Treasure tokens', ja modelado como proxy
+    de +1 Treasure por combate, dado que este arquivo nao rastreia P/T
+    por criatura pra calcular 'that many' de verdade) disparava de graca
+    pra qualquer ataque, sem nunca ter sido equipado em ninguem. Paga o
+    Equip 1x (fica equipado o resto da partida - este simulador nunca
+    reequipa), so' se houver ao menos 1 criatura real em campo."""
+    if "The Reaver Cleaver" not in state.battlefield:
+        return
+    if state.reaver_cleaver_equipped:
+        return
+    if remaining_mana(state) < 3:
+        return
+    if not any(is_creature_card(n) for n in state.battlefield):
+        return
+    spend_mana(state, 3)
+    state.reaver_cleaver_equipped = True
+
+
 def resolve_permanent_etb(state: GameState, name: str):
     if name == "Rain of Riches":
         create_treasures(state, 2, source="Rain of Riches ETB")
@@ -801,7 +936,15 @@ def resolve_instant_sorcery(state: GameState, name: str):
         draw_cards(state, 2)
         create_treasures(state, 1, source=name)
     elif name == "Inspired Tinkering":
-        pull_impulse(state, 3, deadline_turns=2)
+        # Achado real 2026-09-14: "Until the end of your NEXT turn" (nao
+        # "until end of turn") - exilado no turno T, jogavel durante T e
+        # inteiro T+1, expira em T+2. deadline_turns=2 guardava
+        # `state.turn + 2` no momento da conjuracao (turno T), ou seja
+        # deadline=T+2 - ainda valido (`entry[1] >= state.turn`) no
+        # PROPRIO turno T+2, 1 turno alem do real. deadline_turns=1 e' o
+        # valor correto (mesma correcao pro Prosper em end_step, ver
+        # abaixo).
+        pull_impulse(state, 3, deadline_turns=1)
         create_treasures(state, 3, source=name)
     elif name == "Blood Money":
         real_creatures = [n for n in state.battlefield if is_creature_card(n) and n != COMMANDER]
@@ -830,21 +973,53 @@ def resolve_instant_sorcery(state: GameState, name: str):
             enter_battlefield(state, best)
             state.recursion_events_total += 1
     elif name == "Back in Town":
-        x = min(2, remaining_mana(state))
-        outlaws_in_gy = [n for n in state.graveyard if is_outlaw(n) and is_creature_card(n)][:x]
-        for n in outlaws_in_gy:
-            state.graveyard.remove(n)
-            enter_battlefield(state, n)
-            state.recursion_events_total += 1
+        # Achado real 2026-09-14: custo real (Scryfall) e' {X}{2}{B} - X e'
+        # de verdade pago em mana, nao gratis/capado arbitrariamente em 2
+        # (CARD_DB.mv ja corrigido pra 3, o custo fixo real). X = min(mana
+        # que sobrou depois do custo fixo ja pago em cast_card, outlaws de
+        # verdade disponiveis no cemiterio) - sem cap artificial.
+        outlaws_in_gy = [n for n in state.graveyard if is_outlaw(n) and is_creature_card(n)]
+        x = min(len(outlaws_in_gy), remaining_mana(state))
+        if x > 0:
+            spend_mana(state, x)
+            for n in outlaws_in_gy[:x]:
+                state.graveyard.remove(n)
+                enter_battlefield(state, n)
+                state.recursion_events_total += 1
     elif name == "Lich-Knights' Conquest":
-        fodder = state.constructs + state.foods + state.clues
-        n_return = min(fodder, len([n for n in state.graveyard if is_creature_card(n)]))
-        sacrifice_constructs(state, min(state.constructs, n_return))
-        creatures_gy = [n for n in state.graveyard if is_creature_card(n)][:n_return]
-        for n in creatures_gy:
-            state.graveyard.remove(n)
-            enter_battlefield(state, n)
-            state.recursion_events_total += 1
+        # Achado real 2026-09-14: oraculo real e' "Sacrifice any number of
+        # ARTIFACTS, ENCHANTMENTS, and/or TOKENS" - o fodder so' contava
+        # Constructs+Food+Clue, ignorando Treasures e other_tokens (AMBOS
+        # sao tokens de verdade, Treasure tambem e' artefato) - o maior
+        # reservatorio de fodder do deck inteiro ficava fora da conta.
+        creatures_gy = [n for n in state.graveyard if is_creature_card(n)]
+        fodder = state.treasures + state.constructs + state.other_tokens + state.foods + state.clues
+        n_return = min(fodder, len(creatures_gy))
+        if n_return > 0:
+            remaining = n_return
+            take = min(state.treasures, remaining)
+            sacrifice_treasures(state, take)
+            remaining -= take
+            take = min(state.constructs, remaining)
+            sacrifice_constructs(state, take)
+            remaining -= take
+            take = min(state.other_tokens, remaining)
+            sacrifice_other_tokens(state, take)
+            remaining -= take
+            take = min(state.foods, remaining)
+            if take:
+                state.foods -= take
+                on_permanent_sacrificed(state, take, is_artifact=True, is_creature=False, is_token=True)
+                remaining -= take
+            take = min(state.clues, remaining)
+            if take:
+                state.clues -= take
+                on_permanent_sacrificed(state, take, is_artifact=True, is_creature=False, is_token=True)
+                remaining -= take
+            for n in creatures_gy[:n_return]:
+                state.graveyard.remove(n)
+                enter_battlefield(state, n)
+                state.recursion_events_total += 1
 
 
 def pull_impulse(state: GameState, n: int, deadline_turns: int):
@@ -895,10 +1070,30 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
 
 def cast_card(state: GameState, name: str):
     card = CARD_DB[name]
+    # Achado real 2026-09-14: "Extort (Whenever you cast a spell, you may
+    # pay {W/B}. If you do, each opponent loses 1 life and you gain that
+    # much life.)" (Life Insurance) - tag `extort` nunca lida em lugar
+    # nenhum. Mesma convencao ja usada pra TODO drain/vida deste arquivo
+    # (Zulaport/Mayhem Devil/Agent of the Iron Throne/etc): e' um drain
+    # disparado pela SUA PROPRIA acao (conjurar uma magica), nao por um
+    # evento do oponente que precisaria ser simulado - entao e'
+    # modelavel de verdade (drain()+gain_life() proxy), diferente de
+    # efeitos "opponent_dependent" que exigem um alvo/evento do oponente
+    # pra sequer acontecer. Snapshot ANTES do enter_battlefield desta
+    # propria carta (senao a propria Life Insurance "pagaria extort" na
+    # sua propria conjuracao - a habilidade so' existe em campo, nao
+    # ainda na pilha). IA sempre paga se sobrar mana (filosofia agressiva
+    # ja padrao no resto do arquivo).
+    extort_available = "Life Insurance" in state.battlefield
     if name == COMMANDER:
         spend_mana(state, card.mv + 2 * (state.commander_cast_count))
     else:
         spend_mana(state, card.mv)
+    if extort_available and remaining_mana(state) >= 1:
+        spend_mana(state, 1)
+        drain(state, 1)
+        gain_life(state, 1)
+        state.extort_paid_total += 1
     state.spells_cast_this_turn += 1
 
     # A carta sai da mao (ou vai a campo) ANTES de qualquer efeito
@@ -1171,13 +1366,34 @@ def main_phase(state: GameState):
         # dentro do mesmo while.
         if try_phyrexian_reclamation(state):
             continue
+        if try_sevinne_flashback(state):
+            continue
+        if try_face_breaker_impulse(state):
+            continue
         break
+
+    # Achado real 2026-09-14: "Sacrifice three Treasures: Create a 4/4 red
+    # Scorpion Dragon creature token with flying and haste. Activate only
+    # as a sorcery." (Magda, the Hoardmaster) - 100% ausente do codigo (so'
+    # citada em comentario, NUNCA implementada de verdade - so' a 1a
+    # habilidade, "whenever you commit a crime", estava coberta). Sem
+    # {T} no custo real - repetivel livremente enquanto sobrar Treasure,
+    # priorizada aqui antes do Jan Jansen (um corpo real 4/4 voador com
+    # haste vale mais que 2 Constructs 1/1).
+    while "Magda, the Hoardmaster" in state.battlefield and state.treasures >= 3:
+        sacrifice_treasures(state, 3)
+        create_other_tokens(state, 1, source="Magda (Scorpion Dragon)", haste=True)
+        state.magda_dragons_created_total += 1
 
     # Achado real 2026-08-31 (rodada ampliada, categoria 13): engine de
     # nivel do Caretaker's Talent - so' depois de esgotar tudo que da' pra
     # conjurar/recuperar (heuristica: desenvolver board novo > subir nivel
     # de uma carta ja' resolvida).
     try_level_caretakers_talent(state)
+
+    # Achado real 2026-09-14: "Equip {3}" - o custo real nunca era pago em
+    # lugar nenhum (ver try_equip_reaver_cleaver).
+    try_equip_reaver_cleaver(state)
 
     # Jan Jansen: 2 modos, 1x cada por turno (tap) — prioriza Constructs se
     # tiver artefato nao-criatura descartavel, senao Treasure de artefato-criatura.
@@ -1197,14 +1413,43 @@ def main_phase(state: GameState):
 
 
 def combat_step(state: GameState):
+    # Achado real 2026-09-14: "At the beginning of combat on your turn,
+    # put an oil counter on this artifact, then create an X/1 red
+    # Phyrexian Horror creature token with trample and HASTE... Sacrifice
+    # that token at the beginning of the next end step." (Urabrask's
+    # Forge) - o token era criado no FINAL desta funcao, DEPOIS de
+    # `ready_other`/`total_attackers` ja terem sido calculados - mesmo
+    # tendo haste real, o token NUNCA contava como atacante no proprio
+    # combate em que nascia (e era sacrificado no end_step sem nunca ter
+    # feito nada). Corrigido: criado AQUI, antes do snapshot de
+    # atacantes, com `haste=True` (nao fica sick) - e' literalmente o
+    # motivo do gatilho disparar "at the beginning of combat". Conta
+    # exatamente quantos tokens nasceram este turno (Anointed Procession
+    # pode dobrar) pra sacrificar a quantidade certa no end_step.
+    if "Urabrask's Forge" in state.battlefield:
+        state.forge_oil += 1
+        made = create_other_tokens(state, 1, source="Urabrask's Forge", haste=True)
+        state.forge_tokens_this_turn += made
+
     animated = 0
     if state.commander_in_play and state.treasures > 0:
         animated = state.treasures  # Vihaan: Treasures viram 3/3 outlaw ate o final do turno
     state.treasures_animated_this_combat = animated
 
+    # Achado real 2026-09-14: 2a habilidade real do Vihaan (a 1a, animar
+    # Treasures, ja estava implementada acima) - "Other outlaws you
+    # control have vigilance and haste." Vigilance e' 📊 (sem bloqueio
+    # modelado, nao muda nada aqui). Haste NUNCA estava propagado pra
+    # `ready_creatures` - toda criatura outlaw sem haste impressa
+    # (Grenzo/Laughing Jasper Flint/Lotho/Magda-nao-e-outlaw/Mari/Olivia/
+    # Orochi/Pitiless Plunderer/Prosper/Witch of the Moors/Zulaport/Aya)
+    # ficava presa com doenca de invocacao no turno em que entrava, mesmo
+    # com Vihaan em campo concedendo haste de verdade.
     ready_creatures = [n for n in state.battlefield
                        if is_creature_card(n) and n != COMMANDER
-                       and (state.creature_cast_turn.get(n, -1) < state.turn or "haste" in CARD_DB[n].tags)]
+                       and (state.creature_cast_turn.get(n, -1) < state.turn
+                            or "haste" in CARD_DB[n].tags
+                            or (state.commander_in_play and is_outlaw(n)))]
     ready_constructs = max(0, state.constructs - state.constructs_sick)
     ready_other = max(0, state.other_tokens - state.other_tokens_sick)
 
@@ -1258,17 +1503,28 @@ def combat_step(state: GameState):
             if state.library:
                 state.library.pop(0)
                 create_other_tokens(state, 1, source="Orochi manifest")
-        if "Aya of Alexandria" in state.battlefield and any(is_historic(n) for n in ready_creatures):
-            create_other_tokens(state, 1, source="Aya of Alexandria")
+        if "Aya of Alexandria" in state.battlefield:
+            # Achado real 2026-09-14: oraculo real e' "Whenever A HISTORIC
+            # creature you control deals combat damage..." (singular, SEM
+            # "one or more") - ao contrario de Olivia/Face-Breaker/Grim
+            # Hireling/Orochi (todas "one or more...", 1 gatilho em lote
+            # de verdade), este dispara UMA VEZ POR criatura historica que
+            # ataca - `any(...)` achatava pra 1 token fixo, ignorando o
+            # numero real de fontes historicas atacando. Inclui Constructs
+            # (artefato) e Treasures animados pelo Vihaan (viram artefato-
+            # criatura, tambem historico).
+            historic_attackers = (sum(1 for n in ready_creatures if is_historic(n))
+                                   + ready_constructs + animated)
+            if historic_attackers > 0:
+                create_other_tokens(state, historic_attackers, source="Aya of Alexandria")
         if "Grenzo, Havoc Raiser" in state.battlefield:
-            pull_impulse(state, 1, deadline_turns=0)
-        if "The Reaver Cleaver" in state.battlefield:
+            # Achado real 2026-09-14: oraculo real e' "Whenever A creature
+            # you control deals combat damage..." (singular, sem "one or
+            # more") - mesma classe de bug da Aya acima. `total_attackers`
+            # ja e' a contagem real de fontes atacando neste combate.
+            pull_impulse(state, total_attackers, deadline_turns=0)
+        if "The Reaver Cleaver" in state.battlefield and state.reaver_cleaver_equipped:
             create_treasures(state, 1, source="The Reaver Cleaver")
-
-    if "Urabrask's Forge" in state.battlefield:
-        state.forge_oil += 1
-        create_other_tokens(state, 1, source="Urabrask's Forge")
-        state.other_tokens -= 0  # token e sacrificado no end step, ver end_step
 
     if TREASURE_MAXIMIZE_POLICY:
         aggressive_treasure_destruction(state)
@@ -1313,11 +1569,14 @@ def end_step(state: GameState):
         create_treasures(state, state.deaths_this_turn, source="Mahadi (fim do turno)")
 
     if "Prosper, Tome-Bound" in state.battlefield:
-        pull_impulse(state, 1, deadline_turns=2)
-
-    if "Laughing Jasper Flint" in state.battlefield:
-        outlaws = sum(1 for n in state.battlefield if is_outlaw(n))
-        pull_impulse(state, outlaws, deadline_turns=0)
+        # Achado real 2026-09-14: "Until the end of YOUR NEXT TURN" (nao
+        # "until end of turn") - exilado no end_step do turno T, jogavel
+        # durante T+1 inteiro, expira em T+2. deadline_turns=2 guardava
+        # `state.turn + 2` = T+2 no momento do trigger (T), ainda "valido"
+        # (`entry[1] >= state.turn`) no PROPRIO turno T+2 - 1 turno alem
+        # do real. deadline_turns=1 (=T+1) e' o correto (mesma correcao
+        # aplicada na Inspired Tinkering, texto identico).
+        pull_impulse(state, 1, deadline_turns=1)
 
     # Achado real 2026-08-31 (rodada ampliada): oraculo real e' "if you
     # gained life THIS TURN" - o codigo checava `life_gained_total`
@@ -1334,8 +1593,15 @@ def end_step(state: GameState):
             state.hand.append(best)
             state.recursion_events_total += 1
 
-    if "Urabrask's Forge" in state.battlefield and state.other_tokens > 0:
-        sacrifice_other_tokens(state, 1)  # sacrifica o token X/1 do proprio turno
+    # Achado real 2026-09-14: sacrificava sempre exatamente 1, mesmo
+    # quando Anointed Procession dobrava a criacao pra 2 tokens no mesmo
+    # turno (ambas as copias tem "sacrifice that token" - a ruling padrao
+    # pra efeitos de duplicacao de token e' que AMBAS as copias contam
+    # como "that token" pro delayed trigger) - `forge_tokens_this_turn`
+    # (setado em combat_step, ja considerando o dobro) sacrifica a
+    # quantidade certa.
+    if "Urabrask's Forge" in state.battlefield and state.forge_tokens_this_turn > 0:
+        sacrifice_other_tokens(state, state.forge_tokens_this_turn)
 
     if ("Revel in Riches" in state.battlefield and state.treasures >= 10
             and state.revel_condition_met_turn is None):
@@ -1364,9 +1630,28 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.jan_jansen_used_this_turn = False
     state.deaths_this_turn = 0
     state.sephiroth_deaths_this_turn = 0
+    state.face_breaker_used_this_turn = False
+    state.forge_tokens_this_turn = 0
 
     if "Smaug the Magnificent" in state.battlefield:
         create_treasures(state, 1, source="Smaug the Magnificent (upkeep)")
+
+    # Achado real 2026-09-14: oraculo real da Laughing Jasper Flint e' "At
+    # the beginning of your UPKEEP" (nao end step!) - "exile the top X
+    # cards..., where X is the number of outlaws you control. UNTIL END
+    # OF TURN, you may cast spells from among those cards...". Estava
+    # implementada no end_step (fase que so' roda DEPOIS das 2 main
+    # phases do turno) - as cartas exiladas la' nunca tinham como ser
+    # jogadas (play_from_impulse so' e' chamado dentro de main_phase(),
+    # que ja tinha passado 2x quando end_step roda), tornando a
+    # habilidade inteira 100% inutil (nenhum valor gerado, so' lixo
+    # acumulando em impulse_pool). Corrigida pra rodar aqui, na mesma
+    # posicao de upkeep real do Smaug logo acima - "until end of turn"
+    # com deadline_turns=0 agora funciona de verdade (cartas jogaveis nas
+    # 2 main phases DESTE MESMO turno).
+    if "Laughing Jasper Flint" in state.battlefield:
+        outlaws = sum(1 for n in state.battlefield if is_outlaw(n))
+        pull_impulse(state, outlaws, deadline_turns=0)
 
     if not (is_first_turn and on_play):
         if state.library:
@@ -1448,6 +1733,13 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
         avg_tokens_at_lvl3 = avg([s.constructs + s.other_tokens for s in anthem_states])
         print(f"  Proxy anthem nivel 3 (so' jogos com nivel 3): Avg criaturas-token em campo no fim: {avg_tokens_at_lvl3:.2f}"
               f" -> bonus agregado implicado: +{2*avg_tokens_at_lvl3:.2f}/+{2*avg_tokens_at_lvl3:.2f} no total do board (NAO dano calculado - proxy)")
+
+    # Achado real 2026-09-14 (auditoria oraculo-por-oraculo final) — novas
+    # habilidades implementadas nesta rodada.
+    print(f"Avg Scorpion Dragons da Magda (Sacrifice 3 Treasures, 4/4 flying haste): {avg([s.magda_dragons_created_total for s in states]):.2f}")
+    print(f"Avg impulsos via Professional Face-Breaker (Sac Treasure: exile+play): {avg([s.face_breaker_impulse_total for s in states]):.2f}")
+    print(f"Avg Extort pago (Life Insurance, drain/vida proxy): {avg([s.extort_paid_total for s in states]):.2f}")
+    print(f"Avg flashbacks de Sevinne's Reclamation: {avg([s.sevinne_flashback_total for s in states]):.2f}")
 
     revel_hits = sum(1 for s in states if s.revel_condition_met_turn is not None)
 
