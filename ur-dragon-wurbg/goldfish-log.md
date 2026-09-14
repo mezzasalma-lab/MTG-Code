@@ -2598,4 +2598,23 @@ como inferência, não fato confirmado.
 
 ---
 
+## Achado real 2026-09-14 — Roaming Throne era tutorável/cheatável como Dragão real fora do campo
+
+Usuário perguntou se o bug do Roaming Throne achado no Beorn se repetia
+em outros decks. Sim — ver `checklist-oraculo.md` pro achado completo (5
+pontos: Sarkhan's Triumph, Orb of Dragonkind x2, métrica auxiliar, e o
+mais grave — ultimate do Sarkhan Unbroken, que colocaria Roaming Throne
+em campo de graça como se fosse um Dragão de verdade). Resumo numérico
+(2.000 partidas, mesma seed 7500000):
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg tutors_used_total | 0,3935 | 0,398 |
+| Avg orb_mana_activations_total | 0,4675 | 0,4585 |
+| Avg dragons_free_entry_total | 1,1575 | 1,1495 |
+
+20.000 partidas de regressão (seed 7600000+), 0 exceções.
+
+---
+
 <!-- Copie o bloco acima para cada nova partida -->

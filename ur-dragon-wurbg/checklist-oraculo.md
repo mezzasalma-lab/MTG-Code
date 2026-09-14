@@ -1,5 +1,57 @@
 # Checklist cláusula-a-cláusula — The Ur-Dragon (`urdragon_goldfish_v1.py`)
 
+## Achado real 2026-09-14 (usuário perguntou se Roaming Throne está certa em todos os decks onde aparece)
+
+Mesma varredura pedida depois do fix do Beorn. Este deck já tinha uma
+arquitetura mais madura pra Roaming Throne (`ROAMING_THRONE_TYPE =
+"dragon"`, tag cravada diretamente no `CARD_DB` da própria carta — bem
+melhor que o Beorn original), mas isso trouxe um problema DIFERENTE: como
+`is_dragon(name)` só olha a tag estática, ela reconhece Roaming Throne
+como Dragão mesmo enquanto ela está só na **biblioteca ou na mão** — onde
+o oráculo real não concede tipo nenhum ainda ("as this creature enters,
+choose a creature type" só se aplica depois de resolver). Achei **5
+pontos reais** de busca/tutor de Dragão fora do campo de batalha que
+incorretamente aceitavam Roaming Throne como se fosse "a Dragon creature
+card":
+
+1. **Sarkhan's Triumph** ("search your library for a Dragon creature
+   card, put it into your hand") — podia tutorar a própria Roaming
+   Throne.
+2. Métrica auxiliar do mesmo Sarkhan's Triumph (`sarkhan_triumph_hand_had_no_dragon`)
+   — checava a mão por um "Dragão" incluindo Roaming Throne.
+3. **Orb of Dragonkind** (checagem "tem Dragão na mão?") — mesma coisa.
+4. **Orb of Dragonkind** (tutor pela ativação de sacrifício) — mesma coisa.
+5. **Sarkhan Unbroken**, ultimate (−8: "put all Dragon creature cards
+   from your library onto the battlefield") — o mais grave dos 5, porque
+   não é um tutor de 1 carta, é um mass-cheat: colocaria a Roaming Throne
+   em campo de graça igual a qualquer Dragão de verdade.
+
+**Não é bug** (verificado e mantido): o tutor da **Magda** (sacrificar 5
+Treasures → "search for an artifact or Dragon creature card") continua
+encontrando Roaming Throne normalmente — mas isso está CORRETO, porque
+Roaming Throne também é um artefato de verdade (`is_artifact_card`),
+então o modo "artifact card" da busca genuinamente a alcança, independente
+de ser Dragão ou não.
+
+**Corrigido:** novo helper `is_dragon_card(name)` (= `is_dragon(name) and
+name != "Roaming Throne"`), usado nos 5 pontos acima que buscam fora do
+campo de batalha. `is_dragon()` puro continua reconhecendo Roaming Throne
+normalmente pras checagens de BATALHA (contagem de Dragões em campo, a
+própria dobra do gatilho dela via Roaming Throne — que já estava correta
+antes, essa parte não mudou).
+
+**Validação:** 2 testes unitários dirigidos (Sarkhan's Triumph tutora um
+Dragão real quando disponível, ignorando Roaming Throne; sem Dragão real
+na biblioteca, não tutora nada — não usa Roaming Throne como substituto)
+— passando. Batch de 2.000 partidas antes/depois (mesma seed 7500000):
+`tutors_used_total` 0,3935→0,398; `orb_mana_activations_total`
+0,4675→0,4585; `dragons_free_entry_total` 1,1575→1,1495 — movimento
+pequeno (cenário raro: só importa quando Roaming Throne seria o único ou
+o de maior MV entre os "Dragões" candidatos). 20.000 partidas de
+regressão (seed 7600000+), **0 exceções**.
+
+---
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-14
 
 Extensão pra este deck da mesma auditoria já feita em Beorn/Captain

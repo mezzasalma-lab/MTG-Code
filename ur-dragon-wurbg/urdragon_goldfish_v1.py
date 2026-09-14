@@ -646,6 +646,20 @@ def is_dragon(name: str) -> bool:
     return "dragon" in CARD_DB[name].tags
 
 
+def is_dragon_card(name: str) -> bool:
+    """Achado real 2026-09-14 (mesma classe de bug encontrada e corrigida
+    hoje no Beorn/Edgar Markov/Maralen pra Roaming Throne): is_dragon()
+    reconhece Roaming Throne como Dragao porque "as this creature enters,
+    choose a creature type" e' um efeito de ETB - correto pra checagens de
+    BATALHA (a propria dobra do gatilho dela, contagem de Dragoes em
+    campo), mas ERRADO pra busca/tutor de biblioteca ou mao: uma carta
+    parada la ainda nao resolveu, ainda nao escolheu tipo nenhum, nao e'
+    "a Dragon creature card" de verdade. Usado nos tutores reais do deck
+    (Sarkhan's Triumph, Orb of Dragonkind, ultimate do Sarkhan Unbroken)
+    que buscam Dragao fora do campo de batalha."""
+    return is_dragon(name) and name != "Roaming Throne"
+
+
 def is_roaming_type(name: str) -> bool:
     return ROAMING_THRONE_TYPE in CARD_DB[name].tags
 
@@ -1437,9 +1451,9 @@ def resolve_instant_sorcery(state: GameState, name: str):
         # atrapalha a checagem).
         if name == "Sarkhan's Triumph":
             state.sarkhan_triumph_cast_total += 1
-            if not any(is_dragon(c) and is_creature_card(c) for c in state.hand):
+            if not any(is_dragon_card(c) and is_creature_card(c) for c in state.hand):
                 state.sarkhan_triumph_hand_had_no_dragon += 1
-        pool = [n for n in state.library if is_dragon(n)]
+        pool = [n for n in state.library if is_dragon_card(n)]
         if pool:
             best = max(pool, key=lambda n: CARD_DB[n].mv)
             state.library.remove(best)
@@ -1480,13 +1494,13 @@ def do_orb_dragonkind(state: GameState):
         return
     if remaining_mana(state) < 1:
         return
-    dragons_in_hand = [n for n in state.hand if is_dragon(n)]
+    dragons_in_hand = [n for n in state.hand if is_dragon_card(n)]
     if dragons_in_hand:
         spend_mana(state, 1)
         state.dragon_mana_pool += 2
         state.orb_mana_activations_total += 1
     else:
-        pool = [n for n in state.library if is_dragon(n)]
+        pool = [n for n in state.library if is_dragon_card(n)]
         if not pool:
             return
         best = max(pool, key=lambda n: CARD_DB[n].mv)
@@ -1716,7 +1730,7 @@ def main_phase(state: GameState):
             loyalty = getattr(state, "sarkhan_loyalty", 4)
             if loyalty >= 8:
                 state.sarkhan_loyalty = loyalty - 8
-                targets = [n for n in state.library if is_dragon(n) and is_creature_card(n)]
+                targets = [n for n in state.library if is_dragon_card(n) and is_creature_card(n)]
                 for t in targets:
                     if t not in state.library:
                         continue
