@@ -168,6 +168,33 @@ primeira vez — as categorias 1-9 ja tinham sido auditadas em 2026-08-28.
   Documentado aqui como achado real desta auditoria, nao corrigido.
 
 ======================================================================
+Rodada 2026-09-14 — releitura linha-a-linha completa (3a rodada)
+======================================================================
+Pedido do usuario: mesma auditoria oraculo-por-oraculo ja feita nos outros
+13 decks do repositorio. Este deck ja tinha passado por 2 rodadas
+anteriores (2026-08-28, 2026-08-30/31/09-01) — 5 gaps reais adicionais
+achados mesmo assim (ver checklist-oraculo.md pra detalhe completo):
+
+1. Farseek/Nature's Lore/Three Visits buscavam entre os 37 terrenos da
+   lista SEM a restricao real de subtipo (Farseek: Plains/Island/Swamp/
+   Mountain; Nature's Lore/Three Visits: Forest) — corrigido pra
+   FARSEEK_TARGETS (10 duais ABUR)/FOREST_TYPE_TARGETS (4 duais com
+   Forest). Farseek tambem nao marcava a mana fantasma do terreno buscado
+   tapped (mesmo padrao ja achado no Beorn).
+2. `ctype == "creature"` estrito (nao `is_creature_card()`/CREATURE_ISH)
+   excluia artifact creature em 4 lugares — 2 com impacto real (Kozilek's
+   Unsealing, desconto "1a criatura do turno" do Conduit/Radagast — ambos
+   perdiam Roaming Throne/Liberator).
+3. Writhing Chrysalis ("sacrifice another Eldrazi: +1/+1 counter") 100%
+   ausente — Eldrazi Spawn/Scion tokens SAO Eldrazi de verdade e sao
+   sacrificados por mana o tempo todo neste motor.
+4. Spawning Bed ({6},{T},sac: 3 Scion tokens) ficou fora da correcao de
+   2026-09-01 que resgatou Eye of Ugin/Urza's Cave/Ruins of Oran-Rief do
+   mesmo loop generico de terrenos.
+5. Nulldrifter Evoke {2}{U} 100% ausente (mesmo tipo de alt-cost ja
+   modelado pro Warp da Anticausal Vestige) — sempre pagava o custo cheio.
+
+======================================================================
 Simplificacoes documentadas (nao inventadas — omissoes explicitas)
 ======================================================================
 - Modelo de mana GENERICO/TOTAL (mesma convencao de Nekusar/Ur-
@@ -388,13 +415,45 @@ add("Defense of the Heart", 4, "enchantment", set())  # nunca dispara (Regra 1, 
 add("Rhystic Study", 3, "enchantment", {"opponent_dependent"})
 
 # --- Tokens sinteticos (nao existem em lista.md, criados em jogo) ------------
-add("Eldrazi Spawn Token", 0, "creature", {"colorless", "token"})
+add("Eldrazi Spawn Token", 0, "creature", {"colorless", "token", "eldrazi"})
 add("Manifest Token", 0, "creature", {"colorless", "token"})
 
 
 CREATURE_ISH = {"creature", "artifact_creature"}
 LAND_NAMES = {n for n, c in CARD_DB.items() if c.ctype == "land"}
 WARP_COST = {"Anticausal Vestige": 4}
+# Evoke (Nulldrifter, real oraculo "Evoke {2}{U}"): mesmo tratamento ja
+# usado pro Warp da Anticausal Vestige (alt-cost real, nao decorativo).
+# Achado real nesta rodada (2026-09-14): 100% ausente antes -- Nulldrifter
+# sempre pagava o custo cheio de 7. Como este simulador NAO modela combate
+# (ver grep "annihilator"/"attack" no arquivo -- zero ocorrencias), o corpo
+# 7/7 voador com annihilator nunca produz nenhum efeito numerico aqui; o
+# cast-trigger real ("draw two cards") dispara igual via evoke (e' um
+# gatilho de conjuracao, independente do modo). Evocar e' estritamente mais
+# barato (3 gen. vs 7) pelo mesmo valor modelado, perdendo so' 2 gatilhos
+# incidentais de ETB (Glaring Fleshraker 1 dano proxy / elegibilidade do
+# Ruins of Oran-Rief) -- sempre evocado da mao, mesma heuristica greedy ja
+# documentada pro Warp da Vestige.
+EVOKE_COST = {"Nulldrifter": 3}
+
+# Farseek/Nature's Lore/Three Visits: achado real desta rodada (2026-09-14)
+# -- oraculo real de cada um restringe o alvo da busca a um subtipo basico
+# especifico (nao "qualquer terreno"), mas o codigo anterior tratava as 3
+# como buscas irrestritas (qualquer um dos 37 terrenos da lista). Esta
+# decklist NAO tem nenhum basico Plains/Island/Swamp/Mountain/Forest --
+# so os 10 duais ABUR (com subtipos basicos reais) qualificam, confirmado
+# via Scryfall type_line (nao presumido por semelhanca):
+#   Badlands (Swamp Mountain), Bayou (Swamp Forest), Plateau (Mountain
+#   Plains), Savannah (Forest Plains), Scrubland (Plains Swamp), Taiga
+#   (Mountain Forest), Tropical Island (Forest Island), Tundra (Plains
+#   Island), Underground Sea (Island Swamp), Volcanic Island (Island
+#   Mountain).
+# Farseek ("Plains, Island, Swamp, or Mountain card") aceita os 10 --
+# cada dual tem pelo menos um desses 4 tipos. Nature's Lore/Three Visits
+# ("Forest card") so aceitam os 4 com subtipo Forest.
+FARSEEK_TARGETS = {"Badlands", "Bayou", "Plateau", "Savannah", "Scrubland", "Taiga",
+                    "Tropical Island", "Tundra", "Underground Sea", "Volcanic Island"}
+FOREST_TYPE_TARGETS = {"Bayou", "Savannah", "Taiga", "Tropical Island"}
 
 
 def is_creature_card(name: str) -> bool:
@@ -508,6 +567,26 @@ class GameState:
     colorless_creature_entered_this_turn: bool = False
     ruins_oran_rief_counters_total: int = 0
 
+    # --- Achados reais 2026-09-14 (releitura linha-a-linha desta rodada,
+    # deck ja tinha passado por 2 rodadas anteriores de auditoria) ---
+    # Farseek entra tapped (oraculo real) -- deducao de mana fantasma so'
+    # no turno em que resolve (land_tutor1, ver total_mana()).
+    tapped_phantom_mana_this_turn: int = 0
+    # Writhing Chrysalis: "Whenever you sacrifice another Eldrazi, put a
+    # +1/+1 counter on this creature" -- 100% ausente ate esta rodada.
+    # Contador agregado (mesma convencao do Ruins of Oran-Rief acima, sem
+    # P/T por criatura individual).
+    writhing_chrysalis_counters_total: int = 0
+    # Spawning Bed: "{6}, {T}, Sacrifice this land: Create three 1/1
+    # colorless Eldrazi Scion tokens" -- ficou no loop generico de 34
+    # terrenos junto com Eye of Ugin/Urza's Cave/Ruins of Oran-Rief antes
+    # da rodada 2026-09-01, mas foi deixada de fora daquela correcao.
+    spawning_bed_used: bool = False
+    spawning_bed_tokens_total: int = 0
+    # Nulldrifter: Evoke {2}{U} -- alt-cost real, mesmo tratamento ja dado
+    # ao Warp da Anticausal Vestige (ver EVOKE_COST acima).
+    evoke_events_total: int = 0
+
 
 def draw_cards(state: GameState, n: int):
     for _ in range(n):
@@ -534,6 +613,16 @@ def sac_spawns_for_mana(state: GameState, n: int) -> int:
     for _ in range(use):
         if "Eldrazi Spawn Token" in state.battlefield:
             state.battlefield.remove("Eldrazi Spawn Token")
+        # Achado real 2026-09-14: Writhing Chrysalis ("Whenever you
+        # sacrifice another Eldrazi, put a +1/+1 counter on this
+        # creature") estava 100% ausente -- Eldrazi Spawn/Scion tokens SAO
+        # Eldrazi de verdade (tipo real "Eldrazi Spawn"/"Eldrazi Scion"),
+        # e sao sacrificados por mana o tempo todo neste simulador (esta
+        # mesma funcao, chamada todo turno). Tag "eldrazi" adicionada ao
+        # token abaixo; contador agregado (sem P/T por criatura, mesma
+        # convencao do Ruins of Oran-Rief).
+        if "Writhing Chrysalis" in state.battlefield:
+            state.writhing_chrysalis_counters_total += 1
     state.spawn_tokens_available -= use
     state.bonus_mana_pool += use
     return use
@@ -686,7 +775,12 @@ def on_any_spell_cast_hooks(state: GameState, name: str, colorless: bool, mv: in
         times = trigger_times(state, "Glaring Fleshraker", is_permanent_source=True)
         create_spawn_tokens(state, 1 * times)
 
-    if "Kozilek's Unsealing" in state.battlefield and ctype == "creature":
+    # Achado real 2026-09-14: "creature spell" no oraculo real inclui
+    # artifact creature (Roaming Throne, mv4, cai na faixa 4-6) -- a
+    # checagem estrita `ctype == "creature"` excluia isso (ctype real e'
+    # "artifact_creature"). Corrigido pra CREATURE_ISH (mesmo conjunto ja
+    # usado por is_creature_card()).
+    if "Kozilek's Unsealing" in state.battlefield and ctype in CREATURE_ISH:
         times = trigger_times(state, "Kozilek's Unsealing", is_permanent_source=True)
         if mv in (4, 5, 6):
             create_spawn_tokens(state, 2 * times)
@@ -813,7 +907,8 @@ def true_colorless_capacity(state: GameState) -> int:
 
 
 def total_mana(state: GameState) -> int:
-    return land_mana(state) + rocks_mana(state) + state.bonus_mana_pool + forsaken_monument_bonus(state)
+    raw = land_mana(state) + rocks_mana(state) + state.bonus_mana_pool + forsaken_monument_bonus(state)
+    return max(0, raw - state.tapped_phantom_mana_this_turn)
 
 
 def remaining_mana(state: GameState) -> int:
@@ -855,7 +950,7 @@ def eldrazi_cost_discount(state: GameState, name: str) -> int:
     if "eldrazi" in tags:
         if "Eye of Ugin" in state.battlefield:
             d += 2
-        if "Urza's Incubator" in state.battlefield and CARD_DB[name].ctype == "creature":
+        if "Urza's Incubator" in state.battlefield and is_creature_card(name):
             d += 2
     if "colorless" in tags:
         if "Ugin, the Ineffable" in state.battlefield:
@@ -872,7 +967,13 @@ def eldrazi_cost_discount(state: GameState, name: str) -> int:
         # cemiterio desenvolvido. Empilha com os descontos acima (regras
         # reais permitem multiplas reducoes de custo simultaneas).
         d += len(graveyard_card_types(state))
-    if CARD_DB[name].ctype == "creature" and not state.conduit_used_this_turn:
+    # Achado real 2026-09-14: "The first creature spell you cast each turn
+    # costs {2} less" (Conduit of Ruin/Radagast) usava `ctype == "creature"`
+    # estrito, excluindo artifact creature (Roaming Throne mv4, Liberator
+    # mv3 -- ctype real "artifact_creature", mas SAO creature spells pelo
+    # oraculo). Corrigido pra is_creature_card() (mesmo conjunto CREATURE_ISH
+    # usado no resto do arquivo).
+    if is_creature_card(name) and not state.conduit_used_this_turn:
         d += 2 * sum(1 for s in FIRST_CREATURE_DISCOUNT_SOURCES if s in state.battlefield)
     return d
 
@@ -881,6 +982,12 @@ def effective_cost(state: GameState, name: str) -> int:
     d = eldrazi_cost_discount(state, name)
     if name in WARP_COST:
         return max(0, WARP_COST[name] - d)
+    if name in EVOKE_COST:
+        # Mesma convencao ja usada pro WARP_COST acima: cast_card() sempre
+        # escolhe o modo alternativo (mais barato) pra estas cartas, entao
+        # a "castabilidade"/prioridade do loop guloso ja deve refletir o
+        # custo de evoke, nao o cheio.
+        return max(0, EVOKE_COST[name] - d)
     return max(0, CARD_DB[name].mv - d)
 
 
@@ -895,12 +1002,28 @@ def can_cast(state: GameState, name: str) -> bool:
 def resolve_instant_sorcery_effect(state: GameState, name: str):
     tags = CARD_DB[name].tags
     if "land_tutor1" in tags:
-        candidates = [n for n in state.library if n in LAND_NAMES]
+        # Achado real 2026-09-14: oraculo real de cada uma restringe a
+        # busca a um subtipo basico especifico (ver FARSEEK_TARGETS/
+        # FOREST_TYPE_TARGETS acima) -- o codigo anterior buscava
+        # IRRESTRITAMENTE entre os 37 terrenos da lista pras 3 (Farseek/
+        # Nature's Lore/Three Visits tratadas como identicas), quando esta
+        # decklist nao tem nenhum basico Plains/Island/Swamp/Mountain/
+        # Forest -- so os duais ABUR com o subtipo certo qualificam.
+        pool = FARSEEK_TARGETS if name == "Farseek" else FOREST_TYPE_TARGETS
+        candidates = [n for n in state.library if n in pool]
         if candidates:
             pick = candidates[0]
             state.library.remove(pick)
             state.battlefield.append(pick)
             state.ramp_pieces_resolved_total += 1  # RAMP (categoria 10): Farseek/Nature's Lore/Three Visits
+            if name == "Farseek":
+                # Farseek (real oraculo): "...put it onto the battlefield
+                # TAPPED" -- Nature's Lore/Three Visits nao tem "tapped"
+                # (fetch premium classico, confirmado via Scryfall). Sem
+                # essa deducao, o terreno buscado produzia mana fantasma
+                # no MESMO turno (mesmo padrao ja achado no Beorn pras
+                # cartas "put onto the battlefield tapped").
+                state.tapped_phantom_mana_this_turn += 1
     elif "tutor_creature_hand" in tags:
         pool = [n for n in state.library if is_creature_card(n)]
         if pool:
@@ -977,7 +1100,8 @@ def do_cascade(state: GameState, x: int, depth: int = 0):
         resolve_cast(state, found, free=True, from_hand=False)
 
 
-def resolve_cast(state: GameState, name: str, free: bool = False, from_hand: bool = True, warp_mode: bool = False):
+def resolve_cast(state: GameState, name: str, free: bool = False, from_hand: bool = True,
+                  warp_mode: bool = False, evoke_mode: bool = False):
     """Resolve conjurar `name`: paga mana (a menos que `free`), remove da
     mao/exilio se aplicavel, dispara cast-trigger + copias de Echoes/Ulalek,
     entao resolve o spell em si (com sua propria contagem de copias)."""
@@ -987,15 +1111,19 @@ def resolve_cast(state: GameState, name: str, free: bool = False, from_hand: boo
     mv = card.mv
 
     if not free:
-        cost = WARP_COST[name] if warp_mode else effective_cost(state, name)
-        cost = max(0, cost - (eldrazi_cost_discount(state, name) if warp_mode else 0)) if warp_mode else cost
+        if warp_mode:
+            cost = max(0, WARP_COST[name] - eldrazi_cost_discount(state, name))
+        elif evoke_mode:
+            cost = max(0, EVOKE_COST[name] - eldrazi_cost_discount(state, name))
+        else:
+            cost = effective_cost(state, name)
         spend_mana(state, cost)
     if from_hand and name in state.hand:
         state.hand.remove(name)
     elif not from_hand and name in state.warp_exile_zone:
         state.warp_exile_zone.remove(name)
 
-    if card.ctype == "creature" and not state.conduit_used_this_turn:
+    if card.ctype in CREATURE_ISH and not state.conduit_used_this_turn:
         sources_in_play = [s for s in FIRST_CREATURE_DISCOUNT_SOURCES if s in state.battlefield]
         if sources_in_play:
             state.first_creature_discount_events_total += 1
@@ -1072,6 +1200,13 @@ def resolve_cast(state: GameState, name: str, free: bool = False, from_hand: boo
             enter_battlefield(state, name, is_token=is_copy)
             if is_creature_card(name):
                 creature_etb_hooks(state, name, is_copy)
+            if evoke_mode and name in state.battlefield:
+                # Evoke real: "sacrifice it when it enters" -- os ETBs
+                # proprios (Fleshraker/Ruins of Oran-Rief eligibility) ja
+                # dispararam acima antes do sacrificio, igual as regras
+                # reais. Simplificacao documentada: aplicado a toda copia
+                # criada neste loop (Echoes/Ulalek), nao so' o original.
+                state.battlefield.remove(name)
 
     if name == "Zhulodok, Void Gorger":
         pass
@@ -1086,6 +1221,8 @@ def resolve_cast(state: GameState, name: str, free: bool = False, from_hand: boo
 
     if warp_mode:
         state.warp_pending.append(name)
+    if evoke_mode:
+        state.evoke_events_total += 1
 
 
 def creature_etb_hooks(state: GameState, name: str, is_copy: bool):
@@ -1097,6 +1234,10 @@ def creature_etb_hooks(state: GameState, name: str, is_copy: bool):
 def cast_card(state: GameState, name: str):
     if name in WARP_COST and name in state.hand:
         resolve_cast(state, name, warp_mode=True)
+    elif name in EVOKE_COST and name in state.hand:
+        # Nulldrifter: sempre evocado da mao (estritamente mais barato pro
+        # mesmo valor modelado aqui, ver comentario junto de EVOKE_COST).
+        resolve_cast(state, name, evoke_mode=True)
     elif name in state.warp_exile_zone:
         resolve_cast(state, name, from_hand=False)
     else:
@@ -1197,6 +1338,34 @@ def try_ruins_oran_rief(state: GameState):
     if not state.colorless_creature_entered_this_turn:
         return
     state.ruins_oran_rief_counters_total += 1
+
+
+def try_spawning_bed(state: GameState):
+    """Achado real 2026-09-14: Spawning Bed ("{6}, {T}, Sacrifice this
+    land: Create three 1/1 colorless Eldrazi Scion creature tokens") ficou
+    no loop generico dos 34 terrenos junto com Eye of Ugin/Urza's Cave/
+    Ruins of Oran-Rief antes da rodada 2026-09-01, mas foi deixada de fora
+    daquela correcao -- 100% ausente ate agora.
+
+    Heuristica documentada: sacrificar uma fonte de mana PERMANENTE por 3
+    fontes de USO UNICO e' uma troca ruim na maioria dos casos (perde mana
+    recorrente todo turno futuro por mana de 1x so) -- so vale a pena com
+    excedente real de terrenos. Mesmo piso conceitual ja usado em
+    do_world_breaker_recursion() (nunca sacrifica terreno abaixo de uma
+    margem de seguranca), aqui mais conservador (>7, nao >5) por ser uma
+    perda permanente de verdade, nao um land drop reciclado."""
+    if "Spawning Bed" not in state.battlefield or state.spawning_bed_used:
+        return
+    lands_in_play = [n for n in state.battlefield if n in LAND_NAMES]
+    if len(lands_in_play) <= 7:
+        return
+    if remaining_mana(state) < 6:
+        return
+    spend_mana(state, 6)
+    state.battlefield.remove("Spawning Bed")
+    state.spawning_bed_used = True
+    create_spawn_tokens(state, 3)
+    state.spawning_bed_tokens_total += 3
 
 
 def do_one_ring(state: GameState):
@@ -1340,6 +1509,7 @@ def main_phase(state: GameState):
     try_eye_of_ugin(state)
     try_urzas_cave(state)
     try_ruins_oran_rief(state)
+    try_spawning_bed(state)
 
 
 def end_step(state: GameState):
@@ -1445,6 +1615,7 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.conduit_used_this_turn = False
     state.eye_of_ugin_used_this_turn = False
     state.colorless_creature_entered_this_turn = False
+    state.tapped_phantom_mana_this_turn = 0
 
     upkeep_step(state)
     if not (is_first_turn and on_play):
@@ -1518,6 +1689,9 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg tutores via Eye of Ugin ({{7}},{{T}}: busca criatura colorless): {avg([s.eye_of_ugin_tutors_total for s in states]):.2f}")
     print(f"Urza's Cave sacrificado por terreno ({{3}},{{T}},sac): {100*sum(1 for s in states if s.urzas_cave_used)/n:.1f}% dos jogos")
     print(f"Avg contadores +1/+1 via Ruins of Oran-Rief (agregado, sem P/T por criatura): {avg([s.ruins_oran_rief_counters_total for s in states]):.2f}")
+    print(f"Avg contadores +1/+1 via Writhing Chrysalis (sac de Eldrazi Spawn/Scion, agregado): {avg([s.writhing_chrysalis_counters_total for s in states]):.2f}")
+    print(f"Spawning Bed sacrificado por 3 Scion tokens ({{6}},{{T}},sac): {100*sum(1 for s in states if s.spawning_bed_used)/n:.1f}% dos jogos")
+    print(f"Avg evocacoes de Nulldrifter (Evoke {{2}}{{U}}, sempre preferido sobre custo cheio): {avg([s.evoke_events_total for s in states]):.2f}")
 
     # -----------------------------------------------------------------
     # Achado real 2026-08-31 (rodada ampliada, categoria 12): lealdade e

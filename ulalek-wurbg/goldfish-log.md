@@ -4,6 +4,58 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### Auditoria oráculo-por-oráculo completa — 2026-09-14
+
+3ª rodada de auditoria completa (após 2026-08-28 e 2026-08-30/31/09-01).
+Ver `checklist-oraculo.md` pra detalhamento carta-a-carta. **5 gaps
+reais** achados e corrigidos: (1) Farseek/Nature's Lore/Three Visits
+buscavam terreno sem a restrição real de tipo (Plains/Island/Swamp/
+Mountain vs. Forest — só os 10/4 duais ABUR certos qualificam nesta
+decklist, não qualquer um dos 37 terrenos); (2) Farseek também não
+marcava o terreno buscado como tapped (mana fantasma, mesmo padrão do
+Beorn); (3) `ctype == "creature"` estrito excluía artifact creature em 4
+lugares (Kozilek's Unsealing + desconto "1ª criatura do turno" perdiam
+Roaming Throne/Liberator); (4) Writhing Chrysalis ("sacrifice another
+Eldrazi: +1/+1 counter") 100% ausente, apesar do motor sacrificar
+Eldrazi Spawn/Scion por mana o tempo todo; (5) Spawning Bed ({6},{T},sac:
+3 Scion tokens) ficou de fora da correção de 2026-09-01 que resgatou os
+outros 3 terrenos do mesmo loop genérico. Bônus: Nulldrifter Evoke
+{2}{U} também 100% ausente, mesmo padrão de alt-cost já usado no Warp da
+Vestige.
+
+**Validação:** smoke test (103 CARD_DB / 99 BASE_LIBRARY, 0 issues) + 5
+testes unitários dirigidos (1 por correção) + `run_batch` antes/depois
+via `importlib`+`git stash` (2000 jogos, seed 6000000, turns=8) +
+regressão de 20.000 partidas (seed 9100000, turns=8), 0 exceções em
+ambas.
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Ulalek nunca conjurada em 8 turnos | 5.0% | 4.2% |
+| Avg cópias pagas da Ulalek (CC) | 1.05 | 1.14 |
+| Avg cartas compradas extra (draw) | 1.65 | 1.95 |
+| Avg dano proxy Glaring Fleshraker | 1.09 | 1.37 |
+| Avg dobras via Roaming Throne | 0.11 | 0.18 |
+| Avg mão final | 3.02 | 2.95 |
+| Avg capacidade de {C} real/turno | 2.81 | 2.74 |
+| Avg mana TOTAL disponível/turno | 4.73 | 4.79 |
+| RECURSION — % jogos c/ pelo menos 1 evento | 0.05% | 0.10% |
+| FINISHER — % jogos c/ pelo menos 1 finisher | 16.4% | 18.2% |
+| Contadores Writhing Chrysalis (novo) | — | 0.57 avg |
+| Spawning Bed ativado (novo) | — | 1.3% dos jogos |
+| Evocações de Nulldrifter (novo) | — | 0.14 avg |
+
+Todas as métricas se moveram na direção esperada: DRAW e cópias da
+Ulalek sobem (Nulldrifter evocado por 3 em vez de 7 libera mana pra
+conjurar mais Eldrazi e dispara o draw-2 mais cedo/mais vezes), a
+capacidade de {C} real cai ligeiramente (dedução correta da mana
+fantasma do Farseek), turno de conjuração da Ulalek melhora ligeiramente
+(mais mana liberada pelos descontos corrigidos de Roaming
+Throne/Liberator). Nenhum salto brusco ou inexplicável em nenhuma
+métrica não relacionada às 5 correções.
+
+---
+
 ### Auditoria linha-a-linha "compile TUDO" — 2026-09-01
 
 **Gatilho:** pedido direto do usuário ("AGORA FAZ O QUE SEMPRE Te MANDei

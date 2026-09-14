@@ -1,5 +1,97 @@
 # Checklist cláusula-a-cláusula — Ulalek, Fused Atrocity
 
+## Auditoria oráculo-por-oráculo completa — 2026-09-14
+
+Extensão pra este deck da mesma auditoria já feita em Beorn/Captain
+Storm/Edgar Markov/Hei Bai/Maralen/Megatron/Nekusar/Prismatic Bridge/Rat
+King/Thranduil (13 decks no total). Este deck já tinha passado por **2
+rodadas anteriores** (2026-08-28 e 2026-08-30/31/09-01, ver seção acima)
+com vários "achado real" documentados — mesmo assim, a releitura
+linha-a-linha completa desta rodada (oráculo real de todas as 84 cartas
+únicas + terrenos, buscado ao vivo via Scryfall, cruzado clausula-a-
+clausula contra o código) achou **5 gaps reais adicionais**.
+
+**5 gaps reais encontrados e corrigidos:**
+
+1. **Farseek/Nature's Lore/Three Visits buscavam terreno SEM a restrição
+   real de tipo.** As 3 compartilhavam a mesma tag `land_tutor1` tratada
+   como "busca qualquer um dos 37 terrenos da lista" — mas o oráculo real
+   restringe cada uma: Farseek = *"Search your library for a **Plains,
+   Island, Swamp, or Mountain** card"*; Nature's Lore/Three Visits =
+   *"Search your library for a **Forest** card"*. Esta decklist não tem
+   nenhum básico Plains/Island/Swamp/Mountain/Forest — só os terrenos
+   duais ABUR têm os subtipos básicos reais (confirmado via
+   `type_line` do Scryfall, não presumido): **Farseek** aceita os 10
+   duais ABUR (cada um tem pelo menos um dos 4 tipos — ex: Badlands é
+   Swamp Mountain); **Nature's Lore/Three Visits** só aceitam os 4 com
+   subtipo Forest (Bayou, Savannah, Taiga, Tropical Island). O código
+   anterior podia "buscar" qualquer terreno da lista, incluindo
+   utilitários como Ancient Tomb/Command Tower/Eye of Ugin — nenhum dos
+   quais é um alvo legal real pra nenhuma das 3. Corrigido com
+   `FARSEEK_TARGETS`/`FOREST_TYPE_TARGETS` dedicados.
+2. **Farseek também não marcava o terreno buscado como tapped**, mesmo
+   padrão exato já achado no Beorn (Cultivate/Sakura-Tribe Elder/etc):
+   oráculo real diz *"put it onto the battlefield **tapped**"*, mas o
+   terreno buscado produzia mana no MESMO turno (mana fantasma).
+   Nature's Lore/Three Visits, por contraste, genuinamente NÃO têm
+   "tapped" no oráculo (fetches premium clássicos) — corrigido só pra
+   Farseek, com um contador novo por turno
+   (`tapped_phantom_mana_this_turn`, deduzido em `total_mana()`).
+3. **`ctype == "creature"` estrito (não `is_creature_card()`/
+   `CREATURE_ISH`) excluía artifact creature em 4 lugares do arquivo** —
+   2 com impacto real em jogo: (a) o dispatch de **Kozilek's Unsealing**
+   ("creature spell MV 4-6/7+") nunca disparava pra Roaming Throne
+   (artifact creature, MV4 — cai na faixa 4-6, mas `ctype` real é
+   `"artifact_creature"` ≠ `"creature"`); (b) o desconto real "the first
+   creature spell you cast each turn costs {2} less" (Conduit of
+   Ruin/Radagast) nunca se aplicava a Roaming Throne (MV4) nem Liberator,
+   Urza's Battlethopter (MV3) pelo mesmo motivo. Corrigido nos 4 lugares
+   (2 deles sem impacto observável nesta decklist específica, mas
+   corrigidos por correção/consistência).
+4. **Writhing Chrysalis** — "Whenever you sacrifice another Eldrazi, put
+   a +1/+1 counter on this creature" 100% ausente (só o cast-trigger
+   "cria 2 spawn tokens" estava implementado). Eldrazi Spawn/Eldrazi
+   Scion tokens SÃO Eldrazi de verdade (tipo real da carta, confirmado
+   via Scryfall) e são sacrificados por mana o tempo todo neste motor
+   (`sac_spawns_for_mana()`, chamada todo turno) — um gatilho que deveria
+   disparar com bastante frequência num deck deste perfil nunca existia.
+   Corrigido: tag `"eldrazi"` adicionada ao token, contador agregado
+   `writhing_chrysalis_counters_total` incrementado a cada sacrifício
+   (mesma convenção do Ruins of Oran-Rief — sem P/T por criatura
+   individual neste modelo).
+5. **Spawning Bed** ("{6}, {T}, Sacrifice this land: Create three 1/1
+   colorless Eldrazi Scion creature tokens") ficou de fora da correção
+   de 2026-09-01 que resgatou Eye of Ugin/Urza's Cave/Ruins of Oran-Rief
+   do mesmo loop genérico de 34 terrenos — 100% ausente até agora.
+   Corrigido com `try_spawning_bed()`, guardado por `lands_in_play() > 7`
+   (trocar uma fonte de mana PERMANENTE por 3 fontes de uso único é uma
+   troca ruim na maioria dos casos — só ativa com excedente real de
+   terrenos, heurística documentada inline).
+
+**Bônus (mesmo padrão de alt-cost já usado pro Warp da Anticausal
+Vestige, mas achado numa carta diferente): Nulldrifter tem Evoke {2}{U}**
+— 100% ausente, sempre pagava o custo cheio de 7. Como este simulador não
+modela combate (0 ocorrências de "annihilator"/"attack" no arquivo
+inteiro antes desta rodada), o corpo 7/7 voador com annihilator nunca
+produzia nenhum efeito numérico aqui — o cast-trigger real ("draw two
+cards") dispara igual via evoke, então evocar é estritamente mais barato
+(3 mana genérica vs. 7) pelo mesmo valor modelado. Corrigido com
+`EVOKE_COST`/`evoke_mode`, sempre evocado da mão (mesma heurística greedy
+já documentada pro Warp).
+
+**Validação:** smoke test (103 nomes no `CARD_DB` incluindo tokens
+sintéticos e o Radagast de teste comparativo, 99 cartas na
+`BASE_LIBRARY`, 0 desconhecidas/duplicatas) + 5 testes unitários
+dirigidos isolados (1 por correção, todos confirmando o comportamento
+ANTES incorreto e DEPOIS correto) + `run_batch` antes/depois via
+`importlib`+`git stash` (2000 jogos, seed 6000000, turns=8) + regressão
+de 20.000 partidas (seed 9100000, turns=8), 0 exceções em ambas. Métricas
+se moveram na direção esperada sem nenhum salto inexplicável — ver
+`goldfish-log.md` pra tabela completa.
+
+---
+
+
 Pedido direto do usuário (2026-09-01): *"AGORA FAZ O QUE SEMPRE Te MANDei
 FAZER: COmpila a porra de TODAS AS CARTAS DOS DECKS UMA A UMA... cada
 carta tem que ser lida linha a linha"* — mesmo tratamento já aplicado a
