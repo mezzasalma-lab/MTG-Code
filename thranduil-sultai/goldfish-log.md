@@ -4,6 +4,70 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+### Auditoria oráculo-por-oráculo completa (4ª rodada) — 2026-09-14
+
+**Gatilho:** extensão da auditoria "oráculo-por-oráculo" pra todos os
+decks do repositório (mesmo pedido já aplicado a Beorn/Captain Storm/Rat
+King/Prismatic Bridge/Toph/Edgar Markov/Hei Bai/Maralen/Megatron/Nekusar
+nesta sessão). Ver `checklist-oraculo.md` pra detalhamento completo
+carta-a-carta. **9 gaps reais** encontrados apesar de este ser o
+simulador com mais rodadas de auditoria prévia da sessão (3 rodadas
+anteriores: 2026-08-28, 2026-08-30, 2026-09-01):
+
+1. Jarad, Golgari Lich Lord gerava mana fantasma (tag `gy_scaling` errada
+   — Jarad não tem habilidade de mana nenhuma; mesma classe de bug já
+   corrigida pra Immaculate Magistrate).
+2. Selvala, Heart of the Wilds e (3) Marwyn, the Nurturer — mana ability
+   real de cada uma (`greatest power among creatures` / `equal to
+   Marwyn's power`) caía num proxy fixo "+2", quando o arquivo já
+   rastreava os dados reais pra calcular direito (poder impresso +
+   `marwyn_counters` + bônus de anthem).
+4. Deathbloom Ritualist — fórmula de mana usava `len(graveyard)//3`
+   (cartas totais) em vez da contagem real de cartas de CRIATURA no
+   cemitério.
+5. Bloom Tender — "Vivid" (1 mana por cor entre permanentes controlados,
+   tipicamente 2-3 num deck tricolor) tratado como dork fixo de 1.
+6. Lightning Greaves — 100% ausente (mesmo bug já documentado no
+   `beorn_goldfish_v1.py` pra essa MESMA carta: haste concedido de graça
+   nunca beneficiava ninguém).
+7. Champions of the Perfect — custo adicional real ("behold an Elf and
+   exile it") nunca pago; a magia era de graça.
+8. Tyvar the Bellicose — 2ª habilidade real (contadores em criaturas
+   proporcionais à mana que produzem, 1x/turno) 100% ausente.
+9. Wirewood Lodge / Nurturing Peatland / Waterlogged Grove — 2ªs
+   habilidades reais (untap de Elfo / sacrifício por compra) nunca lidas.
+
+**Validação:** smoke test (102 nomes `CARD_DB`, 99 cartas `BASE_LIBRARY`,
+0 desconhecidas) + `run_batch` antes/depois via `git stash` (2.000 jogos,
+mesma seed 5000000) + regressão de 20.000 partidas (seed 9000000+,
+turns=10), **0 exceções** em ambas + 11 testes unitários dirigidos (1 por
+correção), todos passando:
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg spells cast | 11.20 | 11.42 |
+| Avg extra draws (todos os motores) | 11.17 | 11.83 |
+| Avg ramp em campo | 3.57 | 3.60 |
+| Avg finishers ativados | 1.50 | 1.79 |
+| % jogos com finisher até T8 | 55.4% | 59.6% |
+| Immaculate Magistrate contadores/partida | 2.94 | 3.82 |
+| Thranduil ativou habilidade emprestada da GY | 0.51/partida | 0.63/partida |
+| Prime Speaker Vannifar evoluiu criatura | 13.1% dos jogos | 14.6% dos jogos |
+| Lightning Greaves concedeu haste útil | 0% (não existia) | 12.7% dos jogos, avg 0.18/partida |
+| Wirewood Lodge reativou 2ª habilidade | 0% (não existia) | 6.3% dos jogos, avg 0.11/partida |
+| Tyvar the Bellicose contadores via mana | 0 (não existia) | avg 4.31/partida (15.4% dos jogos) |
+| Champions of the Perfect custo pago | 0 (não existia) | avg 0.15/partida |
+| Nurturing Peatland/Waterlogged Grove sac-draw | 0% (não existia) | 21.6% dos jogos, avg 0.23/partida |
+
+Todas as métricas se moveram na direção esperada (mais mana real
+disponível pros dorks escaláveis, mais finishers ativados, mais value das
+habilidades de {T} recém-corrigidas), nenhuma explodiu de forma
+inexplicável — turno de conjuração do comandante (4.56→4.58) e % de blue
+screw (5.3%→5.2%) ficaram praticamente estáveis, como esperado (nenhum
+dos 9 fixes toca essas mecânicas diretamente).
+
+---
+
 ### Auditoria linha-a-linha "compile TUDO" — 2026-09-01
 
 **Gatilho:** pedido direto do usuário ("AGORA FAZ O QUE SEMPRE Te MANDei

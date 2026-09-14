@@ -343,7 +343,19 @@ add("Thranduil, Sindarin Liege // Silvan Rally", 4, {"Creature"}, tags={"token_m
 # -------- Finishers (overruns repetiveis + drenos) --------
 add("Tyvar, the Pummeler", 3, {"Creature"}, tags={"elf", "finisher_repeatable", "self_protect"}, colors={"G"}, legendary_elf=True, activation_cost=5)
 add("Ezuri, Renegade Leader", 3, {"Creature"}, tags={"elf", "finisher_repeatable"}, colors={"G"}, legendary_elf=True, activation_cost=5)
-add("Jarad, Golgari Lich Lord", 4, {"Creature"}, tags={"elf", "finisher_drain", "sac_outlet", "gy_scaling"}, colors={"B", "G"}, legendary_elf=True, activation_cost=3)
+add("Jarad, Golgari Lich Lord", 4, {"Creature"}, tags={"elf", "finisher_drain", "sac_outlet"}, colors={"B", "G"}, legendary_elf=True, activation_cost=3)
+# BUG GRAVE corrigido 2026-09-14 (leitura linha-a-linha, mesma classe de
+# bug ja corrigida pra Immaculate Magistrate em 2026-08-30, "tag de mana
+# aplicada numa carta sem habilidade de mana nenhuma"): Jarad tinha a tag
+# "gy_scaling" -- usada por total_mana() pra dar mana a Deathbloom
+# Ritualist -- mas o oraculo real de Jarad ("Jarad gets +1/+1 for each
+# creature card in your graveyard. {1}{B}{G}, Sacrifice another creature:
+# ... . Sacrifice a Swamp and a Forest: Return this card...") NAO TEM
+# NENHUMA habilidade de mana. Jarad estava gerando mana fantasma (ate
+# len(graveyard)//3) todo turno em que ficava em campo, so por ter essa
+# tag errada. Tag removida; o "+1/+1 for each creature card in your
+# graveyard" (CDA real) implementado via effective_power() abaixo, usado
+# nos gatilhos de Gwenna/Selvala que leem poder de criatura.
 add("Tyvar the Bellicose", 4, {"Creature"}, tags={"elf", "anthem_combat", "counter_engine"}, colors={"B", "G"}, legendary_elf=True)
 add("Tyvar, Jubilant Brawler", 3, {"Planeswalker"}, tags={"gy_fill", "recursion"}, colors={"B", "G"})
 add("Kindred Summons", 7, {"Instant"}, tags={"finisher_burst", "reinforcement"}, colors={"G"})
@@ -565,6 +577,14 @@ class GameState:
     raise_the_palisade_cast: int = 0          # Raise the Palisade: conjuravel, sem devolver o proprio board (Regra 1)
     takenuma_channel_activations: int = 0     # Takenuma Channel: mill 3 + devolve criatura/planeswalker
 
+    # Achados reais 2026-09-14 (leitura linha-a-linha desta rodada, ver checklist-oraculo.md)
+    lightning_greaves_equipped_to: Optional[str] = None  # alvo atual do Equip {0} (bypassa doenca de invocacao)
+    lightning_greaves_haste_grants: int = 0               # quantas vezes o haste destravou uma habilidade no mesmo turno
+    wirewood_lodge_untaps: int = 0            # Wirewood Lodge {G},{T}: untap Elf -> reativa 1 habilidade extra/turno
+    tyvar_bellicose_mana_counters: int = 0    # Tyvar the Bellicose 2a habilidade: +1/+1 por mana produzida por criatura, 1x/turno
+    champions_of_the_perfect_costs_paid: int = 0  # custo adicional real ("behold an Elf and exile it") pago de verdade
+    horizon_land_draws: int = 0               # Nurturing Peatland/Waterlogged Grove: {1},{T},sacrifice -> draw a card
+
     def draw(self, n=1, source="draw"):
         got = 0
         lich = self.has("Underrealm Lich")
@@ -625,7 +645,65 @@ def _dork_ready(state: GameState, card: str) -> bool:
     # quantificavel: mana dorks). Achado real 2026-08-29, nunca modelado.
     if state.has("Tyvar, Jubilant Brawler"):
         return True
+    # Lightning Greaves: "Equipped creature has haste... Equip {0}." Achado
+    # real 2026-09-14: 100% ausente antes (tag "protection" nunca lida em
+    # lugar nenhum) - mesmo bug ja documentado no Beorn pra essa MESMA
+    # carta. Ver try_lightning_greaves_equip().
+    if card == state.lightning_greaves_equipped_to:
+        return True
     return state.creature_cast_turn.get(card, -1) < state.turn
+
+def effective_power(state: GameState, card: str) -> int:
+    """Poder efetivo de uma criatura, cobrindo os CDAs/estaticas reais que
+    este arquivo ja precisa comparar em gatilhos (Gwenna "power>=5"/Selvala
+    "power > outras") mas que so usavam C(card).power bruto (poder
+    IMPRESSO, populado 1x via Scryfall no import - fica congelado mesmo
+    quando o poder real da carta cresce em jogo). Achado real 2026-09-14,
+    mesma classe de bug ja documentada no Beorn pra Lumra ("CDA real
+    hardcoded em 0/2 bruto, quebrando toda comparacao de poder"):
+    - Jarad, Golgari Lich Lord: "Jarad gets +1/+1 for each creature card in
+      your graveyard" - poder impresso e' so' a base (2).
+    - Marwyn, the Nurturer: contadores reais ja rastreados em
+      state.marwyn_counters ("whenever another Elf enters, +1/+1 on
+      Marwyn") nunca eram somados ao poder dela em lugar nenhum."""
+    p = C(card).power
+    if card == "Jarad, Golgari Lich Lord":
+        p += sum(1 for c in state.graveyard if is_creature(c))
+    if card == "Marwyn, the Nurturer":
+        p += state.marwyn_counters
+    return p
+
+def greatest_power_in_play(state: GameState) -> int:
+    """Maior poder entre criaturas em campo - usado pela mana ability REAL
+    de Selvala ("{G},{T}: Add X mana... X = greatest power among creatures
+    you control"), que antes caia no mesmo balde generico "power_scaling"
+    de Marwyn com uma media fixa de 2 (achado real 2026-09-14, mesmo bug
+    documentado no Beorn pra Selvala: "subestimava MUITO o valor real -
+    X escala com counters/anthems"). Convencao: effective_power() (cobre
+    Jarad/Marwyn acima) + bonus de anthem (Elvish Archdruid/Imperious
+    Perfect, +1/+1 pra outros Elfos - mesma contagem ja usada em
+    combat_step() pro poder da Lathril) pras criaturas Elfo. Aproximacao
+    aceita: nao inclui os contadores agregados de destino ambiguo
+    (Immaculate Magistrate/Agatha's Cauldron/Thranduil's Company -
+    "target creature", nao rastreado por criatura individual neste
+    motor)."""
+    creatures = [c for c in state.battlefield if is_creature(c)]
+    if not creatures:
+        return 0
+    anthem_bonus = sum(1 for c in state.battlefield if has_tag(c, "anthem"))
+    return max(effective_power(state, c) + (anthem_bonus if is_elf(c) else 0) for c in creatures)
+
+def distinct_permanent_colors(state: GameState) -> int:
+    """Numero de cores distintas entre os permanentes NAO-terreno
+    controlados - usado pela mana ability real do Bloom Tender ("Vivid -
+    {T}: For each color among permanents you control, add one mana of
+    that color"). Terrenos sao incolores (cor de permanente != cor que ele
+    produz) e nao contam."""
+    colors = set()
+    for c in state.battlefield:
+        if not is_land(c):
+            colors |= C(c).colors
+    return len(colors)
 
 def total_mana(state: GameState) -> int:
     total = 0
@@ -647,10 +725,52 @@ def total_mana(state: GameState) -> int:
             # restricao "spend only on creature spells/abilities" nao e'
             # modelada (deck e' quase todo criatura, baixo impacto real).
             total += 2
-        elif has_tag(card, "power_scaling"):
-            total += 2  # aproximacao: poder medio do board nesses turnos
+        elif card == "Selvala, Heart of the Wilds":
+            # Achado real 2026-09-14 (ver greatest_power_in_play acima):
+            # "-1" e' o {G} que a propria ativacao consome.
+            total += max(0, greatest_power_in_play(state) - 1)
+        elif card == "Marwyn, the Nurturer":
+            # Achado real 2026-09-14: "{T}: Add G equal to Marwyn's power" -
+            # sem custo extra de mana (so' {T}).
+            total += effective_power(state, card)
+        elif card == "Bloom Tender":
+            # Achado real 2026-09-14 (ver distinct_permanent_colors acima):
+            # "Vivid" produz 1 mana POR COR entre os permanentes
+            # controlados, nao 1 fixo (media MUITO baixa num deck tricolor
+            # que quase sempre tem 2-3 cores em permanentes por T3+).
+            total += distinct_permanent_colors(state)
         elif has_tag(card, "gy_scaling"):
-            total += max(1, len(state.graveyard) // 3)
+            # Achado real 2026-09-14: formula real e' "numero de CARTAS DE
+            # CRIATURA no cemiterio" (Deathbloom Ritualist), nao um proxy
+            # de "cartas totais no cemiterio // 3" (cemiterio tem terrenos/
+            # sorceries tambem, nao so' criaturas).
+            total += max(1, sum(1 for c in state.graveyard if is_creature(c)))
+        elif has_tag(card, "ramp"):
+            total += 1
+    return total
+
+def creature_mana_produced(state: GameState) -> int:
+    """Soma da mana produzida so' por CRIATURAS (dorks) neste turno -
+    espelha os ramos relevantes de total_mana() acima, filtrado a
+    criaturas prontas (sem doenca de invocacao). Usado pela 2a habilidade
+    real do Tyvar the Bellicose (ver try_tyvar_bellicose_counters)."""
+    total = 0
+    for card in state.battlefield:
+        if "Creature" not in C(card).types or not _dork_ready(state, card):
+            continue
+        if has_tag(card, "elf_scaling"):
+            elves = sum(1 for c in state.battlefield if is_elf(c))
+            total += max(1, elves)
+        elif card == "Gwenna, Eyes of Gaea":
+            total += 2
+        elif card == "Selvala, Heart of the Wilds":
+            total += max(0, greatest_power_in_play(state) - 1)
+        elif card == "Marwyn, the Nurturer":
+            total += effective_power(state, card)
+        elif card == "Bloom Tender":
+            total += distinct_permanent_colors(state)
+        elif has_tag(card, "gy_scaling"):
+            total += max(1, sum(1 for c in state.graveyard if is_creature(c)))
         elif has_tag(card, "ramp"):
             total += 1
     return total
@@ -728,8 +848,27 @@ def effective_mv(state: GameState, card: str) -> int:
         return 0
     return cost
 
+def _champions_of_the_perfect_exile_candidate(state: GameState) -> Optional[str]:
+    # Champions of the Perfect: "As an additional cost to cast this spell,
+    # behold an Elf and exile it (exile an Elf you control or an Elf card
+    # from your hand)." Achado real 2026-09-14: custo adicional 100%
+    # ausente antes (a magia era conjurada de graca sem nunca pagar o
+    # Elfo exigido). Preferencia: exila da MAO (nao gasta um corpo em
+    # campo) se houver outro Elfo la, senao exila o Elfo mais fraco em
+    # campo (token/dork, nao um lendario).
+    hand_elf = next((c for c in state.hand if is_elf(c) and c != "Champions of the Perfect"), None)
+    if hand_elf:
+        return hand_elf
+    bf_elves = [c for c in state.battlefield if is_elf(c) and is_creature(c)]
+    if bf_elves:
+        bf_elves.sort(key=lambda c: (C(c).is_legendary_elf, C(c).mv))  # nao-lendario/barato primeiro
+        return bf_elves[0]
+    return None
+
 def can_cast(state: GameState, card: str) -> bool:
     if remaining_mana(state) < effective_mv(state, card):
+        return False
+    if card == "Champions of the Perfect" and _champions_of_the_perfect_exile_candidate(state) is None:
         return False
     elf_spell = is_elf(card) and "Creature" in C(card).types
     for color in C(card).colors:
@@ -954,6 +1093,129 @@ def try_eladamri_library_top(state: GameState, log: List[Dict]):
         log.append({"trigger": "eladamri_library_top_reveal", "card": top, "turn": state.turn})
 
 
+# Habilidades de {T} de criatura que fazem sentido reativar via
+# Wirewood Lodge/Lightning Greaves - todas ja tem funcao dedicada,
+# chamada normalmente so 1x/turno em main_phase (mesma logica do {T} real
+# de cada uma).
+_TAP_ABILITY_TAGS = {"tutor", "tutor_passive", "sac_outlet", "gy_scaling", "power_scaling"}
+_TAP_ABILITY_NAMES = {"Imperious Perfect", "Immaculate Magistrate", "Agatha's Soul Cauldron"}
+
+def _has_reactivatable_tap_ability(card: str) -> bool:
+    return (C(card).tags & _TAP_ABILITY_TAGS) or card in _TAP_ABILITY_NAMES
+
+def try_lightning_greaves_equip(state: GameState, log: List[Dict]):
+    """Lightning Greaves, real: "Equipped creature has haste and shroud.
+    Equip {0}." Achado real 2026-09-14: tag "protection" nunca lida em
+    lugar nenhum -- nem o Equip {0} nem o haste concedido tinham qualquer
+    efeito (mesmo bug ja documentado no arquivo irmao beorn_goldfish_v1.py
+    pra essa MESMA carta: "o haste que ela concede de graca nunca
+    beneficiava nenhuma criatura"). Equip {0} e' de graca e "activate only
+    as a sorcery" sem limite de vezes por turno -- move pra melhor alvo a
+    cada turno: prioriza uma criatura conjurada NESTE turno (doenca de
+    invocacao real) que tenha uma habilidade de {T} relevante ja
+    modelada neste arquivo, destravando o uso dela no mesmo turno em que
+    entrou. Shroud (a outra metade do texto) e' protecao pura, sem efeito
+    numerico modelavel sem remocao de oponente (mesma classe de N/A ja
+    documentada pra Heroic Intervention/Iron-Shield Elf)."""
+    if "Lightning Greaves" not in state.battlefield:
+        return
+    sick_targets = [c for c in state.battlefield
+                    if is_creature(c) and state.creature_cast_turn.get(c, -1) == state.turn
+                    and _has_reactivatable_tap_ability(c)]
+    if not sick_targets:
+        state.lightning_greaves_equipped_to = None
+        return
+    target = sick_targets[0]
+    if state.lightning_greaves_equipped_to != target:
+        state.lightning_greaves_equipped_to = target
+        state.lightning_greaves_haste_grants += 1
+        log.append({"trigger": "lightning_greaves_equip", "target": target, "turn": state.turn})
+
+
+def try_wirewood_lodge_untap(state: GameState, log: List[Dict]):
+    """Wirewood Lodge, 2a habilidade real: "{G}, {T}: Untap target Elf."
+    Achado real 2026-09-14: so' o "{T}: Add {C}" generico estava coberto
+    (via produces=set() + is_land() em total_mana()) -- essa segunda linha
+    nunca foi lida em lugar nenhum. Efeito real: permite reativar UMA
+    habilidade de {T} de Elfo (Fauna Shaman/Immaculate Magistrate/Prime
+    Speaker Vannifar/Eladamri/Imperious Perfect - todas ja tem funcao
+    dedicada em main_phase, chamada so' 1x/turno) uma segunda vez no mesmo
+    turno, pagando {G}. Este motor nao rastreia estado tapped/untapped por
+    criatura individual (limitacao estrutural documentada em varios
+    lugares do arquivo) -- aproximacao: reserva o {G}, tenta reativar em
+    ordem de prioridade a PRIMEIRA das 5 funcoes que ache uma acao real
+    disponivel (cada uma ja faz sua propria checagem completa de
+    pre-condicoes); se nenhuma achar nada pra fazer, devolve o {G}
+    reservado (nao paga por um alvo que nao existe)."""
+    if "Wirewood Lodge" not in state.battlefield:
+        return
+    if remaining_mana(state) < 1 or color_sources(state, "G") < 1:
+        return
+    reactivate_order = [
+        ("fauna_shaman_tutors", try_fauna_shaman),
+        ("immaculate_magistrate_counters", try_immaculate_magistrate),
+        ("vannifar_evolves", try_prime_speaker_vannifar),
+        ("eladamri_free_creatures", try_eladamri),
+        ("imperious_perfect_tokens", try_imperious_perfect),
+    ]
+    reserved = state.mana_spent_this_turn
+    state.mana_spent_this_turn += 1  # reserva o {G} ANTES, pra funcao reativada nao gastar essa mesma mana de novo
+    for counter_name, fn in reactivate_order:
+        before = getattr(state, counter_name)
+        fn(state, log)
+        if getattr(state, counter_name) != before:
+            state.wirewood_lodge_untaps += 1
+            log.append({"trigger": "wirewood_lodge_untap", "reactivated": fn.__name__, "turn": state.turn})
+            return
+    state.mana_spent_this_turn = reserved  # nenhum alvo real - devolve o {G}
+
+
+def try_tyvar_bellicose_counters(state: GameState, log: List[Dict]):
+    """Tyvar the Bellicose, 2a habilidade real (estatica concedida a toda
+    criatura que voce controla): "Whenever a mana ability of this creature
+    resolves, put a number of +1/+1 counters on it equal to the amount of
+    mana this creature produced. This ability triggers only once each
+    turn." Achado real 2026-09-14: so' a 1a habilidade (deathtouch em
+    ataque) estava modelada (combat_step) -- este motor de contadores
+    real, disparando toda vez que um dork ativa, nunca tinha efeito
+    nenhum. Aproximacao: soma agregada (mesmo padrao ja usado pra Marwyn/
+    Immaculate Magistrate/Agatha's Cauldron neste arquivo - sem rastrear
+    contador por criatura individual); o "1x/turno" e' por CRIATURA, e
+    como a mana de cada dork ja e' contabilizada no maximo 1x por turno
+    neste motor (mesma premissa de _dork_ready), a soma agregada ja
+    respeita esse limite por natureza."""
+    if "Tyvar the Bellicose" not in state.battlefield:
+        return
+    produced = creature_mana_produced(state)
+    if produced <= 0:
+        return
+    state.tyvar_bellicose_mana_counters += produced
+    log.append({"trigger": "tyvar_bellicose_mana_counters", "amount": produced, "turn": state.turn})
+
+
+def try_horizon_land_sac(state: GameState, log: List[Dict]):
+    """Nurturing Peatland / Waterlogged Grove, 2a habilidade real: "{1},
+    {T}, Sacrifice this land: Draw a card." Achado real 2026-09-14: so' o
+    "{T}, pay 1 life: Add [cor] or [cor]" generico estava modelado (via
+    produces() - vida nunca e' rastreada neste arquivo, mesma premissa ja
+    usada pro dano de Underground River/Yavimaya Coast). Canopy land
+    classica: so' sacrifica quando ja' ha' terrenos de sobra em campo (7+,
+    land flood real) e mana disponivel pra pagar o {1} - nunca corta a
+    propria base de mana enquanto ela ainda importa."""
+    if remaining_mana(state) < 1:
+        return
+    if sum(1 for c in state.battlefield if is_land(c)) < 7:
+        return
+    for name in ("Nurturing Peatland", "Waterlogged Grove"):
+        if name in state.battlefield:
+            state.battlefield.remove(name)
+            state.mana_spent_this_turn += 1
+            got = state.draw(1, source=f"{name} sac draw")
+            state.horizon_land_draws += got
+            log.append({"trigger": "horizon_land_sac_draw", "card": name, "turn": state.turn})
+            return  # 1 por turno (mesma premissa de "utilidade de terreno" ja usada no resto do arquivo)
+
+
 def main_phase(state: GameState, log: List[Dict]):
     if not state.commander_in_play and state.turn >= 3:
         if commander_can_be_cast(state):
@@ -979,6 +1241,8 @@ def main_phase(state: GameState, log: List[Dict]):
         if not state.commander_in_play and state.turn >= 3 and commander_can_be_cast(state):
             _resolve_cast(state, COMMANDER, log, from_hand=False)
 
+    try_lightning_greaves_equip(state, log)
+
     # Ativa finishers repetiveis se sobrar mana e houver board relevante
     activate_finishers(state, log)
     try_trystan_transform(state, log)
@@ -989,6 +1253,8 @@ def main_phase(state: GameState, log: List[Dict]):
     try_prime_speaker_vannifar(state, log)
     try_eladamri(state, log)
     try_elrond_flicker(state, log)
+    try_wirewood_lodge_untap(state, log)
+    try_tyvar_bellicose_counters(state, log)
 
 def _creature_cast_engines_trigger(state: GameState, card: str, log: List[Dict]):
     # Beast Whisperer / Champions of the Perfect: "whenever you cast a creature spell, draw a card".
@@ -1011,7 +1277,7 @@ def _creature_cast_engines_trigger(state: GameState, card: str, log: List[Dict])
     # Gwenna: "whenever you cast a creature spell with power 5 or greater, put
     # a +1/+1 counter on Gwenna and untap it." So a parte do contador tem
     # numero acumulavel (untap repetido nao muda nada).
-    if state.has("Gwenna, Eyes of Gaea") and card != "Gwenna, Eyes of Gaea" and C(card).power >= 5:
+    if state.has("Gwenna, Eyes of Gaea") and card != "Gwenna, Eyes of Gaea" and effective_power(state, card) >= 5:
         for i in range(times_rt):
             state.gwenna_counters += 1
         if times_rt == 2:
@@ -1023,9 +1289,9 @@ def _creature_cast_engines_trigger(state: GameState, card: str, log: List[Dict])
     # aqui ainda NAO tem "card" (hook roda antes do append), entao "outras
     # criaturas" = state.battlefield no momento desta checagem.
     if state.has("Selvala, Heart of the Wilds") and card != "Selvala, Heart of the Wilds":
-        others_power = [C(c).power for c in state.battlefield if is_creature(c)]
+        others_power = [effective_power(state, c) for c in state.battlefield if is_creature(c)]
         max_other = max(others_power) if others_power else 0
-        if C(card).power > max_other:
+        if effective_power(state, card) > max_other:
             for i in range(times_rt):
                 state.draw(1, source="Selvala ETB draw" if i == 0 else "Selvala ETB draw (Roaming Throne dobra)")
                 state.selvala_draws += 1
@@ -1096,6 +1362,17 @@ def _resolve_cast(state: GameState, card: str, log: List[Dict], from_hand: bool)
 
 def cast_spell(state: GameState, card: str, log: List[Dict]):
     state.hand.remove(card)
+
+    if card == "Champions of the Perfect":
+        # Custo adicional real pago de verdade (ver _champions_of_the_perfect_exile_candidate/can_cast).
+        exiled = _champions_of_the_perfect_exile_candidate(state)
+        if exiled in state.hand:
+            state.hand.remove(exiled)
+        elif exiled in state.battlefield:
+            state.battlefield.remove(exiled)
+        state.champions_of_the_perfect_costs_paid += 1
+        log.append({"trigger": "champions_of_the_perfect_exile_cost", "exiled": exiled, "turn": state.turn})
+
     _creature_cast_engines_trigger(state, card, log)
     state.spells_cast += 1
     state.mana_spent_this_turn += effective_mv(state, card)
@@ -1826,6 +2103,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
 
     try_use_own_interaction(state, log)
     main_phase(state, log)
+    try_horizon_land_sac(state, log)
     combat_step(state, log)
     apply_rhystic_study(state, log)
     state.cleanup_hand_size()
@@ -1935,6 +2213,11 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "kindred_dominance_cast": state.kindred_dominance_cast,
         "raise_the_palisade_cast": state.raise_the_palisade_cast,
         "takenuma_channel_activations": state.takenuma_channel_activations,
+        "lightning_greaves_haste_grants": state.lightning_greaves_haste_grants,
+        "wirewood_lodge_untaps": state.wirewood_lodge_untaps,
+        "tyvar_bellicose_mana_counters": state.tyvar_bellicose_mana_counters,
+        "champions_of_the_perfect_costs_paid": state.champions_of_the_perfect_costs_paid,
+        "horizon_land_draws": state.horizon_land_draws,
     }
 
 def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=71000):
@@ -2058,6 +2341,18 @@ def run_batch(n=500, turns=8, out_jsonl="thranduil_v1_runs.jsonl", seed_base=710
     print(f"Raise the Palisade conjurado (sem devolver proprio board, Regra 1) em {100*sum(1 for r in results if r['raise_the_palisade_cast']>0)/n:.1f}% dos jogos")
     tk_games = [r for r in results if r["takenuma_channel_activations"] > 0]
     print(f"Takenuma Channel ativado em {100*len(tk_games)/n:.1f}% dos jogos, avg {avg('takenuma_channel_activations'):.2f} por partida")
+
+    print()
+    print("--- Achados 2026-09-14 (nova rodada) ---")
+    lg_games = [r for r in results if r["lightning_greaves_haste_grants"] > 0]
+    print(f"Lightning Greaves concedeu haste util em {100*len(lg_games)/n:.1f}% dos jogos, avg {avg('lightning_greaves_haste_grants'):.2f} equipes/partida")
+    wl_games = [r for r in results if r["wirewood_lodge_untaps"] > 0]
+    print(f"Wirewood Lodge reativou uma 2a habilidade de Elfo em {100*len(wl_games)/n:.1f}% dos jogos, avg {avg('wirewood_lodge_untaps'):.2f} por partida")
+    tb_games = [r for r in results if r["tyvar_bellicose_mana_counters"] > 0]
+    print(f"Tyvar the Bellicose distribuiu contadores via mana produzida em {100*len(tb_games)/n:.1f}% dos jogos, avg {avg('tyvar_bellicose_mana_counters'):.2f} contadores/partida")
+    print(f"Avg custo adicional (exilar Elfo) pago por Champions of the Perfect: {avg('champions_of_the_perfect_costs_paid'):.2f}")
+    hl_games = [r for r in results if r["horizon_land_draws"] > 0]
+    print(f"Nurturing Peatland/Waterlogged Grove sacrificado por compra (land flood) em {100*len(hl_games)/n:.1f}% dos jogos, avg {avg('horizon_land_draws'):.2f} por partida")
 
     recursion_vals = [r["oversold_cemetery_returns"] + r["tyvar_jubilant_reanimations"]
                        + r["trystans_command_gy_returns"] + r["awaken_honored_dead_returns"]
