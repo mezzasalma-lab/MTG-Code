@@ -242,7 +242,17 @@ bear_defs = [
     ("Dancing from Dark to Dawn", 5, {"Enchantment"}, {"bear_maker","counters_engine","landfall"}),
     ("Little Bear", 3, {"Creature"}, {"bear","counters_engine","untap"}),
     ("Maskwood Nexus", 4, {"Artifact"}, {"changeling_global","token_maker"}),
-    ("Roaming Throne", 4, {"Artifact"}, {"anthem_tribal","double_trigger"}),
+    # Achado real 2026-09-14 (usuario perguntou se Roaming Throne tambem dobra
+    # gatilhos de OUTROS Ursos, nao so' da Beorn): oraculo real confirma que
+    # Roaming Throne e' "Artifact CREATURE - Golem" (nao so' artefato) e "As
+    # this creature enters, choose a creature type. This creature is the
+    # chosen type in addition to its other types." - ela mesma se torna um
+    # Urso (mesma convencao ja documentada de sempre escolher Bear). ctype
+    # antigo {"Artifact"} e tags sem nenhum marcador de Bear a excluiam de
+    # bears_in_play() (o proprio "controle 3+ Ursos" da Beorn) e de qualquer
+    # outro lugar que conte Ursos - ela e' uma 4a fonte "de graca" sempre
+    # presente quando resolve, nao so' um multiplicador de gatilho de outros.
+    ("Roaming Throne", 4, {"Artifact", "Creature"}, {"anthem_tribal","double_trigger","bear_type"}),
     # Achado real 2026-09-14: "changeling" pertence aos TOKENS que ela cria
     # ("...tokens with changeling"), nao ao proprio encantamento (que nunca
     # e' criatura) - a tag estava na carta errada, o que fazia is_bear()
@@ -728,6 +738,32 @@ def bears_in_play(state: GameState) -> int:
         # entao precisa de checagem explicita aqui (ver try_beorns_hospitality_animate).
         n += 1
     return n
+
+def bear_trigger_times(state: GameState, source_card: str) -> int:
+    """Roaming Throne: "If a triggered ability of another creature you
+    control of the chosen type [Bear] triggers, it triggers an additional
+    time." Achado real 2026-09-14 (usuario perguntou se ela dobra os
+    gatilhos de OUTROS Ursos, nao so' o combate da Beorn) - antes dessa
+    correcao, a dobra so' era aplicada manualmente pro combate da Beorn e
+    pro ETB da Ayula (os 2 unicos casos ja escritos a mao). Qualquer OUTRA
+    criatura que vira Bear ao longo do jogo (`converted_to_bear`, pelo
+    proprio combate da Beorn) e tem sua propria habilidade disparada
+    (Little Bear ETB, Forgotten Ancient/Tireless Tracker/Beast Whisperer/
+    Selvala/Ohran/Toski se forem convertidas) tambem deveria dobrar - e
+    nao dobrava, por nao existir um ponto central pra essa checagem. Esta
+    funcao centraliza: a FONTE da habilidade (nao o alvo/gatilho-condicao)
+    precisa ser uma criatura E ser um Urso; fontes nao-criatura (The Great
+    Henge, Chronicle of Victory, Garruk's Uprising, Tribute to the World
+    Tree, Patchwork Banner - todos Artifact/Enchantment) nunca dobram,
+    mesmo escolhendo Bear como tipo, porque o oraculo exige "another
+    CREATURE"."""
+    if not state.roaming_throne_active():
+        return 1
+    if not is_creature(source_card):
+        return 1
+    if not is_bear(state, source_card):
+        return 1
+    return 2
 
 # Achado real 2026-09-01 (leitura linha-a-linha do oraculo completo): Beorn
 # the Fierce ("Other Bears you control get +2/+2"), The Chronicle of Victory
@@ -1234,7 +1270,7 @@ def on_creature_enters(state: GameState, card: str, log: List[Dict], nontoken: b
     # dobra sob Roaming Throne, exatamente como ja acontecia so' pro combate da
     # Beorn (unico caso antes coberto).
     if state.has("Ayula, Queen Among Bears") and card != "Ayula, Queen Among Bears" and is_bear(state, card):
-        times = 2 if state.roaming_throne_active() else 1
+        times = bear_trigger_times(state, "Ayula, Queen Among Bears")
         if times == 2:
             state.roaming_throne_doublings += 1
         state.counters_on_board += 2 * times
@@ -1273,15 +1309,28 @@ def on_creature_enters(state: GameState, card: str, log: List[Dict], nontoken: b
                         if is_creature(c) and c != card]
         others_max = max(others_power) if others_power else 0
         if power > others_max:
-            state.draw(1, source="Selvala draw")
+            # Achado real 2026-09-14: se a propria Selvala ja tiver sido
+            # convertida em Urso por um combate anterior da Beorn
+            # (`converted_to_bear`), o proprio gatilho DELA dobra sob
+            # Roaming Throne, mesma logica ja aplicada ao combate da Beorn
+            # e ao ETB da Ayula (ver bear_trigger_times()).
+            times = bear_trigger_times(state, "Selvala, Heart of the Wilds")
+            if times == 2:
+                state.roaming_throne_doublings += 1
+            state.draw(times, source="Selvala draw")
 
 def on_spell_cast_effects(state: GameState, card: str, log: List[Dict]):
     """Gatilhos de 'quando voce conjura um spell/criatura/spell verde/do tipo X'."""
     is_creature_spell = "Creature" in C(card).types
 
     # Beast Whisperer: "Whenever you cast a creature spell, draw a card."
+    # Achado real 2026-09-14: dobra sob Roaming Throne se a propria Beast
+    # Whisperer ja tiver sido convertida em Urso (ver bear_trigger_times()).
     if state.has("Beast Whisperer") and is_creature_spell and card != "Beast Whisperer":
-        state.draw(1, source="Beast Whisperer")
+        times = bear_trigger_times(state, "Beast Whisperer")
+        if times == 2:
+            state.roaming_throne_doublings += 1
+        state.draw(times, source="Beast Whisperer")
 
     # Necklace of Girion: "Whenever you cast a green spell... put a +1/+1 counter."
     # Spell verde = tem pip {G} no custo (g_pips >= 1), nao e terreno.
@@ -1301,9 +1350,14 @@ def on_spell_cast_effects(state: GameState, card: str, log: List[Dict]):
     # Forgotten Ancient: "Whenever a player casts a spell, you may put a +1/+1
     # counter on this creature." Conta os seus proprios casts aqui; casts dos
     # oponentes usam a mesma premissa agregada da Managorger Hydra (+2/turno no
-    # fim do seu turno, ver play_turn).
+    # fim do seu turno, ver play_turn). Achado real 2026-09-14: dobra sob
+    # Roaming Throne se o proprio Forgotten Ancient ja tiver sido convertido
+    # em Urso (ver bear_trigger_times()).
     if state.has("Forgotten Ancient") and card != "Forgotten Ancient":
-        state.counters_on_board += 1
+        fa_times = bear_trigger_times(state, "Forgotten Ancient")
+        if fa_times == 2:
+            state.roaming_throne_doublings += 1
+        state.counters_on_board += fa_times
 
     # Defiler of Vigor: "Whenever you cast a green permanent spell, put a +1/+1
     # counter on each creature you control." Gap 100% ausente ate essa correcao -
@@ -1313,8 +1367,13 @@ def on_spell_cast_effects(state: GameState, card: str, log: List[Dict]):
     # ANTES do spell resolver (a nova criatura ainda nao entrou nesse momento).
     if state.has("Defiler of Vigor") and card != "Defiler of Vigor" and C(card).g_pips >= 1 \
             and not ({"Instant", "Sorcery"} & C(card).types):
+        # Achado real 2026-09-14: Defiler of Vigor E' criatura - dobra sob
+        # Roaming Throne se ela mesma ja tiver sido convertida em Urso.
         creatures_now = sum(1 for c in state.battlefield if is_creature(c))
-        state.counters_on_board += creatures_now
+        dov_times = bear_trigger_times(state, "Defiler of Vigor")
+        if dov_times == 2:
+            state.roaming_throne_doublings += 1
+        state.counters_on_board += creatures_now * dov_times
 
 def on_land_enters(state: GameState, card: str, log: List[Dict]):
     """Landfall - chamado tanto no land-drop normal quanto em terrenos buscados por
@@ -1354,8 +1413,15 @@ def try_crack_clues(state: GameState, log: List[Dict]):
     while state.clues > 0 and remaining_mana(state) >= 2:
         state.clues -= 1
         state.mana_spent_this_turn += 2
+        # A compra e' habilidade do proprio token Clue (artefato, nunca dobra por
+        # Roaming Throne). O contador e' "whenever you sacrifice a Clue, put a
+        # +1/+1 counter on THIS creature" - fonte e' a Tireless Tracker, dobra se
+        # ela ja tiver sido convertida em Urso (achado real 2026-09-14).
         state.draw(1, source="Tireless Tracker clue")
-        state.counters_on_board += 1
+        tt_times = bear_trigger_times(state, "Tireless Tracker")
+        if tt_times == 2:
+            state.roaming_throne_doublings += 1
+        state.counters_on_board += tt_times
         log.append({"action": "crack_clue", "turn": state.turn})
 
 def try_ayula_influence(state: GameState, log: List[Dict]):
@@ -1741,8 +1807,13 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
         # Bear, put a +1/+1 counter on it." A parte de untap nao tem efeito
         # modelavel nesse sim (sem rastreio de status tapped por criatura) - so a
         # parte de contador e representada, condicionada a existir outro Bear em campo.
+        # Little Bear e' ela mesma um Bear (nato) - o proprio ETB dela dobra sob
+        # Roaming Throne (achado real 2026-09-14, ver bear_trigger_times()).
         if any(is_bear(state, c) for c in state.battlefield if c != "Little Bear"):
-            state.counters_on_board += 1
+            lb_times = bear_trigger_times(state, "Little Bear")
+            if lb_times == 2:
+                state.roaming_throne_doublings += 1
+            state.counters_on_board += lb_times
 
     if card == "Shamanic Revelation":
         # Achado real: oraculo literal e' "draw a card for each creature you
@@ -1811,7 +1882,7 @@ def combat_step(state: GameState, log: List[Dict]):
     # verdade (nao doente de invocacao no turno em que foi conjurada). Correcao:
     # antes disparava mesmo no turno do cast, o que e ilegal (CR 302.6).
     if state.commander_in_play and can_attack(state, COMMANDER):
-        times = 2 if state.roaming_throne_active() else 1
+        times = bear_trigger_times(state, COMMANDER)
         if times == 2:
             state.roaming_throne_doublings += 1
         for _ in range(times):
@@ -1848,15 +1919,22 @@ def combat_step(state: GameState, log: List[Dict]):
     # nao modela bloqueadores do oponente. Se Ohran E Toski estao ambos em campo, o
     # gatilho dispara 2x por criatura atacante (2 fontes independentes do mesmo
     # gatilho, uma pra cada carta).
-    draw_sources = sum(1 for src in ("Ohran Frostfang", "Toski, Bearer of Secrets") if state.has(src))
-    if draw_sources:
+    # Achado real 2026-09-14: cada fonte dobra SEPARADAMENTE sob Roaming Throne
+    # se ELA MESMA ja tiver sido convertida em Urso (Ohran/Toski nao sao Bears
+    # natos) - por isso soma bear_trigger_times() por fonte em vez de um
+    # multiplicador fixo "2 fontes = x2" (uma pode estar convertida e a outra
+    # nao, ver bear_trigger_times()).
+    draw_sources_present = [src for src in ("Ohran Frostfang", "Toski, Bearer of Secrets") if state.has(src)]
+    if draw_sources_present:
+        state.roaming_throne_doublings += sum(1 for src in draw_sources_present if bear_trigger_times(state, src) == 2)
+        per_attacker = sum(bear_trigger_times(state, src) for src in draw_sources_present)
         attackers = [c for c in state.battlefield if can_attack(state, c)]
         if attackers:
-            amount = len(attackers) * draw_sources
+            amount = len(attackers) * per_attacker
             state.draw(amount, source="Ohran Frostfang/Toski combat damage")
             state.combat_damage_draws += amount
             log.append({"trigger": "combat_damage_draw", "attackers": len(attackers),
-                        "sources": draw_sources, "turn": state.turn})
+                        "sources": len(draw_sources_present), "turn": state.turn})
 
 # =========================================================
 # TURN STRUCTURE
@@ -1917,7 +1995,12 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     if state.has("Forgotten Ancient"):
         # Mesma premissa da Managorger: 2 spells de oponentes por turno em media
         # tambem colocam contador na Forgotten Ancient (gatilho e "a player", nao "you").
-        state.counters_on_board += 2
+        # Mesma fonte do achado 2026-09-14 em on_spell_cast_effects - dobra sob
+        # Roaming Throne se convertida em Urso (bear_trigger_times()).
+        fa_times2 = bear_trigger_times(state, "Forgotten Ancient")
+        if fa_times2 == 2:
+            state.roaming_throne_doublings += 1
+        state.counters_on_board += 2 * fa_times2
 
     if state.managorger_in_play:
         # Premissa explicita (nao e dado real): 2 spells de oponentes por turno em media,

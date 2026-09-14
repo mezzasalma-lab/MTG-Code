@@ -1,5 +1,72 @@
 # Checklist cláusula-a-cláusula — Beorn the Fierce
 
+## Achado real 2026-09-14 (usuário perguntou se Roaming Throne dobra os gatilhos de OUTROS Ursos, não só o combate da Beorn)
+
+Oráculo real confirmado via Scryfall: *"Roaming Throne — Ward {2}. As
+this creature enters, choose a creature type. This creature is the
+chosen type in addition to its other types. If a triggered ability of
+another creature you control of the chosen type triggers, it triggers
+an additional time."* Dois pontos importantes que o código anterior não
+refletia:
+
+1. **Roaming Throne é "Artifact CREATURE — Golem"**, não só artefato —
+   e "This creature is the chosen type" significa que **ela mesma se
+   torna um Urso** (mesma convenção já documentada de sempre escolher
+   Bear). `CARD_DB` tinha ctype `{"Artifact"}` (faltando `"Creature"`) e
+   nenhuma tag de Bear — Roaming Throne nunca contava pra
+   `bears_in_play()` (o próprio "controle 3+ Ursos" da Beorn), apesar de
+   ser uma 4ª fonte de Urso sempre presente quando ela resolve. Corrigido:
+   ctype agora `{"Artifact","Creature"}` + tag `bear_type`.
+2. **A dobra vale pra QUALQUER criatura Urso, não só Beorn/Ayula.** O
+   código só tinha a dobra escrita a mão pra esses 2 casos (os únicos já
+   cobertos antes). Mas o combate da própria Beorn converte uma criatura
+   NOVA em Urso a cada combate (`converted_to_bear`, crescente ao longo
+   do jogo) — qualquer criatura convertida que tenha sua PRÓPRIA
+   habilidade disparada (Selvala, Beast Whisperer, Forgotten Ancient,
+   Defiler of Vigor, Tireless Tracker, Ohran Frostfang, Toski) deveria
+   também dobrar a partir do momento em que é convertida, e não dobrava
+   — não existia um ponto central pra essa checagem.
+
+**Corrigido:** nova função central `bear_trigger_times(state, source_card)`
+— retorna 2 só se Roaming Throne estiver ativa E a fonte for uma criatura
+E essa criatura for um Urso (natural, Changeling, ou convertida); 1 em
+qualquer outro caso. Aplicada em TODOS os gatilhos criatura-fonte do
+arquivo que geram compra/contador: combate da Beorn e ETB da Ayula
+(refatorados pra usar a mesma função, comportamento inalterado pra
+esses 2), Selvala (draw), Beast Whisperer (cast-draw), Forgotten Ancient
+(2 pontos: contador por spell próprio + proxy de spells de oponente),
+Defiler of Vigor (contador por spell verde), Tireless Tracker (contador
+ao cracar Clue — a COMPRA em si é do próprio token Clue, artefato, nunca
+dobra), Little Bear (ETB, ela é Urso nato). Conferidas e confirmadas
+CORRETAMENTE sem dobra (fonte não é criatura, mesmo escolhendo Bear como
+tipo): The Great Henge, Chronicle of Victory, Garruk's Uprising, Tribute
+to the World Tree, Patchwork Banner, Necklace of Girion, Dancing from
+Dark to Dawn — todos Artifact/Enchantment.
+
+**Deferido, documentado (não corrigido):** Beorn's Hospitality, quando
+animada em criatura Bear ({5}{G}{G}), tem seu próprio gatilho de landfall
+que também deveria dobrar sob Roaming Throne — mas o arquivo trata
+`is_creature()` como uma checagem ESTÁTICA do `CARD_DB` (Beorn's
+Hospitality permanece ctype Enchantment o tempo todo, só um campo separado
+`beorns_hospitality_animated` rastreia a animação e é tratado manualmente
+em `bears_in_play()`). Modelar isso corretamente exigiria tornar
+`is_creature()` dinâmico ou adicionar mais um caso especial só pra essa
+combinação (animar por 7 mana + ter Roaming Throne + ter mais 1 land
+drop no mesmo turno) — cenário raro o bastante pra ser desproporcional
+ao resto desta correção.
+
+**Validação:** 6 testes unitários dirigidos (1 por site: Roaming Throne
+conta como Urso sozinha; Selvala/Beast Whisperer convertidas dobram;
+Little Bear e Forgotten Ancient dobram; Ohran convertido dobra só a
+contribuição dele, Toski não-convertido fica em 1x) — todos passando.
+20.000 partidas de regressão (seed 8900000+), **0 exceções**. Batch de
+2.000 partidas antes/depois (mesma seed 8800000): `extra_draws`
+18,08→19,25; `mão final` 9,31→9,75; `bear_count_final` 7,79→8,07;
+`roaming_throne_doublings` 0,36→0,91 (essa métrica agora conta TODOS os
+eventos de dobra, não só Beorn/Ayula como antes).
+
+---
+
 ## Achado real 2026-09-14 (usuário apontou os demais motores de draw: Great Henge, Selvala, Toski, Tribute to the World Tree)
 
 Usuário pediu confirmação de que esses 4 também estão certos, além de

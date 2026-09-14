@@ -1162,6 +1162,29 @@ reais, não bugs que inflavam ou destruíam a curva inteira.
 
 ---
 
+## Achado real 2026-09-14 — Roaming Throne não dobrava gatilhos de Ursos convertidos, só Beorn/Ayula
+
+Usuário perguntou se Roaming Throne também dobra os gatilhos de compra
+dos outros Ursos em jogo, não só o combate da própria Beorn. Resposta:
+sim, deveria (oráculo real, ver `checklist-oraculo.md`), e não dobrava
+pra nenhuma criatura convertida em Urso pelo próprio combate da Beorn
+(Selvala, Beast Whisperer, Forgotten Ancient, Defiler of Vigor, Tireless
+Tracker, Ohran Frostfang, Toski). Também achado: a própria Roaming Throne
+se torna um Urso ("this creature is the chosen type") e nunca contava pra
+`bears_in_play()`. Resumo numérico (2.000 partidas, mesma seed 8800000):
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Avg extra_draws/partida | 18,084 | 19,253 |
+| Avg mão final | 9,312 | 9,752 |
+| Avg bear_count_final | 7,787 | 8,073 |
+| Avg roaming_throne_doublings | 0,356 | 0,906 |
+
+20.000 partidas de regressão (seed 8900000+), 0 exceções. 6 testes
+unitários dirigidos, todos passando.
+
+---
+
 ## Achado real 2026-09-14 — Selvala comparava contra recorde histórico, não contra as outras criaturas atuais
 
 Usuário pediu confirmação dos demais motores de draw (Great Henge,
