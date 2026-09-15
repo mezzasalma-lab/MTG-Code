@@ -428,6 +428,7 @@ class GameState:
     tarrians_journal_draws_total: int = 0
     melded_moxite_loots_total: int = 0
     melded_moxite_tokens_total: int = 0
+    ultron_cheap_copies_total: int = 0
 
 
 def draw_cards(state: GameState, n: int):
@@ -473,20 +474,31 @@ def worst_discard_target(state: GameState, pool: list = None):
     return min(candidates, key=lambda n: CARD_DB[n].mv if n in CARD_DB else 0)
 
 
+ROCK_TAG_VALUE = {"rock1": 1, "rock2": 2, "rock3": 3}
+
+
 def rocks_mana(state: GameState) -> int:
+    """Mana generica de rocks continuas. Achado real 2026-09-15 (usuario
+    apontou que duplicar um rock de custo 2 via Ultron e' motor real de
+    rampa + combustivel de graca pro Megatron): a versao anterior desta
+    funcao checava so' PRESENCA ("Sol Ring" in state.battlefield), nunca
+    CONTAGEM real de instancias -- uma copia via Ultron (nome com sufixo
+    " (copia)" de `make_token_copy_name`) nunca batia em nenhum desses
+    checks, e a copia renderia ZERO mana extra mesmo estando de verdade
+    em campo. Corrigido: soma por INSTANCIA real na battlefield, lendo a
+    tag (`rock1`/`rock2`/`rock3`, preservada em toda copia pois
+    `make_token_copy_name` aponta pro mesmo `Card` do original) em vez do
+    nome fixo -- generaliza pra qualquer numero de copias."""
     total = 0
-    if "Sol Ring" in state.battlefield:
-        total += 2
-    for n in ("Arcane Signet", "Fellwar Stone", "Mind Stone",
-              "Talisman of Conviction", "Talisman of Hierarchy", "Talisman of Indulgence"):
-        if n in state.battlefield:
+    for card in state.battlefield:
+        if card not in CARD_DB:
+            continue
+        tags = CARD_DB[card].tags
+        for tag, value in ROCK_TAG_VALUE.items():
+            if tag in tags:
+                total += value
+        if card == "Cursed Mirror":
             total += 1
-    if "Gilded Lotus" in state.battlefield:
-        total += 3
-    if "Cursed Mirror" in state.battlefield:
-        total += 1
-    if "The Eternity Elevator" in state.battlefield:
-        total += 3
     return total
 
 
@@ -751,22 +763,38 @@ def best_payoff_fodder(state: GameState):
     return None
 
 
+CHEAP_WORTH_COPYING_TAGS = {"rock1", "rock2", "rock3", "melded_moxite"}
+# Achado real 2026-09-15 (correcao do usuario): o oraculo do Ultron NAO
+# tem restricao nenhuma de custo ("whenever ANOTHER nontoken artifact...
+# pay {2}: copy" -- qualquer artefato serve). O corte de MV>=3 abaixo e'
+# so' heuristica de VALOR (nao regra da carta) -- mas a versao anterior
+# dessa heuristica errava justamente nos rocks de custo 2: copiar um
+# rock nao e' "+1 mana uma vez" (rate ruim), e' +1 mana TODO turno daí
+# em diante (rampa recorrente) MAIS um token descartavel de graca pro
+# `Destructive Force` sacrificar depois (combustivel sem custo de carta
+# real, so' os {2} da copia). Mesma logica vale pro Melded Moxite (MV 2,
+# tag `melded_moxite`) -- dobrar o loot ETB dela e' bom mesmo barata.
+
+
 def artifact_etb_hooks(state: GameState, name: str, token: bool = False):
     """Ultron, Artificial Malevolence: 'whenever another nontoken
     artifact you control enters, you may pay {2}. If you do, create a
     token that's a copy of it.' Escolhe pagar sempre que sobra mana e o
-    artefato tem valor real de copia (MV>=3 -- nao vale a pena copiar
-    coisa barata tipo Sol Ring/talisman por 2 mana). `token=True` (a
-    propria entrada e' de um token, ex: copia do Ultron/Osgir/Feldon/
-    Skitterbeam) precisa ficar de fora -- senao um token de MV alto
-    copiando a si mesmo via Ultron entra em recursao infinita (achado
-    real ao testar)."""
+    artefato tem valor real de copia -- MV>=3 (corpo/efeito grande) OU
+    esta' em `CHEAP_WORTH_COPYING_TAGS` (rock continuo/Melded Moxite,
+    ver comentario acima). `token=True` (a propria entrada e' de um
+    token, ex: copia do Ultron/Osgir/Feldon/Skitterbeam) precisa ficar
+    de fora -- senao um token de MV alto copiando a si mesmo via Ultron
+    entra em recursao infinita (achado real ao testar)."""
     if token or name == "Ultron, Artificial Malevolence" or "Ultron, Artificial Malevolence" not in state.battlefield:
         return
-    if CARD_DB[name].mv < 3:
+    cheap_worth_it = bool(CARD_DB[name].tags & CHEAP_WORTH_COPYING_TAGS)
+    if CARD_DB[name].mv < 3 and not cheap_worth_it:
         return
     if remaining_mana(state) < 2:
         return
+    if cheap_worth_it:
+        state.ultron_cheap_copies_total += 1
     spend_mana(state, 2)
     token_name = make_token_copy_name(name)
     if is_creature_card(name):
@@ -2274,6 +2302,8 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
           f"{avg([s.melded_moxite_loots_total for s in states]):.2f}")
     print(f"Avg Robot tokens via Melded Moxite (sac {{3}}): "
           f"{avg([s.melded_moxite_tokens_total for s in states]):.2f}")
+    print(f"Avg copias baratas via Ultron (rocks/Melded Moxite, MV<3): "
+          f"{avg([s.ultron_cheap_copies_total for s in states]):.2f}")
     print(f"Avg vida final: {avg([s.life for s in states]):.2f}")
     own_ko = sum(1 for s in states if s.life <= 0)
     print(f"Partidas em que os PROPRIOS efeitos derrubam minha vida a 0 ou menos: {100*own_ko/n:.1f}%")

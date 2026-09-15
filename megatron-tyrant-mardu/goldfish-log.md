@@ -4,6 +4,38 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Correção da heurística do Ultron + bug de contagem em rocks_mana() — 2026-09-15
+
+**Gatilho:** usuário corrigiu minha explicação sobre o Ultron não ter
+"corte de custo" nenhum (oráculo real: qualquer artefato não-token pode
+ser copiado por {2}) e apontou que duplicar mana rock de custo 2 é
+motor real (rampa recorrente + fodder de graça pro Megatron) — a
+heurística antiga (`mv < 3: return`) tratava isso como "não vale a
+pena", contando só o ganho de UM turno em vez do ganho recorrente.
+Testando a correção, achei um bug real: `rocks_mana()` checava presença
+por nome fixo, nunca contava a cópia (nome com sufixo " (copia)").
+Detalhes técnicos completos em `checklist-oraculo.md`.
+
+**Teste isolado que confirmou o bug antes da correção:**
+```
+total_mana com 1 Fellwar Stone: 1
+total_mana com 1 Fellwar Stone + 1 copia via Ultron: 1 (deveria ser 2)
+```
+
+**Corrigido:** `rocks_mana()` agora soma por instância real via tag
+(`rock1`/`rock2`/`rock3`); Ultron agora copia rocks de custo 2 e Melded
+Moxite mesmo com MV<3 (`CHEAP_WORTH_COPYING_TAGS`). Também corrige uma
+sinergia que eu tinha vendido errado no commit anterior (Melded Moxite
+"pode ser dobrada pelo Ultron" nunca disparava de fato, mesma
+heurística bloqueando).
+
+**Validação:** 4 testes unitários + A/B 2000 jogos mesma seed (recursão
+0,56→0,58, resto estável) + regressão de 20.000 partidas, 0 exceções.
+Novo contador `ultron_cheap_copies_total` confirmado disparando (0,02
+partida — baixo mas real, exige Ultron já em campo + mana sobrando).
+
+---
+
 ## +Melded Moxite / -Demand Answers — 2026-09-15
 
 **Gatilho:** usuário perguntou se valia trocar Demand Answers por Melded

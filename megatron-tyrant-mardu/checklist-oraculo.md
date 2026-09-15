@@ -1,5 +1,52 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Correção da heurística do Ultron + bug real de contagem em rocks_mana() — 2026-09-15
+
+**Gatilho:** eu tinha descrito pro usuário que Fellwar Stone "não vira
+alvo de cópia" do Ultron por causa de um "corte de MV≥3" — usuário
+corrigiu: o oráculo real (`whenever ANOTHER nontoken artifact you
+control enters, you may pay {2}. If you do, create a copy`) não tem
+restrição de custo nenhuma, e mais importante, **duplicar um mana rock
+de custo 2 é motor real de rampa recorrente + combustível de graça pro
+Megatron** — a heurística `mv < 3: return` estava certa em rejeitar
+copiar coisa cara demais, mas errada em achar rocks baratos "não valem a
+pena": eu confundi "+1 mana nesse instante" (rate ruim) com o valor real
+("+1 mana TODO turno daí em diante", ganho recorrente).
+
+**Bug real encontrado ao testar a correção:** `rocks_mana()` checava só
+PRESENÇA (`"Sol Ring" in state.battlefield`), nunca contagem de
+instâncias. Uma cópia via Ultron tem nome com sufixo `" (copia)"`
+(`make_token_copy_name`) — nunca bate no nome fixo do original, então a
+cópia de um rock renderia ZERO mana extra mesmo estando de verdade em
+campo. Confirmado com teste isolado antes da correção: `total_mana()`
+com 1 Fellwar Stone + 1 cópia via Ultron = 1 (deveria ser 2).
+
+**Correções:**
+1. `rocks_mana()` reescrita pra somar por instância real na
+   `battlefield`, lendo a tag (`rock1`=1/`rock2`=2/`rock3`=3, preservada
+   em toda cópia porque `make_token_copy_name` aponta pro mesmo objeto
+   `Card` do original) em vez do nome fixo — generaliza pra qualquer
+   número de cópias, não só a do Ultron.
+2. `artifact_etb_hooks()` (Ultron): novo `CHEAP_WORTH_COPYING_TAGS =
+   {"rock1", "rock2", "rock3", "melded_moxite"}` — copia mesmo com MV<3
+   quando a tag bate. Isso também corrige uma inconsistência do commit
+   anterior (Melded Moxite): eu tinha vendido pro usuário "Ultron pode
+   copiar e dobrar o loot" da Moxite como argumento pra troca por Demand
+   Answers, mas ela é MV 2 — a MESMA heurística já bloqueava isso antes,
+   então essa sinergia nunca disparava de verdade no simulador.
+3. Novo contador `ultron_cheap_copies_total` pra validar que o caminho
+   específico (MV<3 mas tag elegível) dispara de verdade, separado do
+   `recursion_events_total` genérico.
+
+**Validação:** 4 testes unitários isolados (rocks_mana conta a cópia;
+Ultron copia Fellwar Stone com mana sobrando; Ultron copia Melded Moxite
+e o ETB de loot dispara 2x; Ultron NÃO copia sem mana sobrando) + A/B
+2000 jogos mesma seed (`recursao_events_total` 0,56→0,58, resto estável)
++ regressão de 20.000 partidas, 0 exceções. `ultron_cheap_copies_total`
+confirmado > 0 numa fração real dos jogos (0,02/partida — baixo porque
+exige Ultron já em campo + mana sobrando depois de outros gastos, mas
+real).
+
 ## +Melded Moxite / -Demand Answers — 2026-09-15
 
 **Gatilho:** usuário propôs a troca depois de eu confirmar que as duas
