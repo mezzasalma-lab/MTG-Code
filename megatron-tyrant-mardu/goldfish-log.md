@@ -4,6 +4,30 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Auditoria comparativa (Noxious Gearhulk/Cityscape Leveler) + redirect Warp/Unearth pro exílio — 2026-09-15
+
+**Gatilho:** usuário pediu novos candidatos de corte pro Scrapbot;
+antes de sugerir, fiz uma auditoria comparativa real (oráculo das 65
+cartas em lote, cruzado contra o código) em vez de julgar de memória.
+Achei 2 cartas com a MESMA classe de bug do Demonic Junker (removal
+real tratada como zero por inconsistência) e o Unearth do Cityscape
+Leveler nunca implementado (mesmo caso do Warp do Bygone Colossus, que
+É modelado). Corrigidas as 2 + implementado o Unearth.
+
+**Pergunta de regra ao vivo (usuário):** sacrificar o Cityscape Leveler
+reanimado por Unearth pro Megatron vai pro cemitério ou exílio? Usuário
+confirmou via ruling oficial: vai pro EXÍLIO (substituição de zona do
+próprio Unearth, sem finality counter). Achado real: `sacrifice()`
+sempre mandava pro cemitério incondicionalmente, ignorando esse caso —
+corrigido, vale também pro Warp do Bygone Colossus. Detalhes completos
+em `checklist-oraculo.md`.
+
+**Validação:** smoke test + 6 testes unitários isolados + A/B 2000
+jogos mesma seed (vida ganha 0,11→0,31, resto estável) + regressão de
+20.000 partidas, 0 exceções.
+
+---
+
 ## Crew 2 do Demonic Junker implementado — 2026-09-15
 
 **Gatilho:** usuário mudou de plano minutos depois de dizer "nunca vai

@@ -176,16 +176,19 @@ add("Triplicate Titan", 9, "creature", {"artifact"}, power=9, toughness=9, pips=
 add("Skitterbeam Battalion", 9, "creature", {"artifact", "skitterbeam"}, power=4, toughness=4, pips={})
 add("Summon: Bahamut", 9, "creature", {"saga_bahamut"}, power=9, toughness=9, pips={})
 add("Metalwork Colossus", 11, "creature", {"artifact", "metalwork_colossus"}, power=10, toughness=10, pips={})
-# Cityscape Leveler: gatilho real ("when you cast this spell and whenever
-# this creature attacks, destroy up to one target nonland permanent...")
-# so' teria alvo valido no OPONENTE (nunca no nosso proprio board) -- sem
-# oponente real modelado, fica de fora (mesma convencao de Genesis
-# Chamber/Treasure Nabber pro lado simetrico/dependente de oponente).
-# "Up to one" ja' cobre o caso de zero alvos, sem whiff. Unearth {8}
-# tambem fora -- caro igual ao hardcast, sem ganho real de modelar
-# separado (documentado, mesma convencao do lado "transformar" do
-# Tarrian's Journal). Fica so' como corpo 8/8 trample colorless.
-add("Cityscape Leveler", 8, "creature", {"artifact"}, power=8, toughness=8, pips={})  # Achado real 2026-09-11
+# Correcao 2026-09-15 (auditoria comparativa): a analise anterior
+# tratava "destroy up to one target nonland permanent" (cast E ataque)
+# como 📊 zero por "so' alvo valido no oponente" -- mas essa e' a MESMA
+# categoria de Path to Exile/Swords to Plowshares/Vandalblast/Generous
+# Gift, todas ja creditadas como interacao real. Corrigido: credita
+# `interaction_spells_cast_total` no ETB (cast) E em cada ataque (ver
+# `all_attackers_combat`). Unearth {8} tambem estava fora por "caro
+# igual ao hardcast" -- mesmo raciocinio usado ANTES de implementar o
+# Warp {3} do Bygone Colossus (que E' modelado, `try_bygone_colossus_
+# warp`) -- inconsistente excluir so' esse. Implementado
+# `try_cityscape_leveler_unearth`, mesmo padrao do Warp (reanima
+# temporario com haste, exilado no fim do turno).
+add("Cityscape Leveler", 8, "creature", {"artifact", "cityscape_leveler"}, power=8, toughness=8, pips={})  # Achado real 2026-09-11
 
 # --- Artefatos de valor continuo ----------------------------------------------
 add("Nexus of Becoming", 6, "artifact", {"nexus_combat_draw_copy"}, pips={})
@@ -663,15 +666,39 @@ def sacrifice(state: GameState, name: str):
     (Scrap Trawler, toolbox Myr Retriever/Junk Diver, Triplicate
     Titan) e os payoffs que disparam em QUALQUER
     sacrificio de criatura (Rakdos, the Muscle -- 'whenever you sacrifice
-    another creature', gatilho automatico, nao e' escolha)."""
+    another creature', gatilho automatico, nao e' escolha).
+
+    Achado real 2026-09-15 (usuario perguntou a regra ao vivo sobre
+    sacrificar o Cityscape Leveler reanimado por Unearth pro Megatron --
+    confirmou via ruling oficial: 'If a permanent returned to the
+    battlefield with unearth would leave the battlefield for any reason,
+    it's exiled instead'). Warp (Bygone Colossus) tem o MESMO texto de
+    substituicao. Sem esse redirect, sacrificar um permanente Warp/
+    Unearth ANTES do fim do turno colocava ele no cemiterio errado --
+    dispararia Scrap Trawler/Pia's Revolution/morte do Triplicate Titan
+    (todos exigem 'put into a GRAVEYARD', que nunca acontece aqui de
+    verdade) e deixaria a carta disponivel pra weld/re-Warp/re-Unearth
+    de novo, o que a regra real nao permite (esta' exilada, nao no
+    cemiterio). O sacrificio em si ainda conta pra Rakdos (dispara em
+    QUALQUER sacrificio, nao em 'dies')."""
     if name not in state.battlefield:
         return
     state.battlefield.remove(name)
-    state.graveyard.append(name)
     if name in state.temp_creatures_pending_sacrifice:
         state.temp_creatures_pending_sacrifice.remove(name)
     was_creature = is_creature_card(name)
     was_artifact = is_artifact_card(name)
+    if name in state.temp_creatures_pending_exile:
+        state.temp_creatures_pending_exile.remove(name)
+        state.exile.append(name)
+        if was_artifact:
+            state.artifacts_sacrificed_total += 1
+        if was_creature:
+            state.creatures_sacrificed_total += 1
+        if was_creature and name != "Rakdos, the Muscle" and "Rakdos, the Muscle" in state.battlefield:
+            rakdos_muscle_trigger(state, name)
+        return
+    state.graveyard.append(name)
     if was_artifact:
         state.artifacts_sacrificed_total += 1
         scrap_trawler_trigger(state, name)
@@ -927,11 +954,20 @@ def resolve_etb(state: GameState, name: str, token: bool = False):
             proxy_drain(state, dmg)
 
     if "noxious_gearhulk" in tags:
-        # "may destroy another target creature; if destroyed, gain life
-        # equal to its toughness." Sem criatura real de oponente pra
-        # destruir -- 📊 estrutural (mesma convencao de etb_removal em
-        # toda a sessao), sem efeito numerico.
-        pass
+        # "may destroy another target creature. If a creature is
+        # destroyed this way, you gain life equal to its toughness."
+        # Achado real 2026-09-15 (auditoria comparativa pedida pelo
+        # usuario): estava tratada como 📊 zero, mas essa e' remocao de
+        # ALVO UNICO no oponente -- MESMA categoria de Path to
+        # Exile/Swords to Plowshares/Generous Gift, ja creditadas como
+        # interacao real (`interaction_spells_cast_total`). Inconsistente
+        # deixar so' essa zerada. Ganho de vida usa proxy de 3 (media
+        # aproximada de resistencia de criatura em Commander -- sem
+        # resistencia real de oponente rastreada, mesma convencao de
+        # aproximacao ja usada em outros efeitos "unknown opponent
+        # stat" do arquivo).
+        state.interaction_spells_cast_total += 1
+        gain_life(state, 3)
 
     if "demonic_junker" in tags:
         # "When this Vehicle enters, for each player, destroy up to one
@@ -1008,6 +1044,16 @@ def resolve_etb(state: GameState, name: str, token: bool = False):
         # Premissa: descarta 0 (mantem a mao), compra so' o +1 garantido
         # -- sem avaliacao real de quais cartas valem descartar.
         draw_cards(state, 1)
+
+    if "cityscape_leveler" in tags:
+        # "When you cast this spell..., destroy up to one target
+        # nonland permanent." Credita como interacao no ETB (mesma
+        # convencao de Path/Swords/Vandalblast/Generous Gift). A
+        # clausula "its controller creates a tapped Powerstone token"
+        # e' ganho do OPONENTE -- fora do modelo, so' rastreamos nosso
+        # proprio lado. O gatilho de ATAQUE ("whenever this creature
+        # attacks...") fica em `all_attackers_combat`.
+        state.interaction_spells_cast_total += 1
 
     if "melded_moxite" in tags:
         # "When this artifact enters, you may discard a card. If you do,
@@ -1980,6 +2026,26 @@ def try_bygone_colossus_warp(state: GameState):
     state.creatures_cheated_in_total += 1
 
 
+def try_cityscape_leveler_unearth(state: GameState):
+    """Cityscape Leveler: 'Unearth {8}' (reanima do cemiterio, ganha
+    haste, exilada no fim do turno ou se deixar o campo). Achado real
+    2026-09-15 (auditoria comparativa): antes excluida por "custo igual
+    ao hardcast, sem ganho de modelar separado" -- mesmo raciocinio que
+    seria usado pra rejeitar o Warp {3} do Bygone Colossus, que E'
+    modelado (`try_bygone_colossus_warp`, template direto pra esta
+    funcao). Reanimar de novo dispara o ETB completo (Warstorm Surge +
+    a remocao real do `cityscape_leveler`, ver `resolve_etb`) e ainda
+    ataca esse turno (haste)."""
+    if "Cityscape Leveler" not in state.graveyard or remaining_mana(state) < 8:
+        return
+    spend_mana(state, 8)
+    state.graveyard.remove("Cityscape Leveler")
+    creature_enters(state, "Cityscape Leveler", from_hand=False)
+    state.creature_cast_turn["Cityscape Leveler"] = state.turn - 1
+    state.temp_creatures_pending_exile.append("Cityscape Leveler")
+    state.creatures_cheated_in_total += 1
+
+
 # ---------------------------------------------------------------------------
 # Custo efetivo / cast / terrenos
 # ---------------------------------------------------------------------------
@@ -2192,6 +2258,7 @@ def main_phase(state: GameState):
     try_ayara_transform(state)
     try_susur_secundi(state)
     try_bygone_colossus_warp(state)
+    try_cityscape_leveler_unearth(state)
     try_fountainport(state)
     try_tarrians_journal(state)
     try_cast_flashback(state, "Faithless Looting", 3)
@@ -2294,6 +2361,12 @@ def all_attackers_combat(state: GameState):
             anrakyr_attack_ability(state)
         elif name == "Daretti, Rocketeer Engineer":
             daretti_rocketeer_attack_ability(state)
+        elif name == "Cityscape Leveler":
+            # "whenever this creature attacks, destroy up to one target
+            # nonland permanent" -- mesma interacao do ETB, dispara de
+            # novo a cada combate que ela ataca (ready_creatures ja'
+            # garante que so' ataca sem doenca de invocacao).
+            state.interaction_spells_cast_total += 1
 
     if state.demonic_junker_crewed_this_turn and "Demonic Junker" in state.battlefield:
         # Crewado esse turno -- "becomes an artifact creature until end
@@ -2456,6 +2529,8 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
           f"{avg([s.proxy_damage_total for s in states]):.2f}")
     print(f"  -- dos quais via Warstorm Surge: {avg([s.warstorm_surge_damage_total for s in states]):.2f} "
           f"({avg([s.warstorm_surge_triggers_total for s in states]):.2f} gatilhos/partida)")
+    print(f"Avg spells/gatilhos de interacao (Path/Swords/Vandalblast/Generous Gift/Bahamut/Noxious "
+          f"Gearhulk/Demonic Junker/Cityscape Leveler): {avg([s.interaction_spells_cast_total for s in states]):.2f}")
     print(f"Avg atacantes por partida (soma de todos os combates -- Megatron + todo o resto do "
           f"board pronto, achado real 2026-09-02): {avg([s.attackers_total_all_turns for s in states]):.2f}")
     print(f"Avg vida ganha: {avg([s.proxy_lifegain_total for s in states]):.2f}")

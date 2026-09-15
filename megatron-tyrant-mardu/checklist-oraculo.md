@@ -1,5 +1,88 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Auditoria comparativa completa das 65 cartas + Noxious Gearhulk/Cityscape Leveler corrigidas — 2026-09-15
+
+**Gatilho:** usuário pediu pra eu sugerir novos candidatos de corte pro
+Dauntless Scrapbot, mas depois do histórico de hoje (3 rodadas de
+"cartas fracas" que na verdade eram bugs reais), decidi fazer uma
+auditoria de verdade primeiro em vez de julgar por memória de novo:
+puxei oráculo real via `/cards/collection` das 65 cartas não-terreno de
+uma vez, cruzei `type_line` contra `ctype` (0 mismatches novos — o
+Demonic Junker já tinha sido corrigido), e busquei todo texto com
+"destroy"/"exile" pra comparar tratamento entre cartas parecidas.
+
+**Achado real (2 cartas, mesma classe de bug de hoje):**
+
+1. **Noxious Gearhulk** — `"you may destroy another target creature.
+   If a creature is destroyed this way, you gain life equal to its
+   toughness."` Estava um `pass` completo, documentado como "📊
+   estrutural" — mas é remoção de ALVO ÚNICO no oponente, MESMA forma
+   de Path to Exile/Swords to Plowshares/Generous Gift, todas já
+   creditadas como `interaction_spells_cast_total`. Inconsistente
+   deixar só essa zerada. Corrigido: credita interação + ganho de vida
+   proxy (3, aproximação de resistência média de criatura — sem
+   resistência real de oponente rastreada).
+
+2. **Cityscape Leveler** — `"When you cast this spell and whenever
+   this creature attacks, destroy up to one target nonland
+   permanent."` Mesmo problema: tratada como zero por "só alvo válido
+   no oponente", mesma categoria das já creditadas. Corrigido: nova tag
+   `cityscape_leveler`, credita interação no ETB (cast) E em cada
+   ataque (`all_attackers_combat`). Também achei que o **Unearth {8}**
+   dela nunca foi implementado, excluído com o raciocínio "custo igual
+   ao hardcast, sem ganho de modelar separado" — o MESMO raciocínio que
+   teria rejeitado o Warp {3} do Bygone Colossus, que É modelado
+   (`try_bygone_colossus_warp`). Inconsistente excluir só esse.
+   Implementada `try_cityscape_leveler_unearth()`, mesmo padrão do
+   Warp: reanima do cemitério com haste, exilada no fim do turno,
+   dispara o ETB completo de novo (Warstorm Surge + a remoção real).
+
+**Achado lateral:** `interaction_spells_cast_total` era incrementado em
+8 pontos diferentes do arquivo mas NUNCA aparecia em nenhum print do
+`run_batch` — métrica cega, sem visibilidade de validação nenhuma.
+Adicionada linha de print dedicada.
+
+**Confirmado limpo no resto da auditoria:** Bahamut (capítulos I/II) já
+credita interação corretamente pra "destroy up to one target nonland
+permanent" — mesmo padrão agora aplicado a Noxious Gearhulk/Cityscape
+Leveler. Os 62 outros `ctype` batem com o `type_line` real (sem novo
+caso tipo Demonic Junker/Vehicle).
+
+**Achado adicional (pergunta de regra do usuário, ao vivo): sacrificar
+um permanente Warp/Unearth vai pro EXÍLIO, não pro cemitério** — usuário
+perguntou se o Cityscape Leveler reanimado via Unearth, ao ser
+sacrificado pro Megatron ANTES do fim do turno, iria pro cemitério ou
+exílio, e se ganhava um "finality counter". Ele mesmo confirmou via
+ruling oficial: *"If a permanent returned to the battlefield with
+unearth would leave the battlefield for any reason, it's exiled
+instead"* — sem counter nenhum, é substituição de zona embutida no
+próprio Unearth (Warp do Bygone Colossus tem o mesmo texto). Achado
+real: `sacrifice()` (função central de todo sacrifício do arquivo)
+sempre mandava pro `state.graveyard` incondicionalmente, ignorando
+`state.temp_creatures_pending_exile` — sacrificar um Warp/Unearth antes
+do fim do turno colocava a carta no cemitério ERRADO, disparando
+Scrap Trawler/Pia's Revolution/morte do Triplicate Titan (todos exigem
+"put into a GRAVEYARD", que nunca acontece de verdade aqui) e deixando
+a carta disponível pra weld/re-Warp/re-Unearth de novo — que a regra
+real não permite. Corrigido: `sacrifice()` agora checa
+`temp_creatures_pending_exile` primeiro e redireciona pro `state.exile`
+nesse caso, pulando os gatilhos "put into a graveyard" mas mantendo o
+gatilho de sacrifício em si (Rakdos, the Muscle dispara em QUALQUER
+sacrifício, não em "dies"). Vale tanto pro Cityscape Leveler (Unearth)
+quanto pro Bygone Colossus (Warp) — mesmo texto de substituição,
+mesma função central corrigida uma vez só.
+
+**Validação:** smoke test (99 cartas, 0 desconhecidas/duplicatas) + 6
+testes unitários isolados (Noxious Gearhulk credita interação+vida;
+Cityscape Leveler credita no ETB e a cada ataque; Unearth reanima com
+haste e credita de novo; sacrificar o Cityscape Leveler reanimado vai
+pro exílio nunca pro cemitério; mesmo redirect vale pro Bygone Colossus
+warpado; sacrifício NORMAL sem Warp/Unearth continua indo pro cemitério
+normalmente) + A/B 2000 jogos mesma seed (vida ganha 0,11→0,31,
+criaturas cheatadas 0,34→0,40, resto estável) + regressão de 20.000
+partidas, 0 exceções. `interaction_spells_cast_total` confirmado em
+1,13/partida (antes invisível, mesmo disparando).
+
 ## Crew 2 do Demonic Junker implementado — 2026-09-15
 
 **Gatilho:** minutos depois de eu documentar "usuário confirmou que
