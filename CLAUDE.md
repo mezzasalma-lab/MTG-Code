@@ -155,3 +155,43 @@ conta como X"), não a carta isoladamente.
    no arquivo antes de mudar (ver caso do Springleaf Parade nesse mesmo
    commit: quase criei um bug novo removendo o filtro errado, se não
    tivesse checado todos os outros usos primeiro).
+
+## Regra #4 (obrigatória): avaliar sugestão de carta = comparar com os MOTORES do deck e as OUTRAS cartas, nunca poder isolado
+
+Pedido explícito do usuário em 2026-09-15 (deck Megatron), depois de eu
+avaliar Melded Moxite vs Demand Answers só pelo ângulo "quantas cartas
+compra" e errar a chamada — o usuário trouxe a comparação certa por conta
+própria (Ultron copia, alimenta o flip do Megatron, é alvo de
+Engineer/Welder) e eu tive que corrigir minha recomendação depois:
+**"É esse tipo de lógica que eu quero que vc utilize ao avaliar cada
+sugestão minha, comparar com os motores do deck e as outras cartas do
+deck!"**
+
+**Daqui pra frente, toda vez que o usuário propuser incluir, cortar ou
+trocar uma carta (em QUALQUER deck deste repositório), a avaliação nunca
+pode parar em "essa carta é boa/isolada por si". Tem que, na ordem:**
+
+1. Buscar o oráculo real da carta no Scryfall (Regra #1/#2 — nunca por
+   memória).
+2. Listar os motores/subsistemas reais do deck em questão (ex. no
+   Megatron: weld/recursão de artefato, cheat-to-play, Warstorm Surge
+   como dano, sacrifício pro flip do comandante, Pia's Revolution como
+   seguro) e checar, cláusula por cláusula do oráculo da carta nova,
+   **em quantos desses motores ela entra** — não só o efeito óbvio de
+   quando ela resolve.
+3. Checar interação com cartas ESPECÍFICAS já na lista que têm
+   restrição de tipo/custo relevante (ex.: Goblin Engineer só reanima
+   MV ≤3; Goblin Welder/Trash for Treasure exigem "artifact card", uma
+   sorcery/instant nunca serve de alvo; Ultron/anthem/doubling só
+   disparam em permanente entrando, nunca em spell instantânea) — isso
+   frequentemente decide o caso mais do que o efeito isolado da carta.
+4. Comparar contra a alternativa real (o que está saindo, se for troca)
+   pelo MESMO critério — quantos motores/interações a carta que sai
+   também alimentava, não só quantas cartas ela comprava.
+5. Só then dar a recomendação, e citar explicitamente qual motor/carta
+   da lista cada ponto da lógica referencia (nunca "essa é mais forte"
+   sem dizer com o que ela interage de verdade nesse deck específico).
+
+Isso vale tanto pra avaliar sugestão do usuário quanto pra eu propor
+sugestão minha (upgrade, corte por EDHREC, etc.) — a mesma lógica
+relacional, nunca julgamento de power level isolado.
