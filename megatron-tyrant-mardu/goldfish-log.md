@@ -4,6 +4,28 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Crew 2 do Demonic Junker implementado — 2026-09-15
+
+**Gatilho:** usuário mudou de plano minutos depois de dizer "nunca vai
+crewar" — descreveu a combo real (token do Nexus/Talisman crewa o
+Junker, os dois atacam com o Megatron, Megatron sacrifica o token pra
+flipar). Detalhes técnicos completos em `checklist-oraculo.md`. Achado
+lateral do próprio usuário: o token do Nexus não tem haste, então a
+combo exata (token criado NESSE combate crewando NESSE combate) não
+funciona por doença de invocação — mas o mecanismo geral funciona com
+fodder de turno anterior.
+
+**Bug real achado ao testar:** `best_megatron_fuel()` sacrificava o
+próprio Demonic Junker recém-crewado como combustível (ele é o maior MV
+do campo) em vez do token que crewou — perdia o ataque que o crew tinha
+acabado de habilitar. Corrigido com exclusão condicional.
+
+**Validação:** 4 testes unitários isolados + smoke test + A/B 2000
+jogos (métricas estáveis) + regressão de 20.000 partidas, 0 exceções.
+`demonic_junker_crews_total` confirmado em 0,06/partida.
+
+---
+
 ## Demonic Junker (Vehicle) + Chandra's Ignition (finalizador) + Nexus of Becoming (cópia real) + bug do Trash for Treasure — 2026-09-15
 
 **Gatilho:** usuário rejeitou meus 3 candidatos de corte pro Dauntless

@@ -466,6 +466,9 @@ class GameState:
     demonic_junker_removals_total: int = 0
     chandras_ignition_casts_total: int = 0
     chandras_ignition_own_creatures_lost_total: int = 0
+    crewed_creatures_tapped: set = field(default_factory=set)
+    demonic_junker_crewed_this_turn: bool = False
+    demonic_junker_crews_total: int = 0
 
 
 def draw_cards(state: GameState, n: int):
@@ -575,8 +578,18 @@ def spend_mana(state: GameState, n: int):
 
 
 def ready_creatures(state: GameState):
+    """Criaturas sem doenca de invocacao E nao tapadas. Achado real
+    2026-09-15 (Crew do Demonic Junker -- usuario apontou a linha real
+    de tapar um token barato pra crewar): antes desta correcao nao
+    existia NENHUM conceito de "tapado" no arquivo, so' doenca de
+    invocacao -- crew introduz o primeiro caso real de "esta criatura
+    ja' tapou por outro motivo esse turno", `crewed_creatures_tapped`
+    cobre isso de forma generica (tambem impede usar {T} de novo em
+    Welder/Scrap Welder/Engineer/Scarecrone/estacao na MESMA criatura,
+    regra real)."""
     return [n for n in state.battlefield if is_creature_card(n)
-            and (state.creature_cast_turn.get(n, -1) < state.turn)]
+            and (state.creature_cast_turn.get(n, -1) < state.turn)
+            and n not in state.crewed_creatures_tapped]
 
 
 
@@ -784,11 +797,20 @@ def best_megatron_fuel(state: GameState):
     (pega o MENOR MV, pra sobrar os grandes em campo pra solda) --
     fazendo o Megatron sacrificar sempre o artefato MAIS FRACO como fuel,
     ao contrario da estrategia real do primer ("prioriza o artefato de
-    MAIOR custo de mana"). Corrigido com selecao propria, descendente."""
+    MAIOR custo de mana"). Corrigido com selecao propria, descendente.
+    Achado real 2026-09-15 (Crew do Demonic Junker): sem essa exclusao,
+    Junker -- sendo o maior MV do campo -- era sacrificado como o
+    PROPRIO fuel assim que crewado, perdendo o ataque que o crew tinha
+    acabado de habilitar (desperdicia a criatura/token que tapou pra
+    nada). So' o exclui enquanto estiver crewado ESSE turno -- depois do
+    combate, ou se nunca foi crewado, continua candidato normal (um
+    Vehicle usado so' pela removal ETB e' fuel valido depois)."""
     for n in state.temp_creatures_pending_sacrifice:
         if n in state.battlefield and is_artifact_card(n):
             return n
     KEEP_ALWAYS = {COMMANDER, "Warstorm Surge", "Sneak Attack", "Daretti, Scrap Savant"}
+    if state.demonic_junker_crewed_this_turn:
+        KEEP_ALWAYS = KEEP_ALWAYS | {"Demonic Junker"}
     candidates = [n for n in state.battlefield if n not in KEEP_ALWAYS and is_artifact_card(n)]
     if not candidates:
         return None
@@ -2205,6 +2227,43 @@ def daretti_rocketeer_attack_ability(state: GameState):
     state.weld_activations_total += 1
 
 
+def try_crew_demonic_junker(state: GameState):
+    """Demonic Junker: 'Crew 2 (Tap any number of untapped creatures you
+    control with total power 2 or greater: This Vehicle becomes an
+    artifact creature until end of turn.)' Achado real 2026-09-15
+    (usuario mudou de ideia sobre nunca crewar -- linha real: um token/
+    criatura barata que sobrou de turno anterior tapa pra crewar, o
+    Junker ataca junto com o Megatron nesse combate, e o MESMO token
+    ainda serve de combustivel pro sacrificio do Megatron depois --
+    crewar so' TAPA quem crewou, nunca sacrifica). Nunca tapa o Megatron
+    (ataca por conta propria via `megatron_combat`) -- prioriza as
+    criaturas de MENOR poder disponiveis (preserva os atacantes grandes
+    de verdade), somando ate' bater o Crew 2. `ready_creatures()` ja'
+    exclui doenca de invocacao -- um token criado NESSE combate (ex:
+    Nexus of Becoming) nunca pode crewar no mesmo turno sem haste
+    (achado real do usuario, confere com a regra oficial: crew e' um
+    custo de {T}, sujeito a doenca de invocacao igual atacar)."""
+    if "Demonic Junker" not in state.battlefield or state.demonic_junker_crewed_this_turn:
+        return
+    candidates = sorted(
+        (n for n in ready_creatures(state) if n != COMMANDER and get_power(state, n) > 0),
+        key=lambda n: get_power(state, n),
+    )
+    used = []
+    total = 0
+    for n in candidates:
+        used.append(n)
+        total += get_power(state, n)
+        if total >= 2:
+            break
+    if total < 2:
+        return
+    for n in used:
+        state.crewed_creatures_tapped.add(n)
+    state.demonic_junker_crewed_this_turn = True
+    state.demonic_junker_crews_total += 1
+
+
 def all_attackers_combat(state: GameState):
     """Achado real 2026-09-02 (usuario jogou no Archidekt e reportou:
     "Os dois geraram mana, ataquei 2 jogadores diferentes e gerei 17 de
@@ -2236,12 +2295,24 @@ def all_attackers_combat(state: GameState):
         elif name == "Daretti, Rocketeer Engineer":
             daretti_rocketeer_attack_ability(state)
 
+    if state.demonic_junker_crewed_this_turn and "Demonic Junker" in state.battlefield:
+        # Crewado esse turno -- "becomes an artifact creature until end
+        # of turn", ataca junto (ctype fica "artifact" no CARD_DB de
+        # proposito -- Vehicle nao e' criatura por padrao -- entao entra
+        # aqui explicito em vez de via `ready_creatures()`).
+        power = get_power(state, "Demonic Junker")
+        if power > 0:
+            state.attackers_this_combat += 1
+            proxy_drain(state, power)
+            state.max_attacker_power_this_combat = max(state.max_attacker_power_this_combat, power)
+
 
 def combat_step(state: GameState):
     state.attackers_this_combat = 0
     state.max_attacker_power_this_combat = 0
     try_nexus_of_becoming(state)
     try_ayara_flip_reanimate(state)
+    try_crew_demonic_junker(state)
     megatron_combat(state)
     all_attackers_combat(state)
     ironsoul_enforcer_trigger(state)
@@ -2302,6 +2373,8 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.susur_secundi_used_this_turn = False
     state.fountainport_used_this_turn = False
     state.tarrians_journal_used_this_turn = False
+    state.crewed_creatures_tapped = set()
+    state.demonic_junker_crewed_this_turn = False
 
     try_phyrexian_arena_upkeep(state)
     try_portal_phyrexia_upkeep(state)
@@ -2429,6 +2502,8 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     chandras = sum(1 for s in states if s.chandras_ignition_casts_total > 0)
     print(f"Partidas em que Chandra's Ignition foi usada como finalizador: {100*chandras/n:.1f}% "
           f"| Avg criaturas proprias perdidas pra ela: {avg([s.chandras_ignition_own_creatures_lost_total for s in states]):.2f}")
+    print(f"Avg vezes que o Demonic Junker foi crewado (atacou junto com o Megatron): "
+          f"{avg([s.demonic_junker_crews_total for s in states]):.2f}")
     print(f"Avg vida final: {avg([s.life for s in states]):.2f}")
     own_ko = sum(1 for s in states if s.life <= 0)
     print(f"Partidas em que os PROPRIOS efeitos derrubam minha vida a 0 ou menos: {100*own_ko/n:.1f}%")

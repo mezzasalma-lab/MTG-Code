@@ -1,5 +1,62 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Crew 2 do Demonic Junker implementado — 2026-09-15
+
+**Gatilho:** minutos depois de eu documentar "usuário confirmou que
+nunca vai crewar" (rodada anterior desta mesma sessão), o usuário
+descreveu exatamente uma linha de crew: *"Nexus of becoming Exila um
+talisma, cria um token 3/3 dele com CVC 2, esse token pode crew o
+Demonic Junker, Junker e Megatron atacam e Megatron sacrifica o token
+para flipar e causar mais dano!"* — mudança real de plano, implementada
+na hora em vez de deixar "0" documentado.
+
+**Oráculo real confirmado:** `"Crew 2"` = texto de reminder padrão
+`"Tap any number of untapped creatures you control with total power 2
+or greater: This Vehicle becomes an artifact creature until end of
+turn."`
+
+**Achado lateral do próprio usuário, ANTES de eu implementar:** *"O
+token do Nexus não tem haste, infelizmente"* — correto, e já bate com
+`ready_creatures()` (doença de invocação já existente): crewar é custo
+de `{T}`, sujeito à mesma restrição de atacar — um token criado NESSE
+combate (Nexus dispara "at the beginning of combat") nunca pode crewar
+no mesmo turno sem haste real. A combo específica descrita não funciona
+turn-1 do token, mas funciona com fodder de um turno anterior (Myr
+Token do Genesis Chamber, Fish Token do Fountainport, etc.) — testado e
+confirmado.
+
+**Implementação:**
+1. Novo conceito `state.crewed_creatures_tapped` (set) — primeira vez
+   que o arquivo modela "esta criatura tapou por outro motivo esse
+   turno" (`ready_creatures()` agora exclui essas, correção que também
+   vale pra `Welder`/`Scrap Welder`/`Engineer`/`Scarecrone`/estação, que
+   também exigem `{T}` — regra real: tapado não tapa de novo).
+2. Nova `try_crew_demonic_junker()` — tapa as criaturas prontas de
+   MENOR poder disponíveis até somar Crew 2 (preserva atacantes
+   grandes), nunca tapa o Megatron.
+3. `all_attackers_combat()` — Demonic Junker crewado esse turno passa a
+   contar como atacante explícito (não aparece em `ready_creatures()`
+   por ser `ctype: "artifact"` por padrão).
+
+**Bug real achado ao testar a combo do usuário:** `best_megatron_fuel()`
+prioriza sempre o MAIOR MV disponível — como o Demonic Junker (MV 7) é
+o maior artefato do campo, ele era sacrificado como o PRÓPRIO
+combustível assim que crewado, perdendo o ataque que o crew tinha
+acabado de habilitar (desperdiça a criatura/token que tapou pra nada).
+Corrigido: `KEEP_ALWAYS` de `best_megatron_fuel()` exclui "Demonic
+Junker" enquanto `state.demonic_junker_crewed_this_turn` for `True` —
+depois do combate (ou se nunca foi crewado), volta a ser candidato
+normal.
+
+**Validação:** 4 testes unitários isolados (2 tokens de turno anterior
+somando poder 2 crewam; 1 token de poder 1 sozinho não crewa; token
+criado nesse turno não crewa — doença de invocação; Junker crewado
+ataca E sobrevive, Megatron sacrifica outra coisa como fuel) + smoke
+test + A/B 2000 jogos mesma seed (métricas estáveis) + regressão de
+20.000 partidas, 0 exceções. `demonic_junker_crews_total` confirmado em
+0,06/partida (raro mas real — exige Junker + fodder pronto de turno
+anterior simultaneamente).
+
 ## Demonic Junker (Vehicle) + Chandra's Ignition (finalizador) + Nexus of Becoming (cópia real) + bug do Trash for Treasure — 2026-09-15
 
 **Gatilho:** usuário rejeitou os 3 candidatos de corte que eu tinha
