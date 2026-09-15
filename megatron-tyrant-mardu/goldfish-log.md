@@ -4,6 +4,29 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## +Triplicate Titan / -Phyrexian Triniform — 2026-09-15
+
+**Gatilho:** usuário confirmou a troca recomendada numa rodada anterior.
+Mesmo custo/corpo/gatilho de morte ({9}, 9/9, 3 tokens 3/3 na morte) —
+diferença real: Titan tem evasão embutida (flying/vigilance/trample no
+corpo e em cada token, 📊 cosmético aqui, sem bloqueio modelado, mas
+real numa mesa de verdade); Triniform tinha Encore {12} que nunca foi
+implementado (gap real, resolvido pela remoção). Detalhes em
+`checklist-oraculo.md`.
+
+**Bug lateral achado no processo:** `build_library()` só filtrava a
+seção "## Comandante", não garantia que só lia "## Deck"/"## Terrenos" —
+meu próprio parágrafo de histórico (que tem uma linha começando com
+"3 tokens...") virou 3 cartas fantasma na library (99→102) até eu
+consertar o parser pra só aceitar as 2 seções certas.
+
+**Validação:** smoke test (99 cartas, 0 desconhecidas/duplicatas) + 1
+teste unitário isolado (morte cria 3 Golem Token) + batch 2000 jogos
+(`Avg Golem tokens via morte do Triplicate Titan: 0.07`) + regressão de
+20.000 partidas, 0 exceções.
+
+---
+
 ## Correção da heurística do Ultron + bug de contagem em rocks_mana() — 2026-09-15
 
 **Gatilho:** usuário corrigiu minha explicação sobre o Ultron não ter

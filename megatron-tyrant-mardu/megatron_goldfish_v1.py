@@ -140,7 +140,16 @@ add("Noxious Gearhulk", 6, "creature", {"artifact", "noxious_gearhulk"}, power=5
 add("Steel Seraph", 6, "creature", {"artifact", "steel_seraph"}, power=5, toughness=4, pips={"W": 1})
 add("Demonic Junker", 7, "creature", {"artifact", "demonic_junker"}, power=4, toughness=3, pips={"B": 1})
 add("Bygone Colossus", 9, "creature", {"artifact", "warp3"}, power=9, toughness=9, pips={})
-add("Phyrexian Triniform", 9, "creature", {"artifact", "triniform_death_tokens"}, power=9, toughness=9, pips={})
+# Achado real 2026-09-15: trocada por Triplicate Titan (mesmo {9}, 9/9,
+# artifact creature, mesmo "on death: create three 3/3 Golem artifact
+# creature tokens"). Diferenca real do oraculo: Titan tem Flying,
+# vigilance, trample no proprio corpo + cada 1 dos 3 tokens ganha 1
+# dessas palavras-chave -- mas sem bloqueio real modelado pra ninguem
+# no arquivo, isso e' 100% cosmetico aqui (ver `death_trigger`). Titan
+# NAO tem o Encore {12} do Triniform (habilidade real, estruturalmente
+# modelavel via NUM_OPPONENTS mas nunca implementada -- vira moot com a
+# troca, nao precisa mais ser corrigida).
+add("Triplicate Titan", 9, "creature", {"artifact"}, power=9, toughness=9, pips={})
 add("Skitterbeam Battalion", 9, "creature", {"artifact", "skitterbeam"}, power=4, toughness=4, pips={})
 add("Summon: Bahamut", 9, "creature", {"saga_bahamut"}, power=9, toughness=9, pips={})
 add("Metalwork Colossus", 11, "creature", {"artifact", "metalwork_colossus"}, power=10, toughness=10, pips={})
@@ -318,8 +327,10 @@ def build_library():
             if s.startswith("## Terrenos"):
                 section = "land"
                 continue
+            if section not in ("deck", "land"):
+                continue
             m = re.match(r'^(\d+)\s+(.+)$', s)
-            if not m or section == "cmd":
+            if not m:
                 continue
             n, name = int(m.group(1)), m.group(2)
             entries.extend([name] * n)
@@ -387,7 +398,7 @@ class GameState:
     temp_creatures_pending_sacrifice: list = field(default_factory=list)
     temp_creatures_pending_exile: list = field(default_factory=list)
     daretti_emblem_pending_return: list = field(default_factory=list)
-    triniform_tokens_total: int = 0
+    triplicate_titan_tokens_total: int = 0
     bahamut_entered_turn: Optional[int] = None
     bahamut_chapter: int = 0
     bahamut_mega_flare_total: int = 0
@@ -560,7 +571,7 @@ def get_power(state: GameState, name: str) -> int:
 
 def creature_enters(state: GameState, name: str, from_hand: bool = True, token: bool = False):
     """Ponto central de TODA criatura entrando em campo -- cast normal,
-    token (Feldon/Skitterbeam/Osgir/Triniform), ou reanimacao (Trash for
+    token (Feldon/Skitterbeam/Osgir/Triplicate Titan), ou reanimacao (Trash for
     Treasure/Ayara-flip/Anrakyr/Mishra unearth/Portal to Phyrexia). Dispara
     Warstorm Surge aqui, no unico lugar real do arquivo onde ETB de
     criatura acontece -- garante que NENHUM ponto de entrada escape do
@@ -610,8 +621,8 @@ def try_genesis_chamber_token(state: GameState, entering_was_token: bool):
 def sacrifice(state: GameState, name: str):
     """Ponto central de TODO sacrificio do arquivo -- remove de
     battlefield, poe no graveyard, dispara os gatilhos reais de morte
-    (Scrap Trawler, toolbox Myr Retriever/Junk Diver, Phyrexian
-    Triniform) e os payoffs que disparam em QUALQUER
+    (Scrap Trawler, toolbox Myr Retriever/Junk Diver, Triplicate
+    Titan) e os payoffs que disparam em QUALQUER
     sacrificio de criatura (Rakdos, the Muscle -- 'whenever you sacrifice
     another creature', gatilho automatico, nao e' escolha)."""
     if name not in state.battlefield:
@@ -692,13 +703,21 @@ def rakdos_muscle_trigger(state: GameState, dying_name: str):
 def death_trigger(state: GameState, dying_name: str):
     """Gatilhos reais de 'quando isso morre' que nao sao o Scrap Trawler
     nem o Rakdos (esses sao genericos, ja tratados em `sacrifice()`)."""
-    if dying_name == "Phyrexian Triniform":
-        token_name = "Phyrexian Golem Token"
+    if dying_name == "Triplicate Titan":
+        # "When this creature dies, create a 3/3 colorless Golem artifact
+        # creature token with flying, a ... with vigilance, and a ...
+        # with trample." As 3 palavras-chave ficam 📊 estrutural -- sem
+        # bloqueio real modelado pra ninguem no arquivo inteiro (nenhuma
+        # criatura tem essa restricao), flying/vigilance/trample nao tem
+        # efeito numerico possivel aqui; os 3 tokens continuam 3/3
+        # identicos na pratica (mesma convencao de simplificacao de
+        # copy-effects/tokens ja usada no arquivo inteiro).
+        token_name = "Golem Token"
         if token_name not in CARD_DB:
             add(token_name, 0, "creature", {"artifact"}, power=3, toughness=3)
         for _ in range(3):
             creature_enters(state, token_name, from_hand=False, token=True)
-        state.triniform_tokens_total += 3
+        state.triplicate_titan_tokens_total += 3
     if dying_name in ("Myr Retriever", "Junk Diver"):
         pool = [c for c in state.graveyard if c != dying_name and is_artifact_card(c)]
         if pool:
@@ -812,7 +831,7 @@ def make_token_copy_name(base_name: str) -> str:
     return token_name
 
 
-TOKEN_FIXED_NAMES = {"Phyrexian Golem Token", "Nexus Golem Token", "Shapeshifter Token",
+TOKEN_FIXED_NAMES = {"Golem Token", "Nexus Golem Token", "Shapeshifter Token",
                      "Myr Token", "Fish Token", "Robot Token"}
 # Correcao 2026-09-09: "Myr Token" (Genesis Chamber) faltava aqui -- gap
 # real, pia_revolution_trigger() teria disparado errado ('nontoken
@@ -1711,7 +1730,7 @@ def try_nexus_of_becoming(state: GameState):
     mais barata e' sempre lucro liquido por um corpo 3/3 gratis + gatilho
     do Warstorm Surge). Simplificacao documentada: o token nao herda os
     'outros tipos' do card original (mesma convencao ja usada pro
-    Phyrexian Golem Token/Shapeshifter Token)."""
+    Golem Token/Shapeshifter Token)."""
     if "Nexus of Becoming" not in state.battlefield:
         return
     draw_cards(state, 1)
@@ -2304,6 +2323,8 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
           f"{avg([s.melded_moxite_tokens_total for s in states]):.2f}")
     print(f"Avg copias baratas via Ultron (rocks/Melded Moxite, MV<3): "
           f"{avg([s.ultron_cheap_copies_total for s in states]):.2f}")
+    print(f"Avg Golem tokens via morte do Triplicate Titan: "
+          f"{avg([s.triplicate_titan_tokens_total for s in states]):.2f}")
     print(f"Avg vida final: {avg([s.life for s in states]):.2f}")
     own_ko = sum(1 for s in states if s.life <= 0)
     print(f"Partidas em que os PROPRIOS efeitos derrubam minha vida a 0 ou menos: {100*own_ko/n:.1f}%")

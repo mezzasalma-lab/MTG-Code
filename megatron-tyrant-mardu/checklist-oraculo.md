@@ -1,5 +1,59 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## +Triplicate Titan / -Phyrexian Triniform — 2026-09-15
+
+**Gatilho:** usuário confirmou a troca que eu tinha recomendado numa
+rodada anterior (nunca aplicada). Reverifiquei o oráculo antes de
+aplicar, seguindo a Regra #4 mesmo numa troca já "decidida".
+
+**Oráculo real (ambas {9}, Artifact Creature 9/9):**
+> Phyrexian Triniform: "When this creature dies, create three 3/3
+> colorless Phyrexian Golem artifact creature tokens. Encore {12}
+> ({12}, Exile this card from your graveyard: For each opponent, create
+> a token copy that attacks that opponent this turn if able. They gain
+> haste. Sacrifice them at the beginning of the next end step. Activate
+> only as a sorcery.)"
+>
+> Triplicate Titan: "Flying, vigilance, trample. When this creature
+> dies, create a 3/3 colorless Golem artifact creature token with
+> flying, a ... with vigilance, and a ... with trample."
+
+**Achado real ao comparar:** o Encore do Triniform NUNCA tinha sido
+implementado (só o death-trigger dos 3 tokens tinha dispatch) — e é
+estruturalmente modelável via `NUM_OPPONENTS=3` (mesma convenção usada
+pra todo "for each opponent" no arquivo). Isso seria um gap real a
+corrigir SE o Triniform ficasse na lista — como ele sai com a troca, o
+gap fica resolvido pela remoção, não precisa de correção separada.
+
+**Clausula-a-clausula do Triplicate Titan:**
+1. ✅ "on death: create 3x 3/3 Golem artifact creature token" —
+   `death_trigger()`, dispatch por nome (`dying_name == "Triplicate
+   Titan"`), token renomeado de "Phyrexian Golem Token" pra "Golem
+   Token" (nome real do tipo de token da carta).
+2. 📊 Flying/vigilance/trample (no corpo E em cada 1 dos 3 tokens) —
+   sem bloqueio real modelado pra NINGUÉM no arquivo inteiro (nenhuma
+   criatura tem essa restrição em lugar nenhum), então evasão/
+   vigilância/trample não tem efeito numérico possível aqui —
+   estrutural, documentado no comentário do `death_trigger`, não
+   julgamento de valor.
+
+**Bug lateral achado ao editar `lista.md`:** `build_library()` só
+excluía a seção "## Comandante" (`section == "cmd"`) do parser de
+contagem — qualquer linha de PROSA antes de "## Comandante" que por
+acaso começasse com um número (ex.: "3 tokens ganha..." dentro do meu
+próprio parágrafo de histórico) era lida como entrada de decklist.
+Confirmado ao adicionar o parágrafo desta troca: biblioteca inflou de 99
+pra 102 cartas com 3 "cartas" fantasma vindas do texto corrido. Corrigido
+pra só aceitar linhas dentro de `section in ("deck", "land")` — fecha a
+classe inteira do bug, não só o caso específico que apareceu agora.
+
+**Validação:** smoke test (99 cartas, 0 desconhecidas/duplicatas, re-
+confirmado depois do fix do parser) + teste unitário isolado (morte do
+Triplicate Titan cria exatamente 3 "Golem Token", contador
+`triplicate_titan_tokens_total` bate) + batch de 2000 jogos (novo
+contador confirmado disparando: 0,07 Golem tokens/partida) + regressão
+de 20.000 partidas, 0 exceções.
+
 ## Correção da heurística do Ultron + bug real de contagem em rocks_mana() — 2026-09-15
 
 **Gatilho:** eu tinha descrito pro usuário que Fellwar Stone "não vira

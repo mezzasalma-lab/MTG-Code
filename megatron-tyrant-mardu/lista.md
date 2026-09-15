@@ -301,6 +301,33 @@ Melded Moxite se conecta com MAIS motores existentes da lista
 (Ultron/Metalwork Colossus/toolbox de solda/flip do Megatron) do que
 Demand Answers tocava — troca 1-por-1 confirmada pelo usuário.
 
+**Correção 2026-09-15 — +Triplicate Titan / -Phyrexian Triniform**: troca
+1-por-1 confirmada pelo usuário depois de eu recomendar em rodada
+anterior (nunca aplicada até agora). Oráculo real via Scryfall — as duas
+são {9}, artifact creature 9/9, mesmo "on death: create three 3/3
+colorless Golem artifact creature tokens":
+
+- **Triplicate Titan**: corpo com Flying/Vigilance/Trample + cada 1 dos
+  3 tokens ganha 1 dessas palavras-chave. No simulador isso é 100%
+  cosmético (`death_trigger` documenta: sem bloqueio real modelado pra
+  ninguém no arquivo inteiro, então evasão/vigilância/trample não têm
+  efeito numérico possível aqui) — mas num jogo real contra bloqueadores
+  de verdade, os 3 tokens ficam individualmente mais difíceis de conter
+  (um voa, um atropela, um mantém a defesa) em vez de 3 vanillas iguais.
+- **Phyrexian Triniform**: sem palavras-chave, mas tem Encore {12}
+  ("exile from graveyard: for each opponent, create a hasty token copy
+  that attacks that opponent, sacrifice at end step") — habilidade real
+  e estruturalmente modelável (via `NUM_OPPONENTS=3`), mas nunca tinha
+  sido implementada (gap real encontrado ao revisar a troca). Como a
+  carta sai da lista, o gap fica resolvido pela remoção, não precisou
+  ser corrigido.
+
+Mesmo custo/corpo/gatilho de morte nos dois — a diferença real é
+"evasão garantida nos tokens" (Titan) vs "1 burst adicional de 12 mana
+tarde de jogo" (Triniform, nunca implementado). Pra Commander real com
+oponentes de verdade, evasão embutida bate reach condicional de late
+game — troca aplicada.
+
 ## Comandante
 
 1 Megatron, Tyrant
@@ -347,7 +374,6 @@ Demand Answers tocava — troca 1-por-1 confirmada pelo usuário.
 1 Osgir, the Reconstructor
 1 Path to Exile
 1 Phyrexian Arena
-1 Phyrexian Triniform
 1 Pia's Revolution
 1 Portal to Phyrexia
 1 Rakdos, the Muscle
@@ -369,6 +395,7 @@ Demand Answers tocava — troca 1-por-1 confirmada pelo usuário.
 1 The Eternity Elevator
 1 Trash for Treasure
 1 Treasure Nabber
+1 Triplicate Titan
 1 Ultron, Artificial Malevolence
 1 Vandalblast
 1 Warstorm Surge
