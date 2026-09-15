@@ -1,5 +1,92 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Demonic Junker (Vehicle) + Chandra's Ignition (finalizador) + Nexus of Becoming (cópia real) + bug do Trash for Treasure — 2026-09-15
+
+**Gatilho:** usuário rejeitou os 3 candidatos de corte que eu tinha
+proposto pro Dauntless Scrapbot, explicando o uso real de cada carta —
+achado real que eu tinha classificado como "estrutural/dead" por
+análise superficial, sem verificar oráculo exato ou testar o fluxo de
+cast de verdade. Ao verificar, achei 4 problemas reais (3 apontados
+pelo usuário + 1 lateral achado ao investigar).
+
+**1. Demonic Junker é VEHICLE, não Artifact Creature** — oráculo real:
+`"Artifact — Vehicle"`, `Crew 2`. Estava registrado com `ctype:
+"creature"` no `CARD_DB`, um erro de categorização real com efeito em
+cascata:
+- Disparava Warstorm Surge no ETB (errado — Vehicle não-crewado não é
+  criatura).
+- Aparecia em `ready_creatures()`/`all_attackers_combat()`, atacando
+  sozinho todo turno como se fosse criatura de verdade (errado).
+- NÃO contava pro desconto do Metalwork Colossus (`noncreature
+  artifacts you control` — devia contar, já que Vehicle não-crewado É
+  artefato não-criatura).
+
+  Corrigido: `ctype: "artifact"`. A habilidade real do ETB (`"for each
+  player, destroy up to one target creature that player controls"`)
+  estava um `pass` completo (tratada erroneamente como 📊 estrutural,
+  igual Noxious Gearhulk) — mas "for each player" bate em CADA
+  oponente de verdade (mesma convenção de "each opponent" já usada no
+  arquivo, não é alvo único isolado). Implementado:
+  `interaction_spells_cast_total += NUM_OPPONENTS` + novo contador
+  dedicado `demonic_junker_removals_total`. Usuário confirmou que nunca
+  vai crewar (Crew 2 fica de fora, 0 — decisão consciente, não
+  estrutural) — **decisão revertida na mesma sessão, ver seção
+  seguinte**.
+
+**2. Chandra's Ignition era wrath incondicional excluído, mas é
+finalizador condicional** — usuário: *"se tiver 2 oponentes com 7 ou
+menos de vida vale usar no Megatron e eliminar estes 2, além de ser
+boardwipe"*. Oráculo real: `"Target creature you control deals damage
+equal to its power to each other creature and each opponent."` A carta
+estava em `NO_SELF_HARM_EXCLUDE`, nunca conjurada — tratando o efeito
+só pelo lado ruim (perder o próprio board) sem modelar o lado bom
+(queima real em TODOS os oponentes, "each opponent" × NUM_OPPONENTS).
+Nova `try_chandras_ignition()`: só ativa quando `proxy_damage_total >=
+CHANDRAS_IGNITION_LETHAL_THRESHOLD` (70, aproximação documentada — sem
+vida real de oponente rastreada, é a melhor métrica proxy disponível),
+sempre aponta pro Megatron, mata minhas próprias criaturas com
+resistência ≤ poder do Megatron via `sacrifice()` (dispara os gatilhos
+reais de morte).
+
+**3. Nexus of Becoming criava token vanilla desconectado, não uma
+cópia real** — usuário: *"Permite criar tokens de Demonic Junker...
+alimentando o sac do Megatron"*. Oráculo real: `"create a token that's
+a copy of the exiled card, except it's a 3/3 Golem artifact creature in
+addition to its other types."` A versão anterior exilava a carta de
+MENOR MV e criava um "Nexus Golem Token" genérico sem nenhuma tag/
+habilidade da carta original — nunca modelava a cópia de verdade.
+Corrigido: nova `make_nexus_copy_name()` (mesma técnica de aliasing do
+`make_token_copy_name`, preservando tags/MV do original, só
+sobrescrevendo poder/resistência pra 3/3 — regra real de cópia); escolha
+mudou de MENOR pra MAIOR MV (exilar o card mais caro da mão é "cheatar"
+o ETB mais valioso pro campo pelo preço da ativação). Confirmado com
+teste: exilar Demonic Junker via Nexus faz o token 3/3 disparar a
+remoção real dele E manter MV 7 (fuel pro Megatron/desconto do
+Metalwork Colossus).
+
+**4. Bug lateral achado ao verificar o caminho de Trash for Treasure**
+— ao confirmar que a função dedicada roda corretamente, descobri que o
+loop genérico de castables (`main_phase`) conjurava "Trash for
+Treasure" como qualquer sorcery afordável ANTES da função dedicada
+(`try_trash_for_treasure`, que paga o custo adicional real de
+sacrificar um artefato) rodar — `resolve_instant_sorcery()` não tem
+dispatch pra essa tag, então a carta era gasta (mana + carta pro
+cemitério) por ZERO efeito. Confirmado com teste isolado ANTES da
+correção. Corrigido: "Trash for Treasure" adicionada à exclusão do loop
+genérico (mesmo conjunto do `NO_SELF_HARM_EXCLUDE`, motivo diferente —
+custo adicional não pago pelo caminho genérico).
+
+**Validação:** smoke test (99 cartas, 0 desconhecidas/duplicatas) + 5
+testes unitários isolados (Demonic Junker não dispara Warstorm/não
+ataca sozinho; Chandra's Ignition não ativa com pouco dano
+acumulado/ativa e poupa criatura resistente com dano suficiente; Nexus
+exila a maior MV e o token herda a habilidade real) + A/B 2000 jogos
+mesma seed (métricas estáveis, artefatos sacrificados 3,64→3,73) +
+regressão de 20.000 partidas, 0 exceções. Novos contadores confirmados
+disparando: `demonic_junker_removals_total` 0,31/partida, Chandra's
+Ignition usada como finalizador em 0,1% dos jogos (raro mas real —
+exige atingir o threshold dentro de só 8 turnos simulados).
+
 ## +Triplicate Titan / -Phyrexian Triniform — 2026-09-15
 
 **Gatilho:** usuário confirmou a troca que eu tinha recomendado numa

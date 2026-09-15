@@ -96,6 +96,21 @@ MEGATRON_VEHICLE_POWER = 4
 MEGATRON_PIPS = {"R": 1, "W": 1, "B": 1}
 
 NUM_OPPONENTS = 3  # premissa declarada (mesa de 4), nunca vida real rastreada
+CHANDRAS_IGNITION_LETHAL_THRESHOLD = 70
+# Achado real 2026-09-15 (usuario apontou o uso real da carta -- "se
+# tiver 2 oponentes com 7 ou menos de vida vale usar no Megatron e
+# eliminar estes 2, alem de ser boardwipe"): Chandra's Ignition e' um
+# FINALIZADOR condicional, nao um wrath simetrico incondicional -- so'
+# vale perder o proprio board quando os oponentes ja' estao baixos.
+# Este simulador NAO rastreia vida real por oponente (so' o agregado
+# `proxy_damage_total`), entao 70 e' uma aproximacao documentada: se ja'
+# saiu esse tanto de dano proxy acumulado (mais de 1,5x uma vida inicial
+# de 40), e' razoavel supor que pelo menos parte da mesa esta' baixa o
+# suficiente pra valer o wipe + queima. Nao e' exato (nao pode ser, sem
+# vida real de oponente) -- e' metrica proxy, mesma convencao do resto
+# do arquivo pra efeito opponent-dependente, em vez de ignorar a carta
+# inteira (que e' o que a versao anterior fazia, via
+# `NO_SELF_HARM_EXCLUDE`).
 
 # --- Mana / rampa ------------------------------------------------------------
 add("Sol Ring", 1, "artifact", {"rock2"})
@@ -138,7 +153,15 @@ add("Ironsoul Enforcer", 5, "creature", {"artifact", "ironsoul"}, power=4, tough
 add("Combustible Gearhulk", 6, "creature", {"artifact", "combustible_gearhulk"}, power=6, toughness=6, pips={"R": 2})
 add("Noxious Gearhulk", 6, "creature", {"artifact", "noxious_gearhulk"}, power=5, toughness=4, pips={"B": 2})
 add("Steel Seraph", 6, "creature", {"artifact", "steel_seraph"}, power=5, toughness=4, pips={"W": 1})
-add("Demonic Junker", 7, "creature", {"artifact", "demonic_junker"}, power=4, toughness=3, pips={"B": 1})
+# Achado real 2026-09-15 (usuario apontou o uso real -- removal + fuel
+# pro Megatron): oraculo real e' "Artifact -- VEHICLE" (Crew 2), NAO
+# "Artifact Creature"! ctype corrigido pra "artifact" -- Vehicle
+# desanimado nao e' criatura (nao dispara Warstorm Surge no ETB, nao
+# ataca sozinho em `all_attackers_combat`, CONTA pro desconto do
+# Metalwork Colossus como artefato nao-criatura). Usuario confirmou que
+# nunca vai crewar -- Crew 2 fica de fora do modelo (0, decisao
+# consciente do usuario, nao estrutural).
+add("Demonic Junker", 7, "artifact", {"demonic_junker"}, power=4, toughness=3, pips={"B": 1})
 add("Bygone Colossus", 9, "creature", {"artifact", "warp3"}, power=9, toughness=9, pips={})
 # Achado real 2026-09-15: trocada por Triplicate Titan (mesmo {9}, 9/9,
 # artifact creature, mesmo "on death: create three 3/3 Golem artifact
@@ -440,6 +463,9 @@ class GameState:
     melded_moxite_loots_total: int = 0
     melded_moxite_tokens_total: int = 0
     ultron_cheap_copies_total: int = 0
+    demonic_junker_removals_total: int = 0
+    chandras_ignition_casts_total: int = 0
+    chandras_ignition_own_creatures_lost_total: int = 0
 
 
 def draw_cards(state: GameState, n: int):
@@ -831,7 +857,7 @@ def make_token_copy_name(base_name: str) -> str:
     return token_name
 
 
-TOKEN_FIXED_NAMES = {"Golem Token", "Nexus Golem Token", "Shapeshifter Token",
+TOKEN_FIXED_NAMES = {"Golem Token", "Shapeshifter Token",
                      "Myr Token", "Fish Token", "Robot Token"}
 # Correcao 2026-09-09: "Myr Token" (Genesis Chamber) faltava aqui -- gap
 # real, pia_revolution_trigger() teria disparado errado ('nontoken
@@ -842,10 +868,11 @@ TOKEN_FIXED_NAMES = {"Golem Token", "Nexus Golem Token", "Shapeshifter Token",
 
 def is_token_name(name: str) -> bool:
     """Distingue token de carta real -- necessario pro Pia's Revolution
-    ('nontoken artifact'). Cobre tanto os tokens-copia dinamicos
-    (`make_token_copy_name`, sufixo ' (copia)') quanto os tokens de nome
-    fixo (Phyrexian Golem/Nexus Golem/Shapeshifter/Myr/Fish)."""
-    return name.endswith(" (copia)") or name in TOKEN_FIXED_NAMES
+    ('nontoken artifact'). Cobre os tokens-copia dinamicos
+    (`make_token_copy_name`, sufixo ' (copia)'; `make_nexus_copy_name`,
+    sufixo ' (Nexus)') e os tokens de nome fixo (Golem/Nexus Golem/
+    Shapeshifter/Myr/Fish)."""
+    return name.endswith(" (copia)") or name.endswith(" (Nexus)") or name in TOKEN_FIXED_NAMES
 
 
 def resolve_etb(state: GameState, name: str, token: bool = False):
@@ -885,11 +912,20 @@ def resolve_etb(state: GameState, name: str, token: bool = False):
         pass
 
     if "demonic_junker" in tags:
-        # "for each player, destroy up to one target creature that player
-        # controls. If a creature you controlled was destroyed, put two
-        # +1/+1 counters." Nunca destruo a minha propria por escolha
-        # (perde mais do que ganha) -- 📊, sem efeito numerico.
-        pass
+        # "When this Vehicle enters, for each player, destroy up to one
+        # target creature that player controls. If a creature you
+        # controlled was destroyed this way, put two +1/+1 counters on
+        # this Vehicle." Achado real 2026-09-15 (usuario apontou: isso E'
+        # removal real, "for each player" bate em CADA oponente, nao so'
+        # no meu lado -- mesma convencao de "each opponent" ja usada em
+        # todo o arquivo, NAO e' 📊 estrutural como Noxious Gearhulk
+        # (aquele e' "another target creature", so' 1 alvo isolado, esse
+        # aqui e' garantido por oponente). Nunca destruo minha propria
+        # criatura por escolha (os contadores so' importam crewado, e o
+        # usuario confirmou que nunca vai crewar -- ctype corrigido pra
+        # "artifact" acima, Vehicle nao e' criatura por padrao).
+        state.interaction_spells_cast_total += NUM_OPPONENTS
+        state.demonic_junker_removals_total += NUM_OPPONENTS
 
     if "skitterbeam" in tags and not token:
         # "When this creature enters, if you cast it [pelo custo cheio,
@@ -1072,6 +1108,40 @@ def try_trash_for_treasure(state: GameState):
         state.battlefield.append(target)
         resolve_etb(state, target)
     state.weld_activations_total += 1
+
+
+def try_chandras_ignition(state: GameState):
+    """Chandra's Ignition: 'Target creature you control deals damage
+    equal to its power to each other creature and each opponent.'
+    Achado real 2026-09-15 (usuario apontou que e' um finalizador
+    condicional, nao um wrath incondicional -- ver
+    `CHANDRAS_IGNITION_LETHAL_THRESHOLD`): so' conjura quando ja' saiu
+    dano proxy suficiente pra supor os oponentes numa faixa de queima
+    letal. Sempre aponta pro Megatron (maior poder recorrente). "Each
+    opponent" bate em todos (x NUM_OPPONENTS, mesma convencao do
+    arquivo); "each OTHER creature" mata minhas proprias tambem --
+    processado via `sacrifice()` pra disparar os gatilhos reais de
+    morte (Scrap Trawler/Pia's Revolution/Rakdos/Triplicate Titan etc),
+    nao um efeito silencioso."""
+    if "Chandra's Ignition" not in state.hand or not can_cast(state, "Chandra's Ignition"):
+        return
+    if state.proxy_damage_total < CHANDRAS_IGNITION_LETHAL_THRESHOLD:
+        return
+    if COMMANDER not in state.battlefield or COMMANDER not in ready_creatures(state):
+        return
+    power = get_power(state, COMMANDER)
+    if power <= 0:
+        return
+    spend_mana(state, effective_cost(state, "Chandra's Ignition"))
+    state.hand.remove("Chandra's Ignition")
+    state.graveyard.append("Chandra's Ignition")
+    others = [n for n in state.battlefield if is_creature_card(n) and n != COMMANDER]
+    for n in others:
+        if CARD_DB[n].toughness <= power:
+            sacrifice(state, n)
+            state.chandras_ignition_own_creatures_lost_total += 1
+    proxy_drain(state, power * NUM_OPPONENTS)
+    state.chandras_ignition_casts_total += 1
 
 
 def try_metalwork_colossus_recursion(state: GameState):
@@ -1717,32 +1787,50 @@ def try_bahamut_saga_tick(state: GameState):
         state.bahamut_mega_flare_total += 1
 
 
+def make_nexus_copy_name(base_name: str) -> str:
+    """Token de Nexus of Becoming: 'a token that's a copy of the exiled
+    card, except it's a 3/3 Golem artifact creature in addition to its
+    other types.' Achado real 2026-09-15 (usuario apontou: exilar uma
+    carta cara de verdade -- ex. Demonic Junker -- e' 'cheating' ela pra
+    campo pelo custo da ativacao, nao pelo mana cheio, E o token ainda
+    dispara a habilidade ETB real da carta copiada). Diferente do
+    `make_token_copy_name` (Ultron/Osgir/Feldon, copia EXATA, mesmo P/T),
+    aqui o oraculo manda sobrescrever poder/resistencia pra 3/3 --
+    preserva as TAGS (dispatch de ETB real) e o MV (pro Metalwork
+    Colossus/fuel do Megatron -- copia mantem MV do original, so' P/T e'
+    sobrescrito, regra real de copia)."""
+    token_name = base_name + " (Nexus)"
+    if token_name not in CARD_DB:
+        base = CARD_DB[base_name]
+        add(token_name, base.mv, "creature", base.tags | {"artifact"}, power=3, toughness=3, pips={})
+    return token_name
+
+
 def try_nexus_of_becoming(state: GameState):
     """Nexus of Becoming: 'At the beginning of combat on your turn, draw
     a card. Then you may exile an artifact or creature card from your
     hand. If you do, create a token that's a copy of the exiled card,
     except it's a 3/3 Golem artifact creature in addition to its other
-    types.' Achado real 2026-09-04 (auditoria sistematica pedida pelo
-    usuario depois de eu ter esquecido esta carta 2x): a tag
-    `nexus_combat_draw_copy` nunca foi lida em lugar nenhum do arquivo --
-    mecanica fantasma pura, igual Ragavan/Daretti Rocketeer antes dela.
-    Exila sempre a carta artefato/criatura de MENOR MV da mao (perder a
-    mais barata e' sempre lucro liquido por um corpo 3/3 gratis + gatilho
-    do Warstorm Surge). Simplificacao documentada: o token nao herda os
-    'outros tipos' do card original (mesma convencao ja usada pro
-    Golem Token/Shapeshifter Token)."""
+    types.' Achado real 2026-09-15 (correcao do usuario, ver
+    `make_nexus_copy_name`): a versao anterior exilava a carta de MENOR
+    MV e criava um token vanilla desconectado -- mas o oraculo real diz
+    que o token E' uma copia (habilidades/ETB reais da carta original),
+    entao o certo e' exilar a carta de MAIOR MV disponivel (maior ETB
+    real pra "cheatar" pra campo pelo preco de uma ativacao de combate,
+    mesma logica de `best_megatron_fuel` -- prioriza sempre o maior
+    valor). Dispara em `beginning of combat`, DEPOIS do main_phase (onde
+    tudo que cabia no mana ja' foi conjurado) -- exilar o que restou na
+    mao e' sempre lucro liquido aqui."""
     if "Nexus of Becoming" not in state.battlefield:
         return
     draw_cards(state, 1)
     candidates = [c for c in state.hand if c in CARD_DB and (is_artifact_card(c) or is_creature_card(c))]
     if not candidates:
         return
-    exiled = min(candidates, key=lambda n: CARD_DB[n].mv)
+    exiled = max(candidates, key=lambda n: CARD_DB[n].mv)
     state.hand.remove(exiled)
     state.exile.append(exiled)
-    token_name = "Nexus Golem Token"
-    if token_name not in CARD_DB:
-        add(token_name, 0, "creature", {"artifact"}, power=3, toughness=3)
+    token_name = make_nexus_copy_name(exiled)
     creature_enters(state, token_name, from_hand=False, token=True)
     state.nexus_tokens_created_total += 1
 
@@ -1905,6 +1993,16 @@ NO_SELF_HARM_EXCLUDE = {
     # mesma categoria de simplificacao estrutural de sempre, nao e'
     # fantasma -- a tag continua definida e documentada).
     "Blacksmith's Skill", "Clever Concealment",
+    # Achado real 2026-09-15: sorcery com CUSTO ADICIONAL real (sacrificio)
+    # que `resolve_instant_sorcery()` nao paga -- sem essa exclusao, o
+    # loop generico de castables via' "Trash for Treasure" como qualquer
+    # sorcery afordavel, gastava a mana + a carta, e nunca chamava a
+    # logica real (`try_trash_for_treasure`, que exige sacrificar um
+    # artefato E escolher alvo no cemiterio). Confirmado com teste
+    # isolado: mana gasta, carta pro cemiterio, ZERO reanimacao
+    # (`weld_activations_total` ficava em 0). So' a funcao dedicada, mais
+    # tarde no `main_phase`, deve conjurar essa carta.
+    "Trash for Treasure",
 }
 
 
@@ -2058,6 +2156,7 @@ def main_phase(state: GameState):
     try_goblin_welder(state)
     try_scrap_welder(state)
     try_trash_for_treasure(state)
+    try_chandras_ignition(state)
     try_goblin_engineer_activation(state)
     try_scarecrone(state)
     try_mishra_unearth(state)
@@ -2325,6 +2424,11 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
           f"{avg([s.ultron_cheap_copies_total for s in states]):.2f}")
     print(f"Avg Golem tokens via morte do Triplicate Titan: "
           f"{avg([s.triplicate_titan_tokens_total for s in states]):.2f}")
+    print(f"Avg remocoes via Demonic Junker (ETB, por oponente): "
+          f"{avg([s.demonic_junker_removals_total for s in states]):.2f}")
+    chandras = sum(1 for s in states if s.chandras_ignition_casts_total > 0)
+    print(f"Partidas em que Chandra's Ignition foi usada como finalizador: {100*chandras/n:.1f}% "
+          f"| Avg criaturas proprias perdidas pra ela: {avg([s.chandras_ignition_own_creatures_lost_total for s in states]):.2f}")
     print(f"Avg vida final: {avg([s.life for s in states]):.2f}")
     own_ko = sum(1 for s in states if s.life <= 0)
     print(f"Partidas em que os PROPRIOS efeitos derrubam minha vida a 0 ou menos: {100*own_ko/n:.1f}%")

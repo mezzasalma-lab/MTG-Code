@@ -4,6 +4,38 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Demonic Junker (Vehicle) + Chandra's Ignition (finalizador) + Nexus of Becoming (cópia real) + bug do Trash for Treasure — 2026-09-15
+
+**Gatilho:** usuário rejeitou meus 3 candidatos de corte pro Dauntless
+Scrapbot explicando o uso real de cada carta — expôs que eu tinha
+classificado 3 cartas como "estrutural/dead" sem verificar a fundo.
+Detalhes completos em `checklist-oraculo.md`. Resumo:
+
+1. **Demonic Junker é Vehicle** (não criatura) — `ctype` corrigido,
+   parava de disparar Warstorm Surge/atacar sozinho errado, passa a
+   contar pro desconto do Metalwork Colossus. Habilidade real de
+   remoção ("for each player, destroy...") implementada de verdade
+   (bate em cada oponente, não é 📊).
+2. **Chandra's Ignition é finalizador condicional**, não wrath
+   incondicional — nova função dedicada só ativa com dano proxy
+   acumulado alto (aproximação de "oponentes na faixa letal").
+3. **Nexus of Becoming** agora copia de verdade a carta exilada (tags +
+   MV preservados, só P/T pra 3/3) e escolhe a de MAIOR MV — antes
+   criava um token vanilla desconectado e escolhia a de MENOR MV
+   (lógica invertida do que a carta realmente faz).
+4. **Bug lateral**: `Trash for Treasure` era consumida pelo loop
+   genérico de cast antes da função dedicada rodar (mana + carta
+   perdidos, zero efeito) — confirmado com teste isolado antes de
+   corrigir.
+
+**Validação:** smoke test + 5 testes unitários isolados + A/B 2000
+jogos mesma seed (métricas estáveis) + regressão de 20.000 partidas, 0
+exceções. `demonic_junker_removals_total` confirmado em 0,31/partida;
+Chandra's Ignition disparou como finalizador em 0,1% dos jogos (raro
+mas real, dentro de só 8 turnos simulados).
+
+---
+
 ## +Triplicate Titan / -Phyrexian Triniform — 2026-09-15
 
 **Gatilho:** usuário confirmou a troca recomendada numa rodada anterior.
