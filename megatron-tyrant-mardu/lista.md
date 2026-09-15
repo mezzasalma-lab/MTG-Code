@@ -269,6 +269,38 @@ do modelo — simplificação documentada, mesma convenção de todo
 copy-effect do arquivo (token copiado fica exatamente igual ao
 original).
 
+**Correção 2026-09-15 — +Melded Moxite / -Demand Answers**: usuário
+avaliou (após eu confirmar oráculo real via Scryfall, ambas {1}{R},
+Edge of Eternities 2025-08-01) que as duas fazem o mesmo "discard 1,
+draw 2" na prática, mas pediu pra comparar contra os motores do deck
+antes de decidir — não power level isolado (isso ficou registrado como
+regra permanente no `CLAUDE.md`, Regra #4). Comparação real:
+
+- **Melded Moxite** (artifact permanente): ETB "may discard a card. If
+  you do, draw two cards" — mesmo loot do Demand Answers, mas por ser
+  artefato NÃO-TOKEN entrando, dispara **Ultron** (`whenever another
+  nontoken artifact you control enters, pay {2}: copy` — pode dobrar o
+  loot), e reduz o custo do **Metalwork Colossus** (`{X} less... where X
+  is total mana value of noncreature artifacts you control`) enquanto
+  fica em campo. É "artifact card" de verdade, então continua alvo
+  válido de **Goblin Engineer** (busca sem restrição de tipo + reanima
+  MV≤3 — Moxite é MV 2, entra na restrição) e **Goblin Welder**/**Trash
+  for Treasure** (ambos exigem "artifact card" no cemitério) pro resto
+  do jogo. A 2ª habilidade (`{3}, Sacrifice this artifact: Create a
+  tapped 2/2 colorless Robot artifact creature token`) ainda alimenta o
+  gatilho de flip do **Megatron, Destructive Force** (sacrifica outro
+  artefato = combustível de MV) e gera mais 1 gatilho de **Warstorm
+  Surge** quando o token entra.
+- **Demand Answers** (instant): dava o loot igual, mas sendo
+  instant/sorcery nunca "entra no campo" — não toca Ultron, Metalwork
+  Colossus, nem nenhum gatilho de ETB. Uma vez resolvido e no cemitério,
+  não é mais "artifact card" — Goblin Engineer/Welder/Trash for Treasure
+  nunca conseguem tocá-lo de novo. Card morto depois de 1 uso.
+
+Melded Moxite se conecta com MAIS motores existentes da lista
+(Ultron/Metalwork Colossus/toolbox de solda/flip do Megatron) do que
+Demand Answers tocava — troca 1-por-1 confirmada pelo usuário.
+
 ## Comandante
 
 1 Megatron, Tyrant
@@ -292,7 +324,6 @@ original).
 1 Daretti, Rocketeer Engineer
 1 Daretti, Scrap Savant
 1 Decree of Pain
-1 Demand Answers
 1 Demonic Junker
 1 Faithless Looting
 1 Feldon of the Third Path
@@ -306,6 +337,7 @@ original).
 1 Ironsoul Enforcer
 1 Junk Diver
 1 Lightning Greaves
+1 Melded Moxite
 1 Metalwork Colossus
 1 Mind Stone
 1 Mishra, Tamer of Mak Fawa

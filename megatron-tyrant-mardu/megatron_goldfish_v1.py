@@ -185,7 +185,17 @@ add("Tarrian's Journal", 2, "artifact", {"tarrians_journal"}, pips={"B": 1})  # 
 
 # --- Draw / filtragem ----------------------------------------------------------
 add("Faithless Looting", 1, "sorcery", {"loot2_2_flashback"}, pips={"R": 1})
-add("Demand Answers", 2, "instant", {"demand_answers"}, pips={"R": 1})
+# Achado real 2026-09-15: trocada por Melded Moxite (Edge of Eternities,
+# 2025-08-01, legal) -- mesmo "discard 1, draw 2" do Demand Answers, mas
+# como ARTEFATO PERMANENTE entrando: dispara o Ultron (copia via {2}),
+# reduz o custo do Metalwork Colossus enquanto fica em campo, e e' alvo
+# valido de Goblin Engineer (busca sem restricao + reanima MV<=3, ela e'
+# MV 2)/Goblin Welder/Trash for Treasure (todos exigem "artifact card" no
+# cemiterio -- Demand Answers, sendo instant, nunca voltava pra lugar
+# nenhum depois de resolver). A 2a habilidade ({3}, sac: cria Robot 2/2)
+# ainda alimenta o flip do Megatron (combustivel de sacrificio) e gera
+# mais um gatilho de Warstorm Surge quando o token entra.
+add("Melded Moxite", 2, "artifact", {"melded_moxite"}, pips={"R": 1})
 add("Black Market Connections", 3, "enchantment", {"black_market"}, pips={"B": 1})
 add("Saheeli's Directive", 3, "sorcery", {"saheeli_directive"}, pips={"R": 3})
 add("Phyrexian Arena", 3, "enchantment", {"phyrexian_arena"}, pips={"B": 2})  # Achado real 2026-09-03
@@ -416,6 +426,8 @@ class GameState:
     fountainport_draws_total: int = 0
     fountainport_tokens_total: int = 0
     tarrians_journal_draws_total: int = 0
+    melded_moxite_loots_total: int = 0
+    melded_moxite_tokens_total: int = 0
 
 
 def draw_cards(state: GameState, n: int):
@@ -773,7 +785,7 @@ def make_token_copy_name(base_name: str) -> str:
 
 
 TOKEN_FIXED_NAMES = {"Phyrexian Golem Token", "Nexus Golem Token", "Shapeshifter Token",
-                     "Myr Token", "Fish Token"}
+                     "Myr Token", "Fish Token", "Robot Token"}
 # Correcao 2026-09-09: "Myr Token" (Genesis Chamber) faltava aqui -- gap
 # real, pia_revolution_trigger() teria disparado errado ('nontoken
 # artifact') se um Myr Token artefato fosse sacrificado como fodder em
@@ -891,6 +903,23 @@ def resolve_etb(state: GameState, name: str, token: bool = False):
         # Premissa: descarta 0 (mantem a mao), compra so' o +1 garantido
         # -- sem avaliacao real de quais cartas valem descartar.
         draw_cards(state, 1)
+
+    if "melded_moxite" in tags:
+        # "When this artifact enters, you may discard a card. If you do,
+        # draw two cards." Achado real 2026-09-15 (troca por Demand
+        # Answers): sempre descarta se houver carta na mao pra descartar
+        # (a propria Moxite ja' foi removida da mao antes desse ETB
+        # resolver, mesma convencao de todo o arquivo) -- +1 carta
+        # liquida garantida, mesma logica do worst_discard_target usado
+        # em todo loot do arquivo. Refoga tambem numa copia via Ultron
+        # (make_token_copy_name preserva a tag, resolve_etb dispara de
+        # novo pro token -- dobra o loot de verdade).
+        if state.hand:
+            worst = worst_discard_target(state)
+            state.hand.remove(worst)
+            state.graveyard.append(worst)
+            draw_cards(state, 2)
+            state.melded_moxite_loots_total += 1
 
     if "daretti_rocketeer" in tags:
         # "Whenever Daretti enters or attacks, choose target artifact
@@ -1059,6 +1088,26 @@ def try_mind_stone_sac(state: GameState):
     spend_mana(state, 1)
     sacrifice(state, "Mind Stone")
     draw_cards(state, 1)
+
+
+def try_melded_moxite_sac(state: GameState):
+    """Melded Moxite: '{3}, Sacrifice this artifact: Create a tapped 2/2
+    colorless Robot artifact creature token.' Mana sink de fim de main
+    phase -- so' quando sobra mana de verdade e nao ha mais nada pra
+    fazer com ela (chamada por ultimo, mesmo padrao do Mind Stone acima).
+    O proprio sacrificio (nao-token) dispara Pia's Revolution, e a
+    entrada do token (criatura) dispara Warstorm Surge de novo -- ambos
+    genericos via `sacrifice()`/`creature_enters()`, sem codigo extra
+    aqui."""
+    if "Melded Moxite" not in state.battlefield or remaining_mana(state) < 3:
+        return
+    spend_mana(state, 3)
+    sacrifice(state, "Melded Moxite")
+    token_name = "Robot Token"
+    if token_name not in CARD_DB:
+        add(token_name, 0, "creature", {"artifact"}, power=2, toughness=2)
+    creature_enters(state, token_name, from_hand=False, token=True)
+    state.melded_moxite_tokens_total += 1
 
 
 def try_goblin_engineer_activation(state: GameState):
@@ -1823,18 +1872,6 @@ def resolve_instant_sorcery(state: GameState, name: str):
             worst = worst_discard_target(state)
             state.hand.remove(worst)
             state.graveyard.append(worst)
-    elif "demand_answers" in tags:
-        # "As an additional cost, sacrifice an artifact or discard a
-        # card. Draw two cards." Prefere sacrificar fodder gratis; senao
-        # descarta a pior carta.
-        fodder = best_payoff_fodder(state)
-        if fodder is not None and is_artifact_card(fodder):
-            sacrifice(state, fodder)
-        elif state.hand:
-            worst = worst_discard_target(state)
-            state.hand.remove(worst)
-            state.graveyard.append(worst)
-        draw_cards(state, 2)
     elif "saheeli_directive" in tags:
         # "Improvise. Reveal the top X cards of your library. You may put
         # any number of artifact cards with mana value X or less from
@@ -1991,6 +2028,7 @@ def main_phase(state: GameState):
     try_tarrians_journal(state)
     try_cast_flashback(state, "Faithless Looting", 3)
     try_mind_stone_sac(state)
+    try_melded_moxite_sac(state)
 
 
 def daretti_rocketeer_attack_ability(state: GameState):
@@ -2232,6 +2270,10 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg compras via Fountainport: {avg([s.fountainport_draws_total for s in states]):.2f} | "
           f"Avg Fish tokens via Fountainport: {avg([s.fountainport_tokens_total for s in states]):.2f}")
     print(f"Avg compras via Tarrian's Journal: {avg([s.tarrians_journal_draws_total for s in states]):.2f}")
+    print(f"Avg loots via Melded Moxite (ETB discard1/draw2): "
+          f"{avg([s.melded_moxite_loots_total for s in states]):.2f}")
+    print(f"Avg Robot tokens via Melded Moxite (sac {{3}}): "
+          f"{avg([s.melded_moxite_tokens_total for s in states]):.2f}")
     print(f"Avg vida final: {avg([s.life for s in states]):.2f}")
     own_ko = sum(1 for s in states if s.life <= 0)
     print(f"Partidas em que os PROPRIOS efeitos derrubam minha vida a 0 ou menos: {100*own_ko/n:.1f}%")

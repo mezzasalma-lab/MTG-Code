@@ -1,5 +1,60 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## +Melded Moxite / -Demand Answers — 2026-09-15
+
+**Gatilho:** usuário propôs a troca depois de eu confirmar que as duas
+cartas fazem "discard 1, draw 2" na prática (oráculo real via Scryfall,
+ambas {1}{R}, Edge of Eternities 2025-08-01). Pedi pra comparar contra
+os motores do deck em vez de julgar por poder isolado — o usuário trouxe
+a lógica certa por conta própria antes de eu terminar a análise, e isso
+foi codificado como regra permanente (`CLAUDE.md`, Regra #4: toda
+avaliação de carta futura tem que citar com quais motores/cartas
+específicas da lista ela interage, nunca só "é mais forte").
+
+**Oráculo real (Melded Moxite):**
+> "When this artifact enters, you may discard a card. If you do, draw
+> two cards.
+> {3}, Sacrifice this artifact: Create a tapped 2/2 colorless Robot
+> artifact creature token."
+
+**Clausula-a-clausula:**
+1. ✅ ETB "may discard a card. If you do, draw two cards" —
+   `resolve_etb()`, tag `melded_moxite`. Sempre descarta se houver carta
+   na mão (a própria Moxite já foi removida antes do ETB resolver, mesma
+   convenção do arquivo inteiro) — +1 carta líquida garantida quando há
+   o que descartar.
+2. ✅ "{3}, Sacrifice this artifact: Create a tapped 2/2 colorless Robot
+   artifact creature token" — nova `try_melded_moxite_sac()`, chamada
+   por último no `main_phase` (mesmo padrão do Mind Stone). Sacrifício
+   dispara Pia's Revolution (artefato não-token) via `sacrifice()`
+   genérico; a entrada do token dispara Warstorm Surge de novo via
+   `creature_enters()` genérico — nenhum código extra precisou tocar
+   nesses 2 gatilhos, só usar a infra central já existente.
+
+**Por que Melded Moxite bate mais motores que Demand Answers** (a lógica
+que motivou a Regra #4): Demand Answers era instant — nunca "entra no
+campo", nunca toca Ultron (`whenever another nontoken artifact you
+control enters`), nunca reduz o custo do Metalwork Colossus (`total mana
+value of noncreature artifacts you control`), e uma vez resolvido não é
+mais "artifact card" — Goblin Engineer (busca sem restrição + reanima
+MV≤3)/Goblin Welder/Trash for Treasure (todos exigem "artifact card" no
+cemitério) nunca mais o tocam. Melded Moxite (MV 2, artefato permanente)
+entra em TODOS esses pontos: dispara Ultron (pode ser copiado, dobrando
+o loot), conta pro desconto do Metalwork Colossus enquanto em campo, e
+continua "artifact card" no cemitério depois de sacrificado — alvo
+válido de Engineer/Welder/Trash for Treasure pro resto do jogo.
+
+**Validação:** smoke test (99 cartas na library, 0 desconhecidas, 0
+duplicatas) + 4 testes unitários isolados (ETB loot com/sem carta na
+mão, sac-for-token com/sem mana suficiente, confirmando Warstorm Surge
+disparando no token) + comparação A/B 2000 jogos mesma seed (antes
+Demand Answers, depois Melded Moxite: "nunca conjurado" 6,1%→6,6%, mão
+final 3,17→3,25, cartas compradas 9,48→9,44 — dentro do ruído esperado
+de uma troca lateral no mesmo custo de mana) + regressão de 20.000
+partidas, 0 exceções. Métricas novas confirmadas disparando de verdade
+(`melded_moxite_loots_total`, `melded_moxite_tokens_total` > 0 numa
+fração real dos jogos).
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-13
 
 **Gatilho:** um goldfish real mostrou o Ultron copiando o Portal to

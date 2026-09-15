@@ -4,6 +4,38 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## +Melded Moxite / -Demand Answers — 2026-09-15
+
+**Gatilho:** usuário perguntou se valia trocar Demand Answers por Melded
+Moxite (achado recomendando inclusão de cartas novas de Edge of
+Eternities). As duas fazem o mesmo "discard 1, draw 2" isolado, mas o
+usuário comparou contra os motores reais do deck em vez de julgar por
+poder isolado — Moxite dispara Ultron (copiável), reduz o custo do
+Metalwork Colossus, alimenta o flip do Megatron, e continua "artifact
+card" (alvo de Goblin Engineer/Welder/Trash for Treasure) depois de
+sacrificada, enquanto Demand Answers (instant) nunca toca nenhum desses
+pontos. Essa lógica ficou registrada como regra permanente no
+`CLAUDE.md` (Regra #4). Detalhes cláusula-a-cláusula em
+`checklist-oraculo.md`.
+
+**Batch, n=2000, seed_base=5000000 (A/B mesma seed, git stash):**
+
+| Métrica | Antes (Demand Answers) | Depois (Melded Moxite) |
+|---|---|---|
+| Nunca conjurado o Megatron em 8 turnos | 6,1% | 6,6% |
+| Avg cartas compradas extra | 9,48 | 9,44 |
+| Avg vida final | 37,13 | 37,08 |
+| Avg mão final | 3,17 | 3,25 |
+
+**Leitura:** diferenças dentro do ruído esperado — troca lateral no
+mesmo custo de mana ({1}{R}), sem regressão real em nenhuma métrica.
+Novos contadores confirmados disparando via instrumentação: `Avg loots
+via Melded Moxite (ETB discard1/draw2): 0.14` | `Avg Robot tokens via
+Melded Moxite (sac {3}): 0.04`. Regressão de 20.000 partidas, 0
+exceções.
+
+---
+
 ## Auditoria oráculo-por-oráculo completa (6 mecânicas fantasma) — 2026-09-13
 
 **Gatilho:** goldfish real com Ultron copiando o Portal to Phyrexia 2x
