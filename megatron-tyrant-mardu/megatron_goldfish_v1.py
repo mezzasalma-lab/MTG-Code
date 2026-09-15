@@ -932,11 +932,22 @@ def resolve_etb(state: GameState, name: str, token: bool = False):
         # artifact card, put it into your graveyard, then shuffle."
         # Achado real 2026-09-13 (auditoria completa oraculo-por-oraculo):
         # a tag existia so' pra categorizacao, o ETB nunca foi despachado
-        # -- fantasma real. Sempre busca a de maior MV (alimenta o motor
-        # de solda/recuperacao com o melhor alvo disponivel)."""
+        # -- fantasma real.
+        # Achado real 2026-09-15 (usuario perguntou sobre tutor de
+        # artefato por causa do Portal to Phyrexia): a versao anterior
+        # so' priorizava MAIOR MV, sem preferir criatura -- testado e
+        # confirmado que isso podia buscar o proprio Portal to Phyrexia
+        # (MV9, NAO criatura) empatado com Triplicate Titan/Skitterbeam
+        # (tambem MV9) e mandar ele pro cemiterio, onde fica inutil pra
+        # alimentar tanto a propria recursao dele (`try_portal_phyrexia_
+        # upkeep`, exige "creature card") quanto a do Scarecrone (exige
+        # "artifact CREATURE card" tambem). Corrigido: prioriza artefato
+        # CRIATURA primeiro, MV descendente como critério secundário --
+        # so' busca um nao-criatura se nao houver nenhuma criatura-
+        # artefato disponivel na biblioteca."""
         gy_targets = [c for c in state.library if is_artifact_card(c)]
         if gy_targets:
-            target = max(gy_targets, key=lambda n: CARD_DB[n].mv)
+            target = max(gy_targets, key=lambda n: (is_creature_card(n), CARD_DB[n].mv))
             state.library.remove(target)
             state.graveyard.append(target)
             state.tutors_used_total += 1

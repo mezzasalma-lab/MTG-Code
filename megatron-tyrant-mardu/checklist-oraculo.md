@@ -1,5 +1,29 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Goblin Engineer prioriza artefato-criatura (Portal to Phyrexia/Scarecrone) — 2026-09-15
+
+**Gatilho:** usuário perguntou se havia busca de artefato no deck por
+causa do Portal to Phyrexia. Resposta real: só o Goblin Engineer busca
+biblioteca (`search your library for an artifact card, put it into
+your graveyard`) — mas confirmei com teste que a heurística anterior
+(`max` só por MV) podia empatar Portal to Phyrexia (MV9, NÃO criatura)
+com Triplicate Titan/Skitterbeam Battalion (MV9, criaturas) e escolher
+o Portal — mandando ele pro cemitério onde fica inútil tanto pra sua
+própria recursão (`try_portal_phyrexia_upkeep`, exige "creature card")
+quanto pra do Scarecrone (exige "artifact CREATURE card").
+
+**Corrigido:** `max(gy_targets, key=lambda n: (is_creature_card(n),
+CARD_DB[n].mv))` — prioriza criatura-artefato primeiro, MV descendente
+como critério secundário. Nunca "whiffa": se não houver nenhuma
+criatura-artefato na biblioteca, ainda busca o melhor não-criatura
+disponível (não é obrigatório achar target, "may search").
+
+**Validação:** 3 testes unitários isolados (empate MV9 escolhe a
+criatura; sem criatura disponível ainda busca o melhor não-criatura;
+continua preferindo maior MV entre criaturas) + smoke test + A/B 2000
+jogos mesma seed (idêntico — só muda QUAL alvo é escolhido em empates
+raros, não a frequência) + regressão de 20.000 partidas, 0 exceções.
+
 ## Auditoria comparativa completa das 65 cartas + Noxious Gearhulk/Cityscape Leveler corrigidas — 2026-09-15
 
 **Gatilho:** usuário pediu pra eu sugerir novos candidatos de corte pro

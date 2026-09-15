@@ -4,6 +4,24 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Goblin Engineer prioriza artefato-criatura — 2026-09-15
+
+**Gatilho:** usuário perguntou sobre busca de artefato por causa do
+Portal to Phyrexia. Só o Goblin Engineer busca biblioteca (vai pro
+cemitério, nunca pra mão/topo — não existe tutor pra mão/topo no
+deck). Testando a interação, confirmei que a heurística antiga podia
+buscar o próprio Portal to Phyrexia (empate de MV com criaturas) e
+desperdiçar a busca — ele fica inútil no cemitério pra alimentar sua
+própria recursão ou a do Scarecrone, que exigem "creature card".
+Corrigido pra priorizar criatura-artefato primeiro. Detalhes em
+`checklist-oraculo.md`.
+
+**Validação:** 3 testes unitários + smoke test + A/B 2000 jogos
+(idêntico, só muda o alvo em empates) + regressão de 20.000 partidas,
+0 exceções.
+
+---
+
 ## Auditoria comparativa (Noxious Gearhulk/Cityscape Leveler) + redirect Warp/Unearth pro exílio — 2026-09-15
 
 **Gatilho:** usuário pediu novos candidatos de corte pro Scrapbot;
