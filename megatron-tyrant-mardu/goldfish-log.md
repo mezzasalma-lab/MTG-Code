@@ -4,6 +4,20 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Modo de resiliência estendido: ataque + bloqueio — 2026-09-16
+
+**Gatilho:** usuário narrou um bloqueio real do goldfish manual (Feldon
+2/3 matou um Knight token 2/2 no bloqueio, o outro Knight conectou) e
+pediu pra estender o modo de resiliência pra cobrir ataque de oponente,
+não só remoção. Detalhes técnicos completos em `checklist-oraculo.md`.
+
+**Validação:** 5 testes unitários (incluindo o cenário EXATO relatado —
+Feldon 2/3 vs Knight 2/2, bloqueio mata sem dano) + smoke test + A/B
+2000 jogos (vida final 37,44→35,82 com ataque ativo) + regressão de
+20.000 partidas em cada modo, 0 exceções.
+
+---
+
 ## Novo modo opcional: remoção "inteligente" de oponente (resiliência) — 2026-09-16
 
 **Gatilho:** usuário testou o novo simulador de interação do Archidekt

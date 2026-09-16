@@ -473,6 +473,8 @@ class GameState:
     interaction_rng: Optional[random.Random] = None
     smart_removals_total: int = 0
     smart_removal_log: list = field(default_factory=list)
+    smart_attacks_taken_total: int = 0
+    smart_blocks_total: int = 0
     crewed_creatures_tapped: set = field(default_factory=set)
     demonic_junker_crewed_this_turn: bool = False
     demonic_junker_crews_total: int = 0
@@ -2525,31 +2527,73 @@ INTERACTION_SETUP_TURNS = 2
 # remocao nenhuma -- o oponente ainda nao tem motivo/mana pra reagir.
 
 
+def interaction_chance(state: GameState) -> float:
+    """Formula compartilhada de 'chance do oponente reagir esse turno'
+    -- usada tanto pela remocao (`try_smart_opponent_removal`) quanto
+    pelo ataque (`try_smart_opponent_attack`). Escala com o impacto do
+    meu proprio board (contagem de permanentes nao-terreno em campo) --
+    board mais desenvolvido = ameaca mais obvia = mais provavel que o
+    oponente reaja."""
+    board_impact = sum(1 for n in state.battlefield if n not in LAND_NAMES)
+    return min(0.10 + 0.03 * board_impact, 0.75)
+
+
 def try_smart_opponent_removal(state: GameState) -> Optional[str]:
     """Rola 1x por turno (a partir do turno 3) se o oponente "esperto"
-    destroi a peca-motor de maior prioridade presente em campo. Chance
-    escala com o impacto do meu proprio board (contagem de permanentes
-    nao-terreno em campo) -- board mais desenvolvido = ameaca mais
-    obvia = mais provavel que o oponente reaja. Sem nenhuma peca da
-    lista curada em campo, retorna sem fazer nada (oponente nao gasta
-    remocao "aleatoria" num corpo grande vanilla so' porque e' grande).
-    Usa `state.interaction_rng` (separado do `rng` do mulligan) -- so'
-    setado por `simulate_one_with_interaction`, nunca pelo goldfish
-    padrao."""
+    destroi a peca-motor de maior prioridade presente em campo. Sem
+    nenhuma peca da lista curada em campo, retorna sem fazer nada
+    (oponente nao gasta remocao "aleatoria" num corpo grande vanilla
+    so' porque e' grande). Usa `state.interaction_rng` (separado do
+    `rng` do mulligan) -- so' setado por `simulate_one_with_interaction`,
+    nunca pelo goldfish padrao."""
     if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
         return None
     present = [n for n in INTERACTION_ENGINE_PRIORITY if n in state.battlefield]
     if not present:
         return None
-    board_impact = sum(1 for n in state.battlefield if n not in LAND_NAMES)
-    chance = min(0.10 + 0.03 * board_impact, 0.75)
-    if state.interaction_rng.random() >= chance:
+    if state.interaction_rng.random() >= interaction_chance(state):
         return None
     target = present[0]
     sacrifice(state, target, is_own_sacrifice=False)
     state.smart_removals_total += 1
     state.smart_removal_log.append((state.turn, target))
     return target
+
+
+OPPONENT_ATTACKER_POWER = 2
+OPPONENT_ATTACKER_TOUGHNESS = 2
+# Achado real do usuario (playtest real, Archidekt interaction sim):
+# "ataqeui o Knight token do adversario absorvi com o Feldon, ele e 2/3
+# e os knights eram 2/2! Um passou e outro morreu." -- perfil generico
+# de atacante de oponente pro modo de resiliencia, calibrado pelo
+# exemplo real (token 2/2). Ajustavel.
+
+
+def try_smart_opponent_attack(state: GameState) -> bool:
+    """Modo opcional de resiliencia -- ataque de oponente (rola
+    independente da remocao, mesma janela/formula de chance via
+    `interaction_chance`). Bloqueia com a MENOR criatura pronta que
+    mata o atacante E sobrevive (preserva as criaturas grandes pro meu
+    proprio ataque, mesma logica de `best_weld_fodder` pra fodder
+    barato) -- sem bloqueador bom disponivel, leva o dano na cara.
+    Nunca usa o Megatron como bloqueador: ele ja atacou nesse mesmo
+    ciclo (tapped) e, na face Vehicle, so' e' criatura durante O MEU
+    turno ('Living metal') -- nao existe como bloqueador real no turno
+    do oponente em nenhuma das duas faces."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return False
+    if state.interaction_rng.random() >= interaction_chance(state):
+        return False
+    candidates = [n for n in ready_creatures(state) if n != COMMANDER
+                  and get_power(state, n) >= OPPONENT_ATTACKER_TOUGHNESS
+                  and CARD_DB[n].toughness > OPPONENT_ATTACKER_POWER]
+    if candidates:
+        blocker = min(candidates, key=lambda n: CARD_DB[n].mv)
+        state.smart_blocks_total += 1
+        return False
+    self_damage(state, OPPONENT_ATTACKER_POWER)
+    state.smart_attacks_taken_total += 1
+    return True
 
 
 # ---------------------------------------------------------------------------
@@ -2681,9 +2725,10 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
 
 def simulate_one_with_interaction(seed: int, turns: int = 8):
     """Mesmo goldfish de `simulate_one`, mas com `try_smart_opponent_
-    removal` rodando a cada turno -- ver comentario da secao 'Modo
-    opcional de resiliencia' acima. NUNCA chamado por `run_batch`/
-    `simulate_one` padrao."""
+    removal`/`try_smart_opponent_attack` rodando a cada turno -- ver
+    comentario da secao 'Modo opcional de resiliencia' acima. As duas
+    rolam independente (podem disparar as duas no mesmo turno). NUNCA
+    chamado por `run_batch`/`simulate_one` padrao."""
     rng = random.Random(seed)
     hand, lib, mulls = mulligan(rng)
     state = GameState(hand=hand, library=lib, mulligans=mulls,
@@ -2693,12 +2738,14 @@ def simulate_one_with_interaction(seed: int, turns: int = 8):
     while turns_played < turns:
         play_turn(state, is_first_turn=is_first, on_play=True)
         try_smart_opponent_removal(state)
+        try_smart_opponent_attack(state)
         is_first = False
         turns_played += 1
         if state.extra_turns_pending > 0:
             state.extra_turns_pending -= 1
             play_turn(state, is_first_turn=False, on_play=True)
             try_smart_opponent_removal(state)
+            try_smart_opponent_attack(state)
             turns_played += 1
     return state
 
@@ -2713,7 +2760,7 @@ def run_batch_with_interaction(n: int, seed_base: int, turns: int = 8):
     def avg(vals):
         return sum(vals) / len(vals) if vals else 0.0
 
-    print(f"n={n}, seed_base={seed_base}, turns={turns} (MODO RESILIENCIA -- remocao inteligente de oponente)")
+    print(f"n={n}, seed_base={seed_base}, turns={turns} (MODO RESILIENCIA -- remocao + ataque inteligente de oponente)")
     print(f"Avg remocoes inteligentes sofridas: {avg([s.smart_removals_total for s in states]):.2f}")
     hit_counts = Counter()
     for s in states:
@@ -2723,6 +2770,9 @@ def run_batch_with_interaction(n: int, seed_base: int, turns: int = 8):
         pct = 100 * hit_counts[name] / n
         if pct > 0:
             print(f"  -- {name} removido em {pct:.1f}% dos jogos")
+    print(f"Avg ataques de oponente sofridos (Knight token {OPPONENT_ATTACKER_POWER}/{OPPONENT_ATTACKER_TOUGHNESS}): "
+          f"{avg([s.smart_attacks_taken_total for s in states]):.2f} | "
+          f"Avg bloqueios com sucesso (matou o atacante, sobreviveu): {avg([s.smart_blocks_total for s in states]):.2f}")
     print(f"Avg dano/perda-de-vida proxy total: {avg([s.proxy_damage_total for s in states]):.2f}")
     print(f"Avg eventos de recursao/valor totais: {avg([s.recursion_events_total for s in states]):.2f}")
     print(f"Avg ativacoes de solda (Welder/Scrap Welder/Trash for Treasure/Engineer/Osgir/Daretti): "

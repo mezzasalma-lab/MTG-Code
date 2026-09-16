@@ -1,5 +1,39 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Modo de resiliência estendido: ataque de oponente + bloqueio — 2026-09-16
+
+**Gatilho:** usuário narrou um bloqueio real do último goldfish manual —
+*"O ataque o Knight token do adversário absorvi com o Feldon, ele é 2/3
+e os knights eram 2/2! Um passou e outro morreu"* — confirmando que
+Feldon (2/3) mata um Knight 2/2 no bloqueio e sobrevive. Pediu pra
+estender o modo de resiliência (removeção já implementada) pra também
+cobrir esse eixo: ataque de oponente + decisão de bloqueio, que o
+goldfish puro nunca modela ("sem bloqueio real modelado pra ninguém").
+
+**Implementado:**
+1. `interaction_chance()` — fórmula de chance extraída pra função
+   compartilhada (era duplicada dentro de `try_smart_opponent_removal`)
+   — usada agora por ambos os eventos (remoção E ataque), que rolam
+   **independente** um do outro no mesmo turno.
+2. `OPPONENT_ATTACKER_POWER/TOUGHNESS = 2/2` — perfil genérico
+   calibrado pelo exemplo real do usuário (Knight token 2/2).
+3. `try_smart_opponent_attack()` — bloqueia com a MENOR criatura pronta
+   que mata o atacante E sobrevive (`power >= 2 and toughness > 2`,
+   preserva as criaturas grandes pro meu próprio ataque); sem
+   bloqueador bom disponível, leva 2 de dano na cara. Megatron NUNCA
+   bloqueia — já atacou nesse ciclo (tapped), e na face Vehicle só é
+   criatura durante O MEU turno ("Living metal") — não existe como
+   bloqueador em nenhuma das duas faces no turno do oponente.
+
+**Validação:** 5 testes unitários isolados (sem `interaction_rng` nunca
+ataca; **Feldon 2/3 bloqueia e mata o Knight 2/2 sem dano — cenário
+real exato do usuário**; sem bloqueador disponível leva o dano; Megatron
+nunca bloqueia; turnos de setup nunca atacam) + smoke test + A/B 2000
+jogos mesma seed (vida final 37,44→35,82 com o ataque ativo, direção
+esperada) + regressão de 20.000 partidas em cada modo, 0 exceções.
+`smart_attacks_taken_total` confirmado em 0,82/partida, `smart_blocks_
+total` em 0,20/partida.
+
 ## Modo opcional de resiliência: remoção "inteligente" de oponente — 2026-09-16
 
 **Gatilho:** usuário jogou com o simulador de interação do Archidekt
