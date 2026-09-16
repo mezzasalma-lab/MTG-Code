@@ -1,5 +1,60 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Modo opcional de resiliência: remoção "inteligente" de oponente — 2026-09-16
+
+**Gatilho:** usuário jogou com o simulador de interação do Archidekt
+(injeta ataque/remoção/counterspell aleatório num goldfish solo) e
+apontou uma observação real: um oponente de mesa de verdade não remove
+aleatório — mira sempre a peça que virou motor recorrente ("quando
+estava com Portal na mesa a remoção de artefato automaticamente pega
+ele, por causa do motor que ele traz pro deck"). Perguntei 3 decisões
+de design antes de implementar (frequência, critério de alvo, escopo)
+— usuário confirmou: setup nos turnos 1-2, chance escalando com
+"poder/tamanho/impacto do boardstate" a partir daí; lista curada de
+peças-motor (não maior MV genérico); **modo separado e opcional**, sem
+tocar o goldfish padrão.
+
+**Implementado:**
+1. `INTERACTION_ENGINE_PRIORITY` — lista curada por prioridade
+   (Warstorm Surge, Portal to Phyrexia, Goblin Welder, Pia's
+   Revolution, Genesis Chamber, Ultron, Cosmic Cube, Daretti Scrap
+   Savant, Osgir, Scrap Trawler). Metalwork Colossus fica DE FORA de
+   propósito — ele já quer ser removido/sacrificado pra voltar via
+   `try_metalwork_colossus_recursion`, remover ele não atrapalha o
+   plano, um oponente esperto não gastaria a remoção nele.
+2. `try_smart_opponent_removal()` — a partir do turno 3
+   (`INTERACTION_SETUP_TURNS = 2`), rola 1x por turno contra a peça de
+   maior prioridade presente em campo; chance = `min(0.10 + 0.03 *
+   permanentes_nao_terreno_em_campo, 0.75)` (aproximação documentada de
+   "impacto do boardstate" — mais desenvolvido, mais provável reagir).
+   Sem nenhuma peça curada em campo, nunca dispara (oponente não gasta
+   remoção "aleatória" em corpo grande vanilla).
+3. **Achado real ao implementar**: `sacrifice()` (função central)
+   disparava Rakdos, the Muscle incondicionalmente — mas o oráculo dele
+   é `"whenever YOU sacrifice another creature"`, não `"whenever a
+   creature dies"`. Destruição de oponente não é MEU sacrifício.
+   Corrigido: novo parâmetro `is_own_sacrifice: bool = True` (default
+   preserva 100% do comportamento existente em todos os call sites
+   atuais) — só pula o gatilho do Rakdos quando `False`.
+4. Novos `simulate_one_with_interaction()`/`run_batch_with_interaction()`
+   — funções TOTALMENTE separadas, nunca chamadas por
+   `simulate_one`/`run_batch` padrão. Novo campo `state.interaction_rng`
+   (só setado por esse modo — `try_smart_opponent_removal` retorna
+   `None` de imediato se for `None`, preservando o goldfish puro
+   intacto).
+
+**Validação:** 5 testes unitários isolados (sem `interaction_rng` nunca
+remove; turnos 1-2 nunca removem; destruição NÃO dispara Rakdos;
+sacrifício MEU continua disparando Rakdos normalmente — regressão; modo
+padrão `simulate_one` nunca seta `interaction_rng`) + smoke test (99
+cartas) + batch de 2000 no modo resiliência (0,34 remoções/partida em
+média; Goblin Welder o mais atingido, 8,0% dos jogos — faz sentido, é o
+mais barato/cedo da lista curada) + A/B mesma seed contra `run_batch`
+padrão (dano 41,27→40,22, ativações de solda 0,44→0,35, recursão
+0,60→0,55 — todas na direção esperada, interação real puxa pra baixo)
++ regressão de 20.000 partidas em CADA modo (resiliência e padrão), 0
+exceções nos dois.
+
 ## Goblin Engineer prioriza artefato-criatura (Portal to Phyrexia/Scarecrone) — 2026-09-15
 
 **Gatilho:** usuário perguntou se havia busca de artefato no deck por

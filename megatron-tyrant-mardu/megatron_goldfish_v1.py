@@ -54,6 +54,7 @@ Simplificacoes documentadas (nao inventadas -- omissoes explicitas):
 """
 
 from __future__ import annotations
+from collections import Counter
 from dataclasses import dataclass, field
 from typing import Optional
 import random
@@ -469,6 +470,9 @@ class GameState:
     demonic_junker_removals_total: int = 0
     chandras_ignition_casts_total: int = 0
     chandras_ignition_own_creatures_lost_total: int = 0
+    interaction_rng: Optional[random.Random] = None
+    smart_removals_total: int = 0
+    smart_removal_log: list = field(default_factory=list)
     crewed_creatures_tapped: set = field(default_factory=set)
     demonic_junker_crewed_this_turn: bool = False
     demonic_junker_crews_total: int = 0
@@ -660,13 +664,22 @@ def try_genesis_chamber_token(state: GameState, entering_was_token: bool):
     state.genesis_chamber_tokens_total += 1
 
 
-def sacrifice(state: GameState, name: str):
-    """Ponto central de TODO sacrificio do arquivo -- remove de
-    battlefield, poe no graveyard, dispara os gatilhos reais de morte
-    (Scrap Trawler, toolbox Myr Retriever/Junk Diver, Triplicate
+def sacrifice(state: GameState, name: str, is_own_sacrifice: bool = True):
+    """Ponto central de TODO sacrificio/destruicao do arquivo -- remove
+    de battlefield, poe no graveyard, dispara os gatilhos reais de
+    morte (Scrap Trawler, toolbox Myr Retriever/Junk Diver, Triplicate
     Titan) e os payoffs que disparam em QUALQUER
     sacrificio de criatura (Rakdos, the Muscle -- 'whenever you sacrifice
     another creature', gatilho automatico, nao e' escolha).
+
+    `is_own_sacrifice=False` (achado real 2026-09-16, modo de
+    resiliencia via `try_smart_opponent_removal`): quando o permanente
+    morre por DESTRUICAO de oponente (nao um sacrificio meu), Rakdos NAO
+    dispara -- o oraculo dele e' 'whenever YOU sacrifice', nao 'whenever
+    a creature dies'. Todo o resto (ir pro cemiterio/exilio, Scrap
+    Trawler, Pia's Revolution, death_trigger) e' igual pras duas causas
+    -- essas exigem so' 'put into a graveyard from the battlefield',
+    que acontece independente de quem causou.
 
     Achado real 2026-09-15 (usuario perguntou a regra ao vivo sobre
     sacrificar o Cityscape Leveler reanimado por Unearth pro Megatron --
@@ -695,7 +708,7 @@ def sacrifice(state: GameState, name: str):
             state.artifacts_sacrificed_total += 1
         if was_creature:
             state.creatures_sacrificed_total += 1
-        if was_creature and name != "Rakdos, the Muscle" and "Rakdos, the Muscle" in state.battlefield:
+        if is_own_sacrifice and was_creature and name != "Rakdos, the Muscle" and "Rakdos, the Muscle" in state.battlefield:
             rakdos_muscle_trigger(state, name)
         return
     state.graveyard.append(name)
@@ -707,7 +720,7 @@ def sacrifice(state: GameState, name: str):
     if was_creature:
         state.creatures_sacrificed_total += 1
     death_trigger(state, name)
-    if was_creature and name != "Rakdos, the Muscle" and "Rakdos, the Muscle" in state.battlefield:
+    if is_own_sacrifice and was_creature and name != "Rakdos, the Muscle" and "Rakdos, the Muscle" in state.battlefield:
         rakdos_muscle_trigger(state, name)
 
 
@@ -2475,6 +2488,71 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
 
 
 # ---------------------------------------------------------------------------
+# Modo opcional de resiliencia -- remocao "inteligente" de oponente
+# ---------------------------------------------------------------------------
+# Achado real 2026-09-16 (usuario, playtest com o simulador de interacao
+# do Archidekt): oponente de mesa real NAO remove aleatorio -- mira
+# sempre a peca que vira motor recorrente ("quando estava com Portal na
+# mesa a remocao de artefato automaticamente pega ele, por causa do
+# motor que ele traz pro deck"). Isso e' um modo SEPARADO e OPCIONAL --
+# `simulate_one`/`run_batch` continuam exatamente como sempre foram
+# (goldfish puro, sem oponente real, premissa documentada no topo do
+# arquivo). Este modo serve pra medir RESILIENCIA (o motor aguenta
+# perder a peca central?), nao pra validar dano/draw normais.
+
+INTERACTION_ENGINE_PRIORITY = [
+    "Warstorm Surge",
+    "Portal to Phyrexia",
+    "Goblin Welder",
+    "Pia's Revolution",
+    "Genesis Chamber",
+    "Ultron, Artificial Malevolence",
+    "Cosmic Cube",
+    "Daretti, Scrap Savant",
+    "Osgir, the Reconstructor",
+    "Scrap Trawler",
+]
+# Lista curada por prioridade (a mais critica primeiro) -- so' cartas
+# que sao motor RECORRENTE de valor (dano/recursao/token/draw todo
+# turno), nao corpos grandes isolados. Metalwork Colossus fica DE FORA
+# de proposito: ele QUER ser removido/sacrificado (`try_metalwork_
+# colossus_recursion` o traz de volta pra mao pagando 2 sacrificios) --
+# remove-lo do campo nao atrapalha o plano, entao um oponente esperto
+# nao gastaria a remocao nele em vez de numa peca irrecuperavel.
+
+INTERACTION_SETUP_TURNS = 2
+# Achado real do usuario: turnos 1-2 sao sempre setup, sem chance de
+# remocao nenhuma -- o oponente ainda nao tem motivo/mana pra reagir.
+
+
+def try_smart_opponent_removal(state: GameState) -> Optional[str]:
+    """Rola 1x por turno (a partir do turno 3) se o oponente "esperto"
+    destroi a peca-motor de maior prioridade presente em campo. Chance
+    escala com o impacto do meu proprio board (contagem de permanentes
+    nao-terreno em campo) -- board mais desenvolvido = ameaca mais
+    obvia = mais provavel que o oponente reaja. Sem nenhuma peca da
+    lista curada em campo, retorna sem fazer nada (oponente nao gasta
+    remocao "aleatoria" num corpo grande vanilla so' porque e' grande).
+    Usa `state.interaction_rng` (separado do `rng` do mulligan) -- so'
+    setado por `simulate_one_with_interaction`, nunca pelo goldfish
+    padrao."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    present = [n for n in INTERACTION_ENGINE_PRIORITY if n in state.battlefield]
+    if not present:
+        return None
+    board_impact = sum(1 for n in state.battlefield if n not in LAND_NAMES)
+    chance = min(0.10 + 0.03 * board_impact, 0.75)
+    if state.interaction_rng.random() >= chance:
+        return None
+    target = present[0]
+    sacrifice(state, target, is_own_sacrifice=False)
+    state.smart_removals_total += 1
+    state.smart_removal_log.append((state.turn, target))
+    return target
+
+
+# ---------------------------------------------------------------------------
 # Mulligan / build / batch
 # ---------------------------------------------------------------------------
 
@@ -2598,6 +2676,59 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Daretti, Scrap Savant chegou ao -10 (emblema): {100*daretti_ult/n:.1f}% dos jogos")
     ayara_flip = sum(1 for s in states if s.ayara_transformed)
     print(f"Ayara transformou (Furnace Queen): {100*ayara_flip/n:.1f}% dos jogos")
+    return states
+
+
+def simulate_one_with_interaction(seed: int, turns: int = 8):
+    """Mesmo goldfish de `simulate_one`, mas com `try_smart_opponent_
+    removal` rodando a cada turno -- ver comentario da secao 'Modo
+    opcional de resiliencia' acima. NUNCA chamado por `run_batch`/
+    `simulate_one` padrao."""
+    rng = random.Random(seed)
+    hand, lib, mulls = mulligan(rng)
+    state = GameState(hand=hand, library=lib, mulligans=mulls,
+                       interaction_rng=random.Random(seed + 999_999))
+    turns_played = 0
+    is_first = True
+    while turns_played < turns:
+        play_turn(state, is_first_turn=is_first, on_play=True)
+        try_smart_opponent_removal(state)
+        is_first = False
+        turns_played += 1
+        if state.extra_turns_pending > 0:
+            state.extra_turns_pending -= 1
+            play_turn(state, is_first_turn=False, on_play=True)
+            try_smart_opponent_removal(state)
+            turns_played += 1
+    return state
+
+
+def run_batch_with_interaction(n: int, seed_base: int, turns: int = 8):
+    """Batch do modo de resiliencia. Reporta so' as metricas relevantes
+    pra "o motor aguenta perder a peca central?" -- nao duplica o
+    relatorio inteiro do `run_batch` padrao (esse continua sendo a
+    referencia de dano/draw sem oponente)."""
+    states = [simulate_one_with_interaction(seed_base + i, turns=turns) for i in range(n)]
+
+    def avg(vals):
+        return sum(vals) / len(vals) if vals else 0.0
+
+    print(f"n={n}, seed_base={seed_base}, turns={turns} (MODO RESILIENCIA -- remocao inteligente de oponente)")
+    print(f"Avg remocoes inteligentes sofridas: {avg([s.smart_removals_total for s in states]):.2f}")
+    hit_counts = Counter()
+    for s in states:
+        for _, target in s.smart_removal_log:
+            hit_counts[target] += 1
+    for name in INTERACTION_ENGINE_PRIORITY:
+        pct = 100 * hit_counts[name] / n
+        if pct > 0:
+            print(f"  -- {name} removido em {pct:.1f}% dos jogos")
+    print(f"Avg dano/perda-de-vida proxy total: {avg([s.proxy_damage_total for s in states]):.2f}")
+    print(f"Avg eventos de recursao/valor totais: {avg([s.recursion_events_total for s in states]):.2f}")
+    print(f"Avg ativacoes de solda (Welder/Scrap Welder/Trash for Treasure/Engineer/Osgir/Daretti): "
+          f"{avg([s.weld_activations_total for s in states]):.2f}")
+    print(f"Avg cartas compradas extra: {avg([s.cards_drawn_extra for s in states]):.2f}")
+    print(f"Avg vida final: {avg([s.life for s in states]):.2f}")
     return states
 
 

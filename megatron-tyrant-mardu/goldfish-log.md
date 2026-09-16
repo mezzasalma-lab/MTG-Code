@@ -4,6 +4,39 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Novo modo opcional: remoção "inteligente" de oponente (resiliência) — 2026-09-16
+
+**Gatilho:** usuário testou o novo simulador de interação do Archidekt
+(injeta ataque/remoção/counter aleatório) e apontou que oponente real
+não remove aleatório — mira sempre a peça-motor (Portal to Phyrexia no
+exemplo real dele). Design fechado com o usuário: setup turnos 1-2,
+chance escala com o board, lista curada de alvos, **modo separado**
+(não altera o goldfish padrão). Detalhes completos em
+`checklist-oraculo.md`.
+
+**Achado real ao implementar**: `sacrifice()` disparava Rakdos, the
+Muscle mesmo quando o permanente foi DESTRUÍDO pelo oponente, não
+sacrificado por mim — oráculo real exige "whenever YOU sacrifice".
+Corrigido com parâmetro `is_own_sacrifice` (default preserva 100% do
+comportamento anterior).
+
+**Resultado do batch (2000 jogos, modo resiliência vs. padrão, mesma
+seed):**
+
+| Métrica | Sem interação | Com interação |
+|---|---|---|
+| Dano/vida perdida proxy | 41,27 | 40,22 |
+| Ativações de solda | 0,44 | 0,35 |
+| Eventos de recursão | 0,60 | 0,55 |
+
+Goblin Welder foi o mais atingido (8,0% dos jogos) — faz sentido, é o
+mais barato/cedo da lista curada de motores.
+
+**Validação:** 5 testes unitários isolados + smoke test + A/B 2000
+jogos + regressão de 20.000 partidas em CADA modo, 0 exceções nos dois.
+
+---
+
 ## Goblin Engineer prioriza artefato-criatura — 2026-09-15
 
 **Gatilho:** usuário perguntou sobre busca de artefato por causa do
