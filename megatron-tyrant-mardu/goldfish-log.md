@@ -4,6 +4,24 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Perfis variados de token de ataque — 2026-09-16
+
+**Gatilho:** usuário pediu pra variar o token de ataque em vez do
+perfil fixo 2/2 — "Knight, saproling, vampiro, etc". Implementado
+`OPPONENT_ATTACKER_PROFILES` (7 perfis com stats reais típicos),
+sorteado por ataque. Detalhes em `checklist-oraculo.md`.
+
+**Resultado real (2000 jogos)**: Elemental Token (3/3) conecta em 286
+jogos contra só 20 bloqueios — Feldon (2/3) não consegue matar um 3/3.
+Tokens 1/1 (Saproling/Vampire/Soldier/Goblin) bloqueiam com taxa bem
+mais alta. Confirma que variar o perfil muda o resultado de combate de
+verdade.
+
+**Validação:** 4 testes unitários + smoke test + batch 2000 + regressão
+de 20.000 partidas em cada modo, 0 exceções.
+
+---
+
 ## Modo de resiliência estendido: ataque + bloqueio — 2026-09-16
 
 **Gatilho:** usuário narrou um bloqueio real do goldfish manual (Feldon

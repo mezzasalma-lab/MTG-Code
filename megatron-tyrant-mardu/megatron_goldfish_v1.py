@@ -475,6 +475,7 @@ class GameState:
     smart_removal_log: list = field(default_factory=list)
     smart_attacks_taken_total: int = 0
     smart_blocks_total: int = 0
+    smart_attack_log: list = field(default_factory=list)
     crewed_creatures_tapped: set = field(default_factory=set)
     demonic_junker_crewed_this_turn: bool = False
     demonic_junker_crews_total: int = 0
@@ -2560,40 +2561,59 @@ def try_smart_opponent_removal(state: GameState) -> Optional[str]:
     return target
 
 
-OPPONENT_ATTACKER_POWER = 2
-OPPONENT_ATTACKER_TOUGHNESS = 2
+OPPONENT_ATTACKER_PROFILES = [
+    ("Knight Token", 2, 2),
+    ("Saproling Token", 1, 1),
+    ("Vampire Token", 1, 1),
+    ("Zombie Token", 2, 2),
+    ("Soldier Token", 1, 1),
+    ("Goblin Token", 1, 1),
+    ("Elemental Token", 3, 3),
+]
 # Achado real do usuario (playtest real, Archidekt interaction sim):
 # "ataqeui o Knight token do adversario absorvi com o Feldon, ele e 2/3
-# e os knights eram 2/2! Um passou e outro morreu." -- perfil generico
-# de atacante de oponente pro modo de resiliencia, calibrado pelo
-# exemplo real (token 2/2). Ajustavel.
+# e os knights eram 2/2! Um passou e outro morreu." -- calibrado pelo
+# exemplo real (Knight 2/2), depois generalizado por pedido direto do
+# usuario ("pode variar o token: Knight, saproling, vampiro, etc") pra
+# uma lista de perfis genericos comuns de token em Commander, sorteada
+# a cada ataque via `state.interaction_rng`. Stats sao os tipicos reais
+# de cada tipo (Saproling/Soldier/Goblin 1/1, Knight/Zombie 2/2,
+# Elemental 3/3) -- keywords de evasao (ex.: flying do Vampire token)
+# ficam FORA de proposito, mesma convencao de "sem bloqueio real
+# modelado" ja documentada pro resto do arquivo (so' poder/resistencia
+# entram na conta aqui).
 
 
-def try_smart_opponent_attack(state: GameState) -> bool:
+def try_smart_opponent_attack(state: GameState) -> Optional[str]:
     """Modo opcional de resiliencia -- ataque de oponente (rola
     independente da remocao, mesma janela/formula de chance via
-    `interaction_chance`). Bloqueia com a MENOR criatura pronta que
-    mata o atacante E sobrevive (preserva as criaturas grandes pro meu
+    `interaction_chance`). Sorteia 1 perfil de `OPPONENT_ATTACKER_
+    PROFILES` e bloqueia com a MENOR criatura pronta que mata o
+    atacante E sobrevive (preserva as criaturas grandes pro meu
     proprio ataque, mesma logica de `best_weld_fodder` pra fodder
     barato) -- sem bloqueador bom disponivel, leva o dano na cara.
     Nunca usa o Megatron como bloqueador: ele ja atacou nesse mesmo
     ciclo (tapped) e, na face Vehicle, so' e' criatura durante O MEU
     turno ('Living metal') -- nao existe como bloqueador real no turno
-    do oponente em nenhuma das duas faces."""
+    do oponente em nenhuma das duas faces. Retorna o nome do token que
+    atacou (pra log/relatorio) ou None se nao atacou."""
     if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
-        return False
+        return None
     if state.interaction_rng.random() >= interaction_chance(state):
-        return False
+        return None
+    name, power, toughness = state.interaction_rng.choice(OPPONENT_ATTACKER_PROFILES)
     candidates = [n for n in ready_creatures(state) if n != COMMANDER
-                  and get_power(state, n) >= OPPONENT_ATTACKER_TOUGHNESS
-                  and CARD_DB[n].toughness > OPPONENT_ATTACKER_POWER]
+                  and get_power(state, n) >= toughness
+                  and CARD_DB[n].toughness > power]
     if candidates:
         blocker = min(candidates, key=lambda n: CARD_DB[n].mv)
         state.smart_blocks_total += 1
-        return False
-    self_damage(state, OPPONENT_ATTACKER_POWER)
+        state.smart_attack_log.append((state.turn, name, "blocked"))
+        return name
+    self_damage(state, power)
     state.smart_attacks_taken_total += 1
-    return True
+    state.smart_attack_log.append((state.turn, name, "unblocked"))
+    return name
 
 
 # ---------------------------------------------------------------------------
@@ -2770,9 +2790,18 @@ def run_batch_with_interaction(n: int, seed_base: int, turns: int = 8):
         pct = 100 * hit_counts[name] / n
         if pct > 0:
             print(f"  -- {name} removido em {pct:.1f}% dos jogos")
-    print(f"Avg ataques de oponente sofridos (Knight token {OPPONENT_ATTACKER_POWER}/{OPPONENT_ATTACKER_TOUGHNESS}): "
+    print(f"Avg ataques de oponente sofridos (perfis variados: Knight/Saproling/Vampire/Zombie/Soldier/Goblin/Elemental): "
           f"{avg([s.smart_attacks_taken_total for s in states]):.2f} | "
           f"Avg bloqueios com sucesso (matou o atacante, sobreviveu): {avg([s.smart_blocks_total for s in states]):.2f}")
+    attack_by_type = Counter()
+    for s in states:
+        for _, name, outcome in s.smart_attack_log:
+            attack_by_type[(name, outcome)] += 1
+    for token_name, _, _ in OPPONENT_ATTACKER_PROFILES:
+        blocked = attack_by_type[(token_name, "blocked")]
+        unblocked = attack_by_type[(token_name, "unblocked")]
+        if blocked + unblocked > 0:
+            print(f"  -- {token_name}: {unblocked} conectaram / {blocked} bloqueados e mortos (em {n} jogos)")
     print(f"Avg dano/perda-de-vida proxy total: {avg([s.proxy_damage_total for s in states]):.2f}")
     print(f"Avg eventos de recursao/valor totais: {avg([s.recursion_events_total for s in states]):.2f}")
     print(f"Avg ativacoes de solda (Welder/Scrap Welder/Trash for Treasure/Engineer/Osgir/Daretti): "

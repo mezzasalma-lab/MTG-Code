@@ -1,5 +1,32 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Perfis variados de token no modo de resiliência (ataque) — 2026-09-16
+
+**Gatilho:** usuário pediu pra variar o tipo de token de ataque
+("Knight, saproling, vampiro, etc") em vez do perfil fixo 2/2
+calibrado no round anterior.
+
+**Implementado:** `OPPONENT_ATTACKER_PROFILES` — lista de 7 perfis com
+stats típicos reais de cada tipo de token comum em Commander (Knight
+2/2, Saproling 1/1, Vampire 1/1, Zombie 2/2, Soldier 1/1, Goblin 1/1,
+Elemental 3/3), sorteada via `state.interaction_rng.choice()` a cada
+ataque. Keywords de evasão (ex.: flying do Vampire token) ficam FORA
+de propósito — mesma convenção de "sem bloqueio real modelado" já
+documentada no resto do arquivo, só poder/resistência entram na conta.
+`try_smart_opponent_attack()` agora retorna o nome do token (não mais
+bool) pra log/relatório; novo `state.smart_attack_log` rastreia
+`(turno, nome, "blocked"/"unblocked")`.
+
+**Validação:** 4 testes unitários isolados (sem `interaction_rng`
+nunca ataca; Feldon 2/3 bloqueia e mata o Knight 2/2 sorteado à força;
+**Elemental 3/3 sorteado à força passa até pelo Feldon** — poder 2 <
+resistência 3, não consegue matar — confirma que a variedade muda o
+resultado de verdade, não é só cosmético; os 7 perfis existem com
+valores plausíveis) + smoke test + batch de 2000 (breakdown por tipo:
+Elemental conecta em 286 de 2000 jogos contra só 20 bloqueios, tokens
+1/1 bloqueiam com taxa muito mais alta — direção esperada) + regressão
+de 20.000 partidas em cada modo, 0 exceções.
+
 ## Modo de resiliência estendido: ataque de oponente + bloqueio — 2026-09-16
 
 **Gatilho:** usuário narrou um bloqueio real do último goldfish manual —
