@@ -477,6 +477,8 @@ class GameState:
     smart_blocks_total: int = 0
     smart_attack_log: list = field(default_factory=list)
     crewed_creatures_tapped: set = field(default_factory=set)
+    ironsoul_triggered_this_combat: bool = False
+    megatron_alone_combos_total: int = 0
     demonic_junker_crewed_this_turn: bool = False
     demonic_junker_crews_total: int = 0
 
@@ -1727,12 +1729,15 @@ def anrakyr_attack_ability(state: GameState):
     state.creatures_cheated_in_total += 1
 
 
-def ironsoul_enforcer_trigger(state: GameState):
-    """'Whenever this creature or a commander you control attacks alone,
-    return target artifact card from your graveyard to the battlefield.'
-    So' dispara quando exatamente 1 criatura atacou nesse combate."""
-    if "Ironsoul Enforcer" not in state.battlefield or state.attackers_this_combat != 1:
-        return
+def ironsoul_reanimate(state: GameState):
+    """Corpo real do gatilho do Ironsoul Enforcer ('return target artifact
+    card from your graveyard to the battlefield'), fatorado numa funcao
+    separada pra poder ser chamado tanto pelo caso organico (poucas
+    criaturas prontas por acaso, ver `ironsoul_enforcer_trigger`) quanto
+    pelo caso deliberado (Megatron ataca sozinho de proposito, ver
+    `try_megatron_alone_with_ironsoul`) -- nesse 2o caso precisa disparar
+    ANTES do gatilho de ataque do Megatron, pra' o artefato recem-
+    reanimado ja' estar disponivel como fuel."""
     gy_artifacts = [c for c in state.graveyard if is_artifact_card(c)]
     if not gy_artifacts:
         return
@@ -1744,6 +1749,26 @@ def ironsoul_enforcer_trigger(state: GameState):
         state.battlefield.append(target)
         resolve_etb(state, target)
     state.recursion_events_total += 1
+
+
+def ironsoul_enforcer_trigger(state: GameState):
+    """'Whenever this creature or a commander you control attacks alone,
+    return target artifact card from your graveyard to the battlefield.'
+    So' dispara quando exatamente 1 criatura atacou nesse combate --
+    checagem pos-hoc pro caso organico (Megatron ou qualquer outra
+    criatura acabou sendo a unica pronta esse turno, sem escolha
+    deliberada). O caso deliberado (linha do Megatron sozinho, achado
+    real 2026-09-17: usuario apontou que Megatron nao precisa do resto do
+    time pra satisfazer 'attacks alone', ja que ele mesmo e' o comandante)
+    ja' disparou este mesmo gatilho antes da declaracao de ataque via
+    `try_megatron_alone_with_ironsoul` -- `ironsoul_triggered_this_combat`
+    evita reanimar 2x no mesmo combate."""
+    if "Ironsoul Enforcer" not in state.battlefield or state.attackers_this_combat != 1:
+        return
+    if state.ironsoul_triggered_this_combat:
+        return
+    ironsoul_reanimate(state)
+    state.ironsoul_triggered_this_combat = True
 
 
 def steel_seraph_combat(state: GameState):
@@ -2407,14 +2432,61 @@ def all_attackers_combat(state: GameState):
             state.max_attacker_power_this_combat = max(state.max_attacker_power_this_combat, power)
 
 
+def try_megatron_alone_with_ironsoul(state: GameState) -> bool:
+    """Linha real achada pelo usuario 2026-09-17: com Ironsoul Enforcer em
+    campo, Megatron NAO precisa do resto do time pra satisfazer 'attacks
+    alone' -- ele mesmo e' o comandante, entao atacar SO' com ele ja'
+    dispara o Ironsoul. Sequencia real (os 2 gatilhos disparam juntos na
+    declaracao de ataque; o controlador escolhe a ordem na pilha -- aqui
+    colocamos o do Ironsoul pra resolver primeiro): Ironsoul devolve o
+    artefato de MAIOR CMC do cemiterio pro campo -> esse artefato
+    recem-chegado fica disponivel como fuel do proprio gatilho de ataque
+    do Megatron ('may sacrifice another artifact... damage equal to its
+    mana value... excess dealt to that creature's controller and you
+    convert Megatron') -> dano extra + flip no meio do combate -> ainda
+    causa dano de combate normal (mudar de face nao remove do combate) ->
+    no postcombat main da face Tyrant pode converter de novo e ganhar
+    mana incolor = vida perdida pelos oponentes esse turno. O corpo
+    reanimado fica permanente no campo depois (fuel pro weld/Ultron/
+    Metalwork Colossus).
+
+    So' vale abrir mao do ataque do resto do time quando o artefato de
+    maior CMC do cemiterio bate mais poder-equivalente do que a soma do
+    poder dos outros atacantes prontos -- sem bloqueio real modelado,
+    atacar com todo mundo e' sempre pelo menos tao bom quanto nao atacar,
+    entao so' compensa abrir mao disso quando o combo entrega mais do que
+    essa soma."""
+    if "Ironsoul Enforcer" not in state.battlefield:
+        return False
+    if COMMANDER not in ready_creatures(state):
+        return False
+    gy_artifacts = [c for c in state.graveyard if is_artifact_card(c)]
+    if not gy_artifacts:
+        return False
+    best_target = max(gy_artifacts, key=lambda n: CARD_DB[n].mv)
+    other_power = sum(get_power(state, n) for n in ready_creatures(state)
+                       if n != COMMANDER and get_power(state, n) > 0)
+    if CARD_DB[best_target].mv <= other_power:
+        return False
+    ironsoul_reanimate(state)
+    state.ironsoul_triggered_this_combat = True
+    state.megatron_alone_combos_total += 1
+    return True
+
+
 def combat_step(state: GameState):
     state.attackers_this_combat = 0
     state.max_attacker_power_this_combat = 0
+    state.ironsoul_triggered_this_combat = False
     try_nexus_of_becoming(state)
     try_ayara_flip_reanimate(state)
-    try_crew_demonic_junker(state)
+
+    alone = try_megatron_alone_with_ironsoul(state)
+    if not alone:
+        try_crew_demonic_junker(state)
     megatron_combat(state)
-    all_attackers_combat(state)
+    if not alone:
+        all_attackers_combat(state)
     ironsoul_enforcer_trigger(state)
     try_cosmic_cube_attack_trigger(state)
     state.attackers_total_all_turns += state.attackers_this_combat
@@ -2732,6 +2804,9 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
           f"| Avg criaturas proprias perdidas pra ela: {avg([s.chandras_ignition_own_creatures_lost_total for s in states]):.2f}")
     print(f"Avg vezes que o Demonic Junker foi crewado (atacou junto com o Megatron): "
           f"{avg([s.demonic_junker_crews_total for s in states]):.2f}")
+    print(f"Avg vezes que o Megatron atacou SOZINHO de proposito pro combo com Ironsoul Enforcer "
+          f"(reanima artefato do cemiterio ANTES do proprio gatilho de ataque, que o usa como fuel): "
+          f"{avg([s.megatron_alone_combos_total for s in states]):.2f}")
     print(f"Avg vida final: {avg([s.life for s in states]):.2f}")
     own_ko = sum(1 for s in states if s.life <= 0)
     print(f"Partidas em que os PROPRIOS efeitos derrubam minha vida a 0 ou menos: {100*own_ko/n:.1f}%")

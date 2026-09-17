@@ -4,6 +4,33 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Megatron ataca sozinho de propósito (combo Ironsoul Enforcer) — 2026-09-17
+
+**Gatilho:** eu tinha sugerido cortar Ironsoul Enforcer com base numa
+métrica que assumia a IA fixa do goldfish (ataca com tudo que está
+pronto). Usuário corrigiu: Megatron é o próprio comandante, "attacks
+alone" não exige mais nenhuma criatura envolvida — dá pra atacar SÓ com
+ele de propósito pra puxar o combo (reanima artefato do cemitério →
+sacrifica pro próprio gatilho de ataque do Megatron → dano + flip →
+dano de combate → converte de novo no postcombat, gerando mana
+incolor). Detalhes técnicos completos em `checklist-oraculo.md`.
+
+**Resultado real (2000 jogos, seed 1M, antes vs depois)**: dano proxy
+total 41,05→41,13, eventos de recursão 0,63→0,67, ativações de solda
+0,41→0,42 — todas na direção esperada. Combo dispara em 0,04
+partidas/média (raro — 1 cópia de Ironsoul Enforcer em 65 cartas, mas
+agora existe e funciona quando a peça aparece, em vez de ficar
+estruturalmente inacessível pela convenção "todo mundo ataca").
+
+**Validação:** 4 testes unitários isolados (combo dispara com CMC alto
+no cemitério e sem outras criaturas prontas; NÃO dispara quando as
+outras criaturas prontas somam mais poder do que o CMC disponível; NÃO
+dispara sem Ironsoul; NÃO dispara com cemitério vazio) + smoke test +
+A/B 2000 jogos + regressão de 20.000 partidas em cada modo (padrão e
+resiliência), 0 exceções.
+
+---
+
 ## Perfis variados de token de ataque — 2026-09-16
 
 **Gatilho:** usuário pediu pra variar o token de ataque em vez do

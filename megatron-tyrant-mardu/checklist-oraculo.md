@@ -1,5 +1,83 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Megatron ataca SOZINHO de propósito pro combo com Ironsoul Enforcer — 2026-09-17
+
+**Gatilho:** usuário pediu 3 candidatas a corte "SEM ERROS". Sugeri
+Ironsoul Enforcer (4/4, "whenever this creature or a commander you
+control attacks alone, return target artifact card from your graveyard
+to the battlefield") como corte, com base numa instrumentação que media
+a taxa de disparo assumindo a IA fixa do `all_attackers_combat()` (ataca
+com tudo que está pronto, convenção "todo mundo ataca" desde
+2026-09-02). O usuário corrigiu: **"Ironsoul traz de volta pro campo qq
+artefato quando ele OU o comandante ataca sozinho... Megatron ataca,
+traz de volta, sacrifica causando dano, flipa, causa dano de combate,
+gera mana incolor e flipa de novo. Ele não precisa atacar!"** — Megatron
+é o próprio comandante, então "attacks alone" é satisfeito só com ELE
+atacando, sem nenhuma outra criatura envolvida; a métrica que eu tinha
+medido não capturava esse combo porque a IA do goldfish nunca escolhe
+deliberadamente atacar só com o Megatron — ela sempre ataca com tudo.
+Confirmado via Scryfall: Megatron, Tyrant (verso Destructive Force) —
+"Whenever Megatron attacks, you may sacrifice another artifact. When
+you do, Megatron deals damage equal to the sacrificed artifact's mana
+value to target creature. If excess damage would be dealt to that
+creature this way, instead that damage is dealt to that creature's
+controller and you convert Megatron."
+
+**Sequência real do combo** (os 2 gatilhos disparam juntos na
+declaração de ataque; o controlador escolhe a ordem deles na pilha —
+coloca-se o do Ironsoul pra resolver PRIMEIRO): Ironsoul devolve o
+artefato de maior CMC do cemitério pro campo → esse artefato recém-
+chegado fica disponível como fuel do próprio gatilho de ataque do
+Megatron → dano extra (excesso vai pro controlador do alvo) + flipa
+Megatron no meio do combate (trocar de face não remove do combate,
+ainda causa dano de combate normal) → no postcombat main da face Tyrant
+pode converter de novo, ganhando `{C}` = vida perdida pelos oponentes
+esse turno. O corpo reanimado, se sobrar (não for usado como fuel),
+fica permanente no campo (fuel pro weld/Ultron/Metalwork Colossus).
+
+**Implementado:**
+1. `ironsoul_reanimate(state)` — corpo real do gatilho do Ironsoul,
+   fatorado numa função própria (antes estava só dentro de
+   `ironsoul_enforcer_trigger`) pra poder ser chamado tanto pelo caso
+   orgânico (poucas criaturas prontas por acaso) quanto pelo caso
+   deliberado, ANTES da escolha de fuel do Megatron.
+2. `try_megatron_alone_with_ironsoul(state)` — decide se vale abrir mão
+   do ataque do resto do time: só quando Ironsoul Enforcer está em
+   campo, o Megatron está pronto pra atacar, há artefato no cemitério, E
+   o CMC do maior artefato do cemitério bate mais poder-equivalente do
+   que a soma do poder das outras criaturas prontas (sem bloqueio real
+   modelado, atacar com todo mundo é sempre pelo menos tão bom quanto
+   não atacar — só compensa abrir mão disso quando o combo entrega
+   mais). Se decide ir sozinho: chama `ironsoul_reanimate` ANTES de
+   `megatron_combat`, marca `ironsoul_triggered_this_combat` (evita
+   reanimar 2x) e incrementa `megatron_alone_combos_total`.
+3. `combat_step()` reordenado: decide "sozinho" antes de crewar o
+   Demonic Junker (crewar e depois não atacar desperdiçaria o crew) e
+   antes de `all_attackers_combat()` (pulado quando vai sozinho).
+   `ironsoul_enforcer_trigger()` continua cobrindo o caso orgânico
+   (poucas criaturas prontas por acaso), com guarda pra não duplicar
+   quando o caso deliberado já disparou.
+
+**Validação:**
+- Smoke test: 0 nomes desconhecidos.
+- 4 testes unitários isolados: (1) combo dispara com Metalwork Colossus
+  (CMC 11) no cemitério e nenhuma outra criatura pronta; confirma que o
+  artefato reanimado é sacrificado como fuel do próprio ataque do
+  Megatron no mesmo combate (dano proxy 17 = 10 de excesso + 7 do
+  Megatron já convertido pra Tyrant); (2) NÃO dispara quando as outras
+  criaturas prontas somam mais poder (10) do que o CMC do cemitério (2,
+  Fellwar Stone); (3) NÃO dispara sem Ironsoul Enforcer em campo; (4)
+  NÃO dispara com cemitério vazio.
+- `run_batch` 2000 partidas, mesma seed, antes vs depois: dano proxy
+  total 41,05→41,13, eventos de recursão 0,63→0,67, solda 0,41→0,42 —
+  todas na direção esperada (mais valor), nenhuma métrica regrediu.
+  Novo combo dispara em 0,04 partidas/média (esperado — 1 cópia de
+  Ironsoul Enforcer em 65 cartas não-terrestres, raro de estar em
+  campo).
+- Regressão de 20.000 partidas no goldfish padrão + 20.000 no modo de
+  resiliência (separado, garantindo que a mudança em `combat_step` não
+  quebrou esse modo opcional) — 0 exceções nos dois.
+
 ## Perfis variados de token no modo de resiliência (ataque) — 2026-09-16
 
 **Gatilho:** usuário pediu pra variar o tipo de token de ataque
