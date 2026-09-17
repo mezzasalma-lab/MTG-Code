@@ -195,3 +195,52 @@ pode parar em "essa carta é boa/isolada por si". Tem que, na ordem:**
 Isso vale tanto pra avaliar sugestão do usuário quanto pra eu propor
 sugestão minha (upgrade, corte por EDHREC, etc.) — a mesma lógica
 relacional, nunca julgamento de power level isolado.
+
+## Regra #5 (obrigatória): a análise prioriza o DECK real (oráculo + regras + jogo real), o simulador é evidência de apoio, nunca a fonte da verdade
+
+Achado real em 2026-09-17 (deck Megatron): pedi 3 candidatas a corte e
+sugeri Ironsoul Enforcer com base numa métrica que instrumentei — quantas
+vezes a habilidade "attacks alone" disparava rodando o goldfish. O número
+saiu baixo porque a IA do simulador tem uma convenção fixa (`all_
+attackers_combat`: ataca com toda criatura pronta, sempre, todo turno) que
+**nunca escolhe deliberadamente atacar só com uma criatura** — então a
+métrica media uma limitação da IA do goldfish, não o valor real da carta.
+O usuário corrigiu direto: Megatron é o próprio comandante, então "attacks
+alone" se satisfaz SÓ com ele atacando, de propósito, puxando um combo
+real (Ironsoul reanima artefato do cemitério → Megatron sacrifica esse
+artefato pro próprio gatilho de ataque → dano + flip → dano de combate →
+converte de novo no postcombat, gera mana). Mesmo padrão de erro também
+nas outras 2 candidatas da mesma rodada: Clever Concealment marcada como
+"sem sinergia" só porque o goldfish solo não modela remoção real de
+oponente pra ela proteger contra (mas é literalmente uma Teferi's
+Protection não-GC — altíssimo power level real); Heartless Conscription
+marcada como "starva a recursão" sem considerar que o próprio "mana of
+any type" dela pluga direto no mana incolor que o Megatron já produz.
+Depois de eu confirmar os 3 erros, o usuário perguntou diretamente: **"Vc
+consegue fazer a análise priorizando o deck ao invés do goldfish?"**
+
+**A partir de agora, pra QUALQUER avaliação de carta (corte, inclusão,
+troca) ou pergunta sobre "essa carta funciona bem aqui?", a ORDEM de
+prioridade é sempre:**
+
+1. **Oráculo real (Scryfall) + regras reais do Magic** — incluindo linhas
+   de jogo deliberadas que um jogador real escolheria (atacar sozinho de
+   propósito, guardar mana, sequenciar gatilhos numa ordem específica),
+   não só o que "acontece sozinho" numa partida.
+2. **Motores e cartas reais do deck** (Regra #4) — sinergias, restrições
+   de tipo/custo, interações específicas.
+3. **Comportamento atual do simulador** — usado só como evidência de
+   APOIO (confirmar magnitude, achar bug de implementação real). NUNCA
+   como árbitro de se uma carta/linha é boa: o goldfish tem convenções
+   fixas documentadas (ataca com tudo, sem bloqueio real, sem oponente
+   real) que são simplificações do MOTOR DE SIMULAÇÃO, não limites da
+   carta ou da linha de jogo real.
+
+**Sinal de alerta (parar e reconsiderar antes de concluir que uma carta é
+fraca):** se a única razão pra achar "essa carta não faz nada" é uma
+convenção conhecida do simulador (ex.: "sem oponente real", "ataca com
+tudo sempre", "sem bloqueio modelado") — isso é candidato a virar um
+FIX NO SIMULADOR (nova função que modela a linha de jogo real que faltava,
+como `try_megatron_alone_with_ironsoul`), não um corte de carta. Corte de
+carta só é válido quando o oráculo real + os motores reais do deck (não o
+simulador) mostram baixo valor.
