@@ -1745,11 +1745,14 @@ def mulligan(rng: random.Random, max_mulls: int = 3):
     while mulls < max_mulls:
         hand, lib = draw_opening_hand(rng)
         if should_keep(hand) or mulls == max_mulls - 1:
-            # London mulligan: bottom `mulls` cards
-            if mulls > 0:
+            # London mulligan: bottom `penalty` cards. Achado real
+            # 2026-09-18 (mesma convencao dos goldfishes manuais do
+            # usuario no Archidekt): 1o mulligan e' GRATIS.
+            penalty = max(0, mulls - 1)
+            if penalty > 0:
                 rng.shuffle(hand)
-                bottom = hand[:mulls]
-                hand = hand[mulls:]
+                bottom = hand[:penalty]
+                hand = hand[penalty:]
                 lib = lib + bottom
             return hand, lib, mulls
         mulls += 1
@@ -2653,28 +2656,30 @@ def play_turn(state: GameState, log: list, is_first_turn: bool, on_play: bool):
     if n_artifacts >= 3 and any(p.card.name == "Inventors' Fair" for p in state.battlefield):
         gain_life(state, 1, log, source="Inventors' Fair (upkeep)")
 
-    if not (is_first_turn and on_play):
-        if state.library:
-            state.hand.append(state.library.pop(0))
-        if state.scheduled_draws > 0 and state.library:
-            state.hand.append(state.library.pop(0))
-            state.scheduled_draws -= 1
-        # Sylvan Library: compra 2 extra, decide manter (pagando 4 de vida cada)
-        # ou devolver ao topo com base numa margem de seguranca de vida.
-        if any(p.card.name == "Sylvan Library" for p in state.battlefield) and len(state.library) >= 2:
-            extra = [state.library.pop(0), state.library.pop(0)]
-            state.hand.extend(extra)
-            state.cards_drawn_extra += 2
-            keep = state.life_total > 20
-            if keep:
-                state.life_total -= 8
-                log.append("  [Sylvan Library] mantem as 2 cartas extra, paga 8 de vida")
-            else:
-                for c in extra:
-                    state.hand.remove(c)
-                    state.library.insert(0, c)
-                state.cards_drawn_extra -= 2
-                log.append("  [Sylvan Library] devolve as 2 cartas extra (vida baixa demais)")
+    # Achado real 2026-09-18: "skip the draw step" no 1o turno de quem
+    # comeca so' existe na regra 1x1 (CR 103.8a). Commander e' sempre
+    # multiplayer -- sempre compra, mesmo no T1.
+    if state.library:
+        state.hand.append(state.library.pop(0))
+    if state.scheduled_draws > 0 and state.library:
+        state.hand.append(state.library.pop(0))
+        state.scheduled_draws -= 1
+    # Sylvan Library: compra 2 extra, decide manter (pagando 4 de vida cada)
+    # ou devolver ao topo com base numa margem de seguranca de vida.
+    if any(p.card.name == "Sylvan Library" for p in state.battlefield) and len(state.library) >= 2:
+        extra = [state.library.pop(0), state.library.pop(0)]
+        state.hand.extend(extra)
+        state.cards_drawn_extra += 2
+        keep = state.life_total > 20
+        if keep:
+            state.life_total -= 8
+            log.append("  [Sylvan Library] mantem as 2 cartas extra, paga 8 de vida")
+        else:
+            for c in extra:
+                state.hand.remove(c)
+                state.library.insert(0, c)
+            state.cards_drawn_extra -= 2
+            log.append("  [Sylvan Library] devolve as 2 cartas extra (vida baixa demais)")
 
     urza_saga_advance(state, log)
     play_land(state, log)
