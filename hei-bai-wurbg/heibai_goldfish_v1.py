@@ -1570,6 +1570,9 @@ BASE_LIBRARY = build_library()
 
 
 def mulligan(rng: random.Random, max_mulls: int = 3):
+    # Achado real 2026-09-18 (mesma convencao dos goldfishes manuais do
+    # usuario no Archidekt): 1o mulligan e' GRATIS -- so' a partir do 2o
+    # entra a punicao real do London Mulligan.
     mulls = 0
     hand, lib = [], []
     while mulls < max_mulls:
@@ -1578,10 +1581,11 @@ def mulligan(rng: random.Random, max_mulls: int = 3):
         hand = lib[:7]
         lib = lib[7:]
         if should_keep(hand) or mulls == max_mulls - 1:
-            if mulls > 0:
+            penalty = max(0, mulls - 1)
+            if penalty > 0:
                 rng.shuffle(hand)
-                bottom = hand[:mulls]
-                hand = hand[mulls:]
+                bottom = hand[:penalty]
+                hand = hand[penalty:]
                 lib = lib + bottom
             return hand, lib, mulls
         mulls += 1
@@ -1596,11 +1600,13 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.tapped_lands_this_turn = 0
 
     upkeep_step(state)
-    if not (is_first_turn and on_play):
-        if state.library:
-            state.hand.append(state.library.pop(0))
-        else:
-            state.library_emptied = True
+    # Achado real 2026-09-18: "skip the draw step" no 1o turno de quem
+    # comeca so' existe na regra 1x1 (CR 103.8a). Commander e' sempre
+    # multiplayer -- ninguem pula a compra do 1o turno.
+    if state.library:
+        state.hand.append(state.library.pop(0))
+    else:
+        state.library_emptied = True
 
     play_land(state)
     main_phase(state)
