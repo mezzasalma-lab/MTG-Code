@@ -297,6 +297,8 @@ class GameState:
     commander_cast_count: int = 0
     commander_cast_turn: Optional[int] = None
     azula_attacking_this_combat: bool = False
+    azula_commander_damage_dealt: int = 0
+    commander_damage_win: bool = False
 
     creature_power_mods: dict = field(default_factory=dict)  # nome -> {"add":int,"mult":int}
     spells_cast_this_turn: int = 0
@@ -1231,6 +1233,17 @@ def combat_step(state: GameState, log: list):
     if not attackers:
         return
     state.azula_attacking_this_combat = COMMANDER in attackers
+    if state.azula_attacking_this_combat:
+        # Achado real 2026-09-18 (regra de commander damage, CR 903.10a):
+        # "if a player has been dealt 21 or more combat damage by the same
+        # commander since the game started, that player loses the game" --
+        # nunca modelada. Acumula o poder real da Azula (com pumps/buffs
+        # ja aplicados via `creature_power`) cada combate que ela ataca,
+        # como se sempre focada no mesmo oponente (linha real disponivel
+        # pro piloto).
+        state.azula_commander_damage_dealt += creature_power(state, COMMANDER)
+        if state.azula_commander_damage_dealt >= 21:
+            state.commander_damage_win = True
 
     for n in attackers:
         # Achado real: o token do Firebender Ascension carrega a tag
@@ -1531,14 +1544,19 @@ def bottom_priority(card: str) -> int:
 
 
 def mulligan(state: GameState):
+    # Achado real 2026-09-18 (mesma convencao usada em todos os goldfishes
+    # manuais do usuario no Archidekt): o 1o mulligan e' GRATIS -- mao final
+    # continua com 7 cartas. So' a partir do 2o mulligan a punicao real do
+    # London Mulligan (bottom N-1 cartas) entra.
     mulls = 0
     while True:
         hand = state.library[:7]
         rest = state.library[7:]
         if should_keep(hand, mulls) or mulls >= 4:
+            penalty = max(0, mulls - 1)
             ordered = sorted(hand, key=bottom_priority, reverse=True)
-            bottom = ordered[:mulls]
-            keep = ordered[mulls:]
+            bottom = ordered[:penalty]
+            keep = ordered[penalty:]
             state.hand = keep
             state.library = rest + bottom
             state.mulligans = mulls
@@ -1599,6 +1617,9 @@ def run_batch(n: int, seed_base: int = 1_000_000, turns: int = 10, out_path: str
     print(f"Maior dano de 1 Grapeshot (max entre partidas): {max(s.storm_grapeshot_max_damage for s in results)}")
     print(f"Interacao jogada (media): {avg(lambda s: s.interaction_plays):.1f}")
     print(f"Mulligans (media): {avg(lambda s: s.mulligans):.2f}")
+    cmd_dmg = sum(1 for s in results if s.commander_damage_win)
+    print(f"Auto-win via commander damage (21+ da propria Azula, CR 903.10a): {100*cmd_dmg/n:.1f}% "
+          f"| Dano de commander acumulado (media): {avg(lambda s: s.azula_commander_damage_dealt):.2f}")
     print(f"Biblioteca esgotada em: {sum(1 for s in results if s.library_emptied)}/{n}")
 
     if out_path:
