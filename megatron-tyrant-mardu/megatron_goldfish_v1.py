@@ -99,6 +99,7 @@ MEGATRON_PIPS = {"R": 1, "W": 1, "B": 1}
 NUM_OPPONENTS = 3  # premissa declarada (mesa de 4), nunca vida real rastreada
 CHANDRAS_IGNITION_LETHAL_THRESHOLD = 70
 POISON_LETHAL = 10  # regra real: 10+ marcadores de veneno = derrota (BlightSteel Colossus tem Infect)
+COMMANDER_DAMAGE_LETHAL = 21  # regra real: 21+ de dano de combate do MESMO comandante ao mesmo jogador = derrota (CR 704.5c/903.10a)
 # Achado real 2026-09-15 (usuario apontou o uso real da carta -- "se
 # tiver 2 oponentes com 7 ou menos de vida vale usar no Megatron e
 # eliminar estes 2, alem de ser boardwipe"): Chandra's Ignition e' um
@@ -458,6 +459,8 @@ class GameState:
     ten_rings_draws_total: int = 0
     blightsteel_poison_win: bool = False
     chandras_ignition_infect_kills_total: int = 0
+    megatron_commander_damage_dealt: int = 0
+    commander_damage_win: bool = False
     portal_phyrexia_reanimations_total: int = 0
     tunnel_grinder_transforms_total: int = 0
     nexus_tokens_created_total: int = 0
@@ -2131,6 +2134,17 @@ def megatron_combat(state: GameState):
     state.max_attacker_power_this_combat = max(state.max_attacker_power_this_combat, power)
     if lifelink_this_combat:
         gain_life(state, power)
+    # Achado real 2026-09-18 (usuario apontou -- regra de commander
+    # damage nunca modelada): "if a player has been dealt 21 or more
+    # combat damage by the same commander since the game started, that
+    # player loses the game" (CR 903.10a). Linha real disponivel pro
+    # piloto: focar o MESMO oponente com o Megatron ataque apos ataque
+    # (escolha deliberada, igual `try_megatron_alone_with_ironsoul` --
+    # nada aqui assume isso automaticamente, so' credita quando os 21
+    # de dano de combate do proprio Megatron realmente se acumulam).
+    state.megatron_commander_damage_dealt += power
+    if state.megatron_commander_damage_dealt >= COMMANDER_DAMAGE_LETHAL:
+        state.commander_damage_win = True
 
 
 def megatron_postcombat(state: GameState):
@@ -2643,8 +2657,16 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.demonic_junker_crewed_this_turn = False
 
     try_portal_phyrexia_upkeep(state)
-    if not (is_first_turn and on_play):
-        draw_cards(state, 1)
+    # Achado real 2026-09-18 (usuario apontou): "skip the draw step" no
+    # primeiro turno de quem joga primeiro so' existe na regra 1x1 (CR
+    # 103.8a: "In a two-player game..."). Commander e' sempre multiplayer
+    # -- CR real pra 3+ jogadores: NENHUM jogador pula a compra do
+    # primeiro turno, nem quem comeca. `NUM_OPPONENTS=3` (mesa de 4) e'
+    # convencao de sempre neste arquivo -- a checagem antiga aplicava a
+    # regra errada (1x1) numa mesa que nunca e' 1x1, tirando 1 carta de
+    # TODO jogo simulado (nao so' um combo raro -- 100% dos jogos, desde
+    # a reconstrucao 2026-09-02).
+    draw_cards(state, 1)
     try_bahamut_saga_tick(state)
 
     play_land(state)
@@ -2807,6 +2829,12 @@ def should_keep(hand: list) -> bool:
 
 
 def mulligan(rng: random.Random):
+    # Achado real 2026-09-18 (usuario apontou -- mesma convencao usada
+    # em todos os goldfishes manuais dele no Archidekt, "Mulligan (0)"
+    # separado de "Keep this"): o 1o mulligan e' GRATIS (compra 7 de
+    # novo, mao final continua com 7 cartas) -- so' a partir do 2o
+    # mulligan que a punicao real do London Mulligan (bottom N-1 cartas)
+    # entra. Antes o codigo aplicava a punicao ja no 1o mulligan.
     mulligans = 0
     while True:
         deck = BASE_LIBRARY[:]
@@ -2814,7 +2842,8 @@ def mulligan(rng: random.Random):
         hand = deck[:7]
         library = deck[7:]
         if should_keep(hand) or mulligans >= 3:
-            for _ in range(mulligans):
+            penalty = max(0, mulligans - 1)
+            for _ in range(penalty):
                 worst = min(hand, key=lambda n: CARD_DB[n].mv if n in CARD_DB else 0)
                 hand.remove(worst)
                 library.insert(0, worst)
@@ -2911,6 +2940,10 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Partidas com auto-win via veneno do BlightSteel Colossus (11 de poder >= {POISON_LETHAL} letal, "
           f"atacando OU via Chandra's Ignition): {100*poison_win/n:.1f}% "
           f"(dos quais via combo com Chandra's Ignition: {100*infect_ignition/n:.1f}%)")
+    cmd_dmg_win = sum(1 for s in states if s.commander_damage_win)
+    print(f"Partidas com auto-win via commander damage (21+ de dano de combate do proprio Megatron "
+          f"ao mesmo oponente, CR 903.10a): {100*cmd_dmg_win/n:.1f}% "
+          f"| Avg dano de commander acumulado no Megatron: {avg([s.megatron_commander_damage_dealt for s in states]):.2f}")
     print(f"Avg vezes que o Demonic Junker foi crewado (atacou junto com o Megatron): "
           f"{avg([s.demonic_junker_crews_total for s in states]):.2f}")
     print(f"Avg vezes que o Megatron atacou SOZINHO de proposito pro combo com Ironsoul Enforcer "

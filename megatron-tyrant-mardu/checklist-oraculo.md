@@ -1,5 +1,84 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## 3 regras de formato Commander nunca modeladas: compra do turno 1, mulligan grátis, commander damage — 2026-09-18
+
+**Gatilho:** usuário perguntou direto — "Vc incluiu o 1o mulligan
+gratuito, a taxa de comandante, e a regra de commander damage (21
+pontos de dano de combate do comandante = jogador sai do jogo)? [...]
+E a compra da primeira carta no primeiro turno tb, nas regras de
+commander?" — 4 perguntas, 3 achados reais (a taxa de comandante já
+estava certa, ver `cast_megatron`/`commander_cast_count`).
+
+### 1. Compra do turno 1 (a mais grave — afetava 100% dos jogos)
+
+**Regra real**: CR 103.8a — "In a **two-player** game, the player who
+plays first skips the draw step of their first turn." Em jogos
+multiplayer (3+ jogadores — Commander É SEMPRE multiplayer,
+`NUM_OPPONENTS=3` é convenção de mesa de 4 usada em todo o arquivo),
+**nenhum jogador pula a compra do primeiro turno**, nem quem começa.
+
+**Bug real**: `play_turn` tinha `if not (is_first_turn and on_play):
+draw_cards(state, 1)` — aplicando a regra 1x1 (skip) numa mesa que
+nunca é 1x1. Isso tirava 1 carta de TODO turno 1 de TODA partida
+simulada desde a reconstrução 2026-09-02 — não é um caso raro de combo,
+é 100% dos jogos, a base inteira de dados desta sessão inteira estava
+levemente subestimada em recursos.
+
+**Corrigido**: turno 1 sempre compra, sem condição.
+
+### 2. Mulligan grátis (1º mulligan sem punição)
+
+**Achado real**: mesma convenção usada em TODOS os goldfishes manuais
+do usuário no Archidekt ("Mulligan (0)" separado de "Keep this" nas
+capturas de tela — o contador não sobe no 1º mulligan). `mulligan()`
+aplicava a punição do London Mulligan (bottom N cartas) já no 1º
+mulligan, igual aos demais.
+
+**Corrigido**: `penalty = max(0, mulligans - 1)` — 1º mulligan devolve
+mão nova de 7 cartas sem descartar nada; a partir do 2º, penalidade
+normal (bottom 1, 2, 3...).
+
+### 3. Commander damage (nunca modelada — e é o wincon REAL mais comum do deck)
+
+**Regra real**: CR 903.10a — "if a player has been dealt 21 or more
+combat damage by the same commander since the game started, that
+player loses the game," independente da vida total desse jogador.
+
+**Achado real ao medir**: instrumentando com as outras 2 correções já
+aplicadas, **83,3% das partidas (2000 jogos) já acumulam 21+ de dano de
+combate SÓ do próprio Megatron em 8 turnos** (média 25,66) — de longe o
+wincon mais comum e mais rápido do deck, e que estava 100% invisível
+até agora. Todo o `proxy_damage_total`/"vida hipotética dos oponentes"
+que reportei nas últimas rodadas estava medindo o eixo ERRADO — o jogo
+real já teria acabado por commander damage muito antes da vida
+hipotética zerar.
+
+**Implementado**: `state.megatron_commander_damage_dealt` acumula o
+poder de CADA combate em que o Megatron ataca (`megatron_combat`,
+já era a variável `power` local usada pro `proxy_drain`); ao atingir
+`COMMANDER_DAMAGE_LETHAL = 21`, marca `state.commander_damage_win =
+True`. Modela a linha real e deliberada de "focar o mesmo oponente com
+o comandante toda vez que ataca" (mesma convenção de linha deliberada já
+usada pro `try_megatron_alone_with_ironsoul`) — não distingue oponentes
+de verdade (goldfish solo), mas credita o dano acumulado como se
+sempre focado no mesmo, que é uma escolha real disponível pro piloto.
+
+### Validação
+
+- 3 testes unitários isolados: (1) `draw_cards` chamado com `n=1` como
+  primeira ação do turno 1, confirmando a compra real; (2) 129 mãos com
+  exatamente 1 mulligan em 500 seeds, todas com 7 cartas (grátis); (3)
+  3 ataques de 7 do Megatron acumulam exatamente 21 de commander damage
+  e disparam `commander_damage_win`.
+- Smoke test: 99 cartas, 0 desconhecidas.
+- `run_batch` 2000 jogos, mesma seed, antes vs depois: TODAS as métricas
+  de valor subiram (mais 1 carta/jogo desde o turno 1 alimenta tudo em
+  cascata) — mana gerada 55,90→70,95, dano proxy 66,73→83,88, cartas
+  compradas extra 13,37→16,37, ativações de solda 0,86→1,11 — e o novo
+  achado de commander damage (83,3%) apareceu.
+- Regressão de 20.000 partidas em cada modo (padrão e resiliência), 0
+  exceções.
+
 ## Fix real: Megatron sacrificado ia pro cemitério pra sempre (regra do comandante não modelada) — 2026-09-18
 
 **Gatilho:** usuário mandou mais um goldfish manual real (com BlightSteel/

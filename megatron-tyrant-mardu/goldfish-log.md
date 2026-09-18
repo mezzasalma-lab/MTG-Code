@@ -38,6 +38,33 @@ cortadas) + A/B 2000 jogos + regressão de 20.000 partidas em cada modo
 
 ---
 
+## 3 regras de Commander nunca modeladas (compra turno 1, mulligan grátis, commander damage) — 2026-09-18
+
+**Gatilho:** usuário perguntou direto se eu tinha modelado o 1º
+mulligan grátis, a taxa de comandante (já estava certa) e a regra de
+commander damage — e depois cobrou também a compra do turno 1. 3
+achados reais confirmados. Detalhes técnicos completos em
+`checklist-oraculo.md`.
+
+**O achado mais importante**: instrumentando as 3 correções, **83,3%
+das 2000 partidas testadas já vencem por commander damage puro (21+ de
+dano do próprio Megatron) dentro de 8 turnos** — de longe o wincon real
+mais comum do deck, nunca medido nesta sessão inteira até agora. Todo o
+"dano proxy"/vida hipotética que venho reportando estava olhando pro
+eixo errado — o jogo já teria acabado antes disso na maioria das vezes.
+
+**Resultado real (2000 jogos, antes vs depois da compra do turno 1 —
+o fix mais impactante dos 3, afeta 100% dos jogos)**: mana gerada pela
+conversão do Megatron 55,90→70,95, dano proxy total 66,73→83,88, cartas
+compradas extra 13,37→16,37 — todas as métricas de valor sobem, porque
+1 carta extra desde o turno 1 alimenta tudo em cascata pelo resto do
+jogo.
+
+**Validação:** 3 testes unitários isolados + smoke test + A/B 2000
+jogos + regressão de 20.000 partidas em cada modo, 0 exceções.
+
+---
+
 ## Fix real: comandante sacrificado ficava preso no cemitério pra sempre — 2026-09-18
 
 **Gatilho:** mais um goldfish manual real seu (Ten Rings/BlightSteel já
