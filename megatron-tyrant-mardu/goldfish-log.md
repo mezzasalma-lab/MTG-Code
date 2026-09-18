@@ -4,6 +4,40 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## +The Ten Rings / -Phyrexian Arena, +BlightSteel Colossus / -Gilded Lotus — 2026-09-18
+
+**Gatilho:** usuário me confrontou sobre 2 pontos que eu não tinha
+calculado de verdade na análise das 7 sugestões (Ten Rings e o hardcast
+do BlightSteel) — "vc não computou isso na sua análise 'COMPLETA'?".
+Instrumentei antes de responder em vez de defender a análise original.
+Detalhes técnicos completos em `checklist-oraculo.md`.
+
+**Achado real que virou bug fix**: ao medir quanto mana incolor o 2º
+flip do Megatron gera, descobri que essa mana nunca era gastável em
+nenhum cast do mesmo turno — `megatron_postcombat` rodava DEPOIS da
+última chamada de `main_phase` do turno. Corrigido (movido pra antes do
+main phase pós-combate, batendo com o oráculo real "at the beginning of
+each of your postcombat main phases").
+
+**Resultado real (2000 jogos, seed 1M, antes vs depois)**: mana gerada
+pela conversão do Megatron 33,89→55,90, dano proxy total 41,13→66,73,
+cartas compradas extra 9,79→13,37 (Ten Rings supera com sobra o que a
+Phyrexian Arena dava), Chandra's Ignition como finalizador 0,1%→5,7%,
+Ayara transformou 2,3%→11,6%. Novo: 1,6% das partidas terminam com
+auto-win via veneno do BlightSteel Colossus (11 de poder ≥ 10 letal,
+atacando sozinho OU via combo com Chandra's Ignition — 0,9% desse
+1,6%). **Correção sobre a linha do Nexus of Becoming** que o usuário
+sugeriu pro combo: o token do Nexus é fixado em 3/3, então essa via
+específica NÃO funciona (precisa dos 11 de poder reais — hardcast/Sneak
+Attack/Anrakyr).
+
+**Validação:** 5 testes unitários isolados + smoke test (achou e
+corrigiu um `KeyError` real — `lista.md` ainda citava as 2 cartas
+cortadas) + A/B 2000 jogos + regressão de 20.000 partidas em cada modo
++ 3.000 partidas em turns=14, 0 exceções em tudo.
+
+---
+
 ## Megatron ataca sozinho de propósito (combo Ironsoul Enforcer) — 2026-09-17
 
 **Gatilho:** eu tinha sugerido cortar Ironsoul Enforcer com base numa

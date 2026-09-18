@@ -98,6 +98,7 @@ MEGATRON_PIPS = {"R": 1, "W": 1, "B": 1}
 
 NUM_OPPONENTS = 3  # premissa declarada (mesa de 4), nunca vida real rastreada
 CHANDRAS_IGNITION_LETHAL_THRESHOLD = 70
+POISON_LETHAL = 10  # regra real: 10+ marcadores de veneno = derrota (BlightSteel Colossus tem Infect)
 # Achado real 2026-09-15 (usuario apontou o uso real da carta -- "se
 # tiver 2 oponentes com 7 ou menos de vida vale usar no Megatron e
 # eliminar estes 2, alem de ser boardwipe"): Chandra's Ignition e' um
@@ -121,8 +122,8 @@ add("Mind Stone", 2, "artifact", {"rock1", "fuel_rock1"})
 add("Talisman of Conviction", 2, "artifact", {"rock1"}, produces={"R", "W"})
 add("Talisman of Hierarchy", 2, "artifact", {"rock1"}, produces={"W", "B"})
 add("Talisman of Indulgence", 2, "artifact", {"rock1"}, produces={"B", "R"})
-add("Gilded Lotus", 5, "artifact", {"rock3"}, produces=set("WUBRG"))
 add("The Eternity Elevator", 5, "artifact", {"rock3", "station"}, pips={})
+add("Blightsteel Colossus", 12, "creature", {"artifact", "infect", "blightsteel"}, power=11, toughness=11, pips={})
 
 # --- Motor central: solda / recuperacao de artefato --------------------------
 add("Goblin Welder", 1, "creature", {"welder"}, power=1, toughness=1, pips={"R": 1})
@@ -234,7 +235,7 @@ add("Faithless Looting", 1, "sorcery", {"loot2_2_flashback"}, pips={"R": 1})
 add("Melded Moxite", 2, "artifact", {"melded_moxite"}, pips={"R": 1})
 add("Black Market Connections", 3, "enchantment", {"black_market"}, pips={"B": 1})
 add("Saheeli's Directive", 3, "sorcery", {"saheeli_directive"}, pips={"R": 3})
-add("Phyrexian Arena", 3, "enchantment", {"phyrexian_arena"}, pips={"B": 2})  # Achado real 2026-09-03
+add("The Ten Rings", 8, "artifact", {"ten_rings"}, pips={})
 
 # --- Removal / interacao (sem alvo real de oponente) ---------------------------
 add("Path to Exile", 1, "instant", {"interaction"}, pips={"W": 1})
@@ -454,7 +455,9 @@ class GameState:
     creatures_sacrificed_total: int = 0
     daretti_savant_minus10_active: bool = False
     cosmic_cube_free_casts_total: int = 0
-    phyrexian_arena_life_lost_total: int = 0
+    ten_rings_draws_total: int = 0
+    blightsteel_poison_win: bool = False
+    chandras_ignition_infect_kills_total: int = 0
     portal_phyrexia_reanimations_total: int = 0
     tunnel_grinder_transforms_total: int = 0
     nexus_tokens_created_total: int = 0
@@ -471,6 +474,7 @@ class GameState:
     chandras_ignition_casts_total: int = 0
     chandras_ignition_own_creatures_lost_total: int = 0
     interaction_rng: Optional[random.Random] = None
+    rng: Optional[random.Random] = None  # o mesmo rng do mulligan/shuffle inicial, guardado no state pro BlightSteel Colossus (shuffle pra biblioteca)
     smart_removals_total: int = 0
     smart_removal_log: list = field(default_factory=list)
     smart_attacks_taken_total: int = 0
@@ -714,6 +718,25 @@ def sacrifice(state: GameState, name: str, is_own_sacrifice: bool = True):
         if was_creature:
             state.creatures_sacrificed_total += 1
         if is_own_sacrifice and was_creature and name != "Rakdos, the Muscle" and "Rakdos, the Muscle" in state.battlefield:
+            rakdos_muscle_trigger(state, name)
+        return
+    if name == "Blightsteel Colossus":
+        # "If Blightsteel Colossus would be put into a graveyard from
+        # anywhere, reveal Blightsteel Colossus and shuffle it into its
+        # owner's library instead." Substituicao real -- nunca chega a
+        # ir pro cemiterio, entao NUNCA e' alvo de Welder/Scrap Welder/
+        # Trash for Treasure/Osgir/Scarecrone/Portal to Phyrexia (todos
+        # exigem "graveyard"); isso e' consistente com a linha real do
+        # combo (hardcast/Sneak Attack/Anrakyr -> ataca ou vira fuel do
+        # Megatron -> volta pra biblioteca, pode ser puxado de novo mais
+        # tarde, nunca preso morto no cemiterio).
+        idx = state.rng.randrange(len(state.library) + 1) if state.rng else len(state.library)
+        state.library.insert(idx, name)
+        if was_artifact:
+            state.artifacts_sacrificed_total += 1
+        if was_creature:
+            state.creatures_sacrificed_total += 1
+        if is_own_sacrifice and was_creature and "Rakdos, the Muscle" in state.battlefield:
             rakdos_muscle_trigger(state, name)
         return
     state.graveyard.append(name)
@@ -1214,30 +1237,55 @@ def try_chandras_ignition(state: GameState):
     condicional, nao um wrath incondicional -- ver
     `CHANDRAS_IGNITION_LETHAL_THRESHOLD`): so' conjura quando ja' saiu
     dano proxy suficiente pra supor os oponentes numa faixa de queima
-    letal. Sempre aponta pro Megatron (maior poder recorrente). "Each
-    opponent" bate em todos (x NUM_OPPONENTS, mesma convencao do
-    arquivo); "each OTHER creature" mata minhas proprias tambem --
-    processado via `sacrifice()` pra disparar os gatilhos reais de
-    morte (Scrap Trawler/Pia's Revolution/Rakdos/Triplicate Titan etc),
-    nao um efeito silencioso."""
+    letal. "Each opponent" bate em todos (x NUM_OPPONENTS, mesma
+    convencao do arquivo); "each OTHER creature" mata minhas proprias
+    tambem -- processado via `sacrifice()` pra disparar os gatilhos
+    reais de morte (Scrap Trawler/Pia's Revolution/Rakdos/Triplicate
+    Titan etc), nao um efeito silencioso.
+
+    Achado real 2026-09-17 (usuario): com BlightSteel Colossus (Infect)
+    em campo, o alvo real deixa de ser o Megatron -- Infect faz QUALQUER
+    dano dessa fonte (incluindo o desta habilidade) ser marcado como
+    veneno nos oponentes em vez de perda de vida, e 11 de poder ja'
+    excede sozinho o teto real de derrota por veneno (`POISON_LETHAL`
+    = 10). Isso e' um auto-win determinístico, independente de quanto
+    dano proxy ja' saiu -- NUNCA passa pelo `CHANDRAS_IGNITION_LETHAL_
+    THRESHOLD` (esse threshold e' so' a heuristica de "os oponentes
+    devem estar baixos de vida", irrelevante pra veneno). Nao precisa
+    de `ready_creatures` -- "target creature you control" nao exige
+    ausencia de doenca de invocacao pra ser alvo legal de um spell
+    (so' pra atacar/usar habilidade com {T})."""
     if "Chandra's Ignition" not in state.hand or not can_cast(state, "Chandra's Ignition"):
         return
-    if state.proxy_damage_total < CHANDRAS_IGNITION_LETHAL_THRESHOLD:
-        return
-    if COMMANDER not in state.battlefield or COMMANDER not in ready_creatures(state):
-        return
-    power = get_power(state, COMMANDER)
+    infect_source = None
+    if "Blightsteel Colossus" in state.battlefield:
+        p = get_power(state, "Blightsteel Colossus")
+        if p >= POISON_LETHAL:
+            infect_source = "Blightsteel Colossus"
+    if infect_source is None:
+        if state.proxy_damage_total < CHANDRAS_IGNITION_LETHAL_THRESHOLD:
+            return
+        if COMMANDER not in state.battlefield or COMMANDER not in ready_creatures(state):
+            return
+        source = COMMANDER
+    else:
+        source = infect_source
+    power = get_power(state, source)
     if power <= 0:
         return
     spend_mana(state, effective_cost(state, "Chandra's Ignition"))
     state.hand.remove("Chandra's Ignition")
     state.graveyard.append("Chandra's Ignition")
-    others = [n for n in state.battlefield if is_creature_card(n) and n != COMMANDER]
+    others = [n for n in state.battlefield if is_creature_card(n) and n != source]
     for n in others:
         if CARD_DB[n].toughness <= power:
             sacrifice(state, n)
             state.chandras_ignition_own_creatures_lost_total += 1
-    proxy_drain(state, power * NUM_OPPONENTS)
+    if infect_source is not None:
+        state.blightsteel_poison_win = True
+        state.chandras_ignition_infect_kills_total += 1
+    else:
+        proxy_drain(state, power * NUM_OPPONENTS)
     state.chandras_ignition_casts_total += 1
 
 
@@ -1811,16 +1859,22 @@ def cast_megatron(state: GameState):
     state.creature_cast_turn[COMMANDER] = state.turn
 
 
-def try_phyrexian_arena_upkeep(state: GameState):
-    """Phyrexian Arena: 'At the beginning of your upkeep, you draw a card
-    and you lose 1 life.' Achado real 2026-09-03 (usuario: 'impressao de
-    que falta draw no deck') -- unico draw incondicional/repetivel todo
-    turno da lista inteira, sem depender de sacrificio nem de combate."""
-    if "Phyrexian Arena" not in state.battlefield:
+def try_ten_rings_draw(state: GameState):
+    """The Ten Rings: 'Your maximum hand size is ten. At the beginning of
+    your end step, if you have fewer than ten cards in hand, draw cards
+    equal to the difference.' Achado real 2026-09-18 (troca por Phyrexian
+    Arena): o motor real medido em `hand_by_turn` mostra a mao
+    estabilizando em ~3,3 cartas do turno 6 em diante -- com isso em
+    campo, compra a diferenca TODO end step (tipicamente 6-7 cartas),
+    nao 1 fixa como a Arena. O tamanho maximo de mao tambem sobe pra 10
+    enquanto ela esta' em campo (ver o `max_hand` no fim de `end_step`)."""
+    if "The Ten Rings" not in state.battlefield:
         return
-    draw_cards(state, 1)
-    self_damage(state, 1)
-    state.phyrexian_arena_life_lost_total += 1
+    missing = 10 - len(state.hand)
+    if missing <= 0:
+        return
+    draw_cards(state, missing)
+    state.ten_rings_draws_total += missing
 
 
 def try_portal_phyrexia_upkeep(state: GameState):
@@ -2409,6 +2463,14 @@ def all_attackers_combat(state: GameState):
         state.attackers_this_combat += 1
         proxy_drain(state, power)
         state.max_attacker_power_this_combat = max(state.max_attacker_power_this_combat, power)
+        if "infect" in CARD_DB[name].tags and power >= POISON_LETHAL:
+            # Infect: "deals damage to players in the form of poison
+            # counters instead." Combate normal desbloqueado (sem
+            # bloqueio real modelado pra nenhum atacante meu, convencao
+            # de sempre) com BlightSteel Colossus (11 de poder, teto real
+            # de 10 pra derrota) e' letal so' de atacar, sem precisar do
+            # combo com Chandra's Ignition.
+            state.blightsteel_poison_win = True
         if name == "Anrakyr the Traveller":
             anrakyr_attack_ability(state)
         elif name == "Daretti, Rocketeer Engineer":
@@ -2494,7 +2556,7 @@ def combat_step(state: GameState):
 
 def end_step(state: GameState):
     try_tunnel_grinder_transform(state)
-    megatron_postcombat(state)
+    try_ten_rings_draw(state)
 
     for n in state.temp_creatures_pending_sacrifice[:]:
         if n in state.battlefield:
@@ -2517,7 +2579,7 @@ def end_step(state: GameState):
                 resolve_etb(state, n)
     state.daretti_emblem_pending_return = []
 
-    max_hand = 7
+    max_hand = 10 if "The Ten Rings" in state.battlefield else 7
     while len(state.hand) > max_hand:
         worst = worst_discard_target(state)
         state.hand.remove(worst)
@@ -2548,7 +2610,6 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.crewed_creatures_tapped = set()
     state.demonic_junker_crewed_this_turn = False
 
-    try_phyrexian_arena_upkeep(state)
     try_portal_phyrexia_upkeep(state)
     if not (is_first_turn and on_play):
         draw_cards(state, 1)
@@ -2558,6 +2619,17 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     main_phase(state)
     try_equip_haste(state)
     combat_step(state)
+    # Achado real 2026-09-18 (usuario perguntou quanto de mana incolor o
+    # 2o flip do Megatron gera pra questionar o hardcast do BlightSteel
+    # Colossus): `megatron_postcombat` estava dentro de `end_step`, ou
+    # seja, DEPOIS da 2a chamada de `main_phase` -- a mana gerada pela
+    # conversao nunca chegava a ser gastavel em nenhum cast daquele
+    # turno, so' existia pro contador `megatron_mana_generated_total`.
+    # O oraculo real e' "at the beginning of each of your postcombat main
+    # phases, you may convert Megatron" -- o gatilho tem que resolver
+    # ANTES do proprio main phase pos-combate rodar, pra' mana gerada
+    # poder ser gasta nele (ex.: hardcast do BlightSteel Colossus).
+    megatron_postcombat(state)
     main_phase(state)
     end_step(state)
 
@@ -2721,7 +2793,7 @@ def mulligan(rng: random.Random):
 def simulate_one(seed: int, turns: int = 8):
     rng = random.Random(seed)
     hand, lib, mulls = mulligan(rng)
-    state = GameState(hand=hand, library=lib, mulligans=mulls)
+    state = GameState(hand=hand, library=lib, mulligans=mulls, rng=rng)
     turns_played = 0
     is_first = True
     while turns_played < turns:
@@ -2760,8 +2832,8 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
           f"board pronto, achado real 2026-09-02): {avg([s.attackers_total_all_turns for s in states]):.2f}")
     print(f"Avg vida ganha: {avg([s.proxy_lifegain_total for s in states]):.2f}")
     print(f"Avg cartas compradas extra: {avg([s.cards_drawn_extra for s in states]):.2f}")
-    print(f"  -- dos quais via Phyrexian Arena: {avg([s.phyrexian_arena_life_lost_total for s in states]):.2f} "
-          f"draws/partida ({avg([s.phyrexian_arena_life_lost_total for s in states]):.2f} vida perdida)")
+    print(f"  -- dos quais via The Ten Rings (compra a diferenca pra 10 no end step): "
+          f"{avg([s.ten_rings_draws_total for s in states]):.2f} draws/partida")
     print(f"Avg conjuracoes gratis via Cosmic Cube: {avg([s.cosmic_cube_free_casts_total for s in states]):.2f}")
     print(f"Avg tokens 3/3 criados via Nexus of Becoming: {avg([s.nexus_tokens_created_total for s in states]):.2f}")
     print(f"Avg ativacoes de haste via Lightning Greaves: "
@@ -2802,6 +2874,11 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     chandras = sum(1 for s in states if s.chandras_ignition_casts_total > 0)
     print(f"Partidas em que Chandra's Ignition foi usada como finalizador: {100*chandras/n:.1f}% "
           f"| Avg criaturas proprias perdidas pra ela: {avg([s.chandras_ignition_own_creatures_lost_total for s in states]):.2f}")
+    poison_win = sum(1 for s in states if s.blightsteel_poison_win)
+    infect_ignition = sum(1 for s in states if s.chandras_ignition_infect_kills_total > 0)
+    print(f"Partidas com auto-win via veneno do BlightSteel Colossus (11 de poder >= {POISON_LETHAL} letal, "
+          f"atacando OU via Chandra's Ignition): {100*poison_win/n:.1f}% "
+          f"(dos quais via combo com Chandra's Ignition: {100*infect_ignition/n:.1f}%)")
     print(f"Avg vezes que o Demonic Junker foi crewado (atacou junto com o Megatron): "
           f"{avg([s.demonic_junker_crews_total for s in states]):.2f}")
     print(f"Avg vezes que o Megatron atacou SOZINHO de proposito pro combo com Ironsoul Enforcer "
@@ -2826,7 +2903,7 @@ def simulate_one_with_interaction(seed: int, turns: int = 8):
     chamado por `run_batch`/`simulate_one` padrao."""
     rng = random.Random(seed)
     hand, lib, mulls = mulligan(rng)
-    state = GameState(hand=hand, library=lib, mulligans=mulls,
+    state = GameState(hand=hand, library=lib, mulligans=mulls, rng=rng,
                        interaction_rng=random.Random(seed + 999_999))
     turns_played = 0
     is_first = True

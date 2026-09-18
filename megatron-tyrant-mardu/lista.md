@@ -328,6 +328,44 @@ tarde de jogo" (Triniform, nunca implementado). Pra Commander real com
 oponentes de verdade, evasão embutida bate reach condicional de late
 game — troca aplicada.
 
+**Correção 2026-09-18 — +The Ten Rings / -Phyrexian Arena, +BlightSteel
+Colossus / -Gilded Lotus**: usuário questionou minha avaliação inicial
+de The Ten Rings e do hardcast do BlightSteel Colossus ("Vc não computou
+isso na sua análise 'COMPLETA'"). Instrumentei com dado real do motor
+antes de responder (Regra #5): mão final estabiliza em ~3,3 cartas do
+turno 6 em diante (3.000 jogos) — com The Ten Rings em campo, isso
+significa comprar ~6-7 cartas TODO end step, não 1 fixa como a Phyrexian
+Arena. Pro BlightSteel: o próprio 2º flip do Megatron (pós-combate) gera
+em média 14,6 mana incolor por evento (mediana 12), com 57%+ dos eventos
+já cobrindo o custo cheio de {12} a partir do turno 7 — hardcast real,
+sem precisar de Sneak Attack/Anrakyr.
+
+Ao investigar isso, achei um bug real e separado: `megatron_postcombat`
+(o 2º flip) estava sendo chamado dentro de `end_step`, ou seja, DEPOIS
+da 2ª chamada de `main_phase` daquele turno — a mana gerada nunca era
+gastável em nenhum cast, só existia pro contador. Corrigido: o gatilho
+resolve ANTES do main phase pós-combate (oráculo real: "at the beginning
+of each of your postcombat main phases"), então a mana agora é
+gastável de verdade no mesmo turno.
+
+BlightSteel Colossus (Infect) + Chandra's Ignition confirmado como
+combo real: 11 de poder já excede o teto de derrota por veneno (10),
+sem precisar dobrar poder. Implementado: `try_chandras_ignition` agora
+prioriza o BlightSteel como fonte (bypassa o threshold normal, que só
+faz sentido pra dano de vida, não pra veneno), e o próprio ataque normal
+dele (`all_attackers_combat`) já é letal sozinho, sem precisar da
+Ignition. A replacement effect real dele ("if would be put into a
+graveyard from anywhere, shuffle into library instead") foi modelada em
+`sacrifice()` — nunca fica preso no cemitério, nunca é alvo de
+Welder/Osgir/Scarecrone/Portal to Phyrexia (todos exigem "graveyard").
+
+Corte de Phyrexian Arena: 1 carta/turno por 1 de vida, redundante com a
+compra muito maior do Ten Rings a partir de quando ele resolve. Corte de
+Gilded Lotus: pior rate de rampa da lista (3 mana da MESMA cor por 5
+mana, upside nunca usado por nenhuma outra carta — nenhum custo do deck
+pede 3 pips da mesma cor), com The Eternity Elevator já cobrindo o
+mesmo slot de 5-mana-ramp com upside real (station escalando).
+
 ## Comandante
 
 1 Megatron, Tyrant
@@ -357,7 +395,7 @@ game — troca aplicada.
 1 Fellwar Stone
 1 Generous Gift
 1 Genesis Chamber
-1 Gilded Lotus
+1 Blightsteel Colossus
 1 Goblin Engineer
 1 Goblin Welder
 1 Heartless Conscription
@@ -373,7 +411,7 @@ game — troca aplicada.
 1 Noxious Gearhulk
 1 Osgir, the Reconstructor
 1 Path to Exile
-1 Phyrexian Arena
+1 The Ten Rings
 1 Pia's Revolution
 1 Portal to Phyrexia
 1 Rakdos, the Muscle

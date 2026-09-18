@@ -1,5 +1,128 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## +The Ten Rings / -Phyrexian Arena, +BlightSteel Colossus / -Gilded Lotus — 2026-09-18
+
+**Gatilho:** usuário questionou 2 pontos da minha análise anterior das
+7 sugestões de carta — "The Ten Rings SEMPRE enche minha mão... vc não
+computou isso" e "quanto de mana incolor... pra vc afirmar que hardcast
+[do BlightSteel] é impossível?". Ambos os pontos eram reais; instrumentei
+com dado do motor (Regra #5, simulador como evidência de apoio) antes de
+responder, em vez de defender a análise original.
+
+### The Ten Rings (oráculo real, Scryfall)
+
+`{8}` Legendary Artifact — "Your maximum hand size is ten. At the
+beginning of your end step, if you have fewer than ten cards in hand,
+draw cards equal to the difference."
+
+**Achado real:** instrumentei `len(state.hand)` no fim de cada turno em
+3.000 jogos — a mão estabiliza em ~3,3 cartas do turno 6 em diante
+(3.42/3.33/3.29/3.33/3.38 nos turnos 6-10). Como The Ten Rings compra a
+DIFERENÇA até 10 (não 1 fixa como a Phyrexian Arena), em campo a partir
+do turno 6+ ela compraria ~6-7 cartas TODO end step.
+
+**Implementado:**
+- `try_ten_rings_draw(state)` — calcula `10 - len(state.hand)` ANTES de
+  comprar (pra métrica correta), chama `draw_cards`, incrementa
+  `state.ten_rings_draws_total`. Chamada no início de `end_step`
+  (oráculo real: "at the beginning of your end step").
+- `max_hand` no cleanup de `end_step` sobe pra 10 quando ela está em
+  campo (era fixo em 7) — segunda cláusula real ("your maximum hand size
+  is ten"), senão a mão comprada seria descartada na mesma passada.
+
+### BlightSteel Colossus (oráculo real, Scryfall) + bug real achado
+
+`{12}` Artifact Creature 11/11, Trample/Infect/Indestructible —
+"If Blightsteel Colossus would be put into a graveyard from anywhere,
+reveal Blightsteel Colossus and shuffle it into its owner's library
+instead."
+
+**Achado real (mana):** instrumentei `megatron_postcombat` (o 2º flip,
+que gera `{C}` = vida perdida pelos oponentes no turno) por EVENTO
+individual em 5.000 jogos: média de 14,58 mana incolor por evento
+(mediana 12), 57% dos eventos já ≥12 (custo cheio do BlightSteel), subindo
+pra 68% no turno 8 e 84% no turno 10.
+
+**Bug real achado ao investigar isso:** `megatron_postcombat` estava
+sendo chamado dentro de `end_step`, que roda DEPOIS da 2ª chamada de
+`main_phase` do turno (`play_turn`: main_phase → combat_step →
+main_phase → end_step). A mana gerada pelo 2º flip nunca era gastável
+em nenhum cast daquele turno — só alimentava o contador
+`megatron_mana_generated_total`, nunca o `remaining_mana()` real na hora
+de conjurar algo. Oráculo real: "At the beginning of each of your
+postcombat main phases, you may convert Megatron" — o gatilho tem que
+resolver ANTES do main phase pós-combate rodar. Corrigido: `megatron_
+postcombat(state)` movido pra `play_turn`, entre `combat_step` e a 2ª
+chamada de `main_phase`.
+
+**Achado real (combo com Chandra's Ignition):** usuário apontou "esse
+com o infect e o Chandra's Ignition vira auto-win". Confirmado via
+oráculo: Chandra's Ignition = "Target creature you control deals damage
+equal to its power to each other creature and each opponent" — sem
++X/+X (não precisa dobrar poder). Infect faz QUALQUER dano dessa fonte
+virar veneno nos oponentes; 11 de poder já excede o teto real de derrota
+por veneno (`POISON_LETHAL = 10`), sozinho, sem dobrar nada. **Correção
+importante sobre a linha via Nexus of Becoming que o usuário sugeriu**:
+o token do Nexus é fixado em 3/3 ("except it's a 3/3 Golem artifact
+creature"), então exilar o BlightSteel por ele dá um corpo de só 3 de
+poder — 3 de veneno, insuficiente. A linha real funciona via hardcast
+(dado do motor acima), Sneak Attack ou o ataque do Anrakyr (poder cheio
+11), não via Nexus.
+
+**Implementado:**
+1. `sacrifice()` ganhou um redirect pra "Blightsteel Colossus": em vez
+   de ir pro cemitério, é inserido de volta na biblioteca em posição
+   aleatória (`state.rng`, o mesmo rng do mulligan/shuffle inicial,
+   agora guardado em `state.rng` pra esse uso). Nunca fica preso no
+   cemitério — nunca é alvo de Goblin Welder/Scrap Welder/Trash for
+   Treasure/Osgir/Scarecrone/Portal to Phyrexia (todos exigem
+   "graveyard" no oráculo real deles).
+2. `all_attackers_combat()`: criatura com tag `"infect"` e poder ≥
+   `POISON_LETHAL` marca `state.blightsteel_poison_win = True` ao
+   atacar — já é letal sozinho, sem precisar da Ignition (basta atacar
+   desbloqueado, convenção de sempre: sem bloqueio real modelado pra
+   nenhum atacante meu).
+3. `try_chandras_ignition()` reescrita: se BlightSteel Colossus está em
+   campo com poder ≥10, ele passa a ser a fonte (bypassa o `CHANDRAS_
+   IGNITION_LETHAL_THRESHOLD` — esse threshold só faz sentido pra dano
+   de vida, veneno mata em qualquer vida). Não usa `ready_creatures`
+   pra esse check — "target creature you control" não exige ausência de
+   doença de invocação pra ser alvo legal de spell.
+
+**Corte de Phyrexian Arena**: 1 carta/turno por 1 de vida, redundante
+com o volume muito maior do Ten Rings a partir de quando ele resolve
+(ver dado real acima).
+
+**Corte de Gilded Lotus**: pior rate de rampa da lista (3 mana da MESMA
+cor por 5 mana) — nenhuma outra carta da lista pede 3 pips da mesma cor
+(os custos duplos mais pesados são `{R}{R}`/`{B}{B}`/`{W}{W}`, só 2),
+então o "upside" dela nunca é usado de verdade; The Eternity Elevator já
+cobre o mesmo slot de 5-mana-ramp com upside real (station escalando).
+
+### Validação
+
+- Smoke test: 99 cartas, 0 desconhecidas (achou 1 problema real ao
+  rodar: `lista.md` ainda tinha "Gilded Lotus"/"Phyrexian Arena" como
+  linhas do decklist mesmo depois de removidas do `CARD_DB` —
+  `KeyError` real, corrigido atualizando as 2 linhas em `lista.md`).
+- 5 testes unitários isolados: Ten Rings compra a diferença exata (3→10,
+  +7) e não dispara sem estar em campo; BlightSteel sacrificado vai pra
+  biblioteca (não cemitério); BlightSteel atacando sozinho (poder 11,
+  sem doença de invocação) marca `blightsteel_poison_win`; Metalwork
+  Colossus (sem infect) NÃO marca; Chandra's Ignition conjura mesmo com
+  `proxy_damage_total=0` quando BlightSteel está em campo (bypassa o
+  threshold) e ainda funciona no modo antigo (Megatron + threshold)
+  quando BlightSteel não está presente.
+- `run_batch` 2000 jogos, mesma seed, antes vs depois: mana gerada pela
+  conversão do Megatron 33,89→55,90 (fix do timing realmente disponibiliza
+  a mana), dano proxy total 41,13→66,73, cartas compradas extra
+  9,79→13,37, Chandra's Ignition como finalizador 0,1%→5,7%, Ayara
+  transformou 2,3%→11,6% — tudo na direção esperada (motor mais forte),
+  nenhuma métrica quebrada ou negativa. Novo auto-win via veneno em
+  1,6% das partidas (0,9% via combo com a Ignition).
+- Regressão de 20.000 partidas no goldfish padrão + 20.000 no modo de
+  resiliência + 3.000 em turns=14 — 0 exceções nos três.
+
 ## Megatron ataca SOZINHO de propósito pro combo com Ironsoul Enforcer — 2026-09-17
 
 **Gatilho:** usuário pediu 3 candidatas a corte "SEM ERROS". Sugeri
