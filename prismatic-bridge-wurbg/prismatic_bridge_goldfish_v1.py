@@ -1458,8 +1458,11 @@ def simulate_one(seed: int, turns: int, with_greater_auramancy: bool) -> Dict:
         state.library.extend(state.hand)
         state.hand = []
         rng.shuffle(state.library)
-    if mulligans:
-        bottoms = choose_bottom(state.hand, mulligans)
+    # Achado real 2026-09-18 (mesma convencao dos goldfishes manuais do
+    # usuario no Archidekt): 1o mulligan e' GRATIS, so' o 2o+ bota cartas.
+    penalty = max(0, mulligans - 1)
+    if penalty:
+        bottoms = choose_bottom(state.hand, penalty)
         for c in bottoms:
             state.hand.remove(c)
             state.library.append(c)
