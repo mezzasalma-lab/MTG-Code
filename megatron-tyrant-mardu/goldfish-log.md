@@ -38,6 +38,30 @@ cortadas) + A/B 2000 jogos + regressão de 20.000 partidas em cada modo
 
 ---
 
+## Fix real: comandante sacrificado ficava preso no cemitério pra sempre — 2026-09-18
+
+**Gatilho:** mais um goldfish manual real seu (Ten Rings/BlightSteel já
+na lista). Rastreei a ordem exata do log pra responder se o mana
+pós-combate do Megatron foi gasto (não foi, nesse turno específico — o
+Portal to Phyrexia foi conjurado ANTES do 2º flip). Mas o mesmo log
+mostrou o Megatron voltando pra zona de comando depois de ser exilado
+por um oponente (regra real 903.9) e sendo reconjurado depois — e isso
+não estava modelado no simulador.
+
+**Achado real**: `sacrifice()` nunca tratou o `COMMANDER` como especial —
+ele ia pro cemitério normal e `commander_in_play` nunca resetava,
+travando o Megatron fora do jogo pra sempre uma vez sacrificado. Isso
+virou um bug ATIVO pelo combo BlightSteel+Chandra's Ignition implementado
+nesta mesma sessão ("each OTHER creature" sempre pega o próprio Megatron,
+toughness 5 ≤ poder 11). Detalhes técnicos completos em
+`checklist-oraculo.md`.
+
+**Validação:** 3 testes unitários isolados + smoke test + A/B 2000 jogos
+(sem regressão nas métricas) + regressão de 20.000 partidas em cada modo
++ 3.000 em turns=14, 0 exceções.
+
+---
+
 ## Megatron ataca sozinho de propósito (combo Ironsoul Enforcer) — 2026-09-17
 
 **Gatilho:** eu tinha sugerido cortar Ironsoul Enforcer com base numa

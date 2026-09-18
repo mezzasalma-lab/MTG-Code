@@ -1,5 +1,56 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Fix real: Megatron sacrificado ia pro cemitério pra sempre (regra do comandante não modelada) — 2026-09-18
+
+**Gatilho:** usuário mandou mais um goldfish manual real (com BlightSteel/
+Ten Rings já na lista) e perguntou se eu via ele tentando gastar o mana
+pós-combate do Megatron. Rastreando a ordem exata dos eventos do log,
+achei que o Portal to Phyrexia foi conjurado ANTES do 2º flip (o que gera
+a mana) — ou seja, esse log específico não confirma o mana pós-combate
+sendo gasto, ficou sem uso naquele turno. Mas o mesmo log mostrou uma
+coisa mais importante: o Megatron foi exilado por um Path to Exile do
+oponente (via modo de interação do Archidekt) e **voltou pra zona de
+comando**, não pro cemitério/exílio — a regra real 903.9 (comandante que
+sairia do campo pode ir pra zona de comando em vez de qualquer outro
+destino) — e depois foi reconjurado pagando o "commander tax".
+
+**Achado real ao checar se o simulador modela isso**: `sacrifice()`
+nunca teve tratamento especial pro `COMMANDER` — ele ia pro
+`state.graveyard` como qualquer permanente comum, e `state.
+commander_in_play` NUNCA resetava pra `False`. Confirmado com teste
+isolado: sacrificar o Megatron o deixava preso no cemitério pra sempre,
+com `commander_in_play` travado em `True`, impedindo `cast_megatron()`
+de jamais reconjurá-lo (`if state.commander_in_play: return` nunca
+liberava, mesmo com ele fisicamente fora do campo).
+
+**Isso virou um bug ATIVO, não só teórico, por causa do combo
+implementado nesta mesma sessão**: `try_chandras_ignition()` com
+BlightSteel Colossus como fonte aplica "each OTHER creature" — e o
+próprio Megatron (toughness 5) sempre se qualifica contra o poder 11 do
+BlightSteel, sendo sacrificado de verdade todo real disparo do combo
+(confirmado: `commander_in_play` continuava `True` e o Megatron ficava
+no cemitério depois do combo, em vez de reconjurável).
+
+**Implementado**: novo branch em `sacrifice()`, checado ANTES de
+qualquer outro redirect (Warp/Unearth pro exílio, BlightSteel pra
+biblioteca) — para o `COMMANDER`, reseta `commander_in_play=False` e
+`megatron_face=None` em vez de ir pro cemitério (escolha sempre pra zona
+de comando, estritamente melhor pro piloto — mesma convenção de "sempre
+a jogada boa" do resto do arquivo). Ainda dispara Rakdos (sacrifício
+real, "whenever you sacrifice", não depende de cemitério), mas NÃO
+dispara Scrap Trawler/Pia's Revolution/death_trigger (exigem "put into a
+graveyard", que nunca acontece aqui) — mesmo padrão já usado pro redirect
+de Warp/Unearth.
+
+**Validação**: 3 testes unitários isolados (Megatron sacrificado não fica
+no cemitério nem no battlefield, `commander_in_play`/`megatron_face`
+resetam; consegue reconjurar depois pagando o tax aumentado —
+`commander_cast_count` incrementa de novo; Rakdos ainda dispara mesmo
+com o redirect) + smoke test + A/B 2000 jogos (métricas praticamente
+idênticas, esperado — só afeta o raro caso do combo, e turns=8 já
+termina o jogo antes de precisar reconjurar) + regressão de 20.000
+partidas em cada modo + 3.000 partidas em turns=14, 0 exceções em tudo.
+
 ## +The Ten Rings / -Phyrexian Arena, +BlightSteel Colossus / -Gilded Lotus — 2026-09-18
 
 **Gatilho:** usuário questionou 2 pontos da minha análise anterior das

@@ -710,6 +710,38 @@ def sacrifice(state: GameState, name: str, is_own_sacrifice: bool = True):
         state.temp_creatures_pending_sacrifice.remove(name)
     was_creature = is_creature_card(name)
     was_artifact = is_artifact_card(name)
+    if name == COMMANDER:
+        # Achado real 2026-09-18 (goldfish manual do usuario -- Path to
+        # Exile de um oponente no Megatron, via modo de interacao do
+        # Archidekt): comandante que sairia do campo pra QUALQUER zona
+        # (cemiterio, exilio, mao, biblioteca) pode ir pra ZONA DE
+        # COMANDO em vez disso (regra 903.9) -- reconjuravel depois
+        # pagando o "commander tax" (`cast_megatron` ja modela o tax via
+        # `commander_cast_count`). Sem essa checagem, `sacrifice()`
+        # tratava o Megatron como permanente comum: ia pro cemiterio de
+        # verdade e `commander_in_play` nunca resetava pra False --
+        # travava ele fora do jogo pro resto da partida, sem poder
+        # reconjurar (confirmado com teste isolado). Vira bug ATIVO a
+        # partir do combo BlightSteel Colossus + Chandra's Ignition
+        # (ver `try_chandras_ignition`): "each OTHER creature" tambem
+        # atinge o proprio Megatron (toughness 5 <= poder 11 da fonte),
+        # entao o combo sacrificava o comandante de verdade sempre que
+        # disparava. Escolha sempre pra zona de comando (estritamente
+        # melhor pro piloto, mesma convencao de "sempre a jogada boa"
+        # usada no resto do arquivo). Ainda conta como sacrificio real
+        # pro Rakdos ("whenever you sacrifice", nao depende de cemiterio)
+        # mas NAO dispara Scrap Trawler/Pia's Revolution/death_trigger
+        # (esses exigem "put into a graveyard", que nunca acontece aqui
+        # -- mesmo padrao ja usado pro redirect de Warp/Unearth abaixo).
+        state.commander_in_play = False
+        state.megatron_face = None
+        if was_artifact:
+            state.artifacts_sacrificed_total += 1
+        if was_creature:
+            state.creatures_sacrificed_total += 1
+        if is_own_sacrifice and was_creature and "Rakdos, the Muscle" in state.battlefield:
+            rakdos_muscle_trigger(state, name)
+        return
     if name in state.temp_creatures_pending_exile:
         state.temp_creatures_pending_exile.remove(name)
         state.exile.append(name)
