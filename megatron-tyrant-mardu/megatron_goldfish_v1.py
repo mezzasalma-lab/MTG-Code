@@ -1125,14 +1125,22 @@ def resolve_etb(state: GameState, name: str, token: bool = False):
         # anterior sempre copiava o Megatron especificamente ("unica
         # criatura que ataca de verdade"), premissa que ficou desatualizada
         # desde que `all_attackers_combat` passou a fazer TODO MUNDO atacar
-        # (achado 2026-09-02, ver docstring de anrakyr_attack_ability) --
-        # subestimava a carta sempre que outra criatura em campo (Triplicate
-        # Titan 9/9, Blightsteel Colossus 11/11, Cityscape Leveler 8/8, etc)
-        # tivesse mais poder que o Megatron (7 Tyrant / 4 Vehicle). Corrigido
-        # pra copiar sempre a criatura de MAIOR poder real em campo
-        # (get_power, cobre CDAs/boosts como Daretti/Osgir) -- haste vem do
-        # proprio efeito, nao exige `ready_creatures`.
-        creatures_in_play = [n for n in state.battlefield if is_creature_card(n)]
+        # (achado 2026-09-02, ver docstring de anrakyr_attack_ability).
+        #
+        # Correcao 2 (mesma rodada, usuario apontou): copiar uma criatura
+        # LENDARIA e' literalmente pior que inutil, nao so' "subotimo" --
+        # CR 704.5j (regra de lendario): eu ja controlo o original de
+        # qualquer lendaria minha (Megatron/Anrakyr/Ayara/etc), entao a
+        # copia entra e e' IMEDIATAMENTE sacrificada (escolho manter o
+        # original) antes de sequer poder atacar. `LEGENDARY_NAMES`
+        # exclui essas do pool -- so' criaturas NAO-lendarias (Triplicate
+        # Titan 9/9, Blightsteel Colossus 11/11, Cityscape Leveler 8/8
+        # trample + destroi ao atacar, tokens, etc) sao alvos legais de
+        # verdade. Copia a de MAIOR poder real (get_power, cobre CDAs/
+        # boosts) entre essas -- haste vem do proprio efeito, nao exige
+        # `ready_creatures`.
+        creatures_in_play = [n for n in state.battlefield
+                              if is_creature_card(n) and not is_legendary(n)]
         if creatures_in_play:
             best = max(creatures_in_play, key=lambda n: get_power(state, n))
             power = get_power(state, best)
