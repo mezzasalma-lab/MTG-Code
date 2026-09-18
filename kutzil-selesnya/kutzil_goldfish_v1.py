@@ -310,6 +310,8 @@ class GameState:
     commander_cast_count: int = 0
     commander_cast_turn: Optional[int] = None
     commander_uid: Optional[int] = None
+    commander_damage_dealt: int = 0
+    commander_damage_win: bool = False
 
     life_total: int = 40
 
@@ -1323,6 +1325,13 @@ def combat_step(state: GameState, log: list):
         if p.uid == urdnan_bonus_uid:
             dmg *= 2
         total_damage += dmg
+        if p.uid == state.commander_uid:
+            # Achado real 2026-09-18 (CR 903.10a): "21+ de dano de combate
+            # do MESMO comandante" -- nunca modelada. Usa commander_uid
+            # (nao so' o nome) pra nunca contar copia/token da Kutzil.
+            state.commander_damage_dealt += dmg
+            if state.commander_damage_dealt >= 21:
+                state.commander_damage_win = True
         if is_buffed_beyond_base(p):
             kutzil_condition_met = True
 
@@ -1801,7 +1810,9 @@ def main_phase(state: GameState, log: list):
 
 def upkeep_draw_step(state: GameState, log: list, is_first_turn: bool, on_play: bool):
     fenrir = next((p for p in state.battlefield if p.card.name == "Summon: Fenrir"), None)
-    draw_this_turn = not (is_first_turn and on_play)
+    # Achado real 2026-09-18: "skip the draw step" no 1o turno so' existe
+    # na regra 1x1 (CR 103.8a). Commander e' sempre multiplayer.
+    draw_this_turn = True
     if draw_this_turn:
         draw_cards(state, 1, log, source="draw normal")
     if fenrir is not None and fenrir.saga_chapter < 3:
@@ -2015,12 +2026,14 @@ def mulligan(rng: random.Random):
         hand = lib[:7]
         lib = lib[7:]
         if should_keep(hand) or mulls >= max_mulls:
-            if mulls > 0:
-                # London mulligan: compra 7, devolve `mulls` cartas ao
-                # fundo da biblioteca (as de menor prioridade primeiro).
+            # Achado real 2026-09-18 (mesma convencao dos goldfishes
+            # manuais do usuario no Archidekt): 1o mulligan e' GRATIS --
+            # so' a partir do 2o entra a punicao real do London Mulligan.
+            penalty = max(0, mulls - 1)
+            if penalty > 0:
                 ordered = sorted(hand, key=bottom_priority, reverse=True)
-                bottom = ordered[:mulls]
-                hand = ordered[mulls:]
+                bottom = ordered[:penalty]
+                hand = ordered[penalty:]
                 lib = lib + bottom
             return hand, lib, mulls
         mulls += 1
@@ -2051,6 +2064,9 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Turno medio de conjuracao da Kutzil: {avg(cmd_turn):.2f} | mediana: {statistics.median(cmd_turn) if cmd_turn else float('nan'):.1f}")
     print(f"Nunca conjurada em {turns} turnos: {100*sum(1 for s in states if s.commander_cast_turn is None)/n:.1f}%")
     print(f"Avg dano proxy total de combate: {avg([s.proxy_damage_total for s in states]):.2f}")
+    cmd_dmg = sum(1 for s in states if s.commander_damage_win)
+    print(f"Auto-win via commander damage (21+ da propria Kutzil, CR 903.10a): {100*cmd_dmg/n:.1f}% "
+          f"| Dano de commander acumulado (media): {avg([s.commander_damage_dealt for s in states]):.2f}")
     print(f"Avg compras via Kutzil (poder>base em combate): {avg([s.kutzil_draws_total for s in states]):.2f}")
     print(f"Avg contadores +1/+1 colocados no total (com multiplicadores): {avg([s.counters_placed_total for s in states]):.2f}")
     print(f"Avg cartas compradas extra (todos os motores): {avg([s.cards_drawn_extra for s in states]):.2f}")
