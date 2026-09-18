@@ -2042,8 +2042,12 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         state.hand = []
         rng.shuffle(state.library)
 
-    if mulligans:
-        bottoms = choose_bottom(state.hand, mulligans)
+    # Achado real 2026-09-18 (mesma convencao dos goldfishes manuais do
+    # usuario no Archidekt): 1o mulligan e' GRATIS, mao final continua
+    # com 7 -- so' a partir do 2o entra a punicao real do London Mulligan.
+    mulligan_penalty = max(0, mulligans - 1)
+    if mulligan_penalty:
+        bottoms = choose_bottom(state.hand, mulligan_penalty)
         for c in bottoms:
             state.hand.remove(c)
             state.library.append(c)
