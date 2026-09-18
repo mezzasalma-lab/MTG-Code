@@ -302,6 +302,8 @@ class GameState:
     commander_in_play: bool = False
     commander_uid: Optional[int] = None
     commander_cast_count: int = 0
+    commander_damage_dealt: int = 0
+    commander_damage_win: bool = False
     commander_cast_turn: Optional[int] = None
 
     spells_cast_this_turn: int = 0
@@ -935,6 +937,13 @@ def combat_step(state: GameState, log: list):
     for p in attackers:
         power = creature_power(state, p)
         total_power += power
+        if p.uid == state.commander_uid:
+            # Achado real 2026-09-18 (CR 903.10a): "21+ de dano de combate
+            # do MESMO comandante" -- nunca modelada. commander_uid (nao
+            # so' o nome) pra nunca contar copia/token da Bumbleflower.
+            state.commander_damage_dealt += power
+            if state.commander_damage_dealt >= 21:
+                state.commander_damage_win = True
         if "lifelink" in CARD_DB[p.card].tags or p.temp_lifelink:
             lifelink_gain += power
 
@@ -1510,14 +1519,18 @@ def bottom_priority(card: str) -> int:
 
 
 def mulligan(state: GameState):
+    # Achado real 2026-09-18 (mesma convencao dos goldfishes manuais do
+    # usuario no Archidekt): 1o mulligan e' GRATIS -- so' a partir do 2o
+    # entra a punicao real do London Mulligan.
     mulls = 0
     while True:
         hand = state.library[:7]
         rest = state.library[7:]
         if should_keep(hand, mulls) or mulls >= 4:
+            penalty = max(0, mulls - 1)
             ordered = sorted(hand, key=bottom_priority, reverse=True)
-            bottom = ordered[:mulls]
-            keep = ordered[mulls:]
+            bottom = ordered[:penalty]
+            keep = ordered[penalty:]
             state.hand = keep
             state.library = rest + bottom
             state.mulligans = mulls
@@ -1573,6 +1586,9 @@ def run_batch(n: int, seed_base: int = 1_000_000, turns: int = 10, out_path: str
     print(f"Vida ganha (media): {avg(lambda s: s.life_gained_total):.1f}")
     print(f"Interacao jogada (media): {avg(lambda s: s.interaction_plays):.1f}")
     print(f"Mulligans (media): {avg(lambda s: s.mulligans):.2f}")
+    cmd_dmg = sum(1 for s in results if s.commander_damage_win)
+    print(f"Auto-win via commander damage (21+ da propria Ms. Bumbleflower, CR 903.10a): {100*cmd_dmg/n:.1f}% "
+          f"| Dano de commander acumulado (media): {avg(lambda s: s.commander_damage_dealt):.2f}")
     print(f"Vitorias via Simic Ascendancy: {sum(1 for s in results if s.won_via_ascendancy)}/{n}")
     print(f"Vitorias via Twenty-Toed Toad: {sum(1 for s in results if s.won_via_toad)}/{n}")
     print(f"Biblioteca esgotada em: {sum(1 for s in results if s.library_emptied)}/{n}")
