@@ -294,3 +294,22 @@ precombat ou postcombat main phase/draw step", etc.):
    função direto) NUNCA pega esse tipo de bug — ele só aparece rodando
    `play_turn`/`simulate_one` completo e checando se o recurso gerado
    está disponível pra gastar na mesma fase que o oráculo promete.
+
+**Agravante real descoberto na mesma rodada**: esse bug específico não
+dependia só de auditoria de código — o usuário JÁ tinha descrito a
+sequência exata num relato de jogo real, dias antes de eu corrigir
+("No último round do goldfish, ataqeui com o Titan e o Megatron, assim
+pude jogar o Cityscape com o mana incolor do Megatron" — 2026-09-15).
+Isso é literalmente "ataca, gera mana no flip, gasta a mana pra conjurar
+algo grande no MESMO turno" — a sequência que estava quebrada. Eu usei
+esse relato só pra justificar UMA correção (a remoção real do Cityscape
+Leveler + Unearth, que realmente faltavam) e nunca testei se a OUTRA
+metade da mesma frase (a mana do Megatron sendo gastável no mesmo turno)
+de fato funcionava no simulador — só vim descobrir isso 3 dias depois,
+por uma pergunta numérica adversarial não relacionada. **Relato de jogo
+real do usuário não é só contexto/flavor pra justificar a correção óbvia
+que ele está pedindo — cada cláusula operacional dentro do relato
+("consegui fazer X usando Y") é uma afirmação testável sobre o
+simulador, e tem que ser instrumentada e confirmada como qualquer outra,
+mesmo que o pedido explícito do usuário aponte pra uma cláusula
+diferente da mesma frase.**
