@@ -751,6 +751,8 @@ class GameState:
 
     # metrics -------------------------------------------------------------
     proxy_damage_total: int = 0
+    commander_damage_dealt: int = 0
+    commander_damage_win: bool = False
     own_interaction_used: int = 0
     sarkhan_triumph_cast_total: int = 0
     sarkhan_triumph_hand_had_no_dragon: int = 0
@@ -1949,6 +1951,18 @@ def combat_step(state: GameState):
         # double strike). Achado real 2026-08-27, tag 'attack_double_strike'
         # nunca tinha sido checada.
         atarka_double_strike = "Atarka, World Render" in state.battlefield
+
+        # CR 903.10a - dano de combate causado pelo objeto-comandante em
+        # si (nao qualquer Dragao atacando): se a Ur-Dragon esta entre os
+        # atacantes, seu proprio dano de combate (poder efetivo, dobrado
+        # por double strike da Atarka - Roaming Throne NAO conta aqui,
+        # dobra gatilho, nao instancia de dano) acumula pro win condition
+        # de 21+. Achado real 2026-09-18.
+        if COMMANDER in attacking_dragons:
+            state.commander_damage_dealt += effective_power(state, COMMANDER) * (2 if atarka_double_strike else 1)
+            if state.commander_damage_dealt >= 21:
+                state.commander_damage_win = True
+
         if n_attacking > 0 and state.commander_in_play:
             times = 2 if ("Roaming Throne" in state.battlefield and COMMANDER in attacking_dragons) else 1
             for _ in range(times):
@@ -2101,10 +2115,13 @@ def mulligan(rng: random.Random, max_mulls: int = 3):
         hand = lib[:7]
         lib = lib[7:]
         if should_keep(hand) or mulls == max_mulls - 1:
-            if mulls > 0:
+            # Achado real 2026-09-18 (mesma convencao dos goldfishes
+            # manuais do usuario no Archidekt): 1o mulligan e' GRATIS.
+            penalty = max(0, mulls - 1)
+            if penalty > 0:
                 rng.shuffle(hand)
-                bottom = hand[:mulls]
-                hand = hand[mulls:]
+                bottom = hand[:penalty]
+                hand = hand[penalty:]
                 lib = lib + bottom
             return hand, lib, mulls
         mulls += 1
@@ -2151,21 +2168,23 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.tapped_land_this_turn = None  # a Triome do turno passado desamarra agora
 
     upkeep_step(state)
-    if not (is_first_turn and on_play):
-        if state.library:
-            state.hand.append(state.library.pop(0))
-        else:
-            state.library_emptied = True
-        if "Sylvan Library" in state.battlefield:
-            # Achado real 2026-08-27: tag 'card_selection' nunca tinha sido
-            # implementada — Sylvan Library era 100% decorativa. Oraculo
-            # real: compra 2 extras, escolhe 2 cartas compradas esse turno
-            # pra devolver ao topo (cada uma custa 4 vida se ficar com
-            # ela). Vida nao e rastreada no simulador (mesma
-            # simplificacao documentada em outras cartas) — assumida a
-            # linha mais comum na pratica (paga 4 vida por 1 extra,
-            # devolve a outra): +1 carta liquida por turno, nao +2.
-            draw_cards(state, 1)
+    # Achado real 2026-09-18: "skip the draw step" no 1o turno de quem
+    # comeca so' existe na regra 1x1 (CR 103.8a). Commander e' sempre
+    # multiplayer -- sempre compra, mesmo no T1.
+    if state.library:
+        state.hand.append(state.library.pop(0))
+    else:
+        state.library_emptied = True
+    if "Sylvan Library" in state.battlefield:
+        # Achado real 2026-08-27: tag 'card_selection' nunca tinha sido
+        # implementada — Sylvan Library era 100% decorativa. Oraculo
+        # real: compra 2 extras, escolhe 2 cartas compradas esse turno
+        # pra devolver ao topo (cada uma custa 4 vida se ficar com
+        # ela). Vida nao e rastreada no simulador (mesma
+        # simplificacao documentada em outras cartas) — assumida a
+        # linha mais comum na pratica (paga 4 vida por 1 extra,
+        # devolve a outra): +1 carta liquida por turno, nao +2.
+        draw_cards(state, 1)
 
     play_land(state)
     try_use_own_interaction(state)
@@ -2198,6 +2217,8 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Nunca conjurada em {turns} turnos: {100*sum(1 for s in states if s.commander_cast_turn is None)/n:.1f}%")
     print(f"Avg contagem de Dragoes em campo (fim de jogo): {avg([dragon_count(s) for s in states]):.2f}")
     print(f"Avg compras via ataque da Ur-Dragon: {avg([s.urdragon_attack_draws_total for s in states]):.2f}")
+    print(f"Avg dano de comandante acumulado (CR 903.10a, so' a Ur-Dragon atacando): {avg([s.commander_damage_dealt for s in states]):.2f}")
+    print(f"Partidas com vitoria por dano de comandante (21+): {100*sum(1 for s in states if s.commander_damage_win)/n:.1f}%")
     print(f"Avg permanentes gratis via ataque da Ur-Dragon: {avg([s.urdragon_free_permanents_total for s in states]):.2f}")
     print(f"Avg dano proxy total (Scourge of Valkas/Dragon Tempest/Terror of the Peaks): {avg([s.proxy_damage_total for s in states]):.2f}")
     print(f"Avg eventos de dano-por-Dragao-ETB: {avg([s.dragon_etb_damage_events_total for s in states]):.2f}")
