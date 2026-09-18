@@ -1117,14 +1117,27 @@ def resolve_etb(state: GameState, name: str, token: bool = False):
         state.recursion_events_total += 1
 
     if "cursed_mirror_clone" in tags:
-        # "may have it become a copy of any creature on the battlefield
-        # until end of turn, except it has haste." Copia o Megatron (unica
-        # criatura que ataca de verdade) e credita uma rajada extra
-        # equivalente ao poder atual dele -- mesma logica ja usada na
-        # versao anterior deste arquivo.
-        if state.commander_in_play and COMMANDER in ready_creatures(state):
-            power = MEGATRON_TYRANT_POWER if state.megatron_face == "tyrant" else MEGATRON_VEHICLE_POWER
-            proxy_drain(state, power)
+        # "As this artifact enters, you may have it become a copy of ANY
+        # creature on the battlefield until end of turn, except it has
+        # haste" (Scryfall, confirmado 2026-09-18) -- nao restrito ao
+        # comandante. Achado real 2026-09-18 (goldfish manual do usuario:
+        # copiou o Cityscape Leveler, 8/8, em vez do Megatron): a versao
+        # anterior sempre copiava o Megatron especificamente ("unica
+        # criatura que ataca de verdade"), premissa que ficou desatualizada
+        # desde que `all_attackers_combat` passou a fazer TODO MUNDO atacar
+        # (achado 2026-09-02, ver docstring de anrakyr_attack_ability) --
+        # subestimava a carta sempre que outra criatura em campo (Triplicate
+        # Titan 9/9, Blightsteel Colossus 11/11, Cityscape Leveler 8/8, etc)
+        # tivesse mais poder que o Megatron (7 Tyrant / 4 Vehicle). Corrigido
+        # pra copiar sempre a criatura de MAIOR poder real em campo
+        # (get_power, cobre CDAs/boosts como Daretti/Osgir) -- haste vem do
+        # proprio efeito, nao exige `ready_creatures`.
+        creatures_in_play = [n for n in state.battlefield if is_creature_card(n)]
+        if creatures_in_play:
+            best = max(creatures_in_play, key=lambda n: get_power(state, n))
+            power = get_power(state, best)
+            if power > 0:
+                proxy_drain(state, power)
 
     if "tunnel_grinder" in tags:
         # "discard any number of cards, then draw that many plus one."
