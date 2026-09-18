@@ -1144,10 +1144,13 @@ def mulligan(rng: random.Random, max_mulls: int = 3):
         hand = lib[:7]
         lib = lib[7:]
         if should_keep(hand) or mulls == max_mulls - 1:
-            if mulls > 0:
+            # Achado real 2026-09-18 (mesma convencao dos goldfishes
+            # manuais do usuario no Archidekt): 1o mulligan e' GRATIS.
+            penalty = max(0, mulls - 1)
+            if penalty > 0:
                 rng.shuffle(hand)
-                bottom = hand[:mulls]
-                hand = hand[mulls:]
+                bottom = hand[:penalty]
+                hand = hand[penalty:]
                 lib = lib + bottom
             return hand, lib, mulls
         mulls += 1
@@ -1163,10 +1166,10 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.tapped_lands_this_turn = set()
 
     upkeep_step(state)
-    if not (is_first_turn and on_play):
-        draw_step(state)
-    else:
-        pass  # 1o turno na ponta: sem compra normal, mas gatilhos simetricos de draw step nao se aplicam ainda (nada em campo)
+    # Achado real 2026-09-18: "skip the draw step" no 1o turno de quem
+    # comeca so' existe na regra 1x1 (CR 103.8a). Commander e' sempre
+    # multiplayer -- sempre roda o draw_step, mesmo no T1.
+    draw_step(state)
 
     play_land(state)
     main_phase(state)
