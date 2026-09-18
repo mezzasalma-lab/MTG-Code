@@ -1584,10 +1584,13 @@ def mulligan(rng: random.Random, max_mulls: int = 3, library=None):
         hand = lib[:7]
         lib = lib[7:]
         if should_keep(hand) or mulls == max_mulls - 1:
-            if mulls > 0:
+            # Achado real 2026-09-18 (mesma convencao dos goldfishes
+            # manuais do usuario no Archidekt): 1o mulligan e' GRATIS.
+            penalty = max(0, mulls - 1)
+            if penalty > 0:
                 rng.shuffle(hand)
-                bottom = hand[:mulls]
-                hand = hand[mulls:]
+                bottom = hand[:penalty]
+                hand = hand[penalty:]
                 lib = lib + bottom
             return hand, lib, mulls
         mulls += 1
@@ -1608,11 +1611,12 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.bounce_untap_used = {}
     state.bounce_untap_bonus_this_turn = 0
 
-    if not (is_first_turn and on_play):
-        if state.library:
-            state.hand.append(state.library.pop(0))
-        else:
-            state.library_emptied = True
+    # Achado real 2026-09-18: "skip the draw step" no 1o turno so' existe
+    # na regra 1x1 (CR 103.8a). Commander e' sempre multiplayer.
+    if state.library:
+        state.hand.append(state.library.pop(0))
+    else:
+        state.library_emptied = True
 
     upkeep_step(state)
     play_land(state)
