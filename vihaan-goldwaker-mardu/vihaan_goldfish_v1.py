@@ -1191,10 +1191,13 @@ def mulligan(rng: random.Random, max_mulls: int = 3):
         hand = lib[:7]
         lib = lib[7:]
         if should_keep(hand) or mulls == max_mulls - 1:
-            if mulls > 0:
+            # Achado real 2026-09-18 (mesma convencao dos goldfishes
+            # manuais do usuario no Archidekt): 1o mulligan e' GRATIS.
+            penalty = max(0, mulls - 1)
+            if penalty > 0:
                 rng.shuffle(hand)
-                bottom = hand[:mulls]
-                hand = hand[mulls:]
+                bottom = hand[:penalty]
+                hand = hand[penalty:]
                 lib = lib + bottom
             return hand, lib, mulls
         mulls += 1
@@ -1653,9 +1656,11 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
         outlaws = sum(1 for n in state.battlefield if is_outlaw(n))
         pull_impulse(state, outlaws, deadline_turns=0)
 
-    if not (is_first_turn and on_play):
-        if state.library:
-            state.hand.append(state.library.pop(0))  # compra normal do turno, nao conta como "extra"
+    # Achado real 2026-09-18: "skip the draw step" no 1o turno de quem
+    # comeca so' existe na regra 1x1 (CR 103.8a). Commander e' sempre
+    # multiplayer -- sempre compra, mesmo no T1.
+    if state.library:
+        state.hand.append(state.library.pop(0))  # compra normal do turno, nao conta como "extra"
 
     play_land(state)
     main_phase(state)
