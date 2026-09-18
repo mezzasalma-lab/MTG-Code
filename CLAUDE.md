@@ -244,3 +244,53 @@ FIX NO SIMULADOR (nova função que modela a linha de jogo real que faltava,
 como `try_megatron_alone_with_ironsoul`), não um corte de carta. Corte de
 carta só é válido quando o oráculo real + os motores reais do deck (não o
 simulador) mostram baixo valor.
+
+## Regra #6 (obrigatória): auditoria carta-a-carta NÃO pega bug de ORQUESTRAÇÃO DE TURNO — timing de fase nomeado exige checar a ORDEM DE CHAMADAS em `play_turn`/`combat_step`/`end_step`, não só a função da carta
+
+Achado real em 2026-09-18 (deck Megatron): o usuário perguntou quanto
+mana incolor o 2º flip do Megatron gera de verdade, questionando minha
+afirmação de que hardcastar o BlightSteel Colossus era inviável. Ao
+instrumentar a resposta, achei que `megatron_postcombat` (o gatilho real
+"At the beginning of each of your postcombat main phases, you may
+convert Megatron") estava sendo chamado dentro de `end_step`, que roda
+DEPOIS da última chamada de `main_phase` daquele turno (`play_turn`:
+`main_phase → combat_step → main_phase → end_step`). A mana gerada
+nunca era gastável em NENHUM cast daquele turno — só alimentava um
+contador. Isso sobreviveu a pelo menos 3 rodadas anteriores de auditoria
+deste mesmo arquivo (linha-a-linha das 99 cartas, varredura de
+"mecânicas fantasma", + vários fixes pontuais) porque nenhuma delas
+pegaria esse bug por construção: **o código da própria carta estava
+100% certo** — a função soma a vida perdida, gera `{C}`, incrementa o
+contador, tudo conforme o oráculo. O bug nunca esteve DENTRO da função
+de nenhuma carta — esteve em ONDE, na ordem de chamadas do turno, essa
+função é invocada. Auditoria carta-a-carta pergunta "essa carta tem
+código pra essa cláusula?"; isso nunca pergunta "a ORDEM DAS FASES no
+`play_turn` bate com a regra real de quando esse timing acontece?".
+
+**A lição é a mesma da Regra #3, um nível mais abstrato**: ali o bug
+morava numa função auxiliar COMPARTILHADA por várias cartas
+(`bears_in_play`); aqui mora na própria ORQUESTRAÇÃO DE FASES do turno
+(`play_turn`), compartilhada por TODAS as cartas com timing nomeado.
+Só apareceu porque o usuário fez uma pergunta numérica adversarial
+("quanto gera, pra você dizer que é impossível?") que forçou
+instrumentar o runtime de verdade — nenhuma leitura de oráculo vs código
+por carta chegaria nessa pergunta.
+
+**Daqui pra frente, toda vez que uma carta tiver texto de oráculo com
+timing de fase nomeado** ("at the beginning of your upkeep/end step/
+precombat ou postcombat main phase/draw step", etc.):
+1. Não basta confirmar que existe uma função pra ela — confirmar TAMBÉM
+   onde, em `play_turn`/`combat_step`/`end_step`, ela é chamada, e se
+   essa posição bate com a ordem real das fases (upkeep vem antes do
+   draw step, que vem antes do main phase, etc.) — em particular, se o
+   efeito é "you may spend/cast" algo GERADO por esse gatilho, confirmar
+   que a chamada acontece ANTES da janela de conjuração daquela mesma
+   fase, não depois.
+2. Sempre que adicionar ou mover a chamada de uma função de gatilho de
+   fase, reler `play_turn` inteiro (a função é curta) pra confirmar a
+   sequência resultante ainda bate com as fases reais de um turno de
+   Magic — não só que a chamada nova "roda em algum lugar".
+3. Um teste unitário isolado da função em si (dar um estado e chamar a
+   função direto) NUNCA pega esse tipo de bug — ele só aparece rodando
+   `play_turn`/`simulate_one` completo e checando se o recurso gerado
+   está disponível pra gastar na mesma fase que o oráculo promete.
