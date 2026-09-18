@@ -269,6 +269,8 @@ class GameState:
     commander_uid: Optional[int] = None
     commander_cast_count: int = 0
     commander_cast_turn: Optional[int] = None
+    commander_damage_dealt: int = 0
+    commander_damage_win: bool = False
 
     spells_cast_this_turn: int = 0
     descended_this_turn: bool = False
@@ -968,6 +970,16 @@ def combat_step(state: GameState, log: list, second_phase: bool = False, exclude
                 eq.card in ("Twin Blades", "Embercleave") and eq.equipped_to == p.uid for eq in state.battlefield):
             power *= 2  # double strike ~= dano de combate 2x (mesma agregacao usada nos outros sims da sessao)
         total_power += power
+        if p.uid == state.commander_uid:
+            # Achado real 2026-09-18 (CR 903.10a): "if a player has been
+            # dealt 21 or more combat damage by the same commander since
+            # the game started, that player loses" -- nunca modelada.
+            # Usa `commander_uid` (nao so' o nome da carta) pra nao contar
+            # eventuais copias/tokens do Captain Storm como o comandante
+            # real -- so' o dano do OBJETO comandante de verdade conta.
+            state.commander_damage_dealt += power
+            if state.commander_damage_dealt >= 21:
+                state.commander_damage_win = True
         equipment_combat_damage_triggers(state, p, log)
         if p.card == "Fathom Fleet Swordjack":
             proxy_burn(state, sum(1 for q in state.battlefield if is_artifact_card(q.card)))
@@ -1300,14 +1312,19 @@ def bottom_priority(card: str) -> int:
 
 
 def mulligan(state: GameState):
+    # Achado real 2026-09-18 (mesma convencao dos goldfishes manuais do
+    # usuario no Archidekt): 1o mulligan e' GRATIS -- mao final continua
+    # com 7 cartas. So' a partir do 2o entra a punicao real do London
+    # Mulligan (bottom N-1 cartas).
     mulls = 0
     while True:
         hand = state.library[:7]
         rest = state.library[7:]
         if should_keep(hand, mulls) or mulls >= 4:
+            penalty = max(0, mulls - 1)
             ordered = sorted(hand, key=bottom_priority, reverse=True)
-            bottom = ordered[:mulls]
-            keep = ordered[mulls:]
+            bottom = ordered[:penalty]
+            keep = ordered[penalty:]
             state.hand = keep
             state.library = rest + bottom
             state.mulligans = mulls
@@ -1363,6 +1380,9 @@ def run_batch(n: int, seed_base: int = 1_000_000, turns: int = 10, out_path: str
     print(f"Equip/attach ativados (media): {avg(lambda s: s.equip_activations_total):.1f}")
     print(f"Interacao jogada (media): {avg(lambda s: s.interaction_plays):.1f}")
     print(f"Mulligans (media): {avg(lambda s: s.mulligans):.2f}")
+    cmd_dmg = sum(1 for s in results if s.commander_damage_win)
+    print(f"Auto-win via commander damage (21+ do proprio Captain Storm, CR 903.10a): {100*cmd_dmg/n:.1f}% "
+          f"| Dano de commander acumulado (media): {avg(lambda s: s.commander_damage_dealt):.2f}")
     print(f"Biblioteca esgotada em: {sum(1 for s in results if s.library_emptied)}/{n}")
 
     if out_path:
