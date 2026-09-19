@@ -1,5 +1,52 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Cityscape Leveler: gatilho de ataque não disparava pra token-cópia (Ultron/Osgir/Feldon) — 2026-09-19
+
+**Gatilho:** usuário pediu pra verificar se o Cityscape Leveler
+("When you cast this spell and whenever this creature attacks, destroy
+up to one target nonland permanent") também destrói uma permanente a
+cada ataque, não só no cast — a cláusula do ETB já tinha sido corrigida
+em 2026-09-15 (commit `f9c54dc`), que também implementou o gatilho de
+ataque dentro de `all_attackers_combat`.
+
+**Achado real (Regra #3 — conceito compartilhado, não a carta em si):**
+a carta ORIGINAL funciona certo (confirmado com teste dirigido: ETB
+credita +1, ataque credita +1 de novo no turno seguinte, doença de
+invocação bloqueia corretamente o ataque no mesmo turno do cast). O bug
+está no DISPATCH do gatilho de ataque em `all_attackers_combat`, que
+usa comparação de NOME LITERAL (`elif name == "Cityscape Leveler":`)
+em vez de tag — inconsistente com o próprio gatilho de ETB em
+`resolve_etb`, que corretamente checa `"cityscape_leveler" in tags`, e
+com o próprio `all_attackers_combat`, que 2 linhas acima já usa o
+padrão certo pra Infect (`if "infect" in CARD_DB[name].tags`).
+
+Isso quebra pra QUALQUER token-cópia do Cityscape Leveler, que este
+deck tem 3 fontes reais de criar: **Ultron, Artificial Malevolence**
+(`artifact_etb_hooks`, copia qualquer artefato não-token com MV>=3
+entrando — Cityscape Leveler é MV 8), **Osgir, the Reconstructor**
+(`try_osgir_activation`, exila do cemitério e cria 2 cópias), e
+**Feldon of the Third Path** (`try_feldon`, cria 1 cópia com haste,
+sacrificada no fim do turno — pode literalmente atacar no MESMO turno
+que entra). Todas usam `make_token_copy_name`, que gera o nome
+`"Cityscape Leveler (copia)"` — a tag `cityscape_leveler` é preservada
+(`CARD_DB[token_name] = CARD_DB[base_name]`), o nome não. O ETB da
+cópia dispara certo (tag-based); o ataque da cópia nunca disparava
+(name-based) — teste dirigido confirmou: 0 no lugar do 1 esperado antes
+do fix.
+
+**Corrigido:** dispatch trocado pra `elif "cityscape_leveler" in
+CARD_DB[name].tags:`, mesmo padrão já usado 2 linhas acima nessa mesma
+função pro Infect.
+
+**Validação:** teste dirigido (4 casos: carta real ETB, carta real
+ataque turno seguinte, cópia via `make_token_copy_name` ETB, cópia
+ataque turno seguinte — os 3 primeiros já batiam antes do fix, o 4o
+saiu 0 antes e 1 depois) + smoke test (99 cartas, 0 desconhecidas) +
+A/B 2000 jogos mesma seed (`interaction_spells_cast_total`
+2,893→2,910, na direção esperada — cópias de Cityscape Leveler que
+sobrevivem pra atacar num turno seguinte são raras, delta pequeno é
+consistente) + regressão de 20.000 partidas, 0 exceções.
+
 ## 3 regras de formato Commander nunca modeladas: compra do turno 1, mulligan grátis, commander damage — 2026-09-18
 
 **Gatilho:** usuário perguntou direto — "Vc incluiu o 1o mulligan

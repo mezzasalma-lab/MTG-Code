@@ -4,6 +4,23 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Cityscape Leveler: gatilho de ataque não disparava pra token-cópia — 2026-09-19
+
+**Gatilho:** usuário pediu pra verificar se o Cityscape Leveler destrói
+uma permanente também a cada ataque (não só no cast). A carta original
+já estava certa desde 2026-09-15; achado real desta rodada foi que o
+dispatch do gatilho de ataque em `all_attackers_combat` comparava NOME
+LITERAL em vez de tag, então nunca disparava pra token-cópia dela
+(Ultron, Osgir, ou Feldon — as 3 fontes reais de cópia neste deck).
+Detalhes completos em `checklist-oraculo.md`.
+
+**Validação:** teste dirigido (carta real + cópia, ETB e ataque) +
+smoke test + A/B 2000 jogos mesma seed
+(`interaction_spells_cast_total` 2,893→2,910) + regressão de 20.000
+partidas, 0 exceções.
+
+---
+
 ## +The Ten Rings / -Phyrexian Arena, +BlightSteel Colossus / -Gilded Lotus — 2026-09-18
 
 **Gatilho:** usuário me confrontou sobre 2 pontos que eu não tinha

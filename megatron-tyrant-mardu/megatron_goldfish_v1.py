@@ -2542,11 +2542,20 @@ def all_attackers_combat(state: GameState):
             anrakyr_attack_ability(state)
         elif name == "Daretti, Rocketeer Engineer":
             daretti_rocketeer_attack_ability(state)
-        elif name == "Cityscape Leveler":
+        elif "cityscape_leveler" in CARD_DB[name].tags:
             # "whenever this creature attacks, destroy up to one target
             # nonland permanent" -- mesma interacao do ETB, dispara de
             # novo a cada combate que ela ataca (ready_creatures ja'
-            # garante que so' ataca sem doenca de invocacao).
+            # garante que so' ataca sem doenca de invocacao). Achado real
+            # 2026-09-19: dispatch por NOME LITERAL ("Cityscape Leveler")
+            # nunca batia pra token-copia dela (Ultron/Osgir/Feldon, todos
+            # via `make_token_copy_name` -> "Cityscape Leveler (copia)",
+            # `CARD_DB[token_name] = CARD_DB[base_name]` preserva a tag
+            # `cityscape_leveler` mas nao o nome) -- o gatilho de ETB
+            # (`resolve_etb`) ja' checava a tag corretamente, so' o de
+            # ataque estava por nome. Corrigido pra checar a tag, mesmo
+            # padrao ja usado por "infect" 2 linhas acima nesta mesma
+            # funcao.
             state.interaction_spells_cast_total += 1
 
     if state.demonic_junker_crewed_this_turn and "Demonic Junker" in state.battlefield:
