@@ -1,5 +1,82 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Modo de resiliência ganha counterspell (4ª e última categoria) — 2026-09-19
+
+**Gatilho:** usuário confirmou "Faça" pra implementar a última categoria
+pendente do simulador de interação do Archidekt (ordem combinada:
+discard > board wipe > counterspell, as 2 primeiras já implementadas
+nesta mesma sessão).
+
+**Diferença estrutural das outras 3 categorias:** wipe/remoção/ataque/
+discard rolam 1x por turno DEPOIS de `play_turn()` inteiro terminar —
+representam o oponente reagindo fora do meu turno. Um counterspell só
+faz sentido no exato momento em que eu conjuro algo, DENTRO do meu
+turno — não dá pra "contra-atacar" um spell depois que o turno inteiro
+já passou. Por isso `try_smart_opponent_counter()` não mora no loop de
+`simulate_one_with_interaction` — é chamada direto de dentro de
+`cast_megatron()`, no ponto exato onde a mana é gasta e a resolução
+aconteceria.
+
+**Escopo (alvo fixo, mesma lógica de "oponente esperto" já usada na
+remoção):** só mira a conjuração do próprio Megatron — quase todo o
+plano do deck depende dele resolver (Warstorm Surge, conversão pra
+mana), então é o alvo óbvio de quem guarda interação. Outros spells
+(Chandra's Ignition, Blightsteel Colossus) ficam fora por enquanto,
+mesmo critério de escopo incremental das outras categorias.
+
+**Regra real aplicada:** a taxa de comandante (CR 903.10a) conta
+"vezes CONJURADO", não "vezes RESOLVIDO" — um Megatron contra-atacado
+ainda paga taxa extra na próxima tentativa. `cast_megatron()` já gasta
+a mana e incrementa `commander_cast_count` ANTES de checar o counter;
+só a entrada em campo (`battlefield.append`, `commander_in_play`,
+`commander_cast_turn`) fica condicionada a NÃO ter sido contra-atacado.
+`commander_cast_turn` só é setado numa resolução real — métrica de
+"turno de conjuração" não conta um cast que nunca chegou a resolver.
+
+**Risco real desta rodada (por que validei com tanto cuidado):**
+`cast_megatron()` é a MESMA função usada pelo goldfish padrão
+(`simulate_one`/`run_batch`) — ao contrário das 3 categorias
+anteriores (funções novas, só chamadas pelo modo de resiliência), esta
+mexeu numa função compartilhada. Rodei 5.000 seeds comparando
+`simulate_one` ANTES/DEPOIS desta mudança, campo a campo
+(`commander_cast_turn`, `megatron_conversions_total`,
+`megatron_mana_generated_total`, `proxy_damage_total`, `life`,
+`cards_drawn_extra`, `commander_cast_count`) — **0 diferenças**,
+confirmando que `try_smart_opponent_counter` retorna `False` de
+imediato sem `interaction_rng` e a refatoração (variável `face`
+extraída, reordenação do incremento de `commander_cast_count`) não
+mudou nenhum comportamento do modo padrão.
+
+**Implementado:**
+1. `state.smart_counters_total` / `state.smart_counter_log`.
+2. `COUNTERSPELL_CHANCE_FACTOR = 0.5` — fator intermediário entre
+   remoção (1.0x) e wipe (0.4x) sobre a mesma `interaction_chance()`.
+3. `try_smart_opponent_counter()` — mesma janela
+   (`INTERACTION_SETUP_TURNS`), retorna bool (alvo é sempre o mesmo,
+   não precisa de lista/nome como as outras).
+4. `cast_megatron()` reestruturado: mana gasta + taxa incrementada
+   primeiro, DEPOIS checa counter, só então resolve (entra em campo).
+5. `run_batch_with_interaction()` — nova linha (avg counters sofridos)
+   + turno médio de conjuração do Megatron QUE RESOLVEU + % que nunca
+   resolveu em N turnos (métrica que só faz sentido reportar agora que
+   existe uma forma real de Megatron NUNCA resolver no modo resiliência).
+
+**Validação:** 5 testes unitários isolados (gating sem rng/turno de
+setup; dispara e retorna True; `cast_megatron` contra-atacado gasta
+mana+paga taxa mas não resolve, `commander_cast_turn` fica `None`;
+modo padrão sem rng resolve normal; recast no turno seguinte após ser
+contra-atacado paga taxa mais alta e resolve) + **5.000 seeds de
+equivalência bit-a-bit do modo padrão** (0 diferenças) + smoke test +
+A/B 2000 jogos mesma seed (dano proxy 66,73→65,22, direção esperada,
+delta pequeno pois a chance efetiva é baixa nos primeiros turnos) +
+regressão de 20.000 partidas em CADA modo (padrão e resiliência), 0
+exceções nos dois. `smart_counters_total` confirmado em 0,08/partida,
+Megatron nunca resolve em 8 turnos em 6,2% dos jogos (métrica nova).
+
+**As 4 categorias do simulador de interação do Archidekt (ataque,
+remoção, discard, counterspell) estão todas implementadas agora** no
+modo de resiliência opcional do Megatron.
+
 ## Modo de resiliência ganha board wipe (destroy all creatures) — 2026-09-19
 
 **Gatilho:** usuário confirmou "Pode começar" pra implementar a 2ª

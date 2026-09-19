@@ -4,6 +4,31 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Modo de resiliência ganha counterspell — última categoria do Archidekt implementada — 2026-09-19
+
+**Gatilho:** 4ª e última categoria pendente do simulador de interação
+do Archidekt. Detalhes técnicos completos em `checklist-oraculo.md`.
+
+**Diferente das outras 3 (que reagem fora do meu turno), o counter
+intercepta a conjuração do Megatron no exato momento do cast** — mexeu
+em `cast_megatron()`, a mesma função do goldfish padrão, então validei
+com 5.000 seeds de equivalência bit-a-bit confirmando 0 impacto no modo
+sem interação antes de considerar pronto.
+
+**Resultado (A/B 2000 jogos mesma seed):** 0,08 counters/partida
+(chance baixa, coerente com Megatron geralmente saindo cedo, turno 3-4,
+janela pequena pra interação escalar). Megatron nunca resolve em 8
+turnos em 6,2% dos jogos no modo resiliência (métrica nova).
+
+**Validação:** 5 testes unitários + 5.000 seeds de equivalência
+bit-a-bit do modo padrão (0 diferenças) + smoke test + A/B 2000 jogos +
+regressão de 20.000 partidas em cada modo, 0 exceções.
+
+**As 4 categorias do Archidekt (ataque, remoção, discard, counterspell)
+estão todas implementadas** no modo de resiliência opcional.
+
+---
+
 ## Modo de resiliência ganha board wipe — 2026-09-19
 
 **Gatilho:** 2ª categoria pendente do simulador de interação do

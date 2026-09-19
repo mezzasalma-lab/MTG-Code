@@ -487,6 +487,8 @@ class GameState:
     smart_discard_log: list = field(default_factory=list)
     smart_wipes_total: int = 0
     smart_wipe_log: list = field(default_factory=list)
+    smart_counters_total: int = 0
+    smart_counter_log: list = field(default_factory=list)
     crewed_creatures_tapped: set = field(default_factory=set)
     ironsoul_triggered_this_combat: bool = False
     megatron_alone_combos_total: int = 0
@@ -1905,15 +1907,24 @@ def cast_megatron(state: GameState):
     tyrant_cost = MEGATRON_TYRANT_COST + tax
     if remaining_mana(state) >= vehicle_cost and has_color_sources_for(state, COMMANDER):
         spend_mana(state, vehicle_cost)
-        state.megatron_face = "vehicle"
+        face = "vehicle"
     elif remaining_mana(state) >= tyrant_cost and has_color_sources_for(state, COMMANDER):
         spend_mana(state, tyrant_cost)
-        state.megatron_face = "tyrant"
+        face = "tyrant"
     else:
         return
+    # Modo opcional de resiliencia: a mana ja' foi gasta (cast real
+    # aconteceu, taxa de comandante conta pro proximo cast -- CR 903.10a,
+    # "an additional {2} for each PREVIOUS TIME this card has been CAST
+    # from the command zone", nao "resolvido") ANTES de checar counter --
+    # um spell contra-atacado ainda foi conjurado de verdade. So' depois
+    # disso e' que a resolucao (entrar em campo) pode ser negada.
+    state.commander_cast_count += 1
+    if try_smart_opponent_counter(state):
+        return
+    state.megatron_face = face
     state.battlefield.append(COMMANDER)
     state.commander_in_play = True
-    state.commander_cast_count += 1
     if state.commander_cast_turn is None:
         state.commander_cast_turn = state.turn
     state.creature_cast_turn[COMMANDER] = state.turn
@@ -2943,6 +2954,50 @@ def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
     return targets
 
 
+COUNTERSPELL_CHANCE_FACTOR = 0.5
+# Ultima categoria pedida pelo usuario ("Faca", depois de discard e
+# wipe). Counterspell real numa lista de 99 tende a ficar entre spot
+# removal (mais comum) e sweeper (mais raro) -- fator intermediario
+# sobre a mesma `interaction_chance()` compartilhada.
+
+
+def try_smart_opponent_counter(state: GameState) -> bool:
+    """Modo opcional de resiliencia -- counterspell (4a e ultima
+    categoria do simulador do Archidekt: ataque/remocao/discard/
+    counter). Estruturalmente DIFERENTE das outras 3: aquelas rolam uma
+    vez por turno, fora do meu turno inteiro (representam o oponente
+    reagindo DEPOIS que meu turno termina); um counterspell so' faz
+    sentido no exato momento em que eu conjuro algo, dentro do MEU
+    turno -- entao esta funcao e' chamada direto de dentro de
+    `cast_megatron()`, nao do loop de `simulate_one_with_interaction`.
+
+    Alvo fixo: SO' a conjuracao do Megatron (o comandante) -- mesma
+    logica de "oponente esperto mira o que importa" ja' usada em
+    `try_smart_opponent_removal` (lista curada de peca-motor, nao alvo
+    aleatorio), aplicada aqui ao caso mais obvio de todos: quase todo o
+    plano do deck depende do Megatron resolver (dano via Warstorm
+    Surge, mana via conversao, etc.) -- um oponente real guarda
+    counterspell pra ele antes de qualquer outra coisa. Outros spells
+    (Chandra's Ignition, Blightsteel Colossus, etc.) ficam FORA por
+    enquanto -- mesmo criterio de escopo das outras categorias, pode
+    ser estendido depois se fizer sentido pra mesa real do usuario.
+
+    O `cast_megatron()` que chama isto ja' gastou a mana e incrementou
+    `commander_cast_count` (a taxa conta 'vezes conjurado', nao 'vezes
+    resolvido', CR 903.10a) ANTES desta checagem -- contra-atacado, o
+    Megatron nunca entra em campo, mas a mana e a taxa ja' foram
+    cobradas de verdade, mesma penalidade real de ter o spell
+    counterado. Retorna True se conjurou de fato (`cast_megatron`
+    decide o que fazer com isso)."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return False
+    if state.interaction_rng.random() >= interaction_chance(state) * COUNTERSPELL_CHANCE_FACTOR:
+        return False
+    state.smart_counters_total += 1
+    state.smart_counter_log.append(state.turn)
+    return True
+
+
 # ---------------------------------------------------------------------------
 # Mulligan / build / batch
 # ---------------------------------------------------------------------------
@@ -3100,8 +3155,20 @@ def simulate_one_with_interaction(seed: int, turns: int = 8):
     oponente pra teste de resiliencia (limpa o board antes de checar
     ataque desbloqueado/remocao/discard), nao uma exigencia de regra
     real (as 4 categorias sao instancias hipoteticas independentes,
-    nao uma sequencia obrigatoria). NUNCA chamado por `run_batch`/
-    `simulate_one` padrao."""
+    nao uma sequencia obrigatoria).
+
+    A 5a categoria (`try_smart_opponent_counter`) NAO mora neste loop --
+    counterspell so' faz sentido no exato momento em que eu conjuro
+    Megatron, dentro do MEU turno (`play_turn` -> `main_phase` ->
+    `cast_megatron`), nao "fora do meu turno" como as outras 4. Mesmo
+    `state.interaction_rng`, mesma janela (`INTERACTION_SETUP_TURNS`) --
+    so' o PONTO onde e' checada que e' diferente por necessidade de
+    regra (nao da pra contra-atacar um spell depois que o turno
+    inteiro ja' passou).
+
+    NUNCA chamado por `run_batch`/`simulate_one` padrao (nem o loop
+    aqui, nem `cast_megatron`'s check de counter -- ambos ficam inertes
+    sem `interaction_rng`)."""
     rng = random.Random(seed)
     hand, lib, mulls = mulligan(rng)
     state = GameState(hand=hand, library=lib, mulligans=mulls, rng=rng,
@@ -3137,7 +3204,13 @@ def run_batch_with_interaction(n: int, seed_base: int, turns: int = 8):
     def avg(vals):
         return sum(vals) / len(vals) if vals else 0.0
 
-    print(f"n={n}, seed_base={seed_base}, turns={turns} (MODO RESILIENCIA -- wipe + remocao + ataque inteligente + discard aleatorio de oponente)")
+    print(f"n={n}, seed_base={seed_base}, turns={turns} (MODO RESILIENCIA -- wipe + remocao + ataque inteligente + discard aleatorio + counterspell de oponente)")
+    print(f"Avg counterspells sofridos (so' mira a conjuracao do Megatron): "
+          f"{avg([s.smart_counters_total for s in states]):.2f}")
+    megatron_cast = [s.commander_cast_turn for s in states if s.commander_cast_turn is not None]
+    print(f"  -- Turno medio de conjuracao do Megatron QUE RESOLVEU: "
+          f"{avg(megatron_cast):.2f} | nunca resolveu em {turns} turnos: "
+          f"{100*(n-len(megatron_cast))/n:.1f}%")
     print(f"Avg board wipes sofridos: {avg([s.smart_wipes_total for s in states]):.2f}")
     wipe_kills = Counter()
     for s in states:
