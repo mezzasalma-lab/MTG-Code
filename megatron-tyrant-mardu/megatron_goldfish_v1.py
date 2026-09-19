@@ -485,6 +485,8 @@ class GameState:
     smart_attack_log: list = field(default_factory=list)
     smart_discards_total: int = 0
     smart_discard_log: list = field(default_factory=list)
+    smart_wipes_total: int = 0
+    smart_wipe_log: list = field(default_factory=list)
     crewed_creatures_tapped: set = field(default_factory=set)
     ironsoul_triggered_this_combat: bool = False
     megatron_alone_combos_total: int = 0
@@ -2887,6 +2889,60 @@ def try_smart_opponent_discard(state: GameState) -> Optional[str]:
     return target
 
 
+BOARD_WIPE_CHANCE_FACTOR = 0.4
+# Um board wipe real (Wrath of God/Blasphemous Act/Toxic Deluge, etc.)
+# e' MUITO mais raro numa lista de 99 cartas do que remocao pontual --
+# a maioria dos decks reais de Commander roda uns 8-12 spot removals
+# contra so' 2-4 sweepers. Em vez de inventar uma formula nova, aplica
+# um fator redutor sobre a MESMA `interaction_chance()` compartilhada
+# (documentado aqui, ajustavel se o usuario achar que nao bate com a
+# mesa real dele).
+
+
+def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
+    """Modo opcional de resiliencia -- board wipe ("destroy all
+    creatures", categoria real do simulador do Archidekt junto com
+    ataque/remocao/discard). Rola independente das outras 3 categorias,
+    mesma janela (`INTERACTION_SETUP_TURNS`), chance reduzida por
+    `BOARD_WIPE_CHANCE_FACTOR` (ver acima). Destroi TODAS as minhas
+    criaturas em campo de uma vez -- ao contrario da remocao (1 peca-
+    motor curada) e do discard (1 carta aleatoria), aqui o "alvo" e'
+    sempre o board inteiro, e' isso que torna um wipe um wipe.
+
+    Achado de regra real ao implementar: o Megatron na face Destructive
+    Force (Vehicle) SO' e' criatura durante O MEU turno ('Living metal')
+    -- as 4 funcoes deste modo de resiliencia representam interacao do
+    OPONENTE, ou seja, fora do meu turno. Um wipe que resolve nesse
+    momento (sorcery-speed, main phase do proprio oponente, mesma janela
+    de sempre) NAO acerta o Megatron se ele estiver na face Vehicle
+    nesse instante (`state.megatron_face == "vehicle"`) -- mesma
+    checagem ja usada em `try_smart_opponent_attack` pra excluir o
+    Megatron como bloqueador. Na face Tyrant (Legendary Artifact
+    CREATURE, sem depender de Living Metal) ele e' sempre um alvo legal.
+
+    Cada criatura destruida passa por `sacrifice(is_own_sacrifice=False)`
+    -- mesma funcao central que ja trata comandante->zona de comando,
+    Warp/Unearth->exilio, Blightsteel->biblioteca, e dispara os gatilhos
+    reais de morte (Scrap Trawler/toolbox/Triplicate Titan) pra cada uma.
+    Sem nenhuma criatura em campo (contando a excecao do Megatron-
+    Vehicle), retorna None sem fazer nada -- oponente esperto nao gasta
+    um wipe num board vazio. Retorna a lista de nomes destruidos (pra
+    log/relatorio) ou None se nao disparou."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    targets = [n for n in state.battlefield if is_creature_card(n)
+               and not (n == COMMANDER and state.megatron_face == "vehicle")]
+    if not targets:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * BOARD_WIPE_CHANCE_FACTOR:
+        return None
+    for n in targets:
+        sacrifice(state, n, is_own_sacrifice=False)
+    state.smart_wipes_total += 1
+    state.smart_wipe_log.append((state.turn, targets))
+    return targets
+
+
 # ---------------------------------------------------------------------------
 # Mulligan / build / batch
 # ---------------------------------------------------------------------------
@@ -3035,12 +3091,17 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
 
 def simulate_one_with_interaction(seed: int, turns: int = 8):
     """Mesmo goldfish de `simulate_one`, mas com `try_smart_opponent_
-    removal`/`try_smart_opponent_attack`/`try_smart_opponent_discard`
-    rodando a cada turno -- ver comentario da secao 'Modo opcional de
-    resiliencia' acima. As 3 rolam independente (podem disparar todas
-    no mesmo turno, mesmo modelo do Archidekt de multiplas categorias
-    de interacao por turno). NUNCA chamado por `run_batch`/`simulate_one`
-    padrao."""
+    wipe`/`try_smart_opponent_removal`/`try_smart_opponent_attack`/
+    `try_smart_opponent_discard` rodando a cada turno -- ver comentario
+    da secao 'Modo opcional de resiliencia' acima. As 4 rolam
+    independente (podem disparar todas no mesmo turno, mesmo modelo do
+    Archidekt de multiplas categorias de interacao por turno). Wipe roda
+    PRIMEIRO de proposito -- representa o "pior turno possivel" do
+    oponente pra teste de resiliencia (limpa o board antes de checar
+    ataque desbloqueado/remocao/discard), nao uma exigencia de regra
+    real (as 4 categorias sao instancias hipoteticas independentes,
+    nao uma sequencia obrigatoria). NUNCA chamado por `run_batch`/
+    `simulate_one` padrao."""
     rng = random.Random(seed)
     hand, lib, mulls = mulligan(rng)
     state = GameState(hand=hand, library=lib, mulligans=mulls, rng=rng,
@@ -3049,6 +3110,7 @@ def simulate_one_with_interaction(seed: int, turns: int = 8):
     is_first = True
     while turns_played < turns:
         play_turn(state, is_first_turn=is_first, on_play=True)
+        try_smart_opponent_wipe(state)
         try_smart_opponent_removal(state)
         try_smart_opponent_attack(state)
         try_smart_opponent_discard(state)
@@ -3057,6 +3119,7 @@ def simulate_one_with_interaction(seed: int, turns: int = 8):
         if state.extra_turns_pending > 0:
             state.extra_turns_pending -= 1
             play_turn(state, is_first_turn=False, on_play=True)
+            try_smart_opponent_wipe(state)
             try_smart_opponent_removal(state)
             try_smart_opponent_attack(state)
             try_smart_opponent_discard(state)
@@ -3074,7 +3137,18 @@ def run_batch_with_interaction(n: int, seed_base: int, turns: int = 8):
     def avg(vals):
         return sum(vals) / len(vals) if vals else 0.0
 
-    print(f"n={n}, seed_base={seed_base}, turns={turns} (MODO RESILIENCIA -- remocao + ataque inteligente + discard aleatorio de oponente)")
+    print(f"n={n}, seed_base={seed_base}, turns={turns} (MODO RESILIENCIA -- wipe + remocao + ataque inteligente + discard aleatorio de oponente)")
+    print(f"Avg board wipes sofridos: {avg([s.smart_wipes_total for s in states]):.2f}")
+    wipe_kills = Counter()
+    for s in states:
+        for _, killed in s.smart_wipe_log:
+            for name in killed:
+                wipe_kills[name] += 1
+    if sum(len(killed) for s in states for _, killed in s.smart_wipe_log):
+        avg_kills = avg([len(killed) for s in states for _, killed in s.smart_wipe_log])
+        print(f"  -- Avg criaturas perdidas por wipe (quando dispara): {avg_kills:.2f}")
+        for name, count in wipe_kills.most_common(5):
+            print(f"  -- {name} perdido em wipe em {100*count/n:.1f}% dos jogos")
     print(f"Avg remocoes inteligentes sofridas: {avg([s.smart_removals_total for s in states]):.2f}")
     hit_counts = Counter()
     for s in states:

@@ -4,6 +4,30 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Modo de resiliência ganha board wipe — 2026-09-19
+
+**Gatilho:** 2ª categoria pendente do simulador de interação do
+Archidekt (ordem combinada: discard > board wipe > counterspell).
+Detalhes técnicos completos em `checklist-oraculo.md`.
+
+**Achado de regra real:** Megatron na face Vehicle (Destructive Force)
+só é criatura durante O MEU turno ("Living metal") — como o modo de
+resiliência representa interação FORA do meu turno, ele fica imune a
+um wipe nessa face (mesma checagem já usada pro bloqueio desde
+2026-09-16). Na face Tyrant continua sendo alvo legal normal.
+
+**Resultado (A/B 2000 jogos mesma seed):** 0,46 wipes/partida, mata em
+média 3,90 criaturas quando dispara. Dano proxy caiu mais (74,91→66,73)
+e bloqueios com sucesso despencaram (0,64→0,46, já que o wipe some com
+os bloqueadores antes do ataque rolar) — resiliência ficou visivelmente
+mais dura.
+
+**Validação:** 6 testes unitários (incluindo o caso crítico
+Vehicle-Megatron imune) + smoke test + A/B 2000 jogos + regressão de
+20.000 partidas, 0 exceções. Goldfish padrão continua intocado.
+
+---
+
 ## Modo de resiliência estendido: discard/disrupção de mão aleatória — 2026-09-19
 
 **Gatilho:** usuário pediu pra implementar a 3ª categoria do simulador

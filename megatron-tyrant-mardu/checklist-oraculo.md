@@ -1,5 +1,83 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Modo de resiliência ganha board wipe (destroy all creatures) — 2026-09-19
+
+**Gatilho:** usuário confirmou "Pode começar" pra implementar a 2ª
+categoria pendente do simulador de interação do Archidekt (ordem
+combinada na rodada anterior: discard > board wipe > counterspell).
+
+**Achado de regra real ao implementar (o mais importante desta rodada):**
+as 4 funções do modo de resiliência (`try_smart_opponent_wipe/removal/
+attack/discard`) rodam DEPOIS de `play_turn()`, ou seja, representam
+interação do oponente **fora do meu turno**. O Megatron na face
+Destructive Force (Vehicle) só é criatura por causa de "Living metal
+(During your turn, this Vehicle is also a creature)" — fora do meu
+turno essa cláusula não vale, então ele NÃO é alvo legal de "destroy
+all creatures" nesse momento. `is_creature_card(COMMANDER)` sozinho
+NUNCA pega isso (`ctype` é fixo "creature" no CARD_DB, não muda com a
+face) — é o mesmo padrão de bug da Regra #3 do CLAUDE.md (conceito
+compartilhado errado pra um subconjunto de quem o lê), só que a
+checagem certa (`state.megatron_face == "vehicle"` exclui) já existia
+em código desde 2026-09-16, em `try_smart_opponent_attack` (Megatron
+nunca bloqueia). Copiei a mesma checagem pro wipe. Na face Tyrant
+(Legendary Artifact CREATURE, sem depender de Living Metal) ele
+continua sendo alvo legal — vai pra zona de comando via `sacrifice()`
+(mesmo tratamento do comandante já existente).
+
+**Implementado:**
+1. `state.smart_wipes_total` / `state.smart_wipe_log` (lista de
+   `(turno, [nomes destruídos])`).
+2. `BOARD_WIPE_CHANCE_FACTOR = 0.4` — sweeper é bem mais raro que
+   remoção pontual numa lista de 99 (decks reais rodam ~8-12 spot
+   removals contra 2-4 sweepers); em vez de inventar fórmula nova,
+   aplica esse fator redutor sobre a MESMA `interaction_chance()`
+   compartilhada das outras 3 categorias.
+3. `try_smart_opponent_wipe()` — mesma janela
+   (`INTERACTION_SETUP_TURNS`), destrói TODAS as criaturas em campo
+   (exceto Megatron-Vehicle, ver acima) via `sacrifice(is_own_
+   sacrifice=False)` uma por uma — reaproveita 100% do tratamento já
+   existente pra comandante→zona de comando, Warp/Unearth→exílio,
+   Blightsteel→biblioteca, e dispara os gatilhos reais de morte
+   (Scrap Trawler/toolbox Myr Retriever-Junk Diver/Triplicate Titan)
+   pra cada criatura perdida. Sem nenhuma criatura elegível em campo,
+   nunca dispara (oponente esperto não gasta wipe em board vazio).
+4. `simulate_one_with_interaction()` — chama o wipe PRIMEIRO na
+   sequência do turno (antes de remoção/ataque/discard), representando
+   o "pior turno possível" pra teste de resiliência (limpa bloqueadores
+   antes de checar ataque desbloqueado) — não é exigência de regra
+   real, as 4 categorias continuam independentes.
+5. `run_batch_with_interaction()` — nova seção de relatório (avg wipes,
+   avg criaturas perdidas por wipe, top-5 mais perdidas).
+
+**Validação:** 6 testes unitários isolados (gating sem rng/turno de
+setup; board vazio nunca dispara; dispara e mata TODAS as criaturas
+menos terreno/artefato não-criatura; Megatron face Tyrant É alvo legal
+e vai pra zona de comando; **Megatron face Vehicle é IMUNE, confirmado
+que ele permanece em campo intocado enquanto a outra criatura morre**;
+Vehicle-Megatron sozinho sem outra criatura nunca dispara o wipe) +
+smoke test + A/B 2000 jogos mesma seed:
+
+| Métrica | Sem wipe | Com wipe |
+|---|---|---|
+| Board wipes sofridos | — | 0,46 |
+| Criaturas perdidas por wipe (quando dispara) | — | 3,90 |
+| Remoções inteligentes sofridas | 0,72 | 0,62 |
+| Ataques sofridos / bloqueios com sucesso | 0,78 / 0,64 | 0,89 / 0,46 |
+| Dano/vida perdida proxy | 74,91 | 66,73 |
+| Cartas compradas extra | 15,32 | 14,54 |
+
+Direção esperada em tudo: menos bloqueios com sucesso (wipe limpa o
+board antes do ataque rolar), mais ataques conectando, dano/draw geral
+caem mais — resiliência ficou mais dura, coerente com adicionar uma
+4ª fonte real de pressão. Regressão de 20.000 partidas via
+`simulate_one_with_interaction`, 0 exceções. Confirmado que o modo
+padrão (sem `interaction_rng`) fica com `smart_wipes_total == 0`
+sempre, zero impacto fora do modo opcional.
+
+**Ainda falta** (última categoria pendente, ordem combinada com o
+usuário): counterspell — nenhuma categoria hoje impede a conjuração do
+Megatron/outra bomba.
+
 ## Modo de resiliência estendido: discard/disrupção de mão aleatória de oponente — 2026-09-19
 
 **Gatilho:** usuário pesquisou o anúncio oficial do simulador de
