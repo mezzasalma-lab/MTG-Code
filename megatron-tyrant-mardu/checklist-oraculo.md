@@ -1,5 +1,82 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Modo de resiliência estendido: discard/disrupção de mão aleatória de oponente — 2026-09-19
+
+**Gatilho:** usuário pesquisou o anúncio oficial do simulador de
+interação do Archidekt (que o modo de resiliência já usa como
+referência desde 2026-09-16) e confirmou que ele modela 3 categorias
+reais — ataque, remoção, **e counterspell/discard** — sendo que o
+nosso modo só cobria as 2 primeiras. Pedido direto: "Implementa o
+discard/disrupção de mão primeiro, aleatoriamente como no modelo do
+Archidekt que vc ja estudou".
+
+**Achado que motivou a prioridade (discard antes de counterspell/
+board wipe):** a Partida #1 registrada em `goldfish-log.md` (2026-09-18)
+já tinha exposto esse buraco na prática — a mão inteira foi descartada
+por um Jace's Archivist do oponente no Turno 2, evento que o modo de
+resiliência simplesmente não conseguia representar antes desta rodada.
+
+**Diferença de design importante vs. `try_smart_opponent_removal`:** o
+Archidekt puxa uma carta REAL aleatória de uma pool via Scryfall por
+categoria, e documenta explicitamente que NÃO valida se o alvo sugerido
+faz sentido pro board atual (ex. real citado no changelog: sugeriu
+Assassin's Trophy com só um Kraken Hatchling em campo). O usuário pediu
+"aleatoriamente" de propósito — ao contrário da remoção (sempre mira a
+peça-motor de maior prioridade de uma lista curada,
+`INTERACTION_ENGINE_PRIORITY`), o novo `try_smart_opponent_discard()`
+escolhe a carta a descartar por `state.interaction_rng.choice(state.
+hand)` **sem nenhum filtro** — pode descartar terreno, pode descartar a
+melhor bomba da mão, exatamente a imprevisibilidade real que o
+Archidekt aceitou como tradeoff deliberado.
+
+**Implementado:**
+1. `state.smart_discards_total` / `state.smart_discard_log` — mesmos
+   padrões de `smart_removals_total`/`smart_removal_log`.
+2. `try_smart_opponent_discard()` — mesma janela (`INTERACTION_SETUP_
+   TURNS = 2`) e mesma fórmula de chance (`interaction_chance()`) das
+   outras 2 categorias, rolando **independente** (as 3 podem disparar
+   no mesmo turno, mesmo modelo do Archidekt de múltiplas categorias
+   por turno). Descarta exatamente 1 carta aleatória da mão por
+   instância (mesma granularidade de 1-permanente/1-atacante das outras
+   2); mão vazia retorna `None` sem erro.
+3. `simulate_one_with_interaction()` — chama as 3 funções (remoção,
+   ataque, discard) em sequência a cada turno, incluindo o loop de
+   turno extra.
+4. `run_batch_with_interaction()` — nova linha de relatório com
+   `Avg descartes forçados sofridos` + top-5 cartas mais descartadas.
+
+**Validação:** 4 testes unitários isolados (sem `interaction_rng`/turno
+de setup nunca dispara; dispara e descarta uma carta real da mão pro
+cemitério, removendo da mão — confirmado em 200 seeds; mão vazia nunca
+quebra; roda em conjunto com remoção+ataque sem interferir) + smoke
+test + A/B 2000 jogos mesma seed (batch ANTES desta rodada vs. DEPOIS,
+`seed_base=1_000_000`):
+
+| Métrica | Sem discard | Com discard |
+|---|---|---|
+| Remoções inteligentes sofridas | 0,77 | 0,72 |
+| Ataques de oponente sofridos | 0,80 | 0,78 |
+| Dano/vida perdida proxy | 78,02 | 74,91 |
+| Cartas compradas extra | 16,07 | 15,32 |
+| Vida final | 36,04 | 36,13 |
+
+Direção esperada em tudo: descarte aleatório reduz levemente o
+desenvolvimento de board (menos permanentes = `interaction_chance()`
+mais baixa = leve queda em remoção/ataque sofridos também, efeito
+colateral coerente, não bug de RNG — a ordem de consumo do
+`interaction_rng` pra remoção/ataque não mudou, o discard só foi
+adicionado DEPOIS dos outros dois na sequência de chamadas). Avg
+descartes forçados: 1,23/partida. Regressão de 20.000 partidas via
+`simulate_one_with_interaction`, 0 exceções. Confirmado que o modo
+padrão (`simulate_one`/`run_batch`, sem `interaction_rng`) continua
+com `smart_discards_total == 0` sempre — zero impacto fora do modo
+opcional.
+
+**Ainda faltam** (próximas rodadas, por ordem de prioridade combinada
+com o usuário): board wipe (nenhuma categoria hoje mata mais de 1
+permanente por vez) e counterspell (nenhuma categoria hoje impede a
+conjuração do Megatron/outra bomba).
+
 ## Cityscape Leveler: gatilho de ataque não disparava pra token-cópia (Ultron/Osgir/Feldon) — 2026-09-19
 
 **Gatilho:** usuário pediu pra verificar se o Cityscape Leveler

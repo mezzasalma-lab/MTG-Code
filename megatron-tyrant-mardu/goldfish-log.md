@@ -4,6 +4,27 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Modo de resiliência estendido: discard/disrupção de mão aleatória — 2026-09-19
+
+**Gatilho:** usuário pediu pra implementar a 3ª categoria do simulador
+de interação do Archidekt (ataque e remoção já existiam) — discard,
+"aleatoriamente como no modelo do Archidekt". Motivado pela própria
+Partida #1 abaixo, que já tinha exposto esse buraco (mão inteira
+descartada por um Jace's Archivist do oponente). Detalhes técnicos
+completos em `checklist-oraculo.md`.
+
+**Resultado (A/B 2000 jogos mesma seed):** descarte aleatório reduz
+levemente dano proxy (78,02→74,91) e cartas extra compradas
+(16,07→15,32) — direção esperada, menos board = menos gatilho pras
+outras 2 categorias de interação também. Avg 1,23 descartes forçados
+por partida.
+
+**Validação:** 4 testes unitários + smoke test + A/B 2000 jogos +
+regressão de 20.000 partidas, 0 exceções. Confirmado que o goldfish
+padrão (sem modo de resiliência) fica 100% intocado.
+
+---
+
 ## Partida #1 — 2026-09-18
 
 - **Formato do teste:** partida real com pelo menos 1 oponente ativo (não

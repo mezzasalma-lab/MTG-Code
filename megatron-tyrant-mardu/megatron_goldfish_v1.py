@@ -483,6 +483,8 @@ class GameState:
     smart_attacks_taken_total: int = 0
     smart_blocks_total: int = 0
     smart_attack_log: list = field(default_factory=list)
+    smart_discards_total: int = 0
+    smart_discard_log: list = field(default_factory=list)
     crewed_creatures_tapped: set = field(default_factory=set)
     ironsoul_triggered_this_combat: bool = False
     megatron_alone_combos_total: int = 0
@@ -2844,6 +2846,47 @@ def try_smart_opponent_attack(state: GameState) -> Optional[str]:
     return name
 
 
+def try_smart_opponent_discard(state: GameState) -> Optional[str]:
+    """Modo opcional de resiliencia -- discard/disrupcao de mao (rola
+    independente de remocao/ataque, mesma janela/formula de chance via
+    `interaction_chance`). Pedido direto do usuario 2026-09-19, depois
+    de estudar o simulador de interacao real do Archidekt: la' tambem e'
+    so' um "rolou discard" com o alvo puxado sem inteligencia nenhuma
+    (carta real aleatoria de uma pool, sem checar se faz sentido pro
+    board -- os proprios devs documentam isso, ex.: sugeriu Assassin's
+    Trophy contra um board com so' um Kraken Hatchling). Achado real que
+    motivou isso: Partida #1 (goldfish-log.md, 2026-09-18) teve a mao
+    inteira descartada por um Jace's Archivist do oponente -- categoria
+    que o modo de resiliencia simplesmente nao tinha.
+
+    Ao contrario de `try_smart_opponent_removal` (sempre acerta a peca-
+    motor de MAIOR prioridade, seleciono 'inteligente' de proposito),
+    aqui o alvo e' escolhido puramente AO ACASO dentro da mao inteira --
+    exatamente o pedido do usuario ('aleatoriamente, no modelo do
+    Archidekt'), sem filtrar terreno/carta ruim: um oponente real
+    escolheria a melhor carta pra te fazer descartar (efeito dirigido,
+    tipo Thoughtseize), mas o PERFIL aleatorio aqui representa efeitos
+    de descarte aleatorio de verdade (ex. seu proprio Faithless
+    Looting/Melded Moxite nao sao aleatorios, mas ha' cartas reais de
+    oponente que sao -- e a falta de 'inteligencia' no alvo e' o mesmo
+    tradeoff que o Archidekt aceitou de proposito, documentado no post
+    deles). Descarta exatamente 1 carta por instancia (mesma granularidade
+    de 1-permanente/1-atacante das outras 2 categorias) -- sem mao pra
+    descartar, retorna None sem fazer nada."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    if not state.hand:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state):
+        return None
+    target = state.interaction_rng.choice(state.hand)
+    state.hand.remove(target)
+    state.graveyard.append(target)
+    state.smart_discards_total += 1
+    state.smart_discard_log.append((state.turn, target))
+    return target
+
+
 # ---------------------------------------------------------------------------
 # Mulligan / build / batch
 # ---------------------------------------------------------------------------
@@ -2992,10 +3035,12 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
 
 def simulate_one_with_interaction(seed: int, turns: int = 8):
     """Mesmo goldfish de `simulate_one`, mas com `try_smart_opponent_
-    removal`/`try_smart_opponent_attack` rodando a cada turno -- ver
-    comentario da secao 'Modo opcional de resiliencia' acima. As duas
-    rolam independente (podem disparar as duas no mesmo turno). NUNCA
-    chamado por `run_batch`/`simulate_one` padrao."""
+    removal`/`try_smart_opponent_attack`/`try_smart_opponent_discard`
+    rodando a cada turno -- ver comentario da secao 'Modo opcional de
+    resiliencia' acima. As 3 rolam independente (podem disparar todas
+    no mesmo turno, mesmo modelo do Archidekt de multiplas categorias
+    de interacao por turno). NUNCA chamado por `run_batch`/`simulate_one`
+    padrao."""
     rng = random.Random(seed)
     hand, lib, mulls = mulligan(rng)
     state = GameState(hand=hand, library=lib, mulligans=mulls, rng=rng,
@@ -3006,6 +3051,7 @@ def simulate_one_with_interaction(seed: int, turns: int = 8):
         play_turn(state, is_first_turn=is_first, on_play=True)
         try_smart_opponent_removal(state)
         try_smart_opponent_attack(state)
+        try_smart_opponent_discard(state)
         is_first = False
         turns_played += 1
         if state.extra_turns_pending > 0:
@@ -3013,6 +3059,7 @@ def simulate_one_with_interaction(seed: int, turns: int = 8):
             play_turn(state, is_first_turn=False, on_play=True)
             try_smart_opponent_removal(state)
             try_smart_opponent_attack(state)
+            try_smart_opponent_discard(state)
             turns_played += 1
     return state
 
@@ -3027,7 +3074,7 @@ def run_batch_with_interaction(n: int, seed_base: int, turns: int = 8):
     def avg(vals):
         return sum(vals) / len(vals) if vals else 0.0
 
-    print(f"n={n}, seed_base={seed_base}, turns={turns} (MODO RESILIENCIA -- remocao + ataque inteligente de oponente)")
+    print(f"n={n}, seed_base={seed_base}, turns={turns} (MODO RESILIENCIA -- remocao + ataque inteligente + discard aleatorio de oponente)")
     print(f"Avg remocoes inteligentes sofridas: {avg([s.smart_removals_total for s in states]):.2f}")
     hit_counts = Counter()
     for s in states:
@@ -3049,6 +3096,15 @@ def run_batch_with_interaction(n: int, seed_base: int, turns: int = 8):
         unblocked = attack_by_type[(token_name, "unblocked")]
         if blocked + unblocked > 0:
             print(f"  -- {token_name}: {unblocked} conectaram / {blocked} bloqueados e mortos (em {n} jogos)")
+    print(f"Avg descartes forcados sofridos (alvo aleatorio na mao, achado real: Partida #1 "
+          f"do goldfish-log.md, Jace's Archivist do oponente): "
+          f"{avg([s.smart_discards_total for s in states]):.2f}")
+    discard_counts = Counter()
+    for s in states:
+        for _, card in s.smart_discard_log:
+            discard_counts[card] += 1
+    for card, count in discard_counts.most_common(5):
+        print(f"  -- {card} descartado em {100*count/n:.1f}% dos jogos")
     print(f"Avg dano/perda-de-vida proxy total: {avg([s.proxy_damage_total for s in states]):.2f}")
     print(f"Avg eventos de recursao/valor totais: {avg([s.recursion_events_total for s in states]):.2f}")
     print(f"Avg ativacoes de solda (Welder/Scrap Welder/Trash for Treasure/Engineer/Osgir/Daretti): "
