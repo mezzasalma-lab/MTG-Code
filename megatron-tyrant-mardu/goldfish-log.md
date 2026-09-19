@@ -4,6 +4,81 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Partida #1 — 2026-09-18
+
+- **Formato do teste:** partida real com pelo menos 1 oponente ativo (não
+  é goldfish 100% solo) — o oponente interagiu diretamente uma vez (ver
+  Turno 2 abaixo), e teve presença de board rastreada em 3 dos 6 turnos
+  (`opponentsCards`: Jace's Archivist T2, Grim Hireling T4, Zombie Rogue
+  T5), sem mais detalhes registrados sobre o board dele.
+- **Mão inicial (mulligan até):** keep na mão inicial de 7, sem mulligan
+  ("Mão inicial boa para teste, vou dar keep") — Talisman of Indulgence,
+  Plains, Myr Retriever, Feldon of the Third Path, Swamp, Terramorphic
+  Expanse, Metalwork Colossus.
+- **Turno da primeira jogada relevante:** Turno 1 — Terramorphic Expanse
+  jogado e sacrificado pela própria habilidade, busca Mountain (tapped).
+- **Turno do primeiro ataque/combo:** Turno 2 — Megatron, Tyrant
+  conjurado do zona de comando (4 mana: Plains+Swamp+Mountain+Talisman
+  of Indulgence). Logo em seguida, o oponente forçou descarte da mão
+  inteira (6 cartas: Melded Moxite, Noxious Gearhulk, Lightning Greaves,
+  Myr Retriever, Feldon of the Third Path, Metalwork Colossus) e compra
+  de 6 novas (Faithless Looting, Combustible Gearhulk, Forbidden
+  Orchard, Bygone Colossus, Brass's Tunnel-Grinder // Tecutlan, Sunlit
+  Marsh) — usuário confirmou depois: interação do oponente, provável
+  Jace's Archivist ("Whenever you draw your second card each turn, you
+  may discard your hand. If you do, draw seven cards" — o efeito real é
+  do CONTROLADOR do Jace's Archivist, não teria alvo direto na minha mão;
+  registrado como relatado pelo usuário, sem certeza 100% do texto exato
+  do lado do oponente). Perdeu Myr Retriever/Feldon/Metalwork Colossus
+  (peças de recursão/reanimação) e Lightning Greaves antes de serem
+  usadas, mas o descarte forçado também encheu o cemitério de fodder pro
+  toolbox de solda mais tarde.
+- **Curva de mana observada:** T1 1 terra (Mountain via Terramorphic),
+  T2 2 mana + Talisman of Indulgence, T3 4 mana + Megatron conjurado, T4
+  5 mana (+Arcane Signet), T5 mana suficiente pra Bygone Colossus via
+  Warp {3} + Steel Seraph + Scrap Welder no mesmo turno, T6 mana
+  suficiente pra Cursed Mirror + Blightsteel Colossus.
+- **Bombas/peças-chave puxadas:** Megatron (T2), Bygone Colossus via
+  Warp com haste (T4, atacou e depois saiu de campo — anotado no app
+  como indo pro cemitério, mas a regra real do Warp é exílio, mesma
+  ruling confirmada em 2026-09-15; possível só registro manual errado no
+  app, não misplay — não afeta o resultado da partida), Steel Seraph
+  (T4, concede voar+vínculo-vital pras minhas criaturas de poder 4+,
+  incluindo o próprio Megatron), Cursed Mirror copiando o Steel Seraph
+  (T5, não o Megatron — bate com a regra de lendário corrigida no
+  simulador em 2026-09-18), Brass's Tunnel-Grinder acumulou 3 contadores
+  Generic e transformou em Tecutlan, the Searing Rift (T5), Blightsteel
+  Colossus (T5, fica com doença de invocação até T6).
+- **Removals sofridos/enviados:** nenhum removal direto relatado —
+  Combustible Gearhulk foi sacrificado no T6 (provável fuel do próprio
+  gatilho de ataque do Megatron, "sacrifice another artifact... damage
+  equal to its mana value").
+- **Resultado:** vitória.
+- **Turno de fim de jogo:** Turno 6 — Blightsteel Colossus (11 de poder,
+  Infect) atacou sem mais doença de invocação, já letal sozinho por
+  veneno (11 ≥ 10). No mesmo turno, Chandra's Ignition também foi
+  conjurada tendo Blightsteel Colossus como criatura-alvo, dano extra de
+  veneno como backup/confirmação do combo. Bate exatamente com os 2
+  caminhos que o simulador já modela pra `blightsteel_poison_win`
+  (ataque OU Chandra's Ignition, achado real 2026-09-17) — boa validação
+  real de uma partida manual pra essa combinação.
+- **O que funcionou bem:** Megatron saiu cedo (T2) e converteu/atacou
+  todo turno a partir do T3; Steel Seraph deu voar+vínculo-vital de
+  graça pro time; Brass's Tunnel-Grinder transformou a tempo de ajudar;
+  Cursed Mirror escolheu o alvo certo (não-lendário) sozinho, sem cair
+  na armadilha da regra de lendário; fechou cedo (T6) com a linha
+  Blightsteel Colossus + Chandra's Ignition, redundante o suficiente pra
+  não depender de bloqueio real do oponente.
+- **O que travou o deck:** o descarte forçado do oponente no T2 custou 3
+  peças de recursão (Myr Retriever/Feldon/Metalwork Colossus) antes de
+  qualquer uma delas ser jogada — não impediu a vitória, mas é uma
+  fraqueza real contra decks com discard/wheel adversário (não modelada
+  no goldfish solo, que não tem oponente real).
+- **Ajustes a considerar:** nenhum ajuste de lista sugerido pelo usuário
+  nesta partida — registro é só de validação/histórico.
+
+---
+
 ## Cityscape Leveler: gatilho de ataque não disparava pra token-cópia — 2026-09-19
 
 **Gatilho:** usuário pediu pra verificar se o Cityscape Leveler destrói
