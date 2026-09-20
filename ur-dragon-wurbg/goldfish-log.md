@@ -4,6 +4,36 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Modo de resiliência portado do Megatron — 2026-09-20
+
+**Gatilho:** usuário pediu pra portar o modo de resiliência (6
+categorias de interação de oponente: board wipe, graveyard wipe,
+graveyard snipe, remoção inteligente, ataque, discard aleatório, +
+counterspell) do Megatron pro Ur-Dragon, com resultado separado do
+goldfish padrão e o original preservado. Detalhes técnicos completos em
+`checklist-oraculo.md`.
+
+**2 limitações estruturais reais deste deck** (não são bugs, são
+diferenças genuínas de arquitetura vs. o Megatron): sem `sacrifice()`
+central (motor é ETB/ataque, não sacrifício — mas isso na verdade
+SIMPLIFICA o port, zero gatilhos de morte pra replicar) e sem
+`toughness` rastreado por criatura nenhuma (motor só rastreia poder de
+saída) — por isso o ataque de oponente aqui nunca é bloqueado,
+diferente do Megatron.
+
+**Validação:** `simulate_one`/`run_batch` confirmados 100%
+bit-idênticos ao original em 5.000 seeds, mesmo com `cast_card`/
+`enter_battlefield` alterados pro hook do counterspell. Regressão de
+20.000 partidas em cada modo, 0 exceções.
+
+**Resultado (A/B 2000 jogos mesma seed):** nunca resolve em 8 turnos
+sobe de 21,3%→31,6%, dano proxy cai de 990,50→310,33 (menos de 1/3) —
+os alvos mais removidos são Roaming Throne (16,1%) e Dragon Tempest
+(14,4%), os 2 multiplicadores centrais do motor de dano. Tabela
+completa em `checklist-oraculo.md`.
+
+---
+
 ### Auditoria oráculo-por-oráculo completa — 2026-09-14
 
 **Gatilho:** extensão da auditoria "oráculo-por-oráculo" pra todos os

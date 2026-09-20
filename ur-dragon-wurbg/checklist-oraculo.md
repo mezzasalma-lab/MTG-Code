@@ -1,5 +1,98 @@
 # Checklist cláusula-a-cláusula — The Ur-Dragon (`urdragon_goldfish_v1.py`)
 
+## Modo de resiliência portado do Megatron (6 categorias de interação de oponente) — 2026-09-20
+
+**Gatilho:** usuário pediu pra avaliar o esforço de portar o modo de
+resiliência (implementado no Megatron, várias rodadas 2026-09-19/20)
+pro resto dos decks. Avaliação usando o Hei Bai como piloto mostrou 2
+lacunas estruturais sérias lá (sem `sacrifice()` central, sem combate
+modelado nenhum). Usuário então pediu pra implementar de verdade no
+Ur-Dragon, com resultado **separado do goldfish atual, preservando o
+original**.
+
+**Arquitetura preservada:** `simulate_one`/`run_batch` continuam
+exatamente como sempre foram — confirmado com **5.000 seeds de
+equivalência bit-a-bit** (`commander_cast_turn`,
+`commander_cast_count`, `proxy_damage_total`, `commander_damage_dealt`,
+`cards_drawn_extra`, `dragon_tokens`), 0 diferenças, mesmo mexendo em
+`cast_card`/`enter_battlefield` (funções compartilhadas pelos 2 modos).
+Todo o modo novo mora em `simulate_one_with_interaction`/
+`run_batch_with_interaction`, funções NOVAS, nunca chamadas pelo
+goldfish padrão.
+
+**Diferenças reais do port vs. o Megatron original (não foi
+copy-paste):**
+
+1. **Sem `sacrifice()` preexistente** — o motor do Ur-Dragon é ETB/
+   ataque, não sacrifício. `remove_permanent()` é uma versão nova e
+   mais simples: grep confirmou **0 cartas "whenever ~ dies"** neste
+   deck, então não existe web de gatilhos de morte pra replicar (era o
+   grosso da complexidade do `sacrifice()` do Megatron). Só precisa
+   saber mandar o comandante pra zona de comando (mesmo padrão já
+   usado no retorno do Hellkite Courser em `end_step`) em vez do
+   cemitério.
+2. **Sem `toughness` rastreado por criatura** — o `Card` deste arquivo
+   só tem `power` (motor só precisa de poder de saída, nunca modelou
+   bloqueio pro lado do jogador). Isso torna **bloqueio impossível de
+   implementar sem inventar dado que não existe** — `try_smart_
+   opponent_attack` aqui nunca é bloqueado, todo ataque conecta direto
+   em `state.life` (novo, só existe pro modo de resiliência — o
+   goldfish padrão documenta explicitamente "Vida não é rastreada no
+   simulador", convenção preservada 100%).
+3. **Sem `state.rng` guardado no state** — nenhuma carta tipo
+   Blightsteel Colossus (Megatron) achada nesta rodada. `put_into_
+   graveyard()` existe como rede de segurança central, mas **isso NÃO
+   é uma auditoria completa das 99 cartas** procurando "would be put
+   into a graveyard from anywhere" — só o Megatron recebeu essa
+   auditoria até agora.
+4. **Alvo do graveyard snipe é Dragão-específico**: usa o MESMO
+   critério que `reanimate_dragons_from_graveyard()` (Haunting Voyage)
+   já usa — maior MV entre Dragão-criatura no cemitério — em vez do
+   critério criatura/artefato genérico do Megatron, porque a recursão
+   real deste deck é de Dragão, não de artefato.
+5. **`INTERACTION_ENGINE_PRIORITY` curada do zero** pros motores reais
+   do Ur-Dragon: Roaming Throne (dobra tudo, prioridade 1), Dragon
+   Tempest, Scourge of Valkas, Herald's Horn, Smothering Tithe,
+   Dragon's Hoard, Up the Beanstalk, Elemental Bond, Garruk's Uprising,
+   Sylvan Library.
+6. **Counterspell** — mesmo padrão do Megatron: taxa de comandante
+   (CR 903.10a, já existia neste arquivo como `commander_cast_count`)
+   incrementada ANTES do check de counter (conta "vezes conjurado",
+   não "vezes resolvido"); movido de `enter_battlefield` pra
+   `cast_card` pra evitar incremento duplicado. Hookado direto no
+   branch `if name == COMMANDER` de `cast_card()`.
+
+**Validação:** 8 testes unitários dirigidos (gating; board wipe destrói
+tudo e manda comandante pra zona de comando; removal mira a peça de
+maior prioridade presente; ataque sempre conecta — sem bloqueio; discard
+aleatório; graveyard wipe dispara 1x só; graveyard snipe mira Dragão de
+maior MV; counterspell gasta mana+taxa mas não resolve, e recast no
+turno seguinte paga taxa mais alta) + 5.000 seeds de equivalência
+bit-a-bit do modo padrão (0 diferenças) + smoke test (batch 2000) +
+**regressão de 20.000 partidas em CADA modo, 0 exceções nos dois**.
+
+**Resultado real (batch 2000 jogos mesma seed, padrão vs. resiliência):**
+
+| Métrica | Padrão | Resiliência |
+|---|---|---|
+| Turno médio de conjuração (que resolveu) | 6,66 | — |
+| Nunca resolveu em 8 turnos | 21,3% | 31,6% |
+| Avg dano/perda-de-vida proxy total | 990,50 | 310,33 |
+| Avg counterspells sofridos | — | 0,10 |
+| Avg board wipes sofridos | — | 0,43 (5,25 criaturas perdidas quando dispara) |
+| Partidas com graveyard wipe sofrido | — | 41,3% (máx. 1x/partida) |
+| Avg graveyard snipes sofridos | — | 0,15 |
+| Avg remoções inteligentes sofridas | — | 0,83 (Roaming Throne 16,1%, Dragon Tempest 14,4%) |
+| Avg ataques de oponente sofridos | — | 1,26 |
+| Avg descartes forçados sofridos | — | 1,21 |
+
+Direção esperada em tudo: a comandante resolve 10,3pp menos vezes em 8
+turnos e o dano proxy cai pra menos de 1/3 (990,50→310,33) — bate com o
+quanto o motor inteiro deste deck depende da Ur-Dragon resolver E
+atacar (Roaming Throne/Dragon Tempest/Scourge of Valkas, os alvos mais
+removidos, são multiplicadores centrais — perde-los corta o motor de
+dano escalável pela raiz).
+
 ## Achado real 2026-09-14 (usuário perguntou se Roaming Throne está certa em todos os decks onde aparece)
 
 Mesma varredura pedida depois do fix do Beorn. Este deck já tinha uma
