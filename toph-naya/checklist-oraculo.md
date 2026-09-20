@@ -1,3 +1,76 @@
+## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
+
+**Gatilho:** usuário pediu direto, mesmo protocolo já aplicado a
+Megatron/Ur-Dragon/Hei Bai/Markov/Ulalek: *"Agora repita este processo
+para a Toph."* Este deck nunca tinha NENHUMA extensão de resiliência
+antes — porte completo do zero, incorporando direto o design final já
+validado (3 rodadas de correção de orquestração de turno + gate de
+atenção do oponente, sem repetir o histórico).
+
+**Este deck é estruturalmente o mais maduro dos 6 portados até agora**
+— já tinha 3 peças de infraestrutura que os outros precisaram construir
+do zero ou corrigir como pré-requisito:
+1. **`leave_battlefield()` já existia** como chokepoint real de
+   leaves-the-battlefield, com Ozolith (reciclagem de contador),
+   Skullclamp (compra ao morrer equipada), Ichor Wellspring, Haywire
+   Mite e Motor #16 (recursão earthbend) todos corretamente tratados.
+   `remove_permanent()` (novo) só precisou tratar o caso do comandante
+   (CR 903.9) e delegar o resto — sem reinventar nenhuma cascata de
+   gatilho do zero, diferente do Markov.
+2. **`state.life_total` já existia** (começa em 40, já usado por Sylvan
+   Library) — reusado como alvo do ataque de oponente, sem precisar de
+   campo novo (diferente dos outros 5 decks).
+3. **A taxa de comandante já existia** (`commander_cast_count`,
+   `commander_effective_mv` = MV base + 2×contador) — já implementada e
+   correta, sem precisar de fix (diferente do Ulalek, que não tinha
+   taxa nenhuma).
+
+**Diferença estrutural real que exigiu adaptação de design:**
+`state.battlefield` é uma lista de objetos `Permanent` (com uid,
+tapped, counters, earthbent...), não nomes de carta crus — "é criatura
+agora" (`is_creature_type`) é **dinâmico por instância**: earthbend
+pode transformar um permanente NÃO-criatura numa criatura de verdade,
+então a mesma carta pode ou não ser um alvo válido de wipe dependendo
+do estado real daquela cópia específica. Todas as 7 categorias de
+interação operam sobre objetos `Permanent`, não sobre strings (diferente
+dos outros 5 decks, que usam nomes crus).
+
+**Achado real ao delegar pra `leave_battlefield`:** como esse
+chokepoint já dispara Motor #16 (recursão earthbend) corretamente pra
+QUALQUER causa de morte (não só sacrifício próprio), o modo de
+resiliência **aumenta** a métrica de recursões via Motor#16 (1,29→2,32
+no comparativo abaixo) em vez de diminuir como as outras métricas —
+comportamento correto, não um bug: mais eventos de morte reais
+(vindos de wipe/remoção de oponente) alimentam um motor de recursão que
+já reage a "morrer" de forma agnóstica à causa, exatamente como o
+oráculo real do Motor #16 funciona.
+
+**`INTERACTION_ENGINE_PRIORITY` curada** (motor recorrente de valor):
+Ultron Artificial Malevolence, The Ozolith, Skullclamp, Wrenn and
+Realmbreaker, Caretaker's Talent, Conduit of Worlds, Kodama of the East
+Tree, Sylvan Library, Zuran Orb, Bristly Bill Spine Sower. Toph fica de
+fora de propósito — já tem categoria dedicada (counterspell no cast) e
+remoção não a mata de verdade mesmo.
+
+**Validação:**
+- Modo padrão confirmado **100% bit-idêntico** ao HEAD anterior — 5.000
+  seeds comparadas campo a campo (36 métricas por seed), 0 divergências.
+- Regressão de 20.000 partidas em modo resiliência, 0 exceções.
+- Testes dirigidos: comandante removido vai pra zona de comando (nunca
+  cemitério); custo de recast reflete a taxa pré-existente; remoção de
+  criatura nomeada delega corretamente pra `leave_battlefield` (Ozolith
+  recicla contadores de uma morte causada por oponente); token
+  rastreado como `Permanent` real é removido corretamente; taxa de
+  ataque pós-wipe cai pra ~13,5% da taxa base (~ fator 0,15 esperado);
+  recast completo testado end-to-end via `main_phase` com mana
+  suficiente.
+- `run_batch_with_interaction` (2000 jogos): avg ataques sofridos 1,03,
+  avg board wipes 0,40 (34,5% das partidas), avg counterspells 0,10,
+  avg vida final 35,43, Toph recastada após remoção em 28,2% das
+  partidas — próximo do Ulalek (30,1%), consistente com ambas
+  resolvendo cedo (turno 3,55-4,21 em média), sobrando bastante tempo
+  de jogo pra serem removidas e recompradas.
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-14
 
 Nova rodada de auditoria, no mesmo padrão das já concluídas em outros 11

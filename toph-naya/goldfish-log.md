@@ -4,6 +4,63 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
+
+**Gatilho:** "Agora repita este processo para a Toph" — mesmo modo já
+validado em Megatron/Ur-Dragon/Hei Bai/Markov/Ulalek, este deck nunca
+tinha nenhuma extensão de resiliência antes. Detalhes técnicos completos
+em `checklist-oraculo.md`.
+
+**Deck estruturalmente mais maduro dos 6 portados** — já tinha
+`leave_battlefield()` (chokepoint real de morte, com Ozolith/Skullclamp/
+Motor#16 já tratados), `state.life_total` (começa em 40) e a taxa de
+comandante (`commander_cast_count`/`commander_effective_mv`) — nenhum
+precisou ser criado do zero, `remove_permanent()` só tratou o caso
+específico do comandante (CR 903.9) e delegou o resto.
+
+**Implementado (7 categorias, design final direto):** ataque sem
+bloqueio, remoção curada (`INTERACTION_ENGINE_PRIORITY`), discard
+aleatório, board wipe, graveyard hate (mass exile + exílio único),
+counterspell no cast do comandante — operando sobre objetos `Permanent`
+(não strings) por causa de earthbend dinâmico.
+
+**Achado real:** Motor#16 (recursão earthbend) dispara pra QUALQUER
+morte real, incluindo a causada por remoção/wipe de oponente — métrica
+sobe (1,29→2,32) em vez de cair como as outras, comportamento correto
+(mais eventos de morte alimentando um motor que já reage à causa
+agnosticamente).
+
+**Resultado (`run_batch_with_interaction`, 2000 jogos):** avg ataques
+sofridos 1,03, avg board wipes 0,40 (34,5% das partidas), avg
+counterspells 0,10, avg vida final 35,43, Toph recastada após remoção
+em 28,2% das partidas.
+
+**Validação:** modo padrão 100% bit-idêntico (5.000 seeds, 36 métricas
+por seed) + regressão de 20.000 partidas em modo resiliência, 0
+exceções + testes dirigidos (comandante→zona de comando, custo de
+recast, Ozolith reciclando contador de morte causada por oponente,
+token `Permanent` real removido, taxa pós-wipe ~0,15x, recast completo
+end-to-end).
+
+**Comparativo completo antes/depois (2000 jogos, mesma seed):**
+
+| Métrica | Antes (padrão) | Depois (resiliência) |
+|---|---|---|
+| Toph nunca conjurada em 8 turnos | 1,8% | 3,1% |
+| Turno médio de conjuração | 3,55 | 3,66 |
+| Avg aplicações de earthbend | 7,00 | 6,34 |
+| Avg recursões via Motor#16 | 1,29 | 2,32 |
+| Avg gatilhos de landfall | 12,81 | 12,23 |
+| Avg cartas compradas extra | 3,77 | 3,20 |
+| Avg tokens criados | 13,92 | 11,94 |
+| Avg vida ganha (life_gained) | 1,50 | 1,25 |
+| Avg movimentos via Ozolith | 0,35 | 0,56 |
+| Avg compras via Skullclamp | 0,03 | 0,04 |
+| Avg reanimações via Conduit of Worlds | 0,03 | 0,03 |
+| Finisher resolvido | 60,2% | 51,5% |
+
+---
+
 ### Auditoria oráculo-por-oráculo (nova rodada, além das 3 de 2026-09-01/02) — 2026-09-14
 
 **Contexto:** auditoria geral do repositório (autorização do usuário pra
