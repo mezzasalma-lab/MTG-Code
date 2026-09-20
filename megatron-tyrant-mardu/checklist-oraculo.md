@@ -1,5 +1,89 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Bug de design: modelo assumia 100% da mesa mirando em mim, todo turno, de todo oponente — 2026-09-20
+
+**Gatilho:** usuário perguntou diretamente, depois de ver a 2ª correção
+de orquestração de turno: *"Vc levou em conta, como no modelo do
+Archidekt, que com 3 oponentes nem todo turno meu deck será o alvo de
+interação dos oponentes? [...] Pq se sempre for 3 contra 1, aí não
+consigo fazer nada, nunca!"*
+
+**Medição real antes de mexer em qualquer código** (instrumentação
+direta, não estimativa): rodei os 3 decks contando, por rodada a partir
+do turno 3, se PELO MENOS 1 dos 6 tipos de interação (ataque, remoção,
+discard, wipe, GY wipe, GY snipe) disparava contra mim.
+
+| Deck | % de rodadas com ZERO interação (antes) |
+|---|---|
+| Megatron | 20,8% |
+| Ur-Dragon | 21,8% |
+| Hei Bai | 11,6% |
+
+Ou seja, **78-88% das rodadas tinham pelo menos 1 evento contra mim** —
+quase o dobro da calibração original de 2026-09-16 (quando as 6
+categorias eram roladas 1x por rodada, agregando os 3 oponentes num só
+`interaction_chance()`): recalculando esse cenário hipotético de
+"1 rolagem agregada" com os dados reais de jogo, a taxa de rodada livre
+subia pra 48,1%.
+
+**Causa raiz:** a 1ª correção de orquestração de turno desta sessão
+(`try_smart_opponent_turn` simulando `NUM_OPPONENTS = 3` turnos de
+oponente reais por rodada) passou a rolar a MESMA fórmula
+`interaction_chance()`, sem nenhuma escala, 3 vezes por rodada em vez
+de 1 — dobrando a pressão agregada sem querer. Documentei isso na hora
+como "consequência genuína da correção" mas nunca chequei se ainda
+fazia sentido pro pod real do usuário. Mais fundo que isso: **o modelo
+nunca teve conceito nenhum de "esse oponente está de olho em outra
+coisa esse turno"** — cada um dos 3 turnos de oponente simulados
+tentava as 6 categorias incondicionalmente, como se 100% da hostilidade
+da mesa mirasse sempre em mim.
+
+**Opções levantadas e decisão do usuário:** apresentei 3 caminhos —
+(a) só reescalar `interaction_chance()` pra baixo, (b) um gate explícito
+de "atenção do oponente" separado das 6 categorias, (c) manter como
+está (mesa de 4 real gera mais pressão que o "oponente" genérico do
+Archidekt mesmo). Usuário escolheu **(b) gate explícito**.
+
+**Corrigido:** nova constante `OPPONENT_ATTENTION_CHANCE = 1.0 /
+NUM_OPPONENTS` (1/3 ≈ 0,333) — raciocínio: num turno de oponente
+qualquer, há 3 alvos possíveis pra atenção dele (eu e os outros 2
+oponentes que este simulador não modela o board), então por simetria a
+chance BASE de que aquele turno seja sobre MIM é 1/NUM_OPPONENTS, antes
+de qualquer ajuste por ameaça de board real (que já fica dentro de
+`interaction_chance()` via `board_impact`, intocado). `try_smart_
+opponent_turn()` agora rola esse gate 1x no INÍCIO, antes de qualquer
+uma das 6 categorias — se falhar, o oponente gastou o turno com outra
+coisa (desenvolver o próprio board, atacar outro oponente, segurar mana
+pro próprio plano) e nenhuma categoria é sequer checada. Ajustável:
+documentado no comentário da constante que uma mesa real onde este
+deck é sempre o alvo óbvio pode justificar valor mais alto.
+
+**Validação:**
+- Modo padrão confirmado 100% bit-idêntico ao HEAD anterior nos 3 decks
+  (5.000 seeds cada, campos-chave comparados).
+- Regressão de 20.000 partidas em modo resiliência nos 3 decks, 0
+  exceções.
+- Taxa de "rodada com zero interação" remedida depois do gate (3.000
+  seeds Megatron, 2.000 Ur-Dragon/Hei Bai):
+
+| Deck | Antes do gate | Depois do gate |
+|---|---|---|
+| Megatron | 20,8% | 57,9% |
+| Ur-Dragon | 21,8% | 58,7% |
+| Hei Bai | 11,6% | 50,1% |
+
+**Resultado (A/B mesma seed, 2000 jogos, antes/depois do gate):**
+
+| Métrica | Megatron antes → depois | Ur-Dragon antes → depois | Hei Bai antes → depois |
+|---|---|---|---|
+| Avg ataques de oponente sofridos | 3,16 → 1,21 | 2,98 → 1,19 | 4,01 → 1,47 |
+| Avg vida final | 33,76 → 36,56 | 35,28 → 38,14 | 33,69 → 37,67 |
+| Avg dano proxy (só Megatron) | 49,16 → 65,64 | — | — |
+
+Mesma correção aplicada de forma idêntica nos 3 decks — ver
+`checklist-oraculo.md` de Ur-Dragon e Hei Bai pros números completos de
+cada um.
+
 ## Bug real de orquestração de turno (2ª rodada): wipe é simétrico pra mesa inteira, não só pro próprio turno do wiper — 2026-09-20
 
 **Gatilho:** usuário apontou, na sequência imediata da correção anterior

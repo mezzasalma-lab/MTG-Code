@@ -4,6 +4,23 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Bug de design: modelo assumia 100% da mesa mirando em mim, sempre — 2026-09-20
+
+**Gatilho:** mesmo achado do usuário aplicado no Megatron — "se sempre
+for 3 contra 1, aí não consigo fazer nada, nunca!". Detalhes em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Corrigido:** `OPPONENT_ATTENTION_CHANCE = 1/NUM_OPPONENTS`, mesmo
+padrão do Megatron/Ur-Dragon.
+
+**Resultado (A/B mesma seed, 2000 jogos):** ataques sofridos 4,01→1,47,
+vida final média 33,69→37,67, rodadas com zero interação 11,6%→50,1%.
+
+**Validação:** modo padrão 100% bit-idêntico (5.000 seeds) + regressão
+de 20.000 partidas, 0 exceções.
+
+---
+
 ## Bug de orquestração de turno (2ª rodada): wipe é simétrico pra mesa inteira — 2026-09-20
 
 **Gatilho:** mesmo achado do usuário aplicado no Megatron — um wipe

@@ -4,6 +4,31 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Bug de design: modelo assumia 100% da mesa mirando em mim, sempre — 2026-09-20
+
+**Gatilho:** usuário perguntou direto: *"se sempre for 3 contra 1, aí
+não consigo fazer nada, nunca!"* — medição real confirmou: 78-88% das
+rodadas nos 3 decks tinham pelo menos 1 evento de interação contra mim,
+quase o dobro da calibração original (48,1% hipotético com 1 rolagem
+agregada por rodada). Causa: a correção de orquestração de turno desta
+sessão passou a rolar `interaction_chance()` 3x por rodada (1x por
+oponente) sem escala nenhuma. Detalhes completos em
+`checklist-oraculo.md`.
+
+**Corrigido (escolha do usuário entre 3 opções):** gate explícito
+`OPPONENT_ATTENTION_CHANCE = 1/NUM_OPPONENTS` — cada turno de oponente
+só rola as 6 categorias de interação se passar primeiro nesse gate
+(representa a chance real desse oponente específico estar de olho em
+mim, e não ocupado com o próprio board ou outro oponente).
+
+**Resultado (A/B mesma seed, 2000 jogos):** ataques sofridos 3,16→1,21,
+vida final média 33,76→36,56, rodadas com zero interação 20,8%→57,9%.
+
+**Validação:** modo padrão 100% bit-idêntico (5.000 seeds) + regressão
+de 20.000 partidas, 0 exceções, nos 3 decks.
+
+---
+
 ## Bug de orquestração de turno (2ª rodada): wipe é simétrico pra mesa inteira — 2026-09-20
 
 **Gatilho:** usuário apontou que a correção anterior (wipe/ataque

@@ -3321,6 +3321,33 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     return states
 
 
+OPPONENT_ATTENTION_CHANCE = 1.0 / NUM_OPPONENTS
+# Achado real do usuario 2026-09-20 (3a rodada da mesma correcao de
+# orquestracao, depois de eu medir que 79-88% das rodadas nos 3 decks
+# tinham PELO MENOS 1 evento de interacao contra mim -- quase o dobro
+# da calibracao original de 1-rolagem-agregada-por-rodada de antes da
+# 1a correcao de orquestracao, efeito colateral nao intencional dela):
+# ate' aqui, CADA um dos `NUM_OPPONENTS` turnos de oponente simulados
+# por rodada tentava as 6 categorias de interacao sem excecao -- ou
+# seja, o modelo assumia que 100% da mesa mira em mim, todo turno de
+# todo oponente, sempre ("se sempre for 3 contra 1, ai' nao consigo
+# fazer nada, nunca" -- citacao direta do usuario). Isso nao bate com
+# uma mesa real: no turno de um oponente qualquer, ha' 3 alvos
+# possiveis pra atencao dele (eu e os outros 2 oponentes que este
+# simulador nao modela o board) -- por simetria, a chance BASE de que
+# ESTE turno especifico de oponente seja realmente sobre MIM (antes de
+# qualquer ajuste por ameaca de board, que ja' fica dentro de
+# `interaction_chance()` via `board_impact`) e' 1/NUM_OPPONENTS.
+#
+# Gate NOVO e SEPARADO das 6 categorias -- rolado 1x no INICIO de
+# `try_smart_opponent_turn`; se falhar, o oponente gastou o turno com
+# outra coisa (desenvolver o proprio board, atacar outro oponente,
+# segurar mana pro proprio plano) e NENHUMA das 6 categorias e' sequer
+# checada. Ajustavel: uma mesa real onde este deck e' sempre o alvo
+# obvio (ex. combo declarado, ou vc e' sempre o jogador na frente)
+# pode justificar um valor mais alto que 1/NUM_OPPONENTS.
+
+
 def try_smart_opponent_turn(state: GameState):
     """Simula O TURNO DE UM oponente dentro da rodada entre os meus
     turnos -- achado real do usuario 2026-09-20 (Regra #6 do CLAUDE.md,
@@ -3364,7 +3391,20 @@ def try_smart_opponent_turn(state: GameState):
     ja' que o wipe roda antes) quanto qualquer oponente posterior na
     mesma rodada. Chance reduzida, nunca zerada, porque haste torna o
     ataque fisicamente possivel mesmo pos-wipe (Regra #1 do CLAUDE.md:
-    so' impossibilidade estrutural justifica nao modelar)."""
+    so' impossibilidade estrutural justifica nao modelar).
+
+    3a rodada da mesma correcao (achado real do usuario 2026-09-20,
+    depois de eu medir 79-88% das rodadas com pelo menos 1 evento de
+    interacao nos 3 decks -- "se sempre for 3 contra 1, ai' nao consigo
+    fazer nada, nunca"): antes de rolar QUALQUER categoria, este turno
+    de oponente precisa passar no gate de `OPPONENT_ATTENTION_CHANCE`
+    (ver comentario da constante acima) -- representa a chance de que
+    ESTE oponente especifico esteja de fato de olho em mim neste turno,
+    em vez de ocupado com o proprio board/outro oponente. Ate' aqui o
+    modelo assumia (sem querer) que TODO turno de TODO oponente e'
+    sobre mim."""
+    if state.turn > INTERACTION_SETUP_TURNS and state.interaction_rng.random() >= OPPONENT_ATTENTION_CHANCE:
+        return
     try_smart_opponent_wipe(state)
     try_smart_opponent_attack(state)
     try_smart_opponent_graveyard_wipe(state)

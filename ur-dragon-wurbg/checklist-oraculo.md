@@ -1,5 +1,29 @@
 # Checklist cláusula-a-cláusula — The Ur-Dragon (`urdragon_goldfish_v1.py`)
 
+## Bug de design: modelo assumia 100% da mesa mirando em mim, todo turno, de todo oponente — 2026-09-20
+
+**Gatilho:** mesmo achado do usuário aplicado ao Megatron primeiro —
+*"se sempre for 3 contra 1, aí não consigo fazer nada, nunca!"* —
+medição real (não estimativa) mostrou 78,2% das rodadas com pelo menos
+1 evento de interação contra mim, quase o dobro da calibração original.
+Raciocínio completo e opções levantadas em
+`megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Corrigido:** mesmo padrão do Megatron — `OPPONENT_ATTENTION_CHANCE =
+1/NUM_OPPONENTS`, gate rolado no início de `try_smart_opponent_turn()`
+antes de qualquer categoria.
+
+**Validação:** modo padrão 100% bit-idêntico ao HEAD anterior (5.000
+seeds) + regressão de 20.000 partidas no modo resiliência, 0 exceções.
+
+**Resultado (A/B mesma seed, 2000 jogos):**
+
+| Métrica | Antes do gate | Depois do gate |
+|---|---|---|
+| Rodadas com zero interação | 21,8% | 58,7% |
+| Avg ataques de oponente sofridos | 2,98 | 1,19 |
+| Avg vida final | 35,28 | 38,14 |
+
 ## Bug real de orquestração de turno (2ª rodada): wipe é simétrico pra mesa inteira — 2026-09-20
 
 **Gatilho:** mesmo achado do usuário aplicado ao Megatron primeiro —

@@ -2376,6 +2376,22 @@ def try_smart_opponent_graveyard_snipe(state: GameState) -> Optional[str]:
     return target
 
 
+OPPONENT_ATTENTION_CHANCE = 1.0 / NUM_OPPONENTS
+# Achado real do usuario 2026-09-20 (3a rodada da mesma correcao de
+# orquestracao, depois de eu medir que 79-88% das rodadas nos 3 decks
+# tinham PELO MENOS 1 evento de interacao contra mim -- "se sempre for
+# 3 contra 1, ai' nao consigo fazer nada, nunca", citacao direta).
+# Antes disso, CADA um dos `NUM_OPPONENTS` turnos de oponente simulados
+# por rodada tentava as 6 categorias sem excecao -- o modelo assumia
+# que 100% da mesa mira em mim, todo turno de todo oponente, sempre.
+# Gate NOVO e SEPARADO das 6 categorias, rolado 1x no INICIO de `try_
+# smart_opponent_turn`: representa a chance de que ESTE oponente
+# especifico esteja de olho em mim neste turno (ha' 3 alvos possiveis
+# pra atencao dele -- eu e os outros 2 oponentes que este simulador nao
+# modela), em vez de ocupado com o proprio board/outro oponente. Ver
+# mesma constante/raciocinio no Megatron.
+
+
 def try_smart_opponent_turn(state: GameState):
     """Simula O TURNO DE UM oponente dentro da rodada entre os meus
     turnos -- achado real do usuario 2026-09-20 (Regra #6 do CLAUDE.md):
@@ -2400,7 +2416,14 @@ def try_smart_opponent_turn(state: GameState):
     wipe` e resetado 1x por rodada em `simulate_one_with_interaction`)
     e SOZINHO reduz a propria chance via `POST_WIPE_ATTACK_HASTE_
     FACTOR` -- cobre uniformemente tanto o turno do proprio wiper
-    quanto qualquer oponente posterior na mesma rodada."""
+    quanto qualquer oponente posterior na mesma rodada.
+
+    3a rodada da mesma correcao (achado real do usuario 2026-09-20):
+    antes de rolar QUALQUER categoria, este turno de oponente precisa
+    passar no gate de `OPPONENT_ATTENTION_CHANCE` -- ver comentario da
+    constante acima."""
+    if state.turn > INTERACTION_SETUP_TURNS and state.interaction_rng.random() >= OPPONENT_ATTENTION_CHANCE:
+        return
     try_smart_opponent_wipe(state)
     try_smart_opponent_attack(state)
     try_smart_opponent_graveyard_wipe(state)
