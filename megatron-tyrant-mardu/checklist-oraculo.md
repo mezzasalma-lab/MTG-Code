@@ -1,5 +1,70 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Bug real de orquestração de turno: wipe e ataque no mesmo turno de oponente — 2026-09-20
+
+**Gatilho:** usuário apontou, depois de ver o comparativo antes/depois:
+*"Wipes geralmente são sorceries, jogadas na main phase 1 ou 2, logo
+não há ataques normalmente nos turnos em que há wipes, só após uma
+rodada completa de turnos entre os 4 oponentes!"* — achado real de
+orquestração de turno (Regra #6 do CLAUDE.md: auditoria carta-a-carta
+não pega isso, só rodando o motor de verdade e questionando a
+sequência de fases).
+
+**O bug real:** as 6 categorias "fora do meu turno" (wipe, graveyard
+wipe, graveyard snipe, remoção, ataque, discard) rolavam TODAS juntas,
+1x por turno MEU, com o comentário explícito dizendo que o wipe rodava
+primeiro "de propósito" pra limpar bloqueadores antes do ataque —
+implicitamente tratando isso como o mesmo oponente, no mesmo turno,
+fazendo as duas coisas. Isso não bate com a regra real: board wipe é
+sorcery (main phase), ataque vem de criatura em campo — se o wipe for
+simétrico, as criaturas do PRÓPRIO oponente que wipou também morrem,
+então ele não ataca nesse mesmo turno.
+
+**Corrigido:** `try_smart_opponent_turn()` — nova função que simula O
+TURNO DE UM oponente por vez, chamada `NUM_OPPONENTS = 3` vezes por
+rodada (mesma premissa de mesa de 4 já documentada). Dentro de CADA
+turno de oponente, wipe e ataque agora são **mutuamente exclusivos**
+(`wiped = try_smart_opponent_wipe(state); if not wiped: try_smart_
+opponent_attack(state)`) — mas um wipe de um oponente ANTERIOR na
+rodada continua afetando corretamente o ataque de um oponente
+POSTERIOR na MESMA rodada, porque as chamadas usam o `state` em
+sequência (meus bloqueadores já estão mortos de verdade quando o
+próximo oponente ataca — não precisa fingir isso, é uma consequência
+real do modelo). As outras 4 categorias continuam podendo coexistir
+com wipe OU ataque no mesmo turno de oponente (um jogador real pode
+conjurar mais de 1 spell de main phase se tiver mana).
+
+**Consequência real na calibração:** como agora são 3 rolagens
+independentes por rodada (uma por oponente) em vez de 1 rolagem
+agregada, a frequência total de cada categoria por rodada sobe de
+verdade (cada `interaction_chance()` individual não mudou, só o número
+de vezes que é checada) — isso é uma correção genuína do modelo
+anterior estar SUBESTIMANDO a pressão real de uma mesa de 4, não uma
+inflação arbitrária.
+
+**Validação:** teste dirigido (2000 seeds confirmando que wipe e
+ataque NUNCA disparam juntos dentro de `try_smart_opponent_turn`,
+único achado True 100% das vezes; teste separado confirmando que o
+efeito do wipe persiste corretamente pro oponente seguinte na mesma
+rodada) + regressão de 20.000 partidas no modo resiliência, 0
+exceções + confirmado que o modo padrão continua intocado (nenhuma
+função compartilhada foi tocada nesta rodada, só o loop de
+`simulate_one_with_interaction`).
+
+**Resultado (batch 2000 jogos mesma seed, modelo antigo 1-rolagem vs. novo 3-turnos-de-oponente):**
+
+| Métrica | Modelo antigo (1 rolagem/rodada) | Modelo novo (3 turnos/rodada) |
+|---|---|---|
+| Avg board wipes sofridos | 0,44 | 0,89 |
+| Graveyard wipe sofrido (partidas) | 36,3% | 68,9% |
+| Avg remoções inteligentes sofridas | 0,60 | 0,84 |
+| Avg ataques de oponente sofridos | 0,86 | 2,54 |
+| Avg descartes forçados sofridos | 1,10 | 2,60 |
+| Avg dano/perda-de-vida proxy total | 63,57 | 48,90 |
+
+Mesma correção aplicada de forma idêntica no Ur-Dragon e no Hei Bai —
+ver `checklist-oraculo.md` de cada deck.
+
 ## Comparativo antes/depois das extensões de resiliência desta sessão — 2026-09-20
 
 **Gatilho:** usuário pediu o mesmo comparativo antes/depois já feito

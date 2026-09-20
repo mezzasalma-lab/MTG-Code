@@ -1610,6 +1610,15 @@ def upkeep_step(state: GameState):
 
 INTERACTION_SETUP_TURNS = 2
 
+NUM_OPPONENTS = 3
+# Achado real do usuario 2026-09-20 (Regra #6 do CLAUDE.md -- bug de
+# orquestracao de turno): board wipe e' sorcery, main phase de UM
+# oponente; ataque vem de criatura em campo DAQUELE MESMO oponente --
+# se o wipe for simetrico, ele nao ataca no mesmo turno ("nao ha
+# ataques normalmente nos turnos em que ha wipes"). Mesma convencao
+# `NUM_OPPONENTS=3` ja' estabelecida no Megatron/Ur-Dragon (mesa de 4)
+# -- ver `try_smart_opponent_turn`.
+
 INTERACTION_ENGINE_PRIORITY = [
     "Sanctum of All",
     "Elesh Norn, Mother of Machines",
@@ -1789,24 +1798,39 @@ def try_smart_opponent_graveyard_snipe(state: GameState) -> Optional[str]:
     return target
 
 
+def try_smart_opponent_turn(state: GameState):
+    """Simula O TURNO DE UM oponente dentro da rodada entre os meus
+    turnos -- achado real do usuario 2026-09-20 (Regra #6 do CLAUDE.md):
+    board wipe e' sorcery, main phase de UM oponente especifico; ataque
+    vem de criatura em campo DAQUELE MESMO oponente. Se o wipe for
+    simetrico, as criaturas dele tambem morrem, entao ele nao ataca
+    NESSE MESMO turno. Wipe e ataque sao mutuamente exclusivos dentro
+    do turno do MESMO oponente -- mas um wipe de um oponente ANTERIOR
+    na rodada continua afetando corretamente o ataque de um oponente
+    POSTERIOR na MESMA rodada. Mesmo padrao do Megatron/Ur-Dragon."""
+    wiped = try_smart_opponent_wipe(state)
+    if not wiped:
+        try_smart_opponent_attack(state)
+    try_smart_opponent_graveyard_wipe(state)
+    try_smart_opponent_graveyard_snipe(state)
+    try_smart_opponent_removal(state)
+    try_smart_opponent_discard(state)
+
+
 def simulate_one_with_interaction(seed: int, turns: int = 8):
-    """Mesmo goldfish de `simulate_one`, mas com as 6 categorias de
-    interacao rodando a cada turno (wipe -> graveyard wipe ->
-    graveyard snipe -> remocao -> ataque -> discard). Counterspell (7a
-    categoria) chamada de dentro de `cast_card`. NUNCA chamado por
-    `run_batch`/`simulate_one` padrao."""
+    """Mesmo goldfish de `simulate_one`, mas com `NUM_OPPONENTS` turnos
+    de oponente de verdade simulados (`try_smart_opponent_turn`) a cada
+    rodada entre os meus turnos. Counterspell (7a categoria) chamada de
+    dentro de `cast_card`. NUNCA chamado por `run_batch`/`simulate_one`
+    padrao."""
     rng = random.Random(seed)
     hand, lib, mulls = mulligan(rng)
     state = GameState(hand=hand, library=lib, mulligans=mulls,
                        interaction_rng=random.Random(seed + 999_999))
     for t in range(turns):
         play_turn(state, is_first_turn=(t == 0), on_play=True)
-        try_smart_opponent_wipe(state)
-        try_smart_opponent_graveyard_wipe(state)
-        try_smart_opponent_graveyard_snipe(state)
-        try_smart_opponent_removal(state)
-        try_smart_opponent_attack(state)
-        try_smart_opponent_discard(state)
+        for _ in range(NUM_OPPONENTS):
+            try_smart_opponent_turn(state)
     return state
 
 

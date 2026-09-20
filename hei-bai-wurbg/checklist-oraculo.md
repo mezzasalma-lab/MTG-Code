@@ -1,5 +1,36 @@
 # Checklist cláusula-a-cláusula — Hei Bai, Forest Guardian
 
+## Bug real de orquestração de turno: wipe e ataque no mesmo turno de oponente — 2026-09-20
+
+**Gatilho:** mesmo achado do usuário aplicado ao Megatron primeiro —
+board wipe é sorcery (main phase de UM oponente), ataque vem de
+criatura em campo DAQUELE MESMO oponente. Se o wipe for simétrico, ele
+não ataca no mesmo turno. Regra #6 do CLAUDE.md. Raciocínio e
+validação completos em `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Corrigido:** `try_smart_opponent_turn()` simula o turno de 1 oponente
+por vez (`NUM_OPPONENTS = 3` por rodada, nova constante, mesma
+convenção do Megatron/Ur-Dragon), wipe e ataque mutuamente exclusivos
+dentro do MESMO turno de oponente.
+
+**Validação:** teste dirigido (2000 seeds, exclusão mútua 100%) +
+regressão de 20.000 partidas, 0 exceções + modo padrão intocado.
+
+**Resultado (batch 2000 jogos mesma seed):**
+
+| Métrica | Modelo antigo (1 rolagem/rodada) | Modelo novo (3 turnos/rodada) |
+|---|---|---|
+| Avg board wipes sofridos | 0,74 | 1,59 |
+| Graveyard wipe sofrido (partidas) | 48,8% | 79,6% |
+| Avg remoções inteligentes sofridas | 0,99 | 1,46 |
+| Avg dano proxy total | 37,72 | 3,14 |
+
+Queda AINDA mais acentuada que o Ur-Dragon (37,72→3,14, ~8% do valor
+anterior) — Elesh Norn/Sanctum of All multiplicam praticamente todo o
+board, e com board wipe agora disparando em quase 80% das partidas (em
+vez de ~49%), o motor "que se realimenta" raramente sobrevive intacto
+até o fim.
+
 ## Modo de resiliência portado do Megatron/Ur-Dragon (6 categorias + counterspell) — 2026-09-20
 
 **Gatilho:** usuário pediu pra implementar mesmo assim, depois de eu

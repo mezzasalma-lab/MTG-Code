@@ -4,6 +4,31 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Bug de orquestração de turno: wipe e ataque no mesmo turno de oponente — 2026-09-20
+
+**Gatilho:** usuário apontou que board wipe é sorcery (main phase) e
+ataque vem de criatura — se o wipe for simétrico, o mesmo oponente não
+ataca no mesmo turno em que wipou. Achado real de Regra #6 (bug de
+orquestração, não pego em auditoria carta-a-carta). Detalhes técnicos
+completos em `checklist-oraculo.md`.
+
+**Corrigido:** `try_smart_opponent_turn()` simula o turno de 1 oponente
+por vez (3 por rodada, `NUM_OPPONENTS`), com wipe e ataque agora
+mutuamente exclusivos dentro do MESMO turno de oponente — mas o efeito
+do wipe continua valendo pro ataque de um oponente seguinte na mesma
+rodada.
+
+**Resultado (A/B mesma seed, modelo antigo vs. novo):** dano proxy no
+modo resiliência 63,57→48,90 (mais pressão real, já que agora são 3
+rolagens independentes por rodada em vez de 1). Mesma correção
+aplicada no Ur-Dragon e Hei Bai.
+
+**Validação:** teste dirigido (2000 seeds, exclusão mútua confirmada
+100%) + regressão de 20.000 partidas, 0 exceções + modo padrão
+confirmado intocado.
+
+---
+
 ## Comparativo antes/depois das extensões de resiliência desta sessão — 2026-09-20
 
 **Gatilho:** mesmo comparativo já feito pro Ur-Dragon e Hei Bai, usando

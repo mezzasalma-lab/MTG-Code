@@ -3296,20 +3296,46 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     return states
 
 
+def try_smart_opponent_turn(state: GameState):
+    """Simula O TURNO DE UM oponente dentro da rodada entre os meus
+    turnos -- achado real do usuario 2026-09-20 (Regra #6 do CLAUDE.md,
+    bug de orquestracao de turno que auditoria carta-a-carta nao pega):
+    a versao anterior rolava as 6 categorias JUNTAS 1x por turno MEU,
+    como se fossem parte de um unico "pior turno possivel" -- mas board
+    wipe e' sorcery, conjurado na main phase de UM oponente especifico,
+    e ataque vem de criatura em campo DAQUELE MESMO oponente. Se o wipe
+    for simetrico, as criaturas dele tambem morrem, entao ele nao ataca
+    NESSE MESMO turno -- "nao ha ataques normalmente nos turnos em que
+    ha wipes" (citacao direta do usuario). Corrigido: wipe e ataque
+    agora sao MUTUAMENTE EXCLUSIVOS dentro do turno do MESMO oponente.
+
+    Chamada `NUM_OPPONENTS` vezes por rodada (uma por oponente de
+    verdade, mesma premissa de mesa de 4 ja' documentada em
+    `NUM_OPPONENTS`) -- um wipe de um oponente ANTERIOR na rodada
+    continua afetando corretamente o ataque de um oponente POSTERIOR
+    na MESMA rodada (chamadas em sequencia, usam o `state` atual --
+    meus bloqueadores ja' estao mortos de verdade quando o proximo
+    oponente ataca, sem precisar fingir isso). As outras categorias
+    (graveyard wipe/snipe, remocao, discard) continuam podendo
+    coexistir com wipe OU ataque no mesmo turno de oponente -- um
+    jogador real pode conjurar mais de 1 spell de main phase no mesmo
+    turno se tiver mana (ex.: remocao pontual E discard), isso nao e'
+    exclusivo entre si."""
+    wiped = try_smart_opponent_wipe(state)
+    if not wiped:
+        try_smart_opponent_attack(state)
+    try_smart_opponent_graveyard_wipe(state)
+    try_smart_opponent_graveyard_snipe(state)
+    try_smart_opponent_removal(state)
+    try_smart_opponent_discard(state)
+
+
 def simulate_one_with_interaction(seed: int, turns: int = 8):
-    """Mesmo goldfish de `simulate_one`, mas com `try_smart_opponent_
-    wipe`/`try_smart_opponent_graveyard_wipe`/`try_smart_opponent_
-    graveyard_snipe`/`try_smart_opponent_removal`/`try_smart_opponent_
-    attack`/`try_smart_opponent_discard` rodando a cada turno -- ver
-    comentario da secao 'Modo opcional de resiliencia' acima. As 6
-    rolam independente (podem disparar todas no mesmo turno, mesmo
-    modelo do Archidekt de multiplas categorias de interacao por
-    turno). Ordem: wipe de criatura -> graveyard wipe -> graveyard
-    snipe -> remocao -> ataque -> discard -- de proposito, pra que
-    criaturas mortas pelo wipe (vao pro cemiterio via `sacrifice()`)
-    fiquem elegiveis pro graveyard hate NO MESMO TURNO ("pior turno
-    possivel" combinado, nao exigencia de regra real -- as categorias
-    sao instancias hipoteticas independentes).
+    """Mesmo goldfish de `simulate_one`, mas com `NUM_OPPONENTS` turnos
+    de oponente de verdade simulados (`try_smart_opponent_turn`) a cada
+    rodada entre os meus turnos -- ver comentario da secao 'Modo
+    opcional de resiliencia' acima e de `try_smart_opponent_turn` pro
+    achado real que motivou essa reestruturacao (2026-09-20).
 
     A 7a categoria (`try_smart_opponent_counter`) NAO mora neste loop --
     counterspell so' faz sentido no exato momento em que eu conjuro
@@ -3331,23 +3357,15 @@ def simulate_one_with_interaction(seed: int, turns: int = 8):
     is_first = True
     while turns_played < turns:
         play_turn(state, is_first_turn=is_first, on_play=True)
-        try_smart_opponent_wipe(state)
-        try_smart_opponent_graveyard_wipe(state)
-        try_smart_opponent_graveyard_snipe(state)
-        try_smart_opponent_removal(state)
-        try_smart_opponent_attack(state)
-        try_smart_opponent_discard(state)
+        for _ in range(NUM_OPPONENTS):
+            try_smart_opponent_turn(state)
         is_first = False
         turns_played += 1
         if state.extra_turns_pending > 0:
             state.extra_turns_pending -= 1
             play_turn(state, is_first_turn=False, on_play=True)
-            try_smart_opponent_wipe(state)
-            try_smart_opponent_graveyard_wipe(state)
-            try_smart_opponent_graveyard_snipe(state)
-            try_smart_opponent_removal(state)
-            try_smart_opponent_attack(state)
-            try_smart_opponent_discard(state)
+            for _ in range(NUM_OPPONENTS):
+                try_smart_opponent_turn(state)
             turns_played += 1
     return state
 

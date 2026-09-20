@@ -1,5 +1,40 @@
 # Checklist cláusula-a-cláusula — The Ur-Dragon (`urdragon_goldfish_v1.py`)
 
+## Bug real de orquestração de turno: wipe e ataque no mesmo turno de oponente — 2026-09-20
+
+**Gatilho:** mesmo achado do usuário aplicado ao Megatron primeiro —
+board wipe é sorcery (main phase de UM oponente), ataque vem de
+criatura em campo DAQUELE MESMO oponente. Se o wipe for simétrico, ele
+não ataca no mesmo turno. Regra #6 do CLAUDE.md (bug de orquestração,
+não pego em auditoria carta-a-carta). Raciocínio e validação completos
+em `megatron-tyrant-mardu/checklist-oraculo.md` — aqui só o resultado
+específico deste deck.
+
+**Corrigido:** `try_smart_opponent_turn()` simula o turno de 1 oponente
+por vez (`NUM_OPPONENTS = 3` por rodada, nova constante — este deck
+não tinha essa convenção antes, adotada agora igual ao Megatron), wipe
+e ataque mutuamente exclusivos dentro do MESMO turno de oponente.
+
+**Validação:** teste dirigido (2000 seeds, exclusão mútua 100%) +
+regressão de 20.000 partidas, 0 exceções + modo padrão confirmado
+intocado (nenhuma função compartilhada tocada).
+
+**Resultado (batch 2000 jogos mesma seed):**
+
+| Métrica | Modelo antigo (1 rolagem/rodada) | Modelo novo (3 turnos/rodada) |
+|---|---|---|
+| Avg board wipes sofridos | 0,43 | 0,87 |
+| Graveyard wipe sofrido (partidas) | 41,3% | 72,2% |
+| Avg remoções inteligentes sofridas | 0,83 | 1,26 |
+| Nunca resolveu em 8 turnos | 31,6% | 45,0% |
+| Avg dano proxy total | 310,33 | 43,29 |
+
+Queda MUITO mais acentuada que a do Megatron (310→43, ~14% do valor
+anterior) — este deck depende inteiramente da comandante resolver E
+atacar pra qualquer dano real, e com 3 turnos de oponente reais por
+rodada em vez de 1 rolagem agregada, a chance dela nunca resolver
+subiu de 31,6% pra 45,0%.
+
 ## Modo de resiliência portado do Megatron (6 categorias de interação de oponente) — 2026-09-20
 
 **Gatilho:** usuário pediu pra avaliar o esforço de portar o modo de

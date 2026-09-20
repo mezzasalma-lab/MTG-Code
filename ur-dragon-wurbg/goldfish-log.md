@@ -4,6 +4,27 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Bug de orquestração de turno: wipe e ataque no mesmo turno de oponente — 2026-09-20
+
+**Gatilho:** mesmo achado do usuário aplicado no Megatron (board wipe é
+sorcery, ataque vem de criatura — se simétrico, o mesmo oponente não
+ataca no turno em que wipou). Detalhes em `checklist-oraculo.md` e
+`megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Corrigido:** `try_smart_opponent_turn()` simula 3 turnos de oponente
+de verdade por rodada, wipe e ataque mutuamente exclusivos no mesmo
+turno.
+
+**Resultado (A/B mesma seed):** dano proxy no modo resiliência
+310,33→43,29 — queda bem mais acentuada que o Megatron, porque este
+deck depende inteiramente da comandante resolver E atacar; nunca
+resolver em 8 turnos subiu de 31,6%→45,0%.
+
+**Validação:** teste dirigido (exclusão mútua 100%) + regressão de
+20.000 partidas, 0 exceções + modo padrão intocado.
+
+---
+
 ## Modo de resiliência portado do Megatron — 2026-09-20
 
 **Gatilho:** usuário pediu pra portar o modo de resiliência (6
