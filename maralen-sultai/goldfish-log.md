@@ -4,6 +4,34 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
+
+**Gatilho:** "Agora vamos atualizar o simulador da Maralen, mantendo
+todos os cuidados que já estamos usando" — mesmo modo já validado em
+Megatron/Ur-Dragon/Hei Bai/Edgar Markov/Ulalek/Toph/Prismatic Bridge,
+este deck nunca tinha nenhuma extensão de resiliência antes. Detalhes
+técnicos completos em `checklist-oraculo.md`.
+
+**Particularidade real deste deck**: tokens de Elfo/Fada são contadores
+agregados, não entradas nomeadas em `state.battlefield` — o wipe de
+criatura precisou de tratamento especial pra zerar esses contadores
+também (são criaturas reais na mesa). 2 bugs reais corrigidos durante o
+porte: `leave_battlefield()` não tratava token corretamente (CR 111.7,
+nunca exercitado antes por falta de call site real) e a taxa de recast
+do comandante não incrementava num cast counterado (CR 903.10a).
+
+**Resultado (A/B 2000 jogos mesma seed_base, modo padrão vs.
+resiliência):** Maralen nunca resolvida em 8 turnos sobe de 1,8% pra
+4,4%. Avg counterspells sofridos: 0,14. Avg board wipes: 0,83, artifact:
+0,16, enchantment: 0,17. Avg remoções inteligentes: 0,65 (Priest of
+Titania o alvo mais removido, 11,7%). Vida final média: 35,63 (de 40).
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `13178fc` (3.000
+seeds) + regressão de 20.000 partidas em modo resiliência, 0 exceções +
+7 testes dirigidos.
+
+---
+
 ### Auditoria oráculo-por-oráculo completa (extensão da sessão de 6 decks) — 2026-09-13
 
 **Gatilho:** continuação da auditoria "compile TUDO" aplicada a Azula/

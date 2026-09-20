@@ -1,5 +1,87 @@
 # Checklist cláusula-a-cláusula — Maralen, Fae Ascendant
 
+## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
+
+**Gatilho:** usuário pediu direto, mesmo protocolo já aplicado a
+Megatron/Ur-Dragon/Hei Bai/Edgar Markov/Ulalek/Toph/Prismatic Bridge
+nesta mesma sessão: *"Agora vamos atualizar o simulador da Maralen,
+mantendo todos os cuidados que já estamos usando."* Este deck nunca
+tinha nenhuma extensão de resiliência antes — porte completo do zero,
+incorporando direto o design FINAL já validado nos outros 7 (não
+precisou repetir o histórico de correção de rolagens independentes de
+wipe nem o gate de atenção do oponente — ambos entraram já corretos).
+
+**Implementadas as 7 categorias padrão:** ataque sem bloqueio, remoção
+curada (`INTERACTION_ENGINE_PRIORITY`), discard aleatório, board wipe
+(criatura/artefato/encantamento com escolha ponderada, pesos
+0.4/0.2/0.15), graveyard hate (mass exile 1x/partida + exílio de carta
+única repetível), counterspell (mira só o cast da própria Maralen) —
+com `state.wiped_this_round` + `POST_WIPE_ATTACK_HASTE_FACTOR` (wipe
+simétrico suprime ataque na rodada inteira, reduzido não zerado) e
+`OPPONENT_ATTENTION_CHANCE = 1/NUM_OPPONENTS` (gate de atenção do
+oponente) desde a primeira versão.
+
+**Achado real específico deste deck (nenhum dos outros 7 tinha essa
+particularidade):** Elfo/Fada TOKEN não vive como entrada nomeada em
+`state.battlefield` — são contadores agregados (`state.elf_tokens`/
+`state.faerie_tokens`, documentado desde a criação do arquivo). Um
+"destroy all creatures" de verdade acerta esses tokens também (são
+criaturas reais na mesa), então `try_smart_opponent_wipe` zera os 2
+contadores quando o tipo escolhido é "creature" — não só remove as
+entradas nomeadas de `state.battlefield` como nos outros decks.
+"Mercenary Token" (Black Market Connections) é o único token deste deck
+que vive nomeado em `state.battlefield` — passa pelo caminho normal.
+
+**Bug real encontrado e corrigido durante o porte (não pré-existente em
+uso — nunca exercitado antes):** `leave_battlefield()` mandava QUALQUER
+permanente pro cemitério incondicionalmente, incluindo token. O único
+call site pré-existente (Champion do Mistbind Clique) nunca passava um
+token de verdade, então o gap nunca disparava — mas `remove_permanent()`
+do modo de resiliência agora pode atingir "Mercenary Token" de verdade.
+Corrigido: token (nome terminado em "Token") nunca vai pro cemitério
+(CR 111.7 — deixa de existir).
+
+**Achado de regra real (CR 903.10a) corrigido durante a integração do
+counterspell:** a taxa de recast do comandante (`commander_cast_count`)
+tem que aumentar toda vez que ela é CONJURADA, resolvendo ou não — mas
+`enter_battlefield()` só incrementava esse contador no caminho de
+sucesso (nunca roda se a conjuração for contra-atacada). Corrigido
+incrementando manualmente no ramo "foi counterada" de `main_phase`
+(testado diretamente: cast contra-atacado no turno 5 incrementa o
+contador de 0 pra 1, igual a um cast bem-sucedido).
+
+**Achado de regra real específico deste deck:** a face de TRÁS de
+Growing Rites of Itlimoc (Itlimoc, Cradle of the Sun, pós-transformação)
+é TERRENO, não encantamento (confirmado via Scryfall: "Legendary
+Enchantment // Legendary Land"). `CARD_DB` fixa `ctype="enchantment"`
+pra carta inteira (só a face da frente é conjurável da mão), mas depois
+de `state.itlimoc_transformed=True` a permanente real na mesa é um
+terreno — excluída explicitamente dos candidatos de wipe de
+encantamento quando já transformou (testado: 500/500 sem alvo
+pós-transformação, 500/500 alvo válido pré-transformação).
+
+Maralen confirmada via Scryfall como Legendary Creature — Elf Faerie
+Noble pura (nunca artefato/encantamento), então nunca é alvo direto dos
+2 tipos novos de wipe — só do wipe de criatura (roteada corretamente
+pra zona de comando via CR 903.9, testado 500/500).
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `13178fc` (3.000
+seeds) + regressão de 20.000 partidas em modo resiliência, 0 exceções +
+7 testes dirigidos (no máximo 1 tipo de wipe por chamada; distribuição
+ponderada dentro de 3pp do esperado; wipe de criatura zera contadores
+de token; Itlimoc transformado excluído do wipe de encantamento;
+Maralen roteada pra zona de comando; Mercenary Token cessa de existir
+em vez de ir pro cemitério; cast counterado incrementa a taxa).
+
+**Resultado (A/B 2000 jogos mesma seed_base, modo padrão vs. modo
+resiliência):** Maralen nunca resolvida em 8 turnos sobe de 1,8% (modo
+padrão) pra 4,4% (modo resiliência, incluindo counterspell). Avg
+counterspells sofridos: 0,14. Avg board wipes: 0,83, artifact wipes:
+0,16, enchantment wipes: 0,17. 38,1% dos jogos sofrem graveyard wipe
+(no máximo 1x). Avg remoções inteligentes: 0,65 — Priest of Titania
+(11,7%) e Cryptolith Rite (8,7%) são os alvos mais removidos entre as
+peças curadas. Vida final média: 35,63 (de 40).
+
 ## Achado real 2026-09-14 (usuário perguntou se Roaming Throne está certa em todos os decks onde aparece) + bug de hang de verdade achado ao validar
 
 Este deck já tinha a arquitetura mais madura da sessão pra Roaming
