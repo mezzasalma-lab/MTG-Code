@@ -4,6 +4,29 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
+
+**Gatilho:** "Temos que incluir remoções de artefatos e encantamentos
+tb: Vandalblast, Farewell, Austere Command, etc…" Detalhes técnicos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Implementado direto no design FINAL** (unificado — 1 rolagem "algum
+wipe acontece" + escolha ponderada de 1 tipo só, pesos 0.4/0.2/0.15),
+usando os checadores dinâmicos já existentes (`is_creature_type`/
+`is_artifact`/`is_enchantment`, todos `(p, state)` — respeitam earthbend
+real, Mycosynth Lattice, Liquimetal).
+
+**Resultado (A/B 2000 jogos mesma seed_base):** % de jogos com pelo
+menos 1 wipe de qualquer tipo sobe de 35,0% pra 56,2% (antes = commit
+`ed65d72`, só wipe de criatura). Avg wipes totais por jogo: 0,416 →
+0,793. 20,2% dos jogos "depois" sofrem pelo menos 1 artifact wipe,
+8,6% pelo menos 1 enchantment wipe.
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `ed65d72`
+(2.000 seeds) + regressão de 20.000 partidas, 0 exceções.
+
+---
+
 ## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
 
 **Gatilho:** "Agora repita este processo para a Toph" — mesmo modo já

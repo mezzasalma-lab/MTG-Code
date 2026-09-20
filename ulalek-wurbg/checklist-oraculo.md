@@ -1,5 +1,45 @@
 # Checklist cláusula-a-cláusula — Ulalek, Fused Atrocity
 
+## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
+
+**Gatilho:** "Temos que incluir remoções de artefatos e encantamentos
+tb: Vandalblast, Farewell, Austere Command, etc…" — raciocínio completo
+(e a correção de design que se seguiu no mesmo dia) em
+`megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Implementado direto no design FINAL** (este deck recebeu a extensão
+DEPOIS da correção de design, então nunca passou pela versão com
+rolagens independentes): `try_smart_opponent_wipe()` único — 1 rolagem
+"algum wipe acontece" (`chance = interaction_chance() *
+TOTAL_WIPE_CHANCE_FACTOR`, soma dos 3 pesos = 0.75) seguida de escolha
+ponderada de 1 TIPO só (`WIPE_TYPE_WEIGHTS = {"creature": 0.4,
+"artifact": 0.2, "enchantment": 0.15}`), restrita aos tipos com alvo
+legal em campo. Ulalek nunca é artefato nem encantamento (Legendary
+Creature — Eldrazi, confirmado via Scryfall), então nunca é alvo
+direto.
+
+**Achado real específico deste deck:** `ARTIFACT_ISH` (novo, não
+existia antes — só `CREATURE_ISH`) inclui "artifact_creature" —
+Roaming Throne (dobrador de gatilho, motor central do deck) e
+Liberator, Urza's Battlethopter são alvos legais de verdade de um wipe
+de artefato, não só corpos isolados. Também relevantes: Echoes of
+Eternity, Kozilek's Unsealing, Rhystic Study (encantamentos reais e
+motores de valor). `state.wiped_this_round` setado se o tipo escolhido
+não for criatura mas algum alvo destruído também for criatura de
+verdade (cobre Roaming Throne/Liberator perdidos por artifact wipe).
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `348fb6d` (2.000
+seeds) + regressão de 20.000 partidas em modo resiliência, 0 exceções +
+testes dirigidos (no máximo 1 tipo por chamada; distribuição ponderada
+correta).
+
+**Resultado (A/B 2000 jogos mesma seed_base):** % de jogos com pelo
+menos 1 wipe de qualquer tipo sobe de 36,7% pra 61,6% (antes = commit
+`348fb6d`, só wipe de criatura). Avg wipes totais por jogo: 0,419 →
+0,843. 23,1% dos jogos "depois" sofrem pelo menos 1 artifact wipe
+(inclui perda do Roaming Throne quando escolhido), 5,8% pelo menos 1
+enchantment wipe.
+
 ## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
 
 **Gatilho:** usuário pediu direto, mesmo protocolo já aplicado a

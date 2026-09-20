@@ -1,5 +1,45 @@
 # Checklist cláusula-a-cláusula — Edgar Markov
 
+## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
+
+**Gatilho:** "Temos que incluir remoções de artefatos e encantamentos
+tb: Vandalblast, Farewell, Austere Command, etc…" — até esta rodada, a
+única categoria de "board wipe" do modo de resiliência era "destroy all
+creatures". Raciocínio completo (e a correção de design que se seguiu
+no mesmo dia) em `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Implementado direto no design FINAL** (este deck recebeu a extensão
+DEPOIS da correção de design nos outros 3, então nunca passou pela
+versão com rolagens independentes): `try_smart_opponent_wipe()` único —
+1 rolagem "algum wipe acontece" (`chance = interaction_chance() *
+TOTAL_WIPE_CHANCE_FACTOR`, soma dos 3 pesos = 0.75) seguida de escolha
+ponderada de 1 TIPO só (`WIPE_TYPE_WEIGHTS = {"creature": 0.4,
+"artifact": 0.2, "enchantment": 0.15}`), restrita aos tipos com alvo
+legal em campo. Delega pro mesmo `remove_permanent(state, log, n,
+source=...)` já usado por todas as outras categorias (nota: assinatura
+com `log` na 2ª posição, diferente da maioria dos outros decks). Edgar
+Markov nunca é artefato nem encantamento (Legendary Creature — Vampire
+Knight, confirmado via Scryfall), então nunca é alvo direto. Vários
+encantamentos reais e motores de valor de verdade neste deck
+(Caretaker's Talent, Black Market Connections, Anointed Procession,
+Smothering Tithe, The Meathook Massacre) agora alcançáveis por wipe de
+encantamento. `state.wiped_this_round` setado se o tipo escolhido não
+for criatura mas algum permanente destruído também for criatura de
+verdade (nenhuma carta desta lista é híbrida hoje — `is_creature`/
+`is_artifact`/`is_enchantment` mutuamente exclusivas, `Card.type` é uma
+string única sem híbrido — checagem mantida por robustez).
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `8faa943` (2.000
+seeds) + regressão de 20.000 partidas em modo resiliência, 0 exceções +
+testes dirigidos (no máximo 1 tipo por chamada, 0 violações; distribuição
+ponderada bate com os pesos relativos dentro de 3pp).
+
+**Resultado (A/B 2000 jogos mesma seed_base):** % de jogos com pelo
+menos 1 wipe de qualquer tipo sobe de 40,8% pra 65,5% (antes = commit
+`8faa943`, só wipe de criatura). Avg wipes totais por jogo: 0,477 →
+0,949. 15,7% dos jogos "depois" sofrem pelo menos 1 artifact wipe,
+17,4% pelo menos 1 enchantment wipe.
+
 ## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
 
 **Gatilho:** usuário pediu direto, depois de já ter validado o modo em

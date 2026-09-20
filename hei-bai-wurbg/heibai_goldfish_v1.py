@@ -428,6 +428,10 @@ def is_enchantment_card(name: str) -> bool:
     return CARD_DB[name].ctype in ("enchantment", "enchantment_creature")
 
 
+def is_artifact_card(name: str) -> bool:
+    return CARD_DB[name].ctype == "artifact"
+
+
 def is_shrine(name: str) -> bool:
     return "shrine" in CARD_DB[name].tags
 
@@ -500,6 +504,10 @@ class GameState:
     life: int = 40
     smart_wipes_total: int = 0
     smart_wipe_log: list = field(default_factory=list)
+    smart_artifact_wipes_total: int = 0
+    smart_artifact_wipe_log: list = field(default_factory=list)
+    smart_enchantment_wipes_total: int = 0
+    smart_enchantment_wipe_log: list = field(default_factory=list)
     smart_removals_total: int = 0
     smart_removal_log: list = field(default_factory=list)
     smart_attacks_taken_total: int = 0
@@ -1674,24 +1682,88 @@ def interaction_chance(state: GameState) -> float:
     return min(0.10 + 0.03 * board_impact, 0.75)
 
 
+def is_creature_now(state: GameState, name: str) -> bool:
+    """`is_creature_card` estatico, respeitando a excecao dinamica real
+    do Enduring Vitality: uma vez ja' retornada como enchantment puro,
+    fica FORA do pool de criatura (nao e' mais criatura de verdade,
+    mesmo `is_creature_card()` estatico dizendo que sim). Usado por
+    `try_smart_opponent_wipe` abaixo pra decidir corretamente candidatos
+    de criatura e se um wipe de outro tipo tambem derrubou uma criatura
+    de verdade (`wiped_this_round`)."""
+    return is_creature_card(name) and not (name == "Enduring Vitality" and state.enduring_vitality_enchantment_only)
+
+
+BOARD_WIPE_CHANCE_FACTOR = 0.4
+ARTIFACT_WIPE_CHANCE_FACTOR = 0.2
+ENCHANTMENT_WIPE_CHANCE_FACTOR = 0.15
+# Pesos relativos de cada TIPO de sweeper (criatura/artefato/
+# encantamento) -- nao sao 3 chances INDEPENDENTES (achado real do
+# usuario 2026-09-20, mesma correcao feita primeiro no Megatron: "Vandalblast,
+# Farewell, Austere Command, etc" tem que existir, MAS "Obviamente tem
+# que ter uma alternancia de remocoes, aleatoria, ate pq wipes de
+# criaturas sao muito mais comuns que remocao de artefatos e
+# encantamentos"). Um oponente real, num turno so', conjura NO MAXIMO 1
+# sweeper -- nunca "destroy all creatures" E "destroy all artifacts" no
+# mesmo turno. `try_smart_opponent_wipe` rola 1x se ALGUM wipe acontece
+# (chance = soma dos 3 pesos) e SO' DEPOIS escolhe qual tipo, com
+# escolha ponderada pelos mesmos 3 fatores. Wipe de encantamento e'
+# mais relevante neste deck do que na maioria (Hei Bai roda varios
+# encantamentos reais, incluindo enchantment creatures).
+WIPE_TYPE_WEIGHTS = {
+    "creature": BOARD_WIPE_CHANCE_FACTOR,
+    "artifact": ARTIFACT_WIPE_CHANCE_FACTOR,
+    "enchantment": ENCHANTMENT_WIPE_CHANCE_FACTOR,
+}
+TOTAL_WIPE_CHANCE_FACTOR = sum(WIPE_TYPE_WEIGHTS.values())
+
+
 def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
-    """Board wipe (destroy all creatures). Enduring Vitality, uma vez
-    ja' retornada como enchantment puro, fica FORA do pool (nao e' mais
-    criatura de verdade, mesmo `is_creature_card()` estatico dizendo que
-    sim -- ver nota da secao acima)."""
+    """Board wipe ("destroy all creatures"/"destroy all artifacts"/
+    "destroy all enchantments"). Hei Bai nunca e' artefato/encantamento
+    (Legendary Creature -- Bear Spirit, confirmado via Scryfall), entao
+    nunca e' alvo dos 2 tipos novos.
+
+    Design de 2 passos (nao 3 rolagens independentes -- ver comentario
+    de `WIPE_TYPE_WEIGHTS` acima): 1) rola 1x se ALGUM wipe acontece
+    esse turno de oponente, chance = `interaction_chance() *
+    TOTAL_WIPE_CHANCE_FACTOR`; 2) SO' se isso disparar, escolhe qual
+    TIPO de sweeper via escolha ponderada (`state.interaction_rng.
+    choices`) restrita aos tipos que tem pelo menos 1 alvo legal em
+    campo. `is_creature_now` (excecao do Enduring Vitality) e' usado
+    tanto pros candidatos de criatura quanto pro calculo de `wiped_
+    this_round` quando um wipe de artefato/encantamento tambem derruba
+    uma enchantment creature de verdade (`is_enchantment_card` ja'
+    inclui "enchantment_creature", incluindo Enduring Vitality mesmo
+    quando ela ja' voltou so' como enchantment -- isso nao afeta seu
+    tipo de encantamento, so' o de criatura)."""
     if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
         return None
-    targets = [n for n in state.battlefield if is_creature_card(n)
-               and not (n == "Enduring Vitality" and state.enduring_vitality_enchantment_only)]
-    if not targets:
+    if state.interaction_rng.random() >= interaction_chance(state) * TOTAL_WIPE_CHANCE_FACTOR:
         return None
-    if state.interaction_rng.random() >= interaction_chance(state) * 0.4:
+    candidates = {
+        "creature": [n for n in state.battlefield if is_creature_now(state, n)],
+        "artifact": [n for n in state.battlefield if is_artifact_card(n)],
+        "enchantment": [n for n in state.battlefield if is_enchantment_card(n)],
+    }
+    available = [t for t in candidates if candidates[t]]
+    if not available:
         return None
+    wipe_type = state.interaction_rng.choices(available, weights=[WIPE_TYPE_WEIGHTS[t] for t in available])[0]
+    targets = candidates[wipe_type]
+    hit_creature = any(is_creature_now(state, n) for n in targets)
     for n in targets:
         remove_permanent(state, n)
-    state.smart_wipes_total += 1
-    state.smart_wipe_log.append((state.turn, targets))
-    state.wiped_this_round = True
+    if wipe_type == "creature":
+        state.smart_wipes_total += 1
+        state.smart_wipe_log.append((state.turn, targets))
+    elif wipe_type == "artifact":
+        state.smart_artifact_wipes_total += 1
+        state.smart_artifact_wipe_log.append((state.turn, targets))
+    else:
+        state.smart_enchantment_wipes_total += 1
+        state.smart_enchantment_wipe_log.append((state.turn, targets))
+    if hit_creature:
+        state.wiped_this_round = True
     return targets
 
 
@@ -1905,6 +1977,8 @@ def run_batch_with_interaction(n: int, seed_base: int, turns: int = 8):
     print(f"  -- Turno medio de conjuracao QUE RESOLVEU: {avg(cmd_cast):.2f} | "
           f"nunca resolveu em {turns} turnos: {100*(n-len(cmd_cast))/n:.1f}%")
     print(f"Avg board wipes sofridos: {avg([s.smart_wipes_total for s in states]):.2f}")
+    print(f"Avg artifact wipes sofridos: {avg([s.smart_artifact_wipes_total for s in states]):.2f}")
+    print(f"Avg enchantment wipes sofridos: {avg([s.smart_enchantment_wipes_total for s in states]):.2f}")
     if sum(len(k) for s in states for _, k in s.smart_wipe_log):
         print(f"  -- Avg criaturas perdidas por wipe (quando dispara): "
               f"{avg([len(k) for s in states for _, k in s.smart_wipe_log]):.2f}")

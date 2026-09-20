@@ -4,6 +4,39 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
+
+**Gatilho:** "Temos que incluir remoções de artefatos e encantamentos
+tb: Vandalblast, Farewell, Austere Command, etc…" Detalhes técnicos
+completos em `checklist-oraculo.md`.
+
+**Achado real:** Megatron é artefato em QUALQUER face (confirmado via
+Scryfall) — um wipe de artefato a alcança mesmo na face Vehicle, ao
+contrário do wipe de criatura (que só a alcança na face Tyrant).
+
+**Correção de design no mesmo dia:** 1ª versão implementou os 3 tipos
+(criatura/artefato/encantamento) como rolagens INDEPENDENTES — usuário
+apontou que isso permite (raramente) 2 sweepers no mesmo turno de
+oponente, irreal, e que os 3 tipos não são igualmente prováveis
+("wipes de criaturas são muito mais comuns"). Redesenhado pra 1 rolagem
+"algum wipe acontece" + escolha ponderada de UM tipo só (pesos
+0.4/0.2/0.15, criatura/artefato/encantamento). Detalhes completos em
+`checklist-oraculo.md`.
+
+**Resultado (A/B 2000 jogos mesma seed_base, design unificado final):**
+% de jogos com pelo menos 1 wipe de qualquer tipo sobe de 35,5% pra
+62,9% (antes = commit `8b84daf`, só wipe de criatura). Avg wipes totais
+por jogo: 0,402 → 0,871. 34,1% dos jogos "depois" sofrem pelo menos 1
+artifact wipe, 5,9% pelo menos 1 enchantment wipe.
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `8b84daf` (3.000
+seeds) + regressão de 20.000 partidas, 0 exceções + 5 testes dirigidos
+confirmando no máximo 1 tipo por chamada, distribuição ponderada
+correta, exceção de face do Megatron, e Blightsteel Colossus (artifact
+creature via tag) tratado corretamente.
+
+---
+
 ## Bug de design: modelo assumia 100% da mesa mirando em mim, sempre — 2026-09-20
 
 **Gatilho:** usuário perguntou direto: *"se sempre for 3 contra 1, aí

@@ -1,5 +1,49 @@
 # Checklist cláusula-a-cláusula — Esika // The Prismatic Bridge
 
+## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
+
+**Gatilho:** "Temos que incluir remoções de artefatos e encantamentos
+tb: Vandalblast, Farewell, Austere Command, etc…" — raciocínio completo
+(e a correção de design que se seguiu no mesmo dia) em
+`megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Implementado direto no design FINAL** (este deck recebeu a extensão
+DEPOIS da correção de design, então nunca passou pela versão com
+rolagens independentes): `try_smart_opponent_wipe(state, log)` único —
+1 rolagem "algum wipe acontece" seguida de escolha ponderada de 1 TIPO
+só (`WIPE_TYPE_WEIGHTS = {"creature": 0.4, "artifact": 0.2,
+"enchantment": 0.15}`), restrita aos tipos com alvo legal em campo
+(`C(n).type == "Creature"/"Artifact"/"Enchantment"`).
+
+**Achado real específico deste deck — o ÚNICO dos 7 onde o wipe alcança
+o comandante:** The Prismatic Bridge É Enchantment de verdade
+(confirmado via Scryfall), então um wipe de ENCANTAMENTO escolhido pela
+rolagem ponderada a atinge — o único dos 3 tipos que faz isso neste
+deck (wipe de criatura e de artefato nunca a alcançam). `remove_
+permanent()` já trata isso corretamente (CR 903.9 — vai pra zona de
+comando, nunca cemitério de verdade) sem precisar de exceção extra
+dentro da função de wipe. The Chain Veil (já em `NONPLANESWALKER_
+ENGINE_PRIORITY`, o maior multiplicador de ativação do deck) é um
+artefato real, alvo legal de wipe de artefato.
+
+**Teste dirigido específico:** confirmado que quando a rolagem escolhe
+"enchantment" e a Bridge está em campo, ela é removida do battlefield,
+`bridge_in_play` vira `False`, e ela NUNCA aparece em `state.graveyard`
+(1.241/1.241 disparos corretamente roteados pra zona de comando em
+3.000 chamadas simuladas).
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `d66e569` (2.000
+seeds) + regressão de 20.000 partidas em modo resiliência, 0 exceções +
+testes dirigidos (no máximo 1 tipo por chamada; distribuição ponderada
+correta; roteamento CR 903.9 da Bridge via wipe de encantamento).
+
+**Resultado (A/B 2000 jogos mesma seed_base):** % de jogos com pelo
+menos 1 wipe de qualquer tipo sobe de 38,7% pra 64,5% (antes = commit
+`d66e569`, só wipe de criatura). Avg wipes totais por jogo: 0,465 →
+0,982. 16,4% dos jogos "depois" sofrem pelo menos 1 artifact wipe,
+27,9% pelo menos 1 enchantment wipe (inclui os casos onde a própria
+Bridge é a vítima).
+
 ## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
 
 **Gatilho:** usuário pediu direto, mesmo protocolo já aplicado a

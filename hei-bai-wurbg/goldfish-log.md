@@ -4,6 +4,32 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
+
+**Gatilho:** "Temos que incluir remoções de artefatos e encantamentos
+tb: Vandalblast, Farewell, Austere Command, etc…" Detalhes técnicos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Correção de design no mesmo dia:** 1ª versão rolava os 3 tipos
+independentemente; usuário apontou o problema ("alternância de
+remoções, aleatória, até pq wipes de criaturas são muito mais comuns")
+— redesenhado pra 1 rolagem "algum wipe acontece" + escolha ponderada
+de UM tipo só (pesos 0.4/0.2/0.15). Detalhes completos em
+`megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Resultado (A/B 2000 jogos mesma seed_base, design unificado final):**
+% de jogos com pelo menos 1 wipe de qualquer tipo sobe de 53,8% pra
+75,2% (antes = commit `8b84daf`, só wipe de criatura). Avg wipes totais
+por jogo: 0,687 → 1,238. 13,1% dos jogos "depois" sofrem pelo menos 1
+artifact wipe, 29,5% pelo menos 1 enchantment wipe.
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `8b84daf` (2.000
+seeds) + regressão de 20.000 partidas, 0 exceções + testes dirigidos
+(no máximo 1 tipo por chamada; distribuição ponderada correta;
+exceção do Enduring Vitality preservada).
+
+---
+
 ## Bug de design: modelo assumia 100% da mesa mirando em mim, sempre — 2026-09-20
 
 **Gatilho:** mesmo achado do usuário aplicado no Megatron — "se sempre

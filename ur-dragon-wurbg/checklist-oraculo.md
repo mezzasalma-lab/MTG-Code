@@ -1,5 +1,56 @@
 # Checklist cláusula-a-cláusula — The Ur-Dragon (`urdragon_goldfish_v1.py`)
 
+## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
+
+**Gatilho:** mesmo achado do usuário aplicado a todos os decks: "Temos
+que incluir remoções de artefatos e encantamentos tb: Vandalblast,
+Farewell, Austere Command, etc…" — até esta rodada, só existia "destroy
+all creatures". Raciocínio completo em
+`megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Implementado (1ª versão, SUPERSEDIDA no mesmo dia):** inicialmente 2
+funções novas com rolagens INDEPENDENTES (`ARTIFACT_WIPE_CHANCE_FACTOR
+= 0.2`, `ENCHANTMENT_WIPE_CHANCE_FACTOR = 0.15`) somadas ao wipe de
+criatura já existente, sem exclusão mútua.
+
+### Correção de design: unificado num único roll + escolha ponderada — 2026-09-20
+
+**Gatilho:** mesma correção do usuário aplicada primeiro no Megatron —
+*"Obviamente tem que ter uma alternância de remoções, aleatória, até pq
+wipes de criaturas são muito mais comuns que remoção de artefatos e
+encantamentos"* — rolagens independentes permitiam (raramente) 2
+sweepers no mesmo turno de oponente, e tratavam os 3 tipos como
+igualmente prováveis. Raciocínio completo do redesign em
+`megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Implementado (final):** `try_smart_opponent_wipe()` único, 2 passos —
+1) rola 1x se ALGUM wipe acontece (`chance = interaction_chance() *
+TOTAL_WIPE_CHANCE_FACTOR`, soma dos 3 pesos = 0.75); 2) SÓ se disparar,
+escolhe 1 TIPO via `state.interaction_rng.choices()` ponderado
+(`WIPE_TYPE_WEIGHTS = {"creature": 0.4, "artifact": 0.2, "enchantment":
+0.15}`), restrito aos tipos com alvo legal em campo. Delega pro mesmo
+`remove_permanent()` de sempre. The Ur-Dragon nunca é artefato nem
+encantamento (Legendary Creature — Dragon Avatar, confirmado via
+Scryfall), então nunca é alvo direto. `ARTIFACT_ISH` já inclui
+"artifact_creature" — Roaming Throne-equivalentes e mana rocks reais
+(Sol Ring, Arcane Signet, talismãs) são alvos legais; 8 encantamentos
+reais (Kindred Discovery, Dragon Tempest, Elemental Bond, Smothering
+Tithe, etc.) agora alcançáveis. `state.wiped_this_round` setado se o
+tipo escolhido não for criatura mas algum permanente destruído também
+for criatura de verdade.
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `8b84daf` (2.000
+seeds) + regressão de 20.000 partidas em modo resiliência, 0 exceções +
+testes dirigidos (no máximo 1 tipo por chamada, 0 violações em 1.500
+chamadas; distribuição ponderada bate com os pesos relativos dentro de
+3pp com 20.000 chamadas forçadas).
+
+**Resultado (A/B 2000 jogos mesma seed_base, design unificado final):**
+% de jogos com pelo menos 1 wipe de qualquer tipo sobe de 37,0% pra
+62,2% (antes = commit `8b84daf`, só wipe de criatura). Avg wipes totais
+por jogo: 0,416 → 0,882. 21,9% dos jogos "depois" sofrem pelo menos 1
+artifact wipe, 17,2% pelo menos 1 enchantment wipe.
+
 ## Bug de design: modelo assumia 100% da mesa mirando em mim, todo turno, de todo oponente — 2026-09-20
 
 **Gatilho:** mesmo achado do usuário aplicado ao Megatron primeiro —

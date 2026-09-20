@@ -476,6 +476,12 @@ def is_land(card: str) -> bool:
 def is_creature(card: str) -> bool:
     return C(card).type == "Creature"
 
+def is_artifact(card: str) -> bool:
+    return C(card).type == "Artifact"
+
+def is_enchantment(card: str) -> bool:
+    return C(card).type == "Enchantment"
+
 def is_vampire(card: str) -> bool:
     return has_tag(card, "vampire_type") or card == COMMANDER
 
@@ -835,6 +841,10 @@ class GameState:
     smart_discard_log: list = field(default_factory=list)
     smart_wipes_total: int = 0
     smart_wipe_log: list = field(default_factory=list)
+    smart_artifact_wipes_total: int = 0
+    smart_artifact_wipe_log: list = field(default_factory=list)
+    smart_enchantment_wipes_total: int = 0
+    smart_enchantment_wipe_log: list = field(default_factory=list)
     smart_counters_total: int = 0
     smart_counter_log: list = field(default_factory=list)
     smart_graveyard_wipes_total: int = 0
@@ -2944,25 +2954,82 @@ def try_smart_opponent_discard(state: GameState, log: List[Dict]) -> Optional[st
     state.smart_discard_log.append((state.turn, target))
     return target
 
+ARTIFACT_WIPE_CHANCE_FACTOR = 0.2
+ENCHANTMENT_WIPE_CHANCE_FACTOR = 0.15
+# Pesos relativos de cada TIPO de sweeper (criatura/artefato/
+# encantamento) -- nao sao 3 chances INDEPENDENTES (achado real do
+# usuario 2026-09-20, mesma correcao feita primeiro no Megatron: "Vandalblast,
+# Farewell, Austere Command, etc" tem que existir, MAS "Obviamente tem
+# que ter uma alternancia de remocoes, aleatoria, ate pq wipes de
+# criaturas sao muito mais comuns que remocao de artefatos e
+# encantamentos"). Um oponente real, num turno so', conjura NO MAXIMO 1
+# sweeper -- nunca "destroy all creatures" E "destroy all artifacts" no
+# mesmo turno. `try_smart_opponent_wipe` rola 1x se ALGUM wipe acontece
+# (chance = soma dos 3 pesos) e SO' DEPOIS escolhe qual tipo, com
+# escolha ponderada pelos mesmos 3 fatores. Wipe de encantamento e'
+# mais relevante neste deck do que na maioria (Caretaker's Talent,
+# Black Market Connections, Anointed Procession, Smothering Tithe, The
+# Meathook Massacre sao encantamentos reais e motores de valor de
+# verdade).
+WIPE_TYPE_WEIGHTS = {
+    "creature": BOARD_WIPE_CHANCE_FACTOR,
+    "artifact": ARTIFACT_WIPE_CHANCE_FACTOR,
+    "enchantment": ENCHANTMENT_WIPE_CHANCE_FACTOR,
+}
+TOTAL_WIPE_CHANCE_FACTOR = sum(WIPE_TYPE_WEIGHTS.values())
+
 def try_smart_opponent_wipe(state: GameState, log: List[Dict]) -> Optional[list]:
-    """Board wipe ('destroy all creatures') -- destroi TODAS as minhas
-    criaturas em campo de uma vez via `remove_permanent` (que ja' trata
+    """Board wipe ('destroy all creatures'/'destroy all artifacts'/
+    'destroy all enchantments') -- destroi TODOS os meus permanentes do
+    tipo escolhido de uma vez via `remove_permanent` (que ja' trata
     comandante->zona de comando, token->deixa de existir, gatilhos reais
-    de morte pra cada uma). Sem nenhuma criatura em campo, retorna None
-    sem fazer nada -- oponente esperto nao gasta um wipe num board
-    vazio."""
+    de morte pra cada um). Edgar Markov nunca e' artefato/encantamento
+    (Legendary Creature -- Vampire Knight, confirmado via Scryfall),
+    entao nunca e' alvo dos 2 tipos novos.
+
+    Design de 2 passos (nao 3 rolagens independentes -- ver comentario
+    de `WIPE_TYPE_WEIGHTS` acima): 1) rola 1x se ALGUM wipe acontece
+    esse turno de oponente, chance = `interaction_chance() *
+    TOTAL_WIPE_CHANCE_FACTOR`; 2) SO' se isso disparar, escolhe qual
+    TIPO de sweeper via escolha ponderada (`state.interaction_rng.
+    choices`) restrita aos tipos que tem pelo menos 1 alvo legal em
+    campo. Se o tipo escolhido nao for 'creature' mas algum alvo
+    destruido TAMBEM for uma criatura de verdade (artifact/enchantment
+    creature), `state.wiped_this_round` e' setado igual -- nenhuma
+    carta desta lista e' hibrida hoje (`is_creature`/`is_artifact`/
+    `is_enchantment` sao mutuamente exclusivas aqui, `Card.type` e' uma
+    string unica sem hibrido), mas a checagem fica por robustez -- uma
+    troca futura de lista nao pode silenciosamente esquecer de suprimir
+    ataque por causa disso. Sem nenhum alvo legal de tipo nenhum,
+    retorna None sem fazer nada."""
     if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
         return None
-    targets = [n for n in state.battlefield if is_creature(n)]
-    if not targets:
+    if state.interaction_rng.random() >= interaction_chance(state) * TOTAL_WIPE_CHANCE_FACTOR:
         return None
-    if state.interaction_rng.random() >= interaction_chance(state) * BOARD_WIPE_CHANCE_FACTOR:
+    candidates = {
+        "creature": [n for n in state.battlefield if is_creature(n)],
+        "artifact": [n for n in state.battlefield if is_artifact(n)],
+        "enchantment": [n for n in state.battlefield if is_enchantment(n)],
+    }
+    available = [t for t in candidates if candidates[t]]
+    if not available:
         return None
+    wipe_type = state.interaction_rng.choices(available, weights=[WIPE_TYPE_WEIGHTS[t] for t in available])[0]
+    targets = candidates[wipe_type]
+    hit_creature = any(is_creature(n) for n in targets)
     for n in targets:
-        remove_permanent(state, log, n, source="opponent_wipe")
-    state.smart_wipes_total += 1
-    state.smart_wipe_log.append((state.turn, targets))
-    state.wiped_this_round = True
+        remove_permanent(state, log, n, source=f"opponent_{wipe_type}_wipe")
+    if wipe_type == "creature":
+        state.smart_wipes_total += 1
+        state.smart_wipe_log.append((state.turn, targets))
+    elif wipe_type == "artifact":
+        state.smart_artifact_wipes_total += 1
+        state.smart_artifact_wipe_log.append((state.turn, targets))
+    else:
+        state.smart_enchantment_wipes_total += 1
+        state.smart_enchantment_wipe_log.append((state.turn, targets))
+    if hit_creature:
+        state.wiped_this_round = True
     return targets
 
 def try_smart_opponent_graveyard_wipe(state: GameState, log: List[Dict]) -> Optional[list]:
@@ -3108,6 +3175,8 @@ def run_batch_with_interaction(n=2000, turns=8, seed_base=6000000):
     print(f"Avg ataques de oponente sofridos: {avg([s.smart_attacks_taken_total for s in states]):.2f}")
     print(f"Avg descartes forcados sofridos: {avg([s.smart_discards_total for s in states]):.2f}")
     print(f"Avg board wipes sofridos: {avg([s.smart_wipes_total for s in states]):.2f}")
+    print(f"Avg artifact wipes sofridos: {avg([s.smart_artifact_wipes_total for s in states]):.2f}")
+    print(f"Avg enchantment wipes sofridos: {avg([s.smart_enchantment_wipes_total for s in states]):.2f}")
     print(f"Board wipe sofrido em {100*sum(1 for s in states if s.smart_wipes_total > 0)/n:.1f}% das partidas")
     print(f"Avg graveyard wipes (mass exile) sofridos: {avg([s.smart_graveyard_wipes_total for s in states]):.2f}")
     print(f"Avg graveyard snipes (exilio unico) sofridos: {avg([s.smart_graveyard_snipes_total for s in states]):.2f}")

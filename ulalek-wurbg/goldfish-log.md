@@ -4,6 +4,30 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
+
+**Gatilho:** "Temos que incluir remoções de artefatos e encantamentos
+tb: Vandalblast, Farewell, Austere Command, etc…" Detalhes técnicos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Implementado direto no design FINAL** (unificado — 1 rolagem "algum
+wipe acontece" + escolha ponderada de 1 tipo só, pesos 0.4/0.2/0.15).
+Achado real: Roaming Throne (dobrador, motor central do deck) e
+Liberator, Urza's Battlethopter são "artifact_creature" — alvos legais
+reais de um wipe de artefato.
+
+**Resultado (A/B 2000 jogos mesma seed_base):** % de jogos com pelo
+menos 1 wipe de qualquer tipo sobe de 36,7% pra 61,6% (antes = commit
+`348fb6d`, só wipe de criatura). Avg wipes totais por jogo: 0,419 →
+0,843. 23,1% dos jogos "depois" sofrem pelo menos 1 artifact wipe,
+5,8% pelo menos 1 enchantment wipe.
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `348fb6d`
+(2.000 seeds) + regressão de 20.000 partidas, 0 exceções + testes
+dirigidos.
+
+---
+
 ## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
 
 **Gatilho:** "implemente a extensão no Ulalek, mesmo protocolo" — mesmo

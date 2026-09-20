@@ -323,6 +323,10 @@ def is_artifact_card(name: str) -> bool:
     return "artifact" in CARD_DB[name].tags or CARD_DB[name].ctype == "artifact"
 
 
+def is_enchantment_card(name: str) -> bool:
+    return CARD_DB[name].ctype == "enchantment"
+
+
 LEGENDARY_NAMES = {
     "Megatron, Tyrant", "Ayara, Widow of the Realm", "Feldon of the Third Path",
     "Daretti, Scrap Savant", "Daretti, Rocketeer Engineer", "Anrakyr the Traveller",
@@ -487,6 +491,10 @@ class GameState:
     smart_discard_log: list = field(default_factory=list)
     smart_wipes_total: int = 0
     smart_wipe_log: list = field(default_factory=list)
+    smart_artifact_wipes_total: int = 0
+    smart_artifact_wipe_log: list = field(default_factory=list)
+    smart_enchantment_wipes_total: int = 0
+    smart_enchantment_wipe_log: list = field(default_factory=list)
     smart_counters_total: int = 0
     smart_counter_log: list = field(default_factory=list)
     smart_graveyard_wipes_total: int = 0
@@ -2995,57 +3003,98 @@ def try_smart_opponent_discard(state: GameState) -> Optional[str]:
 
 
 BOARD_WIPE_CHANCE_FACTOR = 0.4
-# Um board wipe real (Wrath of God/Blasphemous Act/Toxic Deluge, etc.)
-# e' MUITO mais raro numa lista de 99 cartas do que remocao pontual --
-# a maioria dos decks reais de Commander roda uns 8-12 spot removals
-# contra so' 2-4 sweepers. Em vez de inventar uma formula nova, aplica
-# um fator redutor sobre a MESMA `interaction_chance()` compartilhada
-# (documentado aqui, ajustavel se o usuario achar que nao bate com a
-# mesa real dele).
+ARTIFACT_WIPE_CHANCE_FACTOR = 0.2
+ENCHANTMENT_WIPE_CHANCE_FACTOR = 0.15
+# Pesos relativos de cada TIPO de sweeper (criatura/artefato/
+# encantamento) -- nao sao mais 3 chances INDEPENDENTES (achado real do
+# usuario 2026-09-20, depois de eu implementar as 3 como rolagens
+# separadas: "Obviamente tem que ter uma alternancia de remocoes,
+# aleatoria, ate pq wipes de criaturas sao muito mais comuns que
+# remocao de artefatos e encantamentos"). Um oponente real, num turno
+# so', conjura NO MAXIMO 1 sweeper -- nunca "destroy all creatures" E
+# "destroy all artifacts" no mesmo turno. `try_smart_opponent_wipe`
+# agora rola 1x se ALGUM wipe acontece (chance = soma dos 3 pesos) e
+# SO' DEPOIS escolhe qual tipo, com escolha ponderada pelos mesmos 3
+# fatores -- criatura continua a mais comum (Wrath of God/Blasphemous
+# Act/Toxic Deluge, etc. -- 8-12 spot removals pra 2-4 sweepers numa
+# lista real de 99), artefato/encantamento mais raros ainda (Vandalblast
+# overloaded/By Force/Austere Command/Farewell). Chutes razoaveis
+# documentados, ajustaveis se o usuario tiver dado real de mesa.
+WIPE_TYPE_WEIGHTS = {
+    "creature": BOARD_WIPE_CHANCE_FACTOR,
+    "artifact": ARTIFACT_WIPE_CHANCE_FACTOR,
+    "enchantment": ENCHANTMENT_WIPE_CHANCE_FACTOR,
+}
+TOTAL_WIPE_CHANCE_FACTOR = sum(WIPE_TYPE_WEIGHTS.values())
 
 
 def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
     """Modo opcional de resiliencia -- board wipe ("destroy all
-    creatures", categoria real do simulador do Archidekt junto com
-    ataque/remocao/discard). Rola independente das outras 3 categorias,
-    mesma janela (`INTERACTION_SETUP_TURNS`), chance reduzida por
-    `BOARD_WIPE_CHANCE_FACTOR` (ver acima). Destroi TODAS as minhas
-    criaturas em campo de uma vez -- ao contrario da remocao (1 peca-
-    motor curada) e do discard (1 carta aleatoria), aqui o "alvo" e'
-    sempre o board inteiro, e' isso que torna um wipe um wipe.
+    creatures"/"destroy all artifacts"/"destroy all enchantments",
+    categoria real do simulador do Archidekt junto com ataque/remocao/
+    discard, agora com os 3 TIPOS de sweeper real de Commander). Rola
+    independente das outras categorias (remocao/discard/etc.), mesma
+    janela (`INTERACTION_SETUP_TURNS`).
 
-    Achado de regra real ao implementar: o Megatron na face Destructive
-    Force (Vehicle) SO' e' criatura durante O MEU turno ('Living metal')
-    -- as 4 funcoes deste modo de resiliencia representam interacao do
-    OPONENTE, ou seja, fora do meu turno. Um wipe que resolve nesse
-    momento (sorcery-speed, main phase do proprio oponente, mesma janela
-    de sempre) NAO acerta o Megatron se ele estiver na face Vehicle
-    nesse instante (`state.megatron_face == "vehicle"`) -- mesma
-    checagem ja usada em `try_smart_opponent_attack` pra excluir o
-    Megatron como bloqueador. Na face Tyrant (Legendary Artifact
-    CREATURE, sem depender de Living Metal) ele e' sempre um alvo legal.
+    Design de 2 passos (nao 3 rolagens independentes -- ver comentario
+    de `WIPE_TYPE_WEIGHTS` acima): 1) rola 1x se ALGUM wipe acontece
+    esse turno de oponente, chance = `interaction_chance() *
+    TOTAL_WIPE_CHANCE_FACTOR`; 2) SO' se isso disparar, escolhe qual
+    TIPO de sweeper (criatura/artefato/encantamento) via escolha
+    ponderada (`state.interaction_rng.choices`) restrita aos tipos que
+    tem pelo menos 1 alvo legal em campo (um oponente esperto nao
+    "desperdica" a rodagem escolhendo um tipo vazio -- ele so' teria
+    aquele sweeper especifico na mao SE valesse a pena jogar).
 
-    Cada criatura destruida passa por `sacrifice(is_own_sacrifice=False)`
-    -- mesma funcao central que ja trata comandante->zona de comando,
-    Warp/Unearth->exilio, Blightsteel->biblioteca, e dispara os gatilhos
-    reais de morte (Scrap Trawler/toolbox/Triplicate Titan) pra cada uma.
-    Sem nenhuma criatura em campo (contando a excecao do Megatron-
-    Vehicle), retorna None sem fazer nada -- oponente esperto nao gasta
-    um wipe num board vazio. Retorna a lista de nomes destruidos (pra
-    log/relatorio) ou None se nao disparou."""
+    Achado de regra real: o Megatron na face Destructive Force
+    (Vehicle) SO' e' criatura durante O MEU turno ('Living metal') --
+    um wipe de CRIATURA que resolve no turno do oponente NAO o acerta
+    nessa face (mesma checagem ja' usada em `try_smart_opponent_attack`
+    pra excluir o Megatron como bloqueador). Mas ele E' artefato em
+    QUALQUER face (confirmado via Scryfall: as 2 faces reais sao
+    "Legendary Artifact Creature"/"Legendary Artifact") -- um wipe de
+    ARTEFATO o acerta em qualquer face, Vandalblast nao se importa se
+    ele e' criatura no momento.
+
+    Cada permanente destruido passa por `sacrifice(is_own_sacrifice=
+    False)` -- mesma funcao central que ja trata comandante->zona de
+    comando, Warp/Unearth->exilio, Blightsteel->biblioteca, e dispara
+    os gatilhos reais de morte (Scrap Trawler/toolbox/Triplicate Titan)
+    pra cada um. Se o tipo escolhido nao for "creature" mas algum alvo
+    destruido TAMBEM for uma criatura de verdade (artifact/enchantment
+    creature), `state.wiped_this_round` e' setado igual -- perdi poder
+    de ataque real nesta rodada, a causa nomeada nao muda a
+    consequencia pro combate. Sem nenhum alvo legal de tipo nenhum,
+    retorna None sem fazer nada."""
     if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
         return None
-    targets = [n for n in state.battlefield if is_creature_card(n)
-               and not (n == COMMANDER and state.megatron_face == "vehicle")]
-    if not targets:
+    if state.interaction_rng.random() >= interaction_chance(state) * TOTAL_WIPE_CHANCE_FACTOR:
         return None
-    if state.interaction_rng.random() >= interaction_chance(state) * BOARD_WIPE_CHANCE_FACTOR:
+    candidates = {
+        "creature": [n for n in state.battlefield if is_creature_card(n)
+                     and not (n == COMMANDER and state.megatron_face == "vehicle")],
+        "artifact": [n for n in state.battlefield if is_artifact_card(n)],
+        "enchantment": [n for n in state.battlefield if is_enchantment_card(n)],
+    }
+    available = [t for t in candidates if candidates[t]]
+    if not available:
         return None
+    wipe_type = state.interaction_rng.choices(available, weights=[WIPE_TYPE_WEIGHTS[t] for t in available])[0]
+    targets = candidates[wipe_type]
+    hit_creature = any(is_creature_card(n) for n in targets)
     for n in targets:
         sacrifice(state, n, is_own_sacrifice=False)
-    state.smart_wipes_total += 1
-    state.smart_wipe_log.append((state.turn, targets))
-    state.wiped_this_round = True
+    if wipe_type == "creature":
+        state.smart_wipes_total += 1
+        state.smart_wipe_log.append((state.turn, targets))
+    elif wipe_type == "artifact":
+        state.smart_artifact_wipes_total += 1
+        state.smart_artifact_wipe_log.append((state.turn, targets))
+    else:
+        state.smart_enchantment_wipes_total += 1
+        state.smart_enchantment_wipe_log.append((state.turn, targets))
+    if hit_creature:
+        state.wiped_this_round = True
     return targets
 
 
@@ -3490,6 +3539,28 @@ def run_batch_with_interaction(n: int, seed_base: int, turns: int = 8):
         print(f"  -- Avg criaturas perdidas por wipe (quando dispara): {avg_kills:.2f}")
         for name, count in wipe_kills.most_common(5):
             print(f"  -- {name} perdido em wipe em {100*count/n:.1f}% dos jogos")
+    print(f"Avg artifact wipes sofridos (Vandalblast overload/By Force): {avg([s.smart_artifact_wipes_total for s in states]):.2f}")
+    artifact_wipe_kills = Counter()
+    for s in states:
+        for _, killed in s.smart_artifact_wipe_log:
+            for name in killed:
+                artifact_wipe_kills[name] += 1
+    if sum(len(killed) for s in states for _, killed in s.smart_artifact_wipe_log):
+        avg_a_kills = avg([len(killed) for s in states for _, killed in s.smart_artifact_wipe_log])
+        print(f"  -- Avg artefatos perdidos por wipe (quando dispara): {avg_a_kills:.2f}")
+        for name, count in artifact_wipe_kills.most_common(5):
+            print(f"  -- {name} perdido em artifact wipe em {100*count/n:.1f}% dos jogos")
+    print(f"Avg enchantment wipes sofridos (metade de Austere Command/Farewell): {avg([s.smart_enchantment_wipes_total for s in states]):.2f}")
+    enchantment_wipe_kills = Counter()
+    for s in states:
+        for _, killed in s.smart_enchantment_wipe_log:
+            for name in killed:
+                enchantment_wipe_kills[name] += 1
+    if sum(len(killed) for s in states for _, killed in s.smart_enchantment_wipe_log):
+        avg_e_kills = avg([len(killed) for s in states for _, killed in s.smart_enchantment_wipe_log])
+        print(f"  -- Avg encantamentos perdidos por wipe (quando dispara): {avg_e_kills:.2f}")
+        for name, count in enchantment_wipe_kills.most_common(5):
+            print(f"  -- {name} perdido em enchantment wipe em {100*count/n:.1f}% dos jogos")
     gy_wiped = sum(1 for s in states if s.smart_graveyard_wipes_total > 0)
     print(f"Partidas com graveyard wipe sofrido (Bojuka Bog-style, no maximo 1x/partida): "
           f"{100*gy_wiped/n:.1f}%")

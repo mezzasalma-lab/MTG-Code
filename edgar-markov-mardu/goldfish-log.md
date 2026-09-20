@@ -1,5 +1,28 @@
 # Goldfish Log — Edgar Markov
 
+## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
+
+**Gatilho:** "Temos que incluir remoções de artefatos e encantamentos
+tb: Vandalblast, Farewell, Austere Command, etc…" Detalhes técnicos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Implementado direto no design FINAL** (unificado — 1 rolagem "algum
+wipe acontece" + escolha ponderada de 1 tipo só, pesos 0.4/0.2/0.15 —
+este deck nunca passou pela versão com rolagens independentes dos
+outros 3).
+
+**Resultado (A/B 2000 jogos mesma seed_base):** % de jogos com pelo
+menos 1 wipe de qualquer tipo sobe de 40,8% pra 65,5% (antes = commit
+`8faa943`, só wipe de criatura). Avg wipes totais por jogo: 0,477 →
+0,949. 15,7% dos jogos "depois" sofrem pelo menos 1 artifact wipe,
+17,4% pelo menos 1 enchantment wipe.
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `8faa943`
+(2.000 seeds) + regressão de 20.000 partidas, 0 exceções + testes
+dirigidos.
+
+---
+
 ## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
 
 **Gatilho:** "Agora implementa essas mudanças no Markov" — mesmo modo

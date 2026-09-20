@@ -1,5 +1,93 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
+
+**Gatilho:** *"Temos que incluir remoções de artefatos e encantamentos
+tb: Vandalblast, Farewell, Austere Command, etc…"* — até esta rodada, a
+única categoria de "board wipe" do modo de resiliência era "destroy all
+creatures". Cartas reais de mesa (Vandalblast com overload, By Force,
+metade de Austere Command, modo de Farewell) destroem TODOS os
+artefatos ou TODOS os encantamentos, categorias de efeito
+completamente diferentes que nunca estavam representadas.
+
+**Achado real específico deste deck:** Megatron é artefato em QUALQUER
+face — confirmado via Scryfall, as 2 faces reais são "Legendary
+Artifact Creature" (Tyrant) e "Legendary Artifact" (Destructive
+Force/Vehicle), `tags={"artifact", ...}` fixo no `CARD_DB`,
+independente de `state.megatron_face`. Isso é DIFERENTE do wipe de
+criatura (que só a alcança na face Tyrant, via a exceção real de
+Living Metal) — um wipe de artefato a alcança em qualquer face, porque
+Vandalblast não se importa se ela é criatura no momento, só que é um
+artefato. Testado diretamente (`try_smart_opponent_artifact_wipe` com
+Megatron na face Vehicle → ela é um alvo legal; `try_smart_opponent_
+wipe` no mesmo cenário → nunca dispara, sem alvo).
+
+**Implementado (1ª versão, SUPERSEDIDA no mesmo dia — ver correção
+abaixo):** inicialmente `try_smart_opponent_artifact_wipe()`/`try_
+smart_opponent_enchantment_wipe()` como 2 funções NOVAS, cada uma com
+sua própria rolagem independente (`ARTIFACT_WIPE_CHANCE_FACTOR = 0.2`,
+`ENCHANTMENT_WIPE_CHANCE_FACTOR = 0.15`), chamadas as 3 (`try_smart_
+opponent_wipe` + as 2 novas) sem exclusão mútua dentro de `try_smart_
+opponent_turn`.
+
+### Correção de design: rolagens independentes permitiam 2-3 sweepers no MESMO turno de oponente — 2026-09-20
+
+**Gatilho:** usuário apontou o problema direto na sequência: *"Obviamente
+tem que ter uma alternância de remoções, aleatória, até pq wipes de
+criaturas são muito mais comuns que remoção de artefatos e
+encantamentos."* Com 3 rolagens independentes, um único turno de
+oponente podia (embora raro) disparar "destroy all creatures" E
+"destroy all artifacts" ao mesmo tempo — nenhum oponente real de mesa
+conjura 2 sweepers no mesmo turno. Além disso, tratar os 3 tipos como
+igualmente prováveis contraria a frequência real de decks de Commander
+(sweeper de criatura é MUITO mais comum que os outros 2 tipos).
+
+**Correção:** unificados de volta numa ÚNICA função `try_smart_
+opponent_wipe()`, em 2 passos: 1) rola 1x se ALGUM wipe acontece esse
+turno (`chance = interaction_chance() * TOTAL_WIPE_CHANCE_FACTOR`, onde
+`TOTAL_WIPE_CHANCE_FACTOR = soma dos 3 pesos = 0.75`); 2) SÓ se disparar,
+escolhe qual TIPO via `state.interaction_rng.choices()` ponderado pelos
+mesmos 3 fatores (`WIPE_TYPE_WEIGHTS = {"creature": 0.4, "artifact":
+0.2, "enchantment": 0.15}`), restrito aos tipos com pelo menos 1 alvo
+legal em campo (nunca "desperdiça" a escolha numa categoria vazia). No
+máximo 1 tipo de sweeper por turno de oponente, exatamente como um
+oponente real jogaria.
+
+4 encantamentos reais no deck (Sneak Attack, Pia's Revolution, Warstorm
+Surge, Black Market Connections) — motores de valor de verdade, agora
+alcançáveis. A função delega pra `sacrifice(is_own_sacrifice=False)`, o
+mesmo chokepoint central de sempre — Blightsteel Colossus (artifact
+creature via tag, `ctype="creature"` + `"artifact"` em `tags`) continua
+corretamente redirecionado pro shuffle-into-library mesmo quando morre
+por wipe de artefato. Se o tipo escolhido não for "creature" mas algum
+permanente destruído TAMBÉM for uma criatura de verdade,
+`state.wiped_this_round` é setado igual — a causa nomeada não muda a
+consequência real pro combate. Megatron na face Vehicle: excluído dos
+candidatos de criatura (mesma exceção de Living Metal de sempre), mas
+alvo legal de artifact wipe em qualquer face (confirmado via Scryfall —
+"Legendary Artifact Creature"/"Legendary Artifact" nas 2 faces).
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `8b84daf` (3.000
+seeds) + regressão de 20.000 partidas em modo resiliência, 0 exceções +
+5 testes dirigidos: (a) no máximo 1 tipo de wipe dispara por chamada
+(0 violações em 2.000 chamadas); (b) distribuição ponderada bate com os
+pesos relativos quando os 3 tipos têm alvo puro disponível (creature
+53,6% vs. esperado 53,3%; artifact 26,5% vs. 26,7%; enchantment 19,8%
+vs. 20,0%, todos dentro de 3pp); (c) Megatron/Vehicle nunca é alvo de
+wipe de criatura mas sempre de artifact wipe quando escolhido (500/500
+chamadas corretas); (d) Blightsteel Colossus como único artefato em
+campo é corretamente atingido por artifact wipe E seta `wiped_this_
+round` (955/955 disparos); (e) com só 1 tipo tendo alvo legal, esse
+tipo é sempre escolhido (500/500).
+
+**Resultado (A/B 2000 jogos mesma seed_base, antes = commit `8b84daf`
+— só wipe de criatura, depois = design unificado final com os 3
+tipos):** % de jogos com pelo menos 1 wipe de qualquer tipo sobe de
+35,5% pra 62,9%. Avg wipes totais por jogo: 0,402 → 0,871. Dos jogos
+"depois": 34,1% sofreram pelo menos 1 artifact wipe, 5,9% pelo menos 1
+enchantment wipe (creature wipe continua dominante, como esperado pela
+ponderação 0.4/0.2/0.15).
+
 ## Bug de design: modelo assumia 100% da mesa mirando em mim, todo turno, de todo oponente — 2026-09-20
 
 **Gatilho:** usuário perguntou diretamente, depois de ver a 2ª correção

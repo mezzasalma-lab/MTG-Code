@@ -1,5 +1,30 @@
 # Goldfish Log — Esika, God of the Tree // The Prismatic Bridge
 
+## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
+
+**Gatilho:** "Temos que incluir remoções de artefatos e encantamentos
+tb: Vandalblast, Farewell, Austere Command, etc…" Detalhes técnicos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Implementado direto no design FINAL** (unificado — 1 rolagem "algum
+wipe acontece" + escolha ponderada de 1 tipo só, pesos 0.4/0.2/0.15).
+Achado real: a própria Bridge É Enchantment — o único dos 3 tipos de
+wipe que a alcança, corretamente roteada pra zona de comando (CR
+903.9), nunca cemitério.
+
+**Resultado (A/B 2000 jogos mesma seed_base):** % de jogos com pelo
+menos 1 wipe de qualquer tipo sobe de 38,7% pra 64,5% (antes = commit
+`d66e569`, só wipe de criatura). Avg wipes totais por jogo: 0,465 →
+0,982. 16,4% dos jogos "depois" sofrem pelo menos 1 artifact wipe,
+27,9% pelo menos 1 enchantment wipe.
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `d66e569`
+(2.000 seeds) + regressão de 20.000 partidas, 0 exceções + teste
+dirigido confirmando o roteamento CR 903.9 da Bridge (1.241/1.241
+disparos corretos em 3.000 chamadas).
+
+---
+
 ## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
 
 **Gatilho:** "Repita o processo todo com o deck da Prismatic Bridge" —

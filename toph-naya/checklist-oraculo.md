@@ -1,3 +1,46 @@
+## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
+
+**Gatilho:** "Temos que incluir remoções de artefatos e encantamentos
+tb: Vandalblast, Farewell, Austere Command, etc…" — raciocínio completo
+(e a correção de design que se seguiu no mesmo dia) em
+`megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Implementado direto no design FINAL** (este deck recebeu a extensão
+DEPOIS da correção de design, então nunca passou pela versão com
+rolagens independentes): `try_smart_opponent_wipe(state, log)` único —
+1 rolagem "algum wipe acontece" seguida de escolha ponderada de 1 TIPO
+só (`WIPE_TYPE_WEIGHTS = {"creature": 0.4, "artifact": 0.2,
+"enchantment": 0.15}`), restrita aos tipos com alvo legal em campo.
+
+**Achado real específico deste deck (objetos `Permanent`, não strings):**
+"criatura"/"artefato"/"encantamento" aqui são checados via
+`is_creature_type(p, state)`/`is_artifact(p, state)`/`is_enchantment(p,
+state)` — todos DINÂMICOS, respeitando o estado earthbend real do jogo
+(permanentes earthbendados que viraram criatura de verdade), Mycosynth
+Lattice tornando TUDO artefato, e Liquimetal temporário. Toph nunca é
+artefato nem encantamento (Legendary Creature — Human Warrior Ally,
+confirmado via Scryfall). Relevante aqui: Sylvan Library, Caretaker's
+Talent, Earthbender Ascension, Felidar Retreat são encantamentos reais
+e motores de valor de verdade.
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `ed65d72` (2.000
+seeds, comparação via `repr()` dos objetos `Permanent`/`Card` — a
+comparação `==` direta entre instâncias carregadas de dois módulos
+Python diferentes falsamente reporta desigualdade mesmo com campos
+idênticos, já que dataclass `__eq__` checa identidade de classe antes
+dos campos) + regressão de 20.000 partidas em modo resiliência, 0
+exceções. Teste de distribuição ponderada pura estruturalmente pulado
+neste deck (exigiria construir um `state` de jogo completo com objetos
+`Permanent` reais em vez de nomes-string simples) — coberto pela
+regressão de 20.000 partidas sem exceção e pela mesma lógica já
+validada diretamente nos outros 6 decks.
+
+**Resultado (A/B 2000 jogos mesma seed_base):** % de jogos com pelo
+menos 1 wipe de qualquer tipo sobe de 35,0% pra 56,2% (antes = commit
+`ed65d72`, só wipe de criatura). Avg wipes totais por jogo: 0,416 →
+0,793. 20,2% dos jogos "depois" sofrem pelo menos 1 artifact wipe,
+8,6% pelo menos 1 enchantment wipe.
+
 ## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
 
 **Gatilho:** usuário pediu direto, mesmo protocolo já aplicado a

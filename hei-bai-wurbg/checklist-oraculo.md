@@ -1,5 +1,65 @@
 # Checklist cláusula-a-cláusula — Hei Bai, Forest Guardian
 
+## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
+
+**Gatilho:** "Temos que incluir remoções de artefatos e encantamentos
+tb: Vandalblast, Farewell, Austere Command, etc…" Raciocínio completo
+em `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Achado real específico deste deck:** o Enduring Vitality tem uma
+exceção dinâmica real (`state.enduring_vitality_enchantment_only`) que
+já fazia `try_smart_opponent_wipe` tratá-lo como NÃO-criatura quando
+voltou só como encantamento. Extraído `is_creature_now(state, name)`
+(mesma exceção, reusável) pra que `wiped_this_round` continue correto
+quando um wipe de encantamento o destrói nesse estado — ele é
+encantamento de verdade (`is_enchantment_card` já inclui
+"enchantment_creature"), mas não conta como perda de poder de ataque
+se já não era criatura no momento.
+
+**Implementado (1ª versão, SUPERSEDIDA no mesmo dia):** inicialmente 2
+funções novas com rolagens INDEPENDENTES (`ARTIFACT_WIPE_CHANCE_FACTOR
+= 0.2`, `ENCHANTMENT_WIPE_CHANCE_FACTOR = 0.15`) somadas ao wipe de
+criatura já existente.
+
+### Correção de design: unificado num único roll + escolha ponderada — 2026-09-20
+
+**Gatilho:** mesma correção do usuário aplicada primeiro no Megatron —
+*"Obviamente tem que ter uma alternância de remoções, aleatória, até pq
+wipes de criaturas são muito mais comuns que remoção de artefatos e
+encantamentos"*. Raciocínio completo em
+`megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Implementado (final):** `try_smart_opponent_wipe()` único — 1 rolagem
+"algum wipe acontece" (`chance = interaction_chance() *
+TOTAL_WIPE_CHANCE_FACTOR`, soma dos 3 pesos = 0.75) seguida de escolha
+ponderada de 1 TIPO só (`WIPE_TYPE_WEIGHTS = {"creature": 0.4,
+"artifact": 0.2, "enchantment": 0.15}`), restrita aos tipos com alvo
+legal em campo. Este deck roda vários encantamentos reais, incluindo
+enchantment creatures, então a categoria de encantamento é
+particularmente relevante aqui. Hei Bai nunca é artefato nem
+encantamento (Legendary Creature — Bear Spirit, confirmado via
+Scryfall).
+
+`is_creature_now(state, name)` (exceção dinâmica real do Enduring
+Vitality — `state.enduring_vitality_enchantment_only`) preservada
+dentro da função unificada, tanto pros candidatos de criatura quanto
+pro cálculo de `wiped_this_round` quando um wipe de outro tipo também
+derruba uma enchantment creature de verdade (`is_enchantment_card` já
+inclui "enchantment_creature").
+
+**Validação:** modo padrão 100% bit-idêntico ao commit `8b84daf` (2.000
+seeds) + regressão de 20.000 partidas em modo resiliência, 0 exceções +
+testes dirigidos (no máximo 1 tipo por chamada; distribuição ponderada
+correta; `is_creature_now` continua respeitando a exceção do Enduring
+Vitality dentro da função unificada).
+
+**Resultado (A/B 2000 jogos mesma seed_base, design unificado final):**
+% de jogos com pelo menos 1 wipe de qualquer tipo sobe de 53,8% pra
+75,2% (antes = commit `8b84daf`, só wipe de criatura). Avg wipes totais
+por jogo: 0,687 → 1,238. 13,1% dos jogos "depois" sofrem pelo menos 1
+artifact wipe, 29,5% pelo menos 1 enchantment wipe (a categoria mais
+relevante deste deck em particular, como esperado).
+
 ## Bug de design: modelo assumia 100% da mesa mirando em mim, todo turno, de todo oponente — 2026-09-20
 
 **Gatilho:** mesmo achado do usuário aplicado ao Megatron primeiro —
