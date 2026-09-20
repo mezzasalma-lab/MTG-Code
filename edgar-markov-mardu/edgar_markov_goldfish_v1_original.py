@@ -1,3 +1,20 @@
+# ==============================================================================
+# COPIA DE SEGURANCA -- ORIGINAL (antes do modo de resiliencia, 2026-09-20)
+# ==============================================================================
+# Este arquivo e' uma copia FIEL e INTOCADA de edgar_markov_goldfish_v1.py como
+# ele era ANTES do commit que porta o modo de resiliencia (Megatron/Ur-Dragon/
+# Hei Bai -> Markov), preservada como copia de seguranca -- nao e' mantida/
+# atualizada daqui pra frente, so' existe como referencia do estado
+# pre-modo-de-resiliencia (este deck nunca teve NENHUMA extensao de resiliencia
+# antes desta rodada, diferente dos outros 3 decks que ja tinham historico
+# proprio nesse tema).
+#
+# O arquivo ativo (edgar_markov_goldfish_v1.py) ja garante o mesmo
+# comportamento em `simulate_one`/`run_batch` (modo padrao) -- o modo de
+# resiliencia e' aditivo/opcional, nunca chamado por padrao. Esta copia existe
+# so' como snapshot histerico, nao como fallback funcional necessario.
+# ==============================================================================
+
 """
 Goldfish simulator - Edgar Markov (Mardu - R/W/B, tribal Vampiro/aristocratas)
 Escrito e executado por Claude.
@@ -813,36 +830,6 @@ class GameState:
     fountainport_draws: int = 0
     fountainport_used_this_turn: bool = False
 
-    # ---- Modo opcional de resiliencia (interacao de oponente), 2026-09-20 ----
-    # Porte do mesmo modo ja implementado e validado no Megatron/Ur-Dragon/
-    # Hei Bai (usuario: "Agora implementa essas mudanças no Markov"). Todos
-    # os campos abaixo ficam INERTES em modo padrao (`simulate_one`/
-    # `run_batch`) -- so' tem efeito quando `interaction_rng` e' setado por
-    # `simulate_one_with_interaction`. `life` e' NOVO neste arquivo (o
-    # motor padrao nunca rastreou vida propria, so' contadores agregados de
-    # drain/lifegain do OPONENTE) -- serve so' de alvo pro ataque de
-    # oponente do modo de resiliencia, comeca em 40 (vida inicial real de
-    # Commander) e nunca e' lido/escrito por nenhuma funcao de modo padrao.
-    interaction_rng: Optional[random.Random] = None
-    life: int = 40
-    wiped_this_round: bool = False
-    creatures_destroyed_by_opponent_total: int = 0
-    smart_removals_total: int = 0
-    smart_removal_log: list = field(default_factory=list)
-    smart_attacks_taken_total: int = 0
-    smart_attack_log: list = field(default_factory=list)
-    smart_discards_total: int = 0
-    smart_discard_log: list = field(default_factory=list)
-    smart_wipes_total: int = 0
-    smart_wipe_log: list = field(default_factory=list)
-    smart_counters_total: int = 0
-    smart_counter_log: list = field(default_factory=list)
-    smart_graveyard_wipes_total: int = 0
-    smart_graveyard_wipe_log: list = field(default_factory=list)
-    graveyard_wipe_used: bool = False
-    smart_graveyard_snipes_total: int = 0
-    smart_graveyard_snipe_log: list = field(default_factory=list)
-
     def draw(self, n: int = 1):
         for _ in range(n):
             if self.library:
@@ -1486,25 +1473,10 @@ def eminence_trigger(state: GameState, card: str, log: List[Dict]):
     # "Whenever you cast another Vampire spell, if Edgar is in the
     # command zone or on the battlefield, create a 1/1 black Vampire
     # creature token." Funciona mesmo com Edgar so na zona de comando.
-    #
-    # Achado real 2026-09-20 (ao portar o modo de resiliencia -- ver
-    # `remove_permanent`): a condicao antiga `state.commander_in_play or
-    # state.commander_cast_count == 0` so' cobria 2 dos 3 estados reais
-    # de Edgar (em campo; ainda nunca conjurado = literalmente na zona
-    # de comando ainda). Antes desta rodada Edgar nunca DEIXAVA o campo
-    # depois de conjurado (nenhum removal existia neste motor), entao o
-    # 3o estado real -- destruido por um oponente e voltando pra zona de
-    # comando via CR 903.9 -- nunca acontecia e o bug ficava dormant.
-    # Agora que `remove_permanent` pode zerar `commander_in_play` de
-    # verdade, esse 3o estado e' alcancavel: Edgar destruido, sem
-    # nenhuma substituicao de zona alem da zona de comando (nao tem
-    # "shuffle into library"/exile), ENTAO ele esta' SEMPRE em campo OU
-    # na zona de comando neste motor -- Eminence esta' disponivel
-    # incondicionalmente. Simplificado pra refletir isso (comportamento
-    # em modo padrao continua 100% identico: antes do 1o cast a formula
-    # antiga tambem dava True via `commander_cast_count == 0`, e depois
-    # do 1o cast `commander_in_play` nunca virava False em modo padrao).
     if card == COMMANDER or not is_vampire(card):
+        return
+    edgar_available = state.commander_in_play or state.commander_cast_count == 0
+    if not edgar_available:
         return
     times = _times(state)
     for _ in range(times):
@@ -1680,30 +1652,6 @@ def _vito_fanatic_sacrifice_trigger(state: GameState, log: List[Dict]):
         state.vito_fanatic_stage_this_turn = 0
         on_creature_enters(state, log, "Vampire Demon Token", count=n)
 
-def _apply_creature_death_payoffs(state: GameState, log: List[Dict], source: str):
-    # Cascata de "uma criatura MINHA morreu" que dispara em QUALQUER
-    # morte real, nao so' sacrificio -- Pitiless Plunderer ("Whenever
-    # ANOTHER creature you control DIES", verificado via Scryfall,
-    # 2026-09-20: NAO e' sacrifice-restricted) + death payoffs (Blood
-    # Artist/Zulaport/Cruel Celebrant/Vindictive Vampire/Bastion of
-    # Remembrance + contador da Elenda, ja documentados como "dies"
-    # gerais em `_apply_death_payoffs`). Extraido de
-    # `_creature_sacrificed()` (achado real ao portar o modo de
-    # resiliencia do Megatron/Ur-Dragon/Hei Bai pra este deck, que ate'
-    # entao nunca tinha NENHUM jeito de uma criatura NOMEADA morrer --
-    # so' sacrificio de token) pra ser reusado tambem por remocao de
-    # OPONENTE (`remove_permanent`, destroy/wipe real, nao sacrificio) --
-    # `_vito_fanatic_sacrifice_trigger` fica DE FORA de proposito, o
-    # oraculo real dele e' "whenever YOU sacrifice another permanent",
-    # nao "whenever a creature dies" -- destruicao de oponente nao e'
-    # algo que EU sacrifiquei.
-    state.creatures_died_this_turn += 1
-    if state.has("Pitiless Plunderer"):
-        t = token_multiplier(state, creature=False)
-        create_treasure_and_crack(state, log, t, source=f"pitiless_plunderer_{source}")
-        state.pitiless_plunderer_treasures += t
-    _apply_death_payoffs(state, log, source=source)
-
 def _creature_sacrificed(state: GameState, log: List[Dict], source: str):
     # Cascata compartilhada de "uma criatura sua acabou de ser
     # sacrificada" (Pitiless Plunderer + death payoffs + Vito Fanatic).
@@ -1721,57 +1669,14 @@ def _creature_sacrificed(state: GameState, log: List[Dict], source: str):
     # uma unica peca fisica de Equipment por turno, generalizar o
     # reequipe pra todo ponto arriscaria contagem dupla sem ganho real
     # de precisao.
-    #
-    # Refatorado 2026-09-20 (porte do modo de resiliencia): a parte
-    # "Pitiless Plunderer + death payoffs" virou `_apply_creature_death_
-    # payoffs` (compartilhada com remocao de oponente, ver comentario
-    # la) -- este helper agora so' adiciona o que e' EXCLUSIVO de
-    # sacrificio de verdade (o contador + Vito Fanatic). Mesmo
-    # comportamento de antes pros 5 call sites reais ja existentes,
-    # confirmado por regressao bit-a-bit do modo padrao.
     state.creatures_sacrificed_total += 1
-    _apply_creature_death_payoffs(state, log, source=source)
+    state.creatures_died_this_turn += 1
+    if state.has("Pitiless Plunderer"):
+        t = token_multiplier(state, creature=False)
+        create_treasure_and_crack(state, log, t, source=f"pitiless_plunderer_{source}")
+        state.pitiless_plunderer_treasures += t
+    _apply_death_payoffs(state, log, source=source)
     _vito_fanatic_sacrifice_trigger(state, log)
-
-def remove_permanent(state: GameState, log: List[Dict], name: str, source: str = "opponent"):
-    """Ponto central de remocao de permanente do CAMPO por acao de
-    OPONENTE (wipe/remocao do modo de resiliencia, 2026-09-20 -- porte
-    do Megatron/Ur-Dragon/Hei Bai, usuario: "Agora implementa essas
-    mudanças no Markov"). Este deck NUNCA teve nenhum jeito de uma
-    criatura NOMEADA morrer antes desta rodada (so' sacrificio de
-    TOKEN via `sac_loop`, ver docstring do topo do arquivo) -- este e'
-    o 1o ponto real de "destroy"/wipe verdadeiro deste simulador.
-
-    Comandante: vai pra zona de comando (CR 903.9, efeito de
-    SUBSTITUICAO de zona), nunca pro cemiterio -- `commander_in_play`
-    vira False, recastavel depois (`main_phase` ajustado pra permitir
-    recast, ver comentario la'). Justamente por ser substituicao, o
-    comandante NUNCA chega a ser "put into a graveyard" de verdade --
-    gatilhos de "dies" (Pitiless Plunderer, death payoffs) NAO disparam
-    pra ele (ruling real: nunca aconteceu o evento que "dies" define).
-
-    Token (Vampire Token da Eminence, Vampire Demon Token do Vito
-    Fanatic): sai de `state.battlefield` E de `state.tokens` (mantem o
-    pool do `sac_loop` consistente) -- deixa de existir sem ir pro
-    cemiterio (mesma convencao ja' usada em `sac_loop`), mas ainda
-    dispara `_apply_creature_death_payoffs` se for uma criatura (um
-    token morto "dies" normalmente antes de deixar de existir).
-
-    Carta nomeada (nao-comandante): vai pro cemiterio de verdade,
-    dispara `_apply_creature_death_payoffs` se for criatura."""
-    if name not in state.battlefield:
-        return
-    state.battlefield.remove(name)
-    if name == COMMANDER:
-        state.commander_in_play = False
-        return
-    if name in state.tokens:
-        state.tokens.remove(name)
-    else:
-        state.graveyard.append(name)
-        state.creatures_destroyed_by_opponent_total += 1
-    if is_creature(name):
-        _apply_creature_death_payoffs(state, log, source=source)
 
 def add_loyalty(state: GameState, pw: str, amount: int, log: List[Dict], reason: str = ""):
     if pw not in state.loyalty:
@@ -2379,31 +2284,14 @@ def main_phase(state: GameState, log: List[Dict]):
     if COMBO_HUNTING_POLICY:
         combo_hunt(state, log)
 
-    # Achado real 2026-09-20 (porte do modo de resiliencia): a condicao
-    # `commander_cast_count == 0` de antes so' permitia conjurar Edgar
-    # UMA vez pra sempre -- nunca era um problema em modo padrao (nenhum
-    # removal existia, `commander_in_play` nunca voltava a False), mas
-    # bloquearia recast de verdade depois de `remove_permanent` mandar
-    # Edgar de volta pra zona de comando (CR 903.9). Removida -- `not
-    # state.commander_in_play` sozinho ja' e' a condicao real (100%
-    # identico em modo padrao: antes do 1o cast os dois dao a mesma
-    # resposta, e depois do 1o cast `commander_in_play` nunca fica False
-    # sem o modo de resiliencia). Contraataque (`try_smart_opponent_
-    # counter`, 7a categoria do modo de resiliencia -- so' faz sentido
-    # no exato momento do cast, mesmo padrao do Megatron/Ur-Dragon/Hei
-    # Bai): mana gasta e taxa contam ANTES do counter (CR 903.10a conta
-    # "cast", nao "resolved"), entrada em campo so' DEPOIS de passar.
-    if not state.commander_in_play and can_cast(state, COMMANDER):
+    if not state.commander_in_play and state.commander_cast_count == 0 and can_cast(state, COMMANDER):
         state.mana_spent_this_turn += commander_effective_mv(state)
+        state.battlefield.append(COMMANDER)
+        state.commander_in_play = True
+        state.commander_cast_turn = state.turn
         state.commander_cast_count += 1
-        if try_smart_opponent_counter(state):
-            log.append({"action": "cast_commander_countered", "turn": state.turn})
-        else:
-            state.battlefield.append(COMMANDER)
-            state.commander_in_play = True
-            state.commander_cast_turn = state.turn
-            on_creature_enters(state, log, COMMANDER)
-            log.append({"action": "cast_commander", "turn": state.turn})
+        on_creature_enters(state, log, COMMANDER)
+        log.append({"action": "cast_commander", "turn": state.turn})
 
     activate_planeswalkers(state, log)
     try_level_up_caretakers_talent(state, log)
@@ -2789,336 +2677,6 @@ def run_batch(n=2000, turns=8, out_jsonl="edgar_markov_v1_runs.jsonl", seed_base
     print()
     print(f"Logs salvos em: {out_jsonl}")
     return results
-
-# =========================================================
-# MODO OPCIONAL DE RESILIENCIA (interacao de oponente)
-# =========================================================
-# Porte do modo de resiliencia ja' implementado e validado no Megatron/
-# Ur-Dragon/Hei Bai (usuario, 2026-09-20: "Agora implementa essas
-# mudanças no Markov"). Aditivo e OPCIONAL -- nunca chamado por
-# `simulate_one`/`run_batch` (modo padrao), gated inteiramente por
-# `state.interaction_rng` (None em modo padrao, todo `try_smart_
-# opponent_*` abaixo retorna cedo sem nenhum efeito colateral nesse
-# caso). Mesmas 7 categorias e' o mesmo design final ja' validado nos
-# outros 3 decks (incluindo as 3 rodadas de correcao de orquestracao de
-# turno: wipe/ataque mutuamente exclusivos por turno de oponente, wipe
-# simetrico suprimindo ataque na rodada inteira exceto haste, e o gate
-# de "atencao do oponente" pra nao assumir que 100% da mesa mira em mim
-# todo turno) -- implementado aqui direto no design final, sem precisar
-# reproduzir o historico de 3 rodadas que os outros decks passaram.
-#
-# Diferencas estruturais REAIS deste deck vs. os outros 3 (levadas em
-# conta no design abaixo, nao simplificacoes por preguica):
-# - Nenhuma criatura NOMEADA jamais morria neste motor antes desta
-#   rodada (so' sacrificio de TOKEN via sac_loop) -- `remove_permanent`
-#   acima e' o 1o ponto real de destroy/wipe verdadeiro do arquivo.
-# - Combate real (bloqueadores) NAO e' modelado (mesma convencao ja'
-#   documentada no topo do arquivo, "Edgar ataca todo turno... sem
-#   resposta do oponente") -- ataque de oponente aqui tambem conecta
-#   sem bloqueio, mesmo padrao ja usado no Ur-Dragon/Hei Bai.
-# - Este arquivo nunca rastreou vida PROPRIA (so' contadores agregados
-#   de drain/lifegain do oponente) -- `state.life` e' NOVO, existe so'
-#   como alvo do ataque de oponente do modo de resiliencia.
-
-NUM_OPPONENTS = 3  # premissa declarada (mesa de 4), mesma convencao ja' documentada no Megatron/Ur-Dragon/Hei Bai
-
-INTERACTION_SETUP_TURNS = 2
-# Turnos 1-2 sao sempre setup, sem chance de reacao nenhuma -- o
-# oponente ainda nao tem motivo/mana pra reagir.
-
-def interaction_chance(state: GameState) -> float:
-    """Formula compartilhada de 'chance do oponente reagir esse turno' --
-    identica ao Megatron/Ur-Dragon/Hei Bai: escala com o impacto do meu
-    proprio board (permanentes nao-terreno em campo)."""
-    board_impact = sum(1 for n in state.battlefield if not is_land(n))
-    return min(0.10 + 0.03 * board_impact, 0.75)
-
-OPPONENT_ATTENTION_CHANCE = 1.0 / NUM_OPPONENTS
-# Gate de "esse oponente esta' de olho em mim esse turno" (achado real
-# do usuario nos outros 3 decks, 2026-09-20: "se sempre for 3 contra 1,
-# ai' nao consigo fazer nada, nunca!") -- por simetria, ha' 3 alvos
-# possiveis pra atencao de qualquer oponente (eu e os outros 2 que este
-# simulador nao modela), entao a chance BASE de que um turno de
-# oponente qualquer seja sobre MIM e' 1/NUM_OPPONENTS, antes de
-# qualquer ajuste por ameaca de board (que ja' fica dentro de
-# `interaction_chance()`). Rolado 1x no INICIO de `try_smart_opponent_
-# turn`, antes de qualquer categoria.
-
-POST_WIPE_ATTACK_HASTE_FACTOR = 0.15
-# Board wipe e' SIMETRICO -- acerta TODA criatura da mesa, nao so' as
-# minhas. Se um wipe ja' aconteceu NESTA RODADA (`state.wiped_this_
-# round`), TODOS os turnos de oponente restantes na mesma rodada
-# tambem ficam sem criaturas de verdade pra atacar -- exceto por haste
-# (fisicamente possivel, Regra #1 do CLAUDE.md: so' impossibilidade
-# estrutural justifica nao modelar, nunca zerar por completo).
-
-BOARD_WIPE_CHANCE_FACTOR = 0.4
-GRAVEYARD_WIPE_CHANCE_FACTOR = 0.4
-GRAVEYARD_SNIPE_CHANCE_FACTOR = 0.5
-COUNTERSPELL_CHANCE_FACTOR = 0.5
-# Mesmos fatores redutores do Megatron/Ur-Dragon/Hei Bai sobre a MESMA
-# `interaction_chance()` compartilhada -- sweeper/mass-exile sao mais
-# raros numa lista de 99 (0.4), counterspell/exilio-de-carta-unica sao
-# intermediarios (0.5), ataque/remocao/discard usam a chance cheia.
-
-INTERACTION_ENGINE_PRIORITY = [
-    "Roaming Throne",
-    "Pitiless Plunderer",
-    "Ashnod's Altar",
-    "Sanctum Seeker",
-    "Skullclamp",
-    "Black Market Connections",
-    "Caretaker's Talent",
-    "Zulaport Cutthroat",
-    "Sorin, Imperious Bloodlord",
-    "Vito, Fanatic of Aclazotz",
-]
-# Lista curada por prioridade (a mais critica primeiro) -- so' cartas
-# que sao motor RECORRENTE de valor (dobra gatilho/gera Treasure todo
-# turno/dreno por ataque ou morte/engine de draw), nao corpos grandes
-# isolados. O proprio Edgar Markov fica DE FORA de proposito -- ja' tem
-# categoria dedicada (`try_smart_opponent_counter`, mira o CAST dele
-# especificamente) e remocao nao o mata de verdade mesmo (vai pra zona
-# de comando via `remove_permanent`), entao um oponente esperto prefere
-# gastar a remocao pontual numa peca irrecuperavel.
-
-OPPONENT_ATTACKER_PROFILES = [
-    ("Knight Token", 2), ("Saproling Token", 1), ("Vampire Token", 1),
-    ("Zombie Token", 2), ("Soldier Token", 1), ("Goblin Token", 1),
-    ("Elemental Token", 3),
-]
-# Mesmos perfis genericos ja' validados no Megatron/Ur-Dragon/Hei Bai --
-# sem toughness, este arquivo nao modela bloqueio (ver nota estrutural
-# no topo da secao). Todo ataque conecta.
-
-def try_smart_opponent_removal(state: GameState, log: List[Dict]) -> Optional[str]:
-    """Remocao 'inteligente' -- mira sempre a peca-motor de maior
-    prioridade presente em campo (`INTERACTION_ENGINE_PRIORITY`), nunca
-    aleatorio."""
-    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
-        return None
-    present = [n for n in INTERACTION_ENGINE_PRIORITY if n in state.battlefield]
-    if not present:
-        return None
-    if state.interaction_rng.random() >= interaction_chance(state):
-        return None
-    target = present[0]
-    remove_permanent(state, log, target, source="opponent_removal")
-    state.smart_removals_total += 1
-    state.smart_removal_log.append((state.turn, target))
-    return target
-
-def try_smart_opponent_attack(state: GameState, log: List[Dict]) -> Optional[str]:
-    """Ataque de oponente -- SEM bloqueio (limitacao estrutural ja'
-    documentada no topo do arquivo, "combate real nao modelado"). Sempre
-    conecta em `state.life`.
-
-    Se `state.wiped_this_round` (algum wipe ja' disparou nesta rodada,
-    de qualquer oponente, incluindo este mesmo turno) a chance cai pra
-    `POST_WIPE_ATTACK_HASTE_FACTOR` -- representa so' um atacante com
-    haste conjurado DEPOIS do wipe."""
-    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
-        return None
-    chance = interaction_chance(state) * (POST_WIPE_ATTACK_HASTE_FACTOR if state.wiped_this_round else 1.0)
-    if state.interaction_rng.random() >= chance:
-        return None
-    name, power = state.interaction_rng.choice(OPPONENT_ATTACKER_PROFILES)
-    state.life -= power
-    state.smart_attacks_taken_total += 1
-    state.smart_attack_log.append((state.turn, name))
-    return name
-
-def try_smart_opponent_discard(state: GameState, log: List[Dict]) -> Optional[str]:
-    """Discard aleatorio -- mesma logica do Megatron/Ur-Dragon/Hei Bai
-    (alvo puramente ao acaso na mao, sem filtro nenhum)."""
-    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
-        return None
-    if not state.hand:
-        return None
-    if state.interaction_rng.random() >= interaction_chance(state):
-        return None
-    target = state.interaction_rng.choice(state.hand)
-    state.hand.remove(target)
-    state.graveyard.append(target)
-    state.smart_discards_total += 1
-    state.smart_discard_log.append((state.turn, target))
-    return target
-
-def try_smart_opponent_wipe(state: GameState, log: List[Dict]) -> Optional[list]:
-    """Board wipe ('destroy all creatures') -- destroi TODAS as minhas
-    criaturas em campo de uma vez via `remove_permanent` (que ja' trata
-    comandante->zona de comando, token->deixa de existir, gatilhos reais
-    de morte pra cada uma). Sem nenhuma criatura em campo, retorna None
-    sem fazer nada -- oponente esperto nao gasta um wipe num board
-    vazio."""
-    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
-        return None
-    targets = [n for n in state.battlefield if is_creature(n)]
-    if not targets:
-        return None
-    if state.interaction_rng.random() >= interaction_chance(state) * BOARD_WIPE_CHANCE_FACTOR:
-        return None
-    for n in targets:
-        remove_permanent(state, log, n, source="opponent_wipe")
-    state.smart_wipes_total += 1
-    state.smart_wipe_log.append((state.turn, targets))
-    state.wiped_this_round = True
-    return targets
-
-def try_smart_opponent_graveyard_wipe(state: GameState, log: List[Dict]) -> Optional[list]:
-    """Graveyard hate, modelo MASS EXILE (Bojuka Bog/Soul-Guide
-    Lantern-style) -- dispara NO MAXIMO 1x por partida inteira
-    (`state.graveyard_wipe_used`)."""
-    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
-        return None
-    if state.graveyard_wipe_used or not state.graveyard:
-        return None
-    if state.interaction_rng.random() >= interaction_chance(state) * GRAVEYARD_WIPE_CHANCE_FACTOR:
-        return None
-    exiled = state.graveyard[:]
-    state.graveyard.clear()
-    state.graveyard_wipe_used = True
-    state.smart_graveyard_wipes_total += 1
-    state.smart_graveyard_wipe_log.append((state.turn, exiled))
-    return exiled
-
-def try_smart_opponent_graveyard_snipe(state: GameState, log: List[Dict]) -> Optional[str]:
-    """Graveyard hate, modelo EXILIO DE CARTA UNICA (Scavenging
-    Ooze/Cease-style) -- repetivel todo turno. Alvo SMART: maior MV
-    entre criatura no cemiterio -- mesmo criterio que Agadeem's
-    Awakening/Sevinne's Reclamation/Bloodline Bidding ja usam pra
-    escolher alvo real de recursao."""
-    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
-        return None
-    candidates = [c for c in state.graveyard if is_creature(c)]
-    if not candidates:
-        return None
-    if state.interaction_rng.random() >= interaction_chance(state) * GRAVEYARD_SNIPE_CHANCE_FACTOR:
-        return None
-    target = max(candidates, key=lambda n: C(n).mv)
-    state.graveyard.remove(target)
-    state.smart_graveyard_snipes_total += 1
-    state.smart_graveyard_snipe_log.append((state.turn, target))
-    return target
-
-def try_smart_opponent_counter(state: GameState) -> bool:
-    """Counterspell -- so' mira a conjuracao do proprio Edgar Markov
-    (mesma logica do Megatron/Ur-Dragon/Hei Bai: o motor inteiro do
-    deck depende do comandante resolver e atacar). Chamada de dentro de
-    `main_phase()`, nao do loop de `simulate_one_with_interaction` --
-    so' faz sentido no exato momento do cast, dentro do MEU turno."""
-    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
-        return False
-    if state.interaction_rng.random() >= interaction_chance(state) * COUNTERSPELL_CHANCE_FACTOR:
-        return False
-    state.smart_counters_total += 1
-    state.smart_counter_log.append(state.turn)
-    return True
-
-def try_smart_opponent_turn(state: GameState, log: List[Dict]):
-    """Simula O TURNO DE UM oponente dentro da rodada entre os meus
-    turnos (mesmo design final ja' validado no Megatron/Ur-Dragon/Hei
-    Bai, Regra #6 do CLAUDE.md: bug de orquestracao de turno que
-    auditoria carta-a-carta nao pega). Chamada `NUM_OPPONENTS` vezes por
-    rodada -- um wipe de um oponente ANTERIOR na rodada continua
-    afetando corretamente o ataque de um oponente POSTERIOR na MESMA
-    rodada (chamadas em sequencia, mesmo `state`).
-
-    Gate de atencao: antes de rolar QUALQUER categoria, este turno de
-    oponente precisa passar em `OPPONENT_ATTENTION_CHANCE` -- representa
-    a chance de que ESTE oponente especifico esteja de fato de olho em
-    mim neste turno, em vez de ocupado com o proprio board/outro
-    oponente. Wipe e ataque nao precisam de exclusao mutua manual aqui:
-    `try_smart_opponent_attack` ja' se auto-regula via `state.wiped_
-    this_round` (setado por `try_smart_opponent_wipe`, que roda antes,
-    dentro desta mesma chamada)."""
-    if state.turn > INTERACTION_SETUP_TURNS and state.interaction_rng.random() >= OPPONENT_ATTENTION_CHANCE:
-        return
-    try_smart_opponent_wipe(state, log)
-    try_smart_opponent_attack(state, log)
-    try_smart_opponent_graveyard_wipe(state, log)
-    try_smart_opponent_graveyard_snipe(state, log)
-    try_smart_opponent_removal(state, log)
-    try_smart_opponent_discard(state, log)
-
-def simulate_one_with_interaction(seed: int, turns: int = 8) -> GameState:
-    """Mesmo goldfish de `simulate_one`, mas com `NUM_OPPONENTS` turnos
-    de oponente de verdade simulados (`try_smart_opponent_turn`) a cada
-    rodada entre os meus turnos. Counterspell (7a categoria) NAO mora
-    neste loop -- ver `try_smart_opponent_counter`, chamada de dentro de
-    `main_phase` no exato momento do cast do comandante.
-
-    Mulligan duplicado (nao extraido pra helper compartilhado) de
-    proposito -- este arquivo nunca teve uma funcao `mulligan()`
-    separada (diferente do Megatron/Ur-Dragon/Hei Bai), e extrair uma
-    agora tocaria `simulate_one` (modo padrao) sem necessidade real; mais
-    seguro duplicar as ~15 linhas aqui do que arriscar uma regressao
-    numa funcao que precisa ficar bit-a-bit identica.
-
-    NUNCA chamado por `run_batch`/`simulate_one` padrao (nem o loop
-    aqui, nem o counter dentro de `main_phase` -- ambos ficam inertes
-    sem `interaction_rng`). Retorna o `GameState` bruto (nao um dict
-    resumido como `simulate_one`) -- mesma convencao do Megatron/
-    Ur-Dragon/Hei Bai, pra inspecao detalhada das metricas de
-    resiliencia."""
-    rng = random.Random(seed)
-    deck = parse_decklist(DECKLIST_TEXT)
-    assert len(deck) == 99, f"Mainboard deveria ser 99, deu {len(deck)}"
-    rng.shuffle(deck)
-    state = GameState(rng=rng, library=deck, interaction_rng=random.Random(seed + 999_999))
-
-    mulligans = 0
-    while True:
-        state.hand = []
-        state.draw(7)
-        if should_keep(state.hand) or mulligans >= 2:
-            break
-        mulligans += 1
-        state.library.extend(state.hand)
-        state.hand = []
-        rng.shuffle(state.library)
-    mulligan_penalty = max(0, mulligans - 1)
-    if mulligan_penalty:
-        bottoms = choose_bottom(state.hand, mulligan_penalty)
-        for c in bottoms:
-            state.hand.remove(c)
-            state.library.append(c)
-        rng.shuffle(state.library)
-
-    interaction_log: List[Dict] = []
-    game_log = []
-    for t in range(1, turns + 1):
-        play_turn(state, t, game_log)
-        state.wiped_this_round = False
-        for _ in range(NUM_OPPONENTS):
-            try_smart_opponent_turn(state, interaction_log)
-    return state
-
-def run_batch_with_interaction(n=2000, turns=8, seed_base=6000000):
-    """Batch do modo de resiliencia -- reporta so' as metricas
-    relevantes pra 'o motor aguenta perder a peca central?', nao
-    duplica o relatorio inteiro do `run_batch` padrao."""
-    states = [simulate_one_with_interaction(seed_base + i, turns=turns) for i in range(n)]
-
-    def avg(vals):
-        return sum(vals) / len(vals) if vals else 0.0
-
-    print(f"=== Edgar Markov Goldfish v1 - MODO DE RESILIENCIA - n={n}, turns={turns} ===")
-    print(f"Avg remocoes inteligentes sofridas: {avg([s.smart_removals_total for s in states]):.2f}")
-    print(f"Avg ataques de oponente sofridos: {avg([s.smart_attacks_taken_total for s in states]):.2f}")
-    print(f"Avg descartes forcados sofridos: {avg([s.smart_discards_total for s in states]):.2f}")
-    print(f"Avg board wipes sofridos: {avg([s.smart_wipes_total for s in states]):.2f}")
-    print(f"Board wipe sofrido em {100*sum(1 for s in states if s.smart_wipes_total > 0)/n:.1f}% das partidas")
-    print(f"Avg graveyard wipes (mass exile) sofridos: {avg([s.smart_graveyard_wipes_total for s in states]):.2f}")
-    print(f"Avg graveyard snipes (exilio unico) sofridos: {avg([s.smart_graveyard_snipes_total for s in states]):.2f}")
-    print(f"Avg counterspells sofridos (cast do comandante): {avg([s.smart_counters_total for s in states]):.2f}")
-    print(f"Avg vida final: {avg([s.life for s in states]):.2f}")
-    print(f"Avg criaturas destruidas por oponente (fora sacrificio proprio): {avg([s.creatures_destroyed_by_opponent_total for s in states]):.2f}")
-    never_cast = sum(1 for s in states if s.commander_cast_count == 0)
-    print(f"Edgar Markov nunca conjurado em {turns} turnos: {100*never_cast/n:.1f}%")
-    recast = sum(1 for s in states if s.commander_cast_count >= 2)
-    print(f"Edgar Markov recastado ao menos 1x (removido e voltou): {100*recast/n:.1f}%")
-    return states
 
 if __name__ == "__main__":
     run_batch(n=2000, turns=8)

@@ -1,5 +1,45 @@
 # Goldfish Log — Edgar Markov
 
+## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
+
+**Gatilho:** "Agora implementa essas mudanças no Markov" — mesmo modo
+já validado em Megatron/Ur-Dragon/Hei Bai, este deck nunca tinha
+nenhuma extensão de resiliência antes. Detalhes técnicos completos em
+`checklist-oraculo.md`.
+
+**Implementado (7 categorias, design final direto, sem repetir o
+histórico de 3 rodadas de correção dos outros decks):** ataque sem
+bloqueio, remoção curada (`INTERACTION_ENGINE_PRIORITY`), discard
+aleatório, board wipe, graveyard hate (mass exile + exílio único),
+counterspell no cast do comandante — com `state.wiped_this_round` +
+`POST_WIPE_ATTACK_HASTE_FACTOR` (wipe simétrico suprime ataque na
+rodada) e `OPPONENT_ATTENTION_CHANCE = 1/NUM_OPPONENTS` (nem todo
+oponente mira em mim todo turno) já embutidos.
+
+**Novo neste deck (nunca existia antes):** `remove_permanent()` — 1º
+ponto real de "destroy"/wipe de criatura nomeada do arquivo (antes só
+sacrifício de token existia). Comandante removido vai pra zona de
+comando (CR 903.9), nunca cemitério, e fica recastável.
+
+**2 bugs de código compartilhado corrigidos como pré-requisito real do
+port** (achados só porque agora uma criatura pode de fato morrer/sair
+de campo, não visíveis em modo padrão): `eminence_trigger()` tinha uma
+condição que não cobria o estado real "Edgar destruído, de volta na
+zona de comando" (bug dormant até agora); `main_phase()` só permitia
+conjurar Edgar 1x pra sempre, bloquearia recast. Ambos confirmados 100%
+neutros em modo padrão.
+
+**Resultado (`run_batch_with_interaction`, 2000 jogos):** avg ataques
+sofridos 1,22, avg board wipes 0,51 (43,3% das partidas), avg
+counterspells 0,09, avg vida final 38,11, Edgar recastado após remoção
+em 8,6% das partidas — mesma ordem de grandeza dos outros 3 decks.
+
+**Validação:** modo padrão 100% bit-idêntico (5.000 seeds, dict
+COMPLETO de `simulate_one` comparado, não só campos-chave) + regressão
+de 20.000 partidas em modo resiliência, 0 exceções + testes dirigidos
+(comandante→zona de comando, death payoffs corretos vs. Vito Fanatic,
+token consistency, Eminence pós-remoção, taxa pós-wipe ~0,15x).
+
 ### Correção — nome truncado "Emeritus of Woe" → nome completo — 2026-08-31
 
 Varredura de nomes de carta multi-face em todo o repositório (motivada
