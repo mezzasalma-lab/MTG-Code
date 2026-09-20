@@ -1,5 +1,70 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Bug real de orquestração de turno (2ª rodada): wipe é simétrico pra mesa inteira, não só pro próprio turno do wiper — 2026-09-20
+
+**Gatilho:** usuário apontou, na sequência imediata da correção anterior
+(rolagem 1x/turno-meu → `NUM_OPPONENTS` turnos de oponente reais):
+*"Na verdade se jogador A faz wipe, jogador C não tem como atacar até
+voltar ao turno do jogador A, a não ser no caso de haste!"* — a correção
+anterior só tornava wipe e ataque mutuamente exclusivos dentro do turno
+do MESMO oponente que wipou; ainda deixava um oponente POSTERIOR na
+mesma rodada atacar normalmente, o que é errado porque um board wipe é
+**simétrico** (destrói as criaturas de TODOS na mesa, não só as minhas)
+— então nenhum oponente da mesma rodada tem criatura pra atacar depois
+de um wipe, salvo com haste.
+
+**Corrigido:** novo campo `state.wiped_this_round: bool`, setado por
+`try_smart_opponent_wipe()` no momento em que o wipe realmente dispara,
+e resetado pra `False` 1x por rodada em `simulate_one_with_interaction()`
+(antes do loop de `NUM_OPPONENTS`). `try_smart_opponent_attack()` agora
+lê esse flag e reduz (nunca zera) a própria chance via
+`POST_WIPE_ATTACK_HASTE_FACTOR = 0.15` sempre que ele estiver ligado —
+cobre uniformemente tanto o turno do próprio wiper (o flag já está
+`True` quando o ataque dele é checado, já que o wipe roda primeiro
+dentro do mesmo `try_smart_opponent_turn`) quanto qualquer oponente
+posterior na mesma rodada. O gate manual antigo (`if not wiped: try_
+smart_opponent_attack(...)`) foi removido de `try_smart_opponent_turn()`
+porque ficou redundante — o próprio `try_smart_opponent_attack()` agora
+se auto-regula pelo flag em vez de depender de um `if` externo que só
+cobria o caso do mesmo turno.
+
+Chance reduzida, nunca zerada, por decisão direta da Regra #1 do
+CLAUDE.md: só impossibilidade estrutural justifica não modelar algo, e
+um atacante com haste conjurado DEPOIS do wipe é fisicamente possível —
+zerar o ataque por completo seria julgamento de valor, não regra real.
+
+**Validação:**
+- Teste dirigido (20.000 rolagens de `try_smart_opponent_attack`,
+  metade com `wiped_this_round=True` fixo, metade com `False`) — taxa
+  de ataque com o flag ligado caiu pra ~13,5% da taxa base, bem próximo
+  do `POST_WIPE_ATTACK_HASTE_FACTOR=0.15` esperado.
+- Teste dirigido confirmando que `try_smart_opponent_wipe()` seta
+  `wiped_this_round=True` no exato momento em que dispara (não antes).
+- Teste dirigido confirmando que o flag reseta corretamente entre
+  rodadas (`simulate_one_with_interaction` zera antes de cada rodada
+  nova, incluindo o branch de `extra_turns_pending`).
+- Regressão de 20.000 partidas no modo resiliência, **0 exceções**.
+- Modo padrão (`simulate_one`/`run_batch`) confirmado **100%
+  bit-idêntico** ao HEAD anterior a esta correção, 5.000 seeds
+  comparadas campo a campo (`turn`, `life`, `proxy_damage_total`,
+  `commander_cast_count`, `attackers_total_all_turns`,
+  `library_emptied`, `megatron_face`) — o diff desta rodada toca só
+  `GameState.wiped_this_round`, `try_smart_opponent_wipe`, `try_smart_
+  opponent_attack`, `try_smart_opponent_turn` e `simulate_one_with_
+  interaction`, nenhuma função usada pelo modo padrão.
+
+**Resultado (batch 2000 jogos mesma seed, antes = só 1ª correção de
+orquestração / depois = + supressão simétrica pós-wipe):**
+
+| Métrica | Antes (wipe só bloqueia o próprio turno) | Depois (wipe suprime a rodada inteira, exceto haste) |
+|---|---|---|
+| Avg board wipes sofridos | 0,904 | 0,896 |
+| Avg ataques de oponente sofridos (total) | 3,156 | 3,028 |
+| Avg vida final | 33,76 | 33,94 |
+
+Mesma correção aplicada de forma idêntica no Ur-Dragon e no Hei Bai —
+ver `checklist-oraculo.md` de cada deck.
+
 ## Bug real de orquestração de turno: wipe e ataque no mesmo turno de oponente — 2026-09-20
 
 **Gatilho:** usuário apontou, depois de ver o comparativo antes/depois:

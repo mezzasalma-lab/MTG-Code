@@ -1,5 +1,32 @@
 # Checklist cláusula-a-cláusula — Hei Bai, Forest Guardian
 
+## Bug real de orquestração de turno (2ª rodada): wipe é simétrico pra mesa inteira — 2026-09-20
+
+**Gatilho:** mesmo achado do usuário aplicado ao Megatron primeiro —
+*"se jogador A faz wipe, jogador C não tem como atacar até voltar ao
+turno do jogador A, a não ser no caso de haste!"* — a correção anterior
+só tornava wipe/ataque mutuamente exclusivos no MESMO turno do wiper.
+Raciocínio e validação completos em
+`megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Corrigido:** mesmo padrão do Megatron/Ur-Dragon —
+`state.wiped_this_round` (setado por `try_smart_opponent_wipe`,
+resetado 1x por rodada), `try_smart_opponent_attack()` reduz a própria
+chance pra `POST_WIPE_ATTACK_HASTE_FACTOR = 0.15` quando o flag está
+ligado. Gate manual antigo removido de `try_smart_opponent_turn()`.
+
+**Validação:** modo padrão confirmado 100% bit-idêntico ao HEAD anterior
+(5.000 seeds) + regressão de 20.000 partidas no modo resiliência, 0
+exceções.
+
+**Resultado (A/B mesma seed, 2000 jogos):**
+
+| Métrica | Antes (wipe só bloqueia o próprio turno) | Depois (wipe suprime a rodada inteira) |
+|---|---|---|
+| Avg board wipes sofridos | 1,579 | 1,573 |
+| Avg ataques de oponente sofridos | 4,009 | 3,753 |
+| Avg vida final | 33,69 | 34,11 |
+
 ## Bug real de orquestração de turno: wipe e ataque no mesmo turno de oponente — 2026-09-20
 
 **Gatilho:** mesmo achado do usuário aplicado ao Megatron primeiro —

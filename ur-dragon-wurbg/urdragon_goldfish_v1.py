@@ -799,6 +799,7 @@ class GameState:
     graveyard_wipe_used: bool = False
     smart_graveyard_snipes_total: int = 0
     smart_graveyard_snipe_log: list = field(default_factory=list)
+    wiped_this_round: bool = False  # achado real do usuario 2026-09-20 (2a rodada): board wipe e' simetrico -- vale pra toda a rodada, nao so' o turno do oponente que fez o wipe. Reset em simulate_one_with_interaction() no inicio de cada rodada. Mesmo padrao do Megatron.
 
 
 def draw_cards(state: GameState, n: int):
@@ -2227,6 +2228,7 @@ def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
         remove_permanent(state, n)
     state.smart_wipes_total += 1
     state.smart_wipe_log.append((state.turn, targets))
+    state.wiped_this_round = True
     return targets
 
 
@@ -2261,14 +2263,35 @@ OPPONENT_ATTACKER_PROFILES = [
 # da secao). Todo ataque conecta.
 
 
+POST_WIPE_ATTACK_HASTE_FACTOR = 0.15
+# Achado real do usuario 2026-09-20 (2a rodada da mesma correcao de
+# orquestracao de turno, mesmo padrao do Megatron): board wipe e'
+# SIMETRICO de verdade -- acerta TODA criatura em campo, nao so' a
+# minha. Se um wipe ja' aconteceu NESTA RODADA (por qualquer um dos
+# oponentes simulados), TODOS os outros oponentes tambem perderam as
+# criaturas deles no mesmo golpe -- "se jogador A faz wipe, jogador C
+# nao tem como atacar ate' voltar ao turno do jogador A, a nao ser no
+# caso de haste" (citacao direta). Nao suprime o ataque por completo
+# (Regra #1 do CLAUDE.md: so' impossibilidade estrutural e' motivo
+# valido pra nao implementar, e um atacante com haste conjurado DEPOIS
+# do wipe e' fisicamente possivel) -- reduz a chance pra so' esse
+# cenario residual.
+
+
 def try_smart_opponent_attack(state: GameState) -> Optional[str]:
     """Ataque de oponente -- SEM bloqueio (limitacao estrutural: este
     arquivo nunca rastreou toughness de criatura nenhuma, nem minha nem
     de ninguem, entao nao ha' dado pra decidir se um bloqueador mataria
-    o atacante e sobreviveria). Sempre conecta em `state.life`."""
+    o atacante e sobreviveria). Sempre conecta em `state.life`.
+
+    Se `state.wiped_this_round` (algum wipe ja' disparou nesta rodada,
+    de qualquer oponente, incluindo este mesmo turno) a chance cai pra
+    `POST_WIPE_ATTACK_HASTE_FACTOR` -- representa so' um atacante com
+    haste conjurado DEPOIS do wipe."""
     if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
         return None
-    if state.interaction_rng.random() >= interaction_chance(state):
+    chance = interaction_chance(state) * (POST_WIPE_ATTACK_HASTE_FACTOR if state.wiped_this_round else 1.0)
+    if state.interaction_rng.random() >= chance:
         return None
     name, power = state.interaction_rng.choice(OPPONENT_ATTACKER_PROFILES)
     state.life -= power
@@ -2360,15 +2383,26 @@ def try_smart_opponent_turn(state: GameState):
     especifico; ataque vem de criatura em campo DAQUELE MESMO oponente.
     Se o wipe for simetrico, as criaturas dele tambem morrem, entao ele
     nao ataca NESSE MESMO turno ("nao ha ataques normalmente nos turnos
-    em que ha wipes", citacao direta do usuario). Wipe e ataque sao
-    mutuamente exclusivos dentro do turno do MESMO oponente -- mas um
-    wipe de um oponente ANTERIOR na rodada continua afetando
-    corretamente o ataque de um oponente POSTERIOR na MESMA rodada
-    (chamadas em sequencia, mesmo `state`). Ver `try_smart_opponent_
-    turn` do Megatron, mesmo padrao."""
-    wiped = try_smart_opponent_wipe(state)
-    if not wiped:
-        try_smart_opponent_attack(state)
+    em que ha wipes", citacao direta do usuario). Wipe de um oponente
+    ANTERIOR na rodada continua afetando corretamente o ataque de um
+    oponente POSTERIOR na MESMA rodada (chamadas em sequencia, mesmo
+    `state`). Ver `try_smart_opponent_turn` do Megatron, mesmo padrao.
+
+    2a rodada da mesma correcao (achado real do usuario 2026-09-20,
+    "se jogador A faz wipe, jogador C nao tem como atacar ate' voltar
+    ao turno do jogador A, a nao ser no caso de haste"): um board wipe
+    e' SIMETRICO -- acerta TODA criatura da mesa, nao so' as minhas.
+    Entao nao e' so' o PROPRIO turno do oponente que fez o wipe que
+    fica sem ataque -- TODOS os turnos de oponente restantes NESTA
+    MESMA RODADA tambem ficam sem criaturas de verdade pra atacar. Por
+    isso o gate manual daqui foi removido: `try_smart_opponent_attack`
+    agora le' `state.wiped_this_round` (setado por `try_smart_opponent_
+    wipe` e resetado 1x por rodada em `simulate_one_with_interaction`)
+    e SOZINHO reduz a propria chance via `POST_WIPE_ATTACK_HASTE_
+    FACTOR` -- cobre uniformemente tanto o turno do proprio wiper
+    quanto qualquer oponente posterior na mesma rodada."""
+    try_smart_opponent_wipe(state)
+    try_smart_opponent_attack(state)
     try_smart_opponent_graveyard_wipe(state)
     try_smart_opponent_graveyard_snipe(state)
     try_smart_opponent_removal(state)
@@ -2381,13 +2415,19 @@ def simulate_one_with_interaction(seed: int, turns: int = 8):
     rodada entre os meus turnos. Counterspell (7a categoria) NAO mora
     neste loop -- ver `try_smart_opponent_counter`, chamada de dentro
     de `cast_card`. NUNCA chamado por `run_batch`/`simulate_one`
-    padrao."""
+    padrao.
+
+    `state.wiped_this_round` e' resetado pra False aqui, no INICIO de
+    cada rodada (antes do loop de `NUM_OPPONENTS`) -- mesmo padrao do
+    Megatron: um wipe so' suprime ataque ate' a rodada em que aconteceu,
+    nunca vaza pra rodada seguinte."""
     rng = random.Random(seed)
     hand, lib, mulls = mulligan(rng)
     state = GameState(hand=hand, library=lib, mulligans=mulls,
                        interaction_rng=random.Random(seed + 999_999))
     for t in range(turns):
         play_turn(state, is_first_turn=(t == 0), on_play=True)
+        state.wiped_this_round = False
         for _ in range(NUM_OPPONENTS):
             try_smart_opponent_turn(state)
     return state

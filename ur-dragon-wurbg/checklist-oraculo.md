@@ -1,5 +1,35 @@
 # Checklist cláusula-a-cláusula — The Ur-Dragon (`urdragon_goldfish_v1.py`)
 
+## Bug real de orquestração de turno (2ª rodada): wipe é simétrico pra mesa inteira — 2026-09-20
+
+**Gatilho:** mesmo achado do usuário aplicado ao Megatron primeiro —
+*"se jogador A faz wipe, jogador C não tem como atacar até voltar ao
+turno do jogador A, a não ser no caso de haste!"* — a correção anterior
+só tornava wipe/ataque mutuamente exclusivos no MESMO turno do wiper,
+mas um wipe simétrico também mata as criaturas de qualquer outro
+oponente que ataque DEPOIS na mesma rodada. Raciocínio e validação
+completos em `megatron-tyrant-mardu/checklist-oraculo.md` — aqui só o
+resultado específico deste deck.
+
+**Corrigido:** mesmo padrão do Megatron — `state.wiped_this_round`
+(setado por `try_smart_opponent_wipe`, resetado 1x por rodada em
+`simulate_one_with_interaction`), `try_smart_opponent_attack()` reduz a
+própria chance pra `POST_WIPE_ATTACK_HASTE_FACTOR = 0.15` quando o flag
+está ligado (nunca zero — haste continua possível). Gate manual antigo
+removido de `try_smart_opponent_turn()`.
+
+**Validação:** modo padrão confirmado 100% bit-idêntico ao HEAD anterior
+(5.000 seeds, campos `turn`/`life`/`commander_cast_count`) + regressão
+de 20.000 partidas no modo resiliência, 0 exceções.
+
+**Resultado (A/B mesma seed, 2000 jogos):**
+
+| Métrica | Antes (wipe só bloqueia o próprio turno) | Depois (wipe suprime a rodada inteira) |
+|---|---|---|
+| Avg board wipes sofridos | 0,900 | 0,883 |
+| Avg ataques de oponente sofridos | 2,983 | 2,905 |
+| Avg vida final | 35,28 | 35,40 |
+
 ## Bug real de orquestração de turno: wipe e ataque no mesmo turno de oponente — 2026-09-20
 
 **Gatilho:** mesmo achado do usuário aplicado ao Megatron primeiro —

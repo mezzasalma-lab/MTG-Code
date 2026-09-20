@@ -4,6 +4,37 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Bug de orquestração de turno (2ª rodada): wipe é simétrico pra mesa inteira — 2026-09-20
+
+**Gatilho:** usuário apontou que a correção anterior (wipe/ataque
+mutuamente exclusivos só no MESMO turno de oponente) não bastava: *"se
+jogador A faz wipe, jogador C não tem como atacar até voltar ao turno
+do jogador A, a não ser no caso de haste!"* — um board wipe é simétrico,
+então limpa as criaturas de TODOS os oponentes na mesa, não só as do
+oponente que o conjurou. Detalhes técnicos completos em
+`checklist-oraculo.md`.
+
+**Corrigido:** novo flag `state.wiped_this_round`, ligado quando
+qualquer wipe dispara na rodada e resetado no início de cada rodada
+nova. `try_smart_opponent_attack()` reduz a própria chance pra
+`POST_WIPE_ATTACK_HASTE_FACTOR = 0.15` (nunca zero — haste continua
+fisicamente possível, Regra #1) sempre que o flag estiver ligado,
+cobrindo tanto o turno do próprio wiper quanto qualquer oponente
+posterior na mesma rodada. Mesma correção aplicada no Ur-Dragon e Hei
+Bai.
+
+**Resultado (A/B mesma seed, 2000 jogos):** ataques de oponente sofridos
+3,16→3,03, vida final média 33,76→33,94 (menos dano recebido, como
+esperado — menos oponentes conseguem atacar de verdade logo após um
+wipe simétrico).
+
+**Validação:** teste dirigido (20.000 rolagens, taxa pós-wipe caiu pra
+~13,5% da taxa base, ~ o fator 0,15 esperado) + teste dirigido do flag
+sendo setado/resetado corretamente + regressão de 20.000 partidas, 0
+exceções + modo padrão confirmado 100% bit-idêntico (5.000 seeds).
+
+---
+
 ## Bug de orquestração de turno: wipe e ataque no mesmo turno de oponente — 2026-09-20
 
 **Gatilho:** usuário apontou que board wipe é sorcery (main phase) e

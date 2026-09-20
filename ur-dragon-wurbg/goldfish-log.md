@@ -4,6 +4,24 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Bug de orquestração de turno (2ª rodada): wipe é simétrico pra mesa inteira — 2026-09-20
+
+**Gatilho:** mesmo achado do usuário aplicado no Megatron — um wipe
+simétrico suprime ataque de TODOS os oponentes na mesma rodada, não só
+do próprio wiper. Detalhes em `checklist-oraculo.md` e
+`megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Corrigido:** `state.wiped_this_round`, `POST_WIPE_ATTACK_HASTE_
+FACTOR = 0.15`, mesmo padrão do Megatron.
+
+**Resultado (A/B mesma seed, 2000 jogos):** ataques de oponente sofridos
+2,98→2,91, vida final média 35,28→35,40.
+
+**Validação:** modo padrão 100% bit-idêntico (5.000 seeds) + regressão
+de 20.000 partidas, 0 exceções.
+
+---
+
 ## Bug de orquestração de turno: wipe e ataque no mesmo turno de oponente — 2026-09-20
 
 **Gatilho:** mesmo achado do usuário aplicado no Megatron (board wipe é
