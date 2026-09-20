@@ -1,5 +1,94 @@
 # Checklist cláusula-a-cláusula — Ulalek, Fused Atrocity
 
+## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
+
+**Gatilho:** usuário pediu direto, mesmo protocolo já aplicado a
+Megatron/Ur-Dragon/Hei Bai/Markov: *"implemente a extensão no Ulalek,
+mesmo protocolo, salve a versão antes e a depois e me dê as métricas
+comparativas no final."* Este deck nunca tinha NENHUMA extensão de
+resiliência antes — porte completo do zero, incorporando direto o
+design final já validado (3 rodadas de correção de orquestração de
+turno + gate de atenção do oponente, sem repetir o histórico).
+
+**Diferenças estruturais reais deste deck** (levadas em conta no
+design, não simplificações por preguiça):
+1. **0 gatilhos de morte/sacrifício real** — Writhing Chrysalis reage
+   só a EU sacrificar Spawn/Scion pra mana (`sac_spawns_for_mana`),
+   evento diferente de "morrer"/ser destruído por oponente (confirmado
+   por grep antes de escrever `remove_permanent`). Chokepoint mais
+   simples que Markov (sem cascata de death payoff pra replicar).
+2. **Nenhum combate real é modelado** — este arquivo não tem NENHUMA
+   função de ataque/combate (deck de cascade/ramp/valor, não
+   agressivo). Ataque de oponente conecta sem bloqueio, mesmo padrão do
+   Ur-Dragon/Hei Bai/Markov.
+3. **Vida própria nunca foi rastreada** — `state.life` é NOVO, existe
+   só como alvo do ataque de oponente.
+4. **Nenhuma taxa de comandante existia** (CR 903.10a) — este arquivo
+   nunca modelava `+{2}` por cast anterior, porque Ulalek nunca saía de
+   campo antes (só era conjurada 1x). Adicionada como pré-requisito
+   estrutural real do recast, não um extra opcional: sem ela, um
+   recast custaria o mesmo que o 1º cast pra sempre, o que é
+   objetivamente errado pela regra real do formato.
+
+**`remove_permanent()`** (novo): comandante destruído vai pra zona de
+comando (CR 903.9, substituição de zona), nunca cemitério — fica
+recastável, agora pagando a taxa real. Token (Eldrazi Spawn/Manifest,
+tag `"token"`) deixa de existir sem ir pro cemitério (mesma convenção
+já usada em `sac_spawns_for_mana`). Carta nomeada vai pro cemitério de
+verdade.
+
+**Nota estrutural documentada, não corrigida nesta rodada** (📊, Regra
+#1 do CLAUDE.md): o token Spirit 2/2 do +1 de Ugin, the Ineffable nunca
+é adicionado a `state.battlefield` de verdade neste simulador — decisão
+PRÉ-EXISTENTE e já documentada no próprio `do_ugin_loyalty()` ("nunca
+sai de campo neste simulador" porque nenhum evento real de
+leaves-the-battlefield existia antes desta rodada). Meu novo
+`remove_permanent` agora É um evento real desse tipo, o que tecnicamente
+reabre a pergunta — mas corrigir isso direito exigiria redesenhar o
+rastreio por-token do Ugin (qual card exilado volta pra mão quando qual
+token específico morre, com múltiplos tokens/exílios simultâneos
+possíveis), um projeto separado do porte do modo de resiliência, não um
+pré-requisito estrutural dele (ao contrário da taxa de comandante acima,
+que sem ela o recast ficaria objetivamente errado). Registrado aqui pra
+não virar um buraco silencioso — o board wipe/ataque do modo de
+resiliência corretamente NÃO alcançam esse token específico, mesma
+limitação já documentada antes, não uma nova.
+
+**Implementado:** as mesmas 7 categorias já validadas nos outros 4
+decks (ataque sem bloqueio, remoção curada por `INTERACTION_ENGINE_
+PRIORITY`, discard aleatório, board wipe via `remove_permanent`,
+graveyard hate em 2 modelos — mass exile 1x/partida e exílio de carta
+única repetível, alvo = maior MV entre criatura no cemitério, mesmo
+critério que Spawnbed Protector/World Breaker usam pra recursão real
+—, e counterspell mirando só o cast do comandante), já com `state.
+wiped_this_round` + `POST_WIPE_ATTACK_HASTE_FACTOR = 0.15` (wipe
+simétrico suprime ataque na rodada inteira) e `OPPONENT_ATTENTION_
+CHANCE = 1/NUM_OPPONENTS` (nem todo oponente mira em mim todo turno).
+
+**`INTERACTION_ENGINE_PRIORITY` curada** (motor recorrente de valor):
+Echoes of Eternity, Zhulodok Void Gorger, Roaming Throne, Ugin the
+Ineffable, Mystic Forge, The One Ring, Rhystic Study, Forsaken
+Monument, Conduit of Ruin, Radagast of Rhosgobel. Ulalek fica de fora
+de propósito — já tem categoria dedicada (counterspell no cast) e
+remoção não a mata de verdade mesmo.
+
+**Validação:**
+- Modo padrão confirmado **100% bit-idêntico** ao HEAD anterior — 5.000
+  seeds comparadas campo a campo (30 métricas por seed), 0 divergências.
+- Regressão de 20.000 partidas em modo resiliência, 0 exceções.
+- Testes dirigidos: comandante removido vai pra zona de comando (nunca
+  cemitério); custo de recast reflete a taxa (+2 após 1 cast anterior,
+  MV base 5 → 7); token removido não vai pro cemitério; carta nomeada
+  vai pro cemitério; taxa de ataque pós-wipe cai pra ~13,5% da taxa
+  base (~ fator 0,15 esperado); recast completo testado end-to-end via
+  `main_phase` com mana suficiente.
+- `run_batch_with_interaction` (2000 jogos): avg ataques sofridos 1,17,
+  avg board wipes 0,43 (37,0% das partidas), avg counterspells 0,10,
+  avg vida final 38,17, Ulalek recastada após remoção em 30,1% das
+  partidas (bem mais alto que o Markov, 8,6% — Ulalek costuma resolver
+  muito mais cedo, turno 4,2 em média vs. 6,1+ do Markov, sobrando mais
+  turnos no jogo de 8 pra ser removida e recomprada).
+
 ## Achado real 2026-09-14 (usuário perguntou se Roaming Throne está certa em todos os decks onde aparece)
 
 Mesma varredura pedida depois dos fixes no Beorn/Edgar Markov/Ur-Dragon.

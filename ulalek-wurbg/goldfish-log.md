@@ -4,6 +4,57 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
+
+**Gatilho:** "implemente a extensão no Ulalek, mesmo protocolo" — mesmo
+modo já validado em Megatron/Ur-Dragon/Hei Bai/Markov, este deck nunca
+tinha nenhuma extensão de resiliência antes. Detalhes técnicos
+completos em `checklist-oraculo.md`.
+
+**Implementado (7 categorias, design final direto):** ataque sem
+bloqueio, remoção curada (`INTERACTION_ENGINE_PRIORITY`), discard
+aleatório, board wipe, graveyard hate (mass exile + exílio único),
+counterspell no cast do comandante — com `state.wiped_this_round` +
+`POST_WIPE_ATTACK_HASTE_FACTOR` e `OPPONENT_ATTENTION_CHANCE =
+1/NUM_OPPONENTS` já embutidos.
+
+**Novo neste deck:** `remove_permanent()` (comandante → zona de
+comando via CR 903.9, recastável) e a taxa de comandante em si (CR
+903.10a, `+{2}` por cast anterior) — nunca existia, porque Ulalek nunca
+saía de campo antes desta rodada.
+
+**Resultado (`run_batch_with_interaction`, 2000 jogos):** avg ataques
+sofridos 1,17, avg board wipes 0,43 (37,0% das partidas), avg
+counterspells 0,10, avg vida final 38,17, Ulalek recastada após
+remoção em 30,1% das partidas — bem mais alto que o Markov (8,6%),
+porque Ulalek resolve muito mais cedo em média (turno 4,2 vs. 6,1+),
+sobrando mais turnos no jogo pra ser removida e recomprada.
+
+**Validação:** modo padrão 100% bit-idêntico (5.000 seeds, 30 métricas
+por seed) + regressão de 20.000 partidas em modo resiliência, 0
+exceções + testes dirigidos (comandante→zona de comando, custo de
+recast com taxa, token vs. carta nomeada no cemitério, taxa pós-wipe
+~0,15x, recast completo end-to-end).
+
+**Comparativo completo antes/depois (2000 jogos, mesma seed):**
+
+| Métrica | Antes (padrão) | Depois (resiliência) |
+|---|---|---|
+| Ulalek nunca conjurada em 8 turnos | 2,0% | 3,0% |
+| Turno médio de conjuração | 4,21 | 4,32 |
+| Avg cópias pagas da Ulalek (CC) | 1,55 | 1,19 |
+| Avg cópias incondicionais (Echoes) | 0,21 | 0,12 |
+| Avg cascades disparadas (Zhulodok) | 0,14 | 0,06 |
+| Avg cartas compradas extra | 2,41 | 1,70 |
+| Avg cartas via The One Ring | 0,90 | 0,57 |
+| Avg tutores usados | 0,51 | 0,45 |
+| Avg Eldrazi Spawn tokens criados | 2,09 | 1,67 |
+| Avg finalizadores resolvidos (MV≥9) | 0,47 | 0,30 |
+| Avg ativações de Ugin | 0,19 | 0,13 |
+| All Is Dust conjurado | 8,2% | 5,9% |
+
+---
+
 ### Auditoria oráculo-por-oráculo completa — 2026-09-14
 
 3ª rodada de auditoria completa (após 2026-08-28 e 2026-08-30/31/09-01).
