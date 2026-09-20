@@ -4,6 +4,35 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Modo de resiliência ganha graveyard hate + fix central: Blightsteel Colossus indo pro cemitério errado em 7 pontos — 2026-09-20
+
+**Gatilho:** usuário separou graveyard hate real em 2 modelos (mass
+exile estilo Bojuka Bog vs. single-exile estilo Scavenging Ooze/Cease)
+e apontou que o mass exile só pode acontecer 1x/partida ("se o
+oponente gastar o Bojuka bog no 4º turno, não tem mais como repetir
+isso"). Detalhes técnicos completos em `checklist-oraculo.md`.
+
+**Achado real mais importante:** validando o graveyard snipe novo, o
+relatório mostrou "Blightsteel Colossus sniped do cemitério" — estado
+impossível pelo oráculo real dele ("would be put into a graveyard from
+anywhere, shuffle into library instead"). Achei **7 pontos** no arquivo
+que mandavam carta pro cemitério sem passar pelo redirect (Melded
+Moxite, Faithless Looting, limite de mão, Daretti +2, Goblin Engineer,
+Saheeli's Directive/mill, e o discard aleatório do modo de resiliência
+de ontem) — 1 deles (`.extend()` de mill) nem apareceu no grep de texto,
+só foi achado instrumentando a lista do cemitério em runtime.
+
+**Resultado (A/B 2000 jogos mesma seed, modo padrão):** o bug era
+alcançável em 99/2000 partidas (4,95%) antes do fix, 0/2000 depois.
+
+**Validação:** testes dirigidos (graveyard hate + os 3 pontos do fix
+de Blightsteel, com biblioteca de tamanho realista) + varredura de
+runtime com lista instrumentada (3000 seeds, 0 ocorrências) +
+regressão de 20.000 partidas em CADA modo (padrão e resiliência), 0
+exceções, 0 ocorrências do bug nos dois.
+
+---
+
 ## Modo de resiliência ganha counterspell — última categoria do Archidekt implementada — 2026-09-19
 
 **Gatilho:** 4ª e última categoria pendente do simulador de interação

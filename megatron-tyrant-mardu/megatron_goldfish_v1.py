@@ -489,6 +489,11 @@ class GameState:
     smart_wipe_log: list = field(default_factory=list)
     smart_counters_total: int = 0
     smart_counter_log: list = field(default_factory=list)
+    smart_graveyard_wipes_total: int = 0
+    smart_graveyard_wipe_log: list = field(default_factory=list)
+    graveyard_wipe_used: bool = False
+    smart_graveyard_snipes_total: int = 0
+    smart_graveyard_snipe_log: list = field(default_factory=list)
     crewed_creatures_tapped: set = field(default_factory=set)
     ironsoul_triggered_this_combat: bool = False
     megatron_alone_combos_total: int = 0
@@ -793,6 +798,45 @@ def sacrifice(state: GameState, name: str, is_own_sacrifice: bool = True):
         rakdos_muscle_trigger(state, name)
 
 
+def put_into_graveyard(state: GameState, name: str):
+    """Ponto central de TODO 'vai pro cemiterio' que NAO passa pelo
+    campo (isso e' `sacrifice()`) -- descarte da mao (loot/discard) OU
+    biblioteca indo direto pro cemiterio (tutor/reveal-e-mill). Achado
+    real 2026-09-20 ao validar o graveyard snipe novo: o relatorio
+    mostrou 'Blightsteel Colossus sniped do cemiterio', estado
+    IMPOSSIVEL pelo oraculo real ('If Blightsteel Colossus would be put
+    into a graveyard from ANYWHERE, reveal and shuffle into library
+    instead' -- 'anywhere' inclui descarte da mao E biblioteca, nao so'
+    sacrificio/morte no campo, que ja' tinha o redirect certo dentro de
+    `sacrifice()` desde 2026-09-02).
+
+    Grep de TODOS os `state.graveyard.append(...)` do arquivo (Regra #3
+    do CLAUDE.md -- conceito compartilhado, checar todo call site antes
+    de mudar) achou 6 pontos reais que iam direto sem passar pelo
+    redirect: Melded Moxite (ETB discard), Faithless Looting (draw2/
+    discard2), limite de mao no `end_step`, Daretti Scrap Savant (+2:
+    'discard up to two cards' -- descarta os 2 primeiros da mao SEM
+    filtro de MV nenhum, o mais exposto dos 6), um tutor pra cemiterio
+    (`try_goblin_engineer_activation`-adjacent, biblioteca->cemiterio),
+    e um reveal-e-mill de biblioteca. `try_smart_opponent_discard`
+    (resiliencia) era o 7o -- unico com alvo puramente aleatorio, sem
+    NENHUMA protecao de MV (os outros usam `worst_discard_target`, que
+    quase nunca escolheria o MV 12 mais caro do deck; so' o discard
+    aleatorio do modo de resiliencia tornou o bug visivel de verdade
+    nos testes). Corrigido uma vez so' aqui, central -- todos os call
+    sites agora chamam esta funcao em vez de `state.graveyard.append()`
+    direto.
+
+    Sem gatilhos de 'sai do campo' aqui de proposito (Scrap Trawler/
+    Pia's Revolution/death_trigger/Rakdos) -- carta que nunca esteve no
+    campo (vinda da mao ou biblioteca) nao dispara nenhum desses."""
+    if name == "Blightsteel Colossus":
+        idx = state.rng.randrange(len(state.library) + 1) if state.rng else len(state.library)
+        state.library.insert(idx, name)
+    else:
+        state.graveyard.append(name)
+
+
 def pia_revolution_trigger(state: GameState, dying_name: str):
     """Pia's Revolution: 'Whenever a nontoken artifact is put into your
     graveyard from the battlefield, return that card to your hand unless
@@ -1026,12 +1070,22 @@ def resolve_etb(state: GameState, name: str, token: bool = False):
         # "artifact CREATURE card" tambem). Corrigido: prioriza artefato
         # CRIATURA primeiro, MV descendente como critério secundário --
         # so' busca um nao-criatura se nao houver nenhuma criatura-
-        # artefato disponivel na biblioteca."""
-        gy_targets = [c for c in state.library if is_artifact_card(c)]
+        # artefato disponivel na biblioteca.
+        #
+        # Achado real 2026-09-20 (validando o graveyard hate novo):
+        # Blightsteel Colossus (MV 12, sempre o maior da lista) nunca
+        # pode ser escolhido aqui -- teria o "would be put into a
+        # graveyard from anywhere" dele mesmo e simplesmente embaralha
+        # de volta pra biblioteca, desperdicando a busca inteira (nao e'
+        # so' redirect de zona, e' um alvo estrategicamente ruim pra um
+        # jogador esperto escolher de proposito). Excluido do pool --
+        # `put_into_graveyard` abaixo fica so' como rede de seguranca."""
+        gy_targets = [c for c in state.library
+                      if is_artifact_card(c) and c != "Blightsteel Colossus"]
         if gy_targets:
             target = max(gy_targets, key=lambda n: (is_creature_card(n), CARD_DB[n].mv))
             state.library.remove(target)
-            state.graveyard.append(target)
+            put_into_graveyard(state, target)
             state.tutors_used_total += 1
 
     if "combustible_gearhulk" in tags:
@@ -1041,7 +1095,14 @@ def resolve_etb(state: GameState, name: str, token: bool = False):
         # (pior escolha pra ele), entao sempre milha e' dano real.
         milled = state.library[:3]
         state.library = state.library[3:]
-        state.graveyard.extend(milled)
+        # Achado real 2026-09-20 (validando o graveyard hate/`put_into_
+        # graveyard`): mill e' "from anywhere" igual discard/tutor --
+        # Blightsteel Colossus milhado tem que embaralhar de volta pra
+        # biblioteca, nao ficar no cemiterio. O dano ainda conta o MV
+        # dele normal (o mill aconteceu de verdade, so' o DESTINO muda,
+        # oraculo: "total mana value of the cards milled this way").
+        for c in milled:
+            put_into_graveyard(state, c)
         dmg = sum(CARD_DB[c].mv for c in milled if c in CARD_DB)
         if dmg > 0:
             proxy_drain(state, dmg)
@@ -1182,7 +1243,7 @@ def resolve_etb(state: GameState, name: str, token: bool = False):
         if state.hand:
             worst = worst_discard_target(state)
             state.hand.remove(worst)
-            state.graveyard.append(worst)
+            put_into_graveyard(state, worst)
             draw_cards(state, 2)
             state.melded_moxite_loots_total += 1
 
@@ -1791,7 +1852,7 @@ def try_daretti_savant(state: GameState):
         discard_n = min(2, len(state.hand))
         for c in state.hand[:discard_n]:
             state.hand.remove(c)
-            state.graveyard.append(c)
+            put_into_graveyard(state, c)
         draw_cards(state, discard_n)
         state.daretti_savant_loyalty += 2
 
@@ -2292,7 +2353,7 @@ def resolve_instant_sorcery(state: GameState, name: str):
         for _ in range(min(2, len(state.hand))):
             worst = worst_discard_target(state)
             state.hand.remove(worst)
-            state.graveyard.append(worst)
+            put_into_graveyard(state, worst)
     elif "saheeli_directive" in tags:
         # "Improvise. Reveal the top X cards of your library. You may put
         # any number of artifact cards with mana value X or less from
@@ -2313,7 +2374,7 @@ def resolve_instant_sorcery(state: GameState, name: str):
                     state.battlefield.append(c)
                     resolve_etb(state, c)
             else:
-                state.graveyard.append(c)
+                put_into_graveyard(state, c)
 
 
 def try_cast_flashback(state: GameState, name: str, flashback_cost: int):
@@ -2674,7 +2735,7 @@ def end_step(state: GameState):
     while len(state.hand) > max_hand:
         worst = worst_discard_target(state)
         state.hand.remove(worst)
-        state.graveyard.append(worst)
+        put_into_graveyard(state, worst)
 
 
 def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
@@ -2885,7 +2946,16 @@ def try_smart_opponent_discard(state: GameState) -> Optional[str]:
     tradeoff que o Archidekt aceitou de proposito, documentado no post
     deles). Descarta exatamente 1 carta por instancia (mesma granularidade
     de 1-permanente/1-atacante das outras 2 categorias) -- sem mao pra
-    descartar, retorna None sem fazer nada."""
+    descartar, retorna None sem fazer nada.
+
+    A carta escolhida vai pra `put_into_graveyard()` (nao direto pro
+    `state.graveyard`) -- achado real 2026-09-20: como o alvo aqui e'
+    puramente aleatorio (ao contrario dos outros discards do arquivo,
+    que usam `worst_discard_target` e quase nunca pegariam o Blightsteel
+    Colossus MV 12), esta era a funcao com MAIOR chance real de
+    descartar o Blightsteel -- que iria pro cemiterio errado sem o
+    redirect (oraculo real: 'would be put into a graveyard from
+    ANYWHERE' inclui descarte da mao, nao so' sacrificio/morte)."""
     if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
         return None
     if not state.hand:
@@ -2894,7 +2964,7 @@ def try_smart_opponent_discard(state: GameState) -> Optional[str]:
         return None
     target = state.interaction_rng.choice(state.hand)
     state.hand.remove(target)
-    state.graveyard.append(target)
+    put_into_graveyard(state, target)
     state.smart_discards_total += 1
     state.smart_discard_log.append((state.turn, target))
     return target
@@ -2952,6 +3022,88 @@ def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
     state.smart_wipes_total += 1
     state.smart_wipe_log.append((state.turn, targets))
     return targets
+
+
+GRAVEYARD_WIPE_CHANCE_FACTOR = 0.4
+# Mesmo tier de raridade do board wipe (sweeper de criatura) -- pecas
+# dedicadas de mass graveyard hate (Bojuka Bog, modo-sacrificio do
+# Soul-Guide Lantern) tambem sao incomuns numa lista de 99.
+
+GRAVEYARD_SNIPE_CHANCE_FACTOR = 0.5
+# Exilio de carta UNICA (Scavenging Ooze, Cease) e' mais comum que o
+# mass wipe -- efeito barato/repetivel, mesmo tier do counterspell.
+
+
+def try_smart_opponent_graveyard_wipe(state: GameState) -> Optional[list]:
+    """Modo opcional de resiliencia -- graveyard hate, modelo MASS
+    EXILE (Bojuka Bog: 'When this land enters, exile target player's
+    graveyard'; Soul-Guide Lantern: '{T}, Sacrifice: Exile each
+    opponent's graveyard'). Pedido direto do usuario 2026-09-20, junto
+    com `try_smart_opponent_graveyard_snipe` (exilio de carta unica --
+    ver essa funcao pra Scavenging Ooze/Cease).
+
+    Achado de design do proprio usuario: ao contrario das outras
+    categorias (removal/wipe de criatura/ataque/discard, que sempre
+    podem disparar de novo -- representam um POOL de multiplos
+    oponentes/copias hipoteticas), um Bojuka Bog e' uma carta FISICA
+    UNICA na mao do oponente -- "se o oponente gastar o Bojuka Bog no
+    4o turno, nao tem mais como repetir isso, e a partir dai eu estou
+    'protegido'". Modelado com `state.graveyard_wipe_used`: dispara NO
+    MAXIMO 1 vez por partida inteira, nunca de novo depois disso, mesmo
+    que o cemiterio se encha de novo com cartas depois.
+
+    Exila TODO `state.graveyard` de uma vez (mesma zona ja' usada pro
+    redirect de Warp/Unearth). Sem cemiterio pra exilar (vazio, ou ja'
+    usado antes), retorna None sem fazer nada -- oponente esperto nao
+    gasta a carta a toa."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    if state.graveyard_wipe_used or not state.graveyard:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * GRAVEYARD_WIPE_CHANCE_FACTOR:
+        return None
+    exiled = state.graveyard[:]
+    state.graveyard.clear()
+    state.exile.extend(exiled)
+    state.graveyard_wipe_used = True
+    state.smart_graveyard_wipes_total += 1
+    state.smart_graveyard_wipe_log.append((state.turn, exiled))
+    return exiled
+
+
+def try_smart_opponent_graveyard_snipe(state: GameState) -> Optional[str]:
+    """Modo opcional de resiliencia -- graveyard hate, modelo EXILIO DE
+    CARTA UNICA (Scavenging Ooze: '{G}: Exile target card from a
+    graveyard...'; Cease: 'Exile up to two target cards from a single
+    graveyard...' -- confirmados via Scryfall 2026-09-20). Ao contrario
+    do mass wipe (carta unica, dispara so' 1x na partida inteira), esse
+    e' repetivel/barato de verdade -- rola todo turno como as outras
+    categorias normais, sem flag de 'ja usado'.
+
+    Alvo SMART (mesma logica de `try_smart_opponent_removal`, so' que
+    mirando o cemiterio em vez do campo): um oponente de mesa real com
+    Scavenging Ooze nao exila ao acaso -- exila exatamente a carta que
+    minha propria recursao (Feldon/Scarecrone/Goblin Welder/Osgir) mais
+    quer de volta, sempre a de MAIOR MV entre criatura OU artefato no
+    cemiterio (mesmo criterio de 'maior MV' que essas 4 funcoes ja usam
+    internamente pra escolher alvo -- reaproveitado aqui de proposito,
+    o oponente esperto sniparia igual). Token nunca e' alvo real
+    (`is_token_name`, mesma convencao do resto do arquivo). Sem
+    candidato elegivel, retorna None."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    candidates = [c for c in state.graveyard
+                  if (is_creature_card(c) or is_artifact_card(c)) and not is_token_name(c)]
+    if not candidates:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * GRAVEYARD_SNIPE_CHANCE_FACTOR:
+        return None
+    target = max(candidates, key=lambda n: CARD_DB[n].mv)
+    state.graveyard.remove(target)
+    state.exile.append(target)
+    state.smart_graveyard_snipes_total += 1
+    state.smart_graveyard_snipe_log.append((state.turn, target))
+    return target
 
 
 COUNTERSPELL_CHANCE_FACTOR = 0.5
@@ -3146,21 +3298,23 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
 
 def simulate_one_with_interaction(seed: int, turns: int = 8):
     """Mesmo goldfish de `simulate_one`, mas com `try_smart_opponent_
-    wipe`/`try_smart_opponent_removal`/`try_smart_opponent_attack`/
-    `try_smart_opponent_discard` rodando a cada turno -- ver comentario
-    da secao 'Modo opcional de resiliencia' acima. As 4 rolam
-    independente (podem disparar todas no mesmo turno, mesmo modelo do
-    Archidekt de multiplas categorias de interacao por turno). Wipe roda
-    PRIMEIRO de proposito -- representa o "pior turno possivel" do
-    oponente pra teste de resiliencia (limpa o board antes de checar
-    ataque desbloqueado/remocao/discard), nao uma exigencia de regra
-    real (as 4 categorias sao instancias hipoteticas independentes,
-    nao uma sequencia obrigatoria).
+    wipe`/`try_smart_opponent_graveyard_wipe`/`try_smart_opponent_
+    graveyard_snipe`/`try_smart_opponent_removal`/`try_smart_opponent_
+    attack`/`try_smart_opponent_discard` rodando a cada turno -- ver
+    comentario da secao 'Modo opcional de resiliencia' acima. As 6
+    rolam independente (podem disparar todas no mesmo turno, mesmo
+    modelo do Archidekt de multiplas categorias de interacao por
+    turno). Ordem: wipe de criatura -> graveyard wipe -> graveyard
+    snipe -> remocao -> ataque -> discard -- de proposito, pra que
+    criaturas mortas pelo wipe (vao pro cemiterio via `sacrifice()`)
+    fiquem elegiveis pro graveyard hate NO MESMO TURNO ("pior turno
+    possivel" combinado, nao exigencia de regra real -- as categorias
+    sao instancias hipoteticas independentes).
 
-    A 5a categoria (`try_smart_opponent_counter`) NAO mora neste loop --
+    A 7a categoria (`try_smart_opponent_counter`) NAO mora neste loop --
     counterspell so' faz sentido no exato momento em que eu conjuro
     Megatron, dentro do MEU turno (`play_turn` -> `main_phase` ->
-    `cast_megatron`), nao "fora do meu turno" como as outras 4. Mesmo
+    `cast_megatron`), nao "fora do meu turno" como as outras 6. Mesmo
     `state.interaction_rng`, mesma janela (`INTERACTION_SETUP_TURNS`) --
     so' o PONTO onde e' checada que e' diferente por necessidade de
     regra (nao da pra contra-atacar um spell depois que o turno
@@ -3178,6 +3332,8 @@ def simulate_one_with_interaction(seed: int, turns: int = 8):
     while turns_played < turns:
         play_turn(state, is_first_turn=is_first, on_play=True)
         try_smart_opponent_wipe(state)
+        try_smart_opponent_graveyard_wipe(state)
+        try_smart_opponent_graveyard_snipe(state)
         try_smart_opponent_removal(state)
         try_smart_opponent_attack(state)
         try_smart_opponent_discard(state)
@@ -3187,6 +3343,8 @@ def simulate_one_with_interaction(seed: int, turns: int = 8):
             state.extra_turns_pending -= 1
             play_turn(state, is_first_turn=False, on_play=True)
             try_smart_opponent_wipe(state)
+            try_smart_opponent_graveyard_wipe(state)
+            try_smart_opponent_graveyard_snipe(state)
             try_smart_opponent_removal(state)
             try_smart_opponent_attack(state)
             try_smart_opponent_discard(state)
@@ -3204,7 +3362,7 @@ def run_batch_with_interaction(n: int, seed_base: int, turns: int = 8):
     def avg(vals):
         return sum(vals) / len(vals) if vals else 0.0
 
-    print(f"n={n}, seed_base={seed_base}, turns={turns} (MODO RESILIENCIA -- wipe + remocao + ataque inteligente + discard aleatorio + counterspell de oponente)")
+    print(f"n={n}, seed_base={seed_base}, turns={turns} (MODO RESILIENCIA -- wipe + graveyard hate + remocao + ataque inteligente + discard aleatorio + counterspell de oponente)")
     print(f"Avg counterspells sofridos (so' mira a conjuracao do Megatron): "
           f"{avg([s.smart_counters_total for s in states]):.2f}")
     megatron_cast = [s.commander_cast_turn for s in states if s.commander_cast_turn is not None]
@@ -3222,6 +3380,20 @@ def run_batch_with_interaction(n: int, seed_base: int, turns: int = 8):
         print(f"  -- Avg criaturas perdidas por wipe (quando dispara): {avg_kills:.2f}")
         for name, count in wipe_kills.most_common(5):
             print(f"  -- {name} perdido em wipe em {100*count/n:.1f}% dos jogos")
+    gy_wiped = sum(1 for s in states if s.smart_graveyard_wipes_total > 0)
+    print(f"Partidas com graveyard wipe sofrido (Bojuka Bog-style, no maximo 1x/partida): "
+          f"{100*gy_wiped/n:.1f}%")
+    if gy_wiped:
+        avg_gy_exiled = avg([len(exiled) for s in states for _, exiled in s.smart_graveyard_wipe_log])
+        print(f"  -- Avg cartas exiladas quando dispara: {avg_gy_exiled:.2f}")
+    print(f"Avg graveyard snipes sofridos (Scavenging Ooze/Cease-style, sempre pega a maior MV): "
+          f"{avg([s.smart_graveyard_snipes_total for s in states]):.2f}")
+    snipe_counts = Counter()
+    for s in states:
+        for _, card in s.smart_graveyard_snipe_log:
+            snipe_counts[card] += 1
+    for card, count in snipe_counts.most_common(5):
+        print(f"  -- {card} snipado do cemiterio em {100*count/n:.1f}% dos jogos")
     print(f"Avg remocoes inteligentes sofridas: {avg([s.smart_removals_total for s in states]):.2f}")
     hit_counts = Counter()
     for s in states:

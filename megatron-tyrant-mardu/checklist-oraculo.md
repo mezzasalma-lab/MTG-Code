@@ -1,5 +1,99 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Modo de resiliência ganha graveyard hate (2 modelos) + fix central de Blightsteel Colossus em 7 pontos — 2026-09-20
+
+**Gatilho:** usuário apontou que graveyard hate real tem 2 modelos
+distintos — exílio em massa (Bojuka Bog, Soul-Guide Lantern) e exílio
+de carta única (Scavenging Ooze, Cease, "Hardened Veteran"). Antes de
+aceitar, busquei os 3 exemplos no Scryfall (Regra #1/#2): Scavenging
+Ooze e Cease confirmados reais (Cease: "Exile up to two target cards
+from a single graveyard..."); **"Hardened Veteran" não existe** —
+busca exata, fuzzy e por `flavor_name` no Scryfall não retornaram nada,
+então ficou de fora do design, sem ser incluído "de memória". Usuário
+confirmou a divisão e adicionou o insight decisivo: *"se o oponente
+gastar o Bojuka bog no 4º turno, não tem mais como repetir isso"* —
+ou seja, o modelo mass-exile precisa de um limite de 1x/partida, o
+modelo single-exile não.
+
+**Implementado — `try_smart_opponent_graveyard_wipe()`:** estilo Bojuka
+Bog, exila `state.graveyard` inteiro de uma vez. `state.graveyard_wipe_
+used` garante NO MÁXIMO 1 disparo por partida inteira (nunca de novo,
+mesmo que o cemitério se encha de novo depois) — modelo diferente das
+outras categorias (que representam um POOL de múltiplos oponentes/
+cópias hipotéticas); aqui é uma carta física única. `GRAVEYARD_WIPE_
+CHANCE_FACTOR = 0.4`, mesmo tier do board wipe de criatura.
+
+**Implementado — `try_smart_opponent_graveyard_snipe()`:** estilo
+Scavenging Ooze/Cease, exila 1 carta específica por instância, SEM
+flag de uso único (repetível todo turno, efeito real barato). Alvo
+SMART: sempre a maior MV entre criatura/artefato no cemitério —
+reaproveita o MESMO critério que `try_feldon`/`try_scarecrone`/Goblin
+Welder/Osgir já usam internamente pra escolher alvo de recursão (um
+oponente esperto sniparia exatamente o que a minha própria recursão
+mais quer de volta). `GRAVEYARD_SNIPE_CHANCE_FACTOR = 0.5`.
+
+**Sequência no turno:** wipe de criatura → graveyard wipe → graveyard
+snipe → remoção → ataque → discard. De propósito: criaturas mortas pelo
+wipe (vão pro cemitério via `sacrifice()`) ficam elegíveis pro
+graveyard hate NO MESMO TURNO — "pior turno possível" combinado.
+
+**Achado real e mais importante desta rodada — bug pré-existente
+exposto pela própria validação:** ao rodar o batch do graveyard snipe
+novo, o relatório mostrou "Blightsteel Colossus sniped do cemitério" —
+estado IMPOSSÍVEL pelo oráculo real ("If Blightsteel Colossus would be
+put into a graveyard from **anywhere**, reveal and shuffle into
+library instead"). O redirect já existia dentro de `sacrifice()` desde
+2026-09-02, mas **7 call sites diferentes** no arquivo mandavam carta
+pro cemitério direto via `state.graveyard.append()`/`.extend()`, sem
+passar por nenhum redirect:
+
+1. Melded Moxite (ETB discard)
+2. Faithless Looting (draw 2/discard 2)
+3. Limite de mão no `end_step`
+4. Daretti, Scrap Savant +2 ("discard up to two cards") — descarta os
+   2 primeiros da mão SEM filtro de MV nenhum, o mais exposto dos 3
+   discards "reais"
+5. `try_smart_opponent_discard` (resiliência, 2026-09-19) — alvo
+   puramente aleatório, sem NENHUMA proteção — foi o que tornou o bug
+   estatisticamente visível nos testes (os outros usam
+   `worst_discard_target`, que quase nunca escolheria o MV 12 mais
+   caro do deck como "pior carta")
+6. Goblin Engineer (tutor biblioteca→cemitério) — pior ainda: a lógica
+   de alvo já priorizava "maior MV", então escolheria o PRÓPRIO
+   Blightsteel de propósito e desperdiçaria a busca inteira (embaralha
+   de volta sem nenhum efeito)
+7. Improvise-mill de biblioteca (Saheeli's Directive) — `.extend()` em
+   vez de `.append()`, **não apareceu no primeiro grep** de
+   `state.graveyard.append(` — só foi achado instrumentando a lista do
+   cemitério em runtime e rastreando o traceback de toda inserção
+   (Regra #6: auditoria estática de texto tem ponto cego real,
+   precisa rodar o motor de verdade pra pegar tudo)
+
+**Corrigido:** `put_into_graveyard(state, name)` — função central nova
+(mesmo padrão do `sacrifice()`), redireciona Blightsteel Colossus pra
+biblioteca em vez do cemitério. Os 7 call sites acima foram trocados
+pra chamar essa função. Adicionalmente, o Goblin Engineer (site 6) teve
+o PRÓPRIO POOL de alvos corrigido pra excluir Blightsteel Colossus
+(`c != "Blightsteel Colossus"`) — não é só redirect de zona, é um alvo
+estrategicamente ruim pra escolher de propósito (um jogador esperto
+buscaria a 2ª maior MV em vez de desperdiçar a busca).
+
+**Validação:** 3 testes unitários dirigidos com biblioteca de tamanho
+realista (Daretti +2, Goblin Engineer, Combustible Gearhulk mill —
+todos confirmam Blightsteel nunca fica no cemitério, e o dano do
+Combustible Gearhulk continua contando o MV 12 dele normalmente, já
+que o mill aconteceu de verdade, só o destino mudou) + testes dos 2
+novos graveyard hate (mass wipe dispara 1x só mesmo com cemitério
+recheado depois; snipe sempre pega a maior MV, ignora token, repetível
+entre turnos) + **varredura de runtime com lista instrumentada**
+(subclasse de `list` rastreando `append`/`extend`, 3000 seeds, 0
+aparições) + regressão de **20.000 partidas em CADA modo (padrão e
+resiliência)**, 0 exceções, 0 ocorrências do bug nos dois. A/B 2000
+jogos mesma seed no modo padrão: bug era alcançável em 99/2000 partidas
+(4,95%) ANTES do fix, 0/2000 DEPOIS; dano proxy 83,80→82,45 (queda
+pequena e esperada — Blightsteel preso incorretamente no cemitério às
+vezes virava alvo de recursão que não deveria estar disponível).
+
 ## Modo de resiliência ganha counterspell (4ª e última categoria) — 2026-09-19
 
 **Gatilho:** usuário confirmou "Faça" pra implementar a última categoria
