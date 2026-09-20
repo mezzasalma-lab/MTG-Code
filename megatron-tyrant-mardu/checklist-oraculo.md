@@ -1,5 +1,55 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Comparativo antes/depois das extensões de resiliência desta sessão — 2026-09-20
+
+**Gatilho:** usuário pediu o mesmo comparativo antes/depois já feito
+pro Ur-Dragon e Hei Bai, usando a cópia de segurança
+`megatron_goldfish_v1_original.py` (commit `82dc479`, escolhido pelo
+usuário como o checkpoint "antes só das extensões de resiliência desta
+sessão" — mantém o fix do Cityscape Leveler e o registro da Partida
+#1, mas fica antes de discard/board wipe/counterspell/graveyard hate/
+fix do Blightsteel).
+
+**Diferença importante vs. Ur-Dragon/Hei Bai: aqui o GOLDFISH PADRÃO
+também mudou um pouco** — não é bit-idêntico como nos outros 2 decks.
+Motivo real: o fix central do Blightsteel Colossus (`put_into_
+graveyard()`) e a correção do Goblin Engineer (nunca mais busca o
+próprio Blightsteel) tocam funções usadas pelo `simulate_one`/
+`run_batch` padrão também, não só pelo modo de resiliência — a mudança
+é uma correção de bug real (Blightsteel indo pro cemitério quando o
+oráculo diz que nunca pode), já validada e documentada na rodada do
+fix, não uma regressão.
+
+**Resultado real (batch 2000 jogos mesma seed):**
+
+| Métrica (goldfish padrão) | Antes (82dc479) | Depois (atual) |
+|---|---|---|
+| Avg dano/perda-de-vida proxy total | 83,80 | 82,45 |
+| Avg conversões do Megatron | 6,92 | 6,80 |
+| Avg mana gerada pela conversão | 70,96 | 69,39 |
+| Nunca conjurado em 8 turnos | 4,5% | 4,6% |
+
+| Métrica (modo resiliência) | Antes (3 categorias) | Depois (7 categorias) |
+|---|---|---|
+| Avg remoções inteligentes sofridas | 0,77 | 0,60 |
+| Avg ataques sofridos / bloqueios com sucesso | 0,80 / 0,67 | 0,86 / 0,44 |
+| Avg counterspells sofridos | — | 0,07 |
+| Avg board wipes sofridos | — | 0,44 (3,54 criaturas perdidas quando dispara) |
+| Graveyard wipe sofrido (partidas) | — | 36,3% (máx. 1x/partida) |
+| Avg graveyard snipes sofridos | — | 0,45 |
+| Avg descartes forçados sofridos | — | 1,10 |
+| Avg dano/perda-de-vida proxy total | 78,02 | 63,57 |
+| Avg vida final | 36,04 | 36,04 |
+
+Direção esperada: dano proxy no modo resiliência caiu mais um terço
+(78,02→63,57) com as 4 categorias novas por cima das 3 que já
+existiam — bloqueios com sucesso despencaram (0,67→0,44, o board wipe
+limpa bloqueadores antes do ataque rolar, mesmo efeito já documentado
+na rodada do board wipe). Vida final ficou igual (36,04→36,04, mera
+coincidência de arredondamento — a vida só é afetada por ataque
+desbloqueado, que subiu de 0,80→0,86 sofridos, compensado por menos
+partidas chegando tão longe pela pressão adicional).
+
 ## Modo de resiliência ganha graveyard hate (2 modelos) + fix central de Blightsteel Colossus em 7 pontos — 2026-09-20
 
 **Gatilho:** usuário apontou que graveyard hate real tem 2 modelos

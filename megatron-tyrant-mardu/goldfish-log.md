@@ -4,6 +4,25 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Comparativo antes/depois das extensões de resiliência desta sessão — 2026-09-20
+
+**Gatilho:** mesmo comparativo já feito pro Ur-Dragon e Hei Bai, usando
+`megatron_goldfish_v1_original.py` (commit `82dc479`) como "antes".
+Detalhes completos em `checklist-oraculo.md`.
+
+**Diferente dos outros 2 decks, o goldfish padrão aqui NÃO é
+bit-idêntico** — o fix central do Blightsteel Colossus toca uma função
+usada pelo `simulate_one`/`run_batch` normal também (correção de bug
+real já validada, não regressão): dano proxy padrão 83,80→82,45.
+
+**Resultado (modo resiliência, 3 categorias antigas → 7 atuais):** dano
+proxy 78,02→63,57 (mais um terço de queda com as 4 categorias novas
+por cima), bloqueios com sucesso 0,67→0,44 (board wipe limpa
+bloqueadores antes do ataque). Tabela completa em
+`checklist-oraculo.md`.
+
+---
+
 ## Modo de resiliência ganha graveyard hate + fix central: Blightsteel Colossus indo pro cemitério errado em 7 pontos — 2026-09-20
 
 **Gatilho:** usuário separou graveyard hate real em 2 modelos (mass
