@@ -1,5 +1,74 @@
 # Goldfish Log — Esika, God of the Tree // The Prismatic Bridge
 
+## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
+
+**Gatilho:** "Repita o processo todo com o deck da Prismatic Bridge" —
+mesmo modo já validado em Megatron/Ur-Dragon/Hei Bai/Markov/Ulalek/Toph.
+Detalhes técnicos completos em `checklist-oraculo.md`.
+
+**Diferença real vs. os outros 6 decks:** este arquivo já tinha
+`resolve_removal_round`, sistema de remoção próprio (12%/oponente/turno,
+sempre ativo, mira Bridge/protetores) construído pra responder "vale
+Greater Auramancy?". Perguntei ao usuário antes de implementar como
+reconciliar — escolha: modo de resiliência SUBSTITUI o antigo dentro
+dele mesmo (via `play_turn(..., skip_legacy_removal=True)`), modo padrão
+continua 100% intocado com o sistema antigo rodando normal.
+
+**2 bugs reais de Carth the Lion corrigidos** (achados por acaso, não
+relacionados ao modo de resiliência, mas já alcançáveis em modo padrão
+hoje): "put the rest on the bottom" estava recolocando no TOPO da
+biblioteca; a metade "planeswalker morre" do gatilho nunca disparava
+(1.861 mortes de planeswalker em 3.000 jogos de modo padrão, evento
+comum, não raro). Ambos corrigidos e validados.
+
+**Achado de calibração importante:** a Bridge sobrevive MUITO mais sob
+o novo modo de resiliência do que sob o sistema antigo, porque o novo
+sistema (mesma convenção dos outros 6 decks) não mira o comandante
+diretamente — Bridge removida 1,24x em média (sistema antigo) vs. 0,00x
+(sistema novo); em campo no fim 72,0% vs. 90,8%. Consequência esperada
+da decisão de design escolhida, não um bug — mas muda o que os números
+do modo de resiliência respondem comparado à pergunta original do
+Greater Auramancy (essa continua respondida pelo modo padrão intocado).
+
+**Validação:** regressão de 20.000 partidas em modo padrão E resiliência
+(0 exceções nos dois) + testes dirigidos (comandante→zona de comando,
+sincronização de loyalty na morte de planeswalker + gatilho da Carth,
+sistema antigo desligado de verdade dentro do modo de resiliência,
+ordem de biblioteca da Carth batendo com o oráculo real).
+
+**Comparativo — FIX real da Carth (2000 jogos, mesma seed, modo padrão antes/depois):**
+
+| Métrica | Antes do fix | Depois do fix |
+|---|---|---|
+| Avg tutores via Carth | 0,114 | 0,244 |
+| Avg mortes de planeswalker | 0,633 | 0,632 |
+| Avg planeswalkers em campo no fim | 1,734 | 1,745 |
+
+**Comparativo — ANTES (padrão, com fix da Carth) vs. DEPOIS (modo de resiliência), 2000 jogos, 10 turnos:**
+
+| Métrica | Antes | Depois |
+|---|---|---|
+| Bridge nunca conjurada em 10 turnos | 7,8% | 9,2% |
+| Bridge em campo no fim da partida | 72,0% | 90,8% |
+| Avg vezes que a Bridge foi removida | 1,24 | 0,00 |
+| Avg gatilhos da Bridge | 3,20 | 5,58 |
+| Avg acertos em criatura | 1,25 | 2,18 |
+| Avg acertos em planeswalker | 1,95 | 3,40 |
+| Avg ativações de planeswalker | 8,38 | 10,42 |
+| Avg ultimates usados | 1,44 | 1,41 |
+| Avg tokens criados por PW | 2,28 | 2,98 |
+| Avg cartas compradas via PW | 4,54 | 5,64 |
+| Avg planeswalkers em campo no fim | 1,74 | 1,68 |
+| Avg tutores via Carth | 0,24 | 0,44 |
+
+**Métricas exclusivas do modo de resiliência (2000 jogos):** vida final
+36,82; ataques sofridos 2,04; remoções inteligentes 1,80 (miram
+planeswalkers, não a Bridge); descartes 1,33; board wipes 0,77 (56,1%
+das partidas); graveyard wipe 0,59; graveyard snipe 0,64; counterspells
+0,06; Bridge recastada após remoção em 4,5% das partidas.
+
+---
+
 ## Simulação #1 — gerada por Claude (RNG real, não é partida sua)
 
 **Método:** embaralhei a lista de 100 cartas de `lista.md` com `random.shuffle` do Python (sem seed fixa, usa entropia do sistema operacional) em 2026-08-20. Mão inicial = 7 cartas do topo pós-embaralhamento. Convenção: jogador na ponta ("on the play"), sem compra no turno 1, compra 1 carta a partir do turno 2. Efeitos de "olhe o topo N" (ex: Oath of Nissa) foram resolvidos consultando a ordem real da biblioteca simulada, não escolhidos livremente. Este é um teste solo sem oponente — anotei explicitamente onde isso limita alguma carta (ex: Exotic Orchard).

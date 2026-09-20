@@ -1,5 +1,133 @@
 # Checklist cláusula-a-cláusula — Esika // The Prismatic Bridge
 
+## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
+
+**Gatilho:** usuário pediu direto, mesmo protocolo já aplicado a
+Megatron/Ur-Dragon/Hei Bai/Markov/Ulalek/Toph: *"Repita o processo todo
+com o deck da Prismatic Bridge."*
+
+**Diferença estrutural real vs. os outros 6 decks, resolvida ANTES de
+implementar:** este arquivo já tinha um sistema de remoção de oponente
+próprio (`resolve_removal_round`), construído sob medida em rodada
+anterior pra responder "vale incluir Greater Auramancy?" — 12%/oponente/
+turno, sempre ativo desde o turno 1, sem gates, mira só Bridge/
+protetores. Simplesmente empilhar o modo de resiliência padrão por cima
+duplicaria a pressão de remoção (o mesmo problema de "3 contra 1" já
+corrigido no Megatron). Perguntei ao usuário antes de implementar; opção
+escolhida: **o modo de resiliência SUBSTITUI o sistema antigo dentro
+dele mesmo, sem tocar no modo padrão.** `play_turn()` ganhou um parâmetro
+`skip_legacy_removal: bool = False` (default preserva 100% o
+comportamento de todo call site existente); `simulate_one_with_
+interaction()` passa `True`, desligando `resolve_removal_round` só
+dentro do modo de resiliência. `resolve_removal_round` continua
+intocado no modo padrão, respondendo à pergunta original do Greater
+Auramancy sem nenhuma mudança.
+
+**2 bugs reais de Carth the Lion encontrados e corrigidos, sem relação
+com o modo de resiliência** — achados só por auditar como
+`remove_permanent` deveria interagir com `state.loyalty` (Regra #3 do
+CLAUDE.md: conceito compartilhado, não carta isolada). Oráculo real
+(Scryfall): *"Whenever Carth enters or a planeswalker you control dies,
+look at the top seven cards of your library. You may reveal a
+planeswalker card from among them and put it into your hand. Put the
+rest on the bottom of your library in a random order."*
+1. **"Put the rest on the bottom" estava recolocando no TOPO**
+   (`state.library = top7 + rest`) — o oposto do oráculo real. Corrigido
+   pra `rest + shuffled_top7`. Isso muda a ordem da biblioteca em TODO
+   ETB da Carth, não só quando acha um planeswalker — e por consequência
+   o restante do jogo inteiro (mesma seed) diverge depois desse ponto,
+   já que consome a mesma `state.rng` compartilhada por tudo mais.
+2. **A metade "morte de planeswalker" nunca disparava.** O comentário
+   original (2026-09-01) dizia "nada remove nossos planeswalkers uma vez
+   em campo" — isso já era FALSO em modo padrão: `add_loyalty()` mata um
+   planeswalker de verdade quando a lealdade cai a 0 ou menos (ex.:
+   ultimate que zera a própria lealdade). Medido: **1.861 mortes de
+   planeswalker em 3.000 partidas de modo padrão** — não um evento raro,
+   um evento comum que nunca disparava o gatilho de card advantage da
+   Carth. Corrigido: extraído `_planeswalker_dies()` de dentro de
+   `add_loyalty()` (mesma cascata real de "um planeswalker seu morre",
+   reusada tanto pra lealdade chegando a 0 quanto pra remoção/wipe de
+   oponente — a regra real não distingue a causa).
+
+**Consequência real de validação:** como os 2 fixes mudam o consumo de
+`state.rng` no meio de partidas reais, comparação bit-a-bit contra o
+checkpoint anterior diverge amplamente (~19% das seeds em 5.000, a
+maioria delas SEM nenhuma métrica relacionada à Carth mudando —
+confirmado por teste dirigido que isso vem do reordenamento de
+biblioteca no ETB, não de um bug novo). Isso é o comportamento CORRETO
+e esperado de uma correção real de RNG-stream compartilhado (mesmo
+padrão já visto no fix do Blightsteel Colossus no Megatron) — validação
+trocada de bit-idêntico pra comparação agregada A/B, exatamente como
+naquele caso.
+
+**Achado real adicional, documentado mas NÃO corrigido nesta rodada**
+(📊, mesma classe do token do Ugin no Ulalek): Arena Rector — *"When
+this creature dies, you may exile it. If you do, search your library
+for a planeswalker card, put it onto the battlefield, then shuffle."*
+Diferente do bug real da Carth (já alcançável em modo padrão, 1.861/
+3.000 jogos), morte de CRIATURA nomeada nunca foi possível neste arquivo
+antes desta rodada — só fica relevante especificamente quando o NOVO
+wipe/remoção alcança a própria Arena Rector, não um pré-requisito
+estrutural do port (diferente dos 2 fixes da Carth, que já custavam
+valor real em modo padrão hoje).
+
+**Implementado (7 categorias, design final direto):** ataque sem
+bloqueio, remoção "inteligente" (mira o planeswalker de MAIOR lealdade
+em campo — motor dinâmico real deste deck, qualquer um dos 17 pode
+estar em campo a qualquer momento — com fallback pra
+`NONPLANESWALKER_ENGINE_PRIORITY` curada: Doubling Season, The Chain
+Veil, Vorinclex, Innkeeper's Talent, Deepglow Skate, Carth the Lion,
+Evolution Sage, Flux Channeler), discard aleatório, board wipe (só
+`type == "Creature"` de verdade — a Bridge é Enchantment, nunca
+alcançada por um wipe de criatura), graveyard hate (mass exile + exílio
+único, alvo = maior MV entre criatura OU planeswalker no cemitério,
+mesmo critério real que `Tamiyo, Compleated Sage -X` já usa pra
+recursão), e counterspell mirando só o cast da Bridge (normal ou
+flash). `remove_permanent()` (novo): comandante vai pra zona de comando
+(CR 903.9, mesma convenção que `resolve_removal_round` já usava);
+planeswalker delega pra `_planeswalker_dies` (loyalty dict + Carth
+sincronizados); token deixa de existir sem cemitério; carta nomeada vai
+pro cemitério de verdade.
+
+**Achado real de calibração, DIFERENTE dos outros 6 decks — a Bridge
+sobrevive MAIS sob o modo de resiliência novo que sob o sistema antigo:**
+o sistema antigo (`resolve_removal_round`) foi construído
+especificamente pra ameaçar a Bridge (essa era a pergunta de pesquisa
+original do arquivo). O novo sistema padronizado, seguindo a MESMA
+convenção já estabelecida nos outros 6 decks, exclui o comandante de
+`NONPLANESWALKER_ENGINE_PRIORITY`/board wipe (ela já tem categoria
+dedicada de counterspell, e remoção não a mata de verdade mesmo via CR
+903.9) — resultado real medido: Bridge removida em média 1,24x sob o
+sistema antigo vs. **0,00x** sob o novo (nunca removida diretamente,
+só contra-atacada no cast); Bridge em campo no fim da partida 72,0%
+(antigo) vs. **90,8%** (novo). Isso é uma consequência ESPERADA e
+CORRETA da decisão de design escolhida pelo usuário (substituir, não
+empilhar, mantendo a mesma convenção dos outros decks) — mas muda
+substancialmente o que os números do modo de resiliência deste deck
+respondem, comparado à pergunta original do Greater Auramancy (que
+continua sendo respondida pelo modo padrão intocado). Registrado aqui
+explicitamente pra não virar uma surpresa silenciosa.
+
+**Validação:**
+- Regressão de 20.000 partidas em modo padrão (pós-fix da Carth) E em
+  modo resiliência, 0 exceções nos dois.
+- Testes dirigidos: comandante removido vai pra zona de comando (nunca
+  cemitério) e fica recastável (taxa já existia, confirmada); remoção
+  de planeswalker sincroniza `state.loyalty` e dispara Carth
+  corretamente; token não vai pro cemitério; carta nomeada vai;
+  `skip_legacy_removal=True` desliga o sistema antigo por completo
+  dentro do modo de resiliência, `False` (default) mantém o sistema
+  antigo rodando normalmente no modo padrão; taxa de ataque pós-wipe
+  cai pra ~13,5% da taxa base (~ fator 0,15 esperado); reordenamento de
+  biblioteca da Carth confirmado batendo com o oráculo real ("rest" vai
+  pro fundo, não pro topo).
+- `run_batch_with_interaction` (2000 jogos, 10 turnos): avg ataques
+  sofridos 2,04, avg remoções inteligentes 1,80 (miram planeswalkers,
+  não a Bridge), avg board wipes 0,77 (56,1% das partidas), avg
+  counterspells 0,06, avg vida final 36,82, Bridge recastada após
+  remoção em apenas 4,5% das partidas (baixo porque ela quase nunca é
+  removida sob o novo sistema, ver achado de calibração acima).
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-13/14
 
 Extensão pra este deck da mesma auditoria já feita no Megatron/Azula/

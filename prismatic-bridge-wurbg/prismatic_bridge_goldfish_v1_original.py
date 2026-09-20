@@ -1,3 +1,23 @@
+# ==============================================================================
+# COPIA DE SEGURANCA -- ORIGINAL (antes do modo de resiliencia, 2026-09-20)
+# ==============================================================================
+# Este arquivo e' uma copia FIEL e INTOCADA de prismatic_bridge_goldfish_v1.py
+# como ele era ANTES do commit que porta o modo de resiliencia padronizado
+# (Megatron/Ur-Dragon/Hei Bai/Markov/Ulalek/Toph -> Prismatic Bridge) E antes
+# dos 2 fixes reais de Carth the Lion (bottom-of-library errado, gatilho de
+# morte de planeswalker nunca disparado) encontrados durante o mesmo commit.
+# Preservada como copia de seguranca -- nao e' mantida/atualizada daqui pra
+# frente, so' existe como referencia do estado pre-mudancas.
+#
+# IMPORTANTE (diferente dos outros 6 decks): o modo PADRAO deste arquivo
+# (`simulate_one`/`run_batch`) MUDA de verdade em relacao a esta copia --
+# os 2 fixes de Carth the Lion sao correcoes reais de oraculo, nao aditivos
+# opcionais (ver checklist-oraculo.md pro antes/depois quantificado). O modo
+# de resiliencia em si e' aditivo/opcional como sempre. Esta copia existe
+# como snapshot historico E como baseline real pro comparativo dos fixes de
+# Carth.
+# ==============================================================================
+
 """
 Goldfish simulator - Esika, God of the Tree // The Prismatic Bridge (5 cores - WUBRG)
 Escrito e executado por Claude.
@@ -537,35 +557,6 @@ class GameState:
     urza_pw_cheated_total: int = 0
     urza_pw_tutored_total: int = 0
 
-    # ---- Modo opcional de resiliencia (interacao de oponente), 2026-09-20 ----
-    # Porte do mesmo modo ja implementado e validado no Megatron/Ur-Dragon/
-    # Hei Bai/Markov/Ulalek/Toph. Todos os campos abaixo ficam INERTES em
-    # modo padrao (`simulate_one`/`run_batch`) -- so' tem efeito quando
-    # `interaction_rng` e' setado por `simulate_one_with_interaction`, que
-    # tambem passa `skip_legacy_removal=True` pra `play_turn` (desliga o
-    # sistema antigo `resolve_removal_round`, ver decisao do usuario no
-    # checklist-oraculo.md -- os 2 sistemas nao se empilham). `life` e'
-    # NOVO neste arquivo (nunca rastreou vida propria) -- serve so' de
-    # alvo pro ataque de oponente do modo de resiliencia, comeca em 40.
-    interaction_rng: Optional[random.Random] = None
-    life: int = 40
-    wiped_this_round: bool = False
-    smart_removals_total: int = 0
-    smart_removal_log: list = field(default_factory=list)
-    smart_attacks_taken_total: int = 0
-    smart_attack_log: list = field(default_factory=list)
-    smart_discards_total: int = 0
-    smart_discard_log: list = field(default_factory=list)
-    smart_wipes_total: int = 0
-    smart_wipe_log: list = field(default_factory=list)
-    smart_counters_total: int = 0
-    smart_counter_log: list = field(default_factory=list)
-    smart_graveyard_wipes_total: int = 0
-    smart_graveyard_wipe_log: list = field(default_factory=list)
-    graveyard_wipe_used: bool = False
-    smart_graveyard_snipes_total: int = 0
-    smart_graveyard_snipe_log: list = field(default_factory=list)
-
     def draw(self, n: int = 1):
         for _ in range(n):
             if self.library:
@@ -743,32 +734,16 @@ def do_land_fetch_spell(state: GameState, card: str, log: List[Dict]):
     on_land_enters(state, log)
 
 
-def _carth_lion_look_at_top7(state: GameState, log: List[Dict], source: str):
-    """Carth the Lion (Scryfall, oraculo real): 'Whenever Carth enters
-    or a planeswalker you control dies, look at the top seven cards of
-    your library. You may reveal a planeswalker card from among them
-    and put it into your hand. Put the rest on the bottom of your
-    library in a random order.'
-
-    Extraido de `do_carth_etb` (achado real 2026-09-20, ao auditar como
-    `remove_permanent` do modo de resiliencia deveria interagir com
-    `state.loyalty`): 2 bugs reais encontrados na mesma funcao, os 2
-    JA' alcancaveis em modo padrao, sem relacao nenhuma com o modo de
-    resiliencia -- so' achados por estar auditando esta area por outro
-    motivo.
-
-    1. **"Put the rest on the bottom" estava colocando no TOPO**
-       (`state.library = top7 + rest`) -- inverteu duas vezes o
-       posicionamento real (nem "topo" nem realmente "random" no
-       sentido correto de fundo). Corrigido: `rest + shuffled_top7`.
-    2. **A metade "morte de planeswalker" nunca disparava** -- o
-       comentario original (2026-09-01) dizia que "nada remove nossos
-       planeswalkers uma vez em campo", mas isso ja' era falso mesmo em
-       modo padrao: `add_loyalty()` mata um planeswalker de verdade
-       quando a lealdade cai a 0 ou menos (ex.: ultimate que zera a
-       propria lealdade) -- medido: 1.861 mortes de planeswalker em
-       3.000 partidas de modo padrao, nao um evento raro. Ver hook
-       adicionado em `add_loyalty()`."""
+def do_carth_etb(state: GameState, log: List[Dict]):
+    """Carth the Lion: 'Whenever Carth enters or a planeswalker you
+    control dies, look at the top seven cards of your library. You may
+    reveal a planeswalker card from among them and put it into your
+    hand.' Achado real 2026-09-01 (leitura linha-a-linha, "compile
+    TUDO") - so' a metade "morte de planeswalker" nunca dispara neste
+    sim (nada remove nossos planeswalkers uma vez em campo, ver
+    `resolve_removal_round()`), mas a metade ETB e' real e disparada
+    aqui. 17 planeswalkers em 99 cartas - taxa de acerto real, nao um
+    chute."""
     top7 = state.library[:7]
     rest = state.library[7:]
     pw_in_top7 = [c for c in top7 if C(c).type == "Planeswalker"]
@@ -777,13 +752,9 @@ def _carth_lion_look_at_top7(state: GameState, log: List[Dict], source: str):
         top7.remove(found)
         state.hand.append(found)
         state.carth_tutors_total += 1
-        log.append({"trigger": "carth_tutor", "found": found, "source": source, "turn": state.turn})
+        log.append({"trigger": "carth_tutor", "found": found, "turn": state.turn})
     state.rng.shuffle(top7)
-    state.library = rest + top7
-
-
-def do_carth_etb(state: GameState, log: List[Dict]):
-    _carth_lion_look_at_top7(state, log, source="etb")
+    state.library = top7 + rest
 
 def try_fabled_passage(state: GameState, log: List[Dict]):
     """Fabled Passage: '{T}, Sacrifice this land: Search your library for a
@@ -845,28 +816,6 @@ def try_level_up_innkeepers_talent(state: GameState, log: List[Dict]):
     state.innkeepers_talent_level = next_level
     log.append({"trigger": "innkeepers_talent_level_up", "level": next_level, "turn": state.turn})
 
-def _planeswalker_dies(state: GameState, pw: str, log: List[Dict]):
-    """Cascata de 'um planeswalker seu morre' -- extraida de `add_loyalty()`
-    (achado real 2026-09-20, ao portar `remove_permanent` do modo de
-    resiliencia) pra ser reusada tanto por lealdade chegando a 0 (causa
-    original, self-inflicted via ultimate/custo) quanto por remocao/wipe de
-    OPONENTE (`remove_permanent`) -- a regra real ("whenever a planeswalker
-    you control dies") nao distingue a CAUSA da morte, so' que ela
-    aconteceu. Mesmo comportamento de antes pro call site original
-    (confirmado por regressao bit-a-bit do modo padrao)."""
-    if pw in state.battlefield:
-        state.battlefield.remove(pw)
-    state.graveyard.append(pw)
-    if pw in state.loyalty:
-        del state.loyalty[pw]
-    state.pw_deaths_total += 1
-    log.append({"trigger": "planeswalker_death", "pw": pw, "turn": state.turn})
-    # Carth the Lion, "...or a planeswalker you control dies" -- achado real
-    # 2026-09-20, ver `_carth_lion_look_at_top7`.
-    if "Carth the Lion" in state.battlefield:
-        _carth_lion_look_at_top7(state, log, source="pw_death")
-
-
 def add_loyalty(state: GameState, pw: str, amount: int, log: List[Dict], reason: str = ""):
     """Aplica uma mudanca de lealdade (positiva = ganha counters, negativa =
     remove) - so a parte POSITIVA e' dobrada por Doubling Season/Vorinclex
@@ -881,7 +830,12 @@ def add_loyalty(state: GameState, pw: str, amount: int, log: List[Dict], reason:
     log.append({"trigger": "loyalty_change", "pw": pw, "amount": amount,
                 "new_loyalty": state.loyalty[pw], "reason": reason, "turn": state.turn})
     if state.loyalty[pw] <= 0:
-        _planeswalker_dies(state, pw, log)
+        if pw in state.battlefield:
+            state.battlefield.remove(pw)
+        state.graveyard.append(pw)
+        del state.loyalty[pw]
+        state.pw_deaths_total += 1
+        log.append({"trigger": "planeswalker_death", "pw": pw, "turn": state.turn})
 
 def proliferate_loyalty(state: GameState, log: List[Dict], source: str = ""):
     # "Choose any number of permanents/players... give each another counter
@@ -967,11 +921,6 @@ def can_flash_bridge(state: GameState) -> bool:
     return True
 
 def cast_bridge(state: GameState, log: List[Dict], via_flash: bool):
-    # Contraataque (`try_smart_opponent_counter`, 7a categoria do modo de
-    # resiliencia -- so' faz sentido no exato momento do cast, mesmo
-    # padrao dos outros 6 decks): mana/enabler e taxa contam ANTES do
-    # counter (CR 903.10a conta "cast", nao "resolved"), entrada em
-    # campo so' DEPOIS de passar.
     if COMMANDER in state.hand:
         state.hand.remove(COMMANDER)
     mv = bridge_effective_mv(state)
@@ -984,15 +933,12 @@ def cast_bridge(state: GameState, log: List[Dict], via_flash: bool):
         log.append({"action": "flash_enabler_used", "card": enabler, "turn": state.turn})
     else:
         state.mana_spent_this_turn += mv
-    state.bridge_cast_count += 1
-    if try_smart_opponent_counter(state):
-        log.append({"action": "cast_bridge_countered", "via_flash": via_flash, "turn": state.turn})
-        return
     state.battlefield.append(COMMANDER)
     state.bridge_in_play = True
     state.bridge_cast_turn = state.turn
     if state.bridge_first_cast_turn is None:
         state.bridge_first_cast_turn = state.turn
+    state.bridge_cast_count += 1
     state.bridge_flash_cast = via_flash
     log.append({"action": "cast_bridge", "via_flash": via_flash, "turn": state.turn, "effective_mv": mv})
 
@@ -1027,42 +973,6 @@ def resolve_removal_round(state: GameState, log: List[Dict]):
             log.append({"trigger": "removal", "target": COMMANDER, "turn": state.turn})
         else:
             state.removal_attempts_wasted += 1
-
-def remove_permanent(state: GameState, name: str, log: List[Dict], source: str = "opponent"):
-    """Ponto central de remocao de permanente do CAMPO pelo modo de
-    resiliencia (7 categorias padronizadas, 2026-09-20 -- porte do
-    Megatron/Ur-Dragon/Hei Bai/Markov/Ulalek/Toph). Diferente de
-    `resolve_removal_round` (sistema ANTIGO, especifico deste deck, so'
-    mira Bridge/protetores, sempre ativo desde o turno 1) -- por decisao
-    do usuario, o modo de resiliencia NAO empilha os 2 sistemas: dentro
-    dele, `resolve_removal_round` fica desligado (ver `play_turn(...,
-    skip_legacy_removal=True)`) e SO' este chokepoint novo, com os
-    mesmos gates/calibracao ja validados nos outros 6 decks, roda.
-
-    Comandante: mesma convencao ja' usada em `resolve_removal_round`
-    (vai pra zona de comando via CR 903.9 -- `bridge_in_play=False`,
-    nunca cemiterio).
-
-    Planeswalker: delega pra `_planeswalker_dies` (mesma cascata real de
-    "um planeswalker seu morre" que a lealdade chegando a 0 usa --
-    remove de `state.battlefield` E `state.loyalty`, dispara Carth the
-    Lion se em campo).
-
-    Token: deixa de existir sem ir pro cemiterio (mesma convencao dos
-    outros decks -- nomes com "Token" no final, ver `make_pw_token`).
-    Carta nomeada: vai pro cemiterio de verdade."""
-    if name not in state.battlefield:
-        return
-    if name == COMMANDER:
-        state.battlefield.remove(name)
-        state.bridge_in_play = False
-        return
-    if name in state.loyalty:
-        _planeswalker_dies(state, name, log)
-        return
-    state.battlefield.remove(name)
-    if "Token" not in name:
-        state.graveyard.append(name)
 
 # =========================================================
 # ATIVACAO DE PLANESWALKER (regra nova - ver goldfish-sim-card-rules.md #12)
@@ -1486,14 +1396,7 @@ def main_phase(state: GameState, log: List[Dict]):
             do_land_fetch_spell(state, choice, log)
         log.append({"action": "cast", "card": choice, "turn": state.turn})
 
-def play_turn(state: GameState, turn: int, game_log: List[List[Dict]], skip_legacy_removal: bool = False):
-    """`skip_legacy_removal`: usado SO' pelo modo de resiliencia
-    (`simulate_one_with_interaction`) -- desliga `resolve_removal_round`
-    (sistema ANTIGO, especifico deste deck) pra evitar empilhar com o
-    novo sistema padronizado de 7 categorias (decisao do usuario,
-    2026-09-20: modo de resiliencia SUBSTITUI o antigo, nao soma).
-    Default `False` preserva 100% o comportamento de todo call site
-    existente (`simulate_one` nunca passa este argumento)."""
+def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.turn = turn
     state.land_played = False
     state.mana_spent_this_turn = 0
@@ -1520,8 +1423,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]], skip_lega
     if can_flash_bridge(state):
         cast_bridge(state, log, via_flash=True)
 
-    if not skip_legacy_removal:
-        resolve_removal_round(state, log)
+    resolve_removal_round(state, log)
 
     if state.bridge_in_play:
         n_triggers = 2 if state.has("Paradox Haze") else 1
@@ -1739,365 +1641,6 @@ def run_batch(n=2000, turns=10, with_greater_auramancy=False, seed_base=3000000,
           f"The Peregrine Dynamo (copiar gatilho entre N fontes legendarias, mesma excecao do Strionic Resonator).")
     print()
     return results
-
-# =========================================================
-# MODO OPCIONAL DE RESILIENCIA (interacao de oponente)
-# =========================================================
-# Porte do modo de resiliencia ja' implementado e validado no Megatron/
-# Ur-Dragon/Hei Bai/Markov/Ulalek/Toph (usuario, 2026-09-20: "Repita o
-# processo todo com o deck da Prismatic Bridge"). Aditivo e OPCIONAL --
-# nunca chamado por `simulate_one`/`run_batch` (modo padrao), gated
-# inteiramente por `state.interaction_rng`. Design final direto (mesmas 7
-# categorias + as 3 rodadas de correcao de orquestracao de turno ja'
-# validadas nos outros 6 decks), sem precisar reproduzir o historico.
-#
-# DIFERENCA REAL vs. os outros 6 decks: este arquivo JA TINHA um sistema
-# de remocao de oponente proprio (`resolve_removal_round`, especifico
-# pra decidir se vale Greater Auramancy -- 12%/oponente/turno, sempre
-# ativo desde o turno 1, sem gates, mira so' Bridge/protetores). Por
-# decisao EXPLICITA do usuario (perguntado antes de implementar, ver
-# checklist-oraculo.md): o modo de resiliencia NAO empilha os 2 sistemas.
-# `simulate_one_with_interaction` chama `play_turn(..., skip_legacy_
-# removal=True)`, desligando o sistema antigo DENTRO do modo de
-# resiliencia -- o modo PADRAO continua 100% intocado, `resolve_removal_
-# round` roda exatamente como sempre rodou, respondendo a pergunta
-# original do Greater Auramancy sem nenhuma mudanca.
-#
-# Outras diferencas estruturais reais (levadas em conta no design):
-# - Planeswalkers sao rastreados em `state.loyalty` (nome -> lealdade),
-#   ALEM de `state.battlefield` -- remocao/wipe precisa manter os 2
-#   sincronizados. `remove_permanent` delega pra `_planeswalker_dies`
-#   (mesma cascata que a lealdade chegando a 0 ja usa -- Carth the Lion
-#   dispara igual, nao importa a causa da morte).
-# - O comandante (The Prismatic Bridge) e' um ENCHANTMENT, nao criatura
-#   -- board wipe ("destroy all creatures") nunca a alcanca por
-#   definicao de tipo, so' remocao/counterspell dedicados.
-# - Nenhum combate real e' modelado (sem funcao de ataque neste arquivo)
-#   -- ataque de oponente aqui tambem conecta sem bloqueio, mesmo padrao
-#   dos outros 6 decks.
-# - `INTERACTION_ENGINE_PRIORITY` prioriza o planeswalker de MAIOR
-#   lealdade em campo (motor dinamico real deste deck -- qualquer um
-#   dos 17 pode estar em campo a qualquer momento, entao uma lista fixa
-#   de nomes nao capturaria a ameaca real), com fallback pra uma lista
-#   fixa curada de nao-planeswalkers recorrentes.
-# - 📊 Nao corrigido nesta rodada (decisao documentada, nao esquecimento
-#   -- mesma classe do token do Ugin no Ulalek): Arena Rector ("When
-#   this creature dies, you may exile it... search for a planeswalker
-#   card, put it onto the battlefield") so' importa se ELA especificamente
-#   morrer -- ao contrario do bug real do Carth (ja' corrigido acima,
-#   JA' alcancavel em modo padrao via lealdade chegando a 0, 1.861/3.000
-#   jogos), morte de CRIATURA nomeada nunca foi possivel neste arquivo
-#   antes desta rodada -- so' fica relevante especificamente quando MEU
-#   novo wipe/remocao alcanca a propria Arena Rector, nao um
-#   pre-requisito estrutural do port (diferente dos 2 fixes do Carth).
-
-NUM_OPPONENTS = N_OPPONENTS  # reusa a mesma constante ja' declarada no topo do arquivo (mesa de 4, ja documentada)
-
-INTERACTION_SETUP_TURNS = 2
-# Turnos 1-2 sao sempre setup, sem chance de reacao nenhuma -- o
-# oponente ainda nao tem motivo/mana pra reagir.
-
-def interaction_chance(state: GameState) -> float:
-    """Formula compartilhada de 'chance do oponente reagir esse turno' --
-    identica aos outros 6 decks: escala com o impacto do meu proprio
-    board (permanentes nao-terreno em campo)."""
-    board_impact = sum(1 for n in state.battlefield if not is_land(n))
-    return min(0.10 + 0.03 * board_impact, 0.75)
-
-OPPONENT_ATTENTION_CHANCE = 1.0 / NUM_OPPONENTS
-# Gate de "esse oponente esta' de olho em mim esse turno" (achado real
-# do usuario nos outros decks, 2026-09-20: "se sempre for 3 contra 1,
-# ai' nao consigo fazer nada, nunca!") -- por simetria, ha' 3 alvos
-# possiveis pra atencao de qualquer oponente (eu e os outros 2 que este
-# simulador nao modela), entao a chance BASE de que um turno de
-# oponente qualquer seja sobre MIM e' 1/NUM_OPPONENTS, antes de
-# qualquer ajuste por ameaca de board (que ja' fica dentro de
-# `interaction_chance()`). Rolado 1x no INICIO de `try_smart_opponent_
-# turn`, antes de qualquer categoria.
-
-POST_WIPE_ATTACK_HASTE_FACTOR = 0.15
-# Board wipe e' SIMETRICO -- acerta TODA criatura da mesa, nao so' as
-# minhas. Se um wipe ja' aconteceu NESTA RODADA (`state.wiped_this_
-# round`), TODOS os turnos de oponente restantes na mesma rodada
-# tambem ficam sem criaturas de verdade pra atacar -- exceto por haste
-# (fisicamente possivel, Regra #1 do CLAUDE.md: so' impossibilidade
-# estrutural justifica nao modelar, nunca zerar por completo).
-
-BOARD_WIPE_CHANCE_FACTOR = 0.4
-GRAVEYARD_WIPE_CHANCE_FACTOR = 0.4
-GRAVEYARD_SNIPE_CHANCE_FACTOR = 0.5
-COUNTERSPELL_CHANCE_FACTOR = 0.5
-# Mesmos fatores redutores dos outros 6 decks sobre a MESMA
-# `interaction_chance()` compartilhada.
-
-NONPLANESWALKER_ENGINE_PRIORITY = [
-    "Doubling Season",
-    "The Chain Veil",
-    "Vorinclex, Monstrous Raider",
-    "Innkeeper's Talent",
-    "Deepglow Skate",
-    "Carth the Lion",
-    "Evolution Sage",
-    "Flux Channeler",
-]
-# Fallback de `try_smart_opponent_removal` quando NENHUM planeswalker
-# esta' em campo -- lista curada por prioridade (dobradores de
-# contador/lealdade primeiro, maior multiplicador de valor do deck;
-# depois ativacao extra, tutor de carta, proliferate). A propria Bridge
-# fica de fora de proposito -- ja' tem categoria dedicada
-# (`try_smart_opponent_counter`) e remocao nao a mata de verdade mesmo.
-
-OPPONENT_ATTACKER_PROFILES = [
-    ("Knight Token", 2), ("Saproling Token", 1), ("Vampire Token", 1),
-    ("Zombie Token", 2), ("Soldier Token", 1), ("Goblin Token", 1),
-    ("Elemental Token", 3),
-]
-# Mesmos perfis genericos ja' validados nos outros 6 decks -- sem
-# toughness, este arquivo nao modela combate/bloqueio de um oponente de
-# verdade. Todo ataque conecta.
-
-def try_smart_opponent_removal(state: GameState, log: List[Dict]) -> Optional[str]:
-    """Remocao 'inteligente' -- mira o planeswalker de MAIOR lealdade em
-    campo (motor dinamico real deste deck), com fallback pra
-    `NONPLANESWALKER_ENGINE_PRIORITY` se nenhum planeswalker estiver em
-    campo. Nunca aleatorio."""
-    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
-        return None
-    if state.loyalty:
-        target = max(state.loyalty, key=lambda pw: state.loyalty[pw])
-    else:
-        target = next((n for n in NONPLANESWALKER_ENGINE_PRIORITY if n in state.battlefield), None)
-    if target is None:
-        return None
-    if state.interaction_rng.random() >= interaction_chance(state):
-        return None
-    remove_permanent(state, target, log, source="opponent_removal")
-    state.smart_removals_total += 1
-    state.smart_removal_log.append((state.turn, target))
-    return target
-
-def try_smart_opponent_attack(state: GameState, log: List[Dict]) -> Optional[str]:
-    """Ataque de oponente -- SEM bloqueio (limitacao estrutural: este
-    arquivo nao modela combate/bloqueio de um oponente de verdade, nao
-    tem nenhuma funcao de combate). Sempre conecta em `state.life`.
-
-    Se `state.wiped_this_round` (algum wipe ja' disparou nesta rodada,
-    de qualquer oponente, incluindo este mesmo turno) a chance cai pra
-    `POST_WIPE_ATTACK_HASTE_FACTOR` -- representa so' um atacante com
-    haste conjurado DEPOIS do wipe."""
-    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
-        return None
-    chance = interaction_chance(state) * (POST_WIPE_ATTACK_HASTE_FACTOR if state.wiped_this_round else 1.0)
-    if state.interaction_rng.random() >= chance:
-        return None
-    name, power = state.interaction_rng.choice(OPPONENT_ATTACKER_PROFILES)
-    state.life -= power
-    state.smart_attacks_taken_total += 1
-    state.smart_attack_log.append((state.turn, name))
-    return name
-
-def try_smart_opponent_discard(state: GameState, log: List[Dict]) -> Optional[str]:
-    """Discard aleatorio -- mesma logica dos outros 6 decks (alvo
-    puramente ao acaso na mao, sem filtro nenhum)."""
-    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
-        return None
-    if not state.hand:
-        return None
-    if state.interaction_rng.random() >= interaction_chance(state):
-        return None
-    target = state.interaction_rng.choice(state.hand)
-    state.hand.remove(target)
-    state.graveyard.append(target)
-    state.smart_discards_total += 1
-    state.smart_discard_log.append((state.turn, target))
-    return target
-
-def try_smart_opponent_wipe(state: GameState, log: List[Dict]) -> Optional[list]:
-    """Board wipe ('destroy all creatures') -- destroi TODAS as minhas
-    criaturas em campo de uma vez via `remove_permanent`. O comandante
-    (Enchantment) e planeswalkers NUNCA sao alvo de um wipe de criatura
-    -- so' `C(n).type == "Creature"` de verdade. Sem nenhuma criatura em
-    campo, retorna None sem fazer nada."""
-    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
-        return None
-    targets = [n for n in state.battlefield if C(n).type == "Creature"]
-    if not targets:
-        return None
-    if state.interaction_rng.random() >= interaction_chance(state) * BOARD_WIPE_CHANCE_FACTOR:
-        return None
-    for n in targets:
-        remove_permanent(state, n, log, source="opponent_wipe")
-    state.smart_wipes_total += 1
-    state.smart_wipe_log.append((state.turn, targets))
-    state.wiped_this_round = True
-    return targets
-
-def try_smart_opponent_graveyard_wipe(state: GameState, log: List[Dict]) -> Optional[list]:
-    """Graveyard hate, modelo MASS EXILE (Bojuka Bog/Soul-Guide
-    Lantern-style) -- dispara NO MAXIMO 1x por partida inteira
-    (`state.graveyard_wipe_used`)."""
-    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
-        return None
-    if state.graveyard_wipe_used or not state.graveyard:
-        return None
-    if state.interaction_rng.random() >= interaction_chance(state) * GRAVEYARD_WIPE_CHANCE_FACTOR:
-        return None
-    exiled = state.graveyard[:]
-    state.graveyard.clear()
-    state.graveyard_wipe_used = True
-    state.smart_graveyard_wipes_total += 1
-    state.smart_graveyard_wipe_log.append((state.turn, exiled))
-    return exiled
-
-def try_smart_opponent_graveyard_snipe(state: GameState, log: List[Dict]) -> Optional[str]:
-    """Graveyard hate, modelo EXILIO DE CARTA UNICA (Scavenging
-    Ooze/Cease-style) -- repetivel todo turno. Alvo SMART: maior MV
-    entre criatura OU planeswalker no cemiterio -- mesmo criterio real
-    que `Tamiyo, Compleated Sage -X` ja' usa pra escolher alvo de
-    recursao (`by_mv`/`affordable`, qualquer permanente card, nao so'
-    criatura)."""
-    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
-        return None
-    candidates = [c for c in state.graveyard if C(c).type in ("Creature", "Planeswalker")]
-    if not candidates:
-        return None
-    if state.interaction_rng.random() >= interaction_chance(state) * GRAVEYARD_SNIPE_CHANCE_FACTOR:
-        return None
-    target = max(candidates, key=lambda n: C(n).mv)
-    state.graveyard.remove(target)
-    state.smart_graveyard_snipes_total += 1
-    state.smart_graveyard_snipe_log.append((state.turn, target))
-    return target
-
-def try_smart_opponent_counter(state: GameState) -> bool:
-    """Counterspell -- so' mira a conjuracao da propria Bridge (mesma
-    logica dos outros 6 decks: o motor inteiro do deck depende do
-    comandante resolver). Chamada de dentro de `cast_bridge()`, nao do
-    loop de `simulate_one_with_interaction` -- so' faz sentido no exato
-    momento do cast, dentro do MEU turno (cobre tanto cast normal
-    quanto flash)."""
-    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
-        return False
-    if state.interaction_rng.random() >= interaction_chance(state) * COUNTERSPELL_CHANCE_FACTOR:
-        return False
-    state.smart_counters_total += 1
-    state.smart_counter_log.append(state.turn)
-    return True
-
-def try_smart_opponent_turn(state: GameState, log: List[Dict]):
-    """Simula O TURNO DE UM oponente dentro da rodada entre os meus
-    turnos (mesmo design final ja' validado nos outros 6 decks, Regra
-    #6 do CLAUDE.md: bug de orquestracao de turno que auditoria
-    carta-a-carta nao pega). Chamada `NUM_OPPONENTS` vezes por rodada --
-    um wipe de um oponente ANTERIOR na rodada continua afetando
-    corretamente o ataque de um oponente POSTERIOR na MESMA rodada
-    (chamadas em sequencia, mesmo `state`).
-
-    Gate de atencao: antes de rolar QUALQUER categoria, este turno de
-    oponente precisa passar em `OPPONENT_ATTENTION_CHANCE`. Wipe e
-    ataque nao precisam de exclusao mutua manual aqui: `try_smart_
-    opponent_attack` ja' se auto-regula via `state.wiped_this_round`
-    (setado por `try_smart_opponent_wipe`, que roda antes, dentro desta
-    mesma chamada)."""
-    if state.turn > INTERACTION_SETUP_TURNS and state.interaction_rng.random() >= OPPONENT_ATTENTION_CHANCE:
-        return
-    try_smart_opponent_wipe(state, log)
-    try_smart_opponent_attack(state, log)
-    try_smart_opponent_graveyard_wipe(state, log)
-    try_smart_opponent_graveyard_snipe(state, log)
-    try_smart_opponent_removal(state, log)
-    try_smart_opponent_discard(state, log)
-
-def simulate_one_with_interaction(seed: int, turns: int, with_greater_auramancy: bool = False) -> GameState:
-    """Mesmo goldfish de `simulate_one`, mas com `NUM_OPPONENTS` turnos
-    de oponente de verdade simulados (`try_smart_opponent_turn`) a cada
-    rodada entre os meus turnos, e `resolve_removal_round` (sistema
-    ANTIGO) desligado via `skip_legacy_removal=True` (ver decisao do
-    usuario no topo da secao). Counterspell (7a categoria) NAO mora
-    neste loop -- ver `try_smart_opponent_counter`, chamada de dentro de
-    `cast_bridge` no exato momento do cast (normal ou flash).
-
-    Mulligan duplicado (nao extraido pra helper compartilhado) de
-    proposito -- este arquivo nunca teve uma funcao `mulligan()`
-    separada, e extrair uma agora tocaria `simulate_one` (modo padrao)
-    sem necessidade real -- mais seguro duplicar aqui.
-
-    NUNCA chamado por `run_batch`/`simulate_one` padrao. Retorna o
-    `GameState` bruto (nao um dict resumido como `simulate_one`), mesma
-    convencao dos outros 6 decks."""
-    rng = random.Random(seed)
-    decklist = build_decklist(with_greater_auramancy)
-    deck = parse_decklist(decklist)
-    assert len(deck) == 99, f"Mainboard deveria ser 99, deu {len(deck)}"
-    rng.shuffle(deck)
-    state = GameState(rng=rng, library=deck, with_greater_auramancy=with_greater_auramancy,
-                       interaction_rng=random.Random(seed + 999_999))
-
-    mulligans = 0
-    while True:
-        state.hand = []
-        state.draw(7)
-        if should_keep(state.hand) or mulligans >= 2:
-            break
-        mulligans += 1
-        state.library.extend(state.hand)
-        state.hand = []
-        rng.shuffle(state.library)
-    penalty = max(0, mulligans - 1)
-    if penalty:
-        bottoms = choose_bottom(state.hand, penalty)
-        for c in bottoms:
-            state.hand.remove(c)
-            state.library.append(c)
-        rng.shuffle(state.library)
-
-    game_log = []
-    interaction_log: List[Dict] = []
-    t = 0
-    turns_played = 0
-    while turns_played < turns:
-        t += 1
-        play_turn(state, t, game_log, skip_legacy_removal=True)
-        turns_played += 1
-        state.wiped_this_round = False
-        for _ in range(NUM_OPPONENTS):
-            try_smart_opponent_turn(state, interaction_log)
-        while state.extra_turns_pending > 0 and turns_played < turns:
-            state.extra_turns_pending -= 1
-            t += 1
-            play_turn(state, t, game_log, skip_legacy_removal=True)
-            turns_played += 1
-            state.wiped_this_round = False
-            for _ in range(NUM_OPPONENTS):
-                try_smart_opponent_turn(state, interaction_log)
-    return state
-
-def run_batch_with_interaction(n=2000, turns=10, with_greater_auramancy=False, seed_base=6000000):
-    """Batch do modo de resiliencia -- reporta so' as metricas
-    relevantes pra 'o motor aguenta perder a peca central?', nao
-    duplica o relatorio inteiro do `run_batch` padrao."""
-    states = [simulate_one_with_interaction(seed_base + i, turns=turns,
-                                             with_greater_auramancy=with_greater_auramancy) for i in range(n)]
-
-    def avg(vals):
-        return sum(vals) / len(vals) if vals else 0.0
-
-    print(f"=== Prismatic Bridge Goldfish v1 - MODO DE RESILIENCIA - n={n}, turns={turns}, Greater Auramancy={with_greater_auramancy} ===")
-    print(f"Avg remocoes inteligentes sofridas: {avg([s.smart_removals_total for s in states]):.2f}")
-    print(f"Avg ataques de oponente sofridos: {avg([s.smart_attacks_taken_total for s in states]):.2f}")
-    print(f"Avg descartes forcados sofridos: {avg([s.smart_discards_total for s in states]):.2f}")
-    print(f"Avg board wipes sofridos: {avg([s.smart_wipes_total for s in states]):.2f}")
-    print(f"Board wipe sofrido em {100*sum(1 for s in states if s.smart_wipes_total > 0)/n:.1f}% das partidas")
-    print(f"Avg graveyard wipes (mass exile) sofridos: {avg([s.smart_graveyard_wipes_total for s in states]):.2f}")
-    print(f"Avg graveyard snipes (exilio unico) sofridos: {avg([s.smart_graveyard_snipes_total for s in states]):.2f}")
-    print(f"Avg counterspells sofridos (cast da Bridge): {avg([s.smart_counters_total for s in states]):.2f}")
-    print(f"Avg vida final: {avg([s.life for s in states]):.2f}")
-    never_cast = sum(1 for s in states if s.bridge_cast_count == 0)
-    print(f"Bridge nunca conjurada em {turns} turnos: {100*never_cast/n:.1f}%")
-    recast = sum(1 for s in states if s.bridge_cast_count >= 2)
-    print(f"Bridge recastada ao menos 1x (removida e voltou): {100*recast/n:.1f}%")
-    return states
-
 
 if __name__ == "__main__":
     run_batch(n=2000, turns=10, with_greater_auramancy=False, label="SEM Greater Auramancy (lista atual)")
