@@ -4,6 +4,32 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Modo de resiliência portado do Megatron/Ur-Dragon — 2026-09-20
+
+**Gatilho:** usuário pediu pra implementar mesmo depois da avaliação
+de esforço (Hei Bai serviu de piloto e mostrou 2 lacunas estruturais).
+Detalhes técnicos completos em `checklist-oraculo.md`.
+
+**Achado real mais importante:** o próprio arquivo já documentava
+Enduring Vitality (death trigger real, "return it to the battlefield
+as an enchantment") como fora de escopo porque nenhum permanente
+próprio nunca morria aqui. Implementar wipe/remoção pela 1ª vez abriu
+essa janela de verdade — tratado corretamente (`remove_permanent()`),
+com teste dirigido confirmando que ela volta como enchantment e fica
+imune a wipes de criatura depois disso.
+
+**Validação:** 5.000 seeds de equivalência bit-a-bit do modo padrão (0
+diferenças) + 6 testes unitários dirigidos + regressão de 20.000
+partidas em cada modo, 0 exceções.
+
+**Resultado (A/B 2000 jogos mesma seed):** dano proxy cai de 231,65
+pra 37,72 (16% do original) — queda proporcional maior que o Ur-Dragon
+(31%), porque Elesh Norn/Sanctum of All multiplicam quase todo o board,
+e o board wipe médio leva 11,43 Shrines de uma vez. Tabela completa em
+`checklist-oraculo.md`.
+
+---
+
 ## Teste #1 — Farewell vs. Aura Shards (`heibai_aurashards_test.py`) — 2026-08-24
 
 Pedido do usuário: trocar Farewell POR Aura Shards (não só adicionar) e

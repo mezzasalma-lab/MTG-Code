@@ -1,5 +1,84 @@
 # Checklist cláusula-a-cláusula — Hei Bai, Forest Guardian
 
+## Modo de resiliência portado do Megatron/Ur-Dragon (6 categorias + counterspell) — 2026-09-20
+
+**Gatilho:** usuário pediu pra implementar mesmo assim, depois de eu
+usar este deck como piloto pra avaliar esforço (achado que ele tem 2
+lacunas estruturais sérias: sem `sacrifice()`/remoção central, sem
+combate/P-T modelado nenhum). Pedido: mesmo comparativo antes/depois
+que o Ur-Dragon.
+
+**Achado real MAIS IMPORTANTE desta rodada:** o próprio docstring do
+arquivo (linhas ~187-193) já documentava **Enduring Vitality** ("When
+~ dies, if it was a creature, return it to the battlefield... It's an
+enchantment") como fora de escopo — mas especificamente PORQUE "este
+simulador não mata criaturas nomeadas... essa cláusula nunca teria
+janela real pra disparar". Ao implementar wipe/remoção pela 1ª vez
+neste arquivo, essa janela passa a existir de verdade — se eu não
+tratasse isso, teria reintroduzido exatamente o gap que a nota dizia
+ser estruturalmente impossível. Confirmei o oráculo real via Scryfall
+antes de implementar (Regra #1): *"When Enduring Vitality dies, if it
+was a creature, return it to the battlefield under its owner's
+control. It's an enchantment. (It's not a creature.)"*
+
+`remove_permanent()` trata isso: na primeira morte como criatura, ela
+NUNCA vai pro cemitério — volta direto pro campo como enchantment puro
+(`state.enduring_vitality_enchantment_only`). E `try_smart_opponent_
+wipe()` precisa saber que, uma vez flagada, ela **não é mais alvo
+legal de "destroy all creatures"**, mesmo `is_creature_card()` (lookup
+estático no `CARD_DB`) dizendo que sim — mesmo padrão do Megatron-
+Vehicle/Living-Metal (Regra #3 do CLAUDE.md: conceito compartilhado
+errado pra um subconjunto de quem o lê, porque é um efeito contínuo
+que muda o tipo, não o tipo impresso na carta).
+
+**Outras diferenças estruturais reais vs. Megatron/Ur-Dragon:**
+- Sem `power`/`toughness` rastreado em NENHUMA criatura (`Card` só tem
+  `mv`/`ctype`/`tags`) — ataque de oponente aqui NUNCA é bloqueado,
+  mesma limitação do Ur-Dragon, mais extrema (nem o combate do PRÓPRIO
+  jogador existe neste arquivo).
+- Sem taxa de comandante nenhuma (diferente do Megatron/Ur-Dragon) —
+  counterspell mais simples de portar, sem bookkeeping de taxa.
+- Alvo do graveyard snipe usa o MESMO critério que `do_life_origin_
+  reanimate()`/`do_hall_of_heliods_generosity()` já usam (maior MV
+  entre ENCANTAMENTO no cemitério) — recursão real deste deck é de
+  encantamento, não de artefato/Dragão.
+- `INTERACTION_ENGINE_PRIORITY` curada a partir do `auditoria.md` real
+  (seção 2, "motor que se realimenta"): Sanctum of All (dobra Shrine
+  com 6+ em campo + tutor, multiplicador central), Elesh Norn (dobra
+  ETB incondicional), Sythis/Sanctum Weaver (draw/mana), shrines de
+  draw/drain recorrentes, Go-Shintai of Life's Origin, Displacer
+  Kitten.
+
+**Validação:** 6 testes unitários dirigidos (gating; **Enduring
+Vitality retorna como enchantment ao morrer, nunca vai pro cemitério**;
+**2º wipe confirma que ela fica IMUNE uma vez flagada não-criatura**;
+removal mira prioridade correta; graveyard snipe mira maior MV
+encantamento; counterspell sem taxa) + 5.000 seeds de equivalência
+bit-a-bit do modo padrão (0 diferenças) + smoke test + regressão de
+20.000 partidas em CADA modo, 0 exceções nos dois.
+
+**Resultado (A/B 2000 jogos mesma seed):**
+
+| Métrica | Padrão | Resiliência |
+|---|---|---|
+| Turno médio de conjuração (resolveu) | 3,60 | 3,68 |
+| Nunca resolveu em 8 turnos | 0,9% | 0,9% |
+| Avg dano proxy total | 231,65 | 37,72 (16% do original) |
+| Avg drain proxy total | 33,61 | 6,89 |
+| Avg dobras via Elesh Norn | 80,93 | 11,05 |
+| Avg tokens criados | 53,84 | 14,20 |
+| Avg board wipes sofridos | — | 0,74 (11,43 criaturas perdidas quando dispara) |
+| Graveyard wipe sofrido (partidas) | — | 48,8% |
+| Avg remoções inteligentes sofridas | — | 0,99 |
+| Avg counterspells sofridos | — | 0,12 |
+
+Queda proporcional MAIOR que o Ur-Dragon (16% vs. 31% do dano
+original) — coerente com a estrutura do deck: Elesh Norn e Sanctum of
+All são multiplicadores praticamente sobre TUDO (qualquer ETB de
+Shrine), então perdê-los (ou perder Shrines em massa pro board wipe —
+11,43 em média por wipe, contra um board médio de ~10 Shrines) corta o
+motor de forma muito mais desproporcional do que no Ur-Dragon.
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-13
 
 Extensão pra este deck da mesma auditoria já feita no Megatron/Azula/
