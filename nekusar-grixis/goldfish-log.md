@@ -4,6 +4,28 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Porte completo do modo de resiliência + CR 903.9a nativa desde o início — 2026-09-21
+
+**Gatilho:** "Agora faça com oNekusar" — seguindo o porte concluído no
+Vihaan. Detalhes completos em `checklist-oraculo.md` e
+`megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Achado:** 2º deck desta sessão a nascer com CR 903.9a correta desde o
+início. Sem impacto numérico (0 cartas "creature dies", 0 tokens
+agregados — deck de dano-por-compra/wheel/storm, não aristocrata).
+Achado de modelagem real: Spark Double (cópia de criatura) precisa de
+tratamento específico em `remove_permanent` — remover a cópia limpa
+`spark_double_copy_target`, remover o original copiado NÃO afeta a
+cópia (CR 706.2).
+
+**Resultado:** modo padrão idêntico (0/20000 mismatches) — diferente do
+Vihaan, nenhum bug pré-existente do motor próprio foi achado aqui.
+
+**Validação:** regressão de 20.000 partidas em modo de resiliência, 0
+exceções, 0 comandantes presos no cemitério + 6 testes dirigidos.
+
+---
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-13
 
 Ver `checklist-oraculo.md` pra lista completa dos 11 gaps reais achados e
