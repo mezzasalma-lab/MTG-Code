@@ -1,5 +1,101 @@
 # Checklist cláusula-a-cláusula — Rat King, Verminister
 
+## Porte completo do modo de resiliência (interação de oponente) — 2026-09-21
+
+**Gatilho:** usuário pediu direto, mesmo protocolo já aplicado a
+Megatron/Ur-Dragon/Hei Bai/Edgar Markov/Ulalek/Toph/Prismatic
+Bridge/Maralen nesta mesma sessão: *"Vamos fazer a implementação no
+Verminister agora."* Este deck nunca tinha nenhuma extensão de
+resiliência antes — porte completo do zero, incorporando direto o
+design FINAL já validado nos outros 8 (wipe unificado com escolha
+ponderada, gate de atenção do oponente, `wiped_this_round` +
+`POST_WIPE_ATTACK_HASTE_FACTOR` desde a primeira versão).
+
+**Implementadas as 7 categorias padrão:** ataque sem bloqueio, remoção
+curada (`INTERACTION_ENGINE_PRIORITY`: Skullclamp, Thrumming Stone,
+Ayara, Cabal Coffers, Crypt Ghast, Priest of Forgotten Gods,
+Marrow-Gnawer, Pitiless Plunderer, Zulaport Cutthroat, Syr Konrad),
+discard aleatório, board wipe (criatura/artefato/encantamento, pesos
+0.4/0.2/0.15), graveyard hate (mass exile 1x/partida + exílio de carta
+única repetível), counterspell (mira só o cast do próprio Rat King).
+
+**Achado real de regra MAIS substancial que nos outros 8 decks
+(aristocrats + simultaneidade, CR 603.10 "last known information"):**
+este é o primeiro deck da sessão com múltiplas cartas reais de payoff
+de morte (Zulaport Cutthroat, Pitiless Plunderer, Syr Konrad, Species
+Specialist) — um wipe de criatura mata VÁRIAS criaturas ao mesmo tempo
+(de verdade, simultâneo pela regra real), mas o ponto central
+pré-existente do arquivo (`on_creature_dies`, chamado individualmente
+por `leave_battlefield` dentro de um loop sequencial de remoção)
+checa `"Fonte" in state.battlefield` NO MOMENTO de cada morte
+individual — uma fonte de gatilho (ex.: Zulaport) já removida NO MEIO
+do loop deixa de "ver" as mortes que vêm depois dela no MESMO wipe,
+mesmo sendo tecnicamente simultâneas pela regra real. Isso subconta
+significativamente o payoff de aristocrata bem no cenário mais
+temático do deck inteiro (perder o board pra um wrath).
+
+**Achado de gap pré-existente descoberto no processo (não introduzido
+por mim):** `on_creature_dies` também nunca tratava corretamente a
+cláusula "this creature or another creature" da Zulaport (self-
+inclusiva — ela deveria contar até a própria morte dela, oráculo real
+confirmado via Scryfall) — o código checava só presença em campo,
+então a morte DELA MESMA nunca disparava a própria habilidade dela.
+Isso é diferente de Pitiless Plunderer/Syr Konrad, cujo oráculo real
+usa "another creature" (excludente — a própria morte deles NÃO deveria
+contar, e o código já acertava isso por acidente, pela mesma checagem
+de presença). Esse gap pré-existente é FORA DE ESCOPO consertar na
+função compartilhada (`on_creature_dies` é chamada em vários call
+sites de modo PADRÃO — `sacrifice_rats`/`sacrifice_any_creature`/
+`ayara_activation` — mexer nela mudaria resultado de modo padrão,
+quebrando bit-identidade).
+
+**Corrigido SÓ dentro de `try_smart_opponent_wipe`** (sem tocar
+`on_creature_dies`/`leave_battlefield` compartilhados): tira um
+SNAPSHOT de quem está em campo ANTES de remover qualquer coisa, calcula
+os 4 payoffs manualmente a partir dele — Zulaport (self-inclusiva,
+conta TODAS as mortes simultâneas inclusive a própria), Pitiless
+Plunderer/Syr Konrad ("another creature", excluem só a própria morte
+de cada um), Species Specialist (conta só Ratos — ela mesma é Human,
+nunca conta). Uma nova função auxiliar (`_wipe_remove_creature_no_
+trigger`) faz só a remoção física (campo→cemitério ou campo→zona de
+comando pro comandante), sem disparar o `on_creature_dies` individual
+que ficaria incompleto nesse cenário simultâneo.
+
+**Comandante nunca conta pros 4 payoffs** (CR 700.4 + 903.9 — ele vai
+pra zona de comando, nunca "morre" de verdade, mesmo sendo fisicamente
+removido do campo pelo wipe), mas `permanent_left_battlefield_this_turn`
+(Disappear, termo real "left the battlefield" — mais amplo que "dies")
+ainda dispara mesmo quando só o comandante sai.
+
+**2 bugs reais de infraestrutura corrigidos durante o porte** (nunca
+exercitados antes, sem call site pré-existente que os alcançasse):
+`leave_battlefield()` só mandava carta pro cemitério quando
+`is_creature_card()` era verdade — artefato/encantamento removido
+pelo modo de resiliência simplesmente desaparecia sem ir pro cemitério
+de verdade. Corrigido pra sempre mandar carta não-token pro cemitério
+quando `to_graveyard=True`, independente do tipo.
+
+**Validação:** modo padrão 100% bit-idêntico ao commit anterior (3.000
+seeds) + regressão de 20.000 partidas em modo resiliência, 0 exceções +
+7 testes dirigidos, incluindo os 2 mais específicos deste deck: (a)
+Zulaport+Pitiless Plunderer+5 tokens no mesmo wipe — 7 mortes
+simultâneas, Zulaport ganha +7 de vida (self-inclusiva, correto),
+Plunderer ganha 6 Treasures (exclui só a própria morte, correto); (b)
+Syr Konrad+Species Specialist+Rat Colony+2 tokens de Rato — Konrad
+causa 4 de dano (exclui só a própria morte), Species Specialist compra
+3 (só Ratos, nunca ela mesma); (c) comandante junto de Zulaport no
+mesmo wipe — vida sobe só +1 (só Zulaport conta, comandante nunca
+"morre" de verdade).
+
+**Resultado (A/B 2000 jogos mesma seed_base, modo padrão vs.
+resiliência):** vida final média 38,11 → 36,24. Avg board wipes: 0,84,
+artifact: 0,20, enchantment: 0,08. Avg proxy_damage_total (drain/dano
+acumulado) CAI de 5,74 pra 3,59 apesar do bônus real dos wipes — a
+perda de presença de board/cartas pra interação do oponente supera o
+ganho pontual do payoff de morte simultânea. Avg remoções
+inteligentes: 0,51 — Cabal Coffers (10,8%) e Skullclamp (9,8%) são os
+alvos mais removidos entre as peças curadas.
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-13/14
 
 Extensão pra este deck da mesma auditoria já feita no Megatron/Azula/

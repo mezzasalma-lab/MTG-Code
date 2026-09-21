@@ -4,6 +4,36 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Porte completo do modo de resiliência (interação de oponente) — 2026-09-21
+
+**Gatilho:** "Vamos fazer a implementação no Verminister agora" — mesmo
+modo já validado em Megatron/Ur-Dragon/Hei Bai/Edgar Markov/Ulalek/
+Toph/Prismatic Bridge/Maralen. Detalhes técnicos completos em
+`checklist-oraculo.md`.
+
+**Achado real mais substancial da sessão nesta categoria**: aristocrats
++ simultaneidade real (CR 603.10). Um wipe matando Zulaport Cutthroat/
+Pitiless Plunderer/Syr Konrad/Species Specialist JUNTO de outras
+criaturas precisou de um recálculo manual via snapshot pra não
+subcontar os gatilhos (o caminho genérico do arquivo removia uma
+criatura de cada vez, então uma fonte de gatilho já removida no meio
+do loop parava de "ver" as mortes seguintes no mesmo wipe). Corrigido
+só dentro da função de wipe nova, sem tocar nada do modo padrão.
+
+**Resultado (A/B 2000 jogos mesma seed_base):** vida final 38,11 →
+36,24. Avg board wipes: 0,84, artifact: 0,20, enchantment: 0,08. Avg
+proxy_damage_total cai de 5,74 pra 3,59 (a perda de board pra
+interação supera o bônus do payoff simultâneo dos wipes).
+
+**Validação:** modo padrão 100% bit-idêntico (3.000 seeds) + regressão
+de 20.000 partidas, 0 exceções + 7 testes dirigidos, incluindo 3 casos
+específicos do aristocrats simultâneo (Zulaport self-inclusiva +7 vida
+com 7 mortes; Syr Konrad exclui só a própria morte, 4 de dano com 5
+mortes; comandante junto de Zulaport no mesmo wipe nunca conta pro
+total, só +1 vida).
+
+---
+
 ### Auditoria oráculo-por-oráculo completa — 2026-09-13/14
 
 Extensão pra este deck da mesma auditoria já feita no Megatron/Azula/
