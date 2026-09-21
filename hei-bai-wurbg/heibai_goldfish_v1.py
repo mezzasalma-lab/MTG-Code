@@ -1659,15 +1659,31 @@ def put_into_graveyard(state: GameState, name: str):
 def remove_permanent(state: GameState, name: str):
     """Ponto central de remocao de permanente do CAMPO -- 1a vez que
     algo morre de verdade neste arquivo (ver nota da secao acima).
-    Comandante vai pra zona de comando, nunca pro cemiterio. Enduring
-    Vitality tem tratamento especial: primeira morte COMO CRIATURA
-    nunca vai pro cemiterio, volta direto pro campo como enchantment
-    puro (oraculo real, confirmado Scryfall). Resto vai pro cemiterio
-    via `put_into_graveyard()`."""
+    Enduring Vitality tem tratamento especial: primeira morte COMO
+    CRIATURA nunca vai pro cemiterio, volta direto pro campo como
+    enchantment puro (oraculo real, confirmado Scryfall). Resto vai pro
+    cemiterio via `put_into_graveyard()`.
+
+    CORRIGIDO 2026-09-21 (achado real do usuario, CR 903.9a -- ver
+    `rules-cache/comprehensive-rules.txt` linhas 6888-6896, Regra 18 de
+    `references/user-standing-rules.md`): comandante indo pro
+    cemiterio/exilio NAO e' substituicao, e' ACAO BASEADA EM ESTADO (CR
+    704) que roda DEPOIS do evento real -- ele vai pro cemiterio DE
+    VERDADE primeiro (CR 700.4, "dies"), so' DEPOIS o dono PODE
+    escolher move-lo pra zona de comando. A versao anterior pulava o
+    cemiterio inteiramente. Sem efeito NUMERICO observavel aqui (0
+    cartas 'creature dies' neste deck pra reagir -- so' Enduring
+    Vitality reage a SI MESMA morrendo, nao ao comandante), mas
+    corrigido pra ficar estruturalmente certo -- uma futura troca de
+    carta com gatilho de morte compartilhado nao herdaria esse bug em
+    silencio."""
     if name not in state.battlefield:
         return
     state.battlefield.remove(name)
     if name == COMMANDER:
+        put_into_graveyard(state, name)
+        if name in state.graveyard:
+            state.graveyard.remove(name)
         state.commander_in_play = False
         return
     if name == "Enduring Vitality" and not state.enduring_vitality_enchantment_only:
