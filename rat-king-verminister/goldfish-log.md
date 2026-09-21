@@ -4,6 +4,32 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## CR 903.9a: comandante dispara os 4 payoffs de aristocrata de verdade — 2026-09-21
+
+**Gatilho:** usuário conferiu a regra real do CR 903.9 e apontou o erro
+("comandantes podem ser mortos sim!"). Detalhes completos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Achado:** 2 pontos reais — `leave_battlefield` (chokepoint central,
+comandante especial-casado pulava ele, igual Toph/Maralen) E o cálculo
+manual de LKI (last known information) do `try_smart_opponent_wipe`,
+que excluía o comandante EXPLICITAMENTE dos 4 payoffs (Zulaport/
+Pitiless Plunderer/Syr Konrad/Species Specialist). Achado adicional: o
+Rat King tem a tag "rat" (Legendary Creature — Rat Noble) — Species
+Specialist também estava sendo silenciado, não só os outros 3.
+
+**Resultado:** modo padrão idêntico (0/20000 mismatches). Modo de
+resiliência (5000 seeds, A/B): `proxy_damage_total` médio
+3,7574→3,8632; `tokens_created_total` médio 3,956→3,9978; `life` médio
+36,4676→36,5378. Métricas de RNG puro (`smart_wipes_total`/`smart_
+removals_total`) ficaram praticamente idênticas, confirmando
+isolamento da correção.
+
+**Validação:** regressão de 20.000 partidas em modo de resiliência, 0
+exceções, 0 comandantes presos no cemitério + 5 testes dirigidos.
+
+---
+
 ## Porte completo do modo de resiliência (interação de oponente) — 2026-09-21
 
 **Gatilho:** "Vamos fazer a implementação no Verminister agora" — mesmo

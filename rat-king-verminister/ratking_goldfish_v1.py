@@ -582,7 +582,29 @@ def leave_battlefield(state: GameState, name: str, to_graveyard: bool = True, is
     de qualquer um dos 3 tipos) -- corrigido pra sempre mandar carta
     NAO-token pro cemiterio quando `to_graveyard=True`, independente do
     tipo. O gatilho de morte (`on_creature_dies`) continua exclusivo de
-    criatura, igual antes."""
+    criatura, igual antes.
+
+    CORRIGIDO 2026-09-21 (achado real do usuario, CR 903.9a -- ver
+    `rules-cache/comprehensive-rules.txt` linhas 6888-6896, Regra 18 de
+    `references/user-standing-rules.md`; mesma correcao do Toph/Maralen
+    nesta sessao -- Regra #6 do CLAUDE.md, o tratamento do comandante
+    tem que morar no CHOKEPOINT central, nao no caller): tratamento do
+    comandante movido pra AQUI. Ela agora dispara `on_creature_dies`
+    normalmente (Zulaport/Pitiless Plunderer/Syr Konrad/Species
+    Specialist -- nenhum dos 4 e' ela mesma, e ela E' Rato de verdade,
+    tag "rat" no CARD_DB) igual qualquer criatura, ja' que 903.9a e'
+    ACAO BASEADA EM ESTADO (CR 704), nao substituicao -- ela vai pro
+    cemiterio DE VERDADE primeiro (CR 700.4, "dies"), so' DEPOIS e'
+    removida de la' pra representar a escolha do dono de move-la pra
+    zona de comando (`commander_in_play=False`). Nenhum call site real
+    hoje atinge o comandante por aqui (`sacrifice_rats`/`sacrifice_any_
+    creature`/`ayara_activation`/`try_harness_soul_stone` excluem ela
+    de proposito -- jogador racional nunca sacrifica o proprio
+    comandante por fodder mais barato; `try_smart_opponent_removal`
+    tambem a exclui de `INTERACTION_ENGINE_PRIORITY`; wipe de criatura
+    usa `_wipe_remove_creature_no_trigger`, corrigido separadamente),
+    mas corrigido por consistencia estrutural -- uma futura mudanca
+    numa dessas exclusoes deliberadas nao herdaria o bug em silencio."""
     if not is_token and name in state.battlefield:
         state.battlefield.remove(name)
     state.permanent_left_battlefield_this_turn = True
@@ -590,6 +612,10 @@ def leave_battlefield(state: GameState, name: str, to_graveyard: bool = True, is
         state.graveyard.append(name)
     if is_creature_card(name) and to_graveyard:
         on_creature_dies(state, 1, is_token=is_token, dying_is_rat=is_rat(name))
+    if name == COMMANDER:
+        if name in state.graveyard:
+            state.graveyard.remove(name)
+        state.commander_in_play = False
 
 
 def remove_permanent(state: GameState, name: str, source: str = "opponent"):
@@ -599,28 +625,9 @@ def remove_permanent(state: GameState, name: str, source: str = "opponent"):
     Bridge/Maralen). Reaproveita `leave_battlefield()` ja' existente
     (mesmos gatilhos reais de aristocrata -- Zulaport/Pitiless
     Plunderer/Syr Konrad/Species Specialist -- que uma morte por
-    qualquer causa dispara).
-
-    Comandante: regra real (CR 903.9, efeito de SUBSTITUICAO de zona) --
-    vai pra zona de comando, NUNCA pro cemiterio. Achado de regra
-    especifico deste deck (aristocrats): como o Rat King nunca chega a
-    ir pro cemiterio de verdade quando a substituicao e' aplicada, ele
-    genuinamente NAO 'morre' pra fins de regra (CR 700.4, 'dies' exige
-    ir pro cemiterio a partir do campo de batalha) -- os gatilhos de
-    morte de OUTRAS cartas (Zulaport/Ayara/Pitiless Plunderer/Syr
-    Konrad/Species Specialist) NAO disparam quando SO' o comandante e'
-    removido. Por isso este caminho NUNCA chama `leave_battlefield()`
-    (que dispara `on_creature_dies`) -- so' seta `commander_in_play =
-    False` e `permanent_left_battlefield_this_turn = True` (a propria
-    Disappear do Rat King usa 'left the battlefield', termo mais amplo
-    que 'dies' -- confirmado via oraculo real: dispara mesmo sem ir pro
-    cemiterio de verdade)."""
+    qualquer causa dispara, INCLUINDO o comandante agora -- CR 903.9a,
+    ver docstring de `leave_battlefield`)."""
     if name not in state.battlefield:
-        return
-    if name == COMMANDER:
-        state.battlefield.remove(name)
-        state.commander_in_play = False
-        state.permanent_left_battlefield_this_turn = True
         return
     leave_battlefield(state, name, to_graveyard=True)
 
@@ -1750,13 +1757,29 @@ def _wipe_remove_creature_no_trigger(state: GameState, name: str):
     de um snapshot ÚNICO de ANTES do wipe comecar (ver comentario de
     `try_smart_opponent_wipe` abaixo pro motivo -- mortes simultaneas
     exigem 'last known information', CR 603.10, nao o caminho normal
-    remove-um-por-vez de `remove_permanent`). Ainda trata comandante via
-    CR 903.9 (zona de comando, nunca cemiterio) e manda o resto pro
-    cemiterio normalmente."""
+    remove-um-por-vez de `remove_permanent`).
+
+    CORRIGIDO 2026-09-21 (achado real do usuario, CR 903.9a -- ver
+    `rules-cache/comprehensive-rules.txt` linhas 6888-6896, Regra 18 de
+    `references/user-standing-rules.md`): comandante indo pro
+    cemiterio/exilio NAO e' substituicao, e' ACAO BASEADA EM ESTADO (CR
+    704) que roda DEPOIS do evento real -- ela vai pro cemiterio DE
+    VERDADE primeiro (CR 700.4, "dies"), so' DEPOIS o dono PODE
+    escolher move-la pra zona de comando. A versao anterior pulava o
+    cemiterio inteiramente E excluia ela dos 4 payoffs de aristocrata em
+    `try_smart_opponent_wipe` (corrigido la' tambem, ver docstring
+    daquela funcao) -- achado real NUMERICO: Rat King e' Rato de
+    verdade (tag "rat" no CARD_DB), entao Species Specialist deveria
+    contar a morte dela, e Zulaport/Pitiless Plunderer/Syr Konrad
+    tambem (nenhum dos 3 e' ela mesma). Resto vai pro cemiterio
+    normalmente, como antes."""
     if name not in state.battlefield:
         return
     state.battlefield.remove(name)
     if name == COMMANDER:
+        state.graveyard.append(name)
+        if name in state.graveyard:
+            state.graveyard.remove(name)
         state.commander_in_play = False
         return
     state.graveyard.append(name)
@@ -1803,12 +1826,24 @@ def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
 
     Wipe de ARTEFATO/ENCANTAMENTO nao precisa dessa correcao -- nenhuma
     carta desta lista reage a artefato/encantamento saindo de campo, o
-    caminho generico via `remove_permanent` continua correto. O
-    comandante NUNCA conta pros 4 payoffs (CR 903.9 + 700.4 -- vai pra
-    zona de comando, nunca 'morre' de verdade), mas ainda conta pra
-    `permanent_left_battlefield_this_turn` (Disappear usa 'left the
-    battlefield', termo mais amplo que 'dies'). Sem nenhum alvo legal
-    de tipo nenhum, retorna None sem fazer nada."""
+    caminho generico via `remove_permanent` continua correto.
+
+    CORRIGIDO 2026-09-21 (achado real do usuario, CR 903.9a -- ver
+    `rules-cache/comprehensive-rules.txt` linhas 6888-6896, Regra 18 de
+    `references/user-standing-rules.md`): o comandante AGORA conta pros
+    4 payoffs. 903.9a (cemiterio/exilio, o caso de MORTE) e' ACAO
+    BASEADA EM ESTADO (CR 704), NAO substituicao -- o Rat King vai pro
+    cemiterio DE VERDADE primeiro (CR 700.4, "dies"), disparando
+    Zulaport/Pitiless Plunderer/Syr Konrad/Species Specialist
+    normalmente (nenhum dos 4 e' ela mesma), so' DEPOIS o dono PODE
+    escolher move-lo pra zona de comando. Achado real NUMERICO: o Rat
+    King tem a tag "rat" (Legendary Creature -- Rat Noble, confirmado
+    Scryfall), entao Species Specialist tambem deveria contar -- a
+    versao anterior excluia ele de TODOS os 4, nao so' de Species
+    Specialist. Ainda conta pra `permanent_left_battlefield_this_turn`
+    (Disappear usa 'left the battlefield', termo mais amplo que
+    'dies'), como antes. Sem nenhum alvo legal de tipo nenhum, retorna
+    None sem fazer nada."""
     if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
         return None
     if state.interaction_rng.random() >= interaction_chance(state) * TOTAL_WIPE_CHANCE_FACTOR:
@@ -1832,11 +1867,12 @@ def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
 
     if wipe_type == "creature":
         # Snapshot ANTES de remover qualquer coisa (LKI real, ver docstring
-        # acima). O comandante e' fisicamente removido (vai pra zona de
-        # comando) mas NUNCA conta pros 4 payoffs de aristocrata -- CR
-        # 700.4/903.9, ele nao "morre" de verdade (ver docstring).
+        # acima). CORRIGIDO 2026-09-21 (CR 903.9a): o comandante CONTA pros
+        # 4 payoffs de aristocrata agora -- ele morre de verdade primeiro
+        # (CR 700.4/704), so' depois vai pra zona de comando por escolha do
+        # dono. `named_dying_real_deaths` nao exclui mais o comandante.
         named_dying = targets[:]
-        named_dying_real_deaths = [n for n in named_dying if n != COMMANDER]
+        named_dying_real_deaths = named_dying[:]
         rat_like_tokens_dying = state.rat_tokens + state.mercenary_tokens
         squirrel_tokens_dying = state.squirrel_tokens
         total_dying = len(named_dying_real_deaths) + rat_like_tokens_dying + squirrel_tokens_dying

@@ -1,5 +1,90 @@
 # Checklist cláusula-a-cláusula — Rat King, Verminister
 
+## CR 903.9a: comandante DISPARA os 4 payoffs de aristocrata de verdade — 2026-09-21
+
+**Gatilho:** mesmo achado do usuário aplicado a todos os 9 decks desta
+sessão, depois de eu documentar em TODOS eles que "o comandante nunca
+dispara gatilho de morte": *"O comandante não morre e ao invés de ir
+pro cemitério, pode ser movido de volta a zona de comando? Pq até onde
+sei, comandantes podem ser mortos sim! Confere essa regra com muita
+calma e atenção!"* Raciocínio completo da regra em
+`megatron-tyrant-mardu/checklist-oraculo.md` (CR 903.9a é ação baseada
+em estado — CR 704 — não substituição; texto oficial cacheado em
+`rules-cache/comprehensive-rules.txt`, Regra 18 de
+`references/user-standing-rules.md`).
+
+**Achado real NUMÉRICO deste deck (mesma categoria do Edgar Markov —
+motor de aristocrats de verdade): 2 pontos reais precisavam de
+correção, não 1.**
+
+1. **`leave_battlefield`** (chokepoint central, já existia — mesmo
+   padrão do Toph/Maralen nesta sessão): o comandante era
+   especial-casado dentro de `remove_permanent()`, pulando `leave_
+   battlefield` inteiramente (nunca disparava `on_creature_dies`).
+   Movida a lógica pro chokepoint certo, seguindo a Regra #6 do
+   `CLAUDE.md` — `remove_permanent()` agora só delega, sem caso
+   especial. Regrepados os outros 3 call sites reais de `leave_
+   battlefield` (`sacrifice_rats`/`sacrifice_any_creature`/
+   `ayara_activation`) e o de `try_harness_soul_stone` (exile direto)
+   — todos já excluem `COMMANDER` de propósito (jogador racional nunca
+   sacrifica o próprio comandante por fodder mais barato quando há
+   opção mais barata) — nenhum precisou de mudança.
+
+2. **`try_smart_opponent_wipe`'s cálculo manual de LKI (last known
+   information, CR 603.10)** — achado mais sutil e específico deste
+   deck: o wipe de criatura usa um SNAPSHOT manual (não o caminho
+   genérico `remove_permanent`→`leave_battlefield`, por causa de mortes
+   simultâneas reais — ver docstring da função) pra calcular os 4
+   payoffs de aristocrata (Zulaport/Pitiless Plunderer/Syr Konrad/
+   Species Specialist) diretamente. Esse cálculo manual **excluía o
+   comandante EXPLICITAMENTE** (`named_dying_real_deaths = [n for n in
+   named_dying if n != COMMANDER]`) com base na mesma premissa errada
+   de CR 903.9 — corrigida pra **incluir** o comandante
+   (`named_dying_real_deaths = named_dying[:]`, sem exclusão). Achado
+   real adicional: **Rat King, Verminister tem a tag "rat" no
+   `CARD_DB`** (Legendary Creature — Rat Noble, confirmado Scryfall) —
+   a versão anterior não só excluía ele de Zulaport/Pitiless
+   Plunderer/Syr Konrad, mas TAMBÉM de Species Specialist (que conta só
+   Ratos), então o próprio comandante do deck, sendo literalmente um
+   Rato, nunca contava pra própria sub-engine tribal quando morria.
+   `_wipe_remove_creature_no_trigger` (a função de remoção física usada
+   por esse snapshot) também corrigida pra passar o comandante pelo
+   cemitério antes da zona de comando, por consistência estrutural
+   (mesmo sem efeito numérico adicional aqui — os 4 payoffs já são
+   calculados manualmente a partir do snapshot, não da função de
+   remoção física).
+
+**Validação:** compilação OK. Bit-identidade em modo padrão
+(`simulate_one`, 20.000 seeds, seed_base 9300000) contra o commit
+anterior: **0/20000 mismatches** — os 2 call sites reais de `remove_
+permanent`/`try_smart_opponent_wipe` só disparam com `interaction_rng`
+ativo, e `try_smart_opponent_removal` já excluía o comandante de
+`INTERACTION_ENGINE_PRIORITY` de propósito. Regressão de 20.000
+partidas em modo de resiliência (seed_base 9700000): 0 exceções, 0
+comandantes presos no cemitério. **Comparação A/B agregada (5000
+seeds, modo de resiliência) confirmando que a correção move as
+métricas certas na direção esperada:** `proxy_damage_total` (Syr
+Konrad/Pitiless Plunderer) médio 3,7574→3,8632; `tokens_created_total`
+(Treasures do Pitiless Plunderer) médio 3,956→3,9978; `life` (drain do
+Zulaport) médio 36,4676→36,5378 — enquanto `smart_wipes_total`/`smart_
+removals_total` (eventos de RNG puro, não deveriam mudar) ficaram
+praticamente idênticos (0,841/0,8424 e 0,5312/0,5304, diferença dentro
+do ruído esperado de amostragem), confirmando que a divergência é
+isolada à correção. 5 testes dirigidos: (1) Zulaport dispara com a
+morte do comandante via `leave_battlefield` direto, ela não fica presa
+no cemitério; (2) Species Specialist conta a morte do comandante (ela
+é Rato de verdade); (3) `remove_permanent` delega corretamente pro
+chokepoint; (4) `_wipe_remove_creature_no_trigger` não deixa o
+comandante presa no cemitério; (5) `try_smart_opponent_wipe` conta a
+morte do comandante pro Pitiless Plunderer (cria Treasure).
+
+**Resultado:** junto com o Edgar Markov, uma das 2 correções desta
+rodada com impacto numérico real e mensurável — este deck é
+literalmente um motor de aristocrats tribal (Ratos) cujo próprio
+comandante é um Rato, e estava perdendo drain/Treasures/compras reais
+toda vez que ele — a peça central do deck — morria pra remoção/wipe de
+oponente.
+
 ## Porte completo do modo de resiliência (interação de oponente) — 2026-09-21
 
 **Gatilho:** usuário pediu direto, mesmo protocolo já aplicado a
