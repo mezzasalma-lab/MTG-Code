@@ -1,13 +1,24 @@
-# Sultai Arisen (Tarkir: Dragonstorm Commander) — Teval, the Balanced Scale
+# Sultai Arisen (Tarkir: Dragonstorm Commander) — Teval, the Balanced Scale / Kotis, Sibsig Champion
 
 Precon oficial "Sultai Arisen" (Tarkir: Dragonstorm Commander, produto BUG/Sultai,
 lançado 11/04/2025). O deck vem com duas criaturas lendárias na caixa (Teval, the
-Balanced Scale e Kotis, Sibsig Champion), mas nenhuma das duas tem Partner/Choose
-a Background — apenas **Teval, the Balanced Scale é o comandante oficial**; Kotis,
-Sibsig Champion é uma carta normal do maço de 99. Confirmado de forma cruzada em
-4 fontes estruturadas independentes que separam explicitamente "Commander" de
-"Deck/Creatures" (mtg.wtf — mirror direto da lista oficial da WotC —, Archidekt,
-Star City Games e Commander EV), todas concordando: 1 comandante + 99 cartas = 100.
+Balanced Scale e Kotis, Sibsig Champion).
+
+> Correção 2026-09-21 (apontada pelo usuário): numa 1ª passada eu tinha
+> registrado só Teval como comandante, com o raciocínio de que nenhuma
+> das duas tem a keyword Partner/Choose a Background, e 4 fontes
+> estruturadas (mtg.wtf, Archidekt, Star City Games, Commander EV)
+> categorizavam só Teval como "Commander". Mas Partner NÃO é o critério
+> certo aqui — o mesmo padrão já confirmado em 12 outros precons desta
+> sessão (Warhammer 40k, Final Fantasy, Marvel, etc.) é "escolha UM dos
+> dois como comandante único" (não uma dupla simultânea), habilitado
+> sempre que os dois batem a MESMA identidade de cor. Confirmado agora
+> no Scryfall: **Teval, the Balanced Scale** (`{1}{B}{G}{U}`) e **Kotis,
+> Sibsig Champion** (`{B}{G}{U}`) têm identidade de cor idêntica — Sultai
+> (B/G/U) — então qualquer um dos dois é legal como comandante sem mudar
+> nada no resto do maço de 99. Kotis estava listada como carta normal do
+> `## Deck`, movida pra `## Comandante` aqui.
+
 Todos os 85 nomes de carta não-básicos foram validados ao vivo via Scryfall
 `/cards/collection` (85/85 encontrados, sem `flavor_name` divergente — risco baixo
 pois Tarkir: Dragonstorm é set próprio do plano de Tarkir, não Universes Beyond).
@@ -15,10 +26,10 @@ pois Tarkir: Dragonstorm é set próprio do plano de Tarkir, não Universes Beyo
 ## Comandante
 
 1 Teval, the Balanced Scale
+1 Kotis, Sibsig Champion
 
 ## Deck
 
-1 Kotis, Sibsig Champion
 1 Amphin Mutineer
 1 Avenger of Zendikar
 1 Colossal Grave-Reaver
