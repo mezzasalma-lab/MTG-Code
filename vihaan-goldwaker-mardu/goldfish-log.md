@@ -4,6 +4,33 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Porte completo do modo de resiliência + CR 903.9a nativa desde o início — 2026-09-21
+
+**Gatilho:** "Ainda bem que vimos isso antes de implementar o Vihaan,
+que tb tem muito sacrifício de artefatos!" seguido de "Vamos fazer o
+Vihaan agora." Detalhes completos em `checklist-oraculo.md` e
+`megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Achado:** 1º deck desta sessão a nascer com CR 903.9a já correta
+desde o início (`remove_permanent`, Mayhem Devil excluído via
+`on_permanent_destroyed`). Mesmo assim, a regressão de 20k achou 2
+bugs REAIS pré-existentes do próprio motor (não de CR 903.9a): `sacrifice_
+named_creature` nunca tratava o comandante, e o fallback do Deadly
+Dispute podia escolhê-lo sem preferência — 319/20000 seeds (1,6%) com
+o comandante preso no cemitério antes do fix.
+
+**Resultado:** modo padrão diverge em 3,3% das seeds (657/20000) após
+o fix do Deadly Dispute — mudança real e intencional (RNG ripple
+esperado). A/B (10k seeds): `treasures_created_total`/`creature_deaths_
+total`/etc. dentro de margem pequena; "comandante nunca conjurado"
+idêntico nos 2 lados (0,79%/0,79%).
+
+**Validação:** regressão de 20.000 partidas nos 2 modos, 0 exceções, 0
+comandantes presos no cemitério (era 319/20000 antes) + 7 testes
+dirigidos.
+
+---
+
 ### Auditoria oráculo-por-oráculo completa — 2026-09-14
 
 Última das 16 decks desta campanha. Releitura clause-by-clause do oráculo

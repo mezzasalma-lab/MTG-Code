@@ -1,5 +1,102 @@
 # Checklist cláusula-a-cláusula — Vihaan, Goldwaker
 
+## Porte completo do modo de resiliência (interação de oponente) + CR 903.9a nativa desde o início — 2026-09-21
+
+**Gatilho:** *"Ainda bem que vimos isso antes de implementar o Vihaan,
+que tb tem muito sacrifício de artefatos!"* — comentário do usuário
+logo após concluir a auditoria de CR 903.9a nos outros 9 decks desta
+sessão (Megatron/Ur-Dragon/Hei Bai/Edgar Markov/Ulalek/Toph/Prismatic
+Bridge/Maralen/Rat King Verminister), seguido de *"Vamos fazer o Vihaan
+agora."* Este deck nunca tinha nenhuma extensão de resiliência antes
+(criado em 2026-08-22, auditado clausula-a-clausula pela última vez em
+2026-09-14, mas sem `interaction_rng`/`remove_permanent` nenhum) — porte
+completo do zero, **primeiro deck desta sessão a nascer com a correção
+de CR 903.9a nativa desde a 1ª linha**, em vez de implementada errado e
+corrigida depois via retrofit (os outros 9 decks foram todos retrofit).
+
+**Design incorporado direto do padrão final já validado nos outros 9
+decks:** 7 categorias padronizadas (removal/attack/discard/wipe/
+graveyard-wipe/graveyard-snipe/counterspell), wipe unificado (1 rolagem
+"algum wipe acontece" + escolha ponderada de 1 TIPO só —
+creature/artifact/enchantment — em vez de 3 rolagens independentes),
+gate de atenção por oponente (`OPPONENT_ATTENTION_CHANCE`), supressão
+de ataque pós-wipe simétrico (`state.wiped_this_round`).
+
+**CR 903.9a aplicada desde o início em `remove_permanent`:** comandante
+vai pro cemitério DE VERDADE primeiro (CR 700.4, "dies" — ação baseada
+em estado, CR 704, não substituição — ver
+`rules-cache/comprehensive-rules.txt` linhas 6888-6896, Regra 18 de
+`references/user-standing-rules.md`), disparando `on_creature_dies`
+normalmente (Zulaport Cutthroat/Pitiless Plunderer/Agent of the Iron
+Throne/Sephiroth/Life Insurance — nenhum deles é ele mesmo; Vihaan
+NUNCA é artefato, só creature+outlaw, `on_artifact_dies` nunca dispara
+pra ele), só DEPOIS é removido de lá pra representar a escolha do dono
+de movê-lo pra zona de comando. **Mayhem Devil fica de fora** (via
+`on_permanent_destroyed`, uma cópia de `on_permanent_sacrificed` SEM a
+linha do Mayhem Devil) — oráculo real é "whenever YOU SACRIFICE", e
+destruição/wipe de oponente nunca é sacrifício feito por mim.
+
+**Achado real ADICIONAL durante a validação (2 bugs pré-existentes do
+próprio motor do deck, não de oponente — achados só porque a regressão
+de 20.000 partidas rodou de verdade pela 1ª vez neste espaço de
+seeds):** `sacrifice_named_creature` (chokepoint central de sacrifício
+VOLUNTÁRIO já existente no arquivo desde 2026-08-22) **nunca tratava o
+caso do comandante** — se ela fosse escolhida como sacrifício, ficava
+presa no cemitério pra sempre, `commander_in_play` travado em `True`.
+O fallback do **Deadly Dispute** (`resolve_instant_sorcery`, custo
+adicional mandatório "sacrifice an artifact or creature") escolhia
+`candidates[0]` sem NENHUMA preferência contra o comandante — se
+Treasures/Constructs/tokens genéricos estivessem todos zerados,
+`candidates[0]` podia literalmente ser Vihaan mesmo com outro
+artefato/criatura real disponível, dependendo só da ordem de
+`state.battlefield`. **319/20.000 seeds (1,6%) tinham o comandante
+preso no cemitério** antes desta correção. Corrigidos os 2: (1)
+`sacrifice_named_creature` agora trata o comandante igual `remove_
+permanent` (cemitério de verdade → zona de comando), MAS mantém Mayhem
+Devil disparando aqui — diferente de `remove_permanent`, isto É um
+sacrifício de verdade feito por mim; (2) Deadly Dispute agora prefere
+qualquer outro artefato/criatura real antes de considerar o comandante,
+só a sacrifica quando ela é genuinamente a ÚNICA opção legal (o custo é
+mandatório, sem alternativa de não pagar).
+
+**Validação:** compilação OK. Bit-identidade em modo padrão (20.000
+seeds, seed_base 6000000) contra o commit anterior, comparando só as
+chaves PRÉ-EXISTENTES (campos novos do modo de resiliência excluídos
+da comparação, já que trivialmente começam no default em modo padrão):
+**0/20000 mismatches** — antes do fix do Deadly Dispute. Depois do fix
+do Deadly Dispute (mudança de comportamento real e intencional, não
+regressão): **657/20000 mismatches (3,3%)**, divergência esperada e
+legítima (mesma categoria "RNG ripple" do Blightsteel Colossus/
+Megatron/Toph — agora que o comandante é corretamente deprioritizado
+como fodder, jogos que antes a sacrificavam por acidente seguem um
+caminho diferente). Validado por comparação A/B agregada (10.000
+seeds) em vez de bit-identidade:
+`treasures_created_total`/`creature_deaths_total`/
+`drain_damage_total`/`cards_drawn_extra`/`combat_attacks_total` todos
+dentro de margem pequena e coerente (ex. 9,2643→9,1674), e "comandante
+nunca conjurado" **idêntico** nos dois lados (0,79%/0,79% — confirma
+que o fix só afeta QUEM é sacrificado depois dela já estar em campo,
+nunca se/quando ela é conjurada). Regressão de 20.000 partidas em modo
+padrão + 20.000 em modo de resiliência (rodada de novo após o fix dos
+2 bugs pré-existentes): 0 exceções nos 2, **0 comandantes presos no
+cemitério nos 2** (era 319/20000 em resiliência antes do fix). 7 testes
+dirigidos: (1) `remove_permanent` — Zulaport dispara, comandante não
+presa; (2) Mayhem Devil NÃO dispara por destruição de oponente; (3)
+`sacrifice_named_creature` — Mayhem Devil DISPARA (sacrifício real),
+comandante não presa; (4) contra-ataque intercepta o cast, mana já
+gasta, ela nunca entra em campo; (5) Deadly Dispute prefere Sol Ring ao
+comandante quando ambos disponíveis; (6) Deadly Dispute sacrifica o
+comandante só quando é a única opção, sem ficar presa; (7)
+`try_smart_opponent_wipe` inclui o comandante nos alvos, ela não fica
+presa no cemitério.
+
+**Resultado:** primeiro deck desta sessão a nascer com CR 903.9a nativa
+desde o início — mas a validação rigorosa (20k regressão, não só bit-
+identidade rasa) ainda achou 2 bugs REAIS pré-existentes no motor
+próprio do deck (não relacionados a oponente), confirmando o valor de
+sempre rodar a regressão completa mesmo quando a lógica nova "parece"
+certa por construção.
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-14
 
 Última das 16 decks desta campanha (mesmo tratamento já aplicado a
