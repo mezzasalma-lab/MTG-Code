@@ -1,12 +1,22 @@
-# Forces of the Imperium (Warhammer 40,000 Commander) — Inquisitor Greyfax
+# Forces of the Imperium (Warhammer 40,000 Commander) — Inquisitor Greyfax / Marneus Calgar
+
+> Correção 2026-09-21: este precon vem com **2 comandantes possíveis**
+> (não Partner — escolha de qual vira comandante único), confirmado na
+> página oficial do produto (magic.wizards.com/en/products/
+> warhammer-40000-commander): "commanders Inquisitor Greyfax and
+> Marneus Calgar". Ambos batem a mesma identidade de cor Esper (W/U/B)
+> do deck, confirmado no Scryfall. Comandante principal/de capa:
+> **Inquisitor Greyfax**. Comandante secundário: **Marneus Calgar** —
+> estava listado como carta normal do `## Deck` numa 1ª passada (achado
+> real apontado pelo usuário), corrigido aqui.
 
 ## Comandante
 
 1 Inquisitor Greyfax
+1 Marneus Calgar
 
 ## Deck
 
-1 Marneus Calgar
 1 Celestine, the Living Saint
 1 Defenders of Humanity
 1 For the Emperor!

@@ -1,12 +1,23 @@
-# Necron Dynasties (Warhammer 40,000 Commander) — Szarekh, the Silent King
+# Necron Dynasties (Warhammer 40,000 Commander) — Szarekh, the Silent King / Imotekh the Stormlord
+
+> Correção 2026-09-21: este precon vem com **2 comandantes possíveis**
+> (não Partner — escolha de qual vira comandante único), confirmado na
+> página oficial do produto (magic.wizards.com/en/products/
+> warhammer-40000-commander): "commanders Szarekh, The Silent King and
+> Imotekh, The Stormlord". Ambos mono-preto, mesma identidade de cor do
+> deck, confirmado no Scryfall (o nome real da carta não leva vírgula:
+> "Imotekh the Stormlord"). Comandante principal/de capa: **Szarekh,
+> the Silent King**. Comandante secundário: **Imotekh the Stormlord** —
+> estava listado como carta normal do `## Deck` numa 1ª passada (achado
+> real apontado pelo usuário), corrigido aqui.
 
 ## Comandante
 
 1 Szarekh, the Silent King
+1 Imotekh the Stormlord
 
 ## Deck
 
-1 Imotekh the Stormlord
 1 Anrakyr the Traveller
 1 Biotransference
 1 Chronomancer

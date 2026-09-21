@@ -1,12 +1,22 @@
-# Tyranid Swarm (Warhammer 40,000 Commander) — The Swarmlord
+# Tyranid Swarm (Warhammer 40,000 Commander) — The Swarmlord / Magus Lucea Kane
+
+> Correção 2026-09-21: este precon vem com **2 comandantes possíveis**
+> (não Partner — escolha de qual vira comandante único), confirmado na
+> página oficial do produto (magic.wizards.com/en/products/
+> warhammer-40000-commander): "commanders The Swarmlord and Magus Lucea
+> Kane". Ambos batem a mesma identidade de cor Temur (G/U/R) do deck,
+> confirmado no Scryfall. Comandante principal/de capa: **The
+> Swarmlord**. Comandante secundário: **Magus Lucea Kane** — estava
+> listado como carta normal do `## Deck` numa 1ª passada (achado real
+> apontado pelo usuário), corrigido aqui.
 
 ## Comandante
 
 1 The Swarmlord
+1 Magus Lucea Kane
 
 ## Deck
 
-1 Magus Lucea Kane
 1 Genestealer Patriarch
 1 Exocrine
 1 The Red Terror

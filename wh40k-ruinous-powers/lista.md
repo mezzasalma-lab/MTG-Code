@@ -1,12 +1,22 @@
-# The Ruinous Powers (Warhammer 40,000 Commander) — Abaddon, the Despoiler
+# The Ruinous Powers (Warhammer 40,000 Commander) — Abaddon the Despoiler / Be'lakor, the Dark Master
+
+> Correção 2026-09-21: este precon vem com **2 comandantes possíveis**
+> (não Partner — escolha de qual vira comandante único), confirmado na
+> página oficial do produto (magic.wizards.com/en/products/
+> warhammer-40000-commander): "commander Abaddon the Despoiler and
+> Be'lakor, the Dark Master". Ambos batem a mesma identidade de cor
+> Grixis (U/B/R) do deck, confirmado no Scryfall. Comandante principal/
+> de capa: **Abaddon the Despoiler**. Comandante secundário: **Be'lakor,
+> the Dark Master** — estava listada como carta normal do `## Deck`
+> numa 1ª passada (achado real apontado pelo usuário), corrigida aqui.
 
 ## Comandante
 
 1 Abaddon the Despoiler
+1 Be'lakor, the Dark Master
 
 ## Deck
 
-1 Be'lakor, the Dark Master
 1 Lord of Change
 1 Blight Grenade
 1 Great Unclean One
