@@ -4,6 +4,36 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Porte completo do modo de resiliência + CR 903.9a nativa desde o início — 2026-09-21
+
+**Gatilho:** "Faz o deck do Thranduil agora" — seguindo o porte
+concluído no Nekusar, Azula e Beorn. Detalhes completos em
+`checklist-oraculo.md`.
+
+**Achado:** deck nasce com CR 903.9a correta desde o início. Auditoria
+dos pontos de sacrifício pré-existentes (disciplina obrigatória, não
+opcional) achou 3 bugs reais: (1) taxa de comandante (CR 903.8) nunca
+modelada; (2) desconto de Urza's Incubator não alcançava o cast da
+própria comandante (apesar dela ser Elfo), porque `_resolve_cast`
+ignorava `effective_mv()`; (3) `Prime Speaker Vannifar` podia
+sacrificar o próprio comandante sem preferência, e **nenhuma criatura
+sacrificada por ela ia pro cemitério** (bug mais amplo que só o
+comandante — qualquer sacrifício via Vannifar simplesmente desaparecia
+do jogo).
+
+**Resultado:** modo padrão diverge em 3,08% das seeds (615/20000) —
+mudança real e intencional do fix da Vannifar (criaturas sacrificadas
+agora vão pro cemitério de verdade, alimentando cartas como Agatha's
+Soul Cauldron). A/B (10k seeds): métricas principais dentro de margem
+pequena, "comandante nunca conjurada" quase idêntico (3,20%/3,19%),
+turno médio de cast idêntico (4,51).
+
+**Validação:** regressão de 20.000 partidas em modo de resiliência, 0
+exceções, 0 comandantes presos no cemitério, 33,18% das partidas com
+recast pagando a taxa CR 903.8 + 22 testes dirigidos.
+
+---
+
 ### Auditoria oráculo-por-oráculo completa (4ª rodada) — 2026-09-14
 
 **Gatilho:** extensão da auditoria "oráculo-por-oráculo" pra todos os

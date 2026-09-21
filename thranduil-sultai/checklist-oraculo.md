@@ -1,5 +1,147 @@
 # Checklist cláusula-a-cláusula — Thranduil, the Elvenking
 
+## Porte completo do modo de resiliência (interação de oponente) + CR 903.9a nativa desde o início — 2026-09-21
+
+**Gatilho:** *"Faz o deck do Thranduil agora"* — seguindo diretamente o
+porte concluído no Nekusar, Azula e Beorn (mesma sessão, mesmo
+protocolo). Este deck nunca tinha o modo de resiliência atual — porte
+completo do zero, nascendo já com a correção de CR 903.9a nativa desde
+a 1ª linha, em vez de implementada errado e corrigida depois via
+retrofit.
+
+**Design incorporado direto do padrão final já validado nos outros
+decks:** 7 categorias padronizadas (removal/attack/discard/wipe/
+graveyard-wipe/graveyard-snipe/counterspell). `remove_permanent` manda
+o comandante pro cemitério de verdade primeiro (CR 700.4/704, ver
+`rules-cache/comprehensive-rules.txt` linhas 6888-6896, Regra 18 de
+`references/user-standing-rules.md`), só DEPOIS é removida de lá pra
+representar a zona de comando. 'Elf Warrior Token' (único token nomeado
+do deck, gerado por Lathril em combate e por Thranduil, Sindarin Liege
+via landfall) é capturado normalmente pelo candidate list de criatura —
+vive como entrada de string comum em `state.battlefield`, sem contador
+agregado (mesmo padrão do 'Bear Token' do Beorn). `INTERACTION_ENGINE_
+PRIORITY` curada por engines RECORRENTES de verdade (Rhystic Study,
+Roaming Throne, Priest of Titania, Elvish Archdruid, Imperious Perfect,
+Marwyn the Nurturer, Selvala Heart of the Wilds, Oversold Cemetery,
+Immaculate Magistrate, Dionus Elvish Archdruid) — finishers de 1 tiro
+(Bloodline Bidding, Kindred Summons, Finale of Devastation) ficam de
+fora de propósito, mesmo critério já usado no Beorn.
+
+**Contra-ataque (7ª categoria) inserido dentro de `_resolve_cast`** —
+diferente do Beorn (que tinha 2 pontos de cast do comandante duplicados
+em `main_phase`, sem função compartilhada), este arquivo já tinha uma
+única função `_resolve_cast` usada pelos 2 call sites de cast do
+comandante em `main_phase` — o contra-ataque entra 1x só, dentro dela,
+em vez de duplicado nos 2 pontos.
+
+## Achado real ADICIONAL, não relacionado a CR 903.9a: taxa de comandante (CR 903.8) e desconto de Urza's Incubator nunca alcançavam o cast do próprio comandante — 2026-09-21
+
+**Gatilho:** ao inserir o contra-ataque em `_resolve_cast`, percebi que
+essa função usava `C(card).mv` bruto em vez de `effective_mv(state,
+card)` para debitar `state.mana_spent_this_turn` — **dois bugs reais
+compostos**: (1) CR 903.8 (taxa de +{2} por cast anterior da zona de
+comando) nunca era modelada em lugar nenhum do arquivo (confirmado via
+grep: 0 ocorrências de `commander_cast_count` antes desta rodada); (2)
+o desconto real de Urza's Incubator (*"Creature spells of the chosen
+type cost {2} less to cast"*, já corretamente aplicado a outras
+criaturas Elfo dentro de `effective_mv()`) nunca alcançava o cast da
+PRÓPRIA Thranduil, apesar dela ser Elfo — porque `_resolve_cast`
+ignorava `effective_mv()` inteiramente. `can_cast()` já usava
+`effective_mv()` corretamente (checagem de mana suficiente), criando um
+risco real de inconsistência (aprovar um cast que depois gastaria
+menos mana do que o esperado) se a taxa fosse adicionada só em
+`_resolve_cast` sem tocar `effective_mv`.
+
+**Corrigido:** adicionado `commander_cast_count: int = 0` ao
+`GameState`. A taxa (`cost += 2 * state.commander_cast_count`) foi
+colocada DENTRO de `effective_mv()` (não em `_resolve_cast`), depois do
+desconto do Urza's Incubator e do caso especial de Deadly Rollick —
+assim `can_cast()` (que já chama `effective_mv`) e `_resolve_cast`
+(agora também trocado pra chamar `effective_mv`) ficam automaticamente
+consistentes, sem duplicar a lógica em 2 lugares. `commander_cast_count`
+é incrementado em `_resolve_cast` ANTES do contra-ataque (CR
+903.10a/608.2b contam "cast", não "resolved" — mana e taxa já foram
+pagos mesmo se ela for contra-atacada depois).
+
+**Validação:** 3 testes dirigidos confirmando `effective_mv(COMMANDER)`
+sobe exatamente +2 por `commander_cast_count` (0→5, 1→7, 3→11); teste
+confirmando que `_resolve_cast` debita a taxa corretamente e incrementa
+o contador.
+
+## Achado real ADICIONAL: `Prime Speaker Vannifar` podia sacrificar o próprio comandante sem preferência — e NENHUMA criatura sacrificada por ela ia pro cemitério — 2026-09-21
+
+**Gatilho:** mesmo padrão de bug já achado no Vihaan/Beorn nesta sessão
+(Deadly Dispute/Natural Order) — auditando os pontos de sacrifício
+voluntário já existentes no arquivo antes de construir o modo de
+resiliência (Regra #6 do CLAUDE.md: bugs de orquestração podem morar no
+próprio motor do deck, não só em remoção de oponente), achei que o pool
+de sacrifício de `try_prime_speaker_vannifar` (*"{T}, Sacrifice another
+creature: Search your library for a creature card with mana value equal
+to 1 plus the sacrificed creature's mana value..."*) **não deprioritizava
+o próprio comandante** — ela é MV5, então perde facilmente pra qualquer
+dork/utility barato do deck na escolha "sacrifica a de menor MV pra
+maximizar o alvo buscado", e um jogador racional nunca sacrificaria
+voluntariamente seu próprio comandante (motor central: draw/discard de
+elfo lendário, habilidades emprestadas do cemitério, escala de Roaming
+Throne) por um corpo genérico quando qualquer outra criatura serve.
+
+**Agravante real, mais grave que o do Beorn:** a remoção física era
+`state.battlefield.remove(sacrificed)` **sem NENHUM `graveyard.append`**
+— isso não é um bug só do comandante, é um bug de QUALQUER criatura
+sacrificada por essa habilidade: toda criatura sacrificada à Vannifar
+simplesmente **desaparecia do jogo inteiro**, nunca chegando ao
+cemitério (errado pra qualquer criatura — sacrificar é morrer, CR
+701.16/700.4 — e duplamente errado pro comandante, que também nunca
+resetava `commander_in_play` nem podia ser recastada).
+
+**Corrigido:** o pool agora prefere qualquer criatura não-comandante
+(`non_commander`); só cai pro comandante quando ela é genuinamente a
+ÚNICA criatura elegível em campo. A remoção física agora passa por
+`remove_permanent` (CR 903.9a correta pro comandante, e cemitério real
+pra qualquer criatura) em vez do `battlefield.remove` cru sem
+`graveyard.append`.
+
+**Validação:** bit-identidade em modo padrão (20.000 seeds, seed_base
+71000) contra o commit anterior: **615/20000 mismatches (3,08%)** —
+divergência real e esperada (mesma categoria "RNG ripple" já vista no
+Natural Order do Beorn), maior que a do Beorn porque este bug afeta
+QUALQUER ativação de Vannifar, não só quando o comandante é escolhida.
+Confirmado via trace direto da seed 71011: mesmas duas decisões de
+sacrifício em ambos os lados (`Lathril, Blade of the Elves` no T4,
+`Elves of Deep Shadow` no T8, `vannifar_evolves` idêntico: 2/2) — a
+única diferença é que a versão corrigida agora tem 1 carta a mais no
+cemitério (a criatura sacrificada que antes desaparecia), o que
+alimenta 1 ativação extra de Agatha's Soul Cauldron nesse jogo
+específico (`agathas_cauldron_counters` 1→2) — efeito colateral
+esperado, não uma regressão. Comparação A/B agregada (10.000 seeds)
+confirmando que o fix não introduz nenhuma mudança sistemática grande:
+`spells_cast`/`vannifar_evolves`/`battlefield_count`/`hand_size`/
+`finishers_activated` todos dentro de margem pequena, "comandante nunca
+conjurada" quase idêntico (0,0320/0,0319), turno médio de cast do
+comandante idêntico (4,512). Regressão de 20.000 partidas em modo de
+resiliência: 0 exceções, 0 comandantes presos no cemitério, 33,18% das
+partidas com `commander_cast_count >= 2` (recast pagando a taxa CR
+903.8 depois de removida). 22 testes dirigidos: `remove_permanent` no
+comandante (não presa no cemitério, `commander_in_play` resetado),
+`remove_permanent` em permanente comum (vai pro cemitério normalmente),
+`remove_permanent` em token nomeado (remove exatamente 1 cópia), taxa
+de comandante em `effective_mv` (3 casos), `_resolve_cast` debita taxa
+e incrementa contador, contra-ataque intercepta o cast (mana/taxa já
+gastos, ela nunca entra em campo, log correto), Vannifar prefere outra
+criatura ao comandante quando disponível, Vannifar sacrifica o
+comandante só como último recurso (sem ficar presa, recastável depois),
+e criatura sacrificada por Vannifar agora vai pro cemitério de verdade
+(não desaparece mais).
+
+**Resultado:** porte de CR 903.9a encontrou 3 bugs REAIS pré-existentes
+não relacionados entre si (taxa de comandante nunca modelada, desconto
+de Urza's Incubator não alcançava o próprio cast da comandante, e
+Vannifar apagando criaturas sacrificadas do jogo inteiro em vez de
+mandá-las pro cemitério) — nenhum deles visível numa auditoria
+carta-a-carta isolada, só apareceram auditando os pontos de sacrifício/
+remoção pré-existentes ANTES de construir o modo de resiliência, mesma
+disciplina já aplicada no Vihaan/Beorn.
+
 ## Achado real 2026-09-14 (usuário perguntou se Roaming Throne está certa em todos os decks onde aparece)
 
 Mesma varredura pedida depois dos fixes no Beorn/Edgar Markov/Ur-Dragon/
