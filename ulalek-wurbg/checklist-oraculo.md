@@ -1,5 +1,46 @@
 # Checklist cláusula-a-cláusula — Ulalek, Fused Atrocity
 
+## CR 903.9a: comandante passa pelo cemitério de verdade antes da zona de comando — 2026-09-21
+
+**Gatilho:** mesmo achado do usuário aplicado a todos os 9 decks desta
+sessão, depois de eu documentar em TODOS eles que "o comandante nunca
+dispara gatilho de morte": *"O comandante não morre e ao invés de ir
+pro cemitério, pode ser movido de volta a zona de comando? Pq até onde
+sei, comandantes podem ser mortos sim! Confere essa regra com muita
+calma e atenção!"* Raciocínio completo da regra em
+`megatron-tyrant-mardu/checklist-oraculo.md` (CR 903.9a é ação baseada
+em estado — CR 704 — não substituição; texto oficial cacheado em
+`rules-cache/comprehensive-rules.txt`, Regra 18 de
+`references/user-standing-rules.md`).
+
+**Achado específico deste deck:** `remove_permanent()` desviava o
+comandante direto pra zona de comando, pulando o cemitério
+inteiramente. Este deck tem **0 cartas com gatilho "whenever ~
+dies"/sacrifice-trigger reagindo a permanente PRÓPRIO morrendo**
+(reconfirmado por grep antes desta rodada) — Writhing Chrysalis só
+reage a EU sacrificar Spawn/Scion pra mana (`sac_spawns_for_mana`),
+evento diferente de "morrer"/ser destruído por oponente, então
+permanece intocado por este fix.
+
+**Corrigido mesmo assim** por consistência estrutural (Regra #1 do
+`CLAUDE.md`): o comandante agora entra no cemitério de verdade via
+`state.graveyard.append()`, e só DEPOIS é removido de lá pra
+representar a escolha do dono de movê-lo pra zona de comando.
+
+**Validação:** compilação OK. Bit-identidade em modo padrão
+(`simulate_one`, 3000 seeds, seed_base 8600000) contra o commit
+anterior: **0/3000 mismatches** (os 2 call sites de `remove_permanent`
+— `try_smart_opponent_removal`/`try_smart_opponent_wipe` — só disparam
+com `interaction_rng` ativo; nenhum outro ponto do arquivo seta
+`commander_in_play = False`). Regressão de 20.000 partidas em modo de
+resiliência (seed_base 9200000): 0 exceções, 0/20000 partidas com o
+comandante preso no cemitério. 2 testes dirigidos: (1) comandante
+removido → `commander_in_play=False`, fora do campo, não preso no
+cemitério; (2) permanente comum vai pro cemitério e fica lá.
+
+**Resultado:** correção estrutural sem impacto numérico observável
+nesta lista atual, mas fecha o gap de consistência com CR 903.9a.
+
 ## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
 
 **Gatilho:** "Temos que incluir remoções de artefatos e encantamentos

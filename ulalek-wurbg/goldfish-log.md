@@ -4,6 +4,26 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## CR 903.9a: comandante passa pelo cemitério de verdade antes da zona de comando — 2026-09-21
+
+**Gatilho:** usuário conferiu a regra real do CR 903.9 e apontou o erro
+("comandantes podem ser mortos sim!"). Detalhes completos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Achado:** `remove_permanent()` desviava o comandante direto pra zona
+de comando sem passar pelo cemitério. Este deck tem 0 cartas
+"whenever ~ dies" reagindo a permanente próprio morrendo (Writhing
+Chrysalis só reage a sacrifício pra mana, evento diferente) —
+correção puramente estrutural.
+
+**Resultado:** modo padrão idêntico, 0/3000 mismatches de
+bit-identidade.
+
+**Validação:** regressão de 20.000 partidas em modo de resiliência, 0
+exceções, 0 comandantes presos no cemitério + 2 testes dirigidos.
+
+---
+
 ## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
 
 **Gatilho:** "Temos que incluir remoções de artefatos e encantamentos

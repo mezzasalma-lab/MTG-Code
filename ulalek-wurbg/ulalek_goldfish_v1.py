@@ -1159,10 +1159,21 @@ def remove_permanent(state: GameState, name: str, source: str = "opponent"):
     Scion pra mana via `sac_spawns_for_mana`, evento diferente de
     "morrer"/ser destruido por oponente).
 
-    Comandante: vai pra zona de comando (CR 903.9, efeito de
-    SUBSTITUICAO de zona), nunca pro cemiterio -- `commander_in_play`
-    vira False, recastavel depois (`main_phase`/`effective_cost` ja'
-    calculam a taxa via `commander_cast_count`).
+    Comandante: CORRIGIDO 2026-09-21 (achado real do usuario, CR
+    903.9a -- ver `rules-cache/comprehensive-rules.txt` linhas
+    6888-6896, Regra 18 de `references/user-standing-rules.md`).
+    903.9a (cemiterio/exilio, o caso de MORTE) e' ACAO BASEADA EM
+    ESTADO (CR 704), NAO substituicao -- Ulalek vai pro cemiterio DE
+    VERDADE primeiro (CR 700.4, "dies"), so' DEPOIS o dono PODE
+    escolher move-lo pra zona de comando. A versao anterior pulava o
+    cemiterio inteiramente. Sem efeito NUMERICO observavel aqui (0
+    cartas "whenever ~ dies"/sacrifice-trigger neste deck que reagem a
+    permanente PROPRIO morrendo, ver docstring acima), mas corrigido
+    pra ficar estruturalmente certo -- uma futura troca de carta com
+    gatilho de morte nao herdaria esse bug em silencio.
+    `commander_in_play` vira False, recastavel depois
+    (`main_phase`/`effective_cost` ja' calculam a taxa via
+    `commander_cast_count`).
 
     Token (Eldrazi Spawn/Manifest, "token" na tag): deixa de existir sem
     ir pro cemiterio (mesma convencao ja' usada em `sac_spawns_for_
@@ -1183,6 +1194,9 @@ def remove_permanent(state: GameState, name: str, source: str = "opponent"):
         return
     state.battlefield.remove(name)
     if name == COMMANDER:
+        state.graveyard.append(name)
+        if name in state.graveyard:
+            state.graveyard.remove(name)
         state.commander_in_play = False
         return
     if "token" in CARD_DB[name].tags:
