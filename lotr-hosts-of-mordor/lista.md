@@ -1,4 +1,14 @@
-# The Hosts of Mordor (Lord of the Rings: Tales of Middle-earth) — Sauron, Lord of the Rings e Saruman, the White Hand
+# The Hosts of Mordor (Lord of the Rings: Tales of Middle-earth) — Sauron, Lord of the Rings / Saruman, the White Hand
+
+> Correção 2026-09-21 (apontada pelo usuário): numa 1ª passada eu tinha
+> tratado os 4 decks de LOTR como Partners (os 2 comandantes jogando
+> juntos). Confirmado no Scryfall que isso está ERRADO aqui — nem
+> Sauron, Lord of the Rings nem Saruman, the White Hand têm a keyword
+> Partner no oráculo. Os dois têm a MESMA identidade de cor (Grixis,
+> U/B/R), então são **2 comandantes ALTERNATIVOS — escolha só 1**, mesmo
+> padrão já confirmado nos outros 12 precons desta sessão (Warhammer
+> 40k, Final Fantasy, Marvel, etc.). Só "Food and Fellowship" (Frodo +
+> Sam) entre os 4 decks de LOTR é Partner de verdade.
 
 ## Comandante
 

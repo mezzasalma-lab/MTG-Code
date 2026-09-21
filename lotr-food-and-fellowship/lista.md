@@ -1,5 +1,15 @@
 # Food and Fellowship (Lord of the Rings: Tales of Middle-earth) — Frodo, Adventurous Hobbit e Sam, Loyal Attendant
 
+> Nota 2026-09-21 (confirmado a pedido do usuário): este é o ÚNICO dos 4
+> decks de LOTR com Partner de verdade — confirmado no oráculo real via
+> Scryfall: Frodo, Adventurous Hobbit ("Partner with Sam, Loyal
+> Attendant") e Sam, Loyal Attendant ("Partner with Frodo, Adventurous
+> Hobbit...") têm a keyword Partner mútua. Os 2 jogam JUNTOS na zona de
+> comando (não é escolha de um ou outro) — diferente dos outros 3 decks
+> de LOTR (Riders of Rohan/Elven Council/The Hosts of Mordor), que têm 2
+> comandantes ALTERNATIVOS (mesma identidade de cor, sem Partner, você
+> escolhe só 1).
+
 ## Comandante
 
 1 Frodo, Adventurous Hobbit

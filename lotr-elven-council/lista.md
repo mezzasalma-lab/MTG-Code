@@ -1,4 +1,14 @@
-# Elven Council (Lord of the Rings: Tales of Middle-earth) — Galadriel, Elven-Queen e Gandalf, Westward Voyager
+# Elven Council (Lord of the Rings: Tales of Middle-earth) — Galadriel, Elven-Queen / Gandalf, Westward Voyager
+
+> Correção 2026-09-21 (apontada pelo usuário): numa 1ª passada eu tinha
+> tratado os 4 decks de LOTR como Partners (os 2 comandantes jogando
+> juntos). Confirmado no Scryfall que isso está ERRADO aqui — nem
+> Galadriel, Elven-Queen nem Gandalf, Westward Voyager têm a keyword
+> Partner no oráculo. Os dois têm a MESMA identidade de cor (Simic,
+> G/U), então são **2 comandantes ALTERNATIVOS — escolha só 1**, mesmo
+> padrão já confirmado nos outros 12 precons desta sessão (Warhammer
+> 40k, Final Fantasy, Marvel, etc.). Só "Food and Fellowship" (Frodo +
+> Sam) entre os 4 decks de LOTR é Partner de verdade.
 
 ## Comandante
 

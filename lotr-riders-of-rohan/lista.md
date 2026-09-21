@@ -1,4 +1,14 @@
-# Riders of Rohan (Lord of the Rings: Tales of Middle-earth) — Éowyn, Shieldmaiden e Aragorn, King of Gondor
+# Riders of Rohan (Lord of the Rings: Tales of Middle-earth) — Éowyn, Shieldmaiden / Aragorn, King of Gondor
+
+> Correção 2026-09-21 (apontada pelo usuário): numa 1ª passada eu tinha
+> tratado os 4 decks de LOTR como Partners (os 2 comandantes jogando
+> juntos). Confirmado no Scryfall que isso está ERRADO aqui — nem
+> Éowyn, Shieldmaiden nem Aragorn, King of Gondor têm a keyword Partner
+> no oráculo. Os dois têm a MESMA identidade de cor (Jeskai, U/R/W),
+> então são **2 comandantes ALTERNATIVOS — escolha só 1**, mesmo padrão
+> já confirmado nos outros 12 precons desta sessão (Warhammer 40k, Final
+> Fantasy, Marvel, etc.). Só "Food and Fellowship" (Frodo + Sam) entre os
+> 4 decks de LOTR é Partner de verdade.
 
 ## Comandante
 
