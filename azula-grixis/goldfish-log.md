@@ -4,6 +4,58 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Porte completo do modo de resiliência + CR 903.9a nativa desde o início — 2026-09-21
+
+**Gatilho:** "Agora o deck da Azula" — seguindo o porte concluído no
+Vihaan e no Nekusar. Detalhes completos em `checklist-oraculo.md` e
+`megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Achado:** 3º deck desta sessão a nascer com CR 903.9a correta desde o
+início. Sem impacto numérico (0 cartas "creature dies" — deck
+spellslinger/magecraft/storm, não aristocrata). 1 token agregado real
+(Treasures) tratado no wipe de artefato.
+
+**Resultado:** modo padrão idêntico ao commit anterior (0/20000
+mismatches, isolando o fix de determinismo abaixo).
+
+**Validação:** regressão de 20.000 partidas em modo de resiliência, 0
+exceções, 0 comandantes presos no cemitério + 6 testes dirigidos.
+
+---
+
+## Achado adicional: `mulligan()` não era determinística — bug pré-existente sério, não relacionado ao comandante — 2026-09-21
+
+**Gatilho:** validação de bit-identidade do porte acima revelou que
+`mulligan()` reembaralhava a biblioteca com o módulo `random` GLOBAL
+(sem seed própria) sempre que um 2º+ mulligan acontecia — `simulate_
+one(seed)` **não era determinística**: 953/5.000 seeds (19,1%)
+retornavam resultado diferente rodando a MESMA seed 2 vezes. Qualquer
+`run_batch`/goldfishing anterior deste deck pode ter tido resultados
+não totalmente reproduzíveis.
+
+**Corrigido:** `state.rng` (mesmo padrão dos outros 11 decks) agora
+alimenta TODA aleatoriedade do jogo, incluindo o reembaralhamento de
+mulligan.
+
+**Validação:** 0/N resultados diferentes depois do fix (era 953/5000
+antes), confirmado via teste dirigido.
+
+---
+
+## Achado adicional: `state.life` nunca existiu neste arquivo — 2026-09-21
+
+**Gatilho:** ao implementar a categoria "ataque de oponente" do modo
+de resiliência, achei que este deck nunca rastreou a própria vida (nem
+fetches/shock lands descontam) — diferente de todos os outros 11
+decks. Simplificação pré-existente real, não um bug introduzido por
+mim.
+
+**Corrigido:** adicionado `life: int = 40` ao `GameState` (aditivo, só
+usado pela nova categoria de ataque — não muda nenhum comportamento
+pré-existente, confirmado pela bit-identidade 0/20000 acima).
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva

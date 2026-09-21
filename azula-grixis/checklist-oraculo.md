@@ -1,5 +1,108 @@
 # Checklist cláusula-a-cláusula — Fire Lord Azula (Grixis, U/B/R)
 
+## Porte completo do modo de resiliência (interação de oponente) + CR 903.9a nativa desde o início — 2026-09-21
+
+**Gatilho:** *"Agora o deck da Azula"* — seguindo diretamente o porte
+concluído no Vihaan e no Nekusar (mesma sessão, mesmo protocolo). Este
+deck nunca tinha nenhuma extensão de resiliência antes (auditado
+clausula-a-clausula pela última vez em 2026-09-13, mas sem
+`interaction_rng`/`remove_permanent` nenhum) — porte completo do zero,
+**3º deck desta sessão a nascer com a correção de CR 903.9a nativa
+desde a 1ª linha**, em vez de implementada errado e corrigida depois
+via retrofit (os outros 9 decks foram todos retrofit).
+
+**Design incorporado direto do padrão final já validado nos outros 11
+decks:** 7 categorias padronizadas (removal/attack/discard/wipe
+unificado/graveyard-wipe/graveyard-snipe/counterspell). `remove_
+permanent` manda o comandante pro cemitério de verdade primeiro (CR
+700.4/704, ver `rules-cache/comprehensive-rules.txt` linhas 6888-6896,
+Regra 18 de `references/user-standing-rules.md`), só DEPOIS é removida
+de lá pra representar a zona de comando. **Sem NENHUM efeito numérico
+aqui** — este é um deck spellslinger/magecraft/storm com **0 cartas
+"creature dies"** (grep confirmado) — mais próximo estruturalmente do
+Ur-Dragon/Hei Bai/Ulalek/Nekusar. Tem **1 token agregado real**
+(`state.treasures`, igual ao Vihaan) — o wipe de artefato zera ele
+também.
+
+**Validação:** compilação OK. Bit-identidade em modo padrão (20.000
+seeds, seed_base 1000000) contra uma cópia do commit anterior **com o
+fix de determinismo do mulligan (ver achado abaixo) já aplicado** —
+isolando exatamente o efeito deste porte: **0/20000 mismatches**.
+Regressão de 20.000 partidas em modo de resiliência: 0 exceções, 0
+comandantes presos no cemitério. 6 testes dirigidos: (1) `remove_
+permanent` no comandante — não presa no cemitério; (2) permanente
+comum vai pro cemitério normalmente; (3) contra-ataque intercepta o
+cast, mana/taxa já gastos, ela nunca entra em campo; (4) `try_smart_
+opponent_wipe` inclui o comandante nos alvos; (5) wipe de artefato zera
+Treasures agregados; (6) `simulate_one(seed)` é determinístico entre
+execuções (confirma o fix do achado abaixo).
+
+**Resultado:** porte limpo, sem impacto numérico (estrutural, como
+Ur-Dragon/Hei Bai/Ulalek/Nekusar), mas a validação rigorosa achou 2
+bugs REAIS pré-existentes totalmente não relacionados a CR 903.9a — ver
+as 2 seções abaixo.
+
+## Achado real ADICIONAL, não relacionado a CR 903.9a: `mulligan()` não era determinística — bug pré-existente sério — 2026-09-21
+
+**Gatilho:** ao preparar a validação de bit-identidade do porte acima
+(mesmo protocolo rigoroso usado em todos os outros decks — comparar
+`simulate_one(seed)` antes/depois da mudança), notei que `simulate_one`
+usava DUAS fontes de aleatoriedade diferentes: um `random.Random(seed)`
+local só pro embaralhamento INICIAL da biblioteca, e o módulo GLOBAL
+`random` (função solta `random.shuffle`, sem seed própria) pra
+reembaralhar a biblioteca sempre que um 2º+ mulligan acontecia dentro
+de `mulligan()`. **Confirmado ao vivo, rodando a MESMA seed 2 vezes em
+processos com estado global de `random` diferente entre as chamadas:
+953/5.000 seeds (19,1%) retornavam resultados DIFERENTES** — ou seja,
+quase 1 em cada 5 partidas simuladas deste deck nunca foi de verdade
+reproduzível por seed, incluindo qualquer `run_batch`/análise anterior
+já reportada em `goldfish-log.md` deste deck.
+
+**Corrigido:** adicionado `rng: Optional[random.Random] = None` ao
+`GameState` (mesmo padrão já usado nos outros 11 decks desta sessão) —
+`simulate_one` agora guarda `state.rng = random.Random(seed)` e TODA
+aleatoriedade do jogo (embaralhamento inicial E reembaralhamentos de
+mulligan) passa por essa mesma fonte seedada. Reconfirmado via grep que
+`random.` só era usado nesses 2 pontos no arquivo inteiro — nenhum
+outro ponto do motor tinha o mesmo problema.
+
+**Validação:** teste dirigido rodando `simulate_one(seed)` 2x com
+estado global de `random` randomizado entre as chamadas (`random.
+seed(os.urandom(8))`) — 0/N resultados diferentes depois do fix (era
+953/5000 antes). Bit-identidade do porte de CR 903.9a/modo de
+resiliência comparada contra uma cópia do commit anterior **com o
+mesmo fix de determinismo já aplicado** (pra isolar exatamente o efeito
+do porte de resiliência, sem contaminação deste achado): **0/20000
+mismatches** em modo padrão.
+
+**Resultado:** achado sério e completamente independente do CR 903.9a
+— mesma categoria de "bug pré-existente descoberto pela rigor da
+validação" já vista no loop infinito do Maralen nesta sessão. Todo
+`run_batch`/goldfishing anterior deste deck específico pode ter tido
+resultados não totalmente reproduzíveis quando mulligans aconteciam;
+daqui pra frente `simulate_one(seed)` é 100% determinístico.
+
+## Achado real ADICIONAL: `state.life` nunca existiu neste arquivo — 2026-09-21
+
+**Gatilho:** ao implementar `try_smart_opponent_attack` (categoria
+"ataque de oponente" do modo de resiliência, que desconta de
+`state.life`), a 1ª rodada de smoke-test crashou com `AttributeError:
+'GameState' object has no attribute 'life'`. Investigado: este arquivo
+**nunca rastreou a vida do próprio jogador em NENHUM momento** — nem
+fetches nem shock lands descontam vida (diferente de TODOS os outros
+11 decks desta sessão, que sempre tiveram `state.life` desde suas
+respectivas criações). Simplificação pré-existente real do arquivo, não
+um bug introduzido por mim — fora de escopo investigar/corrigir a
+ausência de custo de vida de fetch/shock agora (não relacionado a CR
+903.9a).
+
+**Corrigido (aditivo, não muda nada pré-existente):** adicionado
+`life: int = 40` ao `GameState`, mesma convenção dos outros 11 decks —
+usado SÓ pela nova categoria de ataque de oponente. Nenhum outro ponto
+do arquivo lê ou escreve este campo, então adicioná-lo não altera
+NENHUM comportamento de modo padrão (confirmado pela bit-identidade
+0/20000 acima, que já cobre este período).
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-13
 
 Pedido direto do usuário, extensão pra todos os decks do repositório de
