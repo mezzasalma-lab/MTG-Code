@@ -1,5 +1,73 @@
 # Checklist cláusula-a-cláusula — Edgar Markov
 
+## CR 903.9a: comandante DISPARA gatilhos de morte de verdade antes de ir pra zona de comando — 2026-09-21
+
+**Gatilho:** mesmo achado do usuário aplicado a todos os 9 decks desta
+sessão, depois de eu documentar em TODOS eles que "o comandante nunca
+dispara gatilho de morte": *"O comandante não morre e ao invés de ir
+pro cemitério, pode ser movido de volta a zona de comando? Pq até onde
+sei, comandantes podem ser mortos sim! Confere essa regra com muita
+calma e atenção!"* Raciocínio completo da regra em
+`megatron-tyrant-mardu/checklist-oraculo.md` (CR 903.9a é ação baseada
+em estado — CR 704 — não substituição; texto oficial cacheado em
+`rules-cache/comprehensive-rules.txt`, Regra 18 de
+`references/user-standing-rules.md`).
+
+**Achado real NUMÉRICO deste deck (diferente de Ur-Dragon/Hei Bai, que
+não têm payoff de morte algum):** este é um deck de aristocrats de
+verdade — Pitiless Plunderer ("whenever another creature you control
+dies, create a Treasure"), Blood Artist/Zulaport Cutthroat/Vindictive
+Vampire/Bastion of Remembrance/Funeral Room/Vein Ripper/Meathook
+Massacre/Cordial Vampire (`DEATH_PAYOFF_FORMULAS`, "CARDNAME or another
+creature you control dies") e Elenda, the Dusk Rose (contador). A
+versão anterior de `remove_permanent()` pulava o cemitério inteiramente
+pro comandante, então **nenhum desses payoffs disparava quando Edgar
+morria pra remoção/wipe de oponente** — Treasures e drain de vida reais
+sendo perdidos silenciosamente toda vez que o motor central do deck
+(uma criatura de verdade, "Legendary Creature — Vampire Knight",
+morrendo) era exatamente o cenário em que esses payoffs deveriam
+disparar.
+
+**Corrigido em `remove_permanent()`:** o comandante agora entra no
+cemitério de verdade primeiro (CR 700.4, "dies"), dispara
+`_apply_creature_death_payoffs` (Pitiless Plunderer + todos os death
+payoffs, já que ele é `is_creature(COMMANDER) == True`), e só DEPOIS é
+removido do cemitério pra representar a escolha do dono de movê-lo pra
+zona de comando. **`_vito_fanatic_sacrifice_trigger` fica de fora de
+propósito** — seu oráculo real é "whenever YOU SACRIFICE another
+permanent" (confirmado Scryfall), e destruição/wipe de oponente nunca é
+sacrifício — mesma lógica de exclusão do Pia's Revolution/emblema do
+Daretti no Megatron, mas por motivo diferente (aqui é a condição do
+próprio oráculo, "sacrifice" ≠ "dies", não timing de CR 704.3).
+
+**Validação:** compilação OK. Bit-identidade em modo padrão
+(replicando o path completo de `simulate_one`, 3000 seeds, seed_base
+6000000) contra o commit anterior: **0/3000 mismatches** (os 2 call
+sites reais de `remove_permanent` — `try_smart_opponent_removal`/
+`try_smart_opponent_wipe` — só disparam com `interaction_rng` ativo;
+Edgar nunca é sacrificado pelo próprio motor, está excluído de
+`sac_candidates` de propósito). Regressão de 20.000 partidas em modo
+de resiliência (seed_base 9800000): 0 exceções, 0 comandantes presos
+no cemitério. **Comparação A/B agregada (5000 seeds, mesma seed_base,
+modo de resiliência) confirmando que a correção move as métricas
+certas na direção esperada:** `pitiless_plunderer_treasures` médio
+0,1066→0,1128; `death_trigger_events` médio 2,2822→2,3724;
+`creatures_destroyed_by_opponent_total` médio 2,2722→2,4876 — enquanto
+`smart_wipes_total`/`smart_removals_total` (eventos de RNG, não
+deveriam mudar) ficaram EXATAMENTE iguais (0,614/0,4916 nos dois),
+confirmando que a divergência é isolada à correção, não um efeito
+colateral de RNG ripple. 4 testes dirigidos: (1) Pitiless Plunderer
+dispara com a morte do comandante, ele não fica preso no cemitério;
+(2) Blood Artist (death payoff genérico) dispara; (3) Vito Fanatic
+(sacrifice-only) NÃO dispara por destruição; (4) permanente comum
+continua indo pro cemitério normalmente.
+
+**Resultado:** primeira correção desta rodada (depois do Megatron) com
+impacto numérico real e mensurável — este deck tem motor de
+aristocrats de verdade que estava perdendo valor genuíno toda vez que
+o comandante, sua própria maior ameaça, morria pra remoção de
+oponente.
+
 ## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
 
 **Gatilho:** "Temos que incluir remoções de artefatos e encantamentos

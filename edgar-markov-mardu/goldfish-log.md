@@ -1,5 +1,28 @@
 # Goldfish Log — Edgar Markov
 
+## CR 903.9a: comandante dispara gatilhos de morte de verdade — 2026-09-21
+
+**Gatilho:** usuário conferiu a regra real do CR 903.9 e apontou o erro
+("comandantes podem ser mortos sim!"). Detalhes completos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Achado:** `remove_permanent()` pulava o cemitério pro comandante,
+então Pitiless Plunderer/Blood Artist/Zulaport/Vindictive Vampire/
+Bastion of Remembrance/Elenda nunca disparavam quando Edgar morria pra
+remoção de oponente — este deck TEM payoff de morte real (diferente de
+Ur-Dragon/Hei Bai), então o bug tinha impacto numérico de verdade.
+
+**Resultado:** modo padrão idêntico (0/3000 mismatches — Edgar nunca é
+sacrificado pelo próprio motor). Modo de resiliência (5000 seeds, A/B):
+`pitiless_plunderer_treasures` médio 0,1066→0,1128;
+`death_trigger_events` médio 2,2822→2,3724;
+`creatures_destroyed_by_opponent_total` médio 2,2722→2,4876. Métricas
+de RNG puro (`smart_wipes_total`/`smart_removals_total`) ficaram
+idênticas, confirmando isolamento da correção.
+
+**Validação:** regressão de 20.000 partidas em modo de resiliência, 0
+exceções, 0 comandantes presos no cemitério + 4 testes dirigidos.
+
 ## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
 
 **Gatilho:** "Temos que incluir remoções de artefatos e encantamentos

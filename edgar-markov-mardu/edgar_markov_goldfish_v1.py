@@ -1752,13 +1752,29 @@ def remove_permanent(state: GameState, log: List[Dict], name: str, source: str =
     TOKEN via `sac_loop`, ver docstring do topo do arquivo) -- este e'
     o 1o ponto real de "destroy"/wipe verdadeiro deste simulador.
 
-    Comandante: vai pra zona de comando (CR 903.9, efeito de
-    SUBSTITUICAO de zona), nunca pro cemiterio -- `commander_in_play`
-    vira False, recastavel depois (`main_phase` ajustado pra permitir
-    recast, ver comentario la'). Justamente por ser substituicao, o
-    comandante NUNCA chega a ser "put into a graveyard" de verdade --
-    gatilhos de "dies" (Pitiless Plunderer, death payoffs) NAO disparam
-    pra ele (ruling real: nunca aconteceu o evento que "dies" define).
+    Comandante: CORRIGIDO 2026-09-21 (achado real do usuario, CR
+    903.9a -- ver `rules-cache/comprehensive-rules.txt` linhas
+    6888-6896, Regra 18 de `references/user-standing-rules.md`). A
+    versao anterior tratava CR 903.9 como UM efeito de substituicao so'
+    (a mesma confusao cometida em todos os 9 decks desta sessao,
+    corrigida primeiro no Megatron) -- mas 903.9a (cemiterio/exilio, o
+    caso de MORTE) e' ACAO BASEADA EM ESTADO (CR 704), nao substituicao:
+    Edgar vai pro cemiterio DE VERDADE primeiro (CR 700.4, "dies"),
+    disparando Pitiless Plunderer/Blood Artist/Zulaport/Cruel
+    Celebrant/Vindictive Vampire/Bastion of Remembrance/Elenda
+    normalmente (todos sao "CARDNAME or another creature you control
+    dies"/"another creature you control dies" -- Edgar e' uma criatura
+    de verdade morrendo, nenhuma dessas cartas precisa ser ELE mesmo).
+    SO' DEPOIS o dono escolhe move-lo pra zona de comando --
+    `commander_in_play` vira False, recastavel depois (`main_phase`
+    ajustado pra permitir recast, ver comentario la'). Achado real
+    NUMERICO (diferente de Ur-Dragon/Hei Bai, que nao tem payoff de
+    morte nenhum): este deck TEM Pitiless Plunderer/death payoffs reais,
+    entao a versao antiga estava perdendo Treasures e drain de vida
+    genuinos toda vez que Edgar morria pra remocao de oponente.
+    `_vito_fanatic_sacrifice_trigger` continua DE FORA de proposito --
+    seu oraculo real e' "whenever YOU SACRIFICE another permanent", e
+    destruicao de oponente nunca e' sacrificio.
 
     Token (Vampire Token da Eminence, Vampire Demon Token do Vito
     Fanatic): sai de `state.battlefield` E de `state.tokens` (mantem o
@@ -1773,6 +1789,12 @@ def remove_permanent(state: GameState, log: List[Dict], name: str, source: str =
         return
     state.battlefield.remove(name)
     if name == COMMANDER:
+        state.graveyard.append(name)
+        state.creatures_destroyed_by_opponent_total += 1
+        if is_creature(name):
+            _apply_creature_death_payoffs(state, log, source=source)
+        if name in state.graveyard:
+            state.graveyard.remove(name)
         state.commander_in_play = False
         return
     if name in state.tokens:
