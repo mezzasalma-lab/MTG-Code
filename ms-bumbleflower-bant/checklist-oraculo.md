@@ -1,5 +1,105 @@
 # Checklist cláusula-a-cláusula — Ms. Bumbleflower (Bant, G/W/U)
 
+## Porte completo do modo de resiliência (interação de oponente) + CR 903.9a nativa desde o início — 2026-09-21
+
+**Gatilho:** *"Faça agora a Ms. Bumbleflower"* — seguindo diretamente o
+porte concluído no Nekusar, Azula, Beorn e Thranduil (mesma sessão,
+mesmo protocolo). Este deck nunca tinha o modo de resiliência atual —
+porte completo do zero, nascendo já com a correção de CR 903.9a nativa
+desde a 1ª linha.
+
+**Diferença de arquitetura vs os outros 4 decks já portados:**
+`state.battlefield` aqui é uma lista de objetos `Permanent` (`uid`,
+`card`, `counters`, `tapped`...), não de strings — `remove_permanent`
+precisou ser adaptado pra trabalhar com o objeto `Permanent` direto
+(identificação por `uid`, nunca só nome, mesmo padrão já usado por
+`commander_damage_dealt`/CR 903.10a neste arquivo). `remove_permanent`
+**envolve** a função `leave_battlefield` já existente (que já tratava
+corretamente transferência de contadores pro Ozolith e geração de
+tokens Squid do Chasm Skulker) e adiciona por cima só o que faltava: o
+tratamento do comandante (CR 903.9a — cemitério de verdade primeiro,
+CR 700.4/704, só depois removida de lá pra representar a zona de
+comando).
+
+**Auditoria de pontos de sacrifício pré-existentes (disciplina
+obrigatória antes de construir o modo de resiliência, Regra #6 do
+CLAUDE.md):** grep confirmado — **0 cartas desta lista sacrificam
+permanente nenhum** como custo/efeito real (nenhuma ocorrência de
+"sacrifice"/"destroy" no dispatch do arquivo). Diferente do Beorn/
+Thranduil (que tinham Natural Order/Prime Speaker Vannifar com bug de
+deprioritização do comandante), este deck não tinha NENHUM sacrifice
+outlet pra auditar — mais parecido estruturalmuente com o porte do
+Nekusar (limpo, sem bugs de sacrifício pré-existentes).
+
+## Achado real ADICIONAL: taxa de comandante (CR 903.8) tinha o contador certo mas o efeito de taxação nunca era lido — 2026-09-21
+
+**Gatilho:** ao inserir o contra-ataque em `try_cast_commander`, notei
+que `GameState.commander_cast_count` **já existia** (campo declarado,
+incrementado corretamente a cada cast) — mas `effective_cost()` **nunca
+lia esse campo em lugar nenhum** (grep confirmado: só 1 ocorrência de
+`commander_cast_count` no arquivo inteiro antes desta rodada, o próprio
+incremento). Categoria de bug ligeiramente diferente da já vista no
+Beorn/Thranduil (ausência total) — aqui havia uma ilusão de
+implementação completa (o campo existe, incrementa, parece certo numa
+auditoria superficial), mas o efeito real de taxação (+{2} por cast
+anterior) nunca acontecia. Só passou a importar de verdade agora que o
+modo de resiliência pode genuinamente remover o comandante e forçar um
+recast.
+
+**Corrigido:** `effective_cost()` agora soma `2 *
+state.commander_cast_count` ao MV base quando `name == COMMANDER`,
+antes do `return`.
+
+**Validação:** 3 testes dirigidos confirmando `effective_cost(COMMANDER)`
+sobe exatamente +2 por `commander_cast_count` (0→4, 1→6, 3→10).
+
+## Achado real ADICIONAL, não relacionado a CR 903.9a: `mulligan()` reembaralhava via RNG global, não seedado (mesma classe de bug do Azula) — 2026-09-21
+
+**Gatilho:** antes de construir `simulate_one_with_interaction`,
+auditei `simulate_one`/`mulligan()` pra confirmar threading correto do
+RNG (mesma disciplina já aplicada nos outros decks desta sessão, depois
+do bug real achado no Azula). `simulate_one` usa `rnd = random.Random
+(seed)` só pro shuffle INICIAL da library — mas `mulligan()`
+reembaralhava via `random.shuffle(state.library)` (módulo GLOBAL, não
+seedado) a cada mulligan além do 1º. Confirmado empiricamente: **685
+de 3.000 partidas (22,8%) davam resultado diferente rodando a MESMA
+seed duas vezes**, toda vez que havia pelo menos 1 mulligan.
+
+**Corrigido:** adicionado `rng: Optional[random.Random] = None` ao
+`GameState`; `simulate_one`/`simulate_one_with_interaction` agora
+passam `GameState(rng=rnd)` (o mesmo RNG seedado já usado pro shuffle
+inicial); `mulligan()` trocado pra `state.rng.shuffle(state.library)`.
+
+**Validação:** 0/3.000 partidas não-determinísticas após o fix (vs
+685/3.000 antes). Bit-identidade em modo padrão (20.000 seeds,
+seed_base 1000000) contra uma versão do commit anterior **patcheada
+com APENAS o fix de determinismo** (isolando o efeito puro do porte do
+modo de resiliência + fix de CR 903.8): **0/20000 mismatches** — porte
+100% estrutural em modo padrão, como esperado (0 sacrifícios
+voluntários pré-existentes = comandante nunca sai de campo em modo
+padrão = taxa nunca é diferente de 0 = nenhuma das duas correções tem
+efeito observável fora do modo de resiliência). Regressão de 20.000
+partidas em modo de resiliência: 0 exceções, 0 comandantes presos no
+cemitério, 33,48% das partidas com `commander_cast_count >= 2` (recast
+pagando a taxa CR 903.8 depois de removida). 22 testes dirigidos:
+`remove_permanent` no comandante (não presa no cemitério,
+`commander_in_play`/`commander_uid` resetados), `remove_permanent` em
+criatura comum (vai pro cemitério normalmente), `remove_permanent`
+preserva a transferência de contadores pro Ozolith (via
+`leave_battlefield`), taxa de comandante em `effective_cost` (3 casos),
+`try_cast_commander` debita taxa e incrementa contador, contra-ataque
+intercepta o cast (mana/taxa já gastos, comandante nunca entra em
+campo, log correto), `try_smart_opponent_wipe` inclui o comandante nos
+alvos de criatura e roteia corretamente pra zona de comando, mulligan
+determinístico (300 amostras).
+
+**Resultado:** porte de CR 903.9a sem impacto numérico direto
+estrutural em si (0 sacrifícios voluntários pré-existentes), mas achou
+2 bugs REAIS não relacionados entre si — taxa de comandante com
+contador fantasma (declarado, incrementado, nunca lido) e mulligan
+não-determinístico (mesma classe do Azula) — nenhum dos dois visível
+numa auditoria carta-a-carta isolada da comandante em si.
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-13
 
 Extensão pra este deck da mesma auditoria já feita no Megatron/Azula/

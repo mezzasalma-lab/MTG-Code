@@ -1,5 +1,34 @@
 # Goldfish Log — Ms. Bumbleflower
 
+## Porte completo do modo de resiliência + CR 903.9a nativa desde o início — 2026-09-21
+
+**Gatilho:** "Faça agora a Ms. Bumbleflower" — seguindo o porte
+concluído no Nekusar, Azula, Beorn e Thranduil. Detalhes completos em
+`checklist-oraculo.md`.
+
+**Achado:** deck nasce com CR 903.9a correta desde o início. `state.
+battlefield` aqui é lista de objetos `Permanent` (não strings) —
+`remove_permanent` envolve a `leave_battlefield` já existente (que já
+tratava Ozolith/Chasm Skulker) e só adiciona o tratamento do comandante
+(zona de comando). Auditoria dos pontos de sacrifício pré-existentes
+(disciplina obrigatória) achou **0 sacrifice outlets neste deck**
+(diferente do Beorn/Thranduil) — mas achou 2 bugs reais não
+relacionados: (1) taxa de comandante (CR 903.8) tinha o contador
+certo, mas o efeito de taxação nunca era lido em `effective_cost`; (2)
+`mulligan()` reembaralhava via RNG global em vez do RNG seedado (mesma
+classe de bug do Azula — 685/3000 = 22,8% de partidas
+não-determinísticas com a mesma seed antes do fix).
+
+**Resultado:** modo padrão com bit-identidade PERFEITA (0/20000
+mismatches) contra uma versão anterior patcheada só com o fix de
+determinismo — porte 100% estrutural, como esperado (0 sacrifícios
+voluntários = comandante nunca sai de campo em modo padrão = taxa
+nunca observável fora do modo de resiliência).
+
+**Validação:** regressão de 20.000 partidas em modo de resiliência, 0
+exceções, 0 comandantes presos no cemitério, 33,48% das partidas com
+recast pagando a taxa CR 903.8 + 22 testes dirigidos.
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-13
 
 Extensão pra este deck da mesma auditoria já feita no
