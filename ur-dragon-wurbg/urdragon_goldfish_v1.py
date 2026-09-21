@@ -2200,14 +2200,25 @@ def remove_permanent(state: GameState, name: str, from_battlefield: bool = True)
     """Ponto central de remocao de permanente do CAMPO (wipe/remocao do
     modo de resiliencia) -- equivalente simplificado do `sacrifice()` do
     Megatron: sem gatilhos de morte pra replicar (0 cartas 'whenever ~
-    dies' neste deck, confirmado por grep antes de escrever isto).
-    Comandante vai pra zona de comando (mesmo padrao ja' usado pro
-    retorno do Hellkite Courser em `end_step`), nunca pro cemiterio de
-    verdade -- recastavel depois pagando a taxa de novo. Resto vai pro
-    cemiterio via `put_into_graveyard()`."""
+    dies' neste deck, confirmado por grep -- reconfirmado 2026-09-21).
+
+    CORRIGIDO 2026-09-21 (achado real do usuario, CR 903.9a -- ver
+    `rules-cache/comprehensive-rules.txt` linhas 6888-6896, Regra 18 de
+    `references/user-standing-rules.md`): comandante indo pro
+    cemiterio/exilio NAO e' substituicao, e' ACAO BASEADA EM ESTADO (CR
+    704) que roda DEPOIS do evento real -- ele vai pro cemiterio DE
+    VERDADE primeiro (CR 700.4, "dies"), so' DEPOIS o dono PODE
+    escolher move-lo pra zona de comando. A versao anterior pulava o
+    cemiterio inteiramente. Sem efeito NUMERICO observavel aqui (0
+    cartas 'creature dies' neste deck pra reagir), mas corrigido pra
+    ficar estruturalmente certo -- uma futura troca de carta com
+    gatilho de morte nao herdaria esse bug em silencio."""
     if from_battlefield and name in state.battlefield:
         state.battlefield.remove(name)
     if name == COMMANDER:
+        put_into_graveyard(state, name)
+        if name in state.graveyard:
+            state.graveyard.remove(name)
         state.commander_in_play = False
         return
     put_into_graveyard(state, name)

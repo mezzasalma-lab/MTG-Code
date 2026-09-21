@@ -1,5 +1,59 @@
 # Checklist cláusula-a-cláusula — The Ur-Dragon (`urdragon_goldfish_v1.py`)
 
+## CR 903.9a: comandante passa pelo cemitério de verdade antes da zona de comando — 2026-09-21
+
+**Gatilho:** mesmo achado do usuário aplicado a todos os 9 decks desta
+sessão, depois de eu documentar em TODOS eles que "o comandante nunca
+dispara gatilho de morte": *"O comandante não morre e ao invés de ir
+pro cemitério, pode ser movido de volta a zona de comando? Pq até onde
+sei, comandantes podem ser mortos sim! Confere essa regra com muita
+calma e atenção!"* Raciocínio completo da regra em
+`megatron-tyrant-mardu/checklist-oraculo.md` (mesma correção, CR 903.9a
+é ação baseada em estado — CR 704 — não substituição; texto oficial
+cacheado em `rules-cache/comprehensive-rules.txt`, Regra 18 de
+`references/user-standing-rules.md`).
+
+**Achado específico deste deck:** `remove_permanent()` (ponto central
+de remoção de permanente do campo, usado por `try_smart_opponent_wipe`
+e `try_smart_opponent_removal`) desviava o comandante direto pra zona
+de comando, pulando o cemitério inteiramente. Diferente do Megatron,
+**este deck tem 0 cartas com gatilho "whenever ~ dies"/"creature put
+into graveyard"** (reconfirmado por grep antes desta rodada, mesma
+conclusão do grep original) — ou seja, não existe nenhuma carta na
+lista que reagiria à correção. `put_into_graveyard()` (a função central
+de "vai pro cemitério" deste arquivo) também não tem nenhum efeito
+colateral (é só `state.graveyard.append(name)`, sem gatilho nenhum
+disparado dali).
+
+**Corrigido mesmo assim** por consistência estrutural (Regra #1 do
+`CLAUDE.md`: habilidade real do jogo, mesmo que sem efeito numérico
+observável hoje neste deck específico) — uma futura troca de carta com
+gatilho de morte real não herdaria esse bug em silêncio. O comandante
+agora: entra no cemitério de verdade via `put_into_graveyard()`, e SÓ
+DEPOIS é removido de lá pra representar a escolha do dono de movê-lo
+pra zona de comando (`commander_in_play = False`).
+
+**Validação:** compilação OK. Bit-identidade em modo padrão
+(`simulate_one`, 3000 seeds, seed_base 7600000) contra o commit
+anterior: **0/3000 mismatches** — confirma que a correção não tem
+NENHUM efeito no modo padrão (ambos os call sites de
+`remove_permanent` — `try_smart_opponent_wipe`/`try_smart_opponent_
+removal` — só disparam com `interaction_rng` ativo, ou seja, só no modo
+de resiliência). Regressão de 20.000 partidas em modo de resiliência
+(`simulate_one_with_interaction`, seed_base 9100000): 0 exceções, 0/20000
+partidas com o comandante preso no cemitério (confirma que a sequência
+cemitério→remoção funciona em todo caso testado). 2 testes dirigidos:
+(1) `remove_permanent(state, COMMANDER)` com o comandante em campo →
+`commander_in_play=False`, fora do campo, e NÃO preso no cemitério; (2)
+permanente comum vai pro cemitério normalmente e FICA lá (sem a lógica
+especial do comandante vazar pra outras cartas).
+
+**Resultado:** correção estrutural sem impacto numérico observável
+nesta lista atual (0 cartas reagem), mas fecha o gap de consistência
+com CR 903.9a e remove o risco de uma troca de carta futura (qualquer
+"whenever a creature dies"/"whenever a permanent is put into a
+graveyard from the battlefield") herdar o bug em silêncio.
+
 ## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
 
 **Gatilho:** mesmo achado do usuário aplicado a todos os decks: "Temos
