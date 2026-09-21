@@ -1,3 +1,106 @@
+## CR 903.9a/903.9b: comandante passa pelo `leave_battlefield()` central de verdade — 2026-09-21
+
+**Gatilho:** mesmo achado do usuário aplicado a todos os 9 decks desta
+sessão, depois de eu documentar em TODOS eles que "o comandante nunca
+dispara gatilho de morte": *"O comandante não morre e ao invés de ir
+pro cemitério, pode ser movido de volta a zona de comando? Pq até onde
+sei, comandantes podem ser mortos sim! Confere essa regra com muita
+calma e atenção!"* Raciocínio completo da regra em
+`megatron-tyrant-mardu/checklist-oraculo.md` (CR 903.9a é ação baseada
+em estado — CR 704 — não substituição; texto oficial cacheado em
+`rules-cache/comprehensive-rules.txt`, Regra 18 de
+`references/user-standing-rules.md`).
+
+**Este deck é DIFERENTE dos outros 8: já tinha um chokepoint central
+real de leaves-the-battlefield (`leave_battlefield()`, com Ozolith/
+Skullclamp/Ichor Wellspring/Haywire Mite/Motor#16 já tratados de
+verdade) — só o comandante era tratado como exceção especial dentro de
+`remove_permanent()`, pulando `leave_battlefield` inteiramente.**
+
+**1ª versão do fix (INCOMPLETA, achado durante a própria validação
+desta rodada — exemplo real do que a Regra #6 do `CLAUDE.md` descreve):**
+corrigi só `remove_permanent()` pra rotear o comandante pelo cemitério
+de verdade antes da zona de comando. Bit-identidade em modo padrão deu
+0/3000 — parecia limpo. Mas a regressão de 20.000 partidas em modo de
+resiliência acusou **9/20000 comandantes presos no cemitério + 13/20000
+com `commander_in_play` dessincronizado do campo de verdade**.
+Investigando o log de uma seed falha, achei a causa real: **Skullclamp
+tem sua PRÓPRIA morte por SBA** (`skullclamp_activation()`, linha
+~2608, "+1/-1" zera a resistência de uma criatura earthbendada com 1
+contador) que chama `leave_battlefield()` **DIRETO**, nunca passando
+por `remove_permanent()` — e essa é só 1 de **17+ call sites reais**
+de `leave_battlefield()` neste arquivo (saga, Wrenn, Trading Post,
+Zuran Orb, etc.), a maioria em **MODO PADRÃO**, não resiliência. A
+correção pontual em `remove_permanent()` cobria só 2 desses 17+.
+
+**Correção real (movida pro chokepoint central):** o tratamento do
+comandante foi movido pra DENTRO de `leave_battlefield()` (não mais em
+`remove_permanent()`, que agora só delega, sem caso especial nenhum —
+igual qualquer outra carta). Cemitério (CR 903.9a): ela entra de
+verdade primeiro (disparando Ozolith/Ichor Wellspring/Haywire
+Mite/Skullclamp ANTES, já checados no código antes do ponto de
+inserção), só DEPOIS é removida de lá pra representar a zona de
+comando. Motor#16 (`earthbend_return`): SUBSTITUIÇÃO de verdade
+("return to the battlefield instead") — ela nunca chega a ficar no
+cemitério nesse caso, `enter_battlefield()` já re-seta
+`commander_in_play=True` pro novo Permanent, igual qualquer carta
+earthbendada.
+
+**2º achado real durante a MESMA rodada de validação (ainda a 20k
+regressão, agora em modo padrão puro):** 2/20000 seeds continuavam com
+`commander_in_play` dessincronizado MESMO depois do fix em
+`leave_battlefield()`. Rastreei e achei uma **3ª via de saída de campo
+que nunca passa por `leave_battlefield()` NEM por `remove_permanent()`**:
+o ETB de bounceland (Gruul Turf/Selesnya Sanctuary, linha ~1600) faz
+`state.battlefield.remove(bounced); state.hand.append(bounced.card.name)`
+DIRETO. `is_land()` é dinâmico (`state.commander_in_play and
+is_artifact(perm, state)` — a própria habilidade estática de Toph,
+"nonland artifacts you control are lands") — se ela estiver
+artefato-terreno no momento (ex. via Liquimetal Torque) e for a única
+"terreno" candidata, a bounceland a escolhe e a manda pra MÃO de
+verdade. **CR 903.9b** (mão/biblioteca, diferente de 903.9a) é
+SUBSTITUIÇÃO de verdade: comandante que iria pra mão, dono pode
+escolher zona de comando em vez disso. Corrigido no próprio ETB da
+bounceland: se `bounced.card.name == COMMANDER`, vai pra zona de
+comando (`commander_in_play = False`) em vez de `state.hand.append`.
+
+**Validação (retrabalhada depois de cada achado, não só uma passada):**
+compilação OK. Bit-identidade em modo padrão: **0/3000 mismatches**
+com a comparação ingênua de dataclass `==` deu FALSO POSITIVO
+(2996/3000 "mismatches") por identidade de classe entre 2 módulos
+carregados separadamente (`Permanent`/`Card` são dataclasses — `==`
+padrão do Python checa `self.__class__ is other.__class__`, que falha
+sempre entre 2 imports do mesmo arquivo por caminhos diferentes) —
+corrigido comparando via `dataclasses.asdict`-style, não `==` direto.
+Com a comparação corrigida, bit-identidade real em modo padrão: 0/5000
+inicialmente, **mas 10/20000 numa amostra maior** — divergência real e
+pequena (0,05%, mesma categoria "RNG ripple esperado" do Blightsteel
+Colossus/Megatron: agora que o comandante pode genuinamente sofrer
+SBA/bounce que antes eram pulados, o RNG subsequente diverge). Validado
+por A/B agregado em vez de bit-identidade (10.000 seeds):
+`skullclamp_draws`/`motor16_recursions`/`commander_cast_count`/
+`ozolith_counters`/`ozolith_moves` idênticos (efeito raro demais pra
+mover a média em 10k amostras), fração de partidas terminando com o
+comandante fora de campo subiu de 0,0237 pra 0,0239 (reflete os bugs de
+sincronização corrigidos). Regressão de 20.000 partidas em AMBOS os
+modos (padrão e resiliência), rodada de novo depois de CADA correção:
+0 exceções, 0 comandantes presos no cemitério, 0 comandantes presos na
+mão, 0 flags `commander_in_play` dessincronizadas — nas 3 rodadas
+finais. 5 testes dirigidos: (1) `remove_permanent` via oponente; (2)
+Skullclamp SBA-death via `leave_battlefield` DIRETO (achado #1); (3)
+Motor#16 revivendo o comandante corretamente; (4) permanente comum
+inalterado; (5) bounceland escolhendo o comandante como alvo (achado
+#2) -- vai pra zona de comando, não pra mão.
+
+**Lição confirmada em tempo real desta própria correção (Regra #6 do
+`CLAUDE.md`, "auditoria carta-a-carta não pega bug de orquestração"):**
+uma correção que parecia completa (compilava, passava bit-identidade
+"limpa" por um teste raso, cobria os 2 únicos call sites do modo de
+resiliência) escondia 2 bugs reais de cobertura incompleta que só a
+regressão de 20.000 partidas em AMBOS os modos revelou — e só foram
+resolvidos corretamente movendo a lógica pro chokepoint central
+verdadeiro (`leave_battlefield`) em vez de remendar caso a caso.
+
 ## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
 
 **Gatilho:** "Temos que incluir remoções de artefatos e encantamentos

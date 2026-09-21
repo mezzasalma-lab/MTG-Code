@@ -1045,7 +1045,28 @@ def distinct_land_names(state: GameState) -> int:
 
 def leave_battlefield(state: GameState, perm: Permanent, log: list, to_hand: bool = False):
     """Handles a permanent dying / being sacrificed / exiled. Central place
-    for The Ozolith (counter recycling) and Motor #16 (earthbend return)."""
+    for The Ozolith (counter recycling) and Motor #16 (earthbend return).
+
+    CORRIGIDO 2026-09-21 (achado real do usuario, CR 903.9a -- ver
+    `rules-cache/comprehensive-rules.txt` linhas 6888-6896, Regra 18 de
+    `references/user-standing-rules.md`): tratamento do comandante movido
+    pra CA, o verdadeiro chokepoint central (17+ call sites reais neste
+    arquivo -- sacrificio de saga/Wrenn/Trading Post/Zuran Orb, SBA de
+    Skullclamp, etc.), nao so' `remove_permanent()` (so' 2 desses call
+    sites, ambos resiliencia). Achado real durante a validacao: uma 1a
+    versao deste fix so' em `remove_permanent()` deixava o comandante
+    PRESO no cemiterio (com `commander_in_play` dessincronizado) sempre
+    que ela morria via um dos outros 15+ call sites diretos desta funcao
+    -- ex. Skullclamp SBA (0 de resistencia via +1/-1 equipado, linha
+    ~2608) mata Toph earthbendada de verdade, em MODO PADRAO, sem
+    nenhum oponente envolvido. 903.9a (cemiterio/exilio) e' ACAO BASEADA
+    EM ESTADO (CR 704): ela vai pro cemiterio DE VERDADE primeiro (CR
+    700.4, disparando Ozolith/Ichor Wellspring/Haywire Mite/Skullclamp
+    normalmente, ja' checados ACIMA deste ponto), so' DEPOIS o dono PODE
+    escolher move-la pra zona de comando -- tratado abaixo, apos o
+    Motor#16 (que e' substituicao de verdade: se ela earthbend-retorna,
+    nunca chega a ficar no cemiterio, `enter_battlefield` ja re-seta
+    `commander_in_play=True` pra' o novo Permanent)."""
     if perm not in state.battlefield:
         # Ja saiu do campo por outro efeito (ex: bounce land disparado por uma
         # cadeia de landfall/Motor#16 no meio do processamento de um sacrificio
@@ -1087,9 +1108,21 @@ def leave_battlefield(state: GameState, perm: Permanent, log: list, to_hand: boo
         return
 
     if to_hand:
-        state.hand.append(perm.card.name)
+        if perm.card.name == COMMANDER:
+            # CR 903.9b: comandante que iria pra mao -- substituicao de
+            # verdade, dono pode escolher zona de comando em vez disso.
+            # Nenhum call site real passa to_hand=True hoje (parametro
+            # sem uso ativo neste arquivo), mas tratado por robustez --
+            # uma troca futura de carta com bounce nao herdaria o bug em
+            # silencio.
+            state.commander_in_play = False
+        else:
+            state.hand.append(perm.card.name)
     else:
         state.graveyard.append(perm.card.name)
+        if perm.card.name == COMMANDER:
+            state.graveyard.remove(COMMANDER)
+            state.commander_in_play = False
 
 
 def remove_permanent(state: GameState, perm: Permanent, log: list, source: str = "opponent"):
@@ -1101,20 +1134,18 @@ def remove_permanent(state: GameState, perm: Permanent, log: list, source: str =
     Ichor Wellspring/Haywire Mite/Motor#16 ja' tratados de verdade) --
     entao a maioria dos casos so' delega pra ele, sem reinventar nada.
 
-    Unica excecao: o comandante. `leave_battlefield` nao trata o
-    comandante como caso especial (nunca precisou, nada neste arquivo
-    a removia do campo antes de hoje) -- mandaria Toph pro cemiterio
-    igual qualquer carta e nunca resetaria `commander_in_play`. Isso
-    violaria CR 903.9 (comandante destruido vai pra zona de comando,
-    efeito de SUBSTITUICAO -- nunca chega a ser "put into a graveyard"
-    de verdade, entao gatilhos de "dies" tambem NAO disparam pra ela).
-    Tratado aqui antes de delegar."""
-    if perm not in state.battlefield:
-        return
-    if perm.card.name == COMMANDER:
-        state.battlefield.remove(perm)
-        state.commander_in_play = False
-        return
+    Comandante: CORRIGIDO 2026-09-21 (achado real do usuario, CR
+    903.9a -- ver `rules-cache/comprehensive-rules.txt` linhas
+    6888-6896, Regra 18 de `references/user-standing-rules.md`). Uma 1a
+    versao deste fix tratava o comandante so' AQUI (dentro de
+    `remove_permanent`) -- errado por incompleto: `leave_battlefield` tem
+    15+ OUTROS call sites reais neste arquivo (Skullclamp SBA, saga,
+    Wrenn, Zuran Orb, etc., a maioria em MODO PADRAO, nao so'
+    resiliencia), e o comandante pode morrer por qualquer um deles.
+    Corrigido pra ficar DENTRO de `leave_battlefield` (o chokepoint
+    central de verdade, ver docstring la'), entao delega direto sem
+    nenhum caso especial aqui -- mesma logica de qualquer outra carta
+    deste deck."""
     leave_battlefield(state, perm, log)
 
 
@@ -1569,7 +1600,21 @@ def apply_etb(state: GameState, perm: Permanent, log: list):
         others = [p for p in state.battlefield if is_land(p, state) and p is not perm]
         bounced = others[0] if others else perm
         state.battlefield.remove(bounced)
-        state.hand.append(bounced.card.name)
+        if bounced.card.name == COMMANDER:
+            # CORRIGIDO 2026-09-21 (achado real durante validacao do fix de
+            # CR 903.9a -- ver `leave_battlefield()`): esta bounceland pode
+            # escolher o COMANDANTE como alvo (Toph vira artefato-terreno de
+            # verdade via Liquimetal Torque, `is_land()` e' dinamico) --
+            # achado ao vivo rodando 20k regressao, comandante ficava preso
+            # na MAO (nao no campo, nao no cemiterio) com `commander_in_play`
+            # travado em True, porque este bounce nunca passava por
+            # `leave_battlefield`. CR 903.9b (mao/biblioteca -- SUBSTITUICAO
+            # de verdade, diferente do caso de morte em 903.9a): comandante
+            # que iria pra mao, dono pode escolher zona de comando em vez
+            # disso -- ela nunca chega a mao de verdade.
+            state.commander_in_play = False
+        else:
+            state.hand.append(bounced.card.name)
     elif name == "Wrenn and Realmbreaker":
         state.wrenn_loyalty = 4  # lealdade inicial real (Scryfall)
     elif name == "Urza's Saga":

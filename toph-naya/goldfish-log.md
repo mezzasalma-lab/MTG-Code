@@ -4,6 +4,35 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## CR 903.9a/903.9b: comandante passa pelo `leave_battlefield()` central de verdade — 2026-09-21
+
+**Gatilho:** usuário conferiu a regra real do CR 903.9 e apontou o erro
+("comandantes podem ser mortos sim!"). Detalhes completos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Achado:** diferente dos outros 8 decks, este já tinha um chokepoint
+central real (`leave_battlefield`, 17+ call sites) — uma 1ª correção
+só em `remove_permanent()` (2 desses call sites) ficou incompleta: a
+regressão de 20k acusou comandante preso no cemitério (Skullclamp SBA
+chama `leave_battlefield` direto) e, depois de mover o fix pro
+chokepoint certo, MAIS uma 2ª via achada (bounceland Gruul Turf/
+Selesnya Sanctuary bounca o comandante pra mão direto, sem passar por
+`leave_battlefield` nenhuma). As 2 corrigidas na mesma rodada.
+
+**Resultado:** modo padrão diverge em 0,05% das seeds (10/20.000) —
+Skullclamp SBA/bounceland agora afetam o comandante corretamente.
+Métricas agregadas (skullclamp_draws/motor16_recursions/
+commander_cast_count/ozolith_*) idênticas em 10k amostras (efeito raro
+demais pra mover a média); fração de partidas terminando com o
+comandante fora de campo subiu de 0,0237→0,0239 (bugs de sincronização
+corrigidos).
+
+**Validação:** regressão de 20.000 partidas nos 2 modos (rodada de novo
+após cada correção), 0 exceções, 0 comandantes presos no cemitério, 0
+presos na mão, 0 flags dessincronizadas + 5 testes dirigidos.
+
+---
+
 ## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
 
 **Gatilho:** "Temos que incluir remoções de artefatos e encantamentos
