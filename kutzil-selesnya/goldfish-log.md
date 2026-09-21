@@ -1,5 +1,38 @@
 # Goldfish Compilado — Kutzil, Malamet Exemplar
 
+## Porte completo do modo de resiliência + CR 903.9a nativa desde o início — 2026-09-21
+
+**Gatilho:** "Agora faz o Kutzil" — seguindo o porte concluído no
+Nekusar, Azula, Beorn, Thranduil e Ms. Bumbleflower. Detalhes completos
+em `checklist-oraculo.md`.
+
+**Achado CRÍTICO (diferente de tudo achado antes nesta sessão):** o bug
+de comandante presa não era latente/estrutural — **já acontecia em
+partidas de modo PADRÃO**. `Damning Verdict` ("destroy all creatures
+with no counters") podia matar a própria Kutzil (criatura recém-
+conjurada com 0 contadores), e como `leave_battlefield` nunca tratava o
+comandante, ela ficava "fantasma": `commander_in_play=True` mas ausente
+do battlefield e presa no cemitério pra sempre. Confirmado: 6/10000
+partidas nessa condição ANTES do fix, 0/10000 depois. Corrigido em
+`should_cast_damning_verdict()` (nunca conjura enquanto isso mataria o
+comandante — a carta em si não tem exceção no oráculo, então a proteção
+é na decisão de CONJURAR, não no efeito).
+
+**Achado adicional:** `commander_cast_count` (CR 903.8) já existia
+declarado no GameState, mas nunca era incrementado nem lido —
+`effective_cost()` corrigido pra somar a taxa real. Diferente do Azula/
+Bumbleflower, este deck **não tinha** bug de RNG não-seedado (`mulligan`
+já usava o RNG seedado corretamente).
+
+**Resultado:** bit-identidade em modo padrão com 13/20000 (0,07%)
+divergências — todas legítimas (confirmado via trace: o fix impede a
+morte real da comandante que já acontecia antes). A/B agregado (10k
+seeds): métricas principais idênticas dentro de margem de ruído.
+
+**Validação:** regressão de 20.000 partidas em modo de resiliência, 0
+exceções, 0 comandantes presos/fantasma, 52,76% das partidas com recast
+pagando a taxa CR 903.8 + 23 testes dirigidos.
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-13
 
 Extensão pra este deck da mesma auditoria já feita no Megatron/Azula/

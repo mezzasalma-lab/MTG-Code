@@ -349,6 +349,40 @@ class GameState:
     tale_katara_toph_first_tap_this_turn: set = field(default_factory=set)  # uids ja tapados (1a vez) este turno
     restoration_seminar_active: bool = False  # Paradigm: copia gratis a cada 1o main phase, apos a 1a resolucao real
 
+    # Modo de resiliencia (interacao de oponente) — 2026-09-21, porte do
+    # design final ja' validado em Megatron/Ur-Dragon/Hei Bai/Edgar Markov/
+    # Ulalek/Toph/Prismatic Bridge/Maralen/Rat King Verminister/Vihaan/
+    # Nekusar/Azula/Beorn/Thranduil/Bumbleflower. `interaction_rng` None =
+    # modo padrao, totalmente inerte (bit-identico ao motor sem estas
+    # categorias). Modo OPCIONAL e completamente separado
+    # (`simulate_one_with_interaction`), nunca chamado por
+    # `simulate_one`/`run_batch` padrao. `life_total`/`commander_cast_
+    # count`/`commander_uid` ja' existiam neste arquivo (life_total ja'
+    # ativo, commander_cast_count declarado mas nunca lido/incrementado --
+    # ver achado real em `effective_cost`/`cast_card`).
+    interaction_rng: Optional[random.Random] = None
+    wiped_this_round: bool = False
+    graveyard_wipe_used: bool = False
+
+    smart_removals_total: int = 0
+    smart_removal_log: list = field(default_factory=list)
+    smart_attacks_taken_total: int = 0
+    smart_attack_log: list = field(default_factory=list)
+    smart_discards_total: int = 0
+    smart_discard_log: list = field(default_factory=list)
+    smart_wipes_total: int = 0
+    smart_wipe_log: list = field(default_factory=list)
+    smart_artifact_wipes_total: int = 0
+    smart_artifact_wipe_log: list = field(default_factory=list)
+    smart_enchantment_wipes_total: int = 0
+    smart_enchantment_wipe_log: list = field(default_factory=list)
+    smart_counters_total: int = 0
+    smart_counter_log: list = field(default_factory=list)
+    smart_graveyard_wipes_total: int = 0
+    smart_graveyard_wipe_log: list = field(default_factory=list)
+    smart_graveyard_snipes_total: int = 0
+    smart_graveyard_snipe_log: list = field(default_factory=list)
+
 
 def mk_perm(state: GameState, name: str, is_token: bool = False) -> Permanent:
     p = Permanent(card=CARD_DB[name], entered_turn=state.turn, uid=state.next_uid, is_token=is_token)
@@ -362,6 +396,14 @@ def find_perm(state: GameState, uid: int) -> Optional[Permanent]:
 
 def is_creature(perm: Permanent) -> bool:
     return perm.card.ctype == "creature"
+
+
+def is_artifact(perm: Permanent) -> bool:
+    return perm.card.ctype == "artifact"
+
+
+def is_enchantment(perm: Permanent) -> bool:
+    return perm.card.ctype == "enchantment"
 
 
 def base_power(perm: Permanent) -> int:
@@ -547,6 +589,15 @@ def effective_cost(state: GameState, name: str) -> int:
         creatures = [p for p in state.battlefield if is_creature(p)]
         if creatures:
             d += max(effective_power(p) for p in creatures)
+    if name == COMMANDER:
+        # Achado real 2026-09-21: `commander_cast_count` ja' existia no
+        # GameState (declarado), mas NUNCA era incrementado nem lido em
+        # lugar nenhum -- CR 903.8 (taxa de +{2} por cast anterior da zona
+        # de comando) estava 100% ausente na pratica, apesar do campo
+        # parecer implementado numa auditoria superficial. So' comecou a
+        # importar de verdade agora que o modo de resiliencia pode
+        # genuinamente remover a comandante e forcar um recast.
+        s += 2 * state.commander_cast_count
     return max(0, mv - d + s)
 
 
@@ -944,6 +995,18 @@ def cast_card(state: GameState, name: str, log: list):
     if name in state.hand:
         state.hand.remove(name)
 
+    if name == COMMANDER:
+        state.commander_cast_count += 1
+        # Contra-ataque (`try_smart_opponent_counter`, 7a categoria do modo
+        # de resiliencia -- so' faz sentido no exato momento do cast, mesma
+        # logica dos outros decks ja' portados nesta sessao): mana e taxa
+        # ja' foram gastos ACIMA (CR 903.10a/608.2b contam "cast", nao
+        # "resolved"). `interaction_rng is None` (modo padrao) faz isso ser
+        # sempre False, sem custo nenhum de bit-identidade.
+        if try_smart_opponent_counter(state):
+            log.append("  [Kutzil] contra-atacada no cast (contramagica do modo de resiliencia)")
+            return
+
     if card.is_x:
         state.pending_x = x
 
@@ -1072,6 +1135,45 @@ def leave_battlefield(state: GameState, perm: Permanent, log: list, to_graveyard
             target = best_counter_target(state, exclude_uid=None)
             if target is not None:
                 place_counters(state, target, perm.counters, log, source="Broodguard Elite (move contadores)")
+
+
+def remove_permanent(state: GameState, perm: Permanent, log: list = None, source: str = "opponent"):
+    """Ponto central de remocao de permanente por acao de OPONENTE
+    (wipe/remocao do modo de resiliencia, 2026-09-21 -- porte do design
+    ja' validado em Megatron/Ur-Dragon/Hei Bai/Edgar Markov/Ulalek/Toph/
+    Prismatic Bridge/Maralen/Rat King Verminister/Vihaan/Nekusar/Azula/
+    Beorn/Thranduil/Bumbleflower, ja' incorporando desde o inicio a
+    correcao de CR 903.9a validada nesta sessao).
+
+    Envolve `leave_battlefield()` (ja' existente, trata Rancor/Goldvein
+    Hydra/Puca's Covenant/Ozolith corretamente) e ADICIONA o tratamento
+    do comandante que `leave_battlefield` sozinha nao tem: CR 903.9a
+    (cemiterio/exilio, o caso de MORTE) e' ACAO BASEADA EM ESTADO (CR
+    704), NAO substituicao -- ver
+    `rules-cache/comprehensive-rules.txt` linhas 6888-6896, Regra 18 de
+    `references/user-standing-rules.md`. Kutzil vai pro cemiterio DE
+    VERDADE primeiro (CR 700.4, 'dies', via `leave_battlefield`), so'
+    DEPOIS e' removida de la' pra representar a escolha do dono de
+    move-la pra zona de comando -- e CR 903.8 (taxa de comandante, ja'
+    modelada em `effective_cost` via `state.commander_cast_count`) cobra
+    +{2} por cast anterior a partir da proxima vez que ela for
+    recomprada. Identificacao por `uid` (nao so' nome) -- mesmo padrao ja
+    usado em `commander_damage_dealt`/CR 903.10a neste arquivo, nunca
+    confunde com token/copia.
+
+    Achado real ja' corrigido separadamente em `should_cast_damning_
+    verdict` (2026-09-21): Damning Verdict ('destroy all creatures with
+    no counters') e' o UNICO sacrifice/wipe VOLUNTARIO pre-existente
+    neste deck que podia atingir o proprio comandante sem preferencia --
+    corrigido la' (nunca conjurar enquanto isso mataria Kutzil), nao
+    aqui (o efeito da carta em si nao tem excecao no oraculo real)."""
+    was_commander = perm.uid == state.commander_uid or perm.card.name == COMMANDER
+    leave_battlefield(state, perm, log if log is not None else [], to_graveyard=True)
+    if was_commander:
+        if perm.card.name in state.graveyard:
+            state.graveyard.remove(perm.card.name)
+        state.commander_in_play = False
+        state.commander_uid = None
 
 
 def do_restoration_seminar_effect(state: GameState, log: list, source: str):
@@ -1765,12 +1867,25 @@ def cast_priority(state: GameState, name: str) -> tuple:
 def should_cast_damning_verdict(state: GameState) -> bool:
     """'Destroy all creatures with no counters on them' -- so vale a pena
     se a perda propria for pequena (poucas criaturas sem contador) E
-    houver de fato algo pra destruir (nao gasta a carta a toa)."""
+    houver de fato algo pra destruir (nao gasta a carta a toa).
+
+    Achado real 2026-09-21: a heuristica nunca excluia o proprio
+    COMANDANTE da contagem de "perda aceitavel" -- Kutzil e' criatura
+    recem-conjurada com 0 contadores ate ganhar o 1o buff, exatamente o
+    perfil que este wrath mata. Diferente de um sacrifice outlet com pool
+    escolhido pelo piloto (Beorn/Thranduil nesta sessao), "destroy all
+    creatures with no counters" nao tem excecao nenhuma no oraculo real --
+    nao da' pra "proteger" ela do efeito sem trapacear a carta, entao a
+    unica linha de jogo racional e' NUNCA conjurar enquanto isso
+    destruiria o proprio motor central de draw (gatilho de combate por
+    poder>base)."""
     creatures = [p for p in state.battlefield if is_creature(p)]
     if not creatures:
         return False
     no_counter = [p for p in creatures if p.counters == 0]
     if not no_counter:
+        return False
+    if any(p.card.name == COMMANDER for p in no_counter):
         return False
     return len(no_counter) <= 2 and len(no_counter) < len(creatures)
 
@@ -2016,6 +2131,343 @@ def bottom_priority(card: str) -> tuple:
         return (4, -CARD_DB[card].mv)
     return (2, CARD_DB[card].mv)
 
+
+# =========================================================
+# MODO DE RESILIENCIA (interacao de oponente) — 2026-09-21
+# =========================================================
+# Porte completo do design FINAL ja' validado nos outros decks desta
+# sessao (Megatron/Ur-Dragon/Hei Bai/Edgar Markov/Ulalek/Toph/Prismatic
+# Bridge/Maralen/Rat King Verminister/Vihaan/Nekusar/Azula/Beorn/
+# Thranduil/Bumbleflower). 7 categorias padronizadas (removal/attack/
+# discard/wipe/graveyard-wipe/graveyard-snipe/counterspell), 1 rolagem
+# "algum wipe acontece" + escolha ponderada de 1 TIPO so', gate de
+# atencao por oponente, supressao de ataque pos-wipe simetrico.
+#
+# Este arquivo ja' tinha `life_total` ativo e `mulligan(rng)` ja'
+# threadava o RNG seedado corretamente (0 bug de determinismo aqui,
+# diferente do Azula/Bumbleflower) -- grep confirmado, unico uso de
+# `random.` no arquivo inteiro era o proprio `mulligan`/`simulate_one`.
+#
+# Modo OPCIONAL e completamente separado (`simulate_one_with_
+# interaction`), nunca chamado por `simulate_one`/`run_batch` padrao.
+
+NUM_OPPONENTS = 3  # premissa declarada (mesa de 4), mesma convencao dos outros decks
+
+INTERACTION_SETUP_TURNS = 2
+# Turnos 1-2 sao sempre setup, sem chance de reacao nenhuma -- o oponente
+# ainda nao tem motivo/mana pra reagir.
+
+
+def interaction_chance(state: GameState) -> float:
+    """Formula compartilhada de 'chance do oponente reagir esse turno' --
+    identica aos outros decks: escala com o impacto do meu proprio board
+    (permanentes nao-terreno em campo)."""
+    board_impact = sum(1 for p in state.battlefield if p.card.name not in LAND_NAMES)
+    return min(0.10 + 0.03 * board_impact, 0.75)
+
+
+OPPONENT_ATTENTION_CHANCE = 1.0 / NUM_OPPONENTS
+# Gate de "esse oponente esta' de olho em mim esse turno" -- chance BASE
+# de que um turno de oponente qualquer seja sobre MIM, antes de qualquer
+# ajuste por ameaca de board (que ja' fica dentro de `interaction_
+# chance()`). Rolado 1x no INICIO de `try_smart_opponent_turn`, antes de
+# qualquer categoria.
+
+POST_WIPE_ATTACK_HASTE_FACTOR = 0.15
+# Board wipe e' SIMETRICO -- acerta TODA criatura da mesa, nao so' as
+# minhas. Se um wipe ja' aconteceu NESTA RODADA (`state.wiped_this_
+# round`), TODOS os turnos de oponente restantes na mesma rodada tambem
+# ficam sem criaturas de verdade pra atacar -- exceto por haste.
+
+BOARD_WIPE_CHANCE_FACTOR = 0.4
+ARTIFACT_WIPE_CHANCE_FACTOR = 0.2
+ENCHANTMENT_WIPE_CHANCE_FACTOR = 0.15
+GRAVEYARD_WIPE_CHANCE_FACTOR = 0.4
+GRAVEYARD_SNIPE_CHANCE_FACTOR = 0.5
+COUNTERSPELL_CHANCE_FACTOR = 0.5
+WIPE_TYPE_WEIGHTS = {
+    "creature": BOARD_WIPE_CHANCE_FACTOR,
+    "artifact": ARTIFACT_WIPE_CHANCE_FACTOR,
+    "enchantment": ENCHANTMENT_WIPE_CHANCE_FACTOR,
+}
+TOTAL_WIPE_CHANCE_FACTOR = sum(WIPE_TYPE_WEIGHTS.values())
+
+INTERACTION_ENGINE_PRIORITY = [
+    "The Great Henge",
+    "Hardened Scales",
+    "The Earth Crystal",
+    "Branching Evolution",
+    "Innkeeper's Talent",
+    "Beast Whisperer",
+    "Managorger Hydra",
+    "Ozolith, the Shattered Spire",
+    "Rishkar, Peema Renegade",
+    "Restoration Seminar",
+]
+# Lista curada por prioridade (a mais critica primeiro) -- so' cartas que
+# sao motor RECORRENTE de valor real, priorizando os MULTIPLICADORES de
+# contador (Hardened Scales/The Earth Crystal/Branching Evolution/
+# Innkeeper's Talent, ver docstring do topo do arquivo -- "empilhamento
+# de multiplicadores", motor central compartilhado por TODA fonte de
+# contador do deck) sobre corpos grandes isolados. The Great Henge entra
+# no topo (draw+vida a cada dano de combate, altissimo valor real e
+# recorrente). Restoration Seminar (Paradigm) entra por gerar recursao
+# GRATIS todo main phase seguinte. O proprio comandante fica DE FORA de
+# proposito -- ja' tem categoria dedicada (`try_smart_opponent_counter`,
+# mira o CAST dela especificamente) e remocao pontual nao a mata de
+# verdade mesmo (vai pra zona de comando via `remove_permanent`,
+# recastavel depois pagando a taxa CR 903.8 de novo), entao um oponente
+# esperto prefere gastar a remocao pontual numa peca irrecuperavel.
+
+OPPONENT_ATTACKER_PROFILES = [
+    ("Knight Token", 2), ("Saproling Token", 1), ("Vampire Token", 1),
+    ("Zombie Token", 2), ("Soldier Token", 1), ("Goblin Token", 1),
+    ("Elemental Token", 3),
+]
+# Mesmos perfis genericos ja' validados nos outros decks -- sem
+# toughness, este arquivo nao modela bloqueio de um oponente de verdade.
+# Todo ataque conecta.
+
+
+def try_smart_opponent_removal(state: GameState) -> Optional[str]:
+    """Remocao 'inteligente' -- mira sempre a peca-motor de maior
+    prioridade presente em campo (`INTERACTION_ENGINE_PRIORITY`), nunca
+    aleatorio."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    target_name = next((n for n in INTERACTION_ENGINE_PRIORITY
+                         if any(p.card.name == n for p in state.battlefield)), None)
+    if target_name is None:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state):
+        return None
+    target_perm = next(p for p in state.battlefield if p.card.name == target_name)
+    remove_permanent(state, target_perm, source="opponent_removal")
+    state.smart_removals_total += 1
+    state.smart_removal_log.append((state.turn, target_name))
+    return target_name
+
+
+def try_smart_opponent_attack(state: GameState) -> Optional[str]:
+    """Ataque de oponente -- SEM bloqueio (limitacao estrutural: este
+    arquivo nao modela bloqueio de um oponente de verdade, so' gatilhos
+    de 'EU ataquei'). Sempre conecta em `state.life_total`.
+
+    Se `state.wiped_this_round` (algum wipe ja' disparou nesta rodada, de
+    qualquer oponente, incluindo este mesmo turno) a chance cai pra
+    `POST_WIPE_ATTACK_HASTE_FACTOR` -- representa so' um atacante com
+    haste conjurado DEPOIS do wipe."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    chance = interaction_chance(state) * (POST_WIPE_ATTACK_HASTE_FACTOR if state.wiped_this_round else 1.0)
+    if state.interaction_rng.random() >= chance:
+        return None
+    name, power = state.interaction_rng.choice(OPPONENT_ATTACKER_PROFILES)
+    state.life_total -= power
+    state.smart_attacks_taken_total += 1
+    state.smart_attack_log.append((state.turn, name))
+    return name
+
+
+def try_smart_opponent_discard(state: GameState) -> Optional[str]:
+    """Discard aleatorio -- mesma logica dos outros decks (alvo puramente
+    ao acaso na mao, sem filtro nenhum)."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    if not state.hand:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state):
+        return None
+    target = state.interaction_rng.choice(state.hand)
+    state.hand.remove(target)
+    state.graveyard.append(target)
+    state.smart_discards_total += 1
+    state.smart_discard_log.append((state.turn, target))
+    return target
+
+
+def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
+    """Board wipe ('destroy all creatures'/'destroy all artifacts'/
+    'destroy all enchantments') -- destroi TODOS os meus permanentes do
+    tipo escolhido de uma vez via `remove_permanent` (que ja' trata
+    comandante->zona de comando, CR 903.9a, e Rancor/Goldvein Hydra/
+    Puca's Covenant/Ozolith via `leave_battlefield`). Kutzil e' uma
+    Creature (nunca artefato/encantamento), entao so' e' alvo do wipe de
+    criatura -- exatamente como deveria (ela genuinamente morre nesse
+    caso, so' depois volta pra zona de comando, taxada +{2} na proxima
+    vez).
+
+    Design de 2 passos (nao 3 rolagens independentes): 1) rola 1x se
+    ALGUM wipe acontece esse turno de oponente, chance =
+    `interaction_chance() * TOTAL_WIPE_CHANCE_FACTOR`; 2) SO' se isso
+    disparar, escolhe qual TIPO de sweeper via escolha ponderada
+    (`state.interaction_rng.choices`) restrita aos tipos que tem pelo
+    menos 1 alvo legal em campo."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * TOTAL_WIPE_CHANCE_FACTOR:
+        return None
+    candidates = {
+        "creature": [p for p in state.battlefield if is_creature(p)],
+        "artifact": [p for p in state.battlefield if is_artifact(p)],
+        "enchantment": [p for p in state.battlefield if is_enchantment(p)],
+    }
+    available = [t for t in candidates if candidates[t]]
+    if not available:
+        return None
+    wipe_type = state.interaction_rng.choices(available, weights=[WIPE_TYPE_WEIGHTS[t] for t in available])[0]
+    targets = candidates[wipe_type]
+    hit_creature = wipe_type == "creature"
+    names = [p.card.name for p in targets]
+    for p in list(targets):
+        remove_permanent(state, p, source=f"opponent_{wipe_type}_wipe")
+    if wipe_type == "creature":
+        state.smart_wipes_total += 1
+        state.smart_wipe_log.append((state.turn, names))
+    elif wipe_type == "artifact":
+        state.smart_artifact_wipes_total += 1
+        state.smart_artifact_wipe_log.append((state.turn, names))
+    else:
+        state.smart_enchantment_wipes_total += 1
+        state.smart_enchantment_wipe_log.append((state.turn, names))
+    if hit_creature:
+        state.wiped_this_round = True
+    return names
+
+
+def try_smart_opponent_graveyard_wipe(state: GameState) -> Optional[list]:
+    """Graveyard hate, modelo MASS EXILE (Bojuka Bog/Soul-Guide
+    Lantern-style) -- dispara NO MAXIMO 1x por partida inteira
+    (`state.graveyard_wipe_used`)."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    if state.graveyard_wipe_used or not state.graveyard:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * GRAVEYARD_WIPE_CHANCE_FACTOR:
+        return None
+    exiled = state.graveyard[:]
+    state.graveyard.clear()
+    state.graveyard_wipe_used = True
+    state.smart_graveyard_wipes_total += 1
+    state.smart_graveyard_wipe_log.append((state.turn, exiled))
+    return exiled
+
+
+def try_smart_opponent_graveyard_snipe(state: GameState) -> Optional[str]:
+    """Graveyard hate, modelo EXILIO DE CARTA UNICA (Scavenging
+    Ooze/Cease-style) -- repetivel todo turno. Alvo SMART: maior MV entre
+    criatura no cemiterio."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    candidates = [c for c in state.graveyard if c in CARD_DB and is_creature_card(c)]
+    if not candidates:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * GRAVEYARD_SNIPE_CHANCE_FACTOR:
+        return None
+    target = max(candidates, key=lambda c: CARD_DB[c].mv)
+    state.graveyard.remove(target)
+    state.smart_graveyard_snipes_total += 1
+    state.smart_graveyard_snipe_log.append((state.turn, target))
+    return target
+
+
+def try_smart_opponent_counter(state: GameState) -> bool:
+    """Counterspell -- so' mira a conjuracao da propria Kutzil (mesma
+    logica dos outros decks: o motor inteiro do deck depende dela
+    resolver -- gatilho de combate "power > base power -> draw", motor
+    central de vantagem de carta). Chamada de dentro de `cast_card()` no
+    exato momento do cast (unica funcao que de fato coloca o comandante
+    em campo) -- nao do loop de `simulate_one_with_interaction`, so' faz
+    sentido no exato momento do cast, dentro do MEU turno."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return False
+    if state.interaction_rng.random() >= interaction_chance(state) * COUNTERSPELL_CHANCE_FACTOR:
+        return False
+    state.smart_counters_total += 1
+    state.smart_counter_log.append(state.turn)
+    return True
+
+
+def try_smart_opponent_turn(state: GameState):
+    """Simula O TURNO DE UM oponente dentro da rodada entre os meus turnos
+    (Regra #6 do CLAUDE.md: bug de orquestracao de turno que auditoria
+    carta-a-carta nao pega). Chamada `NUM_OPPONENTS` vezes por rodada -- um
+    wipe de um oponente ANTERIOR na rodada continua afetando corretamente
+    o ataque de um oponente POSTERIOR na MESMA rodada (chamadas em
+    sequencia, mesmo `state`).
+
+    Gate de atencao: antes de rolar QUALQUER categoria, este turno de
+    oponente precisa passar em `OPPONENT_ATTENTION_CHANCE`. Wipe e ataque
+    nao precisam de exclusao mutua manual aqui: `try_smart_opponent_
+    attack` ja' se auto-regula via `state.wiped_this_round` (setado por
+    `try_smart_opponent_wipe`, que roda antes, dentro desta mesma
+    chamada)."""
+    if state.turn > INTERACTION_SETUP_TURNS and state.interaction_rng.random() >= OPPONENT_ATTENTION_CHANCE:
+        return
+    try_smart_opponent_wipe(state)
+    try_smart_opponent_attack(state)
+    try_smart_opponent_graveyard_wipe(state)
+    try_smart_opponent_graveyard_snipe(state)
+    try_smart_opponent_removal(state)
+    try_smart_opponent_discard(state)
+
+
+def simulate_one_with_interaction(seed: int, turns: int = 8) -> GameState:
+    """Mesmo goldfish de `simulate_one`, mas com `NUM_OPPONENTS` turnos de
+    oponente de verdade simulados (`try_smart_opponent_turn`) a cada
+    rodada entre os meus turnos. Counterspell (7a categoria) NAO mora
+    neste loop -- ver `try_smart_opponent_counter`, chamada de dentro de
+    `cast_card()` no exato momento do cast do comandante.
+
+    NUNCA chamado por `run_batch`/`simulate_one` padrao (nem o loop aqui,
+    nem o counter dentro de `cast_card` -- ambos ficam inertes sem
+    `interaction_rng`)."""
+    rng = random.Random(seed)
+    hand, lib, mulls = mulligan(rng)
+    state = GameState(hand=hand, library=lib, mulligans=mulls, interaction_rng=random.Random(seed + 999_999))
+    for t in range(turns):
+        play_turn(state, is_first_turn=(t == 0), on_play=True)
+        state.wiped_this_round = False
+        for _ in range(NUM_OPPONENTS):
+            try_smart_opponent_turn(state)
+    return state
+
+
+def run_batch_with_interaction(n: int = 2000, turns: int = 8, seed_base: int = 6_000_000):
+    """Batch do modo de resiliencia -- reporta so' as metricas relevantes
+    pra 'o motor aguenta perder a peca central?', nao duplica o relatorio
+    inteiro do `run_batch` padrao."""
+    states = [simulate_one_with_interaction(seed_base + i, turns=turns) for i in range(n)]
+
+    def avg(vals):
+        return sum(vals) / len(vals) if vals else 0.0
+
+    print(f"n={n}, seed_base={seed_base}, turns={turns} (MODO RESILIENCIA -- wipe + graveyard hate + "
+          f"remocao + ataque + discard aleatorio + counterspell de oponente)")
+    print(f"Avg counterspells sofridos (so' mira a conjuracao da Kutzil): "
+          f"{avg([s.smart_counters_total for s in states]):.2f}")
+    cmd_cast = [s.commander_cast_turn for s in states if s.commander_cast_turn is not None]
+    print(f"  -- Turno medio de conjuracao QUE RESOLVEU: {avg(cmd_cast):.2f} | "
+          f"nunca resolveu em {turns} turnos: {100*(n-len(cmd_cast))/n:.1f}%")
+    print(f"Avg commander_cast_count final (recasts pagando taxa CR 903.8): "
+          f"{avg([s.commander_cast_count for s in states]):.2f}")
+    print(f"Avg board wipes sofridos: {avg([s.smart_wipes_total for s in states]):.2f}")
+    print(f"Avg artifact wipes sofridos: {avg([s.smart_artifact_wipes_total for s in states]):.2f}")
+    print(f"Avg enchantment wipes sofridos: {avg([s.smart_enchantment_wipes_total for s in states]):.2f}")
+    gy_wiped = sum(1 for s in states if s.smart_graveyard_wipes_total > 0)
+    print(f"Partidas com graveyard wipe sofrido (no maximo 1x/partida): {100*gy_wiped/n:.1f}%")
+    print(f"Avg graveyard snipes sofridos (sempre a maior MV criatura): "
+          f"{avg([s.smart_graveyard_snipes_total for s in states]):.2f}")
+    print(f"Avg remocoes inteligentes sofridas: {avg([s.smart_removals_total for s in states]):.2f}")
+    print(f"Avg ataques sofridos: {avg([s.smart_attacks_taken_total for s in states]):.2f}")
+    print(f"Avg vida final: {avg([s.life_total for s in states]):.2f}")
+    print(f"Avg descartes sofridos: {avg([s.smart_discards_total for s in states]):.2f}")
+    return states
+
+
+# =========================================================
+# MULLIGAN
+# =========================================================
 
 def mulligan(rng: random.Random):
     max_mulls = 3

@@ -1,5 +1,114 @@
 # Checklist cláusula-a-cláusula — Kutzil, Malamet Exemplar
 
+## Porte completo do modo de resiliência (interação de oponente) + CR 903.9a nativa desde o início — 2026-09-21
+
+**Gatilho:** *"Agora faz o Kutzil"* — seguindo diretamente o porte
+concluído no Nekusar, Azula, Beorn, Thranduil e Ms. Bumbleflower (mesma
+sessão, mesmo protocolo). Este deck nunca tinha o modo de resiliência
+atual — porte completo do zero, nascendo já com a correção de CR 903.9a
+nativa desde a 1ª linha.
+
+**Arquitetura:** `state.battlefield` aqui é lista de objetos
+`Permanent` (`uid`, `card`, `counters`...) — mas diferente do Bumbleflower/
+Kutzil-anterior, `perm.card` é o próprio objeto `Card` (não uma string de
+nome), então `remove_permanent` compara por `perm.card.name`.
+`remove_permanent` **envolve** a `leave_battlefield` já existente (que já
+tratava Rancor voltando pra mão, Goldvein Hydra criando Treasures, Puca's
+Covenant recursão, e transferência de contadores pro Ozolith) e adiciona
+só o tratamento do comandante (CR 903.9a — cemitério de verdade primeiro,
+CR 700.4/704, só depois removida de lá pra representar a zona de
+comando). `life_total` já existia ativo neste arquivo (não precisou ser
+adicionado, diferente do Beorn/Thranduil/Bumbleflower).
+
+## Achado real CRÍTICO: `Damning Verdict` já deixava a comandante "fantasma" em partidas de modo PADRÃO — não era um bug latente do modo de resiliência, já acontecia hoje — 2026-09-21
+
+**Gatilho:** auditoria de pontos de sacrifício/destruição pré-existentes
+(disciplina obrigatória antes de construir o modo de resiliência, Regra
+#6 do CLAUDE.md) — grep de `leave_battlefield(` achou 3 call sites reais
+(Summon: Fenrir capítulo III, Warp do Broodguard Elite, e **Damning
+Verdict**). Os 2 primeiros só afetam a própria carta que os contém, sem
+risco. **Damning Verdict** ("Destroy all creatures with no counters on
+them") destrói toda criatura própria com 0 contadores — `should_cast_
+damning_verdict()` já tinha uma heurística real ("só vale a pena se a
+perda for pequena"), mas **nunca excluía a comandante da contagem**.
+Kutzil é criatura recém-conjurada com 0 contadores até ganhar o 1º buff
+— exatamente o perfil que esse próprio wrath mata.
+
+**Diferente de todos os achados anteriores desta sessão (Beorn/
+Thranduil), este bug NÃO era estrutural/latente — já estava ATIVO em
+partidas de modo PADRÃO**, sem precisar do modo de resiliência pra se
+manifestar: `leave_battlefield` nunca tratava o comandante (sem
+`commander_in_play`/`commander_uid` reset), então toda vez que Damning
+Verdict matava a própria Kutzil, ela ia pro cemitério e **ficava lá
+presa como "fantasma"** — `state.commander_in_play` continuava `True`
+(nunca resetado), mas ela não estava fisicamente em lugar nenhum útil
+(nem battlefield, nem recastável — `main_phase`'s `if not state.
+commander_in_play and can_cast(...)` nunca dispararia de novo, já que a
+flag mentia dizendo que ela "ainda está em campo"). Confirmado ao vivo:
+6 de 10.000 partidas (seed_base 1000000) tinham esse estado quebrado
+ANTES do fix.
+
+**Corrigido:**
+1. `should_cast_damning_verdict()` agora recusa conjurar enquanto isso
+   mataria a própria comandante — diferente de um sacrifice outlet com
+   pool de candidatos escolhido pelo piloto (Beorn/Thranduil), "destroy
+   all creatures with no counters" não tem exceção nenhuma no oráculo
+   real, então a única linha de jogo racional é **nunca conjurar**
+   enquanto a perda incluiria o motor central de draw (não dá pra
+   "proteger" ela do efeito sem trapacear a carta).
+2. `remove_permanent()` novo (envolve `leave_battlefield`) trata o
+   comandante corretamente pra qualquer OUTRA fonte de remoção que vier
+   a existir (o modo de resiliência).
+
+**Validação:** bit-identidade em modo padrão (20.000 seeds, seed_base
+1000000) contra o commit anterior: **13/20000 mismatches (0,07%)** —
+divergência real e esperada, confirmada via trace direto da seed
+1002983: `commander_in_play=True` mas Kutzil ausente do battlefield E
+presente no cemitério na versão ANTIGA (o estado fantasma descrito
+acima); na versão corrigida ela nunca chega a morrer (Damning Verdict
+não é conjurada), continua em campo, e segue batendo (`commander_
+damage_dealt` 26→31 no mesmo seed). Comparação A/B agregada (10.000
+seeds): `proxy_damage_total`/`counters_placed_total`/`commander_damage_
+dealt`/`cards_drawn_extra` todos dentro de margem de ruído mínima,
+"comandante nunca conjurada" idêntico (2,52%/2,52%), e o contador direto
+de "comandante fantasma" cai de **6/10000 pra 0/10000**.
+
+## Achado real ADICIONAL: taxa de comandante (CR 903.8) tinha o contador declarado mas nunca era incrementado nem lido (mesma classe do achado no Bumbleflower) — 2026-09-21
+
+**Gatilho:** ao inserir o contra-ataque em `cast_card`, notei que
+`GameState.commander_cast_count` **já existia** (campo declarado) — mas
+grep confirmou **0 outras ocorrências** no arquivo inteiro: nunca era
+incrementado, nunca era lido em `effective_cost()`. Só passou a importar
+de verdade agora que o modo de resiliência pode genuinamente remover o
+comandante e forçar um recast.
+
+**Corrigido:** `effective_cost()` agora soma `2 *
+state.commander_cast_count` ao MV base quando `name == COMMANDER`;
+`cast_card()` incrementa o contador logo após pagar o custo (antes do
+contra-ataque, já que CR 903.10a/608.2b contam "cast", não "resolved").
+
+**Validação:** 3 testes dirigidos confirmando `effective_cost(COMMANDER)`
+sobe exatamente +2 por `commander_cast_count` (0→3, 1→5, 3→9).
+
+**Nota de determinismo:** diferente do Azula/Bumbleflower, este arquivo
+**não tinha** bug de RNG não-seedado — `mulligan(rng)` já recebia e usava
+o `random.Random(seed)` corretamente (grep confirmado: única outra
+ocorrência de `random.` no arquivo inteiro era a própria criação do RNG
+em `simulate_one`). Nenhum fix de determinismo foi necessário aqui.
+
+**Resumo da validação completa:** regressão de 20.000 partidas em modo
+de resiliência: 0 exceções, 0 comandantes presos no cemitério/fantasma,
+52,76% das partidas com `commander_cast_count >= 2` (recast pagando a
+taxa CR 903.8 depois de removida). 23 testes dirigidos: `remove_
+permanent` no comandante (não presa no cemitério, `commander_in_play`/
+`commander_uid` resetados), `remove_permanent` em criatura comum (vai
+pro cemitério normalmente), transferência de contadores pro Ozolith
+preservada, taxa de comandante em `effective_cost` (3 casos), `cast_
+card` debita taxa e incrementa contador, contra-ataque intercepta o
+cast, `try_smart_opponent_wipe` inclui o comandante nos alvos de
+criatura, `should_cast_damning_verdict` recusa/aprova corretamente (2
+casos), mulligan determinístico (300 amostras).
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-13
 
 Extensão pra este deck da mesma auditoria já feita no Megatron/Azula/
