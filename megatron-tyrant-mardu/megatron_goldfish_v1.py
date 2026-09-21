@@ -734,36 +734,54 @@ def sacrifice(state: GameState, name: str, is_own_sacrifice: bool = True):
     was_creature = is_creature_card(name)
     was_artifact = is_artifact_card(name)
     if name == COMMANDER:
-        # Achado real 2026-09-18 (goldfish manual do usuario -- Path to
-        # Exile de um oponente no Megatron, via modo de interacao do
-        # Archidekt): comandante que sairia do campo pra QUALQUER zona
-        # (cemiterio, exilio, mao, biblioteca) pode ir pra ZONA DE
-        # COMANDO em vez disso (regra 903.9) -- reconjuravel depois
-        # pagando o "commander tax" (`cast_megatron` ja modela o tax via
-        # `commander_cast_count`). Sem essa checagem, `sacrifice()`
-        # tratava o Megatron como permanente comum: ia pro cemiterio de
-        # verdade e `commander_in_play` nunca resetava pra False --
-        # travava ele fora do jogo pro resto da partida, sem poder
-        # reconjurar (confirmado com teste isolado). Vira bug ATIVO a
-        # partir do combo BlightSteel Colossus + Chandra's Ignition
-        # (ver `try_chandras_ignition`): "each OTHER creature" tambem
-        # atinge o proprio Megatron (toughness 5 <= poder 11 da fonte),
-        # entao o combo sacrificava o comandante de verdade sempre que
-        # disparava. Escolha sempre pra zona de comando (estritamente
-        # melhor pro piloto, mesma convencao de "sempre a jogada boa"
-        # usada no resto do arquivo). Ainda conta como sacrificio real
-        # pro Rakdos ("whenever you sacrifice", nao depende de cemiterio)
-        # mas NAO dispara Scrap Trawler/Pia's Revolution/death_trigger
-        # (esses exigem "put into a graveyard", que nunca acontece aqui
-        # -- mesmo padrao ja usado pro redirect de Warp/Unearth abaixo).
-        state.commander_in_play = False
-        state.megatron_face = None
+        # CORRIGIDO 2026-09-21 (achado real do usuario, depois de eu ter
+        # implementado esse mesmo erro em TODOS os 9 decks da sessao com
+        # modo de resiliencia -- "comandantes podem ser mortos sim!
+        # Confere essa regra com muita calma"): a regra real (CR 903.9a,
+        # confirmada em `rules-cache/comprehensive-rules.txt` linhas
+        # 6888-6896, NUNCA de memoria a partir de agora -- Regra 18 de
+        # `references/user-standing-rules.md`) NAO e' um efeito de
+        # substituicao unico. Sao 2 clausulas diferentes:
+        # - 903.9b (mao/biblioteca): substituicao de verdade, nunca
+        #   chega la'.
+        # - 903.9a (cemiterio/exilio -- o caso de sacrificio/destruicao):
+        #   ACAO BASEADA EM ESTADO (CR 704), NAO substituicao. O
+        #   comandante vai pro cemiterio DE VERDADE primeiro (CR 700.4,
+        #   "dies" = put into a graveyard from the battlefield) -- so'
+        #   DEPOIS disso o dono PODE (nao e' obrigado) move-lo pra zona
+        #   de comando. A versao anterior deste bloco pulava Scrap
+        #   Trawler/Pia's Revolution/death_trigger inteiramente, tratando
+        #   o comandante como se nunca tivesse ido pro cemiterio de
+        #   verdade -- errado. Confirmado de forma independente: o motor
+        #   open-source "Mage" tinha exatamente esse mesmo bug
+        #   documentado e corrigido (issue #6866 do magefree/mage).
+        #
+        # Corrigido: o comandante passa pelo MESMO caminho de "vai pro
+        # cemiterio" que qualquer artefato/criatura (Scrap Trawler/
+        # death_trigger/Rakdos disparam normal -- nenhum deles exige que
+        # o Megatron CONTINUE no cemiterio depois, so' que o EVENTO
+        # aconteceu). Pia's Revolution/emblema do Daretti (-10) ficam de
+        # fora de proposito: os dois agem sobre "that card"
+        # especificamente, e a ordem real (CR 704.3 -- acoes baseadas em
+        # estado sao checadas ANTES de gatilhos entrarem na pilha)
+        # significa que o Megatron ja' foi pra zona de comando (escolha
+        # sempre feita aqui, estritamente melhor pro piloto -- mesma
+        # convencao "sempre a jogada boa" do resto do arquivo) ANTES
+        # dessas 2 habilidades resolverem, entao nao ha' mais "that card"
+        # no cemiterio pra elas agirem em cima.
+        state.graveyard.append(name)
         if was_artifact:
             state.artifacts_sacrificed_total += 1
+            scrap_trawler_trigger(state, name)
         if was_creature:
             state.creatures_sacrificed_total += 1
+        death_trigger(state, name)
         if is_own_sacrifice and was_creature and "Rakdos, the Muscle" in state.battlefield:
             rakdos_muscle_trigger(state, name)
+        if name in state.graveyard:
+            state.graveyard.remove(name)
+        state.commander_in_play = False
+        state.megatron_face = None
         return
     if name in state.temp_creatures_pending_exile:
         state.temp_creatures_pending_exile.remove(name)

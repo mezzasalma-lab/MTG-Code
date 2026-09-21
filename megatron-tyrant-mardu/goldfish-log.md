@@ -4,6 +4,27 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## CR 903.9a: comandante dispara gatilhos de morte de verdade — 2026-09-21
+
+**Gatilho:** usuário conferiu a regra real do CR 903.9 e apontou o erro
+("comandantes podem ser mortos sim!"). Detalhes completos em
+`checklist-oraculo.md`.
+
+**Achado:** CR 903.9a (cemitério/exílio) é ação baseada em estado, não
+substituição — o comandante morre de verdade primeiro (Scrap
+Trawler/Rakdos disparam), só depois vai pra zona de comando por
+escolha do dono. Pia's Revolution/emblema do Daretti não agem sobre o
+comandante (timing real: SBA acontece antes do trigger resolver).
+
+**Resultado:** modo padrão diverge em 0,10% das seeds (5.000 testadas)
+— só quando Chandra's Ignition sacrifica o próprio comandante via
+combo. `recursion_events_total` médio: 2,883 → 2,884.
+
+**Validação:** regressão de 20.000 partidas nos 2 modos, 0 exceções +
+5 testes dirigidos.
+
+---
+
 ## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
 
 **Gatilho:** "Temos que incluir remoções de artefatos e encantamentos

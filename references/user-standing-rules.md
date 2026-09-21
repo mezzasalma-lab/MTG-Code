@@ -665,6 +665,75 @@ tempo todo."*
   mais neste arquivo é baixo comparado ao custo de repetir a mesma correção
   numa sessão futura.
 
+## 18. `rules-cache/comprehensive-rules.txt` é OBRIGATÓRIO consultar primeiro pra qualquer regra do jogo — nunca citar Comprehensive Rules de memória
+
+Citação literal do usuário (2026-09-21), depois de eu ter implementado em
+TODOS os 9 decks com modo de resiliência que "o comandante nunca dispara
+gatilho de morte, vai direto pra zona de comando, nunca morre de
+verdade": *"O comandante não morre e ao invés de ir pro cemitério, pode
+ser movido de volta a zona de comando? Pq até onde sei, comandantes podem
+ser mortos sim! Confere essa regra com muita calma e atenção!"* e, depois
+da confirmação do erro: *"Já pedi para vc parar de fazer as coisas de
+memória, a não ser que compile uma copia das regras oficiais para
+consulta imediata."*
+
+**Achado real que motivou a regra:** eu tinha implementado `remove_
+permanent()` em TODOS os 9 decks (Megatron/Ur-Dragon/Hei Bai/Edgar
+Markov/Ulalek/Toph/Prismatic Bridge/Maralen/Rat King) tratando "CR 903.9"
+como um efeito de substituição único que sempre desvia o comandante pro
+comando, NUNCA disparando gatilho de morte de outras cartas (Zulaport
+Cutthroat, Pitiless Plunderer, Syr Konrad, Ayara, etc.) — de memória,
+sem checar o texto real. A regra real (confirmada via texto oficial,
+`rules-cache/comprehensive-rules.txt` linhas 6888-6896) tem DUAS
+cláusulas diferentes:
+- **903.9b** (mão/biblioteca): efeito de SUBSTITUIÇÃO de verdade — o
+  comandante nunca chega lá.
+- **903.9a** (cemitério/exílio — o caso de "morrer"): **AÇÃO BASEADA EM
+  ESTADO** (CR 704), não substituição — o comandante vai pro cemitério
+  DE VERDADE primeiro (zona muda de verdade, CR 700.4 "dies" = ir pro
+  cemitério a partir do campo, gatilhos de morte de OUTRAS cartas
+  disparam normalmente), e só DEPOIS, como ação separada, o dono PODE
+  (não é obrigado) escolher mover pra zona de comando. Comandante PODE
+  ficar morto de verdade se o dono não exercer essa opção.
+
+Confirmado de forma independente: o motor open-source "Mage" (usado em
+simuladores tipo MTGO) tinha exatamente esse mesmo bug documentado e
+corrigido (`magefree/mage` issue #6866) — sintoma idêntico (comandante
+nunca entra de verdade no cemitério, gatilhos de morte nunca disparam).
+
+**A partir de agora, ordem OBRIGATÓRIA de consulta pra qualquer regra do
+jogo (Comprehensive Rules) — mesmo padrão já estabelecido pra oráculo de
+carta na Regra 14, agora pra REGRA do jogo em si:**
+
+1. **Primeiro**, `grep`/buscar em `rules-cache/comprehensive-rules.txt`
+   (arquivo TXT oficial completo da Wizards, baixado de
+   `https://media.wizards.com/[ano]/downloads/MagicCompRules
+   [YYYYMMDD].txt` — link real em `Magic.Wizards.com/Rules`). Citar o
+   número exato da regra/subregra (ex.: "903.9a") e o texto literal
+   encontrado, nunca parafrasear de memória.
+2. **Nunca implementar ou afirmar uma regra do jogo a partir de memória
+   ou "essa eu sei"** — mesmo regras que parecem óbvias/batidas (CR
+   903.9 é citada o tempo todo nesta sessão, e ainda assim eu errei a
+   nuance real). Mesma lição da Regra 14 pro oráculo de carta, agora
+   pra regra do jogo.
+3. **Manter o arquivo atualizado**: a Wizards publica uma nova versão a
+   cada lançamento de set (efetiva numa data futura anunciada com
+   antecedência — verificado em 2026-09-21 que já havia uma versão
+   datada 2026-09-25 publicada no CDN deles antes de entrar em vigor).
+   Reconferir `Magic.Wizards.com/Rules` periodicamente e re-baixar
+   quando uma versão mais nova entrar em vigor — nunca usar uma versão
+   claramente desatualizada (checar a data "effective as of" na linha 3
+   do arquivo) nem uma versão ainda não-efetiva.
+4. Se uma regra específica já foi citada/confirmada nesta sessão a
+   partir do arquivo, não precisa re-baixar/re-buscar de novo — mas
+   qualquer citação NOVA de número de regra sempre passa pelo arquivo
+   primeiro, nunca por memória, mesmo que pareça repetir uma regra já
+   vista antes.
+5. Vale retroativamente pra qualquer implementação anterior no
+   repositório que tenha citado uma Comprehensive Rule de memória —
+   acompanha a mesma auditoria retroativa já exigida na Regra 14 (item
+   5) pro oráculo de carta.
+
 ---
 
 <!-- Adicionar novas regras permanentes abaixo conforme o usuário as

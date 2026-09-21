@@ -1,5 +1,57 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## CR 903.9a: comandante DISPARA gatilhos de morte de verdade antes de ir pra zona de comando — 2026-09-21
+
+**Gatilho:** usuário perguntou diretamente, depois de eu documentar em
+TODOS os 9 decks desta sessão que "o comandante nunca dispara gatilho
+de morte": *"O comandante não morre e ao invés de ir pro cemitério,
+pode ser movido de volta a zona de comando? Pq até onde sei,
+comandantes podem ser mortos sim! Confere essa regra com muita calma e
+atenção!"*
+
+**Erro real cometido (de memória, nunca verificado contra o texto
+oficial):** eu tratava CR 903.9 como um único efeito de substituição
+que sempre desvia o comandante pra zona de comando, nunca disparando
+gatilho de morte de outras cartas. Confirmado via texto oficial
+(`rules-cache/comprehensive-rules.txt`, agora cacheado localmente —
+Regra 18 de `references/user-standing-rules.md`) que são 2 regras
+diferentes: **903.9b** (mão/biblioteca) é substituição de verdade;
+**903.9a** (cemitério/exílio — o caso de morte/destruição) é **AÇÃO
+BASEADA EM ESTADO** (CR 704), não substituição — o comandante vai pro
+cemitério DE VERDADE primeiro (CR 700.4, "dies"), e só DEPOIS o dono
+PODE escolher movê-lo pra zona de comando. Confirmado de forma
+independente: o motor open-source "Mage" tinha o mesmo bug documentado
+e corrigido (issue #6866).
+
+**Corrigido em `sacrifice()`:** o comandante agora passa pelo mesmo
+caminho de "vai pro cemitério" que qualquer artefato/criatura — Scrap
+Trawler (evento "artefato put into graveyard", não exige que o
+Megatron continue lá depois), `death_trigger` (sem caso próprio pro
+comandante, no-op seguro), Rakdos (baseado só no MV, sem interação com
+o cemitério) todos disparam normalmente. **Pia's Revolution e o
+emblema do Daretti (-10) ficam de fora de propósito**: os dois agem
+sobre "that card" especificamente, e a ordem real (CR 704.3 — ações
+baseadas em estado são checadas ANTES de gatilhos entrarem na pilha)
+significa que o comandante já foi pra zona de comando antes dessas 2
+resolverem — não há mais "that card" no cemitério pra elas agirem.
+
+**Achado real durante a validação:** esta é a PRIMEIRA correção da
+sessão nesta categoria onde o modo PADRÃO também muda (não só
+resiliência) — o próprio combo do deck (Chandra's Ignition, "each
+other creature" também atinge o Megatron) já sacrifica o comandante em
+modo padrão. Divergência real e pequena (5/5000 seeds, 0,10%,
+`recursion_events_total` médio 2,883→2,884) — mesmo padrão de "RNG
+ripple esperado" já documentado pro fix do Blightsteel Colossus nesta
+sessão, validado por comparação agregada A/B em vez de bit-identidade
+(bit-identidade não é o critério certo aqui, já que o comportamento
+antigo estava genuinamente errado).
+
+**Validação:** regressão de 20.000 partidas em modo padrão + 20.000 em
+modo resiliência, 0 exceções nas duas + 5 testes dirigidos (Scrap
+Trawler dispara com o comandante morrendo; Pia's Revolution NÃO
+devolve o comandante; Rakdos dispara baseado no MV; emblema do Daretti
+não enfileira o comandante; taxa de recast preservada).
+
 ## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
 
 **Gatilho:** *"Temos que incluir remoções de artefatos e encantamentos
