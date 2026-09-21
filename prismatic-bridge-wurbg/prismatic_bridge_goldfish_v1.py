@@ -1026,6 +1026,20 @@ def resolve_removal_round(state: GameState, log: List[Dict]):
             log.append({"trigger": "removal", "target": target, "turn": state.turn})
         elif state.bridge_in_play:
             state.battlefield.remove(COMMANDER)
+            # CORRIGIDO 2026-09-21 (achado real do usuario, CR 903.9a -- ver
+            # `rules-cache/comprehensive-rules.txt` linhas 6888-6896, Regra
+            # 18 de `references/user-standing-rules.md`): comandante indo
+            # pro cemiterio/exilio NAO e' substituicao, e' ACAO BASEADA EM
+            # ESTADO (CR 704) -- ela vai pro cemiterio DE VERDADE primeiro
+            # (CR 700.4, "dies"), so' DEPOIS o dono PODE escolher move-la
+            # pra zona de comando. Sem efeito NUMERICO aqui (0 cartas
+            # "creature/planeswalker dies" neste deck reagem a um
+            # ENCANTAMENTO morrendo -- Carth the Lion so' reage a criatura/
+            # planeswalker, The Prismatic Bridge nunca e' nenhum dos 2),
+            # mas corrigido por consistencia estrutural.
+            state.graveyard.append(COMMANDER)
+            if COMMANDER in state.graveyard:
+                state.graveyard.remove(COMMANDER)
             state.bridge_in_play = False
             state.bridge_removed_count += 1
             log.append({"trigger": "removal", "target": COMMANDER, "turn": state.turn})
@@ -1043,9 +1057,14 @@ def remove_permanent(state: GameState, name: str, log: List[Dict], source: str =
     skip_legacy_removal=True)`) e SO' este chokepoint novo, com os
     mesmos gates/calibracao ja validados nos outros 6 decks, roda.
 
-    Comandante: mesma convencao ja' usada em `resolve_removal_round`
-    (vai pra zona de comando via CR 903.9 -- `bridge_in_play=False`,
-    nunca cemiterio).
+    Comandante: CORRIGIDO 2026-09-21 (achado real do usuario, CR
+    903.9a -- ver `rules-cache/comprehensive-rules.txt` linhas
+    6888-6896, Regra 18 de `references/user-standing-rules.md`, mesma
+    correcao aplicada em `resolve_removal_round` acima). Ela vai pro
+    cemiterio DE VERDADE primeiro (CR 700.4, "dies"), so' DEPOIS o dono
+    PODE escolher move-la pra zona de comando (`bridge_in_play=False`).
+    Sem efeito numerico aqui (0 cartas "creature/planeswalker dies"
+    neste deck reagem a um ENCANTAMENTO morrendo).
 
     Planeswalker: delega pra `_planeswalker_dies` (mesma cascata real de
     "um planeswalker seu morre" que a lealdade chegando a 0 usa --
@@ -1059,6 +1078,9 @@ def remove_permanent(state: GameState, name: str, log: List[Dict], source: str =
         return
     if name == COMMANDER:
         state.battlefield.remove(name)
+        state.graveyard.append(name)
+        if name in state.graveyard:
+            state.graveyard.remove(name)
         state.bridge_in_play = False
         return
     if name in state.loyalty:

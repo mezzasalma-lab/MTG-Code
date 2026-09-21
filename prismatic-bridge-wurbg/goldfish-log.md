@@ -1,5 +1,26 @@
 # Goldfish Log — Esika, God of the Tree // The Prismatic Bridge
 
+## CR 903.9a: comandante passa pelo cemitério de verdade antes da zona de comando — 2026-09-21
+
+**Gatilho:** usuário conferiu a regra real do CR 903.9 e apontou o erro
+("comandantes podem ser mortos sim!"). Detalhes completos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Achado:** 2 call sites reais neste deck (diferente dos outros 8) —
+`remove_permanent` (resiliência) E `resolve_removal_round` (sistema
+legado, roda em modo padrão também). Ambos desviavam o comandante
+direto pra zona de comando sem passar pelo cemitério. Bridge é
+Enchantment (não Creature/Planeswalker) — Carth the Lion, único
+gatilho de morte do deck, não reage a ela — correção puramente
+estrutural nos 2 pontos.
+
+**Resultado:** modo padrão idêntico nas 2 variantes de lista (com/sem
+Greater Auramancy), 0/3000 mismatches cada.
+
+**Validação:** regressão de 20.000 partidas em modo padrão + 20.000 em
+modo de resiliência, 0 exceções nos 2, 0 comandantes presos no
+cemitério + 3 testes dirigidos.
+
 ## `try_smart_opponent_removal` nunca respeitava shroud de Sterling Grove/Greater Auramancy — 2026-09-21
 
 **Gatilho:** usuário perguntou se a proteção de Sterling Grove/Greater

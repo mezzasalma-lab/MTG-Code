@@ -1,5 +1,47 @@
 # Checklist cláusula-a-cláusula — Esika // The Prismatic Bridge
 
+## CR 903.9a: comandante passa pelo cemitério de verdade antes da zona de comando — 2026-09-21
+
+**Gatilho:** mesmo achado do usuário aplicado a todos os 9 decks desta
+sessão, depois de eu documentar em TODOS eles que "o comandante nunca
+dispara gatilho de morte": *"O comandante não morre e ao invés de ir
+pro cemitério, pode ser movido de volta a zona de comando? Pq até onde
+sei, comandantes podem ser mortos sim! Confere essa regra com muita
+calma e atenção!"* Raciocínio completo da regra em
+`megatron-tyrant-mardu/checklist-oraculo.md` (CR 903.9a é ação baseada
+em estado — CR 704 — não substituição; texto oficial cacheado em
+`rules-cache/comprehensive-rules.txt`, Regra 18 de
+`references/user-standing-rules.md`).
+
+**Achado específico deste deck: 2 call sites reais, não só 1.** Este
+deck tem DOIS sistemas de remoção de comandante — `remove_permanent`
+(novo chokepoint do modo de resiliência, porte dos outros 6 decks) E
+`resolve_removal_round` (sistema ANTIGO, específico deste deck, mira
+só Bridge/protetores, sempre ativo desde o turno 1 e rodando em modo
+PADRÃO também, não só resiliência — `simulate_one` chama `play_turn`
+sem `skip_legacy_removal`). Os dois desviavam o comandante direto pra
+zona de comando sem passar pelo cemitério. Corrigidos os 2.
+
+**Comandante é Enchantment, não Creature** (The Prismatic Bridge,
+confirmado Scryfall) — checado se isso muda o critério: este deck tem
+**0 cartas "creature dies"/"planeswalker dies" que reagiriam a um
+ENCANTAMENTO morrendo** (Carth the Lion, o único gatilho de morte real
+do deck, reage só a "a creature or a planeswalker you control dies" —
+Bridge nunca é nenhum dos 2). Correção puramente estrutural, sem
+impacto numérico, nos 2 call sites.
+
+**Validação:** compilação OK. Bit-identidade em modo padrão
+(replicando o path completo de `simulate_one`, 3000 seeds cada, COM e
+SEM Greater Auramancy — já que `resolve_removal_round` roda em ambas
+as variantes) contra o commit anterior: **0/3000 mismatches em cada
+variante**. Regressão de 20.000 partidas em modo padrão (exercitando o
+sistema legado) + 20.000 em modo de resiliência: 0 exceções nos 2, 0
+comandantes presos no cemitério. 3 testes dirigidos: (1)
+`remove_permanent` no comandante — não fica presa no cemitério; (2)
+`resolve_removal_round` (sistema legado) no comandante — mesma
+checagem; (3) permanente comum continua indo pro cemitério
+normalmente.
+
 ## `try_smart_opponent_removal` nunca respeitava shroud de Sterling Grove/Greater Auramancy — 2026-09-21
 
 **Gatilho:** usuário perguntou diretamente, revisando os números de A/B
