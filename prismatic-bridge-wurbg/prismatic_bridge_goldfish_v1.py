@@ -1864,7 +1864,23 @@ def try_smart_opponent_removal(state: GameState, log: List[Dict]) -> Optional[st
     """Remocao 'inteligente' -- mira o planeswalker de MAIOR lealdade em
     campo (motor dinamico real deste deck), com fallback pra
     `NONPLANESWALKER_ENGINE_PRIORITY` se nenhum planeswalker estiver em
-    campo. Nunca aleatorio."""
+    campo. Nunca aleatorio.
+
+    Achado real do usuario 2026-09-21: Sterling Grove/Greater Auramancy
+    ('Other enchantments you control have shroud' -- confirmado via
+    Scryfall, shroud de verdade, nao hexproof) blindam qualquer OUTRO
+    encantamento contra remocao ALVO (nao contra wipe -- 'destroy
+    all'/'exile all' nunca usa 'target', shroud nao se aplica la', ver
+    `try_smart_opponent_wipe`). 2 dos 8 itens de `NONPLANESWALKER_
+    ENGINE_PRIORITY` sao encantamentos de verdade (Doubling Season,
+    Innkeeper's Talent) -- o sistema LEGADO (`resolve_removal_round`,
+    ja' desligado no modo resiliencia) ja' respeitava isso via
+    `protectors_in_play()`, redirecionando remocao pro PROTETOR primeiro
+    (unico jeito de destravar o alvo real depois). Essa checagem nunca
+    foi portada pra esta categoria nova -- corrigido aqui, reaproveitando
+    a mesma `protectors_in_play()` de sempre. Planeswalkers nunca sao
+    encantamento nesta lista (confirmado, sem hibrido), entao o ramo de
+    lealdade nunca precisa de redirecionamento."""
     if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
         return None
     if state.loyalty:
@@ -1873,6 +1889,10 @@ def try_smart_opponent_removal(state: GameState, log: List[Dict]) -> Optional[st
         target = next((n for n in NONPLANESWALKER_ENGINE_PRIORITY if n in state.battlefield), None)
     if target is None:
         return None
+    if C(target).type == "Enchantment":
+        prot = protectors_in_play(state)
+        if prot:
+            target = state.interaction_rng.choice(prot)
     if state.interaction_rng.random() >= interaction_chance(state):
         return None
     remove_permanent(state, target, log, source="opponent_removal")

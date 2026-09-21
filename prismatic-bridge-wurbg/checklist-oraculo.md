@@ -1,5 +1,69 @@
 # Checklist cláusula-a-cláusula — Esika // The Prismatic Bridge
 
+## `try_smart_opponent_removal` nunca respeitava shroud de Sterling Grove/Greater Auramancy — 2026-09-21
+
+**Gatilho:** usuário perguntou diretamente, revisando os números de A/B
+da rodada anterior: *"Vc levou em conta que existe menos remoção de
+encantamento do que de criatura, na Prismatic Bridge? E que a Greater
+Auramancy e outro encantamento protegem todos os encantamentos no
+deck..."*
+
+**Oráculo real confirmado via Scryfall** — Greater Auramancy ({1}{W},
+Shadowmoor 2008) e Sterling Grove ({G}{W}, Modern Horizons 2 2021): as
+duas têm a MESMA cláusula, *"Other enchantments you control have
+shroud"* (shroud de verdade, não hexproof — protege só contra efeitos
+que usam a palavra "target"). Checado contra as 4 wipes reais desta
+própria lista (Toxic Deluge/Blasphemous Act/Supreme Verdict/Farewell) —
+nenhuma usa "target" ("all creatures", "destroy all creatures", "exile
+all X"), então shroud nunca bloqueia um wipe de verdade — o número de
+enchantment wipe do A/B anterior (0,48/jogo) está correto, shroud
+genuinamente não se aplica a essa categoria.
+
+**Mas achei um bug real na categoria de remoção ALVO** (`try_smart_
+opponent_removal`, diferente da categoria de wipe): shroud DEVERIA
+bloquear essa categoria (remoção pontual sempre usa "target" de
+verdade), mas a função nunca checava `protectors_in_play()`. 2 dos 8
+itens de `NONPLANESWALKER_ENGINE_PRIORITY` são encantamentos reais
+(Doubling Season, Innkeeper's Talent) — ficavam vulneráveis a remoção
+direta mesmo com Sterling Grove em campo, quando deveriam estar
+protegidos até o protetor sair primeiro.
+
+**Achado de arquitetura**: o sistema LEGADO (`resolve_removal_round`,
+desligado desde que o modo de resiliência substituiu ele) já modelava
+isso certo — redirecionava a remoção pro protetor primeiro via
+`protectors_in_play()`. Essa checagem nunca foi portada pra
+`try_smart_opponent_removal` quando o modo de resiliência assumiu a
+categoria — mesmo padrão da Regra #3 do CLAUDE.md (conceito
+compartilhado certo numa função, nunca propagado pra função nova que
+substituiu ela).
+
+**Corrigido:** se o alvo determinado (lealdade de planeswalker ou
+fallback `NONPLANESWALKER_ENGINE_PRIORITY`) for um Encantamento de
+verdade (`C(target).type == "Enchantment"`) E houver protetor em campo,
+redireciona pro protetor (`protectors_in_play()`, mesma função já
+existente). Planeswalkers nunca são encantamento nesta lista (sem
+híbrido, confirmado) — o ramo de lealdade nunca precisa de
+redirecionamento, shroud de Sterling Grove/Greater Auramancy não
+alcança planeswalker nenhum.
+
+**Validação:** modo padrão 100% bit-idêntico ao HEAD anterior (2.000
+seeds — mudança é 100% dentro do modo de resiliência, nunca tocado em
+modo padrão) + regressão de 20.000 partidas em modo resiliência, 0
+exceções + 3 testes dirigidos (Doubling Season nunca removido com
+Sterling Grove em campo, 0/1000; Doubling Season removível normalmente
+sem protetor, 1000/1000; planeswalker nunca redirecionado mesmo com
+protetor em campo, 1000/1000).
+
+**Resultado (A/B 2000 jogos mesma seed_base):** efeito real mas
+pequeno, como esperado de uma carta única precisando estar em campo no
+exato momento do roll — Sterling Grove passa a ser removido em 0,3%
+dos jogos (0,0% antes, nunca era alvo desta categoria antes do fix).
+Doubling Season/Innkeeper's Talent removidos praticamente na mesma taxa
+(2,5%/4,0-4,2%) porque a maioria dos jogos onde eles são removidos não
+tinha Sterling Grove em campo simultaneamente — a correção só muda o
+comportamento na janela estreita onde as duas condições coincidem, mas
+está certa pela regra real independente do tamanho do efeito medido.
+
 ## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
 
 **Gatilho:** "Temos que incluir remoções de artefatos e encantamentos

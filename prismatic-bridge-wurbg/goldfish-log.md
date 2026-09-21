@@ -1,5 +1,30 @@
 # Goldfish Log — Esika, God of the Tree // The Prismatic Bridge
 
+## `try_smart_opponent_removal` nunca respeitava shroud de Sterling Grove/Greater Auramancy — 2026-09-21
+
+**Gatilho:** usuário perguntou se a proteção de Sterling Grove/Greater
+Auramancy (shroud pra "other enchantments you control") e a menor
+frequência real de wipe de encantamento tinham sido consideradas.
+Detalhes técnicos completos em `checklist-oraculo.md`.
+
+**Achado:** shroud não se aplica a NENHUMA das wipes reais da lista
+(nenhuma usa "target"), então o número de enchantment wipe do A/B
+anterior está correto. Mas achei um bug real na categoria de remoção
+ALVO (`try_smart_opponent_removal`) — nunca respeitava a proteção,
+diferente do sistema legado que já fazia isso certo antes do modo de
+resiliência substituir ele.
+
+**Resultado (A/B 2000 jogos mesma seed_base):** Sterling Grove passa a
+ser removido em 0,3% dos jogos (0,0% antes — nunca era alvo desta
+categoria). Efeito pequeno mas real (janela estreita: Sterling Grove
+precisa estar em campo no exato momento do roll de remoção).
+
+**Validação:** modo padrão 100% bit-idêntico (2.000 seeds) + regressão
+de 20.000 partidas em modo resiliência, 0 exceções + 3 testes
+dirigidos.
+
+---
+
 ## Modo de resiliência ganha wipe de artefato e wipe de encantamento — 2026-09-20
 
 **Gatilho:** "Temos que incluir remoções de artefatos e encantamentos
