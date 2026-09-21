@@ -4,6 +4,46 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## CR 903.9a: comandante passa pelo `leave_battlefield()` central de verdade — 2026-09-21
+
+**Gatilho:** usuário conferiu a regra real do CR 903.9 e apontou o erro
+("comandantes podem ser mortos sim!"). Detalhes completos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Achado:** igual ao Toph nesta sessão — chokepoint central real já
+existia (`leave_battlefield`), só o comandante pulava ele. Maralen é
+Fada de verdade — Tegwyll (draw+lose 1 life) e o clear de Umbral Mantle
+deveriam disparar com a morte dela e estavam sendo silenciados.
+
+**Resultado:** modo padrão idêntico (0/20000 mismatches, comparado
+contra uma baseline com o guard do bug de loop infinito abaixo já
+aplicado, pra isolar só o efeito deste fix).
+
+**Validação:** regressão de 20.000 partidas nos 2 modos, 0 exceções, 0
+comandantes presos no cemitério + 4 testes dirigidos.
+
+---
+
+## Achado adicional: loop infinito real, bug pré-existente não relacionado ao comandante — 2026-09-21
+
+**Gatilho:** a própria regressão de 20k acima travou indefinidamente
+(não erro, hang de verdade). Rastreado até `use_staff_of_domination_v2`:
+`remaining_mana()` pode mutar `state.infinite_mana_this_turn=True`
+como efeito colateral (combo Umbral Mantle), e o loop finito do Staff
+reavaliava essa mesma função a cada iteração sem guard — uma vez que o
+flag vira True no meio do loop, a condição nunca mais fica falsa. Bug
+pré-existente (mesmo hang no commit anterior), só descoberto agora
+porque a validação de CR 903.9a rodou 20k partidas reais pela 1ª vez
+nesse espaço de seeds.
+
+**Corrigido:** replicado o guard que o loop irmão (Faerie Mastermind)
+já tinha (`and not state.infinite_mana_this_turn`).
+
+**Validação:** 20.000 seeds (mesmo espaço) sem nenhum travamento, 30s
+total (antes: hang permanente a partir do seed 8010333).
+
+---
+
 ## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
 
 **Gatilho:** "Agora vamos atualizar o simulador da Maralen, mantendo

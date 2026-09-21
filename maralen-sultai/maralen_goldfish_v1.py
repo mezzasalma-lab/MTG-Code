@@ -1105,7 +1105,24 @@ def leave_battlefield(state: GameState, name: str, to_graveyard: bool = True):
     vive em `state.battlefield` neste arquivo, os demais -- Elfo/Fada --
     sao contadores agregados sem nome individual). CR 111.7: token que
     deixa do campo de batalha deixa de existir, nunca vai pro cemiterio
-    de verdade."""
+    de verdade.
+
+    CORRIGIDO 2026-09-21 (achado real do usuario, CR 903.9a -- ver
+    `rules-cache/comprehensive-rules.txt` linhas 6888-6896, Regra 18 de
+    `references/user-standing-rules.md`; mesmo achado do Toph nesta
+    sessao -- Regra #6 do CLAUDE.md, o tratamento do comandante tem que
+    morar no CHOKEPOINT central, nao no caller): tratamento do
+    comandante movido pra AQUI, nao mais especial-casado so' dentro de
+    `remove_permanent()`. Achado real NUMERICO: Maralen e' ela mesma
+    "Elf Faerie Noble" (Fada de verdade) -- se ela morrer, Tegwyll, Duke
+    of Splendor (draw+lose 1 life "whenever a Faerie enters... or
+    another Faerie you control dies") e o clear de Umbral Mantle
+    (`state.umbral_equipped_on`) DEVERIAM disparar normalmente, mas a
+    versao anterior pulava esta funcao inteira pro comandante,
+    silenciando os 2. Comandante vai pro cemiterio/fica sem zona
+    rastreada (exilio, `to_graveyard=False`) DE VERDADE primeiro (CR
+    700.4, disparando Tegwyll/Umbral Mantle ACIMA, antes deste ponto),
+    so' DEPOIS o dono PODE escolher move-la pra zona de comando."""
     if name in state.battlefield:
         state.battlefield.remove(name)
     if to_graveyard and not name.endswith("Token"):
@@ -1127,6 +1144,10 @@ def leave_battlefield(state: GameState, name: str, to_graveyard: bool = True):
     if state.umbral_equipped_on == name:
         state.umbral_equipped_on = None
         state.infinite_mana_this_turn = False
+    if name == COMMANDER:
+        if name in state.graveyard:
+            state.graveyard.remove(name)
+        state.commander_in_play = False
 
 
 def remove_permanent(state: GameState, name: str, source: str = "opponent"):
@@ -1138,15 +1159,14 @@ def remove_permanent(state: GameState, name: str, source: str = "opponent"):
     dispara, e agora tambem o tratamento correto de token via CR 111.7,
     ver comentario la).
 
-    Comandante: vai pra zona de comando (CR 903.9, efeito de
-    SUBSTITUICAO de zona), nunca pro cemiterio -- `commander_in_play`
-    vira False, recastavel depois pagando a taxa de novo
-    (`commander_cast_count` ja existente e' o que calcula isso)."""
+    Comandante: CORRIGIDO 2026-09-21 (CR 903.9a -- ver docstring de
+    `leave_battlefield`). Uma 1a versao deste fix tratava o comandante
+    so' AQUI, especial-casada -- errado (mesmo achado do Toph nesta
+    sessao): o tratamento agora mora DENTRO de `leave_battlefield`, o
+    chokepoint central de verdade, entao delega direto sem nenhum caso
+    especial aqui -- `commander_in_play` vira False la',
+    `commander_cast_count` ja existente calcula a taxa de recast."""
     if name not in state.battlefield:
-        return
-    if name == COMMANDER:
-        state.battlefield.remove(name)
-        state.commander_in_play = False
         return
     leave_battlefield(state, name, to_graveyard=True)
 
@@ -1377,7 +1397,20 @@ def use_staff_of_domination_v2(state: GameState):
     spend_mana(state, 5)
     draw_cards(state, 1)
     state.staff_finite_draws_total += 1
-    while remaining_mana(state) >= 6:
+    # CORRIGIDO 2026-09-21 (bug pre-existente achado durante a validacao do
+    # fix de CR 903.9a, ao rodar 20k regressao -- hang de verdade, nao
+    # relacionado ao comandante): `remaining_mana()` -> `total_mana()` ->
+    # `dork_mana()` NAO e' pura -- `dork_mana()` pode setar
+    # `state.infinite_mana_this_turn = True` como efeito colateral (combo
+    # Umbral Mantle + dork escalavel, linha ~728) na hora que e' avaliada.
+    # Uma vez que isso acontece DENTRO deste while (cada iteracao reavalia
+    # `remaining_mana`), `total_mana` passa a retornar 999 pra sempre E
+    # `spend_mana` vira no-op (guarda o mesmo flag) -- a condicao `>= 6`
+    # nunca mais fica falsa, loop infinito de verdade (reproduzido ao vivo,
+    # seed 8010333, travava indefinidamente). O loop irmao de Faerie
+    # Mastermind (linha ~1435) ja' se defende disso (`and not state.
+    # infinite_mana_this_turn`) -- padrao replicado aqui.
+    while remaining_mana(state) >= 6 and not state.infinite_mana_this_turn:
         spend_mana(state, 6)
         draw_cards(state, 1)
         state.staff_finite_draws_total += 1

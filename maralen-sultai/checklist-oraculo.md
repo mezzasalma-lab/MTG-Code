@@ -1,5 +1,106 @@
 # Checklist cláusula-a-cláusula — Maralen, Fae Ascendant
 
+## CR 903.9a: comandante passa pelo `leave_battlefield()` central de verdade — 2026-09-21
+
+**Gatilho:** mesmo achado do usuário aplicado a todos os 9 decks desta
+sessão, depois de eu documentar em TODOS eles que "o comandante nunca
+dispara gatilho de morte": *"O comandante não morre e ao invés de ir
+pro cemitério, pode ser movido de volta a zona de comando? Pq até onde
+sei, comandantes podem ser mortos sim! Confere essa regra com muita
+calma e atenção!"* Raciocínio completo da regra em
+`megatron-tyrant-mardu/checklist-oraculo.md` (CR 903.9a é ação baseada
+em estado — CR 704 — não substituição; texto oficial cacheado em
+`rules-cache/comprehensive-rules.txt`, Regra 18 de
+`references/user-standing-rules.md`).
+
+**Este deck é igual ao Toph nesta sessão: já tinha um chokepoint
+central real (`leave_battlefield`, gatilhos de Tegwyll/Umbral Mantle
+já implementados) — só o comandante era especial-casado dentro de
+`remove_permanent()`, pulando `leave_battlefield` inteiramente.
+Aplicada direto a lição do Toph** (Regra #6 do `CLAUDE.md`): o
+tratamento do comandante foi movido pra DENTRO de `leave_battlefield`
+(não mais em `remove_permanent`, que agora só delega, sem caso
+especial), e todos os call sites reais de `leave_battlefield` foram
+regrepados antes de mudar a função (só 2: o Champion do Mistbind
+Clique — nunca pode ser o comandante, tag exclusiva dela — e
+`remove_permanent`) e todos os `state.battlefield.remove(` diretos
+fora dela (bounce elf em `try_bounce_untap_effects`, já excluía
+`COMMANDER` explicitamente com comentário documentado; Devoted Druid
+hardcoded, carta diferente) — nenhum outro ponto real atinge o
+comandante sem passar por `leave_battlefield`.
+
+**Achado real NUMÉRICO (mesma categoria do Edgar Markov):** Maralen é
+ela mesma "Elf Faerie Noble" — uma Fada de verdade. Tegwyll, Duke of
+Splendor ("whenever a Faerie enters... or another Faerie you control
+dies, draw a card and lose 1 life") e o clear de `state.
+umbral_equipped_on` deveriam disparar quando ela morre, mas a versão
+anterior pulava `leave_battlefield` inteiramente pro comandante,
+silenciando os 2.
+
+**Validação:** compilação OK. Bit-identidade em modo padrão (20.000
+seeds) contra uma cópia do commit anterior **com o mesmo guard do bug
+de loop infinito abaixo já aplicado** (pra isolar exatamente o efeito
+do fix de CR 903.9a, sem contaminação do outro achado): **0/20000
+mismatches** — nenhum dos 2 call sites de `remove_permanent` do modo
+de resiliência roda em modo padrão, e nenhum outro ponto do arquivo
+mata o comandante fora deles. Regressão de 20.000 partidas em modo de
+resiliência: 0 exceções, 0 comandantes presos no cemitério. 4 testes
+dirigidos: (1) `remove_permanent` no comandante; (2) Tegwyll dispara
+com a morte do comandante (achado numérico real); (3) `leave_
+battlefield` chamado direto no comandante — mesmo resultado (chokepoint
+central); (4) permanente comum inalterado.
+
+## Achado adicional durante a validação: loop infinito real (bug pré-existente, não relacionado ao comandante) — 2026-09-21
+
+**Gatilho:** a regressão de 20.000 partidas em modo padrão (rodando a
+validação do fix de CR 903.9a acima) travou indefinidamente — não um
+erro de exceção, um hang de verdade. Investigado ao vivo (`faulthandler.
+dump_traceback_later`, depois um monkeypatch instrumentado em
+`remaining_mana` contando chamadas) até achar a causa raiz: seed
+8010333 (e outros no mesmo espaço de seeds) trava pra sempre dentro do
+loop finito do Staff of Domination.
+
+**Causa raiz:** `remaining_mana()` → `total_mana()` → `dork_mana()` NÃO
+é pura — `dork_mana()` pode setar `state.infinite_mana_this_turn = True`
+como EFEITO COLATERAL da própria avaliação (combo Umbral Mantle + dork
+escalável com saída ≥4, linha ~728), não só ler estado já calculado.
+`use_staff_of_domination_v2()`'s loop de mana FINITA (`while
+remaining_mana(state) >= 6: ...`) reavalia `remaining_mana()` a CADA
+iteração — se o combo Umbral é detectado PELA PRIMEIRA VEZ durante uma
+dessas reavaliações (não antes do loop começar), `total_mana` passa a
+retornar 999 permanentemente E `spend_mana` vira no-op (guarda o mesmo
+flag) — a condição `>= 6` nunca mais fica falsa. Loop infinito de
+verdade, reproduzido ao vivo. **Achado confirmado como pré-existente**:
+o mesmo hang acontece rodando a versão do commit anterior (git HEAD),
+não foi introduzido pela correção de CR 903.9a acima — só foi
+descoberto porque a validação rigorosa desta rodada rodou 20.000
+partidas de verdade pela primeira vez neste espaço de seeds.
+
+**Achado estrutural relevante:** o loop IRMÃO (Faerie Mastermind, mesmo
+arquivo, ~40 linhas abaixo) já tem a defesa certa (`while remaining_mana
+(state) >= 4 and not state.infinite_mana_this_turn:`) — o bug é uma
+INCONSISTÊNCIA entre 2 loops estruturalmente idênticos no mesmo
+arquivo, um defendido, um não.
+
+**Corrigido:** replicado o mesmo guard (`and not state.
+infinite_mana_this_turn`) no loop do Staff of Domination.
+
+**Validação:** varredura completa de 20.000 seeds (mesmo espaço,
+8000000-8019999) em modo padrão: 0 travamentos, tempo total 30s (antes:
+travava indefinidamente a partir do seed 8010333). Teste dirigido:
+`simulate_one(8010333)` completa em <2s (antes: hang permanente,
+confirmado travar por 3+ minutos sem terminar). Bit-identidade
+específica deste fix não verificada isoladamente (contaminaria a
+comparação do fix de CR 903.9a acima, que já isola este fix aplicando
+o mesmo guard na baseline "antes") — mas o efeito é estritamente
+"impede a mutação `infinite_mana_this_turn=True` de deixar o loop
+preso", nunca muda QUANDO ou SE o combo é detectado, só ONDE o
+código para de tentar ativar o Staff mais uma vez depois que a mão
+inteira já vai ser comprada pelo motor "infinito" no próximo turno
+(reset de `infinite_mana_this_turn` em upkeep, linha ~1712) —
+comportamento estruturalmente equivalente, sem side-effect numérico
+novo além de "não trava".
+
 ## Porte completo do modo de resiliência (interação de oponente) — 2026-09-20
 
 **Gatilho:** usuário pediu direto, mesmo protocolo já aplicado a
