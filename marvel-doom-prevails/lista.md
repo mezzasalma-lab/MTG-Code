@@ -1,4 +1,4 @@
-# Doom Prevails (Marvel Super Heroes Commander) — Doctor Doom, King of Latveria
+# Doom Prevails (Marvel Super Heroes Commander) — Doctor Doom, King of Latveria / Loki, the Deceiver
 
 **Registro 2026-09-21**: lista 100% oficial e completa (nenhuma carta
 faltando, nenhuma inventada). Fonte primária: página oficial de
@@ -18,13 +18,16 @@ Confirmado programaticamente: o texto oficial da Wizards usa o `name`
 real (oracle) em 100% dos casos, nunca o nome de capa — registrado aqui
 com o nome real igual à fonte oficial.
 
-**Nota sobre "Loki, the Deceiver"**: a Wizards descreve esse card como
-comandante alternativo ("If you're feeling tricksy, Loki, the Deceiver
-is here to fool your foes") — mas o produto físico só inclui 1 carta
-foil de comandante (Doctor Doom, King of Latveria); Loki é uma lendária
-normal dentro das 99 cartas do deck, não um segundo comandante físico.
-Registrado aqui só como Doctor Doom no `## Comandante`, igual a caixa
-oficial.
+**Nota sobre "Loki, the Deceiver"** (correção 2026-09-21, apontada pelo
+usuário): a Wizards descreve esse card como comandante alternativo
+("If you're feeling tricksy, Loki, the Deceiver is here to fool your
+foes"). Numa 1ª passada eu tinha registrado só Doctor Doom no `##
+Comandante` (raciocínio: "o produto físico só inclui 1 carta foil de
+comandante"), mas o usuário corrigiu — mesmo padrão do Warhammer 40k/
+Marvel Fantastic Four: **2 comandantes possíveis, escolha de qual vira
+comandante único** (não Partner), não uma questão de qual carta vem
+foil. Loki tem a mesma identidade de cor Grixis (U/B/R) do deck,
+confirmado no Scryfall. Movido de `## Deck` pra `## Comandante` aqui.
 
 **Nota sobre nomes com sufixo de deck**: "Arcane Signet (Villains)"/"Sol
 Ring (Villains)"/"Command Tower (Villains)" na página oficial são só
@@ -34,6 +37,7 @@ de sempre (Scryfall confirma nome real sem sufixo). Normalizado aqui.
 ## Comandante
 
 1 Doctor Doom, King of Latveria
+1 Loki, the Deceiver
 
 ## Deck
 
@@ -67,7 +71,6 @@ de sempre (Scryfall confirma nome real sem sufixo). Normalizado aqui.
 1 Lethal Scheme
 1 Living Laser
 1 Loki's Scepter
-1 Loki, the Deceiver
 1 Madame Hydra
 1 Molecule Man
 1 Moonstone, Harsh Mistress

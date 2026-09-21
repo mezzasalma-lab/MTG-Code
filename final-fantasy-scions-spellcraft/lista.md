@@ -1,8 +1,17 @@
-# Scions & Spellcraft (Final Fantasy Commander) — Y'shtola, Night's Blessed
+# Scions & Spellcraft (Final Fantasy Commander) — Y'shtola, Night's Blessed / G'raha Tia, Scion Reborn
+
+> Correção 2026-09-21: este precon vem com **2 comandantes possíveis**
+> (não Partner — escolha de qual vira comandante único, mesmo padrão
+> confirmado pelo usuário no Warhammer 40k/Marvel Fantastic Four).
+> Comandante principal/de capa: **Y'shtola, Night's Blessed**. Comandante
+> secundário: **G'raha Tia, Scion Reborn** (mesma identidade de cor
+> Esper W/U/B, confirmado no Scryfall) — estava listada como carta
+> normal do `## Deck` numa 1ª passada, corrigida aqui.
 
 ## Comandante
 
 1 Y'shtola, Night's Blessed
+1 G'raha Tia, Scion Reborn
 
 ## Deck
 
@@ -31,7 +40,6 @@
 1 Eye of Nidhogg
 1 Fandaniel, Telophoroi Ascian
 1 Final Judgment
-1 G'raha Tia, Scion Reborn
 1 Hermes, Overseer of Elpis
 1 Hildibrand Manderville // Gentleman's Rise
 1 Hraesvelgr of the First Brood

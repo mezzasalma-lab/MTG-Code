@@ -1,8 +1,17 @@
-# Limit Break (Final Fantasy Commander) — Cloud, Ex-SOLDIER
+# Limit Break (Final Fantasy Commander) — Cloud, Ex-SOLDIER / Tifa, Martial Artist
+
+> Correção 2026-09-21: este precon vem com **2 comandantes possíveis**
+> (não Partner — escolha de qual vira comandante único, mesmo padrão
+> confirmado pelo usuário no Warhammer 40k/Marvel Fantastic Four).
+> Comandante principal/de capa: **Cloud, Ex-SOLDIER**. Comandante
+> secundário: **Tifa, Martial Artist** (mesma identidade de cor Naya
+> R/G/W, confirmado no Scryfall) — estava listada como carta normal do
+> `## Deck` numa 1ª passada, corrigida aqui.
 
 ## Comandante
 
 1 Cloud, Ex-SOLDIER
+1 Tifa, Martial Artist
 
 ## Deck
 
@@ -57,7 +66,6 @@
 1 Summon: Kujata
 1 Summoning Materia
 1 Sword of the Animist
-1 Tifa, Martial Artist
 1 Trailblazer's Boots
 1 Ultimate Magic: Holy
 1 Ultimate Magic: Meteor

@@ -1,4 +1,4 @@
-# Avengers Assemble (Marvel Super Heroes Commander) — Captain America, Team Leader
+# Avengers Assemble (Marvel Super Heroes Commander) — Captain America, Team Leader / Director Nick Fury
 
 **Registro 2026-09-21**: lista 100% oficial e completa (nenhuma carta faltando,
 nenhuma inventada). Fonte primária: página oficial de decklists da Wizards
@@ -29,13 +29,17 @@ America, Living Legend" (Human Soldier Hero, `msh`) e "Avengers Tower"
 Heroes) incluídas dentro do deck de Commander, por isso não aparecem no
 set `msc` isoladamente, só via busca direta por nome.
 
-**Nota sobre "Director Nick Fury"**: a Wizards descreve esse card como
-comandante alternativo ("Director Nick Fury will keep your hand stocked
-with Heroes...") — mas o produto físico só inclui 1 carta foil de
-comandante (Captain America, Team Leader); Director Nick Fury é uma
-lendária normal dentro das 99 cartas do deck, não um segundo comandante
-físico. Registrado aqui só como Captain America no `## Comandante`,
-igual a caixa oficial.
+**Nota sobre "Director Nick Fury"** (correção 2026-09-21, apontada pelo
+usuário): a Wizards descreve esse card como comandante alternativo
+("Director Nick Fury will keep your hand stocked with Heroes...").
+Numa 1ª passada eu tinha registrado só Captain America no `##
+Comandante` (raciocínio: "o produto físico só inclui 1 carta foil de
+comandante"), mas o usuário corrigiu — mesmo padrão do Warhammer 40k/
+Marvel Fantastic Four: **2 comandantes possíveis, escolha de qual vira
+comandante único** (não Partner), não uma questão de qual carta vem
+foil. Director Nick Fury tem a mesma identidade de cor Jeskai (W/U/R)
+do deck, confirmado no Scryfall. Movido de `## Deck` pra `##
+Comandante` aqui.
 
 **Nota sobre nomes com sufixo de deck**: a página da Wizards linka Arcane
 Signet/Sol Ring/Command Tower com sufixo do deck ("Arcane Signet
@@ -48,6 +52,7 @@ real aqui.
 ## Comandante
 
 1 Captain America, Team Leader
+1 Director Nick Fury
 
 ## Deck
 
@@ -63,7 +68,6 @@ real aqui.
 1 Captain Mar-Vell, Space-Born
 1 Captain Marvel, Apex Avenger
 1 Destroy Evil
-1 Director Nick Fury
 1 Dismantling Wave
 1 Door of Destinies
 1 Falcon and Redwing

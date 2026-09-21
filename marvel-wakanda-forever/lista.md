@@ -1,4 +1,4 @@
-# Wakanda Forever (Marvel Super Heroes Commander) — T'Challa, the Black Panther
+# Wakanda Forever (Marvel Super Heroes Commander) — T'Challa, the Black Panther / Shuri, the Black Panther
 
 **Registro 2026-09-21**: lista 100% oficial e completa (nenhuma carta
 faltando, nenhuma inventada). Fonte primária: página oficial de
@@ -25,12 +25,20 @@ e "Queen Mother Ramonda" são 2 cartas distintas (Equipment + Legendary
 Creature separados, confirmado via `/cards/collection`), não uma carta
 só com nome quebrado errado entre linhas.
 
-**Nota sobre "Shuri, the Black Panther"**: a Wizards descreve esse card
-como comandante alternativo ("try having Shuri, the Black Panther helm
-the deck") — mas o produto físico só inclui 1 carta foil de comandante
-(T'Challa, the Black Panther); Shuri é uma lendária normal dentro das 99
-cartas do deck, não um segundo comandante físico. Registrado aqui só
-como T'Challa no `## Comandante`, igual a caixa oficial.
+**Nota sobre "Shuri, the Black Panther"** (correção 2026-09-21, apontada
+pelo usuário): a Wizards descreve esse card como comandante alternativo
+("try having Shuri, the Black Panther helm the deck"). Numa 1ª passada
+eu tinha registrado só T'Challa no `## Comandante` (raciocínio: "o
+produto físico só inclui 1 carta foil de comandante"), mas o usuário
+corrigiu — mesmo padrão do Warhammer 40k/Marvel Fantastic Four: **2
+comandantes possíveis, escolha de qual vira comandante único** (não
+Partner), não uma questão de qual carta vem foil. Shuri tem a mesma
+identidade de cor Selesnya (G/W) do deck, confirmado no Scryfall.
+Movida de `## Deck` pra `## Comandante` aqui. (Nota: "Bast, Panther
+Goddess", também G/W e citada por algumas fontes como sugestão de
+upgrade da comunidade, NÃO é o comandante secundário oficial — só Shuri
+tem essa designação confirmada na página oficial/EDHREC — permanece
+como carta normal do `## Deck`.)
 
 **Nota sobre nomes com sufixo de deck**: "Arcane Signet Wakanda"/"Sol
 Ring Wakanda"/"Command Tower Wakanda" na página oficial são só
@@ -40,6 +48,7 @@ de sempre (Scryfall confirma nome real sem sufixo). Normalizado aqui.
 ## Comandante
 
 1 T'Challa, the Black Panther
+1 Shuri, the Black Panther
 
 ## Deck
 
@@ -87,7 +96,6 @@ de sempre (Scryfall confirma nome real sem sufixo). Normalizado aqui.
 1 Royal Talon Fighter Jet
 1 Scourglass
 1 Shuri's Fabricator
-1 Shuri, the Black Panther
 1 Sol Ring
 1 Solemn Simulacrum
 1 Storm, Queen of Wakanda

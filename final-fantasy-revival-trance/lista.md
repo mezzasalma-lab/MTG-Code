@@ -1,8 +1,17 @@
-# Revival Trance (Final Fantasy Commander) — Terra, Herald of Hope
+# Revival Trance (Final Fantasy Commander) — Terra, Herald of Hope / Celes, Rune Knight
+
+> Correção 2026-09-21: este precon vem com **2 comandantes possíveis**
+> (não Partner — escolha de qual vira comandante único, mesmo padrão
+> confirmado pelo usuário no Warhammer 40k/Marvel Fantastic Four).
+> Comandante principal/de capa: **Terra, Herald of Hope**. Comandante
+> secundário: **Celes, Rune Knight** (mesma identidade de cor Mardu
+> R/W/B, confirmado no Scryfall) — estava listada como carta normal do
+> `## Deck` numa 1ª passada, corrigida aqui.
 
 ## Comandante
 
 1 Terra, Herald of Hope
+1 Celes, Rune Knight
 
 ## Deck
 
@@ -13,7 +22,6 @@
 1 Banon, the Returners' Leader
 1 Bedevil
 1 Big Score
-1 Celes, Rune Knight
 1 Coin of Fate
 1 Combustible Gearhulk
 1 Commander's Sphere

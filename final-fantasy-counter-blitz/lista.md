@@ -1,8 +1,17 @@
-# Counter Blitz (Final Fantasy Commander) — Tidus, Yuna's Guardian
+# Counter Blitz (Final Fantasy Commander) — Tidus, Yuna's Guardian / Yuna, Grand Summoner
+
+> Correção 2026-09-21: este precon vem com **2 comandantes possíveis**
+> (não Partner — escolha de qual vira comandante único, mesmo padrão
+> confirmado pelo usuário no Warhammer 40k/Marvel Fantastic Four).
+> Comandante principal/de capa: **Tidus, Yuna's Guardian**. Comandante
+> secundário: **Yuna, Grand Summoner** (mesma identidade de cor Bant
+> G/U/W, confirmado no Scryfall) — estava listada como carta normal do
+> `## Deck` numa 1ª passada, corrigida aqui.
 
 ## Comandante
 
 1 Tidus, Yuna's Guardian
+1 Yuna, Grand Summoner
 
 ## Deck
 
@@ -67,7 +76,6 @@
 1 Walking Ballista
 1 Yuna's Decision
 1 Yuna's Whistle
-1 Yuna, Grand Summoner
 
 ## Terrenos
 

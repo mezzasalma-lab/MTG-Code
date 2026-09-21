@@ -1,8 +1,17 @@
-# Enduring Enchantments (Commander Masters) — Anikthea, Hand of Erebos
+# Enduring Enchantments (Commander Masters) — Anikthea, Hand of Erebos / Narci, Fable Singer
+
+> Correção 2026-09-21: este precon vem com **2 comandantes possíveis**
+> (não Partner — escolha de qual vira comandante único, mesmo padrão
+> confirmado pelo usuário no Warhammer 40k/Marvel Fantastic Four).
+> Comandante principal/de capa: **Anikthea, Hand of Erebos**. Comandante
+> secundário: **Narci, Fable Singer** (mesma identidade de cor Abzan
+> W/B/G, confirmado no Scryfall) — estava listada como carta normal do
+> `## Deck` numa 1ª passada, corrigida aqui.
 
 ## Comandante
 
 1 Anikthea, Hand of Erebos
+1 Narci, Fable Singer
 
 ## Deck
 
@@ -22,7 +31,6 @@
 1 Jukai Naturalist
 1 Mesa Enchantress
 1 Mindwrack Harpy
-1 Narci, Fable Singer
 1 Nessian Wanderer
 1 Nyx Weaver
 1 Nyxborn Behemoth
