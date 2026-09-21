@@ -1,5 +1,109 @@
 # Checklist cláusula-a-cláusula — Captain Storm, Cosmium Raider (Izzet, U/R)
 
+## Porte completo do modo de resiliência (interação de oponente) + CR 903.9a nativa desde o início — 2026-09-21
+
+**Gatilho:** *"Então implemente ele tb"* — último dos 18 decks com
+simulador desta sessão a receber o porte (depois de Nekusar, Azula,
+Beorn, Thranduil, Ms. Bumbleflower e Kutzil). Este deck nunca tinha o
+modo de resiliência atual — porte completo do zero, nascendo já com a
+correção de CR 903.9a nativa desde a 1ª linha.
+
+**Arquitetura:** `state.battlefield` é lista de objetos `Permanent`
+(`uid`, `card`, `counters`...) com `perm.card` como STRING de nome
+(diferente do Kutzil, mais parecido com o Beorn/Thranduil).
+`remove_permanent` **envolve** a `leave_battlefield` já existente (que
+já tratava equipamentos desanexados, transferência de contadores pro
+Ozolith, "death_treasure", Tarrian's Soulcleaver e `descended_this_turn`
+corretamente) e adiciona só o tratamento do comandante (CR 903.9a —
+cemitério de verdade primeiro, CR 700.4/704, só depois removida de lá
+pra representar a zona de comando).
+
+## Achado real CRÍTICO: `commander_uid` ficava obsoleto após blink real (Ghostly Flicker/Planar Incision), zerando silenciosamente o rastreio de CR 903.10a — subestimava a win-condition primária do deck em ~2,5 pontos percentuais — 2026-09-21
+
+**Gatilho:** auditoria de pontos de saída-e-retorno de campo
+pré-existentes (disciplina obrigatória antes de construir o modo de
+resiliência, Regra #6 do CLAUDE.md) — `Ghostly Flicker` ("blink up to 2
+target artifacts/creatures/lands, choosing the highest MV first") e
+`Planar Incision` (blink do artefato/criatura de maior MV + 1 contador)
+são blinks LEGÍTIMOS (exílio-e-retorno na mesma resolução, não é caso de
+CR 903.9a — a permanente nunca "morre" de verdade). Mas `enter_
+battlefield` sempre cria um `Permanent` **NOVO com `uid` novo**, e
+`state.commander_uid` (usado por `combat_step` para rastrear CR 903.10a
+— "21+ de dano de combate da MESMA fonte comandante") nunca era
+atualizado depois do blink. Se Captain Storm fosse um dos alvos
+escolhidos (ela é MV2 — plausível quando o board não tem muita coisa de
+MV mais alto), `state.commander_uid` ficava permanentemente apontando
+pra um `uid` que não existe mais em `state.battlefield`, e **todo dano
+de combate dela dali em diante parava de ser contado**, silenciosamente,
+sem nenhum erro/exceção.
+
+**Diferente de todos os achados anteriores desta sessão, este bug não
+tinha relação nenhuma com sacrifício/morte — a comandante nunca saía de
+campo de verdade, só trocava de identidade (`uid`) no meio de uma
+resolução legítima**, e mesmo assim quebrava CR 903.10a de forma
+totalmente silenciosa (sem exceção, sem log óbvio — só um número que
+parava de subir).
+
+**Corrigido:** nos 2 pontos reais de blink (`ghostly_flicker`/
+`planar_incision` em `cast_instant_sorcery`), captura-se `was_commander
+= (alvo.uid == state.commander_uid)` antes do `leave_battlefield`, e
+depois do `enter_battlefield` recriar o Permanent, `state.commander_uid`
+é atualizado pro `uid` NOVO quando `was_commander` for verdadeiro.
+
+**Validação:** bit-identidade em modo padrão (20.000 seeds, seed_base
+1000000) contra uma versão do commit anterior patcheada com APENAS o
+fix de determinismo (isolando o efeito puro deste fix + o da taxa CR
+903.8): **816/20000 mismatches (4,08%)** — a maior divergência de
+qualquer deck desta sessão, e legítima: confirmada via trace direto da
+seed 1000005 (`commander_uid` registrado=3 mas o Permanent real da
+Captain Storm em campo tinha `uid`=7 na versão ANTIGA —
+`commander_damage_dealt` travado em 3 pra sempre a partir do blink; na
+versão corrigida, `commander_uid` bate com o `uid` real, e o dano
+acumulado sobe pra 42, cruzando o threshold de 21 e disparando
+`commander_damage_win=True`). Comparação A/B agregada (10.000 seeds)
+confirma que NENHUMA outra métrica se move fora de ruído (`proxy_damage_
+total`/`counters_placed_total`/`treasures_created_total`/`cards_drawn_
+extra`/`etb_doubler_triggers_total` idênticos) — só as métricas
+DIRETAMENTE ligadas ao dano da comandante mudam, como esperado: contador
+direto de "`commander_uid` obsoleto" cai de **409/10000 (4,09%) pra
+0/10000**, e **`commander_damage_win` sobe de 81,70% pra 84,17%** — a
+win-condition PRIMÁRIA deste deck estava sendo subestimada em ~2,5
+pontos percentuais por um bug silencioso de rastreio de identidade, não
+por qualquer limitação real do deck.
+
+## Achado real ADICIONAL: taxa de comandante (CR 903.8) tinha o contador declarado e incrementado, mas nunca era somada ao custo (mesma classe do Bumbleflower/Kutzil) — 2026-09-21
+
+**Gatilho:** `GameState.commander_cast_count` já existia e era
+incrementado em `try_cast_commander` — mas só era LIDO em 1 lugar
+(`combat_step`, bônus de ataque de Captain Vargus Wrath, um efeito real
+de carta sem relação com taxa de comandante). `effective_cost()` nunca
+somava a taxa real de CR 903.8.
+
+**Corrigido:** `effective_cost()` agora soma `2 *
+state.commander_cast_count` ao MV base quando `name == COMMANDER`.
+
+**Nota de determinismo:** mesma classe de bug já documentada no Azula/
+Bumbleflower — `mulligan(state)` reembaralhava via `random.shuffle()`
+(módulo GLOBAL) em vez de um RNG seedado. Confirmado empiricamente: 723
+de 3.000 partidas (24,1%) davam resultado diferente rodando a MESMA
+seed duas vezes. Corrigido adicionando `rng: Optional[random.Random] =
+None` ao `GameState` e trocando `mulligan()` pra `state.rng.shuffle`.
+0/3.000 partidas não-determinísticas após o fix.
+
+**Resumo da validação completa:** regressão de 20.000 partidas em modo
+de resiliência: 0 exceções, 0 comandantes presos no cemitério, 0
+`commander_uid` obsoleto, 46,11% das partidas com `commander_cast_count
+>= 2` (recast pagando a taxa CR 903.8 depois de removida). 25 testes
+dirigidos: `remove_permanent` no comandante (não presa no cemitério,
+`commander_in_play`/`commander_uid` resetados), `remove_permanent` em
+criatura comum, transferência de contadores pro Ozolith preservada,
+taxa de comandante em `effective_cost` (3 casos), `try_cast_commander`
+debita taxa e incrementa contador, contra-ataque intercepta o cast
+(mana/taxa/gatilho-de-cast já contam, comandante nunca entra em campo),
+`try_smart_opponent_wipe` inclui o comandante nos alvos, Ghostly Flicker
+mantém `commander_uid` sincronizado após blink (3 casos), mulligan
+determinístico (300 amostras).
+
 ## Auditoria oráculo-por-oráculo completa — 2026-09-13
 
 Extensão pra este deck da mesma auditoria já feita no Megatron/Azula/

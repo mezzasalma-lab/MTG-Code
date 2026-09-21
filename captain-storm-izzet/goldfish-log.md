@@ -4,6 +4,41 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Porte completo do modo de resiliência + CR 903.9a nativa desde o início — 2026-09-21
+
+**Gatilho:** "Então implemente ele tb" — último dos 18 decks com
+simulador desta sessão a receber o porte. Detalhes completos em
+`checklist-oraculo.md`.
+
+**Achado CRÍTICO (o mais impactante numericamente desta sessão):**
+`Ghostly Flicker`/`Planar Incision` (blinks legítimos, não CR 903.9a)
+recriam o Permanent da comandante com um `uid` NOVO, mas `state.
+commander_uid` nunca era atualizado — depois de um blink na própria
+Captain Storm, TODO o dano de combate dela parava de ser contado
+silenciosamente (CR 903.10a quebrado sem erro nenhum). Confirmado:
+409/10000 partidas nessa condição antes do fix, 0/10000 depois. A
+win-condition primária do deck (auto-win via 21+ dano da comandante)
+estava sendo subestimada: **81,70% → 84,17%** depois do fix — a maior
+correção numérica de qualquer deck desta sessão.
+
+**Achado adicional:** `commander_cast_count` (CR 903.8) já existia
+declarado e incrementado, mas nunca somado ao custo em `effective_
+cost()`. Mesma classe de bug de RNG não-seedado do Azula/Bumbleflower no
+`mulligan()` (723/3000 = 24,1% de partidas não-determinísticas antes do
+fix, 0/3000 depois).
+
+**Resultado:** bit-identidade em modo padrão com 816/20000 (4,08%)
+divergências — a maior desta sessão, mas 100% legítima e rastreada
+(confirmado via trace direto: o fix corrige o rastreio de dano da
+comandante que já estava quebrado). A/B agregado (10k seeds): todas as
+outras métricas idênticas dentro de ruído.
+
+**Validação:** regressão de 20.000 partidas em modo de resiliência, 0
+exceções, 0 comandantes presos/uid obsoleto, 46,11% das partidas com
+recast pagando a taxa CR 903.8 + 25 testes dirigidos.
+
+---
+
 ## Partida #1 — AAAA-MM-DD
 
 - **Formato do teste:** goldfish / playtest com amigos / mesa competitiva
