@@ -1,5 +1,135 @@
 # Checklist cláusula-a-cláusula — Beorn the Fierce
 
+## Porte completo do modo de resiliência (interação de oponente) + CR 903.9a nativa desde o início — 2026-09-21
+
+**Gatilho:** *"E depois dele faça o Beorn"* — seguindo diretamente o
+porte concluído no Vihaan, Nekusar e Azula (mesma sessão, mesmo
+protocolo). Este deck nunca tinha o modo de resiliência atual — porte
+completo do zero, **4º deck desta sessão a nascer com a correção de CR
+903.9a nativa desde a 1ª linha**, em vez de implementada errado e
+corrigida depois via retrofit (os outros 9 decks foram todos retrofit).
+
+**Cuidado extra verificado antes de começar:** este deck já teve um
+sistema de "oponente remove minhas permanentes" (`apply_opponent_
+interaction()`) implementado e **revertido** em 2026-08-30, por
+mal-entendido de um pedido do usuário ("Vc me entendeu errado, era para
+o goldfish usar a carta de interação na NOSSA mão... não o oponente
+removendo NOSSAS permanentes"). Confirmado que isso é uma coisa
+diferente: aquele sistema rodava incondicionalmente DENTRO do modo
+padrão; o modo de resiliência desta rodada é **opcional e
+completamente separado** (`simulate_one_with_interaction`, nunca
+chamado por `simulate_one`/`run_batch` padrão), mesmo framework já
+pedido e validado explicitamente nos outros 12 decks desta sessão.
+`try_use_own_interaction()` (o sistema real que ficou, "nós usamos
+nossa remoção 1x/3 turnos") continua intocado, roda sempre no modo
+padrão, sem nenhum conflito com a categoria NOVA "remoção de oponente"
+do modo de resiliência (que só ativa com `interaction_rng`).
+
+**Design incorporado direto do padrão final já validado nos outros 12
+decks:** 7 categorias padronizadas. `remove_permanent` manda o
+comandante pro cemitério de verdade primeiro (CR 700.4/704, ver
+`rules-cache/comprehensive-rules.txt` linhas 6888-6896, Regra 18 de
+`references/user-standing-rules.md`), só DEPOIS é removida de lá pra
+representar a zona de comando. **Sem NENHUM efeito numérico do CR
+903.9a em si** — este é um deck ramp/stompy mono-verde com **0 cartas
+"creature dies"** (grep confirmado) — mais próximo estruturalmente do
+Ur-Dragon/Hei Bai/Ulalek/Nekusar/Azula. 'Bear Token' (único token
+nomeado do deck) é capturado normalmente pelo candidate list de
+criatura — vive como entrada de string comum em `state.battlefield`,
+sem contador agregado (diferente do Treasure do Vihaan/Azula).
+
+## Achado real ADICIONAL, não relacionado a CR 903.9a: taxa de comandante (CR 903.8) nunca foi modelada — 2026-09-21
+
+**Gatilho:** ao inserir o contra-ataque (`try_smart_opponent_counter`)
+nos 2 pontos de cast do comandante, percebi que `effective_cost()`
+nunca somava a taxa real de +{2} por cast anterior da zona de comando
+(CR 903.8). **Achado real: isso nunca importou na PRÁTICA antes de
+hoje** — nada neste simulador jamais fazia o comandante sair de campo
+(0 mecanismo de remoção/sacrifício alcançava ela antes desta rodada),
+então ela era conjurada no máximo 1x por partida, sempre pelo custo
+base. Só se torna um problema real agora que `remove_permanent`/o modo
+de resiliência (e o fix do Natural Order abaixo) podem genuinamente
+destruí-la e forçar um recast — sem a taxa, um recast estaria cobrando
+a regra ERRADA exatamente no cenário que esta rodada introduz. Mesma
+categoria de "achado real pré-existente que só aparece com validação
+rigorosa" já vista no loop infinito do Maralen e no mulligan
+não-determinístico do Azula nesta sessão.
+
+**Corrigido:** adicionado `commander_cast_count: int = 0` ao
+`GameState` (mesma convenção dos outros 12 decks) e `effective_cost()`
+agora soma `2 * state.commander_cast_count` ao MV base quando
+`card == COMMANDER`, antes de aplicar qualquer redução. Incrementado
+nos 2 pontos reais de cast do comandante em `main_phase` (contagem
+acontece ANTES do contra-ataque, já que CR 903.10a/608.2b contam
+"cast", não "resolved").
+
+**Validação:** teste dirigido confirmando que `effective_cost` sobe
+exatamente +2 no 2º cast (`commander_cast_count=1`) vs o 1º
+(`commander_cast_count=0`). Bit-identidade em modo padrão não afetada
+por este fix isoladamente (só passa a importar quando combinado com o
+fix do Natural Order abaixo, que é a única forma dela sair de campo em
+modo padrão).
+
+## Achado real ADICIONAL: `Natural Order` podia sacrificar o próprio comandante sem preferência — 2026-09-21
+
+**Gatilho:** mesmo padrão de bug já achado no Vihaan (fallback do
+Deadly Dispute) nesta sessão — auditando os pontos de sacrifício
+voluntário já existentes no arquivo antes de construir o modo de
+resiliência (Regra #6 do CLAUDE.md: bugs de orquestração podem morar
+no próprio motor do deck, não só em remoção de oponente), achei que o
+pool de sacrifício do Natural Order (`green_creatures = [c for c in
+state.battlefield if is_creature(c) and c != card and C(c).g_pips >=
+1]`) **não deprioritizava o próprio comandante**. Confirmado ao vivo
+rodando a seed 91052 na versão anterior: Beorn é conjurada no turno 4,
+e **sacrificada pelo próprio Natural Order do jogador no turno 5** —
+um jogador racional nunca sacrifica voluntariamente seu comandante
+(motor de anthem + gatilho de combate + escala de Roaming Throne) por
+um corpo genérico quando qualquer outra criatura verde real serve.
+**Agravante real, ligado ao achado de CR 903.9a acima:** como não
+existia `remove_permanent`/tratamento nenhum do comandante nesse ponto
+antes desta rodada, ela ficava **presa fora do jogo pra sempre**
+depois de sacrificada (nunca resetava `commander_in_play`, nunca podia
+ser recastada) — bug duplo, não só a escolha irracional de sacrifício,
+mas a ausência total de recuperação depois.
+
+**Corrigido:** o pool agora prefere qualquer criatura verde
+não-comandante (`non_commander_green`); só cai pro comandante quando
+ela é genuinamente a ÚNICA criatura verde em campo (o custo do Natural
+Order é mandatório, sem alternativa de não pagar). A remoção física
+agora passa por `remove_permanent` (não mais `battlefield.remove` +
+`graveyard.append` direto), então mesmo no caso raro em que ela É
+sacrificada, volta corretamente pra zona de comando e pode ser
+recastada depois (confirmado: mesma seed 91052, ela recasta no turno
+6 na versão corrigida).
+
+**Validação:** compilação OK. Bit-identidade em modo padrão (20.000
+seeds, seed_base 91000) contra o commit anterior: **227/20000
+mismatches (1,14%)** — divergência real e esperada (mesma categoria
+"RNG ripple" do Deadly Dispute/Vihaan e Blightsteel/Megatron), causada
+por este fix (confirmado via trace direto da seed 91052 acima, não um
+bug novo). Comparação A/B agregada (10.000 seeds) confirmando que o
+fix não introduz nenhuma mudança sistemática grande:
+`bear_count_final`/`spells_cast`/`battlefield_count` todos dentro de
+margem pequena (ex. 8,4861→8,4758), e "comandante nunca conjurada"
+**idêntico** nos dois lados (0,0157/0,0157 — confirma que o fix só
+afeta o que acontece DEPOIS dela já estar em campo). Regressão de
+20.000 partidas em modo de resiliência: 0 exceções, 0 comandantes
+presos no cemitério. 7 testes dirigidos: (1) `remove_permanent` no
+comandante — não presa no cemitério; (2) permanente comum vai pro
+cemitério normalmente; (3) taxa de comandante aplicada corretamente
+(+2 no recast); (4) contra-ataque intercepta o cast, mana/taxa já
+gastos, ela nunca entra em campo; (5) `try_smart_opponent_wipe` inclui
+o comandante nos alvos; (6) Natural Order prefere outra criatura verde
+ao comandante quando disponível; (7) Natural Order sacrifica o
+comandante quando é a única opção, sem ficar presa (recastável depois).
+
+**Resultado:** porte de CR 903.9a sem impacto numérico direto
+(estrutural), mas a auditoria de pontos de sacrifício pré-existentes
+(disciplina obrigatória antes de construir o modo de resiliência, não
+opcional) achou 2 bugs REAIS e relacionados — um deles (Natural Order)
+com trace ao vivo confirmando que já acontecia em partidas simuladas
+reais desta lista.
+
 ## Achado real 2026-09-14 (usuário perguntou se Roaming Throne dobra os gatilhos de OUTROS Ursos, não só o combate da Beorn)
 
 Oráculo real confirmado via Scryfall: *"Roaming Throne — Ward {2}. As

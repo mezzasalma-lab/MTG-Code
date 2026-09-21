@@ -4,6 +4,31 @@ Compilação de todos os goldfish rodados na sessão. Cada jogo foi registrado t
 
 ---
 
+## Porte completo do modo de resiliência + CR 903.9a nativa desde o início — 2026-09-21
+
+**Gatilho:** "E depois dele faça o Beorn" — seguindo o porte concluído
+no Vihaan, Nekusar e Azula. Detalhes completos em
+`checklist-oraculo.md` e `megatron-tyrant-mardu/checklist-oraculo.md`.
+
+**Achado:** 4º deck a nascer com CR 903.9a correta desde o início. Sem
+efeito numérico do CR 903.9a em si (0 cartas "creature dies"). Auditoria
+dos pontos de sacrifício pré-existentes (disciplina obrigatória, não
+opcional) achou 2 bugs reais: (1) taxa de comandante (CR 903.8) nunca
+modelada — só importava agora que ela pode sair de campo; (2) Natural
+Order podia sacrificar o próprio comandante sem preferência, e ela
+ficava presa fora do jogo pra sempre depois (confirmado ao vivo, seed
+91052, acontecendo em partida real).
+
+**Resultado:** modo padrão diverge em 1,14% das seeds (227/20000) —
+mudança real e intencional do fix do Natural Order. A/B (10k seeds):
+métricas principais dentro de margem pequena, "comandante nunca
+conjurada" idêntico nos 2 lados.
+
+**Validação:** regressão de 20.000 partidas em modo de resiliência, 0
+exceções, 0 comandantes presos no cemitério + 7 testes dirigidos.
+
+---
+
 ### Correção — conversão de Bear pela Beorn nunca era persistente — 2026-09-02
 
 **Gatilho:** pergunta direta do usuário — *"Vc considerou que com o Beorn
