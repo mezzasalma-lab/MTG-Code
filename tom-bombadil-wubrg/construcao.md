@@ -176,3 +176,40 @@ Game Changers: 3 (Serra's Sanctum, Enlightened Tutor, Teferi's Protection).
 Nenhuma carta de destruição em massa de terreno, turno extra ou combo
 infinito de 2 cartas. O Galactus destrói 1 terreno alvo por ataque, o que
 não é destruição em massa.
+
+## 6. Interações reais achadas ao modelar o simulador (vêm das regras, não do goldfish)
+
+- **Combo infinito: There and Back Again + Clockspinning + Hex Parasite**
+  (com um Smaug em campo; o Flux Channeler substitui o Clockspinning como
+  jeito de pôr o marcador). Com a Saga no II, o Clockspinning (buyback)
+  põe 1 lore e dispara o III. Em resposta, o Hex Parasite (`{1}{B/P}`,
+  sem {T}) tira 1 lore, e pela 714.4 a Saga fica. O III cria um Smaug
+  novo, o antigo morre pela regra da lenda e gera **14 Treasures**, com a
+  Saga de volta no II. Cada volta custa cerca de 6 e rende 14: mana
+  infinita, que vira Mega Flare e dreno da Narci infinitos. São 3 cartas,
+  então é **permitido no Bracket 3** (a restrição é para combo de 2 cartas
+  no começo do jogo), mas vale avisar na mesa. Se o usuário não quiser o
+  infinito, a troca mais limpa é o Hex Parasite: é a única peça que remove
+  marcador sem {T}, e todos os outros removedores param em 1 por turno.
+  **Decisão do usuário**, a lista não foi mudada.
+
+- **Starfield of Nyx × Urza's Saga (anti-sinergia).** O Starfield diz:
+  "As long as you control five or more enchantments, each other non-Aura
+  enchantment you control is a creature … base power and base toughness
+  each equal to its mana value." O Urza's Saga é *Enchantment Land* com
+  valor de mana 0, então vira uma criatura 0/0 e morre por ação baseada em
+  estado (704.5f). Isso aconteceu em 1,3% das 3.000 partidas do goldfish.
+  Na mesa, é só não baixar o Starfield com o Urza's Saga vivo (ou aceitar a
+  perda depois que o III já buscou o Sol Ring). Se virar incômodo, os
+  candidatos a trocar são o Starfield (a recursão já tem Replenish,
+  Resurgent Belief e Hall of Heliod) ou o Urza's Saga (volta um terreno
+  comum). **Decisão do usuário**, a lista não foi mudada.
+- **Starfield também anima o resto dos encantamentos** (Sagas, Resourceful
+  Defense, Leyline Binding etc. viram criaturas). Isso tem os dois lados:
+  eles podem atacar e gerar mana pela Enduring Vitality, mas ficam
+  expostos a wipe de criatura.
+- **Estrid's Invocation copiando Saga que transforma** (Kami War, Jugan,
+  Fable): pelo ruling, o III exila a cópia e ela **fica no exílio**. Na
+  mesa, copie outra Saga.
+- **Sterling Grove** saiu justamente por isso (seção 4): o shroud bloqueia
+  as peças de mover marcador que miram a Saga.
