@@ -3,8 +3,8 @@
 Lista digitada de cabeça pelo usuário (nomes em português e alguns nomes
 alternativos resolvidos ao vivo no Scryfall — Regra #2: nenhum foi marcado
 como "fora do deck" sem checar tradução/impressão real primeiro). Do total
-de 100 cartas do `lista.md`, 41 estão confirmadas como posse física; as
-outras 59 ainda precisam ser proxadas/compradas.
+de 100 cartas do `lista.md`, 42 estão confirmadas como posse física; as
+outras 58 ainda precisam ser proxadas/compradas.
 
 **Nomes traduzidos/alternativos resolvidos:**
 - "Charco da Procriação" → **Breeding Pool**
@@ -51,6 +51,7 @@ Elfo, então ficam registradas aqui para referência futura, não descartadas):
 1 High Perfect Morcant
 1 Immaculate Magistrate
 1 Incubation Druid
+1 Jarad, Golgari Lich Lord
 1 Iron-Shield Elf
 1 Lathril, Blade of the Elves
 1 Lightning Greaves
