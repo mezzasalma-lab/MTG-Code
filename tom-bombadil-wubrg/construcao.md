@@ -191,7 +191,7 @@ não é destruição em massa.
   no começo do jogo), mas vale avisar na mesa. Se o usuário não quiser o
   infinito, a troca mais limpa é o Hex Parasite: é a única peça que remove
   marcador sem {T}, e todos os outros removedores param em 1 por turno.
-  **Decisão do usuário**, a lista não foi mudada.
+  **Decidido pelo usuário (2026-09-22): o combo fica.**
 
 - **Starfield of Nyx × Urza's Saga (anti-sinergia).** O Starfield diz:
   "As long as you control five or more enchantments, each other non-Aura
@@ -203,7 +203,8 @@ não é destruição em massa.
   perda depois que o III já buscou o Sol Ring). Se virar incômodo, os
   candidatos a trocar são o Starfield (a recursão já tem Replenish,
   Resurgent Belief e Hall of Heliod) ou o Urza's Saga (volta um terreno
-  comum). **Decisão do usuário**, a lista não foi mudada.
+  comum). **Decidido pelo usuário (2026-09-22): o Starfield fica** (na
+  mesa, é só não baixá-lo com o Urza's Saga ainda útil).
 - **Starfield também anima o resto dos encantamentos** (Sagas, Resourceful
   Defense, Leyline Binding etc. viram criaturas). Isso tem os dois lados:
   eles podem atacar e gerar mana pela Enduring Vitality, mas ficam

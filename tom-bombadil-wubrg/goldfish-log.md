@@ -149,7 +149,7 @@ Kiora 195 · Primal Odin 193 · Helvault 192 · Birth 179 · Yojimbo 176 ·
 War of the Last Alliance 175. O viés para as de maior valor vem do Enlightened
 Tutor e do Hall of Heliod respondendo ao gatilho do Tom.
 
-### Combo infinito real achado na lista (decisão do usuário)
+### Combo infinito real achado na lista (mantido por decisão do usuário, 2026-09-22)
 
 **There and Back Again + Clockspinning + Hex Parasite** (com um Smaug já
 em campo; o Flux Channeler também serve no lugar do Clockspinning para pôr
