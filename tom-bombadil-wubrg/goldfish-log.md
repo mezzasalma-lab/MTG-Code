@@ -184,3 +184,20 @@ partida é encerrada como vitória por combo (`infinite_combo_turn`).
   ficam reservadas para mana pela Enduring Vitality.
 - Os 📊 (remoção por capítulo, Birth III, Kiora III etc.) são valor real
   que o goldfish não converte em número. Eles não diminuem a carta.
+
+## Teste descartado — 10 duals originais (2026-09-22, decisão do usuário)
+
+Foi testado trocar os 6 shocks e as 4 tri-lands de Nova Capenna pelas 10
+duals originais (commit `432d469`, revertido). Resultado nas mesmas 3.000
+seeds (8 turnos):
+
+| Métrica | Lista atual (shocks + SNC) | 10 duals | Duals + SNC, −4 básicos |
+|---|---|---|---|
+| Tom conjurado em 8 turnos | 91,6% | 89,6% | 91,9% |
+| Tom até o T5 | 56,8% | 57,2% | 58,1% |
+| Mana na fase 1, T2 / T3 | 1,9 / 3,1 | 2,0 / 3,3 | 1,9 / 3,1 |
+| Vida final | 53,2 | 56,3 | 56,6 |
+
+As duals dão 2 cores contra 3 das tri-lands. Com elas, subiram as partidas
+com 5+ manas mas sem alguma cor para o Tom (139 → 177). O usuário decidiu
+**voltar à lista anterior**, sem as duals.
