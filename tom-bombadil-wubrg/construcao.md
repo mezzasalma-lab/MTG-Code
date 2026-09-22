@@ -146,7 +146,7 @@ opção de volta** se o usuário quiser mais recursão.
 **Rampa redundante:** Dryad of the Ilysian Grove e Sylvan Caryatid (o
 Prismatic Omen já dá todos os tipos básicos a todos os terrenos),
 Wild Growth, Spelunking e Destiny Spinner. Entraram Sol Ring (80%),
-Arcane Signet (82%) e Farseek (57%). O Farseek busca tríomes e duals,
+Arcane Signet (82%) e Farseek (57%). O Farseek busca tríomes e shocks,
 que têm os tipos Plains/Island/Swamp/Mountain.
 
 **Terrenos:** Plaza of Heroes, Sea of Clouds, Bountiful Promenade,
@@ -154,8 +154,8 @@ Murmuring Bosk, Cascading Cataracts, Forbidden Orchard, Fabled Passage e
 Bloodstained Mire saíram. Entraram Serra's Sanctum, Karn's Bastion
 (proliferate num terreno, M2), **Urza's Saga** (Saga que o Tom revela;
 o capítulo III busca Sol Ring ou Hex Parasite, custo `{1}`; e remover o
-marcador a mantém viva, M3), as 10 duals originais (ABUR), 5 fetches e
-as 5 tríomes. Sem orçamento, então a melhor base possível.
+marcador a mantém viva, M3), 6 shocks, 5 fetches e as 10 tríomes. Sem
+orçamento, então a melhor base possível.
 
 ## 5. Contagem por função
 
@@ -213,23 +213,3 @@ não é destruição em massa.
   mesa, copie outra Saga.
 - **Sterling Grove** saiu justamente por isso (seção 4): o shroud bloqueia
   as peças de mover marcador que miram a Saga.
-
-## 7. Troca de terrenos pedida pelo usuário (2026-09-22)
-
-As 10 duals originais (Tundra, Underground Sea, Badlands, Taiga, Savannah,
-Scrubland, Volcanic Island, Bayou, Plateau, Tropical Island) entraram. Foram
-conferidas no Scryfall: legais em Commander e nenhuma é Game Changer. Saíram
-os 6 shocks (Temple Garden, Breeding Pool, Overgrown Tomb, Hallowed
-Fountain, Godless Shrine, Stomping Ground) e as 4 tri-lands de Nova Capenna
-que entravam viradas (Spara's Headquarters, Raffine's Tower, Ziatora's
-Proving Ground, Jetmir's Garden). As duals entram desviradas, sem vida, e
-têm tipos básicos, então as fetches, o Farseek, o Binding II ("Forest
-card"), o There and Back Again II ("Mountain card"), o Scholar ("Plains
-card"), a Utopia Sprawl e o domínio do Leyline Binding encontram todas.
-Terrenos que entram virados: de 10 para 6.
-
-Custo medido (goldfish, mesmas 3.000 seeds): cada tri-land dava 3 cores e
-cada dual dá 2. O "Tom conjurado em 8 turnos" caiu de 91,6% para 89,6%,
-porque subiram as partidas com 5+ manas mas sem alguma cor (139 → 177). Em
-troca, a mana do T2/T3 sobe, o Tom até o T5 sobe de 56,8% para 57,2% e a
-vida final sobe cerca de 3.

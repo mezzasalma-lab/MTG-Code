@@ -246,7 +246,7 @@ oponente — cláusula do oráculo citada; conta como métrica proxy quando dá)
 - ✅ **Serra's Sanctum** {W} por encantamento. ✅ **Hall of Heliod's Generosity** {C} + "{1}{W},{T}: enchantment card do cemitério pro topo" (em resposta ao Tom ou no fim do turno).
 - ✅ **The World Tree** entra virado, {G}, com 6+ terrenos todos produzem qualquer cor. Busca de "God cards": nenhuma carta God nas 99 (o Tom mora na zona de comando) — habilidade modelada como sem alvo, não omitida.
 - ✅ **Command Tower** (WUBRG). 📊 **Exotic Orchard** (cores de terreno de oponente — 1 mana sem cor, convenção do Bumbleflower). ✅ **City of Brass** / **Mana Confluence** (1 de vida quando o gasto do turno obriga a usá-las). ✅ **Reflecting Pool** (cores dos meus terrenos).
-- ✅ 5 tríomes: entram viradas, 3 cores, **cycling {3}** (`try_cycling`). ✅ 10 duals originais (ABUR, trocadas no lugar de 6 shocks e 4 tri-lands SNC a pedido do usuário): só os tipos básicos, desviradas, sem vida. ✅ 5 fetches (1 de vida, busca o tipo impresso, desvirado). ✅ 5 básicos.
+- ✅ 9 tríomes/SNC: entram virados, 3 cores, **cycling {3}** (`try_cycling`). ✅ 6 shocks (paga 2, também quando buscada desvirada). ✅ 5 fetches (1 de vida, busca o tipo impresso, desvirado). ✅ 5 básicos.
 
 ## Varredura de tags/nomes órfãos
 
@@ -268,7 +268,7 @@ oponente — cláusula do oráculo citada; conta como métrica proxy quando dá)
 | 1 | Landfall | 0 cartas | N/A (checado: nenhum "Landfall —" no oráculo das 99) |
 | 2 | Mana dorks | Bloom Tender, Faeburrow Elder, Sanctum Weaver, Enduring Vitality (+ criaturas via Vitality), token Monk (Jugan I) | ✅ doença de invocação respeitada em todos (`sick`); dork não ataca |
 | 3 | Mana rocks | Sol Ring, Arcane Signet (+ Treasure/Gold) | ✅ sem doença de invocação |
-| 4 | Fixing / mudar tipo de terreno | Prismatic Omen, The World Tree, Reflecting Pool, Command Tower, City of Brass, Mana Confluence, Exotic Orchard (📊), tríomes, duals ABUR, fetches | ✅ cores pareadas exatamente (`pips_payable`); tipos impressos × tipos em campo separados |
+| 4 | Fixing / mudar tipo de terreno | Prismatic Omen, The World Tree, Reflecting Pool, Command Tower, City of Brass, Mana Confluence, Exotic Orchard (📊), tríomes, shocks, fetches | ✅ cores pareadas exatamente (`pips_payable`); tipos impressos × tipos em campo separados |
 | 5 | Motores de compra | Sythis, Enchantress's Presence, Setessan, Eidolon, Femeref, Narci, O'aka, Goldberry, Nexus Mentality, Bath Song, Song of Eärendil, Bahamut III, Odin III, First Iroan III, Ring nível 2 | ✅ todos disparando (tabela de uso no `goldfish-log.md`) |
 | 6 | Motores de rampa | Farseek, Binding II, There and Back II, Fenrir I, Scholar, auras, fetches | ✅ restrição de tipo real de cada busca |
 | 7 | Ativadas repetíveis | Nesting Grounds, Karn's Bastion, Hall of Heliod, Goldberry, O'aka, Scholar, Power Conduit, Hex Parasite, Satsuki, Weaver, Strionic, Resourceful Defense {4}{W}, Urza's Saga II, Reflection of Kiki-Jiki, Clockspinning (buyback) | ✅ custo real deduzido; {T} de criatura com doença de invocação; mesmo {T} da Goldberry = 1 por turno; terreno virado pra habilidade abre mão da mana |

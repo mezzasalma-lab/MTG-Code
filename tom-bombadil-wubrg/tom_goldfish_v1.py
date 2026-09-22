@@ -270,17 +270,15 @@ for _b in ("Forest", "Plains", "Island", "Swamp", "Mountain"):
     add_land(_b, {_b}, {"basic"})
 for _n, _t in {"Indatha Triome": ("Plains", "Swamp", "Forest"), "Ketria Triome": ("Forest", "Island", "Mountain"),
                "Raugrin Triome": ("Island", "Mountain", "Plains"), "Savai Triome": ("Mountain", "Plains", "Forest"),
-               "Zagoth Triome": ("Swamp", "Forest", "Island")}.items():
+               "Zagoth Triome": ("Swamp", "Forest", "Island"), "Spara's Headquarters": ("Forest", "Plains", "Island"),
+               "Raffine's Tower": ("Plains", "Island", "Swamp"),
+               "Ziatora's Proving Ground": ("Swamp", "Mountain", "Forest"),
+               "Jetmir's Garden": ("Mountain", "Forest", "Plains")}.items():
     add_land(_n, _t, {"etb_tapped", "cycling3"})
-# Duals originais (ABUR) -- 2026-09-22, pedido do usuario: substituem os 6
-# shocks e as 4 tri-lands de Nova Capenna (que entravam viradas). Oraculo:
-# so' os tipos basicos (mana implicita), entram desviradas, sem vida.
-for _n, _t in {"Savannah": ("Forest", "Plains"), "Tropical Island": ("Forest", "Island"),
-               "Bayou": ("Swamp", "Forest"), "Tundra": ("Plains", "Island"),
-               "Scrubland": ("Plains", "Swamp"), "Taiga": ("Mountain", "Forest"),
-               "Underground Sea": ("Island", "Swamp"), "Badlands": ("Swamp", "Mountain"),
-               "Volcanic Island": ("Island", "Mountain"), "Plateau": ("Mountain", "Plains")}.items():
-    add_land(_n, _t, set())
+for _n, _t in {"Temple Garden": ("Forest", "Plains"), "Breeding Pool": ("Forest", "Island"),
+               "Overgrown Tomb": ("Swamp", "Forest"), "Hallowed Fountain": ("Plains", "Island"),
+               "Godless Shrine": ("Plains", "Swamp"), "Stomping Ground": ("Mountain", "Forest")}.items():
+    add_land(_n, _t, {"shockland"})
 FETCHES = {"Windswept Heath": ("Forest", "Plains"), "Flooded Strand": ("Plains", "Island"),
            "Wooded Foothills": ("Mountain", "Forest"), "Verdant Catacombs": ("Swamp", "Forest"),
            "Misty Rainforest": ("Forest", "Island")}
@@ -1138,6 +1136,8 @@ def search_land_to_battlefield(state: GameState, allowed_types: set, log: list, 
         tags = CARD_DB[best].tags
         if "etb_tapped" in tags:
             tapped = True          # tríome/World Tree entram virados mesmo buscados
+        elif "shockland" in tags and not tapped:
+            lose_life(state, 2)    # shock buscada tambem pergunta "pay 2 life"
         enter_battlefield(state, best, log, tapped=tapped)
     return best
 
@@ -2734,7 +2734,7 @@ def land_enters_tapped(state: GameState, name: str) -> bool:
     tags = CARD_DB[name].tags
     if "etb_tapped" in tags:
         return True
-    return False
+    return False   # shockland: sempre paga 2 de vida (convencao dos outros simuladores)
 
 
 def spendable_this_turn(state: GameState) -> int:
@@ -2804,9 +2804,13 @@ def play_land(state: GameState, log: list):
         if tgt:
             state.library.remove(tgt)
             state.rng.shuffle(state.library)
+            if "shockland" in CARD_DB[tgt].tags:
+                lose_life(state, 2)
             enter_battlefield(state, tgt, log, tapped=land_enters_tapped(state, tgt))
             resolve_stack(state, log)
         return
+    if "shockland" in tags:
+        lose_life(state, 2)
     enter_battlefield(state, pick, log, tapped=land_enters_tapped(state, pick))
     resolve_stack(state, log)
 
@@ -3026,13 +3030,12 @@ def run_turn(state: GameState, log: list, is_last_turn: bool = False):
 DECKLIST_TEXT = """
 1 Arcane Signet
 1 Awaken the Honored Dead
-1 Badlands
 1 Barbara Wright
 1 Battle at the Helvault
-1 Bayou
 1 Binding the Old Gods
 1 Birth of the Imperium
 1 Bloom Tender
+1 Breeding Pool
 1 City of Brass
 1 Clockspinning
 1 Command Tower
@@ -3051,13 +3054,16 @@ DECKLIST_TEXT = """
 1 Flooded Strand
 1 Flux Channeler
 1 Forest
+1 Godless Shrine
 1 Goldberry, River-Daughter
 1 Hall of Heliod's Generosity
+1 Hallowed Fountain
 1 Hex Parasite
 1 Historian's Boon
 1 In the Darkness Bind Them
 1 Indatha Triome
 1 Island
+1 Jetmir's Garden
 1 Jugan Defends the Temple // Remnant of the Rising Star
 1 Karn's Bastion
 1 Ketria Triome
@@ -3070,10 +3076,11 @@ DECKLIST_TEXT = """
 1 Nesting Grounds
 1 Nexus Mentality
 1 O'aka, Traveling Merchant
+1 Overgrown Tomb
 1 Plains
-1 Plateau
 1 Power Conduit
 1 Prismatic Omen
+1 Raffine's Tower
 1 Raugrin Triome
 1 Reflecting Pool
 1 Replenish
@@ -3083,14 +3090,14 @@ DECKLIST_TEXT = """
 1 Sanctum Weaver
 1 Satsuki, the Living Lore
 1 Savai Triome
-1 Savannah
 1 Scholar of New Horizons
-1 Scrubland
 1 Serra's Sanctum
 1 Setessan Champion
 1 Sol Ring
 1 Song of Eärendil
+1 Spara's Headquarters
 1 Starfield of Nyx
+1 Stomping Ground
 1 Strionic Resonator
 1 Summon: Bahamut
 1 Summon: Fenrir
@@ -3100,8 +3107,8 @@ DECKLIST_TEXT = """
 1 Swamp
 1 Swords to Plowshares
 1 Sythis, Harvest's Hand
-1 Taiga
 1 Teferi's Protection
+1 Temple Garden
 1 The Bath Song
 1 The Coming of Galactus
 1 The Creation of Avacyn
@@ -3111,18 +3118,15 @@ DECKLIST_TEXT = """
 1 The Kami War // O-Kagachi Made Manifest
 1 The World Tree
 1 There and Back Again
-1 Tropical Island
-1 Tundra
-1 Underground Sea
 1 Urza's Saga
 1 Utopia Sprawl
 1 Verdant Catacombs
-1 Volcanic Island
 1 War of the Last Alliance
 1 Weaver of Harmony
 1 Windswept Heath
 1 Wooded Foothills
 1 Zagoth Triome
+1 Ziatora's Proving Ground
 """
 
 

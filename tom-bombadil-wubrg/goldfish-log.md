@@ -184,22 +184,3 @@ partida é encerrada como vitória por combo (`infinite_combo_turn`).
   ficam reservadas para mana pela Enduring Vitality.
 - Os 📊 (remoção por capítulo, Birth III, Kiora III etc.) são valor real
   que o goldfish não converte em número. Eles não diminuem a carta.
-
-## v1.1 — 10 duals originais no lugar de 6 shocks + 4 tri-lands SNC (2026-09-22, pedido do usuário)
-
-Mesmas 3.000 seeds (8 turnos, seed_base 1.000.000). A coluna B é uma
-alternativa testada para o usuário decidir, e **não foi aplicada**.
-
-| Métrica | Antes (shocks + SNC) | **Aplicado** (10 duals) | B: duals + SNC, −4 básicos |
-|---|---|---|---|
-| Tom conjurado em 8 turnos | 91,6% | 89,6% | 91,9% |
-| Tom até o T5 | 56,8% | 57,2% | 58,1% |
-| Turno médio do Tom | 5,30 | 5,25 | 5,28 |
-| Mana na fase 1, T2 / T3 | 1,9 / 3,1 | 2,0 / 3,3 | 1,9 / 3,1 |
-| Vida final | 53,2 | 56,3 | 56,6 |
-| Dano proxy ≥ 120 | 19,6% | 21,4% | 20,2% |
-
-A queda do "Tom conjurado" no aplicado é de cor, não de mana: as partidas
-com 5+ manas mas sem alguma das 5 cores subiram de 139 para 177. Testes
-dirigidos: 57/57 depois da troca (os testes de fetch/Farseek/Binding/There
-and Back passaram a usar duals).
