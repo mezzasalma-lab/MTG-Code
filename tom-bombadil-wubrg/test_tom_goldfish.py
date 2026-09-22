@@ -414,10 +414,10 @@ def test_enduring_vitality_mana_and_return():
 
 
 def test_farseek_type_restriction():
-    s = fresh(turn=4, hand=["Farseek"], library=["Forest", "Temple Garden", FILLER])
+    s = fresh(turn=4, hand=["Farseek"], library=["Forest", "Savannah", FILLER])
     put_lands(s, ["Forest", "Forest"])
     t.cast_instant(s, "Farseek", [])
-    assert "Temple Garden" in names_on_bf(s), "Plains type (nao-basico ok)"
+    assert "Savannah" in names_on_bf(s), "Plains type (nao-basico ok)"
     s2 = fresh(turn=4, hand=["Farseek"], library=["Forest", FILLER])
     put_lands(s2, ["Forest", "Forest"])
     t.cast_instant(s2, "Farseek", [])
@@ -446,10 +446,11 @@ def test_serras_sanctum_and_world_tree():
     assert t.color_sources(s2, "B") == 6, "6+ terrenos: todos produzem qualquer cor"
 
 
-def test_fetch_shock_life_and_triome_cycling():
-    s = fresh(turn=3, hand=["Windswept Heath"], library=["Temple Garden", FILLER, FILLER])
+def test_fetch_dual_life_and_triome_cycling():
+    s = fresh(turn=3, hand=["Windswept Heath"], library=["Savannah", FILLER, FILLER])
     t.play_land(s, [])
-    assert "Temple Garden" in names_on_bf(s) and s.life == 40 - 1 - 2, "fetch 1 + shock 2"
+    sv = [p for p in s.battlefield if p.card == "Savannah"]
+    assert sv and not sv[0].tapped and s.life == 40 - 1, "fetch 1 de vida; dual entra desvirada sem custo"
     s2 = fresh(turn=9, hand=["Indatha Triome"])
     put_lands(s2, ["Forest"] * 7)
     t.try_cycling(s2, [])
@@ -563,14 +564,14 @@ def test_kami_war_transform_and_attack():
 
 
 def test_binding_there_and_back():
-    s = fresh(turn=6, library=["Overgrown Tomb", "Stomping Ground", FILLER])
+    s = fresh(turn=6, library=["Bayou", "Taiga", FILLER])
     run_chapters(s, "Binding the Old Gods", 3)
-    tomb = [p for p in s.battlefield if p.card in ("Overgrown Tomb", "Stomping Ground")]
-    assert tomb and tomb[0].tapped
-    s2 = fresh(turn=6, library=["Stomping Ground", FILLER])
+    fo = [p for p in s.battlefield if p.card in ("Bayou", "Taiga")]
+    assert fo and fo[0].tapped, "Forest card, virada"
+    s2 = fresh(turn=6, library=["Island", "Badlands", FILLER])
     run_chapters(s2, "There and Back Again", 3)
-    sg = [p for p in s2.battlefield if p.card == "Stomping Ground"]
-    assert sg and not sg[0].tapped and s2.life == 38, "Mountain card desvirada (shock paga 2)"
+    bl = [p for p in s2.battlefield if p.card == "Badlands"]
+    assert bl and not bl[0].tapped and s2.life == 40, "Mountain card desvirada (Island nao serve)"
     assert "Smaug" in names_on_bf(s2) and s2.ring_level == 1
 
 

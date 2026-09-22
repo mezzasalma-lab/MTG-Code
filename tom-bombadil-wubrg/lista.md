@@ -98,16 +98,16 @@
 1 Raugrin Triome
 1 Savai Triome
 1 Zagoth Triome
-1 Spara's Headquarters
-1 Raffine's Tower
-1 Ziatora's Proving Ground
-1 Jetmir's Garden
-1 Temple Garden
-1 Breeding Pool
-1 Overgrown Tomb
-1 Hallowed Fountain
-1 Godless Shrine
-1 Stomping Ground
+1 Underground Sea
+1 Badlands
+1 Volcanic Island
+1 Plateau
+1 Savannah
+1 Tropical Island
+1 Bayou
+1 Tundra
+1 Scrubland
+1 Taiga
 1 Windswept Heath
 1 Flooded Strand
 1 Wooded Foothills

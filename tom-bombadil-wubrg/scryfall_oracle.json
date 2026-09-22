@@ -1371,178 +1371,6 @@
   },
   "game_changer": false
  },
- "Spara's Headquarters": {
-  "name": "Spara's Headquarters",
-  "mana_cost": "",
-  "cmc": 0.0,
-  "type_line": "Land — Forest Plains Island",
-  "oracle_text": "({T}: Add {G}, {W}, or {U}.)\nThis land enters tapped.\nCycling {3} ({3}, Discard this card: Draw a card.)",
-  "color_identity": [
-   "G",
-   "U",
-   "W"
-  ],
-  "keywords": [
-   "Cycling"
-  ],
-  "legalities": {
-   "commander": "legal"
-  },
-  "game_changer": false
- },
- "Raffine's Tower": {
-  "name": "Raffine's Tower",
-  "mana_cost": "",
-  "cmc": 0.0,
-  "type_line": "Land — Plains Island Swamp",
-  "oracle_text": "({T}: Add {W}, {U}, or {B}.)\nThis land enters tapped.\nCycling {3} ({3}, Discard this card: Draw a card.)",
-  "color_identity": [
-   "B",
-   "U",
-   "W"
-  ],
-  "keywords": [
-   "Cycling"
-  ],
-  "legalities": {
-   "commander": "legal"
-  },
-  "game_changer": false
- },
- "Ziatora's Proving Ground": {
-  "name": "Ziatora's Proving Ground",
-  "mana_cost": "",
-  "cmc": 0.0,
-  "type_line": "Land — Swamp Mountain Forest",
-  "oracle_text": "({T}: Add {B}, {R}, or {G}.)\nThis land enters tapped.\nCycling {3} ({3}, Discard this card: Draw a card.)",
-  "color_identity": [
-   "B",
-   "G",
-   "R"
-  ],
-  "keywords": [
-   "Cycling"
-  ],
-  "legalities": {
-   "commander": "legal"
-  },
-  "game_changer": false
- },
- "Jetmir's Garden": {
-  "name": "Jetmir's Garden",
-  "mana_cost": "",
-  "cmc": 0.0,
-  "type_line": "Land — Mountain Forest Plains",
-  "oracle_text": "({T}: Add {R}, {G}, or {W}.)\nThis land enters tapped.\nCycling {3} ({3}, Discard this card: Draw a card.)",
-  "color_identity": [
-   "G",
-   "R",
-   "W"
-  ],
-  "keywords": [
-   "Cycling"
-  ],
-  "legalities": {
-   "commander": "legal"
-  },
-  "game_changer": false
- },
- "Temple Garden": {
-  "name": "Temple Garden",
-  "mana_cost": "",
-  "cmc": 0.0,
-  "type_line": "Land — Forest Plains",
-  "oracle_text": "({T}: Add {G} or {W}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
-  "color_identity": [
-   "G",
-   "W"
-  ],
-  "keywords": [],
-  "legalities": {
-   "commander": "legal"
-  },
-  "game_changer": false
- },
- "Breeding Pool": {
-  "name": "Breeding Pool",
-  "mana_cost": "",
-  "cmc": 0.0,
-  "type_line": "Land — Forest Island",
-  "oracle_text": "({T}: Add {G} or {U}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
-  "color_identity": [
-   "G",
-   "U"
-  ],
-  "keywords": [],
-  "legalities": {
-   "commander": "legal"
-  },
-  "game_changer": false
- },
- "Overgrown Tomb": {
-  "name": "Overgrown Tomb",
-  "mana_cost": "",
-  "cmc": 0.0,
-  "type_line": "Land — Swamp Forest",
-  "oracle_text": "({T}: Add {B} or {G}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
-  "color_identity": [
-   "B",
-   "G"
-  ],
-  "keywords": [],
-  "legalities": {
-   "commander": "legal"
-  },
-  "game_changer": false
- },
- "Hallowed Fountain": {
-  "name": "Hallowed Fountain",
-  "mana_cost": "",
-  "cmc": 0.0,
-  "type_line": "Land — Plains Island",
-  "oracle_text": "({T}: Add {W} or {U}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
-  "color_identity": [
-   "U",
-   "W"
-  ],
-  "keywords": [],
-  "legalities": {
-   "commander": "legal"
-  },
-  "game_changer": false
- },
- "Godless Shrine": {
-  "name": "Godless Shrine",
-  "mana_cost": "",
-  "cmc": 0.0,
-  "type_line": "Land — Plains Swamp",
-  "oracle_text": "({T}: Add {W} or {B}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
-  "color_identity": [
-   "B",
-   "W"
-  ],
-  "keywords": [],
-  "legalities": {
-   "commander": "legal"
-  },
-  "game_changer": false
- },
- "Stomping Ground": {
-  "name": "Stomping Ground",
-  "mana_cost": "",
-  "cmc": 0.0,
-  "type_line": "Land — Mountain Forest",
-  "oracle_text": "({T}: Add {R} or {G}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
-  "color_identity": [
-   "G",
-   "R"
-  ],
-  "keywords": [],
-  "legalities": {
-   "commander": "legal"
-  },
-  "game_changer": false
- },
  "Windswept Heath": {
   "name": "Windswept Heath",
   "mana_cost": "",
@@ -1682,5 +1510,165 @@
    "commander": "legal"
   },
   "game_changer": false
+ },
+ "Savannah": {
+  "name": "Savannah",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Forest Plains",
+  "oracle_text": "({T}: Add {G} or {W}.)",
+  "color_identity": [
+   "G",
+   "W"
+  ],
+  "game_changer": false,
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  }
+ },
+ "Tropical Island": {
+  "name": "Tropical Island",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Forest Island",
+  "oracle_text": "({T}: Add {G} or {U}.)",
+  "color_identity": [
+   "G",
+   "U"
+  ],
+  "game_changer": false,
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  }
+ },
+ "Bayou": {
+  "name": "Bayou",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Swamp Forest",
+  "oracle_text": "({T}: Add {B} or {G}.)",
+  "color_identity": [
+   "B",
+   "G"
+  ],
+  "game_changer": false,
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  }
+ },
+ "Tundra": {
+  "name": "Tundra",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Plains Island",
+  "oracle_text": "({T}: Add {W} or {U}.)",
+  "color_identity": [
+   "U",
+   "W"
+  ],
+  "game_changer": false,
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  }
+ },
+ "Scrubland": {
+  "name": "Scrubland",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Plains Swamp",
+  "oracle_text": "({T}: Add {W} or {B}.)",
+  "color_identity": [
+   "B",
+   "W"
+  ],
+  "game_changer": false,
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  }
+ },
+ "Taiga": {
+  "name": "Taiga",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Mountain Forest",
+  "oracle_text": "({T}: Add {R} or {G}.)",
+  "color_identity": [
+   "G",
+   "R"
+  ],
+  "game_changer": false,
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  }
+ },
+ "Underground Sea": {
+  "name": "Underground Sea",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Island Swamp",
+  "oracle_text": "({T}: Add {U} or {B}.)",
+  "color_identity": [
+   "B",
+   "U"
+  ],
+  "game_changer": false,
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  }
+ },
+ "Badlands": {
+  "name": "Badlands",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Swamp Mountain",
+  "oracle_text": "({T}: Add {B} or {R}.)",
+  "color_identity": [
+   "B",
+   "R"
+  ],
+  "game_changer": false,
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  }
+ },
+ "Volcanic Island": {
+  "name": "Volcanic Island",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Island Mountain",
+  "oracle_text": "({T}: Add {U} or {R}.)",
+  "color_identity": [
+   "R",
+   "U"
+  ],
+  "game_changer": false,
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  }
+ },
+ "Plateau": {
+  "name": "Plateau",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Mountain Plains",
+  "oracle_text": "({T}: Add {R} or {W}.)",
+  "color_identity": [
+   "R",
+   "W"
+  ],
+  "game_changer": false,
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  }
  }
 }
