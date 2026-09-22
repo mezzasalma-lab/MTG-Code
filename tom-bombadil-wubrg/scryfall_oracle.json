@@ -1,0 +1,1686 @@
+{
+ "Tom Bombadil": {
+  "name": "Tom Bombadil",
+  "mana_cost": "{W}{U}{B}{R}{G}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — God Bard",
+  "oracle_text": "As long as there are four or more lore counters among Sagas you control, Tom Bombadil has hexproof and indestructible.\nWhenever the final chapter ability of a Saga you control resolves, reveal cards from the top of your library until you reveal a Saga card. Put that card onto the battlefield and the rest on the bottom of your library in a random order. This ability triggers only once each turn.",
+  "power": "4",
+  "toughness": "4",
+  "color_identity": [
+   "B",
+   "G",
+   "R",
+   "U",
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "The Kami War // O-Kagachi Made Manifest": {
+  "name": "The Kami War // O-Kagachi Made Manifest",
+  "cmc": 6.0,
+  "type_line": "Enchantment — Saga // Enchantment Creature — Dragon Spirit",
+  "color_identity": [
+   "B",
+   "G",
+   "R",
+   "U",
+   "W"
+  ],
+  "keywords": [
+   "Flying",
+   "Transform",
+   "Trample"
+  ],
+  "card_faces": [
+   {
+    "name": "The Kami War",
+    "mana_cost": "{1}{W}{U}{B}{R}{G}",
+    "type_line": "Enchantment — Saga",
+    "oracle_text": "(As this Saga enters and after your draw step, add a lore counter.)\nI — Exile target nonland permanent an opponent controls.\nII — Return up to one other target nonland permanent to its owner's hand. Then each opponent discards a card.\nIII — Exile this Saga, then return it to the battlefield transformed under your control."
+   },
+   {
+    "name": "O-Kagachi Made Manifest",
+    "mana_cost": "",
+    "type_line": "Enchantment Creature — Dragon Spirit",
+    "oracle_text": "O-Kagachi Made Manifest is all colors.\nFlying, trample\nWhenever this creature attacks, defending player chooses a nonland card in your graveyard. Return that card to your hand. This creature gets +X/+0 until end of turn, where X is the mana value of that card.",
+    "power": "6",
+    "toughness": "6"
+   }
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Binding the Old Gods": {
+  "name": "Binding the Old Gods",
+  "mana_cost": "{2}{B}{G}",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Destroy target nonland permanent an opponent controls.\nII — Search your library for a Forest card, put it onto the battlefield tapped, then shuffle.\nIII — Creatures you control gain deathtouch until end of turn.",
+  "color_identity": [
+   "B",
+   "G"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "There and Back Again": {
+  "name": "There and Back Again",
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Up to one target creature can't block for as long as you control this Saga. The Ring tempts you.\nII — Search your library for a Mountain card, put it onto the battlefield, then shuffle.\nIII — Create Smaug, a legendary 6/6 red Dragon creature token with flying, haste, and \"When Smaug dies, create fourteen Treasure tokens.\"",
+  "color_identity": [
+   "R"
+  ],
+  "keywords": [
+   "Treasure",
+   "Haste"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Kiora Bests the Sea God": {
+  "name": "Kiora Bests the Sea God",
+  "mana_cost": "{5}{U}{U}",
+  "cmc": 7.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Create an 8/8 blue Kraken creature token with hexproof.\nII — Tap all nonland permanents target opponent controls. They don't untap during their controller's next untap step.\nIII — Gain control of target permanent an opponent controls. Untap it.",
+  "color_identity": [
+   "U"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Summon: Bahamut": {
+  "name": "Summon: Bahamut",
+  "mana_cost": "{9}",
+  "cmc": 9.0,
+  "type_line": "Enchantment Creature — Saga Dragon",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after IV.)\nI, II — Destroy up to one target nonland permanent.\nIII — Draw two cards.\nIV — Mega Flare — This creature deals damage equal to the total mana value of other permanents you control to each opponent.\nFlying",
+  "power": "9",
+  "toughness": "9",
+  "color_identity": [],
+  "keywords": [
+   "Flying"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Battle at the Helvault": {
+  "name": "Battle at the Helvault",
+  "mana_cost": "{4}{W}{W}",
+  "cmc": 6.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI, II — For each player, exile up to one target non-Saga, nonland permanent that player controls until this Saga leaves the battlefield.\nIII — Create Avacyn, a legendary 8/8 white Angel creature token with flying, vigilance, and indestructible.",
+  "color_identity": [
+   "W"
+  ],
+  "keywords": [
+   "Vigilance"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "War of the Last Alliance": {
+  "name": "War of the Last Alliance",
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI, II — Search your library for a legendary creature card, reveal it, put it into your hand, then shuffle.\nIII — Creatures you control gain double strike until end of turn. The Ring tempts you.",
+  "color_identity": [
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Song of Eärendil": {
+  "name": "Song of Eärendil",
+  "mana_cost": "{3}{G}{U}",
+  "cmc": 5.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Scry 2, then draw two cards.\nII — Create a Treasure token and a 2/2 blue Bird creature token with flying.\nIII — Put a flying counter on each creature you control without flying.",
+  "color_identity": [
+   "G",
+   "U"
+  ],
+  "keywords": [
+   "Treasure",
+   "Scry"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "The Creation of Avacyn": {
+  "name": "The Creation of Avacyn",
+  "mana_cost": "{1}{B}{B}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Search your library for a card, exile it face down, then shuffle.\nII — Turn the exiled card face up. If it's a creature card, you lose life equal to its mana value.\nIII — You may put the exiled card onto the battlefield if it's a creature card. If you don't put it onto the battlefield, put it into its owner's hand.",
+  "color_identity": [
+   "B"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Awaken the Honored Dead": {
+  "name": "Awaken the Honored Dead",
+  "mana_cost": "{B}{G}{U}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Destroy target nonland permanent.\nII — Mill three cards.\nIII — You may discard a card. When you do, return target creature or land card from your graveyard to your hand.",
+  "color_identity": [
+   "B",
+   "G",
+   "U"
+  ],
+  "keywords": [
+   "Mill"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "The Coming of Galactus": {
+  "name": "The Coming of Galactus",
+  "mana_cost": "{2}{B}{B}{G}",
+  "cmc": 5.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after IV.)\nI — Destroy up to one target nonland permanent.\nII, III — Each opponent loses 2 life.\nIV — Create Galactus, a legendary 16/16 black Elder Alien creature token with flying, trample, and \"Whenever Galactus attacks, destroy target land.\"",
+  "color_identity": [
+   "B",
+   "G"
+  ],
+  "keywords": [
+   "Trample"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Jugan Defends the Temple // Remnant of the Rising Star": {
+  "name": "Jugan Defends the Temple // Remnant of the Rising Star",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Saga // Enchantment Creature — Dragon Spirit",
+  "color_identity": [
+   "G"
+  ],
+  "keywords": [
+   "Flying",
+   "Transform"
+  ],
+  "card_faces": [
+   {
+    "name": "Jugan Defends the Temple",
+    "mana_cost": "{2}{G}",
+    "type_line": "Enchantment — Saga",
+    "oracle_text": "(As this Saga enters and after your draw step, add a lore counter.)\nI — Create a 1/1 green Human Monk creature token with \"{T}: Add {G}.\"\nII — Put a +1/+1 counter on each of up to two target creatures.\nIII — Exile this Saga, then return it to the battlefield transformed under your control."
+   },
+   {
+    "name": "Remnant of the Rising Star",
+    "mana_cost": "",
+    "type_line": "Enchantment Creature — Dragon Spirit",
+    "oracle_text": "Flying\nWhenever another creature you control enters, you may pay {X}. When you do, put X +1/+1 counters on that creature.\nAs long as you control five or more modified creatures, this creature gets +5/+5 and has trample. (Equipment, Auras you control, and counters are modifications.)",
+    "power": "2",
+    "toughness": "2"
+   }
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Elspeth Conquers Death": {
+  "name": "Elspeth Conquers Death",
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Exile target permanent an opponent controls with mana value 3 or greater.\nII — Noncreature spells your opponents cast cost {2} more to cast until your next turn.\nIII — Return target creature or planeswalker card from your graveyard to the battlefield. Put a +1/+1 counter or a loyalty counter on it.",
+  "color_identity": [
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "The Eldest Reborn": {
+  "name": "The Eldest Reborn",
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Each opponent sacrifices a creature or planeswalker of their choice.\nII — Each opponent discards a card.\nIII — Put target creature or planeswalker card from a graveyard onto the battlefield under your control.",
+  "color_identity": [
+   "B"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "The Bath Song": {
+  "name": "The Bath Song",
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI, II — Draw two cards, then discard a card.\nIII — Shuffle any number of target cards from your graveyard into your library. Add {U}{U}.",
+  "color_identity": [
+   "U"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "The Cruelty of Gix": {
+  "name": "The Cruelty of Gix",
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "Read ahead (Choose a chapter and start with that many lore counters. Add one after your draw step. Skipped chapters don't trigger. Sacrifice after III.)\nI — Target opponent reveals their hand. You choose a creature or planeswalker card from it. That player discards that card.\nII — Search your library for a card, put that card into your hand, then shuffle. You lose 3 life.\nIII — Put target creature card from a graveyard onto the battlefield under your control.",
+  "color_identity": [
+   "B"
+  ],
+  "keywords": [
+   "Read Ahead"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Birth of the Imperium": {
+  "name": "Birth of the Imperium",
+  "mana_cost": "{2}{W}{U}{B}",
+  "cmc": 5.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Create a 2/2 white Astartes Warrior creature token with vigilance for each opponent you have.\nII — Each opponent sacrifices a creature of their choice.\nIII — Draw two cards for each opponent who controls fewer creatures than you.",
+  "color_identity": [
+   "B",
+   "U",
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "In the Darkness Bind Them": {
+  "name": "In the Darkness Bind Them",
+  "mana_cost": "{2}{U}{B}{R}",
+  "cmc": 5.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after IV.)\nI, II, III — Create a 3/3 black Wraith creature token with menace. The Ring tempts you.\nIV — For each opponent, gain control of up to one target creature that player controls until end of turn. Untap those creatures. They gain haste until end of turn. The Ring tempts you.",
+  "color_identity": [
+   "B",
+   "R",
+   "U"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Summon: Knights of Round": {
+  "name": "Summon: Knights of Round",
+  "mana_cost": "{6}{W}{W}",
+  "cmc": 8.0,
+  "type_line": "Enchantment Creature — Saga Knight",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after V.)\nI, II, III, IV — Create three 2/2 white Knight creature tokens.\nV — Ultimate End — Other creatures you control get +2/+2 until end of turn. Put an indestructible counter on each of them.\nIndestructible",
+  "power": "3",
+  "toughness": "3",
+  "color_identity": [
+   "W"
+  ],
+  "keywords": [
+   "Indestructible"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Summon: Primal Odin": {
+  "name": "Summon: Primal Odin",
+  "mana_cost": "{4}{B}{B}",
+  "cmc": 6.0,
+  "type_line": "Enchantment Creature — Saga Knight",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Gungnir — Destroy target creature an opponent controls.\nII — Zantetsuken — This creature gains \"Whenever this creature deals combat damage to a player, that player loses the game.\"\nIII — Hall of Sorrow — Draw two cards. Each player loses 2 life.",
+  "power": "5",
+  "toughness": "3",
+  "color_identity": [
+   "B"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Summon: Fenrir": {
+  "name": "Summon: Fenrir",
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment Creature — Saga Wolf",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Crescent Fang — Search your library for a basic land card, put it onto the battlefield tapped, then shuffle.\nII — Heavenward Howl — When you next cast a creature spell this turn, that creature enters with an additional +1/+1 counter on it.\nIII — Ecliptic Growl — Draw a card if you control the creature with the greatest power or tied for the greatest power.",
+  "power": "3",
+  "toughness": "2",
+  "color_identity": [
+   "G"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Fable of the Mirror-Breaker // Reflection of Kiki-Jiki": {
+  "name": "Fable of the Mirror-Breaker // Reflection of Kiki-Jiki",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Saga // Enchantment Creature — Goblin Shaman",
+  "color_identity": [
+   "R"
+  ],
+  "keywords": [
+   "Transform",
+   "Treasure"
+  ],
+  "card_faces": [
+   {
+    "name": "Fable of the Mirror-Breaker",
+    "mana_cost": "{2}{R}",
+    "type_line": "Enchantment — Saga",
+    "oracle_text": "(As this Saga enters and after your draw step, add a lore counter.)\nI — Create a 2/2 red Goblin Shaman creature token with \"Whenever this token attacks, create a Treasure token.\"\nII — You may discard up to two cards. If you do, draw that many cards.\nIII — Exile this Saga, then return it to the battlefield transformed under your control."
+   },
+   {
+    "name": "Reflection of Kiki-Jiki",
+    "mana_cost": "",
+    "type_line": "Enchantment Creature — Goblin Shaman",
+    "oracle_text": "{1}, {T}: Create a token that's a copy of another target nonlegendary creature you control, except it has haste. Sacrifice it at the beginning of the next end step.",
+    "power": "2",
+    "toughness": "2"
+   }
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "The First Iroan Games": {
+  "name": "The First Iroan Games",
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after IV.)\nI — Create a 1/1 white Human Soldier creature token.\nII — Put three +1/+1 counters on target creature you control.\nIII — If you control a creature with power 4 or greater, draw two cards.\nIV — Create a Gold token. (It's an artifact with \"Sacrifice this token: Add one mana of any color.\")",
+  "color_identity": [
+   "G"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Summon: Yojimbo": {
+  "name": "Summon: Yojimbo",
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Enchantment Creature — Saga Samurai",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after IV.)\nI — Exile target artifact, enchantment, or tapped creature an opponent controls.\nII, III — Until your next turn, creatures can't attack you unless their controller pays {2} for each of those creatures.\nIV — Create X Treasure tokens, where X is the number of opponents who control a creature with power 4 or greater.\nVigilance",
+  "power": "5",
+  "toughness": "5",
+  "color_identity": [
+   "W"
+  ],
+  "keywords": [
+   "Vigilance",
+   "Treasure"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Resourceful Defense": {
+  "name": "Resourceful Defense",
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever a permanent you control leaves the battlefield, if it had counters on it, put those counters on target permanent you control.\n{4}{W}: Move any number of counters from target permanent you control onto a second target permanent you control.",
+  "color_identity": [
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Goldberry, River-Daughter": {
+  "name": "Goldberry, River-Daughter",
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Nymph",
+  "oracle_text": "{T}: Move a counter of each kind not on Goldberry from another target permanent you control onto Goldberry.\n{U}, {T}: Move one or more counters from Goldberry onto another target permanent you control. If you do, draw a card.",
+  "power": "1",
+  "toughness": "3",
+  "color_identity": [
+   "U"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Nexus Mentality": {
+  "name": "Nexus Mentality",
+  "mana_cost": "{3}{U}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Choose one. If you control a commander as you cast this spell, you may choose both instead.\n• Move all counters from target nonland permanent you control onto another target nonland permanent you control.\n• Remove all counters from target nonland permanent you control. Draw a card for each counter removed this way.",
+  "color_identity": [
+   "U"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Power Conduit": {
+  "name": "Power Conduit",
+  "mana_cost": "{2}",
+  "cmc": 2.0,
+  "type_line": "Artifact",
+  "oracle_text": "{T}, Remove a counter from a permanent you control: Choose one —\n• Put a charge counter on target artifact.\n• Put a +1/+1 counter on target creature.",
+  "color_identity": [],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Scholar of New Horizons": {
+  "name": "Scholar of New Horizons",
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Scout",
+  "oracle_text": "This creature enters with a +1/+1 counter on it.\n{T}, Remove a counter from a permanent you control: Search your library for a Plains card and reveal it. If an opponent controls more lands than you, you may put that card onto the battlefield tapped. If you don't put the card onto the battlefield, put it into your hand. Then shuffle.",
+  "power": "1",
+  "toughness": "1",
+  "color_identity": [
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "O'aka, Traveling Merchant": {
+  "name": "O'aka, Traveling Merchant",
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Human Citizen",
+  "oracle_text": "{T}, Remove a counter from a nonland permanent you control: Draw a card.",
+  "power": "1",
+  "toughness": "2",
+  "color_identity": [
+   "U"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Hex Parasite": {
+  "name": "Hex Parasite",
+  "mana_cost": "{1}",
+  "cmc": 1.0,
+  "type_line": "Artifact Creature — Phyrexian Insect",
+  "oracle_text": "{X}{B/P}: Remove up to X counters from target permanent. For each counter removed this way, this creature gets +1/+0 until end of turn. ({B/P} can be paid with either {B} or 2 life.)",
+  "power": "1",
+  "toughness": "1",
+  "color_identity": [
+   "B"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Clockspinning": {
+  "name": "Clockspinning",
+  "mana_cost": "{U}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Buyback {3} (You may pay an additional {3} as you cast this spell. If you do, put this card into your hand as it resolves.)\nChoose a counter on target permanent or suspended card. Remove that counter from that permanent or card or put another of those counters on it.",
+  "color_identity": [
+   "U"
+  ],
+  "keywords": [
+   "Buyback"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Satsuki, the Living Lore": {
+  "name": "Satsuki, the Living Lore",
+  "mana_cost": "{G}{W}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Human Druid",
+  "oracle_text": "{T}: Put a lore counter on each Saga you control. Activate only as a sorcery.\nWhen Satsuki dies, choose up to one —\n• Return target Saga or enchantment creature you control to its owner's hand.\n• Return target Saga card from your graveyard to your hand.",
+  "power": "1",
+  "toughness": "3",
+  "color_identity": [
+   "G",
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Barbara Wright": {
+  "name": "Barbara Wright",
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Human Advisor",
+  "oracle_text": "History Teacher — Sagas you control have read ahead. (As a Saga enters, choose a chapter and start with that many lore counters. Skipped chapters don't trigger.)\nDoctor's companion (You can have two commanders if the other is the Doctor.)",
+  "power": "1",
+  "toughness": "3",
+  "color_identity": [
+   "W"
+  ],
+  "keywords": [
+   "History Teacher",
+   "Doctor's companion"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Flux Channeler": {
+  "name": "Flux Channeler",
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Wizard",
+  "oracle_text": "Whenever you cast a noncreature spell, proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+  "power": "2",
+  "toughness": "2",
+  "color_identity": [
+   "U"
+  ],
+  "keywords": [
+   "Proliferate"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Ripples of Potential": {
+  "name": "Ripples of Potential",
+  "mana_cost": "{1}{U}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Proliferate, then choose any number of permanents you control that had a counter put on them this way. Those permanents phase out. (To proliferate, choose any number of permanents and/or players, then give each another counter of each kind already there. Treat phased-out permanents and anything attached to them as though they don't exist until their controller's next turn.)",
+  "color_identity": [
+   "U"
+  ],
+  "keywords": [
+   "Proliferate"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Weaver of Harmony": {
+  "name": "Weaver of Harmony",
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Enchantment Creature — Snake Druid",
+  "oracle_text": "Other enchantment creatures you control get +1/+1.\n{G}, {T}: Copy target activated or triggered ability you control from an enchantment source. You may choose new targets for the copy. (Mana abilities can't be targeted.)",
+  "power": "2",
+  "toughness": "2",
+  "color_identity": [
+   "G"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Strionic Resonator": {
+  "name": "Strionic Resonator",
+  "mana_cost": "{2}",
+  "cmc": 2.0,
+  "type_line": "Artifact",
+  "oracle_text": "{2}, {T}: Copy target triggered ability you control. You may choose new targets for the copy. (A triggered ability uses the words \"when,\" \"whenever,\" or \"at.\")",
+  "color_identity": [],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Estrid's Invocation": {
+  "name": "Estrid's Invocation",
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "You may have this enchantment enter as a copy of an enchantment you control, except it has \"At the beginning of your upkeep, you may exile this enchantment. If you do, return it to the battlefield under its owner's control.\"",
+  "color_identity": [
+   "U"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Narci, Fable Singer": {
+  "name": "Narci, Fable Singer",
+  "mana_cost": "{1}{W}{B}{G}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Bard",
+  "oracle_text": "Lifelink\nWhenever you sacrifice an enchantment, draw a card.\nWhenever the final chapter ability of a Saga you control resolves, each opponent loses X life and you gain X life, where X is that Saga's mana value.",
+  "power": "3",
+  "toughness": "3",
+  "color_identity": [
+   "B",
+   "G",
+   "W"
+  ],
+  "keywords": [
+   "Lifelink"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Historian's Boon": {
+  "name": "Historian's Boon",
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever this enchantment or another nontoken enchantment you control enters, create a 1/1 white Soldier creature token.\nWhenever the final chapter ability of a Saga you control triggers, create a 4/4 white Angel creature token with flying and vigilance.",
+  "color_identity": [
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Femeref Enchantress": {
+  "name": "Femeref Enchantress",
+  "mana_cost": "{G}{W}",
+  "cmc": 2.0,
+  "type_line": "Creature — Human Druid",
+  "oracle_text": "Whenever an enchantment is put into a graveyard from the battlefield, draw a card.",
+  "power": "1",
+  "toughness": "2",
+  "color_identity": [
+   "G",
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Sythis, Harvest's Hand": {
+  "name": "Sythis, Harvest's Hand",
+  "mana_cost": "{G}{W}",
+  "cmc": 2.0,
+  "type_line": "Legendary Enchantment Creature — Nymph",
+  "oracle_text": "Whenever you cast an enchantment spell, you gain 1 life and draw a card.",
+  "power": "1",
+  "toughness": "2",
+  "color_identity": [
+   "G",
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Enchantress's Presence": {
+  "name": "Enchantress's Presence",
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever you cast an enchantment spell, draw a card.",
+  "color_identity": [
+   "G"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Setessan Champion": {
+  "name": "Setessan Champion",
+  "mana_cost": "{2}{G}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Warrior",
+  "oracle_text": "Constellation — Whenever an enchantment you control enters, put a +1/+1 counter on this creature and draw a card.",
+  "power": "1",
+  "toughness": "3",
+  "color_identity": [
+   "G"
+  ],
+  "keywords": [
+   "Constellation"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Eidolon of Blossoms": {
+  "name": "Eidolon of Blossoms",
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Enchantment Creature — Spirit",
+  "oracle_text": "Constellation — Whenever this creature or another enchantment you control enters, draw a card.",
+  "power": "2",
+  "toughness": "2",
+  "color_identity": [
+   "G"
+  ],
+  "keywords": [
+   "Constellation"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Sol Ring": {
+  "name": "Sol Ring",
+  "mana_cost": "{1}",
+  "cmc": 1.0,
+  "type_line": "Artifact",
+  "oracle_text": "{T}: Add {C}{C}.",
+  "color_identity": [],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Arcane Signet": {
+  "name": "Arcane Signet",
+  "mana_cost": "{2}",
+  "cmc": 2.0,
+  "type_line": "Artifact",
+  "oracle_text": "{T}: Add one mana of any color in your commander's color identity.",
+  "color_identity": [],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Utopia Sprawl": {
+  "name": "Utopia Sprawl",
+  "mana_cost": "{G}",
+  "cmc": 1.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant Forest\nAs this Aura enters, choose a color.\nWhenever enchanted Forest is tapped for mana, its controller adds an additional one mana of the chosen color.",
+  "color_identity": [
+   "G"
+  ],
+  "keywords": [
+   "Enchant"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Fertile Ground": {
+  "name": "Fertile Ground",
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Enchantment — Aura",
+  "oracle_text": "Enchant land\nWhenever enchanted land is tapped for mana, its controller adds an additional one mana of any color.",
+  "color_identity": [
+   "G"
+  ],
+  "keywords": [
+   "Enchant"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Sanctum Weaver": {
+  "name": "Sanctum Weaver",
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Enchantment Creature — Dryad",
+  "oracle_text": "{T}: Add X mana of any one color, where X is the number of enchantments you control.",
+  "power": "0",
+  "toughness": "2",
+  "color_identity": [
+   "G"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Bloom Tender": {
+  "name": "Bloom Tender",
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Creature — Elf Druid",
+  "oracle_text": "Vivid — {T}: For each color among permanents you control, add one mana of that color.",
+  "power": "1",
+  "toughness": "1",
+  "color_identity": [
+   "G"
+  ],
+  "keywords": [
+   "Vivid"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Faeburrow Elder": {
+  "name": "Faeburrow Elder",
+  "mana_cost": "{1}{G}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Treefolk Druid",
+  "oracle_text": "Vigilance\nThis creature gets +1/+1 for each color among permanents you control.\n{T}: For each color among permanents you control, add one mana of that color.",
+  "power": "0",
+  "toughness": "0",
+  "color_identity": [
+   "G",
+   "W"
+  ],
+  "keywords": [
+   "Vigilance"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Enduring Vitality": {
+  "name": "Enduring Vitality",
+  "mana_cost": "{1}{G}{G}",
+  "cmc": 3.0,
+  "type_line": "Enchantment Creature — Elk Glimmer",
+  "oracle_text": "Vigilance\nCreatures you control have \"{T}: Add one mana of any color.\"\nWhen Enduring Vitality dies, if it was a creature, return it to the battlefield under its owner's control. It's an enchantment. (It's not a creature.)",
+  "power": "3",
+  "toughness": "3",
+  "color_identity": [
+   "G"
+  ],
+  "keywords": [
+   "Vigilance"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Farseek": {
+  "name": "Farseek",
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Search your library for a Plains, Island, Swamp, or Mountain card, put it onto the battlefield tapped, then shuffle.",
+  "color_identity": [
+   "G"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Prismatic Omen": {
+  "name": "Prismatic Omen",
+  "mana_cost": "{1}{G}",
+  "cmc": 2.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Lands you control are every basic land type in addition to their other types.",
+  "color_identity": [
+   "G"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Replenish": {
+  "name": "Replenish",
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Return all enchantment cards from your graveyard to the battlefield. (Auras with nothing to enchant remain in your graveyard.)",
+  "color_identity": [
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Resurgent Belief": {
+  "name": "Resurgent Belief",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Suspend 2—{1}{W} (Rather than cast this card from your hand, pay {1}{W} and exile it with two time counters on it. At the beginning of your upkeep, remove a time counter. When the last is removed, you may cast it without paying its mana cost.)\nReturn all enchantment cards from your graveyard to the battlefield. (Auras with nothing to enchant remain in your graveyard.)",
+  "color_identity": [
+   "W"
+  ],
+  "keywords": [
+   "Suspend"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Starfield of Nyx": {
+  "name": "Starfield of Nyx",
+  "mana_cost": "{4}{W}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "At the beginning of your upkeep, you may return target enchantment card from your graveyard to the battlefield.\nAs long as you control five or more enchantments, each other non-Aura enchantment you control is a creature in addition to its other types and has base power and base toughness each equal to its mana value.",
+  "color_identity": [
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Swords to Plowshares": {
+  "name": "Swords to Plowshares",
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Exile target creature. Its controller gains life equal to its power.",
+  "color_identity": [
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Leyline Binding": {
+  "name": "Leyline Binding",
+  "mana_cost": "{5}{W}",
+  "cmc": 6.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Flash\nDomain — This spell costs {1} less to cast for each basic land type among lands you control.\nWhen this enchantment enters, exile target nonland permanent an opponent controls until this enchantment leaves the battlefield.",
+  "color_identity": [
+   "W"
+  ],
+  "keywords": [
+   "Domain",
+   "Flash"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Teferi's Protection": {
+  "name": "Teferi's Protection",
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Until your next turn, your life total can't change and you gain protection from everything. All permanents you control phase out. (While they're phased out, they're treated as though they don't exist. They phase in before you untap during your untap step.)\nExile Teferi's Protection.",
+  "color_identity": [
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": true
+ },
+ "Enlightened Tutor": {
+  "name": "Enlightened Tutor",
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "type_line": "Instant",
+  "oracle_text": "Search your library for an artifact or enchantment card, reveal it, then shuffle and put that card on top.",
+  "color_identity": [
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": true
+ },
+ "Nesting Grounds": {
+  "name": "Nesting Grounds",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{1}, {T}: Move a counter from target permanent you control onto a second target permanent. Activate only as a sorcery.",
+  "color_identity": [],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Karn's Bastion": {
+  "name": "Karn's Bastion",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{4}, {T}: Proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+  "color_identity": [],
+  "keywords": [
+   "Proliferate"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Urza's Saga": {
+  "name": "Urza's Saga",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Enchantment Land — Urza's Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — This Saga gains \"{T}: Add {C}.\"\nII — This Saga gains \"{2}, {T}: Create a 0/0 colorless Construct artifact creature token with 'This token gets +1/+1 for each artifact you control.'\"\nIII — Search your library for an artifact card with mana cost {0} or {1}, put it onto the battlefield, then shuffle.",
+  "color_identity": [],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Serra's Sanctum": {
+  "name": "Serra's Sanctum",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Legendary Land",
+  "oracle_text": "{T}: Add {W} for each enchantment you control.",
+  "color_identity": [
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": true
+ },
+ "Hall of Heliod's Generosity": {
+  "name": "Hall of Heliod's Generosity",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Legendary Land",
+  "oracle_text": "{T}: Add {C}.\n{1}{W}, {T}: Put target enchantment card from your graveyard on top of your library.",
+  "color_identity": [
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "The World Tree": {
+  "name": "The World Tree",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "This land enters tapped.\n{T}: Add {G}.\nAs long as you control six or more lands, lands you control have \"{T}: Add one mana of any color.\"\n{W}{W}{U}{U}{B}{B}{R}{R}{G}{G}, {T}, Sacrifice this land: Search your library for any number of God cards, put them onto the battlefield, then shuffle.",
+  "color_identity": [
+   "B",
+   "G",
+   "R",
+   "U",
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Command Tower": {
+  "name": "Command Tower",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add one mana of any color in your commander's color identity.",
+  "color_identity": [],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Exotic Orchard": {
+  "name": "Exotic Orchard",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add one mana of any color that a land an opponent controls could produce.",
+  "color_identity": [],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "City of Brass": {
+  "name": "City of Brass",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "Whenever this land becomes tapped, it deals 1 damage to you.\n{T}: Add one mana of any color.",
+  "color_identity": [],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Mana Confluence": {
+  "name": "Mana Confluence",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}, Pay 1 life: Add one mana of any color.",
+  "color_identity": [],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Reflecting Pool": {
+  "name": "Reflecting Pool",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add one mana of any type that a land you control could produce.",
+  "color_identity": [],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Indatha Triome": {
+  "name": "Indatha Triome",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Plains Swamp Forest",
+  "oracle_text": "({T}: Add {W}, {B}, or {G}.)\nThis land enters tapped.\nCycling {3} ({3}, Discard this card: Draw a card.)",
+  "color_identity": [
+   "B",
+   "G",
+   "W"
+  ],
+  "keywords": [
+   "Cycling"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Ketria Triome": {
+  "name": "Ketria Triome",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Forest Island Mountain",
+  "oracle_text": "({T}: Add {G}, {U}, or {R}.)\nThis land enters tapped.\nCycling {3} ({3}, Discard this card: Draw a card.)",
+  "color_identity": [
+   "G",
+   "R",
+   "U"
+  ],
+  "keywords": [
+   "Cycling"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Raugrin Triome": {
+  "name": "Raugrin Triome",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Island Mountain Plains",
+  "oracle_text": "({T}: Add {U}, {R}, or {W}.)\nThis land enters tapped.\nCycling {3} ({3}, Discard this card: Draw a card.)",
+  "color_identity": [
+   "R",
+   "U",
+   "W"
+  ],
+  "keywords": [
+   "Cycling"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Savai Triome": {
+  "name": "Savai Triome",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Mountain Plains Swamp",
+  "oracle_text": "({T}: Add {R}, {W}, or {B}.)\nThis land enters tapped.\nCycling {3} ({3}, Discard this card: Draw a card.)",
+  "color_identity": [
+   "B",
+   "R",
+   "W"
+  ],
+  "keywords": [
+   "Cycling"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Zagoth Triome": {
+  "name": "Zagoth Triome",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Swamp Forest Island",
+  "oracle_text": "({T}: Add {B}, {G}, or {U}.)\nThis land enters tapped.\nCycling {3} ({3}, Discard this card: Draw a card.)",
+  "color_identity": [
+   "B",
+   "G",
+   "U"
+  ],
+  "keywords": [
+   "Cycling"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Spara's Headquarters": {
+  "name": "Spara's Headquarters",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Forest Plains Island",
+  "oracle_text": "({T}: Add {G}, {W}, or {U}.)\nThis land enters tapped.\nCycling {3} ({3}, Discard this card: Draw a card.)",
+  "color_identity": [
+   "G",
+   "U",
+   "W"
+  ],
+  "keywords": [
+   "Cycling"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Raffine's Tower": {
+  "name": "Raffine's Tower",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Plains Island Swamp",
+  "oracle_text": "({T}: Add {W}, {U}, or {B}.)\nThis land enters tapped.\nCycling {3} ({3}, Discard this card: Draw a card.)",
+  "color_identity": [
+   "B",
+   "U",
+   "W"
+  ],
+  "keywords": [
+   "Cycling"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Ziatora's Proving Ground": {
+  "name": "Ziatora's Proving Ground",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Swamp Mountain Forest",
+  "oracle_text": "({T}: Add {B}, {R}, or {G}.)\nThis land enters tapped.\nCycling {3} ({3}, Discard this card: Draw a card.)",
+  "color_identity": [
+   "B",
+   "G",
+   "R"
+  ],
+  "keywords": [
+   "Cycling"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Jetmir's Garden": {
+  "name": "Jetmir's Garden",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Mountain Forest Plains",
+  "oracle_text": "({T}: Add {R}, {G}, or {W}.)\nThis land enters tapped.\nCycling {3} ({3}, Discard this card: Draw a card.)",
+  "color_identity": [
+   "G",
+   "R",
+   "W"
+  ],
+  "keywords": [
+   "Cycling"
+  ],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Temple Garden": {
+  "name": "Temple Garden",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Forest Plains",
+  "oracle_text": "({T}: Add {G} or {W}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+  "color_identity": [
+   "G",
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Breeding Pool": {
+  "name": "Breeding Pool",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Forest Island",
+  "oracle_text": "({T}: Add {G} or {U}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+  "color_identity": [
+   "G",
+   "U"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Overgrown Tomb": {
+  "name": "Overgrown Tomb",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Swamp Forest",
+  "oracle_text": "({T}: Add {B} or {G}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+  "color_identity": [
+   "B",
+   "G"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Hallowed Fountain": {
+  "name": "Hallowed Fountain",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Plains Island",
+  "oracle_text": "({T}: Add {W} or {U}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+  "color_identity": [
+   "U",
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Godless Shrine": {
+  "name": "Godless Shrine",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Plains Swamp",
+  "oracle_text": "({T}: Add {W} or {B}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+  "color_identity": [
+   "B",
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Stomping Ground": {
+  "name": "Stomping Ground",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Mountain Forest",
+  "oracle_text": "({T}: Add {R} or {G}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+  "color_identity": [
+   "G",
+   "R"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Windswept Heath": {
+  "name": "Windswept Heath",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}, Pay 1 life, Sacrifice this land: Search your library for a Forest or Plains card, put it onto the battlefield, then shuffle.",
+  "color_identity": [],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Flooded Strand": {
+  "name": "Flooded Strand",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}, Pay 1 life, Sacrifice this land: Search your library for a Plains or Island card, put it onto the battlefield, then shuffle.",
+  "color_identity": [],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Wooded Foothills": {
+  "name": "Wooded Foothills",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}, Pay 1 life, Sacrifice this land: Search your library for a Mountain or Forest card, put it onto the battlefield, then shuffle.",
+  "color_identity": [],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Verdant Catacombs": {
+  "name": "Verdant Catacombs",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}, Pay 1 life, Sacrifice this land: Search your library for a Swamp or Forest card, put it onto the battlefield, then shuffle.",
+  "color_identity": [],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Misty Rainforest": {
+  "name": "Misty Rainforest",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "{T}, Pay 1 life, Sacrifice this land: Search your library for a Forest or Island card, put it onto the battlefield, then shuffle.",
+  "color_identity": [],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Forest": {
+  "name": "Forest",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Basic Land — Forest",
+  "oracle_text": "({T}: Add {G}.)",
+  "color_identity": [
+   "G"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Plains": {
+  "name": "Plains",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Basic Land — Plains",
+  "oracle_text": "({T}: Add {W}.)",
+  "color_identity": [
+   "W"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Island": {
+  "name": "Island",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Basic Land — Island",
+  "oracle_text": "({T}: Add {U}.)",
+  "color_identity": [
+   "U"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Swamp": {
+  "name": "Swamp",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Basic Land — Swamp",
+  "oracle_text": "({T}: Add {B}.)",
+  "color_identity": [
+   "B"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ },
+ "Mountain": {
+  "name": "Mountain",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Basic Land — Mountain",
+  "oracle_text": "({T}: Add {R}.)",
+  "color_identity": [
+   "R"
+  ],
+  "keywords": [],
+  "legalities": {
+   "commander": "legal"
+  },
+  "game_changer": false
+ }
+}
