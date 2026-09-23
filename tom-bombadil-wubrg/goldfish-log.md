@@ -290,3 +290,75 @@ padrão da Utopia Sprawl na partida #1 — não muda legalidade): Femeref
 Enchantress e Jugan Defends the Temple aparecem "recastadas" no log sem
 nunca terem morrido. Também não persegui a fonte exata de cada +1/+1 do
 Narci (o capítulo II do Jugan ainda não tinha disparado nesse ponto).
+
+### Partida manual #4 (2026-09-23) — Strionic Resonator dobrando capítulos, 0 erros de regra
+
+O usuário perguntou se a jogada estava certa; trace programático do JSON
+confirmou que sim, com uma correção de entendimento (registrada aqui).
+
+| Turno | Evento |
+|---|---|
+| T6 | Birth of the Imperium conjurada (Lore=1, ETB). Capítulo I dispara
+("Create... Astartes Warrior... for each opponent"). **Strionic Resonator**
+usado (tapado neste turno) pra copiar esse gatilho — 6 tokens em vez de 3 |
+| T7 | Draw step leva o marcador de 1→2, cruzando o limiar do **capítulo II**
+("Each opponent sacrifices a creature of their choice") — é aqui que o
+sacrifício de verdade aconteceu. Tom Bombadil conjurado |
+| T8 | Draw step leva o marcador de 2→3 (capítulo III final, "Sacrifice
+after III", draw 2 per opponent with fewer creatures). Em resposta,
+**Clockspinning com Buyback** tira 1 marcador (Lore 3→2, confirmado no
+log) — pela 714.4 ela sobrevive. Como III é o capítulo final, dispara o
+Tom; **Strionic Resonator usado de novo** (destapado no T7, tapado de
+novo aqui) pra copiar o **gatilho do Tom** (não o da Birth) — 2 Sagas de
+graça (Coming of Galactus + Summon: Bahamut). Summon: Knights of Round
+volta do cemitério via **Starfield of Nyx** (upkeep, "return target
+enchantment card from your graveyard") — ela tinha sido descartada no T7 |
+
+**Correção de entendimento**: o usuário achou que salvar a Birth em 2
+continuava disparando o **sacrifício** (capítulo II). Na verdade o
+sacrifício só disparou 1 vez (T7, ao cruzar 1→2) — segurar o marcador EM 2
+não recruza esse limiar. O que se repete ao segurá-la ali é o **capítulo
+III (compra)**, não o II. Pra repetir o sacrifício seria preciso derrubar
+o marcador abaixo de 2 (pra 0 ou 1) e deixar cruzar 2 de novo.
+
+### Partida manual #5 (2026-09-23) — Goldberry salvando a Kiora, 0 erros de regra confirmados
+
+| Turno | Evento |
+|---|---|
+| T1-T2 | Land drop The World Tree (entra virado). Barbara Wright conjurada
+(`{1}{W}`) — dá "read ahead" a todas as Sagas do jogador. **Anomalia**:
+Breeding Pool e Hallowed Fountain aparecem hand→battlefield no MESMO
+turno (T2) — 2 land drops num turno só, sem nenhuma fonte de land drop
+extra identificada até esse ponto. Não consegui explicar com o que já
+tinha em campo; provável erro de sequenciamento ou artefato do
+undo/redo do Archidekt — sinalizando, não afirmando bug |
+| T3-T4 | Scholar of New Horizons, Goldberry River-Daughter, Flux Channeler
+conjuradas. Savai Triome buscada por fetch (Windswept Heath) |
+| T5 | Summon: Fenrir conjurada com Barbara Wright em campo (read ahead
+disponível), entra com Lore=1 (capítulo I dispara, busca terreno básico).
+**Anomalia**: log mostra Fenrir saindo de battlefield→library duas vezes
+seguidas — não encontrei efeito real do deck que explique isso; mais
+provável artefato de undo/redo (o próprio Enlightened Tutor, que embaralha
+a library, foi conjurado no mesmo turno) do que jogada real |
+| T6 | Tom Bombadil conjurado |
+| T7 | Kiora Bests the Sea God conjurada (Lore=1, capítulo I cria Kraken 8/8) |
+| T8 | The Cruelty of Gix conjurada |
+| T9 | Kiora e The Cruelty of Gix ambas avançam. Kiora cruza pro **capítulo
+III** (Lore=3, "Gain control of target permanent an opponent controls") —
+📊 estrutural (sem oponente real). Em resposta, **Goldberry, River-Daughter**
+usa a 1ª habilidade (`{T}: Move a counter... from another target permanent
+onto Goldberry`) puxando 1 marcador de saber da Kiora pra si — Kiora volta
+pra Lore=2 e sobrevive (714.4), mesmo padrão de "salvar a Saga" das
+partidas #1 e #4, mas com Goldberry em vez de Clockspinning/Hex Parasite.
+Battle at the Helvault também cruza pro capítulo final (Lore=3) no mesmo
+turno — só **1** Saga de graça entra via Tom (Summon: Yojimbo), confirmando
+de novo o "once each turn" com 2 finais simultâneos |
+
+**Conferido e correto**: read ahead da Barbara Wright, capítulo I do Fenrir,
+capítulos da Kiora, e o salvamento da Kiora via Goldberry batendo com o
+oráculo real dela (movimenta 1 marcador de cada tipo que ela não tem, de
+outra permanente pra ela). "Once each turn" do Tom confirmado de novo com
+Kiora + Helvault simultâneos.
+
+**Não resolvido** (sinalizado ao usuário, não afirmado como bug): os 2
+land drops aparentes no T2 e o vaivém do Fenrir pro library no T5.
