@@ -326,20 +326,20 @@ o marcador abaixo de 2 (pra 0 ou 1) e deixar cruzar 2 de novo.
 | Turno | Evento |
 |---|---|
 | T1-T2 | Land drop The World Tree (entra virado). Barbara Wright conjurada
-(`{1}{W}`) — dá "read ahead" a todas as Sagas do jogador. **Anomalia**:
-Breeding Pool e Hallowed Fountain aparecem hand→battlefield no MESMO
-turno (T2) — 2 land drops num turno só, sem nenhuma fonte de land drop
-extra identificada até esse ponto. Não consegui explicar com o que já
-tinha em campo; provável erro de sequenciamento ou artefato do
-undo/redo do Archidekt — sinalizando, não afirmando bug |
+(`{1}{W}`) — dá "read ahead" a todas as Sagas do jogador. Breeding Pool
+aparece hand→battlefield e depois Hallowed Fountain também — **confirmado
+pelo usuário**: jogou a Breeding Pool errado (sem W), desfez, e jogou a
+Hallowed Fountain no lugar pra ter acesso a branco. 1 land drop real, não 2 |
 | T3-T4 | Scholar of New Horizons, Goldberry River-Daughter, Flux Channeler
 conjuradas. Savai Triome buscada por fetch (Windswept Heath) |
-| T5 | Summon: Fenrir conjurada com Barbara Wright em campo (read ahead
-disponível), entra com Lore=1 (capítulo I dispara, busca terreno básico).
-**Anomalia**: log mostra Fenrir saindo de battlefield→library duas vezes
-seguidas — não encontrei efeito real do deck que explique isso; mais
-provável artefato de undo/redo (o próprio Enlightened Tutor, que embaralha
-a library, foi conjurado no mesmo turno) do que jogada real |
+| T5 | Summon: Fenrir buscada pelo **Enlightened Tutor**
+(`"...reveal it, then shuffle and put that card on top"` — confirmei o
+texto exato) e posta no topo da library. Log mostra ela indo pra
+battlefield→library duas vezes: **confirmado pelo usuário** — depois de
+achar o Fenrir no topo, ele cracou a Windswept Heath (`...then shuffle`),
+embaralhando a library de novo e perdendo a posição garantida no topo.
+Sem erro de regra — risco real de tutor "topdeck" com fetchland no
+próprio deck |
 | T6 | Tom Bombadil conjurado |
 | T7 | Kiora Bests the Sea God conjurada (Lore=1, capítulo I cria Kraken 8/8) |
 | T8 | The Cruelty of Gix conjurada |
@@ -358,7 +358,13 @@ de novo o "once each turn" com 2 finais simultâneos |
 capítulos da Kiora, e o salvamento da Kiora via Goldberry batendo com o
 oráculo real dela (movimenta 1 marcador de cada tipo que ela não tem, de
 outra permanente pra ela). "Once each turn" do Tom confirmado de novo com
-Kiora + Helvault simultâneos.
+Kiora + Helvault simultâneos. As 2 anomalias do T2 e T5 foram confirmadas
+pelo usuário como desfazer de jogada e embaralho por fetchland — nenhuma
+é bug, 0 erros de regra na partida inteira.
 
-**Não resolvido** (sinalizado ao usuário, não afirmado como bug): os 2
-land drops aparentes no T2 e o vaivém do Fenrir pro library no T5.
+Também confirmado (Scholar of New Horizons, custo real conferido):
+`{T}, Remove a counter from a permanent you control: Search your library
+for a Plains card...` — o custo é remover 1 marcador de **qualquer
+permanente sua**, incondicional (não depende de achar ou de colocar a
+planície em campo). Explica a flutuação de marcadores da própria Scholar
+vista no T5/T8.
