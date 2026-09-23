@@ -241,3 +241,26 @@ misturado, mas não muda a legalidade de nada acima): a sequência exata de
 qual carta moveu/somou cada marcador de saber na Knights of Round no T6
 (Nesting Grounds/Goldberry/Resourceful Defense/Hex Parasite/Clockspinning
 são as candidatas reais do deck pra isso).
+
+### Partida manual #2 (2026-09-23) — travada em 2 terrenos, 0 erros de regra
+
+Mão inicial de 7 sem nenhum terreno (Prismatic Omen, Scholar of New
+Horizons, Jugan Defends the Temple, Leyline Binding, Swords to Plowshares,
+Kiora Bests the Sea God, Enduring Vitality) — mulligan correto. Mulligan
+gratuito (regra da casa do Archidekt/mesa), mantida a segunda mão de 7 com
+1 terreno (Spara's Headquarters): Prismatic Omen, Awaken the Honored Dead,
+Femeref Enchantress, Spara's Headquarters, The Kami War, War of the Last
+Alliance, Narci, Fable Singer.
+
+| Turno | Evento |
+|---|---|
+| T1 | Draw Karn's Bastion · land drop Spara's Headquarters (entra virado) |
+| T2 | Draw Ripples of Potential · land drop Karn's Bastion · **Prismatic Omen** conjurada (`{1}{G}`, 2 mana — bati o custo real no Scryfall, não é `{2}{G}` como eu tinha de cabeça) |
+| T3 | Draw Elspeth Conquers Death · **Femeref Enchantress** conjurada (`{G}{W}`) — só legal por causa da Omen: ela dá a **todo terreno seu todos os 5 tipos básicos**, e terreno com tipo básico tem a habilidade de mana daquela cor mesmo sem texto impresso (CR 305.6-adjacente) — assim o Karn's Bastion (só fazia `{C}`) e o Spara's Headquarters passam a produzir qualquer uma das 5 cores |
+| T4 | Draw Summon: Yojimbo — sem land drop |
+| T5 | Draw Summon: Primal Odin — sem land drop. **Travado em 2 terrenos**, usuário reinicia a partida com a mesma mão pra testar de novo |
+
+**Conferido e correto**: land drops, custo real da Prismatic Omen, e a
+legalidade da Femeref Enchantress via o fixing de cor da Omen. O travamento
+em 2 terrenos é variância real (mão de 7 com 1 terreno + 4 compras seguidas
+sem nenhum terreno), não bug — a Omen resolve cor, nunca quantidade.
