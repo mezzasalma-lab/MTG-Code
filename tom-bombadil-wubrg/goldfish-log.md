@@ -264,3 +264,29 @@ Alliance, Narci, Fable Singer.
 legalidade da Femeref Enchantress via o fixing de cor da Omen. O travamento
 em 2 terrenos é variância real (mão de 7 com 1 terreno + 4 compras seguidas
 sem nenhum terreno), não bug — a Omen resolve cor, nunca quantidade.
+
+### Partida manual #3 (2026-09-23) — replay da mesma mão da #2, 0 erros de regra
+
+Mesma mão mantida da partida #2, mas puxou terrenos diferentes desta vez
+(o embaralhamento do restart é outro). Auditoria confirmada com trace
+programático (não de memória — importava pro ponto do Tom abaixo).
+
+| Turno | Evento |
+|---|---|
+| T1-T4 | Land drops Spara's Headquarters, Karn's Bastion, Exotic Orchard · Arcane Signet (`{2}`) · **Prismatic Omen** conjurada (`{1}{G}`, Arcane Signet fazendo G da identidade do comandante + Karn's Bastion genérico) |
+| T5 | Fable of the Mirror-Breaker conjurada (`{2}{R}`, já com fixing da Omen) → capítulo I cria Goblin Shaman |
+| T6 | Capítulo II da Fable dispara: **"discard up to two, draw that many"** — descarta Kami War + War of the Last Alliance, compra Reflecting Pool + Swamp (bati com o oráculo real). Land drop Swamp. **Tom Bombadil conjurado** (taxa 0) |
+| T7 | Capítulo III da Fable resolve → **transforma** (não sacrifica) em Reflection of Kiki-Jiki — é capítulo final mesmo assim, **dispara o Tom** → Battle at the Helvault de graça. Land drop Reflecting Pool. Summon: Fenrir conjurada, capítulo I dispara na entrada e busca Mountain básico (bati com o oráculo real do Fenrir) |
+| T8 | Island (land drop), Femeref Enchantress, Narci, Flux Channeler conjuradas |
+| T9 | **Fenrir e Battle at the Helvault resolvem capítulo final no mesmo turno** (ambas sacrificadas, Avacyn criada) — só **1** Saga de graça entra (The Eldest Reborn), confirmando que o "once each turn" do Tom não foi violado mesmo com 2 finais simultâneos. Reflection of Kiki-Jiki copia o Flux Channeler real (`{1}`, T, alvo não-lendário). Jugan Defends the Temple conjurada, capítulo I cria Human Monk |
+
+**Conferido e correto**: sequência de mana em toda mágica, capítulos II e
+III da Fable batendo com o oráculo real, capítulo I do Fenrir buscando
+terreno na entrada, e o ponto crítico — **2 capítulos finais resolvendo no
+mesmo turno só geram 1 gatilho do Tom**, exatamente como a regra exige.
+
+**Não confirmado com certeza** (ruído de undo/redo do Archidekt, mesmo
+padrão da Utopia Sprawl na partida #1 — não muda legalidade): Femeref
+Enchantress e Jugan Defends the Temple aparecem "recastadas" no log sem
+nunca terem morrido. Também não persegui a fonte exata de cada +1/+1 do
+Narci (o capítulo II do Jugan ainda não tinha disparado nesse ponto).
