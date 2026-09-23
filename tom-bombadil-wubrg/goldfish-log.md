@@ -201,3 +201,43 @@ seeds (8 turnos):
 As duals dão 2 cores contra 3 das tri-lands. Com elas, subiram as partidas
 com 5+ manas mas sem alguma cor para o Tom (139 → 177). O usuário decidiu
 **voltar à lista anterior**, sem as duals.
+
+## Partidas manuais reais (Archidekt playtester)
+
+Registradas aqui pra comparar com os números do simulador (Regra #5: o
+goldfish é evidência de apoio — a partida manual real é sinal mais forte
+ainda, é a regra real sendo jogada por uma pessoa). Auditoria feita
+cláusula por cláusula contra o oráculo ao vivo do Scryfall (Regra #1);
+duas cartas tinham texto que eu tinha de cabeça desatualizado (Archon of
+Cruelty, sem mais cláusula de sacrificar terreno; Summon: Knights of Round,
+capítulos I–IV criam 3 tokens cada, não só o I) — corrigido antes de fechar
+a auditoria, nunca assumido de memória.
+
+### Partida manual #1 (2026-09-23) — 0 erros de regra encontrados
+
+Mão inicial mantida (keep): Summon: Knights of Round, Farseek, Jetmir's
+Garden, Ketria Triome, Utopia Sprawl, Indatha Triome, Sol Ring.
+
+| Turno | Evento principal |
+|---|---|
+| T1 | Land drop Jetmir's Garden (Triome, entra virado) |
+| T2 | Sol Ring (1 mana de Jetmir's Garden) · land drop Ketria Triome |
+| T3 | Farseek busca Zagoth Triome (válido — tem tipo Swamp/Forest/Island, Farseek só exclui a Forest básica) · Utopia Sprawl encanta um Forest-type · land drop Swamp |
+| T4 | **Tom Bombadil conjurado** (WUBRG exato: Swamp→B, Jetmir's Garden→W, Ketria Triome→R, Zagoth Triome→U, Indatha Triome→G; taxa 0, 1ª conjuração) · land drop Indatha Triome |
+| T5 | Summon: Knights of Round conjurada (8 mana) → capítulo I, 3 Knights 2/2 · land drop Mountain |
+| T6 | Vários disparos de capítulo em Knights of Round via os motores de mover/somar marcador do deck (capítulos I–IV, 3 tokens cada vez) · Faeburrow Elder conjurada · **Archon of Cruelty** (interação simulada do oponente): descarta Serra's Sanctum da mão + sacrifica 1 Knight token |
+| T7-T8 | There and Back Again, Leyline Binding, Summon: Bahamut em campo · **All Is Dust** (interação simulada) sacrifica todo permanente colorido — Tom (WUBRG) vai pra zona de comando pela 903.9a; só o Bahamut (incolor) sobrevive |
+| T9 | **Replenish** devolve todos os encantamentos do cemitério pro campo de uma vez (Knights of Round, Yojimbo, There and Back Again, Leyline Binding, Fertile Ground, Utopia Sprawl) — cada Saga volta com 1 marcador (ETB), capítulo I dispara de novo em todas · Tom reconjurado da zona de comando (taxa 2) |
+
+**Conferido e correto**: sequência de mana do Tom (T4, sem erro), alvo do
+Farseek, alvo do Utopia Sprawl, capítulos da Knights of Round batendo com
+o oráculo real, Archon of Cruelty e All Is Dust como interação simulada
+contra o jogador, replacement 903.9a mandando o Tom pra zona de comando
+em vez do cemitério, e a recursão total via Replenish reiniciando o
+capítulo I de toda Saga que voltou.
+
+**Não confirmado com certeza** (log bruto do Archidekt tem undo/redo
+misturado, mas não muda a legalidade de nada acima): a sequência exata de
+qual carta moveu/somou cada marcador de saber na Knights of Round no T6
+(Nesting Grounds/Goldberry/Resourceful Defense/Hex Parasite/Clockspinning
+são as candidatas reais do deck pra isso).
