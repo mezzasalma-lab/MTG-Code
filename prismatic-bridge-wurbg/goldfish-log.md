@@ -1,5 +1,90 @@
 # Goldfish Log — Esika, God of the Tree // The Prismatic Bridge
 
+## Rodada dedicada de gaps — auditoria completa das 100 cartas — 2026-09-24
+
+**Pedido do usuário:** "Sim, faz a rodada dedicada fechando os gaps restantes".
+Detalhe cláusula por cláusula em `checklist-oraculo.md`.
+
+### Antes/depois de cada correção (2.000 partidas, mesmas seeds)
+
+Modo padrão = seeds 3.000.000+; resiliência = mesa mista, seeds 6.000.000+.
+Médias (as partidas "explosivas" puxam a média de ativações/ultimates pra
+cima — ver medianas na tabela seguinte).
+
+| etapa | 1ª Bridge | gatilhos Bridge | ativações | ultimates | PWs no T10 | land drops | res: vida ≤ 0 (%) | res: remoções sofridas | res: PWs no T10 |
+|---|---|---|---|---|---|---|---|---|---|
+| 0. reestruturação (md5 idêntico) | 4,28 | 3,88 | 10,0 | 2,12 | 2,34 | 4,92 | 19,0 | 1,50 | 1,85 |
+| 1. Doubling Season não dobra custo | 4,28 | 3,88 | 10,0 | 2,10 | 2,33 | 4,91 | 19,0 | 1,51 | 1,83 |
+| 2. Carth = +1 lealdade (não mana) | 4,29 | 3,96 | 10,5 | 2,43 | 2,40 | 4,92 | 18,9 | 1,53 | 1,88 |
+| 3. mulligan sem embaralhar o fundo | 4,30 | 3,98 | 10,6 | 2,45 | 2,44 | 4,96 | 18,9 | 1,54 | 1,88 |
+| 4. Halfling/Plaza/Beacon/Oath of Nissa/Bloom Tender (mana) | 4,22 | 4,09 | 10,8 | 2,49 | 2,50 | 4,97 | 16,7 | 1,61 | 1,95 |
+| 5. shock/dor/World Tree | 4,26 | 4,04 | 10,6 | 2,39 | 2,46 | 4,97 | 18,0 | 1,59 | 1,93 |
+| 6. gatilhos de conjuração centralizados | 4,26 | 4,04 | 10,7 | 2,49 | 2,49 | 4,97 | 17,6 | 1,58 | 1,96 |
+| 7. Kaya 0, seleção real (Narset/Teferis), Vraska vida | 4,26 | 4,07 | 11,0 | 2,60 | 2,56 | 4,98 | 17,6 | 1,59 | 1,97 |
+| 8. **PW conjurado da mão ganha lealdade** | 4,25 | 4,18 | **19,3** | **4,25** | **4,91** | 5,01 | 14,4 | 1,76 | 4,03 |
+| 9. Aminatou + ETB das Oaths | 4,22 | 4,25 | 20,4 | 4,98 | 5,14 | 5,01 | 14,0 | 1,80 | 4,37 |
+| 10. Oko +1/−5, fichas-cópia, Haze | 4,23 | 5,25 | 21,3 | 5,62 | 5,43 | 5,03 | 14,0 | 1,81 | 4,46 |
+| 11. Teferis (desvirar/emblemas) | 4,23 | 6,60 | 45,4 | 13,07 | 5,53 | 5,08 | 13,8 | 1,85 | 4,53 |
+| 12a. **terreno não é mágica** | **5,15** | 4,13 | **22,8** | **5,48** | 4,34 | **7,40** | 16,1 | 1,36 | 3,41 |
+| 12b. Tamiyos (emblema/Notebook) | 5,15 | 4,62 | 32,5 | 8,73 | 5,51 | 7,41 | 16,1 | 1,40 | 3,84 |
+| 13. Bolas (estático) | 5,15 | 4,74 | 33,4 | 10,21 | 5,56 | 7,39 | 16,1 | 1,40 | 3,82 |
+| 14. Ichormoon + ordem do turno extra | 5,15 | 4,44 | 30,4 | 9,06 | 5,54 | 7,41 | 16,1 | 1,37 | 3,86 |
+| 15. Vraska −9 / veneno | 5,15 | 4,28 | 21,1 | 5,81 | 5,39 | 7,40 | 16,1 | 1,32 | 3,84 |
+| 16. Peregrine Dynamo | 5,15 | 4,40 | 22,2 | 6,51 | 5,40 | 7,41 | 16,3 | 1,31 | 3,90 |
+| 17. Nesting Grounds/Grove/Ugin landfall/Urza | 5,16 | 4,42 | 22,3 | 6,71 | 5,33 | 7,36 | 16,4 | 1,31 | 3,95 |
+| 18. respostas (só resiliência) | 5,16 | 4,42 | 22,3 | 6,71 | 5,33 | 7,36 | **14,6** | **0,86** | **4,79** |
+| 19. Innkeeper nível 1 em todo modo | 5,16 | 4,42 | 22,3 | 6,71 | 5,33 | 7,36 | 14,6 | 0,86 | 4,79 |
+
+Notas: a etapa 15 (veneno) derruba a MÉDIA de ativações só nas partidas em
+que um oponente morre envenenado (24% delas): com oponente eliminado há menos
+turnos de oponente pro emblema do Teferi Archmage — nas outras partidas nada
+muda (mediana igual, 11). A etapa 11 → 12a mostra o tamanho do bug do
+terreno: toda a "explosão" de mana da etapa 11 vinha, em parte, dos terrenos
+baixados de graça.
+
+### Commit anterior × agora (3.000 partidas, mesmas seeds)
+
+| | antes | agora |
+|---|---|---|
+| 1ª Bridge (turno médio) | 4,34 (mediana 4) | 5,18 (mediana 5) |
+| Bridge nunca conjurada até o T10 | 10,1% | 6,6% |
+| Land drops em 10 turnos | 4,92 | 7,35 |
+| Gatilhos da Bridge | 3,87 | 4,58 |
+| Ativações de PW | 10,0 (mediana 6) | 23,1 (mediana 11) |
+| Ultimates | 2,17 (mediana 1) | 7,07 (mediana 1) |
+| PWs em campo no T10 | 2,35 (mediana 1) | 5,40 (mediana 4) |
+| Cartas via PW | 5,8 (mediana 2) | 18,7 (mediana 5) |
+| **Resiliência (mesa mista):** vida ≤ 0 até o T10 | 18,2% | 15,3% |
+| remoções sofridas | 1,52 | 0,84 (contramágicas/proteções) |
+| mortes de PW | 2,17 | 2,23 (com o dobro de PWs em campo) |
+| PWs mortos em combate | 0,34 | 0,64 |
+| PWs em campo no T10 | 1,87 | 4,82 |
+
+### A/B de pillowfort refeito (4.000 partidas por célula, seeds 11.000.000+)
+
+Mudou o que o A/B mede: a Oath of Nissa (o slot trocado) agora tem efeito
+real (ETB + mana de PW), então o teste é "pillowfort × Oath of Nissa". O perfil
+`low` (quase sem combate) serve de controle: o efeito lá é quase todo "custo
+de tirar a Oath"; o que sobra nas mesas agressivas é a proteção de verdade.
+
+| Δ PW-turnos vivos por partida | Silent Arbiter | Dueling Grounds | Sphere of Safety | Ghostly Prison |
+|---|---|---|---|---|
+| mesa mista | −0,67 | −0,38 | −0,29 | −0,46 |
+| go-wide | −0,61 | −0,28 | −0,32 | −0,49 |
+| voltron | −0,74 | −0,43 | −0,30 | −0,43 |
+| low (controle) | −0,86 | −0,48 | −0,37 | −0,51 |
+| **proteção líquida na mista (mista − low)** | +0,19 | +0,10 | +0,08 | +0,05 |
+
+PW mortos em combate (mista): Arbiter −0,036, Dueling −0,028, Sphere −0,013,
+Ghostly **+0,009** (empurra ataque pro PW, como antes). Silent Arbiter continua
+roubando gatilho da Bridge (−0,11 PW acertado/partida). Nenhuma das 4 muda a
+taxa de "vida ≤ 0" na mesa mista.
+
+**Leitura:** a conclusão da rodada anterior fica mais forte. Com o motor
+corrigido, o deck põe o dobro de PWs em campo e o ganho de proteção de
+qualquer pillowfort (+0,05 a +0,19 PW-turno por partida na mesa mista) é
+menor que o custo de tirar até uma carta barata como a Oath of Nissa.
+
 ## Modelo de combate + A/B de pillowfort (Silent Arbiter / Dueling Grounds / Sphere of Safety / Ghostly Prison) — 2026-09-24
 
 **Pergunta do usuário:** "Conseguimos implementar no goldfish um simulador de

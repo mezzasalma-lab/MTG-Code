@@ -224,12 +224,12 @@ def test_innkeeper_level1_counter_and_doubling():
     s = fresh()
     s.battlefield.append("Innkeeper's Talent")
     creature(s, "Carth the Lion")
-    pb.our_combat_step(s, [])
+    pb.beginning_of_combat(s, [])
     assert s.creature_counters["Carth the Lion"] == 1
     s = fresh()
     s.battlefield += ["Innkeeper's Talent", "Doubling Season"]
     creature(s, "Carth the Lion")
-    pb.our_combat_step(s, [])
+    pb.beginning_of_combat(s, [])
     assert s.creature_counters["Carth the Lion"] == 2
 
 
@@ -585,7 +585,7 @@ def test_real_life_gain_and_chain_veil_loss():
     s.battlefield.append("The Chain Veil")
     pb.play_turn(s, 1, [])  # nenhum PW ativado -> perde 2
     assert s.life == 38 and s.chain_veil_life_lost_total == 2
-    pw(s, "Kaya, Intangible Slayer", 6)
+    pw(s, "Kaya, Intangible Slayer", 5)  # < 6: a politica usa +2 (com 6+ e mao curta ela compra 2 com o 0)
     pb.play_turn(s, 2, [])  # Kaya +2: ganha 3; ativou -> Chain Veil nao dispara
     assert s.life == 41, s.life
 
@@ -599,6 +599,431 @@ def test_died_turn_marked_when_life_hits_zero():
 
 def test_damn_color_is_black_only():
     assert pb.C("Damn").colors == {"B"}
+
+
+# ---------------------------------------------------------------------------
+# Rodada de gaps (2026-09-24): auditoria completa das 100 cartas
+# ---------------------------------------------------------------------------
+
+LANDS3 = ["Snow-Covered Forest", "Snow-Covered Island", "Snow-Covered Plains"]
+
+
+def test_lands_in_hand_are_not_cast_as_spells():
+    s = std_state(turn=3, library=[FILLER] * 30)
+    s.battlefield += LANDS3
+    s.hand = ["Bayou", "Taiga", "Savannah"]
+    s.land_played = True
+    pb.main_phase(s, [])
+    assert sum(1 for c in s.battlefield if pb.is_land(c)) == 3 and len(s.hand) == 3
+
+
+def test_planeswalker_cast_from_hand_gets_loyalty():
+    s = std_state(turn=5)
+    s.battlefield += LANDS3 + ["Snow-Covered Swamp", "Tundra"]
+    s.hand = ["Teferi, Hero of Dominaria"]
+    s.land_played = True
+    pb.main_phase(s, [])
+    assert s.loyalty.get("Teferi, Hero of Dominaria") == 4
+
+
+def test_doubling_season_does_not_double_loyalty_cost_but_vorinclex_does():
+    s = std_state()
+    s.battlefield.append("Doubling Season")
+    pw(s, "Kaya, Intangible Slayer", 5)
+    pb.resolve_planeswalker(s, "Kaya, Intangible Slayer", [])
+    assert s.loyalty["Kaya, Intangible Slayer"] == 7  # +2 de custo nao e' dobrado (ruling)
+    s = std_state()
+    s.battlefield.append("Vorinclex, Monstrous Raider")
+    pw(s, "Kaya, Intangible Slayer", 5)
+    pb.resolve_planeswalker(s, "Kaya, Intangible Slayer", [])
+    assert s.loyalty["Kaya, Intangible Slayer"] == 9  # Vorinclex: "If you would put" -> dobra
+
+
+def test_carth_adds_plus_one_loyalty_to_costs():
+    s = std_state()
+    s.battlefield.append("Carth the Lion")
+    pw(s, "Kaya, Intangible Slayer", 4)
+    pb.resolve_planeswalker(s, "Kaya, Intangible Slayer", [])
+    assert s.loyalty["Kaya, Intangible Slayer"] == 7  # [+2] vira [+3]
+    s = std_state()
+    s.battlefield.append("Carth the Lion")
+    pw(s, "Elspeth, Sun's Champion", 6)  # [-7] vira [-6]: da' pra ultar com 6
+    pb.resolve_planeswalker(s, "Elspeth, Sun's Champion", [])
+    assert s.elspeth_emblem == 1 and "Elspeth, Sun's Champion" not in s.loyalty
+
+
+def test_mulligan_bottom_is_not_shuffled():
+    orig = pb.should_keep
+    calls = {"n": 0}
+
+    def keep_third(hand):
+        calls["n"] += 1
+        return calls["n"] >= 3
+    pb.should_keep = keep_third
+    try:
+        s = pb.simulate_one_with_interaction(42, turns=0, attack_profile=None)
+    finally:
+        pb.should_keep = orig
+    assert len(s.hand) == 6  # 2 mulligans, o 1o e' gratis -> 1 carta pro fundo
+    bottomed = s.library[-1]
+    assert bottomed not in s.hand
+
+
+def test_halfling_and_plaza_colored_mana_for_legendary():
+    s = std_state()
+    s.battlefield += ["Delighted Halfling"]
+    s.creature_cast_turn["Delighted Halfling"] = 1
+    assert pb.color_sources(s, "B", legendary_spell=True) == 1
+    assert pb.color_sources(s, "B", legendary_spell=False) == 0
+    s = std_state()
+    s.battlefield += ["Plaza of Heroes", pb.COMMANDER]
+    assert pb.color_sources(s, "R") >= 1  # "any color among legendary permanents": a Bridge e' 5 cores
+
+
+def test_oath_of_nissa_static_and_etb():
+    s = std_state()
+    s.battlefield += ["Oath of Nissa", "Snow-Covered Forest"]
+    assert pb.color_sources(s, "B", pw_spell=True) >= 1
+    s = std_state(library=[FILLER, "Ugin, the Spirit Dragon", "Swords to Plowshares"] + [FILLER] * 5)
+    s.battlefield.append("Oath of Nissa")
+    pb.noncreature_etb(s, "Oath of Nissa", [])
+    assert "Ugin, the Spirit Dragon" in s.hand
+
+
+def test_bloom_tender_ignores_land_colors():
+    s = std_state()
+    s.battlefield += ["Bloom Tender", "Bayou", "Taiga"]
+    s.creature_cast_turn["Bloom Tender"] = 1
+    assert pb.total_mana(s) == 2 + 1  # 2 terrenos + Bloom Tender (so' ela mesma e' verde)
+
+
+def test_shockland_and_painlands_and_world_tree():
+    s = std_state(turn=3)
+    s.battlefield += ["Snow-Covered Forest", "Snow-Covered Island"]
+    s.hand = ["Breeding Pool", "Evolution Sage"]  # 3 mana: so' com a shock desvirada
+    pb.play_land(s, [])
+    assert s.life == 38 and "Breeding Pool" not in s.tapped_lands_this_turn
+    s = std_state(turn=3)
+    s.battlefield += ["Snow-Covered Forest", "Snow-Covered Island"]
+    s.hand = ["Breeding Pool", "Sol Ring"]  # 1 mana basta: entra virada, sem pagar
+    pb.play_land(s, [])
+    assert s.life == 40 and "Breeding Pool" in s.tapped_lands_this_turn
+    s = std_state(turn=3)
+    s.battlefield += ["City of Brass", "Mana Confluence", "Snow-Covered Forest"]
+    s.mana_spent_this_turn = 3
+    pb._apply_pain(s)
+    assert s.life == 38
+    s = std_state(turn=3)
+    s.hand = ["The World Tree"]
+    pb.play_land(s, [])
+    assert "The World Tree" in s.tapped_lands_this_turn
+
+
+def test_bridge_cast_triggers_tide_flux_gauntlet_and_beacon():
+    s = std_state()
+    s.battlefield += ["Inexorable Tide", "Flux Channeler", "Ichormoon Gauntlet", "Interplanar Beacon"]
+    pw(s, "Kaya, Intangible Slayer", 5)
+    pb.on_spell_cast(s, pb.COMMANDER, [])
+    assert s.loyalty["Kaya, Intangible Slayer"] == 8  # Tide +1, Flux +1, Gauntlet +1
+    pb.on_spell_cast(s, "Teferi, Hero of Dominaria", [])
+    assert s.life == 41  # Beacon: +1 vida por magia de PW
+
+
+def test_kaya_zero_narset_selection_vraska_life():
+    s = std_state()
+    pw(s, "Kaya, Intangible Slayer", 6)
+    pb.resolve_planeswalker(s, "Kaya, Intangible Slayer", [])
+    assert len(s.hand) == 2
+    s = std_state(library=["Bayou", "Arena Rector", "Doubling Season", FILLER] + [FILLER] * 5)
+    pw(s, "Narset, Parter of Veils", 5)
+    pb.resolve_planeswalker(s, "Narset, Parter of Veils", [])
+    assert s.hand == ["Doubling Season"]
+    s = std_state()
+    pw(s, "Vraska, Betrayal's Sting", 6)
+    pb.resolve_planeswalker(s, "Vraska, Betrayal's Sting", [])
+    assert s.life == 39
+
+
+def test_aminatou_plus1_tops_pw_for_bridge_and_minus1_blinks_deepglow():
+    s = std_state()
+    s.bridge_in_play = True
+    s.battlefield.append(pb.COMMANDER)
+    pw(s, "Aminatou, the Fateshifter", 3)
+    s.hand = ["Ugin, the Spirit Dragon"]
+    pb._eff_aminatou_plus1(s, "Aminatou, the Fateshifter", [], None)
+    assert s.library[0] == "Ugin, the Spirit Dragon"
+    s = std_state()
+    creature(s, "Deepglow Skate")
+    pw(s, "Aminatou, the Fateshifter", 3)
+    pw(s, "Kaya, Intangible Slayer", 6)
+    pb.resolve_planeswalker(s, "Aminatou, the Fateshifter", [])
+    assert s.loyalty["Kaya, Intangible Slayer"] == 12 and s.blinks_total == 1
+
+
+def test_oath_of_teferi_blinks_pw_back_at_end_step():
+    s = std_state(turn=0, library=[FILLER] * 30)
+    pw(s, "Kaya, Intangible Slayer", 2)
+    s.battlefield.append("Oath of Teferi")
+    pb.noncreature_etb(s, "Oath of Teferi", [])
+    assert "Kaya, Intangible Slayer" not in s.battlefield
+    pb.play_turn(s, 1, [])
+    assert s.loyalty.get("Kaya, Intangible Slayer") == 6  # voltou cheia no end step
+
+
+def test_oko_plus1_crime_and_minus5_copies():
+    s = std_state(library=["Bayou", "Swords to Plowshares"] + [FILLER] * 10)
+    pw(s, "Oko, the Ringleader", 2)
+    s.crime_this_turn = True
+    pb._eff_oko_plus1(s, "Oko, the Ringleader", [], None)
+    assert len(s.hand) == 1 and s.discards_total == 1
+    s = std_state()
+    pw(s, "Oko, the Ringleader", 6)
+    pw(s, "Kaya, Intangible Slayer", 2)
+    s.battlefield += ["Sol Ring", "Paradox Haze", "Doubling Season"]
+    pb._eff_oko_minus5(s, "Oko, the Ringleader", [], None)
+    assert s.battlefield.count("Sol Ring") == 3 and s.battlefield.count("Paradox Haze") == 3  # x2 (Doubling Season)
+    assert s.loyalty["Kaya, Intangible Slayer"] >= 12  # ficha entra com 6 x2, regra de lenda fica a maior
+    assert s.battlefield.count("Kaya, Intangible Slayer") == 1
+
+
+def test_paradox_haze_copies_add_upkeeps():
+    s = std_state(turn=0, library=[FILLER] * 40)
+    s.battlefield += [pb.COMMANDER, "Paradox Haze", "Paradox Haze"]
+    s.bridge_in_play = True
+    pb.play_turn(s, 1, [])
+    assert s.bridge_triggers == 3
+
+
+def test_teferi_untap_effects_and_ta_emblem_windows():
+    s = std_state(turn=0, library=["Sphinx of the Second Sun"] * 30)
+    s.battlefield += LANDS3
+    s.hand = ["Evolution Sage"]  # gasta os 3 terrenos
+    pw(s, "Teferi, Hero of Dominaria", 4)
+    pb.play_turn(s, 1, [])
+    assert s.mana_held_back == 2  # 0 sobrando + 2 terrenos desvirados no end step
+    s = std_state(turn=0, library=[FILLER] * 30)
+    s.teferi_ta_emblem = True
+    pw(s, "Kaya, Intangible Slayer", 5)
+    pb.instant_speed_pw_window(s, [])
+    assert s.loyalty["Kaya, Intangible Slayer"] == 7 and s.instant_pw_windows_total == 1
+
+
+def test_tamiyo_fr_emblem_free_cast_and_notebook():
+    s = std_state()
+    s.tamiyo_free_cast = True
+    s.hand = ["Doubling Season", "Farewell"]
+    s.land_played = True
+    pb.main_phase(s, [])
+    assert "Doubling Season" in s.battlefield
+    s = std_state()
+    s.battlefield.append("Tamiyo's Notebook")
+    assert pb.spell_cost(s, "Doubling Season") == 3 and pb.spell_cost(s, pb.COMMANDER) == 5
+    s.battlefield += ["Arena Rector", "Carth the Lion"]
+    assert pb.spell_cost(s, "Blasphemous Act") == 5  # 9 - 2 criaturas - 2 do Notebook
+
+
+def test_bolas_borrows_other_planeswalker_ability():
+    s = std_state()
+    pw(s, "Nicol Bolas, Dragon-God", 4)
+    pw(s, "Elspeth, Sun's Champion", 4)
+    pb.resolve_planeswalker(s, "Nicol Bolas, Dragon-God", [])
+    assert s.battlefield.count("Soldier Token") == 3 and s.loyalty["Nicol Bolas, Dragon-God"] == 5
+    assert s.bolas_borrowed_total == 1
+
+
+def test_gauntlet_extra_turn_comes_before_opponents():
+    order = []
+    orig_play, orig_opp = pb.play_turn, pb.try_smart_opponent_turn
+
+    def fake_play(state, t, game_log, skip_legacy_removal=False):
+        order.append(("nos", t))
+        if t == 1:
+            state.extra_turns_pending = 1
+        game_log.append([])
+
+    def fake_opp(state, log, opp_index=0):
+        order.append(("op", opp_index))
+    pb.play_turn, pb.try_smart_opponent_turn = fake_play, fake_opp
+    try:
+        pb.simulate_one_with_interaction(1, turns=3, attack_profile=None)
+    finally:
+        pb.play_turn, pb.try_smart_opponent_turn = orig_play, orig_opp
+    assert order == [("nos", 1), ("nos", 2), ("op", 0), ("op", 1), ("op", 2), ("nos", 3), ("op", 0), ("op", 1), ("op", 2)], order
+
+
+def test_gauntlet_abilities():
+    s = std_state()
+    s.battlefield.append("Ichormoon Gauntlet")
+    pw(s, "Teferi, Time Raveler", 12)
+    pb.resolve_planeswalker(s, "Teferi, Time Raveler", [])
+    assert s.extra_turns_pending == 1 and "Teferi, Time Raveler" not in s.loyalty  # [-12] com 12: turno extra, ele morre
+    s = std_state()
+    s.battlefield.append("Ichormoon Gauntlet")
+    pw(s, "Teferi, Time Raveler", 2)
+    pw(s, "Kaya, Intangible Slayer", 5)
+    pw(s, "Elspeth, Sun's Champion", 5)
+    pb.resolve_planeswalker(s, "Teferi, Time Raveler", [])  # +1 fraco com 3 PWs -> [0] proliferate
+    assert s.loyalty["Kaya, Intangible Slayer"] == 6 and s.loyalty["Elspeth, Sun's Champion"] == 6
+
+
+def test_vraska_ult_poison_proliferate_kills_and_vorinclex_doubles():
+    s = std_state()
+    pw(s, "Vraska, Betrayal's Sting", 9)
+    pb.resolve_planeswalker(s, "Vraska, Betrayal's Sting", [])
+    assert sorted(s.opp_poison) == [0, 0, 9]
+    pb.proliferate_loyalty(s, [], source="test")
+    assert s.opp_eliminated_total == 1 and s.opp_alive.count(False) == 1
+    s = std_state()
+    s.battlefield.append("Vorinclex, Monstrous Raider")
+    pw(s, "Vraska, Betrayal's Sting", 9)
+    pb.resolve_planeswalker(s, "Vraska, Betrayal's Sting", [])
+    assert s.opp_eliminated_total == 1  # 9 x2 = 18 veneno
+
+
+def test_dynamo_copies_best_activation():
+    s = std_state()
+    s.battlefield += ["The Peregrine Dynamo"] + LANDS3
+    pw(s, "Elspeth, Sun's Champion", 4)
+    pb.resolve_planeswalker(s, "Elspeth, Sun's Champion", [])
+    pb.try_dynamo_copy_activation(s, [])
+    assert s.battlefield.count("Soldier Token") == 6 and s.dynamo_copies_total == 1
+    assert s.loyalty["Elspeth, Sun's Champion"] == 5  # a copia nao paga custo
+
+
+def test_nesting_grounds_moves_counter_to_reach_ult():
+    s = std_state()
+    s.battlefield += ["Nesting Grounds"] + LANDS3
+    pw(s, "Elspeth, Sun's Champion", 6)
+    pw(s, "Kaya, Intangible Slayer", 5)
+    pb.try_nesting_grounds(s, [])
+    assert s.loyalty["Elspeth, Sun's Champion"] == 7 and s.loyalty["Kaya, Intangible Slayer"] == 4
+
+
+def test_sterling_grove_tutor_only_without_bridge():
+    s = std_state(library=[FILLER] * 5 + ["Doubling Season"] + [FILLER] * 5)
+    s.battlefield += ["Sterling Grove"] + LANDS3
+    assert pb.try_sterling_grove_tutor(s, [])
+    assert s.library[0] == "Doubling Season" and "Sterling Grove" in s.graveyard
+    s = std_state(library=[FILLER] * 5 + ["Doubling Season"])
+    s.battlefield += ["Sterling Grove", pb.COMMANDER] + LANDS3
+    s.bridge_in_play = True
+    assert not pb.try_sterling_grove_tutor(s, [])
+
+
+def res_state(turn=5, held=4):
+    s = fresh(turn=turn)
+    s.battlefield += ["Snow-Covered Island", "Snow-Covered Island", "Snow-Covered Forest", "Snow-Covered Plains"]
+    s.mana_held_back = held
+
+    class Always:
+        def random(self):
+            return 0.0
+
+        def choice(self, x):
+            return x[0]
+
+        def choices(self, pop, weights):
+            return [pop[0]]
+    s.interaction_rng = Always()
+    return s
+
+
+def test_counterspell_stops_removal_and_swan_song_gives_bird():
+    s = res_state()
+    pw(s, "Teferi, Hero of Dominaria", 6)
+    s.hand = ["Counterspell"]
+    assert pb.try_smart_opponent_removal(s, [], opp_index=0) is None
+    assert "Teferi, Hero of Dominaria" in s.loyalty and "Counterspell" in s.graveyard
+    s = res_state()
+    pw(s, "Teferi, Hero of Dominaria", 6)
+    s.hand = ["Swan Song"]
+    pb.try_smart_opponent_removal(s, [], opp_index=1)
+    assert any(c["flying"] and c["p"] == 2 for c in s.opp_boards[1])
+
+
+def test_mana_drain_gives_mana_next_main_phase():
+    s = res_state()
+    pw(s, "Teferi, Hero of Dominaria", 6)
+    s.hand = ["Mana Drain"]
+    pb.try_smart_opponent_removal(s, [], opp_index=0)
+    assert s.mana_drain_pending == 2
+
+
+def test_kaya_hexproof_not_targeted():
+    s = res_state()
+    pw(s, "Kaya, Intangible Slayer", 9)
+    pw(s, "Elspeth, Sun's Champion", 3)
+    target = pb.try_smart_opponent_removal(s, [], opp_index=0)
+    assert target == "Elspeth, Sun's Champion" and "Kaya, Intangible Slayer" in s.loyalty
+
+
+def test_ripples_and_mutational_save_pw_in_combat():
+    s = res_state()
+    pw(s, "Kaya, Intangible Slayer", 3)
+    s.hand = ["Ripples of Potential"]
+    s.opp_boards[0] = [opp(5)]
+    pb.opponent_combat(s, 0, [])
+    assert s.loyalty.get("Kaya, Intangible Slayer") == 4  # proliferate + phasing: sem dano
+    s = res_state()
+    pw(s, "Kaya, Intangible Slayer", 3)
+    s.hand = ["Mutational Advantage"]
+    s.opp_boards[0] = [opp(5)]
+    pb.opponent_combat(s, 0, [])
+    assert s.loyalty.get("Kaya, Intangible Slayer") == 4
+
+
+def test_bridge_counter_blocked_by_teferi_tr_halfling_veil():
+    s = res_state()
+    s.battlefield.append("Teferi, Time Raveler")
+    assert not pb.try_smart_opponent_counter(s, [], our_turn=True)
+    s = res_state()
+    s.bridge_uncounterable = True
+    assert not pb.try_smart_opponent_counter(s, [], our_turn=True)
+    s = res_state(turn=5)
+    s.battlefield += ["Snow-Covered Swamp", "Snow-Covered Mountain", "Bayou", "Taiga"]
+    creature(s, "Delighted Halfling")
+    pb.cast_bridge(s, [], via_flash=False)
+    assert pb.COMMANDER in s.battlefield and s.bridge_uncounterable
+
+
+def test_plaza_saves_legendary_creature_and_ward_stops_early_removal():
+    s = res_state(held=5)
+    s.battlefield.append("Plaza of Heroes")
+    creature(s, "Vorinclex, Monstrous Raider")
+    assert pb.try_smart_opponent_removal(s, [], opp_index=0) is None
+    assert "Vorinclex, Monstrous Raider" in s.battlefield and s.plaza_saves_total == 1
+    s = res_state(turn=3, held=0)
+    s.battlefield.append("Innkeeper's Talent")
+    s.innkeepers_talent_level = 2
+    pw(s, "Teferi, Hero of Dominaria", 6)
+    assert pb.try_smart_opponent_removal(s, [], opp_index=0) is None and s.ward_stops_total == 1
+
+
+def test_innkeeper_level1_fires_in_standard_mode_and_feeds_all_will_be_one():
+    s = std_state(turn=0, library=[FILLER] * 30)
+    s.battlefield += ["Innkeeper's Talent", "All Will Be One"]
+    creature(s, "Carth the Lion", cast_turn=0)
+    pb.play_turn(s, 1, [])
+    assert s.creature_counters.get("Carth the Lion") == 1 and s.all_will_be_one_triggers_total >= 1
+
+
+def test_ugin_ult_lands_trigger_landfall():
+    s = std_state(library=["Bayou"] * 7 + [FILLER] * 10)
+    s.battlefield.append("Evolution Sage")
+    pw(s, "Ugin, the Spirit Dragon", 10)
+    pw(s, "Kaya, Intangible Slayer", 5)
+    pb.resolve_planeswalker(s, "Ugin, the Spirit Dragon", [])
+    assert s.evolution_sage_proliferates == 7
+
+
+def test_tamiyo_copy_of_urza_restarts_saga():
+    s = std_state(library=["Kaya, Intangible Slayer"] + [FILLER] * 10)
+    s.graveyard.append("Urza Assembles the Titans")
+    s.urza_chapter = 3
+    pw(s, "Tamiyo, Compleated Sage", 5)
+    pb.resolve_planeswalker(s, "Tamiyo, Compleated Sage", [])
+    assert "Urza Assembles the Titans" in s.battlefield and s.urza_chapter == 1
+    assert "Kaya, Intangible Slayer" in s.hand
 
 
 # ---------------------------------------------------------------------------

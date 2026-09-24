@@ -1,5 +1,122 @@
 # Checklist cláusula-a-cláusula — Esika // The Prismatic Bridge
 
+## Rodada dedicada: auditoria completa das 100 cartas + todos os gaps — 2026-09-24
+
+**Gatilho:** "Sim, faz a rodada dedicada fechando os gaps restantes" (depois da
+rodada do modelo de combate, que listou 14 gaps). Método da Regra #1 inteiro:
+oráculo AO VIVO das 100 cartas (Scryfall `/cards/collection`, 0 não
+encontradas), rulings de toda carta com interação duvidosa, leitura do `.py`
+inteiro, comparação cláusula por cláusula, e checagem de ordem de fases
+(Regra #6). O saldo foi bem maior que os 14 gaps da lista: a auditoria achou
+**bugs de motor** que afetavam o deck inteiro.
+
+### 🐛 Bugs de motor (os maiores, afetavam todas as partidas)
+
+1. **Terreno na mão era "conjurado" como mágica de custo 0.** O loop de
+   conjuração não excluía terrenos: todo terreno da mão ia pro campo todo
+   turno, além do land drop. Medido no commit anterior: até o T4, 2,65 land
+   drops mas 5,0 terrenos em campo. Inflava toda a mana do deck e
+   adiantava a Bridge em ~1 turno (T4,2 → T5,2 real).
+2. **Planeswalker conjurado da mão entrava sem lealdade** (só os postos pela
+   Bridge/Urza/Ugin/Tamiyo tinham). 57% dos PWs em campo no fim da partida
+   nunca tinham ativado nada.
+3. **Doubling Season dobrava o custo [+N] de lealdade.** Ruling oficial: "if
+   you activate an ability whose cost has you put loyalty counters on a
+   planeswalker, the number you put on isn't doubled ... cost, not effect".
+   Vorinclex e Innkeeper nível 3 ("If YOU would put") dobram — ruling do
+   Carth confirma. Novo `cost_counter_multiplier` (vale pra custo e pra
+   marcador em jogador/veneno).
+4. **Carth the Lion cobrava {1} de MANA por ativação.** O oráculo é
+   "cost an additional **[+1]**" — é +1 de LEALDADE (rulings: [+1]→[+2],
+   [0]→[+1], [−6]→[−5]; 2 Carths = [+2]). Era um bônus tratado como imposto.
+5. **Delighted Halfling nunca gerava mana colorida** (o filtro "cor ∈
+   produces={C}" vinha antes do filtro "só pra lendária").
+6. **Bloom Tender contava "cores" de terreno** (o `CARD_DB` guarda
+   identidade de cor nos terrenos; terreno é incolor). Novo `permanent_colors`.
+7. **Mulligan embaralhava as cartas postas no fundo** (CR 103.5: vão pro
+   fundo, sem embaralhar).
+8. **Gatilhos de "sempre que conjurar" não disparavam na conjuração da
+   própria Bridge** (nem da Sterling Grove, nem das remoções do modelo de
+   combate). Novo ponto único `on_spell_cast`.
+9. **Ordem de turno extra (Regra #6):** no modo resiliência os 3 oponentes
+   jogavam ANTES do turno extra e de novo depois dele. "Take an extra turn
+   after this one" vem logo depois do nosso turno.
+10. **Regra de lenda** não existia pra segundos exemplares (fichas-cópia).
+
+### Cláusula por cláusula — o que mudou nesta rodada
+
+| Carta | Cláusula (oráculo ao vivo) | Antes → agora |
+|---|---|---|
+| Aminatou | +1 compra e devolve 1 ao topo; −1 blink; −6 troca permanentes | +1 era vazio → implementado (com a Bridge em campo, põe PW caro no TOPO pra Bridge colocar de graça — Regra #4); −1 implementado (blink de Deepglow/PW/Carth/Oath de Nissa); −6 📊 (permanentes não-criatura de oponente não modelados; entregaria todos os nossos PWs) |
+| Kaya | 0: compre 2 | nunca escolhido → política usa quando ela está segura e a mão curta |
+| Narset | −2: olha 4, pega não-criatura não-terreno | comprava o topo → seleção real |
+| Nicol Bolas | "has all loyalty abilities of all other planeswalkers" | deferido → empresta ultimates/+ dos outros (ruling: 1 ativação por turno, custo sai do Bolas); −8 1x (📊 quem perde depende de lendária do oponente) |
+| Oko | +1 compra 2, descarta 1 (crime) ou 2; −5 ficha-cópia de cada outro não-terreno | +1 vazio, −5 inexistente → implementados; crime rastreado (toda ação nossa que mira oponente); fichas-cópia com o nome da carta, regra de lenda, Doubling Season ×2 |
+| Tamiyo, Compleated Sage | −7 Tamiyo's Notebook (custo −{2}, {T}: compre) | só contava → implementado; cópia de encantamento do cemitério agora dispara ETB (bug achado pelo teste) |
+| Tamiyo, Field Researcher | −7 emblema: conjurar da mão sem pagar | só as 3 compras → emblema implementado |
+| Teferi, Hero | +1 desvira 2 terrenos no end step | nunca → mana pra flash/resposta; −8 emblema acumula (2 = 2 exílios por compra) |
+| Teferi, Temporal Archmage | +1 olha 2 pega 1; −1 desvira 4; −10 lealdade no turno dos oponentes | +1 comprava o topo; −1 e emblema inexistentes → implementados (emblema: 1 ativação por PW em cada turno de oponente; não re-ulta, a permissão não acumula) |
+| Teferi, Time Raveler | estático: oponente só conjura em velocidade de feitiço | → oponente não contramagica a Bridge (resiliência); +1 📝 (sem janela de instantâneo no nosso lado) |
+| Teferi, Who Slows the Sunset | +1 desvira terreno/artefato/criatura; −2 olha 3; −7 emblema desvira tudo no untap do oponente | só vida / compra do topo → mana extra, seleção real, mana de pé no turno dos oponentes; compra do emblema conta só oponente vivo e acumula por emblema |
+| Elspeth | −7 emblema | acumula (+2/+2 por emblema) |
+| Vraska | 0 "lose 1 life"; −9 veneno | vida nunca saía; −9 nunca usado → veneno real, proliferate em jogador envenenado, Vorinclex dobra, eliminação com 10 |
+| Ugin | −10 põe terrenos em campo | landfall (Evolution Sage) agora dispara |
+| Ichormoon Gauntlet | PWs ganham [0] proliferate e [−12] turno extra; +1 marcador ao conjurar não-criatura | 100% ausente → implementado |
+| The Peregrine Dynamo | copia habilidade ativada/disparada de fonte lendária | 📝 "exceção arquitetural" → implementado (copia a melhor ativação de PW, a Chain Veil, ou o proliferate de end step da Atraxa; cópia não paga custo — ruling) |
+| Oath of Nissa | ETB olha 3; PW com mana de qualquer cor | 100% ausente → implementado |
+| Oath of Teferi | ETB exila outro permanente, volta no end step | ausente → implementado (volta antes do proliferate da Atraxa) |
+| Paradox Haze | cópias | 2 Hazes = 2 upkeeps extras (ruling) |
+| Nesting Grounds | {1},{T}: mover marcador | ausente → move 1 lealdade pra um PW alcançar o ultimate no turno (CR 122.5: mover = pôr → Doubling Season dobra, All Will Be One dispara) |
+| Sterling Grove | {1}, sacrifique: tutor de encantamento pro topo | ausente → só sem a Bridge em campo (com ela, o upkeep revela o topo e manda o encantamento pro fundo — anti-sinergia real) e em resposta a remoção mirando a Grove |
+| Plaza of Heroes | cor p/ lendária; cor de lendária em campo; {3},{T}, exile: protege criatura lendária | só {C} → as 3 implementadas (a Bridge é lendária de 5 cores) |
+| Interplanar Beacon | +1 vida ao conjurar PW; mana de 2 cores só p/ PW | ausentes → implementadas |
+| Shocklands (10) | paga 2 vida ou entra virada | de graça → política: paga só se a mana muda o turno |
+| City of Brass / Mana Confluence | 1 de dano/vida por uso | ausente → aproximação (viradas por último) |
+| The World Tree | entra virada | ausente → implementado |
+| Blasphemous Act | −{1} por criatura em campo | ausente no loop genérico → `spell_cost` |
+| Innkeeper's Talent | nível 1 fora do modelo de combate; nível 2 ward {1} | nível 1 só no combate → todo modo; ward implementado (suposição: oponente paga a partir do T4) |
+| Counterspell / Mana Drain / Swan Song / Dovin's Veto | contramágica | 📊 → no modo resiliência ficam na mão e contramagicam remoção/wipe/contramágica do oponente (Swan Song dá o Bird 2/2 voador; Mana Drain dá a mana no próximo main) |
+| Mutational Advantage / Ripples of Potential | hexproof/indestrutível/previne dano; phasing | só o proliferate → respostas protetoras (remoção e combate letal a PW) |
+| Veil of Summer | "spells you control can't be countered" | 📊 → protege a conjuração da Bridge |
+| Delighted Halfling | "that spell can't be countered" | → Bridge paga com ela não é contramagicada |
+| Kaya | hexproof | → oponente não a escolhe como alvo |
+| Urza | cópia pela Tamiyo CS | começa saga nova |
+
+### 📊 / 📝 que continuam (com a cláusula citada)
+
+- **Exotic Orchard** — "any color that a land an opponent controls could
+  produce": terrenos do oponente não modelados; assume as 5 cores numa mesa de 3.
+- **Esika, God of the Tree** (frente do MDFC) — conjurar a Esika significa não
+  ter a Bridge; o plano do deck é sempre a Bridge (política, não omissão).
+- **Aminatou −6**, **Bolas +1 (oponente exila)**, **Narset/Ashiok estáticos**,
+  **Vorinclex (oponente põe metade)**, **Kaya 0 (oponentes fazem scry)**,
+  **Rhystic Study**, **Veil (compra se oponente conjurou azul/preta)**,
+  **Swords/Path (efeito no oponente)** — dependem de estado de oponente não
+  modelado.
+- **The World Tree** (busca de Gods) — não há God no grimório (Esika está na
+  zona de comando).
+- 📝 Teferi, Time Raveler +1 (feitiço com flash): o simulador não tem janela
+  de instantâneo do nosso lado além das respostas.
+- 📝 Segunda Urza simultânea (cópia do Oko −5) e cópia de Innkeeper (nível 1)
+  não têm estado próprio; cópia de Bloom Tender usa a doença da original.
+- 📝 Teto do simulador de 400 permanentes: Oko −5 com Doubling Season copia a
+  própria Doubling Season e o tabuleiro cresce ×4, ×8... (real). Acima disso a
+  partida já está decidida; bate em ~4% das partidas.
+
+### Validação
+
+- Reestruturação dos PWs em tabela de habilidades: **md5 idêntico** ao antes
+  (padrão e resiliência) antes de qualquer correção.
+- Cada correção medida isoladamente (2.000 partidas, mesmas seeds) — tabela no
+  `goldfish-log.md`.
+- `test_prismatic_bridge_goldfish.py`: **85/85** (33 testes novos, um por
+  correção; o da ordem de turno extra roda o loop inteiro — Regra #6).
+- Regressão: 20.000 partidas modo padrão + 20.000 mesa mista + 5.000 em cada
+  perfil (go-wide/voltron/low/sem combate) + 5.000 com cada carta de
+  pillowfort: **0 exceções**. Travamento achado e resolvido no caminho:
+  crescimento explosivo real (Oko −5 copiando Doubling Season) → teto de 400
+  permanentes no simulador.
+
 ## Modelo de combate (oponente ataca planeswalkers) + 9 correções pré-existentes — 2026-09-24
 
 **Gatilho:** pergunta do usuário — *"Conseguimos implementar no goldfish um
