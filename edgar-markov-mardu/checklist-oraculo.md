@@ -1,5 +1,23 @@
 # Checklist cláusula-a-cláusula — Edgar Markov
 
+## London mulligan: as cartas do fundo eram embaralhadas de volta — 2026-09-24
+
+**Achado:** o mesmo bug encontrado no Prismatic Bridge (rodada de gaps de
+2026-09-24) estava copiado aqui, nos 2 pontos (`simulate_one` e
+`simulate_one_with_interaction`): depois de pôr as cartas do 2º mulligan
+no fundo do grimório, o código fazia `rng.shuffle(state.library)` — a carta
+que ia pro fundo voltava pra uma posição aleatória (dava pra comprá-la de
+novo). CR 103.5: "puts a number of those cards ... on the bottom of their
+library in any order" — sem embaralhar depois. Corrigido: removido o
+`shuffle` nos 2 pontos (o `shuffle` de devolver a mão antes de comprar a
+nova continua, esse é real).
+
+**Validação:** 2.000 partidas antes/depois (mesmas seeds): só mudam as
+partidas com 2+ mulligans (380 de 2.000 no modo padrão; 392 no modo
+resiliência) — nenhuma outra. Teste dirigido `test_london_mulligan.py` (raiz
+do repo): passa no código corrigido e falha no antigo, nos 2 modos.
+Regressão de 20.000 partidas (padrão) + 20.000 (resiliência): 0 exceções.
+
 ## CR 903.9a: comandante DISPARA gatilhos de morte de verdade antes de ir pra zona de comando — 2026-09-21
 
 **Gatilho:** mesmo achado do usuário aplicado a todos os 9 decks desta

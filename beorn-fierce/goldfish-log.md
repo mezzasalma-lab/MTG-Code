@@ -4,6 +4,19 @@ Compilação de todos os goldfish rodados na sessão. Cada jogo foi registrado t
 
 ---
 
+## London mulligan sem embaralhar o fundo — 2026-09-24
+
+Detalhes em `checklist-oraculo.md`. Efeito só nas partidas com 2+ mulligans
+(244 de 2.000, mesmas seeds). Médias nessas partidas, antes → depois:
+
+| métrica | antes | depois |
+|---|---|---|
+| combat_damage_draws | 5,811 | 4,533 |
+| counters_on_board_final | 13,18 | 10,50 |
+| finishers_resolved | 0,385 | 0,459 |
+
+Regressão 20.000 + 20.000 partidas: 0 exceções.
+
 ## Porte completo do modo de resiliência + CR 903.9a nativa desde o início — 2026-09-21
 
 **Gatilho:** "E depois dele faça o Beorn" — seguindo o porte concluído

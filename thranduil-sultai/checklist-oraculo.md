@@ -1,5 +1,25 @@
 # Checklist cláusula-a-cláusula — Thranduil, the Elvenking
 
+## London mulligan: as cartas do fundo eram embaralhadas de volta — 2026-09-24
+
+**Achado:** o mesmo bug encontrado no Prismatic Bridge (rodada de gaps de
+2026-09-24) estava copiado aqui, nos 2 pontos (`simulate_one` e
+`simulate_one_with_interaction`): depois de pôr as cartas do 2º mulligan
+no fundo do grimório, o código fazia `rng.shuffle(state.library)` — a carta
+que ia pro fundo voltava pra uma posição aleatória (dava pra comprá-la de
+novo). CR 103.5: "puts a number of those cards ... on the bottom of their
+library in any order" — sem embaralhar depois. Corrigido: removido o
+`shuffle` nos 2 pontos (o `shuffle` de devolver a mão antes de comprar a
+nova continua, esse é real).
+
+**Validação:** 2.000 partidas antes/depois (mesmas seeds): só mudam as
+partidas com 2+ mulligans (257 de 2.000 no modo padrão; 269 no modo
+resiliência) — nenhuma outra. Teste dirigido `test_london_mulligan.py` (raiz
+do repo): passa no código corrigido e falha no antigo, nos 2 modos.
+Regressão de 20.000 partidas (padrão) + 20.000 (resiliência): 0 exceções.
+
+**Achado lateral (não corrigido nesta rodada, por pedido do usuário: "apenas corrija os mulligans"):** o simulador do Thranduil é **não-determinístico entre processos** — a mesma seed dá resultados diferentes conforme o `PYTHONHASHSEED` (ordem de iteração de `set` de strings). Medido: 13 de 2.000 partidas mudaram entre dois processos sem nenhuma relação com o mulligan. A comparação acima foi refeita com `PYTHONHASHSEED=0` nos dois lados (antes = último commit, depois = corrigido): mudaram exatamente as 257 partidas com 2+ mulligans e nenhuma outra.
+
 ## Porte completo do modo de resiliência (interação de oponente) + CR 903.9a nativa desde o início — 2026-09-21
 
 **Gatilho:** *"Faz o deck do Thranduil agora"* — seguindo diretamente o

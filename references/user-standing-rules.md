@@ -611,6 +611,21 @@ carta (substitui a Regra 13 como primeiro passo, não a invalida):**
    com carta de face múltipla merece essa mesma varredura antes de
    confiar no cache pra ele.
 
+**Reincidência registrada (2026-09-24):** o usuário perguntou "pq ainda
+temos cartas sem o oráculo salvo no nosso repositório como mandei". A
+varredura do item 4 achou **1.527 cartas sem oráculo no cache**: o arquivo
+não recebia nenhuma entrada desde 2026-09-14. Ficaram de fora os 27 precons
+(listas adicionadas em 21/09 só com os nomes), o Tom Bombadil (22/09), as
+trocas do Megatron e da Ms. Bumbleflower, e as cartas citadas na conversa de
+24/09 (comparação com o EDHREC do Prismatic Bridge, pillowfort, logs das
+partidas manuais) — o oráculo dessas foi buscado na API e guardado só em
+arquivo temporário do scratchpad, nunca no cache. Corrigido: 1.512 entradas
+novas + 1 `oracle_text` vazio (Stensian Sanguinist // Exsanguinate).
+**Regra operacional:** todo oráculo buscado na API vai pro
+`scryfall-cache/oracle-cache.json` NO MESMO passo em que é buscado (nunca só
+pro scratchpad), e toda lista nova (inclusive precon sem simulador) só é
+commitada junto com as entradas do cache de todas as cartas dela.
+
 ## 15. Salvar o oráculo de TODA carta que o usuário mencionar, não só as que entram num deck/simulador
 
 Citação literal do usuário (2026-08-31): *"Sempre salve o oráculo de TODAS

@@ -1,5 +1,18 @@
 # Goldfish Log — Edgar Markov
 
+## London mulligan sem embaralhar o fundo — 2026-09-24
+
+Detalhes em `checklist-oraculo.md`. Efeito só nas partidas com 2+ mulligans
+(380 de 2.000, mesmas seeds). Médias nessas partidas, antes → depois:
+
+| métrica | antes | depois |
+|---|---|---|
+| skullclamp_draws | 0,263 | 0,405 |
+| black_market_treasures | 0,376 | 0,521 |
+| exsanguinate_casts | 0,089 | 0,058 |
+
+Regressão 20.000 + 20.000 partidas: 0 exceções.
+
 ## CR 903.9a: comandante dispara gatilhos de morte de verdade — 2026-09-21
 
 **Gatilho:** usuário conferiu a regra real do CR 903.9 e apontou o erro

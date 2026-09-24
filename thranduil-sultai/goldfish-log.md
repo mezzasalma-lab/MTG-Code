@@ -4,6 +4,19 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## London mulligan sem embaralhar o fundo — 2026-09-24
+
+Detalhes em `checklist-oraculo.md`. Efeito só nas partidas com 2+ mulligans
+(257 de 2.000, mesmas seeds). Médias nessas partidas, antes → depois:
+
+| métrica | antes | depois |
+|---|---|---|
+| tyvar_bellicose_mana_counters | 2,91 | 4,19 |
+| vannifar_evolves | 0,195 | 0,304 |
+| roaming_throne_doublings | 0,304 | 0,510 |
+
+Regressão 20.000 + 20.000 partidas: 0 exceções.
+
 ## Porte completo do modo de resiliência + CR 903.9a nativa desde o início — 2026-09-21
 
 **Gatilho:** "Faz o deck do Thranduil agora" — seguindo o porte

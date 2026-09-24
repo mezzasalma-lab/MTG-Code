@@ -2572,11 +2572,14 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
     # entra a punicao real do London Mulligan (bottom N-1 cartas).
     mulligan_penalty = max(0, mulligans - 1)
     if mulligan_penalty:
+        # London mulligan (CR 103.5): as cartas vao pro FUNDO do grimorio,
+        # sem embaralhar depois. CORRIGIDO 2026-09-24: havia um
+        # `rng.shuffle(state.library)` aqui que devolvia as cartas do fundo
+        # pra posicoes aleatorias (mesmo bug achado no Prismatic Bridge).
         bottoms = choose_bottom(state.hand, mulligan_penalty)
         for c in bottoms:
             state.hand.remove(c)
             state.library.append(c)
-        rng.shuffle(state.library)
 
     game_log = []
     for t in range(1, turns + 1):
@@ -3168,11 +3171,14 @@ def simulate_one_with_interaction(seed: int, turns: int = 8) -> GameState:
         rng.shuffle(state.library)
     mulligan_penalty = max(0, mulligans - 1)
     if mulligan_penalty:
+        # London mulligan (CR 103.5): as cartas vao pro FUNDO do grimorio,
+        # sem embaralhar depois. CORRIGIDO 2026-09-24: havia um
+        # `rng.shuffle(state.library)` aqui que devolvia as cartas do fundo
+        # pra posicoes aleatorias (mesmo bug achado no Prismatic Bridge).
         bottoms = choose_bottom(state.hand, mulligan_penalty)
         for c in bottoms:
             state.hand.remove(c)
             state.library.append(c)
-        rng.shuffle(state.library)
 
     interaction_log: List[Dict] = []
     game_log = []
