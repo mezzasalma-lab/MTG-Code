@@ -640,6 +640,27 @@ AS CARTAS EU MENCIONAR."*
 - Vale pra cartas citadas de passagem, em pergunta hipotética ("e se eu
   trocasse X por Y"), em comparação, ou mencionadas só de exemplo — qualquer
   nome de carta na conversa dispara a checagem/gravação no cache.
+- **Reforço explícito do usuário (2026-09-24):** *"Mesmo as cartas que
+  perguntar ou sugerir, quero que elas sejam compiladas no cache."* Isso
+  cobre as 3 origens, sem exceção:
+  1. carta que o usuário **pergunta** ("essa carta funciona aqui?",
+     "o que faz X?");
+  2. carta que **eu sugiro** (upgrade, troca, corte por EDHREC,
+     alternativa budget, carta citada como comparação), **mesmo que o
+     usuário nunca adote**;
+  3. carta de **coleção nova ou spoiler** que o usuário pedir pra
+     acompanhar.
+  A gravação acontece **no mesmo passo** em que o oráculo é buscado na API
+  (mesma regra operacional da Regra 14), e entra no **mesmo commit** da
+  resposta/análise que citou a carta. Nunca deixar oráculo buscado só no
+  scratchpad nem só na resposta do chat.
+- **Coleção inteira** (pedido de 2026-09-24 pra FRA, Reality Fracture):
+  baixar via `/cards/search?q=e:<set>&unique=cards` (paginando `next_page`),
+  gravar todas as cartas no `oracle-cache.json` e manter uma lista legível
+  em `scryfall-cache/sets/<set>-<nome>.md` + `.json`. Se a coleção ainda não
+  lançou (spoiler em andamento), rodar de novo
+  `scryfall-cache/sets/fetch_set.py <set>` antes de qualquer análise com
+  cartas dela: a lista pode ter crescido e o texto pode ter mudado.
 
 ## 16. Conferir carta por carta, sempre — nunca inventar, inferir ou presumir
 
