@@ -1,5 +1,95 @@
 # Goldfish Log — Esika, God of the Tree // The Prismatic Bridge
 
+## Modelo de combate + A/B de pillowfort (Silent Arbiter / Dueling Grounds / Sphere of Safety / Ghostly Prison) — 2026-09-24
+
+**Pergunta do usuário:** "Conseguimos implementar no goldfish um simulador de
+ataque aos PW? [...] Vale incluir Silent Arbiter e Dueling [Grounds]?" —
+mesa real: **mista**. Modelo e suposições em `checklist-oraculo.md`.
+
+### Antes/depois de cada correção (2.000 partidas, mesmas seeds)
+
+Modo padrão (seeds 3.000.000+, 10 turnos). `s0` = só o modelo de combate
+(modo padrão bit-idêntico ao commit anterior).
+
+| etapa | gatilhos Bridge | PW acertados | ativações | ultimates | fichas | tutor Carth | PWs no fim |
+|---|---|---|---|---|---|---|---|
+| s0 modelo de combate | 3,243 | 1,960 | 8,799 | 1,542 | 2,309 | 0,244 | 1,809 |
+| s1 `creature_enters` (doença + ETB Deepglow/Carth de todo ponto) | 3,244 | 1,973 | 8,952 | 1,635 | 2,285 | 0,334 | 1,877 |
+| s2 Sphinx (fase inicial adicional real) | **3,884** | **2,352** | 9,989 | 1,980 | 2,503 | 0,367 | 2,320 |
+| s3 Atraxa proliferate no end step | 3,885 | 2,344 | 10,026 | 2,118 | 2,465 | 0,352 | 2,337 |
+| s4 Doubling Season dobra ficha | 3,885 | 2,344 | 10,026 | 2,118 | **2,744** | 0,352 | 2,337 |
+| s5 Damn só preta | 3,881 | 2,341 | 10,021 | 2,118 | 2,743 | 0,351 | 2,336 |
+| s6 Oath+Urza III não somam | 3,877 | 2,341 | 9,985 | 2,110 | 2,727 | 0,351 | 2,333 |
+| s7 lore da Urza dobrado + Read ahead | 3,880 | 2,350 | 10,030 | 2,125 | 2,743 | 0,352 | 2,340 |
+| s8 All Will Be One | = s7 (só métrica nova: 9,9 gatilhos/partida em média; em campo em 12,2% das partidas) |||||||
+| s9 vida real (Kaya/Teferi Sunset/Ugin/Chain Veil) | = s8 (vida não é lida no modo padrão) |||||||
+
+Resiliência, mesa mista (seeds 6.000.000+):
+
+| etapa | vida final | PW mortos em combate | PW-turnos vivos | ultimates | PWs no fim |
+|---|---|---|---|---|---|
+| antes do modelo (ataque genérico antigo) | 37,22 | — | — | 1,120 | 1,429 |
+| s0 modelo de combate | 22,12 | 0,348 | 7,297 | 0,898 | 1,429 |
+| s2 Sphinx | 21,89 | 0,358 | 8,373 | 1,226 | 1,774 |
+| s8 All Will Be One | 22,04 | 0,344 | 8,546 | 1,335 | 1,851 |
+| s9 vida real | **24,74** | 0,344 | 8,546 | 1,335 | 1,851 |
+
+### A/B pareado (5.000 partidas por célula, seeds 11.000.000+, 10 turnos)
+
+Cada candidata entra no slot da **Oath of Nissa** (que o simulador ainda
+não modela = slot "vazio"; mede o ganho marginal da carta). Mesma seed =
+mesma ordem de biblioteca, então as partidas são idênticas até a carta
+aparecer. "Condicional" = só partidas em que a carta chegou ao campo,
+comparadas com a mesma seed sem ela.
+
+**Mesa mista (a real):** base = 17,7% das partidas chegam a vida ≤ 0 até o T10;
+0,33 PW morto em combate por partida (de 2,20 mortes de PW no total — a
+maior parte vem de remoção de oponente e dos próprios ultimates).
+
+| Δ vs base (por partida) | Silent Arbiter | Dueling Grounds | Sphere of Safety | Ghostly Prison |
+|---|---|---|---|---|
+| em campo até o T6 | 14,6% | 10,3% | 5,0% | 10,7% |
+| "morreu" até o T10 | −1,0 pp | −0,8 pp | −0,2 pp | −0,7 pp |
+| PW mortos em combate | −0,024 | −0,008 | −0,007 | **+0,012** |
+| PW-turnos vivos | **−0,287** | +0,007 | 0,000 | −0,053 |
+| ultimates | −0,033 | −0,004 | +0,002 | −0,021 |
+| PWs acertados pela Bridge | **−0,106** | 0,000 | −0,001 | −0,006 |
+| dano de combate nosso (proxy) | −2,6 | −1,9 | −0,3 | −0,3 |
+| condicional: "morreu" | −3,0 pp | −4,2 pp | −2,4 pp | −3,8 pp |
+| condicional: PW-turnos vivos | **−0,74** | +0,01 | −0,05 | −0,25 |
+
+**Mesa go-wide (pior caso pra PW):** base 27,2% "morreu", 0,41 PW morto em
+combate. Dueling Grounds é a melhor: condicional −8,6 pp de morte, −0,145
+PW morto em combate, **+0,37 PW-turnos vivos**, +0,10 ultimate. Sphere:
+condicional +0,29 PW-turnos, −6,4 pp. Silent Arbiter: condicional −0,65
+PW-turnos (Bridge diluída). Ghostly Prison: condicional **+0,12 PW morto em
+combate** (empurra ataque pro PW). **Voltron e low:** as 4 ficam ~neutras
+(só 1 atacante relevante; Silent Arbiter continua negativa pela diluição).
+
+**Sensibilidade (mesa focada em mim, atenção 2/3):** o risco vira MORRER
+(vida final média −8 na mista, −29 na go-wide); as 4 ajudam a vida
+(+0,9 a +4,0) mas os PWs quase não mudam — a conclusão não vira.
+
+### Leitura (Regra #5: deck primeiro, simulador como apoio)
+
+- **Silent Arbiter: não.** É criatura num deck cuja Bridge revela "até
+  achar criatura OU planeswalker" — cada criatura não-PW a mais rouba
+  gatilho da Bridge (−0,27 PW acertado quando ela aparece). Morre nos
+  nossos próprios 5 wipes. Limita nosso ataque (fichas da Elspeth/Samurai/
+  Elk/Oko).
+- **Ghostly Prison: não pra proteger PW.** Ruling oficial: não protege
+  planeswalker — e o atacante que não paga vai pro PW (medido: mais PW
+  morto em combate).
+- **Dueling Grounds: a única com efeito real, e só contra go-wide.** Na
+  mesa mista o ganho nos PWs é ~zero; protege vida. Não para comandante
+  voltron (ele já é 1 atacante só).
+- **Sphere of Safety:** efeito pequeno, 5 de mana, raramente em campo cedo.
+- O deck já tem a defesa anti-criatura que importa: 5 wipes, 4 remoções
+  pontuais, 13 modos de remoção/controle em 11 PWs, All Will Be One (agora
+  modelada), o estático da Eternal Wanderer. Combate responde por ~15% das
+  mortes de PW no modelo; o maior risco medido é a nossa VIDA (17,7% das
+  partidas chegam a 0 na mesa mista), não o PW.
+
 ## CR 903.9a: comandante passa pelo cemitério de verdade antes da zona de comando — 2026-09-21
 
 **Gatilho:** usuário conferiu a regra real do CR 903.9 e apontou o erro

@@ -49,6 +49,13 @@ Metodologia:
   ser lido como "dado esse chute, o efeito e X", nao como "X e a resposta
   definitiva". Ajustar REMOVAL_CHANCE_PER_OPPONENT se o usuario validar um
   numero diferente depois de jogar partidas reais.
+- MODELO DE COMBATE (2026-09-24, so' no modo de resiliencia): oponentes com
+  campo de criaturas (perfis go_wide/voltron/low/mixed) atacando voce e seus
+  planeswalkers, bloqueio, pillowfort (A/B via `swap`), nossas remocoes com
+  efeito real. Ver secao "MODELO DE COMBATE" e checklist-oraculo.md. Na
+  mesma rodada: Sphinx of the Second Sun reimplementado com o oraculo real,
+  All Will Be One/Atraxa (end step)/Doubling Season (fichas)/The Chain Veil
+  (perda de vida) implementados, `creature_enters` unico.
 """
 
 import random
@@ -216,7 +223,7 @@ add("Chromatic Lantern", 3, "Artifact", colors=set(), produces={"B", "G", "R", "
 # terreno em campo, nao so ela mesma. Tag "lands_any_color" checada em
 # color_sources().
 add("Counterspell", 2, "Instant", colors={"U"}, produces=set(), tags={"counterspell"})
-add("Damn", 2, "Sorcery", colors={"B", "W"}, produces=set(), tags={"removal"})
+add("Damn", 2, "Sorcery", colors={"B"}, produces=set(), tags={"removal"})  # {B}{B} (cor = so' preta; o {W} e' do overload {2}{W}{W}, identidade de cor)
 add("Deepglow Skate", 5, "Creature", colors={"U"}, produces=set(), tags={"counter_doubler", "creature"})
 add("Delighted Halfling", 1, "Creature", colors={"G"}, produces={"C"}, tags={"creature", "ramp", "legendary_only_color"})
 # Achado real 2026-08-28: "{T}: Add {C}." incondicional (produces acima),
@@ -275,7 +282,7 @@ add("Teferi, Who Slows the Sunset", 4, "Planeswalker", colors={"U", "W"}, produc
 # arquivo, ficaria de fora mesmo). Ver try_chain_veil_activation().
 add("The Chain Veil", 4, "Artifact", colors=set(), produces=set(), tags={"chain_veil"})
 add("The Eternal Wanderer", 6, "Planeswalker", colors={"W"}, produces=set(), tags={"planeswalker", "wipe"})
-add("The Peregrine Dynamo", 3, "Creature", colors=set(), produces=set(), tags={"creature"})
+add("The Peregrine Dynamo", 3, "Creature", colors=set(), produces=set(), tags={"creature", "artifact"})  # "Legendary Artifact Creature" (tag "artifact": wipe de artefato alcanca)
 add("The World Tree", 0, "Land", colors={"G"}, produces={"G"}, tags={"world_tree_6lands"})
 # Achado real 2026-08-28: "{T}: Add {G}" incondicional (produces acima),
 # mas o resto do oraculo real e' "This land enters tapped." + "As long as
@@ -358,6 +365,51 @@ add("Soldier Token", 0, "Creature", colors={"W"}, produces=set(), tags=set())
 add("Zombie Token", 0, "Creature", colors={"B"}, produces=set(), tags=set())
 add("Elk Token", 0, "Creature", colors={"G"}, produces=set(), tags=set())
 add("Samurai Token", 0, "Creature", colors={"W"}, produces=set(), tags=set())
+add("Spirit Token", 0, "Creature", colors={"W"}, produces=set(), tags=set())  # Kaya, Intangible Slayer -3 (copia 1/1 voadora)
+
+# -------- Candidatas de pillowfort (A/B, 2026-09-24) -- NAO estao na lista --------
+# Oraculo conferido ao vivo no Scryfall. Entram so' via `swap` de
+# `simulate_one_with_interaction` pra medir o efeito contra ataque real
+# aos planeswalkers (modelo de combate, ver secao propria).
+add("Silent Arbiter", 4, "Creature", colors=set(), produces=set(), tags={"creature", "artifact", "attack_limit_one"})  # "Artifact Creature"
+# "No more than one creature can attack each combat. No more than one creature can block each combat."
+add("Dueling Grounds", 3, "Enchantment", colors={"G", "W"}, produces=set(), tags={"attack_limit_one"})
+# mesmo texto do Silent Arbiter, em encantamento
+add("Sphere of Safety", 5, "Enchantment", colors={"W"}, produces=set(), tags={"sphere_of_safety"})
+# "Creatures can't attack you or planeswalkers you control unless their controller pays {X} for each
+# of those creatures, where X is the number of enchantments you control."
+add("Ghostly Prison", 3, "Enchantment", colors={"W"}, produces=set(), tags={"ghostly_prison"})
+# "Creatures can't attack you unless their controller pays {2} for each creature they control that's
+# attacking you." Ruling oficial: "a creature that can't attack you can still attack a planeswalker you control."
+
+# Poder/resistencia/palavras-chave reais (Scryfall, 2026-09-24) das criaturas
+# que podem estar do nosso lado -- so' usado pelo modelo de combate.
+CREATURE_STATS = {
+    "Bloom Tender": (1, 1, set()),
+    "Delighted Halfling": (1, 2, set()),
+    "Evolution Sage": (3, 2, set()),
+    "Arena Rector": (1, 2, set()),
+    "Atraxa, Praetors' Voice": (4, 4, {"deathtouch", "flying", "lifelink", "vigilance"}),
+    "Carth the Lion": (3, 5, set()),
+    "Deepglow Skate": (3, 3, set()),
+    "Flux Channeler": (2, 2, set()),
+    "The Peregrine Dynamo": (1, 5, {"haste"}),
+    "Sphinx of the Second Sun": (6, 6, {"flying"}),
+    "Vorinclex, Monstrous Raider": (6, 6, {"haste", "trample"}),
+    "Silent Arbiter": (1, 5, set()),
+    "Soldier Token": (1, 1, set()),
+    "Zombie Token": (2, 2, set()),
+    "Elk Token": (3, 3, set()),
+    "Samurai Token": (2, 2, {"double_strike"}),
+    "Spirit Token": (1, 1, {"flying"}),
+}
+# Criaturas "descartaveis" pra bloqueio de sacrificio (chump): fichas e
+# dorks/paredes. Motores (Carth, Atraxa, Vorinclex, Flux Channeler,
+# Evolution Sage, Deepglow Skate, Sphinx, Peregrine Dynamo, Arena Rector)
+# so' bloqueiam se sobrevivem ou se a troca mata um atacante que mataria
+# um planeswalker (ver `_choose_blocker`).
+CHUMP_OK = {"Soldier Token", "Zombie Token", "Elk Token", "Samurai Token", "Spirit Token",
+            "Bloom Tender", "Delighted Halfling", "Silent Arbiter"}
 
 def C(name: str) -> Card:
     return CARD_DB[name]
@@ -506,9 +558,14 @@ class GameState:
     # ETB) e The Peregrine Dynamo (copiar gatilho entre N fontes
     # legendarias, mesma excecao arquitetural do Strionic Resonator)
     # permanecem estruturalmente fora de escopo, ver docstring.
-    extra_turns_pending: int = 0
-    sphinx_extra_turns_total: int = 0
-    sphinx_sacrifice_pending: bool = False
+    extra_turns_pending: int = 0  # fila generica de turno extra (hoje nenhuma carta da lista usa)
+    # CORRIGIDO 2026-09-24: o Sphinx of the Second Sun estava implementado
+    # com um texto que a carta NAO tem ("if you cast it, take an extra turn"
+    # + sacrificio no upkeep). Oraculo real (Scryfall ao vivo): "At the
+    # beginning of each of your postcombat main phases, there is an
+    # additional beginning phase after this phase." Ver
+    # `sphinx_additional_beginning_phase`.
+    sphinx_extra_beginning_phases_total: int = 0
     carth_tutors_total: int = 0
 
     # Achado real (auditoria oraculo-por-oraculo): "removal"/"counterspell"/
@@ -549,11 +606,8 @@ class GameState:
     # alvo pro ataque de oponente do modo de resiliencia, comeca em 40.
     interaction_rng: Optional[random.Random] = None
     life: int = 40
-    wiped_this_round: bool = False
     smart_removals_total: int = 0
     smart_removal_log: list = field(default_factory=list)
-    smart_attacks_taken_total: int = 0
-    smart_attack_log: list = field(default_factory=list)
     smart_discards_total: int = 0
     smart_discard_log: list = field(default_factory=list)
     smart_wipes_total: int = 0
@@ -570,10 +624,66 @@ class GameState:
     smart_graveyard_snipes_total: int = 0
     smart_graveyard_snipe_log: list = field(default_factory=list)
 
+    # ---- Modelo de combate: ataque de oponente a planeswalkers, 2026-09-24 ----
+    # Pedido do usuario ("Conseguimos implementar no goldfish um simulador de
+    # ataque aos PW?", aprovado com 3 perfis de mesa + perfil misto). So'
+    # ativo quando `attack_profile` e' setado por `simulate_one_with_
+    # interaction`; em modo padrao tudo abaixo fica inerte.
+    attack_profile: Optional[str] = None
+    opp_archetypes: List[str] = field(default_factory=list)
+    opp_boards: List[list] = field(default_factory=list)       # por oponente: lista de dicts de criatura
+    opp_cmd_cooldown: List[int] = field(default_factory=list)  # voltron: turnos ate recastar o comandante
+    opp_cmd_bonus: List[int] = field(default_factory=list)     # voltron: bonus de equipamento que sobra ao recastar
+    our_tapped: List[str] = field(default_factory=list)        # atacaram no meu turno, ficam virados ate o meu untap (CR 500.1)
+    new_tokens_this_turn: Dict[str, int] = field(default_factory=dict)
+    creature_counters: Dict[str, int] = field(default_factory=dict)       # +1/+1 em criatura nomeada (unica)
+    token_counters: Dict[str, List[int]] = field(default_factory=dict)    # +1/+1 por instancia de ficha
+    elspeth_emblem: bool = False
+    opp_attackers_total: int = 0
+    opp_attacks_on_pw_total: int = 0
+    pw_combat_damage_total: int = 0
+    pw_combat_deaths_total: int = 0
+    face_combat_damage_total: int = 0
+    blocks_total: int = 0
+    our_blockers_lost_total: int = 0
+    opp_creatures_killed_total: int = 0
+    our_wipes_cast_total: int = 0
+    our_spot_removal_cast_total: int = 0
+    pw_defensive_uses_total: int = 0
+    attackers_stopped_by_tax_total: int = 0
+    attackers_redirected_to_pw_total: int = 0
+    attackers_limited_total: int = 0
+    our_combat_damage_proxy_total: int = 0
+    pw_turns_alive_total: int = 0
+    liliana_static_draws_total: int = 0
+    arena_rector_triggers_total: int = 0
+    tamiyo_fr_marked: List[tuple] = field(default_factory=list)  # +1 da Tamiyo FR: ate' 2 criaturas nossas, ate' meu proximo turno
+    tamiyo_fr_combat_draws_total: int = 0
+    teferi_hero_emblem: bool = False
+    teferi_emblem_exiles_total: int = 0
+    ugin_minus_x_total: int = 0
+    oko_combat_copies_total: int = 0
+    our_lifelink_gain_total: int = 0
+    pw_enter_turn: Dict[str, int] = field(default_factory=dict)
+    all_will_be_one_triggers_total: int = 0
+    all_will_be_one_kills_total: int = 0
+    all_will_be_one_face_damage_total: int = 0
+    loyalty_activated_this_turn: bool = False
+    chain_veil_life_lost_total: int = 0
+    died_turn: Optional[int] = None  # 1o turno (meu) em que a vida chegou a <= 0 -- o motor nao encerra a partida; a metrica marca
+    pillowfort_first_turn: Optional[int] = None   # A/B: 1o turno com Silent Arbiter/Dueling Grounds/Sphere/Ghostly Prison em campo
+    pillowfort_turns_total: int = 0
+
     def draw(self, n: int = 1):
         for _ in range(n):
             if self.library:
                 self.hand.append(self.library.pop(0))
+                if self.teferi_hero_emblem and self.attack_profile is not None:
+                    # Emblema do Teferi, Hero of Dominaria (-8): "Whenever you
+                    # draw a card, exile target permanent an opponent
+                    # controls." So' ha' permanente de oponente rastreado no
+                    # modelo de combate.
+                    _teferi_hero_emblem_trigger(self)
 
     def has(self, name: str) -> bool:
         return name in self.battlefield
@@ -789,6 +899,29 @@ def _carth_lion_look_at_top7(state: GameState, log: List[Dict], source: str):
 def do_carth_etb(state: GameState, log: List[Dict]):
     _carth_lion_look_at_top7(state, log, source="etb")
 
+
+def creature_enters(state: GameState, name: str, log: List[Dict]):
+    """Ponto UNICO de 'uma criatura nossa entra no campo' (achado real
+    2026-09-24, Regra #1 taxonomia "gatilho compartilhado ligado so' em
+    ALGUNS dos pontos"): antes, doenca de invocacao e os ETBs de Deepglow
+    Skate ("When this creature enters, double the number of each kind of
+    counter on any number of target permanents") e Carth the Lion
+    ("Whenever Carth enters...") so' existiam no caminho de CONJURAR da mao.
+    Criatura posta em campo pela propria Bridge (o caminho mais comum
+    deste deck!), pelo ultimate do Ugin ou copiada pela Tamiyo, Compleated
+    Sage entrava sem doenca de invocacao (dork gerava mana no mesmo turno)
+    e sem ETB nenhum. "Enters" nao distingue como a carta entrou."""
+    state.creature_cast_turn[name] = state.turn
+    if name == "Deepglow Skate":
+        # Sempre escolhe dobrar TODOS os planeswalkers em campo (nunca ha'
+        # razao real pra nao escolher) e, no modelo de combate, as +1/+1.
+        for pw in list(state.loyalty.keys()):
+            add_loyalty(state, pw, state.loyalty[pw], log, reason="deepglow_skate_etb")
+        if attack_model_on(state):
+            _double_creature_counters(state)
+    if name == "Carth the Lion":
+        do_carth_etb(state, log)
+
 def try_fabled_passage(state: GameState, log: List[Dict]):
     """Fabled Passage: '{T}, Sacrifice this land: Search your library for a
     basic land card, put it onto the battlefield tapped, then shuffle. Then
@@ -831,7 +964,12 @@ def counter_doubler_multiplier(state: GameState) -> int:
     # a permanent or player, put twice that many...") e' o MESMO efeito -
     # engine de leveling implementada (ver try_level_up_innkeepers_talent),
     # empilha com os outros 2 igual.
-    n = sum(1 for c in ("Doubling Season", "Vorinclex, Monstrous Raider") if state.has(c))
+    # Achado real 2026-09-24 (Regra #3): conta CADA copia em campo (a
+    # Tamiyo, Compleated Sage -X cria ficha copia de Doubling Season/
+    # Vorinclex do cemiterio -- 2 Doubling Seasons = x4). Innkeeper's
+    # Talent copiada entra no nivel 1 (nivel de Class nao e' copiavel,
+    # CR 716.2b), entao so' o original conta pro nivel 3.
+    n = sum(state.battlefield.count(c) for c in ("Doubling Season", "Vorinclex, Monstrous Raider"))
     if "Innkeeper's Talent" in state.battlefield and state.innkeepers_talent_level >= 3:
         n += 1
     return 2 ** n
@@ -871,6 +1009,35 @@ def _planeswalker_dies(state: GameState, pw: str, log: List[Dict]):
         _carth_lion_look_at_top7(state, log, source="pw_death")
 
 
+def _counters_put(state: GameState, n: int, log: List[Dict], source: str = ""):
+    """Ponto UNICO de "voce coloca N marcadores num permanente" (ja' com
+    dobradores aplicados). All Will Be One (achado real 2026-09-24: carta
+    na lista com ZERO codigo -- tags vazias): "Whenever you put one or more
+    counters on a permanent or player, this enchantment deals that much
+    damage to target opponent, creature an opponent controls, or
+    planeswalker an opponent controls." Ruling oficial (2023-02-04):
+    dispara tambem quando um permanente nosso ENTRA com marcadores
+    (planeswalker entrando com lealdade). 1 gatilho por permanente que
+    recebeu marcadores (proliferate em 3 PWs = 3 gatilhos). Chamado de:
+    `add_loyalty` (+N), `planeswalker_enters`, `_add_ctr` (+1/+1 no modelo
+    de combate) e lore counter da Urza.
+    Alvo (politica): com o modelo de combate, mata a MAIOR criatura de
+    oponente que o dano mata (defesa dos planeswalkers); senao vai no
+    oponente (metrica proxy, sem vida de oponente rastreada)."""
+    if n <= 0:
+        return
+    for _ in range(state.battlefield.count("All Will Be One")):
+        state.all_will_be_one_triggers_total += 1
+        if attack_model_on(state):
+            cands = [(i, c) for i, b in enumerate(state.opp_boards) for c in b if c["t"] <= n]
+            if cands:
+                i, c = max(cands, key=lambda ic: (ic[1]["p"], ic[1]["cmd"]))
+                _opp_remove_creature(state, i, c, how="damage")
+                state.all_will_be_one_kills_total += 1
+                continue
+        state.all_will_be_one_face_damage_total += n
+
+
 def add_loyalty(state: GameState, pw: str, amount: int, log: List[Dict], reason: str = ""):
     """Aplica uma mudanca de lealdade (positiva = ganha counters, negativa =
     remove) - so a parte POSITIVA e' dobrada por Doubling Season/Vorinclex
@@ -882,6 +1049,8 @@ def add_loyalty(state: GameState, pw: str, amount: int, log: List[Dict], reason:
     if amount > 0:
         amount *= counter_doubler_multiplier(state)
     state.loyalty[pw] += amount
+    if amount > 0:
+        _counters_put(state, amount, log, source=reason)
     log.append({"trigger": "loyalty_change", "pw": pw, "amount": amount,
                 "new_loyalty": state.loyalty[pw], "reason": reason, "turn": state.turn})
     if state.loyalty[pw] <= 0:
@@ -895,11 +1064,17 @@ def proliferate_loyalty(state: GameState, log: List[Dict], source: str = ""):
     # razao real pra nao escolher os proprios).
     for pw in list(state.loyalty.keys()):
         add_loyalty(state, pw, 1, log, reason=f"proliferate_{source}")
+    if attack_model_on(state):
+        # Proliferate tambem alcanca +1/+1 de criatura -- so' existe marcador
+        # de criatura rastreado quando o modelo de combate esta' ligado.
+        _proliferate_creature_counters(state)
 
 def planeswalker_enters(state: GameState, name: str, log: List[Dict]):
     base = PLANESWALKER_STARTING_LOYALTY[name]
     mult = counter_doubler_multiplier(state)
     state.loyalty[name] = base * mult
+    state.pw_enter_turn[name] = state.turn  # doenca de invocacao do Oko quando vira copia de criatura
+    _counters_put(state, base * mult, log, source=f"enters_{name}")
     log.append({"trigger": "planeswalker_enters", "pw": name, "loyalty": state.loyalty[name], "turn": state.turn})
     # Deepglow Skate: "When this creature enters, double the number of each
     # kind of counter on any number of target permanents" - ETB de UMA VEZ
@@ -922,8 +1097,7 @@ def bridge_upkeep_trigger(state: GameState, log: List[Dict]):
         state.battlefield.append(hit)
         if C(hit).type == "Creature":
             state.bridge_hits_creature += 1
-            if hit == "Evolution Sage":
-                pass  # landfall dela ja e' tratada em on_land_enters, nao precisa nada aqui
+            creature_enters(state, hit, log)
         else:
             state.bridge_hits_planeswalker += 1
             if state.first_pw_hit_turn is None:
@@ -1086,6 +1260,14 @@ def remove_permanent(state: GameState, name: str, log: List[Dict], source: str =
     if name in state.loyalty:
         _planeswalker_dies(state, name, log)
         return
+    if C(name).type == "Creature":
+        # Achado real 2026-09-24 (Regra #3, gatilho compartilhado): criatura
+        # nossa morrendo por remocao/wipe de oponente precisa disparar
+        # Liliana, Dreadhorde General ("Whenever a creature you control
+        # dies, draw a card") e o gatilho de morte da Arena Rector -- os 2
+        # passam pela mesma cascata que combate e nossos proprios wipes usam.
+        _our_creature_leaves(state, name, log, exiled=False, source=source)
+        return
     state.battlefield.remove(name)
     if "Token" not in name:
         state.graveyard.append(name)
@@ -1103,14 +1285,35 @@ def remove_permanent(state: GameState, name: str, log: List[Dict], source: str =
 # de criacao de token ja usado no resto do arquivo.
 
 def make_pw_token(state: GameState, token_name: str, n: int, log: List[Dict]):
+    # Doubling Season: "If an effect would create one or more tokens under
+    # your control, it creates twice that many of those tokens instead."
+    # Achado real 2026-09-24: so' a metade de CONTADOR da carta estava
+    # implementada (counter_doubler_multiplier); a de FICHA nunca. Cada
+    # copia dobra de novo. (Vorinclex e Innkeeper's Talent so' dobram
+    # contador, nao ficha.)
+    n *= 2 ** state.battlefield.count("Doubling Season")
     for _ in range(n):
         state.battlefield.append(token_name)
+    if attack_model_on(state):
+        # Doenca de invocacao (fichas criadas neste turno nao atacam) e
+        # marcadores +1/+1 por instancia -- so' o modelo de combate le.
+        state.new_tokens_this_turn[token_name] = state.new_tokens_this_turn.get(token_name, 0) + n
+        state.token_counters.setdefault(token_name, []).extend([0] * n)
     state.pw_tokens_created_total += n
     log.append({"trigger": "pw_token", "token": token_name, "count": n, "turn": state.turn})
 
 def resolve_planeswalker(state: GameState, pw: str, log: List[Dict]):
     loy = state.loyalty[pw]
     state.pw_activations_total += 1
+    state.loyalty_activated_this_turn = True  # lido pelo gatilho de end step da The Chain Veil
+
+    # Modelo de combate (2026-09-24): com criatura de oponente ameacando os
+    # planeswalkers, os modos de remocao/controle que ja existem nas cartas
+    # (Nicol Bolas -3, Kaya -3, Vraska -2, Teferi Hero -3, Eternal Wanderer
+    # +1/-4, Elspeth -3, Liliana -4, Tamiyo FR -2) passam a ter alvo real.
+    # Sem modelo de combate, nunca ha' ameaca -> heuristica antiga intacta.
+    if attack_model_on(state) and _pw_defensive_activation(state, pw, loy, log):
+        return
 
     if pw == "Aminatou, the Fateshifter":
         # +1: draw then put back (filtragem, sem vantagem liquida de cartas
@@ -1130,6 +1333,7 @@ def resolve_planeswalker(state: GameState, pw: str, log: List[Dict]):
         if loy >= 7:
             add_loyalty(state, pw, -7, log, reason="elspeth_ultimate")
             state.pw_ultimates_used_total += 1  # emblem: +2/+2 e voar pras criaturas, estatico
+            state.elspeth_emblem = True  # lido so' pelo modelo de combate (P/T e voo dos nossos bloqueadores)
         else:
             add_loyalty(state, pw, 1, log, reason="elspeth_plus1")
             make_pw_token(state, "Soldier Token", 3, log)
@@ -1140,12 +1344,23 @@ def resolve_planeswalker(state: GameState, pw: str, log: List[Dict]):
         add_loyalty(state, pw, 2, log, reason="kaya_plus2")
         state.pw_life_lost_opponent_total += 3
         state.pw_life_gained_total += 3
+        state.life += 3  # "you gain 3 life" -- vida propria rastreada (lida pelo modelo de combate)
 
     elif pw == "Liliana, Dreadhorde General":
         if loy >= 9:
             add_loyalty(state, pw, -9, log, reason="liliana_ultimate")
             state.pw_ultimates_used_total += 1
             state.pw_wipe_proxy_total += 1  # oponente sacrifica quase tudo
+            if attack_model_on(state):
+                # "Each opponent chooses a permanent they control of each
+                # permanent type and sacrifices the rest." -- cada oponente
+                # fica com a MELHOR criatura dele (escolha dele).
+                for j, b in enumerate(state.opp_boards):
+                    if b:
+                        keep = max(b, key=lambda c: (c["p"], c["cmd"]))
+                        for c in list(b):
+                            if c is not keep:
+                                _opp_remove_creature(state, j, c, how="sacrifice")
         else:
             add_loyalty(state, pw, 1, log, reason="liliana_plus1")
             make_pw_token(state, "Zombie Token", 1, log)
@@ -1201,14 +1416,18 @@ def resolve_planeswalker(state: GameState, pw: str, log: List[Dict]):
             if C(target).type == "Planeswalker":
                 planeswalker_enters(state, target, log)
             elif C(target).type == "Creature":
-                state.creature_cast_turn[target] = state.turn
+                creature_enters(state, target, log)
             state.pw_recursion_total += 1
             log.append({"trigger": "tamiyo_sage_token_copy", "of": target, "turn": state.turn})
         elif loy >= 7:
             add_loyalty(state, pw, -7, log, reason="tamiyo_sage_ultimate")
             state.pw_ultimates_used_total += 1  # Tamiyo's Notebook - sem efeito numerico modelado
         else:
-            add_loyalty(state, pw, 1, log, reason="tamiyo_sage_plus1")  # sem alvo pro tap, so cresce
+            add_loyalty(state, pw, 1, log, reason="tamiyo_sage_plus1")
+            if attack_model_on(state):
+                # "+1: Tap up to one target artifact or creature. It doesn't
+                # untap during its controller's next untap step."
+                _freeze_biggest_threats(state, 1, log, source="tamiyo_sage_plus1")
 
     elif pw == "Tamiyo, Field Researcher":
         if loy >= 7:
@@ -1217,12 +1436,24 @@ def resolve_planeswalker(state: GameState, pw: str, log: List[Dict]):
             state.draw(3)
             state.pw_draws_total += 3  # emblem de cast gratis nao modelado (sem alvo/limite claro)
         else:
-            add_loyalty(state, pw, 1, log, reason="tamiyo_researcher_plus1")  # gatilho de dano de combate, sem combate modelado
+            add_loyalty(state, pw, 1, log, reason="tamiyo_researcher_plus1")
+            if attack_model_on(state):
+                # "+1: Choose up to two target creatures. Until your next
+                # turn, whenever either of those creatures deals combat
+                # damage, you draw a card." -- escolhe as 2 nossas de maior
+                # poder que ja' podem atacar (sem doenca) primeiro.
+                cands = sorted(_our_creature_instances(state),
+                               key=lambda x: (not _is_sick(state, x), _pt(state, x)[0]), reverse=True)
+                state.tamiyo_fr_marked = cands[:2]
 
     elif pw == "Teferi, Hero of Dominaria":
         if loy >= 8:
             add_loyalty(state, pw, -8, log, reason="teferi_hero_ultimate")
-            state.pw_ultimates_used_total += 1  # emblem exila permanente de oponente ao comprar - sem oponente real
+            state.pw_ultimates_used_total += 1
+            # Emblema "Whenever you draw a card, exile target permanent an
+            # opponent controls" -- tem alvo real so' no modelo de combate
+            # (ver GameState.draw); fora dele segue sem efeito numerico.
+            state.teferi_hero_emblem = True
         else:
             add_loyalty(state, pw, 1, log, reason="teferi_hero_plus1")
             state.draw(1)
@@ -1244,6 +1475,10 @@ def resolve_planeswalker(state: GameState, pw: str, log: List[Dict]):
             add_loyalty(state, pw, -3, log, reason="teferi_raveler_minus3")
             state.draw(1)
             state.pw_draws_total += 1
+            if attack_model_on(state):
+                # "-3: Return up to one target artifact, creature, or
+                # enchantment to its owner's hand." Agora ha' alvo real.
+                _bounce_biggest_threat(state, log, source="teferi_raveler_minus3")
         else:
             add_loyalty(state, pw, 1, log, reason="teferi_raveler_plus1")  # flash pra sorceries - sem valor de instant-speed modelado
 
@@ -1259,6 +1494,7 @@ def resolve_planeswalker(state: GameState, pw: str, log: List[Dict]):
         else:
             add_loyalty(state, pw, 1, log, reason="teferi_sunset_plus1")
             state.pw_life_gained_total += 2
+            state.life += 2  # "You gain 2 life."
 
     elif pw == "The Eternal Wanderer":
         # "0" custa 0 lealdade, cria Samurai 2/2 double strike de graca -
@@ -1271,23 +1507,32 @@ def resolve_planeswalker(state: GameState, pw: str, log: List[Dict]):
             add_loyalty(state, pw, -10, log, reason="ugin_ultimate")
             state.pw_ultimates_used_total += 1
             state.pw_life_gained_total += 7
+            state.life += 7  # "You gain 7 life"
             state.draw(7)
             state.pw_draws_total += 7
             # "put up to seven permanent cards from your hand onto the
             # battlefield" - mesmo padrao do Last March of the Ents no
             # Beorn (coloca em campo de graca, sem pagar custo).
             free_permanents = [c for c in state.hand if C(c).type != "Instant" and C(c).type != "Sorcery"][:7]
+            # Entram TODAS ao mesmo tempo; os ETBs (Deepglow Skate/Carth,
+            # via creature_enters) so' resolvem depois -- o Deepglow ve os
+            # planeswalkers que entraram junto com ela.
             for c in free_permanents:
                 state.hand.remove(c)
                 state.battlefield.append(c)
-                if C(c).type == "Creature":
-                    state.creature_cast_turn[c] = state.turn
-                elif C(c).type == "Planeswalker":
+                if C(c).type == "Planeswalker":
                     planeswalker_enters(state, c, log)
                 log.append({"trigger": "ugin_ultimate_free_permanent", "card": c, "turn": state.turn})
+            for c in free_permanents:
+                if C(c).type == "Creature":
+                    creature_enters(state, c, log)
         else:
             add_loyalty(state, pw, 2, log, reason="ugin_plus2")
-            state.pw_removal_proxy_total += 1  # "3 dano a qualquer alvo" - sem alvo de oponente real
+            state.pw_removal_proxy_total += 1  # "3 dano a qualquer alvo"
+            if attack_model_on(state):
+                # Com criatura de oponente em campo, os 3 de dano matam a
+                # maior ameaca com resistencia <= 3.
+                _ugin_ping(state, log)
 
     elif pw == "Vraska, Betrayal's Sting":
         # "0": compra 1 + proliferate - sempre a melhor escolha (sem custo
@@ -1328,26 +1573,42 @@ def try_urza_saga_tick(state: GameState, log: List[Dict]):
     if state.urza_last_ticked_turn == state.turn:
         return
     state.urza_last_ticked_turn = state.turn
-    state.urza_chapter += 1
-    ch = state.urza_chapter
-    if ch == 1:
-        if state.library and C(state.library[0]).type == "Planeswalker":
-            state.hand.append(state.library.pop(0))
-            state.urza_pw_tutored_total += 1
-    elif ch == 2:
-        pw_in_hand = [c for c in state.hand if C(c).type == "Planeswalker" and C(c).mv <= 6]
-        if pw_in_hand:
-            best = max(pw_in_hand, key=lambda c: C(c).mv)
-            state.hand.remove(best)
-            state.battlefield.append(best)
-            planeswalker_enters(state, best, log)
-            state.urza_pw_cheated_total += 1
-    elif ch == 3:
-        state.urza_chapter_iii_this_turn = True
-    if ch >= 3 and "Urza Assembles the Titans" in state.battlefield:
+    # CORRIGIDO 2026-09-24 (Regra #3, conceito compartilhado "marcador"):
+    # lore counter e' marcador colocado num permanente nosso -- Doubling
+    # Season/Vorinclex/Innkeeper nivel 3 dobram (antes sempre +1). Com
+    # Read ahead (CR 702.155a), no turno em que ENTRA so' dispara o
+    # capitulo cujo numero e' EXATAMENTE o numero de marcadores (escolha
+    # modelada: sempre "1", como antes -> com 1 dobrador entra com 2 e so'
+    # o capitulo II dispara). Nos turnos seguintes (CR 714.2b), dispara
+    # todo capitulo N com antes < N <= depois.
+    entering = state.urza_chapter == 0
+    n = counter_doubler_multiplier(state)
+    old = state.urza_chapter
+    new = old + n
+    state.urza_chapter = min(new, 3)
+    _counters_put(state, n, log, source="urza_lore")
+    for ch in range(old + 1, min(new, 3) + 1):
+        if entering and ch != new:
+            continue
+        if ch == 1:
+            if state.library and C(state.library[0]).type == "Planeswalker":
+                state.hand.append(state.library.pop(0))
+                state.urza_pw_tutored_total += 1
+        elif ch == 2:
+            pw_in_hand = [c for c in state.hand if C(c).type == "Planeswalker" and C(c).mv <= 6]
+            if pw_in_hand:
+                best = max(pw_in_hand, key=lambda c: C(c).mv)
+                state.hand.remove(best)
+                state.battlefield.append(best)
+                planeswalker_enters(state, best, log)
+                state.urza_pw_cheated_total += 1
+        elif ch == 3:
+            state.urza_chapter_iii_this_turn = True
+        log.append({"trigger": "urza_saga_chapter", "chapter": ch, "turn": state.turn})
+    if new >= 3 and "Urza Assembles the Titans" in state.battlefield:
+        # "Sacrifice after III" (CR 714.4, acao baseada em estado)
         state.battlefield.remove("Urza Assembles the Titans")
         state.graveyard.append("Urza Assembles the Titans")
-    log.append({"trigger": "urza_saga_chapter", "chapter": ch, "turn": state.turn})
 
 def extra_pw_activation_sources(state: GameState) -> int:
     """Achado real: 3 fontes reais e distintas de ativar lealdade mais de
@@ -1356,11 +1617,16 @@ def extra_pw_activation_sources(state: GameState) -> int:
     campo), The Chain Veil (pago neste turno, {4},{T}) e Urza Assembles
     the Titans capitulo III (so' no turno em que resolve)."""
     extra = 0
-    if state.has("Oath of Teferi"):
+    # CORRIGIDO 2026-09-24 (ruling oficial da Oath of Teferi: "If you
+    # somehow control more than one Oath of Teferi, you won't be able to
+    # activate abilities of planeswalkers you control more than twice in
+    # one turn"): Oath e Urza capitulo III dizem a MESMA coisa ("twice
+    # ... rather than only once") -- nao somam entre si. So' a Chain Veil
+    # ("as though none of its loyalty abilities have been activated")
+    # soma de verdade (rulings da Chain Veil: cada resolucao = +1).
+    if state.has("Oath of Teferi") or state.urza_chapter_iii_this_turn:
         extra += 1
     if state.chain_veil_activated_this_turn:
-        extra += 1
-    if state.urza_chapter_iii_this_turn:
         extra += 1
     return extra
 
@@ -1437,10 +1703,17 @@ def main_phase(state: GameState, log: List[Dict]):
         if enabler is not None:
             reserved = FLASH_ENABLER_COST[enabler] + bridge_effective_mv(state)
 
+    # Modelo de combate: remocao/wipe so' sai com alvo real (criatura de
+    # oponente ameacando), nunca "de graca" -- e com efeito de verdade dos 2
+    # lados da mesa. Sem o modelo, o loop generico abaixo segue igual.
+    if attack_model_on(state):
+        _cast_defensive_spells(state, log, reserved)
+
     # resto da mao, ordem generica por CMC crescente, respeitando a reserva
     for _ in range(8):
         budget = remaining_mana(state) - reserved
-        castables = [c for c in state.hand if c != COMMANDER and can_cast(state, c) and C(c).mv <= budget]
+        castables = [c for c in state.hand if c != COMMANDER and can_cast(state, c) and C(c).mv <= budget
+                     and not (attack_model_on(state) and _held_for_threat(c))]
         if not castables:
             break
         castables.sort(key=lambda c: C(c).mv)
@@ -1484,33 +1757,44 @@ def main_phase(state: GameState, log: List[Dict]):
             if choice == "Urza Assembles the Titans":
                 try_urza_saga_tick(state, log)  # capitulo I dispara no proprio turno do cast
             if C(choice).type == "Creature":
-                state.creature_cast_turn[choice] = state.turn
-                if choice == "Deepglow Skate" and state.loyalty:
-                    # "When this creature enters, double the number of each
-                    # kind of counter on any number of target permanents."
-                    # ETB de UMA VEZ SO (nao e' estatico) - achado real
-                    # 2026-08-28 (regra nova de lealdade): sempre escolhe
-                    # dobrar TODOS os planeswalkers que ja estao em campo
-                    # (nunca ha razao real pra nao escolher).
-                    for pw in list(state.loyalty.keys()):
-                        add_loyalty(state, pw, state.loyalty[pw], log, reason="deepglow_skate_etb")
-                if choice == "Sphinx of the Second Sun":
-                    # "When this creature enters, IF YOU CAST IT, take an
-                    # extra turn after this one." Achado real 2026-09-01
-                    # (leitura linha-a-linha, "compile TUDO"): "if you cast
-                    # it" so' e' satisfeito neste caminho (conjurada de
-                    # verdade da mao) - quando a Bridge POE a carta em campo
-                    # (nao conjura), essa condicao nao e' satisfeita (regra
-                    # real, nao omissao), ver `bridge_upkeep_trigger()`.
-                    state.extra_turns_pending += 1
-                    state.sphinx_extra_turns_total += 1
-                    state.sphinx_sacrifice_pending = True
-                    log.append({"trigger": "sphinx_second_sun_extra_turn", "turn": state.turn})
-                if choice == "Carth the Lion":
-                    do_carth_etb(state, log)
+                creature_enters(state, choice, log)
         if choice in LAND_FETCH_SPELLS:
             do_land_fetch_spell(state, choice, log)
         log.append({"action": "cast", "card": choice, "turn": state.turn})
+
+def sphinx_additional_beginning_phase(state: GameState, log: List[Dict]):
+    """Sphinx of the Second Sun (oraculo real, Scryfall 2026-09-24): "At the
+    beginning of each of your postcombat main phases, there is an
+    additional beginning phase after this phase. (The beginning phase
+    includes the untap, upkeep, and draw steps.)" Rulings oficiais: no
+    untap voce desvira seus permanentes; tudo que dispara "at the beginning
+    of your upkeep" dispara; voce compra no draw step; efeitos "until your
+    next turn" NAO expiram (e' o mesmo turno); depois da fase adicional o
+    jogo vai pro ending phase (NAO ha' outro main phase -- nada de
+    feitico/lealdade depois dela).
+
+    - Untap: terrenos/rochas desviram -> a mana volta a estar disponivel,
+      mas so' pra velocidade de instantaneo (sobra como `mana_held_back`,
+      ex.: flashar a Bridge no end step de um oponente). Criaturas que
+      atacaram desviram e podem bloquear no turno dos oponentes.
+    - Upkeep: gatilho da The Prismatic Bridge de novo. Paradox Haze NAO
+      dobra este ("enchanted player's FIRST upkeep each turn").
+    - Draw: compra 1.
+    Planeswalker que a Bridge poe em campo aqui so' ativa no proximo turno
+    (sem main phase depois)."""
+    state.sphinx_extra_beginning_phases_total += 1
+    # untap step
+    state.mana_spent_this_turn = 0
+    state.tapped_lands_this_turn = set()
+    if attack_model_on(state):
+        state.our_tapped = []
+    # upkeep step
+    if state.bridge_in_play:
+        bridge_upkeep_trigger(state, log)
+    # draw step
+    state.draw(1)
+    log.append({"trigger": "sphinx_additional_beginning_phase", "turn": state.turn})
+
 
 def play_turn(state: GameState, turn: int, game_log: List[List[Dict]], skip_legacy_removal: bool = False):
     """`skip_legacy_removal`: usado SO' pelo modo de resiliencia
@@ -1526,19 +1810,15 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]], skip_lega
     state.tapped_lands_this_turn = set()
     state.chain_veil_activated_this_turn = False
     state.urza_chapter_iii_this_turn = False
+    state.loyalty_activated_this_turn = False
     log = []
-
-    if state.sphinx_sacrifice_pending:
-        # "At the beginning of that turn's upkeep, sacrifice Sphinx of
-        # the Second Sun." Achado real 2026-09-01. Este e' exatamente o
-        # inicio da propria turma extra concedida (flag setada no cast,
-        # consumida aqui no proximo play_turn() - que so' pode ser a
-        # extra, ja que o upkeep do turno QUE disparou ja passou antes
-        # do main_phase setar a flag).
-        if "Sphinx of the Second Sun" in state.battlefield:
-            state.battlefield.remove("Sphinx of the Second Sun")
-            state.graveyard.append("Sphinx of the Second Sun")
-        state.sphinx_sacrifice_pending = False
+    if attack_model_on(state):
+        # Meu untap step (CR 502.3): so' aqui desviram as criaturas que
+        # atacaram no meu turno anterior -- durante os turnos dos oponentes
+        # elas continuaram viradas e nao puderam bloquear.
+        state.our_tapped = []
+        state.new_tokens_this_turn = {}
+        state.tamiyo_fr_marked = []  # +1 da Tamiyo FR vale "until your next turn"
 
     # Linha de flash no end step do oponente anterior (ver docstring: modelado
     # como acontecendo ANTES da rodada de remocao deste turno, entao a Bridge
@@ -1565,6 +1845,37 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]], skip_lega
         state.pw_draws_total += N_OPPONENTS
     play_land(state, log)
     main_phase(state, log)
+    if attack_model_on(state):
+        # Fase de combate (depois do main 1): gatilho "at the beginning of
+        # combat on your turn" da Innkeeper's Talent + nosso ataque.
+        our_combat_step(state, log)
+
+    # Main pos-combate (Regra #6: ordem real das fases). Nenhuma conjuracao
+    # modelada aqui (tudo sai no main 1), mas e' o momento do gatilho do
+    # Sphinx of the Second Sun -- e a fase inicial adicional vem DEPOIS
+    # deste main e ANTES do end step.
+    if "Sphinx of the Second Sun" in state.battlefield:
+        sphinx_additional_beginning_phase(state, log)
+
+    # End step. Atraxa, Praetors' Voice: "At the beginning of your end step,
+    # proliferate." Achado real 2026-09-24: nunca implementado (a carta so'
+    # tinha a tag "proliferate", nenhum dispatch lia). Mesmo helper das
+    # outras 6 fontes de proliferate (lealdade + +1/+1 no modelo de combate).
+    if state.has("Atraxa, Praetors' Voice"):
+        proliferate_loyalty(state, log, source="atraxa_end_step")
+    # The Chain Veil: "At the beginning of your end step, if you didn't
+    # activate a loyalty ability of a planeswalker this turn, you lose 2
+    # life." Achado real 2026-09-24: so' a 2a habilidade dela existia.
+    if state.has("The Chain Veil") and not state.loyalty_activated_this_turn:
+        state.life -= 2
+        state.chain_veil_life_lost_total += 2
+
+    if attack_model_on(state):
+        state.pw_turns_alive_total += len(state.loyalty)
+        if any(n in PILLOWFORT_CARDS for n in state.battlefield):
+            state.pillowfort_turns_total += 1
+            if state.pillowfort_first_turn is None:
+                state.pillowfort_first_turn = state.turn
 
     # Mana nao gasta neste turno fica destapada ate o MEU proximo untap
     # step (CR 500.1) - e a mana real disponivel pra flashar algo no end
@@ -1660,7 +1971,7 @@ def simulate_one(seed: int, turns: int, with_greater_auramancy: bool) -> Dict:
         "innkeepers_talent_in_play": "Innkeeper's Talent" in state.battlefield,
         "innkeepers_talent_level_end": state.innkeepers_talent_level,
         # Achados reais 2026-09-01 (leitura linha-a-linha completa do oraculo):
-        "sphinx_extra_turns_total": state.sphinx_extra_turns_total,
+        "sphinx_extra_beginning_phases_total": state.sphinx_extra_beginning_phases_total,
         "carth_tutors_total": state.carth_tutors_total,
         # Achados reais da auditoria oraculo-por-oraculo 2026-09-13/14:
         "interaction_spells_cast_total": state.interaction_spells_cast_total,
@@ -1668,6 +1979,9 @@ def simulate_one(seed: int, turns: int, with_greater_auramancy: bool) -> Dict:
         "urza_pw_tutored_total": state.urza_pw_tutored_total,
         "urza_pw_cheated_total": state.urza_pw_cheated_total,
         "urza_chapter_end": state.urza_chapter,
+        # Achados reais 2026-09-24 (rodada do modelo de combate):
+        "all_will_be_one_triggers_total": state.all_will_be_one_triggers_total,
+        "all_will_be_one_face_damage_total": state.all_will_be_one_face_damage_total,
     }
 
 def run_batch(n=2000, turns=10, with_greater_auramancy=False, seed_base=3000000, label=""):
@@ -1739,11 +2053,15 @@ def run_batch(n=2000, turns=10, with_greater_auramancy=False, seed_base=3000000,
     print(f"Avg proliferates via Flux Channeler/Inexorable Tide/Mutational Advantage/Ripples of Potential "
           f"(achado 2026-09-01, implementado nesta rodada): "
           f"{sum(r['pw_activations_total'] for r in results)/n:.2f} ativacoes de PW no total (inclui esses proliferates)")
-    print(f"Sphinx of the Second Sun (turno extra real, so' quando conjurada de verdade - nao via Bridge): "
-          f"{sum(r['sphinx_extra_turns_total'] for r in results)/n:.3f} avg | "
-          f"{100*sum(1 for r in results if r['sphinx_extra_turns_total']>0)/n:.1f}% dos jogos")
+    print(f"Sphinx of the Second Sun (fase inicial adicional -- untap/upkeep com Bridge/compra -- por turno em campo): "
+          f"{sum(r['sphinx_extra_beginning_phases_total'] for r in results)/n:.3f} avg | "
+          f"{100*sum(1 for r in results if r['sphinx_extra_beginning_phases_total']>0)/n:.1f}% dos jogos")
     print(f"Carth the Lion (tutor de planeswalker no ETB): {sum(r['carth_tutors_total'] for r in results)/n:.2f} avg | "
           f"{100*sum(1 for r in results if r['carth_tutors_total']>0)/n:.1f}% dos jogos")
+    print(f"All Will Be One (gatilhos por marcador colocado; dano no oponente = proxy): "
+          f"{sum(r['all_will_be_one_triggers_total'] for r in results)/n:.2f} gatilhos avg | "
+          f"{sum(r['all_will_be_one_face_damage_total'] for r in results)/n:.1f} de dano avg | "
+          f"{100*sum(1 for r in results if r['all_will_be_one_triggers_total']>0)/n:.1f}% dos jogos")
     print(f"\n--- Auditoria oraculo-por-oraculo 2026-09-13/14 (achados novos) ---")
     print(f"INTERACTION (Counterspell/Mana Drain/Path/Swords/Anguished Unmaking/Damn/Void Rend/Toxic Deluge/"
           f"Blasphemous Act/Supreme Verdict/Farewell, so' contadas - Regra 1, sem efeito de bordo real): "
@@ -1841,14 +2159,6 @@ OPPONENT_ATTENTION_CHANCE = 1.0 / NUM_OPPONENTS
 # `interaction_chance()`). Rolado 1x no INICIO de `try_smart_opponent_
 # turn`, antes de qualquer categoria.
 
-POST_WIPE_ATTACK_HASTE_FACTOR = 0.15
-# Board wipe e' SIMETRICO -- acerta TODA criatura da mesa, nao so' as
-# minhas. Se um wipe ja' aconteceu NESTA RODADA (`state.wiped_this_
-# round`), TODOS os turnos de oponente restantes na mesma rodada
-# tambem ficam sem criaturas de verdade pra atacar -- exceto por haste
-# (fisicamente possivel, Regra #1 do CLAUDE.md: so' impossibilidade
-# estrutural justifica nao modelar, nunca zerar por completo).
-
 BOARD_WIPE_CHANCE_FACTOR = 0.4
 GRAVEYARD_WIPE_CHANCE_FACTOR = 0.4
 GRAVEYARD_SNIPE_CHANCE_FACTOR = 0.5
@@ -1872,15 +2182,6 @@ NONPLANESWALKER_ENGINE_PRIORITY = [
 # depois ativacao extra, tutor de carta, proliferate). A propria Bridge
 # fica de fora de proposito -- ja' tem categoria dedicada
 # (`try_smart_opponent_counter`) e remocao nao a mata de verdade mesmo.
-
-OPPONENT_ATTACKER_PROFILES = [
-    ("Knight Token", 2), ("Saproling Token", 1), ("Vampire Token", 1),
-    ("Zombie Token", 2), ("Soldier Token", 1), ("Goblin Token", 1),
-    ("Elemental Token", 3),
-]
-# Mesmos perfis genericos ja' validados nos outros 6 decks -- sem
-# toughness, este arquivo nao modela combate/bloqueio de um oponente de
-# verdade. Todo ataque conecta.
 
 def try_smart_opponent_removal(state: GameState, log: List[Dict]) -> Optional[str]:
     """Remocao 'inteligente' -- mira o planeswalker de MAIOR lealdade em
@@ -1921,26 +2222,6 @@ def try_smart_opponent_removal(state: GameState, log: List[Dict]) -> Optional[st
     state.smart_removals_total += 1
     state.smart_removal_log.append((state.turn, target))
     return target
-
-def try_smart_opponent_attack(state: GameState, log: List[Dict]) -> Optional[str]:
-    """Ataque de oponente -- SEM bloqueio (limitacao estrutural: este
-    arquivo nao modela combate/bloqueio de um oponente de verdade, nao
-    tem nenhuma funcao de combate). Sempre conecta em `state.life`.
-
-    Se `state.wiped_this_round` (algum wipe ja' disparou nesta rodada,
-    de qualquer oponente, incluindo este mesmo turno) a chance cai pra
-    `POST_WIPE_ATTACK_HASTE_FACTOR` -- representa so' um atacante com
-    haste conjurado DEPOIS do wipe."""
-    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
-        return None
-    chance = interaction_chance(state) * (POST_WIPE_ATTACK_HASTE_FACTOR if state.wiped_this_round else 1.0)
-    if state.interaction_rng.random() >= chance:
-        return None
-    name, power = state.interaction_rng.choice(OPPONENT_ATTACKER_PROFILES)
-    state.life -= power
-    state.smart_attacks_taken_total += 1
-    state.smart_attack_log.append((state.turn, name))
-    return name
 
 def try_smart_opponent_discard(state: GameState, log: List[Dict]) -> Optional[str]:
     """Discard aleatorio -- mesma logica dos outros 6 decks (alvo
@@ -2005,19 +2286,21 @@ def try_smart_opponent_wipe(state: GameState, log: List[Dict]) -> Optional[list]
     TOTAL_WIPE_CHANCE_FACTOR`; 2) SO' se isso disparar, escolhe qual
     TIPO de sweeper via escolha ponderada (`state.interaction_rng.
     choices`) restrita aos tipos que tem pelo menos 1 alvo legal em
-    campo. Se o tipo escolhido nao for 'creature' mas algum alvo
-    destruido TAMBEM for uma criatura de verdade, `state.wiped_this_
-    round` e' setado igual -- nenhuma carta desta lista e' hibrida hoje,
-    mas a checagem fica por robustez (uma troca futura pode adicionar
-    um artifact/enchantment creature). Sem nenhum alvo legal de tipo
-    nenhum, retorna None sem fazer nada."""
+    campo. Criatura-artefato (The Peregrine Dynamo, Silent Arbiter) e'
+    alvo do wipe de artefato tambem (tag "artifact"), e morre pela
+    cascata normal de criatura (`remove_permanent`). Sem nenhum alvo
+    legal de tipo nenhum, retorna None sem fazer nada."""
     if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
         return None
     if state.interaction_rng.random() >= interaction_chance(state) * TOTAL_WIPE_CHANCE_FACTOR:
         return None
     candidates = {
         "creature": [n for n in state.battlefield if C(n).type == "Creature"],
-        "artifact": [n for n in state.battlefield if C(n).type == "Artifact"],
+        # Achado real 2026-09-24 (Regra #3, conceito compartilhado "o que e'
+        # artefato"): The Peregrine Dynamo e' "Legendary Artifact Creature"
+        # (Scryfall) mas o `CARD_DB` so' guarda 1 tipo ("Creature") -- um wipe
+        # de artefato nunca a alcancava. Tag "artifact" cobre criatura-artefato.
+        "artifact": [n for n in state.battlefield if C(n).type == "Artifact" or has_tag(n, "artifact")],
         "enchantment": [n for n in state.battlefield if C(n).type == "Enchantment"],
     }
     available = [t for t in candidates if candidates[t]]
@@ -2025,9 +2308,12 @@ def try_smart_opponent_wipe(state: GameState, log: List[Dict]) -> Optional[list]
         return None
     wipe_type = state.interaction_rng.choices(available, weights=[WIPE_TYPE_WEIGHTS[t] for t in available])[0]
     targets = candidates[wipe_type]
-    hit_creature = any(C(n).type == "Creature" for n in targets)
     for n in targets:
         remove_permanent(state, n, log, source=f"opponent_{wipe_type}_wipe")
+    if wipe_type == "creature" and attack_model_on(state):
+        # Wipe de criatura e' SIMETRICO: limpa o campo de TODOS os
+        # oponentes tambem (substitui o antigo `wiped_this_round`).
+        _clear_all_opp_boards(state, how="destroy")
     if wipe_type == "creature":
         state.smart_wipes_total += 1
         state.smart_wipe_log.append((state.turn, targets))
@@ -2037,8 +2323,6 @@ def try_smart_opponent_wipe(state: GameState, log: List[Dict]) -> Optional[list]
     else:
         state.smart_enchantment_wipes_total += 1
         state.smart_enchantment_wipe_log.append((state.turn, targets))
-    if hit_creature:
-        state.wiped_this_round = True
     return targets
 
 def try_smart_opponent_graveyard_wipe(state: GameState, log: List[Dict]) -> Optional[list]:
@@ -2093,7 +2377,835 @@ def try_smart_opponent_counter(state: GameState) -> bool:
     state.smart_counter_log.append(state.turn)
     return True
 
-def try_smart_opponent_turn(state: GameState, log: List[Dict]):
+# =========================================================
+# MODELO DE COMBATE -- ataque de oponente a planeswalkers (2026-09-24)
+# =========================================================
+# Pedido do usuario: "Conseguimos implementar no goldfish um simulador de
+# ataque aos PW?" (aprovado com 3 perfis de mesa; a mesa real dele e'
+# "Misto, um pouco de cada, simulando diferentes decks de forma aleatoria").
+#
+# Antes disto, o unico ataque do modo de resiliencia era 1 ficha generica
+# de 1-3 de poder que SEMPRE acertava a vida, nunca um planeswalker, e
+# ninguem bloqueava -- entao nenhuma carta de pillowfort (Silent Arbiter,
+# Dueling Grounds, Sphere of Safety, Ghostly Prison) tinha como ser avaliada.
+#
+# SUPOSICOES (documentadas, nao dados reais -- ler os resultados como
+# comparacao RELATIVA entre variantes do deck nas mesmas seeds):
+# - Cada um dos 3 oponentes tem um arquetipo: "go_wide" (1-3 criaturas
+#   1/1-2/2 por turno a partir do T2, ate 15), "voltron" (comandante 3/3 com
+#   atropelar a partir do T3, +1..3/+1..3 por turno ate 20, volta 1 turno
+#   depois de removido com metade do bonus de equipamento; ate 2 criaturas
+#   2/2 de apoio) ou "low" (30%/turno de uma 3/3 ou 4/4 a partir do T3, ate
+#   3). Perfil "mixed" sorteia o arquetipo de cada oponente por partida.
+# - O campo do oponente cresce TODO turno dele; ele so' ataca voce/seus PWs
+#   no turno em que passa no gate de atencao ja' existente (1/3).
+# - Alvo: os atacantes vao, do maior pro menor, pro planeswalker de MAIOR
+#   lealdade ate somar poder pra mata-lo; depois o proximo PW; sobra vai na
+#   sua vida.
+# - Imposto (Sphere of Safety/Ghostly Prison): o oponente usa ate metade da
+#   mana dele (turno, max 10) pra pagar; quem nao e' pago nao ataca voce --
+#   na Ghostly Prison o atacante de vida nao pago e' redirecionado pro seu
+#   planeswalker (ruling oficial: a Prison nao protege planeswalker).
+# - Nossas remocoes/wipes, que antes eram so' contadas, agora tem efeito
+#   real nos 2 lados da mesa -- e so' saem com alvo (ameaca real).
+# - Instantaneas sao usadas na velocidade de feitico, no meu turno
+#   (simplificacao: sem janela de resposta no turno do oponente).
+ATTACK_PROFILES = ("mixed", "go_wide", "voltron", "low")
+PILLOWFORT_CARDS = ("Silent Arbiter", "Dueling Grounds", "Sphere of Safety", "Ghostly Prison")
+OPP_ARCHETYPES = ("go_wide", "voltron", "low")
+TAX_BUDGET_FRACTION = 0.5
+THREAT_POWER = 3
+SPOT_REMOVAL_MIN_POWER = 4
+WIPE_MIN_OPP_POWER = 8
+GO_WIDE_CAP = 15
+LOW_CAP = 3
+VOLTRON_BASE = 3
+VOLTRON_CAP = 20
+SPOT_REMOVAL_SPELLS = {  # nome -> (custo, simbolos coloridos {cor: qtd}, como remove) -- custo real, Scryfall
+    "Swords to Plowshares": (1, {"W": 1}, "exile"),            # {W}
+    "Path to Exile": (1, {"W": 1}, "exile"),                   # {W}
+    "Damn": (2, {"B": 2}, "destroy"),                          # {B}{B} (modo normal, alvo unico)
+    "Anguished Unmaking": (3, {"W": 1, "B": 1}, "exile"),      # {1}{W}{B}, "You lose 3 life."
+    "Void Rend": (3, {"W": 1, "U": 1, "B": 1}, "destroy"),     # {W}{U}{B}
+}
+WIPE_SPELL_NAMES = ("Toxic Deluge", "Damn", "Supreme Verdict", "Blasphemous Act", "Farewell")
+
+
+def attack_model_on(state: GameState) -> bool:
+    return state.attack_profile is not None
+
+
+def _attack_limit_one(state: GameState) -> bool:
+    return any(has_tag(n, "attack_limit_one") for n in state.battlefield)
+
+
+def _held_for_threat(card: str) -> bool:
+    """Remocao/wipe (so' as magicas -- planeswalkers com tag removal/wipe
+    continuam sendo conjurados normalmente) ficam na mao ate existir alvo."""
+    return C(card).type in ("Instant", "Sorcery") and (has_tag(card, "removal") or has_tag(card, "wipe"))
+
+
+# ---------------- criaturas do nosso lado ----------------
+
+def _our_creature_instances(state: GameState) -> List[tuple]:
+    """Uma entrada por criatura nossa em campo: (nome, indice) pra ficha
+    (varias com o mesmo nome) ou (nome, None) pra carta nomeada."""
+    inst = []
+    seen = set()
+    for name in state.battlefield:
+        if C(name).type != "Creature" or name in seen:
+            continue
+        seen.add(name)
+        n = state.battlefield.count(name)
+        if "Token" in name:
+            lst = state.token_counters.setdefault(name, [])
+            while len(lst) < n:
+                lst.append(0)
+            del lst[n:]
+            inst.extend((name, i) for i in range(n))
+        else:
+            inst.append((name, None))
+    return inst
+
+
+def _ctr(state: GameState, inst: tuple) -> int:
+    name, i = inst
+    if i is None:
+        return state.creature_counters.get(name, 0)
+    lst = state.token_counters.get(name, [])
+    return lst[i] if i < len(lst) else 0
+
+
+def _add_ctr(state: GameState, inst: tuple, n: int):
+    name, i = inst
+    if i is None:
+        state.creature_counters[name] = state.creature_counters.get(name, 0) + n
+    else:
+        state.token_counters[name][i] += n
+    _counters_put(state, n, [], source="plus1_counter")
+
+
+def _pt(state: GameState, inst: tuple):
+    p, t, kw = CREATURE_STATS[inst[0]]
+    c = _ctr(state, inst)
+    bonus = 2 if state.elspeth_emblem else 0
+    kw = set(kw) | ({"flying"} if state.elspeth_emblem else set())
+    return p + c + bonus, t + c + bonus, kw
+
+
+def _is_sick(state: GameState, inst: tuple) -> bool:
+    name, i = inst
+    if "haste" in CREATURE_STATS[name][2]:
+        return False
+    if i is None:
+        return state.creature_cast_turn.get(name, -1) >= state.turn
+    new = state.new_tokens_this_turn.get(name, 0)
+    return i >= len(state.token_counters.get(name, [])) - new
+
+
+def _blocker_value(state: GameState, inst: tuple):
+    """Menor = mais descartavel (bloqueia/chumpa primeiro)."""
+    p, t, _ = _pt(state, inst)
+    return (0 if "Token" in inst[0] else C(inst[0]).mv, p + t)
+
+
+def _proliferate_creature_counters(state: GameState):
+    mult = counter_doubler_multiplier(state)
+    for inst in _our_creature_instances(state):
+        if _ctr(state, inst) > 0:
+            _add_ctr(state, inst, mult)
+
+
+def _double_creature_counters(state: GameState):
+    """Deepglow Skate ETB: 'double the number of each kind of counter on
+    any number of target permanents' -- tambem as +1/+1 das criaturas."""
+    mult = counter_doubler_multiplier(state)
+    for inst in _our_creature_instances(state):
+        c = _ctr(state, inst)
+        if c > 0:
+            _add_ctr(state, inst, c * mult)
+
+
+def _shift_instances(lst: List[tuple], inst: tuple) -> List[tuple]:
+    """Tira `inst` de uma lista de instancias e reindexa as fichas de mesmo
+    nome que estavam depois dela (o indice e' a posicao na lista de
+    marcadores daquela ficha)."""
+    name, i = inst
+    out = []
+    for (n, j) in lst:
+        if n == name:
+            if j == i:
+                continue
+            if i is not None and j is not None and j > i:
+                j -= 1
+        out.append((n, j))
+    return out
+
+
+def _remove_our_instance(state: GameState, inst: tuple):
+    name, i = inst
+    state.battlefield.remove(name)
+    if i is None:
+        state.creature_counters.pop(name, None)
+    else:
+        lst = state.token_counters.get(name, [])
+        if i < len(lst):
+            lst.pop(i)
+    state.our_tapped = _shift_instances(state.our_tapped, inst)
+    state.tamiyo_fr_marked = _shift_instances(state.tamiyo_fr_marked, inst)
+
+
+def _our_creature_leaves(state: GameState, name: str, log: List[Dict], exiled: bool = False,
+                         source: str = "", inst: Optional[tuple] = None):
+    """Cascata unica de 'uma criatura nossa sai de campo' (combate, nossos
+    wipes, remocao/wipe de oponente). Morrer (nao exilio) dispara:
+    - Liliana, Dreadhorde General: 'Whenever a creature you control dies,
+      draw a card.' (fichas tambem morrem)
+    - Arena Rector: 'When this creature dies, you may exile it. If you do,
+      search your library for a planeswalker card, put it onto the
+      battlefield, then shuffle.'"""
+    if name not in state.battlefield:
+        return
+    if inst is None:
+        if "Token" in name:
+            lst = state.token_counters.get(name) or [0]
+            inst = (name, lst.index(min(lst)))
+        else:
+            inst = (name, None)
+    _remove_our_instance(state, inst)
+    if "Token" not in name and not exiled:
+        state.graveyard.append(name)
+    log.append({"trigger": "our_creature_leaves", "card": name, "exiled": exiled, "source": source, "turn": state.turn})
+    if exiled:
+        return
+    if "Liliana, Dreadhorde General" in state.loyalty:
+        state.draw(1)
+        state.pw_draws_total += 1
+        state.liliana_static_draws_total += 1
+    if name == "Arena Rector":
+        pws = [c for c in state.library if C(c).type == "Planeswalker"]
+        if pws:
+            if "Arena Rector" in state.graveyard:
+                state.graveyard.remove("Arena Rector")  # "you may exile it"
+            best = max(pws, key=lambda c: (C(c).mv, PLANESWALKER_STARTING_LOYALTY[c]))
+            state.library.remove(best)
+            state.rng.shuffle(state.library)
+            state.battlefield.append(best)
+            planeswalker_enters(state, best, log)
+            state.arena_rector_triggers_total += 1
+            log.append({"trigger": "arena_rector_dies", "found": best, "turn": state.turn})
+
+
+# ---------------- campo dos oponentes ----------------
+
+def _new_opp_creature(p: int, t: int, flying: bool, haste: bool, trample: bool = False,
+                      cmd: bool = False, token: bool = False, mv: int = 0) -> dict:
+    # `mv` so' e' lido pelo -X do Ugin (ficha = 0; carta = suposicao
+    # documentada: comandante voltron 3, apoio 2/2 = 2, 3/3 = 3, 4/4 = 4).
+    return {"p": p, "t": t, "flying": flying, "trample": trample, "cmd": cmd, "token": token,
+            "sick": not haste, "frozen": 0, "frozen_now": False, "mv": 0 if token else mv}
+
+
+def _opp_threats(state: GameState) -> List[tuple]:
+    """(indice do oponente, criatura) que podem atacar no proximo turno do
+    dono (congeladas nao contam)."""
+    return [(i, c) for i, b in enumerate(state.opp_boards) for c in b if c["frozen"] == 0]
+
+
+def _biggest_threat(state: GameState, max_toughness: Optional[int] = None):
+    cands = [(i, c) for i, c in _opp_threats(state) if max_toughness is None or c["t"] <= max_toughness]
+    if not cands:
+        return None, None
+    return max(cands, key=lambda ic: (ic[1]["p"], ic[1]["trample"], ic[1]["flying"]))
+
+
+def _opp_remove_creature(state: GameState, i: int, c: dict, how: str = "destroy", cooldown: int = 1):
+    b = state.opp_boards[i]
+    for k, x in enumerate(b):
+        if x is c:
+            del b[k]
+            break
+    else:
+        return
+    state.opp_creatures_killed_total += 1
+    if c["cmd"]:
+        # Comandante volta pra zona de comando (CR 903.9); recasta depois,
+        # perdendo as auras (sobra metade do bonus -- equipamento fica).
+        state.opp_cmd_cooldown[i] = cooldown
+        state.opp_cmd_bonus[i] = max(0, (c["p"] - VOLTRON_BASE) // 2)
+
+
+def _clear_all_opp_boards(state: GameState, how: str = "destroy", max_toughness: Optional[int] = None,
+                          min_power: Optional[int] = None):
+    for i, b in enumerate(state.opp_boards):
+        for c in list(b):
+            if max_toughness is not None and c["t"] > max_toughness:
+                continue
+            if min_power is not None and c["p"] < min_power:
+                continue
+            _opp_remove_creature(state, i, c, how=how)
+
+
+def _freeze_biggest_threats(state: GameState, n: int, log: List[Dict], source: str = ""):
+    """'Tap ... It doesn't untap during its controller's next untap step' --
+    a criatura nao ataca no proximo turno do dono."""
+    for _ in range(n):
+        i, c = _biggest_threat(state)
+        if c is None:
+            return
+        c["frozen"] = 1
+        log.append({"trigger": "opp_creature_frozen", "power": c["p"], "source": source, "turn": state.turn})
+
+
+def _bounce_biggest_threat(state: GameState, log: List[Dict], source: str = ""):
+    i, c = _biggest_threat(state)
+    if c is None:
+        return
+    if c["token"]:
+        _opp_remove_creature(state, i, c, how="bounce")        # ficha que sai de campo deixa de existir
+    elif c["cmd"]:
+        _opp_remove_creature(state, i, c, how="bounce", cooldown=0)  # recasta no proximo turno, com doenca
+    else:
+        c["frozen"] = 1  # volta pra mao e e' reconjurada com doenca: nao ataca no proximo turno
+    log.append({"trigger": "opp_creature_bounced", "power": c["p"], "source": source, "turn": state.turn})
+
+
+def _ugin_ping(state: GameState, log: List[Dict]):
+    i, c = _biggest_threat(state, max_toughness=3)
+    if c is not None:
+        _opp_remove_creature(state, i, c, how="destroy")
+        log.append({"trigger": "ugin_ping_kill", "power": c["p"], "turn": state.turn})
+
+
+def _teferi_hero_emblem_trigger(state: GameState):
+    """Emblema do Teferi, Hero of Dominaria: 'Whenever you draw a card,
+    exile target permanent an opponent controls.' Unico permanente de
+    oponente rastreado = criatura; exila a de maior poder (qualquer uma,
+    inclusive congelada)."""
+    cands = [(i, c) for i, b in enumerate(state.opp_boards) for c in b]
+    if not cands:
+        return
+    i, c = max(cands, key=lambda ic: (ic[1]["p"], ic[1]["cmd"]))
+    _opp_remove_creature(state, i, c, how="exile")
+    state.teferi_emblem_exiles_total += 1
+
+
+def _ugin_minus_x_choice(state: GameState, loy: int) -> Optional[int]:
+    """Ugin '-X: Exile each permanent with mana value X or less that's one
+    or more colors.' SIMETRICO: pega nossas fichas (todas coloridas, MV 0)
+    e qualquer permanente colorido nosso de MV <= X. Terreno e artefato
+    incolor nao sao afetados. Escolhe o X (< lealdade) que exila mais poder
+    de oponente SEM exilar nenhum permanente nosso que nao seja ficha, e so'
+    se isso compensar (mesmo limiar dos nossos wipes)."""
+    ours_nontoken = [n for n in set(state.battlefield)
+                     if not is_land(n) and "Token" not in n and C(n).colors]
+    our_token_power = sum(_pt(state, x)[0] for x in _our_creature_instances(state) if "Token" in x[0])
+    best, best_power = None, 0
+    for x in range(0, loy):
+        if any(C(n).mv <= x for n in ours_nontoken):
+            break
+        opp_power = sum(c["p"] for b in state.opp_boards for c in b if c["mv"] <= x)
+        if opp_power > best_power:
+            best, best_power = x, opp_power
+    if best is None or best_power < WIPE_MIN_OPP_POWER or best_power < 2 * our_token_power:
+        return None
+    return best
+
+
+def _ugin_minus_x(state: GameState, x: int, log: List[Dict]):
+    for j, b in enumerate(state.opp_boards):
+        for c in list(b):
+            if c["mv"] <= x:
+                _opp_remove_creature(state, j, c, how="exile")
+    for inst in sorted([i for i in _our_creature_instances(state) if "Token" in i[0]],
+                       key=lambda v: (v[0], -v[1])):
+        _our_creature_leaves(state, inst[0], log, exiled=True, source="ugin_minus_x", inst=inst)
+    state.ugin_minus_x_total += 1
+
+
+def _develop_opponent_board(state: GameState, i: int):
+    arch = state.opp_archetypes[i]
+    rng = state.interaction_rng
+    t = state.turn
+    b = state.opp_boards[i]
+    if arch == "go_wide":
+        if t >= 2:
+            for _ in range(rng.randint(1, 3)):
+                if len(b) >= GO_WIDE_CAP:
+                    break
+                size = 1 if rng.random() < 0.6 else 2
+                b.append(_new_opp_creature(size, size, flying=rng.random() < 0.15,
+                                           haste=rng.random() < 0.10, token=True))
+    elif arch == "voltron":
+        cmd = next((c for c in b if c["cmd"]), None)
+        if cmd is not None:
+            grow = rng.randint(1, 3)
+            cmd["p"] = min(VOLTRON_CAP, cmd["p"] + grow)
+            cmd["t"] = min(VOLTRON_CAP, cmd["t"] + grow)
+        elif state.opp_cmd_cooldown[i] > 0:
+            state.opp_cmd_cooldown[i] -= 1
+        elif t >= 3:
+            base = VOLTRON_BASE + state.opp_cmd_bonus[i]
+            b.append(_new_opp_creature(base, base, flying=rng.random() < 0.35,
+                                       haste=rng.random() < 0.15, trample=True, cmd=True, mv=3))
+        if t >= 2 and sum(1 for c in b if not c["cmd"]) < 2 and rng.random() < 0.25:
+            b.append(_new_opp_creature(2, 2, flying=False, haste=False, mv=2))
+    else:  # "low"
+        if t >= 3 and len(b) < LOW_CAP and rng.random() < 0.30:
+            size = rng.choice((3, 4))
+            b.append(_new_opp_creature(size, size, flying=rng.random() < 0.25, haste=rng.random() < 0.05, mv=size))
+
+
+def _opp_turn_start(state: GameState, i: int):
+    """Untap do oponente i (so' as criaturas DELE): perde a doenca de
+    invocacao; a congelada ('doesn't untap during its controller's next
+    untap step') fica virada e nao ataca neste turno. Depois o campo cresce."""
+    for c in state.opp_boards[i]:
+        c["sick"] = False
+        c["frozen_now"] = c["frozen"] > 0
+        if c["frozen"] > 0:
+            c["frozen"] -= 1
+    _develop_opponent_board(state, i)
+
+
+# ---------------- combate: oponente ataca ----------------
+
+def _choose_blocker(state: GameState, c: dict, tgt: str, avail: List[tuple]) -> Optional[tuple]:
+    cands = [b for b in avail if not c["flying"] or "flying" in _pt(state, b)[2]]
+    if not cands:
+        return None
+
+    def outcome(b):
+        p, t, kw = _pt(state, b)
+        dt = "deathtouch" in kw
+        first_kill = "double_strike" in kw and (p >= c["t"] or dt)
+        kills = first_kill or dt or p * (2 if "double_strike" in kw else 1) >= c["t"]
+        survives = first_kill or c["p"] < t
+        return kills, survives
+
+    good = [b for b in cands if all(outcome(b))]
+    if good:
+        return min(good, key=lambda b: _blocker_value(state, b))
+    if tgt == "face":
+        chumps = [b for b in cands if b[0] in CHUMP_OK]
+        if chumps and state.life - c["p"] <= 10:
+            return min(chumps, key=lambda b: _blocker_value(state, b))
+        return None
+    walls = [b for b in cands if outcome(b)[1]]
+    if walls:
+        return min(walls, key=lambda b: _blocker_value(state, b))
+    lethal = c["p"] >= state.loyalty.get(tgt, 0)
+    chumps = [b for b in cands if b[0] in CHUMP_OK]
+    if chumps and (lethal or c["p"] >= 2):
+        return min(chumps, key=lambda b: _blocker_value(state, b))
+    trades = [b for b in cands if outcome(b)[0]]
+    if trades and lethal:
+        return min(trades, key=lambda b: _blocker_value(state, b))
+    return None
+
+
+def opponent_combat(state: GameState, i: int, log: List[Dict]):
+    """Combate do oponente i contra mim (so' depois do gate de atencao)."""
+    if state.turn <= INTERACTION_SETUP_TURNS:
+        return
+    attackers = [c for c in state.opp_boards[i] if not c["sick"] and not c["frozen_now"]]
+    if not attackers:
+        return
+    limit_one = _attack_limit_one(state)
+    if limit_one and len(attackers) > 1:
+        # "No more than one creature can attack each combat."
+        state.attackers_limited_total += len(attackers) - 1
+        attackers = [max(attackers, key=lambda c: (c["p"], c["trample"], c["flying"]))]
+
+    pws = sorted(state.loyalty.items(), key=lambda kv: -kv[1])
+    need = {pw: loy for pw, loy in pws}
+    # The Eternal Wanderer: "No more than one creature can attack The
+    # Eternal Wanderer each combat."
+    wanderer_taken = [False]
+
+    def pick_pw(skip_full: bool):
+        for pw, _ in pws:
+            if pw == "The Eternal Wanderer" and wanderer_taken[0]:
+                continue
+            if skip_full and need[pw] <= 0:
+                continue
+            return pw
+        return None
+
+    assign = []
+    for c in sorted(attackers, key=lambda c: -c["p"]):
+        tgt = pick_pw(skip_full=True)
+        if tgt is not None:
+            need[tgt] -= c["p"]
+            if tgt == "The Eternal Wanderer":
+                wanderer_taken[0] = True
+            assign.append([c, tgt])
+        else:
+            assign.append([c, "face"])
+
+    sphere = "Sphere of Safety" in state.battlefield
+    ghostly = "Ghostly Prison" in state.battlefield
+    if sphere or ghostly:
+        budget = int(TAX_BUDGET_FRACTION * min(state.turn, 10))
+        x = sum(1 for n in state.battlefield if C(n).type == "Enchantment") if sphere else 0
+        paid = []
+        for c, tgt in sorted(assign, key=lambda a: -a[0]["p"]):
+            cost = x + (2 if ghostly and tgt == "face" else 0)
+            if cost <= budget:
+                budget -= cost
+                paid.append([c, tgt])
+            elif ghostly and tgt == "face" and pick_pw(skip_full=False) is not None and x <= budget:
+                # Ruling: "a creature that can't attack you can still attack
+                # a planeswalker you control" -- vai pro planeswalker.
+                budget -= x
+                new_tgt = pick_pw(skip_full=False)
+                if new_tgt == "The Eternal Wanderer":
+                    wanderer_taken[0] = True
+                paid.append([c, new_tgt])
+                state.attackers_redirected_to_pw_total += 1
+            else:
+                state.attackers_stopped_by_tax_total += 1
+        assign = paid
+    if not assign:
+        return
+    state.opp_attackers_total += len(assign)
+    state.opp_attacks_on_pw_total += sum(1 for _, t in assign if t != "face")
+
+    avail = [b for b in _our_creature_instances(state) if b not in state.our_tapped]
+    max_blocks = 1 if limit_one else len(avail)  # "No more than one creature can block each combat."
+    blocks = {}
+    for c, tgt in sorted(assign, key=lambda a: (a[1] == "face", -a[0]["p"])):
+        if len(blocks) >= max_blocks:
+            break
+        b = _choose_blocker(state, c, tgt, avail)
+        if b is not None:
+            blocks[id(c)] = b
+            avail.remove(b)
+
+    pw_damage: Dict[str, int] = {}
+    face = 0
+    lifelink = 0
+    dead_attackers = []
+    dead_blockers = []
+    for c, tgt in assign:
+        b = blocks.get(id(c))
+        if b is None:
+            if tgt == "face":
+                face += c["p"]
+            else:
+                pw_damage[tgt] = pw_damage.get(tgt, 0) + c["p"]
+            continue
+        state.blocks_total += 1
+        bp, bt, bkw = _pt(state, b)
+        ds = "double_strike" in bkw
+        dt = "deathtouch" in bkw
+        attacker_dead = ds and (bp >= c["t"] or dt)
+        dealt = bp if attacker_dead else 0
+        if not attacker_dead:
+            if c["p"] >= bt:
+                dead_blockers.append(b)
+            if c["trample"]:
+                excess = max(0, c["p"] - bt)
+                if excess:
+                    if tgt == "face":
+                        face += excess
+                    else:
+                        pw_damage[tgt] = pw_damage.get(tgt, 0) + excess
+            dealt = bp * (2 if ds else 1)
+            if dt or dealt >= c["t"]:
+                attacker_dead = True
+        if "lifelink" in bkw:
+            lifelink += dealt
+        if b in state.tamiyo_fr_marked and bp > 0:
+            # Tamiyo FR +1: "whenever either of those creatures deals combat
+            # damage, you draw a card" -- dupla: 2 passos de dano (so' 1 se
+            # o atacante ja' morreu no primeiro).
+            n_steps = 2 if ds and not (bp >= c["t"] or dt) else 1
+            state.draw(n_steps)
+            state.pw_draws_total += n_steps
+            state.tamiyo_fr_combat_draws_total += n_steps
+        if attacker_dead:
+            dead_attackers.append(c)
+
+    state.life += lifelink
+    state.life -= face
+    state.face_combat_damage_total += face
+    if state.life <= 0 and state.died_turn is None:
+        state.died_turn = state.turn
+    for pw, d in pw_damage.items():
+        if pw in state.loyalty:
+            state.pw_combat_damage_total += min(d, state.loyalty[pw])
+            if d >= state.loyalty[pw]:
+                state.pw_combat_deaths_total += 1
+            add_loyalty(state, pw, -d, log, reason="combat_damage")
+    for c in dead_attackers:
+        _opp_remove_creature(state, i, c, how="combat")
+    for b in sorted(dead_blockers, key=lambda x: (x[0], -(x[1] if x[1] is not None else -1))):
+        if b[0] in state.battlefield:
+            _our_creature_leaves(state, b[0], log, exiled=False, source="combat_block", inst=b)
+            state.our_blockers_lost_total += 1
+
+
+# ---------------- nosso turno: combate e respostas ----------------
+
+def _best_counter_target(state: GameState) -> Optional[tuple]:
+    inst = _our_creature_instances(state)
+    if not inst:
+        return None
+    named = [x for x in inst if x[1] is None]
+    pool = named or inst
+    return max(pool, key=lambda x: (_pt(state, x)[1], _pt(state, x)[0]))
+
+
+def our_combat_step(state: GameState, log: List[Dict]):
+    # Innkeeper's Talent nivel 1: "At the beginning of combat on your turn,
+    # put a +1/+1 counter on target creature you control." (marcador ->
+    # dobradores valem, inclusive o nivel 3 dela mesma)
+    if "Innkeeper's Talent" in state.battlefield:
+        tgt = _best_counter_target(state)
+        if tgt is not None:
+            _add_ctr(state, tgt, counter_doubler_multiplier(state))
+
+    # Oko, the Ringleader: "At the beginning of combat on your turn, Oko
+    # becomes a copy of up to one target creature you control until end of
+    # turn, except he has hexproof." Copia valores copiaveis (P/T impressos,
+    # sem marcadores -- CR 707.2); nunca copia lendaria (regra de lenda,
+    # 704.5j, mataria uma das 2). Ataca se estava sob nosso controle desde o
+    # inicio do turno (nao entrou pela Bridge neste upkeep). No fim do turno
+    # volta a ser planeswalker -- nao bloqueia no turno do oponente.
+    oko = None
+    if "Oko, the Ringleader" in state.loyalty:
+        cands = [x for x in _our_creature_instances(state) if x[0] not in LEGENDARY_CARD_NAMES]
+        if cands:
+            src = max(cands, key=lambda x: (CREATURE_STATS[x[0]][0], CREATURE_STATS[x[0]][1]))
+            state.oko_combat_copies_total += 1
+            if state.pw_enter_turn.get("Oko, the Ringleader", -1) < state.turn:
+                p, t, kw = CREATURE_STATS[src[0]]
+                if state.elspeth_emblem:
+                    p, t, kw = p + 2, t + 2, set(kw) | {"flying"}
+                oko = (("Oko, the Ringleader", None), p, kw)
+
+    ready = [x for x in _our_creature_instances(state) if not _is_sick(state, x)]
+    if not ready and oko is None:
+        return
+    limit_one = _attack_limit_one(state)
+    keep = max((len(b) for b in state.opp_boards), default=0)
+    if limit_one:
+        keep = min(keep, 1)
+    vig = [x for x in ready if "vigilance" in _pt(state, x)[2]]
+    nonvig = sorted([x for x in ready if x not in vig],
+                    key=lambda x: ("deathtouch" in _pt(state, x)[2], _pt(state, x)[1], _pt(state, x)[0]),
+                    reverse=True)
+    entries = [(x, _pt(state, x)[0], _pt(state, x)[2]) for x in vig + nonvig[keep:]]
+    if oko is not None:
+        entries.append(oko)
+    if limit_one and len(entries) > 1:
+        entries = [max(entries, key=lambda e: e[1] * (2 if "double_strike" in e[2] else 1))]
+    dmg = 0
+    for x, p, kw in entries:
+        steps = 2 if "double_strike" in kw else 1
+        dmg += p * steps
+        if "lifelink" in kw:
+            state.life += p * steps
+            state.our_lifelink_gain_total += p * steps
+        if x in state.tamiyo_fr_marked and p > 0:
+            state.draw(steps)
+            state.pw_draws_total += steps
+            state.tamiyo_fr_combat_draws_total += steps
+        if "vigilance" not in kw and x[0] != "Oko, the Ringleader":
+            state.our_tapped.append(x)
+    state.our_combat_damage_proxy_total += dmg
+
+
+def _cast_our_spell(state: GameState, name: str, cost: int, log: List[Dict]):
+    """Conjura uma remocao/wipe nossa com efeito real (modelo de combate).
+    Os gatilhos de 'whenever you cast' continuam disparando aqui tambem
+    (Regra #3: gatilho compartilhado em TODO ponto de conjuracao)."""
+    state.hand.remove(name)
+    state.mana_spent_this_turn += cost
+    state.graveyard.append(name)
+    state.interaction_spells_cast_total += 1
+    if state.has("Inexorable Tide"):
+        proliferate_loyalty(state, log, source="inexorable_tide")
+    if state.has("Flux Channeler"):
+        proliferate_loyalty(state, log, source="flux_channeler")
+    log.append({"action": "cast", "card": name, "cost": cost, "turn": state.turn})
+
+
+def _castable_now(state: GameState, cost: int, colors: Dict[str, int], reserved: int) -> bool:
+    """`colors` = simbolos coloridos do custo ({B}{B} -> {"B": 2}): exige
+    uma fonte distinta por simbolo."""
+    if remaining_mana(state) - reserved < cost:
+        return False
+    return all(color_sources(state, col) >= k for col, k in colors.items())
+
+
+def _wipe_option(state: GameState, name: str, reserved: int):
+    """(custo, cores, max_toughness, como) se castavel agora, senao None."""
+    if name not in state.hand:
+        return None
+    n_creatures = sum(len(b) for b in state.opp_boards) + len(_our_creature_instances(state))
+    if name == "Toxic Deluge":
+        # {2}{B} + pague X de vida: "All creatures get -X/-X" -- X = maior
+        # resistencia de oponente (mata tudo deles), so' se a vida aguenta.
+        x = max((c["t"] for b in state.opp_boards for c in b), default=0)
+        if state.life - x <= 10:
+            return None
+        opt = (3, {"B": 1}, x, "destroy")
+    elif name == "Damn":
+        opt = (4, {"W": 2}, None, "destroy")   # overload {2}{W}{W}
+    elif name == "Supreme Verdict":
+        opt = (4, {"W": 2, "U": 1}, None, "destroy")  # {1}{W}{W}{U}
+    elif name == "Blasphemous Act":
+        # {8}{R}, "costs {1} less for each creature on the battlefield"
+        # (minimo so' o {R}); "13 damage to each creature" -- resistencia 14+
+        # sobrevive (comandante voltron chega a 20).
+        opt = (max(1, 9 - n_creatures), {"R": 1}, 13, "destroy")
+    elif name == "Farewell":
+        opt = (6, {"W": 2}, None, "exile")     # {4}{W}{W}, modo "Exile all creatures" (so' esse)
+    else:
+        return None
+    return opt if _castable_now(state, opt[0], opt[1], reserved) else None
+
+
+def _mass_creature_removal(state: GameState, how: str, log: List[Dict], max_toughness: Optional[int] = None,
+                           min_power: Optional[int] = None, source: str = ""):
+    """Remocao em massa SIMETRICA (nossos wipes, Elspeth -3): pega os 2
+    lados da mesa. Toxic Deluge: -X/-X (so' morre resistencia <= X)."""
+    _clear_all_opp_boards(state, how=how, max_toughness=max_toughness, min_power=min_power)
+    victims = []
+    for x in _our_creature_instances(state):
+        p, t, _ = _pt(state, x)
+        if max_toughness is not None and t > max_toughness:
+            continue
+        if min_power is not None and p < min_power:
+            continue
+        victims.append(x)
+    for x in sorted(victims, key=lambda v: (v[0], -(v[1] if v[1] is not None else -1))):
+        if x[0] in state.battlefield:
+            _our_creature_leaves(state, x[0], log, exiled=(how == "exile"), source=source, inst=x)
+
+
+def _cast_defensive_spells(state: GameState, log: List[Dict], reserved: int):
+    for _ in range(6):
+        threats = _opp_threats(state)
+        if not threats:
+            return
+        opp_power = sum(c["p"] for _, c in threats)
+        our_power = sum(_pt(state, x)[0] for x in _our_creature_instances(state))
+        if opp_power >= WIPE_MIN_OPP_POWER and opp_power >= 2 * our_power:
+            best = None
+            for w in WIPE_SPELL_NAMES:
+                opt = _wipe_option(state, w, reserved)
+                if opt and (best is None or opt[0] < best[1][0]):
+                    best = (w, opt)
+            if best:
+                w, (cost, _, max_t, how) = best
+                if w == "Toxic Deluge":
+                    state.life -= max_t  # custo adicional: pague X de vida
+                _cast_our_spell(state, w, cost, log)
+                _mass_creature_removal(state, how, log, max_toughness=max_t, source=w)
+                state.our_wipes_cast_total += 1
+                continue
+        i, big = _biggest_threat(state)
+        min_loy = min(state.loyalty.values()) if state.loyalty else 99
+        if big["p"] >= SPOT_REMOVAL_MIN_POWER or (big["p"] >= THREAT_POWER and big["p"] >= min_loy):
+            opts = [(v[0], s) for s, v in SPOT_REMOVAL_SPELLS.items()
+                    if s in state.hand and _castable_now(state, v[0], v[1], reserved)]
+            if opts:
+                cost, s = min(opts)
+                _cast_our_spell(state, s, cost, log)
+                if s == "Anguished Unmaking":
+                    state.life -= 3
+                _opp_remove_creature(state, i, big, how=SPOT_REMOVAL_SPELLS[s][2])
+                state.our_spot_removal_cast_total += 1
+                continue
+        return
+
+
+def _pw_defensive_activation(state: GameState, pw: str, loy: int, log: List[Dict]) -> bool:
+    """Modo de remocao/controle do planeswalker, quando ha' ameaca real.
+    Ultimates que ja' fecham o jogo continuam com prioridade (a heuristica
+    antiga cuida delas): so' entra aqui abaixo do limiar do ultimate."""
+    threats = _opp_threats(state)
+    if not threats:
+        return False
+    i, big = _biggest_threat(state)
+    n = len(threats)
+    if pw == "Nicol Bolas, Dragon-God" and 3 <= loy < 8 and big["p"] >= THREAT_POWER:
+        add_loyalty(state, pw, -3, log, reason="bolas_minus3_defense")      # "Destroy target creature or planeswalker."
+        _opp_remove_creature(state, i, big, how="destroy")
+    elif pw == "Kaya, Intangible Slayer" and loy >= 4 and big["p"] >= THREAT_POWER:
+        add_loyalty(state, pw, -3, log, reason="kaya_minus3_defense")       # exila + copia 1/1 voadora pra nos
+        _opp_remove_creature(state, i, big, how="exile")
+        make_pw_token(state, "Spirit Token", 1, log)
+    elif pw == "Vraska, Betrayal's Sting" and loy >= 3 and big["p"] >= SPOT_REMOVAL_MIN_POWER:
+        add_loyalty(state, pw, -2, log, reason="vraska_minus2_defense")     # vira Treasure (sai como criatura)
+        _opp_remove_creature(state, i, big, how="treasure", cooldown=2)
+    elif pw == "Teferi, Hero of Dominaria" and 4 <= loy < 8 and big["p"] >= 5:
+        add_loyalty(state, pw, -3, log, reason="teferi_hero_minus3_defense")  # 3a do topo da biblioteca
+        _opp_remove_creature(state, i, big, how="library")
+    elif pw == "The Eternal Wanderer" and loy >= 5 and n >= 5:
+        add_loyalty(state, pw, -4, log, reason="wanderer_minus4_defense")
+        # "For each player, choose a creature that player controls. Each
+        # player sacrifices all creatures they control not chosen" -- NOS
+        # escolhemos: a mais fraca de cada oponente, a nossa melhor.
+        for j, b in enumerate(state.opp_boards):
+            if b:
+                keep = min(b, key=lambda c: c["p"])
+                for c in list(b):
+                    if c is not keep:
+                        _opp_remove_creature(state, j, c, how="sacrifice")
+        ours = _our_creature_instances(state)
+        if ours:
+            keep_us = max(ours, key=lambda x: _pt(state, x)[0] + _pt(state, x)[1])
+            for x in sorted([x for x in ours if x != keep_us], key=lambda v: (v[0], -(v[1] if v[1] is not None else -1))):
+                _our_creature_leaves(state, x[0], log, exiled=False, source="wanderer_minus4", inst=x)
+    elif pw == "The Eternal Wanderer" and big["p"] >= SPOT_REMOVAL_MIN_POWER:
+        add_loyalty(state, pw, 1, log, reason="wanderer_plus1_defense")
+        # "Exile up to one target artifact or creature. Return that card to
+        # the battlefield ... at the beginning of that player's next end
+        # step." Ficha exilada deixa de existir; carta nao ataca no proximo
+        # turno do dono (e o comandante volta sem as auras).
+        if big["token"]:
+            _opp_remove_creature(state, i, big, how="exile")
+        else:
+            if big["cmd"]:
+                lost = max(0, (big["p"] - VOLTRON_BASE) // 2)
+                big["p"] -= lost
+                big["t"] -= lost
+            big["frozen"] = 1
+    elif pw == "Elspeth, Sun's Champion" and 4 <= loy < 7:
+        opp_big = sum(c["p"] for _, c in threats if c["p"] >= 4)
+        our_big = sum(_pt(state, x)[0] for x in _our_creature_instances(state) if _pt(state, x)[0] >= 4)
+        if not (opp_big >= 8 and opp_big > 2 * our_big):
+            return False
+        add_loyalty(state, pw, -3, log, reason="elspeth_minus3_defense")    # "Destroy all creatures with power 4 or greater."
+        _mass_creature_removal(state, "destroy", log, min_power=4, source="elspeth_minus3")
+    elif pw == "Liliana, Dreadhorde General" and 5 <= loy < 9 and n >= 4:
+        add_loyalty(state, pw, -4, log, reason="liliana_minus4_defense")
+        # "Each player sacrifices two creatures of their choice." -- cada
+        # um escolhe as 2 mais fracas.
+        for j, b in enumerate(state.opp_boards):
+            for c in sorted(b, key=lambda c: (c["cmd"], c["p"]))[:2]:
+                _opp_remove_creature(state, j, c, how="sacrifice")
+        ours = sorted(_our_creature_instances(state), key=lambda x: _blocker_value(state, x))[:2]
+        for x in sorted(ours, key=lambda v: (v[0], -(v[1] if v[1] is not None else -1))):
+            _our_creature_leaves(state, x[0], log, exiled=False, source="liliana_minus4", inst=x)
+    elif pw == "Ugin, the Spirit Dragon" and loy < 10 and _ugin_minus_x_choice(state, loy) is not None:
+        x = _ugin_minus_x_choice(state, loy)
+        add_loyalty(state, pw, -x, log, reason="ugin_minus_x_defense")
+        _ugin_minus_x(state, x, log)
+    elif pw == "Tamiyo, Field Researcher" and 3 <= loy < 7 and big["p"] >= THREAT_POWER:
+        add_loyalty(state, pw, -2, log, reason="tamiyo_researcher_minus2_defense")
+        _freeze_biggest_threats(state, 2, log, source="tamiyo_researcher_minus2")
+    else:
+        return False
+    state.pw_defensive_uses_total += 1
+    return True
+
+
+def try_smart_opponent_turn(state: GameState, log: List[Dict], opp_index: int = 0):
     """Simula O TURNO DE UM oponente dentro da rodada entre os meus
     turnos (mesmo design final ja' validado nos outros 6 decks, Regra
     #6 do CLAUDE.md: bug de orquestracao de turno que auditoria
@@ -2103,21 +3215,30 @@ def try_smart_opponent_turn(state: GameState, log: List[Dict]):
     (chamadas em sequencia, mesmo `state`).
 
     Gate de atencao: antes de rolar QUALQUER categoria, este turno de
-    oponente precisa passar em `OPPONENT_ATTENTION_CHANCE`. Wipe e
-    ataque nao precisam de exclusao mutua manual aqui: `try_smart_
-    opponent_attack` ja' se auto-regula via `state.wiped_this_round`
-    (setado por `try_smart_opponent_wipe`, que roda antes, dentro desta
-    mesma chamada)."""
+    oponente precisa passar em `OPPONENT_ATTENTION_CHANCE`.
+
+    Modelo de combate (2026-09-24): o untap/desenvolvimento do campo do
+    oponente (`_opp_turn_start`) roda TODO turno dele, ANTES do gate (o
+    campo dele cresce mesmo quando ele nao esta' olhando pra mim). Ordem
+    real do turno dele: main 1 (wipe) -> combate (`opponent_combat`) ->
+    main 2 (o resto). O wipe de criatura dele limpa os campos de TODOS
+    os oponentes tambem (simetrico) -- substitui o antigo
+    `wiped_this_round`."""
+    if attack_model_on(state):
+        _opp_turn_start(state, opp_index)
     if state.turn > INTERACTION_SETUP_TURNS and state.interaction_rng.random() >= OPPONENT_ATTENTION_CHANCE:
         return
     try_smart_opponent_wipe(state, log)
-    try_smart_opponent_attack(state, log)
+    if attack_model_on(state):
+        opponent_combat(state, opp_index, log)
     try_smart_opponent_graveyard_wipe(state, log)
     try_smart_opponent_graveyard_snipe(state, log)
     try_smart_opponent_removal(state, log)
     try_smart_opponent_discard(state, log)
 
-def simulate_one_with_interaction(seed: int, turns: int, with_greater_auramancy: bool = False) -> GameState:
+def simulate_one_with_interaction(seed: int, turns: int, with_greater_auramancy: bool = False,
+                                  attack_profile: Optional[str] = "mixed",
+                                  swap: Optional[tuple] = None) -> GameState:
     """Mesmo goldfish de `simulate_one`, mas com `NUM_OPPONENTS` turnos
     de oponente de verdade simulados (`try_smart_opponent_turn`) a cada
     rodada entre os meus turnos, e `resolve_removal_round` (sistema
@@ -2133,14 +3254,36 @@ def simulate_one_with_interaction(seed: int, turns: int, with_greater_auramancy:
 
     NUNCA chamado por `run_batch`/`simulate_one` padrao. Retorna o
     `GameState` bruto (nao um dict resumido como `simulate_one`), mesma
-    convencao dos outros 6 decks."""
+    convencao dos outros 6 decks.
+
+    `attack_profile` (modelo de combate, 2026-09-24): "mixed" (default --
+    mesa real do usuario, arquetipo sorteado por oponente), "go_wide",
+    "voltron", "low" (os 3 oponentes com o mesmo arquetipo) ou None (sem
+    criatura de oponente nenhuma). `swap=(sai, entra)`: troca 1 carta da
+    lista so' nesta simulacao (A/B de pillowfort) -- a lista real nao muda."""
+    if attack_profile is not None and attack_profile not in ATTACK_PROFILES:
+        raise ValueError(f"attack_profile invalido: {attack_profile}")
     rng = random.Random(seed)
     decklist = build_decklist(with_greater_auramancy)
+    if swap is not None:
+        out_card, in_card = swap
+        assert f"1 {out_card}\n" in decklist, f"{out_card} nao esta' na lista"
+        assert in_card in CARD_DB, f"{in_card} sem entrada no CARD_DB"
+        decklist = decklist.replace(f"1 {out_card}\n", f"1 {in_card}\n", 1)
     deck = parse_decklist(decklist)
     assert len(deck) == 99, f"Mainboard deveria ser 99, deu {len(deck)}"
     rng.shuffle(deck)
     state = GameState(rng=rng, library=deck, with_greater_auramancy=with_greater_auramancy,
                        interaction_rng=random.Random(seed + 999_999))
+    if attack_profile is not None:
+        state.attack_profile = attack_profile
+        if attack_profile == "mixed":
+            state.opp_archetypes = [state.interaction_rng.choice(OPP_ARCHETYPES) for _ in range(NUM_OPPONENTS)]
+        else:
+            state.opp_archetypes = [attack_profile] * NUM_OPPONENTS
+        state.opp_boards = [[] for _ in range(NUM_OPPONENTS)]
+        state.opp_cmd_cooldown = [0] * NUM_OPPONENTS
+        state.opp_cmd_bonus = [0] * NUM_OPPONENTS
 
     mulligans = 0
     while True:
@@ -2168,32 +3311,49 @@ def simulate_one_with_interaction(seed: int, turns: int, with_greater_auramancy:
         t += 1
         play_turn(state, t, game_log, skip_legacy_removal=True)
         turns_played += 1
-        state.wiped_this_round = False
-        for _ in range(NUM_OPPONENTS):
-            try_smart_opponent_turn(state, interaction_log)
+        for i in range(NUM_OPPONENTS):
+            try_smart_opponent_turn(state, interaction_log, opp_index=i)
         while state.extra_turns_pending > 0 and turns_played < turns:
             state.extra_turns_pending -= 1
             t += 1
             play_turn(state, t, game_log, skip_legacy_removal=True)
             turns_played += 1
-            state.wiped_this_round = False
-            for _ in range(NUM_OPPONENTS):
-                try_smart_opponent_turn(state, interaction_log)
+            for i in range(NUM_OPPONENTS):
+                try_smart_opponent_turn(state, interaction_log, opp_index=i)
     return state
 
-def run_batch_with_interaction(n=2000, turns=10, with_greater_auramancy=False, seed_base=6000000):
+def run_batch_with_interaction(n=2000, turns=10, with_greater_auramancy=False, seed_base=6000000,
+                               attack_profile="mixed", swap=None):
     """Batch do modo de resiliencia -- reporta so' as metricas
     relevantes pra 'o motor aguenta perder a peca central?', nao
     duplica o relatorio inteiro do `run_batch` padrao."""
     states = [simulate_one_with_interaction(seed_base + i, turns=turns,
-                                             with_greater_auramancy=with_greater_auramancy) for i in range(n)]
+                                             with_greater_auramancy=with_greater_auramancy,
+                                             attack_profile=attack_profile, swap=swap) for i in range(n)]
 
     def avg(vals):
         return sum(vals) / len(vals) if vals else 0.0
 
-    print(f"=== Prismatic Bridge Goldfish v1 - MODO DE RESILIENCIA - n={n}, turns={turns}, Greater Auramancy={with_greater_auramancy} ===")
+    print(f"=== Prismatic Bridge Goldfish v1 - MODO DE RESILIENCIA - n={n}, turns={turns}, Greater Auramancy={with_greater_auramancy}, "
+          f"mesa={attack_profile}, troca={swap} ===")
     print(f"Avg remocoes inteligentes sofridas: {avg([s.smart_removals_total for s in states]):.2f}")
-    print(f"Avg ataques de oponente sofridos: {avg([s.smart_attacks_taken_total for s in states]):.2f}")
+    print(f"Avg criaturas de oponente atacando (total): {avg([s.opp_attackers_total for s in states]):.2f} "
+          f"(em planeswalker: {avg([s.opp_attacks_on_pw_total for s in states]):.2f})")
+    print(f"Avg dano de combate em planeswalker: {avg([s.pw_combat_damage_total for s in states]):.2f} | "
+          f"PWs mortos em combate: {avg([s.pw_combat_deaths_total for s in states]):.2f} | "
+          f"dano de combate na vida: {avg([s.face_combat_damage_total for s in states]):.2f}")
+    print(f"Avg PW-turnos vivos: {avg([s.pw_turns_alive_total for s in states]):.2f} | ativacoes: "
+          f"{avg([s.pw_activations_total for s in states]):.2f} | ultimates: {avg([s.pw_ultimates_used_total for s in states]):.2f} | "
+          f"usos defensivos: {avg([s.pw_defensive_uses_total for s in states]):.2f}")
+    print(f"Avg bloqueios: {avg([s.blocks_total for s in states]):.2f} | bloqueadores perdidos: "
+          f"{avg([s.our_blockers_lost_total for s in states]):.2f} | criaturas de oponente mortas: "
+          f"{avg([s.opp_creatures_killed_total for s in states]):.2f}")
+    print(f"Avg nossos wipes: {avg([s.our_wipes_cast_total for s in states]):.2f} | nossas remocoes pontuais: "
+          f"{avg([s.our_spot_removal_cast_total for s in states]):.2f}")
+    print(f"Avg atacantes barrados por imposto: {avg([s.attackers_stopped_by_tax_total for s in states]):.2f} | "
+          f"redirecionados pro PW (Ghostly Prison): {avg([s.attackers_redirected_to_pw_total for s in states]):.2f} | "
+          f"cortados por 'so' 1 ataca': {avg([s.attackers_limited_total for s in states]):.2f}")
+    print(f"Avg dano de combate nosso (proxy): {avg([s.our_combat_damage_proxy_total for s in states]):.2f}")
     print(f"Avg descartes forcados sofridos: {avg([s.smart_discards_total for s in states]):.2f}")
     print(f"Avg board wipes sofridos: {avg([s.smart_wipes_total for s in states]):.2f}")
     print(f"Avg artifact wipes sofridos: {avg([s.smart_artifact_wipes_total for s in states]):.2f}")

@@ -1,5 +1,133 @@
 # Checklist cláusula-a-cláusula — Esika // The Prismatic Bridge
 
+## Modelo de combate (oponente ataca planeswalkers) + 9 correções pré-existentes — 2026-09-24
+
+**Gatilho:** pergunta do usuário — *"Conseguimos implementar no goldfish um
+simulador de ataque aos PW? [...] Vale incluir Silent Arbiter e Dueling [Grounds]?"*
+— aprovado com 3 perfis de mesa + perfil **misto** ("um pouco de cada,
+simulando diferentes decks de forma aleatória", que é a mesa real dele).
+
+**Nota sobre "não fabricar tabuleiro do oponente" (CLAUDE.md):** o modelo
+cria criaturas de oponente abstratas (P/R/voar/atropelar) como MODELO DE
+AMEAÇA, mesma categoria do modo de resiliência já aprovado (remoção/wipe
+de oponente simulados) — foi exatamente o que o usuário pediu. Só existe
+no modo de resiliência (`simulate_one_with_interaction(attack_profile=...)`);
+o modo padrão continua sem oponente nenhum (confirmado bit-a-bit abaixo).
+
+### O modelo (suposições documentadas, não dados reais)
+
+- Arquétipos por oponente: `go_wide` (1–3 criaturas 1/1–2/2 por turno a
+  partir do T2, até 15; 15% voam, 10% ímpeto), `voltron` (comandante 3/3
+  com atropelar a partir do T3, +1..3/+1..3 por turno até 20; volta 1 turno
+  depois de removido com metade do bônus; 35% voa; até 2 apoios 2/2) e
+  `low` (30%/turno de uma 3/3 ou 4/4 a partir do T3, até 3). `mixed` sorteia
+  o arquétipo de cada oponente por partida.
+- O campo cresce todo turno do oponente; ele só ataca a mim/meus PWs no
+  turno em que passa no gate de atenção já existente (1/3).
+- Alvo: atacantes, do maior pro menor, vão pro PW de maior lealdade até
+  somar o suficiente pra matá-lo; depois o próximo; o resto na minha vida.
+- Imposto (Sphere/Ghostly Prison): o oponente usa até metade da mana dele
+  (turno, máx. 10). Ghostly Prison: atacante de vida não pago é
+  redirecionado pro PW (ruling oficial: "a creature that can't attack you
+  can still attack a planeswalker you control").
+- Bloqueio: prefere matar-e-sobreviver, depois parede, depois chump com
+  ficha/dork se o PW morreria ou o atacante tem poder ≥2, troca com
+  "motor" só se o PW morreria. Voar/atropelar/toque mortífero/golpe
+  duplo/vínculo com a vida modelados. Criatura que atacou no meu turno
+  fica virada até o meu untap (não bloqueia).
+- Nossas remoções/wipes agora têm efeito real nos 2 lados e ficam na mão
+  até existir ameaça (instantâneas usadas na velocidade de feitiço, no meu
+  turno — simplificação).
+- O motor não encerra a partida com vida ≤ 0 — a métrica `died_turn` marca.
+
+### Cláusula-a-cláusula (cartas que o modelo toca)
+
+| Carta | Cláusula (oráculo Scryfall ao vivo) | Status |
+|---|---|---|
+| Silent Arbiter / Dueling Grounds | "No more than one creature can attack/block each combat." | ✅ (só no A/B, fora da lista) |
+| Sphere of Safety | imposto {X} por atacante em você OU nos seus PWs, X = seus encantamentos | ✅ (A/B) |
+| Ghostly Prison | imposto {2} só pra atacar VOCÊ (PW não é protegido — ruling) | ✅ (A/B) |
+| The Eternal Wanderer | "No more than one creature can attack The Eternal Wanderer each combat." | 🐛→✅ novo |
+| The Eternal Wanderer | +1 exila criatura até o end step do dono; −4 cada jogador fica com 1 | ✅ com alvo real |
+| Nicol Bolas, Dragon-God | −3 destrói criatura | ✅ ; −8 📊 (depende de o oponente controlar lendária — só o comandante voltron é rastreado; segue como contagem) |
+| Kaya, Intangible Slayer | −3 exila + ficha 1/1 voadora (cópia) pra nós ; +2 "you gain 3 life" | ✅ ; vida do +2 🐛 agora real |
+| Vraska, Betrayal's Sting | −2 criatura vira Treasure | ✅ (comandante: 2 turnos até voltar) |
+| Teferi, Hero of Dominaria | −3 3ª do topo ; −8 emblema "sempre que comprar, exile permanente de oponente" | ✅ (emblema: só no modelo de combate) |
+| Teferi, Time Raveler | −3 devolve criatura | ✅ (ficha some; comandante recasta com doença) |
+| Tamiyo, Compleated Sage | +1 vira e congela 1 | ✅ |
+| Tamiyo, Field Researcher | +1 compra quando as 2 marcadas causam dano de combate (até meu próximo turno) ; −2 congela 2 | ✅ (+1: ataque proxy + bloqueio) |
+| Elspeth, Sun's Champion | −3 destrói poder ≥4 (dos 2 lados) ; −7 emblema +2/+2 e voar | ✅ |
+| Liliana, Dreadhorde General | estático "criatura sua morre → compre" ; −4 cada um sacrifica 2 ; −9 cada oponente fica com 1 de cada tipo | ✅ |
+| Ugin, the Spirit Dragon | +2 3 de dano ; −X exila coloridos MV ≤ X (dos 2 lados) ; −10 ganha 7 de vida | ✅ ; vida do −10 🐛 agora real |
+| Oko, the Ringleader | início de combate: vira cópia de criatura sua (não lendária, sem marcadores — CR 707.2) | ✅ novo |
+| Innkeeper's Talent | nível 1: +1/+1 no início de combate (dobra com dobradores) | ✅ novo |
+| Arena Rector | "When this creature dies... search for a planeswalker, put it onto the battlefield" | ✅ (antes 📊: nada matava criatura nossa — agora combate/wipes/remoção matam) |
+| Atraxa, Praetors' Voice | voar/vigilância/toque mortífero/vínculo ✅ ; "At the beginning of your end step, proliferate" | 🐛 nunca existia → ✅ |
+| Deepglow Skate / Carth the Lion | ETB | 🐛 só disparava conjurando da mão → ✅ em todo ponto de entrada (`creature_enters`) |
+| Remoções/wipes (Swords, Path, Damn, Anguished Unmaking, Void Rend, Toxic Deluge, Supreme Verdict, Blasphemous Act, Farewell) | efeito real, custo real ({B}{B}/overload {2}{W}{W}, "pay X life", "−{1} por criatura", 13 de dano, "lose 3 life") | ✅ no modelo de combate |
+| The Peregrine Dynamo | "Legendary **Artifact** Creature" | 🐛 wipe de artefato nunca a alcançava (Regra #3) → ✅ |
+
+### 🐛 Bugs pré-existentes achados e corrigidos (valem no modo padrão também)
+
+1. **Sphinx of the Second Sun implementado com um texto que a carta não
+   tem.** O código dava "if you cast it, take an extra turn" + sacrifício
+   no upkeep (auditoria de 09-13/14 escrita de memória — exatamente o que a
+   Regra #1 proíbe). Oráculo real: "At the beginning of each of your
+   postcombat main phases, there is an additional beginning phase after
+   this phase." Rulings oficiais conferidas: untap real, gatilhos de upkeep
+   disparam (a Bridge de novo!), compra no draw step, efeitos "until your
+   next turn" não expiram, depois vai pro end phase (sem main phase).
+   Paradox Haze não dobra esse upkeep ("first upkeep each turn"). Novo:
+   `sphinx_additional_beginning_phase`, chamado no main pós-combate de
+   `play_turn` (Regra #6: ordem real das fases conferida).
+2. **Criatura entrando fora do "conjurar da mão"** (Bridge, ult do Ugin,
+   cópia da Tamiyo CS): sem doença de invocação (dork gerava mana no
+   mesmo turno) e sem ETB de Deepglow Skate/Carth the Lion. Novo ponto
+   único `creature_enters`.
+3. **Atraxa**: proliferate de end step nunca implementado.
+4. **Doubling Season**: só a metade de marcador existia; "creates twice
+   that many tokens" nunca. E cópias (Tamiyo CS copiando Doubling
+   Season/Vorinclex do cemitério) não empilhavam.
+5. **Damn**: cor registrada como {B,W}; a cor da carta é só preta ({B}{B};
+   o {W} é do overload/identidade de cor).
+6. **Oath of Teferi + capítulo III da Urza somavam** (+2 ativações). Os 2
+   dizem "twice rather than only once" — não empilham (ruling oficial da
+   Oath). Só a Chain Veil soma.
+7. **Urza Assembles the Titans**: marcador de lore não era dobrado por
+   Doubling Season/Vorinclex/Innkeeper nível 3; agora dobra, com Read ahead
+   real (CR 702.155a: no turno em que entra só dispara o capítulo com
+   número EXATO de marcadores).
+8. **All Will Be One**: carta na lista com ZERO código. Agora dispara em
+   todo ponto em que colocamos marcadores (lealdade, PW entrando — ruling
+   oficial 2023-02-04 —, +1/+1, lore). Modelo de combate: mata a maior
+   criatura de oponente que o dano mata; senão, dano no oponente (proxy).
+9. **Vida real**: ganhos de vida dos PWs (Kaya +2, Teferi Sunset +1, Ugin
+   −10) só alimentavam contador; e o gatilho de end step da The Chain Veil
+   ("if you didn't activate a loyalty ability... lose 2 life") não existia.
+
+### Gaps restantes confirmados (NÃO feitos nesta rodada — ficam pra uma rodada dedicada)
+
+Listados aqui pra não sumirem (Regra #1 — nenhum é julgamento de valor,
+é escopo desta rodada): Oath of Nissa (ETB + mana de qualquer cor pra PW),
+Oath of Teferi (ETB blink), Ichormoon Gauntlet (2 cláusulas), Nicol Bolas
+(estático), Oko −5 e +1, Vraska −9, Aminatou −1/−6, Teferi Temporal
+Archmage −1, Teferi Hero +1 (untap 2 terrenos no end step), Tamiyo CS −7
+(Notebook), Nesting Grounds (mover marcador), Sterling Grove (tutor),
+Innkeeper's Talent nível 2 (ward {1}), Kaya 0 (política nunca escolhe).
+
+### Validação
+
+- Modelo de combate sozinho: modo padrão **bit-idêntico** (md5 de 300
+  seeds × 10 turnos = `78111885dbba34ca35dc78d829e8053c`, igual ao antes).
+- As 9 correções: antes/depois medidos uma a uma (2.000 partidas, mesmas
+  seeds, padrão + resiliência) — tabela em `goldfish-log.md`.
+- `test_prismatic_bridge_goldfish.py`: **52/52** testes dirigidos (cada
+  cláusula acima dispara de verdade; Sphinx/Atraxa/Chain Veil testados
+  rodando `play_turn` inteiro — Regra #6).
+- Regressão: 20.000 partidas modo padrão + 20.000 mesa mista + 5.000 em
+  cada perfil (go_wide/voltron/low/sem combate) + 5.000 com cada carta de
+  pillowfort: **0 exceções**.
+
 ## CR 903.9a: comandante passa pelo cemitério de verdade antes da zona de comando — 2026-09-21
 
 **Gatilho:** mesmo achado do usuário aplicado a todos os 9 decks desta
