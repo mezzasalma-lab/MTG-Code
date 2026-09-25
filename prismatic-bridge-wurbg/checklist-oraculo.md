@@ -1,5 +1,52 @@
 # Checklist cláusula-a-cláusula — Esika // The Prismatic Bridge
 
+## Rodada Reality Fracture: Tam, Loyal Tutor, Entrust the Spark — 2026-09-25
+
+**Gatilho:** o usuário confirmou as 3 candidatas de FRA que eu tinha
+apontado pro deck ("Tam, the Possibility, Loyal Tutor e Entrust the Spark
+foram as que pensei mesmo"). Regra 10 aplicada: oráculo ao vivo, curva,
+motores do deck e simulador rodado com vários cortes e um controle.
+
+**Fontes:**
+- oráculo ao vivo pelo Scryfall (`/cards/named?exact=`, 2026-09-25), salvo no
+  `oracle-cache.json`. As 3 cartas ainda não têm rulings publicadas.
+- CR atualizadas para a versão efetiva de 2026-09-25 (`rules-cache/`).
+- rulings da The Chain Veil, da Oath of Teferi e da Urza Assembles the Titans.
+
+### As 3 candidatas: cláusula a cláusula (entram só via `swap`, a lista não muda)
+
+| Carta | Cláusula (oráculo ao vivo) | Implementação |
+|---|---|---|
+| Tam, the Possibility ({1}{G}{U}, Legendary Creature — Gorgon Wizard 2/4) | "Planeswalker spells you cast cost {1} less to cast." | `spell_cost`: abate só genérico (tabela `GENERIC_MANA`). Aminatou ({W}{U}{B}) e Nicol Bolas ({U}{B}{B}{B}{R}) não caem; cada cópia reduz de novo. |
+| | "{W}{U}{B}{R}{G}, {T}: Proliferate X times, where X is the number of planeswalker types among planeswalkers you control." | `try_tam_proliferate`. X = tipos distintos (`PW_TYPES`, CR 205.3j): 4 Teferis contam 1, The Eternal Wanderer não tem tipo. Tem {T}, então sofre doença de invocação (CR 302.6). Duas janelas: (a) main, antes da passada de lealdade, só se deixa um ultimate pagável no turno; (b) end step do último oponente, com a mana que sobrou do meu turno. Cada proliferate passa pelo mesmo `proliferate_loyalty` (Doubling Season/Vorinclex/Innkeeper, All Will Be One, veneno, +1/+1, lore da Urza). |
+| | (Regra #4: The Peregrine Dynamo) "Copy target activated ... ability ... from another legendary source that's not a commander" | A Tam é lendária e não é comandante. A Dynamo copia a ativação na janela de fim de rodada ({1}): X proliferates de novo sem os 5 de mana. No main a Dynamo fica guardada pro ultimate. |
+| | 2/4 no combate | Não ataca (perderia o {T}); bloqueia normalmente (`CREATURE_STATS`). A Bridge pode acertá-la (é criatura). |
+| Loyal Tutor ({W}, Instant) | "Search your library for a planeswalker card, reveal it, then shuffle and put that card on top." | `try_loyal_tutor`. Com a Bridge em campo, o PW escolhido vai pro topo e o gatilho de upkeep dela o põe em campo de graça. Mesmo ranking da Arena Rector: maior MV, depois maior lealdade; nunca um nome que já controlo. Janelas: end step do último oponente (mana que sobrou) ou em resposta ao gatilho da Bridge no upkeep (CR 113.7a: remover a Bridge depois do gatilho na pilha não o anula). Sem a Bridge, vira "compre o PW certo", só a partir do T8 (`LOYAL_TUTOR_DRAW_MIN_TURN`, política medida: ver goldfish-log). Dispara Inexorable Tide/Flux Channeler/Ichormoon (`on_spell_cast`). |
+| Entrust the Spark ({3}{G}{U}, Sorcery) | "You may sacrifice a planeswalker. If you do, search your library for a planeswalker card, put it onto the battlefield, then shuffle." | `_entrust_choice` + `resolve_entrust_the_spark`. Sem PW em campo fica na mão (não faz nada). Sacrifica o PW de menor lealdade, que quase sempre já ativou no turno, e busca o melhor PW direto pro campo. O buscado ativa no mesmo main phase (CR 606.3). O sacrifício é morte: o gatilho do Carth the Lion resolve DEPOIS da busca (`defer_triggers`). |
+
+### 🐛 Bugs de motor achados nesta rodada (afetam a lista atual, não só as candidatas)
+
+1. **PW que entra no main phase só ativava no turno seguinte (Regra #6, orquestração).**
+   - A única passada de lealdade (`activate_planeswalkers`) rodava ANTES do loop de conjuração.
+   - Afetava todo PW conjurado da mão, capítulo II da Urza no meio do main, ficha da Tamiyo CS −X que entra durante a passada.
+   - CR 606.3: "A player may activate a loyalty ability of a permanent they control any time they have priority and the stack is empty during a main phase of their turn, but only if no player has previously activated a loyalty ability of that permanent that turn". Não há doença de invocação pra lealdade.
+   - Ruling da Chain Veil: vale também "planeswalkers that come under your control later in the turn".
+   - Novo `activate_unactivated_planeswalkers`, chamado depois de cada conjuração e no fim do main.
+   - Na rodada anterior, o fix 8 ("PW conjurado ganha lealdade") deu a lealdade, mas não a ativação.
+2. **Desconto de custo usava `mv - len(colors)` como genérico.**
+   - O Tamiyo's Notebook deixava Nicol Bolas ({U}{B}{B}{B}{R}) em 3 e Counterspell/Damn/Mana Drain em 1.
+   - Nova tabela `GENERIC_MANA`, tirada do `mana_cost` real do cache (CR 601.2f: redução só abate genérico).
+3. **Proliferate e Deepglow Skate não punham lore na Urza Assembles the Titans (Regra #3).**
+   - CR 701.34a ("any number of permanents ... that have a counter") e 714.2b (capítulo dispara ao cruzar N).
+   - É escolha do jogador: `try_urza_extra_lore` só inclui a saga se o capítulo vale agora.
+     - II: com PW de MV≤6 na mão.
+     - III: só antes da passada de lealdade do meu turno; senão o "this turn" se perde e a saga é sacrificada.
+
+### 📝 Aproximações documentadas (não são 📊 de oponente)
+
+- Cópias da Tam (ficha do Oko −5) seguem a doença de invocação da carta original. O motor rastreia criatura nomeada por nome.
+- O custo {W}{U}{B}{R}{G} usa o modelo de cor agregado do arquivo: 1 fonte por cor, sem casamento fonte↔símbolo. É a mesma convenção de toda conjuração deste simulador.
+
 ## Rodada dedicada: auditoria completa das 100 cartas + todos os gaps — 2026-09-24
 
 **Gatilho:** "Sim, faz a rodada dedicada fechando os gaps restantes" (depois da

@@ -1,5 +1,51 @@
 # Goldfish Log — Esika, God of the Tree // The Prismatic Bridge
 
+## Rodada Reality Fracture (Tam, Loyal Tutor, Entrust the Spark) — 2026-09-25
+
+Detalhe cláusula por cláusula e os 3 bugs de motor em `checklist-oraculo.md`.
+
+### Correções de motor: antes/depois (2.000 partidas, mesmas seeds, lista atual)
+
+Modo padrão: seeds 3.000.000+. Resiliência: mesa mista, seeds 6.000.000+.
+Etapas acumulativas.
+
+| etapa | 1ª Bridge | gatilhos Bridge | ativações | ultimates | PWs no T10 | compras via PW | turnos extras (Gauntlet) | oponentes envenenados | res: vida ≤ 0 | res: PW-turnos vivos | res: ativações |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| antes (commit ba77495) | 5,16 | 4,41 | 22,3 | 6,71 | 5,32 | 17,9 | — | — | 14,6% | 14,57 | 19,6 |
+| a. genérico real no desconto | 5,16 | 4,39 | 22,3 | 6,69 | 5,31 | 17,8 | 0,35 | 0,56 | 14,6% | 14,57 | 19,6 |
+| b. **PW ativa no turno em que entra (CR 606.3)** | 5,17 | 5,25 | **34,4** | **10,81** | 5,99 | **28,4** | 0,56 | 0,82 | 14,9% | 15,72 | **30,9** |
+| c. lore da Urza por proliferate/Deepglow | 5,17 | 5,26 | 34,4 | 10,76 | 6,00 | 28,2 | 0,57 | 0,82 | 14,9% | 15,71 | 31,0 |
+
+Cada correção moveu a métrica esperada:
+- **(a)** O Notebook deixou de baratear Bolas, Narset, Counterspell e afins. Efeito pequeno, pra baixo.
+- **(b)** 5,0 PWs por partida passaram a ativar no turno em que entram:
+  - ativações: +54%;
+  - ultimates: +61%;
+  - turnos extras do Gauntlet: +60%.
+- **(c)** PW posto de graça pelo capítulo II da Urza: de 0,108 para 0,142 por partida (+31%).
+
+No modo resiliência a vida ≤ 0 subiu 0,3 pp. Está dentro do ruído, mas a
+direção faz sentido: com mais ativações os PWs viram alvo maior de remoção.
+
+### Validação
+
+- **Testes dirigidos:** 101/101 (`test_prismatic_bridge_goldfish.py`). São 16
+  novos, um por cláusula e interação: desconto só genérico, X por tipo,
+  Doubling Season, doença de invocação, janela main só com ultimate,
+  Dynamo copiando a Tam, Loyal Tutor com a Bridge / na mana que sobrou /
+  segurado sem a Bridge, Entrust + Carth depois da busca + ativação no mesmo
+  turno, Urza por proliferate, troca posicional. O teste antigo "PW
+  conjurado ganha lealdade" foi atualizado: agora ele também ativa (4 → 5).
+- **Regressão:** 40.000 partidas (20.000 padrão + 20.000 resiliência nos 4
+  perfis de mesa), metade com as 3 candidatas dentro via troca. Resultado:
+  **0 exceções, 0 travamentos** (alarme de 20 s por partida).
+- **Lista atual:** o snapshot final (2.000 + 2.000 partidas) é idêntico à
+  etapa c em todas as métricas. A Tam, o Loyal Tutor, o Entrust e a cópia da
+  Dynamo sobre a Tam só agem quando a carta está na lista.
+- **Troca posicional (`apply_swaps`):** a carta nova entra na linha da cortada
+  (regra do teste pareado), então cada partida A/B só diverge quando a carta
+  trocada é comprada.
+
 ## Rodada dedicada de gaps — auditoria completa das 100 cartas — 2026-09-24
 
 **Pedido do usuário:** "Sim, faz a rodada dedicada fechando os gaps restantes".

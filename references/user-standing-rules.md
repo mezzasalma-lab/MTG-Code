@@ -760,6 +760,11 @@ carta na Regra 14, agora pra REGRA do jogo em si:**
    quando uma versão mais nova entrar em vigor — nunca usar uma versão
    claramente desatualizada (checar a data "effective as of" na linha 3
    do arquivo) nem uma versão ainda não-efetiva.
+   **Atualizado em 2026-09-25** para a versão "effective as of September
+   25, 2026" (`MagicCompRules 20260925.txt`, link tirado da própria página
+   `magic.wizards.com/en/rules`). Traz as regras de Reality Fracture:
+   701.71 Empower Jace e 722 Preparation Cards. Também inclui "Dellian" na
+   lista de tipos de planeswalker da 205.3j. A 606.3 e a 701.34a não mudaram.
 4. Se uma regra específica já foi citada/confirmada nesta sessão a
    partir do arquivo, não precisa re-baixar/re-buscar de novo — mas
    qualquer citação NOVA de número de regra sempre passa pelo arquivo

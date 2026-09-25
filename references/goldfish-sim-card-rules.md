@@ -317,6 +317,16 @@ QUALQUER simulador, novo ou já existente. Generalizando: antes de considerar
     - Morte do planeswalker (lealdade chega a 0, ou removido por remoção do
       oponente se esse simulador já rastreia isso) rastreada e refletida no
       board.
+    - **Janela de ativação (achado 2026-09-25, Prismatic Bridge):** todo PW
+      que entra durante o main phase (conjurado da mão, posto em campo por
+      tutor/saga, ficha-cópia) pode ativar **no mesmo turno**. Não existe
+      doença de invocação pra lealdade (CR 606.3: "any time they have
+      priority and the stack is empty during a main phase of their turn").
+      O bug achado foi de ORQUESTRAÇÃO (Regra #6): a única passada de
+      ativação rodava ANTES do loop de conjuração, então PW conjurado só
+      ativava no turno seguinte. A correção subiu as ativações em +54% e os
+      ultimates em +61%. Em todo simulador com PW, conferir que existe uma
+      passada DEPOIS de cada entrada no main phase, não só a do começo.
 
 13. **Cartas com "níveis" — Classes e Sagas** — citação literal do usuário
     (2026-08-28), depois de eu deixar Caretaker's Talent (Hei Bai) e
@@ -345,6 +355,12 @@ QUALQUER simulador, novo ou já existente. Generalizando: antes de considerar
       regra — qualquer Class/Saga em qualquer decklist precisa ter TODOS
       os níveis/capítulos conferidos contra o oráculo real antes de
       decidir o que é modelável.
+    - **Saga também recebe lore de outras fontes (achado 2026-09-25):**
+      proliferate (CR 701.34a, "any number of permanents ... that have a
+      counter") e "double the counters" (Deepglow Skate) põem lore, e o
+      capítulo dispara igual (CR 714.2b). É ESCOLHA do jogador (pode deixar
+      a saga de fora), então a política tem que decidir se o capítulo vale
+      agora, e não aplicar sempre nem nunca.
 
 **Prática obrigatória:** antes de declarar QUALQUER simulador (novo ou já
 existente, numa auditoria de revisão) completo, rodar essa checklist e citar
@@ -412,6 +428,37 @@ pareado (`urdragon_*_test.py` e equivalentes de outros decks):**
   (`.append()`), reverificar com a reconstrução posicional antes de
   reportar o número ao usuário como final — a ranking pode sobreviver, a
   magnitude quase sempre muda.
+
+---
+
+## Redução de custo só abate mana GENÉRICO — usar o `mana_cost` real
+
+Achado real (Prismatic Bridge, 2026-09-25): o desconto do Tamiyo's
+Notebook ("Spells you cast cost {2} less") usava `mv - len(colors)` como
+parte genérica. Isso erra toda carta com 2+ símbolos da mesma cor. Nicol
+Bolas, Dragon-God é {U}{B}{B}{B}{R}: genérico 0, e a aproximação dava 2.
+Counterspell {U}{U} caía pra 1. Redução de custo ("costs {N} less") só
+abate genérico (CR 601.2f). Em todo simulador com redutor de custo, montar
+uma tabela de genérico real a partir do `mana_cost` do cache (híbrido e
+phyrexiano contam como símbolo colorido). Nunca derivar o genérico da
+identidade de cor.
+
+## A/B de carta: nunca comparar MÉDIA de contagem sem teto
+
+Achado real (Prismatic Bridge, 2026-09-25): em partidas já ganhas o motor
+entra em loop (Oko −5 copiando Doubling Season, Gauntlet −12, Chain Veil).
+Aí aparecem 80+ "ultimates" e lealdade na casa dos bilhões numa partida só.
+Uma carta que acelera a chegada nesse estado em 1 partida a mais em 100
+move a média de ultimates em +2. O número parece enorme, mas não diz nada
+sobre o jogo real. Pra decidir inclusão ou corte, usar só métricas
+limitadas por partida:
+- turno do 1º ultimate;
+- P(ultimate até o T8);
+- turnos com ultimate (no máximo 10);
+- morte/vida no modo de resiliência;
+- PW-turnos vivos.
+Sempre reportar diferença pareada com IC95%, e contagem ilimitada só como
+métrica de uso da carta.
 
 ---
 

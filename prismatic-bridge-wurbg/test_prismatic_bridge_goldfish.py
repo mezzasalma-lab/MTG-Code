@@ -623,7 +623,10 @@ def test_planeswalker_cast_from_hand_gets_loyalty():
     s.hand = ["Teferi, Hero of Dominaria"]
     s.land_played = True
     pb.main_phase(s, [])
-    assert s.loyalty.get("Teferi, Hero of Dominaria") == 4
+    # Entra com 4 e (CORRIGIDO 2026-09-25, CR 606.3) ja' ativa o +1 no mesmo
+    # main phase -- antes so' ativava no turno seguinte.
+    assert s.loyalty.get("Teferi, Hero of Dominaria") == 5
+    assert "Teferi, Hero of Dominaria" in s.pw_activated_this_turn
 
 
 def test_doubling_season_does_not_double_loyalty_cost_but_vorinclex_does():
@@ -1051,6 +1054,237 @@ def test_profiles_run_without_exceptions():
 def test_standard_mode_has_no_combat_state():
     r = pb.simulate_one(5, 10, False)
     assert "opp_boards" not in r
+
+
+# ---------------------------------------------------------------------------
+# Rodada Reality Fracture (2026-09-25): correcoes de motor + candidatas FRA
+# ---------------------------------------------------------------------------
+
+WUBRG5 = ["Snow-Covered Plains", "Snow-Covered Island", "Snow-Covered Swamp", "Snow-Covered Mountain",
+          "Snow-Covered Forest"]
+
+
+def test_generic_mana_table_for_cost_reduction():
+    # Tamiyo's Notebook "Spells you cast cost {2} less" so' abate generico:
+    # Nicol Bolas {U}{B}{B}{B}{R} fica 5; Counterspell {U}{U} fica 2; Elspeth {4}{W}{W} 6 -> 4.
+    s = std_state()
+    s.battlefield.append("Tamiyo's Notebook")
+    assert pb.spell_cost(s, "Nicol Bolas, Dragon-God") == 5
+    assert pb.spell_cost(s, "Counterspell") == 2
+    assert pb.spell_cost(s, "Narset, Parter of Veils") == 2  # {1}{U}{U}: so' 1 de generico
+    assert pb.spell_cost(s, "Elspeth, Sun's Champion") == 4
+
+
+def test_tam_reduces_only_planeswalker_generic():
+    s = std_state()
+    creature(s, "Tam, the Possibility")
+    assert pb.spell_cost(s, "Elspeth, Sun's Champion") == 5
+    assert pb.spell_cost(s, "Ugin, the Spirit Dragon") == 7
+    assert pb.spell_cost(s, "Aminatou, the Fateshifter") == 3   # {W}{U}{B}: sem generico
+    assert pb.spell_cost(s, "Nicol Bolas, Dragon-God") == 5
+    assert pb.spell_cost(s, "Doubling Season") == 5            # nao e' PW
+    s.battlefield.append("Tamiyo's Notebook")
+    assert pb.spell_cost(s, "Elspeth, Sun's Champion") == 3    # 4 de generico: -2 -1
+    assert pb.spell_cost(s, "Narset, Parter of Veils") == 2    # 1 de generico: nao cai mais
+
+
+def test_tam_round_end_proliferates_x_types():
+    # Teferi Hero + Teferi TR (1 tipo) + Ugin (outro tipo) -> X = 2 proliferates
+    s = std_state(turn=6)
+    s.battlefield += WUBRG5
+    creature(s, "Tam, the Possibility", cast_turn=4)
+    pw(s, "Teferi, Hero of Dominaria", 4)
+    pw(s, "Teferi, Time Raveler", 3)
+    pw(s, "Ugin, the Spirit Dragon", 7)
+    s.mana_held_back = 5
+    pb.try_tam_proliferate(s, [], window="round_end")
+    assert s.tam_activations_total == 1 and s.tam_proliferates_total == 2
+    assert s.loyalty == {"Teferi, Hero of Dominaria": 6, "Teferi, Time Raveler": 5, "Ugin, the Spirit Dragon": 9}
+    assert s.mana_held_back == 0
+
+
+def test_tam_proliferate_doubled_by_doubling_season():
+    s = std_state(turn=6)
+    s.battlefield += WUBRG5 + ["Doubling Season"]
+    creature(s, "Tam, the Possibility", cast_turn=4)
+    pw(s, "Oko, the Ringleader", 3)
+    pw(s, "Narset, Parter of Veils", 3)
+    s.mana_held_back = 5
+    pb.try_tam_proliferate(s, [], window="round_end")
+    assert s.loyalty == {"Oko, the Ringleader": 7, "Narset, Parter of Veils": 7}  # 2 tipos x (+1 x2)
+
+
+def test_peregrine_dynamo_copies_tam_at_round_end():
+    # Dynamo: "Copy target activated ... ability ... from another legendary
+    # source that's not a commander" -- a Tam e' lendaria: X proliferates de novo.
+    s = std_state(turn=6)
+    s.battlefield += WUBRG5
+    creature(s, "Tam, the Possibility", cast_turn=3)
+    creature(s, "The Peregrine Dynamo", cast_turn=3)
+    pw(s, "Teferi, Hero of Dominaria", 4)
+    pw(s, "Ugin, the Spirit Dragon", 7)
+    s.mana_held_back = 6
+    pb.try_tam_proliferate(s, [], window="round_end")
+    assert s.tam_dynamo_copies_total == 1 and s.tam_proliferates_total == 4
+    assert s.loyalty == {"Teferi, Hero of Dominaria": 8, "Ugin, the Spirit Dragon": 11}
+    # Dynamo que atacou no meu turno (virada no fim da rodada) nao copia
+    s = std_state(turn=6)
+    s.battlefield += WUBRG5
+    creature(s, "Tam, the Possibility", cast_turn=3)
+    creature(s, "The Peregrine Dynamo", cast_turn=3)
+    pw(s, "Ugin, the Spirit Dragon", 7)
+    s.round_end_tapped = {("The Peregrine Dynamo", None)}
+    s.mana_held_back = 6
+    pb.try_tam_proliferate(s, [], window="round_end")
+    assert s.tam_dynamo_copies_total == 0 and s.loyalty["Ugin, the Spirit Dragon"] == 8
+
+
+def test_tam_summoning_sickness_and_colors():
+    # Conjurada no meu turno anterior (5): no end step dos oponentes ainda esta'
+    # doente (CR 302.6, "since their most recent turn began").
+    s = std_state(turn=6)
+    s.battlefield += WUBRG5
+    creature(s, "Tam, the Possibility", cast_turn=5)
+    pw(s, "Ugin, the Spirit Dragon", 7)
+    s.mana_held_back = 5
+    pb.try_tam_proliferate(s, [], window="round_end")
+    assert s.tam_activations_total == 0
+    # Sem fonte de vermelho: {W}{U}{B}{R}{G} nao paga.
+    s = std_state(turn=6)
+    s.battlefield += [l for l in WUBRG5 if l != "Snow-Covered Mountain"] + ["Snow-Covered Forest"]
+    creature(s, "Tam, the Possibility", cast_turn=3)
+    pw(s, "Ugin, the Spirit Dragon", 7)
+    s.mana_held_back = 5
+    pb.try_tam_proliferate(s, [], window="round_end")
+    assert s.tam_activations_total == 0
+
+
+def test_tam_main_window_only_when_it_reaches_an_ultimate():
+    s = std_state(turn=6)
+    s.battlefield += WUBRG5
+    creature(s, "Tam, the Possibility", cast_turn=3)
+    pw(s, "Elspeth, Sun's Champion", 5)  # ult -7: 1 tipo -> +1 = 6, nao alcanca
+    pb.try_tam_proliferate(s, [], window="main")
+    assert s.tam_activations_total == 0
+    pw(s, "Ugin, the Spirit Dragon", 7)   # 2 tipos -> Elspeth 5 -> 7
+    pb.try_tam_proliferate(s, [], window="main")
+    assert s.tam_activations_total == 1 and s.loyalty["Elspeth, Sun's Champion"] == 7
+    assert s.tam_used_turn == 6
+    s.mana_held_back = 5  # ja' virou no main: nao ativa de novo no end step dos oponentes
+    s.turn = 7
+    pb.try_tam_proliferate(s, [], window="round_end")
+    assert s.tam_activations_total == 1
+
+
+def test_tam_never_attacks():
+    s = fresh(turn=6)
+    creature(s, "Tam, the Possibility", cast_turn=3)
+    creature(s, "Carth the Lion", cast_turn=3)
+    pb.our_combat_step(s, [])
+    assert ("Tam, the Possibility", None) not in s.our_tapped
+    assert ("Carth the Lion", None) in s.our_tapped
+
+
+def test_loyal_tutor_with_bridge_puts_best_pw_onto_battlefield():
+    lib = [FILLER] * 10 + ["Ugin, the Spirit Dragon"] + [FILLER] * 10 + ["Narset, Parter of Veils"]
+    s = std_state(turn=6, library=lib)
+    s.battlefield += LANDS3 + [pb.COMMANDER]
+    s.bridge_in_play = True
+    s.hand = ["Loyal Tutor"]
+    pb.play_turn(s, 6, [])
+    assert "Ugin, the Spirit Dragon" in s.loyalty
+    assert s.loyal_tutor_bridge_total == 1 and "Loyal Tutor" in s.graveyard
+    # Ugin entrou no upkeep pela Bridge -> ativou no main phase do mesmo turno
+    assert "Ugin, the Spirit Dragon" in s.pw_activated_this_turn
+
+
+def test_loyal_tutor_uses_held_mana_at_round_end():
+    s = std_state(turn=6, library=[FILLER] * 5 + ["Kaya, Intangible Slayer"] + [FILLER] * 5)
+    s.battlefield += LANDS3 + [pb.COMMANDER]
+    s.bridge_in_play = True
+    s.hand = ["Loyal Tutor"]
+    s.mana_held_back = 1
+    pb.try_loyal_tutor(s, [], window="round_end")
+    assert s.library[0] == "Kaya, Intangible Slayer" and s.mana_held_back == 0
+
+
+def test_loyal_tutor_held_without_bridge_early_then_draw_line():
+    lib = [FILLER] * 5 + ["Teferi, Hero of Dominaria"] + [FILLER] * 5
+    s = std_state(turn=3, library=lib)
+    s.battlefield += LANDS3
+    s.hand = ["Loyal Tutor"]
+    pb.try_loyal_tutor(s, [], window="upkeep")
+    assert "Loyal Tutor" in s.hand  # segura pra linha da Bridge
+    s.turn = pb.LOYAL_TUTOR_DRAW_MIN_TURN
+    pb.try_loyal_tutor(s, [], window="upkeep")
+    assert s.library[0] == "Teferi, Hero of Dominaria" and s.loyal_tutor_draw_total == 1
+
+
+def test_entrust_sacrifices_lowest_fetches_best_and_activates():
+    lib = ["Ugin, the Spirit Dragon"] + [FILLER] * 20
+    s = std_state(turn=6, library=lib)
+    s.battlefield += WUBRG5 + [pb.COMMANDER]
+    s.bridge_in_play = True
+    pw(s, "Teferi, Time Raveler", 1)
+    pw(s, "Elspeth, Sun's Champion", 3)
+    s.hand = ["Entrust the Spark"]
+    s.land_played = True
+    pb.main_phase(s, [])  # passada: TR 1 -> 2, Elspeth 3 -> 4; depois Entrust
+    assert "Teferi, Time Raveler" in s.graveyard and "Teferi, Time Raveler" not in s.loyalty
+    assert "Ugin, the Spirit Dragon" in s.loyalty and s.entrust_casts_total == 1
+    assert s.pw_deaths_total == 1 and "Elspeth, Sun's Champion" in s.loyalty
+    assert "Ugin, the Spirit Dragon" in s.pw_activated_this_turn  # CR 606.3: ativa no mesmo main phase
+    assert s.loyalty["Ugin, the Spirit Dragon"] == 9  # entrou com 7, +2 na hora
+
+
+def test_entrust_carth_trigger_resolves_after_the_search():
+    # A busca acontece na resolucao; o gatilho do Carth (morte do PW) so' depois:
+    # o Carth nao "rouba" o Ugin -- acha o Narset nas 7 do topo ja' embaralhadas.
+    lib = ["Ugin, the Spirit Dragon", "Narset, Parter of Veils"]
+    s = std_state(turn=6, library=lib)
+    creature(s, "Carth the Lion", cast_turn=2)
+    pw(s, "Teferi, Time Raveler", 1)
+    pb.resolve_entrust_the_spark(s, [])
+    assert "Ugin, the Spirit Dragon" in s.loyalty
+    assert "Narset, Parter of Veils" in s.hand and s.carth_tutors_total == 1
+
+
+def test_entrust_stays_in_hand_without_planeswalker():
+    s = std_state(turn=6, library=["Ugin, the Spirit Dragon"] + [FILLER] * 20)
+    s.battlefield += WUBRG5
+    s.hand = ["Entrust the Spark"]
+    s.land_played = True
+    pb.main_phase(s, [])
+    assert s.hand == ["Entrust the Spark"] and s.entrust_casts_total == 0
+
+
+def test_proliferate_advances_urza_to_chapter_ii_only_when_useful():
+    s = std_state(turn=6)
+    s.battlefield.append("Urza Assembles the Titans")
+    s.urza_chapter = 1
+    pw(s, "Narset, Parter of Veils", 3)
+    pb.proliferate_loyalty(s, [], source="test")
+    assert s.urza_chapter == 1  # sem PW MV<=6 na mao: deixa a saga de fora
+    s.hand = ["Oko, the Ringleader"]
+    pb.proliferate_loyalty(s, [], source="test")
+    assert s.urza_chapter == 2 and "Oko, the Ringleader" in s.loyalty
+    # II -> III fora da janela pre-ativacao: nao inclui (perderia o "this turn")
+    s.pre_activation_window = False
+    pb.proliferate_loyalty(s, [], source="test")
+    assert s.urza_chapter == 2
+    s.pre_activation_window = True
+    pb.proliferate_loyalty(s, [], source="test")
+    assert s.urza_chapter == 3 and s.urza_chapter_iii_this_turn
+    assert "Urza Assembles the Titans" in s.graveyard
+
+
+def test_apply_swaps_keeps_line_position():
+    base = pb.build_decklist(False)
+    out = pb.apply_swaps(base, [("Oath of Nissa", "Tam, the Possibility"), ("Swan Song", "Loyal Tutor")])
+    a, b = pb.parse_decklist(base), pb.parse_decklist(out)
+    assert len(b) == 99
+    assert b.index("Tam, the Possibility") == a.index("Oath of Nissa")
+    assert b.index("Loyal Tutor") == a.index("Swan Song")
 
 
 # ---------------------------------------------------------------------------

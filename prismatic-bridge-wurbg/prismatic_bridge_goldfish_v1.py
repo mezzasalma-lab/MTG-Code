@@ -390,6 +390,21 @@ add("Ghostly Prison", 3, "Enchantment", colors={"W"}, produces=set(), tags={"gho
 # "Creatures can't attack you unless their controller pays {2} for each creature they control that's
 # attacking you." Ruling oficial: "a creature that can't attack you can still attack a planeswalker you control."
 
+# -------- Candidatas de Reality Fracture (FRA, lanca 2026-10-02) -- NAO estao na lista --------
+# Oraculo conferido ao vivo no Scryfall (2026-09-25, sem rulings publicadas
+# ainda) e salvo em scryfall-cache/oracle-cache.json. Entram so' via `swap`
+# (simulate_one / simulate_one_with_interaction) pro A/B pedido pelo usuario.
+add("Tam, the Possibility", 3, "Creature", colors={"G", "U"}, produces=set(), tags={"creature"})
+# {1}{G}{U} Legendary Creature -- Gorgon Wizard 2/4. "Planeswalker spells you cast cost {1} less to cast."
+# "{W}{U}{B}{R}{G}, {T}: Proliferate X times, where X is the number of planeswalker types among
+# planeswalkers you control." Ver spell_cost() e try_tam_proliferate().
+add("Loyal Tutor", 1, "Instant", colors={"W"}, produces=set(), tags=set())
+# {W} Instant. "Search your library for a planeswalker card, reveal it, then shuffle and put that card
+# on top." Ver try_loyal_tutor().
+add("Entrust the Spark", 5, "Sorcery", colors={"G", "U"}, produces=set(), tags=set())
+# {3}{G}{U} Sorcery. "You may sacrifice a planeswalker. If you do, search your library for a
+# planeswalker card, put it onto the battlefield, then shuffle." Ver _entrust_choice().
+
 # Poder/resistencia/palavras-chave reais (Scryfall, 2026-09-24) das criaturas
 # que podem estar do nosso lado -- so' usado pelo modelo de combate.
 CREATURE_STATS = {
@@ -405,6 +420,7 @@ CREATURE_STATS = {
     "Sphinx of the Second Sun": (6, 6, {"flying"}),
     "Vorinclex, Monstrous Raider": (6, 6, {"haste", "trample"}),
     "Silent Arbiter": (1, 5, set()),
+    "Tam, the Possibility": (2, 4, set()),
     "Soldier Token": (1, 1, set()),
     "Zombie Token": (2, 2, set()),
     "Elk Token": (3, 3, set()),
@@ -451,6 +467,51 @@ LEGENDARY_CARD_NAMES = {
     "Teferi, Time Raveler", "Teferi, Who Slows the Sunset", "The Chain Veil",
     "The Eternal Wanderer", "The Peregrine Dynamo", "Ugin, the Spirit Dragon",
     "Vorinclex, Monstrous Raider", "Vraska, Betrayal's Sting", "Tamiyo's Notebook",
+    "Tam, the Possibility",  # candidata FRA (so' via swap)
+}
+
+# Parte GENERICA real do custo de mana (Scryfall, `mana_cost`; hibrido e
+# phyrexiano contam como simbolo colorido). Reducao de custo ("costs {N}
+# less") so' abate generico (CR 601.2f / 118.7). CORRIGIDO 2026-09-25: o
+# desconto do Tamiyo's Notebook usava `mv - len(colors)` como generico, que
+# erra toda carta com 2+ simbolos da mesma cor -- ex.: Nicol Bolas,
+# Dragon-God e' {U}{B}{B}{B}{R} (generico 0), a aproximacao dava 2;
+# Counterspell/Damn/Mana Drain ({X}{X}) caiam pra 1 de custo.
+GENERIC_MANA = {
+    "Greater Auramancy": 1, "All Will Be One": 3, "Aminatou, the Fateshifter": 0, "Anguished Unmaking": 1,
+    "Arcane Signet": 2, "Arena Rector": 3, "Ashiok, Dream Render": 1, "Atraxa, Praetors' Voice": 0,
+    "Bloom Tender": 1, "Carth the Lion": 2, "Chromatic Lantern": 3, "Counterspell": 0, "Damn": 0,
+    "Deepglow Skate": 4, "Delighted Halfling": 0, "Doubling Season": 4, "Dovin's Veto": 0,
+    "Elspeth, Sun's Champion": 4, "Evolution Sage": 2, "Farseek": 1, "Farewell": 4, "Flux Channeler": 2,
+    "Ichormoon Gauntlet": 2, "Inexorable Tide": 3, "Innkeeper's Talent": 1, "Kaya, Intangible Slayer": 3,
+    "Liliana, Dreadhorde General": 4, "Mana Drain": 0, "Mutational Advantage": 1, "Narset, Parter of Veils": 1,
+    "Nature's Lore": 1, "Nicol Bolas, Dragon-God": 0, "Oath of Nissa": 0, "Oath of Teferi": 3,
+    "Oko, the Ringleader": 2, "Paradox Haze": 2, "Path to Exile": 0, "Rhystic Study": 2,
+    "Ripples of Potential": 1, "Sol Ring": 1, "Sphinx of the Second Sun": 6, "Sterling Grove": 0,
+    "Supreme Verdict": 1, "Swan Song": 0, "Swords to Plowshares": 0, "Tamiyo, Compleated Sage": 2,
+    "Tamiyo, Field Researcher": 1, "Teferi, Hero of Dominaria": 3, "Teferi, Temporal Archmage": 4,
+    "Teferi, Time Raveler": 1, "Teferi, Who Slows the Sunset": 2, "The Chain Veil": 4,
+    "The Eternal Wanderer": 4, "The Peregrine Dynamo": 3, "Three Visits": 1, "Toxic Deluge": 2,
+    "Ugin, the Spirit Dragon": 8, "Urza Assembles the Titans": 3, "Veil of Summer": 0, "Void Rend": 0,
+    "Vorinclex, Monstrous Raider": 4, "Vraska, Betrayal's Sting": 4, "Silent Arbiter": 4,
+    "Dueling Grounds": 1, "Sphere of Safety": 4, "Ghostly Prison": 2,
+    "Tam, the Possibility": 1, "Loyal Tutor": 0, "Entrust the Spark": 3,
+}
+
+# Tipo de planeswalker (CR 205.3j) de cada PW da lista, do `type_line` real
+# (Scryfall). The Eternal Wanderer e' "Legendary Planeswalker" SEM subtipo.
+# Usado pelo X da Tam, the Possibility ("the number of planeswalker types
+# among planeswalkers you control").
+PW_TYPES = {
+    "Aminatou, the Fateshifter": "Aminatou", "Ashiok, Dream Render": "Ashiok",
+    "Elspeth, Sun's Champion": "Elspeth", "Kaya, Intangible Slayer": "Kaya",
+    "Liliana, Dreadhorde General": "Liliana", "Narset, Parter of Veils": "Narset",
+    "Nicol Bolas, Dragon-God": "Bolas", "Oko, the Ringleader": "Oko",
+    "Tamiyo, Compleated Sage": "Tamiyo", "Tamiyo, Field Researcher": "Tamiyo",
+    "Teferi, Hero of Dominaria": "Teferi", "Teferi, Temporal Archmage": "Teferi",
+    "Teferi, Time Raveler": "Teferi", "Teferi, Who Slows the Sunset": "Teferi",
+    "The Eternal Wanderer": None, "Ugin, the Spirit Dragon": "Ugin",
+    "Vraska, Betrayal's Sting": "Vraska",
 }
 
 # Achado real 2026-08-28 (auditoria de checklist): Farseek/Nature's
@@ -726,6 +787,26 @@ class GameState:
     died_turn: Optional[int] = None  # 1o turno (meu) em que a vida chegou a <= 0 -- o motor nao encerra a partida; a metrica marca
     pillowfort_first_turn: Optional[int] = None   # A/B: 1o turno com Silent Arbiter/Dueling Grounds/Sphere/Ghostly Prison em campo
     pillowfort_turns_total: int = 0
+    # ---- Rodada Reality Fracture (2026-09-25) ----
+    late_pw_activations_total: int = 0   # PW que entrou no main phase depois da passada e ativou no mesmo turno (CR 606.3)
+    pre_activation_window: bool = False  # do meu untap ate' a passada de ativacoes (capitulo III da Urza ainda vale "this turn")
+    urza_extra_lore_total: int = 0       # vezes que proliferate/Deepglow Skate puseram lore na Urza
+    tam_used_turn: int = -99
+    round_end_tapped: Set[tuple] = field(default_factory=set)
+    tam_dynamo_copies_total: int = 0
+    tam_activations_total: int = 0
+    tam_proliferates_total: int = 0
+    tam_mana_saved_total: int = 0
+    loyal_tutor_bridge_total: int = 0    # PW tutorado pro topo e posto em campo pela Bridge
+    loyal_tutor_draw_total: int = 0      # PW tutorado pro topo e comprado (sem Bridge em campo)
+    entrust_casts_total: int = 0
+    entrust_upgrade_mv_total: int = 0    # MV do PW buscado - MV do sacrificado (soma)
+    # Metricas robustas de velocidade (2026-09-25): a contagem de ultimates
+    # explode nas partidas ja' ganhas (loops de Oko/Doubling Season/Gauntlet
+    # chegam a 80+ "ultimates"), entao a media dela nao compara variantes.
+    first_ult_turn: Optional[int] = None  # 1o turno JOGADO (turnos extras contam) com ultimate
+    turns_with_ult: int = 0
+    _ults_seen: int = 0
 
     def draw(self, n: int = 1):
         for _ in range(n):
@@ -875,14 +956,32 @@ def spell_cost(state: GameState, card: str) -> int:
     if card != COMMANDER and state.tamiyo_free_cast and card in state.hand:
         return 0
     if card == COMMANDER:
-        base, pips = bridge_effective_mv(state), 5
+        base = bridge_effective_mv(state)
+        generic = base - 5  # {W}{U}{B}{R}{G} + imposto de comandante (generico)
     elif card == "Blasphemous Act":
-        base, pips = max(1, 9 - _creatures_on_battlefield(state)), 1
+        base = max(1, 9 - _creatures_on_battlefield(state))
+        generic = base - 1
     else:
-        base, pips = C(card).mv, len(C(card).colors)
+        base = C(card).mv
+        generic = GENERIC_MANA.get(card, max(0, base - len(C(card).colors)))
+    reduction = 0
     if "Tamiyo's Notebook" in state.battlefield:
-        base = max(pips, base - 2)
-    return base
+        reduction += 2
+    if C(card).type == "Planeswalker":
+        # Tam, the Possibility: "Planeswalker spells you cast cost {1} less to
+        # cast." (cada copia em campo reduz de novo)
+        reduction += state.battlefield.count("Tam, the Possibility")
+    return base - min(generic, reduction)
+
+
+def tam_discount(state: GameState, card: str) -> int:
+    """Quanto a(s) Tam abateu do custo de `card` agora (so' metrica)."""
+    if C(card).type != "Planeswalker" or "Tam, the Possibility" not in state.battlefield:
+        return 0
+    if state.tamiyo_free_cast and card in state.hand:
+        return 0
+    generic = GENERIC_MANA.get(card, 0) - (2 if "Tamiyo's Notebook" in state.battlefield else 0)
+    return max(0, min(generic, state.battlefield.count("Tam, the Possibility")))
 
 
 def can_cast(state: GameState, card: str) -> bool:
@@ -1131,6 +1230,8 @@ def creature_enters(state: GameState, name: str, log: List[Dict], is_copy: bool 
         for pw in list(state.loyalty.keys()):
             add_loyalty(state, pw, state.loyalty[pw], log, reason="deepglow_skate_etb")
         _double_creature_counters(state)
+        # Lore da Urza tambem e' "counter on a permanent" (achado 2026-09-25).
+        try_urza_extra_lore(state, state.urza_chapter * counter_doubler_multiplier(state), log, source="deepglow_skate")
     if name == "Carth the Lion":
         do_carth_etb(state, log)
 
@@ -1337,7 +1438,7 @@ def _leave_to_graveyard(state: GameState, name: str) -> bool:
     return True
 
 
-def _planeswalker_dies(state: GameState, pw: str, log: List[Dict]):
+def _planeswalker_dies(state: GameState, pw: str, log: List[Dict], defer_triggers: bool = False) -> int:
     """Cascata de 'um planeswalker seu morre' -- extraida de `add_loyalty()`
     (achado real 2026-09-20, ao portar `remove_permanent` do modo de
     resiliencia) pra ser reusada tanto por lealdade chegando a 0 (causa
@@ -1354,9 +1455,14 @@ def _planeswalker_dies(state: GameState, pw: str, log: List[Dict]):
     state.pw_deaths_total += 1
     log.append({"trigger": "planeswalker_death", "pw": pw, "turn": state.turn})
     # Carth the Lion, "...or a planeswalker you control dies" -- achado real
-    # 2026-09-20, ver `_carth_lion_look_at_top7`.
+    # 2026-09-20, ver `_carth_lion_look_at_top7`. `defer_triggers` (Entrust the
+    # Spark): a morte acontece NO MEIO de uma resolucao -- o gatilho so' resolve
+    # depois dela; o chamador dispara (retorna quantos ficaram pendentes).
     if "Carth the Lion" in state.battlefield:
+        if defer_triggers:
+            return 1
         _carth_lion_look_at_top7(state, log, source="pw_death")
+    return 0
 
 
 def _counters_put(state: GameState, n: int, log: List[Dict], source: str = ""):
@@ -1425,6 +1531,9 @@ def proliferate_loyalty(state: GameState, log: List[Dict], source: str = ""):
     # Proliferate tambem alcanca +1/+1 de criatura (1 gatilho de All Will Be
     # One por criatura) -- em todos os modos (achado 2026-09-24, Regra #3).
     _proliferate_creature_counters(state)
+    # ... e o lore da Urza Assembles the Titans, se o capitulo vale agora
+    # (achado 2026-09-25, ver `try_urza_extra_lore`).
+    try_urza_extra_lore(state, counter_doubler_multiplier(state), log, source=f"proliferate_{source}")
 
 ULT_COST = {  # custo real do "ultimate" de cada PW (usado so' pra escolher alvo de marcador extra)
     "Elspeth, Sun's Champion": 7, "Liliana, Dreadhorde General": 9, "Nicol Bolas, Dragon-God": 8,
@@ -2657,6 +2766,16 @@ def try_urza_saga_tick(state: GameState, log: List[Dict]):
     # todo capitulo N com antes < N <= depois.
     entering = state.urza_chapter == 0
     n = counter_doubler_multiplier(state)
+    _urza_add_lore(state, n, log, entering=entering)
+
+
+def _urza_add_lore(state: GameState, n: int, log: List[Dict], entering: bool = False):
+    """Poe `n` marcadores de lore (ja' dobrados) na Urza Assembles the Titans e
+    dispara cada capitulo cruzado -- CR 714.2b: "{rN}" = "When one or more lore
+    counters are put onto this Saga, if the number of lore counters on it was
+    less than N and became at least N". Extraido de `try_urza_saga_tick`
+    (2026-09-25) pra ser reusado por proliferate e Deepglow Skate, que tambem
+    poem lore (antes so' o lore do main phase existia)."""
     old = state.urza_chapter
     new = old + n
     state.urza_chapter = min(new, 3)
@@ -2683,6 +2802,53 @@ def try_urza_saga_tick(state: GameState, log: List[Dict]):
         # "Sacrifice after III" (CR 714.4, acao baseada em estado)
         state.battlefield.remove("Urza Assembles the Titans")
         state.graveyard.append("Urza Assembles the Titans")
+
+
+def try_urza_extra_lore(state: GameState, n: int, log: List[Dict], source: str):
+    """Proliferate (CR 701.34a: "choose any number of permanents ... that have
+    a counter") e Deepglow Skate ("double the number of each kind of counter
+    on any number of target permanents") alcancam a Urza Assembles the Titans
+    -- achado 2026-09-25 (Regra #3, conceito "marcador em permanente"): os 9
+    pontos de proliferate do arquivo so' tocavam lealdade/+1/+1/veneno. E'
+    ESCOLHA do jogador (pode deixar a saga de fora). Politica: so' inclui se
+    o capitulo que dispara vale agora -- II com PW de MV<=6 na mao; III so'
+    antes da passada de ativacoes do MEU turno (senao o "this turn" se perde
+    e a saga e' sacrificada sem uso)."""
+    if "Urza Assembles the Titans" not in state.battlefield or not (1 <= state.urza_chapter < 3) or n <= 0:
+        return
+    old, new = state.urza_chapter, state.urza_chapter + n
+    if new >= 3 and not state.pre_activation_window:
+        return
+    if old < 2 <= new and new < 3 and not any(C(c).type == "Planeswalker" and C(c).mv <= 6 for c in state.hand):
+        return
+    state.urza_extra_lore_total += 1
+    log.append({"trigger": "urza_extra_lore", "source": source, "n": n, "turn": state.turn})
+    _urza_add_lore(state, n, log)
+
+
+def activate_unactivated_planeswalkers(state: GameState, log: List[Dict]):
+    """CR 606.3: "A player may activate a loyalty ability of a permanent they
+    control any time they have priority and the stack is empty during a main
+    phase of their turn, but only if no player has previously activated a
+    loyalty ability of that permanent that turn." CORRIGIDO 2026-09-25: a
+    unica passada de ativacao (`activate_planeswalkers`) roda ANTES do loop de
+    conjuracao -- PW conjurado da mao (ou posto em campo no meio do main
+    phase: capitulo II da Urza por proliferate, ficha da Tamiyo CS -X,
+    Entrust the Spark) so' ativava no turno SEGUINTE. Nao existe doenca de
+    invocacao pra habilidade de lealdade. Ativacoes extras: Oath of
+    Teferi/Urza III/Chain Veil valem pra PW que entra depois (ruling da Chain
+    Veil: "it affects not only planeswalkers you control when it resolves,
+    but also planeswalkers that come under your control later in the turn")."""
+    extra = extra_pw_activation_sources(state)
+    for pw in list(state.loyalty.keys()):
+        if pw in state.pw_activated_this_turn:
+            continue
+        state.late_pw_activations_total += 1
+        for _ in range(1 + extra):
+            if pw not in state.battlefield or pw not in state.loyalty:
+                break
+            resolve_planeswalker(state, pw, log)
+
 
 def extra_pw_activation_sources(state: GameState) -> int:
     """Achado real: 3 fontes reais e distintas de ativar lealdade mais de
@@ -2762,6 +2928,207 @@ def try_sterling_grove_tutor(state: GameState, log: List[Dict], forced: bool = F
     state.sterling_grove_tutors_total += 1
     log.append({"trigger": "sterling_grove_tutor", "found": tgt, "turn": state.turn})
     return True
+
+
+# ---------------- Candidatas de Reality Fracture (so' via swap, 2026-09-25) ----------------
+
+def _pw_types_in_play(state: GameState) -> int:
+    """X da Tam: numero de TIPOS de planeswalker (CR 205.3j) entre os PWs que
+    controlo -- 4 Teferis contam 1; The Eternal Wanderer nao tem tipo."""
+    return len({PW_TYPES[pw] for pw in state.loyalty if PW_TYPES.get(pw)})
+
+
+def _tam_reaches_ult(state: GameState, x: int) -> bool:
+    """X proliferates (x dobradores) deixam algum ultimate pagavel NESTE turno?"""
+    gain = x * counter_doubler_multiplier(state)
+    carth = _carth_count(state)
+    for pw, loy in state.loyalty.items():
+        need = ULT_COST.get(pw)
+        if need is not None and loy + carth < need <= loy + carth + gain and pw not in state.pw_activated_this_turn:
+            return True
+    return False
+
+
+def try_tam_proliferate(state: GameState, log: List[Dict], window: str):
+    """Tam, the Possibility: "{W}{U}{B}{R}{G}, {T}: Proliferate X times, where X
+    is the number of planeswalker types among planeswalkers you control."
+    Habilidade ativada sem restricao de timing (velocidade de instantaneo),
+    com {T} -> doenca de invocacao (CR 302.6). Duas janelas reais:
+    - "main": comeco do main phase, ANTES da passada de lealdade -- so' se os
+      X proliferates deixam um ultimate pagavel neste turno (senao a mana vai
+      pro resto da mao). Fica virada ate' o meu proximo untap (nao bloqueia).
+    - "round_end": end step do ultimo oponente, com a mana que sobrou do meu
+      turno (`mana_held_back`, CR 500.1 -- ela seria perdida no meu untap).
+      Controle "desde o comeco do meu turno mais recente" (302.6): o meu turno
+      mais recente e' o anterior (`state.turn - 1` aqui, ja' que a janela roda
+      no topo de `play_turn`). Tambem nao pode ter virado no main daquele turno.
+    Cada copia (ficha do Oko -5) tem o proprio {T} e paga os 5 de novo (📝
+    doenca de invocacao das copias segue a da carta)."""
+    tam = "Tam, the Possibility"
+    n = state.battlefield.count(tam)
+    if not n:
+        return
+    entered = state.creature_cast_turn.get(tam, -99)
+    if window == "main":
+        if entered >= state.turn or state.tam_used_turn == state.turn:
+            return
+    else:
+        if entered >= state.turn - 1 or state.tam_used_turn == state.turn - 1:
+            return
+    for _ in range(n):
+        budget = remaining_mana(state) if window == "main" else state.mana_held_back
+        if budget < 5 or any(color_sources(state, col) < 1 for col in "WUBRG"):
+            return
+        x = _pw_types_in_play(state)
+        if x < 1:
+            return
+        if window == "main" and not _tam_reaches_ult(state, x):
+            return
+        if window == "main":
+            state.mana_spent_this_turn += 5
+            state.tam_used_turn = state.turn
+            if attack_model_on(state) and (tam, None) not in state.our_tapped:
+                state.our_tapped.append((tam, None))  # {T}: nao bloqueia ate' o meu untap
+        else:
+            state.mana_held_back -= 5
+            state.tam_used_turn = state.turn - 1
+        state.tam_activations_total += 1
+        for _ in range(x):
+            proliferate_loyalty(state, log, source="tam")
+            state.tam_proliferates_total += 1
+        log.append({"trigger": "tam_proliferate", "x": x, "window": window, "turn": state.turn})
+        # The Peregrine Dynamo: "{1}, {T}: Copy target activated or triggered
+        # ability you control from another legendary source that's not a
+        # commander." A Tam e' lendaria e nao e' comandante -> a copia
+        # prolifera X vezes de novo sem pagar o {W}{U}{B}{R}{G} (Regra #4:
+        # interacao com carta especifica da lista). So' na janela de fim de
+        # rodada: no main a Dynamo fica guardada pra copiar um ultimate.
+        dyn = "The Peregrine Dynamo"
+        if (window == "round_end" and dyn in state.battlefield and state.mana_held_back >= 1
+                and state.dynamo_used_turn != state.turn - 1 and (dyn, None) not in state.round_end_tapped):
+            state.mana_held_back -= 1
+            state.dynamo_used_turn = state.turn - 1
+            state.dynamo_copies_total += 1
+            state.tam_dynamo_copies_total += 1
+            x = _pw_types_in_play(state)
+            for _ in range(x):
+                proliferate_loyalty(state, log, source="dynamo_copy_tam")
+                state.tam_proliferates_total += 1
+
+
+def _best_pw_for_battlefield(state: GameState) -> Optional[str]:
+    """PW da biblioteca pra por em campo de graca (Loyal Tutor + Bridge,
+    Entrust the Spark): mesmo ranking que o gatilho da Arena Rector ja' usa
+    (maior MV, depois maior lealdade inicial). Nome que ja' controlo fica de
+    fora (regra de lenda, CR 704.5j, mataria um dos 2)."""
+    pws = [c for c in state.library if C(c).type == "Planeswalker" and c not in state.loyalty]
+    return max(pws, key=lambda c: (C(c).mv, PLANESWALKER_STARTING_LOYALTY[c])) if pws else None
+
+
+def _best_pw_for_hand(state: GameState) -> Optional[str]:
+    """PW da biblioteca pra comprar e conjurar: o mais caro que cabe na mana
+    deste turno (terreno da mao incluso); senao o mais barato."""
+    pws = [c for c in state.library if C(c).type == "Planeswalker" and c not in state.loyalty]
+    if not pws:
+        return None
+    est = total_mana(state) + (1 if any(is_land(c) for c in state.hand) and not state.land_played else 0)
+    fit = [c for c in pws if spell_cost(state, c) <= est]
+    return max(fit, key=lambda c: C(c).mv) if fit else min(pws, key=lambda c: C(c).mv)
+
+
+# Politica do Loyal Tutor SEM a Bridge em campo (linha "compra"): so' a partir
+# deste turno e se a mao nao tem planeswalker -- antes disso, segura pra linha
+# forte (Bridge em campo: o PW tutorado entra de graca no proximo upkeep).
+# Medido (2026-09-25, n=1500 pareado, troca por Swan Song, turno medio do 1o
+# ultimate): so' com a Bridge 9,195 < a partir do T5 9,218 < a partir do T1/T3
+# 9,233 (base sem a carta 9,288) -- usar sem a Bridge cedo custa a linha forte.
+# Fica como recurso de fim de jogo (Bridge que nunca veio / foi removida).
+LOYAL_TUTOR_DRAW_MIN_TURN = 8
+
+
+def try_loyal_tutor(state: GameState, log: List[Dict], window: str):
+    """Loyal Tutor ({W}, instantaneo): "Search your library for a planeswalker
+    card, reveal it, then shuffle and put that card on top."
+    Linha real com a Bridge (Regra #4/#5): o gatilho da Bridge no upkeep
+    ("reveal cards from the top of your library until you reveal a creature
+    or planeswalker card. Put that card onto the battlefield") pega o PW do
+    topo -> PW escolhido em campo de graca por {W}. Janelas:
+    - "round_end": end step do ultimo oponente, com a mana que sobrou do meu
+      turno (`mana_held_back`) -- de graca, ela seria perdida no meu untap;
+    - "upkeep": no meu upkeep, com o gatilho da Bridge na pilha (mana deste
+      turno), se nao deu na janela anterior.
+    Sem a Bridge: vira "compre o PW certo" no draw step -- so' pela politica
+    LOYAL_TUTOR_DRAW_MIN_TURN."""
+    if "Loyal Tutor" not in state.hand:
+        return
+    budget = state.mana_held_back if window == "round_end" else remaining_mana(state)
+    if budget < 1 or color_sources(state, "W") < 1:
+        return
+    if state.bridge_in_play:
+        pick, line = _best_pw_for_battlefield(state), "bridge"
+    else:
+        if state.turn < LOYAL_TUTOR_DRAW_MIN_TURN or any(C(c).type == "Planeswalker" for c in state.hand):
+            return
+        pick, line = _best_pw_for_hand(state), "draw"
+    if pick is None:
+        return
+    if window == "round_end":
+        state.mana_held_back -= 1
+    else:
+        state.mana_spent_this_turn += 1
+    state.hand.remove("Loyal Tutor")
+    on_spell_cast(state, "Loyal Tutor", log)
+    state.library.remove(pick)
+    state.rng.shuffle(state.library)
+    state.library.insert(0, pick)
+    state.graveyard.append("Loyal Tutor")
+    if line == "bridge":
+        state.loyal_tutor_bridge_total += 1
+    else:
+        state.loyal_tutor_draw_total += 1
+    log.append({"action": "loyal_tutor", "found": pick, "line": line, "window": window, "turn": state.turn})
+
+
+def _entrust_choice(state: GameState):
+    """Entrust the Spark: "You may sacrifice a planeswalker. If you do, search
+    your library for a planeswalker card, put it onto the battlefield, then
+    shuffle." Sem PW pra sacrificar a magia nao faz nada -- fica na mao.
+    Politica: sacrifica o PW de MENOR lealdade (quase sempre um que ja' ativou
+    neste turno -- a passada de lealdade vem antes das conjuracoes) e busca o
+    melhor PW da biblioteca; so' vale se o buscado entra com mais lealdade do
+    que o sacrificado tem agora, ou e' mais caro."""
+    if not state.loyalty:
+        return None
+    fetch = _best_pw_for_battlefield(state)
+    if fetch is None:
+        return None
+    sac = min(state.loyalty, key=lambda p: (state.loyalty[p], C(p).mv))
+    if PLANESWALKER_STARTING_LOYALTY[fetch] * counter_doubler_multiplier(state) > state.loyalty[sac] or C(fetch).mv > C(sac).mv:
+        return sac, fetch
+    return None
+
+
+def resolve_entrust_the_spark(state: GameState, log: List[Dict]):
+    """Resolucao: sacrificio (morre -> gatilho do Carth) e busca pro campo na
+    MESMA resolucao; o gatilho do Carth ("whenever a planeswalker you control
+    dies") so' vai pra pilha DEPOIS -- olha as 7 do topo ja' embaralhadas."""
+    choice = _entrust_choice(state)
+    if choice is None:
+        return
+    sac, _ = choice
+    mv_sac = C(sac).mv
+    pending = _planeswalker_dies(state, sac, log, defer_triggers=True)
+    fetch = _best_pw_for_battlefield(state)
+    if fetch is not None:
+        state.library.remove(fetch)
+        state.rng.shuffle(state.library)
+        state.battlefield.append(fetch)
+        planeswalker_enters(state, fetch, log)
+        state.entrust_casts_total += 1
+        state.entrust_upgrade_mv_total += C(fetch).mv - mv_sac
+        log.append({"action": "entrust_the_spark", "sacrificed": sac, "found": fetch, "turn": state.turn})
+    for _ in range(pending):
+        _carth_lion_look_at_top7(state, log, source="pw_death")
 
 
 def _dynamo_ready(state: GameState) -> bool:
@@ -2856,6 +3223,9 @@ def main_phase(state: GameState, log: List[Dict]):
     try_urza_saga_tick(state, log)
     try_chain_veil_activation(state, log)
     try_nesting_grounds(state, log)
+    # Tam, the Possibility (candidata FRA): proliferar X vezes ANTES da passada
+    # de lealdade, so' quando isso deixa um ultimate pagavel neste turno.
+    try_tam_proliferate(state, log, window="main")
 
     # Ativa a habilidade de lealdade de cada planeswalker em campo primeiro
     # (velocidade de feitico, pilha vazia, mesmo momento real que um
@@ -2863,6 +3233,7 @@ def main_phase(state: GameState, log: List[Dict]):
     # turno.
     activate_planeswalkers(state, log)
     try_dynamo_copy_activation(state, log)
+    state.pre_activation_window = False
 
     # protetores primeiro (sao baratos e habilitam a Bridge)
     protection_cards = [c for c in state.hand if has_tag(c, "protection_shroud") and can_cast(state, c)]
@@ -2913,12 +3284,15 @@ def main_phase(state: GameState, log: List[Dict]):
         castables = [c for c in state.hand if not is_land(c) and c != COMMANDER and can_cast(state, c)
                      and spell_cost(state, c) <= budget
                      and not (attack_model_on(state) and _held_for_threat(c))
-                     and not _held_for_response(state, c)]
+                     and not _held_for_response(state, c)
+                     and c != "Loyal Tutor"  # instantaneo: janelas proprias (try_loyal_tutor)
+                     and (c != "Entrust the Spark" or _entrust_choice(state) is not None)]
         if not castables:
             break
         castables.sort(key=lambda c: spell_cost(state, c))
         choice = castables[0]
         cost = spell_cost(state, choice)
+        state.tam_mana_saved_total += tam_discount(state, choice)
         state.hand.remove(choice)
         state.mana_spent_this_turn += cost
 
@@ -2948,6 +3322,8 @@ def main_phase(state: GameState, log: List[Dict]):
             # os outros decks desta sessao).
             state.interaction_spells_cast_total += 1
 
+        if choice == "Entrust the Spark":
+            resolve_entrust_the_spark(state, log)
         if C(choice).type in ("Instant", "Sorcery"):
             state.graveyard.append(choice)
         else:
@@ -2966,6 +3342,10 @@ def main_phase(state: GameState, log: List[Dict]):
         if choice in LAND_FETCH_SPELLS:
             do_land_fetch_spell(state, choice, log)
         log.append({"action": "cast", "card": choice, "turn": state.turn})
+        # CR 606.3: PW que acabou de entrar (conjurado, Entrust, capitulo II
+        # por proliferate...) ativa JA' neste main phase.
+        activate_unactivated_planeswalkers(state, log)
+    activate_unactivated_planeswalkers(state, log)
 
 def sphinx_additional_beginning_phase(state: GameState, log: List[Dict]):
     """Sphinx of the Second Sun (oraculo real, Scryfall 2026-09-24): "At the
@@ -2995,6 +3375,7 @@ def sphinx_additional_beginning_phase(state: GameState, log: List[Dict]):
     if attack_model_on(state):
         state.our_tapped = []
     # upkeep step
+    try_loyal_tutor(state, log, window="upkeep")  # em resposta ao gatilho da Bridge (candidata FRA)
     if state.bridge_in_play:
         bridge_upkeep_trigger(state, log)
     # draw step
@@ -3027,6 +3408,9 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]], skip_lega
     state.mutational_protected = set()
     state.bridge_uncounterable = False
     log = []
+    # O que estava virado no fim da rodada (end step do ultimo oponente) --
+    # lido pela janela de instantaneo abaixo, que modela esse momento.
+    state.round_end_tapped = set(state.our_tapped)
     if attack_model_on(state):
         # Meu untap step (CR 502.3): so' aqui desviram as criaturas que
         # atacaram no meu turno anterior -- durante os turnos dos oponentes
@@ -3035,15 +3419,24 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]], skip_lega
         state.new_tokens_this_turn = {}
         state.tamiyo_fr_marked = []  # +1 da Tamiyo FR vale "until your next turn"
 
+    state.pre_activation_window = False
     # Linha de flash no end step do oponente anterior (ver docstring: modelado
     # como acontecendo ANTES da rodada de remocao deste turno, entao a Bridge
     # flashada escapa da rodada de remocao que precede seu primeiro gatilho)
     if can_flash_bridge(state):
         cast_bridge(state, log, via_flash=True)
+    # Mesma janela (end step do ultimo oponente), com a mana que sobrou do meu
+    # turno anterior e seria perdida no meu untap: candidatas FRA de
+    # velocidade de instantaneo.
+    try_loyal_tutor(state, log, window="round_end")
+    try_tam_proliferate(state, log, window="round_end")
+    # Do meu untap ate' a passada de lealdade: capitulo III da Urza ainda vale.
+    state.pre_activation_window = True
 
     if not skip_legacy_removal:
         resolve_removal_round(state, log)
 
+    try_loyal_tutor(state, log, window="upkeep")  # em resposta ao gatilho da Bridge (candidata FRA)
     if state.bridge_in_play:
         # Paradox Haze: ruling "If two Paradox Hazes enchant the same player,
         # they'll both trigger ... two additional upkeep steps" (copia do
@@ -3146,9 +3539,33 @@ def build_decklist(with_greater_auramancy: bool) -> str:
     # (The Peregrine Dynamo - unica criatura sem nenhuma tag de sinergia)
     return DECKLIST_TEXT.replace("1 The Peregrine Dynamo\n", "1 Greater Auramancy\n")
 
-def simulate_one(seed: int, turns: int, with_greater_auramancy: bool) -> Dict:
+def track_turn_progress(state: GameState, turns_played: int):
+    """Chamado pelo orquestrador depois de cada turno MEU jogado."""
+    if state.pw_ultimates_used_total > state._ults_seen:
+        state.turns_with_ult += 1
+        if state.first_ult_turn is None:
+            state.first_ult_turn = turns_played
+    state._ults_seen = state.pw_ultimates_used_total
+
+
+def apply_swaps(decklist: str, swap) -> str:
+    """`swap` = (sai, entra) ou lista de pares: troca NA MESMA LINHA da lista
+    (preserva a posicao -- pareamento de seed, ver goldfish-sim-card-rules.md
+    "Teste comparativo pareado"). A lista real nao muda."""
+    if swap is None:
+        return decklist
+    pairs = [swap] if isinstance(swap[0], str) else list(swap)
+    for out_card, in_card in pairs:
+        assert f"1 {out_card}\n" in decklist, f"{out_card} nao esta' na lista"
+        assert in_card in CARD_DB, f"{in_card} sem entrada no CARD_DB"
+        assert f"1 {in_card}\n" not in decklist, f"{in_card} ja' esta' na lista"
+        decklist = decklist.replace(f"1 {out_card}\n", f"1 {in_card}\n", 1)
+    return decklist
+
+
+def simulate_one(seed: int, turns: int, with_greater_auramancy: bool, swap=None) -> Dict:
     rng = random.Random(seed)
-    decklist = build_decklist(with_greater_auramancy)
+    decklist = apply_swaps(build_decklist(with_greater_auramancy), swap)
     deck = parse_decklist(decklist)
     assert len(deck) == 99, f"Mainboard deveria ser 99, deu {len(deck)}"
     rng.shuffle(deck)
@@ -3184,6 +3601,7 @@ def simulate_one(seed: int, turns: int, with_greater_auramancy: bool) -> Dict:
         t += 1
         play_turn(state, t, game_log)
         turns_played += 1
+        track_turn_progress(state, turns_played)
         while state.extra_turns_pending > 0 and turns_played < turns:
             # Turno extra (Ichormoon Gauntlet [-12]): "take an extra turn
             # after this one" -- imediatamente apos o nosso turno, antes das
@@ -3192,6 +3610,7 @@ def simulate_one(seed: int, turns: int, with_greater_auramancy: bool) -> Dict:
             t += 1
             play_turn(state, t, game_log)
             turns_played += 1
+            track_turn_progress(state, turns_played)
         for i in range(N_OPPONENTS):
             if state.opp_alive[i]:
                 instant_speed_pw_window(state, game_log[-1])
@@ -3239,6 +3658,21 @@ def simulate_one(seed: int, turns: int, with_greater_auramancy: bool) -> Dict:
         "all_will_be_one_triggers_total": state.all_will_be_one_triggers_total,
         "all_will_be_one_face_damage_total": state.all_will_be_one_face_damage_total,
         "opp_eliminated_total": state.opp_eliminated_total,
+        # Rodada Reality Fracture (2026-09-25):
+        "late_pw_activations_total": state.late_pw_activations_total,
+        "urza_extra_lore_total": state.urza_extra_lore_total,
+        "tam_activations_total": state.tam_activations_total,
+        "tam_proliferates_total": state.tam_proliferates_total,
+        "tam_mana_saved_total": state.tam_mana_saved_total,
+        "loyal_tutor_bridge_total": state.loyal_tutor_bridge_total,
+        "loyal_tutor_draw_total": state.loyal_tutor_draw_total,
+        "entrust_casts_total": state.entrust_casts_total,
+        "entrust_upgrade_mv_total": state.entrust_upgrade_mv_total,
+        "gauntlet_extra_turns_total": state.gauntlet_extra_turns_total,
+        "board_cap_hits_total": state.board_cap_hits_total,
+        "first_ult_turn": state.first_ult_turn,
+        "turns_with_ult": state.turns_with_ult,
+        "tam_dynamo_copies_total": state.tam_dynamo_copies_total,
     }
 
 def run_batch(n=2000, turns=10, with_greater_auramancy=False, seed_base=3000000, label=""):
@@ -4446,7 +4880,9 @@ def our_combat_step(state: GameState, log: List[Dict]):
                     p, t, kw = p + b, t + b, set(kw) | {"flying"}
                 oko = (("Oko, the Ringleader", None), p, kw)
 
-    ready = [x for x in _our_creature_instances(state) if not _is_sick(state, x)]
+    # Tam, the Possibility (candidata FRA) nao ataca: 2 de poder nao paga
+    # perder o {T} da habilidade (janela de end step do oponente) nem o bloqueio.
+    ready = [x for x in _our_creature_instances(state) if not _is_sick(state, x) and x[0] != "Tam, the Possibility"]
     if not ready and oko is None:
         return
     limit_one = _attack_limit_one(state)
@@ -4699,12 +5135,7 @@ def simulate_one_with_interaction(seed: int, turns: int, with_greater_auramancy:
     if attack_profile is not None and attack_profile not in ATTACK_PROFILES:
         raise ValueError(f"attack_profile invalido: {attack_profile}")
     rng = random.Random(seed)
-    decklist = build_decklist(with_greater_auramancy)
-    if swap is not None:
-        out_card, in_card = swap
-        assert f"1 {out_card}\n" in decklist, f"{out_card} nao esta' na lista"
-        assert in_card in CARD_DB, f"{in_card} sem entrada no CARD_DB"
-        decklist = decklist.replace(f"1 {out_card}\n", f"1 {in_card}\n", 1)
+    decklist = apply_swaps(build_decklist(with_greater_auramancy), swap)
     deck = parse_decklist(decklist)
     assert len(deck) == 99, f"Mainboard deveria ser 99, deu {len(deck)}"
     rng.shuffle(deck)
@@ -4749,6 +5180,7 @@ def simulate_one_with_interaction(seed: int, turns: int, with_greater_auramancy:
         t += 1
         play_turn(state, t, game_log, skip_legacy_removal=True)
         turns_played += 1
+        track_turn_progress(state, turns_played)
         # CORRIGIDO 2026-09-24 (Regra #6, ordem de turnos): "take an extra
         # turn after this one" vem IMEDIATAMENTE depois do nosso turno, antes
         # dos oponentes -- e os oponentes nao ganham turno entre os nossos
@@ -4759,6 +5191,7 @@ def simulate_one_with_interaction(seed: int, turns: int, with_greater_auramancy:
             t += 1
             play_turn(state, t, game_log, skip_legacy_removal=True)
             turns_played += 1
+            track_turn_progress(state, turns_played)
         for i in range(NUM_OPPONENTS):
             try_smart_opponent_turn(state, interaction_log, opp_index=i)
     return state
