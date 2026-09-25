@@ -46,6 +46,86 @@ direção faz sentido: com mais ativações os PWs viram alvo maior de remoção
   (regra do teste pareado), então cada partida A/B só diverge quando a carta
   trocada é comprada.
 
+### A/B pareado: cada candidata × 10 cortes (2.000 + 2.000 partidas por variante)
+
+Scripts: `ab_reality_fracture.py` e `ab_reality_fracture_sum.py`. Seeds iguais
+às do snapshot; resiliência em mesa mista.
+
+**Por que não a média de ultimates:** a contagem de ultimates explode nas
+partidas já ganhas (loops de Oko/Doubling Season/Gauntlet: 80+ numa partida
+só). Uma partida a mais nesse estado move a média em +2 e não diz nada.
+Métricas usadas, todas limitadas por partida:
+- turno do 1º ultimate (sem ultimate = 11);
+- P(ultimate até o T8);
+- vida ≤ 0 na resiliência.
+
+Mais detalhes em `references/goldfish-sim-card-rules.md`, seção "A/B de carta".
+
+**Base (lista atual, motor corrigido):**
+- modo padrão: 1º ultimate no turno 9,28 em média; P(ult ≤ T8) = 33,8%;
+- resiliência: vida ≤ 0 em 14,9%; P(ult ≤ T8) = 23,5%.
+
+**Modo padrão — Δ do turno médio do 1º ultimate** (negativo = mais rápido; negrito = IC95% não cruza 0):
+
+| entra ↓ / sai → | Arena Rector | Dovin's Veto | Void Rend | Swan Song | Veil of Summer | Oath of Nissa | Blasphemous Act | Farseek | Three Visits | Doubling Season (controle) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Loyal Tutor | **−0,146 ±0,029** | **−0,130 ±0,027** | **−0,117 ±0,027** | **−0,107 ±0,025** | **−0,106 ±0,027** | **−0,084 ±0,027** | **−0,089 ±0,024** | **−0,065 ±0,025** | **−0,071 ±0,028** | **−0,065 ±0,025** |
+| Tam, the Possibility | **−0,127 ±0,021** | **−0,096 ±0,022** | **−0,101 ±0,022** | **−0,053 ±0,020** | **−0,070 ±0,021** | **−0,046 ±0,027** | **−0,064 ±0,021** | **−0,062 ±0,024** | **−0,033 ±0,023** | **−0,040 ±0,025** |
+| Entrust the Spark | **−0,072 ±0,017** | **−0,040 ±0,015** | **−0,037 ±0,015** | **−0,019 ±0,011** | **−0,022 ±0,012** | −0,001 ±0,022 | **−0,018 ±0,009** | +0,014 ±0,020 | **+0,029 ±0,020** | +0,013 ±0,015 |
+
+**Resiliência — Δ de vida ≤ 0 até o T10** (negativo = melhor):
+
+| entra ↓ / sai → | Arena Rector | Dovin's Veto | Void Rend | Swan Song | Veil of Summer | Oath of Nissa | Blasphemous Act | Farseek | Three Visits | Doubling Season |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Loyal Tutor | −0,2 pp ±0,4 | **−0,5 pp ±0,4** | −0,1 pp ±0,4 | −0,3 pp ±0,4 | −0,3 pp ±0,4 | −0,5 pp ±0,6 | **+0,8 pp ±0,5** | +0,3 pp ±0,6 | −0,1 pp ±0,5 | −0,5 pp ±0,6 |
+| Tam, the Possibility | −0,4 pp ±0,5 | **−1,1 pp ±0,6** | **−0,5 pp ±0,5** | **−0,4 pp ±0,4** | −0,6 pp ±0,6 | −0,5 pp ±0,7 | +0,4 pp ±0,6 | +0,1 pp ±0,6 | +0,1 pp ±0,6 | **−0,8 pp ±0,6** |
+| Entrust the Spark | −0,1 pp ±0,4 | **−0,3 pp ±0,3** | +0,1 pp ±0,4 | +0,1 pp ±0,4 | +0,1 pp ±0,4 | +0,1 pp ±0,6 | **+1,1 pp ±0,5** | **+0,6 pp ±0,6** | **+0,6 pp ±0,5** | −0,1 pp ±0,5 |
+
+**Leitura:**
+- **O controle funciona.** Cortar Doubling Season fica sempre no fundo do
+  ranking, junto com os tutores de terreno (Farseek/Three Visits: ramp já é
+  curto, 9 peças). O método separa corte ruim de corte bom.
+- **Arena Rector é o melhor corte pras 3 cartas.** Ela é alvo da Bridge (criatura)
+  que não dá PW. O gatilho de morte ("When this creature dies ... search your
+  library for a planeswalker card") não tem como ser ligado de propósito:
+  a lista não tem NENHUM outlet de sacrifício de criatura (varredura do
+  oráculo da lista inteira). Na resiliência, cortá-la não piora a
+  sobrevivência de nenhuma das 3.
+- **Blasphemous Act não deve sair.** Cortá-la piora a sobrevivência na
+  resiliência (+0,8 e +1,1 pp com Loyal Tutor/Entrust). O wipe protege os PWs.
+- **Uso por partida** (10 turnos, modo padrão):
+  - Loyal Tutor: sai em 21,2% das partidas (quase sempre que é comprado), 96% delas pela linha da Bridge.
+  - Tam: ativa em 23,6% das partidas, 0,41 ativação e 0,43 de mana economizado por partida. A cópia pela Dynamo aparece em 0,9%.
+  - Entrust: conjurado em 15,1% das partidas.
+
+### Pacotes (as 3 juntas) — mesmas seeds
+
+| pacote | 1º ult (Δ) | P(ult ≤ T8) | res: vida ≤ 0 | res: 1º ult (Δ) | res: PW-turnos (Δ) |
+|---|---|---|---|---|---|
+| base | 9,28 | 33,8% | 14,9% | 9,69 | 15,71 |
+| **P1: Tam→Arena Rector, Loyal Tutor→Swan Song, Entrust→Veil of Summer** | **−0,246 ±0,033** | **40,1%** | 14,2% (−0,7 ±0,7) | **−0,140 ±0,040** | **+0,76 ±0,35** |
+| P2: Tam→Arena Rector, Loyal Tutor→Dovin's Veto, Entrust→Void Rend | **−0,281 ±0,036** | **41,3%** | 14,3% (−0,6 ±0,7) | **−0,145 ±0,041** | **+0,73 ±0,38** |
+| P3: só Tam→Arena Rector + Loyal Tutor→Swan Song | **−0,226 ±0,032** | **39,6%** | 14,2% (−0,7 ±0,6) | **−0,130 ±0,038** | **+0,61 ±0,33** |
+| P4: só Loyal Tutor→Swan Song + Entrust→Arena Rector (sem Tam) | **−0,169 ±0,030** | **38,3%** | 14,5% (−0,4 ±0,5) | **−0,056 ±0,034** | **+0,81 ±0,33** |
+
+Comparações pareadas entre pacotes:
+- **Entrust na margem (P3 → P1):**
+  - 1º ult −0,021 ±0,012 (significativo, mas pequeno);
+  - P(ult ≤ T8) +0,5 pp ±0,4;
+  - vida ≤ 0: 0,0.
+- **Tam na margem (P4 + Tam no lugar de Veil):**
+  - 1º ult −0,077 ±0,023;
+  - P(ult ≤ T8) +1,8 pp ±0,9;
+  - 1º ult na resiliência −0,084 ±0,030.
+- **Cortes "melhores no simulador" (P2) × cortes pelo deck (P1):**
+  - 1º ult −0,035 ±0,039, **indistinguível**;
+  - vida ≤ 0: +0,1 pp ±0,7.
+
+O simulador não separa as duas opções, então quem decide é o deck
+(Regra #5, ver `checklist-oraculo.md`). Void Rend e Dovin's Veto são
+incontraláveis e mais amplas do que o modelo de oponente consegue medir: o
+oponente aqui só tem criatura, remoção, wipe e contramágica na Bridge.
+
 ## Rodada dedicada de gaps — auditoria completa das 100 cartas — 2026-09-24
 
 **Pedido do usuário:** "Sim, faz a rodada dedicada fechando os gaps restantes".

@@ -47,6 +47,69 @@ motores do deck e simulador rodado com vários cortes e um controle.
 - Cópias da Tam (ficha do Oko −5) seguem a doença de invocação da carta original. O motor rastreia criatura nomeada por nome.
 - O custo {W}{U}{B}{R}{G} usa o modelo de cor agregado do arquivo: 1 fonte por cor, sem casamento fonte↔símbolo. É a mesma convenção de toda conjuração deste simulador.
 
+### Avaliação (Regra #4/#5/#10: deck primeiro, simulador como apoio)
+
+**Motores da lista em que cada carta entra:**
+
+| Carta | Motores / cartas da lista que ela alimenta | Onde não entra |
+|---|---|---|
+| **Loyal Tutor** | **The Prismatic Bridge.** O gatilho de upkeep põe em campo o PW que a carta botou no topo: Ugin (MV 8), Kaya (7), Elspeth/Liliana/Wanderer/Teferi TA/Vraska (6), por {W}. Pode ser conjurada em resposta ao próprio gatilho (CR 113.7a: remover a Bridge depois disso não anula o gatilho) ou com a mana que sobrou no end step alheio. **Paradox Haze e Sphinx** dão upkeeps extras, então mais janelas. Por ser mágica não-criatura, dispara **Inexorable Tide/Flux Channeler** (proliferate) e **Ichormoon** (+1 marcador). **Doubling Season:** o PW entra com o dobro. | Sem a Bridge, é tutor pro topo que custa 1 carta (seleção, não vantagem). Não é criatura: não serve de alvo da Bridge. |
+| **Tam, the Possibility** | **PW −{1}:** 15 dos 17 PWs têm genérico (Aminatou e Bolas não). **Proliferate X vezes** (a lista tem 12 tipos de PW em 17 PWs): cada proliferate é dobrado por **Doubling Season/Vorinclex/Innkeeper nv3**, dispara **All Will Be One** 1× por permanente, acelera o **Ichormoon Gauntlet [−12]** (turno extra), soma veneno depois da **Vraska −9** e avança a **Urza**. **Peregrine Dynamo** copia a ativação (fonte lendária). **Lendária:** Esika (frente) dá mana a ela; Plaza of Heroes e Delighted Halfling ajudam a conjurá-la. Corpo 2/4 bloqueia. | Custa {W}{U}{B}{R}{G} por ativação, disputa mana com a mão. É criatura: a Bridge pode acertá-la no lugar de um PW. |
+| **Entrust the Spark** | **Troca um PW gasto** (Elspeth/Teferis depois do emblema, TR com pouca lealdade, ficha-cópia do Oko) pelo melhor PW da biblioteca **direto no campo**, que ativa no mesmo turno. **Carth the Lion:** o sacrifício é morte, então olha as 7 do topo (depois da busca). **Doubling Season:** o buscado entra com o dobro. Com Ugin: 14 de lealdade, dá pra fazer o −10 no mesmo turno. **Oath of Teferi/Chain Veil:** ativa 2×. | Morta na mão sem PW em campo. 5 manas de feitiço, num slot da curva que já tem 9 cartas. Não é alvo da Bridge. |
+
+**Curva** (62 não-terrenos, CMC médio 3,66; 1:7, 2:12, 3:15, 4:8, 5:9, 6:7, 7:1, 8:2, 9:1).
+Com os cortes da recomendação:
+- CMC 1: Swan Song sai e Loyal Tutor entra; Veil of Summer também sai.
+- CMC 4 → 3: Arena Rector sai e Tam entra.
+- CMC 5: Entrust entra.
+
+Resultado (calculado sobre a lista trocada, Scryfall `cmc`):
+
+| CMC | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |
+|---|---|---|---|---|---|---|---|---|---|
+| cartas | 6 | 12 | 16 | 7 | 10 | 7 | 1 | 2 | 1 |
+
+O CMC médio vai de 3,66 para 3,71. O único custo real na curva é o 1-drop a
+menos (Veil de 1 → Entrust de 5).
+
+**Cortes, pela ordem do deck (não do simulador):**
+1. **Arena Rector.** A lista não tem outlet de sacrifício de criatura
+   (varredura do oráculo), então o gatilho de morte só acontece se o oponente
+   ou um wipe matar ela. Ainda por cima é alvo da Bridge que não traz PW. No
+   A/B foi o melhor corte pras 3 candidatas, e na resiliência cortá-la não
+   custou sobrevivência.
+2. **Swan Song.** É a contramágica mais estreita das 4: só encantamento,
+   instantâneo ou feitiço. E dá ao oponente um 2/2 voador, que num deck de
+   superfriends é um atacante de PW a mais. Counterspell, Mana Drain e Dovin's
+   Veto são mais amplas.
+3. **Veil of Summer.** Só vale contra azul/preto. O simulador não distingue
+   ela de Dovin's Veto/Void Rend (P1 × P2 indistinguível). As duas são
+   incontraláveis e mais amplas do que o modelo de oponente mede:
+   - Void Rend destrói qualquer permanente não-terreno;
+   - Veto contra-ataca qualquer mágica não-criatura.
+   Pela Regra #5, ficam.
+
+Não cortar:
+- tutores de terreno (ramp já curto; no A/B, cortar ramp foi sempre dos piores);
+- Blasphemous Act (cortar piora a sobrevivência na resiliência);
+- Doubling Season (controle, sempre no fundo).
+
+**Veredito:** Loyal Tutor é a melhor das 3 no deck: é a carta que a Bridge
+pede. Tam é a segunda, com ganho medido significativo nas duas pontas
+(velocidade e resiliência). Entrust the Spark é positiva, mas marginal por
+cima das outras duas (−0,02 turno). Entra se a ideia é colocar as 3; o
+ganho vem quase todo de Loyal Tutor + Tam.
+
+**Situação na data:**
+- As 3 ainda aparecem como `not_legal` no Scryfall porque a coleção não
+  lançou (lançamento em 2026-10-02).
+- Nenhuma é Game Changer (`game_changer: false`), então o deck continua com
+  3/3 no teto do Bracket 3.
+- EDHREC (json de cada carta, 2026-09-25, pré-lançamento):
+  - Loyal Tutor está em 2.478 decks no geral e em 104 decks da Esika (synergy +0,053);
+  - Tam está em 125 decks no geral e em 49 decks da Esika (synergy +0,069);
+  - Entrust está em 596 decks e ainda não aparece na página da Esika.
+
 ## Rodada dedicada: auditoria completa das 100 cartas + todos os gaps — 2026-09-24
 
 **Gatilho:** "Sim, faz a rodada dedicada fechando os gaps restantes" (depois da
