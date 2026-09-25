@@ -1,5 +1,29 @@
 # Goldfish Log — Edgar Markov
 
+## Planeswalkers ativam no turno em que entram + Sorin só sacrifica Vampiro — 2026-09-25
+
+Detalhes em `checklist-oraculo.md`.
+- 2.000 partidas por modo, mesmas seeds: padrão 6.000.000+ e resiliência 6.000.000+, 8 turnos.
+- `PYTHONHASHSEED=0`; rodar 2× o mesmo código deu resultado idêntico.
+- Etapas acumulativas.
+
+| etapa | ativações de PW | ativações no turno em que entrou | fichas via PW | Vampiro sacrificado pelo Sorin | criatura grátis (Sorin −3) | dreno total | res: ativações de PW | res: mortes de PW |
+|---|---|---|---|---|---|---|---|---|
+| antes | 0,462 | — | 0,141 | — (pegava qualquer ficha) | 0,108 | 5,50 | 0,350 | 0,010 |
+| + Sorin só Vampiro + remoção = morte de PW | 0,462 | 0 | 0,141 | 0,069 | 0,119 | 5,39 | 0,346 | **0,063** |
+| + **PW ativa no turno em que entra (CR 606.3)** | **0,644** | 0,201 | **0,279** | 0,085 | 0,143 | 5,57 | **0,529** | 0,066 |
+
+Leitura de cada etapa:
+- **Sorin só com Vampiro:**
+  - o dreno cai um pouco (5,50 → 5,39), porque os 3 de dano + 3 de vida não saem mais sacrificando Soldier/Snake/Demon;
+  - quando não há Vampiro, o −3 (Vampiro da mão de graça) é usado mais: 0,108 → 0,119.
+- **Remoção de oponente no Sorin:** passa a contar como morte de PW na resiliência (0,010 → 0,063). Com isso a Cruel Celebrant dispara nessa morte.
+- **Ativação no turno em que entra:**
+  - +39% de ativações;
+  - as fichas da Elspeth quase dobram (0,141 → 0,279), porque o +1 dela sai já no turno em que é conjurada;
+  - o dreno volta a subir (5,57).
+- **Impacto no deck:** pequeno, porque Sorin ou Elspeth só estão em campo em ~17% das partidas de 8 turnos. Os 2 PWs são 2 cartas de 99.
+
 ## London mulligan sem embaralhar o fundo — 2026-09-24
 
 Detalhes em `checklist-oraculo.md`. Efeito só nas partidas com 2+ mulligans

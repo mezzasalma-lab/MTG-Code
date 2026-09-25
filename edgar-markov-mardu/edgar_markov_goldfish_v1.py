@@ -713,6 +713,11 @@ class GameState:
     pw_counters_distributed_total: int = 0
     pw_free_creature_total: int = 0
     pw_deaths_total: int = 0
+    # CR 606.3 (2026-09-25): 1 ativacao por PW por turno, rastreada por nome
+    # -- permite ativar o PW que entra DEPOIS da passada do main phase.
+    pw_activated_this_turn: Set[str] = field(default_factory=set)
+    late_pw_activations_total: int = 0
+    sorin_vampire_sacs_total: int = 0
 
     # Achado real 2026-08-28 (usuario: "verifique as cartas com niveis,
     # como classes e sagas... o caretaker's talent se elevado ao nivel 3
@@ -1787,6 +1792,12 @@ def remove_permanent(state: GameState, log: List[Dict], name: str, source: str =
     dispara `_apply_creature_death_payoffs` se for criatura."""
     if name not in state.battlefield:
         return
+    if name in state.loyalty:
+        # Planeswalker (Sorin esta' na INTERACTION_ENGINE_PRIORITY): mesma
+        # cascata de morte da lealdade a 0 -- clausula de PW da Cruel
+        # Celebrant, lealdade limpa (achado 2026-09-25, Regra #3).
+        _planeswalker_dies(state, name, log, source=source)
+        return
     state.battlefield.remove(name)
     if name == COMMANDER:
         state.graveyard.append(name)
@@ -1812,27 +1823,39 @@ def add_loyalty(state: GameState, pw: str, amount: int, log: List[Dict], reason:
     log.append({"trigger": "loyalty_change", "pw": pw, "amount": amount,
                 "new_loyalty": state.loyalty[pw], "reason": reason, "turn": state.turn})
     if state.loyalty[pw] <= 0:
-        if pw in state.battlefield:
-            state.battlefield.remove(pw)
-        state.graveyard.append(pw)
-        del state.loyalty[pw]
-        state.pw_deaths_total += 1
-        log.append({"trigger": "planeswalker_death", "pw": pw, "turn": state.turn})
-        # Cruel Celebrant: "Whenever this creature or another creature OR
-        # PLANESWALKER you control dies..." - achado real 2026-09-13
-        # (auditoria oraculo-por-oraculo): Sorin, Imperious Bloodlord
-        # PODE morrer de verdade aqui (-3 com lealdade == 3), e essa
-        # clausula nunca disparava - so DEATH_PAYOFFS de criatura eram
-        # cobertos. E' a UNICA carta desta lista com essa clausula extra
-        # (confirmado via Scryfall - Blood Artist/Zulaport/Vindictive
-        # Vampire/Bastion/Funeral Room/Vein Ripper/Meathook/Cordial sao
-        # todas criatura-only).
-        if state.has("Cruel Celebrant"):
-            _fire_death_payoff(state, log, "Cruel Celebrant", source="planeswalker_death")
+        _planeswalker_dies(state, pw, log, source="loyalty_zero")
+
+
+def _planeswalker_dies(state: GameState, pw: str, log: List[Dict], source: str):
+    """Cascata unica de "um planeswalker seu morre" -- extraida de
+    `add_loyalty` (2026-09-25, Regra #3: gatilho compartilhado ligado so'
+    em ALGUNS pontos). Antes so' a lealdade chegando a 0 disparava isto;
+    remocao de OPONENTE (`remove_permanent`, modo de resiliencia -- o Sorin
+    esta' na `INTERACTION_ENGINE_PRIORITY`) mandava o Sorin pro cemiterio
+    sem a clausula de PW da Cruel Celebrant e deixava a lealdade velha em
+    `state.loyalty`."""
+    if pw in state.battlefield:
+        state.battlefield.remove(pw)
+    state.graveyard.append(pw)
+    state.loyalty.pop(pw, None)
+    state.pw_deaths_total += 1
+    log.append({"trigger": "planeswalker_death", "pw": pw, "source": source, "turn": state.turn})
+    # Cruel Celebrant: "Whenever this creature or another creature OR
+    # PLANESWALKER you control dies..." - achado real 2026-09-13
+    # (auditoria oraculo-por-oraculo): Sorin, Imperious Bloodlord
+    # PODE morrer de verdade aqui (-3 com lealdade == 3), e essa
+    # clausula nunca disparava - so DEATH_PAYOFFS de criatura eram
+    # cobertos. E' a UNICA carta desta lista com essa clausula extra
+    # (confirmado via Scryfall - Blood Artist/Zulaport/Vindictive
+    # Vampire/Bastion/Funeral Room/Vein Ripper/Meathook/Cordial sao
+    # todas criatura-only).
+    if state.has("Cruel Celebrant"):
+        _fire_death_payoff(state, log, "Cruel Celebrant", source="planeswalker_death")
 
 def resolve_planeswalker(state: GameState, pw: str, log: List[Dict]):
     loy = state.loyalty[pw]
     state.pw_activations_total += 1
+    state.pw_activated_this_turn.add(pw)
 
     if pw == "Sorin, Imperious Bloodlord":
         # 2 habilidades de "+1" reais (regra: so uma ativacao/turno no
@@ -1844,9 +1867,19 @@ def resolve_planeswalker(state: GameState, pw: str, log: List[Dict]):
         # campo de graca se houver um. Senao, +1 poe contador num Vampiro
         # (sem alvo real de combate pro deathtouch/lifelink, so o
         # contador importa).
-        if state.tokens:
-            popped = state.tokens.pop()
+        # CORRIGIDO 2026-09-25: o oraculo e' "You may sacrifice a VAMPIRE" --
+        # o codigo fazia `state.tokens.pop()`, que pegava QUALQUER ficha do
+        # pool (Human Soldier da Elspeth/Bastion, Snake da Ophiomancer,
+        # Demon da Ritual Chamber). Agora so' ficha de Vampiro do pool
+        # descartavel (Vampire Token da Eminence/Legion's Landing,
+        # Shapeshifter changeling). O Vampire Demon 4/3 do Vito fica fora do
+        # pool de proposito (ver `_vito_fanatic_sacrifice_trigger`).
+        vamp_tokens = [t for t in state.tokens if is_vampire(t)]
+        if vamp_tokens:
+            popped = vamp_tokens[-1]
+            state.tokens.remove(popped)
             state.battlefield.remove(popped)
+            state.sorin_vampire_sacs_total += 1
             # Achado real 2026-09-13 (auditoria oraculo-por-oraculo): este
             # e' um sacrificio de criatura de verdade ("You may sacrifice
             # a Vampire") - antes so incrementava creatures_died_this_turn
@@ -1892,6 +1925,25 @@ def activate_planeswalkers(state: GameState, log: List[Dict]):
     for pw in list(state.loyalty.keys()):
         if pw not in state.battlefield:
             continue
+        resolve_planeswalker(state, pw, log)
+
+
+def activate_unactivated_planeswalkers(state: GameState, log: List[Dict]):
+    """CR 606.3: "A player may activate a loyalty ability of a permanent they
+    control any time they have priority and the stack is empty during a main
+    phase of their turn, but only if no player has previously activated a
+    loyalty ability of that permanent that turn." CORRIGIDO 2026-09-25
+    (mesmo bug de orquestracao achado no Prismatic Bridge, Regra #6): a unica
+    passada (`activate_planeswalkers`) rodava ANTES de `cast_available_spells`
+    -- Sorin/Elspeth conjurados da mao (ou Sorin devolvido pela Sevinne's
+    Reclamation) so' ativavam no turno SEGUINTE. Nao existe doenca de
+    invocacao pra lealdade. Chamado depois de cada conjuracao nas 2
+    passadas de `cast_available_spells` (as 2 sao main phase 1: antes do
+    combate)."""
+    for pw in list(state.loyalty.keys()):
+        if pw in state.pw_activated_this_turn or pw not in state.battlefield:
+            continue
+        state.late_pw_activations_total += 1
         resolve_planeswalker(state, pw, log)
 
 def apply_etb(state: GameState, card: str, log: List[Dict]):
@@ -2381,6 +2433,9 @@ def cast_available_spells(state: GameState, log: List[Dict]):
                 on_creature_enters(state, log, choice)
         eminence_trigger(state, choice, log)
         log.append({"action": "cast", "card": choice, "turn": state.turn})
+        # CR 606.3: PW que acabou de entrar ativa JA' neste main phase.
+        activate_unactivated_planeswalkers(state, log)
+    activate_unactivated_planeswalkers(state, log)
 
     if all(p in state.battlefield for p in COMBO_PIECES) and state.both_combo_pieces_turn is None:
         state.both_combo_pieces_turn = state.turn
@@ -2510,6 +2565,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.tapped_lands_this_turn = 0
     state.voldaren_estate_used_this_turn = False
     state.fountainport_used_this_turn = False
+    state.pw_activated_this_turn = set()
     log = []
 
     do_upkeep(state, log)
@@ -2644,6 +2700,8 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "pw_tokens_created_total": state.pw_tokens_created_total,
         "pw_free_creature_total": state.pw_free_creature_total,
         "pw_deaths_total": state.pw_deaths_total,
+        "late_pw_activations_total": state.late_pw_activations_total,
+        "sorin_vampire_sacs_total": state.sorin_vampire_sacs_total,
         "sorin_in_play": state.has("Sorin, Imperious Bloodlord"),
         "elspeth_in_play": state.has("Elspeth, Storm Slayer"),
         "caretakers_talent_in_play": state.has("Caretaker's Talent"),

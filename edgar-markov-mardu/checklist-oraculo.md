@@ -1,5 +1,26 @@
 # Checklist cláusula-a-cláusula — Edgar Markov
 
+## Planeswalkers: ativação no turno em que entram + 2 bugs do Sorin — 2026-09-25
+
+**Gatilho:** o mesmo bug de orquestração achado no Prismatic Bridge (rodada
+Reality Fracture) foi sinalizado aqui. Pedido do usuário: "Corrige o
+simulador do Markov pfv".
+Fontes:
+- oráculo do cache: Sorin, Imperious Bloodlord e Elspeth, Storm Slayer;
+- CR 606.3 em `rules-cache/` (versão de 2026-09-25).
+
+| # | Achado | Oráculo / regra | Correção |
+|---|---|---|---|
+| 1 | 🐛 **PW conjurado só ativava no turno seguinte** (Regra #6, orquestração). A única passada (`activate_planeswalkers`) rodava ANTES de `cast_available_spells`. Sorin/Elspeth conjurados da mão, ou Sorin devolvido pela Sevinne's Reclamation, esperavam um turno. | CR 606.3: "any time they have priority and the stack is empty during a main phase of their turn, but only if no player has previously activated a loyalty ability of that permanent that turn". Não há doença de invocação pra lealdade. | `pw_activated_this_turn` (zera em `play_turn`) + `activate_unactivated_planeswalkers`, chamado depois de cada conjuração e no fim das 2 passadas de `cast_available_spells` (as 2 são main phase 1, antes do combate). |
+| 2 | 🐛 **Sorin +1 sacrificava qualquer ficha** (`state.tokens.pop()`): Human Soldier da Elspeth/Bastion, Snake da Ophiomancer, Demon da Ritual Chamber. | "+1: You may sacrifice **a Vampire**. When you do, Sorin deals 3 damage to any target and you gain 3 life." | Só ficha de Vampiro do pool descartável (Vampire Token, Shapeshifter changeling). O Vampire Demon 4/3 do Vito continua fora do pool, de propósito (já documentado). Sem Vampiro, cai pro −3 / +1 de contador como antes. |
+| 3 | 🐛 **Remoção de oponente no Sorin não era morte de PW** (Regra #3, gatilho compartilhado). O Sorin está na `INTERACTION_ENGINE_PRIORITY`, mas `remove_permanent` só tratava criatura. Ele ia pro cemitério sem a cláusula de PW da Cruel Celebrant e deixava a lealdade velha em `state.loyalty`. | Cruel Celebrant: "Whenever this creature or another creature **or planeswalker** you control dies..." | Nova cascata única `_planeswalker_dies`, usada pela lealdade a 0 e pela remoção. |
+
+**Validação:**
+- **Testes dirigidos:** 6/6 no novo `test_edgar_markov_goldfish.py`. No código antigo, 4 falham: são exatamente os 4 que testam as correções. Os outros 2 garantem "só 1 ativação por turno".
+- **Regressão:** 20.000 partidas no modo padrão + 20.000 na resiliência, com 0 exceções e 0 travamentos.
+- **Números antes/depois:** em `goldfish-log.md`.
+- **London mulligan:** `test_london_mulligan.py` continua 8/8.
+
 ## London mulligan: as cartas do fundo eram embaralhadas de volta — 2026-09-24
 
 **Achado:** o mesmo bug encontrado no Prismatic Bridge (rodada de gaps de
