@@ -2752,4 +2752,103 @@ em campo de graça como se fosse um Dragão de verdade). Resumo numérico
 
 ---
 
+## Fichas de Dragão como criaturas + Draconic Visitor (Ur-Dragon × Vihaan) — 2026-09-25
+
+**Pedido:** *"A carta Draconic Visitor, avalie ela como possível inclusao
+tanto no Ur-Dragon, quanto no Vihan, e me diga aonde ela seria melhor e
+pq, ou se não vale incluir em nenhum dos 2!"* O motor de fichas de Dragão
+foi corrigido primeiro; detalhes em `checklist-oraculo.md`.
+
+### Antes/depois do motor de fichas (2.000 seeds, 7.600.000+, 8 turnos)
+
+| Métrica | Padrão antes | Padrão depois | Resil. antes | Resil. depois |
+|---|---|---|---|---|
+| Dragões em campo (fim) | 26,74 | 68,86 | 10,41 | 18,77 |
+| Fichas de Dragão | 18,38 | 59,44 | 6,73 | 14,67 |
+| Compras da Ur-Dragon | 14,35 | 108,06 | 5,65 | 23,57 |
+| Cartas extras | 22,84 | 31,47 | 11,75 | 16,83 |
+| Dano de ETB (mediana) | 10 | 30 | 0 | 0 |
+| Eventos de dano de ETB | 12,57 | 128,65 | 4,51 | 35,35 |
+| Vitória por dano de comandante | 34,15% | 34,70% | 19,05% | 19,55% |
+| Turno do comandante | 7,115 | 7,112 | 7,537 | 7,534 |
+| Letal ≤T8 (métrica nova) | — | 49,25% | — | 25,85% |
+| Letal ≤T6 | — | 3,10% | — | 1,60% |
+| Partidas que bateram no teto de 400 fichas | — | 9,0% | — | 2,0% |
+
+Tudo se move na direção esperada: fichas agora atacam, compram pela
+Ur-Dragon e disparam Scourge/Tempest/Terror. Médias sem teto (dano total
+~50 mil) não servem pra decidir nada; só as métricas limitadas acima.
+
+### A/B pareado — Visitor no lugar de 7 candidatas + controle (N=3.000, troca posicional)
+
+Diferença pareada (Visitor − base) com IC95%. Controle: Farseek (ramp de
+2; cortar deve atrasar o comandante, e atrasa).
+
+**Padrão** (base: letal ≤T8 49,1%, turno cmd 7,10, dano cmd 34,7%)
+
+| Sai | turno letal | letal ≤T6 | letal ≤T8 | turno cmd | cartas extras | dano cmd |
+|---|---|---|---|---|---|---|
+| Hellkite Courser | +0,035 ±0,010 | −0,8pp ±0,4 | −1,4pp ±0,6 | +0,043 | −1,13 ±0,35 | −3,0pp ±0,6 |
+| Dragonlord Dromoka | −0,009 ±0,007 | +0,1pp ±0,2 | +0,4pp ±0,5 | +0,023 | +0,13 ±0,25 | −0,4pp ±0,4 |
+| Balefire Dragon | −0,008 ±0,009 | 0,0pp ±0,3 | +0,4pp ±0,6 | +0,042 | +0,38 ±0,34 | −1,1pp ±0,5 |
+| Savage Ventmaw | +0,028 ±0,010 | −0,3pp ±0,2 | −1,5pp ±0,6 | +0,095 | −1,27 ±0,36 | −3,0pp ±0,6 |
+| Sarkhan Unbroken | −0,014 ±0,009 | 0,0pp ±0,2 | +0,6pp ±0,7 | +0,028 | +0,27 ±0,31 | −0,7pp ±0,5 |
+| Bladewing the Risen | −0,005 ±0,007 | 0,0pp ±0,2 | +0,1pp ±0,5 | +0,028 | +0,27 ±0,29 | −0,6pp ±0,4 |
+| Hellkite Charger | +0,016 ±0,008 | −0,1pp ±0,2 | −0,6pp ±0,6 | +0,023 | −1,01 ±0,32 | −3,1pp ±0,7 |
+| Farseek (controle) | +0,018 ±0,011 | −0,2pp ±0,3 | −0,9pp ±0,8 | +0,092 | −0,45 ±0,43 | −2,6pp ±0,7 |
+
+**Resiliência** (base: letal ≤T8 25,7%): Dromoka +0,4pp ±0,4; Balefire
++0,2pp ±0,6; Sarkhan Unbroken −0,2pp ±0,6; Bladewing −0,1pp ±0,5; Courser
+−1,9pp ±0,6; Ventmaw −1,0pp ±0,6; Charger −0,7pp ±0,6; Farseek −0,5pp
+±0,7. O turno do comandante piora em todos: +0,01 a +0,09.
+
+### Condicional e decomposição
+
+- A Visitor resolve em **43,7%** das partidas até o T8 (média T6,95) no
+  modo padrão e em 27,7% na resiliência. Isso é 5× mais que no Vihaan
+  (8,2%): o motor de compra da Ur-Dragon, os redutores de custo de Dragão
+  e o Herald's Horn acham e baixam a carta.
+- Nessas partidas, contra a lista base (corte: Sarkhan Unbroken):
+  - letal ≤T8: 76,1% → +1,5pp ±1,5 (resiliência −0,4pp ±2,1);
+  - Dragões +18;
+  - +46 Dragões criados pela Visitor.
+  É efeito teto: as partidas em que ela resolve já são as partidas
+  ganhas.
+- **Decomposição**, Visitor × Dragão 5/5 voador genérico de mesmo custo no
+  mesmo slot (só harness), nas partidas em que resolveu:
+  - letal ≤T8: +0,5pp ±0,9 (resiliência +1,3pp ±1,2);
+  - turno do comandante: +0,03 (mais tarde);
+  - dano de comandante: −1,1pp ±0,6.
+  **O texto da Visitor vale ~zero aqui.** Ele troca a mana de Treasure
+  (Goldspan, Old Gnawbone, Ancient Copper, Tithe, Magda) que paga a
+  comandante de 9 e os Dragões grandes por Dragões extras em partidas que
+  já estavam decididas.
+
+### Comparação Ur-Dragon × Vihaan (Regras 4 e 5: deck primeiro, simulador de apoio)
+
+| | Ur-Dragon | Vihaan |
+|---|---|---|
+| Motores que a carta alimenta | Tribal: o corpo Dragão entra em Eminence, redutores, Scourge/Tempest/Terror/Lathliss/Miirym e no ataque da Ur-Dragon. O texto converte 5 fontes de Treasure | O texto converte ~30 fontes de Treasure/Construct em 5/5 voadores, multiplicados por Anointed/Manufactor/Xorn. Adiciona o infinito Plunderer + Altar |
+| O que a carta desliga | Mana de Treasure (ramp pra comandante de 9), Treasure de 2 manas do Goldspan, tutor da Magda | Animar Treasures (o comandante), Revel in Riches, ~14 consumidores de Treasure |
+| Com que frequência resolve até o T8 | 43,7% | 8,2% |
+| Valor do TEXTO quando resolve (× 5/5 genérico) | ~0 (+0,5pp ±0,9 até T8) | **+7,4pp ±2,4 / +11,5pp ±3,7 até T10** |
+| Incondicional contra os cortes fracos | neutro (±0,6pp), comandante sai mais tarde | neutro a levemente positivo (+0,1 a +0,2pp), diluído pela frequência baixa |
+
+**Veredito:** a Visitor rende mais no **Vihaan**, como finisher e troca de
+modo. Lá o texto dela é o que faz a diferença: ~30 geradores de Treasure
+viram geradores de 5/5 voadores, com multiplicadores de ficha e um
+infinito de 3 peças compatível com o B3. O custo é desligar o próprio
+comandante enquanto ela vive. Esse custo é reversível: basta sacrificá-la
+num dos outlets da lista.
+
+No Ur-Dragon ela é "só mais um Dragão 5/5 de 5". O deck já está saturado
+de Dragões e pagadores, e o texto troca a mana de que a comandante de 9
+precisa por corpos em partidas já ganhas. Nenhum corte melhora de forma
+mensurável. Recomendação aqui: **não incluir**. No máximo é troca lateral
+por Dragonlord Dromoka ou Balefire Dragon, sem ganho medido. Nunca no
+lugar de Hellkite Courser, Savage Ventmaw ou Hellkite Charger, que pioram
+de forma significativa. `lista.md` não muda.
+
+---
+
 <!-- Copie o bloco acima para cada nova partida -->

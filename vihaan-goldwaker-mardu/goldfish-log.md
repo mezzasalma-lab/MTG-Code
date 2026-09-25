@@ -4,6 +4,120 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Draconic Visitor — avaliação como inclusão (vs. Ur-Dragon) + Kambal + Reaver Cleaver — 2026-09-25
+
+**Pedido:** *"A carta Draconic Visitor, avalie ela como possível inclusao
+tanto no Ur-Dragon, quanto no Vihan, e me diga aonde ela seria melhor e
+pq, ou se não vale incluir em nenhum dos 2!"* Implementação e cláusulas em
+`checklist-oraculo.md`.
+
+### Antes/depois das correções (2.000 seeds, 6.000.000+, 8 turnos, mesma seed)
+
+| Métrica | Antes | + Kambal | + Reaver Cleaver |
+|---|---|---|---|
+| Drain médio (padrão) | 5,77 | 6,13 | 6,34 |
+| Drain médio (resiliência) | 2,98 | 3,14 | 3,25 |
+| Treasures criados (padrão) | 9,43 | 9,43 | 9,86 |
+| Revel in Riches condição (padrão) | 0,30% | 0,30% | 0,60% |
+| Vida final (padrão) | 38,03 | 38,39 | 38,42 |
+| `win_turn` ≤ T8 (padrão, métrica nova) | — | 9,40% | 10,00% |
+| `win_turn` ≤ T8 (resiliência) | — | 2,45% | 2,55% |
+
+Tudo o mais ficou bit-idêntico no passo do Kambal (turno do comandante,
+Treasures, mortes, compras). A métrica de combate e o `win_turn` são só
+leitura. The Reaver Cleaver fica equipada em 7,6% das partidas e cria 0,51
+Treasure por partida em média.
+
+### A/B pareado — Visitor no lugar de 6 candidatas + controle (N=5.000, troca posicional)
+
+Diferença pareada (Visitor − base) com IC95%. Controle: Arcane Signet (ramp
+de 2; cortá-lo deve atrasar o comandante, e atrasa).
+
+**Padrão** (base: win ≤T8 8,8%, Treasures 9,77, dano de mesa 13,94, combate 46,77)
+
+| Sai | win_turn | win ≤T8 | combo | turno cmd | Treasures | dano mesa | combate |
+|---|---|---|---|---|---|---|---|
+| Mari, the Killing Quill | −0,003 ±0,003 | +0,2pp ±0,3 | +0,3pp ±0,1 | 0,000 | −0,39 ±0,13 | −0,31 ±0,52 | −0,51 ±0,64 |
+| The Reaver Cleaver | −0,002 ±0,003 | +0,2pp ±0,3 | +0,1pp ±0,1 | 0,000 | −0,85 ±0,12 | −0,67 ±0,26 | +1,37 ±0,27 |
+| Urabrask's Forge | −0,001 ±0,003 | +0,1pp ±0,3 | +0,1pp ±0,1 | 0,000 | −0,37 ±0,07 | −0,58 ±0,33 | +0,24 ±0,46 |
+| Lotho, Corrupt Shirriff | +0,016 ±0,004 | −1,4pp ±0,4 | +0,1pp ±0,1 | −0,002 | −0,83 ±0,15 | −1,04 ±0,77 | −2,60 ±0,72 |
+| Laughing Jasper Flint | +0,001 ±0,003 | −0,1pp ±0,3 | +0,2pp ±0,1 | 0,000 | −0,45 ±0,10 | −0,29 ±0,40 | −0,02 ±0,94 |
+| Orochi Soul-Reaver | +0,021 ±0,005 | −1,8pp ±0,4 | +0,1pp ±0,1 | 0,000 | −0,95 ±0,11 | −1,10 ±0,40 | −2,96 ±0,34 |
+| Arcane Signet (controle) | +0,003 ±0,004 | −0,3pp ±0,3 | +0,1pp ±0,1 | +0,027 ±0,008 | −0,53 ±0,15 | −0,84 ±0,64 | −0,59 ±0,66 |
+
+**Resiliência** (base: win ≤T8 2,1%): Mari/Cleaver/Forge +0,1pp ±0,2;
+Lotho −0,4pp ±0,2; Orochi −0,2pp ±0,2; Signet 0,0pp e turno do comandante
++0,025.
+
+**Leitura do incondicional:** a Visitor só resolve em 8% das partidas até
+o T8 (média no T7,2). O efeito médio fica diluído. Contra as 3 candidatas
+fracas é neutro; contra Lotho e Orochi é pior.
+
+### Condicional — só as partidas em que a Visitor resolveu
+
+Mesmo slot (Mari), 10 turnos pra dar tempo de a carta agir (N=5.000):
+
+| | Padrão (resolveu em 15,1%, T8,4) | Resiliência (6,4%, T8,6) |
+|---|---|---|
+| win ≤T10 | 60,3% → **+5,3pp ±2,7** | 22,4% → **+10,9pp ±4,1** |
+| Treasures | 29,1 → −15,3 | 14,9 → −5,5 |
+| Dano de mesa (drain) | 98,8 → −37,0 | 28,2 → −6,4 |
+| Combate | 146,5 → +34,6 | 75,0 → +24,1 |
+| Dragões criados | +16,7 | +7,1 |
+| Combo (Plunderer + Altar) | +5,8pp | +1,2pp |
+
+**Decomposição — o TEXTO da Visitor vale alguma coisa aqui?** Visitor ×
+um 5/5 voador genérico de mesmo custo no mesmo slot (só no harness). Nas
+partidas em que resolveu, até T10:
+- padrão: win +7,4pp ±2,4;
+- resiliência: +11,5pp ±3,7.
+
+O texto troca −15 Treasures e −35 de drain por +33 de combate, e sai
+positivo. Trocar cada Treasure (1 mana, 3/3 só no meu combate) por um 5/5
+voador permanente acelera o relógio mais do que a perda de mana e de
+drain custa, nesta janela.
+
+### Combo novo — probabilidade (Regra 7)
+
+Visitor + Pitiless Plunderer + Ashnod's Altar, com ≥1 dos 7 pagadores.
+Hipergeométrica em 99 cartas, sem tutor:
+
+| Cartas vistas | 3 peças | 3 peças + pagador |
+|---|---|---|
+| 15 (T8, sem compra extra) | 0,29% | 0,18% |
+| 21 (T8, +6 extras) | 0,85% | 0,66% |
+| 25 (T12, +6 extras) | 1,47% | 1,24% |
+
+No simulador: 0,1–0,3% das partidas até o T8, e 0,9% até o T10. Combo de 3
+peças sem tutor nenhum, abaixo de 1,5% até o T12. Isso é compatível com o
+Bracket 3 (`commander-rules.md`: combos de 3 peças são aceitáveis).
+
+### Conclusão pra este deck
+
+Ver a comparação com o Ur-Dragon em `ur-dragon-wurbg/goldfish-log.md`
+(mesma data). Aqui a Visitor é uma **troca de modo**:
+- desliga o comandante (animar Treasures), a Revel in Riches e ~14 cartas
+  que consomem Treasure;
+- transforma as ~30 fontes de Treasure/Construct da lista em Dragões 5/5
+  voadores, multiplicados por Anointed/Manufactor/Xorn;
+- adiciona um infinito de 3 peças.
+
+Quando resolve, o simulador mostra ganho real (+5 a +11pp de vitória até o
+T10). O texto em si é positivo contra um 5/5 genérico. Corte sugerido:
+**The Reaver Cleaver**, pelos motivos do deck:
+- custa 6 mana no total pra fazer algo;
+- disputa o mesmo papel de fim de jogo;
+- com a Visitor em campo, o "that many Treasure" dela vira Dragão também,
+  ou seja, faz a mesma coisa pior;
+- no A/B é neutro (+0,2pp ±0,3).
+
+Mari não é cortada com base no simulador porque o valor real dela é
+📊 dependente de oponente. Ela dá deathtouch aos Treasures animados, que
+são Construct *Assassin*, e o simulador não modela bloqueio. Pela Regra 5,
+isso não é motivo pra corte. `lista.md` não muda até o usuário decidir.
+
+---
+
 ## Porte completo do modo de resiliência + CR 903.9a nativa desde o início — 2026-09-21
 
 **Gatilho:** "Ainda bem que vimos isso antes de implementar o Vihaan,

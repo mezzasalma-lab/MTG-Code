@@ -1,5 +1,96 @@
 # Checklist cláusula-a-cláusula — The Ur-Dragon (`urdragon_goldfish_v1.py`)
 
+## Fichas de Dragão viram criaturas de verdade + Draconic Visitor (candidata FRA) — 2026-09-25
+
+**Gatilho:** avaliar a Draconic Visitor pro Ur-Dragon e pro Vihaan. Pra
+comparar de forma justa, a carta precisava transformar Treasure em
+Dragão. O motor de fichas de Dragão deste arquivo foi lido de ponta a
+ponta pra isso. Resultado: fichas de Dragão eram só um contador (Regra
+#3, conceito compartilhado "Dragão que você controla"). Todo gerador de
+ficha de Dragão da lista estava parcialmente implementado.
+
+### 🐛 Corrigido — motor único `create_dragon_tokens` / `ready_dragon_tokens`
+
+| Carta / conceito | Cláusula real | Antes | Agora |
+|---|---|---|---|
+| The Ur-Dragon | "Whenever one or more Dragons you control attack, draw that many cards" | ficha nunca atacava | ficha pronta ataca e conta no "that many" |
+| Utvara / Old Gnawbone (e Kindred Discovery, só no `CARD_DB`, fora da lista) | gatilhos de ataque/dano | só Dragão nomeado | contam fichas atacando |
+| Lathliss, Dragon Queen | "create a 5/5 red Dragon creature token with flying" | contador, sem gatilho de entrada | ficha 5/5 que dispara Scourge/Tempest/Terror/Kindred/Hoard |
+| Utvara Hellkite | "create a 6/6 red Dragon creature token with flying" | idem | ficha 6/6 com gatilhos de entrada |
+| Miirym, Sentinel Wyrm | "create a token that's a copy of it" | idem | ficha com o poder impresso da carta copiada (📝 habilidades da cópia não replicadas) |
+| Ancient Gold Dragon | "create ... 1/1 blue Faerie Dragon creature tokens with flying" | fichas genéricas (não-Dragão!) | 1/1 Dragão voador |
+| Dragon Broodmother | "At the beginning of **each** upkeep, create a 1/1 ... Dragon" | 1 por rodada | 1 no meu upkeep + 1 por oponente (end step, prontas no meu turno); devour 📝 nunca usado |
+| Elemental Bond / Garruk's Uprising / Temur Ascendancy / Terror of the Peaks | "whenever a creature ... enters" (nenhum diz nontoken) | ficha não disparava | `token_creature_etb_hooks` (Great Henge fora: "nontoken") |
+| Haste | Temur Ascendancy (todas), Dragon Tempest (voadora, no turno em que entra) | — | `ready_dragon_tokens` |
+| Pumps | Lathliss {1}{R} "+1/+0", Bladewing {B}{R} "+1/+1", Scourge {R} "+1/+0" | só contador | somam no poder de combate (`dragon_pump_bonus_this_turn`, `scourge_pump_this_turn`) |
+| Wipe de oponente (resiliência) | "destroy all creatures" | fichas sobreviviam | `clear_dragon_tokens` |
+
+**Roaming Throne** ("If a triggered ability of another creature you
+control of the chosen type triggers, it triggers an additional time"):
+Terror of the Peaks e Dragon Broodmother são criaturas Dragão com gatilho
+próprio. Nenhuma das duas era dobrada, enquanto Scourge, Lathliss, Miirym,
+Utvara e Old Gnawbone já eram. Corrigido via `roaming_throne_times()`.
+
+**Teto do simulador:** `DRAGON_TOKEN_CAP = 400`. O motor Utvara + Old
+Gnawbone é exponencial de verdade. Acima de 400 fichas a partida já está
+decidida; a métrica `dragon_token_cap_hits` conta quantas vezes bateu no
+teto. É a mesma convenção do `BOARD_CAP` do Prismatic Bridge.
+
+**Métrica nova (só leitura):**
+- `combat_damage_proxy_total` soma o dano de combate dos Dragões
+  atacantes, sem bloqueio. Atarka dobra (double strike) e Twinflame dobra
+  dano a oponente.
+- `lethal_proxy_turn` é o primeiro turno com (dano de ETB + combate) ≥ 120
+  (3 × 40). É a métrica limitada usada no A/B, porque a média de dano sem
+  teto explode (`references/goldfish-sim-card-rules.md`).
+
+### Draconic Visitor — oráculo ao vivo (cache FRA #80), cláusula a cláusula
+
+`{3}{R}{R}` Creature — Dragon 5/5, `not_legal` até 2026-10-02.
+
+| Cláusula | Status | Onde |
+|---|---|---|
+| Flying | ✅ | `FLYING_CREATURES` (Dragon Tempest dá haste) |
+| Dragon (tipo) | ✅ | tag `dragon`: Eminence, Dragonspeaker Shaman, Dragonlord's Servant, Urza's Incubator, Herald's Horn, Scourge/Tempest/Terror/Lathliss/Miirym, ataque da Ur-Dragon |
+| "If one or more artifact tokens would be created under your control, that many 5/5 red Dragon creature tokens with flying are created instead." | ✅ | `visitor_replaces_treasures` em `create_treasures`, `create_and_use_treasures` (Goldspan, Old Gnawbone, Ancient Copper, Smothering Tithe) e `do_magda_treasures` |
+
+Detalhes:
+- É substituição obrigatória (CR 614.1a). A mana do Treasure some; o
+  simulador mede isso em `visitor_mana_lost_total`, e com Goldspan cada
+  Treasure valia 2.
+- A Magda (Brazen Outlaw) nunca junta os 5 Treasures do tutor.
+- 🐛 achado no A/B: a Smothering Tithe é modelada no MEU upkeep, mas o
+  gatilho real é no turno do oponente ("Whenever an opponent draws a
+  card"). Com a Visitor, o Dragão nascia doente no meu turno. Agora
+  `create_and_use_treasures(..., on_opp_turn=True)` faz a ficha nascer no
+  turno anterior, então ela ataca no meu turno.
+- Treasures do oponente (An Offer You Can't Refuse) não são "under your
+  control", então a Visitor não substitui.
+
+### Validação
+
+- Smoke: 99 cartas, 0 desconhecidas.
+- Testes dirigidos: `test_urdragon_goldfish.py`, 18/18. Cobrem:
+  - fichas atacando no "that many" da Ur-Dragon;
+  - doença de invocação e haste via Tempest;
+  - ficha da Lathliss disparando Scourge + Terror;
+  - fichas da Utvara disparando ETB;
+  - Faerie Dragons como Dragões;
+  - Broodmother em cada upkeep;
+  - Roaming Throne dobrando Broodmother e Terror;
+  - wipe limpando fichas;
+  - Visitor substituindo Treasure (e com Goldspan);
+  - Tithe no turno do oponente;
+  - Magda sem tutor;
+  - teto de fichas;
+  - swap posicional/bit-idêntico;
+  - `lethal_proxy_turn`.
+- 20.000 + 20.000 partidas (padrão + resiliência, seed 8.000.000+), 0
+  exceções.
+- Antes/depois em 2.000 seeds: ver `goldfish-log.md`.
+
+---
+
 ## CR 903.9a: comandante passa pelo cemitério de verdade antes da zona de comando — 2026-09-21
 
 **Gatilho:** mesmo achado do usuário aplicado a todos os 9 decks desta

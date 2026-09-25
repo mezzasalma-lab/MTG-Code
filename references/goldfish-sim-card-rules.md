@@ -460,6 +460,49 @@ limitadas por partida:
 Sempre reportar diferença pareada com IC95%, e contagem ilimitada só como
 métrica de uso da carta.
 
+
+## Gatilho do turno do OPONENTE modelado no meu turno: a criatura criada nasce "ontem"
+
+Achado real (Ur-Dragon + Draconic Visitor, 2026-09-25). Smothering Tithe
+("Whenever an opponent draws a card...") é modelada como 1 Treasure no
+MEU upkeep. Pra Treasure isso é neutro: a mana fica disponível no meu
+turno do mesmo jeito. Mas quando uma substituição transforma o produto em
+CRIATURA (Draconic Visitor: Treasure → Dragão 5/5), a posição do proxy
+muda o resultado. A ficha nascia doente no meu turno, sendo que na mesa
+real ela entrou no turno do oponente e ataca no meu. Regra: todo proxy de
+gatilho que acontece fora do meu turno precisa marcar o turno de entrada
+da ficha como `turno - 1` (sem doença de invocação), nunca `turno`.
+
+## Métrica de letalidade: "each opponent loses N" vale N × oponentes
+
+Achado real (Vihaan, 2026-09-25). O contador histórico de drain somava 1
+por gatilho, seja "each opponent loses 1" (Zulaport) ou "target opponent
+loses 1" (Sephiroth). Pra uma métrica de letalidade da mesa (3 × 40 =
+120) isso mistura unidades. Dano de combate e "target"/"any target"
+contam N; "each opponent" conta N × NUM_OPPONENTS. Manter o contador
+antigo pra comparabilidade histórica e criar um contador novo com peso.
+
+## A/B de carta cara ou tardia: condicional + decomposição, não só o incondicional
+
+Achado real (Draconic Visitor, 2026-09-25). A mesma carta resolve em 44%
+das partidas no Ur-Dragon (motor de compra e redutores) e em 8% no Vihaan.
+O A/B incondicional dá "neutro" nos dois, mas por motivos opostos: diluído
+no Vihaan, e efeito teto no Ur-Dragon (as partidas em que ela resolve já
+estão ganhas). Pra toda carta candidata de MV ≥ 5 ou dependente de
+motor, reportar também:
+1. a frequência de resolução por deck;
+2. o condicional, só nas seeds em que ela entrou, com horizonte maior se
+   ela chega tarde;
+3. a **decomposição**: a carta × um corpo genérico de mesmo custo, cor e
+   tipo, no mesmo slot, só no harness. A diferença é o valor do TEXTO
+   naquele deck. É isso que responde "em qual deck ela é melhor".
+
+## Processo: nunca `pkill -f`/`pgrep -f` com padrão que aparece no próprio comando
+
+Aconteceu 2× nesta sessão. O padrão aparece na linha de comando do
+próprio shell, então o `pgrep` casou com ele e o `pkill` derrubou o shell
+junto (exit 144). Listar com `ps aux | grep ... | grep -v grep` e matar
+por PID.
 ---
 
 <!-- Adicionar novas entradas abaixo conforme surgirem cartas com efeitos

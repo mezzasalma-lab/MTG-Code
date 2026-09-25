@@ -1,5 +1,127 @@
 # Checklist cláusula-a-cláusula — Vihaan, Goldwaker
 
+## Draconic Visitor (candidata FRA) + 2 gaps reais achados no caminho — 2026-09-25
+
+**Gatilho:** *"A carta Draconic Visitor, avalie ela como possível inclusao
+tanto no Ur-Dragon, quanto no Vihan, e me diga aonde ela seria melhor e
+pq, ou se não vale incluir em nenhum dos 2!"* A carta entra no simulador
+só como candidata (via `swap`, troca posicional). `lista.md` não muda.
+
+### Draconic Visitor — oráculo ao vivo (cache FRA #80), cláusula a cláusula
+
+`{3}{R}{R}` Creature — Dragon 5/5. Legalidade: `not_legal` até o
+lançamento de FRA (2026-10-02).
+
+| Cláusula | Status | Onde |
+|---|---|---|
+| Flying | ✅ | poder 5 em `CREATURE_POWER`, conta no combate |
+| "If one or more artifact tokens would be created under your control, that many 5/5 red Dragon creature tokens with flying are created instead." | ✅ | `create_treasures` e `create_constructs` → `_create_visitor_dragons` |
+
+Detalhes da substituição (regras reais, não heurística):
+- É efeito de substituição obrigatório (CR 614.1a, "instead"). Com a
+  Visitor em campo nenhum Treasure, Clue, Food, Construct ou Servo chega a
+  existir.
+- O controlador escolhe a ordem das substituições (CR 616.1). A ordem que
+  maximiza Dragões é: Xorn (+1) → Anointed Procession (×2) → Academy
+  Manufactor (Clue + Food + Treasure = 3 fichas de artefato por Treasure) →
+  Visitor. Exemplo: o Treasure do upkeep do Smaug com as 4 em campo vira
+  (1+1)×2×3 = 12 Dragões 5/5.
+- As fichas são criatura, não artefato. Disparam Kambal (2ª habilidade),
+  Mirkwood Bats e Caretaker's Talent na criação. Morrem em "destroy all
+  creatures": `_destroy_dragons` cobre Blood Money, Blasphemous Act e o
+  wipe de oponente do modo de resiliência. Não têm haste: não são outlaws,
+  então o Vihaan não dá haste a elas. Atacam do turno seguinte em diante.
+- O combo Visitor + Pitiless Plunderer + Ashnod's Altar fica fora do
+  Commander Spellbook. Foi derivado das regras: sacrifica um Dragão no
+  Altar ({C}{C}), o Plunderer cria um Treasure, a Visitor troca por um
+  Dragão, e repete. Isso dá mana incolor, mortes, fichas criadas e
+  sacrifícios infinitos. Fecha o jogo com qualquer um dos pagadores da
+  lista: Zulaport Cutthroat, Mirkwood Bats, Nadier's Nightblade, Kambal,
+  Sephiroth (transforma na 4ª resolução, depois o emblema drena sem
+  limite), Mayhem Devil, ou Agent of the Iron Throne com o Vihaan em campo.
+  O Agent é Encantamento (Background), então não serve de primeira
+  criatura do loop. Implementado em `check_visitor_combo`, chamada depois
+  de cada fase principal e no end step.
+
+📝 O que a Visitor desliga no deck (checado no oráculo de cada carta):
+- a 2ª habilidade do próprio Vihaan (animar Treasures);
+- a vitória alternativa da Revel in Riches;
+- o dano do Smaug ("number of Treasures you control");
+- o Treasure de 2 manas do Goldspan;
+- o Scorpion Dragon da Magda, the Hoardmaster;
+- o roubo do Kellogg;
+- os contadores da Olivia;
+- o −X/−X do Grim Hireling;
+- o impulso do Professional Face-Breaker;
+- o pump do Captain Lannery Storm;
+- a cascata da Rain of Riches;
+- o combustível de KCI e Jan Jansen;
+- o dreno da Marionette Master;
+- o anthem da Sentinel Sarah Lyons ("an artifact entered").
+
+A Visitor pode ser sacrificada (Altar, Phyrexian Tower, Deadly Dispute,
+Sephiroth) pra religar o modo Treasure. 📝 O simulador nunca faz isso.
+
+### 🐛 Kambal, Profiteering Mayor — limite de 1x/turno aplicado à habilidade errada
+
+Oráculo: 1ª habilidade "Whenever one or more tokens your opponents
+control enter ... This ability triggers only once each turn."; 2ª
+habilidade "Whenever one or more tokens you control enter, each opponent
+loses 1 life and you gain 1 life." O código limitava a 2ª a 1x/turno. O
+"only once each turn" pertence à 1ª. Corrigido em `on_tokens_created`:
+agora drena a cada evento de criação.
+
+### 🐛 The Reaver Cleaver — "that many" achatado pra 1 fixo
+
+Oráculo: "Equipped creature gets +1/+1 and has trample and 'Whenever this
+creature deals combat damage to a player or planeswalker, create that
+many Treasure tokens.' Equip {3}". O código criava 1 Treasure sempre que
+*qualquer* criatura atacava. Isso é a categoria "fórmula dinâmica
+achatada" da Regra #1: o arquivo agora rastreia poder impresso
+(`CREATURE_POWER`, novo nesta rodada), então dá pra calcular o valor
+exato. Corrigido:
+- equipa a criatura não-comandante de maior poder. O Vihaan nunca ataca
+  neste simulador (`ready_creatures` o exclui);
+- dispara só quando o portador ataca;
+- cria poder + 1 Treasures (o próprio +1/+1), +2 com Sentinel Sarah Lyons
+  ativa;
+- se o portador sai de campo, o Equipamento fica solto (CR 301.5c) e
+  reequipar custa {3} de novo.
+
+### Métrica nova (só leitura, não muda nenhuma decisão)
+
+- `combat_damage_proxy_total` soma o dano de combate sem bloqueio (mesma
+  premissa "ataca livre" do resto do arquivo). Usa poder impresso,
+  Treasure animado 3/3, Construct 1/1, ficha genérica 2 (📝 média), e
+  Dragão 5/5. Bônus reais aplicados:
+  - Caretaker's Talent nível 3 (+2/+2 em ficha de criatura);
+  - Sentinel Sarah Lyons (+2/+2 se um artefato entrou no turno);
+  - Shared Animosity nos grupos homogêneos Construct e Dragão.
+- `drain(..., each_opp=True)` marca "each opponent loses N" (Zulaport,
+  Mirkwood Bats, Nadier's, Kambal, Agent, extort). `table_damage_total`
+  soma N × 3 nesses casos e N em "target"/"any target" (Mayhem Devil,
+  Sephiroth, Marionette, Smaug, Sarah Lyons). `drain_damage_total` segue
+  a convenção antiga.
+- `win_turn` é o primeiro turno que cumpre uma destas condições:
+  - (dano de mesa + combate) ≥ 120;
+  - Revel in Riches no upkeep com 10+ Treasures;
+  - combo da Visitor com pagador.
+
+### Validação
+
+- Smoke: 99 cartas, 0 desconhecidas/duplicadas.
+- Testes dirigidos: `test_vihaan_goldfish.py`, 22/22. Cobrem Kambal,
+  substituição e ordem Xorn/Anointed/Manufactor, Constructs, Dragões
+  atacando/doentes, wipe matando Dragões, combo com e sem pagador, Agent
+  exigindo o comandante, Revel no upkeep, peso "each opponent", Reaver
+  Cleaver "that many", exigência de portador atacando e reequip pago, e
+  swap posicional/bit-idêntico.
+- 20.000 + 20.000 partidas (padrão + resiliência, seed 6.100.000+), 0
+  exceções (rodado depois do fix da Cleaver).
+- Antes/depois em 2.000 seeds: ver `goldfish-log.md`.
+
+---
+
 ## Porte completo do modo de resiliência (interação de oponente) + CR 903.9a nativa desde o início — 2026-09-21
 
 **Gatilho:** *"Ainda bem que vimos isso antes de implementar o Vihaan,

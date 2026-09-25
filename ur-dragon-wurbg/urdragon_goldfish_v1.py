@@ -630,6 +630,16 @@ add("Teferi's Protection", 3, "instant", {"interaction"}, pips={"W": 1})
 add("Haunting Voyage", 6, "sorcery", {"mass_reanimate"}, pips={"B": 2})
 add("Roaming Throne", 4, "artifact_creature", {ROAMING_THRONE_TYPE, "roaming_throne"}, power=4)
 
+# --- Candidata de Reality Fracture (so' via swap, NAO esta na lista) ------------
+# Draconic Visitor (FRA #80, lanca 2026-10-02; oraculo ao vivo Scryfall
+# 2026-09-25, salvo no oracle-cache): "{3}{R}{R}, Creature — Dragon 5/5.
+# Flying. If one or more artifact tokens would be created under your
+# control, that many 5/5 red Dragon creature tokens with flying are created
+# instead." Neste deck as fichas de artefato sao todas Treasure (Ancient
+# Copper Dragon, Old Gnawbone, Goldspan Dragon, Smothering Tithe, Magda) --
+# ver `create_and_use_treasures`/`do_magda_treasures`.
+add("Draconic Visitor", 5, "creature", {"dragon", "draconic_visitor"}, power=5, pips={"R": 2})
+
 ARTIFACT_ISH = {"artifact", "artifact_creature"}
 CREATURE_ISH = {"creature", "artifact_creature"}
 LAND_NAMES = {n for n, c in CARD_DB.items() if c.ctype == "land"}
@@ -687,7 +697,7 @@ FLYING_CREATURES = {
     "Klauth, Unrivaled Ancient", "Lathliss, Dragon Queen",
     "Miirym, Sentinel Wyrm", "Old Gnawbone", "Savage Ventmaw",
     "Scourge of Valkas", "Terror of the Peaks", "Twinflame Tyrant",
-    "Utvara Hellkite",
+    "Utvara Hellkite", "Draconic Visitor",
 }
 
 # Achado real 2026-08-27 (revisao pedida pelo usuario, "revise tudo de
@@ -780,6 +790,19 @@ class GameState:
     fetches_cracked_total: int = 0
     great_henge_counters: dict = field(default_factory=dict)  # por nome: +1/+1 contadores reais do Great Henge ("put a +1/+1 counter on it")
     great_henge_counters_total: int = 0
+    # Fichas de Dragao com poder e turno de entrada (2026-09-25). Antes eram so'
+    # o contador `dragon_tokens` -- nunca atacavam. Cada item: [poder base,
+    # turno em que entrou, tem flying]. `dragon_tokens` continua sendo o
+    # tamanho desta lista (mantido pelo helper `create_dragon_tokens`).
+    dragon_token_list: list = field(default_factory=list)
+    dragon_tokens_created_total: int = 0
+    combat_damage_proxy_total: int = 0        # dano de combate dos Dragoes atacantes (sem bloqueio), proxy
+    dragon_pump_bonus_this_turn: int = 0      # Lathliss {1}{R} / Bladewing {B}{R} ativados neste turno
+    scourge_pump_this_turn: int = 0           # Scourge of Valkas {R}: +1/+0 so' nela
+    visitor_dragons_total: int = 0            # candidata Draconic Visitor (so' via swap)
+    visitor_mana_lost_total: int = 0          # mana de Treasure que deixou de existir (virou Dragao)
+    dragon_token_cap_hits: int = 0
+    lethal_proxy_turn: Optional[int] = None   # 1o turno com dano acumulado (ETB + combate) >= 120 (3 oponentes x 40), proxy
 
     # --- Modo opcional de resiliencia (portado do Megatron, 2026-09-20) --------
     # `life` nunca e' lido/escrito pelo goldfish padrao (documentado no
@@ -868,6 +891,97 @@ def proxy_drain(state: GameState, n: int):
 
 
 # ---------------------------------------------------------------------------
+# Fichas de Dragao (2026-09-25) -- ponto UNICO de criacao
+# ---------------------------------------------------------------------------
+# Achado real (Regra #3, conceito compartilhado "Dragao que voce controla"):
+# as fichas de Dragao (Lathliss 5/5, Utvara 6/6, Broodmother 1/1, copia da
+# Miirym, Faerie Dragon 1/1 do Ancient Gold Dragon) eram so' um contador --
+# (1) nunca atacavam (o "draw that many cards" da Ur-Dragon, a Kindred
+# Discovery, a Utvara e o dano da Old Gnawbone so' viam Dragao NOMEADO), (2)
+# as da Lathliss/Utvara/Broodmother nunca disparavam os gatilhos de "um
+# Dragao/criatura entra" (Scourge of Valkas, Dragon Tempest, Terror of the
+# Peaks, Kindred Discovery, Dragon's Hoard, Elemental Bond/Garruk's
+# Uprising/Temur Ascendancy), (3) os Faerie Dragons do Ancient Gold ("1/1
+# blue Faerie Dragon creature tokens with flying") nem eram Dragao.
+
+def token_effective_power(state: GameState, base: int) -> int:
+    """Poder atual de uma ficha de Dragao: Morophon (+1/+1 em outras
+    criaturas do tipo escolhido) e pumps de Lathliss/Bladewing do turno.
+    Contador do Great Henge nao se aplica (so' nontoken)."""
+    p = base + state.dragon_pump_bonus_this_turn
+    if "Morophon, the Boundless" in state.battlefield:
+        p += 1
+    return p
+
+
+def token_creature_etb_hooks(state: GameState, power: int):
+    """Mesmos gatilhos de `creature_etb_hooks` que valem pra FICHA (nenhum
+    deles diz "nontoken"): Elemental Bond (poder >= 3), Garruk's Uprising e
+    Temur Ascendancy (poder >= 4), Terror of the Peaks (dano = poder). The
+    Great Henge fica de fora ("nontoken creature")."""
+    if "Elemental Bond" in state.battlefield and power >= 3:
+        draw_cards(state, 1)
+    if "Garruk's Uprising" in state.battlefield and power >= 4:
+        draw_cards(state, 1)
+    if "Temur Ascendancy" in state.battlefield and power >= 4:
+        draw_cards(state, 1)
+    if "Terror of the Peaks" in state.battlefield:
+        for _ in range(roaming_throne_times(state)):
+            proxy_drain(state, power)
+
+
+def roaming_throne_times(state: GameState) -> int:
+    """Roaming Throne (tipo = Dragon): "If a triggered ability of another
+    creature you control of the chosen type triggers, it triggers an
+    additional time." CORRIGIDO 2026-09-25: Terror of the Peaks e Dragon
+    Broodmother sao criaturas Dragao com gatilho proprio e nunca eram
+    dobradas (Scourge/Lathliss/Miirym/Utvara/Old Gnawbone ja' eram)."""
+    return 2 if "Roaming Throne" in state.battlefield else 1
+
+
+DRAGON_TOKEN_CAP = 400
+# Teto do SIMULADOR (nao regra do jogo), mesma convencao do BOARD_CAP do
+# Prismatic Bridge: Utvara Hellkite ("Whenever a Dragon you control attacks,
+# create a 6/6") dobra os Dragoes a cada ataque (triplica com Roaming
+# Throne) -- crescimento exponencial real. Acima de 400 fichas a partida ja'
+# esta' decidida; o motor para de criar e conta quantas vezes bateu no teto.
+
+
+def create_dragon_tokens(state: GameState, n: int, power: int, source: str, flying: bool = True,
+                         born_turn: Optional[int] = None):
+    """Cria `n` fichas de Dragao, uma de cada vez (cada uma e' um evento de
+    "entra" separado pra Scourge/Tempest/Terror -- CR 603.2, cada ficha
+    criada dispara "whenever a creature enters" sozinha). `born_turn`: turno
+    em que a ficha entrou, quando o gatilho real acontece no turno de um
+    oponente (Smothering Tithe) -- sem doenca de invocacao no meu turno."""
+    room = max(0, DRAGON_TOKEN_CAP - len(state.dragon_token_list))
+    if n > room:
+        state.dragon_token_cap_hits += 1
+        n = room
+    for _ in range(n):
+        state.dragon_token_list.append([power, state.turn if born_turn is None else born_turn, flying])
+        state.dragon_tokens += 1
+        state.dragon_tokens_created_total += 1
+        dragon_enters(state, f"{source} token", is_token=True)
+        token_creature_etb_hooks(state, token_effective_power(state, power))
+
+
+def ready_dragon_tokens(state: GameState) -> list:
+    """Fichas que podem atacar: entraram antes deste turno (CR 302.6), ou
+    tem haste -- Temur Ascendancy (todas) ou Dragon Tempest (voadora, no
+    turno em que entra). Rhythm of the Wild so' vale pra nontoken."""
+    temur = "Temur Ascendancy" in state.battlefield
+    tempest = "Dragon Tempest" in state.battlefield
+    return [t for t in state.dragon_token_list
+            if t[1] < state.turn or temur or (tempest and t[2] and t[1] == state.turn)]
+
+
+def clear_dragon_tokens(state: GameState):
+    state.dragon_token_list = []
+    state.dragon_tokens = 0
+
+
+# ---------------------------------------------------------------------------
 # Motor central de Dragao — dispatch de ETB
 # ---------------------------------------------------------------------------
 
@@ -924,16 +1038,20 @@ def dragon_enters(state: GameState, name: str, is_token: bool):
         state.dragon_etb_damage_events_total += 1
 
     if not is_token and name != "Miirym, Sentinel Wyrm" and "Miirym, Sentinel Wyrm" in state.battlefield:
+        # "create a token that's a copy of it, except the token isn't
+        # legendary" -- copia o poder impresso (contador nao e' copiavel).
+        # 📝 as habilidades da carta copiada NAO sao replicadas na ficha
+        # (limitacao do motor, documentada no checklist 2026-09-25).
         for _ in range(times_lathliss_miirym):
-            state.dragon_tokens += 1
-            dragon_enters(state, name + " (copia)", is_token=True)
+            create_dragon_tokens(state, 1, CARD_DB[name].power, source="miirym_copy", flying=has_flying(name))
         if times_lathliss_miirym == 2:
             state.roaming_throne_doubles_total += 1
 
     if not is_token and name != "Lathliss, Dragon Queen" and "Lathliss, Dragon Queen" in state.battlefield:
+        # "create a 5/5 red Dragon creature token with flying" -- CORRIGIDO
+        # 2026-09-25: a ficha nunca disparava os gatilhos de entrada.
         for _ in range(times_lathliss_miirym):
-            state.dragon_tokens += 1
-            state.other_tokens += 0
+            create_dragon_tokens(state, 1, 5, source="lathliss")
         if times_lathliss_miirym == 2:
             state.roaming_throne_doubles_total += 1
 
@@ -1290,12 +1408,30 @@ def crack_fetch(state: GameState, fetch_name: str):
 # Resolucao de ETB / cast
 # ---------------------------------------------------------------------------
 
+def visitor_replaces_treasures(state: GameState, n: int, mana_each: int, on_opp_turn: bool = False) -> bool:
+    """Draconic Visitor (candidata FRA): "If one or more artifact tokens
+    would be created under your control, that many 5/5 red Dragon creature
+    tokens with flying are created instead." Efeito de substituicao
+    obrigatorio (CR 614.1a, "instead"). Retorna True se substituiu -- entao
+    nao existe Treasure nenhum (nem mana, nem contagem pra Magda)."""
+    if n <= 0 or "Draconic Visitor" not in state.battlefield:
+        return False
+    state.visitor_mana_lost_total += n * mana_each
+    before = state.dragon_tokens_created_total
+    create_dragon_tokens(state, n, 5, source="draconic_visitor",
+                         born_turn=state.turn - 1 if on_opp_turn else None)
+    state.visitor_dragons_total += state.dragon_tokens_created_total - before  # criadas de fato (teto)
+    return True
+
+
 def create_treasures(state: GameState, n: int):
+    if visitor_replaces_treasures(state, n, 1):
+        return
     state.treasures_created_total += n
     state.bonus_mana_pool += 0  # tesouros so viram mana quando sacrificados (nao modelado tick a tick; ver create_and_spend_treasures)
 
 
-def create_and_use_treasures(state: GameState, n: int):
+def create_and_use_treasures(state: GameState, n: int, on_opp_turn: bool = False):
     """Cria e imediatamente converte em mana disponivel neste turno —
     aproximacao real (o deck nao tem motivo pra segurar Treasure parado).
     Goldspan Dragon: 'Treasures you control have "{T}, Sacrifice this
@@ -1304,8 +1440,10 @@ def create_and_use_treasures(state: GameState, n: int):
     Treasure e escolhida livremente no jogo real, nao modelado pip a pip
     aqui — simplificacao documentada, mesma logica do Klauth/Savage
     Ventmaw)."""
-    state.treasures_created_total += n
     per_treasure = 2 if "Goldspan Dragon" in state.battlefield else 1
+    if visitor_replaces_treasures(state, n, per_treasure, on_opp_turn=on_opp_turn):
+        return
+    state.treasures_created_total += n
     state.bonus_mana_pool += n * per_treasure
 
 
@@ -1388,7 +1526,8 @@ def creature_etb_hooks(state: GameState, name: str):
         state.great_henge_counters[name] = state.great_henge_counters.get(name, 0) + 1
         state.great_henge_counters_total += 1
     if "Terror of the Peaks" in state.battlefield and name != "Terror of the Peaks":
-        proxy_drain(state, power)
+        for _ in range(roaming_throne_times(state)):
+            proxy_drain(state, power)
 
 
 def reanimate_dragons_from_graveyard(state: GameState, limit: int = None):
@@ -1814,14 +1953,17 @@ def try_dragon_pumps(state: GameState):
     if "Lathliss, Dragon Queen" in state.battlefield and remaining_mana(state) >= 2 and dragon_count(state) >= 1:
         spend_mana(state, 2)
         state.lathliss_pumps += 1
+        state.dragon_pump_bonus_this_turn += 1  # "Dragons you control get +1/+0 until end of turn"
 
     if "Bladewing the Risen" in state.battlefield and remaining_mana(state) >= 2 and dragon_count(state) >= 1:
         spend_mana(state, 2)
         state.bladewing_pumps += 1
+        state.dragon_pump_bonus_this_turn += 1  # "Dragons you control get +1/+1 until end of turn"
 
     if "Scourge of Valkas" in state.battlefield and remaining_mana(state) >= 1:
         spend_mana(state, 1)
         state.scourge_self_pumps += 1
+        state.scourge_pump_this_turn += 1       # "{R}: This creature gets +1/+0 until end of turn"
 
 
 def try_lightning_greaves_equip(state: GameState):
@@ -1931,6 +2073,8 @@ def do_magda_treasures(state: GameState):
         taps += 1
     if taps == 0:
         return
+    if visitor_replaces_treasures(state, taps, 1):
+        return  # sem Treasure, a Magda nunca junta os 5 do tutor
     state.magda_treasures += taps
     state.treasures_created_total += taps
     while state.magda_treasures >= 5:
@@ -1979,18 +2123,25 @@ def combat_step(state: GameState):
     ready = ready_creatures(state)
     ready_dragons = [n for n in ready if is_dragon(n)]
     ur_dragon_attacking = COMMANDER in state.battlefield and COMMANDER in ready
-    any_dragon_attacking = len(ready_dragons) > 0
+    # CORRIGIDO 2026-09-25: fichas de Dragao tambem atacam (ver
+    # `create_dragon_tokens`) -- "Whenever one or more Dragons you control
+    # attack, draw THAT MANY cards" conta ficha.
+    attacking_tokens = ready_dragon_tokens(state)
+    any_dragon_attacking = len(ready_dragons) > 0 or len(attacking_tokens) > 0
 
     if ur_dragon_attacking or any_dragon_attacking:
         attacking_dragons = ready_dragons if ready_dragons else ([COMMANDER] if ur_dragon_attacking else [])
+        n_attacking = len(attacking_dragons) + len(attacking_tokens)
         if "Kindred Discovery" in state.battlefield:
             # "...or attacks, draw a card." 1 compra por Dragao atacante -
             # mesmo calculo de attacking_dragons do gatilho da propria
             # Ur-Dragon logo abaixo. Nao dobrada por Roaming Throne (ver
             # comentario do add()).
-            draw_cards(state, len(attacking_dragons))
-        n_attacking = len(attacking_dragons)
-        total_attack_power = sum(effective_power(state, n) for n in attacking_dragons)
+            draw_cards(state, n_attacking)
+        pump = state.dragon_pump_bonus_this_turn
+        total_attack_power = (sum(effective_power(state, n) + pump for n in attacking_dragons)
+                              + (state.scourge_pump_this_turn if "Scourge of Valkas" in attacking_dragons else 0)
+                              + sum(token_effective_power(state, t[0]) for t in attacking_tokens))
         # Atarka, World Render ("Whenever a Dragon you control attacks, it
         # gains double strike"): so afeta gatilhos de "deals combat
         # damage" (combat_treasure_d20/combat_token_d20, Old Gnawbone) —
@@ -2040,8 +2191,11 @@ def combat_step(state: GameState):
                 for _ in range(dmg_times):
                     create_and_use_treasures(state, 10)  # d20 esperado ~10.5, arredondado
             if "combat_token_d20" in tags:
+                # "create a number of 1/1 blue Faerie Dragon creature tokens
+                # with flying" -- CORRIGIDO 2026-09-25: sao DRAGOES (contavam
+                # como ficha generica, fora de todo gatilho de Dragao).
                 for _ in range(dmg_times):
-                    state.other_tokens += 10
+                    create_dragon_tokens(state, 10, 1, source="faerie_dragon")
             if "attack_mana_power" in tags:
                 # Klauth: "X e' o poder TOTAL das criaturas atacantes", nao
                 # so o proprio poder de Klauth — bug real corrigido
@@ -2070,9 +2224,10 @@ def combat_step(state: GameState):
         # cada criatura que causou dano — batching a soma total e
         # matematicamente equivalente a somar token-a-token).
         if "Utvara Hellkite" in state.battlefield:
+            # "create a 6/6 red Dragon creature token with flying" -- CORRIGIDO
+            # 2026-09-25: a ficha nunca disparava os gatilhos de entrada.
             utvara_times = 2 if "Roaming Throne" in state.battlefield else 1
-            for _ in range(n_attacking * utvara_times):
-                state.dragon_tokens += 1
+            create_dragon_tokens(state, n_attacking * utvara_times, 6, source="utvara")
         if "Old Gnawbone" in state.battlefield:
             # "that many" = dano de combate causado — com Atarka (double
             # strike) o dano efetivo dobra, entao os Treasures tambem.
@@ -2080,6 +2235,16 @@ def combat_step(state: GameState):
             gnawbone_times = 2 if "Roaming Throne" in state.battlefield else 1
             for _ in range(gnawbone_times):
                 create_and_use_treasures(state, old_gnawbone_damage)
+
+        # Dano de combate dos Dragoes atacantes (proxy, sem bloqueio --
+        # mesma premissa "ataca livre" do resto do arquivo). Atarka dobra
+        # (double strike), Twinflame Tyrant dobra dano a oponente. Metrica
+        # nova 2026-09-25: antes so' o dano de ETB (Scourge/Tempest/Terror)
+        # era medido, o que zerava o valor de qualquer corpo atacante.
+        combat_dmg = total_attack_power * (2 if atarka_double_strike else 1)
+        if "Twinflame Tyrant" in state.battlefield:
+            combat_dmg *= 2
+        state.combat_damage_proxy_total += combat_dmg
 
 
 def end_step(state: GameState):
@@ -2096,7 +2261,13 @@ def end_step(state: GameState):
         state.hellkite_courser_commander_temp = False
 
     if "Dragon Broodmother" in state.battlefield:
-        state.dragon_tokens += 1
+        # "At the beginning of EACH upkeep, create a 1/1 red and green Dragon
+        # creature token with flying and devour 2." CORRIGIDO 2026-09-25: era
+        # 1 ficha por rodada (e sem gatilho de entrada). A do MEU upkeep sai
+        # em `upkeep_step`; aqui as dos upkeeps dos oponentes antes do meu
+        # proximo turno (entram "neste" turno, prontas pra atacar no
+        # proximo). Devour: politica nunca devora (📝, nao sacrifica corpo).
+        create_dragon_tokens(state, NUM_OPPONENTS * roaming_throne_times(state), 1, source="broodmother_opp_upkeep")
     while len(state.hand) > 7:
         worst = min(state.hand, key=lambda n: effective_cost(state, n) if n not in LAND_NAMES else 0)
         state.hand.remove(worst)
@@ -2104,6 +2275,8 @@ def end_step(state: GameState):
 
 
 def upkeep_step(state: GameState):
+    if "Dragon Broodmother" in state.battlefield:
+        create_dragon_tokens(state, roaming_throne_times(state), 1, source="broodmother_my_upkeep")
     if "Herald's Horn" in state.battlefield and state.library:
         top = state.library[0]
         if is_dragon(top):
@@ -2117,7 +2290,9 @@ def upkeep_step(state: GameState):
     # Smothering Tithe esta em campo (1 oponente falhando em pagar {2} no
     # draw normal do turno, sem tentar modelar draw extra de oponentes).
     if "Smothering Tithe" in state.battlefield:
-        create_and_use_treasures(state, 1)
+        # O gatilho real acontece no turno do OPONENTE: com a Draconic Visitor
+        # a ficha de Dragao nasce la' (pronta pra atacar neste turno).
+        create_and_use_treasures(state, 1, on_opp_turn=True)
         state.smothering_tithe_treasures += 1
 
 
@@ -2283,7 +2458,9 @@ def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
         "artifact": [n for n in state.battlefield if is_artifact_card(n)],
         "enchantment": [n for n in state.battlefield if is_enchantment_card(n)],
     }
-    available = [t for t in candidates if candidates[t]]
+    # CORRIGIDO 2026-09-25: fichas de Dragao sao criaturas -- "destroy all
+    # creatures" tambem as leva (antes sobreviviam a todo wipe).
+    available = [t for t in candidates if candidates[t] or (t == "creature" and state.dragon_token_list)]
     if not available:
         return None
     wipe_type = state.interaction_rng.choices(available, weights=[WIPE_TYPE_WEIGHTS[t] for t in available])[0]
@@ -2291,6 +2468,9 @@ def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
     hit_creature = any(is_creature_card(n) for n in targets)
     for n in targets:
         remove_permanent(state, n)
+    if wipe_type == "creature" and state.dragon_token_list:
+        clear_dragon_tokens(state)
+        hit_creature = True
     if wipe_type == "creature":
         state.smart_wipes_total += 1
         state.smart_wipe_log.append((state.turn, targets))
@@ -2505,7 +2685,7 @@ def try_smart_opponent_turn(state: GameState):
     try_smart_opponent_discard(state)
 
 
-def simulate_one_with_interaction(seed: int, turns: int = 8):
+def simulate_one_with_interaction(seed: int, turns: int = 8, swap=None):
     """Mesmo goldfish de `simulate_one`, mas com `NUM_OPPONENTS` turnos
     de oponente de verdade simulados (`try_smart_opponent_turn`) a cada
     rodada entre os meus turnos. Counterspell (7a categoria) NAO mora
@@ -2518,7 +2698,7 @@ def simulate_one_with_interaction(seed: int, turns: int = 8):
     Megatron: um wipe so' suprime ataque ate' a rodada em que aconteceu,
     nunca vaza pra rodada seguinte."""
     rng = random.Random(seed)
-    hand, lib, mulls = mulligan(rng)
+    hand, lib, mulls = mulligan(rng, library=library_with_swap(swap))
     state = GameState(hand=hand, library=lib, mulligans=mulls,
                        interaction_rng=random.Random(seed + 999_999))
     for t in range(turns):
@@ -2609,11 +2789,26 @@ def build_library():
 BASE_LIBRARY = build_library()
 
 
-def mulligan(rng: random.Random, max_mulls: int = 3):
+def library_with_swap(swap) -> list:
+    """`swap` = (sai, entra) ou lista de pares: troca NA MESMA POSICAO da
+    lista (pareamento de seed, `goldfish-sim-card-rules.md` "Teste
+    comparativo pareado"). A `lista.md` real nao muda."""
+    if swap is None:
+        return BASE_LIBRARY
+    pairs = [swap] if isinstance(swap[0], str) else list(swap)
+    lib = BASE_LIBRARY[:]
+    for out_card, in_card in pairs:
+        assert out_card in lib, f"{out_card} nao esta' na lista"
+        assert in_card in CARD_DB and in_card not in lib, in_card
+        lib[lib.index(out_card)] = in_card
+    return lib
+
+
+def mulligan(rng: random.Random, max_mulls: int = 3, library=None):
     mulls = 0
     hand, lib = [], []
     while mulls < max_mulls:
-        lib = BASE_LIBRARY[:]
+        lib = (library or BASE_LIBRARY)[:]
         rng.shuffle(lib)
         hand = lib[:7]
         lib = lib[7:]
@@ -2669,6 +2864,8 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.orb_dragonkind_used_this_turn = False
     state.first_creature_used_this_turn = False
     state.tapped_land_this_turn = None  # a Triome do turno passado desamarra agora
+    state.dragon_pump_bonus_this_turn = 0
+    state.scourge_pump_this_turn = 0
 
     upkeep_step(state)
     # Achado real 2026-09-18: "skip the draw step" no 1o turno de quem
@@ -2696,11 +2893,16 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     try_hellkite_charger_extra_combat(state)
     main_phase(state)
     end_step(state)
+    if state.lethal_proxy_turn is None and state.proxy_damage_total + state.combat_damage_proxy_total >= LETHAL_PROXY:
+        state.lethal_proxy_turn = state.turn
 
 
-def simulate_one(seed: int, turns: int = 8):
+LETHAL_PROXY = 120  # 3 oponentes x 40 de vida -- premissa da metrica limitada, nao vida real
+
+
+def simulate_one(seed: int, turns: int = 8, swap=None):
     rng = random.Random(seed)
-    hand, lib, mulls = mulligan(rng)
+    hand, lib, mulls = mulligan(rng, library=library_with_swap(swap))
     state = GameState(hand=hand, library=lib, mulligans=mulls)
     for t in range(turns):
         play_turn(state, is_first_turn=(t == 0), on_play=True)

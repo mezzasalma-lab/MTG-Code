@@ -257,6 +257,32 @@ add("Urabrask's Forge", 3, "artifact", {"forge_token"})
 # e' outlaw type, tag faltava.
 add("Grim Hireling", 4, "creature", {"combat_treasure2", "sac_debuff_unused", "outlaw"})
 
+# --- Candidata de Reality Fracture (so' via swap, NAO esta na lista) -------
+# Draconic Visitor (FRA #80, lanca 2026-10-02; oraculo ao vivo Scryfall
+# 2026-09-25, salvo no oracle-cache): "{3}{R}{R}, Creature — Dragon 5/5.
+# Flying. If one or more artifact tokens would be created under your
+# control, that many 5/5 red Dragon creature tokens with flying are created
+# instead." Dragon nao e' outlaw (sem haste do Vihaan). Ver
+# `create_treasures`/`create_constructs`/`check_visitor_combo`.
+add("Draconic Visitor", 5, "creature", {"draconic_visitor"})
+
+# Poder impresso real (Scryfall, oracle-cache 2026-09-25) de cada criatura --
+# usado so' pela metrica nova de dano de combate (proxy, sem bloqueio).
+CREATURE_POWER = {
+    "Vihaan, Goldwaker": 3, "Academy Manufactor": 1, "Xorn": 3, "Goldspan Dragon": 4,
+    "Captain Lannery Storm": 2, "Kellogg, Dangerous Mind": 3, "Lotho, Corrupt Shirriff": 2,
+    "Magda, the Hoardmaster": 2, "Mahadi, Emporium Master": 3, "Olivia, Opulent Outlaw": 3,
+    "Orochi Soul-Reaver": 5, "Pitiless Plunderer": 1, "Professional Face-Breaker": 2,
+    "Prosper, Tome-Bound": 1, "Smaug the Magnificent": 4, "Zulaport Cutthroat": 1,
+    "Nadier's Nightblade": 1, "Mirkwood Bats": 2, "Kambal, Profiteering Mayor": 2,
+    "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel": 3, "Witch of the Moors": 4,
+    "Marionette Master": 1, "Mayhem Devil": 3, "Mari, the Killing Quill": 3,
+    "Jan Jansen, Chaos Crafter": 3, "Grenzo, Havoc Raiser": 2, "Laughing Jasper Flint": 4,
+    "Aya of Alexandria": 4, "Sentinel Sarah Lyons": 4, "Grim Hireling": 3, "Draconic Visitor": 5,
+}
+OTHER_TOKEN_POWER = 2  # 📝 media das fichas genericas (Shapeshifter 3/2, manifesto 2/2, Assassin 1/1...) -- o motor so' guarda contagem
+LETHAL_PROXY = 120     # 3 oponentes x 40 de vida -- premissa da metrica limitada, nao vida real
+
 ARTIFACT_ISH = {"artifact", "artifact_creature"}
 CREATURE_ISH = {"creature", "artifact_creature"}
 LAND_NAMES = {n for n, c in CARD_DB.items() if c.ctype == "land"}
@@ -328,12 +354,13 @@ class GameState:
     treasure_spent_this_turn: bool = False
     cascade_used_this_turn: bool = False
     caretaker_drawn_this_turn: bool = False
-    kambal_drawn_this_turn: bool = False
     black_market_connections_triggered_this_turn: bool = False
     life_gained_this_turn: int = 0
     face_breaker_used_this_turn: bool = False
     forge_tokens_this_turn: int = 0  # quantos tokens do Urabrask's Forge nasceram este turno (p/ sac exato no end_step)
     reaver_cleaver_equipped: bool = False
+    reaver_cleaver_host: Optional[str] = None  # criatura equipada (2026-09-25: "that many" = poder dela)
+    reaver_cleaver_treasures_total: int = 0
 
     commander_in_play: bool = False
     commander_cast_count: int = 0
@@ -373,6 +400,7 @@ class GameState:
     artifact_deaths_total: int = 0
     token_leaves_total: int = 0
     drain_damage_total: int = 0
+    table_damage_total: int = 0  # vida total da mesa (each opponent x NUM_OPPONENTS) -- so' pra win_turn
     life_gained_total: int = 0
     cards_drawn_extra: int = 0
     cascades_triggered: int = 0
@@ -422,6 +450,16 @@ class GameState:
     smart_graveyard_snipes_total: int = 0
     smart_graveyard_snipe_log: list = field(default_factory=list)
 
+    # ---- Rodada Draconic Visitor (2026-09-25) ----
+    dragons: int = 0                     # fichas 5/5 voadoras da Draconic Visitor (candidata)
+    dragons_sick: int = 0
+    dragons_created_total: int = 0
+    visitor_replaced_artifact_tokens: int = 0
+    visitor_combo_turn: Optional[int] = None   # Visitor + Pitiless Plunderer + Ashnod's Altar juntos em campo
+    combat_damage_proxy_total: int = 0
+    artifact_entered_this_turn: bool = False   # Sentinel Sarah Lyons (+2/+2)
+    win_turn: Optional[int] = None             # 1o turno de vitoria (proxy): dano >= 120, Revel in Riches ou combo
+
 
 def draw_cards(state: GameState, n: int):
     for _ in range(n):
@@ -436,9 +474,15 @@ def gain_life(state: GameState, n: int):
     state.life_gained_this_turn += n
 
 
-def drain(state: GameState, n: int):
-    """Dano/drena agregado — proxy, nunca vida real de oponente."""
+def drain(state: GameState, n: int, each_opp: bool = False):
+    """Dano/drena agregado — proxy, nunca vida real de oponente.
+    `drain_damage_total` segue a convencao historica do arquivo (1 por
+    gatilho, seja "each opponent" ou "target"). `table_damage_total` (novo
+    2026-09-25, so' pra metrica limitada `win_turn`) pesa pelo alcance real:
+    "each opponent loses N" = N x NUM_OPPONENTS de vida total da mesa;
+    "target opponent"/"any target" = N."""
     state.drain_damage_total += n
+    state.table_damage_total += n * (NUM_OPPONENTS if each_opp else 1)
 
 
 # ---------------------------------------------------------------------------
@@ -501,8 +545,20 @@ def create_treasures(state: GameState, n: int, source: str = ""):
         total += 1
     if "Anointed Procession" in state.battlefield:
         total *= 2
+    if "Draconic Visitor" in state.battlefield:
+        # Draconic Visitor: "If one or more artifact tokens would be created
+        # under your control, that many 5/5 red Dragon creature tokens with
+        # flying are created instead." O controlador escolhe a ordem dos
+        # efeitos de substituicao (CR 616.1): Xorn (+1) e Anointed (x2)
+        # antes, Academy Manufactor (cada Treasure vira Clue+Food+Treasure =
+        # 3 fichas de artefato) e so' entao a Visitor -- ordem que maximiza
+        # Dragoes. Nenhum Treasure/Clue/Food chega a existir.
+        n_art = total * (3 if "Academy Manufactor" in state.battlefield else 1)
+        _create_visitor_dragons(state, n_art)
+        return
     state.treasures += total
     state.treasures_created_total += total
+    state.artifact_entered_this_turn = True
 
     if "Academy Manufactor" in state.battlefield:
         state.clues += total
@@ -517,10 +573,28 @@ def create_constructs(state: GameState, n: int, source: str = ""):
     if n <= 0:
         return
     total = n * (2 if "Anointed Procession" in state.battlefield else 1)
+    if "Draconic Visitor" in state.battlefield:
+        # Construct/Servo sao "artifact creature" -- ficha de artefato, vira Dragao.
+        _create_visitor_dragons(state, total)
+        return
     state.constructs += total
     state.constructs_sick += total
     state.constructs_created_total += total
+    state.artifact_entered_this_turn = True
     on_tokens_created(state, total, kind="construct")
+
+
+def _create_visitor_dragons(state: GameState, n: int):
+    """Fichas 5/5 voadoras da Draconic Visitor (o dobro da Anointed ja' foi
+    aplicado no evento original). Sao fichas de criatura: Kambal, Mirkwood
+    Bats e Caretaker's Talent reagem. Nao sao artefato."""
+    if n <= 0:
+        return
+    state.dragons += n
+    state.dragons_sick += n
+    state.dragons_created_total += n
+    state.visitor_replaced_artifact_tokens += n
+    on_tokens_created(state, n, kind="creature")
 
 
 def create_other_tokens(state: GameState, n: int, source: str = "", haste: bool = False):
@@ -543,11 +617,16 @@ def on_tokens_created(state: GameState, n: int, kind: str):
     if n <= 0:
         return
     if "Mirkwood Bats" in state.battlefield:
-        drain(state, n)
-    if kind != "treasure_component" and not state.kambal_drawn_this_turn and "Kambal, Profiteering Mayor" in state.battlefield:
-        drain(state, 1)
+        drain(state, n, each_opp=True)
+    # Kambal, Profiteering Mayor -- 2a habilidade: "Whenever one or more
+    # tokens you control enter, each opponent loses 1 life and you gain 1
+    # life." CORRIGIDO 2026-09-25: o codigo limitava a 1x/turno, mas o
+    # "This ability triggers only once each turn" do oraculo pertence a 1a
+    # habilidade (copiar fichas de OPONENTE), nao a esta. drain() segue a
+    # convencao do arquivo (1 por gatilho, igual Zulaport/Mirkwood Bats).
+    if kind != "treasure_component" and "Kambal, Profiteering Mayor" in state.battlefield:
+        drain(state, 1, each_opp=True)
         gain_life(state, 1)
-        state.kambal_drawn_this_turn = True
     if not state.caretaker_drawn_this_turn and "Caretaker's Talent" in state.battlefield:
         draw_cards(state, 1)
         state.caretaker_drawn_this_turn = True
@@ -726,9 +805,9 @@ def on_creature_dies(state: GameState, n: int, is_token: bool):
     # comandante deste deck) - so' existe enquanto ele estiver em campo
     # (`state.commander_in_play`), igual ao texto real.
     if state.commander_in_play and "Agent of the Iron Throne" in state.battlefield:
-        drain(state, n)
+        drain(state, n, each_opp=True)
     if "Zulaport Cutthroat" in state.battlefield:
-        drain(state, n)
+        drain(state, n, each_opp=True)
         gain_life(state, n)
     if "Pitiless Plunderer" in state.battlefield:
         create_treasures(state, n, source="Pitiless Plunderer")
@@ -778,7 +857,7 @@ def on_artifact_dies(state: GameState, n: int):
         return
     state.artifact_deaths_total += n
     if state.commander_in_play and "Agent of the Iron Throne" in state.battlefield:
-        drain(state, n)
+        drain(state, n, each_opp=True)
     if "Marionette Master" in state.battlefield:
         # Poder base real (Scryfall): 1/3. Fabricate 3 aqui sempre escolhe
         # criar 3 Servos (ver resolve_permanent_etb), nao contadores — entao
@@ -792,7 +871,7 @@ def on_token_leaves(state: GameState, n: int):
         return
     state.token_leaves_total += n
     if "Nadier's Nightblade" in state.battlefield:
-        drain(state, n)
+        drain(state, n, each_opp=True)
         gain_life(state, n)
     if "Mirkwood Bats" in state.battlefield:
         # Achado real 2026-08-28 (auditoria de checklist de mecanica):
@@ -801,7 +880,7 @@ def on_token_leaves(state: GameState, n: int):
         # "sacrifice"/leaves-the-battlefield nunca era checada aqui,
         # apesar de ser o motor central de sacrificio do deck
         # (aggressive_treasure_destruction chama isso toda hora).
-        drain(state, n)
+        drain(state, n, each_opp=True)
 
 
 # ---------------------------------------------------------------------------
@@ -1001,16 +1080,31 @@ def try_equip_reaver_cleaver(state: GameState):
     por criatura pra calcular 'that many' de verdade) disparava de graca
     pra qualquer ataque, sem nunca ter sido equipado em ninguem. Paga o
     Equip 1x (fica equipado o resto da partida - este simulador nunca
-    reequipa), so' se houver ao menos 1 criatura real em campo."""
+    reequipa), so' se houver ao menos 1 criatura real em campo.
+
+    CORRIGIDO 2026-09-25 (Regra #1, "formula dinamica achatada"): o
+    oraculo real e' "Equipped creature gets +1/+1 and has trample and
+    'Whenever this creature deals combat damage to a player or
+    planeswalker, create THAT MANY Treasure tokens.'" -- o arquivo agora
+    rastreia poder impresso (`CREATURE_POWER`), entao "that many" = poder
+    do portador + 1 (o proprio +1/+1), +2 com Sentinel Sarah Lyons ativa.
+    Equipa a criatura nao-comandante de maior poder (o Vihaan nunca ataca
+    neste simulador -- `ready_creatures` o exclui). Se o portador sai de
+    campo o Equipamento fica solto (CR 301.5c) e reequipar custa {3} de
+    novo."""
     if "The Reaver Cleaver" not in state.battlefield:
         return
-    if state.reaver_cleaver_equipped:
+    if state.reaver_cleaver_host is not None and state.reaver_cleaver_host in state.battlefield:
         return
+    state.reaver_cleaver_host = None
+    state.reaver_cleaver_equipped = False
     if remaining_mana(state) < 3:
         return
-    if not any(is_creature_card(n) for n in state.battlefield):
+    hosts = [n for n in state.battlefield if is_creature_card(n) and n != COMMANDER]
+    if not hosts:
         return
     spend_mana(state, 3)
+    state.reaver_cleaver_host = max(hosts, key=lambda n: CREATURE_POWER.get(n, 0))
     state.reaver_cleaver_equipped = True
 
 
@@ -1077,6 +1171,7 @@ def resolve_instant_sorcery(state: GameState, name: str):
             sacrifice_named_creature(state, c)
         sacrifice_constructs(state, state.constructs)
         sacrifice_other_tokens(state, state.other_tokens)
+        _destroy_dragons(state)
         create_treasures(state, len(real_creatures), source="Blood Money (nontoken)")
     elif name == "Blasphemous Act":
         real_creatures = [n for n in state.battlefield if is_creature_card(n) and n != COMMANDER]
@@ -1084,6 +1179,7 @@ def resolve_instant_sorcery(state: GameState, name: str):
             sacrifice_named_creature(state, c)
         sacrifice_constructs(state, state.constructs)
         sacrifice_other_tokens(state, state.other_tokens)
+        _destroy_dragons(state)
     elif name in ("Path to Exile", "Shoot the Sheriff", "Council's Judgment",
                   "Deadly Derision", "Requisition Raid", "Boros Charm", "Teferi's Protection"):
         state.commits_crime_this_turn = True
@@ -1146,6 +1242,17 @@ def resolve_instant_sorcery(state: GameState, name: str):
                 state.recursion_events_total += 1
 
 
+def _destroy_dragons(state: GameState):
+    """Fichas de Dragao da Visitor morrendo num "destroy all creatures"
+    (nosso ou de oponente) -- destruicao, nao sacrificio (sem Mayhem Devil)."""
+    n = state.dragons
+    if n <= 0:
+        return
+    state.dragons = 0
+    state.dragons_sick = 0
+    on_permanent_destroyed(state, n, is_artifact=False, is_creature=True, is_token=True)
+
+
 def pull_impulse(state: GameState, n: int, deadline_turns: int):
     for _ in range(n):
         if state.library:
@@ -1180,6 +1287,8 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
             state.commander_cast_turn = state.turn
     if is_creature_card(name):
         state.creature_cast_turn[name] = state.turn
+    if is_artifact_card(name):
+        state.artifact_entered_this_turn = True
     if name == "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel":
         # Achado real 2026-08-31: se esta carta morreu ja transformada e foi
         # recuperada do cemiterio (Sevinne's Reclamation, mv<=3, alcanca
@@ -1215,7 +1324,7 @@ def cast_card(state: GameState, name: str):
         spend_mana(state, card.mv)
     if extort_available and remaining_mana(state) >= 1:
         spend_mana(state, 1)
-        drain(state, 1)
+        drain(state, 1, each_opp=True)
         gain_life(state, 1)
         state.extort_paid_total += 1
     state.spells_cast_this_turn += 1
@@ -1323,10 +1432,24 @@ def should_keep(hand: list) -> bool:
     return False
 
 
-def mulligan(rng: random.Random, max_mulls: int = 3):
+def library_with_swap(swap) -> list:
+    """`swap` = (sai, entra) ou lista de pares: troca NA MESMA POSICAO da
+    lista (pareamento de seed). A `lista.md` real nao muda."""
+    if swap is None:
+        return BASE_LIBRARY
+    pairs = [swap] if isinstance(swap[0], str) else list(swap)
+    lib = BASE_LIBRARY[:]
+    for out_card, in_card in pairs:
+        assert out_card in lib, f"{out_card} nao esta' na lista"
+        assert in_card in CARD_DB and in_card not in lib, in_card
+        lib[lib.index(out_card)] = in_card
+    return lib
+
+
+def mulligan(rng: random.Random, max_mulls: int = 3, library=None):
     mulls = 0
     while mulls < max_mulls:
-        lib = BASE_LIBRARY[:]
+        lib = (library or BASE_LIBRARY)[:]
         rng.shuffle(lib)
         hand = lib[:7]
         lib = lib[7:]
@@ -1414,7 +1537,7 @@ def try_black_market_connections(state: GameState):
     nao tinha nenhuma guarda contra a 2a chamada, dobrando Treasure/draw/
     token/perda de vida todo turno desde a correcao de 2026-08-28. Corrigido
     com o mesmo padrao de flag per-turno ja usado em
-    caretaker_drawn_this_turn/kambal_drawn_this_turn."""
+    caretaker_drawn_this_turn."""
     if "Black Market Connections" not in state.battlefield:
         return
     if state.black_market_connections_triggered_this_turn:
@@ -1595,14 +1718,16 @@ def combat_step(state: GameState):
                             or (state.commander_in_play and is_outlaw(n)))]
     ready_constructs = max(0, state.constructs - state.constructs_sick)
     ready_other = max(0, state.other_tokens - state.other_tokens_sick)
+    ready_dragons = max(0, state.dragons - state.dragons_sick)  # Draconic Visitor (candidata): sem haste
 
-    total_attackers = animated + len(ready_creatures) + ready_constructs + ready_other
+    total_attackers = animated + len(ready_creatures) + ready_constructs + ready_other + ready_dragons
     if total_attackers <= 0:
         return
     state.combat_attacks_total += 1
+    _combat_damage_proxy(state, animated, ready_creatures, ready_constructs, ready_other, ready_dragons)
 
     outlaw_attacking = animated > 0 or any(is_outlaw(n) for n in ready_creatures)
-    any_creature_attacking = len(ready_creatures) + ready_constructs + ready_other + animated > 0
+    any_creature_attacking = len(ready_creatures) + ready_constructs + ready_other + animated + ready_dragons > 0
 
     if "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel" in ready_creatures:
         try_sephiroth_sac_draw(state)
@@ -1666,11 +1791,79 @@ def combat_step(state: GameState):
             # more") - mesma classe de bug da Aya acima. `total_attackers`
             # ja e' a contagem real de fontes atacando neste combate.
             pull_impulse(state, total_attackers, deadline_turns=0)
-        if "The Reaver Cleaver" in state.battlefield and state.reaver_cleaver_equipped:
-            create_treasures(state, 1, source="The Reaver Cleaver")
+        host = state.reaver_cleaver_host
+        if ("The Reaver Cleaver" in state.battlefield and state.reaver_cleaver_equipped
+                and host in state.battlefield and host in ready_creatures):
+            n_dmg = CREATURE_POWER.get(host, 0) + 1
+            if "Sentinel Sarah Lyons" in state.battlefield and state.artifact_entered_this_turn:
+                n_dmg += 2
+            state.reaver_cleaver_treasures_total += n_dmg
+            create_treasures(state, n_dmg, source="The Reaver Cleaver")
 
     if TREASURE_MAXIMIZE_POLICY:
         aggressive_treasure_destruction(state)
+
+
+def _combat_damage_proxy(state: GameState, animated: int, ready_creatures: list, ready_constructs: int,
+                         ready_other: int, ready_dragons: int):
+    """Metrica nova 2026-09-25 (so' leitura, nao muda nenhuma decisao):
+    dano de combate dos atacantes, sem bloqueio (mesma premissa "ataca
+    livre" do resto do arquivo). Antes o arquivo so' media drain -- uma
+    carta que troca Treasure (mana) por corpo atacante ficava com valor
+    zero. Poder impresso (`CREATURE_POWER`), Treasure animado pelo Vihaan
+    3/3, Construct/Servo 1/1, ficha generica 2 (📝 media), Dragao da
+    Visitor 5/5. Bonus reais: Caretaker's Talent nivel 3 (+2/+2 em ficha de
+    criatura), Sentinel Sarah Lyons (+2/+2 em todas se um artefato entrou
+    neste turno), Shared Animosity (+1/+0 por outro atacante que divide
+    tipo -- calculado so' nos 2 grupos homogeneos que esta carta troca:
+    Constructs/Treasures animados [Construct] e Dragoes)."""
+    power = sum(CREATURE_POWER.get(n, 0) for n in ready_creatures)
+    if (state.reaver_cleaver_equipped and state.reaver_cleaver_host in ready_creatures
+            and "The Reaver Cleaver" in state.battlefield):
+        power += 1  # The Reaver Cleaver: +1/+1
+    power += 3 * animated + 1 * ready_constructs + OTHER_TOKEN_POWER * ready_other + 5 * ready_dragons
+    tokens_attacking = animated + ready_constructs + ready_other + ready_dragons
+    if state.caretaker_level >= 3:
+        power += 2 * tokens_attacking
+    if "Sentinel Sarah Lyons" in state.battlefield and state.artifact_entered_this_turn:
+        power += 2 * (len(ready_creatures) + tokens_attacking)
+    if "Shared Animosity" in state.battlefield:
+        construct_group = animated + ready_constructs
+        dragon_group = ready_dragons + sum(1 for n in ready_creatures if n in ("Goldspan Dragon", "Smaug the Magnificent", "Draconic Visitor"))
+        for k in (construct_group, dragon_group):
+            if k > 1:
+                power += k * (k - 1)
+    state.combat_damage_proxy_total += power
+
+
+def check_visitor_combo(state: GameState):
+    """Draconic Visitor + Pitiless Plunderer + Ashnod's Altar = loop
+    infinito (Regra #7: combo novo, fora do Commander Spellbook -- derivado
+    das regras): sacrifica um Dragao no Altar ({C}{C}); o Plunderer ("Whenever
+    another creature you control dies, create a Treasure token") cria um
+    Treasure, que a Visitor substitui por um Dragao 5/5; repete. Mana
+    incolor, mortes, fichas criadas e sacrificadas infinitas. Qualquer
+    pagador da lista fecha o jogo na hora: Zulaport Cutthroat, Mirkwood Bats,
+    Nadier's Nightblade, Kambal (2a habilidade, sem limite), Sephiroth
+    (transforma na 4a e o emblema drena sem limite), Mayhem Devil, Agent of
+    the Iron Throne (com o Vihaan em campo). Precisa de 1 criatura pra
+    comecar o loop."""
+    if state.visitor_combo_turn is not None:
+        return
+    need = ("Draconic Visitor", "Pitiless Plunderer", "Ashnod's Altar")
+    if not all(n in state.battlefield for n in need):
+        return
+    fodder = state.dragons + state.constructs + state.other_tokens + sum(
+        1 for n in state.battlefield if is_creature_card(n) and n not in (COMMANDER, "Pitiless Plunderer", "Draconic Visitor"))
+    if fodder <= 0:
+        return
+    state.visitor_combo_turn = state.turn
+    payoffs = ("Zulaport Cutthroat", "Mirkwood Bats", "Nadier's Nightblade", "Kambal, Profiteering Mayor",
+               "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel", "Mayhem Devil")
+    if any(n in state.battlefield for n in payoffs) or (
+            state.commander_in_play and "Agent of the Iron Throne" in state.battlefield) or state.has_super_nova_emblem:
+        if state.win_turn is None:
+            state.win_turn = state.turn
 
 
 def try_sac_land_outlets(state: GameState):
@@ -1753,6 +1946,10 @@ def end_step(state: GameState):
     if state.constructs_sick or state.other_tokens_sick:
         state.constructs_sick = 0
         state.other_tokens_sick = 0
+    state.dragons_sick = 0
+    check_visitor_combo(state)
+    if state.win_turn is None and state.table_damage_total + state.combat_damage_proxy_total >= LETHAL_PROXY:
+        state.win_turn = state.turn
 
 
 def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
@@ -1765,7 +1962,6 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.treasure_spent_this_turn = False
     state.cascade_used_this_turn = False
     state.caretaker_drawn_this_turn = False
-    state.kambal_drawn_this_turn = False
     state.black_market_connections_triggered_this_turn = False
     state.life_gained_this_turn = 0
     state.bonus_mana_pool = 0
@@ -1775,9 +1971,15 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.sephiroth_deaths_this_turn = 0
     state.face_breaker_used_this_turn = False
     state.forge_tokens_this_turn = 0
+    state.artifact_entered_this_turn = False
 
     if "Smaug the Magnificent" in state.battlefield:
         create_treasures(state, 1, source="Smaug the Magnificent (upkeep)")
+    # Revel in Riches: "At the beginning of your upkeep, if you control ten
+    # or more Treasures, you win the game." (so' metrica win_turn; o
+    # contador historico `revel_condition_met_turn` segue marcado no end_step)
+    if state.win_turn is None and "Revel in Riches" in state.battlefield and state.treasures >= 10:
+        state.win_turn = state.turn
 
     # Achado real 2026-09-14: oraculo real da Laughing Jasper Flint e' "At
     # the beginning of your UPKEEP" (nao end step!) - "exile the top X
@@ -1804,8 +2006,10 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
 
     play_land(state)
     main_phase(state)
+    check_visitor_combo(state)
     combat_step(state)
     main_phase(state)  # pos-combate — usa mana bonus gerada por sac outlets no combate
+    check_visitor_combo(state)
 
     # Magda: gatilho "whenever you commit a crime" (1x/turno) so pode ser
     # checado depois das main phases, que e quando as magicas que cometem
@@ -2011,7 +2215,7 @@ def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
         return None
     if state.interaction_rng.random() >= interaction_chance(state) * TOTAL_WIPE_CHANCE_FACTOR:
         return None
-    has_creature_tokens = (state.constructs + state.other_tokens) > 0
+    has_creature_tokens = (state.constructs + state.other_tokens + state.dragons) > 0
     has_artifact_tokens = (state.treasures + state.constructs + state.clues + state.foods) > 0
     candidates = {
         "creature": [n for n in state.battlefield if is_creature_card(n)],
@@ -2039,9 +2243,12 @@ def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
         if state.other_tokens:
             on_permanent_destroyed(state, state.other_tokens, is_artifact=False, is_creature=True, is_token=True)
             hit_creature = True
-        token_n = state.constructs + state.other_tokens
+        token_n = state.constructs + state.other_tokens + state.dragons
         if token_n:
             log_targets = targets + [f"{token_n} token(s)"]
+        if state.dragons:
+            hit_creature = True
+        _destroy_dragons(state)
         state.constructs = 0
         state.constructs_sick = 0
         state.other_tokens = 0
@@ -2154,7 +2361,7 @@ def try_smart_opponent_turn(state: GameState):
     try_smart_opponent_discard(state)
 
 
-def simulate_one_with_interaction(seed: int, turns: int = 8) -> GameState:
+def simulate_one_with_interaction(seed: int, turns: int = 8, swap=None) -> GameState:
     """Mesmo goldfish de `simulate_one`, mas com `NUM_OPPONENTS` turnos
     de oponente de verdade simulados (`try_smart_opponent_turn`) a cada
     rodada entre os meus turnos. Counterspell (7a categoria) NAO mora
@@ -2167,7 +2374,7 @@ def simulate_one_with_interaction(seed: int, turns: int = 8) -> GameState:
     mesma convencao dos outros 9 decks, pra inspecao detalhada das
     metricas de resiliencia."""
     rng = random.Random(seed)
-    hand, lib, mulls = mulligan(rng)
+    hand, lib, mulls = mulligan(rng, library=library_with_swap(swap))
     state = GameState(hand=hand, library=lib, mulligans=mulls,
                        interaction_rng=random.Random(seed + 999_999))
     for t in range(turns):
@@ -2209,9 +2416,9 @@ def run_batch_with_interaction(n=2000, turns=8, seed_base=6000000):
     return states
 
 
-def simulate_one(seed: int, turns: int = 8):
+def simulate_one(seed: int, turns: int = 8, swap=None):
     rng = random.Random(seed)
-    hand, lib, mulls = mulligan(rng)
+    hand, lib, mulls = mulligan(rng, library=library_with_swap(swap))
     state = GameState(hand=hand, library=lib, mulligans=mulls)
     for t in range(turns):
         play_turn(state, is_first_turn=(t == 0), on_play=True)
