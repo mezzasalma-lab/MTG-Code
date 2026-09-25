@@ -313,3 +313,55 @@ que ele está pedindo — cada cláusula operacional dentro do relato
 simulador, e tem que ser instrumentada e confirmada como qualquer outra,
 mesmo que o pedido explícito do usuário aponte pra uma cláusula
 diferente da mesma frase.**
+
+## Regra #7 (obrigatória): nunca declarar uma auditoria "completa" — declarar o ESCOPO que foi de fato verificado
+
+Cobrança real do usuário em 2026-09-25, depois da avaliação da Draconic
+Visitor: *"Acho incrível como vc ainda acha muitos erros após me garantir
+que já revisou tudo!"* Nessa rodada apareceram 5 bugs reais em 2 arquivos
+(Ur-Dragon e Vihaan). Os dois já tinham "auditoria oráculo-por-oráculo
+completa" documentada. **Os 5 caem em classes que JÁ estavam na
+taxonomia desta CLAUDE.md:**
+
+- **Fichas de Dragão do Ur-Dragon eram só um contador.** Nunca atacavam
+  nem disparavam gatilho de entrada. É a Regra #3: conceito compartilhado
+  "Dragão que você controla".
+- **Roaming Throne não dobrava Terror of the Peaks nem Dragon
+  Broodmother.** É "efeito estático lido em UMA função mas não propagado
+  pra todas".
+- **Kambal: "This ability triggers only once each turn" estava aplicado à
+  cláusula errada.** Falha de leitura cláusula-a-cláusula, justamente o
+  método que dizia ter sido seguido.
+- **The Reaver Cleaver: "that many" estava achatado pra 1 fixo, com a
+  justificativa "o arquivo não rastreia P/T".** Isso era julgamento, não
+  impossibilidade: o poder impresso sempre esteve no cache do Scryfall.
+  É "fórmula dinâmica achatada".
+- **Smothering Tithe: o proxy estava posicionado no MEU turno, mas o
+  gatilho real acontece no turno do oponente.** É a Regra #6: posição de
+  chamada, não código da carta.
+
+**A falha não foi falta de regra. Foi declarar "completo" depois de uma
+passada ancorada em "essa carta tem código?", sem varrer cada classe da
+taxonomia, deck a deck, com evidência.**
+
+**Daqui pra frente:**
+1. **Palavras proibidas.** Nunca escrever "completo", "tudo revisado",
+   "garantido" ou "100%" sobre auditoria de simulador. O relatório lista:
+   - quais classes da taxonomia (Regra #1) foram varridas;
+   - com que método: grep, instrumentação em runtime ou teste dirigido;
+   - quais classes NÃO foram varridas naquele arquivo.
+2. **Toda justificativa 📊 do tipo "o arquivo não rastreia X" é suspeita
+   até prova em contrário.** Se o dado existe no cache do Scryfall (poder,
+   custo, tipo, cor), não é estrutural: é trabalho a fazer. Estrutural é
+   só estado real de OPONENTE (Regra #1).
+3. **Todo conceito de ficha/token precisa passar em 4 checagens**, não só
+   em "é criado":
+   - ataca (e com que doença de invocação);
+   - dispara os gatilhos de "enters" e "dies/leaves";
+   - morre no wipe;
+   - conta em todo "you control X".
+4. **Todo proxy de gatilho que acontece fora do meu turno precisa de
+   checagem explícita.** Upkeep ou draw de oponente, "whenever an opponent
+   ...": confirmar se a posição do proxy muda o resultado quando o
+   produto é criatura, ou quando uma substituição transforma o produto em
+   criatura.
