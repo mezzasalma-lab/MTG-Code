@@ -2851,4 +2851,201 @@ de forma significativa. `lista.md` não muda.
 
 ---
 
+## Tiamat (candidata) + correções de custo, Orb, descarte e resiliência — 2026-09-28
+
+**Pedido:** *"Avalia os prós e contras de incluir Tiamat no Ur-Dragon, a
+carta está em anexo para facilitar"*. Detalhe cláusula a cláusula e
+escopo em `checklist-oraculo.md`, na seção de mesma data.
+
+### Antes/depois da base (2.000 seeds, 7.600.000+, 8 turnos, mesma seed em todas as colunas)
+
+Colunas cumulativas:
+- (a) original;
+- (b) custo: CR 601.2f + Hall + Rhythm mv 3;
+- (c) Triumph só criatura + descarte protege terreno/ramp/redutor antes
+  da comandante;
+- (d) Orb: topo 7, mana colorida, antes da comandante;
+- (e) resiliência: contramágica impedida/respondida, Heroic/Teferi,
+  shroud do Greaves, lifelink da Dromoka.
+
+| Métrica | (a) | (b) | (c) | (d) | (e) final |
+|---|---|---|---|---|---|
+| Padrão: turno da comandante | 7,112 | 7,155 | 7,150 | 7,108 | 7,108 |
+| Padrão: letal ≤T8 | 49,25% | 46,50% | 46,40% | 46,55% | 46,55% |
+| Padrão: letal ≤T6 | 3,10% | 2,45% | 2,45% | 2,40% | 2,40% |
+| Padrão: vitória por dano de comandante | 34,70% | 32,65% | 32,75% | 33,70% | 33,70% |
+| Padrão: cartas extras | 31,47 | 29,70 | 29,74 | 30,27 | 30,27 |
+| Padrão: Dragões em campo (fim) | 68,86 | 58,88 | 58,72 | 60,11 | 60,11 |
+| Padrão: vida | 40,00 | 40,00 | 40,00 | 40,00 | 47,81 |
+| Resil.: turno da comandante | 7,534 | 7,574 | 7,570 | 7,532 | 7,497 |
+| Resil.: letal ≤T8 | 25,85% | 23,45% | 23,45% | 24,05% | 25,35% |
+| Resil.: dano de comandante | 19,55% | 17,95% | 17,90% | 18,30% | 19,35% |
+| Resil.: Dragões em campo (fim) | 18,77 | 16,41 | 16,47 | 16,41 | 21,66 |
+| Resil.: vida | 38,34 | 38,37 | 38,36 | 38,37 | 41,76 |
+
+Leitura:
+- (b) **piora tudo, e é o esperado.** O deck estava pagando Dragões e a
+  comandante com menos mana colorida do que a regra permite. Letal ≤T8
+  cai 2,75pp.
+- (c) quase não mexe na base: ela raramente estoura a mão antes da
+  comandante (7,9% das partidas). Com a Tiamat, isso sobe pra 22%, e a
+  política antiga jogava fora Herald's Horn/Triumph pra guardar Dragão
+  de 7.
+- (d) adianta a comandante em 0,04 turno. A mana da Orb passa a pagar a
+  Ur-Dragon na 1ª fase principal.
+- (e) no modo padrão só muda a vida (lifelink da Dromoka; não há
+  oponente). Na resiliência, dois ganhos:
+  - Heroic/Teferi agora salvam o board: +5,3 Dragões no fim, +1,3pp de
+    letal;
+  - Dromoka, Rhythm e Cavern impedem contramágica: a comandante sai 0,035
+    turno antes.
+
+### A/B pareado — Tiamat no lugar de 7 candidatas + controle (N=3.000, troca posicional, código final)
+
+Diferença pareada (Tiamat − base) com IC95%. Controle: Farseek. Cortar
+ramp de 2 deve atrasar a comandante, e atrasa (+0,07 turno).
+
+**Padrão** (base N=3.000: letal ≤T8 46,3%, ≤T6 3,0%, turno cmd 7,10,
+dano cmd 33,7%)
+
+| Sai | turno letal | letal ≤T6 | letal ≤T8 | turno cmd | cartas extras | dano cmd |
+|---|---|---|---|---|---|---|
+| Hellkite Courser | −0,037 ±0,013 | +0,5pp ±0,4 | +1,6pp ±0,8 | +0,020 | −0,66 ±0,39 | −1,5pp ±0,6 |
+| **Dragonlord Dromoka** | −0,089 ±0,013 | +1,2pp ±0,4 | **+4,0pp ±0,8** | −0,006 | +0,73 ±0,37 | +0,9pp ±0,5 |
+| **Balefire Dragon** | −0,086 ±0,012 | +0,9pp ±0,4 | **+4,1pp ±0,8** | +0,005 | +0,90 ±0,36 | +0,8pp ±0,5 |
+| Savage Ventmaw | −0,039 ±0,012 | +0,6pp ±0,4 | +1,2pp ±0,8 | +0,056 | −0,67 ±0,41 | −0,8pp ±0,6 |
+| **Sarkhan Unbroken** | −0,081 ±0,012 | +0,9pp ±0,4 | **+3,9pp ±0,8** | +0,004 | +0,61 ±0,37 | +0,3pp ±0,5 |
+| **Bladewing the Risen** | −0,071 ±0,011 | +0,8pp ±0,4 | **+3,5pp ±0,8** | +0,004 | +0,70 ±0,34 | +0,5pp ±0,4 |
+| Hellkite Charger | −0,060 ±0,012 | +1,0pp ±0,4 | +2,6pp ±0,8 | −0,007 | −0,53 ±0,37 | −1,8pp ±0,7 |
+| Farseek (controle) | −0,054 ±0,015 | +0,8pp ±0,5 | +2,6pp ±1,0 | +0,066 | −0,03 ±0,47 | −1,2pp ±0,7 |
+
+**Resiliência** (base: letal ≤T8 24,9%, turno cmd 7,48, dano cmd 20,0%),
+letal ≤T8:
+- Dromoka +3,7pp ±0,8;
+- Sarkhan Unbroken +3,3pp ±0,8;
+- Balefire +3,1pp ±0,7;
+- Bladewing +3,0pp ±0,8;
+- Charger +2,5pp ±0,7;
+- Farseek +2,1pp ±0,9;
+- Ventmaw +1,8pp ±0,8;
+- Courser +1,6pp ±0,8.
+
+O turno da comandante fica neutro (−0,007 a +0,010) contra os 4 cortes
+fracos. Só atrasa contra Ventmaw (+0,06) e Farseek (+0,08).
+
+### Condicional, decomposição e sensibilidade
+
+- **Frequência:** a Tiamat é conjurada até o T8 em **39,4%** das partidas
+  (média T7,35) no padrão e em 24,6% na resiliência. Pela
+  hipergeométrica, ver a Tiamat ou o Triumph até o T6 dá 24,7%; o motor
+  de compra da Ur-Dragon, o Horn e a Sylvan sobem isso.
+- **Quando conjurada** (corte: Dromoka), letal ≤T8 78,7% → **+10,6pp
+  ±1,9** (resiliência 59,1% → +14,4pp ±2,8). Comandante: −0,011 turno.
+  Dragões no fim: +25.
+- **Decomposição:** Tiamat × Dragão 7/7 voador lendário genérico de mesmo
+  custo `{2}{W}{U}{B}{R}{G}`, no mesmo slot (só no harness). A diferença
+  é o valor do TEXTO (a busca):
+  - em todas as partidas: +3,4pp ±0,8 (resiliência +3,1pp ±0,7);
+  - quando conjurada: **+9,3pp ±1,8** (resiliência +12,9pp ±2,6);
+  - sem custo em turno da comandante (+0,005).
+  Quase todo o ganho é a busca, não o corpo. É o oposto da Draconic
+  Visitor (texto ≈ 0 aqui).
+- **Ordem de conjuração** (código anterior às correções da Orb e da
+  resiliência, corte Dromoka):
+  - "Tiamat antes de tudo": letal +3,6pp, comandante **+0,047 turno**,
+    dano cmd −1,0pp;
+  - "fila normal": letal **+3,8pp**, comandante −0,006, dano cmd +0,8pp.
+  Linha adotada: fila normal. Na mesa, ramp e comandante primeiro; a
+  Tiamat entra com mana sobrando.
+- **Quais 5 buscar** (código final, corte Dromoka), letal ≤T8:
+
+  | Lista | Padrão | Resil. | Dano cmd (padrão) |
+  |---|---|---|---|
+  | atual: Scourge, Terror, Lathliss, Miirym, Utvara | +4,0pp | +3,7pp | +0,9pp |
+  | mana primeiro: Goldspan, Gnawbone, Copper, Morophon, Ventmaw | +3,8pp | +3,1pp | +1,9pp |
+  | misto: Scourge, Terror, Gnawbone, Goldspan, Morophon | +4,3pp | +3,9pp | +1,7pp |
+
+  As três empatam dentro do IC (±0,8). O misto tem o melhor letal, com
+  quase o mesmo dano de comandante do "mana primeiro".
+
+### Deck primeiro (Regras 4 e 5), simulador de apoio
+
+**Prós, pelos motores do deck:**
+1. **Custo real.** Eminence sempre abate 1: sai por 6. Com qualquer
+   outro redutor (Servant, Dragonspeaker, Sarkhan Soul Aflame, Horn,
+   Incubator) sai por 5, o piso WUBRG. Com Morophon (Dragão) sai por
+   {1}, ou {0} com mais um redutor. Pede as mesmas 5 cores da
+   comandante, e a base já é feita pra isso: Cavern, Haven, Courtyard,
+   Orb e Path pagam pip de qualquer cor pra Dragão.
+2. **A busca é o texto que mais vale na lista.** São 21 "Dragon cards"
+   (Firdoch Core e Morophon entram por Changeling). Um cast põe na mão o
+   pacote inteiro de dano de ETB (Scourge + Terror + Lathliss + Miirym)
+   ou o de mana (Gnawbone + Goldspan + Morophon).
+3. **Multiplicadores que já estão na lista:**
+   - Roaming Throne: busca 10;
+   - Sarkhan's Triumph (instantânea): 1 tutor vira 6 Dragões;
+   - Haven of the Spirit Dragon: devolve pra mão, reconjura, mais 5.
+4. **Gatilhos de ETB que ela mesma dispara:**
+   - Terror: 7 de dano;
+   - Scourge e Tempest: X de dano;
+   - Lathliss: 5/5;
+   - Miirym: cópia 7/7 não lendária;
+   - compra: Great Henge (com +1 contador), Garruk's Uprising, Temur
+     Ascendancy, Elemental Bond.
+5. **Alimenta o ataque da Ur-Dragon.** Enche a mão de permanentes caros
+   pro "put onto the battlefield" de cada ataque.
+6. **Formato:** não é Game Changer. Tutor de criatura é aceito em B3/B4.
+
+**Contras:**
+1. **"If you cast it".** Os 6 caminhos grátis do deck dão só um 7/7:
+   ataque da Ur-Dragon, Magda, Bladewing, Haunting Voyage, Sarkhan −8 e
+   cópia da Miirym. Na mesa, segure a Tiamat pra conjurar e nunca a
+   ponha pelo ataque da comandante, se houver outra opção.
+2. **Tira 5 Dragões da biblioteca.** Piora quem cava Dragão depois:
+   Herald's Horn (upkeep), sacrifício da Orb (topo 7) e Sarkhan Unbroken
+   −8.
+3. **Mão estoura.** São +5 cartas em T6–8. Mitigação: o Dragão
+   descartado vira alvo de Bladewing, Haunting Voyage e Haven.
+4. **Mais um 7 de mana numa curva já pesada.** Morta na mão inicial;
+   conjurada de fato em só 39% das partidas até o T8.
+5. **Se furar a fila, atrasa a comandante** (medido acima).
+6. **Revela 5 cartas** pra mesa.
+7. **US$ 22,91.**
+
+**Corte.** Os 4 cortes fracos empatam no simulador (+3,5 a +4,1pp, IC
+±0,8). O deck desempata:
+- **Dragonlord Dromoka:** manter. "Your opponents can't cast spells
+  during your turn" protege o turno inteiro de ataque da Ur-Dragon contra
+  remoção instantânea, fog e contramágica em QUALQUER magia. O modelo só
+  mede a contramágica na comandante: o valor dela é piso, não teto.
+- **Balefire Dragon:** manter. O wipe unilateral ao conectar é 📊 (board
+  de oponente), então também é piso.
+- **Bladewing the Risen:** manter. Com Tiamat, o descarte por mão cheia
+  alimenta a reanimação dela.
+- **Sarkhan Unbroken: cortar este.** Ele é o candidato com o valor
+  **inteiro** modelado (+1 compra/mana, −2 ficha, −8). Ainda assim é teto:
+  o modo de resiliência nunca ataca planeswalker neste arquivo. E compete
+  com a Tiamat pelo mesmo recurso, os Dragões na biblioteca que o −8 põe
+  em campo.
+- **Nunca** Courser, Ventmaw, Charger ou Farseek: ganho menor, e perde
+  tempo de comandante ou dano de comandante.
+
+**Veredito:** incluir a Tiamat no lugar do Sarkhan Unbroken. É a
+primeira candidata desta série cujo texto mede grande no Ur-Dragon (+9,3pp
+quando conjurada, contra ≈0 da Visitor). Na mesa:
+- fila normal (ramp e comandante primeiro);
+- Triumph → Tiamat quando as 5 cores estiverem prontas;
+- busca mista: Scourge, Terror, Gnawbone, Goldspan, Morophon; Throne em
+  campo → pegar os 10.
+Esta rodada **não altera `lista.md`**: a troca é decisão do usuário.
+
+Escopo (Regra #7):
+- 📊 que continua não medido: Dromoka além da contramágica, wipe da
+  Balefire, ward, bônus do oponente nas contramágicas.
+- Não varrido: ataque de oponente a planeswalker neste arquivo. Ele
+  favorece o Sarkhan Unbroken, então a recomendação de cortar o Sarkhan
+  fica de pé mesmo assim.
+
+---
+
 <!-- Copie o bloco acima para cada nova partida -->

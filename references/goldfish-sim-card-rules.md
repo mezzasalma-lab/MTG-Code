@@ -504,6 +504,14 @@ próprio shell, então o `pgrep` casou com ele e o `pkill` derrubou o shell
 junto (exit 144). Listar com `ps aux | grep ... | grep -v grep` e matar
 por PID.
 
+Reincidência (2026-09-28, mais 2×): `ps aux | grep "[a]b_x" | xargs kill`
+no MESMO comando que depois relança `nohup python3 ab_x ...` também mata o
+shell: o truque do colchete impede o grep de casar consigo mesmo, mas a
+linha do `bash -c` contém o nome do script por extenso mais adiante. Um
+laço `until ! pgrep -f "regress.py std"` também nunca termina, pelo mesmo
+motivo. Regra: **listar PIDs num comando, matar por número em OUTRO
+comando**; nunca listar/matar e relançar na mesma chamada.
+
 ## Efeito que transforma permanente em TERRENO não dá habilidade de mana
 
 Achado real (Toph, 2026-09-26). O simulador somava 1 de mana pra todo
@@ -539,6 +547,54 @@ Achado real (Toph, 2026-09-26). A fetch entra (landfall 1), é quebrada, e
 o terreno buscado entra (landfall 2). O simulador pulava a entrada da
 fetch. Além disso, "Search for a Mountain or Plains card" aceita qualquer
 carta com o TIPO, não só básico. Vale pra todo deck com landfall.
+
+## Checagem de cor: uma fonte paga UM pip (condição de Hall)
+
+Achado real (Ur-Dragon, 2026-09-28). `has_color_sources_for` checava cada
+cor sozinha. Um Command Tower contava como fonte de W, U, B, R e G ao
+mesmo tempo, então Command Tower + 5 Forest "pagava" WUBRG. O certo:
+- uma entrada por fonte pronta, com o conjunto de cores que ela produz;
+- pra todo subconjunto S das cores exigidas, pips(S) ≤ fontes que
+  produzem alguma cor de S.
+Mana restrita que é colorida conta como fonte só pro tipo de magia
+permitido: Orb of Dragonkind ("two mana in any combination of colors"),
+Cavern, Haven. Junto com "redução só abate genérico" (acima), é o par que
+decide se carta de 5 cores é conjurável.
+
+## "Look at the top N" nunca é busca na biblioteca inteira
+
+Achado real (Ur-Dragon, 2026-09-28). O sacrifício da Orb of Dragonkind
+("Look at the top seven cards ... reveal a Dragon card from among them")
+buscava na biblioteca inteira: virou tutor completo. O risco real da linha
+é o topo 7 vir sem alvo. Nesse caso a carta sai por nada, e o resto vai
+pro fundo na ordem que o oráculo manda.
+
+## Categoria nova no modo de resiliência reabre todo 📊 que citava a ausência dela
+
+Achado real (Ur-Dragon, 2026-09-28). Em 2026-08-29, Cavern of Souls
+("can't be countered"), Rhythm of the Wild, Dragonlord Dromoka ("Your
+opponents can't cast spells during your turn"), Heroic Intervention,
+Teferi's Protection e o shroud do Lightning Greaves foram marcados 📊
+"sem contramágica/remoção de oponente". Em 2026-09-20 o modo de
+resiliência ganhou contramágica, wipe e remoção, e ninguém voltou nessas
+cláusulas. Heroic e Teferi ficaram mortas na mão durante esses 8 dias
+de modo de resiliência.
+
+Regra: ao adicionar uma categoria de ação de oponente (contramágica,
+wipe, remoção, ataque, descarte, hate de cemitério) a qualquer simulador,
+grepar no MESMO arquivo toda nota 📊/`opponent_dependent`/`interaction`
+que cita essa categoria. Ligar as respostas no mesmo commit.
+Consequência pra A/B: a carta cujo valor está nessas cláusulas aparece
+subestimada. Cortar por esse número é o erro da Regra #5.
+
+## Política de descarte do cleanup antes da comandante
+
+Achado real (Ur-Dragon, 2026-09-28, avaliando a Tiamat). O descarte pegava
+o menor custo, terreno primeiro, mesmo antes da comandante de 9 estar em
+campo. Com uma carta que põe +5 na mão, isso jogava fora Herald's Horn e
+ramp pra guardar Dragão de 7. Carta que enche a mão só pode ser avaliada
+com uma política de descarte que proteja o plano. Conferir essa política
+antes de rodar A/B de tutor ou draw em massa.
 ---
 
 <!-- Adicionar novas entradas abaixo conforme surgirem cartas com efeitos

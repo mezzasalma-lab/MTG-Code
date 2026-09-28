@@ -200,6 +200,233 @@ def test_lethal_turn_set():
     assert found > 0
 
 
+def test_cost_reduction_only_generic():
+    # CR 601.2f: Scourge of Valkas {2}{R}{R}{R} com Eminence (-1) + Dragonspeaker (-2) = 3, nao 2
+    s = fresh()
+    put(s, "Dragonspeaker Shaman")
+    assert ud.effective_cost(s, "Scourge of Valkas") == 3
+    # Ur-Dragon {4}{W}{U}{B}{R}{G}: nunca abaixo de 5
+    put(s, "Dragonlord's Servant", "Urza's Incubator", "Herald's Horn")
+    assert ud.effective_cost(s, ud.COMMANDER) == 5
+    # Great Henge {7}{G}{G}: nunca abaixo de 2
+    put(s, "Atarka, World Render", "Old Gnawbone")
+    s.battlefield.append("Utvara Hellkite")
+    assert ud.effective_cost(s, "The Great Henge") >= 2
+
+
+def test_rhythm_of_the_wild_mv_3():
+    assert ud.CARD_DB["Rhythm of the Wild"].mv == 3
+
+
+def test_joint_color_check_hall():
+    s = fresh()
+    put(s, "Command Tower", "Forest", "Forest", "Forest", "Forest", "Forest")
+    assert not ud.has_color_sources_for(s, ud.COMMANDER)  # 1 fonte pra W/U/B/R
+    s = fresh()
+    put(s, "Command Tower", "Plains", "Island", "Swamp", "Mountain")
+    assert ud.has_color_sources_for(s, ud.COMMANDER)
+
+
+def test_tiamat_tutors_five_when_cast():
+    s = fresh(library=["Scourge of Valkas", "Forest", "Terror of the Peaks", "Lathliss, Dragon Queen",
+                       "Utvara Hellkite", "Old Gnawbone", "Goldspan Dragon"])
+    s.hand = ["Tiamat"]
+    put(s, "Command Tower", "Plains", "Island", "Swamp", "Mountain", "Forest")
+    ud.cast_card(s, "Tiamat")
+    assert s.tiamat_tutored_total == 5 and "Goldspan Dragon" not in s.hand and "Forest" not in s.hand
+
+
+def test_tiamat_put_onto_battlefield_does_not_tutor():
+    s = fresh(library=["Scourge of Valkas", "Terror of the Peaks"])
+    s.hand = ["Tiamat"]
+    ud.enter_battlefield(s, "Tiamat")
+    assert s.tiamat_tutored_total == 0 and "Scourge of Valkas" not in s.hand
+
+
+def test_ur_dragon_trigger_prefers_other_permanent_over_tiamat():
+    s = fresh(turn=6)
+    put(s, ud.COMMANDER)
+    s.commander_in_play = True
+    s.creature_cast_turn[ud.COMMANDER] = 1
+    s.hand = ["Tiamat", "Scourge of Valkas"]
+    ud.combat_step(s)
+    assert "Tiamat" in s.hand and "Scourge of Valkas" in s.battlefield
+
+
+def test_sarkhans_triumph_fetches_tiamat_with_five_colors():
+    s = fresh(library=["Utvara Hellkite", "Tiamat", "Scourge of Valkas"])
+    put(s, "Command Tower", "Plains", "Island", "Swamp", "Mountain")
+    ud.resolve_instant_sorcery(s, "Sarkhan's Triumph")
+    assert "Tiamat" in s.hand
+    s = fresh(library=["Utvara Hellkite", "Tiamat", "Scourge of Valkas"])
+    put(s, "Mountain", "Mountain", "Forest")
+    ud.resolve_instant_sorcery(s, "Sarkhan's Triumph")
+    assert "Utvara Hellkite" in s.hand
+
+
+def test_tiamat_waits_in_normal_queue_behind_ramp():
+    # politica escolhida por sensibilidade (goldfish-log 2026-09-28): ramp antes
+    s = fresh(library=["Scourge of Valkas", "Terror of the Peaks"] + [FILLER] * 20)
+    s.hand = ["Tiamat", "Farseek"]
+    put(s, "Command Tower", "Plains", "Island", "Swamp", "Mountain", "Forest", "Forest")
+    ud.main_phase(s)
+    assert "Farseek" not in s.hand and s.tiamat_casts == 0
+
+
+def test_orb_sacrifice_only_sees_top_seven():
+    s = fresh(library=[FILLER] * 7 + ["Utvara Hellkite"] + [FILLER] * 5)
+    put(s, "Orb of Dragonkind", "Mountain", "Forest")
+    ud.do_orb_dragonkind(s)
+    assert "Utvara Hellkite" not in s.hand and "Orb of Dragonkind" not in s.battlefield
+    assert s.library[0] == "Utvara Hellkite" and len(s.library) == 13
+    s = fresh(library=[FILLER] * 3 + ["Utvara Hellkite"] + [FILLER] * 5)
+    put(s, "Orb of Dragonkind", "Mountain", "Forest")
+    ud.do_orb_dragonkind(s)
+    assert "Utvara Hellkite" in s.hand and len(s.library) == 8
+
+
+def test_orb_mana_pays_commander_in_first_main_phase():
+    # 8 terrenos (5 cores) + Orb: 8 - 1 + 2 = 9 = custo da Ur-Dragon
+    s = fresh(turn=8)
+    put(s, "Orb of Dragonkind", "Command Tower", "Plains", "Island", "Swamp", "Mountain", "Forest", "Forest", "Forest")
+    assert not ud.can_cast(s, ud.COMMANDER)
+    ud.main_phase(s)
+    assert s.commander_in_play and s.orb_mana_activations_total == 1
+
+
+def test_orb_mana_counts_as_color_for_dragon_spells():
+    s = fresh()
+    put(s, "Forest", "Forest", "Forest", "Forest", "Forest")
+    s.dragon_mana_pool = 2
+    assert ud.has_color_sources_for(s, "Scourge of Valkas") is False  # RRR, so' 2 da Orb
+    assert not ud.has_color_sources_for(s, "Rhythm of the Wild")  # nao-Dragao: a Orb nao paga o {R}
+    put(s, "Mountain")
+    assert ud.has_color_sources_for(s, "Scourge of Valkas")
+
+
+
+
+def test_roaming_throne_doubles_tiamat_search():
+    lib = ["Scourge of Valkas", "Terror of the Peaks", "Lathliss, Dragon Queen", "Utvara Hellkite", "Old Gnawbone",
+           "Goldspan Dragon", "Atarka, World Render", "Hellkite Charger", "Savage Ventmaw", "Balefire Dragon", "Forest"]
+    s = fresh(library=lib)
+    s.hand = ["Tiamat"]
+    put(s, "Roaming Throne", "Command Tower", "Plains", "Island", "Swamp", "Mountain", "Forest", "Forest")
+    ud.cast_card(s, "Tiamat")
+    assert s.tiamat_tutored_total == 10 and s.library == ["Forest"]
+
+
+def test_haven_returns_tiamat_to_hand_when_dragons_remain():
+    s = fresh(library=["Scourge of Valkas"] + [FILLER] * 10)
+    s.graveyard = ["Utvara Hellkite", "Tiamat"]
+    put(s, ud.HAVEN_RECURSION_LAND, "Forest", "Forest", "Mountain")
+    ud.try_haven_recursion(s)
+    assert "Tiamat" in s.hand
+
+
+def test_sarkhans_triumph_needs_dragon_creature_card():
+    s = fresh(library=["Firdoch Core", FILLER])
+    ud.resolve_instant_sorcery(s, "Sarkhan's Triumph")
+    assert "Firdoch Core" not in s.hand
+
+
+def test_tiamat_can_fetch_changeling_dragon_cards():
+    # "Dragon cards" (nao "creature"): Firdoch Core/Morophon tem Changeling
+    s = fresh(library=["Firdoch Core", "Morophon, the Boundless", FILLER])
+    ud.tiamat_tutor(s)
+    assert "Firdoch Core" in s.hand and "Morophon, the Boundless" in s.hand
+
+
+def test_cleanup_keeps_lands_and_ramp_before_commander():
+    s = fresh()
+    s.hand = ["Forest", "Farseek", "Herald's Horn", "Scourge of Valkas", "Utvara Hellkite", "Old Gnawbone",
+              "Terror of the Peaks", "Atarka, World Render", "Goldspan Dragon"]
+    ud.end_step(s)
+    assert len(s.hand) == 7 and {"Forest", "Farseek", "Herald's Horn"} <= set(s.hand)
+    # com a comandante em campo, a ordem antiga (terreno primeiro) volta
+    s = fresh()
+    put(s, ud.COMMANDER); s.commander_in_play = True
+    s.hand = ["Forest", "Mountain", "Farseek", "Scourge of Valkas", "Utvara Hellkite", "Old Gnawbone",
+              "Terror of the Peaks", "Atarka, World Render"]
+    ud.end_step(s)
+    assert "Forest" not in s.hand or "Mountain" not in s.hand
+
+
+class _AlwaysRng:
+    def random(self):
+        return 0.0
+
+
+def test_counter_prevented_by_dromoka_rhythm_cavern():
+    for prot in ("Dragonlord Dromoka", "Rhythm of the Wild", "Cavern of Souls"):
+        s = fresh(turn=ud.INTERACTION_SETUP_TURNS + 2)
+        s.interaction_rng = _AlwaysRng()
+        put(s, prot)
+        assert ud.try_smart_opponent_counter(s) is False
+        assert s.counters_prevented_by == {prot: 1} and s.smart_counters_total == 0
+    s = fresh(turn=ud.INTERACTION_SETUP_TURNS + 2)
+    s.interaction_rng = _AlwaysRng()
+    assert ud.try_smart_opponent_counter(s) is True
+
+
+def test_own_counterspell_answers_the_counter():
+    s = fresh(turn=ud.INTERACTION_SETUP_TURNS + 2)
+    s.interaction_rng = _AlwaysRng()
+    s.hand = ["Swan Song"]
+    put(s, "Island")
+    assert ud.try_smart_opponent_counter(s) is False
+    assert "Swan Song" in s.graveyard and s.counters_answered_total == 1
+
+
+def test_dromoka_lifelink_in_combat():
+    s = fresh(turn=6)
+    put(s, "Dragonlord Dromoka", cast_turn=1)
+    life = s.life
+    ud.combat_step(s)
+    assert s.life == life + 5 and s.dromoka_lifelink_total == 5
+
+
+def test_heroic_intervention_answers_wipe_that_hits_commander():
+    s = fresh(turn=ud.INTERACTION_SETUP_TURNS + 2)
+    s.interaction_rng = ud.random.Random(0)
+    put(s, ud.COMMANDER, "Scourge of Valkas", "Forest", "Forest")
+    s.commander_in_play = True
+    s.hand = ["Heroic Intervention"]
+    assert ud.try_protection_response(s, "wipe", [ud.COMMANDER, "Scourge of Valkas"])
+    assert "Heroic Intervention" in s.graveyard and ud.COMMANDER in s.battlefield
+
+
+def test_teferis_protection_covers_rest_of_round():
+    s = fresh(turn=ud.INTERACTION_SETUP_TURNS + 2)
+    put(s, ud.COMMANDER, "Plains", "Forest", "Forest")
+    s.hand = ["Teferi's Protection"]
+    assert ud.try_protection_response(s, "wipe", [ud.COMMANDER])
+    assert s.teferi_protected and "Teferi's Protection" not in s.graveyard
+    s.interaction_rng = _AlwaysRng()
+    s.interaction_rng.choice = lambda seq: seq[-1]
+    life = s.life
+    ud.try_smart_opponent_attack(s)
+    assert s.life == life
+
+
+def test_small_wipe_not_answered_and_no_mana_no_answer():
+    s = fresh()
+    put(s, "Forest", "Forest")
+    s.hand = ["Heroic Intervention"]
+    assert not ud.try_protection_response(s, "wipe", ["Birds of Paradise"])
+    s.mana_spent_this_turn = 2
+    assert not ud.try_protection_response(s, "wipe", [ud.COMMANDER])
+
+
+def test_greaves_shroud_redirects_removal():
+    s = fresh(turn=ud.INTERACTION_SETUP_TURNS + 2)
+    s.interaction_rng = _AlwaysRng()
+    put(s, "Roaming Throne", "Scourge of Valkas", "Lightning Greaves")
+    s.lightning_greaves_equipped_to = "Roaming Throne"
+    assert ud.try_smart_opponent_removal(s) == "Scourge of Valkas"
+    assert "Roaming Throne" in s.battlefield
+
+
 def run_all():
     tests = [(n, f) for n, f in sorted(globals().items()) if n.startswith("test_") and callable(f)]
     failed = 0

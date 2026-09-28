@@ -1,5 +1,142 @@
 # Checklist cláusula-a-cláusula — The Ur-Dragon (`urdragon_goldfish_v1.py`)
 
+## Tiamat (candidata) + modelo de custo, Orb, descarte e resiliência corrigidos — 2026-09-28
+
+**Gatilho:** *"Avalia os prós e contras de incluir Tiamat no Ur-Dragon, a
+carta está em anexo para facilitar"*. A Tiamat custa WUBRG e tutora. Pra
+comparar de forma justa, o modelo de custo e de cores do arquivo foi
+relido inteiro. Depois vieram os caminhos que buscam Dragão e o modo de
+resiliência, onde estão os cortes candidatos. Os achados de base vieram
+antes da carta.
+
+### 🐛 Corrigido na base (afeta a lista atual)
+
+| # | Carta / conceito | Cláusula real | Antes | Agora |
+|---|---|---|---|---|
+| 1 | Todo redutor (Eminence, Dragonlord's Servant, Dragonspeaker Shaman, Sarkhan Soul Aflame, Herald's Horn, Urza's Incubator, Radagast, Great Henge) | CR 601.2f: redução abate só mana **genérica** | descontava do valor de mana inteiro: Scourge de Valkas ({2}{R}{R}{R}) com Eminence + Dragonspeaker saía por 2; a Ur-Dragon podia custar menos que WUBRG | `effective_cost`: genérico − desconto + pips (menos o que o Morophon tira) |
+| 2 | Checagem de cor (`has_color_sources_for`) | uma fonte paga **um** pip | cada cor checada sozinha: Command Tower + 5 Forest "pagava" WUBRG | condição de Hall sobre `source_color_sets` (uma entrada por fonte pronta) |
+| 3 | Rhythm of the Wild | `{1}{R}{G}` | mv 2 | mv 3 |
+| 4 | Sarkhan's Triumph | "Search your library for a Dragon **creature** card" | podia pegar Firdoch Core (Kindred Artifact, Changeling: é Dragon card, não criatura) | exige criatura |
+| 5 | Orb of Dragonkind, sacrifício | "Look at the **top seven** cards ... Put the rest on the bottom ... in a random order" | buscava na biblioteca inteira (tutor completo) | só o topo 7; sem Dragão lá, a Orb sai por nada; o resto vai pro fundo embaralhado |
+| 6 | Orb of Dragonkind, mana | "Add two mana in any combination of **colors**. Spend this mana only to cast Dragon spells" | contava só quantidade, nunca cor | cada mana do pool paga um pip de qualquer cor em magia de Dragão |
+| 7 | Orb × comandante (Regra #6) | idem, sem "other": vale pra Ur-Dragon | a Orb só era ativada DEPOIS da checagem da comandante e só com Dragão na mão (a comandante fica na zona de comando) | `try_orb_mana_for_commander` antes da checagem, só quando isso torna a comandante conjurável |
+| 8 | Descarte no cleanup | — (política) | menor custo primeiro, terreno antes de tudo, mesmo antes da comandante de 9 estar em campo | antes da comandante, terreno/ramp/redutor só saem se não sobrar outra carta |
+| 9 | Dragonlord Dromoka | "Your opponents can't cast spells during your turn." | 📊 "sem contramágica de oponente" — mas o modo de resiliência TEM contramágica na Ur-Dragon desde 2026-09-20 | impede a contramágica (`counters_prevented_by`) |
+| 10 | Rhythm of the Wild | "Creature spells you control can't be countered." | idem | idem |
+| 11 | Cavern of Souls (Dragão) | "...and that spell can't be countered" | idem | idem (a Ur-Dragon precisa de WUBRG, a Cavern paga um pip) |
+| 12 | Swan Song / Arcane Denial / An Offer You Can't Refuse | "Counter target instant ... / spell / noncreature spell" | nunca respondiam à contramágica deles | respondem se houver mana e cor sobrando (`counters_answered_total`); o bônus do oponente (2/2, 2 cartas, 2 Treasures) fica 📊 |
+| 13 | Heroic Intervention | "Permanents you control gain hexproof and indestructible until end of turn." | fora do loop guloso E fora de `TRUE_INTERACTION_CARDS`: nunca saía da mão | responde a wipe (se leva a comandante ou 3+ permanentes) e a remoção pontual, com a mana que sobrou do meu turno |
+| 14 | Teferi's Protection | "Until your next turn, your life total can't change and you gain protection from everything. All permanents you control phase out. Exile ..." | idem | responde a wipe; anula ataque/remoção até o meu próximo turno; vai pro exílio |
+| 15 | Lightning Greaves | "Equipped creature has shroud" | 📊 "sem remoção alheia" — o modo de resiliência tem remoção pontual | o oponente mira a próxima peça da lista |
+| 16 | Dragonlord Dromoka | "Flying, lifelink" | lifelink nunca somado | ganha o dano dela no combate (Atarka e Twinflame contam) |
+
+Os itens 9–15 são exatamente a Regra #7, item 2. A justificativa 📊 era
+verdadeira em 2026-08-29. Deixou de ser em 2026-09-20, quando o modo de
+resiliência ganhou contramágica, wipe e remoção de oponente, e ninguém
+voltou nessas cláusulas. Os itens 9, 10 e 16 mexem direto num corte
+candidato (Dromoka), por isso entraram antes do A/B.
+
+### Tiamat — oráculo ao vivo (Scryfall + rulings, salvo no oracle-cache)
+
+`{2}{W}{U}{B}{R}{G}` Legendary Creature — Dragon God 7/7. Commander
+legal, não é Game Changer, US$ 22,91.
+
+| Cláusula | Status | Onde |
+|---|---|---|
+| Flying | ✅ | `FLYING_CREATURES` (haste do Dragon Tempest) |
+| Legendary | ✅ | `LEGENDARY_SPELLS`; cópia da Miirym "isn't legendary" |
+| Dragon (tipo) | ✅ | tag `dragon`: Eminence e redutores, Scourge/Tempest/Terror/Lathliss/Miirym, ataque da Ur-Dragon, Haven/Cavern/Courtyard/Orb pagam pips |
+| "When Tiamat enters, **if you cast it**, search your library for up to five Dragon cards not named Tiamat that each have different names, reveal them, put them into your hand, then shuffle." | ✅ | `tiamat_tutor`, chamada só em `cast_card`. Entrada grátis (ataque da Ur-Dragon, Magda, Bladewing, Haunting Voyage, Sarkhan Unbroken −8, cópia da Miirym) não busca |
+| — "Dragon cards" (não "creature") | ✅ | `is_dragon_card`: Firdoch Core e Morophon (Changeling) entram; Roaming Throne na biblioteca não (ruling de 2026-09-14) |
+| — ruling: dispara se conjurada de qualquer zona | ✅ | só há conjuração da mão neste deck |
+| Roaming Throne (Dragão) dobra o gatilho | ✅ | `roaming_throne_times`: até 10 Dragões |
+
+Linhas de pilotagem (Regra #5), cada uma com teste:
+- **Ordem de conjuração:** fila normal (ramp e comandante antes). Foi
+  testada contra "Tiamat antes de tudo": o ganho de letal é igual e a
+  comandante não atrasa (ver `goldfish-log.md`).
+- **Sarkhan's Triumph** busca a Tiamat quando as 5 cores já estão
+  disponíveis. É instantânea: 1 tutor vira 6 Dragões.
+- **Haven of the Spirit Dragon** devolve a Tiamat pra mão, se ainda houver
+  Dragão na biblioteca. Reconjurar busca mais 5.
+- **Magda (5 Treasures)** e o **ataque da Ur-Dragon** evitam pôr a Tiamat
+  em campo: "put onto the battlefield" não é conjurar. Só a usam quando
+  não há outra opção.
+- 📝 Ordem do tutor: lista fixa pelos motores de dano (Scourge, Terror,
+  Lathliss, Miirym, Utvara...). A alternativa "mana primeiro" foi testada
+  em `goldfish-log.md`.
+- 📝 Bladewing/Haunting Voyage devolvem por maior MV. Podem devolver a
+  Tiamat sem busca: é regra, não bug.
+
+### Escopo desta rodada (Regra #7)
+
+Varrido, com método:
+- **Custo e redução:** `effective_cost` inteiro e todo redutor da lista.
+  Método: leitura + teste dirigido.
+- **Checagem de cor:** `has_color_sources_for` e `source_color_sets`.
+  Método: leitura + teste dirigido.
+- **Todo caminho que busca ou põe Dragão:** Triumph, Orb, Magda, Haven,
+  Sarkhan −8, Bladewing, Voyage, ataque da Ur-Dragon e Tiamat. Método:
+  grep + leitura + teste.
+- **Toda cláusula 📊 "sem oponente" contra o que o modo de resiliência já
+  modela** (contramágica, wipe, remoção, ataque). Método: grep de
+  `opponent_dependent`/`interaction` + leitura das 7 funções
+  `try_smart_opponent_*` + teste.
+- **Descarte de cleanup.** Método: trace de partida + medição + teste.
+
+Não varrido nesta rodada:
+- as outras classes da taxonomia nas 99 cartas (Saga, custo alternativo,
+  gatilho compartilhado de morte/sacrifício, doença de invocação em
+  `{T}`);
+- o `urdragon_goldfish_physical_v1.py`.
+
+📊 que continua estrutural:
+- ward {2} da Miirym e do Roaming Throne e as 3 vidas do Terror of the
+  Peaks: é mana/vida do oponente, que não é modelada;
+- o bônus que Swan Song, Arcane Denial e An Offer dão ao oponente;
+- "This spell can't be countered" da própria Dromoka: a contramágica do
+  modelo só mira a Ur-Dragon.
+
+📝 simplificações:
+- a checagem de cor não sabe quais fontes já foram viradas no turno (o
+  modelo separa mana total de cor, igual antes);
+- a proteção do Teferi contra descarte não é modelada.
+
+### Validação
+
+- Smoke: 99 cartas; com a troca, 99 com Tiamat e sem o corte; 0
+  desconhecidas, 0 duplicadas.
+- `test_urdragon_goldfish.py`: 41/41. São 23 testes novos:
+  - custo só genérico;
+  - Rhythm mv 3;
+  - Hall;
+  - Tiamat busca 5 só conjurada, não pelo ataque da Ur-Dragon e não via
+    `enter_battlefield`;
+  - Changeling conta como "Dragon card";
+  - Throne dobra pra 10;
+  - Haven devolve Tiamat;
+  - Triumph busca Tiamat (com e sem 5 cores);
+  - Triumph só criatura;
+  - fila normal;
+  - Orb topo 7;
+  - Orb paga a comandante na main 1;
+  - Orb como cor;
+  - descarte protege ramp;
+  - Dromoka/Rhythm/Cavern impedem contramágica;
+  - Swan Song responde;
+  - lifelink;
+  - Heroic responde wipe;
+  - Teferi cobre a rodada;
+  - wipe pequeno ou sem mana não é respondido;
+  - Greaves redireciona remoção.
+- 20.000 + 20.000 partidas da lista (padrão + resiliência, seed
+  7.600.000+): 0 exceções.
+- 20.000 + 20.000 partidas com Tiamat no lugar da Dromoka: 0 exceções,
+  12.488 conjurações, 55.276 Dragões buscados (4,4 por conjuração).
+- Antes/depois em 2.000 seeds, por correção: `goldfish-log.md`.
+
+---
+
 ## Fichas de Dragão viram criaturas de verdade + Draconic Visitor (candidata FRA) — 2026-09-25
 
 **Gatilho:** avaliar a Draconic Visitor pro Ur-Dragon e pro Vihaan. Pra

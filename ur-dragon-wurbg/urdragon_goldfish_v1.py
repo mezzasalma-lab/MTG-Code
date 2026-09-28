@@ -619,7 +619,9 @@ add("Lightning Greaves", 2, "artifact", {"interaction"})
 # justificado citando so' a redundancia do riot/haste - a protecao contra
 # contramagia e' unica no deck (nenhuma outra carta faz isso) e nunca foi
 # pesada na decisao, mesmo nao sendo mensuravel aqui.
-add("Rhythm of the Wild", 2, "enchantment", {"opponent_dependent"}, pips={"R": 1, "G": 1})
+# CORRIGIDO 2026-09-28 (auditoria de custo contra o Scryfall ao vivo): mv era 2,
+# custo real {1}{R}{G} = 3.
+add("Rhythm of the Wild", 3, "enchantment", {"opponent_dependent"}, pips={"R": 1, "G": 1})
 add("Smothering Tithe", 4, "enchantment", {"treasure_tax"}, pips={"W": 1})
 # Achado 2026-08-30 (pedido explicito do usuario): estava opponent_dependent
 # com zero efeito. Implementada em upkeep_step() com a mesma premissa fixa
@@ -639,6 +641,16 @@ add("Roaming Throne", 4, "artifact_creature", {ROAMING_THRONE_TYPE, "roaming_thr
 # Copper Dragon, Old Gnawbone, Goldspan Dragon, Smothering Tithe, Magda) --
 # ver `create_and_use_treasures`/`do_magda_treasures`.
 add("Draconic Visitor", 5, "creature", {"dragon", "draconic_visitor"}, power=5, pips={"R": 2})
+# Tiamat (candidata, 2026-09-28, NAO esta na lista.md -- so' via swap):
+# {2}{W}{U}{B}{R}{G} Legendary Creature -- Dragon God 7/7, Flying. "When
+# Tiamat enters, if you cast it, search your library for up to five Dragon
+# cards not named Tiamat that each have different names, reveal them, put
+# them into your hand, then shuffle." (oraculo ao vivo + rulings: dispara se
+# conjurada de qualquer zona; "Dragon card" = tipo Dragon na linha de tipo).
+# 📝 Ordem de conjuracao: fila normal (ramp e comandante antes). Testado
+# 2026-09-28 contra "Tiamat antes de tudo": mesmo ganho de letal, sem
+# atrasar a comandante (goldfish-log, secao Tiamat).
+add("Tiamat", 7, "creature", {"dragon", "tiamat"}, power=7, pips={"W": 1, "U": 1, "B": 1, "R": 1, "G": 1})
 
 ARTIFACT_ISH = {"artifact", "artifact_creature"}
 CREATURE_ISH = {"creature", "artifact_creature"}
@@ -697,7 +709,7 @@ FLYING_CREATURES = {
     "Klauth, Unrivaled Ancient", "Lathliss, Dragon Queen",
     "Miirym, Sentinel Wyrm", "Old Gnawbone", "Savage Ventmaw",
     "Scourge of Valkas", "Terror of the Peaks", "Twinflame Tyrant",
-    "Utvara Hellkite", "Draconic Visitor",
+    "Utvara Hellkite", "Draconic Visitor", "Tiamat",
 }
 
 # Achado real 2026-08-27 (revisao pedida pelo usuario, "revise tudo de
@@ -711,7 +723,7 @@ LEGENDARY_SPELLS = {
     "Dragonlord Dromoka", "Klauth, Unrivaled Ancient", "Lathliss, Dragon Queen",
     "Ruby, Daring Tracker", "Miirym, Sentinel Wyrm", "Old Gnawbone",
     "Ramos, Dragon Engine", "Sarkhan, Soul Aflame", "The Great Henge",
-    "Morophon, the Boundless",
+    "Morophon, the Boundless", "Tiamat",
 }
 
 
@@ -801,6 +813,8 @@ class GameState:
     scourge_pump_this_turn: int = 0           # Scourge of Valkas {R}: +1/+0 so' nela
     visitor_dragons_total: int = 0            # candidata Draconic Visitor (so' via swap)
     visitor_mana_lost_total: int = 0          # mana de Treasure que deixou de existir (virou Dragao)
+    tiamat_casts: int = 0                     # candidata Tiamat (so' via swap)
+    tiamat_tutored_total: int = 0
     dragon_token_cap_hits: int = 0
     lethal_proxy_turn: Optional[int] = None   # 1o turno com dano acumulado (ETB + combate) >= 120 (3 oponentes x 40), proxy
 
@@ -824,12 +838,18 @@ class GameState:
     smart_discards_total: int = 0
     smart_discard_log: list = field(default_factory=list)
     smart_counters_total: int = 0
+    counters_prevented_total: int = 0         # Dromoka / Rhythm / Cavern impediram
+    counters_prevented_by: dict = field(default_factory=dict)
+    counters_answered_total: int = 0          # Swan Song / Arcane Denial / An Offer responderam
+    dromoka_lifelink_total: int = 0
     smart_counter_log: list = field(default_factory=list)
     smart_graveyard_wipes_total: int = 0
     smart_graveyard_wipe_log: list = field(default_factory=list)
     graveyard_wipe_used: bool = False
     smart_graveyard_snipes_total: int = 0
     smart_graveyard_snipe_log: list = field(default_factory=list)
+    teferi_protected: bool = False            # Teferi's Protection: "until your next turn"
+    protection_responses: dict = field(default_factory=dict)
     wiped_this_round: bool = False  # achado real do usuario 2026-09-20 (2a rodada): board wipe e' simetrico -- vale pra toda a rodada, nao so' o turno do oponente que fez o wipe. Reset em simulate_one_with_interaction() no inicio de cada rodada. Mesmo padrao do Megatron.
 
 
@@ -1278,14 +1298,50 @@ def has_color_sources_for(state: GameState, name: str) -> bool:
     discount = morophon_pip_discount(state, name)
     dragon_creature = is_dragon(name) and is_creature_card(name)
     legendary = is_legendary(name)
-    for color, needed in pips.items():
-        needed -= discount.get(color, 0)
-        if needed <= 0:
-            continue
-        if color_sources(state, color, dragon_creature_spell=dragon_creature,
-                          legendary_spell=legendary) < needed:
+    need = {c: n - discount.get(c, 0) for c, n in pips.items() if n - discount.get(c, 0) > 0}
+    if not need:
+        return True
+    # CORRIGIDO 2026-09-28: antes cada cor era checada SOZINHA -- um Command
+    # Tower contava como fonte de W, U, B, R e G ao mesmo tempo, entao {W}{U}{B}{R}{G}
+    # (Ur-Dragon, Tiamat) passava com 1 fonte de 5 cores + 4 basicos iguais.
+    # Uma fonte paga UM pip: condicao de Hall -- pra todo subconjunto S das
+    # cores exigidas, pips(S) <= fontes que produzem alguma cor de S.
+    sets = source_color_sets(state, dragon_creature, legendary)
+    if is_dragon(name):
+        # CORRIGIDO 2026-09-28: Orb of Dragonkind "Add two mana in any
+        # combination of colors. Spend this mana only to cast Dragon spells"
+        # -- cada mana do pool paga um pip de qualquer cor.
+        sets += [set("WUBRG")] * state.dragon_mana_pool
+    colors = list(need)
+    for mask in range(1, 1 << len(colors)):
+        sub = {colors[i] for i in range(len(colors)) if mask >> i & 1}
+        if sum(need[c] for c in sub) > sum(1 for src in sets if src & sub):
             return False
     return True
+
+
+def source_color_sets(state: GameState, dragon_creature_spell: bool = False, legendary_spell: bool = False) -> list:
+    """Uma entrada por fonte de mana COLORIDA pronta (mesmos filtros de
+    `color_sources`): o conjunto de cores que ela pode produzir."""
+    out = []
+    ready = set(ready_creatures(state))
+    for card in state.battlefield:
+        base = card.split(" (copia)")[0]
+        if base not in CARD_DB or base == state.tapped_land_this_turn:
+            continue
+        c = CARD_DB[base]
+        if dragon_creature_spell and base in DRAGON_ANY_COLOR_LANDS:
+            produces = set("WUBRG")
+        elif legendary_spell and base == "Delighted Halfling":
+            produces = set("WUBRG")
+        else:
+            produces = set(c.produces)
+        if not produces:
+            continue
+        if is_creature_card(base) and card not in ready and base not in LAND_NAMES:
+            continue
+        out.append(produces)
+    return out
 
 
 def dragon_discount_self(state: GameState) -> int:
@@ -1343,21 +1399,32 @@ def effective_cost(state: GameState, name: str) -> int:
     fora dessa conta de proposito (checados a parte em
     has_color_sources_for, porque desconto de custo NUNCA reduz pip
     colorido, so mana generica — regra real)."""
-    mv = CARD_DB[name].mv
+    # CORRIGIDO 2026-09-28 (CR 601.2f, `references/goldfish-sim-card-rules.md`
+    # "Reducao de custo so' abate mana GENERICO"): os redutores (Eminence,
+    # Dragonlord's Servant, Dragonspeaker Shaman, Sarkhan Soul Aflame, Herald's
+    # Horn, Urza's Incubator, Radagast, Great Henge) eram descontados do valor
+    # de mana INTEIRO -- Scourge of Valkas ({2}{R}{R}{R}) com Eminence +
+    # Dragonspeaker custava 2 em vez de 3; a Ur-Dragon podia sair por menos
+    # que {W}{U}{B}{R}{G}. Agora: pips sempre pagos (menos o que o Morophon
+    # tira), desconto so' no generico.
+    card = CARD_DB[name]
+    pip_total = sum(card.pips.values())
+    generic = card.mv - pip_total
+    morophon_d = sum(morophon_pip_discount(state, name).values())
+    colored = pip_total - morophon_d
     if name == "The Great Henge":
         powers = [effective_power(state, n) for n in state.battlefield if is_creature_card(n)]
         x = max(powers) if powers else 0
-        return max(0, mv - x)
+        return max(0, generic - x) + colored
     first_creature_d = 0
     if (is_creature_card(name) and "Radagast of Rhosgobel" in state.battlefield
             and not state.first_creature_used_this_turn):
         first_creature_d = 2
-    morophon_d = sum(morophon_pip_discount(state, name).values())
     if name == COMMANDER:
-        return max(0, mv - dragon_discount_self(state) - first_creature_d - morophon_d)
+        return max(0, generic - dragon_discount_self(state) - first_creature_d) + colored
     if is_dragon(name):
-        return max(0, mv - dragon_discount_others(state, name) - first_creature_d - morophon_d)
-    return max(0, mv - first_creature_d)
+        return max(0, generic - dragon_discount_others(state, name) - first_creature_d) + colored
+    return max(0, generic - first_creature_d) + colored
 
 
 def can_cast(state: GameState, name: str) -> bool:
@@ -1627,9 +1694,15 @@ def resolve_instant_sorcery(state: GameState, name: str):
             state.sarkhan_triumph_cast_total += 1
             if not any(is_dragon_card(c) and is_creature_card(c) for c in state.hand):
                 state.sarkhan_triumph_hand_had_no_dragon += 1
-        pool = [n for n in state.library if is_dragon_card(n)]
+        # CORRIGIDO 2026-09-28: "Dragon CREATURE card" -- Firdoch Core
+        # (Kindred Artifact com Changeling) e' Dragon card mas nao criatura.
+        pool = [n for n in state.library if is_dragon_card(n) and is_creature_card(n)]
         if pool:
             best = max(pool, key=lambda n: CARD_DB[n].mv)
+            # Candidata Tiamat (so' via swap): a linha real e' Triumph ->
+            # Tiamat -> +5 Dragoes, quando as 5 cores ja estao disponiveis.
+            if "Tiamat" in pool and has_color_sources_for(state, "Tiamat"):
+                best = "Tiamat"
             state.library.remove(best)
             state.hand.append(best)
             state.tutors_used_total += 1
@@ -1655,6 +1728,26 @@ def resolve_instant_sorcery(state: GameState, name: str):
         reanimate_dragons_from_graveyard(state, limit=2)
 
 
+def try_orb_mana_for_commander(state: GameState):
+    """CORRIGIDO 2026-09-28 (Regra #6, ordem de chamadas): a Orb so' era
+    ativada DEPOIS da checagem da comandante, e so' com Dragao na MAO (a
+    comandante fica na zona de comando). A mana dela ("Spend this mana only
+    to cast Dragon spells" -- sem "other", vale pra Ur-Dragon) nunca ajudava
+    a conjurar a comandante na 1a fase principal. Agora: ativa antes, e so'
+    se isso torna a comandante conjuravel."""
+    if ("Orb of Dragonkind" not in state.battlefield or state.orb_dragonkind_used_this_turn
+            or remaining_mana(state) < 1):
+        return
+    spend_mana(state, 1)
+    state.dragon_mana_pool += 2
+    if can_cast(state, COMMANDER):
+        state.orb_dragonkind_used_this_turn = True
+        state.orb_mana_activations_total += 1
+    else:
+        state.dragon_mana_pool -= 2
+        state.mana_spent_this_turn -= 1
+
+
 def do_orb_dragonkind(state: GameState):
     """Orb of Dragonkind: '{1}, {T}: Add two mana in any combination of
     colors. Spend this mana only to cast Dragon spells or activate
@@ -1674,15 +1767,25 @@ def do_orb_dragonkind(state: GameState):
         state.dragon_mana_pool += 2
         state.orb_mana_activations_total += 1
     else:
-        pool = [n for n in state.library if is_dragon_card(n)]
-        if not pool:
+        # CORRIGIDO 2026-09-28: "Look at the top SEVEN cards of your library.
+        # You may reveal a Dragon card from among them ... Put the rest on the
+        # bottom of your library in a random order." Antes buscava na
+        # biblioteca inteira (tutor completo). Sem Dragao no topo 7, a Orb
+        # e' sacrificada por nada -- risco real da linha.
+        if not state.library:
             return
-        best = max(pool, key=lambda n: CARD_DB[n].mv)
-        state.library.remove(best)
-        state.hand.append(best)
+        top = state.library[:7]
+        del state.library[:7]
+        pool = [n for n in top if is_dragon_card(n)]
+        if pool:
+            best = max(pool, key=lambda n: CARD_DB[n].mv)
+            top.remove(best)
+            state.hand.append(best)
+            state.tutors_used_total += 1
+        random.Random(state.turn * 7919 + len(state.library)).shuffle(top)
+        state.library.extend(top)
         spend_mana(state, 1)
         state.battlefield.remove("Orb of Dragonkind")
-        state.tutors_used_total += 1
     state.orb_dragonkind_used_this_turn = True
 
 
@@ -1726,6 +1829,41 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True, count
         creature_etb_hooks(state, name)
     if is_dragon(name):
         dragon_enters(state, name, is_token=False)
+
+
+# Tiamat: quais 5 Dragoes buscar -- pelos motores do deck (Regra #4): dano de
+# ETB que escala com Dragoes primeiro, depois geradores de ficha/copia, depois
+# mana/valor em ataque, depois corpos. 📝 politica fixa (nao olha a mao/campo
+# alem de "ainda esta' na biblioteca").
+TIAMAT_TUTOR_PRIORITY = (
+    "Scourge of Valkas", "Terror of the Peaks", "Lathliss, Dragon Queen", "Miirym, Sentinel Wyrm",
+    "Utvara Hellkite", "Old Gnawbone", "Goldspan Dragon", "Atarka, World Render",
+    "Ancient Copper Dragon", "Klauth, Unrivaled Ancient", "Twinflame Tyrant", "Hellkite Charger",
+    "Ancient Gold Dragon", "Savage Ventmaw", "Balefire Dragon", "Dragon Broodmother",
+    "Morophon, the Boundless", "Bladewing the Risen", "Dragonlord Dromoka", "Hellkite Courser",
+)
+
+
+def tiamat_tutor(state: GameState):
+    """"search your library for up to five Dragon cards not named Tiamat
+    that each have different names ... put them into your hand" -- so' quando
+    CONJURADA (cast_card). Entrada gratis (ataque da Ur-Dragon, Magda,
+    Bladewing, Haunting Voyage, Sarkhan Unbroken -8, copia da Miirym) NAO
+    dispara."""
+    order = [n for n in TIAMAT_TUTOR_PRIORITY if n in state.library]
+    order += sorted({n for n in state.library if is_dragon_card(n) and n != "Tiamat"} - set(order),
+                    key=lambda n: -CARD_DB[n].mv)
+    picked = []
+    for n in order:
+        if n != "Tiamat" and n not in picked:
+            picked.append(n)
+        if len(picked) == 5:
+            break
+    for n in picked:
+        state.library.remove(n)
+        state.hand.append(n)
+    state.tiamat_tutored_total += len(picked)
+    state.tutors_used_total += 1
 
 
 def cast_card(state: GameState, name: str):
@@ -1784,6 +1922,13 @@ def cast_card(state: GameState, name: str):
         return
 
     enter_battlefield(state, name, from_hand=False)
+    if name == "Tiamat":
+        state.tiamat_casts += 1
+        # Roaming Throne (tipo Dragon): Tiamat e' "another creature you
+        # control of the chosen type" -> o gatilho de busca dispara 2x
+        # (cada resolucao busca ate' 5 nomes diferentes de novo).
+        for _ in range(roaming_throne_times(state)):
+            tiamat_tutor(state)
 
 
 def play_land(state: GameState):
@@ -1844,6 +1989,8 @@ def check_color_screw(state: GameState):
 
 
 def main_phase(state: GameState):
+    if not state.commander_in_play and not can_cast(state, COMMANDER):
+        try_orb_mana_for_commander(state)
     if not state.commander_in_play and can_cast(state, COMMANDER):
         cast_card(state, COMMANDER)
 
@@ -2009,6 +2156,9 @@ def try_haven_recursion(state: GameState):
     spend_mana(state, 2)
     state.battlefield.remove(HAVEN_RECURSION_LAND)
     best = max(targets, key=lambda n: CARD_DB[n].mv)
+    if "Tiamat" in targets and any(is_dragon_card(n) and n != "Tiamat" for n in state.library):
+        # Candidata (so' via swap): volta pra MAO -> reconjurar busca mais 5.
+        best = "Tiamat"
     state.graveyard.remove(best)
     state.hand.append(best)
     state.haven_recursion_total += 1
@@ -2082,7 +2232,9 @@ def do_magda_treasures(state: GameState):
         pool = [n for n in state.library if is_dragon(n) or is_artifact_card(n)]
         if not pool:
             break
-        best = max(pool, key=lambda n: CARD_DB[n].mv)
+        # Candidata Tiamat (so' via swap): "put onto the battlefield" nao e'
+        # conjurar -> a busca dos 5 nao dispara; so' como ultima opcao.
+        best = max(pool, key=lambda n: (n != "Tiamat", CARD_DB[n].mv))
         state.library.remove(best)
         enter_battlefield(state, best, from_hand=False)
         state.tutors_used_total += 1
@@ -2169,6 +2321,11 @@ def combat_step(state: GameState):
                 draw_cards(state, n_attacking)
                 state.urdragon_attack_draws_total += n_attacking
                 permanents_in_hand = [c for c in state.hand if CARD_DB[c].ctype != "instant" and CARD_DB[c].ctype != "sorcery"]
+                # Tiamat so' busca os 5 Dragoes se CONJURADA: por de graca aqui joga o
+                # tutor fora. So' entra por aqui se for a unica opcao e nao der pra
+                # conjura-la neste turno (linha deliberada, Regra #5).
+                if "Tiamat" in permanents_in_hand and (len(permanents_in_hand) > 1 or can_cast(state, "Tiamat")):
+                    permanents_in_hand = [c for c in permanents_in_hand if c != "Tiamat"]
                 if permanents_in_hand:
                     best = max(permanents_in_hand, key=lambda n: effective_cost(state, n) if n not in LAND_NAMES else 0)
                     state.hand.remove(best)
@@ -2245,6 +2402,20 @@ def combat_step(state: GameState):
         if "Twinflame Tyrant" in state.battlefield:
             combat_dmg *= 2
         state.combat_damage_proxy_total += combat_dmg
+        if "Dragonlord Dromoka" in attacking_dragons:
+            # CORRIGIDO 2026-09-28: "Flying, lifelink" -- o lifelink nunca era
+            # somado. Ganha o dano que ELA causa (double strike da Atarka e
+            # dobra da Twinflame contam).
+            gain = (effective_power(state, "Dragonlord Dromoka") + pump) * (2 if atarka_double_strike else 1)
+            if "Twinflame Tyrant" in state.battlefield:
+                gain *= 2
+            state.life += gain
+            state.dromoka_lifelink_total += gain
+
+
+# Ramp e redutores de custo de Dragao: o que leva a comandante de 9 pra mesa.
+SETUP_TAGS = {"rock1", "rock2", "rock_any", "land_tutor1", "land_tutor2", "land_tutor2_direct",
+              "dork_flat1", "dragon_discount1", "dragon_discount2"}
 
 
 def end_step(state: GameState):
@@ -2268,8 +2439,19 @@ def end_step(state: GameState):
         # proximo turno (entram "neste" turno, prontas pra atacar no
         # proximo). Devour: politica nunca devora (📝, nao sacrifica corpo).
         create_dragon_tokens(state, NUM_OPPONENTS * roaming_throne_times(state), 1, source="broodmother_opp_upkeep")
+    # CORRIGIDO 2026-09-28 (achado na avaliacao da Tiamat, Regra #5): o
+    # descarte de cleanup pegava sempre o de menor custo, terreno primeiro --
+    # inclusive ANTES da comandante de 9 estar em campo, jogando fora terreno,
+    # ramp e redutor de custo pra guardar Dragao de 6-8 que ainda nao da' pra
+    # pagar. Nenhum piloto faz isso. Enquanto a comandante nao esta' em campo,
+    # terreno/ramp/redutor so' saem se nao sobrar outra carta; fora isso a
+    # ordem antiga (menor custo primeiro) continua.
+    def discard_key(n):
+        protected = (not state.commander_in_play
+                     and (n in LAND_NAMES or bool(CARD_DB[n].tags & SETUP_TAGS) or n == "Orb of Dragonkind"))
+        return (protected, effective_cost(state, n) if n not in LAND_NAMES else 0)
     while len(state.hand) > 7:
-        worst = min(state.hand, key=lambda n: effective_cost(state, n) if n not in LAND_NAMES else 0)
+        worst = min(state.hand, key=discard_key)
         state.hand.remove(worst)
         state.graveyard.append(worst)
 
@@ -2465,6 +2647,9 @@ def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
         return None
     wipe_type = state.interaction_rng.choices(available, weights=[WIPE_TYPE_WEIGHTS[t] for t in available])[0]
     targets = candidates[wipe_type]
+    if try_protection_response(state, "wipe", targets):
+        state.wiped_this_round = state.wiped_this_round or wipe_type == "creature"
+        return []
     hit_creature = any(is_creature_card(n) for n in targets)
     for n in targets:
         remove_permanent(state, n)
@@ -2485,6 +2670,41 @@ def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
     return targets
 
 
+def try_protection_response(state: GameState, kind: str, targets: list) -> bool:
+    """CORRIGIDO 2026-09-28 (Regra #7, item 2): Heroic Intervention e
+    Teferi's Protection estavam tageadas 'interaction' e fora do loop
+    guloso (REACTIVE_NO_TARGET) E fora de `TRUE_INTERACTION_CARDS` -- nunca
+    saiam da mao. Desde 2026-09-20 o modo de resiliencia tem wipe e remocao
+    de oponente; agora elas respondem, com a mana que sobrou do meu turno
+    (`remaining_mana`, o que ficou desvirado).
+    - Heroic Intervention ({1}{G}): "Permanents you control gain hexproof
+      and indestructible until end of turn." Todo wipe/remocao do modelo e'
+      "destroy" -> nada morre.
+    - Teferi's Protection ({2}{W}): "Until your next turn, your life total
+      can't change and you gain protection from everything. All permanents
+      you control phase out. Exile Teferi's Protection." -> salva e ainda
+      anula ataques/remocao ate' o meu proximo turno.
+    Politica (📝): wipe so' e' respondido se leva a comandante ou 3+
+    permanentes; remocao pontual so' com Heroic (Teferi's fica pro wipe)."""
+    if state.teferi_protected:
+        state.protection_responses["teferi_ongoing"] = state.protection_responses.get("teferi_ongoing", 0) + 1
+        return True
+    if kind == "wipe" and not (COMMANDER in targets or len(targets) >= 3):
+        return False
+    options = ["Heroic Intervention"] + (["Teferi's Protection"] if kind == "wipe" else [])
+    for card in options:
+        if card in state.hand and remaining_mana(state) >= effective_cost(state, card) and has_color_sources_for(state, card):
+            spend_mana(state, effective_cost(state, card))
+            state.hand.remove(card)
+            if card == "Teferi's Protection":
+                state.teferi_protected = True  # "Exile Teferi's Protection": nao vai pro cemiterio
+            else:
+                state.graveyard.append(card)
+            state.protection_responses[card] = state.protection_responses.get(card, 0) + 1
+            return True
+    return False
+
+
 def try_smart_opponent_removal(state: GameState) -> Optional[str]:
     """Rola 1x por turno (a partir do turno 3) se o oponente "esperto"
     destroi a peca-motor de maior prioridade presente em campo -- mesma
@@ -2496,6 +2716,11 @@ def try_smart_opponent_removal(state: GameState) -> Optional[str]:
     if not present:
         return None
     if state.interaction_rng.random() >= interaction_chance(state):
+        return None
+    # CORRIGIDO 2026-09-28: Lightning Greaves "Equipped creature has shroud"
+    # -- o oponente esperto mira a proxima peca da lista.
+    present = [n for n in present if n != state.lightning_greaves_equipped_to]
+    if not present or try_protection_response(state, "removal", present[:1]):
         return None
     target = present[0]
     remove_permanent(state, target)
@@ -2547,6 +2772,8 @@ def try_smart_opponent_attack(state: GameState) -> Optional[str]:
     if state.interaction_rng.random() >= chance:
         return None
     name, power = state.interaction_rng.choice(OPPONENT_ATTACKER_PROFILES)
+    if state.teferi_protected:
+        return None  # "your life total can't change and you gain protection from everything"
     state.life -= power
     state.smart_attacks_taken_total += 1
     state.smart_attack_log.append((state.turn, name))
@@ -2580,6 +2807,30 @@ def try_smart_opponent_counter(state: GameState) -> bool:
         return False
     if state.interaction_rng.random() >= interaction_chance(state) * 0.5:
         return False
+    # CORRIGIDO 2026-09-28 (Regra #7, item 2): estas clausulas estavam 📊
+    # "sem contramagica de oponente modelada" desde 2026-08-29. Desde
+    # 2026-09-20 o modo de resiliencia TEM essa contramagica, e nenhuma
+    # delas tinha sido ligada. O sorteio acima fica antes das checagens pra
+    # nao mudar a sequencia do `interaction_rng`.
+    # - Dragonlord Dromoka: "Your opponents can't cast spells during your turn."
+    # - Rhythm of the Wild: "Creature spells you control can't be countered."
+    # - Cavern of Souls (Dragao): "...and that spell can't be countered" -- a
+    #   Ur-Dragon precisa de WUBRG, a Cavern paga um dos pips.
+    for prot in ("Dragonlord Dromoka", "Rhythm of the Wild", "Cavern of Souls"):
+        if prot in state.battlefield:
+            state.counters_prevented_total += 1
+            state.counters_prevented_by[prot] = state.counters_prevented_by.get(prot, 0) + 1
+            return False
+    # Contramagica propria contra a contramagica deles: Swan Song ("Counter
+    # target enchantment, instant, or sorcery spell"), Arcane Denial
+    # ("Counter target spell"), An Offer You Can't Refuse ("Counter target
+    # noncreature spell"). Mais barata primeiro; o bonus pro oponente (2/2,
+    # 2 cartas, 2 Treasures) fica 📊 (board de oponente nao modelado).
+    for answer in ("Swan Song", "Arcane Denial", "An Offer You Can't Refuse"):
+        if answer in state.hand and can_cast(state, answer):
+            cast_card(state, answer)
+            state.counters_answered_total += 1
+            return False
     state.smart_counters_total += 1
     state.smart_counter_log.append(state.turn)
     return True
@@ -2702,6 +2953,7 @@ def simulate_one_with_interaction(seed: int, turns: int = 8, swap=None):
     state = GameState(hand=hand, library=lib, mulligans=mulls,
                        interaction_rng=random.Random(seed + 999_999))
     for t in range(turns):
+        state.teferi_protected = False  # "Until your next turn": acaba quando o meu turno comeca
         play_turn(state, is_first_turn=(t == 0), on_play=True)
         state.wiped_this_round = False
         for _ in range(NUM_OPPONENTS):
