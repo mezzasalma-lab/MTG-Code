@@ -1,3 +1,311 @@
+## Varredura de TUDO + reescrita do motor — 2026-09-26/28
+
+**Pedido:** *"Faz a varredura completa de TUDO do deck da Toph"* (logo
+depois da Regra #7 do CLAUDE.md, criada porque eu tinha declarado
+"auditoria completa" em arquivos que ainda tinham bugs).
+
+**Escopo (Regra #7). Nada aqui é declarado "completo".**
+
+O que foi feito:
+- Oráculo das 98 cartas únicas buscado ao vivo (Scryfall
+  `/cards/collection`, 0 faltando).
+- Rulings de 55 cartas que redefinem tipo, mana ou contador (Regra #3).
+- Leitura integral do `.py` antigo (3.356 linhas) e revisão adversarial
+  do novo depois de escrito.
+- Varridas as 9 classes da taxonomia da Regra #1, mais conceito
+  compartilhado (Regra #3), ordem de fases (Regra #6), as 4 checagens de
+  ficha e o proxy de turno de oponente (Regra #7).
+- Método: leitura, instrumentação em runtime (traço por turno das seeds
+  anômalas) e 61 testes dirigidos (`test_toph_goldfish.py`).
+
+O que **não** foi varrido:
+- Política de pilotagem ótima (ordem de conjuração, quem atacar, qual
+  terreno jogar). Continuam heurísticas gulosas, marcadas 📝.
+- Interação entre 3 ou mais motores ao mesmo tempo além do que os testes
+  e as seeds anômalas cobriram.
+- Performance em partidas de 250 permanentes (há teto, `TOKEN_CAP`).
+
+### Por que os bugs sobreviveram às auditorias anteriores
+
+As rodadas de 2026-08-22 a 09-14 perguntavam "essa carta tem código?" e
+quebraram as 100 cartas em 189 cláusulas. Os bugs desta rodada moravam
+nos **conceitos compartilhados**: o que gera mana, o que é uma ficha, em
+que fase o recurso pode ser gasto. Além disso, 37 linhas estavam
+marcadas 📊 "sem P/T / sem combate / sem cor". Nenhuma delas é
+estrutural, porque o dado existe no Scryfall (Regra #7, item 2).
+
+### 🐛 Achados, por conceito (o motor foi reescrito; ver docstring do `.py`)
+
+| # | Conceito | Bug | Correção |
+|---|---|---|---|
+| 1 | Custo | Comandante com `mv=3`; o custo real {1}{R}{G}{W} = 4 | CARD_DB com custo, pips, P/T e subtipos do oráculo ao vivo |
+| 2 | Mana | Todo terreno somava 1, inclusive artefato-terreno da Toph, que **não** ganha habilidade de mana ("They don't gain the ability to {T} for mana") | `mana_units`: só gera mana com habilidade própria, tipo básico (Yavimaya/Omen/Dryad/Ashaya) ou concessão (Wrenn/Great Divide Guide/Enduring Vitality) |
+| 3 | Mana | Sol Ring e Great Henge sob a Toph davam 1 (o ramo "terreno" vinha antes do "rock") | habilidade própria com 2 unidades |
+| 4 | Mana | Lotus Cobra, Nissa e KCI geravam mana só numa métrica, nunca gastável | pool flutuante da fase (`add_floating`) |
+| 5 | Mana | Treasure nunca era sacrificado: virava mana infinita a cada turno | pacote "treasure" sacrificado ao pagar (com KCI vira {C}{C}) |
+| 6 | Mana | Criatura-terreno da Ashaya e ficha Forest Dryad tapavam no turno em que entravam | `is_sick` (CR 302.6) em toda fonte que é criatura |
+| 7 | Mana | Gruul Turf e Selesnya Sanctuary davam 1 | 2 unidades ({R}{G} / {G}{W}) |
+| 8 | Mana | O {T} de habilidade (Ba Sing Se, Urza's Saga II, Fountainport, Inventors' Fair, Obelisk, Coffin, Resonator, Conduit, Liquimetal, Iron Spider) também contava como mana | `activate()` tapa a fonte e paga com as **outras** |
+| 9 | Mana | Sem cor nenhuma | pips por carta; alocação com cor (o pip mais escasso primeiro); Mycosynth = qualquer cor |
+| 10 | Mana | Badgermole Cub só somava junto com Enduring Vitality | +{G} por criatura tapada pra mana, qualquer fonte |
+| 11 | Mana | Great Divide Guide não dava mana aos Aliados (as 3 Tophs, Bumi, EKG, Student, o próprio Guide) | ✅ |
+| 12 | Mana | Talon Gates "{1}, {T}: any color" inexistente | pacote filtro (custa 1 a mais) |
+| 13 | Fichas | `create_token` era só contador. Nenhuma ficha atacava, tapava pra mana (EV), contava pra Metalcraft/Inventors' Fair/KCI/Oswald, morria em wipe, virava alvo de Skullclamp ou disparava o Kodama | todas são `Permanent`, com habilidades próprias (Treasure, Food, Lander) |
+| 14 | Landfall | A própria fetch nunca disparava landfall (só o básico buscado) | a fetch entra (landfall) e depois é quebrada; também quando posta por Kodama, Spelunking ou Crucible |
+| 15 | Busca | Fetch só achava básico; o oráculo aceita qualquer carta com o tipo (Cinder Glade, Jetmir's, Stomping Ground, Canopy Vista, Temple Garden) | `fetch_search` |
+| 16 | Landfall | Tannuk e Nissa contavam o 2º landfall **global** em vez da 2ª resolução da própria habilidade | contador por permanente, zerado a cada turno (inclusive de oponente) |
+| 17 | Landfall | Nissa comprava 1 carta qualquer | revela até Elf ou Elemental (Tireless Provisioner, Nissa, Ashaya, Mossborn Hydra) |
+| 18 | Landfall | O dano do Tannuk era 📊 | dano na mesa (1 × 3 oponentes, proxy) |
+| 19 | Earthbend | Base P/T 0/0 não modelada; ficha earthbendada voltava como carta **não-ficha**; earthbend 0 não fazia nada (na regra real o terreno morre e volta = landfall) | ✅ (rulings) |
+| 20 | Earthbend | Strionic Resonator copiava o earthbend do Earthshape (mágica) e do Ba Sing Se (habilidade ativada) | só gatilho (earthbend ≥2 ou Skullclamp) |
+| 21 | Earthbend | Toph, Greatest Earthbender sempre earthbend 4 | X = mana **gasta** (0 se o Kodama pôs) |
+| 22 | Contadores | Earth Kingdom General só via earthbend (o "gatilho compartilhado ligado em alguns pontos" da taxonomia) | `add_counters`, ponto único: Bumi, Bristly, Felidar, Germination, Ozolith, Iron Spider, Great Henge, Mossborn, EA |
+| 23 | Contadores | Bristly Bill dobrava qualquer contador de qualquer permanente (quest counter, Arcane Signet) | só +1/+1 em criatura; ativação sem {T}, repetível |
+| 24 | Contadores | Ozolith recebia contador de não-criatura | só criatura; vale pra bounce também (leaves the battlefield) |
+| 25 | Kodama | Só disparava pra **criatura** e se re-disparava em cadeia | "another permanent", nunca o que ele mesmo pôs; ficha tem valor de mana 0 e cópia tem o do original; MDFC na mão não é "permanent card" |
+| 26 | Skullclamp | 1 equip por fase, só em terreno com 1 contador | equip repetível em qualquer criatura de resistência 1 que valha menos que 2 cartas |
+| 27 | Horizon Explorer | 1 Lander por combate; Lander sem habilidade | 1 por **jogador** atacado (ruling); Lander busca básico |
+| 28 | Horizon/Spelunking | "Lands enter untapped" só no land drop | todo terreno, inclusive retorno do earthbend e os postos "tapped" por efeito (ruling) |
+| 29 | Urza's Saga | III buscava por valor de mana (pegava Esper Sentinel {W}); II só no turno do capítulo | custo de mana {0}/{1} (ruling); II todo turno, inclusive em resposta ao III |
+| 30 | Wrenn | −7 não pagava lealdade | paga (Wrenn morre com 7) |
+| 31 | Doença de invocação | {T} de Iron Spider e Oswald (criaturas) ignorava | `is_sick` |
+| 32 | Zonas | Germination Practicum (Paradigm) e Teferi's Protection iam pro cemitério (alvo legal do Bala Ged Recovery) | exílio |
+| 33 | Fases (Regra #6) | Só 1 fase principal: a mana do Kyoshi ("then untap that land"), da Sword e do landfall em combate nunca era gastável; Paradigm/Wrenn sem trava de 1x/turno | main1 / combate / main2 / end step / cleanup (descarte até 7) |
+| 34 | Custos alternativos | Overlord Impending, Springheart Bestow, Talon Gates "{4}: put from hand", Jetmir's cycling, Bridgeworks Battle (pump) inexistentes | ✅ |
+| 35 | P/T/combate | 📊 "sem P/T" | P/T real: Ashaya = terrenos, Construct = artefatos, Wrenn +1 3/3, Ultron 2/2, Caretaker III +2/+2, Sword +2/+2, Skullclamp +1/−1, bestow +1/+1; Great Henge com redução pelo maior poder; Sapling Nursery com Affinity for Forests |
+| 36 | Combate | 📊 "sem combate" | dano proxy sem bloqueio (convenção do repo); double strike em terreno-criatura (Toph GE); vigilance (Student, EV, Iron Spider, Felidar, Wrenn); Sword desvira terrenos; Greaves dá haste; Krang dá haste e indestrutível; dano de comandante (CR 903.10a) |
+| 37 | Remoção | Swords, Erode e Council's Judgment eram conjuradas no vazio (gastava mana em nada) | ficam na mão; `interaction_held_turns` 📊 |
+| 38 | Resiliência | TP, Heroic Intervention, Earthshape, Sapling, Greaves (shroud), Krang, Coffin e Talon Gates eram só "contados" | respondem a wipe, remoção e ataque de verdade (padrão já usado no Tom Bombadil) |
+| 39 | Enduring Vitality | Volta como encantamento era 📝 ("risco de bug") | implementada (earthbend tem prioridade se os dois disparam) |
+| 40 | Bounceland | Devolvia o 1º terreno da lista (podia ser artefato-terreno ou terreno earthbendado) | terreno de verdade já tapped, básico de preferência |
+| 41 | Planar Engineering | Sacrificava os 2 primeiros "terrenos" (podia ser Sol Ring) | primeiro os earthbendados (voltam), depois básico tapped |
+| 42 | Fetch em qualquer rota | Fetch posta por Kodama ou Spelunking nunca era quebrada | quebra ao entrar |
+| 43 | Toph FM | Tentada 1x por turno antes do drop de terreno (bug da própria reescrita, achado no traço) | depois do drop, a cada iteração, nas 2 fases principais |
+
+### Cláusula a cláusula — as 98 cartas únicas (oráculo ao vivo)
+
+✅ modelado · 🐛 corrigido nesta rodada · 📊 estrutural (estado de
+oponente, com a cláusula citada) · 📝 simplificação de política/ordem
+(não de regra)
+
+**Comandante e Tophs**
+- **Toph, the First Metalbender:**
+  - 🐛 custo {1}{R}{G}{W};
+  - ✅ "Nontoken artifacts you control are lands" (sem mana própria 🐛);
+  - ✅ end step earthbend 2.
+- **Toph, Earthbending Master:**
+  - ✅ landfall: experience;
+  - ✅ "Whenever you attack, earthbend X" (X=0 mata o terreno e ele volta 🐛).
+- **Toph, Greatest Earthbender:**
+  - 🐛 X = mana gasta;
+  - 🐛 double strike em terreno-criatura.
+
+**Terrenos**
+- **Fetches (Arid Mesa, Windswept Heath, Wooded Foothills):**
+  - 🐛 landfall da própria fetch;
+  - 🐛 pool tipado;
+  - ✅ 1 de vida.
+- **Ba Sing Se:**
+  - ✅ tapped a menos que controle básico;
+  - ✅ {G};
+  - 🐛 "{2}{G}, {T}: Earthbend 2" com o próprio {T} não virando mana;
+  - 🐛 não copiável pelo Resonator.
+- **Bala Ged Recovery (MDFC):**
+  - ✅ terreno tapped {G};
+  - ✅ mágica (mão recebe carta do cemitério) quando o drop já foi usado;
+  - 🐛 Kodama não pega (a face da frente é mágica).
+- **Bridgeworks Battle (MDFC):**
+  - ✅ terreno "pay 3 life or tapped";
+  - 🐛 mágica +2/+2 num atacante;
+  - 📊 "fights up to one target creature you don't control".
+- **Ondu Inversion (MDFC):**
+  - ✅ terreno tapped {W};
+  - 📊 "Destroy all nonland permanents" (com a Toph, meus artefatos são terreno e sobrevivem; o valor depende do board de oponente).
+- **Bountiful Promenade, Spire Garden:** ✅ destapado (mesa de 4); 🐛 cores.
+- **Canopy Vista, Cinder Glade:** ✅ 2+ básicos; 🐛 tipos pra fetch.
+- **Command Tower:** 🐛 cores do comandante (RGW).
+- **Field of the Dead:**
+  - ✅ tapped, {C};
+  - ✅ Zombie com 7+ nomes (artefato-terreno conta);
+  - 🐛 o Zombie é ficha real.
+- **Basics e snow basics:** ✅ (tipo básico dá a cor).
+- **Fountainport:**
+  - ✅ {C};
+  - 🐛 "{2},{T}, sac a token: draw" com ficha real;
+  - ✅ Fish;
+  - ✅ Treasure.
+- **Gruul Turf / Selesnya Sanctuary:**
+  - ✅ tapped;
+  - 🐛 volta terreno certo;
+  - 🐛 2 manas.
+- **Inventors' Fair:**
+  - ✅ upkeep +1 (fichas contam 🐛);
+  - ✅ tutor {4},{T},sac com 3+ artefatos.
+- **Jetmir's Garden:** ✅ tapped, tipos; 🐛 cycling {3}.
+- **Stomping Ground / Temple Garden:** ✅ 2 de vida ou tapped; 🐛 tipos pra fetch.
+- **Strip Mine:**
+  - ✅ {C};
+  - 🐛 com Crucible/Conduit/emblema: destrói o próprio terreno earthbendado (volta, landfall) e é rejogado;
+  - 📊 alvo de oponente.
+- **Talon Gates of Madara:**
+  - ✅ {C};
+  - 🐛 "{1},{T}: any color";
+  - 🐛 "{4}: put from hand";
+  - 🐛 ETB phase-out: na resiliência protege a peça-motor quando entra fora da main1; no goldfish, nenhum alvo ("up to one").
+- **Urza's Saga:**
+  - ✅ I {C};
+  - 🐛 II todo turno e em resposta ao III;
+  - 🐛 III por custo {0}/{1}.
+- **Yavimaya, Cradle of Growth:** 🐛 "Each land is a Forest" dá {G} a artefato-terreno e conta pra Sapling Nursery.
+
+**Artefatos**
+- **Arcane Signet:** 🐛 RGW.
+- **Conduit of Worlds:**
+  - ✅ jogar terreno do cemitério;
+  - ✅ reanima (trava o turno); {T} não vira mana 🐛.
+- **Crucible of Worlds:** ✅.
+- **Esper Sentinel:** 📊 "Whenever an opponent casts their first noncreature spell"; 🐛 fodder de Skullclamp.
+- **Haywire Mite:**
+  - ✅ morre: +2;
+  - 📊 "{G}, Sacrifice: Exile target noncreature artifact or noncreature enchantment" (alvo de oponente);
+  - 🐛 fodder de Skullclamp.
+- **Ichor Wellspring:** ✅ ETB e morte compram (cópia-ficha também).
+- **Iron Spider:**
+  - 🐛 {T} com doença de invocação;
+  - ✅ contadores;
+  - ✅ {2}, remove 2: draw;
+  - ✅ vigilance.
+- **Krang:**
+  - 🐛 9/9, haste e indestrutível próprios e concedidos aos artefatos-criatura;
+  - 📊 voo/trample (bloqueio).
+- **Krark-Clan Ironworks:** 🐛 mana gastável; sacrifica terreno earthbendado (volta, landfall), Food, Lander e Treasure ({C}{C}).
+- **Lightning Greaves:**
+  - 🐛 equip {0}: haste;
+  - 🐛 shroud contra remoção de oponente (resiliência).
+- **Liquimetal Coating / Torque:** ✅ (Torque {C} com {T} compartilhado 🐛).
+- **Mishra's Bauble:** ✅.
+- **Mox Opal:** ✅ lendário; 🐛 Metalcraft conta ficha.
+- **Mycosynth Lattice:**
+  - ✅ tudo é artefato;
+  - 🐛 mana de qualquer cor;
+  - 📊 "cards ... are colorless" (nenhuma carta da lista checa cor).
+- **Oblivion Stone:**
+  - ✅ permanente (terreno com a Toph, alvo de earthbend e KCI);
+  - 📊 fate counter e wipe (board de oponente).
+- **Skullclamp:** 🐛 loop.
+- **Sol Ring:** 🐛 {C}{C} sob a Toph.
+- **Strionic Resonator:** 🐛 só gatilho; 📝 copia só earthbend ≥2 ou Skullclamp (não landfall).
+- **Sword of Feast and Famine:**
+  - 🐛 equip {2}, +2/+2;
+  - 🐛 desvira terrenos no dano;
+  - 📊 descarte e pro-preto/verde.
+- **The Great Henge:**
+  - 🐛 custo reduzido;
+  - 🐛 {G}{G} e +2 de vida;
+  - ✅ criatura não-ficha entra: contador e compra.
+- **The Ozolith:** 🐛 só criatura; ✅ move no início do combate.
+- **The Stasis Coffin:** ✅ ativação e retorno; 🐛 proteção contra ataque (resiliência).
+- **Ultron:** ✅ cópia (lendário não); 🐛 cópia vira ficha real.
+- **Unstable Obelisk:**
+  - ✅ {C}, {T} compartilhado 🐛;
+  - ✅ {7}: mira o próprio terreno earthbendado;
+  - 📊 alvo de oponente.
+- **Zuran Orb:** 🐛 sacrifica terreno earthbendado depois de tapá-lo; ✅ emergência com vida < 10.
+
+**Criaturas**
+- **Ashaya:** 🐛 P/T = terrenos; ✅ criaturas não-ficha são Forest (tapam {G} com doença de invocação 🐛).
+- **Avatar Kyoshi:**
+  - ✅ earthbend 8 e desvira (a mana agora é gastável na main2 🐛);
+  - 📊 hexproof só no meu turno.
+- **Badgermole Cub:** ✅ ETB earthbend 1; 🐛 +{G} por criatura tapada.
+- **Bristly Bill:** ✅ landfall +1; 🐛 dobra (só +1/+1 de criatura, repetível).
+- **Bumi:** ✅ ETB; 🐛 contadores via `add_counters` (EKG).
+- **Dryad of the Ilysian Grove:** ✅ drop extra (cumulativo 🐛); 🐛 todo tipo básico dá mana.
+- **Earth Kingdom General:** ✅ ETB; 🐛 vida em todo +1/+1.
+- **Earthbending Student:** ✅ ETB; 🐛 vigilance em terreno-criatura.
+- **Enduring Vitality:**
+  - 🐛 criaturas tapam qualquer cor (inclusive ela e as fichas);
+  - 🐛 volta como encantamento;
+  - ✅ vigilance.
+- **Great Divide Guide:** 🐛 terrenos **e Aliados**.
+- **Horizon Explorer:** 🐛 terrenos entram destapados sempre; 🐛 Lander por jogador.
+- **Kodama of the East Tree:**
+  - 🐛 "another permanent";
+  - 🐛 sem cadeia;
+  - 📊 reach;
+  - 📊 partner (comandante único).
+- **Lotus Cobra:** 🐛 mana gastável.
+- **Mossborn Hydra:** ✅ entra com contador (antes do landfall 🐛); ✅ dobra; 📊 trample.
+- **Nissa:** 🐛 2ª resolução própria; 🐛 revela Elf/Elemental.
+- **Oswald Fiddlebender:** 🐛 doença de invocação; 🐛 ficha serve de sacrifício.
+- **Overlord of the Hauntwoods:** 🐛 Impending; ✅ Everywhere no ETB e no ataque (ficha real 🐛).
+- **Scute Swarm:** ✅ Insect ou cópia com 6+ terrenos (fichas reais 🐛).
+- **Springheart Nantuko:** 🐛 Bestow e cópia paga {1}{G}; ✅ Insect.
+- **Tannuk:** 🐛 dano na mesa; 🐛 2ª resolução própria.
+- **Tireless Provisioner:** ✅ Food/Treasure (reais 🐛).
+
+**Encantamentos / planeswalker**
+- **Caretaker's Talent:**
+  - ✅ nível 1 (1x/turno, zera em turno de oponente 🐛);
+  - 🐛 II copia ficha real;
+  - 🐛 III +2/+2.
+- **Earthbender Ascension:** ✅ ETB earthbend e básico; 🐛 quest counter separado.
+- **Felidar Retreat:** ✅ modal (Cat Beast real / contador em cada criatura com vigilance 🐛).
+- **Prismatic Omen:** 🐛 todo tipo básico dá mana.
+- **Sapling Nursery:**
+  - 🐛 Affinity for Forests;
+  - ✅ Treefolk;
+  - 🐛 exile: indestrutível (resposta a wipe na resiliência).
+- **Spelunking:**
+  - ✅ compra;
+  - ✅ terreno da mão;
+  - 🐛 destapado sempre;
+  - 📊 Cave (nenhuma na lista).
+- **Sylvan Library:** ✅.
+- **Wrenn and Realmbreaker:**
+  - 🐛 terrenos tapam qualquer cor;
+  - ✅ +1 (3/3 com haste, vigilance, hexproof 🐛);
+  - ✅ −2 (escolhe permanente útil 🐛);
+  - 🐛 −7 paga lealdade;
+  - ✅ emblema.
+
+**Mágicas**
+- **Awaken the Woods:** 🐛 X = toda a mana que sobra, por último; Dryads são terreno-criatura (landfall, doença de invocação).
+- **Council's Judgment, Swords to Plowshares, Erode:** 📊 alvo de oponente; 🐛 não são mais conjuradas no vazio.
+- **Earthshape:**
+  - 🐛 instantâneo no fim da rodada ou em resposta a wipe;
+  - 🐛 hexproof/indestrutível pelo poder;
+  - 🐛 não copiável.
+- **Enlightened Tutor:** ✅ (no fim da rodada 🐛).
+- **Germination Practicum:** ✅; 🐛 Paradigm 1x/turno; 🐛 exílio.
+- **Heroic Intervention:** 🐛 resposta real.
+- **Planar Engineering:** 🐛 escolha dos sacrificados.
+- **Teferi's Protection:** 🐛 resposta real; 🐛 exílio.
+
+### 📝 Simplificações de política (não de regra)
+
+- Ataca com tudo que pode, sem bloqueio (convenção do repositório).
+  Atacante sem vigilance fica tapped e não gera mana na main2.
+- Conjuração gulosa por valor de mana, com a comandante primeiro.
+- Sacrifício de terreno earthbendado (KCI/Zuran Orb) na main2 e só dos
+  pequenos (≤2 contadores, ou qualquer um com Ozolith).
+- Nissa põe as cartas reveladas no fundo na ordem revelada (o oráculo diz
+  ordem aleatória).
+- Mana flutuante: 1 {T} abre todas as unidades daquela fonte. As que
+  sobram ficam até o fim da fase.
+- `TOKEN_CAP` = 250 permanentes (a explosão Scute Swarm + Kodama +
+  Skullclamp é real, mas acima disso a partida já está decidida).
+
+### Validação
+
+Ver `goldfish-log.md` (mesma data):
+- smoke;
+- 61 testes dirigidos;
+- 2k antes/depois;
+- 20k + 20k de regressão.
+
+---
+
 ## CR 903.9a/903.9b: comandante passa pelo `leave_battlefield()` central de verdade — 2026-09-21
 
 **Gatilho:** mesmo achado do usuário aplicado a todos os 9 decks desta

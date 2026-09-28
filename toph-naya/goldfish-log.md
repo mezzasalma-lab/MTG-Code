@@ -4,6 +4,70 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 ---
 
+## Varredura de TUDO + reescrita do motor — 2026-09-26/28
+
+**Pedido:** *"Faz a varredura completa de TUDO do deck da Toph"*. Achados
+e tabela cláusula-a-cláusula em `checklist-oraculo.md`; o escopo
+verificado e o não verificado estão lá (Regra #7).
+
+### Antes/depois (2.000 seeds, 9.000.000+, 8 turnos, mesma seed)
+
+| Métrica | Padrão antes | Padrão depois | Resil. antes | Resil. depois |
+|---|---|---|---|---|
+| Turno médio da Toph (9 = nunca) | 3,70 | 5,05 | 3,89 | 5,32 |
+| Toph nunca conjurada até T8 | 2,7% | 6,8% | 4,3% | 9,8% |
+| Terrenos em campo no T8 (incl. artefato/criatura-terreno) | 12,43 | 13,96 | 9,86 | 10,01 |
+| Aplicações de earthbend | 6,93 | 5,91 | 6,15 | 4,95 |
+| Recorrências Motor #16 | 1,33 | 1,77 | 2,66 | 2,46 |
+| Gatilhos de landfall | 12,89 | 14,32 | 12,35 | 12,67 |
+| Cartas extras compradas | 3,76 | 4,48 | 3,11 | 2,82 |
+| Fichas criadas | 16,08 | 24,26 | 12,68 | 16,68 |
+| Compras via Skullclamp | 0,03 | 0,75 | 0,07 | 0,34 |
+| Cheats do Kodama | 0,04 | 0,26 | 0,02 | 0,13 |
+| Mana extra **gastável** (Cobra/Nissa/KCI) | 2,97 (não gastável) | 5,83 | 2,21 (não gastável) | 3,06 |
+| Mágicas conjuradas / mana gasta (métrica nova) | — | 10,9 / 43,3 | — | 9,7 / 34,9 |
+| Dano na mesa, mediana (combate + Tannuk) | — | 61 | — | 33 |
+| Letal proxy (≥120 na mesa) até T6 / T8 | — | 0,8% / 23,6% | — | 0,5% / 11,4% |
+| Vitória por dano de comandante (21+) | — | 6,6% | — | 4,4% |
+| Vida final, mediana | 36,4 (média) | 39 | 35,6 (média) | 38 |
+| Partidas que batem no teto de 250 permanentes | — | 6,0% | — | 3,9% |
+| Respostas de proteção que salvaram algo (resiliência) | — | — | — | 0,045/partida |
+
+As médias de vida e de dano explodem (vida média ~10^6 no padrão). Isso é
+o turno de combo real do deck: Scute Swarm com 6+ terrenos gera cópias de
+valor de mana 3, cada cópia dispara o Kodama, que põe cartas da mão, e o
+Skullclamp nas fichas 1/1 compra o deck. Felidar, Mossborn, Bristly Bill e
+Earth Kingdom General escalam os contadores. Traço por turno da seed
+9.000.247 conferido: tudo segue o oráculo. Por isso só as medianas e as
+métricas limitadas acima servem pra comparar.
+
+**Leitura:**
+- A Toph sai **1,3 turno mais tarde**. Não é piora do deck, é correção:
+  - o custo real é 4, não 3;
+  - ela precisa de {R}{G}{W} de fontes diferentes.
+- Diagnóstico de 300 partidas em que ela não saiu até o T5:
+  - 41% têm 4+ fontes mas falta W ou R (várias vezes o Command Tower é a
+    única fonte das duas);
+  - 23% têm menos de 4 fontes;
+  - o resto é terreno que entrou tapped naquele turno.
+- **O deck tem pouca fonte de W e de R.** É um achado sobre a lista, não
+  sobre o simulador. Fica pra conversa de construção, sem mudar a
+  `lista.md` agora.
+- Earthbend cai (−1,0) porque a Toph chega mais tarde (o end step dela é
+  a maior fonte). Fichas (+51%), compras e Kodama sobem porque as fichas
+  agora são permanentes que interagem com o resto do deck.
+
+### Validação
+
+- Smoke: 99 cartas, 0 desconhecidas.
+- 61 testes dirigidos (`test_toph_goldfish.py`), 61/61.
+- 2k antes/depois (tabela acima).
+- 20.000 + 20.000 partidas de regressão (seeds 9.300.000+), 0 exceções.
+  Números por fatia no commit.
+- Traço manual de 5 partidas com a Toph atrasada e da seed explosiva.
+
+---
+
 ## CR 903.9a/903.9b: comandante passa pelo `leave_battlefield()` central de verdade — 2026-09-21
 
 **Gatilho:** usuário conferiu a regra real do CR 903.9 e apontou o erro

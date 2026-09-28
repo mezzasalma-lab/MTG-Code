@@ -503,6 +503,42 @@ Aconteceu 2× nesta sessão. O padrão aparece na linha de comando do
 próprio shell, então o `pgrep` casou com ele e o `pkill` derrubou o shell
 junto (exit 144). Listar com `ps aux | grep ... | grep -v grep` e matar
 por PID.
+
+## Efeito que transforma permanente em TERRENO não dá habilidade de mana
+
+Achado real (Toph, 2026-09-26). O simulador somava 1 de mana pra todo
+terreno, e a Toph ("Nontoken artifacts you control are lands ... (They
+don't gain the ability to {T} for mana.)") transforma todo artefato em
+terreno. Resultado: Skullclamp, Crucible e KCI geravam mana, e Sol Ring e
+Great Henge caíam de 2 pra 1 porque o ramo "terreno" vinha antes do ramo
+"rock". Regra: mana é **por permanente**, pela melhor habilidade de mana
+que ele TEM. As fontes possíveis são:
+- habilidade própria;
+- tipo básico de terreno (Forest dá {G}, inclusive o tipo concedido por
+  Yavimaya, Prismatic Omen, Dryad ou Ashaya);
+- concessão explícita (Wrenn and Realmbreaker, Great Divide Guide,
+  Enduring Vitality).
+
+Todo deck com "X are lands" (Toph, Ashaya, Mycosynth + Toph) precisa
+desse modelo.
+
+## Mana gerada por gatilho precisa ser gastável na mesma fase
+
+Achado real (Toph, 2026-09-26). A mana de Lotus Cobra/Nissa (landfall) e
+do Krark-Clan Ironworks ia só pra uma métrica `mana_generated_extra` e
+nunca podia pagar nada. Esse é o inverso da "mana fantasma" da taxonomia:
+a mana existe mas não pode ser usada. Treasure, por outro lado, nunca era
+sacrificado e virava 1 mana por turno pra sempre. Regra: toda mana gerada
+entra num pool flutuante que esvazia ao fim da fase, e todo recurso gasto
+sai de campo. Precisa haver uma fase principal **pós-combate** pra mana de
+combate (untap do Avatar Kyoshi, Sword of Feast and Famine).
+
+## Fetch: a própria fetch dispara landfall
+
+Achado real (Toph, 2026-09-26). A fetch entra (landfall 1), é quebrada, e
+o terreno buscado entra (landfall 2). O simulador pulava a entrada da
+fetch. Além disso, "Search for a Mountain or Plains card" aceita qualquer
+carta com o TIPO, não só básico. Vale pra todo deck com landfall.
 ---
 
 <!-- Adicionar novas entradas abaixo conforme surgirem cartas com efeitos
