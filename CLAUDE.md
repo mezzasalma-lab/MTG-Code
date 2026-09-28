@@ -221,6 +221,21 @@ os "motores" de memória, e combo não entrou na lista. O passo 2 acima não
 3. **Conferir se o simulador executa o combo.** Se não executa, o valor
    da peça no A/B é piso, e isso vira fix no simulador (Regra #5) antes de
    concluir.
+4. **Pra toda carta avaliada (a que entra e cada candidata a sair) com
+   gatilho ou estático que depende de uma condição — tipo de criatura,
+   "Treasure", "artifact", "Dragon", "nontoken" — enumerar POR SCRIPT
+   quais cartas da lista satisfazem essa condição**, lendo `type_line` e
+   `oracle_text` ao vivo (Changeling e Kindred contam em toda zona; buscar
+   a ruling). Nunca listar de memória. Cobrança real de 2026-09-28: *"Vc
+   esqueceu que com ela em campo, toda vez que eu tap o Firdoch Core eu
+   gero um tesouro. Fica chato ter que te lembrar isso o tempo todo!"*.
+   Ao varrer o conceito "Dwarf" (Magda, Firdoch Core, Morophon) e "Treasure
+   que você controla" achei 4 furos no simulador, todos subestimando a
+   Magda: o Morophon não contava como Dwarf, a Magda não dava +1/+0 aos
+   outros Dwarves, Treasure de outra fonte não contava pro tutor, e
+   Treasure não gasto sumia no fim do turno. Cortar a Magda passou de
+   "aceitável" a "não vale". Regra #3 vale também pra avaliar cartas, não
+   só pra auditar o simulador.
 
 ## Regra #5 (obrigatória): a análise prioriza o DECK real (oráculo + regras + jogo real), o simulador é evidência de apoio, nunca a fonte da verdade
 

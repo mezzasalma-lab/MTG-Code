@@ -756,7 +756,15 @@ class GameState:
     dragon_tokens: int = 0
     other_tokens: int = 0
     ramos_counters: int = 0
-    magda_treasures: int = 0
+    magda_treasures: int = 0                  # (legado) nao usado: Treasure agora e' `treasure_stock`
+    # CORRIGIDO 2026-09-28 (Regra #3, conceito "Treasure que voce controla"):
+    # Treasure e' um PERMANENTE -- persiste entre turnos, conta pro "Sacrifice
+    # five Treasures" da Magda qualquer que seja a fonte (Goldspan, Old
+    # Gnawbone, Ancient Copper, Smothering Tithe, a propria Magda, o Firdoch).
+    # Antes: mana instantanea perdida no fim do turno + contador separado da
+    # Magda que so' contava os Treasures dela.
+    treasure_stock: int = 0
+    magda_sources: dict = field(default_factory=dict)   # de onde vieram os Treasures da Magda (metrica)
     magda_tutors_total: int = 0
     dragons_free_entry_total: int = 0
     haven_recursion_total: int = 0
@@ -973,6 +981,9 @@ def effective_power(state: GameState, name: str) -> int:
         power += sources(state, "Morophon, the Boundless") - (1 if base == "Morophon, the Boundless" else 0)
     power += state.great_henge_counters.get(base, 0)
     power += state.riot_counters.get(base, 0)
+    if base != "Magda, Brazen Outlaw" and is_dwarf_perm(state, base):
+        # Magda: "Other Dwarves you control get +1/+0" (uma por Magda em campo)
+        power += state.battlefield.count("Magda, Brazen Outlaw")
     return power
 
 
@@ -1010,15 +1021,19 @@ def all_creature_powers(state: GameState) -> list:
     Great Henge "greatest power among creatures you control" e Return of
     the Wildspeaker liam so' carta nomeada -- CORRIGIDO 2026-09-28)."""
     return ([effective_power(state, n) for n in state.battlefield if is_creature_card(n)]
-            + [token_effective_power(state, t[0]) for t in state.dragon_token_list])
+            + [token_effective_power(state, t[0], t[3] if len(t) > 3 else None) for t in state.dragon_token_list])
 
 
-def token_effective_power(state: GameState, base: int) -> int:
+def token_effective_power(state: GameState, base: int, copy_of: Optional[str] = None) -> int:
     """Poder atual de uma ficha de Dragao: Morophon (+1/+1 em outras
     criaturas do tipo escolhido) e pumps de Lathliss/Bladewing do turno.
     Contador do Great Henge nao se aplica (so' nontoken)."""
     p = base + state.dragon_pump_bonus_this_turn
-    p += sources(state, "Morophon, the Boundless")  # 📝 ficha-copia do proprio Morophon tambem ganha (erro de 1, raro)
+    # Morophon: "OTHER creatures you control of the chosen type get +1/+1" --
+    # a ficha-copia de Morophon nao se da' o proprio bonus (CORRIGIDO 2026-09-28).
+    p += sources(state, "Morophon, the Boundless") - (1 if copy_of == "Morophon, the Boundless" else 0)
+    if copy_of in DWARF_CARDS:
+        p += state.battlefield.count("Magda, Brazen Outlaw")  # ficha-copia de Changeling e' Dwarf
     return p
 
 
@@ -1041,6 +1056,18 @@ def token_creature_etb_hooks(state: GameState, power: int, copy_of: Optional[str
 
 
 SARKHAN_SA = "Sarkhan, Soul Aflame"
+
+
+DWARF_CARDS = {"Firdoch Core", "Morophon, the Boundless"}   # Changeling: e' todo tipo de criatura, em toda zona
+
+
+def is_dwarf_perm(state: GameState, name: str) -> bool:
+    """Dwarf em campo: Magda (tipo impresso), Firdoch Core e Morophon
+    (Changeling -- Kindred permite tipo de criatura fora de criatura, ruling
+    2025-11-17), e o Sarkhan, Soul Aflame enquanto copia um deles."""
+    if name == "Magda, Brazen Outlaw" or name in DWARF_CARDS:
+        return True
+    return name == SARKHAN_SA and state.sarkhan_copy_of in DWARF_CARDS
 
 
 def sources(state: GameState, name: str) -> int:
@@ -1111,7 +1138,7 @@ def create_dragon_tokens(state: GameState, n: int, power: int, source: str, flyi
             if not (copy_of == "Bladewing the Risen" and bladewing_loop_ready(state)):
                 resolve_etb(state, copy_of)
         dragon_enters(state, copy_of or f"{source} token", is_token=True)
-        token_creature_etb_hooks(state, token_effective_power(state, power), copy_of=copy_of)
+        token_creature_etb_hooks(state, token_effective_power(state, power, copy_of), copy_of=copy_of)
 
 
 def ready_dragon_tokens(state: GameState) -> list:
@@ -1335,7 +1362,7 @@ def rocks_mana(state: GameState) -> int:
     return total
 
 
-def total_mana(state: GameState) -> int:
+def total_mana(state: GameState, include_stock: bool = True) -> int:
     lands = sum(1 for n in state.battlefield if n in LAND_NAMES)
     # Achado real 2026-08-27: Triomes entram tapped incondicionalmente
     # (oraculo real) -- a terra que entrou virada neste turno nao produz mana
@@ -1344,7 +1371,10 @@ def total_mana(state: GameState) -> int:
     if "Ancient Tomb" in state.battlefield and "Ancient Tomb" not in state.tapped_lands_this_turn:
         # CORRIGIDO 2026-09-28: "{T}: Add {C}{C}" -- contava 1 como todo terreno.
         lands += 1
-    return lands + rocks_mana(state) + dork_mana(state) + state.bonus_mana_pool
+    base = lands + rocks_mana(state) + dork_mana(state) + state.bonus_mana_pool
+    if include_stock:
+        base += state.treasure_stock * treasure_mana_each(state)
+    return base
 
 
 def remaining_mana(state: GameState) -> int:
@@ -1450,7 +1480,8 @@ def has_color_sources_for(state: GameState, name: str) -> bool:
     # (Ur-Dragon, Tiamat) passava com 1 fonte de 5 cores + 4 basicos iguais.
     # Uma fonte paga UM pip: condicao de Hall -- pra todo subconjunto S das
     # cores exigidas, pips(S) <= fontes que produzem alguma cor de S.
-    sets = source_color_sets(state, dragon_creature, legendary) + state.bonus_colored
+    sets = (source_color_sets(state, dragon_creature, legendary) + state.bonus_colored
+            + [set("WUBRG")] * (treasure_unspent(state) * treasure_mana_each(state)))
     if is_dragon_card(name):
         # CORRIGIDO 2026-09-28: Orb of Dragonkind "Add two mana in any
         # combination of colors. Spend this mana only to cast Dragon spells"
@@ -1652,28 +1683,67 @@ def visitor_replaces_treasures(state: GameState, n: int, mana_each: int, on_opp_
     return True
 
 
+def treasure_mana_each(state: GameState) -> int:
+    """Goldspan Dragon: 'Treasures you control have "{T}, Sacrifice this
+    artifact: Add two mana of any one color."' (copias inclusas)."""
+    return 2 if sources(state, "Goldspan Dragon") else 1
+
+
+def treasure_nonstock_mana(state: GameState) -> int:
+    return total_mana(state, include_stock=False)
+
+
+def treasure_unspent(state: GameState) -> int:
+    """Treasures que NAO estao comprometidos com mana ja' gasta neste turno
+    (o piloto gasta terrenos/rocks primeiro e guarda o Treasure)."""
+    each = treasure_mana_each(state)
+    spent_from_stock = max(0, state.mana_spent_this_turn - treasure_nonstock_mana(state))
+    return max(0, state.treasure_stock - (spent_from_stock + each - 1) // each)
+
+
 def create_treasures(state: GameState, n: int):
-    if visitor_replaces_treasures(state, n, 1):
-        return
-    state.treasures_created_total += n
-    state.bonus_mana_pool += 0  # tesouros so viram mana quando sacrificados (nao modelado tick a tick; ver create_and_spend_treasures)
+    create_and_use_treasures(state, n)
 
 
 def create_and_use_treasures(state: GameState, n: int, on_opp_turn: bool = False):
-    """Cria e imediatamente converte em mana disponivel neste turno —
-    aproximacao real (o deck nao tem motivo pra segurar Treasure parado).
-    Goldspan Dragon: 'Treasures you control have "{T}, Sacrifice this
-    artifact: Add two mana of any one color."' — com Goldspan em campo,
-    todo Treasure vale 2 mana, nao 1. Entra no pool generico (a cor do
-    Treasure e escolhida livremente no jogo real, nao modelado pip a pip
-    aqui — simplificacao documentada, mesma logica do Klauth/Savage
-    Ventmaw)."""
-    per_treasure = 2 if sources(state, "Goldspan Dragon") else 1
-    if visitor_replaces_treasures(state, n, per_treasure, on_opp_turn=on_opp_turn):
+    """Cria `n` Treasures (CORRIGIDO 2026-09-28: antes viravam mana na hora e
+    o que sobrava sumia no fim do turno; agora ficam em `treasure_stock`,
+    gastam como mana quando ha' o que conjurar e sobrevivem ao turno).
+    Goldspan em campo: cada Treasure vale 2 mana de UMA cor."""
+    if visitor_replaces_treasures(state, n, treasure_mana_each(state), on_opp_turn=on_opp_turn):
         return
     state.treasures_created_total += n
-    state.bonus_mana_pool += n * per_treasure
-    state.bonus_colored.extend([set("WUBRG")] * n)  # Treasure: "one mana of any color" (Goldspan: 2 de UMA cor)
+    state.treasure_stock += n
+
+
+def settle_treasures(state: GameState):
+    """Fim do turno: tira do estoque o que foi gasto como mana."""
+    each = treasure_mana_each(state)
+    spent_from_stock = max(0, state.mana_spent_this_turn - treasure_nonstock_mana(state))
+    used = min(state.treasure_stock, (spent_from_stock + each - 1) // each)
+    state.treasure_stock -= used
+
+
+def try_magda_sacrifice(state: GameState):
+    """Magda, Brazen Outlaw: "Sacrifice five Treasures: Search your library for
+    an artifact or Dragon card, put that card onto the battlefield." Vale
+    QUALQUER Treasure. Politica (📝): so' com Treasure que sobrou depois de
+    conjurar tudo que da' (nao troca mana usavel por tutor)."""
+    if "Magda, Brazen Outlaw" not in state.battlefield:
+        return
+    while treasure_unspent(state) >= 5:
+        pool = [n for n in state.library if is_dragon_card(n) or is_artifact_card(n)]
+        if not pool:
+            return
+        state.treasure_stock -= 5
+        # Tiamat: "put onto the battlefield" nao e' conjurar -> so' como ultima opcao.
+        best = max(pool, key=lambda n: (n != "Tiamat", CARD_DB[n].mv))
+        state.library.remove(best)
+        enter_battlefield(state, best, from_hand=False)
+        state.tutors_used_total += 1
+        state.magda_tutors_total += 1
+        if is_dragon(best):
+            state.dragons_free_entry_total += 1
 
 
 def resolve_etb(state: GameState, name: str):
@@ -1885,7 +1955,7 @@ def resolve_instant_sorcery(state: GameState, name: str):
         # Sarkhan Soul Aflame).
         powers = ([effective_power(state, n) for n in state.battlefield
                    if is_creature_card(n) and n.split(" (copia)")[0] not in HUMAN_CREATURE_NAMES]
-                  + [token_effective_power(state, t[0]) for t in state.dragon_token_list])
+                  + [token_effective_power(state, t[0], t[3] if len(t) > 3 else None) for t in state.dragon_token_list])
         if powers:
             draw_cards(state, max(powers))
     elif "mass_reanimate" in tags:
@@ -2397,6 +2467,7 @@ def main_phase(state: GameState):
         state.ramos_counters -= 5
         state.bonus_mana_pool += 10
 
+    try_magda_sacrifice(state)
     try_haven_recursion(state)
     try_dragon_hoard_draw(state)
     if state.phase == "main1":
@@ -2455,7 +2526,8 @@ def has_pips_for_dragon_ability(state: GameState, pips: dict) -> bool:
     checada. Secluded Courtyard ("...or activate an ability of a creature
     source of the chosen type") e a mana da Orb ("or activate abilities of
     Dragons") pagam qualquer cor aqui; Cavern e Haven nao."""
-    sets = source_color_sets(state) + state.bonus_colored
+    sets = (source_color_sets(state) + state.bonus_colored
+            + [set("WUBRG")] * (treasure_unspent(state) * treasure_mana_each(state)))
     if "Secluded Courtyard" in state.battlefield and "Secluded Courtyard" not in state.tapped_lands_this_turn:
         sets.append(set("WUBRG"))
     sets += [set("WUBRG")] * state.dragon_mana_pool
@@ -2602,61 +2674,48 @@ def try_dragon_hoard_draw(state: GameState):
     state.dragon_hoard_draws_total += 1
 
 
-def do_magda_treasures(state: GameState):
-    """Magda, Brazen Outlaw: 'Whenever a Dwarf you control becomes tapped,
-    create a Treasure token.' + 'Sacrifice five Treasures: search library
-    for an artifact or Dragon card, put onto the battlefield.'
+def do_magda_treasures(state: GameState, bodies: Optional[list] = None):
+    """Magda, Brazen Outlaw: "Whenever a Dwarf you control becomes tapped,
+    create a Treasure token." (ruling 2021-02-05: precisa mudar de virado pra
+    desvirado, e o gatilho nao deixa VOCE virar nada -- atacar e' a via.)
 
-    Bug real corrigido em 2026-08-27 (achado pelo usuario): a tag
-    'treasure_tutor_dragon' existia no CARD_DB mas NUNCA tinha sido
-    implementada em lugar nenhum — Magda era um corpo puramente
-    decorativo. Alem disso, Firdoch Core E' um Dwarf de verdade
-    (Changeling: 'This card is every creature type', em toda zona) —
-    quando ele tapa pra mana (dork_flat1_any), isso TAMBEM dispara o
-    gatilho da Magda, nao so ela mesma atacando. As duas fontes de tap
-    contam aqui: a propria Magda (assume que ataca todo turno que esta
-    pronta, mesma abstracao de combate ja usada pros Dragoes) e Firdoch
-    Core (achado real 2026-08-28: e' artefato, nao criatura - sem doenca
-    de invocacao, tapa pra mana todo turno que esta em campo, sem gate de
-    "ready" - ver rocks_mana()).
-
-    Os Treasures da Magda sao guardados (nao convertidos em mana na
-    hora, ao contrario de create_and_use_treasures) — decisao real: vale
-    mais guardar rumo aos 5 pro tutor gratis de Dragao/artefato do que
-    gastar 1 a 1 em mana."""
+    CORRIGIDO 2026-09-28 (Regra #3, conceito "Dwarf que voce controla"): so'
+    a Magda e o Firdoch Core contavam. Todo Dwarf que fica virado gera 1
+    Treasure por vez:
+    - a Magda atacando (2/1);
+    - **Firdoch Core** virando pra mana, 1x por turno (Changeling = Dwarf em
+      toda zona; e' artefato: sem doenca de invocacao) -- se ele foi animado
+      e ataca, o ataque e' o tap (ainda 1x por turno);
+    - **Morophon** (Changeling) atacando, e fichas-copia dele/do Firdoch da
+      Miirym; o Sarkhan, Soul Aflame copiando Morophon;
+    - cada combate EXTRA (Hellkite Charger "untap all attacking creatures"):
+      os Dwarves atacantes desviram e viram de novo.
+    Os Treasures vao pro estoque compartilhado (`treasure_stock`) e o tutor
+    ("Sacrifice five Treasures") e' `try_magda_sacrifice`."""
     if "Magda, Brazen Outlaw" not in state.battlefield:
         return
-    ready = set(ready_creatures(state))
-    taps = 0
-    if "Magda, Brazen Outlaw" in ready:
-        taps += 1
+    if bodies is None:
+        bodies = attacking_bodies(state)
+    magdas = state.battlefield.count("Magda, Brazen Outlaw")  # cada Magda dispara por Dwarf que vira
+    attackers = [b[3] for b in bodies]
+    by_src = {"magda": 0, "morophon": 0, "firdoch": 0}
+    if "Magda, Brazen Outlaw" in attackers:
+        by_src["magda"] += 1
+    by_src["morophon"] += sum(1 for n in attackers if n == "Morophon, the Boundless")
+    by_src["morophon"] += sum(1 for n in attackers if n == SARKHAN_SA and state.sarkhan_copy_of == "Morophon, the Boundless")
+    by_src["morophon"] += sum(1 for t in state.dragon_token_list
+                              if len(t) > 3 and t[3] == "Morophon, the Boundless" and t in ready_dragon_tokens(state))
     if state.magda_firdoch_tap_turn != state.turn:
-        # Achado real 2026-08-28: Firdoch Core e' artefato, nao criatura -
-        # doenca de invocacao nao se aplica (ver rocks_mana()). CORRIGIDO
-        # 2026-09-28: o combate extra do Hellkite Charger chamava isto de novo
-        # e o Firdoch "virava" 2x no turno; copias da Miirym tambem sao Dwarf.
+        # Firdoch Core (e copias): {T}: Add one mana of any color -- 1x por turno.
         state.magda_firdoch_tap_turn = state.turn
-        taps += (1 if "Firdoch Core" in state.battlefield else 0) + state.firdoch_token_copies
+        by_src["firdoch"] += (1 if "Firdoch Core" in state.battlefield else 0) + state.firdoch_token_copies
+    taps = sum(by_src.values()) * magdas
     if taps == 0:
         return
-    if visitor_replaces_treasures(state, taps, 1):
-        return  # sem Treasure, a Magda nunca junta os 5 do tutor
-    state.magda_treasures += taps
-    state.treasures_created_total += taps
-    while state.magda_treasures >= 5:
-        state.magda_treasures -= 5
-        pool = [n for n in state.library if is_dragon_card(n) or is_artifact_card(n)]
-        if not pool:
-            break
-        # Candidata Tiamat (so' via swap): "put onto the battlefield" nao e'
-        # conjurar -> a busca dos 5 nao dispara; so' como ultima opcao.
-        best = max(pool, key=lambda n: (n != "Tiamat", CARD_DB[n].mv))
-        state.library.remove(best)
-        enter_battlefield(state, best, from_hand=False)
-        state.tutors_used_total += 1
-        state.magda_tutors_total += 1
-        if is_dragon(best):
-            state.dragons_free_entry_total += 1
+    for k, v in by_src.items():
+        if v:
+            state.magda_sources[k] = state.magda_sources.get(k, 0) + v * magdas
+    create_and_use_treasures(state, taps)
 
 
 def try_hellkite_charger_extra_combat(state: GameState):
@@ -2715,7 +2774,7 @@ def attacking_bodies(state: GameState):
     for t in ready_dragon_tokens(state):
         copy_of = t[3] if len(t) > 3 else None
         tags = CARD_DB[copy_of].tags if copy_of else frozenset()
-        bodies.append((tags, token_effective_power(state, t[0]), True, copy_of or "token"))
+        bodies.append((tags, token_effective_power(state, t[0], copy_of), True, copy_of or "token"))
     if state.firdoch_animated_turn == state.turn:
         # "{4}: This artifact becomes a 4/4 artifact creature until end of turn"
         # (Changeling: Dragao). Morophon da' +1/+1 (criatura do tipo escolhido).
@@ -2757,8 +2816,8 @@ def limit_attackers_for_library(state: GameState, bodies: list) -> list:
 
 
 def combat_step(state: GameState):
-    do_magda_treasures(state)
     bodies = limit_attackers_for_library(state, attacking_bodies(state))
+    do_magda_treasures(state, bodies)
     dragon_bodies = [b for b in bodies if b[2]]
     if not bodies:
         return
@@ -3696,6 +3755,7 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     if state.decked_turn is not None:
         return
     settle_mana_life(state)
+    settle_treasures(state)
     end_step(state)
     if state.lethal_proxy_turn is None and state.proxy_damage_total + state.combat_damage_proxy_total >= LETHAL_PROXY:
         state.lethal_proxy_turn = state.turn

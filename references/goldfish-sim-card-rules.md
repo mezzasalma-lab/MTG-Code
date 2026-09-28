@@ -603,6 +603,30 @@ ETB-draw por ficha, "draw X"):
 3. o piloto controla a alavanca real (quantos atacam, quais compras
    opcionais aceita) e usa isso pra não decar.
 
+## Treasure é PERMANENTE: estoque persistente, conta pra qualquer "Sacrifice N Treasures"
+
+Achado real (Ur-Dragon, 2026-09-28, avaliando a Magda). O simulador
+convertia Treasure em mana na hora (o que sobrava sumia no fim do turno) e
+a Magda tinha um contador separado só com os Treasures DELA. Erros: o
+Treasure do Goldspan/Old Gnawbone/Ancient Copper/Smothering Tithe nunca
+contava pro "Sacrifice five Treasures", e Treasure não gasto não passava
+pro turno seguinte. Corrigido com `treasure_stock`: o estoque entra no
+total de mana, gasta só o que foi preciso (terrenos e rocks primeiro), o
+resto persiste, e o tutor sacrifica o que sobrou. Efeito medido: letal até
+o T8 50,4% → 54,7%, comandante 0,13 turno antes. Vale pra todo deck com
+Treasure (Vihaan, Megatron, Toph, Ulalek...): grep de `bonus_mana_pool` em
+código de Treasure.
+
+## Changeling é Dwarf/Dragão/tudo, em toda zona: varrer o conceito, não a carta
+
+Achado real (Ur-Dragon, 2026-09-28). Magda dispara em "a Dwarf you control
+becomes tapped". Firdoch Core e Morophon têm Changeling, então são Dwarf.
+O simulador só conhecia o Firdoch; o Morophon atacando (vira) não gerava
+Treasure e a Magda não dava +1/+0 a nenhum dos dois. Regra: pra todo
+gatilho/estático por tipo de criatura, listar por script, em `type_line` +
+`oracle_text` ao vivo, quem satisfaz (Changeling inclusive), e propagar pra
+fichas-cópia (Miirym) e pro Sarkhan, Soul Aflame copiando.
+
 ## Política de descarte do cleanup antes da comandante
 
 Achado real (Ur-Dragon, 2026-09-28, avaliando a Tiamat). O descarte pegava

@@ -160,13 +160,13 @@ def test_visitor_stops_magda_tutor():
     s = fresh(turn=6)
     put(s, "Draconic Visitor", "Magda, Brazen Outlaw", "Firdoch Core")
     ud.do_magda_treasures(s)
-    assert s.magda_treasures == 0 and s.dragon_tokens == 2
+    assert s.treasure_stock == 0 and s.dragon_tokens == 2
 
 
 def test_no_visitor_treasures_unchanged():
     s = fresh()
     ud.create_and_use_treasures(s, 3)
-    assert s.treasures_created_total == 3 and s.bonus_mana_pool == 3 and s.dragon_tokens == 0
+    assert s.treasures_created_total == 3 and s.treasure_stock == 3 and ud.total_mana(s) == 3 and s.dragon_tokens == 0
 
 
 def test_token_cap():
@@ -899,6 +899,98 @@ def test_gnawbone_charger_loop_repeats_combats():
     ud.try_hellkite_charger_extra_combat(s)
     assert s.hellkite_charger_extra_combats >= 3
     assert s.proxy_damage_total + s.combat_damage_proxy_total >= ud.LETHAL_PROXY
+
+
+# ---------------------------------------------------------------------------
+# Dwarf (Changeling) e Treasure persistente -- Magda + Firdoch Core + Morophon
+# ---------------------------------------------------------------------------
+
+def _magda_turn(*extra, turn=6):
+    s = fresh(turn=turn, library=[FILLER] * 30)
+    put(s, "Magda, Brazen Outlaw", *extra, cast_turn=1)
+    s.hand = []
+    return s
+
+
+def test_firdoch_tap_makes_a_treasure_with_magda():
+    s = _magda_turn("Firdoch Core")
+    ud.combat_step(s)
+    assert s.treasure_stock == 2  # Magda atacando + Firdoch virando
+    assert s.magda_sources == {"magda": 1, "firdoch": 1}
+
+
+def test_firdoch_taps_once_per_turn_even_with_extra_combat():
+    s = _magda_turn("Firdoch Core")
+    ud.combat_step(s)
+    ud.combat_step(s)   # combate extra: a Magda desvira (Charger) e ataca de novo; o Firdoch nao
+    assert s.treasure_stock == 3
+
+
+def test_morophon_is_a_dwarf_and_makes_a_treasure_when_attacking():
+    s = _magda_turn("Morophon, the Boundless")
+    ud.combat_step(s)
+    assert s.treasure_stock == 2 and s.magda_sources.get("morophon") == 1
+
+
+def test_magda_buffs_other_dwarves():
+    s = fresh()
+    put(s, "Magda, Brazen Outlaw", "Morophon, the Boundless")
+    assert ud.effective_power(s, "Morophon, the Boundless") == 7
+    assert ud.effective_power(s, "Magda, Brazen Outlaw") == 2   # "Other Dwarves"
+    ud.create_dragon_tokens(s, 1, 6, source="miirym_copy", copy_of="Morophon, the Boundless")
+    assert ud.token_effective_power(s, 6, "Morophon, the Boundless") == 6 + 1 + 1 + 0  # Morophon (+1) e Magda (+1)
+
+
+def test_treasure_persists_across_turns():
+    s = fresh(library=[FILLER] * 30)
+    ud.create_and_use_treasures(s, 6)
+    ud.play_turn(s, is_first_turn=False, on_play=True)
+    assert s.treasure_stock == 6 and ud.total_mana(s) >= 6
+
+
+def test_treasure_stock_spent_only_when_needed():
+    s = fresh(turn=6)
+    put(s, "Forest", "Forest", "Forest")
+    ud.create_and_use_treasures(s, 4)
+    s.mana_spent_this_turn = 5          # 3 dos terrenos + 2 dos Treasures
+    ud.settle_treasures(s)
+    assert s.treasure_stock == 2
+
+
+def test_goldfish_treasures_count_for_magda_sacrifice():
+    # Treasures de QUALQUER fonte (aqui Old Gnawbone/Goldspan) alimentam o tutor
+    s = fresh(turn=6, library=["Utvara Hellkite"] + [FILLER] * 30)
+    put(s, "Magda, Brazen Outlaw")
+    ud.create_and_use_treasures(s, 5)
+    ud.try_magda_sacrifice(s)
+    assert "Utvara Hellkite" in s.battlefield and s.treasure_stock == 0 and s.magda_tutors_total == 1
+
+
+def test_magda_does_not_sacrifice_treasures_already_spent_as_mana():
+    s = fresh(turn=6, library=["Utvara Hellkite"] + [FILLER] * 30)
+    put(s, "Magda, Brazen Outlaw")
+    ud.create_and_use_treasures(s, 5)
+    s.mana_spent_this_turn = 3          # 3 Treasures ja' viraram mana neste turno
+    ud.try_magda_sacrifice(s)
+    assert s.magda_tutors_total == 0 and "Utvara Hellkite" not in s.battlefield
+
+
+def test_treasure_mana_pays_a_pip_and_goldspan_doubles_it():
+    s = fresh()
+    put(s, "Goldspan Dragon")
+    ud.create_and_use_treasures(s, 2)
+    assert ud.total_mana(s) == 4 + 0  # 2 Treasures x 2 mana (Goldspan; sem terrenos, a propria Goldspan nao produz)
+
+
+def test_magda_engine_reaches_tutor_in_about_three_turns():
+    # Magda + Firdoch + Morophon: 3 Dwarves virando por turno -> 5 Treasures em 2 turnos
+    s = _magda_turn("Firdoch Core", "Morophon, the Boundless")
+    ud.combat_step(s)
+    s.turn += 1
+    for n in ("Magda, Brazen Outlaw", "Morophon, the Boundless"):
+        s.creature_cast_turn[n] = 1
+    ud.combat_step(s)
+    assert s.treasure_stock == 6
 
 
 def run_all():

@@ -3324,6 +3324,9 @@ número é piso.)
   o loop da Bladewing antes do letal. Sem elas: combo +4,2–4,8pp,
   deck-out −0,6–0,7pp.
 
+> ⚠️ **PARCIALMENTE SUPERADA** (mesmo dia): a Magda como 2ª candidata estava
+> errada; ver a seção "Magda + Firdoch Core + Morophon".
+
 **Deck primeiro (Regras #4/#5), desempate:**
 1. **Elemental Bond: melhor alternativa ao Sarkhan.**
    - Só tem uma cláusula (compra obrigatória por criatura de poder ≥3).
@@ -3360,6 +3363,107 @@ número é piso.)
 | Interação | remoção, contramágica, wipes, proteção | fora do A/B de propósito: valor 📊, o simulador as veria como corte grátis |
 
 `lista.md` não muda: a troca é decisão do usuário.
+
+---
+
+## Magda + Firdoch Core + Morophon: conceito "Dwarf" e Treasure persistente — 2026-09-28
+
+**Cobrança:** *"Vc esqueceu que com ela em campo, toda vez que eu tap o
+Firdoch Core eu gero um tesouro. Fica chato ter que te lembrar isso o
+tempo todo!"* (sobre minha avaliação de cortar a Magda pra Tiamat).
+
+**O que o simulador fazia de verdade.** O tap do Firdoch Core → Treasure
+já estava modelado desde 28/08, e o log citava. Só que meu resumo tratou a
+Magda como tutor lento e eu não enumerei o conceito. Varrendo "Dwarf" e
+"Treasure que você controla" (oráculo e rulings ao vivo), 4 furos, todos
+subestimando a Magda:
+
+| # | Cláusula | Antes | Agora |
+|---|---|---|---|
+| 1 | "Whenever a **Dwarf** you control becomes tapped" | Morophon (Changeling = Dwarf) atacando não gerava Treasure; fichas-cópia dele e do Firdoch, nem o Sarkhan copiando Morophon | todo Dwarf que vira conta (Magda, Firdoch, Morophon, cópias); cada combate extra do Charger desvira e vira de novo |
+| 2 | "**Other Dwarves** you control get +1/+0" | nenhum | Firdoch animado, Morophon e cópias ganham +1 por Magda |
+| 3 | "Sacrifice five **Treasures**" | só contava os da própria Magda | Treasure de QUALQUER fonte (Goldspan, Old Gnawbone, Ancient Copper, Tithe, Firdoch) |
+| 4 | Treasure é permanente | virava mana na hora e o que sobrava sumia no fim do turno | `treasure_stock`: persiste, gasta só o necessário, o tutor sacrifica o que sobrou |
+
+Também corrigido: a ficha-cópia do Morophon se dava o próprio anthem
+("Other creatures"); tinha uma nota 📝 "erro de 1, raro" (o dado existia).
+
+### Antes/depois (2.000 seeds, 7.600.000+)
+
+| | Padrão antes | Padrão depois | Resil. antes | Resil. depois |
+|---|---|---|---|---|
+| Letal ≤T6 | 4,00% | 4,75% | 2,00% | 2,65% |
+| Letal ≤T8 | 50,35% | **54,65%** | 28,10% | **31,35%** |
+| Turno da comandante | 7,036 | **6,903** | 7,452 | 7,303 |
+| Vitória por dano de comandante | 38,75% | 42,30% | 24,40% | 27,65% |
+| Dragões em campo no fim (mediana) | 15 | 18 | 3 | 4 |
+| Dano proxy (mediana) | 32,5 | 66 | 0 | 1 |
+| Deck-out | 2,00% | 2,10% | 0,65% | 0,80% |
+
+O maior salto da rodada inteira: o motor de Treasure do deck (Magda,
+Goldspan, Old Gnawbone, Ancient Copper, Tithe) estava subestimado.
+
+### A Magda no código corrigido (N=3.000)
+
+- Em campo em **44%** das partidas até o T8 (padrão), 21% na resiliência.
+- **0,49 tutores por partida** (0,36 na resiliência): cada um põe um
+  Dragão ou artefato direto no campo.
+
+### A/B da Tiamat com o modelo corrigido (N=3.000, pareado, IC95%)
+
+Base: letal ≤T8 54,4% padrão / 31,1% resil.; combo da Bladewing 6,6%.
+
+| Sai | letal ≤T8 padrão | letal ≤T8 resil. | turno cmd | dano cmd | combo Bladewing | deck-out |
+|---|---|---|---|---|---|---|
+| Garruk's Uprising | +4,5 ±0,9 | +4,3 ±0,9 | −0,015 | +0,5 | +5,3 | −0,9 |
+| Elemental Bond | +4,0 ±0,9 | +4,3 ±0,9 | −0,014 | +0,6 | **+6,1** | −0,8 |
+| Dragonlord Dromoka 📊 | +3,6 ±0,9 | +3,8 ±0,8 | −0,012 | −0,7 | +4,4 | 0,0 |
+| Temur Ascendancy | +2,8 ±0,9 | +3,4 ±0,9 | −0,011 | −1,8 | +5,1 | −0,7 |
+| Bladewing the Risen | +2,9 ±0,8 | +3,0 ±0,8 | +0,004 | −2,1 | **−6,6** | −0,3 |
+| Sarkhan Unbroken | +2,2 ±0,9 | +3,3 ±0,7 | +0,014 | −1,4 | +3,5 | +0,2 |
+| Farseek (controle) | +2,1 ±1,0 | +2,1 ±1,0 | +0,066 | −2,7 | +3,1 | −0,4 |
+| **Magda, Brazen Outlaw** | **+0,4 ±0,9** | **+1,6 ±0,9** | **+0,076** | **−2,5** | +3,2 | −0,4 |
+
+**A Magda sai do fim da fila de cortes pro fundo dela**: cortá-la rende
++0,4pp no padrão (zero estatístico, abaixo do Farseek de controle),
+atrasa a comandante 0,076 turno e perde 2,5pp de dano de comandante. A
+avaliação anterior ("segunda candidata") estava errada e é **superada**.
+
+### Recomendação corrigida
+
+1. **Elemental Bond** continua a primeira: +4,0 / +4,3pp e o combo da
+   Bladewing quase dobra (6,6% → 12,7%). A compra obrigatória dela segura
+   atacantes e para o loop antes do letal. A Garruk's Uprising empata no
+   número, mas o trample dela é 📊 (sem bloqueio no goldfish).
+2. **Temur Ascendancy** vira a segunda: +2,8 / +3,4pp. O haste repete o do
+   Dragon Tempest e do riot, e a compra é opcional. Custo: −1,8pp de dano
+   de comandante (haste da Ur-Dragon quando o Tempest não está em campo).
+3. **Sarkhan Unbroken** é a terceira: +2,2 / +3,3pp, mas atrasa a
+   comandante 0,014 turno (o +1 dele é mana).
+4. **Magda: não cortar.** Ela é tutor (0,49 por partida), fonte de dano
+   (Dwarf) e o motor que o Firdoch Core e o Morophon alimentam.
+5. Continuam intocáveis: peças de combo (Miirym, Bladewing, Terror, Old
+   Gnawbone, Hellkite Charger, Dragon Tempest, Ancient Gold), Dromoka,
+   Balefire, Rhythm 📊, ramp e Dragões-motor grandes.
+
+`lista.md` não muda: a troca é decisão do usuário.
+
+**Escopo (Regra #7).** Varrido: os conceitos "Dwarf que você controla" e
+"Treasure que você controla" em todas as fontes e consumidores da lista.
+Método: oráculo + rulings ao vivo, grep e testes dirigidos. Não varrido:
+a política de gastar Treasure vs guardar pro tutor além do "só o que
+sobrou" (📝), e o mesmo conceito de Treasure nos outros 8 simuladores que
+têm Treasure (Vihaan, Megatron, Toph, Ulalek...): checar lá é trabalho
+futuro.
+
+### Validação
+
+- `test_urdragon_goldfish.py`: 98/98. São 10 testes novos (Firdoch tap,
+  1× por turno, Morophon Dwarf, +1/+0, persistência, gasto só do
+  necessário, tutor com Treasure de qualquer fonte, não sacrifica o já
+  gasto, Goldspan dobra, motor em 2 turnos). 11 falham no código anterior.
+- 20.000 + 20.000 partidas (padrão + resiliência, seed 8.000.000+): 0
+  exceções.
 
 ---
 

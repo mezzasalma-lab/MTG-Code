@@ -1,5 +1,27 @@
 # Checklist cláusula-a-cláusula — The Ur-Dragon (`urdragon_goldfish_v1.py`)
 
+## Conceitos "Dwarf" e "Treasure" varridos (Magda, Firdoch Core, Morophon) — 2026-09-28 (4ª rodada do dia)
+
+**Gatilho:** o usuário apontou que eu esqueci o Treasure do tap do Firdoch
+Core ao avaliar a Magda. Rulings ao vivo (Magda 2021-02-05: o Dwarf precisa
+mudar de desvirado pra virado; Firdoch Core 2025-11-17: Kindred permite tipo
+de criatura fora de criatura, Changeling funciona em toda zona).
+
+| Carta | Cláusula | Antes | Agora |
+|---|---|---|---|
+| Magda, Brazen Outlaw | "Whenever a Dwarf you control becomes tapped, create a Treasure token" | Magda e Firdoch Core | + Morophon atacando, fichas-cópia (Miirym) de Morophon/Firdoch, Sarkhan copiando Morophon; extra combat desvira/vira |
+| Magda | "Other Dwarves you control get +1/+0" | nenhum | Firdoch animado, Morophon, cópias |
+| Magda | "Sacrifice five Treasures: ... artifact or Dragon card onto the battlefield" | só Treasures da própria Magda | qualquer Treasure (`treasure_stock`); só o que sobrou depois de conjurar |
+| Conceito Treasure | "{T}, Sacrifice: Add one mana of any color" (Goldspan: 2 de uma cor) | mana instantânea, perdida no fim do turno | permanente: estoque persiste, paga pip, gasta só o necessário |
+| Morophon | "Other creatures you control of the chosen type get +1/+1" | a ficha-cópia dele se dava o próprio bônus | só de outros |
+
+**Escopo (Regra #7).** Varrido: todo produtor e consumidor de Treasure da
+lista, e todo Dwarf (Magda, Firdoch Core, Morophon). Método: oráculo e
+rulings ao vivo, script de tipos, testes dirigidos. Não varrido: o mesmo
+conceito nos outros simuladores com Treasure.
+
+---
+
 ## Combos da lista executados no simulador — 2026-09-28 (3ª rodada do dia)
 
 **Gatilho:** o usuário perguntou se a Bladewing não era peça de combo.
