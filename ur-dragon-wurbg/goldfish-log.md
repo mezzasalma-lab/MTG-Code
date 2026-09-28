@@ -3258,4 +3258,109 @@ Base: letal ≤T8 50,2% (padrão) / 28,0% (resiliência); combo 5,8% / 2,5%.
 
 ---
 
+## Tiamat: candidatas a corte além do Sarkhan Unbroken — 2026-09-28
+
+**Pedido:** *"Se não for o Sarkhan, quais outras candidatas a corte?"*
+
+**Processo** (Regra 10 + adendo da Regra #4):
+1. Curva dos 63 não-terrenos: CMC1 5, CMC2 13, CMC3 16, CMC4 3, CMC5 7,
+   CMC6 10, CMC7 7, CMC8 1, CMC9 1.
+2. Oráculo de todas as candidatas no cache.
+3. Commander Spellbook antes/depois de CADA troca (Tiamat no lugar de X):
+   - só 7 trocas mudam combo, as das peças: Miirym, Bladewing, Terror
+     (infinito de dano), Old Gnawbone, Hellkite Charger (combates
+     infinitos), Dragon Tempest, Ancient Gold (dano quase infinito);
+   - nas outras 28, os 3 combos continuam.
+4. A/B pareado N=3.000 de 27 candidatas (Farseek de controle), com os 3
+   combos executados pelo simulador.
+
+Base: letal ≤T8 50,2% (padrão) / 28,0% (resiliência); combo da Bladewing
+5,8%; deck-out 1,8%.
+
+| Sai | letal ≤T8 padrão | letal ≤T8 resil. | turno cmd (padrão) | dano cmd | combo Bladewing | deck-out |
+|---|---|---|---|---|---|---|
+| Garruk's Uprising | +4,3 ±0,9 | +3,4 ±0,9 | −0,012 | +0,2 | +4,2 | −0,7 |
+| Elemental Bond | +4,1 ±0,9 | +3,4 ±0,9 | −0,009 | +0,6 | +4,8 | −0,6 |
+| Rhythm of the Wild 📊 | +3,7 ±0,9 | +2,7 ±0,8 | −0,014 | −2,5 | +2,9 | −0,1 |
+| Dragonlord Dromoka 📊 | +3,6 ±0,9 | +2,9 ±0,8 | −0,013 | +0,2 | +3,5 | +0,2 |
+| Balefire Dragon 📊 | +3,6 ±0,8 | +2,8 ±0,7 | +0,007 | −1,0 | +3,4 | −0,2 |
+| Magda, Brazen Outlaw | +3,2 ±0,9 | +2,9 ±0,8 | +0,003 | −0,7 | +3,8 | −0,1 |
+| Temur Ascendancy | +3,1 ±0,9 | +2,7 ±0,9 | −0,009 | −1,1 | +4,0 | −0,7 |
+| Bladewing the Risen (combo) | +3,0 ±0,8 | +2,6 ±0,8 | +0,004 | −1,6 | **−5,8** | −0,3 |
+| Sylvan Library | +3,0 ±0,9 | +2,5 ±0,9 | +0,030 | −1,3 | +2,1 | −0,3 |
+| Utvara Hellkite | +3,0 ±1,0 | +2,4 ±0,9 | −0,003 | +0,7 | +4,3 | −0,9 |
+| Up the Beanstalk | +2,6 ±0,9 | +2,3 ±0,9 | +0,019 | −0,1 | +3,0 | 0,0 |
+| Orb of Dragonkind | +2,2 ±0,9 | +2,6 ±0,9 | +0,055 | −2,4 | +2,5 | −0,3 |
+| Sarkhan Unbroken | +2,0 ±0,8 | +2,6 ±0,7 | +0,020 | −1,0 | +2,6 | +0,3 |
+| Return of the Wildspeaker | +2,2 ±0,7 | +2,0 ±0,7 | +0,005 | −0,7 | +1,8 | −0,1 |
+| Dragon's Hoard | +2,0 ±0,9 | +2,1 ±0,9 | +0,068 | −2,0 | +2,4 | −0,2 |
+| Kodama's Reach | +2,2 ±0,9 | +1,7 ±0,9 | +0,086 | −2,3 | +2,7 | −0,4 |
+| Skyshroud Claim | +1,8 ±0,9 | +2,1 ±0,9 | +0,102 | −3,2 | +2,7 | −0,2 |
+| Herald's Horn | +1,9 ±0,9 | +1,9 ±0,8 | +0,045 | −1,5 | +2,1 | −0,1 |
+| Farseek (controle) | +2,0 ±1,0 | +1,7 ±0,9 | +0,069 | −2,1 | +2,4 | −0,2 |
+| Atarka, World Render | +1,5 ±0,8 | +1,6 ±0,7 | +0,005 | −3,8 | +2,8 | −0,1 |
+| Savage Ventmaw | +1,4 ±0,9 | +1,4 ±0,8 | +0,056 | −1,7 | +2,9 | −0,3 |
+| Dragon Broodmother | +1,5 ±0,8 | +1,0 ±0,7 | −0,004 | −0,1 | +2,8 | −0,4 |
+| Klauth, Unrivaled Ancient | +0,8 ±0,8 | +1,2 ±0,7 | +0,049 | −1,4 | +1,8 | −0,4 |
+| Morophon, the Boundless | +0,7 ±0,8 | +1,2 ±0,7 | +0,034 | −3,5 | −0,8 | −0,1 |
+| Hellkite Courser | +1,2 ±0,9 | +0,8 ±0,8 | +0,020 | −2,7 | +3,2 | −0,3 |
+| Firdoch Core | +0,6 ±1,0 | +1,1 ±0,9 | +0,086 | −3,0 | +2,2 | −0,1 |
+| Ancient Copper Dragon | +0,7 ±0,8 | 0,0 ±0,8 | +0,069 | −1,9 | +1,6 | −0,2 |
+
+(pp, exceto turno cmd; 📊 = valor real não medido pelo simulador, o
+número é piso.)
+
+**Leitura do simulador:**
+- As ~10 primeiras empatam dentro do IC (±0,9).
+- O fundo é claro:
+  - cortar ramp/rock (Kodama's, Skyshroud, Farseek, Hoard, Firdoch,
+    Orb) atrasa a comandante 0,05–0,10 turno;
+  - cortar Dragão-motor grande (Ancient Copper, Firdoch, Morophon,
+    Klauth, Courser, Atarka) perde mais letal e dano de comandante.
+- **Achado novo:** Elemental Bond e Garruk's Uprising lideram por
+  anti-sinergia de regra. "Draw a card" delas é obrigatório. Com a
+  Ur-Dragon comprando por atacante e a Utvara/Bladewing criando fichas
+  4/4–6/6, elas forçam o piloto a segurar atacantes pra não decar e param
+  o loop da Bladewing antes do letal. Sem elas: combo +4,2–4,8pp,
+  deck-out −0,6–0,7pp.
+
+**Deck primeiro (Regras #4/#5), desempate:**
+1. **Elemental Bond: melhor alternativa ao Sarkhan.**
+   - Só tem uma cláusula (compra obrigatória por criatura de poder ≥3).
+   - Já é coberta pela Garruk's Uprising (poder ≥4, mais trample) e pela
+     Temur Ascendancy (compra opcional, mais haste).
+   - A compra obrigatória atrapalha os dois finais do deck (ataque em
+     massa da Ur-Dragon e loop da Bladewing). Com a Tiamat, a vantagem de
+     carta vem do tutor.
+   - Curva: sai um 3 (16 → 15).
+2. **Magda, Brazen Outlaw.**
+   - O papel dela, tutor de Dragão via 5 Treasures, é o mesmo da Tiamat.
+     A Tiamat faz isso 5× e sem esperar Treasure: a Magda gera 1–2 por
+     turno (ela mesma atacando como 2/1, o Firdoch virando), porque os
+     outros Treasures do deck viram mana na hora.
+   - Não é Dragão nem peça de combo.
+   - Custo: sai um 2 (curva 13 → 12, fica mais pesada que no corte do
+     Bond).
+3. **Temur Ascendancy.**
+   - O haste dela repete o do Dragon Tempest (todo Dragão do deck voa) e
+     do riot do Rhythm.
+   - A compra é opcional.
+   - Perde −1,1pp de dano de comandante (haste da Ur-Dragon no turno em
+     que desce, quando o Tempest não está em campo). Terceira opção.
+
+**Não cortar, e por quê:**
+
+| Grupo | Cartas | Motivo |
+|---|---|---|
+| Peças de combo (Spellbook) | Miirym, Bladewing, Terror, Old Gnawbone, Hellkite Charger, Dragon Tempest, Ancient Gold | cortar desliga um combo |
+| Garruk's Uprising | — | mesmo número do Bond, mas o trample é 📊 (sem bloqueio no goldfish): na mesa vale contra bloqueador voador e chump |
+| Valor 📊 | Dromoka, Balefire, Rhythm of the Wild | o simulador só mede piso; o Rhythm ainda custa −2,5pp de dano de comandante |
+| Ramp e rocks | Kodama's, Skyshroud, Farseek, Orb, Hoard, Firdoch | atrasam a comandante de 9 |
+| Dragões-motor grandes | Atarka, Klauth, Morophon (deixa a Tiamat por {1}), Ancient Copper, Courser, Ventmaw, Broodmother | perdem mais letal e dano de comandante |
+| Interação | remoção, contramágica, wipes, proteção | fora do A/B de propósito: valor 📊, o simulador as veria como corte grátis |
+
+`lista.md` não muda: a troca é decisão do usuário.
+
+---
+
 <!-- Copie o bloco acima para cada nova partida -->
