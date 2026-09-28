@@ -1,5 +1,27 @@
 # Checklist cláusula-a-cláusula — The Ur-Dragon (`urdragon_goldfish_v1.py`)
 
+## Combos da lista executados no simulador — 2026-09-28 (3ª rodada do dia)
+
+**Gatilho:** o usuário perguntou se a Bladewing não era peça de combo.
+Era, e a recomendação da Tiamat tinha ignorado isso. Commander Spellbook
+ao vivo (`find-my-combos`): 3 combos já montados na lista. Dois não eram
+executáveis no simulador.
+
+| Carta | Cláusula | Antes | Agora |
+|---|---|---|---|
+| Terror of the Peaks | "deals damage equal to that creature's power to **any target**" | só oponente (proxy) | também a própria Bladewing, dentro do loop (`try_bladewing_loop`) |
+| Scourge of Valkas / Dragon Tempest | "deals X damage to **any target**" | só oponente | matam a Bladewing no loop se X ≥ resistência (📝 variante pela regra; o Spellbook lista só a Terror) |
+| Miirym (cópia da Bladewing) | ETB da cópia: "return target Dragon permanent card" | devolvia o Dragão de maior MV | com o loop montado, devolve a Bladewing |
+| Hellkite Charger | "Whenever this creature attacks, you may pay {5}{R}{R}..." | teto de 1 combate extra por turno | repete enquanto dá pra pagar (Treasure da Old Gnawbone) até o letal; trava de 60 |
+
+**Escopo (Regra #7):**
+- **Varrido:** os 3 combos que o Spellbook lista como "included" pra esta
+  lista. Método: Spellbook ao vivo + teste dirigido de cada um.
+- **Não varrido:** os 147 "almostIncluded" (falta 1 carta; nenhum está na
+  lista).
+
+---
+
 ## Varredura das demais cartas e mecânicas — 2026-09-28 (2ª rodada do dia)
 
 **Pedido:** *"Verifique as demais cartas e mecânicas em busca de erros e

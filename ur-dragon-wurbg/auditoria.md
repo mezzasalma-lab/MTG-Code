@@ -178,6 +178,18 @@ Varredura de `oracle_text` das 100 cartas.
 > Bracket na prática (ver critério oficial: precisa ser rápido E
 > provável, não só existir). Registrado aqui como curiosidade de fim de
 > jogo pro grupo saber, não como wincon planejado.
+>
+> **Atualização (2026-09-28):** o simulador agora EXECUTA os dois
+> infinitos (antes nenhum dos dois: a Terror nunca mirava a Bladewing, e o
+> Charger tinha teto de 1 combate extra). Medido em 3.000 partidas:
+> - Miirym + Bladewing + Terror sai em 0,4% até o T6, 5,8% até o T8 e
+>   13,0% até o T10. É ~20× a hipergeométrica pura (0,29% até o T8): o
+>   motor de compra da Ur-Dragon, Herald's Horn, Triumph, Orb, Magda e
+>   Voyage acham as peças.
+> - Com a Tiamat (candidata; busca as 3 peças numa conjuração só): 0,8% /
+>   8,4% / 17,0%.
+> - Continua tardio e de 3 peças: Bracket 3 mantido. Detalhe em
+>   `goldfish-log.md`, seção "Combos no simulador + Tiamat reavaliada".
 
 ---
 

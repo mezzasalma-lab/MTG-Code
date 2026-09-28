@@ -3131,6 +3131,11 @@ do corte.**
 - **Na resiliência os dois empatam.** Lá o Sarkhan agora apanha de ataque
   de oponente.
 
+> ⚠️ **SUPERADA** (mesmo dia): esta recomendação ignorou que a Bladewing é
+> peça do infinito Miirym + Bladewing + Terror of the Peaks, registrado na
+> `auditoria.md` desde 2026-08-27. Ver a seção "Combos no simulador +
+> Tiamat reavaliada".
+
 **Recomendação atualizada:** incluir a Tiamat no lugar do **Bladewing the
 Risen**.
 - O papel do Bladewing, recursão de Dragão, já tem mais dois na lista:
@@ -3143,6 +3148,113 @@ Risen**.
   o valor real deles é 📊 (piso no simulador).
 - Sarkhan Unbroken continua sendo um corte aceitável: empata na
   resiliência, que é o modo mais próximo da mesa. `lista.md` não muda.
+
+---
+
+## Combos no simulador + Tiamat reavaliada (Bladewing é peça de combo) — 2026-09-28
+
+**Pedido:** *"Bladewing não tem um combo no deck? Vc avaliou isso na sua
+consideração?"* e *"Como vc ainda erra por não seguir as regras que
+criei?"*.
+
+**O erro.** A recomendação anterior (cortar Bladewing pra Tiamat) não
+considerou o infinito **Miirym + Bladewing the Risen + Terror of the
+Peaks**. Ele está na `auditoria.md` desde 2026-08-27, e o Commander
+Spellbook o confirmou ao vivo hoje (id 380-1110-3362). A Regra #4 manda
+comparar com os motores e as outras cartas do deck; eu listei os motores
+de memória, sem ler a documentação do deck nem consultar o Spellbook.
+Ganhou um adendo obrigatório no `CLAUDE.md`: ler a documentação do deck e
+rodar o Spellbook antes e depois de cada troca.
+
+**Commander Spellbook ao vivo** (`find-my-combos`, lista atual): 3 combos
+já montados.
+- Old Gnawbone + Hellkite Charger (1800-3398): combates infinitos.
+- Miirym + Bladewing + Terror (380-1110-3362): dano infinito.
+- Dragon Tempest + Ancient Gold Dragon (2855-5982): dano quase infinito.
+
+Com Tiamat no lugar do Sarkhan: os mesmos 3. Com Tiamat no lugar da
+**Bladewing: o combo Miirym + Bladewing + Terror some.**
+
+### O simulador não executava 2 dos 3
+
+| Combo | Antes | Agora |
+|---|---|---|
+| Miirym + Bladewing + Terror | a Terror só mirava oponente; a Bladewing nunca morria, então o loop nunca acontecia | `try_bladewing_loop`: o matador mira a Bladewing, a cópia da Miirym a devolve, e cada volta dispara Scourge/Tempest/Terror/Lathliss no oponente e as compras obrigatórias. Para no letal, no deck-out ou quando a próxima volta decaria |
+| Old Gnawbone + Hellkite Charger | teto de 1 combate extra por turno ("evitar runaway") | repete enquanto os Treasures pagam o {5}{R}{R}, até o letal (trava de segurança: 60) |
+| Dragon Tempest + Ancient Gold | já modelado (fichas Faerie Dragon disparam o Tempest) | — |
+
+📝 Variante pela regra, que o Spellbook não lista: Scourge of Valkas ou
+Dragon Tempest também matam a Bladewing ("X damage to any target") quando
+X ≥ a resistência dela.
+
+Antes/depois do modelo de combo (2.000 seeds, 7.600.000+):
+
+| | Padrão antes | Padrão depois | Resil. antes | Resil. depois |
+|---|---|---|---|---|
+| Letal ≤T6 | 3,55% | 4,00% | 1,70% | 2,00% |
+| Letal ≤T8 | 49,70% | 50,35% | 27,05% | 28,10% |
+| Deck-out | 1,95% | 2,00% | 0,65% | 0,65% |
+
+### Com que frequência o combo sai (Regra 7 de `user-standing-rules.md`), N=3.000
+
+| | até T6 | até T8 | até T10 |
+|---|---|---|---|
+| Lista atual (padrão) | 0,4% | 5,8% | 13,0% |
+| Lista atual (resiliência) | 0,1% | 2,5% | 8,6% |
+| Tiamat no lugar do Sarkhan Unbroken (padrão) | 0,8% | **8,4%** | **17,0%** |
+| Tiamat no lugar do Sarkhan Unbroken (resiliência) | 0,4% | 3,9% | 11,6% |
+| Hipergeométrica: as 3 peças na mão, sem tutor nem compra extra | 0,18% | 0,29% | 0,43% |
+
+- O combo é 20× mais frequente que a hipergeométrica pura: o motor de
+  compra da Ur-Dragon, Herald's Horn, Sarkhan's Triumph, Orb, Magda e
+  Haunting Voyage acham e põem as peças.
+- **A Tiamat busca as 3 peças de uma vez** (todas são Dragões com nomes
+  diferentes) e sobe a frequência em ~45% relativos.
+- Continua tardio: menos de 1% até o T6, e é combo de 3 peças. Compatível
+  com Bracket 3 pelo critério de "rápido E provável" da Regra 7, mas é
+  informação que o grupo pode querer saber.
+
+### A/B pareado da Tiamat com os combos modelados (N=3.000)
+
+Base: letal ≤T8 50,2% (padrão) / 28,0% (resiliência); combo 5,8% / 2,5%.
+
+| Sai | letal ≤T8 padrão | letal ≤T8 resil. | combo Bladewing (padrão) | turno cmd |
+|---|---|---|---|---|
+| Dragonlord Dromoka | +3,6pp ±0,9 | +2,9pp ±0,8 | +3,5pp | −0,013 |
+| Balefire Dragon | +3,6pp ±0,8 | +2,8pp ±0,7 | +3,4pp | +0,007 |
+| Bladewing the Risen | +3,0pp ±0,8 | +2,6pp ±0,8 | **−5,8pp (some)** | +0,004 |
+| Sarkhan Unbroken | +2,0pp ±0,8 | +2,6pp ±0,7 | **+2,6pp** | +0,020 |
+| Farseek (controle) | +2,0pp ±1,0 | +1,7pp ±0,9 | +2,4pp | +0,069 |
+
+### Recomendação corrigida
+
+**Incluir a Tiamat no lugar do Sarkhan Unbroken. Manter a Bladewing.**
+1. **Bladewing:** é peça de infinito, e a Tiamat busca as 3 peças numa
+   conjuração só. Cortar a Bladewing desliga o combo inteiro (5,8% →
+   0%). Cortar o Sarkhan mantém o combo e ainda o torna mais frequente
+   (5,8% → 8,4%).
+2. **O letal proxy subestima combo.** O goldfish não tem bloqueio (Regra
+   #5): dano de combate entra livre, e o infinito, que ignora
+   bloqueador, ganho de vida e fog, aparece com o mesmo peso de um
+   ataque. Na mesa, o combo vale mais que a diferença de +1pp no padrão
+   entre cortar Bladewing ou Sarkhan (na resiliência os dois empatam em
+   +2,6pp).
+3. **Dromoka e Balefire** continuam fora do corte: valor 📊 (piso). A
+   Dromoka ainda protege o turno do combo ("Your opponents can't cast
+   spells during your turn").
+4. **O custo de cortar o Sarkhan Unbroken** é real e medido: a
+   comandante sai ~0,02 turno depois, porque o +1 dele é mana. É o preço
+   da troca.
+
+`lista.md` não muda: a troca é decisão do usuário.
+
+### Validação
+
+- `test_urdragon_goldfish.py`: 88/88. São 5 testes novos: loop letal;
+  sem matador não há loop; o loop para antes de decar; Scourge como
+  matador; Gnawbone + Charger repete combates.
+- 20.000 + 20.000 partidas (padrão + resiliência, seed 8.000.000+): 0
+  exceções.
 
 ---
 

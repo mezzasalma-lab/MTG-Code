@@ -196,6 +196,32 @@ Isso vale tanto pra avaliar sugestão do usuário quanto pra eu propor
 sugestão minha (upgrade, corte por EDHREC, etc.) — a mesma lógica
 relacional, nunca julgamento de power level isolado.
 
+### Adendo obrigatório (2026-09-28): combos e documentação do deck, ANTES de listar motores
+
+Cobrança real do usuário: *"Bladewing não tem um combo no deck? Vc avaliou
+isso na sua consideração?"* e *"Como vc ainda erra por não seguir as
+regras que criei?"*. Eu recomendei cortar Bladewing the Risen pra Tiamat
+sem ver que ela é peça do infinito **Miirym + Bladewing + Terror of the
+Peaks**. O combo estava registrado na `auditoria.md` do próprio deck
+desde 2026-08-27, via Commander Spellbook. A Regra #4 existia; eu listei
+os "motores" de memória, e combo não entrou na lista. O passo 2 acima não
+é executável sem as duas checagens abaixo, que passam a ser parte dele:
+
+1. **Ler a documentação do deck antes de listar motores.** Isso vale pra
+   `auditoria.md`, `checklist-oraculo.md` e `goldfish-log.md`, com grep
+   de "combo", "infinit", "loop" e do nome de CADA carta envolvida (a que
+   entra e toda candidata a sair). Nunca listar motores de memória.
+2. **Rodar o Commander Spellbook com a lista ANTES e DEPOIS de cada troca
+   avaliada.** Endpoint: `POST
+   https://backend.commanderspellbook.com/find-my-combos`, comandante +
+   lista. O combo que SOME com a troca é custo da troca. O que APARECE
+   (inclusive um tutor que monta combo já existente) é ganho, e também
+   pode mudar o Bracket (Regra 7 de `user-standing-rules.md`). A
+   diferença entra no relatório, com o nome do combo.
+3. **Conferir se o simulador executa o combo.** Se não executa, o valor
+   da peça no A/B é piso, e isso vira fix no simulador (Regra #5) antes de
+   concluir.
+
 ## Regra #5 (obrigatória): a análise prioriza o DECK real (oráculo + regras + jogo real), o simulador é evidência de apoio, nunca a fonte da verdade
 
 Achado real em 2026-09-17 (deck Megatron): pedi 3 candidatas a corte e

@@ -779,6 +779,9 @@ class GameState:
     # dela nunca pagava pip. Uma entrada por mana, com as cores possiveis.
     bonus_colored: list = field(default_factory=list)
     dice_rng: Optional[random.Random] = None   # d20 do Ancient Copper/Gold (separado do embaralhamento)
+    in_bladewing_loop: bool = False
+    bladewing_loop_turn: Optional[int] = None
+    bladewing_loop_iterations_total: int = 0
     riot_haste: set = field(default_factory=set)     # Rhythm of the Wild: escolheu haste
     riot_counters: dict = field(default_factory=dict)  # Rhythm of the Wild: escolheu +1/+1
     firdoch_animated_turn: int = -1
@@ -1103,7 +1106,10 @@ def create_dragon_tokens(state: GameState, n: int, power: int, source: str, flyi
         state.dragon_tokens_created_total += 1
         if copy_of in ("Hellkite Courser", "Bladewing the Risen"):
             # ficha-copia entra e o gatilho de ETB DELA dispara (copia tem o texto).
-            resolve_etb(state, copy_of)
+            # Com o loop Miirym + Bladewing + matador montado, o ETB da copia e'
+            # usado pra devolver a propria Bladewing (`try_bladewing_loop`).
+            if not (copy_of == "Bladewing the Risen" and bladewing_loop_ready(state)):
+                resolve_etb(state, copy_of)
         dragon_enters(state, copy_of or f"{source} token", is_token=True)
         token_creature_etb_hooks(state, token_effective_power(state, power), copy_of=copy_of)
 
@@ -1974,6 +1980,115 @@ def apply_riot(state: GameState, name: str, has_haste_now: bool = False):
         state.riot_counters[name] = state.riot_counters.get(name, 0) + 1
 
 
+def bladewing_killer(state: GameState) -> Optional[str]:
+    """Quem mata a Bladewing (4/4) no loop. Terror of the Peaks: dano = poder
+    da propria Bladewing, que e' igual a' resistencia (buffs de Morophon/
+    Henge/riot sao +1/+1). Scourge of Valkas e Dragon Tempest: "deals X
+    damage to any target" -- X = Dragoes em campo, precisa X >= resistencia
+    (📝 variante pela regra; o Commander Spellbook lista so' a da Terror)."""
+    toughness = effective_power(state, "Bladewing the Risen") if "Bladewing the Risen" in state.battlefield else 4
+    if sources(state, "Terror of the Peaks"):
+        return "Terror of the Peaks"
+    if sources(state, "Scourge of Valkas") and dragon_count(state) >= toughness:
+        return "Scourge of Valkas"
+    if "Dragon Tempest" in state.battlefield and dragon_count(state) >= toughness:
+        return "Dragon Tempest"
+    return None
+
+
+def bladewing_loop_ready(state: GameState) -> bool:
+    return (sources(state, "Miirym, Sentinel Wyrm") > 0 and "Bladewing the Risen" in state.battlefield
+            and bladewing_killer(state) is not None and not state.game_over)
+
+
+def try_bladewing_loop(state: GameState):
+    """Infinito Miirym, Sentinel Wyrm + Bladewing the Risen + Terror of the
+    Peaks (Commander Spellbook 380-1110-3362; na auditoria.md desde
+    2026-08-27 e NUNCA modelado -- a Terror so' mirava oponente, entao a
+    Bladewing nunca morria). CORRIGIDO 2026-09-28. Passos (Spellbook):
+    Bladewing entra -> a Terror mira a PROPRIA Bladewing (dano = poder = 4)
+    -> ela morre -> a copia-ficha da Miirym entra -> Terror dispara de novo
+    (no oponente) -> o ETB da copia devolve a Bladewing -> repete.
+    Cada volta: a Bladewing volta (gatilhos de entrada dela, menos o que a
+    mata), +1 copia-ficha 4/4 por gatilho da Miirym (gatilhos de entrada no
+    oponente), fichas da Lathliss, e as compras OBRIGATORIAS (Elemental
+    Bond, Garruk's Uprising, Great Henge). Para no letal, no deck-out, ou
+    quando a proxima volta decaria (o piloto mira o oponente em vez da
+    Bladewing e encerra). 📝 A entrada que abre o loop ja' foi processada
+    pelo caminho normal com o gatilho do matador indo no oponente (1 gatilho
+    a mais de dano, uma vez); o ETB da propria carta (devolver OUTRO Dragao)
+    nao e' usado dentro do loop."""
+    if not bladewing_loop_ready(state):
+        return
+    state.in_bladewing_loop = True
+    if state.bladewing_loop_turn is None:
+        state.bladewing_loop_turn = state.turn
+    throne = roaming_throne_times(state)
+    copies = sources(state, "Miirym, Sentinel Wyrm") * throne
+    lathliss = sources(state, "Lathliss, Dragon Queen") * throne
+    bond = 1 if "Elemental Bond" in state.battlefield else 0
+    uprising = 1 if "Garruk's Uprising" in state.battlefield else 0
+    henge = 1 if "The Great Henge" in state.battlefield else 0
+    draws_per_loop = (bond + uprising) * (1 + copies + lathliss) + henge
+
+    def entry_triggers(power: int, killer: Optional[str]):
+        """Gatilhos de 1 Dragao entrando; `killer` = o gatilho que vai na
+        Bladewing (nao no oponente)."""
+        used = killer is None
+        x = dragon_count(state)
+        for _ in range(sources(state, "Scourge of Valkas") * throne):
+            if not used and killer == "Scourge of Valkas":
+                used = True
+            else:
+                proxy_drain(state, x)
+        if "Dragon Tempest" in state.battlefield:
+            if not used and killer == "Dragon Tempest":
+                used = True
+            else:
+                proxy_drain(state, x)
+        for _ in range(sources(state, "Terror of the Peaks") * throne):
+            if not used and killer == "Terror of the Peaks":
+                used = True
+            else:
+                proxy_drain(state, power)
+        if "Dragon's Hoard" in state.battlefield:
+            state.dragon_hoard_gold_counters += 1
+        if bond and power >= 3:
+            draw_cards(state, 1)
+        if uprising and power >= 4:
+            draw_cards(state, 1)
+
+    for _ in range(400):
+        if state.proxy_damage_total + state.combat_damage_proxy_total >= LETHAL_PROXY or state.game_over:
+            break
+        killer = bladewing_killer(state)
+        if killer is None or len(state.library) - 1 < draws_per_loop:
+            break
+        # 1) o gatilho do matador (da entrada anterior) mata a Bladewing
+        state.battlefield.remove("Bladewing the Risen")
+        state.graveyard.append("Bladewing the Risen")
+        # 2) o ETB da copia-ficha devolve a Bladewing; ela entra de novo
+        state.graveyard.remove("Bladewing the Risen")
+        state.battlefield.append("Bladewing the Risen")
+        state.creature_cast_turn["Bladewing the Risen"] = state.turn
+        if henge:
+            draw_cards(state, 1)
+            state.great_henge_counters["Bladewing the Risen"] = state.great_henge_counters.get("Bladewing the Risen", 0) + 1
+        entry_triggers(effective_power(state, "Bladewing the Risen"), killer)
+        for _ in range(lathliss):
+            create_dragon_tokens(state, 1, 5, source="lathliss")
+        # 3) a Miirym copia a Bladewing que entrou: cada ficha dispara no oponente
+        for _ in range(copies):
+            p = 4 + sources(state, "Morophon, the Boundless")
+            if len(state.dragon_token_list) < DRAGON_TOKEN_CAP:
+                state.dragon_token_list.append([4, state.turn, True, "Bladewing the Risen"])
+                state.dragon_tokens += 1
+                state.dragon_tokens_created_total += 1
+            entry_triggers(p, None)
+        state.bladewing_loop_iterations_total += 1
+    state.in_bladewing_loop = False
+
+
 def enter_battlefield(state: GameState, name: str, from_hand: bool = True, count_as_cast: bool = True):
     if from_hand and name in state.hand:
         state.hand.remove(name)
@@ -2013,6 +2128,8 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True, count
         creature_etb_hooks(state, name)
     if is_dragon(name):
         dragon_enters(state, name, is_token=False)
+    if name == "Bladewing the Risen" and not state.in_bladewing_loop:
+        try_bladewing_loop(state)
 
 
 # Tiamat: quais 5 Dragoes buscar -- pelos motores do deck (Regra #4): dano de
@@ -2557,16 +2674,27 @@ def try_hellkite_charger_extra_combat(state: GameState):
     ele mesmo concedeu, mas isso abriria um loop sem teto natural nesse
     motor (mana pode crescer via Klauth/etc DURANTE o combate); 1 combate
     extra por turno ja captura a maior parte do valor real sem risco de
-    runaway."""
-    if "Hellkite Charger" not in state.battlefield:
-        return
-    if "Hellkite Charger" not in ready_creatures(state):
-        return
-    if remaining_mana(state) < 7 or color_sources(state, "R") < 2:
-        return
-    state.mana_spent_this_turn += 7
-    state.hellkite_charger_extra_combats += 1
-    combat_step(state)
+    runaway.
+
+    CORRIGIDO 2026-09-28: o teto de 1 combate extra cortava o infinito
+    Old Gnawbone + Hellkite Charger (Commander Spellbook 1800-3398,
+    registrado na auditoria.md desde 2026-08-27): cada combate da' Treasure
+    = dano da Gnawbone + Charger (>= 12), que paga o {5}{R}{R} do proximo.
+    O teto natural e' o letal (ou a mana acabar / o deck-out -- o gatilho da
+    Ur-Dragon compra a cada combate, e `limit_attackers_for_library` segura
+    atacantes). 60 combates e' so' trava de seguranca do simulador."""
+    for _ in range(60):
+        if "Hellkite Charger" not in state.battlefield or state.game_over:
+            return
+        if "Hellkite Charger" not in ready_creatures(state):
+            return
+        if remaining_mana(state) < 7 or color_sources(state, "R") < 2:
+            return
+        if state.proxy_damage_total + state.combat_damage_proxy_total >= LETHAL_PROXY:
+            return  # ja' e' letal: o piloto para
+        state.mana_spent_this_turn += 7
+        state.hellkite_charger_extra_combats += 1
+        combat_step(state)
 
 
 def attacking_bodies(state: GameState):

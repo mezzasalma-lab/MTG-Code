@@ -857,6 +857,50 @@ def test_optional_draws_refused_with_low_library():
     assert s.dragon_hoard_draws_total == 0
 
 
+def test_miirym_bladewing_terror_loop_is_lethal():
+    # Commander Spellbook 380-1110-3362
+    s = fresh(turn=7, library=[FILLER] * 40)
+    put(s, "Miirym, Sentinel Wyrm", "Terror of the Peaks")
+    ud.enter_battlefield(s, "Bladewing the Risen", from_hand=False)
+    assert s.bladewing_loop_turn == 7 and s.bladewing_loop_iterations_total > 0
+    assert s.proxy_damage_total >= ud.LETHAL_PROXY
+    assert "Bladewing the Risen" in s.battlefield and s.decked_turn is None
+
+
+def test_bladewing_without_killer_does_not_loop():
+    s = fresh(turn=7)
+    put(s, "Miirym, Sentinel Wyrm")
+    ud.enter_battlefield(s, "Bladewing the Risen", from_hand=False)
+    assert s.bladewing_loop_turn is None and s.bladewing_loop_iterations_total == 0
+
+
+def test_bladewing_loop_stops_before_decking():
+    # Elemental Bond + Garruk's Uprising: 2 compras obrigatorias por Dragao que entra
+    s = fresh(turn=7, library=[FILLER] * 12)
+    put(s, "Miirym, Sentinel Wyrm", "Terror of the Peaks", "Elemental Bond", "Garruk's Uprising")
+    ud.enter_battlefield(s, "Bladewing the Risen", from_hand=False)
+    assert s.decked_turn is None and len(s.library) >= 1
+    assert s.proxy_damage_total < ud.LETHAL_PROXY
+
+
+def test_scourge_can_be_the_killer_with_four_dragons():
+    s = fresh(turn=7, library=[FILLER] * 40)
+    put(s, "Miirym, Sentinel Wyrm", "Scourge of Valkas", "Hellkite Charger")
+    ud.enter_battlefield(s, "Bladewing the Risen", from_hand=False)
+    assert s.bladewing_loop_iterations_total > 0 and s.proxy_damage_total >= ud.LETHAL_PROXY
+
+
+def test_gnawbone_charger_loop_repeats_combats():
+    # Commander Spellbook 1800-3398: cada combate da' >= 12 Treasures, paga o proximo
+    s = fresh(turn=7, library=[FILLER] * 40)
+    put(s, "Old Gnawbone", "Hellkite Charger", "Mountain", "Mountain", "Forest", "Forest", "Forest", "Forest", "Forest")
+    s.phase = "combat"
+    ud.combat_step(s)
+    ud.try_hellkite_charger_extra_combat(s)
+    assert s.hellkite_charger_extra_combats >= 3
+    assert s.proxy_damage_total + s.combat_damage_proxy_total >= ud.LETHAL_PROXY
+
+
 def run_all():
     tests = [(n, f) for n, f in sorted(globals().items()) if n.startswith("test_") and callable(f)]
     failed = 0
