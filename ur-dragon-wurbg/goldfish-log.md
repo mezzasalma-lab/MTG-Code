@@ -3048,4 +3048,102 @@ Escopo (Regra #7):
 
 ---
 
+## Varredura das demais cartas e mecânicas — 2026-09-28 (2ª rodada do dia)
+
+**Pedido:** *"Verifique as demais cartas e mecânicas em busca de erros e
+conserte pfv"*. Achados, método e escopo em `checklist-oraculo.md`, na
+seção de mesma data.
+
+### Antes/depois (2.000 seeds, 7.600.000+, 8 turnos)
+
+Antes = código do commit da Tiamat. Métricas limitadas (medianas e %),
+porque as médias sem teto explodem: dano proxy médio 37 mil → 1 milhão
+com as cópias da Twinflame.
+
+| Métrica | Padrão antes | Padrão depois | Resil. antes | Resil. depois |
+|---|---|---|---|---|
+| Turno da comandante | 7,108 | 7,032 | 7,497 | 7,452 |
+| Letal ≤T6 | 2,40% | 3,55% | 1,40% | 1,70% |
+| Letal ≤T8 | 46,55% | **49,70%** | 25,35% | **27,05%** |
+| Vitória por dano de comandante | 33,70% | **39,50%** | 19,35% | **24,65%** |
+| Derrota por grimório vazio (nova) | — (0, não existia) | 1,95% | — | 0,65% |
+| Grimório esvaziado (flag antiga) | 25,25% | 27,50% | 11,10% | 11,80% |
+| Cartas extras (média) | 30,27 | 33,13 | 16,64 | 18,24 |
+| Compras da Ur-Dragon (mediana) | 7 | 8 | 2 | 2 |
+| Dragões em campo no fim (mediana) | 13 | 15 | 3 | 4 |
+| Dano proxy (mediana) | 22 | 32,5 | 0 | 0 |
+| Vida (mediana; agora com custos de vida) | 40 | 34 | 39 | 33 |
+| Partidas no teto de 400 fichas | 7,0% | 0,3% | 1,7% | 0,05% |
+
+**Correções que puxam pra BAIXO:**
+- a Roaming Throne custava 1 em vez de 4;
+- Ancient Tomb e Cultivate/Kodama's;
+- taxa de comandante;
+- custos de vida;
+- dois terrenos virados no mesmo turno;
+- Hoard sem mana fantasma;
+- deck-out: 16% das partidas eram "letais" no turno em que o piloto
+  decaria antes do dano.
+
+**Correções que puxam pra CIMA:**
+- cópias da Miirym com o texto do Dragão copiado (Scourge, Terror,
+  Utvara, Twinflame, Ur-Dragon, Courser, Bladewing...);
+- Throne dobrando o gatilho da Ur-Dragon sem ela atacar;
+- Twinflame dobrando o dano de comandante;
+- comandante conjurada assim que fica conjurável;
+- Sarkhan Unbroken ativando antes do loop;
+- Sarkhan, Soul Aflame copiando Dragão;
+- Firdoch animado;
+- mana de Treasure/Klauth/Ventmaw pagando pip.
+
+**Saldo:** +3,2pp de letal ≤T8 no modo padrão, +1,7pp na resiliência. O
+teto de fichas quase some (7% → 0,3%): o piloto agora segura atacantes
+pra não decar. Os 1,95% de derrota por deck-out que sobram vêm de compra
+obrigatória que o piloto não controla no ataque: Elemental Bond/Garruk's
+em ficha de Lathliss, Great Henge, Up the Beanstalk.
+
+**Regressão:**
+- 20.000 + 20.000 partidas da lista (padrão + resiliência, seed
+  8.000.000+): 0 exceções.
+- 20.000 + 20.000 com Tiamat no lugar do Sarkhan Unbroken: 0 exceções,
+  13.345 conjurações.
+
+### Tiamat revista no código corrigido (A/B pareado, N=3.000, mesmas seeds)
+
+Base: letal ≤T8 49,5% no padrão e 27,0% na resiliência. Diferença
+pareada da Tiamat no lugar de cada carta, IC95%:
+
+| Sai | letal ≤T8 padrão | letal ≤T8 resil. | turno cmd (padrão) | dano cmd (padrão) |
+|---|---|---|---|---|
+| Dragonlord Dromoka | +3,8pp ±0,9 | +3,2pp ±0,8 | −0,012 | 0,0pp |
+| Balefire Dragon | +3,8pp ±0,8 | +3,0pp ±0,8 | +0,008 | −1,1pp |
+| Bladewing the Risen | +3,2pp ±0,8 | +2,7pp ±0,8 | +0,004 | −1,9pp |
+| Sarkhan Unbroken | +2,3pp ±0,8 | +2,8pp ±0,7 | **+0,020** | −1,1pp |
+| Farseek (controle) | +2,2pp ±1,0 | +2,0pp ±0,9 | +0,070 | −2,4pp |
+
+**O que mudou em relação à recomendação anterior (mesmo dia): o desempate
+do corte.**
+- **Sarkhan Unbroken ficou mais valioso.** O +1 dele ("draw a card, then
+  add one mana of any color") só era ativado DEPOIS do loop de
+  conjuração, então a mana nunca ajudava a descer nada na main 1.
+  Corrigido, cortar o Sarkhan atrasa a comandante (+0,02 turno) e rende
+  ~1pp a menos de letal no padrão que cortar o Bladewing.
+- **Na resiliência os dois empatam.** Lá o Sarkhan agora apanha de ataque
+  de oponente.
+
+**Recomendação atualizada:** incluir a Tiamat no lugar do **Bladewing the
+Risen**.
+- O papel do Bladewing, recursão de Dragão, já tem mais dois na lista:
+  Haunting Voyage e Haven of the Spirit Dragon.
+- O custo dele ({3}{B}{B}{R}{R}) é o mais pesado em pip entre os
+  candidatos.
+- O Sarkhan Unbroken alimenta o motor de mana que leva a comandante de 9
+  pra mesa.
+- Dromoka e Balefire continuam fora do corte pelo mesmo motivo de antes:
+  o valor real deles é 📊 (piso no simulador).
+- Sarkhan Unbroken continua sendo um corte aceitável: empata na
+  resiliência, que é o modo mais próximo da mesa. `lista.md` não muda.
+
+---
+
 <!-- Copie o bloco acima para cada nova partida -->

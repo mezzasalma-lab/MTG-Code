@@ -1,5 +1,235 @@
 # Checklist cláusula-a-cláusula — The Ur-Dragon (`urdragon_goldfish_v1.py`)
 
+## Varredura das demais cartas e mecânicas — 2026-09-28 (2ª rodada do dia)
+
+**Pedido:** *"Verifique as demais cartas e mecânicas em busca de erros e
+conserte pfv"*, logo depois da avaliação da Tiamat, que tinha declarado
+fora do escopo "as outras classes da taxonomia nas 99 cartas".
+
+**Método:**
+- Oráculo ao vivo das 100 cartas: Scryfall `/cards/collection`, 100/100
+  achadas pelo nome, nenhuma com `flavor_name` divergente.
+- Leitura integral do `urdragon_goldfish_v1.py` (3.239 linhas).
+- Comparação cláusula a cláusula, carta por carta.
+- Varredura automática de tags e nomes órfãos: toda carta da lista tem
+  dispatch por nome; as tags "órfãs" são decorativas de cartas
+  despachadas pelo nome.
+- Varredura por CONCEITO (Regra #3):
+  - "é Dragão" em cada zona;
+  - "criatura que você controla";
+  - "quem tem esta habilidade" (cópias);
+  - "terreno entra virado";
+  - "custo de vida".
+- Ordem de chamadas do turno (Regra #6).
+- Um teste dirigido por correção: 38 novos, 79/79 no total. Os 37
+  primeiros foram rodados contra o código anterior à rodada e falham
+  todos lá.
+
+### 🐛 Corrigido
+
+**Conceito "é Dragão" por zona.** A Roaming Throne só escolhe o tipo "as
+this creature enters". Na pilha, no cemitério e na biblioteca é Golem.
+
+| Onde | Antes | Agora |
+|---|---|---|
+| Custo da Throne (Eminence, Servant, Dragonspeaker, Sarkhan, Horn, Incubator, Orb, Cavern/Haven/Courtyard) | com Dragonspeaker + Servant custava **1** (real: 4) | `is_dragon_card` em toda checagem de magia |
+| Bladewing ("Dragon permanent card"), Haunting Voyage, Haven, snipe do oponente | podiam pegar a Throne no cemitério | idem |
+| Herald's Horn ("creature card of the chosen type") | pegava Firdoch Core (artefato) e Throne do topo | só carta de criatura Dragão |
+
+**Mana, terrenos e vida.**
+
+| Carta / conceito | Cláusula | Antes | Agora |
+|---|---|---|---|
+| Ancient Tomb | "{T}: Add {C}{C}" | 1 mana, como todo terreno | 2 |
+| Terreno que entra virado | Triome, Path, slow land, Farseek, Cultivate | UM slot por turno: Triome + Farseek no mesmo turno, o 1º virava mana | lista |
+| Cultivate / Kodama's Reach | "put one onto the battlefield tapped and the other into your hand" | "simplificação": as duas no campo, destravadas | 1 virada no campo, 1 na mão |
+| Ur-Dragon põe terreno da mão | Triome/Path/slow land "enters tapped" | sempre destravado | ponto único `land_enters` |
+| Taxa de comandante | CR 903.8 | fora do `can_cast`: aprovava a Ur-Dragon sem a taxa e gastava mais do que havia | dentro de `effective_cost` |
+| Custos de vida (taxonomia "mana ou VIDA nunca deduzido") | fetch 1, shock 2, Mana Confluence 1, Ancient Tomb 2, Sylvan Library 4, Anguished Unmaking 3 | nenhum cobrado (`life` já existia) | `pay_life`; Tomb/Confluence só quando a mana gasta passa das fontes sem dor |
+| The Great Henge | "{T}: Add {G}{G}. You gain 2 life." | vida ignorada | +2 por turno |
+| Path of Ancestry | "When that mana is spent to cast a creature spell that shares a creature type with your commander, scry 1." | fora "por valor baixo demais" (julgamento de valor, Regra #1) | scry 1 na 1ª magia de criatura Dragão do turno |
+| Triomes (4) | "Cycling {3}" | custo alternativo inexistente | cicla na main 2 com mana sobrando e 7+ terrenos ou outro terreno na mão |
+| Treasure, Klauth, +1 do Sarkhan Unbroken, Savage Ventmaw | "any color" / {R}{R}{R}{G}{G}{G} | só quantidade, nunca pagava pip | entram na checagem de cor |
+| Dragon's Hoard | `{T}` compartilhado (mana OU compra) | comprava na main 1 E na main 2; a mana dela continuava no total | 1× por turno, e a mana sai |
+| Haunting Voyage foretold | "{5}{B}{B}", magia de MV 6 | {B}{B} nunca checado; não disparava Up the Beanstalk; sumia (nem cemitério) | checa BB, dispara Beanstalk, vai pro cemitério |
+| Arcane Denial | "You draw a card at the beginning of the next turn's upkeep." | nunca comprava | compra antes do meu próximo turno |
+
+**Ordem de chamadas (Regra #6).**
+- **Comandante:** só era checada no início de cada fase principal. Sol
+  Ring, Treasure ou Orb conjurados no loop deixavam a Ur-Dragon
+  conjurável, mas o loop gastava a mana em outra coisa. Agora ela entra
+  assim que fica conjurável.
+- **Sarkhan Unbroken:** o +1 (compra + mana) rodava DEPOIS do loop de
+  conjuração, e a mana só servia na main 2. Agora ativa antes e ativa no
+  turno em que entra.
+- **Pumps (Lathliss, Bladewing, Scourge):** rodavam também no fim da main
+  2, depois do combate: mana gasta em nada. Agora só antes do combate, e
+  com a cor checada ({R}; {B}{R}). Secluded Courtyard e Orb pagam
+  habilidade de Dragão.
+
+**Combate.**
+
+| Carta / conceito | Cláusula | Antes | Agora |
+|---|---|---|---|
+| The Ur-Dragon × Roaming Throne | o gatilho é de criatura Dragão em campo | Throne só dobrava se a Ur-Dragon ATACASSE | dobra sempre que ela está em campo |
+| Twinflame Tyrant | "deals double that damage" | não dobrava o dano de comandante nem o "that many" da Old Gnawbone | dobra os dois; cada cópia dobra de novo |
+| Dano de comandante | pump da Lathliss/Bladewing | ignorado | somado |
+| Magda, Brazen Outlaw | o gatilho de Treasure já assumia que ela ataca | o dano dela (2) nunca entrava | entra (e na Gnawbone) |
+| Firdoch Core | "{4}: This artifact becomes a 4/4 artifact creature until end of turn" | não modelado | anima no fim da main 1 com 5+ sobrando e Ur-Dragon/Utvara em campo; ataca como Dragão (Changeling) |
+| Firdoch × Magda | o Firdoch vira 1× por turno | o combate extra do Charger contava de novo | 1× por turno |
+| Return of the Wildspeaker | 2º modo: "Non-Human creatures you control get +3/+3" | só o modo de compra | pump no combate quando fecha o letal proxy; senão, compra na main 2 |
+| Ancient Copper / Ancient Gold | "roll a d20" | 10 fixo | d20 de verdade (RNG próprio) |
+| Rhythm of the Wild | riot: "+1/+1 counter OR haste" | sempre haste | haste só se vai atacar agora (main 1, sem outra haste); senão +1/+1 |
+| Lightning Greaves | equip {0}, repetível | só re-equipava se o alvo saísse de campo (preso num Birds, nunca ia pra Ur-Dragon) | vai pra criatura que ganha com haste agora; senão, comandante |
+| Terror of the Peaks × Great Henge | dano = poder lido na resolução | poder sem o contador do Henge | o controlador ordena o Henge antes (+1) |
+| Great Henge (custo), Garruk's Uprising (ETB), Return of the Wildspeaker | "creature(s) you control" | só criatura nomeada; ficha de Dragão ignorada | fichas contam |
+
+**Cópias (Regra #3, conceito "quem tem esta habilidade").**
+- **Miirym:** a ficha-cópia era um corpo sem texto ("limitação do motor",
+  que não era estrutural). Agora `sources(nome)` conta a carta nomeada +
+  fichas-cópia + Sarkhan copiando. O texto da cópia vale de verdade:
+  - dispara: Scourge, Terror, Lathliss, Miirym, Utvara, Old Gnawbone,
+    Broodmother, gatilho da Ur-Dragon;
+  - estáticos: Twinflame (×2 por cópia), Morophon (anthem e desconto por
+    cópia), Roaming Throne (+1 disparo por cópia), Atarka, Goldspan,
+    Eminence da cópia da Ur-Dragon;
+  - atacando: gatilhos próprios de Goldspan, Ancient Copper/Gold, Klauth,
+    Ventmaw e Dromoka (lifelink);
+  - ETB da cópia: Hellkite Courser (põe a comandante) e Bladewing
+    (reanima).
+- **Miirym × Firdoch Core:** a cópia é artefato, não criatura. Agora dá
+  mana, conta como Dragão e é Dwarf pra Magda, mas não ataca. Antes
+  virava uma ficha de Dragão 0/0 que atacava.
+- **Sarkhan, Soul Aflame:** "become a copy of it until end of turn" era só
+  um contador. Agora:
+  - no fim da main 1, se pode atacar, vira cópia do melhor Dragão nomeado
+    que entrou no turno;
+  - ataca com o P/T e os gatilhos dele;
+  - conta como Dragão;
+  - perde o próprio "Dragon spells cost {1} less" até o fim do turno;
+  - volta no cleanup.
+
+**Deck-out (CR 704.5b), achado ao medir o antes/depois.**
+- **O furo:** `library_emptied` era só uma flag, e a partida seguia. O
+  letal proxy era marcado no fim do turno. Só que o gatilho da Ur-Dragon
+  ("draw that many cards", obrigatório) resolve ANTES do dano de combate.
+  No código anterior a esta rodada, **16,2% das partidas** marcavam letal
+  no mesmo turno em que o grimório acabou (1.000 seeds). Nessas, o piloto
+  teria perdido antes do dano.
+- **Agora:**
+  - comprar de grimório vazio é derrota, e a partida para;
+  - se o dano acumulado já tinha passado de 120, é vitória;
+  - o piloto limita os atacantes: cada Dragão atacando custa as compras
+    obrigatórias (gatilho da Ur-Dragon × cópias × Throne, + fichas da
+    Utvara × Elemental Bond/Garruk's Uprising); ataca com no máximo
+    (grimório − 1) / esse custo, os mais fortes primeiro;
+  - com grimório abaixo de 10, recusa compra opcional: Temur "may", Hoard,
+    Sylvan, RotW-compra, cycling, e o +1 do Sarkhan Unbroken (troca pelo
+    −2).
+
+**Modo de resiliência.** O oponente nunca atacava planeswalker. Agora o
+atacante vai no Sarkhan Unbroken primeiro (mesma convenção do Prismatic
+Bridge), e o Sarkhan morre com lealdade 0.
+
+### 📝 Políticas (não regra) desta rodada
+
+- Scry do Path: terreno pro fundo com 8+ terrenos (campo + mão); mágica
+  pro fundo com menos de 4.
+- Sylvan Library: paga 4 com 14+ de vida.
+- Cycling: só na main 2.
+- Firdoch: só com Ur-Dragon ou Utvara em campo.
+- Return of the Wildspeaker: pump só quando fecha o letal proxy.
+- Sarkhan, Soul Aflame: copia só antes do combate, entre Dragões nomeados.
+- Deck-out: guarda 1 carta pro próximo passo de compra; limiar de compra
+  opcional = 10.
+
+### 📊 Continua estrutural (estado real de oponente)
+
+| Carta | Cláusula |
+|---|---|
+| Exotic Orchard | "any color that a land an opponent controls could produce" |
+| Balefire Dragon | "deals that much damage to each creature that player controls" (agora contada em `balefire_hits_total`) |
+| Crux of Fate, Austere Command, Swords, Beast Within, Assassin's Trophy, Anguished Unmaking, An Offer | alvo/board de oponente (proxy a cada 3 turnos) |
+| Swan Song, Arcane Denial, An Offer | bônus dado ao oponente |
+| Miirym, Roaming Throne, Terror of the Peaks | ward {2} e "cost an additional 3 life" (mana/vida do oponente) |
+| Smothering Tithe | quantos oponentes pagam {2} (estimativa fixa) |
+| Goldspan | "becomes the target of a spell" (só o oponente miraria) |
+
+### Escopo desta rodada (Regra #7)
+
+Varrido nas 99 cartas + comandante, com método:
+- **Custos (mana e vida), inclusive custo alternativo** (Foretell,
+  Cycling). Método: leitura + teste.
+- **Busca/tutor com restrição de tipo.** Método: grep dos 16 usos de
+  `is_dragon` + teste.
+- **Estáticos propagados:** Morophon, Twinflame, Throne, riot, Henge,
+  Goldspan. Método: leitura + teste.
+- **Gatilho compartilhado:** "criatura/Dragão entra", "magia de MV ≥5",
+  "Dragões atacam". Método: todos os pontos de entrada + teste.
+- **`{T}` compartilhado ou repetido:** Hoard, Firdoch/Magda. Método:
+  leitura + teste.
+- **Fórmula achatada:** d20. Método: leitura + teste.
+- **Ordem de fases:** `play_turn` e `main_phase` relidos inteiros.
+- **Fichas, 4 checagens da Regra #7:**
+  - atacam, com doença de invocação;
+  - disparam entrada;
+  - morrem no wipe;
+  - contam em "you control": Henge, Garruk's e RotW eram o furo.
+- **Proxies de turno de oponente:** Tithe, Broodmother e Arcane Denial.
+
+Não varrido:
+- o `urdragon_goldfish_physical_v1.py` e o `_original`;
+- as habilidades das cartas-candidatas fora da lista (Kindred Discovery,
+  Radagast, Ramos, Karplusan etc.);
+- o modelo de oponente do modo de resiliência em si (probabilidades).
+
+### Validação
+
+- Smoke: 99 cartas, 0 desconhecidas, 0 duplicadas.
+- `test_urdragon_goldfish.py`: **83/83**. São 42 testes novos, um por
+  correção:
+  - custo da Throne na pilha;
+  - Tomb 2;
+  - taxa no `can_cast`;
+  - 2 terrenos virados;
+  - Cultivate 1+1;
+  - vida (fetch/shock/Unmaking/Tomb/Confluence/Henge/Sylvan);
+  - terreno da Ur-Dragon virado;
+  - Herald's Horn;
+  - Bladewing (tipo + Throne);
+  - Haven/Voyage;
+  - Hoard 1×;
+  - comandante no loop;
+  - +1 do Sarkhan antes do loop;
+  - pumps só antes do combate e com cor;
+  - Greaves;
+  - riot;
+  - Terror × Henge;
+  - fichas em "creatures you control";
+  - Throne × gatilho da Ur-Dragon;
+  - Twinflame (dano de comandante e Gnawbone);
+  - Magda;
+  - Firdoch animado;
+  - RotW pump;
+  - d20;
+  - cópias da Miirym (Scourge, Ur-Dragon, Courser, Firdoch);
+  - Sarkhan copiando a Utvara;
+  - Arcane Denial;
+  - scry do Path;
+  - cycling;
+  - Voyage foretold;
+  - ataque ao Sarkhan Unbroken;
+  - Treasure pagando pip;
+  - deck-out (derrota, vitória antes da compra, atacantes limitados,
+    compra opcional recusada).
+- Rodados contra o código anterior à rodada, os 37 primeiros testes
+  novos falham todos (o bug existia) e passam no código novo.
+- 20.000 + 20.000 partidas (padrão + resiliência, seed 8.000.000+): **0
+  exceções**.
+- Antes/depois em 2.000 seeds: `goldfish-log.md`.
+
+---
+
 ## Tiamat (candidata) + modelo de custo, Orb, descarte e resiliência corrigidos — 2026-09-28
 
 **Gatilho:** *"Avalia os prós e contras de incluir Tiamat no Ur-Dragon, a

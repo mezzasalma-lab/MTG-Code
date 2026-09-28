@@ -427,6 +427,436 @@ def test_greaves_shroud_redirects_removal():
     assert "Roaming Throne" in s.battlefield
 
 
+# ---------------------------------------------------------------------------
+# Rodada 2026-09-28: varredura das demais cartas e mecanicas
+# ---------------------------------------------------------------------------
+
+WUBRG_LANDS = ("Command Tower", "Plains", "Island", "Swamp", "Mountain", "Forest")
+
+
+def test_roaming_throne_spell_is_not_a_dragon_spell():
+    s = fresh()
+    put(s, "Dragonspeaker Shaman", "Dragonlord's Servant")
+    assert ud.effective_cost(s, "Roaming Throne") == 4  # Golem na pilha: sem Eminence/Servant/Dragonspeaker
+    s.dragon_mana_pool = 2
+    assert ud.remaining_mana_for(s, "Roaming Throne") == ud.remaining_mana(s)  # Orb nao paga
+
+
+def test_ancient_tomb_makes_two():
+    s = fresh()
+    put(s, "Ancient Tomb", "Forest")
+    assert ud.total_mana(s) == 3
+
+
+def test_commander_tax_in_can_cast():
+    s = fresh(turn=8)
+    s.commander_cast_count = 2
+    put(s, *WUBRG_LANDS, "Forest", "Forest", "Forest")
+    assert ud.effective_cost(s, ud.COMMANDER) == 13 and not ud.can_cast(s, ud.COMMANDER)
+
+
+def test_two_tapped_lands_same_turn():
+    s = fresh(library=["Plains", "Mountain"] + [FILLER] * 10)
+    s.hand = ["Ketria Triome"]
+    put(s, "Forest", "Forest")
+    ud.play_land(s)
+    ud.resolve_instant_sorcery(s, "Farseek")
+    assert len(s.tapped_lands_this_turn) == 2 and ud.total_mana(s) == 2
+
+
+def test_cultivate_one_tapped_one_to_hand():
+    s = fresh(library=["Mountain", "Plains"] + [FILLER] * 10)
+    put(s, "Forest")
+    s.library = ["Mountain", "Plains", "Island"]
+    ud.resolve_instant_sorcery(s, "Cultivate")
+    lands_bf = [n for n in s.battlefield if n in ud.LAND_NAMES]
+    assert len(lands_bf) == 2 and len(s.tapped_lands_this_turn) == 1
+    assert sum(1 for n in s.hand if n in ud.LAND_NAMES) == 1
+
+
+def test_life_costs_paid():
+    s = fresh(library=["Blood Crypt"] + [FILLER] * 5)
+    s.hand = ["Bloodstained Mire"]
+    ud.play_land(s)
+    assert s.life_paid == {"fetch": 1, "shock": 2} and s.life == 37
+    s.hand = ["Anguished Unmaking"]
+    put(s, "Plains", "Swamp", "Forest")
+    ud.cast_card(s, "Anguished Unmaking")
+    assert s.life == 34
+
+
+def test_ur_dragon_trigger_land_from_hand_enters_tapped():
+    s = fresh(turn=6)
+    put(s, ud.COMMANDER)
+    s.commander_in_play = True
+    s.hand = ["Zagoth Triome"]
+    ud.combat_step(s)
+    assert "Zagoth Triome" in s.battlefield and "Zagoth Triome" in s.tapped_lands_this_turn
+
+
+def test_heralds_horn_only_dragon_creature_cards():
+    for top in ("Firdoch Core", "Roaming Throne"):
+        s = fresh(library=[top, FILLER])
+        put(s, "Herald's Horn")
+        ud.upkeep_step(s)
+        assert top not in s.hand
+    s = fresh(library=["Scourge of Valkas", FILLER])
+    put(s, "Herald's Horn")
+    ud.upkeep_step(s)
+    assert "Scourge of Valkas" in s.hand
+
+
+def test_bladewing_graveyard_type_and_throne_doubling():
+    s = fresh()
+    s.graveyard = ["Roaming Throne"]
+    ud.enter_battlefield(s, "Bladewing the Risen", from_hand=False)
+    assert "Roaming Throne" in s.graveyard
+    s = fresh()
+    put(s, "Roaming Throne")
+    s.graveyard = ["Scourge of Valkas", "Hellkite Charger"]
+    ud.enter_battlefield(s, "Bladewing the Risen", from_hand=False)
+    assert not s.graveyard
+
+
+def test_haven_and_voyage_skip_throne():
+    s = fresh()
+    s.graveyard = ["Roaming Throne"]
+    put(s, ud.HAVEN_RECURSION_LAND, "Forest", "Forest", "Forest")
+    ud.try_haven_recursion(s)
+    assert "Roaming Throne" in s.graveyard
+    ud.reanimate_dragons_from_graveyard(s)
+    assert "Roaming Throne" in s.graveyard
+
+
+def test_hoard_draws_once_per_turn_and_uses_its_mana():
+    s = fresh()
+    put(s, "Dragon's Hoard", "Forest", "Forest")
+    s.dragon_hoard_gold_counters = 3
+    before = ud.remaining_mana(s)
+    ud.try_dragon_hoard_draw(s)
+    ud.try_dragon_hoard_draw(s)
+    assert s.dragon_hoard_draws_total == 1 and ud.remaining_mana(s) == before - 1
+
+
+def test_commander_cast_as_soon_as_ramp_makes_it_castable():
+    # 6 terrenos + Dragonspeaker: a Ur-Dragon custa 7. Sol Ring (1 -> +2) deixa
+    # 7; antes o loop gastava em Hellkite Charger e ela ficava pra depois.
+    s = fresh(turn=7)
+    put(s, *WUBRG_LANDS, "Dragonspeaker Shaman")
+    s.hand = ["Sol Ring", "Hellkite Charger"]
+    s.phase = "main1"
+    assert not ud.can_cast(s, ud.COMMANDER)
+    ud.main_phase(s)
+    assert s.commander_in_play
+
+
+def test_sarkhan_unbroken_plus_one_before_casting():
+    s = fresh()
+    put(s, "Sarkhan Unbroken", "Forest", "Forest")
+    s.sarkhan_loyalty = 4
+    s.hand = ["Dragon Tempest"]  # {1}{R}: precisa da mana do +1 (cor qualquer)
+    put(s, "Mountain")
+    s.mana_spent_this_turn = 2
+    s.phase = "main1"
+    ud.main_phase(s)
+    assert "Dragon Tempest" in s.battlefield and s.sarkhan_loyalty == 5
+
+
+def test_pumps_only_before_combat():
+    s = fresh()
+    put(s, "Lathliss, Dragon Queen", "Mountain", "Mountain", "Mountain", "Mountain")
+    s.phase = "main2"
+    s.hand = []
+    ud.main_phase(s)
+    assert s.lathliss_pumps == 0
+    s.phase = "main1"
+    ud.main_phase(s)
+    assert s.lathliss_pumps == 1
+
+
+def test_bladewing_pump_needs_black():
+    s = fresh()
+    put(s, "Bladewing the Risen", "Mountain", "Mountain", "Mountain")
+    s.phase = "main1"
+    ud.try_dragon_pumps(s)
+    assert s.bladewing_pumps == 0
+
+
+def test_greaves_moves_to_commander_cast_this_turn():
+    s = fresh(turn=6)
+    put(s, "Lightning Greaves", "Birds of Paradise")
+    s.lightning_greaves_equipped_to = "Birds of Paradise"
+    put(s, ud.COMMANDER, cast_turn=6)
+    s.commander_in_play = True
+    s.phase = "main1"
+    ud.try_lightning_greaves_equip(s)
+    assert s.lightning_greaves_equipped_to == ud.COMMANDER
+
+
+def test_riot_choice():
+    s = fresh()
+    put(s, "Rhythm of the Wild")
+    s.phase = "main1"
+    ud.enter_battlefield(s, "Scourge of Valkas", from_hand=False)
+    assert "Scourge of Valkas" in s.riot_haste
+    put(s, "Temur Ascendancy")
+    ud.enter_battlefield(s, "Lathliss, Dragon Queen", from_hand=False)
+    assert s.riot_counters.get("Lathliss, Dragon Queen") == 1
+    assert ud.effective_power(s, "Lathliss, Dragon Queen") == 7
+
+
+def test_terror_sees_great_henge_counter():
+    s = fresh()
+    put(s, "Terror of the Peaks", "The Great Henge")
+    ud.enter_battlefield(s, "Hellkite Charger", from_hand=False)
+    assert s.proxy_damage_total == 6  # 5 + contador do Henge
+
+
+def test_tokens_count_as_creatures_you_control():
+    s = fresh()
+    s.dragon_token_list = [[6, 1, True, None]]
+    s.dragon_tokens = 1
+    assert ud.effective_cost(s, "The Great Henge") == 1 + 2  # {7}{G}{G} - 6
+    s.library = [FILLER] * 20
+    ud.resolve_instant_sorcery(s, "Return of the Wildspeaker")
+    assert len(s.hand) == 6
+
+
+def test_throne_doubles_ur_dragon_trigger_even_if_she_does_not_attack():
+    s = fresh(turn=6)
+    put(s, ud.COMMANDER, cast_turn=6)  # doente, nao ataca
+    s.commander_in_play = True
+    put(s, "Roaming Throne", "Scourge of Valkas")
+    ud.combat_step(s)
+    # atacam Throne (4/4 Dragao) e Scourge: 2 Dragoes, gatilho x2 = 4 cartas
+    assert s.urdragon_attack_draws_total == 4
+
+
+def test_twinflame_doubles_commander_damage_and_gnawbone():
+    s = fresh(turn=6)
+    put(s, ud.COMMANDER, "Twinflame Tyrant", "Old Gnawbone")
+    s.commander_in_play = True
+    s.hand = []
+    ud.combat_step(s)
+    assert s.commander_damage_dealt == 20
+    assert s.treasures_created_total == (10 + 3 + 7) * 2
+
+
+def test_magda_deals_combat_damage():
+    s = fresh(turn=6)
+    put(s, "Magda, Brazen Outlaw")
+    ud.combat_step(s)
+    assert s.combat_damage_proxy_total == 2
+
+
+def test_firdoch_animated_attacks_as_dragon():
+    s = fresh(turn=6)
+    put(s, ud.COMMANDER, "Firdoch Core", *WUBRG_LANDS)
+    s.firdoch_entered_turn = 2
+    s.commander_in_play = True
+    s.hand = []
+    ud.try_firdoch_animate(s)
+    assert s.firdoch_animated_turn == 6
+    ud.combat_step(s)
+    assert s.urdragon_attack_draws_total == 2 and s.combat_damage_proxy_total == 14
+
+
+def test_return_of_the_wildspeaker_pump_for_lethal():
+    s = fresh(turn=6)
+    s.dragon_token_list = [[6, 1, True, None]] * 5
+    s.dragon_tokens = 5
+    s.proxy_damage_total = 85   # 85 + 30 = 115 < 120; +15 fecha
+    s.hand = ["Return of the Wildspeaker"]
+    put(s, *WUBRG_LANDS)
+    ud.combat_step(s)
+    assert s.rotw_pumps_total == 1 and s.combat_damage_proxy_total == 45
+
+
+def test_d20_uses_rng():
+    s = fresh()
+    s.dice_rng = random.Random(3)
+    rolls = {ud.roll_d20(s) for _ in range(30)}
+    assert len(rolls) > 5 and min(rolls) >= 1 and max(rolls) <= 20
+
+
+def test_miirym_copy_of_scourge_has_scourge_trigger():
+    s = fresh()
+    put(s, "Miirym, Sentinel Wyrm")
+    ud.enter_battlefield(s, "Scourge of Valkas", from_hand=False)
+    assert ud.sources(s, "Scourge of Valkas") == 2
+    before = s.proxy_damage_total
+    ud.enter_battlefield(s, "Hellkite Charger", from_hand=False)
+    # Charger entra: 2 Scourges disparam, e a copia do Charger tambem entra (2 de novo)
+    assert s.proxy_damage_total - before >= 2 * 5
+
+
+def test_miirym_copy_of_ur_dragon_doubles_attack_trigger():
+    s = fresh(turn=6)
+    put(s, "Miirym, Sentinel Wyrm")
+    ud.enter_battlefield(s, ud.COMMANDER, from_hand=False, count_as_cast=False)
+    s.creature_cast_turn[ud.COMMANDER] = 1
+    s.commander_in_play = True
+    s.dragon_token_list[0][1] = 1  # copia pronta
+    s.hand = []
+    ud.combat_step(s)
+    # atacam Ur-Dragon, Miirym e a copia (3 Dragoes); 2 gatilhos -> 6 cartas
+    assert s.urdragon_attack_draws_total == 6
+    assert ud.dragon_discount_others(s, "Scourge of Valkas") == 2  # Eminence da copia
+
+
+def test_miirym_copy_of_courser_puts_commander():
+    s = fresh()
+    put(s, "Miirym, Sentinel Wyrm", ud.COMMANDER)
+    s.commander_in_play = True
+    ud.enter_battlefield(s, "Hellkite Courser", from_hand=False)
+    s2 = fresh()
+    put(s2, "Miirym, Sentinel Wyrm")
+    s2.creature_cast_turn["Miirym, Sentinel Wyrm"] = 0
+    ud.create_dragon_tokens(s2, 1, 6, source="miirym_copy", copy_of="Hellkite Courser")
+    assert s2.commander_in_play
+
+
+def test_miirym_copy_of_firdoch_is_an_artifact():
+    s = fresh(turn=6)
+    put(s, "Miirym, Sentinel Wyrm")
+    ud.enter_battlefield(s, "Firdoch Core", from_hand=False)
+    assert s.firdoch_token_copies == 1 and s.dragon_tokens == 0
+    assert ud.rocks_mana(s) == 2
+
+
+def test_sarkhan_soul_aflame_copies_utvara_and_attacks():
+    s = fresh(turn=6)
+    put(s, ud.SARKHAN_SA, cast_turn=2)
+    s.phase = "main1"
+    ud.enter_battlefield(s, "Utvara Hellkite", from_hand=False)
+    ud.choose_sarkhan_copy(s)
+    assert s.sarkhan_copy_of == "Utvara Hellkite"
+    assert ud.effective_power(s, ud.SARKHAN_SA) == 6 and ud.dragon_count(s) == 2
+    assert ud.dragon_discount_others(s, "Scourge of Valkas") == 1  # perdeu o proprio desconto
+    ud.combat_step(s)
+    # so' o Sarkhan-Utvara ataca (a Utvara nomeada esta' doente): 2 Utvaras x 1 atacante
+    assert s.dragon_tokens == 2
+    ud.end_step(s)
+    assert s.sarkhan_copy_of is None
+
+
+def test_arcane_denial_draw_next_turn():
+    s = fresh()
+    put(s, "Island", "Forest")
+    s.hand = ["Arcane Denial"]
+    ud.cast_card(s, "Arcane Denial")
+    n = len(s.hand)
+    ud.play_turn(s, is_first_turn=False, on_play=True)
+    assert s.arcane_denial_draws_total == 1
+
+
+def test_path_scry_bottoms_land_when_flooded():
+    s = fresh(library=["Forest", "Scourge of Valkas"])
+    put(s, "Path of Ancestry", *WUBRG_LANDS, "Forest")
+    s.hand = ["Hellkite Charger"]
+    s.mana_spent_this_turn = 0
+    ud.cast_card(s, "Hellkite Charger")
+    assert s.path_scries_total == 1 and s.library[0] == "Scourge of Valkas"
+
+
+def test_triome_cycling_in_main2():
+    s = fresh(library=["Scourge of Valkas"] + [FILLER] * 20)
+    put(s, *WUBRG_LANDS, "Forest")
+    s.hand = ["Ketria Triome"]
+    s.phase = "main2"
+    ud.try_triome_cycling(s)
+    assert s.triome_cycles_total == 1 and "Scourge of Valkas" in s.hand
+
+
+def test_voyage_foretold_needs_bb_and_triggers_beanstalk():
+    s = fresh(turn=7)
+    s.haunting_voyage_foretold_turn = 5
+    put(s, "Up the Beanstalk", "Mountain", "Mountain", "Mountain", "Forest", "Forest", "Forest", "Swamp")
+    s.phase = "main1"
+    ud.main_phase(s)
+    assert s.haunting_voyage_foretold_turn == 5  # 1 fonte de B so'
+    put(s, "Bayou")
+    ud.main_phase(s)
+    assert s.haunting_voyage_foretold_turn is None and "Haunting Voyage" in s.graveyard
+
+
+def test_opponent_attacks_sarkhan_unbroken():
+    s = fresh(turn=ud.INTERACTION_SETUP_TURNS + 2)
+    s.interaction_rng = _AlwaysRng()
+    s.interaction_rng.choice = lambda seq: ("Elemental Token", 3)
+    put(s, "Sarkhan Unbroken")
+    s.sarkhan_loyalty = 5
+    life = s.life
+    ud.try_smart_opponent_attack(s)
+    assert s.sarkhan_loyalty == 2 and s.life == life
+    ud.try_smart_opponent_attack(s)
+    assert "Sarkhan Unbroken" in s.graveyard
+
+
+def test_pain_and_henge_life():
+    s = fresh()
+    put(s, "Ancient Tomb", "Forest", "The Great Henge")
+    s.mana_spent_this_turn = 2   # cabe nas fontes sem dor (Forest + Henge)
+    ud.settle_mana_life(s)
+    assert s.life == 42
+    s.mana_spent_this_turn = 5
+    ud.settle_mana_life(s)
+    assert s.life == 42 + 2 - 2
+
+
+def test_sylvan_library_pays_four():
+    s = fresh(library=[FILLER] * 20)
+    put(s, "Sylvan Library")
+    ud.play_turn(s, is_first_turn=False, on_play=True)
+    assert s.life_paid.get("sylvan_library") == 4
+
+
+def test_treasure_mana_pays_a_pip():
+    s = fresh()
+    put(s, "Forest", "Forest", "Forest")
+    assert not ud.can_cast(s, "Dragon Tempest")
+    ud.create_and_use_treasures(s, 1)
+    assert ud.can_cast(s, "Dragon Tempest")
+
+
+def test_deck_out_is_a_loss_and_stops_the_game():
+    s = fresh(turn=6, library=[FILLER] * 3)
+    put(s, ud.COMMANDER)
+    s.commander_in_play = True
+    ud.draw_cards(s, 5)
+    assert s.decked_turn == 6 and s.lethal_proxy_turn is None and s.game_over
+    t = s.turn
+    ud.play_turn(s, is_first_turn=False, on_play=True)
+    assert s.turn == t
+
+
+def test_deck_out_after_lethal_damage_is_a_win():
+    s = fresh(turn=6, library=[])
+    s.proxy_damage_total = ud.LETHAL_PROXY
+    ud.draw_cards(s, 1)
+    assert s.lethal_proxy_turn == 6 and s.decked_turn is None
+
+
+def test_attackers_limited_to_not_deck():
+    s = fresh(turn=6, library=[FILLER] * 4)
+    put(s, ud.COMMANDER)
+    s.commander_in_play = True
+    s.dragon_token_list = [[5, 1, True, None] for _ in range(10)]
+    s.dragon_tokens = 10
+    s.hand = []
+    ud.combat_step(s)
+    assert s.decked_turn is None and s.urdragon_attack_draws_total == 3 and len(s.library) == 1
+    assert s.attackers_held_back_total == 8
+
+
+def test_optional_draws_refused_with_low_library():
+    s = fresh(library=[FILLER] * 5)
+    put(s, "Dragon's Hoard", "Forest", "Forest")
+    s.dragon_hoard_gold_counters = 2
+    ud.try_dragon_hoard_draw(s)
+    assert s.dragon_hoard_draws_total == 0
+
+
 def run_all():
     tests = [(n, f) for n, f in sorted(globals().items()) if n.startswith("test_") and callable(f)]
     failed = 0

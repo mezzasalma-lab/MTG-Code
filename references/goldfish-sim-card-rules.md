@@ -587,6 +587,22 @@ que cita essa categoria. Ligar as respostas no mesmo commit.
 Consequência pra A/B: a carta cujo valor está nessas cláusulas aparece
 subestimada. Cortar por esse número é o erro da Regra #5.
 
+## Compra obrigatória em massa: modelar deck-out (CR 704.5b) e a escolha de atacantes
+
+Achado real (Ur-Dragon, 2026-09-28). "Draw that many cards" da Ur-Dragon
+é obrigatório e resolve na declaração de ataque, antes do dano. O
+simulador só levantava uma flag `library_emptied` e seguia, marcando
+letal no fim do turno. Resultado: 16% das partidas eram "letais" num turno
+em que o piloto teria decado antes do dano.
+
+Regra, pra todo simulador com compra em massa (gatilho de ataque,
+ETB-draw por ficha, "draw X"):
+1. comprar de grimório vazio = derrota; a partida para;
+2. letal só vale se o dano já tinha passado do limiar antes da compra
+   fatal;
+3. o piloto controla a alavanca real (quantos atacam, quais compras
+   opcionais aceita) e usa isso pra não decar.
+
 ## Política de descarte do cleanup antes da comandante
 
 Achado real (Ur-Dragon, 2026-09-28, avaliando a Tiamat). O descarte pegava

@@ -104,7 +104,7 @@ def _color_sources(state, color, dragon_creature_spell=False, legendary_spell=Fa
         base = card.split(" (copia)")[0]
         if base not in sim.CARD_DB:
             continue
-        if base == state.tapped_land_this_turn:
+        if base in state.tapped_lands_this_turn:
             continue
         c = sim.CARD_DB[base]
         if base in sim.LAND_NAMES:
