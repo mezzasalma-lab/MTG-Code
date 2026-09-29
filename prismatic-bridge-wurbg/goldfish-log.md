@@ -366,6 +366,57 @@ PWs tirados de fase por partida em que o Vronos entrou: média 3.53, P(>0) 71.6%
 | resiliência Δ P(dano nosso ≥ 40) | **+6.37 pp ±1.47** |
 | resiliência Δ P(dano nosso ≥ 120) | +1.00 pp ±1.23 |
 
+#### 7. "Vale a pena?": as 4 contra as 3 de Reality Fracture (Tam, Loyal Tutor, Entrust the Spark) nos MESMOS slots fracos
+
+Os três cortes mais fracos da lista (Arena Rector, Swan Song, Veil of Summer) já estão reservados às 3 de FRA
+(`checklist-oraculo.md`, rodada de 2026-09-25). Então a pergunta real é se alguma das 4 ganha desse uso do slot.
+Mesmo harness, mesmas seeds, N = 3.000 (`ab_candidatas_vs_fra.py`; o pacote FRA usa os mesmos cortes da rodada anterior).
+
+**1. Uma carta por vez no slot Arena Rector (Δ sobre a lista atual)**
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: P(dano ≥ 40) |
+|---|---|---|---|---|---|
+| Loyal Tutor (FRA) | **-0.135 ±0.023** | **+3.50 pp ±0.78** | -0.30 pp ±0.34 | **-0.045 ±0.025** | **+1.23 pp ±0.97** |
+| Tam (FRA) | **-0.119 ±0.017** | **+2.93 pp ±0.65** | **-0.37 pp ±0.36** | **-0.053 ±0.024** | **-1.13 pp ±0.83** |
+| Entrust the Spark (FRA) | **-0.064 ±0.014** | **+1.60 pp ±0.51** | -0.20 pp ±0.29 | +0.002 ±0.020 | +0.23 pp ±0.86 |
+| Dihada | **-0.057 ±0.014** | **+1.37 pp ±0.52** | -0.33 pp ±0.35 | **-0.035 ±0.020** | **+3.07 pp ±0.94** |
+| Guff | **-0.053 ±0.013** | **+1.67 pp ±0.49** | **-0.57 pp ±0.33** | +0.002 ±0.020 | +0.00 pp ±0.83 |
+| Vronos | -0.004 ±0.009 | +0.00 pp ±0.35 | -0.20 pp ±0.32 | **+0.039 ±0.021** | **-1.07 pp ±0.84** |
+| Sarkhan | **-0.010 ±0.008** | +0.20 pp ±0.31 | **-0.43 pp ±0.33** | **+0.051 ±0.020** | **+3.80 pp ±0.96** |
+
+**2. Terceiro slot (Tam→Arena Rector e Loyal Tutor→Swan Song fixos; Veil of Summer sai). Δ sobre a lista atual**
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: P(dano ≥ 40) |
+|---|---|---|---|---|---|
+| Tam + Loyal Tutor + **Entrust** | **-0.236 ±0.027** | **+6.00 pp ±0.95** | **-0.67 pp ±0.55** | **-0.125 ±0.033** | **+1.30 pp ±1.15** |
+| Tam + Loyal Tutor + **Dihada** | **-0.246 ±0.029** | **+6.37 pp ±1.04** | **-1.00 pp ±0.60** | **-0.149 ±0.036** | **+4.30 pp ±1.35** |
+| Tam + Loyal Tutor + **Guff** | **-0.227 ±0.029** | **+6.03 pp ±1.04** | **-0.97 pp ±0.59** | **-0.107 ±0.035** | +1.10 pp ±1.25 |
+| Tam + Loyal Tutor + **Vronos** | **-0.183 ±0.029** | **+4.87 pp ±0.99** | -0.57 pp ±0.57 | **-0.088 ±0.035** | +0.63 pp ±1.24 |
+| Tam + Loyal Tutor + **Sarkhan** | **-0.185 ±0.029** | **+4.93 pp ±0.98** | **-0.80 pp ±0.57** | **-0.068 ±0.035** | **+4.63 pp ±1.32** |
+
+**3. O mesmo terceiro slot, Δ sobre o pacote com Entrust (positivo em 'P(...)' e negativo em 'vida ≤ 0/1º ult' = melhor que o Entrust)**
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: P(dano ≥ 40) |
+|---|---|---|---|---|---|
+| Dihada no lugar do Entrust | -0.010 ±0.015 | +0.37 pp ±0.57 | -0.33 pp ±0.37 | **-0.024 ±0.020** | **+3.00 pp ±0.99** |
+| Guff no lugar do Entrust | +0.010 ±0.014 | +0.03 pp ±0.55 | -0.30 pp ±0.33 | +0.018 ±0.019 | -0.20 pp ±0.85 |
+| Vronos no lugar do Entrust | **+0.054 ±0.013** | **-1.13 pp ±0.48** | +0.10 pp ±0.30 | **+0.037 ±0.018** | -0.67 pp ±0.85 |
+| Sarkhan no lugar do Entrust | **+0.052 ±0.013** | **-1.07 pp ±0.48** | -0.13 pp ±0.24 | **+0.057 ±0.018** | **+3.33 pp ±0.91** |
+
+**4. Quarta carta por cima do pacote FRA completo (Tam + Loyal Tutor + Entrust), entrando no lugar do Oath of Nissa. Δ sobre o pacote FRA**
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: P(dano ≥ 40) |
+|---|---|---|---|---|---|
+| + Dihada (sai Oath of Nissa) | -0.003 ±0.020 | +0.20 pp ±0.72 | -0.47 pp ±0.51 | -0.025 ±0.025 | **+3.00 pp ±1.00** |
+| + Guff (sai Oath of Nissa) | +0.008 ±0.020 | -0.23 pp ±0.71 | -0.40 pp ±0.54 | **+0.032 ±0.024** | -0.37 pp ±0.90 |
+| + Vronos (sai Oath of Nissa) | **+0.055 ±0.021** | **-1.13 pp ±0.72** | -0.13 pp ±0.52 | **+0.043 ±0.023** | -0.67 pp ±0.89 |
+| + Sarkhan (sai Oath of Nissa) | **+0.053 ±0.021** | **-0.97 pp ±0.71** | -0.40 pp ±0.51 | **+0.059 ±0.023** | **+3.33 pp ±1.00** |
+
+**Leitura:**
+- Sozinhas no slot Arena Rector, **Loyal Tutor (−0,135) e Tam (−0,119) valem mais que qualquer uma das 4** (Entrust −0,064, Dihada −0,057, Guff −0,053, Sarkhan −0,010, Vronos −0,004 no turno do 1º ultimate).
+- No **terceiro slot** (ao lado de Tam + Loyal Tutor): **Dihada empata com o Entrust no ritmo** (−0,010, dentro do ruído) e fica melhor na resiliência (1º ult −0,024; P(dano ≥ 40) +3,0 pp). Guff empata no ritmo e não traz o resto. Vronos e Sarkhan são piores que o Entrust no ritmo (+0,05 turno).
+- Como **quarta carta** por cima do pacote FRA completo, nenhuma acelera (Dihada ±0; Vronos e Sarkhan pioram ~0,055 turno e −1 pp de P(ult ≤ T8)): o Oath of Nissa vale mais que elas nesse slot. A Dihada e a Sarkhan só somam dano (+3 pp de P(dano ≥ 40)).
+
 ### Leitura (Regra #5: o deck primeiro, o simulador como apoio)
 
 **O que o simulador mede:** velocidade dos ultimates dos 17 PWs, sobrevivência dos PWs e da vida contra 3 oponentes com
