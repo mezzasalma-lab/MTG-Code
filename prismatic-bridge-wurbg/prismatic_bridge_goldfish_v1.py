@@ -405,6 +405,32 @@ add("Entrust the Spark", 5, "Sorcery", colors={"G", "U"}, produces=set(), tags=s
 # {3}{G}{U} Sorcery. "You may sacrifice a planeswalker. If you do, search your library for a
 # planeswalker card, put it onto the battlefield, then shuffle." Ver _entrust_choice().
 
+# -------- Candidatas pedidas pelo usuario (2026-09-29) -- NAO estao na lista --------
+# Oraculo conferido ao vivo no Scryfall (2026-09-29). Entram so' via `swap`.
+# Os 4 sao "Legendary Planeswalker" de lealdade inicial 5. Ver o bloco
+# "CANDIDATAS 2026-09-29" mais abaixo (efeitos, politica e gatilhos).
+add("Dihada, Binder of Wills", 4, "Planeswalker", colors={"R", "W", "B"}, produces=set(), tags={"draw", "planeswalker"})
+# {1}{R}{W}{B}. +2: up to one target legendary creature gains vigilance, lifelink, and indestructible
+# until your next turn. -3: reveal top four; legendary cards to hand, rest to graveyard, a Treasure per
+# card put into the graveyard. -11: gain control of all nonland permanents until EOT, untap, haste.
+add("Commodore Guff", 4, "Planeswalker", colors={"U", "R", "W"}, produces=set(), tags={"draw", "planeswalker"})
+# {1}{U}{R}{W}. "At the beginning of your end step, put a loyalty counter on another target planeswalker
+# you control." +1: 1/1 Wizard token ("{T}: Add {R}. Spend this mana only to cast a planeswalker spell").
+# -3: draw X, X damage to each opponent (X = planeswalkers you control).
+add("Vronos, Masked Inquisitor", 5, "Planeswalker", colors={"U"}, produces=set(), tags={"planeswalker", "removal"})
+# {3}{U}{U}. +1: up to two other target planeswalkers you control phase out at the beginning of the next
+# end step. -2: for each opponent, return up to one target nonland permanent to its owner's hand.
+# -7: target artifact you control becomes a 9/9 Construct artifact creature, vigilance, indestructible,
+# can't be blocked.
+add("Sarkhan the Masterless", 5, "Planeswalker", colors={"R"}, produces=set(), tags={"planeswalker"})
+# {3}{R}{R}. "Whenever a creature attacks you or a planeswalker you control, each Dragon you control
+# deals 1 damage to that creature." +1: until end of turn each planeswalker you control becomes a 4/4 red
+# Dragon creature and gains flying. -3: 4/4 red Dragon creature token with flying.
+add("Dragon Token", 0, "Creature", colors={"R"}, produces=set(), tags=set())   # Sarkhan -3
+add("Wizard Token", 0, "Creature", colors={"R"}, produces=set(), tags=set())   # Commodore Guff +1
+CANDIDATE_PWS = ("Dihada, Binder of Wills", "Commodore Guff", "Vronos, Masked Inquisitor", "Sarkhan the Masterless")
+DIHADA, GUFF, VRONOS, SARKHAN = CANDIDATE_PWS
+
 # Poder/resistencia/palavras-chave reais (Scryfall, 2026-09-24) das criaturas
 # que podem estar do nosso lado -- so' usado pelo modelo de combate.
 CREATURE_STATS = {
@@ -421,6 +447,8 @@ CREATURE_STATS = {
     "Vorinclex, Monstrous Raider": (6, 6, {"haste", "trample"}),
     "Silent Arbiter": (1, 5, set()),
     "Tam, the Possibility": (2, 4, set()),
+    "Dragon Token": (4, 4, {"flying"}),   # Sarkhan the Masterless -3 (candidata)
+    "Wizard Token": (1, 1, set()),        # Commodore Guff +1 (candidata)
     "Soldier Token": (1, 1, set()),
     "Zombie Token": (2, 2, set()),
     "Elk Token": (3, 3, set()),
@@ -433,7 +461,7 @@ CREATURE_STATS = {
 # so' bloqueiam se sobrevivem ou se a troca mata um atacante que mataria
 # um planeswalker (ver `_choose_blocker`).
 CHUMP_OK = {"Soldier Token", "Zombie Token", "Elk Token", "Samurai Token", "Spirit Token",
-            "Bloom Tender", "Delighted Halfling", "Silent Arbiter"}
+            "Bloom Tender", "Delighted Halfling", "Silent Arbiter", "Wizard Token"}
 
 def C(name: str) -> Card:
     return CARD_DB[name]
@@ -468,6 +496,7 @@ LEGENDARY_CARD_NAMES = {
     "The Eternal Wanderer", "The Peregrine Dynamo", "Ugin, the Spirit Dragon",
     "Vorinclex, Monstrous Raider", "Vraska, Betrayal's Sting", "Tamiyo's Notebook",
     "Tam, the Possibility",  # candidata FRA (so' via swap)
+    "Dihada, Binder of Wills", "Commodore Guff", "Vronos, Masked Inquisitor", "Sarkhan the Masterless",  # candidatas 2026-09-29
 }
 
 # Parte GENERICA real do custo de mana (Scryfall, `mana_cost`; hibrido e
@@ -496,6 +525,7 @@ GENERIC_MANA = {
     "Vorinclex, Monstrous Raider": 4, "Vraska, Betrayal's Sting": 4, "Silent Arbiter": 4,
     "Dueling Grounds": 1, "Sphere of Safety": 4, "Ghostly Prison": 2,
     "Tam, the Possibility": 1, "Loyal Tutor": 0, "Entrust the Spark": 3,
+    "Dihada, Binder of Wills": 1, "Commodore Guff": 1, "Vronos, Masked Inquisitor": 3, "Sarkhan the Masterless": 3,
 }
 
 # Tipo de planeswalker (CR 205.3j) de cada PW da lista, do `type_line` real
@@ -512,6 +542,8 @@ PW_TYPES = {
     "Teferi, Time Raveler": "Teferi", "Teferi, Who Slows the Sunset": "Teferi",
     "The Eternal Wanderer": None, "Ugin, the Spirit Dragon": "Ugin",
     "Vraska, Betrayal's Sting": "Vraska",
+    "Dihada, Binder of Wills": "Dihada", "Commodore Guff": "Guff",
+    "Vronos, Masked Inquisitor": "Vronos", "Sarkhan the Masterless": "Sarkhan",  # candidatas 2026-09-29
 }
 
 # Achado real 2026-08-28 (auditoria de checklist): Farseek/Nature's
@@ -545,6 +577,8 @@ PLANESWALKER_STARTING_LOYALTY = {
     "Teferi, Time Raveler": 4, "Teferi, Who Slows the Sunset": 4,
     "The Eternal Wanderer": 5, "Ugin, the Spirit Dragon": 7,
     "Vraska, Betrayal's Sting": 6,
+    "Dihada, Binder of Wills": 5, "Commodore Guff": 5,
+    "Vronos, Masked Inquisitor": 5, "Sarkhan the Masterless": 5,  # candidatas 2026-09-29 (Scryfall)
 }
 # Tamiyo, Compleated Sage / Vraska, Betrayal's Sting tem custo "Compleated"
 # (paga 2 vida em vez de mana colorida, entra com 2 lealdade a menos) - so
@@ -807,6 +841,17 @@ class GameState:
     first_ult_turn: Optional[int] = None  # 1o turno JOGADO (turnos extras contam) com ultimate
     turns_with_ult: int = 0
     _ults_seen: int = 0
+    # ---- Candidatas do usuario (2026-09-29): Dihada, Commodore Guff, Vronos, Sarkhan the Masterless ----
+    cand_stats: Dict[str, int] = field(default_factory=dict)     # contadores por carta (ver `_cs`)
+    treasure_stock: int = 0                    # Treasures nao gastos (Dihada -3): 1 mana de qualquer cor cada, persistem entre turnos
+    wizard_pool: int = 0                       # fichas Wizard (Guff) prontas neste turno: mana {R} so' pra magia de PW
+    pending_phase_out: List[str] = field(default_factory=list)   # Vronos +1: sai de fase no proximo end step
+    sarkhan_animated: Set[str] = field(default_factory=set)      # PWs que viraram Dragao 4/4 (nao sao PW ate' o fim do turno)
+    dihada_shield: Optional[str] = None        # +2 da Dihada: criatura lendaria com vigilancia/lifelink/indestrutivel ate' meu proximo turno
+    vronos_constructs: List[str] = field(default_factory=list)   # -7 do Vronos: artefatos que viraram Construct 9/9
+    artifact_enter_turn: Dict[str, int] = field(default_factory=dict)  # turno em que cada artefato nao-criatura entrou (ruling do Construct)
+    stolen_power_this_turn: int = 0            # Dihada -11: poder das criaturas roubadas (atacam com haste)
+    instant_window: bool = False               # dentro de `instant_speed_pw_window` (emblema do Teferi, Temporal Archmage)
 
     def draw(self, n: int = 1):
         for _ in range(n):
@@ -871,7 +916,7 @@ def total_mana(state: GameState) -> int:
         elif card == "Delighted Halfling":
             if _dork_ready(state, card):
                 total += 1  # so' o {T}: Add {C} incondicional
-    return total
+    return total + state.treasure_stock  # Treasure (Dihada -3): 1 mana de qualquer cor, gasto no fim do turno (`_settle_treasures`)
 
 def color_sources(state: GameState, color: str, legendary_spell: bool = False, pw_spell: bool = False) -> int:
     # Oath of Nissa: "You may spend mana as though it were mana of any color
@@ -927,7 +972,7 @@ def color_sources(state: GameState, color: str, legendary_spell: bool = False, p
         if C(card).type == "Creature" and not _dork_ready(state, card):
             continue
         n += 1
-    return n
+    return n + state.treasure_stock  # Treasure: "Add one mana of any color"
 
 def remaining_mana(state: GameState) -> int:
     # `mana_bonus_this_turn`: permanentes de mana que um efeito DESVIRA no
@@ -971,7 +1016,30 @@ def spell_cost(state: GameState, card: str) -> int:
         # Tam, the Possibility: "Planeswalker spells you cast cost {1} less to
         # cast." (cada copia em campo reduz de novo)
         reduction += state.battlefield.count("Tam, the Possibility")
+        # Fichas Wizard do Commodore Guff: "{T}: Add {R}. Spend this mana only
+        # to cast a planeswalker spell." Modelada como abatimento da parte
+        # GENERICA (conservador: a {R} tambem pagaria um simbolo {R}).
+        reduction += _wizard_avail(state)
     return base - min(generic, reduction)
+
+
+def _wizard_avail(state: GameState) -> int:
+    """Wizards do Guff prontos (sem doenca de invocacao) e ainda em campo."""
+    if state.wizard_pool <= 0:
+        return 0
+    return min(state.wizard_pool, state.battlefield.count("Wizard Token"))
+
+
+def _wizard_used(state: GameState, card: str) -> int:
+    """Quantos Wizards `spell_cost` gasta ao conjurar `card` agora (o pool so'
+    baixa no cast, nao em cada consulta de custo)."""
+    if C(card).type != "Planeswalker" or _wizard_avail(state) <= 0:
+        return 0
+    if card != COMMANDER and state.tamiyo_free_cast and card in state.hand:
+        return 0
+    generic = GENERIC_MANA.get(card, max(0, C(card).mv - len(C(card).colors)))
+    other = (2 if "Tamiyo's Notebook" in state.battlefield else 0) + state.battlefield.count("Tam, the Possibility")
+    return max(0, min(generic, other + _wizard_avail(state)) - min(generic, other))
 
 
 def tam_discount(state: GameState, card: str) -> int:
@@ -1246,6 +1314,8 @@ def noncreature_etb(state: GameState, name: str, log: List[Dict]):
     """ETBs de permanente nao-criatura/nao-PW (achado 2026-09-24: as 2
     Oaths tinham o estatico mas o ETB nunca existia)."""
     _legend_rule_extra(state, name)
+    if C(name).type == "Artifact":
+        state.artifact_enter_turn[name] = state.turn  # Vronos -7: "controlled continuously since the turn began"
     if name == "Oath of Nissa":
         # "When Oath of Nissa enters, look at the top three cards of your
         # library. You may reveal a creature, land, or planeswalker card from
@@ -1540,20 +1610,23 @@ ULT_COST = {  # custo real do "ultimate" de cada PW (usado so' pra escolher alvo
     "Oko, the Ringleader": 5, "Tamiyo, Compleated Sage": 7, "Tamiyo, Field Researcher": 7,
     "Teferi, Hero of Dominaria": 8, "Teferi, Temporal Archmage": 10, "Teferi, Who Slows the Sunset": 7,
     "Ugin, the Spirit Dragon": 10, "Vraska, Betrayal's Sting": 9, "The Eternal Wanderer": 4,
+    "Dihada, Binder of Wills": 11, "Vronos, Masked Inquisitor": 7,   # candidatas 2026-09-29
 }
 
 
-def _best_pw_for_extra_counter(state: GameState) -> Optional[str]:
+def _best_pw_for_extra_counter(state: GameState, exclude: Optional[str] = None) -> Optional[str]:
     """Alvo de "+1 marcador de lealdade num PW": o que fica mais perto de
-    alcancar o ultimate; empate -> maior lealdade."""
-    if not state.loyalty:
+    alcancar o ultimate; empate -> maior lealdade. `exclude`: "another target
+    planeswalker" (Commodore Guff) nunca escolhe o proprio."""
+    pool = [p for p in state.loyalty if p != exclude and p not in state.phased_out] if exclude else list(state.loyalty)
+    if not pool:
         return None
     carth = state.battlefield.count("Carth the Lion")
 
     def gap(pw):
         g = ULT_COST.get(pw, 99) - (state.loyalty[pw] + carth)
         return g if g > 0 else 99
-    return min(state.loyalty, key=lambda pw: (gap(pw), -state.loyalty[pw]))
+    return min(pool, key=lambda pw: (gap(pw), -state.loyalty[pw]))
 
 
 def on_spell_cast(state: GameState, card: str, log: List[Dict]):
@@ -1617,6 +1690,10 @@ def planeswalker_enters(state: GameState, name: str, log: List[Dict]):
     old = state.loyalty.get(name) if state.battlefield.count(name) > 1 else None
     state.loyalty[name] = base * mult
     state.pw_enter_turn[name] = state.turn  # doenca de invocacao do Oko quando vira copia de criatura
+    if name in CANDIDATE_PWS:
+        _cs(state, "entered_" + name)
+        if state.cand_stats.get("first_turn_" + name) is None:
+            state.cand_stats["first_turn_" + name] = state.turn
     _counters_put(state, base * mult, log, source=f"enters_{name}")
     if old is not None:
         # 2o exemplar do mesmo PW lendario em campo (ficha-copia da Tamiyo CS
@@ -1911,6 +1988,11 @@ PW_ABILITIES: Dict[str, Dict[str, object]] = {
     "Vraska, Betrayal's Sting": {"0": 0, "-2": -2, "-9": -9},
 }
 PW_ABILITIES["Ichormoon Gauntlet"] = {"0": 0, "-12": -12}  # concedidas a TODO PW nosso
+# Candidatas do usuario (2026-09-29): custos reais do oraculo (Scryfall).
+PW_ABILITIES[DIHADA] = {"+2": 2, "-3": -3, "-11": -11}
+PW_ABILITIES[GUFF] = {"+1": 1, "-3": -3}
+PW_ABILITIES[VRONOS] = {"+1": 1, "-2": -2, "-7": -7}
+PW_ABILITIES[SARKHAN] = {"+1": 1, "-3": -3}
 PW_EFFECTS: Dict[tuple, object] = {}
 
 
@@ -2039,6 +2121,8 @@ def _choose_base(state: GameState, pw: str, loy: int):
         if loy >= 9 and any(state.opp_alive[i] and state.opp_poison[i] < 9 for i in range(N_OPPONENTS)):
             return (pw, "-9", None, False)
         return (pw, "0", None, False)
+    if pw in CANDIDATE_PWS:
+        return _candidate_choice(state, pw, loy)
     return None
 
 
@@ -2076,6 +2160,11 @@ def _bolas_borrowed_choice(state: GameState, pw: str, loy: int):
         return ("Elspeth, Sun's Champion", "+1", None, False)
     if "Kaya, Intangible Slayer" in others and loy >= 6 and len(state.hand) <= 4:
         return ("Kaya, Intangible Slayer", "0", None, False)
+    # Candidatas 2026-09-29 (Rule #1: Bolas tem TODAS as habilidades dos outros PWs): os dois -3 de compra.
+    if CAND_POLICY["guff_minus3"] and GUFF in others and loy >= 4 and len(state.loyalty) >= 4 and len(state.hand) <= 5:
+        return (GUFF, "-3", None, False)
+    if CAND_POLICY["dihada_minus3"] and DIHADA in others and loy >= 4 and len(state.library) >= 4:
+        return (DIHADA, "-3", None, False)
     return (pw, "+1", None, False)
 
 
@@ -2097,7 +2186,10 @@ def choose_pw_ability(state: GameState, pw: str, loy: int):
     uma habilidade fraca quando ha' 3+ PWs, ou sempre que um oponente
     envenenado pode receber +1 veneno."""
     c = _choose_base(state, pw, loy)
-    if "Ichormoon Gauntlet" not in state.battlefield or (c is not None and c[3]):
+    if "Ichormoon Gauntlet" not in state.battlefield or (c is not None and c[3]) or pw in state.sarkhan_animated:
+        # PW animado pela Sarkhan deixou de ser planeswalker: "Planeswalkers you
+        # control have '[0]: Proliferate...'" nao o alcanca (mas as habilidades
+        # PROPRIAS dele continuam -- ruling 2019-05-03).
         return c
     eff = loy + _carth_count(state)
     if c is not None and _is_ult(c[0], c[1]):
@@ -2719,6 +2811,359 @@ def _eff_vraska_minus2(state, pw, log, x):
         _opp_remove_creature(state, i, big, how="treasure", cooldown=2)
 
 
+# =========================================================
+# CANDIDATAS 2026-09-29: Dihada, Commodore Guff, Vronos, Sarkhan the Masterless
+# =========================================================
+# Pedido do usuario: avaliar a inclusao de cada uma (prós e contras). Oraculo
+# conferido ao vivo no Scryfall em 2026-09-29; entram so' via `swap`. Nada
+# abaixo roda quando a carta nao esta' na lista (bit-identico, ver testes).
+#
+# Premissas de modelagem (documentadas, nao dados reais):
+# - Esika, God of the Tree (frente do comandante) NAO e' modelada em nenhum
+#   ponto deste arquivo: o comandante e' sempre conjurado como The Prismatic
+#   Bridge. Logo, o Dragao animado pela Sarkhan NAO ganha vigilancia nem o
+#   "{T}: Add one mana of any color" da Esika (so' vale se a Esika estiver
+#   em campo, o que exclui a Bridge -- sao duas faces da mesma carta).
+# - Sarkhan +1 (rulings oficiais, Scryfall 2019-05-03): "Once Sarkhan's first
+#   loyalty ability has resolved, each planeswalker you control (including
+#   Sarkhan) is no longer a planeswalker for the rest of the turn. They don't
+#   lose any loyalty counters or abilities, and you can still activate their
+#   loyalty abilities if you haven't done so yet this turn." Logo: (a) o PW
+#   animado AINDA ativa (nao bloqueia ninguem); (b) mas como deixa de ser
+#   planeswalker, "Planeswalkers you control have ..." da Ichormoon Gauntlet nao
+#   o alcanca -- por isso a Sarkhan ativa por ULTIMO (`_activation_order`);
+#   (c) "A planeswalker that becomes a creature ... can't attack unless you've
+#   controlled it continuously since your turn began" (doenca de invocacao) e
+#   o efeito so' pega os PWs que ja' estavam em campo quando resolveu (CR
+#   611.2c): PW que entra depois no mesmo turno continua PW.
+# - O oponente so' age no turno dele (o simulador nao modela instantaneos
+#   dele no MEU turno) -- isso SUPERESTIMA a segurança de animar PWs.
+# - Treasure: 1 mana de qualquer cor, persiste entre turnos, sacrificado ao
+#   gastar. Fora de `state.battlefield` (so' um contador) -- nao entra no
+#   "board_impact" de `interaction_chance` nem em wipe de artefato.
+# - Wizard do Guff: a {R} paga so' magia de PW; abate a parte GENERICA.
+# - Vronos -7 (ruling 2023-07-28): o artefato vira 9/9 Construct (sem
+#   duracao) e "will be able to attack on your turn if it's been under your
+#   control continuously since the turn began. It doesn't matter how long it's
+#   been a creature, just how long it's been on the battlefield." Usa
+#   `artifact_enter_turn` (rastreado em `noncreature_etb`).
+# - Dihada -11: so' as criaturas de oponente sao rastreadas; o resto de
+#   "all nonland permanents" (PW/artefato/encantamento do oponente) e' 📊
+#   estrutural (oponente real nao modelado).
+
+# Chaves de politica ligadas por padrao. O A/B de sensibilidade desliga UMA por vez pra
+# isolar de onde vem o efeito de cada carta (ab_candidatas.py, variante "ENTRA|SAI@flag").
+CAND_POLICY = {"dihada_minus3": True, "guff_minus3": True, "vronos_phase": True, "sarkhan_animate": True}
+
+
+def _cs(state: GameState, key: str, n: int = 1):
+    state.cand_stats[key] = state.cand_stats.get(key, 0) + n
+
+
+def _ds_mult(state: GameState) -> int:
+    """Doubling Season: cada copia dobra as fichas criadas (Treasure inclusive)."""
+    return 2 ** min(state.battlefield.count("Doubling Season"), 9)
+
+
+def _settle_treasures(state: GameState):
+    """Treasure e' sacrificado ao pagar. `total_mana` conta os Treasures como
+    mana de reserva (ultima fonte); no fim do turno (e antes do untap
+    adicional do Sphinx) o que foi gasto alem das outras fontes consome
+    Treasures. `mana_spent_this_turn` desce junto pra o saldo nao mudar."""
+    if state.treasure_stock <= 0:
+        return
+    base = total_mana(state) - state.treasure_stock
+    over = state.mana_spent_this_turn - (base + state.mana_bonus_this_turn)
+    used = max(0, min(state.treasure_stock, over))
+    if used:
+        state.treasure_stock -= used
+        state.mana_spent_this_turn -= used
+        _cs(state, "dihada_treasures_spent", used)
+
+
+# ---------------- Dihada, Binder of Wills ----------------
+
+@_pw_effect(DIHADA, "+2")
+def _eff_dihada_plus2(state, pw, log, x):
+    # "Up to one target legendary creature gains vigilance, lifelink, and
+    # indestructible until your next turn." Alvo: a lendaria que mais ganha
+    # (falta vigilancia/lifelink; depois o maior poder).
+    legends = [c for c in dict.fromkeys(state.battlefield)
+               if C(c).type == "Creature" and c in LEGENDARY_CARD_NAMES and c in CREATURE_STATS]
+    if not legends:
+        return
+    pick = max(legends, key=lambda c: (len({"vigilance", "lifelink"} - set(CREATURE_STATS[c][2])), CREATURE_STATS[c][0]))
+    state.dihada_shield = pick
+    _cs(state, "dihada_plus2_targets")
+
+
+@_pw_effect(DIHADA, "-3")
+def _eff_dihada_minus3(state, pw, log, x):
+    # "Reveal the top four cards of your library. Put any number of legendary
+    # cards from among them into your hand and the rest into your graveyard.
+    # Create a Treasure token for each card put into your graveyard this way."
+    # "Put into your hand" nao e' comprar. Toda carta nao lendaria (terreno,
+    # magia, criatura) vai pro cemiterio e paga 1 Treasure (x Doubling Season).
+    top = state.library[:4]
+    state.library = state.library[4:]
+    legends = [c for c in top if c in LEGENDARY_CARD_NAMES]
+    milled = [c for c in top if c not in LEGENDARY_CARD_NAMES]
+    state.hand.extend(legends)
+    state.graveyard.extend(milled)
+    n_tokens = len(milled) * _ds_mult(state)
+    state.treasure_stock += n_tokens
+    _cs(state, "dihada_minus3")
+    _cs(state, "dihada_revealed", len(top))
+    _cs(state, "dihada_legends_to_hand", len(legends))
+    _cs(state, "dihada_pws_to_hand", sum(1 for c in legends if C(c).type == "Planeswalker"))
+    _cs(state, "dihada_milled", len(milled))
+    _cs(state, "dihada_milled_pw_or_creature", sum(1 for c in milled if C(c).type in ("Creature", "Planeswalker")))
+    _cs(state, "dihada_treasures", n_tokens)
+    log.append({"trigger": "dihada_minus3", "legends": legends, "milled": len(milled), "turn": state.turn})
+
+
+@_pw_effect(DIHADA, "-11")
+def _eff_dihada_ult(state, pw, log, x):
+    # "Gain control of all nonland permanents until end of turn. Untap them.
+    # They gain haste until end of turn." Nossas fontes de mana nao-terreno
+    # desviram (mana extra), e as criaturas de oponente rastreadas atacam com
+    # haste (poder somado -> `our_combat_step`).
+    _cs(state, "dihada_ult")
+    bonus = 0
+    for c in state.battlefield:
+        if is_land(c):
+            continue
+        if c == "Sol Ring":
+            bonus += 2
+        elif has_tag(c, "ramp") and C(c).type != "Sorcery":
+            bonus += 1
+    state.mana_bonus_this_turn += bonus
+    _cs(state, "dihada_ult_untap_mana", bonus)
+    if attack_model_on(state):
+        power = sum(c["p"] for b in state.opp_boards for c in b)
+        state.stolen_power_this_turn += power
+        _cs(state, "dihada_stolen_power", power)
+
+
+# ---------------- Commodore Guff ----------------
+
+@_pw_effect(GUFF, "+1")
+def _eff_guff_plus1(state, pw, log, x):
+    # "Create a 1/1 red Wizard creature token with '{T}: Add {R}. Spend this
+    # mana only to cast a planeswalker spell.'" (Doubling Season dobra.)
+    before = state.battlefield.count("Wizard Token")
+    make_pw_token(state, "Wizard Token", 1, log)
+    _cs(state, "guff_plus1")
+    _cs(state, "guff_wizards", state.battlefield.count("Wizard Token") - before)
+
+
+@_pw_effect(GUFF, "-3")
+def _eff_guff_minus3(state, pw, log, x):
+    # "You draw X cards and Commodore Guff deals X damage to each opponent,
+    # where X is the number of planeswalkers you control." O custo ja' foi
+    # pago (o Guff so' morre se a lealdade zerar, e a politica evita isso).
+    n = len(state.loyalty)
+    state.draw(n)
+    state.pw_draws_total += n
+    alive = sum(state.opp_alive)
+    state.pw_life_lost_opponent_total += n * alive
+    _crime(state)  # "each opponent" -- alvo do dano
+    _cs(state, "guff_minus3")
+    _cs(state, "guff_minus3_cards", n)
+    log.append({"trigger": "guff_minus3", "x": n, "turn": state.turn})
+
+
+def guff_end_step(state: GameState, log: List[Dict]):
+    """"At the beginning of your end step, put a loyalty counter on another
+    target planeswalker you control." Marcador de lealdade e' EFEITO de
+    colocar marcador: Doubling Season/Vorinclex/Innkeeper nivel 3 dobram, All
+    Will Be One dispara (via `add_loyalty`). Alvo: o mais perto do ultimate."""
+    if GUFF not in state.loyalty or GUFF in state.phased_out:
+        return
+    tgt = _best_pw_for_extra_counter(state, exclude=GUFF)
+    if tgt is None:
+        return
+    mult = counter_doubler_multiplier(state)
+    add_loyalty(state, tgt, 1, log, reason="guff_end_step")
+    _cs(state, "guff_end_triggers")
+    _cs(state, "guff_end_counters", mult)
+
+
+# ---------------- Vronos, Masked Inquisitor ----------------
+
+def _phase_out_targets(state: GameState, src_pw: str) -> List[str]:
+    """Ate' 2 OUTROS planeswalkers: os de maior lealdade (mais caros de
+    perder). Teferi, Time Raveler fica de fora: fora de fase ele perde o
+    estatico que faz a Bridge nao poder ser contramagicada."""
+    cands = [p for p in state.loyalty if p != src_pw and p not in state.phased_out
+             and p not in state.pending_phase_out and p != "Teferi, Time Raveler"]
+    return sorted(cands, key=lambda p: (-state.loyalty[p], p))[:2]
+
+
+@_pw_effect(VRONOS, "+1")
+def _eff_vronos_plus1(state, pw, log, x):
+    # "Up to two other target planeswalkers you control phase out at the
+    # beginning of the next end step." (Treat them ... as though they don't
+    # exist until your next turn.) O gatilho e' atrasado: resolve no MEU end
+    # step (`vronos_phase_out_step`), depois de todos os outros gatilhos de
+    # end step que miram PW (Guff, proliferate da Atraxa).
+    tgts = _phase_out_targets(state, pw) if CAND_POLICY["vronos_phase"] else []
+    state.pending_phase_out.extend(tgts)
+    _cs(state, "vronos_plus1")
+    _cs(state, "vronos_phase_targets", len(tgts))
+
+
+def vronos_phase_out_step(state: GameState, log: List[Dict]):
+    if not state.pending_phase_out:
+        return
+    for p in state.pending_phase_out:
+        if p in state.loyalty:
+            state.phased_out.add(p)
+            _cs(state, "vronos_phased_out")
+    state.pending_phase_out = []
+
+
+def _bounce_creature(state: GameState, i: int, c: dict, log: List[Dict], source: str = ""):
+    _crime(state)
+    if c["token"]:
+        _opp_remove_creature(state, i, c, how="bounce")        # ficha que sai de campo deixa de existir
+    elif c["cmd"]:
+        _opp_remove_creature(state, i, c, how="bounce", cooldown=0)  # recasta no proximo turno, com doenca
+    else:
+        c["frozen"] = 1  # volta pra mao e e' reconjurada com doenca: nao ataca no proximo turno
+    log.append({"trigger": "opp_creature_bounced", "power": c["p"], "source": source, "turn": state.turn})
+
+
+@_pw_effect(VRONOS, "-2")
+def _eff_vronos_minus2(state, pw, log, x):
+    # "For each opponent, return up to one target nonland permanent that
+    # player controls to its owner's hand." Uma criatura por oponente vivo (a
+    # maior que ainda ataca); sem modelo de combate so' conta como remocao.
+    alive = [i for i in range(N_OPPONENTS) if state.opp_alive[i]]
+    if not alive:
+        return
+    _crime(state)
+    state.pw_removal_proxy_total += len(alive)
+    _cs(state, "vronos_minus2")
+    if attack_model_on(state):
+        for i in alive:
+            cands = [c for c in state.opp_boards[i] if c["frozen"] == 0]
+            if cands:
+                _bounce_creature(state, i, max(cands, key=lambda c: (c["p"], c["trample"], c["flying"])), log,
+                                 source="vronos_minus2")
+                _cs(state, "vronos_bounced")
+
+
+VRONOS_ARTIFACT_PREF = ("Arcane Signet", "Chromatic Lantern", "Sol Ring", "Ichormoon Gauntlet", "The Chain Veil")
+
+
+def _vronos_artifact(state: GameState) -> Optional[str]:
+    for a in VRONOS_ARTIFACT_PREF:
+        if a in state.battlefield and a not in state.vronos_constructs:
+            return a
+    return None
+
+
+@_pw_effect(VRONOS, "-7")
+def _eff_vronos_ult(state, pw, log, x):
+    # "Target artifact you control becomes a 9/9 Construct artifact creature
+    # and gains vigilance, indestructible, and 'This creature can't be
+    # blocked.'" Sem duracao: permanente. Alvo: o artefato que menos custa
+    # perder de funcao (a rocha continua produzindo mana).
+    a = _vronos_artifact(state)
+    if a is None:
+        return
+    state.vronos_constructs.append(a)
+    _cs(state, "vronos_ult")
+
+
+# ---------------- Sarkhan the Masterless ----------------
+
+def _sarkhan_ping_count(state: GameState) -> int:
+    """Dragoes que estao em campo no turno do OPONENTE: as fichas do -3. (Os
+    PWs animados pelo +1 so' sao Dragoes ate' o fim do MEU turno.)"""
+    if SARKHAN not in state.loyalty or SARKHAN in state.phased_out:
+        return 0
+    return state.battlefield.count("Dragon Token")
+
+
+@_pw_effect(SARKHAN, "+1")
+def _eff_sarkhan_plus1(state, pw, log, x):
+    # "Until end of turn, each planeswalker you control becomes a 4/4 red
+    # Dragon creature and gains flying." Ver premissas acima (CR 205.1a,
+    # 611.2c, 302.6).
+    if not CAND_POLICY["sarkhan_animate"]:
+        _cs(state, "sarkhan_plus1")
+        return  # sensibilidade: so' o +1 de lealdade
+    animated = set(state.loyalty)
+    ready = [p for p in animated if state.pw_enter_turn.get(p, -1) < state.turn]
+    state.sarkhan_animated |= animated
+    power = (4 + 2 * state.elspeth_emblem) * len(ready)
+    _cs(state, "sarkhan_plus1")
+    _cs(state, "sarkhan_animated", len(animated))
+    _cs(state, "sarkhan_ready_attackers", len(ready))
+    _cs(state, "sarkhan_attack_power_potential", power)
+    log.append({"trigger": "sarkhan_plus1", "animated": len(animated), "ready": len(ready), "turn": state.turn})
+
+
+@_pw_effect(SARKHAN, "-3")
+def _eff_sarkhan_minus3(state, pw, log, x):
+    # "Create a 4/4 red Dragon creature token with flying." (Doubling Season dobra.)
+    before = state.battlefield.count("Dragon Token")
+    make_pw_token(state, "Dragon Token", 1, log)
+    _cs(state, "sarkhan_minus3")
+    _cs(state, "sarkhan_dragons", state.battlefield.count("Dragon Token") - before)
+
+
+# ---------------- politica das 4 ----------------
+
+def _steal_power(state: GameState) -> int:
+    if not attack_model_on(state):
+        return 0
+    return sum(c["p"] for b in state.opp_boards for c in b)
+
+
+def _candidate_choice(state: GameState, pw: str, loy: int):
+    """Politica de cada candidata (o custo real de cada habilidade esta' em
+    `PW_ABILITIES`; `loy` ja' inclui o desconto do Carth)."""
+    if pw == DIHADA:
+        # -11 so' com oponente de verdade pra roubar (modelo de combate) e
+        # poder que compensa; senao o -3 (selecao + Treasure) sempre que ela
+        # sobrevive; senao o +2.
+        if loy >= 11 and _steal_power(state) >= 10:
+            return (pw, "-11", None, False)
+        if CAND_POLICY["dihada_minus3"] and loy >= 4 and len(state.library) >= 4:
+            return (pw, "-3", None, False)
+        return (pw, "+2", None, False)
+    if pw == GUFF:
+        # -3 quando X >= 4 (compra 4+), a mao aguenta e o Guff continua vivo
+        # (o gatilho de end step depende dele em campo).
+        if CAND_POLICY["guff_minus3"] and loy >= 4 and len(state.loyalty) >= 4 and len(state.hand) <= 5:
+            return (pw, "-3", None, False)
+        return (pw, "+1", None, False)
+    if state.instant_window:
+        return None  # +1 do Vronos/Sarkhan agendam efeito de MEU end step/turno: so' no meu main phase
+    if pw == VRONOS:
+        if (attack_model_on(state) and loy >= 7 and _vronos_artifact(state) is not None
+                and len(state.vronos_constructs) < 2 and any(state.opp_alive)):
+            return (pw, "-7", None, False)
+        return (pw, "+1", None, False)
+    if pw == SARKHAN:
+        return (pw, "+1", None, False)
+    return None
+
+
+def _activation_order(state: GameState) -> List[str]:
+    """Sarkhan ativa por ULTIMO: o +1 tira o tipo planeswalker de todos ate' o
+    fim do turno; eles ainda ativam as habilidades proprias (ruling), mas
+    perdem as que a Ichormoon Gauntlet concede a "Planeswalkers you control"."""
+    order = list(state.loyalty.keys())
+    if SARKHAN in order:
+        order.remove(SARKHAN)
+        order.append(SARKHAN)
+    return order
+
+
 def try_chain_veil_activation(state: GameState, log: List[Dict]):
     """Achado real: '{4}, {T}: For each planeswalker you control, you
     may activate one of its loyalty abilities once this turn as though
@@ -2840,7 +3285,7 @@ def activate_unactivated_planeswalkers(state: GameState, log: List[Dict]):
     Veil: "it affects not only planeswalkers you control when it resolves,
     but also planeswalkers that come under your control later in the turn")."""
     extra = extra_pw_activation_sources(state)
-    for pw in list(state.loyalty.keys()):
+    for pw in _activation_order(state):
         if pw in state.pw_activated_this_turn:
             continue
         state.late_pw_activations_total += 1
@@ -3149,7 +3594,7 @@ def _copy_value(src: str, key: str) -> int:
             ("Elspeth, Sun's Champion", "+1"): 25, ("Vraska, Betrayal's Sting", "0"): 25,
             ("Ichormoon Gauntlet", "0"): 25, ("Kaya, Intangible Slayer", "-3"): 20,
             ("Nicol Bolas, Dragon-God", "-3"): 20, ("Vraska, Betrayal's Sting", "-2"): 20,
-            ("Oko, the Ringleader", "+1"): 15}.get((src, key), 10)
+            ("Oko, the Ringleader", "+1"): 15, (GUFF, "-3"): 35, (DIHADA, "-3"): 30}.get((src, key), 10)
 
 
 def try_dynamo_copy_activation(state: GameState, log: List[Dict]):
@@ -3173,7 +3618,7 @@ def activate_planeswalkers(state: GameState, log: List[Dict]):
     # Carth the Lion: o custo extra e' [+1] de LEALDADE (ver
     # _pay_loyalty_cost), nao mana -- nada a cobrar aqui.
     extra = extra_pw_activation_sources(state)
-    for pw in list(state.loyalty.keys()):
+    for pw in _activation_order(state):
         for _ in range(1 + extra):
             if pw not in state.battlefield or pw not in state.loyalty:
                 break  # morreu/saiu por outro efeito nesse meio tempo
@@ -3189,13 +3634,17 @@ def instant_speed_pw_window(state: GameState, log: List[Dict]):
     state.instant_pw_windows_total += 1
     state.pw_activated_this_turn = set()
     extra = 1 if state.has("Oath of Teferi") else 0
-    for pw in list(state.loyalty.keys()):
-        if pw in state.phased_out:
-            continue
-        for _ in range(1 + extra):
-            if pw not in state.battlefield or pw not in state.loyalty:
-                break
-            resolve_planeswalker(state, pw, log)
+    state.instant_window = True
+    try:
+        for pw in list(state.loyalty.keys()):
+            if pw in state.phased_out:
+                continue
+            for _ in range(1 + extra):
+                if pw not in state.battlefield or pw not in state.loyalty:
+                    break
+                resolve_planeswalker(state, pw, log)
+    finally:
+        state.instant_window = False
 
 
 # =========================================================
@@ -3292,6 +3741,10 @@ def main_phase(state: GameState, log: List[Dict]):
         castables.sort(key=lambda c: spell_cost(state, c))
         choice = castables[0]
         cost = spell_cost(state, choice)
+        wiz = _wizard_used(state, choice)
+        if wiz:
+            state.wizard_pool -= wiz
+            _cs(state, "guff_wizard_mana", wiz)
         state.tam_mana_saved_total += tam_discount(state, choice)
         state.hand.remove(choice)
         state.mana_spent_this_turn += cost
@@ -3369,6 +3822,7 @@ def sphinx_additional_beginning_phase(state: GameState, log: List[Dict]):
     (sem main phase depois)."""
     state.sphinx_extra_beginning_phases_total += 1
     _apply_pain(state)  # o que foi virado antes deste untap ja' causou dano
+    _settle_treasures(state)  # Treasure gasto ate' aqui some antes do untap zerar `mana_spent_this_turn`
     # untap step
     state.mana_spent_this_turn = 0
     state.tapped_lands_this_turn = set()
@@ -3407,6 +3861,12 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]], skip_lega
     state.phased_out = set()  # phasing in no MEU untap (ruling da Ripples)
     state.mutational_protected = set()
     state.bridge_uncounterable = False
+    # Candidatas 2026-09-29: efeitos "until your next turn" / "until end of turn" acabam aqui.
+    state.dihada_shield = None
+    state.sarkhan_animated = set()
+    state.stolen_power_this_turn = 0
+    state.pending_phase_out = []
+    state.wizard_pool = state.battlefield.count("Wizard Token")  # Wizards de turnos anteriores ja' podem virar
     log = []
     # O que estava virado no fim da rodada (end step do ultimo oponente) --
     # lido pela janela de instantaneo abaixo, que modela esse momento.
@@ -3477,6 +3937,11 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]], skip_lega
         _return_to_battlefield(state, name, log)
     state.pending_end_step_returns = []
 
+    # Commodore Guff: "At the beginning of your end step, put a loyalty
+    # counter on another target planeswalker you control." (nao ha' gatilho
+    # se a Guff nao esta' em campo -- inerte na lista atual.)
+    guff_end_step(state, log)
+
     # End step. Atraxa, Praetors' Voice: "At the beginning of your end step,
     # proliferate." Achado real 2026-09-24: nunca implementado (a carta so'
     # tinha a tag "proliferate", nenhum dispatch lia). Mesmo helper das
@@ -3493,6 +3958,12 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]], skip_lega
     # Sterling Grove (tutor) no nosso end step, se a Bridge nao esta' em campo.
     try_sterling_grove_tutor(state, log)
 
+    # Vronos +1: os PWs escolhidos saem de fase no "beginning of the next end
+    # step" -- por ultimo, depois dos gatilhos de end step que os miram (Guff,
+    # proliferate: permanente fora de fase nao existe pra alvo/escolha).
+    vronos_phase_out_step(state, log)
+    state.sarkhan_animated = set()  # "until end of turn": antes das janelas de instantaneo dos oponentes
+
     # The Chain Veil: "At the beginning of your end step, if you didn't
     # activate a loyalty ability of a planeswalker this turn, you lose 2
     # life." Achado real 2026-09-24: so' a 2a habilidade dela existia.
@@ -3508,6 +3979,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]], skip_lega
                 state.pillowfort_first_turn = state.turn
 
     _apply_pain(state)
+    _settle_treasures(state)  # Treasure gasto no turno some (sacrificado)
 
     # Mana nao gasta neste turno fica destapada ate o MEU proximo untap
     # step (CR 500.1) - e a mana real disponivel pra flashar algo no end
@@ -3673,6 +4145,8 @@ def simulate_one(seed: int, turns: int, with_greater_auramancy: bool, swap=None)
         "first_ult_turn": state.first_ult_turn,
         "turns_with_ult": state.turns_with_ult,
         "tam_dynamo_copies_total": state.tam_dynamo_copies_total,
+        # Candidatas 2026-09-29 (vazio na lista atual):
+        "cand_stats": dict(state.cand_stats),
     }
 
 def run_batch(n=2000, turns=10, with_greater_auramancy=False, seed_base=3000000, label=""):
@@ -4038,6 +4512,10 @@ def try_smart_opponent_wipe(state: GameState, log: List[Dict], opp_index: Option
             pass
     if state.mutational_protected:
         targets = [n for n in targets if n not in state.mutational_protected]
+    if state.dihada_shield is not None or state.vronos_constructs:
+        # "Destroy all ..." nao leva indestrutivel: a criatura com o +2 da
+        # Dihada (ate' meu proximo turno) e os Construct do Vronos -7.
+        targets = [n for n in targets if n != state.dihada_shield and n not in state.vronos_constructs]
     for n in targets:
         remove_permanent(state, n, log, source=f"opponent_{wipe_type}_wipe")
     if wipe_type == "creature" and attack_model_on(state):
@@ -4360,6 +4838,8 @@ def _pt(state: GameState, inst: tuple):
     c = _ctr(state, inst)
     bonus = 2 * state.elspeth_emblem
     kw = set(kw) | ({"flying"} if state.elspeth_emblem else set())
+    if inst[0] == state.dihada_shield:
+        kw |= {"vigilance", "lifelink", "indestructible"}  # Dihada +2, ate' meu proximo turno
     return p + c + bonus, t + c + bonus, kw
 
 
@@ -4540,14 +5020,7 @@ def _bounce_biggest_threat(state: GameState, log: List[Dict], source: str = ""):
     i, c = _biggest_threat(state)
     if c is None:
         return
-    _crime(state)
-    if c["token"]:
-        _opp_remove_creature(state, i, c, how="bounce")        # ficha que sai de campo deixa de existir
-    elif c["cmd"]:
-        _opp_remove_creature(state, i, c, how="bounce", cooldown=0)  # recasta no proximo turno, com doenca
-    else:
-        c["frozen"] = 1  # volta pra mao e e' reconjurada com doenca: nao ataca no proximo turno
-    log.append({"trigger": "opp_creature_bounced", "power": c["p"], "source": source, "turn": state.turn})
+    _bounce_creature(state, i, c, log, source=source)
 
 
 def _ugin_ping(state: GameState, log: List[Dict]):
@@ -4661,7 +5134,7 @@ def _choose_blocker(state: GameState, c: dict, tgt: str, avail: List[tuple]) -> 
         dt = "deathtouch" in kw
         first_kill = "double_strike" in kw and (p >= c["t"] or dt)
         kills = first_kill or dt or p * (2 if "double_strike" in kw else 1) >= c["t"]
-        survives = first_kill or c["p"] < t
+        survives = first_kill or c["p"] < t or "indestructible" in kw  # indestrutivel: Dihada +2
         return kills, survives
 
     good = [b for b in cands if all(outcome(b))]
@@ -4752,6 +5225,29 @@ def opponent_combat(state: GameState, i: int, log: List[Dict]):
     state.opp_attackers_total += len(assign)
     state.opp_attacks_on_pw_total += sum(1 for _, t in assign if t != "face")
 
+    # Sarkhan the Masterless: "Whenever a creature attacks you or a
+    # planeswalker you control, each Dragon you control deals 1 damage to that
+    # creature." Dragoes no turno do oponente = fichas do -3. Dano marcado ate'
+    # o fim do turno (restaurado no fim da funcao); toughness <= N morre ANTES
+    # de causar dano.
+    restore = []
+    n_dragons = _sarkhan_ping_count(state)
+    if n_dragons:
+        survivors = []
+        for c, tgt in assign:
+            if c["t"] <= n_dragons:
+                _opp_remove_creature(state, i, c, how="damage")
+                _cs(state, "sarkhan_ping_kills")
+            else:
+                c["t"] -= n_dragons
+                restore.append((c, n_dragons))
+                survivors.append([c, tgt])
+        _cs(state, "sarkhan_ping_attackers", len(assign))
+        _cs(state, "sarkhan_ping_damage", n_dragons * len(assign))
+        assign = survivors
+        if not assign:
+            return
+
     avail = [b for b in _our_creature_instances(state) if b not in state.our_tapped]
     max_blocks = 1 if limit_one else len(avail)  # "No more than one creature can block each combat."
     blocks = {}
@@ -4783,7 +5279,7 @@ def opponent_combat(state: GameState, i: int, log: List[Dict]):
         attacker_dead = ds and (bp >= c["t"] or dt)
         dealt = bp if attacker_dead else 0
         if not attacker_dead:
-            if c["p"] >= bt:
+            if c["p"] >= bt and "indestructible" not in bkw:  # Dihada +2 (indestrutivel) nao morre em combate
                 dead_blockers.append(b)
             if c["trample"]:
                 excess = max(0, c["p"] - bt)
@@ -4833,6 +5329,8 @@ def opponent_combat(state: GameState, i: int, log: List[Dict]):
         if b[0] in state.battlefield:
             _our_creature_leaves(state, b[0], log, exiled=False, source="combat_block", inst=b)
             state.our_blockers_lost_total += 1
+    for c, n in restore:
+        c["t"] += n  # o dano marcado (Sarkhan) some no fim do turno
 
 
 # ---------------- nosso turno: combate e respostas ----------------
@@ -4856,6 +5354,27 @@ def beginning_of_combat(state: GameState, log: List[Dict]):
         tgt = _best_counter_target(state)
         if tgt is not None:
             _add_ctr(state, tgt, counter_doubler_multiplier(state))
+
+
+def _candidate_attackers(state: GameState) -> List[tuple]:
+    """Atacantes que as 4 candidatas (2026-09-29) acrescentam ao combate:
+    (chave, poder, palavras-chave, rotulo).
+    - Sarkhan +1: PW-Dragao 4/4 voador, so' quem estava sob meu controle desde
+      o comeco do turno (CR 302.6). Sem vigilancia (a da Esika nao existe aqui).
+    - Dihada -11: criaturas roubadas atacam com haste (poder somado).
+    - Vronos -7: Construct 9/9 vigilancia/indestrutivel/impossivel de bloquear;
+      ataca se o artefato estava em campo desde o comeco do turno (ruling)."""
+    out = []
+    bonus = 2 * state.elspeth_emblem
+    for pw in sorted(state.sarkhan_animated):
+        if pw in state.loyalty and state.pw_enter_turn.get(pw, -1) < state.turn:
+            out.append(((pw, None), 4 + bonus, {"flying"}, "sarkhan"))
+    if state.stolen_power_this_turn > 0:
+        out.append((("Dihada stolen", None), state.stolen_power_this_turn, {"haste"}, "dihada"))
+    for a in state.vronos_constructs:
+        if a in state.battlefield and state.artifact_enter_turn.get(a, -1) < state.turn:
+            out.append(((a, None), 9 + bonus, {"vigilance", "indestructible"}, "vronos"))
+    return out
 
 
 def our_combat_step(state: GameState, log: List[Dict]):
@@ -4883,7 +5402,8 @@ def our_combat_step(state: GameState, log: List[Dict]):
     # Tam, the Possibility (candidata FRA) nao ataca: 2 de poder nao paga
     # perder o {T} da habilidade (janela de end step do oponente) nem o bloqueio.
     ready = [x for x in _our_creature_instances(state) if not _is_sick(state, x) and x[0] != "Tam, the Possibility"]
-    if not ready and oko is None:
+    extras = _candidate_attackers(state)
+    if not ready and oko is None and not extras:
         return
     limit_one = _attack_limit_one(state)
     keep = max((len(b) for b in state.opp_boards), default=0)
@@ -4896,12 +5416,18 @@ def our_combat_step(state: GameState, log: List[Dict]):
     entries = [(x, _pt(state, x)[0], _pt(state, x)[2]) for x in vig + nonvig[keep:]]
     if oko is not None:
         entries.append(oko)
+    extra_kind = {}
+    for key, p, kw, kind in extras:
+        entries.append((key, p, kw))
+        extra_kind[key] = kind
     if limit_one and len(entries) > 1:
         entries = [max(entries, key=lambda e: e[1] * (2 if "double_strike" in e[2] else 1))]
     dmg = 0
     for x, p, kw in entries:
         steps = 2 if "double_strike" in kw else 1
         dmg += p * steps
+        if x in extra_kind:
+            _cs(state, extra_kind[x] + "_attack_damage", p * steps)
         if "lifelink" in kw:
             state.life += p * steps
             state.our_lifelink_gain_total += p * steps
@@ -4909,7 +5435,7 @@ def our_combat_step(state: GameState, log: List[Dict]):
             state.draw(steps)
             state.pw_draws_total += steps
             state.tamiyo_fr_combat_draws_total += steps
-        if "vigilance" not in kw and x[0] != "Oko, the Ringleader":
+        if "vigilance" not in kw and x[0] != "Oko, the Ringleader" and x not in extra_kind:
             state.our_tapped.append(x)
     state.our_combat_damage_proxy_total += dmg
 
@@ -4987,6 +5513,8 @@ def _mass_creature_removal(state: GameState, how: str, log: List[Dict], max_toug
             continue
         if min_power is not None and p < min_power:
             continue
+        if how == "destroy" and x[0] == state.dihada_shield:
+            continue  # Dihada +2: indestrutivel ate' meu proximo turno ("destroy" nao leva)
         victims.append(x)
     for x in sorted(victims, key=lambda v: (v[0], -(v[1] if v[1] is not None else -1))):
         if x[0] in state.battlefield:
@@ -5067,6 +5595,14 @@ def _defensive_choice(state: GameState, pw: str, loy: int):
             return (pw, "-X", x)
     if pw == "Tamiyo, Field Researcher" and 3 <= loy < 7 and big["p"] >= THREAT_POWER:
         return (pw, "-2", None)
+    # Candidatas 2026-09-29: Vronos -2 (um bounce por oponente) e Sarkhan -3
+    # (Dragao de guarda -- o estatico da Sarkhan da' 1 de dano por Dragao em
+    # cada atacante). So' no meu main phase.
+    if pw == VRONOS and loy >= 3 and big["p"] >= THREAT_POWER and not state.instant_window:
+        return (pw, "-2", None)
+    if (pw == SARKHAN and loy >= 4 and big["p"] >= THREAT_POWER and state.battlefield.count("Dragon Token") < 2
+            and not state.instant_window):
+        return (pw, "-3", None)
     return None
 
 

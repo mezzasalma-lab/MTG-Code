@@ -156,6 +156,21 @@ conta como X"), não a carta isoladamente.
    commit: quase criei um bug novo removendo o filtro errado, se não
    tivesse checado todos os outros usos primeiro).
 
+### Reincidência (2026-09-29, Sarkhan the Masterless): ler a ruling ANTES de escrever o código, não depois
+
+O item 2 acima já mandava buscar a `rulings_uri` de toda carta que redefine
+tipo. Na Sarkhan ("each planeswalker you control becomes a 4/4 red Dragon
+creature") eu escrevi o efeito e rodei o A/B primeiro, com uma premissa minha
+("o PW animado não ativa mais"), e só li as rulings depois. O ruling de
+2019-05-03 diz o contrário: *"you can still activate their loyalty abilities
+if you haven't done so yet this turn"*. Refiz o código e descartei um lote de
+A/B. Na Vronos foi igual (o Construct ataca no mesmo turno se o artefato já
+estava em campo). **Passo obrigatório antes de implementar qualquer carta
+candidata: baixar as rulings (`rulings_uri`), listar cada uma no
+`checklist-oraculo.md` e conferir o código contra elas.** Vale pra toda carta
+com "becomes", "phase out", "gains control", "copy" ou substituição, não só
+Changeling/Kindred.
+
 ## Regra #4 (obrigatória): avaliar sugestão de carta = comparar com os MOTORES do deck e as OUTRAS cartas, nunca poder isolado
 
 Pedido explícito do usuário em 2026-09-15 (deck Megatron), depois de eu

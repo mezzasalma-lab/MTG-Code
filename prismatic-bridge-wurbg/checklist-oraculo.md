@@ -1,5 +1,73 @@
 # Checklist cláusula-a-cláusula — Esika // The Prismatic Bridge
 
+## Rodada das 4 candidatas: Dihada, Commodore Guff, Vronos, Sarkhan the Masterless — 2026-09-29
+
+**Pedido do usuário:** avaliar a inclusão de cada uma (prós e contras, não
+cortes). Números, tabelas e leitura em `goldfish-log.md` (mesma data).
+
+**Premissas do pedido que o oráculo não confirma:**
+- **Commodore Guff** não põe contador em "todos os PW": é **um** "another
+  target planeswalker you control" por end step. O "todos" sai do proliferate
+  que a lista já tem.
+- **Vronos** tira de fase **até 2 OUTROS** PWs, no "beginning of the next end
+  step" (o gatilho é atrasado); ele mesmo não é protegido.
+- Nomes reais: **Dihada, Binder of Wills** (não "Bender") e **Sarkhan the
+  Masterless** (não "Soul Aflame").
+
+**Fontes:**
+- oráculo ao vivo pelo Scryfall (`/cards/named?exact=`, 2026-09-29). Dihada,
+  Vronos e Sarkhan entraram no `oracle-cache.json` (a Guff já estava, texto
+  idêntico ao ao vivo).
+- rulings ao vivo: Sarkhan (2), Vronos (11), Guff (1), Dihada (0).
+- Commander Spellbook com a lista antes e depois de cada troca (e das 4
+  juntas) e um controle positivo (tirar a Chain Veil derruba 4 combos: o
+  pipeline reage a mudança de lista).
+
+### Cláusula a cláusula (entram só via `swap`; a lista não muda)
+
+| Carta | Cláusula (oráculo ao vivo) | Implementação | |
+|---|---|---|---|
+| **Dihada** ({1}{R}{W}{B}, 5) | +2: "Up to one target legendary creature gains vigilance, lifelink, and indestructible until your next turn." | `_eff_dihada_plus2`: a lendária que mais ganha (falta vigilância/lifelink, depois maior poder). `_pt` dá as 3 palavras-chave; a criatura vira parede (`_choose_blocker` conta indestrutível), não morre no bloqueio, escapa de "destroy" (wipe do oponente e os meus). Acaba no meu próximo untap. Lendárias criatura da lista (enumeradas por script): Atraxa, Carth, Vorinclex, Peregrine Dynamo. | ✅ |
+| | −3: "Reveal the top four cards ... legendary cards ... into your hand and the rest into your graveyard. Create a Treasure token for each card put into your graveyard this way." | `_eff_dihada_minus3`: legendárias vão pra mão (não é compra), o resto pro cemitério, 1 Treasure por carta × Doubling Season. Treasure = 1 mana de qualquer cor (`treasure_stock` em `total_mana`/`color_sources`), persiste entre turnos, some ao ser gasto (`_settle_treasures`). 24 cartas da lista são lendárias (script sobre o `type_line`; Plaza of Heroes NÃO é). | ✅ |
+| | −11: "Gain control of all nonland permanents until end of turn. Untap them. They gain haste until end of turn." | `_eff_dihada_ult`: fontes de mana não-terreno desviram (mana extra) e as criaturas de oponente rastreadas atacam com haste (poder somado → `our_combat_step`). A política só usa com 10+ de poder pra roubar (modo padrão nunca: não há oponente). PW/artefato/encantamento do oponente: 📊 ("all nonland permanents" além de criatura: o modelo só tem criatura de oponente). | ✅ / 📊 |
+| **Commodore Guff** ({1}{U}{R}{W}, 5) | "At the beginning of your end step, put a loyalty counter on another target planeswalker you control." | `guff_end_step` (chamado em `play_turn`, depois dos retornos da Oath e antes do proliferate da Atraxa e do phase out do Vronos). Alvo: o mais perto do ultimate, nunca ela mesma. Passa por `add_loyalty`: Doubling Season/Vorinclex/Innkeeper nv.3 dobram, All Will Be One dispara. Fora de fase não dispara. | ✅ |
+| | +1: "Create a 1/1 red Wizard creature token with '{T}: Add {R}. Spend this mana only to cast a planeswalker spell.'" | `_eff_guff_plus1` (`make_pw_token`: Doubling Season dobra). `wizard_pool` = Wizards de turnos anteriores (doença de invocação); abate a parte GENÉRICA do custo de magia de PW (`spell_cost`, `_wizard_used`); conservador: a {R} também poderia pagar um símbolo {R}. Wizard é criatura: bloqueia (`CHUMP_OK`), morre em wipe. | ✅ / 📝 |
+| | −3: "You draw X cards and Commodore Guff deals X damage to each opponent, where X is the number of planeswalkers you control." | `_eff_guff_minus3`: X no momento da resolução (ruling 2023-07-28), ela inclusa; compra X; dano no oponente é proxy (`pw_life_lost_opponent_total`). | ✅ |
+| **Vronos** ({3}{U}{U}, 5) | +1: "Up to two other target planeswalkers you control phase out at the beginning of the next end step." | `_eff_vronos_plus1` agenda; `vronos_phase_out_step` roda no fim do end step do meu turno (depois de Guff/Atraxa/Sterling Grove: fora de fase não é alvo nem escolha do proliferate). Até 2 maiores lealdades; Teferi, Time Raveler fica de fora (fora de fase perderia o estático que protege a Bridge de contramágica). `phased_out` zera no meu untap (ruling: volta de fase no untap, com os marcadores). Fora de fase o PW não é atacado, não é alvo de remoção, nem ativa na janela do emblema do Teferi TA. | ✅ |
+| | −2: "For each opponent, return up to one target nonland permanent that player controls to its owner's hand." | `_eff_vronos_minus2`: uma criatura (a maior que ainda ataca) por oponente vivo → `_bounce_creature` (ficha morre, comandante recasta, carta volta com doença). Só permanente criatura de oponente é rastreado: bounce de artefato/encantamento/PW dele é 📊. | ✅ / 📊 |
+| | −7: "Target artifact you control becomes a 9/9 Construct artifact creature and gains vigilance, indestructible, and 'This creature can't be blocked.'" | `_eff_vronos_ult`: o artefato de menos custo de perder (Signet > Lantern > Sol Ring > Gauntlet > Chain Veil; a rocha continua produzindo mana). Sem duração. Ataca se estava em campo desde o começo do turno (ruling; `artifact_enter_turn` em `noncreature_etb`), vigilância, indestrutível (wipe "destroy" de artefato não o leva). Só em modo de combate (modo padrão não tem alvo). | ✅ |
+| **Sarkhan the Masterless** ({3}{R}{R}, 5) | "Whenever a creature attacks you or a planeswalker you control, each Dragon you control deals 1 damage to that creature." | `opponent_combat`: N = fichas Dragon em campo (no turno do oponente só o −3 cria Dragão; os PWs do +1 só são Dragão no MEU turno). Cada atacante leva N; toughness ≤ N morre antes de causar dano; o resto fica com dano marcado até o fim do turno (restaurado). A lista tem 0 Dragões (script sobre o `type_line`). Fora de fase não dispara. | ✅ |
+| | +1: "Until end of turn, each planeswalker you control becomes a 4/4 red Dragon creature and gains flying." | `_eff_sarkhan_plus1`. Rulings 2019-05-03: cada PW (ela inclusa) **deixa de ser planeswalker** até o fim do turno, mantém marcadores e habilidades, **ainda ativa** o que não ativou, não perde lealdade por dano; só ataca quem estava sob controle desde o começo do turno; o efeito só pega PW que já estava em campo (CR 611.2c). Ativa por último (`_activation_order`): o animado perde "Planeswalkers you control have..." da Ichormoon Gauntlet. Ataque: 4 de poder voador por PW pronto (+2 por emblema da Elspeth), sem vigilância. | ✅ / 📝 |
+| | −3: "Create a 4/4 red Dragon creature token with flying." | `_eff_sarkhan_minus3` (Doubling Season dobra). Dragão de guarda: bloqueia e alimenta o estático. Política: só com ameaça real e < 2 Dragões (`_defensive_choice`). | ✅ |
+| (as 4) | Bolas: "has all loyalty abilities of all other planeswalkers on the battlefield" | `_bolas_borrowed_choice` empresta os −3 de compra da Guff e da Dihada. | ✅ |
+| (as 4) | Peregrine Dynamo copia habilidade ativada de fonte lendária | `_copy_value` ranqueia Guff −3 (35) e Dihada −3 (30); o −11 e o −7 entram como ultimate (90). | ✅ |
+| (as 4) | Tam (candidata FRA): X = tipos de PW | `PW_TYPES`: Dihada, Guff, Vronos e Sarkhan são 4 tipos novos. | ✅ |
+
+### 🐛 Achado/correção da minha própria premissa (registrado)
+
+- **Sarkhan: eu tinha modelado que o PW animado não ativa mais.** O ruling de 2019-05-03 diz o contrário (**"you can still activate their loyalty abilities if you haven't done so yet this turn"**). Corrigi antes do A/B final (as variantes Vronos/Sarkhan do primeiro lote foram descartadas e rodadas de novo). O que muda de verdade é a Ichormoon Gauntlet.
+- **Vronos −7: eu tinha modelado "ataca só no turno seguinte".** O ruling diz que ataca no mesmo turno se o artefato já estava em campo desde o começo do turno. Passou a usar `artifact_enter_turn`.
+- **Ruling da Sarkhan que NÃO modelei:** "They don't lose loyalty if they're dealt damage while they're not planeswalkers." No simulador o oponente não age no meu turno, então nunca há dano nesse intervalo (📊 estrutural: instantâneo de oponente no meu turno).
+
+### Escopo do que foi (e do que NÃO foi) verificado (Regra #7)
+
+**Varridas, com o método:**
+- conceito "legendário" (Dihada −3/+2, Halfling/Plaza): script sobre o `type_line` ao vivo das 99 cartas: 24 lendárias, batem com `LEGENDARY_CARD_NAMES`; Plaza of Heroes não é lendária;
+- conceito "Dragão": script: 0 Dragões na lista (Ugin e Bolas não têm o tipo Dragon);
+- conceito "artefato" (Vronos −7): 6 na lista (Sol Ring, Arcane Signet, Chromatic Lantern, Ichormoon Gauntlet, The Chain Veil, The Peregrine Dynamo, criatura-artefato);
+- conceito "Wizard": Flux Channeler (na lista) e Tam (candidata FRA); nenhum payoff de Wizard na lista;
+- combos: Spellbook antes/depois de cada carta e das 4 juntas: **0 combos novos, 0 quase-combos novos**; controle positivo funcionou;
+- Game Changer: nenhuma das 4 é (`is:gamechanger` no Scryfall). O deck continua com 3.
+- rulings ao vivo das 4 cartas lidos e conferidos contra o código (2 premissas minhas corrigidas, acima);
+- teste dirigido por cláusula: 23 testes novos (124/124).
+
+**NÃO varridas nesta rodada:**
+- as outras 99 cartas contra as 4 novas uma a uma (só os conceitos acima e os motores da lista);
+- o gatilho "Guff end step" contra a ordem exata com TODOS os outros gatilhos de end step (só Oath, Atraxa, Sterling Grove, Vronos);
+- a frente do comandante (Esika, God of the Tree) não existe no simulador, então o Dragão do +1 não ganha vigilância nem mana (a Esika só vale com ela em campo, o que exclui a Bridge);
+- instantâneo de oponente no MEU turno (afeta principalmente os PWs animados pela Sarkhan);
+- 📊 estruturais com a cláusula citada acima (Dihada −11 além de criatura; Vronos −2 além de criatura).
+
 ## Rodada Reality Fracture: Tam, Loyal Tutor, Entrust the Spark — 2026-09-25
 
 **Gatilho:** o usuário confirmou as 3 candidatas de FRA que eu tinha

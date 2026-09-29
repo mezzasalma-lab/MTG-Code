@@ -1288,6 +1288,439 @@ def test_apply_swaps_keeps_line_position():
 
 
 # ---------------------------------------------------------------------------
+# Candidatas 2026-09-29: Dihada, Commodore Guff, Vronos, Sarkhan the Masterless
+# (um teste por clausula do oraculo + as interacoes com os motores da lista)
+# ---------------------------------------------------------------------------
+DIHADA, GUFF, VRONOS, SARKHAN = pb.CANDIDATE_PWS
+BOLAS = "Nicol Bolas, Dragon-God"
+
+
+def run_ability(s, name, key, x=None):
+    """Paga o custo real de `key` (com Carth etc.) e resolve o efeito."""
+    pb.activate_ability(s, name, name, key, x, [])
+
+
+def test_candidates_are_inert_in_the_current_list():
+    deck = pb.parse_decklist(pb.build_decklist(False))
+    assert not any(c in deck for c in pb.CANDIDATE_PWS)
+    assert all(pb.C(c).type == "Planeswalker" and pb.PLANESWALKER_STARTING_LOYALTY[c] == 5 for c in pb.CANDIDATE_PWS)
+    for seed in range(8):
+        assert pb.simulate_one(3_000_000 + seed, 10, False)["cand_stats"] == {}
+        assert pb.simulate_one_with_interaction(6_000_000 + seed, turns=10).cand_stats == {}
+
+
+def test_dihada_plus2_shields_the_legendary_creature_that_gains_most():
+    s = fresh()
+    pw(s, DIHADA, 5)
+    creature(s, "The Peregrine Dynamo")  # lendaria sem vigilancia/lifelink: ganha os 3
+    creature(s, "Atraxa, Praetors' Voice")  # ja' tem vigilancia e lifelink
+    creature(s, "Bloom Tender")             # nao lendaria: nunca e' alvo
+    run_ability(s, DIHADA, "+2")
+    assert s.loyalty[DIHADA] == 7 and s.dihada_shield == "The Peregrine Dynamo"
+    assert {"vigilance", "lifelink", "indestructible"} <= pb._pt(s, ("The Peregrine Dynamo", None))[2]
+    assert "indestructible" not in pb._pt(s, ("Bloom Tender", None))[2]
+    s = fresh()
+    pw(s, DIHADA, 5)
+    creature(s, "Carth the Lion")
+    run_ability(s, DIHADA, "+2")  # imposto do Carth: o [+2] vira [+3] (ruling); e' lendaria, entao e' alvo
+    assert s.loyalty[DIHADA] == 8 and s.dihada_shield == "Carth the Lion"
+    s = fresh()
+    pw(s, DIHADA, 5)
+    run_ability(s, DIHADA, "+2")  # "up to one": sem criatura lendaria so' ganha a lealdade
+    assert s.loyalty[DIHADA] == 7 and s.dihada_shield is None
+
+
+def test_dihada_shield_wall_in_combat_and_survives_destroy_wipes():
+    s = res_state()
+    creature(s, "The Peregrine Dynamo")
+    pw(s, "Kaya, Intangible Slayer", 3)
+    s.opp_boards[0] = [opp(6)]  # 6 de dano mataria um Carth 3/5 normal
+    pb.opponent_combat(s, 0, [])
+    assert "Kaya, Intangible Slayer" not in s.loyalty  # controle: sem o escudo ninguem bloqueia e a Kaya morre
+    s = res_state()
+    creature(s, "The Peregrine Dynamo")
+    pw(s, "Kaya, Intangible Slayer", 3)
+    s.dihada_shield = "The Peregrine Dynamo"
+    s.opp_boards[0] = [opp(6)]
+    pb.opponent_combat(s, 0, [])
+    assert "The Peregrine Dynamo" in s.battlefield and s.loyalty["Kaya, Intangible Slayer"] == 3
+    # wipe "destroy all creatures" do oponente: com o escudo Carth fica; sem, morre
+    s = res_state()
+    creature(s, "The Peregrine Dynamo")
+    s.dihada_shield = "The Peregrine Dynamo"
+    pb.try_smart_opponent_wipe(s, [], opp_index=0)
+    assert "The Peregrine Dynamo" in s.battlefield
+    s.dihada_shield = None
+    pb.try_smart_opponent_wipe(s, [], opp_index=0)
+    assert "The Peregrine Dynamo" not in s.battlefield
+    # meus proprios wipes: "destroy" nao leva, "exile" leva
+    s = fresh()
+    creature(s, "The Peregrine Dynamo")
+    s.dihada_shield = "The Peregrine Dynamo"
+    pb._mass_creature_removal(s, "destroy", [])
+    assert "The Peregrine Dynamo" in s.battlefield
+    pb._mass_creature_removal(s, "exile", [])
+    assert "The Peregrine Dynamo" not in s.battlefield
+
+
+def test_dihada_shield_ends_at_my_next_untap():
+    s = std_state(turn=5, library=[FILLER] * 30)
+    s.dihada_shield = "Carth the Lion"
+    pb.play_turn(s, 6, [])
+    assert s.dihada_shield is None
+
+
+def test_dihada_minus3_legendary_to_hand_rest_milled_one_treasure_each():
+    top = ["Kaya, Intangible Slayer", "Snow-Covered Forest", "Carth the Lion", "Farseek"]
+    s = fresh(library=top + [FILLER] * 10)
+    pw(s, DIHADA, 5)
+    run_ability(s, DIHADA, "-3")
+    assert s.loyalty[DIHADA] == 2
+    assert s.hand == ["Kaya, Intangible Slayer", "Carth the Lion"]  # "put into your hand": nao e' compra
+    assert s.graveyard == ["Snow-Covered Forest", "Farseek"] and len(s.library) == 10
+    assert s.treasure_stock == 2 and s.pw_draws_total == 0
+    assert s.cand_stats["dihada_legends_to_hand"] == 2 and s.cand_stats["dihada_milled"] == 2
+    # Doubling Season dobra as fichas: 2 cartas pro cemiterio = 4 Treasures
+    s = fresh(library=top + [FILLER] * 10)
+    s.battlefield.append("Doubling Season")
+    pw(s, DIHADA, 5)
+    run_ability(s, DIHADA, "-3")
+    assert s.treasure_stock == 4
+    # biblioteca com menos de 4 cartas: revela so' o que tem
+    s = fresh(library=["Farseek", "Kaya, Intangible Slayer"])
+    pw(s, DIHADA, 5)
+    run_ability(s, DIHADA, "-3")
+    assert s.hand == ["Kaya, Intangible Slayer"] and s.treasure_stock == 1 and s.library == []
+
+
+def test_treasure_is_any_color_mana_and_is_consumed_only_when_spent():
+    s = fresh()
+    s.treasure_stock = 2
+    assert pb.total_mana(s) == 2 and pb.color_sources(s, "B") == 2 and pb.color_sources(s, "R") == 2
+    s.mana_spent_this_turn = 1
+    pb._settle_treasures(s)  # sem outra fonte: o 1 gasto saiu de um Treasure
+    assert s.treasure_stock == 1 and s.mana_spent_this_turn == 0 and pb.remaining_mana(s) == 1
+    s = fresh()
+    s.battlefield += [FILLER] * 3
+    s.treasure_stock = 2
+    s.mana_spent_this_turn = 3  # os 3 terrenos cobrem: Treasure intocado (persiste entre turnos)
+    pb._settle_treasures(s)
+    assert s.treasure_stock == 2
+    s.mana_spent_this_turn = 4
+    pb._settle_treasures(s)
+    assert s.treasure_stock == 1
+    s = std_state(turn=5, library=[FILLER] * 30)
+    s.treasure_stock = 3
+    pb.play_turn(s, 6, [])  # nada pra conjurar: os 3 Treasures sobrevivem e contam como mana guardada
+    assert s.treasure_stock == 3 and s.mana_held_back == 4
+
+
+def test_dihada_ult_untaps_nonland_mana_and_steals_opponent_creatures_for_combat():
+    s = res_state()
+    pw(s, DIHADA, 11)
+    s.battlefield += ["Sol Ring", "Arcane Signet"]
+    s.opp_boards = [[opp(4), opp(2)], [opp(3)], []]
+    run_ability(s, DIHADA, "-11")
+    assert DIHADA not in s.loyalty  # 11 -> 0
+    assert s.mana_bonus_this_turn == 3  # Sol Ring (2) + Arcane Signet (1) desviram
+    assert s.stolen_power_this_turn == 9
+    pb.our_combat_step(s, [])
+    assert s.our_combat_damage_proxy_total == 9 and s.cand_stats["dihada_attack_damage"] == 9
+
+
+def test_dihada_policy_minus3_by_default_ult_only_with_a_board_to_steal():
+    s = res_state()
+    pw(s, DIHADA, 12)
+    s.opp_boards = [[opp(3)], [], []]
+    assert pb.choose_pw_ability(s, DIHADA, 12)[1] == "-3"  # so' 3 de poder pra roubar
+    s.opp_boards = [[opp(6), opp(5)], [], []]
+    assert pb.choose_pw_ability(s, DIHADA, 12)[1] == "-11"
+    s = std_state()
+    pw(s, DIHADA, 12)
+    assert pb.choose_pw_ability(s, DIHADA, 12)[1] == "-3"  # modo padrao: sem oponente, nunca ult
+    s = std_state()
+    pw(s, DIHADA, 3)
+    assert pb.choose_pw_ability(s, DIHADA, 3)[1] == "+2"  # nao se mata no -3
+
+
+def test_guff_end_step_counter_on_another_pw_doubled_and_feeds_all_will_be_one():
+    s = fresh()
+    pw(s, GUFF, 5)
+    pw(s, "Teferi, Hero of Dominaria", 6)
+    pb.guff_end_step(s, [])
+    assert s.loyalty["Teferi, Hero of Dominaria"] == 7 and s.loyalty[GUFF] == 5  # "another": nunca ela mesma
+    s = fresh()
+    pw(s, GUFF, 5)
+    pb.guff_end_step(s, [])  # sem outro PW: sem alvo legal
+    assert s.loyalty[GUFF] == 5 and s.cand_stats.get("guff_end_triggers") is None
+    s = fresh()
+    s.battlefield += ["Doubling Season", "All Will Be One"]
+    pw(s, GUFF, 5)
+    pw(s, "Teferi, Hero of Dominaria", 6)
+    pb.guff_end_step(s, [])
+    assert s.loyalty["Teferi, Hero of Dominaria"] == 8  # Doubling Season: 1 marcador vira 2
+    assert s.all_will_be_one_triggers_total == 1
+    s = fresh()
+    pw(s, GUFF, 5)
+    pw(s, "Teferi, Hero of Dominaria", 6)
+    s.phased_out = {GUFF}  # fora de fase nao tem gatilho
+    pb.guff_end_step(s, [])
+    assert s.loyalty["Teferi, Hero of Dominaria"] == 6
+
+
+def test_guff_end_step_fires_every_turn_in_play_turn_including_extra_turns():
+    s = std_state(turn=0, library=[FILLER] * 40)
+    pw(s, GUFF, 5)
+    pw(s, "Elspeth, Sun's Champion", 4)  # +1 dela na passada + 1 do Guff = 6
+    pb.play_turn(s, 1, [])
+    assert s.cand_stats["guff_end_triggers"] == 1 and s.loyalty["Elspeth, Sun's Champion"] == 6
+    pb.play_turn(s, 2, [])
+    assert s.cand_stats["guff_end_triggers"] == 2
+
+
+def test_guff_plus1_wizard_sick_then_pays_generic_of_planeswalker_spells_only():
+    s = fresh()
+    pw(s, GUFF, 5)
+    run_ability(s, GUFF, "+1")
+    assert s.battlefield.count("Wizard Token") == 1 and s.loyalty[GUFF] == 6
+    assert s.wizard_pool == 0 and pb.spell_cost(s, "Ugin, the Spirit Dragon") == 8  # doenca: so' vale no turno seguinte
+    s.wizard_pool = 1
+    assert pb.spell_cost(s, "Ugin, the Spirit Dragon") == 7  # magia de PW: -1 generico
+    assert pb.spell_cost(s, "Farseek") == 2  # "only to cast a planeswalker spell"
+    assert pb.spell_cost(s, BOLAS) == 5  # {U}{B}{B}{B}{R}: nada generico pra abater (conservador)
+    s = fresh()
+    s.battlefield.append("Doubling Season")
+    pw(s, GUFF, 5)
+    run_ability(s, GUFF, "+1")
+    assert s.battlefield.count("Wizard Token") == 2  # Doubling Season dobra fichas
+
+
+def test_guff_wizard_mana_is_spent_once_when_the_planeswalker_is_cast():
+    s = std_state(turn=6)
+    s.battlefield += [FILLER] * 7
+    token(s, "Wizard Token")
+    s.wizard_pool = 1
+    s.hand = ["Ugin, the Spirit Dragon"]  # {8}: 7 terrenos + 1 Wizard
+    pb.main_phase(s, [])
+    assert "Ugin, the Spirit Dragon" in s.battlefield
+    assert s.wizard_pool == 0 and s.cand_stats["guff_wizard_mana"] == 1
+    assert s.mana_spent_this_turn == 7
+
+
+def test_guff_minus3_draws_and_damages_x_planeswalkers_and_policy():
+    s = fresh(library=[FILLER] * 20)
+    pw(s, GUFF, 5)
+    pw(s, "Kaya, Intangible Slayer", 6)
+    pw(s, "Elspeth, Sun's Champion", 4)
+    run_ability(s, GUFF, "-3")
+    assert len(s.hand) == 3 and s.loyalty[GUFF] == 2 and s.pw_draws_total == 3  # X = 3 PWs (ela inclusa)
+    assert s.pw_life_lost_opponent_total == 3 * sum(s.opp_alive)
+    s = std_state(library=[FILLER] * 20)
+    pw(s, GUFF, 5)
+    pw(s, "Kaya, Intangible Slayer", 6)
+    assert pb.choose_pw_ability(s, GUFF, 5)[1] == "+1"  # X = 2: nao compensa
+    pw(s, "Elspeth, Sun's Champion", 4)
+    pw(s, "Narset, Parter of Veils", 5)
+    assert pb.choose_pw_ability(s, GUFF, 5)[1] == "-3"  # X = 4 e a mao aguenta
+    assert pb.choose_pw_ability(s, GUFF, 3)[1] == "+1"  # nao se mata (o gatilho de end step depende dela)
+
+
+def test_vronos_plus1_phases_out_two_other_pws_at_the_end_step_until_my_untap():
+    s = res_state()
+    pw(s, VRONOS, 5)
+    pw(s, "Teferi, Hero of Dominaria", 7)
+    pw(s, "Kaya, Intangible Slayer", 5)
+    pw(s, "Narset, Parter of Veils", 3)
+    pw(s, "Teferi, Time Raveler", 9)  # fora da escolha: fora de fase perderia o estatico que protege a Bridge
+    run_ability(s, VRONOS, "+1")
+    assert s.pending_phase_out == ["Teferi, Hero of Dominaria", "Kaya, Intangible Slayer"]  # "up to two": os 2 maiores
+    assert not s.phased_out  # so' no "beginning of the next end step"
+    pb.vronos_phase_out_step(s, [])
+    assert s.phased_out == {"Teferi, Hero of Dominaria", "Kaya, Intangible Slayer"} and s.pending_phase_out == []
+    s.opp_boards[0] = [opp(3)]
+    pb.opponent_combat(s, 0, [])  # quem esta' fora de fase nao existe pro ataque
+    assert s.loyalty["Teferi, Hero of Dominaria"] == 7 and s.loyalty["Kaya, Intangible Slayer"] == 5
+    assert s.loyalty["Teferi, Time Raveler"] == 6
+    target = pb.try_smart_opponent_removal(s, [], opp_index=0)
+    assert target not in s.phased_out
+    s.loyalty.pop(VRONOS, None)
+    if VRONOS in s.battlefield:
+        s.battlefield.remove(VRONOS)
+    pb.play_turn(s, 6, [], skip_legacy_removal=True)  # meu untap: voltam de fase
+    assert not s.phased_out
+
+
+def test_vronos_guff_counter_resolves_before_the_phase_out_at_end_step():
+    s = std_state(turn=0, library=[FILLER] * 40)
+    pw(s, GUFF, 5)
+    pw(s, VRONOS, 5)
+    pw(s, "Teferi, Hero of Dominaria", 6)
+    pb.play_turn(s, 1, [])
+    # Teferi: +1 dela na passada (7) + 1 do Guff no end step (8), ANTES de sair de fase
+    assert s.loyalty["Teferi, Hero of Dominaria"] == 8
+    assert s.phased_out == {GUFF, "Teferi, Hero of Dominaria"}
+
+
+def test_vronos_minus2_bounces_one_creature_per_opponent():
+    s = res_state()
+    pw(s, VRONOS, 5)
+    a, b = opp(5), opp(3)
+    s.opp_boards = [[a, opp(2)], [b], []]
+    run_ability(s, VRONOS, "-2")
+    assert a["frozen"] == 1 and b["frozen"] == 1 and s.loyalty[VRONOS] == 3
+    assert s.pw_removal_proxy_total == sum(s.opp_alive) and s.crime_this_turn
+    s = res_state()
+    pw(s, VRONOS, 5)
+    s.opp_boards[0] = [opp(5)]
+    assert pb.choose_pw_ability(s, VRONOS, 5)[1] == "-2"  # ameaca real: modo defensivo
+    s = res_state()
+    pw(s, VRONOS, 5)
+    assert pb.choose_pw_ability(s, VRONOS, 5)[1] == "+1"
+
+
+def test_vronos_ult_construct_9_9_unblockable_attacks_if_artifact_was_there_at_turn_start():
+    s = res_state(turn=5)
+    pw(s, VRONOS, 7)
+    s.battlefield += ["Arcane Signet", "Sol Ring"]
+    s.artifact_enter_turn = {"Arcane Signet": 2, "Sol Ring": 2}
+    s.opp_boards[0] = [opp(2)]
+    assert pb.choose_pw_ability(s, VRONOS, 7)[1] == "-7"
+    run_ability(s, VRONOS, "-7")
+    assert s.vronos_constructs == ["Arcane Signet"] and VRONOS not in s.loyalty
+    pb.our_combat_step(s, [])  # ruling 2023-07-28: ataca no MESMO turno se o artefato ja' estava em campo
+    assert s.our_combat_damage_proxy_total == 9 and s.our_tapped == []  # vigilancia
+    pb.try_smart_opponent_wipe(s, [], opp_index=0)  # "destroy all artifacts": o Construct e' indestrutivel
+    assert "Arcane Signet" in s.battlefield and "Sol Ring" not in s.battlefield
+    s = res_state(turn=5)  # controle: artefato que entrou NESTE turno tem doenca de invocacao
+    pw(s, VRONOS, 7)
+    s.battlefield.append("Arcane Signet")
+    pb.noncreature_etb(s, "Arcane Signet", [])
+    assert s.artifact_enter_turn["Arcane Signet"] == 5
+    run_ability(s, VRONOS, "-7")
+    pb.our_combat_step(s, [])
+    assert s.our_combat_damage_proxy_total == 0
+    s.turn = 6
+    pb.our_combat_step(s, [])
+    assert s.our_combat_damage_proxy_total == 9
+
+
+def test_sarkhan_plus1_animates_all_pws_ready_ones_attack_they_still_activate_but_lose_gauntlet():
+    s = res_state(turn=6)
+    pw(s, SARKHAN, 5, entered=6)
+    pw(s, "Kaya, Intangible Slayer", 3, entered=2)
+    pw(s, "Elspeth, Sun's Champion", 4, entered=6)
+    run_ability(s, SARKHAN, "+1")
+    assert s.sarkhan_animated == {SARKHAN, "Kaya, Intangible Slayer", "Elspeth, Sun's Champion"}
+    assert s.cand_stats["sarkhan_animated"] == 3 and s.cand_stats["sarkhan_ready_attackers"] == 1
+    # ruling 2019-05-03: "you can still activate their loyalty abilities if you haven't done so yet this turn"
+    pb.resolve_planeswalker(s, "Kaya, Intangible Slayer", [])
+    assert s.loyalty["Kaya, Intangible Slayer"] == 5
+    pw(s, "Narset, Parter of Veils", 5, entered=6)  # entrou depois: o efeito so' pegou quem ja' estava (CR 611.2c)
+    assert "Narset, Parter of Veils" not in s.sarkhan_animated
+    pb.resolve_planeswalker(s, "Narset, Parter of Veils", [])
+    assert s.loyalty["Narset, Parter of Veils"] == 3
+    pb.our_combat_step(s, [])
+    assert s.our_combat_damage_proxy_total == 4 and s.cand_stats["sarkhan_attack_damage"] == 4  # so' a Kaya 4/4 voadora
+    s.elspeth_emblem = 1
+    assert pb._candidate_attackers(s)[0][1] == 6  # o emblema da Elspeth (+2/+2) vale pro Dragao
+    # "Planeswalkers you control have '[0]: Proliferate ...[-12]: extra turn'": o PW animado nao e' planeswalker
+    s = res_state(turn=6)
+    s.battlefield.append("Ichormoon Gauntlet")
+    pw(s, "Kaya, Intangible Slayer", 12, entered=2)
+    assert pb.choose_pw_ability(s, "Kaya, Intangible Slayer", 12)[:2] == ("Ichormoon Gauntlet", "-12")
+    s.sarkhan_animated.add("Kaya, Intangible Slayer")
+    assert pb.choose_pw_ability(s, "Kaya, Intangible Slayer", 12)[:2] == ("Kaya, Intangible Slayer", "0")
+
+
+def test_sarkhan_activates_last_and_animation_ends_at_the_end_step():
+    s = std_state(turn=0, library=[FILLER] * 40)
+    pw(s, SARKHAN, 5)  # primeiro no dict: mesmo assim ativa por ultimo
+    pw(s, "Kaya, Intangible Slayer", 3)
+    assert pb._activation_order(s)[-1] == SARKHAN
+    pb.play_turn(s, 2, [])
+    assert s.loyalty["Kaya, Intangible Slayer"] == 5  # +2 antes da animacao (se a Sarkhan fosse primeiro ficaria 3)
+    assert s.cand_stats["sarkhan_plus1"] == 1 and s.sarkhan_animated == set()
+
+
+def test_sarkhan_dragons_ping_every_attacker_before_damage():
+    s = res_state(turn=6)
+    pw(s, SARKHAN, 5)
+    pw(s, "Kaya, Intangible Slayer", 3)
+    token(s, "Dragon Token", 2)  # 2 Dragoes: 2 de dano em CADA atacante
+    small, big = opp(2), opp(6)
+    s.opp_boards[0] = [small, big]
+    pb.opponent_combat(s, 0, [])
+    assert s.cand_stats["sarkhan_ping_kills"] == 1 and s.cand_stats["sarkhan_ping_damage"] == 4
+    assert s.opp_boards[0] == []  # o 2/2 morre no gatilho; o 6/6 (4 restantes) morre na troca com o Dragao 4/4
+    s = res_state(turn=6)  # controle: sem a Sarkhan (Dragoes so' de bloqueio) o 6/6 sobrevive
+    pw(s, "Kaya, Intangible Slayer", 3)
+    token(s, "Dragon Token", 2)
+    small, big = opp(2), opp(6)
+    s.opp_boards[0] = [small, big]
+    pb.opponent_combat(s, 0, [])
+    assert big in s.opp_boards[0] and "sarkhan_ping_kills" not in s.cand_stats
+    s = res_state(turn=6)  # o dano marcado some no fim do turno
+    pw(s, SARKHAN, 5)
+    pw(s, "Kaya, Intangible Slayer", 3)
+    token(s, "Dragon Token", 1)
+    tough = opp(5, 7)
+    s.opp_boards[0] = [tough]
+    pb.opponent_combat(s, 0, [])
+    assert tough["t"] == 7 and s.cand_stats["sarkhan_ping_damage"] == 1
+    s.phased_out = {SARKHAN}
+    assert pb._sarkhan_ping_count(s) == 0  # fora de fase: sem gatilho
+
+
+def test_sarkhan_minus3_dragon_token_and_defensive_policy():
+    s = fresh()
+    pw(s, SARKHAN, 5)
+    run_ability(s, SARKHAN, "-3")
+    assert s.battlefield.count("Dragon Token") == 1 and s.loyalty[SARKHAN] == 2
+    s = fresh()
+    s.battlefield.append("Doubling Season")
+    pw(s, SARKHAN, 5)
+    run_ability(s, SARKHAN, "-3")
+    assert s.battlefield.count("Dragon Token") == 2
+    s = res_state()
+    pw(s, SARKHAN, 5)
+    assert pb.choose_pw_ability(s, SARKHAN, 5)[1] == "+1"  # sem ameaca: anima os PWs
+    s.opp_boards[0] = [opp(5)]
+    assert pb.choose_pw_ability(s, SARKHAN, 5)[1] == "-3"  # com ameaca: Dragao de guarda
+    token(s, "Dragon Token", 2)
+    assert pb.choose_pw_ability(s, SARKHAN, 5)[1] == "+1"  # ja' tem 2
+
+
+def test_bolas_borrows_guff_and_dihada_minus3():
+    s = fresh(library=[FILLER] * 20)
+    for name, loy in ((BOLAS, 6), (GUFF, 5), ("Narset, Parter of Veils", 5), ("Ashiok, Dream Render", 5),
+                      ("Vraska, Betrayal's Sting", 6)):
+        pw(s, name, loy)
+    choice = pb._bolas_borrowed_choice(s, BOLAS, 6)
+    assert choice[:2] == (GUFF, "-3")
+    pb.activate_ability(s, BOLAS, choice[0], choice[1], None, [])
+    assert s.loyalty[BOLAS] == 3 and len(s.hand) == 5  # o custo sai da lealdade do Bolas; X = 5 PWs
+    s = fresh(library=[FILLER] * 20)
+    for name, loy in ((BOLAS, 6), (DIHADA, 5), ("Narset, Parter of Veils", 5)):
+        pw(s, name, loy)
+    assert pb._bolas_borrowed_choice(s, BOLAS, 6)[:2] == (DIHADA, "-3")
+
+
+def test_candidates_run_full_games_without_exceptions():
+    for cand in pb.CANDIDATE_PWS:
+        for seed in range(12):
+            r = pb.simulate_one(3_000_000 + seed, 10, False, swap=[("Arena Rector", cand)])
+            assert isinstance(r["cand_stats"], dict)
+            for prof in ("mixed", "go_wide", "voltron", "low"):
+                pb.simulate_one_with_interaction(6_000_000 + seed, turns=10, attack_profile=prof,
+                                                 swap=[("Arena Rector", cand)])
+    # os 4 juntos
+    sw = [("Arena Rector", DIHADA), ("Swan Song", GUFF), ("Veil of Summer", VRONOS), ("Oath of Nissa", SARKHAN)]
+    for seed in range(12):
+        pb.simulate_one(3_000_000 + seed, 10, False, swap=sw)
+        pb.simulate_one_with_interaction(6_000_000 + seed, turns=10, swap=sw)
+
+
+# ---------------------------------------------------------------------------
 # Runner
 # ---------------------------------------------------------------------------
 

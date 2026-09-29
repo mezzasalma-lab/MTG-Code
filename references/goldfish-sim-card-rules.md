@@ -497,6 +497,35 @@ motor, reportar também:
    tipo, no mesmo slot, só no harness. A diferença é o valor do TEXTO
    naquele deck. É isso que responde "em qual deck ela é melhor".
 
+## A/B de carta: dano por limiar, proteção por dano recebido, e controle de entrada
+
+Achado real (Prismatic Bridge, 2026-09-29, Dihada/Guff/Vronos/Sarkhan).
+1. **Dano de combate: usar P(dano ≥ 40) e P(dano ≥ 120), não a média.** O proxy
+   é dominado pelas partidas em loop. A média com teto de 1000 dava sobre a
+   base um sinal que contradizia o efeito real da Sarkhan (Δ −5,1 ±5,9 contra
+   +6,2 pp de P(dano ≥ 40) sobre o PW inerte). 40 = uma vida de oponente; 120 =
+   a mesa de 3.
+2. **Carta de proteção (phase out, hexproof) não aparece em "PWs mortos".** O
+   oponente simulado bate no de maior lealdade fora de fase e desvia o dano
+   pro resto, então o total de mortes não muda. Medir dano recebido pelos
+   permanentes protegidos, soma de lealdade no fim e comparar a carta com a
+   MESMA carta sem a habilidade (chave `CAND_POLICY` desligada no harness).
+3. **Sempre incluir o corpo genérico (PW inerte).** Ele separa "é mais um PW"
+   e o valor do slot cortado do valor do texto. Sem ele o A/B contra
+   Arena Rector misturava tudo (o slot vale ~0,065 de 1º ult na resiliência).
+4. **Sensibilidade por chave de política**, uma de cada vez. Mostrou que o
+   valor da Dihada vem todo do −3, o da Guff do gatilho e não do −3, e o da
+   Sarkhan do +1 (animação) só no dano.
+
+## Processo: resposta idêntica em todos os cenários exige controle positivo
+
+Os 6 resultados do Commander Spellbook (base, 4 cartas, as 4 juntas) tinham
+exatamente o mesmo tamanho em bytes. Isso pode ser "nenhuma das cartas está
+em combo" ou "a requisição não mudou". Antes de afirmar "0 combos novos",
+rodar um controle positivo: remover uma carta que ESTÁ em combos (a Chain
+Veil derrubou 4) e ver a resposta mudar. Guardar o script (`csb.py`), não só
+os JSONs.
+
 ## Processo: nunca `pkill -f`/`pgrep -f` com padrão que aparece no próprio comando
 
 Aconteceu 2× nesta sessão. O padrão aparece na linha de comando do

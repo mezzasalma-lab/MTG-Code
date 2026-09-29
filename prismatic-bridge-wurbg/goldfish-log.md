@@ -1,5 +1,535 @@
 # Goldfish Log — Esika, God of the Tree // The Prismatic Bridge
 
+## Rodada das 4 candidatas: Dihada, Commodore Guff, Vronos, Sarkhan the Masterless — 2026-09-29
+
+**Pedido do usuário:** "Avalie a inclusão das seguintes cartas ao deck, quero
+prós e contras mais do que sugestões de cortes no momento": Dihada (pelo −3),
+Commodore Guff (contador de lealdade em todos os PWs no end step), Vronos
+(phase out de 2 PWs até o meu próximo turno) e Sarkhan the Masterless (o +1
+vira todos os PWs em Dragões 4/4 voadores). Cláusula a cláusula, rulings,
+premissas corrigidas e escopo: `checklist-oraculo.md` (mesma data).
+
+**Duas premissas do pedido que o oráculo não confirma:** a Guff põe contador
+em **um** PW alvo por end step (não em todos); o Vronos tira de fase **outros**
+PWs (até 2), no "next end step".
+
+### O que muda no simulador
+
+- As 4 entram **só via `swap`**. A lista atual continua bit-idêntica: 900 partidas
+  padrão + 1.200 de resiliência (4 perfis) comparadas campo a campo com o código
+  anterior, 0 divergências.
+- Efeitos novos (`prismatic_bridge_goldfish_v1.py`, bloco "CANDIDATAS 2026-09-29"):
+  - Dihada: escudo da +2 (vigilância/lifelink/indestrutível numa lendária), −3 com
+    Treasure (`treasure_stock`: mana de qualquer cor, persiste, some ao gastar), −11 (untap de fontes de mana + criaturas
+    de oponente roubadas atacam com haste).
+  - Guff: gatilho de end step (`guff_end_step`), Wizard (mana {R} só pra PW: abate o genérico), −3 (X = PWs).
+  - Vronos: phase out no end step (`vronos_phase_out_step`), −2 (1 bounce por oponente), −7 (Construct 9/9).
+  - Sarkhan: estático (cada Dragão dá 1 de dano em cada atacante), +1 (PWs viram Dragão 4/4 voador), −3 (Dragão).
+  - Motores da lista que agora enxergam as 4: Doubling Season (fichas, Treasure, lealdade inicial), Bolas (empresta os −3
+    de compra), Peregrine Dynamo (copia), Oath/Chain Veil (2× no turno), Tam (4 tipos de PW novos).
+- **Correção de premissa minha, registrada:** eu tinha modelado que o PW animado pela Sarkhan não ativa mais. O ruling
+  (2019-05-03) diz que ainda ativa. Corrigi antes do A/B final; o primeiro lote de Vronos/Sarkhan foi descartado e rodado
+  de novo. O Vronos −7 também foi ajustado ao ruling (ataca no mesmo turno se o artefato já estava em campo).
+
+### Validação
+
+- **Testes dirigidos:** 124/124 (23 novos, um por cláusula e por interação: escudo da Dihada em combate e em wipe, Treasure
+  como mana de qualquer cor e consumo no fim do turno, Guff com Doubling Season/All Will Be One/fora de fase, Wizard
+  doente e depois pagando só genérico de PW, ordem Guff antes do phase out, Vronos −2/−7 e o Construct indestrutível,
+  Sarkhan animando (só os prontos atacam, ainda ativam, perdem a Gauntlet), Dragões atirando nos atacantes e o dano marcado
+  restaurado, Bolas emprestando o −3 da Guff/Dihada, 12 partidas completas por candidata e pelas 4 juntas).
+- **Bit-identidade da lista atual:** 0 divergências (600 + 300 padrão, 800 + 400 resiliência) em todos os campos do estado,
+  antes e depois das correções de ruling.
+- **Regressão:** 20.000 partidas padrão + 20.000 de resiliência (perfis rotativos), swaps rotativos (base, cada
+  candidata, 3 combinações das 4 juntas): **0 exceções, 0 travamentos** (alarme de 20 s por partida). Entraram em campo
+  em 9.160 (Dihada), 9.599 (Guff), 8.716 (Vronos) e 8.758 (Sarkhan) dessas 40.000 partidas; o −11 da Dihada disparou em
+  327 e o −7 do Vronos em 1.748.
+- **Commander Spellbook antes/depois** (`spellbook_antes_depois.py`; comandante + 99): lista atual 12 combos e 92 quase-combos. Com cada candidata e com as
+  4 juntas: **0 combos novos, 0 removidos, 0 quase-combos novos**. Controle positivo: tirar a The Chain Veil derruba 4
+  combos (o pipeline reage a mudança de lista). Nenhuma das 4 é Game Changer (`is:gamechanger`): o deck segue com 3.
+- **Oráculo:** Dihada, Vronos e Sarkhan entraram no `scryfall-cache/oracle-cache.json` (a Guff já estava, texto idêntico).
+
+### A/B pareado (N = 3.000 seeds; padrão 3.000.000+, resiliência mista 6.000.000+)
+
+Scripts: `ab_candidatas.py` (harness), `ab_candidatas_sum.py` (tabelas), `ab_vronos_protecao.py`,
+`regress_candidatas.py`. A carta nova entra **na linha** da cortada (troca posicional): a partida só diverge quando aquela
+posição é comprada ou revelada. Cortes: Arena Rector, Swan Song, Veil of Summer, Oath of Nissa, Farseek e Doubling Season
+(controle: cortar o motor tem que sair pior). Métricas sempre limitadas por partida (regra "A/B de carta" de
+`references/goldfish-sim-card-rules.md`): turno do 1º ultimate (sem ultimate = 11), P(ultimate ≤ T8), vida ≤ 0 e PW-turnos
+na resiliência, e **P(dano nosso ≥ 40 / ≥ 120)**: a média do proxy de dano é dominada pelas partidas em loop (a média com teto de
+1000 subestimava a Sarkhan: Δ −5,1 ±5,9 sobre a base no slot Arena Rector, enquanto P(dano ≥ 40) sobe +6,2 pp sobre o PW inerte); o limiar não. **Controle do lado da entrada:** um PW de lealdade 5
+**sem nenhuma habilidade** (só existe no harness), no mesmo slot. Candidata − PW inerte = valor do TEXTO, sem misturar com "é
+mais um PW" nem com o valor do slot cortado (decomposição da regra "A/B de carta cara ou tardia").
+
+**Base (lista atual, motor atual):**
+- padrão: 1º ultimate no turno 9,253; P(ult ≤ T8) 34,7%; 1,484 turnos com ultimate;
+- resiliência (mesa mista): vida ≤ 0 em 14,7% (go_wide 28,1%, voltron 18,9%, low 1,8%); 1º ult 9,693; PW-turnos vivos 15,75; PWs mortos em combate 0,577; PWs no T10 5,36.
+
+**Frequência:** Dihada e Guff entram em 44 a 47% das partidas (num slot só; chegam pela Bridge ou pela mão, mediana do
+1º turno em campo: 8); Vronos e Sarkhan em 39 a 43% (custam 5). O efeito condicional (só as partidas em que entram) é
+cerca de 2× o incondicional.
+
+
+#### 1. O que o TEXTO da carta faz: candidata menos o PW inerte no mesmo slot
+
+Negativo em 1º ult e vida ≤ 0 = melhor; positivo em P(ult ≤ T8), PW-turnos e P(dano) = melhor. Negrito = IC95% não cruza 0.
+
+**Efeito das HABILIDADES: candidata menos o PW inerte no mesmo slot (todas as partidas; negativo em 1º ult/vida ≤ 0 = melhor)**
+
+| candidata | métrica | sai Arena Rector | sai Swan Song |
+|---|---|---|---|
+| Dihada | padrão Δ 1º ult (turno) | **-0.063 ±0.014** | **-0.074 ±0.016** |
+| Dihada | padrão Δ P(ult ≤ T8) | **+1.40 pp ±0.53** | **+1.93 pp ±0.58** |
+| Dihada | padrão Δ turnos c/ ult | **+0.097 ±0.016** | **+0.097 ±0.017** |
+| Dihada | resil. Δ vida ≤ 0 | -0.23 pp ±0.30 | -0.33 pp ±0.41 |
+| Dihada | resil. Δ 1º ult | **-0.100 ±0.019** | **-0.079 ±0.018** |
+| Dihada | resil. Δ PW-turnos vivos | **+1.829 ±0.217** | **+1.649 ±0.203** |
+| Dihada | resil. Δ PWs mortos em combate | -0.002 ±0.015 | -0.006 ±0.013 |
+| Dihada | resil. Δ P(dano nosso ≥ 40) | **+5.47 pp ±0.93** | **+4.43 pp ±0.86** |
+| Dihada | resil. Δ P(dano nosso ≥ 120) | **+4.77 pp ±0.88** | **+3.27 pp ±0.79** |
+| Guff | padrão Δ 1º ult (turno) | **-0.059 ±0.012** | **-0.060 ±0.011** |
+| Guff | padrão Δ P(ult ≤ T8) | **+1.70 pp ±0.46** | **+1.50 pp ±0.46** |
+| Guff | padrão Δ turnos c/ ult | **+0.063 ±0.012** | **+0.071 ±0.012** |
+| Guff | resil. Δ vida ≤ 0 | **-0.47 pp ±0.24** | **-0.33 pp ±0.28** |
+| Guff | resil. Δ 1º ult | **-0.063 ±0.015** | **-0.052 ±0.015** |
+| Guff | resil. Δ PW-turnos vivos | **+0.619 ±0.124** | **+0.442 ±0.127** |
+| Guff | resil. Δ PWs mortos em combate | **-0.052 ±0.012** | **-0.050 ±0.013** |
+| Guff | resil. Δ P(dano nosso ≥ 40) | **+2.40 pp ±0.68** | **+1.60 pp ±0.67** |
+| Guff | resil. Δ P(dano nosso ≥ 120) | **+1.67 pp ±0.63** | **+1.13 pp ±0.61** |
+| Vronos | padrão Δ 1º ult (turno) | **-0.010 ±0.007** | -0.005 ±0.008 |
+| Vronos | padrão Δ P(ult ≤ T8) | +0.03 pp ±0.27 | +0.07 pp ±0.31 |
+| Vronos | padrão Δ turnos c/ ult | **+0.010 ±0.008** | +0.005 ±0.008 |
+| Vronos | resil. Δ vida ≤ 0 | -0.10 pp ±0.28 | +0.07 pp ±0.37 |
+| Vronos | resil. Δ 1º ult | **-0.026 ±0.015** | **-0.036 ±0.014** |
+| Vronos | resil. Δ PW-turnos vivos | -0.039 ±0.139 | **-0.130 ±0.110** |
+| Vronos | resil. Δ PWs mortos em combate | **-0.037 ±0.014** | **-0.035 ±0.014** |
+| Vronos | resil. Δ P(dano nosso ≥ 40) | **+1.33 pp ±0.66** | **+1.47 pp ±0.66** |
+| Vronos | resil. Δ P(dano nosso ≥ 120) | **+0.70 pp ±0.57** | +0.33 pp ±0.52 |
+| Sarkhan | padrão Δ 1º ult (turno) | **-0.017 ±0.007** | **-0.009 ±0.007** |
+| Sarkhan | padrão Δ P(ult ≤ T8) | +0.23 pp ±0.25 | +0.17 pp ±0.28 |
+| Sarkhan | padrão Δ turnos c/ ult | **+0.016 ±0.008** | **+0.009 ±0.008** |
+| Sarkhan | resil. Δ vida ≤ 0 | **-0.33 pp ±0.32** | -0.23 pp ±0.39 |
+| Sarkhan | resil. Δ 1º ult | **-0.013 ±0.013** | **-0.022 ±0.012** |
+| Sarkhan | resil. Δ PW-turnos vivos | -0.050 ±0.110 | **-0.125 ±0.106** |
+| Sarkhan | resil. Δ PWs mortos em combate | **-0.043 ±0.012** | **-0.042 ±0.013** |
+| Sarkhan | resil. Δ P(dano nosso ≥ 40) | **+6.20 pp ±0.93** | **+5.83 pp ±0.92** |
+| Sarkhan | resil. Δ P(dano nosso ≥ 120) | **+1.50 pp ±0.58** | **+1.40 pp ±0.60** |
+
+**Efeito das HABILIDADES: candidata menos o PW inerte no mesmo slot (só partidas em que ela entrou; negativo em 1º ult/vida ≤ 0 = melhor)**
+
+| candidata | métrica | sai Arena Rector | sai Swan Song |
+|---|---|---|---|
+| Dihada | padrão Δ 1º ult (turno) | **-0.135 ±0.030** | **-0.161 ±0.034** |
+| Dihada | padrão Δ P(ult ≤ T8) | **+2.98 pp ±1.12** | **+4.25 pp ±1.26** |
+| Dihada | padrão Δ turnos c/ ult | **+0.207 ±0.032** | **+0.214 ±0.036** |
+| Dihada | resil. Δ vida ≤ 0 | -0.43 pp ±0.63 | -0.72 pp ±0.89 |
+| Dihada | resil. Δ 1º ult | **-0.213 ±0.039** | **-0.170 ±0.039** |
+| Dihada | resil. Δ PW-turnos vivos | **+3.939 ±0.439** | **+3.578 ±0.417** |
+| Dihada | resil. Δ PWs mortos em combate | +0.000 ±0.033 | -0.009 ±0.028 |
+| Dihada | resil. Δ P(dano nosso ≥ 40) | **+11.78 pp ±1.93** | **+9.52 pp ±1.83** |
+| Dihada | resil. Δ P(dano nosso ≥ 120) | **+10.21 pp ±1.84** | **+6.99 pp ±1.69** |
+| Guff | padrão Δ 1º ult (turno) | **-0.127 ±0.024** | **-0.132 ±0.024** |
+| Guff | padrão Δ P(ult ≤ T8) | **+3.63 pp ±0.98** | **+3.31 pp ±1.01** |
+| Guff | padrão Δ turnos c/ ult | **+0.134 ±0.024** | **+0.158 ±0.026** |
+| Guff | resil. Δ vida ≤ 0 | **-0.93 pp ±0.50** | **-0.72 pp ±0.60** |
+| Guff | resil. Δ 1º ult | **-0.135 ±0.032** | **-0.111 ±0.033** |
+| Guff | resil. Δ PW-turnos vivos | **+1.355 ±0.260** | **+0.962 ±0.272** |
+| Guff | resil. Δ PWs mortos em combate | **-0.107 ±0.025** | **-0.106 ±0.028** |
+| Guff | resil. Δ P(dano nosso ≥ 40) | **+5.23 pp ±1.44** | **+3.40 pp ±1.44** |
+| Guff | resil. Δ P(dano nosso ≥ 120) | **+3.58 pp ±1.35** | **+2.39 pp ±1.32** |
+| Vronos | padrão Δ 1º ult (turno) | -0.012 ±0.015 | -0.009 ±0.017 |
+| Vronos | padrão Δ P(ult ≤ T8) | +0.00 pp ±0.58 | +0.08 pp ±0.71 |
+| Vronos | padrão Δ turnos c/ ult | +0.012 ±0.017 | +0.007 ±0.018 |
+| Vronos | resil. Δ vida ≤ 0 | -0.16 pp ±0.60 | +0.16 pp ±0.81 |
+| Vronos | resil. Δ 1º ult | **-0.065 ±0.035** | **-0.080 ±0.033** |
+| Vronos | resil. Δ PW-turnos vivos | +0.262 ±0.312 | -0.064 ±0.250 |
+| Vronos | resil. Δ PWs mortos em combate | **-0.081 ±0.032** | **-0.078 ±0.032** |
+| Vronos | resil. Δ P(dano nosso ≥ 40) | **+3.74 pp ±1.55** | **+3.40 pp ±1.56** |
+| Vronos | resil. Δ P(dano nosso ≥ 120) | **+2.03 pp ±1.34** | +0.81 pp ±1.23 |
+| Sarkhan | padrão Δ 1º ult (turno) | **-0.027 ±0.015** | **-0.018 ±0.016** |
+| Sarkhan | padrão Δ P(ult ≤ T8) | +0.47 pp ±0.54 | +0.33 pp ±0.65 |
+| Sarkhan | padrão Δ turnos c/ ult | **+0.028 ±0.016** | **+0.017 ±0.016** |
+| Sarkhan | resil. Δ vida ≤ 0 | **-0.73 pp ±0.69** | -0.56 pp ±0.85 |
+| Sarkhan | resil. Δ 1º ult | **-0.034 ±0.029** | **-0.047 ±0.027** |
+| Sarkhan | resil. Δ PW-turnos vivos | +0.230 ±0.230 | -0.047 ±0.240 |
+| Sarkhan | resil. Δ PWs mortos em combate | **-0.094 ±0.027** | **-0.095 ±0.030** |
+| Sarkhan | resil. Δ P(dano nosso ≥ 40) | **+15.57 pp ±2.11** | **+13.96 pp ±2.12** |
+| Sarkhan | resil. Δ P(dano nosso ≥ 120) | **+3.97 pp ±1.34** | **+3.39 pp ±1.42** |
+
+#### 2. Sensibilidade: desligar o que carrega cada carta (slot Arena Rector, Δ pareado sobre a base)
+
+| candidata / política | padrão Δ 1º ult (turno) | padrão Δ P(ult ≤ T8) | padrão Δ turnos c/ ult | resil. Δ vida ≤ 0 | resil. Δ 1º ult | resil. Δ PW-turnos vivos | resil. Δ PWs mortos em combate | resil. Δ P(dano nosso ≥ 40) |
+|---|---|---|---|---|---|---|---|---|
+| Dihada: política completa | **-0.057 ±0.014** | **+1.37 pp ±0.52** | **+0.087 ±0.015** | -0.33 pp ±0.35 | **-0.035 ±0.020** | **+2.199 ±0.234** | **+0.045 ±0.017** | **+3.07 pp ±0.94** |
+| Dihada: sem o −3 (só +2) | +0.003 ±0.006 | +0.13 pp ±0.21 | **-0.010 ±0.006** | **-0.37 pp ±0.31** | **+0.061 ±0.019** | **+0.445 ±0.166** | **+0.025 ±0.012** | +0.17 pp ±0.87 |
+| Guff: política completa | **-0.053 ±0.013** | **+1.67 pp ±0.49** | **+0.052 ±0.012** | **-0.57 pp ±0.33** | +0.002 ±0.020 | **+0.989 ±0.179** | -0.004 ±0.012 | +0.00 pp ±0.83 |
+| Guff: sem o −3 (só +1 e o gatilho de end step) | **-0.055 ±0.012** | **+1.63 pp ±0.48** | **+0.051 ±0.012** | **-0.57 pp ±0.33** | +0.003 ±0.020 | **+0.722 ±0.170** | -0.005 ±0.011 | -0.43 pp ±0.81 |
+| Vronos: política completa | -0.004 ±0.009 | +0.00 pp ±0.35 | -0.001 ±0.009 | -0.20 pp ±0.32 | **+0.039 ±0.021** | **+0.331 ±0.179** | +0.011 ±0.012 | **-1.07 pp ±0.84** |
+| Vronos: +1 sem phase out (só +1 de lealdade) | -0.004 ±0.009 | +0.00 pp ±0.35 | -0.000 ±0.009 | -0.27 pp ±0.31 | **+0.043 ±0.020** | **+0.300 ±0.175** | +0.012 ±0.012 | **-1.07 pp ±0.85** |
+| Sarkhan: política completa | **-0.010 ±0.008** | +0.20 pp ±0.31 | +0.006 ±0.008 | **-0.43 pp ±0.33** | **+0.051 ±0.020** | **+0.320 ±0.164** | +0.005 ±0.011 | **+3.80 pp ±0.96** |
+| Sarkhan: +1 sem animar (só +1 de lealdade; Dragões do −3 e o estático ficam) | **-0.010 ±0.008** | +0.20 pp ±0.31 | +0.006 ±0.008 | **-0.43 pp ±0.33** | **+0.051 ±0.020** | **+0.317 ±0.163** | +0.005 ±0.011 | **-1.83 pp ±0.76** |
+
+Legenda: "sem o −3" = a política nunca usa o −3 (Dihada/Guff); "sem phase out" = o +1 do Vronos só dá lealdade; "sem animar" = o +1 da Sarkhan só dá lealdade (as fichas Dragão do −3 e o estático ficam).
+
+#### 3. Sensibilidade ao perfil de mesa (candidata − PW inerte, slot Arena Rector, resiliência, N = 3.000 por perfil)
+
+| candidata − PW inerte (slot Arena Rector) | métrica | mista | go_wide | voltron | low |
+|---|---|---|---|---|---|
+| Dihada | vida ≤ 0 | -0.23 pp ±0.30 | -0.03 pp ±0.46 | **-0.43 pp ±0.38** | -0.07 pp ±0.13 |
+| Dihada | 1º ult | **-0.100 ±0.019** | **-0.103 ±0.019** | **-0.089 ±0.019** | **-0.082 ±0.017** |
+| Dihada | PWs mortos em combate | -0.002 ±0.015 | -0.007 ±0.022 | **-0.017 ±0.015** | -0.001 ±0.008 |
+| Dihada | P(dano ≥ 40) | **+5.47 pp ±0.93** | **+5.83 pp ±0.97** | **+4.67 pp ±0.91** | **+4.87 pp ±0.90** |
+| Guff | vida ≤ 0 | **-0.47 pp ±0.24** | **-0.60 pp ±0.42** | -0.33 pp ±0.35 | -0.10 pp ±0.11 |
+| Guff | 1º ult | **-0.063 ±0.015** | **-0.057 ±0.015** | **-0.051 ±0.016** | **-0.059 ±0.014** |
+| Guff | PWs mortos em combate | **-0.052 ±0.012** | **-0.089 ±0.019** | **-0.043 ±0.013** | **-0.026 ±0.007** |
+| Guff | P(dano ≥ 40) | **+2.40 pp ±0.68** | **+1.83 pp ±0.65** | **+2.10 pp ±0.70** | **+2.30 pp ±0.72** |
+| Vronos | vida ≤ 0 | -0.10 pp ±0.28 | **+0.50 pp ±0.41** | **-0.47 pp ±0.35** | -0.03 pp ±0.07 |
+| Vronos | 1º ult | **-0.026 ±0.015** | **-0.031 ±0.013** | **-0.037 ±0.016** | **-0.014 ±0.012** |
+| Vronos | PWs mortos em combate | **-0.037 ±0.014** | **-0.056 ±0.017** | **-0.076 ±0.017** | **-0.012 ±0.007** |
+| Vronos | P(dano ≥ 40) | **+1.33 pp ±0.66** | **+1.93 pp ±0.66** | **+1.87 pp ±0.74** | **+1.67 pp ±0.66** |
+| Sarkhan | vida ≤ 0 | **-0.33 pp ±0.32** | +0.27 pp ±0.39 | **-0.43 pp ±0.34** | -0.07 pp ±0.09 |
+| Sarkhan | 1º ult | **-0.013 ±0.013** | **-0.015 ±0.011** | **-0.014 ±0.013** | -0.007 ±0.012 |
+| Sarkhan | PWs mortos em combate | **-0.043 ±0.012** | **-0.038 ±0.014** | **-0.030 ±0.015** | **-0.020 ±0.007** |
+| Sarkhan | P(dano ≥ 40) | **+6.20 pp ±0.93** | **+4.93 pp ±0.84** | **+5.33 pp ±0.90** | **+6.67 pp ±0.96** |
+
+Base por perfil (vida ≤ 0): mista: 14.7% | go_wide: 28.1% | voltron: 18.9% | low: 1.8%
+
+
+#### 4. Vronos: o que o phase out protege de fato (resiliência mista, N = 3.000; `ab_vronos_protecao.py`)
+
+#### Vronos: onde o phase out aparece (todas as partidas; n=3000)
+
+| métrica | Vronos completo − base | Vronos sem phase out − base | phase out (completo − sem) | Vronos − PW inerte |
+|---|---|---|---|---|
+| Δ soma da lealdade dos PWs no fim (cap 1000) | **-18.652 ±8.057** | **-17.474 ±8.001** | -1.179 ±2.792 | +0.671 ±6.310 |
+| Δ PWs vivos no T10 (cap 50) | +0.046 ±0.088 | +0.047 ±0.088 | -0.001 ±0.024 | -0.020 ±0.070 |
+| Δ PW-turnos vivos | **+0.331 ±0.179** | **+0.300 ±0.175** | +0.031 ±0.039 | -0.039 ±0.139 |
+| Δ PWs mortos em combate | +0.011 ±0.012 | +0.012 ±0.012 | -0.001 ±0.004 | **-0.037 ±0.014** |
+| Δ dano de combate recebido pelos PWs (cap 1000) | +0.062 ±0.073 | **+0.106 ±0.074** | **-0.045 ±0.021** | **-0.395 ±0.087** |
+| Δ remoções sofridas | +0.015 ±0.019 | +0.015 ±0.018 | +0.000 ±0.004 | -0.000 ±0.018 |
+| Δ vida ≤ 0 | -0.20 pp ±0.32 | -0.27 pp ±0.31 | +0.07 pp ±0.09 | -0.10 pp ±0.28 |
+| Δ 1º ultimate (turno) | **+0.039 ±0.021** | **+0.043 ±0.020** | **-0.004 ±0.004** | **-0.026 ±0.015** |
+
+#### Vronos: onde o phase out aparece (só as 1231 partidas em que o Vronos entrou; n=1231)
+
+| métrica | Vronos completo − base | Vronos sem phase out − base | phase out (completo − sem) | Vronos − PW inerte |
+|---|---|---|---|---|
+| Δ soma da lealdade dos PWs no fim (cap 1000) | **-34.351 ±18.558** | **-31.478 ±18.422** | -2.872 ±6.805 | +6.650 ±14.687 |
+| Δ PWs vivos no T10 (cap 50) | **+0.312 ±0.204** | **+0.314 ±0.202** | -0.002 ±0.058 | +0.103 ±0.162 |
+| Δ PW-turnos vivos | **+1.119 ±0.405** | **+1.042 ±0.394** | +0.076 ±0.096 | +0.262 ±0.312 |
+| Δ PWs mortos em combate | +0.014 ±0.027 | +0.016 ±0.027 | -0.002 ±0.010 | **-0.081 ±0.032** |
+| Δ dano de combate recebido pelos PWs (cap 1000) | +0.126 ±0.161 | **+0.235 ±0.164** | **-0.109 ±0.050** | **-0.819 ±0.196** |
+| Δ remoções sofridas | +0.036 ±0.043 | +0.036 ±0.042 | +0.000 ±0.011 | +0.008 ±0.042 |
+| Δ vida ≤ 0 | **-0.73 pp ±0.66** | **-0.89 pp ±0.61** | +0.16 pp ±0.23 | -0.16 pp ±0.60 |
+| Δ 1º ultimate (turno) | **+0.068 ±0.046** | **+0.079 ±0.045** | **-0.011 ±0.010** | **-0.065 ±0.035** |
+
+PWs tirados de fase por partida em que o Vronos entrou: média 3.53, P(>0) 71.6%
+
+#### 5. Frequência e uso por partida em que a carta entrou
+
+| candidata | Arena Rector | Swan Song | Veil of Summer | Oath of Nissa | Farseek | Doubling Season |
+|---|---|---|---|---|---|---|
+| Dihada (std) | 47.0% | 45.5% | 45.4% | 44.1% | 44.6% | 45.0% |
+| Dihada (res) | 46.7% | 46.2% | 48.4% | 46.4% | 47.9% | 48.1% |
+| Guff (std) | 46.9% | 45.3% | 45.4% | 44.0% | 44.5% | 45.1% |
+| Guff (res) | 46.5% | 46.1% | 48.2% | 46.3% | 47.7% | 48.0% |
+| Vronos (std) | 42.0% | 40.2% | 40.6% | 38.6% | 39.4% | 39.2% |
+| Vronos (res) | 41.0% | 41.2% | 43.0% | 40.1% | 41.9% | 42.3% |
+| Sarkhan (std) | 42.1% | 40.4% | 40.7% | 38.7% | 39.5% | 39.2% |
+| Sarkhan (res) | 41.1% | 41.3% | 43.1% | 40.1% | 41.9% | 42.5% |
+| CONTROLE (PW sem habilidade) (std) | 47.4% | 45.8% | — | — | — | — |
+| CONTROLE (PW sem habilidade) (res) | 46.9% | 46.4% | — | — | — | — |
+
+**Uso (slot Arena Rector; mediana | média com teto 1000 por partida | P(>0))**
+
+**Dihada — std** (n=1410 partidas com a carta em campo, de 3000)
+
+| métrica | mediana | média (cap 1000/partida) | P(>0) |
+|---|---|---|---|
+| dihada_minus3 | 3 | 3.86 | 94.0% |
+| dihada_plus2_targets | 1 | 2.25 | 53.3% |
+| dihada_legends_to_hand | 2 | 3.05 | 81.1% |
+| dihada_pws_to_hand | 1 | 1.99 | 70.5% |
+| dihada_milled | 11 | 12.41 | 94.0% |
+| dihada_milled_pw_or_creature | 1 | 0.87 | 54.8% |
+| dihada_treasures | 14 | 126.91 | 94.0% |
+| dihada_treasures_spent | 1 | 3.83 | 51.3% |
+| dihada_ult | 0 | 0.00 | 0.0% |
+| dihada_stolen_power | 0 | 0.00 | 0.0% |
+| 1º turno em campo | 8 | 8.13 | — |
+
+**Dihada — res** (n=1401 partidas com a carta em campo, de 3000)
+
+| métrica | mediana | média (cap 1000/partida) | P(>0) |
+|---|---|---|---|
+| dihada_minus3 | 2 | 3.15 | 94.0% |
+| dihada_plus2_targets | 0 | 1.76 | 45.0% |
+| dihada_legends_to_hand | 2 | 2.52 | 78.8% |
+| dihada_pws_to_hand | 1 | 1.64 | 67.5% |
+| dihada_milled | 8 | 10.08 | 93.9% |
+| dihada_milled_pw_or_creature | 0 | 0.68 | 44.7% |
+| dihada_treasures | 9 | 87.50 | 93.9% |
+| dihada_treasures_spent | 1 | 3.37 | 54.4% |
+| dihada_ult | 0 | 0.12 | 7.6% |
+| dihada_stolen_power | 0 | 2.40 | 7.6% |
+| 1º turno em campo | 8 | 8.03 | — |
+
+**Guff — std** (n=1406 partidas com a carta em campo, de 3000)
+
+| métrica | mediana | média (cap 1000/partida) | P(>0) |
+|---|---|---|---|
+| guff_plus1 | 4 | 4.27 | 94.2% |
+| guff_wizards | 4 | 8.47 | 86.3% |
+| guff_wizard_mana | 0 | 1.52 | 34.4% |
+| guff_minus3 | 1 | 1.21 | 51.3% |
+| guff_minus3_cards | 4 | 14.85 | 51.3% |
+| guff_end_triggers | 2 | 2.57 | 96.4% |
+| guff_end_counters | 5 | 213.33 | 96.4% |
+| 1º turno em campo | 8 | 8.13 | — |
+
+**Guff — res** (n=1395 partidas com a carta em campo, de 3000)
+
+| métrica | mediana | média (cap 1000/partida) | P(>0) |
+|---|---|---|---|
+| guff_plus1 | 3 | 4.05 | 96.1% |
+| guff_wizards | 3 | 6.23 | 91.9% |
+| guff_wizard_mana | 0 | 0.65 | 26.9% |
+| guff_minus3 | 0 | 0.37 | 31.7% |
+| guff_minus3_cards | 0 | 2.07 | 31.7% |
+| guff_end_triggers | 2 | 2.21 | 93.0% |
+| guff_end_counters | 4 | 132.39 | 93.0% |
+| 1º turno em campo | 8 | 8.03 | — |
+
+**Vronos — std** (n=1259 partidas com a carta em campo, de 3000)
+
+| métrica | mediana | média (cap 1000/partida) | P(>0) |
+|---|---|---|---|
+| vronos_plus1 | 3 | 4.00 | 96.6% |
+| vronos_phased_out | 5 | 6.74 | 93.7% |
+| vronos_minus2 | 0 | 0.00 | 0.0% |
+| vronos_bounced | 0 | 0.00 | 0.0% |
+| vronos_ult | 0 | 0.00 | 0.0% |
+| vronos_attack_damage | 0 | 0.00 | 0.0% |
+| 1º turno em campo | 9 | 8.40 | — |
+
+**Vronos — res** (n=1231 partidas com a carta em campo, de 3000)
+
+| métrica | mediana | média (cap 1000/partida) | P(>0) |
+|---|---|---|---|
+| vronos_plus1 | 1 | 1.99 | 74.6% |
+| vronos_phased_out | 2 | 3.53 | 71.6% |
+| vronos_minus2 | 0 | 0.82 | 39.2% |
+| vronos_bounced | 0 | 2.04 | 39.2% |
+| vronos_ult | 0 | 0.55 | 39.8% |
+| vronos_attack_damage | 0 | 8.27 | 24.1% |
+| 1º turno em campo | 9 | 8.31 | — |
+
+**Sarkhan — std** (n=1264 partidas com a carta em campo, de 3000)
+
+| métrica | mediana | média (cap 1000/partida) | P(>0) |
+|---|---|---|---|
+| sarkhan_plus1 | 3 | 4.08 | 96.4% |
+| sarkhan_animated | 19 | 40.01 | 96.4% |
+| sarkhan_ready_attackers | 8 | 23.54 | 90.0% |
+| sarkhan_attack_power_potential | 36 | 206.66 | 90.0% |
+| sarkhan_attack_damage | 0 | 0.00 | 0.0% |
+| sarkhan_minus3 | 0 | 0.00 | 0.0% |
+| sarkhan_ping_kills | 0 | 0.00 | 0.0% |
+| sarkhan_ping_damage | 0 | 0.00 | 0.0% |
+| 1º turno em campo | 9 | 8.39 | — |
+
+**Sarkhan — res** (n=1233 partidas com a carta em campo, de 3000)
+
+| métrica | mediana | média (cap 1000/partida) | P(>0) |
+|---|---|---|---|
+| sarkhan_plus1 | 2 | 2.96 | 89.9% |
+| sarkhan_animated | 12 | 26.91 | 89.9% |
+| sarkhan_ready_attackers | 5 | 15.45 | 83.5% |
+| sarkhan_attack_power_potential | 20 | 130.26 | 83.5% |
+| sarkhan_attack_damage | 18 | 75.79 | 80.6% |
+| sarkhan_minus3 | 0 | 0.48 | 36.7% |
+| sarkhan_ping_kills | 0 | 0.53 | 10.6% |
+| sarkhan_ping_damage | 0 | 1.26 | 20.4% |
+| 1º turno em campo | 9 | 8.32 | — |
+
+#### 6. As 4 juntas
+
+| métrica | Δ pareado |
+|---|---|
+| padrão Δ 1º ult (turno) | +0.026 ±0.030 |
+| padrão Δ P(ult ≤ T8) | -0.57 pp ±1.06 |
+| padrão Δ turnos c/ ult | -0.012 ±0.029 |
+| resiliência Δ vida ≤ 0 | **-0.83 pp ±0.82** |
+| resiliência Δ 1º ult | **+0.067 ±0.037** |
+| resiliência Δ PW-turnos vivos | **+3.284 ±0.373** |
+| resiliência Δ PWs mortos em combate | **+0.032 ±0.028** |
+| resiliência Δ P(dano nosso ≥ 40) | **+6.37 pp ±1.47** |
+| resiliência Δ P(dano nosso ≥ 120) | +1.00 pp ±1.23 |
+
+### Leitura (Regra #5: o deck primeiro, o simulador como apoio)
+
+**O que o simulador mede:** velocidade dos ultimates dos 17 PWs, sobrevivência dos PWs e da vida contra 3 oponentes com
+criaturas, e um proxy de dano de combate. **O que ele NÃO mede:**
+- instantâneo de oponente no MEU turno (afeta só os PWs animados da Sarkhan);
+- a QUALIDADE do PW protegido (o oponente simulado bate no de maior lealdade fora de fase e desvia o resto);
+- a frente da Esika (não existe no arquivo);
+- Dihada −11 e Vronos −2 além de criatura de oponente (📊 estrutural).
+
+Por isso as conclusões abaixo separam "medido" de "raciocínio pelo deck".
+
+**Dihada — a candidata cujo efeito é mais forte e vem inteiro do −3.**
+- Medido: sem o −3 (só +2) o ganho some (padrão Δ 1º ult −0,057 → +0,003; resiliência Δ 1º ult −0,035 → +0,061, pior que a base). Contra o PW inerte: 1º ult −0,063 no padrão e −0,100 na resiliência; P(dano ≥ 40) +5,5 pp. Nos 4 perfis de mesa o 1º ult melhora 0,08 a 0,10.
+- Pelo deck: o −3 é um tutor de "lendária" e a lista tem 24 (17 PWs + Chain Veil, Oath of Teferi, Oath of Nissa, Vorinclex, Carth, Atraxa, Peregrine Dynamo). P(≥1 lendária nas 4) = 67,7% e P(≥1 PW) = 53,5% na biblioteca cheia. Em partida: mediana 3 usos, ~3,1 lendárias na mão (2,0 PWs).
+- O "custo" do mill é quase zero porque as cartas moídas são aleatórias (a Dihada só seleciona); a perda específica é criatura/PW que a Bridge acertaria: 0,87 por partida.
+- Treasure paga os PWs que ela mesma pôs na mão (7 PWs custam 6+), mas sobra: mediana 1 Treasure gasto por partida (51% das partidas gastam algum). A carta chega tarde (T8 mediano), então não é ramp.
+- Contra: 4 mana R/W/B; puxar PW pra mão tira ele da pilha que a Bridge põe de graça (o Treasure compensa em mana, não em tempo); o −11 só dispara em 7,6% das partidas de resiliência em que ela entra.
+
+**Commodore Guff — vale pelo gatilho de end step e pelos Wizards, não pelo −3, e é UM PW por turno.**
+- Medido: contra o PW inerte, 1º ult −0,059 (padrão) e −0,063 (resiliência); vida ≤ 0 −0,47 pp; PWs mortos −0,052. Sem o −3 o ganho de velocidade é o mesmo (−0,055 vs −0,053): o −3 só acrescenta PW-turnos (+0,99 vs +0,72).
+- Pelo deck: o contador passa por `add_loyalty`, então Doubling Season/Vorinclex/Innkeeper nv.3 dobram e o All Will Be One dispara; o alvo é o PW mais perto do ultimate. O Wizard (dobrado pela Doubling Season) é bloqueador e a {R} paga PW (34% das partidas em que ela entra usam essa mana). O −3 compra X = PWs em campo (mediana 4, usado em 51% das partidas em que entra).
+- Contra: **o "todos os PWs" que motivou a inclusão já existe** na lista (8 cartas dão proliferate, por varredura do oráculo: Atraxa no MESMO end step, Evolution Sage, Flux Channeler, Inexorable Tide, Ichormoon Gauntlet [0], Mutational Advantage, Ripples of Potential e Vraska 0; o Deepglow Skate dobra os contadores); a Guff soma 1 contador (2 com dobrador) em 1 PW. Entra tarde (T8 mediano), 4 mana U/R/W, precisa estar viva no end step.
+
+**Vronos — a mais fraca no que dá pra medir; a proteção é redundante com a lista.**
+- Medido: padrão sem efeito no ritmo (Δ 1º ult −0,010 vs inerte). O phase out em si: −0,109 de dano de combate nos PWs por partida em que ele entra, mas mortes de PW (−0,002) e vida ≤ 0 (+0,16 pp) não mudam, porque o dano vai pros PWs que ficaram. O efeito medido sobre o inerte (PWs mortos −0,037 no geral e −0,081 quando entra) vem principalmente do −2 (por eliminação: com e sem o phase out o número é o mesmo). Na mesa go_wide a vida ≤ 0 até piora (+0,50 pp).
+- −2: 1 bounce por oponente (3 na mesa de 4), usado em 39% das partidas de resiliência em que ele entra. −7: Construct 9/9 impossível de bloquear, indestrutível, com vigilância; usado em 40% dessas partidas e o Construct ataca em 24% (dano médio 8,3 por partida).
+- Contra: protege só OUTROS PWs e só até o meu untap (no meu turno todos ficam expostos); o Vronos e a Bridge (encantamento) ficam na linha de fogo; PW fora de fase perde os estáticos (Teferi Time Raveler, Narset, Wanderer) e a ativação instantânea do emblema do Teferi TA; a lista já tem **Ripples of Potential** (phase out de TODOS os PWs por {1}{U}, instantâneo, com proliferate), Mutational Advantage, Veil of Summer e Sterling Grove. 5 mana UU no tempo de feitiço.
+
+**Sarkhan the Masterless — abre uma linha de vitória que a lista não tem, com risco que o simulador não vê.**
+- Medido: contra o PW inerte, P(dano ≥ 40) **+6,2 pp** (+15,6 pp nas partidas em que entra) e P(≥ 120) +1,5 pp; vida ≤ 0 −0,33 pp; PWs mortos −0,043. A animação sozinha vale +5,6 pp de P(dano ≥ 40) (+3,80 pp com ela, −1,83 pp sem); a queda de vida ≤ 0 vem das fichas Dragão e do estático, não da animação. Nas partidas em que ela entra na resiliência, 81% usam o +1 com dano e o dano mediano é 18. No padrão o ganho é mínimo (Δ 1º ult −0,017).
+- Pelo deck: hoje a lista fecha por veneno (Vraska −9: elimina um oponente em 33% das partidas até o T10), Bolas −8, Elspeth −7 ou turnos extras. Com 4 a 6 PWs prontos são 16 a 24 de dano voador por turno, dividido entre 3 oponentes (por isso P(≥ 120) só sobe 1,5 pp: sozinha não fecha a mesa). Doubling Season: entra com 10.
+- Regras que pesam (rulings): o PW animado **deixa de ser planeswalker** até o fim do turno (perde as habilidades que a Ichormoon Gauntlet concede, mas ainda ativa as próprias); só ataca quem estava sob controle desde o começo do turno; sem vigilância (a da Esika exige a frente em campo, que exclui a Bridge). A lista tem 0 Dragões, então o estático só conta as fichas do −3.
+- Contra: no meu turno os PWs viram criaturas 4/4: um Swords to Plowshares ou wipe em resposta exila/mata Ugin, Kaya, Elspeth. **O simulador não modela instantâneo de oponente no meu turno, então esta carta é a mais superestimada aqui.** 5 mana RR.
+
+**As 4 juntas** (Dihada→Arena Rector, Guff→Swan Song, Vronos→Veil of Summer, Sarkhan→Oath of Nissa): o ritmo padrão não muda (1º ult +0,026 ±0,030, P(ult ≤ T8) −0,57 pp ±1,06: os cortes de Swan Song/Veil/Oath e o fato de Vronos/Sarkhan não acelerarem cancelam o ganho de Dihada e Guff); na resiliência: vida ≤ 0 −0,83 pp, PW-turnos +3,28, P(dano ≥ 40) +6,4 pp, mas o 1º ult piora (+0,067). Ou seja, o ganho do pacote é sobrevivência e dano, não velocidade.
+
+**Onde cada uma interage com a lista (Regra #4):**
+- Bridge: as 4 são PWs, então entram de graça pelo gatilho de upkeep e ativam no mesmo turno (CR 606.3); a fatia de PW do pool da Bridge passa de 17/28 para 21/32.
+- Urza cap. II pode botá-las de graça (todas MV ≤ 6); Carth acha mais PWs no top 7; Arena Rector nunca as escolhe (busca o de maior MV: Ugin/Kaya).
+- Doubling Season: lealdade inicial 10, fichas dobradas (Treasure, Wizard, Dragão); Chain Veil/Oath de Teferi/Urza III: 2 ativações no turno; Peregrine Dynamo copia o −3 da Guff/Dihada.
+- Aminatou −1 e Oath de Teferi devolvem a candidata com lealdade nova; Oko −5 copia (regra da lenda).
+- Combos: 0 novos (Spellbook). Bracket: nenhuma é Game Changer; o deck continua com 3.
+
+### Limites desta rodada (Regra #7: o que foi e o que NÃO foi verificado)
+
+- **Verificado:** oráculo e rulings ao vivo das 4, cláusula a cláusula, com teste dirigido; combos (Spellbook antes/depois + controle); os conceitos "lendária", "Dragão", "artefato" e "Wizard" enumerados por script sobre o `type_line`; A/B com controle de corte (Doubling Season/Farseek) e de entrada (PW inerte); condicional; sensibilidade a política (4 chaves) e a perfil de mesa (3); bit-identidade da lista atual; regressão de 40.000 partidas.
+- **NÃO verificado:** as outras 99 cartas contra as 4 uma a uma (só os conceitos e motores listados); instantâneo de oponente no meu turno; a frente da Esika; ordem do gatilho da Guff contra todos os outros gatilhos de end step (só Oath, Atraxa, Sterling Grove, Vronos); a qualidade do PW protegido pelo Vronos; a interação real do −11 da Dihada com PW/artefato/encantamento do oponente (📊).
+- **Sem o efeito do Carth na Sarkhan animada:** o Carth cobra [+1] "planeswalkers' loyalty abilities"; um PW animado não é planeswalker. Não achei ruling; o simulador mantém o imposto (conservador).
+
+
+<details><summary>Tabelas completas: cada candidata contra cada corte (incondicional e condicional)</summary>
+
+**Modo padrão — todas as partidas (incondicional)**
+
+| candidata ↓ / sai → | Arena Rector | Swan Song | Veil of Summer | Oath of Nissa | Farseek | Doubling Season |
+|---|---|---|---|---|---|---|
+| Dihada: Δ 1º ult (turno) | **-0.057 ±0.014** | **-0.028 ±0.016** | **-0.027 ±0.016** | -0.008 ±0.021 | +0.013 ±0.019 | **+0.020 ±0.018** |
+| Dihada: Δ P(ult ≤ T8) | **+1.37 pp ±0.52** | **+0.70 pp ±0.64** | **+0.93 pp ±0.61** | +0.40 pp ±0.73 | -0.03 pp ±0.66 | -0.40 pp ±0.66 |
+| Dihada: Δ turnos c/ ult | **+0.087 ±0.015** | **+0.044 ±0.017** | **+0.049 ±0.017** | **+0.023 ±0.021** | +0.013 ±0.019 | +0.002 ±0.017 |
+| Guff: Δ 1º ult (turno) | **-0.053 ±0.013** | **-0.014 ±0.014** | **-0.016 ±0.015** | +0.002 ±0.021 | **+0.021 ±0.017** | +0.013 ±0.018 |
+| Guff: Δ P(ult ≤ T8) | **+1.67 pp ±0.49** | +0.27 pp ±0.58 | **+0.77 pp ±0.59** | -0.10 pp ±0.72 | -0.37 pp ±0.62 | +0.00 pp ±0.63 |
+| Guff: Δ turnos c/ ult | **+0.052 ±0.012** | **+0.018 ±0.015** | **+0.023 ±0.015** | -0.015 ±0.020 | -0.014 ±0.018 | -0.009 ±0.017 |
+| Vronos: Δ 1º ult (turno) | -0.004 ±0.009 | **+0.041 ±0.013** | **+0.032 ±0.014** | **+0.049 ±0.021** | **+0.061 ±0.018** | **+0.054 ±0.017** |
+| Vronos: Δ P(ult ≤ T8) | +0.00 pp ±0.35 | **-1.17 pp ±0.52** | **-0.63 pp ±0.49** | **-1.00 pp ±0.71** | **-1.37 pp ±0.61** | **-1.03 pp ±0.59** |
+| Vronos: Δ turnos c/ ult | -0.001 ±0.009 | **-0.048 ±0.014** | **-0.032 ±0.014** | **-0.076 ±0.020** | **-0.056 ±0.018** | **-0.057 ±0.016** |
+| Sarkhan: Δ 1º ult (turno) | **-0.010 ±0.008** | **+0.037 ±0.013** | **+0.031 ±0.014** | **+0.048 ±0.021** | **+0.061 ±0.018** | **+0.051 ±0.017** |
+| Sarkhan: Δ P(ult ≤ T8) | +0.20 pp ±0.31 | **-1.07 pp ±0.51** | **-0.57 pp ±0.49** | **-1.00 pp ±0.71** | **-1.30 pp ±0.61** | **-0.90 pp ±0.58** |
+| Sarkhan: Δ turnos c/ ult | +0.006 ±0.008 | **-0.045 ±0.014** | **-0.030 ±0.014** | **-0.074 ±0.020** | **-0.055 ±0.018** | **-0.054 ±0.016** |
+| CONTROLE (PW sem habilidade): Δ 1º ult (turno) | +0.006 ±0.006 | **+0.046 ±0.014** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ P(ult ≤ T8) | -0.03 pp ±0.24 | **-1.23 pp ±0.52** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ turnos c/ ult | **-0.011 ±0.007** | **-0.053 ±0.014** | — | — | — | — |
+
+**Resiliência — todas as partidas (incondicional)**
+
+| candidata ↓ / sai → | Arena Rector | Swan Song | Veil of Summer | Oath of Nissa | Farseek | Doubling Season |
+|---|---|---|---|---|---|---|
+| Dihada: Δ vida ≤ 0 | -0.33 pp ±0.35 | **-0.50 pp ±0.46** | **-0.43 pp ±0.42** | **-0.67 pp ±0.53** | +0.00 pp ±0.47 | **-0.60 pp ±0.52** |
+| Dihada: Δ 1º ult | **-0.035 ±0.020** | **-0.024 ±0.021** | **-0.039 ±0.022** | **-0.027 ±0.025** | -0.004 ±0.026 | **+0.025 ±0.024** |
+| Dihada: Δ PW-turnos vivos | **+2.199 ±0.234** | **+1.964 ±0.219** | **+2.219 ±0.233** | **+1.789 ±0.253** | **+1.714 ±0.266** | **+2.098 ±0.235** |
+| Dihada: Δ PWs mortos em combate | **+0.045 ±0.017** | **+0.036 ±0.016** | **+0.033 ±0.017** | **+0.035 ±0.018** | **+0.026 ±0.017** | **+0.025 ±0.017** |
+| Dihada: Δ P(dano nosso ≥ 40) | **+3.07 pp ±0.94** | **+2.63 pp ±0.97** | **+2.50 pp ±0.94** | **+2.63 pp ±1.02** | **+3.23 pp ±1.02** | **+1.97 pp ±1.00** |
+| Dihada: Δ P(dano nosso ≥ 120) | **+2.83 pp ±0.90** | **+2.03 pp ±0.82** | **+2.17 pp ±0.86** | **+2.40 pp ±0.93** | **+1.60 pp ±0.97** | +0.67 pp ±0.96 |
+| Guff: Δ vida ≤ 0 | **-0.57 pp ±0.33** | **-0.50 pp ±0.45** | -0.30 pp ±0.41 | -0.53 pp ±0.55 | +0.23 pp ±0.48 | -0.37 pp ±0.50 |
+| Guff: Δ 1º ult | +0.002 ±0.020 | +0.003 ±0.020 | +0.001 ±0.022 | **+0.031 ±0.024** | **+0.039 ±0.024** | **+0.047 ±0.023** |
+| Guff: Δ PW-turnos vivos | **+0.989 ±0.179** | **+0.756 ±0.168** | **+0.971 ±0.182** | **+0.462 ±0.205** | **+0.499 ±0.222** | **+1.035 ±0.199** |
+| Guff: Δ PWs mortos em combate | -0.004 ±0.012 | -0.008 ±0.016 | -0.006 ±0.016 | -0.003 ±0.016 | -0.008 ±0.017 | **-0.019 ±0.016** |
+| Guff: Δ P(dano nosso ≥ 40) | +0.00 pp ±0.83 | -0.20 pp ±0.83 | -0.13 pp ±0.84 | **-0.90 pp ±0.90** | -0.43 pp ±0.91 | -0.87 pp ±0.95 |
+| Guff: Δ P(dano nosso ≥ 120) | -0.27 pp ±0.77 | -0.10 pp ±0.74 | +0.23 pp ±0.76 | -0.23 pp ±0.79 | -0.23 pp ±0.84 | **-1.50 pp ±0.87** |
+| Vronos: Δ vida ≤ 0 | -0.20 pp ±0.32 | -0.10 pp ±0.40 | -0.03 pp ±0.38 | -0.13 pp ±0.57 | +0.40 pp ±0.48 | -0.10 pp ±0.49 |
+| Vronos: Δ 1º ult | **+0.039 ±0.021** | **+0.019 ±0.018** | **+0.029 ±0.021** | **+0.044 ±0.024** | **+0.058 ±0.025** | **+0.075 ±0.022** |
+| Vronos: Δ PW-turnos vivos | **+0.331 ±0.179** | **+0.185 ±0.151** | **+0.377 ±0.158** | +0.078 ±0.199 | -0.055 ±0.222 | **+0.304 ±0.164** |
+| Vronos: Δ PWs mortos em combate | +0.011 ±0.012 | +0.006 ±0.014 | +0.003 ±0.014 | -0.003 ±0.017 | -0.002 ±0.017 | -0.001 ±0.014 |
+| Vronos: Δ P(dano nosso ≥ 40) | **-1.07 pp ±0.84** | -0.33 pp ±0.83 | -0.60 pp ±0.85 | -0.77 pp ±0.92 | -0.73 pp ±0.91 | **-1.57 pp ±0.89** |
+| Vronos: Δ P(dano nosso ≥ 120) | **-1.23 pp ±0.72** | **-0.90 pp ±0.70** | **-1.40 pp ±0.73** | **-0.83 pp ±0.81** | **-1.53 pp ±0.87** | **-2.80 pp ±0.83** |
+| Sarkhan: Δ vida ≤ 0 | **-0.43 pp ±0.33** | -0.40 pp ±0.43 | -0.33 pp ±0.37 | -0.43 pp ±0.56 | +0.13 pp ±0.46 | -0.30 pp ±0.48 |
+| Sarkhan: Δ 1º ult | **+0.051 ±0.020** | **+0.033 ±0.018** | **+0.045 ±0.020** | **+0.060 ±0.023** | **+0.081 ±0.025** | **+0.089 ±0.023** |
+| Sarkhan: Δ PW-turnos vivos | **+0.320 ±0.164** | **+0.190 ±0.148** | **+0.420 ±0.154** | +0.055 ±0.195 | -0.111 ±0.218 | **+0.397 ±0.169** |
+| Sarkhan: Δ PWs mortos em combate | +0.005 ±0.011 | -0.001 ±0.013 | +0.006 ±0.013 | +0.003 ±0.017 | +0.006 ±0.016 | -0.013 ±0.013 |
+| Sarkhan: Δ P(dano nosso ≥ 40) | **+3.80 pp ±0.96** | **+4.03 pp ±0.96** | **+4.13 pp ±0.97** | **+3.37 pp ±1.02** | **+3.67 pp ±1.04** | **+3.60 pp ±1.02** |
+| Sarkhan: Δ P(dano nosso ≥ 120) | -0.43 pp ±0.75 | +0.17 pp ±0.69 | -0.03 pp ±0.79 | +0.00 pp ±0.82 | -0.50 pp ±0.86 | **-1.57 pp ±0.85** |
+| CONTROLE (PW sem habilidade): Δ vida ≤ 0 | -0.10 pp ±0.30 | -0.17 pp ±0.44 | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ 1º ult | **+0.065 ±0.019** | **+0.055 ±0.018** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ PW-turnos vivos | **+0.370 ±0.164** | **+0.315 ±0.149** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ PWs mortos em combate | **+0.048 ±0.013** | **+0.042 ±0.015** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ P(dano nosso ≥ 40) | **-2.40 pp ±0.77** | **-1.80 pp ±0.78** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ P(dano nosso ≥ 120) | **-1.93 pp ±0.69** | **-1.23 pp ±0.67** | — | — | — | — |
+
+**Modo padrão — só as partidas em que a candidata entrou em campo (condicional)**
+
+| candidata ↓ / sai → | Arena Rector | Swan Song | Veil of Summer | Oath of Nissa | Farseek | Doubling Season |
+|---|---|---|---|---|---|---|
+| Dihada: Δ 1º ult (turno) | **-0.122 ±0.030** | **-0.061 ±0.035** | **-0.063 ±0.035** | -0.034 ±0.045 | +0.008 ±0.041 | +0.023 ±0.036 |
+| Dihada: Δ P(ult ≤ T8) | **+2.91 pp ±1.11** | **+1.54 pp ±1.38** | **+2.13 pp ±1.34** | +0.98 pp ±1.60 | +0.30 pp ±1.45 | -0.81 pp ±1.35 |
+| Dihada: Δ turnos c/ ult | **+0.186 ±0.032** | **+0.101 ±0.036** | **+0.112 ±0.036** | **+0.074 ±0.045** | **+0.049 ±0.041** | +0.028 ±0.035 |
+| Guff: Δ 1º ult (turno) | **-0.114 ±0.026** | **-0.032 ±0.030** | **-0.038 ±0.034** | -0.014 ±0.044 | +0.025 ±0.037 | +0.008 ±0.036 |
+| Guff: Δ P(ult ≤ T8) | **+3.56 pp ±1.03** | +0.59 pp ±1.26 | **+1.76 pp ±1.30** | -0.15 pp ±1.59 | -0.37 pp ±1.35 | +0.07 pp ±1.29 |
+| Guff: Δ turnos c/ ult | **+0.112 ±0.026** | **+0.045 ±0.033** | **+0.054 ±0.033** | -0.010 ±0.044 | -0.010 ±0.038 | +0.003 ±0.036 |
+| Vronos: Δ 1º ult (turno) | -0.001 ±0.019 | **+0.095 ±0.031** | **+0.073 ±0.033** | **+0.078 ±0.047** | **+0.097 ±0.038** | **+0.111 ±0.037** |
+| Vronos: Δ P(ult ≤ T8) | -0.08 pp ±0.75 | **-2.82 pp ±1.23** | **-1.40 pp ±1.19** | **-1.90 pp ±1.66** | **-2.20 pp ±1.40** | **-2.30 pp ±1.30** |
+| Vronos: Δ turnos c/ ult | -0.007 ±0.020 | **-0.109 ±0.032** | **-0.072 ±0.032** | **-0.137 ±0.046** | **-0.090 ±0.039** | **-0.114 ±0.035** |
+| Sarkhan: Δ 1º ult (turno) | -0.016 ±0.018 | **+0.086 ±0.031** | **+0.071 ±0.034** | **+0.077 ±0.046** | **+0.099 ±0.038** | **+0.102 ±0.036** |
+| Sarkhan: Δ P(ult ≤ T8) | +0.40 pp ±0.64 | **-2.56 pp ±1.21** | **-1.23 pp ±1.19** | **-1.89 pp ±1.65** | **-2.11 pp ±1.41** | **-1.96 pp ±1.28** |
+| Sarkhan: Δ turnos c/ ult | +0.009 ±0.019 | **-0.099 ±0.032** | **-0.067 ±0.033** | **-0.134 ±0.046** | **-0.090 ±0.038** | **-0.108 ±0.035** |
+| CONTROLE (PW sem habilidade): Δ 1º ult (turno) | +0.013 ±0.013 | **+0.099 ±0.030** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ P(ult ≤ T8) | -0.07 pp ±0.50 | **-2.69 pp ±1.12** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ turnos c/ ult | **-0.022 ±0.014** | **-0.111 ±0.031** | — | — | — | — |
+
+**Resiliência — só as partidas em que a candidata entrou em campo (condicional)**
+
+| candidata ↓ / sai → | Arena Rector | Swan Song | Veil of Summer | Oath of Nissa | Farseek | Doubling Season |
+|---|---|---|---|---|---|---|
+| Dihada: Δ vida ≤ 0 | **-0.71 pp ±0.71** | **-1.30 pp ±0.91** | **-1.10 pp ±0.83** | **-1.29 pp ±1.01** | -0.70 pp ±0.80 | **-1.66 pp ±0.86** |
+| Dihada: Δ 1º ult | **-0.075 ±0.043** | **-0.050 ±0.044** | **-0.079 ±0.043** | **-0.073 ±0.051** | -0.031 ±0.052 | +0.032 ±0.046 |
+| Dihada: Δ PW-turnos vivos | **+4.745 ±0.465** | **+4.399 ±0.428** | **+4.616 ±0.444** | **+4.017 ±0.507** | **+3.898 ±0.504** | **+4.339 ±0.449** |
+| Dihada: Δ PWs mortos em combate | **+0.095 ±0.035** | **+0.073 ±0.034** | **+0.072 ±0.033** | **+0.081 ±0.036** | **+0.048 ±0.032** | **+0.054 ±0.031** |
+| Dihada: Δ P(dano nosso ≥ 40) | **+6.50 pp ±1.98** | **+6.20 pp ±2.03** | **+5.51 pp ±1.90** | **+5.90 pp ±2.13** | **+6.89 pp ±2.08** | **+4.44 pp ±2.04** |
+| Dihada: Δ P(dano nosso ≥ 120) | **+6.07 pp ±1.92** | **+4.61 pp ±1.70** | **+4.62 pp ±1.74** | **+5.61 pp ±1.95** | **+3.69 pp ±1.96** | +1.73 pp ±1.94 |
+| Guff: Δ vida ≤ 0 | **-1.36 pp ±0.64** | **-1.30 pp ±0.89** | **-0.83 pp ±0.81** | -0.86 pp ±1.06 | -0.49 pp ±0.79 | **-1.18 pp ±0.80** |
+| Guff: Δ 1º ult | +0.003 ±0.042 | +0.009 ±0.041 | +0.002 ±0.043 | +0.049 ±0.049 | **+0.059 ±0.049** | **+0.081 ±0.045** |
+| Guff: Δ PW-turnos vivos | **+2.178 ±0.373** | **+1.796 ±0.340** | **+2.045 ±0.362** | **+1.155 ±0.423** | **+1.372 ±0.427** | **+2.132 ±0.393** |
+| Guff: Δ PWs mortos em combate | -0.014 ±0.024 | -0.024 ±0.033 | -0.008 ±0.031 | +0.001 ±0.032 | -0.023 ±0.033 | **-0.037 ±0.029** |
+| Guff: Δ P(dano nosso ≥ 40) | -0.07 pp ±1.78 | +0.07 pp ±1.73 | +0.00 pp ±1.70 | -1.73 pp ±1.88 | -0.77 pp ±1.86 | -1.46 pp ±1.94 |
+| Guff: Δ P(dano nosso ≥ 120) | -0.57 pp ±1.65 | +0.00 pp ±1.55 | +0.62 pp ±1.56 | -0.07 pp ±1.64 | -0.14 pp ±1.71 | **-2.78 pp ±1.76** |
+| Vronos: Δ vida ≤ 0 | **-0.73 pp ±0.66** | -0.49 pp ±0.81 | -0.23 pp ±0.79 | -1.00 pp ±1.06 | -0.48 pp ±0.70 | **-0.87 pp ±0.80** |
+| Vronos: Δ 1º ult | **+0.068 ±0.046** | +0.036 ±0.040 | **+0.062 ±0.045** | +0.042 ±0.051 | **+0.080 ±0.054** | **+0.154 ±0.047** |
+| Vronos: Δ PW-turnos vivos | **+1.119 ±0.405** | **+0.777 ±0.333** | **+1.017 ±0.349** | **+0.800 ±0.426** | **+0.648 ±0.457** | **+0.733 ±0.366** |
+| Vronos: Δ PWs mortos em combate | +0.014 ±0.027 | +0.009 ±0.031 | +0.008 ±0.028 | -0.007 ±0.034 | -0.025 ±0.034 | -0.002 ±0.027 |
+| Vronos: Δ P(dano nosso ≥ 40) | -1.95 pp ±1.97 | +0.08 pp ±1.90 | -0.85 pp ±1.91 | -0.83 pp ±2.10 | -0.80 pp ±2.05 | **-2.92 pp ±2.04** |
+| Vronos: Δ P(dano nosso ≥ 120) | **-2.52 pp ±1.70** | -1.46 pp ±1.60 | **-2.87 pp ±1.66** | -0.92 pp ±1.88 | **-2.47 pp ±1.94** | **-6.23 pp ±1.91** |
+| Sarkhan: Δ vida ≤ 0 | **-0.97 pp ±0.71** | **-1.13 pp ±0.89** | **-1.01 pp ±0.79** | **-1.75 pp ±1.04** | **-0.79 pp ±0.62** | **-1.10 pp ±0.81** |
+| Sarkhan: Δ 1º ult | **+0.101 ±0.044** | **+0.069 ±0.039** | **+0.101 ±0.044** | **+0.089 ±0.050** | **+0.134 ±0.052** | **+0.191 ±0.049** |
+| Sarkhan: Δ PW-turnos vivos | **+1.056 ±0.364** | **+0.781 ±0.323** | **+1.110 ±0.339** | **+0.744 ±0.415** | **+0.508 ±0.448** | **+0.944 ±0.375** |
+| Sarkhan: Δ PWs mortos em combate | +0.001 ±0.024 | -0.008 ±0.029 | +0.013 ±0.027 | +0.008 ±0.035 | -0.006 ±0.034 | **-0.030 ±0.026** |
+| Sarkhan: Δ P(dano nosso ≥ 40) | **+9.89 pp ±2.21** | **+10.65 pp ±2.17** | **+10.13 pp ±2.15** | **+9.57 pp ±2.34** | **+9.70 pp ±2.32** | **+9.25 pp ±2.30** |
+| Sarkhan: Δ P(dano nosso ≥ 120) | -0.57 pp ±1.76 | +1.13 pp ±1.58 | +0.31 pp ±1.81 | +1.25 pp ±1.89 | +0.00 pp ±1.93 | **-3.29 pp ±1.95** |
+| CONTROLE (PW sem habilidade): Δ vida ≤ 0 | -0.43 pp ±0.59 | -0.57 pp ±0.87 | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ 1º ult | **+0.136 ±0.040** | **+0.119 ±0.038** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ PW-turnos vivos | **+0.830 ±0.345** | **+0.835 ±0.301** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ PWs mortos em combate | **+0.099 ±0.027** | **+0.084 ±0.032** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ P(dano nosso ≥ 40) | **-5.18 pp ±1.63** | **-3.37 pp ±1.61** | — | — | — | — |
+| CONTROLE (PW sem habilidade): Δ P(dano nosso ≥ 120) | **-4.12 pp ±1.46** | **-2.44 pp ±1.37** | — | — | — | — |
+
+</details>
+
 ## Rodada Reality Fracture (Tam, Loyal Tutor, Entrust the Spark) — 2026-09-25
 
 Detalhe cláusula por cláusula e os 3 bugs de motor em `checklist-oraculo.md`.
