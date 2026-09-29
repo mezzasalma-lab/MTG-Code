@@ -92,7 +92,7 @@ resolver, usa-se a última informação; carta com {X} na biblioteca conta X = 0
 | (interação) É criatura: a Bridge a acerta e ela entra com doença de invocação | `creature_enters`; a doença NÃO afeta a busca (não tem {T}). | ✅ |
 | (convenção) Não ataca | 📝 peça de motor, como a Tam (`NON_ATTACKING_NAMES`); ela bloqueia como qualquer criatura minha (`_choose_blocker`). | 📝 |
 | (interação) Liliana −4 ("each player sacrifices two creatures of their choice"), Eternal Wanderer −4 e os wipes próprios matam a Sisay | A escolha do −4 é MINHA: `liliana_spares_sisay` (padrão ligado) deixa a Sisay por último e usa o +1 se ela seria uma das 2 sacrificadas. Wipes próprios e Elspeth −3 (poder ≥ 4, com a Bridge ela é 7/7) continuam matando (`_mass_creature_removal` lê o poder real por `_pt`). Achado pela instrumentação de fontes de morte na avaliação Sisay × Arena Rector. | ✅ |
-| (convenção) Ativação no fim do turno do oponente (a habilidade não tem restrição de timing) | 📝 não modelada: seria uma ativação EXTRA com mana que sobrou do meu turno; o simulador só ativa no meu main phase, então **subestima** a carta. | 📝 |
+| (convenção) Ativação no fim do turno do oponente (a habilidade não tem restrição de timing) | ✅ modelada como chave de sensibilidade (`sisay_round_end`, **desligada por padrão**): `try_sisay_round_end` usa a mana que sobrou do meu turno (`mana_held_back`, CR 500.1) na mesma janela de fim de rodada que Tam e Loyal Tutor já usam; criatura buscada entra sem doença de invocação; Dynamo copia por {1}. Soma ≤ 0,005 turno no padrão e +0,19 PW-turnos vivos na resiliência (seção "Sisay com a janela de fim de rodada" do log). Padrão desligado só pra não invalidar os A/B já publicados. | ✅ |
 
 ### Escopo do que foi (e do que NÃO foi) verificado (Regra #7)
 
@@ -106,7 +106,7 @@ resolver, usa-se a última informação; carta com {X} na biblioteca conta X = 0
 
 **NÃO varridas:**
 - as outras 99 cartas contra a Sisay uma a uma (só os conceitos "lendária", "cor", "MV" e os motores da lista);
-- a ordem da política de ativação contra TODAS as janelas do turno (testei mão-primeiro vs busca-primeiro; instantâneo no fim do turno do oponente não);
+- a ordem da política de ativação contra TODAS as janelas do turno (testei mão-primeiro vs busca-primeiro e a janela de fim de rodada; resposta a remoção não);
 - o modelo de cor é agregado (1 fonte por cor): o custo {W}{U}{B}{R}{G} pode ser mais difícil de pagar numa mesa real do que aqui;
 - 📊 resposta de oponente à ativação (ruling da última informação).
 

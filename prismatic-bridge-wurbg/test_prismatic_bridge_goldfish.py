@@ -1946,6 +1946,41 @@ def test_arena_rector_outlet_damn_or_void_rend_on_own_arena_rector_fetches_the_t
         pb.CAND_POLICY["arena_rector_outlet"] = False
 
 
+def test_sisay_round_end_window_uses_leftover_mana_at_the_opponents_end_step():
+    def base(target="Teferi, Time Raveler", held=5):
+        s = sisay_state(library=[target] + [FILLER] * 12)
+        s.mana_held_back = held
+        return s
+    # padrao: janela desligada
+    s = base()
+    assert pb.try_sisay_round_end(s, []) == 0 and "Teferi, Time Raveler" not in s.battlefield
+    pb.CAND_POLICY["sisay_round_end"] = True
+    try:
+        s = base()
+        assert pb.try_sisay_round_end(s, []) == 1
+        assert "Teferi, Time Raveler" in s.battlefield and s.mana_held_back == 0
+        assert s.cand_stats.get("sisay_round_end_activations") == 1
+        # sem 5 de mana sobrando nao busca
+        s = base(held=4)
+        assert pb.try_sisay_round_end(s, []) == 0
+        # criatura buscada entra no end step do oponente: sem doenca de invocacao no meu turno seguinte
+        s = base(target="Atraxa, Praetors' Voice")
+        assert pb.try_sisay_round_end(s, []) == 1
+        assert s.creature_cast_turn["Atraxa, Praetors' Voice"] == s.turn - 1
+        # Peregrine Dynamo copia por {1}: segunda busca na mesma janela
+        s = base(held=6)
+        s.library = ["Teferi, Time Raveler", "Aminatou, the Fateshifter"] + [FILLER] * 12
+        creature(s, "The Peregrine Dynamo", cast_turn=1)
+        assert pb.try_sisay_round_end(s, []) == 1
+        assert s.cand_stats.get("sisay_fetches") == 2 and s.mana_held_back == 0
+        # a janela roda no topo do play_turn (fim de rodada) e o resto do turno segue normal
+        s = base()
+        pb.play_turn(s, s.turn + 1, [])
+        assert s.cand_stats.get("sisay_round_end_activations", 0) >= 1
+    finally:
+        pb.CAND_POLICY["sisay_round_end"] = False
+
+
 def test_sisay_runs_full_games_without_exceptions():
     for slot in ("Arena Rector", "Swan Song", "Doubling Season"):
         for seed in range(10):

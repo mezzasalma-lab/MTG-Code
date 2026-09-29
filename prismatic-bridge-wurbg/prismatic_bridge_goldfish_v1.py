@@ -2878,7 +2878,9 @@ CAND_POLICY = {"dihada_minus3": True, "guff_minus3": True, "vronos_phase": True,
                "arena_rector_outlet": False,  # LINHA DELIBERADA (sensibilidade; desligada por padrao pra nao mexer nos A/B
                                               # ja' feitos): destruir a PROPRIA Arena Rector com Damn {B}{B} ou Void Rend
                                               # {W}{U}{B} pra disparar o gatilho de morte (PW direto pro campo)
-               "arena_rector_outlet_pre_hand": True}  # True: essa linha vem antes da mao (teto); False: so' com a mana que sobra
+               "arena_rector_outlet_pre_hand": True,  # True: essa linha vem antes da mao (teto); False: so' com a mana que sobra
+               "sisay_round_end": False}  # LINHA DELIBERADA (sensibilidade): a Sisay busca tambem no end step do ultimo oponente
+                                          # com a mana que sobrou do meu turno, como Tam e Loyal Tutor ja' fazem por padrao
 CAND_POLICY_DEFAULTS = dict(CAND_POLICY)   # o harness de A/B inverte o padrao das chaves pedidas na variante ("@chave")
 
 
@@ -3252,11 +3254,13 @@ def _sisay_pick(state: GameState, targets: List[str]) -> Optional[str]:
     return max(targets, key=lambda c: C(c).mv) if targets else None
 
 
-def _sisay_fetch(state: GameState, name: str, log: List[Dict], via_dynamo: bool = False):
+def _sisay_fetch(state: GameState, name: str, log: List[Dict], via_dynamo: bool = False, round_end: bool = False):
     power = 2 + _sisay_bonus(state)
     state.library.remove(name)
     state.rng.shuffle(state.library)  # "then shuffle" resolve ANTES dos ETBs (gatilho do Carth olha o topo depois)
     _return_to_battlefield(state, name, log)
+    if round_end and C(name).type == "Creature":
+        state.creature_cast_turn[name] = state.turn - 1  # entrou no end step do oponente: sob meu controle desde antes do meu turno
     _cs(state, "sisay_fetches")
     _cs(state, "sisay_power_sum", power)
     _cs(state, "sisay_fetch_pw" if C(name).type == "Planeswalker" else "sisay_fetch_engine")
@@ -3314,6 +3318,39 @@ def sisay_activate(state: GameState, log: List[Dict], reserved: int = 0, min_mv:
                 state.dynamo_used_turn = state.turn
                 state.dynamo_copies_total += 1
                 _sisay_fetch(state, second, log, via_dynamo=True)
+    return n
+
+
+def try_sisay_round_end(state: GameState, log: List[Dict]) -> int:
+    """Sisay no end step do ultimo oponente (a habilidade nao tem {T} nem restricao de timing): a mana que sobrou do meu
+    turno (`mana_held_back`, CR 500.1 -- seria perdida no meu untap) paga a busca, na mesma janela que Tam e Loyal Tutor ja'
+    usam. Criatura buscada entra ANTES do meu turno (sem doenca de invocacao nele); PW buscado ativa no meu main phase.
+    Peregrine Dynamo copia ({1}, 1x por rodada). Chave `sisay_round_end` (padrao desligada). Retorna quantas buscas."""
+    n = 0
+    if not (CAND_POLICY["sisay_activate"] and CAND_POLICY["sisay_round_end"]):
+        return n
+    for _ in range(4):
+        if SISAY not in state.battlefield or SISAY in state.phased_out:
+            return n
+        if state.mana_held_back < 5 or any(color_sources(state, c) < 1 for c in SISAY_COLORS):
+            return n
+        pick = _sisay_pick(state, sisay_targets(state))
+        if pick is None:
+            return n
+        state.mana_held_back -= 5
+        _cs(state, "sisay_activations")
+        _cs(state, "sisay_round_end_activations")
+        _sisay_fetch(state, pick, log, round_end=True)
+        n += 1
+        dyn = "The Peregrine Dynamo"
+        if (dyn in state.battlefield and state.mana_held_back >= 1 and state.dynamo_used_turn != state.turn - 1
+                and (dyn, None) not in state.round_end_tapped):
+            second = _sisay_pick(state, sisay_targets(state))
+            if second is not None:
+                state.mana_held_back -= 1
+                state.dynamo_used_turn = state.turn - 1
+                state.dynamo_copies_total += 1
+                _sisay_fetch(state, second, log, via_dynamo=True, round_end=True)
     return n
 
 
@@ -4055,6 +4092,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]], skip_lega
     # velocidade de instantaneo.
     try_loyal_tutor(state, log, window="round_end")
     try_tam_proliferate(state, log, window="round_end")
+    try_sisay_round_end(state, log)
     # Do meu untap ate' a passada de lealdade: capitulo III da Urza ainda vale.
     state.pre_activation_window = True
 

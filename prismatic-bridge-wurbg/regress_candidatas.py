@@ -36,12 +36,13 @@ def alarm(_sig, _frm):
 signal.signal(signal.SIGALRM, alarm)
 part, nparts, N, out = int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), sys.argv[4]
 res = {"std": 0, "res": 0, "errors": [], "hangs": 0, "cast_or_entered": {c: 0 for c in pb.CANDIDATE_PWS + pb.CANDIDATE_CREATURES},
-       "ults": {"dihada_ult": 0, "vronos_ult": 0, "sisay_activations": 0, "arena_rector_outlet_Damn": 0, "arena_rector_outlet_Void Rend": 0}}
+       "ults": {"dihada_ult": 0, "vronos_ult": 0, "sisay_activations": 0, "arena_rector_outlet_Damn": 0, "arena_rector_outlet_Void Rend": 0, "sisay_round_end_activations": 0}}
 for i in range(part, N, nparts):
     sw = SWAPS[i % len(SWAPS)]
     # chave de sensibilidade da linha deliberada da Arena Rector: 1 partida em 3 (o resto roda com o padrao, desligada)
     pb.CAND_POLICY["arena_rector_outlet"] = (i % 3 == 0)
     pb.CAND_POLICY["arena_rector_outlet_pre_hand"] = (i % 2 == 0)
+    pb.CAND_POLICY["sisay_round_end"] = (i % 4 == 1)   # janela de fim de rodada da Sisay: 1 partida em 4
     for mode in ("std", "res"):
         seed = (3_000_000 if mode == "std" else 6_000_000) + 100_000 + i
         signal.alarm(20)

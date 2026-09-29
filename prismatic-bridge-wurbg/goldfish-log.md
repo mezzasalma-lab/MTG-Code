@@ -1,5 +1,92 @@
 # Goldfish Log — Esika, God of the Tree // The Prismatic Bridge
 
+## Sisay com a janela de fim de rodada — "ela parece MUITO melhor que o Rector" — 2026-09-29
+
+**Comentário do usuário:** "Ela parece MUITO melhor que o rector." Hipótese testada (Regra #5, o simulador como possível subestimador):
+o simulador só ativava a Sisay no MEU turno, embora a habilidade não tenha {T} nem restrição de timing. **Tam e Loyal Tutor já
+usam por padrão a janela de fim de rodada** (end step do último oponente, com a mana que sobrou do meu turno, `mana_held_back`,
+CR 500.1), então a comparação Sisay × Tam/Loyal Tutor estava enviesada contra a Sisay.
+
+**Implementação (`try_sisay_round_end`, chamada no topo de `play_turn` logo depois da janela da Tam):** com a chave
+`sisay_round_end` ligada, cada {W}{U}{B}{R}{G} que sobrou paga uma busca; criatura buscada entra com `creature_cast_turn = turno − 1`
+(sob meu controle desde antes do meu turno, sem doença de invocação); PW buscado ativa no meu main phase; a Peregrine Dynamo copia
+por {1} (1× por rodada). **Chave desligada por padrão**, só pra não invalidar os A/B já publicados (a diferença medida abaixo é
+pequena). Teste dirigido novo (liga/desliga, sem 5 de mana não busca, criatura sem doença, Dynamo, integração no `play_turn`).
+Validação: 137/137 testes, lista atual bit-idêntica (N = 300 padrão + 400 resiliência, 0 divergências), regressão de 40.000
+partidas com a janela ligada em 1 de cada 4 (a janela disparou em 447 delas): **0 exceções, 0 travamentos**.
+
+### 1. Sisay COM a janela de fim de rodada, no lugar de cada carta (Δ sobre a lista atual)
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: PW-turnos vivos | resil.: P(dano ≥ 40) | resil.: P(dano ≥ 120) |
+|---|---|---|---|---|---|---|---|
+| Sisay no lugar de Arena Rector | **-0.090 ±0.019** | **+2.33 pp ±0.69** | **-0.47 pp ±0.37** | -0.021 ±0.022 | +0.058 ±0.215 | +0.13 pp ±0.92 | -0.83 pp ±0.88 |
+| Sisay no lugar de Swan Song | **-0.067 ±0.018** | **+1.70 pp ±0.64** | **-0.67 pp ±0.43** | -0.014 ±0.022 | -0.177 ±0.186 | -0.43 pp ±0.87 | -0.63 pp ±0.83 |
+| Sisay no lugar de Veil of Summer | **-0.077 ±0.020** | **+2.73 pp ±0.72** | -0.30 pp ±0.48 | **-0.028 ±0.025** | +0.080 ±0.208 | -0.07 pp ±0.93 | -0.23 pp ±0.91 |
+| Sisay + Loyal Tutor (saem Arena Rector + Swan Song) | **-0.175 ±0.026** | **+4.57 pp ±0.90** | **-0.77 pp ±0.47** | **-0.072 ±0.029** | **+0.766 ±0.286** | **+1.30 pp ±1.11** | +0.50 pp ±1.05 |
+| Sisay + Tam (saem Arena Rector + Swan Song) | **-0.147 ±0.024** | **+3.83 pp ±0.89** | **-0.87 pp ±0.50** | **-0.059 ±0.030** | **-0.272 ±0.261** | **-1.13 pp ±1.09** | **-1.87 pp ±1.05** |
+| Tam + Loyal Tutor + Sisay (a Sisay no lugar do Veil of Summer) | **-0.268 ±0.031** | **+7.50 pp ±1.10** | **-0.93 pp ±0.64** | **-0.127 ±0.036** | **+0.657 ±0.320** | +0.93 pp ±1.27 | +1.00 pp ±1.18 |
+
+### 2. O que a janela SOMA à Sisay (com a janela − sem a janela, mesmo slot)
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: PW-turnos vivos | resil.: P(dano ≥ 40) | resil.: P(dano ≥ 120) |
+|---|---|---|---|---|---|---|---|
+| Sisay no lugar de Arena Rector | **-0.004 ±0.003** | +0.10 pp ±0.17 | -0.03 pp ±0.07 | **-0.015 ±0.007** | **+0.189 ±0.074** | **+0.57 pp ±0.40** | +0.33 pp ±0.36 |
+| Sisay no lugar de Swan Song | **-0.005 ±0.004** | +0.17 pp ±0.17 | +0.00 pp ±0.00 | **-0.017 ±0.006** | **+0.216 ±0.078** | **+0.50 pp ±0.42** | **+0.57 pp ±0.39** |
+| Sisay no lugar de Veil of Summer | **-0.005 ±0.003** | +0.07 pp ±0.09 | -0.03 pp ±0.11 | **-0.015 ±0.008** | **+0.245 ±0.076** | **+0.53 pp ±0.39** | **+0.87 pp ±0.41** |
+| Sisay + Loyal Tutor | **-0.004 ±0.004** | +0.07 pp ±0.16 | -0.07 pp ±0.09 | **-0.030 ±0.011** | **+0.265 ±0.095** | **+0.70 pp ±0.46** | **+0.53 pp ±0.41** |
+| Sisay + Tam | -0.003 ±0.003 | +0.03 pp ±0.15 | -0.10 pp ±0.11 | **-0.021 ±0.011** | **+0.237 ±0.086** | **+0.53 pp ±0.44** | **+0.57 pp ±0.42** |
+| Tam + Loyal Tutor + Sisay | **-0.004 ±0.002** | +0.07 pp ±0.09 | -0.03 pp ±0.11 | **-0.018 ±0.008** | **+0.243 ±0.076** | **+0.40 pp ±0.39** | **+0.37 pp ±0.34** |
+
+### 3. Sisay COM a janela contra as outras cartas no MESMO slot da Arena Rector (Sisay − outra; negativo em 1º ult/vida = Sisay melhor)
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: PW-turnos vivos | resil.: P(dano ≥ 40) | resil.: P(dano ≥ 120) |
+|---|---|---|---|---|---|---|---|
+| Sisay (com a janela) − Tam | **+0.028 ±0.017** | -0.60 pp ±0.67 | -0.10 pp ±0.30 | **+0.032 ±0.021** | **+0.315 ±0.179** | **+1.27 pp ±0.83** | +0.07 pp ±0.77 |
+
+### 3b. idem contra o Loyal Tutor
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: PW-turnos vivos | resil.: P(dano ≥ 40) | resil.: P(dano ≥ 120) |
+|---|---|---|---|---|---|---|---|
+| Sisay (com a janela) − Loyal Tutor | **+0.045 ±0.022** | **-1.17 pp ±0.74** | -0.17 pp ±0.40 | +0.023 ±0.025 | **-0.643 ±0.249** | **-1.10 pp ±0.97** | **-1.83 pp ±0.92** |
+
+### 3c. Par Sisay (com a janela) + Loyal Tutor contra Tam + Loyal Tutor
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: PW-turnos vivos | resil.: P(dano ≥ 40) | resil.: P(dano ≥ 120) |
+|---|---|---|---|---|---|---|---|
+| Sisay+LT (janela) − Tam+LT | **+0.034 ±0.017** | **-0.80 pp ±0.64** | -0.07 pp ±0.26 | **+0.034 ±0.020** | **+0.320 ±0.184** | **+0.97 pp ±0.82** | +0.03 pp ±0.79 |
+
+### 4. Uso da janela (partidas em que a Sisay entrou; slot Arena Rector)
+
+| modo | partidas em que entrou | com ≥ 1 busca no fim da rodada | média de buscas no fim da rodada (das que entraram) | média de buscas no total |
+|---|---|---|---|---|
+| std | 1378 | 369 (26.8%) | 0.58 | 3.66 |
+| res | 1339 | 316 (23.6%) | 0.45 | 2.62 |
+
+### Leitura
+
+- **A janela quase não muda a velocidade** (−0,004 turno no 1º ult, dentro do que o ruído permite distinguir) porque até o T8 quase
+  não sobra mana depois da mão. **Soma na resiliência:** +0,19 a +0,27 PW-turnos vivos, +0,4 a +0,7 pp de P(dano ≥ 40) e −0,015 a
+  −0,030 no 1º ult. Ela é usada em 27% (padrão) e 24% (resiliência) das partidas em que a Sisay entra (0,58 e 0,45 buscas por partida).
+- **Sisay (com a janela) no lugar da Arena Rector:** −0,090 turno e +2,3 pp de P(ult ≤ T8) no padrão; na resiliência vida ≤ 0
+  −0,47 pp, PW-turnos +0,06 e P(dano ≥ 40) +0,13 (ambos empate), P(dano ≥ 120) −0,83 pp (agora dentro do ruído; sem a janela era
+  −1,17 pp e pior). Ou seja: melhor em ritmo e um pouco melhor na vida, empate no resto.
+- **Contra as outras cartas no MESMO slot** ela continua atrás no ritmo: +0,028 turno mais lenta que a Tam e +0,045 mais lenta que o
+  Loyal Tutor. Na resiliência ela passa a ficar à frente da Tam (+0,32 PW-turnos, +1,3 pp de P(dano ≥ 40)). O par Sisay + Loyal Tutor
+  é +0,034 turno mais lento que Tam + Loyal Tutor no padrão e +0,032 pior no 1º ult da resiliência, mas +0,32 PW-turnos e +1,0 pp de
+  P(dano ≥ 40) melhor.
+- **"MUITO melhor" que a Arena Rector?** Os números dizem "melhor de forma consistente, mas em escala pequena": cerca de 1 turno mais
+  cedo a cada 11 partidas. Onde o efeito é maior: nas partidas em que ela de fato entra (46% delas) o ganho sobre o slot é o
+  dobro (−0,19 turno, +4,9 pp de P(ult ≤ T8); tabela condicional da seção Sisay). Isso é intrínseco ao deck: o ritmo dos ultimates
+  é limitado pela lealdade acumulando, não por achar carta, então um tutor melhor move pouco a média.
+- Continua valendo o que a Arena Rector faz e a Sisay não: Ugin/Kaya sem custo de mana (83% dos disparos) e seguro contra os
+  wipes do próprio deck.
+
+### Limites (Regra #7)
+
+- **Verificado:** a janela (teste dirigido, 6 variantes de A/B pareado, uso), com a mesma janela de Tam/Loyal Tutor.
+- **NÃO verificado:** a janela com a Tam e a Sisay disputando a mesma mana sobrando (a Tam vem primeiro; sem otimização entre as duas);
+  resposta a remoção (ativar em resposta, com 5 mana aberta); o padrão desligado ainda vale pra todas as tabelas anteriores da Sisay.
+
 ## Sisay no lugar da Arena Rector — troca direta como tutor — 2026-09-29
 
 **Pedido:** "Pensei em usar ela no lugar do Arena Rector, como tutor."
@@ -109,7 +196,8 @@ estrutural; frequência menor que a de Damn/Void Rend).
   Sisay morre em 30% das partidas de resiliência em que entra (25% por wipe de oponente, 4% por wipe meu, ~0% pela Liliana depois do
   ajuste de política); a Arena Rector morre em 38% e ganha com isso.
 - **O que o simulador não vê e favorece a Sisay:** ativar a busca em resposta a uma remoção (com 5 mana aberta a remoção só custa o
-  corpo) e ativar no fim do turno do oponente. **O que não vê e favorece a Arena Rector:** chump block deliberado (nenhuma das
+  corpo) e, com a janela de fim de rodada desligada por padrão, ativar no fim do turno do oponente (medido depois: soma ≤ 0,005 turno,
+  ver a seção "Sisay com a janela de fim de rodada" abaixo). **O que não vê e favorece a Arena Rector:** chump block deliberado (nenhuma das
   mortes medidas foi por combate), Bolas −3 e Ugin +2 na própria criatura.
 
 **Medido (troca direta, slot da Arena Rector):**
@@ -137,7 +225,7 @@ Arena Rector se você NÃO for usar Tam nem Loyal Tutor.
   instrumentação de uso da Arena Rector e da Sisay; A/B pareado nos 6 cortes e em 3 pares; linha deliberada em 2 prioridades;
   política do −4 da Liliana; testes dirigidos (136/136); regressão e bit-identidade (abaixo).
 - **NÃO verificado:** Bolas −3 e Ugin +2 na própria Arena Rector; chump block deliberado com a Arena Rector; ativação da Sisay em
-  resposta a remoção ou no fim do turno do oponente; pagamento real das 5 cores; as outras 99 cartas contra a Sisay uma a uma; a
+  resposta a remoção; pagamento real das 5 cores; as outras 99 cartas contra a Sisay uma a uma; a
   frente da Esika.
 - Regressão de 40.000 partidas (20.000 padrão + 20.000 resiliência, com swaps rotativos incluindo os 3 pares e a linha
   deliberada ligada em 1 de cada 3 partidas, alarme de 20 s): **0 exceções, 0 travamentos** (a linha deliberada disparou com Damn em 119 e com Void Rend em 117 partidas). Lista atual
@@ -287,8 +375,8 @@ Ela entra em ~45% das partidas (padrão 45,9% no slot Arena Rector; 42–47% nos
   dentro do ruído no slot Arena Rector (P(dano ≥ 120) −1,17 pp ±0,87 é pior); **o slot que ela toma é que pesa**, não a carta.
 
 **O que o simulador NÃO vê (e pode subestimar ou superestimar):**
-- ativação no fim do turno do oponente (a habilidade não tem restrição de timing): seria uma ativação EXTRA com mana que sobrou do
-  meu turno; o simulador só ativa no meu turno, então **subestima a carta**;
+- ativação no fim do turno do oponente: **agora modelada como chave de sensibilidade** (`sisay_round_end`, desligada por padrão; seção "Sisay com
+  a janela de fim de rodada"): soma ≤ 0,005 turno no padrão e +0,19 PW-turnos vivos na resiliência;
 - resposta do oponente à ativação (ruling da última informação, 📊 estrutural);
 - o modelo de cor é agregado (1 fonte por cor), então **superestima** a facilidade de pagar {W}{U}{B}{R}{G} com mana real;
 - a frente da Esika.
@@ -304,7 +392,7 @@ muda o topo que ele olha), Delighted Halfling/Plaza of Heroes (pagam a Sisay). C
   e de corpo; condicional (só quando entrou); sensibilidade a política (3 variantes) e a perfil de mesa (4); bit-identidade da lista
   atual; regressão de 40.000 partidas.
 - **NÃO verificado:** as outras 99 cartas contra a Sisay uma a uma (só os conceitos e motores listados); ativação no fim do turno do
-  oponente; ordem da ativação contra todas as janelas do turno (só mão-primeiro vs busca-primeiro); pagamento de cor com mana real
+  oponente SÓ como sensibilidade (chave desligada por padrão); ordem da ativação contra todas as janelas do turno (só mão-primeiro vs busca-primeiro); pagamento de cor com mana real
   (o arquivo usa 1 fonte por cor); resposta de oponente à ativação; a frente da Esika.
 
 ## Rodada das 4 candidatas: Dihada, Commodore Guff, Vronos, Sarkhan the Masterless — 2026-09-29
