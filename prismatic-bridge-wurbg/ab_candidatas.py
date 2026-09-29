@@ -30,9 +30,27 @@ def _register_control():
 
 _register_control()
 
+CONTROL_BODY = "Control Body (2/2 lendaria sem texto)"
+
+
+def _register_control_body():
+    """CONTROLE do lado da entrada pra CRIATURA candidata (Sisay): {2}{W}, Legendary Creature 2/2 sem NENHUM texto
+    (mesmo custo, cor, tipo e corpo base; lendaria pra Halfling/Plaza pagarem igual). Candidata - corpo = valor do TEXTO.
+    Nao ataca (mesmo tratamento da Sisay)."""
+    pb.add(CONTROL_BODY, 3, "Creature", colors={"W"}, produces=set(), tags={"creature"})
+    pb.CREATURE_STATS[CONTROL_BODY] = (2, 2, set())
+    pb.GENERIC_MANA[CONTROL_BODY] = 2
+    pb.LEGENDARY_CARD_NAMES.add(CONTROL_BODY)
+    pb.NON_ATTACKING_NAMES.add(CONTROL_BODY)
+    if CONTROL_BODY not in pb.CANDIDATE_CREATURES:
+        pb.CANDIDATE_CREATURES = tuple(pb.CANDIDATE_CREATURES) + (CONTROL_BODY,)
+
+
+_register_control_body()
+
 
 def parse(v):
-    """Retorna (swap, flags_desligadas). "ENTRA|SAI@dihada_minus3,guff_minus3" desliga essas
+    """Retorna (swap, flags_desligadas). "ENTRA|SAI@dihada_minus3,guff_minus3" INVERTE o padrao dessas
     chaves de `pb.CAND_POLICY` so' durante a variante (sensibilidade)."""
     flags = []
     if "@" in v:
@@ -81,7 +99,8 @@ if __name__ == "__main__":
             continue
         sw, off = parse(v)
         for flag in pb.CAND_POLICY:
-            pb.CAND_POLICY[flag] = flag not in off
+            dflt = pb.CAND_POLICY_DEFAULTS[flag]
+            pb.CAND_POLICY[flag] = (not dflt) if flag in off else dflt   # "@chave" inverte o padrao da chave
         d = {"res": [res_metrics(pb.simulate_one_with_interaction(6_000_000 + i, turns=10, attack_profile=profile, swap=sw))
                      for i in range(N)]}
         if profile == "mixed" and not res_only:

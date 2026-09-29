@@ -1,5 +1,161 @@
 # Goldfish Log — Esika, God of the Tree // The Prismatic Bridge
 
+## Sisay, Weatherlight Captain (5ª candidata do dia, pedida depois das 4) — 2026-09-29
+
+**Pedido:** "E a avaliação de Sisay, Weatherlight Captain para o deck da PB?" (prós e contras, Regra #4/#5).
+Oráculo ao vivo (Scryfall): {2}{W}, Legendary Creature — Human Soldier 2/2. *"Sisay gets +1/+1 for each color among other
+legendary permanents you control. {W}{U}{B}{R}{G}: Search your library for a legendary permanent card with mana value less
+than Sisay's power, put that card onto the battlefield, then shuffle."* Rulings ao vivo (2019-06-14): última informação se
+ela sai antes da resolução; {X} na biblioteca vale 0. Cláusula a cláusula em `checklist-oraculo.md` (adendo Sisay).
+
+**Correção de premissa minha:** eu lembrava "poder = maior MV entre as outras lendárias". O oráculo é outro (+1/+1 por COR
+entre as OUTRAS lendárias; a busca é limitada pelo poder dela). Foi pego pela leitura ao vivo antes de escrever código.
+
+### O que muda no simulador (via `swap`; a lista atual não muda)
+
+- Sisay é criatura lendária de 3 MV, corpo 2/2 + `_sisay_bonus` (união das cores dos outros permanentes lendários em campo,
+  inclusive a Bridge, que é 5 cores → 7/7 na hora). Não ataca (`NON_ATTACKING_NAMES`, mesma convenção da Tam).
+- Ativação `sisay_activate`: {W}{U}{B}{R}{G}, **sem {T}** (ativa no turno em que entra), procura lendária com MV < poder que eu
+  ainda não controlo; embaralha antes dos ETBs; PW entra com lealdade (× Doubling Season) e ativa no mesmo main phase; Oath de
+  Teferi pisca; Carth olha as 7; Chain Veil registra a entrada. Peregrine Dynamo copia a ativação (1×/turno, {1}).
+  Delighted Halfling e Plaza of Heroes pagam a Sisay (é lendária).
+- Política de escolha do alvo: sem PW em campo → melhor PW; com 2+ PWs → Oath de Teferi; senão o PW de maior MV; senão peça de
+  motor. **Ordem no turno: a busca vai na frente da mão** (`sisay_pre_hand_all`). Medido: −0,086 (busca primeiro) vs −0,069
+  (política antiga: mão primeiro, busca antes só com alvo MV ≥ 6) no 1º ultimate.
+- Chaves de política novas em `CAND_POLICY`: `sisay_activate` e `sisay_pre_hand_all` (o A/B liga/desliga cada uma com `@chave`).
+- Estatísticas novas (`cand_stats`): `sisay_activations`, `sisay_fetches`, `sisay_fetch_pw`, `sisay_fetch_engine`,
+  `sisay_power_sum`, `sisay_dynamo_copies`, `entered_Sisay…`, `first_turn_…`.
+
+### Validação
+
+- Testes: 134/134 (10 novos da Sisay: bônus de cor, Bridge 7/7, sem {T}, alvo por MV < poder, regra da lenda, Doubling Season,
+  ordem antes/depois da mão, Dynamo, Halfling/Plaza, não ataca).
+- Lista atual **bit-idêntica** ao snapshot anterior (`bitident.py`: N = 300 no padrão + 400 na resiliência (4 perfis), 0 divergências).
+- Regressão de 40.000 partidas (20.000 padrão + 20.000 resiliência, 4 perfis de mesa, swaps rotativos incluindo Sisay
+  sozinha em 3 slots e um pacote de 5 candidatas, alarme de 20 s): **0 exceções, 0 travamentos** (a Sisay entrou em 6.119 dessas partidas; 4.335 partidas tiveram ao menos uma ativação).
+- Commander Spellbook (antes/depois, lista de 99 + Esika): **0 combos novos**; 2 quase-combos com Intruder Alarm (não está na
+  lista). Não é Game Changer.
+
+### A/B pareado (N = 3.000 seeds; padrão 3.000.000+, resiliência mista 6.000.000+; IC95%; negrito = não cruza 0)
+
+**Sisay no lugar de cada corte (Δ pareado sobre a lista atual; negativo em 1º ult = melhor)**
+
+| sai ↓ | padrão: 1º ult | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: P(dano ≥ 40) |
+|---|---|---|---|---|---|
+| Arena Rector | **-0.086 ±0.019** | **+2.23 pp ±0.68** | **-0.40 pp ±0.38** | +0.008 ±0.023 | -0.53 pp ±0.91 |
+| Swan Song | **-0.062 ±0.017** | **+1.53 pp ±0.64** | **-0.57 pp ±0.46** | +0.012 ±0.022 | **-1.07 pp ±0.88** |
+| Veil of Summer | **-0.072 ±0.020** | **+2.67 pp ±0.72** | -0.23 pp ±0.47 | +0.005 ±0.024 | -0.70 pp ±0.91 |
+| Oath of Nissa | **-0.047 ±0.022** | **+1.70 pp ±0.77** | -0.43 pp ±0.56 | +0.023 ±0.024 | **-1.23 pp ±0.94** |
+| Farseek | **-0.047 ±0.020** | **+1.73 pp ±0.69** | +0.07 pp ±0.44 | **+0.029 ±0.025** | **-1.53 pp ±0.97** |
+| Doubling Season | **-0.033 ±0.021** | **+1.07 pp ±0.73** | -0.53 pp ±0.56 | **+0.042 ±0.025** | **-1.73 pp ±1.01** |
+
+Controles do mesmo A/B: cortar Arena Rector por um **corpo 2/2 lendário sem texto** (mesmo custo, cor, tipo) dá
++0,002 ±0,009 no padrão (sem efeito); cortar Swan Song por ele dá +0,046 ±0,014 (o corte em si custa isso). Ou seja, **todo o
+ganho de ritmo da Sisay vem do texto (a busca), não do corpo**.
+
+**O que o TEXTO faz: Sisay − corpo 2/2 sem texto (mesmo slot; todas as partidas | só partidas em que a carta entrou)**
+
+| métrica | Arena Rector (todas) | Swan Song (todas) | Arena Rector (entrou) | Swan Song (entrou) |
+|---|---|---|---|---|
+| padrão Δ 1º ult (turno) | **-0.089 ±0.017** | **-0.108 ±0.018** | **-0.193 ±0.037** | **-0.246 ±0.039** |
+| padrão Δ P(ult ≤ T8) | **+2.30 pp ±0.62** | **+2.93 pp ±0.64** | **+5.01 pp ±1.35** | **+6.67 pp ±1.44** |
+| resil. Δ vida ≤ 0 | -0.17 pp ±0.28 | **-0.60 pp ±0.36** | -0.37 pp ±0.64 | **-1.34 pp ±0.80** |
+| resil. Δ 1º ult | **-0.050 ±0.017** | **-0.026 ±0.016** | **-0.111 ±0.039** | **-0.059 ±0.035** |
+| resil. Δ PW-turnos vivos | **+0.547 ±0.162** | **+0.259 ±0.138** | **+1.225 ±0.360** | **+0.578 ±0.307** |
+| resil. Δ PWs mortos em combate | **-0.014 ±0.010** | **-0.013 ±0.011** | **-0.031 ±0.023** | **-0.029 ±0.025** |
+| resil. Δ P(dano ≥ 40) | **+1.67 pp ±0.80** | **+1.00 pp ±0.72** | **+3.73 pp ±1.78** | **+2.23 pp ±1.61** |
+| resil. Δ P(dano ≥ 120) | +0.57 pp ±0.71 | +0.10 pp ±0.68 | +1.27 pp ±1.58 | +0.22 pp ±1.52 |
+
+**Sensibilidade (slot Arena Rector, Δ pareado sobre a base)**
+
+| variante | padrão Δ 1º ult | padrão Δ P(ult ≤ T8) | resil. Δ vida ≤ 0 | resil. Δ 1º ult | resil. Δ PW-turnos vivos | resil. Δ P(dano ≥ 40) |
+|---|---|---|---|---|---|---|
+| política final (busca antes da mão) | **-0.086 ±0.019** | **+2.23 pp ±0.68** | **-0.40 pp ±0.38** | +0.008 ±0.023 | -0.199 ±0.213 | -0.53 pp ±0.91 |
+| **sem a busca** (só o corpo que cresce) | +0.002 ±0.009 | -0.07 pp ±0.33 | **-0.33 pp ±0.33** | **+0.049 ±0.021** | **-0.651 ±0.176** | **-2.93 pp ±0.82** |
+| política antiga (mão primeiro; busca antes só com alvo MV ≥ 6) | **-0.069 ±0.016** | **+1.73 pp ±0.61** | -0.37 pp ±0.38 | **+0.027 ±0.022** | -0.157 ±0.193 | **-1.67 pp ±0.89** |
+
+**Sensibilidade ao perfil de mesa (só resiliência, N = 3.000 por perfil, slot Arena Rector; política final)**
+
+| candidata − controle (o que o TEXTO faz) | mista | go_wide | voltron | low |
+|---|---|---|---|---|
+| vida ≤ 0 | -0.17 pp ±0.28 | **-0.67 pp ±0.40** | **-0.60 pp ±0.32** | -0.03 pp ±0.07 |
+| 1º ult | **-0.050 ±0.017** | **-0.040 ±0.019** | **-0.077 ±0.019** | **-0.077 ±0.019** |
+| PW-turnos vivos | **+0.547 ±0.162** | **+0.282 ±0.152** | **+0.535 ±0.161** | **+0.718 ±0.171** |
+| PWs mortos em combate | **-0.014 ±0.010** | +0.000 ±0.015 | **-0.034 ±0.013** | **-0.016 ±0.006** |
+| P(dano ≥ 40) | **+1.67 pp ±0.80** | +0.67 pp ±0.73 | **+1.77 pp ±0.80** | **+2.27 pp ±0.84** |
+
+| candidata − base (o que o SLOT faz) | mista | go_wide | voltron | low |
+|---|---|---|---|---|
+| vida ≤ 0 | **-0.40 pp ±0.38** | **-0.67 pp ±0.48** | **-0.43 pp ±0.38** | -0.10 pp ±0.11 |
+| 1º ult | +0.008 ±0.023 | +0.006 ±0.022 | **-0.031 ±0.024** | **-0.060 ±0.022** |
+| PW-turnos vivos | -0.199 ±0.213 | **-0.275 ±0.192** | -0.127 ±0.211 | +0.182 ±0.205 |
+| PWs mortos em combate | **-0.017 ±0.014** | -0.001 ±0.017 | **-0.037 ±0.016** | **-0.018 ±0.007** |
+| P(dano ≥ 40) | -0.53 pp ±0.91 | **-0.93 pp ±0.82** | -0.17 pp ±0.94 | +0.77 pp ±0.92 |
+
+**Uso por partida em que a carta entrou (slot Arena Rector; mediana | média | P(>0))**
+
+| métrica | padrão (n=1.378 de 3.000) | resiliência (n=1.339 de 3.000) |
+|---|---|---|
+| ativações | 3 \| 3,18 \| 76,2% | 1 \| 1,99 \| 66,2% |
+| buscas | 3 \| 3,24 \| 76,2% | 1 \| 2,04 \| 66,2% |
+| buscas que trouxeram PW | 2 \| 2,21 \| 65,0% | 1 \| 1,35 \| 53,9% |
+| buscas que trouxeram peça de motor | 1 \| 1,03 \| 63,3% | 0 \| 0,70 \| 48,2% |
+| cópias pela Peregrine Dynamo | 0 \| 0,06 \| 6,4% | 0 \| 0,05 \| 4,8% |
+| turno em que entra | mediana 8 | mediana 8 |
+
+Ela entra em ~45% das partidas (padrão 45,9% no slot Arena Rector; 42–47% nos seis cortes).
+
+### Leitura (Regra #5: o deck primeiro, o simulador como apoio)
+
+**Pelo deck (medido + raciocínio):**
+- **É a mais "Bridge-nativa" das candidatas.** É criatura (a Bridge a acerta, o que nenhuma das 4 PWs do dia faz), a própria Bridge
+  conta como lendária de 5 cores, então ela fica 7/7 no turno em que entra e alcança 22 das 24 lendárias da lista (só Kaya MV 7 e
+  Ugin MV 8 ficam de fora). Sem {T}: a doença de invocação não atrasa a busca.
+- A busca é um tutor repetível e gratuito em cartas (só custa {W}{U}{B}{R}{G}): traz PW (2,2 por partida em que entra no padrão),
+  que entra com o dobro de lealdade pela Doubling Season e **ativa no mesmo turno**; ou peça de motor (Chain Veil, Oath de Teferi,
+  Carth, Vorinclex, Atraxa, Peregrine Dynamo). A Dynamo copia a busca; o Chain Veil e o Oath dobram ativações.
+- **Medido:** melhor das 5 candidatas do dia no ritmo (−0,086 turno no slot Arena Rector; melhora nos 6 cortes; Dihada −0,057,
+  Guff −0,053, Sarkhan −0,010, Vronos −0,004 no mesmo slot). Todo o efeito vem da busca (sem ela: +0,002). Ainda fica atrás de
+  Loyal Tutor (−0,135) e Tam (−0,119) no mesmo slot (`ab_candidatas_vs_fra.py`, seção 7 acima).
+- No **terceiro slot** ela é marginalmente melhor que o Entrust no ritmo (−0,028 ±0,017; +1,4 pp de P(ult ≤ T8)) e pior na
+  resiliência (1º ult +0,028 ±0,022; dano ≥ 40 −0,9 pp, dentro do ruído). Como **quarta carta** por cima do pacote FRA completo,
+  −0,018 ±0,020 (não significativo).
+
+**Contra:**
+- **5 mana com as 5 cores por ativação** (mais os 3 da conjuração): compete com a mão pelo mesmo mana; a política final põe a busca
+  na frente, mas isso custa a mão do turno. Mediana de 3 ativações por partida em que ela entra no padrão, 1 na resiliência.
+- **Depende da Bridge:** sem ela, o poder dela é 2 + cores das OUTRAS lendárias (vermelho só pelo Nicol Bolas: máximo 6/6 sem a
+  Bridge) e a busca alcança bem menos.
+- **É criatura:** exposta a remoção e wipe (a Plaza of Heroes a protege, se estiver em campo). O simulador de resiliência a
+  modela como criatura comum (não ataca, não bloqueia). Contra o corpo 2/2 sem texto, o TEXTO ganha PW-turnos vivos (+0,28 a
+  +0,72) e 1º ult da resiliência (−0,04 a −0,08) nos 4 perfis de mesa; contra a BASE (o slot que ela toma) os PW-turnos ficam
+  entre −0,28 e +0,18 e o P(dano ≥ 40) entre −0,9 e +0,8 pp: ela paga o slot e não deixa ganho claro de resiliência ou dano.
+- Entra tarde (turno mediano 8) e só em ~45% das partidas; não alcança Kaya/Ugin; o ganho em vida ≤ 0 é pequeno (−0,4 a −0,6 pp,
+  significativo só em 2 dos 6 cortes).
+- Sobre a resiliência ao comparar com a BASE (não com o corpo): PW-turnos vivos −0,199 ±0,213 e P(dano ≥ 40) −0,53 pp ±0,91, ambos
+  dentro do ruído no slot Arena Rector; **o slot que ela toma é que pesa**, não a carta.
+
+**O que o simulador NÃO vê (e pode subestimar ou superestimar):**
+- ativação no fim do turno do oponente (a habilidade não tem restrição de timing): seria uma ativação EXTRA com mana que sobrou do
+  meu turno; o simulador só ativa no meu turno, então **subestima a carta**;
+- resposta do oponente à ativação (ruling da última informação, 📊 estrutural);
+- o modelo de cor é agregado (1 fonte por cor), então **superestima** a facilidade de pagar {W}{U}{B}{R}{G} com mana real;
+- a frente da Esika.
+
+**Onde interage com a lista (Regra #4):** Bridge (alvo e fonte do bônus), Doubling Season (lealdade dobrada dos PWs buscados),
+Chain Veil/Oath de Teferi/Urza III (2 ativações do PW buscado), Peregrine Dynamo (copia a busca), Carth (o embaralhamento da busca
+muda o topo que ele olha), Delighted Halfling/Plaza of Heroes (pagam a Sisay). Combos: 0 novos. Bracket: não é Game Changer; o deck continua com 3.
+
+### Limites desta rodada (Regra #7: o que foi e o que NÃO foi verificado)
+
+- **Verificado:** oráculo e rulings ao vivo cláusula a cláusula com teste dirigido; conceitos "lendária permanente", MV e "cor entre
+  lendárias" enumerados por script sobre o `type_line`/`cmc` ao vivo; Spellbook antes/depois; A/B nos 6 cortes com controle de corte
+  e de corpo; condicional (só quando entrou); sensibilidade a política (3 variantes) e a perfil de mesa (4); bit-identidade da lista
+  atual; regressão de 40.000 partidas.
+- **NÃO verificado:** as outras 99 cartas contra a Sisay uma a uma (só os conceitos e motores listados); ativação no fim do turno do
+  oponente; ordem da ativação contra todas as janelas do turno (só mão-primeiro vs busca-primeiro); pagamento de cor com mana real
+  (o arquivo usa 1 fonte por cor); resposta de oponente à ativação; a frente da Esika.
+
 ## Rodada das 4 candidatas: Dihada, Commodore Guff, Vronos, Sarkhan the Masterless — 2026-09-29
 
 **Pedido do usuário:** "Avalie a inclusão das seguintes cartas ao deck, quero
@@ -366,10 +522,10 @@ PWs tirados de fase por partida em que o Vronos entrou: média 3.53, P(>0) 71.6%
 | resiliência Δ P(dano nosso ≥ 40) | **+6.37 pp ±1.47** |
 | resiliência Δ P(dano nosso ≥ 120) | +1.00 pp ±1.23 |
 
-#### 7. "Vale a pena?": as 4 contra as 3 de Reality Fracture (Tam, Loyal Tutor, Entrust the Spark) nos MESMOS slots fracos
+#### 7. "Vale a pena?": as candidatas do dia (Dihada, Guff, Vronos, Sarkhan e, na rodada seguinte, Sisay) contra as 3 de Reality Fracture (Tam, Loyal Tutor, Entrust the Spark) nos MESMOS slots fracos
 
 Os três cortes mais fracos da lista (Arena Rector, Swan Song, Veil of Summer) já estão reservados às 3 de FRA
-(`checklist-oraculo.md`, rodada de 2026-09-25). Então a pergunta real é se alguma das 4 ganha desse uso do slot.
+(`checklist-oraculo.md`, rodada de 2026-09-25). Então a pergunta real é se alguma delas ganha desse uso do slot (a Sisay entrou depois, na seção própria acima; as linhas dela estão nas mesmas tabelas).
 Mesmo harness, mesmas seeds, N = 3.000 (`ab_candidatas_vs_fra.py`; o pacote FRA usa os mesmos cortes da rodada anterior).
 
 **1. Uma carta por vez no slot Arena Rector (Δ sobre a lista atual)**
@@ -383,6 +539,7 @@ Mesmo harness, mesmas seeds, N = 3.000 (`ab_candidatas_vs_fra.py`; o pacote FRA 
 | Guff | **-0.053 ±0.013** | **+1.67 pp ±0.49** | **-0.57 pp ±0.33** | +0.002 ±0.020 | +0.00 pp ±0.83 |
 | Vronos | -0.004 ±0.009 | +0.00 pp ±0.35 | -0.20 pp ±0.32 | **+0.039 ±0.021** | **-1.07 pp ±0.84** |
 | Sarkhan | **-0.010 ±0.008** | +0.20 pp ±0.31 | **-0.43 pp ±0.33** | **+0.051 ±0.020** | **+3.80 pp ±0.96** |
+| Sisay | **-0.086 ±0.019** | **+2.23 pp ±0.68** | **-0.40 pp ±0.38** | +0.008 ±0.023 | -0.53 pp ±0.91 |
 
 **2. Terceiro slot (Tam→Arena Rector e Loyal Tutor→Swan Song fixos; Veil of Summer sai). Δ sobre a lista atual**
 
@@ -393,6 +550,7 @@ Mesmo harness, mesmas seeds, N = 3.000 (`ab_candidatas_vs_fra.py`; o pacote FRA 
 | Tam + Loyal Tutor + **Guff** | **-0.227 ±0.029** | **+6.03 pp ±1.04** | **-0.97 pp ±0.59** | **-0.107 ±0.035** | +1.10 pp ±1.25 |
 | Tam + Loyal Tutor + **Vronos** | **-0.183 ±0.029** | **+4.87 pp ±0.99** | -0.57 pp ±0.57 | **-0.088 ±0.035** | +0.63 pp ±1.24 |
 | Tam + Loyal Tutor + **Sarkhan** | **-0.185 ±0.029** | **+4.93 pp ±0.98** | **-0.80 pp ±0.57** | **-0.068 ±0.035** | **+4.63 pp ±1.32** |
+| Tam + Loyal Tutor + **Sisay** | **-0.264 ±0.031** | **+7.43 pp ±1.10** | **-0.87 pp ±0.63** | **-0.097 ±0.036** | +0.43 pp ±1.27 |
 
 **3. O mesmo terceiro slot, Δ sobre o pacote com Entrust (positivo em 'P(...)' e negativo em 'vida ≤ 0/1º ult' = melhor que o Entrust)**
 
@@ -402,6 +560,7 @@ Mesmo harness, mesmas seeds, N = 3.000 (`ab_candidatas_vs_fra.py`; o pacote FRA 
 | Guff no lugar do Entrust | +0.010 ±0.014 | +0.03 pp ±0.55 | -0.30 pp ±0.33 | +0.018 ±0.019 | -0.20 pp ±0.85 |
 | Vronos no lugar do Entrust | **+0.054 ±0.013** | **-1.13 pp ±0.48** | +0.10 pp ±0.30 | **+0.037 ±0.018** | -0.67 pp ±0.85 |
 | Sarkhan no lugar do Entrust | **+0.052 ±0.013** | **-1.07 pp ±0.48** | -0.13 pp ±0.24 | **+0.057 ±0.018** | **+3.33 pp ±0.91** |
+| Sisay no lugar do Entrust | **-0.028 ±0.017** | **+1.43 pp ±0.66** | -0.20 pp ±0.39 | **+0.028 ±0.022** | -0.87 pp ±0.88 |
 
 **4. Quarta carta por cima do pacote FRA completo (Tam + Loyal Tutor + Entrust), entrando no lugar do Oath of Nissa. Δ sobre o pacote FRA**
 
@@ -411,11 +570,12 @@ Mesmo harness, mesmas seeds, N = 3.000 (`ab_candidatas_vs_fra.py`; o pacote FRA 
 | + Guff (sai Oath of Nissa) | +0.008 ±0.020 | -0.23 pp ±0.71 | -0.40 pp ±0.54 | **+0.032 ±0.024** | -0.37 pp ±0.90 |
 | + Vronos (sai Oath of Nissa) | **+0.055 ±0.021** | **-1.13 pp ±0.72** | -0.13 pp ±0.52 | **+0.043 ±0.023** | -0.67 pp ±0.89 |
 | + Sarkhan (sai Oath of Nissa) | **+0.053 ±0.021** | **-0.97 pp ±0.71** | -0.40 pp ±0.51 | **+0.059 ±0.023** | **+3.33 pp ±1.00** |
+| + Sisay (sai Oath of Nissa) | -0.018 ±0.020 | **+0.83 pp ±0.72** | -0.43 pp ±0.52 | **+0.031 ±0.025** | **-1.20 pp ±0.91** |
 
 **Leitura:**
-- Sozinhas no slot Arena Rector, **Loyal Tutor (−0,135) e Tam (−0,119) valem mais que qualquer uma das 4** (Entrust −0,064, Dihada −0,057, Guff −0,053, Sarkhan −0,010, Vronos −0,004 no turno do 1º ultimate).
-- No **terceiro slot** (ao lado de Tam + Loyal Tutor): **Dihada empata com o Entrust no ritmo** (−0,010, dentro do ruído) e fica melhor na resiliência (1º ult −0,024; P(dano ≥ 40) +3,0 pp). Guff empata no ritmo e não traz o resto. Vronos e Sarkhan são piores que o Entrust no ritmo (+0,05 turno).
-- Como **quarta carta** por cima do pacote FRA completo, nenhuma acelera (Dihada ±0; Vronos e Sarkhan pioram ~0,055 turno e −1 pp de P(ult ≤ T8)): o Oath of Nissa vale mais que elas nesse slot. A Dihada e a Sarkhan só somam dano (+3 pp de P(dano ≥ 40)).
+- Sozinhas no slot Arena Rector, **Loyal Tutor (−0,135) e Tam (−0,119) valem mais que qualquer uma das 5 novas** (Sisay −0,086, Entrust −0,064, Dihada −0,057, Guff −0,053, Sarkhan −0,010, Vronos −0,004 no turno do 1º ultimate). A Sisay é a melhor das 5 em velocidade.
+- No **terceiro slot** (ao lado de Tam + Loyal Tutor): a **Sisay ganha do Entrust no ritmo** (−0,028 ±0,017 no turno do 1º ult; +1,4 pp de P(ult ≤ T8)) e a **Dihada empata com ele** (−0,010, dentro do ruído). Na resiliência é o contrário: a Dihada fica melhor que o Entrust (1º ult −0,024; P(dano ≥ 40) +3,0 pp) e a Sisay fica pior (1º ult +0,028 ±0,022; P(dano ≥ 40) −0,9 pp, dentro do ruído). Guff empata no ritmo e não traz o resto. Vronos e Sarkhan são piores que o Entrust no ritmo (+0,05 turno).
+- Como **quarta carta** por cima do pacote FRA completo, nenhuma acelera de forma clara (Dihada ±0; Sisay −0,018 ±0,020, não significativo, com +0,8 pp de P(ult ≤ T8) e 1º ult da resiliência +0,031 pior; Vronos e Sarkhan pioram ~0,055 turno e −1 pp de P(ult ≤ T8)): o Oath of Nissa vale tanto quanto elas nesse slot. A Dihada e a Sarkhan só somam dano (+3 pp de P(dano ≥ 40)).
 
 ### Leitura (Regra #5: o deck primeiro, o simulador como apoio)
 

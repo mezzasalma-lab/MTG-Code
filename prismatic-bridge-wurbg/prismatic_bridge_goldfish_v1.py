@@ -426,10 +426,17 @@ add("Sarkhan the Masterless", 5, "Planeswalker", colors={"R"}, produces=set(), t
 # {3}{R}{R}. "Whenever a creature attacks you or a planeswalker you control, each Dragon you control
 # deals 1 damage to that creature." +1: until end of turn each planeswalker you control becomes a 4/4 red
 # Dragon creature and gains flying. -3: 4/4 red Dragon creature token with flying.
+add("Sisay, Weatherlight Captain", 3, "Creature", colors={"W"}, produces=set(), tags={"creature"})
+# {2}{W} Legendary Creature -- Human Soldier 2/2 (oraculo ao vivo, 2026-09-29): "Sisay gets +1/+1 for each color among other
+# legendary permanents you control." / "{W}{U}{B}{R}{G}: Search your library for a legendary permanent card with mana value
+# less than Sisay's power, put that card onto the battlefield, then shuffle." Ver `_sisay_bonus` e `sisay_activate`.
 add("Dragon Token", 0, "Creature", colors={"R"}, produces=set(), tags=set())   # Sarkhan -3
 add("Wizard Token", 0, "Creature", colors={"R"}, produces=set(), tags=set())   # Commodore Guff +1
 CANDIDATE_PWS = ("Dihada, Binder of Wills", "Commodore Guff", "Vronos, Masked Inquisitor", "Sarkhan the Masterless")
 DIHADA, GUFF, VRONOS, SARKHAN = CANDIDATE_PWS
+SISAY = "Sisay, Weatherlight Captain"
+CANDIDATE_CREATURES = (SISAY,)   # candidata criatura (pedido de 2026-09-29): entra so' via swap
+NON_ATTACKING_NAMES = {"Tam, the Possibility", SISAY}   # pecas de motor: nunca atacam (o A/B tambem poe o corpo de controle aqui)
 
 # Poder/resistencia/palavras-chave reais (Scryfall, 2026-09-24) das criaturas
 # que podem estar do nosso lado -- so' usado pelo modelo de combate.
@@ -447,6 +454,7 @@ CREATURE_STATS = {
     "Vorinclex, Monstrous Raider": (6, 6, {"haste", "trample"}),
     "Silent Arbiter": (1, 5, set()),
     "Tam, the Possibility": (2, 4, set()),
+    SISAY: (2, 2, set()),                 # base; o poder/resistencia reais vem de `_sisay_bonus` (ver `_pt`)
     "Dragon Token": (4, 4, {"flying"}),   # Sarkhan the Masterless -3 (candidata)
     "Wizard Token": (1, 1, set()),        # Commodore Guff +1 (candidata)
     "Soldier Token": (1, 1, set()),
@@ -497,6 +505,7 @@ LEGENDARY_CARD_NAMES = {
     "Vorinclex, Monstrous Raider", "Vraska, Betrayal's Sting", "Tamiyo's Notebook",
     "Tam, the Possibility",  # candidata FRA (so' via swap)
     "Dihada, Binder of Wills", "Commodore Guff", "Vronos, Masked Inquisitor", "Sarkhan the Masterless",  # candidatas 2026-09-29
+    "Sisay, Weatherlight Captain",
 }
 
 # Parte GENERICA real do custo de mana (Scryfall, `mana_cost`; hibrido e
@@ -526,6 +535,7 @@ GENERIC_MANA = {
     "Dueling Grounds": 1, "Sphere of Safety": 4, "Ghostly Prison": 2,
     "Tam, the Possibility": 1, "Loyal Tutor": 0, "Entrust the Spark": 3,
     "Dihada, Binder of Wills": 1, "Commodore Guff": 1, "Vronos, Masked Inquisitor": 3, "Sarkhan the Masterless": 3,
+    "Sisay, Weatherlight Captain": 2,
 }
 
 # Tipo de planeswalker (CR 205.3j) de cada PW da lista, do `type_line` real
@@ -1291,6 +1301,10 @@ def creature_enters(state: GameState, name: str, log: List[Dict], is_copy: bool 
     instancia (new_tokens_this_turn), sem marcar a carta original."""
     if not is_copy:
         state.creature_cast_turn[name] = state.turn
+    if name in CANDIDATE_CREATURES:
+        _cs(state, "entered_" + name)
+        if state.cand_stats.get("first_turn_" + name) is None:
+            state.cand_stats["first_turn_" + name] = state.turn
     _legend_rule_extra(state, name)
     if name == "Deepglow Skate":
         # Sempre escolhe dobrar TODOS os planeswalkers em campo (nunca ha'
@@ -2853,7 +2867,11 @@ def _eff_vraska_minus2(state, pw, log, x):
 
 # Chaves de politica ligadas por padrao. O A/B de sensibilidade desliga UMA por vez pra
 # isolar de onde vem o efeito de cada carta (ab_candidatas.py, variante "ENTRA|SAI@flag").
-CAND_POLICY = {"dihada_minus3": True, "guff_minus3": True, "vronos_phase": True, "sarkhan_animate": True}
+CAND_POLICY = {"dihada_minus3": True, "guff_minus3": True, "vronos_phase": True, "sarkhan_animate": True,
+               "sisay_activate": True,
+               "sisay_pre_hand_all": True}   # True (padrao): a busca da Sisay passa na frente da mao pra QUALQUER alvo;
+                                             # False = politica antiga (mao primeiro, antes dela so' alvo MV >= 6)
+CAND_POLICY_DEFAULTS = dict(CAND_POLICY)   # o harness de A/B inverte o padrao das chaves pedidas na variante ("@chave")
 
 
 def _cs(state: GameState, key: str, n: int = 1):
@@ -3162,6 +3180,110 @@ def _activation_order(state: GameState) -> List[str]:
         order.remove(SARKHAN)
         order.append(SARKHAN)
     return order
+
+
+# ---------------- Sisay, Weatherlight Captain ----------------
+# Oraculo ao vivo (Scryfall, 2026-09-29): "Sisay gets +1/+1 for each color among other legendary permanents you control."
+# / "{W}{U}{B}{R}{G}: Search your library for a legendary permanent card with mana value less than Sisay's power, put
+# that card onto the battlefield, then shuffle." Rulings: se a Sisay sai depois de ativada, usa-se a ultima informacao
+# dela; carta com {X} na biblioteca conta X = 0 (nenhuma legendaria da lista tem X).
+# Premissas do modelo:
+# - Sem {T}: ativa no turno em que entra (nao ha doenca de invocacao). Custo = 5 de mana com as 5 cores (mesmo modelo de
+#   cor agregado do arquivo: 1 fonte por cor). Usa a mana que sobra no MEU main phase (reserva das respostas respeitada);
+#   o mesmo mana no fim do turno do oponente (instantaneo) nao e' modelado: so' perde a ativacao extra do PW buscado
+#   no mesmo turno (CR 606.3), entao e' conservador.
+# - Busca so' "legendary permanent card": nao existem lendarias instantaneas/feiticos nem terrenos lendarios na lista (script).
+# - A Bridge e' "Legendary Enchantment" de 5 cores: com ela em campo a Sisay e' 7/7 e busca MV <= 6 (Kaya 7 e Ugin 8 ficam
+#   de fora). Sem a Bridge, o poder depende das cores das OUTRAS lendarias (a propria cor branca dela nao conta).
+# - Nao ataca (como a Tam): e' peca de motor, e o simulador nao tem bloqueio do oponente pra ela arriscar.
+# - Peregrine Dynamo copia a ativacao (fonte lendaria que nao e' comandante): +1 busca por {1}, uma vez por turno; disputa
+#   o {T} da Dynamo com a copia de PW, que vem antes no main phase.
+
+SISAY_COLORS = ("W", "U", "B", "R", "G")
+SISAY_ENGINE_PREF = ("The Chain Veil", "Vorinclex, Monstrous Raider", "Atraxa, Praetors' Voice", "Carth the Lion",
+                     "The Peregrine Dynamo", "Oath of Nissa")
+
+
+def _other_legendary_permanents(state: GameState) -> List[str]:
+    """Permanentes lendarios em campo MENOS a Sisay (a Bridge conta: "Legendary Enchantment" de 5 cores); fora de fase
+    nao existe."""
+    return [n for n in state.battlefield
+            if n != SISAY and n not in state.phased_out and (n in LEGENDARY_CARD_NAMES or n == COMMANDER)]
+
+
+def _sisay_bonus(state: GameState) -> int:
+    colors: Set[str] = set()
+    for n in _other_legendary_permanents(state):
+        colors |= permanent_colors(n)
+    return len(colors)
+
+
+def sisay_targets(state: GameState) -> List[str]:
+    """Cartas da biblioteca que a busca pode pegar agora: lendaria, permanente, MV < poder da Sisay, e que ainda nao
+    controlo (regra de lenda)."""
+    power = 2 + _sisay_bonus(state)
+    return [c for c in dict.fromkeys(state.library)
+            if c in LEGENDARY_CARD_NAMES and C(c).type not in ("Instant", "Sorcery", "Land")
+            and C(c).mv < power and c not in state.battlefield and c not in state.loyalty]
+
+
+def _sisay_pick(state: GameState, targets: List[str]) -> Optional[str]:
+    """Politica: sem PW em campo, o melhor PW; com 2+ PWs, a Oath of Teferi (ativa 2x) se der; senao o PW de maior MV
+    (depois maior lealdade, o mesmo ranking da Arena Rector/Loyal Tutor); senao a peca de motor por preferencia."""
+    pws = [c for c in targets if C(c).type == "Planeswalker"]
+    best_pw = max(pws, key=lambda c: (C(c).mv, PLANESWALKER_STARTING_LOYALTY[c])) if pws else None
+    if not state.loyalty and best_pw is not None:
+        return best_pw
+    if "Oath of Teferi" in targets and len(state.loyalty) >= 2:
+        return "Oath of Teferi"
+    if best_pw is not None:
+        return best_pw
+    for c in SISAY_ENGINE_PREF:
+        if c in targets:
+            return c
+    return max(targets, key=lambda c: C(c).mv) if targets else None
+
+
+def _sisay_fetch(state: GameState, name: str, log: List[Dict], via_dynamo: bool = False):
+    power = 2 + _sisay_bonus(state)
+    state.library.remove(name)
+    state.rng.shuffle(state.library)  # "then shuffle" resolve ANTES dos ETBs (gatilho do Carth olha o topo depois)
+    _return_to_battlefield(state, name, log)
+    _cs(state, "sisay_fetches")
+    _cs(state, "sisay_power_sum", power)
+    _cs(state, "sisay_fetch_pw" if C(name).type == "Planeswalker" else "sisay_fetch_engine")
+    _cs(state, "sisay_fetched " + name)
+    if via_dynamo:
+        _cs(state, "sisay_dynamo_copies")
+    log.append({"trigger": "sisay_fetch", "card": name, "power": power, "turn": state.turn})
+
+
+def sisay_activate(state: GameState, log: List[Dict], reserved: int = 0, min_mv: int = 0) -> int:
+    """"{W}{U}{B}{R}{G}: Search your library for a legendary permanent card ..." quantas vezes a mana que sobra pagar.
+    `min_mv`: antes da mao so' vale o alvo grande (MV >= min_mv); depois da mao, qualquer um."""
+    n = 0
+    if not CAND_POLICY["sisay_activate"]:
+        return n
+    for _ in range(4):
+        if SISAY not in state.battlefield or SISAY in state.phased_out:
+            return n
+        if remaining_mana(state) - reserved < 5 or any(color_sources(state, c) < 1 for c in SISAY_COLORS):
+            return n
+        pick = _sisay_pick(state, sisay_targets(state))
+        if pick is None or C(pick).mv < min_mv:
+            return n
+        state.mana_spent_this_turn += 5
+        _cs(state, "sisay_activations")
+        _sisay_fetch(state, pick, log)
+        n += 1
+        if _dynamo_ready(state):
+            second = _sisay_pick(state, sisay_targets(state))
+            if second is not None:
+                state.mana_spent_this_turn += 1
+                state.dynamo_used_turn = state.turn
+                state.dynamo_copies_total += 1
+                _sisay_fetch(state, second, log, via_dynamo=True)
+    return n
 
 
 def try_chain_veil_activation(state: GameState, log: List[Dict]):
@@ -3727,6 +3849,10 @@ def main_phase(state: GameState, log: List[Dict]):
     if attack_model_on(state):
         _cast_defensive_spells(state, log, reserved)
 
+    # Sisay (candidata): a busca vem ANTES da mao (medido: -0,086 turno no 1o ultimate contra -0,069 com a mao primeiro,
+    # e sem o custo na resiliencia); com a chave `sisay_pre_hand_all` desligada so' o alvo grande (MV >= 6) passa na frente.
+    sisay_activate(state, log, reserved, min_mv=0 if CAND_POLICY["sisay_pre_hand_all"] else 6)
+
     # resto da mao, ordem generica por CMC crescente, respeitando a reserva
     for _ in range(40 if state.tamiyo_free_cast else 8):
         budget = remaining_mana(state) - reserved
@@ -3799,6 +3925,9 @@ def main_phase(state: GameState, log: List[Dict]):
         # por proliferate...) ativa JA' neste main phase.
         activate_unactivated_planeswalkers(state, log)
     activate_unactivated_planeswalkers(state, log)
+    # Sisay: a mana que sobrou depois da mao paga a busca (qualquer alvo); o PW buscado ativa no mesmo main phase.
+    if sisay_activate(state, log, reserved, min_mv=0):
+        activate_unactivated_planeswalkers(state, log)
 
 def sphinx_additional_beginning_phase(state: GameState, log: List[Dict]):
     """Sphinx of the Second Sun (oraculo real, Scryfall 2026-09-24): "At the
@@ -4835,6 +4964,8 @@ def _add_ctr(state: GameState, inst: tuple, n: int):
 
 def _pt(state: GameState, inst: tuple):
     p, t, kw = CREATURE_STATS[inst[0]]
+    if inst[0] == SISAY:
+        p = t = 2 + _sisay_bonus(state)   # "+1/+1 for each color among other legendary permanents you control"
     c = _ctr(state, inst)
     bonus = 2 * state.elspeth_emblem
     kw = set(kw) | ({"flying"} if state.elspeth_emblem else set())
@@ -5401,7 +5532,7 @@ def our_combat_step(state: GameState, log: List[Dict]):
 
     # Tam, the Possibility (candidata FRA) nao ataca: 2 de poder nao paga
     # perder o {T} da habilidade (janela de end step do oponente) nem o bloqueio.
-    ready = [x for x in _our_creature_instances(state) if not _is_sick(state, x) and x[0] != "Tam, the Possibility"]
+    ready = [x for x in _our_creature_instances(state) if not _is_sick(state, x) and x[0] not in NON_ATTACKING_NAMES]
     extras = _candidate_attackers(state)
     if not ready and oko is None and not extras:
         return

@@ -19,6 +19,7 @@ for prefix in sys.argv[1:]:
 base = "base"
 N = len(data[base]["res"])
 D, G, V, S = "Dihada, Binder of Wills", "Commodore Guff", "Vronos, Masked Inquisitor", "Sarkhan the Masterless"
+SIS = "Sisay, Weatherlight Captain"
 FRA = "Tam, the Possibility|Arena Rector+Loyal Tutor|Swan Song"
 ENT3 = f"{FRA}+Entrust the Spark|Veil of Summer"
 COLS = [("padrão: 1º ult (turno)", "std", "first_ult", lambda x: x, False),
@@ -57,14 +58,17 @@ def table(title, rows, ref):
 table("1. Uma carta por vez no slot Arena Rector (Δ sobre a lista atual)",
       [("Loyal Tutor (FRA)", "Loyal Tutor|Arena Rector"), ("Tam (FRA)", "Tam, the Possibility|Arena Rector"),
        ("Entrust the Spark (FRA)", "Entrust the Spark|Arena Rector"), ("Dihada", f"{D}|Arena Rector"),
-       ("Guff", f"{G}|Arena Rector"), ("Vronos", f"{V}|Arena Rector"), ("Sarkhan", f"{S}|Arena Rector")], base)
+       ("Guff", f"{G}|Arena Rector"), ("Vronos", f"{V}|Arena Rector"), ("Sarkhan", f"{S}|Arena Rector"),
+       ("Sisay", f"{SIS}|Arena Rector")], base)
 table("2. Terceiro slot (Tam→Arena Rector e Loyal Tutor→Swan Song fixos; Veil of Summer sai). Δ sobre a lista atual",
       [("Tam + Loyal Tutor + **Entrust**", ENT3), ("Tam + Loyal Tutor + **Dihada**", f"{FRA}+{D}|Veil of Summer"),
        ("Tam + Loyal Tutor + **Guff**", f"{FRA}+{G}|Veil of Summer"), ("Tam + Loyal Tutor + **Vronos**", f"{FRA}+{V}|Veil of Summer"),
-       ("Tam + Loyal Tutor + **Sarkhan**", f"{FRA}+{S}|Veil of Summer")], base)
+       ("Tam + Loyal Tutor + **Sarkhan**", f"{FRA}+{S}|Veil of Summer"),
+       ("Tam + Loyal Tutor + **Sisay**", f"{FRA}+{SIS}|Veil of Summer")], base)
 table("3. O mesmo terceiro slot, Δ sobre o pacote com Entrust (positivo em 'P(...)' e negativo em 'vida ≤ 0/1º ult' = melhor que o Entrust)",
       [("Dihada no lugar do Entrust", f"{FRA}+{D}|Veil of Summer"), ("Guff no lugar do Entrust", f"{FRA}+{G}|Veil of Summer"),
-       ("Vronos no lugar do Entrust", f"{FRA}+{V}|Veil of Summer"), ("Sarkhan no lugar do Entrust", f"{FRA}+{S}|Veil of Summer")], ENT3)
+       ("Vronos no lugar do Entrust", f"{FRA}+{V}|Veil of Summer"), ("Sarkhan no lugar do Entrust", f"{FRA}+{S}|Veil of Summer"), ("Sisay no lugar do Entrust", f"{FRA}+{SIS}|Veil of Summer")], ENT3)
 table("4. Quarta carta por cima do pacote FRA completo (Tam + Loyal Tutor + Entrust), entrando no lugar do Oath of Nissa. Δ sobre o pacote FRA",
       [("+ Dihada (sai Oath of Nissa)", f"{ENT3}+{D}|Oath of Nissa"), ("+ Guff (sai Oath of Nissa)", f"{ENT3}+{G}|Oath of Nissa"),
-       ("+ Vronos (sai Oath of Nissa)", f"{ENT3}+{V}|Oath of Nissa"), ("+ Sarkhan (sai Oath of Nissa)", f"{ENT3}+{S}|Oath of Nissa")], ENT3)
+       ("+ Vronos (sai Oath of Nissa)", f"{ENT3}+{V}|Oath of Nissa"), ("+ Sarkhan (sai Oath of Nissa)", f"{ENT3}+{S}|Oath of Nissa"),
+       ("+ Sisay (sai Oath of Nissa)", f"{ENT3}+{SIS}|Oath of Nissa")], ENT3)

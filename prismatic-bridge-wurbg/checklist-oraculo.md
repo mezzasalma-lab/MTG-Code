@@ -68,6 +68,47 @@ cortes). Números, tabelas e leitura em `goldfish-log.md` (mesma data).
 - instantâneo de oponente no MEU turno (afeta principalmente os PWs animados pela Sarkhan);
 - 📊 estruturais com a cláusula citada acima (Dihada −11 além de criatura; Vronos −2 além de criatura).
 
+## Adendo (2026-09-29, 2º pedido do dia): Sisay, Weatherlight Captain
+
+**Pedido do usuário:** "E a avaliação de Sisay, Weatherlight Captain para o deck da PB?"
+
+**Correção de premissa minha, ANTES de escrever código (Regra #1):** eu lembrava o oráculo dela errado ("poder = maior
+MV entre as outras lendárias"). O oráculo ao vivo (Scryfall, 2026-09-29; já estava no `oracle-cache.json`, texto idêntico)
+é outro: *"Sisay gets +1/+1 for each color among other legendary permanents you control. {W}{U}{B}{R}{G}: Search your
+library for a legendary permanent card with mana value less than Sisay's power, put that card onto the battlefield, then
+shuffle."* ({2}{W}, Legendary Creature — Human Soldier 2/2). Rulings ao vivo (2): se ela sai depois de ativada mas antes de
+resolver, usa-se a última informação; carta com {X} na biblioteca conta X = 0.
+
+### Cláusula a cláusula (entra só via `swap`; a lista não muda)
+
+| Cláusula (oráculo ao vivo) | Implementação | |
+|---|---|---|
+| "+1/+1 for each color among other legendary permanents you control." | `_sisay_bonus` / `_pt`: união das cores dos OUTROS permanentes lendários em campo. A The Prismatic Bridge conta ("Legendary Enchantment" de 5 cores): com ela em campo a Sisay é 7/7. A cor branca dela própria não conta; fora de fase não existe; marcadores +1/+1 somam. | ✅ |
+| "{W}{U}{B}{R}{G}: Search your library for a legendary permanent card with mana value less than Sisay's power, put that card onto the battlefield, then shuffle." | `sisay_activate` / `sisay_targets` / `_sisay_pick` / `_sisay_fetch`. Custo: 5 de mana com as 5 cores (modelo de cor agregado do arquivo: 1 fonte por cor). **Sem {T}**: ativa no turno em que entra. Alvo: lendária permanente da biblioteca com MV < poder e que eu ainda não controlo (regra da lenda). O "then shuffle" resolve ANTES dos ETBs (o gatilho do Carth olha o topo depois). ETB por `_return_to_battlefield`: PW entra com lealdade × Doubling Season e ativa no mesmo main phase (CR 606.3); Oath of Teferi pisca; Carth olha as 7; a Chain Veil registra o turno de entrada. Política: sem PW em campo o melhor PW; com 2+ PWs a Oath of Teferi; senão o PW de maior MV; senão a peça de motor. A busca passa na frente da mão (medido: −0,086 vs −0,069 do turno do 1º ultimate com a mão primeiro). | ✅ |
+| Ruling: "If Sisay leaves the battlefield after you've activated its last ability but before that ability resolves, use its last known existence" | 📊 não modelado: o simulador não tem instantâneo de oponente respondendo à ativação (ela resolve inteira). Estrutural (resposta de oponente). | 📊 |
+| Ruling: "{X} in a card in a library is considered to be 0" | Sem efeito: nenhuma lendária da lista tem {X} (script sobre o oráculo). | ✅ |
+| (interação) The Peregrine Dynamo copia a ativação (fonte lendária que não é comandante) | `sisay_activate`: +1 busca por {1}, uma vez por turno; disputa o {T} da Dynamo com a cópia de PW, que vem antes no main phase. | ✅ |
+| (interação) Delighted Halfling e Plaza of Heroes pagam a Sisay (é lendária) | `LEGENDARY_CARD_NAMES`. | ✅ |
+| (interação) É criatura: a Bridge a acerta e ela entra com doença de invocação | `creature_enters`; a doença NÃO afeta a busca (não tem {T}). | ✅ |
+| (convenção) Não ataca | 📝 peça de motor, como a Tam (`NON_ATTACKING_NAMES`); o simulador não tem bloqueio de oponente pra ela arriscar. | 📝 |
+| (convenção) Ativação no fim do turno do oponente (a habilidade não tem restrição de timing) | 📝 não modelada: seria uma ativação EXTRA com mana que sobrou do meu turno; o simulador só ativa no meu main phase, então **subestima** a carta. | 📝 |
+
+### Escopo do que foi (e do que NÃO foi) verificado (Regra #7)
+
+**Varridas, com o método:**
+- conceito "lendária permanente" e MV, por script sobre o `type_line`/`cmc` ao vivo: 24 lendárias na lista (17 PWs + Chain Veil, Oath of Nissa, Oath of Teferi, Vorinclex, Carth, Atraxa, Peregrine Dynamo), MV 1 (1), 3 (5), 4 (6), 5 (4), 6 (6), 7 (1), 8 (1); nenhum terreno, instantâneo ou feitiço lendário; com a Bridge (7/7, MV < 7) ela alcança 22 das 24 (Kaya MV 7 e Ugin MV 8 ficam de fora);
+- conceito "cor entre lendárias": o vermelho só existe no Nicol Bolas; sem a Bridge e sem o Bolas o máximo é 2 + 4 = 6 (W, U, B, G);
+- combos: Commander Spellbook antes/depois: **0 combos novos**; 2 quase-combos novos com Intruder Alarm (não está na lista); nenhuma combinação conhecida usa a Sisay com as 99;
+- não é Game Changer (`is:gamechanger`); o deck segue com 3;
+- rulings ao vivo lidos e conferidos contra o código antes do A/B;
+- teste dirigido por cláusula: 10 novos (134/134).
+
+**NÃO varridas:**
+- as outras 99 cartas contra a Sisay uma a uma (só os conceitos "lendária", "cor", "MV" e os motores da lista);
+- a ordem da política de ativação contra TODAS as janelas do turno (testei mão-primeiro vs busca-primeiro; instantâneo no fim do turno do oponente não);
+- o modelo de cor é agregado (1 fonte por cor): o custo {W}{U}{B}{R}{G} pode ser mais difícil de pagar numa mesa real do que aqui;
+- 📊 resposta de oponente à ativação (ruling da última informação).
+
 ## Rodada Reality Fracture: Tam, Loyal Tutor, Entrust the Spark — 2026-09-25
 
 **Gatilho:** o usuário confirmou as 3 candidatas de FRA que eu tinha

@@ -664,6 +664,27 @@ campo. Com uma carta que põe +5 na mão, isso jogava fora Herald's Horn e
 ramp pra guardar Dragão de 7. Carta que enche a mão só pode ser avaliada
 com uma política de descarte que proteja o plano. Conferir essa política
 antes de rodar A/B de tutor ou draw em massa.
+## Habilidade ativada de tutor: medir a ORDEM na fase antes de concluir que ela "funciona"
+
+Achado real (Prismatic Bridge, 2026-09-29, Sisay). A primeira política pôs a
+busca DEPOIS do loop da mão (só antes quando o alvo custava 6+). Rodou, disparou,
+trouxe PW, e o A/B deu −0,069 de 1º ult. Medindo a outra ordem (busca antes da
+mão, o mana da fase vai primeiro pro tutor) deu −0,086, e no terceiro slot
+mudou o veredito contra o Entrust. Habilidade sem {T} e sem restrição de
+timing tem uma janela de ordem dentro do main phase; a ordem entra no harness
+como chave de política (`@sisay_pre_hand_all`), com as duas medidas no log.
+Outras duas lições do mesmo achado: (1) o oráculo que eu lembrava estava
+errado (poder = maior MV; o real é +1/+1 por cor entre OUTRAS lendárias),
+então buscar ao vivo antes de escrever código não é opcional; (2) uma chamada
+extra de `activate_unactivated_planeswalkers` depois do main phase mudou a
+base sem a carta em campo, só a bit-identidade da lista atual pegou. Chamada
+nova só quando a ação de fato aconteceu (retorno inteiro > 0).
+
+Reincidência de `pgrep -f`: um laço `until [ -f done ] && ! pgrep -f
+bitident.py` dentro de `bash -c` nunca terminou, porque a linha do próprio
+`bash -c` contém "bitident.py". Esperar por ARQUIVO de sinal (`done.txt`
+escrito pelo script), nunca por `pgrep -f` do nome do script.
+
 ---
 
 <!-- Adicionar novas entradas abaixo conforme surgirem cartas com efeitos

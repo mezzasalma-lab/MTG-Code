@@ -12,11 +12,14 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import prismatic_bridge_goldfish_v1 as pb
 
 D, G, V, S = pb.CANDIDATE_PWS
+SIS = pb.SISAY
 SWAPS = [None,
          [("Arena Rector", D)], [("Arena Rector", G)], [("Arena Rector", V)], [("Arena Rector", S)],
          [("Arena Rector", D), ("Swan Song", G), ("Veil of Summer", V), ("Oath of Nissa", S)],
          [("Farseek", D), ("Doubling Season", G), ("Swan Song", V), ("Arena Rector", S)],
-         [("Oath of Nissa", D), ("Arena Rector", G), ("Farseek", V), ("Veil of Summer", S)]]
+         [("Oath of Nissa", D), ("Arena Rector", G), ("Farseek", V), ("Veil of Summer", S)],
+         [("Arena Rector", SIS)], [("Swan Song", SIS)], [("Doubling Season", SIS)],
+         [("Arena Rector", SIS), ("Swan Song", D), ("Veil of Summer", G), ("Oath of Nissa", S), ("Farseek", V)]]
 PROFILES = ("mixed", "go_wide", "voltron", "low")
 
 
@@ -30,8 +33,8 @@ def alarm(_sig, _frm):
 
 signal.signal(signal.SIGALRM, alarm)
 part, nparts, N, out = int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), sys.argv[4]
-res = {"std": 0, "res": 0, "errors": [], "hangs": 0, "cast_or_entered": {c: 0 for c in pb.CANDIDATE_PWS},
-       "ults": {"dihada_ult": 0, "vronos_ult": 0}}
+res = {"std": 0, "res": 0, "errors": [], "hangs": 0, "cast_or_entered": {c: 0 for c in pb.CANDIDATE_PWS + pb.CANDIDATE_CREATURES},
+       "ults": {"dihada_ult": 0, "vronos_ult": 0, "sisay_activations": 0}}
 for i in range(part, N, nparts):
     sw = SWAPS[i % len(SWAPS)]
     for mode in ("std", "res"):
@@ -44,7 +47,7 @@ for i in range(part, N, nparts):
             else:
                 s = pb.simulate_one_with_interaction(seed, turns=10, attack_profile=PROFILES[(i // len(SWAPS)) % 4], swap=sw)
                 cs = s.cand_stats
-            for c in pb.CANDIDATE_PWS:
+            for c in pb.CANDIDATE_PWS + pb.CANDIDATE_CREATURES:
                 if cs.get("entered_" + c, 0) > 0:
                     res["cast_or_entered"][c] += 1
             for k in res["ults"]:

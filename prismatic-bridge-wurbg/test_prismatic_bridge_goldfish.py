@@ -1721,6 +1721,175 @@ def test_candidates_run_full_games_without_exceptions():
 
 
 # ---------------------------------------------------------------------------
+# Sisay, Weatherlight Captain (candidata de 2026-09-29): um teste por clausula do oraculo ao vivo
+# ---------------------------------------------------------------------------
+SISAY = pb.SISAY
+FIVE_COLOR_LANDS = ["Snow-Covered Plains", "Snow-Covered Island", "Snow-Covered Swamp", "Snow-Covered Mountain",
+                    "Snow-Covered Forest"]
+
+
+def sisay_state(lands=None, library=None, bridge=True, turn=6):
+    s = std_state(turn=turn, library=library if library is not None else [FILLER] * 30)
+    s.battlefield += list(lands if lands is not None else FIVE_COLOR_LANDS)
+    if bridge:
+        s.battlefield.append(pb.COMMANDER)
+        s.bridge_in_play = True
+    creature(s, SISAY, cast_turn=1)
+    return s
+
+
+def test_sisay_power_is_2_plus_colors_among_OTHER_legendary_permanents():
+    s = std_state()
+    creature(s, SISAY, cast_turn=1)
+    assert pb._pt(s, (SISAY, None))[:2] == (2, 2)  # sozinha: 2/2
+    s.battlefield.append("Arena Rector")  # criatura branca NAO lendaria: nao conta
+    assert pb._sisay_bonus(s) == 0
+    pw(s, "Teferi, Hero of Dominaria", 4)  # lendaria branca e azul
+    assert pb._pt(s, (SISAY, None))[:2] == (4, 4)
+    pw(s, "Elspeth, Sun's Champion", 4)  # branca de novo: a cor nao conta 2x
+    assert pb._pt(s, (SISAY, None))[:2] == (4, 4)
+    s.battlefield.append(pb.COMMANDER)  # The Prismatic Bridge: "Legendary Enchantment" de 5 cores
+    assert pb._pt(s, (SISAY, None))[:2] == (7, 7)
+    s.creature_counters[SISAY] = 1  # marcador +1/+1 soma por cima
+    assert pb._pt(s, (SISAY, None))[:2] == (8, 8)
+    s.phased_out = {"Teferi, Hero of Dominaria", "Elspeth, Sun's Champion"}
+    s.battlefield.remove(pb.COMMANDER)
+    assert pb._sisay_bonus(s) == 0  # fora de fase nao existe
+
+
+def test_sisay_search_limited_by_power_legendary_permanent_and_not_already_controlled():
+    lib = ["Kaya, Intangible Slayer", "Ugin, the Spirit Dragon", "Elspeth, Sun's Champion", "Doubling Season",
+           "Counterspell", "Oko, the Ringleader", "Narset, Parter of Veils", "Carth the Lion", "Teferi, Hero of Dominaria"]
+    s = sisay_state(library=lib)  # com a Bridge: 7/7 -> MV < 7
+    t = pb.sisay_targets(s)
+    assert "Elspeth, Sun's Champion" in t and "Teferi, Hero of Dominaria" in t and "Carth the Lion" in t
+    assert "Kaya, Intangible Slayer" not in t and "Ugin, the Spirit Dragon" not in t  # MV 7 e 8
+    assert "Doubling Season" not in t and "Counterspell" not in t  # nao lendarias
+    pw(s, "Narset, Parter of Veils", 5)  # ja' controlo: regra da lenda
+    assert "Narset, Parter of Veils" not in pb.sisay_targets(s)
+    s = sisay_state(library=lib, bridge=False)  # sem a Bridge e sem outras lendarias: 2/2 -> MV < 2
+    assert pb.sisay_targets(s) == []
+    pw(s, "Teferi, Time Raveler", 4)  # W+U -> 4/4 -> MV < 4
+    t = pb.sisay_targets(s)
+    assert "Narset, Parter of Veils" in t and "Oko, the Ringleader" not in t and "Carth the Lion" not in t
+
+
+def test_sisay_activation_costs_five_mana_of_all_colors_and_fetched_pw_activates_same_turn():
+    s = sisay_state(library=["Liliana, Dreadhorde General"] + [FILLER] * 12)
+    pb.main_phase(s, [])
+    assert "Liliana, Dreadhorde General" in s.battlefield and "Liliana, Dreadhorde General" not in s.library
+    assert s.mana_spent_this_turn == 5 and s.cand_stats["sisay_activations"] == 1
+    assert s.loyalty["Liliana, Dreadhorde General"] == 7 and "Zombie Token" in s.battlefield  # entrou com 6 e ja' ativou (+1)
+    assert s.cand_stats["sisay_power_sum"] == 7
+    # sem as 5 cores nao ativa, por mais mana que haja
+    s = sisay_state(lands=["Snow-Covered Forest"] * 7, library=["Liliana, Dreadhorde General"] + [FILLER] * 12)
+    pb.main_phase(s, [])
+    assert "Liliana, Dreadhorde General" not in s.battlefield
+    # sem mana suficiente (4) tambem nao
+    s = sisay_state(lands=FIVE_COLOR_LANDS[:4], library=["Liliana, Dreadhorde General"] + [FILLER] * 12)
+    assert pb.sisay_activate(s, [], 0, 0) == 0
+
+
+def test_sisay_fetch_enters_with_doubling_season_etbs_and_shuffles_before_them():
+    s = sisay_state(library=["Vraska, Betrayal's Sting"] + [FILLER] * 12)
+    s.battlefield.append("Doubling Season")
+    pb.sisay_activate(s, [], 0, 0)
+    assert s.loyalty["Vraska, Betrayal's Sting"] == 12  # 6 x2 (Doubling Season)
+    s = sisay_state(library=["Oath of Teferi"] + [FILLER] * 12)
+    pw(s, "Kaya, Intangible Slayer", 6)
+    pw(s, "Elspeth, Sun's Champion", 4)
+    pb.sisay_activate(s, [], 0, 0)
+    assert "Oath of Teferi" in s.battlefield and s.oath_etbs_total == 1  # o ETB da Oath dispara
+    # Carth: o ETB ("look at the top seven") resolve DEPOIS da busca e do "then shuffle": com a biblioteca cheia de PWs
+    # o topo tem PW de qualquer jeito, entao o gatilho acha um (e a Carth so' entra se a Sisay a buscou)
+    lib = ["Carth the Lion"] + ["Ashiok, Dream Render"] * 12
+    s = sisay_state(library=lib)
+    pb.sisay_activate(s, [], 0, 0)
+    assert "Carth the Lion" in s.battlefield or "Ashiok, Dream Render" in s.battlefield
+    s = sisay_state(library=["Carth the Lion"] + ["Ashiok, Dream Render"] * 12, lands=FIVE_COLOR_LANDS)
+    pw(s, "Ashiok, Dream Render", 5)  # Ashiok ja' em campo: so' a Carth e' alvo valido
+    pb.sisay_activate(s, [], 0, 0)
+    assert "Carth the Lion" in s.battlefield and s.carth_tutors_total == 1 and s.cand_stats["sisay_fetches"] == 1
+
+
+def test_sisay_pick_policy_pw_first_then_oath_with_two_pws_then_engine_pieces():
+    s = sisay_state(library=["Oath of Teferi", "Elspeth, Sun's Champion", "Liliana, Dreadhorde General", "Carth the Lion"] + [FILLER] * 5)
+    assert pb._sisay_pick(s, pb.sisay_targets(s)) in ("Elspeth, Sun's Champion", "Liliana, Dreadhorde General")  # sem PW: o melhor PW
+    pw(s, "Kaya, Intangible Slayer", 6)
+    assert pb._sisay_pick(s, pb.sisay_targets(s)) in ("Elspeth, Sun's Champion", "Liliana, Dreadhorde General")  # 1 PW: ainda PW
+    pw(s, "Narset, Parter of Veils", 5)
+    assert pb._sisay_pick(s, pb.sisay_targets(s)) == "Oath of Teferi"  # 2+ PWs: a Oath (ativa 2x)
+    s = sisay_state(library=["The Chain Veil", "Vorinclex, Monstrous Raider", "Carth the Lion"] + [FILLER] * 5)
+    assert pb._sisay_pick(s, pb.sisay_targets(s)) == "The Chain Veil"  # sem PW na biblioteca: peca de motor
+    assert pb._sisay_pick(s, []) is None
+
+
+def test_sisay_dynamo_copies_the_activation_for_one_more_search():
+    s = sisay_state(lands=FIVE_COLOR_LANDS + [FILLER], library=["Liliana, Dreadhorde General", "Elspeth, Sun's Champion"] + [FILLER] * 12)
+    creature(s, "The Peregrine Dynamo", cast_turn=1)
+    assert pb.sisay_activate(s, [], 0, 0) == 1
+    assert "Liliana, Dreadhorde General" in s.battlefield and "Elspeth, Sun's Champion" in s.battlefield
+    assert s.mana_spent_this_turn == 6 and s.dynamo_copies_total == 1 and s.cand_stats["sisay_dynamo_copies"] == 1
+
+
+def test_sisay_respects_reserve_min_mv_phase_out_and_policy_key():
+    s = sisay_state(lands=FIVE_COLOR_LANDS + [FILLER] * 2, library=["Aminatou, the Fateshifter"] + [FILLER] * 12)
+    assert pb.sisay_activate(s, [], 3, 0) == 0  # 7 de mana - 3 reservados < 5
+    assert pb.sisay_activate(s, [], 0, 6) == 0  # o alvo (MV 3) e' menor que o minimo pedido antes da mao
+    s.phased_out = {SISAY}
+    assert pb.sisay_activate(s, [], 0, 0) == 0  # fora de fase nao ativa
+    s.phased_out = set()
+    pb.CAND_POLICY["sisay_activate"] = False
+    try:
+        assert pb.sisay_activate(s, [], 0, 0) == 0
+    finally:
+        pb.CAND_POLICY["sisay_activate"] = True
+    assert pb.sisay_activate(s, [], 0, 0) == 1
+
+
+def test_sisay_never_attacks_and_counts_as_bridge_target_and_legendary_spell():
+    s = res_state()
+    creature(s, SISAY, cast_turn=1)
+    s.battlefield.append(pb.COMMANDER)
+    s.opp_boards[0] = [opp(1)]
+    pb.our_combat_step(s, [])
+    assert s.our_combat_damage_proxy_total == 0  # peca de motor: nao ataca
+    s = std_state(library=[SISAY] + [FILLER] * 10)
+    pb.bridge_upkeep_trigger(s, [])  # criatura: a Bridge acerta e ela entra doente
+    assert SISAY in s.battlefield and s.creature_cast_turn[SISAY] == s.turn and s.cand_stats["entered_" + SISAY] == 1
+    assert SISAY in pb.LEGENDARY_CARD_NAMES  # Delighted Halfling / Plaza pagam a Sisay
+
+
+def test_sisay_search_goes_before_the_hand_by_default_and_after_it_with_the_old_policy_key():
+    def run():
+        s = sisay_state(lands=FIVE_COLOR_LANDS, library=["Teferi, Time Raveler"] + [FILLER] * 12)
+        s.hand = ["Farseek"]  # 2 de mana: com os 5 terrenos so' dá pra Farseek OU pra busca
+        pb.main_phase(s, [])
+        return s
+    s = run()
+    assert "Teferi, Time Raveler" in s.battlefield and "Farseek" in s.hand  # busca primeiro (alvo de MV 3)
+    pb.CAND_POLICY["sisay_pre_hand_all"] = False
+    try:
+        s = run()
+    finally:
+        pb.CAND_POLICY["sisay_pre_hand_all"] = True
+    assert "Teferi, Time Raveler" not in s.battlefield and "Farseek" not in s.hand  # politica antiga: mao primeiro
+
+
+def test_sisay_runs_full_games_without_exceptions():
+    for slot in ("Arena Rector", "Swan Song", "Doubling Season"):
+        for seed in range(10):
+            r = pb.simulate_one(3_000_000 + seed, 10, False, swap=[(slot, SISAY)])
+            assert isinstance(r["cand_stats"], dict)
+            for prof in ("mixed", "go_wide", "voltron", "low"):
+                pb.simulate_one_with_interaction(6_000_000 + seed, turns=10, attack_profile=prof, swap=[(slot, SISAY)])
+    sw = [("Arena Rector", SISAY), ("Swan Song", DIHADA), ("Veil of Summer", GUFF), ("Oath of Nissa", SARKHAN)]
+    for seed in range(10):
+        pb.simulate_one(3_000_000 + seed, 10, False, swap=sw)
+        pb.simulate_one_with_interaction(6_000_000 + seed, turns=10, swap=sw)
+
+
+# ---------------------------------------------------------------------------
 # Runner
 # ---------------------------------------------------------------------------
 

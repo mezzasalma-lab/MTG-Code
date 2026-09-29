@@ -13,7 +13,9 @@ import sys
 
 CANDS = {"Dihada, Binder of Wills": "Dihada", "Commodore Guff": "Guff",
          "Vronos, Masked Inquisitor": "Vronos", "Sarkhan the Masterless": "Sarkhan",
-         "Control PW (inerte)": "CONTROLE (PW sem habilidade)"}
+         "Sisay, Weatherlight Captain": "Sisay",
+         "Control PW (inerte)": "CONTROLE (PW sem habilidade)",
+         "Control Body (2/2 lendaria sem texto)": "CONTROLE (corpo 2/2 sem texto)"}
 SLOTS = ["Arena Rector", "Swan Song", "Veil of Summer", "Oath of Nissa", "Farseek", "Doubling Season"]
 PACK = ("Dihada, Binder of Wills|Arena Rector+Commodore Guff|Swan Song+"
         "Vronos, Masked Inquisitor|Veil of Summer+Sarkhan the Masterless|Oath of Nissa")
@@ -105,6 +107,7 @@ if "std" in base:
 table("Resiliência — só as partidas em que a candidata entrou em campo (condicional)", "res", RES_COLS, sub_mode=True)
 
 CTRL = "Control PW (inerte)"
+CTRL_OF = {"Sisay, Weatherlight Captain": "Control Body (2/2 lendaria sem texto)"}  # candidata criatura: corpo sem texto
 
 
 def paired_vs(v, w, mode, key, fn=lambda x: x, sub=None):
@@ -120,22 +123,23 @@ def paired_vs(v, w, mode, key, fn=lambda x: x, sub=None):
     return m, 1.96 * sd / math.sqrt(len(d)), len(d)
 
 
-CTRL_SLOTS = [s for s in ("Arena Rector", "Swan Song") if f"{CTRL}|{s}" in data]
+CTRL_SLOTS = [s for s in ("Arena Rector", "Swan Song") if f"{CTRL}|{s}" in data
+              or f"{CTRL_OF['Sisay, Weatherlight Captain']}|{s}" in data]
 if CTRL_SLOTS:
     for cond in (False, True):
         print("#### Efeito das HABILIDADES: candidata menos o PW inerte no mesmo slot "
               f"({'só partidas em que ela entrou' if cond else 'todas as partidas'}; negativo em 1º ult/vida ≤ 0 = melhor)\n")
         print("| candidata | métrica | " + " | ".join(f"sai {s}" for s in CTRL_SLOTS) + " |")
         print("|---|---|" + "---|" * len(CTRL_SLOTS))
-        for cname, short in list(CANDS.items())[:4]:
+        for cname, short in [(k, v) for k, v in CANDS.items() if not k.startswith("Control")]:
             for mode, cols in (("std", STD_COLS), ("res", RES_COLS)):
                 if mode not in base:
                     continue
                 for label, key, fn, pct in cols:
                     cells = []
                     for s in CTRL_SLOTS:
-                        v, w = f"{cname}|{s}", f"{CTRL}|{s}"
-                        if v not in data:
+                        v, w = f"{cname}|{s}", f"{CTRL_OF.get(cname, CTRL)}|{s}"
+                        if v not in data or w not in data:
                             cells.append("—")
                             continue
                         sub = entered(v, mode, cname) if cond else None
@@ -163,6 +167,8 @@ USE = {"Dihada, Binder of Wills": ["dihada_minus3", "dihada_plus2_targets", "dih
                           "guff_end_triggers", "guff_end_counters"],
        "Vronos, Masked Inquisitor": ["vronos_plus1", "vronos_phased_out", "vronos_minus2", "vronos_bounced", "vronos_ult",
                                      "vronos_attack_damage"],
+       "Sisay, Weatherlight Captain": ["sisay_activations", "sisay_fetches", "sisay_fetch_pw", "sisay_fetch_engine",
+                                       "sisay_dynamo_copies"],
        "Sarkhan the Masterless": ["sarkhan_plus1", "sarkhan_animated", "sarkhan_ready_attackers",
                                   "sarkhan_attack_power_potential", "sarkhan_attack_damage", "sarkhan_minus3",
                                   "sarkhan_ping_kills", "sarkhan_ping_damage"]}
@@ -197,11 +203,13 @@ if PACK in data:
         print(f"| resiliência {label} | {fmt(paired(PACK, 'res', key, fn), pct)} |")
     print()
 
-SENS = {"Dihada, Binder of Wills": ("dihada_minus3", "sem o −3 (só +2)"),
-        "Commodore Guff": ("guff_minus3", "sem o −3 (só +1 e o gatilho de end step)"),
-        "Vronos, Masked Inquisitor": ("vronos_phase", "+1 sem phase out (só +1 de lealdade)"),
-        "Sarkhan the Masterless": ("sarkhan_animate", "+1 sem animar (só +1 de lealdade; Dragões do −3 e o estático ficam)")}
-rows = [(c, f, d) for c, (f, d) in SENS.items() if f"{c}|Arena Rector@{f}" in data]
+SENS = [("Dihada, Binder of Wills", "dihada_minus3", "sem o −3 (só +2)"),
+        ("Commodore Guff", "guff_minus3", "sem o −3 (só +1 e o gatilho de end step)"),
+        ("Vronos, Masked Inquisitor", "vronos_phase", "+1 sem phase out (só +1 de lealdade)"),
+        ("Sarkhan the Masterless", "sarkhan_animate", "+1 sem animar (só +1 de lealdade; Dragões do −3 e o estático ficam)"),
+        ("Sisay, Weatherlight Captain", "sisay_activate", "sem a busca (só o corpo que cresce)"),
+        ("Sisay, Weatherlight Captain", "sisay_pre_hand_all", "política antiga: mão primeiro, busca antes só com alvo MV ≥ 6")]
+rows = [(c, f, d) for c, f, d in SENS if f"{c}|Arena Rector@{f}" in data]
 if rows:
     print("#### Sensibilidade: desligar o que carrega a carta (slot Arena Rector, Δ pareado vs base)\n")
     print("| candidata / política | " + " | ".join("padrão " + l for l, *_ in STD_COLS if "std" in base) + " | " +
