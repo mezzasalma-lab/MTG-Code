@@ -26,7 +26,7 @@ for prefix in sys.argv[1:]:
         for k, v in json.load(open(f)).items():
             if k == "base" and "base" in data:
                 continue
-            data[k] = v
+            data.setdefault(k, {}).update(v)   # junta std/res de rodadas diferentes; prefixo posterior sobrescreve o mesmo modo
 base = data["base"]
 modes = [m for m in ("std", "res") if m in base]
 N = len(base["res"])

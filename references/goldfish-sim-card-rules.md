@@ -685,6 +685,24 @@ bitident.py` dentro de `bash -c` nunca terminou, porque a linha do próprio
 `bash -c` contém "bitident.py". Esperar por ARQUIVO de sinal (`done.txt`
 escrito pelo script), nunca por `pgrep -f` do nome do script.
 
+## Comparar duas cartas que "fazem a mesma coisa": instrumentar a fonte de cada evento e refazer a varredura de prosa
+
+Achado real (Prismatic Bridge, 2026-09-29, Sisay no lugar da Arena Rector). Três erros meus de uma vez, todos pegos só
+porque o usuário propôs uma troca direta e eu fui olhar o que a carta cortada FAZ no simulador:
+1. **Prosa antiga virou "fato".** O log dizia "a lista não tem NENHUM outlet de sacrifício de criatura" e usava isso pra
+   chamar a Arena Rector de carta morta. Liliana −4, Eternal Wanderer −4 e 4 wipes eram outlets de propósito, e o simulador já
+   os modelava. Antes de reusar uma afirmação negativa ("não tem X") de um doc antigo, refazer a varredura ao vivo e
+   grepar `NENHUM|nunca|não tem` nos docs do deck.
+2. **Regex por texto perde efeito escondido em modo alternativo.** A varredura por "each creature" não achou o Damn (o
+   "each" só aparece no overload). Depois da varredura por texto, rodar uma segunda por ALVO ("destroy target", "damage to
+   target") e uma por palavra-chave de modo (overload, kicker, escape).
+3. **Política do simulador que só aparece na fonte do evento.** Instrumentando `_our_creature_leaves` por `source`, a Liliana
+   −4 apareceu sacrificando a Sisay em 8% das entradas, embora o −4 seja escolha do jogador. Toda comparação de duas
+   criaturas deve imprimir de onde vêm as mortes de cada uma (combate, wipe próprio, outlet, wipe de oponente).
+Complemento: "a carta vale pouco no simulador" só vale depois de perguntar qual linha DELIBERADA falta (aqui: Damn/Void Rend na
+própria Arena Rector). Modelei como chave desligada por padrão e medi o teto: −0,009 turno, o que confirmou o A/B em vez de
+mudar a conclusão. Fazer a medição do teto antes de reclamar que o simulador subestima uma carta.
+
 ---
 
 <!-- Adicionar novas entradas abaixo conforme surgirem cartas com efeitos

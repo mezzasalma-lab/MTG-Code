@@ -1,5 +1,148 @@
 # Goldfish Log — Esika, God of the Tree // The Prismatic Bridge
 
+## Sisay no lugar da Arena Rector — troca direta como tutor — 2026-09-29
+
+**Pedido:** "Pensei em usar ela no lugar do Arena Rector, como tutor."
+Regras #4/#5: comparar com os motores do deck e com a linha real de jogo, não só o A/B.
+
+**Oráculo ao vivo (Scryfall):** Arena Rector {3}{W}, Creature — Human Cleric **1/2**: *"When this creature dies, you may exile it. If
+you do, search your library for a planeswalker card, put it onto the battlefield, then shuffle."* Ruling (2018-06-08): se ela sai
+do cemitério antes de resolver (ficha-cópia, por exemplo), não exila e não busca. O simulador respeita (`was_card`).
+
+**Correções de premissa minhas (achadas por script sobre o oráculo ao vivo das 99 cartas; ver `checklist-oraculo.md`):**
+1. O log e o checklist diziam "a lista não tem NENHUM outlet de sacrifício de criatura". **Falso.** Outlets de mesa: Liliana −4 e
+   Eternal Wanderer −4. Wipes: Blasphemous Act, Supreme Verdict, Toxic Deluge, Damn (overload). Alvo único que eu posso apontar pra
+   ELA: Damn {B}{B}, Void Rend {W}{U}{B}, Nicol Bolas −3, Ugin +2. O simulador já modelava os de mesa; a prosa estava errada.
+2. Minha 1ª varredura (regex) perdeu o Damn (o "each creature" só está no overload). A 2ª, por alvo, achou os 4 de alvo único.
+3. Bug de política do simulador achado pela instrumentação: o −4 da Liliana sacrificava a Sisay em ~8% das partidas de
+   resiliência em que ela entrava, embora o −4 seja escolha MINHA. Corrigido (`liliana_spares_sisay`, padrão ligado; a Sisay fica
+   por último e, se ela seria uma das 2, uso o +1). Efeito nos números: pequeno e dentro do ruído (linha "Liliana −4 antigo" da
+   sensibilidade na seção Sisay). Teste dirigido novo; lista atual e swaps sem a Sisay não mudam.
+4. A linha deliberada da Arena Rector (Damn/Void Rend nela mesma) não existia no simulador. Agora existe como chave de
+   sensibilidade **desligada por padrão** (`arena_rector_outlet`, `arena_rector_outlet_pre_hand`) pra não mexer nos A/B anteriores.
+
+### O que a Arena Rector entrega hoje no simulador (instrumentação; `arena_uso.py`, N = 3.000 por modo, lista atual)
+
+| | padrão (goldfish) | resiliência (mista) |
+|---|---|---|
+| entra em campo | 43,0% das partidas (turno mediano 9) | 41,8% (turno mediano 8) |
+| morre | **0%** (sem oponente, nada a mata) | 37,8% das que entraram |
+| gatilho dispara (busca PW) | 0% | 36,3% das que entraram (15,2% de todas as partidas) |
+| PW buscado (1º disparo) | — | Ugin 291 (64%), Kaya 85 (19%), Vraska 27, Liliana 26, Wanderer 6, outros 20 |
+| fonte da morte que dispara | — | wipe de OPONENTE 236 (52%), Wanderer −4 83, Toxic Deluge 37, Damn 26, Supreme Verdict 26, Liliana −4 24, Blasphemous Act 23 |
+
+Leitura: no padrão a carta é peso morto (por isso cortá-la por um corpo sem texto custa +0,002); na resiliência ela vira wipe
+insurance: **83% dos disparos trazem Ugin ou Kaya, justamente os dois PWs que a Sisay NÃO alcança** (MV 8 e 7; a Sisay 7/7 pega
+MV ≤ 6).
+
+### A linha deliberada (Damn/Void Rend na própria Arena Rector) quanto vale? (`ab_arena_outlet_sum.py`)
+
+Chave ligada, prioridade máxima (antes da mão) e prioridade mínima (só com a mana que sobra), Δ pareado sobre a lista atual:
+
+| variante | padrão 1º ult | padrão P(ult ≤ T8) | resil. vida ≤ 0 | resil. 1º ult | resil. PW-turnos vivos | resil. P(dano ≥ 40) | resil. P(dano ≥ 120) |
+|---|---|---|---|---|---|---|---|
+| linha antes da mão (teto) | **-0.009 ±0.005** | **+0.20 pp ±0.16** | -0.03 pp ±0.07 | -0.001 ±0.005 | **+0.079 ±0.052** | +0.10 pp ±0.27 | +0.20 pp ±0.26 |
+| linha só com a mana que sobra | +0.000 ±0.000 | +0.00 pp ±0.00 | -0.03 pp ±0.07 | **-0.005 ±0.003** | **+0.104 ±0.038** | +0.20 pp ±0.26 | +0.20 pp ±0.24 |
+
+Uso: antes da mão, em 7,2% das partidas padrão e 4,8% das de resiliência (Damn 116/76, Void Rend 100/69 partidas); só com a mana
+que sobra, 0,3% e 5,7%. **Vale pouco porque a carta de remoção e a Arena Rector em campo raramente coexistem** (2 cartas em 99). É
+teto de prioridade, não estimativa central. Bolas −3 e Ugin +2 na própria Arena Rector NÃO estão modelados (pendência, não
+estrutural; frequência menor que a de Damn/Void Rend).
+
+### A/B: Sisay no lugar da Arena Rector (N = 3.000 seeds; política final da Liliana; IC95%; negrito = não cruza 0)
+
+**Contra a lista atual e contra a Arena Rector COM a linha deliberada**
+
+| comparação (Δ pareado) | padrão 1º ult | padrão P(ult ≤ T8) | resil. vida ≤ 0 | resil. 1º ult | resil. PW-turnos vivos | resil. P(dano ≥ 40) | resil. P(dano ≥ 120) |
+|---|---|---|---|---|---|---|---|
+| Sisay − Arena Rector (lista atual) | **-0.086 ±0.019** | **+2.23 pp ±0.68** | **-0.43 pp ±0.38** | -0.007 ±0.022 | -0.131 ±0.217 | -0.43 pp ±0.92 | **-1.17 pp ±0.87** |
+| Sisay − Arena Rector com a linha antes da mão | **-0.077 ±0.018** | **+2.03 pp ±0.67** | **-0.40 pp ±0.37** | -0.006 ±0.022 | -0.210 ±0.217 | -0.53 pp ±0.92 | **-1.37 pp ±0.87** |
+| Sisay − Arena Rector com a linha só com a mana que sobra | **-0.086 ±0.019** | **+2.23 pp ±0.68** | **-0.40 pp ±0.37** | -0.002 ±0.022 | **-0.235 ±0.220** | -0.63 pp ±0.92 | **-1.37 pp ±0.87** |
+
+**Sisay em cada corte, política final** (a Arena Rector é o corte em que ela perde menos na resiliência junto com Veil e Doubling Season; Swan Song, Oath e Farseek custam mais PW-turnos):
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: PW-turnos vivos | resil.: P(dano ≥ 40) | resil.: P(dano ≥ 120) |
+|---|---|---|---|---|---|---|---|
+| Sisay no lugar de Arena Rector | **-0.086 ±0.019** | **+2.23 pp ±0.68** | **-0.43 pp ±0.38** | -0.007 ±0.022 | -0.131 ±0.217 | -0.43 pp ±0.92 | **-1.17 pp ±0.87** |
+| Sisay no lugar de Swan Song | **-0.062 ±0.017** | **+1.53 pp ±0.64** | **-0.67 pp ±0.43** | +0.003 ±0.022 | **-0.394 ±0.191** | **-0.93 pp ±0.88** | **-1.20 pp ±0.83** |
+| Sisay no lugar de Veil of Summer | **-0.072 ±0.020** | **+2.67 pp ±0.72** | -0.27 pp ±0.48 | -0.013 ±0.024 | -0.165 ±0.203 | -0.60 pp ±0.90 | **-1.10 pp ±0.89** |
+| Sisay no lugar de Oath of Nissa | **-0.047 ±0.022** | **+1.70 pp ±0.77** | **-0.63 pp ±0.55** | +0.006 ±0.025 | **-0.343 ±0.219** | -0.87 pp ±0.93 | -0.77 pp ±0.82 |
+| Sisay no lugar de Farseek | **-0.047 ±0.020** | **+1.73 pp ±0.69** | -0.07 pp ±0.44 | +0.013 ±0.025 | **-0.665 ±0.247** | **-1.33 pp ±0.96** | **-1.67 pp ±0.92** |
+| Sisay no lugar de Doubling Season | **-0.033 ±0.021** | **+1.07 pp ±0.73** | **-0.60 pp ±0.56** | +0.021 ±0.025 | -0.130 ±0.232 | **-1.43 pp ±1.01** | **-2.13 pp ±0.94** |
+
+**Qual carta ocupa o slot da Arena Rector (e do Swan Song) quando os pares entram juntos** (mesmas seeds):
+
+**Cada par contra a lista atual**
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: PW-turnos vivos | resil.: P(dano ≥ 40) | resil.: P(dano ≥ 120) |
+|---|---|---|---|---|---|---|---|
+| Sisay + Loyal Tutor (saem Arena Rector + Swan Song) | **-0.171 ±0.026** | **+4.50 pp ±0.90** | **-0.73 pp ±0.48** | **-0.057 ±0.029** | **+0.572 ±0.287** | +0.70 pp ±1.12 | +0.13 pp ±1.05 |
+| Sisay + Tam (saem Arena Rector + Swan Song) | **-0.144 ±0.024** | **+3.80 pp ±0.89** | **-0.83 pp ±0.50** | **-0.051 ±0.030** | **-0.453 ±0.264** | **-1.53 pp ±1.08** | **-2.23 pp ±1.02** |
+| Tam + Loyal Tutor (saem Arena Rector + Swan Song) | **-0.209 ±0.025** | **+5.37 pp ±0.89** | **-0.70 pp ±0.48** | **-0.106 ±0.030** | **+0.446 ±0.266** | +0.33 pp ±1.07 | +0.47 pp ±0.98 |
+
+**Cada par contra Tam + Loyal Tutor (positivo em 'P(...)' e negativo em 'vida ≤ 0/1º ult' = melhor que o par FRA)**
+
+| variante | padrão: 1º ult (turno) | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: PW-turnos vivos | resil.: P(dano ≥ 40) | resil.: P(dano ≥ 120) |
+|---|---|---|---|---|---|---|---|
+| Sisay + Loyal Tutor (saem Arena Rector + Swan Song) | **+0.038 ±0.017** | **-0.87 pp ±0.64** | -0.03 pp ±0.27 | **+0.049 ±0.021** | +0.126 ±0.186 | +0.37 pp ±0.82 | -0.33 pp ±0.77 |
+| Sisay + Tam (saem Arena Rector + Swan Song) | **+0.065 ±0.026** | **-1.57 pp ±0.95** | -0.13 pp ±0.42 | **+0.055 ±0.031** | **-0.899 ±0.288** | **-1.87 pp ±1.14** | **-2.70 pp ±1.06** |
+
+**Terceiro slot sobre o par Tam + Loyal Tutor (entra no lugar do Veil of Summer; Δ sobre o par):**
+
+| variante (Δ sobre Tam + Loyal Tutor) | padrão: 1º ult | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: PW-turnos vivos | resil.: P(dano ≥ 40) |
+|---|---|---|---|---|---|---|
+| Sisay no lugar do Veil of Summer | **-0.055 ±0.019** | **+2.07 pp ±0.69** | -0.20 pp ±0.46 | -0.004 ±0.023 | -0.032 ±0.194 | +0.20 pp ±0.91 |
+| Entrust no lugar do Veil of Summer | **-0.027 ±0.011** | **+0.63 pp ±0.35** | +0.03 pp ±0.27 | **-0.020 ±0.013** | **+0.168 ±0.111** | **+0.97 pp ±0.53** |
+| Dihada no lugar do Veil of Summer | **-0.037 ±0.016** | **+1.00 pp ±0.58** | -0.30 pp ±0.41 | **-0.043 ±0.022** | **+2.491 ±0.247** | **+3.97 pp ±1.00** |
+
+### Leitura (Regra #5: o deck primeiro, o simulador como apoio)
+
+**O que a troca muda de verdade (pelo deck):**
+- **Mesmo tipo, mesma contagem.** As duas são criatura: a Bridge continua com 17 PWs + 11 criaturas (por script sobre o `type_line`).
+  Muda a QUALIDADE do acerto da Bridge: Arena Rector é uma das menos impactantes ao entrar (1/2 que só rende se morrer); Sisay entra
+  7/7 e já ativa no mesmo turno, sem {T}.
+- **Tipos diferentes de tutor.** Arena Rector é **reativa e de graça**: qualquer PW (sem teto de MV, na prática Ugin com a Doubling
+  Season entra com 14 de lealdade), mas só quando morre. Sisay é **proativa e repetível**: qualquer lendária permanente com MV < poder
+  (PW, Chain Veil, Oath, Carth, Vorinclex, Atraxa, Dynamo), mas custa {W}{U}{B}{R}{G} por busca e só alcança MV ≤ 6.
+- **Os wipes do deck são a favor de uma e contra a outra.** Blasphemous Act, Supreme Verdict, Toxic Deluge, Damn, Liliana −4 e
+  Wanderer −4 transformam a Arena Rector em PW; matam a Sisay (Elspeth −3 também, se ela estiver 7/7, poder ≥ 4). No simulador a
+  Sisay morre em 30% das partidas de resiliência em que entra (25% por wipe de oponente, 4% por wipe meu, ~0% pela Liliana depois do
+  ajuste de política); a Arena Rector morre em 38% e ganha com isso.
+- **O que o simulador não vê e favorece a Sisay:** ativar a busca em resposta a uma remoção (com 5 mana aberta a remoção só custa o
+  corpo) e ativar no fim do turno do oponente. **O que não vê e favorece a Arena Rector:** chump block deliberado (nenhuma das
+  mortes medidas foi por combate), Bolas −3 e Ugin +2 na própria criatura.
+
+**Medido (troca direta, slot da Arena Rector):**
+- Velocidade: **−0,086 turno no 1º ultimate (+2,2 pp de P(ult ≤ T8))**; a linha deliberada da Arena Rector reduz isso pra −0,077.
+- Sobrevivência: vida ≤ 0 −0,4 pp (melhor), PW-turnos vivos −0,13 (dentro do ruído; −0,21 a −0,24 contra a Arena Rector com a linha),
+  P(dano ≥ 40) −0,4 pp (ruído), **P(dano ≥ 120) −1,2 a −1,4 pp (pior)**. Ou seja, empate na defesa e perda pequena no dano longo.
+- No slot dela a Sisay ainda **perde pra Loyal Tutor (−0,135) e pra Tam (−0,119)** e, com o Loyal Tutor no outro slot, **Tam + Loyal
+  Tutor (−0,209) ganha de Sisay + Loyal Tutor (−0,171)** por 0,038 ±0,017 turno (e 0,049 ±0,021 de 1º ult na resiliência). Sisay + Tam
+  é o pior par (−0,144, com PW-turnos −0,45 e dano ≥ 120 −2,2 pp); provável causa: as duas são sumidouros de {W}{U}{B}{R}{G}
+  (hipótese, não medida isoladamente).
+- Como **terceira carta** por cima de Tam + Loyal Tutor (no lugar do Veil of Summer) a Sisay é a que mais acelera (−0,055 ±0,019,
+  +2,1 pp de P(ult ≤ T8)), mas não soma nada na resiliência; a Dihada acelera menos (−0,037) e soma +2,5 PW-turnos e +4,0 pp de
+  P(dano ≥ 40).
+
+**Conclusão pelo deck:** a troca Sisay ↔ Arena Rector é boa em velocidade e neutra na defesa, mas a Arena Rector NÃO é a carta morta
+que o log dizia (ela vale por Ugin/Kaya e pelos wipes). Se a decisão for entre a Sisay e a Tam ou o Loyal Tutor pro mesmo slot, a
+Sisay perde. A Sisay faz mais sentido como carta a mais (no lugar do Veil of Summer, depois de Tam + Loyal Tutor) ou no lugar da
+Arena Rector se você NÃO for usar Tam nem Loyal Tutor.
+
+### Limites desta rodada (Regra #7)
+
+- **Verificado:** oráculo e ruling da Arena Rector ao vivo; varredura por script (2 padrões, e a 1ª tinha um furo que a 2ª cobriu) do
+  que mata/sacrifica criatura minha nas 99 cartas; Spellbook antes/depois (0 combos novos ou removidos com a troca; Tam no lugar
+  também 0; controle positivo tirando a Chain Veil derrubou 4; a Arena Rector sozinha não sustenta nenhum combo nem quase-combo);
+  instrumentação de uso da Arena Rector e da Sisay; A/B pareado nos 6 cortes e em 3 pares; linha deliberada em 2 prioridades;
+  política do −4 da Liliana; testes dirigidos (136/136); regressão e bit-identidade (abaixo).
+- **NÃO verificado:** Bolas −3 e Ugin +2 na própria Arena Rector; chump block deliberado com a Arena Rector; ativação da Sisay em
+  resposta a remoção ou no fim do turno do oponente; pagamento real das 5 cores; as outras 99 cartas contra a Sisay uma a uma; a
+  frente da Esika.
+- Regressão de 40.000 partidas (20.000 padrão + 20.000 resiliência, com swaps rotativos incluindo os 3 pares e a linha
+  deliberada ligada em 1 de cada 3 partidas, alarme de 20 s): **0 exceções, 0 travamentos** (a linha deliberada disparou com Damn em 119 e com Void Rend em 117 partidas). Lista atual
+  **bit-idêntica** ao snapshot anterior: N = 300 no padrão + 400 na resiliência (4 perfis), 0 divergências.
+
 ## Sisay, Weatherlight Captain (5ª candidata do dia, pedida depois das 4) — 2026-09-29
 
 **Pedido:** "E a avaliação de Sisay, Weatherlight Captain para o deck da PB?" (prós e contras, Regra #4/#5).
@@ -22,17 +165,22 @@ entre as OUTRAS lendárias; a busca é limitada pelo poder dela). Foi pego pela 
 - Política de escolha do alvo: sem PW em campo → melhor PW; com 2+ PWs → Oath de Teferi; senão o PW de maior MV; senão peça de
   motor. **Ordem no turno: a busca vai na frente da mão** (`sisay_pre_hand_all`). Medido: −0,086 (busca primeiro) vs −0,069
   (política antiga: mão primeiro, busca antes só com alvo MV ≥ 6) no 1º ultimate.
-- Chaves de política novas em `CAND_POLICY`: `sisay_activate` e `sisay_pre_hand_all` (o A/B liga/desliga cada uma com `@chave`).
+- Chaves de política novas em `CAND_POLICY`: `sisay_activate`, `sisay_pre_hand_all` e `liliana_spares_sisay` (o A/B liga/desliga cada
+  uma com `@chave`). A última nasceu na avaliação Sisay × Arena Rector (seção acima): o −4 da Liliana ("each player sacrifices two
+  creatures of their choice") é escolha MINHA, então a Sisay fica por último e, se ela seria uma das 2 sacrificadas (≤ 2 criaturas
+  minhas), o simulador usa o +1 em vez do −4. Antes o simulador sacrificava a Sisay em ~8% das partidas de resiliência em que ela
+  entrava (107 de 1.339). O efeito nos números foi pequeno e dentro do ruído (tabela de sensibilidade).
 - Estatísticas novas (`cand_stats`): `sisay_activations`, `sisay_fetches`, `sisay_fetch_pw`, `sisay_fetch_engine`,
   `sisay_power_sum`, `sisay_dynamo_copies`, `entered_Sisay…`, `first_turn_…`.
 
 ### Validação
 
-- Testes: 134/134 (10 novos da Sisay: bônus de cor, Bridge 7/7, sem {T}, alvo por MV < poder, regra da lenda, Doubling Season,
-  ordem antes/depois da mão, Dynamo, Halfling/Plaza, não ataca).
+- Testes: 135/135 (11 novos: 10 da Sisay — bônus de cor, Bridge 7/7, sem {T}, alvo por MV < poder, regra da lenda, Doubling Season,
+  ordem antes/depois da mão, Dynamo, Halfling/Plaza, não ataca — e 1 da política do −4 da Liliana).
 - Lista atual **bit-idêntica** ao snapshot anterior (`bitident.py`: N = 300 no padrão + 400 na resiliência (4 perfis), 0 divergências).
-- Regressão de 40.000 partidas (20.000 padrão + 20.000 resiliência, 4 perfis de mesa, swaps rotativos incluindo Sisay
-  sozinha em 3 slots e um pacote de 5 candidatas, alarme de 20 s): **0 exceções, 0 travamentos** (a Sisay entrou em 6.119 dessas partidas; 4.335 partidas tiveram ao menos uma ativação).
+- Regressão de 40.000 partidas (20.000 padrão + 20.000 resiliência, 4 perfis de mesa, swaps rotativos incluindo Sisay sozinha em 3 slots, 3 pares e um pacote de 5
+  candidatas, linha deliberada da Arena Rector ligada em 1 de cada 3, alarme de 20 s): **0 exceções, 0 travamentos** (a Sisay entrou em 7.374 dessas partidas;
+  5.275 tiveram ao menos uma ativação).
 - Commander Spellbook (antes/depois, lista de 99 + Esika): **0 combos novos**; 2 quase-combos com Intruder Alarm (não está na
   lista). Não é Game Changer.
 
@@ -40,14 +188,14 @@ entre as OUTRAS lendárias; a busca é limitada pelo poder dela). Foi pego pela 
 
 **Sisay no lugar de cada corte (Δ pareado sobre a lista atual; negativo em 1º ult = melhor)**
 
-| sai ↓ | padrão: 1º ult | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: P(dano ≥ 40) |
-|---|---|---|---|---|---|
-| Arena Rector | **-0.086 ±0.019** | **+2.23 pp ±0.68** | **-0.40 pp ±0.38** | +0.008 ±0.023 | -0.53 pp ±0.91 |
-| Swan Song | **-0.062 ±0.017** | **+1.53 pp ±0.64** | **-0.57 pp ±0.46** | +0.012 ±0.022 | **-1.07 pp ±0.88** |
-| Veil of Summer | **-0.072 ±0.020** | **+2.67 pp ±0.72** | -0.23 pp ±0.47 | +0.005 ±0.024 | -0.70 pp ±0.91 |
-| Oath of Nissa | **-0.047 ±0.022** | **+1.70 pp ±0.77** | -0.43 pp ±0.56 | +0.023 ±0.024 | **-1.23 pp ±0.94** |
-| Farseek | **-0.047 ±0.020** | **+1.73 pp ±0.69** | +0.07 pp ±0.44 | **+0.029 ±0.025** | **-1.53 pp ±0.97** |
-| Doubling Season | **-0.033 ±0.021** | **+1.07 pp ±0.73** | -0.53 pp ±0.56 | **+0.042 ±0.025** | **-1.73 pp ±1.01** |
+| sai ↓ | padrão: 1º ult | padrão: P(ult ≤ T8) | resil.: vida ≤ 0 | resil.: 1º ult | resil.: PW-turnos vivos | resil.: P(dano ≥ 40) | resil.: P(dano ≥ 120) |
+|---|---|---|---|---|---|---|---|
+| Arena Rector | **-0.086 ±0.019** | **+2.23 pp ±0.68** | **-0.43 pp ±0.38** | -0.007 ±0.022 | -0.131 ±0.217 | -0.43 pp ±0.92 | **-1.17 pp ±0.87** |
+| Swan Song | **-0.062 ±0.017** | **+1.53 pp ±0.64** | **-0.67 pp ±0.43** | +0.003 ±0.022 | **-0.394 ±0.191** | **-0.93 pp ±0.88** | **-1.20 pp ±0.83** |
+| Veil of Summer | **-0.072 ±0.020** | **+2.67 pp ±0.72** | -0.27 pp ±0.48 | -0.013 ±0.024 | -0.165 ±0.203 | -0.60 pp ±0.90 | **-1.10 pp ±0.89** |
+| Oath of Nissa | **-0.047 ±0.022** | **+1.70 pp ±0.77** | **-0.63 pp ±0.55** | +0.006 ±0.025 | **-0.343 ±0.219** | -0.87 pp ±0.93 | -0.77 pp ±0.82 |
+| Farseek | **-0.047 ±0.020** | **+1.73 pp ±0.69** | -0.07 pp ±0.44 | +0.013 ±0.025 | **-0.665 ±0.247** | **-1.33 pp ±0.96** | **-1.67 pp ±0.92** |
+| Doubling Season | **-0.033 ±0.021** | **+1.07 pp ±0.73** | **-0.60 pp ±0.56** | +0.021 ±0.025 | -0.130 ±0.232 | **-1.43 pp ±1.01** | **-2.13 pp ±0.94** |
 
 Controles do mesmo A/B: cortar Arena Rector por um **corpo 2/2 lendário sem texto** (mesmo custo, cor, tipo) dá
 +0,002 ±0,009 no padrão (sem efeito); cortar Swan Song por ele dá +0,046 ±0,014 (o corte em si custa isso). Ou seja, **todo o
@@ -59,48 +207,49 @@ ganho de ritmo da Sisay vem do texto (a busca), não do corpo**.
 |---|---|---|---|---|
 | padrão Δ 1º ult (turno) | **-0.089 ±0.017** | **-0.108 ±0.018** | **-0.193 ±0.037** | **-0.246 ±0.039** |
 | padrão Δ P(ult ≤ T8) | **+2.30 pp ±0.62** | **+2.93 pp ±0.64** | **+5.01 pp ±1.35** | **+6.67 pp ±1.44** |
-| resil. Δ vida ≤ 0 | -0.17 pp ±0.28 | **-0.60 pp ±0.36** | -0.37 pp ±0.64 | **-1.34 pp ±0.80** |
-| resil. Δ 1º ult | **-0.050 ±0.017** | **-0.026 ±0.016** | **-0.111 ±0.039** | **-0.059 ±0.035** |
-| resil. Δ PW-turnos vivos | **+0.547 ±0.162** | **+0.259 ±0.138** | **+1.225 ±0.360** | **+0.578 ±0.307** |
-| resil. Δ PWs mortos em combate | **-0.014 ±0.010** | **-0.013 ±0.011** | **-0.031 ±0.023** | **-0.029 ±0.025** |
-| resil. Δ P(dano ≥ 40) | **+1.67 pp ±0.80** | **+1.00 pp ±0.72** | **+3.73 pp ±1.78** | **+2.23 pp ±1.61** |
-| resil. Δ P(dano ≥ 120) | +0.57 pp ±0.71 | +0.10 pp ±0.68 | +1.27 pp ±1.58 | +0.22 pp ±1.52 |
+| resil. Δ vida ≤ 0 | -0.20 pp ±0.28 | **-0.70 pp ±0.34** | -0.45 pp ±0.62 | **-1.56 pp ±0.75** |
+| resil. Δ 1º ult | **-0.064 ±0.018** | **-0.035 ±0.015** | **-0.144 ±0.039** | **-0.079 ±0.034** |
+| resil. Δ PW-turnos vivos | **+0.615 ±0.168** | **+0.334 ±0.141** | **+1.378 ±0.372** | **+0.744 ±0.314** |
+| resil. Δ PWs mortos em combate | **-0.022 ±0.010** | **-0.019 ±0.011** | **-0.049 ±0.022** | **-0.042 ±0.023** |
+| resil. Δ P(dano ≥ 40) | **+1.77 pp ±0.81** | **+1.13 pp ±0.73** | **+3.96 pp ±1.80** | **+2.53 pp ±1.62** |
+| resil. Δ P(dano ≥ 120) | **+0.83 pp ±0.72** | +0.13 pp ±0.69 | **+1.87 pp ±1.61** | +0.30 pp ±1.54 |
 
 **Sensibilidade (slot Arena Rector, Δ pareado sobre a base)**
 
 | variante | padrão Δ 1º ult | padrão Δ P(ult ≤ T8) | resil. Δ vida ≤ 0 | resil. Δ 1º ult | resil. Δ PW-turnos vivos | resil. Δ P(dano ≥ 40) |
 |---|---|---|---|---|---|---|
-| política final (busca antes da mão) | **-0.086 ±0.019** | **+2.23 pp ±0.68** | **-0.40 pp ±0.38** | +0.008 ±0.023 | -0.199 ±0.213 | -0.53 pp ±0.91 |
-| **sem a busca** (só o corpo que cresce) | +0.002 ±0.009 | -0.07 pp ±0.33 | **-0.33 pp ±0.33** | **+0.049 ±0.021** | **-0.651 ±0.176** | **-2.93 pp ±0.82** |
-| política antiga (mão primeiro; busca antes só com alvo MV ≥ 6) | **-0.069 ±0.016** | **+1.73 pp ±0.61** | -0.37 pp ±0.38 | **+0.027 ±0.022** | -0.157 ±0.193 | **-1.67 pp ±0.89** |
+| política final (busca antes da mão) | **-0.086 ±0.019** | **+2.23 pp ±0.68** | **-0.43 pp ±0.38** | -0.007 ±0.022 | -0.131 ±0.217 | -0.43 pp ±0.92 |
+| **sem a busca** (só o corpo que cresce) | +0.002 ±0.009 | -0.07 pp ±0.33 | **-0.33 pp ±0.33** | **+0.048 ±0.020** | **-0.659 ±0.176** | **-3.00 pp ±0.82** |
+| política antiga da mão (mão primeiro; busca antes só com alvo MV ≥ 6) | **-0.069 ±0.016** | **+1.73 pp ±0.61** | **-0.40 pp ±0.37** | +0.015 ±0.022 | -0.085 ±0.192 | **-1.43 pp ±0.88** |
+| Liliana −4 antigo (sacrifica a Sisay; `@liliana_spares_sisay`) | (igual: sem oponente) | (igual) | **-0.40 pp ±0.38** | +0.008 ±0.023 | -0.199 ±0.213 | -0.53 pp ±0.91 |
 
 **Sensibilidade ao perfil de mesa (só resiliência, N = 3.000 por perfil, slot Arena Rector; política final)**
 
 | candidata − controle (o que o TEXTO faz) | mista | go_wide | voltron | low |
 |---|---|---|---|---|
-| vida ≤ 0 | -0.17 pp ±0.28 | **-0.67 pp ±0.40** | **-0.60 pp ±0.32** | -0.03 pp ±0.07 |
-| 1º ult | **-0.050 ±0.017** | **-0.040 ±0.019** | **-0.077 ±0.019** | **-0.077 ±0.019** |
-| PW-turnos vivos | **+0.547 ±0.162** | **+0.282 ±0.152** | **+0.535 ±0.161** | **+0.718 ±0.171** |
-| PWs mortos em combate | **-0.014 ±0.010** | +0.000 ±0.015 | **-0.034 ±0.013** | **-0.016 ±0.006** |
-| P(dano ≥ 40) | **+1.67 pp ±0.80** | +0.67 pp ±0.73 | **+1.77 pp ±0.80** | **+2.27 pp ±0.84** |
+| vida ≤ 0 | -0.20 pp ±0.28 | **-0.97 pp ±0.41** | **-0.53 pp ±0.32** | -0.03 pp ±0.07 |
+| 1º ult | **-0.064 ±0.018** | **-0.065 ±0.019** | **-0.086 ±0.020** | **-0.082 ±0.018** |
+| PW-turnos vivos | **+0.615 ±0.168** | **+0.446 ±0.154** | **+0.530 ±0.161** | **+0.708 ±0.172** |
+| PWs mortos em combate | **-0.022 ±0.010** | **-0.028 ±0.013** | **-0.034 ±0.013** | **-0.016 ±0.006** |
+| P(dano ≥ 40) | **+1.77 pp ±0.81** | **+1.10 pp ±0.76** | **+1.73 pp ±0.81** | **+2.27 pp ±0.85** |
 
 | candidata − base (o que o SLOT faz) | mista | go_wide | voltron | low |
 |---|---|---|---|---|
-| vida ≤ 0 | **-0.40 pp ±0.38** | **-0.67 pp ±0.48** | **-0.43 pp ±0.38** | -0.10 pp ±0.11 |
-| 1º ult | +0.008 ±0.023 | +0.006 ±0.022 | **-0.031 ±0.024** | **-0.060 ±0.022** |
-| PW-turnos vivos | -0.199 ±0.213 | **-0.275 ±0.192** | -0.127 ±0.211 | +0.182 ±0.205 |
-| PWs mortos em combate | **-0.017 ±0.014** | -0.001 ±0.017 | **-0.037 ±0.016** | **-0.018 ±0.007** |
-| P(dano ≥ 40) | -0.53 pp ±0.91 | **-0.93 pp ±0.82** | -0.17 pp ±0.94 | +0.77 pp ±0.92 |
+| vida ≤ 0 | **-0.43 pp ±0.38** | **-0.97 pp ±0.48** | -0.37 pp ±0.38 | -0.10 pp ±0.11 |
+| 1º ult | -0.007 ±0.022 | -0.018 ±0.022 | **-0.040 ±0.024** | **-0.064 ±0.022** |
+| PW-turnos vivos | -0.131 ±0.217 | -0.111 ±0.191 | -0.132 ±0.214 | +0.172 ±0.206 |
+| PWs mortos em combate | **-0.024 ±0.013** | **-0.030 ±0.016** | **-0.038 ±0.016** | **-0.018 ±0.007** |
+| P(dano ≥ 40) | -0.43 pp ±0.92 | -0.50 pp ±0.83 | -0.20 pp ±0.94 | +0.77 pp ±0.93 |
 
 **Uso por partida em que a carta entrou (slot Arena Rector; mediana | média | P(>0))**
 
 | métrica | padrão (n=1.378 de 3.000) | resiliência (n=1.339 de 3.000) |
 |---|---|---|
-| ativações | 3 \| 3,18 \| 76,2% | 1 \| 1,99 \| 66,2% |
-| buscas | 3 \| 3,24 \| 76,2% | 1 \| 2,04 \| 66,2% |
-| buscas que trouxeram PW | 2 \| 2,21 \| 65,0% | 1 \| 1,35 \| 53,9% |
-| buscas que trouxeram peça de motor | 1 \| 1,03 \| 63,3% | 0 \| 0,70 \| 48,2% |
-| cópias pela Peregrine Dynamo | 0 \| 0,06 \| 6,4% | 0 \| 0,05 \| 4,8% |
+| ativações | 3 \| 3,18 \| 76,2% | 2 \| 2,19 \| 67,0% |
+| buscas | 3 \| 3,24 \| 76,2% | 2 \| 2,24 \| 67,0% |
+| buscas que trouxeram PW | 2 \| 2,21 \| 65,0% | 1 \| 1,50 \| 54,8% |
+| buscas que trouxeram peça de motor | 1 \| 1,03 \| 63,3% | 1 \| 0,74 \| 51,7% |
+| cópias pela Peregrine Dynamo | 0 \| 0,06 \| 6,4% | 0 \| 0,05 \| 5,2% |
 | turno em que entra | mediana 8 | mediana 8 |
 
 Ela entra em ~45% das partidas (padrão 45,9% no slot Arena Rector; 42–47% nos seis cortes).
@@ -117,9 +266,9 @@ Ela entra em ~45% das partidas (padrão 45,9% no slot Arena Rector; 42–47% nos
 - **Medido:** melhor das 5 candidatas do dia no ritmo (−0,086 turno no slot Arena Rector; melhora nos 6 cortes; Dihada −0,057,
   Guff −0,053, Sarkhan −0,010, Vronos −0,004 no mesmo slot). Todo o efeito vem da busca (sem ela: +0,002). Ainda fica atrás de
   Loyal Tutor (−0,135) e Tam (−0,119) no mesmo slot (`ab_candidatas_vs_fra.py`, seção 7 acima).
-- No **terceiro slot** ela é marginalmente melhor que o Entrust no ritmo (−0,028 ±0,017; +1,4 pp de P(ult ≤ T8)) e pior na
-  resiliência (1º ult +0,028 ±0,022; dano ≥ 40 −0,9 pp, dentro do ruído). Como **quarta carta** por cima do pacote FRA completo,
-  −0,018 ±0,020 (não significativo).
+- No **terceiro slot** ela é marginalmente melhor que o Entrust no ritmo (−0,028 ±0,017; +1,4 pp de P(ult ≤ T8)) empata
+  na resiliência (1º ult +0,016 ±0,022; dano ≥ 40 −0,8 pp, dentro do ruído). Como **quarta carta** por cima do pacote FRA completo,
+  −0,018 ±0,020 (não significativo; vida ≤ 0 −0,6 pp, mas P(dano ≥ 40) −1,1 pp).
 
 **Contra:**
 - **5 mana com as 5 cores por ativação** (mais os 3 da conjuração): compete com a mão pelo mesmo mana; a política final põe a busca
@@ -127,13 +276,15 @@ Ela entra em ~45% das partidas (padrão 45,9% no slot Arena Rector; 42–47% nos
 - **Depende da Bridge:** sem ela, o poder dela é 2 + cores das OUTRAS lendárias (vermelho só pelo Nicol Bolas: máximo 6/6 sem a
   Bridge) e a busca alcança bem menos.
 - **É criatura:** exposta a remoção e wipe (a Plaza of Heroes a protege, se estiver em campo). O simulador de resiliência a
-  modela como criatura comum (não ataca, não bloqueia). Contra o corpo 2/2 sem texto, o TEXTO ganha PW-turnos vivos (+0,28 a
-  +0,72) e 1º ult da resiliência (−0,04 a −0,08) nos 4 perfis de mesa; contra a BASE (o slot que ela toma) os PW-turnos ficam
-  entre −0,28 e +0,18 e o P(dano ≥ 40) entre −0,9 e +0,8 pp: ela paga o slot e não deixa ganho claro de resiliência ou dano.
-- Entra tarde (turno mediano 8) e só em ~45% das partidas; não alcança Kaya/Ugin; o ganho em vida ≤ 0 é pequeno (−0,4 a −0,6 pp,
-  significativo só em 2 dos 6 cortes).
-- Sobre a resiliência ao comparar com a BASE (não com o corpo): PW-turnos vivos −0,199 ±0,213 e P(dano ≥ 40) −0,53 pp ±0,91, ambos
-  dentro do ruído no slot Arena Rector; **o slot que ela toma é que pesa**, não a carta.
+  modela como criatura comum (não ataca; bloqueia como qualquer criatura minha; morreu em ~35% das partidas em que entrou, quase
+  todas por wipe de oponente ou wipe/Liliana −4 meus, e em nenhuma por combate). Contra o corpo 2/2 sem texto, o TEXTO ganha
+  PW-turnos vivos (+0,45 a +0,71) e 1º ult da resiliência (−0,06 a −0,09) nos 4 perfis de mesa; contra a BASE (o slot que ela
+  toma) os PW-turnos ficam entre −0,13 e +0,17 e o P(dano ≥ 40) entre −0,5 e +0,8 pp: ela paga o slot e não deixa ganho claro de
+  resiliência ou dano.
+- Entra tarde (turno mediano 8) e só em ~45% das partidas; não alcança Kaya/Ugin; o ganho em vida ≤ 0 é pequeno (−0,07 a −0,67 pp,
+  significativo em 4 dos 6 cortes).
+- Sobre a resiliência ao comparar com a BASE (não com o corpo): PW-turnos vivos −0,131 ±0,217 e P(dano ≥ 40) −0,43 pp ±0,92, ambos
+  dentro do ruído no slot Arena Rector (P(dano ≥ 120) −1,17 pp ±0,87 é pior); **o slot que ela toma é que pesa**, não a carta.
 
 **O que o simulador NÃO vê (e pode subestimar ou superestimar):**
 - ativação no fim do turno do oponente (a habilidade não tem restrição de timing): seria uma ativação EXTRA com mana que sobrou do
@@ -539,7 +690,7 @@ Mesmo harness, mesmas seeds, N = 3.000 (`ab_candidatas_vs_fra.py`; o pacote FRA 
 | Guff | **-0.053 ±0.013** | **+1.67 pp ±0.49** | **-0.57 pp ±0.33** | +0.002 ±0.020 | +0.00 pp ±0.83 |
 | Vronos | -0.004 ±0.009 | +0.00 pp ±0.35 | -0.20 pp ±0.32 | **+0.039 ±0.021** | **-1.07 pp ±0.84** |
 | Sarkhan | **-0.010 ±0.008** | +0.20 pp ±0.31 | **-0.43 pp ±0.33** | **+0.051 ±0.020** | **+3.80 pp ±0.96** |
-| Sisay | **-0.086 ±0.019** | **+2.23 pp ±0.68** | **-0.40 pp ±0.38** | +0.008 ±0.023 | -0.53 pp ±0.91 |
+| Sisay | **-0.086 ±0.019** | **+2.23 pp ±0.68** | **-0.43 pp ±0.38** | -0.007 ±0.022 | -0.43 pp ±0.92 |
 
 **2. Terceiro slot (Tam→Arena Rector e Loyal Tutor→Swan Song fixos; Veil of Summer sai). Δ sobre a lista atual**
 
@@ -550,7 +701,7 @@ Mesmo harness, mesmas seeds, N = 3.000 (`ab_candidatas_vs_fra.py`; o pacote FRA 
 | Tam + Loyal Tutor + **Guff** | **-0.227 ±0.029** | **+6.03 pp ±1.04** | **-0.97 pp ±0.59** | **-0.107 ±0.035** | +1.10 pp ±1.25 |
 | Tam + Loyal Tutor + **Vronos** | **-0.183 ±0.029** | **+4.87 pp ±0.99** | -0.57 pp ±0.57 | **-0.088 ±0.035** | +0.63 pp ±1.24 |
 | Tam + Loyal Tutor + **Sarkhan** | **-0.185 ±0.029** | **+4.93 pp ±0.98** | **-0.80 pp ±0.57** | **-0.068 ±0.035** | **+4.63 pp ±1.32** |
-| Tam + Loyal Tutor + **Sisay** | **-0.264 ±0.031** | **+7.43 pp ±1.10** | **-0.87 pp ±0.63** | **-0.097 ±0.036** | +0.43 pp ±1.27 |
+| Tam + Loyal Tutor + **Sisay** | **-0.264 ±0.031** | **+7.43 pp ±1.10** | **-0.90 pp ±0.64** | **-0.109 ±0.036** | +0.53 pp ±1.26 |
 
 **3. O mesmo terceiro slot, Δ sobre o pacote com Entrust (positivo em 'P(...)' e negativo em 'vida ≤ 0/1º ult' = melhor que o Entrust)**
 
@@ -560,7 +711,7 @@ Mesmo harness, mesmas seeds, N = 3.000 (`ab_candidatas_vs_fra.py`; o pacote FRA 
 | Guff no lugar do Entrust | +0.010 ±0.014 | +0.03 pp ±0.55 | -0.30 pp ±0.33 | +0.018 ±0.019 | -0.20 pp ±0.85 |
 | Vronos no lugar do Entrust | **+0.054 ±0.013** | **-1.13 pp ±0.48** | +0.10 pp ±0.30 | **+0.037 ±0.018** | -0.67 pp ±0.85 |
 | Sarkhan no lugar do Entrust | **+0.052 ±0.013** | **-1.07 pp ±0.48** | -0.13 pp ±0.24 | **+0.057 ±0.018** | **+3.33 pp ±0.91** |
-| Sisay no lugar do Entrust | **-0.028 ±0.017** | **+1.43 pp ±0.66** | -0.20 pp ±0.39 | **+0.028 ±0.022** | -0.87 pp ±0.88 |
+| Sisay no lugar do Entrust | **-0.028 ±0.017** | **+1.43 pp ±0.66** | -0.23 pp ±0.40 | +0.016 ±0.022 | -0.77 pp ±0.88 |
 
 **4. Quarta carta por cima do pacote FRA completo (Tam + Loyal Tutor + Entrust), entrando no lugar do Oath of Nissa. Δ sobre o pacote FRA**
 
@@ -570,12 +721,12 @@ Mesmo harness, mesmas seeds, N = 3.000 (`ab_candidatas_vs_fra.py`; o pacote FRA 
 | + Guff (sai Oath of Nissa) | +0.008 ±0.020 | -0.23 pp ±0.71 | -0.40 pp ±0.54 | **+0.032 ±0.024** | -0.37 pp ±0.90 |
 | + Vronos (sai Oath of Nissa) | **+0.055 ±0.021** | **-1.13 pp ±0.72** | -0.13 pp ±0.52 | **+0.043 ±0.023** | -0.67 pp ±0.89 |
 | + Sarkhan (sai Oath of Nissa) | **+0.053 ±0.021** | **-0.97 pp ±0.71** | -0.40 pp ±0.51 | **+0.059 ±0.023** | **+3.33 pp ±1.00** |
-| + Sisay (sai Oath of Nissa) | -0.018 ±0.020 | **+0.83 pp ±0.72** | -0.43 pp ±0.52 | **+0.031 ±0.025** | **-1.20 pp ±0.91** |
+| + Sisay (sai Oath of Nissa) | -0.018 ±0.020 | **+0.83 pp ±0.72** | **-0.57 pp ±0.52** | +0.013 ±0.025 | **-1.07 pp ±0.92** |
 
 **Leitura:**
 - Sozinhas no slot Arena Rector, **Loyal Tutor (−0,135) e Tam (−0,119) valem mais que qualquer uma das 5 novas** (Sisay −0,086, Entrust −0,064, Dihada −0,057, Guff −0,053, Sarkhan −0,010, Vronos −0,004 no turno do 1º ultimate). A Sisay é a melhor das 5 em velocidade.
-- No **terceiro slot** (ao lado de Tam + Loyal Tutor): a **Sisay ganha do Entrust no ritmo** (−0,028 ±0,017 no turno do 1º ult; +1,4 pp de P(ult ≤ T8)) e a **Dihada empata com ele** (−0,010, dentro do ruído). Na resiliência é o contrário: a Dihada fica melhor que o Entrust (1º ult −0,024; P(dano ≥ 40) +3,0 pp) e a Sisay fica pior (1º ult +0,028 ±0,022; P(dano ≥ 40) −0,9 pp, dentro do ruído). Guff empata no ritmo e não traz o resto. Vronos e Sarkhan são piores que o Entrust no ritmo (+0,05 turno).
-- Como **quarta carta** por cima do pacote FRA completo, nenhuma acelera de forma clara (Dihada ±0; Sisay −0,018 ±0,020, não significativo, com +0,8 pp de P(ult ≤ T8) e 1º ult da resiliência +0,031 pior; Vronos e Sarkhan pioram ~0,055 turno e −1 pp de P(ult ≤ T8)): o Oath of Nissa vale tanto quanto elas nesse slot. A Dihada e a Sarkhan só somam dano (+3 pp de P(dano ≥ 40)).
+- No **terceiro slot** (ao lado de Tam + Loyal Tutor): a **Sisay ganha do Entrust no ritmo** (−0,028 ±0,017 no turno do 1º ult; +1,4 pp de P(ult ≤ T8)) e a **Dihada empata com ele** (−0,010, dentro do ruído). Na resiliência a Dihada fica melhor que o Entrust (1º ult −0,024; P(dano ≥ 40) +3,0 pp) e a Sisay empata com ele (1º ult +0,016 ±0,022; P(dano ≥ 40) −0,8 pp, dentro do ruído; política final da Liliana). Guff empata no ritmo e não traz o resto. Vronos e Sarkhan são piores que o Entrust no ritmo (+0,05 turno).
+- Como **quarta carta** por cima do pacote FRA completo, nenhuma acelera de forma clara (Dihada ±0; Sisay −0,018 ±0,020, não significativo, com +0,8 pp de P(ult ≤ T8), vida ≤ 0 −0,6 pp e P(dano ≥ 40) −1,1 pp; Vronos e Sarkhan pioram ~0,055 turno e −1 pp de P(ult ≤ T8)): o Oath of Nissa vale tanto quanto elas nesse slot. A Dihada e a Sarkhan só somam dano (+3 pp de P(dano ≥ 40)).
 
 ### Leitura (Regra #5: o deck primeiro, o simulador como apoio)
 
@@ -828,10 +979,12 @@ Mais detalhes em `references/goldfish-sim-card-rules.md`, seção "A/B de carta"
   curto, 9 peças). O método separa corte ruim de corte bom.
 - **Arena Rector é o melhor corte pras 3 cartas.** Ela é alvo da Bridge (criatura)
   que não dá PW. O gatilho de morte ("When this creature dies ... search your
-  library for a planeswalker card") não tem como ser ligado de propósito:
-  a lista não tem NENHUM outlet de sacrifício de criatura (varredura do
-  oráculo da lista inteira). Na resiliência, cortá-la não piora a
-  sobrevivência de nenhuma das 3.
+  library for a planeswalker card") ~~não tem como ser ligado de propósito:
+  a lista não tem NENHUM outlet de sacrifício de criatura~~ (**correção
+  2026-09-29:** Liliana −4 e Eternal Wanderer −4 são outlets de propósito, e
+  Blasphemous Act/Supreme Verdict/Toxic Deluge/Damn matam a criatura; ver a
+  seção Sisay × Arena Rector no topo deste log). Na resiliência, cortá-la não
+  piora a sobrevivência de nenhuma das 3.
 - **Blasphemous Act não deve sair.** Cortá-la piora a sobrevivência na
   resiliência (+0,8 e +1,1 pp com Loyal Tutor/Entrust). O wipe protege os PWs.
 - **Uso por partida** (10 turnos, modo padrão):

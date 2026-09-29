@@ -15,7 +15,7 @@ for prefix in sys.argv[1:]:
         for k, v in json.load(open(f)).items():
             if k == "base" and "base" in data:
                 continue
-            data[k] = v
+            data.setdefault(k, {}).update(v)   # junta std/res de rodadas diferentes; prefixo posterior sobrescreve o mesmo modo
 base = "base"
 N = len(data[base]["res"])
 D, G, V, S = "Dihada, Binder of Wills", "Commodore Guff", "Vronos, Masked Inquisitor", "Sarkhan the Masterless"

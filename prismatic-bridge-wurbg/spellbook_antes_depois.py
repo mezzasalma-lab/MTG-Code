@@ -35,11 +35,19 @@ def deck_with(swaps):
 
 if __name__ == "__main__":
     D, G, V, S = pb.CANDIDATE_PWS
-    scen = {"base": deck_with(None),
-            "Dihada": deck_with([("Arena Rector", D)]), "Guff": deck_with([("Arena Rector", G)]),
-            "Vronos": deck_with([("Arena Rector", V)]), "Sarkhan": deck_with([("Arena Rector", S)]),
-            "as 4 juntas": deck_with([("Arena Rector", D), ("Swan Song", G), ("Veil of Summer", V), ("Oath of Nissa", S)]),
-            "CONTROLE positivo: sem The Chain Veil": [c for c in deck_with(None) if c != "The Chain Veil"]}
+    if "sisay" in sys.argv[1:]:
+        # 2026-09-29: Sisay no lugar da Arena Rector (e a Arena Rector sozinha, pra ver o que ela sustenta hoje)
+        scen = {"base": deck_with(None),
+                "Sisay no lugar da Arena Rector": deck_with([("Arena Rector", pb.SISAY)]),
+                "Tam no lugar da Arena Rector": deck_with([("Arena Rector", "Tam, the Possibility")]),
+                "sem a Arena Rector (99 - 1)": [c for c in deck_with(None) if c != "Arena Rector"],
+                "CONTROLE positivo: sem The Chain Veil": [c for c in deck_with(None) if c != "The Chain Veil"]}
+    else:
+        scen = {"base": deck_with(None),
+                "Dihada": deck_with([("Arena Rector", D)]), "Guff": deck_with([("Arena Rector", G)]),
+                "Vronos": deck_with([("Arena Rector", V)]), "Sarkhan": deck_with([("Arena Rector", S)]),
+                "as 4 juntas": deck_with([("Arena Rector", D), ("Swan Song", G), ("Veil of Summer", V), ("Oath of Nissa", S)]),
+                "CONTROLE positivo: sem The Chain Veil": [c for c in deck_with(None) if c != "The Chain Veil"]}
     base_inc = base_alm = None
     for name, deck in scen.items():
         inc, alm = summarize(query(deck))

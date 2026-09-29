@@ -90,7 +90,8 @@ resolver, usa-se a última informação; carta com {X} na biblioteca conta X = 0
 | (interação) The Peregrine Dynamo copia a ativação (fonte lendária que não é comandante) | `sisay_activate`: +1 busca por {1}, uma vez por turno; disputa o {T} da Dynamo com a cópia de PW, que vem antes no main phase. | ✅ |
 | (interação) Delighted Halfling e Plaza of Heroes pagam a Sisay (é lendária) | `LEGENDARY_CARD_NAMES`. | ✅ |
 | (interação) É criatura: a Bridge a acerta e ela entra com doença de invocação | `creature_enters`; a doença NÃO afeta a busca (não tem {T}). | ✅ |
-| (convenção) Não ataca | 📝 peça de motor, como a Tam (`NON_ATTACKING_NAMES`); o simulador não tem bloqueio de oponente pra ela arriscar. | 📝 |
+| (convenção) Não ataca | 📝 peça de motor, como a Tam (`NON_ATTACKING_NAMES`); ela bloqueia como qualquer criatura minha (`_choose_blocker`). | 📝 |
+| (interação) Liliana −4 ("each player sacrifices two creatures of their choice"), Eternal Wanderer −4 e os wipes próprios matam a Sisay | A escolha do −4 é MINHA: `liliana_spares_sisay` (padrão ligado) deixa a Sisay por último e usa o +1 se ela seria uma das 2 sacrificadas. Wipes próprios e Elspeth −3 (poder ≥ 4, com a Bridge ela é 7/7) continuam matando (`_mass_creature_removal` lê o poder real por `_pt`). Achado pela instrumentação de fontes de morte na avaliação Sisay × Arena Rector. | ✅ |
 | (convenção) Ativação no fim do turno do oponente (a habilidade não tem restrição de timing) | 📝 não modelada: seria uma ativação EXTRA com mana que sobrou do meu turno; o simulador só ativa no meu main phase, então **subestima** a carta. | 📝 |
 
 ### Escopo do que foi (e do que NÃO foi) verificado (Regra #7)
@@ -101,7 +102,7 @@ resolver, usa-se a última informação; carta com {X} na biblioteca conta X = 0
 - combos: Commander Spellbook antes/depois: **0 combos novos**; 2 quase-combos novos com Intruder Alarm (não está na lista); nenhuma combinação conhecida usa a Sisay com as 99;
 - não é Game Changer (`is:gamechanger`); o deck segue com 3;
 - rulings ao vivo lidos e conferidos contra o código antes do A/B;
-- teste dirigido por cláusula: 10 novos (134/134).
+- teste dirigido por cláusula: 12 novos ao todo nesta sequência (136/136: 10 da Sisay, 1 da política do −4 da Liliana, 1 da linha deliberada da Arena Rector).
 
 **NÃO varridas:**
 - as outras 99 cartas contra a Sisay uma a uma (só os conceitos "lendária", "cor", "MV" e os motores da lista);
@@ -182,11 +183,34 @@ O CMC médio vai de 3,66 para 3,71. O único custo real na curva é o 1-drop a
 menos (Veil de 1 → Entrust de 5).
 
 **Cortes, pela ordem do deck (não do simulador):**
-1. **Arena Rector.** A lista não tem outlet de sacrifício de criatura
+1. **Arena Rector.** ~~A lista não tem outlet de sacrifício de criatura
    (varredura do oráculo), então o gatilho de morte só acontece se o oponente
-   ou um wipe matar ela. Ainda por cima é alvo da Bridge que não traz PW. No
-   A/B foi o melhor corte pras 3 candidatas, e na resiliência cortá-la não
-   custou sobrevivência.
+   ou um wipe matar ela.~~ **CORREÇÃO 2026-09-29 (varredura por script sobre o
+   oráculo ao vivo das 99 cartas, pedida na avaliação Sisay × Arena Rector):
+   isso estava ERRADO.** A lista tem 2 outlets de sacrifício de propósito
+   (Liliana, Dreadhorde General −4: "Each player sacrifices two creatures of
+   their choice"; The Eternal Wanderer −4: "Each player sacrifices all creatures
+   they control not chosen this way"), 4 wipes que matam a minha criatura
+   (Blasphemous Act, Supreme Verdict, Toxic Deluge, Damn overload) e 4 removedores
+   de alvo único que posso apontar pra ELA (Damn {B}{B} "Destroy target creature";
+   Void Rend {W}{U}{B} "Destroy target nonland permanent"; Nicol Bolas −3
+   "Destroy target creature or planeswalker"; Ugin +2 "3 damage to any target").
+   Não servem: Farewell exila (não morre), Swords/Path/Anguished Unmaking exilam,
+   Elspeth −3 só destrói poder ≥ 4 (a Arena Rector é 1/2), All Will Be One só
+   acerta oponente/criatura de oponente. A minha 1ª varredura (regex) **perdeu o
+   Damn** porque o "each creature" dele só aparece no overload; a 2ª, por alvo
+   ("destroy target", "damage to target"), achou os 4 de alvo único. O simulador
+   já modelava os outlets de mesa (`source=liliana_minus4`, `wanderer_minus4`,
+   wipes próprios); a linha deliberada Damn/Void Rend na própria Arena Rector
+   passou a existir como chave de sensibilidade (`arena_rector_outlet`,
+   desligada por padrão). **PENDÊNCIA (não é impossibilidade estrutural, é
+   trabalho que ficou por fazer):** Bolas −3 e Ugin +2 apontados pra própria
+   Arena Rector não estão modelados. Teto de impacto: o teto de Damn/Void Rend
+   (linha antes da mão, 4,8% a 7,2% das partidas) deu só −0,009 turno no 1º
+   ultimate; Bolas e Ugin aparecem em frequência menor que as duas mágicas. Ainda é alvo da
+   Bridge que não traz PW, e no A/B foi o melhor corte pras 3 candidatas; na
+   resiliência cortá-la por um corpo sem texto custa PW-turnos e dano (ver
+   `goldfish-log.md`, seção Sisay × Arena Rector).
 2. **Swan Song.** É a contramágica mais estreita das 4: só encantamento,
    instantâneo ou feitiço. E dá ao oponente um 2/2 voador, que num deck de
    superfriends é um atacante de PW a mais. Counterspell, Mana Drain e Dovin's

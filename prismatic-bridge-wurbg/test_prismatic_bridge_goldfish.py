@@ -1876,6 +1876,76 @@ def test_sisay_search_goes_before_the_hand_by_default_and_after_it_with_the_old_
     assert "Teferi, Time Raveler" not in s.battlefield and "Farseek" not in s.hand  # politica antiga: mao primeiro
 
 
+def test_liliana_minus4_spares_sisay_and_is_skipped_when_it_would_force_her_sacrifice():
+    def base():
+        s = fresh()
+        s.battlefield += list(FIVE_COLOR_LANDS)
+        pw(s, "Liliana, Dreadhorde General", 6)
+        s.opp_boards[0] = [opp(3), opp(3), opp(3), opp(3)]  # 4 ameacas: o -4 e' considerado
+        creature(s, SISAY, cast_turn=1)
+        return s
+    # so' a Sisay de criatura minha: o -4 me obrigaria a sacrificar ela -> fica o +1 (None = sem modo de controle)
+    s = base()
+    assert pb._defensive_choice(s, "Liliana, Dreadhorde General", 6) is None
+    pb.CAND_POLICY["liliana_spares_sisay"] = False
+    try:
+        assert pb._defensive_choice(base(), "Liliana, Dreadhorde General", 6) == ("Liliana, Dreadhorde General", "-4", None)
+    finally:
+        pb.CAND_POLICY["liliana_spares_sisay"] = True
+    # com 3 criaturas o -4 vale, e o sacrificio recai nas 2 mais fracas (fichas), nunca na Sisay
+    s = base()
+    token(s, "Zombie Token", 2)
+    creature(s, "Bloom Tender", cast_turn=1)
+    assert pb._defensive_choice(s, "Liliana, Dreadhorde General", 6) == ("Liliana, Dreadhorde General", "-4", None)
+    pb._eff_liliana_minus4(s, "Liliana, Dreadhorde General", [], None)
+    assert SISAY in s.battlefield and "Bloom Tender" in s.battlefield and s.battlefield.count("Zombie Token") == 0
+    # sem a Sisay em campo nada muda (base bit-identica): o -4 continua escolhido com 1 criatura minha
+    s = fresh()
+    pw(s, "Liliana, Dreadhorde General", 6)
+    s.opp_boards[0] = [opp(3), opp(3), opp(3), opp(3)]
+    creature(s, "Arena Rector", cast_turn=1)
+    assert pb._defensive_choice(s, "Liliana, Dreadhorde General", 6) == ("Liliana, Dreadhorde General", "-4", None)
+
+
+def test_arena_rector_outlet_damn_or_void_rend_on_own_arena_rector_fetches_the_top_mv_planeswalker():
+    def base(hand):
+        s = std_state(turn=6, library=["Ugin, the Spirit Dragon", "Kaya, Intangible Slayer"] + [FILLER] * 12)
+        s.battlefield += list(FIVE_COLOR_LANDS) + ["Snow-Covered Swamp"]  # Damn e' {B}{B}: 2 fontes pretas distintas
+        creature(s, "Arena Rector", cast_turn=1)
+        s.hand = list(hand)
+        return s
+    # padrao: linha desligada, nada acontece
+    s = base(["Damn"])
+    assert pb.try_arena_rector_outlet(s, [], 0) == 0 and "Arena Rector" in s.battlefield
+    pb.CAND_POLICY["arena_rector_outlet"] = True
+    try:
+        s = base(["Damn"])
+        assert pb.try_arena_rector_outlet(s, [], 0) == 1
+        assert "Ugin, the Spirit Dragon" in s.battlefield and "Arena Rector" not in s.battlefield  # PW de maior MV
+        assert "Arena Rector" not in s.graveyard  # "you may exile it"
+        assert "Damn" in s.graveyard and "Damn" not in s.hand
+        # sem Damn, Void Rend serve ({W}{U}{B}); sem nenhum dos dois, nada
+        s = base(["Void Rend"])
+        assert pb.try_arena_rector_outlet(s, [], 0) == 1 and "Ugin, the Spirit Dragon" in s.battlefield
+        s = base(["Farseek"])
+        assert pb.try_arena_rector_outlet(s, [], 0) == 0 and "Arena Rector" in s.battlefield
+        # sem PW na biblioteca o gatilho nao tem o que buscar: nao gasta a carta
+        s = base(["Damn"])
+        s.library = [FILLER] * 10
+        assert pb.try_arena_rector_outlet(s, [], 0) == 0 and "Damn" in s.hand
+        # sem mana (reserva) nao conjura
+        s = base(["Damn"])
+        assert pb.try_arena_rector_outlet(s, [], 5) == 0  # 6 de mana - 5 reservados < 2
+        # a linha entra no main_phase (antes da mao por padrao) e o PW buscado ativa no mesmo turno
+        s = base(["Damn"])
+        s.battlefield.append(pb.COMMANDER)  # Bridge ja' em campo: nao gasta a mana do turno conjurando ela
+        s.bridge_in_play = True
+        pb.main_phase(s, [])
+        assert "Ugin, the Spirit Dragon" in s.battlefield and s.cand_stats.get("arena_rector_outlet_Damn") == 1
+    finally:
+        pb.CAND_POLICY["arena_rector_outlet"] = False
+
+
 def test_sisay_runs_full_games_without_exceptions():
     for slot in ("Arena Rector", "Swan Song", "Doubling Season"):
         for seed in range(10):

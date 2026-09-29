@@ -19,7 +19,9 @@ SWAPS = [None,
          [("Farseek", D), ("Doubling Season", G), ("Swan Song", V), ("Arena Rector", S)],
          [("Oath of Nissa", D), ("Arena Rector", G), ("Farseek", V), ("Veil of Summer", S)],
          [("Arena Rector", SIS)], [("Swan Song", SIS)], [("Doubling Season", SIS)],
-         [("Arena Rector", SIS), ("Swan Song", D), ("Veil of Summer", G), ("Oath of Nissa", S), ("Farseek", V)]]
+         [("Arena Rector", SIS), ("Swan Song", D), ("Veil of Summer", G), ("Oath of Nissa", S), ("Farseek", V)],
+         [("Arena Rector", SIS), ("Swan Song", "Loyal Tutor")], [("Arena Rector", SIS), ("Swan Song", "Tam, the Possibility")],
+         [("Arena Rector", "Tam, the Possibility"), ("Swan Song", "Loyal Tutor")]]
 PROFILES = ("mixed", "go_wide", "voltron", "low")
 
 
@@ -34,9 +36,12 @@ def alarm(_sig, _frm):
 signal.signal(signal.SIGALRM, alarm)
 part, nparts, N, out = int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), sys.argv[4]
 res = {"std": 0, "res": 0, "errors": [], "hangs": 0, "cast_or_entered": {c: 0 for c in pb.CANDIDATE_PWS + pb.CANDIDATE_CREATURES},
-       "ults": {"dihada_ult": 0, "vronos_ult": 0, "sisay_activations": 0}}
+       "ults": {"dihada_ult": 0, "vronos_ult": 0, "sisay_activations": 0, "arena_rector_outlet_Damn": 0, "arena_rector_outlet_Void Rend": 0}}
 for i in range(part, N, nparts):
     sw = SWAPS[i % len(SWAPS)]
+    # chave de sensibilidade da linha deliberada da Arena Rector: 1 partida em 3 (o resto roda com o padrao, desligada)
+    pb.CAND_POLICY["arena_rector_outlet"] = (i % 3 == 0)
+    pb.CAND_POLICY["arena_rector_outlet_pre_hand"] = (i % 2 == 0)
     for mode in ("std", "res"):
         seed = (3_000_000 if mode == "std" else 6_000_000) + 100_000 + i
         signal.alarm(20)

@@ -2380,7 +2380,8 @@ def _eff_liliana_minus4(state, pw, log, x):
     for j, b in enumerate(state.opp_boards):
         for c in sorted(b, key=lambda c: (c["cmd"], c["p"]))[:2]:
             _opp_remove_creature(state, j, c, how="sacrifice")
-    ours = sorted(_our_creature_instances(state), key=lambda v: _blocker_value(state, v))[:2]
+    spare = CAND_POLICY["liliana_spares_sisay"]
+    ours = sorted(_our_creature_instances(state), key=lambda v: (spare and v[0] == SISAY, _blocker_value(state, v)))[:2]
     for v in sorted(ours, key=lambda v: (v[0], -(v[1] if v[1] is not None else -1))):
         _our_creature_leaves(state, v[0], log, exiled=False, source="liliana_minus4", inst=v)
 
@@ -2869,8 +2870,15 @@ def _eff_vraska_minus2(state, pw, log, x):
 # isolar de onde vem o efeito de cada carta (ab_candidatas.py, variante "ENTRA|SAI@flag").
 CAND_POLICY = {"dihada_minus3": True, "guff_minus3": True, "vronos_phase": True, "sarkhan_animate": True,
                "sisay_activate": True,
-               "sisay_pre_hand_all": True}   # True (padrao): a busca da Sisay passa na frente da mao pra QUALQUER alvo;
+               "sisay_pre_hand_all": True,   # True (padrao): a busca da Sisay passa na frente da mao pra QUALQUER alvo;
                                              # False = politica antiga (mao primeiro, antes dela so' alvo MV >= 6)
+               "liliana_spares_sisay": True,  # True (padrao): o -4 da Liliana ("each player sacrifices two creatures of
+                                              # their choice") e' MEU escolher: a Sisay fica por ultimo e, se ela seria
+                                              # das 2 sacrificadas (<= 2 criaturas minhas), nao uso o -4. False = antigo
+               "arena_rector_outlet": False,  # LINHA DELIBERADA (sensibilidade; desligada por padrao pra nao mexer nos A/B
+                                              # ja' feitos): destruir a PROPRIA Arena Rector com Damn {B}{B} ou Void Rend
+                                              # {W}{U}{B} pra disparar o gatilho de morte (PW direto pro campo)
+               "arena_rector_outlet_pre_hand": True}  # True: essa linha vem antes da mao (teto); False: so' com a mana que sobra
 CAND_POLICY_DEFAULTS = dict(CAND_POLICY)   # o harness de A/B inverte o padrao das chaves pedidas na variante ("@chave")
 
 
@@ -3256,6 +3264,29 @@ def _sisay_fetch(state: GameState, name: str, log: List[Dict], via_dynamo: bool 
     if via_dynamo:
         _cs(state, "sisay_dynamo_copies")
     log.append({"trigger": "sisay_fetch", "card": name, "power": power, "turn": state.turn})
+
+
+def try_arena_rector_outlet(state: GameState, log: List[Dict], reserved: int = 0) -> int:
+    """Linha deliberada (Regra #5): Arena Rector ("When this creature dies, you may exile it. If you do, search your
+    library for a planeswalker card, put it onto the battlefield, then shuffle.") + Damn ({B}{B}, "Destroy target
+    creature") ou Void Rend ({W}{U}{B}, "Destroy target nonland permanent") alvo nela mesma: 2 ou 3 de mana levam o PW de
+    maior MV (Ugin/Kaya) direto pro campo. So' com a criatura-CARTA em campo (ficha-copia nao tem o que exilar, ruling
+    2018-06-08) e PW na biblioteca. Retorna 1 se disparou. Chave `arena_rector_outlet` (padrao desligada)."""
+    if not CAND_POLICY["arena_rector_outlet"] or "Arena Rector" not in state.battlefield:
+        return 0
+    if state.token_copies.get("Arena Rector", 0) > 0 and state.battlefield.count("Arena Rector") <= state.token_copies["Arena Rector"]:
+        return 0
+    if not any(C(c).type == "Planeswalker" for c in state.library):
+        return 0
+    for spell in ("Damn", "Void Rend"):
+        cost, colors, _ = SPOT_REMOVAL_SPELLS[spell]
+        cost = _adjust_cost(state, spell, cost, colors)
+        if spell in state.hand and _castable_now(state, cost, colors, reserved):
+            _cast_our_spell(state, spell, cost, log)
+            _cs(state, "arena_rector_outlet_" + spell)
+            _our_creature_leaves(state, "Arena Rector", log, exiled=False, source=spell + "_on_own_arena_rector")
+            return 1
+    return 0
 
 
 def sisay_activate(state: GameState, log: List[Dict], reserved: int = 0, min_mv: int = 0) -> int:
@@ -3849,6 +3880,9 @@ def main_phase(state: GameState, log: List[Dict]):
     if attack_model_on(state):
         _cast_defensive_spells(state, log, reserved)
 
+    if CAND_POLICY["arena_rector_outlet_pre_hand"] and try_arena_rector_outlet(state, log, reserved):
+        activate_unactivated_planeswalkers(state, log)
+
     # Sisay (candidata): a busca vem ANTES da mao (medido: -0,086 turno no 1o ultimate contra -0,069 com a mao primeiro,
     # e sem o custo na resiliencia); com a chave `sisay_pre_hand_all` desligada so' o alvo grande (MV >= 6) passa na frente.
     sisay_activate(state, log, reserved, min_mv=0 if CAND_POLICY["sisay_pre_hand_all"] else 6)
@@ -3927,6 +3961,8 @@ def main_phase(state: GameState, log: List[Dict]):
     activate_unactivated_planeswalkers(state, log)
     # Sisay: a mana que sobrou depois da mao paga a busca (qualquer alvo); o PW buscado ativa no mesmo main phase.
     if sisay_activate(state, log, reserved, min_mv=0):
+        activate_unactivated_planeswalkers(state, log)
+    if not CAND_POLICY["arena_rector_outlet_pre_hand"] and try_arena_rector_outlet(state, log, reserved):
         activate_unactivated_planeswalkers(state, log)
 
 def sphinx_additional_beginning_phase(state: GameState, log: List[Dict]):
@@ -5719,6 +5755,9 @@ def _defensive_choice(state: GameState, pw: str, loy: int):
             return (pw, "-3", None)
         return None
     if pw == "Liliana, Dreadhorde General" and 5 <= loy < 9 and n >= 4:
+        if (CAND_POLICY["liliana_spares_sisay"] and SISAY in state.battlefield
+                and len(_our_creature_instances(state)) <= 2):
+            return None  # o -4 me obrigaria a sacrificar a Sisay (2 criaturas ou menos): fica o +1
         return (pw, "-4", None)
     if pw == "Ugin, the Spirit Dragon" and loy < 10:
         x = _ugin_minus_x_choice(state, loy)
