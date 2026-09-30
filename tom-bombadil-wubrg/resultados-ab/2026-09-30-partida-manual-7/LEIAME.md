@@ -43,6 +43,10 @@ python3 orchard_sens.py sum dados/orchard_sens > /tmp/orch.md              # = r
 - As simulações em si (`orchard_sens.py run`) não foram re-executadas para comparar com os `.json`; a garantia é o controle
   `base` = `tom_v1_runs.jsonl` (3000/3000 iguais).
 
+## Confirmações do usuário (2026-09-30, depois do arquivamento)
+As 6 anomalias "cópia-ficha de Saga sem fonte" que o script lista no T8 (The Bath Song) e a morte da Barbara Wright no T6 (Golgari Charm não a mata: 1/3 com −1/−1)
+foram confirmadas pelo usuário como erros de operação dele. O script e o `resumos/trace.md` não foram alterados (continuam listando as 6 cópias como anomalia sem fonte).
+
 ## O que as verificações automáticas NÃO provam
 Custo e cor de mana, ordem da pilha, escolhas (alvos, descartes, capítulo de read ahead) e compras/descartes por habilidade só
 foram conferidos à mão no `goldfish-log.md`; o log do playtester não registra gatilhos que o jogador não executou, então

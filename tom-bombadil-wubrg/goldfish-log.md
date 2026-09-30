@@ -429,7 +429,7 @@ Oráculo de cada carta conferido ao vivo no Scryfall; `Femeref Enchantress` tem 
   com Femeref viva, a cópia sacrificada no fim do turno compraria 1 (encantamento indo pro cemitério). Sem Femeref no T9–T10, o ganho foi só mana.
 - **Sim × real**: Tom no T4 acontece em 27,3% das 3.000 partidas do simulador (≤ T5: 56,8%). Primeiro gatilho do Tom no T8, igual à #7.
 
-### Partida manual #7 (2026-09-30) — 1 violação de regra provada pelo log (2º terreno no T8) e 5 pontos não confirmados
+### Partida manual #7 (2026-09-30) — 1 violação de regra provada pelo log (2º terreno no T8), 2 erros de operação confirmados pelo usuário e 3 pontos não confirmados
 
 Dados brutos, script, rulings, varredura da lista e a sensibilidade do Exotic Orchard em
 `tom-bombadil-wubrg/resultados-ab/2026-09-30-partida-manual-7/` (Regra #8; `cmp` byte a byte feito).
@@ -463,18 +463,19 @@ Golgari Charm e Torment of Hailfire.
 - **T8, 2 jogadas de terreno**: City of Brass e **Urza's Saga** (a ruling de 2021-06-18 diz "é um terreno, só pode ser jogada como terreno"). CR 305.2 dá 1 por
   turno e nenhuma das 100 cartas da `lista.md` dá jogada extra (varredura por script: 0). O erro não muda o que foi conjurado (sem a Saga ainda sobram ≥ 10 mana para os 10 gastos).
 
+**Confirmado pelo usuário (2026-09-30): erros de operação dele, não regra do deck nem bug do simulador**
+- **As 6 cópias-ficha de The Bath Song no T8** foram erro dele. Sem efeito no jogo (nenhuma carta da lista copia Saga; se fossem reais teriam disparado o cap. I ×6 e a constelação ×6).
+- **A Barbara Wright morrer com a Golgari Charm no T6** foi erro dele: o oráculo dá −1/−1 e a Barbara é 1/3, então ela sobrevive (0/2 até o fim do turno). Consequência real: com ela viva,
+  a Fable do T7 poderia ter entrado com read ahead (escolhendo o capítulo). Não medi essa linha.
+
 **Não confirmado / sem explicação no log**
 1. **Constelação do Champion e gatilho da Sythis incompletos**. Conta pelo oráculo (qualquer encantamento entrando, inclusive criatura-encantamento e Saga posta pelo Tom —
    ruling 2020-01-24): T6 esperava 4 compras (passo + constelação + cap. I ×2), o log tem 3; T7 esperava 4, tem 3; T8 esperava +4 marcadores (ITDBT, Sythis, Urza's Saga, Summon),
    o log tem +2, e nenhuma compra da constelação nem da Sythis ao conjurar a Summon. Padrão: o marcador foi posto, a compra da constelação não. Isso só prejudica o jogador (menos cartas e
    um Champion menor), não é jogada ilegal a favor.
-2. **6 cópias-ficha de The Bath Song no T8**, sem marcador e sem fonte: nenhuma carta da lista copia Saga (Reflection copia só criatura; Estrid's Invocation é conjurada). Se fossem
-   reais, cada uma entraria com 1 marcador e dispararia o cap. I (compre 2, descarte 1) ×6 e a constelação ×6 — nada disso aparece. Artefato do playtester (marcadores de lembrete?).
-3. **Barbara Wright morreu no T6** depois da Golgari Charm, mas a Barbara é 1/3: o modo −1/−1 a deixa 0/2, o modo "destrua encantamento" não a mira (criatura sem ser encantamento),
-   "regenerar" não mata. O log não tem outra causa. Consequência real: a Fable entrou sem read ahead.
-4. Farseek aparece mão→campo e mão→cemitério no T7: nenhum terreno foi buscado, então foi descartada pelo cap. II da Bath Song e o outro registro é um arrasto desfeito.
+2. Farseek aparece mão→campo e mão→cemitério no T7: nenhum terreno foi buscado, então foi descartada pelo cap. II da Bath Song e o outro registro é um arrasto desfeito.
    Bath Song mão→cemitério duas vezes no T8 (desfazer/refazer).
-5. **Exotic Orchard e o Tom no T5**: só fecha WUBRG se o Orchard produzir cor. O log não tem terreno de oponente e a ruling (2009-02-01) diz que o Orchard nunca faz incolor e,
+3. **Exotic Orchard e o Tom no T5**: só fecha WUBRG se o Orchard produzir cor. O log não tem terreno de oponente e a ruling (2009-02-01) diz que o Orchard nunca faz incolor e,
    sem terreno de oponente que produza não há cor a escolher (oráculo). Com 4 fontes reais sem ele, o Tom no T5 é impossível; nos T3, T4, T6 e T7 o Weaver (que não foi virado)
    cobriria a falta. Suposição declarada: mesa real (3 oponentes, Orchard colorido).
 
