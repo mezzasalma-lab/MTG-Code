@@ -1,5 +1,159 @@
 # Goldfish Log — Esika, God of the Tree // The Prismatic Bridge
 
+## Sisay como redundância do motor de PW de graça — 2026-09-30
+
+**Pergunta do usuário:** "E como redundância para o motor do deck de colocar PW em campo de graça?"
+Regras #4/#5: primeiro os motores reais do deck (por script sobre o oráculo ao vivo), depois a medição, depois o que o simulador não vê.
+
+**Fontes de PW sem conjurar, na lista atual (varredura por "onto the battlefield" no oráculo ao vivo das 99 cartas + o verso da Bridge):**
+- **Da biblioteca:** The Prismatic Bridge (upkeep; revela até criatura ou PW: 17 dos 28 alvos são PW; aleatório) e Arena Rector (só se morrer; qualquer PW).
+- **Da mão (não servem de redundância da Bridge):** Urza Assembles the Titans cap. II (PW MV ≤ 6) e Ugin −10 (até 7 permanentes).
+- **Candidatas:** Sisay (repetível, com escolha), Entrust the Spark (sacrifica um PW) e Loyal Tutor (só rende com a Bridge: o PW vai pro topo).
+Ou seja, a lista tem **um motor repetível** de PW da biblioteca (a Bridge). A Sisay seria o segundo.
+
+**Instrumentação (`motor_pw_gratis.py`, N = 3.000 por modo, mesmas seeds):** registra cada `planeswalker_enters` com a FONTE (Bridge, Arena
+Rector, Sisay, Entrust, Urza II, Ugin, conjurado; fichas-cópia do Oko e reentrada por blink ficam de fora). Variantes: lista atual e a
+candidata no slot da Arena Rector (Sisay, Sisay + janela de fim de rodada, Entrust, Loyal Tutor). Estratos definidos pela lista atual
+na mesma seed (a Bridge falhou ou não).
+
+#### padrão (goldfish): N = 3000
+
+**1. Quantos PWs entram de graça, e de onde (média por partida até o T10; mediana entre parênteses quando > 0)**
+
+| variante | bridge | arena_rector | sisay | entrust | urza2 | ugin_ult | total de graça | PWs conjurados |
+|---|---|---|---|---|---|---|---|---|
+| base | 2.10 | 0.00 | 0.00 | 0.00 | 0.14 | 1.30 | **3.54** | 3.72 |
+| Sisay | 1.94 | 0.00 | 1.01 | 0.00 | 0.12 | 1.17 | **4.24** | 3.39 |
+| Sisay + janela de fim de rodada | 1.92 | 0.00 | 1.18 | 0.00 | 0.13 | 1.12 | **4.34** | 3.41 |
+| Entrust the Spark | 2.16 | 0.00 | 0.00 | 0.15 | 0.16 | 1.67 | **4.13** | 3.71 |
+| Loyal Tutor | 2.22 | 0.00 | 0.00 | 0.00 | 0.16 | 1.94 | **4.32** | 3.76 |
+
+**2. PW de graça vindo da BIBLIOTECA (Bridge, Arena Rector, Sisay, Entrust): chance de ter ≥ 1 / ≥ 2 em campo até cada turno, e média de PWs em campo (qualquer origem, sem fichas-cópia). Δ pareado sobre a lista atual**
+
+| variante | ≥ 1 até T6 | ≥ 1 até T8 | ≥ 2 até T8 | nenhum até T8 | PWs em campo até T6 (média) | PWs em campo até T8 (média) |
+|---|---|---|---|---|---|---|
+| base | 36.3% | 60.1% | 34.6% | 39.9% | 1.17 | 3.56 |
+| Sisay | 38.4% (**+2.1 pp ±0.5**) | 62.6% (**+2.5 pp ±0.6**) | 39.6% (**+4.9 pp ±0.8**) | 37.4% (**-2.5 pp ±0.6**) | 1.20 (**+0.04 ±0.02**) | 3.78 (**+0.22 ±0.07**) |
+| Sisay + janela de fim de rodada | 38.5% (**+2.2 pp ±0.5**) | 62.7% (**+2.6 pp ±0.6**) | 39.8% (**+5.1 pp ±0.8**) | 37.3% (**-2.6 pp ±0.6**) | 1.21 (**+0.04 ±0.02**) | 3.80 (**+0.24 ±0.07**) |
+| Entrust the Spark | 37.5% (**+1.2 pp ±0.4**) | 61.7% (**+1.6 pp ±0.5**) | 37.8% (**+3.1 pp ±0.7**) | 38.3% (**-1.6 pp ±0.5**) | 1.21 (**+0.04 ±0.01**) | 3.83 (**+0.27 ±0.06**) |
+| Loyal Tutor | 38.1% (**+1.8 pp ±0.6**) | 62.0% (**+1.8 pp ±0.7**) | 37.2% (**+2.6 pp ±0.8**) | 38.0% (**-1.8 pp ±0.7**) | 1.24 (**+0.07 ±0.02**) | 4.00 (**+0.44 ±0.09**) |
+
+**3. Quando o motor falha: chance de ter ≥ 1 PW da biblioteca (de graça) em campo até o T8, por estrato (estrato definido pela lista atual, mesma seed)**
+
+| estrato (partidas) | base | Sisay | Sisay + janela de fim de rodada | Entrust the Spark | Loyal Tutor |
+|---|---|---|---|---|---|
+| Bridge NÃO lançada até o T6 (ou nunca) (634, 21.1%) | 12.9% | 14.7% | 14.7% | 14.4% | 14.5% |
+| Bridge lançada até o T6 (2366, 78.9%) | 72.8% | 75.4% | 75.6% | 74.4% | 74.7% |
+| Bridge REMOVIDA pelo oponente pelo menos 1 vez (2171, 72.4%) | 63.2% | 66.1% | 66.2% | 65.0% | 65.4% |
+
+**4. PW de graça da biblioteca vindo de fonte que NÃO é a Bridge (Arena Rector, Sisay, Entrust; média por partida até o T10), por estrato**
+
+| estrato | base | Sisay | Sisay + janela de fim de rodada | Entrust the Spark | Loyal Tutor |
+|---|---|---|---|---|---|
+| Bridge NÃO lançada até o T6 (ou nunca) | 0.00 | 0.28 | 0.33 | 0.06 | 0.00 |
+| Bridge lançada até o T6 | 0.00 | 1.21 | 1.40 | 0.17 | 0.00 |
+| Bridge REMOVIDA pelo oponente pelo menos 1 vez | 0.00 | 1.05 | 1.21 | 0.15 | 0.00 |
+
+#### resiliência (mista): N = 3000
+
+**1. Quantos PWs entram de graça, e de onde (média por partida até o T10; mediana entre parênteses quando > 0)**
+
+| variante | bridge | arena_rector | sisay | entrust | urza2 | ugin_ult | total de graça | PWs conjurados |
+|---|---|---|---|---|---|---|---|---|
+| base | 2.97 | 0.15 | 0.00 | 0.00 | 0.13 | 1.14 | **4.40** | 3.32 |
+| Sisay | 2.87 | 0.00 | 0.67 | 0.00 | 0.11 | 0.87 | **4.52** | 3.16 |
+| Sisay + janela de fim de rodada | 2.85 | 0.00 | 0.82 | 0.00 | 0.11 | 0.85 | **4.63** | 3.16 |
+| Entrust the Spark | 3.06 | 0.00 | 0.00 | 0.13 | 0.13 | 1.14 | **4.47** | 3.34 |
+| Loyal Tutor | 3.13 | 0.00 | 0.00 | 0.00 | 0.13 | 1.26 | **4.52** | 3.40 |
+
+**2. PW de graça vindo da BIBLIOTECA (Bridge, Arena Rector, Sisay, Entrust): chance de ter ≥ 1 / ≥ 2 em campo até cada turno, e média de PWs em campo (qualquer origem, sem fichas-cópia). Δ pareado sobre a lista atual**
+
+| variante | ≥ 1 até T6 | ≥ 1 até T8 | ≥ 2 até T8 | nenhum até T8 | PWs em campo até T6 (média) | PWs em campo até T8 (média) |
+|---|---|---|---|---|---|---|
+| base | 46.4% | 73.9% | 54.5% | 26.1% | 1.40 | 3.89 |
+| Sisay | 46.5% (+0.1 pp ±0.5) | 74.3% (+0.4 pp ±0.5) | 55.9% (**+1.5 pp ±0.7**) | 25.7% (-0.4 pp ±0.5) | 1.39 (-0.01 ±0.02) | 3.91 (+0.03 ±0.06) |
+| Sisay + janela de fim de rodada | 46.6% (+0.2 pp ±0.5) | 74.4% (+0.4 pp ±0.5) | 56.1% (**+1.6 pp ±0.7**) | 25.6% (-0.4 pp ±0.5) | 1.39 (-0.00 ±0.02) | 3.96 (**+0.07 ±0.06**) |
+| Entrust the Spark | 46.3% (-0.1 pp ±0.5) | 74.0% (+0.1 pp ±0.4) | 54.8% (+0.3 pp ±0.6) | 26.0% (-0.1 pp ±0.4) | 1.41 (**+0.02 ±0.02**) | 3.95 (**+0.07 ±0.06**) |
+| Loyal Tutor | 47.8% (**+1.4 pp ±0.6**) | 74.8% (**+0.8 pp ±0.5**) | 54.7% (+0.3 pp ±0.7) | 25.2% (**-0.8 pp ±0.5**) | 1.43 (**+0.03 ±0.02**) | 4.03 (**+0.15 ±0.08**) |
+
+**3. Quando o motor falha: chance de ter ≥ 1 PW da biblioteca (de graça) em campo até o T8, por estrato (estrato definido pela lista atual, mesma seed)**
+
+| estrato (partidas) | base | Sisay | Sisay + janela de fim de rodada | Entrust the Spark | Loyal Tutor |
+|---|---|---|---|---|---|
+| Bridge NÃO lançada até o T6 (ou nunca) (750, 25.0%) | 18.9% | 18.3% | 18.3% | 17.7% | 19.3% |
+| Bridge lançada até o T6 (2250, 75.0%) | 92.3% | 93.0% | 93.1% | 92.8% | 93.2% |
+| Bridge REMOVIDA pelo oponente pelo menos 1 vez (0, 0%) | — | — | — | — | — |
+
+**4. PW de graça da biblioteca vindo de fonte que NÃO é a Bridge (Arena Rector, Sisay, Entrust; média por partida até o T10), por estrato**
+
+| estrato | base | Sisay | Sisay + janela de fim de rodada | Entrust the Spark | Loyal Tutor |
+|---|---|---|---|---|---|
+| Bridge NÃO lançada até o T6 (ou nunca) | 0.06 | 0.12 | 0.15 | 0.03 | 0.00 |
+| Bridge lançada até o T6 | 0.18 | 0.86 | 1.04 | 0.16 | 0.00 |
+| Bridge REMOVIDA pelo oponente pelo menos 1 vez | — | — | — | — | — |
+
+### Combos que a Sisay alcança (Commander Spellbook da lista atual, 12 combos; MV e "Legendary" por `type_line`/`cmc` ao vivo)
+
+| combo | peças (L = lendária, número = MV) | a Sisay busca |
+|---|---|---|
+| 2 peças | Teferi, Who Slows the Sunset [L4] + The Chain Veil [L4] | as DUAS |
+| 2 peças | Teferi, Who Slows the Sunset [L4] + The Peregrine Dynamo [L3] | as DUAS |
+| 2 peças | Teferi, Temporal Archmage [L6] + The Chain Veil [L4] | as DUAS |
+| 2 peças | Vorinclex [L6] + Vraska, Betrayal's Sting [L6] | as DUAS |
+| 2 peças | Innkeeper's Talent [não lendária, 2] + Vraska [L6] | só a Vraska |
+| 3 peças | Carth [L4] + Teferi TA [L6] + Chain Veil [L4] | as TRÊS |
+| 3 peças | Aminatou [L3] + Bolas [L5] + Oath of Teferi [L5] / The Chain Veil [L4] (2 combos) | as TRÊS |
+| 4 peças | Aminatou + Doubling Season [não lendária] + Ichormoon Gauntlet [não lendária] + Ugin [L8] ou Liliana [L6] | Aminatou e Liliana |
+| 4 peças | Aminatou + Ichormoon Gauntlet + Vorinclex + Ugin [L8] ou Liliana [L6] | Aminatou, Vorinclex, Liliana |
+
+Com a Bridge em campo a Sisay é 7/7 (MV ≤ 6): **em todos os 4 combos de 2 peças de PW/artefato as duas peças são alcançáveis**, então uma
+peça em campo + 5 mana + a Sisay fecha o combo no mesmo turno. **O simulador só executa o loop da Vraska** (auditoria.md, seção de combos),
+então nenhum desses números está nas tabelas acima: o valor de tutor de combo é PISO zero aqui, não medido. Sem a Bridge o poder cai (2 +
+cores das outras lendárias) e o Chain Veil (MV 4) já pede 3 cores em campo.
+
+### Qualidade do PW que entra (MV médio e % com MV ≥ 6, até o T10; conjurados e de graça)
+
+| fonte | padrão | resiliência |
+|---|---|---|
+| Bridge (aleatório) | MV 4,96; 42% com MV ≥ 6 | MV 4,95; 42% |
+| **Sisay** (escolhe; MV < poder) | **MV 5,20; 56%** | **MV 5,40; 66%** |
+| Arena Rector (qualquer PW) | — (não morre no padrão) | MV 7,42; 97% (Ugin/Kaya) |
+| Entrust the Spark (qualquer PW) | MV 7,21; 94% | MV 7,16; 95% |
+| conjurado da mão | MV 4,59; 30% | MV 4,45; 26% |
+
+### Leitura (Regra #5: o deck primeiro, o simulador como apoio)
+
+**Pelo deck:**
+- **A Sisay é um segundo motor de verdade, mas chega tarde e depende do primeiro.** Custa {2}{W} + {W}{U}{B}{R}{G} por busca (mediana de
+  entrada: T8), e a Bridge é quem a deixa 7/7. A Bridge falhando por mana/cores (não lançada até o T6, 21% das partidas padrão) derruba
+  a Sisay pelo mesmo motivo: **falha correlacionada**, não redundância. Onde ela seria redundância de verdade é quando a Bridge já
+  foi lançada e depois removida: a Sisay continua buscando (menor, sem os 5 tons da Bridge).
+- **Complementa em qualidade e em controle, não em tempo:** a Bridge é aleatória (42% de PW MV ≥ 6); a Sisay escolhe, mas só até MV ≤ 6
+  (MV médio 5,2), então não alcança Ugin/Kaya, que são justamente o que Arena Rector e Entrust entregam (MV 7,2 a 7,4).
+- **Melhor redundância pelo TEMPO é o Loyal Tutor** (PW garantido no próximo upkeep, 1 mana): +0,44 PW em campo até o T8, contra +0,27
+  do Entrust e +0,22 da Sisay.
+
+**Medido (padrão, goldfish):**
+- Base tem 60,1% das partidas com ≥ 1 PW de graça da biblioteca até o T8 (só a Bridge; a Arena Rector nunca dispara sem oponente).
+  Com a Sisay: 62,6% (+2,5 pp), e com ≥ 2: 34,6% → 39,6% (+4,9 pp). PWs em campo até o T8: 3,56 → 3,78.
+- **Quando o motor falha** (Bridge não lançada até o T6): 12,9% → 14,7% de ter ≥ 1 PW de graça até o T8, +1,8 pp: praticamente nada,
+  igual ao Entrust e ao Loyal Tutor (+1,5 pp). Quando a Bridge sai, a Sisay soma 1,21 PW por partida de FORA da Bridge até o T10
+  (1,40 com a janela de fim de rodada), contra 0,17 do Entrust e 0 da Arena Rector no padrão: aí ela é o outro motor.
+- **Resiliência:** a Sisay NÃO aumenta o número de PWs em campo (+0,03 PW até o T8, dentro do ruído; ≥ 1 até o T8 +0,4 pp, ruído);
+  só a chance de ter ≥ 2 sobe +1,5 pp. A Arena Rector dava 0,15 PW por partida aqui e a Sisay entrega 0,67 mas os PWs buscados
+  deixam de ser conjurados (conjurados: 3,32 → 3,16).
+
+### Limites (Regra #7)
+
+- **A Bridge removida pelo oponente:** na resiliência o simulador nunca remove a Bridge (0 de 3.000 partidas; a remoção legada que
+  mirava nela está desligada nesse modo), então esse estrato só existe no padrão, onde a remoção legada atinge a Bridge em 72% das
+  partidas (parâmetro do modelo antigo que eu NÃO validei contra jogo real). No padrão, nas partidas com Bridge removida ao menos uma
+  vez a Sisay soma +2,9 pp de ≥ 1 PW de graça até o T8 (63,2% → 66,1%), pouco acima da média (+2,5 pp).
+- **NÃO verificado:** a Sisay com a Bridge fora de campo, separada por poder (a instrumentação não divide as buscas por presença da
+  Bridge); busca em resposta a remoção; combos (o simulador só executa o da Vraska); a Sisay contra a Bridge de segunda cópia (Loyal
+  Tutor a acerta por design).
+- Cartas com MV: Kaya (7) e Ugin (8) ficam fora do alcance da Sisay por regra (MV < poder, e o poder máximo na lista é 7).
+
 ## Sisay com a janela de fim de rodada — "ela parece MUITO melhor que o Rector" — 2026-09-29
 
 **Comentário do usuário:** "Ela parece MUITO melhor que o rector." Hipótese testada (Regra #5, o simulador como possível subestimador):
