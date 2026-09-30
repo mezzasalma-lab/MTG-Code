@@ -31,6 +31,11 @@ python3 analisa_partida.py dados/partida.json.xz > /tmp/trace6.md      # = resum
 - `cmp` do trace refeito a partir de `dados/partida.json.xz` contra `resumos/trace.md`: **idêntico byte a byte**.
 - Resultado automático: 0 violações provadas; 3 anomalias sem fonte, todas na mesma Saga (In the Darkness Bind Them, T12).
 
+## Confirmações do usuário (2026-09-30, depois do arquivamento)
+As 3 anomalias automáticas (ITDBT no T12: exílio, volta com Lore 1 e marcadores extras) foram erro de operação dele: o correto era só somar o marcador de saber.
+Também confirmou: fichas do Culling Ritual que deveriam ter sido removidas, Fertile Ground anexada no Serra's Sanctum, Enduring Vitality virada como ataque simulado (ela tem vigilance),
+2ª compra da Femeref feita antes da hora e erro de mana no T6 (sem detalhar). O script e o `resumos/trace.md` não foram alterados.
+
 ## O que as verificações automáticas NÃO provam
 Custo/cor de mana, ordem da pilha, escolhas e compras por habilidade foram conferidos à mão no `goldfish-log.md`; o log do
 playtester não registra o que o jogador não executou, e mistura desfazer/refazer (ex.: Fable com duas entradas idênticas no T6).

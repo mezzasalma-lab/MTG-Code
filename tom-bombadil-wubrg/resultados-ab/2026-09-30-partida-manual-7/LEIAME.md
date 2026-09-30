@@ -44,8 +44,10 @@ python3 orchard_sens.py sum dados/orchard_sens > /tmp/orch.md              # = r
   `base` = `tom_v1_runs.jsonl` (3000/3000 iguais).
 
 ## Confirmações do usuário (2026-09-30, depois do arquivamento)
-As 6 anomalias "cópia-ficha de Saga sem fonte" que o script lista no T8 (The Bath Song) e a morte da Barbara Wright no T6 (Golgari Charm não a mata: 1/3 com −1/−1)
-foram confirmadas pelo usuário como erros de operação dele. O script e o `resumos/trace.md` não foram alterados (continuam listando as 6 cópias como anomalia sem fonte).
+Todas as anomalias da partida #7 foram respondidas pelo usuário: as 6 cópias-ficha de The Bath Song (T8), a morte da Barbara Wright no T6 (Golgari Charm não a mata: 1/3 com −1/−1),
+os marcadores +1/+1 do Setessan Champion esquecidos, o Farseek arrastado para o campo em vez de descartado, o 2º terreno do T8 (esqueceu a City of Brass) e o Exotic Orchard do T5
+(suposição dele de que gerava a cor que faltava) foram erros ou suposições dele. Resíduo sem resposta: compras da constelação nos T6/T7 e Bath Song mão→cemitério duas vezes.
+O script e o `resumos/trace.md` não foram alterados (continuam listando as 6 cópias como anomalia sem fonte: o script só lê o log).
 
 ## O que as verificações automáticas NÃO provam
 Custo e cor de mana, ordem da pilha, escolhas (alvos, descartes, capítulo de read ahead) e compras/descartes por habilidade só

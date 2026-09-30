@@ -289,7 +289,7 @@ escolhas de alvo.
 
 | carta | ruling/oráculo que importa | simulador |
 |---|---|---|
-| Exotic Orchard | ruling 2009-02-01: nunca faz incolor; só cor que terreno de oponente produza | 📊 `produces=set()` = 1 incolor (convenção do Bumbleflower). Errada nas duas pontas; efeito medido em `goldfish-log.md` (Tom ≤ T5: 56,8% → 60,1% com Orchard colorido) |
+| Exotic Orchard | ruling 2009-02-01: nunca faz incolor; só cor que terreno de oponente produza | 📊 `produces=set()` = 1 incolor (convenção do Bumbleflower). Errada nas duas pontas; teto medido em `goldfish-log.md` (Tom ≤ T5: 56,8% → 60,1% se os oponentes cobrirem as cores; o valor real depende dos terrenos deles) |
 | Setessan Champion | ruling 2020-01-24: dispara com QUALQUER encantamento entrando (criatura-encantamento, Saga posta pelo Tom) | ✅ `on_enchantment_enters` vale pra toda entrada (+1/+1 e compra) |
 | Sanctum Weaver | encantamento-criatura: conta a si mesma no X; habilidade de mana (ruling 2021-06-18) | ✅ tipos `{enchantment, creature}` |
 | Femeref Enchantress | só "encantamento vai pro cemitério → compra" (não tem gatilho de entrar); criatura, não encantamento | ✅ |

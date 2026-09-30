@@ -373,7 +373,7 @@ permanente sua**, incondicional (não depende de achar ou de colocar a
 planície em campo). Explica a flutuação de marcadores da própria Scholar
 vista no T5/T8.
 
-### Partida manual #6 (2026-09-30) — 0 violações provadas pelo log; 1 trecho do T12 não reproduzível
+### Partida manual #6 (2026-09-30) — 0 violações de regra provadas pelo log; 6 erros de operação confirmados pelo usuário
 
 Dados brutos, script e verificação byte a byte em
 `tom-bombadil-wubrg/resultados-ab/2026-09-30-partida-manual-6/` (Regra #8).
@@ -388,36 +388,42 @@ Oráculo de cada carta conferido ao vivo no Scryfall; `Femeref Enchantress` tem 
 | T3 | Serra's Sanctum · Fertile Ground (só fecha no Sanctum: aura dá +1 mana) · Arcane Signet |
 | T4 | Flooded Strand → **Savai Triome** (tem Plains) · **Tom Bombadil** (WUBRG exato: Sanctum 2 = W do encantamento + 1 da aura, Signet, Temple Garden, Raugrin) |
 | T5 | Raffine's Tower (virado) · Enduring Vitality + Bloom Tender (5 mana, com 6 fontes de sobra sem o Tom; o Tom aparece virado: ataque ou mana via Vitality) |
-| T6 | Fable (Goblin Shaman) + Elspeth Conquers Death + Femeref = 10 mana de 10 a 12 disponíveis (ver "mana" abaixo). Snail do oponente (interação simulada) |
+| T6 | Fable (Goblin Shaman) + Elspeth Conquers Death + Femeref = 10 mana de gasto; o usuário reconheceu erro de mana neste turno (ver "confirmado" abaixo). Snail do oponente (interação simulada) |
 | T7 | Fable cap. II: descarta Barbara, compra Windswept Heath → cracada, busca **Zagoth Triome** (tem Forest). ECD cap. II. Goblin Shaman ataca → Treasure |
 | T8 | ECD cap. III (devolve Barbara com +1/+1) **e** Fable cap. III (vira Reflection of Kiki-Jiki) no mesmo turno → o Tom dispara **1 vez** (The Coming of Galactus de graça). Culling Ritual (oponente simulado) destrói MV ≤ 2 |
 | T9–T10 | Reflection copia Enduring Vitality (cópia-ficha); Galactus cap. II e III |
 | T11 | Galactus cap. IV (ficha 16/16) → o Tom busca **In the Darkness Bind Them** (Wraith + o Anel tenta). Leyline Binding ({W}: 5 tipos básicos) + Weaver of Harmony |
-| T12 | ITDBT cap. II (Wraith). Anguished Unmaking (oponente simulado) exila a Saga; o log a mostra voltando com Lore 1 e subindo até 3 no mesmo turno (ver "não confirmado"). O'aka + Utopia Sprawl |
+| T12 | ITDBT cap. II (Wraith). Anguished Unmaking (oponente simulado). O log mostra a ITDBT no exílio, voltando com Lore 1 e subindo até 3 no mesmo turno, com 2 Wraiths e 2 tempts a mais: erro de operação, o correto era só somar 1 marcador (ver "confirmado"). O'aka + Utopia Sprawl |
 | T13 | só compra |
 
 **Conferido e correto** (script + conta à mão; escopo no `LEIAME.md` da pasta):
 - **Terrenos**: 1 jogado da mão por turno, nos 13 turnos. Os 3 fetches foram ao cemitério e buscaram terreno do tipo certo
   (Wooded Foothills→Mountain, Flooded Strand→Plains, Windswept Heath→Forest; as Triomes têm esses tipos).
 - **Saber**: ECD T6→T8 (1→2→3, sacrificada), Fable T6→T8, Galactus T8→T11 (1→4, sacrificada), ITDBT T11. Só +1 por turno na fase
-  principal 1 (CR 714.3c), sacrifício depois do capítulo final (714.4). Uma Saga só perdeu marcador de forma inexplicada: ITDBT no T12.
+  principal 1 (CR 714.3c), sacrifício depois do capítulo final (714.4). A única exceção, a ITDBT no T12, foi erro de operação do usuário (ver abaixo).
 - **Tom**: no máximo 1 Saga de graça por turno. No T8 houve 2 capítulos finais resolvendo (ECD III e Fable III) e entrou só 1
   Saga — o "once each turn" funcionando de verdade (mesma confirmação da partida #5).
 - **Mana**: T3 (Raugrin + Temple Garden pagam a Fertile Ground; o Sanctum só rende depois dela, X = 1 + 1 da aura = 2, e paga o Signet: exato),
-  T4 (Sanctum 2 + Signet + Temple Garden + Raugrin = 5 = WUBRG exato) e T5 (6 fontes para 5) fecham. T6: gastos 10 (Fable 3 + ECD 5 + Femeref 2; a Femeref
-  é criatura, não encantamento) contra 7 fontes de 1 + Sanctum (já havia Fertile Ground + Enduring Vitality, X = 2 → 3 mana; X = 3 após a Fable → 4; X = 4 após
-  a ECD → 5) = 10 a 12. T7–T12: no máximo 3 mana gastos por turno com ≥ 4 fontes viradas (folga grande; não conferi cor por cor).
+  T4 (Sanctum 2 + Signet + Temple Garden + Raugrin = 5 = WUBRG exato) e T5 (6 fontes para 5) fecham. **T6 não fecha com certeza**: gastos 10 (Fable 3 + ECD 5 + Femeref 2; a Femeref
+  é criatura, não encantamento) contra 7 fontes de 1 (contando Tom e Enduring Vitality) + Sanctum (já havia Fertile Ground + Enduring Vitality, X = 2 → 3 mana; X = 3 após a Fable → 4) = 10 a 11.
+  Se as viradas do Tom e da Vitality no T6 eram ataque simulado (o usuário confirmou esse hábito para a Vitality nos T7/T8), sobram só 5 fontes de 1 + Sanctum 4 = **9 para 10 gastos**.
+  T7–T12: no máximo 3 mana gastos por turno com ≥ 4 fontes viradas (folga grande; não conferi cor por cor).
 - **Compra/descarte**: Fable II no T7 (descarta 1, compra 1 ✓). Barbara voltando com o contador da ECD III ✓.
   Femeref: no T8 saem 2 compras extras (Forest, Hallowed Fountain) e o oráculo dá 2 gatilhos (ECD vai pro cemitério; Fertile Ground morre
-  junto com a própria Femeref no Culling Ritual e ela "vê" — CR 603.10a). A contagem bate; a ordem do log põe a 2ª compra antes do Ritual.
-- **The Ring** no T12: 2º tempt dá "atacar → compra e descarta": o descarte da Hallowed Fountain bate.
+  junto com a própria Femeref no Culling Ritual e ela "vê" — CR 603.10a). A contagem bate; a 2ª compra foi feita antes da hora (confirmado pelo usuário, ver abaixo).
+- **The Ring** no T12: o 2º tempt (o do cap. II) dá "atacar → compra e descarta": o descarte da Hallowed Fountain bate. Os tempts 3–4 do log foram erro (ver abaixo).
 
-**Não confirmado / sem explicação no log** (nenhum prova erro de regra):
-1. **ITDBT no T12**: foi ao exílio (Anguished Unmaking simulado) e "voltou" com Lore 1 sem carta da lista que a devolva, e ganhou 2 marcadores
-   no mesmo turno (1→2→3). Os 2 Wraiths extras e os tempts 3–4 do Anel não são reproduzíveis — provável ajuste manual/desfazer do playtester.
-2. Culling Ritual destrói também fichas (MV 0): Goblin Shaman e Treasures não aparecem mortos no log (o playtester pode não registrar fichas que somem).
-3. Fable com duas entradas idênticas no T6 (desfazer/refazer); Fertile Ground sem registro de em qual terreno foi (deduzido: Sanctum).
-4. Enduring Vitality virada nos T7/T8 sem magia conjurada (uso não identificado); Bloom Tender nunca virado e morreu no Ritual.
+**Confirmado pelo usuário (2026-09-30): erros de operação dele, não regra do deck nem bug do simulador**
+- **ITDBT no T12**: o correto era só somar o marcador de saber (Lore 2 → cap. II: 1 Wraith + 1 tempt). O exílio, a volta com Lore 1, os 2 marcadores extras, os 2 Wraiths extras e os
+  tempts 3–4 do Anel foram erro. O alvo da Anguished Unmaking (oponente simulado, no mesmo turno) não foi informado.
+- **Fichas do Culling Ritual (T8)**: Goblin Shaman e os Treasures deveriam ter sido removidos (MV 0). Ficaram em jogo por esquecimento.
+- **Fertile Ground**: anexada no Serra's Sanctum (era a minha dedução; o T3 só fecha assim).
+- **Enduring Vitality virada nos T7/T8**: era ataque simulado, erro dele. A Vitality tem vigilance (oráculo), então atacar não a vira.
+- **Femeref, 2ª compra extra do T8**: feita antes da hora (a contagem de 2 compras estava certa; a ordem não).
+- **Mana do T6**: o usuário reconhece erro, sem dizer qual. Pela minha conta, é compatível com Tom e Vitality terem sido virados como ataque: aí faltaria 1 mana para os 10 gastos.
+  Se a Femeref (2) não tivesse sido conjurada no T6, as 2 compras do T8 também não teriam acontecido. Não medi.
+
+**Sem resposta do usuário** (não perguntei ou não respondeu): a Fable com duas entradas idênticas no T6 (provável desfazer/refazer) e o Bloom Tender nunca virado (morreu no Ritual).
 
 **Leitura do deck** (oráculo + regras; o simulador só apoia):
 - O T2 real ficou sem jogada com 4 magias de 2 mana na mão (Femeref, Bloom Tender, Barbara, depois Fertile Ground): fetch no T1 (1 vida; busca um shock que entra
@@ -429,7 +435,7 @@ Oráculo de cada carta conferido ao vivo no Scryfall; `Femeref Enchantress` tem 
   com Femeref viva, a cópia sacrificada no fim do turno compraria 1 (encantamento indo pro cemitério). Sem Femeref no T9–T10, o ganho foi só mana.
 - **Sim × real**: Tom no T4 acontece em 27,3% das 3.000 partidas do simulador (≤ T5: 56,8%). Primeiro gatilho do Tom no T8, igual à #7.
 
-### Partida manual #7 (2026-09-30) — 1 violação de regra provada pelo log (2º terreno no T8), 2 erros de operação confirmados pelo usuário e 3 pontos não confirmados
+### Partida manual #7 (2026-09-30) — 1 violação de regra provada pelo log (2º terreno no T8) e 5 outros erros/suposições do usuário, todos confirmados; 2 pontos residuais
 
 Dados brutos, script, rulings, varredura da lista e a sensibilidade do Exotic Orchard em
 `tom-bombadil-wubrg/resultados-ab/2026-09-30-partida-manual-7/` (Regra #8; `cmp` byte a byte feito).
@@ -462,22 +468,23 @@ Golgari Charm e Torment of Hailfire.
 **Violação provada pelo log**
 - **T8, 2 jogadas de terreno**: City of Brass e **Urza's Saga** (a ruling de 2021-06-18 diz "é um terreno, só pode ser jogada como terreno"). CR 305.2 dá 1 por
   turno e nenhuma das 100 cartas da `lista.md` dá jogada extra (varredura por script: 0). O erro não muda o que foi conjurado (sem a Saga ainda sobram ≥ 10 mana para os 10 gastos).
+  **Confirmado pelo usuário: esqueceu que já tinha jogado a City of Brass.**
 
-**Confirmado pelo usuário (2026-09-30): erros de operação dele, não regra do deck nem bug do simulador**
-- **As 6 cópias-ficha de The Bath Song no T8** foram erro dele. Sem efeito no jogo (nenhuma carta da lista copia Saga; se fossem reais teriam disparado o cap. I ×6 e a constelação ×6).
-- **A Barbara Wright morrer com a Golgari Charm no T6** foi erro dele: o oráculo dá −1/−1 e a Barbara é 1/3, então ela sobrevive (0/2 até o fim do turno). Consequência real: com ela viva,
+**Confirmado pelo usuário (2026-09-30): erros de operação ou suposições dele, não regra do deck nem bug do simulador**
+- **As 6 cópias-ficha de The Bath Song no T8**: erro dele. Sem efeito no jogo (nenhuma carta da lista copia Saga; se fossem reais teriam disparado o cap. I ×6 e a constelação ×6).
+- **A Barbara Wright morrer com a Golgari Charm no T6**: erro dele. O oráculo dá −1/−1 e a Barbara é 1/3, então ela sobrevive (0/2 até o fim do turno). Consequência real: com ela viva,
   a Fable do T7 poderia ter entrado com read ahead (escolhendo o capítulo). Não medi essa linha.
+- **Marcadores +1/+1 do Setessan Champion**: esqueceu de pôr os de quando encantamentos entraram (no T8 o oráculo pedia +4 e o log tem +2). Sobre a Sythis, o usuário lembrou que o gatilho só
+  compra 1 carta e dá 1 de vida; o log não tem essa compra no T8.
+- **Farseek no T7**: devia ter sido descartado pelo cap. II da Bath Song, e não entrado em campo (arrasto errado; nenhum terreno foi buscado).
+- **Exotic Orchard no T5**: o usuário **presumiu** que o Orchard gerava a cor que faltava entre as 4 das outras fontes. Não é regra: o log não tem terreno de oponente, e o oráculo/ruling
+  (2009-02-01) só dá cor de terreno de oponente (nunca incolor). Sem a suposição, o Tom no T5 não fecha (4 fontes reais para 5 cores); nos T3, T4, T6 e T7 o Weaver (que não foi virado) cobriria a falta.
+  A conjuração do Tom no T5 fica como "legal só sob a suposição de que os oponentes têm terreno com a cor que faltava".
 
-**Não confirmado / sem explicação no log**
-1. **Constelação do Champion e gatilho da Sythis incompletos**. Conta pelo oráculo (qualquer encantamento entrando, inclusive criatura-encantamento e Saga posta pelo Tom —
-   ruling 2020-01-24): T6 esperava 4 compras (passo + constelação + cap. I ×2), o log tem 3; T7 esperava 4, tem 3; T8 esperava +4 marcadores (ITDBT, Sythis, Urza's Saga, Summon),
-   o log tem +2, e nenhuma compra da constelação nem da Sythis ao conjurar a Summon. Padrão: o marcador foi posto, a compra da constelação não. Isso só prejudica o jogador (menos cartas e
-   um Champion menor), não é jogada ilegal a favor.
-2. Farseek aparece mão→campo e mão→cemitério no T7: nenhum terreno foi buscado, então foi descartada pelo cap. II da Bath Song e o outro registro é um arrasto desfeito.
-   Bath Song mão→cemitério duas vezes no T8 (desfazer/refazer).
-3. **Exotic Orchard e o Tom no T5**: só fecha WUBRG se o Orchard produzir cor. O log não tem terreno de oponente e a ruling (2009-02-01) diz que o Orchard nunca faz incolor e,
-   sem terreno de oponente que produza não há cor a escolher (oráculo). Com 4 fontes reais sem ele, o Tom no T5 é impossível; nos T3, T4, T6 e T7 o Weaver (que não foi virado)
-   cobriria a falta. Suposição declarada: mesa real (3 oponentes, Orchard colorido).
+**Residual (sem resposta do usuário)**
+1. **Compras da constelação do Champion nos T6 e T7 e a da Sythis no T8**: o log tem 1 compra a menos em cada um dos T6/T7 (passo + constelação + capítulo: 4 esperadas, 3 no log). O usuário só confirmou ter
+   esquecido os marcadores. Suposição declarada: as compras também foram esquecidas (mesmo padrão). Só prejudica o jogador.
+2. Bath Song mão→cemitério duas vezes no T8 (registro duplicado, provável desfazer/refazer).
 
 **Leitura do deck** (oráculo + regras; o simulador só apoia):
 - T5–T7 sem terreno na mão (Zagoth Triome descartado no T4 pro Torment): 4 terrenos até o T8. O Flux Channeler ficou na mão do T2 ao T8 (nunca conjurado, descartado
@@ -488,7 +495,7 @@ Golgari Charm e Torment of Hailfire.
 - Tom no T4 (#6) e no T5 (#7), 1º gatilho no T8 nas duas: dentro do que o simulador dá como comum (Tom ≤ T5 em 56,8% das partidas). Duas partidas não provam a distribuição.
 
 **Sensibilidade medida: convenção do Exotic Orchard no simulador** (achado desta partida; simulador NÃO alterado)
-O simulador dá ao Orchard 1 mana incolor (`add_land("Exotic Orchard", (), set(), produces=set())`). As duas pontas estão erradas pela ruling: o Orchard nunca faz incolor; na mesa faz cor.
+O simulador dá ao Orchard 1 mana incolor (`add_land("Exotic Orchard", (), set(), produces=set())`). As duas pontas estão erradas pela ruling: o Orchard nunca faz incolor, e faz cor só se um terreno de oponente a produzir. A variante "qualquer cor" é portanto um **teto** (assume oponentes com as cores que faltam; é a mesma suposição que o usuário fez no T5).
 Pareado, N = 3.000, mesmas sementes, 10 turnos (controle: a variante `base` reproduz `tom_v1_runs.jsonl` em 3000/3000 partidas):
 
 | métrica | Orchard incolor (atual) | Orchard qualquer cor | Δ pareado |
@@ -499,6 +506,6 @@ Pareado, N = 3.000, mesmas sementes, 10 turnos (controle: a variante `base` repr
 | ≥ 1 gatilho do Tom até o T10 | 90,2% | 91,5% | **+1,3 pp ±0,5** |
 | só nas 684 partidas (22,8%) com Orchard em campo: Tom até o T5 | 53,7% | 68,0% | **+14,3 pp ±3,0** |
 
-Tradução: na média o simulador subestima o Tom em cerca de 3 partidas a mais em 100 por T5; em quem tem o Orchard, 14 a mais em 100. O turno de lançamento do Tom mudou em 232 de 3.000 partidas (7,7%).
+Tradução (teto): na média o simulador subestima o Tom em até cerca de 3 partidas a mais em 100 por T5; em quem tem o Orchard, até 14 a mais em 100. O valor real fica entre a convenção atual e o teto, conforme os terrenos dos oponentes. O turno de lançamento do Tom mudou em 232 de 3.000 partidas (7,7%).
 Não mudei o padrão: todas as tabelas arquivadas (A/B, regressões) usam a convenção antiga e mudá-la quebraria a comparação. A variante fica pronta em `orchard_sens.py`; a terceira convenção
 (Orchard sem mana quando não há terreno de oponente, a leitura estrita do goldfish) não foi medida.
