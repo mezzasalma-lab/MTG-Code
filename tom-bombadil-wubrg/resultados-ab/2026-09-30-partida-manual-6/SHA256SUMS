@@ -1,0 +1,5 @@
+bc1068d36c38b7eb1fa7829baafea133be483fc776705d234b3fffdff95d6bb1  ./LEIAME.md
+0e55e98834db0031de563469ce0f92da04cc20ec8c0503bc78198af80cfb150a  ./analisa_partida.py
+21d6cd343bb9b96d9615cd94daf7123010be6942f5f99dbab767790ec2c7e2eb  ./dados/partida.json.xz
+e562b62030a318c20a970ae3de8b88ae19db5f15ab60c2c363e62fc8cdb3badc  ./descomprimir.sh
+c17f0c1fd1a1b08b346337f96674e8f0bdc2288a625ac82789bf641e2c029adb  ./resumos/trace.md

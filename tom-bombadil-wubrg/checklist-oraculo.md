@@ -278,3 +278,24 @@ oponente — cláusula do oráculo citada; conta como métrica proxy quando dá)
 | 11 | Face múltipla | Kami War, Jugan, Fable — `layout: transform` no Scryfall (conferido) | ✅ só a frente é conjurável; o verso só pelo capítulo III |
 | 12 | Planeswalkers | 0 cartas | N/A |
 | 13 | Níveis (Classes/Sagas) | 0 Classes; 25 Sagas | ✅ todos os capítulos de todas as Sagas (seção acima); o capítulo II do Urza's Saga compete pelo mesmo {T} da mana (`activate_land`) |
+
+## Rodada 2026-09-30: partidas manuais #6 e #7 (oráculo ao vivo + rulings antes de concluir)
+
+Nenhuma linha de `tom_goldfish_v1.py` foi alterada nesta rodada. Método: oráculo ao vivo de cada carta da partida, `rulings_uri` das 15 cartas cuja
+leitura mudava a conclusão (`resultados-ab/2026-09-30-partida-manual-7/resumos/rulings_scryfall.json`), varredura por script das 100 cartas de `lista.md`
+(`.../resumos/varredura_lista.txt`) e checagem do código do simulador contra o que a partida real mostrou. Classes varridas: terreno por turno, fetch, marcador de saber por
+objeto-Saga, gatilho do Tom por turno, fontes de mana × magias, compras/descartes de capítulos. **Não varridas**: custo e cor de mana em T7–T12 da #6, ordem da pilha,
+escolhas de alvo.
+
+| carta | ruling/oráculo que importa | simulador |
+|---|---|---|
+| Exotic Orchard | ruling 2009-02-01: nunca faz incolor; só cor que terreno de oponente produza | 📊 `produces=set()` = 1 incolor (convenção do Bumbleflower). Errada nas duas pontas; efeito medido em `goldfish-log.md` (Tom ≤ T5: 56,8% → 60,1% com Orchard colorido) |
+| Setessan Champion | ruling 2020-01-24: dispara com QUALQUER encantamento entrando (criatura-encantamento, Saga posta pelo Tom) | ✅ `on_enchantment_enters` vale pra toda entrada (+1/+1 e compra) |
+| Sanctum Weaver | encantamento-criatura: conta a si mesma no X; habilidade de mana (ruling 2021-06-18) | ✅ tipos `{enchantment, creature}` |
+| Femeref Enchantress | só "encantamento vai pro cemitério → compra" (não tem gatilho de entrar); criatura, não encantamento | ✅ |
+| Barbara Wright | read ahead: escolhe 1..capítulo final, não usa a pilha | ✅ `choose_saga_start` (política por Saga; Bath Song fora de `READ_AHEAD_FINAL_OK` por `CHAPTER_VALUE` 4/4/2) |
+| The Bath Song | cap. III pode não ter alvo e ainda soma {U}{U} | ✅ (linha 1309) |
+| Urza's Saga | é terreno: só pode ser jogada como terreno (conta como a jogada de terreno do turno) | ✅ `lands_played_this_turn` já barra o 2º terreno (a partida #7 jogou 2) |
+| Tom Bombadil | dispara quando o capítulo final **resolve**; 1 vez por turno | ✅ |
+| Golgari Charm | sem ruling; −1/−1 deixa Barbara Wright (1/3) com 0/2 | n/a (interação de oponente simulada pelo jogador) |
+| Torment of Hailfire | X repetições, o oponente escolhe descartar, sacrificar ou perder 3 | n/a (📊 oponente) |
