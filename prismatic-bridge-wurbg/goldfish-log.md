@@ -1,5 +1,7 @@
 # Goldfish Log — Esika, God of the Tree // The Prismatic Bridge
 
+> **Dados brutos e como reproduzir as tabelas desta página (2026-09-29/30):** [`resultados-ab/2026-09-29-candidatas-e-sisay/LEIAME.md`](resultados-ab/2026-09-29-candidatas-e-sisay/LEIAME.md) — dados `.json.xz`, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
 ## Sisay como redundância do motor de PW de graça — 2026-09-30
 
 **Pergunta do usuário:** "E como redundância para o motor do deck de colocar PW em campo de graça?"

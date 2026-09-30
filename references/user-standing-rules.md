@@ -775,6 +775,19 @@ carta na Regra 14, agora pra REGRA do jogo em si:**
    acompanha a mesma auditoria retroativa já exigida na Regra 14 (item
    5) pro oráculo de carta.
 
+## 19. Todo resultado que sustenta uma conclusão é arquivado no repositório (dados brutos comprimidos + índice auditável)
+
+Citação literal do usuário (2026-09-30): *"Guarde tudo para referência futura,
+hoje e sempre, de forma resumida mas acessível e auditável."*
+
+- Não basta commitar as tabelas: os dados brutos (JSON por partida), os
+  comandos, as sementes e o commit do código têm que estar no repositório, senão
+  se perdem com a pasta temporária da sessão.
+- Formato completo (pasta `<deck>/resultados-ab/<data>-<tema>/`, `LEIAME.md`,
+  `SHA256SUMS`, verificação de reprodutibilidade): Regra #8 do `CLAUDE.md`.
+  Modelo: `prismatic-bridge-wurbg/resultados-ab/2026-09-29-candidatas-e-sisay/`.
+- Vale para todo deck do repositório e para toda rodada futura.
+
 ---
 
 <!-- Adicionar novas regras permanentes abaixo conforme o usuário as

@@ -421,3 +421,39 @@ taxonomia, deck a deck, com evidência.**
    ...": confirmar se a posição do proxy muda o resultado quando o
    produto é criatura, ou quando uma substituição transforma o produto em
    criatura.
+
+## Regra #8 (obrigatória): todo resultado que sustenta uma conclusão é ARQUIVADO no repositório — resumido, acessível e auditável
+
+Pedido explícito do usuário em 2026-09-30, depois de descobrir que os dados
+brutos de 3 dias de A/B estavam só na pasta temporária da sessão (perdida ao
+fim dela; só as tabelas resumidas estavam no GitHub): **"Guarde tudo para
+referência futura, hoje e sempre, de forma resumida mas acessível e
+auditável."**
+
+**Toda vez que uma conclusão entregue ao usuário depender de simulação, A/B,
+regressão, instrumentação ou consulta a API (Spellbook, Scryfall), no MESMO
+commit da conclusão, arquivar em `<deck>/resultados-ab/<AAAA-MM-DD>-<tema>/`:**
+1. **Dados brutos comprimidos** (`dados/*.json.xz`, `xz -9`): nunca só as
+   tabelas. Custo medido: ~12 MB para 128 arquivos (268 MB crus).
+2. **`LEIAME.md`** com: como foram gerados (simulador, sementes, N, pareamento,
+   sintaxe das variantes), **mapa arquivo → o que é → commit do código → status
+   (usado / superado / INVÁLIDO) → tabela do log que o usa**, e o **comando que
+   reproduz cada tabela**. Lote superado ou inválido se guarda e se MARCA, não
+   se apaga.
+3. **`resumos/`**: a saída de cada script de resumo, o índice de dados
+   (`indice_dados.py`), regressões, bit-identidade e respostas de API.
+4. **`orquestracao/`**: os scripts que só existiam na pasta temporária
+   (lançadores, `bitident.py`, etc.).
+5. **`SHA256SUMS`** (e `sha256sum -c` passando) e `descomprimir.sh`.
+6. **Verificação de reprodutibilidade feita ANTES de declarar arquivado:**
+   refazer pelo menos as tabelas publicadas a partir dos `.json.xz` e comparar
+   com `cmp`. Registrar no `LEIAME.md` quais bateram byte a byte e quais não
+   foram conferidas.
+7. Linkar a pasta no topo do `goldfish-log.md` do deck.
+
+Modelo a copiar: `prismatic-bridge-wurbg/resultados-ab/2026-09-29-candidatas-e-sisay/`.
+Isso vale pra QUALQUER deck deste repositório, não só o Prismatic Bridge, e
+**nunca substitui** documentar a rodada em `checklist-oraculo.md` e
+`goldfish-log.md` (Regra #1). Ao começar uma rodada nova, criar a pasta de
+resultados logo no início e ir guardando os lotes nela, em vez de deixar tudo
+pro fim: a pasta temporária da sessão some.
