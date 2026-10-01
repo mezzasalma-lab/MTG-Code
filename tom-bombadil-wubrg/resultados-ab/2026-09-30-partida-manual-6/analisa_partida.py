@@ -124,6 +124,13 @@ for i, t in enumerate(T, 1):
     cast = [f"{e['name'].split(' // ')[0]} ({mv(e['name'])})" for e in t if e["fromZone"] in ("hand", "commandZone") and e["toZone"] == "battlefield" and "Land" not in tipos(e["name"])]
     gy = [f"{e['name'].split(' // ')[0]} ({mv(e['name'])})" for e in t if e["fromZone"] == "hand" and e["toZone"] == "graveyard"]
     print(f"| T{i} | {', '.join(vir) or '—'} | {', '.join(cast) or '—'} | {', '.join(gy) or '—'} |")
+# 2c) cartas que entram na mão vindas da biblioteca, por turno (compra do passo + capítulos "compre" + constelação/Sythis etc.).
+#     É o lado "log" da conta; o esperado pelo oráculo (passo de compra + cada habilidade) está no goldfish-log.
+print("\n| turno | library→mão no log | cartas |")
+print("|---|---|---|")
+for i, t in enumerate(T, 1):
+    cs = [e["name"].split(" // ")[0] for e in t if e["fromZone"] == "library" and e["toZone"] == "hand"]
+    print(f"| T{i} | {len(cs)} | {', '.join(cs) or '—'} |")
 # 3) marcadores de saber por objeto-Saga (chave = id do objeto; cópia-ficha é outro objeto), em ORDEM DO LOG:
 #    entrada = 1 marcador (ou o de read ahead); depois só +1 no início da fase principal 1 de cada turno (CR 714.3c).
 #    Qualquer outro incremento precisa de fonte (proliferate, Satsuki, mover marcador...). Cópia-ficha sem marcador = log incompleto.

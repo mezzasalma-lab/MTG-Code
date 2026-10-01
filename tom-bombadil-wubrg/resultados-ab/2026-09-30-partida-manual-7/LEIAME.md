@@ -15,7 +15,7 @@ Arquivo da Regra #8 (`CLAUDE.md`). A análise em prosa está em
 | arquivo | o que é | status |
 |---|---|---|
 | `dados/partida.json.xz` | log bruto da partida #7 | usado |
-| `analisa_partida.py` | trace por turno + verificações automáticas (terrenos por turno, fetch, marcadores de saber por objeto-Saga, cópias-ficha de Saga, gatilho do Tom ≤ 1/turno, fontes viradas × magias). Capítulo final das Sagas e fetchlands vêm do oráculo no cache | usado; mesma versão usada na #6 |
+| `analisa_partida.py` | trace por turno + verificações automáticas (terrenos por turno, fetch, marcadores de saber por objeto-Saga, cópias-ficha de Saga, gatilho do Tom ≤ 1/turno, fontes viradas × magias, compras library→mão por turno). Capítulo final das Sagas e fetchlands vêm do oráculo no cache | usado; mesma versão usada na #6 |
 | `resumos/trace.md` | saída do script | usado |
 | `resumos/rulings_scryfall.json` | rulings ao vivo (Scryfall) | usado |
 | `resumos/varredura_lista.txt` | varredura por script das 100 cartas de `lista.md`: terreno extra, cópia, "could produce", lore/proliferate (regex sobre o oráculo) | usado |
@@ -43,11 +43,12 @@ python3 orchard_sens.py sum dados/orchard_sens > /tmp/orch.md              # = r
 - As simulações em si (`orchard_sens.py run`) não foram re-executadas para comparar com os `.json`; a garantia é o controle
   `base` = `tom_v1_runs.jsonl` (3000/3000 iguais).
 
-## Confirmações do usuário (2026-09-30, depois do arquivamento)
-Todas as anomalias da partida #7 foram respondidas pelo usuário: as 6 cópias-ficha de The Bath Song (T8), a morte da Barbara Wright no T6 (Golgari Charm não a mata: 1/3 com −1/−1),
-os marcadores +1/+1 do Setessan Champion esquecidos, o Farseek arrastado para o campo em vez de descartado, o 2º terreno do T8 (esqueceu a City of Brass) e o Exotic Orchard do T5
-(suposição dele de que gerava a cor que faltava) foram erros ou suposições dele. Resíduo sem resposta: compras da constelação nos T6/T7 e Bath Song mão→cemitério duas vezes.
-O script e o `resumos/trace.md` não foram alterados (continuam listando as 6 cópias como anomalia sem fonte: o script só lê o log).
+## Confirmações do usuário (2026-09-30 e 2026-10-01, depois do arquivamento)
+Todas as anomalias da partida #7 foram respondidas: as 6 cópias-ficha de The Bath Song (T8), a Bath Song indo 2× ao cemitério (foi 1×), a morte da Barbara Wright no T6 (Golgari Charm não a mata:
+1/3 com −1/−1), o Farseek arrastado para o campo em vez de descartado, o 2º terreno do T8 (esqueceu a City of Brass) e o Exotic Orchard do T5 (suposição dele de que gerava a cor que faltava) foram
+erros ou suposições dele. Setessan Champion: o usuário disse que só ganha marcador e que quem compra é a Sythis; o oráculo ao vivo diz que o Champion **também compra** (contador + compra), então as
+7 compras que faltam (6 do Champion, 1 da Sythis) são leitura errada da carta + esquecimento (conta por turno no `goldfish-log.md`). A nova tabela "library→mão no log" do `resumos/trace.md` é o lado
+"log" dessa conta. Nenhum resíduo.
 
 ## O que as verificações automáticas NÃO provam
 Custo e cor de mana, ordem da pilha, escolhas (alvos, descartes, capítulo de read ahead) e compras/descartes por habilidade só

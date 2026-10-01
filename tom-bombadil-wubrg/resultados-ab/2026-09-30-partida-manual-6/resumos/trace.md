@@ -147,6 +147,22 @@
 | T12 | Zagoth Triome, Raugrin Triome, Temple Garden, Savai Triome, Weaver of Harmony (criatura) | O'aka, Traveling Merchant (2), Utopia Sprawl (1) | Hallowed Fountain (0) |
 | T13 | — | — | — |
 
+| turno | library→mão no log | cartas |
+|---|---|---|
+| T1 | 8 | Enduring Vitality, Femeref Enchantress, Serra's Sanctum, Temple Garden, Bloom Tender, Wooded Foothills, Barbara Wright, Elspeth Conquers Death |
+| T2 | 1 | Fertile Ground |
+| T3 | 1 | Arcane Signet |
+| T4 | 1 | Flooded Strand |
+| T5 | 1 | Raffine's Tower |
+| T6 | 1 | Fable of the Mirror-Breaker |
+| T7 | 2 | Leyline Binding, Windswept Heath |
+| T8 | 3 | Stomping Ground, Forest, Hallowed Fountain |
+| T9 | 1 | Godless Shrine |
+| T10 | 1 | Ketria Triome |
+| T11 | 1 | Weaver of Harmony |
+| T12 | 2 | O'aka, Traveling Merchant, Utopia Sprawl |
+| T13 | 1 | Indatha Triome |
+
 | Saga (objeto) | valores de saber em ordem do log (T: valores) | anomalias |
 |---|---|---|
 | Elspeth Conquers Death `hwse5NBqt9S` | T6: entra 1; T7: 2; T8: 3→cemitério | — |

@@ -108,6 +108,17 @@
 | T7 | Ketria Triome, Exotic Orchard, Forest, Savai Triome, Arcane Signet | Arcane Signet (2), Fable of the Mirror-Breaker (3), Farseek (2) | Farseek (2) |
 | T8 | Arcane Signet, Savai Triome, Exotic Orchard, Ketria Triome, Forest, City of Brass, Urza's Saga, Sanctum Weaver (criatura) | Sythis, Harvest's Hand (2), Summon: Knights of Round (8) | Flux Channeler (3), Jugan Defends the Temple (3) |
 
+| turno | library→mão no log | cartas |
+|---|---|---|
+| T1 | 8 | Awaken the Honored Dead, Savai Triome, Barbara Wright, Exotic Orchard, Zagoth Triome, Forest, Sanctum Weaver, Ketria Triome |
+| T2 | 1 | Flux Channeler |
+| T3 | 1 | Setessan Champion |
+| T4 | 1 | Summon: Knights of Round |
+| T5 | 1 | Faeburrow Elder |
+| T6 | 3 | The Bath Song, Teferi's Protection, Fable of the Mirror-Breaker |
+| T7 | 3 | Arcane Signet, Farseek, Jugan Defends the Temple |
+| T8 | 3 | City of Brass, Sythis, Harvest's Hand, Urza's Saga |
+
 | Saga (objeto) | valores de saber em ordem do log (T: valores) | anomalias |
 |---|---|---|
 | Awaken the Honored Dead `8Pfrai0B3de` |  | — |

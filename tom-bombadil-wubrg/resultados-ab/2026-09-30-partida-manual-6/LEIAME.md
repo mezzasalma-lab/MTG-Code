@@ -31,10 +31,12 @@ python3 analisa_partida.py dados/partida.json.xz > /tmp/trace6.md      # = resum
 - `cmp` do trace refeito a partir de `dados/partida.json.xz` contra `resumos/trace.md`: **idêntico byte a byte**.
 - Resultado automático: 0 violações provadas; 3 anomalias sem fonte, todas na mesma Saga (In the Darkness Bind Them, T12).
 
-## Confirmações do usuário (2026-09-30, depois do arquivamento)
-As 3 anomalias automáticas (ITDBT no T12: exílio, volta com Lore 1 e marcadores extras) foram erro de operação dele: o correto era só somar o marcador de saber.
-Também confirmou: fichas do Culling Ritual que deveriam ter sido removidas, Fertile Ground anexada no Serra's Sanctum, Enduring Vitality virada como ataque simulado (ela tem vigilance),
-2ª compra da Femeref feita antes da hora e erro de mana no T6 (sem detalhar). O script e o `resumos/trace.md` não foram alterados.
+## Confirmações do usuário (2026-09-30 e 2026-10-01, depois do arquivamento)
+As 3 anomalias automáticas (ITDBT no T12: exílio, volta com Lore 1 e marcadores extras) foram erro de operação dele: o correto era só somar o marcador de saber. O alvo da Anguished Unmaking
+(oponente simulado) foi o token Galactus 16/16; ficha que sai de jogo não é registrada pelo playtester. Também confirmou: fichas do Culling Ritual que deveriam ter sido removidas, Fertile Ground
+anexada no Serra's Sanctum, Enduring Vitality virada como ataque simulado (ela tem vigilance), 2ª compra da Femeref feita antes da hora, erro de mana no T6 (sem detalhar), Fable com 2 entradas
+= misclick, Bloom Tender desvirado nos T6–T7 de propósito (blefe). O log mostra o Bloom Tender virado uma vez, no T8, antes de morrer no Ritual. Nenhum resíduo. O script ganhou só a tabela de compras
+(a #6 foi regenerada com a versão final).
 
 ## O que as verificações automáticas NÃO provam
 Custo/cor de mana, ordem da pilha, escolhas e compras por habilidade foram conferidos à mão no `goldfish-log.md`; o log do
