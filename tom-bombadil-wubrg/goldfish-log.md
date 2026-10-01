@@ -525,7 +525,7 @@ Tradução (teto): na média o simulador subestima o Tom em até cerca de 3 part
 Não mudei o padrão: todas as tabelas arquivadas (A/B, regressões) usam a convenção antiga e mudá-la quebraria a comparação. A variante fica pronta em `orchard_sens.py`; a terceira convenção
 (Orchard sem mana quando não há terreno de oponente, a leitura estrita do goldfish) não foi medida.
 
-### Partida manual #8 (2026-10-01) — 1 violação de regra confirmada (Satsuki), 2 omissões e 1 compra sem registro
+### Partida manual #8 (2026-10-01) — 1 violação de regra confirmada (Satsuki) e 2 omissões
 
 Dados brutos, script, rulings e trace em `tom-bombadil-wubrg/resultados-ab/2026-10-01-partida-manual-8/` (Regra #8). Oráculos ao vivo; rulings lidas antes de concluir
 (Estrid's Invocation, Satsuki, O'aka, Resourceful Defense, Jugan, Summon: Fenrir, Birth of the Imperium, Ugin, ECD, Tom; `resumos/rulings_scryfall.json`).
@@ -557,18 +557,26 @@ a 8ª carta do T1 (Resourceful Defense) é a compra do turno. O playtester compr
 - **Human Citizen (T6)**: 3 fichas 1/1 que o simulador de interação mandou atacar.
 - **Estrid no T8**: aconteceu no upkeep (o simulador compra sozinho na troca de turno).
 - **Encerramento**: parou no T8 para fechar o goldfish mais cedo (com Narci, Fable, Creation of Avacyn, Binding the Old Gods, Farseek e Summon: Bahamut na mão e mana de sobra).
+- **T7, Fenrir III**: assumiu que não controlava a criatura de maior poder, por isso sem compra (ver omissão 3).
 - **Resourceful Defense e a Birth (T7)**: esqueceu de mover o 1 marcador de saber da Birth exilada (gatilho obrigatório).
 
 **Violação de regra (confirmada pelo usuário)**
 - **T7, Satsuki**: "Put a lore counter on each Saga you control". O usuário disse que só acelerou a Fenrir ("para ativar o gatilho do Tom e trazer mais uma saga"). Pelo oráculo, a Jugan (2→3) e a cópia da Estrid (2→3) também receberiam o marcador:
   - Jugan cap. III: exila e volta transformada (Remnant of the Rising Star 2/2 voador). Acaba o loop O'aka + Jugan, porque deixa de ser Saga.
   - Cópia da Estrid cap. III: compra 1 carta (condição provavelmente verdadeira: Tom 6/6 contra as fichas 1/1, se ainda estavam em campo) e é sacrificada → Resourceful Defense move os marcadores dela.
-  - O Tom continuaria com 1 gatilho (só dispara 1 vez por turno). Escolhas legais: não ativar a Satsuki nesse turno, ou ativar e aceitar a Jugan transformada. Não medi nenhuma das duas linhas.
+  - O Tom continuaria com 1 gatilho (só dispara 1 vez por turno).
+  - **Linha legal que mantinha o loop E o gatilho do Tom** (achada depois, corrige a lista de escolhas que dei antes): com o Tom já em campo, pagar a habilidade da **Resourceful Defense**
+    ({4}{W}: "Move any number of counters from target permanent you control onto a second target permanent you control") para tirar 1 marcador de saber da Jugan (2→1) e só então ativar a Satsuki: a Jugan
+    volta a 2 e o cap. II dispara DE NOVO (+1/+1 em mais 2 criaturas), a Fenrir vai a 3 (Tom) e a cópia da Estrid a 3. Era pagável sem mexer nos 5 terrenos do Tom: no fim do T7 o Serra's Sanctum
+    (1 W por encantamento seu: Jugan, Resourceful Defense, Fenrir e Estrid = 4), a Sol Ring (2), o Bloom Tender (5 cores com o Tom em campo) e o Human Monk terminam desvirados no log.
+  - Ou seja: ativar a Satsuki era boa ideia; o erro foi não pagar o ajuste da Jugan. Alternativas sem a Resourceful Defense: não ativar (o gatilho do Tom ficaria para o T8, quando a Fenrir chega a 3 sozinha) ou ativar
+    e aceitar a Jugan transformada. Nenhuma das linhas foi medida.
 
 **Omissões / sem registro**
 1. **T7, marcador da Birth**: a Birth foi exilada com 1 marcador e nenhum foi movido (confirmado: esquecimento).
 2. **T8, cópia da Estrid como Jugan**: entrou com 1 marcador no upkeep. No início da fase principal ela deveria ganhar o marcador natural (2) e disparar o cap. II (+1/+1 em até 2 criaturas). O log mostra só os 2 contadores da Jugan de verdade. O usuário confirmou o timing no upkeep, mas não comentou o marcador: provável omissão (perdeu 2 contadores +1/+1).
-3. **T7, compras**: esperado 3 (compra do turno, O'aka, e Fenrir III que compra com o Tom 6/6), log 2. À pergunta "qual não aconteceu?", o usuário respondeu "imaginei que sim" (ambígua). Fica aberto qual das duas compras não foi feita.
+3. **T7, compras (resolvido)**: o log tem 2 (compra do turno + O'aka). A Fenrir III não comprou porque o usuário **assumiu que não tinha a criatura de maior poder** (resposta de 2026-10-01). O estado
+   registrado/simulado só tinha as 3 fichas 1/1 do T6 contra o Tom 6/6, então pelo log a condição seria verdadeira; a premissa de uma criatura de oponente maior não está no log. Fica como suposição declarada, não erro de regra.
 
 **Regra de futuro (não ocorreu)**: se a cópia da Estrid como Jugan chegar ao cap. III, ela será exilada e NÃO volta (não é carta de dupla face; ruling análogo da Azusa em `Jugan Defends the Temple`). O gatilho do Tom ainda dispara.
 

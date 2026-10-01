@@ -22,7 +22,8 @@ Simulador (`tom_goldfish_v1.py`): não alterado.
 
 ## Confirmações do usuário (2026-10-01)
 Jugan no T4 (O'aka antes do passo natural; o log mostra Lore 3 antes e um ajuste +4/+4 não explicado), Satsuki só na Fenrir (violação do "each Saga you control"), marcador da Birth esquecido (Resourceful Defense),
-Human Citizen = 3 fichas 1/1 atacando pelo simulador de interação, Estrid no upkeep, encerramento antecipado no T8. Resíduo: 1 compra do T7 e o marcador natural da cópia da Estrid no T8.
+Human Citizen = 3 fichas 1/1 atacando pelo simulador de interação, Estrid no upkeep, encerramento antecipado no T8. Fenrir III do T7 sem compra por suposição dele (achou que não tinha a maior criatura; o log só tinha fichas 1/1 do oponente simulado). Resíduo: o marcador natural da cópia da Estrid no T8.
+Linha legal que não foi jogada no T7 (Resourceful Defense {4}{W} para tirar o marcador da Jugan antes da Satsuki) descrita no `goldfish-log.md`; não medida.
 O script e o `resumos/trace.md` não foram alterados (listam 2 "anomalias de saber" na Jugan e na Fenrir que o relato do usuário explica: remoção prévia pelo O'aka e Satsuki só na Fenrir).
 
 ## O que o script NÃO prova
