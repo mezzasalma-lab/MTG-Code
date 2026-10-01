@@ -299,3 +299,17 @@ escolhas de alvo.
 | Tom Bombadil | dispara quando o capítulo final **resolve**; 1 vez por turno | ✅ |
 | Golgari Charm | sem ruling; −1/−1 deixa Barbara Wright (1/3) com 0/2 | n/a (interação de oponente simulada pelo jogador) |
 | Torment of Hailfire | X repetições, o oponente escolhe descartar, sacrificar ou perder 3 | n/a (📊 oponente) |
+
+## Rodada 2026-10-01: partida manual #8 (rulings lidas antes de concluir)
+
+Nenhuma linha de `tom_goldfish_v1.py` foi alterada. Cartas e rulings em `resultados-ab/2026-10-01-partida-manual-8/resumos/rulings_scryfall.json`. Classes varridas: terreno por turno, fetch,
+saber por objeto-Saga, gatilho do Tom por turno, fontes viradas × magias, compras por turno, movimento de marcadores. **Não varridas**: cor de mana em T8 (sem magias), ordem da pilha, escolhas de alvo.
+
+| carta | oráculo/ruling que importa | simulador |
+|---|---|---|
+| Satsuki, the Living Lore | "each Saga you control" (todas, não só a escolhida); no final já não dispara de novo (ruling 2022-02-18) | ✅ `try_satsuki` põe em toda Saga com saber < final |
+| O'aka, Traveling Merchant | remove marcador de QUALQUER permanente não-terreno seu; remover saber e recolocar faz o mesmo capítulo disparar de novo (ruling "removing lore counters", Fenrir/ECD) | ✅ equivalente: `try_value_removers` tira no fim do turno de Saga cujo capítulo vale repetir; o passo natural devolve |
+| Estrid's Invocation | copia o que estiver em campo ao entrar (2018-07-13); volta como objeto novo e escolhe de novo; copiar Saga entra com 1 marcador; cópia de Saga de dupla face que "volta transformada" NÃO é carta de dupla face: fica exilada (ruling análogo da Azusa em Jugan) | já tratada (linha 2842, "copiar: Saga recomeça do capítulo I"); o exílio permanente da cópia da Jugan no cap. III não foi conferido no código |
+| Resourceful Defense | gatilho obrigatório "if it had counters": move todos os marcadores (qualquer tipo) para 1 permanente alvo | ✅ |
+| Summon: Fenrir | cap. II vale para o próximo spell de criatura do turno; cap. III compra se tiver a criatura de maior poder | ✅ |
+| Jugan Defends the Temple | cap. III exila e volta transformada; cópia não-DFC fica exilada (acima) | ✅ para a carta de verdade |

@@ -5,8 +5,8 @@ Regra #5: o simulador é **evidência de apoio**. A análise do deck
 goldfish tem convenções fixas: ataca com tudo, não modela bloqueio, não
 tem oponente real, e interação com oponente conta como 📊 (proxy).
 
-**Dados brutos arquivados (Regra #8):** partidas manuais #6 e #7 (2026-09-30) em
-`tom-bombadil-wubrg/resultados-ab/2026-09-30-partida-manual-6/` e `.../2026-09-30-partida-manual-7/`
+**Dados brutos arquivados (Regra #8):** partidas manuais #6 e #7 (2026-09-30) e #8 (2026-10-01) em
+`tom-bombadil-wubrg/resultados-ab/2026-09-30-partida-manual-6/`, `.../2026-09-30-partida-manual-7/` e `.../2026-10-01-partida-manual-8/`
 (`LEIAME.md` em cada uma: origem, mapa de arquivos, comandos, `cmp`; a #7 inclui a sensibilidade do Exotic Orchard).
 
 ## v1 — construção inicial (2026-09-22) — RASCUNHO, aguardando revisão da lista pelo usuário
@@ -524,3 +524,55 @@ Pareado, N = 3.000, mesmas sementes, 10 turnos (controle: a variante `base` repr
 Tradução (teto): na média o simulador subestima o Tom em até cerca de 3 partidas a mais em 100 por T5; em quem tem o Orchard, até 14 a mais em 100. O valor real fica entre a convenção atual e o teto, conforme os terrenos dos oponentes. O turno de lançamento do Tom mudou em 232 de 3.000 partidas (7,7%).
 Não mudei o padrão: todas as tabelas arquivadas (A/B, regressões) usam a convenção antiga e mudá-la quebraria a comparação. A variante fica pronta em `orchard_sens.py`; a terceira convenção
 (Orchard sem mana quando não há terreno de oponente, a leitura estrita do goldfish) não foi medida.
+
+### Partida manual #8 (2026-10-01) — 1 violação de regra confirmada (Satsuki), 2 omissões e 1 compra sem registro
+
+Dados brutos, script, rulings e trace em `tom-bombadil-wubrg/resultados-ab/2026-10-01-partida-manual-8/` (Regra #8). Oráculos ao vivo; rulings lidas antes de concluir
+(Estrid's Invocation, Satsuki, O'aka, Resourceful Defense, Jugan, Summon: Fenrir, Birth of the Imperium, Ugin, ECD, Tom; `resumos/rulings_scryfall.json`).
+Mão inicial (foto, "Keep this", Interaction simulator ligado): Narci, O'aka, Forest, Jugan Defends the Temple, Sol Ring, Flooded Strand, Estrid's Invocation (2 terrenos + Sol Ring);
+a 8ª carta do T1 (Resourceful Defense) é a compra do turno. O playtester compra sozinho ao mudar de turno (informado pelo usuário); marcador de saber é manual.
+
+| Turno | Evento principal |
+|---|---|
+| T1 | Forest · Sol Ring (pago com a Forest) |
+| T2 | compra Bloom Tender · Flooded Strand → cracada, busca **Raffine's Tower** (Plains Island Swamp, virada) · **Jugan** ({2}{G} = Forest + Sol Ring, exato) → cap. I: Human Monk |
+| T3 | sem terreno na mão · Jugan lore 2 → cap. II: +1/+1 no Monk · **O'aka** + **Bloom Tender** (4 de 5 mana: Raffine's, Forest, Sol Ring 2, Monk) |
+| T4 | O'aka remove 1 marcador de saber da Jugan antes do passo natural (2→1), compra a ECD; o passo natural a leva a 2 → cap. II de novo: +1/+1 em Bloom Tender e O'aka · **Resourceful Defense** ({2}{W}) + **Satsuki** ({G}{W}) |
+| T5 | mesmo ciclo (Jugan 2→1→2, cap. II: Satsuki e Bloom Tender), O'aka compra o Serra's Sanctum · Sanctum jogado · **ECD** ({3}{W}{W} = Sanctum WW [Jugan + Resourceful Defense] + Sol Ring 2 + Forest, exato) |
+| T6 | Jugan cap. II (Satsuki e Monk) · ECD lore 2 · Raugrin Triome (virada) · **Summon: Fenrir** (cap. I busca Swamp) · **Estrid's Invocation** como cópia da Fenrir (cap. I busca **Mountain**; Raugrin e Mountain são o 1º vermelho do jogo e entram virados) · simulador de interação: 3 fichas Human Citizen 1/1 atacam (confirmado pelo usuário) |
+| T7 | Jugan cap. II (O'aka e Bloom Tender) · ECD lore 3 (cap. III sem alvo) e sacrificada → Resourceful Defense move os 3 marcadores de saber para a Sol Ring · Fenrir lore 2 e a cópia da Estrid lore 2 (2× cap. II "próximo spell de criatura entra com +1/+1") · **Tom Bombadil** (5 terrenos = WUBRG exato) entra com 2 marcadores · Satsuki acelera só a Fenrir (3) → cap. III, sacrificada → **1º gatilho do Tom: Birth of the Imperium** → 3 Astartes Warrior; Fenrir morre e os 3 marcadores vão para o Bloom Tender · Urza's Saga (terreno) · Ugin, Eye of the Storms (oponente simulado) exila a Birth |
+| T8 | Jugan 2→1→2, cap. II (Tom e O'aka) · Estrid sai e volta no upkeep como cópia da Jugan → cap. I: outro Human Monk · nenhuma magia (parou o goldfish de propósito) |
+
+**Conferido e correto** (script + conta à mão; escopo no `LEIAME.md` da pasta):
+- **Terrenos**: 1 jogado da mão por turno (T3, T4 e T8 sem terreno na mão). Flooded Strand → Raffine's Tower (tem Plains/Island); Fenrir e Estrid buscam básicos, virados.
+- **Mana**: T1–T7 fecham (T2, T5 e T7 exatos). T7: Raugrin (W/U) + Raffine's (W/U/B) + Swamp + Mountain + Forest = WUBRG. Sobraram Sol Ring e Sanctum.
+- **Loop O'aka + Jugan** legal: remover marcador de saber de uma Saga e recolocar faz o mesmo capítulo disparar de novo (ruling "removing lore counters... will trigger again", Summon: Fenrir/ECD). Rendeu +1/+1 em 2 criaturas por turno (T3: 1; T4–T8: 2) e 1 compra do O'aka por turno a partir do T4. Os marcadores finais batem (Bloom Tender 3, Tom 3, O'aka 3, Satsuki 2, Monk 2).
+- **Estrid**: copia o que está em campo ao entrar (ruling 2018-07-13), entra como Saga com 1 marcador (cap. I buscou o Mountain) e, ao voltar no upkeep, é objeto novo e copia o que estiver em campo (a Jugan); contadores somem.
+- **Tom**: 1 gatilho (Fenrir III) e 1 só por turno. A ECD III resolveu ANTES de o Tom entrar (o Tom é de velocidade de feitiço: o marcador natural da ECD no início da fase principal dispara o capítulo III antes de qualquer conjuração), então não gerou gatilho. Quando a Ugin foi conjurada (antes de a Birth sair): Jugan 2 + Birth 1 + Urza's Saga 1 = 4 marcadores de saber em Sagas → Tom com hexproof/indestructible.
+- Marcador de saber em não-Saga (Sol Ring, Bloom Tender, via Resourceful Defense) é legal ("put those counters on target permanent") e não conta para o Tom.
+- Compras (library→mão, `resumos/trace.md`): T4–T6 e T8 = 2 (compra do turno + O'aka). T7 = 2 (esperado 3, ver abaixo).
+
+**Confirmado pelo usuário (2026-10-01)**
+- **T4, Jugan**: usou o O'aka antes do passo natural de 2 para 3, voltando a Jugan para 1; o passo natural a leva a 2 e o cap. II dispara de novo. O log mostra "Lore 3" antes do registro do O'aka, com um ajuste de +4/+4 na Jugan (o Remnant é 2/2); o usuário não comentou o +4/+4 e a ordem do log. Aceito o relato dele (ruído de interface).
+- **Human Citizen (T6)**: 3 fichas 1/1 que o simulador de interação mandou atacar.
+- **Estrid no T8**: aconteceu no upkeep (o simulador compra sozinho na troca de turno).
+- **Encerramento**: parou no T8 para fechar o goldfish mais cedo (com Narci, Fable, Creation of Avacyn, Binding the Old Gods, Farseek e Summon: Bahamut na mão e mana de sobra).
+- **Resourceful Defense e a Birth (T7)**: esqueceu de mover o 1 marcador de saber da Birth exilada (gatilho obrigatório).
+
+**Violação de regra (confirmada pelo usuário)**
+- **T7, Satsuki**: "Put a lore counter on each Saga you control". O usuário disse que só acelerou a Fenrir ("para ativar o gatilho do Tom e trazer mais uma saga"). Pelo oráculo, a Jugan (2→3) e a cópia da Estrid (2→3) também receberiam o marcador:
+  - Jugan cap. III: exila e volta transformada (Remnant of the Rising Star 2/2 voador). Acaba o loop O'aka + Jugan, porque deixa de ser Saga.
+  - Cópia da Estrid cap. III: compra 1 carta (condição provavelmente verdadeira: Tom 6/6 contra as fichas 1/1, se ainda estavam em campo) e é sacrificada → Resourceful Defense move os marcadores dela.
+  - O Tom continuaria com 1 gatilho (só dispara 1 vez por turno). Escolhas legais: não ativar a Satsuki nesse turno, ou ativar e aceitar a Jugan transformada. Não medi nenhuma das duas linhas.
+
+**Omissões / sem registro**
+1. **T7, marcador da Birth**: a Birth foi exilada com 1 marcador e nenhum foi movido (confirmado: esquecimento).
+2. **T8, cópia da Estrid como Jugan**: entrou com 1 marcador no upkeep. No início da fase principal ela deveria ganhar o marcador natural (2) e disparar o cap. II (+1/+1 em até 2 criaturas). O log mostra só os 2 contadores da Jugan de verdade. O usuário confirmou o timing no upkeep, mas não comentou o marcador: provável omissão (perdeu 2 contadores +1/+1).
+3. **T7, compras**: esperado 3 (compra do turno, O'aka, e Fenrir III que compra com o Tom 6/6), log 2. À pergunta "qual não aconteceu?", o usuário respondeu "imaginei que sim" (ambígua). Fica aberto qual das duas compras não foi feita.
+
+**Regra de futuro (não ocorreu)**: se a cópia da Estrid como Jugan chegar ao cap. III, ela será exilada e NÃO volta (não é carta de dupla face; ruling análogo da Azusa em `Jugan Defends the Temple`). O gatilho do Tom ainda dispara.
+
+**Leitura do deck** (oráculo + regras; o simulador só apoia):
+- **O Tom só entrou no T7 por falta de vermelho, não de mana**: o primeiro vermelho veio no T6 (Raugrin e Mountain, os dois virados). No T5 havia mana de sobra (Sanctum 2–3 + Sol Ring 2 + Forest + Raffine's + Bloom Tender 3 + Monk) mas nenhuma fonte de R, e o Bloom Tender só dá cor de permanente em campo. O Farseek (busca Mountain) ficou na biblioteca até o T8.
+- **Sim × real**: o simulador lança o Tom até o T7 em 86,2% das partidas (até o T5: 56,8%). T7 é típico, nem rápido nem lento. Um gatilho no T7.
+- O loop O'aka + Jugan é linha real do deck. O simulador faz o equivalente (O'aka tira marcador no fim do turno de Saga cujo capítulo vale repetir, `try_value_removers`, e o passo natural a devolve). A Satsuki do simulador (`try_satsuki`) já põe marcador em TODA Saga com saber abaixo do final, como o oráculo manda. Nada a mudar no código.
