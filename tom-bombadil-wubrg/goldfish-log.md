@@ -598,7 +598,7 @@ O simulador de interação estava **Off** na foto e foi ligado depois (confirmad
 | T2 | Command Tower · **Power Conduit** ({2}: Tower + Tomb) |
 | T3 | Ziatora's Proving Ground (virado), sem magia (2 fontes, nada de 2 na mão) |
 | T4 | City of Brass · **Binding the Old Gods** ({2}{B}{G}, 4 terrenos, exato) |
-| T5 | Binding lore 2 → cap. II busca **Zagoth Triome** (tem Forest, virado) · Serra's Sanctum · **Tom Bombadil** (WUBRG exato: Sanctum W [só o Binding é encantamento], Tower U, Tomb B, City R, Proving Ground G) · interação: o Shapeshifter ataca e o Tom o bloqueia; o Rankle conecta e escolhe só o modo "cada jogador descarta" (a Birth of the Imperium vai da mão ao cemitério) |
+| T5 | Binding lore 2 → cap. II busca **Zagoth Triome** (tem Forest, virado) · Serra's Sanctum · **Tom Bombadil** (WUBRG exato: Sanctum W [só o Binding é encantamento], Tower U, Tomb B, City R, Proving Ground G) · interação: o "Shapeshifter" (ficha genérica 3/2) ataca e o Tom o bloqueia; o Rankle conecta e escolhe só o modo "cada jogador descarta" (a Birth of the Imperium vai da mão ao cemitério) |
 | T6 | Binding lore 3 → Power Conduit tira 1 marcador (3→2) em resposta ao cap. III e põe +1/+1 no Tom; o cap. III resolve → **1º gatilho do Tom: Summon: Fenrir** (cap. I busca **Plains**, virado) · Jetmir's Garden (virado) · **The Eldest Reborn** ({4}{B}) · interação: Amazing Acrobatics |
 | T7 | Fenrir lore 2 · Eldest lore 2 · Binding lore 3 → Conduit (3→2, +1/+1 no Tom, que fica com 2) → **2º gatilho do Tom: In the Darkness Bind Them** (Wraith) · **Indatha Triome** buscada pelo cap. II do Binding (ver erro) · Urza's Saga (terreno) · **Battle at the Helvault** ({4}{W}{W} = Sanctum 5 W + Plains) **contrada pela Amazing Acrobatics** (vai ao cemitério) · interação: Archfiend of Ifnir |
 | T8 | compra a Replenish · Binding lore 3 e Fenrir lore 3 e Eldest lore 3: os três vão ao cemitério de propósito (capítulos III) · **3º gatilho do Tom: Fable of the Mirror-Breaker** (Goblin Shaman) · Fenrir III compra o Mountain (Tom 6/6 contra o Archfiend 5/4: tem o maior poder) · Urza's Saga cap. II + {2},{T}: Construct · Mountain · **Replenish** ({3}{W}) devolve Eldest Reborn, Binding, Fenrir, Battle e Birth (todos com 1 marcador). Parou aí (confirmado: não resolveu nenhum capítulo I) |
@@ -625,7 +625,7 @@ O simulador de interação estava **Off** na foto e foi ligado depois (confirmad
   então o spell era pagável legalmente do mesmo jeito. Sem efeito no que foi conjurado.
 
 **Interações (confirmado pelo usuário)**
-- **Shapeshifter** atacou e o **Tom bloqueou** (o número escolhido, que define poder e resistência, não foi informado; pelo log o Tom sobreviveu).
+- **Shapeshifter**: era uma **ficha genérica 3/2** (não a carta real, em que poder + resistência = 7). Atacou e o **Tom 4/4 bloqueou**: pela conta de combate o Tom leva 3 e sobrevive, e a ficha (resistência 2) morre (ficha que sai de jogo não aparece no log).
 - **Rankle**: só o modo "each player discards a card" (a Birth do T5). Os modos de comprar/perder vida e de sacrificar não foram escolhidos; o de sacrifício teria matado o Tom.
 - **Archfiend of Ifnir**: "Whenever you cycle or discard another card, put a -1/-1 counter on each creature your opponents control." Não faz nada ao entrar (o usuário confirmou); nenhum ciclo/descarte do oponente depois dele, então sem efeito.
 - **Amazing Acrobatics**: controu a Battle at the Helvault (T7).

@@ -24,7 +24,7 @@ Simulador (`tom_goldfish_v1.py`): não alterado.
 ## Confirmações do usuário (2026-10-02)
 Indatha Triome no T7 = erro (achou que tirar o marcador do Binding disparava o capítulo II de novo); Battle at the Helvault = contrada pela Amazing Acrobatics (por isso vai ao cemitério); Anel esquecido (ITDBT I e II);
 parou depois da Replenish sem resolver capítulos; Construct com 2 marcadores só para representar o 2/2; simulador de interação ligado depois da foto da mão. Respostas de 2026-10-02 (2ª rodada): T6 = 2 terrenos por erro (Urza's Saga + Jetmir's Garden; devia ser só o Garden; a Saga voltou à mão e foi jogada no T7);
-Shapeshifter atacou e o Tom bloqueou; Rankle só descarte; Archfiend não faz nada ao entrar. Nenhum resíduo.
+Shapeshifter era uma ficha genérica 3/2 (não a carta real), atacou e o Tom 4/4 bloqueou; Rankle só descarte; Archfiend não faz nada ao entrar. Nenhum resíduo.
 O script e o `resumos/trace.md` não foram alterados: a "violação" de 2 terrenos no T6 que ele lista foi confirmada como erro e nenhuma anomalia de saber (a busca da Indatha no T7 aparece como terreno buscado, sem anomalia de saber).
 
 ## O que o script NÃO prova
