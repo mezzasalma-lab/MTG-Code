@@ -1,0 +1,285 @@
+{
+ "The Kami War // O-Kagachi Made Manifest": {
+  "scryfall_uri": "https://scryfall.com/card/neo/227/the-kami-war-o-kagachi-made-manifest?utm_source=api",
+  "oracle_id": "4d23b22b-31a5-4eec-b894-2dd5a7138c5a",
+  "rulings": [
+   {
+    "date": "2022-02-18",
+    "text": "Each face of a transforming double-faced card has its own set of characteristics: name, types, subtypes, abilities, and so on. While a transforming double-faced permanent is on the battlefield, consider only the characteristics of the face that's currently up. The other set of characteristics is ignored."
+   },
+   {
+    "date": "2022-02-18",
+    "text": "Each transforming double-faced card in this set is cast face up. In every zone other than the battlefield, consider only the characteristics of its front face. If it is on the battlefield, consider only the characteristics of the face that's up; the other face's characteristics are ignored."
+   },
+   {
+    "date": "2022-02-18",
+    "text": "The mana value of a transforming double-faced card is the mana value of its front face, no matter which face is up."
+   },
+   {
+    "date": "2022-02-18",
+    "text": "The back face of a transforming double-faced card usually has a color indicator that defines its color."
+   },
+   {
+    "date": "2022-02-18",
+    "text": "A transforming double-faced card enters the battlefield with its front face up by default, unless a spell or ability instructs you to put it onto the battlefield transformed or you cast it transformed, in which case it enters with its back face up."
+   },
+   {
+    "date": "2022-02-18",
+    "text": "If you are instructed to put a card that isn't a double-faced card onto the battlefield transformed, it will not enter the battlefield at all. In that case, it stays in the zone it was previously in. For example, if a single-faced card is a copy of Azusa's Many Journeys, the chapter III ability will cause it to be exiled and then remain in exile."
+   }
+  ]
+ },
+ "Hex Parasite": {
+  "scryfall_uri": "https://scryfall.com/card/nph/137/hex-parasite?utm_source=api",
+  "oracle_id": "c180f21b-f553-4839-80c7-a3ce2fae9b5a",
+  "rulings": [
+   {
+    "date": "2011-06-01",
+    "text": "You may choose a value for X that’s greater than the number of counters on the targeted permanent. However, Hex Parasite only gets the bonus for counters actually removed."
+   },
+   {
+    "date": "2011-06-01",
+    "text": "If the permanent has multiple kinds of counters, you choose how many of each to remove when the ability resolves."
+   }
+  ]
+ },
+ "Starfield of Nyx": {
+  "scryfall_uri": "https://scryfall.com/card/cmm/840/starfield-of-nyx?utm_source=api",
+  "oracle_id": "922d603e-6623-4455-b91f-fad76f94045a",
+  "rulings": [
+   {
+    "date": "2015-06-22",
+    "text": "If the first ability returns an Aura card to the battlefield, you choose what that Aura will enchant as it enters the battlefield. If the Aura can’t legally enchant anything, it stays in the graveyard."
+   },
+   {
+    "date": "2015-06-22",
+    "text": "Note that if an Aura is returned to the battlefield this way, whatever the Aura enchants isn’t a target of Starfield of Nyx’s ability, nor is it a target of the Aura card itself. You could put an Aura onto the battlefield this way enchanting a creature with hexproof controlled by an opponent, for example."
+   },
+   {
+    "date": "2015-06-22",
+    "text": "A noncreature permanent that turns into a creature can attack, and its {T} abilities can be activated, only if its controller has continuously controlled that permanent since the beginning of their most recent turn. It doesn’t matter how long the permanent has been a creature."
+   }
+  ]
+ },
+ "Eidolon of Blossoms": {
+  "scryfall_uri": "https://scryfall.com/card/cmm/892/eidolon-of-blossoms?utm_source=api",
+  "oracle_id": "77ccbea1-70af-4194-adad-39a904221c75",
+  "rulings": [
+   {
+    "date": "2014-04-26",
+    "text": "A constellation ability triggers whenever an enchantment enters the battlefield under your control for any reason. Enchantments with other card types, such as enchantment creatures, will also cause constellation abilities to trigger."
+   },
+   {
+    "date": "2014-04-26",
+    "text": "An Aura spell without bestow that has an illegal target when it tries to resolve won't resolve and will be put into its owner's graveyard. It won't enter the battlefield and constellation abilities won't trigger. An Aura spell with bestow won't be countered this way. It will revert to being an enchantment creature and resolve, entering the battlefield and triggering constellation abilities."
+   },
+   {
+    "date": "2014-04-26",
+    "text": "When an enchantment enters the battlefield under your control, each constellation ability of permanents you control will trigger. You can put these abilities on the stack in any order. The last ability you put on the stack will be the first one that resolves."
+   }
+  ]
+ },
+ "Enchantress's Presence": {
+  "scryfall_uri": "https://scryfall.com/card/cmm/893/enchantresss-presence?utm_source=api",
+  "oracle_id": "795b096a-2bce-4588-a2c9-abc5ea40dc0c",
+  "rulings": [
+   {
+    "date": "2021-06-18",
+    "text": "The triggered ability will resolve before the spell that caused it to trigger."
+   },
+   {
+    "date": "2021-06-18",
+    "text": "The ability is independent from the spell that caused it to trigger. Notably, if the enchantment spell is countered or doesn't resolve for any other reason, you'll still draw a card (unless something specifically counters the triggered ability)."
+   }
+  ]
+ },
+ "Femeref Enchantress": {
+  "scryfall_uri": "https://scryfall.com/card/vis/129/femeref-enchantress?utm_source=api",
+  "oracle_id": "8b983a46-580f-4a94-8ef3-5253e503148e",
+  "rulings": [
+   {
+    "date": "2005-08-01",
+    "text": "If it goes to the graveyard, its ability will not trigger because of any Auras on herself unless those Auras are being destroyed by the same effect that is destroying the Enchantress. This is because those Auras are not put into the graveyard until after she is in the graveyard."
+   }
+  ]
+ },
+ "Deafening Silence": {
+  "scryfall_uri": "https://scryfall.com/card/eld/10/deafening-silence?utm_source=api",
+  "oracle_id": "6284ef01-d17d-4584-aecb-1b841ae638e5",
+  "rulings": [
+   {
+    "date": "2019-10-04",
+    "text": "Players may cast any number of creature spells plus one noncreature spell each turn."
+   },
+   {
+    "date": "2019-10-04",
+    "text": "Deafening Silence will look at the entire turn to see if a player has cast a noncreature spell yet that turn, even if Deafening Silence wasn't on the battlefield when that spell was cast. Notably, you can't cast Deafening Silence and then cast another noncreature spell that turn."
+   },
+   {
+    "date": "2019-10-04",
+    "text": "If you cast a noncreature spell that was countered, you can't cast another noncreature spell that turn."
+   }
+  ]
+ },
+ "Casualties of War": {
+  "scryfall_uri": "https://scryfall.com/card/soc/300/casualties-of-war?utm_source=api",
+  "oracle_id": "5c6c8fe7-3520-423b-a224-1c0af516871a",
+  "rulings": [
+   {
+    "date": "2019-05-03",
+    "text": "Each target permanent is destroyed in the order specified. Abilities that trigger when one is destroyed won't be put onto the stack until Casualties of War has finished resolving."
+   },
+   {
+    "date": "2019-05-03",
+    "text": "You can choose any number of the modes for Casualties of War, but you can't choose a mode more than once."
+   }
+  ]
+ },
+ "Torment of Hailfire": {
+  "scryfall_uri": "https://scryfall.com/card/hou/77/torment-of-hailfire?utm_source=api",
+  "oracle_id": "30a0a6c2-1fbb-4784-ab96-22611d57e62c",
+  "rulings": [
+   {
+    "date": "2017-07-14",
+    "text": "If X is 0, Torment of Hailfire resolves with no effect."
+   },
+   {
+    "date": "2017-07-14",
+    "text": "While resolving Torment of Hailfire, your opponent chooses a card to be discarded without revealing it, chooses a nonland permanent to be sacrificed, or chooses to do neither. Then that player discards that card, sacrifices that permanent, or loses 3 life, then repeats this process if it hasn’t been done X times yet. Your opponent can always choose to lose 3 life, even if they have cards to discard or nonland permanents to sacrifice."
+   },
+   {
+    "date": "2017-07-14",
+    "text": "Each repetition through this process is done separately. If an opponent sacrifices a creature with an ability that triggers when another creature dies, for example, it will see creatures that are sacrificed before it, but not those are sacrificed after it."
+   },
+   {
+    "date": "2017-07-14",
+    "text": "State-based actions aren’t checked in between repetitions of this process, so the game state may be a little unusual while making the choice. For example, a player may sacrifice a creature and then later sacrifice an Aura that was attached to that creature."
+   },
+   {
+    "date": "2017-07-14",
+    "text": "In a multiplayer game, each opponent in turn order makes their choice once, then all of the actions occur simultaneously, then they repeat this process if it hasn’t been done X times yet. Opponents will know choices made by earlier opponents when making their choices, although a card chosen to be discarded this way isn’t revealed until it’s discarded."
+   },
+   {
+    "date": "2017-07-14",
+    "text": "In a Two-Headed Giant game, Torment of Hailfire causes both opponents to sacrifice a nonland permanent, discard a card, or lose 3 life X times. Your opponents can choose the same torment or different ones each time."
+   }
+  ]
+ },
+ "Syphon Mind": {
+  "scryfall_uri": "https://scryfall.com/card/msc/159/syphon-mind?utm_source=api",
+  "oracle_id": "abc37d6c-6300-47b5-a679-9db5b83eb54f",
+  "rulings": []
+ },
+ "Estrid's Invocation": {
+  "scryfall_uri": "https://scryfall.com/card/mh3/269/estrids-invocation?utm_source=api",
+  "oracle_id": "7f5f10ee-6428-4053-8824-3bc70420ec2c",
+  "rulings": [
+   {
+    "date": "2018-07-13",
+    "text": "If Estrid's Invocation doesn't copy an enchantment as it enters the battlefield, it won't have the ability to exile it at the beginning of your upkeep. You can't have it copy itself to get this ability."
+   },
+   {
+    "date": "2018-07-13",
+    "text": "Once Estrid's Invocation returns, it's considered a new object with no relation to the object that it was. You must choose an enchantment that's currently on the battlefield to copy (or to not copy anything). Auras that were attached to it will be put into their owners' graveyards. Any counters that were on it cease to exist."
+   },
+   {
+    "date": "2018-07-13",
+    "text": "Estrid's Invocation copies exactly what was printed on the original enchantment (unless that enchantment is copying something else or is a token; see below). It doesn't copy whether that enchantment is tapped or untapped, whether it has any counters on it or any Auras attached to it, or any non-copy effects that have changed its types, color, or so on."
+   },
+   {
+    "date": "2018-07-13",
+    "text": "If the copied enchantment has {X} in its mana cost, X is considered to be 0."
+   },
+   {
+    "date": "2018-07-13",
+    "text": "If the chosen enchantment is copying something else (for example, if the chosen enchantment is another Estrid's Invocation), then Estrid's Invocation enters the battlefield as whatever the chosen enchantment copied."
+   },
+   {
+    "date": "2018-07-13",
+    "text": "If the chosen enchantment is a token, Estrid's Invocation copies the original characteristics of that token as stated by the effect that created the token. Estrid's Invocation doesn't become a token in this case."
+   },
+   {
+    "date": "2018-07-13",
+    "text": "If the chosen enchantment is an Aura, you choose what it enchants just before Estrid's Invocation enters the battlefield. The chosen recipient must be able to legally be enchanted by the Aura Estrid's Invocation will be. This doesn't target the player or permanent it will enchant, so an opponent's permanent with hexproof may be chosen this way."
+   },
+   {
+    "date": "2018-07-13",
+    "text": "If the chosen enchantment is an Aura but Estrid's Invocation won't be able to legally enchant anything, Estrid's Invocation remains in its current zone and doesn't enter the battlefield. If Estrid's Invocation is on the stack, it's put into its owner's graveyard."
+   },
+   {
+    "date": "2018-07-13",
+    "text": "Any enters-the-battlefield abilities of the copied enchantment will trigger when Estrid's Invocation enters the battlefield. Any \"as [this enchantment] enters the battlefield\" or \"[this enchantment] enters the battlefield with\" abilities of the chosen enchantment will also work."
+   },
+   {
+    "date": "2018-07-13",
+    "text": "If Estrid's Invocation somehow enters the battlefield at the same time as another enchantment, it can't become a copy of that enchantment. You may choose only an enchantment that's already on the battlefield."
+   }
+  ]
+ },
+ "Sythis, Harvest's Hand": {
+  "scryfall_uri": "https://scryfall.com/card/cmm/938/sythis-harvests-hand?utm_source=api",
+  "oracle_id": "0fc64fd6-f057-4056-9dca-47accb7ff036",
+  "rulings": [
+   {
+    "date": "2021-06-18",
+    "text": "Sythis, Harvest Hand's ability doesn't trigger when it is cast."
+   }
+  ]
+ },
+ "The First Iroan Games": {
+  "scryfall_uri": "https://scryfall.com/card/thb/170/the-first-iroan-games?utm_source=api",
+  "oracle_id": "58934f6d-1aa2-414c-85c6-955a1e26d675",
+  "rulings": [
+   {
+    "date": "2020-01-24",
+    "text": "A Gold token is a colorless Gold artifact token with \"Sacrifice this artifact: Add one mana of any color.\""
+   },
+   {
+    "date": "2020-01-24",
+    "text": "As a Saga enters the battlefield, its controller puts a lore counter on it. As your precombat main phase begins (immediately after your draw step), you put another lore counter on each Saga you control. Putting a lore counter on a Saga in either of these ways doesn't use the stack."
+   },
+   {
+    "date": "2020-01-24",
+    "text": "Each symbol on the left of a Saga's text box represents a chapter ability. A chapter ability is a triggered ability that triggers when a lore counter that is put on the Saga causes the number of lore counters on the Saga to become equal to or greater than the ability's chapter number. Chapter abilities are put onto the stack and may be responded to."
+   },
+   {
+    "date": "2020-01-24",
+    "text": "A chapter ability doesn't trigger if a lore counter is put on a Saga that already had a number of lore counters greater than or equal to that chapter's number. For example, the third lore counter put on a Saga causes the III chapter ability to trigger, but I and II won't trigger again."
+   },
+   {
+    "date": "2020-01-24",
+    "text": "Once a chapter ability has triggered, the ability on the stack won't be affected if the Saga gains or loses counters, or if it leaves the battlefield."
+   },
+   {
+    "date": "2020-01-24",
+    "text": "If multiple chapter abilities trigger at the same time, their controller puts them on the stack in any order. If any of them require targets, those targets are chosen as you put the abilities on the stack, before any of those abilities resolve."
+   },
+   {
+    "date": "2020-01-24",
+    "text": "Removing lore counters won't cause a previous chapter ability to trigger. If lore counters are removed from a Saga, the appropriate chapter abilities will trigger again when the Saga receives lore counters. "
+   },
+   {
+    "date": "2020-01-24",
+    "text": "Once the number of lore counters on a Saga is greater than or equal to the greatest number among its chapter abilities, the Saga's controller sacrifices it as soon as its chapter ability has left the stack, most likely by resolving or being countered. This state-based action doesn't use the stack."
+   }
+  ]
+ },
+ "Setessan Champion": {
+  "scryfall_uri": "https://scryfall.com/card/cmm/912/setessan-champion?utm_source=api",
+  "oracle_id": "38513660-260f-4663-b199-6473fa004a3b",
+  "rulings": [
+   {
+    "date": "2020-01-24",
+    "text": "If Setessan Champion leaves the battlefield after its ability has triggered, you still draw a card even though you won't put a +1/+1 counter on Setessan Champion."
+   },
+   {
+    "date": "2020-01-24",
+    "text": "A constellation ability triggers whenever an enchantment enters the battlefield under your control for any reason. Enchantments with other card types, such as enchantment creatures, will also cause constellation abilities to trigger."
+   },
+   {
+    "date": "2020-01-24",
+    "text": "An Aura spell that has an illegal target when it tries to resolve doesn't resolve and is instead put into its owner's graveyard. It doesn't enter the battlefield, so constellation abilities don't trigger."
+   }
+  ]
+ }
+}

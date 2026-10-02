@@ -327,3 +327,18 @@ fontes de mana × magias, compras por turno, Saga salva por remoção de marcado
 | Amazing Acrobatics | "counter target spell" ou "tap one or two target creatures" (sem ruling); spell contrado vai ao cemitério | 📊 interação de oponente |
 | Construct (ficha) | 0/0, "+1/+1 for each artifact you control" é estático, não marcador | ✅ o simulador conta artefatos; no playtester o usuário usou marcadores só para exibir o P/T |
 | Rankle, Master of Pranks | modos escolhidos na ordem impressa; sacrifício: cada jogador escolhe uma criatura (ruling 2019-10-04) | 📊 interação de oponente |
+
+## Rodada 2026-10-02: partida manual #10 (rulings lidas antes de concluir)
+
+Nenhuma linha de `tom_goldfish_v1.py` foi alterada. Rulings em `resultados-ab/2026-10-02-partida-manual-10/resumos/rulings_scryfall.json`. Classes varridas: terreno por turno, fetch, saber por objeto-Saga, gatilho do Tom,
+compras pelos motores de encantamento (ledger `resumos/ledger_compras.md`), restrição da Deafening Silence. **Não varridas**: cor de mana em T11–T13, ordem da pilha, o alvo do cap. I da Kami War no T13.
+
+| carta | oráculo/ruling que importa | simulador |
+|---|---|---|
+| Eidolon of Blossoms / Setessan Champion | constelação: dispara com QUALQUER encantamento entrando, inclusive criatura-encantamento e os que a Starfield/Tom/Estrid põem (rulings 2014-04-26, 2020-01-24) | ✅ `on_enchantment_enters` |
+| Enchantress's Presence / Sythis | só ao CONJURAR encantamento (não ao entrar por Starfield/Tom); a Presence compra mesmo se o spell for contrado (ruling 2021-06-18) | ✅ no ponto de conjuração |
+| Femeref Enchantress | qualquer encantamento (inclusive Aura que cai junto, de qualquer jogador) indo ao cemitério vindo do campo | ✅ (conferido no `checklist` anterior) |
+| Starfield of Nyx | upkeep: devolve 1 encantamento do cemitério; a cópia da Estrid (cópia da Starfield) dispara de novo | ✅ `starfield` e `estrid` já tratadas |
+| The Kami War + Hex Parasite | remover marcador e pôr de novo dispara o cap. I outra vez; Hex Parasite `{X}{B/P}` tira até X marcadores (ruling 2011-06-01: tira só os que existem) | ⚠️ Hex Parasite não entra em `try_value_removers` (só salva final e combo); candidato a ajuste |
+| Deafening Silence | conta o TURNO inteiro, mesmo se entrou depois (ruling 2019-10-04); só vale para magias não-criatura | 📊 interação de oponente |
+| Casualties of War | destrói em ordem; gatilhos (Femeref) só depois de resolver (ruling 2019-05-03) | 📊 interação de oponente |

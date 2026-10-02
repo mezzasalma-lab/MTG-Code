@@ -5,8 +5,8 @@ Regra #5: o simulador é **evidência de apoio**. A análise do deck
 goldfish tem convenções fixas: ataca com tudo, não modela bloqueio, não
 tem oponente real, e interação com oponente conta como 📊 (proxy).
 
-**Dados brutos arquivados (Regra #8):** partidas manuais #6 e #7 (2026-09-30), #8 (2026-10-01) e #9 (2026-10-02) em
-`tom-bombadil-wubrg/resultados-ab/2026-09-30-partida-manual-6/`, `.../2026-09-30-partida-manual-7/`, `.../2026-10-01-partida-manual-8/` e `.../2026-10-02-partida-manual-9/`
+**Dados brutos arquivados (Regra #8):** partidas manuais #6 e #7 (2026-09-30), #8 (2026-10-01), #9 e #10 (2026-10-02) em
+`tom-bombadil-wubrg/resultados-ab/2026-09-30-partida-manual-6/`, `.../2026-09-30-partida-manual-7/`, `.../2026-10-01-partida-manual-8/`, `.../2026-10-02-partida-manual-9/` e `.../2026-10-02-partida-manual-10/`
 (`LEIAME.md` em cada uma: origem, mapa de arquivos, comandos, `cmp`; a #7 inclui a sensibilidade do Exotic Orchard).
 
 ## v1 — construção inicial (2026-09-22) — RASCUNHO, aguardando revisão da lista pelo usuário
@@ -637,3 +637,46 @@ Resíduo da #9: nenhum.
 - **Linha Binding III + Power Conduit** rende 1 gatilho do Tom por turno (T6, T7 e T8) com 1 só Saga: o Conduit a salva toda vez, e o gatilho traz uma Saga nova. No T8 o usuário parou de salvá-la e sacrificou 3 Sagas para a Replenish devolver 5.
 - **Replenish**: devolve 5 Sagas com 1 marcador; os capítulos I valem: Fenrir (básico), Birth (3 Astartes Warrior, um por oponente) e Binding/Eldest/Battle (dependem de alvo de oponente, 📊). O log termina antes de resolvê-los.
 - **Sim × real**: 3 gatilhos do Tom até o T8 acontece em 21,1% das partidas simuladas (8 turnos); Tom até o T5 em 56,8%; os dois juntos em 18,8% (cerca de 1 em 5): nesses dois critérios a partida está entre as ~20% melhores do simulador. O simulador joga Replenish (`replenish_effect`) e guarda encantamentos no cemitério quando há Replenish na mão (`bath_song_iii`). Nada a mudar no código.
+
+### Partida manual #10 (2026-10-02) — 13 turnos; 0 erros de regra a favor do jogador, 13 compras esquecidas e 6 erros de registro
+
+Dados brutos, script, ledger de compras, rulings e trace em `tom-bombadil-wubrg/resultados-ab/2026-10-02-partida-manual-10/` (Regra #8). Oráculos ao vivo; rulings lidas antes de concluir (Kami War, Hex Parasite, Starfield of Nyx,
+Eidolon of Blossoms, Enchantress's Presence, Femeref, Deafening Silence, Casualties of War, Torment of Hailfire, Syphon Mind, Estrid, Sythis, The First Iroan Games, Setessan Champion; `resumos/rulings_scryfall.json`).
+Mão inicial (foto, **1 mulligan grátis**, simulador de interação On): Enchantress's Presence, Summon: Primal Odin, Leyline Binding, Utopia Sprawl, Femeref Enchantress, Hallowed Fountain, Misty Rainforest; a 8ª carta do T1 (Starfield of Nyx) é a compra do turno.
+
+| Turno | Evento principal |
+|---|---|
+| T1 | Misty Rainforest → busca **Ziatora's Proving Ground** (tem Forest, virado) |
+| T2 | **Ketria Triome** (virado; a Hallowed Fountain do log foi desfeita) |
+| T3 | **Utopia Sprawl** num terreno Forest (Proving Ground paga o {G}) |
+| T4 | Hallowed Fountain (o log a repete em T3 e T4) · **Enchantress's Presence** ({2}{G}) |
+| T5 | **Fertile Ground** (a Presence compra a Bath Song) · **Femeref Enchantress** |
+| T6 | **Tom Bombadil** (5 mana) e logo morre por interação do oponente (volta ao comando, taxa 1) · Torment of Hailfire: descarta de propósito Primal Odin, Leyline Binding e The Bath Song (enchantments → cemitério para a Starfield) |
+| T7 | **Eidolon of Blossoms** |
+| T8 | **Tom** de novo (taxa 1 = 7 mana: 5 terrenos + Utopia Sprawl + Fertile Ground) · Witness Protection (oponente) |
+| T9 | **Starfield of Nyx** · Sol Ring · Deafening Silence (oponente) |
+| T10 | Starfield devolve a Bath Song (cap. I: compre 2, descarte 1) · Resourceful Defense, **Sythis**, Hex Parasite, Sanctum Weaver · Syphon Mind ×2: descarta Summon: Knights e In the Darkness Bind Them (voltam depois) |
+| T11 | Starfield devolve Summon: Knights (3 Knights) · Bath Song II · **The Kami War** (cap. I exila a Witness Protection) · Scholar · Casualties of War destrói Sol Ring, Summon: Knights, Fertile Ground e a Hallowed Fountain (e a Utopia Sprawl junto) |
+| T12 | **Kami War**: Hex Parasite tira o marcador (1→0) no upkeep, o passo natural a leva a 1 e o cap. I exila a **Deafening Silence** · Bath Song III → **gatilho do Tom: The First Iroan Games** · Starfield devolve Knights (+3 Knights) · Prismatic Omen, **Estrid's Invocation** (cópia da Knights: +3), Setessan Champion, Satsuki · Savai Triome |
+| T13 | Starfield devolve **In the Darkness Bind Them** e a cópia da Starfield (Estrid) devolve **Summon: Primal Odin** · Kami War 1→0→1 de novo · Arcane Signet, Power Conduit, **Summon: Bahamut**, **Jugan** · Plains · O Anel (carga 2) |
+
+**Conferido e correto** (script + conta à mão; escopo no `LEIAME.md` da pasta):
+- **Terrenos**: 1 por turno. As repetições da mesma carta (Fountain nos T2–T4, Mountain ×3 no T10) são desfazer; no T2 foi a Ketria Triome e no T12 a Savai Triome (confirmado), a Overgrown Tomb do T12 e a Fountain do T2 foram desfeitas.
+- **Mana** T3–T10 fecha (T4 = 3 com Ketria + Fountain + bônus da Sprawl; T5 = 4; T8 = 7; T10 gasta 8 de 10). T11–T13 não conferi cor por cor.
+- **Starfield**: devoluções legais no upkeep: Bath Song (T10), Knights (T11 e T12, 3 fichas cada), ITDBT e Primal Odin (T13: a Starfield e a cópia dela pela Estrid, 2 gatilhos).
+- **Deafening Silence** ("uma magia não-criatura por turno", conta o turno inteiro: ruling 2019-10-04): T10 só a Resourceful Defense, T11 só a Kami War; no T12 e no T13 ela já tinha saído (exilada pelo cap. I da Kami War, ver abaixo).
+- **Loop Kami War + Hex Parasite**: legal. O Hex Parasite tira o marcador de saber no upkeep (`{X}{B/P}`: X = 1) e o passo natural o devolve: o capítulo I dispara de novo (ruling: remover marcador deixa o capítulo disparar de novo quando um marcador é *posto*). Cada volta exila um permanente não-terreno do oponente: T11 Witness Protection, T12 Deafening Silence, T13 alvo não informado.
+- **Descartes de propósito** (Torment de 3): Primal Odin, Leyline Binding e Bath Song já no cemitério para a Starfield (Bath Song voltou no T10, Odin no T13).
+- **Tom**: lançado no T6 (taxa 0), morreu e voltou no T8 (taxa 1); 1 gatilho em 13 turnos (T12: Bath Song III → The First Iroan Games).
+
+**Confirmado pelo usuário (2026-10-02)**
+- **Compras**: esqueceu "quase todas" as do Femeref e algumas das demais. Ledger (`resumos/ledger_compras.md`): esperado 67, log 54 (−13): T7 −1, T10 −1, T11 −4 (Eidolon pelo Knights que voltou e Femeref ×3 do Casualties), T12 −5 (Femeref da Bath Song e Estrid ×3, mais 1), T13 −2. Só prejudica o jogador.
+- **Marcadores**: Kami War com saber 2 no T12 foi erro de registro (o certo era 1→0→1); Summon: Knights 1→2 no T13 sem fonte foi erro; a Iroan Games II deu só 2 marcadores ao Tom em vez de 3 (erro); os marcadores do Setessan Champion foram esquecidos.
+- **T10**: a Fable "mão→campo" foi erro de registro (foi descartada); eram para ser 2 descartes (os 2 Syphon Mind) e o log tem 3, então um descarte indevido (o usuário não disse qual; a Fable é o último do log); a Resourceful Defense em 3 registros foi erro (1 conjuração).
+- **T6, Tom morto**: o usuário diz que foi o Casualties of War. O log mostra o Torment of Hailfire no T6 e o Casualties de fato só no T11 (alvo de criatura: Summon: Knights; o Tom ficou). Divergência entre o relato e o log, sem efeito: o Tom volta ao comando e é recastado no T8 com taxa 1.
+- **Terrenos**: Ketria Triome no T2 e Savai Triome no T12.
+
+**Leitura do deck** (oráculo + regras; o simulador só apoia):
+- **O prejuízo principal desta partida é contabilidade, não regra**: 13 compras a menos de 67 (~19%). O Femeref é o motor mais esquecido (4 compras).
+- **Kami War + Hex Parasite** é um removedor repetível por turno, o mesmo padrão do O'aka + Jugan (#8). O simulador usa o Hex Parasite para salvar capítulo final e no combo infinito, mas `try_value_removers` só tem O'aka, Scholar e Power Conduit: **candidato a ajuste no simulador** (Regra #5: convenção, não limite da carta). Não alterei.
+- **Sim × real**: Tom lançado no T6 (simulador: até o T6 em 76,2%), mas 0 gatilhos do Tom até o T8, e o 1º só no T12. No simulador, 0 gatilhos até o T8 acontece em 28,5% das partidas de 8 turnos. O Tom morrer e recastar no T8 (taxa 1) pesou.
