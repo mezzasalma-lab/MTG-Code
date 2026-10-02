@@ -5,8 +5,8 @@ Regra #5: o simulador é **evidência de apoio**. A análise do deck
 goldfish tem convenções fixas: ataca com tudo, não modela bloqueio, não
 tem oponente real, e interação com oponente conta como 📊 (proxy).
 
-**Dados brutos arquivados (Regra #8):** partidas manuais #6 e #7 (2026-09-30) e #8 (2026-10-01) em
-`tom-bombadil-wubrg/resultados-ab/2026-09-30-partida-manual-6/`, `.../2026-09-30-partida-manual-7/` e `.../2026-10-01-partida-manual-8/`
+**Dados brutos arquivados (Regra #8):** partidas manuais #6 e #7 (2026-09-30), #8 (2026-10-01) e #9 (2026-10-02) em
+`tom-bombadil-wubrg/resultados-ab/2026-09-30-partida-manual-6/`, `.../2026-09-30-partida-manual-7/`, `.../2026-10-01-partida-manual-8/` e `.../2026-10-02-partida-manual-9/`
 (`LEIAME.md` em cada uma: origem, mapa de arquivos, comandos, `cmp`; a #7 inclui a sensibilidade do Exotic Orchard).
 
 ## v1 — construção inicial (2026-09-22) — RASCUNHO, aguardando revisão da lista pelo usuário
@@ -584,3 +584,47 @@ a 8ª carta do T1 (Resourceful Defense) é a compra do turno. O playtester compr
 - **O Tom só entrou no T7 por falta de vermelho, não de mana**: o primeiro vermelho veio no T6 (Raugrin e Mountain, os dois virados). No T5 havia mana de sobra (Sanctum 2–3 + Sol Ring 2 + Forest + Raffine's + Bloom Tender 3 + Monk) mas nenhuma fonte de R, e o Bloom Tender só dá cor de permanente em campo. O Farseek (busca Mountain) ficou na biblioteca até o T8.
 - **Sim × real**: o simulador lança o Tom até o T7 em 86,2% das partidas (até o T5: 56,8%). T7 é típico, nem rápido nem lento. Um gatilho no T7.
 - O loop O'aka + Jugan é linha real do deck. O simulador faz o equivalente (O'aka tira marcador no fim do turno de Saga cujo capítulo vale repetir, `try_value_removers`, e o passo natural a devolve). A Satsuki do simulador (`try_satsuki`) já põe marcador em TODA Saga com saber abaixo do final, como o oráculo manda. Nada a mudar no código.
+
+### Partida manual #9 (2026-10-02) — 1 erro de regra confirmado (Binding II), 1 omissão (Anel ×2) e 1 ponto residual (T6)
+
+Dados brutos, script, rulings e trace em `tom-bombadil-wubrg/resultados-ab/2026-10-02-partida-manual-9/` (Regra #8). Oráculos ao vivo; rulings lidas antes de concluir (Binding the Old Gods, Power Conduit,
+Replenish, Battle at the Helvault, Amazing Acrobatics, The Eldest Reborn, Rankle, Fenrir, In the Darkness Bind Them, Urza's Saga; `resumos/rulings_scryfall.json`). Mão inicial (foto, "Keep this"):
+Power Conduit, Overgrown Tomb, Birth of the Imperium, Battle at the Helvault, Binding the Old Gods, Command Tower, Serra's Sanctum; a 8ª carta do T1 (City of Brass) é a compra do turno.
+O simulador de interação estava **Off** na foto e foi ligado depois (confirmado); o usuário o configurou para "até três interações por rodada".
+
+| Turno | Evento principal |
+|---|---|
+| T1 | Overgrown Tomb (virado, sem pagar 2 vidas) |
+| T2 | Command Tower · **Power Conduit** ({2}: Tower + Tomb) |
+| T3 | Ziatora's Proving Ground (virado), sem magia (2 fontes, nada de 2 na mão) |
+| T4 | City of Brass · **Binding the Old Gods** ({2}{B}{G}, 4 terrenos, exato) |
+| T5 | Binding lore 2 → cap. II busca **Zagoth Triome** (tem Forest, virado) · Serra's Sanctum · **Tom Bombadil** (WUBRG exato: Sanctum W [só o Binding é encantamento], Tower U, Tomb B, City R, Proving Ground G) · interação: Shapeshifter e Rankle; a Birth of the Imperium vai da mão ao cemitério (compatível com o modo "cada jogador descarta" do Rankle) |
+| T6 | Binding lore 3 → Power Conduit tira 1 marcador (3→2) em resposta ao cap. III e põe +1/+1 no Tom; o cap. III resolve → **1º gatilho do Tom: Summon: Fenrir** (cap. I busca **Plains**, virado) · Jetmir's Garden (virado) · **The Eldest Reborn** ({4}{B}) · interação: Amazing Acrobatics |
+| T7 | Fenrir lore 2 · Eldest lore 2 · Binding lore 3 → Conduit (3→2, +1/+1 no Tom, que fica com 2) → **2º gatilho do Tom: In the Darkness Bind Them** (Wraith) · **Indatha Triome** buscada pelo cap. II do Binding (ver erro) · Urza's Saga (terreno) · **Battle at the Helvault** ({4}{W}{W} = Sanctum 5 W + Plains) **contrada pela Amazing Acrobatics** (vai ao cemitério) · interação: Archfiend of Ifnir |
+| T8 | compra a Replenish · Binding lore 3 e Fenrir lore 3 e Eldest lore 3: os três vão ao cemitério de propósito (capítulos III) · **3º gatilho do Tom: Fable of the Mirror-Breaker** (Goblin Shaman) · Fenrir III compra o Mountain (Tom 6/6 contra o Archfiend 5/4: tem o maior poder) · Urza's Saga cap. II + {2},{T}: Construct · Mountain · **Replenish** ({3}{W}) devolve Eldest Reborn, Binding, Fenrir, Battle e Birth (todos com 1 marcador). Parou aí (confirmado: não resolveu nenhum capítulo I) |
+
+**Conferido e correto** (script + conta à mão; escopo no `LEIAME.md` da pasta):
+- **Mana**: T2–T8 fecham. T4, T5 e T7 exatos (T7: Sanctum com Binding, Fenrir, Eldest, ITDBT e Urza's Saga = 5 W + Plains = os 6 da Battle). T8: Replenish com 4 terrenos; Construct com 2 do Sanctum.
+- **Gatilho do Tom**: 1 por turno nos T6, T7 e T8 (no T8 resolveram 3 capítulos finais e entrou só 1 Saga). Os três vêm do capítulo III do Binding, que o Power Conduit salvou no T6 e no T7
+  (tirar o marcador com o capítulo na pilha: lore 2 < final, a Saga não é sacrificada; ruling 2021-02-05).
+- **Compras** (library→mão, `resumos/trace.md`): T2–T7 = 1 (compra do turno); T8 = 2 (compra do turno + Fenrir III). T1 = 8 (a mão da foto + a compra do turno).
+- **Fetch por efeito**: Zagoth (Binding II, T5) e Plains (Fenrir I, T6) corretos (Forest / básico). **Terrenos da mão**: 1 por turno, exceto T6 (ver residual).
+- **Battle at the Helvault no T7**: entra e vai ao cemitério porque foi **contrada** (o playtester põe o spell no campo e, se é contrado, move ao cemitério; a Amazing Acrobatics é "counter target spell"). Foi só depois devolvida pela Replenish.
+- **Construct com 2 marcadores +1/+1 (T8)**: o usuário os pôs para representar o 2/2 (0/0 com +1/+1 por artefato: Power Conduit + ele mesmo). O P/T bate; o efeito real é estático, então não acompanha mudança no número de artefatos, e os marcadores poderiam ser removidos pelo Conduit.
+
+**Erro de regra (confirmado pelo usuário)**
+- **T7, Indatha Triome**: o usuário achou que tirar o marcador do Binding (3→2) fazia o capítulo II disparar de novo. Não faz: "Removing lore counters won't cause a previous chapter ability to trigger" (ruling 2021-02-05); o capítulo II só dispara de novo
+  quando um marcador é *posto* e o saber passa de 1 para 2. A busca (Forest, virado) não era devida. Efeito: 1 terreno a mais em campo (virado no T7, sem uso no T8: a Replenish foi paga com outros 4). A forma legal de repetir o capítulo II
+  é remover ANTES do passo natural (2→1) e deixar o passo natural levá-lo a 2, mas então o Binding não chega ao III e o Tom não dispara (o usuário escolheu o III).
+
+**Omissão (confirmada)**: **The Ring Tempts You** (In the Darkness Bind Them I no T7 e II no T8) esquecido: nenhum emblema nem portador do Anel (o emblema apareceu no log da #6).
+
+**Residual (sem resposta direta)**
+- **T6, dois terrenos**: o log mostra Urza's Saga e Jetmir's Garden da mão, e a Urza's Saga aparece "mão→campo" de novo no T7 (devolução à mão não fica no log, mesmo padrão da #5). Se a Urza's Saga foi devolvida, o T6 teve 1 terreno só; se não foi, houve 2 (erro). A resposta do usuário ("ou entrou a Fenrir, ou foi a retirada do marcador do Binding") não esclareceu isso.
+  Pela conta de mana, a Eldest Reborn do T6 fecha com o Sanctum em 3 W (Binding, Fenrir e a Urza's Saga em campo) + Zagoth + Proving Ground; mas City, Tower e Tomb terminaram desvirados, então o spell era pagável sem a 2ª terra.
+- **Interações**: só se registrou o efeito da Acrobatics (contra a Battle) e o descarte da Birth no T5. Shapeshifter, Rankle (outros modos), Archfiend e o motivo de o Tom ficar virado nos T6/T7 não foram informados. O modo de sacrifício do Rankle teria matado o Tom (único criatura no T5): não aconteceu.
+
+**Leitura do deck** (oráculo + regras; o simulador só apoia):
+- **Linha Binding III + Power Conduit** rende 1 gatilho do Tom por turno (T6, T7 e T8) com 1 só Saga: o Conduit a salva toda vez, e o gatilho traz uma Saga nova. No T8 o usuário parou de salvá-la e sacrificou 3 Sagas para a Replenish devolver 5.
+- **Replenish**: devolve 5 Sagas com 1 marcador; os capítulos I valem: Fenrir (básico), Birth (3 Astartes Warrior, um por oponente) e Binding/Eldest/Battle (dependem de alvo de oponente, 📊). O log termina antes de resolvê-los.
+- **Sim × real**: 3 gatilhos do Tom até o T8 acontece em 21,1% das partidas simuladas (8 turnos); Tom até o T5 em 56,8%; os dois juntos em 18,8% (cerca de 1 em 5): nesses dois critérios a partida está entre as ~20% melhores do simulador. O simulador joga Replenish (`replenish_effect`) e guarda encantamentos no cemitério quando há Replenish na mão (`bath_song_iii`). Nada a mudar no código.

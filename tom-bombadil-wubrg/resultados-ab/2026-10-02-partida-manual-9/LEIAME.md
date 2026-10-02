@@ -1,7 +1,6 @@
-# Tom Bombadil — partida manual #9 (2026-10-02): dados brutos e script (rodada em andamento)
+# Tom Bombadil — partida manual #9 (2026-10-02): dados brutos e script 
 
-Arquivo da Regra #8 (`CLAUDE.md`). **Status: aguardando as respostas do usuário** às dúvidas levantadas na análise; a seção
-"Partida manual #9" de `tom-bombadil-wubrg/goldfish-log.md` só é escrita depois delas.
+Arquivo da Regra #8 (`CLAUDE.md`). **Status: concluída com as respostas do usuário** (2026-10-02). A análise em prosa está na seção "Partida manual #9" de `tom-bombadil-wubrg/goldfish-log.md`.
 
 ## Como os dados foram obtidos
 - `dados/partida.json.xz`: o JSON do Archidekt playtester que o usuário colou na conversa (8 elementos = 8 turnos), extraído por script do registro da conversa
@@ -16,7 +15,17 @@ Arquivo da Regra #8 (`CLAUDE.md`). **Status: aguardando as respostas do usuário
 | `dados/partida.json.xz` | log bruto da partida #9 | usado |
 | `analisa_partida.py` | mesmo script das partidas #6–#8 | usado |
 | `resumos/trace.md` | saída do script | usado |
+| `resumos/rulings_scryfall.json` | rulings ao vivo (Scryfall) de 10 cartas | usado (não conferido por `cmp`: depende da API) |
 | `descomprimir.sh` | descomprime `dados/*.xz` | — |
 
 Reproduz: `bash descomprimir.sh; python3 analisa_partida.py dados/partida.json.xz > /tmp/trace9.md` (= `resumos/trace.md`).
 Simulador (`tom_goldfish_v1.py`): não alterado.
+
+## Confirmações do usuário (2026-10-02)
+Indatha Triome no T7 = erro (achou que tirar o marcador do Binding disparava o capítulo II de novo); Battle at the Helvault = contrada pela Amazing Acrobatics (por isso vai ao cemitério); Anel esquecido (ITDBT I e II);
+parou depois da Replenish sem resolver capítulos; Construct com 2 marcadores só para representar o 2/2; simulador de interação ligado depois da foto da mão. Resíduo: os dois terrenos do T6 (Urza's Saga e Jetmir's Garden no log;
+a Urza's Saga volta "mão→campo" no T7) e os efeitos de Shapeshifter, Rankle e Archfiend.
+O script e o `resumos/trace.md` não foram alterados: listam "violação" de 2 terrenos no T6 e nenhuma anomalia de saber (a busca da Indatha no T7 aparece como terreno buscado, sem anomalia de saber).
+
+## O que o script NÃO prova
+Custo e cor de mana, ordem da pilha, escolhas, efeitos das interações do oponente e compras por habilidade foram conferidos à mão no `goldfish-log.md`.

@@ -313,3 +313,17 @@ saber por objeto-Saga, gatilho do Tom por turno, fontes viradas × magias, compr
 | Resourceful Defense | gatilho obrigatório "if it had counters": move todos os marcadores (qualquer tipo) para 1 permanente alvo | ✅ |
 | Summon: Fenrir | cap. II vale para o próximo spell de criatura do turno; cap. III compra se tiver a criatura de maior poder | ✅ |
 | Jugan Defends the Temple | cap. III exila e volta transformada; cópia não-DFC fica exilada (acima) | ✅ para a carta de verdade |
+
+## Rodada 2026-10-02: partida manual #9 (rulings lidas antes de concluir)
+
+Nenhuma linha de `tom_goldfish_v1.py` foi alterada. Rulings em `resultados-ab/2026-10-02-partida-manual-9/resumos/rulings_scryfall.json`. Classes varridas: terreno por turno, fetch por efeito, saber por objeto-Saga, gatilho do Tom por turno,
+fontes de mana × magias, compras por turno, Saga salva por remoção de marcador. **Não varridas**: efeitos das interações do oponente (só Acrobatics e o descarte da Birth foram informados), ordem da pilha.
+
+| carta | oráculo/ruling que importa | simulador |
+|---|---|---|
+| Binding the Old Gods | remover marcador de saber NÃO dispara capítulo de novo (ruling 2021-02-05): o II só repete se um marcador for posto de 1 para 2; com o capítulo na pilha, tirar marcador salva a Saga | ✅ `finals_saved` / `try_value_removers` tiram marcador sem disparar capítulo |
+| Power Conduit | `{T}, remove a counter from a permanent you control`: +1/+1 em criatura ou carga em artefato; sem ruling | ✅ está em `try_value_removers` |
+| Replenish | decide o que volta quando a resolução começa (ruling 2004-10-04); Sagas voltam com 1 marcador | ✅ `replenish_effect`; a política de guardar encantamentos no cemitério existe em `bath_song_iii` |
+| Amazing Acrobatics | "counter target spell" ou "tap one or two target creatures" (sem ruling); spell contrado vai ao cemitério | 📊 interação de oponente |
+| Construct (ficha) | 0/0, "+1/+1 for each artifact you control" é estático, não marcador | ✅ o simulador conta artefatos; no playtester o usuário usou marcadores só para exibir o P/T |
+| Rankle, Master of Pranks | modos escolhidos na ordem impressa; sacrifício: cada jogador escolhe uma criatura (ruling 2019-10-04) | 📊 interação de oponente |
