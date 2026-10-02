@@ -1,0 +1,133 @@
+
+=== FIM T1
+battlefield (1) : Ketria Triome(T)
+hand : Raugrin Triome, Windswept Heath, The Eldest Reborn, In the Darkness Bind Them, Jugan Defends the Temple // Remnant of the Rising Star, Fertile Ground, O'aka, Traveling Merchant
+graveyard (0) : 
+commandZone (0) : 
+opponentsCards : 
+
+=== FIM T2
+battlefield (3) : Fertile Ground, Ketria Triome(T), Overgrown Tomb(T)
+hand : Raugrin Triome, The Eldest Reborn, In the Darkness Bind Them, Jugan Defends the Temple // Remnant of the Rising Star, O'aka, Traveling Merchant, Faeburrow Elder
+graveyard (1) : Windswept Heath
+commandZone (0) : 
+opponentsCards : 
+
+=== FIM T3
+battlefield (5) : Raugrin Triome(T), Fertile Ground, Ketria Triome(T), O'aka, Traveling Merchant, Overgrown Tomb(T)
+hand : The Eldest Reborn, In the Darkness Bind Them, Jugan Defends the Temple // Remnant of the Rising Star, Faeburrow Elder, Savai Triome
+graveyard (1) : Windswept Heath
+commandZone (0) : 
+opponentsCards : 
+
+=== FIM T4
+battlefield (7) : Raugrin Triome, Fertile Ground, Ketria Triome(T), O'aka, Traveling Merchant(T), Faeburrow Elder, Overgrown Tomb(T), Savai Triome(T)
+hand : The Eldest Reborn, In the Darkness Bind Them, Jugan Defends the Temple // Remnant of the Rising Star, Karn's Bastion
+graveyard (1) : Windswept Heath
+commandZone (0) : 
+opponentsCards : 
+
+=== FIM T5
+battlefield (12) : Raugrin Triome(T), In the Darkness Bind Them{Lore=1}, Fertile Ground, Ketria Triome(T), O'aka, Traveling Merchant{Ring=1}, Faeburrow Elder(T), Overgrown Tomb(T), Savai Triome(T), Karn's Bastion, Tom Bombadil, [The Ring]{Generic=1}, [Wraith]
+hand : The Eldest Reborn, Jugan Defends the Temple // Remnant of the Rising Star, War of the Last Alliance
+graveyard (1) : Windswept Heath
+commandZone (0) : 
+opponentsCards : Squid
+
+=== FIM T6
+battlefield (14) : Raugrin Triome(T), In the Darkness Bind Them{Lore=2}, Jugan Defends the Temple{Lore=1}, Fertile Ground, Ketria Triome(T), Overgrown Tomb(T), Savai Triome(T), Karn's Bastion(T), War of the Last Alliance{Lore=1}, [The Ring]{Generic=2}, [Wraith]{Ring bearer=1}, Breeding Pool(T), [Wraith], [Human Monk]
+hand : The Eldest Reborn
+graveyard (4) : Windswept Heath, O'aka, Traveling Merchant, Faeburrow Elder, Narci, Fable Singer
+commandZone (1) : Tom Bombadiltax1
+opponentsCards : Squid, Blasphemous Edict
+
+=== FIM T7
+battlefield (16) : Raugrin Triome(T), In the Darkness Bind Them{Lore=3}, Jugan Defends the Temple{Lore=2}, Fertile Ground, Ketria Triome(T), Overgrown Tomb(T), Savai Triome(T), Karn's Bastion(T), War of the Last Alliance{Lore=2}, Tom Bombadiltax1, [The Ring]{Generic=3}, [Wraith]{Ring bearer=1}, Breeding Pool(T), [Wraith], [Human Monk], [Wraith]{+1 / +1=1,Ring bearer=1}
+hand : The Eldest Reborn, Starfield of Nyx
+graveyard (4) : Windswept Heath, O'aka, Traveling Merchant, Faeburrow Elder, Narci, Fable Singer
+commandZone (0) : 
+opponentsCards : Squid, Blasphemous Edict, Angel
+
+=== FIM T8
+battlefield (14) : Raugrin Triome(T), Fertile Ground, Ketria Triome(T), Overgrown Tomb(T), Savai Triome(T), Karn's Bastion, [The Ring]{Generic=4}, [Wraith]{Ring bearer=1}, Breeding Pool, [Wraith], [Human Monk], Starfield of Nyx, [Wraith]{+1 / +1=1,Ring bearer=1}, Binding the Old Gods{Lore=1}
+hand : The Eldest Reborn, Temple Garden, Goldberry, River-Daughter
+graveyard (7) : Windswept Heath, In the Darkness Bind Them, Jugan Defends the Temple, O'aka, Traveling Merchant, Faeburrow Elder, War of the Last Alliance, Narci, Fable Singer
+commandZone (1) : Tom Bombadiltax2
+opponentsCards : Squid, Blasphemous Edict, Angel, Martial Coup
+
+=== FIM T9
+battlefield (19) : Raugrin Triome, The Eldest Reborn{Lore=1}, In the Darkness Bind Them{Lore=1}, Fertile Ground, Ketria Triome(T), Overgrown Tomb(T), Savai Triome(T), Karn's Bastion(T), [The Ring]{Generic=4}, [Wraith]{Ring bearer=1}, Breeding Pool, [Wraith], [Human Monk], Starfield of Nyx, [Wraith]{+1 / +1=1,Ring bearer=1}, Temple Garden, Binding the Old Gods{Lore=2}, Ziatora's Proving Ground(T), [Wraith]{Ring bearer=1}
+hand : Goldberry, River-Daughter, Satsuki, the Living Lore
+graveyard (6) : Windswept Heath, Jugan Defends the Temple, O'aka, Traveling Merchant, Faeburrow Elder, War of the Last Alliance, Narci, Fable Singer
+commandZone (1) : Tom Bombadiltax2
+opponentsCards : Squid, Blasphemous Edict, Angel, Martial Coup, Amazing Acrobatics
+
+=== FIM T10
+battlefield (23) : Raugrin Triome(T), The Eldest Reborn{Lore=2}, In the Darkness Bind Them{Lore=2}, Jugan Defends the Temple{Lore=1}, Fertile Ground, Ketria Triome(T), Overgrown Tomb(T), Savai Triome(T), Karn's Bastion(T), Tom Bombadiltax2, [The Ring]{Generic=4}, [Wraith]{Ring bearer=1}, Breeding Pool(T), [Wraith], [Human Monk], Starfield of Nyx, [Wraith]{+1 / +1=1,Ring bearer=1}, Temple Garden(T), Ziatora's Proving Ground(T), [Wraith](T){Ring bearer=1}, The World Tree, [Wraith], [Human Monk]
+hand : Goldberry, River-Daughter, Satsuki, the Living Lore
+graveyard (6) : Windswept Heath, O'aka, Traveling Merchant, Faeburrow Elder, War of the Last Alliance, Narci, Fable Singer, Binding the Old Gods
+commandZone (0) : 
+opponentsCards : Squid, Blasphemous Edict, Angel, Martial Coup, Amazing Acrobatics, Beast
+
+=== FIM T11
+battlefield (29) : Raugrin Triome, The Eldest Reborn{Lore=1}, In the Darkness Bind Them{Lore=3}, Jugan Defends the Temple{Lore=2}, Fertile Ground, Ketria Triome(T), Overgrown Tomb(T), Savai Triome(T), Karn's Bastion, Tom Bombadil(T){+1 / +1=1}tax2, [The Ring]{Generic=4}, [Wraith]{Ring bearer=1}, Breeding Pool, [Wraith], Narci, Fable Singer, [Human Monk], Starfield of Nyx, [Wraith]{+1 / +1=1,Ring bearer=1}, Temple Garden, Goldberry, River-Daughter, Ziatora's Proving Ground(T), [Wraith](T){Ring bearer=1,+1 / +1=1}, The World Tree, [Wraith](T), [Human Monk], Summon: Fenrir{Lore=1}, [Wraith], Plains(T), The Cruelty of Gix{Lore=1}
+hand : Satsuki, the Living Lore
+graveyard (5) : Windswept Heath, O'aka, Traveling Merchant, Faeburrow Elder, War of the Last Alliance, Binding the Old Gods
+commandZone (0) : 
+opponentsCards : Squid, Blasphemous Edict, Angel, Martial Coup, Amazing Acrobatics, Beast, Kraken
+
+=== FIM T12
+battlefield (33) : Raugrin Triome(T), The Eldest Reborn{Lore=2}, In the Darkness Bind Them{Lore=3}, Jugan Defends the Temple{Lore=2}, Fertile Ground, Ketria Triome, Overgrown Tomb(T), Savai Triome(T), Karn's Bastion, War of the Last Alliance{Lore=1}, Tom Bombadil(T){+1 / +1=1}tax2, [The Ring]{Generic=4}, [Wraith]{Ring bearer=1}, Breeding Pool(T), [Wraith], Narci, Fable Singer, [Human Monk], Starfield of Nyx, [Wraith]{+1 / +1=1,Ring bearer=1}, Temple Garden, Goldberry, River-Daughter{Lore=1}, Satsuki, the Living Lore, Ziatora's Proving Ground(T), [Wraith](T){Ring bearer=1,+1 / +1=1}, The World Tree, [Wraith], [Human Monk], Summon: Fenrir{Lore=2}, [Wraith], Plains, The Cruelty of Gix{Lore=2}, Power Conduit, [Wraith](T)
+hand : Hallowed Fountain
+graveyard (5) : Windswept Heath, O'aka, Traveling Merchant, Faeburrow Elder, Binding the Old Gods, Sythis, Harvest's Hand
+commandZone (0) : 
+opponentsCards : Squid, Blasphemous Edict, Angel, Martial Coup, Amazing Acrobatics, Beast, Kraken, Lethal Scheme, Mindbreak Trap
+
+=== FIM T13
+battlefield (36) : Raugrin Triome(T), The Eldest Reborn{Lore=2}, Jugan Defends the Temple(flip), Fertile Ground, Ketria Triome(T), O'aka, Traveling Merchant, Overgrown Tomb(T), Savai Triome, Karn's Bastion, War of the Last Alliance{Lore=2}, [The Ring]{Generic=4}, [Wraith]{Ring bearer=1}, Breeding Pool, [Wraith], Narci, Fable Singer, [Human Monk], Starfield of Nyx, [Wraith]{+1 / +1=1,Ring bearer=1}, Temple Garden(T), Goldberry, River-Daughter(T){Lore=0}, Satsuki, the Living Lore, Ziatora's Proving Ground, [Wraith](T){+1 / +1=1}, The World Tree(T), [Wraith], [Human Monk], [Wraith], Plains(T), Hallowed Fountain(T), Power Conduit(T), Sythis, Harvest's Hand, [Wraith](T), Sanctum Weaver, There and Back Again{Lore=1}, Historian's Boon, [Knight]
+hand : Verdant Catacombs, Barbara Wright
+graveyard (6) : Windswept Heath, In the Darkness Bind Them, Faeburrow Elder, Binding the Old Gods, Summon: Fenrir, The Cruelty of Gix
+commandZone (1) : Tom Bombadiltax3
+opponentsCards : Squid, Blasphemous Edict, Angel, Martial Coup, Amazing Acrobatics, Beast, Kraken, Lethal Scheme, Mindbreak Trap, Soul Shatter
+
+=== FIM T14
+battlefield (32) : Raugrin Triome(T), Ketria Triome(T), O'aka, Traveling Merchant, Overgrown Tomb(T), Savai Triome(T), Karn's Bastion(T), Tom Bombadil{+1 / +1=2}tax3, [The Ring]{Generic=4}, [Wraith]{Ring bearer=1}, Breeding Pool(T), [Wraith], Narci, Fable Singer, [Human Monk], [Wraith]{+1 / +1=1,Ring bearer=1}, Temple Garden(T), Goldberry, River-Daughter{Lore=0}, Satsuki, the Living Lore, Ziatora's Proving Ground(T), [Wraith](T){+1 / +1=2,Ring bearer=1}, The World Tree(T), [Wraith](T), [Human Monk], [Wraith], Plains(T), Hallowed Fountain(T), [Wraith](T), Verdant Catacombs(T), [Knight], [Angel], [Angel], [Knight], Island(T)
+hand : Barbara Wright, City of Brass, Utopia Sprawl
+graveyard (16) : Windswept Heath, The Eldest Reborn, In the Darkness Bind Them, Jugan Defends the Temple, Fertile Ground, Faeburrow Elder, War of the Last Alliance, Starfield of Nyx, Binding the Old Gods, Summon: Fenrir, The Cruelty of Gix, Power Conduit, Sythis, Harvest's Hand, Sanctum Weaver, There and Back Again, Historian's Boon
+commandZone (0) : 
+opponentsCards : Squid, Blasphemous Edict, Angel, Martial Coup, Amazing Acrobatics, Beast, Kraken, Lethal Scheme, Mindbreak Trap, Soul Shatter, Bane of Progress
+
+=== FIM T15
+battlefield (36) : Raugrin Triome, Ketria Triome, O'aka, Traveling Merchant, Overgrown Tomb, Savai Triome(T), Karn's Bastion, Tom Bombadil{+1 / +1=2}tax3, [The Ring]{Generic=4}, [Wraith]{Ring bearer=1}, Breeding Pool, [Wraith], Narci, Fable Singer, [Human Monk], [Wraith]{+1 / +1=1,Ring bearer=1}, Temple Garden(T), Goldberry, River-Daughter{Lore=0}, Satsuki, the Living Lore, Ziatora's Proving Ground(T), [Wraith](T){+1 / +1=2,Ring bearer=1}, The World Tree(T), [Wraith], [Human Monk], [Wraith], Plains(T), Hallowed Fountain(T), [Wraith](T), Verdant Catacombs(T), [Knight], Barbara Wright, City of Brass(T), [Angel](T), [Angel](T), [Knight], Utopia Sprawl, Island(T), Summon: Primal Odin{Lore=1}
+hand : 
+graveyard (16) : Windswept Heath, The Eldest Reborn, In the Darkness Bind Them, Jugan Defends the Temple, Fertile Ground, Faeburrow Elder, War of the Last Alliance, Starfield of Nyx, Binding the Old Gods, Summon: Fenrir, The Cruelty of Gix, Power Conduit, Sythis, Harvest's Hand, Sanctum Weaver, There and Back Again, Historian's Boon
+commandZone (0) : 
+opponentsCards : Squid, Blasphemous Edict, Angel, Martial Coup, Amazing Acrobatics, Beast, Kraken, Lethal Scheme, Mindbreak Trap, Soul Shatter, Bane of Progress, No Mercy
+
+=== FIM T16
+battlefield (37) : Raugrin Triome, Ketria Triome, O'aka, Traveling Merchant(T), Overgrown Tomb, Savai Triome, Karn's Bastion, Tom Bombadiltax3, [The Ring]{Generic=4}, [Wraith]{Ring bearer=1}, Breeding Pool, [Wraith], Narci, Fable Singer, [Human Monk], [Wraith]{+1 / +1=1,Ring bearer=1}, Temple Garden(T), Goldberry, River-Daughter{Lore=0}, Satsuki, the Living Lore, Ziatora's Proving Ground, [Wraith](T){+1 / +1=2,Ring bearer=1}, The World Tree(T), [Wraith], [Human Monk], [Wraith], Plains(T), Hallowed Fountain(T), [Wraith](T), Verdant Catacombs(T), [Knight], Barbara Wright, City of Brass, [Angel](T), [Angel](T){Lore=1}, [Knight], Utopia Sprawl, Island(T), Nexus Mentality, Resurgent Belief{Time=2}
+hand : Hall of Heliod's Generosity, Flux Channeler, Nesting Grounds
+graveyard (19) : Windswept Heath, The Eldest Reborn, In the Darkness Bind Them, Jugan Defends the Temple, Fertile Ground, Faeburrow Elder, War of the Last Alliance, Starfield of Nyx, Binding the Old Gods, Summon: Fenrir, The Cruelty of Gix, Power Conduit, Sythis, Harvest's Hand, Sanctum Weaver, There and Back Again, Historian's Boon, Summon: Primal Odin, Wooded Foothills, Prismatic Omen
+commandZone (0) : 
+opponentsCards : Squid, Blasphemous Edict, Angel, Martial Coup, Amazing Acrobatics, Beast, Kraken, Lethal Scheme, Mindbreak Trap, Soul Shatter, Bane of Progress, No Mercy, Jace's Archivist, Soul Shatter
+
+=== FIM T17
+battlefield (40) : Raugrin Triome, Ketria Triome, O'aka, Traveling Merchant(T), Overgrown Tomb, Savai Triome, Karn's Bastion, Tom Bombadiltax3, [The Ring]{Generic=4}, [Wraith]{Ring bearer=1}, Breeding Pool, [Wraith], Narci, Fable Singer, [Human Monk], [Wraith]{+1 / +1=1,Ring bearer=1}, Temple Garden(T), Goldberry, River-Daughter{Lore=0}, Satsuki, the Living Lore, Ziatora's Proving Ground(T), [Wraith](T){+1 / +1=2,Ring bearer=1}, The World Tree(T), [Wraith](T), [Human Monk], [Wraith], Plains(T), Hallowed Fountain, [Wraith](T), Verdant Catacombs, [Knight], Barbara Wright, City of Brass, [Angel](T), [Angel](T), [Knight], Utopia Sprawl, Island, Nexus Mentality, Resurgent Belief{Time=1}, Flux Channeler, Nesting Grounds, Sol Ring
+hand : Hall of Heliod's Generosity, Raffine's Tower
+graveyard (19) : Windswept Heath, The Eldest Reborn, In the Darkness Bind Them, Jugan Defends the Temple, Fertile Ground, Faeburrow Elder, War of the Last Alliance, Starfield of Nyx, Binding the Old Gods, Summon: Fenrir, The Cruelty of Gix, Power Conduit, Sythis, Harvest's Hand, Sanctum Weaver, There and Back Again, Historian's Boon, Summon: Primal Odin, Wooded Foothills, Prismatic Omen
+commandZone (0) : 
+opponentsCards : Squid, Blasphemous Edict, Angel, Martial Coup, Amazing Acrobatics, Beast, Kraken, Lethal Scheme, Mindbreak Trap, Soul Shatter, Bane of Progress, No Mercy, Jace's Archivist, Soul Shatter, Steel Hellkite, All Is Dust
+
+=== FIM T18
+battlefield (68) : Raugrin Triome(T), The Eldest Reborn{Lore=1}, In the Darkness Bind Them{Lore=1}, Jugan Defends the Temple{Lore=1}, Fertile Ground, Ketria Triome(T), Overgrown Tomb(T), Savai Triome(T), Karn's Bastion(T), War of the Last Alliance{Lore=1}, Tom Bombadiltax4, [The Ring]{Generic=4}, [Wraith]{Ring bearer=1}, Breeding Pool(T), [Wraith], [Human Monk], Starfield of Nyx, [Wraith]{+1 / +1=1,Ring bearer=1}, Temple Garden(T), Binding the Old Gods{Lore=1}, Ziatora's Proving Ground(T), [Wraith](T){+1 / +1=2,Ring bearer=1}, The World Tree(T), [Wraith], [Human Monk], Summon: Fenrir{Lore=1}, [Wraith], Plains, The Cruelty of Gix{Lore=1}, Hallowed Fountain(T), Sythis, Harvest's Hand, [Wraith](T), Sanctum Weaver, There and Back Again{Lore=1}, Verdant Catacombs(T), Historian's Boon, [Knight], City of Brass, [Angel], [Angel], [Knight], Utopia Sprawl, Island, Summon: Primal Odin{Lore=1}, Prismatic Omen, Hall of Heliod's Generosity(T), Nesting Grounds(T), Sol Ring, Teferi's Protection, Scholar of New Horizons, Serra's Sanctum(T), [Human Monk], [Wraith], [Human Soldier], [Human Soldier], [Human Soldier], [Human Soldier], [Human Soldier], [Human Soldier], [Human Soldier], [Human Soldier], [Human Soldier], [Human Soldier], [Human Soldier], [Human Soldier], [Human Soldier], [Human Soldier], Swamp(T)
+hand : Raffine's Tower, Swords to Plowshares, Enlightened Tutor, Enduring Vitality, Command Tower, Exotic Orchard
+graveyard (19) : Windswept Heath, O'aka, Traveling Merchant, Faeburrow Elder, Narci, Fable Singer, Goldberry, River-Daughter, Satsuki, the Living Lore, Power Conduit, Barbara Wright, Wooded Foothills, Nexus Mentality, Resurgent Belief, Flux Channeler, Elspeth Conquers Death, Birth of the Imperium, Summon: Knights of Round, Misty Rainforest, The Coming of Galactus, Awaken the Honored Dead, Battle at the Helvault
+commandZone (0) : 
+opponentsCards : Squid, Blasphemous Edict, Angel, Martial Coup, Amazing Acrobatics, Beast, Kraken, Lethal Scheme, Mindbreak Trap, Soul Shatter, Bane of Progress, No Mercy, Jace's Archivist, Soul Shatter, Steel Hellkite, All Is Dust, Vandalblast, Casualties of War
+
+=== FIM T19
+battlefield (67) : Raugrin Triome, The Eldest Reborn{Lore=1}, In the Darkness Bind Them{Lore=1}, Jugan Defends the Temple{Lore=1}, Fertile Ground, Ketria Triome, Overgrown Tomb, Savai Triome, Karn's Bastion, War of the Last Alliance{Lore=1}, Tom Bombadiltax4, [The Ring]{Generic=4}, [Wraith]{Ring bearer=1}, Breeding Pool, [Wraith], [Human Monk], Starfield of Nyx, [Wraith]{+1 / +1=1,Ring bearer=1}, Temple Garden, Binding the Old Gods{Lore=1}, Ziatora's Proving Ground, [Wraith](T){+1 / +1=2,Ring bearer=1}, The World Tree, [Wraith], [Human Monk], Summon: Fenrir{Lore=1}, [Wraith], Plains, The Cruelty of Gix{Lore=1}, Hallowed Fountain, Sythis, Harvest's Hand, [Wraith](T), Sanctum Weaver, There and Back Again{Lore=1}, Verdant Catacombs, Historian's Boon, [Knight], City of Brass, [Angel], [Angel], [Knight], Utopia Sprawl, Island, Summon: Primal Odin{Lore=1}, Prismatic Omen, Hall of Heliod's Generosity, Nesting Grounds, Sol Ring, Scholar of New Horizons, Serra's Sanctum, [Human Monk], [Wraith], [Human Soldier], [Human Soldier], [Human Soldier], [Human Soldier], [Human Soldier], [Human Soldier], [Human Soldier], [Human Soldier], [Human Soldier], [Human Soldier], [Human Soldier], [Human Soldier], [Human Soldier], [Human Soldier], Swamp
+hand : Raffine's Tower, Swords to Plowshares, Enlightened Tutor, Enduring Vitality, Command Tower, Exotic Orchard, Strionic Resonator
+graveyard (20) : Windswept Heath, O'aka, Traveling Merchant, Faeburrow Elder, Narci, Fable Singer, Goldberry, River-Daughter, Satsuki, the Living Lore, Power Conduit, Barbara Wright, Wooded Foothills, Nexus Mentality, Resurgent Belief, Flux Channeler, Elspeth Conquers Death, Teferi's Protection, Birth of the Imperium, Summon: Knights of Round, Misty Rainforest, The Coming of Galactus, Awaken the Honored Dead, Battle at the Helvault
+commandZone (0) : 
+opponentsCards : Squid, Blasphemous Edict, Angel, Martial Coup, Amazing Acrobatics, Beast, Kraken, Lethal Scheme, Mindbreak Trap, Soul Shatter, Bane of Progress, No Mercy, Jace's Archivist, Soul Shatter, Steel Hellkite, All Is Dust, Vandalblast, Casualties of War

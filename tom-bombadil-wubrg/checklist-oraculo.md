@@ -342,3 +342,20 @@ compras pelos motores de encantamento (ledger `resumos/ledger_compras.md`), rest
 | The Kami War + Hex Parasite | remover marcador e pôr de novo dispara o cap. I outra vez; Hex Parasite `{X}{B/P}` tira até X marcadores (ruling 2011-06-01: tira só os que existem) | ⚠️ Hex Parasite não entra em `try_value_removers` (só salva final e combo); candidato a ajuste |
 | Deafening Silence | conta o TURNO inteiro, mesmo se entrou depois (ruling 2019-10-04); só vale para magias não-criatura | 📊 interação de oponente |
 | Casualties of War | destrói em ordem; gatilhos (Femeref) só depois de resolver (ruling 2019-05-03) | 📊 interação de oponente |
+
+## Rodada 2026-10-02: partida manual #11 (rulings lidas antes de concluir)
+
+Nenhuma linha de `tom_goldfish_v1.py` foi alterada. Rulings em `resultados-ab/2026-10-02-partida-manual-11/resumos/rulings_scryfall.json` (36 cartas). Classes varridas: terreno por turno, fetch (com a correção `God card` só no script desta pasta),
+saber por objeto-Saga (`resumos/saber_por_saga.txt`), gatilho do Tom por turno, compras (ledger) e fichas da Boon, mana por turno (total, não cor), interações simuladas do oponente. **Não varridas**: cor de mana, ordem da pilha, pontos de vida,
+ataque do Ring-bearer (assumido "virado = atacou"), alvos dos capítulos I que miram o oponente.
+
+| carta | oráculo/ruling que importa | simulador |
+|---|---|---|
+| Sagas (todas) | 714.3b: "As a Saga enters, put a lore counter. As your first main phase begins (immediately after your draw step), put another lore counter on each Saga you control" (rulings Eldest Reborn/Fenrir): uma Saga devolvida no upkeep ganha o 2º marcador no mesmo turno | ✅ `upkeep_step` roda a Starfield no upkeep; o passo de marcadores fica na fase principal (comentário 714.3b no arquivo; lido só o `upkeep_step` nesta rodada) |
+| Tom Bombadil | o gatilho "when another ability resolves" vê permanentes que entraram durante a resolução (ruling 2023-06-16: Elspeth Conquers Death); 1×/turno | referenciado no simulador; não reauditado nesta rodada |
+| Narci, Fable Singer | mesmas palavras do Tom ("final chapter ability... resolves"); "sacrifice an enchantment" inclui o sacrifício de Saga por SBA e o de Soul Shatter/All Is Dust | referenciado no simulador; não reauditado nesta rodada |
+| Historian's Boon | Soldier para a Boon e para outro encantamento NÃO-ficha que entra com ela em campo (inclusive entrando juntos); Angel por capítulo final que DISPARA (não precisa resolver) | referenciado no simulador; não reauditado nesta rodada |
+| Resurgent Belief | suspend: resolve de graça quando o último marcador sai; devolve TODOS os encantamentos do cemitério (ruling 2021-06-18), Auras escolhem o que encantar | `resolve_suspended` e `replenish_effect` existem (chamada no `upkeep_step` lida); lógica não reauditada |
+| Nexus Mentality | com um comandante em campo ao conjurar, os 2 modos juntos (ruling 2026-03-20) | referenciado no simulador; não reauditado nesta rodada |
+| Blasphemous Edict / All Is Dust / Bane of Progress / Soul Shatter / Martial Coup | Edict: menos de 13 criaturas sacrifica todas (2024-11-08); All Is Dust: terrenos não têm cor (2018-12-07); Bane: destrói artefatos e encantamentos de todos; Soul Shatter: o jogador escolhe entre empatados no MV mais alto (2020-09-25) | 📊 interação de oponente |
+| The World Tree | com 6+ terrenos, todos os terrenos do jogador viram "qualquer cor" (inclusive fetchland); a habilidade de sacrificar busca Deuses, não terrenos | script do log: corrigido nesta pasta; simulador: não reauditado |

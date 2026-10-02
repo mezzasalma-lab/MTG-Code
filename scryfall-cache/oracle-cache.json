@@ -168682,5 +168682,173 @@
     "set": "thob",
     "toughness": "1",
     "type_line": "Token Creature — Human Soldier"
+  },
+  "Blasphemous Edict": {
+    "cmc": 5.0,
+    "collector_number": "57",
+    "color_identity": [
+      "B"
+    ],
+    "colors": [
+      "B"
+    ],
+    "keywords": [],
+    "layout": "normal",
+    "legalities": {
+      "standard": "legal",
+      "future": "legal",
+      "historic": "legal",
+      "timeless": "legal",
+      "gladiator": "legal",
+      "pioneer": "legal",
+      "modern": "legal",
+      "legacy": "legal",
+      "pauper": "not_legal",
+      "vintage": "legal",
+      "penny": "legal",
+      "commander": "legal",
+      "oathbreaker": "legal",
+      "standardbrawl": "legal",
+      "brawl": "legal",
+      "competitivebrawl": "legal",
+      "alchemy": "legal",
+      "paupercommander": "not_legal",
+      "duel": "legal",
+      "oldschool": "not_legal",
+      "premodern": "not_legal",
+      "predh": "not_legal",
+      "tlr": "not_legal"
+    },
+    "loyalty": null,
+    "mana_cost": "{3}{B}{B}",
+    "name": "Blasphemous Edict",
+    "oracle_text": "You may pay {B} rather than pay this spell's mana cost if there are thirteen or more creatures on the battlefield.\nEach player sacrifices thirteen creatures of their choice.",
+    "power": null,
+    "prices": {
+      "usd": "4.69",
+      "usd_foil": "5.64",
+      "usd_etched": null,
+      "eur": "5.53",
+      "eur_foil": "5.85",
+      "tix": "0.02"
+    },
+    "released_at": "2024-11-15",
+    "scryfall_uri": "https://scryfall.com/card/fdn/57/blasphemous-edict?utm_source=api",
+    "set": "fdn",
+    "toughness": null,
+    "type_line": "Sorcery"
+  },
+  "No Mercy": {
+    "cmc": 4.0,
+    "collector_number": "95",
+    "color_identity": [
+      "B"
+    ],
+    "colors": [
+      "B"
+    ],
+    "keywords": [],
+    "layout": "normal",
+    "legalities": {
+      "standard": "not_legal",
+      "future": "not_legal",
+      "historic": "legal",
+      "timeless": "legal",
+      "gladiator": "legal",
+      "pioneer": "not_legal",
+      "modern": "not_legal",
+      "legacy": "legal",
+      "pauper": "not_legal",
+      "vintage": "legal",
+      "penny": "not_legal",
+      "commander": "legal",
+      "oathbreaker": "legal",
+      "standardbrawl": "not_legal",
+      "brawl": "legal",
+      "competitivebrawl": "legal",
+      "alchemy": "not_legal",
+      "paupercommander": "not_legal",
+      "duel": "legal",
+      "oldschool": "not_legal",
+      "premodern": "legal",
+      "predh": "legal",
+      "tlr": "not_legal"
+    },
+    "loyalty": null,
+    "mana_cost": "{2}{B}{B}",
+    "name": "No Mercy",
+    "oracle_text": "Whenever a creature deals damage to you, destroy it.",
+    "power": null,
+    "prices": {
+      "usd": "24.42",
+      "usd_foil": "28.98",
+      "usd_etched": null,
+      "eur": "17.95",
+      "eur_foil": "19.86",
+      "tix": "2.04"
+    },
+    "released_at": "2023-01-13",
+    "scryfall_uri": "https://scryfall.com/card/dmr/95/no-mercy?utm_source=api",
+    "set": "dmr",
+    "toughness": null,
+    "type_line": "Enchantment"
+  },
+  "Angel": {
+    "cmc": 0.0,
+    "collector_number": "4",
+    "color_identity": [
+      "W"
+    ],
+    "colors": [
+      "W"
+    ],
+    "keywords": [
+      "Flying",
+      "Vigilance"
+    ],
+    "layout": "token",
+    "legalities": {
+      "standard": "not_legal",
+      "future": "not_legal",
+      "historic": "not_legal",
+      "timeless": "not_legal",
+      "gladiator": "not_legal",
+      "pioneer": "not_legal",
+      "modern": "not_legal",
+      "legacy": "not_legal",
+      "pauper": "not_legal",
+      "vintage": "not_legal",
+      "penny": "not_legal",
+      "commander": "not_legal",
+      "oathbreaker": "not_legal",
+      "standardbrawl": "not_legal",
+      "brawl": "not_legal",
+      "competitivebrawl": "not_legal",
+      "alchemy": "not_legal",
+      "paupercommander": "not_legal",
+      "duel": "not_legal",
+      "oldschool": "not_legal",
+      "premodern": "not_legal",
+      "predh": "not_legal",
+      "tlr": "not_legal"
+    },
+    "loyalty": null,
+    "mana_cost": "",
+    "name": "Angel",
+    "oracle_text": "Flying, vigilance",
+    "power": "4",
+    "prices": {
+      "usd": null,
+      "usd_foil": null,
+      "usd_etched": null,
+      "eur": null,
+      "eur_foil": null,
+      "tix": null
+    },
+    "released_at": "2026-06-26",
+    "scryfall_uri": "https://scryfall.com/card/tmsc/4/angel?utm_source=api",
+    "set": "tmsc",
+    "toughness": "4",
+    "type_line": "Token Creature — Angel"
   }
 }
