@@ -585,7 +585,7 @@ a 8ª carta do T1 (Resourceful Defense) é a compra do turno. O playtester compr
 - **Sim × real**: o simulador lança o Tom até o T7 em 86,2% das partidas (até o T5: 56,8%). T7 é típico, nem rápido nem lento. Um gatilho no T7.
 - O loop O'aka + Jugan é linha real do deck. O simulador faz o equivalente (O'aka tira marcador no fim do turno de Saga cujo capítulo vale repetir, `try_value_removers`, e o passo natural a devolve). A Satsuki do simulador (`try_satsuki`) já põe marcador em TODA Saga com saber abaixo do final, como o oráculo manda. Nada a mudar no código.
 
-### Partida manual #9 (2026-10-02) — 1 erro de regra confirmado (Binding II), 1 omissão (Anel ×2) e 1 ponto residual (T6)
+### Partida manual #9 (2026-10-02) — 2 erros de regra confirmados (2º terreno no T6 e Binding II) e 1 omissão (Anel ×2); sem resíduo
 
 Dados brutos, script, rulings e trace em `tom-bombadil-wubrg/resultados-ab/2026-10-02-partida-manual-9/` (Regra #8). Oráculos ao vivo; rulings lidas antes de concluir (Binding the Old Gods, Power Conduit,
 Replenish, Battle at the Helvault, Amazing Acrobatics, The Eldest Reborn, Rankle, Fenrir, In the Darkness Bind Them, Urza's Saga; `resumos/rulings_scryfall.json`). Mão inicial (foto, "Keep this"):
@@ -598,7 +598,7 @@ O simulador de interação estava **Off** na foto e foi ligado depois (confirmad
 | T2 | Command Tower · **Power Conduit** ({2}: Tower + Tomb) |
 | T3 | Ziatora's Proving Ground (virado), sem magia (2 fontes, nada de 2 na mão) |
 | T4 | City of Brass · **Binding the Old Gods** ({2}{B}{G}, 4 terrenos, exato) |
-| T5 | Binding lore 2 → cap. II busca **Zagoth Triome** (tem Forest, virado) · Serra's Sanctum · **Tom Bombadil** (WUBRG exato: Sanctum W [só o Binding é encantamento], Tower U, Tomb B, City R, Proving Ground G) · interação: Shapeshifter e Rankle; a Birth of the Imperium vai da mão ao cemitério (compatível com o modo "cada jogador descarta" do Rankle) |
+| T5 | Binding lore 2 → cap. II busca **Zagoth Triome** (tem Forest, virado) · Serra's Sanctum · **Tom Bombadil** (WUBRG exato: Sanctum W [só o Binding é encantamento], Tower U, Tomb B, City R, Proving Ground G) · interação: o Shapeshifter ataca e o Tom o bloqueia; o Rankle conecta e escolhe só o modo "cada jogador descarta" (a Birth of the Imperium vai da mão ao cemitério) |
 | T6 | Binding lore 3 → Power Conduit tira 1 marcador (3→2) em resposta ao cap. III e põe +1/+1 no Tom; o cap. III resolve → **1º gatilho do Tom: Summon: Fenrir** (cap. I busca **Plains**, virado) · Jetmir's Garden (virado) · **The Eldest Reborn** ({4}{B}) · interação: Amazing Acrobatics |
 | T7 | Fenrir lore 2 · Eldest lore 2 · Binding lore 3 → Conduit (3→2, +1/+1 no Tom, que fica com 2) → **2º gatilho do Tom: In the Darkness Bind Them** (Wraith) · **Indatha Triome** buscada pelo cap. II do Binding (ver erro) · Urza's Saga (terreno) · **Battle at the Helvault** ({4}{W}{W} = Sanctum 5 W + Plains) **contrada pela Amazing Acrobatics** (vai ao cemitério) · interação: Archfiend of Ifnir |
 | T8 | compra a Replenish · Binding lore 3 e Fenrir lore 3 e Eldest lore 3: os três vão ao cemitério de propósito (capítulos III) · **3º gatilho do Tom: Fable of the Mirror-Breaker** (Goblin Shaman) · Fenrir III compra o Mountain (Tom 6/6 contra o Archfiend 5/4: tem o maior poder) · Urza's Saga cap. II + {2},{T}: Construct · Mountain · **Replenish** ({3}{W}) devolve Eldest Reborn, Binding, Fenrir, Battle e Birth (todos com 1 marcador). Parou aí (confirmado: não resolveu nenhum capítulo I) |
@@ -619,10 +619,19 @@ O simulador de interação estava **Off** na foto e foi ligado depois (confirmad
 
 **Omissão (confirmada)**: **The Ring Tempts You** (In the Darkness Bind Them I no T7 e II no T8) esquecido: nenhum emblema nem portador do Anel (o emblema apareceu no log da #6).
 
-**Residual (sem resposta direta)**
-- **T6, dois terrenos**: o log mostra Urza's Saga e Jetmir's Garden da mão, e a Urza's Saga aparece "mão→campo" de novo no T7 (devolução à mão não fica no log, mesmo padrão da #5). Se a Urza's Saga foi devolvida, o T6 teve 1 terreno só; se não foi, houve 2 (erro). A resposta do usuário ("ou entrou a Fenrir, ou foi a retirada do marcador do Binding") não esclareceu isso.
-  Pela conta de mana, a Eldest Reborn do T6 fecha com o Sanctum em 3 W (Binding, Fenrir e a Urza's Saga em campo) + Zagoth + Proving Ground; mas City, Tower e Tomb terminaram desvirados, então o spell era pagável sem a 2ª terra.
-- **Interações**: só se registrou o efeito da Acrobatics (contra a Battle) e o descarte da Birth no T5. Shapeshifter, Rankle (outros modos), Archfiend e o motivo de o Tom ficar virado nos T6/T7 não foram informados. O modo de sacrifício do Rankle teria matado o Tom (único criatura no T5): não aconteceu.
+**Erro de regra (confirmado pelo usuário, 2026-10-02)**
+- **T6, dois terrenos**: o usuário jogou a Urza's Saga e o Jetmir's Garden; "era para ter jogado o Garden". A Urza's Saga voltou à mão (aparece "mão→campo" de novo no T7; devolução à mão não fica no log, mesmo padrão da #5) e foi jogada no T7 como único terreno do turno.
+  Efeito: com a Saga em campo o Sanctum rendeu 3 W (Binding, Fenrir, Urza's Saga) e pagou a Eldest Reborn ({4}{B}) com Zagoth + Proving Ground; sem a 2ª terra o Sanctum renderia 2 W, mas City, Tower e Tomb terminaram desvirados,
+  então o spell era pagável legalmente do mesmo jeito. Sem efeito no que foi conjurado.
+
+**Interações (confirmado pelo usuário)**
+- **Shapeshifter** atacou e o **Tom bloqueou** (o número escolhido, que define poder e resistência, não foi informado; pelo log o Tom sobreviveu).
+- **Rankle**: só o modo "each player discards a card" (a Birth do T5). Os modos de comprar/perder vida e de sacrificar não foram escolhidos; o de sacrifício teria matado o Tom.
+- **Archfiend of Ifnir**: "Whenever you cycle or discard another card, put a -1/-1 counter on each creature your opponents control." Não faz nada ao entrar (o usuário confirmou); nenhum ciclo/descarte do oponente depois dele, então sem efeito.
+- **Amazing Acrobatics**: controu a Battle at the Helvault (T7).
+- O Tom ficar virado nos T6/T7 não foi explicado (provavelmente ataque); sem efeito nas conclusões.
+
+Resíduo da #9: nenhum.
 
 **Leitura do deck** (oráculo + regras; o simulador só apoia):
 - **Linha Binding III + Power Conduit** rende 1 gatilho do Tom por turno (T6, T7 e T8) com 1 só Saga: o Conduit a salva toda vez, e o gatilho traz uma Saga nova. No T8 o usuário parou de salvá-la e sacrificou 3 Sagas para a Replenish devolver 5.

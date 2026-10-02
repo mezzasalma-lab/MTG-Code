@@ -317,7 +317,7 @@ saber por objeto-Saga, gatilho do Tom por turno, fontes viradas × magias, compr
 ## Rodada 2026-10-02: partida manual #9 (rulings lidas antes de concluir)
 
 Nenhuma linha de `tom_goldfish_v1.py` foi alterada. Rulings em `resultados-ab/2026-10-02-partida-manual-9/resumos/rulings_scryfall.json`. Classes varridas: terreno por turno, fetch por efeito, saber por objeto-Saga, gatilho do Tom por turno,
-fontes de mana × magias, compras por turno, Saga salva por remoção de marcador. **Não varridas**: efeitos das interações do oponente (só Acrobatics e o descarte da Birth foram informados), ordem da pilha.
+fontes de mana × magias, compras por turno, Saga salva por remoção de marcador. **Não varridas**: ordem da pilha. Efeitos das interações do oponente informados pelo usuário (Acrobatics controu a Battle, Rankle só descarte, Shapeshifter bloqueado pelo Tom, Archfiend sem efeito ao entrar).
 
 | carta | oráculo/ruling que importa | simulador |
 |---|---|---|
