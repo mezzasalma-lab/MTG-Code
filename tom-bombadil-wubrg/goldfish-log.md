@@ -731,6 +731,7 @@ Oráculos ao vivo; rulings lidas antes de concluir (36 cartas; `resumos/rulings_
 7. **T18, 2 terrenos da mão**: Hall of Heliod's Generosity e Serra's Sanctum.
 8. **O Anel**: o Ring-bearer fica virado de T10 a T17 e o Anel já tinha o "compre e descarte ao atacar" desde o T6: não há nenhum loot no log.
 9. **There and Back Again II (T14)**: Lore=2 e nenhum Mountain entrou (a lista tem Mountain, Stomping Ground e Jetmir's Garden na biblioteca; a Island do T14 foi do Fenrir I).
+10. **Pequenas**: Soul Shatter do T13 (Tom e a Eldest Reborn, animada pela Starfield, empatavam em MV 5: foi escolha sacrificar o Tom?); O'aka virado no T4 sem marcador em nenhum permanente; Scholar of New Horizons entrou no T18 sem o +1/+1 do oráculo; T8 e T12 sem jogada de terreno com terreno na mão.
 
 **Leitura do deck** (oráculo + regras; o simulador só apoia):
 - **Resiliência**: o Tom morreu 4 vezes (Edict T6, Martial Coup T8, Soul Shatter T13, All Is Dust T18) e voltou pelo comando com taxa até 4 (5 lançamentos no total); o Bane of Progress não o atinge (não é artefato nem encantamento) e, com ≥ 4 marcadores nas Sagas, ele fica hexproof e indestrutível. A Resurgent Belief reconstruiu 16 encantamentos de uma vez (a Boon deu 14 fichas) e a Teferi's Protection passou por Vandalblast + Casualties.
