@@ -17,6 +17,14 @@ Pedido do usuário: *"E a inclusão de Power Depot no Megatron?"*
 
 ## O simulador não foi alterado
 
+> **Nota posterior (2026-10-03, mesma data, depois desta rodada): o simulador vivo mudou.** A frase "o simulador não foi alterado" vale **para esta rodada** (medidas com o commit `22d0ed2`).
+> Depois dela, `megatron_goldfish_v1.py` ganhou a habilidade do Myriad Landscape e o piloto de terreno tapped em T1/T2
+> (`../2026-10-03-myriad-e-tapped-t1t2/LEIAME.md`). Consequências para esta pasta: (1) **as tabelas continuam reproduzíveis**, porque `--sum` lê só os brutos `.json.xz`;
+> (2) `bitident.py` compara com o arquivo VIVO e **passa a divergir**: para refazê-lo, extraia o simulador antigo com `git show 22d0ed2:megatron-tyrant-mardu/megatron_goldfish_v1.py`
+> (há uma cópia em `../2026-10-03-myriad-e-tapped-t1t2/codigo/megatron_goldfish_v1_ANTES_22d0ed2.py`) e aponte o script para ele; (3) os números **absolutos** daqui (por exemplo cmd ≤T4 = 77,8%) são do piloto antigo,
+> não comparáveis com rodadas feitas depois da correção; as diferenças pareadas desta rodada continuam valendo para o piloto antigo.
+
+
 `megatron-tyrant-mardu/megatron_goldfish_v1.py` (último commit `22d0ed2`) **não foi editado**: o Power Depot e a instrumentação entram por *monkeypatch* em tempo de execução (`orquestracao/pd_harness.py`).
 A base do harness (sem o Depot na lista) foi comparada com o módulo original, carregado como módulo separado e sem nenhum patch: ver `resumos/bitident.txt`.
 Código desta pasta: o commit que a adiciona (`git log -1 -- megatron-tyrant-mardu/resultados-ab/2026-10-03-power-depot`).

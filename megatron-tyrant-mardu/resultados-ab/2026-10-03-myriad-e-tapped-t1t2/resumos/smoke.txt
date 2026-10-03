@@ -1,0 +1,7 @@
+cartas na biblioteca: 99 | distintas: 84
+desconhecidas (fora do CARD_DB): []
+duplicadas nao-basicas: []
+terrenos: 34 | basicos: {'Mountain': 6, 'Plains': 6, 'Swamp': 6} | Myriad Landscape: 1
+terrenos que entram tapped (ETB_TAPPED_LANDS) presentes na lista: ['Evolving Wilds', 'Myriad Landscape', 'Nomad Outpost', 'Rocky Tar Pit', 'Smoldering Marsh', 'Sunlit Marsh', 'Susur Secundi, Void Altar', 'Terramorphic Expanse']
+flags: True 2 True True
+200 partidas sem excecao | partidas com Myriad ativado: 29

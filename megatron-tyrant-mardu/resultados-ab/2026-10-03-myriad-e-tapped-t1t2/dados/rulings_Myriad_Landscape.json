@@ -1,0 +1,143 @@
+{
+ "card": "Myriad Landscape",
+ "oracle_id": "2549bc57-9ffb-4053-9f10-f2a5f792b845",
+ "rulings": [
+  {
+   "object": "ruling",
+   "oracle_id": "2549bc57-9ffb-4053-9f10-f2a5f792b845",
+   "source": "wotc",
+   "published_at": "2018-03-16",
+   "comment": "You can choose to find one basic land card with Myriad Landscape's last ability."
+  }
+ ],
+ "oracle_raw": {
+  "object": "card",
+  "id": "a0e2098f-1d94-491a-a7e9-a45a9f69e3a8",
+  "oracle_id": "2549bc57-9ffb-4053-9f10-f2a5f792b845",
+  "multiverse_ids": [],
+  "resource_id": "C462C5EC0B87B10652F9E1744445C555B5327D3D44274276AD66C69521C27D00",
+  "mtgo_id": 142475,
+  "tcgplayer_id": 642066,
+  "cardmarket_id": 834142,
+  "name": "Myriad Landscape",
+  "lang": "en",
+  "released_at": "2025-08-01",
+  "uri": "https://api.scryfall.com/cards/a0e2098f-1d94-491a-a7e9-a45a9f69e3a8",
+  "scryfall_uri": "https://scryfall.com/card/eoc/169/myriad-landscape?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T01:26:49Z",
+  "image_uris": {
+   "small": "https://cards.scryfall.io/small/front/a/0/a0e2098f-1d94-491a-a7e9-a45a9f69e3a8.jpg?1783906009",
+   "normal": "https://cards.scryfall.io/normal/front/a/0/a0e2098f-1d94-491a-a7e9-a45a9f69e3a8.jpg?1783906009",
+   "large": "https://cards.scryfall.io/large/front/a/0/a0e2098f-1d94-491a-a7e9-a45a9f69e3a8.jpg?1783906009",
+   "png": "https://cards.scryfall.io/png/front/a/0/a0e2098f-1d94-491a-a7e9-a45a9f69e3a8.png?1783906009",
+   "art_crop": "https://cards.scryfall.io/art_crop/front/a/0/a0e2098f-1d94-491a-a7e9-a45a9f69e3a8.jpg?1783906009",
+   "border_crop": "https://cards.scryfall.io/border_crop/front/a/0/a0e2098f-1d94-491a-a7e9-a45a9f69e3a8.jpg?1783906009",
+   "thumb": "https://cards.scryfall.io/thumb/front/a/0/a0e2098f-1d94-491a-a7e9-a45a9f69e3a8.webp?1783906009",
+   "grid": "https://cards.scryfall.io/grid/front/a/0/a0e2098f-1d94-491a-a7e9-a45a9f69e3a8.webp?1783906009",
+   "display": "https://cards.scryfall.io/display/front/a/0/a0e2098f-1d94-491a-a7e9-a45a9f69e3a8.webp?1783906009",
+   "art": "https://cards.scryfall.io/art/front/a/0/a0e2098f-1d94-491a-a7e9-a45a9f69e3a8.webp?1783906009",
+   "crop": "https://cards.scryfall.io/crop/front/a/0/a0e2098f-1d94-491a-a7e9-a45a9f69e3a8.webp?1783906009"
+  },
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "This land enters tapped.\n{T}: Add {C}.\n{2}, {T}, Sacrifice this land: Search your library for up to two basic land cards that share a land type, put them onto the battlefield tapped, then shuffle.",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [],
+  "produced_mana": [
+   "C"
+  ],
+  "legalities": {
+   "standard": "not_legal",
+   "future": "not_legal",
+   "historic": "not_legal",
+   "timeless": "not_legal",
+   "gladiator": "not_legal",
+   "pioneer": "not_legal",
+   "modern": "not_legal",
+   "legacy": "legal",
+   "pauper": "not_legal",
+   "vintage": "legal",
+   "penny": "not_legal",
+   "commander": "legal",
+   "oathbreaker": "legal",
+   "standardbrawl": "not_legal",
+   "brawl": "not_legal",
+   "competitivebrawl": "not_legal",
+   "alchemy": "not_legal",
+   "paupercommander": "not_legal",
+   "duel": "legal",
+   "oldschool": "not_legal",
+   "premodern": "not_legal",
+   "predh": "not_legal",
+   "tlr": "legal"
+  },
+  "games": [
+   "paper",
+   "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+   "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "b6ec8c6b-b4e6-4cb4-84d6-06234ace3b44",
+  "set": "eoc",
+  "set_name": "Edge of Eternities Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/b6ec8c6b-b4e6-4cb4-84d6-06234ace3b44",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aeoc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/eoc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a0e2098f-1d94-491a-a7e9-a45a9f69e3a8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2549bc57-9ffb-4053-9f10-f2a5f792b845&unique=prints",
+  "collector_number": "169",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Richard Wright",
+  "artist_ids": [
+   "7b1b0ce9-2c58-4321-a2a7-cdc94feae082"
+  ],
+  "illustration_id": "7e690845-0e99-4e38-a642-f312e2dd8612",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 31,
+  "preview": {
+   "source": "The Command Zone",
+   "source_uri": "https://www.youtube.com/watch?v=HxXLWC_JRdM",
+   "previewed_at": "2025-07-09"
+  },
+  "prices": {
+   "usd": "0.28",
+   "usd_foil": null,
+   "usd_etched": null,
+   "eur": "0.26",
+   "eur_foil": null,
+   "tix": "0.12"
+  },
+  "related_uris": {
+   "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMyriad%2BLandscape",
+   "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMyriad%2BLandscape",
+   "edhrec": "https://edhrec.com/route/?cc=Myriad+Landscape"
+  },
+  "purchase_uris": {
+   "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F642066%3Fpage%3D1",
+   "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=834142&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+   "cardhoarder": "https://www.cardhoarder.com/cards/142475?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+ }
+}

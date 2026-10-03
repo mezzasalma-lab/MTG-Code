@@ -1,9 +1,55 @@
 # Goldfish Log — Megatron, Tyrant
 
+> **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: Myriad Landscape e terreno tapped em T1/T2 (2026-10-03):** [`resultados-ab/2026-10-03-myriad-e-tapped-t1t2/LEIAME.md`](resultados-ab/2026-10-03-myriad-e-tapped-t1t2/LEIAME.md) — brutos `.json.xz` por partida, código antes/depois, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
 > **Dados brutos e como reproduzir as tabelas da seção Inevitable Defeat (2026-10-03):** [`resultados-ab/2026-10-03-inevitable-defeat/LEIAME.md`](resultados-ab/2026-10-03-inevitable-defeat/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
 > **Dados brutos e como reproduzir as tabelas da seção Power Depot (2026-10-03):** [`resultados-ab/2026-10-03-power-depot/LEIAME.md`](resultados-ab/2026-10-03-power-depot/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
+
+---
+
+## Correção do simulador: Myriad Landscape e terreno tapped em T1/T2 — 2026-10-03
+
+**Pedido:** *"Quero que vc corrija o Myriad Landscape e o terreno tapped em T1 e T2 no simulador do Megatron"* (os dois gaps que eu tinha registrado como achados laterais na avaliação do Power Depot).
+**Veredito:** os dois estão corrigidos em `megatron_goldfish_v1.py`. Efeito no goldfish (N=10.000 pareado, sementes 3.000.000+i, 8 turnos): comandante conjurado até o T3 **31,3% → 35,6%** (+4,26 ±0,45pp), até o T4 **77,8% → 81,3%** (+3,53 ±0,39pp), "nunca em T8" 4,1% → 3,8% (−0,32 ±0,13pp), win +1,25 ±0,28pp, dano médio 83,40 → 86,72. **Atenção:** a base do simulador mudou. Os números absolutos de rodadas anteriores (Power Depot, Inevitable Defeat, Kingpin etc.) foram medidos no piloto antigo; as comparações pareadas *dentro* de cada rodada continuam válidas, comparar números absolutos *entre* rodadas, não.
+
+### O que mudou no código
+1. **Myriad Landscape, 3ª habilidade** (`try_myriad_landscape`). Oráculo lido ao vivo: *This land enters tapped. {T}: Add {C}. {2}, {T}, Sacrifice this land: Search your library for up to two basic land cards that share a land type, put them onto the battlefield tapped, then shuffle.* Ruling (1, 2018-03-16): pode achar só um básico. Antes só as duas primeiras cláusulas existiam. Agora: custo {2}+{T}, sacrifício pelo `sacrifice()` central, até 2 básicos **do mesmo tipo** (o par rende +1 terreno líquido e +2 fontes de UMA cor, não fixa as três), embaralha de verdade.
+2. **Terreno tapped em T1/T2** (`choose_land_to_play`). Em T1 e T2, com um terreno tapped e um untapped na mão, joga o tapped, **a não ser** que o tapped faça perder uma jogada de desenvolvimento (rock ou permanente castável só com o untapped; por exemplo Sol Ring em T1, Mind Stone em T2). O teste é uma simulação a seco do `main_phase`, e **só permanentes contam** (Swords/Path sem alvo no goldfish e Faithless Looting não seguram um terreno tapped).
+
+### Decisões de piloto (convenções minhas, não do oráculo; ficam documentadas no `.py`)
+- O Myriad só é ativado com mana que **sobraria** (≥3: {2} + o {C} do próprio Myriad), nunca no lugar de conjurar, **depois da 2ª main phase e antes do end step**. Os dois básicos entram tapped e desviram no próximo untap: custo de tempo zero. Antes do end step porque o "descended" do Brass's Tunnel-Grinder conta o Myriad sacrificado (teste em `play_turn` completo).
+- Tipo buscado: o de maior déficit de fonte (cor que o comandante ainda exige ou maior pip de carta da mão), depois o que traz 2 em vez de 1.
+- A janela do tapped é **T1/T2, como pedido**. Medi também até T4 (sensibilidade): **+6,94pp no T3 e +5,36pp no T4** (contra +4,26 e +3,53). Subir é só mudar `TAPPED_LAND_FIRST_MAX_TURN`; **não mudei sem você decidir**.
+
+### Medição (apoio; N=10.000 sementes 3.000.000+i, pareado; base = simulador antes, commit 22d0ed2)
+Base: cmd ≤T3 31,3% · ≤T4 77,8% · ≤T5 88,8% · nunca 4,1% · win 83,8% · dano 83,40 · mana de flip 70,25 · mana no main phase T2/T3/T4 = 1,943 / 3,300 / 4,273. Diferença pareada (variante − base), IC95%:
+
+| variante | cmd ≤T3 (pp) | cmd ≤T4 (pp) | cmd ≤T5 (pp) | nunca T8 (pp) | win (pp) | dano | mana T2 / T3 / T4 | terrenos no fim |
+|---|---|---|---|---|---|---|---|---|
+| só terreno tapped T1/T2 | +4,25 ±0,45 | +3,31 ±0,38 | +0,02 ±0,07 | +0,00 ±0,04 | +0,72 ±0,22 | +2,73 ±0,45 | +0,09 / +0,10 / +0,04 | +0,01 |
+| só Myriad (habilidade) | +0,00 | +0,04 ±0,04 | +0,15 ±0,08 | −0,34 ±0,12 | +0,31 ±0,16 | +0,56 ±0,20 | 0 / 0 / 0 | +0,15 ±0,01 |
+| **as duas (o que ficou)** | **+4,26 ±0,45** | **+3,53 ±0,39** | +0,35 ±0,13 | −0,32 ±0,13 | **+1,25 ±0,28** | **+3,32 ±0,49** | +0,09 / +0,10 / +0,04 | +0,16 |
+| sensibilidade: política cega (sempre o tapped) | +1,36 ±0,51 | +4,75 ±0,43 | +0,02 ±0,07 | +0,00 ±0,04 | +0,75 ±0,24 | +1,70 ±0,38 | **−0,13** / +0,12 / +0,10 | +0,01 |
+| sensibilidade: tapped até o T4 (+Myriad) | +6,94 ±0,55 | +5,36 ±0,48 | +0,32 ±0,14 | −0,33 ±0,13 | +1,41 ±0,30 | +4,27 ±0,60 | +0,09 / +0,10 / +0,01 | +0,16 |
+
+**Leitura (medido):** (a) o ganho do terreno vem de mana: **+0,09 e +0,10 de mana no T2 e T3**, o que coloca o comandante antes. (b) O Myriad é ativado em **15,4%** das partidas e dá **+0,15 terreno** por partida, exatamente o esperado (+1 terreno líquido × 15,4%); o efeito é pequeno e aparece em "nunca conjurado" (−0,34pp) e no win, não no T3/T4. (c) A política cega (sempre o tapped) tem **−0,13 de mana no T2**, porque perde Sol Ring/Mind Stone, e ganha menos no T3 (+1,36 contra +4,25pp); o teste de jogada perdida é o que um jogador faria. **Raciocínio (não medido diretamente):** a política cega ganha mais no T4 (+4,75 contra +3,31pp) porque, quando o piloto fica com o untapped por causa de um rock, o tapped é empurrado para o T3/T4, onde o piloto original o joga pela ordem de cor e pode custar o turno do Megatron; a sensibilidade "até o T4" (que resolve isso e mantém o teste) é consistente com a explicação, mas não a prova.
+**Lote de 2.000 (sementes 1.000.000+i, as do `run_batch`)** e **modo resiliência (2.000)** mostram a mesma direção (`resumos/ab_2000.txt`, `resumos/ab_2000_resiliencia.txt`): ambas = +3,95/+3,85pp (T3/T4) no goldfish e +3,60/+3,75pp na resiliência; win +1,95 e +2,35pp.
+
+### Validação (Regra #1) — tudo arquivado em `resultados-ab/2026-10-03-myriad-e-tapped-t1t2/`
+- **Smoke:** 99 cartas na biblioteca, 84 distintas, 0 desconhecidas, 0 duplicadas não básicas, 34 terrenos (6 Mountain/6 Plains/6 Swamp, 1 Myriad).
+- **Bit-identidade com as duas correções desligadas:** 20.000/20.000 partidas idênticas ao commit 22d0ed2 no modo padrão e 20.000/20.000 na resiliência (impressão digital do estado final inteiro).
+- **Verificação cruzada independente:** a política cega reproduz o `early_all` do harness do Power Depot (outro código, por monkeypatch) em 10.000/10.000 partidas, 12 campos por partida.
+- **Regressão:** 140.000 partidas (7 configurações/modos × 20.000), **0 exceções**, **0 violações de conservação** (Plains/Swamp/Mountain/Myriad somam sempre 6/6/6/1 entre as zonas).
+- **Testes dirigidos:** 49/49, incluindo: Myriad ativa só com remaining ≥3, nunca no turno em que entrou, tipo certo pela cor que falta, só 1 básico na biblioteca (ruling), sem básico = não sacrifica, shuffle real, `rng` nulo; `play_turn` completo (Regra #6: o Myriad conta como "descended" do Tunnel-Grinder; os básicos rendem mana no turno seguinte); T1/T2: Sol Ring em T1 e Mind Stone em T2 seguram o untapped, Swords/Path/Looting não, Sol Ring + Mind Stone em T2 deixam o tapped (o Sol Ring libera a mana do Mind Stone), T3 volta ao piloto original; a simulação a seco não altera o estado.
+
+### Achados laterais (não corrigidos, Regra #1)
+- **O London Mulligan do simulador põe as cartas devolvidas no TOPO da biblioteca** (`library.insert(0, worst)`; `draw_cards` tira do índice 0), então a carta "ao fundo" é a próxima compra. Demonstrado em runtime (`resumos/mulligan_topo.txt`); afeta as **21,4%** das mãos com 2+ mulligans. Não mexi: está fora do pedido e muda a base de tudo.
+- **As fetches (Evolving Wilds, Terramorphic Expanse, Rocky Tar Pit) seguem simplificadas** como fonte fixa já em campo, sem sacrifício, busca nem embaralhamento. É modelável com o mesmo mecanismo do Myriad; não foi feito.
+
+### O que NÃO foi verificado (Regra #7)
+Só as classes terreno/mana/cor, biblioteca/embaralhar, ordem de fases e "carta no cemitério = permanente" foram varridas; não houve auditoria carta a carta do `.py` inteiro. A política "Myriad só com mana que sobraria" e "tapped sempre que não custar jogada" em T3+ (além da sensibilidade até T4) não foram medidas como alternativas.
 
 ---
 
@@ -61,8 +107,8 @@ Linhas omitidas por serem terrenos que o dono explicitou manter ou cuja habilida
 - Efeito contra oponentes reais (remoção de terreno-artefato, Vandalblast/hate de artefato batendo no Depot): estrutural, não medido.
 
 ### Achados laterais do simulador (não corrigidos nesta rodada)
-- **O piloto original não joga terreno tapped no T1/T2.** Com `early_all` (na base inteira, sem Depot) o comandante conjurado até T4 sobe de **77,8% para 82,6%** e o dano médio de **83,4 para 85,1**. É limite do simulador, não do deck: um jogador joga o tapped quando não há jogada.
-- **A habilidade do Myriad Landscape não é modelada** (e as fetches são simplificadas): Regra #1, gap a corrigir.
+- **[Corrigido ainda em 2026-10-03: ver a seção acima.]** **O piloto original não joga terreno tapped no T1/T2.** Com `early_all` (na base inteira, sem Depot) o comandante conjurado até T4 sobe de **77,8% para 82,6%** e o dano médio de **83,4 para 85,1**. É limite do simulador, não do deck: um jogador joga o tapped quando não há jogada.
+- **[Myriad corrigido ainda em 2026-10-03: ver a seção acima; as fetches seguem simplificadas.]** **A habilidade do Myriad Landscape não é modelada** (e as fetches são simplificadas): Regra #1, gap a corrigir.
 
 **Escopo verificado nesta rodada:** oráculo + 4 rulings do Depot e rulings de Megatron/Pia's Revolution/Scrap Trawler/Goblin Welder/Warstorm Surge; enumeração por script das 85 entradas distintas de `lista.md` (artefatos com pip colorido, leitores de "artifact", artefatos-criatura, terrenos, habilidades de artefato com mana colorido); Spellbook antes/depois em 19 trocas de terreno + 2 controles positivos; A/B pareado de 21 trocas (19 terrenos + 2 rocks de controle) em 5 políticas de jogada e 2 regras de cor; bit-identidade do harness contra o simulador original sem patch (300/300 em 123 campos, nas 3 políticas que não alteram a base); tabelas refeitas dos `.json.xz` byte a byte (8/8).
 **Não verificado:** oponente real; Modular, Pia's Revolution, Ultron e saídas de sacrifício com o Depot na linha deliberada; o Depot como fonte de mana para habilidades de artefato (nenhuma da lista precisa); sequenciamento humano de terrenos além de "tapped primeiro no T1/T2"; auditoria carta-a-carta do `.py` (a carta não está na lista).

@@ -1,5 +1,48 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Myriad Landscape e terreno tapped em T1/T2 (correção do simulador) — oráculo, rulings e cláusulas — 2026-10-03
+
+Pedido: *"Quero que vc corrija o Myriad Landscape e o terreno tapped em T1 e T2 no simulador do Megatron"*. Código: `megatron_goldfish_v1.py` (antes = commit `22d0ed2`). Tudo que sustenta a conclusão está em
+`resultados-ab/2026-10-03-myriad-e-tapped-t1t2/` (LEIAME com o mapa arquivo → comando). Oráculo e rulings lidos **ao vivo** no Scryfall (2026-10-03) **antes** de escrever o código (Regra #3); resposta bruta em
+`resultados-ab/2026-10-03-myriad-e-tapped-t1t2/dados/rulings_Myriad_Landscape.json`; a carta já estava em `scryfall-cache/oracle-cache.json`.
+
+**Oráculo (Myriad Landscape, impressão consultada: Edge of Eternities Commander, eoc, 2025-08-01; legal em Commander):** Land. *This land enters tapped. {T}: Add {C}. {2}, {T}, Sacrifice this land: Search your library for up to two basic land cards that share a land type, put them onto the battlefield tapped, then shuffle.*
+**Ruling (1, 2018-03-16):** *You can choose to find one basic land card with Myriad Landscape's last ability.*
+
+| Cláusula do oráculo | Status | Onde / como |
+|---|---|---|
+| "Land" | ✅ | `LAND_NAMES` |
+| "This land enters tapped." | ✅ | `ETB_TAPPED_LANDS` + `land_enters_tapped()` (fonte única da regra de "entra tapped", usada por `play_land`, pela escolha do terreno e pela simulação a seco) |
+| "{T}: Add {C}." | ✅ | conta 1 mana genérica em `total_mana` e **não** é fonte de W/B/R (`produces=set()`: {C} não é cor) |
+| "{2}, {T}, Sacrifice this land: …" (custo) | 🐛 corrigido | `try_myriad_landscape`: paga {2} e o {T} (o próprio {C} fica indisponível: gasta 3 de mana no modelo fungível); não ativa no turno em que entrou (entra tapped, não paga o {T}) |
+| "… Sacrifice this land" | 🐛 corrigido | `sacrifice()` central: vai ao cemitério (conta como permanente em `count_permanent_cards`: "descended" do Brass's Tunnel-Grinder) |
+| "Search your library for up to two basic land cards that share a land type" | 🐛 corrigido | até 2 do **mesmo** tipo (Plains, Swamp ou Mountain: +2 fontes de UMA cor, +1 terreno líquido), removidos de `state.library`; "up to": com 1 só no grimório, busca 1 (ruling); sem nenhum, não ativa |
+| "put them onto the battlefield tapped" | ✅ por posição de fase | a ativação fica depois da 2ª main phase: os básicos entram tapped e desviram no próximo untap (`play_turn` reinicia o turno); teste M14 confirma que rendem mana no turno seguinte |
+| "then shuffle" | 🐛 corrigido | `state.rng.shuffle(state.library)` (sem `rng`, não embaralha) |
+| Ruling 2018-03-16 | ✅ | teste M5 |
+
+**Convenções do piloto (não são oráculo):** só ativa com mana que sobraria (remaining ≥3), nunca no lugar de conjurar; escolhe o tipo de maior déficit de fonte (cor que o comandante ainda exige ou maior pip de uma carta da mão), depois 2 em vez de 1, depois o de menos fontes.
+Ativar antes de conjurar (acelerar o turno seguinte) ou no fim do turno do oponente **não** foi modelado nem medido; em mana é equivalente ao fim do meu turno, e só o Tunnel-Grinder (que checa "descended" no meu end step) distingue.
+
+**Terreno tapped em T1/T2 (comportamento do piloto):** `choose_land_to_play`. Em T1..T`TAPPED_LAND_FIRST_MAX_TURN` (=2, como pedido), com um terreno tapped e um untapped na mão, joga o tapped, **salvo** se o tapped fizer perder uma jogada de desenvolvimento
+(simulação a seco `dry_run_mana_spent`: comandante primeiro, depois rocks e o resto pela ordem do `main_phase`, o rock conjurado soma mana aos casts seguintes; **só permanentes contam**: Swords/Path/Vandalblast sem alvo no goldfish e Faithless Looting não seguram um terreno tapped).
+**Conferência da regra "entra tapped" contra o oráculo ao vivo (cache) dos 16 não-básicos da lista:** Myriad Landscape, Nomad Outpost, Rocky Tar Pit, Susur Secundi, Smoldering Marsh (se <2 básicos), Sunlit Marsh entram tapped no oráculo e estão em `ETB_TAPPED_LANDS`;
+Badlands, Command Tower, Exotic/Forbidden Orchard, Fountainport, Plateau, Scrubland, Shadowblood Ridge entram untapped e não estão. **Evolving Wilds e Terramorphic Expanse** entram untapped no oráculo, mas estão no conjunto de propósito: o simulador as trata como fetch simplificada
+(terreno que não dá mana no turno em que entra e vira fonte W/B/R no seguinte), que em mana é exatamente o efeito de "joga e sacrifica na hora, o básico entra tapped".
+
+**Regra #3 (conceito compartilhado "terreno que entrou tapped"):** grep de `tapped_land_this_turn` no `.py` final: definição no `GameState`; `total_mana` (desconta 1 terreno); `color_sources` (exclui a fonte); `choose_land_to_play`/`dry_run_mana_spent` (só na cópia rasa);
+`play_land` (grava); `try_myriad_landscape` (guarda: não ativa no turno em que o Myriad entrou); `play_turn` (zera). O campo guarda **um** terreno por turno; a nova habilidade nunca precisa de mais de um porque os básicos entram no fim do turno. `LAND_NAMES`/`ETB_TAPPED_LANDS`: 14 usos conferidos.
+**Regra #6 (ordem de fases):** `play_turn` = `draw → try_bahamut_saga_tick → play_land → main_phase → try_equip_haste → combat_step → megatron_postcombat → main_phase → try_myriad_landscape → end_step`. A chamada nova fica **depois** de toda a mana do turno (a mana do Myriad nunca disputa um cast)
+e **antes** do `end_step` (o gatilho do Tunnel-Grinder lá checa "descended"). Teste M13, em `play_turn` completo, confirma o contador sobe com a habilidade ligada e não sobe desligada (uma 1ª versão do teste falhou porque o flip do Megatron sacrificava o Tunnel-Grinder como combustível: erro do teste, não do código).
+
+**Validação:** smoke (99 cartas, 0 desconhecidas/duplicadas, 34 terrenos); bit-identidade com as duas correções desligadas, 20.000+20.000 partidas (padrão e resiliência); verificação cruzada da política cega contra o `early_all` do Power Depot (outro código), 10.000/10.000 partidas;
+regressão 140.000 partidas, 0 exceções, 0 violações de conservação de cartas; 49 testes dirigidos 49/49; A/B pareado N=2.000 (padrão e resiliência) e N=10.000 com a métrica nova se movendo no sentido esperado (mana T2/T3 +0,09/+0,10; terrenos +0,15 com 15,4% de ativações = esperado). Números no `goldfish-log.md`.
+
+**Achados laterais (não corrigidos):** (1) o London Mulligan põe as cartas devolvidas no **topo** da biblioteca (`library.insert(0, worst)`), 21,4% das mãos (2+ mulligans; `resumos/mulligan_topo.txt`); (2) **fetches** (Evolving Wilds, Terramorphic Expanse, Rocky Tar Pit) seguem como fonte fixa, sem sacrifício/busca/embaralhamento: modelável, não é 📊, fica como pendência da Regra #1.
+
+**Classes da taxonomia da Regra #1 varridas (e só elas):** habilidade ativada com custo de mana + {T} + sacrifício (Myriad), busca sem a restrição de tipo real (par que compartilha tipo, "up to two"), conceito compartilhado (terreno tapped, carta no cemitério = permanente), ordem de fases (Regra #6), custo real deduzido (3 de mana).
+**Não varridas:** as demais 15 classes e as outras cartas do `.py` (esta rodada não foi uma auditoria carta a carta).
+
 ## Power Depot (candidata, implementada só no harness) — oráculo, rulings e cláusulas — 2026-10-03
 
 A carta **não está na lista**; foi acrescentada em tempo de execução por `resultados-ab/2026-10-03-power-depot/orquestracao/pd_harness.py`
@@ -35,6 +78,7 @@ O Depot como combustível do Megatron renderia 0 de dano (MV 0): fora de propós
 **Regra #6 (ordem de fases):** `play_turn` = `draw → try_bahamut_saga_tick → play_land → main_phase → try_equip_haste → combat_step → megatron_postcombat → main_phase → end_step`; o terreno é jogado antes do 1º main, então um Depot
 jogado no turno N só paga mana de N+1 em diante (tapped), e a fixação para o comandante vale a partir do N+1.
 
+**[Atualização 2026-10-03, mesma data, depois: (a) Myriad Landscape e (b) terreno tapped em T1/T2 foram corrigidos; as fetches seguem simplificadas. Ver a seção "Myriad Landscape e terreno tapped em T1/T2" no topo deste arquivo.]**
 **Achado lateral do simulador (não corrigido nesta rodada, Regra #1):** (a) a **habilidade do Myriad Landscape** ({2},{T}, sacrifique: busca até dois básicos para o campo, tapped) **não é modelada**: o `.py` o trata como "terreno tapped que dá {C}" (`produces=set()`); o mesmo vale pelas fetches (Evolving Wilds, Terramorphic Expanse, Rocky Tar Pit), modeladas como fonte fixa W/B/R já em campo. Comparar o Depot contra esses slots **favorece o Depot**.
 (b) o piloto original joga terrenos por cor faltante e, em empate, pela ordem da mão: **não joga terreno tapped no T1/T2** como um jogador faria. Com a política deliberada `early_all` (qualquer terreno tapped primeiro no T1/T2, na base e nas variantes) o comandante conjurado até T4 sobe de 77,8% para 82,6% e o dano médio de 83,4 para 85,1 (N=10.000, mesmas sementes): é um piso do simulador, não um limite do deck.
 

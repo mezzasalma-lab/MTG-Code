@@ -48,13 +48,6 @@ Simplificacoes documentadas (nao inventadas -- omissoes explicitas):
 - Efeitos "target opponent"/"each opponent" sempre multiplicados por
   NUM_OPPONENTS quando o oraculo diz "each opponent"; mantidos como
   valor unico quando diz "target opponent" (so' 1 oponente).
-- Piloto de terrenos (2026-10-03): em T1/T2 joga o terreno que entra
-  tapped quando isso nao custa uma jogada de desenvolvimento (rock/
-  permanente castavel so' com o untapped) -- `choose_land_to_play`.
-  Myriad Landscape ({2},{T}, sacrifice: ate' 2 basicos do mesmo tipo,
-  tapped, shuffle) so' e' ativado com mana que sobraria, depois da 2a
-  main phase -- `try_myriad_landscape`. Convencoes do piloto, nao do
-  oraculo; ver `resultados-ab/2026-10-03-myriad-e-tapped-t1t2/LEIAME.md`.
 - Remocao/interacao sem alvo real de oponente (Path to Exile, Swords to
   Plowshares, Chaos Warp, Vandalblast) conjurada quando ha mana sobrando
   e conta como interaction_spells_cast, mesma convencao de toda a sessao.
@@ -64,7 +57,6 @@ from __future__ import annotations
 from collections import Counter
 from dataclasses import dataclass, field
 from typing import Optional
-import copy
 import random
 
 # ---------------------------------------------------------------------------
@@ -312,7 +304,7 @@ add("Terramorphic Expanse", 0, "land", set(), produces={"W", "B", "R"})
 add("Rocky Tar Pit", 0, "land", set(), produces={"B", "R"})
 add("Nomad Outpost", 0, "land", set(), produces={"W", "B", "R"})
 add("Sunlit Marsh", 0, "land", set(), produces={"W", "B"})
-add("Myriad Landscape", 0, "land", set(), produces=set())  # {T}: Add {C} (colorless). A 3a habilidade ({2},{T}, sacrifice: 2 basicos que compartilham tipo, tapped, shuffle) e' `try_myriad_landscape` -- corrigido 2026-10-03, antes ficava sem modelo
+add("Myriad Landscape", 0, "land", set(), produces=set())  # so' rampa incolor no modelo simplificado
 add("Shadowblood Ridge", 0, "land", set(), produces={"B", "R"})  # untapped real (custo extra de {1} pras 2 cores juntas nao rastreado, mesma convencao do arquivo)
 
 LAND_NAMES = {n for n, c in CARD_DB.items() if c.ctype == "land"}
@@ -321,17 +313,6 @@ ETB_TAPPED_LANDS = {
     "Evolving Wilds", "Terramorphic Expanse", "Rocky Tar Pit", "Nomad Outpost",
     "Sunlit Marsh", "Myriad Landscape",  # todos sempre tapped no oraculo real
 }
-
-# Correcao 2026-10-03 (pedido do usuario: "corrija o Myriad Landscape e o
-# terreno tapped em T1 e T2 no simulador do Megatron"). As duas chaves
-# existem pra isolar cada correcao no A/B; com as DUAS em False o arquivo
-# se comporta bit-a-bit como o de antes (commit 22d0ed2), que e' o teste
-# de regressao de bit-identidade.
-TAPPED_LAND_FIRST_ENABLED = True
-TAPPED_LAND_FIRST_MAX_TURN = 2   # "T1 e T2" -- ate' que turno o piloto prefere o terreno tapped
-TAPPED_LAND_FIRST_SKIP_IF_LOSES_PLAY = True  # False = politica "cega" (sempre o tapped), so' pra sensibilidade/verificacao cruzada
-MYRIAD_ABILITY_ENABLED = True
-MYRIAD_BASIC_FOR_COLOR = {"W": "Plains", "B": "Swamp", "R": "Mountain"}  # os 3 basicos da lista (singleton nao se aplica a basico)
 
 
 def is_creature_card(name: str) -> bool:
@@ -527,10 +508,6 @@ class GameState:
     megatron_alone_combos_total: int = 0
     demonic_junker_crewed_this_turn: bool = False
     demonic_junker_crews_total: int = 0
-    myriad_activations_total: int = 0
-    myriad_basics_fetched_total: int = 0
-    tapped_land_first_plays_total: int = 0  # vezes em que o piloto escolheu o terreno tapped (T<=MAX_TURN) tendo um untapped na mao
-    tapped_land_skipped_for_play_total: int = 0  # vezes em que ficou com o untapped porque o tapped custaria uma jogada real
 
 
 def draw_cards(state: GameState, n: int):
@@ -2467,82 +2444,13 @@ def cast_card(state: GameState, name: str):
         artifact_etb_hooks(state, name)
 
 
-def land_enters_tapped(state: GameState, name: str) -> bool:
-    """Fonte unica da regra de 'enters tapped' dos terrenos da lista.
-    Smoldering Marsh so' entra tapped com MENOS de 2 basicos em campo
-    (oraculo: 'unless you control two or more basic lands'); os demais de
-    ETB_TAPPED_LANDS entram sempre tapped no oraculo real."""
-    if name not in ETB_TAPPED_LANDS:
-        return False
-    if name == "Smoldering Marsh":
-        basics_in_play = sum(1 for n in state.battlefield if n in ("Mountain", "Plains", "Swamp"))
-        return basics_in_play < 2
-    return True
+def play_land(state: GameState):
+    if state.lands_played_this_turn >= 1:
+        return
+    lands_in_hand = [n for n in state.hand if n in LAND_NAMES]
+    if not lands_in_hand:
+        return
 
-
-def dry_run_mana_spent(state: GameState, land: str) -> int:
-    """Quanta mana de DESENVOLVIMENTO o `main_phase` gastaria NESTE turno
-    se `land` fosse o terreno jogado -- simulacao a seco, sem mutar
-    `state` (copia rasa; so' `battlefield` e `hand` sao recriadas). Segue
-    a ordem do `main_phase`: comandante primeiro, depois o loop de
-    castables (rocks primeiro, depois menor custo efetivo), com o rock
-    conjurado ja' somando mana pros casts seguintes (Sol Ring {1} -> +2
-    pra um 2-drop no mesmo turno).
-
-    So' PERMANENTES contam (instant/sorcery ficam de fora): num goldfish
-    nao ha' alvo pra Swords/Path/Vandalblast em T1/T2 (o `main_phase` as
-    lanca como metrica proxy de interacao) e um jogador de verdade nao
-    deixaria de jogar o terreno tapped pra gastar mana nisso -- nem num
-    Faithless Looting. A jogada que o terreno tapped 'perderia' e' rock
-    ou corpo/artefato em campo. Efeitos de ETB de nao-rocks (Treasure
-    etc.) nao entram: so' o gasto de mana de cast. Usado so' pra decidir
-    entre terreno tapped e untapped em T1/T2 -- nunca altera o jogo."""
-    sim = copy.copy(state)
-    sim.battlefield = state.battlefield + [land]
-    hand = list(state.hand)
-    hand.remove(land)
-    sim.hand = hand
-    if land_enters_tapped(state, land):
-        sim.tapped_land_this_turn = land
-    spent = 0
-    if not sim.commander_in_play:
-        tax = 2 * sim.commander_cast_count
-        for cost in (MEGATRON_VEHICLE_COST + tax, MEGATRON_TYRANT_COST + tax):
-            if remaining_mana(sim) >= cost and has_color_sources_for(sim, COMMANDER):
-                sim.mana_spent_this_turn += cost
-                spent += cost
-                break
-    while True:
-        castables = [n for n in sim.hand if n not in LAND_NAMES and CARD_DB[n].ctype not in ("instant", "sorcery")
-                     and can_cast(sim, n) and n not in NO_SELF_HARM_EXCLUDE]
-        if not castables:
-            break
-        castables.sort(key=lambda n: (0 if (CARD_DB[n].tags & {"rock1", "rock2", "rock3"}) else 1,
-                                      effective_cost(sim, n)))
-        n = castables[0]
-        cost = effective_cost(sim, n)
-        sim.mana_spent_this_turn += cost
-        spent += cost
-        sim.hand.remove(n)
-        if (CARD_DB[n].tags & {"rock1", "rock2", "rock3"}) or n == "Cursed Mirror":
-            sim.battlefield.append(n)
-    return spent
-
-
-def choose_land_to_play(state: GameState, lands_in_hand: list) -> str:
-    """Escolhe o terreno do turno. Ordem base (inalterada desde sempre):
-    quem fixa cor que ainda falta (W/B/R com 0 fontes) vem primeiro.
-
-    Correcao 2026-10-03: em T1..TAPPED_LAND_FIRST_MAX_TURN, havendo um
-    terreno que entra tapped E um que entra untapped na mao, o piloto
-    joga o TAPPED -- o custo de um terreno tapped e' sempre 1 mana num
-    turno qualquer, e o melhor turno pra paga-lo e' aquele em que essa
-    mana seria desperdicada (T1 quase sempre; T2 quando nao ha' jogada de
-    2). Excecao real que um jogador faria: se o tapped fizesse perder
-    uma jogada (Sol Ring em T1, Mind Stone/Arcane Signet em T2 com 2
-    terrenos), joga o untapped. O teste e' `dry_run_mana_spent`: tapped
-    so' perde se gastar MENOS mana de desenvolvimento (permanentes) que o
-    melhor untapped."""
     def missing_score(card):
         score = 0
         for color in "WBR":
@@ -2550,106 +2458,18 @@ def choose_land_to_play(state: GameState, lands_in_hand: list) -> str:
                 score += 1
         return -score
 
-    ordered = sorted(lands_in_hand, key=missing_score)
-    default = ordered[0]
-    if not (TAPPED_LAND_FIRST_ENABLED and state.turn <= TAPPED_LAND_FIRST_MAX_TURN):
-        return default
-    tapped = [n for n in ordered if land_enters_tapped(state, n)]
-    untapped = [n for n in ordered if not land_enters_tapped(state, n)]
-    if not tapped or not untapped:
-        return default
-    if TAPPED_LAND_FIRST_SKIP_IF_LOSES_PLAY and dry_run_mana_spent(state, tapped[0]) < dry_run_mana_spent(state, untapped[0]):
-        state.tapped_land_skipped_for_play_total += 1
-        return untapped[0]
-    state.tapped_land_first_plays_total += 1
-    return tapped[0]
-
-
-def play_land(state: GameState):
-    if state.lands_played_this_turn >= 1:
-        return
-    lands_in_hand = [n for n in state.hand if n in LAND_NAMES]
-    if not lands_in_hand:
-        return
-    choice = choose_land_to_play(state, lands_in_hand)
+    lands_in_hand.sort(key=missing_score)
+    choice = lands_in_hand[0]
     state.hand.remove(choice)
     state.lands_played_this_turn += 1
     state.battlefield.append(choice)
-    if land_enters_tapped(state, choice):
-        state.tapped_land_this_turn = choice
-
-
-def try_myriad_landscape(state: GameState):
-    """Myriad Landscape: '{2}, {T}, Sacrifice this land: Search your
-    library for up to two basic land cards that share a land type, put
-    them onto the battlefield tapped, then shuffle.' Ruling 2018-03-16:
-    'You can choose to find one basic land card.'
-
-    Ate' 2026-10-03 so' o '{T}: Add {C}' estava modelado; a 3a habilidade
-    nao tinha codigo nenhum (Regra #1).
-
-    QUANDO: depois da 2a main phase e ANTES do end step (ver `play_turn`).
-    Convencao do piloto: so' ativa com mana que SOBRARIA (remaining >= 3 =
-    {2} de custo + o proprio {C} do Myriad, que fica tapado pelo {T}) --
-    nunca deixa de conjurar pra ativar. Os 2 basicos entram tapped, mas
-    como e' o fim do meu turno eles desvirando no proximo untap: custo
-    zero de tempo. Antes do end step (e nao no fim do turno do oponente)
-    porque 'descended' do Brass's Tunnel-Grinder ('a permanent card was
-    put into your graveyard from anywhere') conta o Myriad sacrificado, e
-    o gatilho do end step checa isso. Nao ativa no turno em que entrou
-    (entra tapped, nao paga o {T}).
-
-    QUAL TIPO: os 2 basicos tem que compartilhar tipo -> um tipo so'
-    (Plains/Swamp/Mountain), +2 fontes da MESMA cor. Escolhe o tipo com
-    maior deficit de fonte (W/B/R que o comandante ainda precisa, ou o
-    maior numero de pips de uma carta da mao), depois o que traz 2 em vez
-    de 1, depois o de menos fontes. Se so' resta 1 basico daquele tipo,
-    busca 1 ('up to two'). O shuffle e' real (`state.rng.shuffle`): isso
-    tambem re-embaralha as cartas que outras habilidades puseram no fundo
-    da biblioteca (Cosmic Cube) e muda o consumo do rng depois da
-    ativacao -- partidas em que o Myriad nunca e' ativado continuam
-    identicas, bit a bit, ao simulador anterior."""
-    if not MYRIAD_ABILITY_ENABLED:
-        return
-    if "Myriad Landscape" not in state.battlefield:
-        return
-    if state.tapped_land_this_turn == "Myriad Landscape":
-        return
-    if remaining_mana(state) < 3:
-        return
-    in_library = {b: state.library.count(b) for b in MYRIAD_BASIC_FOR_COLOR.values()}
-    options = [(c, b) for c, b in MYRIAD_BASIC_FOR_COLOR.items() if in_library[b] > 0]
-    if not options:
-        return
-
-    wanted = {c: (0 if state.commander_in_play else 1) for c in "WBR"}
-    for n in state.hand:
-        if n in CARD_DB and n not in LAND_NAMES:
-            for c, k in CARD_DB[n].pips.items():
-                if c in wanted:
-                    wanted[c] = max(wanted[c], k)
-
-    def sources_next_turn(color):
-        return sum(1 for n in state.battlefield if n in CARD_DB and color in CARD_DB[n].produces)
-
-    def option_key(opt):
-        color, basic = opt
-        have = sources_next_turn(color)
-        return (max(0, wanted[color] - have), min(2, in_library[basic]), -have)
-
-    _, basic = max(options, key=option_key)
-    spend_mana(state, 3)
-    sacrifice(state, "Myriad Landscape")
-    fetched = 0
-    for _ in range(2):
-        if basic in state.library:
-            state.library.remove(basic)
-            state.battlefield.append(basic)
-            fetched += 1
-    if state.rng is not None:
-        state.rng.shuffle(state.library)
-    state.myriad_activations_total += 1
-    state.myriad_basics_fetched_total += fetched
+    if choice in ETB_TAPPED_LANDS:
+        if choice == "Smoldering Marsh":
+            basics_in_play = sum(1 for n in state.battlefield if n in ("Mountain", "Plains", "Swamp"))
+            if basics_in_play < 2:
+                state.tapped_land_this_turn = choice
+        else:
+            state.tapped_land_this_turn = choice
 
 
 # ---------------------------------------------------------------------------
@@ -2998,7 +2818,6 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     # poder ser gasta nele (ex.: hardcast do BlightSteel Colossus).
     megatron_postcombat(state)
     main_phase(state)
-    try_myriad_landscape(state)
     end_step(state)
 
 
@@ -3555,14 +3374,6 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
           f"| Avg dano de commander acumulado no Megatron: {avg([s.megatron_commander_damage_dealt for s in states]):.2f}")
     print(f"Avg vezes que o Demonic Junker foi crewado (atacou junto com o Megatron): "
           f"{avg([s.demonic_junker_crews_total for s in states]):.2f}")
-    myriad_games = sum(1 for s in states if s.myriad_activations_total > 0)
-    print(f"Myriad Landscape ({{2}},{{T}}, sacrifice: ate' 2 basicos que compartilham tipo, tapped, shuffle): "
-          f"partidas com >=1 ativacao: {100*myriad_games/n:.1f}% | Avg ativacoes: "
-          f"{avg([s.myriad_activations_total for s in states]):.3f} | Avg basicos buscados: "
-          f"{avg([s.myriad_basics_fetched_total for s in states]):.3f}")
-    print(f"Piloto de terrenos em T1/T2 (tapped primeiro): Avg vezes que jogou o TAPPED tendo um untapped na mao: "
-          f"{avg([s.tapped_land_first_plays_total for s in states]):.3f} | Avg vezes que ficou com o untapped "
-          f"pra nao perder jogada: {avg([s.tapped_land_skipped_for_play_total for s in states]):.3f}")
     print(f"Avg vezes que o Megatron atacou SOZINHO de proposito pro combo com Ironsoul Enforcer "
           f"(reanima artefato do cemiterio ANTES do proprio gatilho de ataque, que o usa como fuel): "
           f"{avg([s.megatron_alone_combos_total for s in states]):.2f}")
