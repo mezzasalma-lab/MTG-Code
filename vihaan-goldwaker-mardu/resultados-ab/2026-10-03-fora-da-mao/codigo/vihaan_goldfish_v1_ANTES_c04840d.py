@@ -73,17 +73,6 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas):
   dispara); (c) "4a vez NESTE turno": o contador zera a cada turno de
   oponente e quando ele reentra (objeto novo). Ver
   `resultados-ab/2026-10-03-sephiroth/LEIAME.md`.
-- "Conjurar/jogar de fora da mao" (2026-10-03, 4a rodada, achada ao
-  auditar a partida manual #1): (a) terreno exilado por fonte "play"
-  (Prosper, Inspired Tinkering, Face-Breaker) e' a jogada de terreno + Pact
-  Boon; (b) magia do exilio entra na mesma esteira do cast da mao (resolve,
-  cemiterio, conta como magia) em vez de virar permanente parado; (c)
-  flashback e a magia do Cascade contam como "cast" (Lotho, extort) e o
-  Lotho so' dispara se ja' estava em campo no cast; (d) Captain Lannery
-  Storm: +1/+0 por Treasure sacrificado (poder e "that many" do Cleaver);
-  (e) Sevinne's Reclamation so' escolhe "permanent card" (terreno vale,
-  instantanea/feitico e ela mesma nao). Ver
-  `resultados-ab/2026-10-03-fora-da-mao/LEIAME.md`.
 """
 
 import copy
@@ -356,14 +345,6 @@ SEPHIROTH_EMBLEM_STACKING_ENABLED = True       # emblema + Sephiroth de frente: 
 SEPHIROTH_SIMULTANEOUS_DEATH_ENABLED = True    # wipe: o gatilho dele dispara para as outras que morrem junto, em qualquer ordem (ruling 2025-06-06)
 SEPHIROTH_TURN_BOUNDARY_ENABLED = True         # "4a vez NESTE turno": o contador zera a cada turno de oponente (antes: so' no meu turno)
 
-# Correcoes de "conjurar/jogar de FORA da mao" (2026-10-03, 4a rodada; achadas ao auditar a partida manual #1 do usuario). Com as CINCO em
-# False o arquivo se comporta bit-a-bit como o do commit c04840d.
-IMPULSE_LAND_PLAY_ENABLED = True           # terreno exilado por fonte "play" (Prosper, Inspired Tinkering, Face-Breaker) vira a jogada de terreno + Pact Boon
-IMPULSE_CAST_PIPELINE_ENABLED = True       # magia do exilio entra na MESMA esteira do cast da mao: resolve, vai ao cemiterio, conta como "cast"; Pact Boon ao conjurar
-SPELL_CAST_COUNT_ALL_PATHS_ENABLED = True  # flashback e a magia do Cascade contam como "cast" (Lotho, extort); Lotho so' dispara se ja' estava em campo NO cast
-STORM_SACRIFICE_PUMP_ENABLED = True        # Captain Lannery Storm: +1/+0 ate' o fim do turno por Treasure sacrificado (poder dela e "that many" do Cleaver)
-SEVINNE_PERMANENT_TARGET_ENABLED = True    # Sevinne's Reclamation: alvo = "permanent card" MV<=3 (terreno vale; instantanea/feitico NAO, nem ela mesma)
-
 TREASURE_SOURCE_TAGS = {
     "goldspan", "treasure_attack", "draw_treasure", "sac_draw_treasure",
     "impulse_treasure", "modal_treasure", "etb_treasure", "cascade_treasure",
@@ -448,14 +429,6 @@ class GameState:
     seph_batch_emblems: int = 0          # emblemas existentes quando o lote comecou (emblema novo nao dispara pro lote)
     seph_batch_leaves: bool = False      # o proprio Sephiroth morre neste lote (nao vira)
     sephiroth_extra_triggers_total: int = 0  # gatilhos que o codigo antigo perdia (emblema + frente juntos, ou frente em wipe que o mata)
-    impulse_lands: list = field(default_factory=list)  # terrenos exilados jogaveis por fonte "play" (card, prazo)
-    impulse_lands_played_total: int = 0
-    impulse_spells_cast_total: int = 0   # magias conjuradas do exilio pela esteira de cast
-    lotho_triggers_total: int = 0
-    treasures_sacrificed_this_turn: int = 0
-    storm_sac_baseline: int = 0          # sacrificios ja' feitos quando a Storm entrou (os pagos pra conjura-la nao contam)
-    storm_pump_total: int = 0
-    sevinne_nonpermanent_returns_total: int = 0  # (so' leitura) devolucoes de instantanea/feitico que o codigo antigo fazia
     caretaker_level: int = 1  # Classes sempre entram no nivel 1
 
     # metrics --------------------------------------------------------------
@@ -726,7 +699,6 @@ def sacrifice_treasures(state: GameState, n: int, for_mana: bool = False, as_cre
         return 0
     state.treasures -= n
     state.treasures_sacrificed_total += n
-    state.treasures_sacrificed_this_turn += n
     if for_mana:
         state.treasure_spent_this_turn = True
     if as_creature is None:
@@ -1213,29 +1185,6 @@ def try_phyrexian_reclamation(state: GameState) -> bool:
     return True
 
 
-def _sevinne_return_one(state: GameState) -> bool:
-    """Um resolve de Sevinne's Reclamation: "Return target PERMANENT card with mana value 3 or less from your graveyard to the battlefield."
-    Ruling 2024-06-07: permanent card = artefato, batalha, criatura, encantamento, TERRENO ou planeswalker (instantanea e feitico nao;
-    nem a propria Sevinne's, que ja' esta no cemiterio quando resolve). SEVINNE_PERMANENT_TARGET_ENABLED liga esse filtro; o codigo antigo
-    so' excluia terreno, entao a heuristica "maior MV" devolvia com frequencia a PROPRIA Sevinne's ou um feitico, que ficava parado no
-    campo sem efeito. Terreno devolvido entra tapped se a regra dele manda (nao e' jogada de terreno)."""
-    if SEVINNE_PERMANENT_TARGET_ENABLED:
-        cheap = [n for n in state.graveyard if CARD_DB[n].mv <= 3 and CARD_DB[n].ctype not in ("instant", "sorcery")]
-    else:
-        cheap = [n for n in state.graveyard if CARD_DB[n].mv <= 3 and CARD_DB[n].ctype != "land"]
-    if not cheap:
-        return False
-    best = max(cheap, key=lambda n: CARD_DB[n].mv)
-    state.graveyard.remove(best)
-    if CARD_DB[best].ctype in ("instant", "sorcery"):
-        state.sevinne_nonpermanent_returns_total += 1
-    elif SEVINNE_PERMANENT_TARGET_ENABLED and CARD_DB[best].ctype == "land" and land_enters_tapped(state, best):
-        state.tapped_lands_this_turn.add(best)
-    enter_battlefield(state, best)
-    state.recursion_events_total += 1
-    return True
-
-
 def try_sevinne_flashback(state: GameState) -> bool:
     """Achado real 2026-09-14: 'Flashback {4}{W}' (Scryfall, MV5 - custo
     alternativo pra conjurar do cemiterio, depois exila) 100% ausente -
@@ -1253,14 +1202,14 @@ def try_sevinne_flashback(state: GameState) -> bool:
         return False
     spend_mana(state, 5)
     state.graveyard.remove("Sevinne's Reclamation")
-    if SPELL_CAST_COUNT_ALL_PATHS_ENABLED:
-        _register_nonhand_cast(state)  # flashback = conjurada do cemiterio (Lotho, extort; sem Pact Boon: nao e' exilio)
-        if (state.treasure_spent_this_turn and "Rain of Riches" in state.battlefield
-                and not state.cascade_used_this_turn):
-            do_cascade(state, CARD_DB["Sevinne's Reclamation"].mv)
-            state.cascade_used_this_turn = True
     for _ in range(2):  # original + copia real (a copia nao existiria sem o flashback)
-        _sevinne_return_one(state)
+        cheap = [n for n in state.graveyard if CARD_DB[n].mv <= 3 and CARD_DB[n].ctype != "land"]
+        if not cheap:
+            continue
+        best = max(cheap, key=lambda n: CARD_DB[n].mv)
+        state.graveyard.remove(best)
+        enter_battlefield(state, best)
+        state.recursion_events_total += 1
     state.sevinne_flashback_total += 1
     return True
 
@@ -1281,7 +1230,7 @@ def try_face_breaker_impulse(state: GameState) -> bool:
     if state.treasures <= 0:
         return False
     sacrifice_treasures(state, 1)
-    pull_impulse(state, 1, deadline_turns=0, lands_ok=True)
+    pull_impulse(state, 1, deadline_turns=0)
     state.face_breaker_used_this_turn = True
     state.face_breaker_impulse_total += 1
     return True
@@ -1377,7 +1326,7 @@ def resolve_instant_sorcery(state: GameState, name: str):
         # PROPRIO turno T+2, 1 turno alem do real. deadline_turns=1 e' o
         # valor correto (mesma correcao pro Prosper em end_step, ver
         # abaixo).
-        pull_impulse(state, 3, deadline_turns=1, lands_ok=True)
+        pull_impulse(state, 3, deadline_turns=1)
         create_treasures(state, 3, source=name)
     elif name == "Blood Money":
         real_creatures = [n for n in state.battlefield if is_creature_card(n) and n != COMMANDER]
@@ -1405,7 +1354,12 @@ def resolve_instant_sorcery(state: GameState, name: str):
         if name == "Deadly Derision":
             create_treasures(state, 1, source=name)
     elif name == "Sevinne's Reclamation":
-        _sevinne_return_one(state)
+        cheap = [n for n in state.graveyard if CARD_DB[n].mv <= 3 and CARD_DB[n].ctype != "land"]
+        if cheap:
+            best = max(cheap, key=lambda n: CARD_DB[n].mv)
+            state.graveyard.remove(best)
+            enter_battlefield(state, best)
+            state.recursion_events_total += 1
     elif name == "Back in Town":
         # Achado real 2026-09-14: custo real (Scryfall) e' {X}{2}{B} - X e'
         # de verdade pago em mana, nao gratis/capado arbitrariamente em 2
@@ -1467,45 +1421,14 @@ def _destroy_dragons(state: GameState):
     on_permanent_destroyed(state, n, is_artifact=False, is_creature=True, is_token=True)
 
 
-def pull_impulse(state: GameState, n: int, deadline_turns: int, lands_ok: bool = False):
-    """`lands_ok`: a fonte diz "play" (Prosper, Inspired Tinkering, Face-Breaker) e nao "cast" (Grenzo, Laughing Jasper Flint): so' nela
-    um terreno exilado pode ser jogado (IMPULSE_LAND_PLAY_ENABLED); nas de "cast" ele fica no pool, morto, como sempre."""
+def pull_impulse(state: GameState, n: int, deadline_turns: int):
     for _ in range(n):
         if state.library:
-            card = state.library.pop(0)
-            if IMPULSE_LAND_PLAY_ENABLED and lands_ok and CARD_DB[card].ctype == "land":
-                state.impulse_lands.append((card, state.turn + deadline_turns))
-            else:
-                state.impulse_pool.append((card, state.turn + deadline_turns))
-
-
-def play_impulse_land(state: GameState) -> bool:
-    """IMPULSE_LAND_PLAY_ENABLED: joga o terreno exilado (Prosper: "you may play that card") como a jogada de terreno do turno, se ela
-    ainda estiver livre -- antes do terreno da mao, que nao expira. Pact Boon ("whenever you play a card from exile, create a Treasure",
-    ruling 2021-07-23: qualquer carta jogada do exilio, terreno inclusive) dispara se o Prosper esta em campo."""
-    if not IMPULSE_LAND_PLAY_ENABLED or state.lands_played_this_turn >= 1 or not state.impulse_lands:
-        return False
-    valid = [e for e in state.impulse_lands if e[1] >= state.turn]
-    if not valid:
-        return False
-    valid.sort(key=lambda e: land_enters_tapped(state, e[0]))  # untapped primeiro (sort estavel)
-    land, deadline = valid[0]
-    state.impulse_lands.remove((land, deadline))
-    enters_tapped = land_enters_tapped(state, land)
-    state.battlefield.append(land)
-    state.lands_played_this_turn += 1
-    if enters_tapped:
-        state.tapped_lands_this_turn.add(land)
-    state.impulse_lands_played_total += 1
-    if "Prosper, Tome-Bound" in state.battlefield:
-        create_treasures(state, 1, source="Prosper Pact Boon")
-    return True
+            state.impulse_pool.append((state.library.pop(0), state.turn + deadline_turns))
 
 
 def play_from_impulse(state: GameState):
     """Joga a carta mais barata disponivel no pool de exilio, se der."""
-    if play_impulse_land(state):
-        return True
     valid = [entry for entry in state.impulse_pool if entry[1] >= state.turn]
     valid = [e for e in valid if e[0] != "land" and CARD_DB.get(e[0]) and CARD_DB[e[0]].ctype != "land"]
     castable = [e for e in valid if can_cast(state, e[0])]
@@ -1514,12 +1437,6 @@ def play_from_impulse(state: GameState):
     castable.sort(key=lambda e: CARD_DB[e[0]].mv)
     card, deadline = castable[0]
     state.impulse_pool.remove((card, deadline))
-    if IMPULSE_CAST_PIPELINE_ENABLED:
-        # mesma esteira do cast da mao (cobra o custo, conta como magia, extort, Lotho, resolve a instantanea/feitico e a manda ao
-        # cemiterio; o Pact Boon dispara no cast, antes de resolver). O codigo antigo punha a magia no CAMPO como permanente e nunca a resolvia.
-        state.impulse_spells_cast_total += 1
-        cast_card(state, card, from_zone="exile")
-        return True
     spend_mana(state, CARD_DB[card].mv)
     enter_battlefield(state, card, from_hand=False)
     if "Prosper, Tome-Bound" in state.battlefield:
@@ -1538,9 +1455,6 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
             state.commander_cast_turn = state.turn
     if is_creature_card(name):
         state.creature_cast_turn[name] = state.turn
-    if STORM_SACRIFICE_PUMP_ENABLED and name == "Captain Lannery Storm":
-        # ruling 2017-09-29: os Treasures sacrificados pra CONJURAR a Storm nao a fortalecem (ela ainda nao estava em campo)
-        state.storm_sac_baseline = state.treasures_sacrificed_this_turn
     if is_artifact_card(name):
         state.artifact_entered_this_turn = True
     if name == "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel":
@@ -1557,34 +1471,8 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
     resolve_permanent_etb(state, name)
 
 
-def _lotho_second_spell(state: GameState, lotho_ready: bool):
-    """Lotho: "Whenever a player casts their second spell each turn, you lose 1 life and create a Treasure". O gatilho e' de CAST: o Lotho
-    precisa ja' estar em campo quando a magia e' conjurada (`lotho_ready` e' a foto tirada antes de ela entrar); uma magia conjurada
-    antes dele conta (ruling 2023-06-16)."""
-    if lotho_ready and state.spells_cast_this_turn == 2:
-        state.life -= 1
-        state.lotho_triggers_total += 1
-        create_treasures(state, 1, source="Lotho (2a magica)")
-
-
-def _register_nonhand_cast(state: GameState, from_exile: bool = False):
-    """SPELL_CAST_COUNT_ALL_PATHS_ENABLED: os efeitos de "whenever you cast a spell" das magias que nao saem da mao (flashback, Cascade): conta
-    como magia conjurada, extort (Life Insurance), Lotho e, se vem do exilio, Pact Boon. O custo ja' foi pago por quem chama."""
-    lotho_ready = "Lotho, Corrupt Shirriff" in state.battlefield
-    if "Life Insurance" in state.battlefield and remaining_mana(state) >= 1:
-        spend_mana(state, 1)
-        drain(state, 1, each_opp=True)
-        gain_life(state, 1)
-        state.extort_paid_total += 1
-    state.spells_cast_this_turn += 1
-    _lotho_second_spell(state, lotho_ready)
-    if from_exile and "Prosper, Tome-Bound" in state.battlefield:
-        create_treasures(state, 1, source="Prosper Pact Boon")
-
-
-def cast_card(state: GameState, name: str, from_zone: str = "hand"):
+def cast_card(state: GameState, name: str):
     card = CARD_DB[name]
-    lotho_ready = "Lotho, Corrupt Shirriff" in state.battlefield  # foto no CAST (SPELL_CAST_COUNT_ALL_PATHS_ENABLED)
     # Achado real 2026-09-14: "Extort (Whenever you cast a spell, you may
     # pay {W/B}. If you do, each opponent loses 1 life and you gain that
     # much life.)" (Life Insurance) - tag `extort` nunca lida em lugar
@@ -1610,10 +1498,6 @@ def cast_card(state: GameState, name: str, from_zone: str = "hand"):
         gain_life(state, 1)
         state.extort_paid_total += 1
     state.spells_cast_this_turn += 1
-    if SPELL_CAST_COUNT_ALL_PATHS_ENABLED:
-        _lotho_second_spell(state, lotho_ready)
-    if from_zone == "exile" and "Prosper, Tome-Bound" in state.battlefield:
-        create_treasures(state, 1, source="Prosper Pact Boon")
 
     # Contra-ataque (`try_smart_opponent_counter`, 7a categoria do modo de
     # resiliencia -- so' faz sentido no exato momento do cast, mesma
@@ -1637,11 +1521,10 @@ def cast_card(state: GameState, name: str, from_zone: str = "hand"):
     if countered:
         pass
     elif is_spell:
-        if from_zone == "hand":
-            state.hand.remove(name)
+        state.hand.remove(name)
         state.graveyard.append(name)
     else:
-        enter_battlefield(state, name, from_hand=(from_zone == "hand"))
+        enter_battlefield(state, name)
 
     treasure_funded = state.treasure_spent_this_turn
     if (treasure_funded and "Rain of Riches" in state.battlefield
@@ -1649,8 +1532,7 @@ def cast_card(state: GameState, name: str, from_zone: str = "hand"):
         do_cascade(state, card.mv)
         state.cascade_used_this_turn = True
 
-    if (not SPELL_CAST_COUNT_ALL_PATHS_ENABLED and "Lotho, Corrupt Shirriff" in state.battlefield
-            and state.spells_cast_this_turn == 2):
+    if "Lotho, Corrupt Shirriff" in state.battlefield and state.spells_cast_this_turn == 2:
         state.life -= 1
         create_treasures(state, 1, source="Lotho (2a magica)")
 
@@ -1674,8 +1556,6 @@ def do_cascade(state: GameState, mv_cutoff: int):
             break
     if hit:
         exiled.remove(hit)
-        if SPELL_CAST_COUNT_ALL_PATHS_ENABLED:
-            _register_nonhand_cast(state, from_exile=True)  # a magia do Cascade e' conjurada do exilio
         enter_battlefield(state, hit, from_hand=False)
         if CARD_DB[hit].ctype in ("instant", "sorcery"):
             if CARD_DB[hit].tags & REMOVAL_TAGS:
@@ -1886,8 +1766,6 @@ def choose_land_to_play(state: GameState, lands_in_hand: list) -> str:
 
 def play_land(state: GameState):
     if state.lands_played_this_turn >= 1:
-        return
-    if play_impulse_land(state):
         return
     lands_in_hand = [n for n in state.hand if n in LAND_NAMES]
     if not lands_in_hand:
@@ -2180,8 +2058,6 @@ def combat_step(state: GameState):
         if ("The Reaver Cleaver" in state.battlefield and state.reaver_cleaver_equipped
                 and host in state.battlefield and host in ready_creatures):
             n_dmg = CREATURE_POWER.get(host, 0) + 1
-            if host == "Captain Lannery Storm":
-                n_dmg += _storm_pump(state)  # +1/+0 por Treasure sacrificado antes do dano
             if "Sentinel Sarah Lyons" in state.battlefield and state.artifact_entered_this_turn:
                 n_dmg += 2
             state.reaver_cleaver_treasures_total += n_dmg
@@ -2189,14 +2065,6 @@ def combat_step(state: GameState):
 
     if TREASURE_MAXIMIZE_POLICY:
         aggressive_treasure_destruction(state)
-
-
-def _storm_pump(state: GameState) -> int:
-    """Captain Lannery Storm: "Whenever you sacrifice a Treasure, Captain Lannery Storm gets +1/+0 until end of turn." Ruling 2017-09-29: vale
-    pra qualquer sacrificio, nao so' o da mana; os pagos pra conjurar a propria Storm nao contam (`storm_sac_baseline`)."""
-    if not STORM_SACRIFICE_PUMP_ENABLED or "Captain Lannery Storm" not in state.battlefield:
-        return 0
-    return max(0, state.treasures_sacrificed_this_turn - state.storm_sac_baseline)
 
 
 def _combat_damage_proxy(state: GameState, animated: int, ready_creatures: list, ready_constructs: int,
@@ -2213,10 +2081,6 @@ def _combat_damage_proxy(state: GameState, animated: int, ready_creatures: list,
     tipo -- calculado so' nos 2 grupos homogeneos que esta carta troca:
     Constructs/Treasures animados [Construct] e Dragoes)."""
     power = sum(CREATURE_POWER.get(n, 0) for n in ready_creatures)
-    if "Captain Lannery Storm" in ready_creatures:
-        pump = _storm_pump(state)
-        power += pump
-        state.storm_pump_total += pump
     if (state.reaver_cleaver_equipped and state.reaver_cleaver_host in ready_creatures
             and "The Reaver Cleaver" in state.battlefield):
         power += 1  # The Reaver Cleaver: +1/+1
@@ -2311,7 +2175,7 @@ def end_step(state: GameState):
         # (`entry[1] >= state.turn`) no PROPRIO turno T+2 - 1 turno alem
         # do real. deadline_turns=1 (=T+1) e' o correto (mesma correcao
         # aplicada na Inspired Tinkering, texto identico).
-        pull_impulse(state, 1, deadline_turns=1, lands_ok=True)
+        pull_impulse(state, 1, deadline_turns=1)
 
     # Achado real 2026-08-31 (rodada ampliada): oraculo real e' "if you
     # gained life THIS TURN" - o codigo checava `life_gained_total`
@@ -2358,8 +2222,6 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.mana_spent_this_turn = 0
     state.tapped_lands_this_turn = set()
     state.spells_cast_this_turn = 0
-    state.treasures_sacrificed_this_turn = 0
-    state.storm_sac_baseline = 0
     state.commits_crime_this_turn = False
     state.treasure_spent_this_turn = False
     state.cascade_used_this_turn = False

@@ -77,3 +77,7 @@ Reverificados também os arquivos anteriores do Vihaan contra o simulador vivo (
 - "Another creature dies" de criatura de **oponente** não entra: o simulador não modela criatura de oponente (📊 estado de oponente).
 - O Sephiroth poderia sacrificar Treasures animados como combustível (política); Xorn/Pitiless Plunderer em lote por evento (pré-existente); 7 outros decks sorteiam o fundo no mulligan. **Não** alterados.
 - Nenhuma carta foi cortada ou adicionada à lista; o Commander Spellbook não foi consultado porque nada na lista mudou.
+
+## Nota posterior (2026-10-03, rodada "fora da mão"): o que mudou NESTA pasta depois do commit original
+
+O simulador vivo ganhou depois cinco chaves novas (`IMPULSE_*`, `SPELL_CAST_*`, `STORM_*`, `SEVINNE_*`, ver `../2026-10-03-fora-da-mao/LEIAME.md`), **ligadas por padrão**. Para esta pasta continuar reproduzindo o simulador como era no commit dela, `orquestracao/fx_common.py` foi ajustado: `flags()` agora também **desliga** as 5 chaves novas e o conjunto `NOVOS` (campos de `GameState` ignorados na impressão digital) ganhou os 8 campos novos; `orquestracao/smoke.py` passou a carregar o simulador por `F.flags(...)`. Nenhum dado bruto, resumo ou tabela mudou. Reverificado: `bash orquestracao/verificar_reproducao.sh --tudo` → 11/11 byte a byte iguais. `SHA256SUMS` regenerado.

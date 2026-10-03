@@ -4,6 +4,8 @@ Arquivo de referência **permanente e auditável** do que sustenta a análise da
 `vihaan-goldwaker-mardu/goldfish-log.md` (seção "Partida manual #1 do Vihaan …") e em `vihaan-goldwaker-mardu/checklist-oraculo.md`. **Esta pasta guarda os dados por trás delas.**
 Pedido do usuário: *"Analise esse Goldfish do Vihaan: Assumi algumas mortes em combate para gerar tesouros com o Mahadi, e um oponente fez 2 spells com Lotho e Tax em campo, gerando 2 tesouros fora do meu turno."* + o log JSON do Archidekt playtester.
 
+> **Atualização (mesmo dia):** as 4 lacunas do simulador citadas aqui foram corrigidas em [`../2026-10-03-fora-da-mao/`](../2026-10-03-fora-da-mao/LEIAME.md). Os resumos desta pasta são do simulador **antes** (snapshot `c04840d` em `codigo/`) e continuam reproduzíveis.
+
 ## Em 1 minuto
 
 | Quero… | Faça |

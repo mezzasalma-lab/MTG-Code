@@ -1,5 +1,7 @@
 # Goldfish Log — Vihaan, Goldwaker
 
+> **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: conjurar/jogar de fora da mão (2026-10-03):** [`resultados-ab/2026-10-03-fora-da-mao/LEIAME.md`](resultados-ab/2026-10-03-fora-da-mao/LEIAME.md) — brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
 > **Dados brutos e como reproduzir as tabelas da seção Partida manual #1 do Vihaan (2026-10-03):** [`resultados-ab/2026-10-03-partida-manual-1/LEIAME.md`](resultados-ab/2026-10-03-partida-manual-1/LEIAME.md) — o log da partida (`.json.xz`), oráculo e rulings ao vivo, scripts, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
 > **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: Sephiroth (2026-10-03):** [`resultados-ab/2026-10-03-sephiroth/LEIAME.md`](resultados-ab/2026-10-03-sephiroth/LEIAME.md) — brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
@@ -10,6 +12,48 @@
 
 > **Dados brutos e como reproduzir as tabelas da seção Kingpin, Wilson Fisk (2026-10-03):** [`resultados-ab/2026-10-03-kingpin/LEIAME.md`](resultados-ab/2026-10-03-kingpin/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
+
+---
+
+## Correção do simulador: conjurar/jogar de fora da mão (terreno do exílio, mágica do exílio, "spell cast", Storm, Sevinne's) — 2026-10-03
+
+**Pedido (implícito):** o usuário respondeu *"Quero sim, sempre!"* à oferta de corrigir erros do simulador; estes saíram da análise da partida manual #1 (seção abaixo). Código: `vihaan_goldfish_v1.py` (antes = commit `c04840d`).
+**Veredito:** cinco correções, cada uma atrás da sua chave, **todas no sentido esperado**. Juntas, no modo padrão (N=10.000, pareado): **win até o T8 +1,29 ±0,30pp** (10,6% → 11,9%), Treasures criados **+0,48 ±0,08**, dano de combate proxy +1,36 ±0,27, mana do T6 +0,06; no modo resiliência win +0,47 ±0,20pp. O ganho vem sobretudo de **jogar o terreno que o Prosper exila** (win +0,76 ±0,20pp sozinho) e de **resolver a mágica que ele exila** (+0,51 ±0,18pp); a contagem de "spell cast" e a Sevinne's mudam o número pouco e ficam por correção de regra. A mais grave em regra: **a mágica exilada pelo Prosper virava um permanente parado e o efeito nunca resolvia**, e **a Sevinne's Reclamation devolvia uma instantânea/feitiço (muitas vezes ela mesma) 0,14 vezes por jogo** (2.735 devoluções em 20.000 jogos), que também ficava parada no campo.
+
+### O que mudou no código (5 chaves)
+1. **Terreno do exílio** (`IMPULSE_LAND_PLAY_ENABLED`). Fontes que dizem *play* (Prosper, Inspired Tinkering, Face-Breaker; oráculo lido ao vivo) mandam o terreno exilado para `impulse_lands`; ele é a jogada de terreno do turno (**antes** do terreno da mão, que não expira; entra untapped primeiro) e dispara o **Pact Boon** (ruling 2021-07-23: qualquer carta jogada do exílio). Grenzo e Laughing Jasper Flint dizem *cast*: terreno exilado por eles continua não jogável.
+2. **Mágica do exílio** (`IMPULSE_CAST_PIPELINE_ENABLED`). `play_from_impulse` agora chama `cast_card(..., from_zone="exile")`: cobra o custo, conta como magia, extort, Lotho, **resolve** a instantânea/feitiço e a manda ao cemitério; o Pact Boon dispara no cast, antes de resolver. Antes: `enter_battlefield` direto, sem resolver.
+3. **Contagem de "spell cast"** (`SPELL_CAST_COUNT_ALL_PATHS_ENABLED`). Flashback da Sevinne's e a mágica do Cascade contam como magia conjurada (Lotho, extort; Pact Boon no Cascade, que conjura do exílio; Rain of Riches no flashback pago com Treasure). E o **Lotho só dispara se já estava em campo no cast** (foto antes de a magia entrar; ruling 2023-06-16: as conjuradas antes dele contam); antes ele disparava contra si mesmo quando era a 2ª mágica.
+4. **Storm** (`STORM_SACRIFICE_PUMP_ENABLED`). *Whenever you sacrifice a Treasure, +1/+0 until end of turn* (ruling 2017-09-29: qualquer sacrifício; os pagos pra conjurar a Storm não contam, `storm_sac_baseline`): entra no poder dela no dano proxy e no "that many" do Cleaver quando ela é o portador.
+5. **Alvo da Sevinne's** (`SEVINNE_PERMANENT_TARGET_ENABLED`). *Return target permanent card with MV ≤3* (ruling 2024-06-07: artefato, batalha, criatura, encantamento, **terreno**, planeswalker). O filtro antigo só excluía terreno, então a heurística "maior MV" escolhia com frequência **a própria Sevinne's** (que já está no cemitério ao resolver) ou um feitiço. Agora instantânea/feitiço não é alvo; terreno é (entra tapped se a regra dele manda, não gasta jogada de terreno). *Descoberto pelo invariante de validação da correção 2, não pela análise da partida.*
+
+### Medição (apoio; pareada; base = simulador antes, commit `c04840d`; N=10.000, sementes 3.000.000+i, 8 turnos; entre parênteses o modo resiliência)
+Diferença pareada (variante − antes), IC95%:
+
+| variante | win ≤8 (pp) | Treasures | combate | mortes de criatura | recursões | mana T6 |
+|---|---|---|---|---|---|---|
+| só terreno do exílio | **+0,76 ±0,20** (+0,19 ±0,09) | +0,28 ±0,06 (+0,13 ±0,04) | +0,95 ±0,16 (+0,42 ±0,08) | +0,12 ±0,02 (+0,08 ±0,02) | +0,004 | +0,063 ±0,007 (+0,047) |
+| só magia do exílio | **+0,51 ±0,18** (+0,32 ±0,14) | +0,26 ±0,04 (+0,15 ±0,03) | +0,67 ±0,45 (+0,29 ±0,08) | +0,11 ±0,03 (+0,07 ±0,02) | +0,019 | +0,005 |
+| só contagem de "spell cast" | −0,12 ±0,14 (−0,09 ±0,09) n.s. | −0,02 ±0,03 n.s. | −0,23 ±0,13 | −0,005 | 0 | −0,007 ±0,004 |
+| só Storm | +0,23 ±0,09 (+0,11 ±0,07) | +0,002 | **+0,54 ±0,04** (+0,29 ±0,02) | +0,001 | 0 | 0 |
+| só alvo da Sevinne's | −0,01 ±0,08 n.s. (+0,03 ±0,08) | −0,007 ±0,009 | −0,29 ±0,10 (+0,04 ±0,05) | −0,007 | **−0,115 ±0,007** (−0,058) | −0,001 |
+| **as cinco** | **+1,29 ±0,30** (+0,47 ±0,20) | **+0,48 ±0,08** (+0,26 ±0,06) | **+1,36 ±0,27** (+0,86 ±0,16) | **+0,23 ±0,04** (+0,12 ±0,03) | −0,105 ±0,008 (−0,043) | **+0,061 ±0,008** (+0,052) |
+
+Base: win ≤8 10,6% (2,6%) · Treasures criados 10,47 (6,95) · combate 50,44 (32,12) · mortes de criatura 3,18 (4,65) · mana T6 6,13 (5,85).
+**Métricas diretas (por jogo, padrão, as cinco vs antes):** terrenos do exílio jogados 0 → **0,275**; magias do exílio conjuradas 0 → **0,771**; chamadas de Pact Boon 0,180 → **0,343**; chamadas do Lotho 0,354 → 0,393; bônus da Storm somado 0 → **0,573**; **cartas de instantânea/feitiço paradas no campo no fim 0,359 → 0,000**. Só 39,0% das partidas terminam no mesmo estado do antes (52,6% na resiliência), de modo que a mudança é ampla, mas pequena em magnitude.
+
+**Leitura (medido):** (a) cada contador direto sai de zero e o número de mágicas mortas no campo sai de 0,36 por jogo para 0; é a evidência de que as correções disparam de verdade. (b) Terreno e magia do exílio são os que mexem em vitória e mana. (c) A contagem de "spell cast" quase não muda o total do Lotho (0,354 → 0,334 chamadas sozinha): o auto-disparo que sumiu e as mágicas do exílio/flashback que entraram se compensam; o efeito é de regra, não de número (e é o que o seu T7/T8 exigia). (d) A Sevinne's tira "recursões" **fantasma** (0,115 por jogo: devoluções de feitiço que não faziam nada); o combate −0,29 ±0,10 no padrão **não se repete** na resiliência (+0,04 ±0,05) nem no lote de 2.000 (−0,11 ±0,08): não interpreto.
+**Lido como raciocínio, não medido:** a política de jogada continua a de antes: a carta do exílio só é jogada **depois** de tudo que dá pra jogar da mão (`main_phase`), embora ela expire e a da mão não. Medido: **1,5 cartas não-terreno por jogo entram no pool de impulso e expiram sem ser jogadas** (padrão, até o T8; 1,0 na resiliência), inalterado por estas correções. Isso é decisão de ordem de jogo, não de regra, e fica como achado aberto.
+
+### Validação (Regra #1) — arquivada em `resultados-ab/2026-10-03-fora-da-mao/`
+- **Smoke:** 99 cartas, 93 distintas, 0 desconhecidas, 0 duplicadas não básicas, 35 terrenos; 200 partidas sem exceção.
+- **Testes dirigidos:** 37/37 (`resumos/testes_dirigidos.txt`), incluindo os cenários reais da partida manual (T5: terreno do exílio + Treasure; T6: Sevinne's do exílio devolvendo o Mahadi; T7: Lotho do exílio + Tax = 2 Treasures e −1 de vida; T8: flashback + Dictate dispara o Lotho), invariantes em 3.000 partidas (nenhuma mágica parada no campo, nenhuma carta duplicada) e, para cada correção, o teste com a chave **desligada** reproduzindo o comportamento antigo (no código antigo, 399 de 1.500 jogos terminam com mágica parada no campo).
+- **Bit-identidade com as 5 chaves desligadas:** 20.000/20.000 partidas idênticas ao `c04840d` no modo padrão e 20.000/20.000 na resiliência.
+- **Regressão:** 180.000 partidas (9 configurações/modos × 20.000, sementes 5.000.000+i), **0 exceções**, 0 cartas duplicadas, 0 partidas com mais de 1 jogada de terreno no turno, 0 com "animados vivos" ≠ 0 ao fim do turno, 0 com Treasures < 0, 0 emblemas do Sephiroth inconsistentes; com as cinco chaves, **0 jogos terminam com instantânea/feitiço parado no campo** (no código antigo: 5.310 de 20.000 jogos no padrão e 3.548 na resiliência).
+
+### Escopo verificado e NÃO verificado (Regra #7)
+- **Verificado:** os 5 caminhos que movem carta de fora da mão (`cast_card`, `play_from_impulse`, `play_land`/`play_impulse_land`, `try_sevinne_flashback`, `do_cascade`), o filtro "permanent card" nos 2 pontos da Sevinne's, o contador de Treasures sacrificados e a Storm/Cleaver no combate; por teste dirigido + A/B + regressão.
+- **Não verificado / aberto:** (1) política "carta do exílio por último" (1,5 cartas/jogo expiram); (2) Lotho e Monologue Tax em 2ª mágica de **oponente** continuam 📊 (estado de oponente); (3) o resto do `.py` não foi relido nesta rodada; (4) a escolha do alvo da Sevinne's segue "maior MV" (heurística; terreno só quando não há outro alvo); (5) wipes próprios usam o caminho de sacrifício (Mayhem Devil a mais, comandante excluído), Sephiroth só conta mortes minhas, Xorn/Plunderer em lote (achados abertos das rodadas anteriores).
 
 ---
 
@@ -70,7 +114,8 @@ Treasures "tapped" que **continuam** no turno seguinte = atacantes marcados (a a
 2. **Mágica do exílio.** Teste direto: com o Prosper em campo e o Blood Money no pool, `play_from_impulse` o **põe no campo como permanente** (`"Blood Money" in battlefield = True`, cemitério = False), **sem destruir nenhuma criatura**, sem contar como mágica conjurada; só o Treasure do Pact Boon sai. Vale para toda mágica exilada (feitiço ou instantânea): Blood Money, Sevinne's Reclamation, Big Score, Path to Exile...
 3. **Contagem de "spell cast" (Lotho).** `spells_cast_this_turn` só sobe em `cast_card`. Teste direto: Lotho do exílio + Monologue Tax da mão → contador 1 (o Lotho **não** dispara, o seu T7 sim); flashback da Sevinne's → contador 0 (esperado 1; o seu T8 sim). E **Sol Ring depois Lotho (2ª mágica)** → o Lotho cria 1 Treasure e tira 1 de vida **de si mesmo**, porque o teste de "Lotho em campo" roda depois de ele entrar: pelo oráculo ele estava na pilha. O Cascade (Rain of Riches) também não conta a mágica que conjura.
 4. **Storm.** *"Whenever you sacrifice a Treasure, Captain Lannery Storm gets +1/+0 until end of turn"* (ruling 2017-09-29: qualquer sacrifício; os pagos para conjurar a própria Storm não contam) não aparece no `.py`: só o gatilho de ataque. Com o Cleaver equipado nela, o "that many" cresce 1 por Treasure sacrificado antes do dano.
-**Lido como raciocínio, não medido:** o impacto dessas lacunas no win ≤T8 e no ritmo de mana só sai de um A/B depois do conserto (próxima seção do log).
+**Lido como raciocínio, não medido:** o impacto dessas lacunas no win ≤T8 e no ritmo de mana só sai de um A/B depois do conserto.
+**Atualização (mesmo dia):** as quatro lacunas foram corrigidas, com uma quinta achada na validação (alvo da Sevinne's); ver a seção "Correção do simulador: conjurar/jogar de fora da mão", logo acima neste log. Os números desta seção (§4) são do simulador **antes** da correção (commit `c04840d`); para o simulador atual, a coluna de comparação mudaria um pouco.
 
 ### Escopo verificado e NÃO verificado (Regra #7)
 - **Verificado:** terrenos (tapped/untapped), custos de todas as magias que entraram em campo, Pact Boon em T5/T6/T7, ataque da Storm, Sevinne's (exílio e flashback), identificação dos Treasures que somem (por id), conta de mana por turno (script `ledger_mana.py`), comparação por distribuição com o simulador.

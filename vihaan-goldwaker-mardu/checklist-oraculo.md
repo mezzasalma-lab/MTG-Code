@@ -1,5 +1,31 @@
 # Checklist cláusula-a-cláusula — Vihaan, Goldwaker
 
+## Conjurar/jogar de fora da mão (correção do simulador) — oráculo, rulings e cláusulas — 2026-10-03
+
+Origem: análise da partida manual #1 (seção abaixo) + invariante de validação. Código: `vihaan_goldfish_v1.py` (antes = commit `c04840d`). Tudo que sustenta a conclusão está em `resultados-ab/2026-10-03-fora-da-mao/` (LEIAME com o mapa arquivo → comando). Oráculo e rulings lidos **ao vivo** antes de escrever o código (Regra #3; resposta bruta em `.../dados/oraculo_rulings_ao_vivo.json`, 70 rulings de 29 cartas).
+
+| Cláusula do oráculo | Ruling | Antes (`c04840d`) | Depois |
+|---|---|---|---|
+| **Prosper**: *you may play that card* (Mystic Arcanum) | terreno é "play" | 🐛 terreno exilado nunca jogado (`play_from_impulse` filtrava terreno) | ✅ `play_impulse_land`: é a jogada de terreno, antes do da mão; untapped primeiro |
+| **Prosper**, Pact Boon: *whenever you play a card from exile* | qualquer carta jogada do exílio, **terreno inclusive** (2021-07-23) | ✅ só magia não-terreno | ✅ terreno, magia e a conjurada pelo Cascade |
+| **Inspired Tinkering**: *you may play those cards* / **Professional Face-Breaker**: *you may play that card this turn* | "play" → terreno vale | 🐛 idem | ✅ `lands_ok=True` |
+| **Grenzo** / **Laughing Jasper Flint**: *you may cast* | "cast" → terreno **não** vale | ✅ (por acidente) | ✅ de propósito (`lands_ok=False`) |
+| **Mágica do exílio** (instantânea/feitiço jogada de lá) | segue custo e timing; resolve e vai ao cemitério | 🐛 virava **permanente parado**, efeito nunca resolvia | ✅ `cast_card(from_zone="exile")` |
+| **Lotho**: *whenever a player casts their second spell each turn, you lose 1 life and create a Treasure* | conjuradas **antes** do Lotho contam (2023-06-16); gatilho de **cast** | 🐛 `spells_cast_this_turn` só subia em `cast_card`; 🐛 testava "em campo" **depois** de a magia entrar (disparava contra si) | ✅ flashback e Cascade contam; foto do Lotho no cast; 📊 2ª mágica de **oponente** (estado de oponente) |
+| **Life Insurance**, extort: *whenever you cast a spell* | qualquer magia conjurada | 🐛 só da mão | ✅ também flashback, exílio e Cascade |
+| **Rain of Riches**: *first spell each turn that mana from a Treasure was spent to cast has cascade* | — | ✅ só da mão | ✅ também flashback |
+| **Captain Lannery Storm**: *whenever you sacrifice a Treasure, +1/+0 until end of turn* | qualquer sacrifício; os pagos para **conjurar** a Storm não contam (2017-09-29) | 🐛 não existia | ✅ `_storm_pump` no poder (proxy) e no "that many" do **Reaver Cleaver** quando ela é o portador |
+| **Sevinne's Reclamation**: *return target permanent card MV ≤3 … if cast from a graveyard, may copy* | permanent card = artefato, batalha, criatura, encantamento, **terreno**, planeswalker (2024-06-07); a cópia não é "cast" | 🐛 filtro `ctype != "land"`: devolvia instantânea/feitiço, **inclusive ela mesma**; terreno nunca | ✅ `_sevinne_return_one` (cast e flashback); terreno devolvido entra tapped se a regra manda, sem gastar jogada de terreno |
+
+**Regra #3 (conceitos compartilhados):** "carta que entra/é conjurada de fora da mão" (5 caminhos: `cast_card`, `play_from_impulse`, `try_sevinne_flashback`, `do_cascade`, `try_face_breaker_impulse`/`pull_impulse`) e "permanent card" (2 pontos da Sevinne's). Grep conferido: `state.treasures -=` só em `sacrifice_treasures` (um ponto para o contador da Storm); `spells_cast_this_turn` só em `cast_card` antes da correção.
+**Regra #6 (ordem de eventos):** o Lotho precisa estar em campo no CAST; o Pact Boon dispara no cast (antes de resolver: Blood Money destrói o Prosper depois de o Treasure ser criado); o terreno do exílio entra em `play_land` (antes de `main_phase`) para a mana valer no turno.
+**Regra #7:** os Treasures criados por Pact Boon/Lotho/Storm/Cleaver não atacam no turno em que nascem (só os que existiam no início do combate viram criatura, CR 611.2c): o roteamento do Treasure animado, já corrigido, não muda.
+**Erro de processo, registrado:** a 1ª versão do A/B tinha colunas lidas de contadores que o código antigo não tem (0 no ANTES, enganoso); foi apagada e refeita com medidas comparáveis antes de qualquer conclusão.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas/duplicadas, 35 terrenos); 37 testes dirigidos 37/37 (cenários T5–T8 da partida manual incluídos); bit-identidade com as 5 chaves desligadas, 20.000+20.000 partidas; regressão 180.000 partidas, 0 exceções, 0 violações (≤1 terreno por turno, 0 mágicas paradas no campo); A/B pareado N=2.000 e N=10.000 nos dois modos, todas as métricas diretas no sentido esperado (win ≤T8 padrão +1,29 ±0,30pp, resiliência +0,47 ±0,20pp).
+**Classes da taxonomia da Regra #1 varridas (e só elas):** gatilho compartilhado ligado em só alguns pontos (cast de fora da mão), conceito compartilhado ("spell cast", "permanent card"), custo alternativo real (flashback, cast do exílio), fórmula dinâmica (Storm + Cleaver), busca sem restrição de tipo real (Sevinne's), ordem de fases/eventos (Lotho no cast).
+**Não varridas:** as demais classes e as outras cartas do `.py`. **Aberto:** política "carta do exílio por último" (1,5 cartas/jogo expiram), 2ª mágica de oponente (Lotho/Tax) 📊, heurística "maior MV" da Sevinne's.
+
 ## Partida manual #1 — cláusulas das cartas que a partida exercita: log × oráculo × simulador — 2026-10-03
 
 Pedido: *"Analise esse Goldfish do Vihaan: Assumi algumas mortes em combate para gerar tesouros com o Mahadi, e um oponente fez 2 spells com Lotho e Tax em campo, gerando 2 tesouros fora do meu turno."* Tudo que sustenta a conclusão está em
