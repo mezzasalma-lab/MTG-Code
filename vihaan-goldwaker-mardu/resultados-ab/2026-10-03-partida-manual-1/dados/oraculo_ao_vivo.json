@@ -1,0 +1,302 @@
+{
+ "Boros Charm": {
+  "oracle_id": "2679d0dd-ba30-4a1c-b6a0-b3ac6c790496",
+  "type_line": "Instant",
+  "mana_cost": "{R}{W}",
+  "cmc": 2.0,
+  "oracle_text": "Choose one —\n• Boros Charm deals 4 damage to target player or planeswalker.\n• Permanents you control gain indestructible until end of turn.\n• Target creature gains double strike until end of turn.",
+  "set": "fdn",
+  "released_at": "2024-11-15",
+  "rulings_uri": "https://api.scryfall.com/cards/e0d8c9f6-cbbd-4694-b100-01cfb81036cc/rulings"
+ },
+ "Tainted Peak": {
+  "oracle_id": "b2bae7fc-0668-4b34-9cd6-0d80aea52275",
+  "type_line": "Land",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "oracle_text": "{T}: Add {C}.\n{T}: Add {B} or {R}. Activate only if you control a Swamp.",
+  "set": "dsc",
+  "released_at": "2024-09-27",
+  "rulings_uri": "https://api.scryfall.com/cards/7e6f1a55-0fec-4b94-9640-9110ca8d0212/rulings"
+ },
+ "Mirkwood Bats": {
+  "oracle_id": "0636b6c3-0662-420a-b30d-f0a14e7c512d",
+  "type_line": "Creature — Bat",
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "oracle_text": "Flying\nWhenever you create or sacrifice a token, each opponent loses 1 life.",
+  "set": "ltr",
+  "released_at": "2023-06-23",
+  "rulings_uri": "https://api.scryfall.com/cards/15f035df-784a-4dc8-b7f5-77139a4e6e99/rulings"
+ },
+ "Pitiless Plunderer": {
+  "oracle_id": "a784481f-eccb-4112-bb38-04a659319660",
+  "type_line": "Creature — Human Pirate",
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "oracle_text": "Whenever another creature you control dies, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "set": "lcc",
+  "released_at": "2023-11-17",
+  "rulings_uri": "https://api.scryfall.com/cards/5b5cd187-857a-44dd-8595-a52857a0b753/rulings"
+ },
+ "Prosper, Tome-Bound": {
+  "oracle_id": "1e9b0fd6-5aae-401a-8df5-d94ce6442696",
+  "type_line": "Legendary Creature — Tiefling Warlock",
+  "mana_cost": "{2}{B}{R}",
+  "cmc": 4.0,
+  "oracle_text": "Deathtouch\nMystic Arcanum — At the beginning of your end step, exile the top card of your library. Until the end of your next turn, you may play that card.\nPact Boon — Whenever you play a card from exile, create a Treasure token.",
+  "set": "afc",
+  "released_at": "2021-07-23",
+  "rulings_uri": "https://api.scryfall.com/cards/d743336e-d5c7-4053-a23d-92ec7581f74e/rulings"
+ },
+ "Arcane Signet": {
+  "oracle_id": "0bc7f093-bef0-4f1a-852c-4b75ebf54838",
+  "type_line": "Artifact",
+  "mana_cost": "{2}",
+  "cmc": 2.0,
+  "oracle_text": "{T}: Add one mana of any color in your commander's color identity.",
+  "set": "frc",
+  "released_at": "2026-10-02",
+  "rulings_uri": "https://api.scryfall.com/cards/c6b6117c-faab-4bbb-b851-07bd8061ef03/rulings"
+ },
+ "Mountain": {
+  "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+  "type_line": "Basic Land — Mountain",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "oracle_text": "({T}: Add {R}.)",
+  "set": "trk",
+  "released_at": "2026-11-13",
+  "rulings_uri": "https://api.scryfall.com/cards/2a844b96-6616-4c39-8f4f-5d14a3b2bd55/rulings"
+ },
+ "Dragonskull Summit": {
+  "oracle_id": "63398c02-6fb1-481d-9d9f-81063532fbc0",
+  "type_line": "Land",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "oracle_text": "This land enters tapped unless you control a Swamp or a Mountain.\n{T}: Add {B} or {R}.",
+  "set": "msc",
+  "released_at": "2026-06-26",
+  "rulings_uri": "https://api.scryfall.com/cards/d20e433a-eb62-4301-bc20-bfe27468b033/rulings"
+ },
+ "Mahadi, Emporium Master": {
+  "oracle_id": "1b3e841e-0f8f-467d-9983-f9b8d081a67f",
+  "type_line": "Legendary Creature — Devil",
+  "mana_cost": "{1}{B}{R}",
+  "cmc": 3.0,
+  "oracle_text": "At the beginning of your end step, create a Treasure token for each creature that died this turn. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "set": "clb",
+  "released_at": "2022-06-10",
+  "rulings_uri": "https://api.scryfall.com/cards/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5/rulings"
+ },
+ "Path of Ancestry": {
+  "oracle_id": "b473e293-59e3-4e04-acf2-622604aeb25f",
+  "type_line": "Land",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "oracle_text": "This land enters tapped.\n{T}: Add one mana of any color in your commander's color identity. When that mana is spent to cast a creature spell that shares a creature type with your commander, scry 1. (Look at the top card of your library. You may put that card on the bottom.)",
+  "set": "mbc",
+  "released_at": "2026-11-09",
+  "rulings_uri": "https://api.scryfall.com/cards/b1aaa7b0-1cac-4a92-b880-7ef1ac00618f/rulings"
+ },
+ "Vihaan, Goldwaker": {
+  "oracle_id": "0613a0d8-f6bc-41ca-8070-b2506f756fc8",
+  "type_line": "Legendary Creature — Dwarf Warlock",
+  "mana_cost": "{R}{W}{B}",
+  "cmc": 3.0,
+  "oracle_text": "Other outlaws you control have vigilance and haste. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws.)\nAt the beginning of combat on your turn, you may have Treasures you control become 3/3 Construct Assassin artifact creatures in addition to their other types until end of turn.",
+  "set": "otc",
+  "released_at": "2024-04-19",
+  "rulings_uri": "https://api.scryfall.com/cards/7b549690-72eb-4244-bb66-996a2bd1027e/rulings"
+ },
+ "Pentavite": {
+  "oracle_id": "c9e57f97-be25-4ab6-9158-d2677d7742f7",
+  "type_line": "Token Artifact Creature — Pentavite",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "oracle_text": "Flying",
+  "set": "tcm2",
+  "released_at": "2018-06-08",
+  "rulings_uri": "https://api.scryfall.com/cards/b6571af0-80e2-474b-a8b1-d3d90e954d2b/rulings"
+ },
+ "Battlefield Forge": {
+  "oracle_id": "6b75b94e-83b7-457e-ac41-7ca90b5a59aa",
+  "type_line": "Land",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "oracle_text": "{T}: Add {C}.\n{T}: Add {R} or {W}. This land deals 1 damage to you.",
+  "set": "frc",
+  "released_at": "2026-10-02",
+  "rulings_uri": "https://api.scryfall.com/cards/ef7d3676-b1db-4329-9201-18f8a6c54ea6/rulings"
+ },
+ "Desolate Mire": {
+  "oracle_id": "3edf9201-265f-4cd9-b27b-8073bf1a4cf2",
+  "type_line": "Land",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "oracle_text": "{1}, {T}: Add {W}{B}.",
+  "set": "soc",
+  "released_at": "2026-04-24",
+  "rulings_uri": "https://api.scryfall.com/cards/6a261c7d-38a4-4000-97b2-76e7ab9989c5/rulings"
+ },
+ "Wheel of Fortune": {
+  "oracle_id": "a8abd966-de7b-46a3-8ac7-8747ab35653a",
+  "type_line": "Sorcery",
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "oracle_text": "Each player discards their hand, then draws seven cards.",
+  "set": "vma",
+  "released_at": "2014-06-16",
+  "rulings_uri": "https://api.scryfall.com/cards/2597050f-6b1b-474e-aa16-33fd154628ca/rulings"
+ },
+ "Dictate of Erebos": {
+  "oracle_id": "7c777a41-e40a-4b40-96bf-8ddd5c12924c",
+  "type_line": "Enchantment",
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "oracle_text": "Flash\nWhenever a creature you control dies, each opponent sacrifices a creature of their choice.",
+  "set": "jou",
+  "released_at": "2014-05-02",
+  "rulings_uri": "https://api.scryfall.com/cards/9f06db70-95f9-41eb-8e5f-8bc56fd34c09/rulings"
+ },
+ "Sol Ring": {
+  "oracle_id": "6ad8011d-3471-4369-9d68-b264cc027487",
+  "type_line": "Artifact",
+  "mana_cost": "{1}",
+  "cmc": 1.0,
+  "oracle_text": "{T}: Add {C}{C}.",
+  "set": "frc",
+  "released_at": "2026-10-02",
+  "rulings_uri": "https://api.scryfall.com/cards/8ee443cc-e17a-493b-9c93-1f9e141a30e4/rulings"
+ },
+ "Aya of Alexandria": {
+  "oracle_id": "27b690f2-d7ce-43b6-8e8b-98a8ffe487bb",
+  "type_line": "Legendary Creature — Human Assassin",
+  "mana_cost": "{2}{R}{W}",
+  "cmc": 4.0,
+  "oracle_text": "Menace, lifelink\nWhenever a historic creature you control deals combat damage to a player, create a 1/1 black Assassin creature token with menace. (Artifacts, legendaries, and Sagas are historic.)",
+  "set": "acr",
+  "released_at": "2024-07-05",
+  "rulings_uri": "https://api.scryfall.com/cards/80bd1928-18ec-4f55-acd8-9a62f9869fff/rulings"
+ },
+ "Path to Exile": {
+  "oracle_id": "d683d985-9888-4d21-8b5f-69e69ce4a03b",
+  "type_line": "Instant",
+  "mana_cost": "{W}",
+  "cmc": 1.0,
+  "oracle_text": "Exile target creature. Its controller may search their library for a basic land card, put that card onto the battlefield tapped, then shuffle.",
+  "set": "frc",
+  "released_at": "2026-10-02",
+  "rulings_uri": "https://api.scryfall.com/cards/22e08a78-55b7-46b0-bd1a-a51548fc1861/rulings"
+ },
+ "Captain Lannery Storm": {
+  "oracle_id": "235bf0ba-658c-463f-b112-7478ba27bd7b",
+  "type_line": "Legendary Creature — Human Pirate",
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "oracle_text": "Haste\nWhenever Captain Lannery Storm attacks, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")\nWhenever you sacrifice a Treasure, Captain Lannery Storm gets +1/+0 until end of turn.",
+  "set": "otc",
+  "released_at": "2024-04-19",
+  "rulings_uri": "https://api.scryfall.com/cards/60a457e2-6cc7-47f0-9a24-df5459395358/rulings"
+ },
+ "Zulaport Cutthroat": {
+  "oracle_id": "76b003e0-15af-4f22-bdf2-1ade5430964a",
+  "type_line": "Creature — Human Rogue Ally",
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "oracle_text": "Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life.",
+  "set": "soc",
+  "released_at": "2026-04-24",
+  "rulings_uri": "https://api.scryfall.com/cards/c43609fb-3cee-44e0-98d0-3ecaba1d5767/rulings"
+ },
+ "Magda, the Hoardmaster": {
+  "oracle_id": "7fd2beb8-f823-4723-beec-e59b62127490",
+  "type_line": "Legendary Creature — Dwarf Berserker",
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "oracle_text": "Whenever you commit a crime, create a tapped Treasure token. This ability triggers only once each turn. (Targeting opponents, anything they control, and/or cards in their graveyards is a crime.)\nSacrifice three Treasures: Create a 4/4 red Scorpion Dragon creature token with flying and haste. Activate only as a sorcery.",
+  "set": "otj",
+  "released_at": "2024-04-19",
+  "rulings_uri": "https://api.scryfall.com/cards/4443d112-209b-49ec-bc40-3a11dcdb092e/rulings"
+ },
+ "Rakdos Signet": {
+  "oracle_id": "3adb7681-977f-4a32-9ec8-51481b958268",
+  "type_line": "Artifact",
+  "mana_cost": "{2}",
+  "cmc": 2.0,
+  "oracle_text": "{1}, {T}: Add {B}{R}.",
+  "set": "frc",
+  "released_at": "2026-10-02",
+  "rulings_uri": "https://api.scryfall.com/cards/a263e71d-953f-4648-b326-33133cfa7e00/rulings"
+ },
+ "Sevinne's Reclamation": {
+  "oracle_id": "1b9f9f5b-8712-4f00-90cb-1b7b9970eccc",
+  "type_line": "Sorcery",
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "oracle_text": "Return target permanent card with mana value 3 or less from your graveyard to the battlefield. If this spell was cast from a graveyard, you may copy this spell and may choose a new target for the copy.\nFlashback {4}{W} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+  "set": "soc",
+  "released_at": "2026-04-24",
+  "rulings_uri": "https://api.scryfall.com/cards/8deab1ef-4219-4767-a3c4-b61250d0ebe0/rulings"
+ },
+ "The Reaver Cleaver": {
+  "oracle_id": "37a2a31d-51e6-4c07-b4c2-b206ad40eb42",
+  "type_line": "Legendary Artifact — Equipment",
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "oracle_text": "Equipped creature gets +1/+1 and has trample and \"Whenever this creature deals combat damage to a player or planeswalker, create that many Treasure tokens.\"\nEquip {3}",
+  "set": "dmc",
+  "released_at": "2022-09-09",
+  "rulings_uri": "https://api.scryfall.com/cards/5bcd1591-b5b9-49fc-9f2a-45f31ed1871e/rulings"
+ },
+ "The Eldest Reborn": {
+  "oracle_id": "44ed4c0c-a012-4895-a547-b04150553bba",
+  "type_line": "Enchantment — Saga",
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Each opponent sacrifices a creature or planeswalker of their choice.\nII — Each opponent discards a card.\nIII — Put target creature or planeswalker card from a graveyard onto the battlefield under your control.",
+  "set": "dsc",
+  "released_at": "2024-09-27",
+  "rulings_uri": "https://api.scryfall.com/cards/4d29351e-5608-40e8-8220-6c9635d48ad4/rulings"
+ },
+ "Lotho, Corrupt Shirriff": {
+  "oracle_id": "135cc078-1c45-465e-b0b9-7168c89f56f4",
+  "type_line": "Legendary Creature — Halfling Rogue",
+  "mana_cost": "{W}{B}",
+  "cmc": 2.0,
+  "oracle_text": "Whenever a player casts their second spell each turn, you lose 1 life and create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "set": "ltr",
+  "released_at": "2023-06-23",
+  "rulings_uri": "https://api.scryfall.com/cards/ce01ff8f-a037-484f-9148-c847ffaabc5a/rulings"
+ },
+ "Monologue Tax": {
+  "oracle_id": "ace8e88e-ca6a-4bdf-8c6d-1b914fc00259",
+  "type_line": "Enchantment",
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "oracle_text": "Whenever an opponent casts their second spell each turn, you create a Treasure token.",
+  "set": "msc",
+  "released_at": "2026-06-26",
+  "rulings_uri": "https://api.scryfall.com/cards/ee68d390-11cb-4617-a9ee-6e8cf7ff0e55/rulings"
+ },
+ "Blood Money": {
+  "oracle_id": "75f5d372-4ff9-430c-8302-72472439e0d2",
+  "type_line": "Sorcery",
+  "mana_cost": "{5}{B}{B}",
+  "cmc": 7.0,
+  "oracle_text": "Destroy all creatures. For each nontoken creature destroyed this way, you create a tapped Treasure token.",
+  "set": "lcc",
+  "released_at": "2023-11-17",
+  "rulings_uri": "https://api.scryfall.com/cards/bbbc5c9d-110a-44cd-a2c9-8bad7dac4b5f/rulings"
+ },
+ "Swamp": {
+  "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+  "type_line": "Basic Land — Swamp",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "oracle_text": "({T}: Add {B}.)",
+  "set": "trk",
+  "released_at": "2026-11-13",
+  "rulings_uri": "https://api.scryfall.com/cards/b7387103-1df1-4fd0-9e91-1544509792c7/rulings"
+ }
+}

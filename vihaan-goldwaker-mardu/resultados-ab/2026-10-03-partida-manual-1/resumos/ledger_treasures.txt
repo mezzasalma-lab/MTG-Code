@@ -1,0 +1,45 @@
+Treasures (ids do log): turno -> eventos
+  F--PiJszG    T5:CRIADA,tap | T6:untap,tap   ultima aparicao: T6
+  QaM6nMtBe    T5:CRIADA | T6:tap | T7:untap,tap   ultima aparicao: T7
+  olyMYvYre    T6:CRIADA,tap | T7:untap,tap   ultima aparicao: T7
+  24DnlO5iG    T6:CRIADA | T7:untap+ctr,tap | T8:untap,tap   ultima aparicao: T8
+  QDERyYy7DV   T6:CRIADA | T8:tap   ultima aparicao: T8
+  c7NtHaVSK    T6:CRIADA | T7:tap | T8:untap   ultima aparicao: T8
+  aacBYMh68X   T6:CRIADA | T7:tap | T8:untap,tap   ultima aparicao: T8
+  mdDSOz_RZI   T6:CRIADA | T8:tap   ultima aparicao: T8
+  -AVzM4L45    T7:CRIADA | T8:tap   ultima aparicao: T8
+  rM8ZZ1INdR   T7:CRIADA | T8:tap   ultima aparicao: T8
+  wnNaOBFq7    T7:CRIADA   ultima aparicao: T7
+  W-tBznzKOE   T7:CRIADA   ultima aparicao: T7
+  fdjpAaOtO    T7:CRIADA   ultima aparicao: T7
+  muKCqjs530   T7:CRIADA   ultima aparicao: T7
+  gLSKcL5Xyg   T7:CRIADA | T8:tap   ultima aparicao: T8
+  -0-nmPbWL    T8:CRIADA   ultima aparicao: T8
+  Rbxh1E0CJn   T8:CRIADA   ultima aparicao: T8
+  zZN6IZPVfM   T8:CRIADA   ultima aparicao: T8
+  GovyAiktcy   T8:CRIADA   ultima aparicao: T8
+  Pa-C8Bmr9F   T8:CRIADA   ultima aparicao: T8
+  a1lYRJzvrJ   T8:CRIADA   ultima aparicao: T8
+
+Criadas por turno: {1: 0, 2: 0, 3: 0, 4: 0, 5: 2, 6: 6, 7: 7, 8: 6}
+  F--PiJszG: terminou T6 TAPPED e nao desvirou em T7 -> SUMIU (sacrificada, morta ou apagada)
+  QaM6nMtBe: terminou T7 TAPPED e nao desvirou em T8 -> SUMIU (sacrificada, morta ou apagada)
+  olyMYvYre: terminou T7 TAPPED e nao desvirou em T8 -> SUMIU (sacrificada, morta ou apagada)
+  24DnlO5iG: ainda aparece no ultimo turno T8 (tap); ultimo turno, sem turno seguinte pra decidir
+  QDERyYy7DV: ainda aparece no ultimo turno T8 (tap); ultimo turno, sem turno seguinte pra decidir
+  c7NtHaVSK: ainda aparece no ultimo turno T8 (untap); ultimo turno, sem turno seguinte pra decidir
+  aacBYMh68X: ainda aparece no ultimo turno T8 (tap); ultimo turno, sem turno seguinte pra decidir
+  mdDSOz_RZI: ainda aparece no ultimo turno T8 (tap); ultimo turno, sem turno seguinte pra decidir
+  -AVzM4L45: ainda aparece no ultimo turno T8 (tap); ultimo turno, sem turno seguinte pra decidir
+  rM8ZZ1INdR: ainda aparece no ultimo turno T8 (tap); ultimo turno, sem turno seguinte pra decidir
+  wnNaOBFq7: terminou T7 destapada (CRIADA) e sem linha depois -> INDETERMINADO (tratada como viva)
+  W-tBznzKOE: terminou T7 destapada (CRIADA) e sem linha depois -> INDETERMINADO (tratada como viva)
+  fdjpAaOtO: terminou T7 destapada (CRIADA) e sem linha depois -> INDETERMINADO (tratada como viva)
+  muKCqjs530: terminou T7 destapada (CRIADA) e sem linha depois -> INDETERMINADO (tratada como viva)
+  gLSKcL5Xyg: ainda aparece no ultimo turno T8 (tap); ultimo turno, sem turno seguinte pra decidir
+  -0-nmPbWL: ainda aparece no ultimo turno T8 (CRIADA); ultimo turno, sem turno seguinte pra decidir
+  Rbxh1E0CJn: ainda aparece no ultimo turno T8 (CRIADA); ultimo turno, sem turno seguinte pra decidir
+  zZN6IZPVfM: ainda aparece no ultimo turno T8 (CRIADA); ultimo turno, sem turno seguinte pra decidir
+  GovyAiktcy: ainda aparece no ultimo turno T8 (CRIADA); ultimo turno, sem turno seguinte pra decidir
+  Pa-C8Bmr9F: ainda aparece no ultimo turno T8 (CRIADA); ultimo turno, sem turno seguinte pra decidir
+  a1lYRJzvrJ: ainda aparece no ultimo turno T8 (CRIADA); ultimo turno, sem turno seguinte pra decidir

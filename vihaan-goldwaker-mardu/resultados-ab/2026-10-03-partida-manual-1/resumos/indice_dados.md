@@ -1,0 +1,5 @@
+| arquivo | conteúdo |
+|---|---|
+| `oraculo_ao_vivo.json` | 1a consulta ao Scryfall: oráculo das 30 cartas do log, **sem rulings** (SUPERADO por `oraculo_rulings_ao_vivo.json`; guardado, não apagado) |
+| `oraculo_rulings_ao_vivo.json` | oráculo bruto do Scryfall + rulings de 29 cartas (Boros Charm, Tainted Peak, Mirkwood Bats, Pitiless Plunderer, Prosper, Tome-Bound, Arcane Signet, Mountain, Dragonskull Summit, Mahadi, Emporium Master, Path of Ancestry, Vihaan, Goldwaker, Battlefield Forge, Desolate Mire, Wheel of Fortune, Dictate of Erebos, Sol Ring, Aya of Alexandria, Path to Exile, Captain Lannery Storm, Zulaport Cutthroat, Magda, the Hoardmaster, Rakdos Signet, Sevinne's Reclamation, The Reaver Cleaver, The Eldest Reborn, Lotho, Corrupt Shirriff, Monologue Tax, Blood Money, Swamp; 70 rulings no total), lidos ao vivo em 2026-10-03 antes de escrever o código |
+| `partida.json.xz` | o log da partida manual (Archidekt playtester): lista de 8 turnos, 183 registros no total; cada registro = nome, id, tapped, token, counters, fromZone, toZone, zone |

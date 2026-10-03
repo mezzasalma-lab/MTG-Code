@@ -1,0 +1,591 @@
+{
+ "Boros Charm": {
+  "name": "Boros Charm",
+  "type_line": "Instant",
+  "mana_cost": "{R}{W}",
+  "oracle_text": "Choose one —\n• Boros Charm deals 4 damage to target player or planeswalker.\n• Permanents you control gain indestructible until end of turn.\n• Target creature gains double strike until end of turn.",
+  "card_faces": null,
+  "power": null,
+  "toughness": null,
+  "rulings": [
+   {
+    "published_at": "2024-11-08",
+    "comment": "Boros Charm's second mode affects only permanents you control at the time it resolves. It won't affect permanents that come under your control later in the turn."
+   },
+   {
+    "published_at": "2024-11-08",
+    "comment": "Planeswalkers with indestructible will still have loyalty counters removed from them as they are dealt damage. If a planeswalker with indestructible has no loyalty counters, it will still be put into its owner's graveyard, as the rule that does this doesn't destroy the planeswalker."
+   }
+  ]
+ },
+ "Tainted Peak": {
+  "name": "Tainted Peak",
+  "type_line": "Land",
+  "mana_cost": "",
+  "oracle_text": "{T}: Add {C}.\n{T}: Add {B} or {R}. Activate only if you control a Swamp.",
+  "card_faces": null,
+  "power": null,
+  "toughness": null,
+  "rulings": []
+ },
+ "Mirkwood Bats": {
+  "name": "Mirkwood Bats",
+  "type_line": "Creature — Bat",
+  "mana_cost": "{3}{B}",
+  "oracle_text": "Flying\nWhenever you create or sacrifice a token, each opponent loses 1 life.",
+  "card_faces": null,
+  "power": "2",
+  "toughness": "3",
+  "rulings": []
+ },
+ "Pitiless Plunderer": {
+  "name": "Pitiless Plunderer",
+  "type_line": "Creature — Human Pirate",
+  "mana_cost": "{3}{B}",
+  "oracle_text": "Whenever another creature you control dies, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "card_faces": null,
+  "power": "1",
+  "toughness": "4",
+  "rulings": [
+   {
+    "published_at": "2018-01-19",
+    "comment": "If Pitiless Plunderer dies at the same time as one or more other creatures you control, its ability will still trigger for each of those other creatures."
+   }
+  ]
+ },
+ "Prosper, Tome-Bound": {
+  "name": "Prosper, Tome-Bound",
+  "type_line": "Legendary Creature — Tiefling Warlock",
+  "mana_cost": "{2}{B}{R}",
+  "oracle_text": "Deathtouch\nMystic Arcanum — At the beginning of your end step, exile the top card of your library. Until the end of your next turn, you may play that card.\nPact Boon — Whenever you play a card from exile, create a Treasure token.",
+  "card_faces": null,
+  "power": "1",
+  "toughness": "4",
+  "rulings": [
+   {
+    "published_at": "2021-07-23",
+    "comment": "You must still pay all costs and follow all timing rules for cards played with the Mystic Arcanum ability."
+   },
+   {
+    "published_at": "2021-07-23",
+    "comment": "The Pact Boon ability triggers whenever you play any cards from exile, not just those exiled with the Mystic Arcanum ability."
+   }
+  ]
+ },
+ "Arcane Signet": {
+  "name": "Arcane Signet",
+  "type_line": "Artifact",
+  "mana_cost": "{2}",
+  "oracle_text": "{T}: Add one mana of any color in your commander's color identity.",
+  "card_faces": null,
+  "power": null,
+  "toughness": null,
+  "rulings": [
+   {
+    "published_at": "2020-11-10",
+    "comment": "If you don't have a commander, Arcane Signet's ability produces no mana."
+   },
+   {
+    "published_at": "2020-11-10",
+    "comment": "If your commander is a card that has no colors in its color identity, Arcane Signet's ability produces no mana. It doesn't produce {C}."
+   },
+   {
+    "published_at": "2020-11-10",
+    "comment": "If you have two commanders, the ability adds one mana of any color in their combined color identities."
+   }
+  ]
+ },
+ "Mountain": {
+  "name": "Mountain",
+  "type_line": "Basic Land — Mountain",
+  "mana_cost": "",
+  "oracle_text": "({T}: Add {R}.)",
+  "card_faces": null,
+  "power": null,
+  "toughness": null,
+  "rulings": []
+ },
+ "Dragonskull Summit": {
+  "name": "Dragonskull Summit",
+  "type_line": "Land",
+  "mana_cost": "",
+  "oracle_text": "This land enters tapped unless you control a Swamp or a Mountain.\n{T}: Add {B} or {R}.",
+  "card_faces": null,
+  "power": null,
+  "toughness": null,
+  "rulings": [
+   {
+    "published_at": "2009-10-01",
+    "comment": "This checks for lands you control with the land type Swamp or Mountain, not for lands named Swamp or Mountain. The lands it checks for don't have to be basic lands. For example, if you control Stomping Ground (a nonbasic land with the land types Mountain and Forest), Dragonskull Summit will enter untapped."
+   },
+   {
+    "published_at": "2009-10-01",
+    "comment": "As this is entering, it checks for lands that are already on the battlefield. It won't see lands that are entering at the same time (due to Warp World, for example)."
+   }
+  ]
+ },
+ "Mahadi, Emporium Master": {
+  "name": "Mahadi, Emporium Master",
+  "type_line": "Legendary Creature — Devil",
+  "mana_cost": "{1}{B}{R}",
+  "oracle_text": "At the beginning of your end step, create a Treasure token for each creature that died this turn. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "card_faces": null,
+  "power": "3",
+  "toughness": "3",
+  "rulings": []
+ },
+ "Path of Ancestry": {
+  "name": "Path of Ancestry",
+  "type_line": "Land",
+  "mana_cost": "",
+  "oracle_text": "This land enters tapped.\n{T}: Add one mana of any color in your commander's color identity. When that mana is spent to cast a creature spell that shares a creature type with your commander, scry 1. (Look at the top card of your library. You may put that card on the bottom.)",
+  "card_faces": null,
+  "power": null,
+  "toughness": null,
+  "rulings": [
+   {
+    "published_at": "2023-07-28",
+    "comment": "If you have two commanders, the last ability adds one mana of any color in their combined color identities. When you spend that mana on a creature spell that shares a creature type with either of your commanders, you'll scry 1."
+   },
+   {
+    "published_at": "2023-07-28",
+    "comment": "Your commander's creature types are checked immediately after you cast a creature spell spending mana from Path of Ancestry's last ability. They aren't set before the game begins, and they may not be the same types your commander had when you activated that ability."
+   },
+   {
+    "published_at": "2020-11-10",
+    "comment": "If your commander has no creature types, it can't share a creature type with any spell that you cast."
+   },
+   {
+    "published_at": "2020-11-10",
+    "comment": "If you don't have a commander, Path of Ancestry's ability produces no mana."
+   },
+   {
+    "published_at": "2020-11-10",
+    "comment": "If Path of Ancestry's last ability produces two mana (most likely due to Mana Reflection), spending those two mana to cast creature spells that share a creature type with your commander will cause two abilities to trigger. Each of those abilities will cause you to scry 1. You won't scry 2. This is true whether you spend the mana on one creature spell or two."
+   },
+   {
+    "published_at": "2020-11-10",
+    "comment": "If you cast your commander with mana from Path of Ancestry, and your commander hasn't somehow lost all of its creature types while on the stack, you'll scry 1."
+   },
+   {
+    "published_at": "2020-11-10",
+    "comment": "If your commander is a card that has no colors in its color identity, Path of Ancestry's ability produces no mana. It doesn't produce {C}."
+   }
+  ]
+ },
+ "Vihaan, Goldwaker": {
+  "name": "Vihaan, Goldwaker",
+  "type_line": "Legendary Creature — Dwarf Warlock",
+  "mana_cost": "{R}{W}{B}",
+  "oracle_text": "Other outlaws you control have vigilance and haste. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws.)\nAt the beginning of combat on your turn, you may have Treasures you control become 3/3 Construct Assassin artifact creatures in addition to their other types until end of turn.",
+  "card_faces": null,
+  "power": "3",
+  "toughness": "3",
+  "rulings": [
+   {
+    "published_at": "2024-04-12",
+    "comment": "If a Treasure you control is already a creature when Vihaan’s second ability resolves and you choose to apply its effect to all Treasures you control, that effect will overwrite any previous effects that set that creature’s power and toughness to specific numbers. Effects that otherwise modify its power and toughness will still apply no matter when they took effect. The same is true for +1/+1 counters."
+   },
+   {
+    "published_at": "2024-04-12",
+    "comment": "Treasures you control will keep any abilities they previously had while they’re creatures."
+   },
+   {
+    "published_at": "2024-04-12",
+    "comment": "A card, spell, or permanent is an outlaw if it has the Assassin, Mercenary, Pirate, Rogue, or Warlock creature type. It doesn’t matter if it has more than one of those creature types; as long as it has at least one, it’s an outlaw."
+   },
+   {
+    "published_at": "2024-04-12",
+    "comment": "Outlaw is not a creature type. If an effect asks you to choose a creature type, you can’t choose outlaw."
+   },
+   {
+    "published_at": "2024-04-12",
+    "comment": "If an ability refers to an outlaw or whether a player controls an outlaw, it’s referring only to permanents with one or more of the creature types specified above. Notably, it’s not referring to any spell or card not on the battlefield. However, other abilities may refer to an “outlaw spell” or “outlaw card” in a zone other than the battlefield. Those abilities refer to spells and cards with one or more of the specified creature types."
+   }
+  ]
+ },
+ "Battlefield Forge": {
+  "name": "Battlefield Forge",
+  "type_line": "Land",
+  "mana_cost": "",
+  "oracle_text": "{T}: Add {C}.\n{T}: Add {R} or {W}. This land deals 1 damage to you.",
+  "card_faces": null,
+  "power": null,
+  "toughness": null,
+  "rulings": [
+   {
+    "published_at": "2015-06-22",
+    "comment": "Like most lands, each land in this cycle is colorless. The damage dealt to you is dealt by a colorless source."
+   },
+   {
+    "published_at": "2015-06-22",
+    "comment": "The damage dealt to you is part of the second mana ability. It doesn't use the stack and can't be responded to."
+   }
+  ]
+ },
+ "Desolate Mire": {
+  "name": "Desolate Mire",
+  "type_line": "Land",
+  "mana_cost": "",
+  "oracle_text": "{1}, {T}: Add {W}{B}.",
+  "card_faces": null,
+  "power": null,
+  "toughness": null,
+  "rulings": []
+ },
+ "Wheel of Fortune": {
+  "name": "Wheel of Fortune",
+  "type_line": "Sorcery",
+  "mana_cost": "{2}{R}",
+  "oracle_text": "Each player discards their hand, then draws seven cards.",
+  "card_faces": null,
+  "power": null,
+  "toughness": null,
+  "rulings": []
+ },
+ "Dictate of Erebos": {
+  "name": "Dictate of Erebos",
+  "type_line": "Enchantment",
+  "mana_cost": "{3}{B}{B}",
+  "oracle_text": "Flash\nWhenever a creature you control dies, each opponent sacrifices a creature of their choice.",
+  "card_faces": null,
+  "power": null,
+  "toughness": null,
+  "rulings": [
+   {
+    "published_at": "2014-04-26",
+    "comment": "When the triggered ability resolves, first the player whose turn it is (if that player is an opponent) chooses which creature they will sacrifice, then each other opponent in turn order does the same, then all chosen creatures are sacrificed at the same time."
+   },
+   {
+    "published_at": "2014-04-26",
+    "comment": "None of the opponents are targeted. An opponent with hexproof would still sacrifice a creature."
+   },
+   {
+    "published_at": "2014-04-26",
+    "comment": "If multiple creatures you control die at the same time, Dictate of Erebos's triggered ability will trigger that many times."
+   },
+   {
+    "published_at": "2014-04-26",
+    "comment": "If you control more than one Dictate of Erebos and a creature you control dies, each of the triggered abilities will trigger. Each opponent will sacrifice a creature each time one of those abilities resolves."
+   },
+   {
+    "published_at": "2014-04-26",
+    "comment": "If you and an opponent each control a Dictate of Erebos and a creature dies, a chain reaction happens. First the ability of one player's Dictate of Erebos will trigger, causing each opponent to sacrifice a creature. That sacrifice causes the ability of the other player's Dictate of Erebos to trigger, and so on."
+   }
+  ]
+ },
+ "Sol Ring": {
+  "name": "Sol Ring",
+  "type_line": "Artifact",
+  "mana_cost": "{1}",
+  "oracle_text": "{T}: Add {C}{C}.",
+  "card_faces": null,
+  "power": null,
+  "toughness": null,
+  "rulings": []
+ },
+ "Aya of Alexandria": {
+  "name": "Aya of Alexandria",
+  "type_line": "Legendary Creature — Human Assassin",
+  "mana_cost": "{2}{R}{W}",
+  "oracle_text": "Menace, lifelink\nWhenever a historic creature you control deals combat damage to a player, create a 1/1 black Assassin creature token with menace. (Artifacts, legendaries, and Sagas are historic.)",
+  "card_faces": null,
+  "power": "4",
+  "toughness": "3",
+  "rulings": [
+   {
+    "published_at": "2024-07-05",
+    "comment": "A card, spell, or permanent is historic if it has the legendary supertype, the artifact card type, or the Saga subtype. Having two of those qualities doesn’t make an object more historic than another or provide an additional bonus—an object either is historic or it isn’t."
+   },
+   {
+    "published_at": "2024-07-05",
+    "comment": "Some abilities trigger “whenever you cast a historic spell.” Such an ability resolves before the spell that caused it to trigger. It resolves even if that spell is countered."
+   },
+   {
+    "published_at": "2024-07-05",
+    "comment": "An ability that triggers “whenever you cast a historic spell” doesn’t trigger if a historic card is put onto the battlefield without being cast."
+   },
+   {
+    "published_at": "2024-07-05",
+    "comment": "Lands are never cast, so abilities that trigger “whenever you cast a historic spell” won’t trigger if you play a legendary land. They also won’t trigger if a card on the battlefield transforms into a card with the legendary supertype, the artifact card type, or the Saga subtype."
+   }
+  ]
+ },
+ "Path to Exile": {
+  "name": "Path to Exile",
+  "type_line": "Instant",
+  "mana_cost": "{W}",
+  "oracle_text": "Exile target creature. Its controller may search their library for a basic land card, put that card onto the battlefield tapped, then shuffle.",
+  "card_faces": null,
+  "power": null,
+  "toughness": null,
+  "rulings": [
+   {
+    "published_at": "2026-01-27",
+    "comment": "The controller of the exiled creature isn't required to search their library for a basic land. If that player doesn't, the player won't shuffle their library."
+   },
+   {
+    "published_at": "2026-01-27",
+    "comment": "If the target creature is an illegal target by the time Path to Exile tries to resolve, it won't resolve and none of its effects will happen. The creature's controller won't search for a basic land card."
+   }
+  ]
+ },
+ "Captain Lannery Storm": {
+  "name": "Captain Lannery Storm",
+  "type_line": "Legendary Creature — Human Pirate",
+  "mana_cost": "{2}{R}",
+  "oracle_text": "Haste\nWhenever Captain Lannery Storm attacks, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")\nWhenever you sacrifice a Treasure, Captain Lannery Storm gets +1/+0 until end of turn.",
+  "card_faces": null,
+  "power": "2",
+  "toughness": "2",
+  "rulings": [
+   {
+    "published_at": "2017-09-29",
+    "comment": "You can activate the mana ability of a Treasure even if you have nothing to spend that mana on."
+   },
+   {
+    "published_at": "2017-09-29",
+    "comment": "Captain Lannery Storm's last ability triggers whenever you sacrifice a Treasure for any reason, not just to activate a Treasure's mana ability."
+   },
+   {
+    "published_at": "2017-09-29",
+    "comment": "If you sacrifice Treasures to cast Captain Lannery Storm, its last ability won't trigger for those Treasures."
+   }
+  ]
+ },
+ "Zulaport Cutthroat": {
+  "name": "Zulaport Cutthroat",
+  "type_line": "Creature — Human Rogue Ally",
+  "mana_cost": "{1}{B}",
+  "oracle_text": "Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life.",
+  "card_faces": null,
+  "power": "1",
+  "toughness": "1",
+  "rulings": [
+   {
+    "published_at": "2021-03-19",
+    "comment": "If another creature you control dies at the same time as Zulaport Cutthroat, its ability triggers for that creature."
+   }
+  ]
+ },
+ "Magda, the Hoardmaster": {
+  "name": "Magda, the Hoardmaster",
+  "type_line": "Legendary Creature — Dwarf Berserker",
+  "mana_cost": "{1}{R}",
+  "oracle_text": "Whenever you commit a crime, create a tapped Treasure token. This ability triggers only once each turn. (Targeting opponents, anything they control, and/or cards in their graveyards is a crime.)\nSacrifice three Treasures: Create a 4/4 red Scorpion Dragon creature token with flying and haste. Activate only as a sorcery.",
+  "card_faces": null,
+  "power": "2",
+  "toughness": "2",
+  "rulings": [
+   {
+    "published_at": "2024-04-12",
+    "comment": "A player commits a crime as they cast a spell, activate an ability, or put a triggered ability on the stack that targets at least one opponent, at least one permanent, spell, or ability an opponent controls, and/or at least one card in an opponent’s graveyard."
+   },
+   {
+    "published_at": "2024-04-12",
+    "comment": "The spell or ability that constituted a crime doesn’t have to have resolved yet or at all. As soon as you’re finished casting the spell, activating the ability, or putting the triggered ability on the stack, you’ve committed a crime."
+   },
+   {
+    "published_at": "2024-04-12",
+    "comment": "For example, an ability that triggers when you cast a spell that targets an opponent will trigger at the same time as an ability that triggers whenever you commit a crime. Those abilities can be put on the stack in either order (if you control them both), and they’ll both resolve before the spell that caused them to trigger."
+   },
+   {
+    "published_at": "2024-04-12",
+    "comment": "A player can commit only one crime per spell or ability they control. Targeting multiple opponents, permanents, spells, abilities, and/or cards with the same spell or ability doesn’t constitute committing multiple crimes."
+   },
+   {
+    "published_at": "2024-04-12",
+    "comment": "Changing the target or targets of a spell or ability won’t affect whether or not the controller of that spell or ability has committed a crime. Only the initial targets chosen for that spell or ability are used to determine whether or not its controller committed a crime."
+   }
+  ]
+ },
+ "Rakdos Signet": {
+  "name": "Rakdos Signet",
+  "type_line": "Artifact",
+  "mana_cost": "{2}",
+  "oracle_text": "{1}, {T}: Add {B}{R}.",
+  "card_faces": null,
+  "power": null,
+  "toughness": null,
+  "rulings": []
+ },
+ "Sevinne's Reclamation": {
+  "name": "Sevinne's Reclamation",
+  "type_line": "Sorcery",
+  "mana_cost": "{2}{W}",
+  "oracle_text": "Return target permanent card with mana value 3 or less from your graveyard to the battlefield. If this spell was cast from a graveyard, you may copy this spell and may choose a new target for the copy.\nFlashback {4}{W} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+  "card_faces": null,
+  "power": null,
+  "toughness": null,
+  "rulings": [
+   {
+    "published_at": "2025-06-06",
+    "comment": "A spell cast using flashback will always be exiled afterward, whether it resolves, is countered, or leaves the stack in some other way."
+   },
+   {
+    "published_at": "2025-06-06",
+    "comment": "You can cast a spell using flashback even if it was somehow put into your graveyard without having been cast."
+   },
+   {
+    "published_at": "2025-06-06",
+    "comment": "To determine the total cost of a spell, start with the mana cost or alternative cost (such as a flashback cost) you're paying, add any cost increases, then apply any cost reductions. The mana value of the spell is determined only by its mana cost, no matter what the total cost to cast the spell was."
+   },
+   {
+    "published_at": "2025-06-06",
+    "comment": "You must still follow any timing restrictions and permissions, including those based on the card's type. For instance, you can cast a sorcery using flashback only when you could normally cast a sorcery."
+   },
+   {
+    "published_at": "2025-06-06",
+    "comment": "\"Flashback [cost]\" means \"You may cast this card from your graveyard if the resulting spell is an instant or sorcery spell by paying [cost] rather than paying its mana cost\" and \"If the flashback cost was paid, exile this card instead of putting it anywhere else any time it would leave the stack.\""
+   },
+   {
+    "published_at": "2025-06-06",
+    "comment": "If a card with flashback is put into your graveyard during your turn, you can cast it if it's legal to do so before any other player can take any actions."
+   },
+   {
+    "published_at": "2024-06-07",
+    "comment": "A permanent card is an artifact, battle, creature, enchantment, land, or planeswalker card."
+   },
+   {
+    "published_at": "2019-08-23",
+    "comment": "The copy that Sevinne's Reclamation creates is created on the stack, so it's not \"cast.\" Abilities that trigger when a player casts a spell won't trigger. The copy wasn't cast from a graveyard, so it won't make another copy of itself."
+   },
+   {
+    "published_at": "2019-08-23",
+    "comment": "If you cast Sevinne's Reclamation from your graveyard, any abilities that trigger as the permanent card returns to the battlefield will resolve before the copy of Sevinne's Reclamation resolves but after new targets for the copy have been chosen."
+   },
+   {
+    "published_at": "2019-08-23",
+    "comment": "If a card in a graveyard has {X} in its mana cost, X is considered to be 0."
+   },
+   {
+    "published_at": "2019-08-23",
+    "comment": "If the target card is an illegal target by the time Sevinne's Reclamation tries to resolve, the spell doesn't resolve. You won't copy it if you cast it from a graveyard."
+   }
+  ]
+ },
+ "The Reaver Cleaver": {
+  "name": "The Reaver Cleaver",
+  "type_line": "Legendary Artifact — Equipment",
+  "mana_cost": "{2}{R}",
+  "oracle_text": "Equipped creature gets +1/+1 and has trample and \"Whenever this creature deals combat damage to a player or planeswalker, create that many Treasure tokens.\"\nEquip {3}",
+  "card_faces": null,
+  "power": null,
+  "toughness": null,
+  "rulings": []
+ },
+ "The Eldest Reborn": {
+  "name": "The Eldest Reborn",
+  "type_line": "Enchantment — Saga",
+  "mana_cost": "{4}{B}",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Each opponent sacrifices a creature or planeswalker of their choice.\nII — Each opponent discards a card.\nIII — Put target creature or planeswalker card from a graveyard onto the battlefield under your control.",
+  "card_faces": null,
+  "power": null,
+  "toughness": null,
+  "rulings": [
+   {
+    "published_at": "2018-04-27",
+    "comment": "When the first chapter ability of The Eldest Reborn resolves, the next opponent in turn order (or, if it's an opponent's turn, that opponent) chooses a creature or planeswalker they control, then each other opponent in turn order (if any) does the same. All chosen permanents are then sacrificed at the same time. Players will know the choices made by earlier players when making their choices."
+   },
+   {
+    "published_at": "2018-04-27",
+    "comment": "When the second chapter ability of The Eldest Reborn resolves, the next opponent in turn order (or, if it's an opponent's turn, that opponent) chooses a card in hand without revealing it, then each other opponent in turn order (if any) does the same. All chosen cards are then discarded at the same time."
+   },
+   {
+    "published_at": "2018-04-27",
+    "comment": "In a multiplayer game, if a player leaves the game, all cards that player owns leave as well. If you leave the game, the permanent you control from The Eldest Reborn's final chapter ability is exiled."
+   },
+   {
+    "published_at": "2018-04-27",
+    "comment": "As a Saga enters the battlefield, its controller puts a lore counter on it. As your precombat main phase begins (immediately after your draw step), you put another lore counter on each Saga you control. Putting a lore counter on a Saga in either of these ways doesn't use the stack."
+   },
+   {
+    "published_at": "2018-04-27",
+    "comment": "Each symbol on the left of a Saga's text box represents a chapter ability. A chapter ability is a triggered ability that triggers when a lore counter that is put on the Saga causes the number of lore counters on the Saga to become equal to or greater than the ability's chapter number. Chapter abilities are put onto the stack and may be responded to."
+   },
+   {
+    "published_at": "2018-04-27",
+    "comment": "A chapter ability doesn't trigger if a lore counter is put on a Saga that already had a number of lore counters greater than or equal to that chapter's number. For example, the third lore counter put on a Saga causes the III chapter ability to trigger, but I and II won't trigger again."
+   },
+   {
+    "published_at": "2018-04-27",
+    "comment": "Once a chapter ability has triggered, the ability on the stack won't be affected if the Saga gains or loses counters, or if it leaves the battlefield."
+   },
+   {
+    "published_at": "2018-04-27",
+    "comment": "If multiple chapter abilities trigger at the same time, their controller puts them on the stack in any order. If any of them require targets, those targets are chosen as you put the abilities on the stack, before any of those abilities resolve."
+   },
+   {
+    "published_at": "2018-04-27",
+    "comment": "If counters are removed from a Saga, the appropriate chapter abilities will trigger again when the Saga receives lore counters. Removing lore counters won't cause a previous chapter ability to trigger."
+   },
+   {
+    "published_at": "2018-04-27",
+    "comment": "Once the number of lore counters on a Saga is greater than or equal to the greatest number among its chapter abilities—in the Dominaria set, this is always three—the Saga's controller sacrifices it as soon as its chapter ability has left the stack, most likely by resolving or being countered. This state-based action doesn't use the stack."
+   }
+  ]
+ },
+ "Lotho, Corrupt Shirriff": {
+  "name": "Lotho, Corrupt Shirriff",
+  "type_line": "Legendary Creature — Halfling Rogue",
+  "mana_cost": "{W}{B}",
+  "oracle_text": "Whenever a player casts their second spell each turn, you lose 1 life and create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "card_faces": null,
+  "power": "2",
+  "toughness": "1",
+  "rulings": [
+   {
+    "published_at": "2023-06-16",
+    "comment": "Spells that were cast before Lotho, Corrupt Shirriff count. If Lotho, Corrupt Shirriff was the first spell you cast this turn, the next spell you cast this turn is your second spell."
+   }
+  ]
+ },
+ "Monologue Tax": {
+  "name": "Monologue Tax",
+  "type_line": "Enchantment",
+  "mana_cost": "{2}{W}",
+  "oracle_text": "Whenever an opponent casts their second spell each turn, you create a Treasure token.",
+  "card_faces": null,
+  "power": null,
+  "toughness": null,
+  "rulings": [
+   {
+    "published_at": "2021-04-16",
+    "comment": "Nothing special happens on the third spell, fourth spell, and so on."
+   },
+   {
+    "published_at": "2021-04-16",
+    "comment": "It doesn't matter if Monologue Tax was on the battlefield for the first spell. It also doesn't matter if that first spell resolved or not."
+   },
+   {
+    "published_at": "2021-04-16",
+    "comment": "The ability can trigger once each turn for each opponent."
+   }
+  ]
+ },
+ "Blood Money": {
+  "name": "Blood Money",
+  "type_line": "Sorcery",
+  "mana_cost": "{5}{B}{B}",
+  "oracle_text": "Destroy all creatures. For each nontoken creature destroyed this way, you create a tapped Treasure token.",
+  "card_faces": null,
+  "power": null,
+  "toughness": null,
+  "rulings": [
+   {
+    "published_at": "2022-06-10",
+    "comment": "If a creature isn't destroyed this way for some reason, such as having indestructible or being regenerated, Blood Money's controller will not create a Treasure token for it."
+   }
+  ]
+ },
+ "Swamp": {
+  "name": "Swamp",
+  "type_line": "Basic Land — Swamp",
+  "mana_cost": "",
+  "oracle_text": "({T}: Add {B}.)",
+  "card_faces": null,
+  "power": null,
+  "toughness": null,
+  "rulings": []
+ }
+}

@@ -1,5 +1,7 @@
 # Goldfish Log — Vihaan, Goldwaker
 
+> **Dados brutos e como reproduzir as tabelas da seção Partida manual #1 do Vihaan (2026-10-03):** [`resultados-ab/2026-10-03-partida-manual-1/LEIAME.md`](resultados-ab/2026-10-03-partida-manual-1/LEIAME.md) — o log da partida (`.json.xz`), oráculo e rulings ao vivo, scripts, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
 > **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: Sephiroth (2026-10-03):** [`resultados-ab/2026-10-03-sephiroth/LEIAME.md`](resultados-ab/2026-10-03-sephiroth/LEIAME.md) — brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
 > **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: Treasure animado, mulligan e terreno tapped (2026-10-03):** [`resultados-ab/2026-10-03-treasure-animado-e-mulligan/LEIAME.md`](resultados-ab/2026-10-03-treasure-animado-e-mulligan/LEIAME.md) — brutos `.json.xz` por partida, código antes/depois, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
@@ -8,6 +10,72 @@
 
 > **Dados brutos e como reproduzir as tabelas da seção Kingpin, Wilson Fisk (2026-10-03):** [`resultados-ab/2026-10-03-kingpin/LEIAME.md`](resultados-ab/2026-10-03-kingpin/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
+
+---
+
+## Partida manual #1 do Vihaan (8 turnos, 2026-10-03) — auditoria contra o oráculo + comparação com o simulador
+
+**Pedido:** *"Analise esse Goldfish do Vihaan: Assumi algumas mortes em combate para gerar tesouros com o Mahadi, e um oponente fez 2 spells com Lotho e Tax em campo, gerando 2 tesouros fora do meu turno."* + log do Archidekt (8 turnos).
+**Veredito:**
+1. **Nenhuma jogada ilegal nos pontos que o log permite checar** (terrenos e se entram tapped, custos pagos, Pact Boon com carta jogada do exílio, gatilho de ataque da Storm, Sevinne's do exílio e depois flashback, Mahadi voltando do cemitério). A conta de mana fecha **exatamente** em T2, T3, T4 e T8.
+2. **Treasures: 21 criados (2 / 6 / 7 / 6 em T5–T8). Só T5 fecha sozinho.** T6 e T7 só fecham com duas informações que o log não registra (o dano do equipado com o Reaver Cleaver e quantas mortes você assumiu); abaixo está a conta, com as fórmulas, para você confirmar. **Pelo oráculo, T7 teria no mínimo 6 e até 10 Treasures; o log tem 7.**
+3. **Dois pontos de regra que dependem de você:** o contador +1/+1 do Treasure em T7 (se marcava o Cleaver, o equip não podia ter sido naquele momento) e o **The Eldest Reborn do oponente** (o capítulo I aparece, você sacrificou o Zulaport; o capítulo II, "descarte uma carta", não aparece).
+4. **Contra o simulador (medido):** 21 Treasures até o T8 está no ~**P90** do simulador (9,8% dos jogos do modo padrão chegam a 21; 3,4% no modo resiliência). Achei **4 lacunas reais no simulador** que esta partida exercita, todas confirmadas por teste direto no código: (a) ele **nunca joga o terreno que o Prosper exila** (você fez isso em T5: Desolate Mire + Treasure do Pact Boon); (b) uma **mágica jogada do exílio vira permanente no campo e o efeito nunca resolve** (o Blood Money exilado não destrói nada; a Sevinne's do exílio de T6 não devolveria o Mahadi); (c) mágica do exílio e **flashback não contam como "spell cast"**, então o Lotho de T7 e T8 não dispararia, e o Lotho conjurado como 2ª mágica **dispara contra si mesmo**; (d) a 3ª cláusula da Storm (*+1/+0 por Treasure sacrificado*) **não existe**; no seu T6, com o Cleaver, vale 1 Treasure.
+
+### 1. Sequência verificada turno a turno (ids do log; só o que o oráculo permite checar)
+| T | O que o log mostra | Oráculo / regra | Status |
+|---|---|---|---|
+| 1 | Dragonskull Summit (tapped) com Mountain na mão | *enters tapped unless you control a Swamp or a Mountain*: sem Mountain em campo, entra tapped; é a jogada "tapped primeiro" | ✅ |
+| 2 | Mountain; Mountain + Summit → Arcane Signet | 2 mana, custo 2 | ✅ |
+| 3 | Path of Ancestry (tapped); Signet + Summit + Mountain → Vihaan | custo {R}{W}{B}; Signet dá W | ✅ |
+| 4 | Forge; Path + Signet + Mountain + Forge → Prosper; Vihaan ataca; Prosper exila Desolate Mire no end step; Wheel do oponente descarta 5 cartas | custo 4; **5 fontes disponíveis, 4 usadas** (Summit sem usar) | ✅ (1 mana sem uso) |
+| 5 | **Desolate Mire jogada do exílio → Treasure**; Sol Ring, Rakdos Signet, Zulaport, Storm; Storm ataca → Treasure; Prosper exila Sevinne's | Pact Boon dispara ao **jogar qualquer carta do exílio** (ruling 2021-07-23), terreno inclusive; Storm: *whenever attacks, create a Treasure* | ✅ 2 Treasures = 1 Pact Boon + 1 Storm (**fecha**) |
+| 6 | Sevinne's **do exílio** → Mahadi (MV3) volta; Reaver Cleaver; Storm ataca e morre; Eldest Reborn do oponente; Prosper exila Lotho; Zulaport morre | Pact Boon (+1) ao conjurar do exílio; alvo MV ≤3 ✓; Mahadi só conta mortes **do meu turno** (Zulaport morreu no turno do oponente, não conta) | ✅ regras; Treasures: ver §2 |
+| 7 | Lotho **do exílio**; Monologue Tax; Prosper exila Blood Money | Pact Boon ao jogar Lotho do exílio; Lotho dispara na **2ª mágica de qualquer jogador** (a Tax foi a minha 2ª) | ⚠️ ver §2 |
+| 8 | Swamp; Sevinne's **flashback** → Zulaport; Dictate of Erebos | flashback {4}{W} = 5 ✓, exila depois ✓; Dictate 5 ✓ | ✅ regras; fontes sem Treasure = 10 = 5 + 5 |
+
+### 2. Conta de Treasures (log × oráculo)
+Mana por turno (`resumos/ledger_mana.txt`): fontes líquidas sem contar Treasure = gasto em T2 (2), T3 (3), T4 (4 + 1 sem uso), **T8 (10 = Sevinne's 5 + Dictate 5)**; sobras de **+1 em T5** e **+3 em T6 e em T7**, que são exatamente o custo do **Equip {3} do Reaver Cleaver** (o log não registra o equip: é inferência).
+Treasures "tapped" que **continuam** no turno seguinte = atacantes marcados (a animação do Vihaan dá vigilância aos outlaws, então o toque é só marcação); os que **somem** = mortos/sacrificados: T6 some 1 (F--PiJszG), T7 somem 2 (olyMYvYre, QaM6nMtBe) — **são as mortes que você disse ter assumido em combate**.
+
+| Turno | Linhas "criada" no log | Fontes pelo oráculo | Fecha? |
+|---|---|---|---|
+| T5 | 2 | Pact Boon (Mire do exílio) 1 + Storm ataque 1 | ✅ exato |
+| T6 | 6 | Pact Boon (Sevinne's do exílio) 1 + Storm ataque 1 = **2 certos**; restam 4 = **Cleaver (dano do Storm equipado: 3, ou 4 se o Treasure F sacrificado deu +1/+0)** + **Mahadi (criaturas mortas no meu turno: Storm, mais as que você assumiu)** | só com c + m = 4 (não dá pra separar pelo log) |
+| T7 | 7 | Pact Boon (Lotho do exílio) 1 + Lotho na 2ª mágica (Tax) 1 = **2 certos**; + Mahadi (≥2: olyMYvYre e QaM6nMtBe) + Cleaver (0–4) + as **2 de fora do turno** (Lotho + Tax numa 2ª mágica do oponente) | **6 a 10 esperados × 7 no log** |
+| T8 | 6 | **Lotho na 2ª mágica (Dictate; a Sevinne's em flashback foi a 1ª; sem Pact Boon porque saiu do cemitério, não do exílio) = 1 certo** + Mahadi (m mortes assumidas): 1 + m = 6, logo m = 5 se o Lotho foi contado; ou 6 mortes assumidas se ele foi esquecido. Há 7 Treasures marcados como atacantes (inferência: a mana sem Treasure já paga Sevinne's + Dictate, então os 7 toques de Treasure em T8 só podem ser atacantes marcados) | fecha com m = 5 ou 6 (depende de você); último turno, não dá pra ver o que sumiu |
+
+**Onde está o buraco, por turno:** em T7 **nenhuma linha "criada" aparece junto da conjuração do Lotho (Pact Boon) nem da Tax (gatilho do Lotho)**; as 4 linhas antes do end step e as 3 depois comportam duas leituras igualmente possíveis (Cleaver 4 + Mahadi 1 + oponente 2 = 7, ou Mahadi 2 + oponente 2 + 3 outras = 7), e as duas deixam de fora pelo menos 2–3 Treasures que o oráculo pede. Em T6, a Storm morta em combate dá 1 morte; se o Treasure F foi sacrificado com a Storm em campo, ela ganha **+1/+0** (ruling 2017-09-29: qualquer sacrifício) e com o Cleaver isso vira **+1 Treasure**.
+
+### 3. Dúvidas para você (o log não responde)
+1. **T6:** de onde vieram as 4 linhas além de Pact Boon e do ataque da Storm? Quanto foi o dano da Storm equipada (3 ou 4)? Quantas mortes você assumiu em T6 (só a Storm, ou o F--PiJszG também)?
+2. **T7 e T8:** os Treasures do **Pact Boon do Lotho** e do **Lotho na Tax** (T7) e do **Lotho no Dictate** (T8), com os −1 de vida de cada um, foram criados? Em quais linhas? E os 2 do oponente (Lotho + Tax), em qual bloco?
+3. **T7, o contador +1/+1 no Treasure 24DnlO5iG:** era o marcador do Cleaver? Equip só no timing de feitiço, e o Treasure só vira criatura no início do combate; se o equip foi antes, o alvo teria que ser uma criatura de verdade (Lotho tem haste pelo Vihaan; o Mahadi não).
+4. **The Eldest Reborn:** capítulo II (cada oponente descarta uma carta) deveria ocorrer no turno seguinte do jogador dele, entre T7 e T8; não há descarte no log. O capítulo III põe uma criatura de **qualquer cemitério** no controle dele depois do T8. Você descartou/vai descartar?
+5. **O que ficou na mão sem uso até o T8:** Magda (2 mana, na mão desde T4), Aya of Alexandria (4), Path to Exile (1) e a **Blood Money exilada pelo Prosper em T7, que expirou no fim do T8** (7 mana; em T8 havia **até 12 Treasures**: 15 criados até T7, 3 somem por id, e os que não geraram linha contam como vivos). Foi decisão (goldfish sem alvos, preservar Treasures) ou esquecimento? Não estou dizendo que erraram: cada uma é motor do deck (Magda é sumidouro de Treasures e dá Dragon 4/4; Blood Money com Zulaport + Mahadi + Dictate em campo é morte em massa com payoff), então a resposta muda a leitura.
+6. **Sevinne's flashback (T8):** a cópia ("you may copy this spell, new target") não foi usada. No cemitério havia Storm (MV3), Tainted Peak (MV0, terreno também é permanente) e o Zulaport usado. Foi escolha?
+
+### 4. Comparação com o simulador (medido; N=10.000, sementes 3.000.000+i, 8 turnos; simulador no estado do commit `c04840d`; `resumos/comparacao_simulador_*.txt`)
+| | partida | simulador padrão | simulador resiliência |
+|---|---|---|---|
+| Treasures criados acumulados T5 / T6 / T7 / T8 | 2 / 8 / 15 / 21 | médias 1,94 / 3,96 / 6,79 / 10,42 | 1,58 / 3,01 / 4,80 / 6,83 |
+| % dos jogos do simulador com ≥ a partida | — | 52,7 / 13,4 / 8,1 / **9,7** | 43,1 / 7,7 / 3,3 / **3,0** |
+| P(≥21 até o T8) | 21 | 9,8% (p90 = 20, p99 = 39) | 3,4% |
+| Comandante conjurado até o T3 | T3 | 92,8% | 88,0% |
+| Mana total T2 / T3 / T4 | 2 / 3 / 5 | 2,03 / 3,19 / 4,02 | 2,03 / 3,19 / 4,00 |
+
+**Leitura (medido):** a partida está no **topo ~10%** do simulador (não é outlier). Por fonte, o simulador (padrão) gera por jogo até o T8: Storm ataque 0,73, Cleaver 0,65, **Mahadi 0,44**, **Lotho (2ª mágica minha) 0,44**; **Tax e Lotho em 2ª mágica de OPONENTE: 0** (estrutural 📊: *"Whenever an opponent casts their second spell each turn"* / *"Whenever a player casts their second spell each turn"* dependem de mágicas de oponente que o simulador não modela; nunca fabriquei isso). As **mortes assumidas em combate** também não existem no simulador (sem bloqueio, sem remoção em combate), então o Mahadi do simulador é piso (as mortes dele vêm só de sacrifícios próprios e wipes).
+**Lacunas reais do simulador achadas aqui (Regra #6: cláusulas operacionais do relato, testadas no código do commit `c04840d`):**
+1. **Terreno do exílio.** `play_from_impulse` filtra terreno (`e[0] != "land"` e `ctype != "land"`), então **o terreno exilado pelo Prosper nunca é jogado** e o Pact Boon dele nunca dispara. Medido: **1,78 terrenos entram no pool de impulso por jogo (46% dos jogos têm ≥1)**, **0,38 por jogo com o Prosper em campo na hora** (0,17 na resiliência): cada um é uma jogada de terreno e um Treasure perdidos. É o que a sua T5 fez. (Fontes que dizem *play*: Prosper, Inspired Tinkering, Face-Breaker; Grenzo e Laughing Jasper Flint dizem *cast*, terreno não vale.)
+2. **Mágica do exílio.** Teste direto: com o Prosper em campo e o Blood Money no pool, `play_from_impulse` o **põe no campo como permanente** (`"Blood Money" in battlefield = True`, cemitério = False), **sem destruir nenhuma criatura**, sem contar como mágica conjurada; só o Treasure do Pact Boon sai. Vale para toda mágica exilada (feitiço ou instantânea): Blood Money, Sevinne's Reclamation, Big Score, Path to Exile...
+3. **Contagem de "spell cast" (Lotho).** `spells_cast_this_turn` só sobe em `cast_card`. Teste direto: Lotho do exílio + Monologue Tax da mão → contador 1 (o Lotho **não** dispara, o seu T7 sim); flashback da Sevinne's → contador 0 (esperado 1; o seu T8 sim). E **Sol Ring depois Lotho (2ª mágica)** → o Lotho cria 1 Treasure e tira 1 de vida **de si mesmo**, porque o teste de "Lotho em campo" roda depois de ele entrar: pelo oráculo ele estava na pilha. O Cascade (Rain of Riches) também não conta a mágica que conjura.
+4. **Storm.** *"Whenever you sacrifice a Treasure, Captain Lannery Storm gets +1/+0 until end of turn"* (ruling 2017-09-29: qualquer sacrifício; os pagos para conjurar a própria Storm não contam) não aparece no `.py`: só o gatilho de ataque. Com o Cleaver equipado nela, o "that many" cresce 1 por Treasure sacrificado antes do dano.
+**Lido como raciocínio, não medido:** o impacto dessas lacunas no win ≤T8 e no ritmo de mana só sai de um A/B depois do conserto (próxima seção do log).
+
+### Escopo verificado e NÃO verificado (Regra #7)
+- **Verificado:** terrenos (tapped/untapped), custos de todas as magias que entraram em campo, Pact Boon em T5/T6/T7, ataque da Storm, Sevinne's (exílio e flashback), identificação dos Treasures que somem (por id), conta de mana por turno (script `ledger_mana.py`), comparação por distribuição com o simulador.
+- **NÃO verificado:** o que o log não registra (equips, vida, ordem real de triggers: a ordem das linhas dentro do turno nem sempre é cronológica, como a Prosper do T6 aparecendo depois do Eldest Reborn do oponente); a atribuição exata de cada Treasure de T6/T7/T8 (precisa das suas respostas acima); se alguma carta saiu do turno certo por escolha. **Não** avaliei se as escolhas de jogo foram boas (isso exigiria os motores e o Commander Spellbook: Regra #4).
+- **Simulador:** o resto do `.py` não foi relido nesta rodada; só `play_from_impulse`, `play_land`, `cast_card`, `try_sevinne_flashback` (a cópia **está** modelada: original + cópia), `do_cascade`, o gatilho de ataque da Storm / equip / dano do Cleaver e o Lotho/Tax/Mahadi como acima.
 
 ---
 

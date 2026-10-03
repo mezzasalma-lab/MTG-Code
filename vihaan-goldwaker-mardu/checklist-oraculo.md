@@ -1,5 +1,33 @@
 # Checklist cláusula-a-cláusula — Vihaan, Goldwaker
 
+## Partida manual #1 — cláusulas das cartas que a partida exercita: log × oráculo × simulador — 2026-10-03
+
+Pedido: *"Analise esse Goldfish do Vihaan: Assumi algumas mortes em combate para gerar tesouros com o Mahadi, e um oponente fez 2 spells com Lotho e Tax em campo, gerando 2 tesouros fora do meu turno."* Tudo que sustenta a conclusão está em
+`resultados-ab/2026-10-03-partida-manual-1/` (LEIAME com o mapa arquivo → comando). Oráculo e **rulings** (70, de 29 cartas) lidos **ao vivo** no Scryfall (2026-10-03) antes da análise (Regra #3); resposta bruta em `.../dados/oraculo_rulings_ao_vivo.json`. Todas as cartas do log estão em `scryfall-cache/oracle-cache.json`.
+
+| Carta / cláusula do oráculo | Ruling relevante | Log | Simulador (`c04840d`) |
+|---|---|---|---|
+| **Prosper**, Mystic Arcanum: *at the beginning of your end step, exile the top card… until the end of your next turn, you may play that card* | Precisa seguir custos e timing normais | ✅ T4 Mire, T5 Sevinne's, T6 Lotho, T7 Blood Money | ✅ `end_step` com `deadline_turns=1`; 🐛 **terreno nunca jogado** |
+| **Prosper**, Pact Boon: *whenever you play a card from exile, create a Treasure* | dispara com **qualquer** carta jogada do exílio (2021-07-23), terreno inclusive | ✅ T5 (Mire), T6 (Sevinne's), T7 (Lotho: sem linha "criada" ao lado) | ✅ só magia não-terreno; 🐛 terreno e mágica |
+| **Lotho**: *whenever a player casts their second spell each turn, you lose 1 life and create a Treasure* | mágicas conjuradas **antes** do Lotho contam (2023-06-16) | ⚠️ T7 (Tax = 2ª), T8 (Dictate = 2ª) sem linha "criada" dedicada | ✅ só a minha 2ª mágica **da mão**; 🐛 não conta exílio/flashback/Cascade; 🐛 dispara em si mesmo se for a 2ª mágica; 📊 2ª mágica de **oponente** (estado de oponente) |
+| **Monologue Tax**: *whenever an opponent casts their second spell each turn, you create a Treasure* | uma vez por turno **por oponente**; não importa se a Tax estava em campo na 1ª mágica (2021-04-16) | ⚠️ "2 Treasures fora do meu turno" (Lotho + Tax) informados pelo usuário | 📊 `opponent_dependent` (mágica de oponente); nunca fabricado |
+| **Mahadi**: *at the beginning of your end step, create a Treasure for each creature that died this turn* | só mortes **do meu turno** | ✅ T6 volta do cemitério; Zulaport morreu no turno do oponente | ✅ `deaths_this_turn` no end step (inclui Treasure animado sacrificado); 📊 mortes assumidas em combate não existem (sem bloqueio) |
+| **Captain Lannery Storm**: *haste* / *whenever attacks, create a Treasure* | — | ✅ T5, T6 | ✅ |
+| **Storm**: *whenever you sacrifice a Treasure, +1/+0 until end of turn* | qualquer sacrifício (2017-09-29); os pagos para **conjurar** a Storm não contam | ⚠️ T6: Treasure F--PiJszG some com a Storm em campo | 🐛 **não existe** |
+| **The Reaver Cleaver**: *+1/+1, trample, whenever deals combat damage to a player, create that many Treasures* / Equip {3} | — | ⚠️ equip não registrado; sobras de mana de 3 em T6 e T7 batem com ele | ✅ equip pago, "that many" = poder + 1 (dinâmico); 🐛 sem o +1/+0 da Storm |
+| **Sevinne's Reclamation**: *return target permanent card MV ≤3 from your graveyard; if cast from a graveyard, may copy and choose a new target* / Flashback {4}{W} | permanent card inclui **terreno** (2024-06-07); a cópia não é "cast" e não copia de novo (2019-08-23); flashback exila sempre | ✅ T6 do exílio (Mahadi), T8 flashback (Zulaport); ⚠️ cópia não usada | ✅ flashback com original + cópia (`try_sevinne_flashback`); 🐛 do exílio vira permanente sem efeito; alvo exclui terreno (heurística) |
+| **Eldest Reborn** (oponente): I sacrifice / II discard / III reanimate | cada capítulo no turno do dono, depois do draw (2018-04-27) | ⚠️ I aparece (Zulaport); II e III sem registro | 📊 carta de oponente |
+| **Desolate Mire**: *{1},{T}: add {W}{B}* / **Rakdos Signet**: *{1},{T}: add {B}{R}* | +1 líquido cada | ✅ usados nas contas de mana | ✅ |
+| **Dragonskull Summit**: *enters tapped unless you control a Swamp or a Mountain* | checa os que já estão em campo | ✅ T1 tapped (sem Mountain em campo) | ✅ (`land_enters_tapped`) |
+
+**Regra #3 (conceito compartilhado "jogar/conjurar de FORA da mão"):** o simulador tem 5 caminhos que movem carta de fora da mão para o jogo, e cada um tratava um subconjunto das consequências de "cast"/"play": `cast_card` (completo), `play_from_impulse` (só mana + entrar + Pact Boon, mágica vira permanente), `try_sevinne_flashback` (mana + efeito, sem contar a mágica), `do_cascade` (entra + resolve, sem contar), `try_face_breaker_impulse`/`pull_impulse` (terreno descartado). Consequências compartilhadas que faltavam: contador de "second spell" (Lotho), extort (Life Insurance), Pact Boon, resolução de instantânea/feitiço, jogada de terreno.
+**Regra #6 (ordem de fases/eventos):** o Lotho precisa estar em campo **no momento da conjuração**, não depois de a mágica entrar; o teste ficava depois de `enter_battlefield`.
+**Regra #7 (ficha/token, 4 checagens):** só os Treasures que existem quando a habilidade resolve viram criatura (CR 611.2c) — conferido **por id** (`atacantes_vs_criacao.txt`): nenhum Treasure virado foi criado depois do primeiro toque de Treasure do turno; as mortes assumidas em combate são do usuário, não do simulador.
+
+**Validação:** 7/7 saídas refeitas e iguais byte a byte (`resumos/verificacao_reproducao.txt`); mana fecha exato em T2, T3, T4, T8 (script `ledger_mana.py`); 4 testes diretos das lacunas do simulador.
+**Classes da taxonomia da Regra #1 varridas (e só elas):** gatilho compartilhado ligado em só alguns pontos (cast de fora da mão), conceito compartilhado ("spell cast"), custo alternativo (flashback, cast do exílio), fórmula dinâmica achatada (Storm + Cleaver), ordem de fases (Lotho no cast).
+**Não varridas:** as demais classes e as outras cartas do `.py`; as respostas do usuário sobre a atribuição dos Treasures de T6/T7/T8 (perguntas no `goldfish-log.md`).
+
 ## Sephiroth, Fabled SOLDIER // One-Winged Angel (correção do simulador) — oráculo, rulings e cláusulas — 2026-10-03
 
 Pedido: *"Quero sim, corrija os itens 2 e 3."* (lacunas do Sephiroth levantadas ao responder se o simulador flipava com 4 mortes no turno). Código: `vihaan_goldfish_v1.py` (antes = commit `ba74496`). Tudo que sustenta a conclusão está em

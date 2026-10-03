@@ -1,0 +1,8 @@
+T1: viradas=0 criadas no turno=0 | virada que foi criada DEPOIS do primeiro toque de ficha: []
+T2: viradas=0 criadas no turno=0 | virada que foi criada DEPOIS do primeiro toque de ficha: []
+T3: viradas=0 criadas no turno=0 | virada que foi criada DEPOIS do primeiro toque de ficha: []
+T4: viradas=0 criadas no turno=0 | virada que foi criada DEPOIS do primeiro toque de ficha: []
+T5: viradas=1 criadas no turno=2 | virada que foi criada DEPOIS do primeiro toque de ficha: []
+T6: viradas=3 criadas no turno=6 | virada que foi criada DEPOIS do primeiro toque de ficha: []
+T7: viradas=5 criadas no turno=7 | virada que foi criada DEPOIS do primeiro toque de ficha: []
+T8: viradas=7 criadas no turno=6 | virada que foi criada DEPOIS do primeiro toque de ficha: []

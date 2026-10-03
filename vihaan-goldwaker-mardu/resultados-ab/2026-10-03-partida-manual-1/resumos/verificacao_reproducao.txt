@@ -1,0 +1,8 @@
+IGUAL  sequencia_bruta.txt
+IGUAL  ledger_treasures.txt
+IGUAL  ledger_mana.txt
+IGUAL  atacantes_vs_criacao.txt
+IGUAL  lacunas_simulador_c04840d.txt
+IGUAL  comparacao_simulador_padrao.txt
+IGUAL  comparacao_simulador_resiliencia.txt
+7/7 saidas byte a byte iguais

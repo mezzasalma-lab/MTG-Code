@@ -1,0 +1,11 @@
+1) terreno exilado pelo Prosper: pull_impulse poe no pool e play_from_impulse o ignora
+   play_from_impulse devolveu False | Desolate Mire no campo: False | Treasures criados: 0 (esperado pelo oraculo: jogar o terreno e +1 Treasure)
+2) Blood Money do exilio
+   jogou=True | Blood Money no CAMPO=True | no cemiterio=False | Zulaport ainda em campo=True | mortes de criatura=0 | spells_cast=0 (esperado: wipe, cemiterio, 1 magica conjurada)
+   Sevinne's do exilio com Mahadi no cemiterio: Mahadi voltou=False (esperado: voltou, como no T6 da partida)
+3) contagem de 'spell cast' e Lotho
+   Lotho do exilio + Tax da mao: spells_cast=1, Treasures do Lotho na Tax=0 (esperado 2 e 1)
+   flashback Sevinne's (1a) depois Dictate (2a): spells_cast apos o flashback=0 (esperado 1); Treasures do Lotho no Dictate=0 (esperado 1)
+   Sol Ring depois Lotho (2a magica): Treasures=1, vida=39 (esperado 0 e 40: o Lotho estava na pilha)
+4) Storm: +1/+0 por Treasure sacrificado
+   'Lannery' aparece no .py nas linhas: [176, 198, 290, 564, 1998, 1999] (so' o gatilho de ataque; nenhuma menciona o +1/+0)
