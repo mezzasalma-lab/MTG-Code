@@ -168850,5 +168850,169 @@
     "set": "tmsc",
     "toughness": "4",
     "type_line": "Token Creature — Angel"
+  },
+  "Inevitable Defeat": {
+    "cmc": 4.0,
+    "collector_number": "194",
+    "color_identity": [
+      "B",
+      "R",
+      "W"
+    ],
+    "colors": [
+      "B",
+      "R",
+      "W"
+    ],
+    "keywords": [],
+    "legalities": {
+      "standard": "legal",
+      "future": "legal",
+      "historic": "legal",
+      "timeless": "legal",
+      "gladiator": "legal",
+      "pioneer": "legal",
+      "modern": "legal",
+      "legacy": "legal",
+      "pauper": "not_legal",
+      "vintage": "legal",
+      "penny": "legal",
+      "commander": "legal",
+      "oathbreaker": "legal",
+      "standardbrawl": "legal",
+      "brawl": "legal",
+      "competitivebrawl": "legal",
+      "alchemy": "legal",
+      "paupercommander": "not_legal",
+      "duel": "legal",
+      "oldschool": "not_legal",
+      "premodern": "not_legal",
+      "predh": "not_legal",
+      "tlr": "not_legal"
+    },
+    "mana_cost": "{1}{R}{W}{B}",
+    "name": "Inevitable Defeat",
+    "oracle_text": "This spell can't be countered.\nExile target nonland permanent. Its controller loses 3 life and you gain 3 life.",
+    "prices": {
+      "usd": "0.77",
+      "usd_foil": "0.76",
+      "usd_etched": null,
+      "eur": "0.26",
+      "eur_foil": "0.63",
+      "tix": "0.02"
+    },
+    "released_at": "2025-04-11",
+    "scryfall_uri": "https://scryfall.com/card/tdm/194/inevitable-defeat?utm_source=api",
+    "set": "tdm",
+    "type_line": "Instant"
+  },
+  "The Pride of Hull Clade": {
+    "cmc": 11.0,
+    "collector_number": "172",
+    "color_identity": [
+      "G",
+      "U"
+    ],
+    "colors": [
+      "G"
+    ],
+    "keywords": [
+      "Defender"
+    ],
+    "legalities": {
+      "standard": "legal",
+      "future": "legal",
+      "historic": "legal",
+      "timeless": "legal",
+      "gladiator": "legal",
+      "pioneer": "legal",
+      "modern": "legal",
+      "legacy": "legal",
+      "pauper": "not_legal",
+      "vintage": "legal",
+      "penny": "legal",
+      "commander": "legal",
+      "oathbreaker": "legal",
+      "standardbrawl": "legal",
+      "brawl": "legal",
+      "competitivebrawl": "legal",
+      "alchemy": "not_legal",
+      "paupercommander": "not_legal",
+      "duel": "legal",
+      "oldschool": "not_legal",
+      "premodern": "not_legal",
+      "predh": "not_legal",
+      "tlr": "not_legal"
+    },
+    "mana_cost": "{10}{G}",
+    "name": "The Pride of Hull Clade",
+    "oracle_text": "This spell costs {X} less to cast, where X is the total toughness of creatures you control.\nDefender\n{2}{U}{U}: Until end of turn, target creature you control gets +1/+0, gains \"Whenever this creature deals combat damage to a player, draw cards equal to its toughness,\" and can attack as though it didn't have defender.",
+    "power": "2",
+    "prices": {
+      "usd": "1.68",
+      "usd_foil": "2.45",
+      "usd_etched": null,
+      "eur": "1.62",
+      "eur_foil": "2.00",
+      "tix": "0.02"
+    },
+    "released_at": "2024-02-09",
+    "scryfall_uri": "https://scryfall.com/card/mkm/172/the-pride-of-hull-clade?utm_source=api",
+    "set": "mkm",
+    "toughness": "15",
+    "type_line": "Legendary Creature — Crocodile Elk Turtle"
+  },
+  "Body of Research": {
+    "cmc": 6.0,
+    "collector_number": "168",
+    "color_identity": [
+      "G",
+      "U"
+    ],
+    "colors": [
+      "G",
+      "U"
+    ],
+    "keywords": [],
+    "legalities": {
+      "standard": "not_legal",
+      "future": "not_legal",
+      "historic": "legal",
+      "timeless": "legal",
+      "gladiator": "legal",
+      "pioneer": "legal",
+      "modern": "legal",
+      "legacy": "legal",
+      "pauper": "not_legal",
+      "vintage": "legal",
+      "penny": "legal",
+      "commander": "legal",
+      "oathbreaker": "legal",
+      "standardbrawl": "not_legal",
+      "brawl": "legal",
+      "competitivebrawl": "legal",
+      "alchemy": "not_legal",
+      "paupercommander": "not_legal",
+      "duel": "legal",
+      "oldschool": "not_legal",
+      "premodern": "not_legal",
+      "predh": "not_legal",
+      "tlr": "not_legal"
+    },
+    "mana_cost": "{G}{G}{G}{U}{U}{U}",
+    "name": "Body of Research",
+    "oracle_text": "Create a 0/0 green and blue Fractal creature token. Put X +1/+1 counters on it, where X is the number of cards in your library.",
+    "prices": {
+      "usd": "1.38",
+      "usd_foil": "1.52",
+      "usd_etched": null,
+      "eur": "0.81",
+      "eur_foil": "1.44",
+      "tix": "0.02"
+    },
+    "released_at": "2021-04-23",
+    "scryfall_uri": "https://scryfall.com/card/stx/168/body-of-research?utm_source=api",
+    "set": "stx",
+    "type_line": "Sorcery"
   }
 }

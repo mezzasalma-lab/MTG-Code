@@ -1,0 +1,7 @@
+IGUAL  ab_8t.txt
+IGUAL  ab_10t.txt
+IGUAL  condicional_10t.txt
+IGUAL  ablacao_thranduil.txt
+IGUAL  toughness_por_turno.txt
+IGUAL  enumeracao.txt
+6/6 tabelas byte a byte iguais

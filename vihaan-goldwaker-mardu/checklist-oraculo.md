@@ -1,5 +1,32 @@
 # Checklist cláusula-a-cláusula — Vihaan, Goldwaker
 
+## Inevitable Defeat (candidata, implementada só no harness) — oráculo, ruling e cláusulas — 2026-10-03
+
+A carta **não está na lista**; foi acrescentada em tempo de execução por `resultados-ab/2026-10-03-inevitable-defeat/orquestracao/vih_harness.py`
+(monkeypatch; `vihaan_goldfish_v1.py` não foi alterado). Oráculo lido ao vivo no Scryfall (2026-10-03) e salvo em `scryfall-cache/oracle-cache.json`;
+resposta bruta e rulings em `resultados-ab/2026-10-03-inevitable-defeat/dados/rulings_Inevitable_Defeat.json`.
+
+**Oráculo:** {1}{R}{W}{B}, Instant. *This spell can't be countered. Exile target nonland permanent. Its controller loses 3 life and you gain 3 life.*
+**Rulings (1):** 2025-04-04 — se o alvo for ilegal quando a magia tenta resolver, ela não resolve e nenhum efeito acontece: ninguém ganha nem perde vida.
+
+| Cláusula do oráculo | Status | Como entra no harness |
+|---|---|---|
+| "This spell can't be countered." | 📊 estrutural | o goldfish não tem contramágica de oponente |
+| "Exile target nonland permanent." | 📊 estrutural | exílio de permanente de OPONENTE (não modelado). Conta como remoção (tag `removal` ⇒ `removal_cast_total`) |
+| (efeito colateral do alvo) | ✅ | o alvo é permanente de oponente, então **comete crime** ("Targeting opponents, anything they control... is a crime", reminder text da Magda): `commits_crime_this_turn = True`, que o simulador lê no fim do turno para a Magda |
+| "Its controller loses 3 life" | ✅ | `drain(state, 3, each_opp=False)` (alvo único: 3 de vida de mesa) |
+| "and you gain 3 life." | ✅ | `gain_life(state, 3)`, que soma em `life_gained_this_turn` (lido pela Witch of the Moors no end step) |
+| ruling 2025-04-04 (alvo ilegal ⇒ nada acontece) | 📊 estrutural | o goldfish assume alvo sempre legal |
+| custo {1}{R}{W}{B} | ✅ com ressalva | o simulador só conta mana total; a restrição R+W+B é uma porta de cor do harness (`VIH_COLOR=sim|best`: 3 fontes distintas, Treasure e Arcane Signet como fonte de qualquer cor) |
+
+**Regra #3 (conceitos compartilhados que a carta lê):** (a) "cometeu crime neste turno" — escrito por todas as remoções com alvo (linha ~1185 do `.py`) e lido só no fim do turno
+pela Magda (linha ~2020); a Defeat escreve o mesmo flag; (b) "ganhou vida neste turno" — `gain_life` soma em `life_gained_this_turn`, zerado em `play_turn` e lido pela Witch no end step;
+(c) "dano de mesa" (`drain`) — alimenta `table_damage_total`, que compõe `win_turn`. Nenhum conceito de tipo (artefato, token, criatura) é tocado: a carta não entra em campo.
+**Regra #6 (ordem de fases):** o flag de crime é lido depois dos main phases (comentário do `.py`, bug corrigido em 2026-08-22), então a Defeat conjurada em qualquer main do meu turno conta. A Defeat no **turno do oponente** não é modelada (o simulador só conjura no meu turno): para a Magda isso seria um 2º Treasure possível, então o proxy é piso.
+
+**Classes da taxonomia da Regra #1 varridas para esta carta (e só ela):** gatilho compartilhado (crime, ganho de vida), custo (cor), tipo (não é artefato/token/criatura), custo alternativo (nenhum no oráculo), fórmula dinâmica (nenhuma: 3 fixo no oráculo).
+**Não varridas:** auditoria carta-a-carta do `.py` (não era o pedido), oponente real (📊).
+
 ## Draconic Visitor (candidata FRA) + 2 gaps reais achados no caminho — 2026-09-25
 
 **Gatilho:** *"A carta Draconic Visitor, avalie ela como possível inclusao

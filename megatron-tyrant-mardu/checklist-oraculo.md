@@ -1,5 +1,34 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Inevitable Defeat (candidata, implementada só no harness) — oráculo, ruling e cláusulas — 2026-10-03
+
+A carta **não está na lista**; foi acrescentada em tempo de execução por `resultados-ab/2026-10-03-inevitable-defeat/orquestracao/meg_harness.py`
+(monkeypatch; `megatron_goldfish_v1.py` não foi alterado). Oráculo lido ao vivo no Scryfall (2026-10-03) e salvo em `scryfall-cache/oracle-cache.json`;
+resposta bruta e rulings em `resultados-ab/2026-10-03-inevitable-defeat/dados/rulings_Inevitable_Defeat.json`.
+
+**Oráculo:** {1}{R}{W}{B}, Instant. *This spell can't be countered. Exile target nonland permanent. Its controller loses 3 life and you gain 3 life.*
+
+**Rulings (1):** 2025-04-04 — se o alvo for ilegal quando a magia tenta resolver, ela não resolve e nenhum efeito acontece: ninguém ganha nem perde vida.
+
+| Cláusula do oráculo | Status | Como entra no harness |
+|---|---|---|
+| "This spell can't be countered." | 📊 estrutural | o goldfish não tem contramágica de oponente; sem efeito mensurável |
+| "Exile target nonland permanent." | 📊 estrutural | exílio de permanente de OPONENTE (não modelado); conta como spell de interação (tag `interaction`) |
+| "Its controller loses 3 life" | ✅ | `proxy_drain(state, 3)`: alimenta `life_lost_by_opponents_this_turn`, que o Megatron lê no pós-combate |
+| "and you gain 3 life." | ✅ | `gain_life(state, 3)` |
+| ruling 2025-04-04 (alvo ilegal ⇒ nada acontece) | 📊 estrutural | o goldfish assume alvo sempre legal |
+| custo {1}{R}{W}{B} | ✅ | `pips={"R":1,"W":1,"B":1}`, validado por `can_cast`/`has_color_sources_for` do próprio simulador |
+
+**Regra #3 (conceitos compartilhados que a carta lê):** (a) "vida perdida pelos oponentes neste turno" é lido só por `megatron_postcombat`
+(conferido por grep: `life_lost_by_opponents_this_turn` aparece em `proxy_drain`, no reset de `play_turn` e em `megatron_postcombat`); (b) a carta
+não é artefato nem criatura, então nenhum conceito de tipo (`is_artifact`, "artifact card" de Welder/Engineer/Trash for Treasure) a toca.
+**Regra #6 (ordem de fases):** `play_turn` = `try_portal_phyrexia_upkeep → draw → try_bahamut_saga_tick → play_land → main_phase → try_equip_haste →
+combat_step → megatron_postcombat → main_phase → end_step`; a Defeat só alimenta o flip se resolver num main 1 ou no combate do mesmo turno.
+
+**Classes da taxonomia da Regra #1 varridas para esta carta (e só ela):** custo alternativo (nenhum no oráculo), gatilho de fase nomeado (nenhum na carta;
+o do Megatron foi conferido), vida como recurso (ganho e perda modelados), tipo (não é artefato/criatura). **Não varridas:** auditoria carta-a-carta do `.py`
+(não era o pedido), contramágica/oponente real (📊).
+
 ## CR 903.9a: comandante DISPARA gatilhos de morte de verdade antes de ir pra zona de comando — 2026-09-21
 
 **Gatilho:** usuário perguntou diretamente, depois de eu documentar em

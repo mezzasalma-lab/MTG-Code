@@ -1,0 +1,147 @@
+{
+ "id": "648-5353",
+ "of": [
+  {
+   "id": 25983
+  }
+ ],
+ "salt": null,
+ "uses": [
+  {
+   "card": {
+    "id": 5353,
+    "name": "The Pride of Hull Clade",
+    "faces": 1,
+    "spoiler": false,
+    "oracleId": "bbd7b756-bbee-451e-9446-06019791cb36",
+    "typeLine": "Legendary Creature — Crocodile Elk Turtle",
+    "imageUriBackPng": null,
+    "imageUriFrontPng": "https://cards.scryfall.io/png/front/e/d/edb40ab9-e552-4eb5-9c35-09094136dd4f.png?1783912862",
+    "imageUriBackLarge": null,
+    "imageUriBackSmall": null,
+    "imageUriBackNormal": null,
+    "imageUriFrontLarge": "https://cards.scryfall.io/large/front/e/d/edb40ab9-e552-4eb5-9c35-09094136dd4f.jpg?1783912862",
+    "imageUriFrontSmall": "https://cards.scryfall.io/small/front/e/d/edb40ab9-e552-4eb5-9c35-09094136dd4f.jpg?1783912862",
+    "layoutRotationFront": null,
+    "imageUriFrontNormal": "https://cards.scryfall.io/normal/front/e/d/edb40ab9-e552-4eb5-9c35-09094136dd4f.jpg?1783912862",
+    "imageUriBackArtCrop": null,
+    "imageUriFrontArtCrop": "https://cards.scryfall.io/art_crop/front/e/d/edb40ab9-e552-4eb5-9c35-09094136dd4f.jpg?1783912862"
+   },
+   "quantity": 1,
+   "usedFace": null,
+   "zoneLocations": [
+    "B"
+   ],
+   "exileCardState": "",
+   "mustBeCommander": false,
+   "libraryCardState": "",
+   "graveyardCardState": "",
+   "battlefieldCardState": ""
+  },
+  {
+   "card": {
+    "id": 648,
+    "name": "Body of Research",
+    "faces": 1,
+    "spoiler": false,
+    "oracleId": "e0c21b32-f672-4496-91ed-7b7f351eb539",
+    "typeLine": "Sorcery",
+    "imageUriBackPng": null,
+    "imageUriFrontPng": "https://cards.scryfall.io/png/front/9/8/98b56823-0076-49cc-b5aa-4accb8e2782e.png?1783927322",
+    "imageUriBackLarge": null,
+    "imageUriBackSmall": null,
+    "imageUriBackNormal": null,
+    "imageUriFrontLarge": "https://cards.scryfall.io/large/front/9/8/98b56823-0076-49cc-b5aa-4accb8e2782e.jpg?1783927322",
+    "imageUriFrontSmall": "https://cards.scryfall.io/small/front/9/8/98b56823-0076-49cc-b5aa-4accb8e2782e.jpg?1783927322",
+    "layoutRotationFront": null,
+    "imageUriFrontNormal": "https://cards.scryfall.io/normal/front/9/8/98b56823-0076-49cc-b5aa-4accb8e2782e.jpg?1783927322",
+    "imageUriBackArtCrop": null,
+    "imageUriFrontArtCrop": "https://cards.scryfall.io/art_crop/front/9/8/98b56823-0076-49cc-b5aa-4accb8e2782e.jpg?1783927322"
+   },
+   "quantity": 1,
+   "usedFace": null,
+   "zoneLocations": [
+    "H"
+   ],
+   "exileCardState": "",
+   "mustBeCommander": false,
+   "libraryCardState": "",
+   "graveyardCardState": "",
+   "battlefieldCardState": ""
+  }
+ ],
+ "notes": "",
+ "prices": {
+  "tcgplayer": "3.07",
+  "cardmarket": "2.16",
+  "cardkingdom": "4.08"
+ },
+ "status": "OK",
+ "spoiler": false,
+ "identity": "GU",
+ "includes": [
+  {
+   "id": 26876
+  },
+  {
+   "id": 25983
+  }
+ ],
+ "produces": [
+  {
+   "feature": {
+    "id": 24,
+    "name": "Infinite card draw",
+    "status": "S",
+    "uncountable": true
+   },
+   "quantity": 1
+  },
+  {
+   "feature": {
+    "id": 61,
+    "name": "Infinite draw triggers",
+    "status": "H",
+    "uncountable": true
+   },
+   "quantity": 1
+  },
+  {
+   "feature": {
+    "id": 1044,
+    "name": "Near-infinite combat damage to one opponent",
+    "status": "S",
+    "uncountable": false
+   },
+   "quantity": 1
+  }
+ ],
+ "requires": [],
+ "legalities": {
+  "brawl": true,
+  "predh": false,
+  "legacy": true,
+  "modern": true,
+  "pauper": false,
+  "alchemy": false,
+  "pioneer": true,
+  "vintage": true,
+  "standard": false,
+  "commander": true,
+  "premodern": false,
+  "oathbreaker": true,
+  "standardBrawl": false,
+  "pauperCommander": false,
+  "competitiveBrawl": true,
+  "pauperCommanderMain": false
+ },
+ "popularity": 179,
+ "bracketTag": "E",
+ "description": "Cast Body of Research by paying {G}{G}{G}{U}{U}{U}, creating a 0/0 Fractal creature token, and then putting a number of +1/+1 counters on it equal to your deck size.\nGive the Fractal token haste.\nActivate The Pride of Hull Clade by paying {2}{U}{U}, targeting the Fractal.\nDeal combat damage to an opponent using the Fractal token.\nThe Fractal triggers, causing you to draw cards equal to its toughness.",
+ "manaNeeded": "{2}{G}{G}{G}{U}{U}{U}{U}{U}",
+ "variantCount": 1,
+ "saltVoteCount": 0,
+ "manaValueNeeded": 10,
+ "easyPrerequisites": "",
+ "notablePrerequisites": "An opponent cannot block creatures you control.\nYou have a way to give a creature you control haste."
+}

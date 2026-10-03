@@ -1,0 +1,61 @@
+base: {'fin<=6': 0.204, 'fin<=8': 0.613, 'cmd<=5': 0.851, 'cmd<=8': 0.972, 'extra_draws': 12.133, 'spells': 11.814, 'leg_elf_trig': 3.079}
+sai (ordem: maior perda primeiro)          fin<=6   fin<=8   cmd<=5   cmd<=8    xdraws  spells
+Edric, Spymaster of Trest                   -0.5pp    -1.5pp    -0.5pp    -0.1pp     -2.78   -0.27
+Priest of Titania                           -6.0pp    -6.7pp    -1.4pp    -0.4pp     -0.89   -0.49
+Sol Ring                                    -3.5pp    -4.8pp    -2.3pp    -0.4pp     -0.52   -0.40
+Elvish Archdruid                            -3.4pp    -4.5pp    -1.0pp    -0.1pp     -0.54   -0.29
+Bloom Tender                                -2.3pp    -3.6pp    -2.1pp    -0.7pp     -0.55   -0.35
+Jarad, Golgari Lich Lord                    -2.8pp    -5.5pp    +0.0pp    +0.0pp     -0.26   -0.10
+Beast Whisperer                             +0.6pp    +0.0pp    +0.0pp    -0.2pp     -1.32   -0.43
+Wirewood Channeler                          -2.3pp    -4.7pp    -1.3pp    -0.3pp     -0.34   -0.27
+Glissa Sunslayer                            -0.2pp    -1.2pp    -0.0pp    -0.2pp     -1.00   -0.29
+Marwyn, the Nurturer                        -1.9pp    -3.2pp    -0.3pp    -0.2pp     -0.55   -0.23
+Tyvar, the Pummeler                         -1.7pp    -4.3pp    -0.2pp    -0.2pp     -0.31   -0.15
+Allosaurus Shepherd                         -2.8pp    -5.5pp    -0.2pp    -0.1pp     +0.05   -0.13
+Ezuri, Renegade Leader                      -1.9pp    -4.3pp    -0.1pp    -0.1pp     -0.19   -0.10
+Gwenna, Eyes of Gaea                        -0.7pp    -2.2pp    -1.2pp    -0.4pp     -0.43   -0.19
+Elvish Warmaster                            -2.9pp    -4.8pp    -0.2pp    -0.1pp     +0.04   -0.09
+Champions of the Perfect                    +0.7pp    +0.5pp    +0.0pp    -0.3pp     -0.92   -0.26
+Eladamri, Korvecdal                         -0.0pp    -0.7pp    -0.1pp    -0.1pp     -0.62   -0.38
+Elrond, Moon-Reader                         -0.7pp    -0.2pp    +0.1pp    +0.0pp     -0.75   -0.14
+Rhystic Study                               +0.5pp    -0.3pp    -0.1pp    -0.2pp     -0.65   -0.26
+Llanowar Elves                              -1.7pp    -2.3pp    -1.4pp    -0.1pp     -0.21   -0.23
+Prime Speaker Vannifar                      -0.1pp    -1.3pp    -0.0pp    +0.1pp     -0.41   -0.14
+Lluwen, Imperfect Naturalist                -0.9pp    -2.0pp    -0.1pp    +0.0pp     -0.22   -0.13
+Elves of Deep Shadow                        -1.3pp    -2.1pp    -1.0pp    -0.4pp     -0.09   -0.20
+Arbor Elf                                   -1.2pp    -1.7pp    -0.9pp    -0.2pp     -0.21   -0.23
+Elvish Mystic                               -1.9pp    -1.7pp    -1.3pp    -0.5pp     -0.14   -0.26
+Arcane Signet                               -0.8pp    -2.1pp    -1.8pp    -0.8pp     +0.04   -0.23
+Thranduil, Sindarin Liege // Silvan Rall    -0.2pp    -0.9pp    -0.0pp    -0.0pp     -0.27   -0.11
+Trystan, Callous Cultivator // Trystan,     -0.7pp    -1.2pp    -0.1pp    +0.0pp     -0.18   -0.16
+Incubation Druid                            -0.8pp    -1.4pp    -1.5pp    -0.4pp     -0.03   -0.13
+Selvala, Heart of the Wilds                 -0.7pp    -0.7pp    -0.5pp    -0.2pp     -0.20   -0.09
+Arwen, Weaver of Hope                       -0.3pp    -0.6pp    -0.0pp    +0.0pp     -0.24   -0.11
+High Perfect Morcant                        -0.0pp    +0.0pp    +0.0pp    -0.0pp     -0.32   -0.12
+Tyvar the Bellicose                         +0.0pp    -0.2pp    +0.0pp    -0.0pp     -0.21   -0.10
+Lathril, Blade of the Elves                 +0.1pp    +0.2pp    +0.0pp    +0.0pp     -0.29   -0.12
+Kindred Summons                             -0.4pp    -1.2pp    -0.1pp    +0.0pp     +0.01   -0.03
+Bloodline Bidding                           -0.3pp    -0.8pp    -0.1pp    -0.1pp     +0.02   -0.02
+Tyvar, Jubilant Brawler                     -0.8pp    -1.8pp    +0.1pp    -0.0pp     +0.24   -0.09
+Dionus, Elvish Archdruid                    +0.3pp    +0.2pp    -0.0pp    +0.1pp     -0.16   -0.10
+Devoted Druid                               -0.2pp    -1.0pp    -0.4pp    -0.1pp     +0.14   -0.12
+Trystan's Command                           +0.5pp    +0.3pp    +0.0pp    -0.0pp     -0.08   -0.09
+Underrealm Lich                             +0.3pp    -0.1pp    +0.1pp    +0.0pp     +0.06   -0.07
+Deathbloom Ritualist                        +0.5pp    -0.6pp    -0.1pp    -0.2pp     +0.22   -0.03
+Finale of Devastation                       -1.4pp    -1.2pp    +0.0pp    +0.0pp     +0.31   -0.06
+Ruthless Winnower                           +0.2pp    +0.4pp    +0.0pp    -0.0pp     +0.03   -0.03
+Selfless Safewright                         +0.4pp    +0.5pp    +0.1pp    +0.1pp     -0.00   -0.05
+Deadly Rollick                              +0.3pp    -0.3pp    +0.0pp    -0.0pp     +0.20   +0.00
+Kindred Dominance                           +0.5pp    +0.5pp    +0.0pp    +0.0pp     +0.03   -0.02
+Raise the Palisade                          +0.4pp    +0.3pp    +0.1pp    +0.0pp     +0.07   -0.01
+Iron-Shield Elf                             -0.1pp    +0.0pp    +0.0pp    +0.0pp     +0.13   -0.10
+Oversold Cemetery                           +0.2pp    +0.4pp    +0.0pp    -0.0pp     +0.07   -0.17
+Immaculate Magistrate                       +0.3pp    +0.2pp    +0.1pp    -0.0pp     +0.12   -0.04
+Imperious Perfect                           -0.2pp    -0.2pp    +0.1pp    +0.0pp     +0.30   -0.01
+Awaken the Honored Dead                     +0.0pp    +0.0pp    +0.2pp    -0.0pp     +0.33   +0.05
+Lightning Greaves                           -0.1pp    +0.1pp    +0.0pp    -0.0pp     +0.32   -0.03
+Heroic Intervention                         +0.2pp    +0.0pp    +0.0pp    +0.1pp     +0.33   -0.07
+Agatha's Soul Cauldron                      +0.0pp    +0.1pp    +0.1pp    -0.0pp     +0.33   -0.04
+Buried Alive                                +0.3pp    -0.3pp    +0.2pp    +0.0pp     +0.42   -0.03
+Fauna Shaman                                -0.2pp    +0.3pp    +0.1pp    +0.1pp     +0.31   -0.04
+Assassin's Trophy                           +0.4pp    +0.0pp    +0.4pp    +0.1pp     +0.38   +0.08

@@ -1,0 +1,18 @@
+Defeat no lugar de Chaos Warp (N=20000)
+   cast_pct                           18.71
+   fed_pct_jogos                      6.55
+   fed_pct_das_conjuradas             35.03
+   mana_alimentada_media_por_jogo     0.20
+   mana_convertida_media_por_jogo     70.38
+   turno_medio_cast                   6.13
+   cast_com_megatron_em_campo_pct     18.65
+   cast_por_turno                     {3: 48, 4: 397, 5: 970, 6: 756, 7: 750, 8: 821}
+Defeat no lugar de Generous Gift (N=20000)
+   cast_pct                           18.63
+   fed_pct_jogos                      6.22
+   fed_pct_das_conjuradas             33.41
+   mana_alimentada_media_por_jogo     0.19
+   mana_convertida_media_por_jogo     70.34
+   turno_medio_cast                   6.14
+   cast_com_megatron_em_campo_pct     18.54
+   cast_por_turno                     {3: 37, 4: 412, 5: 948, 6: 755, 7: 758, 8: 816}

@@ -1,5 +1,63 @@
 # Goldfish Log — Vihaan, Goldwaker
 
+> **Dados brutos e como reproduzir as tabelas da seção Inevitable Defeat (2026-10-03):** [`resultados-ab/2026-10-03-inevitable-defeat/LEIAME.md`](resultados-ab/2026-10-03-inevitable-defeat/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
+---
+
+## Inevitable Defeat — avaliação como possível inclusão — 2026-10-03
+
+**Pedido:** *"Faça o mesmo para Inevitable Defeat como possível inclusão nos meus dois decks Mardu: Megatron e Vihaan."* (a parte do Megatron está em `megatron-tyrant-mardu/goldfish-log.md`).
+Regras #3/#4/#5 e adendo de 2026-09-28: oráculo e ruling ao vivo → docs do deck (`auditoria.md`, `checklist-oraculo.md`, `goldfish-log.md`) → Commander Spellbook antes/depois com controle positivo → enumeração por script → simulador só como apoio.
+
+**Oráculo (Scryfall ao vivo, 2026-10-03; salvo no cache):** {1}{R}{W}{B}, Instant (Tarkir: Dragonstorm, 2025-04-11, legal, não é Game Changer, ~US$0,77). *This spell can't be countered. Exile target nonland permanent. Its controller loses 3 life and you gain 3 life.* **Ruling (2025-04-04):** alvo ilegal na resolução ⇒ nada acontece, ninguém ganha nem perde vida.
+
+### O que a carta toca nos motores reais do Vihaan (`auditoria.md` §3–§6 + `resumos/enumeracao.txt`)
+
+- **Motor central = Treasures (30 fontes) + multiplicadores (Xorn, Academy Manufactor, Anointed Procession) + vitória por Revel in Riches.** A Defeat **não cria Treasure**, não é token, não é artefato, não morre/entra: nenhum multiplicador nem sac outlet a vê. Contraste com as respostas do deck que **alimentam** o motor: **Deadly Derision** (instant: destrói criatura/PW e cria Treasure) e **Blood Money** (wipe em sorcery: cria Treasure por criatura não-token destruída).
+- **Crime (único payoff do deck: Magda, the Hoardmaster, "whenever you commit a crime, create a tapped Treasure", 1×/turno):** a Defeat mira um permanente de oponente, então comete crime. Mas já cometem crime, por exemplo, Path to Exile, Shoot the Sheriff, Deadly Derision, Boros Charm, Requisition Raid, Bojuka Bog e o upkeep do Laughing Jasper Flint (miram oponente/permanente/cemitério dele); a Defeat só soma um Treasure da Magda se for o único crime do turno. No simulador a Magda estava em campo em **13% das conjuradas**.
+- **Ganho de vida:** payoffs de "você ganhou vida" = **Witch of the Moors** (1 carta; no end step, se você ganhou vida, o oponente sacrifica criatura e você devolve criatura do cemitério). Os 3 de vida da Defeat ligam a Witch **por demanda**, desde que resolvam no meu turno (a condição é "ganhou vida neste turno" no meu end step), mas ela estava em campo em só **~1% das conjuradas**. Outras fontes de ganho (Zulaport, Nadier's, Life Insurance, Sephiroth) disparam por criatura/token que sai de campo, nada a ver com a Defeat.
+- **Cobertura de interação (oráculo):** Path/Shoot the Sheriff/Deadly Derision pegam criatura (Derision também PW); Boros Charm 4 de dano a jogador/PW; **Council's Judgment** (sorcery, exila qualquer permanente não-terreno por voto, sem alvo) e **Requisition Raid** (sorcery, artefato e/ou encantamento) são as únicas respostas a encantamento/artefato, **nenhuma em instant**. A Defeat seria a primeira resposta em instant a qualquer permanente não-terreno, sem alvo-restrição de tipo, sem contramágica.
+- **Cor:** R+W+B = identidade do comandante. O simulador do Vihaan **não modela cor** (só mana total); medi à parte, lendo o estado dos mesmos jogos: P(R+W+B e ≥4 de mana) por T4/T5/T6/T8 = **62–71% / 81–84% / 89–90% / 96%** (leitura pessimista–otimista; Treasure conta como fonte de qualquer cor; o simulador joga terrenos na ordem da mão sem sequenciar por cor, então a leitura pessimista é piso). Aplicando essa porta de cor, a taxa de conjuração cai ≤0,2pp.
+- **Combos (Commander Spellbook, antes e depois):** base = 4 combos (Ashnod's Altar + Mahadi + Revel in Riches; Anointed Procession/Goldspan Dragon/Xorn + Gleaming Splendor + Smothering Tithe). Defeat sem cortar: **0 combos novos, 0 "quase" novos**. Controles positivos ok: cortar Smothering Tithe ou Gleaming Splendor remove 3 combos. **Nenhuma das 13 candidatas testadas pertence a combo** (Academy Manufactor, Blasphemous Act e Teferi's Protection pertencem a "quase combos": 4, 4 e 6).
+
+### Medição no simulador (apoio; N=10.000 sementes 3.000.000+i pareadas, 8 turnos, troca posicional, com a porta de cor pessimista)
+
+Defeat conjurada em ~10,7% das partidas até T8 (o simulador encerra a partida quando a condição do Revel in Riches é cumprida). Base: `win_turn` ≤T8 8,8%, comandante ≤T3 85,0%, dano de mesa 13,85. `win_turn` = 1º turno com dano ≥120, Revel in Riches ou combo; o dreno de 3 da Defeat soma ao dano de mesa.
+
+| Defeat entra no lugar de | win ≤T8 (pp) | cmd ≤T3 (pp) | dano de mesa | Treasures | conjurada |
+|---|---|---|---|---|---|
+| Monologue Tax | +0,16 ±0,12 | +0,00 ±0,00 | +0,48 ±0,08 | +0,04 ±0,02 | 10,5% |
+| Academy Manufactor | +0,41 ±0,16 | +0,00 ±0,00 | +0,73 ±0,10 | +0,19 ±0,03 | 11,1% |
+| Back in Town | +0,13 ±0,14 | +0,01 ±0,02 | +0,49 ±0,08 | +0,05 ±0,02 | 11,0% |
+| Teferi's Protection | +0,20 ±0,15 | +0,00 ±0,00 | +0,42 ±0,13 | +0,01 ±0,04 | 10,4% |
+| Smothering Tithe | +0,17 ±0,12 | +0,07 ±0,21 | +0,42 ±0,08 | +0,04 ±0,03 | 10,7% |
+| Council's Judgment | +0,23 ±0,14 | +0,00 ±0,00 | +0,50 ±0,13 | +0,02 ±0,02 | 11,0% |
+| Shoot the Sheriff | +0,14 ±0,16 | +0,04 ±0,04 | +0,32 ±0,09 | −0,00 ±0,02 | 10,2% |
+| Boros Charm | +0,17 ±0,14 | +0,04 ±0,04 | +0,43 ±0,11 | +0,03 ±0,03 | 10,8% |
+| Path to Exile | +0,13 ±0,15 | +0,08 ±0,06 | +0,28 ±0,07 | −0,00 ±0,02 | 10,7% |
+| Deadly Derision | −0,21 ±0,13 | +0,00 ±0,00 | +0,13 ±0,10 | −0,16 ±0,02 | 11,1% |
+| Requisition Raid | −0,03 ±0,16 | +0,08 ±0,06 | +0,40 ±0,10 | −0,01 ±0,03 | 11,0% |
+| Blasphemous Act | +0,39 ±0,16 | +0,00 ±0,00 | +0,36 ±0,25 | +0,09 ±0,03 | 10,2% |
+| Life Insurance | +0,28 ±0,15 | +0,00 ±0,00 | +0,05 ±0,10 | +0,07 ±0,03 | 10,9% |
+| Mari, the Killing Quill | −0,02 ±0,13 | +0,01 ±0,02 | +0,45 ±0,08 | +0,01 ±0,02 | 10,8% |
+| The Reaver Cleaver | −0,14 ±0,19 | +0,00 ±0,00 | −0,00 ±0,13 | −0,45 ±0,06 | 10,4% |
+| Laughing Jasper Flint | −0,45 ±0,18 | +0,00 ±0,00 | −0,10 ±0,22 | −0,10 ±0,06 | 11,2% |
+| Urabrask's Forge | −0,41 ±0,16 | +0,00 ±0,00 | −0,35 ±0,15 | −0,03 ±0,03 | 10,7% |
+| Lotho, Corrupt Shirriff | −1,42 ±0,25 | +0,14 ±0,07 | −0,33 ±0,13 | −0,44 ±0,05 | 10,4% |
+| Orochi Soul-Reaver | −1,46 ±0,25 | +0,00 ±0,00 | −0,72 ±0,14 | −0,59 ±0,05 | 10,9% |
+| **controle** Arcane Signet | −0,42 ±0,22 | −0,66 ±0,24 | −0,13 ±0,15 | −0,13 ±0,05 | 10,1% |
+| **controle** Sol Ring | −3,13 ±0,37 | −1,98 ±0,28 | −1,87 ±0,30 | −0,71 ±0,08 | 9,7% |
+
+**Smothering Tithe aparece na tabela só como leitura do simulador:** cortá-la remove 3 combos no Spellbook (com Gleaming Splendor + Anointed Procession/Goldspan Dragon/Xorn), então não é candidata real. Os controles doem (Sol Ring −3,1pp; Arcane Signet atrasa o comandante −0,7pp). Entre as candidatas há dois grupos: trocas dentro do ruído (+0,1 a +0,4pp; o sinal positivo de Monologue Tax/Academy/Back in Town/Blasphemous Act vem **do simulador premiar não gastar mana**: a Blank Card inconjurável no mesmo slot dá +0,52 / +0,59 / +0,52pp, mais que a Defeat) e trocas que custam (Lotho e Orochi Soul-Reaver, −1,4pp: são geradores de Treasure). **O dreno da própria Defeat explica ~0,32 do dano de mesa (3 × 10,7% por partida);** o resto do +0,3 a +0,7 é o mesmo efeito de "slot livre" que a Blank Card mostra (+0,32 a +0,54). A recursão da Witch não se moveu (±0,004).
+
+### O que a medição NÃO diz (Regra #5)
+- **Várias das cartas "baratas de cortar" no simulador são geradoras de valor dependente de oponente**, que o goldfish não vê: Monologue Tax e Gleaming Splendor (Treasure por spell/compra de oponente), Teferi's Protection (proteção), Academy Manufactor/Back in Town (motor/recursão), Smothering Tithe (3 combos no Spellbook). Custo ~0 no simulador **não** é razão para cortá-las (Regra #5). O que o simulador mostra com segurança é só o contrário: cortar Lotho, Orochi Soul-Reaver ou o Sol Ring dói.
+- Exílio, contramágica, alvo ilegal (ruling), a Defeat como resposta a encantamento/artefato/PW em instant: 📊 estruturais (sem permanente de oponente no goldfish).
+- O primeiro lote usou a "Blank Card" como artefato; nesta rodada isso não mudou nenhum número do Vihaan (idêntico nos dois lotes), mas o lote anterior está em `superado-blank-artefato/` para auditoria.
+
+**Escopo verificado nesta rodada:** oráculo + ruling; `auditoria.md`, `checklist-oraculo.md` e `goldfish-log.md` do deck lidos para motores/combos; enumeração por script sobre as 95 entradas distintas de `lista.md` (crime, alvo de oponente, ganho de vida, perda de vida, exile, gatilho de spell); Spellbook antes/depois em 13 trocas candidatas + 2 controles positivos; castabilidade de cor (2 leituras); A/B pareado de 19 trocas + 2 controles + 3 "Blank" em 3 modos de porta de cor (off/pessimista/otimista, equivalentes em ≤0,2pp de conjuração); bit-identidade do harness contra o simulador original sem patch (300/300 em 101 campos do `GameState`, nos 3 modos); tabelas refeitas dos `.json.xz` byte a byte.
+**Não verificado:** comportamento contra oponentes reais; linha deliberada "Defeat em instant no turno do oponente" (Magda daria um 2º Treasure no turno do oponente: o simulador só conjura no meu turno, e a Regra #7.4 manda checar proxy fora do turno: aqui o proxy é **piso**); sequenciamento de terrenos por cor; qualquer classe da taxonomia da Regra #1 no `.py` (a carta não está na lista).
+
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
 
 ---

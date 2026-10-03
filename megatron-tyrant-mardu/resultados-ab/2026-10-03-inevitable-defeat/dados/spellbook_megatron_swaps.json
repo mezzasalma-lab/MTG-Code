@@ -1,0 +1,718 @@
+{
+ "base": {
+  "n": 99,
+  "incluidos": {
+   "Blightsteel Colossus + Chandra's Ignition": [
+    "{'feature': {'id': 50, 'name': 'Each opponent loses the game', 'status': 'S', 'uncountable': True}, 'quantity': 1}"
+   ],
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber": [
+    "{'feature': {'id': 2408, 'name': 'Infinite artifact ETB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2409, 'name': 'Infinite artifact LTB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2419, 'name': 'Infinite artifact sacrifice triggers', 'status': 'H', 'uncountable': True}, 'quantity': 1}"
+   ]
+  },
+  "quase": [
+   "Ashnod's Altar + Myr Retriever + Ultron, Artificial Malevolence",
+   "Blade of Selves + Blightsteel Colossus",
+   "Bladewing the Risen + Cursed Mirror",
+   "Blasphemous Act + Expedited Inheritance",
+   "Blasphemous Act + Fall of Cair Andros",
+   "Blasphemous Act + Repercussion",
+   "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer",
+   "Blightsteel Colossus + Cybermen Squadron",
+   "Blightsteel Colossus + Duke Ulder Ravengard",
+   "Blightsteel Colossus + Legion Loyalty",
+   "Chandra's Ignition + Enduring Angel // Angelic Enforcer",
+   "Chandra's Ignition + Hidetsugu Consumes All // Vessel of the All-Consuming",
+   "Chandra's Ignition + Serra Avatar",
+   "Chandra's Ignition + Soul of Eternity",
+   "Crackdown Construct + Lightning Greaves",
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Weapons Manufacturing",
+   "Cursed Mirror + Felidar Guardian",
+   "Cursed Mirror + Wispweaver Angel",
+   "Doomsday Excruciator + Rakdos, the Muscle",
+   "Goblin Welder + Thornbite Staff",
+   "Junk Diver + Krark-Clan Ironworks + Myr Retriever + Scrap Trawler + Sol Ring",
+   "Krark-Clan Ironworks + Myr Retriever + Ultron, Artificial Malevolence",
+   "Lightning Greaves + Monk Gyatso",
+   "Mycosynth Lattice + Vandalblast",
+   "Nested Ghoul + Warstorm Surge",
+   "Raptor Hatchling + Warstorm Surge",
+   "Storm Herd + Warstorm Surge"
+  ],
+  "identidade": "RWB"
+ },
+ "+Inevitable Defeat (sem cortar)": {
+  "n": 100,
+  "incluidos": {
+   "Blightsteel Colossus + Chandra's Ignition": [
+    "{'feature': {'id': 50, 'name': 'Each opponent loses the game', 'status': 'S', 'uncountable': True}, 'quantity': 1}"
+   ],
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber": [
+    "{'feature': {'id': 2408, 'name': 'Infinite artifact ETB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2409, 'name': 'Infinite artifact LTB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2419, 'name': 'Infinite artifact sacrifice triggers', 'status': 'H', 'uncountable': True}, 'quantity': 1}"
+   ]
+  },
+  "quase": [
+   "Ashnod's Altar + Myr Retriever + Ultron, Artificial Malevolence",
+   "Blade of Selves + Blightsteel Colossus",
+   "Bladewing the Risen + Cursed Mirror",
+   "Blasphemous Act + Expedited Inheritance",
+   "Blasphemous Act + Fall of Cair Andros",
+   "Blasphemous Act + Repercussion",
+   "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer",
+   "Blightsteel Colossus + Cybermen Squadron",
+   "Blightsteel Colossus + Duke Ulder Ravengard",
+   "Blightsteel Colossus + Legion Loyalty",
+   "Chandra's Ignition + Enduring Angel // Angelic Enforcer",
+   "Chandra's Ignition + Hidetsugu Consumes All // Vessel of the All-Consuming",
+   "Chandra's Ignition + Serra Avatar",
+   "Chandra's Ignition + Soul of Eternity",
+   "Crackdown Construct + Lightning Greaves",
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Weapons Manufacturing",
+   "Cursed Mirror + Felidar Guardian",
+   "Cursed Mirror + Wispweaver Angel",
+   "Doomsday Excruciator + Rakdos, the Muscle",
+   "Goblin Welder + Thornbite Staff",
+   "Junk Diver + Krark-Clan Ironworks + Myr Retriever + Scrap Trawler + Sol Ring",
+   "Krark-Clan Ironworks + Myr Retriever + Ultron, Artificial Malevolence",
+   "Lightning Greaves + Monk Gyatso",
+   "Mycosynth Lattice + Vandalblast",
+   "Nested Ghoul + Warstorm Surge",
+   "Raptor Hatchling + Warstorm Surge",
+   "Storm Herd + Warstorm Surge"
+  ],
+  "identidade": "RWB"
+ },
+ "-Chaos Warp +Inevitable Defeat": {
+  "n": 99,
+  "incluidos": {
+   "Blightsteel Colossus + Chandra's Ignition": [
+    "{'feature': {'id': 50, 'name': 'Each opponent loses the game', 'status': 'S', 'uncountable': True}, 'quantity': 1}"
+   ],
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber": [
+    "{'feature': {'id': 2408, 'name': 'Infinite artifact ETB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2409, 'name': 'Infinite artifact LTB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2419, 'name': 'Infinite artifact sacrifice triggers', 'status': 'H', 'uncountable': True}, 'quantity': 1}"
+   ]
+  },
+  "quase": [
+   "Ashnod's Altar + Myr Retriever + Ultron, Artificial Malevolence",
+   "Blade of Selves + Blightsteel Colossus",
+   "Bladewing the Risen + Cursed Mirror",
+   "Blasphemous Act + Expedited Inheritance",
+   "Blasphemous Act + Fall of Cair Andros",
+   "Blasphemous Act + Repercussion",
+   "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer",
+   "Blightsteel Colossus + Cybermen Squadron",
+   "Blightsteel Colossus + Duke Ulder Ravengard",
+   "Blightsteel Colossus + Legion Loyalty",
+   "Chandra's Ignition + Enduring Angel // Angelic Enforcer",
+   "Chandra's Ignition + Hidetsugu Consumes All // Vessel of the All-Consuming",
+   "Chandra's Ignition + Serra Avatar",
+   "Chandra's Ignition + Soul of Eternity",
+   "Crackdown Construct + Lightning Greaves",
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Weapons Manufacturing",
+   "Cursed Mirror + Felidar Guardian",
+   "Cursed Mirror + Wispweaver Angel",
+   "Doomsday Excruciator + Rakdos, the Muscle",
+   "Goblin Welder + Thornbite Staff",
+   "Junk Diver + Krark-Clan Ironworks + Myr Retriever + Scrap Trawler + Sol Ring",
+   "Krark-Clan Ironworks + Myr Retriever + Ultron, Artificial Malevolence",
+   "Lightning Greaves + Monk Gyatso",
+   "Mycosynth Lattice + Vandalblast",
+   "Nested Ghoul + Warstorm Surge",
+   "Raptor Hatchling + Warstorm Surge",
+   "Storm Herd + Warstorm Surge"
+  ],
+  "identidade": "RWB"
+ },
+ "-Generous Gift +Inevitable Defeat": {
+  "n": 99,
+  "incluidos": {
+   "Blightsteel Colossus + Chandra's Ignition": [
+    "{'feature': {'id': 50, 'name': 'Each opponent loses the game', 'status': 'S', 'uncountable': True}, 'quantity': 1}"
+   ],
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber": [
+    "{'feature': {'id': 2408, 'name': 'Infinite artifact ETB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2409, 'name': 'Infinite artifact LTB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2419, 'name': 'Infinite artifact sacrifice triggers', 'status': 'H', 'uncountable': True}, 'quantity': 1}"
+   ]
+  },
+  "quase": [
+   "Ashnod's Altar + Myr Retriever + Ultron, Artificial Malevolence",
+   "Blade of Selves + Blightsteel Colossus",
+   "Bladewing the Risen + Cursed Mirror",
+   "Blasphemous Act + Expedited Inheritance",
+   "Blasphemous Act + Fall of Cair Andros",
+   "Blasphemous Act + Repercussion",
+   "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer",
+   "Blightsteel Colossus + Cybermen Squadron",
+   "Blightsteel Colossus + Duke Ulder Ravengard",
+   "Blightsteel Colossus + Legion Loyalty",
+   "Chandra's Ignition + Enduring Angel // Angelic Enforcer",
+   "Chandra's Ignition + Hidetsugu Consumes All // Vessel of the All-Consuming",
+   "Chandra's Ignition + Serra Avatar",
+   "Chandra's Ignition + Soul of Eternity",
+   "Crackdown Construct + Lightning Greaves",
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Weapons Manufacturing",
+   "Cursed Mirror + Felidar Guardian",
+   "Cursed Mirror + Wispweaver Angel",
+   "Doomsday Excruciator + Rakdos, the Muscle",
+   "Goblin Welder + Thornbite Staff",
+   "Junk Diver + Krark-Clan Ironworks + Myr Retriever + Scrap Trawler + Sol Ring",
+   "Krark-Clan Ironworks + Myr Retriever + Ultron, Artificial Malevolence",
+   "Lightning Greaves + Monk Gyatso",
+   "Mycosynth Lattice + Vandalblast",
+   "Nested Ghoul + Warstorm Surge",
+   "Raptor Hatchling + Warstorm Surge",
+   "Storm Herd + Warstorm Surge"
+  ],
+  "identidade": "RWB"
+ },
+ "-Path to Exile +Inevitable Defeat": {
+  "n": 99,
+  "incluidos": {
+   "Blightsteel Colossus + Chandra's Ignition": [
+    "{'feature': {'id': 50, 'name': 'Each opponent loses the game', 'status': 'S', 'uncountable': True}, 'quantity': 1}"
+   ],
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber": [
+    "{'feature': {'id': 2408, 'name': 'Infinite artifact ETB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2409, 'name': 'Infinite artifact LTB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2419, 'name': 'Infinite artifact sacrifice triggers', 'status': 'H', 'uncountable': True}, 'quantity': 1}"
+   ]
+  },
+  "quase": [
+   "Ashnod's Altar + Myr Retriever + Ultron, Artificial Malevolence",
+   "Blade of Selves + Blightsteel Colossus",
+   "Bladewing the Risen + Cursed Mirror",
+   "Blasphemous Act + Expedited Inheritance",
+   "Blasphemous Act + Fall of Cair Andros",
+   "Blasphemous Act + Repercussion",
+   "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer",
+   "Blightsteel Colossus + Cybermen Squadron",
+   "Blightsteel Colossus + Duke Ulder Ravengard",
+   "Blightsteel Colossus + Legion Loyalty",
+   "Chandra's Ignition + Enduring Angel // Angelic Enforcer",
+   "Chandra's Ignition + Hidetsugu Consumes All // Vessel of the All-Consuming",
+   "Chandra's Ignition + Serra Avatar",
+   "Chandra's Ignition + Soul of Eternity",
+   "Crackdown Construct + Lightning Greaves",
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Weapons Manufacturing",
+   "Cursed Mirror + Felidar Guardian",
+   "Cursed Mirror + Wispweaver Angel",
+   "Doomsday Excruciator + Rakdos, the Muscle",
+   "Goblin Welder + Thornbite Staff",
+   "Junk Diver + Krark-Clan Ironworks + Myr Retriever + Scrap Trawler + Sol Ring",
+   "Krark-Clan Ironworks + Myr Retriever + Ultron, Artificial Malevolence",
+   "Lightning Greaves + Monk Gyatso",
+   "Mycosynth Lattice + Vandalblast",
+   "Nested Ghoul + Warstorm Surge",
+   "Raptor Hatchling + Warstorm Surge",
+   "Storm Herd + Warstorm Surge"
+  ],
+  "identidade": "RWB"
+ },
+ "-Swords to Plowshares +Inevitable Defeat": {
+  "n": 99,
+  "incluidos": {
+   "Blightsteel Colossus + Chandra's Ignition": [
+    "{'feature': {'id': 50, 'name': 'Each opponent loses the game', 'status': 'S', 'uncountable': True}, 'quantity': 1}"
+   ],
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber": [
+    "{'feature': {'id': 2408, 'name': 'Infinite artifact ETB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2409, 'name': 'Infinite artifact LTB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2419, 'name': 'Infinite artifact sacrifice triggers', 'status': 'H', 'uncountable': True}, 'quantity': 1}"
+   ]
+  },
+  "quase": [
+   "Ashnod's Altar + Myr Retriever + Ultron, Artificial Malevolence",
+   "Blade of Selves + Blightsteel Colossus",
+   "Bladewing the Risen + Cursed Mirror",
+   "Blasphemous Act + Expedited Inheritance",
+   "Blasphemous Act + Fall of Cair Andros",
+   "Blasphemous Act + Repercussion",
+   "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer",
+   "Blightsteel Colossus + Cybermen Squadron",
+   "Blightsteel Colossus + Duke Ulder Ravengard",
+   "Blightsteel Colossus + Legion Loyalty",
+   "Chandra's Ignition + Enduring Angel // Angelic Enforcer",
+   "Chandra's Ignition + Hidetsugu Consumes All // Vessel of the All-Consuming",
+   "Chandra's Ignition + Serra Avatar",
+   "Chandra's Ignition + Soul of Eternity",
+   "Crackdown Construct + Lightning Greaves",
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Weapons Manufacturing",
+   "Cursed Mirror + Felidar Guardian",
+   "Cursed Mirror + Wispweaver Angel",
+   "Doomsday Excruciator + Rakdos, the Muscle",
+   "Goblin Welder + Thornbite Staff",
+   "Junk Diver + Krark-Clan Ironworks + Myr Retriever + Scrap Trawler + Sol Ring",
+   "Krark-Clan Ironworks + Myr Retriever + Ultron, Artificial Malevolence",
+   "Lightning Greaves + Monk Gyatso",
+   "Mycosynth Lattice + Vandalblast",
+   "Nested Ghoul + Warstorm Surge",
+   "Raptor Hatchling + Warstorm Surge",
+   "Storm Herd + Warstorm Surge"
+  ],
+  "identidade": "RWB"
+ },
+ "-Vandalblast +Inevitable Defeat": {
+  "n": 99,
+  "incluidos": {
+   "Blightsteel Colossus + Chandra's Ignition": [
+    "{'feature': {'id': 50, 'name': 'Each opponent loses the game', 'status': 'S', 'uncountable': True}, 'quantity': 1}"
+   ],
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber": [
+    "{'feature': {'id': 2408, 'name': 'Infinite artifact ETB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2409, 'name': 'Infinite artifact LTB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2419, 'name': 'Infinite artifact sacrifice triggers', 'status': 'H', 'uncountable': True}, 'quantity': 1}"
+   ]
+  },
+  "quase": [
+   "Ashnod's Altar + Myr Retriever + Ultron, Artificial Malevolence",
+   "Blade of Selves + Blightsteel Colossus",
+   "Bladewing the Risen + Cursed Mirror",
+   "Blasphemous Act + Expedited Inheritance",
+   "Blasphemous Act + Fall of Cair Andros",
+   "Blasphemous Act + Repercussion",
+   "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer",
+   "Blightsteel Colossus + Cybermen Squadron",
+   "Blightsteel Colossus + Duke Ulder Ravengard",
+   "Blightsteel Colossus + Legion Loyalty",
+   "Chandra's Ignition + Enduring Angel // Angelic Enforcer",
+   "Chandra's Ignition + Hidetsugu Consumes All // Vessel of the All-Consuming",
+   "Chandra's Ignition + Serra Avatar",
+   "Chandra's Ignition + Soul of Eternity",
+   "Crackdown Construct + Lightning Greaves",
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Weapons Manufacturing",
+   "Cursed Mirror + Felidar Guardian",
+   "Cursed Mirror + Wispweaver Angel",
+   "Doomsday Excruciator + Rakdos, the Muscle",
+   "Goblin Welder + Thornbite Staff",
+   "Junk Diver + Krark-Clan Ironworks + Myr Retriever + Scrap Trawler + Sol Ring",
+   "Krark-Clan Ironworks + Myr Retriever + Ultron, Artificial Malevolence",
+   "Lightning Greaves + Monk Gyatso",
+   "Nested Ghoul + Warstorm Surge",
+   "Raptor Hatchling + Warstorm Surge",
+   "Storm Herd + Warstorm Surge"
+  ],
+  "identidade": "RWB"
+ },
+ "-Heartless Conscription +Inevitable Defeat": {
+  "n": 99,
+  "incluidos": {
+   "Blightsteel Colossus + Chandra's Ignition": [
+    "{'feature': {'id': 50, 'name': 'Each opponent loses the game', 'status': 'S', 'uncountable': True}, 'quantity': 1}"
+   ],
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber": [
+    "{'feature': {'id': 2408, 'name': 'Infinite artifact ETB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2409, 'name': 'Infinite artifact LTB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2419, 'name': 'Infinite artifact sacrifice triggers', 'status': 'H', 'uncountable': True}, 'quantity': 1}"
+   ]
+  },
+  "quase": [
+   "Ashnod's Altar + Myr Retriever + Ultron, Artificial Malevolence",
+   "Blade of Selves + Blightsteel Colossus",
+   "Bladewing the Risen + Cursed Mirror",
+   "Blasphemous Act + Expedited Inheritance",
+   "Blasphemous Act + Fall of Cair Andros",
+   "Blasphemous Act + Repercussion",
+   "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer",
+   "Blightsteel Colossus + Cybermen Squadron",
+   "Blightsteel Colossus + Duke Ulder Ravengard",
+   "Blightsteel Colossus + Legion Loyalty",
+   "Chandra's Ignition + Enduring Angel // Angelic Enforcer",
+   "Chandra's Ignition + Hidetsugu Consumes All // Vessel of the All-Consuming",
+   "Chandra's Ignition + Serra Avatar",
+   "Chandra's Ignition + Soul of Eternity",
+   "Crackdown Construct + Lightning Greaves",
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Weapons Manufacturing",
+   "Cursed Mirror + Felidar Guardian",
+   "Cursed Mirror + Wispweaver Angel",
+   "Doomsday Excruciator + Rakdos, the Muscle",
+   "Goblin Welder + Thornbite Staff",
+   "Junk Diver + Krark-Clan Ironworks + Myr Retriever + Scrap Trawler + Sol Ring",
+   "Krark-Clan Ironworks + Myr Retriever + Ultron, Artificial Malevolence",
+   "Lightning Greaves + Monk Gyatso",
+   "Mycosynth Lattice + Vandalblast",
+   "Nested Ghoul + Warstorm Surge",
+   "Raptor Hatchling + Warstorm Surge",
+   "Storm Herd + Warstorm Surge"
+  ],
+  "identidade": "RWB"
+ },
+ "-Decree of Pain +Inevitable Defeat": {
+  "n": 99,
+  "incluidos": {
+   "Blightsteel Colossus + Chandra's Ignition": [
+    "{'feature': {'id': 50, 'name': 'Each opponent loses the game', 'status': 'S', 'uncountable': True}, 'quantity': 1}"
+   ],
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber": [
+    "{'feature': {'id': 2408, 'name': 'Infinite artifact ETB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2409, 'name': 'Infinite artifact LTB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2419, 'name': 'Infinite artifact sacrifice triggers', 'status': 'H', 'uncountable': True}, 'quantity': 1}"
+   ]
+  },
+  "quase": [
+   "Ashnod's Altar + Myr Retriever + Ultron, Artificial Malevolence",
+   "Blade of Selves + Blightsteel Colossus",
+   "Bladewing the Risen + Cursed Mirror",
+   "Blasphemous Act + Expedited Inheritance",
+   "Blasphemous Act + Fall of Cair Andros",
+   "Blasphemous Act + Repercussion",
+   "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer",
+   "Blightsteel Colossus + Cybermen Squadron",
+   "Blightsteel Colossus + Duke Ulder Ravengard",
+   "Blightsteel Colossus + Legion Loyalty",
+   "Chandra's Ignition + Enduring Angel // Angelic Enforcer",
+   "Chandra's Ignition + Hidetsugu Consumes All // Vessel of the All-Consuming",
+   "Chandra's Ignition + Serra Avatar",
+   "Chandra's Ignition + Soul of Eternity",
+   "Crackdown Construct + Lightning Greaves",
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Weapons Manufacturing",
+   "Cursed Mirror + Felidar Guardian",
+   "Cursed Mirror + Wispweaver Angel",
+   "Doomsday Excruciator + Rakdos, the Muscle",
+   "Goblin Welder + Thornbite Staff",
+   "Junk Diver + Krark-Clan Ironworks + Myr Retriever + Scrap Trawler + Sol Ring",
+   "Krark-Clan Ironworks + Myr Retriever + Ultron, Artificial Malevolence",
+   "Lightning Greaves + Monk Gyatso",
+   "Mycosynth Lattice + Vandalblast",
+   "Nested Ghoul + Warstorm Surge",
+   "Raptor Hatchling + Warstorm Surge",
+   "Storm Herd + Warstorm Surge"
+  ],
+  "identidade": "RWB"
+ },
+ "-Blasphemous Act +Inevitable Defeat": {
+  "n": 99,
+  "incluidos": {
+   "Blightsteel Colossus + Chandra's Ignition": [
+    "{'feature': {'id': 50, 'name': 'Each opponent loses the game', 'status': 'S', 'uncountable': True}, 'quantity': 1}"
+   ],
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber": [
+    "{'feature': {'id': 2408, 'name': 'Infinite artifact ETB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2409, 'name': 'Infinite artifact LTB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2419, 'name': 'Infinite artifact sacrifice triggers', 'status': 'H', 'uncountable': True}, 'quantity': 1}"
+   ]
+  },
+  "quase": [
+   "Ashnod's Altar + Myr Retriever + Ultron, Artificial Malevolence",
+   "Blade of Selves + Blightsteel Colossus",
+   "Bladewing the Risen + Cursed Mirror",
+   "Blightsteel Colossus + Cybermen Squadron",
+   "Blightsteel Colossus + Duke Ulder Ravengard",
+   "Blightsteel Colossus + Legion Loyalty",
+   "Chandra's Ignition + Enduring Angel // Angelic Enforcer",
+   "Chandra's Ignition + Hidetsugu Consumes All // Vessel of the All-Consuming",
+   "Chandra's Ignition + Serra Avatar",
+   "Chandra's Ignition + Soul of Eternity",
+   "Crackdown Construct + Lightning Greaves",
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Weapons Manufacturing",
+   "Cursed Mirror + Felidar Guardian",
+   "Cursed Mirror + Wispweaver Angel",
+   "Doomsday Excruciator + Rakdos, the Muscle",
+   "Goblin Welder + Thornbite Staff",
+   "Junk Diver + Krark-Clan Ironworks + Myr Retriever + Scrap Trawler + Sol Ring",
+   "Krark-Clan Ironworks + Myr Retriever + Ultron, Artificial Malevolence",
+   "Lightning Greaves + Monk Gyatso",
+   "Mycosynth Lattice + Vandalblast",
+   "Nested Ghoul + Warstorm Surge",
+   "Raptor Hatchling + Warstorm Surge",
+   "Storm Herd + Warstorm Surge"
+  ],
+  "identidade": "RWB"
+ },
+ "-Tarrian's Journal +Inevitable Defeat": {
+  "n": 99,
+  "incluidos": {
+   "Blightsteel Colossus + Chandra's Ignition": [
+    "{'feature': {'id': 50, 'name': 'Each opponent loses the game', 'status': 'S', 'uncountable': True}, 'quantity': 1}"
+   ],
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber": [
+    "{'feature': {'id': 2408, 'name': 'Infinite artifact ETB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2409, 'name': 'Infinite artifact LTB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2419, 'name': 'Infinite artifact sacrifice triggers', 'status': 'H', 'uncountable': True}, 'quantity': 1}"
+   ]
+  },
+  "quase": [
+   "Ashnod's Altar + Myr Retriever + Ultron, Artificial Malevolence",
+   "Blade of Selves + Blightsteel Colossus",
+   "Bladewing the Risen + Cursed Mirror",
+   "Blasphemous Act + Expedited Inheritance",
+   "Blasphemous Act + Fall of Cair Andros",
+   "Blasphemous Act + Repercussion",
+   "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer",
+   "Blightsteel Colossus + Cybermen Squadron",
+   "Blightsteel Colossus + Duke Ulder Ravengard",
+   "Blightsteel Colossus + Legion Loyalty",
+   "Chandra's Ignition + Enduring Angel // Angelic Enforcer",
+   "Chandra's Ignition + Hidetsugu Consumes All // Vessel of the All-Consuming",
+   "Chandra's Ignition + Serra Avatar",
+   "Chandra's Ignition + Soul of Eternity",
+   "Crackdown Construct + Lightning Greaves",
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Weapons Manufacturing",
+   "Cursed Mirror + Felidar Guardian",
+   "Cursed Mirror + Wispweaver Angel",
+   "Doomsday Excruciator + Rakdos, the Muscle",
+   "Goblin Welder + Thornbite Staff",
+   "Junk Diver + Krark-Clan Ironworks + Myr Retriever + Scrap Trawler + Sol Ring",
+   "Krark-Clan Ironworks + Myr Retriever + Ultron, Artificial Malevolence",
+   "Lightning Greaves + Monk Gyatso",
+   "Mycosynth Lattice + Vandalblast",
+   "Nested Ghoul + Warstorm Surge",
+   "Raptor Hatchling + Warstorm Surge",
+   "Storm Herd + Warstorm Surge"
+  ],
+  "identidade": "RWB"
+ },
+ "-Scarecrone +Inevitable Defeat": {
+  "n": 99,
+  "incluidos": {
+   "Blightsteel Colossus + Chandra's Ignition": [
+    "{'feature': {'id': 50, 'name': 'Each opponent loses the game', 'status': 'S', 'uncountable': True}, 'quantity': 1}"
+   ],
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber": [
+    "{'feature': {'id': 2408, 'name': 'Infinite artifact ETB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2409, 'name': 'Infinite artifact LTB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2419, 'name': 'Infinite artifact sacrifice triggers', 'status': 'H', 'uncountable': True}, 'quantity': 1}"
+   ]
+  },
+  "quase": [
+   "Ashnod's Altar + Myr Retriever + Ultron, Artificial Malevolence",
+   "Blade of Selves + Blightsteel Colossus",
+   "Bladewing the Risen + Cursed Mirror",
+   "Blasphemous Act + Expedited Inheritance",
+   "Blasphemous Act + Fall of Cair Andros",
+   "Blasphemous Act + Repercussion",
+   "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer",
+   "Blightsteel Colossus + Cybermen Squadron",
+   "Blightsteel Colossus + Duke Ulder Ravengard",
+   "Blightsteel Colossus + Legion Loyalty",
+   "Chandra's Ignition + Enduring Angel // Angelic Enforcer",
+   "Chandra's Ignition + Hidetsugu Consumes All // Vessel of the All-Consuming",
+   "Chandra's Ignition + Serra Avatar",
+   "Chandra's Ignition + Soul of Eternity",
+   "Crackdown Construct + Lightning Greaves",
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Weapons Manufacturing",
+   "Cursed Mirror + Felidar Guardian",
+   "Cursed Mirror + Wispweaver Angel",
+   "Doomsday Excruciator + Rakdos, the Muscle",
+   "Goblin Welder + Thornbite Staff",
+   "Junk Diver + Krark-Clan Ironworks + Myr Retriever + Scrap Trawler + Sol Ring",
+   "Krark-Clan Ironworks + Myr Retriever + Ultron, Artificial Malevolence",
+   "Lightning Greaves + Monk Gyatso",
+   "Mycosynth Lattice + Vandalblast",
+   "Nested Ghoul + Warstorm Surge",
+   "Raptor Hatchling + Warstorm Surge",
+   "Storm Herd + Warstorm Surge"
+  ],
+  "identidade": "RWB"
+ },
+ "-Black Market Connections +Inevitable Defeat": {
+  "n": 99,
+  "incluidos": {
+   "Blightsteel Colossus + Chandra's Ignition": [
+    "{'feature': {'id': 50, 'name': 'Each opponent loses the game', 'status': 'S', 'uncountable': True}, 'quantity': 1}"
+   ],
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber": [
+    "{'feature': {'id': 2408, 'name': 'Infinite artifact ETB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2409, 'name': 'Infinite artifact LTB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2419, 'name': 'Infinite artifact sacrifice triggers', 'status': 'H', 'uncountable': True}, 'quantity': 1}"
+   ]
+  },
+  "quase": [
+   "Ashnod's Altar + Myr Retriever + Ultron, Artificial Malevolence",
+   "Blade of Selves + Blightsteel Colossus",
+   "Bladewing the Risen + Cursed Mirror",
+   "Blasphemous Act + Expedited Inheritance",
+   "Blasphemous Act + Fall of Cair Andros",
+   "Blasphemous Act + Repercussion",
+   "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer",
+   "Blightsteel Colossus + Cybermen Squadron",
+   "Blightsteel Colossus + Duke Ulder Ravengard",
+   "Blightsteel Colossus + Legion Loyalty",
+   "Chandra's Ignition + Enduring Angel // Angelic Enforcer",
+   "Chandra's Ignition + Hidetsugu Consumes All // Vessel of the All-Consuming",
+   "Chandra's Ignition + Serra Avatar",
+   "Chandra's Ignition + Soul of Eternity",
+   "Crackdown Construct + Lightning Greaves",
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Weapons Manufacturing",
+   "Cursed Mirror + Felidar Guardian",
+   "Cursed Mirror + Wispweaver Angel",
+   "Doomsday Excruciator + Rakdos, the Muscle",
+   "Goblin Welder + Thornbite Staff",
+   "Junk Diver + Krark-Clan Ironworks + Myr Retriever + Scrap Trawler + Sol Ring",
+   "Krark-Clan Ironworks + Myr Retriever + Ultron, Artificial Malevolence",
+   "Lightning Greaves + Monk Gyatso",
+   "Mycosynth Lattice + Vandalblast",
+   "Nested Ghoul + Warstorm Surge",
+   "Raptor Hatchling + Warstorm Surge",
+   "Storm Herd + Warstorm Surge"
+  ],
+  "identidade": "RWB"
+ },
+ "-Clever Concealment +Inevitable Defeat": {
+  "n": 99,
+  "incluidos": {
+   "Blightsteel Colossus + Chandra's Ignition": [
+    "{'feature': {'id': 50, 'name': 'Each opponent loses the game', 'status': 'S', 'uncountable': True}, 'quantity': 1}"
+   ],
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber": [
+    "{'feature': {'id': 2408, 'name': 'Infinite artifact ETB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2409, 'name': 'Infinite artifact LTB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2419, 'name': 'Infinite artifact sacrifice triggers', 'status': 'H', 'uncountable': True}, 'quantity': 1}"
+   ]
+  },
+  "quase": [
+   "Ashnod's Altar + Myr Retriever + Ultron, Artificial Malevolence",
+   "Blade of Selves + Blightsteel Colossus",
+   "Bladewing the Risen + Cursed Mirror",
+   "Blasphemous Act + Expedited Inheritance",
+   "Blasphemous Act + Fall of Cair Andros",
+   "Blasphemous Act + Repercussion",
+   "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer",
+   "Blightsteel Colossus + Cybermen Squadron",
+   "Blightsteel Colossus + Duke Ulder Ravengard",
+   "Blightsteel Colossus + Legion Loyalty",
+   "Chandra's Ignition + Enduring Angel // Angelic Enforcer",
+   "Chandra's Ignition + Hidetsugu Consumes All // Vessel of the All-Consuming",
+   "Chandra's Ignition + Serra Avatar",
+   "Chandra's Ignition + Soul of Eternity",
+   "Crackdown Construct + Lightning Greaves",
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Weapons Manufacturing",
+   "Cursed Mirror + Felidar Guardian",
+   "Cursed Mirror + Wispweaver Angel",
+   "Doomsday Excruciator + Rakdos, the Muscle",
+   "Goblin Welder + Thornbite Staff",
+   "Junk Diver + Krark-Clan Ironworks + Myr Retriever + Scrap Trawler + Sol Ring",
+   "Krark-Clan Ironworks + Myr Retriever + Ultron, Artificial Malevolence",
+   "Lightning Greaves + Monk Gyatso",
+   "Mycosynth Lattice + Vandalblast",
+   "Nested Ghoul + Warstorm Surge",
+   "Raptor Hatchling + Warstorm Surge",
+   "Storm Herd + Warstorm Surge"
+  ],
+  "identidade": "RWB"
+ },
+ "-Pia's Revolution +Inevitable Defeat": {
+  "n": 99,
+  "incluidos": {
+   "Blightsteel Colossus + Chandra's Ignition": [
+    "{'feature': {'id': 50, 'name': 'Each opponent loses the game', 'status': 'S', 'uncountable': True}, 'quantity': 1}"
+   ],
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber": [
+    "{'feature': {'id': 2408, 'name': 'Infinite artifact ETB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2409, 'name': 'Infinite artifact LTB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2419, 'name': 'Infinite artifact sacrifice triggers', 'status': 'H', 'uncountable': True}, 'quantity': 1}"
+   ]
+  },
+  "quase": [
+   "Ashnod's Altar + Myr Retriever + Ultron, Artificial Malevolence",
+   "Blade of Selves + Blightsteel Colossus",
+   "Bladewing the Risen + Cursed Mirror",
+   "Blasphemous Act + Expedited Inheritance",
+   "Blasphemous Act + Fall of Cair Andros",
+   "Blasphemous Act + Repercussion",
+   "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer",
+   "Blightsteel Colossus + Cybermen Squadron",
+   "Blightsteel Colossus + Duke Ulder Ravengard",
+   "Blightsteel Colossus + Legion Loyalty",
+   "Chandra's Ignition + Enduring Angel // Angelic Enforcer",
+   "Chandra's Ignition + Hidetsugu Consumes All // Vessel of the All-Consuming",
+   "Chandra's Ignition + Serra Avatar",
+   "Chandra's Ignition + Soul of Eternity",
+   "Crackdown Construct + Lightning Greaves",
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Weapons Manufacturing",
+   "Cursed Mirror + Felidar Guardian",
+   "Cursed Mirror + Wispweaver Angel",
+   "Doomsday Excruciator + Rakdos, the Muscle",
+   "Goblin Welder + Thornbite Staff",
+   "Junk Diver + Krark-Clan Ironworks + Myr Retriever + Scrap Trawler + Sol Ring",
+   "Krark-Clan Ironworks + Myr Retriever + Ultron, Artificial Malevolence",
+   "Lightning Greaves + Monk Gyatso",
+   "Mycosynth Lattice + Vandalblast",
+   "Nested Ghoul + Warstorm Surge",
+   "Raptor Hatchling + Warstorm Surge",
+   "Storm Herd + Warstorm Surge"
+  ],
+  "identidade": "RWB"
+ },
+ "-Chandra's Ignition +Inevitable Defeat": {
+  "n": 99,
+  "incluidos": {
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber": [
+    "{'feature': {'id': 2408, 'name': 'Infinite artifact ETB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2409, 'name': 'Infinite artifact LTB', 'status': 'H', 'uncountable': True}, 'quantity': 1}",
+    "{'feature': {'id': 2419, 'name': 'Infinite artifact sacrifice triggers', 'status': 'H', 'uncountable': True}, 'quantity': 1}"
+   ]
+  },
+  "quase": [
+   "Ashnod's Altar + Myr Retriever + Ultron, Artificial Malevolence",
+   "Blade of Selves + Blightsteel Colossus",
+   "Bladewing the Risen + Cursed Mirror",
+   "Blasphemous Act + Expedited Inheritance",
+   "Blasphemous Act + Fall of Cair Andros",
+   "Blasphemous Act + Repercussion",
+   "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer",
+   "Blightsteel Colossus + Chandra's Ignition",
+   "Blightsteel Colossus + Cybermen Squadron",
+   "Blightsteel Colossus + Duke Ulder Ravengard",
+   "Blightsteel Colossus + Legion Loyalty",
+   "Crackdown Construct + Lightning Greaves",
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Weapons Manufacturing",
+   "Cursed Mirror + Felidar Guardian",
+   "Cursed Mirror + Wispweaver Angel",
+   "Doomsday Excruciator + Rakdos, the Muscle",
+   "Goblin Welder + Thornbite Staff",
+   "Junk Diver + Krark-Clan Ironworks + Myr Retriever + Scrap Trawler + Sol Ring",
+   "Krark-Clan Ironworks + Myr Retriever + Ultron, Artificial Malevolence",
+   "Lightning Greaves + Monk Gyatso",
+   "Mycosynth Lattice + Vandalblast",
+   "Nested Ghoul + Warstorm Surge",
+   "Raptor Hatchling + Warstorm Surge",
+   "Storm Herd + Warstorm Surge"
+  ],
+  "identidade": "RWB"
+ },
+ "-Genesis Chamber +Inevitable Defeat": {
+  "n": 99,
+  "incluidos": {
+   "Blightsteel Colossus + Chandra's Ignition": [
+    "{'feature': {'id': 50, 'name': 'Each opponent loses the game', 'status': 'S', 'uncountable': True}, 'quantity': 1}"
+   ]
+  },
+  "quase": [
+   "Ashnod's Altar + Myr Retriever + Ultron, Artificial Malevolence",
+   "Blade of Selves + Blightsteel Colossus",
+   "Bladewing the Risen + Cursed Mirror",
+   "Blasphemous Act + Expedited Inheritance",
+   "Blasphemous Act + Fall of Cair Andros",
+   "Blasphemous Act + Repercussion",
+   "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer",
+   "Blightsteel Colossus + Cybermen Squadron",
+   "Blightsteel Colossus + Duke Ulder Ravengard",
+   "Blightsteel Colossus + Legion Loyalty",
+   "Chandra's Ignition + Enduring Angel // Angelic Enforcer",
+   "Chandra's Ignition + Hidetsugu Consumes All // Vessel of the All-Consuming",
+   "Chandra's Ignition + Serra Avatar",
+   "Chandra's Ignition + Soul of Eternity",
+   "Crackdown Construct + Lightning Greaves",
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber",
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Weapons Manufacturing",
+   "Cursed Mirror + Felidar Guardian",
+   "Cursed Mirror + Wispweaver Angel",
+   "Doomsday Excruciator + Rakdos, the Muscle",
+   "Goblin Welder + Thornbite Staff",
+   "Junk Diver + Krark-Clan Ironworks + Myr Retriever + Scrap Trawler + Sol Ring",
+   "Krark-Clan Ironworks + Myr Retriever + Ultron, Artificial Malevolence",
+   "Lightning Greaves + Monk Gyatso",
+   "Mycosynth Lattice + Vandalblast",
+   "Nested Ghoul + Warstorm Surge",
+   "Raptor Hatchling + Warstorm Surge",
+   "Storm Herd + Warstorm Surge"
+  ],
+  "identidade": "RWB"
+ }
+}

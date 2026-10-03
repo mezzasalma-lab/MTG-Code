@@ -1,0 +1,49 @@
+cartas na lista: 99
+base                               n=99 incluidos=4 quase=98 id=RWB
++Inevitable Defeat (sem cortar)    n=100 incluidos=4 quase=98 id=RWB
+   novos incluidos: [] | novos quase: 0
+-Monologue Tax +Inevitable Defeat  n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Academy Manufactor +Inevitable Defeat n=99 incluidos=4 quase=94 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 4 | quase novos: 0
+-Back in Town +Inevitable Defeat   n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Smothering Tithe +Inevitable Defeat n=99 incluidos=1 quase=96 id=RWB
+   incluidos que SUMIRAM: [('Anointed Procession', 'Gleaming Splendor', 'Smothering Tithe'), ('Gleaming Splendor', 'Goldspan Dragon', 'Smothering Tithe'), ('Gleaming Splendor', 'Smothering Tithe', 'Xorn')] | NOVOS: []
+   quase sumiram: 5 | quase novos: 3
+-Teferi's Protection +Inevitable Defeat n=99 incluidos=4 quase=92 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 6 | quase novos: 0
+-Council's Judgment +Inevitable Defeat n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Shoot the Sheriff +Inevitable Defeat n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Boros Charm +Inevitable Defeat    n=99 incluidos=4 quase=97 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 1 | quase novos: 0
+-Path to Exile +Inevitable Defeat  n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Deadly Derision +Inevitable Defeat n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Requisition Raid +Inevitable Defeat n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Blasphemous Act +Inevitable Defeat n=99 incluidos=4 quase=94 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 4 | quase novos: 0
+-Life Insurance +Inevitable Defeat n=99 incluidos=4 quase=97 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 1 | quase novos: 0
+-Mari, the Killing Quill +Inevitable Defeat n=99 incluidos=4 quase=98 id=RWB
+   incluidos que SUMIRAM: [] | NOVOS: []
+   quase sumiram: 0 | quase novos: 0
+-Gleaming Splendor +Inevitable Defeat n=99 incluidos=1 quase=96 id=RWB
+   incluidos que SUMIRAM: [('Anointed Procession', 'Gleaming Splendor', 'Smothering Tithe'), ('Gleaming Splendor', 'Goldspan Dragon', 'Smothering Tithe'), ('Gleaming Splendor', 'Smothering Tithe', 'Xorn')] | NOVOS: []
+   quase sumiram: 5 | quase novos: 3

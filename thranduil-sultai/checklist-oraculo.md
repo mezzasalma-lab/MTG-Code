@@ -1,5 +1,33 @@
 # Checklist cláusula-a-cláusula — Thranduil, the Elvenking
 
+## The Pride of Hull Clade (candidata, implementada só no harness) — oráculo, rulings e cláusulas — 2026-10-03
+
+A carta **não está na lista**; foi acrescentada em tempo de execução por `resultados-ab/2026-10-03-pride-of-hull-clade/orquestracao/thr_harness.py`
+(monkeypatch; `thranduil_goldfish_v1.py` não foi alterado). Oráculo lido ao vivo no Scryfall (2026-10-03) e salvo em `scryfall-cache/oracle-cache.json`;
+resposta bruta e rulings em `resultados-ab/2026-10-03-pride-of-hull-clade/dados/rulings_The_Pride_of_Hull_Clade.json`.
+
+**Oráculo:** {10}{G}, Legendary Creature — Crocodile Elk Turtle, 2/15, Defender. *This spell costs {X} less to cast, where X is the total toughness of creatures you control.*
+*{2}{U}{U}: Until end of turn, target creature you control gets +1/+0, gains "Whenever this creature deals combat damage to a player, draw cards equal to its toughness," and can attack as though it didn't have defender.*
+
+| Cláusula / ruling (2024-02-02) | Status | Como entra no harness |
+|---|---|---|
+| tipos "Crocodile Elk Turtle" (não é Elfo) | ✅ | sem tag `elf`: `is_elf()` falso, então não recebe anthem de Elfo (`anthem`), nem gatilho de "Elf enters" |
+| "legendary" (não é Elfo lendário) | ✅ | o gatilho da Thranduil (`thranduil_legendary_elf_triggers`) exige Elfo lendário: não dispara |
+| custo reduzido por toughness total das criaturas | ✅ (lacuna do simulador fechada no harness) | o simulador não rastreava toughness; `total_toughness()` = impresso (cache) + anthem de Elfo + contadores da Marwyn; `effective_mv` devolve `max(1, 11 − toughness)` |
+| ruling: toughness lida ao mover para a pilha / não muda ao pagar mana | ✅ | lida uma vez em `effective_mv` no cast |
+| ruling: o custo não cai abaixo de {G} | ✅ | `max(1, …)` |
+| ruling: o MV continua 11 | ✅ | `add(PRIDE, 11, …)` (Finale of Devastation com X=11 alcançaria) |
+| 2/15 Defender | ✅ | não ataca sem a ativação |
+| "{2}{U}{U}: +1/+0, compra = toughness ao conectar, ataca como se não tivesse defender" | ✅ com premissa | 3 modos (`off`, `trample_line` = linha deliberada com Ezuri já pago, `ceiling` = teto sem bloqueio); a **conexão** do atacante é 📊 estrutural (sem bloqueio/oponente no goldfish) |
+| "+1/+0" | 📊 | sem efeito mensurável (sem bloqueio nem vida de oponente) |
+| ruling: compra usa a toughness "como existia por último" se o alvo sair | 📊 | o goldfish não tem remoção de oponente reagindo ao gatilho |
+| habilidade concedida é gatilho de criatura: Roaming Throne dobra se o alvo for Elfo do tipo escolhido | ✅ | `trample_line`: compra × 2 com `roaming_throne_active()` |
+
+**Regra #3 (conceitos compartilhados que a carta lê):** (a) "total toughness" não existia no simulador: criei `total_toughness()` no harness e conferi por grep que ninguém mais no `.py` lê toughness; (b) `is_elf()`/`anthem`: o poder dos Elfos usa a contagem de `anthem`, e o harness reusa a mesma contagem para a toughness; (c) `draw()` (`source != "normal"` soma em `extra_draws`) e a substituição do Underrealm Lich vivem em `draw()`, então a compra da Pride passa pelo Lich de graça.
+**Regra #6 (ordem de fases):** a ativação roda no início de `combat_step` (depois do pump da Ezuri em `activate_finishers`, que roda em `main_phase`), e só no turno em que a Ezuri pagou o +3/+3; conferido por `ezuri_pump_turn == state.turn`.
+
+**Classes da taxonomia da Regra #1 varridas para esta carta (e só ela):** conceito compartilhado (toughness, Elfo, legendário, compra), custo dinâmico (fórmula real, não achatada), gatilho de fase (ordem em `play_turn`). **Não varridas:** auditoria carta-a-carta do `.py`, Elfos com toughness `*` (Jarad = base 1 no harness), oponente real (📊).
+
 ## London mulligan: as cartas do fundo eram embaralhadas de volta — 2026-09-24
 
 **Achado:** o mesmo bug encontrado no Prismatic Bridge (rodada de gaps de

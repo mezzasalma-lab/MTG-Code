@@ -1,5 +1,59 @@
 # Goldfish Log — Megatron, Tyrant
 
+> **Dados brutos e como reproduzir as tabelas da seção Inevitable Defeat (2026-10-03):** [`resultados-ab/2026-10-03-inevitable-defeat/LEIAME.md`](resultados-ab/2026-10-03-inevitable-defeat/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
+---
+
+## Inevitable Defeat — avaliação como possível inclusão — 2026-10-03
+
+**Pedido:** *"Faça o mesmo para Inevitable Defeat como possível inclusão nos meus dois decks Mardu: Megatron e Vihaan."* (a parte do Vihaan está em `vihaan-goldwaker-mardu/goldfish-log.md`).
+Regras #4/#5: oráculo e rulings ao vivo, motores e combos do deck, Commander Spellbook antes/depois com controle positivo, enumeração por script, e só então o simulador como apoio.
+
+**Oráculo (Scryfall ao vivo, 2026-10-03; salvo em `scryfall-cache/oracle-cache.json`):** {1}{R}{W}{B}, Instant (Tarkir: Dragonstorm, 2025-04-11, legal em Commander, não é Game Changer, ~US$0,77). *This spell can't be countered. Exile target nonland permanent. Its controller loses 3 life and you gain 3 life.*
+**Ruling (2025-04-04, único):** se o alvo for ilegal na resolução, a magia não resolve e ninguém ganha nem perde vida.
+
+### O que a carta toca nos motores reais do Megatron
+
+- **Flip do Megatron ({C} = vida perdida pelos oponentes no turno):** os 3 de vida entram na conta do gatilho de pós-combate. Só vale se a Defeat resolver **antes** do pós-combate do turno em que o Megatron atacou e converteu. Ordem de fases conferida em `play_turn` (Regra #6): `main_phase → try_equip_haste → combat_step → megatron_postcombat → main_phase → end_step`; a mana do flip é gastável no 2º main.
+- **Não é artefato, não entra em campo:** não dispara Ultron, não reduz Metalwork Colossus, não é alvo de Goblin Welder/Engineer/Trash for Treasure, não alimenta o flip como combustível. Nenhum dos motores de artefato do deck vê a carta.
+- **Cobertura de interação (oráculo das cartas da lista, `resumos/enumeracao.txt`):** Path/Swords só pegam criatura; Vandalblast só artefato (sorcery); Generous Gift e Chaos Warp são os únicos instants que pegam qualquer permanente (Gift dá um Elefante 3/3 ao dono; Chaos Warp é aleatório e pode devolver uma permanente); Summon: Bahamut (caps. I/II) e Cityscape Leveler (cast/ataque) destroem "up to one target nonland permanent" mas não são instants. A Defeat é a **única** resposta em instant, determinística, sem contrapartida pro oponente, e não anulável por contramágica.
+- **Cor:** R+W+B é exatamente a identidade do comandante. Medido no simulador (que modela pips): P(R+W+B em campo e ≥4 mana) por T4/T5/T8 = 80,3% / 89,8% / 96,1%, contra 77,8% / 88,8% / 95,9% de Megatron conjurado. A Defeat é conjurável quase sempre que o comandante já foi.
+- **Combos (Commander Spellbook, `find-my-combos`, antes e depois de cada troca):** base = 2 combos (Blightsteel Colossus + Chandra's Ignition; Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber). Defeat sem cortar: 0 combos novos. Controles positivos funcionaram: cortar Chandra's Ignition remove o 1º combo; cortar Genesis Chamber remove o 2º. **Nenhuma das 13 candidatas testadas pertence a combo.** Cortar Blasphemous Act remove 4 "quase combos" (peças faltando) e Vandalblast 1.
+
+### Medição no simulador (apoio; N=10.000 sementes 3.000.000+i pareadas, 8 turnos, troca posicional)
+
+Defeat conjurada em ~18,5% das partidas (turno médio 6,1; a cor deixa 3,9% das partidas sem R+W+B até T8). Diferença pareada (Defeat − base), IC95%:
+
+| Defeat entra no lugar de | win (pp) | dano proxy | mana convertida | spells de interação |
+|---|---|---|---|---|
+| Chaos Warp | −0,01 ±0,11 | +0,58 ±0,20 | +0,12 ±0,17 | −0,01 |
+| Generous Gift | −0,11 ±0,13 | +0,57 ±0,17 | +0,20 ±0,15 | −0,01 |
+| Path to Exile | −0,20 ±0,11 | −0,27 ±0,29 | −0,53 ±0,26 | −0,03 |
+| Swords to Plowshares | −0,15 ±0,13 | −0,10 ±0,21 | −0,49 ±0,19 | −0,03 |
+| Vandalblast | −0,03 ±0,14 | −0,08 ±0,21 | −0,35 ±0,18 | −0,03 |
+| Heartless Conscription | −0,25 ±0,13 | −0,31 ±0,28 | −0,59 ±0,25 | +0,17 |
+| Decree of Pain | −0,22 ±0,11 | −0,33 ±0,19 | −0,66 ±0,17 | +0,15 |
+| Blasphemous Act | −0,27 ±0,13 | −0,38 ±0,24 | −0,66 ±0,19 | +0,16 |
+| Clever Concealment | −0,32 ±0,13 | −0,69 ±0,25 | −0,94 ±0,22 | +0,14 |
+| Pia's Revolution | −0,30 ±0,14 | −1,39 ±0,32 | −1,46 ±0,27 | +0,11 |
+| Tarrian's Journal | −0,72 ±0,19 | −0,80 ±0,35 | −1,11 ±0,34 | +0,11 |
+| Black Market Connections | −0,73 ±0,18 | −2,98 ±0,37 | −2,76 ±0,32 | +0,03 |
+| Scarecrone | −1,04 ±0,21 | −1,28 ±0,27 | −1,68 ±0,24 | +0,13 |
+| **controle** Arcane Signet | −3,11 ±0,37 | −4,37 ±0,54 | −4,54 ±0,49 | +0,04 |
+| **controle** Fellwar Stone | −2,61 ±0,34 | −3,95 ±0,48 | −4,29 ±0,44 | +0,04 |
+
+Base: win 83,8%, dano proxy 83,4, mana convertida 70,25. Os controles doem (rocks de mana: −2,6 a −3,1pp de win), como esperado; as demais variações ficam em ±1 de dano.
+- **Quanto a Defeat realmente alimenta o flip:** em 6,5% das partidas (35% das vezes em que é conjurada) ela é lançada num turno em que o Megatron converte no pós-combate, e rende em média **0,20 {C} por partida**, contra 70 {C} de mana de flip por partida. Pequeno no agregado; é o piso, porque o simulador joga a Defeat quando "dá", não na linha deliberada (main 1, antes do ataque).
+- **O dano proxy da Defeat é só o dreno dela:** 3 × 18,7% = 0,56, igual ao +0,58 de Chaos Warp→Defeat. Ou seja, o simulador não vê nenhum outro efeito (e não pode: exílio de permanente de oponente é 📊).
+
+### O que a medição NÃO diz (Regra #5)
+
+- Com a "Blank Card" (inconjurável, **instantâneo**) no lugar de uma interação o dano **sobe** +0,9 a +1,8: o simulador premia não gastar mana em interação (goldfish sem oponente). O primeiro lote usou a Blank como artefato MV 99, que Welder/Sneak Attack/Anrakyr traziam ao campo e o Megatron sacrificava como combustível (+9 a +11 de dano): lote **superado e mantido** em `superado-blank-artefato/`.
+- Exílio, contramágica, alvo ilegal (ruling) e valor contra permanentes de oponente são 📊 estruturais: o goldfish não tem permanente de oponente. A medição só confirma que a carta **não quebra** o plano e que ela cabe no custo/cor do deck.
+
+**Escopo verificado nesta rodada:** oráculo + ruling (1); `play_turn` (ordem de fases); enumeração por script sobre as 85 entradas distintas de `lista.md` (oráculo do cache; `resumos/enumeracao.txt`); Spellbook antes/depois em 13 trocas candidatas + 2 controles positivos; castabilidade de cor medida no simulador (pips); A/B pareado de 15 trocas + 4 controles "Blank"; bit-identidade do harness contra o simulador original sem patch (300/300 em 123 campos do `GameState`); tabelas refeitas dos `.json.xz` byte a byte (`cmp`).
+**Não verificado:** comportamento contra oponentes reais (remoção, contramágica, bloqueio); interação da Defeat com a mesa de 3 oponentes (alvos legais/ilegais); linha deliberada "Defeat no main 1 para alimentar o flip" (o simulador não escolhe essa linha); classes da taxonomia da Regra #1 além da castabilidade e dos gatilhos de fase relevantes (a carta não está na lista, então não houve auditoria carta-a-carta do `.py`).
+
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
 
 ---
