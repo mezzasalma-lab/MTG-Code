@@ -1,11 +1,60 @@
 # Goldfish Log — Vihaan, Goldwaker
 
+> **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: Sephiroth (2026-10-03):** [`resultados-ab/2026-10-03-sephiroth/LEIAME.md`](resultados-ab/2026-10-03-sephiroth/LEIAME.md) — brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
 > **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: Treasure animado, mulligan e terreno tapped (2026-10-03):** [`resultados-ab/2026-10-03-treasure-animado-e-mulligan/LEIAME.md`](resultados-ab/2026-10-03-treasure-animado-e-mulligan/LEIAME.md) — brutos `.json.xz` por partida, código antes/depois, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
 > **Dados brutos e como reproduzir as tabelas da seção Inevitable Defeat (2026-10-03):** [`resultados-ab/2026-10-03-inevitable-defeat/LEIAME.md`](resultados-ab/2026-10-03-inevitable-defeat/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
 > **Dados brutos e como reproduzir as tabelas da seção Kingpin, Wilson Fisk (2026-10-03):** [`resultados-ab/2026-10-03-kingpin/LEIAME.md`](resultados-ab/2026-10-03-kingpin/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
+
+---
+
+## Correção do simulador: Sephiroth (emblema acumulável, wipe com mortes simultâneas, contador por turno) — 2026-10-03
+
+**Pedido:** *"Quero sim, corrija os itens 2 e 3."* (itens da lista de lacunas do Sephiroth que eu tinha levantado ao responder se o simulador flipava o Sephiroth com 4 mortes no mesmo turno.)
+**Veredito:** as três correções estão no `vihaan_goldfish_v1.py`, cada uma atrás da sua chave (`SEPHIROTH_EMBLEM_STACKING_ENABLED`, `SEPHIROTH_SIMULTANEOUS_DEATH_ENABLED`, `SEPHIROTH_TURN_BOUNDARY_ENABLED`). O efeito é **pequeno em jogo médio e grande na taxa de "Sephiroth virou"**: no modo resiliência (oponente com wipe) a taxa cai de **2,31% para ~0,6%** dos jogos, porque **72% das viradas antigas (167 de 231) vinham de wipes em que o Sephiroth morria junto** e, pela ruling, **não vira**. Drain, dano da mesa e vitória até o T8 não se mexem de forma mensurável.
+
+### O que o oráculo diz (lido ao vivo, 2026-10-03; arquivado em `dados/oraculo_e_rulings.json`)
+- Frente: *Whenever another creature dies, target opponent loses 1 life and you gain 1 life. If this is the fourth time this ability has resolved this turn, transform Sephiroth.*
+- Verso: *Super Nova — As this creature transforms into Sephiroth, One-Winged Angel, you get an emblem with "Whenever a creature dies, target opponent loses 1 life and you gain 1 life."*
+- **Ruling 2025-06-06:** *If Sephiroth, Fabled SOLDIER and one or more other creatures die at the same time, its last ability will trigger for each of those other creatures. (It won't transform, though.)* As outras 9 rulings são sobre faces de carta dupla e não mudam a leitura.
+
+### O que mudou no código (3 correções + 1 achada no caminho)
+1. **Emblema + Sephiroth de frente = 2 gatilhos por morte** (`..._EMBLEM_STACKING_ENABLED`). O emblema é objeto independente, então se o Sephiroth volta de frente (reanimado) com um emblema já existente, cada morte dispara o do emblema **e** o da frente; a 4ª resolução da frente vira de novo e dá um **2º emblema**, e emblemas acumulam. O código antigo guardava um sim/não e só disparava o emblema (1 por morte). Passei a contar `super_nova_emblems`.
+2. **Wipe com mortes simultâneas** (`..._SIMULTANEOUS_DEATH_ENABLED`). Os wipes próprios (Blood Money, Blasphemous Act) e o do oponente (`try_smart_opponent_wipe`) tiram as criaturas do campo uma a uma, então o resultado dependia da ORDEM de remoção: Sephiroth primeiro na lista = 0 gatilhos; Sephiroth por último = 4 gatilhos **e virava** (contra a ruling). Agora `begin_mass_death`/`end_mass_death` tiram a foto do que ele enxerga antes do lote: dispara para cada outra criatura (fichas incluídas), em qualquer ordem, e **não vira** se ele morre junto.
+3. **"4ª vez neste turno"** (`..._TURN_BOUNDARY_ENABLED`) — achado enquanto corrigia: `sephiroth_deaths_this_turn` só zerava no meu turno, então mortes do meu turno vazavam para o turno do oponente (e entre os 3 oponentes). Agora zera em cada turno de oponente, e quando o Sephiroth reentra em campo (objeto novo).
+4. **Erro meu pego pelos testes dirigidos** (antes de medir qualquer coisa): na primeira versão do lote, a morte do **próprio** Sephiroth disparava a habilidade da frente (5 gatilhos num wipe com 4 outras criaturas, em vez de 4). A frente diz "another". Agora as vias de permanente nomeado (`sacrifice_named_creature`, `remove_permanent`) informam quem morreu (`dying=`); a morte dele não dispara a frente, mas dispara o emblema ("a creature dies", sem "another") se já houver um.
+
+### Medição (apoio; pareada; base = simulador antes, commit `ba74496`, que já tem Treasure animado/mulligan/tapped)
+Diferença pareada (variante − antes), IC95%, N=10.000, sementes 3.000.000+i, 8 turnos. A coluna "virou" é a taxa de jogos com o emblema:
+
+| modo / variante | virou (pp) | emblemas/jogo | drain | dano mesa | win ≤T8 (pp) | jogos com estado final igual ao antes |
+|---|---|---|---|---|---|---|
+| **padrão** — base | 2,03% | 0,0203 | 7,01 | 15,61 | 10,6% | — |
+| padrão — só emblema acumulável | 0 | 0 | 0 | 0 | 0 | 99,68% |
+| padrão — só wipe simultâneo | −0,27 ±0,10 | −0,003 ±0,001 | +0,005 ±0,005 | +0,005 ±0,005 | 0 | 99,04% |
+| padrão — só contador por turno | 0 | 0 | 0 | 0 | 0 | 100% |
+| **padrão — as três** | **−0,27 ±0,10** | −0,003 ±0,001 | +0,005 ±0,005 | +0,005 ±0,005 | 0 | 99,04% |
+| **resiliência** — base | 2,31% | 0,0231 | 3,63 | 7,99 | 2,6% | — |
+| resiliência — só emblema acumulável | 0 | 0 | 0 | 0 | 0 | 99,89% |
+| resiliência — só wipe simultâneo | **−1,67 ±0,25** | −0,017 ±0,003 | +0,002 ±0,007 | +0,002 ±0,007 | 0 | 96,95% |
+| resiliência — só contador por turno | −0,69 ±0,16 | −0,007 ±0,002 | −0,030 ±0,008 | −0,030 ±0,008 | 0 | 94,64% |
+| **resiliência — as três** | **−1,70 ±0,25** | −0,017 ±0,003 | +0,002 ±0,007 | +0,001 ±0,008 | 0 | 93,07% |
+
+**Leitura (medido):** (a) a virada cai porque o simulador antigo virava o Sephiroth em wipe em que ele morria junto (contra a ruling) e carregava contagem de um turno para outro. Instrumentado no código antigo (`resumos/flips_em_wipe_antes_resiliencia.txt`, resiliência, N=10.000): das **231** viradas, **167 foram em wipe com o Sephiroth morrendo junto** (162 de oponente, 5 meus), 6 em wipe com ele sobrevivendo e 58 fora de wipe. (b) O drain não se mexe: o que se perde de emblemas fantasmas se compensa com os gatilhos que antes se perdiam quando o Sephiroth era removido primeiro. (c) O **emblema acumulável quase nunca acontece**: em 20.000 jogos do modo padrão o "emblema + frente em campo" gerou **4 gatilhos extras** no total; em 10.000 jogos de resiliência, 1 jogo (2 gatilhos extras). Precisa de recursão do Sephiroth depois de virar. É correção de regra, não de número. (d) No modo padrão a variante "contador por turno" não muda nada porque esse modo não tem turno de oponente; os 6 jogos de 2.000 que mudam de estado na variante "emblema" divergem **só** no campo `sephiroth_deaths_this_turn` (zerado na reentrada), sem efeito em métrica (`resumos/explica_diferencas_*.txt`).
+**Lido como raciocínio, não medido:** nenhuma dessas correções muda a recomendação do Sephiroth na lista; só a confiança no número dele no modo resiliência (a taxa de emblema era ~3,8× a real: 2,31% contra ~0,61%).
+
+### Validação (Regra #1) — arquivada em `resultados-ab/2026-10-03-sephiroth/`
+- **Smoke:** 99 cartas, 93 distintas, 0 desconhecidas, 0 duplicadas não básicas, 35 terrenos; 200 partidas sem exceção.
+- **Testes dirigidos:** 28/28 (`resumos/testes_dirigidos.txt`): emblema + frente = 2 gatilhos por morte; 4ª resolução dá o 2º emblema; wipe com o Sephiroth primeiro e último na lista dão o mesmo resultado (4 gatilhos, não vira); o mesmo no wipe do oponente; 5 fichas morrendo juntas com ele vivo (vira na 4ª, 5 gatilhos); emblema + frente morrendo juntos (7 = 4 do emblema + 3 da frente); contador zera no turno do oponente e na reentrada; com as chaves desligadas cada teste reproduz o comportamento antigo documentado.
+- **Bit-identidade com as 3 chaves desligadas:** 20.000/20.000 idênticas ao commit `ba74496` no modo padrão e 20.000/20.000 na resiliência.
+- **Regressão:** 140.000 partidas (7 configurações/modos × 20.000, sementes 5.000.000+i), **0 exceções**, 0 cartas duplicadas, 0 violações dos invariantes novos (`has_super_nova_emblem == (emblemas>0)`, virou ⇒ ≥1 emblema, nenhum lote de mortes ativo no fim do turno).
+
+### Escopo verificado e NÃO verificado (Regra #7)
+- **Verificado:** só os gatilhos de morte do Sephiroth (frente e emblema) em todas as vias que removem criatura nomeada ou ficha em lote (Blood Money, Blasphemous Act, `try_smart_opponent_wipe`, `sacrifice_named_creature`, `remove_permanent`), por teste dirigido + A/B + regressão. A habilidade de entrada/ataque ("sacrifice another creature, draw") **não foi relida** nesta rodada.
+- **Continuam abertos (não corrigidos aqui):** (1) os wipes próprios usam o caminho de **sacrifício**, mas "destroy" não é sacrifício: Mayhem Devil dispara a mais e o comandante é excluído; (2) o Sephiroth só conta mortes das minhas criaturas (a frente diz "another creature", de qualquer controlador: mortes de criaturas de oponente não entram, estrutural 📊 por serem estado de oponente); (3) política: o Sephiroth poderia sacrificar Treasures animados como fodder; (4) Xorn/Pitiless Plunderer por lote de evento; (5) 7 outros decks ainda sorteiam as cartas do fundo no mulligan.
 
 ---
 

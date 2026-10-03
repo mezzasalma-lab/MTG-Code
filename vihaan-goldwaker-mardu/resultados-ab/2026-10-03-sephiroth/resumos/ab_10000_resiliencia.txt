@@ -1,0 +1,13 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia (oponente esperto, simulate_one_with_interaction)
+ANTES: win<=T8 2.6% | Sephiroth virou (emblema) em 2.31% dos jogos | emblemas/jogo 0.0231 | dano mesa 7.99 drain 3.63 vida ganha 1.71 mortes de criatura 4.65 Treasures 6.95
+variante     win<=8 pp      virou pp       emblemas       dano mesa      drain          vida ganha     mortes cria.   Treasures     
+emblema       +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000 
+simultaneas   +0.000±0.000   -1.670±0.251   -0.017±0.003   +0.002±0.007   +0.002±0.007   +0.002±0.007   +0.000±0.000   +0.000±0.000 
+fronteira     +0.000±0.000   -0.690±0.162   -0.007±0.002   -0.030±0.008   -0.030±0.008   -0.030±0.008   -0.000±0.000   +0.000±0.001 
+todas         +0.000±0.000   -1.700±0.253   -0.017±0.003   +0.001±0.008   +0.002±0.007   +0.002±0.007   -0.000±0.000   +0.000±0.001 
+
+variante     jogos iguais  jogos com gatilho extra do emblema gatilhos extras/jogo    
+emblema      99.89%        1                              0.00020                 
+simultaneas  96.95%        0                              0.00000                 
+fronteira    94.64%        0                              0.00000                 
+todas        93.07%        0                              0.00000                 

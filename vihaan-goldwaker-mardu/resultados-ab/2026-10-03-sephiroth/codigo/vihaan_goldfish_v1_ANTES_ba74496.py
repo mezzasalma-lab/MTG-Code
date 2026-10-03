@@ -64,15 +64,6 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas):
   ESCOLHE as cartas do fundo (`choose_bottom`). Terrenos: em T1/T2 joga o
   que entra tapped salvo se custar uma jogada (`choose_land_to_play`).
   Ver `resultados-ab/2026-10-03-treasure-animado-e-mulligan/LEIAME.md`.
-- Sephiroth (2026-10-03, 3a rodada): (a) o emblema e' um objeto
-  independente e acumula; com emblema E Sephiroth de frente em campo cada
-  morte dispara 2 gatilhos e a 4a resolucao da frente da' um 2o emblema;
-  (b) mortes simultaneas em wipe (ruling 2025-06-06): o gatilho vale para
-  TODAS as outras que morrem junto, em qualquer ordem de remocao, e ele
-  nao vira se morre junto (a frente diz "another": a morte dele nao a
-  dispara); (c) "4a vez NESTE turno": o contador zera a cada turno de
-  oponente e quando ele reentra (objeto novo). Ver
-  `resultados-ab/2026-10-03-sephiroth/LEIAME.md`.
 """
 
 import copy
@@ -339,12 +330,6 @@ TAPPED_LAND_FIRST_ENABLED = True          # T1/T2: joga o terreno tapped quando 
 TAPPED_LAND_FIRST_MAX_TURN = 2
 TAPPED_LAND_FIRST_SKIP_IF_LOSES_PLAY = True  # False = politica "cega" (sempre o tapped), so' pra sensibilidade
 
-# Correcoes do Sephiroth (2026-10-03, 3a rodada; o usuario pediu "corrija os itens 2 e 3"). Com as TRES em False o arquivo
-# se comporta bit-a-bit como o do commit ba74496.
-SEPHIROTH_EMBLEM_STACKING_ENABLED = True       # emblema + Sephiroth de frente: 2 gatilhos por morte; cada virada gera 1 emblema (acumulam)
-SEPHIROTH_SIMULTANEOUS_DEATH_ENABLED = True    # wipe: o gatilho dele dispara para as outras que morrem junto, em qualquer ordem (ruling 2025-06-06)
-SEPHIROTH_TURN_BOUNDARY_ENABLED = True         # "4a vez NESTE turno": o contador zera a cada turno de oponente (antes: so' no meu turno)
-
 TREASURE_SOURCE_TAGS = {
     "goldspan", "treasure_attack", "draw_treasure", "sac_draw_treasure",
     "impulse_treasure", "modal_treasure", "etb_treasure", "cascade_treasure",
@@ -423,12 +408,6 @@ class GameState:
     # criatura sair de campo depois) - campo separado do "transformed" da
     # propria carta, nunca resetado no resto da partida.
     has_super_nova_emblem: bool = False
-    super_nova_emblems: int = 0  # quantos emblemas Super Nova existem (cada virada gera um; has_super_nova_emblem = emblemas > 0)
-    seph_batch_active: bool = False      # dentro de um evento de mortes SIMULTANEAS (wipe)
-    seph_batch_front_up: bool = False    # Sephiroth de frente em campo quando o lote de mortes comecou
-    seph_batch_emblems: int = 0          # emblemas existentes quando o lote comecou (emblema novo nao dispara pro lote)
-    seph_batch_leaves: bool = False      # o proprio Sephiroth morre neste lote (nao vira)
-    sephiroth_extra_triggers_total: int = 0  # gatilhos que o codigo antigo perdia (emblema + frente juntos, ou frente em wipe que o mata)
     caretaker_level: int = 1  # Classes sempre entram no nivel 1
 
     # metrics --------------------------------------------------------------
@@ -798,7 +777,7 @@ def sacrifice_named_creature(state: GameState, name: str):
     state.battlefield.remove(name)
     state.creature_cast_turn.pop(name, None)
     state.graveyard.append(name)
-    on_permanent_sacrificed(state, 1, is_artifact=is_artifact_card(name), is_creature=True, is_token=False, dying=name)
+    on_permanent_sacrificed(state, 1, is_artifact=is_artifact_card(name), is_creature=True, is_token=False)
     if name == COMMANDER:
         if name in state.graveyard:
             state.graveyard.remove(name)
@@ -806,20 +785,20 @@ def sacrifice_named_creature(state: GameState, name: str):
     return True
 
 
-def on_permanent_sacrificed(state: GameState, n: int, is_artifact: bool, is_creature: bool, is_token: bool, dying=None):
+def on_permanent_sacrificed(state: GameState, n: int, is_artifact: bool, is_creature: bool, is_token: bool):
     """Dispara os gatilhos de sacrificio/morte reais. Chamado por toda via
     de sacrificio (Treasure, Construct, token generico, criatura nomeada)."""
     if "Mayhem Devil" in state.battlefield:
         drain(state, n)
     if is_creature:
-        on_creature_dies(state, n, is_token=is_token, dying=dying)
+        on_creature_dies(state, n, is_token=is_token)
     if is_artifact:
         on_artifact_dies(state, n)
     if is_token:
         on_token_leaves(state, n)
 
 
-def on_permanent_destroyed(state: GameState, n: int, is_artifact: bool, is_creature: bool, is_token: bool, dying=None):
+def on_permanent_destroyed(state: GameState, n: int, is_artifact: bool, is_creature: bool, is_token: bool):
     """Porte do modo de resiliencia (2026-09-21): mesmos gatilhos reais de
     'dies'/'put into a graveyard from the battlefield' que `on_permanent_
     sacrificed` dispara, MENOS Mayhem Devil -- oraculo real e' 'Whenever
@@ -832,7 +811,7 @@ def on_permanent_destroyed(state: GameState, n: int, is_artifact: bool, is_creat
     on_token_leaves) reagem normalmente -- nenhum deles e' 'sacrifice'-
     restrito no oraculo real."""
     if is_creature:
-        on_creature_dies(state, n, is_token=is_token, dying=dying)
+        on_creature_dies(state, n, is_token=is_token)
     if is_artifact:
         on_artifact_dies(state, n)
     if is_token:
@@ -873,14 +852,14 @@ def remove_permanent(state: GameState, name: str, source: str = "opponent"):
     is_art = is_artifact_card(name)
     is_creat = is_creature_card(name)
     state.graveyard.append(name)
-    on_permanent_destroyed(state, 1, is_artifact=is_art, is_creature=is_creat, is_token=False, dying=name)
+    on_permanent_destroyed(state, 1, is_artifact=is_art, is_creature=is_creat, is_token=False)
     if name == COMMANDER:
         if name in state.graveyard:
             state.graveyard.remove(name)
         state.commander_in_play = False
 
 
-def on_creature_dies(state: GameState, n: int, is_token: bool, dying=None):
+def on_creature_dies(state: GameState, n: int, is_token: bool):
     if n <= 0:
         return
     state.creature_deaths_total += n
@@ -924,96 +903,22 @@ def on_creature_dies(state: GameState, n: int, is_token: bool, dying=None):
     # campo depois). (2) sem limite de 4x/turno depois de transformado (o
     # limite so' existia na habilidade da FRENTE, pra disparar o transform).
     # (3) a habilidade de ataque muda de escala - ver try_sephiroth_sac_draw.
-    if SEPHIROTH_EMBLEM_STACKING_ENABLED or SEPHIROTH_SIMULTANEOUS_DEATH_ENABLED:
-        _sephiroth_death_triggers(state, n, dying)
-    else:
-        sephiroth_on_bf = "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel" in state.battlefield
-        for _ in range(n):
-            if state.has_super_nova_emblem:
-                drain(state, 1)
-                gain_life(state, 1)
-            elif sephiroth_on_bf and not state.sephiroth_transformed:
-                drain(state, 1)
-                gain_life(state, 1)
-                state.sephiroth_deaths_this_turn += 1
-                if state.sephiroth_deaths_this_turn == 4:
-                    state.sephiroth_transformed = True
-                    state.has_super_nova_emblem = True
-                    state.super_nova_emblems = max(1, state.super_nova_emblems)
+    sephiroth_on_bf = "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel" in state.battlefield
+    for _ in range(n):
+        if state.has_super_nova_emblem:
+            drain(state, 1)
+            gain_life(state, 1)
+        elif sephiroth_on_bf and not state.sephiroth_transformed:
+            drain(state, 1)
+            gain_life(state, 1)
+            state.sephiroth_deaths_this_turn += 1
+            if state.sephiroth_deaths_this_turn == 4:
+                state.sephiroth_transformed = True
+                state.has_super_nova_emblem = True
 
     if not is_token and "Life Insurance" in state.battlefield:
         state.life -= 1
         create_treasures(state, 1, source="Life Insurance")
-
-
-SEPHIROTH = "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel"
-
-
-def _sephiroth_death_triggers(state: GameState, n: int, dying=None):
-    """Gatilhos de morte do Sephiroth (oraculo lido ao vivo, 2026-10-03). Frente: "Whenever another creature dies, target
-    opponent loses 1 life and you gain 1 life. If this is the fourth time this ability has resolved this turn, transform
-    Sephiroth." Verso: "Super Nova -- As this creature transforms into Sephiroth, One-Winged Angel, you get an emblem with
-    'Whenever a creature dies, target opponent loses 1 life and you gain 1 life.'"
-    Regras que o codigo antigo errava:
-    - O emblema e' um objeto independente: com um emblema E um Sephiroth de FRENTE em campo (voltou do cemiterio, por exemplo),
-      cada morte dispara DOIS gatilhos (o do emblema e o da frente), e a 4a resolucao da frente vira de novo e da' um 2o
-      emblema (emblemas acumulam: cada um dispara). O codigo antigo so' disparava o emblema (1 por morte) e guardava um sim/nao.
-    - Mortes SIMULTANEAS (wipe; ruling 2025-06-06: 'If Sephiroth and one or more other creatures die at the same time, its
-      last ability will trigger for each of those other creatures. It won't transform, though.'): o gatilho olha para tras, entao
-      vale para todas as outras que morrem junto, em qualquer ordem de remocao -- o codigo antigo tirava o Sephiroth do campo
-      primeiro e perdia as que eram removidas depois (e todas as fichas). Um emblema que nasce no meio do lote nao dispara pras
-      mortes do lote (elas ja' aconteceram) -- mas os gatilhos da frente ja' na pilha continuam resolvendo.
-    Cada morte conta (fichas incluidas: 'dies' = vai ao cemiterio).
-    A frente diz "ANOTHER creature": a morte do proprio Sephiroth (`dying`, so' as vias de permanente nomeado informam) nao
-    dispara a habilidade da frente, mas dispara o emblema ("a creature dies", sem "another") se ja' houver um."""
-    batch = SEPHIROTH_SIMULTANEOUS_DEATH_ENABLED and state.seph_batch_active
-    if batch:
-        front_up = state.seph_batch_front_up
-        emblems_then = state.seph_batch_emblems
-        flip_blocked = state.seph_batch_leaves
-    else:
-        front_up = SEPHIROTH in state.battlefield and not state.sephiroth_transformed
-        emblems_then = state.super_nova_emblems
-        flip_blocked = False
-    for _ in range(n):
-        if SEPHIROTH_EMBLEM_STACKING_ENABLED:
-            front_here = front_up and dying != SEPHIROTH
-            fires = emblems_then + (1 if front_here else 0)
-            front_resolves = front_here
-            if emblems_then and front_here:
-                state.sephiroth_extra_triggers_total += 1  # o codigo antigo perdia o gatilho da frente
-        else:
-            front_here = front_up and dying != SEPHIROTH
-            fires = 1 if (emblems_then or front_here) else 0
-            front_resolves = front_here and not emblems_then
-        for _f in range(fires):
-            drain(state, 1)
-            gain_life(state, 1)
-        if front_resolves:
-            state.sephiroth_deaths_this_turn += 1
-            if (state.sephiroth_deaths_this_turn == 4 and not flip_blocked and SEPHIROTH in state.battlefield
-                    and not state.sephiroth_transformed):
-                state.sephiroth_transformed = True
-                state.super_nova_emblems = state.super_nova_emblems + 1 if SEPHIROTH_EMBLEM_STACKING_ENABLED else 1
-                state.has_super_nova_emblem = True
-
-
-def begin_mass_death(state: GameState, leaving_names):
-    """Chamar ANTES de remover varias criaturas ao mesmo tempo (wipe). Tira a foto do que o Sephiroth enxerga: de frente em
-    campo, quantos emblemas, e se ele proprio esta entre os que morrem (entao nao vira)."""
-    if not SEPHIROTH_SIMULTANEOUS_DEATH_ENABLED:
-        return
-    state.seph_batch_active = True
-    state.seph_batch_front_up = SEPHIROTH in state.battlefield and not state.sephiroth_transformed
-    state.seph_batch_emblems = state.super_nova_emblems
-    state.seph_batch_leaves = SEPHIROTH in leaving_names
-
-
-def end_mass_death(state: GameState):
-    state.seph_batch_active = False
-    state.seph_batch_front_up = False
-    state.seph_batch_emblems = 0
-    state.seph_batch_leaves = False
 
 
 def on_artifact_dies(state: GameState, n: int):
@@ -1331,23 +1236,19 @@ def resolve_instant_sorcery(state: GameState, name: str):
     elif name == "Blood Money":
         real_creatures = [n for n in state.battlefield if is_creature_card(n) and n != COMMANDER]
         n_dead = len(real_creatures) + state.constructs + state.other_tokens
-        begin_mass_death(state, real_creatures)
         for c in real_creatures:
             sacrifice_named_creature(state, c)
         sacrifice_constructs(state, state.constructs)
         sacrifice_other_tokens(state, state.other_tokens)
         _destroy_dragons(state)
-        end_mass_death(state)
         create_treasures(state, len(real_creatures), source="Blood Money (nontoken)")
     elif name == "Blasphemous Act":
         real_creatures = [n for n in state.battlefield if is_creature_card(n) and n != COMMANDER]
-        begin_mass_death(state, real_creatures)
         for c in real_creatures:
             sacrifice_named_creature(state, c)
         sacrifice_constructs(state, state.constructs)
         sacrifice_other_tokens(state, state.other_tokens)
         _destroy_dragons(state)
-        end_mass_death(state)
     elif name in ("Path to Exile", "Shoot the Sheriff", "Council's Judgment",
                   "Deadly Derision", "Requisition Raid", "Boros Charm", "Teferi's Protection"):
         state.commits_crime_this_turn = True
@@ -1466,8 +1367,6 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
         # NAO reseta - e' um objeto independente, permanente pro resto do
         # jogo mesmo que Sephiroth morra e volte sem estar transformado.
         state.sephiroth_transformed = False
-        if SEPHIROTH_EMBLEM_STACKING_ENABLED:
-            state.sephiroth_deaths_this_turn = 0  # objeto novo: "this ability has resolved this turn" recomeca
     resolve_permanent_etb(state, name)
 
 
@@ -2497,7 +2396,6 @@ def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
     wipe_type = state.interaction_rng.choices(available, weights=[WIPE_TYPE_WEIGHTS[t] for t in available])[0]
     targets = candidates[wipe_type]
     hit_creature = any(is_creature_card(n) for n in targets)
-    begin_mass_death(state, targets)  # mortes simultaneas: o Sephiroth enxerga o lote inteiro, em qualquer ordem
     for n in targets:
         remove_permanent(state, n, source=f"opponent_{wipe_type}_wipe")
     log_targets = targets[:]
@@ -2545,7 +2443,6 @@ def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
         state.smart_enchantment_wipes_total += 1
         state.smart_enchantment_wipe_log.append((state.turn, log_targets))
 
-    end_mass_death(state)
     if hit_creature:
         state.wiped_this_round = True
     return log_targets
@@ -2618,11 +2515,6 @@ def try_smart_opponent_turn(state: GameState):
     opponent_attack` ja' se auto-regula via `state.wiped_this_round`
     (setado por `try_smart_opponent_wipe`, que roda antes, dentro desta
     mesma chamada)."""
-    if SEPHIROTH_TURN_BOUNDARY_ENABLED:
-        # Sephiroth: "If this is the fourth time this ability has resolved THIS TURN": cada turno de oponente e' um turno novo.
-        # O contador so' zerava no meu `play_turn`, entao mortes do meu turno somavam com as do turno do oponente
-        # (e as dos 3 oponentes entre si).
-        state.sephiroth_deaths_this_turn = 0
     if state.turn > INTERACTION_SETUP_TURNS and state.interaction_rng.random() >= OPPONENT_ATTENTION_CHANCE:
         return
     try_smart_opponent_wipe(state)

@@ -104,3 +104,7 @@ Treasures animados sacrificados **como criatura** por partida: **0,56** (só Alt
 - O Treasure só tapa por mana se estiver desvirado; o Vihaan dá vigilância aos outlaws (os animados), então atacar não os tapa. Se o Vihaan morresse no meio do turno, os animados perderiam vigilância e haste. **Não** modelado.
 - Os outros 7 decks com sorteio das cartas do fundo no mulligan (Hei Bai, Maralen, Nekusar, Rat King, Toph, Ulalek, Ur-Dragon) **não** foram alterados.
 - Nenhuma carta foi cortada ou adicionada à lista; o Commander Spellbook não foi consultado porque nada na lista mudou.
+
+## Nota posterior (2026-10-03, rodada do Sephiroth): o que mudou NESTA pasta depois do commit original
+
+O simulador vivo ganhou depois três chaves novas (`SEPHIROTH_*`, ver `../2026-10-03-sephiroth/LEIAME.md`), **ligadas por padrão**. Para esta pasta continuar reproduzindo o simulador como era no commit dela, `orquestracao/fx_common.py` foi ajustado em duas linhas lógicas: (1) `flags()` agora também **desliga** as 3 chaves do Sephiroth; (2) o conjunto `NOVOS` (campos de `GameState` ignorados na impressão digital) ganhou os 6 campos novos (`super_nova_emblems`, `seph_batch_*`, `sephiroth_extra_triggers_total`). Nenhum dado bruto, resumo ou tabela mudou. Reverificado: `bash orquestracao/verificar_reproducao.sh --tudo` → 7/7 byte a byte iguais (a bit-identidade tinha passado a divergir sem o ajuste; com ele volta a 20.000/20.000 nos dois modos). `SHA256SUMS` regenerado (só o `fx_common.py` mudou).

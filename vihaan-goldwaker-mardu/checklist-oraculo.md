@@ -1,5 +1,34 @@
 # Checklist cláusula-a-cláusula — Vihaan, Goldwaker
 
+## Sephiroth, Fabled SOLDIER // One-Winged Angel (correção do simulador) — oráculo, rulings e cláusulas — 2026-10-03
+
+Pedido: *"Quero sim, corrija os itens 2 e 3."* (lacunas do Sephiroth levantadas ao responder se o simulador flipava com 4 mortes no turno). Código: `vihaan_goldfish_v1.py` (antes = commit `ba74496`). Tudo que sustenta a conclusão está em
+`resultados-ab/2026-10-03-sephiroth/` (LEIAME com o mapa arquivo → comando). Oráculo e rulings lidos **ao vivo** no Scryfall (2026-10-03) antes de escrever o código e relidos antes de fechar a rodada (Regra #3); resposta bruta em `.../dados/oraculo_e_rulings.json`.
+
+**Rulings (10, 2025-06-06) relevantes:** (i) *If Sephiroth, Fabled SOLDIER and one or more other creatures die at the same time, its last ability will trigger for each of those other creatures. (It won't transform, though.)* (ii) *If this card somehow enters the battlefield with its back face up, it didn't transform, so you won't get an emblem.* As demais 8 tratam de faces de carta dupla, cor, valor de mana e fichas-cópia e não mudam a leitura.
+
+| Cláusula do oráculo | Status | Onde / como |
+|---|---|---|
+| Frente: "Whenever Sephiroth enters or attacks, you may sacrifice another creature. If you do, draw a card." | ✅ já existia · **não relida nesta rodada** | `try_sephiroth_sac_draw` (fora do escopo da correção) |
+| Frente: "Whenever another creature dies, target opponent loses 1 life and you gain 1 life" | ✅ + 🐛 corrigido (simultaneidade) | `_sephiroth_death_triggers`: em lote (`begin_mass_death`) dispara para **cada outra** criatura que morre junto, em qualquer ordem de remoção, fichas incluídas; a morte do próprio Sephiroth **não** dispara a frente ("another") |
+| Frente: "If this is the fourth time this ability has resolved this turn, transform Sephiroth" | ✅ + 🐛 corrigido (contador) | conta resoluções da frente, vira na 4ª; **não vira** se ele morre no mesmo lote (ruling i); o contador zera em cada turno de oponente (`try_smart_opponent_turn`) e na reentrada (objeto novo em `enter_battlefield`). As resoluções 5ª, 6ª… que já estavam na pilha continuam resolvendo, sem virar de novo |
+| Verso: "Super Nova — … you get an emblem with 'Whenever a creature dies, …'" | 🐛 corrigido (acumula) | `super_nova_emblems` conta emblemas; cada virada dá 1 novo; emblema é objeto independente (continua mesmo sem Sephiroth em campo) |
+| Emblema: "Whenever a **creature** dies" (sem "another") | ✅ | a morte do próprio Sephiroth dispara o emblema (W5/W8 nos testes) |
+| Emblema + Sephiroth de frente em campo | 🐛 corrigido | 2 gatilhos por morte (o do emblema e o da frente); a 4ª resolução da frente vira de novo e dá um 2º emblema. Um emblema que nasce no meio do lote **não** dispara para as mortes do lote (já aconteceram) |
+| Verso: "Flying" | 📊 | sem bloqueio nem remoção por voo no goldfish (evasão não muda nada aqui) |
+| Verso: "Whenever Sephiroth attacks, you may sacrifice any number of other creatures. If you do, draw that many cards." | ✅ já existia · **não relida nesta rodada** | `try_sephiroth_sac_draw` |
+| "another creature dies" de criatura de **oponente** | 📊 estrutural | a cláusula não restringe o controlador, mas o simulador não modela criaturas de oponente (estado real de oponente, Regra #1) |
+
+**Regra #3 (conceito compartilhado "criatura morre"):** todas as vias que tiram criatura do campo, conferidas por grep em `vihaan_goldfish_v1.py` (`battlefield.remove`, `constructs -=`, `other_tokens -=`, zeramentos de contador nos wipes): `sacrifice_named_creature` e `remove_permanent` (nomeadas), `sacrifice_constructs`, `sacrifice_other_tokens`, `sacrifice_treasures` (animados), `_destroy_dragons`, os blocos de wipe de `try_smart_opponent_wipe` e Blood Money/Blasphemous Act — todas chamam `on_creature_dies` via `on_permanent_sacrificed`/`on_permanent_destroyed`. A única outra remoção direta do campo é o Cascade tirando a **mágica** resolvida (não é criatura). Os wipes (3 pontos) agora abrem e fecham o lote.
+**Regra #6 (ordem de fases):** o contador zerava só no meu turno; `try_smart_opponent_turn` agora o zera no início de cada turno de oponente. A virada é medida no momento em que a 4ª resolução ocorre, não no end step, então não depende da ordem de `play_turn`.
+
+**Erro meu na própria correção (pego por teste dirigido antes da medição):** a 1ª versão do lote disparava a frente também na morte do próprio Sephiroth (5 gatilhos num wipe com 4 outras criaturas). Corrigido com `dying=` nas duas vias de permanente nomeado. Conferido nos testes W1, W2, W3, W7, W8 e W9.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas/duplicadas, 35 terrenos); 28 testes dirigidos 28/28; bit-identidade com as 3 chaves desligadas, 20.000+20.000 partidas; regressão 140.000 partidas, 0 exceções, 0 violações dos invariantes novos; A/B pareado N=2.000 e N=10.000 (padrão e resiliência): virada do Sephiroth no modo resiliência **2,31% → ~0,61%** (−1,70 ±0,25pp), das quais 72% das viradas antigas (167/231) eram wipes em que ele morria junto (instrumentado no código antigo); drain e vitória até o T8 sem mudança mensurável. Reprodutibilidade: 11 de 11 saídas refeitas e iguais byte a byte (`resumos/verificacao_reproducao.txt`).
+**Achados laterais (não corrigidos):** wipes próprios (Blood Money, Blasphemous Act) usam o caminho de **sacrifício** ("destroy" não é sacrifício: Mayhem Devil dispara a mais, comandante excluído); Sephiroth poderia sacrificar Treasures animados (política); Xorn e Pitiless Plunderer em lote por evento (pré-existente); 7 outros decks sorteiam o fundo no mulligan.
+**Classes da taxonomia da Regra #1 varridas (e só elas):** gatilho compartilhado ligado em só alguns pontos (morte de criatura nos wipes e sacrifícios), conceito compartilhado "criatura que morre" (grep de todas as vias), ordem de fases / fronteira de turno (Regra #6), fórmula dinâmica (número de emblemas × número de gatilhos).
+**Não varridas:** as demais classes e as outras cartas do `.py` (não foi auditoria carta a carta); as habilidades de entrada/ataque do Sephiroth não foram relidas.
+
 ## Treasure animado, mulligan e terreno tapped (correção do simulador) — oráculo, rulings e cláusulas — 2026-10-03
 
 Pedido: *"Quero sim, corrija todos os erros do simulador!"* (resposta à oferta de corrigir o roteamento do Treasure animado). Código: `vihaan_goldfish_v1.py` (antes = commit `6e623d3`). Tudo que sustenta a conclusão está em

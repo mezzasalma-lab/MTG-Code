@@ -6,7 +6,8 @@ DECK = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..")
 HERE = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 ANTES = os.path.join(HERE, "codigo", "vihaan_goldfish_v1_ANTES_6e623d3.py")
 DEPOIS = os.path.join(DECK, "vihaan_goldfish_v1.py")
-NOVOS = {"treasures_animated_alive", "animated_treasures_sacrificed_any_total", "tapped_land_first_plays_total",
+NOVOS = {"super_nova_emblems", "seph_batch_active", "seph_batch_front_up", "seph_batch_emblems", "seph_batch_leaves",
+         "sephiroth_extra_triggers_total", "treasures_animated_alive", "animated_treasures_sacrificed_any_total", "tapped_land_first_plays_total",
          "tapped_land_skipped_for_play_total", "interaction_rng"}
 
 
@@ -27,6 +28,12 @@ def flags(m, treasure=True, bottom=True, tapped=True, tapped_max_turn=None, skip
         m.TAPPED_LAND_FIRST_SKIP_IF_LOSES_PLAY = skip_if_loses_play
         if tapped_max_turn is not None:
             m.TAPPED_LAND_FIRST_MAX_TURN = tapped_max_turn
+    # Rodada do Sephiroth (commit posterior a este lote): as 3 chaves novas vem LIGADAS no arquivo vivo; aqui ficam desligadas pra
+    # esta pasta continuar reproduzindo o simulador como era no commit deste lote.
+    if hasattr(m, "SEPHIROTH_EMBLEM_STACKING_ENABLED"):
+        m.SEPHIROTH_EMBLEM_STACKING_ENABLED = False
+        m.SEPHIROTH_SIMULTANEOUS_DEATH_ENABLED = False
+        m.SEPHIROTH_TURN_BOUNDARY_ENABLED = False
     return m
 
 
