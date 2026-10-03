@@ -1,5 +1,46 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## Power Depot (candidata, implementada só no harness) — oráculo, rulings e cláusulas — 2026-10-03
+
+A carta **não está na lista**; foi acrescentada em tempo de execução por `resultados-ab/2026-10-03-power-depot/orquestracao/pd_harness.py`
+(monkeypatch; `megatron_goldfish_v1.py` não foi alterado). Oráculo lido ao vivo no Scryfall (2026-10-03; Modern Horizons 2, reimpresso em Edge of Eternities;
+legal em Commander, não é Game Changer, ~US$0,60) e salvo em `scryfall-cache/oracle-cache.json`; resposta bruta e rulings em
+`resultados-ab/2026-10-03-power-depot/dados/rulings_Power_Depot.json` (e as rulings das cartas de contexto em `rulings_contexto_megatron_ultron_pia.json`).
+
+**Oráculo:** Artifact Land. *This land enters tapped. {T}: Add {C}. {T}: Add one mana of any color. Spend this mana only to cast artifact spells or activate abilities of artifacts. Modular 1.*
+**Rulings do Power Depot (4, 2021-06-18):** (1) é terreno, só pode ser jogado como terreno, não é conjurado; (2) entra com um contador +1/+1 que não faz nada enquanto for terreno; ao ir ao cemitério
+vindo do campo você pode pôr os contadores num artefato-criatura alvo, quaisquer que sejam os tipos do Depot naquele momento; (3) se for criatura e morrer por contadores −1/−1, o Modular põe tantos contadores quanto
+tinha; (4) o mana do 3º efeito não paga habilidades de cartas-artefato em outras zonas (cycling, unearth).
+**Rulings que decidem a leitura em outras cartas (Megatron, Tyrant // Destructive Force, 18):** "More Than Meets the Eye" lança a carta **convertida** (a magia na pilha é a face de trás, um artefato Vehicle) e é custo
+alternativo; o MV continua o da face frontal; "Living metal" faz o Vehicle ser artefato-criatura só no meu turno. Logo **as duas faces do comandante são magias-artefato**.
+**Pia's Revolution (5):** dispara por artefato **não-token** que vá ao SEU cemitério vindo do campo, de quem quer que o controlasse. **Scrap Trawler (4):** o alvo precisa ter MV menor que o do artefato que foi ao cemitério. **Ultron: sem rulings.**
+
+| Cláusula do oráculo | Status | Como entra no harness |
+|---|---|---|
+| "Artifact Land" (é terreno e é artefato) | ✅ terreno / ✅ parcial artefato | conta como terreno em `LAND_NAMES`/`total_mana`; é artefato só nos efeitos listados abaixo (Junker, combustível por política); **não** entra nas piscinas `is_artifact_card()` do `.py` por política (ver Regra #3) |
+| "This land enters tapped." | ✅ | `ETB_TAPPED_LANDS` + `tapped_land_this_turn` (não rende mana no turno em que entra) |
+| "{T}: Add {C}." | ✅ | conta como 1 mana qualquer em `total_mana` |
+| "{T}: any color, only for artifact spells / abilities of artifacts" | ✅ magias / ✅ habilidades (nenhuma da lista precisa) | `has_color_sources_for` do harness: para magia-ARTEFATO, cada Depot untapped cobre **um** pip faltante; para não-artefato, nada. Varredura por script: **nenhuma habilidade ativada** de artefato da lista tem mana colorido no custo (`resumos/enumeracao.txt` §6) |
+| "Modular 1" (contador entra; ao ir ao cemitério, +1/+1 num artefato-criatura alvo) | 📊 não modelado | o contador é inócuo em campo (ruling); o efeito só ocorre se o Depot for sacrificado/destruído e há 17 artefatos-criatura na lista (Megatron incluído) como alvo; não afeta nenhuma métrica da rodada |
+| ruling: pode ser jogado só como terreno | ✅ | só pela jogada de terreno (`play_land`), nunca por `cast_card` |
+| Demonic Junker "Affinity for artifacts" | ✅ | cada Depot em campo reduz {1} (o simulador só conta cartas com tag `artifact`) |
+| Pia's Revolution devolvendo o Depot à mão (artefato não-token que vai ao cemitério) | 📊 não modelado | o `.py` trata como artefato só cartas com tag; com o Depot sacrificado, o retorno à mão e a nova jogada como terreno **não** entram (piso) |
+| Ultron copiando o Depot por {2} (terreno tapped que vira 2/2) | 📊 não modelado | o simulador só copia artefato com MV≥3 ou rock/Moxite (`CHEAP_WORTH_COPYING_TAGS`); sem ruling oficial do Ultron sobre o token-terreno |
+
+**Regra #3 (conceito compartilhado "artefato"):** `is_artifact_card()` tem 33 usos no `.py` além da definição (conferido por grep): piscinas de cemitério (Welder, Engineer, Trash for Treasure, Scrap Trawler, Junk Diver, Myr Retriever,
+Ironsoul Enforcer, Mishra), combustível do Megatron (`best_megatron_fuel`: maior MV), fodder (`best_weld_fodder`: menor MV), Ultron (`artifact_etb_hooks`), reduções de custo (Junker, Metalwork Colossus),
+`daretti_rocketeer` (poder = maior MV), `pia_revolution` (via `sacrifice`). Marcar o Depot como artefato no `CARD_DB` o jogaria em TODAS essas piscinas de uma vez (o fodder de menor MV o escolheria à toa, sacrificando terreno
+no T2); por isso o harness o mantém fora por política e liga só os efeitos reais com decisão deliberada: Junker (sempre), combustível de Welder/Engineer/Trash com ≥7 terrenos em campo (`fodder7`).
+O Depot como combustível do Megatron renderia 0 de dano (MV 0): fora de propósito. Ruling do Megatron consultado antes de escrever o código.
+**Regra #6 (ordem de fases):** `play_turn` = `draw → try_bahamut_saga_tick → play_land → main_phase → try_equip_haste → combat_step → megatron_postcombat → main_phase → end_step`; o terreno é jogado antes do 1º main, então um Depot
+jogado no turno N só paga mana de N+1 em diante (tapped), e a fixação para o comandante vale a partir do N+1.
+
+**Achado lateral do simulador (não corrigido nesta rodada, Regra #1):** (a) a **habilidade do Myriad Landscape** ({2},{T}, sacrifique: busca até dois básicos para o campo, tapped) **não é modelada**: o `.py` o trata como "terreno tapped que dá {C}" (`produces=set()`); o mesmo vale pelas fetches (Evolving Wilds, Terramorphic Expanse, Rocky Tar Pit), modeladas como fonte fixa W/B/R já em campo. Comparar o Depot contra esses slots **favorece o Depot**.
+(b) o piloto original joga terrenos por cor faltante e, em empate, pela ordem da mão: **não joga terreno tapped no T1/T2** como um jogador faria. Com a política deliberada `early_all` (qualquer terreno tapped primeiro no T1/T2, na base e nas variantes) o comandante conjurado até T4 sobe de 77,8% para 82,6% e o dano médio de 83,4 para 85,1 (N=10.000, mesmas sementes): é um piso do simulador, não um limite do deck.
+
+**Classes da taxonomia da Regra #1 varridas para esta carta (e só ela):** conceito compartilhado (artefato, terreno, cor de magia-artefato), custo alternativo (MTMTE do comandante), gatilho de fase (ordem de `play_land`), custo dinâmico (Junker/Metalwork), tipo (artefato × terreno).
+**Não varridas:** auditoria carta-a-carta do `.py` (não era o pedido); Modular, Pia's Revolution e Ultron com o Depot (📊 acima); oponente real.
+
 ## Inevitable Defeat (candidata, implementada só no harness) — oráculo, ruling e cláusulas — 2026-10-03
 
 A carta **não está na lista**; foi acrescentada em tempo de execução por `resultados-ab/2026-10-03-inevitable-defeat/orquestracao/meg_harness.py`

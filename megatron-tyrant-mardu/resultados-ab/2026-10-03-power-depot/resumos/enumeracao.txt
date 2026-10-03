@@ -1,0 +1,156 @@
+nomes distintos lidos de lista.md: 85 | terrenos distintos: 19 (34 cópias) | não-terrenos: 66
+
+## 1) MAGIAS-ARTEFATO com pips coloridos no custo (o mana de qualquer cor do Power Depot paga):
+  - Megatron, Tyrant                   {3}{R}{W}{B}   [Legendary Artifact Creature]  <- colorido
+  - Anrakyr the Traveller              {4}{B}         [Legendary Artifact Creature]  <- colorido
+  - Arcane Signet                      {2}            [Artifact]
+  - Brass's Tunnel-Grinder             {2}{R} //      [Legendary Artifact // Legendary Land]  <- colorido
+  - Bygone Colossus                    {9}            [Artifact Creature]
+  - Cityscape Leveler                  {8}            [Artifact Creature]
+  - Combustible Gearhulk               {4}{R}{R}      [Artifact Creature]  <- colorido
+  - Cosmic Cube                        {5}            [Artifact]
+  - Cursed Mirror                      {2}{R}         [Artifact]  <- colorido
+  - Demonic Junker                     {6}{B}         [Artifact]  <- colorido
+  - Fellwar Stone                      {2}            [Artifact]
+  - Genesis Chamber                    {2}            [Artifact]
+  - Blightsteel Colossus               {12}           [Artifact Creature]
+  - Ironsoul Enforcer                  {4}{W}         [Artifact Creature]  <- colorido
+  - Junk Diver                         {3}            [Artifact Creature]
+  - Lightning Greaves                  {2}            [Artifact]
+  - Melded Moxite                      {1}{R}         [Artifact]  <- colorido
+  - Metalwork Colossus                 {11}           [Artifact Creature]
+  - Mind Stone                         {2}            [Artifact]
+  - Myr Retriever                      {2}            [Artifact Creature]
+  - Nexus of Becoming                  {6}            [Artifact]
+  - Noxious Gearhulk                   {4}{B}{B}      [Artifact Creature]  <- colorido
+  - The Ten Rings                      {8}            [Legendary Artifact]
+  - Portal to Phyrexia                 {9}            [Artifact]
+  - Scarecrone                         {3}            [Artifact Creature]
+  - Scrap Trawler                      {3}            [Artifact Creature]
+  - Skitterbeam Battalion              {9}            [Artifact Creature]
+  - Sol Ring                           {1}            [Artifact]
+  - Steel Seraph                       {6}            [Artifact Creature]
+  - Talisman of Conviction             {2}            [Artifact]
+  - Talisman of Hierarchy              {2}            [Artifact]
+  - Talisman of Indulgence             {2}            [Artifact]
+  - Tarrian's Journal                  {1}{B} //      [Legendary Artifact]  <- colorido
+  - The Eternity Elevator              {5}            [Legendary Artifact]
+  - Triplicate Titan                   {9}            [Artifact Creature]
+  - Ultron, Artificial Malevolence     {3}            [Legendary Artifact Creature]
+  total de artefatos não-terreno: 36 | com pips coloridos: 10
+  Comandante: Megatron, Tyrant {3}{R}{W}{B} (Legendary Artifact Creature); More Than Meets the Eye {1}{R}{W}{B} lança a face Vehicle (Legendary Artifact): as duas são magias-artefato.
+
+## 2) MAGIAS NÃO-artefato com pips coloridos (o Depot NÃO fixa; só rende {C}):
+  - Ayara, Widow of the Realm          {1}{B}{B} //   [Legendary Creature]
+  - Black Market Connections           {2}{B}         [Enchantment]
+  - Blacksmith's Skill                 {W}            [Instant]
+  - Blasphemous Act                    {8}{R}         [Sorcery]
+  - Chandra's Ignition                 {3}{R}{R}      [Sorcery]
+  - Chaos Warp                         {2}{R}         [Instant]
+  - Daretti, Rocketeer Engineer        {4}{R}         [Legendary Creature]
+  - Daretti, Scrap Savant              {3}{R}         [Legendary Planeswalker]
+  - Decree of Pain                     {6}{B}{B}      [Sorcery]
+  - Faithless Looting                  {R}            [Sorcery]
+  - Feldon of the Third Path           {1}{R}{R}      [Legendary Creature]
+  - Generous Gift                      {2}{W}         [Instant]
+  - Goblin Engineer                    {1}{R}         [Creature]
+  - Goblin Welder                      {R}            [Creature]
+  - Heartless Conscription             {6}{B}{B}      [Sorcery]
+  - Mishra, Tamer of Mak Fawa          {3}{B}{R}      [Legendary Creature]
+  - Osgir, the Reconstructor           {2}{R}{W}      [Legendary Creature]
+  - Path to Exile                      {W}            [Instant]
+  - Pia's Revolution                   {2}{R}         [Enchantment]
+  - Rakdos, the Muscle                 {2}{B}{B}{R}   [Legendary Creature]
+  - Saheeli's Directive                {X}{R}{R}{R}   [Sorcery]
+  - Scrap Welder                       {2}{R}         [Creature]
+  - Clever Concealment                 {2}{W}{W}      [Instant]
+  - Sneak Attack                       {3}{R}         [Enchantment]
+  - Swords to Plowshares               {W}            [Instant]
+  - Trash for Treasure                 {2}{R}         [Sorcery]
+  - Treasure Nabber                    {2}{R}         [Creature]
+  - Vandalblast                        {R}            [Sorcery]
+  - Warstorm Surge                     {5}{R}         [Enchantment]
+
+## 3) Cartas da lista que LEEM 'artifact' no texto (o Depot é artefato permanente enquanto está em campo/ao entrar/ao ir ao cemitério):
+  ## affinity/improvise/convoke de artefato
+     - Demonic Junker [Artifact]: Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.) When this Vehicle enters, for each player, destroy up to one target creature that player controls. If a creatu
+     - Saheeli's Directive [Sorcery]: Improvise (Each artifact you tap after you're done activating mana abilities pays for {1}.) Reveal the top X cards of your library. You may put any number of artifact cards with mana value X or less f
+  ## sacrifica artefato (custo ou efeito)
+     - Megatron, Tyrant [Legendary Artifact Creature]: Megatron, Tyrant | {3}{R}{W}{B} | Legendary Artifact Creature — Robot More Than Meets the Eye {1}{R}{W}{B} (You may cast this card converted for {1}{R}{W}{B}.) Your opponents can't cast spells during 
+     - Daretti, Rocketeer Engineer [Legendary Creature]: Daretti's power is equal to the greatest mana value among artifacts you control. Whenever Daretti enters or attacks, choose target artifact card in your graveyard. You may sacrifice an artifact. If yo
+     - Daretti, Scrap Savant [Legendary Planeswalker]: +2: Discard up to two cards, then draw that many cards. −2: Sacrifice an artifact. If you do, return target artifact card from your graveyard to the battlefield. −10: You get an emblem with "Whenever 
+     - Goblin Engineer [Creature]: When this creature enters, you may search your library for an artifact card, put it into your graveyard, then shuffle. {R}, {T}, Sacrifice an artifact: Return target artifact card with mana value 3 or
+     - Metalwork Colossus [Artifact Creature]: This spell costs {X} less to cast, where X is the total mana value of noncreature artifacts you control. Sacrifice two artifacts: Return this card from your graveyard to your hand.
+     - Osgir, the Reconstructor [Legendary Creature]: Vigilance {1}, Sacrifice an artifact: Target creature you control gets +2/+0 until end of turn. {X}, {T}, Exile an artifact card with mana value X from your graveyard: Create two tokens that are copie
+     - Scrap Welder [Creature]: {T}, Sacrifice an artifact with mana value X: Return target artifact card with mana value less than X from your graveyard to the battlefield. It gains haste until end of turn.
+     - Tarrian's Journal [Legendary Artifact]: Tarrian's Journal ({1}{B}): {T}, Sacrifice another artifact or creature: Draw a card. Activate only as a sorcery. {2}, {T}, Discard your hand: Transform Tarrian's Journal. // The Tomb of Aclazotz (): 
+     - Trash for Treasure [Sorcery]: As an additional cost to cast this spell, sacrifice an artifact. Return target artifact card from your graveyard to the battlefield.
+  ## artifact card no cemitério (alvo de reanimar/devolver)
+     - Daretti, Rocketeer Engineer [Legendary Creature]: Daretti's power is equal to the greatest mana value among artifacts you control. Whenever Daretti enters or attacks, choose target artifact card in your graveyard. You may sacrifice an artifact. If yo
+     - Daretti, Scrap Savant [Legendary Planeswalker]: +2: Discard up to two cards, then draw that many cards. −2: Sacrifice an artifact. If you do, return target artifact card from your graveyard to the battlefield. −10: You get an emblem with "Whenever 
+     - Goblin Engineer [Creature]: When this creature enters, you may search your library for an artifact card, put it into your graveyard, then shuffle. {R}, {T}, Sacrifice an artifact: Return target artifact card with mana value 3 or
+     - Goblin Welder [Creature]: {T}: Choose target artifact a player controls and target artifact card in that player's graveyard. If both targets are still legal as this ability resolves, that player simultaneously sacrifices the a
+     - Ironsoul Enforcer [Artifact Creature]: Whenever this creature or a commander you control attacks alone, return target artifact card from your graveyard to the battlefield.
+     - Junk Diver [Artifact Creature]: Flying When this creature dies, return another target artifact card from your graveyard to your hand.
+     - Mishra, Tamer of Mak Fawa [Legendary Creature]: Permanents you control have "Ward—Sacrifice a permanent." Each artifact card in your graveyard has unearth {1}{B}{R}. ({1}{B}{R}: Return the card from your graveyard to the battlefield. It gains haste
+     - Myr Retriever [Artifact Creature]: When this creature dies, return another target artifact card from your graveyard to your hand.
+     - Osgir, the Reconstructor [Legendary Creature]: Vigilance {1}, Sacrifice an artifact: Target creature you control gets +2/+0 until end of turn. {X}, {T}, Exile an artifact card with mana value X from your graveyard: Create two tokens that are copie
+     - Saheeli's Directive [Sorcery]: Improvise (Each artifact you tap after you're done activating mana abilities pays for {1}.) Reveal the top X cards of your library. You may put any number of artifact cards with mana value X or less f
+     - Scrap Trawler [Artifact Creature]: Whenever this creature dies or another artifact you control is put into a graveyard from the battlefield, return to your hand target artifact card in your graveyard with lesser mana value.
+     - Scrap Welder [Creature]: {T}, Sacrifice an artifact with mana value X: Return target artifact card with mana value less than X from your graveyard to the battlefield. It gains haste until end of turn.
+     - Trash for Treasure [Sorcery]: As an additional cost to cast this spell, sacrifice an artifact. Return target artifact card from your graveyard to the battlefield.
+  ## 'nontoken artifact ... enters' (Ultron)
+     - Ultron, Artificial Malevolence [Legendary Artifact Creature]: Whenever another nontoken artifact you control enters, you may pay {2}. If you do, create a token that's a copy of it. If the token isn't a creature, it becomes a 2/2 Robot Villain creature in additio
+  ## 'artifact ... put into (your) graveyard from the battlefield'
+     - Daretti, Scrap Savant [Legendary Planeswalker]: +2: Discard up to two cards, then draw that many cards. −2: Sacrifice an artifact. If you do, return target artifact card from your graveyard to the battlefield. −10: You get an emblem with "Whenever 
+     - Pia's Revolution [Enchantment]: Whenever a nontoken artifact is put into your graveyard from the battlefield, return that card to your hand unless target opponent has this enchantment deal 3 damage to them.
+     - Scrap Trawler [Artifact Creature]: Whenever this creature dies or another artifact you control is put into a graveyard from the battlefield, return to your hand target artifact card in your graveyard with lesser mana value.
+  ## valor/contagem de artefatos em campo
+     - Daretti, Rocketeer Engineer [Legendary Creature]: Daretti's power is equal to the greatest mana value among artifacts you control. Whenever Daretti enters or attacks, choose target artifact card in your graveyard. You may sacrifice an artifact. If yo
+     - Demonic Junker [Artifact]: Affinity for artifacts (This spell costs {1} less to cast for each artifact you control.) When this Vehicle enters, for each player, destroy up to one target creature that player controls. If a creatu
+     - Metalwork Colossus [Artifact Creature]: This spell costs {X} less to cast, where X is the total mana value of noncreature artifacts you control. Sacrifice two artifacts: Return this card from your graveyard to your hand.
+
+## 4) ARTEFATOS-CRIATURA da lista (alvos possíveis do Modular 1: +1/+1 ao Depot ir pro cemitério):
+  - Megatron, Tyrant (Legendary Artifact Creature)
+  - Anrakyr the Traveller (Legendary Artifact Creature)
+  - Bygone Colossus (Artifact Creature)
+  - Cityscape Leveler (Artifact Creature)
+  - Combustible Gearhulk (Artifact Creature)
+  - Blightsteel Colossus (Artifact Creature)
+  - Ironsoul Enforcer (Artifact Creature)
+  - Junk Diver (Artifact Creature)
+  - Metalwork Colossus (Artifact Creature)
+  - Myr Retriever (Artifact Creature)
+  - Noxious Gearhulk (Artifact Creature)
+  - Scarecrone (Artifact Creature)
+  - Scrap Trawler (Artifact Creature)
+  - Skitterbeam Battalion (Artifact Creature)
+  - Steel Seraph (Artifact Creature)
+  - Triplicate Titan (Artifact Creature)
+  - Ultron, Artificial Malevolence (Legendary Artifact Creature)
+
+## 5) TERRENOS da lista e o que cada um dá (cópias):
+  - Badlands                       x1  [Land]  untapped | ({T}: Add {B} or {R}.)
+  - Command Tower                  x1  [Land]  untapped | {T}: Add one mana of any color in your commander's color identity.
+  - Evolving Wilds                 x1  [Land]  fetch: o terreno buscado entra tapped | {T}, Sacrifice this land: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle.
+  - Exotic Orchard                 x1  [Land]  untapped | {T}: Add one mana of any color that a land an opponent controls could produce.
+  - Forbidden Orchard              x1  [Land]  untapped | {T}: Add one mana of any color. Whenever you tap this land for mana, target opponent creates a 1/1 colorless Spirit crea
+  - Fountainport                   x1  [Land]  untapped | {T}: Add {C}. {2}, {T}, Sacrifice a token: Draw a card. {3}, {T}, Pay 1 life: Create a 1/1 blue Fish creature token. {4}
+  - Myriad Landscape               x1  [Land]  fetch: o terreno buscado entra tapped | This land enters tapped. {T}: Add {C}. {2}, {T}, Sacrifice this land: Search your library for up to two basic land cards
+  - Mountain                       x6  [Basic Land]  untapped | ({T}: Add {R}.)
+  - Nomad Outpost                  x1  [Land]  entra TAPPED | This land enters tapped. {T}: Add {R}, {W}, or {B}.
+  - Plains                         x6  [Basic Land]  untapped | ({T}: Add {W}.)
+  - Plateau                        x1  [Land]  untapped | ({T}: Add {R} or {W}.)
+  - Rocky Tar Pit                  x1  [Land]  entra TAPPED | This land enters tapped. {T}, Sacrifice this land: Search your library for a Swamp or Mountain card, put it onto the bat
+  - Scrubland                      x1  [Land]  untapped | ({T}: Add {W} or {B}.)
+  - Shadowblood Ridge              x1  [Land]  untapped | {1}, {T}: Add {B}{R}.
+  - Smoldering Marsh               x1  [Land]  tapped condicional | ({T}: Add {B} or {R}.) This land enters tapped unless you control two or more basic lands.
+  - Sunlit Marsh                   x1  [Land]  entra TAPPED | ({T}: Add {W} or {B}.) This land enters tapped.
+  - Susur Secundi, Void Altar      x1  [Land]  entra TAPPED | This land enters tapped. {T}: Add {B}. Station (Tap another creature you control: Put charge counters equal to its power
+  - Swamp                          x6  [Basic Land]  untapped | ({T}: Add {B}.)
+  - Terramorphic Expanse           x1  [Land]  fetch: o terreno buscado entra tapped | {T}, Sacrifice this land: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle.
+
+## 6) HABILIDADES ATIVADAS de cartas-artefato da lista cujo CUSTO tem mana colorido (o mana de qualquer cor do Depot também paga habilidades de artefatos):
+  (nenhuma)
+
+## 7) Contagem: artefatos não-terreno 36; magias-artefato com pip colorido 10; não-artefatos com pip colorido 29; terrenos distintos 19 (34 cópias)

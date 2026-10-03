@@ -2,6 +2,71 @@
 
 > **Dados brutos e como reproduzir as tabelas da seção Inevitable Defeat (2026-10-03):** [`resultados-ab/2026-10-03-inevitable-defeat/LEIAME.md`](resultados-ab/2026-10-03-inevitable-defeat/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
+> **Dados brutos e como reproduzir as tabelas da seção Power Depot (2026-10-03):** [`resultados-ab/2026-10-03-power-depot/LEIAME.md`](resultados-ab/2026-10-03-power-depot/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
+
+---
+
+## Power Depot — avaliação como possível inclusão — 2026-10-03
+
+**Pedido:** *"E a inclusão de Power Depot no Megatron?"*
+Regras #3/#4/#5 e adendo de 2026-09-28: oráculo e rulings ao vivo → docs do deck → Commander Spellbook antes/depois com controle positivo → enumeração por script → simulador só como apoio. Nenhuma carta foi cortada ou adicionada à lista.
+
+**Oráculo (Scryfall ao vivo, 2026-10-03; salvo no cache):** Artifact Land (Modern Horizons 2; reimpresso em Edge of Eternities; legal, não é Game Changer, ~US$0,60). *This land enters tapped. {T}: Add {C}. {T}: Add one mana of any color. Spend this mana only to cast artifact spells or activate abilities of artifacts. Modular 1.*
+**Rulings (4):** só pode ser jogado como terreno; o contador +1/+1 do Modular é inócuo enquanto for terreno e, ao ir ao cemitério vindo do campo, você pode pô-lo num artefato-criatura alvo; o mana de qualquer cor não paga habilidades de artefato em outras zonas (cycling, unearth).
+
+### O que a carta toca nos motores reais do Megatron (`resumos/enumeracao.txt`, por script sobre o oráculo ao vivo)
+
+- **O comandante é uma magia-artefato nas duas faces.** Megatron, Tyrant é *Legendary Artifact Creature* ({3}{R}{W}{B}) e o custo "More Than Meets the Eye" ({1}{R}{W}{B}) lança a face de trás, *Legendary Artifact — Vehicle* (ruling: a magia na pilha é a face convertida). O mana de qualquer cor do Depot paga o comandante. É o ponto central da carta para este deck.
+- **Mas fixa UM pip, não três.** O Megatron exige R+W+B ao mesmo tempo; um Depot cobre só o pip que falta, as outras duas cores continuam vindo de outros terrenos/rocks.
+- **Quem mais usa a fixação:** das **36** magias-artefato não-terreno da lista, **10** têm pip colorido: Megatron, Anrakyr the Traveller ({B}), Brass's Tunnel-Grinder ({R}), Combustible Gearhulk ({R}{R}), Cursed Mirror ({R}), Demonic Junker ({B}), Ironsoul Enforcer ({W}), Melded Moxite ({R}), Noxious Gearhulk ({B}{B}) e Tarrian's Journal ({B}). **Nenhuma habilidade ativada de artefato da lista tem mana colorido no custo.**
+- **Para as outras 29 magias coloridas o Depot é só um terreno incolor** (e tapped): todo o início vermelho (Goblin Welder {R}, Goblin Engineer, Scrap Welder, Trash for Treasure, Feldon, Sneak Attack, Warstorm Surge, Chandra's Ignition), a remoção branca (Path, Swords, Generous Gift, Clever Concealment) e os wipes/Ayara em preto.
+- **É artefato em campo:** Demonic Junker (Affinity) fica {1} mais barato; é combustível de MV 0 para as saídas de sacrifício da lista (Goblin Welder, Goblin Engineer, Trash for Treasure, Daretti ×2, Osgir, Tarrian's Journal, Metalwork Colossus); com a Pia's Revolution em campo voltaria à mão e poderia ser jogado de novo como terreno; o Modular dá +1/+1 num dos 17 artefatos-criatura (Megatron incluído) quando ele vai ao cemitério. Como combustível do próprio Megatron rende **0** de dano (MV 0). Scrap Welder (exige MV maior) e Scrap Trawler (alvo de MV menor) não aproveitam um MV 0.
+- **Combos (Commander Spellbook, antes e depois de cada troca):** base = 2 combos (Blightsteel Colossus + Chandra's Ignition; Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber). Depot sem cortar: **0 combos novos**. Em **19 trocas de terreno** nenhum combo some ou aparece; controles positivos ok (cortar Chandra's Ignition ou Genesis Chamber remove o combo certo).
+
+### Medição no simulador (apoio; N=10.000 sementes 3.000.000+i pareadas, 8 turnos, troca posicional)
+
+**Como foi modelado** (detalhes no `checklist-oraculo.md`): terreno tapped; {C}; fixação condicional de **um** pip para magia-artefato; Junker conta o Depot; fora das piscinas de artefato do `.py` por política (senão o sacrifício de menor MV o escolheria à toa). **Tabela principal = política `early_all`:** qualquer terreno que entra tapped é jogado primeiro no T1/T2, **na base e nas variantes**, para o Depot não ganhar de graça de terrenos tapped jogados em ordem arbitrária pelo piloto original. Base: comandante ≤T3 32,6% · ≤T4 82,6% · ≤T5 88,8% · nunca em T8 4,1% · win 84,6% · dano 85,1.
+Diferença pareada (Depot − base), IC95%:
+
+| Depot entra no lugar de | cmd ≤T3 (pp) | cmd ≤T4 (pp) | cmd ≤T5 (pp) | nunca em T8 (pp) | win (pp) | dano | fixa o cmd |
+|---|---|---|---|---|---|---|---|
+| Plains | −1,80 ±0,29 | +0,04 ±0,21 | +0,45 ±0,18 | −0,28 ±0,12 | +0,40 ±0,20 | −0,67 ±0,27 | 2,0% |
+| Swamp | −1,12 ±0,26 | +0,24 ±0,22 | +0,64 ±0,18 | −0,39 ±0,13 | +0,39 ±0,22 | −0,48 ±0,24 | 1,6% |
+| Mountain | −1,50 ±0,28 | +0,01 ±0,23 | +0,39 ±0,18 | −0,33 ±0,13 | +0,26 ±0,21 | −0,72 ±0,27 | 1,7% |
+| Sunlit Marsh (W/B tapped) | +0,06 ±0,10 | +0,17 ±0,14 | +0,29 ±0,13 | −0,19 ±0,09 | +0,31 ±0,15 | −0,09 ±0,24 | 2,1% |
+| Rocky Tar Pit (B/R tapped) | +0,21 ±0,11 | +0,37 ±0,15 | +0,35 ±0,14 | −0,25 ±0,10 | +0,31 ±0,15 | +0,12 ±0,22 | 1,9% |
+| Smoldering Marsh (B/R tapped) | +0,09 ±0,09 | +0,13 ±0,18 | +0,28 ±0,13 | −0,18 ±0,10 | +0,25 ±0,16 | −0,29 ±0,23 | 1,7% |
+| Nomad Outpost (tri tapped) | −0,07 ±0,05 | −0,28 ±0,13 | −0,16 ±0,08 | +0,01 ±0,04 | −0,15 ±0,13 | −0,51 ±0,23 | 2,0% |
+| Evolving Wilds | −0,09 ±0,06 | −0,31 ±0,14 | −0,18 ±0,08 | +0,02 ±0,04 | −0,23 ±0,13 | −0,32 ±0,18 | 2,0% |
+| Terramorphic Expanse | −0,12 ±0,07 | −0,19 ±0,13 | −0,19 ±0,09 | +0,06 ±0,05 | −0,20 ±0,13 | −0,28 ±0,17 | 1,9% |
+| Badlands | −1,46 ±0,29 | −0,04 ±0,24 | +0,40 ±0,17 | −0,21 ±0,12 | +0,27 ±0,21 | −0,74 ±0,28 | 1,9% |
+| Scrubland | −1,69 ±0,27 | −0,64 ±0,22 | +0,10 ±0,15 | −0,09 ±0,11 | −0,04 ±0,19 | −1,12 ±0,33 | 1,8% |
+| Plateau | −1,71 ±0,28 | −0,82 ±0,23 | −0,15 ±0,14 | −0,07 ±0,07 | −0,33 ±0,19 | −0,91 ±0,29 | 1,9% |
+| Shadowblood Ridge | −1,64 ±0,28 | −0,16 ±0,23 | +0,35 ±0,17 | −0,26 ±0,12 | +0,22 ±0,19 | −1,12 ±0,36 | 2,0% |
+| Exotic Orchard | −1,83 ±0,28 | −1,04 ±0,21 | −0,51 ±0,14 | +0,12 ±0,07 | −0,57 ±0,17 | −1,37 ±0,31 | 2,2% |
+| Forbidden Orchard | −1,82 ±0,27 | −0,80 ±0,19 | −0,29 ±0,12 | +0,11 ±0,06 | −0,44 ±0,16 | −1,47 ±0,31 | 2,0% |
+| Command Tower | −1,80 ±0,27 | −0,97 ±0,20 | −0,40 ±0,13 | +0,05 ±0,04 | −0,42 ±0,18 | −1,22 ±0,26 | 2,3% |
+| **controle (rock)** Arcane Signet | −4,77 ±0,47 | −0,72 ±0,23 | +0,05 ±0,14 | −0,10 ±0,10 | −0,99 ±0,26 | −2,46 ±0,51 | 2,3% |
+| **controle (rock)** Fellwar Stone | −4,29 ±0,45 | −0,64 ±0,22 | +0,00 ±0,14 | −0,08 ±0,08 | −0,78 ±0,24 | −2,27 ±0,43 | 1,8% |
+
+Linhas omitidas por serem terrenos que o dono explicitou manter ou cuja habilidade o simulador não modela (ver abaixo): Fountainport, Susur Secundi, Myriad Landscape (os números estão em `resumos/ab_powerdepot_10000_early_all.txt`).
+**Leitura:** (a) o Depot é **decisivo para conjurar o comandante em 1,6–2,3% das partidas** (2,4–4,2% com casamento estrito de cor); (b) no lugar de um **básico** ele **atrasa** o comandante no T3 (−1,1 a −1,8pp, o custo do terreno tapped), empata em T4, ganha no T5 (+0,4 a +0,6pp), reduz as partidas "nunca conjurado" (−0,3pp) e o win sobe +0,3 a +0,4pp, mas o dano cai −0,5 a −0,7; (c) no lugar de um **dual tapped** (Sunlit Marsh, Rocky Tar Pit, Smoldering Marsh) o custo de tempo some (T3 ≈ 0), o T5 sobe +0,3 e o win +0,25 a +0,31pp (IC ±0,15), dano ≈ 0; (d) no lugar de um **fixador untapped** (Command Tower, as duas Orchards, Plateau) é pior (win −0,3 a −0,6pp, dano −0,9 a −1,5), e no lugar de **fetches/Nomad Outpost** ligeiramente pior (win −0,15 a −0,23pp); (e) os controles doem (rocks: −4,3 a −4,8pp no T3, win −0,8 a −1,0pp), então o Depot **não** substitui rampa. Os efeitos são pequenos (≤0,6pp de win), na mesma ordem do ruído de um A/B desse tamanho.
+**Sensibilidades (resumos e brutos na pasta; direção idêntica):** piloto original do simulador (`core`: o Depot só perde tempo, −2,0 a −2,4pp no T3 por jogar terreno tapped fora de hora, e o ganho do T5 e de "nunca" se mantém); só o Depot jogado cedo (`early`; favorece o Depot frente a terrenos tapped que o piloto joga em ordem arbitrária: Myriad Landscape +1,3 no T3, Susur +1,2); **Depot sobrando (≥7 terrenos) como combustível** de Welder/Engineer/Trash (+0,05 a +0,14pp de win sobre `early_all`: Plains +0,53, Sunlit Marsh +0,36, Rocky Tar Pit +0,45, Smoldering Marsh +0,38); **casamento estrito de cor** (cada fonte paga um pip; a base cai para 79,8%/87,4% no T4/T5 e o Depot decide em até 4,2% das partidas, mesmas conclusões).
+
+### O que a medição NÃO diz (Regra #5)
+- **Dois dos três melhores slots do simulador são terrenos que o dono quis manter ou que o `.py` modela de forma incompleta:** Susur Secundi e Fountainport foram mantidos por pedido explícito (`lista.md`); a **habilidade do Myriad Landscape** ({2},{T}, sacrifique: até dois básicos que compartilham tipo, para o campo tapped; +1 terreno e fixa uma cor) **não está no simulador** e as fetches são fontes fixas já em campo. Qualquer ganho do Depot contra esses slots é inflado por isso. **Não** leia a tabela como "troque o Myriad Landscape".
+- **Modular, Pia's Revolution devolvendo o Depot à mão (replay como terreno), Ultron copiando o Depot por {2} e o Depot como combustível de Daretti/Osgir/Tarrian's Journal/Metalwork Colossus** não estão modelados (ou só em `fodder7`, parcial): o simulador é piso aqui.
+- **Exotic Orchard** conta como fonte de W/B/R no goldfish (o oráculo depende de terrenos de oponente): a base é otimista para a fixação, o que **subestima** o valor do Depot.
+- Efeito contra oponentes reais (remoção de terreno-artefato, Vandalblast/hate de artefato batendo no Depot): estrutural, não medido.
+
+### Achados laterais do simulador (não corrigidos nesta rodada)
+- **O piloto original não joga terreno tapped no T1/T2.** Com `early_all` (na base inteira, sem Depot) o comandante conjurado até T4 sobe de **77,8% para 82,6%** e o dano médio de **83,4 para 85,1**. É limite do simulador, não do deck: um jogador joga o tapped quando não há jogada.
+- **A habilidade do Myriad Landscape não é modelada** (e as fetches são simplificadas): Regra #1, gap a corrigir.
+
+**Escopo verificado nesta rodada:** oráculo + 4 rulings do Depot e rulings de Megatron/Pia's Revolution/Scrap Trawler/Goblin Welder/Warstorm Surge; enumeração por script das 85 entradas distintas de `lista.md` (artefatos com pip colorido, leitores de "artifact", artefatos-criatura, terrenos, habilidades de artefato com mana colorido); Spellbook antes/depois em 19 trocas de terreno + 2 controles positivos; A/B pareado de 21 trocas (19 terrenos + 2 rocks de controle) em 5 políticas de jogada e 2 regras de cor; bit-identidade do harness contra o simulador original sem patch (300/300 em 123 campos, nas 3 políticas que não alteram a base); tabelas refeitas dos `.json.xz` byte a byte (8/8).
+**Não verificado:** oponente real; Modular, Pia's Revolution, Ultron e saídas de sacrifício com o Depot na linha deliberada; o Depot como fonte de mana para habilidades de artefato (nenhuma da lista precisa); sequenciamento humano de terrenos além de "tapped primeiro no T1/T2"; auditoria carta-a-carta do `.py` (a carta não está na lista).
+
 ---
 
 ## Inevitable Defeat — avaliação como possível inclusão — 2026-10-03

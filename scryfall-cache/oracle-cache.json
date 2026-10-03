@@ -169014,5 +169014,54 @@
     "scryfall_uri": "https://scryfall.com/card/stx/168/body-of-research?utm_source=api",
     "set": "stx",
     "type_line": "Sorcery"
+  },
+  "Power Depot": {
+    "cmc": 0.0,
+    "collector_number": "251",
+    "color_identity": [],
+    "colors": [],
+    "keywords": [
+      "Modular"
+    ],
+    "legalities": {
+      "standard": "not_legal",
+      "future": "not_legal",
+      "historic": "legal",
+      "timeless": "legal",
+      "gladiator": "legal",
+      "pioneer": "not_legal",
+      "modern": "legal",
+      "legacy": "legal",
+      "pauper": "not_legal",
+      "vintage": "legal",
+      "penny": "legal",
+      "commander": "legal",
+      "oathbreaker": "legal",
+      "standardbrawl": "not_legal",
+      "brawl": "legal",
+      "competitivebrawl": "legal",
+      "alchemy": "not_legal",
+      "paupercommander": "not_legal",
+      "duel": "legal",
+      "oldschool": "not_legal",
+      "premodern": "not_legal",
+      "predh": "not_legal",
+      "tlr": "legal"
+    },
+    "mana_cost": "",
+    "name": "Power Depot",
+    "oracle_text": "This land enters tapped.\n{T}: Add {C}.\n{T}: Add one mana of any color. Spend this mana only to cast artifact spells or activate abilities of artifacts.\nModular 1",
+    "prices": {
+      "usd": "0.60",
+      "usd_foil": "0.60",
+      "usd_etched": null,
+      "eur": "0.22",
+      "eur_foil": "0.52",
+      "tix": "0.03"
+    },
+    "released_at": "2021-06-18",
+    "scryfall_uri": "https://scryfall.com/card/mh2/251/power-depot?utm_source=api",
+    "set": "mh2",
+    "type_line": "Artifact Land"
   }
 }
