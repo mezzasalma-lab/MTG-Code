@@ -681,7 +681,7 @@ Mão inicial (foto, **1 mulligan grátis**, simulador de interação On): Enchan
 - **Kami War + Hex Parasite** é um removedor repetível por turno, o mesmo padrão do O'aka + Jugan (#8). O simulador usa o Hex Parasite para salvar capítulo final e no combo infinito, mas `try_value_removers` só tem O'aka, Scholar e Power Conduit: **candidato a ajuste no simulador** (Regra #5: convenção, não limite da carta). Não alterei.
 - **Sim × real**: Tom lançado no T6 (simulador: até o T6 em 76,2%), mas 0 gatilhos do Tom até o T8, e o 1º só no T12. No simulador, 0 gatilhos até o T8 acontece em 28,5% das partidas de 8 turnos. O Tom morrer e recastar no T8 (taxa 1) pesou.
 
-### Partida manual #11 (2026-10-02) — 19 turnos; a mais longa e a que mais sofreu interação · AGUARDANDO as respostas do usuário
+### Partida manual #11 (2026-10-02) — 19 turnos; T18 inválido (14 compras sem base no oráculo) e vários gatilhos esquecidos contra o jogador · respostas do usuário em 2026-10-03
 
 Dados brutos, scripts, ledger e rulings em `tom-bombadil-wubrg/resultados-ab/2026-10-02-partida-manual-11/` (Regra #8; `LEIAME.md` tem o escopo). O usuário jogou "para testar a resiliência" (mulligan 0, simulador de interação On; 16 interações simuladas).
 Mão (foto): Raugrin Triome, Windswept Heath, The Eldest Reborn, In the Darkness Bind Them, Jugan Defends the Temple, Fertile Ground, Ketria Triome; a 8ª carta (O'aka) é a compra do T1.
@@ -703,7 +703,7 @@ Oráculos ao vivo; rulings lidas antes de concluir (36 cartas; `resumos/rulings_
 | T15 | Barbara Wright, **Summon: Primal Odin**, Utopia Sprawl, City of Brass · No Mercy (oponente) |
 | T16 | O'aka + **Nexus Mentality** (2 modos): Odin 2→1→0 e o contador vai para um Angel; os 2 marcadores do Tom saem e compram 2 · **Resurgent Belief suspensa** (2) · Jace's Archivist · Soul Shatter sacrifica o Odin |
 | T17 | Sol Ring, Flux Channeler, Nesting Grounds · Resurgent Belief (1) · Steel Hellkite + **All Is Dust** (oponente) |
-| T18 | All Is Dust varre as permanentes coloridas (Tom, Narci, Goldberry, Satsuki, O'aka, Barbara, Flux, Utopia Sprawl...) · **Resurgent Belief resolve no upkeep: 16 encantamentos voltam** · 14 Human Soldier (Boon) · **Tom** (13 = 5 + taxa 8) · Teferi's Protection contra Vandalblast + Casualties of War |
+| T18 | All Is Dust varre as permanentes coloridas (Tom, Narci, Goldberry, Satsuki, O'aka, Barbara, Flux, Utopia Sprawl...) · **Resurgent Belief resolve no upkeep: 16 encantamentos voltam** · 14 Human Soldier (Boon; eram 16) · **Tom** (13 = 5 + taxa 8) · 14 compras sem base (Sythis só dispara ao conjurar): Scholar, Serra's Sanctum e Teferi's Protection vieram delas → **o resto do T18 é inválido** |
 | T19 | Strionic Resonator comprada; Teferi's Protection sai · fim |
 
 **Conferido e correto** (script + conta à mão; escopo no `LEIAME.md`):
@@ -719,20 +719,25 @@ Oráculos ao vivo; rulings lidas antes de concluir (36 cartas; `resumos/rulings_
 - **Nexus Mentality (T16)** com o Tom em campo: os 2 modos juntos (mover os contadores do Odin e remover os do Tom comprando 2) são legais (ruling 2026-03-20).
 - **Narci** volta no T11 pelo Eldest III e vê a resolução do capítulo final (ruling do Tom, 2023-06-16: "triggers when another ability resolves... will see"); Fenrir II (T12) põe o +1/+1 na Sythis (a próxima magia de criatura).
 - **Compras por tutor**: War I → Narci (T6) e Sythis (T12), War II → Barbara (T13), Cruelty II → Power Conduit (T12).
-- **Mão do T18**: 14 cartas descartadas a 7 = limite de mão no fim do turno; Teferi's Protection conjurada na vez do oponente com a Serra's Sanctum.
 
-**Perguntas ao usuário (pendentes, 2026-10-02)**
-1. **Eldest Reborn voltou depois de sacrificada** (T11 e T14): a Starfield só age no upkeep, quando a Eldest ainda estava em campo. Quem a devolveu? No T14 ela ainda ganhou um 2º marcador (1→2).
-2. **Starfield × marcador natural**: ITDBT (T9), Jugan (T10), War (T12) e Cruelty (T14) voltam com 1 marcador e terminam o turno com 1. Pela regra (714.3b) a devolução é no upkeep e o marcador natural vem depois, então terminariam com 2 (cap. II no mesmo turno). Foi a ordem manual (marcador antes da Starfield)? Além disso a Jugan ficou com 2 do T11 ao T12 (nenhum registro no T12).
-3. **T12, gatilho do Tom**: a ITDBT chegou ao cap. IV (final) e você a salvou com a Goldberry; o Tom (1×/turno) devia ter buscado uma Saga da biblioteca e não há nenhuma library→campo no T12.
-4. **Compras** (`resumos/ledger_compras.md`): esperado 49, log 55; por turno T7 −1 (War II só aparece no T8), T11 −1 (Narci), T13 −4, T14 −1 (esperado: compra + Narci ×2 pelas Sagas sacrificadas; o log tem só 2 cartas), T16 −1 (Narci pelo Odin sacrificado); T18 +13.
-5. **T18, 14 cartas library→mão** sem fonte no log (Narci e Sythis estavam mortos pela All Is Dust): de onde vieram?
-6. **Fichas da Boon**: T14 devia dar 3 Soldier (Fenrir, Eldest, Cruelty entraram com a Boon) e há 1 "Knight"; T18 devia dar 16 (16 encantamentos entraram juntos com a Boon) e há 14. Os 2 Angels do T14 (War III e Eldest III) estão certos.
-7. **T18, 2 terrenos da mão**: Hall of Heliod's Generosity e Serra's Sanctum.
-8. **O Anel**: o Ring-bearer fica virado de T10 a T17 e o Anel já tinha o "compre e descarte ao atacar" desde o T6: não há nenhum loot no log.
-9. **There and Back Again II (T14)**: Lore=2 e nenhum Mountain entrou (a lista tem Mountain, Stomping Ground e Jetmir's Garden na biblioteca; a Island do T14 foi do Fenrir I).
-10. **Pequenas**: Soul Shatter do T13 (Tom e a Eldest Reborn, animada pela Starfield, empatavam em MV 5: foi escolha sacrificar o Tom?); O'aka virado no T4 sem marcador em nenhum permanente; Scholar of New Horizons entrou no T18 sem o +1/+1 do oráculo; T8 e T12 sem jogada de terreno com terreno na mão.
+**Confirmado pelo usuário (2026-10-03)** (numeração = a das dúvidas)
+1. **Eldest Reborn**: o usuário diz que foi a 3 e que tirou 1 marcador antes de sacrificar ("acho que com o O'aka"). **T14 fecha**: a fonte compatível é o Power Conduit (virado no idx 22; o Wraith vai de +1/+1 1→2 no idx 23; a O'aka ficou desvirada), então a Eldest foi salva 3→2 e os registros "cemitério → volta com 1 → 2" (idx 16–21) são ela movida e refeita no playtester.
+   **T11 não fecha**: a O'aka estava no cemitério (T6–T13), o Power Conduit ainda estava na biblioteca (veio no T12) e a Goldberry só entrou no T11 depois (idx 27, sem poder virar). Nenhuma fonte de remoção em campo: **aberto**.
+2. **Starfield × marcador natural**: o usuário perguntou se pode ordenar os gatilhos do upkeep como quiser. Entre gatilhos **próprios** pode (T7: a Wraith da ITDBT III antes da Jugan II, certo). Mas o marcador natural **não é gatilho de upkeep**: é ação de turno no início da fase principal 1, depois da compra (rulings de Fenrir, Eldest e Binding), e a Starfield age no upkeep.
+   Logo ITDBT (T9), Jugan (T10), War (T12) e Cruelty (T14) deviam ter 2 marcadores ao fim do turno (cap. II no mesmo turno) e têm 1: ficaram um capítulo atrás, contra o jogador. Tirar marcador no upkeep com O'aka/Conduit é ativada legal (o loop do #8 segue legal).
+3. **T12, Tom**: gatilho esquecido (contra o jogador: uma Saga a menos).
+4. **Narci compra**: oráculo: "Whenever you sacrifice an enchantment, draw a card." (1ª habilidade) e, separado, "Whenever the final chapter ability of a Saga you control resolves, each opponent loses X life and you gain X life, where X is that Saga's mana value". As compras esquecidas estão no ledger.
+5. **T18, 14 compras**: o usuário leu a Sythis como "encantamento entra". O oráculo é "Whenever you **cast** an enchantment spell": a Resurgent Belief devolve, não conjura, e a Sythis voltou junto com os outros. Compras legais no T18: a do turno e a da Narci (Utopia Sprawl sacrificada junto com ela). **Inválido**: as 14 cartas, e tudo que veio delas (Scholar, Serra's Sanctum, Teferi's Protection, o descarte a 7).
+6. **Boon**: cria Soldier 1/1 (não Knight 2/2) e a própria Boon conta ("this enchantment or another nontoken enchantment"): erro do usuário. T13 e T14 usaram Knight (poder 1 a mais); T14 eram 2 Soldiers (Fenrir e Cruelty, já que a Eldest não reentrou) e há 1; T18 eram 16 e o usuário contou 15 e fez 14. Os 2 Angels do T14 estão certos.
+7. **Terrenos T18**: a explicação do usuário (fetchland que vira terreno normal com a World Tree) vale para a Verdant Catacombs do T14, não para o T18: Hall of Heliod's Generosity e Serra's Sanctum são Legendary Land. A Sanctum veio da compra sem base (5), então o 2º terreno do T18 não existiria.
+8. **Anel**: o "compre e descarte ao atacar" foi esquecido nos 8 ataques do Ring-bearer (T10–T17).
+9. **There and Back Again II (T14)**: o Mountain não foi buscado (esquecido).
+10. **Soul Shatter T13**: o usuário disse que a Eldest Reborn é "encantamento puro". Com a Starfield e 5+ encantamentos (9 ao fim do T13) cada encantamento não-Aura vira criatura (oráculo da Starfield): a Eldest (MV 5) empatava com o Tom (MV 5) e a escolha era do jogador (a Starfield só caiu no T14). Sacrificar o Tom custou +2 de taxa (11 mana no T14).
+    O'aka virado no T4: não havia nenhum marcador em campo (o 1º +1/+1 só existe no T7), então não houve efeito possível: clique. Scholar sem +1/+1: esquecido. T8 e T12 sem terreno: o usuário achava que já tinha jogado.
+
+**Em aberto**: (a) quem devolveu/salvou a Eldest no T11 (acima); (b) a Jugan ficou com 2 marcadores do T11 ao T12 (sem registro no T12; o usuário não respondeu); (c) o Ring-bearer não foi marcado no T18 depois de ITDBT I e There and Back Again I.
 
 **Leitura do deck** (oráculo + regras; o simulador só apoia):
-- **Resiliência**: o Tom morreu 4 vezes (Edict T6, Martial Coup T8, Soul Shatter T13, All Is Dust T18) e voltou pelo comando com taxa até 4 (5 lançamentos no total); o Bane of Progress não o atinge (não é artefato nem encantamento) e, com ≥ 4 marcadores nas Sagas, ele fica hexproof e indestrutível. A Resurgent Belief reconstruiu 16 encantamentos de uma vez (a Boon deu 14 fichas) e a Teferi's Protection passou por Vandalblast + Casualties.
+- **Resiliência (até o T17 e o início do T18, que são válidos)**: o Tom morreu 4 vezes (Edict T6, Martial Coup T8, Soul Shatter T13, All Is Dust T18) e voltou pelo comando com taxa até 4 (5 lançamentos no total); o Bane of Progress não o atinge (não é artefato nem encantamento) e, com ≥ 4 marcadores nas Sagas, ele fica hexproof e indestrutível. A Resurgent Belief reconstruiu os 16 encantamentos de uma vez (o certo eram 16 Soldiers da Boon).
+- **O que o T18 NÃO prova**: a Teferi's Protection que "passou" por Vandalblast + Casualties veio de uma compra sem base. Sem ela o dano seria pequeno de qualquer jeito: o Tom entra com 9 marcadores nas Sagas (hexproof e indestrutível, não pode ser alvo) e o Vandalblast só acerta o Sol Ring; a Casualties tira 1 de cada tipo (Sol Ring, 1 criatura que não seja o Tom, 1 encantamento, 1 terreno). Isso é leitura do oráculo, não do log.
 - **Sim × real**: Tom no T5 (simulador ≤T5 em 56,8%), 1 gatilho até o T8 (simulador: ≥1 em 71,5%, ≥2 em 47,3%). O simulador só mede 8 turnos; o `upkeep_step` já faz a Starfield antes do marcador natural (714.3b), então a ordem do log manual é do jogador, não do simulador. Nada a mudar no código.

@@ -1,6 +1,7 @@
 """Ledger de compras e de fichas da partida manual #11 (Tom Bombadil): ESPERADO (se todo gatilho foi resolvido) x LOG.
 Uso: python3 ledger_compras.py [dados/partida.json.xz]   (saída em Markdown)
 Os eventos esperados por turno foram lidos à mão do trace (resumos/trace.md) + oráculo/rulings ao vivo; são LEITURA MINHA, não prova:
+ - [2026-10-03] O usuário não sabia que a Narci compra ("Whenever you sacrifice an enchantment, draw a card" é a 1ª habilidade; a 2ª é o dreno do cap. final): as compras dela estão no ledger e foram esquecidas.
  - Narci (Whenever you sacrifice an enchantment, draw a card): vale enquanto Narci está em campo; sacrifício de Saga por SBA (cap. final) conta;
    Soul Shatter/All Is Dust (sacrificar) contam; Bane of Progress/Lethal Scheme (destruir) NÃO contam.
  - Sythis (cast enchantment spell: ganhe 1, compre 1): vale só enquanto Sythis está em campo e só para MAGIA conjurada (não para devolução/ficha).
@@ -29,12 +30,12 @@ ESP = {
  13: [("compra do turno", 1, ""), ("Narci: Cruelty, ITDBT e Fenrir sacrificadas (cap. final)", 3, "Eldest foi salva (3->2): não conta"),
       ("Sythis: Sanctum Weaver e Historian's Boon conjuradas", 2, "Sythis voltou no idx 10"), ("War cap. II (tutor lendária)", 1, "Barbara"),
       ("Goldberry {U},{T}: move contador e compra", 1, "só se foi a 2ª habilidade (idx 40-42)")],
- 14: [("compra do turno", 1, ""), ("Narci: War e Eldest sacrificadas (cap. III)", 2, "")],
+ 14: [("compra do turno", 1, ""), ("Narci: War sacrificada (cap. III)", 1, "Eldest foi salva (3->2) segundo o usuário (2026-10-03): não conta; fonte do marcador: Power Conduit (idx 22), O'aka ficou desvirada")],
  15: [("compra do turno", 1, "")],
  16: [("compra do turno", 1, ""), ("O'aka: tira contador do Odin", 1, "Nexus Mentality"), ("Nexus Mentality (2 modos, comandante em campo): 2 contadores do Tom", 2, "Resurgent Belief + Prismatic Omen"),
       ("Narci: Odin sacrificada pelo Soul Shatter", 1, ""), ("Jace's Archivist (aceito o log)", 3, "Hall, Flux Channeler, Nesting Grounds")],
  17: [("compra do turno", 1, ""), ("O'aka: tira contador do Angel", 1, "Raffine's Tower")],
- 18: [("compra do turno", 1, ""), ("Narci: Utopia Sprawl sacrificada pela All Is Dust (simultânea)", 1, "")],
+ 18: [("compra do turno", 1, ""), ("Narci: Utopia Sprawl sacrificada pela All Is Dust (simultânea)", 1, "")],  # as 14 compras do log vieram de Sythis lida como 'encantamento ENTRA' (2026-10-03); Sythis só dispara ao CONJURAR: sem base
  19: [("compra do turno", 1, "")],
 }
 print("| turno | esperado | log | diferença (log − esperado) | fontes esperadas | cartas library→mão no log |")
@@ -46,10 +47,10 @@ for i in range(1, len(T) + 1):
     te += e; tl += l
     fontes = "; ".join(f"{f} ×{n}" for f, n, _ in ESP.get(i, []) if n)
     print(f"| T{i} | {e} | {l} | {l - e:+d} | {fontes} | {', '.join(LOG[i])} |")
-print(f"\n**Total esperado {te} × log {tl} (log − esperado = {tl - te:+d}).** T18: 14 cartas library→mão sem fonte identificável no log.")
+print(f"\n**Total esperado {te} × log {tl} (log − esperado = {tl - te:+d}).** T18: as 14 cartas extras vieram de Sythis lida como 'encantamento entra' (usuário, 2026-10-03); sem base no oráculo. Sem elas o log teria {tl - 14} (log − esperado = {tl - 14 - te:+d}).")
 
 # fichas do Historian's Boon (Soldier 1/1 por encantamento NÃO-ficha que entra com a Boon em campo; Angel 4/4 por cap. final que dispara com a Boon em campo)
-ENTR_BOON = {13: ("Historian's Boon (ela própria)", 1), 14: ("Fenrir (Eldest III), Eldest (devolvida), Cruelty (Starfield)", 3),
+ENTR_BOON = {13: ("Historian's Boon (ela própria)", 1), 14: ("Fenrir (Eldest III) e Cruelty (Starfield); a Eldest foi salva, não reentrou", 2),
              18: ("16 encantamentos devolvidos pela Resurgent Belief (inclui a Boon)", 16)}
 SOLD = {i: sum(1 for r in t if r["token"] and r["name"] in ("Knight", "Human Soldier") and r["fromZone"] is None and r["toZone"] == "battlefield") for i, t in enumerate(T, 1)}
 ANG = {i: sum(1 for r in t if r["token"] and r["name"] == "Angel" and r["fromZone"] is None and r["toZone"] == "battlefield") for i, t in enumerate(T, 1)}
