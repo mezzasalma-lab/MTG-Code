@@ -17,6 +17,14 @@ Pedido do usuário: *"Analise esse Goldfish do Vihaan: Assumi algumas mortes em 
 | conferir que nada foi alterado | `sha256sum -c SHA256SUMS` (nesta pasta; o `LEIAME.md` e o próprio `SHA256SUMS` ficam de fora) |
 | saber o que há em cada arquivo de dados | `resumos/indice_dados.md` (gerado por `python3 indice_dados.py`) |
 
+## Respostas do usuário às perguntas da análise (2026-10-03, mensagem seguinte; transcritas sem reescrever)
+
+> *"Eu assumi 3 mortes no T6, e o primeiro ataque o Reaver Cleaver fez 2 de dano no player. O Eldest Reborn me fez sacrificar o Zulaport. Esqueci o Descarte. Magda, Aya e Path foram descartadas pro Wheel of Fortune."*
+> *"Além disso quando castei o Dictate eu usei tesouros já criaturas para ativar o Machado mais vezes!"*
+
+Como foram lidas (a leitura é minha, não do usuário): **"Machado" = Mahadi** (autocorretor; "Machado" não é carta da lista, e sacrificar Treasures que já são criaturas só "ativa mais vezes" o Mahadi, que cria 1 Treasure por criatura morta no turno; se o usuário quis dizer o Reaver Cleaver, a leitura muda). **"Esqueci o Descarte" = o capítulo II do Eldest Reborn não foi registrado.** **"Wheel of Fortune"** das três cartas: li como um **2º Wheel depois do T8** (o Wheel do T4 é anterior à compra de Magda/Aya/Path, que vieram dele).
+**Efeito no log:** (1) T6: as 3 mortes assumidas dão 3 pelo Mahadi e o Cleaver deu 2: com o Pact Boon da Sevinne's e o ataque da Storm são **7 esperados × 6 linhas "criada"**; (2) T8: os 7 toques de Treasure **não eram atacantes marcados** (premissa errada do `ledger_mana.py`, que vale para T5–T7 onde o Treasure virado reaparece desvirado no turno seguinte): eram **Treasures já criaturas sacrificados para pagar o Dictate**, cada um uma criatura morta para o Mahadi.
+
 ## Como ler o log (premissas, a conferir com o usuário)
 
 Formato: lista de 8 turnos; cada turno = registros `{name, id, tapped, token, counters, fromZone, toZone, zone}`. As primeiras linhas de cada turno são as **desvirações** (untap) de quem estava virado; depois vêm as ações em ordem de registro. O log só gera linha quando o **estado muda**:

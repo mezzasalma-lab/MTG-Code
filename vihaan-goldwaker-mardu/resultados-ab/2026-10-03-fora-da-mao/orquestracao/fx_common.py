@@ -6,7 +6,7 @@ DECK = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..")
 HERE = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 ANTES = os.path.join(HERE, "codigo", "vihaan_goldfish_v1_ANTES_c04840d.py")
 DEPOIS = os.path.join(DECK, "vihaan_goldfish_v1.py")
-NOVOS = {"interaction_rng", "super_nova_emblems", "seph_batch_active", "seph_batch_front_up", "seph_batch_emblems", "seph_batch_leaves",
+NOVOS = {"dictate_triggers_total", "treasure_farm_total", "impulse_expiring_first_total", "interaction_rng", "super_nova_emblems", "seph_batch_active", "seph_batch_front_up", "seph_batch_emblems", "seph_batch_leaves",
          "sephiroth_extra_triggers_total", "impulse_lands", "impulse_lands_played_total", "impulse_spells_cast_total", "lotho_triggers_total",
          "treasures_sacrificed_this_turn", "storm_sac_baseline", "storm_pump_total", "sevinne_nonpermanent_returns_total"}
 
@@ -28,6 +28,9 @@ def flags(m, land=True, cast=True, count=True, storm=True, sevinne=True):
         m.SPELL_CAST_COUNT_ALL_PATHS_ENABLED = count
         m.STORM_SACRIFICE_PUMP_ENABLED = storm
         m.SEVINNE_PERMANENT_TARGET_ENABLED = sevinne
+    if hasattr(m, "IMPULSE_EXPIRING_FIRST_ENABLED"):  # 5a rodada (Prosper expirando primeiro; farm de Treasure animado): ligadas no arquivo vivo, desligadas aqui (esta pasta reproduz o simulador do commit dela)
+        m.IMPULSE_EXPIRING_FIRST_ENABLED = False
+        m.TREASURE_SELF_OUTLET_FARM_ENABLED = False
     return m
 
 

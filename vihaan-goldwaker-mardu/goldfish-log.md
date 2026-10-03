@@ -1,5 +1,7 @@
 # Goldfish Log — Vihaan, Goldwaker
 
+> **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: exílio do Prosper expirando primeiro e Treasure animado com Mahadi (2026-10-03):** [`resultados-ab/2026-10-03-exilio-primeiro-e-mahadi/LEIAME.md`](resultados-ab/2026-10-03-exilio-primeiro-e-mahadi/LEIAME.md) — brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
 > **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: conjurar/jogar de fora da mão (2026-10-03):** [`resultados-ab/2026-10-03-fora-da-mao/LEIAME.md`](resultados-ab/2026-10-03-fora-da-mao/LEIAME.md) — brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
 > **Dados brutos e como reproduzir as tabelas da seção Partida manual #1 do Vihaan (2026-10-03):** [`resultados-ab/2026-10-03-partida-manual-1/LEIAME.md`](resultados-ab/2026-10-03-partida-manual-1/LEIAME.md) — o log da partida (`.json.xz`), oráculo e rulings ao vivo, scripts, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
@@ -12,6 +14,56 @@
 
 > **Dados brutos e como reproduzir as tabelas da seção Kingpin, Wilson Fisk (2026-10-03):** [`resultados-ab/2026-10-03-kingpin/LEIAME.md`](resultados-ab/2026-10-03-kingpin/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
+
+---
+
+## Correção do simulador: exílio do Prosper expirando primeiro e Treasure animado com Mahadi — 2026-10-03
+
+**Pedido:** *"Corrija o efeito do Prosper, a melhor parte dele é jogar terreno do exílio e criar um tesouro! Além disso quando castei o Dictate eu usei tesouros já criaturas para ativar o Machado mais vezes!"* (junto com as respostas da análise da partida; ver §3b da seção "Partida manual #1", mais abaixo). Leio **"Machado" como Mahadi** (autocorretor; não há carta de nome parecido na lista, e sacrificar Treasures já criaturas só faz sentido para as mortes que o Mahadi conta). Se foi o Reaver Cleaver, diga e eu refaço.
+**Veredito:**
+1. **O terreno do exílio + Treasure já estava corrigido** no commit anterior (`7cd3f55`) e funciona: dos terrenos que o Prosper exila e já tiveram a sua vez, **97,8% foram jogados** (1.074 de 1.098; cada um dispara o Pact Boon). O que ainda estava errado era a **política das mágicas**: só **37%** das mágicas que o Prosper exilava eram conjuradas (744 de 2.005); **63% expiravam** porque a mão ia primeiro. Você sempre jogou o exílio antes (T5 Mire, T6 Sevinne's, T7 Lotho). Agora a carta do exílio que expira neste turno é conjurada antes das da mão: **97,2% conjuradas** (1.943 de 1.999).
+2. **Treasure já criatura como saída própria.** O próprio Treasure é saída de sacrifício (habilidade de mana, ativável sem nada pra gastar) e os animados pelo Vihaan são criaturas até o fim do turno. Com **Mahadi** (1 Treasure por criatura morta) ou **Pitiless Plunderer** (1 Treasure por morte), sacrificá-los é de graça. O simulador só fazia isso com Altar/KCI. Agora, no fim da 2ª main, sacrifica os animados que sobraram quando há Mahadi ou Plunderer em campo.
+3. **Efeito (padrão, N=10.000, pareado): win até o T8 +2,40 ±0,42pp** (11,9% → 14,3%), estoque de Treasures no fim +0,49 ±0,16, mortes de criatura +0,75 ±0,09; no modo resiliência win +0,63 ±0,25pp.
+
+### O que mudou no código (2 chaves)
+1. **Exílio expirando primeiro** (`IMPULSE_EXPIRING_FIRST_ENABLED`). No início de cada `main_phase` (depois do comandante), `play_from_impulse(expiring_only=True)` conjura as cartas do pool com prazo = turno atual (mais barata primeiro), pela esteira de cast da rodada anterior, com Pact Boon. As que podem esperar (prazo > turno) continuam depois da mão. Jogada de terreno do exílio já era a primeira (`play_land`).
+2. **Treasure animado como saída própria** (`TREASURE_SELF_OUTLET_FARM_ENABLED`). `farm_animated_treasures` roda no fim da 2ª main: com Mahadi ou Pitiless Plunderer em campo, sacrifica todos os Treasures animados que sobraram (`sacrifice_treasures(for_mana=True)`: mana ability do Treasure; a mana sobra e esvazia), sem exceder os animados. Sem Mahadi/Plunderer custaria 1 Treasure por morte e **não é feito** (isso seria julgamento de valor). Todas as mortes alimentam o resto: Zulaport, Sephiroth (vira na 4ª), Marionette Master, Mirkwood Bats, Agent of the Iron Throne.
+3. **Proxy do Dictate** (sem chave; só leitura): `dictate_triggers_total` conta as criaturas minhas que morrem com o Dictate em campo (*each opponent sacrifices a creature*: estado de oponente, 📊, nunca simulado). Antes o Dictate não tinha nem contagem.
+
+### Medição (apoio; pareada; base = simulador antes, commit `7cd3f55`; N=10.000, sementes 3.000.000+i, 8 turnos; entre parênteses o modo resiliência)
+Diferença pareada (variante − antes), IC95%:
+
+| variante | win ≤8 (pp) | Treasures criados | estoque no fim | dano mesa | drain | mortes de criatura |
+|---|---|---|---|---|---|---|
+| só exílio expirando primeiro | **+1,26 ±0,37** (+0,34 ±0,22) | +0,85 ±0,16 (+0,27 ±0,06) | +0,16 ±0,08 (+0,02 ±0,03) | +2,12 ±1,00 (+0,57 ±0,23) | +0,91 ±0,38 (+0,23 ±0,09) | +0,04 ±0,06 (+0,06 ±0,04) |
+| só Treasure animado (farm) | **+1,08 ±0,20** (+0,26 ±0,11) | +1,01 ±0,20 (+0,40 ±0,17) | +0,32 ±0,14 (+0,09 ±0,13) | +1,91 ±0,26 (+0,51 ±0,17) | +0,81 ±0,11 (+0,22 ±0,07) | **+0,67 ±0,07** (+0,27 ±0,05) |
+| **as duas** | **+2,40 ±0,42** (+0,63 ±0,25) | **+1,92 ±0,26** (+0,68 ±0,18) | **+0,49 ±0,16** (+0,12 ±0,13 n.s.) | **+4,15 ±1,03** (+1,10 ±0,27) | **+1,77 ±0,40** (+0,46 ±0,11) | **+0,75 ±0,09** (+0,35 ±0,06) |
+
+Base: win ≤8 11,9% (3,1%) · Treasures criados 10,95 (7,22) · **estoque no fim 3,01 (1,75)** · dano mesa 16,89 (8,42) · drain 7,58 (3,83) · mortes de criatura 3,40 (4,77).
+**Cuidado ao ler "Treasures criados":** com o Mahadi e o Plunderer o Treasure sacrificado volta como um Treasure novo, então "criados" sobe mais do que o estoque. O ganho líquido é a coluna **estoque no fim** (+0,49 ±0,16 no padrão; +0,12 ±0,13, não significativo, na resiliência).
+**Métricas diretas (por jogo, padrão, as duas vs antes):** magias do exílio conjuradas 0,77 → **1,46**; chamadas de Pact Boon 0,34 → **0,56**; cartas do exílio conjuradas antes das da mão 0 → **1,37**; cartas do pool que expiram sem uso 1,53 → **1,20**; Treasures-criatura sacrificados pelo farm 0 → **0,67**; Treasures pedidos pelo Mahadi 0,35 → **0,83** e pelo Plunderer 0,37 → **0,77**; gatilhos do Dictate (proxy) **0,24** (antes não contados). Só 54,5% das partidas terminam no mesmo estado do antes (68,5% na resiliência).
+
+**Destino das cartas que o Prosper exila** (`resumos/prosper_destino_*.txt`; só as que já tiveram a sua vez; padrão, N=10.000):
+| | antes | depois |
+|---|---|---|
+| terreno jogado | 97,8% (1.074 de 1.098) | 97,3% (1.110 de 1.141) |
+| mágica conjurada | **37,1%** (744 de 2.005) | **97,2%** (1.943 de 1.999) |
+| mágica expirou sem uso | **62,9%** (1.261) | **2,8%** (56) |
+Jogos com pelo menos 1 exílio do Prosper: 15,5% → 16,1% (o Prosper só entra em campo do T4 em diante).
+
+**Leitura (medido):** (a) o grosso do ganho de vitória vem das duas correções somadas (+2,40pp), cada uma sozinha dá cerca de +1pp; (b) o "farm" faz o que a sua T8 fez: 0,67 Treasures-criatura por jogo viram mortes, o que levanta as mortes de criatura em +0,67 e o Mahadi/Plunderer devolvem o Treasure (o estoque no fim sobe +0,32 só com o farm); (c) o terreno do Prosper já funcionava e continua; a mudança é nas mágicas.
+**Lido como raciocínio, não medido:** o farm assume que o Mahadi/Plunderer continuam em campo até o end step (o simulador não tem remoção em resposta aí); e a política "sacrifica tudo que sobrou" desperdiça a mana desses Treasures (esvazia), o que é de graça só porque o Mahadi/Plunderer a repõem. O Dictate do simulador não faz o oponente sacrificar nada (📊): nas suas mãos ele é um motor de remoção por morte que o simulador subestima.
+
+### Validação (Regra #1) — arquivada em `resultados-ab/2026-10-03-exilio-primeiro-e-mahadi/`
+- **Smoke:** 99 cartas, 93 distintas, 0 desconhecidas, 0 duplicadas não básicas, 35 terrenos; 200 partidas sem exceção.
+- **Testes dirigidos:** 17/17 (`resumos/testes_dirigidos.txt`): carta do exílio que expira vai antes da da mão (e a que não expira espera); comandante continua primeiro; mana pra uma só; farm com Mahadi (net zero no end step), com Plunderer, sem nenhum dos dois (não sacrifica), só os animados (os criados depois do combate ficam); cenário do T8 (Mahadi + Zulaport + Dictate, 7 animados = 7 drains + 7 gatilhos do Dictate); integração com o Sephiroth (vira na 4ª morte); Dictate pago com Treasures já criaturas (3 no custo + 4 sobrando = 7 mortes); invariantes em 3.000 partidas.
+- **Bit-identidade com as 2 chaves desligadas:** 20.000/20.000 idênticas ao `7cd3f55` no modo padrão e 20.000/20.000 na resiliência.
+- **Regressão:** 140.000 partidas (7 configurações/modos × 20.000, sementes 5.000.000+i), **0 exceções**, 0 cartas duplicadas, 0 partidas com mais de 1 jogada de terreno no turno, 0 com "animados vivos" ≠ 0 ao fim do turno, 0 Treasures < 0, 0 farms inválidos (nunca acima dos animados, nunca sem Mahadi/Plunderer), 0 emblemas do Sephiroth inconsistentes.
+- **Reprodutibilidade:** `bash orquestracao/verificar_reproducao.sh --tudo` → **10/10 saídas byte a byte iguais** (`cmp`): as 4 tabelas do A/B refeitas dos `.json.xz` e a re-execução do smoke, dos 17 testes, da bit-identidade (20.000 × 2 modos), da regressão (140.000 partidas) e do destino do Prosper (antes e depois). Os arquivos dos lotes anteriores do Vihaan, ajustados para desligar as 2 chaves novas, foram reverificados contra o simulador vivo: `fora-da-mao` 8/8, `sephiroth` 11/11, `treasure-animado-e-mulligan` 7/7, `kingpin` 11/11, `inevitable-defeat` 6/6, `partida-manual-1` 7/7.
+
+### Escopo verificado e NÃO verificado (Regra #7)
+- **Verificado:** o início de `main_phase` (ordem exílio × mão), `play_from_impulse`, o fim da 2ª main (`farm_animated_treasures`), `on_creature_dies` (proxy do Dictate), e o destino medido de cada carta que o Prosper exila; por teste dirigido + A/B + regressão.
+- **Não verificado / aberto:** (1) o farm sem Mahadi/Plunderer (custaria 1 Treasure por morte: decisão de valor, não feito); (2) a ordem dentro do turno: o simulador sacrifica no fim da 2ª main, então o Dictate (se estiver em campo) já conta cada morte, o que é igual ou melhor que a sua T8 (onde ele foi pago com os Treasures); (3) o Dictate segue 📊 (o oponente nunca sacrifica nada); (4) Lotho/Monologue Tax em 2ª mágica de oponente 📊; (5) o resto do `.py` não foi relido nesta rodada; (6) a leitura de "Machado" como Mahadi.
 
 ---
 
@@ -87,7 +139,7 @@ Treasures "tapped" que **continuam** no turno seguinte = atacantes marcados (a a
 | T5 | 2 | Pact Boon (Mire do exílio) 1 + Storm ataque 1 | ✅ exato |
 | T6 | 6 | Pact Boon (Sevinne's do exílio) 1 + Storm ataque 1 = **2 certos**; restam 4 = **Cleaver (dano do Storm equipado: 3, ou 4 se o Treasure F sacrificado deu +1/+0)** + **Mahadi (criaturas mortas no meu turno: Storm, mais as que você assumiu)** | só com c + m = 4 (não dá pra separar pelo log) |
 | T7 | 7 | Pact Boon (Lotho do exílio) 1 + Lotho na 2ª mágica (Tax) 1 = **2 certos**; + Mahadi (≥2: olyMYvYre e QaM6nMtBe) + Cleaver (0–4) + as **2 de fora do turno** (Lotho + Tax numa 2ª mágica do oponente) | **6 a 10 esperados × 7 no log** |
-| T8 | 6 | **Lotho na 2ª mágica (Dictate; a Sevinne's em flashback foi a 1ª; sem Pact Boon porque saiu do cemitério, não do exílio) = 1 certo** + Mahadi (m mortes assumidas): 1 + m = 6, logo m = 5 se o Lotho foi contado; ou 6 mortes assumidas se ele foi esquecido. Há 7 Treasures marcados como atacantes (inferência: a mana sem Treasure já paga Sevinne's + Dictate, então os 7 toques de Treasure em T8 só podem ser atacantes marcados) | fecha com m = 5 ou 6 (depende de você); último turno, não dá pra ver o que sumiu |
+| T8 | 6 | **Lotho na 2ª mágica (Dictate; a Sevinne's em flashback foi a 1ª; sem Pact Boon porque saiu do cemitério, não do exílio) = 1 certo** + Mahadi (m mortes assumidas): 1 + m = 6, logo m = 5 se o Lotho foi contado; ou 6 mortes assumidas se ele foi esquecido. Os 7 toques de Treasure em T8 foram **sacrifícios de Treasures já criaturas para pagar o Dictate** (resposta do usuário; a minha inferência anterior, "atacantes marcados", estava errada) | 7 sacrificados como criatura = 7 mortes pro Mahadi, mais o Lotho no Dictate: **8 esperados × 6 no log** se os 7 eram criaturas |
 
 **Onde está o buraco, por turno:** em T7 **nenhuma linha "criada" aparece junto da conjuração do Lotho (Pact Boon) nem da Tax (gatilho do Lotho)**; as 4 linhas antes do end step e as 3 depois comportam duas leituras igualmente possíveis (Cleaver 4 + Mahadi 1 + oponente 2 = 7, ou Mahadi 2 + oponente 2 + 3 outras = 7), e as duas deixam de fora pelo menos 2–3 Treasures que o oráculo pede. Em T6, a Storm morta em combate dá 1 morte; se o Treasure F foi sacrificado com a Storm em campo, ela ganha **+1/+0** (ruling 2017-09-29: qualquer sacrifício) e com o Cleaver isso vira **+1 Treasure**.
 
@@ -98,6 +150,17 @@ Treasures "tapped" que **continuam** no turno seguinte = atacantes marcados (a a
 4. **The Eldest Reborn:** capítulo II (cada oponente descarta uma carta) deveria ocorrer no turno seguinte do jogador dele, entre T7 e T8; não há descarte no log. O capítulo III põe uma criatura de **qualquer cemitério** no controle dele depois do T8. Você descartou/vai descartar?
 5. **O que ficou na mão sem uso até o T8:** Magda (2 mana, na mão desde T4), Aya of Alexandria (4), Path to Exile (1) e a **Blood Money exilada pelo Prosper em T7, que expirou no fim do T8** (7 mana; em T8 havia **até 12 Treasures**: 15 criados até T7, 3 somem por id, e os que não geraram linha contam como vivos). Foi decisão (goldfish sem alvos, preservar Treasures) ou esquecimento? Não estou dizendo que erraram: cada uma é motor do deck (Magda é sumidouro de Treasures e dá Dragon 4/4; Blood Money com Zulaport + Mahadi + Dictate em campo é morte em massa com payoff), então a resposta muda a leitura.
 6. **Sevinne's flashback (T8):** a cópia ("you may copy this spell, new target") não foi usada. No cemitério havia Storm (MV3), Tainted Peak (MV0, terreno também é permanente) e o Zulaport usado. Foi escolha?
+
+### 3b. Respostas do usuário (mesma data) e o que mudam
+Transcrição e leitura em `resultados-ab/2026-10-03-partida-manual-1/LEIAME.md` (seção "Respostas do usuário"). Resumo:
+| Pergunta | Resposta | Efeito |
+|---|---|---|
+| T6: mortes assumidas e dano da Storm/Cleaver | **3 mortes** (Mahadi cria 3); o **Cleaver fez 2 de dano** no primeiro ataque | T6 = Pact Boon 1 + ataque da Storm 1 + Cleaver 2 + Mahadi 3 = **7 esperados × 6 linhas "criada"**. Entre o ataque da Storm e a morte dela há **2** linhas onde se esperam 3 (Storm 1 + Cleaver 2): **falta 1 Treasure no combate de T6** (dano 2 = criatura de poder 1 + o +1 do Cleaver: Zulaport ou Prosper; a Storm daria 3) |
+| Eldest Reborn | sacrificou o **Zulaport** (capítulo I como no log); **esqueceu** o descarte (capítulo II) | log passa a ✅ no capítulo I; o II não foi registrado (o III reanimaria do cemitério de qualquer jogador depois do T8) |
+| Magda, Aya, Path sem uso | foram **descartadas pro Wheel of Fortune** (li como um 2º Wheel depois do T8) | deixa de ser "esquecimento": não há o que cobrar; a Blood Money exilada em T7 que expirou no T8 **continua sem resposta** |
+| T8: Dictate | pagou com **Treasures já criaturas** "para ativar o Machado mais vezes" (li **Mahadi**) | os 7 toques de Treasure do T8 são sacrifícios (não atacantes); cada animado sacrificado = 1 criatura morta = 1 Treasure do Mahadi no end step. T8: 7 mortes + Lotho no Dictate = **8 esperados × 6 linhas** se os 7 eram criaturas |
+**Ainda sem resposta:** T7 (Pact Boon do Lotho e Lotho na Tax; os 2 de fora do turno; o contador +1/+1), Sevinne's sem a cópia no T8, e quantos dos 7 Treasures do T8 eram criaturas.
+**Dois padrões que se repetem:** (1) os gatilhos do **Lotho** (Pact Boon ao jogá-lo do exílio, 2ª mágica) não aparecem como linhas "criada"; (2) em T6 falta 1 Treasure no combate. Ambos subcontam a favor do oráculo (o jogador recebeu **menos** Treasures do que as regras davam).
 
 ### 4. Comparação com o simulador (medido; N=10.000, sementes 3.000.000+i, 8 turnos; simulador no estado do commit `c04840d`; `resumos/comparacao_simulador_*.txt`)
 | | partida | simulador padrão | simulador resiliência |

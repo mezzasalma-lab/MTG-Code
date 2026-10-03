@@ -1,5 +1,28 @@
 # Checklist cláusula-a-cláusula — Vihaan, Goldwaker
 
+## Prosper (exílio) e Mahadi (mortes de Treasure animado) — correção do simulador — oráculo, rulings e cláusulas — 2026-10-03
+
+Origem: respostas do usuário à análise da partida manual #1 (§3b do `goldfish-log.md`). Código: `vihaan_goldfish_v1.py` (antes = commit `7cd3f55`). Tudo que sustenta a conclusão está em `resultados-ab/2026-10-03-exilio-primeiro-e-mahadi/` (LEIAME com o mapa arquivo → comando). Oráculo e rulings: os já lidos ao vivo (`.../2026-10-03-partida-manual-1/dados/oraculo_rulings_ao_vivo.json`).
+
+| Cláusula do oráculo | Ruling | Antes (`7cd3f55`) | Depois |
+|---|---|---|---|
+| **Prosper**, Mystic Arcanum: *exile the top card… until the end of your next turn, you may play that card* | a carta segue custos e timing normais (2021-07-23) | ✅ terreno jogado (97,8% dos que tiveram vez); 🐛 **mágica: 63% expiravam** (a mão ia primeiro; o usuário sempre jogou o exílio antes: T5, T6, T7) | ✅ a que expira neste turno é conjurada antes da mão (97,2% conjuradas) |
+| **Prosper**, Pact Boon: *whenever you play a card from exile, create a Treasure* | qualquer carta jogada do exílio, terreno inclusive | ✅ por carta jogada | ✅ mais cartas jogadas ⇒ mais Treasures (0,34 → 0,56 chamadas por jogo) |
+| **Treasure**: *{T}, Sacrifice this token: Add one mana of any color* | habilidade de mana: pode ser ativada sem nada pra gastar (ruling 2017-09-29 da Storm: *"You can activate the mana ability of a Treasure even if you have nothing to spend that mana on"*) | 🐛 só havia saída de sacrifício com Ashnod's Altar / Krark-Clan Ironworks | ✅ o próprio Treasure é a saída |
+| **Vihaan**: *Treasures you control become 3/3 Construct Assassin artifact creatures… until end of turn* | Treasures mantêm as habilidades enquanto são criaturas (2024-04-12); CR 611.2c | ✅ criatura até o fim do turno (rodada do Treasure animado) | ✅ sacrificá-los como criatura é morte de criatura |
+| **Mahadi**: *at the beginning of your end step, create a Treasure for each creature that died this turn* | só mortes do meu turno | ✅ conta `deaths_this_turn`; 🐛 só havia mortes dos animados com Altar/KCI | ✅ + o farm com Mahadi/Plunderer (a linha do T8) |
+| **Pitiless Plunderer**: *whenever another creature you control dies, create a Treasure* | dispara para cada outra criatura que morre junto (2018-01-19) | ✅ | ✅ também no farm |
+| **Zulaport / Sephiroth / Marionette Master / Mirkwood Bats / Agent of the Iron Throne** | gatilhos de morte/sacrifício | ✅ | ✅ também nas mortes do farm (testado: Sephiroth vira na 4ª) |
+| **Dictate of Erebos**: *whenever a creature you control dies, each opponent sacrifices a creature of their choice* | um gatilho por criatura que morre; o oponente escolhe (2014-04-26) | 📊 sem nem contagem | 📊 `dictate_triggers_total` conta o uso (proxy); o oponente nunca sacrifica nada (estado de oponente) |
+
+**Regra #3 (conceito compartilhado "saída de sacrifício de Treasure"):** `aggressive_treasure_destruction` só reconhecia Altar e KCI como saídas; o Treasure sacrificado por mana (`spend_mana`) já usava o roteamento do animado. Conferido por grep: `state.treasures -=` só em `sacrifice_treasures`.
+**Regra #6 (ordem de fases):** o farm roda **depois** da 2ª `main_phase` (a mana foi gasta, os animados que pagaram magias já saíram) e **antes** do `end_step` (o Mahadi conta `deaths_this_turn` ali); a expiração do exílio é checada no **início** de cada `main_phase`.
+**Regra #7 (ficha, 4 checagens):** o Treasure animado ataca? sim, e é criatura até o fim do turno; dispara "dies"? sim (`on_permanent_sacrificed`); morre no wipe? sim; conta em "you control X"? sim. O Treasure criado depois do início do combate **não** é criatura (CR 611.2c): o farm só leva `treasures_animated_alive`.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas/duplicadas, 35 terrenos); 17 testes dirigidos 17/17; bit-identidade com as 2 chaves desligadas, 20.000+20.000 partidas; regressão 140.000 partidas, 0 exceções, 0 violações; A/B pareado N=2.000 e N=10.000 nos dois modos (win ≤T8 padrão +2,40 ±0,42pp; resiliência +0,63 ±0,25pp; estoque de Treasures no fim +0,49 ±0,16 no padrão).
+**Classes da taxonomia da Regra #1 varridas (e só elas):** habilidade ativada que nunca era usada como saída (Treasure como sacrifício), gatilho compartilhado (mortes de criatura), ordem de fases/eventos, escolha de política contra a linha real do usuário (Regra #5: exílio primeiro).
+**Não varridas:** as demais classes e as outras cartas do `.py`. **Aberto:** farm sem Mahadi/Plunderer (decisão de valor), Dictate 📊, Lotho/Tax em 2ª mágica de oponente 📊.
+
 ## Conjurar/jogar de fora da mão (correção do simulador) — oráculo, rulings e cláusulas — 2026-10-03
 
 Origem: análise da partida manual #1 (seção abaixo) + invariante de validação. Código: `vihaan_goldfish_v1.py` (antes = commit `c04840d`). Tudo que sustenta a conclusão está em `resultados-ab/2026-10-03-fora-da-mao/` (LEIAME com o mapa arquivo → comando). Oráculo e rulings lidos **ao vivo** antes de escrever o código (Regra #3; resposta bruta em `.../dados/oraculo_rulings_ao_vivo.json`, 70 rulings de 29 cartas).
@@ -42,7 +65,7 @@ Pedido: *"Analise esse Goldfish do Vihaan: Assumi algumas mortes em combate para
 | **Storm**: *whenever you sacrifice a Treasure, +1/+0 until end of turn* | qualquer sacrifício (2017-09-29); os pagos para **conjurar** a Storm não contam | ⚠️ T6: Treasure F--PiJszG some com a Storm em campo | 🐛 **não existe** |
 | **The Reaver Cleaver**: *+1/+1, trample, whenever deals combat damage to a player, create that many Treasures* / Equip {3} | — | ⚠️ equip não registrado; sobras de mana de 3 em T6 e T7 batem com ele | ✅ equip pago, "that many" = poder + 1 (dinâmico); 🐛 sem o +1/+0 da Storm |
 | **Sevinne's Reclamation**: *return target permanent card MV ≤3 from your graveyard; if cast from a graveyard, may copy and choose a new target* / Flashback {4}{W} | permanent card inclui **terreno** (2024-06-07); a cópia não é "cast" e não copia de novo (2019-08-23); flashback exila sempre | ✅ T6 do exílio (Mahadi), T8 flashback (Zulaport); ⚠️ cópia não usada | ✅ flashback com original + cópia (`try_sevinne_flashback`); 🐛 do exílio vira permanente sem efeito; alvo exclui terreno (heurística) |
-| **Eldest Reborn** (oponente): I sacrifice / II discard / III reanimate | cada capítulo no turno do dono, depois do draw (2018-04-27) | ⚠️ I aparece (Zulaport); II e III sem registro | 📊 carta de oponente |
+| **Eldest Reborn** (oponente): I sacrifice / II discard / III reanimate | cada capítulo no turno do dono, depois do draw (2018-04-27) | ✅ I: o usuário confirmou que sacrificou o **Zulaport**; ⚠️ II: **esqueceu** o descarte (resposta do usuário); III sem registro | 📊 carta de oponente |
 | **Desolate Mire**: *{1},{T}: add {W}{B}* / **Rakdos Signet**: *{1},{T}: add {B}{R}* | +1 líquido cada | ✅ usados nas contas de mana | ✅ |
 | **Dragonskull Summit**: *enters tapped unless you control a Swamp or a Mountain* | checa os que já estão em campo | ✅ T1 tapped (sem Mountain em campo) | ✅ (`land_enters_tapped`) |
 

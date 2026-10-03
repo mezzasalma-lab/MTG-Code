@@ -84,14 +84,6 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas):
   (e) Sevinne's Reclamation so' escolhe "permanent card" (terreno vale,
   instantanea/feitico e ela mesma nao). Ver
   `resultados-ab/2026-10-03-fora-da-mao/LEIAME.md`.
-- Prosper e Mahadi (2026-10-03, 5a rodada, respostas do usuario sobre a
-  partida manual #1): (a) a carta do exilio que expira neste turno e'
-  conjurada ANTES das da mao (o usuario sempre jogou assim; 63% das magias
-  exiladas expiravam sem uso); (b) com Mahadi ou Pitiless Plunderer em
-  campo, os Treasures animados (criaturas) que sobram no fim da 2a main sao
-  sacrificados pela propria habilidade de mana, so' pelas mortes (de graca:
-  o Mahadi/Plunderer devolve 1 Treasure por morte). Ver
-  `resultados-ab/2026-10-03-exilio-primeiro-e-mahadi/LEIAME.md`.
 """
 
 import copy
@@ -372,11 +364,6 @@ SPELL_CAST_COUNT_ALL_PATHS_ENABLED = True  # flashback e a magia do Cascade cont
 STORM_SACRIFICE_PUMP_ENABLED = True        # Captain Lannery Storm: +1/+0 ate' o fim do turno por Treasure sacrificado (poder dela e "that many" do Cleaver)
 SEVINNE_PERMANENT_TARGET_ENABLED = True    # Sevinne's Reclamation: alvo = "permanent card" MV<=3 (terreno vale; instantanea/feitico NAO, nem ela mesma)
 
-# Correcoes de 5a rodada (2026-10-03; o usuario respondeu a analise da partida manual #1). Com as DUAS em False o arquivo se comporta bit-a-bit
-# como o do commit 7cd3f55.
-IMPULSE_EXPIRING_FIRST_ENABLED = True      # carta do exilio que expira NESTE turno e' conjurada ANTES das da mao (usar ou perder; cada uma ainda da' Pact Boon)
-TREASURE_SELF_OUTLET_FARM_ENABLED = True   # com Mahadi/Pitiless Plunderer em campo, os Treasures-criatura restantes sao sacrificados no fim da 2a main (mortes de graca)
-
 TREASURE_SOURCE_TAGS = {
     "goldspan", "treasure_attack", "draw_treasure", "sac_draw_treasure",
     "impulse_treasure", "modal_treasure", "etb_treasure", "cascade_treasure",
@@ -469,9 +456,6 @@ class GameState:
     storm_sac_baseline: int = 0          # sacrificios ja' feitos quando a Storm entrou (os pagos pra conjura-la nao contam)
     storm_pump_total: int = 0
     sevinne_nonpermanent_returns_total: int = 0  # (so' leitura) devolucoes de instantanea/feitico que o codigo antigo fazia
-    dictate_triggers_total: int = 0      # proxy (so' leitura): gatilhos do Dictate of Erebos (cada oponente sacrifica uma criatura): estado de oponente, nunca simulado
-    treasure_farm_total: int = 0         # Treasures-criatura sacrificados pela propria habilidade de mana, so' pelas mortes
-    impulse_expiring_first_total: int = 0
     caretaker_level: int = 1  # Classes sempre entram no nivel 1
 
     # metrics --------------------------------------------------------------
@@ -929,8 +913,6 @@ def on_creature_dies(state: GameState, n: int, is_token: bool, dying=None):
         return
     state.creature_deaths_total += n
     state.deaths_this_turn += n
-    if "Dictate of Erebos" in state.battlefield:
-        state.dictate_triggers_total += n  # 📊 "each opponent sacrifices a creature": so' conta o uso, nunca fabrica board de oponente
     # Achado real 2026-09-14: oraculo real da Agent of the Iron Throne
     # (Background) e' "Commander creatures you own have 'Whenever an
     # ARTIFACT OR CREATURE you control is put into a graveyard from the
@@ -1520,14 +1502,11 @@ def play_impulse_land(state: GameState) -> bool:
     return True
 
 
-def play_from_impulse(state: GameState, expiring_only: bool = False):
-    """Joga a carta mais barata disponivel no pool de exilio, se der. `expiring_only` (IMPULSE_EXPIRING_FIRST_ENABLED): so' as que expiram
-    neste turno (prazo == turno); as outras podem esperar."""
+def play_from_impulse(state: GameState):
+    """Joga a carta mais barata disponivel no pool de exilio, se der."""
     if play_impulse_land(state):
         return True
     valid = [entry for entry in state.impulse_pool if entry[1] >= state.turn]
-    if expiring_only:
-        valid = [e for e in valid if e[1] == state.turn]
     valid = [e for e in valid if e[0] != "land" and CARD_DB.get(e[0]) and CARD_DB[e[0]].ctype != "land"]
     castable = [e for e in valid if can_cast(state, e[0])]
     if not castable:
@@ -1539,8 +1518,6 @@ def play_from_impulse(state: GameState, expiring_only: bool = False):
         # mesma esteira do cast da mao (cobra o custo, conta como magia, extort, Lotho, resolve a instantanea/feitico e a manda ao
         # cemiterio; o Pact Boon dispara no cast, antes de resolver). O codigo antigo punha a magia no CAMPO como permanente e nunca a resolvia.
         state.impulse_spells_cast_total += 1
-        if expiring_only:
-            state.impulse_expiring_first_total += 1
         cast_card(state, card, from_zone="exile")
         return True
     spend_mana(state, CARD_DB[card].mv)
@@ -2023,12 +2000,6 @@ def main_phase(state: GameState):
 
     try_black_market_connections(state)
 
-    if IMPULSE_EXPIRING_FIRST_ENABLED:
-        # "Until the end of your next turn, you may play that card" (Prosper): a carta do exilio que expira neste turno se perde se nao for
-        # jogada agora, e a da mao espera; jogar do exilio ainda cria o Treasure do Pact Boon. Jogada de terreno ja' foi feita em play_land.
-        while play_from_impulse(state, expiring_only=True):
-            pass
-
     while True:
         castables = [n for n in state.hand if n not in LAND_NAMES and can_cast(state, n)]
         if castables:
@@ -2089,25 +2060,6 @@ def main_phase(state: GameState):
     # Impulse pool: tenta jogar o que der
     while play_from_impulse(state):
         pass
-
-
-def farm_animated_treasures(state: GameState):
-    """TREASURE_SELF_OUTLET_FARM_ENABLED: o proprio Treasure e' saida de sacrificio ("{T}, Sacrifice this token: Add one mana of any color" e'
-    habilidade de mana: pode ser ativada mesmo sem nada pra gastar, ruling 2017-09-29 da Storm). Os animados pelo Vihaan sao CRIATURAS ate' o fim
-    do turno, entao cada um sacrificado e' uma criatura morta. Com Mahadi ("at the beginning of your end step, create a Treasure for each creature
-    that died this turn") ou Pitiless Plunderer ("whenever another creature you control dies, create a Treasure") isso e' de GRACA: cada Treasure
-    gasto volta como um Treasure novo, e as mortes alimentam o resto (Zulaport, Sephiroth, Dictate, Marionette Master, Mirkwood Bats...). E' a linha
-    que o usuario jogou no T8 da partida manual #1. Sem Mahadi/Plunderer custaria 1 Treasure por morte e nao e' feito (julgamento de valor fica de
-    fora). Roda no fim da 2a main, depois de a mana ter sido gasta (os animados que pagaram magias ja' foram sacrificados primeiro)."""
-    if not TREASURE_SELF_OUTLET_FARM_ENABLED or state.treasures_animated_alive <= 0:
-        return
-    if "Mahadi, Emporium Master" not in state.battlefield and "Pitiless Plunderer" not in state.battlefield:
-        return
-    n = min(state.treasures_animated_alive, state.treasures)
-    if n <= 0:
-        return
-    sacrifice_treasures(state, n, for_mana=True)
-    state.treasure_farm_total += n
 
 
 def combat_step(state: GameState):
@@ -2460,7 +2412,6 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     check_visitor_combo(state)
     combat_step(state)
     main_phase(state)  # pos-combate — usa mana bonus gerada por sac outlets no combate
-    farm_animated_treasures(state)
     check_visitor_combo(state)
 
     # Magda: gatilho "whenever you commit a crime" (1x/turno) so pode ser
