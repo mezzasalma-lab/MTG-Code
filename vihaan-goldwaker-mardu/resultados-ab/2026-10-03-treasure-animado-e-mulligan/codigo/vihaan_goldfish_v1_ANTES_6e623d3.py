@@ -57,16 +57,8 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas):
   total de dano/drain gerado.
 - Combate: "ataca" = nao esta com summoning sickness (ou tem haste).
   Nenhum bloqueio, nenhuma remocao de oponente durante o combate.
-- Treasure animado (2026-10-03): depois da animacao no combate, e ate' o
-  fim do turno, TODO sacrificio de Treasure (mana, Dispute, Magda, Jan
-  Jansen, KCI, Altar...) conta como morte de criatura; so' os Treasures
-  que existiam no inicio do combate (CR 611.2c). Mulligan: o jogador
-  ESCOLHE as cartas do fundo (`choose_bottom`). Terrenos: em T1/T2 joga o
-  que entra tapped salvo se custar uma jogada (`choose_land_to_play`).
-  Ver `resultados-ab/2026-10-03-treasure-animado-e-mulligan/LEIAME.md`.
 """
 
-import copy
 import json
 import math
 import random
@@ -321,15 +313,6 @@ REMOVAL_TAGS = {"removal", "removal_treasure", "wipe", "wipe_treasure"}
 #    turno (`bonus_mana_pool`), disponivel pro resto do main phase.
 TREASURE_MAXIMIZE_POLICY = True
 
-# Correcoes 2026-10-03 (pedido do usuario: "corrija todos os erros do
-# simulador"). Uma chave por correcao, pra isolar cada uma no A/B; com as
-# TRES em False o arquivo se comporta bit-a-bit como o do commit 6e623d3.
-ANIMATED_TREASURE_ROUTING_ENABLED = True  # Treasure animado sacrificado = criatura, por QUALQUER caminho (nao so' Altar)
-MULLIGAN_SMART_BOTTOM_ENABLED = True      # London Mulligan: o jogador ESCOLHE as cartas do fundo (antes: aleatorias)
-TAPPED_LAND_FIRST_ENABLED = True          # T1/T2: joga o terreno tapped quando nao custa jogada (antes: lands_in_hand[0])
-TAPPED_LAND_FIRST_MAX_TURN = 2
-TAPPED_LAND_FIRST_SKIP_IF_LOSES_PLAY = True  # False = politica "cega" (sempre o tapped), so' pra sensibilidade
-
 TREASURE_SOURCE_TAGS = {
     "goldspan", "treasure_attack", "draw_treasure", "sac_draw_treasure",
     "impulse_treasure", "modal_treasure", "etb_treasure", "cascade_treasure",
@@ -364,10 +347,6 @@ class GameState:
     tapped_lands_this_turn: set = field(default_factory=set)  # terrenos "enters tapped" jogados este turno - ver ETB_TAPPED_LANDS
     treasures_animated_this_combat: int = 0
     animated_treasures_sacrificed_total: int = 0
-    treasures_animated_alive: int = 0  # dos Treasures animados no inicio do combate, quantos ainda estao em campo (CR 611.2c: so' os que existiam NA resolucao)
-    animated_treasures_sacrificed_any_total: int = 0  # animados sacrificados como CRIATURA, por qualquer caminho
-    tapped_land_first_plays_total: int = 0
-    tapped_land_skipped_for_play_total: int = 0
     bonus_mana_generated_total: int = 0
     jan_jansen_used_this_turn: bool = False
     spells_cast_this_turn: int = 0
@@ -657,22 +636,7 @@ def on_tokens_created(state: GameState, n: int, kind: str):
 # Sacrificio — funcoes centrais (aristocratas reagem aqui)
 # ---------------------------------------------------------------------------
 
-def sacrifice_treasures(state: GameState, n: int, for_mana: bool = False, as_creature=None):
-    """Sacrifica `n` Treasures. `as_creature=None` (padrao): quantos deles sao
-    CRIATURA no momento e' decidido pelo estado -- Vihaan, Goldwaker: "At the
-    beginning of combat on your turn, you may have Treasures you control
-    become 3/3 Construct Assassin artifact creatures ... until end of turn".
-    Pelo CR 611.2c o conjunto afetado e' fixado quando o efeito comeca: so'
-    os Treasures que ja' existiam no inicio do combate (`treasures_animated_
-    alive`); Treasure criado depois (Olivia, Pitiless Plunderer, Reaver
-    Cleaver...) NAO e' criatura. Esses ficam criaturas ate' o fim do turno --
-    inclusive na 2a main phase -- entao sacrifica-los (por mana, Deadly
-    Dispute, Magda, Jan Jansen, Face-Breaker, Lich-Knights' Conquest, KCI,
-    Altar) dispara os gatilhos de morte de CRIATURA (Zulaport, Pitiless
-    Plunderer, Sephiroth, Agent of the Iron Throne, Mahadi no end step...)
-    alem dos de artefato e de token. Sacrifica os animados primeiro: mais
-    gatilhos pelo mesmo Treasure (escolha do controlador). `as_creature`
-    explicito (True/False) forca o comportamento antigo."""
+def sacrifice_treasures(state: GameState, n: int, for_mana: bool = False, as_creature: bool = False):
     n = min(n, state.treasures)
     if n <= 0:
         return 0
@@ -680,16 +644,7 @@ def sacrifice_treasures(state: GameState, n: int, for_mana: bool = False, as_cre
     state.treasures_sacrificed_total += n
     if for_mana:
         state.treasure_spent_this_turn = True
-    if as_creature is None:
-        n_creature = min(n, state.treasures_animated_alive) if ANIMATED_TREASURE_ROUTING_ENABLED else 0
-    else:
-        n_creature = n if as_creature else 0
-    if n_creature:
-        state.treasures_animated_alive = max(0, state.treasures_animated_alive - n_creature)
-        state.animated_treasures_sacrificed_any_total += n_creature
-        on_permanent_sacrificed(state, n_creature, is_artifact=True, is_creature=True, is_token=True)
-    if n - n_creature:
-        on_permanent_sacrificed(state, n - n_creature, is_artifact=True, is_creature=False, is_token=True)
+    on_permanent_sacrificed(state, n, is_artifact=True, is_creature=as_creature, is_token=True)
     return n
 
 
@@ -698,32 +653,8 @@ def aggressive_treasure_destruction(state: GameState):
     combate pelo melhor outlet disponivel. Se o Vihaan os animou em
     criaturas ate o final do turno, o Ashnod's Altar pega TODOS os
     gatilhos de uma vez (criatura+artefato+token); sem animacao ou sem
-    Ashnod's Altar, cai pro Krark-Clan Ironworks (so artefato+token).
-
-    ANIMATED_TREASURE_ROUTING_ENABLED (2026-10-03): os dois outlets passam
-    a sacrificar com o roteamento padrao de `sacrifice_treasures`. Ashnod's
-    Altar ("Sacrifice a CREATURE") so' aceita os Treasures ANIMADOS ainda
-    vivos (os criados depois da animacao nao sao criatura e o codigo antigo
-    os sacrificava ao Altar mesmo assim); Krark-Clan Ironworks ("Sacrifice
-    an ARTIFACT") aceita todos, e um Treasure animado sacrificado a ele
-    TAMBEM e' criatura -- o codigo antigo o tratava como nao-criatura
-    ("nao e' criatura fora do combate"), o que o oraculo do Vihaan nega
-    (vale ate' o fim do turno)."""
+    Ashnod's Altar, cai pro Krark-Clan Ironworks (so artefato+token)."""
     if state.treasures <= 0:
-        return
-    if ANIMATED_TREASURE_ROUTING_ENABLED:
-        if "Krark-Clan Ironworks" in state.battlefield:
-            available = state.treasures
-        elif "Ashnod's Altar" in state.battlefield:
-            available = min(state.treasures, state.treasures_animated_alive)
-        else:
-            return
-        if available <= 0:
-            return
-        n = sacrifice_treasures(state, available)
-        state.bonus_mana_pool += 2 * n
-        state.bonus_mana_generated_total += 2 * n
-        state.animated_treasures_sacrificed_total += min(n, state.treasures_animated_this_combat)
         return
     animated = state.treasures_animated_this_combat > 0
     if animated and "Ashnod's Altar" in state.battlefield:
@@ -1515,29 +1446,6 @@ def library_with_swap(swap) -> list:
     return lib
 
 
-def choose_bottom(hand: list, n: int) -> list:
-    """London Mulligan: o jogador ESCOLHE as `n` cartas do fundo. Antes de
-    2026-10-03 o arquivo sorteava as cartas (`rng.shuffle(hand)`), o que
-    devolve com a mesma chance um Sol Ring e um terreno sobrando. Regra
-    usada (a mesma do Edgar Markov/Megatron): so' desfaz de terreno quando
-    sobram MAIS de 4 (e entao o que entra tapped primeiro); fora isso
-    devolve a carta nao-terreno de MAIOR custo, protegendo as de
-    `GOOD_KEEP` (Sol Ring, Arcane Signet, Smothering Tithe, Big Score)."""
-    hand = list(hand)
-    bottom = []
-    for _ in range(n):
-        lands = [c for c in hand if c in LAND_NAMES]
-        nonlands = [c for c in hand if c not in LAND_NAMES]
-        if len(lands) > 4 or not nonlands:
-            pick = min(lands, key=lambda c: (0 if "etb_tapped" in CARD_DB[c].tags else 1))
-        else:
-            pool = [c for c in nonlands if c not in GOOD_KEEP] or nonlands
-            pick = max(pool, key=lambda c: CARD_DB[c].mv)
-        hand.remove(pick)
-        bottom.append(pick)
-    return bottom
-
-
 def mulligan(rng: random.Random, max_mulls: int = 3, library=None):
     mulls = 0
     while mulls < max_mulls:
@@ -1550,14 +1458,9 @@ def mulligan(rng: random.Random, max_mulls: int = 3, library=None):
             # manuais do usuario no Archidekt): 1o mulligan e' GRATIS.
             penalty = max(0, mulls - 1)
             if penalty > 0:
-                if MULLIGAN_SMART_BOTTOM_ENABLED:
-                    bottom = choose_bottom(hand, penalty)
-                    for c in bottom:
-                        hand.remove(c)
-                else:
-                    rng.shuffle(hand)
-                    bottom = hand[:penalty]
-                    hand = hand[penalty:]
+                rng.shuffle(hand)
+                bottom = hand[:penalty]
+                hand = hand[penalty:]
                 lib = lib + bottom
             return hand, lib, mulls
         mulls += 1
@@ -1590,90 +1493,26 @@ def _controls_basic_type(state: GameState, basic_type: str) -> bool:
     return any(n in carriers for n in state.battlefield)
 
 
-def land_enters_tapped(state: GameState, name: str) -> bool:
-    """Fonte unica da regra de 'enters tapped' (tag `etb_tapped`, checkland,
-    fastland). Chamada ANTES de o terreno entrar em campo: `other_lands_before`
-    e' a contagem sem ele. Shockland: sempre paga os 2 de vida (convencao do
-    arquivo), nunca entra tapped."""
-    tags = CARD_DB[name].tags
-    if "etb_tapped" in tags:
-        return True
-    if name in CHECKLAND_TYPES:
-        return not any(_controls_basic_type(state, t) for t in CHECKLAND_TYPES[name])
-    if "fastland" in tags:
-        other_lands_before = sum(1 for n in state.battlefield if n in LAND_NAMES)
-        return other_lands_before > FASTLAND_MAX_OTHER_LANDS.get(name, 0)
-    return False
-
-
-def dry_run_mana_spent(state: GameState, land: str) -> int:
-    """Mana de DESENVOLVIMENTO que o `main_phase` gastaria neste turno se
-    `land` fosse o terreno jogado (simulacao a seco, copia rasa, nao muta
-    `state`). Mesma ordem do `main_phase`: comandante, depois castables
-    (fontes de Treasure primeiro, depois menor custo), o rock conjurado
-    soma mana aos casts seguintes. So' PERMANENTES contam: Path/Requisition
-    Raid/Shoot the Sheriff/Boros Charm sem alvo no goldfish nao seguram um
-    terreno tapped. Efeitos de ETB (Treasure etc.) nao entram."""
-    sim = copy.copy(state)
-    sim.battlefield = state.battlefield + [land]
-    hand = list(state.hand)
-    hand.remove(land)
-    sim.hand = hand
-    sim.tapped_lands_this_turn = set(state.tapped_lands_this_turn)
-    if land_enters_tapped(state, land):
-        sim.tapped_lands_this_turn.add(land)
-    spent = 0
-    if not sim.commander_in_play and can_cast(sim, COMMANDER):
-        cost = CARD_DB[COMMANDER].mv + 2 * sim.commander_cast_count
-        sim.mana_spent_this_turn += cost
-        spent += cost
-    while True:
-        castables = [n for n in sim.hand if n not in LAND_NAMES and CARD_DB[n].ctype not in ("instant", "sorcery")
-                     and can_cast(sim, n)]
-        if not castables:
-            break
-        castables.sort(key=lambda n: (not is_treasure_source(n), CARD_DB[n].mv))
-        n = castables[0]
-        sim.mana_spent_this_turn += CARD_DB[n].mv
-        spent += CARD_DB[n].mv
-        sim.hand.remove(n)
-        if n in ("Sol Ring", "Arcane Signet"):
-            sim.battlefield.append(n)
-    return spent
-
-
-def choose_land_to_play(state: GameState, lands_in_hand: list) -> str:
-    """Ordem base (desde sempre): o primeiro terreno da mao. Correcao
-    2026-10-03: em T1..TAPPED_LAND_FIRST_MAX_TURN, havendo um terreno que
-    entra tapped E um untapped na mao, joga o TAPPED -- a mana de um turno
-    sem jogada seria desperdicada -- salvo se isso custar uma jogada de
-    desenvolvimento (Sol Ring em T1, Arcane Signet/2-drop em T2): teste por
-    `dry_run_mana_spent`. Mesma regra do Megatron."""
-    default = lands_in_hand[0]
-    if not (TAPPED_LAND_FIRST_ENABLED and state.turn <= TAPPED_LAND_FIRST_MAX_TURN):
-        return default
-    tapped = [n for n in lands_in_hand if land_enters_tapped(state, n)]
-    untapped = [n for n in lands_in_hand if not land_enters_tapped(state, n)]
-    if not tapped or not untapped:
-        return default
-    if TAPPED_LAND_FIRST_SKIP_IF_LOSES_PLAY and dry_run_mana_spent(state, tapped[0]) < dry_run_mana_spent(state, untapped[0]):
-        state.tapped_land_skipped_for_play_total += 1
-        return untapped[0]
-    state.tapped_land_first_plays_total += 1
-    return tapped[0]
-
-
 def play_land(state: GameState):
     if state.lands_played_this_turn >= 1:
         return
     lands_in_hand = [n for n in state.hand if n in LAND_NAMES]
     if not lands_in_hand:
         return
-    choice = choose_land_to_play(state, lands_in_hand)
+    choice = lands_in_hand[0]
     state.hand.remove(choice)
-    enters_tapped = land_enters_tapped(state, choice)
+    other_lands_before = sum(1 for n in state.battlefield if n in LAND_NAMES)
     state.battlefield.append(choice)
     state.lands_played_this_turn += 1
+
+    tags = CARD_DB[choice].tags
+    enters_tapped = False
+    if "etb_tapped" in tags:
+        enters_tapped = True
+    elif choice in CHECKLAND_TYPES:
+        enters_tapped = not any(_controls_basic_type(state, t) for t in CHECKLAND_TYPES[choice])
+    elif "fastland" in tags:
+        enters_tapped = other_lands_before > FASTLAND_MAX_OTHER_LANDS.get(choice, 0)
     # "shockland" (Blood Crypt): assume sempre paga os 2 de vida, mesma
     # convencao ja usada nesse arquivo pra outros custos de vida nao
     # rastreados (sem vida propria modelada) - nunca entra tapped aqui.
@@ -1862,7 +1701,6 @@ def combat_step(state: GameState):
     if state.commander_in_play and state.treasures > 0:
         animated = state.treasures  # Vihaan: Treasures viram 3/3 outlaw ate o final do turno
     state.treasures_animated_this_combat = animated
-    state.treasures_animated_alive = animated  # CR 611.2c: o conjunto animado e' fixado agora
 
     # Achado real 2026-09-14: 2a habilidade real do Vihaan (a 1a, animar
     # Treasures, ja estava implementada acima) - "Other outlaws you
@@ -2112,7 +1950,6 @@ def end_step(state: GameState):
     check_visitor_combo(state)
     if state.win_turn is None and state.table_damage_total + state.combat_damage_proxy_total >= LETHAL_PROXY:
         state.win_turn = state.turn
-    state.treasures_animated_alive = 0  # 'until end of turn': os Treasures deixam de ser criatura
 
 
 def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
@@ -2129,7 +1966,6 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.life_gained_this_turn = 0
     state.bonus_mana_pool = 0
     state.treasures_animated_this_combat = 0
-    state.treasures_animated_alive = 0
     state.jan_jansen_used_this_turn = False
     state.deaths_this_turn = 0
     state.sephiroth_deaths_this_turn = 0
@@ -2615,8 +2451,6 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
     print(f"Avg cascades via Rain of Riches: {avg([s.cascades_triggered for s in states]):.2f}")
     print(f"Avg combates com pelo menos 1 atacante: {avg([s.combat_attacks_total for s in states]):.2f}")
     print(f"Avg Treasures sacrificados ANIMADOS via Ashnod's Altar (criatura+artefato+token junto): {avg([s.animated_treasures_sacrificed_total for s in states]):.2f}")
-    print(f"Avg Treasures animados sacrificados COMO CRIATURA, por qualquer caminho (mana, Altar, KCI, Dispute, Magda, ...): {avg([s.animated_treasures_sacrificed_any_total for s in states]):.2f}")
-    print(f"Piloto de terrenos em T1/T2 (tapped primeiro): Avg vezes que jogou o TAPPED tendo um untapped na mao: {avg([s.tapped_land_first_plays_total for s in states]):.3f} | Avg vezes que ficou com o untapped pra nao perder jogada: {avg([s.tapped_land_skipped_for_play_total for s in states]):.3f}")
     print(f"Avg mana bonus gerada por sac outlets pos-combate (total no jogo): {avg([s.bonus_mana_generated_total for s in states]):.2f}")
 
     # Achado real 2026-08-31 (rodada ampliada) — Sephiroth transform, agora

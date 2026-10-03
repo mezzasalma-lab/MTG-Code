@@ -1,9 +1,52 @@
 # Goldfish Log — Vihaan, Goldwaker
 
+> **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: Treasure animado, mulligan e terreno tapped (2026-10-03):** [`resultados-ab/2026-10-03-treasure-animado-e-mulligan/LEIAME.md`](resultados-ab/2026-10-03-treasure-animado-e-mulligan/LEIAME.md) — brutos `.json.xz` por partida, código antes/depois, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
 > **Dados brutos e como reproduzir as tabelas da seção Inevitable Defeat (2026-10-03):** [`resultados-ab/2026-10-03-inevitable-defeat/LEIAME.md`](resultados-ab/2026-10-03-inevitable-defeat/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
 > **Dados brutos e como reproduzir as tabelas da seção Kingpin, Wilson Fisk (2026-10-03):** [`resultados-ab/2026-10-03-kingpin/LEIAME.md`](resultados-ab/2026-10-03-kingpin/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
+
+---
+
+## Correção do simulador: Treasure animado, mulligan e terreno tapped — 2026-10-03
+
+**Pedido:** *"Quer que eu corrija agora o roteamento do Treasure animado para todos os gatilhos de criatura? Isso move os números de base do Vihaan, então eu rodaria antes e depois."* — *"Quero sim, corrija todos os erros do simulador!"*
+**Veredito:** as três correções estão no `vihaan_goldfish_v1.py`, cada uma atrás da sua chave. Efeito no goldfish (N=10.000 pareado, sementes 3.000.000+i, 8 turnos), as três juntas: win até o T8 **+1,83 ±0,36pp**, comandante ≤T3 **+7,77 ±0,57pp** (85,0% → 92,8%), ≤T4 +1,05 ±0,21pp, Treasures criados +0,77, dano de combate proxy +3,01, drain +0,78, mortes de criatura **+1,05** por partida. **Atenção:** a base do simulador mudou. Os números absolutos das rodadas anteriores (Kingpin, Inevitable Defeat, Draconic Visitor etc.) são do simulador antigo; as comparações pareadas dentro de cada rodada continuam válidas, comparar números absolutos entre rodadas, não.
+
+### O que mudou no código
+1. **Treasure animado = criatura em todo sacrifício** (`ANIMATED_TREASURE_ROUTING_ENABLED`). Oráculo lido ao vivo: *At the beginning of combat on your turn, you may have Treasures you control become 3/3 Construct Assassin artifact creatures … until end of turn.* Rulings (2024-04-12): mantêm as habilidades. **CR 611.2c:** o conjunto afetado é fixado quando o efeito começa, então só os Treasures que já existiam no início do combate viram criatura. Até aqui só o Ashnod's Altar tratava o animado como criatura; agora **todo** sacrifício depois da animação conta (mana de Treasure na 2ª main phase, Deadly Dispute, Magda, Jan Jansen, Professional Face-Breaker, Lich-Knights' Conquest, Krark-Clan Ironworks, Altar), disparando Zulaport, Pitiless Plunderer, Sephiroth, Agent of the Iron Throne, e o Mahadi no end step.
+   Dois erros do código antigo, no mesmo ponto: (a) o **Krark-Clan Ironworks** tratava o animado como "não criatura fora do combate", o que o oráculo do Vihaan nega; (b) o **Ashnod's Altar** ("Sacrifice a **creature**") recebia **todos** os Treasures, inclusive os criados depois da animação, que não são criatura. Agora o Altar só aceita os animados vivos (o mana bonus cai −0,34 por partida: era mana que o oráculo não permite).
+2. **Mulligan com escolha** (`MULLIGAN_SMART_BOTTOM_ENABLED`). O London Mulligan do Vihaan **sorteava** as cartas do fundo (`rng.shuffle(hand)`), devolvendo com a mesma chance o Sol Ring e um terreno sobrando. Agora: só devolve terreno quando sobram mais de 4 (primeiro o que entra tapped); fora isso, a carta não-terreno de maior custo, protegendo Sol Ring, Arcane Signet, Smothering Tithe e Big Score.
+3. **Terreno tapped em T1/T2** (`TAPPED_LAND_FIRST_ENABLED`). Antes jogava o **primeiro terreno da mão**. Agora, em T1/T2, joga o que entra tapped (Bojuka Bog, Path of Ancestry, checkland sem o básico, fastland depois do T3) **salvo** se isso custar uma jogada de desenvolvimento (Sol Ring, Arcane Signet, 2-drop); só permanentes contam (Path to Exile/Requisition Raid/Shoot the Sheriff sem alvo no goldfish não seguram o terreno). Mesma regra do Megatron.
+
+### Medição (apoio; N=10.000 sementes 3.000.000+i pareadas; base = simulador antes, commit 6e623d3)
+Base: win ≤T8 8,8% · revel ≤T8 0,46% · cmd ≤T3 85,0% · ≤T4 95,3% · Treasures criados 9,71 · dano mesa 13,85 · combate 47,43 · drain 6,23 · mortes de criatura 2,13 · mana bonus 2,28. Diferença pareada (variante − base), IC95%:
+
+| variante | win ≤8 (pp) | cmd ≤T3 (pp) | cmd ≤T4 (pp) | Treasures | combate | drain | mortes de criatura | mana bonus |
+|---|---|---|---|---|---|---|---|---|
+| só Treasure animado | +0,81 ±0,24 | 0 | 0 | +0,42 ±0,17 | +0,71 ±0,22 | +0,42 ±0,08 | **+0,91 ±0,06** | −0,34 ±0,09 |
+| só mulligan com escolha | +0,25 ±0,19 | +1,40 ±0,31 | +1,00 ±0,20 | +0,10 ±0,05 | +0,64 ±0,19 | +0,05 ±0,05 | +0,04 ±0,02 | +0,04 ±0,04 |
+| só terreno tapped T1/T2 | +0,72 ±0,20 | **+6,39 ±0,52** | +0,03 ±0,05 | +0,23 ±0,05 | +1,50 ±0,21 | +0,28 ±0,09 | +0,07 ±0,02 | +0,11 ±0,04 |
+| **as três (o que ficou)** | **+1,83 ±0,36** | **+7,77 ±0,57** | **+1,05 ±0,21** | **+0,77 ±0,18** | **+3,01 ±0,36** | **+0,78 ±0,13** | **+1,05 ±0,07** | −0,21 ±0,10 |
+| sensibilidade: tapped cego (sempre o tapped) | +0,53 ±0,22 | +7,67 ±0,52 | +0,03 ±0,05 | +0,19 ±0,06 | +1,11 ±0,21 | +0,22 ±0,08 | +0,06 ±0,03 | +0,08 ±0,04 |
+| sensibilidade: tapped até o T4 (+as outras 2) | +2,08 ±0,38 | +8,76 ±0,57 | +1,05 ±0,21 | +0,83 ±0,18 | +3,34 ±0,38 | +0,81 ±0,12 | +1,07 ±0,07 | −0,17 ±0,10 |
+
+**Leitura (medido):** (a) Treasures animados sacrificados **como criatura** por partida: **0,56** (só Altar, antes) → **1,53** (as três). É o que move as mortes de criatura (+1,05), o drain (+0,78) e, pelo Pitiless Plunderer e pelo Mahadi, os Treasures criados (+0,77). (b) O terreno tapped move o **T3** (+6,39pp), com mana +0,08 no T3: o T4 já estava saturado (95,3%). (c) O mulligan com escolha rende +1,40pp no T3. (d) A política cega ganha um pouco mais no T3 (+7,67 contra +6,39pp) mas tem mana no T2 **−0,02** (perde Sol Ring/Arcane Signet); o teste de jogada perdida é o que um jogador faria. O modo resiliência (2.000) e o lote de 2.000 mostram a mesma direção (`resumos/ab_2000.txt`, `resumos/ab_2000_resiliencia.txt`): win +1,50pp e +0,60pp.
+
+### Validação (Regra #1) — arquivada em `resultados-ab/2026-10-03-treasure-animado-e-mulligan/`
+- **Smoke:** 99 cartas, 93 distintas, 0 desconhecidas, 0 duplicadas não básicas, 35 terrenos.
+- **Bit-identidade com as 3 chaves desligadas:** 20.000/20.000 partidas idênticas ao commit 6e623d3 no modo padrão e 20.000/20.000 na resiliência.
+- **Regressão:** 160.000 partidas (8 configurações/modos × 20.000), **0 exceções**, 0 cartas duplicadas, 0 partidas com "Treasures animados vivos" ≠ 0 ao fim do turno, 0 com Treasures < 0.
+- **Testes dirigidos:** 42/42, incluindo `play_turn` completo (Vihaan + Krark-Clan Ironworks + Zulaport + Mahadi: os animados morrem como criatura e o Mahadi cria os Treasures no end step; a animação acontece no combate e zera no fim do turno: Regra #6) e a invariante em 2.000 partidas reais "criaturas sacrificadas = mín(n, animados vivos)" em toda chamada.
+
+### Achados laterais (não corrigidos, Regra #1)
+- **Sephiroth:** "sacrifique qualquer número de outras criaturas ao atacar" aceita os Treasures animados (são criaturas nesse momento); o simulador só oferece fichas e Constructs como combustível. Política, não oráculo; não modelado nem medido.
+- **Xorn / Pitiless Plunderer:** o simulador cria os Treasures em **lote** por evento (`create_treasures(n)`); o Xorn soma +1 por lote, não por criatura que morre (cada morte é um gatilho separado). Pré-existente; não alterado.
+- **Mulligan com sorteio das cartas do fundo** em outros 7 decks: Hei Bai, Maralen, Nekusar, Rat King, Toph, Ulalek, Ur-Dragon (varredura por grep de `rng.shuffle(hand)` + `bottom = hand[:penalty]`). Nenhum foi alterado.
+
+### O que NÃO foi verificado (Regra #7)
+Só as classes sacrifício/morte de Treasure e "criatura que morre" (`on_permanent_sacrificed`), ordem de fases, mulligan e jogada de terreno foram varridas neste arquivo; não houve auditoria carta a carta do `.py` inteiro. A política "Treasure animado primeiro" e "tapped sempre que não custar jogada" em T3+ (além da sensibilidade até T4) não foram medidas como alternativas.
 
 ---
 
@@ -47,7 +90,7 @@ O Kingpin é conjurado em **15,5% das partidas até T8 (26,7% até T12), em méd
 - **Oponente real** (remoção do Kingpin, do Vihaan ou dos Treasures animados, bloqueio, contramágica), a linha `delib` em jogo real e o Kingpin como corpo 3/6 menace que bloqueia: 📊 estruturais ou não medidos.
 
 ### Achado lateral do simulador (não corrigido nesta rodada, Regra #1)
-- **Treasure ANIMADO sacrificado é tratado como não-criatura em dois caminhos para TODOS os gatilhos de criatura:** (a) `spend_mana` (mana do 2º main) chama `sacrifice_treasures(for_mana=True)` com `as_creature=False`; (b) `aggressive_treasure_destruction` só passa `as_creature=True` com o Ashnod's Altar, e cai no Krark-Clan Ironworks com `as_creature=False` ("não é criatura fora do combate"), embora os Treasures sigam sendo criaturas até o fim do turno (oráculo do Vihaan). Zulaport Cutthroat, Nadier's Nightblade, Pitiless Plunderer, Sephiroth, Dictate of Erebos e a Mahadi (end step) **subestimam** esses eventos. Aqui só o Kingpin os enxerga (política `anim`/`delib`), para a base ficar idêntica ao simulador original; corrigir para todos moveria a base do deck.
+- **[Corrigido ainda em 2026-10-03, depois desta rodada: ver a seção "Correção do simulador: Treasure animado, mulligan e terreno tapped" no topo deste arquivo.]** **Treasure ANIMADO sacrificado é tratado como não-criatura em dois caminhos para TODOS os gatilhos de criatura:** (a) `spend_mana` (mana do 2º main) chama `sacrifice_treasures(for_mana=True)` com `as_creature=False`; (b) `aggressive_treasure_destruction` só passa `as_creature=True` com o Ashnod's Altar, e cai no Krark-Clan Ironworks com `as_creature=False` ("não é criatura fora do combate"), embora os Treasures sigam sendo criaturas até o fim do turno (oráculo do Vihaan). Zulaport Cutthroat, Nadier's Nightblade, Pitiless Plunderer, Sephiroth, Dictate of Erebos e a Mahadi (end step) **subestimam** esses eventos. Aqui só o Kingpin os enxerga (política `anim`/`delib`), para a base ficar idêntica ao simulador original; corrigir para todos moveria a base do deck.
 
 **Escopo verificado nesta rodada:** oráculo + rulings (Kingpin: nenhum; Vihaan, Xorn, Academy Manufactor, Anointed Procession, Dictate of Erebos, Mirkwood Bats, Goldspan Dragon, Ashnod's Altar, Sephiroth lidos e salvos); leitura de `on_permanent_sacrificed`, `sacrifice_*`, `spend_mana`, `aggressive_treasure_destruction`, `combat_step`, `end_step` e `play_turn` (ordem de fases: animação no início do combate, 2º main depois do combate, end step por último); enumeração por script das 94 entradas distintas de `lista.md`; Spellbook antes/depois em 29 trocas (25 candidatas + 4 controles positivos); A/B pareado do Kingpin contra TODAS as 64 cartas não-terreno em 3 políticas (8 turnos) e contra 14 delas em 12 turnos; Kingpin − Blank no mesmo slot (8 e 12 turnos); condicional nas partidas com Kingpin conjurado; bit-identidade do harness contra o simulador original sem patch (300/300 em 101 campos, nas 3 políticas); 11/11 tabelas refeitas dos `.json.xz` byte a byte.
 **Não verificado:** oponente real; a linha deliberada `delib` na mesa; efeito do Kingpin como bloqueador; o simulador mede dano contra um alvo-proxy de 120 (3 oponentes × 40), não vida real; qualquer classe da taxonomia da Regra #1 no `.py` além do roteamento de sacrifício e das fases (a carta não está na lista).

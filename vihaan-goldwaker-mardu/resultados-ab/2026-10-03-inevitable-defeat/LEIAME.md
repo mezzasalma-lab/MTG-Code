@@ -17,6 +17,15 @@ Pedido do usuário: *"Faça o mesmo para Inevitable Defeat como possível inclus
 
 ## O simulador não foi alterado
 
+> **Nota posterior (2026-10-03, mesma data, depois desta rodada): o simulador vivo mudou.** A frase "o simulador não foi alterado" vale **para esta rodada** (medidas com o commit `6e623d3`).
+> Depois dela, `vihaan_goldfish_v1.py` ganhou o roteamento do Treasure animado (todo sacrifício de Treasure depois da animação conta como morte de criatura), o mulligan com escolha das cartas do fundo
+> e o terreno tapped em T1/T2 (`../2026-10-03-treasure-animado-e-mulligan/LEIAME.md`). Consequências para esta pasta: (1) **as tabelas continuam reproduzíveis**, porque `--sum` lê só os brutos `.json.xz`;
+> (2) `bitident.py` e qualquer rerodada **sem** `--sum` rodam contra o arquivo VIVO e **passam a divergir**: para refazê-los, extraia o simulador antigo com
+> `git show 6e623d3:vihaan-goldwaker-mardu/vihaan_goldfish_v1.py` (há uma cópia em `../2026-10-03-treasure-animado-e-mulligan/codigo/vihaan_goldfish_v1_ANTES_6e623d3.py`) ou desligue as 3 chaves
+> (`ANIMATED_TREASURE_ROUTING_ENABLED`, `MULLIGAN_SMART_BOTTOM_ENABLED`, `TAPPED_LAND_FIRST_ENABLED`); (3) os números **absolutos** daqui são do simulador antigo, não comparáveis com rodadas feitas depois da correção;
+> o "achado lateral" do Treasure animado citado no log desta rodada foi **corrigido** nessa rodada seguinte.
+
+
 `vihaan-goldwaker-mardu/vihaan_goldfish_v1.py` (último commit `6e623d3`) **não foi editado**: a carta nova e a instrumentação entram por *monkeypatch* em tempo de execução (`orquestracao/*_harness.py`).
 A base do harness (sem a carta na lista) foi comparada com o módulo original, carregado como módulo separado e sem nenhum patch: ver `resumos/bitident.txt`.
 Código desta pasta: o commit que a adiciona (`git log -1 -- vihaan-goldwaker-mardu/resultados-ab/2026-10-03-inevitable-defeat`).

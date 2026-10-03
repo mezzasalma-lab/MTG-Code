@@ -1,5 +1,36 @@
 # Checklist cláusula-a-cláusula — Vihaan, Goldwaker
 
+## Treasure animado, mulligan e terreno tapped (correção do simulador) — oráculo, rulings e cláusulas — 2026-10-03
+
+Pedido: *"Quero sim, corrija todos os erros do simulador!"* (resposta à oferta de corrigir o roteamento do Treasure animado). Código: `vihaan_goldfish_v1.py` (antes = commit `6e623d3`). Tudo que sustenta a conclusão está em
+`resultados-ab/2026-10-03-treasure-animado-e-mulligan/` (LEIAME com o mapa arquivo → comando). Oráculo e rulings lidos **ao vivo** no Scryfall (2026-10-03) **antes** de escrever o código (Regra #3); resposta bruta em `.../dados/oraculo_e_rulings.json`.
+
+**Oráculo (Vihaan, Goldwaker, Outlaws of Thunder Junction Commander):** *Other outlaws you control have vigilance and haste. At the beginning of combat on your turn, you may have Treasures you control become 3/3 Construct Assassin artifact creatures in addition to their other types until end of turn.*
+**Rulings (5, 2024-04-12):** os Treasures animados mantêm as habilidades; Assassin é outlaw; um Treasure que já é criatura tem o P/T sobrescrito pelo efeito. **CR 611.2c** (`rules-cache/comprehensive-rules.txt`, linha 2915): o conjunto de objetos afetado é fixado quando o efeito contínuo começa.
+**Cartas de contexto lidas:** Zulaport Cutthroat (1 ruling), Pitiless Plunderer (1), Mahadi, Emporium Master (0), Ashnod's Altar (0), Krark-Clan Ironworks (0), Sephiroth (10).
+
+| Cláusula do oráculo | Status | Onde / como |
+|---|---|---|
+| Vihaan: "Other outlaws you control have vigilance and haste" | ✅ | haste propagado a `ready_creatures`; vigilância 📊 (sem bloqueio modelado), e é por ela que o Treasure animado que ataca continua desvirado para mana na 2ª main |
+| Vihaan: "At the beginning of combat… Treasures you control become 3/3 Construct Assassin artifact creatures… until end of turn" (animação) | ✅ | `combat_step`: `treasures_animated_this_combat` e `treasures_animated_alive` = Treasures no início do combate |
+| "… until end of turn" | 🐛 corrigido | os animados continuam criaturas na 2ª main phase; `end_step` zera `treasures_animated_alive` (antes só o Altar os via como criatura, e só no combate) |
+| CR 611.2c: só os Treasures que existiam na resolução | 🐛 corrigido | `sacrifice_treasures` só roteia como criatura até `treasures_animated_alive`; o Treasure criado depois (Olivia, Face-Breaker, Pitiless Plunderer, Reaver Cleaver…) não é criatura. O código antigo sacrificava **todos** os Treasures ao Altar |
+| Ruling: "Treasures keep any abilities they previously had while they're creatures" | ✅ | o animado continua podendo ser sacrificado por mana (`spend_mana`) e por qualquer outlet |
+| Ashnod's Altar: "Sacrifice a creature: Add {C}{C}" | 🐛 corrigido | só aceita animados vivos |
+| Krark-Clan Ironworks: "Sacrifice an artifact: Add {C}{C}" | 🐛 corrigido | aceita todos; o animado sacrificado a ele também é criatura (antes: "não é criatura fora do combate") |
+| Zulaport / Pitiless Plunderer / Sephiroth / Agent of the Iron Throne / Mahadi: "creature dies / is sacrificed" | 🐛 corrigido por conceito compartilhado | disparam em **todo** sacrifício de Treasure animado (`on_permanent_sacrificed(is_creature=True)`), não só no do Altar |
+
+**Regra #3 (conceito compartilhado "Treasure animado é criatura"):** os 9 pontos de `sacrifice_treasures` no `.py` (conferido por grep): `spend_mana` (mana de Treasure), `try_face_breaker_impulse`, `Deadly Dispute` (`resolve_instant_sorcery`), `Lich-Knights' Conquest`, Magda ("Sacrifice three Treasures"), Jan Jansen, `aggressive_treasure_destruction` (Altar e KCI). Todos passam agora pelo mesmo roteamento padrão (`as_creature=None`); só os dois explícitos antigos ficam sob a chave desligada.
+**Regra #6 (ordem de fases):** `play_turn` = `… draw → play_land → main_phase → check_visitor_combo → combat_step (animação no início; destruição pós-combate) → main_phase (2ª: mana de Treasure animado) → … → end_step (Mahadi; zera os animados)`. A animação precede os dois pontos em que o sacrifício importa; Mahadi conta as mortes **antes** de o end step zerar. Teste em `play_turn` completo.
+
+**Mulligan e terreno (Vihaan):** (1) o London Mulligan sorteava as cartas do fundo; agora `choose_bottom` (terreno só com mais de 4, depois a não-terreno de maior custo, protegendo `GOOD_KEEP`). (2) `play_land` jogava `lands_in_hand[0]`; agora `choose_land_to_play` (tapped em T1/T2 salvo se custar uma jogada de desenvolvimento) com a regra de "entra tapped" numa função só (`land_enters_tapped`: tag `etb_tapped`, checkland, fastland; shockland paga a vida).
+
+**Validação:** smoke (99 cartas, 0 desconhecidas/duplicadas, 35 terrenos); bit-identidade com as 3 chaves desligadas, 20.000+20.000 partidas; regressão 160.000 partidas, 0 exceções; 42 testes dirigidos 42/42; A/B pareado N=2.000 (padrão e resiliência) e N=10.000 com as métricas novas se movendo no sentido esperado (animados sacrificados como criatura 0,56 → 1,53 por partida; mortes de criatura +1,05; mana T2/T3 do tapped +0,05/+0,08). Números no `goldfish-log.md`.
+
+**Achados laterais (não corrigidos):** Sephiroth poderia sacrificar Treasures animados (política); Xorn e Pitiless Plunderer em lote por evento (pré-existente); 7 outros decks sorteiam as cartas do fundo no mulligan.
+**Classes da taxonomia da Regra #1 varridas (e só elas):** gatilho compartilhado ligado em só alguns pontos (morte de criatura por sacrifício de Treasure), estático lido em uma função mas não propagado (Treasure animado = criatura), conceito compartilhado "criatura que morre", ordem de fases (Regra #6), custo/escolha do piloto (mulligan, terreno).
+**Não varridas:** as demais classes e as outras cartas do `.py` (esta rodada não foi uma auditoria carta a carta).
+
 ## Kingpin, Wilson Fisk (candidata, implementada só no harness) — oráculo, rulings e cláusulas — 2026-10-03
 
 A carta **não está na lista**; foi acrescentada em tempo de execução por `resultados-ab/2026-10-03-kingpin/orquestracao/kp_harness.py`

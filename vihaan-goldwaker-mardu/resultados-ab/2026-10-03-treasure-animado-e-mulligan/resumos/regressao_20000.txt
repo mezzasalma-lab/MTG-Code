@@ -1,0 +1,8 @@
+todas        padrao       N=20000 sementes 5000000..5019999: excecoes=0 | cartas duplicadas=0 | animados vivos != 0 no fim do turno=0 | Treasures<0=0
+todas        resiliencia  N=20000 sementes 5000000..5019999: excecoes=0 | cartas duplicadas=0 | animados vivos != 0 no fim do turno=0 | Treasures<0=0
+so_treasure  padrao       N=20000 sementes 5000000..5019999: excecoes=0 | cartas duplicadas=0 | animados vivos != 0 no fim do turno=0 | Treasures<0=0
+so_bottom    padrao       N=20000 sementes 5000000..5019999: excecoes=0 | cartas duplicadas=0 | animados vivos != 0 no fim do turno=0 | Treasures<0=0
+so_tapped    padrao       N=20000 sementes 5000000..5019999: excecoes=0 | cartas duplicadas=0 | animados vivos != 0 no fim do turno=0 | Treasures<0=0
+blunt        padrao       N=20000 sementes 5000000..5019999: excecoes=0 | cartas duplicadas=0 | animados vivos != 0 no fim do turno=0 | Treasures<0=0
+todas_t4     padrao       N=20000 sementes 5000000..5019999: excecoes=0 | cartas duplicadas=0 | animados vivos != 0 no fim do turno=0 | Treasures<0=0
+todas_t4     resiliencia  N=20000 sementes 5000000..5019999: excecoes=0 | cartas duplicadas=0 | animados vivos != 0 no fim do turno=0 | Treasures<0=0

@@ -1,0 +1,1244 @@
+{
+ "Vihaan, Goldwaker": {
+  "oracle_id": "0613a0d8-f6bc-41ca-8070-b2506f756fc8",
+  "type_line": "Legendary Creature — Dwarf Warlock",
+  "oracle_text": "Other outlaws you control have vigilance and haste. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws.)\nAt the beginning of combat on your turn, you may have Treasures you control become 3/3 Construct Assassin artifact creatures in addition to their other types until end of turn.",
+  "set": "otc",
+  "released_at": "2024-04-19",
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "0613a0d8-f6bc-41ca-8070-b2506f756fc8",
+    "source": "wotc",
+    "published_at": "2024-04-12",
+    "comment": "If a Treasure you control is already a creature when Vihaan’s second ability resolves and you choose to apply its effect to all Treasures you control, that effect will overwrite any previous effects that set that creature’s power and toughness to specific numbers. Effects that otherwise modify its power and toughness will still apply no matter when they took effect. The same is true for +1/+1 counters."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "0613a0d8-f6bc-41ca-8070-b2506f756fc8",
+    "source": "wotc",
+    "published_at": "2024-04-12",
+    "comment": "Treasures you control will keep any abilities they previously had while they’re creatures."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "0613a0d8-f6bc-41ca-8070-b2506f756fc8",
+    "source": "wotc",
+    "published_at": "2024-04-12",
+    "comment": "A card, spell, or permanent is an outlaw if it has the Assassin, Mercenary, Pirate, Rogue, or Warlock creature type. It doesn’t matter if it has more than one of those creature types; as long as it has at least one, it’s an outlaw."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "0613a0d8-f6bc-41ca-8070-b2506f756fc8",
+    "source": "wotc",
+    "published_at": "2024-04-12",
+    "comment": "Outlaw is not a creature type. If an effect asks you to choose a creature type, you can’t choose outlaw."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "0613a0d8-f6bc-41ca-8070-b2506f756fc8",
+    "source": "wotc",
+    "published_at": "2024-04-12",
+    "comment": "If an ability refers to an outlaw or whether a player controls an outlaw, it’s referring only to permanents with one or more of the creature types specified above. Notably, it’s not referring to any spell or card not on the battlefield. However, other abilities may refer to an “outlaw spell” or “outlaw card” in a zone other than the battlefield. Those abilities refer to spells and cards with one or more of the specified creature types."
+   }
+  ],
+  "raw": {
+   "object": "card",
+   "id": "7b549690-72eb-4244-bb66-996a2bd1027e",
+   "oracle_id": "0613a0d8-f6bc-41ca-8070-b2506f756fc8",
+   "multiverse_ids": [
+    658308
+   ],
+   "mtgo_id": 125219,
+   "tcgplayer_id": 545279,
+   "cardmarket_id": 764498,
+   "name": "Vihaan, Goldwaker",
+   "lang": "en",
+   "released_at": "2024-04-19",
+   "uri": "https://api.scryfall.com/cards/7b549690-72eb-4244-bb66-996a2bd1027e",
+   "scryfall_uri": "https://scryfall.com/card/otc/8/vihaan-goldwaker?utm_source=api",
+   "layout": "normal",
+   "highres_image": true,
+   "image_status": "highres_scan",
+   "image_updated_at": "2026-07-13T03:06:11Z",
+   "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/b/7b549690-72eb-4244-bb66-996a2bd1027e.jpg?1783911971",
+    "normal": "https://cards.scryfall.io/normal/front/7/b/7b549690-72eb-4244-bb66-996a2bd1027e.jpg?1783911971",
+    "large": "https://cards.scryfall.io/large/front/7/b/7b549690-72eb-4244-bb66-996a2bd1027e.jpg?1783911971",
+    "png": "https://cards.scryfall.io/png/front/7/b/7b549690-72eb-4244-bb66-996a2bd1027e.png?1783911971",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/b/7b549690-72eb-4244-bb66-996a2bd1027e.jpg?1783911971",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/b/7b549690-72eb-4244-bb66-996a2bd1027e.jpg?1783911971",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/b/7b549690-72eb-4244-bb66-996a2bd1027e.webp?1783911971",
+    "grid": "https://cards.scryfall.io/grid/front/7/b/7b549690-72eb-4244-bb66-996a2bd1027e.webp?1783911971",
+    "display": "https://cards.scryfall.io/display/front/7/b/7b549690-72eb-4244-bb66-996a2bd1027e.webp?1783911971",
+    "art": "https://cards.scryfall.io/art/front/7/b/7b549690-72eb-4244-bb66-996a2bd1027e.webp?1783911971",
+    "crop": "https://cards.scryfall.io/crop/front/7/b/7b549690-72eb-4244-bb66-996a2bd1027e.webp?1783911971"
+   },
+   "mana_cost": "{R}{W}{B}",
+   "cmc": 3.0,
+   "type_line": "Legendary Creature — Dwarf Warlock",
+   "oracle_text": "Other outlaws you control have vigilance and haste. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws.)\nAt the beginning of combat on your turn, you may have Treasures you control become 3/3 Construct Assassin artifact creatures in addition to their other types until end of turn.",
+   "power": "3",
+   "toughness": "3",
+   "colors": [
+    "B",
+    "R",
+    "W"
+   ],
+   "color_identity": [
+    "B",
+    "R",
+    "W"
+   ],
+   "keywords": [],
+   "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+   },
+   "games": [
+    "paper",
+    "mtgo"
+   ],
+   "reserved": false,
+   "game_changer": false,
+   "foil": true,
+   "nonfoil": false,
+   "finishes": [
+    "foil"
+   ],
+   "oversized": false,
+   "promo": false,
+   "reprint": false,
+   "variation": false,
+   "set_id": "d6548798-0c10-4509-b71a-2d8b1d14665a",
+   "set": "otc",
+   "set_name": "Outlaws of Thunder Junction Commander",
+   "set_type": "commander",
+   "set_uri": "https://api.scryfall.com/sets/d6548798-0c10-4509-b71a-2d8b1d14665a",
+   "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aotc&unique=prints",
+   "scryfall_set_uri": "https://scryfall.com/sets/otc?utm_source=api",
+   "rulings_uri": "https://api.scryfall.com/cards/7b549690-72eb-4244-bb66-996a2bd1027e/rulings",
+   "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0613a0d8-f6bc-41ca-8070-b2506f756fc8&unique=prints",
+   "collector_number": "8",
+   "digital": false,
+   "rarity": "mythic",
+   "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+   "artist": "Magali Villeneuve",
+   "artist_ids": [
+    "9e6a55ae-be4d-4c23-a2a5-135737ffd879"
+   ],
+   "illustration_id": "dde07978-1bfa-417a-b1b4-78b2767a7dce",
+   "border_color": "black",
+   "frame": "2015",
+   "frame_effects": [
+    "legendary"
+   ],
+   "security_stamp": "oval",
+   "full_art": false,
+   "textless": false,
+   "booster": false,
+   "story_spotlight": false,
+   "edhrec_rank": 6015,
+   "prices": {
+    "usd": null,
+    "usd_foil": "2.00",
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": "0.70",
+    "tix": "1.00"
+   },
+   "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=658308&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DVihaan%252C%2BGoldwaker",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DVihaan%252C%2BGoldwaker",
+    "edhrec": "https://edhrec.com/route/?cc=Vihaan%2C+Goldwaker"
+   },
+   "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F545279%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=764498&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/125219?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+   }
+  }
+ },
+ "Zulaport Cutthroat": {
+  "oracle_id": "76b003e0-15af-4f22-bdf2-1ade5430964a",
+  "type_line": "Creature — Human Rogue Ally",
+  "oracle_text": "Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life.",
+  "set": "soc",
+  "released_at": "2026-04-24",
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "76b003e0-15af-4f22-bdf2-1ade5430964a",
+    "source": "wotc",
+    "published_at": "2021-03-19",
+    "comment": "If another creature you control dies at the same time as Zulaport Cutthroat, its ability triggers for that creature."
+   }
+  ],
+  "raw": {
+   "object": "card",
+   "id": "c43609fb-3cee-44e0-98d0-3ecaba1d5767",
+   "oracle_id": "76b003e0-15af-4f22-bdf2-1ade5430964a",
+   "multiverse_ids": [],
+   "resource_id": "1145C829669EB7B58E0F008D9886ED44C04D34BDB15FC204F5F81B9611D7BF1F",
+   "mtgo_id": 148933,
+   "tcgplayer_id": 687519,
+   "cardmarket_id": 881552,
+   "name": "Zulaport Cutthroat",
+   "lang": "en",
+   "released_at": "2026-04-24",
+   "uri": "https://api.scryfall.com/cards/c43609fb-3cee-44e0-98d0-3ecaba1d5767",
+   "scryfall_uri": "https://scryfall.com/card/soc/233/zulaport-cutthroat?utm_source=api",
+   "layout": "normal",
+   "highres_image": true,
+   "image_status": "highres_scan",
+   "image_updated_at": "2026-07-13T00:49:39Z",
+   "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/4/c43609fb-3cee-44e0-98d0-3ecaba1d5767.jpg?1783903779",
+    "normal": "https://cards.scryfall.io/normal/front/c/4/c43609fb-3cee-44e0-98d0-3ecaba1d5767.jpg?1783903779",
+    "large": "https://cards.scryfall.io/large/front/c/4/c43609fb-3cee-44e0-98d0-3ecaba1d5767.jpg?1783903779",
+    "png": "https://cards.scryfall.io/png/front/c/4/c43609fb-3cee-44e0-98d0-3ecaba1d5767.png?1783903779",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/4/c43609fb-3cee-44e0-98d0-3ecaba1d5767.jpg?1783903779",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/4/c43609fb-3cee-44e0-98d0-3ecaba1d5767.jpg?1783903779",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/4/c43609fb-3cee-44e0-98d0-3ecaba1d5767.webp?1783903779",
+    "grid": "https://cards.scryfall.io/grid/front/c/4/c43609fb-3cee-44e0-98d0-3ecaba1d5767.webp?1783903779",
+    "display": "https://cards.scryfall.io/display/front/c/4/c43609fb-3cee-44e0-98d0-3ecaba1d5767.webp?1783903779",
+    "art": "https://cards.scryfall.io/art/front/c/4/c43609fb-3cee-44e0-98d0-3ecaba1d5767.webp?1783903779",
+    "crop": "https://cards.scryfall.io/crop/front/c/4/c43609fb-3cee-44e0-98d0-3ecaba1d5767.webp?1783903779"
+   },
+   "mana_cost": "{1}{B}",
+   "cmc": 2.0,
+   "type_line": "Creature — Human Rogue Ally",
+   "oracle_text": "Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life.",
+   "power": "1",
+   "toughness": "1",
+   "colors": [
+    "B"
+   ],
+   "color_identity": [
+    "B"
+   ],
+   "keywords": [],
+   "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+   },
+   "games": [
+    "paper",
+    "mtgo"
+   ],
+   "reserved": false,
+   "game_changer": false,
+   "foil": false,
+   "nonfoil": true,
+   "finishes": [
+    "nonfoil"
+   ],
+   "oversized": false,
+   "promo": false,
+   "reprint": true,
+   "variation": false,
+   "set_id": "97fab8d1-480a-419d-ab14-663968e29b9c",
+   "set": "soc",
+   "set_name": "Secrets of Strixhaven Commander",
+   "set_type": "commander",
+   "set_uri": "https://api.scryfall.com/sets/97fab8d1-480a-419d-ab14-663968e29b9c",
+   "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Asoc&unique=prints",
+   "scryfall_set_uri": "https://scryfall.com/sets/soc?utm_source=api",
+   "rulings_uri": "https://api.scryfall.com/cards/c43609fb-3cee-44e0-98d0-3ecaba1d5767/rulings",
+   "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A76b003e0-15af-4f22-bdf2-1ade5430964a&unique=prints",
+   "collector_number": "233",
+   "digital": false,
+   "rarity": "uncommon",
+   "flavor_text": "\"Eldrazi? Ha! Try walking through Zulaport at night with your pockets full. Now *that's* dangerous.\"",
+   "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+   "artist": "Jason Rainville",
+   "artist_ids": [
+    "6ed7e669-579b-443d-b223-e5cbcb2a7483"
+   ],
+   "illustration_id": "9ce09029-ba04-47a0-8769-eb9e514219da",
+   "border_color": "black",
+   "frame": "2015",
+   "full_art": false,
+   "textless": false,
+   "booster": false,
+   "story_spotlight": false,
+   "edhrec_rank": 236,
+   "penny_rank": 950,
+   "prices": {
+    "usd": "1.34",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.56",
+    "eur_foil": null,
+    "tix": "0.09"
+   },
+   "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DZulaport%2BCutthroat",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DZulaport%2BCutthroat",
+    "edhrec": "https://edhrec.com/route/?cc=Zulaport+Cutthroat"
+   },
+   "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F687519%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=881552&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/148933?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+   }
+  }
+ },
+ "Pitiless Plunderer": {
+  "oracle_id": "a784481f-eccb-4112-bb38-04a659319660",
+  "type_line": "Creature — Human Pirate",
+  "oracle_text": "Whenever another creature you control dies, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "set": "lcc",
+  "released_at": "2023-11-17",
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "a784481f-eccb-4112-bb38-04a659319660",
+    "source": "wotc",
+    "published_at": "2018-01-19",
+    "comment": "If Pitiless Plunderer dies at the same time as one or more other creatures you control, its ability will still trigger for each of those other creatures."
+   }
+  ],
+  "raw": {
+   "object": "card",
+   "id": "5b5cd187-857a-44dd-8595-a52857a0b753",
+   "oracle_id": "a784481f-eccb-4112-bb38-04a659319660",
+   "multiverse_ids": [
+    640504
+   ],
+   "mtgo_id": 118816,
+   "tcgplayer_id": 525765,
+   "cardmarket_id": 743560,
+   "name": "Pitiless Plunderer",
+   "lang": "en",
+   "released_at": "2023-11-17",
+   "uri": "https://api.scryfall.com/cards/5b5cd187-857a-44dd-8595-a52857a0b753",
+   "scryfall_uri": "https://scryfall.com/card/lcc/208/pitiless-plunderer?utm_source=api",
+   "layout": "normal",
+   "highres_image": true,
+   "image_status": "highres_scan",
+   "image_updated_at": "2026-07-13T03:37:49Z",
+   "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/b/5b5cd187-857a-44dd-8595-a52857a0b753.jpg?1783913869",
+    "normal": "https://cards.scryfall.io/normal/front/5/b/5b5cd187-857a-44dd-8595-a52857a0b753.jpg?1783913869",
+    "large": "https://cards.scryfall.io/large/front/5/b/5b5cd187-857a-44dd-8595-a52857a0b753.jpg?1783913869",
+    "png": "https://cards.scryfall.io/png/front/5/b/5b5cd187-857a-44dd-8595-a52857a0b753.png?1783913869",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/b/5b5cd187-857a-44dd-8595-a52857a0b753.jpg?1783913869",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/b/5b5cd187-857a-44dd-8595-a52857a0b753.jpg?1783913869",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/b/5b5cd187-857a-44dd-8595-a52857a0b753.webp?1783913869",
+    "grid": "https://cards.scryfall.io/grid/front/5/b/5b5cd187-857a-44dd-8595-a52857a0b753.webp?1783913869",
+    "display": "https://cards.scryfall.io/display/front/5/b/5b5cd187-857a-44dd-8595-a52857a0b753.webp?1783913869",
+    "art": "https://cards.scryfall.io/art/front/5/b/5b5cd187-857a-44dd-8595-a52857a0b753.webp?1783913869",
+    "crop": "https://cards.scryfall.io/crop/front/5/b/5b5cd187-857a-44dd-8595-a52857a0b753.webp?1783913869"
+   },
+   "mana_cost": "{3}{B}",
+   "cmc": 4.0,
+   "type_line": "Creature — Human Pirate",
+   "oracle_text": "Whenever another creature you control dies, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+   "power": "1",
+   "toughness": "4",
+   "colors": [
+    "B"
+   ],
+   "color_identity": [
+    "B"
+   ],
+   "keywords": [
+    "Treasure"
+   ],
+   "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+   ],
+   "all_parts": [
+    {
+     "object": "related_card",
+     "id": "3dfaedeb-f8ec-4f0e-b243-c850770a86f2",
+     "component": "token",
+     "name": "Treasure",
+     "type_line": "Token Artifact — Treasure",
+     "uri": "https://api.scryfall.com/cards/3dfaedeb-f8ec-4f0e-b243-c850770a86f2"
+    },
+    {
+     "object": "related_card",
+     "id": "5b5cd187-857a-44dd-8595-a52857a0b753",
+     "component": "combo_piece",
+     "name": "Pitiless Plunderer",
+     "type_line": "Creature — Human Pirate",
+     "uri": "https://api.scryfall.com/cards/5b5cd187-857a-44dd-8595-a52857a0b753"
+    }
+   ],
+   "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+   },
+   "games": [
+    "paper",
+    "mtgo"
+   ],
+   "reserved": false,
+   "game_changer": false,
+   "foil": false,
+   "nonfoil": true,
+   "finishes": [
+    "nonfoil"
+   ],
+   "oversized": false,
+   "promo": false,
+   "reprint": true,
+   "variation": false,
+   "set_id": "d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+   "set": "lcc",
+   "set_name": "The Lost Caverns of Ixalan Commander",
+   "set_type": "commander",
+   "set_uri": "https://api.scryfall.com/sets/d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+   "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alcc&unique=prints",
+   "scryfall_set_uri": "https://scryfall.com/sets/lcc?utm_source=api",
+   "rulings_uri": "https://api.scryfall.com/cards/5b5cd187-857a-44dd-8595-a52857a0b753/rulings",
+   "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa784481f-eccb-4112-bb38-04a659319660&unique=prints",
+   "collector_number": "208",
+   "digital": false,
+   "rarity": "uncommon",
+   "flavor_text": "\"Shame to let good gold go to the grave.\"",
+   "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+   "artist": "David Palumbo",
+   "artist_ids": [
+    "04ce1c75-e30c-4b7a-8cb0-b53e4ecc2f39"
+   ],
+   "illustration_id": "5d72c3ad-f3dc-450a-80a0-79fe2b984628",
+   "border_color": "black",
+   "frame": "2015",
+   "full_art": false,
+   "textless": false,
+   "booster": false,
+   "story_spotlight": false,
+   "edhrec_rank": 225,
+   "penny_rank": 7134,
+   "prices": {
+    "usd": "4.72",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "3.74",
+    "eur_foil": null,
+    "tix": "0.26"
+   },
+   "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=640504&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPitiless%2BPlunderer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPitiless%2BPlunderer",
+    "edhrec": "https://edhrec.com/route/?cc=Pitiless+Plunderer"
+   },
+   "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F525765%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=743560&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/118816?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+   }
+  }
+ },
+ "Mahadi, Emporium Master": {
+  "oracle_id": "1b3e841e-0f8f-467d-9983-f9b8d081a67f",
+  "type_line": "Legendary Creature — Devil",
+  "oracle_text": "At the beginning of your end step, create a Treasure token for each creature that died this turn. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "set": "clb",
+  "released_at": "2022-06-10",
+  "rulings": [],
+  "raw": {
+   "object": "card",
+   "id": "c3da2b1a-76c5-4d36-bdf8-025b86f61eb5",
+   "oracle_id": "1b3e841e-0f8f-467d-9983-f9b8d081a67f",
+   "multiverse_ids": [
+    563165
+   ],
+   "mtgo_id": 100602,
+   "tcgplayer_id": 272705,
+   "cardmarket_id": 659059,
+   "name": "Mahadi, Emporium Master",
+   "lang": "en",
+   "released_at": "2022-06-10",
+   "uri": "https://api.scryfall.com/cards/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5",
+   "scryfall_uri": "https://scryfall.com/card/clb/282/mahadi-emporium-master?utm_source=api",
+   "layout": "normal",
+   "highres_image": true,
+   "image_status": "highres_scan",
+   "image_updated_at": "2026-07-13T06:04:49Z",
+   "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.jpg?1783922689",
+    "normal": "https://cards.scryfall.io/normal/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.jpg?1783922689",
+    "large": "https://cards.scryfall.io/large/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.jpg?1783922689",
+    "png": "https://cards.scryfall.io/png/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.png?1783922689",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.jpg?1783922689",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.jpg?1783922689",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.webp?1783922689",
+    "grid": "https://cards.scryfall.io/grid/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.webp?1783922689",
+    "display": "https://cards.scryfall.io/display/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.webp?1783922689",
+    "art": "https://cards.scryfall.io/art/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.webp?1783922689",
+    "crop": "https://cards.scryfall.io/crop/front/c/3/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5.webp?1783922689"
+   },
+   "mana_cost": "{1}{B}{R}",
+   "cmc": 3.0,
+   "type_line": "Legendary Creature — Devil",
+   "oracle_text": "At the beginning of your end step, create a Treasure token for each creature that died this turn. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+   "power": "3",
+   "toughness": "3",
+   "colors": [
+    "B",
+    "R"
+   ],
+   "color_identity": [
+    "B",
+    "R"
+   ],
+   "keywords": [
+    "Treasure"
+   ],
+   "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+   ],
+   "all_parts": [
+    {
+     "object": "related_card",
+     "id": "7c502480-111e-46a3-9f2f-9c4901d88323",
+     "component": "combo_piece",
+     "name": "Mahadi, Emporium Master",
+     "type_line": "Legendary Creature — Devil",
+     "uri": "https://api.scryfall.com/cards/7c502480-111e-46a3-9f2f-9c4901d88323"
+    },
+    {
+     "object": "related_card",
+     "id": "770b988d-4f31-4746-8c23-4ed8d9a6b393",
+     "component": "token",
+     "name": "Treasure",
+     "type_line": "Token Artifact — Treasure",
+     "uri": "https://api.scryfall.com/cards/770b988d-4f31-4746-8c23-4ed8d9a6b393"
+    }
+   ],
+   "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+   },
+   "games": [
+    "paper",
+    "mtgo"
+   ],
+   "reserved": false,
+   "game_changer": false,
+   "foil": true,
+   "nonfoil": true,
+   "finishes": [
+    "nonfoil",
+    "foil"
+   ],
+   "oversized": false,
+   "promo": false,
+   "reprint": false,
+   "variation": false,
+   "set_id": "5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+   "set": "clb",
+   "set_name": "Commander Legends: Battle for Baldur's Gate",
+   "set_type": "draft_innovation",
+   "set_uri": "https://api.scryfall.com/sets/5e4c3fe8-fd57-4b20-ad56-c03790a16cea",
+   "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aclb&unique=prints",
+   "scryfall_set_uri": "https://scryfall.com/sets/clb?utm_source=api",
+   "rulings_uri": "https://api.scryfall.com/cards/c3da2b1a-76c5-4d36-bdf8-025b86f61eb5/rulings",
+   "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1b3e841e-0f8f-467d-9983-f9b8d081a67f&unique=prints",
+   "collector_number": "282",
+   "digital": false,
+   "rarity": "uncommon",
+   "flavor_text": "\"Welcome to the Wandering Emporium. Feel free to browse the bazaar. We have everything a lost soul could want, need, or afford.\"",
+   "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+   "artist": "Ilse Gort",
+   "artist_ids": [
+    "12070c2e-4de6-46bc-b379-8a580dfb34c5"
+   ],
+   "illustration_id": "7064957b-d9a4-4cbe-a4cb-5b6cfaa93950",
+   "border_color": "black",
+   "frame": "2015",
+   "frame_effects": [
+    "legendary"
+   ],
+   "full_art": false,
+   "textless": false,
+   "booster": true,
+   "story_spotlight": false,
+   "edhrec_rank": 1276,
+   "preview": {
+    "source": "AusGamers",
+    "source_uri": "https://www.ausgamers.com/news/read/3640225/magic-the-gathering-commander-legends-battle-for-baldurs-gate-exclusive-card-reveal",
+    "previewed_at": "2022-05-18"
+   },
+   "prices": {
+    "usd": "1.33",
+    "usd_foil": "4.59",
+    "usd_etched": null,
+    "eur": "1.87",
+    "eur_foil": "2.69",
+    "tix": "9.31"
+   },
+   "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=563165&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMahadi%252C%2BEmporium%2BMaster",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMahadi%252C%2BEmporium%2BMaster",
+    "edhrec": "https://edhrec.com/route/?cc=Mahadi%2C+Emporium+Master"
+   },
+   "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F272705%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=659059&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/100602?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+   }
+  }
+ },
+ "Ashnod's Altar": {
+  "oracle_id": "4d18bcba-a346-445e-a182-6cc30b7e066d",
+  "type_line": "Artifact",
+  "oracle_text": "Sacrifice a creature: Add {C}{C}.",
+  "set": "cmm",
+  "released_at": "2023-08-04",
+  "rulings": [],
+  "raw": {
+   "object": "card",
+   "id": "3c0f7157-a375-499c-92c7-d47d2e95dbad",
+   "oracle_id": "4d18bcba-a346-445e-a182-6cc30b7e066d",
+   "multiverse_ids": [
+    627832
+   ],
+   "mtgo_id": 114965,
+   "tcgplayer_id": 504612,
+   "cardmarket_id": 722420,
+   "name": "Ashnod's Altar",
+   "lang": "en",
+   "released_at": "2023-08-04",
+   "uri": "https://api.scryfall.com/cards/3c0f7157-a375-499c-92c7-d47d2e95dbad",
+   "scryfall_uri": "https://scryfall.com/card/cmm/368/ashnods-altar?utm_source=api",
+   "layout": "normal",
+   "highres_image": true,
+   "image_status": "highres_scan",
+   "image_updated_at": "2026-07-13T04:06:45Z",
+   "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/c/3c0f7157-a375-499c-92c7-d47d2e95dbad.jpg?1783915605",
+    "normal": "https://cards.scryfall.io/normal/front/3/c/3c0f7157-a375-499c-92c7-d47d2e95dbad.jpg?1783915605",
+    "large": "https://cards.scryfall.io/large/front/3/c/3c0f7157-a375-499c-92c7-d47d2e95dbad.jpg?1783915605",
+    "png": "https://cards.scryfall.io/png/front/3/c/3c0f7157-a375-499c-92c7-d47d2e95dbad.png?1783915605",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/c/3c0f7157-a375-499c-92c7-d47d2e95dbad.jpg?1783915605",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/c/3c0f7157-a375-499c-92c7-d47d2e95dbad.jpg?1783915605",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/c/3c0f7157-a375-499c-92c7-d47d2e95dbad.webp?1783915605",
+    "grid": "https://cards.scryfall.io/grid/front/3/c/3c0f7157-a375-499c-92c7-d47d2e95dbad.webp?1783915605",
+    "display": "https://cards.scryfall.io/display/front/3/c/3c0f7157-a375-499c-92c7-d47d2e95dbad.webp?1783915605",
+    "art": "https://cards.scryfall.io/art/front/3/c/3c0f7157-a375-499c-92c7-d47d2e95dbad.webp?1783915605",
+    "crop": "https://cards.scryfall.io/crop/front/3/c/3c0f7157-a375-499c-92c7-d47d2e95dbad.webp?1783915605"
+   },
+   "mana_cost": "{3}",
+   "cmc": 3.0,
+   "type_line": "Artifact",
+   "oracle_text": "Sacrifice a creature: Add {C}{C}.",
+   "colors": [],
+   "color_identity": [],
+   "keywords": [],
+   "produced_mana": [
+    "C"
+   ],
+   "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+   },
+   "games": [
+    "paper",
+    "mtgo"
+   ],
+   "reserved": false,
+   "game_changer": false,
+   "foil": true,
+   "nonfoil": true,
+   "finishes": [
+    "nonfoil",
+    "foil"
+   ],
+   "oversized": false,
+   "promo": false,
+   "reprint": true,
+   "variation": false,
+   "set_id": "cd05036f-2698-43e6-a48e-5c8d82f0a551",
+   "set": "cmm",
+   "set_name": "Commander Masters",
+   "set_type": "masters",
+   "set_uri": "https://api.scryfall.com/sets/cd05036f-2698-43e6-a48e-5c8d82f0a551",
+   "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmm&unique=prints",
+   "scryfall_set_uri": "https://scryfall.com/sets/cmm?utm_source=api",
+   "rulings_uri": "https://api.scryfall.com/cards/3c0f7157-a375-499c-92c7-d47d2e95dbad/rulings",
+   "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4d18bcba-a346-445e-a182-6cc30b7e066d&unique=prints",
+   "collector_number": "368",
+   "digital": false,
+   "rarity": "uncommon",
+   "flavor_text": "\"If you work at sawing up carcasses, you notice how the joints fit, how the nerves are arrayed, and how the skin peels back.\"\n—Ashnod, to Tawnos",
+   "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+   "artist": "Greg Staples",
+   "artist_ids": [
+    "93d65564-bf00-447b-8406-e2031f03b6b1"
+   ],
+   "illustration_id": "5abdc37b-1ed5-45e2-8237-30ce034ecc95",
+   "border_color": "black",
+   "frame": "2015",
+   "full_art": false,
+   "textless": false,
+   "booster": true,
+   "story_spotlight": false,
+   "edhrec_rank": 134,
+   "preview": {
+    "source": "le Pincecrâne",
+    "source_uri": "https://twitter.com/pincecrane/status/1679570764993789953",
+    "previewed_at": "2023-07-14"
+   },
+   "prices": {
+    "usd": "15.65",
+    "usd_foil": "19.20",
+    "usd_etched": null,
+    "eur": "13.19",
+    "eur_foil": "18.71",
+    "tix": "12.50"
+   },
+   "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=627832&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DAshnod%2527s%2BAltar",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DAshnod%2527s%2BAltar",
+    "edhrec": "https://edhrec.com/route/?cc=Ashnod%27s+Altar"
+   },
+   "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F504612%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=722420&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/114965?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+   }
+  }
+ },
+ "Krark-Clan Ironworks": {
+  "oracle_id": "68e1f7e0-a9b3-437f-8086-0c0cb85f2880",
+  "type_line": "Artifact",
+  "oracle_text": "Sacrifice an artifact: Add {C}{C}.",
+  "set": "5dn",
+  "released_at": "2004-06-04",
+  "rulings": [],
+  "raw": {
+   "object": "card",
+   "id": "c60174d6-1f9d-4870-b3db-34d6fcb3f6ab",
+   "oracle_id": "68e1f7e0-a9b3-437f-8086-0c0cb85f2880",
+   "multiverse_ids": [
+    51633
+   ],
+   "mtgo_id": 20862,
+   "mtgo_foil_id": 20863,
+   "tcgplayer_id": 11808,
+   "cardmarket_id": 505,
+   "name": "Krark-Clan Ironworks",
+   "lang": "en",
+   "released_at": "2004-06-04",
+   "uri": "https://api.scryfall.com/cards/c60174d6-1f9d-4870-b3db-34d6fcb3f6ab",
+   "scryfall_uri": "https://scryfall.com/card/5dn/134/krark-clan-ironworks?utm_source=api",
+   "layout": "normal",
+   "highres_image": true,
+   "image_status": "highres_scan",
+   "image_updated_at": "2026-07-13T12:06:18Z",
+   "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/6/c60174d6-1f9d-4870-b3db-34d6fcb3f6ab.jpg?1783944378",
+    "normal": "https://cards.scryfall.io/normal/front/c/6/c60174d6-1f9d-4870-b3db-34d6fcb3f6ab.jpg?1783944378",
+    "large": "https://cards.scryfall.io/large/front/c/6/c60174d6-1f9d-4870-b3db-34d6fcb3f6ab.jpg?1783944378",
+    "png": "https://cards.scryfall.io/png/front/c/6/c60174d6-1f9d-4870-b3db-34d6fcb3f6ab.png?1783944378",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/6/c60174d6-1f9d-4870-b3db-34d6fcb3f6ab.jpg?1783944378",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/6/c60174d6-1f9d-4870-b3db-34d6fcb3f6ab.jpg?1783944378",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/6/c60174d6-1f9d-4870-b3db-34d6fcb3f6ab.webp?1783944378",
+    "grid": "https://cards.scryfall.io/grid/front/c/6/c60174d6-1f9d-4870-b3db-34d6fcb3f6ab.webp?1783944378",
+    "display": "https://cards.scryfall.io/display/front/c/6/c60174d6-1f9d-4870-b3db-34d6fcb3f6ab.webp?1783944378",
+    "art": "https://cards.scryfall.io/art/front/c/6/c60174d6-1f9d-4870-b3db-34d6fcb3f6ab.webp?1783944378",
+    "crop": "https://cards.scryfall.io/crop/front/c/6/c60174d6-1f9d-4870-b3db-34d6fcb3f6ab.webp?1783944378"
+   },
+   "mana_cost": "{4}",
+   "cmc": 4.0,
+   "type_line": "Artifact",
+   "oracle_text": "Sacrifice an artifact: Add {C}{C}.",
+   "colors": [],
+   "color_identity": [],
+   "keywords": [],
+   "produced_mana": [
+    "C"
+   ],
+   "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "banned",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+   },
+   "games": [
+    "paper",
+    "mtgo"
+   ],
+   "reserved": false,
+   "game_changer": false,
+   "foil": true,
+   "nonfoil": true,
+   "finishes": [
+    "nonfoil",
+    "foil"
+   ],
+   "oversized": false,
+   "promo": false,
+   "reprint": false,
+   "variation": false,
+   "set_id": "e4bc1b87-5476-463c-8640-4c414ecf1763",
+   "set": "5dn",
+   "set_name": "Fifth Dawn",
+   "set_type": "expansion",
+   "set_uri": "https://api.scryfall.com/sets/e4bc1b87-5476-463c-8640-4c414ecf1763",
+   "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3A5dn&unique=prints",
+   "scryfall_set_uri": "https://scryfall.com/sets/5dn?utm_source=api",
+   "rulings_uri": "https://api.scryfall.com/cards/c60174d6-1f9d-4870-b3db-34d6fcb3f6ab/rulings",
+   "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A68e1f7e0-a9b3-437f-8086-0c0cb85f2880&unique=prints",
+   "collector_number": "134",
+   "digital": false,
+   "rarity": "uncommon",
+   "flavor_text": "All the junk, refuse, and offal of the Krark Clan is diligently collected, melted down, and made into more junk, refuse, and offal.",
+   "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+   "artist": "Greg Hildebrandt",
+   "artist_ids": [
+    "020f967b-0d2f-4166-aabe-901dba8bc7ec"
+   ],
+   "illustration_id": "5526462d-f6c7-465c-b561-fdd645f0c18f",
+   "border_color": "black",
+   "frame": "2003",
+   "full_art": false,
+   "textless": false,
+   "booster": true,
+   "story_spotlight": false,
+   "edhrec_rank": 1323,
+   "prices": {
+    "usd": "16.67",
+    "usd_foil": "88.15",
+    "usd_etched": null,
+    "eur": "10.77",
+    "eur_foil": "49.75",
+    "tix": "0.04"
+   },
+   "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=51633&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKrark-Clan%2BIronworks",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKrark-Clan%2BIronworks",
+    "edhrec": "https://edhrec.com/route/?cc=Krark-Clan+Ironworks"
+   },
+   "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F11808%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=505&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/20862?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+   }
+  }
+ },
+ "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel": {
+  "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+  "type_line": "Legendary Creature — Human Avatar Soldier // Legendary Creature — Angel Nightmare Avatar",
+  "oracle_text": [
+   "Whenever Sephiroth enters or attacks, you may sacrifice another creature. If you do, draw a card.\nWhenever another creature dies, target opponent loses 1 life and you gain 1 life. If this is the fourth time this ability has resolved this turn, transform Sephiroth.",
+   "Flying\nSuper Nova — As this creature transforms into Sephiroth, One-Winged Angel, you get an emblem with \"Whenever a creature dies, target opponent loses 1 life and you gain 1 life.\"\nWhenever Sephiroth attacks, you may sacrifice any number of other creatures. If you do, draw that many cards."
+  ],
+  "set": "fin",
+  "released_at": "2025-06-13",
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "Each face of a nonmodal double-faced card has its own set of characteristics: name, types, subtypes, abilities, and so on. While a nonmodal double-faced permanent is on the battlefield, consider only the characteristics of the face that's currently up. The other set of characteristics is ignored."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "A nonmodal double-faced card enters with its front face up by default, unless a spell or ability instructs you to put it onto the battlefield transformed or allows you to cast it transformed, in which case it enters with its back face up."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "If Sephiroth, Fabled SOLDIER and one or more other creatures die at the same time, its last ability will trigger for each of those other creatures. (It won't transform, though.)"
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "In the Commander variant, a double-faced card's color identity is determined by the mana costs and mana symbols in the rules text of both faces combined. If either face has a color indicator or basic land type, those are also considered. For example, Cecil, Dark Knight's color identity is black and white, since its front face is black and its back face has a white color indicator."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "Each nonmodal double-faced card in this release is cast face up. In every zone other than the battlefield, consider only the characteristics of its front face. If it is on the battlefield, consider only the characteristics of the face that's up; the other face's characteristics are ignored."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "If this card somehow enters the battlefield with its back face up, it didn't transform, so you won't get an emblem."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "The mana value of a nonmodal double-faced card is the mana value of its front face, no matter which face is up."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "The back face of a nonmodal double-faced card usually has a color indicator that defines its color."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "A token that is created as a copy of a double-faced permanent or a double-faced card in another zone is a double-faced token. It will have both the front face and back face of whatever object it's copying. If it's copying a double-faced permanent whose back face is up, the token will enter with its back face up. It can transform if instructed to do so."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "If you are instructed to put a card that isn't a double-faced card onto the battlefield transformed, it will not enter at all. In that case, it stays in the zone it was previously in. For example, if a single-faced card is a copy of Crystal Fragments, it will be exiled during the resolution of its second ability and remain in exile."
+   }
+  ],
+  "raw": {
+   "object": "card",
+   "id": "85eaf5e7-77dc-4842-a70c-ce4ac7f724df",
+   "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+   "multiverse_ids": [],
+   "resource_id": "ECB268E96A32B1E20C67F990CC29F74677BD5FA7E5C76AE7E1122EC2721879EC",
+   "mtgo_id": 141159,
+   "arena_id": 95975,
+   "tcgplayer_id": 630950,
+   "cardmarket_id": 824140,
+   "name": "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel",
+   "lang": "en",
+   "released_at": "2025-06-13",
+   "uri": "https://api.scryfall.com/cards/85eaf5e7-77dc-4842-a70c-ce4ac7f724df",
+   "scryfall_uri": "https://scryfall.com/card/fin/115/sephiroth-fabled-soldier-sephiroth-one-winged-angel?utm_source=api",
+   "layout": "transform",
+   "highres_image": true,
+   "image_status": "highres_scan",
+   "image_updated_at": "2026-07-13T01:36:57Z",
+   "cmc": 3.0,
+   "type_line": "Legendary Creature — Human Avatar Soldier // Legendary Creature — Angel Nightmare Avatar",
+   "color_identity": [
+    "B"
+   ],
+   "keywords": [
+    "Flying",
+    "Transform",
+    "Super Nova"
+   ],
+   "card_faces": [
+    {
+     "object": "card_face",
+     "name": "Sephiroth, Fabled SOLDIER",
+     "mana_cost": "{2}{B}",
+     "type_line": "Legendary Creature — Human Avatar Soldier",
+     "oracle_text": "Whenever Sephiroth enters or attacks, you may sacrifice another creature. If you do, draw a card.\nWhenever another creature dies, target opponent loses 1 life and you gain 1 life. If this is the fourth time this ability has resolved this turn, transform Sephiroth.",
+     "colors": [
+      "B"
+     ],
+     "power": "3",
+     "toughness": "3",
+     "artist": "Wisnu Tan",
+     "artist_id": "f2d36cdd-a4e9-43ba-b2ad-9d514f6706d4",
+     "illustration_id": "8f37cc66-d9b3-4c2b-ab50-ffd88fae33dd",
+     "image_uris": {
+      "small": "https://cards.scryfall.io/small/front/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.jpg?1783906617",
+      "normal": "https://cards.scryfall.io/normal/front/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.jpg?1783906617",
+      "large": "https://cards.scryfall.io/large/front/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.jpg?1783906617",
+      "png": "https://cards.scryfall.io/png/front/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.png?1783906617",
+      "art_crop": "https://cards.scryfall.io/art_crop/front/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.jpg?1783906617",
+      "border_crop": "https://cards.scryfall.io/border_crop/front/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.jpg?1783906617",
+      "thumb": "https://cards.scryfall.io/thumb/front/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.webp?1783906617",
+      "grid": "https://cards.scryfall.io/grid/front/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.webp?1783906617",
+      "display": "https://cards.scryfall.io/display/front/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.webp?1783906617",
+      "art": "https://cards.scryfall.io/art/front/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.webp?1783906617",
+      "crop": "https://cards.scryfall.io/crop/front/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.webp?1783906617"
+     }
+    },
+    {
+     "object": "card_face",
+     "name": "Sephiroth, One-Winged Angel",
+     "mana_cost": "",
+     "type_line": "Legendary Creature — Angel Nightmare Avatar",
+     "oracle_text": "Flying\nSuper Nova — As this creature transforms into Sephiroth, One-Winged Angel, you get an emblem with \"Whenever a creature dies, target opponent loses 1 life and you gain 1 life.\"\nWhenever Sephiroth attacks, you may sacrifice any number of other creatures. If you do, draw that many cards.",
+     "colors": [
+      "B"
+     ],
+     "color_indicator": [
+      "B"
+     ],
+     "power": "5",
+     "toughness": "5",
+     "artist": "Wisnu Tan",
+     "artist_id": "f2d36cdd-a4e9-43ba-b2ad-9d514f6706d4",
+     "illustration_id": "677e4386-d715-45f9-95d7-aff24ff1ed3b",
+     "image_uris": {
+      "small": "https://cards.scryfall.io/small/back/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.jpg?1783906617",
+      "normal": "https://cards.scryfall.io/normal/back/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.jpg?1783906617",
+      "large": "https://cards.scryfall.io/large/back/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.jpg?1783906617",
+      "png": "https://cards.scryfall.io/png/back/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.png?1783906617",
+      "art_crop": "https://cards.scryfall.io/art_crop/back/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.jpg?1783906617",
+      "border_crop": "https://cards.scryfall.io/border_crop/back/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.jpg?1783906617",
+      "thumb": "https://cards.scryfall.io/thumb/back/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.webp?1783906617",
+      "grid": "https://cards.scryfall.io/grid/back/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.webp?1783906617",
+      "display": "https://cards.scryfall.io/display/back/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.webp?1783906617",
+      "art": "https://cards.scryfall.io/art/back/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.webp?1783906617",
+      "crop": "https://cards.scryfall.io/crop/back/8/5/85eaf5e7-77dc-4842-a70c-ce4ac7f724df.webp?1783906617"
+     }
+    }
+   ],
+   "all_parts": [
+    {
+     "object": "related_card",
+     "id": "db95465a-2a58-44d7-9439-edd18c9505f0",
+     "component": "combo_piece",
+     "name": "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel",
+     "type_line": "Legendary Creature — Human Avatar Soldier // Legendary Creature — Angel Nightmare Avatar",
+     "uri": "https://api.scryfall.com/cards/db95465a-2a58-44d7-9439-edd18c9505f0"
+    },
+    {
+     "object": "related_card",
+     "id": "03165625-1cb9-4e7b-85be-df400adc4487",
+     "component": "combo_piece",
+     "name": "Sephiroth, One-Winged Angel Emblem",
+     "type_line": "Emblem",
+     "uri": "https://api.scryfall.com/cards/03165625-1cb9-4e7b-85be-df400adc4487"
+    }
+   ],
+   "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+   },
+   "games": [
+    "paper",
+    "arena",
+    "mtgo"
+   ],
+   "reserved": false,
+   "game_changer": false,
+   "foil": true,
+   "nonfoil": true,
+   "finishes": [
+    "nonfoil",
+    "foil"
+   ],
+   "oversized": false,
+   "promo": false,
+   "reprint": false,
+   "variation": false,
+   "set_id": "d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+   "set": "fin",
+   "set_name": "Final Fantasy",
+   "set_type": "expansion",
+   "set_uri": "https://api.scryfall.com/sets/d7beb4b7-e1ff-4d35-ab07-5700f17ea1ea",
+   "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afin&unique=prints",
+   "scryfall_set_uri": "https://scryfall.com/sets/fin?utm_source=api",
+   "rulings_uri": "https://api.scryfall.com/cards/85eaf5e7-77dc-4842-a70c-ce4ac7f724df/rulings",
+   "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A70113003-be5e-406a-9aec-cb480468c36d&unique=prints",
+   "collector_number": "115",
+   "digital": false,
+   "rarity": "mythic",
+   "artist": "Wisnu Tan",
+   "artist_ids": [
+    "f2d36cdd-a4e9-43ba-b2ad-9d514f6706d4"
+   ],
+   "border_color": "black",
+   "frame": "2015",
+   "frame_effects": [
+    "legendary"
+   ],
+   "security_stamp": "triangle",
+   "full_art": false,
+   "textless": false,
+   "booster": true,
+   "story_spotlight": false,
+   "promo_types": [
+    "universesbeyond",
+    "ffvii"
+   ],
+   "edhrec_rank": 1254,
+   "prices": {
+    "usd": "28.89",
+    "usd_foil": "33.20",
+    "usd_etched": null,
+    "eur": "27.97",
+    "eur_foil": "37.04",
+    "tix": "1.01"
+   },
+   "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSephiroth%252C%2BFabled%2BSOLDIER%2B%252F%252F%2BSephiroth%252C%2BOne-Winged%2BAngel",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSephiroth%252C%2BFabled%2BSOLDIER%2B%252F%252F%2BSephiroth%252C%2BOne-Winged%2BAngel",
+    "edhrec": "https://edhrec.com/route/?cc=Sephiroth%2C+Fabled+SOLDIER"
+   },
+   "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F630950%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=824140&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/141159?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+   }
+  }
+ }
+}
