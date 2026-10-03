@@ -30,3 +30,6 @@ O script e o `resumos/trace.md` não foram alterados: o trace lista "violação"
 
 ## O que as verificações NÃO provam
 Custo e cor de mana em T11–T13, ordem da pilha, escolhas de alvo e efeitos do oponente além do que o log mostra.
+
+## Correção posterior (2026-10-03)
+O usuário confirmou (na partida #11) que achava que os marcadores de saber também aumentam no upkeep. Nesta partida isso aparece nas Sagas devolvidas pela Starfield: Bath Song (T10), Summon: Knights (T11 e T12) e Primal Odin (T13) terminam o turno com 1 marcador; pela regra 714.3b ganhariam o 2º no mesmo turno (a In the Darkness Bind Them do T13 está certa, com 2). O trace e o script não mudaram.
