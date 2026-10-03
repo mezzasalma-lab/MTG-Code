@@ -1,0 +1,73 @@
+nomes distintos lidos de lista.md (comandante + 99 cartas, básicas contadas uma vez): 94
+
+## 1) SAÍDAS que sacrificam CRIATURA (custo ou efeito; o Kingpin dispara ao sacrificar, 1x/turno)
+  - Ashnod's Altar [Artifact]: Sacrifice a creature: Add {C}{C}.
+  - Deadly Dispute [Instant]: As an additional cost to cast this spell, sacrifice an artifact or creature. Draw two cards and create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.")
+  - High Market [Land]: {T}: Add {C}. {T}, Sacrifice a creature: You gain 1 life.
+  - Jan Jansen, Chaos Crafter [Legendary Creature]: Haste {T}, Sacrifice an artifact creature: Create two Treasure tokens. {T}, Sacrifice a noncreature artifact: Create two 1/1 colorless Construct artifact creature tokens.
+  - Krark-Clan Ironworks [Artifact]: Sacrifice an artifact: Add {C}{C}.
+  - Lich-Knights' Conquest [Sorcery]: Sacrifice any number of artifacts, enchantments, and/or tokens. Return that many creature cards from your graveyard to the battlefield.
+  - Phyrexian Tower [Legendary Land]: {T}: Add {C}. {T}, Sacrifice a creature: Add {B}{B}.
+  - Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel [Legendary Creature]: Sephiroth, Fabled SOLDIER ({2}{B}): Whenever Sephiroth enters or attacks, you may sacrifice another creature. If you do, draw a card. Whenever another creature dies, target opponent loses 1 life and you gain 1 
+  (8 cartas)
+
+## 2) Geradores de TREASURE e substituições de criação (o Kingpin cria 2; Xorn +1, Procession ×2, Academy Manufactor)
+  - Academy Manufactor [Artifact Creature]: If you would create a Clue, Food, or Treasure token, instead create one of each.
+  - Anointed Procession [Enchantment]: If an effect would create one or more tokens under your control, it creates twice that many of those tokens instead.
+  - Big Score [Instant]: As an additional cost to cast this spell, discard a card. Draw two cards and create two Treasure tokens. (They're artifacts with "{T}, Sacrifice this token: Add one mana of any color.")
+  - Black Market Connections [Enchantment]: At the beginning of your first main phase, choose one or more — • Sell Contraband — Create a Treasure token. You lose 1 life. • Buy Information — Draw a card. You lose 2 life. • Hire a Mercenary — Create a 3/2 
+  - Blood Money [Sorcery]: Destroy all creatures. For each nontoken creature destroyed this way, you create a tapped Treasure token.
+  - Captain Lannery Storm [Legendary Creature]: Haste Whenever Captain Lannery Storm attacks, create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.") Whenever you sacrifice a Treasure, Captain Lannery Storm ge
+  - Deadly Derision [Instant]: Destroy target creature or planeswalker. Create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.")
+  - Deadly Dispute [Instant]: As an additional cost to cast this spell, sacrifice an artifact or creature. Draw two cards and create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.")
+  - Gleaming Splendor [Enchantment]: Whenever an opponent draws their second card each turn, you create a Treasure token. {2}{W}: Two target players each draw a card.
+  - Goldspan Dragon [Creature]: Flying, haste Whenever this creature attacks or becomes the target of a spell, create a Treasure token. Treasures you control have "{T}, Sacrifice this artifact: Add two mana of any one color."
+  - Grim Hireling [Creature]: Whenever one or more creatures you control deal combat damage to a player, create two Treasure tokens. {B}, Sacrifice X Treasures: Target creature gets -X/-X until end of turn. Activate only as a sorcery.
+  - Inspired Tinkering [Sorcery]: Exile the top three cards of your library. Until the end of your next turn, you may play those cards. Create three Treasure tokens. (They're artifacts with "{T}, Sacrifice this token: Add one mana of any color.
+  - Jan Jansen, Chaos Crafter [Legendary Creature]: Haste {T}, Sacrifice an artifact creature: Create two Treasure tokens. {T}, Sacrifice a noncreature artifact: Create two 1/1 colorless Construct artifact creature tokens.
+  - Kellogg, Dangerous Mind [Legendary Creature]: First strike, haste Whenever Kellogg attacks, create a Treasure token. Sacrifice five Treasures: Gain control of target creature for as long as you control Kellogg. Activate only as a sorcery.
+  - Life Insurance [Enchantment]: Extort (Whenever you cast a spell, you may pay {W/B}. If you do, each opponent loses 1 life and you gain that much life.) Whenever a nontoken creature dies, you lose 1 life and create a Treasure token.
+  - Lotho, Corrupt Shirriff [Legendary Creature]: Whenever a player casts their second spell each turn, you lose 1 life and create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.")
+  - Magda, the Hoardmaster [Legendary Creature]: Whenever you commit a crime, create a tapped Treasure token. This ability triggers only once each turn. (Targeting opponents, anything they control, and/or cards in their graveyards is a crime.) Sacrifice three
+  - Mahadi, Emporium Master [Legendary Creature]: At the beginning of your end step, create a Treasure token for each creature that died this turn. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.")
+  - Mari, the Killing Quill [Legendary Creature]: Whenever a creature an opponent controls dies, exile it with a hit counter on it. Assassins, Mercenaries, and Rogues you control have deathtouch and "Whenever this creature deals combat damage to a player, you 
+  - Monologue Tax [Enchantment]: Whenever an opponent casts their second spell each turn, you create a Treasure token.
+  - Olivia, Opulent Outlaw [Legendary Creature]: Flying, lifelink Whenever one or more outlaws you control deal combat damage to a player, create a Treasure token. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws.) {3}, Sacrifice two Treasur
+  - Orochi Soul-Reaver [Creature]: Ninjutsu {3}{B} ({3}{B}, Return an unblocked attacker you control to hand: Put this card onto the battlefield from your hand tapped and attacking.) Whenever one or more creatures you control deal combat damage 
+  - Pitiless Plunderer [Creature]: Whenever another creature you control dies, create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.")
+  - Professional Face-Breaker [Creature]: Menace Whenever one or more creatures you control deal combat damage to a player, create a Treasure token. Sacrifice a Treasure: Exile the top card of your library. You may play that card this turn.
+  - Prosper, Tome-Bound [Legendary Creature]: Deathtouch Mystic Arcanum — At the beginning of your end step, exile the top card of your library. Until the end of your next turn, you may play that card. Pact Boon — Whenever you play a card from exile, creat
+  - Rain of Riches [Enchantment]: When this enchantment enters, create two Treasure tokens. The first spell you cast each turn that mana from a Treasure was spent to cast has cascade. (When you cast the spell, exile cards from the top of your l
+  - Revel in Riches [Enchantment]: Whenever a creature an opponent controls dies, create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.") At the beginning of your upkeep, if you control ten or mor
+  - Smaug the Magnificent [Legendary Creature]: Flying, haste Whenever Smaug attacks, he deals damage equal to the number of Treasures you control to any target. At the beginning of your upkeep, create a Treasure token.
+  - Smothering Tithe [Enchantment]: Whenever an opponent draws a card, that player may pay {2}. If the player doesn't, you create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.")
+  - The Reaver Cleaver [Legendary Artifact]: Equipped creature gets +1/+1 and has trample and "Whenever this creature deals combat damage to a player or planeswalker, create that many Treasure tokens." Equip {3}
+  - Unexpected Windfall [Instant]: As an additional cost to cast this spell, discard a card. Draw two cards and create two Treasure tokens. (They're artifacts with "{T}, Sacrifice this token: Add one mana of any color.")
+  - Vihaan, Goldwaker [Legendary Creature]: Other outlaws you control have vigilance and haste. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws.) At the beginning of combat on your turn, you may have Treasures you control become 3/3 Co
+  - Xorn [Creature]: If you would create one or more Treasure tokens, instead create those tokens plus an additional Treasure token.
+  (33 cartas)
+
+## 3) Pagadores de 'token criado / token entra / token sai' (cada disparo do Kingpin cria 2+ fichas)
+  - Caretaker's Talent [Enchantment]: (Gain the next level as a sorcery to add its ability.) Whenever one or more tokens you control enter, draw a card. This ability triggers only once each turn. {W}: Level 2 When this Class becomes level 2, create
+  - Kambal, Profiteering Mayor [Legendary Creature]: Whenever one or more tokens your opponents control enter, for each of them, create a tapped token that's a copy of it. This ability triggers only once each turn. Whenever one or more tokens you control enter, e
+  - Mirkwood Bats [Creature]: Flying Whenever you create or sacrifice a token, each opponent loses 1 life.
+  - Nadier's Nightblade [Creature]: Whenever a token you control leaves the battlefield, each opponent loses 1 life and you gain 1 life.
+  (4 cartas)
+
+## 4) Pagadores de morte/sacrifício de criatura (o Kingpin sacrificado/saída também dispara estes)
+  - Captain Lannery Storm [Legendary Creature]: Haste Whenever Captain Lannery Storm attacks, create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.") Whenever you sacrifice a Treasure, Captain Lannery Storm ge
+  - Dictate of Erebos [Enchantment]: Flash Whenever a creature you control dies, each opponent sacrifices a creature of their choice.
+  - Life Insurance [Enchantment]: Extort (Whenever you cast a spell, you may pay {W/B}. If you do, each opponent loses 1 life and you gain that much life.) Whenever a nontoken creature dies, you lose 1 life and create a Treasure token.
+  - Pitiless Plunderer [Creature]: Whenever another creature you control dies, create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.")
+  - Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel [Legendary Creature]: Sephiroth, Fabled SOLDIER ({2}{B}): Whenever Sephiroth enters or attacks, you may sacrifice another creature. If you do, draw a card. Whenever another creature dies, target opponent loses 1 life and you gain 1 
+  - Zulaport Cutthroat [Creature]: Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life.
+  (6 cartas)
+
+## 5) Cartas que LEEM no TEXTO o tipo Human/Villain (o Kingpin é Human Villain, NÃO é outlaw: sem vigilância/haste do Vihaan)
+  (0 cartas)
+
+## 6) Cartas que fazem Treasure virar CRIATURA (sacrificá-lo vira sacrificar criatura)
+  - Vihaan, Goldwaker [Legendary Creature]: Other outlaws you control have vigilance and haste. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws.) At the beginning of combat on your turn, you may have Treasures you control become 3/3 Co
+  (1 cartas)
+
+## 7) Contagem: criaturas na lista (com o comandante) = 30 | outlaws = 15 | não-outlaws = 15

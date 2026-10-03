@@ -1,0 +1,12 @@
+IGUAL  ab_kingpin_6000_sim.txt
+IGUAL  ab_kingpin_6000_anim.txt
+IGUAL  ab_kingpin_6000_delib.txt
+IGUAL  ab_kingpin_6000_t12_sim_slots.txt
+IGUAL  ab_kingpin_6000_t12_anim_slots.txt
+IGUAL  ab_kingpin_6000_t12_delib_slots.txt
+IGUAL  ab_kingpin_6000_t12_delib_blank.txt
+IGUAL  kingpin_vs_blank.txt
+IGUAL  condicional_kingpin_vs_blank.txt
+IGUAL  castabilidade_b_kingpin.txt
+IGUAL  enumeracao.txt
+11/11 tabelas byte a byte iguais

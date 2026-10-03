@@ -1,5 +1,34 @@
 # Checklist cláusula-a-cláusula — Vihaan, Goldwaker
 
+## Kingpin, Wilson Fisk (candidata, implementada só no harness) — oráculo, rulings e cláusulas — 2026-10-03
+
+A carta **não está na lista**; foi acrescentada em tempo de execução por `resultados-ab/2026-10-03-kingpin/orquestracao/kp_harness.py`
+(monkeypatch; `vihaan_goldfish_v1.py` não foi alterado). Oráculo lido ao vivo no Scryfall (2026-10-03; Marvel Super Heroes Commander #661; a foto enviada confere com o oráculo) e
+salvo em `scryfall-cache/oracle-cache.json`; resposta bruta e rulings em `resultados-ab/2026-10-03-kingpin/dados/rulings_Kingpin_Wilson_Fisk.json` (rulings de contexto em `rulings_contexto_vihaan_xorn_manufactor_procession.json`).
+
+**Oráculo:** {3}{B}, Legendary Creature — Human Villain, 3/6. *Menace. Whenever you sacrifice Kingpin or another creature, create two Treasure tokens. This ability triggers only once each turn.*
+**Rulings do Kingpin: nenhum (0).** **Rulings de contexto lidas antes de escrever o código:** Vihaan, Goldwaker (5; 2024-04-12): os Treasures animados "keep any abilities they previously had while they're creatures" e "outlaw" é Assassin/Mercenary/Pirate/Rogue/Warlock;
+Xorn (1): várias Xorn somam; Academy Manufactor (4): cada criação vira 1 de cada (Clue, Food, Treasure); Anointed Procession (6): dobra a quantidade de cada tipo, e várias Processions multiplicam; Dictate of Erebos (5); Goldspan Dragon (3); Mirkwood Bats e Ashnod's Altar (0); Sephiroth (10).
+
+| Cláusula do oráculo | Status | Como entra no harness |
+|---|---|---|
+| Legendary Creature 3/6, {3}{B} | ✅ | `add(KINGPIN, 4, "creature", {"kingpin"})`; poder 3 em `CREATURE_POWER` (métrica de combate) |
+| tipos Human Villain (não é outlaw) | ✅ | sem tag `outlaw`: o Vihaan não lhe dá haste nem vigilância; entra e só ataca no turno seguinte |
+| Menace | 📊 estrutural | sem bloqueio no goldfish (convenção do arquivo) |
+| "Whenever you sacrifice Kingpin or another creature" | ✅ | gatilho em `on_permanent_sacrificed(..., is_creature=True)`, o ponto central de todo sacrifício do simulador (Constructs, fichas, criatura nomeada, Treasure animado via Altar); para "Kingpin" sacrificado, `_kp_self` deixa o gatilho enxergar a própria saída. Destruição/wipe (`on_permanent_destroyed`) **não** dispara, como no oráculo |
+| "create two Treasure tokens" | ✅ | `create_treasures(state, 2)`: Xorn (+1), Anointed Procession (×2) e Academy Manufactor (Clue+Food+Treasure) valem como para qualquer criação, na ordem que maximiza (Xorn → Procession → Manufactor) |
+| "This ability triggers only once each turn." | ✅ | flag `kp_triggered_this_turn`, zerada no início de `play_turn` |
+| ruling do Vihaan: Treasure animado conserva habilidades = é criatura | ✅ nas políticas `anim`/`delib` | sacrificar um Treasure ANIMADO (após o início do combate, até o fim do turno) por qualquer via conta como criatura sacrificada para o Kingpin (mana no 2º main, Krark-Clan Ironworks, Magda); o simulador original passa `as_creature=False` e só o Altar passa `True`: lacuna do `.py` (abaixo), que aqui só o Kingpin enxerga |
+| linha deliberada (não é cláusula) | ✅ política `delib` | no começo do `end_step`, sem disparo no turno e com Treasure animado sobrando, sacrifica UM por nada para disparar o Kingpin (−1 Treasure, +2/+3/+4/+6) |
+
+**Regra #3 (conceitos compartilhados que a carta lê):** (a) **"sacrificar"** = `on_permanent_sacrificed` (o Mayhem Devil já lê o mesmo ponto: "Whenever you sacrifice a permanent"); a destruição passa por `on_permanent_destroyed`, que o Mayhem Devil e o Kingpin ignoram de propósito (conferido por leitura das duas funções); (b) **"criar Treasure"** = `create_treasures`, que já aplica Xorn/Procession/Academy e dispara `on_tokens_created` (Mirkwood Bats, Kambal, Caretaker's Talent), então cada disparo do Kingpin aciona esses pagadores de graça; (c) **"Treasure animado é criatura"** só existe em `treasures_animated_this_combat` (setado no início de `combat_step`, zerado em `play_turn`); a leitura de quantos animados restam (`_animated_left`) é do harness.
+**Regra #6 (ordem de fases, `play_turn`):** `upkeep (Smaug, Revel, Laughing Jasper Flint) → compra → play_land → main_phase → combat_step (animação no início) → main_phase (2º main: aqui o Treasure animado já é criatura) → Magda (crime) → end_step`. O disparo `delib` roda no começo do end step (depois dos dois mains), então os 2 Treasures criados **não** são gastáveis naquele turno (valem a partir do seguinte) e a conta de Revel in Riches é feita no upkeep seguinte (o simulador a marca no end step e encerra a partida).
+
+**Achado lateral do simulador (não corrigido nesta rodada, Regra #1; classe "gatilho compartilhado ligado só em ALGUNS pontos"):** o Treasure animado sacrificado é tratado como não-criatura em dois caminhos, para TODOS os gatilhos de criatura: `spend_mana` (mana do 2º main) e o ramo do Krark-Clan Ironworks de `aggressive_treasure_destruction` (só o Ashnod's Altar passa `as_creature=True`), apesar de o oráculo do Vihaan manter o Treasure criatura até o fim do turno. Zulaport Cutthroat, Nadier's Nightblade, Pitiless Plunderer, Sephiroth, Dictate of Erebos e Mahadi (end step, `deaths_this_turn`) subestimam esses eventos.
+
+**Classes da taxonomia da Regra #1 varridas para esta carta (e só ela):** gatilho compartilhado (sacrifício, criação de Treasure), conceito compartilhado (criatura × Treasure animado), fórmula com multiplicadores (Xorn/Procession/Academy), ordem de fases, tipo (outlaw ou não), limite 1×/turno.
+**Não varridas:** auditoria carta-a-carta do `.py` (a carta não está na lista), Menace/bloqueio (📊), oponente real.
+
 ## Inevitable Defeat (candidata, implementada só no harness) — oráculo, ruling e cláusulas — 2026-10-03
 
 A carta **não está na lista**; foi acrescentada em tempo de execução por `resultados-ab/2026-10-03-inevitable-defeat/orquestracao/vih_harness.py`

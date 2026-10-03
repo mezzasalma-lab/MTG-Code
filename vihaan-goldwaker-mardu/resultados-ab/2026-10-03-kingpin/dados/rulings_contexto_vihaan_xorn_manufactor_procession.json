@@ -1,0 +1,301 @@
+{
+ "Vihaan, Goldwaker": {
+  "name": "Vihaan, Goldwaker",
+  "oracle_id": "0613a0d8-f6bc-41ca-8070-b2506f756fc8",
+  "rulings_uri": "https://api.scryfall.com/cards/7b549690-72eb-4244-bb66-996a2bd1027e/rulings",
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "0613a0d8-f6bc-41ca-8070-b2506f756fc8",
+    "source": "wotc",
+    "published_at": "2024-04-12",
+    "comment": "If a Treasure you control is already a creature when Vihaan’s second ability resolves and you choose to apply its effect to all Treasures you control, that effect will overwrite any previous effects that set that creature’s power and toughness to specific numbers. Effects that otherwise modify its power and toughness will still apply no matter when they took effect. The same is true for +1/+1 counters."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "0613a0d8-f6bc-41ca-8070-b2506f756fc8",
+    "source": "wotc",
+    "published_at": "2024-04-12",
+    "comment": "Treasures you control will keep any abilities they previously had while they’re creatures."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "0613a0d8-f6bc-41ca-8070-b2506f756fc8",
+    "source": "wotc",
+    "published_at": "2024-04-12",
+    "comment": "A card, spell, or permanent is an outlaw if it has the Assassin, Mercenary, Pirate, Rogue, or Warlock creature type. It doesn’t matter if it has more than one of those creature types; as long as it has at least one, it’s an outlaw."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "0613a0d8-f6bc-41ca-8070-b2506f756fc8",
+    "source": "wotc",
+    "published_at": "2024-04-12",
+    "comment": "Outlaw is not a creature type. If an effect asks you to choose a creature type, you can’t choose outlaw."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "0613a0d8-f6bc-41ca-8070-b2506f756fc8",
+    "source": "wotc",
+    "published_at": "2024-04-12",
+    "comment": "If an ability refers to an outlaw or whether a player controls an outlaw, it’s referring only to permanents with one or more of the creature types specified above. Notably, it’s not referring to any spell or card not on the battlefield. However, other abilities may refer to an “outlaw spell” or “outlaw card” in a zone other than the battlefield. Those abilities refer to spells and cards with one or more of the specified creature types."
+   }
+  ]
+ },
+ "Xorn": {
+  "name": "Xorn",
+  "oracle_id": "11d8fab8-93af-4291-80bd-cf9436e99f4b",
+  "rulings_uri": "https://api.scryfall.com/cards/f73fdf76-e3a6-49d0-bfb0-4b7cdbd4271e/rulings",
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "11d8fab8-93af-4291-80bd-cf9436e99f4b",
+    "source": "wotc",
+    "published_at": "2021-07-23",
+    "comment": "If you control multiple copies of Xorn, you'll create that many additional Treasure tokens."
+   }
+  ]
+ },
+ "Academy Manufactor": {
+  "name": "Academy Manufactor",
+  "oracle_id": "f36d1d8b-8303-44a9-ab56-531931641ea2",
+  "rulings_uri": "https://api.scryfall.com/cards/76480f4d-ad6d-4ed6-82c6-fa12abc22557/rulings",
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "f36d1d8b-8303-44a9-ab56-531931641ea2",
+    "source": "wotc",
+    "published_at": "2021-06-18",
+    "comment": "If you control one Academy Manufactor and would create some number of Clue, Food, or Treasure tokens, you will instead create that many Clue tokens, that many Food tokens, and that many Treasure tokens."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "f36d1d8b-8303-44a9-ab56-531931641ea2",
+    "source": "wotc",
+    "published_at": "2021-06-18",
+    "comment": "If you control two Academy Manufactors and would create some number of Clue, Food, or Treasure tokens, you will instead create three times that many Clue tokens, three times that many Food tokens, and three times that many Treasure tokens."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "f36d1d8b-8303-44a9-ab56-531931641ea2",
+    "source": "wotc",
+    "published_at": "2021-06-18",
+    "comment": "If you control eighteen Academy Manufactors (I don't know, you figure it out) and would create some number of Clue, Food, or Treasure tokens, you will instead create 129,140,163 times that many Clue tokens, 129,140,163 times that many Food tokens, and 129,140,163 times that many Treasure tokens."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "f36d1d8b-8303-44a9-ab56-531931641ea2",
+    "source": "wotc",
+    "published_at": "2021-06-18",
+    "comment": "Creating a Clue token this way isn't the same thing as investigating. Notably, an ability that triggers whenever you investigate won't trigger because you created a Clue token due to this replacement effect. If the original token creation was because you investigated once, those abilities will still each trigger once, no matter how many Clue tokens you end up creating."
+   }
+  ]
+ },
+ "Anointed Procession": {
+  "name": "Anointed Procession",
+  "oracle_id": "7246d45b-2185-4cdd-981b-5419b7d52bce",
+  "rulings_uri": "https://api.scryfall.com/cards/9a52c265-6920-4929-ba0a-70da08df01f1/rulings",
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "7246d45b-2185-4cdd-981b-5419b7d52bce",
+    "source": "wotc",
+    "published_at": "2018-01-19",
+    "comment": "There are many important moments in the story, but the most crucial—called “story spotlights”—are shown on cards. These cards have the Planeswalker symbol in their text box; this symbol has no effect on gameplay. You can read more about these events in the official Magic fiction at http://www.mtgstory.com."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "7246d45b-2185-4cdd-981b-5419b7d52bce",
+    "source": "wotc",
+    "published_at": "2017-04-18",
+    "comment": "All of the tokens enter the battlefield simultaneously. They’ll be created with the same name, color, type and subtype, abilities, power, toughness, and so on."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "7246d45b-2185-4cdd-981b-5419b7d52bce",
+    "source": "wotc",
+    "published_at": "2017-04-18",
+    "comment": "If the token you create has any “as [this permanent] enters the battlefield” or “[this permanent] enters the battlefield with” abilities, first determine how many tokens are being created, then apply those abilities individually for each one. For example, if a token with “You may have [this permanent] enter the battlefield as a copy of any creature on the battlefield” would be created (such as an embalmed Vizier of Many Faces), the resulting two tokens can each copy a different creature."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "7246d45b-2185-4cdd-981b-5419b7d52bce",
+    "source": "wotc",
+    "published_at": "2017-04-18",
+    "comment": "If an effect creates more than one kind of token, it’ll create twice as many of each kind. For example, if you cast Bestial Menace while controlling Anointed Procession, you’ll create two Snake tokens, two Wolf tokens, and two Elephant tokens."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "7246d45b-2185-4cdd-981b-5419b7d52bce",
+    "source": "wotc",
+    "published_at": "2017-04-18",
+    "comment": "If you control two Anointed Processions, then the number of tokens created is four times the original number. If you control three, then the number of tokens created is eight times the original number, and so on."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "7246d45b-2185-4cdd-981b-5419b7d52bce",
+    "source": "wotc",
+    "published_at": "2017-04-18",
+    "comment": "If the effect creating the tokens instructs you to do something with those tokens at a later time, like exiling them at the end of combat, you’ll do that for all the tokens."
+   }
+  ]
+ },
+ "Dictate of Erebos": {
+  "name": "Dictate of Erebos",
+  "oracle_id": "7c777a41-e40a-4b40-96bf-8ddd5c12924c",
+  "rulings_uri": "https://api.scryfall.com/cards/9f06db70-95f9-41eb-8e5f-8bc56fd34c09/rulings",
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "7c777a41-e40a-4b40-96bf-8ddd5c12924c",
+    "source": "wotc",
+    "published_at": "2014-04-26",
+    "comment": "When the triggered ability resolves, first the player whose turn it is (if that player is an opponent) chooses which creature they will sacrifice, then each other opponent in turn order does the same, then all chosen creatures are sacrificed at the same time."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "7c777a41-e40a-4b40-96bf-8ddd5c12924c",
+    "source": "wotc",
+    "published_at": "2014-04-26",
+    "comment": "None of the opponents are targeted. An opponent with hexproof would still sacrifice a creature."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "7c777a41-e40a-4b40-96bf-8ddd5c12924c",
+    "source": "wotc",
+    "published_at": "2014-04-26",
+    "comment": "If multiple creatures you control die at the same time, Dictate of Erebos's triggered ability will trigger that many times."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "7c777a41-e40a-4b40-96bf-8ddd5c12924c",
+    "source": "wotc",
+    "published_at": "2014-04-26",
+    "comment": "If you control more than one Dictate of Erebos and a creature you control dies, each of the triggered abilities will trigger. Each opponent will sacrifice a creature each time one of those abilities resolves."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "7c777a41-e40a-4b40-96bf-8ddd5c12924c",
+    "source": "wotc",
+    "published_at": "2014-04-26",
+    "comment": "If you and an opponent each control a Dictate of Erebos and a creature dies, a chain reaction happens. First the ability of one player's Dictate of Erebos will trigger, causing each opponent to sacrifice a creature. That sacrifice causes the ability of the other player's Dictate of Erebos to trigger, and so on."
+   }
+  ]
+ },
+ "Mirkwood Bats": {
+  "name": "Mirkwood Bats",
+  "oracle_id": "0636b6c3-0662-420a-b30d-f0a14e7c512d",
+  "rulings_uri": "https://api.scryfall.com/cards/15f035df-784a-4dc8-b7f5-77139a4e6e99/rulings",
+  "rulings": []
+ },
+ "Goldspan Dragon": {
+  "name": "Goldspan Dragon",
+  "oracle_id": "716b3ea2-45b7-4a8f-af72-de7f4e510eff",
+  "rulings_uri": "https://api.scryfall.com/cards/848c1951-90fa-4f01-9aed-76f1afcd9995/rulings",
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "716b3ea2-45b7-4a8f-af72-de7f4e510eff",
+    "source": "wotc",
+    "published_at": "2021-02-05",
+    "comment": "If a spell targets Goldspan Dragon more than once, the triggered ability will trigger only once."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "716b3ea2-45b7-4a8f-af72-de7f4e510eff",
+    "source": "wotc",
+    "published_at": "2021-02-05",
+    "comment": "An ability that triggers when a creature becomes the target of a spell resolves before the spell that caused it to trigger. Such an ability resolves even if that spell is countered."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "716b3ea2-45b7-4a8f-af72-de7f4e510eff",
+    "source": "wotc",
+    "published_at": "2021-02-05",
+    "comment": "Players can cast spells and activate abilities after the triggered ability resolves but before the spell that caused it to trigger does."
+   }
+  ]
+ },
+ "Ashnod's Altar": {
+  "name": "Ashnod's Altar",
+  "oracle_id": "4d18bcba-a346-445e-a182-6cc30b7e066d",
+  "rulings_uri": "https://api.scryfall.com/cards/3c0f7157-a375-499c-92c7-d47d2e95dbad/rulings",
+  "rulings": []
+ },
+ "Sephiroth, Fabled SOLDIER": {
+  "name": "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel",
+  "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+  "rulings_uri": "https://api.scryfall.com/cards/85eaf5e7-77dc-4842-a70c-ce4ac7f724df/rulings",
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "Each face of a nonmodal double-faced card has its own set of characteristics: name, types, subtypes, abilities, and so on. While a nonmodal double-faced permanent is on the battlefield, consider only the characteristics of the face that's currently up. The other set of characteristics is ignored."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "A nonmodal double-faced card enters with its front face up by default, unless a spell or ability instructs you to put it onto the battlefield transformed or allows you to cast it transformed, in which case it enters with its back face up."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "If Sephiroth, Fabled SOLDIER and one or more other creatures die at the same time, its last ability will trigger for each of those other creatures. (It won't transform, though.)"
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "In the Commander variant, a double-faced card's color identity is determined by the mana costs and mana symbols in the rules text of both faces combined. If either face has a color indicator or basic land type, those are also considered. For example, Cecil, Dark Knight's color identity is black and white, since its front face is black and its back face has a white color indicator."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "Each nonmodal double-faced card in this release is cast face up. In every zone other than the battlefield, consider only the characteristics of its front face. If it is on the battlefield, consider only the characteristics of the face that's up; the other face's characteristics are ignored."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "If this card somehow enters the battlefield with its back face up, it didn't transform, so you won't get an emblem."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "The mana value of a nonmodal double-faced card is the mana value of its front face, no matter which face is up."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "The back face of a nonmodal double-faced card usually has a color indicator that defines its color."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "A token that is created as a copy of a double-faced permanent or a double-faced card in another zone is a double-faced token. It will have both the front face and back face of whatever object it's copying. If it's copying a double-faced permanent whose back face is up, the token will enter with its back face up. It can transform if instructed to do so."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "source": "wotc",
+    "published_at": "2025-06-06",
+    "comment": "If you are instructed to put a card that isn't a double-faced card onto the battlefield transformed, it will not enter at all. In that case, it stays in the zone it was previously in. For example, if a single-faced card is a copy of Crystal Fragments, it will be exiled during the resolution of its second ability and remain in exile."
+   }
+  ]
+ }
+}

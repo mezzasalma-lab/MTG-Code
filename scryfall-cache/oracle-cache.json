@@ -169063,5 +169063,61 @@
     "scryfall_uri": "https://scryfall.com/card/mh2/251/power-depot?utm_source=api",
     "set": "mh2",
     "type_line": "Artifact Land"
+  },
+  "Kingpin, Wilson Fisk": {
+    "cmc": 4.0,
+    "collector_number": "661",
+    "color_identity": [
+      "B"
+    ],
+    "colors": [
+      "B"
+    ],
+    "keywords": [
+      "Treasure",
+      "Menace"
+    ],
+    "legalities": {
+      "standard": "not_legal",
+      "future": "not_legal",
+      "historic": "legal",
+      "timeless": "legal",
+      "gladiator": "legal",
+      "pioneer": "not_legal",
+      "modern": "not_legal",
+      "legacy": "legal",
+      "pauper": "not_legal",
+      "vintage": "legal",
+      "penny": "not_legal",
+      "commander": "legal",
+      "oathbreaker": "legal",
+      "standardbrawl": "not_legal",
+      "brawl": "legal",
+      "competitivebrawl": "legal",
+      "alchemy": "not_legal",
+      "paupercommander": "not_legal",
+      "duel": "legal",
+      "oldschool": "not_legal",
+      "premodern": "not_legal",
+      "predh": "not_legal",
+      "tlr": "not_legal"
+    },
+    "mana_cost": "{3}{B}",
+    "name": "Kingpin, Wilson Fisk",
+    "oracle_text": "Menace\nWhenever you sacrifice Kingpin or another creature, create two Treasure tokens. This ability triggers only once each turn. (They're artifacts with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+    "power": "3",
+    "prices": {
+      "usd": "0.67",
+      "usd_foil": "4.10",
+      "usd_etched": null,
+      "eur": "1.58",
+      "eur_foil": "1.96",
+      "tix": "1.06"
+    },
+    "released_at": "2026-06-26",
+    "scryfall_uri": "https://scryfall.com/card/msc/661/kingpin-wilson-fisk?utm_source=api",
+    "set": "msc",
+    "toughness": "6",
+    "type_line": "Legendary Creature — Human Villain"
   }
 }

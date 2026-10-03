@@ -2,6 +2,56 @@
 
 > **Dados brutos e como reproduzir as tabelas da seção Inevitable Defeat (2026-10-03):** [`resultados-ab/2026-10-03-inevitable-defeat/LEIAME.md`](resultados-ab/2026-10-03-inevitable-defeat/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
+> **Dados brutos e como reproduzir as tabelas da seção Kingpin, Wilson Fisk (2026-10-03):** [`resultados-ab/2026-10-03-kingpin/LEIAME.md`](resultados-ab/2026-10-03-kingpin/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
+
+---
+
+## Kingpin, Wilson Fisk — avaliação como possível inclusão — 2026-10-03
+
+**Pedido:** *"E a inclusão de Kingpin, Wilson Fisk no Vihaan?"* (com foto da carta).
+Regras #3/#4/#5 e adendo de 2026-09-28: oráculo e rulings ao vivo (a foto só confirma que a carta existe) → docs do deck → Commander Spellbook antes/depois com controle positivo → enumeração por script → simulador só como apoio. Nenhuma carta foi cortada ou adicionada à lista.
+
+**Oráculo (Scryfall ao vivo, 2026-10-03; salvo no cache):** {3}{B}, Legendary Creature — Human Villain 3/6 (Marvel Super Heroes Commander, 2026-06-26; legal, não é Game Changer, ~US$0,67). *Menace. Whenever you sacrifice Kingpin or another creature, create two Treasure tokens. This ability triggers only once each turn.* **Rulings: nenhum.**
+**Rulings que decidem a leitura (Vihaan, 2024-04-12):** os Treasures animados "mantêm as habilidades" enquanto são criaturas; "outlaw" é Assassin/Mercenary/Pirate/Rogue/Warlock. Kingpin é Human Villain: **não é outlaw** (sem vigilância/haste do Vihaan, ataca só no turno seguinte).
+
+### O que a carta toca nos motores reais do Vihaan (`resumos/enumeracao.txt`, varredura por script sobre o oráculo ao vivo)
+
+- **O gatilho exige sacrificar uma CRIATURA, e o Vihaan transforma os próprios Treasures em criaturas.** No início do combate, "Treasures you control become 3/3 Construct Assassin artifact creatures until end of turn". A partir daí qualquer Treasure sacrificado, **por 1 de mana no 2º main, pelo Krark-Clan Ironworks, pelo Ashnod's Altar ou pela Magda**, é uma criatura sacrificada e dispara o Kingpin: **+2 Treasures por turno com 1 Treasure gasto** (+3 com Xorn, +4 com Anointed Procession, +6 com os dois; com Academy Manufactor vêm 2 Clues e 2 Foods juntos).
+- **Saídas de sacrifício de criatura na lista (8):** Ashnod's Altar, Deadly Dispute, High Market, Jan Jansen, Krark-Clan Ironworks, Lich-Knights' Conquest (fichas), Phyrexian Tower, Sephiroth. Fora do turno de animação o Kingpin depende delas (ou das fichas que a lista já sacrifica: Constructs do Jan Jansen, ficha da Urabrask's Forge no end step).
+- **Limite:** 1 vez por turno; 2 Treasures por disparo, não por criatura. Por isso **empilha, não compete**, com o grupo "criatura morre → Treasure" já na lista: Pitiless Plunderer (+1 por criatura que morre, sem limite), Mahadi (no end step, 1 por criatura morta no turno), Life Insurance (criatura não-ficha que morre) e Revel in Riches (criatura de oponente). Com ≥3 Treasures animados sacrificados no mesmo turno Plunderer + Mahadi já dão mais que o Kingpin; o Kingpin vale quando se sacrifica **um** Treasure só.
+- **Gatilhos de ficha que cada disparo aciona:** Mirkwood Bats (criar/sacrificar ficha), Kambal (fichas entrando), Caretaker's Talent (compra 1ª vez no turno), Nadier's Nightblade (ficha saindo). Gatilhos de morte/sacrifício que o Treasure animado sacrificado também aciona: Zulaport, Pitiless Plunderer, Dictate of Erebos, Sephiroth e Captain Lannery Storm (reage a sacrificar Treasure); Life Insurance não conta (só criatura não-ficha).
+- **Cor:** o simulador do Vihaan não modela cor; o {B} (cor primária do deck) foi medido à parte: P(≥4 de mana e fonte de B, contando Treasure) por T3/T4/T5/T8 = 16% / 77% / 90% / 97% (`resumos/castabilidade_b_kingpin.txt`; só 2,6% das partidas nunca chegam lá em 8 turnos).
+- **Combos (Commander Spellbook, antes e depois de cada troca):** base = 4 combos (Ashnod's Altar + Mahadi + Revel in Riches; Anointed Procession/Goldspan Dragon/Xorn + Gleaming Splendor + Smothering Tithe). **Kingpin sem cortar: 0 combos novos e 0 "quase" novos** (em 29 trocas testadas). Controles positivos ok: cortar Smothering Tithe ou Gleaming Splendor remove 3 combos; cortar Mahadi ou Ashnod's Altar remove 1. **Pitiless Plunderer** (34) e **Ashnod's Altar** (32) são as duas cartas com mais "quase combos" da lista; o limite de 1×/turno do Kingpin impede um loop de Treasure por conta própria.
+
+### Medição no simulador (apoio; N=6.000 sementes 3.000.000+i pareadas, troca posicional; harness sem alterar `vihaan_goldfish_v1.py`)
+
+**Como foi modelado:** o gatilho do Kingpin é ligado em `on_permanent_sacrificed(is_creature=True)`, o ponto central pelo qual o simulador roteia todo sacrifício, e cria 2 Treasures por `create_treasures` (Xorn, Procession e Academy Manufactor valem como para qualquer criação). Três políticas: **`sim`** só o que o simulador já roteia como sacrifício de criatura; **`anim`** + sacrificar um Treasure ANIMADO por qualquer via conta como criatura sacrificada (mana no 2º main, Krark-Clan Ironworks, Magda), só para o Kingpin, mantendo a base intacta (ver achado lateral); **`delib`** + linha deliberada: no end step, se o Kingpin ainda não disparou e há Treasure animado, sacrifica UM por nada para disparar (−1 Treasure, +2). O simulador não escolhe essa linha sozinho.
+**Base (8 turnos):** `win_turn` ≤T8 9,0%, Revel in Riches ≤T8 0,48%, comandante ≤T3 85,0%, Treasures criados 9,66. **(12 turnos):** `win_turn` ≤T12 78,1%, Revel ≤T12 7,95%, Treasures criados 50,9. (`win_turn` = 1º turno com dano de mesa+combate proxy ≥120, Revel in Riches ou combo.)
+O Kingpin é conjurado em **15,5% das partidas até T8 (26,7% até T12), em média no T6**; por partida conjurada dispara 0,7/1,0/1,5 vez em 8 turnos e 2,1/2,5/3,2 em 12 (`sim`/`anim`/`delib`) e cria 1,5–1,9 / 2,1–2,5 / 3,2–3,8 Treasures (8 turnos) e 5,4–6,0 / 6,6–7,0 / 8,3–8,8 (12 turnos).
+
+**Contra uma carta morta, no mesmo slot e nas mesmas sementes** (a Blank Card inconjurável entra NA MESMA POSIÇÃO: contrafactual exato; o simulador premia não gastar mana, então comparar com a base misturaria os dois efeitos). Diferença Kingpin − Blank, IC95%:
+
+| slot | política | win ≤T8 (pp) | win ≤T12 (pp) | Revel ≤T12 (pp) |
+|---|---|---|---|---|
+| Academy Manufactor | sim / anim / delib | −0,02 / +0,17 / +0,30 (±0,24) | +0,80 / +0,87 / +1,27 (±0,4) | +0,33 / +0,38 / +0,47 (±0,3) |
+| Monologue Tax | sim / anim / delib | −0,15 / +0,03 / +0,25 (±0,25) | +0,67 / +0,67 / +0,92 (±0,4) | +0,30 / +0,47 / +0,57 (±0,34) |
+| Back in Town | sim / anim / delib | −0,33 / −0,13 / +0,07 (±0,23) | +0,82 / +0,82 / +1,08 (±0,4) | +0,55 / +0,57 / +0,55 (±0,35) |
+
+**Leitura:** (a) **em 8 turnos o Kingpin não se distingue de uma carta morta** (−0,3 a +0,3pp); (b) **em 12 turnos ganha de uma carta morta: +0,7 a +0,9pp de win (`sim`/`anim`) e +0,9 a +1,3pp (`delib`), e +0,3 a +0,6pp de Revel in Riches** (base 7,95%): efeito pequeno, mas com IC acima de zero nas 9 células de win ≤T12 e em 8 das 9 de Revel ≤T12; (c) **nas partidas em que ele foi conjurado** (n ≈ 920–930, `resumos/condicional_kingpin_vs_blank.txt`, 8 turnos) ele cria **+0,6 a +0,9 (sim), +1,4 a +1,6 (anim) e +2,6 a +3,0 (delib) Treasures a mais que a Blank**, e termina com +0,3 a +0,5 / +0,6 a +0,7 / +1,0 a +1,2 Treasures a mais em campo, sem ganho de win em 8 turnos (±1,5pp com esse n); (d) **dano de mesa e de combate** nessas partidas sobem na linha `delib` (+0,4 a +1,2 e +3,5 a +4,5), dentro de IC largo.
+**Custo de cortar outras cartas (referência, `delib`, 8 turnos, win ≤T8, Kingpin − base):** Sol Ring −2,8 ±0,5; Mirkwood Bats −1,7 ±0,4; Orochi Soul-Reaver −1,0 ±0,3; Anointed Procession −0,9 ±0,25; Lotho −0,8 ±0,3; Agent of the Iron Throne −0,5 ±0,3; Xorn −0,45 ±0,3; Nadier's Nightblade −0,35 ±0,3 (os controles Sol Ring e Arcane Signet doem; no 12 turnos Sol Ring −1,0 e Orochi −2,0). As demais 56 linhas estão em `resumos/ab_kingpin_6000_{sim,anim,delib}.txt` e as de 12 turnos em `resumos/ab_kingpin_6000_t12_*_slots.txt`.
+
+### O que a medição NÃO diz (Regra #5)
+- **As cartas "baratas de cortar" no simulador são, em grande parte, valor dependente de oponente que o goldfish não vê** (Monologue Tax, Teferi's Protection, Back in Town, Academy Manufactor, Smothering Tithe com 3 combos): custo ~0 no simulador **não** é argumento para cortá-las. A tabela mostra o efeito do Kingpin contra uma carta morta, **não** qual carta deve sair; essa escolha é sua.
+- **Blasphemous Act:** nas tabelas de 12 turnos, trocá-la dá +4,2 a +4,5pp de win; isso é o simulador conjurando um wipe contra o próprio campo, não um dado sobre o deck.
+- **Oponente real** (remoção do Kingpin, do Vihaan ou dos Treasures animados, bloqueio, contramágica), a linha `delib` em jogo real e o Kingpin como corpo 3/6 menace que bloqueia: 📊 estruturais ou não medidos.
+
+### Achado lateral do simulador (não corrigido nesta rodada, Regra #1)
+- **Treasure ANIMADO sacrificado é tratado como não-criatura em dois caminhos para TODOS os gatilhos de criatura:** (a) `spend_mana` (mana do 2º main) chama `sacrifice_treasures(for_mana=True)` com `as_creature=False`; (b) `aggressive_treasure_destruction` só passa `as_creature=True` com o Ashnod's Altar, e cai no Krark-Clan Ironworks com `as_creature=False` ("não é criatura fora do combate"), embora os Treasures sigam sendo criaturas até o fim do turno (oráculo do Vihaan). Zulaport Cutthroat, Nadier's Nightblade, Pitiless Plunderer, Sephiroth, Dictate of Erebos e a Mahadi (end step) **subestimam** esses eventos. Aqui só o Kingpin os enxerga (política `anim`/`delib`), para a base ficar idêntica ao simulador original; corrigir para todos moveria a base do deck.
+
+**Escopo verificado nesta rodada:** oráculo + rulings (Kingpin: nenhum; Vihaan, Xorn, Academy Manufactor, Anointed Procession, Dictate of Erebos, Mirkwood Bats, Goldspan Dragon, Ashnod's Altar, Sephiroth lidos e salvos); leitura de `on_permanent_sacrificed`, `sacrifice_*`, `spend_mana`, `aggressive_treasure_destruction`, `combat_step`, `end_step` e `play_turn` (ordem de fases: animação no início do combate, 2º main depois do combate, end step por último); enumeração por script das 94 entradas distintas de `lista.md`; Spellbook antes/depois em 29 trocas (25 candidatas + 4 controles positivos); A/B pareado do Kingpin contra TODAS as 64 cartas não-terreno em 3 políticas (8 turnos) e contra 14 delas em 12 turnos; Kingpin − Blank no mesmo slot (8 e 12 turnos); condicional nas partidas com Kingpin conjurado; bit-identidade do harness contra o simulador original sem patch (300/300 em 101 campos, nas 3 políticas); 11/11 tabelas refeitas dos `.json.xz` byte a byte.
+**Não verificado:** oponente real; a linha deliberada `delib` na mesa; efeito do Kingpin como bloqueador; o simulador mede dano contra um alvo-proxy de 120 (3 oponentes × 40), não vida real; qualquer classe da taxonomia da Regra #1 no `.py` além do roteamento de sacrifício e das fases (a carta não está na lista).
+
 ---
 
 ## Inevitable Defeat — avaliação como possível inclusão — 2026-10-03
