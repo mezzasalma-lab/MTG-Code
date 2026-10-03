@@ -1,0 +1,6 @@
+cartas na biblioteca: 99 | distintas: 84
+desconhecidas (fora do CARD_DB): []
+duplicadas nao-basicas: []
+terrenos: 34 | fetch lands na lista: ['Evolving Wilds', 'Rocky Tar Pit', 'Terramorphic Expanse']
+flags: smart True True True
+200 partidas sem excecao | com fetch sacrificado: 94 | com Myriad ativado: 32

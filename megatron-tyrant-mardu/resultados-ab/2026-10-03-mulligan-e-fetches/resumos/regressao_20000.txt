@@ -1,0 +1,7 @@
+ambas         padrao       N=20000 sementes 5000000..5019999: excecoes=0 | violacoes de conservacao (13 terrenos nomeados)=0 | fetch sobrando em campo=0 | total_mana<0=0
+ambas         resiliencia  N=20000 sementes 5000000..5019999: excecoes=0 | violacoes de conservacao (13 terrenos nomeados)=0 | fetch sobrando em campo=0 | total_mana<0=0
+so_mull       padrao       N=20000 sementes 5000000..5019999: excecoes=0 | violacoes de conservacao (13 terrenos nomeados)=0 | fetch sobrando em campo=0 | total_mana<0=0
+so_fetch      padrao       N=20000 sementes 5000000..5019999: excecoes=0 | violacoes de conservacao (13 terrenos nomeados)=0 | fetch sobrando em campo=0 | total_mana<0=0
+mull_posicao  padrao       N=20000 sementes 5000000..5019999: excecoes=0 | violacoes de conservacao (13 terrenos nomeados)=0 | fetch sobrando em campo=0 | total_mana<0=0
+antigo        padrao       N=20000 sementes 5000000..5019999: excecoes=0 | violacoes de conservacao (13 terrenos nomeados)=0 | fetch sobrando em campo=0 | total_mana<0=0
+antigo        resiliencia  N=20000 sementes 5000000..5019999: excecoes=0 | violacoes de conservacao (13 terrenos nomeados)=0 | fetch sobrando em campo=0 | total_mana<0=0

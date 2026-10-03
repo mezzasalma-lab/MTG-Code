@@ -4,7 +4,7 @@
 import inspect, os, random, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import fx_common as F
-M = F.carrega(F.DEPOIS, "mega_mull")
+M = F.flags(F.carrega(F.DEPOIS, "mega_mull"))  # flags() desliga as novidades da 2a rodada (mulligan com escolha, fetches)
 
 class Identidade(random.Random):
     def shuffle(self, x):  # baralho fica na ordem de BASE_LIBRARY
@@ -18,7 +18,7 @@ sete_primeiras = M.BASE_LIBRARY[:7]
 devolvida = [c for c in sete_primeiras if c not in hand or sete_primeiras.count(c) > hand.count(c)]
 print("mulligans =", mulls, "| mao final:", len(hand), "cartas | carta devolvida:", devolvida, "| topo da biblioteca (proxima compra):", library[0])
 print("a carta devolvida e' a PROXIMA a ser comprada:", devolvida[0] == library[0])
-print("linha em mulligan():", [l.strip() for l in inspect.getsource(M.mulligan).splitlines() if "insert" in l])
+print("linha em mulligan():", [l.strip() for l in inspect.getsource(M.mulligan).splitlines() if l.strip().startswith("library.insert")])
 print("linha em draw_cards():", [l.strip() for l in inspect.getsource(M.draw_cards).splitlines() if "pop" in l])
 cont = {}
 for i in range(20000):

@@ -23,6 +23,7 @@ Pedido do usuário: *"E a inclusão de Power Depot no Megatron?"*
 > (2) `bitident.py` compara com o arquivo VIVO e **passa a divergir**: para refazê-lo, extraia o simulador antigo com `git show 22d0ed2:megatron-tyrant-mardu/megatron_goldfish_v1.py`
 > (há uma cópia em `../2026-10-03-myriad-e-tapped-t1t2/codigo/megatron_goldfish_v1_ANTES_22d0ed2.py`) e aponte o script para ele; (3) os números **absolutos** daqui (por exemplo cmd ≤T4 = 77,8%) são do piloto antigo,
 > não comparáveis com rodadas feitas depois da correção; as diferenças pareadas desta rodada continuam valendo para o piloto antigo.
+> **Segunda mudança do simulador no mesmo dia:** London Mulligan com escolha das cartas do fundo e fetch lands com a habilidade real (`../2026-10-03-mulligan-e-fetches/LEIAME.md`, código anterior em `../2026-10-03-mulligan-e-fetches/codigo/`). Vale tudo que está dito acima.
 
 
 `megatron-tyrant-mardu/megatron_goldfish_v1.py` (último commit `22d0ed2`) **não foi editado**: o Power Depot e a instrumentação entram por *monkeypatch* em tempo de execução (`orquestracao/pd_harness.py`).

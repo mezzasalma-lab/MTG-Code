@@ -5,6 +5,11 @@ Arquivo de referência **permanente e auditável** de tudo que sustenta as concl
 **Esta pasta guarda os dados por trás delas.**
 Pedido do usuário: *"Quero que vc corrija o Myriad Landscape e o terreno tapped em T1 e T2 no simulador do Megatron"*.
 
+> **Nota posterior (2026-10-03, 2ª rodada):** os dois "achados laterais" desta pasta (mulligan no topo, fetches simplificadas) **foram corrigidos** em `../2026-10-03-mulligan-e-fetches/LEIAME.md`.
+> Esta pasta mede o simulador do commit `3dae6ba`: o `fx_common.flags()` de `orquestracao/` agora desliga as duas novidades (`MULLIGAN_BOTTOM_MODE="legacy"`, `FETCHLANDS_ENABLED=False`) e o `SHA256SUMS` foi regenerado por isso;
+> `verificar_reproducao.sh --tudo` continua dando 9/9. Os números **absolutos** daqui não são comparáveis com rodadas feitas depois. **Um erro desta rodada foi achado na seguinte:** os 2 básicos que o Myriad Landscape busca
+> (entram tapped) contavam como mana do próprio turno para efeitos do end step (1 partida em 20.000); corrigido na 2ª rodada, sob a chave `FETCHLANDS_ENABLED`.
+
 ## Em 1 minuto
 
 | Quero… | Faça |

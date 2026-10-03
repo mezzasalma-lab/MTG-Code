@@ -1,5 +1,36 @@
 # Checklist cláusula-a-cláusula — Megatron, Tyrant
 
+## London Mulligan e fetch lands (correção do simulador, 2ª rodada) — oráculo, rulings e cláusulas — 2026-10-03
+
+Pedido: *"Quero sim, sempre! Termine as tarefas que pararam pelo limite"* (corrigir o mulligan e modelar as fetches, os dois achados laterais da rodada do Myriad). Código: `megatron_goldfish_v1.py` (antes = commit `3dae6ba`). Tudo que sustenta a conclusão está em
+`resultados-ab/2026-10-03-mulligan-e-fetches/` (LEIAME com o mapa arquivo → comando). Oráculo e rulings lidos **ao vivo** no Scryfall (2026-10-03) **antes** de escrever o código (Regra #3); resposta bruta em `.../dados/oraculo_e_rulings.json`.
+
+**Oráculos:** *Evolving Wilds* e *Terramorphic Expanse*: "{T}, Sacrifice this land: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle." (entram untapped; 0 rulings). *Rocky Tar Pit:* "This land enters tapped. {T}, Sacrifice this land: Search your library for a Swamp or Mountain card, put it onto the battlefield, then shuffle." **Ruling (1, 2004-10-04):** *Because the "search" requires you to find a card with certain characteristics, you don't have to find the card if you don't want to.*
+
+| Cláusula do oráculo | Status | Onde / como |
+|---|---|---|
+| Evolving/Terramorphic: "enter untapped" (sem "enters tapped") | 🐛 corrigido | `ETB_TAPPED_LANDS` os tinha como "terrenos tapped" (aproximação); agora entram em campo e o piloto sacrifica na hora (`play_land` → `crack_fetchland`); o conjunto continua servindo só à política de terreno ("funcionalmente tapped") |
+| "{T}, Sacrifice this land" | 🐛 corrigido | `sacrifice()` central: cemitério, permanente (conta como "descended" do Tunnel-Grinder) |
+| "Search your library for a basic land card" (Evolving/Terramorphic) | 🐛 corrigido | alvos: Plains, Swamp, Mountain na biblioteca; escolha pela cor em déficit (comandante + pips da mão) |
+| "Search your library for a Swamp or Mountain card" (Rocky Tar Pit) | 🐛 corrigido | alvo = carta com o **tipo** (básicos **e** duais com tipo): na lista, Badlands, Scrubland, Plateau, Smoldering Marsh, Sunlit Marsh, Swamp, Mountain (`LAND_TYPES` conferido contra o `type_line` do Scryfall por script; Command Tower/Fountainport etc. não têm tipo) |
+| "put it onto the battlefield tapped" (Evolving/Terramorphic) | 🐛 corrigido | entra tapped: lista `extra_tapped_lands_this_turn` (0 de mana e 0 de cor neste turno) |
+| "put it onto the battlefield" (Rocky) | 🐛 corrigido | entra untapped, salvo a regra do próprio alvo (`land_enters_tapped`: Smoldering Marsh com menos de 2 básicos, Sunlit Marsh) |
+| "This land enters tapped" (Rocky) | ✅ | só pode ser sacrificado a partir do turno seguinte (`land_played_this_turn_name`); `try_crack_rocky_tar_pit` roda **antes** da main phase |
+| "then shuffle" | 🐛 corrigido | `state.rng.shuffle(state.library)` |
+| Ruling 2004-10-04 (a busca pode falhar) | ✅ | sem alvo na biblioteca, não sacrifica (teste F4/F8) |
+| (implícito) as 3 não têm habilidade de mana | 🐛 corrigido | `_no_mana_land`: em campo não rendem mana nem cor (antes: fonte fixa de W/B/R cada) |
+
+**Mulligan (CR 103.5, London Mulligan):** as cartas devolvidas vão ao **fundo** e o jogador as escolhe. O código antigo as punha no **topo** (`library.insert(0, …)`; `draw_cards` tira do índice 0) e escolhia a de menor MV. Conferido contra o repositório: os decks já corrigidos em 2026-09-24 (Beorn, Edgar Markov, Thranduil, Prismatic Bridge) usam `choose_bottom`; o Megatron ficou de fora dessa varredura.
+
+**Regra #3 (conceito compartilhado "terreno tapped"/"fonte de cor"):** `tapped_land_this_turn` guarda um **nome**; com básicos (várias cópias) excluiria todas. Sites lidos: `total_mana`, `color_sources`, `play_land`, `dry_run_mana_spent` (cópia rasa), `try_myriad_landscape`, `play_turn` (reset). Generalização aditiva: `extra_tapped_lands_this_turn` (uma entrada por instância), descontada uma vez em `total_mana` e `color_sources`; `colored_sources_all` (para decidir cor) ignora as fetches. O conceito "o Myriad Landscape entra tapped" também passou a usar a lista: **o teste de bit-identidade achou que, na versão anterior, os 2 básicos do Myriad contavam como mana do próprio turno** (1 partida em 20.000).
+**Regra #6 (ordem de fases):** `play_turn` = `draw → try_bahamut_saga_tick → play_land (Evolving/Terramorphic sacrificadas aqui) → try_crack_rocky_tar_pit → main_phase → try_equip_haste → combat_step → megatron_postcombat → main_phase → try_myriad_landscape → end_step`. O sacrifício do Rocky precisa vir **antes** da janela de conjuração (o terreno buscado entra untapped e rende mana no mesmo turno): teste em `play_turn` completo.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas/duplicadas, 34 terrenos); bit-identidade com `legacy` + fetch desligado, 20.000+20.000 partidas; regressão 140.000 partidas, 0 exceções, 0 violações de conservação dos 13 terrenos nomeados; 33 testes dirigidos 33/33; A/B pareado N=2.000 (padrão e resiliência) e N=10.000 com a métrica nova se movendo no sentido esperado (média de terrenos numa mão de 6 cartas com 2 mulligans 1,44 → 2,35; mana T2–T4 das fetches ≈ 0 e perda só de cor). Números no `goldfish-log.md`.
+
+**Achados laterais (não corrigidos):** o mulligan de 7 outros decks sorteia as cartas do fundo; quando sacrificar a fetch (na hora/início do turno seguinte) e a regra de escolha do fundo do mulligan são convenções do piloto.
+**Classes da taxonomia da Regra #1 varridas (e só elas):** busca/fetch sem a restrição de tipo real do oráculo (Rocky Tar Pit: "Swamp or Mountain card", não "basic"), habilidade ativada com {T} + sacrifício (as 3 fetches), conceito compartilhado (terreno tapped por instância, carta no cemitério = permanente), ordem de fases (Regra #6), escolha do piloto (mulligan).
+**Não varridas:** as demais classes e as outras cartas do `.py` (esta rodada não foi uma auditoria carta a carta).
+
 ## Myriad Landscape e terreno tapped em T1/T2 (correção do simulador) — oráculo, rulings e cláusulas — 2026-10-03
 
 Pedido: *"Quero que vc corrija o Myriad Landscape e o terreno tapped em T1 e T2 no simulador do Megatron"*. Código: `megatron_goldfish_v1.py` (antes = commit `22d0ed2`). Tudo que sustenta a conclusão está em
@@ -38,6 +69,7 @@ e **antes** do `end_step` (o gatilho do Tunnel-Grinder lá checa "descended"). T
 **Validação:** smoke (99 cartas, 0 desconhecidas/duplicadas, 34 terrenos); bit-identidade com as duas correções desligadas, 20.000+20.000 partidas (padrão e resiliência); verificação cruzada da política cega contra o `early_all` do Power Depot (outro código), 10.000/10.000 partidas;
 regressão 140.000 partidas, 0 exceções, 0 violações de conservação de cartas; 49 testes dirigidos 49/49; A/B pareado N=2.000 (padrão e resiliência) e N=10.000 com a métrica nova se movendo no sentido esperado (mana T2/T3 +0,09/+0,10; terrenos +0,15 com 15,4% de ativações = esperado). Números no `goldfish-log.md`.
 
+**[Atualização 2026-10-03, 2ª rodada: (1) o mulligan e (2) as fetches foram corrigidos. Ver a seção "London Mulligan e fetch lands" no topo deste arquivo.]**
 **Achados laterais (não corrigidos):** (1) o London Mulligan põe as cartas devolvidas no **topo** da biblioteca (`library.insert(0, worst)`), 21,4% das mãos (2+ mulligans; `resumos/mulligan_topo.txt`); (2) **fetches** (Evolving Wilds, Terramorphic Expanse, Rocky Tar Pit) seguem como fonte fixa, sem sacrifício/busca/embaralhamento: modelável, não é 📊, fica como pendência da Regra #1.
 
 **Classes da taxonomia da Regra #1 varridas (e só elas):** habilidade ativada com custo de mana + {T} + sacrifício (Myriad), busca sem a restrição de tipo real (par que compartilha tipo, "up to two"), conceito compartilhado (terreno tapped, carta no cemitério = permanente), ordem de fases (Regra #6), custo real deduzido (3 de mana).

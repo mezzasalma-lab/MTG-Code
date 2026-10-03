@@ -55,12 +55,6 @@ Simplificacoes documentadas (nao inventadas -- omissoes explicitas):
   tapped, shuffle) so' e' ativado com mana que sobraria, depois da 2a
   main phase -- `try_myriad_landscape`. Convencoes do piloto, nao do
   oraculo; ver `resultados-ab/2026-10-03-myriad-e-tapped-t1t2/LEIAME.md`.
-- Fetch lands e mulligan (2026-10-03, 2a rodada): Evolving Wilds/
-  Terramorphic Expanse sao sacrificadas na hora que entram (o basico
-  entra tapped); Rocky Tar Pit ("Swamp or Mountain card": basicos e duais
-  com tipo) no inicio do turno seguinte, antes da main phase. O London
-  Mulligan escolhe as cartas e as poe no FUNDO (`choose_bottom`). Convencoes
-  do piloto; ver `resultados-ab/2026-10-03-mulligan-e-fetches/LEIAME.md`.
 - Remocao/interacao sem alvo real de oponente (Path to Exile, Swords to
   Plowshares, Chaos Warp, Vandalblast) conjurada quando ha mana sobrando
   e conta como interaction_spells_cast, mesma convencao de toda a sessao.
@@ -325,9 +319,7 @@ LAND_NAMES = {n for n, c in CARD_DB.items() if c.ctype == "land"}
 ETB_TAPPED_LANDS = {
     "Smoldering Marsh", "Susur Secundi, Void Altar",  # Smoldering so' se <2 terrenos; Susur sempre
     "Evolving Wilds", "Terramorphic Expanse", "Rocky Tar Pit", "Nomad Outpost",
-    "Sunlit Marsh", "Myriad Landscape",  # Rocky/Nomad/Sunlit/Myriad/Susur: tapped no oraculo real. Evolving/Terramorphic entram UNTAPPED, mas
-                                         # nao rendem mana no turno em que entram (o basico buscado entra tapped): o conjunto serve a politica
-                                         # de terreno ("funcionalmente tapped") -- ver FETCH_LANDS e `crack_fetchland`.
+    "Sunlit Marsh", "Myriad Landscape",  # todos sempre tapped no oraculo real
 }
 
 # Correcao 2026-10-03 (pedido do usuario: "corrija o Myriad Landscape e o
@@ -339,30 +331,6 @@ TAPPED_LAND_FIRST_ENABLED = True
 TAPPED_LAND_FIRST_MAX_TURN = 2   # "T1 e T2" -- ate' que turno o piloto prefere o terreno tapped
 TAPPED_LAND_FIRST_SKIP_IF_LOSES_PLAY = True  # False = politica "cega" (sempre o tapped), so' pra sensibilidade/verificacao cruzada
 MYRIAD_ABILITY_ENABLED = True
-
-# Correcoes 2026-10-03 (2a rodada: "corrija todos os erros do simulador"). Uma chave por correcao.
-# Com MULLIGAN_BOTTOM_MODE="legacy" e FETCHLANDS_ENABLED=False (e as duas de cima como estao) o arquivo se comporta
-# bit-a-bit como o do commit 3dae6ba.
-MULLIGAN_BOTTOM_MODE = "smart"  # "legacy" = menor MV, no TOPO (bug) | "bottom_only" = menor MV, no fundo | "smart" = escolhe, no fundo
-FETCHLANDS_ENABLED = True       # Evolving Wilds / Terramorphic Expanse / Rocky Tar Pit com a habilidade real (antes: fonte fixa W/B/R)
-
-# Fetches (oraculo lido ao vivo, 2026-10-03):
-#  - Evolving Wilds / Terramorphic Expanse: ENTRAM untapped. "{T}, Sacrifice this land: Search your library for a basic land
-#    card, put it onto the battlefield tapped, then shuffle."
-#  - Rocky Tar Pit: "This land enters tapped. {T}, Sacrifice this land: Search your library for a Swamp or Mountain card, put it
-#    onto the battlefield, then shuffle." -- o alvo e' qualquer CARTA com o TIPO Swamp ou Mountain (basicos E duais com tipo),
-#    entra untapped (se o proprio alvo nao disser o contrario). Ruling 2004-10-04: pode nao achar.
-# Nenhuma das tres tem habilidade de mana: enquanto em campo nao rendem mana nem cor.
-FETCH_LANDS = {"Evolving Wilds", "Terramorphic Expanse", "Rocky Tar Pit"}
-FETCH_TO_BASIC_ONLY = {"Evolving Wilds", "Terramorphic Expanse"}
-BASIC_LANDS = ("Plains", "Swamp", "Mountain")
-# tipos de terreno das cartas da lista (do type_line do Scryfall, conferido por script no teste): so' o que importa pro Rocky Tar Pit
-LAND_TYPES = {
-    "Plains": {"Plains"}, "Swamp": {"Swamp"}, "Mountain": {"Mountain"},
-    "Badlands": {"Swamp", "Mountain"}, "Scrubland": {"Plains", "Swamp"}, "Plateau": {"Mountain", "Plains"},
-    "Smoldering Marsh": {"Swamp", "Mountain"}, "Sunlit Marsh": {"Plains", "Swamp"},
-}
-ROCKY_TAR_PIT_ORDER = ("Badlands", "Scrubland", "Plateau", "Smoldering Marsh", "Sunlit Marsh", "Swamp", "Mountain")
 MYRIAD_BASIC_FOR_COLOR = {"W": "Plains", "B": "Swamp", "R": "Mountain"}  # os 3 basicos da lista (singleton nao se aplica a basico)
 
 
@@ -559,11 +527,6 @@ class GameState:
     megatron_alone_combos_total: int = 0
     demonic_junker_crewed_this_turn: bool = False
     demonic_junker_crews_total: int = 0
-    extra_tapped_lands_this_turn: list = field(default_factory=list)  # terrenos que entraram tapped por EFEITO (fetch/Myriad), 1 item por instancia
-    land_played_this_turn_name: Optional[str] = None
-    fetch_cracks_total: int = 0
-    fetch_duals_fetched_total: int = 0   # Rocky Tar Pit buscou um terreno nao-basico (dual com tipo)
-    fetch_untapped_total: int = 0        # Rocky Tar Pit buscou um terreno que entrou untapped
     myriad_activations_total: int = 0
     myriad_basics_fetched_total: int = 0
     tapped_land_first_plays_total: int = 0  # vezes em que o piloto escolheu o terreno tapped (T<=MAX_TURN) tendo um untapped na mao
@@ -641,16 +604,10 @@ def rocks_mana(state: GameState) -> int:
     return total
 
 
-def _no_mana_land(name: str) -> bool:
-    """Fetch land (FETCHLANDS_ENABLED): sem habilidade de mana, nunca rende mana nem cor em campo."""
-    return FETCHLANDS_ENABLED and name in FETCH_LANDS
-
-
 def total_mana(state: GameState) -> int:
-    lands = sum(1 for n in state.battlefield if n in LAND_NAMES and not _no_mana_land(n))
-    if state.tapped_land_this_turn is not None and not _no_mana_land(state.tapped_land_this_turn):
+    lands = sum(1 for n in state.battlefield if n in LAND_NAMES)
+    if state.tapped_land_this_turn is not None:
         lands -= 1
-    lands -= len(state.extra_tapped_lands_this_turn)  # basicos/duais que entraram tapped por efeito neste turno
     return lands + rocks_mana(state) + state.bonus_mana_pool
 
 
@@ -660,29 +617,15 @@ def remaining_mana(state: GameState) -> int:
 
 def color_sources(state: GameState, color: str, spell_name: str = None) -> int:
     n = 0
-    # terrenos que entraram tapped por efeito (fetch/Myriad): exclui so' as INSTANCIAS tapped, nao todos os de mesmo nome
-    # (basicos se repetem -- o campo `tapped_land_this_turn` guarda um NOME e excluiria todas as copias)
-    skip = Counter(state.extra_tapped_lands_this_turn) if state.extra_tapped_lands_this_turn else None
     for card in state.battlefield:
         if card not in CARD_DB:
             continue
         if card == state.tapped_land_this_turn:
             continue
-        if _no_mana_land(card):
-            continue
-        if skip and skip.get(card, 0) > 0:
-            skip[card] -= 1
-            continue
         c = CARD_DB[card]
         if color in c.produces:
             n += 1
     return n
-
-
-def colored_sources_all(state: GameState, color: str) -> int:
-    """Fontes de `color` em campo contando tambem as que estao tapped agora (valem a partir do proximo untap).
-    Fetch lands em campo nao contam (nao produzem mana)."""
-    return sum(1 for n in state.battlefield if n in CARD_DB and not _no_mana_land(n) and color in CARD_DB[n].produces)
 
 
 def has_color_sources_for(state: GameState, name: str) -> bool:
@@ -2631,80 +2574,9 @@ def play_land(state: GameState):
     choice = choose_land_to_play(state, lands_in_hand)
     state.hand.remove(choice)
     state.lands_played_this_turn += 1
-    state.land_played_this_turn_name = choice
     state.battlefield.append(choice)
-    if FETCHLANDS_ENABLED and choice in FETCH_LANDS:
-        if choice in FETCH_TO_BASIC_ONLY:
-            crack_fetchland(state, choice)   # entra untapped; o piloto sacrifica na hora (o basico entra tapped)
-        return                               # Rocky Tar Pit: entra tapped, so' pode ser sacrificado a partir do proximo turno
     if land_enters_tapped(state, choice):
         state.tapped_land_this_turn = choice
-
-
-def fetch_color_need(state: GameState):
-    """Deficit de fonte por cor (W/B/R) e demanda da mao -- a mesma leitura do Myriad Landscape: o comandante ainda exige 1 de
-    cada cor (se nao esta em campo) e cada carta da mao pode exigir mais de uma fonte da mesma cor."""
-    wanted = {c: (0 if state.commander_in_play else 1) for c in "WBR"}
-    demand = {c: 0 for c in "WBR"}
-    for n in state.hand:
-        if n in CARD_DB and n not in LAND_NAMES:
-            for c, k in CARD_DB[n].pips.items():
-                if c in wanted:
-                    wanted[c] = max(wanted[c], k)
-                    demand[c] += k
-    deficit = {c: max(0, wanted[c] - colored_sources_all(state, c)) for c in "WBR"}
-    return deficit, demand
-
-
-def pick_fetch_target(state: GameState, candidates: list) -> str:
-    """Escolhe o terreno a buscar: o que cobre mais cores em deficit, depois a de maior demanda da mao, depois o que entra
-    untapped agora, depois o de mais cores (dual > basico). Empate total: a ordem de `candidates` (fixa, deterministica)."""
-    deficit, demand = fetch_color_need(state)
-
-    def key(t):
-        cols = [c for c in "WBR" if c in CARD_DB[t].produces]
-        return (sum(1 for c in cols if deficit[c] > 0), sum(demand[c] for c in cols if deficit[c] > 0),
-                0 if land_enters_tapped(state, t) else 1, len(cols))
-    return max(candidates, key=key)
-
-
-def crack_fetchland(state: GameState, name: str) -> bool:
-    """`{T}, Sacrifice this land: Search ... then shuffle` (Evolving Wilds, Terramorphic Expanse, Rocky Tar Pit). O terreno vai
-    ao cemiterio pelo `sacrifice()` central (carta de permanente: conta como "descended" do Tunnel-Grinder), o alvo sai da
-    biblioteca e a biblioteca e' embaralhada. Evolving/Terramorphic: um basico, ENTRA TAPPED. Rocky Tar Pit: qualquer carta com o
-    tipo Swamp ou Mountain (basicos e duais com tipo), entra untapped salvo se o proprio alvo entrar tapped (Smoldering Marsh com
-    menos de 2 basicos, Sunlit Marsh). Sem alvo na biblioteca: nao sacrifica (ruling 2004-10-04: a busca pode falhar, e o
-    piloto nao gasta o terreno a toa)."""
-    if name not in state.battlefield:
-        return False
-    if name in FETCH_TO_BASIC_ONLY:
-        candidates = [b for b in BASIC_LANDS if b in state.library]
-    else:
-        candidates = [n for n in ROCKY_TAR_PIT_ORDER if n in state.library]
-    if not candidates:
-        return False
-    target = pick_fetch_target(state, candidates)
-    sacrifice(state, name)
-    state.library.remove(target)
-    tapped = name in FETCH_TO_BASIC_ONLY or land_enters_tapped(state, target)  # regra do alvo, com o fetch ja fora do campo
-    state.battlefield.append(target)
-    if tapped:
-        state.extra_tapped_lands_this_turn.append(target)
-    else:
-        state.fetch_untapped_total += 1
-    if target not in BASIC_LANDS:
-        state.fetch_duals_fetched_total += 1
-    state.fetch_cracks_total += 1
-    if state.rng is not None:
-        state.rng.shuffle(state.library)
-    return True
-
-
-def try_crack_rocky_tar_pit(state: GameState):
-    """Rocky Tar Pit entrou tapped em turno anterior: agora desvirado, o piloto sacrifica ANTES da main phase (o terreno buscado
-    entra untapped e ja' rende mana neste turno -- Regra #6: tem que rodar antes da janela de conjuracao)."""
-    if FETCHLANDS_ENABLED and "Rocky Tar Pit" in state.battlefield and state.land_played_this_turn_name != "Rocky Tar Pit":
-        crack_fetchland(state, "Rocky Tar Pit")
 
 
 def try_myriad_landscape(state: GameState):
@@ -2758,7 +2630,7 @@ def try_myriad_landscape(state: GameState):
                     wanted[c] = max(wanted[c], k)
 
     def sources_next_turn(color):
-        return colored_sources_all(state, color)
+        return sum(1 for n in state.battlefield if n in CARD_DB and color in CARD_DB[n].produces)
 
     def option_key(opt):
         color, basic = opt
@@ -2773,11 +2645,6 @@ def try_myriad_landscape(state: GameState):
         if basic in state.library:
             state.library.remove(basic)
             state.battlefield.append(basic)
-            if FETCHLANDS_ENABLED:
-                # "put them onto the battlefield tapped": ate' 2026-10-03 os 2 basicos contavam como mana do proprio turno
-                # pra efeitos do end step (achado pelo teste de bit-identidade: 1 partida em 20.000 conjurava a mais
-                # uma copia da Ultron com essa mana "fantasma"). Sob a mesma chave da rastreabilidade de terreno tapped.
-                state.extra_tapped_lands_this_turn.append(basic)
             fetched += 1
     if state.rng is not None:
         state.rng.shuffle(state.library)
@@ -3086,8 +2953,6 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.bonus_mana_pool = 0
     state.temp_power_boost = {}
     state.tapped_land_this_turn = None
-    state.extra_tapped_lands_this_turn = []
-    state.land_played_this_turn_name = None
     state.life_lost_by_opponents_this_turn = 0
     state.ayara_recur_used_this_turn = False
     state.goblin_welder_used_this_turn = False
@@ -3118,7 +2983,6 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     try_bahamut_saga_tick(state)
 
     play_land(state)
-    try_crack_rocky_tar_pit(state)
     main_phase(state)
     try_equip_haste(state)
     combat_step(state)
@@ -3573,33 +3437,6 @@ def should_keep(hand: list) -> bool:
     return False
 
 
-MULLIGAN_KEEPERS = {"Sol Ring", "Arcane Signet", "Fellwar Stone", "Mind Stone"}  # os `good_early` de should_keep (o comandante nao entra na mao)
-
-
-def choose_bottom(hand: list, n: int) -> list:
-    """London Mulligan (CR 103.5): o jogador ESCOLHE as `n` cartas que vao pro
-    FUNDO da biblioteca. Antes de 2026-10-03 o arquivo escolhia a de MENOR
-    mana value -- que e' sempre um terreno (MV 0) ou um rock barato, o
-    oposto do que um jogador faz -- e ainda a punha no TOPO. Regra usada
-    (a mesma do Edgar Markov): so' devolve terreno quando sobram MAIS de 4
-    (e entao o de menos cores, desempate pelo que entra tapped); fora isso
-    devolve a carta nao-terreno de MAIOR custo, protegendo Sol Ring,
-    Arcane Signet, Fellwar Stone e Mind Stone."""
-    hand = list(hand)
-    bottom = []
-    for _ in range(n):
-        lands = [c for c in hand if c in LAND_NAMES]
-        nonlands = [c for c in hand if c not in LAND_NAMES]
-        if len(lands) > 4 or not nonlands:
-            pick = min(lands, key=lambda c: (len(CARD_DB[c].produces), 0 if c in ETB_TAPPED_LANDS else 1))
-        else:
-            pool = [c for c in nonlands if c not in MULLIGAN_KEEPERS] or nonlands
-            pick = max(pool, key=lambda c: CARD_DB[c].mv)
-        hand.remove(pick)
-        bottom.append(pick)
-    return bottom
-
-
 def mulligan(rng: random.Random):
     # Achado real 2026-09-18 (usuario apontou -- mesma convencao usada
     # em todos os goldfishes manuais dele no Archidekt, "Mulligan (0)"
@@ -3607,11 +3444,6 @@ def mulligan(rng: random.Random):
     # novo, mao final continua com 7 cartas) -- so' a partir do 2o
     # mulligan que a punicao real do London Mulligan (bottom N-1 cartas)
     # entra. Antes o codigo aplicava a punicao ja no 1o mulligan.
-    #
-    # CORRIGIDO 2026-10-03: as cartas devolvidas iam pro TOPO
-    # (`library.insert(0, ...)`, e `draw_cards` tira do indice 0) -- eram
-    # a proxima compra, em 21,4% das maos (2+ mulligans); e a escolhida era
-    # a de menor MV. Ver `choose_bottom` e MULLIGAN_BOTTOM_MODE.
     mulligans = 0
     while True:
         deck = BASE_LIBRARY[:]
@@ -3620,19 +3452,10 @@ def mulligan(rng: random.Random):
         library = deck[7:]
         if should_keep(hand) or mulligans >= 3:
             penalty = max(0, mulligans - 1)
-            if MULLIGAN_BOTTOM_MODE == "smart":
-                bottom = choose_bottom(hand, penalty)
-                for c in bottom:
-                    hand.remove(c)
-                library.extend(bottom)
-            else:
-                for _ in range(penalty):
-                    worst = min(hand, key=lambda n: CARD_DB[n].mv if n in CARD_DB else 0)
-                    hand.remove(worst)
-                    if MULLIGAN_BOTTOM_MODE == "bottom_only":
-                        library.append(worst)
-                    else:
-                        library.insert(0, worst)
+            for _ in range(penalty):
+                worst = min(hand, key=lambda n: CARD_DB[n].mv if n in CARD_DB else 0)
+                hand.remove(worst)
+                library.insert(0, worst)
             return hand, library, mulligans
         mulligans += 1
 
@@ -3737,9 +3560,6 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
           f"partidas com >=1 ativacao: {100*myriad_games/n:.1f}% | Avg ativacoes: "
           f"{avg([s.myriad_activations_total for s in states]):.3f} | Avg basicos buscados: "
           f"{avg([s.myriad_basics_fetched_total for s in states]):.3f}")
-    print(f"Fetch lands (Evolving Wilds/Terramorphic Expanse/Rocky Tar Pit, sacrificio + busca + shuffle): Avg sacrificios: "
-          f"{avg([s.fetch_cracks_total for s in states]):.3f} | Rocky Tar Pit buscou dual com tipo: "
-          f"{avg([s.fetch_duals_fetched_total for s in states]):.3f} | buscou terreno untapped: {avg([s.fetch_untapped_total for s in states]):.3f}")
     print(f"Piloto de terrenos em T1/T2 (tapped primeiro): Avg vezes que jogou o TAPPED tendo um untapped na mao: "
           f"{avg([s.tapped_land_first_plays_total for s in states]):.3f} | Avg vezes que ficou com o untapped "
           f"pra nao perder jogada: {avg([s.tapped_land_skipped_for_play_total for s in states]):.3f}")

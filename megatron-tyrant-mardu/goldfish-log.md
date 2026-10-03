@@ -1,11 +1,51 @@
 # Goldfish Log — Megatron, Tyrant
 
+> **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: London Mulligan e fetch lands (2026-10-03, 2ª rodada):** [`resultados-ab/2026-10-03-mulligan-e-fetches/LEIAME.md`](resultados-ab/2026-10-03-mulligan-e-fetches/LEIAME.md) — brutos `.json.xz` por partida, código antes/depois, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
 > **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: Myriad Landscape e terreno tapped em T1/T2 (2026-10-03):** [`resultados-ab/2026-10-03-myriad-e-tapped-t1t2/LEIAME.md`](resultados-ab/2026-10-03-myriad-e-tapped-t1t2/LEIAME.md) — brutos `.json.xz` por partida, código antes/depois, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
 > **Dados brutos e como reproduzir as tabelas da seção Inevitable Defeat (2026-10-03):** [`resultados-ab/2026-10-03-inevitable-defeat/LEIAME.md`](resultados-ab/2026-10-03-inevitable-defeat/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
 > **Dados brutos e como reproduzir as tabelas da seção Power Depot (2026-10-03):** [`resultados-ab/2026-10-03-power-depot/LEIAME.md`](resultados-ab/2026-10-03-power-depot/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
+
+---
+
+## Correção do simulador: London Mulligan e fetch lands — 2026-10-03 (2ª rodada)
+
+**Pedido:** *"Quer que eu corrija o mulligan ou modele as fetches? Os dois mudam a base de novo"* — *"Quero sim, sempre!"* (os dois achados laterais da rodada do Myriad Landscape).
+**Veredito:** os dois estão corrigidos em `megatron_goldfish_v1.py`, cada um atrás da sua chave. Efeito no goldfish (N=10.000 pareado, sementes 3.000.000+i), os dois juntos: comandante até o T3 **35,5% → 36,7%** (+1,22 ±0,43pp), até o T4 **81,3% → 82,8%** (+1,51 ±0,52pp), "nunca em T8" 3,8% → ~3,1% (−0,68 ±0,28pp), win +0,72 ±0,53pp (dentro do ruído). **O efeito de cada correção sozinha é maior e de sinais opostos:** o mulligan com escolha **sobe** o T4 em **+2,65pp**; as fetches **descem** em **−1,35pp**. **Atenção:** a base do simulador mudou de novo; números absolutos de rodadas anteriores (Power Depot, Inevitable Defeat, Myriad Landscape) são do simulador antigo; comparar números absolutos entre rodadas, não.
+
+### O que mudou no código
+1. **London Mulligan** (`MULLIGAN_BOTTOM_MODE`). Dois erros juntos: as cartas devolvidas iam para o **topo** da biblioteca (`library.insert(0, …)`; a compra tira do índice 0), e a escolhida era a de **menor** custo (terreno primeiro). Agora o jogador escolhe e elas vão para o **fundo**: só devolve terreno quando sobram mais de 4 (o de menos cores; o que entra tapped no empate); fora isso, a carta não-terreno de maior custo, protegendo Sol Ring, Arcane Signet, Fellwar Stone e Mind Stone.
+2. **Fetch lands** (`FETCHLANDS_ENABLED`). Oráculo lido ao vivo. *Evolving Wilds / Terramorphic Expanse:* entram **untapped**; "{T}, Sacrifice this land: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle". *Rocky Tar Pit:* "enters tapped. {T}, Sacrifice this land: Search your library for a **Swamp or Mountain card**, put it onto the battlefield, then shuffle": o alvo é qualquer carta com o **tipo**, então Badlands, Scrubland, Plateau, Smoldering Marsh e Sunlit Marsh também servem (conferido contra o `type_line` do Scryfall); entra untapped, salvo se o próprio alvo entra tapped. Nenhuma tem habilidade de mana. Até aqui eram "terreno tapped que vira fonte de W, B e R **ao mesmo tempo**" (o Rocky: B e R).
+3. **Terreno tapped por instância.** O campo antigo `tapped_land_this_turn` guarda um **nome** e excluiria todas as cópias de um básico; os básicos buscados e os do Myriad Landscape agora entram numa lista por instância (`extra_tapped_lands_this_turn`).
+
+### Medição (apoio; N=10.000 sementes 3.000.000+i pareadas; base = simulador antes, commit 3dae6ba)
+Base: cmd ≤T3 35,5% · ≤T4 81,3% · ≤T5 89,1% · nunca 3,8% · win 85,1% · dano 86,72 · mana de flip 73,01 · mana no 1º main phase T2/T3/T4 = 2,032 / 3,401 / 4,316. Diferença pareada (variante − base), IC95%:
+
+| variante | cmd ≤T3 (pp) | cmd ≤T4 (pp) | cmd ≤T5 (pp) | nunca (pp) | win (pp) | dano | mana T2 / T3 / T4 |
+|---|---|---|---|---|---|---|---|
+| só a posição (menor MV, mas no fundo) | −1,46 ±0,35 | **−3,74 ±0,44** | −3,98 ±0,42 | +2,47 ±0,33 | −3,47 ±0,43 | −2,58 ±0,43 | −0,05 / −0,11 / −0,13 |
+| só o mulligan com escolha | +1,80 ±0,29 | **+2,65 ±0,33** | +1,83 ±0,27 | −0,93 ±0,19 | +1,93 ±0,33 | +0,80 ±0,38 | +0,03 / +0,05 / +0,07 |
+| só as fetches | −0,65 ±0,35 | **−1,35 ±0,44** | −1,29 ±0,35 | +0,33 ±0,23 | −1,33 ±0,46 | −0,48 ±0,77 | −0,01 / 0,00 / 0,00 |
+| **as duas (o que ficou)** | **+1,22 ±0,43** | **+1,51 ±0,52** | +0,74 ±0,42 | −0,68 ±0,28 | +0,72 ±0,53 | +0,71 ±0,84 | +0,02 / +0,05 / +0,07 |
+
+**Leitura (medido):** (a) corrigir só a posição **piora** o T4 em 3,74pp: o bug do topo escondia a escolha ruim (a carta de menor custo, quase sempre terreno, voltava na compra seguinte); sem escolher bem, mandar para o fundo deixa a mão sem terrenos (média de terrenos numa mão de 6 cartas com 2 mulligans: **1,44** no código antigo, **2,35** com a escolha). A correção só vale as duas partes juntas. (b) As fetches **pioram** o T4 em 1,35pp **sem mudar a mana** (T2–T4 ≈ 0): a perda é de **cor**. **Raciocínio (não medido separadamente):** o modelo antigo contava cada Evolving Wilds/Terramorphic Expanse como fonte de W, B **e** R, e a carta real busca **um** básico. (c) O Rocky Tar Pit buscou um dual com tipo em 0,17 partidas e um terreno untapped em 0,17: mais fixação que o "B/R fixo" de antes, mas não compensa o resto. Lote de 2.000 e modo resiliência (2.000) mostram a mesma direção.
+
+### Validação (Regra #1) — arquivada em `resultados-ab/2026-10-03-mulligan-e-fetches/`
+- **Smoke:** 99 cartas, 84 distintas, 0 desconhecidas, 0 duplicadas não básicas, 34 terrenos.
+- **Bit-identidade com `legacy` + fetch desligado:** 20.000/20.000 partidas idênticas ao commit 3dae6ba no modo padrão e 20.000/20.000 na resiliência. **O teste achou um erro meu da rodada do Myriad:** na 1ª versão, 1 partida em 20.000 divergia, porque os 2 básicos que o Myriad Landscape busca (que entram **tapped**) contavam como mana do próprio turno para efeitos do end step (pagavam uma cópia a mais da Ultron). Corrigido: agora entram na lista de terrenos tapped.
+- **Regressão:** 140.000 partidas (7 configurações/modos × 20.000), **0 exceções**, 0 violações de conservação dos 13 terrenos nomeados, 0 fetch sobrando em campo ao fim do turno quando havia alvo, 0 `total_mana` negativo.
+- **Testes dirigidos:** 33/33, incluindo `play_turn` completo (o Rocky Tar Pit é sacrificado **antes** do 1º main phase do T2 e o terreno buscado já rende mana: Regra #6) e a conferência dos tipos de terreno do simulador contra o `type_line` do Scryfall.
+- **A rodada anterior continua reproduzível:** o `fx_common.flags` da pasta do Myriad agora desliga as duas novidades; `verificar_reproducao.sh --tudo` de lá → 9/9.
+
+### Achados laterais (não corrigidos, Regra #1)
+- **Mulligan com sorteio das cartas do fundo** em outros 7 decks (lista no log do Vihaan); nenhum foi alterado.
+- A escolha de **quando** sacrificar a fetch (na hora; o Rocky no início do turno seguinte) e a regra de escolha do fundo do mulligan são convenções do piloto, não do oráculo.
+
+### O que NÃO foi verificado (Regra #7)
+Só as classes terreno/mana/cor, biblioteca/embaralhar/busca com restrição de tipo real, mulligan, ordem de fases e "carta no cemitério = permanente" foram varridas neste arquivo; não houve auditoria carta a carta do `.py` inteiro. Sacrificar a fetch no fim do turno do oponente ou guardá-la para afinar mais tarde não foi modelado nem medido.
 
 ---
 
@@ -45,6 +85,7 @@ Base: cmd ≤T3 31,3% · ≤T4 77,8% · ≤T5 88,8% · nunca 4,1% · win 83,8% �
 - **Testes dirigidos:** 49/49, incluindo: Myriad ativa só com remaining ≥3, nunca no turno em que entrou, tipo certo pela cor que falta, só 1 básico na biblioteca (ruling), sem básico = não sacrifica, shuffle real, `rng` nulo; `play_turn` completo (Regra #6: o Myriad conta como "descended" do Tunnel-Grinder; os básicos rendem mana no turno seguinte); T1/T2: Sol Ring em T1 e Mind Stone em T2 seguram o untapped, Swords/Path/Looting não, Sol Ring + Mind Stone em T2 deixam o tapped (o Sol Ring libera a mana do Mind Stone), T3 volta ao piloto original; a simulação a seco não altera o estado.
 
 ### Achados laterais (não corrigidos, Regra #1)
+- **[Os dois foram corrigidos ainda em 2026-10-03, na 2ª rodada: ver a seção "Correção do simulador: London Mulligan e fetch lands" no topo deste arquivo.]**
 - **O London Mulligan do simulador põe as cartas devolvidas no TOPO da biblioteca** (`library.insert(0, worst)`; `draw_cards` tira do índice 0), então a carta "ao fundo" é a próxima compra. Demonstrado em runtime (`resumos/mulligan_topo.txt`); afeta as **21,4%** das mãos com 2+ mulligans. Não mexi: está fora do pedido e muda a base de tudo.
 - **As fetches (Evolving Wilds, Terramorphic Expanse, Rocky Tar Pit) seguem simplificadas** como fonte fixa já em campo, sem sacrifício, busca nem embaralhamento. É modelável com o mesmo mecanismo do Myriad; não foi feito.
 

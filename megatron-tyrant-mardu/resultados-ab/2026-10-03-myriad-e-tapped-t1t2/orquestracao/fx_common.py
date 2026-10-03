@@ -21,6 +21,11 @@ def carrega(caminho, nome):
 
 def flags(m, tapped=True, myriad=True, tapped_max_turn=None, skip_if_loses_play=True):
     """Liga/desliga as duas correcoes (so' existe no modulo DEPOIS)."""
+    if hasattr(m, "FETCHLANDS_ENABLED"):
+        # Nota posterior (2026-10-03, 2a rodada): o simulador vivo ganhou fetch lands e mulligan com escolha
+        # (resultados-ab/2026-10-03-mulligan-e-fetches/). Esta pasta mede o simulador do commit 3dae6ba: desliga as duas.
+        m.FETCHLANDS_ENABLED = False
+        m.MULLIGAN_BOTTOM_MODE = "legacy"
     if hasattr(m, "TAPPED_LAND_FIRST_ENABLED"):
         m.TAPPED_LAND_FIRST_ENABLED = tapped
         m.MYRIAD_ABILITY_ENABLED = myriad
@@ -34,7 +39,10 @@ def impressao(state):
     """Hash de TODO o estado final (menos objetos Random e os 4 contadores novos
     que so' existem no DEPOIS)."""
     ignora = {"rng", "interaction_rng", "myriad_activations_total", "myriad_basics_fetched_total",
-              "tapped_land_first_plays_total", "tapped_land_skipped_for_play_total"}
+              "tapped_land_first_plays_total", "tapped_land_skipped_for_play_total",
+              # campos da 2a rodada (2026-10-03), inexistentes no simulador ANTES:
+              "extra_tapped_lands_this_turn", "land_played_this_turn_name", "fetch_cracks_total",
+              "fetch_duals_fetched_total", "fetch_untapped_total"}
     partes = []
     for k in sorted(vars(state)):
         if k in ignora:

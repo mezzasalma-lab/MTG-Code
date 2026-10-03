@@ -3,7 +3,7 @@ import os, sys
 from collections import Counter
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import fx_common as F
-M = F.carrega(F.DEPOIS, "mega_smoke")
+M = F.flags(F.carrega(F.DEPOIS, "mega_smoke"))  # idem
 cnt = Counter(M.BASE_LIBRARY)
 print("cartas na biblioteca:", len(M.BASE_LIBRARY), "| distintas:", len(cnt))
 print("desconhecidas (fora do CARD_DB):", [n for n in cnt if n not in M.CARD_DB])
