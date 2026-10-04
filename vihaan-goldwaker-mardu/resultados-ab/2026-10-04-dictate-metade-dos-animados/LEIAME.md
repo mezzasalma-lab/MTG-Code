@@ -91,3 +91,8 @@ Nenhum lote superado ou inválido nesta pasta.
 - **As 5 chaves novas** (wipes próprios: destruição fiel, Treasure virado, custo da Blasphemous Act, retenção; imposto do comandante) vêm **ligadas** no simulador vivo. O `orquestracao/fx_common.py` desta pasta as **desliga** (e inclui os 7 campos novos do `GameState` em `NOVOS`) pra continuar reproduzindo o simulador do commit dela.
 - O `orquestracao/smoke.py` desta pasta carregava o simulador vivo **sem passar por `F.flags`** (as 200 partidas rodavam com as chaves novas ligadas e o `smoke.txt` deu `DIFERE` na 1ª execução); passou a usar `F.flags(F.carrega(...))` e o `cmp` voltou a bater.
 - `verificar_reproducao.sh --tudo` depois da 9ª rodada: 11/11 depois de corrigir o smoke. `SHA256SUMS` regenerado.
+
+## Nota de 2026-10-04 (10ª rodada: `../2026-10-04-wipes-segurados/`)
+
+- **As 3 chaves novas** (todo wipe próprio segurado; custo do wipe pago primeiro com Treasures animados; exceção mitigada com Mayhem Devil) vêm **ligadas** no simulador vivo. O `orquestracao/fx_common.py` desta pasta as **desliga** (e inclui os 3 campos novos do `GameState` em `NOVOS`) pra continuar reproduzindo o simulador do commit dela.
+- `verificar_reproducao.sh --tudo` depois da 10ª rodada: 11/11. `SHA256SUMS` regenerado.

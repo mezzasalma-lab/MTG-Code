@@ -114,6 +114,11 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas):
   Achado na mesma rodada: o imposto do comandante nunca entrava no que PODE ser conjurado (`can_cast` olhava so' o MV 3, e o cast gastava 3 + 2 por cast
   anterior, que o `mana_spent` empurrava acima do total de graca) e so' contava quando ele ENTRAVA (um cast anulado nao somava, contra CR 903.8).
   Ver `resultados-ab/2026-10-04-wipes-proprios/LEIAME.md`.
+- Todo wipe proprio e' SEGURADO (2026-10-04, 10a rodada, principio do usuario: "todo boardwipe deve ser segurado para causar mais perdas aos
+  oponentes do que a mim"): o simulador nao tem nada do lado do oponente pra pesar contra a perda (📊), entao nenhum wipe proprio e' conjurado,
+  salvo na circunstancia mitigada que o usuario cita: com Mayhem Devil em campo, pagar o custo com Treasures ANIMADOS (que o wipe mataria de
+  qualquer jeito) ainda causa dano nos oponentes (1 por sacrificio) alem do efeito do wipe. E o custo do wipe e' sempre pago primeiro com os
+  animados vivos. Ver `resultados-ab/2026-10-04-wipes-segurados/LEIAME.md`.
 """
 
 import copy
@@ -417,6 +422,12 @@ OWN_WIPE_DESTROY_ORACLE_ENABLED = True       # Blood Money / Blasphemous Act: "d
 BLOOD_MONEY_TAPPED_TREASURE_ENABLED = True   # "you create a TAPPED Treasure": os Treasures da Blood Money nao pagam mana (nem entram no farm) no turno em que nascem
 BLASPHEMOUS_ACT_COST_REDUCTION_ENABLED = True  # "costs {1} less to cast for each creature on the battlefield" (so' as minhas; as do oponente sao 📊), piso {R}
 OWN_WIPE_HOLD_ENGINE_ENABLED = True          # linha do usuario: nao conjura Blood Money / Blasphemous Act se isso destruiria o Vihaan ou o Mahadi em campo (os motores do deck)
+# Correcoes de 10a rodada (2026-10-04; principio do usuario: "todo boardwipe deve ser 'segurado' para causar mais 'perdas' aos oponentes do que a mim ...
+# com Mayhem Devil em campo, sacrificar tesouros animados para pagar o custo do wipe ainda causa dano nos oponentes alem do efeito do wipe em si").
+# Com as 3 chaves em False o arquivo se comporta bit-a-bit como o do commit 47ec126.
+OWN_WIPE_HOLD_ALWAYS_ENABLED = True          # todo wipe proprio e' segurado (o lado do oponente e' 📊): generaliza a retencao "Vihaan ou Mahadi em campo" da 9a rodada
+OWN_WIPE_PAY_WITH_ANIMATED_ENABLED = True    # o custo do wipe e' pago primeiro com Treasures ANIMADOS vivos: eles morreriam no wipe de qualquer jeito; cada sacrificio e' mana + morte de criatura + gatilho de sacrificio (Mayhem Devil)
+OWN_WIPE_RELEASE_MITIGATED_ENABLED = True    # unica excecao a retencao: Mayhem Devil em campo, animados vivos pagando o custo INTEIRO e dano do pagamento > criaturas minhas perdidas (a circunstancia que o usuario cita)
 COMMANDER_TAX_ENABLED = True                 # CR 903.8: o imposto ({2} por cast anterior da zona de comando) entra no que PODE ser conjurado, e e' contado no CAST (tambem se for anulado), nao so' quando entra
 OWN_WIPES = ("Blood Money", "Blasphemous Act")
 
@@ -479,6 +490,9 @@ class GameState:
     own_wipe_tapped_treasures_total: int = 0
     own_wipe_held_total: int = 0  # wipes proprios conjuraveis que o jogador SEGUROU (destruiriam Vihaan/Mahadi), uma vez por carta por turno
     own_wipe_held_this_turn: set = field(default_factory=set)
+    own_wipe_mitigated_casts_total: int = 0  # wipes conjurados com Mayhem Devil em campo e animados vivos suficientes pra pagar o custo inteiro
+    own_wipe_animated_paid_total: int = 0    # Treasures animados sacrificados pra pagar o custo de um wipe proprio
+    own_wipe_pay_drain_total: int = 0        # dano/dreno (proxy) causado pelos sacrificios que pagaram o wipe (Mayhem Devil, Zulaport, Sephiroth...)
 
     commander_in_play: bool = False
     commander_cast_count: int = 0
@@ -1216,18 +1230,63 @@ def spell_cost(state: GameState, name: str) -> int:
     return mv
 
 
-def wipe_held(state: GameState, name: str) -> bool:
-    """OWN_WIPE_HOLD_ENGINE_ENABLED (linha do usuario, T8 da partida manual #1: a Blood Money ficou exilada de proposito, "sem Vihaan e Mahadi em
-    campo acho que seria pior"): um wipe proprio que destruiria o Vihaan ou o Mahadi nao e' conjurado. A decisao e' do jogador, nao do simulador:
-    sem criatura do oponente no modelo, o wipe so' mataria o meu proprio campo."""
-    if not OWN_WIPE_HOLD_ENGINE_ENABLED or name not in OWN_WIPES:
+def wipe_mitigated(state: GameState, name: str) -> bool:
+    """A circunstancia que o usuario cita (2026-10-04): "com Mayhem Devil em campo, sacrificar tesouros animados para pagar o custo do wipe ainda
+    causa dano nos oponentes alem do efeito do wipe em si", dentro do principio "causar mais perdas aos oponentes do que a mim". O simulador so'
+    enxerga o que e' dele: o dano do pagamento (1 por Treasure animado sacrificado, Mayhem Devil) contra as MINHAS criaturas nao-ficha que o wipe
+    destruiria (inclui o comandante e o proprio Mayhem Devil), 1 dano por 1 criatura. O efeito do wipe nas criaturas do oponente e' 📊 e fica de
+    fora (a conta e' conservadora). Condicoes: Mayhem Devil em campo, animados vivos e desvirados pagando o custo INTEIRO (eles morreriam no wipe de
+    qualquer jeito) e dano do pagamento > criaturas minhas perdidas. Sem efeitos colaterais."""
+    if "Mayhem Devil" not in state.battlefield:
         return False
-    if state.commander_in_play or "Mahadi, Emporium Master" in state.battlefield:
-        if name not in state.own_wipe_held_this_turn:
-            state.own_wipe_held_this_turn.add(name)
-            state.own_wipe_held_total += 1
-        return True
-    return False
+    tv = treasure_value(state)
+    custo = spell_cost(state, name)
+    animados = min(state.treasures_animated_alive, state.treasures - state.treasures_tapped)
+    if animados * tv < custo:
+        return False
+    sacrificios = math.ceil(custo / tv)
+    minhas = sum(1 for n in state.battlefield if is_creature_card(n))
+    return sacrificios > minhas
+
+
+def wipe_held(state: GameState, name: str) -> bool:
+    """Retencao dos wipes proprios (Blood Money, Blasphemous Act).
+    OWN_WIPE_HOLD_ALWAYS_ENABLED (10a rodada, principio do usuario: "todo boardwipe deve ser segurado para causar mais perdas aos oponentes do que a
+    mim"): o simulador nao modela nada do lado do oponente (📊), entao nao ha' como o wipe causar mais perda a ele do que a mim; fica sempre
+    segurado, exceto na circunstancia mitigada (`wipe_mitigated`, OWN_WIPE_RELEASE_MITIGATED_ENABLED).
+    OWN_WIPE_HOLD_ENGINE_ENABLED (9a rodada, T8 da partida manual #1: a Blood Money ficou exilada de proposito, "sem Vihaan e Mahadi em campo acho
+    que seria pior"): so' segura se destruiria o Vihaan ou o Mahadi."""
+    if name not in OWN_WIPES:
+        return False
+    if OWN_WIPE_HOLD_ALWAYS_ENABLED:
+        if OWN_WIPE_RELEASE_MITIGATED_ENABLED and wipe_mitigated(state, name):
+            return False
+        held = True
+    elif OWN_WIPE_HOLD_ENGINE_ENABLED:
+        held = state.commander_in_play or "Mahadi, Emporium Master" in state.battlefield
+    else:
+        return False
+    if held and name not in state.own_wipe_held_this_turn:
+        state.own_wipe_held_this_turn.add(name)
+        state.own_wipe_held_total += 1
+    return held
+
+
+def _wipe_pay_with_animated(state: GameState, cost: int) -> int:
+    """OWN_WIPE_PAY_WITH_ANIMATED_ENABLED: os Treasures animados vivos pagam o wipe primeiro. Eles sao criaturas ate' o fim do turno e o wipe os
+    destruiria sem dar nada (ficha: nem Treasure da Blood Money); sacrificados como custo viram mana, morte de criatura (Zulaport, Plunderer,
+    Dictate, Sephiroth...) e sacrificio (Mayhem Devil: 1 de dano cada, e a ruling 2019-05-03 manda o gatilho resolver antes do wipe). Retorna o
+    que ainda falta pagar com terrenos/rocks."""
+    tv = treasure_value(state)
+    disponiveis = min(state.treasures_animated_alive, state.treasures - state.treasures_tapped)
+    k = min(disponiveis, math.ceil(cost / tv))
+    if k <= 0:
+        return cost
+    antes = state.drain_damage_total
+    sacrifice_treasures(state, k, for_mana=True)
+    state.own_wipe_animated_paid_total += k
+    state.own_wipe_pay_drain_total += state.drain_damage_total - antes
+    return max(0, cost - k * tv)
 
 
 def can_cast(state: GameState, name: str) -> bool:
@@ -1780,7 +1839,13 @@ def cast_card(state: GameState, name: str, from_zone: str = "hand"):
         if COMMANDER_TAX_ENABLED:
             state.commander_cast_count += 1  # CR 903.8: conta o CAST da zona de comando, mesmo se for anulado
     else:
-        spend_mana(state, spell_cost(state, name))
+        custo = spell_cost(state, name)
+        if name in OWN_WIPES:
+            if wipe_mitigated(state, name):
+                state.own_wipe_mitigated_casts_total += 1
+            if OWN_WIPE_PAY_WITH_ANIMATED_ENABLED:
+                custo = _wipe_pay_with_animated(state, custo)
+        spend_mana(state, custo)
     if extort_available and remaining_mana(state) >= 1:
         spend_mana(state, 1)
         drain(state, 1, each_opp=True)

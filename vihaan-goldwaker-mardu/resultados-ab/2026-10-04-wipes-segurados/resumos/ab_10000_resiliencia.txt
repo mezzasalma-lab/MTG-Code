@@ -1,0 +1,14 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia (oponente esperto, simulate_one_with_interaction)
+ANTES: win<=T8 4.0% | Treasures criados 8.08 (estoque no fim 1.93) | dano mesa 9.83 combate 34.60 drain 4.46 | mortes de criatura 5.10 | mana bonus 1.09 | recursoes 0.22 | mana T5 5.005 T6 5.948
+variante  win<=8 pp      Treasures criados estoque no fim dano mesa      combate        drain          mortes cria.   mana bonus     mana T5        mana T6       
+sempre     +0.000±0.000   +0.000±0.000   +0.000±0.000   -0.002±0.004   +0.001±0.002   -0.001±0.001   -0.001±0.001   +0.000±0.000   +0.000±0.000   +0.000±0.000 
+liberar    +0.000±0.000   +0.001±0.001   -0.001±0.001   -0.001±0.004   +0.002±0.003   +0.000±0.002   +0.001±0.003   +0.000±0.000   +0.000±0.000   +0.000±0.000 
+sem_hold_pagar  -0.410±0.160   -0.138±0.041   -0.092±0.026   -0.270±0.243   -1.834±0.180   -0.164±0.088   +0.200±0.048   -0.087±0.032   -0.000±0.001   -0.005±0.004 
+sem_hold   -0.410±0.160   -0.139±0.041   -0.093±0.026   -0.272±0.243   -1.835±0.180   -0.165±0.088   +0.199±0.048   -0.087±0.032   -0.000±0.001   -0.005±0.004 
+
+variante        jogos iguais Blood Money  Blasphemous Act wipe c/ Vihaan|Mahadi Vihaan destruido  retencoes   wipe mitigado      animados pagando  dano pagamento  pool expirado 
+antes           100.0%       0.0000       0.0002          0.0000                0.0000            n/a         n/a                n/a               n/a             0.8094        
+sempre          100.0%       0.0000       0.0000          0.0000                0.0000            0.3398      0.0000             0.0000            0.0000          0.8094        
+liberar         100.0%       0.0001       0.0000          0.0001                0.0001            0.3398      0.0001             0.0007            0.0007          0.8094        
+sem_hold_pagar   91.2%       0.0274       0.0615          0.0885                0.0885            0.0000      0.0000             0.0326            0.0195          0.7789        
+sem_hold         91.2%       0.0274       0.0615          0.0885                0.0885            0.0000      0.0000             0.0000            0.0000          0.7790        

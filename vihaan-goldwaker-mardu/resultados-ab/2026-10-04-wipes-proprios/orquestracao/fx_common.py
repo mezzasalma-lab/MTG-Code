@@ -11,7 +11,7 @@ NOVOS = {"interaction_rng", "super_nova_emblems", "seph_batch_active", "seph_bat
          "treasures_sacrificed_this_turn", "storm_sac_baseline", "storm_pump_total", "sevinne_nonpermanent_returns_total",
          "dictate_triggers_total", "treasure_farm_total", "impulse_expiring_first_total", "impulse_all_first_total",
          "treasure_farm_dictate_total", "treasures_tapped", "own_wipes_cast_total", "blood_money_cast_total", "own_wipe_commander_destroyed_total",
-         "own_wipe_tapped_treasures_total", "own_wipe_held_total", "own_wipe_held_this_turn"}
+         "own_wipe_tapped_treasures_total", "own_wipe_held_total", "own_wipe_held_this_turn", "own_wipe_mitigated_casts_total", "own_wipe_animated_paid_total", "own_wipe_pay_drain_total"}
 
 
 def carrega(caminho, nome):
@@ -31,6 +31,10 @@ def flags(m, destroy=True, tapped=True, cost=True, hold=True, tax=True):
                     ("BLASPHEMOUS_ACT_COST_REDUCTION_ENABLED", cost), ("OWN_WIPE_HOLD_ENGINE_ENABLED", hold), ("COMMANDER_TAX_ENABLED", tax)):
         if hasattr(m, nome):
             setattr(m, nome, v)
+    if hasattr(m, "OWN_WIPE_HOLD_ALWAYS_ENABLED"):  # 10a rodada (wipes segurados): ligadas no arquivo vivo, desligadas aqui (esta pasta reproduz o simulador do commit dela)
+        m.OWN_WIPE_HOLD_ALWAYS_ENABLED = False
+        m.OWN_WIPE_PAY_WITH_ANIMATED_ENABLED = False
+        m.OWN_WIPE_RELEASE_MITIGATED_ENABLED = False
     return m
 
 

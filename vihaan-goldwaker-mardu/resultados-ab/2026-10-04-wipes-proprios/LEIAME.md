@@ -87,3 +87,10 @@ Nenhum lote superado ou inválido nesta pasta, **exceto** a 1ª tentativa de `lo
 - As 3 premissas acima (retenção também na Blasphemous Act; "Vihaan ou Mahadi"; contador agregado de virados) não foram confirmadas pelo usuário.
 - Lotho/Monologue Tax em 2ª mágica de **oponente** continuam 📊 (convenção do usuário: 1 dos 3 oponentes, 2 mágicas).
 - Nenhuma carta foi cortada ou adicionada à lista; o Commander Spellbook não foi consultado porque nada na lista mudou.
+
+## Nota de 2026-10-04 (10ª rodada: `../2026-10-04-wipes-segurados/`)
+
+- **As 3 chaves novas** (todo wipe próprio segurado; custo do wipe pago primeiro com Treasures animados; exceção mitigada com Mayhem Devil) vêm **ligadas** no simulador vivo. O `orquestracao/fx_common.py` desta pasta as **desliga** (e inclui os 3 campos novos do `GameState` em `NOVOS`) pra continuar reproduzindo o simulador do commit dela.
+- O `orquestracao/smoke.py` desta pasta carregava o simulador vivo **sem passar por `F.flags`**; passou a usar `F.flags(F.carrega(...))` (o `cmp` do smoke foi conferido isolado antes da verificação completa).
+- **Princípio mais geral do usuário (mesmo dia):** a retenção desta pasta (só com Vihaan/Mahadi em campo; Blasphemous Act por palpite meu) foi generalizada para **todo wipe segurado**, com exceção mitigada: ver `../2026-10-04-wipes-segurados/`. Os números desta pasta descrevem a regra do commit `47ec126`.
+- `verificar_reproducao.sh --tudo` depois da 10ª rodada: 11/11. `SHA256SUMS` regenerado.

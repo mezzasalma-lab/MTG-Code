@@ -3,7 +3,7 @@ import os, sys
 from collections import Counter
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import fx_common as F
-V = F.carrega(F.DEPOIS, "vih_smoke")
+V = F.flags(F.carrega(F.DEPOIS, "vih_smoke"))  # 10a rodada: desliga as chaves novas pra esta pasta reproduzir o simulador do commit dela
 cnt = Counter(V.BASE_LIBRARY)
 print("cartas na biblioteca:", len(V.BASE_LIBRARY), "| distintas:", len(cnt))
 print("desconhecidas (fora do CARD_DB):", [n for n in cnt if n not in V.CARD_DB])

@@ -47,6 +47,12 @@ Leitura: corrige a base da reserva da mensagem anterior: a metade é **dos Treas
 
 Leitura: (1) no flashback do T8 a **cópia** da Sevinne's devolveu o **Zulaport**; (2) a **Blood Money** exilada pelo Prosper em T7 foi **segurada de propósito** (destruiria Vihaan e Mahadi); (3) os **2 Treasures e −1 de vida** que não apareciam no log do T7/T8 vêm de **1 dos 3 oponentes** ter conjurado 2 mágicas no turno (Lotho: −1 vida e 1 Treasure; Monologue Tax: 1 Treasure), contagem do usuário. As três respostas fecham os itens abertos desta partida; ver `../2026-10-04-wipes-proprios/`.
 
+**Sétima mensagem do usuário (2026-10-04), transcrita sem reescrever:**
+> *"Todo boardwipe deve ser "segurado" para causar mais "perdas" aos oponentes do que a mim.*
+> *Claro que quando utilizados, eu perco tudo que for criatura em campo, mas dependendo das circunstancias isso pode ser mitigado: por exemplo: Com Mayhem Devil em campo, sacrificar tesouros animados para [pagar o custo do wipe ainda causa dano nos oponentes além do efeito do wipe em sim!"*
+
+Leitura: generaliza a resposta anterior sobre a Blood Money: **todo** boardwipe é segurado até causar mais perda ao oponente do que a mim; a perda pode ser mitigada, por exemplo pagando o custo do wipe com os Treasures animados (que o wipe mataria de qualquer jeito) com Mayhem Devil em campo (1 de dano por sacrifício). Virou as 3 chaves de `../2026-10-04-wipes-segurados/`.
+
 ## Como ler o log (premissas, a conferir com o usuário)
 
 Formato: lista de 8 turnos; cada turno = registros `{name, id, tapped, token, counters, fromZone, toZone, zone}`. As primeiras linhas de cada turno são as **desvirações** (untap) de quem estava virado; depois vêm as ações em ordem de registro. O log só gera linha quando o **estado muda**:

@@ -1,0 +1,26 @@
+N=10000 sementes 3000000..3009999, modo padrao (diferenca pareada A - B, IC95%)
+metrica                                liberar - sempre       sem_hold_pagar - sem_hold
+win<=8 (pp)                              +0.000 ±0.000        +0.000 ±0.000     
+estoque no fim                           -0.002 ±0.005        -0.005 ±0.003     
+Treasures criados                        +0.002 ±0.005        +0.001 ±0.002     
+mortes de criatura                       +0.006 ±0.007        +0.000 ±0.001     
+dreno (proxy)                            +0.001 ±0.003        +0.004 ±0.004     
+dano de mesa (proxy)                     +0.001 ±0.003        +0.011 ±0.011     
+Blood Money conjurada                    +0.001 ±0.000        +0.000 ±0.000     
+Blasphemous Act conjurada                +0.000 ±0.000        +0.000 ±0.000     
+wipe c/ Vihaan ou Mahadi em campo        +0.001 ±0.000        -0.000 ±0.000     
+Vihaan conjurado (cast)                  +0.000 ±0.000        +0.000 ±0.000     
+
+N=10000 sementes 3000000..3009999, modo resiliencia (diferenca pareada A - B, IC95%)
+metrica                                liberar - sempre       sem_hold_pagar - sem_hold
+win<=8 (pp)                              +0.000 ±0.000        +0.000 ±0.000     
+estoque no fim                           -0.001 ±0.001        +0.001 ±0.002     
+Treasures criados                        +0.001 ±0.001        +0.001 ±0.001     
+mortes de criatura                       +0.001 ±0.003        +0.000 ±0.001     
+dreno (proxy)                            +0.001 ±0.001        +0.002 ±0.002     
+dano de mesa (proxy)                     +0.001 ±0.001        +0.003 ±0.002     
+Blood Money conjurada                    +0.000 ±0.000        +0.000 ±0.000     
+Blasphemous Act conjurada                +0.000 ±0.000        +0.000 ±0.000     
+wipe c/ Vihaan ou Mahadi em campo        +0.000 ±0.000        +0.000 ±0.000     
+Vihaan conjurado (cast)                  +0.000 ±0.000        +0.000 ±0.000     
+

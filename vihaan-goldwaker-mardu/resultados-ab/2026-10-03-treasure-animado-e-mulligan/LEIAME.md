@@ -119,3 +119,8 @@ Nota (rodada "exílio sempre e Dictate", 2026-10-04): o simulador vivo ganhou ma
 
 - **As 5 chaves novas** (wipes próprios: destruição fiel, Treasure virado, custo da Blasphemous Act, retenção; imposto do comandante) vêm **ligadas** no simulador vivo. O `orquestracao/fx_common.py` desta pasta as **desliga** (e inclui os 7 campos novos do `GameState` em `NOVOS`) pra continuar reproduzindo o simulador do commit dela.
 - `verificar_reproducao.sh --tudo` depois da 9ª rodada: 7/7. `SHA256SUMS` regenerado.
+
+## Nota de 2026-10-04 (10ª rodada: `../2026-10-04-wipes-segurados/`)
+
+- **As 3 chaves novas** (todo wipe próprio segurado; custo do wipe pago primeiro com Treasures animados; exceção mitigada com Mayhem Devil) vêm **ligadas** no simulador vivo. O `orquestracao/fx_common.py` desta pasta as **desliga** (e inclui os 3 campos novos do `GameState` em `NOVOS`) pra continuar reproduzindo o simulador do commit dela.
+- `verificar_reproducao.sh --tudo` depois da 10ª rodada: 7/7. `SHA256SUMS` regenerado.

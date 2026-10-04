@@ -1,5 +1,7 @@
 # Goldfish Log — Vihaan, Goldwaker
 
+> **Dados brutos e como reproduzir as tabelas da seção Todo boardwipe segurado, e o custo pago com Treasures animados (2026-10-04):** [`resultados-ab/2026-10-04-wipes-segurados/LEIAME.md`](resultados-ab/2026-10-04-wipes-segurados/LEIAME.md) — brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
 > **Dados brutos e como reproduzir as tabelas da seção Respostas do T8 e correção do simulador: wipes próprios (Blood Money / Blasphemous Act) e imposto do comandante (2026-10-04):** [`resultados-ab/2026-10-04-wipes-proprios/LEIAME.md`](resultados-ab/2026-10-04-wipes-proprios/LEIAME.md) — brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
 > **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: a metade do farm com Dictate conta só os Treasures animados (2026-10-04):** [`resultados-ab/2026-10-04-dictate-metade-dos-animados/LEIAME.md`](resultados-ab/2026-10-04-dictate-metade-dos-animados/LEIAME.md) — brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
@@ -25,6 +27,66 @@
 
 ---
 
+## Todo boardwipe segurado, e o custo pago com Treasures animados (Mayhem Devil) — 2026-10-04
+
+**Pedido (princípio do usuário, generalizando a rodada anterior):**
+> *"Todo boardwipe deve ser "segurado" para causar mais "perdas" aos oponentes do que a mim. Claro que quando utilizados, eu perco tudo que for criatura em campo, mas dependendo das circunstancias isso pode ser mitigado: por exemplo: Com Mayhem Devil em campo, sacrificar tesouros animados para [pagar o custo do wipe ainda causa dano nos oponentes além do efeito do wipe em sim!"*
+
+**Veredito:**
+1. **A regra da rodada anterior era estreita demais.** Eu segurava o wipe só quando ele destruiria Vihaan ou Mahadi (e a extensão à Blasphemous Act era palpite meu). O seu princípio é mais geral: **todo** wipe fica na mão até causar mais perda ao oponente do que a mim. O simulador **não tem nada do lado do oponente** (📊: sem criaturas, sem vida real), então o lado "perdas do oponente" que o wipe causaria por si só é imensurável aqui: sem essa contrapartida, **nenhum wipe próprio é conjurado**, salvo a circunstância mitigada que você citou.
+2. **O pagamento do custo com Treasures animados entrou no modelo.** Antes o custo do wipe saía dos terrenos (`spend_mana` paga terrenos e rocks primeiro) e os animados vivos eram **destruídos de graça** pelo próprio wipe (fichas: nem Treasure da Blood Money). Agora o custo do wipe é pago **primeiro com os animados vivos e desvirados**: cada um vira mana, morte de criatura (Zulaport, Plunderer, Dictate, Sephiroth...) e **sacrifício** (Mayhem Devil: 1 de dano cada; a ruling de 2019-05-03 manda o gatilho resolver **antes** do wipe). Isso vale sempre que um wipe é conjurado, porque os animados morreriam de qualquer jeito: pagar com eles nunca é pior que pagar com terrenos.
+3. **A circunstância mitigada virou a única exceção à retenção:** Mayhem Devil em campo, animados vivos e desvirados pagando o custo **inteiro**, e **dano do pagamento > criaturas minhas perdidas** (1 dano = 1 criatura, o proxy conservador, porque o efeito do wipe nas criaturas do oponente fica de fora). Com tabuleiro cheio (Blood Money com 9 criaturas minhas e 7 de dano) o simulador segura; com 6 criaturas minhas ele conjura.
+4. **Medido: quase nada muda nos números, e isso é informação.** A regra da rodada anterior (segurar com Vihaan ou Mahadi) já segurava o wipe em ~100% dos casos, porque o Vihaan quase sempre está em campo quando um wipe é conjurável: **a retenção universal não segura nenhuma jogada a mais nas 10.000 partidas** (0,632 retenções por jogo antes e depois), e a exceção mitigada dispara em **0,05% das partidas** (5 em 10.000, padrão; 1 em 10.000, resiliência). O que a regra nova muda é a **intenção do modelo** (não depende mais do acaso de o Vihaan estar vivo) e a **física do pagamento**.
+
+### O que mudou no código (3 chaves, todas ligadas por padrão; com as 3 desligadas o arquivo é bit-idêntico ao commit `47ec126`)
+| chave | o que faz |
+|---|---|
+| `OWN_WIPE_HOLD_ALWAYS_ENABLED` | todo wipe próprio (Blood Money, Blasphemous Act) é segurado: o lado do oponente é 📊. Generaliza `OWN_WIPE_HOLD_ENGINE_ENABLED` (a regra da 9ª rodada fica como a base de comparação) |
+| `OWN_WIPE_PAY_WITH_ANIMATED_ENABLED` | o custo do wipe é pago primeiro com os Treasures **animados vivos e desvirados** (`ceil(custo/valor do Treasure)` deles; o resto vem dos terrenos); sacrifício = mana + morte de criatura + gatilho de sacrifício (Mayhem Devil). Contadores `own_wipe_animated_paid_total` e `own_wipe_pay_drain_total` |
+| `OWN_WIPE_RELEASE_MITIGATED_ENABLED` | a exceção: libera o wipe quando `wipe_mitigated` (Mayhem Devil em campo, animados pagando o custo inteiro, dano do pagamento > criaturas minhas perdidas). Contador `own_wipe_mitigated_casts_total` |
+
+**Premissas minhas, não confirmadas pelo usuário (agora que o princípio é geral, estas substituem as da rodada anterior):** (a) a unidade da comparação é **1 dano = 1 criatura minha perdida**, só com o que o simulador enxerga (o efeito do wipe no campo do oponente é 📊 e fica de fora, o que torna a exceção conservadora); (b) **só** a circunstância que você citou (Mayhem Devil + animados) libera o wipe; outras mitigações reais (Zulaport e Sephiroth drenando pelas mortes, Plunderer devolvendo Treasure, Mahadi no end step se ele sobrevivesse) **não** entram na conta de liberar, só aparecem nos efeitos quando o wipe é conjurado; (c) exigir os animados pagando o custo **inteiro** (cobertura parcial segura).
+
+### Medição (apoio; pareada; base = simulador antes, commit `47ec126`, em que a retenção era só "Vihaan ou Mahadi"; N=10.000, sementes 3.000.000+i, 8 turnos; entre parênteses o modo resiliência)
+Diferença pareada (variante − antes), IC95%. `sempre` = retenção universal sem exceção; `liberar` = o que fica no repositório; `sem_hold_pagar` e `sem_hold` = referências **sem nenhuma retenção** (o wipe sai sempre que há mana), com e sem o pagamento por animados:
+
+| variante | win ≤8 (pp) | estoque no fim | mortes de criatura | dreno (proxy) |
+|---|---|---|---|---|
+| `sempre` | +0,000 ±0,000 (+0,000 ±0,000) | +0,000 ±0,000 (+0,000 ±0,000) | +0,000 ±0,000 (−0,001 ±0,001) | +0,000 ±0,000 (−0,001 ±0,001) |
+| **`liberar` (repositório)** | +0,000 ±0,000 (+0,000 ±0,000) | −0,002 ±0,005 n.s. (−0,001 ±0,001 n.s.) | +0,006 ±0,007 n.s. (+0,001 ±0,003 n.s.) | +0,001 ±0,003 n.s. (+0,000 ±0,002 n.s.) |
+| `sem_hold_pagar` | **−2,160 ±0,332** (−0,410 ±0,160) | −0,124 ±0,098 (−0,092 ±0,026) | +0,910 ±0,071 (+0,200 ±0,048) | −0,460 ±0,612 n.s. (−0,164 ±0,088 n.s.) |
+| `sem_hold` | **−2,160 ±0,332** (−0,410 ±0,160) | −0,119 ±0,098 (−0,093 ±0,026) | +0,910 ±0,071 (+0,199 ±0,048) | −0,464 ±0,612 n.s. (−0,165 ±0,088 n.s.) |
+
+Base: win ≤8 15,5% (4,0%) · estoque no fim 3,73 (1,93) · mortes de criatura 3,78 (5,10) · dreno 10,30 (4,46).
+**Métricas diretas (por jogo, padrão; entre parênteses a resiliência):**
+
+| | Blood Money | Blasphemous Act | wipe com Vihaan/Mahadi em campo | retenções (carta × turno) | wipes na circunstância mitigada | animados pagando wipe | dano do pagamento | partidas iguais ao antes |
+|---|---|---|---|---|---|---|---|---|
+| antes | 0 (0) | 0 (0,0002) | 0 (0) | n/a | n/a | n/a | n/a | 100% |
+| `sempre` | 0 (0) | 0 (0) | 0 (0) | 0,632 (0,340) | 0 | 0 | 0 | 100% |
+| **`liberar`** | 0,0005 (0,0001) | 0 (0) | 0,0005 (0,0001) | 0,632 (0,340) | **0,0005 (0,0001)** | 0,0035 (0,0007) | 0,0035 (0,0007) | ≥99,95% (≥99,99%) |
+| `sem_hold_pagar` | 0,055 (0,027) | 0,119 (0,062) | 0,172 (0,089) | 0 | 0 | 0,048 (0,033) | 0,041 (0,020) | 83,0% (91,2%) |
+| `sem_hold` | 0,055 (0,027) | 0,119 (0,062) | 0,172 (0,089) | 0 | 0 | 0 | 0 | 83,0% (91,2%) |
+
+**Pares que a tabela não mostra** (`resumos/pares_10000.txt`; diferença pareada, IC95%): `liberar − sempre`: win +0,000 ±0,000 (+0,000 ±0,000), todas as demais métricas n.s.; `sem_hold_pagar − sem_hold`: win +0,000 ±0,000 (+0,000 ±0,000), dreno +0,004 ±0,004 n.s., dano de mesa +0,011 ±0,011 n.s.
+**Regressão** (160.000 partidas, 4 configurações × 2 modos × 20.000): na configuração do repositório (`liberar`) saem **11 wipes em 20.000 partidas no padrão e 2 na resiliência, todos na circunstância mitigada**, pagos com **77 e 14 Treasures animados** (7 por Blood Money) e **todos destroem o Vihaan** (a perda aceita no princípio).
+**Leitura (medido):** (a) segurar o wipe vale **+2,16 ±0,33pp** de vitória até o T8 (padrão) e +0,41 ±0,16pp (resiliência) sobre deixá-lo sair sempre, o que confirma o custo próprio do wipe quando só o **meu** campo existe; (b) pagar o custo com animados **não** salva o wipe na ausência de retenção (`sem_hold_pagar` = `sem_hold`: −2,16pp), porque sem retenção o simulador o conjura antes do combate (main 1), quando ainda não há animados: os animados só existem depois do combate, e é só aí que a exceção mitigada pode agir; (c) a exceção é rara (0,05% das partidas) e nunca muda o instante da vitória nas amostras (win ±0,000).
+**Limite do que isso prova (Regra #5):** sem criaturas de oponente o wipe só pode **custar**: a vantagem da retenção aqui é verdadeira por construção. O seu princípio compara perdas dos dois lados; o lado do oponente (campos limpos, um Treasure por criatura não-ficha deles com a Blood Money) é 📊 e **não está medido**. A decisão real de conjurar continua sendo sua; o simulador só segura por padrão e libera na circunstância que você descreveu.
+**Lido como raciocínio, não medido:** com Mayhem Devil em campo e **muitos** Treasures animados pós-combate, pagar a Blood Money (7) sacrificando 7 animados dá 7 de dano e ainda manda o resto do campo ao cemitério; é o caso em que o princípio se satisfaz **mesmo no goldfish**, e ele é raro porque exige 7 Treasures desvirados no início do combate **e** menos de 7 criaturas minhas.
+
+### Validação (Regra #1) — arquivada em `resultados-ab/2026-10-04-wipes-segurados/`
+- **Smoke:** 99 cartas, 93 distintas, 0 desconhecidas, 0 duplicadas não básicas, 35 terrenos; 200 partidas sem exceção.
+- **Testes dirigidos:** 24/24: Blood Money paga com 7 animados (mana dos terrenos intacta, 7 sacrificados, **7 de dano do Mayhem Devil antes do wipe**; o wipe segue destruindo Vihaan/Lotho/Mayhem sem dano extra); chave desligada paga com os 7 terrenos e o Mayhem Devil não causa dano; sem Mayhem Devil o pagamento é o mesmo mas sem dano; cobertura parcial (3 animados + 4 terrenos); Treasure virado não paga; Goldspan Dragon (Treasure vale 2); Blasphemous Act paga o piso com 1 animado e o Zulaport drena; magia comum (Sol Ring) continua pagando com terrenos; **retenção universal** (sem Vihaan nem Mahadi, com 8 de mana: segura Blood Money e Blasphemous Act; chave desligada = regra da 9ª rodada); **exceção mitigada** (libera com Mayhem + 7 animados; não libera sem Mayhem, com cobertura parcial, com animados virados, com a chave da exceção desligada, com Blasphemous Act em tabuleiro cheio, nem com 9 criaturas minhas contra 7 de dano; libera com 6 criaturas contra 7 de dano e num tabuleiro magro com a Act); carta exilada pelo Prosper (libera só na mitigada; senão expira); invariante em 3.000 jogos por modo (todo wipe conjurado está na circunstância mitigada; o pagamento nunca passa dos animados vivos).
+- **Bit-identidade com as 3 chaves desligadas:** 20.000/20.000 partidas idênticas ao `47ec126` no padrão e 20.000/20.000 na resiliência.
+- **Regressão:** 160.000 partidas (`liberar`, `sempre`, `sem_hold`, `antes` × 2 modos × 20.000, sementes 5.000.000+i), **0 exceções**, 0 cartas duplicadas, 0 partidas com mais de 1 jogada de terreno, 0 "animados vivos" ≠ 0 no fim do turno, 0 Treasures < 0, 0 farms inválidos, 0 mágicas paradas no campo, 0 emblemas inconsistentes, 0 Treasures virados fora de [0, estoque], **0 wipes conjurados contra a retenção da configuração, 0 criaturas sobrando depois do wipe, 0 comandantes conjurados sem mana pro imposto, 0 pagamentos com animados inválidos**.
+- **Reprodutibilidade:** `bash orquestracao/verificar_reproducao.sh --tudo` → **11/11 saídas byte a byte iguais** (`cmp`): as 4 tabelas do A/B e as diferenças pareadas refeitas dos `.json.xz` e a re-execução do smoke, dos 24 testes, da bit-identidade (2 modos × 20.000), da regressão (160.000 partidas) e do destino do Prosper. Os 11 arquivos anteriores do Vihaan, reverificados com `--tudo`, **todos iguais** (`wipes-proprios` 11/11, `dictate-metade-dos-animados` 11/11, `dictate-metade` 10/10, `exilio-sempre-e-dictate` 10/10, `exilio-primeiro-e-mahadi` 10/10, `fora-da-mao` 8/8, `sephiroth` 11/11, `treasure-animado-e-mulligan` 7/7, `kingpin` 11/11, `inevitable-defeat` 6/6, `partida-manual-1` 7/7); o `fx_common.py` de 8 deles foi ajustado para desligar as 3 chaves novas e o `smoke.py` do `wipes-proprios` passou por `F.flags`.
+
+### Escopo verificado e NÃO verificado (Regra #7)
+- **Verificado:** `wipe_held`, `wipe_mitigated`, `_wipe_pay_with_animated` e a ordem de pagamento em `cast_card` (o custo do wipe, sacrifício antes do wipe resolver), a interação com Treasure virado, Goldspan e a carta exilada, por teste dirigido + A/B + regressão + bit-identidade. Classes da taxonomia varridas, e só elas: política de jogada contra a linha real do usuário, custo de ativação (ordem e fonte do pagamento), gatilho compartilhado (sacrifício dispara Mayhem Devil, morte de criatura dispara Zulaport/Plunderer/Dictate), conceito compartilhado ("animado = criatura até o fim do turno").
+- **Não verificado / aberto:** (1) o benefício real do wipe contra os campos dos oponentes (📊); (2) as 3 premissas minhas acima (unidade 1 dano = 1 criatura; só a circunstância do Mayhem Devil libera; cobertura inteira); (3) outras circunstâncias mitigadoras que você possa ter em mente além do Mayhem Devil (Zulaport, Sephiroth, Plunderer) não entram na decisão de liberar; (4) Lotho/Monologue Tax em 2ª mágica de oponente (📊); (5) o resto do `.py` não foi relido nesta rodada.
+
+---
+
 ## Respostas do T8 (Sevinne's, Blood Money, Lotho + Tax) e correção do simulador: wipes próprios e imposto do comandante — 2026-10-04
 
 **Pedido (3 respostas do usuário, a última fecha os itens abertos do T7/T8):**
@@ -47,6 +109,7 @@
 
 **Regra #3 (conceitos compartilhados):** "o que um wipe destrói" (comandante, fichas, Treasure animado), "destruir ≠ sacrificar" (Mayhem Devil) e "morte simultânea" (look-back) eram tratados só em parte e só em alguns caminhos: `_destroy_dragons` e o wipe do oponente já usavam destruição; o wipe **próprio** usava sacrifício, excluía o comandante e ignorava os Treasures animados.
 **Premissas minhas, não confirmadas pelo usuário:** (a) a retenção vale **também para a Blasphemous Act** (extensão da sua razão: ela destruiria os mesmos motores e nem cria Treasure); (b) "segurar" quando **Vihaan OU Mahadi** estiver em campo (não só os dois juntos); (c) o modelo dos Treasures virados é por contador agregado (não rastreia quais são animados).
+> **Correção do usuário no mesmo dia: o princípio é mais geral.** *"Todo boardwipe deve ser segurado para causar mais perdas aos oponentes do que a mim ..."*: as premissas (a) e (b) acima (retenção só com Vihaan/Mahadi, estendida à Blasphemous Act por palpite meu) foram substituídas pela retenção **universal** com exceção mitigada na seção acima. Os números desta seção descrevem a regra do commit `47ec126` e ficam como histórico.
 
 ### Medição (apoio; pareada; base = simulador antes, commit `bf8a6f6`; N=10.000, sementes 3.000.000+i, 8 turnos; entre parênteses o modo resiliência)
 Diferença pareada (variante − antes), IC95%. Cada variante liga só o que diz; `sem_hold` = tudo menos a retenção (o que o simulador faria sem a sua linha); `todas` = o que fica no repositório:

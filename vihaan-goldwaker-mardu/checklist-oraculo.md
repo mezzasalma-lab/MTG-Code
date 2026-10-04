@@ -1,5 +1,23 @@
 # Checklist cláusula-a-cláusula — Vihaan, Goldwaker
 
+## Wipes próprios segurados e custo pago com Treasures animados (correção do simulador) — oráculo, rulings e cláusulas — 2026-10-04
+
+Origem: princípio do usuário: *"Todo boardwipe deve ser "segurado" para causar mais "perdas" aos oponentes do que a mim. Claro que quando utilizados, eu perco tudo que for criatura em campo, mas dependendo das circunstancias isso pode ser mitigado: por exemplo: Com Mayhem Devil em campo, sacrificar tesouros animados para [pagar o custo do wipe ainda causa dano nos oponentes além do efeito do wipe em sim!"* Código: `vihaan_goldfish_v1.py` (antes = commit `47ec126`). Oráculo e rulings: os lidos ao vivo em 2026-10-04 (cópia em `resultados-ab/2026-10-04-wipes-segurados/dados/oraculo_rulings_ao_vivo.json`). Tudo que sustenta a conclusão está em `resultados-ab/2026-10-04-wipes-segurados/`.
+
+| Cláusula do oráculo | Ruling | Antes (`47ec126`) | Depois |
+|---|---|---|---|
+| **Mayhem Devil**, *Whenever a player sacrifices a permanent, deals 1 damage to any target.* | se o sacrifício paga um **custo**, o gatilho resolve **antes** da magia (2019-05-03); o gatilho é meu e eu escolho o alvo | ✅ dispara por sacrifício (Treasure de mana, Altar...); 🐛 mas o custo do wipe saía dos **terrenos**, então o Mayhem Devil não disparava no wipe e os animados morriam de graça | ✅ o custo do wipe é pago **primeiro com os animados** (1 dano por Treasure sacrificado, antes do wipe) |
+| **Treasure**, *{T}, Sacrifice this token: Add one mana of any color.* | habilidade de mana; só desvirado | ✅ | ✅ só os **desvirados** pagam (Blood Money cria virados) |
+| **Vihaan**, *Treasures you control become 3/3 Construct Assassin artifact creatures until end of turn* | o conjunto é fixado na resolução | ✅ animados = criatura até o fim do turno | ✅ sacrificá-los é morte de criatura (Zulaport, Plunderer, Dictate, Sephiroth) **e** sacrifício (Mayhem Devil) |
+| **Blood Money** (`{5}{B}{B}`) / **Blasphemous Act** (`{8}{R}`, {1} a menos por criatura, piso {R}) | MV 9 da Act; a redução vale antes de pagar (2020-11-10) | 🐛 conjuradas só com a retenção de Vihaan/Mahadi (palpite meu) | ✅ **todo wipe próprio segurado**; 📊 o benefício contra os campos dos oponentes não é modelável; exceção: circunstância mitigada |
+| **Pitiless Plunderer / Zulaport / Mahadi** (mitigadores reais de um wipe) | Plunderer dispara pelas outras que morrem junto (2018-01-19) | ✅ no wipe (9ª rodada) | ✅ inalterado; **não** entram na conta de liberar (só nos efeitos quando o wipe é conjurado) |
+
+**Regra #6 (ordem de eventos):** o custo do wipe é pago **antes** do wipe resolver (animados sacrificados e Mayhem Devil resolvendo antes, ruling 2019-05-03); os animados só existem **depois do combate**, então a exceção mitigada só pode agir na 2ª main; sem retenção o simulador conjuraria o wipe na 1ª main, antes de existirem animados (por isso `sem_hold_pagar` = `sem_hold`).
+**Regra #5:** o princípio veio do usuário; o simulador só mede: segurar vale +2,16 ±0,33pp (padrão) sobre deixar o wipe sair sempre, e sem criaturas de oponente isso é verdadeiro por construção. O benefício real do wipe é 📊.
+**Premissas minhas, não confirmadas:** unidade da comparação 1 dano = 1 criatura minha perdida; só a circunstância do Mayhem Devil libera; animados pagando o custo inteiro.
+**Validação:** smoke; 24/24 testes dirigidos; bit-identidade (3 chaves desligadas × `47ec126`, 20.000 × 2 modos); regressão 160.000 partidas, 0 exceções; A/B pareado N=2.000/10.000 nos dois modos, 5 variantes.
+**Classes da taxonomia da Regra #1 varridas (e só elas):** política de jogada contra a linha real do usuário, custo de ativação (ordem e fonte do pagamento), gatilho compartilhado (sacrifício vs morte), conceito compartilhado ("animado = criatura até o fim do turno"). **Não varridas:** as demais classes e cartas do `.py`.
+
 ## Blood Money, Blasphemous Act, Sevinne's, Lotho, Monologue Tax e imposto do comandante (correção do simulador) — oráculo, rulings e cláusulas — 2026-10-04
 
 Origem: respostas do usuário sobre o T8 da partida manual #1: *"A cópia da Sevinne trouxe o Zulaport de volta. Blood money ficou exilada permanentemente, mesmo que ela gerasse muitos tesouros, sem Vihaan e Mahadi em campo acho que seria pior! Lotho e Tax eu considerei que 1 dos 3 oponentes jogou 2 mágicas no mesmo turno e por isso perdi 1 de vida e criei 2 tesouros!"* Código: `vihaan_goldfish_v1.py` (antes = commit `bf8a6f6`). Oráculo e **rulings lidos ao vivo no Scryfall em 2026-10-04, ANTES do código** (Regra #3): `resultados-ab/2026-10-04-wipes-proprios/dados/oraculo_rulings_ao_vivo_9a_rodada.json`. Tudo que sustenta a conclusão está em `resultados-ab/2026-10-04-wipes-proprios/`.
@@ -20,6 +38,7 @@ Origem: respostas do usuário sobre o T8 da partida manual #1: *"A cópia da Sev
 **Regra #6 (ordem de eventos):** o wipe é uma resolução única (morte simultânea): os eventos de "dies" são disparados com o campo ainda cheio e só depois as peças saem; o Mahadi morto não cria Treasure no end step; o untap dos Treasures virados está no início de `play_turn`.
 **Regra #3 (conceitos compartilhados):** "o que um wipe destrói", "destruir ≠ sacrificar" e "morte simultânea" foram auditados por grep em todos os pontos que removem criatura em lote (`resolve_instant_sorcery` próprio, `_destroy_dragons`, wipe do oponente em `try_smart_opponent_wipe`/`remove_permanent`).
 **Premissas minhas, não confirmadas:** a retenção vale também para a Blasphemous Act; "segurar" com Vihaan **ou** Mahadi; os Treasures virados são um contador agregado.
+**Correção do usuário no mesmo dia:** o princípio é mais geral (todo wipe segurado, com exceção mitigada); as duas primeiras premissas foram substituídas pela seção acima.
 **Validação:** smoke; 34/34 testes dirigidos; bit-identidade (5 chaves desligadas × `bf8a6f6`, 20.000 × 2 modos); regressão 120.000 partidas, 0 exceções; A/B pareado N=2.000/10.000 nos dois modos, 7 variantes.
 **Classes da taxonomia da Regra #1 varridas (e só elas):** conceito compartilhado, custo de ativação (imposto, redução de custo), gatilho compartilhado ligado em alguns pontos, política de jogada contra a linha real do usuário. **Não varridas:** as demais classes e cartas do `.py`.
 
