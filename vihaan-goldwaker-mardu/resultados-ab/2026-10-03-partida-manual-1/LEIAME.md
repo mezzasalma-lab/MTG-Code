@@ -35,6 +35,11 @@ Leitura: **"T7 foi erro meu"** = a diferença entre o que as regras davam em T7 
 
 Leitura: o **contador +1/+1** do Treasure 24DnlO5iG em T7 foi **clique errado** (a intenção era duplicar o token, isto é, criar um Treasure); não é marcador do Reaver Cleaver e não tem efeito de regra. A 2ª frase é o **critério de reserva** do sacrifício com o Dictate: **até metade dos Treasures** (virou chave do simulador em `../2026-10-04-dictate-metade/`).
 
+**Quinta mensagem do usuário (2026-10-04), transcrita sem reescrever:**
+> *"Metade dos tesouros animados, tesouros inanimados não trigam o Dictate!"*
+
+Leitura: corrige a base da reserva da mensagem anterior: a metade é **dos Treasures animados** (só eles são criatura e disparam o Dictate), não do estoque inteiro (virou a chave `TREASURE_FARM_DICTATE_HALF_OF_ANIMATED_ENABLED` em `../2026-10-04-dictate-metade-dos-animados/`).
+
 ## Como ler o log (premissas, a conferir com o usuário)
 
 Formato: lista de 8 turnos; cada turno = registros `{name, id, tapped, token, counters, fromZone, toZone, zone}`. As primeiras linhas de cada turno são as **desvirações** (untap) de quem estava virado; depois vêm as ações em ordem de registro. O log só gera linha quando o **estado muda**:

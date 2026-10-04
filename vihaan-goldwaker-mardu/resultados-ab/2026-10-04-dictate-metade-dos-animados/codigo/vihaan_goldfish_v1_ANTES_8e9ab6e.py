@@ -98,15 +98,6 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas):
   Dictate of Erebos em campo, sacrificar os Treasures animados mesmo sem
   Mahadi/Plunderer (cada morte: cada oponente sacrifica 1 criatura, 📊).
   Ver `resultados-ab/2026-10-04-exilio-sempre-e-dictate/LEIAME.md`.
-- Reserva do Dictate (2026-10-04, 7a rodada): o usuario sacrificaria "ate'
-  metade dos treasures para eliminar criaturas dos adversarios"; quando so'
-  o Dictate justifica o sacrificio (sem Mahadi/Plunderer, que repoem), o
-  simulador sacrifica no maximo metade do estoque. Ver
-  `resultados-ab/2026-10-04-dictate-metade/LEIAME.md`.
-- A metade e' dos ANIMADOS (2026-10-04, correcao do usuario: "metade dos tesouros
-  animados, tesouros inanimados nao trigam o Dictate"): o teto do sacrificio
-  com so' o Dictate e' `treasures_animated_alive // 2`, nao `treasures // 2`.
-  Ver `resultados-ab/2026-10-04-dictate-metade-dos-animados/LEIAME.md`.
 """
 
 import copy
@@ -395,14 +386,6 @@ TREASURE_SELF_OUTLET_FARM_ENABLED = True   # com Mahadi/Pitiless Plunderer em ca
 # Correcoes de 6a rodada (2026-10-04; preferencias do usuario). Com as DUAS em False o arquivo se comporta bit-a-bit como o do commit ba594c8.
 IMPULSE_ALL_FIRST_ENABLED = True           # TODA magia do exilio e' conjurada antes das da mao (nao so' as que expiram neste turno): cada uma cria 1 Treasure (Pact Boon)
 TREASURE_FARM_WITH_DICTATE_ENABLED = True  # Dictate of Erebos em campo tambem justifica sacrificar os Treasures animados (cada morte: cada oponente sacrifica 1 criatura)
-
-# Correcao de 7a rodada (2026-10-04; criterio dado pelo usuario: "eu sacrificaria ate' metade dos treasures para eliminar criaturas dos adversarios").
-# Com a chave em False o arquivo se comporta bit-a-bit como o do commit 8e9ab6e.
-TREASURE_FARM_DICTATE_HALF_RESERVE_ENABLED = True  # quando SO' o Dictate justifica (sem Mahadi/Plunderer): sacrifica no maximo METADE dos Treasures (a outra metade e' reserva)
-
-# Correcao de 8a rodada (2026-10-04; o usuario corrigiu a base da metade: "metade dos tesouros animados, tesouros inanimados nao trigam o Dictate").
-# Com a chave em False a base da metade volta a ser o ESTOQUE inteiro (comportamento do commit 9e613ea); so' age com a chave da 7a rodada ligada.
-TREASURE_FARM_DICTATE_HALF_OF_ANIMATED_ENABLED = True  # a metade conta so' os Treasures ANIMADOS vivos (os unicos que sao criatura e disparam o Dictate), nao o estoque inteiro
 
 TREASURE_SOURCE_TAGS = {
     "goldspan", "treasure_attack", "draw_treasure", "sac_draw_treasure",
@@ -2135,12 +2118,7 @@ def farm_animated_treasures(state: GameState):
     fora). Roda no fim da 2a main, depois de a mana ter sido gasta (os animados que pagaram magias ja' foram sacrificados primeiro).
     TREASURE_FARM_WITH_DICTATE_ENABLED (6a rodada, resposta do usuario: "o Dictate e' mais vantagem, eu sacrifico tesouros animados e todos os
     oponentes sacrificam criaturas"): Dictate of Erebos em campo tambem aciona o farm, mesmo sem Mahadi/Plunderer, ainda que custe 1 Treasure
-    por morte; o efeito nos oponentes e' 📊 (so' `dictate_triggers_total` conta o uso).
-    TREASURE_FARM_DICTATE_HALF_RESERVE_ENABLED (7a rodada, criterio do usuario: "eu sacrificaria ate' metade dos treasures para eliminar criaturas
-    dos adversarios"): quando so' o Dictate justifica, no maximo METADE (base do commit 9e613ea: o estoque, `treasures // 2`; ver a chave da 8a rodada); com
-    Mahadi/Plunderer o sacrificio e' de graca e continua sendo de todos os animados.
-    TREASURE_FARM_DICTATE_HALF_OF_ANIMATED_ENABLED (8a rodada, correcao do usuario: "metade dos tesouros animados, tesouros inanimados nao
-    trigam o Dictate"): a base da metade e' `treasures_animated_alive` (so' eles sao criatura), nao `treasures`."""
+    por morte; o efeito nos oponentes e' 📊 (so' `dictate_triggers_total` conta o uso)."""
     if not TREASURE_SELF_OUTLET_FARM_ENABLED or state.treasures_animated_alive <= 0:
         return
     com_reposicao = "Mahadi, Emporium Master" in state.battlefield or "Pitiless Plunderer" in state.battlefield
@@ -2148,9 +2126,6 @@ def farm_animated_treasures(state: GameState):
     if not com_reposicao and not com_dictate:
         return
     n = min(state.treasures_animated_alive, state.treasures)
-    if not com_reposicao and TREASURE_FARM_DICTATE_HALF_RESERVE_ENABLED:
-        base = state.treasures_animated_alive if TREASURE_FARM_DICTATE_HALF_OF_ANIMATED_ENABLED else state.treasures
-        n = min(n, base // 2)  # "ate' metade": a outra metade fica de reserva (mana do proximo turno)
     if n <= 0:
         return
     sacrifice_treasures(state, n, for_mana=True)

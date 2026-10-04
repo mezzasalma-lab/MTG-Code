@@ -1,0 +1,12 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia (oponente esperto, simulate_one_with_interaction)
+ANTES: win<=T8 3.6% | Treasures criados 7.72 (estoque no fim 1.73) | dano mesa 9.32 combate 32.91 drain 4.20 | mortes de criatura 4.98 | mana bonus 0.99 | recursoes 0.22 | mana T5 4.980 T6 5.878
+variante  win<=8 pp      Treasures criados estoque no fim dano mesa      combate        drain          mortes cria.   mana bonus     mana T5        mana T6       
+animados   +0.000±0.000   +0.000±0.000   +0.009±0.006   -0.016±0.014   +0.013±0.012   -0.006±0.005   -0.011±0.006   +0.000±0.000   +0.000±0.000   +0.000±0.000 
+tudo       +0.000±0.000   +0.002±0.002   -0.013±0.006   +0.019±0.012   -0.025±0.018   +0.008±0.005   +0.016±0.006   +0.000±0.000   +0.000±0.000   -0.001±0.001 
+sem        +0.000±0.000   +0.000±0.000   +0.022±0.012   -0.041±0.029   +0.030±0.020   -0.017±0.012   -0.026±0.012   +0.000±0.000   +0.000±0.000   +0.001±0.001 
+
+variante  jogos iguais magias do exilio  Pact Boon (cham.) exilio sempre 1o  farm (Treasures)  farm so' Dictate  Mahadi (Treasures)  Plunderer (Treasures) Dictate (gat.)  pool expirado 
+antes     100.0%       0.8245            0.2110            0.8905            0.2510            0.0300            0.2490              0.3270                0.1965          0.7190        
+animados   99.0%       0.8245            0.2110            0.8905            0.2370            0.0160            0.2490              0.3270                0.1850          0.7190        
+tudo       98.5%       0.8245            0.2110            0.8905            0.2675            0.0465            0.2490              0.3270                0.2120          0.7190        
+sem        98.5%       0.8245            0.2110            0.8905            0.2210            0.0000            0.2490              0.3270                0.1705          0.7190        

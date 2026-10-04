@@ -78,3 +78,8 @@ Nenhum lote superado ou inválido nesta pasta.
 - As duas premissas acima ("metade" do estoque inteiro; teto não vale com Mahadi/Plunderer) não foram confirmadas pelo usuário.
 - Lotho/Monologue Tax em 2ª mágica de **oponente** continuam 📊. Sem resposta: a cópia da Sevinne's no T8 e a Blood Money que expirou no T8.
 - Nenhuma carta foi cortada ou adicionada à lista; o Commander Spellbook não foi consultado porque nada na lista mudou.
+
+## Nota de 2026-10-04 (8ª rodada: `../2026-10-04-dictate-metade-dos-animados/`)
+
+- **Correção do usuário:** *"Metade dos tesouros animados, tesouros inanimados não trigam o Dictate!"* A 1ª premissa desta pasta ("metade dos treasures" = metade do **estoque inteiro**) estava errada: a metade é **dos animados**, e virou a chave `TREASURE_FARM_DICTATE_HALF_OF_ANIMATED_ENABLED` (ligada por padrão no simulador vivo). Os números desta pasta descrevem a regra do commit `9e613ea` (base = estoque) e ficam como histórico.
+- **Esta pasta continua reproduzindo o simulador do commit dela**: `orquestracao/fx_common.py` desliga a chave nova e `orquestracao/prosper_destino.py` passa por `F.flags`. `verificar_reproducao.sh --tudo` depois da 8ª rodada: 10/10. `SHA256SUMS` regenerado.

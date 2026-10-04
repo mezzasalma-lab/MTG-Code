@@ -1,5 +1,23 @@
 # Checklist cláusula-a-cláusula — Vihaan, Goldwaker
 
+## Dictate com Treasures animados: a metade conta só os ANIMADOS (correção do simulador) — 2026-10-04
+
+Origem: correção do usuário à rodada anterior: *"Metade dos tesouros animados, tesouros inanimados não trigam o Dictate!"* Código: `vihaan_goldfish_v1.py` (antes = commit `9e613ea`, em que a metade era do estoque). Tudo que sustenta a conclusão está em `resultados-ab/2026-10-04-dictate-metade-dos-animados/`. Oráculo e rulings: os já lidos ao vivo (cópia em `.../2026-10-04-dictate-metade-dos-animados/dados/oraculo_rulings_ao_vivo.json`).
+
+| Cláusula do oráculo | Ruling | Antes (`9e613ea`) | Depois |
+|---|---|---|---|
+| **Dictate of Erebos**: *whenever a creature you control dies, each opponent sacrifices a creature of their choice* | um gatilho por criatura; o oponente escolhe (2014-04-26) | 🐛 o teto era `estoque // 2`: com 12 Treasures e 7 animados sacrificava 6 (mais da metade dos animados) | ✅ teto `animados // 2` (3); 📊 o oponente nunca sacrifica nada: `dictate_triggers_total` × 3 oponentes = proxy |
+| **Treasure inanimado** (criado depois do início do combate, CR 611.2c, ou fora do turno) | **não é criatura**, logo não morre como criatura e **não dispara o Dictate** (usuário) | ✅ já não era sacrificado como criatura | ✅ e deixou de contar na base do teto |
+| **Vihaan, Goldwaker**: *Treasures you control become 3/3 Construct Assassin artifact creatures until end of turn* | o conjunto afetado é fixado na resolução (CR 611.2c) | ✅ | ✅ inalterado |
+| **Mahadi / Pitiless Plunderer**: repõem o Treasure quando a criatura-Treasure morre | — | ✅ todos os animados, de graça | ✅ inalterado (o teto só vale quando só o Dictate justifica) |
+
+**Regra #3 (conceito compartilhado "só animado é criatura"):** grep dos dois únicos lugares que baixam `state.treasures` (`sacrifice_treasures`, wipe de oponente): nenhum transforma inanimado em morte de criatura; o erro era só a **base do teto**.
+**Regra #6 (ordem de eventos):** inalterada: o Dictate é pago antes com terrenos/rocks; o farm roda depois da 2ª `main_phase`; o teto é calculado sobre `treasures_animated_alive` **naquele ponto**.
+**Regra #5:** o critério veio do usuário (linha de jogo real); o simulador só mede o custo (+0,021 ±0,004 Treasures no estoque, −0,022 ±0,006 mortes de criatura, win −0,020 ±0,048pp n.s.) e **não dá valor** às criaturas de oponente (📊).
+**Premissas minhas, não confirmadas:** `animados // 2` arredonda pra baixo (1 animado → 0); com Mahadi/Plunderer o teto não se aplica.
+**Validação:** smoke; 19/19 testes dirigidos; bit-identidade nos 4 casos (20.000 partidas cada); regressão 160.000 partidas, 0 exceções; A/B pareado N=2.000/10.000 nos dois modos.
+**Classes da taxonomia da Regra #1 varridas (e só elas):** conceito compartilhado ("só animado é criatura"), custo de ativação (Treasure como saída própria), política de jogada contra a linha real do usuário. **Não varridas:** as demais classes e cartas do `.py`.
+
 ## Dictate com Treasures animados: reserva de "até metade dos treasures" (correção do simulador) — 2026-10-04
 
 Origem: resposta do usuário: *"O contador foi erro de clique, era para duplicar o token. Eu sacrificaria até metade dos treasures para eliminar criaturas dos adversários."* Código: `vihaan_goldfish_v1.py` (antes = commit `8e9ab6e`). Tudo que sustenta a conclusão está em `resultados-ab/2026-10-04-dictate-metade/`. Oráculo e rulings: os já lidos ao vivo (`.../2026-10-03-partida-manual-1/dados/oraculo_rulings_ao_vivo.json`; cópia em `.../2026-10-04-dictate-metade/dados/`).
@@ -14,6 +32,7 @@ Origem: resposta do usuário: *"O contador foi erro de clique, era para duplicar
 **Regra #6 (ordem de eventos):** inalterada: o Dictate é pago antes com terrenos/rocks; o farm roda depois da 2ª `main_phase`; o teto é calculado sobre o `state.treasures` **naquele ponto** (depois do pagamento do Dictate).
 **Regra #5:** o critério da reserva veio do usuário (linha de jogo real), não do simulador; o simulador só mede o custo (+0,023 ±0,005 Treasures no estoque, −0,022 ±0,006 mortes de criatura, win −0,020 ±0,039pp n.s.) e **não dá valor** às criaturas de oponente (📊).
 **Premissas minhas, não confirmadas:** "metade dos treasures" = metade do **estoque inteiro**, arredondada pra baixo; com Mahadi/Plunderer o teto não se aplica.
+**Correção do usuário no mesmo dia:** a 1ª premissa estava errada; a metade é **dos animados** (seção acima).
 **Validação:** smoke; 17/17 testes dirigidos; bit-identidade com a chave desligada (20.000+20.000 partidas); regressão 120.000 partidas, 0 exceções; A/B pareado N=2.000/10.000 nos dois modos.
 **Classes da taxonomia da Regra #1 varridas (e só elas):** custo de ativação (Treasure como saída própria), gatilho compartilhado (morte de criatura → Dictate), política de jogada contra a linha real do usuário. **Não varridas:** as demais classes e cartas do `.py`.
 
