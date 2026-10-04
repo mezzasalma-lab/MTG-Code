@@ -1,0 +1,40 @@
+PASS - W1 Blood Money destroi o COMANDANTE tambem (Vihaan e' Legendary Creature): sai do campo, vai a zona de comando (nao fica no cemiterio), 3 mortes 
+PASS - W1b 'for each nontoken creature destroyed': 3 nao-fichas (Zulaport, Lotho e o Vihaan) = 3 Treasures, todos VIRADOS 
+PASS - W1c chave desligada = codigo antigo: o comandante SOBREVIVE ao 'destroy all creatures' e so' 2 Treasures, desvirados 
+PASS - W2 destroy != sacrifice: Mayhem Devil ('whenever a player SACRIFICES a permanent') NAO reage a Blood Money (0 de dano); o codigo antigo o disparava 
+PASS - W2b idem na Blasphemous Act (13 de dano, nao e' sacrificio): 0 de dano do Mayhem Devil 
+PASS - W3 Blood Money destroi os Treasures ANIMADOS vivos (sao criaturas ate' o fim do turno, ficha = sem Treasure por eles) e nao os conta como sacrificados: 6 destruidos + Plunderer e Vihaan 
+PASS - W3b contas dos Treasures: 10 - 6 destruidos = 4, + 7 do Plunderer (Vihaan e os 6 animados morrem junto; nunca pela propria morte) + 2 virados da Blood Money (Plunderer, Vihaan) = 13, dos quais 2 virados 
+PASS - W4 morte simultanea: o Zulaport dispara pela propria morte e pelas outras (4 mortes = 4 de vida e 4 de dreno) em QUALQUER ordem do campo 
+PASS - W4b o Plunderer dispara pelas OUTRAS que morrem junto (3: Lotho, Olivia, Vihaan), nunca por si, em qualquer ordem; + 4 virados da Blood Money = 7 Treasures criados 
+PASS - W4c o codigo antigo (chave desligada) dependia da ordem: o numero de gatilhos do Zulaport variava com a posicao dele no campo 
+PASS - W5 'another creature': o Plunderer (ainda em campo durante a propria morte simultanea) nao cria Treasure pela propria morte 
+PASS - W6 Sephiroth + 4 criaturas + Vihaan num wipe: ele morre junto, entao NAO vira (sem emblema); o gatilho da frente dispara pelas outras 5 e nunca pela propria morte 
+PASS - W7 o Mahadi morre no wipe: no end step ele nao cria Treasure por morte nenhuma 
+PASS - W8 Treasure virado nao paga mana no turno: 3 virados = 0 de mana (com a chave desligada pagariam 3) 
+PASS - W8b o farm usa a habilidade de mana ({T}, Sacrifice): so' desvirado (6 animados, 5 virados -> 1 sacrificado) 
+PASS - W8c sacrificio fora da mana leva os virados primeiro (5/3 -> 3/1); pra mana, so' os desvirados (3/1 -> 1/1) 
+PASS - W8d untap: os Treasures virados desviram no meu proximo turno (tapped = 0 no inicio) 
+PASS - W8e Treasure animado virado nao ataca: 5 animados todos virados = sem ataque; com 2 virados atacam 3 (9 de dano no proxy) 
+PASS - W9 Blasphemous Act: {1} a menos por criatura minha em campo: 0 criaturas = 9; 4 (3 + Vihaan) = 5; 14 (com Constructs, fichas, Dragao e Treasures animados) = piso {R} = 1; desligada = 9 
+PASS - W9b custo 5 com 5 terrenos: conjuravel; com 4 terrenos nao 
+PASS - W9c o cast cobra o custo reduzido (5 de 5 terrenos) e a Blasphemous Act sai da mao e destroi tudo, comandante inclusive, SEM criar Treasure 
+PASS - H1 Vihaan em campo: a Blood Money (7 de mana disponiveis) fica na mao; 1 retencao registrada 
+PASS - H2 so' o Mahadi em campo (comandante na zona de comando): tambem segura 
+PASS - H3 sem Vihaan nem Mahadi em campo: conjura (nao ha' motor a perder) 
+PASS - H4 a mesma retencao vale pra Blasphemous Act (extensao minha da razao do usuario: destruiria os mesmos motores) 
+PASS - H5 chave desligada = comportamento anterior: conjura a Blood Money mesmo com Vihaan em campo (e agora o destroi) 
+PASS - H6 Blood Money exilada (o caso do T8): com Vihaan em campo NAO e' conjurada e fica no pool ate' expirar; sem os motores e' conjurada 
+PASS - X1 imposto do comandante: com 1 cast anterior ele custa 5; com 4 de mana nao e' conjuravel, com 5 e'; a chave desligada (codigo antigo) o deixava conjurar com 3 
+PASS - X1b primeira conjuracao: 3 de mana bastam (imposto 0) e a contagem vai a 1 no cast 
+PASS - X2 CR 903.8: um cast ANULADO tambem soma o imposto (contagem 1, comandante fora de campo); o codigo antigo so' contava quando entrava (contagem 0) 
+PASS - I1 (padrao, 2.000 jogos, retencao ligada) nenhuma carta duplicada, tapped sempre entre 0 e o estoque, e NENHUM wipe proprio conjurado com Vihaan/Mahadi em campo 
+   info I1 padrao: wipes proprios conjurados com a retencao ligada em 2.000 jogos: 0
+PASS - I2 (padrao, 2.000 jogos, retencao DESLIGADA) o invariante e' significativo: ha' wipe conjurado com Vihaan/Mahadi em campo, e tapped continua valido 
+   info I2 padrao: wipes proprios conjurados sem retencao em 2.000 jogos: 344 (com Vihaan/Mahadi em campo: 342)
+PASS - I1 (resiliencia, 2.000 jogos, retencao ligada) nenhuma carta duplicada, tapped sempre entre 0 e o estoque, e NENHUM wipe proprio conjurado com Vihaan/Mahadi em campo 
+   info I1 resiliencia: wipes proprios conjurados com a retencao ligada em 2.000 jogos: 1
+PASS - I2 (resiliencia, 2.000 jogos, retencao DESLIGADA) o invariante e' significativo: ha' wipe conjurado com Vihaan/Mahadi em campo, e tapped continua valido 
+   info I2 resiliencia: wipes proprios conjurados sem retencao em 2.000 jogos: 161 (com Vihaan/Mahadi em campo: 159)
+
+34/34 testes passaram

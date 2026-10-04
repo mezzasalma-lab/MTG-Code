@@ -107,6 +107,13 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas):
   animados, tesouros inanimados nao trigam o Dictate"): o teto do sacrificio
   com so' o Dictate e' `treasures_animated_alive // 2`, nao `treasures // 2`.
   Ver `resultados-ab/2026-10-04-dictate-metade-dos-animados/LEIAME.md`.
+- Wipes proprios (Blood Money / Blasphemous Act), 2026-10-04 (9a rodada, resposta do usuario sobre a Blood Money do T8 que ficou no exilio:
+  "sem Vihaan e Mahadi em campo acho que seria pior"): o wipe passa a destruir (nao sacrificar) TODAS as criaturas, inclusive o comandante e
+  os Treasures animados vivos, com mortes simultaneas (gatilhos olham pra tras); a Blood Money cria Treasures VIRADOS; a Blasphemous Act custa
+  {1} a menos por criatura (so' as minhas; as do oponente sao 📊); e nao se conjura um wipe proprio que destruiria Vihaan ou Mahadi.
+  Achado na mesma rodada: o imposto do comandante nunca entrava no que PODE ser conjurado (`can_cast` olhava so' o MV 3, e o cast gastava 3 + 2 por cast
+  anterior, que o `mana_spent` empurrava acima do total de graca) e so' contava quando ele ENTRAVA (um cast anulado nao somava, contra CR 903.8).
+  Ver `resultados-ab/2026-10-04-wipes-proprios/LEIAME.md`.
 """
 
 import copy
@@ -404,6 +411,15 @@ TREASURE_FARM_DICTATE_HALF_RESERVE_ENABLED = True  # quando SO' o Dictate justif
 # Com a chave em False a base da metade volta a ser o ESTOQUE inteiro (comportamento do commit 9e613ea); so' age com a chave da 7a rodada ligada.
 TREASURE_FARM_DICTATE_HALF_OF_ANIMATED_ENABLED = True  # a metade conta so' os Treasures ANIMADOS vivos (os unicos que sao criatura e disparam o Dictate), nao o estoque inteiro
 
+# Correcoes de 9a rodada (2026-10-04; resposta do usuario: a Blood Money ficou no exilio de proposito, "sem Vihaan e Mahadi em campo acho que seria pior").
+# Com as 5 chaves em False o arquivo se comporta bit-a-bit como o do commit bf8a6f6.
+OWN_WIPE_DESTROY_ORACLE_ENABLED = True       # Blood Money / Blasphemous Act: "destroy all creatures" de verdade: inclui o comandante e os Treasures animados vivos, e' destruicao (sem Mayhem Devil), mortes SIMULTANEAS (os gatilhos olham pra tras)
+BLOOD_MONEY_TAPPED_TREASURE_ENABLED = True   # "you create a TAPPED Treasure": os Treasures da Blood Money nao pagam mana (nem entram no farm) no turno em que nascem
+BLASPHEMOUS_ACT_COST_REDUCTION_ENABLED = True  # "costs {1} less to cast for each creature on the battlefield" (so' as minhas; as do oponente sao 📊), piso {R}
+OWN_WIPE_HOLD_ENGINE_ENABLED = True          # linha do usuario: nao conjura Blood Money / Blasphemous Act se isso destruiria o Vihaan ou o Mahadi em campo (os motores do deck)
+COMMANDER_TAX_ENABLED = True                 # CR 903.8: o imposto ({2} por cast anterior da zona de comando) entra no que PODE ser conjurado, e e' contado no CAST (tambem se for anulado), nao so' quando entra
+OWN_WIPES = ("Blood Money", "Blasphemous Act")
+
 TREASURE_SOURCE_TAGS = {
     "goldspan", "treasure_attack", "draw_treasure", "sac_draw_treasure",
     "impulse_treasure", "modal_treasure", "etb_treasure", "cascade_treasure",
@@ -456,6 +472,13 @@ class GameState:
     reaver_cleaver_equipped: bool = False
     reaver_cleaver_host: Optional[str] = None  # criatura equipada (2026-09-25: "that many" = poder dela)
     reaver_cleaver_treasures_total: int = 0
+    treasures_tapped: int = 0  # Treasures VIRADOS agora (Blood Money: "create a tapped Treasure"): nao pagam mana neste turno; desviram no meu proximo untap
+    own_wipes_cast_total: int = 0
+    blood_money_cast_total: int = 0
+    own_wipe_commander_destroyed_total: int = 0
+    own_wipe_tapped_treasures_total: int = 0
+    own_wipe_held_total: int = 0  # wipes proprios conjuraveis que o jogador SEGUROU (destruiriam Vihaan/Mahadi), uma vez por carta por turno
+    own_wipe_held_this_turn: set = field(default_factory=set)
 
     commander_in_play: bool = False
     commander_cast_count: int = 0
@@ -646,8 +669,8 @@ def is_historic(name: str) -> bool:
 # Motor de Treasure — criacao com os 3 multiplicadores empilhaveis
 # ---------------------------------------------------------------------------
 
-def create_treasures(state: GameState, n: int, source: str = ""):
-    """Ordem escolhida (o controlador escolhe, nas regras reais): Xorn
+def create_treasures(state: GameState, n: int, source: str = "", tapped: bool = False):
+    """`tapped` (Blood Money, BLOOD_MONEY_TAPPED_TREASURE_ENABLED): os Treasures nascem virados. Ordem escolhida (o controlador escolhe, nas regras reais): Xorn
     primeiro (+1 flat por evento), Anointed Procession depois (dobra o
     total), Academy Manufactor por ultimo (cada Treasure resultante TAMBEM
     cria 1 Clue + 1 Food — interpretacao escalando com N, documentada no
@@ -673,6 +696,9 @@ def create_treasures(state: GameState, n: int, source: str = ""):
     state.treasures += total
     state.treasures_created_total += total
     state.artifact_entered_this_turn = True
+    if tapped and BLOOD_MONEY_TAPPED_TREASURE_ENABLED:
+        state.treasures_tapped += total
+        state.own_wipe_tapped_treasures_total += total
 
     if "Academy Manufactor" in state.battlefield:
         state.clues += total
@@ -770,6 +796,10 @@ def sacrifice_treasures(state: GameState, n: int, for_mana: bool = False, as_cre
     if n <= 0:
         return 0
     state.treasures -= n
+    if state.treasures_tapped:
+        if not for_mana:
+            state.treasures_tapped -= min(state.treasures_tapped, n)  # fora da mana o jogador sacrifica os virados primeiro (nao servem pra mana mesmo)
+        state.treasures_tapped = min(state.treasures_tapped, state.treasures)
     state.treasures_sacrificed_total += n
     state.treasures_sacrificed_this_turn += n
     if for_mana:
@@ -974,7 +1004,7 @@ def on_creature_dies(state: GameState, n: int, is_token: bool, dying=None):
     if "Zulaport Cutthroat" in state.battlefield:
         drain(state, n, each_opp=True)
         gain_life(state, n)
-    if "Pitiless Plunderer" in state.battlefield:
+    if "Pitiless Plunderer" in state.battlefield and dying != "Pitiless Plunderer":  # "another creature": nunca pela propria morte (wipe simultaneo)
         create_treasures(state, n, source="Pitiless Plunderer")
 
     # Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel — achado real
@@ -1161,15 +1191,47 @@ def treasure_value(state: GameState) -> int:
 
 def total_mana(state: GameState) -> int:
     return (lands_in_play(state) + rocks_mana(state)
-            + state.treasures * treasure_value(state) + state.bonus_mana_pool)
+            + (state.treasures - state.treasures_tapped) * treasure_value(state) + state.bonus_mana_pool)
 
 
 def remaining_mana(state: GameState) -> int:
     return max(0, total_mana(state) - state.mana_spent_this_turn)
 
 
+def creatures_on_battlefield(state: GameState) -> int:
+    """Criaturas MINHAS em campo (cartas nomeadas, Constructs, fichas genericas, Dragoes da Visitor e Treasures animados vivos). As do oponente
+    sao 📊 (o simulador nao modela o campo dele): a reducao da Blasphemous Act e' so' um piso."""
+    return (sum(1 for n in state.battlefield if is_creature_card(n)) + state.constructs + state.other_tokens + state.dragons
+            + state.treasures_animated_alive)
+
+
+def spell_cost(state: GameState, name: str) -> int:
+    """Custo total pago (sem o imposto do comandante, que o cast_card soma). Blasphemous Act: "costs {1} less to cast for each creature on the
+    battlefield", nunca abaixo de {R} (ruling 2020-11-10); o MV continua 9 (cascade/Lotho leem o MV, nao o custo)."""
+    mv = CARD_DB[name].mv
+    if COMMANDER_TAX_ENABLED and name == COMMANDER:
+        return mv + 2 * state.commander_cast_count  # CR 903.8: o comandante conjurado da zona de comando custa {2} a mais por cast anterior
+    if BLASPHEMOUS_ACT_COST_REDUCTION_ENABLED and name == "Blasphemous Act":
+        return max(1, mv - creatures_on_battlefield(state))
+    return mv
+
+
+def wipe_held(state: GameState, name: str) -> bool:
+    """OWN_WIPE_HOLD_ENGINE_ENABLED (linha do usuario, T8 da partida manual #1: a Blood Money ficou exilada de proposito, "sem Vihaan e Mahadi em
+    campo acho que seria pior"): um wipe proprio que destruiria o Vihaan ou o Mahadi nao e' conjurado. A decisao e' do jogador, nao do simulador:
+    sem criatura do oponente no modelo, o wipe so' mataria o meu proprio campo."""
+    if not OWN_WIPE_HOLD_ENGINE_ENABLED or name not in OWN_WIPES:
+        return False
+    if state.commander_in_play or "Mahadi, Emporium Master" in state.battlefield:
+        if name not in state.own_wipe_held_this_turn:
+            state.own_wipe_held_this_turn.add(name)
+            state.own_wipe_held_total += 1
+        return True
+    return False
+
+
 def can_cast(state: GameState, name: str) -> bool:
-    return remaining_mana(state) >= CARD_DB[name].mv
+    return remaining_mana(state) >= spell_cost(state, name)
 
 
 def spend_mana(state: GameState, n: int):
@@ -1427,25 +1489,36 @@ def resolve_instant_sorcery(state: GameState, name: str):
         pull_impulse(state, 3, deadline_turns=1, lands_ok=True)
         create_treasures(state, 3, source=name)
     elif name == "Blood Money":
-        real_creatures = [n for n in state.battlefield if is_creature_card(n) and n != COMMANDER]
-        n_dead = len(real_creatures) + state.constructs + state.other_tokens
-        begin_mass_death(state, real_creatures)
-        for c in real_creatures:
-            sacrifice_named_creature(state, c)
-        sacrifice_constructs(state, state.constructs)
-        sacrifice_other_tokens(state, state.other_tokens)
-        _destroy_dragons(state)
-        end_mass_death(state)
-        create_treasures(state, len(real_creatures), source="Blood Money (nontoken)")
+        state.own_wipes_cast_total += 1
+        state.blood_money_cast_total += 1
+        if OWN_WIPE_DESTROY_ORACLE_ENABLED:
+            # "For each nontoken creature destroyed this way, you create a tapped Treasure token" (o do oponente e' 📊)
+            n_nontoken = _own_wipe_destroy_all(state)
+            create_treasures(state, n_nontoken, source="Blood Money (nontoken)", tapped=True)
+        else:
+            real_creatures = [n for n in state.battlefield if is_creature_card(n) and n != COMMANDER]
+            n_dead = len(real_creatures) + state.constructs + state.other_tokens
+            begin_mass_death(state, real_creatures)
+            for c in real_creatures:
+                sacrifice_named_creature(state, c)
+            sacrifice_constructs(state, state.constructs)
+            sacrifice_other_tokens(state, state.other_tokens)
+            _destroy_dragons(state)
+            end_mass_death(state)
+            create_treasures(state, len(real_creatures), source="Blood Money (nontoken)")
     elif name == "Blasphemous Act":
-        real_creatures = [n for n in state.battlefield if is_creature_card(n) and n != COMMANDER]
-        begin_mass_death(state, real_creatures)
-        for c in real_creatures:
-            sacrifice_named_creature(state, c)
-        sacrifice_constructs(state, state.constructs)
-        sacrifice_other_tokens(state, state.other_tokens)
-        _destroy_dragons(state)
-        end_mass_death(state)
+        state.own_wipes_cast_total += 1
+        if OWN_WIPE_DESTROY_ORACLE_ENABLED:
+            _own_wipe_destroy_all(state)  # 13 de dano em cada criatura: todas morrem (nenhuma tem 13 de resistencia nem e' indestrutivel)
+        else:
+            real_creatures = [n for n in state.battlefield if is_creature_card(n) and n != COMMANDER]
+            begin_mass_death(state, real_creatures)
+            for c in real_creatures:
+                sacrifice_named_creature(state, c)
+            sacrifice_constructs(state, state.constructs)
+            sacrifice_other_tokens(state, state.other_tokens)
+            _destroy_dragons(state)
+            end_mass_death(state)
     elif name in ("Path to Exile", "Shoot the Sheriff", "Council's Judgment",
                   "Deadly Derision", "Requisition Raid", "Boros Charm", "Teferi's Protection"):
         state.commits_crime_this_turn = True
@@ -1514,6 +1587,55 @@ def _destroy_dragons(state: GameState):
     on_permanent_destroyed(state, n, is_artifact=False, is_creature=True, is_token=True)
 
 
+def _own_wipe_destroy_all(state: GameState) -> int:
+    """OWN_WIPE_DESTROY_ORACLE_ENABLED. "Destroy all creatures" (Blood Money) / "13 damage to each creature" (Blasphemous Act), do MEU lado (o do
+    oponente e' 📊). Oraculo lido ao vivo em 2026-10-04: destroi TODAS as criaturas, inclusive o comandante (Vihaan e' Legendary Creature) e os
+    Treasures que o Vihaan animou neste turno (sao criaturas ate' o fim do turno); e' DESTRUICAO, nao sacrificio (Mayhem Devil so' reage a
+    sacrificio); a morte e' SIMULTANEA, entao os gatilhos de "dies" olham pra tras (ruling 2018-01-19 do Pitiless Plunderer: ele dispara pelas
+    outras que morrem junto; o Zulaport dispara tambem pela propria morte): por isso todos os eventos sao disparados com o campo ainda cheio e SO'
+    DEPOIS as pecas saem. O comandante vai ao cemiterio (a morte dispara) e o dono o leva a zona de comando (CR 903.9a, acao baseada em estado).
+    Retorna quantas criaturas NAO-ficha foram destruidas (a Blood Money cria 1 Treasure virado por cada)."""
+    named = [n for n in state.battlefield if is_creature_card(n)]
+    n_con, n_oth, n_dra = state.constructs, state.other_tokens, state.dragons
+    n_anim = min(state.treasures_animated_alive, state.treasures)
+    begin_mass_death(state, named)
+    for c in named:
+        on_creature_dies(state, 1, is_token=False, dying=c)
+        if is_artifact_card(c):
+            on_artifact_dies(state, 1)
+    if n_con:
+        on_creature_dies(state, n_con, is_token=True)
+        on_artifact_dies(state, n_con)
+        on_token_leaves(state, n_con)
+    if n_oth:
+        on_creature_dies(state, n_oth, is_token=True)
+        on_token_leaves(state, n_oth)
+    if n_dra:
+        on_creature_dies(state, n_dra, is_token=True)
+        on_token_leaves(state, n_dra)
+    if n_anim:
+        on_creature_dies(state, n_anim, is_token=True)
+        on_artifact_dies(state, n_anim)
+        on_token_leaves(state, n_anim)
+    end_mass_death(state)
+    for c in named:
+        state.battlefield.remove(c)
+        state.creature_cast_turn.pop(c, None)
+        if c == COMMANDER:
+            state.commander_in_play = False
+            state.own_wipe_commander_destroyed_total += 1
+        else:
+            state.graveyard.append(c)
+    state.constructs = state.constructs_sick = 0
+    state.other_tokens = state.other_tokens_sick = 0
+    state.dragons = state.dragons_sick = 0
+    if n_anim:
+        state.treasures -= n_anim
+        state.treasures_animated_alive = max(0, state.treasures_animated_alive - n_anim)
+        state.treasures_tapped = min(state.treasures_tapped, state.treasures)
+    return len(named)
+
+
 def pull_impulse(state: GameState, n: int, deadline_turns: int, lands_ok: bool = False):
     """`lands_ok`: a fonte diz "play" (Prosper, Inspired Tinkering, Face-Breaker) e nao "cast" (Grenzo, Laughing Jasper Flint): so' nela
     um terreno exilado pode ser jogado (IMPULSE_LAND_PLAY_ENABLED); nas de "cast" ele fica no pool, morto, como sempre."""
@@ -1558,7 +1680,7 @@ def play_from_impulse(state: GameState, expiring_only: bool = False):
     if expiring_only:
         valid = [e for e in valid if e[1] == state.turn]
     valid = [e for e in valid if e[0] != "land" and CARD_DB.get(e[0]) and CARD_DB[e[0]].ctype != "land"]
-    castable = [e for e in valid if can_cast(state, e[0])]
+    castable = [e for e in valid if can_cast(state, e[0]) and not wipe_held(state, e[0])]
     if not castable:
         return False
     castable.sort(key=lambda e: CARD_DB[e[0]].mv)
@@ -1585,7 +1707,8 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
     state.battlefield.append(name)
     if name == COMMANDER:
         state.commander_in_play = True
-        state.commander_cast_count += 1
+        if not COMMANDER_TAX_ENABLED:
+            state.commander_cast_count += 1
         if state.commander_cast_turn is None:
             state.commander_cast_turn = state.turn
     if is_creature_card(name):
@@ -1654,8 +1777,10 @@ def cast_card(state: GameState, name: str, from_zone: str = "hand"):
     extort_available = "Life Insurance" in state.battlefield
     if name == COMMANDER:
         spend_mana(state, card.mv + 2 * (state.commander_cast_count))
+        if COMMANDER_TAX_ENABLED:
+            state.commander_cast_count += 1  # CR 903.8: conta o CAST da zona de comando, mesmo se for anulado
     else:
-        spend_mana(state, card.mv)
+        spend_mana(state, spell_cost(state, name))
     if extort_available and remaining_mana(state) >= 1:
         spend_mana(state, 1)
         drain(state, 1, each_opp=True)
@@ -2064,7 +2189,7 @@ def main_phase(state: GameState):
         if IMPULSE_ALL_FIRST_ENABLED and play_from_impulse(state):
             state.impulse_all_first_total += 1  # carta que acabou de ser exilada neste main (Tinkering, Face-Breaker): tambem vai antes da mao
             continue
-        castables = [n for n in state.hand if n not in LAND_NAMES and can_cast(state, n)]
+        castables = [n for n in state.hand if n not in LAND_NAMES and can_cast(state, n) and not wipe_held(state, n)]
         if castables:
             if TREASURE_MAXIMIZE_POLICY:
                 castables.sort(key=lambda n: (not is_treasure_source(n), CARD_DB[n].mv))
@@ -2147,7 +2272,7 @@ def farm_animated_treasures(state: GameState):
     com_dictate = TREASURE_FARM_WITH_DICTATE_ENABLED and "Dictate of Erebos" in state.battlefield
     if not com_reposicao and not com_dictate:
         return
-    n = min(state.treasures_animated_alive, state.treasures)
+    n = min(state.treasures_animated_alive, state.treasures - state.treasures_tapped)  # o farm usa a habilidade de mana ({T}, Sacrifice): so' desvirado
     if not com_reposicao and TREASURE_FARM_DICTATE_HALF_RESERVE_ENABLED:
         base = state.treasures_animated_alive if TREASURE_FARM_DICTATE_HALF_OF_ANIMATED_ENABLED else state.treasures
         n = min(n, base // 2)  # "ate' metade": a outra metade fica de reserva (mana do proximo turno)
@@ -2183,6 +2308,7 @@ def combat_step(state: GameState):
         animated = state.treasures  # Vihaan: Treasures viram 3/3 outlaw ate o final do turno
     state.treasures_animated_this_combat = animated
     state.treasures_animated_alive = animated  # CR 611.2c: o conjunto animado e' fixado agora
+    animated_att = animated - min(state.treasures_tapped, animated)  # criatura virada nao ataca (Treasure da Blood Money)
 
     # Achado real 2026-09-14: 2a habilidade real do Vihaan (a 1a, animar
     # Treasures, ja estava implementada acima) - "Other outlaws you
@@ -2202,14 +2328,14 @@ def combat_step(state: GameState):
     ready_other = max(0, state.other_tokens - state.other_tokens_sick)
     ready_dragons = max(0, state.dragons - state.dragons_sick)  # Draconic Visitor (candidata): sem haste
 
-    total_attackers = animated + len(ready_creatures) + ready_constructs + ready_other + ready_dragons
+    total_attackers = animated_att + len(ready_creatures) + ready_constructs + ready_other + ready_dragons
     if total_attackers <= 0:
         return
     state.combat_attacks_total += 1
-    _combat_damage_proxy(state, animated, ready_creatures, ready_constructs, ready_other, ready_dragons)
+    _combat_damage_proxy(state, animated_att, ready_creatures, ready_constructs, ready_other, ready_dragons)
 
-    outlaw_attacking = animated > 0 or any(is_outlaw(n) for n in ready_creatures)
-    any_creature_attacking = len(ready_creatures) + ready_constructs + ready_other + animated + ready_dragons > 0
+    outlaw_attacking = animated_att > 0 or any(is_outlaw(n) for n in ready_creatures)
+    any_creature_attacking = len(ready_creatures) + ready_constructs + ready_other + animated_att + ready_dragons > 0
 
     if "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel" in ready_creatures:
         try_sephiroth_sac_draw(state)
@@ -2264,7 +2390,7 @@ def combat_step(state: GameState):
             # (artefato) e Treasures animados pelo Vihaan (viram artefato-
             # criatura, tambem historico).
             historic_attackers = (sum(1 for n in ready_creatures if is_historic(n))
-                                   + ready_constructs + animated)
+                                   + ready_constructs + animated_att)
             if historic_attackers > 0:
                 create_other_tokens(state, historic_attackers, source="Aya of Alexandria")
         if "Grenzo, Havoc Raiser" in state.battlefield:
@@ -2454,6 +2580,8 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.lands_played_this_turn = 0
     state.mana_spent_this_turn = 0
     state.tapped_lands_this_turn = set()
+    state.treasures_tapped = 0  # untap: os Treasures virados da Blood Money desviram no meu proximo turno
+    state.own_wipe_held_this_turn = set()
     state.spells_cast_this_turn = 0
     state.treasures_sacrificed_this_turn = 0
     state.storm_sac_baseline = 0
@@ -2771,6 +2899,7 @@ def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
         if token_n:
             log_targets = targets + [f"{token_n} token(s)"]
         state.treasures = 0
+        state.treasures_tapped = 0
         state.constructs = 0
         state.constructs_sick = 0
         state.clues = 0

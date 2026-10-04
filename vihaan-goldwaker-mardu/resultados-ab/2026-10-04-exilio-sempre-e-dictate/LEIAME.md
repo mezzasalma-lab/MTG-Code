@@ -76,3 +76,8 @@ Os arquivos dos lotes anteriores do Vihaan (`2026-10-03-exilio-primeiro-e-mahadi
 - **Respondido pelo usuário:** o contador +1/+1 do Treasure no T7 foi **clique errado** (a intenção era duplicar o token); e o critério de reserva do Dictate é *"até metade dos treasures"* (virou a chave `TREASURE_FARM_DICTATE_HALF_RESERVE_ENABLED`, ligada por padrão no simulador vivo). As frases "Sem resposta: o contador +1/+1 do Treasure no T7" e "sacrifica todos os animados que sobram" acima descrevem o estado **daquela** rodada.
 - **Esta pasta continua reproduzindo o simulador do commit dela**: `orquestracao/fx_common.py` desliga a chave nova e `orquestracao/prosper_destino.py` agora passa por `F.flags` (antes carregava o simulador vivo sem desligá-la e 3 contagens do `prosper_destino_depois_padrao.txt` diferiam). `verificar_reproducao.sh --tudo`: 9/10 na 1ª execução depois da 7ª rodada; os dois resumos do Prosper (antes e depois) conferidos por `cmp` depois do ajuste. `SHA256SUMS` regenerado.
 
+## Nota de 2026-10-04 (9ª rodada: `../2026-10-04-wipes-proprios/`)
+
+- **As 5 chaves novas** (wipes próprios: destruição fiel, Treasure virado, custo da Blasphemous Act, retenção; imposto do comandante) vêm **ligadas** no simulador vivo. O `orquestracao/fx_common.py` desta pasta as **desliga** (e inclui os 7 campos novos do `GameState` em `NOVOS`) pra continuar reproduzindo o simulador do commit dela.
+- O `orquestracao/smoke.py` desta pasta carregava o simulador vivo **sem passar por `F.flags`** (as 200 partidas rodavam com as chaves novas ligadas e o `smoke.txt` deu `DIFERE` na 1ª execução); passou a usar `F.flags(F.carrega(...))` e o `cmp` voltou a bater.
+- `verificar_reproducao.sh --tudo` depois da 9ª rodada: 10/10 depois de corrigir o smoke. `SHA256SUMS` regenerado.

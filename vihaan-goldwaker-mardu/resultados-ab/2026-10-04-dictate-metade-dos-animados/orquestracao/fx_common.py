@@ -11,7 +11,7 @@ NOVOS = {"interaction_rng", "super_nova_emblems", "seph_batch_active", "seph_bat
          "sephiroth_extra_triggers_total", "impulse_lands", "impulse_lands_played_total", "impulse_spells_cast_total", "lotho_triggers_total",
          "treasures_sacrificed_this_turn", "storm_sac_baseline", "storm_pump_total", "sevinne_nonpermanent_returns_total",
          "dictate_triggers_total", "treasure_farm_total", "impulse_expiring_first_total", "impulse_all_first_total",
-         "treasure_farm_dictate_total"}
+         "treasure_farm_dictate_total", "treasures_tapped", "own_wipes_cast_total", "blood_money_cast_total", "own_wipe_commander_destroyed_total", "own_wipe_tapped_treasures_total", "own_wipe_held_total", "own_wipe_held_this_turn"}
 
 
 def carrega(caminho, nome):
@@ -32,6 +32,12 @@ def flags(m, half=True, animados=True, dictate=True):
         m.TREASURE_FARM_DICTATE_HALF_OF_ANIMATED_ENABLED = animados
     if hasattr(m, "TREASURE_FARM_WITH_DICTATE_ENABLED"):
         m.TREASURE_FARM_WITH_DICTATE_ENABLED = dictate
+    if hasattr(m, "OWN_WIPE_DESTROY_ORACLE_ENABLED"):  # 9a rodada (wipes proprios + imposto do comandante): ligadas no arquivo vivo, desligadas aqui (esta pasta reproduz o simulador do commit dela)
+        m.OWN_WIPE_DESTROY_ORACLE_ENABLED = False
+        m.BLOOD_MONEY_TAPPED_TREASURE_ENABLED = False
+        m.BLASPHEMOUS_ACT_COST_REDUCTION_ENABLED = False
+        m.OWN_WIPE_HOLD_ENGINE_ENABLED = False
+        m.COMMANDER_TAX_ENABLED = False
     return m
 
 

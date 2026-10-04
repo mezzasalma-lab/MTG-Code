@@ -85,3 +85,8 @@ O simulador vivo ganhou depois cinco chaves novas (`IMPULSE_*`, `SPELL_CAST_*`, 
 Terceira nota (rodada "Prosper e Mahadi", 2026-10-03): o simulador vivo ganhou mais duas chaves ligadas por padrão (`IMPULSE_EXPIRING_FIRST_ENABLED`, `TREASURE_SELF_OUTLET_FARM_ENABLED`; ver `../2026-10-03-exilio-primeiro-e-mahadi/LEIAME.md`). `orquestracao/fx_common.py` agora também as desliga e ignora os 3 campos novos do `GameState`. Reverificado: `bash orquestracao/verificar_reproducao.sh --tudo` → 11/11 byte a byte iguais. `SHA256SUMS` regenerado.
 
 Nota (rodada "exílio sempre e Dictate", 2026-10-04): o simulador vivo ganhou mais duas chaves ligadas por padrão (`IMPULSE_ALL_FIRST_ENABLED`, `TREASURE_FARM_WITH_DICTATE_ENABLED`; ver `../2026-10-04-exilio-sempre-e-dictate/LEIAME.md`). `orquestracao/fx_common.py` agora também as desliga e ignora os 2 campos novos do `GameState`. Reverificado: `bash orquestracao/verificar_reproducao.sh --tudo` → 11/11 byte a byte iguais. `SHA256SUMS` regenerado.
+
+## Nota de 2026-10-04 (9ª rodada: `../2026-10-04-wipes-proprios/`)
+
+- **As 5 chaves novas** (wipes próprios: destruição fiel, Treasure virado, custo da Blasphemous Act, retenção; imposto do comandante) vêm **ligadas** no simulador vivo. O `orquestracao/fx_common.py` desta pasta as **desliga** (e inclui os 7 campos novos do `GameState` em `NOVOS`) pra continuar reproduzindo o simulador do commit dela.
+- `verificar_reproducao.sh --tudo` depois da 9ª rodada: 11/11. `SHA256SUMS` regenerado.

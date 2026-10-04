@@ -40,6 +40,13 @@ Leitura: o **contador +1/+1** do Treasure 24DnlO5iG em T7 foi **clique errado** 
 
 Leitura: corrige a base da reserva da mensagem anterior: a metade é **dos Treasures animados** (só eles são criatura e disparam o Dictate), não do estoque inteiro (virou a chave `TREASURE_FARM_DICTATE_HALF_OF_ANIMATED_ENABLED` em `../2026-10-04-dictate-metade-dos-animados/`).
 
+**Sexta mensagem do usuário (2026-10-04), transcrita sem reescrever:**
+> *"A cópia da Sevinne trouxe o Zulaport de volta*
+> *Blood money ficou exilada permanentemente, mesmo que ela gerasse muitos tesouros, sem Vihaan e Mahadi em campo acho que seria pior!*
+> *Lotho e Tax eu considerei que 1 dos 3 oponentes jogou 2 mágicas no mesmo turno e por isso perdi 1 de vida e criei 2 tesouros!"*
+
+Leitura: (1) no flashback do T8 a **cópia** da Sevinne's devolveu o **Zulaport**; (2) a **Blood Money** exilada pelo Prosper em T7 foi **segurada de propósito** (destruiria Vihaan e Mahadi); (3) os **2 Treasures e −1 de vida** que não apareciam no log do T7/T8 vêm de **1 dos 3 oponentes** ter conjurado 2 mágicas no turno (Lotho: −1 vida e 1 Treasure; Monologue Tax: 1 Treasure), contagem do usuário. As três respostas fecham os itens abertos desta partida; ver `../2026-10-04-wipes-proprios/`.
+
 ## Como ler o log (premissas, a conferir com o usuário)
 
 Formato: lista de 8 turnos; cada turno = registros `{name, id, tapped, token, counters, fromZone, toZone, zone}`. As primeiras linhas de cada turno são as **desvirações** (untap) de quem estava virado; depois vêm as ações em ordem de registro. O log só gera linha quando o **estado muda**:

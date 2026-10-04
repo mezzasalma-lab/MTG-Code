@@ -83,3 +83,9 @@ Nenhum lote superado ou inválido nesta pasta.
 
 - **Correção do usuário:** *"Metade dos tesouros animados, tesouros inanimados não trigam o Dictate!"* A 1ª premissa desta pasta ("metade dos treasures" = metade do **estoque inteiro**) estava errada: a metade é **dos animados**, e virou a chave `TREASURE_FARM_DICTATE_HALF_OF_ANIMATED_ENABLED` (ligada por padrão no simulador vivo). Os números desta pasta descrevem a regra do commit `9e613ea` (base = estoque) e ficam como histórico.
 - **Esta pasta continua reproduzindo o simulador do commit dela**: `orquestracao/fx_common.py` desliga a chave nova e `orquestracao/prosper_destino.py` passa por `F.flags`. `verificar_reproducao.sh --tudo` depois da 8ª rodada: 10/10. `SHA256SUMS` regenerado.
+
+## Nota de 2026-10-04 (9ª rodada: `../2026-10-04-wipes-proprios/`)
+
+- **As 5 chaves novas** (wipes próprios: destruição fiel, Treasure virado, custo da Blasphemous Act, retenção; imposto do comandante) vêm **ligadas** no simulador vivo. O `orquestracao/fx_common.py` desta pasta as **desliga** (e inclui os 7 campos novos do `GameState` em `NOVOS`) pra continuar reproduzindo o simulador do commit dela.
+- O `orquestracao/smoke.py` desta pasta carregava o simulador vivo **sem passar por `F.flags`** (as 200 partidas rodavam com as chaves novas ligadas e o `smoke.txt` deu `DIFERE` na 1ª execução); passou a usar `F.flags(F.carrega(...))` e o `cmp` voltou a bater.
+- `verificar_reproducao.sh --tudo` depois da 9ª rodada: 10/10 depois de corrigir o smoke. `SHA256SUMS` regenerado.

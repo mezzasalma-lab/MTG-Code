@@ -75,3 +75,8 @@ Os arquivos dos lotes anteriores do Vihaan (`2026-10-03-fora-da-mao`, `2026-10-0
 - Nenhuma carta foi cortada ou adicionada à lista; o Commander Spellbook não foi consultado porque nada na lista mudou.
 
 Nota (rodada "exílio sempre e Dictate", 2026-10-04): o simulador vivo ganhou mais duas chaves ligadas por padrão (`IMPULSE_ALL_FIRST_ENABLED`, `TREASURE_FARM_WITH_DICTATE_ENABLED`; ver `../2026-10-04-exilio-sempre-e-dictate/LEIAME.md`). `orquestracao/fx_common.py` agora também as desliga e ignora os 2 campos novos do `GameState`. Reverificado: `bash orquestracao/verificar_reproducao.sh --tudo` → 10/10 byte a byte iguais. `SHA256SUMS` regenerado.
+
+## Nota de 2026-10-04 (9ª rodada: `../2026-10-04-wipes-proprios/`)
+
+- **As 5 chaves novas** (wipes próprios: destruição fiel, Treasure virado, custo da Blasphemous Act, retenção; imposto do comandante) vêm **ligadas** no simulador vivo. O `orquestracao/fx_common.py` desta pasta as **desliga** (e inclui os 7 campos novos do `GameState` em `NOVOS`) pra continuar reproduzindo o simulador do commit dela.
+- `verificar_reproducao.sh --tudo` depois da 9ª rodada: 10/10. `SHA256SUMS` regenerado.

@@ -85,3 +85,9 @@ Nenhum lote superado ou inválido nesta pasta.
 - As duas premissas acima (arredondar pra baixo; teto não vale com Mahadi/Plunderer) não foram confirmadas pelo usuário.
 - Lotho/Monologue Tax em 2ª mágica de **oponente** continuam 📊. Sem resposta: a cópia da Sevinne's no T8 e a Blood Money que expirou no T8.
 - Nenhuma carta foi cortada ou adicionada à lista; o Commander Spellbook não foi consultado porque nada na lista mudou.
+
+## Nota de 2026-10-04 (9ª rodada: `../2026-10-04-wipes-proprios/`)
+
+- **As 5 chaves novas** (wipes próprios: destruição fiel, Treasure virado, custo da Blasphemous Act, retenção; imposto do comandante) vêm **ligadas** no simulador vivo. O `orquestracao/fx_common.py` desta pasta as **desliga** (e inclui os 7 campos novos do `GameState` em `NOVOS`) pra continuar reproduzindo o simulador do commit dela.
+- O `orquestracao/smoke.py` desta pasta carregava o simulador vivo **sem passar por `F.flags`** (as 200 partidas rodavam com as chaves novas ligadas e o `smoke.txt` deu `DIFERE` na 1ª execução); passou a usar `F.flags(F.carrega(...))` e o `cmp` voltou a bater.
+- `verificar_reproducao.sh --tudo` depois da 9ª rodada: 11/11 depois de corrigir o smoke. `SHA256SUMS` regenerado.
