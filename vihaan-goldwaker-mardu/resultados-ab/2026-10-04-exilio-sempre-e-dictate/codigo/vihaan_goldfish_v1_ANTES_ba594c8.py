@@ -92,12 +92,6 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas):
   sacrificados pela propria habilidade de mana, so' pelas mortes (de graca:
   o Mahadi/Plunderer devolve 1 Treasure por morte). Ver
   `resultados-ab/2026-10-03-exilio-primeiro-e-mahadi/LEIAME.md`.
-- Preferencias do usuario (2026-10-04, 6a rodada): (a) SEMPRE jogar a
-  magia exilada antes das da mao, tambem as que nao expiram neste turno
-  (cada carta jogada do exilio cria 1 Treasure pelo Pact Boon); (b) com o
-  Dictate of Erebos em campo, sacrificar os Treasures animados mesmo sem
-  Mahadi/Plunderer (cada morte: cada oponente sacrifica 1 criatura, 📊).
-  Ver `resultados-ab/2026-10-04-exilio-sempre-e-dictate/LEIAME.md`.
 """
 
 import copy
@@ -383,10 +377,6 @@ SEVINNE_PERMANENT_TARGET_ENABLED = True    # Sevinne's Reclamation: alvo = "perm
 IMPULSE_EXPIRING_FIRST_ENABLED = True      # carta do exilio que expira NESTE turno e' conjurada ANTES das da mao (usar ou perder; cada uma ainda da' Pact Boon)
 TREASURE_SELF_OUTLET_FARM_ENABLED = True   # com Mahadi/Pitiless Plunderer em campo, os Treasures-criatura restantes sao sacrificados no fim da 2a main (mortes de graca)
 
-# Correcoes de 6a rodada (2026-10-04; preferencias do usuario). Com as DUAS em False o arquivo se comporta bit-a-bit como o do commit ba594c8.
-IMPULSE_ALL_FIRST_ENABLED = True           # TODA magia do exilio e' conjurada antes das da mao (nao so' as que expiram neste turno): cada uma cria 1 Treasure (Pact Boon)
-TREASURE_FARM_WITH_DICTATE_ENABLED = True  # Dictate of Erebos em campo tambem justifica sacrificar os Treasures animados (cada morte: cada oponente sacrifica 1 criatura)
-
 TREASURE_SOURCE_TAGS = {
     "goldspan", "treasure_attack", "draw_treasure", "sac_draw_treasure",
     "impulse_treasure", "modal_treasure", "etb_treasure", "cascade_treasure",
@@ -482,8 +472,6 @@ class GameState:
     dictate_triggers_total: int = 0      # proxy (so' leitura): gatilhos do Dictate of Erebos (cada oponente sacrifica uma criatura): estado de oponente, nunca simulado
     treasure_farm_total: int = 0         # Treasures-criatura sacrificados pela propria habilidade de mana, so' pelas mortes
     impulse_expiring_first_total: int = 0
-    impulse_all_first_total: int = 0     # cartas do exilio conjuradas antes da mao porque a preferencia do usuario e' SEMPRE jogar o exilio
-    treasure_farm_dictate_total: int = 0 # animados sacrificados so' porque ha' Dictate em campo (sem Mahadi/Plunderer: custa 1 Treasure cada)
     caretaker_level: int = 1  # Classes sempre entram no nivel 1
 
     # metrics --------------------------------------------------------------
@@ -2035,18 +2023,13 @@ def main_phase(state: GameState):
 
     try_black_market_connections(state)
 
-    if IMPULSE_EXPIRING_FIRST_ENABLED or IMPULSE_ALL_FIRST_ENABLED:
+    if IMPULSE_EXPIRING_FIRST_ENABLED:
         # "Until the end of your next turn, you may play that card" (Prosper): a carta do exilio que expira neste turno se perde se nao for
         # jogada agora, e a da mao espera; jogar do exilio ainda cria o Treasure do Pact Boon. Jogada de terreno ja' foi feita em play_land.
-        # IMPULSE_ALL_FIRST_ENABLED: preferencia do usuario, SEMPRE jogar o exilio (tambem as que poderiam esperar, ex. Inspired Tinkering).
-        while play_from_impulse(state, expiring_only=not IMPULSE_ALL_FIRST_ENABLED):
-            if IMPULSE_ALL_FIRST_ENABLED:
-                state.impulse_all_first_total += 1
+        while play_from_impulse(state, expiring_only=True):
+            pass
 
     while True:
-        if IMPULSE_ALL_FIRST_ENABLED and play_from_impulse(state):
-            state.impulse_all_first_total += 1  # carta que acabou de ser exilada neste main (Tinkering, Face-Breaker): tambem vai antes da mao
-            continue
         castables = [n for n in state.hand if n not in LAND_NAMES and can_cast(state, n)]
         if castables:
             if TREASURE_MAXIMIZE_POLICY:
@@ -2115,23 +2098,16 @@ def farm_animated_treasures(state: GameState):
     that died this turn") ou Pitiless Plunderer ("whenever another creature you control dies, create a Treasure") isso e' de GRACA: cada Treasure
     gasto volta como um Treasure novo, e as mortes alimentam o resto (Zulaport, Sephiroth, Dictate, Marionette Master, Mirkwood Bats...). E' a linha
     que o usuario jogou no T8 da partida manual #1. Sem Mahadi/Plunderer custaria 1 Treasure por morte e nao e' feito (julgamento de valor fica de
-    fora). Roda no fim da 2a main, depois de a mana ter sido gasta (os animados que pagaram magias ja' foram sacrificados primeiro).
-    TREASURE_FARM_WITH_DICTATE_ENABLED (6a rodada, resposta do usuario: "o Dictate e' mais vantagem, eu sacrifico tesouros animados e todos os
-    oponentes sacrificam criaturas"): Dictate of Erebos em campo tambem aciona o farm, mesmo sem Mahadi/Plunderer, ainda que custe 1 Treasure
-    por morte; o efeito nos oponentes e' 📊 (so' `dictate_triggers_total` conta o uso)."""
+    fora). Roda no fim da 2a main, depois de a mana ter sido gasta (os animados que pagaram magias ja' foram sacrificados primeiro)."""
     if not TREASURE_SELF_OUTLET_FARM_ENABLED or state.treasures_animated_alive <= 0:
         return
-    com_reposicao = "Mahadi, Emporium Master" in state.battlefield or "Pitiless Plunderer" in state.battlefield
-    com_dictate = TREASURE_FARM_WITH_DICTATE_ENABLED and "Dictate of Erebos" in state.battlefield
-    if not com_reposicao and not com_dictate:
+    if "Mahadi, Emporium Master" not in state.battlefield and "Pitiless Plunderer" not in state.battlefield:
         return
     n = min(state.treasures_animated_alive, state.treasures)
     if n <= 0:
         return
     sacrifice_treasures(state, n, for_mana=True)
     state.treasure_farm_total += n
-    if not com_reposicao:
-        state.treasure_farm_dictate_total += n  # sem Mahadi/Plunderer isso CUSTA 1 Treasure por morte; o ganho e' o Dictate (cada oponente sacrifica 1 criatura por morte)
 
 
 def combat_step(state: GameState):

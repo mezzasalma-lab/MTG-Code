@@ -73,3 +73,5 @@ Os arquivos dos lotes anteriores do Vihaan (`2026-10-03-fora-da-mao`, `2026-10-0
 - **Dictate** segue 📊: o oponente nunca sacrifica nada; só se conta o uso. Lotho/Monologue Tax em 2ª mágica de **oponente** continuam 📊.
 - **A leitura de "Machado" como Mahadi** é minha; se o usuário quis dizer o Reaver Cleaver, esta correção do farm não é a que ele pediu.
 - Nenhuma carta foi cortada ou adicionada à lista; o Commander Spellbook não foi consultado porque nada na lista mudou.
+
+Nota (rodada "exílio sempre e Dictate", 2026-10-04): o simulador vivo ganhou mais duas chaves ligadas por padrão (`IMPULSE_ALL_FIRST_ENABLED`, `TREASURE_FARM_WITH_DICTATE_ENABLED`; ver `../2026-10-04-exilio-sempre-e-dictate/LEIAME.md`). `orquestracao/fx_common.py` agora também as desliga e ignora os 2 campos novos do `GameState`. Reverificado: `bash orquestracao/verificar_reproducao.sh --tudo` → 10/10 byte a byte iguais. `SHA256SUMS` regenerado.

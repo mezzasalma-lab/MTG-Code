@@ -25,6 +25,11 @@ Pedido do usuário: *"Analise esse Goldfish do Vihaan: Assumi algumas mortes em 
 Como foram lidas (a leitura é minha, não do usuário): **"Machado" = Mahadi** (autocorretor; "Machado" não é carta da lista, e sacrificar Treasures que já são criaturas só "ativa mais vezes" o Mahadi, que cria 1 Treasure por criatura morta no turno; se o usuário quis dizer o Reaver Cleaver, a leitura muda). **"Esqueci o Descarte" = o capítulo II do Eldest Reborn não foi registrado.** **"Wheel of Fortune"** das três cartas: li como um **2º Wheel depois do T8** (o Wheel do T4 é anterior à compra de Magda/Aya/Path, que vieram dele).
 **Efeito no log:** (1) T6: as 3 mortes assumidas dão 3 pelo Mahadi e o Cleaver deu 2: com o Pact Boon da Sevinne's e o ataque da Storm são **7 esperados × 6 linhas "criada"**; (2) T8: os 7 toques de Treasure **não eram atacantes marcados** (premissa errada do `ledger_mana.py`, que vale para T5–T7 onde o Treasure virado reaparece desvirado no turno seguinte): eram **Treasures já criaturas sacrificados para pagar o Dictate**, cada um uma criatura morta para o Mahadi.
 
+**Terceira mensagem do usuário (2026-10-04), transcrita sem reescrever:**
+> *"T7 foi erro meu. Prefiro sempre jogar o spell exilado para criar mais tesouros. O dictate é mais vantagem, eu sacrifico tesouros animados e todos os oponentes sacrificam criaturas"*
+
+Leitura: **"T7 foi erro meu"** = a diferença entre o que as regras davam em T7 (Pact Boon do Lotho jogado do exílio, Lotho na 2ª mágica) e as linhas "criada" do log foi **esquecimento do usuário** ao registrar, não regra do jogo nem do simulador. As outras duas frases são **preferências de jogo** que viraram chaves do simulador (`../2026-10-04-exilio-sempre-e-dictate/`).
+
 ## Como ler o log (premissas, a conferir com o usuário)
 
 Formato: lista de 8 turnos; cada turno = registros `{name, id, tapped, token, counters, fromZone, toZone, zone}`. As primeiras linhas de cada turno são as **desvirações** (untap) de quem estava virado; depois vêm as ações em ordem de registro. O log só gera linha quando o **estado muda**:

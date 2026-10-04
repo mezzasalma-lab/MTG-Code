@@ -6,7 +6,7 @@ import fx_common as F
 N = int(sys.argv[1]) if len(sys.argv) > 1 else 10000
 S0 = int(sys.argv[2]) if len(sys.argv) > 2 else 3_000_000
 caminho = os.path.abspath(os.environ["FX_SIM"]) if os.environ.get("FX_SIM") else F.DEPOIS
-V = F.flags(F.carrega(caminho, "vih_prosper"))
+V = F.carrega(caminho, "vih_prosper")
 MODO = os.environ.get("FX_MODO", "padrao")
 cont = collections.Counter()
 cur = {"puxadas": collections.Counter(), "jogadas": collections.Counter()}

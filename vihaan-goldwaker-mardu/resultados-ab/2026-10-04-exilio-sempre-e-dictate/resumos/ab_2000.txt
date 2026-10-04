@@ -1,0 +1,12 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao (goldfish)
+ANTES: win<=T8 12.6% | Treasures criados 12.15 (estoque no fim 3.13) | dano mesa 19.44 combate 52.00 drain 8.47 | mortes de criatura 3.80 | mana bonus 2.09 | recursoes 0.09 | mana T5 5.106 T6 6.205
+variante  win<=8 pp      Treasures criados estoque no fim dano mesa      combate        drain          mortes cria.   mana bonus     mana T5        mana T6       
+todo       +0.450±0.353   +0.044±0.068   -0.005±0.039   +0.130±0.312   +0.341±0.214   +0.073±0.117   +0.037±0.061   +0.024±0.062   +0.004±0.005   +0.018±0.013 
+dictate    +0.100±0.139   +0.009±0.009   -0.083±0.031   +0.221±0.112   -0.131±0.138   +0.081±0.040   +0.094±0.032   +0.003±0.006   +0.000±0.000   -0.003±0.003 
+todas      +0.550±0.379   +0.054±0.069   -0.085±0.050   +0.344±0.332   +0.209±0.254   +0.151±0.124   +0.128±0.069   +0.026±0.062   +0.004±0.005   +0.016±0.014 
+
+variante  jogos iguais magias do exilio  Pact Boon (cham.) exilio sempre 1o  farm (Treasures)  farm so' Dictate  Mahadi (Treasures)  Plunderer (Treasures) Dictate (gat.)  pool expirado 
+antes     100.0%       1.3480            0.4760            0.0000            0.5880            0.0000            0.6365              0.6780                0.2100          1.0935        
+todo       87.5%       1.3990            0.4820            1.4750            0.5965            0.0000            0.6560              0.6780                0.2115          1.0805        
+dictate    97.5%       1.3510            0.4775            0.0000            0.6810            0.0935            0.6375              0.6785                0.3040          1.0920        
+todas      85.2%       1.4025            0.4840            1.4790            0.6860            0.0900            0.6570              0.6785                0.3020          1.0790        

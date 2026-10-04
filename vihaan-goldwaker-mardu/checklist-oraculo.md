@@ -1,5 +1,21 @@
 # Checklist cláusula-a-cláusula — Vihaan, Goldwaker
 
+## Preferências do usuário: exílio sempre primeiro e Dictate com Treasures animados (correção do simulador) — 2026-10-04
+
+Origem: respostas do usuário (T7 erro dele; *"Prefiro sempre jogar o spell exilado para criar mais tesouros"*; *"O dictate é mais vantagem, eu sacrifico tesouros animados e todos os oponentes sacrificam criaturas"*). Código: `vihaan_goldfish_v1.py` (antes = commit `ba594c8`). Tudo que sustenta a conclusão está em `resultados-ab/2026-10-04-exilio-sempre-e-dictate/`. Oráculo e rulings: os já lidos ao vivo (`.../2026-10-03-partida-manual-1/dados/oraculo_rulings_ao_vivo.json`).
+
+| Cláusula do oráculo | Ruling | Antes (`ba594c8`) | Depois |
+|---|---|---|---|
+| **Prosper**, Pact Boon: *whenever you play a card from exile, create a Treasure* | qualquer carta jogada do exílio (2021-07-23) | ✅ só as que expiram neste turno iam antes da mão | ✅ **toda** carta do exílio antes da mão (preferência do usuário); mais cartas ⇒ mais Pact Boon |
+| **Inspired Tinkering**: *exile the top three cards… until the end of your next turn, you may play those cards* | "play" (terreno vale); dois turnos | 🐛 ficavam esperando depois da mão no turno em que eram exiladas | ✅ jogadas assim que aparecem (inclusive no meio do main) |
+| **Dictate of Erebos**: *whenever a creature you control dies, each opponent sacrifices a creature of their choice* | um gatilho por criatura; o oponente escolhe (2014-04-26) | 📊 só contava o uso; o farm exigia Mahadi/Plunderer | ✅ o Dictate em campo aciona o farm (custo: 1 Treasure por morte sem reposição); 📊 o oponente nunca sacrifica nada: `dictate_triggers_total` × 3 oponentes = proxy |
+| **Treasure**: *{T}, Sacrifice this token: Add one mana of any color* | habilidade de mana, ativável sem nada pra gastar | ✅ (rodada anterior) | ✅ |
+
+**Regra #6 (ordem de eventos):** o Dictate é pago com terrenos/rocks antes (`spend_mana` só gasta Treasure no que falta) e os animados morrem depois, com ele em campo; o farm roda depois da 2ª `main_phase`.
+**Regra #5:** o simulador não dá valor aos sacrifícios dos oponentes (📊), então a métrica de vitória não mostra a vantagem do Dictate; a análise prioriza a linha real do usuário e reporta o custo em Treasures (−0,084 ±0,015 no estoque, só pelo Dictate).
+**Validação:** smoke; 16/16 testes dirigidos; bit-identidade com as 2 chaves desligadas (20.000+20.000 partidas); regressão 140.000 partidas, 0 exceções; A/B pareado N=2.000/10.000 nos dois modos.
+**Classes da taxonomia da Regra #1 varridas (e só elas):** política de jogada contra a linha real do usuário (exílio primeiro), habilidade ativada que nunca era usada como saída (Treasure), gatilho compartilhado (morte de criatura → Dictate). **Não varridas:** as demais classes e cartas do `.py`.
+
 ## Prosper (exílio) e Mahadi (mortes de Treasure animado) — correção do simulador — oráculo, rulings e cláusulas — 2026-10-03
 
 Origem: respostas do usuário à análise da partida manual #1 (§3b do `goldfish-log.md`). Código: `vihaan_goldfish_v1.py` (antes = commit `7cd3f55`). Tudo que sustenta a conclusão está em `resultados-ab/2026-10-03-exilio-primeiro-e-mahadi/` (LEIAME com o mapa arquivo → comando). Oráculo e rulings: os já lidos ao vivo (`.../2026-10-03-partida-manual-1/dados/oraculo_rulings_ao_vivo.json`).

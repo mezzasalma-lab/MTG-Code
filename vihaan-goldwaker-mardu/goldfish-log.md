@@ -1,5 +1,7 @@
 # Goldfish Log — Vihaan, Goldwaker
 
+> **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: exílio sempre primeiro e farm com Dictate (2026-10-04):** [`resultados-ab/2026-10-04-exilio-sempre-e-dictate/LEIAME.md`](resultados-ab/2026-10-04-exilio-sempre-e-dictate/LEIAME.md) — brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
 > **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: exílio do Prosper expirando primeiro e Treasure animado com Mahadi (2026-10-03):** [`resultados-ab/2026-10-03-exilio-primeiro-e-mahadi/LEIAME.md`](resultados-ab/2026-10-03-exilio-primeiro-e-mahadi/LEIAME.md) — brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
 > **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: conjurar/jogar de fora da mão (2026-10-03):** [`resultados-ab/2026-10-03-fora-da-mao/LEIAME.md`](resultados-ab/2026-10-03-fora-da-mao/LEIAME.md) — brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
@@ -14,6 +16,48 @@
 
 > **Dados brutos e como reproduzir as tabelas da seção Kingpin, Wilson Fisk (2026-10-03):** [`resultados-ab/2026-10-03-kingpin/LEIAME.md`](resultados-ab/2026-10-03-kingpin/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
+
+---
+
+## Correção do simulador: exílio sempre primeiro e farm de Treasure animado também com Dictate — 2026-10-04
+
+**Pedido (3 frases do usuário):** *"T7 foi erro meu. Prefiro sempre jogar o spell exilado para criar mais tesouros. O dictate é mais vantagem, eu sacrifico tesouros animados e todos os oponentes sacrificam criaturas."*
+**Veredito:**
+1. **T7 foi esquecimento de registro** (Pact Boon do Lotho e Lotho na Tax não anotados): fecha, não é erro de regra nem do simulador.
+2. **"Sempre jogar o spell exilado"** virou chave (`IMPULSE_ALL_FIRST_ENABLED`): *toda* carta do exílio (não só as que expiram neste turno) é conjurada antes das da mão, inclusive as que acabaram de ser exiladas no meio do main (Inspired Tinkering). **O efeito é pequeno no simulador, porque a rodada anterior já pegava quase tudo:** as cartas do Prosper expiram no turno em que ficam jogáveis (97,2% → 97,3% das mágicas conjuradas); só as da Inspired Tinkering, que valem por dois turnos, mudam.
+3. **Dictate em campo aciona o sacrifício dos Treasures animados** (`TREASURE_FARM_WITH_DICTATE_ENABLED`), **mesmo sem Mahadi/Plunderer**, como você faz. **Sem a reposição isso custa Treasures:** estoque no fim **−0,084 ±0,015 por jogo** (padrão) quando é só o Dictate que justifica; em troca, **+0,087 gatilhos do Dictate por jogo** (0,245 → 0,335), isto é, ~0,26 criaturas de oponente a mais sacrificadas por jogo (×3 oponentes, proxy). O simulador **não dá valor** a essas criaturas de oponente (📊), então na métrica de vitória o efeito é zero (+0,04 ±0,08pp).
+Nenhum dos dois move a vitória até o T8 de forma significativa (juntos: +0,23 ±0,20pp padrão, +0,10 ±0,14pp resiliência): são correções de **linha de jogo**, não de número.
+
+### O que mudou no código (2 chaves)
+1. **`IMPULSE_ALL_FIRST_ENABLED`**: no início de `main_phase` roda `play_from_impulse` sem o filtro "expira neste turno", e dentro do laço da mão, a cada iteração, a carta do exílio (a mais barata primeiro, maximizando quantas entram e portanto quantos Pact Boon) vai antes de qualquer carta da mão. O comandante continua primeiro. Antes (rodada anterior): só as que expiram neste turno.
+2. **`TREASURE_FARM_WITH_DICTATE_ENABLED`**: `farm_animated_treasures` também roda com o Dictate of Erebos em campo. `treasure_farm_dictate_total` conta os animados sacrificados *só por causa do Dictate* (sem Mahadi/Plunderer). **Ordem:** o Dictate é pago antes com terrenos/rocks (o `spend_mana` só gasta Treasure no que falta), e os animados morrem depois, com ele em campo: nenhum gatilho se perde (o contrário da sua T8, em que ele foi pago com os próprios animados).
+
+### Medição (apoio; pareada; base = simulador antes, commit `ba594c8`; N=10.000, sementes 3.000.000+i, 8 turnos; entre parênteses o modo resiliência)
+Diferença pareada (variante − antes), IC95%:
+
+| variante | win ≤8 (pp) | Treasures criados | estoque no fim | dano mesa | mortes de criatura |
+|---|---|---|---|---|---|
+| só "exílio sempre primeiro" | +0,19 ±0,19 n.s. (+0,06 ±0,13 n.s.) | +0,10 ±0,04 (+0,06 ±0,03) | +0,03 ±0,03 n.s. (+0,01 ±0,02 n.s.) | +0,20 ±0,17 (+0,05 ±0,10 n.s.) | +0,03 ±0,03 n.s. (+0,02 ±0,02 n.s.) |
+| só "farm também com Dictate" | +0,04 ±0,08 n.s. (+0,05 ±0,05 n.s.) | −0,005 ±0,004 (−0,001 ±0,002 n.s.) | **−0,084 ±0,015** (−0,046 ±0,009) | +0,15 ±0,07 (+0,07 ±0,03) | **+0,09 ±0,02** (+0,06 ±0,01) |
+| **as duas** | +0,23 ±0,20 n.s. (+0,10 ±0,14 n.s.) | +0,09 ±0,04 (+0,06 ±0,03) | −0,05 ±0,03 n.s. (−0,03 ±0,02 n.s.) | +0,34 ±0,18 (+0,13 ±0,10) | **+0,11 ±0,03** (+0,08 ±0,03) |
+
+Base: win ≤8 14,3% (3,7%) · Treasures criados 12,87 (7,90) · estoque no fim 3,50 (1,87) · dano mesa 21,04 (9,53) · mortes de criatura 4,16 (5,12).
+**Métricas diretas (por jogo, padrão, as duas vs antes):** cartas do exílio conjuradas antes das da mão **pela chave "sempre"** 0 → **1,61**; magias do exílio conjuradas 1,464 → 1,507; chamadas de Pact Boon 0,561 → 0,571; Treasures-criatura sacrificados pelo farm 0,666 → **0,771** (dos quais **0,088 só por causa do Dictate**); gatilhos do Dictate 0,245 → **0,335**, isto é, criaturas de oponente forçadas a sacrificar (×3, proxy) 0,73 → **1,01** por jogo (resiliência 0,44 → 0,59). Só 85,7% das partidas terminam no mesmo estado do antes (89,4% na resiliência).
+**Destino das cartas que o Prosper exila** (`resumos/prosper_destino_*.txt`, só as que já tiveram a vez): mágica conjurada **97,2% → 97,3%** (1.943 de 1.999 → 1.955 de 2.009); terreno jogado 97,3% → 97,5%. Praticamente inalterado: o "sempre" é irrelevante para o Prosper porque as cartas dele sempre expiram no turno seguinte.
+
+**Leitura (medido):** (a) os dois ajustes são de **linha de jogo**: o "sempre" só muda a ordem da Inspired Tinkering (+0,10 Treasures criados); (b) o farm com Dictate **gasta** estoque (−0,084 sozinho) para forçar sacrifícios que o simulador não valoriza, então o número de vitória não sobe e o estoque cai um pouco; isso é consistente com o que você disse ("o Dictate é mais vantagem": a vantagem está no oponente, que o simulador não mede); (c) a conta real do Dictate para você é **gatilhos × 3 oponentes**: 0,335 gatilhos por jogo no simulador = ~1 criatura de oponente por jogo até o T8.
+**Lido como raciocínio, não medido:** o valor de cada criatura de oponente sacrificada (depende do que sobra no campo dele, estado de oponente 📊); a política "sacrifica **todos** os animados que sobraram" é a que a regra "o Dictate justifica" pede, mas a sua T8 sacrificou **7 dos até 12** Treasures disponíveis, então pode haver uma reserva que eu não consegui inferir do log: se houver um critério (guardar N Treasures para o próximo turno), diga e eu parametrizo.
+
+### Validação (Regra #1) — arquivada em `resultados-ab/2026-10-04-exilio-sempre-e-dictate/`
+- **Smoke:** 99 cartas, 93 distintas, 0 desconhecidas, 0 duplicadas não básicas, 35 terrenos; 200 partidas sem exceção.
+- **Testes dirigidos:** 16/16: carta do exílio que **não** expira (prazo 8) vai antes da mão; a recém-exilada pela Inspired Tinkering também (com mana pra só uma, entra a do exílio e o Zulaport fica na mão; com a chave desligada, o contrário); o comandante segue primeiro; vários do exílio entram com 1 Pact Boon cada; Dictate sem Mahadi/Plunderer sacrifica os animados (5 mortes, 5 gatilhos = 15 criaturas de oponente no proxy); com a chave desligada não; com Mahadi o contador "só Dictate" fica em 0; sem Dictate/Mahadi/Plunderer não sacrifica; só os animados; **Dictate pago com os 5 terrenos e 6 animados depois morrem com ele em campo = 6 gatilhos**; integração com Zulaport e Sephiroth; sequência real `combat_step` → `main_phase` → farm → `end_step`; invariantes em 3.000 partidas.
+- **Bit-identidade com as 2 chaves desligadas:** 20.000/20.000 idênticas ao `ba594c8` no modo padrão e 20.000/20.000 na resiliência.
+- **Regressão:** 140.000 partidas (7 configurações/modos × 20.000, sementes 5.000.000+i), **0 exceções**, 0 cartas duplicadas, 0 partidas com mais de 1 jogada de terreno no turno, 0 "animados vivos" ≠ 0 no fim do turno, 0 Treasures < 0, 0 farms inválidos, 0 mágicas paradas no campo, 0 emblemas do Sephiroth inconsistentes.
+- **Reprodutibilidade:** `bash orquestracao/verificar_reproducao.sh --tudo` → **10/10 saídas byte a byte iguais** (`cmp`): as 4 tabelas do A/B refeitas dos `.json.xz` e a re-execução do smoke, dos 16 testes, da bit-identidade (20.000 × 2 modos), da regressão (140.000 partidas) e do destino do Prosper (antes e depois). Os arquivos dos lotes anteriores do Vihaan, ajustados para desligar as 2 chaves novas, foram reverificados contra o simulador vivo: `exilio-primeiro-e-mahadi` 10/10, `fora-da-mao` 8/8, `sephiroth` 11/11, `treasure-animado-e-mulligan` 7/7, `kingpin` 11/11, `inevitable-defeat` 6/6, `partida-manual-1` 7/7 (o `prosper_destino.py` de `exilio-primeiro-e-mahadi` carregava o simulador vivo sem passar por `F.flags` e pegou as chaves novas ligadas; ajustado e refeito).
+
+### Escopo verificado e NÃO verificado (Regra #7)
+- **Verificado:** o início e o laço de `main_phase` (ordem exílio × mão), `play_from_impulse`, `farm_animated_treasures`; por teste dirigido + A/B + regressão + destino do Prosper.
+- **Não verificado / aberto:** (1) o valor dos sacrifícios do Dictate no oponente (📊: só se conta o uso); (2) a quantidade de Treasures que você guarda ao sacrificar com o Dictate (o simulador sacrifica todos os animados que sobram); (3) Lotho/Monologue Tax em 2ª mágica de oponente 📊; (4) o resto do `.py` não foi relido; (5) o contador +1/+1 do Treasure no T7 e a cópia da Sevinne's no T8 continuam sem resposta.
 
 ---
 
@@ -159,8 +203,9 @@ Transcrição e leitura em `resultados-ab/2026-10-03-partida-manual-1/LEIAME.md`
 | Eldest Reborn | sacrificou o **Zulaport** (capítulo I como no log); **esqueceu** o descarte (capítulo II) | log passa a ✅ no capítulo I; o II não foi registrado (o III reanimaria do cemitério de qualquer jogador depois do T8) |
 | Magda, Aya, Path sem uso | foram **descartadas pro Wheel of Fortune** (li como um 2º Wheel depois do T8) | deixa de ser "esquecimento": não há o que cobrar; a Blood Money exilada em T7 que expirou no T8 **continua sem resposta** |
 | T8: Dictate | pagou com **Treasures já criaturas** "para ativar o Machado mais vezes" (li **Mahadi**) | os 7 toques de Treasure do T8 são sacrifícios (não atacantes); cada animado sacrificado = 1 criatura morta = 1 Treasure do Mahadi no end step. T8: 7 mortes + Lotho no Dictate = **8 esperados × 6 linhas** se os 7 eram criaturas |
-**Ainda sem resposta:** T7 (Pact Boon do Lotho e Lotho na Tax; os 2 de fora do turno; o contador +1/+1), Sevinne's sem a cópia no T8, e quantos dos 7 Treasures do T8 eram criaturas.
-**Dois padrões que se repetem:** (1) os gatilhos do **Lotho** (Pact Boon ao jogá-lo do exílio, 2ª mágica) não aparecem como linhas "criada"; (2) em T6 falta 1 Treasure no combate. Ambos subcontam a favor do oráculo (o jogador recebeu **menos** Treasures do que as regras davam).
+**T7 (resposta do usuário em 2026-10-04): "T7 foi erro meu".** O que faltava no log de T7 (Pact Boon do Lotho jogado do exílio; Lotho na 2ª mágica) foi esquecimento de registro, não erro de regra; **fecha**.
+**Ainda sem resposta:** o contador +1/+1 do Treasure em T7, a Sevinne's sem a cópia no T8, a Blood Money que expirou, e quantos dos 7 Treasures do T8 eram criaturas.
+**Dois padrões que se repetem:** (1) os gatilhos do **Lotho** (Pact Boon ao jogá-lo do exílio, 2ª mágica) não aparecem como linhas "criada": em T7 o usuário confirmou que foi **erro dele** (T8 provavelmente igual: Lotho no Dictate); (2) em T6 falta 1 Treasure no combate. Ambos subcontam a favor do oráculo (o jogador registrou **menos** Treasures do que as regras davam).
 
 ### 4. Comparação com o simulador (medido; N=10.000, sementes 3.000.000+i, 8 turnos; simulador no estado do commit `c04840d`; `resumos/comparacao_simulador_*.txt`)
 | | partida | simulador padrão | simulador resiliência |

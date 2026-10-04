@@ -74,3 +74,5 @@ Os arquivos dos lotes anteriores do Vihaan (`2026-10-03-sephiroth`, `2026-10-03-
 - Nenhuma carta foi cortada ou adicionada à lista; o Commander Spellbook não foi consultado porque nada na lista mudou.
 
 Terceira nota (rodada "Prosper e Mahadi", 2026-10-03): o simulador vivo ganhou mais duas chaves ligadas por padrão (`IMPULSE_EXPIRING_FIRST_ENABLED`, `TREASURE_SELF_OUTLET_FARM_ENABLED`; ver `../2026-10-03-exilio-primeiro-e-mahadi/LEIAME.md`). `orquestracao/fx_common.py` agora também as desliga e ignora os 3 campos novos do `GameState`. Reverificado: `bash orquestracao/verificar_reproducao.sh --tudo` → 8/8 byte a byte iguais. `SHA256SUMS` regenerado.
+
+Nota (rodada "exílio sempre e Dictate", 2026-10-04): o simulador vivo ganhou mais duas chaves ligadas por padrão (`IMPULSE_ALL_FIRST_ENABLED`, `TREASURE_FARM_WITH_DICTATE_ENABLED`; ver `../2026-10-04-exilio-sempre-e-dictate/LEIAME.md`). `orquestracao/fx_common.py` agora também as desliga e ignora os 2 campos novos do `GameState`. Reverificado: `bash orquestracao/verificar_reproducao.sh --tudo` → 8/8 byte a byte iguais. `SHA256SUMS` regenerado.
