@@ -1,0 +1,422 @@
+===== Blasphemous Edict | Sorcery | {3}{B}{B} | commander: legal | GC: False | id: ['B'] | US$ 4.48
+You may pay {B} rather than pay this spell's mana cost if there are thirteen or more creatures on the battlefield.
+Each player sacrifices thirteen creatures of their choice.
+ - 2024-11-08 If a player controls fewer than thirteen creatures when Blasphemous Edict resolves, they will sacrifice all of their creatures.
+ - 2024-11-08 Starting with the player whose turn it is, each player in turn order chooses which creatures they will sacrifice, then all the creatures chosen by all players are sacrificed at the same time. Players get to know the choices made by players who chose before them.
+===== By Invitation Only | Sorcery | {3}{W}{W} | commander: legal | GC: False | id: ['W'] | US$ 0.38
+Choose a number between 0 and 13. Each player sacrifices that many creatures of their choice.
+ - 2021-11-19 The numbers you may choose include 0 and 13.
+ - 2021-11-19 If a player controls fewer than the chosen number of creatures, they will sacrifice all their creatures.
+ - 2021-11-19 Starting with the player whose turn it is, each player in turn order chooses which creatures they will sacrifice, then all the creatures chosen by all players are sacrificed at the same time. Players get to know the choices made by players who chose before them.
+===== Barter in Blood | Sorcery | {2}{B}{B} | commander: legal | GC: False | id: ['B'] | US$ 0.27
+Each player sacrifices two creatures of their choice.
+ - 2012-05-01 The active player chooses which creatures will be sacrificed first, then each other player in turn order does the same. Then all creatures are sacrificed simultaneously.
+ - 2012-05-01 If a player controls only one creature, that creature is sacrificed.
+ - 2012-05-01 Barter in Blood doesn’t target any creatures and may be cast even if a player controls fewer than two creatures.
+===== Tergrid's Shadow | Instant | {3}{B}{B} | commander: legal | GC: False | id: ['B'] | US$ 0.28
+Each player sacrifices two creatures.
+Foretell {2}{B}{B} (During your turn, you may pay {2} and exile this card from your hand face down. Cast it on a later turn for its foretell cost.)
+ - 2021-02-05 As Tergrid's Shadow resolves, first the player whose turn it is chooses two creatures they control, then each other player in turn order does the same, knowing the choices made before them. Then all the chosen creatures are sacrificed at the same time.
+ - 2021-02-05 If a player controls two or fewer creatures, that player sacrifices each creature they control.
+ - 2021-02-05 Because exiling a card with foretell from your hand is a special action, you can do so any time you have priority during your turn, including in response to spells and abilities. Once you announce you're taking the action, no other player can respond by trying to remove the card from your hand.
+ - 2021-02-05 Casting a foretold card from exile follows the timing rules for that card. If you foretell an instant card, you can cast it as soon as the next player's turn. In most cases, if you foretell a card that isn't an instant (or doesn't have flash), you'll have to wait until your next turn to cast it.
+ - 2021-02-05 If you're casting a foretold card from exile for its foretell cost, you can't choose to cast it for any other alternative costs. You can, however, pay additional costs, such as kicker costs. If the card has any mandatory additional costs, those must be paid to cast the spell.
+===== Rankle's Prank | Sorcery | {2}{B}{B} | commander: legal | GC: False | id: ['B'] | US$ 0.38
+Choose one or more —
+• Each player discards two cards.
+• Each player loses 4 life.
+• Each player sacrifices two creatures of their choice.
+ - 2023-09-01 You can choose a mode even if some or all players will be entirely or partially unaffected.
+ - 2023-09-01 As the first mode is performed, first the player whose turn it is chooses two cards in hand without revealing them, then each other player in turn order does the same. Then the chosen cards are discarded at the same time.
+ - 2023-09-01 As the third mode is performed, first the player whose turn it is chooses two creatures they control, then each other player in turn order does the same, knowing the choices made before them. Then all the chosen creatures are sacrificed at the same time.
+===== Taste of Death | Sorcery | {4}{B}{B} | commander: legal | GC: False | id: ['B'] | US$ 0.43
+Each player sacrifices three creatures of their choice. You create three Food tokens. (They're artifacts with "{2}, {T}, Sacrifice this token: You gain 3 life.")
+ - 2024-11-08 Food is an artifact type. Even though it appears on some creatures, it's never a creature type.
+ - 2024-11-08 You can't sacrifice a Food to pay multiple costs. For example, you can't sacrifice a Food token to activate its own ability and also to activate Maraleaf Rider's ability.
+ - 2024-11-08 Whatever you do, don't eat the delicious cards.
+ - 2019-10-04 As Taste of Death resolves, first the player whose turn it is chooses three creatures they control, then each other player in turn order does the same, knowing the choices made before them. Then all the chosen creatures are sacrificed at the same time.
+ - 2019-10-04 If a player controls three or fewer creatures, that player sacrifices each creature they control.
+ - 2019-10-04 You create three Food tokens, no matter how many creatures were actually sacrificed, even if some or all players sacrificed no creatures.
+===== Necrotic Hex | Sorcery | {6}{B} | commander: legal | GC: False | id: ['B'] | US$ 0.42
+Each player sacrifices six creatures of their choice. You create six tapped 2/2 black Zombie creature tokens.
+ - 2020-11-10 Let's say everyone controls lots of creatures. As Necrotc Hex resolves, first the player whose turn it is (likely you) chooses which six creatures they'll sacrifice, then each other player in turn order does the same, knowing the choices of players before them. Then all creatures are sacrificed simultaneously. Finally, you'll create the six tapped Zombies.
+ - 2020-11-10 You'll create six tapped Zombies no matter how many creatures you sacrifice.
+===== Abyssal Gorestalker | Creature — Horror | {4}{B}{B} | commander: legal | GC: False | id: ['B'] | US$ 0.24
+When this creature enters, each player sacrifices two creatures of their choice.
+ - 2023-11-10 As the enters-the-battlefield ability resolves, first the player whose turn it is chooses which two creatures they are going to sacrifice, then each other player in turn order does the same. Players will know the choices of previous players when making their choices. Then all creatures are sacrificed by their controllers simultaneously.
+ - 2023-11-10 If a player controls only one creature as the ability resolves, they must sacrifice it.
+ - 2023-11-10 You may sacrifice Abyssal Gorestalker to its own ability. If it is the only creature you control or one of two creatures you control, you must sacrifice it.
+===== Meathook Massacre II | Legendary Enchantment | {X}{X}{B}{B}{B}{B} | commander: legal | GC: False | id: ['B'] | US$ 2.39
+When Meathook Massacre II enters, each player sacrifices X creatures of their choice.
+Whenever a creature you control dies, you may pay 3 life. If you do, return that card under your control with a finality counter on it.
+Whenever a creature an opponent controls dies, they may pay 3 life. If they don't, return that card under your control with a finality counter on it.
+ - 2024-09-20 If a creature that dies leaves the graveyard before Meathook Massacre II's second or third ability (as appropriate) resolves, that creature won't return to the battlefield regardless of whether or not life was paid.
+ - 2024-09-20 When a token creature dies, Meathook Massacre II's second or third ability (as appropriate) will trigger. The appropriate player has the option to pay 3 life, but regardless of their choice, the token won't return to the battlefield.
+ - 2024-09-20 Finality counters work on any permanent, not only creatures. If a permanent with a finality counter on it would be put into a graveyard from the battlefield, exile it instead.
+ - 2024-09-20 Finality counters don't stop permanents from going to zones other than the graveyard from the battlefield. For example, if a permanent with a finality counter on it would be put into its owner's hand from the battlefield, it does so normally.
+ - 2024-09-20 Finality counters aren't keyword counters, and a finality counter doesn't give any abilities to the permanent it's on. If that permanent loses its abilities and then would go to a graveyard, it will still be exiled instead.
+ - 2024-09-20 Multiple finality counters on a single permanent are redundant.
+===== Liliana, Dreadhorde General | Legendary Planeswalker — Liliana | {4}{B}{B} | commander: legal | GC: False | id: ['B'] | US$ 10.62
+Whenever a creature you control dies, draw a card.
++1: Create a 2/2 black Zombie creature token.
+−4: Each player sacrifices two creatures of their choice.
+−9: Each opponent chooses a permanent they control of each permanent type and sacrifices the rest.
+ - 2024-01-12 If Liliana dies at the same time as one or more creatures you control, her first ability triggers for each of those creatures.
+ - 2024-01-12 If Liliana somehow becomes a creature and dies, her first ability will trigger.
+ - 2024-01-12 As Liliana's second loyalty ability resolves, first the player whose turn it is chooses two creatures they control, then each other player in turn order does the same, knowing the choices made before them. Then all the chosen creatures are sacrificed at the same time. If any player can choose only one creature, that player does so.
+ - 2024-01-12 As Liliana's last ability resolves, the next opponent in turn order (or, if it's somehow an opponent's turn, that opponent) makes all of their choices for it, then each other opponent in turn order does the same, knowing the choices made before them. Then all the unchosen permanents are sacrificed at the same time.
+ - 2024-01-12 The permanent types are artifact, creature, enchantment, land, and planeswalker. Supertypes, like legendary, aren't permanent types.
+ - 2024-01-12 While making choices for Liliana's last ability, if a permanent has more than one permanent type, it can count for any of them. For example, you could choose an artifact creature as the artifact you're sparing, another creature as the creature, and an enchantment creature as the enchantment. Similarly, you could choose an enchantment creature as both the creature and the enchantment that you're sparing, even if you control another creature and/or another enchantment.
+===== Zodiark, Umbral God | Legendary Creature — God | {B}{B}{B}{B}{B} | commander: legal | GC: False | id: ['B'] | US$ 0.60
+Indestructible
+When Zodiark enters, each player sacrifices half the non-God creatures they control of their choice, rounded down.
+Whenever a player sacrifices another creature, put a +1/+1 counter on Zodiark.
+ - 2025-06-06 While resolving Zodiark's second ability, you choose half the non-God creatures you control (rounded down), then each other player in turn order does the same. Then each of the chosen creatures are sacrificed simultaneously.
+===== Tragic Arrogance | Sorcery | {3}{W}{W} | commander: legal | GC: False | id: ['W'] | US$ 0.19
+For each player, you choose from among the permanents that player controls an artifact, a creature, an enchantment, and a planeswalker. Then each player sacrifices all other nonland permanents they control.
+ - 2015-06-22 None of the chosen permanents are targets of Tragic Arrogance.
+ - 2015-06-22 If a permanent has more than one of the affected types, it can count for any of them. For example, you could choose an artifact creature as the artifact you're sparing, another creature as the creature, and an enchantment creature as the enchantment. Similarly, you could choose an enchantment creature as both the creature and the enchantment that you're sparing, even if the player controls another creature and/or another enchantment.
+===== Mythos of Snapdax | Sorcery | {2}{W}{W} | commander: legal | GC: False | id: ['B', 'R', 'W'] | US$ 0.37
+Each player chooses an artifact, a creature, an enchantment, and a planeswalker from among the nonland permanents they control, then sacrifices the rest. If {B}{R} was spent to cast this spell, you choose the permanents for each player instead.
+ - 2020-04-17 If you control a permanent with more than one type, you may choose it for each of those types. For example, you could choose an artifact creature as the artifact you keep and also as the creature you keep.
+ - 2020-04-17 If you’re choosing the permanents for each player, your choices must still be legal. For example, you can’t decline to choose a creature a player will keep if that player controls a creature.
+ - 2020-04-17 As Mythos of Snapdax resolves, first you choose which permanents you control won’t be sacrificed, then each other player in turn order does the same, knowing the choices made before them. Then each nonland permanent not chosen is sacrificed at the same time.
+ - 2020-04-17 Lands with another permanent type can’t be chosen and won’t be sacrificed.
+ - 2020-04-17 The abilities of the Mythos check what colors of mana were spent to cast the spell. It’s not an alternative cost to cast the spell.
+ - 2020-04-17 If an effect copies the Mythos spell, no mana was spent to cast the copy, so the copy won’t receive the bonus.
+ - 2020-04-17 The ability checks what mana was actually spent to cast a spell. If an effect allows you to spend mana “as though it were mana” of any color or type, that allows you to spend mana you couldn’t otherwise spend, but it doesn’t change what mana you spent to cast the spell.
+ - 2020-04-17 If an effect allows you to cast a spell without paying its mana cost, you can’t choose to cast it and pay unless another rule or effect allows you to cast that spell for a cost. Similarly, you can’t waive a cost reduction unless that effect says you may.
+===== Winnowing | Sorcery | {4}{W}{W} | commander: legal | GC: False | id: ['W'] | US$ 0.37
+Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.)
+For each player, you choose a creature that player controls. Then each player sacrifices all other creatures they control that don't share a creature type with the chosen creature they control.
+ - 2025-11-17 When calculating a spell's total cost, include any alternative costs, additional costs, or anything else that increases or reduces the cost to cast the spell. Convoke applies after the total cost is calculated. Convoke doesn't change a spell's mana cost or mana value.
+ - 2025-11-17 Tapping an untapped creature that's attacking or blocking to convoke a spell won't cause that creature to stop attacking or blocking.
+ - 2025-11-17 If a creature you control has a mana ability with {T} in the cost, activating that ability while casting a spell with convoke will result in the creature being tapped before you pay the spell's costs. You won't be able to tap it again for convoke. Similarly, if you sacrifice a creature to activate a mana ability while casting a spell with convoke, that creature won't be on the battlefield when you pay the spell's costs, so you won't be able to tap it for convoke.
+ - 2025-11-17 You can tap any untapped creature you control to convoke a spell, even one you haven't controlled continuously since the beginning of your most recent turn.
+===== Slaughter the Strong | Sorcery | {1}{W}{W} | commander: legal | GC: False | id: ['W'] | US$ 0.27
+Each player chooses any number of creatures they control with total power 4 or less, then sacrifices all other creatures they control.
+ - 2020-11-10 Slaughter the Strong has each player choose any number of creatures and then checks that the total power of creatures each player chose this way is 4 or less. For example, you could save two 2/2 creatures, or a 1/1 and a 3/3 creature, but not all four of those creatures.
+ - 2020-11-10 As Slaughter the Strong resolves, first the player whose turn it is chooses which creatures will be spared, then each other player in turn order does the same knowing the choices made before them. Then all the creatures not chosen are sacrificed simultaneously.
+ - 2020-11-10 If a creature's power is somehow less than 0, it subtracts from the total power of the other creatures its controller chooses. This can cause creatures with power 5 or greater to survive.
+===== Destined Confrontation | Sorcery | {2}{W}{W} | commander: legal | GC: False | id: ['W'] | US$ 0.21
+Each player chooses any number of creatures they control with total power 4 or less, then sacrifices all other creatures they control.
+ - 2025-10-02 If a creature's power is somehow less than 0, it subtracts from the total power of the other creatures its controller chooses. This can cause creatures with power 5 or greater to survive.
+ - 2025-10-02 As Destined Confrontation resolves, first the player whose turn it is chooses which creatures will be spared, then each other player in turn order does the same knowing the choices made before them. Then all the creatures not chosen are sacrificed simultaneously.
+ - 2025-10-02 Destined Confrontation has each player choose any number of creatures and then checks that the total power of creatures each player chose this way is 4 or less. For example, you could save two 2/2 creatures, or a 1/1 and a 3/3 creature, but not all four of those creatures.
+===== Rite of Ruin | Sorcery | {5}{R}{R} | commander: legal | GC: False | id: ['R'] | US$ 0.20
+Choose an order for artifacts, creatures, and lands. Each player sacrifices one permanent of their choice of the first type, sacrifices two of their choice of the second type, then sacrifices three of their choice of the third type.
+ - 2012-05-01 First you choose the order for the card types. Then each player in turn order (starting with the active player) chooses one permanent they control of the first card type. Then those permanents are sacrificed at the same time. Then each player in turn order chooses two permanents they control of the second card type. Then those permanents are sacrificed at the same time. Finally, each player in turn order chooses three permanents of the third card type, then those permanents are sacrificed at the same time.
+ - 2012-05-01 Permanents sacrificed for one card type won’t be on the battlefield to be chosen for subsequent card types.
+ - 2012-05-01 If any abilities trigger while Rite of Ruin is resolving, those abilities will wait until Rite of Ruin finishes resolving before going on the stack. Starting with the active player, each player puts their abilities on the stack in any order.
+===== Living Death | Sorcery | {3}{B}{B} | commander: legal | GC: False | id: ['B'] | US$ 6.49
+Each player exiles all creature cards from their graveyard, then sacrifices all creatures they control, then puts all cards they exiled this way onto the battlefield.
+ - 2018-03-16 As Living Death resolves, all players exile their creature cards from graveyards at the same time. Then all players sacrifice all creatures they control at the same time. Then all players put all creatures they exiled onto the battlefield at the same time.
+ - 2018-03-16 Only cards exiled by Living Death's first instruction are put onto the battlefield. If a replacement effect (such as that of Leyline of the Void) causes any of the sacrificed creatures to be exiled instead of put into a graveyard, those cards aren't returned to the battlefield.
+===== Living End | Sorcery |  | commander: legal | GC: False | id: ['B'] | US$ 3.74
+Suspend 3—{2}{B}{B}
+Each player exiles all creature cards from their graveyard, then sacrifices all creatures they control, then puts all cards they exiled this way onto the battlefield.
+ - 2024-02-02 If you cast a card "without paying its mana cost," such as with suspend, you can't choose to cast it for any alternative costs. You can, however, pay additional costs. If the card has any mandatory additional costs, you must pay those if you want to cast the card.
+ - 2024-02-02 When the last time counter is removed, the second triggered ability of suspend (the one that lets you cast the card) triggers. It doesn't matter why the last time counter was removed or what effect removed it.
+ - 2024-02-02 Cards exiled with suspend are exiled face up.
+ - 2024-02-02 The mana value of a spell cast without paying its mana cost is determined by its mana cost, even though that cost wasn't paid.
+ - 2024-02-02 If the spell requires any targets, those targets are chosen when the spell is finally cast, not when it's exiled.
+ - 2024-02-02 If a card with no mana cost is given an alternative cost equal to its mana cost (by Snapcaster Mage, for example), that cost cannot be paid and the card cannot be cast this way.
+ - 2024-02-02 If an effect refers to a "suspended card," that means a card that (1) has suspend, (2) is in exile, and (3) has one or more time counters on it.
+ - 2024-02-02 If the card has {X} in its mana cost, you must choose 0 as the value of X when casting it without paying its mana cost.
+ - 2024-02-02 If the second triggered ability is countered, the card can't be cast. It remains exiled with no time counters on it, and it's no longer suspended.
+ - 2024-02-02 Suspend is a keyword that represents three abilities. The first is a static ability that allows you to exile the card from your hand with the specified number of time counters (the number before the dash) on it by paying its suspend cost (listed after the dash). The second is a triggered ability that removes a time counter from the suspended card at the beginning of each of your upkeeps. The third is a triggered ability that gives you the option to cast the card when the last time counter is removed.
+ - 2024-02-02 Due to a recent rules change to suspend, you are no longer required to cast the suspended card as the second triggered ability of suspend resolves. Instead, as the second triggered ability resolves, you may cast the card. Timing permissions based on the card's type are ignored. If you don't cast the card, it remains exiled with no time counters on it, and it's no longer suspended.
+ - 2024-02-02 If the first triggered ability of suspend (the one that removes time counters) is countered, no time counter is removed. The ability will trigger again at the beginning of the card's owner's next upkeep.
+ - 2024-02-02 Exiling a card with suspend isn't casting that card. This action doesn't use the stack and can't be responded to.
+ - 2024-02-02 A card with no mana cost can't be cast normally; you'll need a way to cast it for an alternative cost or without paying its mana cost, such as by suspending it.
+ - 2024-02-02 You can exile a card in your hand using suspend any time you could cast that card. Consider its card type, any effects that modify when you could cast it (such as flash) and any other effects that stop you from casting it (such as from Meddling Mage's ability) to determine if and when you can do this. Whether you could actually complete all steps in casting the card is irrelevant. For example, you can exile a card with suspend that has no mana cost or that requires a target even if no legal targets are available at that time.
+ - 2021-03-19 "All cards they exiled this way" refers only to the cards exiled in the first part of the effect. If a replacement effect (such as that of Leyline of the Void) exiles any of the sacrificed creatures instead of putting them into the graveyard, those cards aren't returned to the battlefield.
+ - 2021-03-19 While Living End is resolving, first each player exiles their graveyard at the same time, then each player sacrifices all creatures they control at the same time, and finally each player puts their exiled cards onto the battlefield at the same time.
+ - 2013-06-07 Although originally printed with a characteristic-defining ability that defined its color, this card now has a color indicator. This color indicator can't be affected by text-changing effects (such as the one created by Crystal Spray), although color-changing effects can still overwrite it.
+===== Bringer of the Last Gift | Creature — Vampire Demon | {6}{B}{B} | commander: legal | GC: False | id: ['B'] | US$ 0.85
+Flying
+When this creature enters, if you cast it, each player sacrifices all other creatures they control. Then each player returns all creature cards from their graveyard that weren't put there this way to the battlefield.
+ - 2023-11-10 Bringer of the Last Gift's last ability triggers if you cast it from any zone. It doesn't trigger if you put Bringer of the Last Gift onto the battlefield without casting it.
+===== Scrap Mastery | Sorcery | {3}{R}{R} | commander: legal | GC: False | id: ['R'] | US$ 4.74
+Each player exiles all artifact cards from their graveyard, then sacrifices all artifacts they control, then puts all cards they exiled this way onto the battlefield.
+ - 2014-11-07 “Exiled this way” refers to the exile instruction that’s part of Scrap Mastery’s effect. If the sacrificed artifacts are instead exiled because of a replacement effect, those cards won’t be put onto the battlefield.
+===== All Is Dust | Kindred Sorcery — Eldrazi | {7} | commander: legal | GC: False | id: [] | US$ 5.70
+Each player sacrifices all permanents they control that are one or more colors.
+ - 2024-06-07 This cards was originally printed with the "tribal" card type. That card type has been replaced with "kindred". This change does not affect the gameplay function of this card.
+ - 2024-06-07 While it appears only on cards that already have other card types, kindred is a card type and will be counted by effects that refer to the number of card types among cards in a zone.
+ - 2024-06-07 Kindred is a card type that allows noncreature cards to have creature types. For example, Echoes of Eternity is an Eldrazi (although not a creature) while on the battlefield and an Eldrazi card (although not a creature card) in zones other than the battlefield.
+ - 2018-12-07 A land card that produces colored mana, even a land with a basic land type, normally has no color.
+ - 2013-07-01 All Is Dust doesn't destroy permanents. Rather, it causes them to be sacrificed. Regeneration, umbra armor, and indestructible can't save permanents from All Is Dust.
+ - 2010-06-15 Tokens may have one or more colors. The effect that creates a token states what color it is or whether it's colorless.
+ - 2010-06-15 All permanents with one or more colors are sacrificed at the same time.
+ - 2010-06-15 Lands have no mana cost, so they are colorless unless an effect states otherwise.
+===== Extus, Oriq Overlord // Awaken the Blood Avatar | Legendary Creature — Human Warlock // Sorcery | {1}{W}{B}{B} // {6}{B}{R} | commander: legal | GC: False | id: ['B', 'R', 'W'] | US$ 0.50
+Double strike
+Magecraft — Whenever you cast or copy an instant or sorcery spell, return target nonlegendary creature card from your graveyard to your hand.
+//
+As an additional cost to cast this spell, you may sacrifice any number of creatures. This spell costs {2} less to cast for each creature sacrificed this way.
+Each opponent sacrifices a creature of their choice. Create a 3/6 black and red Avatar creature token with haste and "Whenever this token attacks, it deals 3 damage to each opponent."
+ - 2021-04-16 Returning a nonlegendary creature card is not optional. If there is at least one in your graveyard, you must target it with the magecraft ability.
+ - 2021-04-16 Awaken the Blood Avatar’s first ability can’t reduce its cost below {B}{R}. However, you can sacrifice any number of creatures, even if they won’t reduce its cost any further.
+ - 2021-04-16 Include any additional costs to cast Awaken the Blood Avatar before applying its own cost reduction. For example, if Extus is your commander, and an additional cost of {6} applies from the “commander tax,” you may cast Awaken the Blood Avatar by sacrificing four creatures and paying {4}{B}{R}.
+ - 2021-04-16 As Awaken the Blood Avatar resolves, first the next opponent in turn order (or, if it’s an opponent’s turn, the opponent whose turn it is) chooses a creature they control, then each other opponent in turn order does the same knowing the choices made before them. Then all the chosen creatures are sacrificed at the same time.
+ - 2021-04-16 The Blood Avatar will be awakened even if no player has creatures to sacrifice when it resolves.
+ - 2021-04-16 Each magecraft ability has a different effect, although they all have the same trigger condition, whenever you cast or copy an instant or sorcery spell.
+ - 2021-04-16 For example, if you control Archmage Emeritus and cast an instant or sorcery spell, Archmage Emeritus’s magecraft ability will trigger and you will draw a card.
+ - 2021-04-16 If an effect creates a copy of an instant or sorcery spell, this will also cause the magecraft ability to trigger.
+ - 2021-04-16 If an effect creates multiple copies of an instant or sorcery spell, magecraft abilities trigger once for each copy created by the effect.
+ - 2021-04-16 Some effects instruct you to copy an instant or sorcery card in a zone other than the stack. These copies do not cause magecraft abilities to trigger. However, most effects that do this also allow you to cast the copy, and casting the copy will cause magecraft abilities to trigger.
+===== Vona's Hunger | Instant | {2}{B} | commander: legal | GC: False | id: ['B'] | US$ 6.06
+Ascend (If you control ten or more permanents, you get the city's blessing for the rest of the game.)
+Each opponent sacrifices a creature of their choice. If you have the city's blessing, instead each opponent sacrifices half the creatures they control of their choice, rounded up.
+ - 2018-01-19 When Vona’s Hunger resolves, first the player whose turn it is (if that player is an opponent) chooses which creature or creatures they will sacrifice, then each other opponent in turn order does the same, then all chosen creatures are sacrificed at the same time. Players will know choices made by earlier players when making their choices.
+ - 2018-01-19 Once you have the city’s blessing, you have it for the rest of the game, even if you lose control of some or all of your permanents. The city’s blessing isn’t a permanent itself and can’t be removed by any effect.
+ - 2018-01-19 A permanent is any object on the battlefield, including tokens and lands. Spells and emblems aren’t permanents.
+ - 2018-01-19 If you cast a spell with ascend, you don’t get the city’s blessing until it resolves. Players may respond to that spell by trying to change whether you get the city’s blessing.
+ - 2018-01-19 If you control ten permanents but don’t control a permanent or resolving spell with ascend, you don’t get the city’s blessing. For example, if you control ten permanents, lose control of one, then cast Golden Demise, you won’t have the city’s blessing and the spell will affect creatures you control.
+ - 2018-01-19 If your tenth permanent enters the battlefield and then a permanent leaves the battlefield immediately afterwards (most likely due to the “Legend Rule” or due to being a creature with 0 toughness), you get the city’s blessing before it leaves the battlefield.
+===== Make an Example | Sorcery | {3}{B} | commander: legal | GC: False | id: ['B'] | US$ 10.36
+Each opponent separates the creatures they control into two piles. For each opponent, you choose one of their piles. Each opponent sacrifices the creatures in their chosen pile. (Piles can be empty.)
+ - 2022-04-29 “Their chosen pile” means the pile of their permanents that you chose; it doesn't mean that they get to choose a pile.
+===== Syphon Flesh | Sorcery | {4}{B} | commander: legal | GC: False | id: ['B'] | US$ 0.36
+Each other player sacrifices a creature of their choice. You create a 2/2 black Zombie creature token for each creature sacrificed this way.
+===== Perilous Predicament | Instant | {4}{B} | commander: legal | GC: False | id: ['B'] | US$ 0.06
+Each opponent sacrifices an artifact creature and a nonartifact creature of their choice.
+ - 2017-02-09 When Perilous Predicament resolves, first the player whose turn it is (if that player is an opponent) chooses which creatures they will sacrifice, then each other opponent in turn order does the same, then all chosen creatures are sacrificed at the same time.
+ - 2017-02-09 If each creature an opponent controls is an artifact creature, that player sacrifices only one creature. Similarly, if each creature an opponent controls is a nonartifact creature, that player sacrifices only one creature. If an opponent controls no creatures, that player doesn’t sacrifice anything.
+===== Crackling Doom | Instant | {R}{W}{B} | commander: legal | GC: False | id: ['B', 'R', 'W'] | US$ 0.38
+Crackling Doom deals 2 damage to each opponent. Each opponent sacrifices a creature with the greatest power among creatures that player controls.
+ - 2014-09-20 Crackling Doom doesn't target any player or creature. For example, a creature with protection from black could be sacrificed.
+ - 2014-09-20 The sacrifice is not dependent on the damage being dealt. It doesn't matter if that damage is prevented or redirected.
+ - 2014-09-20 In a multiplayer game, each opponent, starting with the active player and proceeding in turn order, chooses which creature they will sacrifice and then all creatures are sacrificed at the same time. Each successive player will know what the players before them chose to sacrifice.
+ - 2014-09-20 If a player controls two or more creatures tied for the greatest power among creatures they control, that player chooses one of them to sacrifice.
+===== Rush of Dread | Sorcery | {1}{B}{B} | commander: legal | GC: False | id: ['B'] | US$ 0.37
+Spree (Choose one or more additional costs.)
++ {1} — Target opponent sacrifices half the creatures they control of their choice, rounded up.
++ {2} — Target opponent discards half the cards in their hand, rounded up.
++ {2} — Target opponent loses half their life, rounded up.
+ - 2024-04-12 Like the effects of all modal spells, Rush of Dread’s effects happen in order. If the first two modes target different opponents, the opponent targeted by the second mode will see what the first opponent sacrificed before choosing what to discard.
+ - 2024-04-12 Spells with spree have a + (plus sign) indicator in the upper right corner of the card frame. This has no rules meaning and serves only to remind players that at least one additional cost is required to cast the spell.
+ - 2024-04-12 Each additional cost and associated mode in the text box is also preceded with a + indicator. These symbols also have no rules meaning and serve only to remind players that the listed costs are additional costs.
+ - 2024-04-12 You must choose at least one of the listed modes and pay its associated additional cost in order to cast a spell with spree.
+ - 2024-04-12 You choose the modes as you cast the spell with spree. Once modes are chosen, they can’t be changed.
+ - 2024-04-12 If a mode requires a target, you can select that mode only if there’s a legal target available. Ignore the targeting requirements for modes you don’t choose.
+ - 2024-04-12 No matter which modes you choose, you always follow the instructions in the order they are written.
+ - 2024-04-12 You can’t choose the same mode more than once.
+ - 2024-04-12 The mana value of a spell with spree is determined only by its mana cost (in the upper right corner of the card). It doesn’t matter which modes you choose or which additional costs you pay, including any additional costs imposed by other effects.
+ - 2024-04-12 No player can cast spells or activate abilities in between the modes of a resolving spell. Any abilities that trigger won’t be put onto the stack until the spell is done resolving.
+ - 2024-04-12 If a spell with spree is copied, the effect that creates the copy may allow you to choose new targets. You cannot choose new modes.
+ - 2024-04-12 If all targets for the chosen modes become illegal before a spell with spree resolves, the spell won’t resolve and none of its effects will happen. If at least one target is still legal, the spell will resolve but will have no effect on any illegal targets.
+ - 2024-04-12 If an effect allows you to cast a spell with spree “without paying its mana cost,” you must still choose at least one mode and pay the associated additional costs.
+===== Skull Storm | Sorcery | {7}{B}{B} | commander: legal | GC: False | id: ['B'] | US$ 0.92
+When you cast this spell, copy it for each time you've cast your commander from the command zone this game.
+Each opponent sacrifices a creature of their choice. Each opponent who can't loses half their life, rounded up.
+ - 2018-10-05 If you have multiple commanders, you’ll copy this spell for each time you’ve cast either of them. For example, if you’ve cast one commander once and one twice, you’ll copy this spell three times.
+ - 2018-07-13 The amount of life to lose is determined only as Skull Storm resolves. For example, if an opponent controls no creatures and has 30 life when you cast Skull Storm and make two copies, the first to resolve causes that opponent to lose 15 life (so they have 15 life left), the second causes that opponent to lose 8 life (7 life left), and the original spell causes that player to lose 4 life, leaving the player at 3 life.
+ - 2018-07-13 Each Storm’s triggered ability counts only how many times you’ve cast your commander from the command zone before that triggered ability resolves. If you cast your commander again later, you won’t get another copy.
+ - 2018-07-13 If your commander was countered, that time you cast it still counts.
+ - 2018-07-13 Each Storm’s triggered ability can copy the Storm spell even if that spell is countered before that ability resolves.
+ - 2018-07-13 The copies are created on the stack, so they’re not “cast.” Abilities that trigger when a player casts a spell (such as the Storm’s ability itself) won’t trigger.
+===== Choice of Damnations | Sorcery — Arcane | {5}{B} | commander: legal | GC: False | id: ['B'] | US$ 22.59
+Target opponent chooses a number. You may have that player lose that much life. If you don't, that player sacrifices all but that many permanents of their choice.
+ - 2005-06-01 After the opponent chooses a number, Choice of Damnations’ controller may choose to make that opponent either lose that much life or make that opponent sacrifice permanents.
+ - 2005-06-01 If the opponent must sacrifice all but a number of permanents, that opponent chooses that many permanents and then sacrifices the rest. If the number chosen is greater than the number of permanents the opponent controls, the player sacrifices nothing.
+===== Portal to Phyrexia | Artifact | {9} | commander: legal | GC: False | id: [] | US$ 50.00
+When this artifact enters, each opponent sacrifices three creatures of their choice.
+At the beginning of your upkeep, put target creature card from a graveyard onto the battlefield under your control. It's a Phyrexian in addition to its other types.
+===== Urborg Justice | Instant | {B}{B} | commander: legal | GC: False | id: ['B'] | US$ 3.14
+Target opponent sacrifices a creature of their choice for each creature put into your graveyard from the battlefield this turn.
+ - 2004-10-04 The creatures are chosen on resolution, not on announcement.
+ - 2004-10-04 Does not target the creatures.
+===== Martyr's Bond | Enchantment | {4}{W}{W} | commander: legal | GC: False | id: ['W'] | US$ 1.08
+Whenever this enchantment or another nonland permanent you control is put into a graveyard from the battlefield, each opponent sacrifices a permanent of their choice that shares a card type with it.
+ - 2011-09-22 If Martyr’s Bond and other nonland permanents are put into the graveyard from the battlefield at the same time, Martyr’s Bond will trigger for itself and each of those other nonland permanents.
+ - 2011-09-22 Each opponent must sacrifice only one permanent for each trigger, even if the nonland permanent you controlled that went to the graveyard had multiple types. For example, if an artifact creature you control is put into a graveyard from the battlefield, each opponent sacrifices exactly one artifact or creature, and that permanent doesn’t need to be an artifact creature.
+===== Butcher of Malakir | Creature — Vampire Warrior | {5}{B}{B} | commander: legal | GC: False | id: ['B'] | US$ 0.39
+Flying
+Whenever this creature or another creature you control dies, each opponent sacrifices a creature of their choice.
+ - 2010-03-01 When the triggered ability resolves, first the player whose turn it is (if that player is an opponent) chooses which creature they will sacrifice, then each other opponent in turn order does the same, then all chosen creatures are sacrificed at the same time.
+ - 2010-03-01 If multiple creatures you control (possibly including Butcher of Malakir itself) are put into their owners' graveyards at the same time, Butcher of Malakir's triggered ability will trigger that many times.
+ - 2010-03-01 If you control more than one Butcher of Malakir and a creature you control is put into a graveyard, each of those Butchers' abilities will trigger. Each opponent will sacrifice a creature each time one of those abilities resolves.
+ - 2010-03-01 If you and an opponent each control a Butcher of Malakir and a creature is put into a graveyard, a chain reaction happens. First the ability of one player's Butcher will trigger, causing each opponent to sacrifice a creature. That sacrifice causes the ability of the other player's Butcher to trigger, and so on.
+===== Dusk Mangler | Creature — Horror | {5}{B}{B} | commander: legal | GC: False | id: ['B'] | US$ 0.22
+As an additional cost to cast this spell, sacrifice a creature, discard a card, or pay 4 life.
+When this creature enters, each opponent sacrifices a creature of their choice, discards a card, and loses 4 life.
+ - 2022-04-29 As Dusk Mangler's triggered ability resolves, each opponent, starting with the next player in turn order, chooses a creature, knowing the choices made before them. All of those creatures are sacrificed at the same time. Next, each opponent chooses a card in their hand without revealing it, and all of those cards are discarded at the same time. Then, each opponent loses 4 life.
+===== Malfegor | Legendary Creature — Demon Dragon | {2}{B}{B}{R}{R} | commander: legal | GC: False | id: ['B', 'R'] | US$ 0.42
+Flying
+When Malfegor enters, discard your hand. Each opponent sacrifices a creature of their choice for each card discarded this way.
+ - 2017-11-17 Malfegor’s ability is not optional. You must discard your entire hand no matter how many creatures your opponents control.
+ - 2017-11-17 After you discard your hand and the number of creatures each opponent must sacrifice has been determined, each opponent in turn order, starting with the player whose turn it is if that player is your opponent, chooses which creatures they will sacrifice, then all the chosen creatures are all sacrificed at the same time.
+===== Gix's Command | Sorcery | {3}{B}{B} | commander: legal | GC: False | id: ['B'] | US$ 0.55
+Choose two —
+• Put two +1/+1 counters on up to one creature. It gains lifelink until end of turn.
+• Destroy each creature with power 2 or less.
+• Return up to two creature cards from your graveyard to your hand.
+• Each opponent sacrifices a creature with the greatest power among creatures they control.
+ - 2022-10-14 Since none of the modes have targets, you don't have to choose which creature is getting the counters or which cards you're returning until Gix's Command resolves.
+===== Legate Lanius, Caesar's Ace | Legendary Creature — Human Soldier | {2}{B}{R} | commander: legal | GC: False | id: ['B', 'R'] | US$ 0.31
+Decimate — When Legate Lanius enters, each opponent sacrifices a tenth of the creatures they control of their choice, rounded up.
+Whenever an opponent sacrifices a creature, put a +1/+1 counter on Legate Lanius.
+ - 2024-03-08 For example, when Legate Lanius's first ability resolves, an opponent who controls between one and ten creatures will sacrifice one creature. An opponent who controls between eleven and twenty creatures will sacrifice two creatures, and so on.
+===== Din of the Fireherd | Sorcery | {5}{B/R}{B/R}{B/R} | commander: legal | GC: False | id: ['B', 'R'] | US$ 0.69
+Create a 5/5 black and red Elemental creature token. Target opponent sacrifices a creature of their choice for each black creature you control, then sacrifices a land of their choice for each red creature you control.
+ - 2008-05-01 The parts of the spell happen in order. When determining how many black creatures and how many red creatures you control, keep in mind that you just put a creature onto the battlefield that’s black and red.
+ - 2008-05-01 If the targeted opponent becomes an illegal target, the entire spell doesn’t resolve. You won’t get a token.
+===== Dead Drop | Sorcery | {9}{B} | commander: legal | GC: False | id: ['B'] | US$ 0.19
+Delve (Each card you exile from your graveyard while casting this spell pays for {1}.)
+Target player sacrifices two creatures of their choice.
+ - 2021-03-19 Delve doesn't change a spell's mana cost or mana value. For example, Treasure Cruise's mana value is 8 even if you exiled three cards to cast it.
+ - 2021-03-19 You can exile cards to pay only for generic mana, and you can't exile more cards than the generic mana requirement of a spell with delve. For example, you can't exile more than seven cards from your graveyard to cast Treasure Cruise unless an effect has increased its cost.
+ - 2021-03-19 Because delve isn't an alternative cost, it can be used in conjunction with alternative costs, such as flashback. It can also be used to pay for additional costs that include generic mana.
+ - 2014-09-20 The target player chooses which creatures they will sacrifice as Dead Drop resolves. If the player controls only one creature at that time, they will sacrifice it.
+ - 2014-09-20 Dead Drop doesn't target any creature. The target player could sacrifice a creature with hexproof, for example.
+===== Curse of the Cabal | Sorcery | {9}{B} | commander: legal | GC: False | id: ['B'] | US$ 3.06
+Target player sacrifices half the permanents they control of their choice, rounded down.
+Suspend 2—{2}{B}{B} (Rather than cast this card from your hand, you may pay {2}{B}{B} and exile it with two time counters on it. At the beginning of your upkeep, remove a time counter. When the last is removed, you may cast it without paying its mana cost.)
+At the beginning of each player's upkeep, if this card is suspended, that player may sacrifice a permanent of their choice. If the player does, put two time counters on this card.
+ - 2024-02-02 Suspend is a keyword that represents three abilities. The first is a static ability that allows you to exile the card from your hand with the specified number of time counters (the number before the dash) on it by paying its suspend cost (listed after the dash). The second is a triggered ability that removes a time counter from the suspended card at the beginning of each of your upkeeps. The third is a triggered ability that gives you the option to cast the card when the last time counter is removed.
+ - 2024-02-02 You can exile a card in your hand using suspend any time you could cast that card. Consider its card type, any effects that modify when you could cast it (such as flash) and any other effects that stop you from casting it (such as from Meddling Mage's ability) to determine if and when you can do this. Whether you could actually complete all steps in casting the card is irrelevant. For example, you can exile a card with suspend that has no mana cost or that requires a target even if no legal targets are available at that time.
+ - 2024-02-02 Cards exiled with suspend are exiled face up.
+ - 2024-02-02 Exiling a card with suspend isn't casting that card. This action doesn't use the stack and can't be responded to.
+ - 2024-02-02 If the spell requires any targets, those targets are chosen when the spell is finally cast, not when it's exiled.
+ - 2024-02-02 If an effect refers to a "suspended card," that means a card that (1) has suspend, (2) is in exile, and (3) has one or more time counters on it.
+ - 2024-02-02 If the first triggered ability of suspend (the one that removes time counters) is countered, no time counter is removed. The ability will trigger again at the beginning of the card's owner's next upkeep.
+ - 2024-02-02 When the last time counter is removed, the second triggered ability of suspend (the one that lets you cast the card) triggers. It doesn't matter why the last time counter was removed or what effect removed it.
+ - 2024-02-02 If the second triggered ability is countered, the card can't be cast. It remains exiled with no time counters on it, and it's no longer suspended.
+ - 2024-02-02 Due to a recent rules change to suspend, you are no longer required to cast the suspended card as the second triggered ability of suspend resolves. Instead, as the second triggered ability resolves, you may cast the card. Timing permissions based on the card's type are ignored. If you don't cast the card, it remains exiled with no time counters on it, and it's no longer suspended.
+ - 2024-02-02 If you cast a card "without paying its mana cost," such as with suspend, you can't choose to cast it for any alternative costs. You can, however, pay additional costs. If the card has any mandatory additional costs, you must pay those if you want to cast the card.
+ - 2024-02-02 If the card has {X} in its mana cost, you must choose 0 as the value of X when casting it without paying its mana cost.
+ - 2024-02-02 The mana value of a spell cast without paying its mana cost is determined by its mana cost, even though that cost wasn't paid.
+===== Fraying Omnipotence | Sorcery | {3}{B}{B} | commander: legal | GC: False | id: ['B'] | US$ 0.72
+Each player loses half their life, then discards half the cards in their hand, then sacrifices half the creatures they control of their choice. Round up each time.
+ - 2018-07-13 The amounts that are lost are rounded up, not the amounts kept. For example, a player with 5 life, five cards in hand, and five creatures would lose 3 life, discard three cards, and sacrifice three creatures.
+ - 2018-07-13 Because the instructions are followed in order, abilities of the creatures a player will sacrifice may modify or trigger on losing life, discarding cards, and/or sacrificing creatures. Abilities that trigger this way will resolve after Fraying Omnipotence is done resolving.
+ - 2018-07-13 When Fraying Omnipotence resolves, first each player loses the appropriate amount of life at once. Next, the player whose turn it is chooses an appropriate number of cards in hand without revealing them, then each other player in turn order does the same, and then those cards are all discarded simultaneously. Then, the player whose turn it is chooses an appropriate number of creatures they control. Each other player in turn order does the same, knowing choices made by previous players. Finally, all of the chosen creatures are sacrificed simultaneously.
+ - 2018-07-13 In a Two-Headed Giant game, Fraying Omnipotence causes each player to lose half of their team’s life, rounded up. This means that teams at an even life total will have 0 life, and teams at an odd life total will have -1 life. The game then ends in a draw.
+===== Pox | Sorcery | {B}{B}{B} | commander: legal | GC: False | id: ['B'] | US$ None
+Each player loses a third of their life, then discards a third of the cards in their hand, then sacrifices a third of the creatures they control of their choice, then sacrifices a third of the lands they control of their choice. Round up each time.
+ - 2007-09-16 The losses, discards, and sacrifices are rounded up. For example, if you have 5 life, you'll lose 2 life, leaving you at 3 life. (Five divided by three is one and two-thirds. Rounding that up to the nearest whole number gives you two.)
+ - 2007-09-16 Each part of Pox's effect is processed separately. For each part, first the player whose turn it is makes all necessary choices (such as which cards to discard), then each other player in turn order chooses, then the actions happen at the same time. Then Pox's effect moves to the next stage.
+ - 2007-09-16 The number you need to lose, discard, or sacrifice isn't calculated until it's time to perform that part of the effect. For example, if your opponent casts Pox and you discard Dodecapod as part of Pox's discard effect, Dodecapod will be put onto the battlefield instead of into your graveyard. Then, when determining how many creatures you need to sacrifice, the Dodecapod is taken into account.
+===== Pox Plague | Sorcery | {B}{B}{B}{B}{B} | commander: legal | GC: False | id: ['B'] | US$ 0.31
+Each player loses half their life, then discards half the cards in their hand, then sacrifices half the permanents they control of their choice. Round down each time.
+===== Death Cloud | Sorcery | {X}{B}{B}{B} | commander: legal | GC: False | id: ['B'] | US$ 5.76
+Each player loses X life, discards X cards, sacrifices X creatures of their choice, then sacrifices X lands of their choice.
+ - 2013-06-07 If you control a permanent that’s a creature and a land, and you choose to sacrifice it as you sacrifice creatures, it won’t be on the battlefield when you sacrifice lands. You can’t sacrifice it again.
+===== Blasphemous Act | Sorcery | {8}{R} | commander: legal | GC: False | id: ['R'] | US$ 0.99
+This spell costs {1} less to cast for each creature on the battlefield.
+Blasphemous Act deals 13 damage to each creature.
+ - 2020-11-10 Although players may respond to Blasphemous Act once it's been cast, once it's announced, they can't respond before the cost is calculated and paid.
+ - 2020-11-10 To determine the total cost of a spell, start with the mana cost or alternative cost you're paying, add any cost increases, then apply any cost reductions (such as that of Blasphemous Act). The mana value of the spell is determined only by its mana cost, no matter what the total cost to cast the spell was.
+ - 2020-11-10 Blasphemous Act's ability can't reduce the total cost to cast the spell below {R}.
+ - 2020-11-10 The total cost to cast Blasphemous Act is locked in before you pay that cost. For example, if there are three creatures on the battlefield, including one you can sacrifice to add {C}, the total cost of Blasphemous Act is {5}{R}. Then you can sacrifice the creature when you activate mana abilities just before paying the cost.
+===== Blood Money | Sorcery | {5}{B}{B} | commander: legal | GC: False | id: ['B'] | US$ 2.65
+Destroy all creatures. For each nontoken creature destroyed this way, you create a tapped Treasure token.
+ - 2022-06-10 If a creature isn't destroyed this way for some reason, such as having indestructible or being regenerated, Blood Money's controller will not create a Treasure token for it.
+===== Mayhem Devil | Creature — Devil | {1}{B}{R} | commander: legal | GC: False | id: ['B', 'R'] | US$ 0.35
+Whenever a player sacrifices a permanent, this creature deals 1 damage to any target.
+ - 2019-05-03 A legendary permanent that is put into a graveyard because of the "legend rule" isn't sacrificed.
+ - 2019-05-03 You control Mayhem Devil's triggered ability and choose the target, no matter who sacrificed the permanent.
+ - 2019-05-03 If a permanent is sacrificed to pay a cost of a spell or ability, Mayhem Devil's ability will resolve before that spell or ability. Conversely, if a permanent is sacrificed during the resolution of a spell or ability, that spell or ability will finish resolving before Mayhem Devil's ability is put onto the stack.
+ - 2019-05-03 Mayhem Devil itself doesn't allow any player to sacrifice any permanents. Its ability triggers whenever a player sacrifices a permanent because some other spell, ability, or cost instructed the player to do so.
+ - 2019-05-03 If you sacrifice Mayhem Devil, its ability triggers.
+===== Dictate of Erebos | Enchantment | {3}{B}{B} | commander: legal | GC: False | id: ['B'] | US$ 17.90
+Flash
+Whenever a creature you control dies, each opponent sacrifices a creature of their choice.
+ - 2014-04-26 When the triggered ability resolves, first the player whose turn it is (if that player is an opponent) chooses which creature they will sacrifice, then each other opponent in turn order does the same, then all chosen creatures are sacrificed at the same time.
+ - 2014-04-26 None of the opponents are targeted. An opponent with hexproof would still sacrifice a creature.
+ - 2014-04-26 If multiple creatures you control die at the same time, Dictate of Erebos's triggered ability will trigger that many times.
+ - 2014-04-26 If you control more than one Dictate of Erebos and a creature you control dies, each of the triggered abilities will trigger. Each opponent will sacrifice a creature each time one of those abilities resolves.
+ - 2014-04-26 If you and an opponent each control a Dictate of Erebos and a creature dies, a chain reaction happens. First the ability of one player's Dictate of Erebos will trigger, causing each opponent to sacrifice a creature. That sacrifice causes the ability of the other player's Dictate of Erebos to trigger, and so on.
+===== Teferi's Protection | Instant | {2}{W} | commander: legal | GC: True | id: ['W'] | US$ 46.73
+Until your next turn, your life total can't change and you gain protection from everything. All permanents you control phase out. (While they're phased out, they're treated as though they don't exist. They phase in before you untap during your untap step.)
+Exile Teferi's Protection.
+ - 2017-08-25 Gaining protection from everything causes a spell or ability on the stack to have an illegal target if it targets you. As a spell or ability tries to resolve, if all its targets are illegal, that spell or ability doesn't resolve and none of its effects happen, including effects unrelated to the target. If at least one target is still legal, the spell or ability does as much as it can to the remaining legal targets, and its other effects still happen.
+ - 2017-08-25 Effects that replace an event with having you gain life (like Words of Worship's effect does) or having you lose life will apply and end up replacing the event with nothing.
+ - 2017-08-25 Permanents that phase out with counters phase in with those counters.
+ - 2017-08-25 If you gain control of another player's permanent and it phases out, if the duration of the control-change effect expires before it phases in, that permanent phases in under that other player's control as your next untap step begins. If you leave the game before your next untap step, it phases in as the next untap step begins after your turn would have begun.
+ - 2017-08-25 Protection from everything will usually prevent damage if it would be dealt to you, but some damage can't be prevented. In this case, because your life total also can't change, that damage has any other effects that it may have aside from causing you to lose that much life (such as effects from lifelink or infect) and triggers and effects can see that damage was dealt even though your life total didn't change.
+ - 2017-08-25 While a permanent is phased out, it's treated as though it doesn't exist. It can't be the target of spells or abilities, its static abilities have no effect on the game, its triggered abilities can't trigger, it can't attack or block, and so on.
+ - 2017-08-25 If your untap step is somehow skipped as your next turn begins, your phased-out permanents won't phase in until the next untap step you actually have, but you'll no longer have protection from everything and your life total can change again.
+ - 2017-08-25 If an effect would set your life total to a certain number that's different than your current life total, that part of the effect won't do anything.
+ - 2017-08-25 Choices made for permanents as they entered the battlefield are remembered when they phase in.
+ - 2017-08-25 Spells and abilities that would normally cause you to gain or lose life still resolve while your life total can't change, but the life-gain or life-loss part simply has no effect.
+ - 2017-08-25 ---------- The following rulings focus on the phasing keyword ----------
+ - 2017-08-25 A permanent phasing out causes a spell or ability on the stack to have an illegal target if it targets that permanent. As a spell or ability tries to resolve, if all its targets are illegal, that spell or ability doesn't resolve and none of its effects happen, including effects unrelated to the target. If at least one target is still legal, the spell or ability does as much as it can to the remaining legal targets, and its other effects still happen.
+ - 2017-08-25 Any continuous effects with a "for as long as" duration such as that of Mathas, Fiend Seeker ignore phased-out objects. Any such effects will expire if their conditions are no longer met after ignoring the phased-out objects.
+ - 2017-08-25 Each Aura and Equipment that phases out attached to a permanent that's phasing out phases in with that permanent and still attached to it.
+ - 2017-08-25 If a player has protection from everything, it means three things: 1) All damage that would be dealt to that player is prevented. 2) Auras can't be attached to that player. 3) That player can't be the target of spells or abilities.
+ - 2017-08-25 If a cost includes causing you to gain life (like the alternative cost of an opponent's Invigorate does), that cost can't be paid.
+ - 2017-08-25 Any one-shot effects that are waiting "until [this] leaves the battlefield," such as that of Banishing Light, won't happen when a permanent phases out.
+ - 2017-08-25 ---------- The following rulings focus on the "protection from" keyword ----------
+ - 2017-08-25 Nothing other than the specified events are prevented or illegal. An effect that doesn't target you could still cause you to discard cards, for example. Creatures can still attack you while you have protection from everything, although combat damage that they would deal to you will be prevented.
+ - 2017-08-25 ---------- The following rulings focus on what it means if your life total can't change ----------
+ - 2017-08-25 You can't pay a cost that includes the payment of any amount of life other than 0 life.
+ - 2017-08-25 Effects that would replace having you gain life with some other event won't be able to be applied because it's impossible for you to gain life. The same is true for effects that would replace having you lose life with some other event.
+ - 2017-08-25 If an effect would cause you to exchange life totals with another player, the exchange won't happen. Neither player's life total changes.
+ - 2017-08-25 Phasing out doesn't cause any "leaves the battlefield" abilities to trigger. Similarly, phasing in won't cause any "enters" abilities to trigger.
+ - 2017-08-25 Each Aura and Equipment you control attached to a permanent that isn't phasing out phases in attached to that permanent if it can still be attached to that permanent. If not, it phases in unattached. An Aura that phases in unattached will be put into its owner's graveyard as a state-based action. The same is true with Auras attached to players.
+ - 2017-08-25 If a token is phased out, it will phase in as your next untap step begins. This is a change from previous rules.
+ - 2017-08-25 Any creatures that phase in under your control as your next untap step begins will be able to attack and pay a cost of {T} during that turn.
+===== Boros Charm | Instant | {R}{W} | commander: legal | GC: False | id: ['R', 'W'] | US$ None
+Choose one —
+• Boros Charm deals 4 damage to target player or planeswalker.
+• Permanents you control gain indestructible until end of turn.
+• Target creature gains double strike until end of turn.
+ - 2024-11-08 Boros Charm's second mode affects only permanents you control at the time it resolves. It won't affect permanents that come under your control later in the turn.
+ - 2024-11-08 Planeswalkers with indestructible will still have loyalty counters removed from them as they are dealt damage. If a planeswalker with indestructible has no loyalty counters, it will still be put into its owner's graveyard, as the rule that does this doesn't destroy the planeswalker.
+===== Vihaan, Goldwaker | Legendary Creature — Dwarf Warlock | {R}{W}{B} | commander: legal | GC: False | id: ['B', 'R', 'W'] | US$ None
+Other outlaws you control have vigilance and haste. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws.)
+At the beginning of combat on your turn, you may have Treasures you control become 3/3 Construct Assassin artifact creatures in addition to their other types until end of turn.
+ - 2024-04-12 If a Treasure you control is already a creature when Vihaan’s second ability resolves and you choose to apply its effect to all Treasures you control, that effect will overwrite any previous effects that set that creature’s power and toughness to specific numbers. Effects that otherwise modify its power and toughness will still apply no matter when they took effect. The same is true for +1/+1 counters.
+ - 2024-04-12 Treasures you control will keep any abilities they previously had while they’re creatures.
+ - 2024-04-12 A card, spell, or permanent is an outlaw if it has the Assassin, Mercenary, Pirate, Rogue, or Warlock creature type. It doesn’t matter if it has more than one of those creature types; as long as it has at least one, it’s an outlaw.
+ - 2024-04-12 Outlaw is not a creature type. If an effect asks you to choose a creature type, you can’t choose outlaw.
+ - 2024-04-12 If an ability refers to an outlaw or whether a player controls an outlaw, it’s referring only to permanents with one or more of the creature types specified above. Notably, it’s not referring to any spell or card not on the battlefield. However, other abilities may refer to an “outlaw spell” or “outlaw card” in a zone other than the battlefield. Those abilities refer to spells and cards with one or more of the specified creature types.
+===== Mirkwood Bats | Creature — Bat | {3}{B} | commander: legal | GC: False | id: ['B'] | US$ 1.38
+Flying
+Whenever you create or sacrifice a token, each opponent loses 1 life.
+===== Pitiless Plunderer | Creature — Human Pirate | {3}{B} | commander: legal | GC: False | id: ['B'] | US$ 4.79
+Whenever another creature you control dies, create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.")
+ - 2018-01-19 If Pitiless Plunderer dies at the same time as one or more other creatures you control, its ability will still trigger for each of those other creatures.
+===== Zulaport Cutthroat | Creature — Human Rogue Ally | {1}{B} | commander: legal | GC: False | id: ['B'] | US$ 1.36
+Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life.
+ - 2021-03-19 If another creature you control dies at the same time as Zulaport Cutthroat, its ability triggers for that creature.
+===== Mahadi, Emporium Master | Legendary Creature — Devil | {1}{B}{R} | commander: legal | GC: False | id: ['B', 'R'] | US$ 1.62
+At the beginning of your end step, create a Treasure token for each creature that died this turn. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.")
+===== Krark-Clan Ironworks | Artifact | {4} | commander: legal | GC: False | id: [] | US$ 16.67
+Sacrifice an artifact: Add {C}{C}.
+===== Ashnod's Altar | Artifact | {3} | commander: legal | GC: False | id: [] | US$ 15.65
+Sacrifice a creature: Add {C}{C}.
+===== Deadly Dispute | Instant | {1}{B} | commander: legal | GC: False | id: ['B'] | US$ 0.31
+As an additional cost to cast this spell, sacrifice an artifact or creature.
+Draw two cards and create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.")
+===== Sevinne's Reclamation | Sorcery | {2}{W} | commander: legal | GC: False | id: ['W'] | US$ 0.42
+Return target permanent card with mana value 3 or less from your graveyard to the battlefield. If this spell was cast from a graveyard, you may copy this spell and may choose a new target for the copy.
+Flashback {4}{W} (You may cast this card from your graveyard for its flashback cost. Then exile it.)
+ - 2025-06-06 A spell cast using flashback will always be exiled afterward, whether it resolves, is countered, or leaves the stack in some other way.
+ - 2025-06-06 You can cast a spell using flashback even if it was somehow put into your graveyard without having been cast.
+ - 2025-06-06 To determine the total cost of a spell, start with the mana cost or alternative cost (such as a flashback cost) you're paying, add any cost increases, then apply any cost reductions. The mana value of the spell is determined only by its mana cost, no matter what the total cost to cast the spell was.
+ - 2025-06-06 You must still follow any timing restrictions and permissions, including those based on the card's type. For instance, you can cast a sorcery using flashback only when you could normally cast a sorcery.
+ - 2025-06-06 "Flashback [cost]" means "You may cast this card from your graveyard if the resulting spell is an instant or sorcery spell by paying [cost] rather than paying its mana cost" and "If the flashback cost was paid, exile this card instead of putting it anywhere else any time it would leave the stack."
+ - 2025-06-06 If a card with flashback is put into your graveyard during your turn, you can cast it if it's legal to do so before any other player can take any actions.
+ - 2024-06-07 A permanent card is an artifact, battle, creature, enchantment, land, or planeswalker card.
+ - 2019-08-23 The copy that Sevinne's Reclamation creates is created on the stack, so it's not "cast." Abilities that trigger when a player casts a spell won't trigger. The copy wasn't cast from a graveyard, so it won't make another copy of itself.
+ - 2019-08-23 If you cast Sevinne's Reclamation from your graveyard, any abilities that trigger as the permanent card returns to the battlefield will resolve before the copy of Sevinne's Reclamation resolves but after new targets for the copy have been chosen.
+ - 2019-08-23 If a card in a graveyard has {X} in its mana cost, X is considered to be 0.
+ - 2019-08-23 If the target card is an illegal target by the time Sevinne's Reclamation tries to resolve, the spell doesn't resolve. You won't copy it if you cast it from a graveyard.
+===== Life Insurance | Enchantment | {3}{W}{B} | commander: legal | GC: False | id: ['B', 'W'] | US$ 0.31
+Extort (Whenever you cast a spell, you may pay {W/B}. If you do, each opponent loses 1 life and you gain that much life.)
+Whenever a nontoken creature dies, you lose 1 life and create a Treasure token.
+ - 2024-01-12 You may pay {W/B} a maximum of one time for each extort triggered ability. You decide whether to pay when the ability resolves.
+ - 2024-01-12 The amount of life you gain from extort is based on the total amount of life lost, not necessarily the number of opponents you have. For example, if your opponent's life total can't change (perhaps because that player controls Platinum Emperion), you won't gain any life.
+ - 2024-01-12 The extort ability doesn't target any player.
+ - 2024-01-12 The extort ability resolves before the spell that caused it to trigger. The ability resolves even if that spell is countered.
+===== Revel in Riches | Enchantment | {4}{B} | commander: legal | GC: False | id: ['B'] | US$ 21.11
+Whenever a creature an opponent controls dies, create a Treasure token. (It's an artifact with "{T}, Sacrifice this token: Add one mana of any color.")
+At the beginning of your upkeep, if you control ten or more Treasures, you win the game.
+ - 2017-09-29 If you don't control ten Treasures as your upkeep begins, the second ability of Revel in Riches won't trigger. You can't take any actions during your turn before your upkeep begins.
+ - 2017-09-29 If you don't control ten Treasures as the second ability of Revel in Riches resolves, you won't win the game.
+ - 2017-09-29 If an opponent's creature dies at the same time that Revel in Riches is destroyed, you'll get a Treasure.
+ - 2017-09-29 If the second ability of Revel in Riches causes you to win the game, please refrain from throwing your Treasure tokens into the air as this may distract or injure other players.

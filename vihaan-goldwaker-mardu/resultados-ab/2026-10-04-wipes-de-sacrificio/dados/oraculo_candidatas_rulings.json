@@ -1,0 +1,2891 @@
+{
+ "Blasphemous Edict": {
+  "name": "Blasphemous Edict",
+  "oracle_id": "6cf50e21-0f60-4e9a-b910-ebe1bad2a29e",
+  "type_line": "Sorcery",
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "oracle_text": "You may pay {B} rather than pay this spell's mana cost if there are thirteen or more creatures on the battlefield.\nEach player sacrifices thirteen creatures of their choice.",
+  "faces": [
+   {
+    "name": "Blasphemous Edict",
+    "mana_cost": "{3}{B}{B}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "You may pay {B} rather than pay this spell's mana cost if there are thirteen or more creatures on the battlefield.\nEach player sacrifices thirteen creatures of their choice."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "fdn",
+  "released_at": "2024-11-15",
+  "prices_usd": "4.48",
+  "rulings": [
+   [
+    "2024-11-08",
+    "If a player controls fewer than thirteen creatures when Blasphemous Edict resolves, they will sacrifice all of their creatures."
+   ],
+   [
+    "2024-11-08",
+    "Starting with the player whose turn it is, each player in turn order chooses which creatures they will sacrifice, then all the creatures chosen by all players are sacrificed at the same time. Players get to know the choices made by players who chose before them."
+   ]
+  ]
+ },
+ "By Invitation Only": {
+  "name": "By Invitation Only",
+  "oracle_id": "d64e96bf-6815-462c-93b4-c9c22dc43eda",
+  "type_line": "Sorcery",
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "oracle_text": "Choose a number between 0 and 13. Each player sacrifices that many creatures of their choice.",
+  "faces": [
+   {
+    "name": "By Invitation Only",
+    "mana_cost": "{3}{W}{W}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Choose a number between 0 and 13. Each player sacrifices that many creatures of their choice."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "W"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "vow",
+  "released_at": "2021-11-19",
+  "prices_usd": "0.38",
+  "rulings": [
+   [
+    "2021-11-19",
+    "The numbers you may choose include 0 and 13."
+   ],
+   [
+    "2021-11-19",
+    "If a player controls fewer than the chosen number of creatures, they will sacrifice all their creatures."
+   ],
+   [
+    "2021-11-19",
+    "Starting with the player whose turn it is, each player in turn order chooses which creatures they will sacrifice, then all the creatures chosen by all players are sacrificed at the same time. Players get to know the choices made by players who chose before them."
+   ]
+  ]
+ },
+ "Barter in Blood": {
+  "name": "Barter in Blood",
+  "oracle_id": "9167998d-5cac-47d7-99f2-f38122f7b8e7",
+  "type_line": "Sorcery",
+  "mana_cost": "{2}{B}{B}",
+  "cmc": 4.0,
+  "oracle_text": "Each player sacrifices two creatures of their choice.",
+  "faces": [
+   {
+    "name": "Barter in Blood",
+    "mana_cost": "{2}{B}{B}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Each player sacrifices two creatures of their choice."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "jmp",
+  "released_at": "2020-07-17",
+  "prices_usd": "0.27",
+  "rulings": [
+   [
+    "2012-05-01",
+    "The active player chooses which creatures will be sacrificed first, then each other player in turn order does the same. Then all creatures are sacrificed simultaneously."
+   ],
+   [
+    "2012-05-01",
+    "If a player controls only one creature, that creature is sacrificed."
+   ],
+   [
+    "2012-05-01",
+    "Barter in Blood doesn’t target any creatures and may be cast even if a player controls fewer than two creatures."
+   ]
+  ]
+ },
+ "Tergrid's Shadow": {
+  "name": "Tergrid's Shadow",
+  "oracle_id": "692260bb-e01c-4550-832a-9611856a6ff0",
+  "type_line": "Instant",
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "oracle_text": "Each player sacrifices two creatures.\nForetell {2}{B}{B} (During your turn, you may pay {2} and exile this card from your hand face down. Cast it on a later turn for its foretell cost.)",
+  "faces": [
+   {
+    "name": "Tergrid's Shadow",
+    "mana_cost": "{3}{B}{B}",
+    "type_line": "Instant",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Each player sacrifices two creatures.\nForetell {2}{B}{B} (During your turn, you may pay {2} and exile this card from your hand face down. Cast it on a later turn for its foretell cost.)"
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "khm",
+  "released_at": "2021-02-05",
+  "prices_usd": "0.28",
+  "rulings": [
+   [
+    "2021-02-05",
+    "As Tergrid's Shadow resolves, first the player whose turn it is chooses two creatures they control, then each other player in turn order does the same, knowing the choices made before them. Then all the chosen creatures are sacrificed at the same time."
+   ],
+   [
+    "2021-02-05",
+    "If a player controls two or fewer creatures, that player sacrifices each creature they control."
+   ],
+   [
+    "2021-02-05",
+    "Because exiling a card with foretell from your hand is a special action, you can do so any time you have priority during your turn, including in response to spells and abilities. Once you announce you're taking the action, no other player can respond by trying to remove the card from your hand."
+   ],
+   [
+    "2021-02-05",
+    "Casting a foretold card from exile follows the timing rules for that card. If you foretell an instant card, you can cast it as soon as the next player's turn. In most cases, if you foretell a card that isn't an instant (or doesn't have flash), you'll have to wait until your next turn to cast it."
+   ],
+   [
+    "2021-02-05",
+    "If you're casting a foretold card from exile for its foretell cost, you can't choose to cast it for any other alternative costs. You can, however, pay additional costs, such as kicker costs. If the card has any mandatory additional costs, those must be paid to cast the spell."
+   ]
+  ]
+ },
+ "Rankle's Prank": {
+  "name": "Rankle's Prank",
+  "oracle_id": "052e8e1c-d006-4c9f-90da-deafbbf7fed3",
+  "type_line": "Sorcery",
+  "mana_cost": "{2}{B}{B}",
+  "cmc": 4.0,
+  "oracle_text": "Choose one or more —\n• Each player discards two cards.\n• Each player loses 4 life.\n• Each player sacrifices two creatures of their choice.",
+  "faces": [
+   {
+    "name": "Rankle's Prank",
+    "mana_cost": "{2}{B}{B}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Choose one or more —\n• Each player discards two cards.\n• Each player loses 4 life.\n• Each player sacrifices two creatures of their choice."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "woe",
+  "released_at": "2023-09-08",
+  "prices_usd": "0.38",
+  "rulings": [
+   [
+    "2023-09-01",
+    "You can choose a mode even if some or all players will be entirely or partially unaffected."
+   ],
+   [
+    "2023-09-01",
+    "As the first mode is performed, first the player whose turn it is chooses two cards in hand without revealing them, then each other player in turn order does the same. Then the chosen cards are discarded at the same time."
+   ],
+   [
+    "2023-09-01",
+    "As the third mode is performed, first the player whose turn it is chooses two creatures they control, then each other player in turn order does the same, knowing the choices made before them. Then all the chosen creatures are sacrificed at the same time."
+   ]
+  ]
+ },
+ "Taste of Death": {
+  "name": "Taste of Death",
+  "oracle_id": "f92673fe-cd73-48ae-bfbd-aa750582b80b",
+  "type_line": "Sorcery",
+  "mana_cost": "{4}{B}{B}",
+  "cmc": 6.0,
+  "oracle_text": "Each player sacrifices three creatures of their choice. You create three Food tokens. (They're artifacts with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")",
+  "faces": [
+   {
+    "name": "Taste of Death",
+    "mana_cost": "{4}{B}{B}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Each player sacrifices three creatures of their choice. You create three Food tokens. (They're artifacts with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")"
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "c21",
+  "released_at": "2021-04-23",
+  "prices_usd": "0.43",
+  "rulings": [
+   [
+    "2024-11-08",
+    "Food is an artifact type. Even though it appears on some creatures, it's never a creature type."
+   ],
+   [
+    "2024-11-08",
+    "You can't sacrifice a Food to pay multiple costs. For example, you can't sacrifice a Food token to activate its own ability and also to activate Maraleaf Rider's ability."
+   ],
+   [
+    "2024-11-08",
+    "Whatever you do, don't eat the delicious cards."
+   ],
+   [
+    "2019-10-04",
+    "As Taste of Death resolves, first the player whose turn it is chooses three creatures they control, then each other player in turn order does the same, knowing the choices made before them. Then all the chosen creatures are sacrificed at the same time."
+   ],
+   [
+    "2019-10-04",
+    "If a player controls three or fewer creatures, that player sacrifices each creature they control."
+   ],
+   [
+    "2019-10-04",
+    "You create three Food tokens, no matter how many creatures were actually sacrificed, even if some or all players sacrificed no creatures."
+   ]
+  ]
+ },
+ "Necrotic Hex": {
+  "name": "Necrotic Hex",
+  "oracle_id": "a6e720a2-9819-40ec-a811-7812898b531a",
+  "type_line": "Sorcery",
+  "mana_cost": "{6}{B}",
+  "cmc": 7.0,
+  "oracle_text": "Each player sacrifices six creatures of their choice. You create six tapped 2/2 black Zombie creature tokens.",
+  "faces": [
+   {
+    "name": "Necrotic Hex",
+    "mana_cost": "{6}{B}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Each player sacrifices six creatures of their choice. You create six tapped 2/2 black Zombie creature tokens."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "cmr",
+  "released_at": "2020-11-20",
+  "prices_usd": "0.42",
+  "rulings": [
+   [
+    "2020-11-10",
+    "Let's say everyone controls lots of creatures. As Necrotc Hex resolves, first the player whose turn it is (likely you) chooses which six creatures they'll sacrifice, then each other player in turn order does the same, knowing the choices of players before them. Then all creatures are sacrificed simultaneously. Finally, you'll create the six tapped Zombies."
+   ],
+   [
+    "2020-11-10",
+    "You'll create six tapped Zombies no matter how many creatures you sacrifice."
+   ]
+  ]
+ },
+ "Abyssal Gorestalker": {
+  "name": "Abyssal Gorestalker",
+  "oracle_id": "465cda20-c8f3-4a7c-a250-875877bce21d",
+  "type_line": "Creature — Horror",
+  "mana_cost": "{4}{B}{B}",
+  "cmc": 6.0,
+  "oracle_text": "When this creature enters, each player sacrifices two creatures of their choice.",
+  "faces": [
+   {
+    "name": "Abyssal Gorestalker",
+    "mana_cost": "{4}{B}{B}",
+    "type_line": "Creature — Horror",
+    "power": "6",
+    "toughness": "6",
+    "oracle_text": "When this creature enters, each player sacrifices two creatures of their choice."
+   }
+  ],
+  "power": "6",
+  "toughness": "6",
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "lci",
+  "released_at": "2023-11-17",
+  "prices_usd": "0.24",
+  "rulings": [
+   [
+    "2023-11-10",
+    "As the enters-the-battlefield ability resolves, first the player whose turn it is chooses which two creatures they are going to sacrifice, then each other player in turn order does the same. Players will know the choices of previous players when making their choices. Then all creatures are sacrificed by their controllers simultaneously."
+   ],
+   [
+    "2023-11-10",
+    "If a player controls only one creature as the ability resolves, they must sacrifice it."
+   ],
+   [
+    "2023-11-10",
+    "You may sacrifice Abyssal Gorestalker to its own ability. If it is the only creature you control or one of two creatures you control, you must sacrifice it."
+   ]
+  ]
+ },
+ "Meathook Massacre II": {
+  "name": "Meathook Massacre II",
+  "oracle_id": "68957dca-df5c-4051-af22-407cb7e47200",
+  "type_line": "Legendary Enchantment",
+  "mana_cost": "{X}{X}{B}{B}{B}{B}",
+  "cmc": 4.0,
+  "oracle_text": "When Meathook Massacre II enters, each player sacrifices X creatures of their choice.\nWhenever a creature you control dies, you may pay 3 life. If you do, return that card under your control with a finality counter on it.\nWhenever a creature an opponent controls dies, they may pay 3 life. If they don't, return that card under your control with a finality counter on it.",
+  "faces": [
+   {
+    "name": "Meathook Massacre II",
+    "mana_cost": "{X}{X}{B}{B}{B}{B}",
+    "type_line": "Legendary Enchantment",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "When Meathook Massacre II enters, each player sacrifices X creatures of their choice.\nWhenever a creature you control dies, you may pay 3 life. If you do, return that card under your control with a finality counter on it.\nWhenever a creature an opponent controls dies, they may pay 3 life. If they don't, return that card under your control with a finality counter on it."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "dsk",
+  "released_at": "2024-09-27",
+  "prices_usd": "2.39",
+  "rulings": [
+   [
+    "2024-09-20",
+    "If a creature that dies leaves the graveyard before Meathook Massacre II's second or third ability (as appropriate) resolves, that creature won't return to the battlefield regardless of whether or not life was paid."
+   ],
+   [
+    "2024-09-20",
+    "When a token creature dies, Meathook Massacre II's second or third ability (as appropriate) will trigger. The appropriate player has the option to pay 3 life, but regardless of their choice, the token won't return to the battlefield."
+   ],
+   [
+    "2024-09-20",
+    "Finality counters work on any permanent, not only creatures. If a permanent with a finality counter on it would be put into a graveyard from the battlefield, exile it instead."
+   ],
+   [
+    "2024-09-20",
+    "Finality counters don't stop permanents from going to zones other than the graveyard from the battlefield. For example, if a permanent with a finality counter on it would be put into its owner's hand from the battlefield, it does so normally."
+   ],
+   [
+    "2024-09-20",
+    "Finality counters aren't keyword counters, and a finality counter doesn't give any abilities to the permanent it's on. If that permanent loses its abilities and then would go to a graveyard, it will still be exiled instead."
+   ],
+   [
+    "2024-09-20",
+    "Multiple finality counters on a single permanent are redundant."
+   ]
+  ]
+ },
+ "Liliana, Dreadhorde General": {
+  "name": "Liliana, Dreadhorde General",
+  "oracle_id": "5e958212-6a5b-4288-8d31-f1572619d7dc",
+  "type_line": "Legendary Planeswalker — Liliana",
+  "mana_cost": "{4}{B}{B}",
+  "cmc": 6.0,
+  "oracle_text": "Whenever a creature you control dies, draw a card.\n+1: Create a 2/2 black Zombie creature token.\n−4: Each player sacrifices two creatures of their choice.\n−9: Each opponent chooses a permanent they control of each permanent type and sacrifices the rest.",
+  "faces": [
+   {
+    "name": "Liliana, Dreadhorde General",
+    "mana_cost": "{4}{B}{B}",
+    "type_line": "Legendary Planeswalker — Liliana",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Whenever a creature you control dies, draw a card.\n+1: Create a 2/2 black Zombie creature token.\n−4: Each player sacrifices two creatures of their choice.\n−9: Each opponent chooses a permanent they control of each permanent type and sacrifices the rest."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "fdn",
+  "released_at": "2024-11-15",
+  "prices_usd": "10.62",
+  "rulings": [
+   [
+    "2024-01-12",
+    "If Liliana dies at the same time as one or more creatures you control, her first ability triggers for each of those creatures."
+   ],
+   [
+    "2024-01-12",
+    "If Liliana somehow becomes a creature and dies, her first ability will trigger."
+   ],
+   [
+    "2024-01-12",
+    "As Liliana's second loyalty ability resolves, first the player whose turn it is chooses two creatures they control, then each other player in turn order does the same, knowing the choices made before them. Then all the chosen creatures are sacrificed at the same time. If any player can choose only one creature, that player does so."
+   ],
+   [
+    "2024-01-12",
+    "As Liliana's last ability resolves, the next opponent in turn order (or, if it's somehow an opponent's turn, that opponent) makes all of their choices for it, then each other opponent in turn order does the same, knowing the choices made before them. Then all the unchosen permanents are sacrificed at the same time."
+   ],
+   [
+    "2024-01-12",
+    "The permanent types are artifact, creature, enchantment, land, and planeswalker. Supertypes, like legendary, aren't permanent types."
+   ],
+   [
+    "2024-01-12",
+    "While making choices for Liliana's last ability, if a permanent has more than one permanent type, it can count for any of them. For example, you could choose an artifact creature as the artifact you're sparing, another creature as the creature, and an enchantment creature as the enchantment. Similarly, you could choose an enchantment creature as both the creature and the enchantment that you're sparing, even if you control another creature and/or another enchantment."
+   ]
+  ]
+ },
+ "Zodiark, Umbral God": {
+  "name": "Zodiark, Umbral God",
+  "oracle_id": "f1190fb9-72a2-48f8-bc2d-61240f1e9119",
+  "type_line": "Legendary Creature — God",
+  "mana_cost": "{B}{B}{B}{B}{B}",
+  "cmc": 5.0,
+  "oracle_text": "Indestructible\nWhen Zodiark enters, each player sacrifices half the non-God creatures they control of their choice, rounded down.\nWhenever a player sacrifices another creature, put a +1/+1 counter on Zodiark.",
+  "faces": [
+   {
+    "name": "Zodiark, Umbral God",
+    "mana_cost": "{B}{B}{B}{B}{B}",
+    "type_line": "Legendary Creature — God",
+    "power": "5",
+    "toughness": "5",
+    "oracle_text": "Indestructible\nWhen Zodiark enters, each player sacrifices half the non-God creatures they control of their choice, rounded down.\nWhenever a player sacrifices another creature, put a +1/+1 counter on Zodiark."
+   }
+  ],
+  "power": "5",
+  "toughness": "5",
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "fin",
+  "released_at": "2025-06-13",
+  "prices_usd": "0.60",
+  "rulings": [
+   [
+    "2025-06-06",
+    "While resolving Zodiark's second ability, you choose half the non-God creatures you control (rounded down), then each other player in turn order does the same. Then each of the chosen creatures are sacrificed simultaneously."
+   ]
+  ]
+ },
+ "Tragic Arrogance": {
+  "name": "Tragic Arrogance",
+  "oracle_id": "8a29bd35-33ef-4317-9fe5-8aaff5d7d64d",
+  "type_line": "Sorcery",
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "oracle_text": "For each player, you choose from among the permanents that player controls an artifact, a creature, an enchantment, and a planeswalker. Then each player sacrifices all other nonland permanents they control.",
+  "faces": [
+   {
+    "name": "Tragic Arrogance",
+    "mana_cost": "{3}{W}{W}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "For each player, you choose from among the permanents that player controls an artifact, a creature, an enchantment, and a planeswalker. Then each player sacrifices all other nonland permanents they control."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "W"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "msc",
+  "released_at": "2026-06-26",
+  "prices_usd": "0.19",
+  "rulings": [
+   [
+    "2015-06-22",
+    "None of the chosen permanents are targets of Tragic Arrogance."
+   ],
+   [
+    "2015-06-22",
+    "If a permanent has more than one of the affected types, it can count for any of them. For example, you could choose an artifact creature as the artifact you're sparing, another creature as the creature, and an enchantment creature as the enchantment. Similarly, you could choose an enchantment creature as both the creature and the enchantment that you're sparing, even if the player controls another creature and/or another enchantment."
+   ]
+  ]
+ },
+ "Mythos of Snapdax": {
+  "name": "Mythos of Snapdax",
+  "oracle_id": "4b0b4d16-1d2b-497e-a1ae-bfb89eece665",
+  "type_line": "Sorcery",
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "oracle_text": "Each player chooses an artifact, a creature, an enchantment, and a planeswalker from among the nonland permanents they control, then sacrifices the rest. If {B}{R} was spent to cast this spell, you choose the permanents for each player instead.",
+  "faces": [
+   {
+    "name": "Mythos of Snapdax",
+    "mana_cost": "{2}{W}{W}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Each player chooses an artifact, a creature, an enchantment, and a planeswalker from among the nonland permanents they control, then sacrifices the rest. If {B}{R} was spent to cast this spell, you choose the permanents for each player instead."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B",
+   "R",
+   "W"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "iko",
+  "released_at": "2020-04-24",
+  "prices_usd": "0.37",
+  "rulings": [
+   [
+    "2020-04-17",
+    "If you control a permanent with more than one type, you may choose it for each of those types. For example, you could choose an artifact creature as the artifact you keep and also as the creature you keep."
+   ],
+   [
+    "2020-04-17",
+    "If you’re choosing the permanents for each player, your choices must still be legal. For example, you can’t decline to choose a creature a player will keep if that player controls a creature."
+   ],
+   [
+    "2020-04-17",
+    "As Mythos of Snapdax resolves, first you choose which permanents you control won’t be sacrificed, then each other player in turn order does the same, knowing the choices made before them. Then each nonland permanent not chosen is sacrificed at the same time."
+   ],
+   [
+    "2020-04-17",
+    "Lands with another permanent type can’t be chosen and won’t be sacrificed."
+   ],
+   [
+    "2020-04-17",
+    "The abilities of the Mythos check what colors of mana were spent to cast the spell. It’s not an alternative cost to cast the spell."
+   ],
+   [
+    "2020-04-17",
+    "If an effect copies the Mythos spell, no mana was spent to cast the copy, so the copy won’t receive the bonus."
+   ],
+   [
+    "2020-04-17",
+    "The ability checks what mana was actually spent to cast a spell. If an effect allows you to spend mana “as though it were mana” of any color or type, that allows you to spend mana you couldn’t otherwise spend, but it doesn’t change what mana you spent to cast the spell."
+   ],
+   [
+    "2020-04-17",
+    "If an effect allows you to cast a spell without paying its mana cost, you can’t choose to cast it and pay unless another rule or effect allows you to cast that spell for a cost. Similarly, you can’t waive a cost reduction unless that effect says you may."
+   ]
+  ]
+ },
+ "Winnowing": {
+  "name": "Winnowing",
+  "oracle_id": "8b834f83-951b-4b5c-b9f1-3d860baa3c0e",
+  "type_line": "Sorcery",
+  "mana_cost": "{4}{W}{W}",
+  "cmc": 6.0,
+  "oracle_text": "Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.)\nFor each player, you choose a creature that player controls. Then each player sacrifices all other creatures they control that don't share a creature type with the chosen creature they control.",
+  "faces": [
+   {
+    "name": "Winnowing",
+    "mana_cost": "{4}{W}{W}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.)\nFor each player, you choose a creature that player controls. Then each player sacrifices all other creatures they control that don't share a creature type with the chosen creature they control."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "W"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "ecl",
+  "released_at": "2026-01-23",
+  "prices_usd": "0.37",
+  "rulings": [
+   [
+    "2025-11-17",
+    "When calculating a spell's total cost, include any alternative costs, additional costs, or anything else that increases or reduces the cost to cast the spell. Convoke applies after the total cost is calculated. Convoke doesn't change a spell's mana cost or mana value."
+   ],
+   [
+    "2025-11-17",
+    "Tapping an untapped creature that's attacking or blocking to convoke a spell won't cause that creature to stop attacking or blocking."
+   ],
+   [
+    "2025-11-17",
+    "If a creature you control has a mana ability with {T} in the cost, activating that ability while casting a spell with convoke will result in the creature being tapped before you pay the spell's costs. You won't be able to tap it again for convoke. Similarly, if you sacrifice a creature to activate a mana ability while casting a spell with convoke, that creature won't be on the battlefield when you pay the spell's costs, so you won't be able to tap it for convoke."
+   ],
+   [
+    "2025-11-17",
+    "You can tap any untapped creature you control to convoke a spell, even one you haven't controlled continuously since the beginning of your most recent turn."
+   ]
+  ]
+ },
+ "Slaughter the Strong": {
+  "name": "Slaughter the Strong",
+  "oracle_id": "7a3569a0-a55f-40c9-9588-92db35e26567",
+  "type_line": "Sorcery",
+  "mana_cost": "{1}{W}{W}",
+  "cmc": 3.0,
+  "oracle_text": "Each player chooses any number of creatures they control with total power 4 or less, then sacrifices all other creatures they control.",
+  "faces": [
+   {
+    "name": "Slaughter the Strong",
+    "mana_cost": "{1}{W}{W}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Each player chooses any number of creatures they control with total power 4 or less, then sacrifices all other creatures they control."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "W"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "tdc",
+  "released_at": "2025-04-11",
+  "prices_usd": "0.27",
+  "rulings": [
+   [
+    "2020-11-10",
+    "Slaughter the Strong has each player choose any number of creatures and then checks that the total power of creatures each player chose this way is 4 or less. For example, you could save two 2/2 creatures, or a 1/1 and a 3/3 creature, but not all four of those creatures."
+   ],
+   [
+    "2020-11-10",
+    "As Slaughter the Strong resolves, first the player whose turn it is chooses which creatures will be spared, then each other player in turn order does the same knowing the choices made before them. Then all the creatures not chosen are sacrificed simultaneously."
+   ],
+   [
+    "2020-11-10",
+    "If a creature's power is somehow less than 0, it subtracts from the total power of the other creatures its controller chooses. This can cause creatures with power 5 or greater to survive."
+   ]
+  ]
+ },
+ "Destined Confrontation": {
+  "name": "Destined Confrontation",
+  "oracle_id": "9703140f-36ee-4427-a390-c1dbdb9e4ee9",
+  "type_line": "Sorcery",
+  "mana_cost": "{2}{W}{W}",
+  "cmc": 4.0,
+  "oracle_text": "Each player chooses any number of creatures they control with total power 4 or less, then sacrifices all other creatures they control.",
+  "faces": [
+   {
+    "name": "Destined Confrontation",
+    "mana_cost": "{2}{W}{W}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Each player chooses any number of creatures they control with total power 4 or less, then sacrifices all other creatures they control."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "W"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "tla",
+  "released_at": "2025-11-21",
+  "prices_usd": "0.21",
+  "rulings": [
+   [
+    "2025-10-02",
+    "If a creature's power is somehow less than 0, it subtracts from the total power of the other creatures its controller chooses. This can cause creatures with power 5 or greater to survive."
+   ],
+   [
+    "2025-10-02",
+    "As Destined Confrontation resolves, first the player whose turn it is chooses which creatures will be spared, then each other player in turn order does the same knowing the choices made before them. Then all the creatures not chosen are sacrificed simultaneously."
+   ],
+   [
+    "2025-10-02",
+    "Destined Confrontation has each player choose any number of creatures and then checks that the total power of creatures each player chose this way is 4 or less. For example, you could save two 2/2 creatures, or a 1/1 and a 3/3 creature, but not all four of those creatures."
+   ]
+  ]
+ },
+ "Rite of Ruin": {
+  "name": "Rite of Ruin",
+  "oracle_id": "d0dd0586-d89e-40e9-863d-9c390bee117a",
+  "type_line": "Sorcery",
+  "mana_cost": "{5}{R}{R}",
+  "cmc": 7.0,
+  "oracle_text": "Choose an order for artifacts, creatures, and lands. Each player sacrifices one permanent of their choice of the first type, sacrifices two of their choice of the second type, then sacrifices three of their choice of the third type.",
+  "faces": [
+   {
+    "name": "Rite of Ruin",
+    "mana_cost": "{5}{R}{R}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Choose an order for artifacts, creatures, and lands. Each player sacrifices one permanent of their choice of the first type, sacrifices two of their choice of the second type, then sacrifices three of their choice of the third type."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "R"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "avr",
+  "released_at": "2012-05-04",
+  "prices_usd": "0.20",
+  "rulings": [
+   [
+    "2012-05-01",
+    "First you choose the order for the card types. Then each player in turn order (starting with the active player) chooses one permanent they control of the first card type. Then those permanents are sacrificed at the same time. Then each player in turn order chooses two permanents they control of the second card type. Then those permanents are sacrificed at the same time. Finally, each player in turn order chooses three permanents of the third card type, then those permanents are sacrificed at the same time."
+   ],
+   [
+    "2012-05-01",
+    "Permanents sacrificed for one card type won’t be on the battlefield to be chosen for subsequent card types."
+   ],
+   [
+    "2012-05-01",
+    "If any abilities trigger while Rite of Ruin is resolving, those abilities will wait until Rite of Ruin finishes resolving before going on the stack. Starting with the active player, each player puts their abilities on the stack in any order."
+   ]
+  ]
+ },
+ "Living Death": {
+  "name": "Living Death",
+  "oracle_id": "9e6a3df4-67a3-452e-a6ef-f04dbadb21ef",
+  "type_line": "Sorcery",
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "oracle_text": "Each player exiles all creature cards from their graveyard, then sacrifices all creatures they control, then puts all cards they exiled this way onto the battlefield.",
+  "faces": [
+   {
+    "name": "Living Death",
+    "mana_cost": "{3}{B}{B}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Each player exiles all creature cards from their graveyard, then sacrifices all creatures they control, then puts all cards they exiled this way onto the battlefield."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "tdc",
+  "released_at": "2025-04-11",
+  "prices_usd": "6.49",
+  "rulings": [
+   [
+    "2018-03-16",
+    "As Living Death resolves, all players exile their creature cards from graveyards at the same time. Then all players sacrifice all creatures they control at the same time. Then all players put all creatures they exiled onto the battlefield at the same time."
+   ],
+   [
+    "2018-03-16",
+    "Only cards exiled by Living Death's first instruction are put onto the battlefield. If a replacement effect (such as that of Leyline of the Void) causes any of the sacrificed creatures to be exiled instead of put into a graveyard, those cards aren't returned to the battlefield."
+   ]
+  ]
+ },
+ "Living End": {
+  "name": "Living End",
+  "oracle_id": "3939fbe0-3be4-41ef-828d-c93f2cb33b4f",
+  "type_line": "Sorcery",
+  "mana_cost": "",
+  "cmc": 0.0,
+  "oracle_text": "Suspend 3—{2}{B}{B}\nEach player exiles all creature cards from their graveyard, then sacrifices all creatures they control, then puts all cards they exiled this way onto the battlefield.",
+  "faces": [
+   {
+    "name": "Living End",
+    "mana_cost": "",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Suspend 3—{2}{B}{B}\nEach player exiles all creature cards from their graveyard, then sacrifices all creatures they control, then puts all cards they exiled this way onto the battlefield."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "tsr",
+  "released_at": "2021-03-19",
+  "prices_usd": "3.74",
+  "rulings": [
+   [
+    "2024-02-02",
+    "If you cast a card \"without paying its mana cost,\" such as with suspend, you can't choose to cast it for any alternative costs. You can, however, pay additional costs. If the card has any mandatory additional costs, you must pay those if you want to cast the card."
+   ],
+   [
+    "2024-02-02",
+    "When the last time counter is removed, the second triggered ability of suspend (the one that lets you cast the card) triggers. It doesn't matter why the last time counter was removed or what effect removed it."
+   ],
+   [
+    "2024-02-02",
+    "Cards exiled with suspend are exiled face up."
+   ],
+   [
+    "2024-02-02",
+    "The mana value of a spell cast without paying its mana cost is determined by its mana cost, even though that cost wasn't paid."
+   ],
+   [
+    "2024-02-02",
+    "If the spell requires any targets, those targets are chosen when the spell is finally cast, not when it's exiled."
+   ],
+   [
+    "2024-02-02",
+    "If a card with no mana cost is given an alternative cost equal to its mana cost (by Snapcaster Mage, for example), that cost cannot be paid and the card cannot be cast this way."
+   ],
+   [
+    "2024-02-02",
+    "If an effect refers to a \"suspended card,\" that means a card that (1) has suspend, (2) is in exile, and (3) has one or more time counters on it."
+   ],
+   [
+    "2024-02-02",
+    "If the card has {X} in its mana cost, you must choose 0 as the value of X when casting it without paying its mana cost."
+   ],
+   [
+    "2024-02-02",
+    "If the second triggered ability is countered, the card can't be cast. It remains exiled with no time counters on it, and it's no longer suspended."
+   ],
+   [
+    "2024-02-02",
+    "Suspend is a keyword that represents three abilities. The first is a static ability that allows you to exile the card from your hand with the specified number of time counters (the number before the dash) on it by paying its suspend cost (listed after the dash). The second is a triggered ability that removes a time counter from the suspended card at the beginning of each of your upkeeps. The third is a triggered ability that gives you the option to cast the card when the last time counter is removed."
+   ],
+   [
+    "2024-02-02",
+    "Due to a recent rules change to suspend, you are no longer required to cast the suspended card as the second triggered ability of suspend resolves. Instead, as the second triggered ability resolves, you may cast the card. Timing permissions based on the card's type are ignored. If you don't cast the card, it remains exiled with no time counters on it, and it's no longer suspended."
+   ],
+   [
+    "2024-02-02",
+    "If the first triggered ability of suspend (the one that removes time counters) is countered, no time counter is removed. The ability will trigger again at the beginning of the card's owner's next upkeep."
+   ],
+   [
+    "2024-02-02",
+    "Exiling a card with suspend isn't casting that card. This action doesn't use the stack and can't be responded to."
+   ],
+   [
+    "2024-02-02",
+    "A card with no mana cost can't be cast normally; you'll need a way to cast it for an alternative cost or without paying its mana cost, such as by suspending it."
+   ],
+   [
+    "2024-02-02",
+    "You can exile a card in your hand using suspend any time you could cast that card. Consider its card type, any effects that modify when you could cast it (such as flash) and any other effects that stop you from casting it (such as from Meddling Mage's ability) to determine if and when you can do this. Whether you could actually complete all steps in casting the card is irrelevant. For example, you can exile a card with suspend that has no mana cost or that requires a target even if no legal targets are available at that time."
+   ],
+   [
+    "2021-03-19",
+    "\"All cards they exiled this way\" refers only to the cards exiled in the first part of the effect. If a replacement effect (such as that of Leyline of the Void) exiles any of the sacrificed creatures instead of putting them into the graveyard, those cards aren't returned to the battlefield."
+   ],
+   [
+    "2021-03-19",
+    "While Living End is resolving, first each player exiles their graveyard at the same time, then each player sacrifices all creatures they control at the same time, and finally each player puts their exiled cards onto the battlefield at the same time."
+   ],
+   [
+    "2013-06-07",
+    "Although originally printed with a characteristic-defining ability that defined its color, this card now has a color indicator. This color indicator can't be affected by text-changing effects (such as the one created by Crystal Spray), although color-changing effects can still overwrite it."
+   ]
+  ]
+ },
+ "Bringer of the Last Gift": {
+  "name": "Bringer of the Last Gift",
+  "oracle_id": "0fb9a8a2-4331-4259-9460-a37397554962",
+  "type_line": "Creature — Vampire Demon",
+  "mana_cost": "{6}{B}{B}",
+  "cmc": 8.0,
+  "oracle_text": "Flying\nWhen this creature enters, if you cast it, each player sacrifices all other creatures they control. Then each player returns all creature cards from their graveyard that weren't put there this way to the battlefield.",
+  "faces": [
+   {
+    "name": "Bringer of the Last Gift",
+    "mana_cost": "{6}{B}{B}",
+    "type_line": "Creature — Vampire Demon",
+    "power": "6",
+    "toughness": "6",
+    "oracle_text": "Flying\nWhen this creature enters, if you cast it, each player sacrifices all other creatures they control. Then each player returns all creature cards from their graveyard that weren't put there this way to the battlefield."
+   }
+  ],
+  "power": "6",
+  "toughness": "6",
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "lci",
+  "released_at": "2023-11-17",
+  "prices_usd": "0.85",
+  "rulings": [
+   [
+    "2023-11-10",
+    "Bringer of the Last Gift's last ability triggers if you cast it from any zone. It doesn't trigger if you put Bringer of the Last Gift onto the battlefield without casting it."
+   ]
+  ]
+ },
+ "Scrap Mastery": {
+  "name": "Scrap Mastery",
+  "oracle_id": "62dac700-49f7-4745-af67-37d2a81dcebc",
+  "type_line": "Sorcery",
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "oracle_text": "Each player exiles all artifact cards from their graveyard, then sacrifices all artifacts they control, then puts all cards they exiled this way onto the battlefield.",
+  "faces": [
+   {
+    "name": "Scrap Mastery",
+    "mana_cost": "{3}{R}{R}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Each player exiles all artifact cards from their graveyard, then sacrifices all artifacts they control, then puts all cards they exiled this way onto the battlefield."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "R"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "cm2",
+  "released_at": "2018-06-08",
+  "prices_usd": "4.74",
+  "rulings": [
+   [
+    "2014-11-07",
+    "“Exiled this way” refers to the exile instruction that’s part of Scrap Mastery’s effect. If the sacrificed artifacts are instead exiled because of a replacement effect, those cards won’t be put onto the battlefield."
+   ]
+  ]
+ },
+ "All Is Dust": {
+  "name": "All Is Dust",
+  "oracle_id": "14693689-d087-43b6-9c3f-63ab0648fc20",
+  "type_line": "Kindred Sorcery — Eldrazi",
+  "mana_cost": "{7}",
+  "cmc": 7.0,
+  "oracle_text": "Each player sacrifices all permanents they control that are one or more colors.",
+  "faces": [
+   {
+    "name": "All Is Dust",
+    "mana_cost": "{7}",
+    "type_line": "Kindred Sorcery — Eldrazi",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Each player sacrifices all permanents they control that are one or more colors."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "cmm",
+  "released_at": "2023-08-04",
+  "prices_usd": "5.70",
+  "rulings": [
+   [
+    "2024-06-07",
+    "This cards was originally printed with the \"tribal\" card type. That card type has been replaced with \"kindred\". This change does not affect the gameplay function of this card."
+   ],
+   [
+    "2024-06-07",
+    "While it appears only on cards that already have other card types, kindred is a card type and will be counted by effects that refer to the number of card types among cards in a zone."
+   ],
+   [
+    "2024-06-07",
+    "Kindred is a card type that allows noncreature cards to have creature types. For example, Echoes of Eternity is an Eldrazi (although not a creature) while on the battlefield and an Eldrazi card (although not a creature card) in zones other than the battlefield."
+   ],
+   [
+    "2018-12-07",
+    "A land card that produces colored mana, even a land with a basic land type, normally has no color."
+   ],
+   [
+    "2013-07-01",
+    "All Is Dust doesn't destroy permanents. Rather, it causes them to be sacrificed. Regeneration, umbra armor, and indestructible can't save permanents from All Is Dust."
+   ],
+   [
+    "2010-06-15",
+    "Tokens may have one or more colors. The effect that creates a token states what color it is or whether it's colorless."
+   ],
+   [
+    "2010-06-15",
+    "All permanents with one or more colors are sacrificed at the same time."
+   ],
+   [
+    "2010-06-15",
+    "Lands have no mana cost, so they are colorless unless an effect states otherwise."
+   ]
+  ]
+ },
+ "Extus, Oriq Overlord // Awaken the Blood Avatar": {
+  "name": "Extus, Oriq Overlord // Awaken the Blood Avatar",
+  "oracle_id": "0b299983-9f0f-404a-acd1-8f142572b1f1",
+  "type_line": "Legendary Creature — Human Warlock // Sorcery",
+  "mana_cost": "{1}{W}{B}{B} // {6}{B}{R}",
+  "cmc": 4.0,
+  "oracle_text": "Double strike\nMagecraft — Whenever you cast or copy an instant or sorcery spell, return target nonlegendary creature card from your graveyard to your hand.\n//\nAs an additional cost to cast this spell, you may sacrifice any number of creatures. This spell costs {2} less to cast for each creature sacrificed this way.\nEach opponent sacrifices a creature of their choice. Create a 3/6 black and red Avatar creature token with haste and \"Whenever this token attacks, it deals 3 damage to each opponent.\"",
+  "faces": [
+   {
+    "name": "Extus, Oriq Overlord",
+    "mana_cost": "{1}{W}{B}{B}",
+    "type_line": "Legendary Creature — Human Warlock",
+    "power": "2",
+    "toughness": "4",
+    "oracle_text": "Double strike\nMagecraft — Whenever you cast or copy an instant or sorcery spell, return target nonlegendary creature card from your graveyard to your hand."
+   },
+   {
+    "name": "Awaken the Blood Avatar",
+    "mana_cost": "{6}{B}{R}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "As an additional cost to cast this spell, you may sacrifice any number of creatures. This spell costs {2} less to cast for each creature sacrificed this way.\nEach opponent sacrifices a creature of their choice. Create a 3/6 black and red Avatar creature token with haste and \"Whenever this token attacks, it deals 3 damage to each opponent.\""
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B",
+   "R",
+   "W"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "stx",
+  "released_at": "2021-04-23",
+  "prices_usd": "0.50",
+  "rulings": [
+   [
+    "2021-04-16",
+    "Returning a nonlegendary creature card is not optional. If there is at least one in your graveyard, you must target it with the magecraft ability."
+   ],
+   [
+    "2021-04-16",
+    "Awaken the Blood Avatar’s first ability can’t reduce its cost below {B}{R}. However, you can sacrifice any number of creatures, even if they won’t reduce its cost any further."
+   ],
+   [
+    "2021-04-16",
+    "Include any additional costs to cast Awaken the Blood Avatar before applying its own cost reduction. For example, if Extus is your commander, and an additional cost of {6} applies from the “commander tax,” you may cast Awaken the Blood Avatar by sacrificing four creatures and paying {4}{B}{R}."
+   ],
+   [
+    "2021-04-16",
+    "As Awaken the Blood Avatar resolves, first the next opponent in turn order (or, if it’s an opponent’s turn, the opponent whose turn it is) chooses a creature they control, then each other opponent in turn order does the same knowing the choices made before them. Then all the chosen creatures are sacrificed at the same time."
+   ],
+   [
+    "2021-04-16",
+    "The Blood Avatar will be awakened even if no player has creatures to sacrifice when it resolves."
+   ],
+   [
+    "2021-04-16",
+    "Each magecraft ability has a different effect, although they all have the same trigger condition, whenever you cast or copy an instant or sorcery spell."
+   ],
+   [
+    "2021-04-16",
+    "For example, if you control Archmage Emeritus and cast an instant or sorcery spell, Archmage Emeritus’s magecraft ability will trigger and you will draw a card."
+   ],
+   [
+    "2021-04-16",
+    "If an effect creates a copy of an instant or sorcery spell, this will also cause the magecraft ability to trigger."
+   ],
+   [
+    "2021-04-16",
+    "If an effect creates multiple copies of an instant or sorcery spell, magecraft abilities trigger once for each copy created by the effect."
+   ],
+   [
+    "2021-04-16",
+    "Some effects instruct you to copy an instant or sorcery card in a zone other than the stack. These copies do not cause magecraft abilities to trigger. However, most effects that do this also allow you to cast the copy, and casting the copy will cause magecraft abilities to trigger."
+   ]
+  ]
+ },
+ "Vona's Hunger": {
+  "name": "Vona's Hunger",
+  "oracle_id": "da522912-1bc2-4d70-b426-94d10edb2afe",
+  "type_line": "Instant",
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "oracle_text": "Ascend (If you control ten or more permanents, you get the city's blessing for the rest of the game.)\nEach opponent sacrifices a creature of their choice. If you have the city's blessing, instead each opponent sacrifices half the creatures they control of their choice, rounded up.",
+  "faces": [
+   {
+    "name": "Vona's Hunger",
+    "mana_cost": "{2}{B}",
+    "type_line": "Instant",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Ascend (If you control ten or more permanents, you get the city's blessing for the rest of the game.)\nEach opponent sacrifices a creature of their choice. If you have the city's blessing, instead each opponent sacrifices half the creatures they control of their choice, rounded up."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "rix",
+  "released_at": "2018-01-19",
+  "prices_usd": "6.06",
+  "rulings": [
+   [
+    "2018-01-19",
+    "When Vona’s Hunger resolves, first the player whose turn it is (if that player is an opponent) chooses which creature or creatures they will sacrifice, then each other opponent in turn order does the same, then all chosen creatures are sacrificed at the same time. Players will know choices made by earlier players when making their choices."
+   ],
+   [
+    "2018-01-19",
+    "Once you have the city’s blessing, you have it for the rest of the game, even if you lose control of some or all of your permanents. The city’s blessing isn’t a permanent itself and can’t be removed by any effect."
+   ],
+   [
+    "2018-01-19",
+    "A permanent is any object on the battlefield, including tokens and lands. Spells and emblems aren’t permanents."
+   ],
+   [
+    "2018-01-19",
+    "If you cast a spell with ascend, you don’t get the city’s blessing until it resolves. Players may respond to that spell by trying to change whether you get the city’s blessing."
+   ],
+   [
+    "2018-01-19",
+    "If you control ten permanents but don’t control a permanent or resolving spell with ascend, you don’t get the city’s blessing. For example, if you control ten permanents, lose control of one, then cast Golden Demise, you won’t have the city’s blessing and the spell will affect creatures you control."
+   ],
+   [
+    "2018-01-19",
+    "If your tenth permanent enters the battlefield and then a permanent leaves the battlefield immediately afterwards (most likely due to the “Legend Rule” or due to being a creature with 0 toughness), you get the city’s blessing before it leaves the battlefield."
+   ]
+  ]
+ },
+ "Make an Example": {
+  "name": "Make an Example",
+  "oracle_id": "591edddc-3736-44cf-9719-117c24ff3980",
+  "type_line": "Sorcery",
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "oracle_text": "Each opponent separates the creatures they control into two piles. For each opponent, you choose one of their piles. Each opponent sacrifices the creatures in their chosen pile. (Piles can be empty.)",
+  "faces": [
+   {
+    "name": "Make an Example",
+    "mana_cost": "{3}{B}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Each opponent separates the creatures they control into two piles. For each opponent, you choose one of their piles. Each opponent sacrifices the creatures in their chosen pile. (Piles can be empty.)"
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "ncc",
+  "released_at": "2022-04-29",
+  "prices_usd": "10.36",
+  "rulings": [
+   [
+    "2022-04-29",
+    "“Their chosen pile” means the pile of their permanents that you chose; it doesn't mean that they get to choose a pile."
+   ]
+  ]
+ },
+ "Syphon Flesh": {
+  "name": "Syphon Flesh",
+  "oracle_id": "bc7c3151-ad07-429a-8af8-e4f24b7d9f6b",
+  "type_line": "Sorcery",
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "oracle_text": "Each other player sacrifices a creature of their choice. You create a 2/2 black Zombie creature token for each creature sacrificed this way.",
+  "faces": [
+   {
+    "name": "Syphon Flesh",
+    "mana_cost": "{4}{B}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Each other player sacrifices a creature of their choice. You create a 2/2 black Zombie creature token for each creature sacrificed this way."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "mic",
+  "released_at": "2021-09-24",
+  "prices_usd": "0.36",
+  "rulings": []
+ },
+ "Perilous Predicament": {
+  "name": "Perilous Predicament",
+  "oracle_id": "169728d6-7820-4a6d-a815-70714ad3e887",
+  "type_line": "Instant",
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "oracle_text": "Each opponent sacrifices an artifact creature and a nonartifact creature of their choice.",
+  "faces": [
+   {
+    "name": "Perilous Predicament",
+    "mana_cost": "{4}{B}",
+    "type_line": "Instant",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Each opponent sacrifices an artifact creature and a nonartifact creature of their choice."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "aer",
+  "released_at": "2017-01-20",
+  "prices_usd": "0.06",
+  "rulings": [
+   [
+    "2017-02-09",
+    "When Perilous Predicament resolves, first the player whose turn it is (if that player is an opponent) chooses which creatures they will sacrifice, then each other opponent in turn order does the same, then all chosen creatures are sacrificed at the same time."
+   ],
+   [
+    "2017-02-09",
+    "If each creature an opponent controls is an artifact creature, that player sacrifices only one creature. Similarly, if each creature an opponent controls is a nonartifact creature, that player sacrifices only one creature. If an opponent controls no creatures, that player doesn’t sacrifice anything."
+   ]
+  ]
+ },
+ "Crackling Doom": {
+  "name": "Crackling Doom",
+  "oracle_id": "ee81f37b-2a81-46d7-8d2f-9091123846c4",
+  "type_line": "Instant",
+  "mana_cost": "{R}{W}{B}",
+  "cmc": 3.0,
+  "oracle_text": "Crackling Doom deals 2 damage to each opponent. Each opponent sacrifices a creature with the greatest power among creatures that player controls.",
+  "faces": [
+   {
+    "name": "Crackling Doom",
+    "mana_cost": "{R}{W}{B}",
+    "type_line": "Instant",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Crackling Doom deals 2 damage to each opponent. Each opponent sacrifices a creature with the greatest power among creatures that player controls."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B",
+   "R",
+   "W"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "2x2",
+  "released_at": "2022-07-08",
+  "prices_usd": "0.38",
+  "rulings": [
+   [
+    "2014-09-20",
+    "Crackling Doom doesn't target any player or creature. For example, a creature with protection from black could be sacrificed."
+   ],
+   [
+    "2014-09-20",
+    "The sacrifice is not dependent on the damage being dealt. It doesn't matter if that damage is prevented or redirected."
+   ],
+   [
+    "2014-09-20",
+    "In a multiplayer game, each opponent, starting with the active player and proceeding in turn order, chooses which creature they will sacrifice and then all creatures are sacrificed at the same time. Each successive player will know what the players before them chose to sacrifice."
+   ],
+   [
+    "2014-09-20",
+    "If a player controls two or more creatures tied for the greatest power among creatures they control, that player chooses one of them to sacrifice."
+   ]
+  ]
+ },
+ "Rush of Dread": {
+  "name": "Rush of Dread",
+  "oracle_id": "0dfe6ec6-a0df-41c8-90dd-1ddf0417700a",
+  "type_line": "Sorcery",
+  "mana_cost": "{1}{B}{B}",
+  "cmc": 3.0,
+  "oracle_text": "Spree (Choose one or more additional costs.)\n+ {1} — Target opponent sacrifices half the creatures they control of their choice, rounded up.\n+ {2} — Target opponent discards half the cards in their hand, rounded up.\n+ {2} — Target opponent loses half their life, rounded up.",
+  "faces": [
+   {
+    "name": "Rush of Dread",
+    "mana_cost": "{1}{B}{B}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Spree (Choose one or more additional costs.)\n+ {1} — Target opponent sacrifices half the creatures they control of their choice, rounded up.\n+ {2} — Target opponent discards half the cards in their hand, rounded up.\n+ {2} — Target opponent loses half their life, rounded up."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "otj",
+  "released_at": "2024-04-19",
+  "prices_usd": "0.37",
+  "rulings": [
+   [
+    "2024-04-12",
+    "Like the effects of all modal spells, Rush of Dread’s effects happen in order. If the first two modes target different opponents, the opponent targeted by the second mode will see what the first opponent sacrificed before choosing what to discard."
+   ],
+   [
+    "2024-04-12",
+    "Spells with spree have a + (plus sign) indicator in the upper right corner of the card frame. This has no rules meaning and serves only to remind players that at least one additional cost is required to cast the spell."
+   ],
+   [
+    "2024-04-12",
+    "Each additional cost and associated mode in the text box is also preceded with a + indicator. These symbols also have no rules meaning and serve only to remind players that the listed costs are additional costs."
+   ],
+   [
+    "2024-04-12",
+    "You must choose at least one of the listed modes and pay its associated additional cost in order to cast a spell with spree."
+   ],
+   [
+    "2024-04-12",
+    "You choose the modes as you cast the spell with spree. Once modes are chosen, they can’t be changed."
+   ],
+   [
+    "2024-04-12",
+    "If a mode requires a target, you can select that mode only if there’s a legal target available. Ignore the targeting requirements for modes you don’t choose."
+   ],
+   [
+    "2024-04-12",
+    "No matter which modes you choose, you always follow the instructions in the order they are written."
+   ],
+   [
+    "2024-04-12",
+    "You can’t choose the same mode more than once."
+   ],
+   [
+    "2024-04-12",
+    "The mana value of a spell with spree is determined only by its mana cost (in the upper right corner of the card). It doesn’t matter which modes you choose or which additional costs you pay, including any additional costs imposed by other effects."
+   ],
+   [
+    "2024-04-12",
+    "No player can cast spells or activate abilities in between the modes of a resolving spell. Any abilities that trigger won’t be put onto the stack until the spell is done resolving."
+   ],
+   [
+    "2024-04-12",
+    "If a spell with spree is copied, the effect that creates the copy may allow you to choose new targets. You cannot choose new modes."
+   ],
+   [
+    "2024-04-12",
+    "If all targets for the chosen modes become illegal before a spell with spree resolves, the spell won’t resolve and none of its effects will happen. If at least one target is still legal, the spell will resolve but will have no effect on any illegal targets."
+   ],
+   [
+    "2024-04-12",
+    "If an effect allows you to cast a spell with spree “without paying its mana cost,” you must still choose at least one mode and pay the associated additional costs."
+   ]
+  ]
+ },
+ "Skull Storm": {
+  "name": "Skull Storm",
+  "oracle_id": "6f34d70e-7a3a-43f7-b2c9-f89519804d3c",
+  "type_line": "Sorcery",
+  "mana_cost": "{7}{B}{B}",
+  "cmc": 9.0,
+  "oracle_text": "When you cast this spell, copy it for each time you've cast your commander from the command zone this game.\nEach opponent sacrifices a creature of their choice. Each opponent who can't loses half their life, rounded up.",
+  "faces": [
+   {
+    "name": "Skull Storm",
+    "mana_cost": "{7}{B}{B}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "When you cast this spell, copy it for each time you've cast your commander from the command zone this game.\nEach opponent sacrifices a creature of their choice. Each opponent who can't loses half their life, rounded up."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "c18",
+  "released_at": "2018-08-10",
+  "prices_usd": "0.92",
+  "rulings": [
+   [
+    "2018-10-05",
+    "If you have multiple commanders, you’ll copy this spell for each time you’ve cast either of them. For example, if you’ve cast one commander once and one twice, you’ll copy this spell three times."
+   ],
+   [
+    "2018-07-13",
+    "The amount of life to lose is determined only as Skull Storm resolves. For example, if an opponent controls no creatures and has 30 life when you cast Skull Storm and make two copies, the first to resolve causes that opponent to lose 15 life (so they have 15 life left), the second causes that opponent to lose 8 life (7 life left), and the original spell causes that player to lose 4 life, leaving the player at 3 life."
+   ],
+   [
+    "2018-07-13",
+    "Each Storm’s triggered ability counts only how many times you’ve cast your commander from the command zone before that triggered ability resolves. If you cast your commander again later, you won’t get another copy."
+   ],
+   [
+    "2018-07-13",
+    "If your commander was countered, that time you cast it still counts."
+   ],
+   [
+    "2018-07-13",
+    "Each Storm’s triggered ability can copy the Storm spell even if that spell is countered before that ability resolves."
+   ],
+   [
+    "2018-07-13",
+    "The copies are created on the stack, so they’re not “cast.” Abilities that trigger when a player casts a spell (such as the Storm’s ability itself) won’t trigger."
+   ]
+  ]
+ },
+ "Choice of Damnations": {
+  "name": "Choice of Damnations",
+  "oracle_id": "506714a8-b9c2-443a-a9e8-ef9130e674ba",
+  "type_line": "Sorcery — Arcane",
+  "mana_cost": "{5}{B}",
+  "cmc": 6.0,
+  "oracle_text": "Target opponent chooses a number. You may have that player lose that much life. If you don't, that player sacrifices all but that many permanents of their choice.",
+  "faces": [
+   {
+    "name": "Choice of Damnations",
+    "mana_cost": "{5}{B}",
+    "type_line": "Sorcery — Arcane",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Target opponent chooses a number. You may have that player lose that much life. If you don't, that player sacrifices all but that many permanents of their choice."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "sok",
+  "released_at": "2005-06-03",
+  "prices_usd": "22.59",
+  "rulings": [
+   [
+    "2005-06-01",
+    "After the opponent chooses a number, Choice of Damnations’ controller may choose to make that opponent either lose that much life or make that opponent sacrifice permanents."
+   ],
+   [
+    "2005-06-01",
+    "If the opponent must sacrifice all but a number of permanents, that opponent chooses that many permanents and then sacrifices the rest. If the number chosen is greater than the number of permanents the opponent controls, the player sacrifices nothing."
+   ]
+  ]
+ },
+ "Portal to Phyrexia": {
+  "name": "Portal to Phyrexia",
+  "oracle_id": "301d1d8e-d3fc-4010-8b29-4724fa0b31cd",
+  "type_line": "Artifact",
+  "mana_cost": "{9}",
+  "cmc": 9.0,
+  "oracle_text": "When this artifact enters, each opponent sacrifices three creatures of their choice.\nAt the beginning of your upkeep, put target creature card from a graveyard onto the battlefield under your control. It's a Phyrexian in addition to its other types.",
+  "faces": [
+   {
+    "name": "Portal to Phyrexia",
+    "mana_cost": "{9}",
+    "type_line": "Artifact",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "When this artifact enters, each opponent sacrifices three creatures of their choice.\nAt the beginning of your upkeep, put target creature card from a graveyard onto the battlefield under your control. It's a Phyrexian in addition to its other types."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "bro",
+  "released_at": "2022-11-18",
+  "prices_usd": "50.00",
+  "rulings": []
+ },
+ "Urborg Justice": {
+  "name": "Urborg Justice",
+  "oracle_id": "d8e2dea9-0e96-4ce4-a070-9893f44cf0cc",
+  "type_line": "Instant",
+  "mana_cost": "{B}{B}",
+  "cmc": 2.0,
+  "oracle_text": "Target opponent sacrifices a creature of their choice for each creature put into your graveyard from the battlefield this turn.",
+  "faces": [
+   {
+    "name": "Urborg Justice",
+    "mana_cost": "{B}{B}",
+    "type_line": "Instant",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Target opponent sacrifices a creature of their choice for each creature put into your graveyard from the battlefield this turn."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "wth",
+  "released_at": "1997-06-09",
+  "prices_usd": "3.14",
+  "rulings": [
+   [
+    "2004-10-04",
+    "The creatures are chosen on resolution, not on announcement."
+   ],
+   [
+    "2004-10-04",
+    "Does not target the creatures."
+   ]
+  ]
+ },
+ "Martyr's Bond": {
+  "name": "Martyr's Bond",
+  "oracle_id": "7de8ffa5-f6e5-4987-b3f8-6d6fc83f8fa8",
+  "type_line": "Enchantment",
+  "mana_cost": "{4}{W}{W}",
+  "cmc": 6.0,
+  "oracle_text": "Whenever this enchantment or another nonland permanent you control is put into a graveyard from the battlefield, each opponent sacrifices a permanent of their choice that shares a card type with it.",
+  "faces": [
+   {
+    "name": "Martyr's Bond",
+    "mana_cost": "{4}{W}{W}",
+    "type_line": "Enchantment",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Whenever this enchantment or another nonland permanent you control is put into a graveyard from the battlefield, each opponent sacrifices a permanent of their choice that shares a card type with it."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "W"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "cmd",
+  "released_at": "2011-06-17",
+  "prices_usd": "1.08",
+  "rulings": [
+   [
+    "2011-09-22",
+    "If Martyr’s Bond and other nonland permanents are put into the graveyard from the battlefield at the same time, Martyr’s Bond will trigger for itself and each of those other nonland permanents."
+   ],
+   [
+    "2011-09-22",
+    "Each opponent must sacrifice only one permanent for each trigger, even if the nonland permanent you controlled that went to the graveyard had multiple types. For example, if an artifact creature you control is put into a graveyard from the battlefield, each opponent sacrifices exactly one artifact or creature, and that permanent doesn’t need to be an artifact creature."
+   ]
+  ]
+ },
+ "Butcher of Malakir": {
+  "name": "Butcher of Malakir",
+  "oracle_id": "a85197ab-dc94-4b72-9716-8dbdbbe90ff8",
+  "type_line": "Creature — Vampire Warrior",
+  "mana_cost": "{5}{B}{B}",
+  "cmc": 7.0,
+  "oracle_text": "Flying\nWhenever this creature or another creature you control dies, each opponent sacrifices a creature of their choice.",
+  "faces": [
+   {
+    "name": "Butcher of Malakir",
+    "mana_cost": "{5}{B}{B}",
+    "type_line": "Creature — Vampire Warrior",
+    "power": "5",
+    "toughness": "4",
+    "oracle_text": "Flying\nWhenever this creature or another creature you control dies, each opponent sacrifices a creature of their choice."
+   }
+  ],
+  "power": "5",
+  "toughness": "4",
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "lcc",
+  "released_at": "2023-11-17",
+  "prices_usd": "0.39",
+  "rulings": [
+   [
+    "2010-03-01",
+    "When the triggered ability resolves, first the player whose turn it is (if that player is an opponent) chooses which creature they will sacrifice, then each other opponent in turn order does the same, then all chosen creatures are sacrificed at the same time."
+   ],
+   [
+    "2010-03-01",
+    "If multiple creatures you control (possibly including Butcher of Malakir itself) are put into their owners' graveyards at the same time, Butcher of Malakir's triggered ability will trigger that many times."
+   ],
+   [
+    "2010-03-01",
+    "If you control more than one Butcher of Malakir and a creature you control is put into a graveyard, each of those Butchers' abilities will trigger. Each opponent will sacrifice a creature each time one of those abilities resolves."
+   ],
+   [
+    "2010-03-01",
+    "If you and an opponent each control a Butcher of Malakir and a creature is put into a graveyard, a chain reaction happens. First the ability of one player's Butcher will trigger, causing each opponent to sacrifice a creature. That sacrifice causes the ability of the other player's Butcher to trigger, and so on."
+   ]
+  ]
+ },
+ "Dusk Mangler": {
+  "name": "Dusk Mangler",
+  "oracle_id": "74de3356-9779-40f9-9881-fe795a1d5bbd",
+  "type_line": "Creature — Horror",
+  "mana_cost": "{5}{B}{B}",
+  "cmc": 7.0,
+  "oracle_text": "As an additional cost to cast this spell, sacrifice a creature, discard a card, or pay 4 life.\nWhen this creature enters, each opponent sacrifices a creature of their choice, discards a card, and loses 4 life.",
+  "faces": [
+   {
+    "name": "Dusk Mangler",
+    "mana_cost": "{5}{B}{B}",
+    "type_line": "Creature — Horror",
+    "power": "5",
+    "toughness": "4",
+    "oracle_text": "As an additional cost to cast this spell, sacrifice a creature, discard a card, or pay 4 life.\nWhen this creature enters, each opponent sacrifices a creature of their choice, discards a card, and loses 4 life."
+   }
+  ],
+  "power": "5",
+  "toughness": "4",
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "clb",
+  "released_at": "2022-06-10",
+  "prices_usd": "0.22",
+  "rulings": [
+   [
+    "2022-04-29",
+    "As Dusk Mangler's triggered ability resolves, each opponent, starting with the next player in turn order, chooses a creature, knowing the choices made before them. All of those creatures are sacrificed at the same time. Next, each opponent chooses a card in their hand without revealing it, and all of those cards are discarded at the same time. Then, each opponent loses 4 life."
+   ]
+  ]
+ },
+ "Malfegor": {
+  "name": "Malfegor",
+  "oracle_id": "52e1546a-63eb-48d7-acc4-81b912aabc90",
+  "type_line": "Legendary Creature — Demon Dragon",
+  "mana_cost": "{2}{B}{B}{R}{R}",
+  "cmc": 6.0,
+  "oracle_text": "Flying\nWhen Malfegor enters, discard your hand. Each opponent sacrifices a creature of their choice for each card discarded this way.",
+  "faces": [
+   {
+    "name": "Malfegor",
+    "mana_cost": "{2}{B}{B}{R}{R}",
+    "type_line": "Legendary Creature — Demon Dragon",
+    "power": "6",
+    "toughness": "6",
+    "oracle_text": "Flying\nWhen Malfegor enters, discard your hand. Each opponent sacrifices a creature of their choice for each card discarded this way."
+   }
+  ],
+  "power": "6",
+  "toughness": "6",
+  "color_identity": [
+   "B",
+   "R"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "ima",
+  "released_at": "2017-11-17",
+  "prices_usd": "0.42",
+  "rulings": [
+   [
+    "2017-11-17",
+    "Malfegor’s ability is not optional. You must discard your entire hand no matter how many creatures your opponents control."
+   ],
+   [
+    "2017-11-17",
+    "After you discard your hand and the number of creatures each opponent must sacrifice has been determined, each opponent in turn order, starting with the player whose turn it is if that player is your opponent, chooses which creatures they will sacrifice, then all the chosen creatures are all sacrificed at the same time."
+   ]
+  ]
+ },
+ "Gix's Command": {
+  "name": "Gix's Command",
+  "oracle_id": "9270eb03-4600-40cc-83a5-ea987d5d4978",
+  "type_line": "Sorcery",
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "oracle_text": "Choose two —\n• Put two +1/+1 counters on up to one creature. It gains lifelink until end of turn.\n• Destroy each creature with power 2 or less.\n• Return up to two creature cards from your graveyard to your hand.\n• Each opponent sacrifices a creature with the greatest power among creatures they control.",
+  "faces": [
+   {
+    "name": "Gix's Command",
+    "mana_cost": "{3}{B}{B}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Choose two —\n• Put two +1/+1 counters on up to one creature. It gains lifelink until end of turn.\n• Destroy each creature with power 2 or less.\n• Return up to two creature cards from your graveyard to your hand.\n• Each opponent sacrifices a creature with the greatest power among creatures they control."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "bro",
+  "released_at": "2022-11-18",
+  "prices_usd": "0.55",
+  "rulings": [
+   [
+    "2022-10-14",
+    "Since none of the modes have targets, you don't have to choose which creature is getting the counters or which cards you're returning until Gix's Command resolves."
+   ]
+  ]
+ },
+ "Legate Lanius, Caesar's Ace": {
+  "name": "Legate Lanius, Caesar's Ace",
+  "oracle_id": "c6b5ca62-e5ee-4636-b12e-7c1d455e8384",
+  "type_line": "Legendary Creature — Human Soldier",
+  "mana_cost": "{2}{B}{R}",
+  "cmc": 4.0,
+  "oracle_text": "Decimate — When Legate Lanius enters, each opponent sacrifices a tenth of the creatures they control of their choice, rounded up.\nWhenever an opponent sacrifices a creature, put a +1/+1 counter on Legate Lanius.",
+  "faces": [
+   {
+    "name": "Legate Lanius, Caesar's Ace",
+    "mana_cost": "{2}{B}{R}",
+    "type_line": "Legendary Creature — Human Soldier",
+    "power": "2",
+    "toughness": "2",
+    "oracle_text": "Decimate — When Legate Lanius enters, each opponent sacrifices a tenth of the creatures they control of their choice, rounded up.\nWhenever an opponent sacrifices a creature, put a +1/+1 counter on Legate Lanius."
+   }
+  ],
+  "power": "2",
+  "toughness": "2",
+  "color_identity": [
+   "B",
+   "R"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "pip",
+  "released_at": "2024-03-08",
+  "prices_usd": "0.31",
+  "rulings": [
+   [
+    "2024-03-08",
+    "For example, when Legate Lanius's first ability resolves, an opponent who controls between one and ten creatures will sacrifice one creature. An opponent who controls between eleven and twenty creatures will sacrifice two creatures, and so on."
+   ]
+  ]
+ },
+ "Din of the Fireherd": {
+  "name": "Din of the Fireherd",
+  "oracle_id": "6480ab32-3a29-4449-8ff7-c8e43c320ed3",
+  "type_line": "Sorcery",
+  "mana_cost": "{5}{B/R}{B/R}{B/R}",
+  "cmc": 8.0,
+  "oracle_text": "Create a 5/5 black and red Elemental creature token. Target opponent sacrifices a creature of their choice for each black creature you control, then sacrifices a land of their choice for each red creature you control.",
+  "faces": [
+   {
+    "name": "Din of the Fireherd",
+    "mana_cost": "{5}{B/R}{B/R}{B/R}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Create a 5/5 black and red Elemental creature token. Target opponent sacrifices a creature of their choice for each black creature you control, then sacrifices a land of their choice for each red creature you control."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B",
+   "R"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "shm",
+  "released_at": "2008-05-02",
+  "prices_usd": "0.69",
+  "rulings": [
+   [
+    "2008-05-01",
+    "The parts of the spell happen in order. When determining how many black creatures and how many red creatures you control, keep in mind that you just put a creature onto the battlefield that’s black and red."
+   ],
+   [
+    "2008-05-01",
+    "If the targeted opponent becomes an illegal target, the entire spell doesn’t resolve. You won’t get a token."
+   ]
+  ]
+ },
+ "Dead Drop": {
+  "name": "Dead Drop",
+  "oracle_id": "09f3d60c-34ee-41ec-a047-fe2140b11950",
+  "type_line": "Sorcery",
+  "mana_cost": "{9}{B}",
+  "cmc": 10.0,
+  "oracle_text": "Delve (Each card you exile from your graveyard while casting this spell pays for {1}.)\nTarget player sacrifices two creatures of their choice.",
+  "faces": [
+   {
+    "name": "Dead Drop",
+    "mana_cost": "{9}{B}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Delve (Each card you exile from your graveyard while casting this spell pays for {1}.)\nTarget player sacrifices two creatures of their choice."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "ktk",
+  "released_at": "2014-09-26",
+  "prices_usd": "0.19",
+  "rulings": [
+   [
+    "2021-03-19",
+    "Delve doesn't change a spell's mana cost or mana value. For example, Treasure Cruise's mana value is 8 even if you exiled three cards to cast it."
+   ],
+   [
+    "2021-03-19",
+    "You can exile cards to pay only for generic mana, and you can't exile more cards than the generic mana requirement of a spell with delve. For example, you can't exile more than seven cards from your graveyard to cast Treasure Cruise unless an effect has increased its cost."
+   ],
+   [
+    "2021-03-19",
+    "Because delve isn't an alternative cost, it can be used in conjunction with alternative costs, such as flashback. It can also be used to pay for additional costs that include generic mana."
+   ],
+   [
+    "2014-09-20",
+    "The target player chooses which creatures they will sacrifice as Dead Drop resolves. If the player controls only one creature at that time, they will sacrifice it."
+   ],
+   [
+    "2014-09-20",
+    "Dead Drop doesn't target any creature. The target player could sacrifice a creature with hexproof, for example."
+   ]
+  ]
+ },
+ "Curse of the Cabal": {
+  "name": "Curse of the Cabal",
+  "oracle_id": "cafede0d-aa14-4266-b619-321ac756262d",
+  "type_line": "Sorcery",
+  "mana_cost": "{9}{B}",
+  "cmc": 10.0,
+  "oracle_text": "Target player sacrifices half the permanents they control of their choice, rounded down.\nSuspend 2—{2}{B}{B} (Rather than cast this card from your hand, you may pay {2}{B}{B} and exile it with two time counters on it. At the beginning of your upkeep, remove a time counter. When the last is removed, you may cast it without paying its mana cost.)\nAt the beginning of each player's upkeep, if this card is suspended, that player may sacrifice a permanent of their choice. If the player does, put two time counters on this card.",
+  "faces": [
+   {
+    "name": "Curse of the Cabal",
+    "mana_cost": "{9}{B}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Target player sacrifices half the permanents they control of their choice, rounded down.\nSuspend 2—{2}{B}{B} (Rather than cast this card from your hand, you may pay {2}{B}{B} and exile it with two time counters on it. At the beginning of your upkeep, remove a time counter. When the last is removed, you may cast it without paying its mana cost.)\nAt the beginning of each player's upkeep, if this card is suspended, that player may sacrifice a permanent of their choice. If the player does, put two time counters on this card."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "tsp",
+  "released_at": "2006-10-06",
+  "prices_usd": "3.06",
+  "rulings": [
+   [
+    "2024-02-02",
+    "Suspend is a keyword that represents three abilities. The first is a static ability that allows you to exile the card from your hand with the specified number of time counters (the number before the dash) on it by paying its suspend cost (listed after the dash). The second is a triggered ability that removes a time counter from the suspended card at the beginning of each of your upkeeps. The third is a triggered ability that gives you the option to cast the card when the last time counter is removed."
+   ],
+   [
+    "2024-02-02",
+    "You can exile a card in your hand using suspend any time you could cast that card. Consider its card type, any effects that modify when you could cast it (such as flash) and any other effects that stop you from casting it (such as from Meddling Mage's ability) to determine if and when you can do this. Whether you could actually complete all steps in casting the card is irrelevant. For example, you can exile a card with suspend that has no mana cost or that requires a target even if no legal targets are available at that time."
+   ],
+   [
+    "2024-02-02",
+    "Cards exiled with suspend are exiled face up."
+   ],
+   [
+    "2024-02-02",
+    "Exiling a card with suspend isn't casting that card. This action doesn't use the stack and can't be responded to."
+   ],
+   [
+    "2024-02-02",
+    "If the spell requires any targets, those targets are chosen when the spell is finally cast, not when it's exiled."
+   ],
+   [
+    "2024-02-02",
+    "If an effect refers to a \"suspended card,\" that means a card that (1) has suspend, (2) is in exile, and (3) has one or more time counters on it."
+   ],
+   [
+    "2024-02-02",
+    "If the first triggered ability of suspend (the one that removes time counters) is countered, no time counter is removed. The ability will trigger again at the beginning of the card's owner's next upkeep."
+   ],
+   [
+    "2024-02-02",
+    "When the last time counter is removed, the second triggered ability of suspend (the one that lets you cast the card) triggers. It doesn't matter why the last time counter was removed or what effect removed it."
+   ],
+   [
+    "2024-02-02",
+    "If the second triggered ability is countered, the card can't be cast. It remains exiled with no time counters on it, and it's no longer suspended."
+   ],
+   [
+    "2024-02-02",
+    "Due to a recent rules change to suspend, you are no longer required to cast the suspended card as the second triggered ability of suspend resolves. Instead, as the second triggered ability resolves, you may cast the card. Timing permissions based on the card's type are ignored. If you don't cast the card, it remains exiled with no time counters on it, and it's no longer suspended."
+   ],
+   [
+    "2024-02-02",
+    "If you cast a card \"without paying its mana cost,\" such as with suspend, you can't choose to cast it for any alternative costs. You can, however, pay additional costs. If the card has any mandatory additional costs, you must pay those if you want to cast the card."
+   ],
+   [
+    "2024-02-02",
+    "If the card has {X} in its mana cost, you must choose 0 as the value of X when casting it without paying its mana cost."
+   ],
+   [
+    "2024-02-02",
+    "The mana value of a spell cast without paying its mana cost is determined by its mana cost, even though that cost wasn't paid."
+   ]
+  ]
+ },
+ "Fraying Omnipotence": {
+  "name": "Fraying Omnipotence",
+  "oracle_id": "3b00068d-ad07-417c-bbb3-5f980615fb06",
+  "type_line": "Sorcery",
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "oracle_text": "Each player loses half their life, then discards half the cards in their hand, then sacrifices half the creatures they control of their choice. Round up each time.",
+  "faces": [
+   {
+    "name": "Fraying Omnipotence",
+    "mana_cost": "{3}{B}{B}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Each player loses half their life, then discards half the cards in their hand, then sacrifices half the creatures they control of their choice. Round up each time."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "m19",
+  "released_at": "2018-07-13",
+  "prices_usd": "0.72",
+  "rulings": [
+   [
+    "2018-07-13",
+    "The amounts that are lost are rounded up, not the amounts kept. For example, a player with 5 life, five cards in hand, and five creatures would lose 3 life, discard three cards, and sacrifice three creatures."
+   ],
+   [
+    "2018-07-13",
+    "Because the instructions are followed in order, abilities of the creatures a player will sacrifice may modify or trigger on losing life, discarding cards, and/or sacrificing creatures. Abilities that trigger this way will resolve after Fraying Omnipotence is done resolving."
+   ],
+   [
+    "2018-07-13",
+    "When Fraying Omnipotence resolves, first each player loses the appropriate amount of life at once. Next, the player whose turn it is chooses an appropriate number of cards in hand without revealing them, then each other player in turn order does the same, and then those cards are all discarded simultaneously. Then, the player whose turn it is chooses an appropriate number of creatures they control. Each other player in turn order does the same, knowing choices made by previous players. Finally, all of the chosen creatures are sacrificed simultaneously."
+   ],
+   [
+    "2018-07-13",
+    "In a Two-Headed Giant game, Fraying Omnipotence causes each player to lose half of their team’s life, rounded up. This means that teams at an even life total will have 0 life, and teams at an odd life total will have -1 life. The game then ends in a draw."
+   ]
+  ]
+ },
+ "Pox": {
+  "name": "Pox",
+  "oracle_id": "539d7c1a-b5e9-4204-9109-ddb2e8dec168",
+  "type_line": "Sorcery",
+  "mana_cost": "{B}{B}{B}",
+  "cmc": 3.0,
+  "oracle_text": "Each player loses a third of their life, then discards a third of the cards in their hand, then sacrifices a third of the creatures they control of their choice, then sacrifices a third of the lands they control of their choice. Round up each time.",
+  "faces": [
+   {
+    "name": "Pox",
+    "mana_cost": "{B}{B}{B}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Each player loses a third of their life, then discards a third of the cards in their hand, then sacrifices a third of the creatures they control of their choice, then sacrifices a third of the lands they control of their choice. Round up each time."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "me1",
+  "released_at": "2007-09-10",
+  "prices_usd": null,
+  "rulings": [
+   [
+    "2007-09-16",
+    "The losses, discards, and sacrifices are rounded up. For example, if you have 5 life, you'll lose 2 life, leaving you at 3 life. (Five divided by three is one and two-thirds. Rounding that up to the nearest whole number gives you two.)"
+   ],
+   [
+    "2007-09-16",
+    "Each part of Pox's effect is processed separately. For each part, first the player whose turn it is makes all necessary choices (such as which cards to discard), then each other player in turn order chooses, then the actions happen at the same time. Then Pox's effect moves to the next stage."
+   ],
+   [
+    "2007-09-16",
+    "The number you need to lose, discard, or sacrifice isn't calculated until it's time to perform that part of the effect. For example, if your opponent casts Pox and you discard Dodecapod as part of Pox's discard effect, Dodecapod will be put onto the battlefield instead of into your graveyard. Then, when determining how many creatures you need to sacrifice, the Dodecapod is taken into account."
+   ]
+  ]
+ },
+ "Pox Plague": {
+  "name": "Pox Plague",
+  "oracle_id": "c505d304-9428-4532-87a2-167c69f16969",
+  "type_line": "Sorcery",
+  "mana_cost": "{B}{B}{B}{B}{B}",
+  "cmc": 5.0,
+  "oracle_text": "Each player loses half their life, then discards half the cards in their hand, then sacrifices half the permanents they control of their choice. Round down each time.",
+  "faces": [
+   {
+    "name": "Pox Plague",
+    "mana_cost": "{B}{B}{B}{B}{B}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Each player loses half their life, then discards half the cards in their hand, then sacrifices half the permanents they control of their choice. Round down each time."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "sos",
+  "released_at": "2026-04-24",
+  "prices_usd": "0.31",
+  "rulings": []
+ },
+ "Death Cloud": {
+  "name": "Death Cloud",
+  "oracle_id": "680f5eca-b98e-4f73-a852-ab629d94297e",
+  "type_line": "Sorcery",
+  "mana_cost": "{X}{B}{B}{B}",
+  "cmc": 3.0,
+  "oracle_text": "Each player loses X life, discards X cards, sacrifices X creatures of their choice, then sacrifices X lands of their choice.",
+  "faces": [
+   {
+    "name": "Death Cloud",
+    "mana_cost": "{X}{B}{B}{B}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Each player loses X life, discards X cards, sacrifices X creatures of their choice, then sacrifices X lands of their choice."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "mma",
+  "released_at": "2013-06-07",
+  "prices_usd": "5.76",
+  "rulings": [
+   [
+    "2013-06-07",
+    "If you control a permanent that’s a creature and a land, and you choose to sacrifice it as you sacrifice creatures, it won’t be on the battlefield when you sacrifice lands. You can’t sacrifice it again."
+   ]
+  ]
+ },
+ "Blasphemous Act": {
+  "name": "Blasphemous Act",
+  "oracle_id": "7a2484a9-04fd-41a0-8224-610c1c07ed10",
+  "type_line": "Sorcery",
+  "mana_cost": "{8}{R}",
+  "cmc": 9.0,
+  "oracle_text": "This spell costs {1} less to cast for each creature on the battlefield.\nBlasphemous Act deals 13 damage to each creature.",
+  "faces": [
+   {
+    "name": "Blasphemous Act",
+    "mana_cost": "{8}{R}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "This spell costs {1} less to cast for each creature on the battlefield.\nBlasphemous Act deals 13 damage to each creature."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "R"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "msc",
+  "released_at": "2026-06-26",
+  "prices_usd": "0.99",
+  "rulings": [
+   [
+    "2020-11-10",
+    "Although players may respond to Blasphemous Act once it's been cast, once it's announced, they can't respond before the cost is calculated and paid."
+   ],
+   [
+    "2020-11-10",
+    "To determine the total cost of a spell, start with the mana cost or alternative cost you're paying, add any cost increases, then apply any cost reductions (such as that of Blasphemous Act). The mana value of the spell is determined only by its mana cost, no matter what the total cost to cast the spell was."
+   ],
+   [
+    "2020-11-10",
+    "Blasphemous Act's ability can't reduce the total cost to cast the spell below {R}."
+   ],
+   [
+    "2020-11-10",
+    "The total cost to cast Blasphemous Act is locked in before you pay that cost. For example, if there are three creatures on the battlefield, including one you can sacrifice to add {C}, the total cost of Blasphemous Act is {5}{R}. Then you can sacrifice the creature when you activate mana abilities just before paying the cost."
+   ]
+  ]
+ },
+ "Blood Money": {
+  "name": "Blood Money",
+  "oracle_id": "75f5d372-4ff9-430c-8302-72472439e0d2",
+  "type_line": "Sorcery",
+  "mana_cost": "{5}{B}{B}",
+  "cmc": 7.0,
+  "oracle_text": "Destroy all creatures. For each nontoken creature destroyed this way, you create a tapped Treasure token.",
+  "faces": [
+   {
+    "name": "Blood Money",
+    "mana_cost": "{5}{B}{B}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Destroy all creatures. For each nontoken creature destroyed this way, you create a tapped Treasure token."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "lcc",
+  "released_at": "2023-11-17",
+  "prices_usd": "2.65",
+  "rulings": [
+   [
+    "2022-06-10",
+    "If a creature isn't destroyed this way for some reason, such as having indestructible or being regenerated, Blood Money's controller will not create a Treasure token for it."
+   ]
+  ]
+ },
+ "Mayhem Devil": {
+  "name": "Mayhem Devil",
+  "oracle_id": "4709f11c-aef8-45ac-b2bf-e640c568dfac",
+  "type_line": "Creature — Devil",
+  "mana_cost": "{1}{B}{R}",
+  "cmc": 3.0,
+  "oracle_text": "Whenever a player sacrifices a permanent, this creature deals 1 damage to any target.",
+  "faces": [
+   {
+    "name": "Mayhem Devil",
+    "mana_cost": "{1}{B}{R}",
+    "type_line": "Creature — Devil",
+    "power": "3",
+    "toughness": "3",
+    "oracle_text": "Whenever a player sacrifices a permanent, this creature deals 1 damage to any target."
+   }
+  ],
+  "power": "3",
+  "toughness": "3",
+  "color_identity": [
+   "B",
+   "R"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "eoc",
+  "released_at": "2025-08-01",
+  "prices_usd": "0.35",
+  "rulings": [
+   [
+    "2019-05-03",
+    "A legendary permanent that is put into a graveyard because of the \"legend rule\" isn't sacrificed."
+   ],
+   [
+    "2019-05-03",
+    "You control Mayhem Devil's triggered ability and choose the target, no matter who sacrificed the permanent."
+   ],
+   [
+    "2019-05-03",
+    "If a permanent is sacrificed to pay a cost of a spell or ability, Mayhem Devil's ability will resolve before that spell or ability. Conversely, if a permanent is sacrificed during the resolution of a spell or ability, that spell or ability will finish resolving before Mayhem Devil's ability is put onto the stack."
+   ],
+   [
+    "2019-05-03",
+    "Mayhem Devil itself doesn't allow any player to sacrifice any permanents. Its ability triggers whenever a player sacrifices a permanent because some other spell, ability, or cost instructed the player to do so."
+   ],
+   [
+    "2019-05-03",
+    "If you sacrifice Mayhem Devil, its ability triggers."
+   ]
+  ]
+ },
+ "Dictate of Erebos": {
+  "name": "Dictate of Erebos",
+  "oracle_id": "7c777a41-e40a-4b40-96bf-8ddd5c12924c",
+  "type_line": "Enchantment",
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "oracle_text": "Flash\nWhenever a creature you control dies, each opponent sacrifices a creature of their choice.",
+  "faces": [
+   {
+    "name": "Dictate of Erebos",
+    "mana_cost": "{3}{B}{B}",
+    "type_line": "Enchantment",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Flash\nWhenever a creature you control dies, each opponent sacrifices a creature of their choice."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "jou",
+  "released_at": "2014-05-02",
+  "prices_usd": "17.90",
+  "rulings": [
+   [
+    "2014-04-26",
+    "When the triggered ability resolves, first the player whose turn it is (if that player is an opponent) chooses which creature they will sacrifice, then each other opponent in turn order does the same, then all chosen creatures are sacrificed at the same time."
+   ],
+   [
+    "2014-04-26",
+    "None of the opponents are targeted. An opponent with hexproof would still sacrifice a creature."
+   ],
+   [
+    "2014-04-26",
+    "If multiple creatures you control die at the same time, Dictate of Erebos's triggered ability will trigger that many times."
+   ],
+   [
+    "2014-04-26",
+    "If you control more than one Dictate of Erebos and a creature you control dies, each of the triggered abilities will trigger. Each opponent will sacrifice a creature each time one of those abilities resolves."
+   ],
+   [
+    "2014-04-26",
+    "If you and an opponent each control a Dictate of Erebos and a creature dies, a chain reaction happens. First the ability of one player's Dictate of Erebos will trigger, causing each opponent to sacrifice a creature. That sacrifice causes the ability of the other player's Dictate of Erebos to trigger, and so on."
+   ]
+  ]
+ },
+ "Teferi's Protection": {
+  "name": "Teferi's Protection",
+  "oracle_id": "0d4ecdb1-ec90-497f-a7a4-1c68092b8757",
+  "type_line": "Instant",
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "oracle_text": "Until your next turn, your life total can't change and you gain protection from everything. All permanents you control phase out. (While they're phased out, they're treated as though they don't exist. They phase in before you untap during your untap step.)\nExile Teferi's Protection.",
+  "faces": [
+   {
+    "name": "Teferi's Protection",
+    "mana_cost": "{2}{W}",
+    "type_line": "Instant",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Until your next turn, your life total can't change and you gain protection from everything. All permanents you control phase out. (While they're phased out, they're treated as though they don't exist. They phase in before you untap during your untap step.)\nExile Teferi's Protection."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "W"
+  ],
+  "legal_commander": "legal",
+  "game_changer": true,
+  "set": "2x2",
+  "released_at": "2022-07-08",
+  "prices_usd": "46.73",
+  "rulings": [
+   [
+    "2017-08-25",
+    "Gaining protection from everything causes a spell or ability on the stack to have an illegal target if it targets you. As a spell or ability tries to resolve, if all its targets are illegal, that spell or ability doesn't resolve and none of its effects happen, including effects unrelated to the target. If at least one target is still legal, the spell or ability does as much as it can to the remaining legal targets, and its other effects still happen."
+   ],
+   [
+    "2017-08-25",
+    "Effects that replace an event with having you gain life (like Words of Worship's effect does) or having you lose life will apply and end up replacing the event with nothing."
+   ],
+   [
+    "2017-08-25",
+    "Permanents that phase out with counters phase in with those counters."
+   ],
+   [
+    "2017-08-25",
+    "If you gain control of another player's permanent and it phases out, if the duration of the control-change effect expires before it phases in, that permanent phases in under that other player's control as your next untap step begins. If you leave the game before your next untap step, it phases in as the next untap step begins after your turn would have begun."
+   ],
+   [
+    "2017-08-25",
+    "Protection from everything will usually prevent damage if it would be dealt to you, but some damage can't be prevented. In this case, because your life total also can't change, that damage has any other effects that it may have aside from causing you to lose that much life (such as effects from lifelink or infect) and triggers and effects can see that damage was dealt even though your life total didn't change."
+   ],
+   [
+    "2017-08-25",
+    "While a permanent is phased out, it's treated as though it doesn't exist. It can't be the target of spells or abilities, its static abilities have no effect on the game, its triggered abilities can't trigger, it can't attack or block, and so on."
+   ],
+   [
+    "2017-08-25",
+    "If your untap step is somehow skipped as your next turn begins, your phased-out permanents won't phase in until the next untap step you actually have, but you'll no longer have protection from everything and your life total can change again."
+   ],
+   [
+    "2017-08-25",
+    "If an effect would set your life total to a certain number that's different than your current life total, that part of the effect won't do anything."
+   ],
+   [
+    "2017-08-25",
+    "Choices made for permanents as they entered the battlefield are remembered when they phase in."
+   ],
+   [
+    "2017-08-25",
+    "Spells and abilities that would normally cause you to gain or lose life still resolve while your life total can't change, but the life-gain or life-loss part simply has no effect."
+   ],
+   [
+    "2017-08-25",
+    "---------- The following rulings focus on the phasing keyword ----------"
+   ],
+   [
+    "2017-08-25",
+    "A permanent phasing out causes a spell or ability on the stack to have an illegal target if it targets that permanent. As a spell or ability tries to resolve, if all its targets are illegal, that spell or ability doesn't resolve and none of its effects happen, including effects unrelated to the target. If at least one target is still legal, the spell or ability does as much as it can to the remaining legal targets, and its other effects still happen."
+   ],
+   [
+    "2017-08-25",
+    "Any continuous effects with a \"for as long as\" duration such as that of Mathas, Fiend Seeker ignore phased-out objects. Any such effects will expire if their conditions are no longer met after ignoring the phased-out objects."
+   ],
+   [
+    "2017-08-25",
+    "Each Aura and Equipment that phases out attached to a permanent that's phasing out phases in with that permanent and still attached to it."
+   ],
+   [
+    "2017-08-25",
+    "If a player has protection from everything, it means three things: 1) All damage that would be dealt to that player is prevented. 2) Auras can't be attached to that player. 3) That player can't be the target of spells or abilities."
+   ],
+   [
+    "2017-08-25",
+    "If a cost includes causing you to gain life (like the alternative cost of an opponent's Invigorate does), that cost can't be paid."
+   ],
+   [
+    "2017-08-25",
+    "Any one-shot effects that are waiting \"until [this] leaves the battlefield,\" such as that of Banishing Light, won't happen when a permanent phases out."
+   ],
+   [
+    "2017-08-25",
+    "---------- The following rulings focus on the \"protection from\" keyword ----------"
+   ],
+   [
+    "2017-08-25",
+    "Nothing other than the specified events are prevented or illegal. An effect that doesn't target you could still cause you to discard cards, for example. Creatures can still attack you while you have protection from everything, although combat damage that they would deal to you will be prevented."
+   ],
+   [
+    "2017-08-25",
+    "---------- The following rulings focus on what it means if your life total can't change ----------"
+   ],
+   [
+    "2017-08-25",
+    "You can't pay a cost that includes the payment of any amount of life other than 0 life."
+   ],
+   [
+    "2017-08-25",
+    "Effects that would replace having you gain life with some other event won't be able to be applied because it's impossible for you to gain life. The same is true for effects that would replace having you lose life with some other event."
+   ],
+   [
+    "2017-08-25",
+    "If an effect would cause you to exchange life totals with another player, the exchange won't happen. Neither player's life total changes."
+   ],
+   [
+    "2017-08-25",
+    "Phasing out doesn't cause any \"leaves the battlefield\" abilities to trigger. Similarly, phasing in won't cause any \"enters\" abilities to trigger."
+   ],
+   [
+    "2017-08-25",
+    "Each Aura and Equipment you control attached to a permanent that isn't phasing out phases in attached to that permanent if it can still be attached to that permanent. If not, it phases in unattached. An Aura that phases in unattached will be put into its owner's graveyard as a state-based action. The same is true with Auras attached to players."
+   ],
+   [
+    "2017-08-25",
+    "If a token is phased out, it will phase in as your next untap step begins. This is a change from previous rules."
+   ],
+   [
+    "2017-08-25",
+    "Any creatures that phase in under your control as your next untap step begins will be able to attack and pay a cost of {T} during that turn."
+   ]
+  ]
+ },
+ "Boros Charm": {
+  "name": "Boros Charm",
+  "oracle_id": "2679d0dd-ba30-4a1c-b6a0-b3ac6c790496",
+  "type_line": "Instant",
+  "mana_cost": "{R}{W}",
+  "cmc": 2.0,
+  "oracle_text": "Choose one —\n• Boros Charm deals 4 damage to target player or planeswalker.\n• Permanents you control gain indestructible until end of turn.\n• Target creature gains double strike until end of turn.",
+  "faces": [
+   {
+    "name": "Boros Charm",
+    "mana_cost": "{R}{W}",
+    "type_line": "Instant",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Choose one —\n• Boros Charm deals 4 damage to target player or planeswalker.\n• Permanents you control gain indestructible until end of turn.\n• Target creature gains double strike until end of turn."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "R",
+   "W"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "fdn",
+  "released_at": "2024-11-15",
+  "prices_usd": null,
+  "rulings": [
+   [
+    "2024-11-08",
+    "Boros Charm's second mode affects only permanents you control at the time it resolves. It won't affect permanents that come under your control later in the turn."
+   ],
+   [
+    "2024-11-08",
+    "Planeswalkers with indestructible will still have loyalty counters removed from them as they are dealt damage. If a planeswalker with indestructible has no loyalty counters, it will still be put into its owner's graveyard, as the rule that does this doesn't destroy the planeswalker."
+   ]
+  ]
+ },
+ "Vihaan, Goldwaker": {
+  "name": "Vihaan, Goldwaker",
+  "oracle_id": "0613a0d8-f6bc-41ca-8070-b2506f756fc8",
+  "type_line": "Legendary Creature — Dwarf Warlock",
+  "mana_cost": "{R}{W}{B}",
+  "cmc": 3.0,
+  "oracle_text": "Other outlaws you control have vigilance and haste. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws.)\nAt the beginning of combat on your turn, you may have Treasures you control become 3/3 Construct Assassin artifact creatures in addition to their other types until end of turn.",
+  "faces": [
+   {
+    "name": "Vihaan, Goldwaker",
+    "mana_cost": "{R}{W}{B}",
+    "type_line": "Legendary Creature — Dwarf Warlock",
+    "power": "3",
+    "toughness": "3",
+    "oracle_text": "Other outlaws you control have vigilance and haste. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws.)\nAt the beginning of combat on your turn, you may have Treasures you control become 3/3 Construct Assassin artifact creatures in addition to their other types until end of turn."
+   }
+  ],
+  "power": "3",
+  "toughness": "3",
+  "color_identity": [
+   "B",
+   "R",
+   "W"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "otc",
+  "released_at": "2024-04-19",
+  "prices_usd": null,
+  "rulings": [
+   [
+    "2024-04-12",
+    "If a Treasure you control is already a creature when Vihaan’s second ability resolves and you choose to apply its effect to all Treasures you control, that effect will overwrite any previous effects that set that creature’s power and toughness to specific numbers. Effects that otherwise modify its power and toughness will still apply no matter when they took effect. The same is true for +1/+1 counters."
+   ],
+   [
+    "2024-04-12",
+    "Treasures you control will keep any abilities they previously had while they’re creatures."
+   ],
+   [
+    "2024-04-12",
+    "A card, spell, or permanent is an outlaw if it has the Assassin, Mercenary, Pirate, Rogue, or Warlock creature type. It doesn’t matter if it has more than one of those creature types; as long as it has at least one, it’s an outlaw."
+   ],
+   [
+    "2024-04-12",
+    "Outlaw is not a creature type. If an effect asks you to choose a creature type, you can’t choose outlaw."
+   ],
+   [
+    "2024-04-12",
+    "If an ability refers to an outlaw or whether a player controls an outlaw, it’s referring only to permanents with one or more of the creature types specified above. Notably, it’s not referring to any spell or card not on the battlefield. However, other abilities may refer to an “outlaw spell” or “outlaw card” in a zone other than the battlefield. Those abilities refer to spells and cards with one or more of the specified creature types."
+   ]
+  ]
+ },
+ "Mirkwood Bats": {
+  "name": "Mirkwood Bats",
+  "oracle_id": "0636b6c3-0662-420a-b30d-f0a14e7c512d",
+  "type_line": "Creature — Bat",
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "oracle_text": "Flying\nWhenever you create or sacrifice a token, each opponent loses 1 life.",
+  "faces": [
+   {
+    "name": "Mirkwood Bats",
+    "mana_cost": "{3}{B}",
+    "type_line": "Creature — Bat",
+    "power": "2",
+    "toughness": "3",
+    "oracle_text": "Flying\nWhenever you create or sacrifice a token, each opponent loses 1 life."
+   }
+  ],
+  "power": "2",
+  "toughness": "3",
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "ltr",
+  "released_at": "2023-06-23",
+  "prices_usd": "1.38",
+  "rulings": []
+ },
+ "Pitiless Plunderer": {
+  "name": "Pitiless Plunderer",
+  "oracle_id": "a784481f-eccb-4112-bb38-04a659319660",
+  "type_line": "Creature — Human Pirate",
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "oracle_text": "Whenever another creature you control dies, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "faces": [
+   {
+    "name": "Pitiless Plunderer",
+    "mana_cost": "{3}{B}",
+    "type_line": "Creature — Human Pirate",
+    "power": "1",
+    "toughness": "4",
+    "oracle_text": "Whenever another creature you control dies, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")"
+   }
+  ],
+  "power": "1",
+  "toughness": "4",
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "lcc",
+  "released_at": "2023-11-17",
+  "prices_usd": "4.79",
+  "rulings": [
+   [
+    "2018-01-19",
+    "If Pitiless Plunderer dies at the same time as one or more other creatures you control, its ability will still trigger for each of those other creatures."
+   ]
+  ]
+ },
+ "Zulaport Cutthroat": {
+  "name": "Zulaport Cutthroat",
+  "oracle_id": "76b003e0-15af-4f22-bdf2-1ade5430964a",
+  "type_line": "Creature — Human Rogue Ally",
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "oracle_text": "Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life.",
+  "faces": [
+   {
+    "name": "Zulaport Cutthroat",
+    "mana_cost": "{1}{B}",
+    "type_line": "Creature — Human Rogue Ally",
+    "power": "1",
+    "toughness": "1",
+    "oracle_text": "Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life."
+   }
+  ],
+  "power": "1",
+  "toughness": "1",
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "soc",
+  "released_at": "2026-04-24",
+  "prices_usd": "1.36",
+  "rulings": [
+   [
+    "2021-03-19",
+    "If another creature you control dies at the same time as Zulaport Cutthroat, its ability triggers for that creature."
+   ]
+  ]
+ },
+ "Mahadi, Emporium Master": {
+  "name": "Mahadi, Emporium Master",
+  "oracle_id": "1b3e841e-0f8f-467d-9983-f9b8d081a67f",
+  "type_line": "Legendary Creature — Devil",
+  "mana_cost": "{1}{B}{R}",
+  "cmc": 3.0,
+  "oracle_text": "At the beginning of your end step, create a Treasure token for each creature that died this turn. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "faces": [
+   {
+    "name": "Mahadi, Emporium Master",
+    "mana_cost": "{1}{B}{R}",
+    "type_line": "Legendary Creature — Devil",
+    "power": "3",
+    "toughness": "3",
+    "oracle_text": "At the beginning of your end step, create a Treasure token for each creature that died this turn. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")"
+   }
+  ],
+  "power": "3",
+  "toughness": "3",
+  "color_identity": [
+   "B",
+   "R"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "clb",
+  "released_at": "2022-06-10",
+  "prices_usd": "1.62",
+  "rulings": []
+ },
+ "Krark-Clan Ironworks": {
+  "name": "Krark-Clan Ironworks",
+  "oracle_id": "68e1f7e0-a9b3-437f-8086-0c0cb85f2880",
+  "type_line": "Artifact",
+  "mana_cost": "{4}",
+  "cmc": 4.0,
+  "oracle_text": "Sacrifice an artifact: Add {C}{C}.",
+  "faces": [
+   {
+    "name": "Krark-Clan Ironworks",
+    "mana_cost": "{4}",
+    "type_line": "Artifact",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Sacrifice an artifact: Add {C}{C}."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "5dn",
+  "released_at": "2004-06-04",
+  "prices_usd": "16.67",
+  "rulings": []
+ },
+ "Ashnod's Altar": {
+  "name": "Ashnod's Altar",
+  "oracle_id": "4d18bcba-a346-445e-a182-6cc30b7e066d",
+  "type_line": "Artifact",
+  "mana_cost": "{3}",
+  "cmc": 3.0,
+  "oracle_text": "Sacrifice a creature: Add {C}{C}.",
+  "faces": [
+   {
+    "name": "Ashnod's Altar",
+    "mana_cost": "{3}",
+    "type_line": "Artifact",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Sacrifice a creature: Add {C}{C}."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "cmm",
+  "released_at": "2023-08-04",
+  "prices_usd": "15.65",
+  "rulings": []
+ },
+ "Deadly Dispute": {
+  "name": "Deadly Dispute",
+  "oracle_id": "457af74a-02b3-4659-846d-63e482667f34",
+  "type_line": "Instant",
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "oracle_text": "As an additional cost to cast this spell, sacrifice an artifact or creature.\nDraw two cards and create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "faces": [
+   {
+    "name": "Deadly Dispute",
+    "mana_cost": "{1}{B}",
+    "type_line": "Instant",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "As an additional cost to cast this spell, sacrifice an artifact or creature.\nDraw two cards and create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")"
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "msc",
+  "released_at": "2026-06-26",
+  "prices_usd": "0.31",
+  "rulings": []
+ },
+ "Sevinne's Reclamation": {
+  "name": "Sevinne's Reclamation",
+  "oracle_id": "1b9f9f5b-8712-4f00-90cb-1b7b9970eccc",
+  "type_line": "Sorcery",
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "oracle_text": "Return target permanent card with mana value 3 or less from your graveyard to the battlefield. If this spell was cast from a graveyard, you may copy this spell and may choose a new target for the copy.\nFlashback {4}{W} (You may cast this card from your graveyard for its flashback cost. Then exile it.)",
+  "faces": [
+   {
+    "name": "Sevinne's Reclamation",
+    "mana_cost": "{2}{W}",
+    "type_line": "Sorcery",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Return target permanent card with mana value 3 or less from your graveyard to the battlefield. If this spell was cast from a graveyard, you may copy this spell and may choose a new target for the copy.\nFlashback {4}{W} (You may cast this card from your graveyard for its flashback cost. Then exile it.)"
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "W"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "soc",
+  "released_at": "2026-04-24",
+  "prices_usd": "0.42",
+  "rulings": [
+   [
+    "2025-06-06",
+    "A spell cast using flashback will always be exiled afterward, whether it resolves, is countered, or leaves the stack in some other way."
+   ],
+   [
+    "2025-06-06",
+    "You can cast a spell using flashback even if it was somehow put into your graveyard without having been cast."
+   ],
+   [
+    "2025-06-06",
+    "To determine the total cost of a spell, start with the mana cost or alternative cost (such as a flashback cost) you're paying, add any cost increases, then apply any cost reductions. The mana value of the spell is determined only by its mana cost, no matter what the total cost to cast the spell was."
+   ],
+   [
+    "2025-06-06",
+    "You must still follow any timing restrictions and permissions, including those based on the card's type. For instance, you can cast a sorcery using flashback only when you could normally cast a sorcery."
+   ],
+   [
+    "2025-06-06",
+    "\"Flashback [cost]\" means \"You may cast this card from your graveyard if the resulting spell is an instant or sorcery spell by paying [cost] rather than paying its mana cost\" and \"If the flashback cost was paid, exile this card instead of putting it anywhere else any time it would leave the stack.\""
+   ],
+   [
+    "2025-06-06",
+    "If a card with flashback is put into your graveyard during your turn, you can cast it if it's legal to do so before any other player can take any actions."
+   ],
+   [
+    "2024-06-07",
+    "A permanent card is an artifact, battle, creature, enchantment, land, or planeswalker card."
+   ],
+   [
+    "2019-08-23",
+    "The copy that Sevinne's Reclamation creates is created on the stack, so it's not \"cast.\" Abilities that trigger when a player casts a spell won't trigger. The copy wasn't cast from a graveyard, so it won't make another copy of itself."
+   ],
+   [
+    "2019-08-23",
+    "If you cast Sevinne's Reclamation from your graveyard, any abilities that trigger as the permanent card returns to the battlefield will resolve before the copy of Sevinne's Reclamation resolves but after new targets for the copy have been chosen."
+   ],
+   [
+    "2019-08-23",
+    "If a card in a graveyard has {X} in its mana cost, X is considered to be 0."
+   ],
+   [
+    "2019-08-23",
+    "If the target card is an illegal target by the time Sevinne's Reclamation tries to resolve, the spell doesn't resolve. You won't copy it if you cast it from a graveyard."
+   ]
+  ]
+ },
+ "Life Insurance": {
+  "name": "Life Insurance",
+  "oracle_id": "50779f73-c538-4364-aca4-4ab069a00814",
+  "type_line": "Enchantment",
+  "mana_cost": "{3}{W}{B}",
+  "cmc": 5.0,
+  "oracle_text": "Extort (Whenever you cast a spell, you may pay {W/B}. If you do, each opponent loses 1 life and you gain that much life.)\nWhenever a nontoken creature dies, you lose 1 life and create a Treasure token.",
+  "faces": [
+   {
+    "name": "Life Insurance",
+    "mana_cost": "{3}{W}{B}",
+    "type_line": "Enchantment",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Extort (Whenever you cast a spell, you may pay {W/B}. If you do, each opponent loses 1 life and you gain that much life.)\nWhenever a nontoken creature dies, you lose 1 life and create a Treasure token."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B",
+   "W"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "dsc",
+  "released_at": "2024-09-27",
+  "prices_usd": "0.31",
+  "rulings": [
+   [
+    "2024-01-12",
+    "You may pay {W/B} a maximum of one time for each extort triggered ability. You decide whether to pay when the ability resolves."
+   ],
+   [
+    "2024-01-12",
+    "The amount of life you gain from extort is based on the total amount of life lost, not necessarily the number of opponents you have. For example, if your opponent's life total can't change (perhaps because that player controls Platinum Emperion), you won't gain any life."
+   ],
+   [
+    "2024-01-12",
+    "The extort ability doesn't target any player."
+   ],
+   [
+    "2024-01-12",
+    "The extort ability resolves before the spell that caused it to trigger. The ability resolves even if that spell is countered."
+   ]
+  ]
+ },
+ "Revel in Riches": {
+  "name": "Revel in Riches",
+  "oracle_id": "cc3fcd26-c088-4335-9a35-0e11019e3d5b",
+  "type_line": "Enchantment",
+  "mana_cost": "{4}{B}",
+  "cmc": 5.0,
+  "oracle_text": "Whenever a creature an opponent controls dies, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")\nAt the beginning of your upkeep, if you control ten or more Treasures, you win the game.",
+  "faces": [
+   {
+    "name": "Revel in Riches",
+    "mana_cost": "{4}{B}",
+    "type_line": "Enchantment",
+    "power": null,
+    "toughness": null,
+    "oracle_text": "Whenever a creature an opponent controls dies, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")\nAt the beginning of your upkeep, if you control ten or more Treasures, you win the game."
+   }
+  ],
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "game_changer": false,
+  "set": "xln",
+  "released_at": "2017-09-29",
+  "prices_usd": "21.11",
+  "rulings": [
+   [
+    "2017-09-29",
+    "If you don't control ten Treasures as your upkeep begins, the second ability of Revel in Riches won't trigger. You can't take any actions during your turn before your upkeep begins."
+   ],
+   [
+    "2017-09-29",
+    "If you don't control ten Treasures as the second ability of Revel in Riches resolves, you won't win the game."
+   ],
+   [
+    "2017-09-29",
+    "If an opponent's creature dies at the same time that Revel in Riches is destroyed, you'll get a Treasure."
+   ],
+   [
+    "2017-09-29",
+    "If the second ability of Revel in Riches causes you to win the game, please refrain from throwing your Treasure tokens into the air as this may distract or injure other players."
+   ]
+  ]
+ }
+}

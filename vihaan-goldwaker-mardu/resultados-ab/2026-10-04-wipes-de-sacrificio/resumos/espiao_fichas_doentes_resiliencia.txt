@@ -1,0 +1,1 @@
+resiliencia 3000 {'constructs_sick_gt0': 9, 'constructs_afeta_prontos': 5, 'constructs_prontos_perdidos': 5} jogos com algum evento: 9

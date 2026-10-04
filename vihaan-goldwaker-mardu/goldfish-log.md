@@ -1,5 +1,7 @@
 # Goldfish Log — Vihaan, Goldwaker
 
+> **Dados brutos e como reproduzir as tabelas da seção Avaliação: algum wipe de sacrifício válido no deck muda os números e a avaliação da Edict? (2026-10-04):** [`resultados-ab/2026-10-04-wipes-de-sacrificio/LEIAME.md`](resultados-ab/2026-10-04-wipes-de-sacrificio/LEIAME.md) — buscas e respostas cruas do Scryfall e do Commander Spellbook, brutos `.json.xz` por estado, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
 > **Dados brutos e como reproduzir as tabelas da seção Avaliação: trocar Blasphemous Act por Blasphemous Edict (2026-10-04):** [`resultados-ab/2026-10-04-blasphemous-edict/LEIAME.md`](resultados-ab/2026-10-04-blasphemous-edict/LEIAME.md) — respostas cruas do Scryfall e do Commander Spellbook, brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
 > **Dados brutos e como reproduzir as tabelas da seção Todo boardwipe segurado, e o custo pago com Treasures animados (2026-10-04):** [`resultados-ab/2026-10-04-wipes-segurados/LEIAME.md`](resultados-ab/2026-10-04-wipes-segurados/LEIAME.md) — brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
@@ -25,6 +27,121 @@
 > **Dados brutos e como reproduzir as tabelas da seção Inevitable Defeat (2026-10-03):** [`resultados-ab/2026-10-03-inevitable-defeat/LEIAME.md`](resultados-ab/2026-10-03-inevitable-defeat/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
 > **Dados brutos e como reproduzir as tabelas da seção Kingpin, Wilson Fisk (2026-10-03):** [`resultados-ab/2026-10-03-kingpin/LEIAME.md`](resultados-ab/2026-10-03-kingpin/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
+
+---
+
+## Avaliação: algum wipe de sacrifício válido no deck muda os números e a avaliação da Edict? — 2026-10-04
+
+**Pergunta do usuário:** *"Algum wipe de sacrifício valido no deck muda esses números e avaliação?"* (depois da avaliação Blasphemous Act × Blasphemous Edict, em que eu só tinha **listado**, sem avaliar, By Invitation Only, Tragic Arrogance, Tergrid's Shadow, Barter in Blood, Taste of Death e Necrotic Hex).
+**Nada foi trocado na lista** (decisão do usuário). Protocolo da Regra #4/#5 na ordem: oráculo e rulings ao vivo, documentação do deck, Commander Spellbook antes/depois com controle positivo, enumeração por script, motores do deck, comparação com o que sai (Blasphemous Act **e** Blood Money, medidos nos mesmos estados), simulador só como apoio.
+
+**Veredito: os números da Edict NÃO mudam (reproduzi a linha da rodada anterior), mas a avaliação muda em dois pontos.** (1) A comparação certa para "um wipe que sacrifica" neste deck **não é a Edict, é a By Invitation Only**: o texto é o mesmo, com o número N à minha escolha; com N = "tudo menos Vihaan, Mahadi e Mayhem Devil" o Vihaan **não morre nunca** (0,0%; Edict 92,7%, Act 98,6%) e eu perco 3,84 criaturas por conjuração (Edict 4,73, Act 6,34). O preço é `{W}{W}` (castável em 33,3% dos estados, a Edict em 37,2%) e a perda do custo alternativo `{B}`. (2) **Winnowing** é a que mais muda a conta: custo médio 2,9 (convoke), Vihaan sobrevive (0,0% de morte), perco 3,91 criaturas; o que sobra no campo dos oponentes é 📊. **Nenhuma** é uma melhoria provada: o lado dos oponentes (onde um wipe vale) o simulador não vê, e o Act continua único em duas coisas (custo mínimo na mesa real e o Boros Charm).
+
+### Como foi a busca (e o que a rodada anterior tinha perdido)
+- Busca ampla ao vivo no Scryfall (10 formulações, `id<=rwb`, legal em Commander, `resumos/busca_ampla.txt`): **348 cartas**, classificadas por script: 141 de sacrifício "em massa", 164 "edict de 1", 20 só de terreno, 23 outras. A busca da rodada anterior só procurava `t:sorcery`/`t:instant` com 3 frases fixas e **não achou** Mythos of Snapdax, Meathook Massacre II, Zodiark, Liliana Dreadhorde General nem as unilaterais (Vona's Hunger, Crackling Doom, Make an Example, Syphon Flesh...). E a minha lista de 6 nomes **deixou de fora** Slaughter the Strong, Winnowing, Living Death, Scrap Mastery, All Is Dust e Rankle's Prank, que a própria saída daquela busca já listava (`resultados-ab/2026-10-04-blasphemous-edict/resumos/scryfall_buscas.txt`).
+- Corte manual para **20 variantes** (+ Act e Blood Money como referência) e as exclusões com a cláusula do oráculo: `checklist-oraculo.md` (seção do topo). **Não são wipes** (e ficaram fora): Vona's Hunger/Crackling Doom/Make an Example/Syphon Flesh/Perilous Predicament (um oponente sacrifica metade ou 1 criatura, **sem custo no meu campo**: medidos só em castabilidade), os motores de morte (Butcher of Malakir, Martyr's Bond, Urborg Justice...), as de alvo único e as de MV 6–10 (Choice of Damnations, Skull Storm, Portal to Phyrexia...). **Extus // Awaken the Blood Avatar** apareceu na busca: não é wipe (*each opponent sacrifices **a** creature*; a redução de custo é por criatura minha sacrificada).
+
+### Oráculo (ao vivo, 2026-10-04) das que decidem
+- **By Invitation Only** `{3}{W}{W}` Sorcery: *Choose a number between 0 and 13. Each player sacrifices that many creatures of their choice.* Rulings (2021-11-19): 0 e 13 valem; com menos criaturas o jogador sacrifica todas; cada um escolhe em ordem de turno e **tudo é sacrificado ao mesmo tempo**.
+- **Winnowing** `{4}{W}{W}` Sorcery: *Convoke. For each player, you choose a creature that player controls. Then each player sacrifices all other creatures they control that don't share a creature type with the chosen creature they control.* Ruling (2025-11-17): convoke aceita criatura desvirada mesmo com doença de invocação.
+- **Mythos of Snapdax** `{2}{W}{W}`: *Each player chooses an artifact, a creature, an enchantment, and a planeswalker … then sacrifices the rest. If {B}{R} was spent to cast this spell, you choose the permanents for each player instead.* Tragic Arrogance `{3}{W}{W}` é o mesmo efeito, sempre com a minha escolha, **1 mana mais cara**: dominada pelo Mythos num deck Mardu.
+- **Slaughter the Strong** `{1}{W}{W}`: *Each player chooses any number of creatures they control with total power 4 or less, then sacrifices all other creatures they control.*
+- **Living Death** `{3}{B}{B}`: *exiles all creature cards from their graveyard, then sacrifices all creatures they control, then puts all cards they exiled this way onto the battlefield.* **Scrap Mastery** (artefatos) e **All Is Dust** (`{7}`, só os coloridos).
+- N fixo: **Barter in Blood** `{2}{B}{B}` (2), **Tergrid's Shadow** `{3}{B}{B}` instantânea (2; foretell), **Taste of Death** `{4}{B}{B}` (3 + 3 Food), **Necrotic Hex** `{6}{B}` (6 + 6 Zumbis), **Rankle's Prank** `{2}{B}{B}` (modos), **Liliana, Dreadhorde General** `{4}{B}{B}` (−4: 2; passiva de compra). Metade/X: **Zodiark** `{B}{B}{B}{B}{B}`, **Meathook Massacre II** `{X}{X}{B}{B}{B}{B}`.
+- Nenhuma é Game Changer (a busca `is:gamechanger` só foi feita na Edict; as demais têm `game_changer: false` na resposta crua).
+
+### Documentação do deck, Commander Spellbook e enumeração por script
+- **Spellbook antes/depois** (39 consultas; `resumos/spellbook.txt`, resposta crua em `dados/spellbook_cru.json.xz`): base = **4 combos** (Ashnod's Altar + Mahadi + Revel in Riches; Anointed Procession / Goldspan Dragon / Xorn + Gleaming Splendor + Smothering Tithe). **Em TODAS as 17 candidatas, sem cortar e trocando o Act: 0 combos que somem, 0 novos.** Somem só os 4 "quase" do Act (Repercussion, Toralf, Fall of Cair Andros, Expedited Inheritance: peças fora da lista). Surgem "quase" com Liliana (+3), Zodiark (+2), Living Death (+1) e Scrap Mastery (+1), sempre com peça fora da lista. Controles positivos: cortar Smothering Tithe tira 3 combos, Ashnod's Altar tira 1.
+- **Enumeração por script** (`resumos/enumeracao.txt`; oráculo ao vivo das 94 cartas distintas): reagem a **sacrifício**: só **Mayhem Devil, Mirkwood Bats e Captain Lannery Storm**; a **morte**: Dictate, Zulaport, Plunderer, Sephiroth, Life Insurance, Revel in Riches, Mari, Agent, Marionette Master. Tipos de criatura (Winnowing): Human 11 cartas, Rogue 6, Assassin/Warlock 3, Devil/Dragon/Dwarf/Pirate/Tiefling/Vampire/Warrior/Artificer 2; incolores (All Is Dust): só 5 (Manufactor, Signet, Altar, KCI, Sol Ring); fontes de cor: W 14 terrenos, B 21, R 17.
+
+### Motores do deck contra as candidatas
+| Motor / carta da lista | O que faz com cada família |
+|---|---|
+| **Mayhem Devil** (1 cópia) | dispara por **cada permanente sacrificada de qualquer jogador**: todas as de sacrifício (meus + de cada oponente); nunca o Act nem o Blood Money (dano/destruição) |
+| **Mirkwood Bats** (1 cópia) | 1 de vida de cada oponente por ficha minha sacrificada (todas as de sacrifício; Mythos/Scrap/Tragic até pelos Treasures) |
+| Zulaport, Plunderer, Nadier, Agent, Life Insurance, Sephiroth, Revel in Riches, Mari, Marionette Master | reagem a morte/saída: iguais nas duas famílias |
+| **Dictate of Erebos** (1 cópia; em campo em 1,6% dos estados) | com ele, qualquer wipe que mata N criaturas minhas faz cada oponente sacrificar N: no lado deles destruir e sacrificar passam a valer o mesmo |
+| **Teferi's Protection** (1 cópia) | phase out do que é meu: protege contra destruir **e** sacrificar; liga um wipe unilateral com **qualquer** das candidatas (mas desliga meus gatilhos) |
+| **Boros Charm** (1 cópia) | indestructible: só contra destruir. Faz do Act/Blood Money um wipe unilateral que **nenhuma** candidata de sacrifício permite |
+| Treasures animados (Vihaan) | são o fodder do regulador N da By Invitation Only e as criaturas "Construct Assassin" do Winnowing (e do convoke: com vigilance do Vihaan ficam desvirados na 2ª main) |
+| Vihaan (comandante, Dwarf Warlock) | o que o N da By Invitation Only e a escolha do Winnowing/Slaughter protegem; no Act ele morre em 98,6% (imposto `{2}` na volta) |
+| cor | W é a cor mais rara em fontes (14 terrenos): By Invitation Only, Winnowing, Slaughter e Mythos/Tragic pedem `{W}{W}` (Mythos ainda `{B}{R}` gastos) |
+
+### Medido no simulador (apoio; só o MEU lado)
+**O que o simulador não vê:** não há criaturas de oponente. Isso favorece qualquer variante no que ela faria no campo deles e desfavorece o Act no custo (a redução por criaturas deles é 📊): **a castabilidade das candidatas contra a do Act não é comparável**. Cor: o simulador só conta mana; cada ensaio confere se as fontes em campo cobrem os símbolos de cor da carta (otimista: ignora o mana já gasto no turno).
+**Ensaio a seco** (`orquestracao/sac_dry_run.py`; 10.000 partidas do modo padrão, 119.958 estados naturais com turno ≥ 3, sementes `3_000_000+i`): em cada estado copio o campo e conjuro cada variante pelo caminho real do simulador (custo, pagamento com animados, gatilhos). Harness `sac_harness.py` (as cartas **não** foram adicionadas ao `vihaan_goldfish_v1.py`). A linha da **Edict reproduz a rodada anterior**: dano − Act **+0,54 ±0,04** (antes +0,54 ±0,04) em todos os estados e **+6,94 ±0,16** com Mayhem Devil (antes +6,91 ±0,16: a diferença é o filtro de cor).
+
+**Todos os estados** (só o meu lado; "castável" = mana **e** cor; perdidas = minhas criaturas/fichas/animados; dano−Act = pareado nos estados em que as duas são conjuráveis):
+
+| variante | castável | custo | N por oponente | minhas perdidas | todos os meus permanentes que saem | dano − Act | Vihaan morre |
+|---|---|---|---|---|---|---|---|
+| **Blasphemous Act** (referência) | 32,8% | 3,7 | tudo (dano) | 6,34 | 4,85 | — | 98,6% |
+| **Blood Money** (referência) | 20,7% | 7,0 | tudo (destruir) | 5,81 | 0,27 (+4,74 Treasures) | +0,24 ±0,01 | 96,6% |
+| Blasphemous Edict | 37,2% | 4,7 | 13 | 4,73 | 3,84 | +0,54 ±0,04 | 92,7% |
+| **By Invitation Only, N=13** | 33,3% | 5,0 | 13 | 4,76 | 3,91 | +0,61 ±0,04 | 94,2% |
+| **By Invitation Only, N=motores** | 33,3% | 5,0 | 3,6 | **3,84** | 3,13 | +0,25 ±0,03 | **0,0%** |
+| By Invitation Only, N=fodder | 33,3% | 5,0 | 1,1 | 1,38 | 1,34 | −1,25 ±0,04 | 0,0% |
+| **Winnowing** (guardo o Vihaan) | 42,0% | **2,9** | — | 3,91 | 3,07 | +0,19 ±0,03 | **0,0%** |
+| Winnowing (guardo os animados) | 42,0% | 2,9 | — | 3,68 | 2,84 | −0,34 ±0,04 | 34,2% |
+| Slaughter the Strong | 48,5% | 3,0 | — | 3,02 | 2,41 | +0,03 ±0,03 | 0,0% |
+| Mythos of Snapdax (`WWBR`) | 37,4% | 4,0 | — | 3,87 | **6,00** | +1,71 ±0,09 | 0,0% |
+| Tragic Arrogance | 33,3% | 5,0 | — | 3,94 | 6,20 | +1,69 ±0,10 | 0,0% |
+| Barter in Blood | 46,8% | 4,0 | 2 | 2,01 | 1,86 | −1,42 ±0,05 | 34,9% |
+| Tergrid's Shadow | 36,5% | 5,0 | 2 | 2,13 | 1,98 | −1,32 ±0,05 | 28,4% |
+| Rankle's Prank (perder 4 + sacrificar 2) | 46,8% | 4,0 | 2 | 2,01 | 1,86 | **+2,58** ±0,05 | 34,9% |
+| Taste of Death | 28,1% | 6,0 | 3 | 2,98 | −0,85 | −0,69 ±0,05 | 40,6% |
+| Necrotic Hex | 20,8% | 7,0 | 6 | −2,14 | −2,62 | +0,22 ±0,05 | 73,2% |
+| Liliana, Dreadhorde General (−4) | 28,1% | 6,0 | 2 | 2,20 | 2,13 | −1,28 ±0,05 | 21,0% |
+| Zodiark, Umbral God (`BBBBB`) | 19,7% | 5,0 | 2,6 | 3,04 | 2,60 | −0,75 ±0,05 | 0,7% |
+| Meathook Massacre II (X máx.) | 7,9% | 8,1 | 2,0 | 2,96 | 3,61 | −1,86 ±0,14 | 0,0% |
+| Living Death | 36,5% | 5,0 | — | 4,63 | 3,70 | +0,84 ±0,04 | 96,9% |
+| Scrap Mastery | 35,1% | 5,0 | — | 0,66 | 3,93 (**−2,04 de estoque de Treasures**) | −0,45 ±0,09 | 0,0% |
+| All Is Dust | 20,8% | 7,0 | — | 5,35 | 6,04 | +0,72 ±0,05 | 96,6% |
+
+**Com Mayhem Devil em campo** (5.323 estados, 4,4%): dano − Act: Edict **+6,94 ±0,16**, By Invitation Only N=13 +7,11 ±0,17, **N=motores +5,10 ±0,27 (Vihaan e Mayhem sobrevivem 100%)**, N=fodder +0,50 ±0,26, **Winnowing +5,99 ±0,22 (Vihaan 0,0%; Mayhem morre 99,8%)**, Slaughter +5,53 ±0,23, Mythos +12,23 ±0,75 e Tragic +12,19 ±0,79 (perdendo 9,1 permanentes), Living Death +7,88, All Is Dust +9,17, Rankle's Prank +4,06, Barter +0,06 ±0,20. Blood Money +1,12 ±0,09.
+**2ª main com 4+ animados** (1.955 estados): Act 95,1% castável, custo 1,1, perde 15,4 criaturas, Vihaan 100% morre; **Winnowing (Vihaan)** 92,8%, custo 2,0, perde 13,85 (quase todos os animados), Vihaan 0,0%; **Winnowing (animados)** perde só 8,74 e **ganha** +2,30 de estoque de Treasures mas o Vihaan morre 100%; **By Invitation Only N=motores** N=10,4 por oponente, perde 14,74 (a mesa inteira menos os 3 motores), Vihaan 0,0%, dano − Act +2,31 ±0,45; Edict Vihaan 58,0%.
+**Minhas criaturas ≥ 6** (22.639 estados): Act 79,6%, Winnowing 73,1%, By Invitation Only [motores] 52,7%, Edict 57,9%, Blood Money 41,9%; Vihaan morre 100% (Act), 85,5% (Edict), 0,0% (N=motores, Winnowing-Vihaan, Slaughter).
+**Quanto as situações aparecem no goldfish:** Mayhem Devil 4,4%, Bats 2,3%, Dictate 1,6%, Plunderer 6,4%, Mahadi 8,5%; minhas criaturas média 3,6 (≥ 8: 10,2%; ≥ 13: 2,7%); **cartas de criatura no meu cemitério: média 0,13** (o Living Death quase não tem o que devolver: só em 2,1% dos estados há 3+).
+
+### Lado dos oponentes: aritmética, não medida (`resumos/paridade_oponente_padrao.txt`)
+Se cada um dos 3 oponentes tiver `c` criaturas, ele sacrifica `min(N, c)`. Criaturas dos 3 oponentes por criatura **minha** perdida (estados em que a variante é conjurável):
+
+| c por oponente | Edict | By Invitation Only [motores] | Barter | Taste of Death | Zodiark |
+|---|---|---|---|---|---|
+| 2 | 1,27 | 1,25 | 2,98 | 2,01 | 1,60 |
+| 4 | 2,54 | 1,93 | 2,98 | 3,02 | 2,16 |
+| 6 | 3,80 | 2,27 | 2,98 | 3,02 | 2,35 |
+| 10 | 6,34 | 2,55 | 2,98 | 3,02 | 2,46 |
+
+Leitura: a Edict (N=13) rende mais conforme o campo dos oponentes cresce (1,3 criatura deles por criatura minha com 2 por oponente, 6,3 com 10); o `N=motores` tira 1,9 a 2,6 por criatura minha e **guarda o Vihaan**; as de N fixo pequeno têm a melhor razão (~3:1) mas não são wipes. Com Mayhem Devil cada criatura que o oponente sacrifica vale +1 de dano; com Revel in Riches, +1 Treasure; com Dictate, mais sacrifícios.
+
+### Modo resiliência (estados sob pressão de interação de oponente; 119.990 estados; `resumos/dry_run_resiliencia_10000.txt`)
+Os estados são mais pobres (média 2,56 criaturas minhas, Vihaan em campo em 76,8%, Mayhem Devil em 2,5%, cartas de criatura no cemitério média 0,50) e **a ordem entre as variantes não muda**. Todos os estados: castável (mana + cor) Act 23,2%, Blood Money 16,9%, Edict 34,0%, By Invitation Only 30,2%, Winnowing 36,3%, Slaughter 45,1%, Mythos 34,0%; o Vihaan morre em Act 94,4%, Blood Money 84,3%, Edict 81,5%, By Invitation Only [N=13] 82,2% e em **0,0%** com N=motores, Winnowing (guardando o Vihaan) e Slaughter; minhas criaturas perdidas: Act 5,01, Edict 3,18, **By Invitation Only [N=motores] 2,38 (N=2,2)**, Winnowing 2,59, Slaughter 1,87. Com Mayhem Devil (3.029 estados), dano − Act: Edict +6,09 ±0,18, By Invitation Only N=13 +6,06 ±0,20, **N=motores +3,70 ±0,22**, N=fodder +0,55 ±0,21, Winnowing +4,64 ±0,19, Slaughter +4,21 ±0,19, Mythos +8,60 ±1,20. Na 2ª main com 4+ animados (1.070 estados): Act custo 1,3 e perde 11,93; Winnowing (Vihaan) custo 2,0 e perde 10,54 (Vihaan 0,0%); Winnowing (animados) perde 6,23 e ganha +0,41 de estoque (Vihaan morre em 100%); By Invitation Only [motores] N=6,7 por oponente, perde 11,12, Vihaan 0,0%.
+
+### O que muda na avaliação anterior (Edict × Act)
+1. **O número da Edict não muda** (+0,54 ±0,04 dano, Vihaan 92,7% × 98,6%, castável 37,2% × 32,8%).
+2. **A By Invitation Only é a versão da Edict que combina com o deck:** o regulador N deixa o Vihaan vivo e poupa 0,9 criaturas por conjuração (3,84 × 4,73) ao custo de 3,9pp de castabilidade (`{W}{W}`), sem o `{B}` alternativo, e de menos dano com Mayhem Devil (+5,10 × +6,94). **Mas a tabela da razão mostra que a Edict (N=13) rende mais conforme os campos dos oponentes crescem (1,3:1 com 2 criaturas por oponente, 6,3:1 com 10)**; o N regulável é a razão de existir da By Invitation Only.
+3. **Winnowing é a candidata que mais muda a conta**, mas é a mais dependente de suposição: o custo vem do convoke (aproximado) e o efeito nos oponentes depende dos **tipos de criatura** deles (se o campo do oponente é todo do mesmo tipo, ele **guarda tudo**: contra tribal/fichas iguais ela é fraca; contra mesa de tipos variados, **eu escolho** a criatura deles e quase tudo sai). Não medido.
+4. **Mythos/Tragic Arrogance não fazem sentido neste deck** (perco 6,0 a 6,2 permanentes em média, 17,7 a 18,6 na 2ª main com 4+ animados, e fico com 1 de cada tipo); Living Death, All Is Dust e as de N fixo pequeno também não são wipes para este deck (meu cemitério quase não tem criaturas; o Vihaan morre em 96–97%).
+5. **Spellbook: nada muda** (0 combos que somem e 0 novos em todas as 17 candidatas). **Bracket** não muda (nenhuma é Game Changer).
+6. **O que continua a favor do Act:** custo mínimo na mesa real (reduz por TODAS as criaturas, 📊), Boros Charm (indestrutível; nenhuma de sacrifício aceita), e é o que já está na lista. **O corte a comparar continua podendo ser o Blood Money** (7 mana, castável em 20,7%, devolve 4,74 Treasures): **medido aqui como referência, não avaliado como corte**.
+
+### O que eu faria (e o que depende de você)
+- **Sem trocar nada agora.** Se você quiser testar um wipe de sacrifício, as duas que mais se encaixam nos motores do deck são **By Invitation Only** (a Edict com regulador) e **Winnowing** (a mais barata e que guarda o Vihaan); **Slaughter the Strong** é a terceira (3 mana, Vihaan sempre fica), mas quem escolhe o que sobra do lado deles são eles (poder total ≤ 4 por jogador). As demais têm a razão contra o deck nas tabelas acima (Mythos/Tragic: perco 6 permanentes; Living Death/All Is Dust: o Vihaan morre em 96–97%; N fixo pequeno: não é wipe; Zodiark/Meathook: cor e custo).
+- O que decide e eu **não** vejo daqui: (i) o número de criaturas e de tipos distintos nos campos dos oponentes das suas mesas; (ii) quantos Humans/Warlocks/Assassins você controla quando conjurar o Winnowing; (iii) qual carta sai (Act, Blood Money ou outra): a comparação direta de corte **não** foi feita.
+
+### Validação (Regra #1/#8) — arquivada em `resultados-ab/2026-10-04-wipes-de-sacrificio/`
+- O simulador (`vihaan_goldfish_v1.py`, commit `a17049f`) **não foi alterado**: nenhuma carta foi adicionada; tudo está no harness. Bit-identidade e A/B não se aplicam (nenhuma chave nova).
+- **Testes dirigidos:** 38/38 (oráculo → parâmetros, equivalência do executor novo com o `edict_harness.py` em 3.594 estados naturais, By Invitation Only nas 3 políticas, Mythos/Tragic, Winnowing nas 2 políticas e custo com convoke, Slaughter, Living Death, Scrap Mastery, All Is Dust, Meathook, Taste/Hex/Liliana/Prank/Zodiark, cores, custo pago com animados, 0 violações de invariante em 1.500 estados × 20 variantes × 2 fases).
+- **Regressão do harness:** 20.000 partidas por modo, sementes `5_000_000+i`, ensaio das 22 variantes (Act, Blood Money e as 20): **0 exceções e 0 violações de invariante nos dois modos** (padrão: 239.900 estados; resiliência: 239.974 estados; invariantes: nenhum contador negativo, animados ≤ estoque, virados em [0, estoque], nenhuma carta nomeada duplicada, nenhuma carta no campo e no cemitério ao mesmo tempo, comandante consistente com `commander_in_play`; `resumos/regressao_dry_run_*_20000.txt`).
+- **Reprodutibilidade:** `bash orquestracao/verificar_reproducao.sh` e `--tudo`: `bash orquestracao/verificar_reproducao.sh` (5/5) e `--tudo` → **12/12 saídas byte a byte iguais** (`cmp`; `resumos/verificacao_reproducao.txt`): as 2 tabelas do ensaio a seco e as 2 da aritmética do oponente refeitas dos `.json.xz`, a enumeração, e a **re-execução** do smoke, dos 38 testes, dos efeitos unilaterais e dos 4 lotes do ensaio a seco (10.000 partidas × 2 modos + regressão de 20.000 × 2 modos). O simulador e os 13 arquivos anteriores do Vihaan **não foram tocados** (nenhuma chave nova), então não foram reverificados.
+
+### Escopo verificado e NÃO verificado (Regra #7)
+- **Verificado:** oráculo e rulings (ao vivo) de 63 cartas; busca ampla (348 cartas) classificada por script; Commander Spellbook antes/depois nas 17 candidatas com controle positivo; enumeração por script sobre as 94 cartas distintas; ensaio a seco do meu lado em 20 variantes + 2 referências nos dois modos; castabilidade por cor; aritmética do lado dos oponentes. Classes varridas, e só elas: conceito compartilhado ("destruir ≠ sacrificar", "tipo de criatura compartilhado", "animado = criatura até o fim do turno", "cor gasta"), gatilho compartilhado (sacrifício de qualquer jogador), política de jogada.
+- **Não verificado / aberto:** (1) o efeito de cada uma **no campo dos oponentes** (📊); (2) a frequência real de campos grandes, de tipos iguais, de indestrutível e de Mayhem Devil nas **suas mesas**; (3) o corte (Act × Blood Money × outra) e a comparação carta a carta com o que sai; (4) as 18+ cartas excluídas (motores de morte, alvo único, MV ≥ 8) **só têm a cláusula citada**, não rodaram; (5) o convoke do Winnowing e a escolha do que guardar são aproximações minhas; (6) a castabilidade por cor é otimista (ignora mana já gasto); (7) nenhuma carta foi adicionada ao `.py`; (8) o resto do `.py` não foi relido.
+- **Achado lateral aberto (NÃO corrigido; mexeria no simulador e obrigaria a refazer a verificação dos 13 arquivos anteriores):** `sacrifice_constructs` e `sacrifice_other_tokens` nunca decrementam os contadores de fichas "doentes" (só o total); como os prontos são `max(0, total − doentes)`, sacrificar uma ficha criada neste turno **antes do combate** tira um atacante pronto em vez de um doente. Medido com um espião (`orquestracao/espiao_fichas_doentes.py`, 3.000 partidas): só **12 partidas no padrão (0,4%) e 9 na resiliência (0,3%)** sacrificam Constructs doentes antes do combate, com 1 atacante a menos por evento; os demais casos (todos os de fichas genéricas) acontecem depois do combate, sem efeito, porque os doentes zeram no fim do turno. Efeito desprezível; candidato a uma rodada própria (chave + A/B). Foi isso que o invariante "doentes ≤ total" marcou 8 vezes com o Living Death na resiliência (ETB do Sephiroth devolvido sacrificando Constructs recém-criados): o invariante foi retirado do harness, e a justificativa está no docstring de `invariantes`.
+- **Erros do processo, registrados:** (a) a rodada anterior listou "outras 6" a partir de uma busca estreita (`t:sorcery`/`t:instant` + 3 frases) e de um corte meu que deixou de fora 6 cartas que a própria saída daquela busca mostrava, e eu a apresentei como a lista das magias de sacrifício válidas; (b) um caminho relativo no `--bruto` do ensaio (o carregador do simulador faz `chdir`) derrubou a execução de 10 minutos ao gravar o resultado: corrigido com `abspath`; (c) os lotes principais foram relançados três vezes (métricas e variantes acrescentadas, invariante revisto) e **só o último** está arquivado; 
 
 
 ---
@@ -81,8 +198,8 @@ Ao montar a tabela acima, o oráculo ao vivo do Mirkwood Bats (*"create or **sac
 ### O que eu faria (e o que depende de você)
 1. **Manter o Act** como wipe barato e unilateral com Boros Charm (indestrutível), o que **a Edict não faz**.
 2. A Edict **ganha** se (i) as suas mesas têm indestrutível/proteção/prevenção de dano de forma recorrente (o Act e o Blood Money, os dois wipes atuais, **falham** contra isso), (ii) o Mayhem Devil costuma estar em campo, (iii) você chega a 14+ criaturas (animados + fichas) e quer guardar Vihaan/Mahadi. **Perde** em mesas go-wide (>13 criaturas por oponente) e nas faixas de 8–12 criaturas no campo (o Act custa `{R}`–`{3}`, a Edict 5).
-3. Se o objetivo é **diversificar contra indestrutível**, o corte a comparar não é o Act e sim o **Blood Money** (que também é "destroy"), mas ele dá um Treasure por criatura **não-ficha destruída** (as dos oponentes também) e alimenta o Revel in Riches: **não avaliei** esse corte.
-4. Outras magias de sacrifício em R/W/B legais em Commander, **só listadas, não avaliadas** (`resumos/scryfall_buscas.txt`): By Invitation Only (escolhe o número de 0 a 13), Tragic Arrogance, Tergrid's Shadow, Barter in Blood, Taste of Death, Necrotic Hex.
+3. Se o objetivo é **diversificar contra indestrutível**, o corte a comparar não é o Act e sim o **Blood Money** (que também é "destroy"), mas ele dá um Treasure por criatura **não-ficha destruída** (as dos oponentes também) e alimenta o Revel in Riches: **não avaliei** esse corte. **[Atualização de 2026-10-04: o Blood Money passou a ser medido como referência nos mesmos estados (castável em 20,7%, custo 7, Vihaan morre em 96,6%, devolve 4,74 Treasures); o corte em si continua não avaliado.]**
+4. Outras magias de sacrifício em R/W/B legais em Commander, **só listadas, não avaliadas** (`resumos/scryfall_buscas.txt`): By Invitation Only (escolhe o número de 0 a 13), Tragic Arrogance, Tergrid's Shadow, Barter in Blood, Taste of Death, Necrotic Hex. **[Respondido em 2026-10-04, depois desta seção: ver "Avaliação: algum wipe de sacrifício válido no deck muda os números e a avaliação da Edict?" no topo deste arquivo. A busca desta rodada era estreita e a lista de 6 nomes era um corte meu: a busca ampla achou 348 cartas.]**
 
 ### Validação (Regra #1) — arquivada em `resultados-ab/2026-10-04-blasphemous-edict/`
 - **Bit-identidade da chave do Bats desligada × `b30ef1f`:** 20.000/20.000 partidas idênticas no padrão e 20.000/20.000 na resiliência.
