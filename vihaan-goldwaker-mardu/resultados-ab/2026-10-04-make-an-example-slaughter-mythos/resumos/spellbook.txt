@@ -1,0 +1,63 @@
+base (lista atual)                                   n=99 incluidos=4 quase=98 id=RWB
+-Blasphemous Act (sem entrar nada)                   n=98 incluidos=4 quase=94 id=RWB
+-Blood Money (sem entrar nada)                       n=98 incluidos=4 quase=98 id=RWB
+CONTROLE -Smothering Tithe                           n=98 incluidos=1 quase=96 id=RWB
+CONTROLE -Ashnod's Altar                             n=98 incluidos=3 quase=67 id=RWB
++Make an Example (sem cortar)                        n=100 incluidos=4 quase=98 id=RWB
+-Blasphemous Act +Make an Example                    n=99 incluidos=4 quase=94 id=RWB
+-Blood Money +Make an Example                        n=99 incluidos=4 quase=98 id=RWB
++Slaughter the Strong (sem cortar)                   n=100 incluidos=4 quase=98 id=RWB
+-Blasphemous Act +Slaughter the Strong               n=99 incluidos=4 quase=94 id=RWB
+-Blood Money +Slaughter the Strong                   n=99 incluidos=4 quase=98 id=RWB
++Mythos of Snapdax (sem cortar)                      n=100 incluidos=4 quase=98 id=RWB
+-Blasphemous Act +Mythos of Snapdax                  n=99 incluidos=4 quase=94 id=RWB
+-Blood Money +Mythos of Snapdax                      n=99 incluidos=4 quase=98 id=RWB
+
+Combos INCLUIDOS na base (4):
+  - Anointed Procession + Gleaming Splendor + Smothering Tithe -> ['Infinite card draw for any number of players', 'Infinite draw triggers for any number of players', 'Near-infinite Treasure tokens']
+  - Ashnod's Altar + Mahadi, Emporium Master + Revel in Riches -> ['Win the game at the beginning of your next upkeep']
+  - Gleaming Splendor + Goldspan Dragon + Smothering Tithe -> ['Infinite card draw for any number of players', 'Infinite draw triggers for any number of players', 'Near-infinite Treasure tokens']
+  - Gleaming Splendor + Smothering Tithe + Xorn -> ['Infinite card draw for any number of players', 'Infinite draw triggers for any number of players', 'Near-infinite Treasure tokens']
+
+[-Blasphemous Act (sem entrar nada)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 ['Blasphemous Act + Expedited Inheritance', 'Blasphemous Act + Fall of Cair Andros', 'Blasphemous Act + Repercussion', "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer"] | 'quase' novos: 0
+
+[-Blood Money (sem entrar nada)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 [] | 'quase' novos: 0
+
+[CONTROLE -Smothering Tithe] combos que SUMIRAM: ['Anointed Procession + Gleaming Splendor + Smothering Tithe', 'Gleaming Splendor + Goldspan Dragon + Smothering Tithe', 'Gleaming Splendor + Smothering Tithe + Xorn'] | NOVOS: []
+   'quase' que sumiram: 5 ['Elspeth, Storm Slayer + Gleaming Splendor + Smothering Tithe', 'Exalted Sunborn + Gleaming Splendor + Smothering Tithe', 'Gleaming Splendor + Kaya, Geist Hunter + Smothering Tithe', 'Gleaming Splendor + Mondrak, Glory Dominus + Smothering Tithe', 'Gleaming Splendor + Smothering Tithe + Zirda, the Dawnwaker'] | 'quase' novos: 3
+      quase novo + Anointed Procession + Gleaming Splendor + Smothering Tithe
+      quase novo + Gleaming Splendor + Goldspan Dragon + Smothering Tithe
+      quase novo + Gleaming Splendor + Smothering Tithe + Xorn
+
+[CONTROLE -Ashnod's Altar] combos que SUMIRAM: ["Ashnod's Altar + Mahadi, Emporium Master + Revel in Riches"] | NOVOS: []
+   'quase' que sumiram: 32 ["Academy Manufactor + Ashnod's Altar + Cauldron Familiar + Pitiless Plunderer", "Anointed Procession + Ashnod's Altar + Pitiless Plunderer + Weirding Shaman", "Anointed Procession + Ashnod's Altar + Sorcerer's Broom", "Anointed Procession + Ashnod's Altar + Thopter Squadron", "Ashnod's Altar + Bloodsoaked Champion + Life Insurance + Zulaport Cutthroat", "Ashnod's Altar + Bloodsoaked Champion + Pitiless Plunderer", "Ashnod's Altar + Cult Conscript + Pitiless Plunderer", "Ashnod's Altar + Dictate of Erebos + Overseer of the Damned", "Ashnod's Altar + Draconic Visitor + Pitiless Plunderer", "Ashnod's Altar + Dualcaster Mage + Sevinne's Reclamation", "Ashnod's Altar + Eirdu, Carrier of Dawn // Isilu, Carrier of Twilight + Marionette Master", "Ashnod's Altar + Eldrazi Displacer + Marionette Master", "Ashnod's Altar + Enduring Renewal", "Ashnod's Altar + Gauntlets of Light + Jan Jansen, Chaos Crafter + Pitiless Plunderer", "Ashnod's Altar + Gravecrawler + Pitiless Plunderer", "Ashnod's Altar + Haunt of the Dead Marshes + Pitiless Plunderer", "Ashnod's Altar + Hildibrand Manderville // Gentleman's Rise + Pitiless Plunderer", "Ashnod's Altar + Jan Jansen, Chaos Crafter + Pitiless Plunderer + Staff of Domination", "Ashnod's Altar + Jan Jansen, Chaos Crafter + Pitiless Plunderer + Sword of the Paruns", "Ashnod's Altar + Jan Jansen, Chaos Crafter + Thornbite Staff", "Ashnod's Altar + Krenko, Baron of Tin Street + Pitiless Plunderer", "Ashnod's Altar + Marionette Master + Nim Deathmantle", "Ashnod's Altar + Nadier's Nightblade + Plague of Vermin", "Ashnod's Altar + Oathkeeper, Takeno's Daisho", "Ashnod's Altar + Oathsworn Vampire + Pitiless Plunderer + Zulaport Cutthroat", "Ashnod's Altar + Ozox, the Clattering King + Pitiless Plunderer", "Ashnod's Altar + Pashalik Mons + Pitiless Plunderer", "Ashnod's Altar + Pitiless Plunderer + Reassembling Skeleton", "Ashnod's Altar + Pitiless Plunderer + Stridehangar Automaton", "Ashnod's Altar + Pitiless Plunderer + Summoning Station", "Ashnod's Altar + Pitiless Plunderer + Tenacious Dead", "Ashnod's Altar + Spawnsire of Ulamog"] | 'quase' novos: 1
+      quase novo + Ashnod's Altar + Mahadi, Emporium Master + Revel in Riches
+
+[+Make an Example (sem cortar)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 [] | 'quase' novos: 0
+
+[-Blasphemous Act +Make an Example] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 ['Blasphemous Act + Expedited Inheritance', 'Blasphemous Act + Fall of Cair Andros', 'Blasphemous Act + Repercussion', "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer"] | 'quase' novos: 0
+
+[-Blood Money +Make an Example] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 [] | 'quase' novos: 0
+
+[+Slaughter the Strong (sem cortar)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 [] | 'quase' novos: 0
+
+[-Blasphemous Act +Slaughter the Strong] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 ['Blasphemous Act + Expedited Inheritance', 'Blasphemous Act + Fall of Cair Andros', 'Blasphemous Act + Repercussion', "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer"] | 'quase' novos: 0
+
+[-Blood Money +Slaughter the Strong] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 [] | 'quase' novos: 0
+
+[+Mythos of Snapdax (sem cortar)] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 [] | 'quase' novos: 0
+
+[-Blasphemous Act +Mythos of Snapdax] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 4 ['Blasphemous Act + Expedited Inheritance', 'Blasphemous Act + Fall of Cair Andros', 'Blasphemous Act + Repercussion', "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer"] | 'quase' novos: 0
+
+[-Blood Money +Mythos of Snapdax] combos que SUMIRAM: [] | NOVOS: []
+   'quase' que sumiram: 0 [] | 'quase' novos: 0

@@ -1,5 +1,19 @@
 # Checklist cláusula-a-cláusula — Vihaan, Goldwaker
 
+## Make an Example, Slaughter the Strong e Mythos of Snapdax (as 3 escolhidas pelo usuário) — oráculo, rulings e cláusulas — 2026-10-04
+
+Origem: mensagem do usuário: *"Gostei de Make an Example, Slaughter the Strong, Mythos of Snapdax. Winnowing não é útil contra decks tribais … ou decks de artefatos…"*. Oráculo e rulings **ao vivo** (`resultados-ab/2026-10-04-make-an-example-slaughter-mythos/dados/oraculo_rulings_ao_vivo.json`). Nada foi trocado.
+
+| Cláusula do oráculo | Ruling | Modelagem |
+|---|---|---|
+| **Make an Example**, *Each opponent separates the creatures they control into two piles. For each opponent, you choose one of their piles. Each opponent sacrifices the creatures in their chosen pile.* | a pilha é a que eu escolho (2022-04-29) | 📊 só os oponentes sacrificam: **não está no harness**; só castabilidade (48,9%, `efeitos_unilaterais.txt`); Mayhem Devil/Revel/Sephiroth/Life Insurance/Mari reagem às criaturas **deles** (raciocínio) |
+| **Slaughter the Strong**, *Each player chooses any number of creatures they control with total power 4 or less, then sacrifices all other creatures they control.* | escolha em ordem de turno; sacrifício simultâneo (2020-11-10) | ✅ harness (rodada `wipes-de-sacrificio`): guardo Vihaan (poder 3) +1; animado é 3/3; 📊 o que eles guardam; por fase em `estrato_fase_*.txt` |
+| **Mythos of Snapdax**, *If {B}{R} was spent to cast this spell, you choose the permanents for each player instead.* | confere as cores GASTAS; o mesmo objeto vale para vários tipos (2020-04-17) | ✅ harness: guardo Vihaan, 1 artefato, 1 encantamento; pips `W W B R`; por fase em `estrato_fase_*.txt`; 📊 o lado deles; linhas com Teferi's Protection e "gastar Treasures antes" são raciocínio |
+| **Winnowing**, *share a creature type* (descartada pelo usuário) | — | tipo de **criatura** ≠ tipo de **carta** (artifact); o descarte contra tribal/fichas do mesmo tipo se sustenta |
+
+**Regra #4:** Spellbook antes/depois nos 2 cortes (Act, Blood Money) com controle positivo: 0 combos mudam; cortar o Blood Money tira 0 "quase", cortar o Act tira 4 (peças fora da lista). **Regra #5:** a Mythos tinha sido descartada só pelo meu lado (perm- 6,0); corrigido: por fase cai para 4,43 em 1ª main (10,79 na 2ª). **Validação:** `verificar_reproducao.sh` 3/3; simulador não alterado.
+**Classes da taxonomia da Regra #1 varridas (e só elas):** conceito compartilhado (fase do turno, "animado = criatura até o fim do turno"), gatilho compartilhado (sacrifício de qualquer jogador; morte de criatura de oponente). **Não varridas:** as demais classes e cartas do `.py`.
+
 ## Wipes de sacrifício válidos no deck (resposta a "algum wipe de sacrifício válido no deck muda esses números e avaliação?") — oráculo, rulings e cláusulas — 2026-10-04
 
 Origem: pergunta do usuário: *"Algum wipe de sacrifício valido no deck muda esses números e avaliação?"* (depois da avaliação Blasphemous Act × Blasphemous Edict, em que eu só tinha **listado** 6 outras cartas). **Nada foi trocado na lista.** Oráculo e **rulings de 63 cartas lidos ao vivo no Scryfall em 2026-10-04, antes de qualquer conclusão** (Regra #3; `resultados-ab/2026-10-04-wipes-de-sacrificio/dados/oraculo_candidatas_rulings.json`, 248 rulings). A busca da rodada anterior só procurava `t:sorcery`/`t:instant` com 3 frases fixas (não achou Mythos of Snapdax, Meathook Massacre II, Zodiark, Liliana Dreadhorde General nem as unilaterais) e a minha lista de 6 nomes deixou de fora Slaughter the Strong, Winnowing, Living Death, Scrap Mastery, All Is Dust e Rankle's Prank, que a saída daquela busca já listava; esta rodada fez uma busca ampla (10 formulações, R/W/B, legal em Commander, `dados/busca_ampla_cru.json.xz`): **348 cartas** distintas, classificadas por script (141 "em massa", 164 "edict de 1", 20 só de terreno, 23 outras); a lista curta abaixo é o corte manual, com a cláusula do oráculo de cada exclusão.

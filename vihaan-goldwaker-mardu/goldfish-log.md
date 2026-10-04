@@ -1,5 +1,7 @@
 # Goldfish Log — Vihaan, Goldwaker
 
+> **Dados brutos e como reproduzir as tabelas da seção Make an Example, Slaughter the Strong e Mythos of Snapdax: as 3 que o usuário escolheu (2026-10-04):** [`resultados-ab/2026-10-04-make-an-example-slaughter-mythos/LEIAME.md`](resultados-ab/2026-10-04-make-an-example-slaughter-mythos/LEIAME.md) — Commander Spellbook cru, oráculo e rulings ao vivo, tabelas por fase, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
 > **Dados brutos e como reproduzir as tabelas da seção Avaliação: algum wipe de sacrifício válido no deck muda os números e a avaliação da Edict? (2026-10-04):** [`resultados-ab/2026-10-04-wipes-de-sacrificio/LEIAME.md`](resultados-ab/2026-10-04-wipes-de-sacrificio/LEIAME.md) — buscas e respostas cruas do Scryfall e do Commander Spellbook, brutos `.json.xz` por estado, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
 > **Dados brutos e como reproduzir as tabelas da seção Avaliação: trocar Blasphemous Act por Blasphemous Edict (2026-10-04):** [`resultados-ab/2026-10-04-blasphemous-edict/LEIAME.md`](resultados-ab/2026-10-04-blasphemous-edict/LEIAME.md) — respostas cruas do Scryfall e do Commander Spellbook, brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
@@ -27,6 +29,63 @@
 > **Dados brutos e como reproduzir as tabelas da seção Inevitable Defeat (2026-10-03):** [`resultados-ab/2026-10-03-inevitable-defeat/LEIAME.md`](resultados-ab/2026-10-03-inevitable-defeat/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
 > **Dados brutos e como reproduzir as tabelas da seção Kingpin, Wilson Fisk (2026-10-03):** [`resultados-ab/2026-10-03-kingpin/LEIAME.md`](resultados-ab/2026-10-03-kingpin/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
+
+---
+
+## Make an Example, Slaughter the Strong e Mythos of Snapdax: as 3 que o usuário escolheu — 2026-10-04
+
+**Mensagem do usuário:** *"Gostei de Make an Example, Slaughter the Strong, Mythos of Snapdax. Winnowing não é útil contra decks tribais, onde 90% das criaturas compartilham o mesmo tipo, ou decks de artefatos onde todas as criaturas são criaturas artefatos!"*
+**Nada foi trocado na lista** (decisão do usuário) e o simulador não foi alterado. Esta seção só **acrescenta** o que faltava: o Commander Spellbook das 3 com os dois cortes possíveis e a separação por fase do turno.
+
+**Winnowing (descartada pelo usuário):** o caso tribal está certo e já constava ("se o campo do oponente é todo do mesmo tipo, ele guarda tudo"). Sobre artefatos: o texto é *"don't share a **creature type**"* e *artifact* é **tipo de carta**, não tipo de criatura; criatura artefato só poupa a outra se compartilhar Thopter/Servo/Construct/Golem etc. Na prática, deck de artefatos costuma ter fichas de um tipo só, então o resultado é parecido e o descarte se sustenta.
+
+**Correção minha à Mythos:** eu a tinha descartado ("não faz sentido neste deck") só porque ela me tira 6,0 permanentes em média. Isso mede **só o meu lado**; o valor dela está no lado dos oponentes (eu escolho o que cada um guarda), que o simulador não vê: é o "sinal de alerta" da Regra #5. Reavaliada abaixo; o que ela me custa é real, mas pode ser mitigado.
+
+### Oráculo (ao vivo, 2026-10-04; `dados/oraculo_rulings_ao_vivo.json`)
+- **Make an Example** `{3}{B}` Sorcery: *Each opponent separates the creatures they control into two piles. For each opponent, you choose one of their piles. Each opponent sacrifices the creatures in their chosen pile. (Piles can be empty.)* Ruling (2022-04-29): "their chosen pile" é a pilha que **eu** escolho.
+- **Slaughter the Strong** `{1}{W}{W}` Sorcery: *Each player chooses any number of creatures they control with total power 4 or less, then sacrifices all other creatures they control.* Rulings (2020-11-10): cada jogador escolhe em ordem de turno, sabendo as escolhas anteriores; tudo é sacrificado ao mesmo tempo.
+- **Mythos of Snapdax** `{2}{W}{W}` Sorcery (identidade B/R/W): *Each player chooses an artifact, a creature, an enchantment, and a planeswalker from among the nonland permanents they control, then sacrifices the rest. If {B}{R} was spent to cast this spell, you choose the permanents for each player instead.* Rulings (2020-04-17): o mesmo objeto pode valer para vários tipos; confere as cores **gastas**; lands com outro tipo não podem ser escolhidas nem são sacrificadas.
+
+### Commander Spellbook (14 consultas; `resumos/spellbook.txt`, resposta crua em `dados/spellbook_cru.json.xz`)
+Base = **4 combos** (Ashnod's Altar + Mahadi + Revel in Riches; Anointed Procession / Goldspan Dragon / Xorn + Gleaming Splendor + Smothering Tithe). Para cada uma das 3 cartas, **sem cortar, trocando o Act e trocando o Blood Money: 0 combos que somem, 0 novos, 0 "quase" novos.** Cortar o Act (sem entrar nada) tira 4 "quase" (Repercussion, Toralf, Fall of Cair Andros, Expedited Inheritance: peças fora da lista); **cortar o Blood Money tira 0 combos e 0 "quase"**. Controles positivos: cortar Smothering Tithe tira 3 combos, Ashnod's Altar tira 1. O Spellbook **não distingue** os dois cortes; o Bracket não muda (nenhuma das 3 é Game Changer).
+
+### Motores do deck contra as 3 (enumeração por script da rodada anterior: `2026-10-04-wipes-de-sacrificio/resumos/enumeracao.txt`)
+Quando um **oponente** perde criaturas, reagem: **Mayhem Devil** (só se for sacrifício: as 3 são, 1 de dano por permanente de qualquer jogador), **Revel in Riches** (*creature an opponent controls dies → Treasure*), **Sephiroth** (*another creature dies → drain 1*), **Life Insurance** (*nontoken creature dies → Treasure, −1 de vida meu*) e **Mari** (*opponent creature dies → exilar com hit counter*). Zulaport, Plunderer, Agent e Dictate só olham as **minhas** mortes. A Make an Example e a Slaughter (do lado deles) alimentam esses 4–5; a Mythos também, e ainda tira artefatos e encantamentos deles.
+
+### O que cada uma faz, pelo oráculo e pelos motores (raciocínio; o lado dos oponentes é 📊)
+- **Make an Example:** **não custa nada do meu campo** (o princípio "wipe só quando causa mais perda a eles que a mim" já vem de fábrica, sem precisar segurar). Cada oponente divide as criaturas em duas pilhas e eu escolho uma: para se proteger ele equilibra o valor das pilhas, então perde **pelo menos metade do valor** do campo dele, pela minha escolha. Com 1 criatura, perde ela. Ganha de Edict/Act contra indestrutível/proteção (é sacrifício). Fraca contra campo vazio ou de 1 criatura sem valor. Castável em 48,9% dos estados (`{B}`, 4 mana).
+- **Slaughter the Strong:** **não depende de tipo de criatura** (nem de artefato): mata tudo que sobra acima de 4 de poder total por jogador, então funciona contra tribal, fichas e deck de artefatos, onde o Winnowing falha. Eles escolhem o que guardam (até 4 de poder). Do meu lado guardo o Vihaan (poder 3) +1 de poder; os animados são 3/3, então só cabe 1 deles sem o Vihaan. **Em 1ª main (antes de animar) os Treasures não são criaturas e não morrem.**
+- **Mythos of Snapdax:** com B e R gastos eu escolho o que **cada jogador** guarda: cada oponente fica com 1 artefato, 1 criatura, 1 encantamento e 1 planeswalker (os mais fracos, pela minha escolha) e perde **todo o resto não-terreno**, inclusive rocks, encantamentos e fichas. 4 mana fixos, ignora indestrutível. Linhas que reduzem o meu custo: (i) **Teferi's Protection antes** (phase out dos meus permanentes: eles não existem, nada meu é sacrificado; 3 + 4 = 7 mana, 2 cartas); (ii) conjurar **em 1ª main** (antes dos animados) e gastar antes o estoque de Treasures em outras mágicas; (iii) com **Mayhem Devil** cada permanente sacrificada vale 1 de dano (os dos 3 oponentes também).
+
+### Medido (apoio; só o MEU lado; 10.000 partidas, mesmos 119.958 estados da rodada anterior) — por FASE
+`resumos/estrato_fase_padrao.txt`. "castável" = mana **e** cor; perdidas = minhas criaturas/fichas/animados; perm- = **todos** os meus permanentes não-terreno que saem.
+
+| fase | carta | castável | custo | minhas perdidas | perm- | Vihaan morre |
+|---|---|---|---|---|---|---|
+| **1ª main** (59.979 estados) | Blasphemous Act | 42,3% | 4,6 | 4,72 | 3,83 | 98,1% |
+| | Blood Money | 33,1% | 7,0 | 4,71 | −0,15 | 96,3% |
+| | **Slaughter the Strong** | **70,2%** | 3,0 | **1,97** | 1,55 | **0,0%** |
+| | **Mythos of Snapdax** | 56,3% | 4,0 | 2,75 | 4,43 | **0,0%** |
+| **2ª main** (59.979 estados) | Blasphemous Act | 23,2% | 2,1 | 9,30 | 6,70 | 99,4% |
+| | Blood Money | 8,3% | 7,0 | 10,24 | 1,94 | 97,8% |
+| | Slaughter the Strong | 26,8% | 3,0 | 5,78 | 4,68 | 0,0% |
+| | Mythos of Snapdax | 18,5% | 4,0 | 7,30 | **10,79** | 0,0% |
+
+Leitura: **a fase muda tudo para as duas de custo baixo.** Antes do combate a Slaughter me custa 1,97 criaturas e a Mythos 2,75 criaturas / 4,43 permanentes, contra 10,79 permanentes da Mythos depois que os animados existem. Com Mayhem Devil em campo (2.134 estados de 1ª main): Slaughter castável em 89,8%, dano proxy 6,07; Mythos 86,1%, dano proxy 10,98 (só o meu lado). No modo resiliência (`estrato_fase_resiliencia.txt`) a ordem é a mesma: 1ª main Slaughter castável em 68,3% e perdendo 1,13; Mythos 53,8% e 1,59.
+
+### O que isso muda
+1. **A Mythos deixa de ser "não vale"**: conjurada em 1ª main (ou depois de gastar os Treasures, ou atrás de Teferi's Protection) o custo para mim cai de 10,8 para 4,4 permanentes e o efeito nos oponentes é o maior da lista; o que continua verdadeiro é que **na 2ª main, com animados, ela é cara** (10,79) e que o efeito deles não foi medido.
+2. **A Slaughter é a mais barata e a mais independente do campo deles** (tipo, artefato, tribal). O limite: eles escolhem o que guardam (≤ 4 de poder).
+3. **A Make an Example é a única que cumpre sozinha o princípio do usuário** (nenhuma perda minha), mas só tira do oponente a pilha que eu escolho (≥ metade do valor, não tudo).
+4. **O corte continua em aberto**: Act e Blood Money medidos como referência (Act: custo mínimo na mesa real e Boros Charm; Blood Money: 7 mana, castável em 20,7% dos estados, devolve 4,74 Treasures). O Spellbook não decide.
+
+### Validação (Regra #1/#8) — arquivada em `resultados-ab/2026-10-04-make-an-example-slaughter-mythos/`
+Simulador não alterado (bit-identidade e A/B não se aplicam); nenhuma simulação nova (as tabelas por fase vêm do bruto da rodada `2026-10-04-wipes-de-sacrificio`); `verificar_reproducao.sh` **3/3** `cmp`; controles positivos do Spellbook funcionaram.
+
+### Escopo verificado e NÃO verificado (Regra #7)
+- **Verificado:** oráculo e rulings das 3 (ao vivo); Spellbook antes/depois nos 2 cortes com controle; tabelas por fase refeitas do bruto. Classes varridas, e só elas: conceito compartilhado ("criatura = animado até o fim do turno", fase do turno), gatilho compartilhado (sacrifício de qualquer jogador; morte de criatura de oponente).
+- **Não verificado / aberto:** (1) o efeito das 3 no campo dos oponentes (📊); (2) a comparação carta a carta com o que sai (Act ou Blood Money): decisão do usuário; (3) a Make an Example não está no harness (só castabilidade, 48,9%); (4) as linhas com Teferi's Protection e "gastar os Treasures antes" são raciocínio, não medidas; (5) a frequência real de campos grandes e de indestrutível nas suas mesas.
 
 
 ---

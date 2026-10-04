@@ -1,0 +1,37 @@
+Bruto: raw_dry_run_resiliencia_10000.json.xz | modo=resiliencia N=10000 | 119990 estados | so' o MEU lado; castavel = mana E cor; medias por estado onde a carta e' castavel
+
+### 1a main (antes do combate; sem Treasures animados): 59995 estados
+carta                               castavel  custo  perdidas   perm-  estoqueD    dreno  Vihaan†
+Blasphemous Act                        31.1%    5.4      3.67    3.50     +0.11     0.92    92.0%
+Blood Money                            28.2%    7.0      3.01    0.34     +2.62     0.82    81.5%
+Slaughter the Strong                   68.3%    3.0      1.13    1.00     +0.12     0.35     0.0%
+Mythos of Snapdax [B+R pagos]          53.8%    4.0      1.59    2.72     -0.58     0.70     0.0%
+By Invitation Only [N=motores]         50.8%    5.0      1.70    1.59     +0.08     0.52     0.0%
+Blasphemous Edict                      57.6%    5.0      2.51    2.31     +0.17     0.67    79.9%
+
+### 2a main (depois do combate; com animados vivos): 59995 estados
+carta                               castavel  custo  perdidas   perm-  estoqueD    dreno  Vihaan†
+Blasphemous Act                        15.3%    2.6      7.71    6.70     -0.75     3.25    99.4%
+Blood Money                             5.6%    7.0      7.75    2.78     +2.81     3.73    98.6%
+Slaughter the Strong                   21.8%    3.0      4.18    4.12     -1.11     2.10     0.0%
+Mythos of Snapdax [B+R pagos]          14.3%    4.0      5.37    8.15     -2.68     3.75     0.0%
+By Invitation Only [N=motores]          9.7%    5.0      5.90    5.90     -1.71     3.30     0.0%
+Blasphemous Edict                      10.4%    4.5      6.89    6.57     -1.40     3.80    90.2%
+
+### 1a main, com Mayhem Devil em campo: 1054 estados
+carta                               castavel  custo  perdidas   perm-  estoqueD    dreno  Vihaan†
+Blasphemous Act                        82.2%    4.3      4.83    4.25     +0.56     1.19    98.7%
+Blood Money                            61.4%    7.0      4.82   -0.13     +4.91     1.57    98.5%
+Slaughter the Strong                   86.0%    3.0      3.10    2.70     +0.39     3.82     0.0%
+Mythos of Snapdax [B+R pagos]          81.3%    4.0      3.57    5.10     -0.88     6.69     0.0%
+By Invitation Only [N=motores]         81.2%    5.0      2.61    2.31     +0.28     3.34     0.0%
+Blasphemous Edict                      89.4%    5.0      4.56    4.04     +0.50     5.63    96.5%
+
+### 2a main, com Mayhem Devil em campo: 1975 estados
+carta                               castavel  custo  perdidas   perm-  estoqueD    dreno  Vihaan†
+Blasphemous Act                        37.8%    2.2      8.48    7.10     -0.23     4.67    99.9%
+Blood Money                            11.9%    7.0      8.92    1.80     +4.94     7.31    99.6%
+Slaughter the Strong                   39.3%    3.0      5.73    5.23     -0.74     8.71     0.0%
+Mythos of Snapdax [B+R pagos]          28.6%    4.0      6.78   10.55     -3.67    15.69     0.0%
+By Invitation Only [N=motores]         20.5%    5.0      6.24    5.83     -1.37    10.40     0.0%
+Blasphemous Edict                      23.3%    4.1      8.38    7.43     -0.82    13.26    91.7%
