@@ -229,6 +229,138 @@ def test_swap_none_is_bit_identical():
     assert a.drain_damage_total == b.drain_damage_total and a.hand == b.hand
 
 
+# ---------------------------------------------------------------------------
+# 12a rodada (2026-10-04): Mythos of Snapdax no lugar do Blood Money.
+# Oraculo (Scryfall, 2026-10-04): "Each player chooses an artifact, a creature, an enchantment, and a planeswalker from among the nonland permanents they control,
+# then sacrifices the rest. If {B}{R} was spent to cast this spell, you choose the permanents for each player instead."
+# Rulings 2020-04-17: o mesmo objeto pode valer por varios tipos; confere as cores GASTAS; terrenos com outro tipo nao podem ser escolhidos nem sao sacrificados; simultaneo.
+# ---------------------------------------------------------------------------
+MYTHOS = "Mythos of Snapdax"
+
+
+def test_mythos_keeps_engine_creature_best_artifact_and_enchantment():
+    s = fresh()
+    vg.create_treasures(s, 2)   # antes do Anointed Procession entrar (ele dobraria a criacao de fichas)
+    put(s, "Vihaan, Goldwaker", "Mahadi, Emporium Master", "Sol Ring", "Arcane Signet", "Anointed Procession", "Revel in Riches", "Plains", "Swamp")
+    s.commander_in_play = True
+    sel = vg._mythos_selection(s)
+    sobrevive = {"Vihaan, Goldwaker", "Sol Ring", "Anointed Procession"}
+    assert set(sel["cre"]) | set(sel["outros"]) == {"Mahadi, Emporium Master", "Arcane Signet", "Revel in Riches"}, sel
+    assert sel["inan"] == 2 and sel["anim"] == 0 and sobrevive.isdisjoint(sel["cre"] + sel["outros"])
+    n = vg._mass_sacrifice(s, sel)
+    assert n == 3 + 2
+    assert set(s.battlefield) == sobrevive | {"Plains", "Swamp"}, s.battlefield   # terrenos nao sao permanentes escolhiveis nem sao sacrificados
+
+
+def test_mythos_sacrifice_is_not_destroy_mayhem_devil_triggers_for_each():
+    # Mayhem Devil: "Whenever a player sacrifices a permanent, Mayhem Devil deals 1 damage to any target": 1 por permanente sacrificada, ele proprio incluido (mortes simultaneas)
+    s = fresh()
+    vg.create_treasures(s, 2)   # antes do Anointed Procession entrar (ele dobraria a criacao de fichas)
+    put(s, "Vihaan, Goldwaker", "Mayhem Devil", "Sol Ring", "Anointed Procession")
+    s.commander_in_play = True
+    s.clues, s.foods, s.constructs = 1, 1, 1
+    d0 = s.drain_damage_total
+    n = vg._mass_sacrifice(s, vg._mythos_selection(s))
+    # sacrificados: Mayhem Devil + 2 Treasures + 1 Clue + 1 Food + 1 Construct = 6 (o Construct e' criatura E artefato: o Sol Ring fica como artefato, o Vihaan como criatura)
+    assert n == 6, n
+    assert s.drain_damage_total - d0 == 6
+    assert "Mayhem Devil" not in s.battlefield and "Mayhem Devil" in s.graveyard
+    assert s.treasures == 0 and s.clues == 0 and s.foods == 0 and s.constructs == 0
+
+
+def test_mythos_spell_in_flight_is_not_a_permanent():
+    # cascade poe a magia no campo antes de resolver: ela nao e' permanente, nao e' sacrificada, e a remocao do campo depois nao pode falhar (achado na validacao)
+    s = fresh()
+    put(s, "Vihaan, Goldwaker", MYTHOS)
+    s.commander_in_play = True
+    sel = vg._mythos_selection(s)
+    assert MYTHOS not in sel["cre"] + sel["outros"], sel
+    vg.resolve_instant_sorcery(s, MYTHOS)
+    assert MYTHOS in s.battlefield and "Vihaan, Goldwaker" in s.battlefield
+
+
+def test_mythos_cascade_hit_does_not_crash_and_is_declined_when_held():
+    base = vg.CASCADE_DECLINE_HELD_WIPES_ENABLED
+    try:
+        for flag, esperado in ((True, 0), (False, 1)):
+            vg.CASCADE_DECLINE_HELD_WIPES_ENABLED = flag
+            s = fresh(library=[MYTHOS] + [FILLER] * 5)
+            put(s, "Vihaan, Goldwaker", "Sol Ring")
+            s.commander_in_play = True
+            vg.do_cascade(s, 5)   # a unica carta nao-terreno do topo e' a Mythos (MV 4 < 5)
+            assert s.mythos_cast_total == esperado, (flag, s.mythos_cast_total)
+            if flag:
+                assert MYTHOS in s.library and MYTHOS not in s.graveyard   # recusada: vai pro fundo
+            else:
+                assert MYTHOS in s.graveyard and MYTHOS not in s.battlefield
+    finally:
+        vg.CASCADE_DECLINE_HELD_WIPES_ENABLED = base
+
+
+def test_mythos_needs_two_white_sources():
+    def casta(*campo, treasures=0):
+        s = fresh()
+        put(s, *campo)
+        s.hand = [MYTHOS]
+        if treasures:
+            vg.create_treasures(s, treasures)
+        return vg.can_cast(s, MYTHOS)
+    assert not casta("Plains", "Mountain", "Mountain", "Swamp")                    # {W}{W}: so' 1 fonte de W
+    assert casta("Plains", "Plains", "Mountain", "Swamp")
+    assert casta("Plains", "Command Tower", "Mountain", "Swamp")                   # Command Tower produz W
+    assert casta("Plains", "Mountain", "Mountain", treasures=1)                    # Treasure produz qualquer cor
+    assert not casta("Mountain", "Mountain", "Mountain", "Swamp")
+    vg.MYTHOS_COLOR_CHECK_ENABLED = False
+    try:
+        assert casta("Mountain", "Mountain", "Mountain", "Swamp")                  # chave desligada: so' o custo
+    finally:
+        vg.MYTHOS_COLOR_CHECK_ENABLED = True
+
+
+def test_mythos_br_proxy_requires_four_distinct_colored_sources():
+    # {B}{R} gastos NO LUGAR do {2}: precisa de W,W,B,R em 4 fontes DISTINTAS (ruling: vale o que foi gasto de fato)
+    def cast(*campo):
+        s = fresh()
+        put(s, *campo)
+        s.hand = [MYTHOS]
+        vg.cast_card(s, MYTHOS)
+        return s
+    s = cast("Plains", "Plains", "Swamp", "Mountain")
+    assert s.mythos_cast_total == 1 and s.mythos_br_spent_total == 1 and not s.mythos_br_pending
+    s = cast("Plains", "Plains", "Mountain", "Mountain")                            # sem fonte de B
+    assert s.mythos_cast_total == 1 and s.mythos_br_spent_total == 0
+    s = cast("Plains", "Plains", "Blood Crypt", "Mountain")                         # Blood Crypt produz B ou R: serve de B, o Mountain de R
+    assert s.mythos_br_spent_total == 1
+    s = cast("Plains", "Plains", "Blood Crypt", "Plains")                           # B/R de uma fonte so': falta a 4a cor
+    assert s.mythos_br_spent_total == 0
+
+
+def test_mythos_replaces_blood_money_in_library_and_flag_off_restores_it():
+    assert MYTHOS in vg.BASE_LIBRARY and "Blood Money" not in vg.BASE_LIBRARY and len(vg.BASE_LIBRARY) == 99
+    vg.MYTHOS_REPLACES_BLOOD_MONEY_ENABLED = False
+    try:
+        lib = vg.build_library()
+        assert "Blood Money" in lib and MYTHOS not in lib and len(lib) == 99
+        assert lib[lib.index("Blood Crypt") + 1] == "Blood Money"
+        assert sorted(x for x in lib if x != "Blood Money") == sorted(x for x in vg.BASE_LIBRARY if x != MYTHOS)
+    finally:
+        vg.MYTHOS_REPLACES_BLOOD_MONEY_ENABLED = True
+
+
+def test_mythos_swap_pairs_with_blood_money_position():
+    flag = vg.MYTHOS_REPLACES_BLOOD_MONEY_ENABLED
+    vg.MYTHOS_REPLACES_BLOOD_MONEY_ENABLED = False
+    base = vg.BASE_LIBRARY
+    try:
+        vg.BASE_LIBRARY = vg.build_library()
+        lib = vg.library_with_swap(("Blood Money", MYTHOS))
+        i = vg.BASE_LIBRARY.index("Blood Money")
+        assert lib[i] == MYTHOS and len(lib) == 99 and "Blood Money" not in lib
+    finally:
+        vg.MYTHOS_REPLACES_BLOOD_MONEY_ENABLED = flag
+        vg.BASE_LIBRARY = base
+
+
 def run_all():
     tests = [(n, f) for n, f in sorted(globals().items()) if n.startswith("test_") and callable(f)]
     failed = 0

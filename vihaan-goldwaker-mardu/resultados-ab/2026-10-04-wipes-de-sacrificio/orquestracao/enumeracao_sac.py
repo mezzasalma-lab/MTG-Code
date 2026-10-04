@@ -6,7 +6,7 @@ nomeados (Scrap Mastery / Mythos / Tragic Arrogance); (5) fontes de W, B e R nos
 import collections, json, lzma, os, re
 AQUI = os.path.dirname(os.path.abspath(__file__))
 C = json.load(lzma.open(os.path.join(AQUI, "..", "dados", "oraculo_lista_ao_vivo.json.xz"), "rt"))
-LISTA = os.path.join(AQUI, "..", "..", "..", "lista.md")
+LISTA = os.path.join(AQUI, "..", "..", "..", "resultados-ab", "_lista_legada", "lista.md")   # 12a rodada: a lista de a17049f (com Blood Money); a viva tem a Mythos
 lista = []
 sec = None
 for l in open(LISTA):

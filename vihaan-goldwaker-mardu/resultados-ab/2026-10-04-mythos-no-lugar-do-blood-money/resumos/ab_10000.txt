@@ -1,0 +1,43 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao (goldfish)
+antes:          win<=T8 15.5% | Treasures criados 13.31 (estoque no fim 3.73) | dano mesa 23.05 combate 56.68 drain 10.30 | mortes de criatura 3.78 | mana bonus 2.39 | recursoes 0.06 | mana T5 5.099 T6 6.221
+antes_sem_hold: win<=T8 13.3% | Treasures criados 12.94 (estoque no fim 3.61) | dano mesa 22.28 combate 50.96 drain 9.80 | mortes de criatura 4.69 | mana bonus 2.14 | recursoes 0.11 | mana T5 5.099 T6 6.212
+
+Diferenca (variante - base), pareada por semente, IC95%:
+variante (base)                    win<=8 pp      Treasures criados estoque no fim dano mesa      combate        drain          mortes cria.   mana bonus     mana T5        mana T6       
+mythos_par (antes)                  -0.050±0.065   -0.194±0.328   -0.142±0.251   -0.111±0.122   -0.280±0.290   -0.084±0.094   -0.045±0.081   -0.090±0.163   -0.001±0.001   -0.001±0.002 
+antes_cascata (antes)               +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000   +0.000±0.000 
+mythos_cascata (antes_cascata)      -0.010±0.052   -0.012±0.021   -0.007±0.014   -0.032±0.073   -0.078±0.130   -0.024±0.042   -0.007±0.012   +0.005±0.008   -0.001±0.001   -0.001±0.002 
+mythos_sem_cor (antes_cascata)      -0.010±0.052   -0.012±0.021   -0.007±0.014   -0.032±0.073   -0.078±0.130   -0.024±0.042   -0.007±0.012   +0.005±0.008   -0.001±0.001   -0.001±0.002 
+mythos_sem_hold (antes_sem_hold)    -0.790±0.206   -0.916±0.342   -0.606±0.258   -0.771±0.605   -1.981±0.315   -0.324±0.246   -0.118±0.089   -0.249±0.166   -0.002±0.001   -0.011±0.004 
+mythos_sem_hold_sem_cor (antes_sem_hold)  -0.800±0.205   -0.924±0.342   -0.606±0.258   -0.795±0.605   -2.027±0.316   -0.334±0.246   -0.116±0.088   -0.252±0.167   -0.002±0.001   -0.011±0.004 
+mythos_sem_hold_sem_cor (mythos_sem_hold)  -0.010±0.020   -0.008±0.006   +0.000±0.002   -0.023±0.018   -0.045±0.020   -0.009±0.007   +0.002±0.004   -0.003±0.004   -0.000±0.000   -0.000±0.000 
+antes_sem_hold (antes)              -2.190±0.333   -0.376±0.198   -0.122±0.098   -0.770±1.464   -5.719±0.862   -0.499±0.602   +0.904±0.072   -0.251±0.055   -0.000±0.001   -0.009±0.004 
+mythos_repo (antes_cascata) NAO pareado  -0.010±1.004   -0.493±0.533   -0.361±0.313   -0.145±1.968   -1.996±1.985   -0.200±0.808   -0.162±0.160   -0.067±0.242   -0.008±0.037   -0.004±0.052 
+
+(jogos iguais = impressao digital do estado final identica, com 'Mythos of Snapdax' lido como 'Blood Money'; so' mede em quantas partidas a troca/correcao mudou ALGUMA coisa)
+variante                 jogos iguais Blood Money  Act        Mythos     Mythos c/ {B}{R} poss.   Vihaan destruido   turnos c/ cor travada wipe via cascade cascade recusou 
+antes                    100.0%       0.0005       0.0000     0.0000     0.0000                   0.0005             0.0000               0.0000           0.0000          
+mythos_par                98.6%       0.0000       0.0000     0.0022     0.0001                   0.0000             0.1005               0.0021           0.0000          
+antes_cascata            100.0%       0.0005       0.0000     0.0000     0.0000                   0.0005             0.0000               0.0000           0.0000          
+mythos_cascata            98.6%       0.0000       0.0000     0.0001     0.0001                   0.0000             0.1005               0.0000           0.0021          
+mythos_sem_cor            98.6%       0.0000       0.0000     0.0001     0.0001                   0.0000             0.0000               0.0000           0.0021          
+antes_sem_hold            83.0%       0.0547       0.1186     0.0000     0.0000                   0.1720             0.0000               0.0000           0.0000          
+mythos_sem_hold           77.2%       0.0000       0.1119     0.1128     0.1092                   0.1119             0.0968               0.0020           0.0000          
+mythos_sem_hold_sem_cor   77.0%       0.0000       0.1118     0.1160     0.1067                   0.1118             0.0000               0.0020           0.0000          
+mythos_repo                0.0%       0.0000       0.0000     0.0001     0.0001                   0.0000             0.0964               0.0000           0.0017          
+
+Por resolucao, POR CARTA (soma sobre as partidas; so' o MEU lado; criaturas = nomeadas + fichas + Treasures animados; permanentes = nao-terreno, nomeadas + fichas, liquido do que a propria
+resolucao cria: o Blood Money cria 1 Treasure por criatura nao-ficha destruida, a Mythos so' sacrifica):
+  variante                 carta            resolucoes  criaturas perdidas permanentes perdidos  
+  antes                    Blood Money      5           11.20              1.40                  
+  mythos_par               Mythos of Snapdax 22          4.95               9.64                  
+  antes_cascata            Blood Money      5           11.20              1.40                  
+  mythos_cascata           Mythos of Snapdax 1           3.00               5.00                  
+  mythos_sem_cor           Mythos of Snapdax 1           3.00               5.00                  
+  antes_sem_hold           Blood Money      547         6.83               -1.65                 
+  antes_sem_hold           Blasphemous Act  1186        7.76               3.75                  
+  mythos_sem_hold          Blasphemous Act  1119        7.68               3.90                  
+  mythos_sem_hold          Mythos of Snapdax 1128        4.55               7.48                  
+  mythos_sem_hold_sem_cor  Blasphemous Act  1118        7.68               3.90                  
+  mythos_sem_hold_sem_cor  Mythos of Snapdax 1160        4.49               7.34                  
+  mythos_repo              Mythos of Snapdax 1           3.00               3.00                  

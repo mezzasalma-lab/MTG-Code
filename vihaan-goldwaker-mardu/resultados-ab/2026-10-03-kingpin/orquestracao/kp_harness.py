@@ -26,6 +26,13 @@ os.chdir(os.path.join(REPO, "vihaan-goldwaker-mardu"))
 sys.path.insert(0, os.path.join(REPO, "vihaan-goldwaker-mardu"))
 import vihaan_goldfish_v1 as V  # noqa: E402
 
+# 12a rodada (Mythos no lugar do Blood Money): o arquivo vivo agora tem a Mythos na lista; aqui as chaves novas ficam desligadas, a lista volta a ter o Blood Money (bit-identico a a17049f)
+# e esta pasta continua reproduzindo o simulador COMO ERA no commit dela.
+if hasattr(V, "MYTHOS_REPLACES_BLOOD_MONEY_ENABLED"):
+    V.MYTHOS_REPLACES_BLOOD_MONEY_ENABLED = False
+    V.CASCADE_DECLINE_HELD_WIPES_ENABLED = False
+    V.BASE_LIBRARY = V.build_library()
+
 KINGPIN = "Kingpin, Wilson Fisk"
 BLANK = "Blank Card"
 V.add(KINGPIN, 4, "creature", {"kingpin"})

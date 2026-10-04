@@ -86,3 +86,7 @@ Nenhum lote superado ou inválido nesta pasta.
 - A Edict **não está** no `vihaan_goldfish_v1.py`; o harness não passa por hold/hold-always além do que `cast_card` já faz.
 - Só foram varridos, no simulador, `on_token_leaves`, `on_permanent_destroyed` e `_own_wipe_destroy_all` (grep): **não** foi auditoria carta a carta.
 - Nenhuma carta foi cortada ou adicionada à lista.
+
+## Nota de 2026-10-04 (12ª rodada: Mythos of Snapdax no lugar do Blood Money)
+
+A lista viva do Vihaan (`../../lista.md`) passou a ter `Mythos of Snapdax` no lugar de `Blood Money` e o simulador vivo ganhou duas chaves novas (`MYTHOS_REPLACES_BLOOD_MONEY_ENABLED`, `CASCADE_DECLINE_HELD_WIPES_ENABLED`; ver `../2026-10-04-mythos-no-lugar-do-blood-money/LEIAME.md`). Para esta pasta **continuar reproduzindo o que publicou**, os scripts abaixo passaram a ler a lista antiga (`../_lista_legada/lista.md`, cópia exata da lista de `a17049f`) e/ou a **desligar as duas chaves novas** no simulador vivo (a lista volta a ter o Blood Money na posição antiga; bit-idêntico a `a17049f`) e, nos `fx_common.py`, a ignorar os 4 campos novos do `GameState` na impressão digital. **Nenhum dado bruto nem resumo desta pasta foi tocado.** Scripts alterados: `orquestracao/csb_edict.py`, `orquestracao/enumeracao.py`, `orquestracao/fx_common.py`. Depois do ajuste, `bash orquestracao/verificar_reproducao.sh --tudo`: **9/9** saídas iguais byte a byte, **0 `DIFERE`**. `SHA256SUMS` regenerado (o `LEIAME.md` e o próprio `SHA256SUMS` ficam de fora).

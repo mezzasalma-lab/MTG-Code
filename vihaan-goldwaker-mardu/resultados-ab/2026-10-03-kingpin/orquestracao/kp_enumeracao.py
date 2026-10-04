@@ -4,7 +4,7 @@ Uso: python3 kp_enumeracao.py"""
 import json, re
 REPO = "/home/user/MTG-Code"
 c = json.load(open(f"{REPO}/scryfall-cache/oracle-cache.json"))
-names = [l.strip()[l.strip().index(" ") + 1:] for l in open(f"{REPO}/vihaan-goldwaker-mardu/lista.md") if l.strip() and l.strip()[0].isdigit()]
+names = [l.strip()[l.strip().index(" ") + 1:] for l in open(f"{REPO}/vihaan-goldwaker-mardu/resultados-ab/_lista_legada/lista.md") if l.strip() and l.strip()[0].isdigit()]
 names.append("Vihaan, Goldwaker")
 def get(n):
     k = n if n in c else next((x for x in c if x.startswith(n + " //")), None)

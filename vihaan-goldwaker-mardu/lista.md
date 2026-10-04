@@ -17,7 +17,6 @@
 1 Blackcleave Cliffs
 1 Blasphemous Act
 1 Blood Crypt
-1 Blood Money
 1 Bojuka Bog
 1 Boros Charm
 1 Brightclimb Pathway // Grimclimb Pathway
@@ -60,6 +59,7 @@
 1 Mirkwood Bats
 1 Monologue Tax
 3 Mountain
+1 Mythos of Snapdax
 1 Nadier's Nightblade
 1 Olivia, Opulent Outlaw
 1 Orochi Soul-Reaver

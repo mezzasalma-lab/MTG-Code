@@ -4,20 +4,25 @@ import hashlib, importlib.util, os, sys
 
 DECK = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 HERE = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+LEGADO = os.path.join(DECK, "resultados-ab", "_lista_legada")   # 12a rodada: a lista de a17049f (com Blood Money); os snapshots ANTES leem ESTA, nao a lista viva (que tem a Mythos)
 ANTES = os.path.join(HERE, "codigo", "vihaan_goldfish_v1_ANTES_6e623d3.py")
 DEPOIS = os.path.join(DECK, "vihaan_goldfish_v1.py")
-NOVOS = {"impulse_all_first_total", "treasure_farm_dictate_total", "dictate_triggers_total", "treasure_farm_total", "impulse_expiring_first_total", "impulse_lands", "impulse_lands_played_total", "impulse_spells_cast_total", "lotho_triggers_total",
+NOVOS = {"mythos_cast_total", "mythos_br_spent_total", "mythos_br_pending", "mythos_perm_lost_total", "impulse_all_first_total", "treasure_farm_dictate_total", "dictate_triggers_total", "treasure_farm_total", "impulse_expiring_first_total", "impulse_lands", "impulse_lands_played_total", "impulse_spells_cast_total", "lotho_triggers_total",
          "treasures_sacrificed_this_turn", "storm_sac_baseline", "storm_pump_total", "sevinne_nonpermanent_returns_total", "super_nova_emblems", "seph_batch_active", "seph_batch_front_up", "seph_batch_emblems", "seph_batch_leaves",
          "sephiroth_extra_triggers_total", "treasures_animated_alive", "animated_treasures_sacrificed_any_total", "tapped_land_first_plays_total",
          "tapped_land_skipped_for_play_total", "interaction_rng", "treasures_tapped", "own_wipes_cast_total", "blood_money_cast_total", "own_wipe_commander_destroyed_total", "own_wipe_tapped_treasures_total", "own_wipe_held_total", "own_wipe_held_this_turn", "own_wipe_mitigated_casts_total", "own_wipe_animated_paid_total", "own_wipe_pay_drain_total"}
 
 
 def carrega(caminho, nome):
-    os.chdir(DECK)
+    os.chdir(DECK if caminho == DEPOIS else LEGADO)
     spec = importlib.util.spec_from_file_location(nome, caminho)
     m = importlib.util.module_from_spec(spec)
     sys.modules[nome] = m  # o @dataclass consulta sys.modules
     spec.loader.exec_module(m)
+    if caminho == DEPOIS and hasattr(m, "MYTHOS_REPLACES_BLOOD_MONEY_ENABLED"):  # 12a rodada (Mythos no lugar do Blood Money; cascade recusa wipe segurado): ligadas no arquivo vivo,
+        m.MYTHOS_REPLACES_BLOOD_MONEY_ENABLED = False                              # desligadas aqui: esta pasta continua reproduzindo o simulador e a lista COMO ERAM no commit dela
+        m.CASCADE_DECLINE_HELD_WIPES_ENABLED = False
+        m.BASE_LIBRARY = m.build_library()
     return m
 
 

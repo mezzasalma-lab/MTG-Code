@@ -1,5 +1,7 @@
 # Goldfish Log — Vihaan, Goldwaker
 
+> **Dados brutos e como reproduzir as tabelas da seção Mythos of Snapdax no lugar do Blood Money (2026-10-04):** [`resultados-ab/2026-10-04-mythos-no-lugar-do-blood-money/LEIAME.md`](resultados-ab/2026-10-04-mythos-no-lugar-do-blood-money/LEIAME.md) — brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
 > **Dados brutos e como reproduzir as tabelas da seção Make an Example, Slaughter the Strong e Mythos of Snapdax: as 3 que o usuário escolheu (2026-10-04):** [`resultados-ab/2026-10-04-make-an-example-slaughter-mythos/LEIAME.md`](resultados-ab/2026-10-04-make-an-example-slaughter-mythos/LEIAME.md) — Commander Spellbook cru, oráculo e rulings ao vivo, tabelas por fase, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
 > **Dados brutos e como reproduzir as tabelas da seção Avaliação: algum wipe de sacrifício válido no deck muda os números e a avaliação da Edict? (2026-10-04):** [`resultados-ab/2026-10-04-wipes-de-sacrificio/LEIAME.md`](resultados-ab/2026-10-04-wipes-de-sacrificio/LEIAME.md) — buscas e respostas cruas do Scryfall e do Commander Spellbook, brutos `.json.xz` por estado, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
@@ -33,10 +35,66 @@
 
 ---
 
+## Mythos of Snapdax entra no lugar do Blood Money — 2026-10-04 (12ª rodada)
+
+**Mensagem do usuário:** *"Quero adicionar o Mythos pelo menos."* Na pergunta "Qual carta sai?", o usuário escolheu **Blood Money**.
+**Lista:** `−1 Blood Money`, `+1 Mythos of Snapdax` (99 cartas, 35 terrenos, 0 desconhecidas, 0 duplicadas). CMC médio dos não-terrenos **3,4688 → 3,4219** (por script). Commander Spellbook (lista antes × depois, 2 controles positivos): **4 combos nos dois lados, 98 "quase" nos dois lados, nenhum sumiu, nenhum surgiu** → Bracket inalterado (a Mythos não é Game Changer).
+
+**Veredito:** a troca está feita e a Mythos está **modelada em todas as cláusulas do oráculo** no simulador (chave `MYTHOS_REPLACES_BLOOD_MONEY_ENABLED`). **O goldfish não consegue dizer se ela é melhor ou pior que o Blood Money:** com a política de segurar todo wipe próprio (princípio do usuário, 10ª rodada), **quase nunca nenhuma das duas é conjurada** (em 10.000 partidas: Blood Money 5×, Mythos 1×) e o A/B pareado dá **zero dentro do erro** (win≤T8 −0,010 ± 0,052 pp). Isso mede a política, não as cartas. O que o simulador **mede de verdade** é o que cada uma custa no **meu** lado quando é conjurada, e o que ela vale na mesa (lado dos oponentes) é 📊. A validação achou **2 bugs reais** (um deles antigo, só exposto pela Mythos), já corrigidos.
+
+### Medido (apoio; só o MEU lado; N=10.000 pareado, sementes `3_000_000+i`, IC95%; `resultados-ab/2026-10-04-mythos-no-lugar-do-blood-money/resumos/ab_10000*.txt`)
+
+| comparação (diferença = variante − base) | padrão | resiliência |
+|---|---|---|
+| **a troca, com a retenção ligada** (`mythos_cascata − antes_cascata`) — win≤T8 | −0,010 ± 0,052 pp | −0,020 ± 0,028 pp |
+| idem — Treasures criados / combate | −0,012 ± 0,021 / −0,078 ± 0,130 | +0,006 ± 0,009 / −0,008 ± 0,020 |
+| casts: Mythos resolvida / Blood Money resolvido em `antes_cascata` | **1 / 5 em 10.000** | **1 / 1 em 10.000** |
+| a troca com o cascade **como em `a17049f`** (`mythos_par − antes`) — win≤T8 | −0,050 ± 0,065 pp | −0,050 ± 0,044 pp |
+| a correção do cascade **sozinha** (`antes_cascata − antes`) | 0,000 em todas as 10 métricas | 0,000 em todas |
+| **sem a retenção** (todo wipe conjurado quando pode): `mythos_sem_hold − antes_sem_hold` — win≤T8 | **−0,790 ± 0,206 pp** | −0,160 ± 0,107 pp |
+| idem — Treasures criados / combate / mortes de criatura | −0,916 ± 0,342 / −1,981 ± 0,315 / −0,118 ± 0,089 | −0,422 ± 0,329 / −0,963 ± 0,277 / −0,101 ± 0,083 |
+| **o que a cor custa** (`{W}{W}` desligado × ligado, sem retenção) — win≤T8 | −0,010 ± 0,020 pp | 0,000 ± 0,000 pp |
+| repositório de fato × `antes_cascata` (**não pareado**: a lista nova tem outra ordem) — win≤T8 | −0,010 ± 1,004 pp | −0,110 ± 0,539 pp |
+
+**Custo por resolução no meu lado** (sem retenção, padrão 10.000; resiliência entre parênteses; "perm." = permanentes não-terreno, nomeadas + fichas, **líquido** do que a resolução cria):
+
+| carta | resoluções | criaturas minhas perdidas | perm. perdidos | Vihaan destruído |
+|---|---|---|---|---|
+| Blood Money | 547 (274) | 6,83 (4,82) | **−1,65** (−0,15): cria Treasure por criatura não-ficha minha destruída | sim, quando está em campo |
+| Blasphemous Act (referência) | 1.186 (615) | 7,76 (6,14) | 3,75 (5,11) | sim, quando está em campo |
+| **Mythos of Snapdax** | 1.128 (750) | **4,55 (3,08)** | **7,48 (5,02)** | **nunca**: o Vihaan é a 1ª criatura guardada (invariante 17 da regressão: 0 violações em 3.751 resoluções) |
+
+Como ler (medido): conjurada, a Mythos custa **menos criaturas** que o Blood Money e o Act e **nunca mata o Vihaan**, mas tira **mais permanentes não-criatura** (Treasures, Clues, Foods, rocks, encantamentos) que o Blood Money, que ainda me **devolve** Treasures. Por isso "sem retenção" ela perde mais no goldfish: ela é conjurada **2× mais** (0,113 contra 0,055 por partida: custa 4 em vez de 7) e cada conjuração tira Treasures do motor. É a **política** "conjurar sempre que puder", não a qualidade da carta. A cor: em média **0,097 turnos por partida** em que a Mythos estava disponível pelo mana e o `{W}{W}` travou (`turnos c/ cor travada`), e tirar a trava muda ≈ 0 (casts 0,1160 contra 0,1128).
+
+### Raciocínio (não medido), Regra #4: contra os motores e as outras cartas do deck
+- **Reagem a SACRIFÍCIO só 3 cartas** (enumeração por script, `2026-10-04-wipes-de-sacrificio/resumos/enumeracao.txt`): **Mayhem Devil** (*whenever a player sacrifices a permanent*: 1 dano por permanente, dos 3 oponentes também), **Mirkwood Bats** (*create or sacrifice a token*: cada Treasure sacrificado é ficha) e **Captain Lannery Storm** (*sacrifice a Treasure*: +1/+0). A Mythos **sacrifica**, então liga os três; o Blood Money **destrói**, e não liga nenhum (o Bats só em sacrifício, correção da 11ª rodada). As **9 cartas de morte** (Dictate, Zulaport, Plunderer, Sephiroth, Life Insurance, Revel in Riches, Mari, Agent, Marionette Master) reagem às duas.
+- **O que o corte perde:** o Blood Money cria um Treasure **tapped para cada criatura não-ficha destruída, de qualquer jogador** (oráculo: *"For each nontoken creature destroyed this way, you create a tapped Treasure token"*); o simulador só conta as **minhas**, então o `−1,65` acima **subestima** o Blood Money (📊 as criaturas dos oponentes). Era uma das fontes de Treasure do motor (CMC 7). E o **Boros Charm** (*"Permanents you control gain indestructible"*) transformava o Blood Money/Act num wipe **unilateral**; contra sacrifício ele **não** protege (e a Mythos já deixa 1 criatura, 1 artefato, 1 encantamento). **Teferi's Protection** (*phase out*) protege contra os dois.
+- **O que o corte ganha:** custo **4** em vez de 7; o **Vihaan sobrevive** por construção; liga Devil/Bats/Storm; ignora indestrutível; com `{B}{R}` gastos **eu escolho o que cada jogador guarda** (os 21 terrenos de B e os 17 de R + Treasures de qualquer cor cobrem o par em 95–97% dos casts simulados). **Custo de cor:** `{W}{W}` precisa de 2 fontes de W (14 terrenos de 35 + Arcane Signet + Treasures; o Blood Money pedia `{B}{B}`, 21 terrenos).
+
+### Achados da validação (corrigidos antes de arquivar; detalhes no `LEIAME.md` da pasta)
+1. **`ValueError: list.remove(x): x not in list`** (semente `5000045`, modo resiliência): o cascade põe a magia no campo antes de resolver e a Mythos a **sacrificava junto**. É a Regra #6 (o bug estava em ONDE a magia resolve, não na carta). Corrigido; teste dirigido.
+2. **O cascade conjurava à força todo wipe próprio que acertasse**, ignorando a retenção ("you **may** cast it"). **Antigo**: valia para Blood Money/Act desde a 10ª rodada, mas nunca aparecia (**0 wipes resolvidos dentro de cascade em 40.000 partidas** com a política antiga: o Blood Money tem MV 7). A Mythos (MV 4) é acertada em **31 de 20.000 (padrão) e 24 de 20.000 (resiliência)** partidas; agora o acerto segurado vai para o fundo da biblioteca (`CASCADE_DECLINE_HELD_WIPES_ENABLED`; efeito sozinho sobre a lista antiga: **0,000**).
+3. (do **meu invariante**, não do simulador) 3 versões do invariante de sobreviventes deram falso positivo (166/72 e 57/16 em 2.273/1.478 resoluções; depois 8 + 2 com a **Academy Manufactor** como "o artefato" ao lado do Vihaan como "a criatura", que é **legal**: ruling de 2020-04-17). A versão final mede a seleção e exige uma atribuição legal a slots distintos.
+
+### Validação (Regra #1)
+- **Smoke:** 99 cartas, 0 desconhecidas, 0 duplicadas, 35 terrenos, Mythos 1 / Blood Money 0; 200 partidas sem exceção.
+- **Testes:** `test_vihaan_goldfish.py` **30/30** (22 antigos + 8 da Mythos: seleção por tipo, sacrifício ≠ destruição com Mayhem Devil, magia em voo, cascade recusado/forçado, `{W}{W}`, `{B}{R}`, lista com a chave ligada/desligada, `swap` na posição do Blood Money). Em **2.400 estados naturais** (turnos 4/6/8, 2 modos): **0 divergências** simulador × `r_manter_um` do harness (⚠ mesmo autor e mesma política: pega divergência de cópia, **não** é oráculo independente) e **0 violações** na resolução forçada (12.687 permanentes sacrificadas).
+- **Bit-identidade** (chaves desligadas × `a17049f`): **20.000 × 2 modos, 0 diferentes**.
+- **Regressão:** 20.000 × 6 configurações/modos = **120.000 partidas, 0 exceções, invariantes 1–19 = 0**, incluindo **3.751 resoluções reais de Mythos** (config sem retenção) com os invariantes de cor, de `{B}{R}`, de escolha legal, de contador e de motor guardado.
+- **A/B:** 2.000 e 10.000 pareados × 2 modos (acima).
+- **Reprodutibilidade:** `verificar_reproducao.sh --tudo` da pasta nova **17/17** (inclui os 4 lotes do A/B re-simulados com bruto idêntico) e das **15 pastas anteriores** contra o simulador vivo com as chaves novas desligadas: **todas iguais, 0 `DIFERE`** (exilio-primeiro-e-mahadi 10/10, fora-da-mao 8/8, inevitable-defeat 6/6, kingpin 11/11, partida-manual-1 7/7, sephiroth 11/11, treasure-animado-e-mulligan 7/7, blasphemous-edict 9/9, dictate-metade 10/10, dictate-metade-dos-animados 11/11, exilio-sempre-e-dictate 10/10, make-an-example-slaughter-mythos 3/3, wipes-de-sacrificio 12/12, wipes-proprios 11/11, wipes-segurados 11/11). Os scripts que liam a lista/simulador vivos passaram a ler `resultados-ab/_lista_legada/lista.md` e a desligar as 2 chaves; `SHA256SUMS` regenerados. A docstring do cabeçalho do simulador foi editada depois que a reverificação das 15 começou (só comentário).
+
+### Escopo (Regra #7): verificado e NÃO verificado
+**Varrido:** todas as cláusulas do oráculo da Mythos e os 8 rulings (teste dirigido + invariantes); a **cor** (`{W}{W}`, `{B}{R}`); o conceito compartilhado "permanente não-terreno / o que vale como artefato, criatura, encantamento" (inclui artefato-criatura e Treasure animado); a **posição de chamada** do cascade; Spellbook antes/depois com controle; reprodutibilidade das 15 pastas anteriores. **NÃO verificado:** (a) o **lado dos oponentes** (o que **eles** guardam e sacrificam, os gatilhos deles, as escolhas de todos os jogadores com `{B}{R}`) é 📊 — oráculo: *"**Each player** chooses… then sacrifices the rest"*; o simulador só conta uso e se o `{B}{R}` coube; (b) a **política** do que eu guardo (Vihaan > Mahadi > Mayhem Devil; Sol Ring > Altar > …; Dictate > Procession > Revel) é minha, **legal por construção** (o invariante prova) mas **não demonstrada ótima**; (c) o **valor real** da carta numa mesa: o goldfish não mede (A/B com retenção ≈ 0 porque nem ela nem o Blood Money são conjurados); (d) o `{W}{W}` usa fontes **otimistas** (ignora o mana já gasto no turno; filter lands/MDFC pela união das cores); (e) as **outras classes** da taxonomia da Regra #1 não foram varridas de novo no `.py` inteiro, só as que a Mythos e o cascade tocam; (f) a condição **"mitigada"** da 10ª rodada foi **adaptada** à Mythos contando como "perda minha" só as permanentes **nomeadas** sacrificadas (fichas e Treasures não entram): escolha minha, conservadora, raríssima (1–2 casts em 20.000); (g) o **conserto do cascade é uma política** (declinar sempre que o wipe estiver segurado), coerente com o princípio do usuário, mas é escolha minha aplicada ao cascade.
+**Em aberto:** a quirk dos contadores `*_sick` (nunca decrementam em `sacrifice_*`; 0,3–0,4% das partidas antes do combate, achada na rodada dos wipes de sacrifício) **continua aberta**; Make an Example e Slaughter the Strong **não** entraram (o usuário pediu só a Mythos).
+
+
+---
+
 ## Make an Example, Slaughter the Strong e Mythos of Snapdax: as 3 que o usuário escolheu — 2026-10-04
 
 **Mensagem do usuário:** *"Gostei de Make an Example, Slaughter the Strong, Mythos of Snapdax. Winnowing não é útil contra decks tribais, onde 90% das criaturas compartilham o mesmo tipo, ou decks de artefatos onde todas as criaturas são criaturas artefatos!"*
-**Nada foi trocado na lista** (decisão do usuário) e o simulador não foi alterado. Esta seção só **acrescenta** o que faltava: o Commander Spellbook das 3 com os dois cortes possíveis e a separação por fase do turno.
+**Nada foi trocado na lista** (decisão do usuário) e o simulador não foi alterado. Esta seção só **acrescenta** o que faltava: o Commander Spellbook das 3 com os dois cortes possíveis e a separação por fase do turno. **Atualização (12ª rodada, mesmo dia):** o usuário decidiu depois adicionar a Mythos, no lugar do Blood Money; ver a seção "Mythos of Snapdax entra no lugar do Blood Money", acima desta. Make an Example e Slaughter the Strong continuam fora.
 
 **Winnowing (descartada pelo usuário):** o caso tribal está certo e já constava ("se o campo do oponente é todo do mesmo tipo, ele guarda tudo"). Sobre artefatos: o texto é *"don't share a **creature type**"* e *artifact* é **tipo de carta**, não tipo de criatura; criatura artefato só poupa a outra se compartilhar Thopter/Servo/Construct/Golem etc. Na prática, deck de artefatos costuma ter fichas de um tipo só, então o resultado é parecido e o descarte se sustenta.
 

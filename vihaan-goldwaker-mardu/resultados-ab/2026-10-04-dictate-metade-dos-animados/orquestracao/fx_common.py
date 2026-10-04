@@ -4,10 +4,11 @@ import hashlib, importlib.util, os, sys
 
 DECK = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 HERE = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+LEGADO = os.path.join(DECK, "resultados-ab", "_lista_legada")   # 12a rodada: a lista de a17049f (com Blood Money); os snapshots ANTES leem ESTA, nao a lista viva (que tem a Mythos)
 ANTES = os.path.join(HERE, "codigo", "vihaan_goldfish_v1_ANTES_9e613ea.py")    # 7a rodada: metade do ESTOQUE
 ANTES0 = os.path.join(HERE, "codigo", "vihaan_goldfish_v1_ANTES_8e9ab6e.py")   # 6a rodada: o Dictate sacrifica TODOS os animados
 DEPOIS = os.path.join(DECK, "vihaan_goldfish_v1.py")
-NOVOS = {"interaction_rng", "super_nova_emblems", "seph_batch_active", "seph_batch_front_up", "seph_batch_emblems", "seph_batch_leaves",
+NOVOS = {"mythos_cast_total", "mythos_br_spent_total", "mythos_br_pending", "mythos_perm_lost_total", "interaction_rng", "super_nova_emblems", "seph_batch_active", "seph_batch_front_up", "seph_batch_emblems", "seph_batch_leaves",
          "sephiroth_extra_triggers_total", "impulse_lands", "impulse_lands_played_total", "impulse_spells_cast_total", "lotho_triggers_total",
          "treasures_sacrificed_this_turn", "storm_sac_baseline", "storm_pump_total", "sevinne_nonpermanent_returns_total",
          "dictate_triggers_total", "treasure_farm_total", "impulse_expiring_first_total", "impulse_all_first_total",
@@ -15,11 +16,15 @@ NOVOS = {"interaction_rng", "super_nova_emblems", "seph_batch_active", "seph_bat
 
 
 def carrega(caminho, nome):
-    os.chdir(DECK)
+    os.chdir(DECK if caminho == DEPOIS else LEGADO)
     spec = importlib.util.spec_from_file_location(nome, caminho)
     m = importlib.util.module_from_spec(spec)
     sys.modules[nome] = m
     spec.loader.exec_module(m)
+    if caminho == DEPOIS and hasattr(m, "MYTHOS_REPLACES_BLOOD_MONEY_ENABLED"):  # 12a rodada (Mythos no lugar do Blood Money; cascade recusa wipe segurado): ligadas no arquivo vivo,
+        m.MYTHOS_REPLACES_BLOOD_MONEY_ENABLED = False                              # desligadas aqui: esta pasta continua reproduzindo o simulador e a lista COMO ERAM no commit dela
+        m.CASCADE_DECLINE_HELD_WIPES_ENABLED = False
+        m.BASE_LIBRARY = m.build_library()
     return m
 
 

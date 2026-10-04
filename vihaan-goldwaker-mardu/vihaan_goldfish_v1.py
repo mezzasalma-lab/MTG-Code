@@ -122,6 +122,16 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas):
 - Mirkwood Bats so' dispara em SACRIFICIO (2026-10-04, achado na avaliacao Blasphemous Act x Blasphemous Edict; oraculo ao vivo: "Whenever you create
   or sacrifice a token, each opponent loses 1 life"): ficha destruida (wipe, remocao do oponente) nao a dispara; Nadier's Nightblade ("leaves the
   battlefield") dispara nos dois. Ver `resultados-ab/2026-10-04-blasphemous-edict/LEIAME.md`.
+- Mythos of Snapdax no lugar do Blood Money (2026-10-04, 12a rodada, decisao do usuario: "Quero adicionar o Mythos pelo menos"; corte escolhido por ele:
+  Blood Money): {2}{W}{W} Sorcery, "Each player chooses an artifact, a creature, an enchantment, and a planeswalker from among the nonland permanents
+  they control, then sacrifices the rest. If {B}{R} was spent to cast this spell, you choose the permanents for each player instead." O MEU lado e'
+  modelado (guardo Vihaan > Mahadi > Mayhem Devil como criatura, 1 artefato, 1 encantamento; o resto nao-terreno e' SACRIFICIO simultaneo: Mayhem
+  Devil dispara por cada permanente, inclusive Treasures/Clues/Foods/fichas); o dos oponentes e' 📊 (so' conta o uso, e se {B}{R} foram gastos). O
+  simulador nao tinha NENHUMA nocao de cor de mana: aqui so' a Mythos confere o `{W}{W}` (e o `{B}{R}` do proxy) contra as fontes em campo. A validacao
+  achou 2 bugs reais, corrigidos: (1) o cascade poe a magia no campo antes de resolver e a Mythos a sacrificava junto (`list.remove` quebrava): a magia em
+  voo (instantanea/feitico no campo) nao e' permanente; (2) o cascade ("you MAY cast it") conjurava a forca todo wipe proprio que acertasse, ignorando a
+  retencao da 10a rodada: `CASCADE_DECLINE_HELD_WIPES_ENABLED` manda o acerto segurado pro fundo da biblioteca. Ver
+  `resultados-ab/2026-10-04-mythos-no-lugar-do-blood-money/LEIAME.md`.
 """
 
 import copy
@@ -295,6 +305,7 @@ add("Deadly Derision", 4, "instant", {"removal_treasure"})
 add("Requisition Raid", 1, "sorcery", {"removal"})
 add("Blasphemous Act", 9, "sorcery", {"wipe"})
 add("Blood Money", 7, "sorcery", {"wipe_treasure"})
+add("Mythos of Snapdax", 4, "sorcery", {"wipe"})  # 12a rodada: entra no lugar do Blood Money (flag MYTHOS_REPLACES_BLOOD_MONEY_ENABLED)
 add("Demolition Field", 0, "land", set())  # ja adicionada
 add("Boros Charm", 2, "instant", {"protection_unused"})
 add("Teferi's Protection", 3, "instant", {"protection_unused"})
@@ -434,7 +445,14 @@ OWN_WIPE_RELEASE_MITIGATED_ENABLED = True    # unica excecao a retencao: Mayhem 
 # Correcao de 11a rodada (2026-10-04; achado na avaliacao Blasphemous Act x Blasphemous Edict): com a chave em False o arquivo se comporta bit-a-bit como o do commit b30ef1f.
 MIRKWOOD_BATS_SACRIFICE_ONLY_ENABLED = True  # Mirkwood Bats ("whenever you create or SACRIFICE a token") nao dispara em ficha DESTRUIDA (wipe, remocao); Nadier's Nightblade ("leaves the battlefield") dispara nos dois
 COMMANDER_TAX_ENABLED = True                 # CR 903.8: o imposto ({2} por cast anterior da zona de comando) entra no que PODE ser conjurado, e e' contado no CAST (tambem se for anulado), nao so' quando entra
-OWN_WIPES = ("Blood Money", "Blasphemous Act")
+# Correcao de 12a rodada (2026-10-04; decisao do usuario: Mythos of Snapdax entra, Blood Money sai). Com a chave em False a `lista.md` do repositorio e' lida como se
+# ainda tivesse o Blood Money na posicao antiga (o arquivo se comporta bit-a-bit como o do commit a17049f).
+MYTHOS_REPLACES_BLOOD_MONEY_ENABLED = True   # a lista tem Mythos of Snapdax no lugar do Blood Money
+MYTHOS_COLOR_CHECK_ENABLED = True            # a Mythos so' e' conjuravel com `{W}{W}` nas fontes em campo (o resto do simulador ignora cor de mana)
+CASCADE_DECLINE_HELD_WIPES_ENABLED = True    # achado na validacao da Mythos: o cascade ("you MAY cast it") conjurava a forca todo wipe proprio que acertasse, ignorando a retencao da 10a rodada; agora o acerto segurado vai pro fundo da biblioteca
+OWN_WIPES =("Blood Money", "Blasphemous Act", "Mythos of Snapdax")
+MYTHOS = "Mythos of Snapdax"
+KEEP_ENGINES = ("Vihaan, Goldwaker", "Mahadi, Emporium Master", "Mayhem Devil")  # ordem da criatura que guardo na Mythos
 
 TREASURE_SOURCE_TAGS = {
     "goldspan", "treasure_attack", "draw_treasure", "sac_draw_treasure",
@@ -498,6 +516,10 @@ class GameState:
     own_wipe_mitigated_casts_total: int = 0  # wipes conjurados com Mayhem Devil em campo e animados vivos suficientes pra pagar o custo inteiro
     own_wipe_animated_paid_total: int = 0    # Treasures animados sacrificados pra pagar o custo de um wipe proprio
     own_wipe_pay_drain_total: int = 0        # dano/dreno (proxy) causado pelos sacrificios que pagaram o wipe (Mayhem Devil, Zulaport, Sephiroth...)
+    mythos_cast_total: int = 0               # Mythos of Snapdax conjuradas (12a rodada)
+    mythos_br_spent_total: int = 0           # dessas, as em que {B}{R} PODIAM ser gastos (eu escolheria as permanentes de cada jogador: 📊 o lado dos oponentes)
+    mythos_br_pending: bool = False          # {B}{R} cabem nas fontes no momento do cast (lido na resolucao)
+    mythos_perm_lost_total: int = 0          # permanentes MINHAS sacrificadas pela Mythos (criaturas, fichas, Treasures, artefatos, encantamentos)
 
     commander_in_play: bool = False
     commander_cast_count: int = 0
@@ -1254,7 +1276,11 @@ def wipe_mitigated(state: GameState, name: str) -> bool:
     if animados * tv < custo:
         return False
     sacrificios = math.ceil(custo / tv)
-    minhas = sum(1 for n in state.battlefield if is_creature_card(n))
+    if name == MYTHOS:  # a Mythos sacrifica TODOS os nao-terreno que eu nao guardo (nao so' criaturas): a "perda minha" e' essa
+        sel = _mythos_selection(state)
+        minhas = len(sel["cre"]) + len(sel["outros"])
+    else:
+        minhas = sum(1 for n in state.battlefield if is_creature_card(n))
     return sacrificios > minhas
 
 
@@ -1298,7 +1324,50 @@ def _wipe_pay_with_animated(state: GameState, cost: int) -> int:
     return max(0, cost - k * tv)
 
 
+# Cores que cada terreno produz entre W/B/R (Scryfall `produced_mana`, lido ao vivo em 2026-10-04; MDFC/filter lands = uniao das cores). So' a Mythos usa isto.
+LAND_COLORS = {
+    "Battlefield Forge": "WR", "Blackcleave Cliffs": "BR", "Blood Crypt": "BR", "Bojuka Bog": "B", "Brightclimb Pathway // Grimclimb Pathway": "WB",
+    "Caves of Koilos": "WB", "Clifftop Retreat": "WR", "Command Beacon": "", "Command Tower": "WBR", "Demolition Field": "", "Desolate Mire": "WB",
+    "Dragonskull Summit": "BR", "Exotic Orchard": "WBR", "Fetid Heath": "WB", "High Market": "", "Isolated Chapel": "WB", "Luxury Suite": "BR",
+    "Mountain": "R", "Path of Ancestry": "WBR", "Phyrexian Tower": "B", "Plains": "W", "Rogue's Passage": "", "Rugged Prairie": "WR",
+    "Shadowblood Ridge": "BR", "Spectator Seating": "WR", "Sulfurous Springs": "BR", "Swamp": "B", "Tainted Peak": "BR", "Treasure Vault": "",
+}
+
+
+def color_sources(state: GameState) -> list:
+    """Uma string de cores (subconjunto de "WBR") por fonte que pode pagar cor agora: terrenos em campo (menos os que entraram virados neste turno), Arcane Signet e
+    Treasures desvirados (qualquer cor). Otimista: ignora o mana ja' gasto no turno e trata filter lands/MDFC pela uniao das cores."""
+    fontes = []
+    for n in state.battlefield:
+        if n in LAND_NAMES:
+            if n in state.tapped_lands_this_turn:
+                continue
+            cs = LAND_COLORS.get(n, "")
+            if cs:
+                fontes.append(cs)
+        elif n == "Arcane Signet":
+            fontes.append("WBR")
+    fontes += ["WBR"] * max(0, state.treasures - state.treasures_tapped)
+    return fontes
+
+
+def pips_ok(fontes: list, pips: list) -> bool:
+    """Existe uma atribuicao de fontes DISTINTAS aos simbolos de cor `pips` (ex.: ["W","W","B","R"])?"""
+    pips = sorted(pips, key=lambda p: sum(1 for f in fontes if p in f))
+
+    def rec(i, usadas):
+        if i == len(pips):
+            return True
+        for j, f in enumerate(fontes):
+            if j not in usadas and pips[i] in f and rec(i + 1, usadas | {j}):
+                return True
+        return False
+    return rec(0, frozenset())
+
+
 def can_cast(state: GameState, name: str) -> bool:
+    if MYTHOS_COLOR_CHECK_ENABLED and name == MYTHOS and not pips_ok(color_sources(state), ["W", "W"]):
+        return False
     return remaining_mana(state) >= spell_cost(state, name)
 
 
@@ -1574,6 +1643,13 @@ def resolve_instant_sorcery(state: GameState, name: str):
             _destroy_dragons(state)
             end_mass_death(state)
             create_treasures(state, len(real_creatures), source="Blood Money (nontoken)")
+    elif name == MYTHOS:
+        state.own_wipes_cast_total += 1
+        state.mythos_cast_total += 1
+        if state.mythos_br_pending:
+            state.mythos_br_spent_total += 1
+        state.mythos_br_pending = False
+        state.mythos_perm_lost_total += _mass_sacrifice(state, _mythos_selection(state))
     elif name == "Blasphemous Act":
         state.own_wipes_cast_total += 1
         if OWN_WIPE_DESTROY_ORACLE_ENABLED:
@@ -1702,6 +1778,107 @@ def _own_wipe_destroy_all(state: GameState) -> int:
         state.treasures_animated_alive = max(0, state.treasures_animated_alive - n_anim)
         state.treasures_tapped = min(state.treasures_tapped, state.treasures)
     return len(named)
+
+
+def _mythos_selection(state: GameState) -> dict:
+    """O que a Mythos of Snapdax SACRIFICA do meu lado (tudo que e' nao-terreno e nao fica). "Each player chooses an artifact, a creature, an enchantment, and a planeswalker
+    from among the nonland permanents they control, then sacrifices the rest" (rulings 2020-04-17: o mesmo objeto pode valer para varios tipos; lands com outro tipo nao
+    podem ser escolhidos nem sao sacrificados). Guardo: CRIATURA = Vihaan > Mahadi > Mayhem Devil > nomeada de maior MV > Treasure animado > Construct > Dragao > ficha; ARTEFATO
+    (de preferencia OUTRO objeto) = Sol Ring > Ashnod's Altar > Krark-Clan Ironworks > Arcane Signet > The Reaver Cleaver > outro nomeado > Treasure > Construct/Clue/Food, e se so'
+    sobra a propria criatura-artefato ela vale como os dois; ENCANTAMENTO = Dictate of Erebos > Anointed Procession > Revel in Riches > outro; planeswalker: nenhum na lista."""
+    # instantanea/feitico no campo = a propria magia em voo (o cascade a poe no campo antes de resolver): nao e' permanente, nao e' sacrificada
+    nome = [n for n in state.battlefield if n not in LAND_NAMES and CARD_DB[n].ctype not in ("instant", "sorcery")]
+    cre = [n for n in nome if is_creature_card(n)]
+    anim = min(state.treasures_animated_alive, state.treasures)
+    sel = {"cre": list(cre), "outros": [n for n in nome if not is_creature_card(n)], "con": state.constructs, "oth": state.other_tokens, "dra": state.dragons,
+           "anim": anim, "inan": state.treasures - anim, "clues": state.clues, "foods": state.foods}
+
+    def tira(g):
+        if g[0] == "nome":
+            (sel["cre"] if g[1] in sel["cre"] else sel["outros"]).remove(g[1])
+        else:
+            sel[g[1]] -= 1
+    c_keep = next((("nome", e) for e in KEEP_ENGINES if e in cre), None)
+    if c_keep is None and cre:
+        c_keep = ("nome", max(cre, key=lambda n: (CARD_DB[n].mv, n)))
+    if c_keep is None:
+        c_keep = next((("ficha", k) for k in ("anim", "con", "dra", "oth") if sel[k] > 0), None)
+    if c_keep:
+        tira(c_keep)
+    nomeados_art = [n for n in sel["cre"] + sel["outros"] if is_artifact_card(n)]
+    a_keep = next((("nome", p) for p in ("Sol Ring", "Ashnod's Altar", "Krark-Clan Ironworks", "Arcane Signet", "The Reaver Cleaver") if p in nomeados_art), None)
+    if a_keep is None and nomeados_art:
+        a_keep = ("nome", sorted(nomeados_art)[0])
+    if a_keep is None:
+        a_keep = next((("ficha", k) for k in ("inan", "anim", "con", "clues", "foods") if sel[k] > 0), None)
+    if a_keep:
+        tira(a_keep)
+    enc = next((p for p in ("Dictate of Erebos", "Anointed Procession", "Revel in Riches") if p in sel["outros"]), None)
+    if enc is None:
+        encs = sorted(n for n in sel["outros"] if is_enchantment_card(n))
+        enc = encs[0] if encs else None
+    if enc:
+        sel["outros"].remove(enc)
+    return sel
+
+
+def _mass_sacrifice(state: GameState, sel: dict) -> int:
+    """Sacrificio SIMULTANEO de `sel` (todas as pecas saem juntas; os gatilhos olham pra tras, como em `_own_wipe_destroy_all`). E' SACRIFICIO, nao destruicao: o Mayhem Devil
+    dispara por CADA permanente (nomeada, ficha, Treasure, Clue, Food), inclusive ele proprio, e o Mirkwood Bats por cada ficha. O comandante vai ao cemiterio (a morte dispara) e o
+    dono o leva a zona de comando (CR 903.9a). Devolve quantas permanentes foram sacrificadas."""
+    cre, outros = list(sel["cre"]), list(sel["outros"])
+    con, oth, dra, anim, inan = sel["con"], sel["oth"], sel["dra"], sel["anim"], sel["inan"]
+    clues, foods = sel["clues"], sel["foods"]
+    total = len(cre) + len(outros) + con + oth + dra + anim + inan + clues + foods
+    if total == 0:
+        return 0
+    begin_mass_death(state, cre)
+    if "Mayhem Devil" in state.battlefield:
+        drain(state, total)  # 1 de dano por permanente sacrificada (simultaneas: o Mayhem Devil ve' todas, inclusive a propria)
+    for c in cre:
+        on_creature_dies(state, 1, is_token=False, dying=c)
+        if is_artifact_card(c):
+            on_artifact_dies(state, 1)
+    for c in outros:
+        if is_artifact_card(c):
+            on_artifact_dies(state, 1)
+    if con:
+        on_creature_dies(state, con, is_token=True); on_artifact_dies(state, con); on_token_leaves(state, con, sacrificed=True)
+    if oth:
+        on_creature_dies(state, oth, is_token=True); on_token_leaves(state, oth, sacrificed=True)
+    if dra:
+        on_creature_dies(state, dra, is_token=True); on_token_leaves(state, dra, sacrificed=True)
+    if anim:
+        on_creature_dies(state, anim, is_token=True); on_artifact_dies(state, anim); on_token_leaves(state, anim, sacrificed=True)
+    if inan:
+        on_artifact_dies(state, inan); on_token_leaves(state, inan, sacrificed=True)
+    for k in (clues, foods):
+        if k:
+            on_artifact_dies(state, k); on_token_leaves(state, k, sacrificed=True)
+    end_mass_death(state)
+    for c in cre + outros:
+        state.battlefield.remove(c)
+        state.creature_cast_turn.pop(c, None)
+        if c == COMMANDER:
+            state.commander_in_play = False
+            state.own_wipe_commander_destroyed_total += 1
+        else:
+            state.graveyard.append(c)
+        if c == "The Reaver Cleaver" or c == state.reaver_cleaver_host:
+            state.reaver_cleaver_equipped = False
+            state.reaver_cleaver_host = None
+    state.constructs -= con; state.constructs_sick = min(state.constructs_sick, state.constructs)
+    state.other_tokens -= oth; state.other_tokens_sick = min(state.other_tokens_sick, state.other_tokens)
+    state.dragons -= dra; state.dragons_sick = min(state.dragons_sick, state.dragons)
+    state.clues -= clues
+    state.foods -= foods
+    if anim + inan:
+        state.treasures -= anim + inan
+        state.treasures_animated_alive = max(0, state.treasures_animated_alive - anim)
+        state.treasures_tapped = min(state.treasures_tapped, state.treasures)
+        state.treasures_sacrificed_total += anim + inan  # Captain Lannery Storm: "whenever you sacrifice a Treasure"
+        state.treasures_sacrificed_this_turn += anim + inan
+    return total
 
 
 def pull_impulse(state: GameState, n: int, deadline_turns: int, lands_ok: bool = False):
@@ -1849,6 +2026,8 @@ def cast_card(state: GameState, name: str, from_zone: str = "hand"):
             state.commander_cast_count += 1  # CR 903.8: conta o CAST da zona de comando, mesmo se for anulado
     else:
         custo = spell_cost(state, name)
+        if name == MYTHOS:
+            state.mythos_br_pending = pips_ok(color_sources(state), ["W", "W", "B", "R"])  # {B}{R} gastos => eu escolho as permanentes de cada jogador (📊 o lado deles)
         if name in OWN_WIPES:
             if wipe_mitigated(state, name):
                 state.own_wipe_mitigated_casts_total += 1
@@ -1909,6 +2088,20 @@ def cast_card(state: GameState, name: str, from_zone: str = "hand"):
         if card.tags & REMOVAL_TAGS:
             state.removal_cast_total += 1
         resolve_instant_sorcery(state, name)
+    if name == MYTHOS:
+        state.mythos_br_pending = False  # anulada: o {B}{R} do cast nao vaza pra uma Mythos conjurada de graca (cascade) depois
+
+
+def cascade_declines(state: GameState, name: str) -> bool:
+    """CASCADE_DECLINE_HELD_WIPES_ENABLED: o cascade diz "you MAY cast it without paying its mana cost" e o principio do usuario (10a rodada) e' que todo wipe proprio fica
+    segurado. A excecao 'mitigada' (`wipe_mitigated`) vive de PAGAR o custo com Treasures animados (Mayhem Devil), e um cast de graca nao paga nada: nunca e' mitigado."""
+    if not CASCADE_DECLINE_HELD_WIPES_ENABLED or name not in OWN_WIPES:
+        return False
+    if OWN_WIPE_HOLD_ALWAYS_ENABLED:
+        return True
+    if OWN_WIPE_HOLD_ENGINE_ENABLED:
+        return state.commander_in_play or "Mahadi, Emporium Master" in state.battlefield
+    return False
 
 
 def do_cascade(state: GameState, mv_cutoff: int):
@@ -1923,6 +2116,8 @@ def do_cascade(state: GameState, mv_cutoff: int):
         if CARD_DB[c].ctype != "land" and CARD_DB[c].mv < mv_cutoff:
             hit = c
             break
+    if hit and cascade_declines(state, hit):
+        hit = None  # recusa: a carta fica entre as exiladas, que vao pro fundo em ordem aleatoria
     if hit:
         exiled.remove(hit)
         if SPELL_CAST_COUNT_ALL_PATHS_ENABLED:
@@ -1956,6 +2151,9 @@ def build_library():
         for _ in range(qty):
             lib.append(name)
     assert len(lib) == 99, len(lib)
+    if not MYTHOS_REPLACES_BLOOD_MONEY_ENABLED and MYTHOS in lib:  # chave desligada: a lista volta a ter o Blood Money na posicao que ele tinha (bit-identico a a17049f)
+        lib.remove(MYTHOS)
+        lib.insert(lib.index("Blood Crypt") + 1, "Blood Money")
     return lib
 
 
@@ -3212,7 +3410,7 @@ def run_batch(n: int, seed_base: int, turns: int = 8):
           f" | Avg Treasures criados no jogo (motor de ramp central do deck, ver secao 3/5 da auditoria): {avg([s.treasures_created_total for s in states]):.2f}")
     print(f"DRAW: Avg cartas compradas extra (alem da compra normal do turno): {avg([s.cards_drawn_extra for s in states]):.2f}")
     print(f"INTERACTION: Avg remocao/wipe conjurados por jogo (Path to Exile, Shoot the Sheriff, Council's Judgment,"
-          f" Deadly Derision, Requisition Raid, Blasphemous Act, Blood Money): {avg([s.removal_cast_total for s in states]):.2f}")
+          f" Deadly Derision, Requisition Raid, Blasphemous Act, Mythos of Snapdax): {avg([s.removal_cast_total for s in states]):.2f}")
     print(f"RECURSION: Avg cartas recuperadas do cemiterio por jogo (Sevinne's Reclamation, Phyrexian Reclamation,"
           f" Back in Town, Lich-Knights' Conquest, Witch of the Moors): {avg([s.recursion_events_total for s in states]):.2f}"
           f" | das quais via Phyrexian Reclamation (repetivel): {avg([s.phyrexian_reclamation_activations_total for s in states]):.2f}")

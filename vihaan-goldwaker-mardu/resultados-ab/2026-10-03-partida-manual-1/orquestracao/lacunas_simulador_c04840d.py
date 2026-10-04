@@ -3,7 +3,7 @@
 import importlib.util, os, sys
 AQUI = os.path.dirname(os.path.abspath(__file__))
 DECK = os.path.abspath(os.path.join(AQUI, "..", "..", ".."))
-os.chdir(DECK)
+os.chdir(os.path.join(DECK, "resultados-ab", "_lista_legada"))   # 12a rodada: o snapshot le a lista de a17049f (com Blood Money)
 spec = importlib.util.spec_from_file_location("v", os.path.join(AQUI, "..", "codigo", "vihaan_goldfish_v1_c04840d.py"))
 V = importlib.util.module_from_spec(spec); sys.modules["v"] = V; spec.loader.exec_module(V)
 

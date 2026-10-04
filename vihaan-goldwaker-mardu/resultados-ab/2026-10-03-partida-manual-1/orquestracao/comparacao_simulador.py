@@ -4,7 +4,7 @@ pelo Prosper/impulso que o simulador nunca joga (play_from_impulse exclui terren
 Uso: [FX_MODO=resiliencia] python3 comparacao_simulador.py [N] [semente0]"""
 import collections, importlib.util, os, statistics as st, sys
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-os.chdir(REPO)
+os.chdir(os.path.join(REPO, "resultados-ab", "_lista_legada"))   # 12a rodada: o snapshot le a lista de a17049f (com Blood Money)
 SIM = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "codigo", "vihaan_goldfish_v1_c04840d.py")  # simulador como estava no commit c04840d (antes de qualquer correcao do terreno do Prosper)
 spec = importlib.util.spec_from_file_location("vih_cmp", SIM)
 V = importlib.util.module_from_spec(spec); sys.modules["vih_cmp"] = V; spec.loader.exec_module(V)

@@ -1,0 +1,2 @@
+padrao: N=20000 seed_base=5000000 partidas diferentes=0 -> BIT-IDENTICO
+resiliencia: N=20000 seed_base=5000000 partidas diferentes=0 -> BIT-IDENTICO

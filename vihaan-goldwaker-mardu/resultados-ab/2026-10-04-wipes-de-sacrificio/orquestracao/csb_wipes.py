@@ -5,7 +5,7 @@ Uso (da raiz do repositorio): SSL_CERT_FILE=/root/.ccr/ca-bundle.crt python3 vih
 import collections, json, lzma, os, re, sys, time, urllib.request
 os.environ.setdefault("SSL_CERT_FILE", "/root/.ccr/ca-bundle.crt")
 AQUI = os.path.dirname(os.path.abspath(__file__))
-LISTA = os.path.join(AQUI, "..", "..", "..", "lista.md")
+LISTA = os.path.join(AQUI, "..", "..", "..", "resultados-ab", "_lista_legada", "lista.md")   # 12a rodada: a lista de a17049f (com Blood Money); a viva tem a Mythos
 CMD = "Vihaan, Goldwaker"
 CANDIDATAS = ["Blasphemous Edict", "By Invitation Only", "Barter in Blood", "Tergrid's Shadow", "Rankle's Prank", "Taste of Death", "Necrotic Hex", "Liliana, Dreadhorde General",
               "Zodiark, Umbral God", "Meathook Massacre II", "Mythos of Snapdax", "Tragic Arrogance", "Winnowing", "Slaughter the Strong", "Living Death", "Scrap Mastery", "All Is Dust"]

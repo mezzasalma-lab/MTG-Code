@@ -1,0 +1,363 @@
+{
+ "Mythos of Snapdax": {
+  "card": {
+   "object": "card",
+   "id": "2712a1a3-dd28-44c8-a661-5bcf68d3acaa",
+   "oracle_id": "4b0b4d16-1d2b-497e-a1ae-bfb89eece665",
+   "multiverse_ids": [
+    479544
+   ],
+   "mtgo_id": 80057,
+   "arena_id": 71091,
+   "tcgplayer_id": 212088,
+   "cardmarket_id": 451743,
+   "name": "Mythos of Snapdax",
+   "lang": "en",
+   "released_at": "2020-04-24",
+   "uri": "https://api.scryfall.com/cards/2712a1a3-dd28-44c8-a661-5bcf68d3acaa",
+   "scryfall_uri": "https://scryfall.com/card/iko/24/mythos-of-snapdax?utm_source=api",
+   "layout": "normal",
+   "highres_image": true,
+   "image_status": "highres_scan",
+   "image_updated_at": "2026-07-13T08:24:45Z",
+   "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/7/2712a1a3-dd28-44c8-a661-5bcf68d3acaa.jpg?1783931085",
+    "normal": "https://cards.scryfall.io/normal/front/2/7/2712a1a3-dd28-44c8-a661-5bcf68d3acaa.jpg?1783931085",
+    "large": "https://cards.scryfall.io/large/front/2/7/2712a1a3-dd28-44c8-a661-5bcf68d3acaa.jpg?1783931085",
+    "png": "https://cards.scryfall.io/png/front/2/7/2712a1a3-dd28-44c8-a661-5bcf68d3acaa.png?1783931085",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/7/2712a1a3-dd28-44c8-a661-5bcf68d3acaa.jpg?1783931085",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/7/2712a1a3-dd28-44c8-a661-5bcf68d3acaa.jpg?1783931085",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/7/2712a1a3-dd28-44c8-a661-5bcf68d3acaa.webp?1783931085",
+    "grid": "https://cards.scryfall.io/grid/front/2/7/2712a1a3-dd28-44c8-a661-5bcf68d3acaa.webp?1783931085",
+    "display": "https://cards.scryfall.io/display/front/2/7/2712a1a3-dd28-44c8-a661-5bcf68d3acaa.webp?1783931085",
+    "art": "https://cards.scryfall.io/art/front/2/7/2712a1a3-dd28-44c8-a661-5bcf68d3acaa.webp?1783931085",
+    "crop": "https://cards.scryfall.io/crop/front/2/7/2712a1a3-dd28-44c8-a661-5bcf68d3acaa.webp?1783931085"
+   },
+   "mana_cost": "{2}{W}{W}",
+   "cmc": 4.0,
+   "type_line": "Sorcery",
+   "oracle_text": "Each player chooses an artifact, a creature, an enchantment, and a planeswalker from among the nonland permanents they control, then sacrifices the rest. If {B}{R} was spent to cast this spell, you choose the permanents for each player instead.",
+   "colors": [
+    "W"
+   ],
+   "color_identity": [
+    "B",
+    "R",
+    "W"
+   ],
+   "keywords": [],
+   "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+   },
+   "games": [
+    "arena",
+    "paper",
+    "mtgo"
+   ],
+   "reserved": false,
+   "game_changer": false,
+   "foil": true,
+   "nonfoil": true,
+   "finishes": [
+    "nonfoil",
+    "foil"
+   ],
+   "oversized": false,
+   "promo": false,
+   "reprint": false,
+   "variation": false,
+   "set_id": "19feda43-15ab-427e-a0e4-148a4bf2b03a",
+   "set": "iko",
+   "set_name": "Ikoria: Lair of Behemoths",
+   "set_type": "expansion",
+   "set_uri": "https://api.scryfall.com/sets/19feda43-15ab-427e-a0e4-148a4bf2b03a",
+   "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aiko&unique=prints",
+   "scryfall_set_uri": "https://scryfall.com/sets/iko?utm_source=api",
+   "rulings_uri": "https://api.scryfall.com/cards/2712a1a3-dd28-44c8-a661-5bcf68d3acaa/rulings",
+   "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A4b0b4d16-1d2b-497e-a1ae-bfb89eece665&unique=prints",
+   "collector_number": "24",
+   "digital": false,
+   "rarity": "rare",
+   "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+   "artist": "Seb McKinnon",
+   "artist_ids": [
+    "ad4caca0-8d89-44ce-a1a6-d5ca905bd6fb"
+   ],
+   "illustration_id": "00cc1642-a581-4304-836a-886c39f331b6",
+   "border_color": "black",
+   "frame": "2015",
+   "security_stamp": "oval",
+   "full_art": false,
+   "textless": false,
+   "booster": true,
+   "story_spotlight": false,
+   "edhrec_rank": 6723,
+   "penny_rank": 12759,
+   "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/articles/archive/card-preview/wrath-judgment-mythos-2020-04-03",
+    "previewed_at": "2020-04-03"
+   },
+   "prices": {
+    "usd": "0.37",
+    "usd_foil": "0.51",
+    "usd_etched": null,
+    "eur": "0.36",
+    "eur_foil": "0.86",
+    "tix": "0.02"
+   },
+   "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=479544&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMythos%2Bof%2BSnapdax",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMythos%2Bof%2BSnapdax",
+    "edhrec": "https://edhrec.com/route/?cc=Mythos+of+Snapdax"
+   },
+   "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F212088%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=451743&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/80057?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+   }
+  },
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "4b0b4d16-1d2b-497e-a1ae-bfb89eece665",
+    "source": "wotc",
+    "published_at": "2020-04-17",
+    "comment": "If you control a permanent with more than one type, you may choose it for each of those types. For example, you could choose an artifact creature as the artifact you keep and also as the creature you keep."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "4b0b4d16-1d2b-497e-a1ae-bfb89eece665",
+    "source": "wotc",
+    "published_at": "2020-04-17",
+    "comment": "If you’re choosing the permanents for each player, your choices must still be legal. For example, you can’t decline to choose a creature a player will keep if that player controls a creature."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "4b0b4d16-1d2b-497e-a1ae-bfb89eece665",
+    "source": "wotc",
+    "published_at": "2020-04-17",
+    "comment": "As Mythos of Snapdax resolves, first you choose which permanents you control won’t be sacrificed, then each other player in turn order does the same, knowing the choices made before them. Then each nonland permanent not chosen is sacrificed at the same time."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "4b0b4d16-1d2b-497e-a1ae-bfb89eece665",
+    "source": "wotc",
+    "published_at": "2020-04-17",
+    "comment": "Lands with another permanent type can’t be chosen and won’t be sacrificed."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "4b0b4d16-1d2b-497e-a1ae-bfb89eece665",
+    "source": "wotc",
+    "published_at": "2020-04-17",
+    "comment": "The abilities of the Mythos check what colors of mana were spent to cast the spell. It’s not an alternative cost to cast the spell."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "4b0b4d16-1d2b-497e-a1ae-bfb89eece665",
+    "source": "wotc",
+    "published_at": "2020-04-17",
+    "comment": "If an effect copies the Mythos spell, no mana was spent to cast the copy, so the copy won’t receive the bonus."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "4b0b4d16-1d2b-497e-a1ae-bfb89eece665",
+    "source": "wotc",
+    "published_at": "2020-04-17",
+    "comment": "The ability checks what mana was actually spent to cast a spell. If an effect allows you to spend mana “as though it were mana” of any color or type, that allows you to spend mana you couldn’t otherwise spend, but it doesn’t change what mana you spent to cast the spell."
+   },
+   {
+    "object": "ruling",
+    "oracle_id": "4b0b4d16-1d2b-497e-a1ae-bfb89eece665",
+    "source": "wotc",
+    "published_at": "2020-04-17",
+    "comment": "If an effect allows you to cast a spell without paying its mana cost, you can’t choose to cast it and pay unless another rule or effect allows you to cast that spell for a cost. Similarly, you can’t waive a cost reduction unless that effect says you may."
+   }
+  ]
+ },
+ "Blood Money": {
+  "card": {
+   "object": "card",
+   "id": "bbbc5c9d-110a-44cd-a2c9-8bad7dac4b5f",
+   "oracle_id": "75f5d372-4ff9-430c-8302-72472439e0d2",
+   "multiverse_ids": [
+    640479
+   ],
+   "mtgo_id": 118766,
+   "tcgplayer_id": 525806,
+   "cardmarket_id": 743535,
+   "name": "Blood Money",
+   "lang": "en",
+   "released_at": "2023-11-17",
+   "uri": "https://api.scryfall.com/cards/bbbc5c9d-110a-44cd-a2c9-8bad7dac4b5f",
+   "scryfall_uri": "https://scryfall.com/card/lcc/183/blood-money?utm_source=api",
+   "layout": "normal",
+   "highres_image": true,
+   "image_status": "highres_scan",
+   "image_updated_at": "2026-07-13T03:37:59Z",
+   "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/b/bbbc5c9d-110a-44cd-a2c9-8bad7dac4b5f.jpg?1783913879",
+    "normal": "https://cards.scryfall.io/normal/front/b/b/bbbc5c9d-110a-44cd-a2c9-8bad7dac4b5f.jpg?1783913879",
+    "large": "https://cards.scryfall.io/large/front/b/b/bbbc5c9d-110a-44cd-a2c9-8bad7dac4b5f.jpg?1783913879",
+    "png": "https://cards.scryfall.io/png/front/b/b/bbbc5c9d-110a-44cd-a2c9-8bad7dac4b5f.png?1783913879",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/b/bbbc5c9d-110a-44cd-a2c9-8bad7dac4b5f.jpg?1783913879",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/b/bbbc5c9d-110a-44cd-a2c9-8bad7dac4b5f.jpg?1783913879",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/b/bbbc5c9d-110a-44cd-a2c9-8bad7dac4b5f.webp?1783913879",
+    "grid": "https://cards.scryfall.io/grid/front/b/b/bbbc5c9d-110a-44cd-a2c9-8bad7dac4b5f.webp?1783913879",
+    "display": "https://cards.scryfall.io/display/front/b/b/bbbc5c9d-110a-44cd-a2c9-8bad7dac4b5f.webp?1783913879",
+    "art": "https://cards.scryfall.io/art/front/b/b/bbbc5c9d-110a-44cd-a2c9-8bad7dac4b5f.webp?1783913879",
+    "crop": "https://cards.scryfall.io/crop/front/b/b/bbbc5c9d-110a-44cd-a2c9-8bad7dac4b5f.webp?1783913879"
+   },
+   "mana_cost": "{5}{B}{B}",
+   "cmc": 7.0,
+   "type_line": "Sorcery",
+   "oracle_text": "Destroy all creatures. For each nontoken creature destroyed this way, you create a tapped Treasure token.",
+   "colors": [
+    "B"
+   ],
+   "color_identity": [
+    "B"
+   ],
+   "keywords": [
+    "Treasure"
+   ],
+   "all_parts": [
+    {
+     "object": "related_card",
+     "id": "3dfaedeb-f8ec-4f0e-b243-c850770a86f2",
+     "component": "token",
+     "name": "Treasure",
+     "type_line": "Token Artifact — Treasure",
+     "uri": "https://api.scryfall.com/cards/3dfaedeb-f8ec-4f0e-b243-c850770a86f2"
+    },
+    {
+     "object": "related_card",
+     "id": "bbbc5c9d-110a-44cd-a2c9-8bad7dac4b5f",
+     "component": "combo_piece",
+     "name": "Blood Money",
+     "type_line": "Sorcery",
+     "uri": "https://api.scryfall.com/cards/bbbc5c9d-110a-44cd-a2c9-8bad7dac4b5f"
+    }
+   ],
+   "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+   },
+   "games": [
+    "paper",
+    "mtgo"
+   ],
+   "reserved": false,
+   "game_changer": false,
+   "foil": false,
+   "nonfoil": true,
+   "finishes": [
+    "nonfoil"
+   ],
+   "oversized": false,
+   "promo": false,
+   "reprint": true,
+   "variation": false,
+   "set_id": "d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+   "set": "lcc",
+   "set_name": "The Lost Caverns of Ixalan Commander",
+   "set_type": "commander",
+   "set_uri": "https://api.scryfall.com/sets/d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+   "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alcc&unique=prints",
+   "scryfall_set_uri": "https://scryfall.com/sets/lcc?utm_source=api",
+   "rulings_uri": "https://api.scryfall.com/cards/bbbc5c9d-110a-44cd-a2c9-8bad7dac4b5f/rulings",
+   "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A75f5d372-4ff9-430c-8302-72472439e0d2&unique=prints",
+   "collector_number": "183",
+   "digital": false,
+   "rarity": "mythic",
+   "flavor_text": "The more you have, the more you have to lose.",
+   "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+   "artist": "Inka Schulz",
+   "artist_ids": [
+    "3f93408e-c510-42a5-beef-9ddbc56d9056"
+   ],
+   "illustration_id": "b82e9bb4-0bd2-41d7-a55a-c57de92033f0",
+   "border_color": "black",
+   "frame": "2015",
+   "security_stamp": "oval",
+   "full_art": false,
+   "textless": false,
+   "booster": false,
+   "story_spotlight": false,
+   "edhrec_rank": 1664,
+   "prices": {
+    "usd": "2.65",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "2.56",
+    "eur_foil": null,
+    "tix": "5.25"
+   },
+   "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=640479&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBlood%2BMoney",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBlood%2BMoney",
+    "edhrec": "https://edhrec.com/route/?cc=Blood+Money"
+   },
+   "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F525806%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=743535&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/118766?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+   }
+  },
+  "rulings": [
+   {
+    "object": "ruling",
+    "oracle_id": "75f5d372-4ff9-430c-8302-72472439e0d2",
+    "source": "wotc",
+    "published_at": "2022-06-10",
+    "comment": "If a creature isn't destroyed this way for some reason, such as having indestructible or being regenerated, Blood Money's controller will not create a Treasure token for it."
+   }
+  ]
+ }
+}

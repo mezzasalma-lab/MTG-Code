@@ -1,0 +1,16 @@
+cartas na biblioteca: 99 | distintas: 93
+desconhecidas (fora do CARD_DB): []
+duplicadas nao-basicas: []
+terrenos: 35 | basicos: {'Mountain': 3, 'Plains': 2, 'Swamp': 4}
+flags: True True True 2 True
+flags Sephiroth (emblema, simultaneas, fronteira): True True True
+flags 9a rodada (wipe proprio: destroy, tapped, custo da Act, hold; imposto do comandante): True True True True True
+flag 11a rodada (Mirkwood Bats so' em sacrificio): True
+flags 12a rodada (Mythos no lugar do Blood Money, cor do {W}{W}): True True | Mythos na lista: 1 | Blood Money na lista: 0 | OWN_WIPES: ('Blood Money', 'Blasphemous Act', 'Mythos of Snapdax')
+flags 10a rodada (wipe segurado sempre, pagar com animados, liberar mitigado): True True True
+flag 8a rodada (a metade conta so' os animados): True
+flag 7a rodada (reserva de metade no farm com Dictate): True
+flags 6a rodada (exilio sempre primeiro, farm tambem com Dictate): True True
+flags 5a rodada (exilio expirando primeiro, farm de Treasure animado): True True
+flags fora da mao (terreno, esteira, contagem, storm, sevinne): True True True True True
+200 partidas sem excecao | partidas com animados sacrificados como criatura: 133 | wipes proprios conjurados: 0 | Blood Money: 0 | Mythos: 0

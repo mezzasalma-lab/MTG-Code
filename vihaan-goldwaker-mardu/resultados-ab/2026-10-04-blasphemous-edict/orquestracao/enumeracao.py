@@ -3,7 +3,7 @@ relevante pra comparar Blasphemous Act (destroy-like: 13 de dano) x Blasphemous 
 Uso (da raiz do repositorio): SSL_CERT_FILE=/root/.ccr/ca-bundle.crt python3 vihaan-goldwaker-mardu/resultados-ab/2026-10-04-blasphemous-edict/orquestracao/enumeracao.py"""
 import json, lzma, os, re, subprocess, sys, time, urllib.parse
 AQUI = os.path.dirname(os.path.abspath(__file__))
-LISTA = os.path.join(AQUI, "..", "..", "..", "lista.md")
+LISTA = os.path.join(AQUI, "..", "..", "..", "resultados-ab", "_lista_legada", "lista.md")   # 12a rodada: a lista de a17049f (com Blood Money); a viva tem a Mythos
 
 def nomes(path):
     out = []; sec = None

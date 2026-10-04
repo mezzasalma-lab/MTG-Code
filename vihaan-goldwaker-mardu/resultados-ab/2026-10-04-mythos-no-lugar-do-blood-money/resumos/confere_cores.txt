@@ -1,0 +1,5 @@
+terrenos distintos na biblioteca: 29 | copias: 35 | fora do LAND_COLORS: []
+divergencias LAND_COLORS x produced_mana ao vivo: []
+fontes de W entre os terrenos: 14 copias em 13 nomes (+ Arcane Signet e Treasures, qualquer cor)
+fontes de B entre os terrenos: 21 copias em 18 nomes (+ Arcane Signet e Treasures, qualquer cor)
+fontes de R entre os terrenos: 17 copias em 15 nomes (+ Arcane Signet e Treasures, qualquer cor)
