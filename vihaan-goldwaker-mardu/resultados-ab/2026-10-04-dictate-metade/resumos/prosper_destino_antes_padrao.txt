@@ -1,0 +1,7 @@
+vihaan_goldfish_v1_ANTES_8e9ab6e.py | modo padrao | N=10000 sementes 3000000..3009999 | jogos com pelo menos 1 exilio do Prosper: 1617 (16.2%) | exilios do Prosper: 4634 (0.46 por jogo)
+  terreno  jogada                   1108  (67.8% dos terreno exilados)
+  terreno  EXPIROU sem uso            28  (1.7% dos terreno exilados)
+  terreno  ainda valida no fim       498  (30.5% dos terreno exilados)
+  magia    jogada                   1955  (65.2% dos magia exilados)
+  magia    EXPIROU sem uso            54  (1.8% dos magia exilados)
+  magia    ainda valida no fim       991  (33.0% dos magia exilados)

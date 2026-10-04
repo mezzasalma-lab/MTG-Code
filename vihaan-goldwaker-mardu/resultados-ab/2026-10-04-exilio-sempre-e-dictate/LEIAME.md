@@ -70,3 +70,9 @@ Os arquivos dos lotes anteriores do Vihaan (`2026-10-03-exilio-primeiro-e-mahadi
 - O **valor** dos sacrifícios do Dictate no oponente é 📊 (só se conta o uso: `dictate_triggers_total`). O simulador sacrifica **todos** os animados que sobram quando há Dictate; a sua T8 sacrificou 7 dos até 12 disponíveis, e o critério da reserva não dá pra inferir do log.
 - Lotho/Monologue Tax em 2ª mágica de **oponente** continuam 📊. Sem resposta: o contador +1/+1 do Treasure no T7 e a cópia da Sevinne's no T8.
 - Nenhuma carta foi cortada ou adicionada à lista; o Commander Spellbook não foi consultado porque nada na lista mudou.
+
+## Nota de 2026-10-04 (7ª rodada: `../2026-10-04-dictate-metade/`)
+
+- **Respondido pelo usuário:** o contador +1/+1 do Treasure no T7 foi **clique errado** (a intenção era duplicar o token); e o critério de reserva do Dictate é *"até metade dos treasures"* (virou a chave `TREASURE_FARM_DICTATE_HALF_RESERVE_ENABLED`, ligada por padrão no simulador vivo). As frases "Sem resposta: o contador +1/+1 do Treasure no T7" e "sacrifica todos os animados que sobram" acima descrevem o estado **daquela** rodada.
+- **Esta pasta continua reproduzindo o simulador do commit dela**: `orquestracao/fx_common.py` desliga a chave nova e `orquestracao/prosper_destino.py` agora passa por `F.flags` (antes carregava o simulador vivo sem desligá-la e 3 contagens do `prosper_destino_depois_padrao.txt` diferiam). `verificar_reproducao.sh --tudo`: 9/10 na 1ª execução depois da 7ª rodada; os dois resumos do Prosper (antes e depois) conferidos por `cmp` depois do ajuste. `SHA256SUMS` regenerado.
+

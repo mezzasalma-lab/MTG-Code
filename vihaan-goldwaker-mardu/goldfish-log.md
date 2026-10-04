@@ -1,5 +1,7 @@
 # Goldfish Log — Vihaan, Goldwaker
 
+> **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: farm com Dictate limitado a até metade dos Treasures (2026-10-04):** [`resultados-ab/2026-10-04-dictate-metade/LEIAME.md`](resultados-ab/2026-10-04-dictate-metade/LEIAME.md) — brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
 > **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: exílio sempre primeiro e farm com Dictate (2026-10-04):** [`resultados-ab/2026-10-04-exilio-sempre-e-dictate/LEIAME.md`](resultados-ab/2026-10-04-exilio-sempre-e-dictate/LEIAME.md) — brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
 > **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: exílio do Prosper expirando primeiro e Treasure animado com Mahadi (2026-10-03):** [`resultados-ab/2026-10-03-exilio-primeiro-e-mahadi/LEIAME.md`](resultados-ab/2026-10-03-exilio-primeiro-e-mahadi/LEIAME.md) — brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
@@ -16,6 +18,50 @@
 
 > **Dados brutos e como reproduzir as tabelas da seção Kingpin, Wilson Fisk (2026-10-03):** [`resultados-ab/2026-10-03-kingpin/LEIAME.md`](resultados-ab/2026-10-03-kingpin/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
+
+---
+
+## Correção do simulador: farm com Dictate limitado a até metade dos Treasures — 2026-10-04
+
+**Pedido (2 frases do usuário):** *"O contador foi erro de clique, era para duplicar o token. Eu sacrificaria até metade dos treasures para eliminar criaturas dos adversários."*
+**Veredito:**
+1. **O contador +1/+1 do Treasure no T7 foi clique errado** (a intenção era duplicar o token, isto é, criar um Treasure): não é marcador do Cleaver, não tem efeito de regra e não muda nada no simulador. **Fecha** o último item do T7.
+2. **O critério de reserva do Dictate é "até metade dos Treasures".** Virou chave (`TREASURE_FARM_DICTATE_HALF_RESERVE_ENABLED`): quando **só o Dictate** justifica o sacrifício (sem Mahadi nem Pitiless Plunderer em campo), o farm sacrifica no máximo `estoque // 2` Treasures-criatura (arredonda pra baixo; nunca mais que os animados vivos). **Com Mahadi ou Plunderer o sacrifício continua de graça e de todos os animados** (a reposição devolve o Treasure), como na rodada anterior.
+3. **Efeito medido, pequeno, e proporcional ao que a reserva corta:** em relação à regra anterior (sacrificar *todos* os animados), a reserva devolve **+0,023 ±0,005 Treasures no estoque do fim por jogo** (padrão) e custa **−0,022 ±0,006 mortes de criatura** e **−0,022 gatilhos do Dictate por jogo** (0,335 → 0,313; ×3 oponentes no proxy: 1,005 → 0,938 criaturas de oponente por jogo). Só **1,5% das partidas** mudam de estado, porque "só o Dictate justifica" é raro (0,088 Treasures por jogo na regra anterior). Vitória até o T8: **−0,020 ±0,039pp, n.s.**
+
+### O que mudou no código (1 chave)
+`TREASURE_FARM_DICTATE_HALF_RESERVE_ENABLED` em `farm_animated_treasures`: `n = min(animados vivos, estoque)`; **se não há Mahadi/Plunderer** (só o Dictate justifica), `n = min(n, estoque // 2)`. `treasure_farm_dictate_total` continua contando os animados sacrificados só por causa do Dictate. **Leitura adotada (raciocínio, não confirmada):** "metade dos treasures" = metade do **estoque inteiro** (animados + não animados), arredondada pra baixo; a alternativa seria metade só dos animados. **Com a chave desligada o arquivo é bit-idêntico ao commit `8e9ab6e`.** Nenhum campo novo no `GameState`.
+
+### Medição (apoio; pareada; base = simulador antes, commit `8e9ab6e`, em que o Dictate sacrifica **todos** os animados; N=10.000, sementes 3.000.000+i, 8 turnos; entre parênteses o modo resiliência)
+Diferença pareada (variante − antes), IC95%. `metade` = a chave nova; `sem` = o farm com Dictate desligado (regra da 5ª rodada: só Mahadi/Plunderer), como referência de custo:
+
+| variante | win ≤8 (pp) | Treasures criados | estoque no fim | dano mesa | mortes de criatura |
+|---|---|---|---|---|---|
+| **metade** | −0,020 ±0,039 n.s. (−0,010 ±0,020 n.s.) | +0,005 ±0,003 (+0,001 ±0,001 n.s.) | **+0,023 ±0,005** (+0,014 ±0,003) | −0,030 ±0,016 (−0,016 ±0,009) | **−0,022 ±0,006** (−0,018 ±0,004) |
+| sem (referência) | −0,040 ±0,078 n.s. (−0,040 ±0,048 n.s.) | +0,005 ±0,003 (+0,000 ±0,002 n.s.) | **+0,079 ±0,014** (+0,043 ±0,009) | −0,135 ±0,056 (−0,075 ±0,031) | **−0,082 ±0,015** (−0,054 ±0,010) |
+
+Base: win ≤8 14,5% (3,8%) · Treasures criados 12,97 (7,96) · estoque no fim 3,45 (1,84) · dano mesa 21,37 (9,65) · mortes de criatura 4,26 (5,20).
+**Métricas diretas (por jogo, padrão; entre parênteses a resiliência):**
+
+| | gatilhos do Dictate | ×3 oponentes (proxy) | Treasures-criatura sacrificados só pelo Dictate | partidas iguais ao antes |
+|---|---|---|---|---|
+| antes (sacrifica todos) | 0,335 (0,197) | 1,005 (0,592) | 0,088 (0,057) | 100% |
+| **metade** | **0,313** (0,180) | **0,938** (0,539) | **0,062** (0,039) | 98,5% (98,8%) |
+| sem (farm com Dictate desligado) | 0,253 (0,143) | 0,759 (0,428) | 0 | 97,3% (97,9%) |
+
+**Leitura (medido):** (a) a reserva fica **entre** as duas regras: mantém **73%** dos gatilhos que o farm com Dictate dava (0,0599 de 0,0822 acima de `sem`) e custa **71%** do estoque (0,056 de 0,079): o corte é quase linear, a reserva **não** troca estoque por gatilho em condição melhor, só limita o tamanho; (b) como o cenário "só o Dictate justifica" é ~11% do farm (0,088 de 0,771 Treasures-criatura sacrificados por jogo), a diferença total é de 1,5% das partidas; (c) o `win` não se move (n.s. nos dois modos): o simulador não dá valor às criaturas de oponente (📊), então **o valor de matar criaturas dos adversários, que é o motivo do seu critério, continua fora da métrica**.
+**Lido como raciocínio, não medido:** (i) "até metade" é um **teto**; o simulador sacrifica **exatamente o teto** (`estoque // 2`) sempre que há animados suficientes, enquanto uma jogada real sacrifica o que o campo do oponente pede (quantas criaturas valem o Treasure): isso é estado de oponente 📊; (ii) a hipótese de que a reserva deva valer também com Mahadi/Plunderer não foi adotada, porque ali o Treasure volta; se você quiser o teto também lá, é só dizer; (iii) a sua T8 gastou 7 Treasures-criatura **pagando** o Dictate, o que é outra coisa (custo do cast, não o farm depois), então o log da partida não dá esse critério e a sua resposta é a fonte.
+
+### Validação (Regra #1) — arquivada em `resultados-ab/2026-10-04-dictate-metade/`
+- **Smoke:** 99 cartas, 93 distintas, 0 desconhecidas, 0 duplicadas não básicas, 35 terrenos; 200 partidas sem exceção.
+- **Testes dirigidos:** 17/17: só o Dictate com 10 Treasures animados sacrifica 5 (5 gatilhos = 15 criaturas de oponente no proxy ×3, 5 de reserva); estoque ímpar (7) → 3; poucos animados (3 de 10) → o limite é o número de animados; estoque 1 → 0 (não sacrifica o único Treasure); 12 Treasures com 7 animados → 6; escala do T8 (12 animados) → 6; chave desligada = regra anterior (todos); **Dictate + Mahadi e Dictate + Plunderer: todos os animados e contador "só Dictate" em 0**; só Mahadi: todos; farm com Dictate desligado e sem motor: nada; **ordem** (Dictate pago pelos 5 terrenos e só depois 4 animados morrem com ele em campo = 4 gatilhos); sequência real `combat_step → main_phase → farm → end_step` (8 animados → 4 sacrificados, 0 vivos no fim); integração com Zulaport e Sephiroth (12 Treasures → 6 sacrificados, 6 gatilhos, 6 drains, Sephiroth vira na 4ª morte); invariante em 1.500 jogos por modo (o farm nunca passa dos animados nem, só com o Dictate, da metade do estoque).
+- **Bit-identidade com a chave desligada:** 20.000/20.000 partidas idênticas ao `8e9ab6e` no modo padrão e 20.000/20.000 na resiliência.
+- **Regressão:** 120.000 partidas (3 configurações — `metade`, `tudo`, `sem` — × 2 modos × 20.000, sementes 5.000.000+i), **0 exceções**, 0 cartas duplicadas, 0 partidas com mais de 1 jogada de terreno no turno, 0 "animados vivos" ≠ 0 no fim do turno, 0 Treasures < 0, 0 farms inválidos (inclui o invariante da metade), 0 mágicas paradas no campo, 0 emblemas do Sephiroth inconsistentes.
+- **Reprodutibilidade:** @@VERIF@@
+
+### Escopo verificado e NÃO verificado (Regra #7)
+- **Verificado:** `farm_animated_treasures` (a regra do teto e a ordem de chamada em `play_turn`), por teste dirigido + A/B + regressão + bit-identidade. Classes da taxonomia varridas, e só elas: custo de ativação (Treasure como saída), gatilho compartilhado (morte de criatura → Dictate), política de jogada contra a linha real do usuário.
+- **Não verificado / aberto:** (1) o valor dos sacrifícios do Dictate no oponente (📊: só se conta o uso, `dictate_triggers_total` × 3 oponentes); (2) se "metade" é do estoque inteiro (adotado) ou só dos animados; (3) se o teto deve valer também com Mahadi/Plunderer (não adotado); (4) Lotho/Monologue Tax em 2ª mágica de oponente 📊; (5) a cópia da Sevinne's no T8 e a Blood Money que expirou no T8 continuam sem resposta; (6) o resto do `.py` não foi relido.
 
 ---
 
@@ -57,7 +103,7 @@ Base: win ≤8 14,3% (3,7%) · Treasures criados 12,87 (7,90) · estoque no fim 
 
 ### Escopo verificado e NÃO verificado (Regra #7)
 - **Verificado:** o início e o laço de `main_phase` (ordem exílio × mão), `play_from_impulse`, `farm_animated_treasures`; por teste dirigido + A/B + regressão + destino do Prosper.
-- **Não verificado / aberto:** (1) o valor dos sacrifícios do Dictate no oponente (📊: só se conta o uso); (2) a quantidade de Treasures que você guarda ao sacrificar com o Dictate (o simulador sacrifica todos os animados que sobram); (3) Lotho/Monologue Tax em 2ª mágica de oponente 📊; (4) o resto do `.py` não foi relido; (5) o contador +1/+1 do Treasure no T7 e a cópia da Sevinne's no T8 continuam sem resposta.
+- **Não verificado / aberto:** (1) o valor dos sacrifícios do Dictate no oponente (📊: só se conta o uso); (2) a quantidade de Treasures que você guarda ao sacrificar com o Dictate (o simulador sacrifica todos os animados que sobram; **respondido em 2026-10-04: "até metade dos treasures"**, ver a seção acima); (3) Lotho/Monologue Tax em 2ª mágica de oponente 📊; (4) o resto do `.py` não foi relido; (5) a cópia da Sevinne's no T8 continua sem resposta (o contador +1/+1 do T7 foi clique errado, resposta de 2026-10-04).
 
 ---
 
@@ -159,7 +205,7 @@ Base: win ≤8 10,6% (2,6%) · Treasures criados 10,47 (6,95) · combate 50,44 (
 **Veredito:**
 1. **Nenhuma jogada ilegal nos pontos que o log permite checar** (terrenos e se entram tapped, custos pagos, Pact Boon com carta jogada do exílio, gatilho de ataque da Storm, Sevinne's do exílio e depois flashback, Mahadi voltando do cemitério). A conta de mana fecha **exatamente** em T2, T3, T4 e T8.
 2. **Treasures: 21 criados (2 / 6 / 7 / 6 em T5–T8). Só T5 fecha sozinho.** T6 e T7 só fecham com duas informações que o log não registra (o dano do equipado com o Reaver Cleaver e quantas mortes você assumiu); abaixo está a conta, com as fórmulas, para você confirmar. **Pelo oráculo, T7 teria no mínimo 6 e até 10 Treasures; o log tem 7.**
-3. **Dois pontos de regra que dependem de você:** o contador +1/+1 do Treasure em T7 (se marcava o Cleaver, o equip não podia ter sido naquele momento) e o **The Eldest Reborn do oponente** (o capítulo I aparece, você sacrificou o Zulaport; o capítulo II, "descarte uma carta", não aparece).
+3. **Dois pontos de regra que dependem de você:** o contador +1/+1 do Treasure em T7 *(respondido depois: clique errado, a intenção era duplicar o token)* (se marcava o Cleaver, o equip não podia ter sido naquele momento) e o **The Eldest Reborn do oponente** (o capítulo I aparece, você sacrificou o Zulaport; o capítulo II, "descarte uma carta", não aparece).
 4. **Contra o simulador (medido):** 21 Treasures até o T8 está no ~**P90** do simulador (9,8% dos jogos do modo padrão chegam a 21; 3,4% no modo resiliência). Achei **4 lacunas reais no simulador** que esta partida exercita, todas confirmadas por teste direto no código: (a) ele **nunca joga o terreno que o Prosper exila** (você fez isso em T5: Desolate Mire + Treasure do Pact Boon); (b) uma **mágica jogada do exílio vira permanente no campo e o efeito nunca resolve** (o Blood Money exilado não destrói nada; a Sevinne's do exílio de T6 não devolveria o Mahadi); (c) mágica do exílio e **flashback não contam como "spell cast"**, então o Lotho de T7 e T8 não dispararia, e o Lotho conjurado como 2ª mágica **dispara contra si mesmo**; (d) a 3ª cláusula da Storm (*+1/+0 por Treasure sacrificado*) **não existe**; no seu T6, com o Cleaver, vale 1 Treasure.
 
 ### 1. Sequência verificada turno a turno (ids do log; só o que o oráculo permite checar)
@@ -190,7 +236,7 @@ Treasures "tapped" que **continuam** no turno seguinte = atacantes marcados (a a
 ### 3. Dúvidas para você (o log não responde)
 1. **T6:** de onde vieram as 4 linhas além de Pact Boon e do ataque da Storm? Quanto foi o dano da Storm equipada (3 ou 4)? Quantas mortes você assumiu em T6 (só a Storm, ou o F--PiJszG também)?
 2. **T7 e T8:** os Treasures do **Pact Boon do Lotho** e do **Lotho na Tax** (T7) e do **Lotho no Dictate** (T8), com os −1 de vida de cada um, foram criados? Em quais linhas? E os 2 do oponente (Lotho + Tax), em qual bloco?
-3. **T7, o contador +1/+1 no Treasure 24DnlO5iG:** era o marcador do Cleaver? Equip só no timing de feitiço, e o Treasure só vira criatura no início do combate; se o equip foi antes, o alvo teria que ser uma criatura de verdade (Lotho tem haste pelo Vihaan; o Mahadi não).
+3. **T7, o contador +1/+1 no Treasure 24DnlO5iG** *(respondido em 2026-10-04: **clique errado, a intenção era duplicar o token**, isto é, criar um Treasure; não tinha relação com o Cleaver)*: era o marcador do Cleaver? Equip só no timing de feitiço, e o Treasure só vira criatura no início do combate; se o equip foi antes, o alvo teria que ser uma criatura de verdade (Lotho tem haste pelo Vihaan; o Mahadi não).
 4. **The Eldest Reborn:** capítulo II (cada oponente descarta uma carta) deveria ocorrer no turno seguinte do jogador dele, entre T7 e T8; não há descarte no log. O capítulo III põe uma criatura de **qualquer cemitério** no controle dele depois do T8. Você descartou/vai descartar?
 5. **O que ficou na mão sem uso até o T8:** Magda (2 mana, na mão desde T4), Aya of Alexandria (4), Path to Exile (1) e a **Blood Money exilada pelo Prosper em T7, que expirou no fim do T8** (7 mana; em T8 havia **até 12 Treasures**: 15 criados até T7, 3 somem por id, e os que não geraram linha contam como vivos). Foi decisão (goldfish sem alvos, preservar Treasures) ou esquecimento? Não estou dizendo que erraram: cada uma é motor do deck (Magda é sumidouro de Treasures e dá Dragon 4/4; Blood Money com Zulaport + Mahadi + Dictate em campo é morte em massa com payoff), então a resposta muda a leitura.
 6. **Sevinne's flashback (T8):** a cópia ("you may copy this spell, new target") não foi usada. No cemitério havia Storm (MV3), Tainted Peak (MV0, terreno também é permanente) e o Zulaport usado. Foi escolha?
@@ -204,7 +250,8 @@ Transcrição e leitura em `resultados-ab/2026-10-03-partida-manual-1/LEIAME.md`
 | Magda, Aya, Path sem uso | foram **descartadas pro Wheel of Fortune** (li como um 2º Wheel depois do T8) | deixa de ser "esquecimento": não há o que cobrar; a Blood Money exilada em T7 que expirou no T8 **continua sem resposta** |
 | T8: Dictate | pagou com **Treasures já criaturas** "para ativar o Machado mais vezes" (li **Mahadi**) | os 7 toques de Treasure do T8 são sacrifícios (não atacantes); cada animado sacrificado = 1 criatura morta = 1 Treasure do Mahadi no end step. T8: 7 mortes + Lotho no Dictate = **8 esperados × 6 linhas** se os 7 eram criaturas |
 **T7 (resposta do usuário em 2026-10-04): "T7 foi erro meu".** O que faltava no log de T7 (Pact Boon do Lotho jogado do exílio; Lotho na 2ª mágica) foi esquecimento de registro, não erro de regra; **fecha**.
-**Ainda sem resposta:** o contador +1/+1 do Treasure em T7, a Sevinne's sem a cópia no T8, a Blood Money que expirou, e quantos dos 7 Treasures do T8 eram criaturas.
+**Contador +1/+1 do Treasure em T7 (resposta de 2026-10-04): clique errado, a intenção era duplicar o token (criar um Treasure).** Não é marcador do Cleaver e não tem efeito de regra; **fecha**.
+**Ainda sem resposta:** a Sevinne's sem a cópia no T8, a Blood Money que expirou, e quantos dos 7 Treasures do T8 eram criaturas.
 **Dois padrões que se repetem:** (1) os gatilhos do **Lotho** (Pact Boon ao jogá-lo do exílio, 2ª mágica) não aparecem como linhas "criada": em T7 o usuário confirmou que foi **erro dele** (T8 provavelmente igual: Lotho no Dictate); (2) em T6 falta 1 Treasure no combate. Ambos subcontam a favor do oráculo (o jogador registrou **menos** Treasures do que as regras davam).
 
 ### 4. Comparação com o simulador (medido; N=10.000, sementes 3.000.000+i, 8 turnos; simulador no estado do commit `c04840d`; `resumos/comparacao_simulador_*.txt`)

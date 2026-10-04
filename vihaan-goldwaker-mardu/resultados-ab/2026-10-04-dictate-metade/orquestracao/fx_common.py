@@ -1,10 +1,10 @@
-"""Utilitarios comuns: carrega o simulador do Vihaan ANTES (commit ba594c8) e DEPOIS (arquivo vivo) como modulos separados e gera a
+"""Utilitarios comuns: carrega o simulador do Vihaan ANTES (commit 8e9ab6e) e DEPOIS (arquivo vivo) como modulos separados e gera a
 impressao digital do estado final. O carregador faz chdir pro deck (o simulador le 'lista.md')."""
 import hashlib, importlib.util, os, sys
 
 DECK = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 HERE = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-ANTES = os.path.join(HERE, "codigo", "vihaan_goldfish_v1_ANTES_ba594c8.py")
+ANTES = os.path.join(HERE, "codigo", "vihaan_goldfish_v1_ANTES_8e9ab6e.py")
 DEPOIS = os.path.join(DECK, "vihaan_goldfish_v1.py")
 NOVOS = {"interaction_rng", "super_nova_emblems", "seph_batch_active", "seph_batch_front_up", "seph_batch_emblems", "seph_batch_leaves",
          "sephiroth_extra_triggers_total", "impulse_lands", "impulse_lands_played_total", "impulse_spells_cast_total", "lotho_triggers_total",
@@ -22,13 +22,11 @@ def carrega(caminho, nome):
     return m
 
 
-def flags(m, allfirst=True, dictate=True):
-    """As duas correcoes da 6a rodada (SEMPRE jogar o exilio primeiro; farm tambem com Dictate). As demais chaves ficam como no repositorio."""
-    if hasattr(m, "IMPULSE_ALL_FIRST_ENABLED"):
-        m.IMPULSE_ALL_FIRST_ENABLED = allfirst
+def flags(m, half=True, dictate=True):
+    """A correcao da 7a rodada (reserva de metade no farm com Dictate). `dictate` liga/desliga o farm com Dictate (variante 'sem'). As demais chaves ficam como no repositorio."""
+    if hasattr(m, "TREASURE_FARM_DICTATE_HALF_RESERVE_ENABLED"):
+        m.TREASURE_FARM_DICTATE_HALF_RESERVE_ENABLED = half
         m.TREASURE_FARM_WITH_DICTATE_ENABLED = dictate
-    if hasattr(m, "TREASURE_FARM_DICTATE_HALF_RESERVE_ENABLED"):  # 7a rodada (reserva de metade): ligada no arquivo vivo, desligada aqui pra esta pasta reproduzir o simulador do commit dela
-        m.TREASURE_FARM_DICTATE_HALF_RESERVE_ENABLED = False
     return m
 
 

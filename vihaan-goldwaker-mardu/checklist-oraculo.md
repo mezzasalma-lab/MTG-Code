@@ -1,5 +1,22 @@
 # Checklist cláusula-a-cláusula — Vihaan, Goldwaker
 
+## Dictate com Treasures animados: reserva de "até metade dos treasures" (correção do simulador) — 2026-10-04
+
+Origem: resposta do usuário: *"O contador foi erro de clique, era para duplicar o token. Eu sacrificaria até metade dos treasures para eliminar criaturas dos adversários."* Código: `vihaan_goldfish_v1.py` (antes = commit `8e9ab6e`). Tudo que sustenta a conclusão está em `resultados-ab/2026-10-04-dictate-metade/`. Oráculo e rulings: os já lidos ao vivo (`.../2026-10-03-partida-manual-1/dados/oraculo_rulings_ao_vivo.json`; cópia em `.../2026-10-04-dictate-metade/dados/`).
+
+| Cláusula do oráculo | Ruling | Antes (`8e9ab6e`) | Depois |
+|---|---|---|---|
+| **Dictate of Erebos**: *whenever a creature you control dies, each opponent sacrifices a creature of their choice* | um gatilho por criatura; o oponente escolhe (2014-04-26) | ✅ o farm sacrificava **todos** os animados quando só o Dictate justificava | ✅ no máximo **metade do estoque** (`estoque // 2`) quando só o Dictate justifica; 📊 o oponente nunca sacrifica nada: `dictate_triggers_total` × 3 oponentes = proxy |
+| **Treasure**: *{T}, Sacrifice this token: Add one mana of any color* | habilidade de mana, ativável sem nada pra gastar | ✅ | ✅ (sacrifício com a reserva respeitada) |
+| **Mahadi / Pitiless Plunderer**: repõem o Treasure quando a criatura-Treasure morre | — | ✅ sacrifício de graça, todos os animados | ✅ **inalterado**: o teto só vale quando só o Dictate justifica (a reposição devolve o Treasure) |
+| (registro do usuário) contador +1/+1 no Treasure em T7 | — | aberto | **clique errado** (a intenção era duplicar o token); sem efeito de regra; fechado |
+
+**Regra #6 (ordem de eventos):** inalterada: o Dictate é pago antes com terrenos/rocks; o farm roda depois da 2ª `main_phase`; o teto é calculado sobre o `state.treasures` **naquele ponto** (depois do pagamento do Dictate).
+**Regra #5:** o critério da reserva veio do usuário (linha de jogo real), não do simulador; o simulador só mede o custo (+0,023 ±0,005 Treasures no estoque, −0,022 ±0,006 mortes de criatura, win −0,020 ±0,039pp n.s.) e **não dá valor** às criaturas de oponente (📊).
+**Premissas minhas, não confirmadas:** "metade dos treasures" = metade do **estoque inteiro**, arredondada pra baixo; com Mahadi/Plunderer o teto não se aplica.
+**Validação:** smoke; 17/17 testes dirigidos; bit-identidade com a chave desligada (20.000+20.000 partidas); regressão 120.000 partidas, 0 exceções; A/B pareado N=2.000/10.000 nos dois modos.
+**Classes da taxonomia da Regra #1 varridas (e só elas):** custo de ativação (Treasure como saída própria), gatilho compartilhado (morte de criatura → Dictate), política de jogada contra a linha real do usuário. **Não varridas:** as demais classes e cartas do `.py`.
+
 ## Preferências do usuário: exílio sempre primeiro e Dictate com Treasures animados (correção do simulador) — 2026-10-04
 
 Origem: respostas do usuário (T7 erro dele; *"Prefiro sempre jogar o spell exilado para criar mais tesouros"*; *"O dictate é mais vantagem, eu sacrifico tesouros animados e todos os oponentes sacrificam criaturas"*). Código: `vihaan_goldfish_v1.py` (antes = commit `ba594c8`). Tudo que sustenta a conclusão está em `resultados-ab/2026-10-04-exilio-sempre-e-dictate/`. Oráculo e rulings: os já lidos ao vivo (`.../2026-10-03-partida-manual-1/dados/oraculo_rulings_ao_vivo.json`).

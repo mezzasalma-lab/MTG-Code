@@ -30,6 +30,11 @@ Como foram lidas (a leitura é minha, não do usuário): **"Machado" = Mahadi** 
 
 Leitura: **"T7 foi erro meu"** = a diferença entre o que as regras davam em T7 (Pact Boon do Lotho jogado do exílio, Lotho na 2ª mágica) e as linhas "criada" do log foi **esquecimento do usuário** ao registrar, não regra do jogo nem do simulador. As outras duas frases são **preferências de jogo** que viraram chaves do simulador (`../2026-10-04-exilio-sempre-e-dictate/`).
 
+**Quarta mensagem do usuário (2026-10-04), transcrita sem reescrever:**
+> *"O contador foi erro de clique, era para duplicar o token. Eu sacrificaria até metade dos treasures para eliminar criaturas dos adversários"*
+
+Leitura: o **contador +1/+1** do Treasure 24DnlO5iG em T7 foi **clique errado** (a intenção era duplicar o token, isto é, criar um Treasure); não é marcador do Reaver Cleaver e não tem efeito de regra. A 2ª frase é o **critério de reserva** do sacrifício com o Dictate: **até metade dos Treasures** (virou chave do simulador em `../2026-10-04-dictate-metade/`).
+
 ## Como ler o log (premissas, a conferir com o usuário)
 
 Formato: lista de 8 turnos; cada turno = registros `{name, id, tapped, token, counters, fromZone, toZone, zone}`. As primeiras linhas de cada turno são as **desvirações** (untap) de quem estava virado; depois vêm as ações em ordem de registro. O log só gera linha quando o **estado muda**:
