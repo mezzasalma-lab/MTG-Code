@@ -35,6 +35,8 @@ def flags(m, destroy=True, tapped=True, cost=True, hold=True, tax=True):
         m.OWN_WIPE_HOLD_ALWAYS_ENABLED = False
         m.OWN_WIPE_PAY_WITH_ANIMATED_ENABLED = False
         m.OWN_WIPE_RELEASE_MITIGATED_ENABLED = False
+    if hasattr(m, "MIRKWOOD_BATS_SACRIFICE_ONLY_ENABLED"):  # 11a rodada (Mirkwood Bats so' em sacrificio): ligada no arquivo vivo, desligada aqui (esta pasta reproduz o simulador do commit dela)
+        m.MIRKWOOD_BATS_SACRIFICE_ONLY_ENABLED = False
     return m
 
 

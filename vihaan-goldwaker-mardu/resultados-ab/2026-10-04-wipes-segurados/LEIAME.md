@@ -85,3 +85,8 @@ Nenhum lote superado ou inválido nesta pasta.
 - As 3 premissas acima (unidade 1 dano = 1 criatura; só a circunstância do Mayhem Devil libera; custo inteiro por animados) não foram confirmadas pelo usuário; outras mitigações reais (Zulaport, Sephiroth, Plunderer) não entram na decisão de liberar.
 - Lotho/Monologue Tax em 2ª mágica de **oponente** continuam 📊 (convenção do usuário: 1 dos 3 oponentes, 2 mágicas).
 - Nenhuma carta foi cortada ou adicionada à lista; o Commander Spellbook não foi consultado porque nada na lista mudou.
+
+## Nota de 2026-10-04 (11ª rodada: `../2026-10-04-blasphemous-edict/`)
+
+- **A chave nova** (`MIRKWOOD_BATS_SACRIFICE_ONLY_ENABLED`: o Mirkwood Bats só dispara em sacrifício de ficha, não em ficha destruída) vem **ligada** no simulador vivo. O `orquestracao/fx_common.py` desta pasta a **desliga** (bloco anexado ao fim do `flags()`; nenhum campo novo do `GameState`) pra continuar reproduzindo o simulador do commit dela.
+- `verificar_reproducao.sh --tudo` depois da 11ª rodada: 11/11. `SHA256SUMS` regenerado.

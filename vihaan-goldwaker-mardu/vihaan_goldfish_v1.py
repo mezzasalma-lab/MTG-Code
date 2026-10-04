@@ -119,6 +119,9 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas):
   salvo na circunstancia mitigada que o usuario cita: com Mayhem Devil em campo, pagar o custo com Treasures ANIMADOS (que o wipe mataria de
   qualquer jeito) ainda causa dano nos oponentes (1 por sacrificio) alem do efeito do wipe. E o custo do wipe e' sempre pago primeiro com os
   animados vivos. Ver `resultados-ab/2026-10-04-wipes-segurados/LEIAME.md`.
+- Mirkwood Bats so' dispara em SACRIFICIO (2026-10-04, achado na avaliacao Blasphemous Act x Blasphemous Edict; oraculo ao vivo: "Whenever you create
+  or sacrifice a token, each opponent loses 1 life"): ficha destruida (wipe, remocao do oponente) nao a dispara; Nadier's Nightblade ("leaves the
+  battlefield") dispara nos dois. Ver `resultados-ab/2026-10-04-blasphemous-edict/LEIAME.md`.
 """
 
 import copy
@@ -428,6 +431,8 @@ OWN_WIPE_HOLD_ENGINE_ENABLED = True          # linha do usuario: nao conjura Blo
 OWN_WIPE_HOLD_ALWAYS_ENABLED = True          # todo wipe proprio e' segurado (o lado do oponente e' 📊): generaliza a retencao "Vihaan ou Mahadi em campo" da 9a rodada
 OWN_WIPE_PAY_WITH_ANIMATED_ENABLED = True    # o custo do wipe e' pago primeiro com Treasures ANIMADOS vivos: eles morreriam no wipe de qualquer jeito; cada sacrificio e' mana + morte de criatura + gatilho de sacrificio (Mayhem Devil)
 OWN_WIPE_RELEASE_MITIGATED_ENABLED = True    # unica excecao a retencao: Mayhem Devil em campo, animados vivos pagando o custo INTEIRO e dano do pagamento > criaturas minhas perdidas (a circunstancia que o usuario cita)
+# Correcao de 11a rodada (2026-10-04; achado na avaliacao Blasphemous Act x Blasphemous Edict): com a chave em False o arquivo se comporta bit-a-bit como o do commit b30ef1f.
+MIRKWOOD_BATS_SACRIFICE_ONLY_ENABLED = True  # Mirkwood Bats ("whenever you create or SACRIFICE a token") nao dispara em ficha DESTRUIDA (wipe, remocao); Nadier's Nightblade ("leaves the battlefield") dispara nos dois
 COMMANDER_TAX_ENABLED = True                 # CR 903.8: o imposto ({2} por cast anterior da zona de comando) entra no que PODE ser conjurado, e e' contado no CAST (tambem se for anulado), nao so' quando entra
 OWN_WIPES = ("Blood Money", "Blasphemous Act")
 
@@ -944,16 +949,18 @@ def on_permanent_destroyed(state: GameState, n: int, is_artifact: bool, is_creat
     sacrificio feito por mim (mesma distincao ja aplicada ao Vito
     Fanatic no Edgar Markov e ao Vito-style de outros decks desta
     sessao). Zulaport/Pitiless Plunderer/Agent of the Iron Throne/
-    Sephiroth/Nadier's Nightblade/Marionette Master/Mirkwood Bats/Life
-    Insurance (dentro de on_creature_dies/on_artifact_dies/
-    on_token_leaves) reagem normalmente -- nenhum deles e' 'sacrifice'-
-    restrito no oraculo real."""
+    Sephiroth/Nadier's Nightblade/Marionette Master/Life Insurance
+    (dentro de on_creature_dies/on_artifact_dies/on_token_leaves) reagem
+    normalmente -- nenhum deles e' 'sacrifice'-restrito no oraculo real.
+    CORRECAO de 2026-10-04: o Mirkwood Bats ESTAVA nessa lista, mas o
+    oraculo ao vivo e' "Whenever you create or SACRIFICE a token" -- ficha
+    destruida nao o dispara (MIRKWOOD_BATS_SACRIFICE_ONLY_ENABLED)."""
     if is_creature:
         on_creature_dies(state, n, is_token=is_token, dying=dying)
     if is_artifact:
         on_artifact_dies(state, n)
     if is_token:
-        on_token_leaves(state, n)
+        on_token_leaves(state, n, sacrificed=False)
 
 
 def remove_permanent(state: GameState, name: str, source: str = "opponent"):
@@ -1149,14 +1156,16 @@ def on_artifact_dies(state: GameState, n: int):
         drain(state, n * 1)
 
 
-def on_token_leaves(state: GameState, n: int):
+def on_token_leaves(state: GameState, n: int, sacrificed: bool = True):
+    """`sacrificed` (MIRKWOOD_BATS_SACRIFICE_ONLY_ENABLED): o Mirkwood Bats so' reage a SACRIFICIO de ficha; ficha destruida sai do campo sem dispara-lo.
+    O Nadier's Nightblade reage a qualquer saida de ficha."""
     if n <= 0:
         return
     state.token_leaves_total += n
     if "Nadier's Nightblade" in state.battlefield:
         drain(state, n, each_opp=True)
         gain_life(state, n)
-    if "Mirkwood Bats" in state.battlefield:
+    if "Mirkwood Bats" in state.battlefield and (sacrificed or not MIRKWOOD_BATS_SACRIFICE_ONLY_ENABLED):
         # Achado real 2026-08-28 (auditoria de checklist de mecanica):
         # "Whenever you create OR SACRIFICE a token" - so a metade
         # "create" (via on_tokens_created) disparava; a metade
@@ -1665,17 +1674,17 @@ def _own_wipe_destroy_all(state: GameState) -> int:
     if n_con:
         on_creature_dies(state, n_con, is_token=True)
         on_artifact_dies(state, n_con)
-        on_token_leaves(state, n_con)
+        on_token_leaves(state, n_con, sacrificed=False)
     if n_oth:
         on_creature_dies(state, n_oth, is_token=True)
-        on_token_leaves(state, n_oth)
+        on_token_leaves(state, n_oth, sacrificed=False)
     if n_dra:
         on_creature_dies(state, n_dra, is_token=True)
-        on_token_leaves(state, n_dra)
+        on_token_leaves(state, n_dra, sacrificed=False)
     if n_anim:
         on_creature_dies(state, n_anim, is_token=True)
         on_artifact_dies(state, n_anim)
-        on_token_leaves(state, n_anim)
+        on_token_leaves(state, n_anim, sacrificed=False)
     end_mass_death(state)
     for c in named:
         state.battlefield.remove(c)

@@ -86,3 +86,8 @@ Os arquivos dos lotes anteriores do Vihaan (`2026-10-03-exilio-primeiro-e-mahadi
 
 - **As 3 chaves novas** (todo wipe próprio segurado; custo do wipe pago primeiro com Treasures animados; exceção mitigada com Mayhem Devil) vêm **ligadas** no simulador vivo. O `orquestracao/fx_common.py` desta pasta as **desliga** (e inclui os 3 campos novos do `GameState` em `NOVOS`) pra continuar reproduzindo o simulador do commit dela.
 - `verificar_reproducao.sh --tudo` depois da 10ª rodada: 10/10. `SHA256SUMS` regenerado.
+
+## Nota de 2026-10-04 (11ª rodada: `../2026-10-04-blasphemous-edict/`)
+
+- **A chave nova** (`MIRKWOOD_BATS_SACRIFICE_ONLY_ENABLED`: o Mirkwood Bats só dispara em sacrifício de ficha, não em ficha destruída) vem **ligada** no simulador vivo. O `orquestracao/fx_common.py` desta pasta a **desliga** (bloco anexado ao fim do `flags()`; nenhum campo novo do `GameState`) pra continuar reproduzindo o simulador do commit dela.
+- `verificar_reproducao.sh --tudo` depois da 11ª rodada: 10/10. `SHA256SUMS` regenerado.

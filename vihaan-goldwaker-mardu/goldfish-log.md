@@ -1,5 +1,7 @@
 # Goldfish Log — Vihaan, Goldwaker
 
+> **Dados brutos e como reproduzir as tabelas da seção Avaliação: trocar Blasphemous Act por Blasphemous Edict (2026-10-04):** [`resultados-ab/2026-10-04-blasphemous-edict/LEIAME.md`](resultados-ab/2026-10-04-blasphemous-edict/LEIAME.md) — respostas cruas do Scryfall e do Commander Spellbook, brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
 > **Dados brutos e como reproduzir as tabelas da seção Todo boardwipe segurado, e o custo pago com Treasures animados (2026-10-04):** [`resultados-ab/2026-10-04-wipes-segurados/LEIAME.md`](resultados-ab/2026-10-04-wipes-segurados/LEIAME.md) — brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
 > **Dados brutos e como reproduzir as tabelas da seção Respostas do T8 e correção do simulador: wipes próprios (Blood Money / Blasphemous Act) e imposto do comandante (2026-10-04):** [`resultados-ab/2026-10-04-wipes-proprios/LEIAME.md`](resultados-ab/2026-10-04-wipes-proprios/LEIAME.md) — brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
@@ -24,6 +26,73 @@
 
 > **Dados brutos e como reproduzir as tabelas da seção Kingpin, Wilson Fisk (2026-10-03):** [`resultados-ab/2026-10-03-kingpin/LEIAME.md`](resultados-ab/2026-10-03-kingpin/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
+
+---
+
+## Avaliação: trocar Blasphemous Act por Blasphemous Edict — 2026-10-04
+
+**Pergunta do usuário:** *"Pensando nisso agora, não seria melhor trocar o Blasphemous Act por um wipe que sacrifica as criaturas, como por exemplo: Blasphemous Edict?"* (depois do princípio "todo boardwipe segurado" e do pagamento do custo com Treasures animados + Mayhem Devil).
+**Nada foi trocado na lista** (decisão do usuário). Protocolo da Regra #4/#5 seguido na ordem: oráculo e rulings ao vivo, documentação do deck, Commander Spellbook antes/depois com controle positivo, enumeração por script, motores do deck, comparação com a que sai, simulador só como apoio.
+
+**Veredito: não é uma melhoria clara; é uma troca condicional, com ganhos reais em 3 situações e perdas reais em 3.** Eu manteria o Act, a menos que as suas mesas tenham indestrutível/proteção com frequência ou o Mayhem Devil costume estar em campo. O ganho grande da Edict (Mayhem Devil) aparece em **4,4% dos estados** do goldfish; sem ele a Edict é um Act um pouco mais caro.
+
+### Oráculo (ao vivo, 2026-10-04) e rulings
+- **Blasphemous Edict** `{3}{B}{B}` Sorcery (mono-preto, legal em Commander, **não é Game Changer**: sem mudança de Bracket): *"You may pay {B} rather than pay this spell's mana cost if there are thirteen or more creatures on the battlefield. Each player sacrifices thirteen creatures of their choice."* Rulings (2024-11-08): com menos de 13 criaturas o jogador sacrifica todas; na ordem de turno cada um escolhe e **todas são sacrificadas ao mesmo tempo**.
+- **Blasphemous Act** `{8}{R}` Sorcery: *"costs {1} less to cast for each creature on the battlefield. Deals 13 damage to each creature."* Piso {R}; o MV continua 9 (rulings 2020-11-10).
+- A diferença que decide quase tudo: **Edict = sacrifício; Act = dano**. Mayhem Devil (*"whenever a player sacrifices a permanent"*, **de qualquer jogador**; o próprio Mayhem Devil também dispara; se o sacrifício acontece na resolução, o gatilho entra na pilha depois que a magia termina, ruling 2019-05-03) e Mirkwood Bats (*"whenever you create or sacrifice a token"*) **só reagem à Edict**. Zulaport, Plunderer, Nadier, Agent, Marionette Master, Life Insurance, Sephiroth, Dictate, Revel in Riches e Mari reagem à **morte/saída** e disparam nas duas.
+
+### Documentação do deck e Commander Spellbook
+- `auditoria.md` (seção 7): os 2 wipes do deck são o **Act** ("geralmente muito barato de conjurar tarde no jogo") e o **Blood Money** (destroy + Treasure por não-ficha). Nenhum combo registrado depende do Act.
+- **Spellbook antes/depois** (`resumos/spellbook.txt`; resposta crua em `dados/spellbook_cru.json.xz`): base = **4 combos** (Ashnod's Altar + Mahadi + Revel in Riches; Anointed Procession / Goldspan Dragon / Xorn + Gleaming Splendor + Smothering Tithe). **Act → Edict: 0 combos que somem, 0 novos.** Somem 4 "quase" (combos a 1 carta de fechar): Act + Repercussion / Toralf / Fall of Cair Andros / Expedited Inheritance, **nenhuma dessas 4 peças está na lista**. A Edict não cria nenhum "quase" novo. **Controles positivos funcionaram:** cortar Smothering Tithe tira 3 combos, cortar Ashnod's Altar tira 1; cortar Mayhem Devil não tira nenhum combo (mas tira 3 "quase").
+- **Enumeração por script** (oráculo ao vivo das 94 cartas distintas; `resumos/enumeracao.txt`): reagem especificamente a **sacrifício** (e não a destroy/dano): **Mayhem Devil, Mirkwood Bats, Captain Lannery Storm** (só Treasure, irrelevante depois do combate); reagem a **morte/saída**: 10 cartas (valem nas duas); **proteção contra wipe**: **Boros Charm** (indestructible) e **Teferi's Protection** (proteção + phase out); outros edicts já na lista: Dictate of Erebos, Witch of the Moors; outros wipes: Blood Money. (A varredura 5 também listou Black Market Connections por falso positivo: "first main *phase*".)
+
+### Os motores do deck contra as duas cartas
+| Motor / carta da lista | Blasphemous Act | Blasphemous Edict |
+|---|---|---|
+| **Mayhem Devil** (1 cópia): 1 de dano por permanente sacrificada, de qualquer jogador | não dispara (dano/destruição); só dispara no **custo** se eu pagar com Treasures | **dispara por cada permanente sacrificada**, minha **e de cada oponente** (até 13 por jogador) |
+| **Mirkwood Bats** (1 cópia): cada ficha sacrificada = 1 de vida de cada oponente | não dispara | dispara por cada ficha minha sacrificada (Treasures animados, Constructs, fichas) |
+| Zulaport, Plunderer, Nadier, Agent, Marionette Master, Life Insurance, Sephiroth, Dictate, Revel in Riches (Treasure por criatura de oponente que morre), Mari | disparam | disparam (igual) |
+| **Boros Charm** (permanentes minhas ficam indestrutíveis): wipe **unilateral** que mantém meus motores | funciona (dano não mata indestrutível) | **não funciona** (sacrifício ignora indestructible) |
+| **Teferi's Protection** (phase out de tudo que é meu) | funciona | funciona (as duas deixam de me atingir), mas meus gatilhos também somem |
+| Vihaan animando Treasures (cada animado conta como criatura) | custo cai 1 por animado (e por criatura do oponente, 📊) | custo fixo 5; {B} se 13+ criaturas no campo |
+| Meu campo com **14+ criaturas** (animados + fichas) | morre tudo | **eu escolho as 13**: sacrifico fichas/animados e guardo Vihaan, Mahadi e Mayhem |
+| Oponente com **indestrutível / proteção / prevenção de dano** | a criatura sobrevive (13 de dano não a mata) | sacrifício não é impedido por nenhuma das três |
+| Oponente **go-wide** com mais de 13 criaturas | todas morrem | ele guarda as que passam de 13 |
+| Cor / MV | `{R}` (17 fontes) no piso; MV 9 (cascade do Rain of Riches pega quase tudo) | `{B}{B}` (21 fontes + Treasures); MV 5 (cascade pega só cartas de MV < 5) |
+
+### Medido no simulador (apoio; só o MEU lado)
+**O que o simulador não vê (a favor e contra):** não há criaturas de oponente. Isso **favorece a Edict** no que ela faria no campo dos oponentes (sacrifícios deles disparando Mayhem Devil/Bats, Treasure do Revel in Riches por criatura deles) e **desfavorece o Act** no custo (a redução por criaturas do oponente é 📊; **raciocínio, não medido:** numa mesa de 4 com 8+ criaturas o Act custa `{R}` a `{3}`, não os ~4 mana do goldfish).
+**Ensaio a seco** (`orquestracao/edict_dry_run.py`; 10.000 partidas do modo padrão, 119.958 estados naturais com turno ≥ 3): em cada estado copio o campo e conjuro cada wipe pelo caminho real do simulador (custo, pagamento com animados, gatilhos). Harness `edict_harness.py` (a carta **não** foi adicionada ao `vihaan_goldfish_v1.py`). Estados onde as **duas** são conjuráveis:
+
+| só o meu lado | Act | Edict | Edict − Act (pareado, IC95%) |
+|---|---|---|---|
+| **todos os estados** (33.929) | custo 3,98 · dano 3,07 | custo 4,66 · dano 3,61 | custo **+0,68 ±0,02** · dano **+0,54 ±0,04** · criaturas nomeadas perdidas −0,25 ±0,01 |
+| **sem Mayhem Devil** (30.936) | dano 2,92 | dano 2,84 | dano **−0,08 ±0,03**, custo +0,61 ±0,02, vida −0,14 ±0,02 |
+| **com Mayhem Devil** (2.993) | custo 2,95 · dano 4,58 | custo 4,38 · dano 11,49 | dano **+6,91 ±0,16** · custo +1,43 ±0,06 · Vihaan morre em 99,8% (Act) × 90,9% (Edict) |
+| **com Mayhem, 2ª main** (1.062) | dano 8,47 | dano 17,36 | dano **+8,89 ±0,36** · custo +1,71 ±0,11 · Vihaan morre em 99,9% × 78,3% |
+| **com Mayhem, 2ª main, 4+ animados** (204) | dano 14,47 · nomeadas perdidas 6,77 | dano 24,17 · nomeadas perdidas 3,94 | dano **+9,70 ±1,21** · nomeadas perdidas **−2,83 ±0,46** · Vihaan morre em 100% × 52,9% |
+
+**Quanto as situações boas aparecem no goldfish** (mesmos 119.958 estados): Mayhem Devil em campo **4,4%**; Mirkwood Bats **2,3%**; um dos dois **6,5%**; minhas criaturas ≥ 8: 10,2%, ≥ 13: 2,7%, ≥ 14: 2,1% (onde eu escolho o que sacrificar). A Edict é conjurável em 38,2% dos estados e o Act em 32,9%, mas essa vantagem é da convenção "o Act só conta minhas criaturas" (📊).
+**Leitura (medido):** (a) **com Mayhem Devil em campo a Edict causa +6,9 de dano (+8,9 na 2ª main) só pelo meu lado, a +1,4 de mana**, e ainda deixa o Vihaan vivo em 9–47% dos casos (quando tenho 14+ criaturas); cada criatura de oponente sacrificada soma +1 a isso (📊, não medido); (b) **sem Mayhem Devil a Edict é praticamente o Act com 0,6 de mana a mais**; (c) a condição boa é rara (4,4% + 2,3% dos estados), porque o deck tem **1 cópia** de cada e **nenhum tutor**.
+
+### Achado lateral corrigido (Regra #3): Mirkwood Bats só dispara em sacrifício
+Ao montar a tabela acima, o oráculo ao vivo do Mirkwood Bats (*"create or **sacrifice** a token"*) mostrou um erro do simulador: `on_token_leaves` o disparava em **qualquer** saída de ficha, inclusive **destruída** (wipe próprio, wipe do oponente), e um comentário em `on_permanent_destroyed` afirmava o contrário do oráculo. Nova chave `MIRKWOOD_BATS_SACRIFICE_ONLY_ENABLED` (ligada; desligada = bit-idêntico ao `b30ef1f`): ficha destruída não dispara o Bats; Nadier's Nightblade (*"leaves the battlefield"*) segue disparando nas duas. **Efeito medido (10.000 partidas pareadas):** padrão **0** (nenhuma ficha destruída com o Bats em campo; 100% das partidas idênticas); resiliência: **−0,043 de dreno por jogo atribuível ao Bats** (0,254 → 0,211), dano de mesa −0,138 ±0,049, win −0,020 ±0,028pp (n.s.), 0,8% das partidas mudam (opositor destruindo as minhas fichas com o Bats em campo).
+
+### O que eu faria (e o que depende de você)
+1. **Manter o Act** como wipe barato e unilateral com Boros Charm (indestrutível), o que **a Edict não faz**.
+2. A Edict **ganha** se (i) as suas mesas têm indestrutível/proteção/prevenção de dano de forma recorrente (o Act e o Blood Money, os dois wipes atuais, **falham** contra isso), (ii) o Mayhem Devil costuma estar em campo, (iii) você chega a 14+ criaturas (animados + fichas) e quer guardar Vihaan/Mahadi. **Perde** em mesas go-wide (>13 criaturas por oponente) e nas faixas de 8–12 criaturas no campo (o Act custa `{R}`–`{3}`, a Edict 5).
+3. Se o objetivo é **diversificar contra indestrutível**, o corte a comparar não é o Act e sim o **Blood Money** (que também é "destroy"), mas ele dá um Treasure por criatura **não-ficha destruída** (as dos oponentes também) e alimenta o Revel in Riches: **não avaliei** esse corte.
+4. Outras magias de sacrifício em R/W/B legais em Commander, **só listadas, não avaliadas** (`resumos/scryfall_buscas.txt`): By Invitation Only (escolhe o número de 0 a 13), Tragic Arrogance, Tergrid's Shadow, Barter in Blood, Taste of Death, Necrotic Hex.
+
+### Validação (Regra #1) — arquivada em `resultados-ab/2026-10-04-blasphemous-edict/`
+- **Bit-identidade da chave do Bats desligada × `b30ef1f`:** 20.000/20.000 partidas idênticas no padrão e 20.000/20.000 na resiliência.
+- **Testes dirigidos:** 15/15 (5 do Bats: ficha destruída não dispara, sacrificada dispara, Nadier nos dois, caminho do oponente, Treasure animado sacrificado por mana; 10 da semântica da Edict no harness: <13 sacrifica todas, Mayhem dispara por cada sacrifício inclusive o próprio, mortes simultâneas, Bats por ficha, >13 escolhe e guarda os motores, custo 5 / {B} com 13+, Act × Edict na mesma mesa, pagamento com animados, retenção universal e exceção mitigada também para a Edict).
+- **Regressão:** 80.000 partidas (`bats`, `antes` × 2 modos × 20.000, sementes 5.000.000+i), **0 exceções** e os invariantes das rodadas anteriores em 0; novo invariante "ficha destruída nunca causa dreno quando só o Bats está em campo": 0 violações, **exercitado em 201 saídas de ficha por destruição** (resiliência).
+- **Reprodutibilidade:** `bash orquestracao/verificar_reproducao.sh --tudo` → **9/9 saídas byte a byte iguais** (`cmp`): as 4 tabelas do A/B (chave do Bats) e a re-execução do smoke, dos 15 testes, da bit-identidade (2 modos × 20.000), da regressão (80.000 partidas) e do ensaio a seco (10.000 partidas). Os 12 arquivos anteriores do Vihaan, reverificados com `--tudo`, **todos iguais** (`wipes-segurados` 11/11, `wipes-proprios` 11/11, `dictate-metade-dos-animados` 11/11, `dictate-metade` 10/10, `exilio-sempre-e-dictate` 10/10, `exilio-primeiro-e-mahadi` 10/10, `fora-da-mao` 8/8, `sephiroth` 11/11, `treasure-animado-e-mulligan` 7/7, `kingpin` 11/11, `inevitable-defeat` 6/6, `partida-manual-1` 7/7); o `fx_common.py` de 9 deles foi ajustado para desligar a chave nova. **Não conferido byte a byte:** as respostas da API ao vivo (Scryfall, Commander Spellbook): estão guardadas cruas, mas uma nova consulta pode devolver dados diferentes.
+
+### Escopo verificado e NÃO verificado (Regra #7)
+- **Verificado:** oráculo e rulings das cartas citadas (ao vivo); Commander Spellbook antes/depois (resposta crua guardada); enumeração por script sobre as 94 cartas distintas; ensaio a seco do meu lado; `on_token_leaves`/`on_permanent_destroyed` (Bats). Classes varridas, e só elas: conceito compartilhado ("destruir ≠ sacrificar", "morte simultânea", "criatura = animado até o fim do turno"), gatilho compartilhado ligado em alguns pontos (Bats), política de jogada.
+- **Não verificado / aberto:** (1) o efeito da Edict e do Act **no campo dos oponentes** (📊); (2) a frequência real de indestrutível/proteção, de 14+ criaturas e de Mayhem Devil nas **suas mesas**; (3) o corte Blood Money × Edict e as outras magias de sacrifício listadas; (4) a Edict **não foi adicionada** ao `vihaan_goldfish_v1.py` (só ao harness, que não toca o simulador); (5) o resto do `.py` não foi relido.
 
 ---
 

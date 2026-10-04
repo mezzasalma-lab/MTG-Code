@@ -1,0 +1,580 @@
+{
+ "Blasphemous Edict": {
+  "name": "Blasphemous Edict",
+  "oracle_id": "6cf50e21-0f60-4e9a-b910-ebe1bad2a29e",
+  "type_line": "Sorcery",
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "oracle_text": "You may pay {B} rather than pay this spell's mana cost if there are thirteen or more creatures on the battlefield.\nEach player sacrifices thirteen creatures of their choice.",
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "rulings": [
+   [
+    "2024-11-08",
+    "If a player controls fewer than thirteen creatures when Blasphemous Edict resolves, they will sacrifice all of their creatures."
+   ],
+   [
+    "2024-11-08",
+    "Starting with the player whose turn it is, each player in turn order chooses which creatures they will sacrifice, then all the creatures chosen by all players are sacrificed at the same time. Players get to know the choices made by players who chose before them."
+   ]
+  ]
+ },
+ "Blasphemous Act": {
+  "name": "Blasphemous Act",
+  "oracle_id": "7a2484a9-04fd-41a0-8224-610c1c07ed10",
+  "type_line": "Sorcery",
+  "mana_cost": "{8}{R}",
+  "cmc": 9.0,
+  "oracle_text": "This spell costs {1} less to cast for each creature on the battlefield.\nBlasphemous Act deals 13 damage to each creature.",
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "R"
+  ],
+  "legal_commander": "legal",
+  "rulings": [
+   [
+    "2020-11-10",
+    "Although players may respond to Blasphemous Act once it's been cast, once it's announced, they can't respond before the cost is calculated and paid."
+   ],
+   [
+    "2020-11-10",
+    "To determine the total cost of a spell, start with the mana cost or alternative cost you're paying, add any cost increases, then apply any cost reductions (such as that of Blasphemous Act). The mana value of the spell is determined only by its mana cost, no matter what the total cost to cast the spell was."
+   ],
+   [
+    "2020-11-10",
+    "Blasphemous Act's ability can't reduce the total cost to cast the spell below {R}."
+   ],
+   [
+    "2020-11-10",
+    "The total cost to cast Blasphemous Act is locked in before you pay that cost. For example, if there are three creatures on the battlefield, including one you can sacrifice to add {C}, the total cost of Blasphemous Act is {5}{R}. Then you can sacrifice the creature when you activate mana abilities just before paying the cost."
+   ]
+  ]
+ },
+ "Mayhem Devil": {
+  "name": "Mayhem Devil",
+  "oracle_id": "4709f11c-aef8-45ac-b2bf-e640c568dfac",
+  "type_line": "Creature — Devil",
+  "mana_cost": "{1}{B}{R}",
+  "cmc": 3.0,
+  "oracle_text": "Whenever a player sacrifices a permanent, this creature deals 1 damage to any target.",
+  "power": "3",
+  "toughness": "3",
+  "color_identity": [
+   "B",
+   "R"
+  ],
+  "legal_commander": "legal",
+  "rulings": [
+   [
+    "2019-05-03",
+    "A legendary permanent that is put into a graveyard because of the \"legend rule\" isn't sacrificed."
+   ],
+   [
+    "2019-05-03",
+    "You control Mayhem Devil's triggered ability and choose the target, no matter who sacrificed the permanent."
+   ],
+   [
+    "2019-05-03",
+    "If a permanent is sacrificed to pay a cost of a spell or ability, Mayhem Devil's ability will resolve before that spell or ability. Conversely, if a permanent is sacrificed during the resolution of a spell or ability, that spell or ability will finish resolving before Mayhem Devil's ability is put onto the stack."
+   ],
+   [
+    "2019-05-03",
+    "Mayhem Devil itself doesn't allow any player to sacrifice any permanents. Its ability triggers whenever a player sacrifices a permanent because some other spell, ability, or cost instructed the player to do so."
+   ],
+   [
+    "2019-05-03",
+    "If you sacrifice Mayhem Devil, its ability triggers."
+   ]
+  ]
+ },
+ "Mirkwood Bats": {
+  "name": "Mirkwood Bats",
+  "oracle_id": "0636b6c3-0662-420a-b30d-f0a14e7c512d",
+  "type_line": "Creature — Bat",
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "oracle_text": "Flying\nWhenever you create or sacrifice a token, each opponent loses 1 life.",
+  "power": "2",
+  "toughness": "3",
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "rulings": []
+ },
+ "Nadier's Nightblade": {
+  "name": "Nadier's Nightblade",
+  "oracle_id": "391978f6-0bbc-41e8-9246-f7d0e21c7900",
+  "type_line": "Creature — Elf Warrior",
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "oracle_text": "Whenever a token you control leaves the battlefield, each opponent loses 1 life and you gain 1 life.",
+  "power": "1",
+  "toughness": "3",
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "rulings": []
+ },
+ "Zulaport Cutthroat": {
+  "name": "Zulaport Cutthroat",
+  "oracle_id": "76b003e0-15af-4f22-bdf2-1ade5430964a",
+  "type_line": "Creature — Human Rogue Ally",
+  "mana_cost": "{1}{B}",
+  "cmc": 2.0,
+  "oracle_text": "Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life.",
+  "power": "1",
+  "toughness": "1",
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "rulings": [
+   [
+    "2021-03-19",
+    "If another creature you control dies at the same time as Zulaport Cutthroat, its ability triggers for that creature."
+   ]
+  ]
+ },
+ "Pitiless Plunderer": {
+  "name": "Pitiless Plunderer",
+  "oracle_id": "a784481f-eccb-4112-bb38-04a659319660",
+  "type_line": "Creature — Human Pirate",
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "oracle_text": "Whenever another creature you control dies, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "power": "1",
+  "toughness": "4",
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "rulings": [
+   [
+    "2018-01-19",
+    "If Pitiless Plunderer dies at the same time as one or more other creatures you control, its ability will still trigger for each of those other creatures."
+   ]
+  ]
+ },
+ "Mahadi, Emporium Master": {
+  "name": "Mahadi, Emporium Master",
+  "oracle_id": "1b3e841e-0f8f-467d-9983-f9b8d081a67f",
+  "type_line": "Legendary Creature — Devil",
+  "mana_cost": "{1}{B}{R}",
+  "cmc": 3.0,
+  "oracle_text": "At the beginning of your end step, create a Treasure token for each creature that died this turn. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+  "power": "3",
+  "toughness": "3",
+  "color_identity": [
+   "B",
+   "R"
+  ],
+  "legal_commander": "legal",
+  "rulings": []
+ },
+ "Dictate of Erebos": {
+  "name": "Dictate of Erebos",
+  "oracle_id": "7c777a41-e40a-4b40-96bf-8ddd5c12924c",
+  "type_line": "Enchantment",
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "oracle_text": "Flash\nWhenever a creature you control dies, each opponent sacrifices a creature of their choice.",
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "rulings": [
+   [
+    "2014-04-26",
+    "When the triggered ability resolves, first the player whose turn it is (if that player is an opponent) chooses which creature they will sacrifice, then each other opponent in turn order does the same, then all chosen creatures are sacrificed at the same time."
+   ],
+   [
+    "2014-04-26",
+    "None of the opponents are targeted. An opponent with hexproof would still sacrifice a creature."
+   ],
+   [
+    "2014-04-26",
+    "If multiple creatures you control die at the same time, Dictate of Erebos's triggered ability will trigger that many times."
+   ],
+   [
+    "2014-04-26",
+    "If you control more than one Dictate of Erebos and a creature you control dies, each of the triggered abilities will trigger. Each opponent will sacrifice a creature each time one of those abilities resolves."
+   ],
+   [
+    "2014-04-26",
+    "If you and an opponent each control a Dictate of Erebos and a creature dies, a chain reaction happens. First the ability of one player's Dictate of Erebos will trigger, causing each opponent to sacrifice a creature. That sacrifice causes the ability of the other player's Dictate of Erebos to trigger, and so on."
+   ]
+  ]
+ },
+ "Rain of Riches": {
+  "name": "Rain of Riches",
+  "oracle_id": "ef1e2d3d-e977-4729-9430-eba6242e5dfe",
+  "type_line": "Enchantment",
+  "mana_cost": "{3}{R}{R}",
+  "cmc": 5.0,
+  "oracle_text": "When this enchantment enters, create two Treasure tokens.\nThe first spell you cast each turn that mana from a Treasure was spent to cast has cascade. (When you cast the spell, exile cards from the top of your library until you exile a nonland card that costs less. You may cast it without paying its mana cost. Put the exiled cards on the bottom in a random order.)",
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "R"
+  ],
+  "legal_commander": "legal",
+  "rulings": []
+ },
+ "Blood Money": {
+  "name": "Blood Money",
+  "oracle_id": "75f5d372-4ff9-430c-8302-72472439e0d2",
+  "type_line": "Sorcery",
+  "mana_cost": "{5}{B}{B}",
+  "cmc": 7.0,
+  "oracle_text": "Destroy all creatures. For each nontoken creature destroyed this way, you create a tapped Treasure token.",
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "rulings": [
+   [
+    "2022-06-10",
+    "If a creature isn't destroyed this way for some reason, such as having indestructible or being regenerated, Blood Money's controller will not create a Treasure token for it."
+   ]
+  ]
+ },
+ "Marionette Master": {
+  "name": "Marionette Master",
+  "oracle_id": "dabbf796-3b88-499e-8839-06fa36fe01ac",
+  "type_line": "Creature — Human Artificer",
+  "mana_cost": "{4}{B}{B}",
+  "cmc": 6.0,
+  "oracle_text": "Fabricate 3 (When this creature enters, put three +1/+1 counters on it or create three 1/1 colorless Servo artifact creature tokens.)\nWhenever an artifact you control is put into a graveyard from the battlefield, target opponent loses life equal to this creature's power.",
+  "power": "1",
+  "toughness": "3",
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "rulings": [
+   [
+    "2016-09-20",
+    "The amount of life lost is determined as Marionette Master's last ability resolves. If Marionette Master is no longer on the battlefield, use its power as it last existed on the battlefield to determine how much life is lost."
+   ],
+   [
+    "2016-09-20",
+    "If Marionette Master's power is negative, the target opponent doesn't lose (or gain) life."
+   ],
+   [
+    "2016-09-20",
+    "If Marionette Master and an artifact you control are put into a graveyard at the same time, Marionette Master's ability triggers."
+   ],
+   [
+    "2016-09-20",
+    "Artifact tokens that are sacrificed or destroyed are put into their owner's graveyard before ceasing to exist. If you controlled the token, Marionette Master's last ability will trigger."
+   ],
+   [
+    "2016-09-20",
+    "You choose whether to put +1/+1 counters on the creature or create Servo tokens as the fabricate ability is resolving. No player may take actions between the time you choose and the time that counters are added or tokens are created."
+   ],
+   [
+    "2016-09-20",
+    "Fabricate doesn't cause the creature with the ability to enter the battlefield with +1/+1 counters already on it. For example, Weaponcraft Enthusiast will enter the battlefield as a 0/1 creature, then its fabricate ability goes on the stack. Players may take actions (such as casting instants) while the ability is waiting to resolve."
+   ],
+   [
+    "2016-09-20",
+    "If you can't put +1/+1 counters on the creature for any reason as fabricate resolves (for instance, if it's no longer on the battlefield), you just create Servo tokens."
+   ]
+  ]
+ },
+ "Agent of the Iron Throne": {
+  "name": "Agent of the Iron Throne",
+  "oracle_id": "325032d5-c452-4454-8976-82f86fee5ab8",
+  "type_line": "Legendary Enchantment — Background",
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "oracle_text": "Commander creatures you own have \"Whenever an artifact or creature you control is put into a graveyard from the battlefield, each opponent loses 1 life.\"",
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "rulings": [
+   [
+    "2022-06-10",
+    "Choose a Background is a variant of the partner ability. You may have two commanders if one of them is a legendary creature with the choose a background ability and the other is a legendary Background enchantment. Backgrounds and cards with choose a Background do not interact with cards which have any other partner ability."
+   ],
+   [
+    "2022-06-10",
+    "If your Commander deck has two commanders, you can include only cards whose own color identities are also found in your commanders’ combined color identities."
+   ],
+   [
+    "2022-06-10",
+    "Both commanders start in the command zone, and the remaining 98 cards (or 58 cards in a Commander Draft game) of your deck are shuffled to become your library."
+   ],
+   [
+    "2022-06-10",
+    "If your commander loses the choose a Background ability or stops being a Background during the game, as appropriate, it is still your commander."
+   ],
+   [
+    "2022-06-10",
+    "Once the game begins, your two commanders are tracked separately. If you cast one, you won’t have to pay an additional {2} the first time you cast the other. A player loses the game after having been dealt 21 combat damage from any one of them, not from both of them combined (although your Background won’t usually be a creature anyway)."
+   ],
+   [
+    "2022-06-10",
+    "If something refers to your commander while you have two commanders, it refers to one of them of your choice. If you are instructed to perform an action on your commander (e.g. put it from the command zone into your hand due to Command Beacon), you choose one of your commanders at the time the effect happens."
+   ],
+   [
+    "2022-06-10",
+    "An effect that checks whether you control your commander is satisfied if you control one or both of your two commanders."
+   ],
+   [
+    "2022-06-10",
+    "You can choose two commanders that are the same color or colors."
+   ],
+   [
+    "2022-06-10",
+    "If a card refers to a commander creature you own, a Background won't usually be counted or included for that effect. If another spell or ability causes your Background to become a creature, however, it will be included. Any effect that refers to your commander or a commander you own or control without specifying creature will apply to a Background that is your commander, as appropriate."
+   ],
+   [
+    "2022-06-10",
+    "If you control a Background that grants an ability to commander creatures you own, and you own more than one commander creature, each of them will have that ability."
+   ]
+  ]
+ },
+ "Life Insurance": {
+  "name": "Life Insurance",
+  "oracle_id": "50779f73-c538-4364-aca4-4ab069a00814",
+  "type_line": "Enchantment",
+  "mana_cost": "{3}{W}{B}",
+  "cmc": 5.0,
+  "oracle_text": "Extort (Whenever you cast a spell, you may pay {W/B}. If you do, each opponent loses 1 life and you gain that much life.)\nWhenever a nontoken creature dies, you lose 1 life and create a Treasure token.",
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B",
+   "W"
+  ],
+  "legal_commander": "legal",
+  "rulings": [
+   [
+    "2024-01-12",
+    "You may pay {W/B} a maximum of one time for each extort triggered ability. You decide whether to pay when the ability resolves."
+   ],
+   [
+    "2024-01-12",
+    "The amount of life you gain from extort is based on the total amount of life lost, not necessarily the number of opponents you have. For example, if your opponent's life total can't change (perhaps because that player controls Platinum Emperion), you won't gain any life."
+   ],
+   [
+    "2024-01-12",
+    "The extort ability doesn't target any player."
+   ],
+   [
+    "2024-01-12",
+    "The extort ability resolves before the spell that caused it to trigger. The ability resolves even if that spell is countered."
+   ]
+  ]
+ },
+ "Captain Lannery Storm": {
+  "name": "Captain Lannery Storm",
+  "oracle_id": "235bf0ba-658c-463f-b112-7478ba27bd7b",
+  "type_line": "Legendary Creature — Human Pirate",
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "oracle_text": "Haste\nWhenever Captain Lannery Storm attacks, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")\nWhenever you sacrifice a Treasure, Captain Lannery Storm gets +1/+0 until end of turn.",
+  "power": "2",
+  "toughness": "2",
+  "color_identity": [
+   "R"
+  ],
+  "legal_commander": "legal",
+  "rulings": [
+   [
+    "2017-09-29",
+    "You can activate the mana ability of a Treasure even if you have nothing to spend that mana on."
+   ],
+   [
+    "2017-09-29",
+    "Captain Lannery Storm's last ability triggers whenever you sacrifice a Treasure for any reason, not just to activate a Treasure's mana ability."
+   ],
+   [
+    "2017-09-29",
+    "If you sacrifice Treasures to cast Captain Lannery Storm, its last ability won't trigger for those Treasures."
+   ]
+  ]
+ },
+ "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel": {
+  "name": "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel",
+  "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+  "type_line": "Legendary Creature — Human Avatar Soldier // Legendary Creature — Angel Nightmare Avatar",
+  "mana_cost": null,
+  "cmc": 3.0,
+  "oracle_text": null,
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "B"
+  ],
+  "legal_commander": "legal",
+  "rulings": [
+   [
+    "2025-06-06",
+    "Each face of a nonmodal double-faced card has its own set of characteristics: name, types, subtypes, abilities, and so on. While a nonmodal double-faced permanent is on the battlefield, consider only the characteristics of the face that's currently up. The other set of characteristics is ignored."
+   ],
+   [
+    "2025-06-06",
+    "A nonmodal double-faced card enters with its front face up by default, unless a spell or ability instructs you to put it onto the battlefield transformed or allows you to cast it transformed, in which case it enters with its back face up."
+   ],
+   [
+    "2025-06-06",
+    "If Sephiroth, Fabled SOLDIER and one or more other creatures die at the same time, its last ability will trigger for each of those other creatures. (It won't transform, though.)"
+   ],
+   [
+    "2025-06-06",
+    "In the Commander variant, a double-faced card's color identity is determined by the mana costs and mana symbols in the rules text of both faces combined. If either face has a color indicator or basic land type, those are also considered. For example, Cecil, Dark Knight's color identity is black and white, since its front face is black and its back face has a white color indicator."
+   ],
+   [
+    "2025-06-06",
+    "Each nonmodal double-faced card in this release is cast face up. In every zone other than the battlefield, consider only the characteristics of its front face. If it is on the battlefield, consider only the characteristics of the face that's up; the other face's characteristics are ignored."
+   ],
+   [
+    "2025-06-06",
+    "If this card somehow enters the battlefield with its back face up, it didn't transform, so you won't get an emblem."
+   ],
+   [
+    "2025-06-06",
+    "The mana value of a nonmodal double-faced card is the mana value of its front face, no matter which face is up."
+   ],
+   [
+    "2025-06-06",
+    "The back face of a nonmodal double-faced card usually has a color indicator that defines its color."
+   ],
+   [
+    "2025-06-06",
+    "A token that is created as a copy of a double-faced permanent or a double-faced card in another zone is a double-faced token. It will have both the front face and back face of whatever object it's copying. If it's copying a double-faced permanent whose back face is up, the token will enter with its back face up. It can transform if instructed to do so."
+   ],
+   [
+    "2025-06-06",
+    "If you are instructed to put a card that isn't a double-faced card onto the battlefield transformed, it will not enter at all. In that case, it stays in the zone it was previously in. For example, if a single-faced card is a copy of Crystal Fragments, it will be exiled during the resolution of its second ability and remain in exile."
+   ]
+  ]
+ },
+ "Vihaan, Goldwaker": {
+  "name": "Vihaan, Goldwaker",
+  "oracle_id": "0613a0d8-f6bc-41ca-8070-b2506f756fc8",
+  "type_line": "Legendary Creature — Dwarf Warlock",
+  "mana_cost": "{R}{W}{B}",
+  "cmc": 3.0,
+  "oracle_text": "Other outlaws you control have vigilance and haste. (Assassins, Mercenaries, Pirates, Rogues, and Warlocks are outlaws.)\nAt the beginning of combat on your turn, you may have Treasures you control become 3/3 Construct Assassin artifact creatures in addition to their other types until end of turn.",
+  "power": "3",
+  "toughness": "3",
+  "color_identity": [
+   "B",
+   "R",
+   "W"
+  ],
+  "legal_commander": "legal",
+  "rulings": [
+   [
+    "2024-04-12",
+    "If a Treasure you control is already a creature when Vihaan’s second ability resolves and you choose to apply its effect to all Treasures you control, that effect will overwrite any previous effects that set that creature’s power and toughness to specific numbers. Effects that otherwise modify its power and toughness will still apply no matter when they took effect. The same is true for +1/+1 counters."
+   ],
+   [
+    "2024-04-12",
+    "Treasures you control will keep any abilities they previously had while they’re creatures."
+   ],
+   [
+    "2024-04-12",
+    "A card, spell, or permanent is an outlaw if it has the Assassin, Mercenary, Pirate, Rogue, or Warlock creature type. It doesn’t matter if it has more than one of those creature types; as long as it has at least one, it’s an outlaw."
+   ],
+   [
+    "2024-04-12",
+    "Outlaw is not a creature type. If an effect asks you to choose a creature type, you can’t choose outlaw."
+   ],
+   [
+    "2024-04-12",
+    "If an ability refers to an outlaw or whether a player controls an outlaw, it’s referring only to permanents with one or more of the creature types specified above. Notably, it’s not referring to any spell or card not on the battlefield. However, other abilities may refer to an “outlaw spell” or “outlaw card” in a zone other than the battlefield. Those abilities refer to spells and cards with one or more of the specified creature types."
+   ]
+  ]
+ },
+ "Anointed Procession": {
+  "name": "Anointed Procession",
+  "oracle_id": "7246d45b-2185-4cdd-981b-5419b7d52bce",
+  "type_line": "Enchantment",
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "oracle_text": "If an effect would create one or more tokens under your control, it creates twice that many of those tokens instead.",
+  "power": null,
+  "toughness": null,
+  "color_identity": [
+   "W"
+  ],
+  "legal_commander": "legal",
+  "rulings": [
+   [
+    "2018-01-19",
+    "There are many important moments in the story, but the most crucial—called “story spotlights”—are shown on cards. These cards have the Planeswalker symbol in their text box; this symbol has no effect on gameplay. You can read more about these events in the official Magic fiction at http://www.mtgstory.com."
+   ],
+   [
+    "2017-04-18",
+    "All of the tokens enter the battlefield simultaneously. They’ll be created with the same name, color, type and subtype, abilities, power, toughness, and so on."
+   ],
+   [
+    "2017-04-18",
+    "If the token you create has any “as [this permanent] enters the battlefield” or “[this permanent] enters the battlefield with” abilities, first determine how many tokens are being created, then apply those abilities individually for each one. For example, if a token with “You may have [this permanent] enter the battlefield as a copy of any creature on the battlefield” would be created (such as an embalmed Vizier of Many Faces), the resulting two tokens can each copy a different creature."
+   ],
+   [
+    "2017-04-18",
+    "If an effect creates more than one kind of token, it’ll create twice as many of each kind. For example, if you cast Bestial Menace while controlling Anointed Procession, you’ll create two Snake tokens, two Wolf tokens, and two Elephant tokens."
+   ],
+   [
+    "2017-04-18",
+    "If you control two Anointed Processions, then the number of tokens created is four times the original number. If you control three, then the number of tokens created is eight times the original number, and so on."
+   ],
+   [
+    "2017-04-18",
+    "If the effect creating the tokens instructs you to do something with those tokens at a later time, like exiling them at the end of combat, you’ll do that for all the tokens."
+   ]
+  ]
+ },
+ "Kambal, Profiteering Mayor": {
+  "name": "Kambal, Profiteering Mayor",
+  "oracle_id": "619e0686-e88c-4238-8364-75395e733533",
+  "type_line": "Legendary Creature — Human Advisor",
+  "mana_cost": "{1}{W}{B}",
+  "cmc": 3.0,
+  "oracle_text": "Whenever one or more tokens your opponents control enter, for each of them, create a tapped token that's a copy of it. This ability triggers only once each turn.\nWhenever one or more tokens you control enter, each opponent loses 1 life and you gain 1 life.",
+  "power": "2",
+  "toughness": "4",
+  "color_identity": [
+   "B",
+   "W"
+  ],
+  "legal_commander": "legal",
+  "rulings": [
+   [
+    "2024-04-12",
+    "Each of the new tokens copies the original characteristics of the appropriate token as stated by the effect that created that token and nothing else (unless that creature is copying something else; see below). It doesn’t copy whether the opponent’s token is tapped or untapped, whether it has any counters on it or Auras and Equipment attached to it, or any non-copy effects that have changed its power, toughness, types, color, and so on."
+   ],
+   [
+    "2024-04-12",
+    "If the copied token has {X} in its mana cost, X is 0. (Most tokens don’t have a mana cost unless they’re copying something else.)"
+   ],
+   [
+    "2024-04-12",
+    "If the copied token is copying something else, then the new token enters the battlefield as whatever that token copied."
+   ],
+   [
+    "2024-04-12",
+    "Any enters-the-battlefield abilities of the copied token will trigger when the token enters the battlefield. Any “as [this permanent] enters the battlefield” or “[this permanent] enters the battlefield with” abilities of the copied token will also work."
+   ]
+  ]
+ }
+}

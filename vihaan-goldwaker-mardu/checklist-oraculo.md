@@ -1,5 +1,26 @@
 # Checklist cláusula-a-cláusula — Vihaan, Goldwaker
 
+## Blasphemous Edict × Blasphemous Act (avaliação de troca) e Mirkwood Bats só em sacrifício — oráculo, rulings e cláusulas — 2026-10-04
+
+Origem: pergunta do usuário: *"Pensando nisso agora, não seria melhor trocar o Blasphemous Act por um wipe que sacrifica as criaturas, como por exemplo: Blasphemous Edict?"* Oráculo e **rulings lidos ao vivo no Scryfall em 2026-10-04, antes de qualquer conclusão** (Regra #3; `resultados-ab/2026-10-04-blasphemous-edict/dados/oraculo_rulings_ao_vivo.json`, 19 cartas). Nenhuma carta foi trocada.
+
+| Cláusula do oráculo | Ruling | Modelagem no simulador |
+|---|---|---|
+| **Blasphemous Edict**, *You may pay {B} rather than pay this spell's mana cost if there are thirteen or more creatures on the battlefield.* | — | harness (`edict_harness.py`, **fora** do `vihaan_goldfish_v1.py`): custo 5; {B} com 13+ criaturas **minhas** (piso; as do oponente são 📊) |
+| **Blasphemous Edict**, *Each player sacrifices thirteen creatures of their choice.* | com menos de 13 sacrifica todas; cada jogador escolhe em ordem de turno e **tudo é sacrificado ao mesmo tempo** (2024-11-08) | ✅ meu lado: sacrifica `min(total, 13)`, fichas primeiro e depois as nomeadas de menor valor, guardando Vihaan/Mahadi/Mayhem; eventos com look-back (como o wipe próprio); 📊 o lado dos oponentes |
+| **Mayhem Devil**, *Whenever a player sacrifices a permanent, deals 1 damage to any target.* | de **qualquer** jogador; dispara pelo próprio Mayhem Devil; sacrifício na resolução → o gatilho entra depois que a magia termina; sacrifício como custo → resolve antes (2019-05-03) | ✅ Edict: 1 de dano por permanente minha sacrificada (inclusive ele); 📊 as dos oponentes; Act (dano) não dispara |
+| **Mirkwood Bats**, *Whenever you create or sacrifice a token, each opponent loses 1 life.* | — | 🐛 **corrigido**: ficha DESTRUÍDA (wipe próprio/do oponente) não dispara (`MIRKWOOD_BATS_SACRIFICE_ONLY_ENABLED`); sacrificada dispara. O comentário de `on_permanent_destroyed` que dizia o contrário foi corrigido |
+| **Nadier's Nightblade**, *Whenever a token you control leaves the battlefield…* | — | ✅ dispara nas duas (saída, não sacrifício) |
+| **Zulaport / Plunderer / Dictate / Agent / Marionette Master / Life Insurance / Sephiroth / Revel in Riches / Mari** (morte ou saída) | Zulaport e Plunderer disparam pelas que morrem junto (2021-03-19, 2018-01-19) | ✅ iguais para Act e Edict |
+| **Boros Charm**, *Permanents you control gain indestructible until end of turn.* | — | 📊 não modelado (`protection_unused`); **raciocínio:** faz do Act/Blood Money um wipe unilateral que a Edict não permite |
+| **Teferi's Protection** (proteção + phase out de tudo que é meu) | — | 📊 idem; funciona com as duas, mas desliga meus gatilhos |
+
+**Regra #4:** motores listados e conferidos por script (`resumos/enumeracao.txt`); Spellbook antes/depois com controle positivo (`resumos/spellbook.txt`): troca = 0 combos que somem, 0 novos; Edict não é Game Changer.
+**Regra #5:** o simulador só mede o **meu** lado; o ensaio a seco é piso da Edict. A convenção "o Act só conta as minhas criaturas" favorece a Edict em castabilidade (📊).
+**Regra #3 / achado:** o simulador conflava "sacrifício" e "saída de ficha" no `on_token_leaves` (Bats). Auditado por grep: 4 chamadas de `on_token_leaves` (sacrifício, destruição, 4 do wipe próprio).
+**Validação:** 15/15 testes dirigidos; bit-identidade (chave do Bats desligada × `b30ef1f`, 20.000 × 2 modos); regressão 80.000 partidas, 0 exceções; A/B pareado da chave do Bats N=2.000/10.000 nos dois modos; ensaio a seco 10.000 partidas.
+**Classes da taxonomia da Regra #1 varridas (e só elas):** conceito compartilhado (destruir ≠ sacrificar, morte simultânea), gatilho compartilhado ligado em alguns pontos (Bats), política de jogada. **Não varridas:** as demais classes e cartas do `.py`.
+
 ## Wipes próprios segurados e custo pago com Treasures animados (correção do simulador) — oráculo, rulings e cláusulas — 2026-10-04
 
 Origem: princípio do usuário: *"Todo boardwipe deve ser "segurado" para causar mais "perdas" aos oponentes do que a mim. Claro que quando utilizados, eu perco tudo que for criatura em campo, mas dependendo das circunstancias isso pode ser mitigado: por exemplo: Com Mayhem Devil em campo, sacrificar tesouros animados para [pagar o custo do wipe ainda causa dano nos oponentes além do efeito do wipe em sim!"* Código: `vihaan_goldfish_v1.py` (antes = commit `47ec126`). Oráculo e rulings: os lidos ao vivo em 2026-10-04 (cópia em `resultados-ab/2026-10-04-wipes-segurados/dados/oraculo_rulings_ao_vivo.json`). Tudo que sustenta a conclusão está em `resultados-ab/2026-10-04-wipes-segurados/`.
