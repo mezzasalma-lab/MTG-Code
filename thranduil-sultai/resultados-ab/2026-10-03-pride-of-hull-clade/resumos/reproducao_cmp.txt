@@ -5,3 +5,5 @@ IGUAL  ablacao_thranduil.txt
 IGUAL  toughness_por_turno.txt
 IGUAL  enumeracao.txt
 6/6 tabelas byte a byte iguais
+
+[2026-10-05] reverificacao: thr_toughness.py passou a fixar as chaves novas em False e o verificar_reproducao.sh fixa PYTHONHASHSEED=0 nessa tabela (o simulador da epoca dependia do hash; dos seeds 0 a 5 so o 5 diferia). Resultado: 6/6 tabelas byte a byte iguais

@@ -4,6 +4,10 @@ import json, sys, statistics as st
 sys.path.insert(0, '.')
 import thr_harness as H
 T = H.T
+# Fixa o simulador no comportamento de 2026-10-03: as chaves da varredura de 2026-10-05 (terreno virado primeiro, ordem deterministica) nao existiam quando esta tabela foi gerada.
+for _k in ("TAPPED_LAND_FIRST_ENABLED", "DETERMINISTIC_SET_ORDER_ENABLED"):
+    if hasattr(T, _k):
+        setattr(T, _k, False)
 N = 6000
 rows = {t: [] for t in range(1, 9)}
 for i in range(N):
