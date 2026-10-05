@@ -1,0 +1,60 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 6482 (64.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0531       0.0469      -0.0062 ±0.0022  
+  *commander_cast_turn__ate_T3                  0.1444       0.1475      +0.0031 ±0.0016  
+  *commander_cast_turn__ate_T4                  0.4142       0.4215      +0.0073 ±0.0027  
+  *commander_cast_turn__ate_T5                  0.7557       0.7659      +0.0102 ±0.0030  
+  *lands_played_total                           5.7678       5.8189      +0.0511 ±0.0124  
+  *commander_cast_turn__ate_T6                  0.8674       0.8768      +0.0094 ±0.0028  
+  *commander_cast_count                         1.4861       1.5034      +0.0173 ±0.0060  
+  *maralen_free_casts_total                     2.4604       2.4845      +0.0241 ±0.0114  
+  *interaction_spells_cast_total                1.9174       1.9439      +0.0265 ±0.0132  
+  *len_hand                                     1.7681       1.6949      -0.0732 ±0.0435  
+  *landfall_elf_tokens_total                    0.0996       0.0935      -0.0061 ±0.0044  
+  *maralen_triggers_total                       7.6042       7.6740      +0.0698 ±0.0510  
+  *ramp_pieces_cast_total                       3.7072       3.7351      +0.0279 ±0.0207  
+  *len_smart_counter_log                        0.1283       0.1318      +0.0035 ±0.0032  
+  *smart_counters_total                         0.1283       0.1318      +0.0035 ±0.0032  
+  *len_creature_cast_turn                       8.2479       8.2881      +0.0402 ±0.0376  
+  *cards_exiled_total                          14.7392      14.8227      +0.0835 ±0.0805  
+  *len_battlefield                             11.7069      11.7650      +0.0581 ±0.0567  
+
+[so_mulligan - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8429 (84.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0531       0.0469      -0.0062 ±0.0022  
+  *commander_cast_turn__ate_T3                  0.1444       0.1475      +0.0031 ±0.0016  
+  *commander_cast_turn__ate_T4                  0.4142       0.4215      +0.0073 ±0.0027  
+  *commander_cast_turn__ate_T5                  0.7557       0.7659      +0.0102 ±0.0030  
+  *lands_played_total                           5.7678       5.8139      +0.0461 ±0.0086  
+  *commander_cast_turn__ate_T6                  0.8674       0.8768      +0.0094 ±0.0028  
+  *commander_cast_count                         1.4861       1.5003      +0.0142 ±0.0052  
+  *len_hand                                     1.7681       1.6886      -0.0795 ±0.0298  
+  *maralen_free_casts_total                     2.4604       2.4806      +0.0202 ±0.0092  
+  *interaction_spells_cast_total                1.9174       1.9364      +0.0190 ±0.0088  
+  *wiped_this_round                             0.1716       0.1760      +0.0044 ±0.0030  
+  *ramp_pieces_cast_total                       3.7072       3.7265      +0.0193 ±0.0147  
+  *maralen_triggers_total                       7.6042       7.6467      +0.0425 ±0.0372  
+  *cards_exiled_total                          14.7392      14.8081      +0.0689 ±0.0610  
+  *tutors_used_total                            0.7310       0.7247      -0.0063 ±0.0056  
+  *warmaster_used_this_turn                     0.0682       0.0702      +0.0020 ±0.0018  
+  *len_smart_wipe_log                           0.8192       0.8246      +0.0054 ±0.0050  
+  *smart_wipes_total                            0.8192       0.8246      +0.0054 ±0.0050  
+
+[so_ordem - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7795 (78.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *len_smart_attack_log                         1.2493       1.2421      -0.0072 ±0.0056  
+  *smart_attacks_taken_total                    1.2493       1.2421      -0.0072 ±0.0056  
+  *landfall_elf_tokens_total                    0.0996       0.0956      -0.0040 ±0.0032  
+  *commander_cast_count                         1.4861       1.4898      +0.0037 ±0.0032  
+  *tokens_created_total                       244.7142     221.7177     -22.9965 ±20.0782 
+   staff_infinite_draws                         0.5257       0.5717      +0.0460 ±0.0502  
+   infinite_combo_assembled                     0.0585       0.0569      -0.0016 ±0.0018  
+   infinite_combo_turn__nunca                   0.9415       0.9431      +0.0016 ±0.0018  
+   radagast_discount_used_this_turn             0.0588       0.0609      +0.0021 ±0.0025  
+   joraga_level                                 0.6565       0.6655      +0.0090 ±0.0115  
+   len_smart_counter_log                        0.1283       0.1294      +0.0011 ±0.0014  
+   smart_counters_total                         0.1283       0.1294      +0.0011 ±0.0014  
+   marwyn_power                                 1.5889       1.5991      +0.0102 ±0.0132  
+   elf_tokens                                 128.3968     117.3915     -11.0053 ±15.0542 

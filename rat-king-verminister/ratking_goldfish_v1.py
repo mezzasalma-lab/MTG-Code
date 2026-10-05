@@ -1487,6 +1487,30 @@ def build_library(names_override=None):
 BASE_LIBRARY = build_library()
 
 
+# Correcao de 2026-10-05 (varredura das classes de erro das rodadas do Vihaan/Megatron nos outros decks): o London Mulligan deste arquivo SORTEAVA as cartas do fundo
+# (`rng.shuffle(hand)`), devolvendo com a mesma chance uma carta-chave e um terreno sobrando. Com a chave em False o arquivo se comporta bit-a-bit como antes.
+MULLIGAN_SMART_BOTTOM_ENABLED = True   # o jogador ESCOLHE as cartas do fundo (mesma regra do Vihaan/Megatron)
+MULLIGAN_PROTECTED = frozenset({"Sol Ring", COMMANDER, "Dark Ritual", "Rat Colony"})   # as cartas que `should_keep` ja' trata como "boa abertura": nao sao devolvidas se houver outra
+
+
+def choose_bottom(hand: list, n: int) -> list:
+    """London Mulligan: o jogador ESCOLHE as `n` cartas do fundo. So' desfaz de terreno quando sobram MAIS de 4 (e entao o que entra tapped primeiro, se o CARD_DB marcar);
+    fora isso devolve a carta nao-terreno de MAIOR custo, protegendo `MULLIGAN_PROTECTED`."""
+    hand = list(hand)
+    bottom = []
+    for _ in range(n):
+        lands = [c for c in hand if c in LAND_NAMES]
+        nonlands = [c for c in hand if c not in LAND_NAMES]
+        if len(lands) > 4 or not nonlands:
+            pick = min(lands, key=lambda c: (0 if "etb_tapped" in CARD_DB[c].tags else 1))
+        else:
+            pool = [c for c in nonlands if c not in MULLIGAN_PROTECTED] or nonlands
+            pick = max(pool, key=lambda c: CARD_DB[c].mv)
+        hand.remove(pick)
+        bottom.append(pick)
+    return bottom
+
+
 def mulligan(rng: random.Random, max_mulls: int = 3, library=None):
     base = library if library is not None else BASE_LIBRARY
     mulls = 0
@@ -1501,13 +1525,21 @@ def mulligan(rng: random.Random, max_mulls: int = 3, library=None):
             # manuais do usuario no Archidekt): 1o mulligan e' GRATIS.
             penalty = max(0, mulls - 1)
             if penalty > 0:
-                rng.shuffle(hand)
-                bottom = hand[:penalty]
-                hand = hand[penalty:]
+                if MULLIGAN_SMART_BOTTOM_ENABLED:
+                    bottom = choose_bottom(hand, penalty)
+                    for c in bottom:
+                        hand.remove(c)
+                else:
+                    rng.shuffle(hand)
+                    bottom = hand[:penalty]
+                    hand = hand[penalty:]
                 lib = lib + bottom
             return hand, lib, mulls
         mulls += 1
     return hand, lib, mulls
+
+
+UPKEEP_BEFORE_DRAW_ENABLED = True   # CR 502-504: upkeep antes do draw step (antes: comprava e so' depois rodava o upkeep)
 
 
 def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
@@ -1522,12 +1554,17 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     # Achado real 2026-09-18: "skip the draw step" no 1o turno de quem
     # comeca so' existe na regra 1x1 (CR 103.8a). Commander e' sempre
     # multiplayer -- sempre compra, mesmo no T1.
+    # Correcao de 2026-10-05 (Regra #6, ordem das fases): o upkeep vem ANTES do draw step (CR 502-504). O codigo comprava primeiro e depois rodava o upkeep, entao o
+    # tutor do Ratcatcher ("at the beginning of your upkeep, search for a Rat") buscava com a carta do topo ja' fora da biblioteca.
+    if UPKEEP_BEFORE_DRAW_ENABLED:
+        upkeep_step(state)
     if state.library:
         state.hand.append(state.library.pop(0))
     else:
         state.library_emptied = True
 
-    upkeep_step(state)
+    if not UPKEEP_BEFORE_DRAW_ENABLED:
+        upkeep_step(state)
     play_land(state)
     main_phase(state, is_first_main=True)
     combat_step(state)

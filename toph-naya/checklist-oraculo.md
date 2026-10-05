@@ -1,5 +1,20 @@
 ## Varredura de TUDO + reescrita do motor — 2026-09-26/28
 
+## Mulligan com escolha do fundo (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| London Mulligan, CR 103.5 | 🐛 corrigido: `choose_bottom`, atrás de `MULLIGAN_SMART_BOTTOM_ENABLED` |
+| Imposto de comandante, CR 903.8 | ✅ já estava no arquivo (`generic += 2 * commander_cast_count`) |
+| Upkeep antes do draw (CR 503/504) | ✅ já estava (`upkeep_and_draw`: upkeep, depois a compra) |
+| Ordem de terrenos / entrada virada (T1/T2) | não tratado nesta seção |
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`.
+
+---
+
 **Pedido:** *"Faz a varredura completa de TUDO do deck da Toph"* (logo
 depois da Regra #7 do CLAUDE.md, criada porque eu tinha declarado
 "auditoria completa" em arquivos que ainda tinham bugs).

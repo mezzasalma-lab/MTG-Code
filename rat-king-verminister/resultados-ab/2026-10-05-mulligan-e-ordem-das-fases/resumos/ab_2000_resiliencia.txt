@@ -1,0 +1,60 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1875 (93.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0005       0.0000      -0.0005 ±0.0010  
+   commander_cast_turn__ate_T3                  0.9870       0.9895      +0.0025 ±0.0026  
+  *commander_cast_turn__ate_T4                  0.9930       0.9965      +0.0035 ±0.0026  
+  *commander_cast_turn__ate_T5                  0.9945       0.9970      +0.0025 ±0.0022  
+  *lands_played_total                           5.6870       5.7075      +0.0205 ±0.0093  
+  *len_hand                                     2.7800       2.7280      -0.0520 ±0.0303  
+  *len_tapped_lands_this_turn                   0.1405       0.1455      +0.0050 ±0.0037  
+  *soul_stone_harnessed                         0.0300       0.0320      +0.0020 ±0.0020  
+   len_smart_discard_log                        1.0925       1.1015      +0.0090 ±0.0098  
+   smart_discards_total                         1.0925       1.1015      +0.0090 ±0.0098  
+   rat_king_reanimations_total                  2.9280       2.9555      +0.0275 ±0.0313  
+   commander_cast_count                         1.7000       1.7060      +0.0060 ±0.0071  
+   recursion_events_total                       3.3835       3.4100      +0.0265 ±0.0329  
+   commander_cast_turn__ate_T6                  0.9985       0.9995      +0.0010 ±0.0014  
+   len_smart_enchantment_wipe_log               0.0960       0.0980      +0.0020 ±0.0028  
+   smart_enchantment_wipes_total                0.0960       0.0980      +0.0020 ±0.0028  
+   len_graveyard                                5.6935       5.7275      +0.0340 ±0.0476  
+   interaction_spells_cast_total                0.6010       0.5970      -0.0040 ±0.0059  
+
+[so_mulligan - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1887 (94.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0005       0.0000      -0.0005 ±0.0010  
+   commander_cast_turn__ate_T3                  0.9870       0.9895      +0.0025 ±0.0026  
+  *commander_cast_turn__ate_T4                  0.9930       0.9965      +0.0035 ±0.0026  
+  *commander_cast_turn__ate_T5                  0.9945       0.9970      +0.0025 ±0.0022  
+  *lands_played_total                           5.6870       5.7085      +0.0215 ±0.0092  
+  *len_hand                                     2.7800       2.7280      -0.0520 ±0.0301  
+  *len_tapped_lands_this_turn                   0.1405       0.1455      +0.0050 ±0.0037  
+  *soul_stone_harnessed                         0.0300       0.0320      +0.0020 ±0.0020  
+   rat_king_reanimations_total                  2.9280       2.9560      +0.0280 ±0.0313  
+   len_smart_discard_log                        1.0925       1.1010      +0.0085 ±0.0097  
+   smart_discards_total                         1.0925       1.1010      +0.0085 ±0.0097  
+   recursion_events_total                       3.3835       3.4115      +0.0280 ±0.0327  
+   commander_cast_count                         1.7000       1.7060      +0.0060 ±0.0071  
+   len_graveyard                                5.6935       5.7310      +0.0375 ±0.0474  
+   interaction_spells_cast_total                0.6010       0.5965      -0.0045 ±0.0058  
+   commander_cast_turn__ate_T6                  0.9985       0.9995      +0.0010 ±0.0014  
+   len_smart_enchantment_wipe_log               0.0960       0.0980      +0.0020 ±0.0028  
+   smart_enchantment_wipes_total                0.0960       0.0980      +0.0020 ±0.0028  
+
+[so_ordem - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1988 (99.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+   len_graveyard                                5.6935       5.6900      -0.0035 ±0.0038  
+   lands_played_this_turn                       0.4755       0.4740      -0.0015 ±0.0017  
+   len_creature_cast_turn                       4.0895       4.0880      -0.0015 ±0.0017  
+   len_smart_removal_log                        0.5445       0.5430      -0.0015 ±0.0017  
+   smart_removals_total                         0.5445       0.5430      -0.0015 ±0.0017  
+   mana_spent_this_turn                         5.9245       5.9220      -0.0025 ±0.0029  
+   len_library                                 78.5190      78.5235      +0.0045 ±0.0056  
+   lands_played_total                           5.6870       5.6860      -0.0010 ±0.0014  
+   rat_tokens                                   1.0130       1.0115      -0.0015 ±0.0022  
+   tokens_created_total                         4.0645       4.0630      -0.0015 ±0.0022  
+   life                                        36.9735      36.9715      -0.0020 ±0.0031  
+   proxy_damage_total                           4.2705       4.2640      -0.0065 ±0.0120  
+   creatures_died_this_turn                     2.7500       2.7495      -0.0005 ±0.0010  
+   interaction_spells_cast_total                0.6010       0.6015      +0.0005 ±0.0010  

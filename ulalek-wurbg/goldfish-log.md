@@ -1,6 +1,88 @@
 # Goldfish Log — Ulalek, Fused Atrocity
 
+> **Rodada 2026-10-05 (Mulligan com escolha do fundo (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`](resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md)
+
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
+
+---
+
+## Mulligan com escolha do fundo (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada. Comandante em campo até T4: 62,3% → 63,2% (+0,90 ± 0,22 pp); até T5 +0,88 ± 0,20 pp; nunca em 8 turnos −0,33 ± 0,12 pp (N=10.000, padrão; resiliência com o mesmo sinal: +0,84 ± 0,22 pp até T4).
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **London Mulligan com as cartas do fundo SORTEADAS** (`rng.shuffle(hand); bottom = hand[:penalty]`). CR 103.5: depois de comprar a mão nova o jogador "puts a number of those cards ... on the bottom of their library in any order", ou seja, ESCOLHE quais. O arquivo devolvia, com a mesma chance, uma carta-chave ou um terreno que faltava. Mesma classe do erro achado e corrigido no Megatron e no Vihaan (2026-10-03/04).
+
+**O que mudou:**
+- `MULLIGAN_SMART_BOTTOM_ENABLED` (padrão `True`) + `choose_bottom(hand, n)`: só devolve terreno quando sobram MAIS de 4 na mão (e então o que entra virado primeiro, se o `CARD_DB` marcar `etb_tapped`); fora isso devolve a carta não-terreno de MAIOR custo, poupando `MULLIGAN_PROTECTED` (as cartas que `should_keep` já trata como boa abertura). A regra do mulligan grátis do 1º mulligan (CR 103.5c, multiplayer) já estava modelada e não mudou. Com a chave em `False` o caminho antigo (sorteio) volta bit a bit.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8858 (88.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0202       0.0169      -0.0033 ±0.0012  
+  *commander_cast_turn__ate_T3                  0.2022       0.2047      +0.0025 ±0.0014  
+  *commander_cast_turn__ate_T4                  0.6228       0.6318      +0.0090 ±0.0022  
+  *commander_cast_turn__ate_T5                  0.9001       0.9089      +0.0088 ±0.0020  
+  *len_hand                                     3.0744       3.0135      -0.0609 ±0.0100  
+  *len_battlefield                             14.5761      14.6606      +0.0845 ±0.0190  
+  *interaction_spells_cast_total                2.1015       2.1217      +0.0202 ±0.0051  
+  *commander_cast_turn__ate_T6                  0.9430       0.9492      +0.0062 ±0.0017  
+  *ramp_pieces_resolved_total                   2.0961       2.1125      +0.0164 ±0.0050  
+  *commander_cast_count                         0.9798       0.9831      +0.0033 ±0.0012  
+  *commander_in_play                            0.9798       0.9831      +0.0033 ±0.0012  
+  *tutors_used_total                            0.4908       0.4984      +0.0076 ±0.0030  
+  *ulalek_copies_total                          1.5318       1.5441      +0.0123 ±0.0059  
+  *ulalek_cc_payments_safe                      1.4841       1.4963      +0.0122 ±0.0059  
+  *eye_of_ugin_tutors_total                     0.0472       0.0499      +0.0027 ±0.0014  
+  *ruins_oran_rief_counters_total               0.4745       0.4832      +0.0087 ±0.0046  
+  *flash_online_turns                           1.4927       1.5072      +0.0145 ±0.0077  
+  *spell_token_copies_total                     1.7133       1.7268      +0.0135 ±0.0079
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8854 (88.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0385       0.0353      -0.0032 ±0.0015  
+  *commander_cast_turn__ate_T3                  0.1919       0.1943      +0.0024 ±0.0013  
+  *commander_cast_turn__ate_T4                  0.5657       0.5741      +0.0084 ±0.0022  
+  *commander_cast_turn__ate_T5                  0.8443       0.8529      +0.0086 ±0.0022  
+  *len_hand                                     2.4104       2.3599      -0.0505 ±0.0095  
+  *commander_cast_count                         1.3425       1.3539      +0.0114 ±0.0032  
+  *len_battlefield                             11.0533      11.1092      +0.0559 ±0.0162  
+  *ramp_pieces_resolved_total                   1.9437       1.9594      +0.0157 ±0.0047  
+  *commander_cast_turn__ate_T6                  0.9027       0.9091      +0.0064 ±0.0020  
+  *interaction_spells_cast_total                1.8912       1.9054      +0.0142 ±0.0045  
+  *ruins_oran_rief_counters_total               0.4495       0.4585      +0.0090 ±0.0043  
+  *tutors_used_total                            0.4030       0.4083      +0.0053 ±0.0030  
+  *flash_online_turns                           1.1788       1.1921      +0.0133 ±0.0079  
+  *len_library                                 81.2411      81.2153      -0.0258 ±0.0158  
+  *graveyard_wipe_used                          0.3330       0.3364      +0.0034 ±0.0024  
+  *len_smart_graveyard_wipe_log                 0.3330       0.3364      +0.0034 ±0.0024  
+  *smart_graveyard_wipes_total                  0.3330       0.3364      +0.0034 ±0.0024  
+  *len_smart_wipe_log                           0.5286       0.5326      +0.0040 ±0.0033
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** o Ulalek depende de Eldrazi caros e de mana incolor; a escolha do fundo protege Sol Ring, Arcane Signet, Talismans, Thran Dynamo, Ancient Tomb e Command Tower, e devolve a carta mais cara quando há terreno suficiente.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `ulalek_goldfish_v1_ANTES_ea6c277.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 8/8 (`resumos/testes_dirigidos.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Mulligan:** leitura de `mulligan` e `should_keep`; teste dirigido (M1–M8: escolha do fundo, conservação das cartas, caminho antigo com a chave desligada); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+
+**Escopo — NÃO verificado:**
+- **Jogada de terreno virado em T1/T2 ("tapped-first")** e **condições de entrada dos terrenos** (checkland/fastland/slow/reveal): não são tratadas nesta seção; quando houver correção, ela tem seção própria.
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** o invariante "carta acima do número no baralho" dispara em 14.218/20.000 partidas (padrão) e 10.822 (resiliência), **igual** com a chave desligada (14.072 e 10.726). Conferido por script em 400 partidas: 290 violam e **todas** têm cópias de feitiço do Ulalek (`ulalek_copies_total` + `spell_token_copies_total` > 0, 0 exceções); são fichas-cópia com o mesmo nome da carta (Roaming Throne, Writhing Chrysalis, Sowing Mycospawn…), esperadas pelo oráculo ("copy that spell"), não carta duplicada. 0 exceções em 20.000 × 2 modos × 2 configurações.
 
 ---
 

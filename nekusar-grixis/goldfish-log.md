@@ -1,6 +1,88 @@
 # Goldfish Log — Nekusar, the Mindrazer
 
+> **Rodada 2026-10-05 (Mulligan com escolha do fundo (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`](resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md)
+
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
+
+---
+
+## Mulligan com escolha do fundo (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada. É o deck em que o mulligan mais pesa: comandante em campo até T5: 69,2% → 70,8% (+1,69 ± 0,32 pp); nunca em 8 turnos: 8,7% → 7,7% (−1,02 ± 0,24 pp); cartas em campo no fim +0,17 ± 0,04 (N=10.000, padrão; resiliência com o mesmo sinal).
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **London Mulligan com as cartas do fundo SORTEADAS** (`rng.shuffle(hand); bottom = hand[:penalty]`). CR 103.5: depois de comprar a mão nova o jogador "puts a number of those cards ... on the bottom of their library in any order", ou seja, ESCOLHE quais. O arquivo devolvia, com a mesma chance, uma carta-chave ou um terreno que faltava. Mesma classe do erro achado e corrigido no Megatron e no Vihaan (2026-10-03/04).
+
+**O que mudou:**
+- `MULLIGAN_SMART_BOTTOM_ENABLED` (padrão `True`) + `choose_bottom(hand, n)`: só devolve terreno quando sobram MAIS de 4 na mão (e então o que entra virado primeiro, se o `CARD_DB` marcar `etb_tapped`); fora isso devolve a carta não-terreno de MAIOR custo, poupando `MULLIGAN_PROTECTED` (as cartas que `should_keep` já trata como boa abertura). A regra do mulligan grátis do 1º mulligan (CR 103.5c, multiplayer) já estava modelada e não mudou. Com a chave em `False` o caminho antigo (sorteio) volta bit a bit.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8174 (81.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0868       0.0766      -0.0102 ±0.0024  
+  *commander_cast_turn__ate_T3                  0.0960       0.0996      +0.0036 ±0.0014  
+  *commander_cast_turn__ate_T4                  0.2928       0.3035      +0.0107 ±0.0024  
+  *commander_cast_turn__ate_T5                  0.6915       0.7084      +0.0169 ±0.0032  
+  *commander_cast_turn__ate_T6                  0.8035       0.8177      +0.0142 ±0.0030  
+  *len_battlefield                             14.6506      14.8198      +0.1692 ±0.0373  
+  *commander_cast_count                         0.9132       0.9234      +0.0102 ±0.0024  
+  *commander_in_play                            0.9132       0.9234      +0.0102 ±0.0024  
+  *len_creature_cast_turn                       3.1473       3.1891      +0.0418 ±0.0129  
+  *lands_played_this_turn                       0.7655       0.7761      +0.0106 ±0.0036  
+  *tutors_used_total                            0.9047       0.9216      +0.0169 ±0.0057  
+  *interaction_spells_cast_total                3.1900       3.2486      +0.0586 ±0.0203  
+  *len_library                                 61.9738      61.6486      -0.3252 ±0.1319  
+  *cards_drawn_extra                           29.8373      30.1579      +0.3206 ±0.1322  
+  *sensei_top_draws_total                       2.2012       2.2445      +0.0433 ±0.0187  
+  *small_wheel_lands_used_total                 0.2820       0.2923      +0.0103 ±0.0050  
+  *rituals_cast_total                           0.8730       0.8871      +0.0141 ±0.0070  
+  *breach_recasts_total                         1.3636       1.4013      +0.0377 ±0.0199
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8172 (81.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.1110       0.0989      -0.0121 ±0.0027  
+  *commander_cast_turn__ate_T3                  0.0893       0.0926      +0.0033 ±0.0013  
+  *commander_cast_turn__ate_T4                  0.2569       0.2659      +0.0090 ±0.0023  
+  *commander_cast_turn__ate_T5                  0.6395       0.6553      +0.0158 ±0.0033  
+  *len_battlefield                             11.1055      11.2345      +0.1290 ±0.0275  
+  *commander_cast_turn__ate_T6                  0.7673       0.7810      +0.0137 ±0.0031  
+  *commander_in_play                            0.7727       0.7851      +0.0124 ±0.0036  
+  *commander_cast_count                         1.1423       1.1578      +0.0155 ±0.0045  
+  *interaction_spells_cast_total                2.5779       2.6281      +0.0502 ±0.0179  
+  *len_creature_cast_turn                       1.9889       2.0195      +0.0306 ±0.0118  
+  *len_hand                                     4.4064       4.3606      -0.0458 ±0.0182  
+  *lands_played_this_turn                       0.7048       0.7130      +0.0082 ±0.0038  
+  *breach_loops_total                           0.3291       0.3377      +0.0086 ±0.0043  
+  *rituals_cast_total                           0.7020       0.7131      +0.0111 ±0.0058  
+  *sensei_top_draws_total                       1.5705       1.6033      +0.0328 ±0.0172  
+  *small_wheel_lands_used_total                 0.2808       0.2910      +0.0102 ±0.0056  
+  *breach_recasts_total                         0.8583       0.8866      +0.0283 ±0.0157  
+  *tutors_used_total                            0.7884       0.7973      +0.0089 ±0.0051
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** o comandante do Nekusar é caro e o deck depende de terrenos e rituais; devolver uma carta sorteada tinha mais chance de custar uma peça-chave do que sobrar um terreno extra, por isso o ganho aqui é maior do que nos decks com comandante barato.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `nekusar_goldfish_v1_ANTES_96a6a22.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 8/8 (`resumos/testes_dirigidos.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Mulligan:** leitura de `mulligan` e `should_keep`; teste dirigido (M1–M8: escolha do fundo, conservação das cartas, caminho antigo com a chave desligada); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+
+**Escopo — NÃO verificado:**
+- **Jogada de terreno virado em T1/T2 ("tapped-first")** e **condições de entrada dos terrenos** (checkland/fastland/slow/reveal): não são tratadas nesta seção; quando houver correção, ela tem seção própria.
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
 
 ---
 

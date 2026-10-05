@@ -1,6 +1,92 @@
 # Goldfish Log — Maralen, Fae Ascendant
 
+> **Rodada 2026-10-05 (Mulligan com escolha do fundo + upkeep antes do draw (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`](resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md)
+
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
+
+---
+
+## Mulligan com escolha do fundo + upkeep antes do draw (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/` (`LEIAME.md`).
+
+**Veredito:** dois erros reais, dois consertos, bit-idênticos com a chave desligada. Comandante em campo até T5: 84,1% → 85,2% (+1,11 ± 0,27 pp); nunca em 8 turnos: −0,37 ± 0,14 pp (N=10.000, padrão). O ganho vem do **mulligan** (isolado dá o mesmo número). A ordem upkeep × draw muda 32% das partidas mas **não move o comandante**; dos ~100 campos medidos só uns poucos passam do IC95% (`marwyn_power` +0,047 ± 0,028, `ramp_pieces_cast_total` +0,041 ± 0,026: ~1,5 IC95%), o que cabe no acaso de olhar ~100 campos. Não afirmo efeito da ordem.
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **London Mulligan com as cartas do fundo SORTEADAS** (`rng.shuffle(hand); bottom = hand[:penalty]`). CR 103.5: depois de comprar a mão nova o jogador "puts a number of those cards ... on the bottom of their library in any order", ou seja, ESCOLHE quais. O arquivo devolvia, com a mesma chance, uma carta-chave ou um terreno que faltava. Mesma classe do erro achado e corrigido no Megatron e no Vihaan (2026-10-03/04).
+- **Upkeep depois do draw.** `play_turn` comprava e só então rodava `upkeep_step` (Bitterblossom, Bitterbloom Bearer). CR 502–504: upkeep vem ANTES do draw step. Regra #6: o código da carta estava certo, a posição da chamada não.
+
+**O que mudou:**
+- `MULLIGAN_SMART_BOTTOM_ENABLED` (padrão `True`) + `choose_bottom(hand, n)`: só devolve terreno quando sobram MAIS de 4 na mão (e então o que entra virado primeiro, se o `CARD_DB` marcar `etb_tapped`); fora isso devolve a carta não-terreno de MAIOR custo, poupando `MULLIGAN_PROTECTED` (as cartas que `should_keep` já trata como boa abertura). A regra do mulligan grátis do 1º mulligan (CR 103.5c, multiplayer) já estava modelada e não mudou. Com a chave em `False` o caminho antigo (sorteio) volta bit a bit.
+- `UPKEEP_BEFORE_DRAW_ENABLED` (padrão `True`): em `play_turn`, `upkeep_step` roda antes da compra; desligada, roda depois (caminho antigo).
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 5642 (56.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0228       0.0191      -0.0037 ±0.0014  
+  *commander_cast_turn__ate_T3                  0.1556       0.1592      +0.0036 ±0.0017  
+  *commander_cast_turn__ate_T4                  0.4892       0.4976      +0.0084 ±0.0027  
+  *commander_cast_turn__ate_T5                  0.8409       0.8520      +0.0111 ±0.0027  
+  *commander_cast_turn__ate_T6                  0.9253       0.9338      +0.0085 ±0.0023  
+  *lands_played_total                           6.0999       6.1506      +0.0507 ±0.0145  
+  *commander_cast_count                         0.9772       0.9809      +0.0037 ±0.0014  
+  *commander_in_play                            0.9772       0.9809      +0.0037 ±0.0014  
+  *ramp_pieces_cast_total                       4.9592       5.0141      +0.0549 ±0.0320  
+  *maralen_free_casts_total                     3.2059       3.2235      +0.0176 ±0.0113  
+  *len_battlefield                             21.2289      21.3403      +0.1114 ±0.0833  
+  *faerie_tokens                                1.3126       1.3280      +0.0154 ±0.0122  
+  *len_bounce_untap_used                        0.4937       0.5022      +0.0085 ±0.0075  
+  *cards_exiled_total                          23.1117      23.2569      +0.1452 ±0.1308  
+  *interaction_spells_cast_total                2.4905       2.5118      +0.0213 ±0.0199  
+  *len_library                                 52.2232      51.9964      -0.2268 ±0.2197  
+  *marwyn_power                                 2.5557       2.5921      +0.0364 ±0.0358  
+   len_creature_cast_turn                      11.3890      11.4493      +0.0603 ±0.0610
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 6482 (64.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0531       0.0469      -0.0062 ±0.0022  
+  *commander_cast_turn__ate_T3                  0.1444       0.1475      +0.0031 ±0.0016  
+  *commander_cast_turn__ate_T4                  0.4142       0.4215      +0.0073 ±0.0027  
+  *commander_cast_turn__ate_T5                  0.7557       0.7659      +0.0102 ±0.0030  
+  *lands_played_total                           5.7678       5.8189      +0.0511 ±0.0124  
+  *commander_cast_turn__ate_T6                  0.8674       0.8768      +0.0094 ±0.0028  
+  *commander_cast_count                         1.4861       1.5034      +0.0173 ±0.0060  
+  *maralen_free_casts_total                     2.4604       2.4845      +0.0241 ±0.0114  
+  *interaction_spells_cast_total                1.9174       1.9439      +0.0265 ±0.0132  
+  *len_hand                                     1.7681       1.6949      -0.0732 ±0.0435  
+  *landfall_elf_tokens_total                    0.0996       0.0935      -0.0061 ±0.0044  
+  *maralen_triggers_total                       7.6042       7.6740      +0.0698 ±0.0510  
+  *ramp_pieces_cast_total                       3.7072       3.7351      +0.0279 ±0.0207  
+  *len_smart_counter_log                        0.1283       0.1318      +0.0035 ±0.0032  
+  *smart_counters_total                         0.1283       0.1318      +0.0035 ±0.0032  
+  *len_creature_cast_turn                       8.2479       8.2881      +0.0402 ±0.0376  
+  *cards_exiled_total                          14.7392      14.8227      +0.0835 ±0.0805  
+  *len_battlefield                             11.7069      11.7650      +0.0581 ±0.0567
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** com o upkeep antes da compra, o token de Faerie do Bitterblossom/Bearer já existe quando a mão é comprada, mas nada na compra depende dele; o efeito esperado é nulo, e a medição não contradiz (nada de relevante além do IC95% no comandante). Por que 32% das partidas divergem, se o efeito esperado é nulo: **hipótese não testada** — a troca de ordem das chamadas pode mudar a sequência de sorteios do `rng` (`create_token` e a compra usam o mesmo gerador) e com isso o desenrolar de partidas que seguem equivalentes em distribuição.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `maralen_goldfish_v1_ANTES_c7cf734.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 9/9 (`resumos/testes_dirigidos.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Mulligan:** leitura de `mulligan` e `should_keep`; teste dirigido (M1–M8: escolha do fundo, conservação das cartas, caminho antigo com a chave desligada); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+- **Ordem das fases:** teste dirigido O1 e leitura de `play_turn` inteiro (Regra #6).
+
+**Escopo — NÃO verificado:**
+- **Jogada de terreno virado em T1/T2 ("tapped-first")** e **condições de entrada dos terrenos** (checkland/fastland/slow/reveal): não são tratadas nesta seção; quando houver correção, ela tem seção própria.
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+- **Condições de entrada dos terrenos da Maralen** (checkland/slow/reveal): levantadas na triagem, não corrigidas nesta seção.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
 
 ---
 

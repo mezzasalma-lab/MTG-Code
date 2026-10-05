@@ -1,6 +1,91 @@
 # Goldfish Log — Rat King, Verminister
 
+> **Rodada 2026-10-05 (Mulligan com escolha do fundo + upkeep antes do draw (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`](resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md)
+
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
+
+---
+
+## Mulligan com escolha do fundo + upkeep antes do draw (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/` (`LEIAME.md`).
+
+**Veredito:** dois erros reais, dois consertos, bit-idênticos com a chave desligada. O efeito é pequeno porque o comandante já entra cedo neste deck (em campo até T3: 99,2% → 99,5%; +0,26 ± 0,10 pp, N=10.000). O mulligan escolhido ajuda um pouco (mais terrenos jogados: +0,018 ± 0,004 por partida); a ordem upkeep × draw muda 0,5% das partidas e **não** move nenhuma métrica além do ruído.
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **London Mulligan com as cartas do fundo SORTEADAS** (`rng.shuffle(hand); bottom = hand[:penalty]`). CR 103.5: depois de comprar a mão nova o jogador "puts a number of those cards ... on the bottom of their library in any order", ou seja, ESCOLHE quais. O arquivo devolvia, com a mesma chance, uma carta-chave ou um terreno que faltava. Mesma classe do erro achado e corrigido no Megatron e no Vihaan (2026-10-03/04).
+- **Upkeep depois do draw.** `play_turn` comprava a carta e só então rodava `upkeep_step`. CR 502–504: upkeep vem ANTES do draw step. O tutor do Ratcatcher ("at the beginning of your upkeep, search for a Rat") buscava com a carta do topo já fora da biblioteca. Regra #6 (orquestração de turno): o código da carta estava certo; a posição da chamada não.
+
+**O que mudou:**
+- `MULLIGAN_SMART_BOTTOM_ENABLED` (padrão `True`) + `choose_bottom(hand, n)`: só devolve terreno quando sobram MAIS de 4 na mão (e então o que entra virado primeiro, se o `CARD_DB` marcar `etb_tapped`); fora isso devolve a carta não-terreno de MAIOR custo, poupando `MULLIGAN_PROTECTED` (as cartas que `should_keep` já trata como boa abertura). A regra do mulligan grátis do 1º mulligan (CR 103.5c, multiplayer) já estava modelada e não mudou. Com a chave em `False` o caminho antigo (sorteio) volta bit a bit.
+- `UPKEEP_BEFORE_DRAW_ENABLED` (padrão `True`): em `play_turn`, `upkeep_step` roda antes da compra; com a chave desligada roda depois (caminho antigo).
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9355 (93.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0010       0.0006      -0.0004 ±0.0004  
+  *commander_cast_turn__ate_T3                  0.9921       0.9947      +0.0026 ±0.0010  
+  *commander_cast_turn__ate_T4                  0.9954       0.9971      +0.0017 ±0.0008  
+  *commander_cast_turn__ate_T5                  0.9966       0.9981      +0.0015 ±0.0008  
+  *lands_played_total                           5.8267       5.8447      +0.0180 ±0.0038  
+  *len_battlefield                             16.1445      16.1854      +0.0409 ±0.0166  
+  *len_hand                                     3.2338       3.1980      -0.0358 ±0.0194  
+  *commander_cast_turn__ate_T6                  0.9973       0.9985      +0.0012 ±0.0007  
+  *tokens_created_total                         6.0888       6.1467      +0.0579 ±0.0355  
+  *rat_tokens                                   3.2295       3.2757      +0.0462 ±0.0321  
+  *len_tapped_lands_this_turn                   0.1987       0.2007      +0.0020 ±0.0016  
+  *len_tapped_creatures_this_turn               0.7959       0.7999      +0.0040 ±0.0033  
+  *ramp_pieces_cast_total                       0.6981       0.7007      +0.0026 ±0.0024  
+  *commander_cast_count                         0.9990       0.9994      +0.0004 ±0.0004  
+  *commander_in_play                            0.9990       0.9994      +0.0004 ±0.0004  
+   soul_stone_harnessed                         0.0537       0.0546      +0.0009 ±0.0010  
+   creatures_died_this_turn                     1.8354       1.8417      +0.0063 ±0.0085  
+   thrumming_stone_free_casts_total             0.4317       0.4272      -0.0045 ±0.0067
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9343 (93.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0013       0.0007      -0.0006 ±0.0005  
+  *commander_cast_turn__ate_T3                  0.9895       0.9923      +0.0028 ±0.0010  
+  *commander_cast_turn__ate_T4                  0.9949       0.9966      +0.0017 ±0.0008  
+  *commander_cast_turn__ate_T5                  0.9965       0.9980      +0.0015 ±0.0008  
+  *lands_played_total                           5.6458       5.6605      +0.0147 ±0.0040  
+  *len_hand                                     2.6403       2.5992      -0.0411 ±0.0204  
+  *commander_cast_turn__ate_T6                  0.9973       0.9985      +0.0012 ±0.0007  
+  *len_battlefield                             10.7181      10.7435      +0.0254 ±0.0171  
+  *len_smart_removal_log                        0.5238       0.5209      -0.0029 ±0.0027  
+  *smart_removals_total                         0.5238       0.5209      -0.0029 ±0.0027  
+  *permanent_left_battlefield_this_turn         0.5767       0.5741      -0.0026 ±0.0026  
+   commander_cast_count                         1.7015       1.7040      +0.0025 ±0.0026  
+   emeritus_prepared                            0.0509       0.0500      -0.0009 ±0.0009  
+   ramp_pieces_cast_total                       0.6294       0.6315      +0.0021 ±0.0023  
+   tutors_used_total                            0.8834       0.8694      -0.0140 ±0.0174  
+   len_tapped_lands_this_turn                   0.1667       0.1679      +0.0012 ±0.0016  
+   recursion_events_total                       3.4180       3.4295      +0.0115 ±0.0155  
+   len_graveyard                                5.8854       5.9012      +0.0158 ±0.0219
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** a ordem upkeep × draw só importa quando o upkeep olha ou muda a biblioteca/mão; aqui só o tutor de Rat do Ratcatcher faz isso, e ele raramente decide uma partida. O resultado (99,5% das partidas idênticas) é coerente com isso.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `ratking_goldfish_v1_ANTES_53e6255.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 9/9 (`resumos/testes_dirigidos.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Mulligan:** leitura de `mulligan` e `should_keep`; teste dirigido (M1–M8: escolha do fundo, conservação das cartas, caminho antigo com a chave desligada); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+- **Ordem das fases:** teste dirigido O1 (com a chave ligada o upkeep roda com a mão ainda sem a carta comprada) e leitura de `play_turn` inteiro (Regra #6).
+
+**Escopo — NÃO verificado:**
+- **Jogada de terreno virado em T1/T2 ("tapped-first")** e **condições de entrada dos terrenos** (checkland/fastland/slow/reveal): não são tratadas nesta seção; quando houver correção, ela tem seção própria.
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** `mana_spent_this_turn` negativo em ~0,3% das partidas (62/20.000 padrão, 49 resiliência; 60 e 50 com a chave desligada): é a convenção do arquivo para mana extra de ritual (`Dark Ritual`: custa 1 e faz `mana_spent_this_turn -= 3`; `Culling the Weak`: `-= 4`; o contador negativo vira mana a gastar no turno), idêntica antes e depois, não um bug da correção. 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
 
 ---
 
