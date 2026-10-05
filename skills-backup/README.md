@@ -17,7 +17,7 @@ Criada em **2026-09-30**; atualizada em **2026-10-05** (Regra #10). Regra de man
 | `mtg-commander/references/protocolo-de-avaliacao.md` | **novo:** protocolo de avaliação de cartas, simuladores, A/B e relatório (destilado das Regras #1–#10) e checklist de erros já cometidos |
 | `mtg-commander/references/goldfish-sim-card-rules.md`, `pod-simulator-design.md` | lições de processo dos simuladores e design do motor de mesa (cópias idênticas de `references/` do repositório) |
 | `mtg-commander/references/CLAUDE-repositorio.md` | texto integral das regras do repositório (cópia idêntica do `CLAUDE.md` da raiz, Regras #1–#10) |
-| `mtg-commander.zip` | **pacote pronto para enviar à conta** (gerado do backup em 2026-10-05, já com a Regra #10; `SKILL.md` na raiz do zip) |
+| `mtg-commander.zip` | **pacote pronto para enviar à conta** (gerado do backup em 2026-10-05, já com a Regra #10; pasta `mtg-commander/` como raiz do zip) |
 | `sincronizar-skill.sh` | mantém skill viva, backup e espelhos iguais (modos abaixo) |
 | `SHA256SUMS` | hashes de todos os arquivos de `mtg-commander/` (`cd skills-backup && sha256sum -c SHA256SUMS`) |
 
@@ -43,8 +43,11 @@ Estado anterior da skill (2026-09-26): `SKILL.md` + 3 referências. Agora:
 ## Como restaurar / reinstalar
 
 1. **Claude Code (pasta de skills):** copie `skills-backup/mtg-commander/` inteira para `~/.claude/skills/mtg-commander/`.
-2. **Skill da conta (app):** envie `skills-backup/mtg-commander.zip` como skill nas configurações da conta (o zip já está pronto, com `SKILL.md` na raiz; `bash skills-backup/sincronizar-skill.sh --zip` o refaz a partir do backup). **Isso só você consegue fazer: nenhuma ferramenta da sessão grava skills na conta.** Ao enviar, a versão antiga da conta precisa ser substituída (nome `mtg-commander`). Não verifiquei o caminho exato dessa tela; o formato
-   (`SKILL.md` com frontmatter + `references/`) é o padrão de skills.
+2. **Skill da conta (app, claude.ai):** pré-requisito: Configurações → Capacidades → "Code execution and file creation" ligado. Depois: **Customize → Skills → "+" → "+ Create skill" → "Upload a skill"** e escolher
+   `skills-backup/mtg-commander.zip`. O zip já está pronto (pasta `mtg-commander/` como raiz do zip, com `SKILL.md` dentro, como o app exige; `bash skills-backup/sincronizar-skill.sh --zip` o refaz a partir do backup).
+   A documentação oficial não diz o que acontece ao enviar uma skill com o mesmo nome de uma que já existe: o jeito seguro é **excluir (ou desativar) a `mtg-commander` antiga antes de enviar** e conferir na lista.
+   **Isso só o usuário consegue fazer: nenhuma ferramenta da sessão grava skills na conta.** Fontes: <https://support.claude.com/en/articles/12512198-how-to-create-custom-skills>,
+   <https://support.claude.com/en/articles/12512180-use-skills-in-claude> e <https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview> (o texto desses artigos varia entre "Settings > Features" e "Customize > Skills").
 3. Conferir: `cd skills-backup && sha256sum -c SHA256SUMS`.
 
 ## Como manter (script)

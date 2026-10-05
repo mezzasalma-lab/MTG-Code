@@ -5,7 +5,7 @@
 #   --para-skill   copia os ESPELHOS do repositório para dentro da skill viva
 #                  (CLAUDE.md -> references/CLAUDE-repositorio.md; references/{user-standing-rules,goldfish-sim-card-rules,pod-simulator-design}.md)
 #   --para-backup  copia a skill viva inteira para skills-backup/mtg-commander/ e refaz o SHA256SUMS
-#   --zip          gera skills-backup/mtg-commander.zip (SKILL.md na raiz do zip) a partir do BACKUP, pronto pra enviar como skill nas configuracoes da conta
+#   --zip          gera skills-backup/mtg-commander.zip (pasta mtg-commander/ como raiz do zip, com SKILL.md dentro) a partir do BACKUP, pronto pra enviar como skill nas configuracoes da conta
 # Variável opcional: SKILL_DIR (pasta viva da skill; por padrão /root/.claude/skills/synced/*/mtg-commander)
 set -e
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
@@ -36,7 +36,8 @@ case "$MODO" in
   --zip)
     command -v zip >/dev/null || { echo "zip nao encontrado"; exit 1; }
     rm -f "$REPO/skills-backup/mtg-commander.zip"
-    (cd "$BACKUP" && zip -qr -X "$REPO/skills-backup/mtg-commander.zip" . -x '*.pyc' -x '__pycache__/*')
-    echo "zip gerado: skills-backup/mtg-commander.zip ($(du -h "$REPO/skills-backup/mtg-commander.zip" | cut -f1)); raiz do zip:"; unzip -l "$REPO/skills-backup/mtg-commander.zip" | sed -n '4,12p' ;;
+    # o app exige a PASTA da skill como raiz do zip, com o mesmo nome do `name:` do SKILL.md (mtg-commander.zip -> mtg-commander/SKILL.md)
+    (cd "$REPO/skills-backup" && zip -qr -X mtg-commander.zip mtg-commander -x '*.pyc' -x '*/__pycache__/*')
+    echo "zip gerado: skills-backup/mtg-commander.zip ($(du -h "$REPO/skills-backup/mtg-commander.zip" | cut -f1)); conteudo:"; unzip -l "$REPO/skills-backup/mtg-commander.zip" | sed -n '4,8p' ;;
   *) echo "modo desconhecido: $MODO"; exit 2 ;;
 esac
