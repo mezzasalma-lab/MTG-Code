@@ -616,7 +616,6 @@ class GameState:
     tapped_land_first_plays_total: int = 0   # correcao de 2026-10-05: vezes em que T1/T2 jogou o terreno virado primeiro
     tapped_land_skipped_for_play_total: int = 0   # ... e vezes em que o ensaio mostrou que isso custaria uma jogada e jogou o desvirado
     evolution_sage_proliferates: int = 0
-    returned_land_landfall_total: int = 0   # correcao de 2026-10-05: terrenos que voltaram ao campo (blink) e dispararam landfall
     mana_held_back: int = 0  # mana nao gasta no ultimo turno, disponivel pra flash no end step alheio (untap so acontece no MEU untap step - CR 500.1 - entao isso NAO reseta pra total_mana entre meus turnos)
     lands_played_total: int = 0
 
@@ -1283,12 +1282,6 @@ def play_land(state: GameState, log: List[Dict]):
     state.lands_played_total += 1
     on_land_enters(state, log)
 
-# Correcao de 2026-10-05 (varredura mecanica de landfall, `varredura-2026-10-05/resumos/audit_landfall_ANTES.txt`): o terreno que VOLTA ao campo (blink da Aminatou, the Fateshifter /
-# Oath of Teferi no end step) e' um terreno que entra: dispara landfall (Evolution Sage: proliferate) como qualquer outro. `_return_to_battlefield` so' despachava ETB de PW/criatura/nao-criatura.
-# Medido: 7 entradas em 300 partidas sem a chamada de landfall (2.375 entradas x 2.368 chamadas). Com a chave em False o comportamento antigo volta bit a bit.
-LAND_ENTER_TRIGGERS_ALL_ENABLED = True
-
-
 def on_land_enters(state: GameState, log: List[Dict]):
     # Evolution Sage: "Landfall - Whenever a land you control enters,
     # proliferate." Achado real 2026-08-28: sem NENHUM despacho de landfall
@@ -1443,9 +1436,6 @@ def _return_to_battlefield(state: GameState, name: str, log: List[Dict]):
         creature_enters(state, name, log)
     else:
         noncreature_etb(state, name, log)
-        if LAND_ENTER_TRIGGERS_ALL_ENABLED and is_land(name):
-            state.returned_land_landfall_total += 1
-            on_land_enters(state, log)
 
 
 def _blink(state: GameState, name: str, log: List[Dict], delayed: bool = False):
@@ -4416,8 +4406,6 @@ def simulate_one(seed: int, turns: int, with_greater_auramancy: bool, swap=None)
         # Achados reais 2026-09-24 (rodada do modelo de combate):
         "all_will_be_one_triggers_total": state.all_will_be_one_triggers_total,
         "all_will_be_one_face_damage_total": state.all_will_be_one_face_damage_total,
-        "returned_land_landfall_total": state.returned_land_landfall_total,   # correcao de 2026-10-05
-        "evolution_sage_proliferates": state.evolution_sage_proliferates,
         "opp_eliminated_total": state.opp_eliminated_total,
         # Rodada Reality Fracture (2026-09-25):
         "late_pw_activations_total": state.late_pw_activations_total,

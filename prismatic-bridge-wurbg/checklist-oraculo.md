@@ -1,5 +1,19 @@
 # Checklist cláusula-a-cláusula — Esika // The Prismatic Bridge
 
+## Landfall no terreno devolvido ao campo (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| Landfall (Evolution Sage) em TODO ponto de entrada de terreno | 🐛 corrigido: terreno devolvido por `_return_to_battlefield` (blink) agora dispara, atrás de `LAND_ENTER_TRIGGERS_ALL_ENABLED` |
+| Landfall em play_land / Fabled Passage / Farseek-Nature's Lore-Three Visits / Ugin ultimate | ✅ já disparava (conferido na varredura) |
+
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-landfall-terreno-devolvido/LEIAME.md`.
+
+---
+
 ## Terreno virado primeiro em T1/T2 (varredura de 2026-10-05) — 2026-10-05
 
 **Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.

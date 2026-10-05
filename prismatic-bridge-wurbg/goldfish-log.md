@@ -1,5 +1,82 @@
 # Goldfish Log — Esika, God of the Tree // The Prismatic Bridge
 
+> **Rodada 2026-10-05 (Landfall no terreno devolvido ao campo (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-landfall-terreno-devolvido/LEIAME.md`](resultados-ab/2026-10-05-landfall-terreno-devolvido/LEIAME.md)
+
+## Landfall no terreno devolvido ao campo (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-landfall-terreno-devolvido/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada. O efeito é raro e pequeno: 99,1% das partidas pareadas (N=10.000, padrão) terminam com resultado idêntico ao de antes; o terreno que volta ao campo por blink (Aminatou, the Fateshifter / Oath of Teferi) acontece em 0,07 terreno(s) por partida; a Evolution Sage prolifera 1,16 vez(es) por partida no total (modo padrão: o contador é novo no resultado e só existe na variante depois; no modo resiliência já existia), e o terreno devolvido só soma uma dessas se a Sage estiver em campo. Campos que passam do IC95% na tabela pareada (N=10.000) — padrão: `pw_deaths_total` -0,0021 ± 0,0016 (base 0,6378); `planeswalkers_in_play_end` +0,0016 ± 0,0013 (base 2,9870). resiliência: `evolution_sage_proliferates` +0,0215 ± 0,0061 (base 0,7161); `all_will_be_one_triggers_total` +3,0665 ± 1,7638 (base 251,8471); `len_graveyard` -0,0012 ± 0,0010 (base 4,4731); `pw_turns_alive_total` +0,0010 ± 0,0010 (base 6,3661).
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **Terreno que volta ao campo não disparava landfall.** `_return_to_battlefield` (blink da Aminatou, the Fateshifter −1 e do Oath of Teferi no end step) despachava ETB de planeswalker/criatura/não-criatura, mas não a chamada de landfall: o terreno devolvido entra em campo (regra: "a land enters under your control") e a **Evolution Sage** ("Landfall — Whenever a land you control enters, proliferate") deveria proliferar. Achado pela varredura mecânica de landfall (`varredura-2026-10-05/scripts/audit_landfall.py`; `resumos/audit_landfall_ANTES.txt`): 2.375 entradas de terreno × 2.368 chamadas de landfall em 300 partidas; a diferença (7) é exatamente `_return_to_battlefield`. Nos outros decks com despacho de landfall (Beorn, Maralen, Toph) entradas = chamadas (ou chamadas ≥ entradas, no Toph, que despacha por permanente).
+
+**O que mudou:**
+- `LAND_ENTER_TRIGGERS_ALL_ENABLED` (padrão `True`): em `_return_to_battlefield`, terreno devolvido chama `on_land_enters` (Evolution Sage → `proliferate_loyalty`). Contadores novos na saída: `returned_land_landfall_total` e `evolution_sage_proliferates` (este já existia no estado, agora também no resultado). Com a chave em `False` o comportamento antigo volta bit a bit.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9914 (99.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.2397       6.2397      +0.0000 ±0.0003  
+  *pw_deaths_total                              0.6378       0.6357      -0.0021 ±0.0016  
+  *planeswalkers_in_play_end                    2.9870       2.9886      +0.0016 ±0.0013  
+   pw_tokens_created_total                      2.0901       2.0867      -0.0034 ±0.0045  
+   opp_eliminated_total                         0.2193       0.2195      +0.0002 ±0.0003  
+   pw_recursion_total                           0.2424       0.2422      -0.0002 ±0.0003  
+   urza_extra_lore_total                        0.0391       0.0389      -0.0002 ±0.0003  
+   urza_chapter_end                             0.2546       0.2540      -0.0006 ±0.0008  
+   board_cap_hits_total                        28.8477      28.7583      -0.0894 ±0.1680  
+   bridge_cast_turn__ate_T4                     0.1055       0.1056      +0.0001 ±0.0002  
+   bridge_cast_turn__ate_T5                     0.2941       0.2942      +0.0001 ±0.0002  
+   bridge_in_play_end                           0.7135       0.7134      -0.0001 ±0.0002  
+   carth_tutors_total                           0.3899       0.3897      -0.0002 ±0.0004  
+   protectors_removed_count                     0.0534       0.0535      +0.0001 ±0.0002  
+   removal_attempts_total                       0.8845       0.8846      +0.0001 ±0.0002
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9930 (99.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *evolution_sage_proliferates                  0.7161       0.7376      +0.0215 ±0.0061  
+   lands_played_total                           6.1453       6.1452      -0.0001 ±0.0002  
+  *all_will_be_one_triggers_total             251.8471     254.9136      +3.0665 ±1.7638  
+  *len_graveyard                                4.4731       4.4719      -0.0012 ±0.0010  
+  *pw_turns_alive_total                         6.3661       6.3671      +0.0010 ±0.0010  
+   len_token_counters                           0.7839       0.7842      +0.0003 ±0.0003  
+   oko_minus5_total                             0.2050       0.2053      +0.0003 ±0.0003  
+   discards_total                               0.2638       0.2633      -0.0005 ±0.0006  
+   len_pw_activated_this_turn                   2.7711       2.7715      +0.0004 ±0.0005  
+   pw_deaths_total                              1.3050       1.3044      -0.0006 ±0.0008  
+   elspeth_emblem                               0.2086       0.2088      +0.0002 ±0.0003  
+   pw_recursion_total                           0.2619       0.2617      -0.0002 ±0.0003  
+   pw_activations_total                         9.2390       9.2399      +0.0009 ±0.0013  
+   len_new_tokens_this_turn                     0.5635       0.5641      +0.0006 ±0.0009  
+   len_loyalty                                  2.4919       2.4925      +0.0006 ±0.0009  
+   len_activations_this_turn                    4.6930       4.6939      +0.0009 ±0.0014
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** o efeito esperado é minúsculo (precisa de blink de terreno + Evolution Sage em campo + planeswalkers pra proliferar); a correção existe porque o gatilho tem que disparar em todo ponto de entrada de terreno, não pela magnitude.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `prismatic_bridge_goldfish_v1_ANTES_2c2da70.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 5/5 (`resumos/testes_dirigidos.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Landfall:** varredura mecânica de entradas de terreno × chamadas da função de landfall em Beorn, PB, Maralen e Toph (300 partidas cada); testes dirigidos PF1–PF5 (proliferate com Evolution Sage, chave desligada, sem Evolution Sage, criatura devolvida não conta, 300 partidas por modo).
+- **Bit-identidade** com a chave desligada × snapshot: 20.000 partidas × 2 modos (contadores novos ignorados).
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+
+**Escopo — NÃO verificado:**
+- **Outros gatilhos de "a land enters"** além do landfall da Evolution Sage neste deck (a varredura de oráculo da lista só achou landfall em Evolution Sage e The World Tree, que não é gatilho de entrada).
+- **Resto da taxonomia da Regra #1 neste arquivo:** `grep` e leitura pontual, sem leitura integral nem instrumentação em runtime nesta rodada.
+- **Oponente real:** o goldfish não modela.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos deram 0 violações.
+
+---
+
 > **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
 
 ## Terreno virado primeiro em T1/T2 (varredura de 2026-10-05) — 2026-10-05
