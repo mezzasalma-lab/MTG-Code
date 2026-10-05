@@ -1,5 +1,19 @@
 # Checklist cláusula-a-cláusula — Thranduil, the Elvenking
 
+## Terreno virado primeiro em T1/T2 + ordem das habilidades emprestadas determinística (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| Terreno que entra virado jogado primeiro em T1/T2 quando não custa jogada | 🐛 corrigido: `tapped_first_pick` + ensaio a seco, atrás de `TAPPED_LAND_FIRST_ENABLED` |
+| Determinismo entre processos (`set` de str iterado em ordem de hash) | 🐛 corrigido: `DETERMINISTIC_SET_ORDER_ENABLED` (ordem das fontes emprestadas do cemitério) |
+
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`.
+
+---
+
 ## The Pride of Hull Clade (candidata, implementada só no harness) — oráculo, rulings e cláusulas — 2026-10-03
 
 A carta **não está na lista**; foi acrescentada em tempo de execução por `resultados-ab/2026-10-03-pride-of-hull-clade/orquestracao/thr_harness.py`

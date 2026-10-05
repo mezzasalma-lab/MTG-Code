@@ -1,8 +1,89 @@
 # Goldfish Log — Rat King, Verminister
 
+> **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
+
 > **Rodada 2026-10-05 (Mulligan com escolha do fundo + upkeep antes do draw (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`](resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md)
 
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
+
+---
+
+## Terreno virado primeiro em T1/T2 (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-terreno-virado-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada e com o ensaio sem efeito colateral (modo GHOST). Modo padrão, N=10.000: (campos do comandante ausentes). Modo resiliência: (campos do comandante ausentes). A correção joga o terreno virado primeiro em média 0,33 vez(es) por partida (N=10.000, padrão) e o ensaio impede 0,14 vez(es) por partida (teria custado uma jogada). Terrenos jogados no total: +0,002 ± 0,004 por partida.
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **Terreno que entra virado nunca é jogado primeiro.** `play_land` jogava sempre o primeiro terreno da ordem própria do deck (desvirado antes de virado). Em T1/T2, sem nada pra conjurar, a mana do turno era desperdiçada enquanto o terreno que entra virado ficava na mão pra um turno em que ele custa desenvolvimento. Mesmo erro achado e corrigido no Vihaan e no Megatron (2026-10-03/04).
+
+**O que mudou:**
+- `TAPPED_LAND_FIRST_ENABLED` (padrão `True`), `TAPPED_LAND_FIRST_MAX_TURN = 2`: em T1..T2, havendo terreno virado E desvirado na mão, `tapped_first_pick` joga o virado, **salvo se isso custar desenvolvimento**: o teste é um ENSAIO a seco da própria fase de conjuração pré-combate do deck (cópia profunda do estado; `CARD_DB` compartilhado; RNG do estado copiado; `random` global restaurado), comparando o MV total das cartas que saem da mão com cada candidato. Empate → o virado. Dentro de cada grupo vale a ordem própria do deck (cor mais escassa etc.). Contadores novos no estado: `tapped_land_first_plays_total` (jogou o virado) e `tapped_land_skipped_for_play_total` (o ensaio mostrou que custaria uma jogada e jogou o desvirado). `TAPPED_LAND_FIRST_GHOST` só existe pra validação (roda o ensaio e ignora o resultado). Com a chave em `False` o caminho antigo volta bit a bit.
+- Terrenos virados do deck: os de tag `etb_tapped` e Castle Locthwain sem Swamp/Urborg em campo. A ordem própria do deck (Urborg, Cabal Coffers, Nykthos, Castle Locthwain, Swamp) vale dentro de cada grupo.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7200 (72.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           5.8447       5.8470      +0.0023 ±0.0038  
+  *len_tapped_lands_this_turn                   0.2007       0.1951      -0.0056 ±0.0029  
+  *rat_tokens                                   3.2757       3.3417      +0.0660 ±0.0548  
+  *len_battlefield                             16.1854      16.2165      +0.0311 ±0.0261  
+  *tokens_created_total                         6.1467       6.2123      +0.0656 ±0.0580  
+  *len_creature_cast_turn                       4.5104       4.5174      +0.0070 ±0.0065  
+  *mercenary_tokens                             0.1597       0.1617      +0.0020 ±0.0020  
+  *mana_spent_this_turn                         7.4141       7.4500      +0.0359 ±0.0358  
+   creatures_died_this_turn                     1.8417       1.8555      +0.0138 ±0.0139  
+   treasure_tokens                              0.9636       0.9737      +0.0101 ±0.0102  
+   soul_stone_harnessed                         0.0546       0.0538      -0.0008 ±0.0009  
+   library_emptied                              0.0020       0.0023      +0.0003 ±0.0003  
+   tutors_used_total                            0.9225       0.9053      -0.0172 ±0.0211  
+   cards_drawn_extra                            2.9853       3.0050      +0.0197 ±0.0277  
+   len_tapped_creatures_this_turn               0.7999       0.8027      +0.0028 ±0.0040
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7202 (72.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           5.6605       5.6596      -0.0009 ±0.0056  
+  *commander_cast_turn__ate_T3                  0.9923       0.9874      -0.0049 ±0.0016  
+   commander_cast_turn__ate_T4                  0.9966       0.9963      -0.0003 ±0.0004  
+   commander_cast_turn__ate_T5                  0.9980       0.9979      -0.0001 ±0.0002  
+  *len_smart_counter_log                        0.0499       0.0540      +0.0041 ±0.0029  
+  *smart_counters_total                         0.0499       0.0540      +0.0041 ±0.0029  
+  *len_smart_graveyard_snipe_log                0.2734       0.2684      -0.0050 ±0.0046  
+  *smart_graveyard_snipes_total                 0.2734       0.2684      -0.0050 ±0.0046  
+  *wiped_this_round                             0.1734       0.1694      -0.0040 ±0.0037  
+  *len_battlefield                             10.7435      10.7820      +0.0385 ±0.0373  
+  *commander_cast_count                         1.7040       1.7097      +0.0057 ±0.0056  
+  *creatures_died_this_turn                     2.8953       2.8495      -0.0458 ±0.0455  
+   len_tapped_lands_this_turn                   0.1679       0.1642      -0.0037 ±0.0037  
+   mercenary_tokens                             0.0658       0.0682      +0.0024 ±0.0026  
+   commander_in_play                            0.8146       0.8180      +0.0034 ±0.0037  
+   life                                        36.6752      36.6281      -0.0471 ±0.0545  
+   len_smart_discard_log                        1.1339       1.1408      +0.0069 ±0.0081  
+   smart_discards_total                         1.1339       1.1408      +0.0069 ±0.0081
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** o ganho esperado é pequeno e concentrado em T1–T3: só muda a partida quando a mão tem terreno virado E desvirado e nenhuma jogada de T1/T2 que o terreno desvirado pague (nesses casos o terreno virado deixa de ficar parado na mão até um turno em que atrasaria o desenvolvimento).
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `ratking_goldfish_v1_ANTES_7918e0b.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 8/8 (`resumos/testes_dirigidos.txt`); ghost (chave ligada + ensaio ignorado == desligada), 20.000 × 2 modos (`resumos/ghost_20000.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Terreno virado primeiro:** leitura de `play_land` (+ predicado de entrada virada do deck); testes dirigidos TL1–TL8 (escolha com/sem jogada em T1, chave desligada, T3, só um tipo na mão, ensaio sem efeito no estado/RNG/`random`, modo GHOST, integração em `play_land`); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Ensaio sem efeito colateral:** com a chave ligada + modo GHOST (roda o ensaio e ignora o resultado) o resultado é idêntico a tudo desligado, 20.000 × 2 modos (`resumos/ghost_20000.txt`).
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+
+**Escopo — NÃO verificado:**
+- **Condições de entrada dos terrenos** além do que a varredura mecânica cobriu (`varredura-2026-10-05/`: cenário de campo vazio + cenário condição satisfeita × violada para os padrões "unless you control …"/reveal; terrenos que o `CARD_DB` do deck não tem como básico foram pulados e estão listados lá).
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
 
 ---
 

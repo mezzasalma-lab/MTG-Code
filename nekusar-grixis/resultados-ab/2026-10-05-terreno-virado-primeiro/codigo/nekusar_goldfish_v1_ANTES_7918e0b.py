@@ -91,8 +91,6 @@ Simplificacoes documentadas (nao inventadas — omissoes explicitas):
   criaturas de ataque, e um deck de dano por gatilho de compra).
 """
 
-import collections
-import copy
 import json
 import random
 import re
@@ -305,8 +303,6 @@ class GameState:
     the_one_ring_burden: int = 0
     life: int = 40
     tapped_lands_this_turn: set = field(default_factory=set)
-    tapped_land_first_plays_total: int = 0   # correcao de 2026-10-05: vezes em que T1/T2 jogou o terreno virado primeiro
-    tapped_land_skipped_for_play_total: int = 0   # ... e vezes em que o ensaio mostrou que isso custaria uma jogada e jogou o desvirado
     spark_double_copy_target: Optional[str] = None
 
     commander_in_play: bool = False
@@ -783,7 +779,7 @@ def resolve_instant_sorcery(state: GameState, name: str):
     elif "tutor" in tags or "tutor_top" in tags or "tutor_instant_sorcery" in tags:
         do_tutor(state, name)
     elif name == "Brain Freeze":
-        copies = state.spells_cast_this_turn - (1 if STORM_SELF_COUNT_FIX_ENABLED else 0)  # storm: copiada 1x por spell ja conjurada ANTES (o contador ja inclui o proprio Brain Freeze)
+        copies = state.spells_cast_this_turn  # storm: copiada 1x por spell ja conjurada antes
         state.mill_proxy_total += 3 * (1 + copies) * NUM_OPPONENTS
     elif name == "Reanimate" or name == "Animate Dead":
         targets = [c for c in state.graveyard if is_creature_card(c)]
@@ -932,9 +928,8 @@ def cast_card(state: GameState, name: str, from_hand: bool = True):
         spend_mana(state, card.mv)
     if from_hand and name != COMMANDER:
         state.hand.remove(name)
-    if not (LAND_PLAY_NOT_A_SPELL_ENABLED and name in LAND_NAMES):   # CR 305.1: jogar terreno nao e' conjurar magia (nao conta pra storm)
-        state.spells_cast_this_turn += 1
-        state.storm_count_max = max(state.storm_count_max, state.spells_cast_this_turn)
+    state.spells_cast_this_turn += 1
+    state.storm_count_max = max(state.storm_count_max, state.spells_cast_this_turn)
 
     if name in LAND_NAMES:
         state.battlefield.append(name)
@@ -987,82 +982,13 @@ def cast_card(state: GameState, name: str, from_hand: bool = True):
         state.underworld_breach_active = True
 
 
-# ---------------------------------------------------------------------------
-# Terreno virado primeiro em T1/T2 -- correcao de 2026-10-05 (mesma regra do Vihaan/Megatron)
-# ---------------------------------------------------------------------------
-# Antes: `play_land` jogava SEMPRE o primeiro terreno da ordem propria do deck (desvirado antes de virado); a mana de um turno sem jogada era desperdicada e o
-# terreno virado ficava pra um turno em que ele custa desenvolvimento. Agora, em T1..TAPPED_LAND_FIRST_MAX_TURN, havendo terreno virado E desvirado na mao, joga o
-# virado, salvo se isso custar desenvolvimento: o teste e' um ENSAIO a seco da propria fase de conjuracao pre-combate (copia profunda do estado), comparando o MV
-# total das cartas que saem da mao com cada candidato. Empate -> o virado. Com a chave em False o comportamento e' o antigo, bit a bit.
-# Correcoes de 2026-10-05 (varredura de contadores de magia, Regra 'terreno nao e' magia'): (1) `cast_card` contava a JOGADA de terreno em `spells_cast_this_turn`/`storm_count_max` (CR 305.1: jogar
-# terreno nao e' conjurar); (2) o storm do Brain Freeze usava `spells_cast_this_turn` ja' incluindo o proprio Brain Freeze (copias = magias conjuradas ANTES dela). Medido antes: Brain Freeze como 1a magia
-# do turno dava 18 de mill proxy (storm 1) em vez de 9 (storm 0); com 1 terreno jogado antes, 27 em vez de 9. Com as chaves em False o comportamento antigo volta bit a bit.
-LAND_PLAY_NOT_A_SPELL_ENABLED = True
-STORM_SELF_COUNT_FIX_ENABLED = True
-TAPPED_LAND_FIRST_ENABLED = True
-TAPPED_LAND_FIRST_MAX_TURN = 2
-TAPPED_LAND_FIRST_GHOST = False   # so' validacao: roda o ensaio mas ignora o resultado (joga o padrao). Com a chave ligada + GHOST == chave desligada prova que o ensaio nao tem efeito colateral
-_TL_FORCED = None   # terreno imposto a play_land durante o ensaio a seco
-_TL_BUSY = False    # trava de recursao: o ensaio chama play_land de novo
-
-
-def _tl_is_tapped(state, name: str) -> bool:
-    return "etb_tapped" in CARD_DB[name].tags or ("etb_tapped_conditional" in CARD_DB[name].tags and not any(n in MOUNTAIN_TYPE_LANDS for n in state.battlefield))
-
-
-def _tl_develop(sim, log: list):
-    """Fase de conjuracao pre-combate do turno: a mesma sequencia que o turno roda logo depois de `play_land`."""
-    main_phase(sim)
-
-
-def _tl_dry_run_mv(state, land: str) -> int:
-    """MV total das cartas que SAEM da mao se `land` for o terreno jogado e o resto da fase pre-combate rodar. Copia profunda (CARD_DB compartilhado; RNG do estado
-    copiado e `random` global restaurado): nao muta `state`."""
-    global _TL_FORCED, _TL_BUSY
-    memo = {id(c): c for c in CARD_DB.values()}
-    saved = random.getstate()
-    sim = copy.deepcopy(state, memo)
-    ficam = collections.Counter(sim.hand)
-    ficam[land] -= 1
-    _TL_FORCED, _TL_BUSY = land, True
-    try:
-        play_land(sim)
-        _tl_develop(sim, None)
-    finally:
-        _TL_FORCED, _TL_BUSY = None, False
-        random.setstate(saved)
-    saiu = ficam - collections.Counter(sim.hand)
-    return sum(CARD_DB[c].mv for c in saiu.elements() if c in CARD_DB)
-
-
-def tapped_first_pick(state, lands_in_hand: list) -> str:
-    """`lands_in_hand` ja' vem ordenada pelo criterio do proprio deck: a 1a e' o padrao (comportamento antigo)."""
-    if _TL_FORCED is not None and _TL_FORCED in lands_in_hand:
-        return _TL_FORCED
-    default = lands_in_hand[0]
-    if not TAPPED_LAND_FIRST_ENABLED or _TL_BUSY or state.turn > TAPPED_LAND_FIRST_MAX_TURN:
-        return default
-    tapped = [n for n in lands_in_hand if _tl_is_tapped(state, n)]
-    untapped = [n for n in lands_in_hand if not _tl_is_tapped(state, n)]
-    if not tapped or not untapped:
-        return default
-    mv_virado, mv_desvirado = _tl_dry_run_mv(state, tapped[0]), _tl_dry_run_mv(state, untapped[0])
-    if TAPPED_LAND_FIRST_GHOST:
-        return default
-    if mv_virado >= mv_desvirado:
-        state.tapped_land_first_plays_total += 1
-        return tapped[0]
-    state.tapped_land_skipped_for_play_total += 1
-    return untapped[0]
-
-
 def play_land(state: GameState):
     if state.lands_played_this_turn >= 1:
         return
     lands_in_hand = [n for n in state.hand if n in LAND_NAMES]
     if not lands_in_hand:
         return
-    choice = tapped_first_pick(state, lands_in_hand)
+    choice = lands_in_hand[0]
     cast_card(state, choice)
     state.lands_played_this_turn += 1
 

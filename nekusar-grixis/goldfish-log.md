@@ -1,8 +1,96 @@
 # Goldfish Log — Nekusar, the Mindrazer
 
+> **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 + contagem de magias/storm (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
+
 > **Rodada 2026-10-05 (Mulligan com escolha do fundo (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`](resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md)
 
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
+
+---
+
+## Terreno virado primeiro em T1/T2 + contagem de magias/storm (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-terreno-virado-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada e com o ensaio sem efeito colateral (modo GHOST). Modo padrão, N=10.000: comandante em campo até T3 10,0% → 9,9% (-0,04 ± 0,16 pp), até T4 +0,26 ± 0,17 pp, até T5 +0,48 ± 0,25 pp; comandante que nunca chega a entrar na partida +0,07 ± 0,12 pp. Modo resiliência: comandante em campo até T3 9,3% → 9,2% (-0,01 ± 0,15 pp), até T4 +0,19 ± 0,19 pp, até T5 +0,40 ± 0,27 pp; comandante que nunca chega a entrar na partida -0,01 ± 0,14 pp. A correção joga o terreno virado primeiro em média 0,17 vez(es) por partida (N=10.000, padrão) e o ensaio impede 0,25 vez(es) por partida (teria custado uma jogada).
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **Terreno que entra virado nunca é jogado primeiro.** `play_land` jogava sempre o primeiro terreno da ordem própria do deck (desvirado antes de virado). Em T1/T2, sem nada pra conjurar, a mana do turno era desperdiçada enquanto o terreno que entra virado ficava na mão pra um turno em que ele custa desenvolvimento. Mesmo erro achado e corrigido no Vihaan e no Megatron (2026-10-03/04).
+- **Jogar terreno contava como magia conjurada.** `cast_card` (que também joga os terrenos) incrementava `spells_cast_this_turn` e `storm_count_max` antes do ramo de terreno. CR 305.1: jogar terreno não é conjurar magia. Isso inflava o storm do Brain Freeze e a métrica `storm_count_max`.
+- **O storm do Brain Freeze contava ela mesma.** `copies = spells_cast_this_turn` já inclui o próprio Brain Freeze (o contador sobe antes de resolver), mas storm copia "para cada outra magia conjurada ANTES" e a fórmula do mill somava 1 do original (`3 × (1 + copies)`): uma cópia a mais. Medido no HEAD: Brain Freeze como 1ª magia do turno dava mill proxy 18 (storm 1) em vez de 9 (storm 0); com 1 terreno jogado antes, 27 em vez de 9 (`varredura-2026-10-05/resumos/audit_terreno_nao_e_magia_ANTES.txt`: Nekusar é o único dos 18 simuladores em que jogar um terreno comum mexe num contador de magia).
+
+**O que mudou:**
+- `TAPPED_LAND_FIRST_ENABLED` (padrão `True`), `TAPPED_LAND_FIRST_MAX_TURN = 2`: em T1..T2, havendo terreno virado E desvirado na mão, `tapped_first_pick` joga o virado, **salvo se isso custar desenvolvimento**: o teste é um ENSAIO a seco da própria fase de conjuração pré-combate do deck (cópia profunda do estado; `CARD_DB` compartilhado; RNG do estado copiado; `random` global restaurado), comparando o MV total das cartas que saem da mão com cada candidato. Empate → o virado. Dentro de cada grupo vale a ordem própria do deck (cor mais escassa etc.). Contadores novos no estado: `tapped_land_first_plays_total` (jogou o virado) e `tapped_land_skipped_for_play_total` (o ensaio mostrou que custaria uma jogada e jogou o desvirado). `TAPPED_LAND_FIRST_GHOST` só existe pra validação (roda o ensaio e ignora o resultado). Com a chave em `False` o caminho antigo volta bit a bit.
+- `LAND_PLAY_NOT_A_SPELL_ENABLED` (padrão `True`): `cast_card` não conta a jogada de terreno em `spells_cast_this_turn`/`storm_count_max`.
+- `STORM_SELF_COUNT_FIX_ENABLED` (padrão `True`): Brain Freeze usa `spells_cast_this_turn - 1` (magias conjuradas antes dela). Com as chaves em `False` a contagem antiga volta.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 713 (7.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0766       0.0773      +0.0007 ±0.0012  
+   commander_cast_turn__ate_T3                  0.0996       0.0992      -0.0004 ±0.0016  
+  *commander_cast_turn__ate_T4                  0.3035       0.3061      +0.0026 ±0.0017  
+  *commander_cast_turn__ate_T5                  0.7084       0.7132      +0.0048 ±0.0025  
+  *spells_cast_this_turn                        5.1322       4.3554      -0.7768 ±0.0432  
+  *storm_count_max                              7.3068       6.5211      -0.7857 ±0.0588  
+  *sensei_top_draws_total                       2.2445       2.2670      +0.0225 ±0.0113  
+  *len_library                                 61.6486      61.5002      -0.1484 ±0.0847  
+  *tutors_used_total                            0.9216       0.9293      +0.0077 ±0.0044  
+  *cards_drawn_extra                           30.1579      30.3011      +0.1432 ±0.0847  
+  *len_graveyard                               16.0192      16.1141      +0.0949 ±0.0608  
+  *len_battlefield                             14.8198      14.8587      +0.0389 ±0.0255  
+  *self_damage_total                           13.5460      13.7239      +0.1779 ±0.1197  
+  *interaction_spells_cast_total                3.2486       3.2704      +0.0218 ±0.0147  
+  *len_creature_cast_turn                       3.1891       3.2023      +0.0132 ±0.0089  
+  *puzzle_box_events_total                      0.4547       0.4605      +0.0058 ±0.0040  
+  *the_one_ring_burden                          0.3262       0.3349      +0.0087 ±0.0073  
+  *proxy_lifegain_total                        20.3406      20.6810      +0.3404 ±0.2892
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 840 (8.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0989       0.0988      -0.0001 ±0.0014  
+   commander_cast_turn__ate_T3                  0.0926       0.0925      -0.0001 ±0.0015  
+   commander_cast_turn__ate_T4                  0.2659       0.2678      +0.0019 ±0.0019  
+  *commander_cast_turn__ate_T5                  0.6553       0.6593      +0.0040 ±0.0027  
+  *spells_cast_this_turn                        3.9466       3.2284      -0.7182 ±0.0298  
+  *storm_count_max                              5.6990       4.8870      -0.8120 ±0.0514  
+  *commander_cast_count                         1.1578       1.1634      +0.0056 ±0.0035  
+  *tutors_used_total                            0.7973       0.8040      +0.0067 ±0.0045  
+  *sensei_top_draws_total                       1.6033       1.6188      +0.0155 ±0.0109  
+  *len_smart_graveyard_snipe_log                0.1371       0.1407      +0.0036 ±0.0029  
+  *smart_graveyard_snipes_total                 0.1371       0.1407      +0.0036 ±0.0029  
+  *faerie_mastermind_draws_total                0.6237       0.6351      +0.0114 ±0.0104  
+  *len_smart_wipe_log                           0.4713       0.4753      +0.0040 ±0.0040  
+  *smart_wipes_total                            0.4713       0.4753      +0.0040 ±0.0040  
+   mill_proxy_total                            66.2504      62.2875      -3.9629 ±3.9655  
+   self_damage_total                            5.8097       5.9028      +0.0931 ±0.0938  
+   graveyard_wipe_used                          0.3616       0.3642      +0.0026 ±0.0028  
+   len_smart_graveyard_wipe_log                 0.3616       0.3642      +0.0026 ±0.0028
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** a correção do storm não muda o jogo goldfish (Brain Freeze só alimenta a métrica `mill_proxy_total`/`storm_count_max`), muda a medida que o deck usa pra avaliar o finalizador de mill: o número antigo estava inflado.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `nekusar_goldfish_v1_ANTES_7918e0b.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 11/11 (`resumos/testes_dirigidos.txt`); ghost (chave ligada + ensaio ignorado == desligada), 20.000 × 2 modos (`resumos/ghost_20000.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Terreno virado primeiro:** leitura de `play_land` (+ predicado de entrada virada do deck); testes dirigidos TL1–TL8 (escolha com/sem jogada em T1, chave desligada, T3, só um tipo na mão, ensaio sem efeito no estado/RNG/`random`, modo GHOST, integração em `play_land`); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Ensaio sem efeito colateral:** com a chave ligada + modo GHOST (roda o ensaio e ignora o resultado) o resultado é idêntico a tudo desligado, 20.000 × 2 modos (`resumos/ghost_20000.txt`).
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+- **Contagem de magias:** testes dirigidos TL17–TL19 (terreno não conta; Brain Freeze com storm 0 e com 2 magias antes; chaves desligadas = contagem antiga); varredura mecânica `audit_terreno_nao_e_magia.py` nos 18 simuladores (só `play_land` com terreno comum; caminhos de fetch/reanimação de terreno não varridos).
+
+**Escopo — NÃO verificado:**
+- **Condições de entrada dos terrenos** além do que a varredura mecânica cobriu (`varredura-2026-10-05/`: cenário de campo vazio + cenário condição satisfeita × violada para os padrões "unless you control …"/reveal; terrenos que o `CARD_DB` do deck não tem como básico foram pulados e estão listados lá).
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
 
 ---
 

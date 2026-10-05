@@ -1,0 +1,14 @@
+cenario (virado, desvirado, magica): ('Mistrise Village', 'Badlands', 'Bloodchief Ascension')
+PASS TL1 com uma magica que so' o desvirado paga, T1 joga o desvirado e conta o skip
+PASS TL2 sem nada pra conjurar, T1 joga o virado e conta o first-play
+PASS TL3 chave desligada: primeiro da ordem propria do deck, sem contar nada
+PASS TL4 em T3 a correcao nao se aplica (ordem propria do deck)
+PASS TL5 so' viradas ou so' desviradas na mao: ordem propria do deck
+PASS TL6 o ensaio nao muta estado/RNG/random global e solta a trava
+PASS TL8 modo GHOST: roda o ensaio mas joga o padrao e nao conta nada
+PASS TL7 play_land joga so' o terreno escolhido (1 por turno) e o virado nao da mana no turno
+PASS TL17 jogar terreno NAO conta como magia conjurada (spells_cast_this_turn/storm_count_max intactos)
+PASS TL18 Brain Freeze como 1a magia do turno tem storm 0 (mill proxy = 3 x oponentes); depois de 2 magias, storm 2
+PASS TL19 chaves desligadas: contagem antiga (terreno conta; Brain Freeze conta a si mesmo)
+
+11/11 testes passaram

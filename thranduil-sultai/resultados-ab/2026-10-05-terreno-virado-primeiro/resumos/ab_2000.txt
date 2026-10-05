@@ -1,0 +1,62 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1696 (84.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.9295       6.9365      +0.0070 ±0.0168  
+   commander_cast_turn__nunca                   0.0370       0.0360      -0.0010 ±0.0020  
+  *commander_cast_turn__ate_T3                  0.1055       0.1120      +0.0065 ±0.0053  
+   commander_cast_turn__ate_T4                  0.5415       0.5425      +0.0010 ±0.0068  
+  *commander_cast_turn__ate_T5                  0.8570       0.8635      +0.0065 ±0.0051  
+  *spells_cast                                 11.6365      11.7305      +0.0940 ±0.0498  
+  *creature_engine_draws                        1.5510       1.6860      +0.1350 ±0.0730  
+  *battlefield_count                           19.7870      19.9335      +0.1465 ±0.0957  
+  *devoted_druid_bursts                         0.0545       0.0610      +0.0065 ±0.0045  
+  *fauna_shaman_tutors                          0.1695       0.1850      +0.0155 ±0.0119  
+  *glissa_draws                                 0.5450       0.5660      +0.0210 ±0.0173  
+  *vannifar_evolves                             0.3805       0.3980      +0.0175 ±0.0144  
+  *trystan_transforms_total                     0.4590       0.4750      +0.0160 ±0.0140  
+  *extra_draws                                 11.8180      12.0475      +0.2295 ±0.2010  
+  *elvish_warmaster_tokens                      0.6060       0.6240      +0.0180 ±0.0163  
+  *finisher_turn__ate_T5                        0.0615       0.0655      +0.0040 ±0.0037  
+  *edric_death_turn__ate_T4                     0.0355       0.0390      +0.0035 ±0.0032  
+  *finisher_turn__ate_T6                        0.2020       0.2090      +0.0070 ±0.0065  
+  *trystan_drain_events                         0.2335       0.2425      +0.0090 ±0.0084  
+
+[so_terreno - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1701 (85.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.9295       6.9365      +0.0070 ±0.0168  
+   commander_cast_turn__nunca                   0.0370       0.0360      -0.0010 ±0.0020  
+  *commander_cast_turn__ate_T3                  0.1055       0.1120      +0.0065 ±0.0053  
+   commander_cast_turn__ate_T4                  0.5415       0.5425      +0.0010 ±0.0068  
+  *commander_cast_turn__ate_T5                  0.8570       0.8635      +0.0065 ±0.0051  
+  *spells_cast                                 11.6365      11.7320      +0.0955 ±0.0497  
+  *creature_engine_draws                        1.5510       1.6880      +0.1370 ±0.0729  
+  *battlefield_count                           19.7870      19.9370      +0.1500 ±0.0955  
+  *devoted_druid_bursts                         0.0545       0.0610      +0.0065 ±0.0045  
+  *trystan_transforms_total                     0.4590       0.4765      +0.0175 ±0.0135  
+  *fauna_shaman_tutors                          0.1695       0.1845      +0.0150 ±0.0118  
+  *glissa_draws                                 0.5450       0.5660      +0.0210 ±0.0173  
+  *vannifar_evolves                             0.3805       0.3980      +0.0175 ±0.0144  
+  *trystan_drain_events                         0.2335       0.2435      +0.0100 ±0.0083  
+  *extra_draws                                 11.8180      12.0515      +0.2335 ±0.2008  
+  *elvish_warmaster_tokens                      0.6060       0.6240      +0.0180 ±0.0163  
+  *finisher_turn__ate_T5                        0.0615       0.0655      +0.0040 ±0.0037  
+  *edric_death_turn__ate_T4                     0.0355       0.0390      +0.0035 ±0.0032  
+  *finisher_turn__ate_T6                        0.2020       0.2090      +0.0070 ±0.0065  
+
+[so_ordem_set - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1995 (99.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+   finishers_activated                          1.7905       1.7920      +0.0015 ±0.0017  
+   thranduil_gy_ability_borrows                 0.5950       0.5965      +0.0015 ±0.0017  
+   cards_milled_total                           7.4305       7.4245      -0.0060 ±0.0072  
+   trystan_transforms_total                     0.4590       0.4570      -0.0020 ±0.0024  
+   trystan_drain_events                         0.2335       0.2325      -0.0010 ±0.0014  
+   trystan_lifegain_events                      0.1590       0.1580      -0.0010 ±0.0014  
+   elves_milled_to_gy                           1.2395       1.2380      -0.0015 ±0.0022  
+   battlefield_count                           19.7870      19.7835      -0.0035 ±0.0061  
+   cards_discarded_to_hand_size                 2.6300       2.6305      +0.0005 ±0.0010  
+   creature_engine_draws                        1.5510       1.5490      -0.0020 ±0.0039  
+   eladamri_free_creatures                      0.0750       0.0745      -0.0005 ±0.0010  
+   extra_draws                                 11.8180      11.8140      -0.0040 ±0.0078  
+   horizon_land_draws                           0.2520       0.2515      -0.0005 ±0.0010  
+   imperious_perfect_tokens                     0.4285       0.4280      -0.0005 ±0.0010  

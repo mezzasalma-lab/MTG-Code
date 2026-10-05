@@ -1,0 +1,21 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1449 (72.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           5.7075       5.7100      +0.0025 ±0.0126  
+  *commander_cast_turn__ate_T3                  0.9895       0.9850      -0.0045 ±0.0043  
+   commander_cast_turn__ate_T4                  0.9965       0.9960      -0.0005 ±0.0010  
+  *len_smart_artifact_wipe_log                  0.2035       0.2115      +0.0080 ±0.0062  
+  *smart_artifact_wipes_total                   0.2035       0.2115      +0.0080 ±0.0062  
+  *commander_cast_count                         1.7060       1.6925      -0.0135 ±0.0132  
+   rat_tokens                                   1.0160       0.9780      -0.0380 ±0.0395  
+   len_smart_wipe_log                           0.8220       0.8085      -0.0135 ±0.0149  
+   smart_wipes_total                            0.8220       0.8085      -0.0135 ±0.0149  
+   len_smart_counter_log                        0.0515       0.0570      +0.0055 ±0.0066  
+   smart_counters_total                         0.0515       0.0570      +0.0055 ±0.0066  
+   emeritus_prepared                            0.0520       0.0485      -0.0035 ±0.0043  
+   len_smart_removal_log                        0.5445       0.5355      -0.0090 ±0.0125  
+   smart_removals_total                         0.5445       0.5355      -0.0090 ±0.0125  
+   creatures_died_this_turn                     2.7710       2.8285      +0.0575 ±0.0843  
+   ninja_teen_level                             0.2075       0.2140      +0.0065 ±0.0101  
+   len_smart_discard_log                        1.1015       1.1125      +0.0110 ±0.0183  

@@ -1,0 +1,230 @@
+DEPOIS (arquivo vivo): cartas na biblioteca=99 | distintas=94 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+ANTES (snapshot): cartas na biblioteca=99 | distintas=94 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+chaves da correcao no arquivo vivo: TAPPED_LAND_FIRST_ENABLED=True, LAND_PLAY_NOT_A_SPELL_ENABLED=True, STORM_SELF_COUNT_FIX_ENABLED=True
+Bit-identidade: arquivo vivo com as chaves {'TAPPED_LAND_FIRST_ENABLED': False, 'LAND_PLAY_NOT_A_SPELL_ENABLED': False, 'STORM_SELF_COUNT_FIX_ENABLED': False} == snapshot codigo/nekusar_goldfish_v1_ANTES_7918e0b.py; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['tapped_land_first_plays_total', 'tapped_land_skipped_for_play_total'])
+padrao: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+resiliencia: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+Ghost: arquivo vivo com {'TAPPED_LAND_FIRST_ENABLED': True, 'TAPPED_LAND_FIRST_GHOST': True} (o ensaio roda, o resultado e' ignorado) == arquivo vivo com as chaves {'TAPPED_LAND_FIRST_ENABLED': False, 'LAND_PLAY_NOT_A_SPELL_ENABLED': False, 'STORM_SELF_COUNT_FIX_ENABLED': False}; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['tapped_land_first_plays_total', 'tapped_land_skipped_for_play_total'])
+padrao: N=20000 partidas diferentes=0 -> IDENTICO (o ensaio nao tem efeito colateral)
+resiliencia: N=20000 partidas diferentes=0 -> IDENTICO (o ensaio nao tem efeito colateral)
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 153 (7.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0830       0.0815      -0.0015 ±0.0026  
+   commander_cast_turn__ate_T3                  0.1080       0.1045      -0.0035 ±0.0038  
+   commander_cast_turn__ate_T4                  0.3090       0.3100      +0.0010 ±0.0044  
+  *commander_cast_turn__ate_T5                  0.7000       0.7065      +0.0065 ±0.0061  
+  *spells_cast_this_turn                        5.4675       4.6915      -0.7760 ±0.1223  
+  *storm_count_max                              7.3345       6.6645      -0.6700 ±0.1682  
+  *cards_drawn_extra                           29.6265      30.0010      +0.3745 ±0.2359  
+  *len_library                                 62.1675      61.7985      -0.3690 ±0.2356  
+  *len_graveyard                               15.3865      15.6135      +0.2270 ±0.1621  
+  *full_wheels_total                            2.0450       2.0815      +0.0365 ±0.0271  
+  *interaction_spells_cast_total                3.2760       3.3305      +0.0545 ±0.0409  
+  *sensei_top_draws_total                       2.0805       2.1135      +0.0330 ±0.0278  
+  *library_emptied                              0.0460       0.0500      +0.0040 ±0.0034  
+  *the_one_ring_burden                          0.3185       0.3445      +0.0260 ±0.0233  
+  *breach_recasts_total                         1.4025       1.4495      +0.0470 ±0.0424  
+  *faerie_mastermind_draws_total                1.0320       1.0620      +0.0300 ±0.0279  
+  *rituals_cast_total                           0.8540       0.8670      +0.0130 ±0.0125  
+   proxy_damage_total                         431.3875     453.1905     +21.8030 ±22.1818 
+
+[so_tapped_land_first - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1646 (82.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0830       0.0815      -0.0015 ±0.0026  
+   commander_cast_turn__ate_T3                  0.1080       0.1045      -0.0035 ±0.0038  
+   commander_cast_turn__ate_T4                  0.3090       0.3100      +0.0010 ±0.0044  
+  *commander_cast_turn__ate_T5                  0.7000       0.7065      +0.0065 ±0.0061  
+  *cards_drawn_extra                           29.6265      30.0010      +0.3745 ±0.2359  
+  *len_library                                 62.1675      61.7985      -0.3690 ±0.2356  
+  *len_graveyard                               15.3865      15.6135      +0.2270 ±0.1621  
+  *full_wheels_total                            2.0450       2.0815      +0.0365 ±0.0271  
+  *interaction_spells_cast_total                3.2760       3.3305      +0.0545 ±0.0409  
+  *sensei_top_draws_total                       2.0805       2.1135      +0.0330 ±0.0278  
+  *library_emptied                              0.0460       0.0500      +0.0040 ±0.0034  
+  *the_one_ring_burden                          0.3185       0.3445      +0.0260 ±0.0233  
+  *breach_recasts_total                         1.4025       1.4495      +0.0470 ±0.0424  
+  *faerie_mastermind_draws_total                1.0320       1.0620      +0.0300 ±0.0279  
+  *rituals_cast_total                           0.8540       0.8670      +0.0130 ±0.0125  
+   proxy_damage_total                         431.3875     453.1905     +21.8030 ±22.1818 
+   flashback_card_recasts_total                 0.2275       0.2380      +0.0105 ±0.0109  
+   storm_count_max                              7.3345       7.4920      +0.1575 ±0.1679  
+
+[so_land_play_not_a_spell - antes] N=2000 | partidas com resultado IDENTICO ao da base: 206 (10.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *storm_count_max                              7.3345       6.5075      -0.8270 ±0.0166  
+  *spells_cast_this_turn                        5.4675       4.6920      -0.7755 ±0.0183  
+  *mill_proxy_total                           160.6295     158.9375      -1.6920 ±0.1718  
+
+[so_storm_self_count_fix - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1606 (80.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *mill_proxy_total                           160.6295     158.6675      -1.9620 ±0.1819  
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 180 (9.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.1040       0.1055      +0.0015 ±0.0026  
+   commander_cast_turn__ate_T3                  0.1025       0.0990      -0.0035 ±0.0038  
+   commander_cast_turn__ate_T4                  0.2695       0.2710      +0.0015 ±0.0045  
+   commander_cast_turn__ate_T5                  0.6415       0.6440      +0.0025 ±0.0064  
+  *spells_cast_this_turn                        4.0685       3.3030      -0.7655 ±0.0792  
+  *storm_count_max                              5.4705       4.6795      -0.7910 ±0.1093  
+  *faerie_mastermind_draws_total                0.6450       0.6885      +0.0435 ±0.0267  
+  *commander_cast_count                         1.1615       1.1505      -0.0110 ±0.0077  
+  *len_smart_artifact_wipe_log                  0.2490       0.2580      +0.0090 ±0.0071  
+  *smart_artifact_wipes_total                   0.2490       0.2580      +0.0090 ±0.0071  
+  *len_library                                 67.9735      67.7335      -0.2400 ±0.2036  
+  *cards_drawn_extra                           23.8675      24.1070      +0.2395 ±0.2039  
+  *sensei_top_draws_total                       1.5300       1.5670      +0.0370 ±0.0317  
+  *len_graveyard                               11.3735      11.5540      +0.1805 ±0.1762  
+   surveil_mills_total                          0.0280       0.0250      -0.0030 ±0.0034  
+   len_smart_graveyard_snipe_log                0.1325       0.1275      -0.0050 ±0.0062  
+   smart_graveyard_snipes_total                 0.1325       0.1275      -0.0050 ±0.0062  
+   cephalid_coliseum_used                       0.0760       0.0795      +0.0035 ±0.0047  
+
+[so_tapped_land_first - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1646 (82.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.1040       0.1055      +0.0015 ±0.0026  
+   commander_cast_turn__ate_T3                  0.1025       0.0990      -0.0035 ±0.0038  
+   commander_cast_turn__ate_T4                  0.2695       0.2710      +0.0015 ±0.0045  
+   commander_cast_turn__ate_T5                  0.6415       0.6440      +0.0025 ±0.0064  
+  *faerie_mastermind_draws_total                0.6450       0.6885      +0.0435 ±0.0267  
+  *commander_cast_count                         1.1615       1.1505      -0.0110 ±0.0077  
+  *len_smart_artifact_wipe_log                  0.2490       0.2580      +0.0090 ±0.0071  
+  *smart_artifact_wipes_total                   0.2490       0.2580      +0.0090 ±0.0071  
+  *len_library                                 67.9735      67.7335      -0.2400 ±0.2036  
+  *cards_drawn_extra                           23.8675      24.1070      +0.2395 ±0.2039  
+  *sensei_top_draws_total                       1.5300       1.5670      +0.0370 ±0.0317  
+  *len_graveyard                               11.3735      11.5540      +0.1805 ±0.1762  
+   surveil_mills_total                          0.0280       0.0250      -0.0030 ±0.0034  
+   len_smart_graveyard_snipe_log                0.1325       0.1275      -0.0050 ±0.0062  
+   smart_graveyard_snipes_total                 0.1325       0.1275      -0.0050 ±0.0062  
+   cephalid_coliseum_used                       0.0760       0.0795      +0.0035 ±0.0047  
+   rituals_cast_total                           0.6860       0.6935      +0.0075 ±0.0101  
+   tutors_used_total                            0.8005       0.8085      +0.0080 ±0.0108  
+
+[so_land_play_not_a_spell - antes] N=2000 | partidas com resultado IDENTICO ao da base: 232 (11.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *storm_count_max                              5.4705       4.6625      -0.8080 ±0.0173  
+  *spells_cast_this_turn                        4.0685       3.3465      -0.7220 ±0.0196  
+  *mill_proxy_total                            59.0860      57.8215      -1.2645 ±0.1480  
+
+[so_storm_self_count_fix - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1677 (83.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *mill_proxy_total                            59.0860      57.5110      -1.5750 ±0.1633  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 713 (7.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0766       0.0773      +0.0007 ±0.0012  
+   commander_cast_turn__ate_T3                  0.0996       0.0992      -0.0004 ±0.0016  
+  *commander_cast_turn__ate_T4                  0.3035       0.3061      +0.0026 ±0.0017  
+  *commander_cast_turn__ate_T5                  0.7084       0.7132      +0.0048 ±0.0025  
+  *spells_cast_this_turn                        5.1322       4.3554      -0.7768 ±0.0432  
+  *storm_count_max                              7.3068       6.5211      -0.7857 ±0.0588  
+  *sensei_top_draws_total                       2.2445       2.2670      +0.0225 ±0.0113  
+  *len_library                                 61.6486      61.5002      -0.1484 ±0.0847  
+  *tutors_used_total                            0.9216       0.9293      +0.0077 ±0.0044  
+  *cards_drawn_extra                           30.1579      30.3011      +0.1432 ±0.0847  
+  *len_graveyard                               16.0192      16.1141      +0.0949 ±0.0608  
+  *len_battlefield                             14.8198      14.8587      +0.0389 ±0.0255  
+  *self_damage_total                           13.5460      13.7239      +0.1779 ±0.1197  
+  *interaction_spells_cast_total                3.2486       3.2704      +0.0218 ±0.0147  
+  *len_creature_cast_turn                       3.1891       3.2023      +0.0132 ±0.0089  
+  *puzzle_box_events_total                      0.4547       0.4605      +0.0058 ±0.0040  
+  *the_one_ring_burden                          0.3262       0.3349      +0.0087 ±0.0073  
+  *proxy_lifegain_total                        20.3406      20.6810      +0.3404 ±0.2892  
+
+[so_tapped_land_first - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8223 (82.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0766       0.0773      +0.0007 ±0.0012  
+   commander_cast_turn__ate_T3                  0.0996       0.0992      -0.0004 ±0.0016  
+  *commander_cast_turn__ate_T4                  0.3035       0.3061      +0.0026 ±0.0017  
+  *commander_cast_turn__ate_T5                  0.7084       0.7132      +0.0048 ±0.0025  
+  *sensei_top_draws_total                       2.2445       2.2670      +0.0225 ±0.0113  
+  *len_library                                 61.6486      61.5002      -0.1484 ±0.0847  
+  *tutors_used_total                            0.9216       0.9293      +0.0077 ±0.0044  
+  *cards_drawn_extra                           30.1579      30.3011      +0.1432 ±0.0847  
+  *len_graveyard                               16.0192      16.1141      +0.0949 ±0.0608  
+  *len_battlefield                             14.8198      14.8587      +0.0389 ±0.0255  
+  *self_damage_total                           13.5460      13.7239      +0.1779 ±0.1197  
+  *interaction_spells_cast_total                3.2486       3.2704      +0.0218 ±0.0147  
+  *len_creature_cast_turn                       3.1891       3.2023      +0.0132 ±0.0089  
+  *puzzle_box_events_total                      0.4547       0.4605      +0.0058 ±0.0040  
+  *the_one_ring_burden                          0.3262       0.3349      +0.0087 ±0.0073  
+  *proxy_lifegain_total                        20.3406      20.6810      +0.3404 ±0.2892  
+  *faerie_mastermind_draws_total                1.0353       1.0491      +0.0138 ±0.0117  
+  *rituals_cast_total                           0.8871       0.8930      +0.0059 ±0.0050  
+
+[so_land_play_not_a_spell - antes] N=10000 | partidas com resultado IDENTICO ao da base: 989 (9.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *storm_count_max                              7.3068       6.4858      -0.8210 ±0.0075  
+  *spells_cast_this_turn                        5.1322       4.3561      -0.7761 ±0.0082  
+  *mill_proxy_total                           160.6916     158.9357      -1.7559 ±0.0772  
+
+[so_storm_self_count_fix - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7822 (78.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *mill_proxy_total                           160.6916     158.5487      -2.1429 ±0.0832  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 840 (8.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0989       0.0988      -0.0001 ±0.0014  
+   commander_cast_turn__ate_T3                  0.0926       0.0925      -0.0001 ±0.0015  
+   commander_cast_turn__ate_T4                  0.2659       0.2678      +0.0019 ±0.0019  
+  *commander_cast_turn__ate_T5                  0.6553       0.6593      +0.0040 ±0.0027  
+  *spells_cast_this_turn                        3.9466       3.2284      -0.7182 ±0.0298  
+  *storm_count_max                              5.6990       4.8870      -0.8120 ±0.0514  
+  *commander_cast_count                         1.1578       1.1634      +0.0056 ±0.0035  
+  *tutors_used_total                            0.7973       0.8040      +0.0067 ±0.0045  
+  *sensei_top_draws_total                       1.6033       1.6188      +0.0155 ±0.0109  
+  *len_smart_graveyard_snipe_log                0.1371       0.1407      +0.0036 ±0.0029  
+  *smart_graveyard_snipes_total                 0.1371       0.1407      +0.0036 ±0.0029  
+  *faerie_mastermind_draws_total                0.6237       0.6351      +0.0114 ±0.0104  
+  *len_smart_wipe_log                           0.4713       0.4753      +0.0040 ±0.0040  
+  *smart_wipes_total                            0.4713       0.4753      +0.0040 ±0.0040  
+   mill_proxy_total                            66.2504      62.2875      -3.9629 ±3.9655  
+   self_damage_total                            5.8097       5.9028      +0.0931 ±0.0938  
+   graveyard_wipe_used                          0.3616       0.3642      +0.0026 ±0.0028  
+   len_smart_graveyard_wipe_log                 0.3616       0.3642      +0.0026 ±0.0028  
+
+[so_tapped_land_first - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8224 (82.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0989       0.0988      -0.0001 ±0.0014  
+   commander_cast_turn__ate_T3                  0.0926       0.0925      -0.0001 ±0.0015  
+   commander_cast_turn__ate_T4                  0.2659       0.2678      +0.0019 ±0.0019  
+  *commander_cast_turn__ate_T5                  0.6553       0.6593      +0.0040 ±0.0027  
+  *commander_cast_count                         1.1578       1.1634      +0.0056 ±0.0035  
+  *tutors_used_total                            0.7973       0.8040      +0.0067 ±0.0045  
+  *sensei_top_draws_total                       1.6033       1.6188      +0.0155 ±0.0109  
+  *len_smart_graveyard_snipe_log                0.1371       0.1407      +0.0036 ±0.0029  
+  *smart_graveyard_snipes_total                 0.1371       0.1407      +0.0036 ±0.0029  
+  *faerie_mastermind_draws_total                0.6237       0.6351      +0.0114 ±0.0104  
+  *len_smart_wipe_log                           0.4713       0.4753      +0.0040 ±0.0040  
+  *smart_wipes_total                            0.4713       0.4753      +0.0040 ±0.0040  
+   self_damage_total                            5.8097       5.9028      +0.0931 ±0.0938  
+   graveyard_wipe_used                          0.3616       0.3642      +0.0026 ±0.0028  
+   len_smart_graveyard_wipe_log                 0.3616       0.3642      +0.0026 ±0.0028  
+   smart_graveyard_wipes_total                  0.3616       0.3642      +0.0026 ±0.0028  
+   len_smart_removal_log                        0.6509       0.6550      +0.0041 ±0.0047  
+   smart_removals_total                         0.6509       0.6550      +0.0041 ±0.0047  
+
+[so_land_play_not_a_spell - antes] N=10000 | partidas com resultado IDENTICO ao da base: 1136 (11.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *storm_count_max                              5.6990       4.8955      -0.8035 ±0.0078  
+  *spells_cast_this_turn                        3.9466       3.2336      -0.7130 ±0.0089  
+  *mill_proxy_total                            66.2504      64.8554      -1.3950 ±0.0684  
+
+[so_storm_self_count_fix - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8161 (81.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *mill_proxy_total                            66.2504      64.4909      -1.7595 ±0.0750  
+Regressao: N=20000 por configuracao/modo, sementes 5_000_000+i; excecoes + invariantes genericas (carta acima do baralho em alguma zona; contadores negativos)
+depois (repositorio)   padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+depois (repositorio)   resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}

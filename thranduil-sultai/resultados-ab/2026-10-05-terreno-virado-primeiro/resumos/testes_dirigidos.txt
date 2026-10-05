@@ -1,0 +1,11 @@
+cenario (virado, desvirado, magica): ("Elvenking's Halls", 'Botanical Sanctum', 'Allosaurus Shepherd')
+PASS TL1 com uma magica que so' o desvirado paga, T1 joga o desvirado e conta o skip
+PASS TL2 sem nada pra conjurar, T1 joga o virado e conta o first-play
+PASS TL3 chave desligada: primeiro da ordem propria do deck, sem contar nada
+PASS TL4 em T3 a correcao nao se aplica (ordem propria do deck)
+PASS TL5 so' viradas ou so' desviradas na mao: ordem propria do deck
+PASS TL6 o ensaio nao muta estado/RNG/random global e solta a trava
+PASS TL8 modo GHOST: roda o ensaio mas joga o padrao e nao conta nada
+PASS TL7 play_land joga so' o terreno escolhido (1 por turno) e o virado nao da mana no turno
+
+8/8 testes passaram

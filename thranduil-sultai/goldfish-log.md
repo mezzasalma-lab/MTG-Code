@@ -1,6 +1,95 @@
 # Goldfish Log — Thranduil (Sultai)
 
+> **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 + ordem das habilidades emprestadas determinística (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
+
 > **Dados brutos e como reproduzir as tabelas da seção The Pride of Hull Clade (2026-10-03):** [`resultados-ab/2026-10-03-pride-of-hull-clade/LEIAME.md`](resultados-ab/2026-10-03-pride-of-hull-clade/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
+---
+
+## Terreno virado primeiro em T1/T2 + ordem das habilidades emprestadas determinística (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-terreno-virado-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada e com o ensaio sem efeito colateral (modo GHOST). Modo padrão, N=10.000: comandante em campo até T3 11,0% → 11,7% (+0,67 ± 0,25 pp), até T4 +1,35 ± 0,34 pp, até T5 +0,48 ± 0,22 pp; comandante que nunca chega a entrar na partida +0,03 ± 0,07 pp. Modo resiliência: comandante em campo até T3 5,6% → 5,7% (+0,18 ± 0,19 pp), até T4 +0,57 ± 0,39 pp, até T5 +0,18 ± 0,45 pp; comandante que nunca chega a entrar na partida +0,08 ± 0,19 pp. A correção joga o terreno virado primeiro em média 0,36 vez(es) por partida (N=10.000, padrão) e o ensaio impede 0,22 vez(es) por partida (teria custado uma jogada). Terrenos jogados no total: +0,015 ± 0,007 por partida.
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **Terreno que entra virado nunca é jogado primeiro.** `play_land` jogava sempre o primeiro terreno da ordem própria do deck (desvirado antes de virado). Em T1/T2, sem nada pra conjurar, a mana do turno era desperdiçada enquanto o terreno que entra virado ficava na mão pra um turno em que ele custa desenvolvimento. Mesmo erro achado e corrigido no Vihaan e no Megatron (2026-10-03/04).
+- **Ordem de iteração de `set` de strings dependia de `PYTHONHASHSEED`.** A mesma semente dava resultados diferentes em processos diferentes (o hash de `str` muda a cada execução do Python). Medido: 3 `PYTHONHASHSEED` diferentes, 1.500 sementes × 2 modos, comparando o estado final campo a campo (`resumos/determinismo.txt`). Aqui: `gy_borrow_sources = {c for c in state.graveyard ...}` era iterado como set; com mana limitada, a ORDEM decide qual finisher emprestado (Elvish Warmaster etc.) ativa. É o caso com efeito de jogo medido: controle (chave desligada) 14 sementes divergentes em 1.500 (padrão) e 36 (resiliência), em campos de jogo (`finishers_activated`, `mana_spent_this_turn`, `cards_milled_total`, `trystan_transforms_total`…); correção: 0.
+
+**O que mudou:**
+- `TAPPED_LAND_FIRST_ENABLED` (padrão `True`), `TAPPED_LAND_FIRST_MAX_TURN = 2`: em T1..T2, havendo terreno virado E desvirado na mão, `tapped_first_pick` joga o virado, **salvo se isso custar desenvolvimento**: o teste é um ENSAIO a seco da própria fase de conjuração pré-combate do deck (cópia profunda do estado; `CARD_DB` compartilhado; RNG do estado copiado; `random` global restaurado), comparando o MV total das cartas que saem da mão com cada candidato. Empate → o virado. Dentro de cada grupo vale a ordem própria do deck (cor mais escassa etc.). Contadores novos no estado: `tapped_land_first_plays_total` (jogou o virado) e `tapped_land_skipped_for_play_total` (o ensaio mostrou que custaria uma jogada e jogou o desvirado). `TAPPED_LAND_FIRST_GHOST` só existe pra validação (roda o ensaio e ignora o resultado). Com a chave em `False` o caminho antigo volta bit a bit.
+- `DETERMINISTIC_SET_ORDER_ENABLED` (padrão `True`): as fontes emprestadas do cemitério passam a ser iteradas na ordem do cemitério (`dict.fromkeys(state.graveyard)`), não na do hash do set. Com a chave em `False` o laço antigo (ordem do hash) volta.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8330 (83.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.9713       6.9868      +0.0155 ±0.0075  
+   commander_cast_turn__nunca                   0.0276       0.0279      +0.0003 ±0.0007  
+  *commander_cast_turn__ate_T3                  0.1101       0.1168      +0.0067 ±0.0025  
+  *commander_cast_turn__ate_T4                  0.5444       0.5579      +0.0135 ±0.0034  
+  *commander_cast_turn__ate_T5                  0.8493       0.8541      +0.0048 ±0.0022  
+  *finishers_activated                          1.8109       1.8623      +0.0514 ±0.0129  
+  *finisher_turn__ate_T6                        0.2017       0.2131      +0.0114 ±0.0030  
+  *battlefield_count                           19.9272      20.0678      +0.1406 ±0.0394  
+  *finisher_turn__ate_T5                        0.0635       0.0692      +0.0057 ±0.0020  
+  *elvish_warmaster_tokens                      0.6151       0.6342      +0.0191 ±0.0071  
+  *spells_cast                                 11.7748      11.8370      +0.0622 ±0.0234  
+  *thranduil_gy_ability_borrows                 0.6236       0.6474      +0.0238 ±0.0093  
+  *cards_milled_total                           7.2489       7.4030      +0.1541 ±0.0619  
+  *edric_death_turn__ate_T4                     0.0304       0.0335      +0.0031 ±0.0013  
+  *creature_engine_draws                        1.7781       1.8542      +0.0761 ±0.0320  
+  *extra_draws                                 12.1208      12.3156      +0.1948 ±0.0826  
+  *elrond_draws                                 0.2324       0.2432      +0.0108 ±0.0048  
+  *elves_milled_to_gy                           1.2022       1.2276      +0.0254 ±0.0121  
+  *rhystic_study_draws                          0.6146       0.6285      +0.0139 ±0.0069
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7316 (73.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.5178       6.5195      +0.0017 ±0.0084  
+   commander_cast_turn__nunca                   0.0690       0.0698      +0.0008 ±0.0019  
+   commander_cast_turn__ate_T3                  0.0556       0.0574      +0.0018 ±0.0019  
+  *commander_cast_turn__ate_T4                  0.2825       0.2882      +0.0057 ±0.0039  
+   commander_cast_turn__ate_T5                  0.5146       0.5164      +0.0018 ±0.0045  
+  *spells_cast                                  9.9772      10.0314      +0.0542 ±0.0198  
+  *edric_death_turn__ate_T4                     0.0305       0.0333      +0.0028 ±0.0012  
+  *len_creature_cast_turn                       7.6709       7.7162      +0.0453 ±0.0199  
+  *finisher_turn__ate_T6                        0.1107       0.1165      +0.0058 ±0.0026  
+  *first_blue_screw_turn__ate_T6                0.0494       0.0516      +0.0022 ±0.0012  
+  *edric_death_turn__ate_T6                     0.0820       0.0849      +0.0029 ±0.0016  
+  *first_blue_screw_turn__ate_T3                0.0151       0.0169      +0.0018 ±0.0010  
+  *cards_milled_total                           4.8322       4.9058      +0.0736 ±0.0411  
+  *first_blue_screw_turn__ate_T5                0.0452       0.0473      +0.0021 ±0.0012  
+  *edric_death_turn__ate_T5                     0.0570       0.0593      +0.0023 ±0.0013  
+  *commander_in_play                            0.6506       0.6430      -0.0076 ±0.0044  
+  *first_blue_screw_turn__ate_T4                0.0338       0.0357      +0.0019 ±0.0011  
+  *takenuma_channel_activations                 0.0911       0.0949      +0.0038 ±0.0023  
+  *edric_death_turn__ate_T3                     0.0134       0.0150      +0.0016 ±0.0010
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** o ganho esperado é pequeno e concentrado em T1–T3: só muda a partida quando a mão tem terreno virado E desvirado e nenhuma jogada de T1/T2 que o terreno desvirado pague (nesses casos o terreno virado deixa de ficar parado na mão até um turno em que atrasaria o desenvolvimento).
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `thranduil_goldfish_v1_ANTES_0ee4972.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 8/8 (`resumos/testes_dirigidos.txt`); ghost (chave ligada + ensaio ignorado == desligada), 20.000 × 2 modos (`resumos/ghost_20000.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Terreno virado primeiro:** leitura de `play_land` (+ predicado de entrada virada do deck); testes dirigidos TL1–TL8 (escolha com/sem jogada em T1, chave desligada, T3, só um tipo na mão, ensaio sem efeito no estado/RNG/`random`, modo GHOST, integração em `play_land`); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Ensaio sem efeito colateral:** com a chave ligada + modo GHOST (roda o ensaio e ignora o resultado) o resultado é idêntico a tudo desligado, 20.000 × 2 modos (`resumos/ghost_20000.txt`).
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+- **Determinismo:** 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos, controle × correção (`resumos/determinismo.txt`).
+- **Invariante genérica "campos negativos" (regressão):** 1 partida em 20.000 (resiliência, semente 5.008.802) termina com `mana_spent_this_turn` = -1 com a correção ligada; 0 com a chave desligada. Rastreei a escrita: vem de `try_devoted_druid_burst` (`-= 1`, o ganho líquido de mana do Devoted Druid: {T}: Add {G}, depois põe um contador -1/-1 pra desvirar), ou seja, mana bônus por desenho, não custo não cobrado. A diferença 1 × 0 é só a partida seguir outro caminho depois que a ordem dos terrenos mudou.
+
+**Escopo — NÃO verificado:**
+- **Condições de entrada dos terrenos** além do que a varredura mecânica cobriu (`varredura-2026-10-05/`: cenário de campo vazio + cenário condição satisfeita × violada para os padrões "unless you control …"/reveal; terrenos que o `CARD_DB` do deck não tem como básico foram pulados e estão listados lá).
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
 
 ---
 
