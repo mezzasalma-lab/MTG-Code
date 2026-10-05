@@ -1,5 +1,20 @@
 # Checklist cláusula-a-cláusula — Ms. Bumbleflower (Bant, G/W/U)
 
+## Terreno virado primeiro em T1/T2 + ordem de equipar determinística (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| Terreno que entra virado jogado primeiro em T1/T2 quando não custa jogada | 🐛 corrigido: `tapped_first_pick` + ensaio a seco, atrás de `TAPPED_LAND_FIRST_ENABLED` |
+| Determinismo entre processos (`set` de str iterado em ordem de hash) | 🐛 corrigido: `DETERMINISTIC_SET_ORDER_ENABLED` (ordem de equipar) |
+| Tranquil Landscape | ✅ já modelado (busca básico, entra virado) |
+
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`.
+
+---
+
 ## Porte completo do modo de resiliência (interação de oponente) + CR 903.9a nativa desde o início — 2026-09-21
 
 **Gatilho:** *"Faça agora a Ms. Bumbleflower"* — seguindo diretamente o

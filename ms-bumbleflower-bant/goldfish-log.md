@@ -1,5 +1,91 @@
 # Goldfish Log — Ms. Bumbleflower
 
+> **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 + ordem de equipar determinística (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
+
+## Terreno virado primeiro em T1/T2 + ordem de equipar determinística (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-terreno-virado-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada e com o ensaio sem efeito colateral (modo GHOST). Modo padrão, N=10.000: comandante em campo até T3 25,3% → 27,1% (+1,84 ± 0,38 pp), até T4 +2,94 ± 0,36 pp, até T5 +1,37 ± 0,24 pp; comandante que nunca chega a entrar na partida -0,03 ± 0,03 pp. Modo resiliência: comandante em campo até T3 23,6% → 25,3% (+1,65 ± 0,37 pp), até T4 +2,95 ± 0,39 pp, até T5 +1,69 ± 0,32 pp; comandante que nunca chega a entrar na partida -0,20 ± 0,12 pp. A correção joga o terreno virado primeiro em média 0,41 vez(es) por partida (N=10.000, padrão) e o ensaio impede 0,32 vez(es) por partida (teria custado uma jogada).
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **Terreno que entra virado nunca é jogado primeiro.** `play_land` jogava sempre o primeiro terreno da ordem própria do deck (desvirado antes de virado). Em T1/T2, sem nada pra conjurar, a mana do turno era desperdiçada enquanto o terreno que entra virado ficava na mão pra um turno em que ele custa desenvolvimento. Mesmo erro achado e corrigido no Vihaan e no Megatron (2026-10-03/04).
+- **Ordem de iteração de `set` de strings dependia de `PYTHONHASHSEED`.** A mesma semente dava resultados diferentes em processos diferentes (o hash de `str` muda a cada execução do Python). Medido: 3 `PYTHONHASHSEED` diferentes, 1.500 sementes × 2 modos, comparando o estado final campo a campo (`resumos/determinismo.txt`). Aqui: `for eq_name in EQUIPMENT_NAMES` (set) decidia a ORDEM em que Lightning Greaves e Swiftfoot Boots tentam equipar, com mana limitada. No controle (chave desligada) 0 sementes divergentes em 1.500 × 2 modos: a correção é **preventiva** (só 2 equipamentos na lista; a divergência exigiria os dois desequipados com mana pra um só).
+
+**O que mudou:**
+- `TAPPED_LAND_FIRST_ENABLED` (padrão `True`), `TAPPED_LAND_FIRST_MAX_TURN = 2`: em T1..T2, havendo terreno virado E desvirado na mão, `tapped_first_pick` joga o virado, **salvo se isso custar desenvolvimento**: o teste é um ENSAIO a seco da própria fase de conjuração pré-combate do deck (cópia profunda do estado; `CARD_DB` compartilhado; RNG do estado copiado; `random` global restaurado), comparando o MV total das cartas que saem da mão com cada candidato. Empate → o virado. Dentro de cada grupo vale a ordem própria do deck (cor mais escassa etc.). Contadores novos no estado: `tapped_land_first_plays_total` (jogou o virado) e `tapped_land_skipped_for_play_total` (o ensaio mostrou que custaria uma jogada e jogou o desvirado). `TAPPED_LAND_FIRST_GHOST` só existe pra validação (roda o ensaio e ignora o resultado). Com a chave em `False` o caminho antigo volta bit a bit.
+- `DETERMINISTIC_SET_ORDER_ENABLED` (padrão `True`): `for eq_name in sorted(EQUIPMENT_NAMES)` no lugar de iterar o `set`. Com a chave em `False` o laço antigo (ordem do hash) volta.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 6217 (62.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0176       0.0173      -0.0003 ±0.0003  
+  *commander_cast_turn__ate_T3                  0.2527       0.2711      +0.0184 ±0.0038  
+  *commander_cast_turn__ate_T4                  0.6222       0.6516      +0.0294 ±0.0036  
+  *commander_cast_turn__ate_T5                  0.8052       0.8189      +0.0137 ±0.0024  
+  *next_uid                                    27.6954      27.8745      +0.1791 ±0.0375  
+  *len_battlefield                             26.3806      26.5556      +0.1750 ±0.0368  
+  *opponent_forced_draws_total                 18.8363      19.0375      +0.2012 ±0.0441  
+  *interaction_plays                            3.5706       3.6073      +0.0367 ±0.0094  
+  *len_library                                 62.2983      62.0584      -0.2399 ±0.0646  
+  *len_graveyard                                5.6115       5.6702      +0.0587 ±0.0162  
+  *cards_drawn_extra                           26.4223      26.6327      +0.2104 ±0.0614  
+  *commander_cast_turn__ate_T6                  0.8897       0.8938      +0.0041 ±0.0014  
+  *mana_spent_this_turn                        13.4606      13.5814      +0.1208 ±0.0421  
+  *proxy_damage_total                         218.8067     223.2510      +4.4443 ±1.5527  
+  *len_first_counter_this_turn                  3.4820       3.5161      +0.0341 ±0.0150  
+  *counters_placed_total                       90.4371      92.4162      +1.9791 ±0.8743  
+  *turn                                         9.7198       9.7123      -0.0075 ±0.0034  
+  *won_via_ascendancy                           0.2292       0.2340      +0.0048 ±0.0022
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 6217 (62.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0305       0.0285      -0.0020 ±0.0012  
+  *commander_cast_turn__ate_T3                  0.2361       0.2526      +0.0165 ±0.0037  
+  *commander_cast_turn__ate_T4                  0.5730       0.6025      +0.0295 ±0.0039  
+  *commander_cast_turn__ate_T5                  0.7518       0.7687      +0.0169 ±0.0032  
+  *opponent_forced_draws_total                 12.6883      12.8769      +0.1886 ±0.0589  
+  *commander_cast_turn__ate_T6                  0.8483       0.8552      +0.0069 ±0.0024  
+  *interaction_plays                            2.7530       2.7812      +0.0282 ±0.0111  
+  *len_library                                 69.1143      68.9294      -0.1849 ±0.0749  
+  *cards_drawn_extra                           20.5250      20.6755      +0.1505 ±0.0685  
+  *next_uid                                    24.7555      24.9143      +0.1588 ±0.0880  
+  *commander_uid                               10.2416      10.4117      +0.1701 ±0.0973  
+  *len_smart_removal_log                        0.9283       0.9419      +0.0136 ±0.0078  
+  *smart_removals_total                         0.9283       0.9419      +0.0136 ±0.0078  
+  *proxy_damage_total                          91.2522      93.0961      +1.8439 ±1.1331  
+  *commander_in_play                            0.7413       0.7481      +0.0068 ±0.0045  
+  *len_graveyard                                7.6616       7.7308      +0.0692 ±0.0459  
+  *len_first_counter_this_turn                  1.8154       1.8356      +0.0202 ±0.0151  
+  *communal_brewing_ingredient_counters         0.2338       0.2372      +0.0034 ±0.0026
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** o ganho esperado é pequeno e concentrado em T1–T3: só muda a partida quando a mão tem terreno virado E desvirado e nenhuma jogada de T1/T2 que o terreno desvirado pague (nesses casos o terreno virado deixa de ficar parado na mão até um turno em que atrasaria o desenvolvimento).
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `bumbleflower_goldfish_v1_ANTES_f4b6289.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 8/8 (`resumos/testes_dirigidos.txt`); ghost (chave ligada + ensaio ignorado == desligada), 20.000 × 2 modos (`resumos/ghost_20000.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Terreno virado primeiro:** leitura de `play_land` (+ predicado de entrada virada do deck); testes dirigidos TL1–TL8 (escolha com/sem jogada em T1, chave desligada, T3, só um tipo na mão, ensaio sem efeito no estado/RNG/`random`, modo GHOST, integração em `play_land`); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Ensaio sem efeito colateral:** com a chave ligada + modo GHOST (roda o ensaio e ignora o resultado) o resultado é idêntico a tudo desligado, 20.000 × 2 modos (`resumos/ghost_20000.txt`).
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+- **Determinismo:** 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos, controle × correção (`resumos/determinismo.txt`); varredura AST (`varredura-2026-10-05/`).
+
+**Escopo — NÃO verificado:**
+- **Condições de entrada dos terrenos** além do que a varredura mecânica cobriu (`varredura-2026-10-05/`: cenário de campo vazio + cenário condição satisfeita × violada para os padrões "unless you control …"/reveal; terrenos que o `CARD_DB` do deck não tem como básico foram pulados e estão listados lá).
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
+
+---
+
 ## Porte completo do modo de resiliência + CR 903.9a nativa desde o início — 2026-09-21
 
 **Gatilho:** "Faça agora a Ms. Bumbleflower" — seguindo o porte

@@ -1,0 +1,6 @@
+Beorn, Fierce Host: terrenos da lista.md cujo oraculo (scryfall-cache/oracle-cache.json) diz que podem entrar virados
+(regex: /enters( the battlefield)? tapped|If you don't, it enters tapped/ no oracle_text; condicionais e choque incluidos)
+
+- Bala Ged Recovery // Bala Ged Sanctuary | Sorcery // Land | Bala Ged Recovery ({2}{G}): Return target card from your graveyard to your hand. /  //  / Bala Ged Sanctuary (): This land enters tapped. / {T}: Add {G}.
+
+terrenos na lista (incluindo MDFC com face de terreno): 8

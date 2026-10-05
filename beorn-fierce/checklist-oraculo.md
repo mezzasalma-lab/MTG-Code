@@ -1,5 +1,16 @@
 # Checklist cláusula-a-cláusula — Beorn the Fierce
 
+## Varredura de 2026-10-05: nenhuma correção de código neste deck — 2026-10-05
+
+| cláusula / conceito | situação |
+|---|---|
+| Terreno virado primeiro em T1/T2 | 📊 sem domínio: o único terreno que entra virado é um MDFC (Bala Ged Sanctuary), cuja face de terreno custa a magia (oráculo: "Bala Ged Sanctuary (): This land enters tapped") |
+| London Mulligan, CR 103.5 | ✅ já escolhe o fundo |
+| Imposto de comandante, CR 903.8 | ✅ já estava |
+| Entrada de terrenos, determinismo, terreno ≠ magia | ✅ sem divergência nas varreduras mecânicas (`varredura-2026-10-05/`) |
+
+---
+
 ## London mulligan: as cartas do fundo eram embaralhadas de volta — 2026-09-24
 
 **Achado:** o mesmo bug encontrado no Prismatic Bridge (rodada de gaps de

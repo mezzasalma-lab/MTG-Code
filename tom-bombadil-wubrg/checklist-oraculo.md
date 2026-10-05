@@ -1,5 +1,16 @@
 # Tom Bombadil — checklist oráculo × código (2026-09-22)
 
+## Varredura de 2026-10-05: nenhuma correção de código neste deck — 2026-10-05
+
+| cláusula / conceito | situação |
+|---|---|
+| Terreno virado primeiro | ✅ equivalente já existente (`land_option_score`: mana gastável, empate → virado) |
+| Fetchlands | ✅ já modeladas |
+| Entrada de terrenos | ✅ (1 falso positivo da varredura: Serra's Sanctum) |
+| Determinismo entre processos | ✅ resultado de jogo idêntico; só o cache `_mana_cache` varia (sem efeito) |
+
+---
+
 Construção do simulador `tom_goldfish_v1.py` do zero, junto com a lista.
 Método (CLAUDE.md, Regra #1): oráculo das 100 cartas buscado **ao vivo** no
 Scryfall (`/cards/collection` + `/cards/named?fuzzy=` para as de duas

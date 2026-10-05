@@ -1,0 +1,22 @@
+LOTE N=2000 sementes 1000000..1001999, 10 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1200 (60.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0250       0.0260      +0.0010 ±0.0024  
+   commander_cast_turn__ate_T3                  0.1470       0.1505      +0.0035 ±0.0060  
+  *commander_cast_turn__ate_T4                  0.6000       0.6270      +0.0270 ±0.0124  
+   commander_cast_turn__ate_T5                  0.8060       0.8110      +0.0050 ±0.0071  
+  *commander_damage_win                         0.6180       0.6450      +0.0270 ±0.0119  
+  *azula_commander_damage_dealt                21.4355      21.5495      +0.1140 ±0.1015  
+   azula_copy_events_total                      1.8390       1.8765      +0.0375 ±0.0459  
+   narset_used_this_turn                        0.0040       0.0030      -0.0010 ±0.0014  
+   proxy_damage_total                        3948.4480    3451.4630    -496.9850 ±703.2052
+   treasures                                   17.7270      18.2490      +0.5220 ±0.8318  
+   treasures_created_total                     17.7270      18.2490      +0.5220 ±0.8318  
+   ascension_quest_counters                     0.4920       0.4805      -0.0115 ±0.0192  
+   bonus_mana_pool                              3.5425       3.5675      +0.0250 ±0.0439  
+   mana_spent_this_turn                         8.3905       8.7185      +0.3280 ±0.5867  
+   storm_grapeshot_events_total                 0.3300       0.3260      -0.0040 ±0.0073  
+   zada_copy_events_total                       0.8720       0.8545      -0.0175 ±0.0369  
+   spells_cast_this_turn                        2.5130       2.5860      +0.0730 ±0.1573  
+   interaction_plays                            2.3290       2.3420      +0.0130 ±0.0281  

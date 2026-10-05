@@ -1,6 +1,24 @@
 # Goldfish Compilado — Beorn the Fierce
 
+> **Rodada 2026-10-05 (varredura de classes de erro; nenhuma correção de código aqui):** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
+
 Compilação de todos os goldfish rodados na sessão. Cada jogo foi registrado turno a turno a partir dos logs reais (imagens de opening hand + JSON de jogadas), com as correções apontadas ao longo do processo já aplicadas.
+
+---
+
+## Varredura de 2026-10-05: nenhuma correção de código neste deck — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Evidência: `resultados-ab/2026-10-05-terreno-virado-primeiro/` (`LEIAME.md`, `resumos/terrenos_que_entram_virados.txt`) e `varredura-2026-10-05/`.
+
+**Veredito:** nenhuma das classes varridas aplica a este simulador; **nada foi alterado em `beorn_goldfish_v1.py`**.
+
+- **Terreno virado primeiro em T1/T2:** sem domínio. O único terreno da lista que o oráculo manda entrar virado é **Bala Ged Recovery // Bala Ged Sanctuary**, um MDFC cuja face de terreno custa a magia (decisão à parte, já tratada em `try_bala_ged_recovery`). Sem um segundo terreno virado que não seja MDFC, o dilema "virado × desvirado" não existe. (Varredura por script do oráculo em cache: `resumos/terrenos_que_entram_virados.txt`.)
+- **Mulligan:** já escolhe as cartas do fundo (`choose_bottom`/`bottom_priority`, correção de 2026-09-24).
+- **Entrada de terrenos contra o oráculo:** `audit_entrada_ANTES.txt` (7 terrenos checados, 0 divergências).
+- **Determinismo entre processos:** 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos, 0 divergências (`varredura-2026-10-05/resumos/determinismo_1500_sementes_estado_final.txt`).
+- **Jogar terreno ≠ conjurar magia:** nenhum contador de magia muda (`audit_terreno_nao_e_magia_ANTES.txt`). **Fetchlands:** a lista não tem.
+
+**Escopo — NÃO verificado:** o resto da taxonomia da Regra #1 (conjuração fora da mão, sacrifício × destroy, cascade, `_sick` agregados, fórmulas achatadas) por `grep`/leitura pontual, sem leitura integral nem instrumentação em runtime nesta rodada; oponente real (convenção do repositório).
 
 ---
 

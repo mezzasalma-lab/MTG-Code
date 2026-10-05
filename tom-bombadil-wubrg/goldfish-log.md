@@ -1,5 +1,25 @@
 # Tom Bombadil — goldfish log
 
+> **Rodada 2026-10-05 (varredura de classes de erro; nenhuma correção de código aqui):** [`varredura-2026-10-05/LEIAME.md`](../varredura-2026-10-05/LEIAME.md)
+
+
+## Varredura de 2026-10-05: nenhuma correção de código neste deck — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Evidência: `varredura-2026-10-05/` (`LEIAME.md` e `resumos/`).
+
+**Veredito:** nenhuma correção em `tom_goldfish_v1.py`; as classes varridas ou já estavam resolvidas ou só mostram artefato interno.
+
+- **Terreno virado primeiro:** já existe equivalente — `land_option_score` joga o terreno de mentira, mede a mana gastável no turno e, no empate, prefere o que entra virado (vale em todos os turnos, não só T1/T2).
+- **Mulligan / imposto / ordem upkeep × draw:** já corrigidos antes (2026-10-03/04).
+- **Fetchlands:** já modeladas (`play_land`: sacrifica, 1 de vida, busca por tipo, embaralha, choque buscado paga 2).
+- **Entrada de terrenos:** `audit_entrada_ANTES.txt`: 25 terrenos, 1 divergência que é falso positivo (Serra's Sanctum não produz mana sozinho com campo vazio).
+- **Determinismo entre processos:** o resultado do jogo é idêntico entre `PYTHONHASHSEED`s; o único campo que muda é o cache interno `_mana_cache` (670/1.500 padrão e 262/1.500 resiliência), que não entra em nenhuma decisão observável (nenhum outro campo diverge). A impressão digital do `abgen` agora ignora campos `_*cache*`.
+- **Jogar terreno ≠ conjurar magia:** nenhum contador muda.
+
+**Escopo — NÃO verificado:** o resto da taxonomia da Regra #1 (conjuração fora da mão, sacrifício × destroy, cascade, `_sick` agregados, fórmulas achatadas) por `grep`/leitura pontual, sem leitura integral nem instrumentação em runtime nesta rodada.
+
+---
+
 Regra #5: o simulador é **evidência de apoio**. A análise do deck
 (`construcao.md`) vem do oráculo, das regras e dos motores reais. O
 goldfish tem convenções fixas: ataca com tudo, não modela bloqueio, não
