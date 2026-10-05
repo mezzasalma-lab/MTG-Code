@@ -1,0 +1,21 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1625 (81.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__ate_T3                  0.4870       0.5265      +0.0395 ±0.0091  
+  *commander_cast_turn__ate_T4                  0.9165       0.9255      +0.0090 ±0.0044  
+   commander_cast_turn__ate_T5                  0.9650       0.9650      +0.0000 ±0.0014  
+  *mind_stone_harnessed                         0.1840       0.1885      +0.0045 ±0.0032  
+  *blinks_total                                 5.0015       5.2340      +0.2325 ±0.1737  
+  *shrine_reblinks_total                        2.6400       2.7155      +0.0755 ±0.0718  
+  *cards_drawn_extra                           14.0480      14.2345      +0.1865 ±0.1805  
+  *len_library                                 65.6200      65.4215      -0.1985 ±0.1958  
+   ramp_pieces_cast                             1.5150       1.5275      +0.0125 ±0.0129  
+   len_graveyard                                9.4300       9.5495      +0.1195 ±0.1305  
+   mana_spent_this_turn                        14.5335      14.6700      +0.1365 ±0.1760  
+   library_emptied                              0.0820       0.0840      +0.0020 ±0.0028  
+   len_creature_cast_turn                       5.8365       5.8605      +0.0240 ±0.0385  
+   life_origin_reanimates_total                 0.0300       0.0320      +0.0020 ±0.0042  
+   replenish_returns_total                      0.2980       0.2875      -0.0105 ±0.0276  
+   tutors_used_total                            0.9220       0.9175      -0.0045 ±0.0127  
+   len_hand                                     3.9800       3.9755      -0.0045 ±0.0241  
