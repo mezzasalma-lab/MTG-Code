@@ -172,7 +172,7 @@ def danny_pink_compra_uma_vez_por_turno_por_criatura():
     m.place_counters(st, mm, 1)
     m.place_counters(st, mm, 1)
     assert len(st.hand) - h0 == 1, len(st.hand) - h0
-    st.turn += 1
+    st.turn_id += 1
     m.place_counters(st, mm, 1)
     assert len(st.hand) - h0 == 2
 
@@ -1143,6 +1143,221 @@ def opp_rad_zero_nao_faz_nada():
     o = st.opps[0]
     m.rad_trigger_opp(st, o)
     assert st.mothman_triggers_total == 0
+
+
+# ============================================================== rodada de rulings (2026-10-05): testes das correcoes
+@teste
+def konrad_mortes_simultaneas_wipe_conta_cada_outra_criatura():
+    st = fresh(bf=["Syr Konrad, the Grim", "Six", "Gyre Sage", "Ruin Crab"])
+    m.kill_group(st, list(m.creatures(st)))
+    assert not m.creatures(st)
+    # 4 criaturas morrem juntas, incluindo o Konrad: ele dispara por cada UMA DAS OUTRAS 3 (nao por ele mesmo)
+    assert st.opps[0].life == 37, st.opps[0].life
+
+
+@teste
+def konrad_morte_isolada_de_outra_criatura():
+    st = fresh(bf=["Syr Konrad, the Grim", "Six"])
+    six = m.perms_named(st, "Six")[0]
+    m.remove_permanent(st, six, "dies")
+    assert st.opps[0].life == 39
+
+
+@teste
+def frogantua_tudo_ou_nada_no_mill():
+    st = fresh(bf=["Rampant Frogantua"], lib=["Forest"] * 6)
+    st.battlefield[0].entered_turn = 1
+    st.battlefield[0].counters = 10                       # dano 13 > biblioteca (6): nao posso escolher milar
+    m.combat_step(st)
+    assert st.self_mill_by_source.get("frogantua", 0) == 0, st.self_mill_by_source
+
+
+@teste
+def persist_dispara_hollowmurk_sultai():
+    st = fresh(bf=["Hollowmurk Siege", "Glen Elendra Archmage"])
+    st.battlefield[0].ctr["sultai"] = 1
+    h0 = len(st.hand)
+    m.remove_permanent(st, st.battlefield[1], "dies")      # volta com -1/-1: 'a counter is put on a creature you control'
+    assert len(st.hand) - h0 == 1, len(st.hand) - h0
+
+
+@teste
+def ballista_entra_com_contadores_dispara_hollowmurk():
+    st = fresh(bf=["Hollowmurk Siege"], hand=["Walking Ballista"])
+    st.battlefield[0].ctr["sultai"] = 1
+    for _ in range(4):
+        add(st, "Forest")
+    h0 = len(st.hand)
+    assert m.cast_card(st, "Walking Ballista", x=2)
+    assert len(st.hand) - h0 == 0, len(st.hand) - h0        # -1 (Ballista saiu da mao) +1 (Hollowmurk)
+
+
+@teste
+def once_each_turn_zera_a_cada_turno_de_qualquer_jogador():
+    st = fresh(bf=["Mirelurk Queen"], opps_lib=["N"] * 30)
+    m.begin_any_turn(st)
+    h0 = len(st.hand)
+    m.mill_event(st, [(1, 1)], source="t")
+    m.mill_event(st, [(1, 1)], source="t")
+    assert len(st.hand) - h0 == 1
+    m.begin_any_turn(st)                                    # turno de um oponente: a Queen dispara de novo
+    m.mill_event(st, [(1, 1)], source="t")
+    assert len(st.hand) - h0 == 2
+
+
+@teste
+def ascension_dispara_com_magia_anulada_do_oponente():
+    st = fresh(bf=["Bloodchief Ascension"], hand=["Negate"] + ["Island"] * 0)
+    st.battlefield[0].ctr["quest"] = 3
+    for _ in range(3):
+        add(st, "Island")
+    o = st.opps[0]
+    l0 = o.life
+    assert m.respond_to_opp_spell(st, o, noncreature=True, mv=4)
+    assert o.life == l0 - 2, o.life
+
+
+@teste
+def orb_no_untap_conta_neste_turno_a_queen():
+    st = fresh(bf=["Mesmeric Orb", "Mirelurk Queen", "Forest", "Forest"], lib=["Fathom Mage"] * 30)
+    for p in st.battlefield:
+        if "land" in p.card.types:
+            p.tapped = True
+    m.begin_any_turn(st)
+    h0 = len(st.hand)
+    m.untap_my_permanents(st)
+    assert len(st.hand) - h0 == 1                            # 2 mills do Orb no untap: a Queen compra UMA vez (once each turn)
+
+
+@teste
+def lantern_exila_cemiterio_de_oponente_como_interacao():
+    got = 0
+    for sd in range(40):
+        st = fresh(seed=sd + 1, bf=["Soul-Guide Lantern"], hand=["Forest"] * 6, turn=6)
+        for o in st.opps:
+            o.graveyard = ["C", "N", "N", "L"]
+        if m.act_lantern_exile(st):
+            got += 1
+            assert all(o.graveyard == [] for o in st.opps) and st.interaction_plays == 1
+    assert got > 0
+
+
+@teste
+def repulsive_mutation_como_contramagica_suave():
+    st = fresh(bf=["Six", "Island", "Forest", "Island", "Forest", "Island"], hand=["Repulsive Mutation"])
+    o = st.opps[0]
+    o.lands = 2
+    c0 = st.battlefield[0].counters
+    assert m.respond_to_opp_spell(st, o, noncreature=True, mv=4)       # o oponente tem 2 de mana de sobra < poder -> nao paga
+    assert st.battlefield[0].counters > c0
+
+
+# ============================================================== candidatas (pacote de 5 trocas + Master)
+@teste
+def candidata_evolution_sage_proliferate_no_landfall():
+    st = fresh(bf=["Evolution Sage", "Six"])
+    st.battlefield[1].counters = 2
+    st.opps[0].rad = 2
+    m.put_land_onto_battlefield(st, "Forest", source="play")
+    assert st.battlefield[1].counters == 3 and st.opps[0].rad == 3, (st.battlefield[1].counters, st.opps[0].rad)
+
+
+@teste
+def candidata_karns_bastion_proliferate():
+    st = fresh(bf=["Karn's Bastion", "Six", "Evolution Witness", "Forest", "Forest", "Forest", "Forest", "Forest"])
+    for p in st.battlefield:
+        if p.card.name in ("Six", "Evolution Witness"):
+            p.counters = 2
+    for o in st.opps:
+        o.rad = 3
+    assert m.act_karns_bastion(st)
+    assert st.battlefield[1].counters == 3 and all(o.rad == 4 for o in st.opps)
+    assert st.battlefield[0].tapped
+
+
+@teste
+def candidata_bruvac_dobra_mill_de_oponente_e_nao_o_meu():
+    st = fresh(bf=["Bruvac the Grandiloquent"], opps_lib=["N"] * 40, lib=["Fathom Mage"] * 30)
+    l_me = len(st.library); l_o = len(st.opps[0].library)
+    m.mill_event(st, [(0, 3), (1, 3)], source="t")
+    assert l_me - len(st.library) == 3 and l_o - len(st.opps[0].library) == 6
+
+
+@teste
+def candidata_bruvac_dobra_rad_mill_do_oponente():
+    st = fresh(bf=["Bruvac the Grandiloquent"], opps_lib=["N"] * 40)
+    o = st.opps[0]
+    o.rad = 3
+    m.rad_trigger_opp(st, o)
+    # mila 6 nao-terrenos: perde 6 de vida e remove 3 rad (so' tinha 3)
+    assert o.life == 34 and o.rad == 0, (o.life, o.rad)
+
+
+@teste
+def candidata_master_perda_de_vida_vira_mill_nos_dois_lados():
+    st = fresh(bf=["The Master of Lake-town"], opps_lib=["N"] * 20, lib=["Fathom Mage"] * 30)
+    l_me = len(st.library); l_o = len(st.opps[0].library)
+    m.lose_life_opp(st, 1, 4, "t")
+    assert l_o - len(st.opps[0].library) == 4
+    m.lose_life_self(st, 2, "t")
+    assert l_me - len(st.library) == 2
+
+
+@teste
+def candidata_master_morre_compra_por_cemiterio_com_7_ou_mais():
+    st = fresh(bf=["The Master of Lake-town"], gy=["Forest"] * 7)
+    st.opps[0].graveyard = ["N"] * 7
+    h0 = len(st.hand)
+    m.remove_permanent(st, st.battlefield[0], "dies")
+    assert len(st.hand) - h0 == 2, len(st.hand) - h0
+
+
+@teste
+def candidata_master_mais_ascension_e_combo():
+    st = fresh(bf=["The Master of Lake-town", "Bloodchief Ascension"], opps_lib=["N"] * 60)
+    st.battlefield[1].ctr["quest"] = 3
+    m.mill_event(st, [(1, 1)], source="t")
+    assert st.opps[0].eliminated and st.combo_win == "ascension_mindcrank"
+
+
+@teste
+def candidata_garruk_trample_e_compra():
+    st = fresh(bf=["Garruk's Uprising", "Six"])
+    assert m.has_trample(st, st.battlefield[1])
+    st2 = fresh(bf=["Six"], hand=["Garruk's Uprising"])
+    st2.battlefield[0].counters = 3                      # poder 5
+    for n in ("Forest", "Forest", "Forest"):
+        add(st2, n)
+    h0 = len(st2.hand)
+    assert m.cast_card(st2, "Garruk's Uprising")
+    assert len(st2.hand) - h0 == 0, len(st2.hand) - h0   # -1 (carta jogada) +1 (ETB: controla poder >= 4)
+    st2.hand.append("Herd Baloth")
+    for n in ("Forest",) * 5:
+        add(st2, n)
+    h1 = len(st2.hand)
+    assert m.cast_card(st2, "Herd Baloth")               # poder 4 entra: compra
+    assert len(st2.hand) - h1 == 0, len(st2.hand) - h1
+
+
+@teste
+def candidata_opulent_palace_entra_virado_e_da_bgu():
+    st = fresh()
+    p = m.put_land_onto_battlefield(st, "Opulent Palace", source="play")
+    assert p.tapped
+    p.tapped = False
+    assert m.mana_sources(st)[0].colors == frozenset({"B", "G", "U"})
+
+
+@teste
+def swaps_trocam_cartas_na_biblioteca():
+    m.SWAPS = (("Cold-Eyed Selkie", "Evolution Sage"), ("Swarmyard", "Karn's Bastion"))
+    try:
+        lib = m.current_library()
+        assert len(lib) == 99 and "Evolution Sage" in lib and "Cold-Eyed Selkie" not in lib and "Karn's Bastion" in lib and "Swarmyard" not in lib
+        st = m.new_state(5)
+        assert len(st.library) + len(st.hand) == 99
+    finally:
+        m.SWAPS = ()
 
 
 def main():

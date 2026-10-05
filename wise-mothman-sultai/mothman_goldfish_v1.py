@@ -233,6 +233,14 @@ add("Toxic Deluge", "{2}{B}", {"sorcery"}, {"wipe", "toxic_deluge"})
 add("V.A.T.S.", "{2}{B}{B}", {"instant"}, {"vats"})
 add("Wave Goodbye", "{2}{U}{U}", {"sorcery"}, {"wipe", "wave_goodbye"})
 
+# --- Candidatas (pacote de 5 trocas + Master of Lake-town; ver candidatas-pos-eoe.md) — so' entram na biblioteca por `SWAPS` ---------------------
+add("Evolution Sage", "{2}{G}", {"creature"}, {"evo_sage"}, 3, 2, subtypes={"Elf", "Druid"})
+add("Karn's Bastion", "", {"land"}, {"karns_bastion"}, produces={"C"})
+add("Bruvac the Grandiloquent", "{2}{U}", {"creature"}, {"bruvac"}, 1, 4, legendary=True, subtypes={"Human", "Advisor"})
+add("The Master of Lake-town", "{1}{B}{B}", {"creature"}, {"master", "deathtouch"}, 3, 2, legendary=True, subtypes={"Human", "Advisor"})
+add("Garruk's Uprising", "{2}{G}", {"enchantment"}, {"garruk"})
+add("Opulent Palace", "", {"land"}, {"etb_tapped", "palace"}, produces={"B", "G", "U"})
+
 # --- Fichas -----------------------------------------------------------------------
 add("Horror Token", "", {"creature"}, {"token"}, 1, 1, token=True, subtypes={"Horror"})
 add("Zombie Token", "", {"creature"}, {"token"}, 2, 2, token=True, subtypes={"Zombie"})
@@ -290,6 +298,7 @@ class Opp:
 @dataclass
 class GameState:
     turn: int = 0
+    turn_id: int = 0                  # +1 a cada turno de QUALQUER jogador (meu e dos oponentes): 'once each turn' / 'first time each turn' contam por aqui
     rng: Optional[random.Random] = None
     on_play: bool = True
     library: list = field(default_factory=list)
@@ -466,6 +475,26 @@ class GameState:
     memory_erosion_events: int = 0
     prox_mana_wasted_total: int = 0
     # modo resiliencia
+    konrad_batch: bool = False
+    cleared_T6: int = 0                      # a mesa inteira (3 oponentes) eliminada ate o turno N (indicadores 0/1 pro A/B)
+    cleared_T7: int = 0
+    cleared_T8: int = 0
+    cleared_T9: int = 0
+    cleared_T10: int = 0
+    first_elim_T6: int = 0
+    first_elim_T8: int = 0
+    self_lost: int = 0                       # eu perdi (decado ou vida <= 0)
+    smart_artifact_wipes_total: int = 0
+    smart_enchantment_wipes_total: int = 0
+    smart_graveyard_snipes_total: int = 0
+    smart_discards_total: int = 0
+    smart_attack_damage_total: int = 0
+    wiped_this_round: bool = False
+    graveyard_wipe_used: bool = False
+    angel_prevented_total: int = 0
+    regenerations_used: int = 0
+    protections_by_kind: dict = field(default_factory=dict)
+    commander_countered_total: int = 0
     smart_removals_total: int = 0
     smart_wipes_total: int = 0
     smart_counters_total: int = 0
@@ -1098,6 +1127,7 @@ def mill_event(state: GameState, parts: list, source: str = "", before_triggers=
             o = state.opps[pl - 1]
             if o.eliminated:
                 continue
+            n = n * (2 ** count_named(state, "Bruvac the Grandiloquent"))       # Bruvac: substituicao, so' oponentes
             cards = _opp_take(state, o, n)
             result[pl] = cards
             state.cards_milled_opp_total += len(cards)
@@ -1287,8 +1317,8 @@ def on_counters_placed(state: GameState, perm: Permanent, total: int, kind: str,
     c = eff_card(perm)
     creature = is_creature(perm)
     # Danny Pink: criaturas minhas tem "primeira vez a cada turno que contadores sao postos nesta criatura: compre"
-    if creature and has_perm(state, "Danny Pink") and perm.last_counter_turn != state.turn:
-        perm.last_counter_turn = state.turn
+    if creature and has_perm(state, "Danny Pink") and perm.last_counter_turn != state.turn_id:
+        perm.last_counter_turn = state.turn_id
         draw_cards(state, 1, source="danny_pink")
     # Hollowmurk Siege (modo Sultai): "Whenever a counter is put on a creature you control, draw a card. Once each turn."
     if creature and not state.hollowmurk_triggered_this_turn:
@@ -1608,7 +1638,7 @@ def counter_target_value(state: GameState, p: Permanent) -> float:
 
 def counter_draw_cost(state: GameState, p: Permanent) -> int:
     """Compras OBRIGATORIAS que um contador neste alvo dispara (Danny Pink: 1a vez no turno por criatura)."""
-    return 1 if (has_perm(state, "Danny Pink") and is_creature(p) and p.last_counter_turn != state.turn) else 0
+    return 1 if (has_perm(state, "Danny Pink") and is_creature(p) and p.last_counter_turn != state.turn_id) else 0
 
 
 def choose_counter_targets(state: GameState, x: int) -> list:
@@ -1704,6 +1734,9 @@ def apply_etb(state: GameState, p: Permanent):
             commit_crime(state, "patron_support_opp")
             for _ in range(min(2 - len(others), OPP_CREATURE_TARGETS)):
                 draw_cards(state, 1, source="generous_patron")
+    if "garruk" in t:
+        if any(is_creature(q) and power(state, q) >= 4 for q in state.battlefield):
+            draw_cards(state, 1, source="garruk")
     if "hollowmurk" in t:
         # "As this enchantment enters, choose Sultai or Abzan": Sultai compra (1x por turno); com a biblioteca curta, Abzan (contador no atacante + menace)
         if SELF_MILL_GUARD_ENABLED and library_budget(state) < 12:
@@ -1745,7 +1778,7 @@ def freestrider_trigger(state: GameState):
         for lp in lands_in_play(state):
             for col in eff_card(lp).produces:
                 have[col] += 1
-        pick = max(cands, key=lambda c: (sum(10.0 / (1 + have[col]) for col in CARD_DB[c].produces & ANY_BGU), c))
+        pick = max(cands, key=lambda c: (sum(10.0 / (1 + have[col]) for col in sorted(CARD_DB[c].produces & ANY_BGU)), c))
         top.remove(pick)
     # o resto vai pro fundo em ordem aleatoria
     state.rng.shuffle(top)
@@ -1794,7 +1827,8 @@ def lantern_etb(state: GameState):
     if al:
         commit_crime(state, "lantern")
         tgt = max(al, key=lambda o: (len(o.graveyard), -o.idx))
-        tgt.graveyard.pop()
+        if tgt.graveyard:                         # o gatilho de crime (Deepmuck) pode ter mexido no cemiterio
+            tgt.graveyard.pop()
 
 
 def normalize_counters(p: Permanent):
@@ -1806,9 +1840,29 @@ def normalize_counters(p: Permanent):
 
 
 def creature_dies(state: GameState, perm: Permanent, sacrificed: bool = False):
-    """Efeitos de 'uma criatura morre' que nao dependem de onde ela vai: Syr Konrad (outra criatura)."""
+    """Efeitos de 'uma criatura morre' que nao dependem de onde ela vai: Syr Konrad (outra criatura). Em mortes SIMULTANEAS (`kill_group`) o ping e' contado la' (ruling 2019-10-04)."""
+    if state.konrad_batch:
+        return
     for k in [q for q in state.battlefield if "syr_konrad" in q.card.tags and q is not perm]:
         konrad_ping(state, 1)
+
+
+def kill_group(state: GameState, perms: list, reason: str = "dies"):
+    """Mortes simultaneas (wipes): cada Syr Konrad que estava em campo dispara uma vez por OUTRA criatura que morre junto (ruling 2019-10-04: 'if one or more creatures die at the same
+    time as Syr Konrad, its first ability triggers for each of those creatures')."""
+    group = [p for p in perms if p in state.battlefield]
+    konrads = [q for q in state.battlefield if "syr_konrad" in q.card.tags]
+    dying = [p for p in group if is_creature(p)]
+    state.konrad_batch = True
+    try:
+        for p in group:
+            remove_permanent(state, p, reason)
+    finally:
+        state.konrad_batch = False
+    for k in konrads:
+        for c in dying:
+            if c is not k:
+                konrad_ping(state, 1)
 
 
 def remove_permanent(state: GameState, perm: Permanent, reason: str = "dies", sacrificed: bool = False):
@@ -1834,6 +1888,9 @@ def remove_permanent(state: GameState, perm: Permanent, reason: str = "dies", sa
         creature_dies(state, perm, sacrificed)
     had_minus = perm.ctr.get("minus1", 0) > 0
     put_card_into_graveyard(state, name, "battlefield", sacrificed=sacrificed)
+    if "master" in perm.card.tags:
+        n7 = (1 if len(state.graveyard) >= 7 else 0) + sum(1 for o in state.opps if len(o.graveyard) >= 7)
+        draw_cards(state, n7, source="master_of_lake_town")
     # Persist (Glen Elendra Archmage): volta com um contador -1/-1 se nao tinha
     if "persist" in perm.card.tags and not had_minus and name in state.graveyard:
         state.graveyard.remove(name)
@@ -1841,6 +1898,7 @@ def remove_permanent(state: GameState, perm: Permanent, reason: str = "dies", sa
         q.ctr["minus1"] = 1 + count_named(state, "Winding Constrictor")      # Constrictor: +1 de cada tipo de contador
         state.battlefield.append(q)
         state.persist_returns += 1
+        on_counters_placed(state, q, q.ctr["minus1"], "-1/-1", "persist")     # Hollowmurk Sultai / Danny: 'a counter is put on a creature you control' (de qualquer tipo)
         enter_permanent_triggers(state, q, from_cast=False)
 
 
@@ -1944,6 +2002,10 @@ def cast_commander(state: GameState) -> bool:
     state.commander_in_cz = False
     state.spells_cast_this_turn += 1
     state.casts_by_card[name] = state.casts_by_card.get(name, 0) + 1
+    if state.interaction_rng is not None and try_smart_opponent_counter(state):
+        state.commander_countered_total += 1
+        state.commander_in_cz = True                  # anulado: volta pra zona de comando (o imposto de comandante ja' conta a conjuracao, CR 903.8)
+        return True
     if state.commander_cast_turn is None:
         state.commander_cast_turn = state.turn
     p = mk_perm(state, name)
@@ -2004,6 +2066,8 @@ def resolve_spell(state: GameState, name: str, x: int = 0, face: str = "front", 
         p.counters = (x + plus) * mult if x > 0 else 0
         state.counters_placed_total += p.counters
     state.battlefield.append(p)
+    if "ballista" in tags and p.counters > 0:
+        on_counters_placed(state, p, p.counters, "+1/+1", "enters")      # Hollowmurk/Danny: 'enters with counters' conta como 'counters put on' (ruling Hollowmurk 2025-04-04)
     if "artifact" in types and "sol_ring" in tags or "henge" in tags or "kami" in tags or "gyre_sage" in tags or "bramble" in tags:
         state.ramp_pieces_in_play += 1
     if "kozilek" in tags and state.first_finisher_turn is None:
@@ -2034,18 +2098,14 @@ def resolve_instant_sorcery(state: GameState, name: str, x: int):
     if "nuclear_fallout" in tags:
         state.wipes_cast += 1
         # "Each creature gets twice -X/-X until end of turn. Each player gets X rad counters."
-        for p in list(creatures(state)):
-            if toughness(state, p) <= 2 * x:
-                remove_permanent(state, p)
+        kill_group(state, [p for p in creatures(state) if toughness(state, p) <= 2 * x])
         give_rad(state, 0, x)
         for o in alive_opps(state):
             give_rad(state, o.idx, x)
         return
     if "toxic_deluge" in tags:
         state.wipes_cast += 1
-        for p in list(creatures(state)):
-            if toughness(state, p) <= x:
-                remove_permanent(state, p)
+        kill_group(state, [p for p in creatures(state) if toughness(state, p) <= x])
         return
     if "wave_goodbye" in tags:
         state.wipes_cast += 1
@@ -2089,7 +2149,13 @@ def resolve_smugglers_surprise(state: GameState):
         cards = res.get(0, [])
         picks = [c for c in cards if ("creature" in CARD_DB[c].types or is_land_card_name(c)) and c in state.graveyard]
         picks.sort(key=lambda c: (-graveyard_value(state, c), c))
-        for c in picks[:2]:
+        taken = 0
+        for c in picks:
+            if taken >= 2:
+                break
+            if c not in state.graveyard:
+                continue
+            taken += 1
             state.graveyard.remove(c)
             state.hand.append(c)
             state.recursion_events_total += 1
@@ -2252,10 +2318,12 @@ def tapped_first_pick(state: GameState, cands: list) -> Optional[str]:
         return None
     base = count_castable(state)
     best_un = max(untapped, key=lambda c: (land_play_score(state, c), c))
+    uid0 = state.next_uid
     tmp = mk_perm(state, best_un)
     state.battlefield.append(tmp)
     with_un = count_castable(state)
     state.battlefield.remove(tmp)
+    state.next_uid = uid0                    # ensaio a seco sem efeito colateral (Regra #10)
     if with_un > base:
         state.tapped_land_skipped_for_play_total += 1
         return None
@@ -2473,10 +2541,10 @@ def cast_loop(state: GameState, phase: str = "main1"):
                 lands_h = [h for h in state.hand if "land" in CARD_DB[h].types and "mdfc" not in CARD_DB[h].tags]
                 if lands_h and can_pay(state, g, pips, CARD_DB[name]):
                     d = min(lands_h, key=lambda h: land_play_score(state, h))
+                    state.graveyard.remove(name)              # CR 601.2a: a carta vai pra pilha ANTES de pagar o custo (descartar o terreno nao pode devolve-la)
+                    graveyard_leave(state, [name])
                     state.hand.remove(d)
                     put_card_into_graveyard(state, d, "hand")
-                    state.graveyard.remove(name)
-                    graveyard_leave(state, [name])
                     ok = cast_card(state, name, zone="graveyard")
                     state.six_retraces += 1
                     state.recursion_events_total += 1
@@ -2582,13 +2650,18 @@ def draw_step(state: GameState):
     draw_cards(state, 1, source="normal")
 
 
-def upkeep_step(state: GameState):
-    state.lands_played_this_turn = 0
-    state.muldrotha_used = []
+def begin_any_turn(state: GameState):
+    """Inicio de QUALQUER turno (meu ou de oponente): zera os limites 'uma vez a cada turno' (Mirelurk Queen, Deepmuck, Freestrider, Hollowmurk Sultai, Terrasymbiosis, Danny Pink)."""
+    state.turn_id += 1
     state.crime_this_turn = {}
     state.queen_triggered_this_turn = False
     state.hollowmurk_triggered_this_turn = False
     state.terrasymbiosis_used = False
+
+
+def upkeep_step(state: GameState):
+    state.lands_played_this_turn = 0
+    state.muldrotha_used = []
     state.spells_cast_this_turn = 0
     state.attackers_this_turn = []
     state.pool = {}
@@ -2728,6 +2801,7 @@ def end_step(state: GameState):
             p.copy_of = None               # Shifting Woodland: 'until end of turn' acaba no cleanup
         p.temp_power = 0
         p.temp_trample = False
+        p.crewed = False                   # Crew: 'until end of turn'
 
 
 # =========================================================
@@ -2735,6 +2809,17 @@ def end_step(state: GameState):
 # =========================================================
 
 COUNTER_MIN_MV = 3          # so' contra-mágica magias com MV >= isto (ameacas); o resto passa
+OPP_NONPERMANENT_FRACTION = 0.6      # das magias NAO-criatura do oponente, fracao que e' instantanea/feitico (vai ao cemiterio dele ao resolver; as outras sao permanentes)
+
+
+def opp_card_to_graveyard(state: GameState, o: Opp, kind: str):
+    """Carta do oponente `o` vai ao cemiterio dele por causa que NAO e' mill (magia anulada, instantanea/feitico resolvida). Bloodchief Ascension (3+ marcadores): 'whenever a card is put
+    into an opponent's graveyard from anywhere' — perde 2 / eu ganho 2 (ruling 2009-10-01: de qualquer zona)."""
+    if o.eliminated:
+        return
+    o.graveyard.append(kind)
+    if any(p.ctr.get("quest", 0) >= 3 for p in perms_named(state, "Bloodchief Ascension")) and not state.game_over:
+        ascension_hit(state, o.idx)
 
 
 def respond_to_opp_spell(state: GameState, o: Opp, noncreature: bool, mv: int) -> bool:
@@ -2750,25 +2835,45 @@ def respond_to_opp_spell(state: GameState, o: Opp, noncreature: bool, mv: int) -
             state.opp_spells_countered_total += 1
             commit_crime(state, "counter_glen")
             remove_permanent(state, glens[0], "sacrificed", sacrificed=True)
+            opp_card_to_graveyard(state, o, "N" if noncreature else "C")
             return True
-    order = ["Fierce Guardianship", "An Offer You Can't Refuse", "Negate", "Arcane Denial", "Didn't Say Please"]
+    order = ["Fierce Guardianship", "An Offer You Can't Refuse", "Negate", "Arcane Denial", "Didn't Say Please", "Repulsive Mutation"]
     for name in order:
         if name not in state.hand:
             continue
         if name in ("Fierce Guardianship", "An Offer You Can't Refuse", "Negate") and not noncreature:
             continue
         free = (name == "Fierce Guardianship" and free_cast_possible(state, name))
-        g, pips = effective_cost(state, name)
+        xr = 0
+        if name == "Repulsive Mutation":
+            # {X}{G}{U}: X contadores numa criatura minha + 'counter up to one target spell unless its controller pays mana equal to the greatest power among creatures you control'
+            if not creatures(state):
+                continue
+            g0, p0 = effective_cost(state, name, 0)
+            xr = max_x(state, g0, p0, 1, CARD_DB[name])
+            if xr < 1:
+                continue
+        g, pips = effective_cost(state, name, xr)
         if not free and not can_pay(state, g, pips, CARD_DB[name]):
             continue
         if not free:
             pay_mana(state, g, pips, CARD_DB[name])
         state.hand.remove(name)
         state.spells_cast_this_turn += 1
+        if name == "Repulsive Mutation":
+            tgt = max(creatures(state), key=lambda q: (counter_target_value(state, q), -q.uid))
+            place_counters(state, tgt, xr, source="repulsive_mutation")
+            greatest = max(power(state, q) for q in creatures(state))
+            put_card_into_graveyard(state, name, "stack")
+            commit_crime(state, "counter")
+            if o.lands - mv >= greatest:
+                return False               # o oponente paga o imposto: a magia dele resolve (os contadores ficam)
         state.counterspells_cast += 1
         state.opp_spells_countered_total += 1
-        put_card_into_graveyard(state, name, "stack")
-        commit_crime(state, "counter")                     # alvo: magia de oponente
+        opp_card_to_graveyard(state, o, "N" if noncreature else "C")      # a magia anulada vai ao cemiterio do dono
+        if name != "Repulsive Mutation":
+            put_card_into_graveyard(state, name, "stack")
+            commit_crime(state, "counter")                     # alvo: magia de oponente
         if name == "Didn't Say Please":
             mill_event(state, [(o.idx, 3)], source="didnt_say_please")
         elif name == "Arcane Denial":
@@ -2795,6 +2900,7 @@ def opponent_turn(state: GameState, o: Opp):
         return
     o.turns_taken += 1
     state.opp_turns_total += 1
+    begin_any_turn(state)
     rng = opp_rng(state, o)
     for x in state.opps:
         x.lost_life_this_turn = 0          # "this turn" = o turno ATUAL (Bloodchief Ascension olha qualquer oponente)
@@ -2858,7 +2964,9 @@ def opponent_turn(state: GameState, o: Opp):
                 if mv < power(state, pw):
                     state.pollywog_draws += 1
                     draw_cards(state, 1, source="pollywog")
-        respond_to_opp_spell(state, o, noncreature=not creature, mv=mv)
+        if not respond_to_opp_spell(state, o, noncreature=not creature, mv=mv):
+            if not creature and rng.random() < OPP_NONPERMANENT_FRACTION and not o.eliminated and not state.game_over:
+                opp_card_to_graveyard(state, o, "N")            # instantanea/feitico resolvido vai ao cemiterio
     o.tapped_last_turn = min(o.lands, int(round(o.lands * OPP_TAP_FRACTION)))
     # fim do turno do oponente: Bloodchief Ascension
     if not state.game_over:
@@ -3000,6 +3108,8 @@ def cauldron_use(state: GameState, perm: Permanent) -> bool:
     kind, what = tgt
     if kind == "opp":
         commit_crime(state, "cauldron")
+        if "C" not in what.graveyard:
+            return True                                    # o gatilho de crime (Deepmuck) mexeu no cemiterio: a habilidade e' anulada na resolucao
         what.graveyard.remove("C")
         state.cauldron_exiles_opp += 1
         state.cauldron_exiles_total += 1
@@ -3042,6 +3152,17 @@ def minamo_untap(state: GameState, target: Permanent) -> bool:
             orb_untap(state, 1)
             return True
         m.tapped = False
+    return False
+
+
+def act_minamo_henge(state: GameState) -> bool:
+    """Minamo -> The Great Henge (lendaria): '{U},{T}: Untap target legendary permanent'. Saldo de mana ~0 (Minamo deixa de dar o proprio {U}); ganho: {T}: GG + 2 de vida. So' vale com vida baixa
+    e sem Mesmeric Orb (cada desvirar me mila)."""
+    if state.life >= 25 or has_perm(state, "Mesmeric Orb"):
+        return False
+    for h in perms_named(state, "The Great Henge"):
+        if h.tapped and minamo_untap(state, h):
+            return True
     return False
 
 
@@ -3393,6 +3514,21 @@ def act_strip_mine(state: GameState) -> bool:
     return True
 
 
+def act_lantern_exile(state: GameState) -> bool:
+    """Soul-Guide Lantern, 2a ativada: '{T}, Sacrifice: Exile each opponent's graveyard.' O efeito (tirar recursao do oponente) e' estrutural; so' uso quando os cemiterios deles tem
+    material (>= 6 cartas somadas) e o oponente tem algo pra recuperar (`target_available`): conta como interacao proxy. Nao mira (nao e' crime)."""
+    ls = [p for p in perms_named(state, "Soul-Guide Lantern") if not p.tapped]
+    if not ls or len(state.hand) <= 5:           # com a mao cheia prefiro a compra (act_lantern)
+        return False
+    if sum(len(o.graveyard) for o in alive_opps(state)) < 6 or not target_available(state):
+        return False
+    state.battlefield.remove(ls[0])
+    state.interaction_plays += 1
+    for o in state.opps:
+        o.graveyard.clear()
+    return True
+
+
 def act_lantern(state: GameState) -> bool:
     ls = [p for p in perms_named(state, "Soul-Guide Lantern") if not p.tapped]
     if not ls:
@@ -3463,6 +3599,20 @@ def graveyard_cast_options_if_muldrotha(state: GameState) -> bool:
             continue
         if any(t in c.types for t in ("creature", "artifact", "enchantment", "planeswalker")):
             return True
+    return False
+
+
+def act_karns_bastion(state: GameState) -> bool:
+    """Karn's Bastion: '{4}, {T}: Proliferate.' (o proprio {T} e' custo: o terreno nao paga o {4})."""
+    for b in perms_named(state, "Karn's Bastion"):
+        if b.tapped or proliferate_value(state) < 5:
+            continue
+        b.tapped = True
+        if afford(state, 4):
+            spend(state, 4)
+            proliferate(state, "karns_bastion")
+            return True
+        b.tapped = False
     return False
 
 
@@ -3669,12 +3819,13 @@ def combat_step(state: GameState):
         if "selkie" in t and not replaced:
             draw_cards(state, pw, source="selkie")
         if "frogantua" in t and not replaced:
-            k = min(pw, max(0, len(state.library) - SELF_MILL_RESERVE)) if SELF_MILL_GUARD_ENABLED else pw
+            k = pw if (len(state.library) >= pw and safe_self_mill(state, pw)) else 0      # ruling: se a biblioteca tem menos que o dano, nao posso escolher milar (tudo ou nada)
             if k > 0:
                 res = mill_event(state, [(0, k)], source="frogantua")
-                for lc in [c for c in res.get(0, []) if is_land_card_name(c) and c in state.graveyard]:
-                    state.graveyard.remove(lc)
-                    put_land_onto_battlefield(state, lc, tapped=True, source="frogantua")
+                for lc in [c for c in res.get(0, []) if is_land_card_name(c)]:
+                    if lc in state.graveyard:                       # duplicatas / ja' movido por outro gatilho (Hedge Shredder)
+                        state.graveyard.remove(lc)
+                        put_land_onto_battlefield(state, lc, tapped=True, source="frogantua")
         if p in state.battlefield and is_modified(state, p) and has_perm(state, "Kodama of the West Tree") and not replaced:
             tgt = basic_land_search(state)
             if tgt is not None:
@@ -3726,6 +3877,7 @@ def record_turn_metrics(state: GameState):
 
 def play_turn(state: GameState):
     state.turn += 1
+    begin_any_turn(state)                       # ANTES do untap: os mills do Mesmeric Orb ja' sao deste turno
     if state.turn > 1:
         untap_my_permanents(state)
     if state.game_over:
@@ -3956,6 +4108,13 @@ def new_state(seed: int) -> GameState:
 def finalize(state: GameState):
     state.library_at_end = len(state.library)
     state.life_min = min(state.life_min, state.life)
+    t = state.table_cleared_turn
+    for n in (6, 7, 8, 9, 10):
+        setattr(state, f"cleared_T{n}", 1 if (t is not None and t <= n) else 0)
+    f = state.first_opp_elim_turn
+    state.first_elim_T6 = 1 if (f is not None and f <= 6) else 0
+    state.first_elim_T8 = 1 if (f is not None and f <= 8) else 0
+    state.self_lost = 1 if (state.decked or state.died_life) else 0
 
 
 def simulate_one(seed: int, turns: int = 12) -> GameState:
@@ -4113,4 +4272,250 @@ def act_wipe_proxy(state: GameState) -> bool:
     return False
 
 
-ACTIONS = ACTIONS[:-1] + (act_agadeem, act_smugglers, act_fallout, act_repulsive, act_removal_proxy, act_wipe_proxy) + ACTIONS[-1:]
+ACTIONS = ACTIONS[:-1] + (act_karns_bastion, act_agadeem, act_smugglers, act_fallout, act_repulsive, act_removal_proxy, act_wipe_proxy, act_minamo_henge, act_lantern_exile) + ACTIONS[-1:]
+
+
+# =========================================================
+# MODO DE RESILIENCIA (interacao de oponente) — mesmo design dos outros decks do repositorio
+# (7 categorias: remocao pontual, ataque, discard, wipe [criatura/artefato/encantamento], graveyard wipe [1x], graveyard snipe, counterspell no comandante;
+# gate de atencao por oponente; supressao de ataque pos-wipe) + as DEFESAS reais deste deck: contramagicas/Glen Elendra, Heroic Intervention,
+# Smuggler's Surprise (modo +{1}), Swiftfoot Boots (hexproof), regeneracao (Swarmyard, Yavimaya Hollow), Plaza of Heroes, Angel of Suffering (previne e mila).
+# =========================================================
+INTERACTION_SETUP_TURNS = 2
+OPPONENT_ATTENTION_CHANCE = 1.0 / 3
+POST_WIPE_ATTACK_HASTE_FACTOR = 0.15
+WIPE_TYPE_WEIGHTS = {"creature": 0.4, "artifact": 0.2, "enchantment": 0.15}
+TOTAL_WIPE_CHANCE_FACTOR = sum(WIPE_TYPE_WEIGHTS.values())
+GRAVEYARD_WIPE_CHANCE_FACTOR = 0.4
+GRAVEYARD_SNIPE_CHANCE_FACTOR = 0.5
+COUNTERSPELL_CHANCE_FACTOR = 0.5
+INTERACTION_ENGINE_PRIORITY = ["Fathom Mage", "Danny Pink", "Winding Constrictor", "Hardened Scales", "Ouroboroid", "Mirelurk Queen", "Kami of Whispered Hopes", "Muldrotha, the Gravetide",
+                               "The Gitrog Monster", "Icetill Explorer", "Syr Konrad, the Grim", "Zellix, Sanity Flayer", "Hollowmurk Siege", "Mindcrank", "Mesmeric Orb",
+                               "Psychic Corrosion", "Memory Erosion", "The Great Henge", "Palantír of Orthanc", "Agatha's Soul Cauldron", "Altar of Dementia",
+                               "Bloodchief Ascension", "Ruin Crab", "Altar of the Brood", "Deepmuck Desperado"]
+OPPONENT_ATTACKER_PROFILES = [("Knight Token", 2), ("Saproling Token", 1), ("Vampire Token", 1), ("Zombie Token", 2), ("Soldier Token", 1), ("Goblin Token", 1), ("Elemental Token", 3)]
+
+
+def interaction_chance(state: GameState) -> float:
+    board_impact = sum(1 for p in state.battlefield if "land" not in p.card.types)
+    return min(0.10 + 0.03 * board_impact, 0.75)
+
+
+def _prot(state: GameState, kind: str):
+    state.protection_used_total += 1
+    state.protections_by_kind[kind] = state.protections_by_kind.get(kind, 0) + 1
+
+
+def regenerate_sources(state: GameState) -> list:
+    """Swarmyard ({T}: regenerar Inseto/Rato/Aranha/Esquilo — Mothman e Icetill sao Insetos) e Yavimaya Hollow ({G},{T}: regenerar qualquer criatura)."""
+    out = []
+    for p in perms_named(state, "Swarmyard"):
+        if not p.tapped:
+            out.append(("swarmyard", p))
+    for p in perms_named(state, "Yavimaya Hollow"):
+        if not p.tapped and afford(state, 0, (frozenset("G"),), ignore_reserve=True):
+            out.append(("hollow", p))
+    return out
+
+
+def try_protect_from_destroy(state: GameState, victims: list, spell_mv: int, noncreature: bool = True) -> set:
+    """Devolve o conjunto de uids que SOBREVIVEM a um 'destroy' do oponente: 1) anular a magia; 2) Heroic Intervention; 3) Smuggler's (+{1}): so' poder >= 4;
+    4) Plaza of Heroes: 1 lendaria; 5) regeneracao (Swarmyard so' Inseto; Hollow qualquer)."""
+    saved = set()
+    if respond_to_opp_spell(state, alive_opps(state)[0] if alive_opps(state) else state.opps[0], noncreature=noncreature, mv=max(spell_mv, COUNTER_MIN_MV)):
+        _prot(state, "counter")
+        return {p.uid for p in victims}
+    if "Heroic Intervention" in state.hand:
+        g, pips = effective_cost(state, "Heroic Intervention")
+        if can_pay(state, g, pips, CARD_DB["Heroic Intervention"]):
+            pay_mana(state, g, pips, CARD_DB["Heroic Intervention"])
+            state.hand.remove("Heroic Intervention")
+            put_card_into_graveyard(state, "Heroic Intervention", "stack")
+            _prot(state, "heroic_intervention")
+            return {p.uid for p in victims}
+    if "Smuggler's Surprise" in state.hand and any(is_creature(p) and power(state, p) >= 4 for p in victims):
+        G = frozenset("G")
+        if can_pay(state, 1, (G,), CARD_DB["Smuggler's Surprise"]):
+            pay_mana(state, 1, (G,), CARD_DB["Smuggler's Surprise"])
+            state.hand.remove("Smuggler's Surprise")
+            put_card_into_graveyard(state, "Smuggler's Surprise", "stack")
+            _prot(state, "smugglers_surprise")
+            return {p.uid for p in victims if is_creature(p) and power(state, p) >= 4}
+    for pl in perms_named(state, "Plaza of Heroes"):
+        if not pl.tapped and afford(state, 3, (), ignore_reserve=True):
+            leg = [p for p in victims if eff_card(p).legendary and is_creature(p)]
+            if leg:
+                best = max(leg, key=lambda p: (counter_target_value(state, p), -p.uid))
+                pl.tapped = True
+                spend(state, 3, ())
+                state.battlefield.remove(pl)                      # {3},{T}, exile this land
+                saved.add(best.uid)
+                _prot(state, "plaza")
+                break
+    for kind, src in regenerate_sources(state):
+        if kind == "swarmyard":
+            cands = [p for p in victims if "Insect" in eff_card(p).subtypes and p.uid not in saved and is_creature(p)]
+        else:
+            cands = [p for p in victims if is_creature(p) and p.uid not in saved]
+        if not cands:
+            continue
+        tgt = max(cands, key=lambda p: (counter_target_value(state, p), -p.uid))
+        if kind == "hollow":
+            src.tapped = True
+            spend(state, 0, (frozenset("G"),))
+        else:
+            src.tapped = True
+        state.regenerations_used += 1
+        saved.add(tgt.uid)
+        _prot(state, "regenerate")
+    return saved
+
+
+def try_smart_opponent_removal(state: GameState) -> Optional[str]:
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    target_name = next((n for n in INTERACTION_ENGINE_PRIORITY if any(eff_name(p) == n for p in state.battlefield)), None)
+    if target_name is None:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state):
+        return None
+    perm = next(p for p in state.battlefield if eff_name(p) == target_name)
+    # Swiftfoot Boots: a criatura equipada tem hexproof (remocao pontual nao pode mira-la)
+    if any(q.attached_to == perm.uid for q in state.battlefield if "boots" in q.card.tags):
+        _prot(state, "boots_hexproof")
+        return None
+    if is_creature(perm):
+        saved = try_protect_from_destroy(state, [perm], spell_mv=3)
+    else:
+        saved = try_protect_from_destroy(state, [perm], spell_mv=3)
+    if perm.uid in saved:
+        return None
+    remove_permanent(state, perm, "opponent_removal")
+    state.smart_removals_total += 1
+    return target_name
+
+
+def try_smart_opponent_attack(state: GameState) -> Optional[str]:
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    chance = interaction_chance(state) * (POST_WIPE_ATTACK_HASTE_FACTOR if state.wiped_this_round else 1.0)
+    if state.interaction_rng.random() >= chance:
+        return None
+    name, pw = state.interaction_rng.choice(OPPONENT_ATTACKER_PROFILES)
+    state.smart_attacks_taken_total += 1
+    state.smart_attack_damage_total += pw
+    if has_perm(state, "Angel of Suffering"):
+        # "If damage would be dealt to you, prevent that damage and mill twice that many cards."
+        state.angel_prevented_total += pw
+        mill_event(state, [(0, 2 * pw)], source="angel_of_suffering")
+    else:
+        lose_life_self(state, pw, "opponent_attack")
+    return name
+
+
+def try_smart_opponent_discard(state: GameState) -> Optional[str]:
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS or not state.hand:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state):
+        return None
+    target = state.interaction_rng.choice(state.hand)
+    state.hand.remove(target)
+    put_card_into_graveyard(state, target, "hand")
+    state.smart_discards_total += 1
+    return target
+
+
+def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * TOTAL_WIPE_CHANCE_FACTOR:
+        return None
+    candidates = {"creature": [p for p in state.battlefield if is_creature(p)],
+                  "artifact": [p for p in state.battlefield if is_artifact(p) and "land" not in p.card.types],
+                  "enchantment": [p for p in state.battlefield if "enchantment" in eff_card(p).types and "land" not in p.card.types]}
+    available = [t for t in ("creature", "artifact", "enchantment") if candidates[t]]
+    if not available:
+        return None
+    wipe_type = state.interaction_rng.choices(available, weights=[WIPE_TYPE_WEIGHTS[t] for t in available])[0]
+    victims = list(candidates[wipe_type])
+    saved = try_protect_from_destroy(state, victims, spell_mv=4)
+    names = [eff_name(p) for p in victims if p.uid not in saved and p in state.battlefield]
+    kill_group(state, [p for p in victims if p.uid not in saved], "opponent_wipe")
+    if wipe_type == "creature":
+        state.smart_wipes_total += 1
+        state.wiped_this_round = True
+    elif wipe_type == "artifact":
+        state.smart_artifact_wipes_total += 1
+    else:
+        state.smart_enchantment_wipes_total += 1
+    return names
+
+
+def try_smart_opponent_graveyard_wipe(state: GameState) -> Optional[list]:
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS or state.graveyard_wipe_used or not state.graveyard:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * GRAVEYARD_WIPE_CHANCE_FACTOR:
+        return None
+    exiled = list(state.graveyard)
+    state.graveyard.clear()                       # exilio em massa: NAO dispara o gatilho do Kozilek (nao vai ao cemiterio) e tira o combustivel de Muldrotha/Icetill/Six
+    state.graveyard_wipe_used = True
+    state.smart_graveyard_hate_total += 1
+    graveyard_leave(state, exiled)
+    return exiled
+
+
+def try_smart_opponent_graveyard_snipe(state: GameState) -> Optional[str]:
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    cands = [c for c in state.graveyard if "creature" in CARD_DB[c].types and not CARD_DB[c].token]
+    if not cands or state.interaction_rng.random() >= interaction_chance(state) * GRAVEYARD_SNIPE_CHANCE_FACTOR:
+        return None
+    target = max(cands, key=lambda c: (CARD_DB[c].mv, c))
+    state.graveyard.remove(target)
+    state.smart_graveyard_snipes_total += 1
+    graveyard_leave(state, [target])
+    return target
+
+
+def try_smart_opponent_counter(state: GameState) -> bool:
+    """Counterspell que mira a conjuracao do comandante (o motor inteiro depende do Mothman resolver)."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return False
+    if state.interaction_rng.random() >= interaction_chance(state) * COUNTERSPELL_CHANCE_FACTOR:
+        return False
+    state.smart_counters_total += 1
+    return True
+
+
+def try_smart_opponent_turn(state: GameState):
+    if state.turn > INTERACTION_SETUP_TURNS and state.interaction_rng.random() >= OPPONENT_ATTENTION_CHANCE:
+        return
+    try_smart_opponent_wipe(state)
+    try_smart_opponent_attack(state)
+    try_smart_opponent_graveyard_wipe(state)
+    try_smart_opponent_graveyard_snipe(state)
+    try_smart_opponent_removal(state)
+    try_smart_opponent_discard(state)
+
+
+def simulate_one_with_interaction(seed: int, turns: int = 12) -> GameState:
+    state = new_state(seed)
+    state.interaction_rng = random.Random(seed + 999_999)
+    for _ in range(turns):
+        play_turn(state)
+        if state.game_over:
+            break
+        state.wiped_this_round = False
+        for o in list(state.opps):
+            if o.eliminated:
+                continue
+            opponent_turn(state, o)
+            if state.game_over:
+                break
+            try_smart_opponent_turn(state)
+            if state.game_over:
+                break
+        if state.game_over:
+            break
+    finalize(state)
+    return state

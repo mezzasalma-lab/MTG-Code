@@ -1,0 +1,57 @@
+====================================================================================================
+1) ENTRADA DE CADA TERRENO x ORACULO (campo vazio, vida 40) — esperado derivado do TEXTO do oraculo
+  OK  Agadeem's Awakening // Agadeem, the Undercrypt          esperado_virado=False simulador_virado=False | agadeem's awakening ({x}{b}{b}{b}): return from your graveyard to the battlefield any numb
+  OK  Bojuka Bog                                              esperado_virado=True  simulador_virado=True  | this land enters tapped. / when this land enters, exile target player's graveyard. / {t}: add 
+  OK  Boseiju, Who Endures                                    esperado_virado=False simulador_virado=False | {t}: add {g}. / channel — {1}{g}, discard this card: destroy target artifact, enchantment, o
+  OK  Breeding Pool                                           esperado_virado=False simulador_virado=False | ({t}: add {g} or {u}.) / as this land enters, you may pay 2 life. if you don't, it enters ta
+  OK  Command Tower                                           esperado_virado=False simulador_virado=False | {t}: add one mana of any color in your commander's color identity.
+  OK  Fabled Passage                                          esperado_virado=False simulador_virado=False | {t}, sacrifice this land: search your library for a basic land card, put it onto the battl
+  OK  Forest                                                  esperado_virado=False simulador_virado=False | ({t}: add {g}.)
+  OK  Island                                                  esperado_virado=False simulador_virado=False | ({t}: add {u}.)
+  OK  Minamo, School at Water's Edge                          esperado_virado=False simulador_virado=False | {t}: add {u}. / {u}, {t}: untap target legendary permanent.
+  OK  Misty Rainforest                                        esperado_virado=False simulador_virado=False | {t}, pay 1 life, sacrifice this land: search your library for a forest or island card, put
+  OK  Morphic Pool                                            esperado_virado=False simulador_virado=False | this land enters tapped unless you have two or more opponents. / {t}: add {u} or {b}.
+  OK  Overgrown Tomb                                          esperado_virado=False simulador_virado=False | ({t}: add {b} or {g}.) / as this land enters, you may pay 2 life. if you don't, it enters ta
+  OK  Plaza of Heroes                                         esperado_virado=False simulador_virado=False | {t}: add {c}. / {t}: add one mana of any color. spend this mana only to cast a legendary spe
+  OK  Polluted Delta                                          esperado_virado=False simulador_virado=False | {t}, pay 1 life, sacrifice this land: search your library for an island or swamp card, put
+  OK  Rejuvenating Springs                                    esperado_virado=False simulador_virado=False | this land enters tapped unless you have two or more opponents. / {t}: add {g} or {u}.
+  OK  Shifting Woodland                                       esperado_virado=True  simulador_virado=True  | this land enters tapped unless you control a forest. / {t}: add {g}. / delirium — {2}{g}{g}: t
+  OK  Strip Mine                                              esperado_virado=False simulador_virado=False | {t}: add {c}. / {t}, sacrifice this land: destroy target land.
+  OK  Swamp                                                   esperado_virado=False simulador_virado=False | ({t}: add {b}.)
+  OK  Swarmyard                                               esperado_virado=False simulador_virado=False | {t}: add {c}. / {t}: regenerate target insect, rat, spider, or squirrel. (the next time it w
+  OK  Takenuma, Abandoned Mire                                esperado_virado=False simulador_virado=False | {t}: add {b}. / channel — {3}{b}, discard this card: mill three cards, then return a creatur
+  OK  Undergrowth Stadium                                     esperado_virado=False simulador_virado=False | this land enters tapped unless you have two or more opponents. / {t}: add {b} or {g}.
+  OK  Urza's Saga                                             esperado_virado=False simulador_virado=False | (as this saga enters and after your draw step, add a lore counter. sacrifice after iii.) / i
+  OK  Verdant Catacombs                                       esperado_virado=False simulador_virado=False | {t}, pay 1 life, sacrifice this land: search your library for a swamp or forest card, put 
+  OK  Waterlogged Grove                                       esperado_virado=False simulador_virado=False | {t}, pay 1 life: add {g} or {u}. / {1}, {t}, sacrifice this land: draw a card.
+  OK  Watery Grave                                            esperado_virado=False simulador_virado=False | ({t}: add {u} or {b}.) / as this land enters, you may pay 2 life. if you don't, it enters ta
+  OK  Yavimaya Hollow                                         esperado_virado=False simulador_virado=False | {t}: add {c}. / {g}, {t}: regenerate target creature.
+  OK  Zagoth Triome                                           esperado_virado=True  simulador_virado=True  | ({t}: add {b}, {g}, or {u}.) / this land enters tapped. / cycling {3} ({3}, discard this card:
+  terrenos conferidos: 27 (> 0), divergencias: 0
+====================================================================================================
+1b) CONDICOES: Shifting Woodland com/sem Floresta; slowlands com 3/2/1 oponentes; choques com vida 40 e vida 8
+  Woodland com Forest virado? False (esperado False)
+  Woodland com Triome (subtipo Forest) virado? False (esperado False: Triome e' Swamp Forest Island)
+  Woodland campo vazio virado? True (esperado True)
+  Morphic Pool com 3 oponente(s) vivo(s) virado? False (esperado False)
+  Morphic Pool com 2 oponente(s) vivo(s) virado? False (esperado False)
+  Morphic Pool com 1 oponente(s) vivo(s) virado? True (esperado True)
+  Overgrown Tomb vida 40: virado=False, vida depois=38
+  Overgrown Tomb vida 8: virado=True, vida depois=8
+====================================================================================================
+2) FETCH REAL: sacrifica, 1 de vida (Fabled Passage nao), busca por SUBTIPO, thinning, vai ao cemiterio
+  Misty Rainforest     quebrou e buscou em 40/40 partidas (esperado: todas as com alvo na biblioteca)
+  Polluted Delta       quebrou e buscou em 40/40 partidas (esperado: todas as com alvo na biblioteca)
+  Verdant Catacombs    quebrou e buscou em 40/40 partidas (esperado: todas as com alvo na biblioteca)
+  Fabled Passage       quebrou e buscou em 40/40 partidas (esperado: todas as com alvo na biblioteca)
+====================================================================================================
+3) JOGAR TERRENO NAO E' MAGIA: spells_cast_this_turn nao pode mudar em play_land_phase
+  100 partidas, 0 contagens indevidas
+====================================================================================================
+4) LANDFALL EM TODO PONTO DE ENTRADA: total de terrenos que entram x chamadas de landfall (300 partidas, 2 modos)
+  terrenos entraram: 7299 (> 0) | chamadas de landfall: 7299 | por origem: {'play': 4913, 'fetch': 608, 'kodama': 520, 'hedge_shredder': 400, 'ramp': 345, 'fabled_passage': 208, 'frogantua': 199, 'freestrider': 106}
+  OK: entradas == chamadas
+====================================================================================================
+5) ESTADO POR NOME x POR INSTANCIA: o simulador marca terreno virado por uid/atributo do Permanent (nao por nome)?
+  ocorrencias de conjunto de NOMES de terrenos virados: 0 [] (0 = o estado vive em Permanent.tapped, por instancia)
+  Permanent.tapped existe e e' por instancia: True
