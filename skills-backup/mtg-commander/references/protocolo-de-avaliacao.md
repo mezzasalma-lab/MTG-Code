@@ -22,6 +22,8 @@ Nunca "essa carta é boa/forte" isolado. Na ordem:
    nome de cada carta envolvida (a que entra e cada candidata a sair).
 3. **Commander Spellbook ANTES e DEPOIS** de cada troca (`POST https://backend.commanderspellbook.com/find-my-combos`, comandante + lista) com **controle positivo**
    (tirar uma carta que está em combos e ver a resposta mudar). Combo que some é custo; combo que aparece (inclusive tutor que monta combo existente) é ganho e pode mudar o Bracket.
+   **A API ignora, sem erro, nome de carta que não reconhece** (achado de 2026-10-05, Mothman): resolva cada nome antes via `GET /cards/?q=<nome>` (2 faces: `Frente // Verso`), grave se foi reconhecido e rode também um
+   **controle de corte** (tirar peça de combo da lista tem de fazê-lo sumir); sem isso, "nenhum combo novo" pode ser vácuo.
 4. **Conferir se o simulador executa o combo.** Se não, o valor da peça no A/B é piso e isso é candidato a fix no simulador.
 5. **Enumerar POR SCRIPT** (`type_line` + `oracle_text` ao vivo) as cartas da lista que satisfazem cada condição da carta (tipo de criatura, Treasure, "legendary", "artifact"…). Changeling/Kindred contam em
    toda zona. Depois da varredura por texto, rodar uma 2ª por **alvo** (`destroy target`, `damage to target`) e por **modo alternativo** (overload, kicker, escape): a regex de texto perde efeito escondido.
