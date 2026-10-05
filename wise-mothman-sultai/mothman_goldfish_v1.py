@@ -3716,6 +3716,8 @@ def pick_attackers(state: GameState) -> list:
 def assign_targets(state: GameState, attackers: list) -> dict:
     """Cada atacante -> oponente. Gulosamente: do maior poder pro menor, no oponente de menor vida restante que ainda nao esta coberto; Zumbis (Undead Alchemist) vao pro de maior biblioteca."""
     al = alive_opps(state)
+    if not al:
+        return {}
     rem = {o.idx: o.life for o in al}
     out = {}
     zomb = has_perm(state, "Undead Alchemist")
@@ -3776,6 +3778,8 @@ def combat_step(state: GameState):
         if state.game_over:
             return
     attackers = [p for p in attackers if p in state.battlefield]
+    if state.game_over or not alive_opps(state):
+        return                                  # os gatilhos de ataque (Konrad, mill) podem ter eliminado a mesa antes do dano
     for h in perms_named(state, "Hollowmurk Siege"):
         if h.ctr.get("abzan") and attackers:
             best = max(attackers, key=lambda q: (counter_target_value(state, q), -q.uid))
