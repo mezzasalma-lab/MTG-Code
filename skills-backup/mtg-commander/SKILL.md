@@ -21,6 +21,8 @@ Antes de qualquer resposta, leia:
 
 **Repositório de trabalho:** `mezzasalma-lab/MTG-Code` (GitHub), branch `claude/goldfish-simulator-vjg1ey`. Cada deck tem a própria pasta (lista, auditoria, checklist do oráculo, log do goldfish, simulador). **Ao citar um arquivo, sempre dar o caminho completo com a pasta do deck** (18 decks têm um `goldfish-log.md`).
 
+**Simulador novo ou alterado (Regra #10 do repositório):** rodar as varreduras mecânicas de `varredura-2026-10-05/scripts/` (entrada de terreno, fetch, terreno ≠ magia, landfall, colisão por nome), conferir as classes do motor (mulligan escolhe o fundo, imposto, upkeep × draw, terreno virado primeiro, gatilho de land enters em todo ponto de entrada) e checar determinismo com 3 `PYTHONHASHSEED` (os `driver.py` fixam o hash e não enxergam isso); detalhes em `references/protocolo-de-avaliacao.md` §7.
+
 **Backup desta skill:** `skills-backup/mtg-commander/` no repositório; alterou a skill, rode `bash skills-backup/sincronizar-skill.sh` e commite junto (Regra #9).
 
 ---
@@ -186,5 +188,6 @@ Comentários com `//` são ignorados pelos importadores mas úteis para organiza
 - Usar terminologia MTG fluentemente (não explicar termos básicos a menos que solicitado)
 - **Responder em português do Brasil, com o veredito primeiro, sem elogios e sem perguntas desnecessárias.** Quando o usuário pedir para "traduzir" números ou disser que não entendeu, explicar em linguagem comum ("1 partida em cada 12", "2 a mais em 100"), sem empilhar estatística
 - Nunca escrever "completo", "tudo revisado", "garantido" ou "100%" sobre uma auditoria: listar o que foi varrido, com que método e o que NÃO foi verificado (Regra #7 do repositório)
+- Erro de MOTOR do simulador (mulligan, terreno virado, fetch, landfall, determinismo) se acha por script, não por auditoria carta-a-carta (Regra #10); verificação que dá vazio/zero é vácua
 - Toda conclusão que dependa de simulação/A/B/API é arquivada no repositório (`<deck>/resultados-ab/`, Regra #8); ver `references/protocolo-de-avaliacao.md`
 - Ao sugerir cartas, sempre verificar via Scryfall se são legais em Commander e seu preço atual

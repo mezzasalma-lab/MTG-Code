@@ -1,8 +1,8 @@
 # Protocolo de avaliação de cartas, simuladores e resultados (usuário mezzasalma)
 
-Destilado operacional das Regras #1–#9 do `CLAUDE.md` do repositório `mezzasalma-lab/MTG-Code` (texto integral em
+Destilado operacional das Regras #1–#10 do `CLAUDE.md` do repositório `mezzasalma-lab/MTG-Code` (texto integral em
 `references/CLAUDE-repositorio.md` desta skill) e das preferências que o usuário repetiu. **Em caso de dúvida, vale o texto integral.**
-Atualizado em 2026-09-30.
+Atualizado em 2026-10-05 (Regra #10: varredura mecânica de erros do motor).
 
 ## 0. Onde estão as coisas (repositório `mezzasalma-lab/MTG-Code`, branch de trabalho `claude/goldfish-simulator-vjg1ey`)
 
@@ -72,7 +72,20 @@ comando que reproduz), `resumos/`, `orquestracao/`, `SHA256SUMS`, `descomprimir.
 
 Alterou esta skill (ou um espelho): `bash skills-backup/sincronizar-skill.sh` e commitar no mesmo commit (README em `skills-backup/`).
 
-## 7. Erros que já cometi e o que fiz para não repetir (checklist rápido)
+## 7. Simulador novo ou alterado — varredura mecânica de erros do MOTOR (Regra #10)
+
+Auditoria carta-a-carta não pega erro de motor (a varredura de 2026-10-05 achou erro em 14 dos 18 decks e nenhum seria pego assim). Antes de declarar pronto:
+1. **Scripts** de `varredura-2026-10-05/scripts/` (o `LEIAME.md` da pasta lista os falsos positivos já verificados): `audit_entrada.py` / `audit_entrada2.py` (terreno entra virado quando o oráculo manda; "unless you control…" por
+   SUBTIPO), `audit_fetch.py` (sacrifício, 1 de vida, busca por subtipo, thinning), `audit_terreno_nao_e_magia.py`, `audit_landfall.py` (entradas × chamadas de landfall), `colisao_nome.py` (estado por nome). Ler cada divergência à mão.
+2. **Classes do motor:** mulligan ESCOLHE o fundo (CR 103.5); imposto do comandante no cast (CR 903.8); upkeep antes do draw; terreno virado jogado primeiro em T1/T2 quando não custa jogada (ensaio a seco + modo GHOST);
+   fetch real (inclusive a devolvida do cemitério); "whenever a land enters" em TODO ponto de entrada (play_land, fetch, ramp, blink, saga).
+3. **Determinismo:** os `driver.py` fixam `PYTHONHASHSEED=0` e NÃO enxergam dependência de hash; rodar `det_check.sh`/`det_wide2.sh` (3 hash seeds × 1.500 sementes × 2 modos) quando mexer em iteração de `set`/`dict` de strings.
+4. **Verificação vazia é vácua:** conferir que contagens são > 0 (smoke de simulador baseado em dict contava 0 cartas); tabela publicada = função só do bruto (`driver.py sum` × re-execução); conferir `Traceback` no log, não o `rc`
+   (`$(date)` no mesmo `echo` zera `$?`).
+5. **Operação:** verificação completa re-simula o arquivo VIVO (não editar o simulador enquanto roda); commitar e enviar cada deck quando fecha (o contêiner pode reiniciar).
+Não coberto (declarar na Regra #7): conjuração fora da mão, sacrifício × destroy, `_sick` agregados, fórmulas achatadas, choque que não deduz vida (Kutzil, Edgar), oponente real.
+
+## 8. Erros que já cometi e o que fiz para não repetir (checklist rápido)
 
 | erro | correção |
 |---|---|
@@ -84,3 +97,6 @@ Alterou esta skill (ou um espelho): `bash skills-backup/sincronizar-skill.sh` e 
 | declarei "auditoria completa" e apareceram bugs | Regra #7: escopo verificado e não verificado |
 | citei `goldfish-log.md` sem pasta e abriu o da Azula | caminho completo sempre |
 | dados brutos só na pasta temporária | Regra #8: arquivar no repositório |
+| mulligan devolvia o fundo por sorteio; terreno virado nunca jogado primeiro; fetch ficava como dual; gatilho de land enters só no `play_land` (14 de 18 decks) | Regra #10: varrer o MOTOR por script em todo simulador, não só as cartas |
+| `driver.py` com `PYTHONHASHSEED=0` escondia dependência de hash (Thranduil: 14/1.500 e 36/1.500 sementes) | `det_check.sh` com 3 hash seeds antes de declarar o simulador determinístico |
+| verificação "passou" com 0 cartas contadas / tabela em memória ≠ tabela dos brutos | número vazio ou zero é vácuo: conferir > 0 e comparar `sum` com a re-execução |

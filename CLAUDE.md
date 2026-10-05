@@ -470,3 +470,76 @@ arquivos espelhados (`CLAUDE.md`, `references/user-standing-rules.md`,
 rodar `bash skills-backup/sincronizar-skill.sh` (modos e restauração em
 `skills-backup/README.md`) e commitar o resultado junto.** As cópias não podem
 divergir.
+
+## Regra #10 (obrigatória): classes de erro SISTÊMICAS são varridas por script em TODO simulador (novo ou alterado), e o determinismo é checado com `PYTHONHASHSEED` variável
+
+Pedido do usuário em 2026-10-05: *"Com base nos erros encontrados nas ultimas
+revisões, reanálise todos os outros decks em busca de erros semelhantes, e os
+corrija"*; depois de eu propor esta regra no relatório final: *"Sim, adicione a
+Regra #10 e sincronize a skill"*. **Achado real:** a varredura achou erro de
+simulador em 14 dos 18 decks, e **nenhum** teria sido pego por auditoria
+carta-a-carta (Regra #1), porque o erro não mora na carta: mora no motor
+(mulligan que devolvia o fundo por sorteio, terreno que entra virado nunca
+jogado primeiro, terreno que entra desvirado contra o oráculo, fetchland que
+ficava em campo como dual, gatilho de "a land enters" ligado só em parte dos
+pontos de entrada, resultado que mudava com `PYTHONHASHSEED`). Mesma lição das
+Regras #3 e #6, um nível acima: o conceito compartilhado é a **mecânica do
+motor**, não a função de uma carta.
+
+**Daqui pra frente, antes de declarar pronto qualquer simulador novo ou
+alterado (deck novo, carta nova com efeito de terreno/mulligan/fase, mudança
+no `play_land`/`play_turn`/mulligan):**
+1. **Rodar as varreduras mecânicas** de `varredura-2026-10-05/scripts/`
+   (`LEIAME.md` da pasta explica cada uma e lista os falsos positivos já
+   verificados): `audit_entrada.py` e `audit_entrada2.py` (terreno entra virado
+   quando o oráculo manda; condições "unless you control…" por SUBTIPO),
+   `audit_fetch.py` (sacrifício, 1 de vida, busca por subtipo, thinning),
+   `audit_terreno_nao_e_magia.py` (jogar terreno não conta como magia/storm),
+   `audit_landfall.py` (todo terreno que entra dispara o landfall do deck),
+   `colisao_nome.py` (estado por NOME em vez de por instância). Ler à mão cada
+   divergência antes de corrigir ou de classificar como falso positivo.
+2. **Conferir a lista de classes do motor** (todas já tiveram erro real): o
+   mulligan ESCOLHE o fundo (CR 103.5); o imposto do comandante conta no cast,
+   inclusive contra-atacado (CR 903.8); upkeep antes do draw; em T1/T2 o terreno
+   que entra virado é jogado primeiro quando não custa desenvolvimento (ensaio a
+   seco com cópia profunda, modo GHOST provando que o ensaio não tem efeito
+   colateral); fetch real, **inclusive a fetch devolvida do cemitério**; todo
+   gatilho de "whenever a land enters" (Field of the Dead, landfall) em TODO
+   ponto de entrada (`play_land`, fetch, ramp, blink, saga), não só no
+   `play_land`.
+3. **Determinismo entre processos.** Os `driver.py` das pastas de resultados
+   fixam `PYTHONHASHSEED=0` (senão nada reproduz byte a byte), e por isso **não
+   enxergam** dependência de ordem de hash. A única checagem que enxerga é
+   `det_check.sh`/`det_wide2.sh`: ≥ 3 `PYTHONHASHSEED` × ≥ 1.500 sementes × 2
+   modos, campo a campo, no estado final. Rodar sempre que o código mudar
+   iteração de `set`/`dict`/`frozenset` de strings; iterar `set` de `str` com a
+   ordem importando é bug (usar ordem do cemitério/lista/`sorted`). Medido: o
+   Thranduil mudava de resultado em 14/1.500 (padrão) e 36/1.500 (resiliência)
+   sementes entre processos.
+4. **Verificação que dá vazio ou zero é vácua: conferir que o número é > 0.**
+   Achados desta rodada: o smoke contava 0 cartas nos simuladores baseados em
+   dict (sem `BASE_LIBRARY`); a tabela do A/B calculada em memória usava só os
+   campos da partida 0 e divergia da refeita dos brutos (12/16 no Captain
+   Storm); um inteiro astronômico (`10^212`) estourava a média. **A tabela
+   publicada tem que ser função só do bruto arquivado** (comparar `driver.py sum`
+   com a re-execução), e o resultado de uma bateria longa se confere pelo
+   `Traceback` no `log_driver.txt`, nunca pelo `rc` de um `echo` (`$(date)` no
+   mesmo `echo` zera o `$?`).
+5. **Cada correção** segue a Regra #1 (chave, bit-identidade com a chave
+   desligada em 20.000 × 2 modos, regressão 20.000 × 2 modos com 0 exceções, A/B
+   pareado 2.000 e 10.000, teste dirigido), a Regra #7 (declarar o que foi e o
+   que NÃO foi varrido) e a Regra #8 (arquivar). Verificação completa
+   (`verificar_reproducao.sh --tudo`) re-simula o arquivo VIVO: **não editar o
+   simulador enquanto ela roda**.
+6. **Rodada longa em segundo plano:** o contêiner pode reiniciar e derrubar tudo
+   (aconteceu em 2026-10-05, 15:14 UTC). Comitar e enviar cada deck assim que a
+   verificação dele fecha, não deixar tudo pro fim; scripts de espera usam arquivo
+   de sinal ou PID, nunca `pgrep -f`/`pkill -f` por nome de script.
+
+**O que esta regra NÃO cobre (continua sujeito à Regra #7, varrer e declarar):**
+caminhos de conjuração fora da mão e "whenever you cast"; sacrifício × destroy;
+contadores `_sick` agregados; fórmulas dinâmicas achatadas; combinação de
+condições de entrada de terreno; choque que não deduz os 2 de vida (Kutzil e
+Edgar confirmados; vida só importa onde algo a lê); estado de oponente real.
+Esta lista é o piso, não o teto: classe nova achada vira script em
+`varredura-2026-10-05/scripts/` e linha nesta regra.

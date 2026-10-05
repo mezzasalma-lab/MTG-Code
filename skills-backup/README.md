@@ -1,7 +1,7 @@
 # Backup versionado da skill `mtg-commander`
 
 Cópia de segurança da skill **`mtg-commander`** (especialista em Commander/EDH, com as regras permanentes do usuário e o protocolo de avaliação de cartas/simuladores).
-Criada e atualizada em **2026-09-30**. Regra de manutenção: Regra #9 do `CLAUDE.md` (raiz do repositório).
+Criada em **2026-09-30**; atualizada em **2026-10-05** (Regra #10). Regra de manutenção: Regra #9 do `CLAUDE.md` (raiz do repositório).
 
 > **Este backup é a cópia durável.** A pasta viva da skill (`/root/.claude/skills/synced/<id>/mtg-commander/`) é sincronizada com a conta do usuário, mas
 > **alterações feitas nela durante uma sessão não são gravadas na conta** e o próximo sync pode sobrescrevê-las. Para a skill da conta refletir a versão
@@ -13,10 +13,10 @@ Criada e atualizada em **2026-09-30**. Regra de manutenção: Regra #9 do `CLAUD
 |---|---|
 | `mtg-commander/SKILL.md` | a skill (frontmatter `name`/`description` + fluxo de trabalho, Scryfall, brackets, checklist de análise, tom) |
 | `mtg-commander/references/commander-rules.md`, `archetypes.md`, `scryfall-api.md` | referências originais da skill (inalteradas) |
-| `mtg-commander/references/user-standing-rules.md` | **regras permanentes do usuário** (20 seções; cópia idêntica de `references/user-standing-rules.md` do repositório) |
-| `mtg-commander/references/protocolo-de-avaliacao.md` | **novo:** protocolo de avaliação de cartas, simuladores, A/B e relatório (destilado das Regras #1–#9) e checklist de erros já cometidos |
+| `mtg-commander/references/user-standing-rules.md` | **regras permanentes do usuário** (21 seções; cópia idêntica de `references/user-standing-rules.md` do repositório) |
+| `mtg-commander/references/protocolo-de-avaliacao.md` | **novo:** protocolo de avaliação de cartas, simuladores, A/B e relatório (destilado das Regras #1–#10) e checklist de erros já cometidos |
 | `mtg-commander/references/goldfish-sim-card-rules.md`, `pod-simulator-design.md` | lições de processo dos simuladores e design do motor de mesa (cópias idênticas de `references/` do repositório) |
-| `mtg-commander/references/CLAUDE-repositorio.md` | texto integral das regras do repositório (cópia idêntica do `CLAUDE.md` da raiz, Regras #1–#9) |
+| `mtg-commander/references/CLAUDE-repositorio.md` | texto integral das regras do repositório (cópia idêntica do `CLAUDE.md` da raiz, Regras #1–#10) |
 | `sincronizar-skill.sh` | mantém skill viva, backup e espelhos iguais (modos abaixo) |
 | `SHA256SUMS` | hashes de todos os arquivos de `mtg-commander/` (`cd skills-backup && sha256sum -c SHA256SUMS`) |
 
@@ -29,6 +29,15 @@ Estado anterior da skill (2026-09-26): `SKILL.md` + 3 referências. Agora:
 - Restauradas as referências que o repositório declarava como "cópia principal na skill" e que **não existiam** na pasta viva: `user-standing-rules.md` e `goldfish-sim-card-rules.md` (mais
   `pod-simulator-design.md`).
 - Novos: `protocolo-de-avaliacao.md` e `CLAUDE-repositorio.md`.
+
+## O que mudou na atualização de 2026-10-05 (Regra #10)
+
+- `CLAUDE.md` (e o espelho `references/CLAUDE-repositorio.md`): **Regra #10** — classes de erro SISTÊMICAS do motor do simulador (mulligan, terreno virado primeiro, entrada de terreno contra o oráculo, fetch real,
+  gatilho de "a land enters" em todo ponto de entrada, determinismo com `PYTHONHASHSEED`) são varridas por script em todo simulador novo ou alterado (`varredura-2026-10-05/scripts/`).
+- `references/user-standing-rules.md`: nova seção 21 (espelha a Regra #10).
+- `mtg-commander/references/protocolo-de-avaliacao.md`: nova §7 (varredura mecânica do motor) e 3 linhas no checklist de erros (agora §8).
+- `mtg-commander/SKILL.md`: parágrafo "Simulador novo ou alterado" e uma linha em "Tom e abordagem".
+- **Aviso (Regra #9):** a pasta viva da skill é sincronizada com a conta do usuário, mas alterações feitas nela durante uma sessão NÃO são gravadas na conta; este backup é a cópia durável e a skill da conta só reflete a mudança se for reinstalada a partir daqui.
 
 ## Como restaurar / reinstalar
 

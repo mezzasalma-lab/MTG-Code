@@ -806,6 +806,20 @@ Pedido do usuário (2026-09-30): *"Atualize a skill e faça uma cópia dela no G
 
 ---
 
+## 21. Classes de erro SISTÊMICAS do motor do simulador são varridas por script em todo simulador novo/alterado; determinismo checado com `PYTHONHASHSEED` variável
+
+Pedido do usuário (2026-10-05): *"Sim, adicione a Regra #10 e sincronize a skill"* (depois de *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*).
+
+- A varredura de 2026-10-05 achou erro em 14 dos 18 decks e nenhum seria pego por auditoria carta-a-carta: o erro mora no motor (mulligan que sorteava o fundo, terreno virado nunca jogado primeiro,
+  terreno que entra desvirado contra o oráculo, fetchland que ficava em campo como dual, gatilho de "a land enters" só em parte dos pontos de entrada, resultado que dependia de `PYTHONHASHSEED`).
+- Antes de declarar pronto um simulador novo ou alterado: rodar os scripts de `varredura-2026-10-05/scripts/` (`audit_entrada`, `audit_entrada2`, `audit_fetch`, `audit_terreno_nao_e_magia`,
+  `audit_landfall`, `colisao_nome`), conferir a lista de classes do motor e checar determinismo com 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos (`det_check.sh`/`det_wide2.sh`): os `driver.py` fixam
+  o hash em 0 e por isso não enxergam esse bug. Texto integral e o que a regra NÃO cobre: Regra #10 do `CLAUDE.md`.
+- Verificação que dá vazio/zero é vácua (conferir que o número é > 0); a tabela publicada tem que ser função só do bruto arquivado; resultado de bateria longa se confere por `Traceback` no log, não pelo `rc`.
+- Comitar e enviar cada deck assim que a verificação fecha (o contêiner pode reiniciar no meio da rodada); não editar o simulador enquanto a verificação completa re-simula o arquivo vivo.
+
+---
+
 <!-- Adicionar novas regras permanentes abaixo conforme o usuário as
      estabelecer explicitamente. Cada entrada deve citar a frase literal
      do usuário quando possível, pra não perder o contexto original. -->
