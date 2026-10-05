@@ -1,5 +1,20 @@
 # Checklist cláusula-a-cláusula — Esika // The Prismatic Bridge
 
+## Terreno virado primeiro em T1/T2 (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| Terreno que entra virado jogado primeiro em T1/T2 quando não custa jogada | 🐛 corrigido: `tapped_first_pick` + ensaio a seco, atrás de `TAPPED_LAND_FIRST_ENABLED` |
+| Choques (10): paga 2 de vida só se a mana muda o que dá pra conjurar; senão entra virado | ✅ já era política deliberada do arquivo (`_shock_pays_life`) |
+| Fabled Passage | ✅ já modelado (`try_fabled_passage`: busca básico, desvira com 4+ terrenos; não embaralha) |
+
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`.
+
+---
+
 ## Rodada das 4 candidatas: Dihada, Commodore Guff, Vronos, Sarkhan the Masterless — 2026-09-29
 
 **Pedido do usuário:** avaliar a inclusão de cada uma (prós e contras, não

@@ -1,5 +1,83 @@
 # Goldfish Log — Esika, God of the Tree // The Prismatic Bridge
 
+> **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
+
+## Terreno virado primeiro em T1/T2 (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-terreno-virado-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada e com o ensaio sem efeito colateral (modo GHOST). Modo padrão, N=10.000: sem diferença pareada nos campos do turno do comandante (ou o simulador não os registra). Modo resiliência: sem diferença pareada nos campos do turno do comandante (ou o simulador não os registra). A correção joga o terreno virado primeiro em média 0,10 vez(es) por partida (N=10.000, padrão) e o ensaio impede 0,03 vez(es) por partida (teria custado uma jogada). Terrenos jogados no total: +0,001 ± 0,003 por partida.
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **Terreno que entra virado nunca é jogado primeiro.** `play_land` jogava sempre o primeiro terreno da ordem própria do deck (desvirado antes de virado). Em T1/T2, sem nada pra conjurar, a mana do turno era desperdiçada enquanto o terreno que entra virado ficava na mão pra um turno em que ele custa desenvolvimento. Mesmo erro achado e corrigido no Vihaan e no Megatron (2026-10-03/04).
+
+**O que mudou:**
+- `TAPPED_LAND_FIRST_ENABLED` (padrão `True`), `TAPPED_LAND_FIRST_MAX_TURN = 2`: em T1..T2, havendo terreno virado E desvirado na mão, `tapped_first_pick` joga o virado, **salvo se isso custar desenvolvimento**: o teste é um ENSAIO a seco da própria fase de conjuração pré-combate do deck (cópia profunda do estado; `CARD_DB` compartilhado; RNG do estado copiado; `random` global restaurado), comparando o MV total das cartas que saem da mão com cada candidato. Empate → o virado. Dentro de cada grupo vale a ordem própria do deck (cor mais escassa etc.). Contadores novos no estado: `tapped_land_first_plays_total` (jogou o virado) e `tapped_land_skipped_for_play_total` (o ensaio mostrou que custaria uma jogada e jogou o desvirado). `TAPPED_LAND_FIRST_GHOST` só existe pra validação (roda o ensaio e ignora o resultado). Com a chave em `False` o caminho antigo volta bit a bit.
+- O único terreno que entra virado incondicionalmente é The World Tree (os choques seguem a política própria `_shock_pays_life`, que já escolhe virado quando a mana não muda o que dá pra conjurar).
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9692 (96.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.2391       6.2397      +0.0006 ±0.0029  
+  *bridge_first_cast_turn__ate_T5               0.6855       0.6907      +0.0052 ±0.0017  
+  *bridge_first_cast_turn__ate_T4               0.3459       0.3510      +0.0051 ±0.0017  
+  *interaction_spells_cast_total                2.6069       2.6256      +0.0187 ±0.0080  
+  *turns_with_ult                               0.5370       0.5421      +0.0051 ±0.0023  
+  *late_pw_activations_total                    2.2397       2.2580      +0.0183 ±0.0090  
+  *pw_activations_total                        10.6675      10.7688      +0.1013 ±0.0509  
+  *first_pw_hit_turn__ate_T6                    0.3668       0.3695      +0.0027 ±0.0015  
+  *pw_removal_proxy_total                       0.9767       0.9845      +0.0078 ±0.0044  
+  *pw_deaths_total                              0.6320       0.6378      +0.0058 ±0.0034  
+  *first_ult_turn__nunca                        0.6336       0.6310      -0.0026 ±0.0015  
+  *pw_recursion_total                           0.2372       0.2424      +0.0052 ±0.0031  
+  *first_pw_hit_turn__ate_T5                    0.1647       0.1668      +0.0021 ±0.0013  
+  *bridge_cast_turn__ate_T5                     0.2911       0.2941      +0.0030 ±0.0018  
+  *planeswalkers_in_play_end                    2.9696       2.9870      +0.0174 ±0.0108
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9264 (92.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.1439       6.1453      +0.0014 ±0.0035  
+  *bridge_first_cast_turn__ate_T4               0.3318       0.3368      +0.0050 ±0.0017  
+  *pw_turns_alive_total                         6.3039       6.3661      +0.0622 ±0.0227  
+  *turns_with_ult                               0.3323       0.3400      +0.0077 ±0.0030  
+  *bridge_cast_turn__ate_T4                     0.2865       0.2912      +0.0047 ±0.0018  
+  *len_pw_enter_turn                            3.6842       3.7142      +0.0300 ±0.0118  
+  *first_pw_hit_turn__ate_T5                    0.2158       0.2196      +0.0038 ±0.0015  
+  *len_creature_cast_turn                       2.5024       2.5210      +0.0186 ±0.0074  
+  *shock_life_paid_total                        1.1494       1.1672      +0.0178 ±0.0074  
+  *bridge_first_cast_turn__ate_T5               0.6457       0.6498      +0.0041 ±0.0018  
+  *late_pw_activations_total                    1.9222       1.9428      +0.0206 ±0.0090  
+  *pw_activations_total                         9.1190       9.2390      +0.1200 ±0.0532  
+  *first_ult_turn__nunca                        0.7678       0.7637      -0.0041 ±0.0019  
+  *len_artifact_enter_turn                      0.8886       0.8955      +0.0069 ±0.0033  
+  *len_library                                 74.5996      74.4904      -0.1092 ±0.0543
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** o ganho esperado é pequeno e concentrado em T1–T3: só muda a partida quando a mão tem terreno virado E desvirado e nenhuma jogada de T1/T2 que o terreno desvirado pague (nesses casos o terreno virado deixa de ficar parado na mão até um turno em que atrasaria o desenvolvimento).
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `prismatic_bridge_goldfish_v1_ANTES_ff19dd6.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 8/8 (`resumos/testes_dirigidos.txt`); ghost (chave ligada + ensaio ignorado == desligada), 20.000 × 2 modos (`resumos/ghost_20000.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Terreno virado primeiro:** leitura de `play_land` (+ predicado de entrada virada do deck); testes dirigidos TL1–TL8 (escolha com/sem jogada em T1, chave desligada, T3, só um tipo na mão, ensaio sem efeito no estado/RNG/`random`, modo GHOST, integração em `play_land`); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Ensaio sem efeito colateral:** com a chave ligada + modo GHOST (roda o ensaio e ignora o resultado) o resultado é idêntico a tudo desligado, 20.000 × 2 modos (`resumos/ghost_20000.txt`).
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+
+**Escopo — NÃO verificado:**
+- **Condições de entrada dos terrenos** além do que a varredura mecânica cobriu (`varredura-2026-10-05/`: cenário de campo vazio + cenário condição satisfeita × violada para os padrões "unless you control …"/reveal; terrenos que o `CARD_DB` do deck não tem como básico foram pulados e estão listados lá).
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
+
+---
+
 > **Dados brutos e como reproduzir as tabelas desta página (2026-09-29/30):** [`resultados-ab/2026-09-29-candidatas-e-sisay/LEIAME.md`](resultados-ab/2026-09-29-candidatas-e-sisay/LEIAME.md) — dados `.json.xz`, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
 ## Sisay como redundância do motor de PW de graça — 2026-09-30

@@ -1,0 +1,19 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1927 (96.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.2660       6.2680      +0.0020 ±0.0060  
+  *turns_with_ult                               0.5405       0.5500      +0.0095 ±0.0066  
+  *bridge_first_cast_turn__ate_T4               0.3535       0.3595      +0.0060 ±0.0042  
+  *pw_activations_total                        10.7435      10.8900      +0.1465 ±0.1024  
+  *late_pw_activations_total                    2.2630       2.2880      +0.0250 ±0.0188  
+  *first_ult_turn__nunca                        0.6430       0.6385      -0.0045 ±0.0035  
+  *planeswalkers_in_play_end                    2.9425       2.9735      +0.0310 ±0.0246  
+  *pw_draws_total                               7.1920       7.3140      +0.1220 ±0.0976  
+  *pw_life_lost_opponent_total                  1.0980       1.1280      +0.0300 ±0.0246  
+  *interaction_spells_cast_total                2.6160       2.6415      +0.0255 ±0.0210  
+  *chain_veil_activations_total                 0.1425       0.1465      +0.0040 ±0.0034  
+  *pw_ultimates_used_total                      2.3270       2.3780      +0.0510 ±0.0458  
+  *first_pw_hit_turn__ate_T6                    0.3710       0.3750      +0.0040 ±0.0037  
+  *pw_life_gained_total                         3.7110       3.8050      +0.0940 ±0.0887  
+  *first_ult_turn__ate_T6                       0.0585       0.0605      +0.0020 ±0.0020  

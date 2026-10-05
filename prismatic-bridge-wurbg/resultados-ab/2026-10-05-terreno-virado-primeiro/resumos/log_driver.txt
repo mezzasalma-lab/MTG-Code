@@ -1,0 +1,94 @@
+DEPOIS (arquivo vivo): cartas na biblioteca=99 | distintas=99 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+ANTES (snapshot): cartas na biblioteca=99 | distintas=99 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+chaves da correcao no arquivo vivo: TAPPED_LAND_FIRST_ENABLED=True
+Bit-identidade: arquivo vivo com as chaves {'TAPPED_LAND_FIRST_ENABLED': False} == snapshot codigo/prismatic_bridge_goldfish_v1_ANTES_ff19dd6.py; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['tapped_land_first_plays_total', 'tapped_land_skipped_for_play_total'])
+padrao: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+resiliencia: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+Ghost: arquivo vivo com {'TAPPED_LAND_FIRST_ENABLED': True, 'TAPPED_LAND_FIRST_GHOST': True} (o ensaio roda, o resultado e' ignorado) == arquivo vivo com as chaves {'TAPPED_LAND_FIRST_ENABLED': False}; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['tapped_land_first_plays_total', 'tapped_land_skipped_for_play_total'])
+padrao: N=20000 partidas diferentes=0 -> IDENTICO (o ensaio nao tem efeito colateral)
+resiliencia: N=20000 partidas diferentes=0 -> IDENTICO (o ensaio nao tem efeito colateral)
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1927 (96.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.2660       6.2680      +0.0020 ±0.0060  
+  *turns_with_ult                               0.5405       0.5500      +0.0095 ±0.0066  
+  *bridge_first_cast_turn__ate_T4               0.3535       0.3595      +0.0060 ±0.0042  
+  *pw_activations_total                        10.7435      10.8900      +0.1465 ±0.1024  
+  *late_pw_activations_total                    2.2630       2.2880      +0.0250 ±0.0188  
+  *first_ult_turn__nunca                        0.6430       0.6385      -0.0045 ±0.0035  
+  *planeswalkers_in_play_end                    2.9425       2.9735      +0.0310 ±0.0246  
+  *pw_draws_total                               7.1920       7.3140      +0.1220 ±0.0976  
+  *pw_life_lost_opponent_total                  1.0980       1.1280      +0.0300 ±0.0246  
+  *interaction_spells_cast_total                2.6160       2.6415      +0.0255 ±0.0210  
+  *chain_veil_activations_total                 0.1425       0.1465      +0.0040 ±0.0034  
+  *pw_ultimates_used_total                      2.3270       2.3780      +0.0510 ±0.0458  
+  *first_pw_hit_turn__ate_T6                    0.3710       0.3750      +0.0040 ±0.0037  
+  *pw_life_gained_total                         3.7110       3.8050      +0.0940 ±0.0887  
+  *first_ult_turn__ate_T6                       0.0585       0.0605      +0.0020 ±0.0020  
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1831 (91.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.1900       6.1965      +0.0065 ±0.0081  
+  *pw_turns_alive_total                         6.5315       6.6070      +0.0755 ±0.0399  
+  *graveyard_wipe_used                          0.3185       0.3270      +0.0085 ±0.0053  
+  *len_smart_graveyard_wipe_log                 0.3185       0.3270      +0.0085 ±0.0053  
+  *smart_graveyard_wipes_total                  0.3185       0.3270      +0.0085 ±0.0053  
+  *len_pw_enter_turn                            3.7865       3.8250      +0.0385 ±0.0244  
+  *len_pw_activated_this_turn                   2.8485       2.8815      +0.0330 ±0.0215  
+  *bridge_cast_turn__ate_T4                     0.2880       0.2940      +0.0060 ±0.0039  
+  *pw_defensive_uses_total                      0.9355       0.9510      +0.0155 ±0.0107  
+  *len_loyalty                                  2.5705       2.6005      +0.0300 ±0.0213  
+  *late_pw_activations_total                    1.9780       1.9995      +0.0215 ±0.0155  
+  *pw_activations_total                         9.3265       9.5040      +0.1775 ±0.1303  
+  *nesting_moves_total                          0.0275       0.0305      +0.0030 ±0.0024  
+  *shock_life_paid_total                        1.1100       1.1310      +0.0210 ±0.0170  
+  *len_library                                 74.5465      74.4160      -0.1305 ±0.1063  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9692 (96.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.2391       6.2397      +0.0006 ±0.0029  
+  *bridge_first_cast_turn__ate_T5               0.6855       0.6907      +0.0052 ±0.0017  
+  *bridge_first_cast_turn__ate_T4               0.3459       0.3510      +0.0051 ±0.0017  
+  *interaction_spells_cast_total                2.6069       2.6256      +0.0187 ±0.0080  
+  *turns_with_ult                               0.5370       0.5421      +0.0051 ±0.0023  
+  *late_pw_activations_total                    2.2397       2.2580      +0.0183 ±0.0090  
+  *pw_activations_total                        10.6675      10.7688      +0.1013 ±0.0509  
+  *first_pw_hit_turn__ate_T6                    0.3668       0.3695      +0.0027 ±0.0015  
+  *pw_removal_proxy_total                       0.9767       0.9845      +0.0078 ±0.0044  
+  *pw_deaths_total                              0.6320       0.6378      +0.0058 ±0.0034  
+  *first_ult_turn__nunca                        0.6336       0.6310      -0.0026 ±0.0015  
+  *pw_recursion_total                           0.2372       0.2424      +0.0052 ±0.0031  
+  *first_pw_hit_turn__ate_T5                    0.1647       0.1668      +0.0021 ±0.0013  
+  *bridge_cast_turn__ate_T5                     0.2911       0.2941      +0.0030 ±0.0018  
+  *planeswalkers_in_play_end                    2.9696       2.9870      +0.0174 ±0.0108  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9264 (92.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.1439       6.1453      +0.0014 ±0.0035  
+  *bridge_first_cast_turn__ate_T4               0.3318       0.3368      +0.0050 ±0.0017  
+  *pw_turns_alive_total                         6.3039       6.3661      +0.0622 ±0.0227  
+  *turns_with_ult                               0.3323       0.3400      +0.0077 ±0.0030  
+  *bridge_cast_turn__ate_T4                     0.2865       0.2912      +0.0047 ±0.0018  
+  *len_pw_enter_turn                            3.6842       3.7142      +0.0300 ±0.0118  
+  *first_pw_hit_turn__ate_T5                    0.2158       0.2196      +0.0038 ±0.0015  
+  *len_creature_cast_turn                       2.5024       2.5210      +0.0186 ±0.0074  
+  *shock_life_paid_total                        1.1494       1.1672      +0.0178 ±0.0074  
+  *bridge_first_cast_turn__ate_T5               0.6457       0.6498      +0.0041 ±0.0018  
+  *late_pw_activations_total                    1.9222       1.9428      +0.0206 ±0.0090  
+  *pw_activations_total                         9.1190       9.2390      +0.1200 ±0.0532  
+  *first_ult_turn__nunca                        0.7678       0.7637      -0.0041 ±0.0019  
+  *len_artifact_enter_turn                      0.8886       0.8955      +0.0069 ±0.0033  
+  *len_library                                 74.5996      74.4904      -0.1092 ±0.0543  
+Regressao: N=20000 por configuracao/modo, sementes 5_000_000+i; excecoes + invariantes genericas (carta acima do baralho em alguma zona; contadores negativos)
+depois (repositorio)   padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+depois (repositorio)   resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}

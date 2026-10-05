@@ -65,8 +65,6 @@ Metodologia:
   mulligan embaralhando o fundo, ordem do turno extra. Ver checklist-oraculo.md.
 """
 
-import collections
-import copy
 import random
 from dataclasses import dataclass, field
 from typing import Set, List, Dict, Optional
@@ -613,8 +611,6 @@ class GameState:
     land_played: bool = False
     mana_spent_this_turn: int = 0
     tapped_lands_this_turn: Set[str] = field(default_factory=set)  # Farseek/Fabled Passage - terreno entra tapped esse turno, resetado em play_turn()
-    tapped_land_first_plays_total: int = 0   # correcao de 2026-10-05: vezes em que T1/T2 jogou o terreno virado primeiro
-    tapped_land_skipped_for_play_total: int = 0   # ... e vezes em que o ensaio mostrou que isso custaria uma jogada e jogou o desvirado
     evolution_sage_proliferates: int = 0
     mana_held_back: int = 0  # mana nao gasta no ultimo turno, disponivel pra flash no end step alheio (untap so acontece no MEU untap step - CR 500.1 - entao isso NAO reseta pra total_mana entre meus turnos)
     lands_played_total: int = 0
@@ -1183,70 +1179,6 @@ def _apply_pain(state: GameState):
     state.pain_life_lost_total += dmg
 
 
-# ---------------------------------------------------------------------------
-# Terreno virado primeiro em T1/T2 -- correcao de 2026-10-05 (mesma regra do Vihaan/Megatron)
-# ---------------------------------------------------------------------------
-# Antes: `play_land` jogava SEMPRE o primeiro terreno da ordem propria do deck (desvirado antes de virado); a mana de um turno sem jogada era desperdicada e o
-# terreno virado ficava pra um turno em que ele custa desenvolvimento. Agora, em T1..TAPPED_LAND_FIRST_MAX_TURN, havendo terreno virado E desvirado na mao, joga o
-# virado, salvo se isso custar desenvolvimento: o teste e' um ENSAIO a seco da propria fase de conjuracao pre-combate (copia profunda do estado), comparando o MV
-# total das cartas que saem da mao com cada candidato. Empate -> o virado. Com a chave em False o comportamento e' o antigo, bit a bit.
-TAPPED_LAND_FIRST_ENABLED = True
-TAPPED_LAND_FIRST_MAX_TURN = 2
-TAPPED_LAND_FIRST_GHOST = False   # so' validacao: roda o ensaio mas ignora o resultado (joga o padrao). Com a chave ligada + GHOST == chave desligada prova que o ensaio nao tem efeito colateral
-_TL_FORCED = None   # terreno imposto a play_land durante o ensaio a seco
-_TL_BUSY = False    # trava de recursao: o ensaio chama play_land de novo
-
-
-def _tl_is_tapped(state, name: str) -> bool:
-    return name == "The World Tree"
-
-
-def _tl_develop(sim, log: list):
-    """Fase de conjuracao pre-combate do turno: a mesma sequencia que o turno roda logo depois de `play_land`."""
-    main_phase(sim, log)
-
-
-def _tl_dry_run_mv(state, land: str) -> int:
-    """MV total das cartas que SAEM da mao se `land` for o terreno jogado e o resto da fase pre-combate rodar. Copia profunda (CARD_DB compartilhado; RNG do estado
-    copiado e `random` global restaurado): nao muta `state`."""
-    global _TL_FORCED, _TL_BUSY
-    memo = {id(c): c for c in CARD_DB.values()}
-    saved = random.getstate()
-    sim = copy.deepcopy(state, memo)
-    ficam = collections.Counter(sim.hand)
-    ficam[land] -= 1
-    _TL_FORCED, _TL_BUSY = land, True
-    try:
-        play_land(sim, [])
-        _tl_develop(sim, [])
-    finally:
-        _TL_FORCED, _TL_BUSY = None, False
-        random.setstate(saved)
-    saiu = ficam - collections.Counter(sim.hand)
-    return sum(CARD_DB[c].mv for c in saiu.elements() if c in CARD_DB)
-
-
-def tapped_first_pick(state, lands_in_hand: list) -> str:
-    """`lands_in_hand` ja' vem ordenada pelo criterio do proprio deck: a 1a e' o padrao (comportamento antigo)."""
-    if _TL_FORCED is not None and _TL_FORCED in lands_in_hand:
-        return _TL_FORCED
-    default = lands_in_hand[0]
-    if not TAPPED_LAND_FIRST_ENABLED or _TL_BUSY or state.turn > TAPPED_LAND_FIRST_MAX_TURN:
-        return default
-    tapped = [n for n in lands_in_hand if _tl_is_tapped(state, n)]
-    untapped = [n for n in lands_in_hand if not _tl_is_tapped(state, n)]
-    if not tapped or not untapped:
-        return default
-    mv_virado, mv_desvirado = _tl_dry_run_mv(state, tapped[0]), _tl_dry_run_mv(state, untapped[0])
-    if TAPPED_LAND_FIRST_GHOST:
-        return default
-    if mv_virado >= mv_desvirado:
-        state.tapped_land_first_plays_total += 1
-        return tapped[0]
-    state.tapped_land_skipped_for_play_total += 1
-    return untapped[0]
-
-
 def play_land(state: GameState, log: List[Dict]):
     if state.land_played:
         return
@@ -1263,11 +1195,7 @@ def play_land(state: GameState, log: List[Dict]):
         if C(c).produces & missing:
             best = c
             break
-    ordered = list(lands_in_hand)
-    if best:
-        ordered.remove(best)
-        ordered.insert(0, best)
-    choice = tapped_first_pick(state, ordered)
+    choice = best or lands_in_hand[0]
     state.hand.remove(choice)
     state.battlefield.append(choice)
     if choice == "The World Tree":
@@ -4379,8 +4307,6 @@ def simulate_one(seed: int, turns: int, with_greater_auramancy: bool, swap=None)
         "protectors_removed_count": state.protectors_removed_count,
         "removal_attempts_total": state.removal_attempts_total,
         "lands_played_total": state.lands_played_total,
-        "tapped_land_first_plays_total": state.tapped_land_first_plays_total,
-        "tapped_land_skipped_for_play_total": state.tapped_land_skipped_for_play_total,
         "pw_activations_total": state.pw_activations_total,
         "pw_draws_total": state.pw_draws_total,
         "pw_tokens_created_total": state.pw_tokens_created_total,
