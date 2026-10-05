@@ -1,4 +1,4 @@
-# The Wise Mothman — Sultai — auditoria completa (2026-10-05)
+# The Wise Mothman — Sultai — auditoria (2026-10-05; escopo verificado e não verificado no §8)
 
 > Deck novo informado pelo usuário em 2026-10-05 (100 cartas, a montar; **ainda sem simulador** — ver "O que NÃO foi verificado").
 > Lista: `lista.md` (nomes reais do Scryfall; original do usuário em `lista-original-usuario.txt`; nomes de capa em `nomes-de-capa.md`).
