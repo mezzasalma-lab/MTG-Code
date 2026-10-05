@@ -1,5 +1,20 @@
 # Checklist cláusula-a-cláusula — Hei Bai, Forest Guardian
 
+## Fetchlands reais (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| Fetchland: sacrifício + 1 de vida + busca por subtipo + thinning | 🐛 corrigido: `crack_fetch`, atrás de `FETCH_LANDS_ENABLED` |
+| "then shuffle" da fetch | 📊 não modelado (a biblioteca já é uma permutação aleatória e nada põe carta no topo antes do terreno) |
+| Terreno buscado entra virado quando o oráculo manda (Indatha/Ketria Triome) | ✅ contado em `tapped_lands_this_turn` |
+
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-fetchlands-reais/LEIAME.md`.
+
+---
+
 ## Terreno virado primeiro em T1/T2 (varredura de 2026-10-05) — 2026-10-05
 
 **Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
@@ -7,7 +22,7 @@
 | cláusula / conceito | situação |
 |---|---|
 | Terreno que entra virado jogado primeiro em T1/T2 quando não custa jogada | 🐛 corrigido: `tapped_first_pick` + ensaio a seco, atrás de `TAPPED_LAND_FIRST_ENABLED` |
-| Fetchlands (8 no deck) | **não tratado aqui**: a varredura mecânica mostrou a fetch ficando em campo como dual, sem sacrifício/busca/vida (ver seção própria da onda 4, se existir) |
+| Fetchlands (8 no deck) | 🐛 corrigido na onda 4 (mesma data, seção "Fetchlands reais" acima): sacrifício, 1 de vida, busca por subtipo, thinning |
 
 
 **Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`.

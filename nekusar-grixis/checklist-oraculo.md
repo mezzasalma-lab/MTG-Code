@@ -24,7 +24,7 @@
 | Terreno que entra virado jogado primeiro em T1/T2 quando não custa jogada | 🐛 corrigido: `tapped_first_pick` + ensaio a seco, atrás de `TAPPED_LAND_FIRST_ENABLED` |
 | Jogar terreno ≠ conjurar magia (CR 305.1) | 🐛 corrigido: `LAND_PLAY_NOT_A_SPELL_ENABLED` |
 | Storm do Brain Freeze (cópias = magias antes dela) | 🐛 corrigido: `STORM_SELF_COUNT_FIX_ENABLED` |
-| Fetchlands (9 no deck) | **não tratado aqui**: a fetch paga 1 de vida mas fica em campo como dual, sem sacrifício/busca (ver seção própria da onda 4, se existir) |
+| Fetchlands (9 no deck) | 🐛 corrigido na onda 4 (mesma data, seção "Fetchlands reais" acima): sacrifício, busca por subtipo, thinning (a vida já era paga) |
 
 
 **Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`.

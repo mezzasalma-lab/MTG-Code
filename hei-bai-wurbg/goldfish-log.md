@@ -1,10 +1,93 @@
 # Goldfish Log — Hei-Bai, Forest Guardian
 
+> **Rodada 2026-10-05 (Fetchlands reais (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-fetchlands-reais/LEIAME.md`](resultados-ab/2026-10-05-fetchlands-reais/LEIAME.md)
+
 > **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
 
 > **Rodada 2026-10-05 (Mulligan com escolha do fundo + imposto de comandante + ordem de set determinística (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`](resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md)
 
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
+
+---
+
+## Fetchlands reais (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-fetchlands-reais/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada. Modo padrão, N=10.000: comandante em campo até T3 51,6% → 51,5% (-0,08 ± 0,09 pp), até T4 -0,26 ± 0,10 pp, até T5 -0,26 ± 0,10 pp, comandante que nunca entra +0,15 ± 0,08 pp. Modo resiliência: comandante em campo até T3 48,9% → 48,9% (-0,08 ± 0,09 pp), até T4 -0,29 ± 0,24 pp, até T5 -0,38 ± 0,24 pp, comandante que nunca entra +0,12 ± 0,13 pp. Fetches de fato quebradas por partida: 1,50 (N=10.000, padrão); sem alvo na biblioteca: 0,01 por partida. Biblioteca no fim da partida: -1,680 ± 0,124 cartas (o thinning). Vida no fim (resiliência): -1,416 ± 0,029 (1 de vida por fetch).
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **Fetchland ficava em campo como terreno dual estático.** O oráculo da fetch é "{T}, Pay 1 life, Sacrifice this land: Search your library for a [tipo] or [tipo] card, put it onto the battlefield, then shuffle". O simulador deixava a fetch em campo produzindo mana das duas cores, sem sacrifício, sem busca (a biblioteca nunca afinava), sem ir pro cemitério e sem a vida do custo. Mesma classe do Megatron (Evolving Wilds / Terramorphic Expanse / Rocky Tar Pit, corrigido em 2026-10-03). Achado pela varredura mecânica de fetches (`varredura-2026-10-05/resumos/audit_fetch_ANTES.txt`).
+
+**O que mudou:**
+- `FETCH_LANDS_ENABLED` (padrão `True`): ao jogar a fetch, `crack_fetch` a manda pro cemitério, paga 1 de vida e busca na biblioteca um terreno com subtipo compatível com o texto da fetch (básico OU dual tipada, por SUBTIPO do `type_line` do oráculo, não por nome); o terreno buscado entra em campo pelas regras de entrada do deck. Escolha: não-básico antes de básico (preserva os básicos pro Cultivate/Aang's Journey/Kodama's Reach, que só buscam básico) e, por último, o que entra virado (Triomes). Sem alvo na biblioteca a fetch fica em campo como antes (contado em `fetch_no_target_total`). Contadores novos: `fetches_cracked_total`, `fetch_no_target_total`. Com a chave em `False` o caminho antigo volta bit a bit.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 1793 (17.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0052       0.0067      +0.0015 ±0.0008  
+   commander_cast_turn__ate_T3                  0.5162       0.5154      -0.0008 ±0.0009  
+  *commander_cast_turn__ate_T4                  0.9328       0.9302      -0.0026 ±0.0010  
+  *commander_cast_turn__ate_T5                  0.9672       0.9646      -0.0026 ±0.0010  
+  *life                                        40.0000      38.4974      -1.5026 ±0.0209  
+  *len_graveyard                                9.6663      11.2228      +1.5565 ±0.0839  
+  *len_library                                 65.2421      63.5622      -1.6799 ±0.1237  
+  *lands_played_this_turn                       0.6018       0.5541      -0.0477 ±0.0069  
+  *ramp_pieces_cast                             1.5742       1.6129      +0.0387 ±0.0093  
+  *len_creature_cast_turn                       5.9118       6.0221      +0.1103 ±0.0274  
+  *len_hand                                     3.9796       4.0148      +0.0352 ±0.0140  
+  *mana_spent_this_turn                        14.9843      15.3690      +0.3847 ±0.1696  
+  *commander_cast_turn__ate_T6                  0.9830       0.9811      -0.0019 ±0.0009  
+  *library_emptied                              0.0855       0.0909      +0.0054 ±0.0025  
+  *commander_cast_count                         0.9948       0.9933      -0.0015 ±0.0008  
+  *commander_in_play                            0.9948       0.9933      -0.0015 ±0.0008  
+  *replenish_returns_total                      0.2593       0.2908      +0.0315 ±0.0167  
+  *mind_stone_harnessed                         0.1797       0.1834      +0.0037 ±0.0023
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 1918 (19.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0143       0.0155      +0.0012 ±0.0013  
+   commander_cast_turn__ate_T3                  0.4894       0.4886      -0.0008 ±0.0009  
+  *commander_cast_turn__ate_T4                  0.8780       0.8751      -0.0029 ±0.0024  
+  *commander_cast_turn__ate_T5                  0.9309       0.9271      -0.0038 ±0.0024  
+  *life                                        37.9841      36.5680      -1.4161 ±0.0285  
+  *len_library                                 73.7965      72.3287      -1.4678 ±0.1284  
+  *lands_played_this_turn                       0.4873       0.4493      -0.0380 ±0.0074  
+  *graveyard_wipe_used                          0.4114       0.4317      +0.0203 ±0.0059  
+  *len_smart_graveyard_wipe_log                 0.4114       0.4317      +0.0203 ±0.0059  
+  *smart_graveyard_wipes_total                  0.4114       0.4317      +0.0203 ±0.0059  
+  *len_graveyard                               10.6069      11.9986      +1.3917 ±0.4468  
+  *len_hand                                     2.8375       2.8948      +0.0573 ±0.0223  
+  *ramp_pieces_cast                             1.1876       1.2063      +0.0187 ±0.0085  
+  *commander_cast_count                         1.5261       1.5133      -0.0128 ±0.0066  
+  *commander_cast_turn__ate_T6                  0.9638       0.9609      -0.0029 ±0.0019  
+  *len_creature_cast_turn                       4.6228       4.6529      +0.0301 ±0.0220  
+  *commander_in_play                            0.7134       0.7064      -0.0070 ±0.0059  
+   len_smart_artifact_wipe_log                  0.1298       0.1332      +0.0034 ±0.0037
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** a biblioteca afina (−1 terreno por fetch, ligeiramente mais cartas úteis nos próximos draws), o terreno buscado entra pelas regras de entrada do deck (virado quando o oráculo manda) e cada fetch custa 1 de vida e põe uma carta no cemitério; o efeito no comandante em T3–T5 é de segunda ordem.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `heibai_goldfish_v1_ANTES_0126a36.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 8/8 (`resumos/testes_dirigidos.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Fetch real:** leitura de `play_land` (e do caminho de entrada de terreno) + testes dirigidos FT1–FT8 (a fetch vai pro cemitério, a biblioteca perde exatamente 1 carta, o buscado tem subtipo compatível — varre TODAS as fetches do deck —, custo de 1 de vida, sem alvo → fica em campo, escolhe o que entra desvirado, thinning, chave desligada = caminho antigo, 300 partidas completas por modo); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Bit-identidade** com a chave desligada × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro (contadores novos ignorados).
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+
+**Escopo — NÃO verificado:**
+- **O "then shuffle" do oráculo NÃO é modelado:** o estado deste simulador não tem RNG próprio na biblioteca (a biblioteca já é uma permutação aleatória). Embaralhar de novo só mudaria algo se um tutor ou scry tivesse posto uma carta específica no topo entre a compra e a jogada de terreno; a ordem do turno impede isso nas linhas modeladas.
+- **Landfall:** varri o `oracle_text` das cartas da lista procurando gatilhos de "whenever a land enters"/Landfall: neste deck nenhuma carta além dos terrenos tem esse gatilho, então o terreno buscado não deixa gatilho sem disparar.
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão, sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada.
+- **Oponente real:** o goldfish não modela (convenção do repositório).
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
 
 ---
 
@@ -19,7 +102,7 @@ Registro de partidas de goldfishing (testes solo) e partidas reais com este deck
 
 **O que mudou:**
 - `TAPPED_LAND_FIRST_ENABLED` (padrão `True`), `TAPPED_LAND_FIRST_MAX_TURN = 2`: em T1..T2, havendo terreno virado E desvirado na mão, `tapped_first_pick` joga o virado, **salvo se isso custar desenvolvimento**: o teste é um ENSAIO a seco da própria fase de conjuração pré-combate do deck (cópia profunda do estado; `CARD_DB` compartilhado; RNG do estado copiado; `random` global restaurado), comparando o MV total das cartas que saem da mão com cada candidato. Empate → o virado. Dentro de cada grupo vale a ordem própria do deck (cor mais escassa etc.). Contadores novos no estado: `tapped_land_first_plays_total` (jogou o virado) e `tapped_land_skipped_for_play_total` (o ensaio mostrou que custaria uma jogada e jogou o desvirado). `TAPPED_LAND_FIRST_GHOST` só existe pra validação (roda o ensaio e ignora o resultado). Com a chave em `False` o caminho antigo volta bit a bit.
-- Terrenos que entram virados neste deck: Indatha Triome e Ketria Triome (sempre) e Abandoned Air Temple ("unless you control a basic land"). Os 8 fetchlands ficam na ordem do deck (ver pendência de fetch abaixo).
+- Terrenos que entram virados neste deck: Indatha Triome e Ketria Triome (sempre) e Abandoned Air Temple ("unless you control a basic land"). Os 8 fetchlands ficam na ordem do deck aqui; o conserto da fetch (busca de verdade) é a seção "Fetchlands reais" desta mesma data, acima.
 
 **Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
 

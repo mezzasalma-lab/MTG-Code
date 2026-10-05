@@ -23,7 +23,7 @@
 |---|---|
 | Terreno que entra virado jogado primeiro em T1/T2 quando não custa jogada | 🐛 corrigido: `tapped_first_pick` + ensaio a seco, atrás de `TAPPED_LAND_FIRST_ENABLED` |
 | Determinismo entre processos (`set` de str iterado em ordem de hash) | 🐛 corrigido: `DETERMINISTIC_SET_ORDER_ENABLED` (ordem dos payoffs de morte) |
-| Fetchlands (Arid Mesa/Bloodstained Mire/Marsh Flats) | ver seção própria (onda 4): modelados como duais estáticas, sem busca |
+| Fetchlands (Arid Mesa/Bloodstained Mire/Marsh Flats) | 🐛 corrigido na onda 4 (mesma data, seção "Fetchlands reais" acima): sacrifício, 1 de vida, busca por subtipo, thinning |
 
 
 **Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`.

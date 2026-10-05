@@ -278,34 +278,6 @@ LAND_BASIC_TYPES = {
 # "search for a basic land CARD", nao alcanca duais/triomes com o tipo).
 BASIC_LAND_NAMES = {"Forest", "Island", "Mountain", "Plains", "Swamp"}
 
-# Fetchlands reais -- correcao de 2026-10-05 (varredura mecanica de fetches, `varredura-2026-10-05/resumos/audit_fetch_ANTES.txt`; mesma classe do Megatron: Evolving Wilds/Terramorphic/Rocky Tar Pit).
-# Antes: a fetch era um terreno que ficava em campo como dual estatica (ou, no Nekusar, pagava a vida mas ficava em campo): sem sacrificio, sem busca, sem thinning da biblioteca.
-# Oraculo: "{T}, Pay 1 life, Sacrifice this land: Search your library for a X or Y card, put it onto the battlefield, then shuffle." Agora: ao jogar a fetch ela e' sacrificada (vai pro cemiterio), paga 1 de vida,
-# a biblioteca perde um terreno do tipo certo (basico OU dual tipada, por SUBTIPO) que entra em campo pelas regras de entrada do deck. Politica de escolha: terreno que entra desvirado (e sem pagar vida),
-# nao-basico antes de basico (preserva os basicos pro Cultivate/Aang's Journey/Kodama's Reach, que so' buscam basico) e, por ultimo, o que entra virado (Triomes). Sem alvo na biblioteca a fetch fica em campo (comportamento antigo; contado em `fetch_no_target_total`, esperado ~0).
-# O "shuffle" do oraculo NAO e' modelado: o estado deste simulador nao tem RNG (so' `interaction_rng` no modo de resiliencia) e a biblioteca ja' e' uma permutacao aleatoria; embaralhar de novo so' mudaria algo se um tutor/scry tivesse posto uma carta no topo entre a compra e a jogada de terreno, o que a ordem do turno impede.
-# Com a chave em False o comportamento antigo volta bit a bit.
-FETCH_LANDS_ENABLED = True
-FETCH_TYPES = {'Arid Mesa': {'Mountain', 'Plains'}, 'Bloodstained Mire': {'Mountain', 'Swamp'}, 'Flooded Strand': {'Island', 'Plains'}, 'Marsh Flats': {'Plains', 'Swamp'}, 'Misty Rainforest': {'Forest', 'Island'}, 'Scalding Tarn': {'Island', 'Mountain'}, 'Verdant Catacombs': {'Forest', 'Swamp'}, 'Windswept Heath': {'Forest', 'Plains'}}
-
-
-def crack_fetch(state: "GameState", fetch: str):   # GameState e' definido mais abaixo no arquivo
-    """Quebra a fetch recem-jogada: ver o cabecalho FETCH_LANDS_ENABLED."""
-    searched = set(FETCH_TYPES[fetch])
-    pool = [n for n in state.library if n in LAND_BASIC_TYPES and (LAND_BASIC_TYPES[n] & searched)]
-    if not pool:
-        state.fetch_no_target_total += 1
-        return
-    pick = min(pool, key=lambda n: (n in ETB_TAPPED_LANDS, n in BASIC_LAND_NAMES))
-    state.life -= 1
-    state.library.remove(pick)
-    state.battlefield.remove(fetch)
-    state.graveyard.append(fetch)
-    state.battlefield.append(pick)
-    if pick in ETB_TAPPED_LANDS:
-        state.tapped_lands_this_turn += 1
-    state.fetches_cracked_total += 1
-
 # --- As 17 Shrines -----------------------------------------------------------
 SHRINE_NAMES = {
     "Crescent Island Temple", "Honden of Life's Web", "Honden of Seeing Winds",
@@ -492,8 +464,6 @@ class GameState:
     commander_in_play: bool = False
     commander_cast_turn: Optional[int] = None
     commander_cast_count: int = 0   # CR 903.8: casts da zona de comando (imposto de {2} por cast anterior); correcao de 2026-10-05
-    fetches_cracked_total: int = 0   # correcao de 2026-10-05: fetchlands de fato quebradas (busca real)
-    fetch_no_target_total: int = 0   # ... e fetches sem alvo na biblioteca (ficam em campo)
     tapped_land_first_plays_total: int = 0   # correcao de 2026-10-05: vezes em que T1/T2 jogou o terreno virado primeiro
     tapped_land_skipped_for_play_total: int = 0   # ... e vezes em que o ensaio mostrou que isso custaria uma jogada e jogou o desvirado
 
@@ -1307,8 +1277,6 @@ def play_land(state: GameState):
         state.lands_played_this_turn += 1
         if choice in ETB_TAPPED_LANDS or (choice == "Abandoned Air Temple" and not controls_basic):
             state.tapped_lands_this_turn += 1
-        if FETCH_LANDS_ENABLED and choice in FETCH_TYPES:
-            crack_fetch(state, choice)
 
 
 def do_sterling_grove_tutor(state: GameState):
