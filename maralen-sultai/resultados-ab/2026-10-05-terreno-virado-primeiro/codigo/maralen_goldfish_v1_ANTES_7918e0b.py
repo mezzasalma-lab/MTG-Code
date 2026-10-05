@@ -174,8 +174,6 @@ ja e' pago via `tapped_lands_this_turn` (remove a propria mana do land)
 regressao, 0 excecoes em todas.
 """
 
-import collections
-import copy
 import json
 import random
 import re
@@ -418,8 +416,6 @@ class GameState:
     maralen_free_cast_used_this_turn: bool = False
     devoted_druid_extra_untaps: int = 0  # so' vale no turno em que foi setado (ver devoted_druid_pump)
     tapped_lands_this_turn: set = field(default_factory=set)  # Bojuka Bog/Path of Ancestry/Zagoth Triome ("enters tapped"), resetado em play_turn()
-    tapped_land_first_plays_total: int = 0   # correcao de 2026-10-05: vezes em que T1/T2 jogou o terreno virado primeiro
-    tapped_land_skipped_for_play_total: int = 0   # ... e vezes em que o ensaio mostrou que isso custaria uma jogada e jogou o desvirado
     devoted_druid_counters: int = 0  # -1/-1 counters permanentes, morre ao chegar em 2 (toughness real = 2)
     joraga_level: int = 0
     mistbind_exiled: list = field(default_factory=list)  # Fadas exiladas pelo Champion do Mistbind Clique
@@ -1275,98 +1271,6 @@ def landfall_trigger(state: GameState):
         state.landfall_counters_total += 1
 
 
-# ---------------------------------------------------------------------------
-# Terreno virado primeiro em T1/T2 -- correcao de 2026-10-05 (mesma regra do Vihaan/Megatron)
-# ---------------------------------------------------------------------------
-# Antes: `play_land` jogava SEMPRE o primeiro terreno da ordem propria do deck (desvirado antes de virado); a mana de um turno sem jogada era desperdicada e o
-# terreno virado ficava pra um turno em que ele custa desenvolvimento. Agora, em T1..TAPPED_LAND_FIRST_MAX_TURN, havendo terreno virado E desvirado na mao, joga o
-# virado, salvo se isso custar desenvolvimento: o teste e' um ENSAIO a seco da propria fase de conjuracao pre-combate (copia profunda do estado), comparando o MV
-# total das cartas que saem da mao com cada candidato. Empate -> o virado. Com a chave em False o comportamento e' o antigo, bit a bit.
-TAPPED_LAND_FIRST_ENABLED = True
-TAPPED_LAND_FIRST_MAX_TURN = 2
-TAPPED_LAND_FIRST_GHOST = False   # so' validacao: roda o ensaio mas ignora o resultado (joga o padrao). Com a chave ligada + GHOST == chave desligada prova que o ensaio nao tem efeito colateral
-_TL_FORCED = None   # terreno imposto a play_land durante o ensaio a seco
-_TL_BUSY = False    # trava de recursao: o ensaio chama play_land de novo
-
-
-def _tl_is_tapped(state, name: str) -> bool:
-    return land_enters_tapped(state, name)
-
-
-def _tl_develop(sim, log: list):
-    """Fase de conjuracao pre-combate do turno: a mesma sequencia que o turno roda logo depois de `play_land`."""
-    main_phase(sim, is_first_main=True)
-
-
-def _tl_dry_run_mv(state, land: str) -> int:
-    """MV total das cartas que SAEM da mao se `land` for o terreno jogado e o resto da fase pre-combate rodar. Copia profunda (CARD_DB compartilhado; RNG do estado
-    copiado e `random` global restaurado): nao muta `state`."""
-    global _TL_FORCED, _TL_BUSY
-    memo = {id(c): c for c in CARD_DB.values()}
-    saved = random.getstate()
-    sim = copy.deepcopy(state, memo)
-    ficam = collections.Counter(sim.hand)
-    ficam[land] -= 1
-    _TL_FORCED, _TL_BUSY = land, True
-    try:
-        play_land(sim)
-        _tl_develop(sim, None)
-    finally:
-        _TL_FORCED, _TL_BUSY = None, False
-        random.setstate(saved)
-    saiu = ficam - collections.Counter(sim.hand)
-    return sum(CARD_DB[c].mv for c in saiu.elements() if c in CARD_DB)
-
-
-def tapped_first_pick(state, lands_in_hand: list) -> str:
-    """`lands_in_hand` ja' vem ordenada pelo criterio do proprio deck: a 1a e' o padrao (comportamento antigo)."""
-    if _TL_FORCED is not None and _TL_FORCED in lands_in_hand:
-        return _TL_FORCED
-    default = lands_in_hand[0]
-    if not TAPPED_LAND_FIRST_ENABLED or _TL_BUSY or state.turn > TAPPED_LAND_FIRST_MAX_TURN:
-        return default
-    tapped = [n for n in lands_in_hand if _tl_is_tapped(state, n)]
-    untapped = [n for n in lands_in_hand if not _tl_is_tapped(state, n)]
-    if not tapped or not untapped:
-        return default
-    mv_virado, mv_desvirado = _tl_dry_run_mv(state, tapped[0]), _tl_dry_run_mv(state, untapped[0])
-    if TAPPED_LAND_FIRST_GHOST:
-        return default
-    if mv_virado >= mv_desvirado:
-        state.tapped_land_first_plays_total += 1
-        return tapped[0]
-    state.tapped_land_skipped_for_play_total += 1
-    return untapped[0]
-
-
-# Correcao de 2026-10-05 (varredura de entrada de terrenos contra o oraculo, Regra 12): so' Bojuka Bog/Path of Ancestry/Zagoth Triome (tag `etb_tapped`) entravam virados. Faltavam as condicoes reais
-# (oraculo, conferido em scryfall-cache): Drowned Catacomb ("tapped unless you control an Island or a Swamp"), Hinterland Harbor (Forest or Island), Woodland Cemetery (Swamp or Forest),
-# Sunken Hollow ("unless you control two or more basic lands"), Gilt-Leaf Palace ("you may reveal an Elf card from your hand. If you don't, this land enters tapped"). "Island/Swamp/Forest" aqui e'
-# SUBTIPO de terreno (Bayou, Tropical Island, Underground Sea, Breeding Pool, Watery Grave, Overgrown Tomb, Sunken Hollow e Zagoth Triome contam). Choque (Breeding Pool/Watery Grave/Overgrown Tomb)
-# segue a convencao do repositorio (paga 2 de vida, desvirado); Morphic Pool/Undergrowth Stadium ("unless you have two or more opponents") entram desvirados em mesa de 4.
-# Com a chave em False o comportamento antigo volta bit a bit (so' a tag `etb_tapped`).
-LAND_ENTRY_CONDITIONS_ENABLED = True
-LAND_BASIC_SUBTYPES = {"Bayou": {"Forest", "Swamp"}, "Breeding Pool": {"Forest", "Island"}, "Overgrown Tomb": {"Forest", "Swamp"}, "Sunken Hollow": {"Island", "Swamp"},
-                       "Tropical Island": {"Forest", "Island"}, "Underground Sea": {"Island", "Swamp"}, "Watery Grave": {"Island", "Swamp"}, "Zagoth Triome": {"Forest", "Island", "Swamp"},
-                       "Forest": {"Forest"}, "Island": {"Island"}, "Swamp": {"Swamp"}}
-CHECKLAND_SUBTYPES = {"Drowned Catacomb": {"Island", "Swamp"}, "Hinterland Harbor": {"Forest", "Island"}, "Woodland Cemetery": {"Forest", "Swamp"}}
-
-
-def land_enters_tapped(state: GameState, name: str) -> bool:
-    """Fonte unica de 'entra virado'. Chamada ANTES de o terreno sair da mao/entrar em campo."""
-    if "etb_tapped" in CARD_DB[name].tags:
-        return True
-    if not LAND_ENTRY_CONDITIONS_ENABLED:
-        return False
-    if name in CHECKLAND_SUBTYPES:
-        return not any(CHECKLAND_SUBTYPES[name] & LAND_BASIC_SUBTYPES.get(n, set()) for n in state.battlefield)
-    if name == "Sunken Hollow":
-        return sum(1 for n in state.battlefield if n in ("Forest", "Island", "Swamp")) < 2
-    if name == "Gilt-Leaf Palace":
-        return not any(is_elf(n) for n in state.hand if n != name)
-    return False
-
-
 def play_land(state: GameState):
     max_lands = 1
     if "Thranduil's Company" in state.battlefield:
@@ -1378,13 +1282,12 @@ def play_land(state: GameState):
         lands_in_hand = [n for n in state.hand if n in LAND_NAMES]
         if not lands_in_hand:
             return
-        choice = tapped_first_pick(state, lands_in_hand)
-        tapped_entry = land_enters_tapped(state, choice)   # avaliado ANTES de entrar (a condicao olha o campo/mao sem o proprio terreno)
+        choice = lands_in_hand[0]
         state.hand.remove(choice)
         state.battlefield.append(choice)
         state.lands_played_this_turn += 1
         state.lands_played_total += 1
-        if tapped_entry:
+        if "etb_tapped" in CARD_DB[choice].tags:
             # Achado real 2026-08-28 (auditoria de checklist): Bojuka Bog/
             # Path of Ancestry/Zagoth Triome tinham a tag mas ela nunca era
             # lida em lugar nenhum - produziam mana no proprio turno em que

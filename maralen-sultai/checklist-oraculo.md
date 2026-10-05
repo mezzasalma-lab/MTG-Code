@@ -1,5 +1,23 @@
 # Checklist cláusula-a-cláusula — Maralen, Fae Ascendant
 
+## Terreno virado primeiro em T1/T2 + condições de entrada de terreno (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| Terreno que entra virado jogado primeiro em T1/T2 quando não custa jogada | 🐛 corrigido: `tapped_first_pick` + ensaio a seco, atrás de `TAPPED_LAND_FIRST_ENABLED` |
+| Drowned Catacomb / Hinterland Harbor / Woodland Cemetery (check lands) | 🐛 corrigido: `land_enters_tapped` por subtipo, atrás de `LAND_ENTRY_CONDITIONS_ENABLED` |
+| Sunken Hollow (2+ básicos) | 🐛 corrigido |
+| Gilt-Leaf Palace (revelar Elfo) | 🐛 corrigido (política: entra desvirado se há Elfo na mão) |
+| Choques (3) | ✅ convenção do repositório (paga 2 de vida; vida não é deduzida neste arquivo) |
+| Morphic Pool / Undergrowth Stadium | ✅ desvirados em mesa de 4 ("two or more opponents") |
+
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`.
+
+---
+
 ## Mulligan com escolha do fundo + upkeep antes do draw (varredura de 2026-10-05) — 2026-10-05
 
 **Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
