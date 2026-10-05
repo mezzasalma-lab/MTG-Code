@@ -1,0 +1,207 @@
+DEPOIS (arquivo vivo): cartas na biblioteca=0 | distintas=0 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+ANTES (snapshot): cartas na biblioteca=0 | distintas=0 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+chaves da correcao no arquivo vivo: TAPPED_LAND_FIRST_ENABLED=True, DETERMINISTIC_SET_ORDER_ENABLED=True
+Bit-identidade: arquivo vivo com as chaves {'TAPPED_LAND_FIRST_ENABLED': False, 'DETERMINISTIC_SET_ORDER_ENABLED': False} == snapshot codigo/edgar_markov_goldfish_v1_ANTES_0c92480.py; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['tapped_land_first_plays_total', 'tapped_land_skipped_for_play_total'])
+padrao: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+resiliencia: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+Ghost: arquivo vivo com {'TAPPED_LAND_FIRST_ENABLED': True, 'TAPPED_LAND_FIRST_GHOST': True} (o ensaio roda, o resultado e' ignorado) == arquivo vivo com as chaves {'TAPPED_LAND_FIRST_ENABLED': False, 'DETERMINISTIC_SET_ORDER_ENABLED': False}; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['tapped_land_first_plays_total', 'tapped_land_skipped_for_play_total'])
+padrao: N=20000 partidas diferentes=0 -> IDENTICO (o ensaio nao tem efeito colateral)
+resiliencia: N=20000 partidas diferentes=0 -> IDENTICO (o ensaio nao tem efeito colateral)
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1878 (93.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.4695       6.4735      +0.0040 ±0.0034  
+   commander_cast_turn__nunca                   0.2140       0.2145      +0.0005 ±0.0017  
+   commander_cast_turn__ate_T4                  0.0600       0.0615      +0.0015 ±0.0022  
+  *commander_cast_turn__ate_T5                  0.1690       0.1725      +0.0035 ±0.0029  
+  *edgar_attack_counters_total                  7.1135       7.2295      +0.1160 ±0.0425  
+  *eminence_tokens_created                      2.9190       2.9490      +0.0300 ±0.0126  
+  *drain_total                                  5.9675       6.0940      +0.1265 ±0.0603  
+  *edgar_attack_turns                           1.4425       1.4520      +0.0095 ±0.0049  
+  *pw_activations_total                         0.6170       0.6290      +0.0120 ±0.0068  
+  *creatures_sacrificed_total                   2.6405       2.6615      +0.0210 ±0.0122  
+  *lifegain_total                               3.9200       4.0010      +0.0810 ±0.0482  
+  *token_doubler_events                         0.4255       0.4415      +0.0160 ±0.0104  
+  *caretakers_talent_draws                      0.2055       0.2140      +0.0085 ±0.0058  
+  *unholy_annex_draws                           0.5220       0.5290      +0.0070 ±0.0048  
+  *welcoming_vampire_draws                      0.3435       0.3490      +0.0055 ±0.0038  
+  *black_market_treasures                       0.3965       0.4060      +0.0095 ±0.0066  
+  *purphoros_damage_total                       0.4660       0.4940      +0.0280 ±0.0198  
+  *death_trigger_events                         2.3130       2.3420      +0.0290 ±0.0213  
+
+[so_terreno - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1878 (93.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.4695       6.4735      +0.0040 ±0.0034  
+   commander_cast_turn__nunca                   0.2140       0.2145      +0.0005 ±0.0017  
+   commander_cast_turn__ate_T4                  0.0600       0.0615      +0.0015 ±0.0022  
+  *commander_cast_turn__ate_T5                  0.1690       0.1725      +0.0035 ±0.0029  
+  *edgar_attack_counters_total                  7.1135       7.2295      +0.1160 ±0.0425  
+  *eminence_tokens_created                      2.9190       2.9490      +0.0300 ±0.0126  
+  *drain_total                                  5.9675       6.0940      +0.1265 ±0.0603  
+  *edgar_attack_turns                           1.4425       1.4520      +0.0095 ±0.0049  
+  *pw_activations_total                         0.6170       0.6290      +0.0120 ±0.0068  
+  *creatures_sacrificed_total                   2.6405       2.6615      +0.0210 ±0.0122  
+  *lifegain_total                               3.9200       4.0010      +0.0810 ±0.0482  
+  *token_doubler_events                         0.4255       0.4415      +0.0160 ±0.0104  
+  *caretakers_talent_draws                      0.2055       0.2140      +0.0085 ±0.0058  
+  *unholy_annex_draws                           0.5220       0.5290      +0.0070 ±0.0048  
+  *welcoming_vampire_draws                      0.3435       0.3490      +0.0055 ±0.0038  
+  *black_market_treasures                       0.3965       0.4060      +0.0095 ±0.0066  
+  *purphoros_damage_total                       0.4660       0.4940      +0.0280 ±0.0198  
+  *death_trigger_events                         2.3130       2.3420      +0.0290 ±0.0213  
+
+[so_ordem_set - antes] N=2000 | partidas com resultado IDENTICO ao da base: 2000 (100.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1583 (79.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.2940       6.2905      -0.0035 ±0.0060  
+  *commander_cast_turn__nunca                   0.3085       0.3120      +0.0035 ±0.0032  
+   commander_cast_turn__ate_T4                  0.0360       0.0370      +0.0010 ±0.0020  
+   commander_cast_turn__ate_T5                  0.1105       0.1115      +0.0010 ±0.0020  
+  *eminence_tokens_created                      2.6450       2.6705      +0.0255 ±0.0104  
+  *len_library                                 82.1805      82.1535      -0.0270 ±0.0180  
+  *creatures_sacrificed_total                   2.1030       2.1225      +0.0195 ±0.0134  
+  *pw_activations_total                         0.5110       0.5210      +0.0100 ±0.0075  
+  *tutors_used_total                            0.3175       0.3205      +0.0030 ±0.0024  
+  *token_doubler_events                         0.2945       0.3050      +0.0105 ±0.0085  
+  *len_graveyard                                2.9800       3.0085      +0.0285 ±0.0235  
+  *commander_cast_count                         0.8355       0.8305      -0.0050 ±0.0044  
+  *caretakers_talent_level                      1.1480       1.1520      +0.0040 ±0.0037  
+  *caretakers_talent_draws                      0.1135       0.1190      +0.0055 ±0.0051  
+  *ramp_pieces_cast                             0.6100       0.6135      +0.0035 ±0.0032  
+  *caretakers_talent_level2_copies              0.0215       0.0235      +0.0020 ±0.0020  
+  *emeritus_of_woe_tutors                       0.0365       0.0385      +0.0020 ±0.0020  
+  *fountainport_draws                           0.1135       0.1095      -0.0040 ±0.0039  
+
+[so_terreno - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1583 (79.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.2940       6.2905      -0.0035 ±0.0060  
+  *commander_cast_turn__nunca                   0.3085       0.3120      +0.0035 ±0.0032  
+   commander_cast_turn__ate_T4                  0.0360       0.0370      +0.0010 ±0.0020  
+   commander_cast_turn__ate_T5                  0.1105       0.1115      +0.0010 ±0.0020  
+  *eminence_tokens_created                      2.6450       2.6705      +0.0255 ±0.0104  
+  *len_library                                 82.1805      82.1535      -0.0270 ±0.0180  
+  *creatures_sacrificed_total                   2.1030       2.1225      +0.0195 ±0.0134  
+  *pw_activations_total                         0.5110       0.5210      +0.0100 ±0.0075  
+  *tutors_used_total                            0.3175       0.3205      +0.0030 ±0.0024  
+  *token_doubler_events                         0.2945       0.3050      +0.0105 ±0.0085  
+  *len_graveyard                                2.9800       3.0085      +0.0285 ±0.0235  
+  *commander_cast_count                         0.8355       0.8305      -0.0050 ±0.0044  
+  *caretakers_talent_level                      1.1480       1.1520      +0.0040 ±0.0037  
+  *caretakers_talent_draws                      0.1135       0.1190      +0.0055 ±0.0051  
+  *ramp_pieces_cast                             0.6100       0.6135      +0.0035 ±0.0032  
+  *caretakers_talent_level2_copies              0.0215       0.0235      +0.0020 ±0.0020  
+  *emeritus_of_woe_tutors                       0.0365       0.0385      +0.0020 ±0.0020  
+  *fountainport_draws                           0.1135       0.1095      -0.0040 ±0.0039  
+
+[so_ordem_set - antes] N=2000 | partidas com resultado IDENTICO ao da base: 2000 (100.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9390 (93.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.3844       6.3877      +0.0033 ±0.0016  
+  *commander_cast_turn__nunca                   0.2209       0.2198      -0.0011 ±0.0007  
+   commander_cast_turn__ate_T3                  0.0072       0.0074      +0.0002 ±0.0004  
+  *commander_cast_turn__ate_T4                  0.0675       0.0686      +0.0011 ±0.0007  
+  *commander_cast_turn__ate_T5                  0.1800       0.1816      +0.0016 ±0.0011  
+  *eminence_tokens_created                      2.9537       2.9751      +0.0214 ±0.0046  
+  *edgar_attack_counters_total                  7.0819       7.1506      +0.0687 ±0.0163  
+  *creatures_sacrificed_total                   2.6549       2.6748      +0.0199 ±0.0048  
+  *drain_total                                  5.7359       5.8377      +0.1018 ±0.0256  
+  *pw_activations_total                         0.6328       0.6411      +0.0083 ±0.0023  
+  *death_trigger_events                         2.3414       2.3710      +0.0296 ±0.0083  
+  *lifegain_total                               3.9105       3.9704      +0.0599 ±0.0178  
+  *black_market_treasures                       0.4188       0.4279      +0.0091 ±0.0027  
+  *unholy_annex_draws                           0.5623       0.5696      +0.0073 ±0.0023  
+  *edgar_attack_turns                           1.4527       1.4591      +0.0064 ±0.0020  
+  *token_doubler_events                         0.3710       0.3819      +0.0109 ±0.0037  
+  *ophiomancer_snakes_created                   0.2532       0.2579      +0.0047 ±0.0020  
+  *warleaders_call_damage_total                 0.4822       0.4910      +0.0088 ±0.0040  
+  *roaming_throne_doublings                     0.3274       0.3357      +0.0083 ±0.0039  
+
+[so_terreno - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9391 (93.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.3844       6.3877      +0.0033 ±0.0016  
+  *commander_cast_turn__nunca                   0.2209       0.2198      -0.0011 ±0.0007  
+   commander_cast_turn__ate_T3                  0.0072       0.0074      +0.0002 ±0.0004  
+  *commander_cast_turn__ate_T4                  0.0675       0.0686      +0.0011 ±0.0007  
+  *commander_cast_turn__ate_T5                  0.1800       0.1816      +0.0016 ±0.0011  
+  *eminence_tokens_created                      2.9537       2.9751      +0.0214 ±0.0046  
+  *edgar_attack_counters_total                  7.0819       7.1506      +0.0687 ±0.0163  
+  *creatures_sacrificed_total                   2.6549       2.6748      +0.0199 ±0.0048  
+  *drain_total                                  5.7359       5.8377      +0.1018 ±0.0256  
+  *pw_activations_total                         0.6328       0.6411      +0.0083 ±0.0023  
+  *death_trigger_events                         2.3414       2.3710      +0.0296 ±0.0083  
+  *lifegain_total                               3.9105       3.9703      +0.0598 ±0.0178  
+  *black_market_treasures                       0.4188       0.4279      +0.0091 ±0.0027  
+  *unholy_annex_draws                           0.5623       0.5696      +0.0073 ±0.0023  
+  *edgar_attack_turns                           1.4527       1.4591      +0.0064 ±0.0020  
+  *token_doubler_events                         0.3710       0.3819      +0.0109 ±0.0037  
+  *ophiomancer_snakes_created                   0.2532       0.2579      +0.0047 ±0.0020  
+  *warleaders_call_damage_total                 0.4822       0.4910      +0.0088 ±0.0040  
+  *roaming_throne_doublings                     0.3274       0.3357      +0.0083 ±0.0039  
+
+[so_ordem_set - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9999 (100.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lifegain_total                               3.9105       3.9106      +0.0001 ±0.0002  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8056 (80.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.2200       6.2213      +0.0013 ±0.0026  
+   commander_cast_turn__nunca                   0.3165       0.3175      +0.0010 ±0.0021  
+   commander_cast_turn__ate_T3                  0.0040       0.0042      +0.0002 ±0.0004  
+   commander_cast_turn__ate_T4                  0.0425       0.0431      +0.0006 ±0.0008  
+   commander_cast_turn__ate_T5                  0.1148       0.1155      +0.0007 ±0.0013  
+  *eminence_tokens_created                      2.6980       2.7155      +0.0175 ±0.0050  
+  *drain_total                                  4.4098       4.4875      +0.0777 ±0.0235  
+  *lifegain_total                               3.0470       3.0999      +0.0529 ±0.0200  
+  *death_trigger_events                         2.5198       2.5557      +0.0359 ±0.0142  
+  *creatures_sacrificed_total                   2.1440       2.1581      +0.0141 ±0.0060  
+  *purphoros_damage_total                       0.2930       0.3074      +0.0144 ±0.0063  
+  *len_library                                 82.2039      82.1827      -0.0212 ±0.0095  
+  *pw_activations_total                         0.5088       0.5168      +0.0080 ±0.0037  
+  *urzas_saga_entered_turn__ate_T3              0.0683       0.0663      -0.0020 ±0.0010  
+  *len_hand                                     2.9911       2.9746      -0.0165 ±0.0089  
+  *voldaren_estate_blood_tokens                 0.2366       0.2411      +0.0045 ±0.0024  
+  *ramp_pieces_cast                             0.6143       0.6164      +0.0021 ±0.0012  
+  *late_pw_activations_total                    0.1845       0.1865      +0.0020 ±0.0011  
+  *unholy_annex_draws                           0.4982       0.5039      +0.0057 ±0.0033  
+
+[so_terreno - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8056 (80.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.2200       6.2213      +0.0013 ±0.0026  
+   commander_cast_turn__nunca                   0.3165       0.3175      +0.0010 ±0.0021  
+   commander_cast_turn__ate_T3                  0.0040       0.0042      +0.0002 ±0.0004  
+   commander_cast_turn__ate_T4                  0.0425       0.0431      +0.0006 ±0.0008  
+   commander_cast_turn__ate_T5                  0.1148       0.1155      +0.0007 ±0.0013  
+  *eminence_tokens_created                      2.6980       2.7155      +0.0175 ±0.0050  
+  *drain_total                                  4.4098       4.4875      +0.0777 ±0.0235  
+  *lifegain_total                               3.0470       3.0999      +0.0529 ±0.0200  
+  *death_trigger_events                         2.5198       2.5557      +0.0359 ±0.0142  
+  *creatures_sacrificed_total                   2.1440       2.1581      +0.0141 ±0.0060  
+  *purphoros_damage_total                       0.2930       0.3074      +0.0144 ±0.0063  
+  *len_library                                 82.2039      82.1827      -0.0212 ±0.0095  
+  *pw_activations_total                         0.5088       0.5168      +0.0080 ±0.0037  
+  *urzas_saga_entered_turn__ate_T3              0.0683       0.0663      -0.0020 ±0.0010  
+  *len_hand                                     2.9911       2.9746      -0.0165 ±0.0089  
+  *voldaren_estate_blood_tokens                 0.2366       0.2411      +0.0045 ±0.0024  
+  *ramp_pieces_cast                             0.6143       0.6164      +0.0021 ±0.0012  
+  *late_pw_activations_total                    0.1845       0.1865      +0.0020 ±0.0011  
+  *unholy_annex_draws                           0.4982       0.5039      +0.0057 ±0.0033  
+
+[so_ordem_set - antes] N=10000 | partidas com resultado IDENTICO ao da base: 10000 (100.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+Regressao: N=20000 por configuracao/modo, sementes 5_000_000+i; excecoes + invariantes genericas (carta acima do baralho em alguma zona; contadores negativos)
+depois (repositorio)   padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+depois (repositorio)   resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={'mana_spent_this_turn': 374}
+chave_desligada        padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={'mana_spent_this_turn': 370}

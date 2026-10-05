@@ -1,5 +1,94 @@
 # Goldfish Log — Edgar Markov
 
+> **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 + ordem dos payoffs determinística (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
+
+## Terreno virado primeiro em T1/T2 + ordem dos payoffs determinística (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-terreno-virado-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada e com o ensaio sem efeito colateral (modo GHOST). Modo padrão, N=10.000: comandante em campo até T3 0,7% → 0,7% (+0,02 ± 0,04 pp), até T4 +0,11 ± 0,07 pp, até T5 +0,16 ± 0,11 pp; comandante que nunca chega a entrar na partida -0,11 ± 0,07 pp. Modo resiliência: comandante em campo até T3 0,4% → 0,4% (+0,02 ± 0,04 pp), até T4 +0,06 ± 0,08 pp, até T5 +0,07 ± 0,13 pp; comandante que nunca chega a entrar na partida +0,10 ± 0,21 pp. A correção joga o terreno virado primeiro em média 0,26 vez(es) por partida (N=10.000, padrão) e o ensaio impede 0,12 vez(es) por partida (teria custado uma jogada). Terrenos jogados no total: +0,003 ± 0,002 por partida.
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **Terreno que entra virado nunca é jogado primeiro.** `play_land` jogava sempre o primeiro terreno da ordem própria do deck (desvirado antes de virado). Em T1/T2, sem nada pra conjurar, a mana do turno era desperdiçada enquanto o terreno que entra virado ficava na mão pra um turno em que ele custa desenvolvimento. Mesmo erro achado e corrigido no Vihaan e no Megatron (2026-10-03/04).
+- **Ordem de iteração de `set` de strings dependia de `PYTHONHASHSEED`.** A mesma semente dava resultados diferentes em processos diferentes (o hash de `str` muda a cada execução do Python). Medido: 3 `PYTHONHASHSEED` diferentes, 1.500 sementes × 2 modos, comparando o estado final campo a campo (`resumos/determinismo.txt`). Aqui: `for payoff in DEATH_PAYOFFS` (set de nomes) decidia a ordem de disparo dos payoffs de morte. No controle (chave desligada) 0 sementes divergentes em 1.500 × 2 modos: correção **preventiva** (efeitos hoje comutativos).
+
+**O que mudou:**
+- `TAPPED_LAND_FIRST_ENABLED` (padrão `True`), `TAPPED_LAND_FIRST_MAX_TURN = 2`: em T1..T2, havendo terreno virado E desvirado na mão, `tapped_first_pick` joga o virado, **salvo se isso custar desenvolvimento**: o teste é um ENSAIO a seco da própria fase de conjuração pré-combate do deck (cópia profunda do estado; `CARD_DB` compartilhado; RNG do estado copiado; `random` global restaurado), comparando o MV total das cartas que saem da mão com cada candidato. Empate → o virado. Dentro de cada grupo vale a ordem própria do deck (cor mais escassa etc.). Contadores novos no estado: `tapped_land_first_plays_total` (jogou o virado) e `tapped_land_skipped_for_play_total` (o ensaio mostrou que custaria uma jogada e jogou o desvirado). `TAPPED_LAND_FIRST_GHOST` só existe pra validação (roda o ensaio e ignora o resultado). Com a chave em `False` o caminho antigo volta bit a bit.
+- `DETERMINISTIC_SET_ORDER_ENABLED` (padrão `True`): `for payoff in DEATH_PAYOFF_FORMULAS` (dict, ordem de declaração) no lugar de iterar `DEATH_PAYOFFS` (set). Com a chave em `False` o laço antigo (ordem do hash) volta.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9390 (93.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.3844       6.3877      +0.0033 ±0.0016  
+  *commander_cast_turn__nunca                   0.2209       0.2198      -0.0011 ±0.0007  
+   commander_cast_turn__ate_T3                  0.0072       0.0074      +0.0002 ±0.0004  
+  *commander_cast_turn__ate_T4                  0.0675       0.0686      +0.0011 ±0.0007  
+  *commander_cast_turn__ate_T5                  0.1800       0.1816      +0.0016 ±0.0011  
+  *eminence_tokens_created                      2.9537       2.9751      +0.0214 ±0.0046  
+  *edgar_attack_counters_total                  7.0819       7.1506      +0.0687 ±0.0163  
+  *creatures_sacrificed_total                   2.6549       2.6748      +0.0199 ±0.0048  
+  *drain_total                                  5.7359       5.8377      +0.1018 ±0.0256  
+  *pw_activations_total                         0.6328       0.6411      +0.0083 ±0.0023  
+  *death_trigger_events                         2.3414       2.3710      +0.0296 ±0.0083  
+  *lifegain_total                               3.9105       3.9704      +0.0599 ±0.0178  
+  *black_market_treasures                       0.4188       0.4279      +0.0091 ±0.0027  
+  *unholy_annex_draws                           0.5623       0.5696      +0.0073 ±0.0023  
+  *edgar_attack_turns                           1.4527       1.4591      +0.0064 ±0.0020  
+  *token_doubler_events                         0.3710       0.3819      +0.0109 ±0.0037  
+  *ophiomancer_snakes_created                   0.2532       0.2579      +0.0047 ±0.0020  
+  *warleaders_call_damage_total                 0.4822       0.4910      +0.0088 ±0.0040  
+  *roaming_throne_doublings                     0.3274       0.3357      +0.0083 ±0.0039
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8056 (80.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+   lands_played_total                           6.2200       6.2213      +0.0013 ±0.0026  
+   commander_cast_turn__nunca                   0.3165       0.3175      +0.0010 ±0.0021  
+   commander_cast_turn__ate_T3                  0.0040       0.0042      +0.0002 ±0.0004  
+   commander_cast_turn__ate_T4                  0.0425       0.0431      +0.0006 ±0.0008  
+   commander_cast_turn__ate_T5                  0.1148       0.1155      +0.0007 ±0.0013  
+  *eminence_tokens_created                      2.6980       2.7155      +0.0175 ±0.0050  
+  *drain_total                                  4.4098       4.4875      +0.0777 ±0.0235  
+  *lifegain_total                               3.0470       3.0999      +0.0529 ±0.0200  
+  *death_trigger_events                         2.5198       2.5557      +0.0359 ±0.0142  
+  *creatures_sacrificed_total                   2.1440       2.1581      +0.0141 ±0.0060  
+  *purphoros_damage_total                       0.2930       0.3074      +0.0144 ±0.0063  
+  *len_library                                 82.2039      82.1827      -0.0212 ±0.0095  
+  *pw_activations_total                         0.5088       0.5168      +0.0080 ±0.0037  
+  *urzas_saga_entered_turn__ate_T3              0.0683       0.0663      -0.0020 ±0.0010  
+  *len_hand                                     2.9911       2.9746      -0.0165 ±0.0089  
+  *voldaren_estate_blood_tokens                 0.2366       0.2411      +0.0045 ±0.0024  
+  *ramp_pieces_cast                             0.6143       0.6164      +0.0021 ±0.0012  
+  *late_pw_activations_total                    0.1845       0.1865      +0.0020 ±0.0011  
+  *unholy_annex_draws                           0.4982       0.5039      +0.0057 ±0.0033
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** o ganho esperado é pequeno e concentrado em T1–T3: só muda a partida quando a mão tem terreno virado E desvirado e nenhuma jogada de T1/T2 que o terreno desvirado pague (nesses casos o terreno virado deixa de ficar parado na mão até um turno em que atrasaria o desenvolvimento).
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `edgar_markov_goldfish_v1_ANTES_0c92480.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 8/8 (`resumos/testes_dirigidos.txt`); ghost (chave ligada + ensaio ignorado == desligada), 20.000 × 2 modos (`resumos/ghost_20000.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Terreno virado primeiro:** leitura de `play_land` (+ predicado de entrada virada do deck); testes dirigidos TL1–TL8 (escolha com/sem jogada em T1, chave desligada, T3, só um tipo na mão, ensaio sem efeito no estado/RNG/`random`, modo GHOST, integração em `play_land`); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Ensaio sem efeito colateral:** com a chave ligada + modo GHOST (roda o ensaio e ignora o resultado) o resultado é idêntico a tudo desligado, 20.000 × 2 modos (`resumos/ghost_20000.txt`).
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+- **Determinismo:** 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos, controle × correção (`resumos/determinismo.txt`).
+- **Invariante genérica "campos negativos" (regressão):** `mana_spent_this_turn` termina negativo em ~1,9% das partidas de resiliência (374/20.000 com a correção, 370/20.000 com ela desligada; 0 no modo padrão). Não é regressão nem bug de custo: o contador é a mana LÍQUIDA gasta e fica negativo por desenho quando sobra mana bônus no fim do turno (`try_cabal_coffers`: `-= sc-2`; Treasure criado e estalado: `-= count`; Ashnod's/Phyrexian Altar e Phyrexian Tower no `sac_loop`). Conferido em 1.200 partidas de resiliência: 22 terminaram negativas, 17 delas sem altar em campo; li o campo final de 2 delas (uma com Phyrexian Tower, outra com Cabal Coffers); as outras 20 não foram inspecionadas uma a uma.
+
+**Escopo — NÃO verificado:**
+- **Condições de entrada dos terrenos** além do que a varredura mecânica cobriu (`varredura-2026-10-05/`: cenário de campo vazio + cenário condição satisfeita × violada para os padrões "unless you control …"/reveal; terrenos que o `CARD_DB` do deck não tem como básico foram pulados e estão listados lá).
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
+
+---
+
 ## Planeswalkers ativam no turno em que entram + Sorin só sacrifica Vampiro — 2026-09-25
 
 Detalhes em `checklist-oraculo.md`.

@@ -1,0 +1,7 @@
+Determinismo entre processos: mesma semente, 3 PYTHONHASHSEED diferentes (11, 22, 33), N=1500 sementes (1_000_000+i), modos padrao e resiliencia; compara campo a campo o estado final.
+CONTROLE (DETERMINISTIC_SET_ORDER_ENABLED=False, o iterador antigo):
+edgar-markov-mardu         padrao       N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
+edgar-markov-mardu         resiliencia  N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
+CORRECAO (arquivo vivo, DETERMINISTIC_SET_ORDER_ENABLED=True):
+edgar-markov-mardu         padrao       N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
+edgar-markov-mardu         resiliencia  N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
