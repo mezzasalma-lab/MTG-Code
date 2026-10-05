@@ -1,5 +1,20 @@
 # Checklist cláusula-a-cláusula — Ulalek, Fused Atrocity
 
+## Terreno virado primeiro em T1/T2 + Ruins of Oran-Rief entra virada (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| Terreno que entra virado jogado primeiro em T1/T2 quando não custa jogada | 🐛 corrigido: `tapped_first_pick` + ensaio a seco, atrás de `TAPPED_LAND_FIRST_ENABLED` |
+| Ruins of Oran-Rief: entra virada | 🐛 corrigido: `LAND_ENTRY_CONDITIONS_ENABLED` |
+| Cascade (Zhulodok, "cascade, cascade") | inalterado: `do_cascade` devolve os exilados ao fundo na mesma ordem (oráculo: ordem aleatória); o estado não tem RNG, efeito só perto de esgotar o grimório — pendência registrada |
+
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`.
+
+---
+
 ## Mulligan com escolha do fundo (varredura de 2026-10-05) — 2026-10-05
 
 **Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.

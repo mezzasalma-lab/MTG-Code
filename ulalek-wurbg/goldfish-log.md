@@ -1,8 +1,94 @@
 # Goldfish Log — Ulalek, Fused Atrocity
 
+> **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 + Ruins of Oran-Rief entra virada (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
+
 > **Rodada 2026-10-05 (Mulligan com escolha do fundo (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`](resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md)
 
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
+
+---
+
+## Terreno virado primeiro em T1/T2 + Ruins of Oran-Rief entra virada (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-terreno-virado-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada e com o ensaio sem efeito colateral (modo GHOST). Modo padrão, N=10.000: comandante em campo até T3 20,5% → 20,2% (-0,22 ± 0,10 pp), até T4 -0,36 ± 0,13 pp, até T5 -0,24 ± 0,10 pp, comandante que nunca entra +0,03 ± 0,03 pp. Modo resiliência: comandante em campo até T3 19,4% → 19,2% (-0,23 ± 0,09 pp), até T4 -0,42 ± 0,14 pp, até T5 -0,24 ± 0,13 pp, comandante que nunca entra +0,04 ± 0,07 pp. A correção joga o terreno virado primeiro em média 0,08 vez(es) por partida (N=10.000, padrão) e o ensaio impede 0,06 vez(es) por partida (teria custado uma jogada).
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **Terreno que entra virado nunca é jogado primeiro.** `play_land` jogava sempre o primeiro terreno da ordem própria do deck (desvirado antes de virado). Em T1/T2, sem nada pra conjurar, a mana do turno era desperdiçada enquanto o terreno que entra virado ficava na mão pra um turno em que ele custa desenvolvimento. Mesmo erro achado e corrigido no Vihaan e no Megatron (2026-10-03/04).
+- **Ruins of Oran-Rief entrava DESVIRADA.** Oráculo: "This land enters tapped." O `play_land` não tinha nenhum tratamento de entrada virada (só Farseek deduzia mana de terreno virado, via `tapped_phantom_mana_this_turn`): a Ruins produzia {C} no próprio turno (mana fantasma). Achado pela varredura mecânica de entrada (`audit_entrada_ANTES.txt`): é o único terreno do deck que entra virado.
+
+**O que mudou:**
+- `TAPPED_LAND_FIRST_ENABLED` (padrão `True`), `TAPPED_LAND_FIRST_MAX_TURN = 2`: em T1..T2, havendo terreno virado E desvirado na mão, `tapped_first_pick` joga o virado, **salvo se isso custar desenvolvimento**: o teste é um ENSAIO a seco da própria fase de conjuração pré-combate do deck (cópia profunda do estado; `CARD_DB` compartilhado; RNG do estado copiado; `random` global restaurado), comparando o MV total das cartas que saem da mão com cada candidato. Empate → o virado. Dentro de cada grupo vale a ordem própria do deck (cor mais escassa etc.). Contadores novos no estado: `tapped_land_first_plays_total` (jogou o virado) e `tapped_land_skipped_for_play_total` (o ensaio mostrou que custaria uma jogada e jogou o desvirado). `TAPPED_LAND_FIRST_GHOST` só existe pra validação (roda o ensaio e ignora o resultado). Com a chave em `False` o caminho antigo volta bit a bit.
+- `LAND_ENTRY_CONDITIONS_ENABLED` (padrão `True`): `play_land` deduz a mana da Ruins no turno em que entra (`tapped_phantom_mana_this_turn += 1`, a mesma convenção do Farseek).
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8274 (82.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0169       0.0172      +0.0003 ±0.0003  
+  *commander_cast_turn__ate_T3                  0.2047       0.2025      -0.0022 ±0.0010  
+  *commander_cast_turn__ate_T4                  0.6318       0.6282      -0.0036 ±0.0013  
+  *commander_cast_turn__ate_T5                  0.9089       0.9065      -0.0024 ±0.0010  
+  *tapped_phantom_mana_this_turn                0.0198       0.0345      +0.0147 ±0.0024  
+  *len_battlefield                             14.6606      14.6299      -0.0307 ±0.0073  
+  *spell_token_copies_total                     1.7268       1.7146      -0.0122 ±0.0041  
+  *len_library                                 80.1159      80.1429      +0.0270 ±0.0092  
+  *finisher_resolved_total                      0.4482       0.4415      -0.0067 ±0.0023  
+  *first_finisher_turn__nunca                   0.7643       0.7677      +0.0034 ±0.0012  
+  *ulalek_copies_total                          1.5441       1.5340      -0.0101 ±0.0036  
+  *ulalek_cc_payments_safe                      1.4963       1.4865      -0.0098 ±0.0035  
+  *flash_online_turns                           1.5072       1.5021      -0.0051 ±0.0021  
+  *cards_drawn_extra                            2.1673       2.1491      -0.0182 ±0.0075  
+  *one_ring_burden                              0.3773       0.3736      -0.0037 ±0.0017  
+  *interaction_spells_cast_total                2.1217       2.1170      -0.0047 ±0.0022  
+  *len_graveyard                                3.1074       3.0983      -0.0091 ±0.0044  
+  *ramp_pieces_resolved_total                   2.1125       2.1071      -0.0054 ±0.0027
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8314 (83.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0353       0.0357      +0.0004 ±0.0007  
+  *commander_cast_turn__ate_T3                  0.1943       0.1920      -0.0023 ±0.0009  
+  *commander_cast_turn__ate_T4                  0.5741       0.5699      -0.0042 ±0.0014  
+  *commander_cast_turn__ate_T5                  0.8529       0.8505      -0.0024 ±0.0013  
+  *tapped_phantom_mana_this_turn                0.0151       0.0282      +0.0131 ±0.0022  
+  *spell_token_copies_total                     1.1679       1.1580      -0.0099 ±0.0035  
+  *ulalek_copies_total                          1.0874       1.0783      -0.0091 ±0.0034  
+  *ulalek_cc_payments_safe                      1.0469       1.0383      -0.0086 ±0.0033  
+  *ruins_oran_rief_counters_total               0.4585       0.4681      +0.0096 ±0.0050  
+  *writhing_chrysalis_counters_total            0.5049       0.4996      -0.0053 ±0.0029  
+  *graveyard_wipe_used                          0.3364       0.3336      -0.0028 ±0.0016  
+  *len_smart_graveyard_wipe_log                 0.3364       0.3336      -0.0028 ±0.0016  
+  *smart_graveyard_wipes_total                  0.3364       0.3336      -0.0028 ±0.0016  
+  *len_battlefield                             11.1092      11.0927      -0.0165 ±0.0099  
+  *interaction_spells_cast_total                1.9054       1.9019      -0.0035 ±0.0022  
+  *len_hand                                     2.3599       2.3690      +0.0091 ±0.0057  
+  *spawn_tokens_created_total                   1.4216       1.4145      -0.0071 ±0.0045  
+  *ramp_pieces_resolved_total                   1.9594       1.9556      -0.0038 ±0.0025
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** o deck tem 1 terreno virado entre 37, então a correção do `tapped-first` dispara pouco (ver contadores); o ganho da Ruins virada é negativo no turno em que entra (menos 1 {C} em T2–T5 quando ela é jogada), o que é o oráculo, não uma perda do simulador.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `ulalek_goldfish_v1_ANTES_7918e0b.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 11/11 (`resumos/testes_dirigidos.txt`); ghost (chave ligada + ensaio ignorado == desligada), 20.000 × 2 modos (`resumos/ghost_20000.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Terreno virado primeiro:** leitura de `play_land` (+ predicado de entrada virada do deck); testes dirigidos TL1–TL8 (escolha com/sem jogada em T1, chave desligada, T3, só um tipo na mão, ensaio sem efeito no estado/RNG/`random`, modo GHOST, integração em `play_land`); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Ensaio sem efeito colateral:** com a chave ligada + modo GHOST (roda o ensaio e ignora o resultado) o resultado é idêntico a tudo desligado, 20.000 × 2 modos (`resumos/ghost_20000.txt`).
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+- **Ruins:** testes dirigidos TL12–TL14 (entra virada: sem mana no turno; terreno comum segue desvirado; chave desligada = antigo).
+
+**Escopo — NÃO verificado:**
+- **Condições de entrada dos terrenos** além do que a varredura mecânica cobriu (`varredura-2026-10-05/`: cenário de campo vazio + cenário condição satisfeita × violada para os padrões "unless you control …"/reveal; terrenos que o `CARD_DB` do deck não tem como básico foram pulados e estão listados lá).
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
 
 ---
 
