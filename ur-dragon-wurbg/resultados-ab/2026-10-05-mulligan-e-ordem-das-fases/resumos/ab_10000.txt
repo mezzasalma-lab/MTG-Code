@@ -1,0 +1,22 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8667 (86.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.1515       0.1401      -0.0114 ±0.0027  
+   commander_cast_turn__ate_T3                  0.0006       0.0005      -0.0001 ±0.0002  
+   commander_cast_turn__ate_T4                  0.0215       0.0221      +0.0006 ±0.0008  
+  *commander_cast_turn__ate_T5                  0.1535       0.1587      +0.0052 ±0.0021  
+  *own_interaction_used                         0.8189       0.8316      +0.0127 ±0.0028  
+  *commander_cast_count                         0.8485       0.8599      +0.0114 ±0.0027  
+  *commander_in_play                            0.8486       0.8600      +0.0114 ±0.0027  
+  *urdragon_free_permanents_total               2.4304       2.4666      +0.0362 ±0.0114  
+  *len_life_paid                                2.3053       2.3174      +0.0121 ±0.0041  
+  *fetches_cracked_total                        1.3173       1.3264      +0.0091 ±0.0036  
+  *len_battlefield                             28.6873      28.9387      +0.2514 ±0.0983  
+  *commander_cast_turn__ate_T6                  0.3882       0.3948      +0.0066 ±0.0028  
+  *arcane_denial_draws_total                    0.1174       0.1201      +0.0027 ±0.0012  
+  *sarkhan_triumph_cast_total                   0.4300       0.4368      +0.0068 ±0.0030  
+  *commander_damage_dealt                      23.5533      24.0171      +0.4638 ±0.2072  
+  *len_library                                 43.0598      42.6230      -0.4368 ±0.1959  
+  *dragon_hoard_draws_total                     0.4349       0.4441      +0.0092 ±0.0043  
+  *path_scry_turn__ate_T3                       0.8419       0.8388      -0.0031 ±0.0015  

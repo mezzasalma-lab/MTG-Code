@@ -1,5 +1,20 @@
 # Checklist cláusula-a-cláusula — The Ur-Dragon (`urdragon_goldfish_v1.py`)
 
+## Mulligan com escolha do fundo (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| London Mulligan, CR 103.5 | 🐛 corrigido: `choose_bottom`, atrás de `MULLIGAN_SMART_BOTTOM_ENABLED` |
+| Imposto de comandante, CR 903.8 | ✅ já estava (`effective_cost` soma `2 * commander_cast_count`) |
+| Upkeep antes do draw (CR 503/504) | ✅ já estava (`play_turn`: upkeep, depois a compra) |
+| Entrada de terrenos (slow/shock/triome) e fetchlands | ✅ já modelados em `land_enters`/`crack_fetch` (corrigido em 2026-09-28); tapped-first não tratado nesta seção |
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`.
+
+---
+
 ## Conceitos "Dwarf" e "Treasure" varridos (Magda, Firdoch Core, Morophon) — 2026-09-28 (4ª rodada do dia)
 
 **Gatilho:** o usuário apontou que eu esqueci o Treasure do tap do Firdoch
