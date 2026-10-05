@@ -1,0 +1,105 @@
+## MILL_OPONENTE (10): Altar of Dementia, Altar of the Brood, Deepmuck Desperado, Memory Erosion, Mindcrank, Psychic Corrosion, Rampant Frogantua, Ruin Crab, Takenuma, Abandoned Mire, Undead Alchemist
+## MILL_PROPRIO (7): Bramble Familiar // Fetch Quest, Icetill Explorer, Palantír of Orthanc, Ruin Crab, Six, Smuggler's Surprise, Takenuma, Abandoned Mire
+## PAGA_CARTA_MILLED (7): The Wise Mothman, Bloodchief Ascension, Kozilek, Butcher of Truth, Mirelurk Queen, Syr Konrad, the Grim, Undead Alchemist, Zellix, Sanity Flayer
+## RAD (3): The Wise Mothman, Mirelurk Queen, Nuclear Fallout
+## COLOCA_P1P1 (19): The Wise Mothman, Agatha's Soul Cauldron, Basking Broodscale, Danny Pink, Evolution Witness, Fathom Mage, Generous Patron, Gyre Sage, Hardened Scales, Herd Baloth, Hollowmurk Siege, Kami of Whispered Hopes, Mirelurk Queen, Ouroboroid, Pollywog Prodigy, Repulsive Mutation, The Great Henge, Walking Ballista, Wave Goodbye
+## DOBRA_CONTADOR (4): Angel of Suffering, Hardened Scales, Kami of Whispered Hopes, Winding Constrictor
+## PAGA_CONTADOR (8): Basking Broodscale, Danny Pink, Evolution Witness, Fathom Mage, Gyre Sage, Herd Baloth, Hollowmurk Siege, Pollywog Prodigy
+## TERRENO_NO_CEMITERIO (8): Bramble Familiar // Fetch Quest, Freestrider Lookout, Hedge Shredder, Icetill Explorer, Rampant Frogantua, Ruin Crab, Six, The Gitrog Monster
+## PROLIFERA (1): Cankerbloom
+## COMPRA (16): Arcane Denial, Cold-Eyed Selkie, Danny Pink, Fathom Mage, Generous Patron, Hollowmurk Siege, Kozilek, Butcher of Truth, Mirelurk Queen, Palantír of Orthanc, Pollywog Prodigy, Psychic Corrosion, Soul-Guide Lantern, The Gitrog Monster, The Great Henge, Waterlogged Grove, Zagoth Triome
+## CONTRAMAGICA (6): An Offer You Can't Refuse, Arcane Denial, Didn't Say Please, Fierce Guardianship, Glen Elendra Archmage, Negate
+## PROTEGE (6): Heroic Intervention, Plaza of Heroes, Smuggler's Surprise, Swarmyard, Swiftfoot Boots, Yavimaya Hollow
+## REMOVE (13): Agatha's Soul Cauldron, Bojuka Bog, Boseiju, Who Endures, Bramble Familiar // Fetch Quest, Cankerbloom, Nuclear Fallout, Soul-Guide Lantern, Strip Mine, Syr Konrad, the Grim, Tear Asunder, Toxic Deluge, Walking Ballista, Wave Goodbye
+## MANA (31): Agadeem's Awakening // Agadeem, the Undercrypt, An Offer You Can't Refuse, Basking Broodscale, Bojuka Bog, Boseiju, Who Endures, Bramble Familiar // Fetch Quest, Breeding Pool, Fabled Passage, Gyre Sage, Icetill Explorer, Minamo, School at Water's Edge, Misty Rainforest, Morphic Pool, Nature's Lore, Overgrown Tomb, Plaza of Heroes, Rejuvenating Springs, Shifting Woodland, Sol Ring, Strip Mine, Swarmyard, Takenuma, Abandoned Mire, The Gitrog Monster, The Great Henge, Three Visits, Undergrowth Stadium, Urza's Saga, Waterlogged Grove, Watery Grave, Yavimaya Hollow, Zagoth Triome
+## LEGENDARIA (17): The Wise Mothman, Agatha's Soul Cauldron, Ashiok, Dream Render, Boseiju, Who Endures, Danny Pink, Kodama of the West Tree, Kozilek, Butcher of Truth, Minamo, School at Water's Edge, Muldrotha, the Gravetide, Palantír of Orthanc, Six, Syr Konrad, the Grim, Takenuma, Abandoned Mire, The Gitrog Monster, The Great Henge, Yavimaya Hollow, Zellix, Sanity Flayer
+
+## cartas por numero de motores (sem LEGENDARIA/MANA/COMPRA genericos) — menos ligadas primeiro
+0 | Agadeem's Awakening // Agadeem, the Undercrypt | MANA
+0 | Ashiok, Dream Render | LEGENDARIA
+0 | Breeding Pool | MANA
+0 | Command Tower | 
+0 | Fabled Passage | MANA
+0 | Kodama of the West Tree | LEGENDARIA
+0 | Mesmeric Orb | 
+0 | Minamo, School at Water's Edge | MANA,LEGENDARIA
+0 | Misty Rainforest | MANA
+0 | Morphic Pool | MANA
+0 | Muldrotha, the Gravetide | LEGENDARIA
+0 | Nature's Lore | MANA
+0 | Overgrown Tomb | MANA
+0 | Polluted Delta | 
+0 | Rejuvenating Springs | MANA
+0 | Shifting Woodland | MANA
+0 | Sol Ring | MANA
+0 | Three Visits | MANA
+0 | Undergrowth Stadium | MANA
+0 | Urza's Saga | MANA
+0 | V.A.T.S. | 
+0 | Verdant Catacombs | 
+0 | Watery Grave | MANA
+1 | Altar of Dementia | MILL_OPONENTE
+1 | Altar of the Brood | MILL_OPONENTE
+1 | An Offer You Can't Refuse | CONTRAMAGICA,MANA
+1 | Angel of Suffering | DOBRA_CONTADOR
+1 | Bloodchief Ascension | PAGA_CARTA_MILLED
+1 | Bojuka Bog | REMOVE,MANA
+1 | Boseiju, Who Endures | REMOVE,MANA,LEGENDARIA
+1 | Cold-Eyed Selkie | COMPRA
+1 | Deepmuck Desperado | MILL_OPONENTE
+1 | Didn't Say Please | CONTRAMAGICA
+1 | Fierce Guardianship | CONTRAMAGICA
+1 | Freestrider Lookout | TERRENO_NO_CEMITERIO
+1 | Glen Elendra Archmage | CONTRAMAGICA
+1 | Hedge Shredder | TERRENO_NO_CEMITERIO
+1 | Heroic Intervention | PROTEGE
+1 | Memory Erosion | MILL_OPONENTE
+1 | Mindcrank | MILL_OPONENTE
+1 | Negate | CONTRAMAGICA
+1 | Ouroboroid | COLOCA_P1P1
+1 | Plaza of Heroes | PROTEGE,MANA
+1 | Repulsive Mutation | COLOCA_P1P1
+1 | Strip Mine | REMOVE,MANA
+1 | Swarmyard | PROTEGE,MANA
+1 | Swiftfoot Boots | PROTEGE
+1 | Tear Asunder | REMOVE
+1 | Toxic Deluge | REMOVE
+1 | Waterlogged Grove | COMPRA,MANA
+1 | Winding Constrictor | DOBRA_CONTADOR
+1 | Yavimaya Hollow | PROTEGE,MANA,LEGENDARIA
+1 | Zagoth Triome | COMPRA,MANA
+1 | Zellix, Sanity Flayer | PAGA_CARTA_MILLED,LEGENDARIA
+2 | Agatha's Soul Cauldron | COLOCA_P1P1,REMOVE,LEGENDARIA
+2 | Arcane Denial | COMPRA,CONTRAMAGICA
+2 | Basking Broodscale | COLOCA_P1P1,PAGA_CONTADOR,MANA
+2 | Cankerbloom | PROLIFERA,REMOVE
+2 | Evolution Witness | COLOCA_P1P1,PAGA_CONTADOR
+2 | Generous Patron | COLOCA_P1P1,COMPRA
+2 | Gyre Sage | COLOCA_P1P1,PAGA_CONTADOR,MANA
+2 | Hardened Scales | COLOCA_P1P1,DOBRA_CONTADOR
+2 | Herd Baloth | COLOCA_P1P1,PAGA_CONTADOR
+2 | Icetill Explorer | MILL_PROPRIO,TERRENO_NO_CEMITERIO,MANA
+2 | Kami of Whispered Hopes | COLOCA_P1P1,DOBRA_CONTADOR
+2 | Kozilek, Butcher of Truth | PAGA_CARTA_MILLED,COMPRA,LEGENDARIA
+2 | Nuclear Fallout | RAD,REMOVE
+2 | Palantír of Orthanc | MILL_PROPRIO,COMPRA,LEGENDARIA
+2 | Psychic Corrosion | MILL_OPONENTE,COMPRA
+2 | Rampant Frogantua | MILL_OPONENTE,TERRENO_NO_CEMITERIO
+2 | Six | MILL_PROPRIO,TERRENO_NO_CEMITERIO,LEGENDARIA
+2 | Smuggler's Surprise | MILL_PROPRIO,PROTEGE
+2 | Soul-Guide Lantern | COMPRA,REMOVE
+2 | Syr Konrad, the Grim | PAGA_CARTA_MILLED,REMOVE,LEGENDARIA
+2 | Takenuma, Abandoned Mire | MILL_OPONENTE,MILL_PROPRIO,MANA,LEGENDARIA
+2 | The Gitrog Monster | TERRENO_NO_CEMITERIO,COMPRA,MANA,LEGENDARIA
+2 | The Great Henge | COLOCA_P1P1,COMPRA,MANA,LEGENDARIA
+2 | Undead Alchemist | MILL_OPONENTE,PAGA_CARTA_MILLED
+2 | Walking Ballista | COLOCA_P1P1,REMOVE
+2 | Wave Goodbye | COLOCA_P1P1,REMOVE
+3 | Bramble Familiar // Fetch Quest | MILL_PROPRIO,TERRENO_NO_CEMITERIO,REMOVE,MANA
+3 | Danny Pink | COLOCA_P1P1,PAGA_CONTADOR,COMPRA,LEGENDARIA
+3 | Fathom Mage | COLOCA_P1P1,PAGA_CONTADOR,COMPRA
+3 | Hollowmurk Siege | COLOCA_P1P1,PAGA_CONTADOR,COMPRA
+3 | Pollywog Prodigy | COLOCA_P1P1,PAGA_CONTADOR,COMPRA
+3 | Ruin Crab | MILL_OPONENTE,MILL_PROPRIO,TERRENO_NO_CEMITERIO
+3 | The Wise Mothman | PAGA_CARTA_MILLED,RAD,COLOCA_P1P1,LEGENDARIA
+4 | Mirelurk Queen | PAGA_CARTA_MILLED,RAD,COLOCA_P1P1,COMPRA

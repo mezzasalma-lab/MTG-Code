@@ -1,0 +1,14 @@
+base: incluidos 2 quase 134
+10 / 121
+20 / 121
+30 / 121
+40 / 121
+50 / 121
+60 / 121
+70 / 121
+80 / 121
+90 / 121
+100 / 121
+110 / 121
+120 / 121
+fim: 121 candidatas; 0 nao reconhecidas pelo Spellbook

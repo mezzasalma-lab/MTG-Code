@@ -1,0 +1,43 @@
+## Tipos de criatura/permanente (enumerado por type_line; sem changeling na lista)
+- Creature (32): The Wise Mothman, Angel of Suffering, Basking Broodscale, Bramble Familiar // Fetch Quest, Cankerbloom, Cold-Eyed Selkie, Danny Pink, Deepmuck Desperado, Evolution Witness, Fathom Mage, Freestrider Lookout, Generous Patron, Glen Elendra Archmage, Gyre Sage, Herd Baloth, Icetill Explorer, Kami of Whispered Hopes, Kodama of the West Tree, Kozilek, Butcher of Truth, Mirelurk Queen, Muldrotha, the Gravetide, Ouroboroid, Pollywog Prodigy, Rampant Frogantua, Ruin Crab, Six, Syr Konrad, the Grim, The Gitrog Monster, Undead Alchemist, Walking Ballista, Winding Constrictor, Zellix, Sanity Flayer
+- Insect (2): The Wise Mothman, Icetill Explorer
+- Mutant (3): The Wise Mothman, Evolution Witness, Mirelurk Queen
+- Zombie (1): Undead Alchemist
+- Advisor (2): Danny Pink, Generous Patron
+- Elf (3): Evolution Witness, Generous Patron, Gyre Sage
+- Horror (2): The Gitrog Monster, Zellix, Sanity Flayer
+- Frog (3): Pollywog Prodigy, Rampant Frogantua, The Gitrog Monster
+- Wizard (3): Fathom Mage, Glen Elendra Archmage, Pollywog Prodigy
+- Elemental (2): Bramble Familiar // Fetch Quest, Muldrotha, the Gravetide
+- Construct (1): Walking Ballista
+- Artifact (12): Agatha's Soul Cauldron, Altar of Dementia, Altar of the Brood, Hedge Shredder, Mesmeric Orb, Mindcrank, Palantír of Orthanc, Sol Ring, Soul-Guide Lantern, Swiftfoot Boots, The Great Henge, Walking Ballista
+- Legendary (17): The Wise Mothman, Agatha's Soul Cauldron, Ashiok, Dream Render, Boseiju, Who Endures, Danny Pink, Kodama of the West Tree, Kozilek, Butcher of Truth, Minamo, School at Water's Edge, Muldrotha, the Gravetide, Palantír of Orthanc, Six, Syr Konrad, the Grim, Takenuma, Abandoned Mire, The Gitrog Monster, The Great Henge, Yavimaya Hollow, Zellix, Sanity Flayer
+- Enchantment (6): Bloodchief Ascension, Hardened Scales, Hollowmurk Siege, Memory Erosion, Psychic Corrosion, Urza's Saga
+- Planeswalker (1): Ashiok, Dream Render
+- Vehicle (1): Hedge Shredder
+- Equipment (1): Swiftfoot Boots
+
+criaturas (face da frente): 32; + Hedge Shredder (Veiculo, vira criatura com Crew 1)
+MDFC/adventure com face criatura: ['Bramble Familiar // Fetch Quest']
+
+## Fontes de 'terreno entra no campo' alem da jogada normal de terreno (suporta Evolution Sage / Ruin Crab / landfall)
+(13) Bramble Familiar // Fetch Quest, Fabled Passage, Freestrider Lookout, Hedge Shredder, Icetill Explorer, Kodama of the West Tree, Misty Rainforest, Muldrotha, the Gravetide, Nature's Lore, Polluted Delta, The Gitrog Monster, Three Visits, Verdant Catacombs
+
+## Hipergeometrica (Regra 7 de user-standing-rules): P(ter TODAS as pecas na mao ate o turno T), biblioteca de 99 cartas (comandante fora), 7 cartas na mao inicial + 1 compra por turno (no jogo de 4 jogadores todos compram no T1)
+- Bloodchief Ascension + Mindcrank (2 pecas): T6: 1.6% | T8: 2.2% | T10: 2.8% | T12: 3.5%  (so' compras normais; sem tutor/draw extra; Gitrog/Henge/Hollowmurk/Danny Pink etc. aumentam)
+- Altar of Dementia + The Great Henge + Glen Elendra Archmage (3 pecas): T6: 0.2% | T8: 0.3% | T10: 0.4% | T12: 0.6%  (so' compras normais; sem tutor/draw extra; Gitrog/Henge/Hollowmurk/Danny Pink etc. aumentam)
+(Antes de mana, de a Ascension juntar 3 marcadores de busca e de sobreviver a remocao.)
+
+## Hipergeometrica com a candidata Master of Lake-town (segundo parceiro da Ascension)
+- Bloodchief Ascension + (Mindcrank OU The Master of Lake-town): T6: 3.0% (so' Mindcrank: 1.6%) | T8: 4.0% (so' Mindcrank: 2.2%) | T10: 5.2% (so' Mindcrank: 2.8%) | T12: 6.4% (so' Mindcrank: 3.5%)
+
+## Risco do Kozilek num deck de auto-mill: P(Kozilek ser milado) = cartas milladas / 99 (ordem aleatoria)
+- 15 cartas milladas: 15% | 30 cartas milladas: 30% | 45 cartas milladas: 45% | 60 cartas milladas: 61%  (quando Kozilek vai pro cemiterio de qualquer lugar, ele embaralha o cemiterio inteiro na biblioteca: zera Six/Muldrotha/Icetill/Agatha)
+
+## Armadilhas de Bracket: combos de 2 cartas que UMA carta pos-EOE completaria (Spellbook 'quase'), probabilidade de ter a peca ja' na lista + k completares ate o turno T
+- 2 pecas (1 ja' na lista, ex.: Basking Broodscale ou Walking Ballista, + 1 de 1 completares): T6: 1.6% | T8: 2.2% | T10: 2.8%
+- 2 pecas (1 ja' na lista, ex.: Basking Broodscale ou Walking Ballista, + 1 de 3 completares): T6: 4.3% | T8: 5.7% | T10: 7.2%
+- 2 pecas (1 ja' na lista, ex.: Basking Broodscale ou Walking Ballista, + 1 de 5 completares): T6: 6.4% | T8: 8.3% | T10: 10.3%
+- 3 pecas (2 ja' na lista, ex.: Altar of Dementia + Glen Elendra, + 1 de 1 completares): T6: 0.18% | T8: 0.29% | T10: 0.43%
+- 3 pecas (2 ja' na lista, ex.: Altar of Dementia + Glen Elendra, + 1 de 3 completares): T6: 0.49% | T8: 0.77% | T10: 1.12%
+- 3 pecas (2 ja' na lista, ex.: Altar of Dementia + Glen Elendra, + 1 de 5 completares): T6: 0.74% | T8: 1.13% | T10: 1.62%

@@ -232,7 +232,15 @@ os "motores" de memória, e combo não entrou na lista. O passo 2 acima não
    lista. O combo que SOME com a troca é custo da troca. O que APARECE
    (inclusive um tutor que monta combo já existente) é ganho, e também
    pode mudar o Bracket (Regra 7 de `user-standing-rules.md`). A
-   diferença entra no relatório, com o nome do combo.
+   diferença entra no relatório, com o nome do combo. **A API ignora, sem
+   erro, nome de carta que não reconhece** (achado de 2026-10-05, deck
+   Mothman): "nenhum combo novo" com nome não reconhecido é resultado
+   vácuo. Resolver cada nome antes via `GET /cards/?q=<nome>` (cartas de
+   2 faces entram como `Frente // Verso`), registrar no arquivo de dados
+   se foi reconhecido, e rodar sempre um **controle positivo** (combo
+   conhecido tem de aparecer) e um **controle de corte** (cortar peça de
+   combo da lista tem de fazê-lo sumir). Rodadas antigas deste
+   repositório que passaram nomes sem essa checagem não foram reauditadas.
 3. **Conferir se o simulador executa o combo.** Se não executa, o valor
    da peça no A/B é piso, e isso vira fix no simulador (Regra #5) antes de
    concluir.

@@ -180,6 +180,13 @@ não velocidade):**
 - Registrar esse cálculo explicitamente na auditoria/log, não só a
   conclusão — pra não repetir o erro de alarmar sobre reclassificação de
   Bracket antes de checar viabilidade real.
+- **O Commander Spellbook ignora, sem erro, nome de carta que não
+  reconhece** (achado de 2026-10-05, deck Mothman). Antes de dizer "essa
+  carta não cria combo", resolver o nome via `GET /cards/?q=<nome>` (carta
+  de 2 faces: `Frente // Verso`), gravar nos dados se foi reconhecida e
+  rodar um controle positivo (combo conhecido aparece) e um controle de
+  corte (tirar peça de combo da lista o faz sumir). Rodadas anteriores
+  que usaram nomes sem essa checagem não foram reauditadas.
 
 ## 8. Necessidade real de mana é turno-a-turno, não soma agregada de pips
 

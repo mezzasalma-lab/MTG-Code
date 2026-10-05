@@ -1,0 +1,91 @@
+1 The Wise Mothman (SLD) 2455 *F*
+1 Aerith's Curaga Magic (SLD) 1872 *F*
+1 Agadeem's Awakening / Agadeem, the Undercrypt (ZNR) 336 *F*
+1 Agatha's Soul Cauldron (WOE) 366 *F*
+1 Altar of Dementia (BRR) 66 *F*
+1 Altar of the Brood (SLC) 1 *F*
+1 An Offer You Can't Refuse (FDN) 311 *F*
+1 Angel of Suffering (SNC) 416 *F*
+1 Arcane Denial (SLD) 2489 *F*
+1 Ashiok, Dream Render (WAR) 228 *F*
+1 Basking Broodscale (MH3) 145 *F*
+1 Bloodchief Ascension (CMM) 636 *F*
+1 Bojuka Bog (SLD) 1532★ *F*
+1 Boseiju, Who Endures (NEO) 412 *F*
+1 Bramble Familiar / Fetch Quest (WOE) 283 *F*
+1 Breeding Pool (EOE) 278 *F*
+1 Cankerbloom (ONE) 294 *F*
+1 Cold-Eyed Selkie (MMA) 186 *F*
+1 Command Tower (PW25) 17 *F*
+1 Danny Pink (WHO) 356 *F*
+1 Deepmuck Desperado (OTJ) 42 *F*
+1 Didn't Say Please (ELD) 42 *F*
+1 Dol Amroth (LTC) 369 *F*
+1 Evolution Witness (MH3) 424 *F*
+1 Fabled Passage (BLB) 367 *F*
+1 Fathom Mage (GTC) 162 *F*
+1 Fierce Guardianship (CMM) 694 *F*
+5 Forest (AKH) 268
+1 Freestrider Lookout (OTJ) 340 *F*
+1 Generous Patron (SLD) 768 *F*
+1 Glen Elendra Archmage (SLD) 115 *F*
+1 Gyre Sage (GTC) 123 *F*
+1 Hardened Scales (WOT) 55 *F*
+1 Hedge Shredder (DSK) 320 *F*
+1 Herd Baloth (MH2) 165 *F*
+1 Hollowmurk Siege (TDM) 387 *F*
+1 Icetill Explorer (EOE) 362 *F*
+4 Island (DDM) 41
+1 Kami of Whispered Hopes (MOM) 383 *F*
+1 Kodama of the West Tree (NEO) 392 *F*
+1 Kozilek, Butcher of Truth (2X2) 576 *F*
+1 Memory Erosion (ALA) 50 *F*
+1 Mindcrank (SLD) 2456 *F*
+1 Mirelurk Hatchling (SLD) 7095 *F*
+1 Mirelurk Queen (PIP) 377 *F*
+1 Misty Rainforest (SPG) 116 *F*
+1 Morphic Pool (ZNE) 17 *F*
+1 Mothman Egg (SLD) 2457 *F*
+1 Muldrotha, the Gravetide (FDN) 430 *F*
+1 Nature's Lore (DMR) 346 *F*
+1 Negate (STA) 18 *F*
+1 Nuclear Fallout (PIP) 331 *F*
+1 Ouroboroid (EOE) 345 *F*
+1 Overgrown Tomb (ECL) 350 *F*
+1 Palantír of Orthanc (HOC) 45 *F*
+1 Plaza of Heroes (EOS) 78 *F*
+1 Polluted Delta (MH3) 356 *F*
+1 Pollywog Prodigy (BLC) 50
+1 Psychic Corrosion (M19) 68 *F*
+1 Rampant Frogantua (M3C) 66 *F*
+1 Rejuvenating Springs (CMM) 662 *F*
+1 Repulsive Mutation (MKM) 227 *F*
+1 Shifting Woodland (MH3) 357 *F*
+1 Six (SLD) 2660 *F*
+1 Smuggler's Surprise (OTJ) 345 *F*
+1 Sol Ring (SLD) 2560 *F*
+1 Soul-Guide Lantern (WOE) 251
+1 Strip Mine (EOS) 85 *F*
+3 Swamp (MKM) 282
+1 Swarmyard (EOS) 87 *F*
+1 Swiftfoot Boots (MBC) 77 *F*
+1 Syr Konrad, the Grim (SLD) 1297 *F*
+1 Takenuma, Abandoned Mire (NEO) 416 *F*
+1 Tear Asunder (DMU) 183 *F*
+1 The Gitrog Monster (BLC) 88 *F*
+1 The Party Tree (LTC) 348 *F*
+1 Toxic Deluge (2XM) 345 *F*
+1 Undead Alchemist (ISD) 84 *F*
+1 Undergrowth Stadium (CMM) 666 *F*
+1 Urza's Saga (SLC) 21 *F*
+1 V.A.T.S. (PIP) 333 *F*
+1 Verdant Catacombs (SPG) 113 *F*
+1 Walking Ballista (MB2) 238 *F*
+1 Waterlogged Grove (ACR) 116 *F*
+1 Watery Grave (EOE) 286 *F*
+1 Wave Goodbye (TMC) 46 *F*
+1 We Want . . . A SHRUBBERY! (SLD) 1676 *F*
+1 Winding Constrictor (PIP) 751 *F*
+1 Yavimaya Hollow (UDS) 143 *F*
+1 Zagoth Triome (IKO) 313 *F*
+1 Zellix, Sanity Flayer (CLB) 619 *F*
