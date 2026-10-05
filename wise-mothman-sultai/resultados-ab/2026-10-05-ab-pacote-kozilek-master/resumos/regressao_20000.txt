@@ -1,0 +1,13 @@
+Regressao: N=20000 por variante/modo, sementes 5_000_000+i; excecoes + invariantes genericas (carta acima do baralho em alguma zona; contadores negativos)
+base                               padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+base                               resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+pacote5                            padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+pacote5                            resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+pacote5+master_por_negate          padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+pacote5+master_por_negate          resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+kozilek_sem_embaralhar             padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+kozilek_sem_embaralhar             resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+kozilek_cortado_por_forest         padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+kozilek_cortado_por_forest         resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+controle_guarda_desligada          padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+controle_guarda_desligada          resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}

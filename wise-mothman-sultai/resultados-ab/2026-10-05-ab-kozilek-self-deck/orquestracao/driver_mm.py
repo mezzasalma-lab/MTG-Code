@@ -82,12 +82,17 @@ def ab():
         nomes = list(VAR) if N == 2000 else cfg["variantes_10000"]
         for modo in MODOS:
             seeds = range(seed0, seed0 + N)
-            res = {}
-            for nome in nomes:
-                res[nome] = A.serie_paralela(SIM, f"ab_{nome[:10]}_{modo}_{N}", DECK, VAR[nome], modo, seeds, TURNS)
-                print("feito", N, modo, nome, flush=True)
             suf = "" if modo == "padrao" else "_resiliencia"
-            A.salvar_raw(os.path.join(OUTDIR, "dados", f"raw_ab_{N}{suf}"), res)
+            rawp = os.path.join(OUTDIR, "dados", f"raw_ab_{N}{suf}")
+            if os.path.exists(rawp + ".json.xz") and not os.environ.get("REFAZ"):
+                res = A.carregar_raw(rawp)            # retomada apos reinicio do contêiner: o lote ja' gravado (mesmo codigo, mesmas sementes) e' reaproveitado
+                print("reaproveitado", N, modo, flush=True)
+            else:
+                res = {}
+                for nome in nomes:
+                    res[nome] = A.serie_paralela(SIM, f"ab_{nome[:10]}_{modo}_{N}", DECK, VAR[nome], modo, seeds, TURNS)
+                    print("feito", N, modo, nome, flush=True)
+                A.salvar_raw(rawp, res)
             out(f"ab_{N}{suf}.txt", tabelas(res, N, seed0, modo))
 
 

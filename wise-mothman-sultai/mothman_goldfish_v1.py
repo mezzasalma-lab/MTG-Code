@@ -3785,6 +3785,8 @@ def combat_step(state: GameState):
             best = max(attackers, key=lambda q: (counter_target_value(state, q), -q.uid))
             place_counters(state, best, 1, source="hollowmurk_abzan")
     # --- dano de combate (simultaneo)
+    if state.game_over or not alive_opps(state):
+        return                                  # Hollowmurk Abzan / compras podem ter eliminado a mesa (ex.: Psychic Corrosion + Ascension + Mindcrank)
     targets = assign_targets(state, attackers)
     dmg = collections.defaultdict(int)
     zombie_mill = collections.defaultdict(int)
@@ -3793,7 +3795,9 @@ def combat_step(state: GameState):
         pw = power(state, p)
         if pw <= 0:
             continue
-        idx = targets[p.uid]
+        idx = targets.get(p.uid)
+        if idx is None:
+            continue
         if has_perm(state, "Undead Alchemist") and "Zombie" in eff_card(p).subtypes:
             zombie_mill[idx] += pw                 # 'instead that player mills that many cards'
             dealers.append((p, idx, pw, True))
