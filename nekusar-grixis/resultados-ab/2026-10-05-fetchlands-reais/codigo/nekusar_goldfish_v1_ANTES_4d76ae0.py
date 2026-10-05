@@ -305,8 +305,6 @@ class GameState:
     the_one_ring_burden: int = 0
     life: int = 40
     tapped_lands_this_turn: set = field(default_factory=set)
-    fetches_cracked_total: int = 0   # correcao de 2026-10-05: fetchlands de fato quebradas (busca real)
-    fetch_no_target_total: int = 0   # ... e fetches sem alvo na biblioteca (ficam em campo)
     tapped_land_first_plays_total: int = 0   # correcao de 2026-10-05: vezes em que T1/T2 jogou o terreno virado primeiro
     tapped_land_skipped_for_play_total: int = 0   # ... e vezes em que o ensaio mostrou que isso custaria uma jogada e jogou o desvirado
     spark_double_copy_target: Optional[str] = None
@@ -924,48 +922,6 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
     resolve_etb(state, name)
 
 
-# Fetchlands reais -- correcao de 2026-10-05 (varredura mecanica de fetches, `varredura-2026-10-05/resumos/audit_fetch_ANTES.txt`; mesma classe do Megatron: Evolving Wilds/Terramorphic/Rocky Tar Pit).
-# Antes: a fetch era um terreno que ficava em campo como dual estatica (ou, no Nekusar, pagava a vida mas ficava em campo): sem sacrificio, sem busca, sem thinning da biblioteca.
-# Oraculo: "{T}, Pay 1 life, Sacrifice this land: Search your library for a X or Y card, put it onto the battlefield, then shuffle." Agora: ao jogar a fetch ela e' sacrificada (vai pro cemiterio), paga 1 de vida,
-# a biblioteca perde um terreno do tipo certo (basico OU dual tipada, por SUBTIPO) que entra em campo pelas regras de entrada do deck. Politica de escolha: terreno que entra desvirado (e sem pagar vida),
-# sem pagar vida (choque so' se nao ha outra) e nao-basico antes de basico. Sem alvo na biblioteca a fetch fica em campo (comportamento antigo; contado em `fetch_no_target_total`, esperado ~0).
-# O "shuffle" do oraculo NAO e' modelado: o estado deste simulador nao tem RNG (so' `interaction_rng` no modo de resiliencia) e a biblioteca ja' e' uma permutacao aleatoria; embaralhar de novo so' mudaria algo se um tutor/scry tivesse posto uma carta no topo entre a compra e a jogada de terreno.
-# Com a chave em False o comportamento antigo volta bit a bit.
-FETCH_LANDS_ENABLED = True
-FETCH_TYPES = {'Arid Mesa': {'Mountain', 'Plains'}, 'Bloodstained Mire': {'Mountain', 'Swamp'}, 'Flooded Strand': {'Island', 'Plains'}, 'Marsh Flats': {'Plains', 'Swamp'}, 'Misty Rainforest': {'Forest', 'Island'}, 'Polluted Delta': {'Island', 'Swamp'}, 'Scalding Tarn': {'Island', 'Mountain'}, 'Verdant Catacombs': {'Forest', 'Swamp'}, 'Wooded Foothills': {'Forest', 'Mountain'}}
-LAND_BASIC_TYPES = {'Badlands': {'Mountain', 'Swamp'}, 'Blood Crypt': {'Mountain', 'Swamp'}, 'Island': {'Island'}, 'Mountain': {'Mountain'}, 'Steam Vents': {'Island', 'Mountain'}, 'Swamp': {'Swamp'}, 'Undercity Sewers': {'Island', 'Swamp'}, 'Underground Sea': {'Island', 'Swamp'}, 'Volcanic Island': {'Island', 'Mountain'}, 'Watery Grave': {'Island', 'Swamp'}, "Xander's Lounge": {'Island', 'Mountain', 'Swamp'}}
-
-
-def land_etb(state: GameState, name: str):
-    """Efeitos de entrada de um terreno que NAO veio de `cast_card` (o buscado por uma fetch): mesmas regras do ramo de terreno de `cast_card`."""
-    card = CARD_DB[name]
-    state.battlefield.append(name)
-    if "etb_tapped" in card.tags:
-        state.tapped_lands_this_turn.add(name)
-    if "shock" in card.tags:
-        state.life -= 2
-    if "etb_tapped_conditional" in card.tags and not any(n in MOUNTAIN_TYPE_LANDS for n in state.battlefield):
-        state.tapped_lands_this_turn.add(name)
-    if "surveil_on_etb" in card.tags:
-        do_surveil_1(state)
-
-
-def crack_fetch(state: GameState, fetch: str) -> bool:
-    """Quebra a fetch recem-jogada (a vida do custo ja' foi paga em `cast_card`). Devolve True se buscou."""
-    searched = set(FETCH_TYPES[fetch])
-    pool = [n for n in state.library if n in LAND_BASIC_TYPES and (LAND_BASIC_TYPES[n] & searched)]
-    if not pool:
-        state.fetch_no_target_total += 1
-        return False
-    pick = min(pool, key=lambda n: ("etb_tapped" in CARD_DB[n].tags, "shock" in CARD_DB[n].tags, n in ("Island", "Swamp", "Mountain")))
-    state.library.remove(pick)
-    state.battlefield.remove(fetch)
-    state.graveyard.append(fetch)
-    land_etb(state, pick)
-    state.fetches_cracked_total += 1
-    return True
-
-
 def cast_card(state: GameState, name: str, from_hand: bool = True):
     card = CARD_DB[name]
     if name == COMMANDER:
@@ -984,8 +940,6 @@ def cast_card(state: GameState, name: str, from_hand: bool = True):
         state.battlefield.append(name)
         if "fetch" in card.tags:
             state.life -= 1
-            if FETCH_LANDS_ENABLED and crack_fetch(state, name):
-                return   # fetch sacrificada; o terreno buscado ja' passou por land_etb
         if "etb_tapped" in card.tags:
             state.tapped_lands_this_turn.add(name)
         if "shock" in card.tags:

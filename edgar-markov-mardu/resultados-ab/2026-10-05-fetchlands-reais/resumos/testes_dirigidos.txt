@@ -1,0 +1,15 @@
+fetch de teste: Arid Mesa -> tipos ['Mountain', 'Plains'] | elegiveis: ['Blood Crypt', 'Godless Shrine', 'Plains', 'Savai Triome'] ...
+cenario FT5 (fetch, virado, desvirado): ('Arid Mesa', 'Savai Triome', 'Blood Crypt')
+   padrao: 168 fetches quebradas em 300 partidas
+   resiliencia: 158 fetches quebradas em 300 partidas
+PASS FT1 a fetch vai pro cemiterio, 1 carta sai da biblioteca, 1 terreno entra e o contador sobe
+PASS FT2 o buscado tem subtipo compativel (varre TODAS as fetches do deck)
+PASS FT3 a fetch custa exatamente 1 de vida
+PASS FT4 sem alvo na biblioteca: a fetch fica em campo e conta sem-alvo
+PASS FT5 entre terreno virado e desvirado, busca o desvirado (o virado esta ANTES na biblioteca)
+PASS FT6 thinning: a copia buscada sai da biblioteca
+PASS FT7 chave desligada: a fetch fica em campo, nada muda na biblioteca/cemiterio, contador 0
+PASS FT9 (Edgar) Sevinne's Reclamation devolve a fetch do cemiterio ao campo e ela tambem busca (permanente MV<=3)
+PASS FT8 integracao: 300 partidas completas por modo, sem excecao, a fetch quebra e sobra em campo so' se contada sem alvo
+
+9/9 testes passaram

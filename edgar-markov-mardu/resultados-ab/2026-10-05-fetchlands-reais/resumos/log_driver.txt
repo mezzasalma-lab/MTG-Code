@@ -1,0 +1,107 @@
+DEPOIS (arquivo vivo): cartas na biblioteca=99 | distintas=93 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+ANTES (snapshot): cartas na biblioteca=99 | distintas=93 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+chaves da correcao no arquivo vivo: FETCH_LANDS_ENABLED=True
+Bit-identidade: arquivo vivo com as chaves {'FETCH_LANDS_ENABLED': False} == snapshot codigo/edgar_markov_goldfish_v1_ANTES_fd34e07.py; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['fetches_cracked_total', 'fetch_no_target_total'])
+padrao: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+resiliencia: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1679 (84.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.4735       6.4305      -0.0430 ±0.0101  
+   commander_cast_turn__nunca                   0.2145       0.2195      +0.0050 ±0.0065  
+   commander_cast_turn__ate_T3                  0.0075       0.0085      +0.0010 ±0.0014  
+   commander_cast_turn__ate_T4                  0.0615       0.0630      +0.0015 ±0.0022  
+  *commander_cast_turn__ate_T5                  0.1725       0.1810      +0.0085 ±0.0056  
+  *sevinnes_reclamation_returns                 0.0025       0.0460      +0.0435 ±0.0089  
+  *creatures_sacrificed_total                   2.6615       2.6860      +0.0245 ±0.0211  
+  *fountainport_treasures                       0.1045       0.1115      +0.0070 ±0.0063  
+  *eminence_tokens_created                      2.9490       2.9725      +0.0235 ±0.0222  
+   death_trigger_events                         2.3420       2.3755      +0.0335 ±0.0342  
+   skullclamp_draws                             0.4150       0.4280      +0.0130 ±0.0134  
+   legion_landing_in_play                       0.1540       0.1565      +0.0025 ±0.0026  
+   unholy_annex_draws                           0.5290       0.5350      +0.0060 ±0.0063  
+   urzas_saga_construct_tokens                  0.1685       0.1700      +0.0015 ±0.0017  
+   ramp_pieces_cast                             0.6395       0.6430      +0.0035 ±0.0040  
+   ritual_chamber_demons_created                0.1080       0.1100      +0.0020 ±0.0024  
+   ritual_chamber_unlocked                      0.1080       0.1100      +0.0020 ±0.0024  
+   black_market_treasures                       0.4060       0.4110      +0.0050 ±0.0060  
+   adanto_tokens_created                        0.1140       0.1185      +0.0045 ±0.0055  
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1171 (58.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.2905       6.2460      -0.0445 ±0.0137  
+   commander_cast_turn__nunca                   0.3120       0.3130      +0.0010 ±0.0085  
+   commander_cast_turn__ate_T3                  0.0040       0.0045      +0.0005 ±0.0017  
+   commander_cast_turn__ate_T4                  0.0370       0.0380      +0.0010 ±0.0031  
+  *commander_cast_turn__ate_T5                  0.1115       0.1190      +0.0075 ±0.0063  
+  *len_library                                 82.1535      81.5820      -0.5715 ±0.0498  
+  *life                                        38.2240      37.6935      -0.5305 ±0.0462  
+  *len_graveyard                                3.0085       3.3380      +0.3295 ±0.0574  
+  *sevinnes_reclamation_returns                 0.0465       0.0690      +0.0225 ±0.0073  
+  *graveyard_wipe_used                          0.3155       0.3440      +0.0285 ±0.0109  
+  *len_smart_graveyard_wipe_log                 0.3155       0.3440      +0.0285 ±0.0109  
+  *smart_graveyard_wipes_total                  0.3155       0.3440      +0.0285 ±0.0109  
+  *len_hand                                     2.9785       3.0345      +0.0560 ±0.0355  
+  *eminence_tokens_created                      2.6705       2.7040      +0.0335 ±0.0235  
+  *tutors_used_total                            0.3205       0.3280      +0.0075 ±0.0056  
+  *champion_of_dusk_draws                       0.2310       0.2515      +0.0205 ±0.0164  
+  *land_played                                  0.5305       0.5185      -0.0120 ±0.0105  
+  *wiped_this_round                             0.1195       0.1100      -0.0095 ±0.0086  
+  *len_smart_counter_log                        0.0895       0.0815      -0.0080 ±0.0076  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8279 (82.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.3877       6.3421      -0.0456 ±0.0048  
+  *commander_cast_turn__nunca                   0.2198       0.2273      +0.0075 ±0.0030  
+   commander_cast_turn__ate_T3                  0.0074       0.0076      +0.0002 ±0.0006  
+   commander_cast_turn__ate_T4                  0.0686       0.0674      -0.0012 ±0.0012  
+  *commander_cast_turn__ate_T5                  0.1816       0.1878      +0.0062 ±0.0024  
+  *sevinnes_reclamation_returns                 0.0048       0.0513      +0.0465 ±0.0041  
+  *creatures_sacrificed_total                   2.6748       2.7078      +0.0330 ±0.0097  
+  *death_trigger_events                         2.3710       2.4235      +0.0525 ±0.0160  
+  *eminence_tokens_created                      2.9751       3.0059      +0.0308 ±0.0095  
+  *ramp_pieces_cast                             0.6394       0.6434      +0.0040 ±0.0018  
+  *tutors_used_total                            0.3745       0.3795      +0.0050 ±0.0023  
+  *lifegain_total                               3.9704       4.0302      +0.0598 ±0.0283  
+  *welcoming_vampire_draws                      0.3454       0.3530      +0.0076 ±0.0038  
+  *unholy_annex_draws                           0.5696       0.5745      +0.0049 ±0.0027  
+  *elenda_counters                              0.1773       0.1848      +0.0075 ±0.0042  
+  *tapped_land_skipped_for_play_total           0.1206       0.1237      +0.0031 ±0.0019  
+  *urzas_saga_construct_tokens                  0.1578       0.1588      +0.0010 ±0.0006  
+  *voldaren_estate_blood_tokens                 0.3029       0.3072      +0.0043 ±0.0029  
+  *black_market_treasures                       0.4279       0.4319      +0.0040 ±0.0028  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 5749 (57.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.2213       6.1765      -0.0448 ±0.0063  
+  *commander_cast_turn__nunca                   0.3175       0.3301      +0.0126 ±0.0044  
+   commander_cast_turn__ate_T3                  0.0042       0.0046      +0.0004 ±0.0006  
+   commander_cast_turn__ate_T4                  0.0431       0.0432      +0.0001 ±0.0014  
+  *commander_cast_turn__ate_T5                  0.1155       0.1209      +0.0054 ±0.0028  
+  *len_library                                 82.1827      81.6294      -0.5533 ±0.0211  
+  *life                                        38.2100      37.6952      -0.5148 ±0.0209  
+  *len_graveyard                                3.1199       3.4737      +0.3538 ±0.0265  
+  *sevinnes_reclamation_returns                 0.0487       0.0728      +0.0241 ±0.0032  
+  *graveyard_wipe_used                          0.3043       0.3327      +0.0284 ±0.0051  
+  *len_smart_graveyard_wipe_log                 0.3043       0.3327      +0.0284 ±0.0051  
+  *smart_graveyard_wipes_total                  0.3043       0.3327      +0.0284 ±0.0051  
+  *commander_cast_count                         0.8265       0.8103      -0.0162 ±0.0048  
+  *land_played                                  0.5271       0.5131      -0.0140 ±0.0046  
+  *creatures_sacrificed_total                   2.1581       2.1889      +0.0308 ±0.0123  
+  *tutors_used_total                            0.3372       0.3437      +0.0065 ±0.0026  
+  *ramp_pieces_cast                             0.6164       0.6210      +0.0046 ±0.0020  
+  *eminence_tokens_created                      2.7155       2.7393      +0.0238 ±0.0106  
+  *bastion_of_remembrance_tokens                0.1407       0.1437      +0.0030 ±0.0017  
+Regressao: N=20000 por configuracao/modo, sementes 5_000_000+i; excecoes + invariantes genericas (carta acima do baralho em alguma zona; contadores negativos)
+depois (repositorio)   padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+depois (repositorio)   resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={'mana_spent_this_turn': 380}
+chave_desligada        padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={'mana_spent_this_turn': 374}

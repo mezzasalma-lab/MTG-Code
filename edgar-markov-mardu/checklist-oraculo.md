@@ -1,5 +1,20 @@
 # Checklist cláusula-a-cláusula — Edgar Markov
 
+## Fetchlands reais (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| Fetchland: sacrifício + 1 de vida + busca por subtipo + thinning | 🐛 corrigido: `crack_fetch`, atrás de `FETCH_LANDS_ENABLED` |
+| "then shuffle" da fetch | 📊 não modelado (a biblioteca já é uma permutação aleatória e nada põe carta no topo antes do terreno) |
+| Sevinne's Reclamation devolve uma fetch do cemitério | 🐛 corrigido: a fetch devolvida também busca |
+
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-fetchlands-reais/LEIAME.md`.
+
+---
+
 ## Terreno virado primeiro em T1/T2 + ordem dos payoffs determinística (varredura de 2026-10-05) — 2026-10-05
 
 **Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.

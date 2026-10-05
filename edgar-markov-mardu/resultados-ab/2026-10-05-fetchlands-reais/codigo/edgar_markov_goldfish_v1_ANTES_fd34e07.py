@@ -804,8 +804,6 @@ class GameState:
     # campo) contribuiam mana no mesmo turno em que entravam, sem
     # restricao nenhuma. Corrigido - ver play_land().
     tapped_lands_this_turn: int = 0
-    fetches_cracked_total: int = 0   # correcao de 2026-10-05: fetchlands de fato quebradas (busca real)
-    fetch_no_target_total: int = 0   # ... e fetches sem alvo na biblioteca (ficam em campo)
     tapped_land_first_plays_total: int = 0   # correcao de 2026-10-05: vezes em que T1/T2 jogou o terreno virado primeiro
     tapped_land_skipped_for_play_total: int = 0   # ... e vezes em que o ensaio mostrou que isso custaria uma jogada e jogou o desvirado
 
@@ -1325,41 +1323,6 @@ def tapped_first_pick(state, lands_in_hand: list) -> str:
     return untapped[0]
 
 
-# Fetchlands reais -- correcao de 2026-10-05 (varredura mecanica de fetches, `varredura-2026-10-05/resumos/audit_fetch_ANTES.txt`; mesma classe do Megatron: Evolving Wilds/Terramorphic/Rocky Tar Pit).
-# Antes: a fetch era um terreno que ficava em campo como dual estatica (ou, no Nekusar, pagava a vida mas ficava em campo): sem sacrificio, sem busca, sem thinning da biblioteca.
-# Oraculo: "{T}, Pay 1 life, Sacrifice this land: Search your library for a X or Y card, put it onto the battlefield, then shuffle." Agora: ao jogar a fetch ela e' sacrificada (vai pro cemiterio), paga 1 de vida,
-# a biblioteca perde um terreno do tipo certo (basico OU dual tipada, por SUBTIPO) que entra em campo pelas regras de entrada do deck. Politica de escolha: terreno que entra desvirado (e sem pagar vida),
-# a que cobre a cor ausente (W/B/R; `color_sources`) e, por ultimo, a que entra virada (Savai Triome). Sem alvo na biblioteca a fetch fica em campo (comportamento antigo; contado em `fetch_no_target_total`, esperado ~0).
-# O "shuffle" do oraculo NAO e' modelado: a biblioteca ja' e' uma permutacao aleatoria e o turno compra antes de jogar terreno; embaralhar de novo so' mudaria algo com carta posta no topo por tutor entre a compra e a jogada de terreno.
-# Com a chave em False o comportamento antigo volta bit a bit.
-FETCH_LANDS_ENABLED = True
-FETCH_TYPES = {'Arid Mesa': {'Mountain', 'Plains'}, 'Bloodstained Mire': {'Mountain', 'Swamp'}, 'Marsh Flats': {'Plains', 'Swamp'}}
-LAND_BASIC_TYPES = {'Blood Crypt': {'Mountain', 'Swamp'}, 'Godless Shrine': {'Plains', 'Swamp'}, 'Plains': {'Plains'}, 'Savai Triome': {'Mountain', 'Plains', 'Swamp'}, 'Swamp': {'Swamp'}}
-
-
-def crack_fetch(state: GameState, fetch: str, log: List[Dict]):
-    """Quebra a fetch recem-jogada: ver o cabecalho FETCH_LANDS_ENABLED."""
-    searched = set(FETCH_TYPES[fetch])
-    pool = [n for n in state.library if n in LAND_BASIC_TYPES and (LAND_BASIC_TYPES[n] & searched)]
-    if not pool:
-        state.fetch_no_target_total += 1
-        return
-    missing = {"W", "B", "R"} - {c for n in state.battlefield for c in C(n).produces}
-    def key(n):
-        tapped = n == "Savai Triome"
-        return (tapped, -len(C(n).produces & missing))
-    pick = min(pool, key=key)
-    state.life -= 1
-    state.library.remove(pick)
-    state.battlefield.remove(fetch)
-    state.graveyard.append(fetch)
-    state.battlefield.append(pick)
-    if pick == "Savai Triome":
-        state.tapped_lands_this_turn += 1
-    state.fetches_cracked_total += 1
-    log.append({"action": "fetch_crack", "fetch": fetch, "target": pick, "turn": state.turn})
-
-
 def play_land(state: GameState, log: List[Dict]):
     if state.land_played:
         return
@@ -1394,8 +1357,6 @@ def play_land(state: GameState, log: List[Dict]):
         state.tapped_lands_this_turn += 1
     if choice == "Urza's Saga":
         state.urzas_saga_entered_turn = state.turn
-    if FETCH_LANDS_ENABLED and choice in FETCH_TYPES:
-        crack_fetch(state, choice, log)
 
 # =========================================================
 # EMINENCE + GATILHOS DE VAMPIRO (Passo 0 - ver docstring)
@@ -2504,8 +2465,6 @@ def cast_available_spells(state: GameState, log: List[Dict]):
                     state.graveyard.remove(target)
                     state.battlefield.append(target)
                     apply_etb(state, target, log)
-                    if FETCH_LANDS_ENABLED and target in FETCH_TYPES:
-                        crack_fetch(state, target, log)   # fetch devolvida ao campo (Sevinne's Reclamation: permanente MV<=3 do cemiterio) tambem busca
                     if is_creature(target):
                         on_creature_enters(state, log, target)
                     state.sevinnes_reclamation_returns += 1
@@ -2790,8 +2749,6 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "roaming_throne_in_play": state.has("Roaming Throne"),
         "roaming_throne_doublings": state.roaming_throne_doublings,
         "lands_played_total": state.lands_played_total,
-        "fetches_cracked_total": state.fetches_cracked_total,
-        "fetch_no_target_total": state.fetch_no_target_total,
         "tapped_land_first_plays_total": state.tapped_land_first_plays_total,
         "tapped_land_skipped_for_play_total": state.tapped_land_skipped_for_play_total,
         "purphoros_damage_total": state.purphoros_damage_total,

@@ -1,5 +1,92 @@
 # Goldfish Log — Edgar Markov
 
+> **Rodada 2026-10-05 (Fetchlands reais (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-fetchlands-reais/LEIAME.md`](resultados-ab/2026-10-05-fetchlands-reais/LEIAME.md)
+
+## Fetchlands reais (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-fetchlands-reais/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada. Modo padrão, N=10.000: comandante em campo até T3 0,7% → 0,8% (+0,02 ± 0,06 pp), até T4 -0,12 ± 0,12 pp, até T5 +0,62 ± 0,24 pp; comandante que nunca entra +0,75 ± 0,30 pp. Modo resiliência: comandante em campo até T3 0,4% → 0,5% (+0,04 ± 0,06 pp), até T4 +0,01 ± 0,14 pp, até T5 +0,54 ± 0,28 pp; comandante que nunca entra +1,26 ± 0,44 pp. Fetches de fato quebradas por partida: 0,56 (N=10.000, padrão); sem alvo na biblioteca: 0,00 por partida. Vida no fim (resiliência): -0,515 ± 0,021 (1 de vida por fetch).
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **Fetchland ficava em campo como terreno dual estático.** O oráculo da fetch é "{T}, Pay 1 life, Sacrifice this land: Search your library for a [tipo] or [tipo] card, put it onto the battlefield, then shuffle". O simulador deixava a fetch em campo produzindo mana das duas cores, sem sacrifício, sem busca (a biblioteca nunca afinava), sem ir pro cemitério e sem a vida do custo. Mesma classe do Megatron (Evolving Wilds / Terramorphic Expanse / Rocky Tar Pit, corrigido em 2026-10-03). Achado pela varredura mecânica de fetches (`varredura-2026-10-05/resumos/audit_fetch_ANTES.txt`).
+
+**O que mudou:**
+- `FETCH_LANDS_ENABLED` (padrão `True`): ao jogar a fetch, `crack_fetch` a manda pro cemitério, paga 1 de vida e busca na biblioteca um terreno com subtipo compatível com o texto da fetch (básico OU dual tipada, por SUBTIPO do `type_line` do oráculo, não por nome); o terreno buscado entra em campo pelas regras de entrada do deck. Escolha: o terreno que cobre a cor ausente (W/B/R) e, por último, o que entra virado (Savai Triome). Sem alvo na biblioteca a fetch fica em campo como antes (contado em `fetch_no_target_total`). Contadores novos: `fetches_cracked_total`, `fetch_no_target_total`. Com a chave em `False` o caminho antigo volta bit a bit.
+- **Sevinne's Reclamation devolve fetch:** a fetch que volta do cemitério pro campo (permanente de MV ≤ 3) também busca (oráculo: pode ser ativada assim que volta). Achado pelo próprio teste de integração (FT8): sem isso a fetch devolvida ficava em campo como dual.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8279 (82.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.3877       6.3421      -0.0456 ±0.0048  
+  *commander_cast_turn__nunca                   0.2198       0.2273      +0.0075 ±0.0030  
+   commander_cast_turn__ate_T3                  0.0074       0.0076      +0.0002 ±0.0006  
+   commander_cast_turn__ate_T4                  0.0686       0.0674      -0.0012 ±0.0012  
+  *commander_cast_turn__ate_T5                  0.1816       0.1878      +0.0062 ±0.0024  
+  *sevinnes_reclamation_returns                 0.0048       0.0513      +0.0465 ±0.0041  
+  *creatures_sacrificed_total                   2.6748       2.7078      +0.0330 ±0.0097  
+  *death_trigger_events                         2.3710       2.4235      +0.0525 ±0.0160  
+  *eminence_tokens_created                      2.9751       3.0059      +0.0308 ±0.0095  
+  *ramp_pieces_cast                             0.6394       0.6434      +0.0040 ±0.0018  
+  *tutors_used_total                            0.3745       0.3795      +0.0050 ±0.0023  
+  *lifegain_total                               3.9704       4.0302      +0.0598 ±0.0283  
+  *welcoming_vampire_draws                      0.3454       0.3530      +0.0076 ±0.0038  
+  *unholy_annex_draws                           0.5696       0.5745      +0.0049 ±0.0027  
+  *elenda_counters                              0.1773       0.1848      +0.0075 ±0.0042  
+  *tapped_land_skipped_for_play_total           0.1206       0.1237      +0.0031 ±0.0019  
+  *urzas_saga_construct_tokens                  0.1578       0.1588      +0.0010 ±0.0006  
+  *voldaren_estate_blood_tokens                 0.3029       0.3072      +0.0043 ±0.0029  
+  *black_market_treasures                       0.4279       0.4319      +0.0040 ±0.0028
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 5749 (57.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.2213       6.1765      -0.0448 ±0.0063  
+  *commander_cast_turn__nunca                   0.3175       0.3301      +0.0126 ±0.0044  
+   commander_cast_turn__ate_T3                  0.0042       0.0046      +0.0004 ±0.0006  
+   commander_cast_turn__ate_T4                  0.0431       0.0432      +0.0001 ±0.0014  
+  *commander_cast_turn__ate_T5                  0.1155       0.1209      +0.0054 ±0.0028  
+  *len_library                                 82.1827      81.6294      -0.5533 ±0.0211  
+  *life                                        38.2100      37.6952      -0.5148 ±0.0209  
+  *len_graveyard                                3.1199       3.4737      +0.3538 ±0.0265  
+  *sevinnes_reclamation_returns                 0.0487       0.0728      +0.0241 ±0.0032  
+  *graveyard_wipe_used                          0.3043       0.3327      +0.0284 ±0.0051  
+  *len_smart_graveyard_wipe_log                 0.3043       0.3327      +0.0284 ±0.0051  
+  *smart_graveyard_wipes_total                  0.3043       0.3327      +0.0284 ±0.0051  
+  *commander_cast_count                         0.8265       0.8103      -0.0162 ±0.0048  
+  *land_played                                  0.5271       0.5131      -0.0140 ±0.0046  
+  *creatures_sacrificed_total                   2.1581       2.1889      +0.0308 ±0.0123  
+  *tutors_used_total                            0.3372       0.3437      +0.0065 ±0.0026  
+  *ramp_pieces_cast                             0.6164       0.6210      +0.0046 ±0.0020  
+  *eminence_tokens_created                      2.7155       2.7393      +0.0238 ±0.0106  
+  *bastion_of_remembrance_tokens                0.1407       0.1437      +0.0030 ±0.0017
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** a biblioteca afina (−1 terreno por fetch, ligeiramente mais cartas úteis nos próximos draws), o terreno buscado entra pelas regras de entrada do deck (virado quando o oráculo manda) e cada fetch custa 1 de vida e põe uma carta no cemitério; o efeito no comandante em T3–T5 é de segunda ordem.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `edgar_markov_goldfish_v1_ANTES_fd34e07.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 9/9 (`resumos/testes_dirigidos.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Fetch real:** leitura de `play_land` (e do caminho de entrada de terreno) + testes dirigidos FT1–FT8 (a fetch vai pro cemitério, a biblioteca perde exatamente 1 carta, o buscado tem subtipo compatível — varre TODAS as fetches do deck —, custo de 1 de vida, sem alvo → fica em campo, escolhe o que entra desvirado, thinning, chave desligada = caminho antigo, 300 partidas completas por modo); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Bit-identidade** com a chave desligada × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro (contadores novos ignorados).
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+- **Sevinne's Reclamation × fetch no cemitério:** teste dirigido FT9 e o efeito medido na tabela (`sevinnes_reclamation_returns` sobe porque o cemitério agora tem alvo MV 0).
+
+**Escopo — NÃO verificado:**
+- **O "then shuffle" do oráculo NÃO é modelado:** o estado deste simulador não tem RNG próprio na biblioteca (a biblioteca já é uma permutação aleatória). Embaralhar de novo só mudaria algo se um tutor ou scry tivesse posto uma carta específica no topo entre a compra e a jogada de terreno; a ordem do turno impede isso nas linhas modeladas.
+- **Landfall:** varri o `oracle_text` das cartas da lista procurando gatilhos de "whenever a land enters"/Landfall: neste deck nenhuma carta além dos terrenos tem esse gatilho, então o terreno buscado não deixa gatilho sem disparar.
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão, sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada.
+- **Oponente real:** o goldfish não modela (convenção do repositório).
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
+
+---
+
 > **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 + ordem dos payoffs determinística (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
 
 ## Terreno virado primeiro em T1/T2 + ordem dos payoffs determinística (varredura de 2026-10-05) — 2026-10-05
