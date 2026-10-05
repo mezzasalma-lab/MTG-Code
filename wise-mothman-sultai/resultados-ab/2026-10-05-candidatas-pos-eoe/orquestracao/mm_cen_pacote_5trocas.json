@@ -1,0 +1,4 @@
+{
+ "PACOTE 5 TROCAS (sem cortar o Kozilek)": {"sai": ["Cold-Eyed Selkie", "Swarmyard", "Soul-Guide Lantern", "An Offer You Can't Refuse", "Bojuka Bog"], "entra": ["Evolution Sage", "Karn's Bastion", "Bruvac the Grandiloquent", "Garruk's Uprising", "Opulent Palace"]},
+ "PACOTE 5 TROCAS + Master of Lake-town <- Negate": {"sai": ["Cold-Eyed Selkie", "Swarmyard", "Soul-Guide Lantern", "An Offer You Can't Refuse", "Bojuka Bog", "Negate"], "entra": ["Evolution Sage", "Karn's Bastion", "Bruvac the Grandiloquent", "Garruk's Uprising", "Opulent Palace", "The Master of Lake-town"]}
+}

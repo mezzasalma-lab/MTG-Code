@@ -109,8 +109,9 @@ Medido (por script/Spellbook): proliferate = 1 efeito; amplificadores = 3 (todos
 - **Auto-mill sem rede.** Pelo menos 8 fontes de auto-mill (Six 3/ataque, Icetill 1/terreno, Hedge Shredder 2/ataque, Smuggler's 4, Fetch Quest 7, Takenuma 3, Palantír X,
   Orb 1 por permanente desvirado) numa biblioteca de 99; a única recuperação é o Kozilek (embaralha o cemitério de volta, mas **só quando ele vai ao cemitério**: milado, descartado, morto ou contramagicado).
   Os rad counters **seus** também milam e tiram vida (1 por não-terreno).
-- **Kozilek é de dois gumes:** ao ir ao cemitério de qualquer lugar ele embaralha o cemitério na biblioteca. Num deck de auto-mill ele é milado com probabilidade ≈ cartas milladas/99
-  (15 → 15%, 30 → 30%, 45 → 45%, 60 → 61%), e quando acontece zera Six/Muldrotha/Icetill/Agatha (mas protege contra decking).
+- **Kozilek é o seguro contra morrer por auto-mill** (correção do usuário, 2026-10-05): ao ir ao cemitério de qualquer lugar (milado, descartado, morto, contramagicado) ele embaralha o cemitério
+  na biblioteca. Num deck de auto-mill ele é milado com probabilidade ≈ cartas milladas/99 (15 → 15%, 30 → 30%, 45 → 45%, 60 → 61%), justamente quando o risco de decking sobe. O custo (zera Six/Muldrotha/Icetill/Agatha)
+  existe, mas é o preço do seguro. **Não é corte.** Quanto ele salva é medido no simulador (`../mothman_goldfish_v1.py`, taxa de self-deck com/sem Kozilek).
 - **Proteção do comandante**: Swiftfoot Boots (hexproof), Heroic Intervention, Smuggler's Surprise (só poder ≥ 4), Glen Elendra (contra mágica). Nada contra varredor que exila / −X/−X
   além dos counters do próprio deck.
 - **Dois pontos únicos de falha**: Kodama (trample) e Hardened Scales/Constrictor/Kami (amplificação) — redundância baixa.

@@ -28,11 +28,17 @@ for k, v in sw.items():
     inc = set(v["incluidos"])
     print(f"| {k} | {v['n_cartas_main']} | {len(inc)} | {'; '.join(sorted(inc - b)) or '-'} | {'; '.join(sorted(b - inc)) or '-'} | {len(v['quase_incluidos'])} |")
 pf = J("spellbook_pacote_final.json")
-print("\n## 4. Pacote final (6 trocas) e variante com Mutational Advantage <- Negate (7 trocas)\n")
+print("\n## 4. Pacote final de 6 trocas (SUPERADO: tirava o Kozilek) e variante com Mutational Advantage <- Negate\n")
 for k, v in pf.items():
     if k == "base": continue
     inc = set(v["incluidos"])
     print(f"- **{k}**: sai {v['sai']}; entra {v['entra']}; NOVOS: {sorted(inc - b) or '-'}; SUMIRAM: {sorted(b - inc) or '-'}; 'quase' {len(v['quase_incluidos'])} (base {len(pf['base']['quase_incluidos'])})")
+p5 = J("spellbook_pacote_5trocas.json")
+print("\n## 4b. Pacote de 5 trocas (Kozilek MANTIDO) — vigente; o de 6 trocas acima esta SUPERADO\n")
+for k, v in p5.items():
+    if k == "base": continue
+    inc = set(v["incluidos"])
+    print(f"- **{k}**: sai {v['sai']}; entra {v['entra']}; NOVOS: {sorted(inc - b) or '-'}; SUMIRAM: {sorted(b - inc) or '-'}; 'quase' {len(v['quase_incluidos'])} (base {len(p5['base']['quase_incluidos'])})")
 print("\n## 5. Combos 'quase' da lista base cuja ULTIMA carta existe no pool pos-EOE (uma carta completaria)\n")
 q = J("spellbook_quase_pool.json")
 print("| carta que falta | demais pecas (ja' na lista) | templates | produz | bracketTag | popularidade |\n|---|---|---|---|---|---|")

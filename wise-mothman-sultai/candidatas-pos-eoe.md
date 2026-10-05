@@ -8,14 +8,19 @@
 
 ## 0. Veredito
 
-**Pacote recomendado: 6 trocas** (todas dentro do Bracket 3, 0 combo desaparece, +1 combo de 3 peças tardio, curva média 2,94 → 2,89, fontes de cor U/B/G 16/16/18 → 17/16/19):
+**Pacote recomendado: 5 trocas** (todas dentro do Bracket 3; Spellbook: 0 combo novo, 0 combo some; curva média 2,94 → 3,00; fontes de cor U/B/G 16/16/18 → 17/16/19) **+ The Master of Lake-town, com o corte ainda em aberto.**
+
+> **Correção (2026-10-05, usuário): o Kozilek NÃO é corte.** Eu tinha proposto Kozilek ← Master tratando o "embaralha o cemitério na biblioteca" como custo (zera Six/Muldrotha/Icetill).
+> O usuário lembrou que ele é **o seguro contra morrer por auto-mill**: o deck tem 8+ fontes de auto-mill e nenhum outro efeito que devolva cartas à biblioteca. Sobra a pergunta
+> "a quantas partidas isso salva?", que só um simulador responde — e o simulador do Mothman (em construção) mede a taxa de self-deck com e sem Kozilek.
+> O Master fica **sem corte designado** (candidatos a medir: Negate, Strip Mine, Yavimaya Hollow); números do pacote antigo de 6 trocas ficam em `resumos/` marcados como SUPERADOS.
 
 | entra | sai | por quê entra (motor do deck) | por quê sai |
 |---|---|---|---|
 | **Evolution Sage** (2G, 3/2, ECC) | Cold-Eyed Selkie | landfall → proliferate: 14 efeitos além da jogada normal botam terreno; proliferate cresce 19 cartas com +1/+1, os rad counters, Ascension, Palantír, Urza's Saga | 1 vínculo de motor (compra se conectar), corpo 1/1 |
 | **Karn's Bastion** (terreno, EOC) | Swarmyard | `{4},{T}`: proliferate, sem gastar slot de mágica (terreno incolor por terreno incolor) | 1 vínculo (regenera Inseto: Mothman/Icetill) |
 | **Bruvac the Grandiloquent** (2U, 1/4, SLD) | Soul-Guide Lantern | "se oponente fosse milar, milla o dobro": dobra 14 fontes de mill do oponente + os rad counters dele; dobra o X do Mothman | cantrip com hate de cemitério |
-| **The Master of Lake-town** (1BB, 3/2 toque mortal, HOB) | Kozilek, Butcher of Truth | "quando um jogador perde vida, ele milla essa quantidade": perda de vida do oponente na lista = Ascension, Mindcrank, Konrad, Palantír, Ballista + rad counters; **2º parceiro da Bloodchief Ascension** (Spellbook) | 10 de custo; embaralha seu cemitério se for milado (≈ cartas milladas/99) |
+| **The Master of Lake-town** (1BB, 3/2 toque mortal, HOB) | *(a medir; **não** o Kozilek)* | "quando um jogador perde vida, ele milla essa quantidade": perda de vida do oponente na lista = Ascension, Mindcrank, Konrad, Palantír, Ballista + rad counters; **2º parceiro da Bloodchief Ascension** (Spellbook) | — |
 | **Garruk's Uprising** (2G) | An Offer You Can't Refuse | **trample no time inteiro** (Mothman incluso) + compra quando entra criatura de poder ≥ 4 (9 na lista, mais com contadores) | contramágica que dá 2 Treasures ao oponente; sobram 5 contramágicas |
 | **Opulent Palace** (terreno BGU, ECC) | Bojuka Bog | G e U são as cores apertadas (triagem); troca virado-por-virado | só B (B tem sobra), entra virado. **Com a Lantern também fora, o único hate de cemitério que sobra é o `−1` da Ashiok**: se a sua mesa tem reanimação, corte **Yavimaya Hollow** (incolor, regenera) no lugar da Bojuka Bog |
 
@@ -138,7 +143,7 @@ Fathom Mage / Generous Patron + {Iron Man Armored Avenger, Lyla, Stark's Ingenui
 Ouroboroid + Sage of Hours = turnos infinitos; Psychic Corrosion + Peer into the Abyss = mill infinito. Chance de ter as duas peças (1 já na lista) com 1 completador: 1,6% (T6), 2,2% (T8); com 3: 4,3% / 5,7%; com 5: 6,4% / 8,3%.
 **Se quiser ficar no Bracket 3, evite adicionar vários.** Tabela completa: `resumos/spellbook_resumo.md` (§5).
 
-**Pacote de 6 trocas:** base 2 → pacote 3 combos; `sumiram: nenhum`; "quase" 134 → 142. Controle: cortar Mindcrank ou Glen Elendra (no lugar da Sage) **derruba** o combo correspondente de 2 para 1.
+**Pacote de 5 trocas (Kozilek mantido):** base 2 → 2 combos; `novos: nenhum`; `sumiram: nenhum`; "quase" 134 → 143. Com o Master no lugar do Negate: 3 combos (+ Ascension + Master). *(O pacote antigo de 6 trocas, com Kozilek fora, está SUPERADO.)* Controle: cortar Mindcrank ou Glen Elendra (no lugar da Sage) **derruba** o combo correspondente de 2 para 1.
 
 ## 9. Fila para depois (Tier 2/3, sem corte designado)
 

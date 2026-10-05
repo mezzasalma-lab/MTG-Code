@@ -24,7 +24,7 @@ Aqui não há simulador (o deck não tem): os dados são **consultas à API do S
 - **Rulings** das cartas centrais e das 131 candidatas da shortlist: `dados/rulings_shortlist.json.xz`, `dados/lista_bruto.json.xz` → `resumos/rulings_principais.md`.
 - **Commander Spellbook** (`POST https://backend.commanderspellbook.com/find-my-combos`, commander + 99 cartas; nomes resolvidos antes via `GET /cards/?q=`; **nome desconhecido é ignorado
   pela API sem erro**, por isso `mm_csb_lote.py` registra `spellbook_reconhece`: 121/121 reconhecidas): base, **controle positivo** (Thassa's Oracle + Demonic Consultation devolve o combo deles),
-  cada candidata adicionada, cada troca, o pacote de 6 trocas, e **dois controles de corte** (cortar Mindcrank ou Glen Elendra faz o combo respectivo sumir: 2 → 1 nos dois).
+  cada candidata adicionada, cada troca, os pacotes (6 trocas, **SUPERADO**; 5 trocas, vigente) e **dois controles de corte** (cortar Mindcrank ou Glen Elendra faz o combo respectivo sumir: 2 → 1 nos dois).
   Passo a passo dos combos: `dados/spellbook_variantes_*.json.xz` (`GET /variants/<id>/`).
 - **Probabilidades** (hipergeométrica, 99 cartas, 7 + 1 por turno): `resumos/numeros_por_script.txt`.
 - **Preços:** `prices.usd` do Scryfall, menor impressão da janela (índice) e entre **todas** as impressões das cartas principais (`dados/precos_todas_impressoes.json.xz`).
@@ -57,18 +57,19 @@ Aqui não há simulador (o deck não tem): os dados são **consultas à API do S
 | `spellbook_variantes_base`, `spellbook_variantes_candidatas` | passo a passo dos combos (base; Master+Ascension, Dakmor+Gitrog, Mindskinner+Konrad) | usado | idem |
 | `spellbook_candidatas` | 121 candidatas adicionadas (sem cortar) | usado | `candidatas-pos-eoe.md` §8 |
 | `spellbook_swaps` | 12 cenários de troca (S1–S6, T2a–e, "PACOTE 1") + 2 controles de corte | usado; o cenário **"PACOTE 1" está SUPERADO** pelo pacote final (trocou Negate por Mutational Advantage e não tinha a troca de terreno) | §0, §8 |
-| `spellbook_pacote_final` | **pacote de 6 trocas** e variante com Mutational Advantage | usado (final) | §0, §8 |
+| `spellbook_pacote_final` | pacote de 6 trocas (tirava o Kozilek) e variante com Mutational Advantage | **SUPERADO** (2026-10-05: o usuário lembrou que o Kozilek é o seguro contra morrer por auto-mill) | só histórico |
+| `spellbook_pacote_5trocas` | **pacote de 5 trocas (Kozilek mantido)** e variante com Master of Lake-town no lugar do Negate | usado (vigente) | §0, §8 |
 | `spellbook_quase_pool` | combos "falta 1 carta" cuja carta está no pool | usado | §8 (armadilhas de Bracket) |
 | `precos_todas_impressoes`, `pre_lancamento_cartas`, `sets_nao_lancados_consulta` | preços e pré-lançamento | usado | §3–§6, §10 |
 
-`resumos/`: `auditoria_mecanica.txt`, `auditoria_pacote_final.txt`, `motores_por_script.txt`, `numeros_por_script.txt`, `condicoes_por_script.txt`, `candidatas_por_etiqueta.md`, `spellbook_resumo.md`, `rulings_principais.md`,
-`lista_pacote_final_proposta.md` (**proposta, não é a lista do usuário**), e `log_spellbook_*.txt` (saída de tela dos lotes; **não** são derivados do bruto).
-Lote superado: o cenário "PACOTE 1 (S1..S6)" de `spellbook_swaps` (mantido e marcado, não apagado). Inválido: nenhum.
+`resumos/`: `auditoria_mecanica.txt`, `auditoria_pacote_5trocas.txt`, `auditoria_pacote_6trocas_SUPERADA.txt`, `motores_por_script.txt`, `numeros_por_script.txt`, `condicoes_por_script.txt`, `candidatas_por_etiqueta.md`, `spellbook_resumo.md`, `rulings_principais.md`,
+`lista_pacote_5trocas_proposta.md` e `auditoria_pacote_5trocas.txt` (**propostas, não são a lista do usuário**), `lista_pacote_final_6trocas_SUPERADA.md` e `auditoria_pacote_6trocas_SUPERADA.txt` (superadas, mantidas), e `log_spellbook_*.txt` (saída de tela dos lotes; **não** são derivados do bruto).
+Lotes superados (mantidos e marcados, não apagados): o cenário "PACOTE 1 (S1..S6)" de `spellbook_swaps` e `spellbook_pacote_final`. Inválido: nenhum.
 
 ## Verificação de reprodutibilidade (feita antes de declarar arquivado)
 
-`bash verificar_reproducao.sh` em 2026-10-05: **9 de 9 `cmp` iguais**, refeitos **só** a partir dos `.json.xz`, de `../../lista.md` e do `scryfall-cache`:
-`candidatas_indice.json`, `candidatas_por_etiqueta.md`, `auditoria_mecanica.txt`, `auditoria_pacote_final.txt`, `motores_por_script.txt`, `numeros_por_script.txt`, `condicoes_por_script.txt`, `spellbook_resumo.md`, `rulings_principais.md`.
+`bash verificar_reproducao.sh` em 2026-10-05: **10 de 10 `cmp` iguais** (rodado de novo depois da troca para o pacote de 5), refeitos **só** a partir dos `.json.xz`, de `../../lista.md` e do `scryfall-cache`:
+`candidatas_indice.json`, `candidatas_por_etiqueta.md`, `auditoria_mecanica.txt`, `auditoria_pacote_5trocas.txt`, `auditoria_pacote_6trocas_SUPERADA.txt`, `motores_por_script.txt`, `numeros_por_script.txt`, `condicoes_por_script.txt`, `spellbook_resumo.md`, `rulings_principais.md`.
 Verificação não vácua: o índice tem 3.097 cartas, `rad` 2, `proliferate` 19, `mill` 95, Spellbook base 2 combos e controle positivo com 3.
 
 **Não conferido:** (1) as respostas das APIs são de **2026-10-05**; refazer a consulta amanhã pode dar outro resultado (cartas novas, combos novos) — por isso o bruto está aqui;

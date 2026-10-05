@@ -160,10 +160,15 @@ Nomes nao reconhecidos pelo Spellbook: nenhum
 | CONTROLE (corte de peca de combo): Mindcrank <- Evolution Sage | 99 | 1 | - | Bloodchief Ascension + Mindcrank | 134 |
 | CONTROLE (corte de peca de combo): Glen Elendra Archmage <- Evolution Sage | 99 | 1 | - | Altar of Dementia + The Great Henge | 103 |
 
-## 4. Pacote final (6 trocas) e variante com Mutational Advantage <- Negate (7 trocas)
+## 4. Pacote final de 6 trocas (SUPERADO: tirava o Kozilek) e variante com Mutational Advantage <- Negate
 
 - **PACOTE FINAL (6 trocas)**: sai ['Cold-Eyed Selkie', 'Swarmyard', 'Soul-Guide Lantern', 'Kozilek, Butcher of Truth', "An Offer You Can't Refuse", 'Bojuka Bog']; entra ['Evolution Sage', "Karn's Bastion", 'Bruvac the Grandiloquent', 'The Master of Lake-town', "Garruk's Uprising", 'Opulent Palace']; NOVOS: ['Bloodchief Ascension + The Master of Lake-town']; SUMIRAM: -; 'quase' 142 (base 134)
 - **PACOTE FINAL + Mutational Advantage <- Negate (7 trocas)**: sai ['Cold-Eyed Selkie', 'Swarmyard', 'Soul-Guide Lantern', 'Kozilek, Butcher of Truth', "An Offer You Can't Refuse", 'Bojuka Bog', 'Negate']; entra ['Evolution Sage', "Karn's Bastion", 'Bruvac the Grandiloquent', 'The Master of Lake-town', "Garruk's Uprising", 'Opulent Palace', 'Mutational Advantage']; NOVOS: ['Bloodchief Ascension + The Master of Lake-town']; SUMIRAM: -; 'quase' 142 (base 134)
+
+## 4b. Pacote de 5 trocas (Kozilek MANTIDO) — vigente; o de 6 trocas acima esta SUPERADO
+
+- **PACOTE 5 TROCAS (sem cortar o Kozilek)**: sai ['Cold-Eyed Selkie', 'Swarmyard', 'Soul-Guide Lantern', "An Offer You Can't Refuse", 'Bojuka Bog']; entra ['Evolution Sage', "Karn's Bastion", 'Bruvac the Grandiloquent', "Garruk's Uprising", 'Opulent Palace']; NOVOS: -; SUMIRAM: -; 'quase' 143 (base 134)
+- **PACOTE 5 TROCAS + Master of Lake-town <- Negate**: sai ['Cold-Eyed Selkie', 'Swarmyard', 'Soul-Guide Lantern', "An Offer You Can't Refuse", 'Bojuka Bog', 'Negate']; entra ['Evolution Sage', "Karn's Bastion", 'Bruvac the Grandiloquent', "Garruk's Uprising", 'Opulent Palace', 'The Master of Lake-town']; NOVOS: ['Bloodchief Ascension + The Master of Lake-town']; SUMIRAM: -; 'quase' 143 (base 134)
 
 ## 5. Combos 'quase' da lista base cuja ULTIMA carta existe no pool pos-EOE (uma carta completaria)
 
