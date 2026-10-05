@@ -1,0 +1,106 @@
+DEPOIS (arquivo vivo): cartas na biblioteca=99 | distintas=97 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+ANTES (snapshot): cartas na biblioteca=99 | distintas=97 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+chaves da correcao no arquivo vivo: TAPPED_LAND_FIRST_ENABLED=True
+Bit-identidade: arquivo vivo com as chaves {'TAPPED_LAND_FIRST_ENABLED': False} == snapshot codigo/toph_goldfish_v1_ANTES_7918e0b.py; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['tapped_land_first_plays_total', 'tapped_land_skipped_for_play_total'])
+padrao: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+resiliencia: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+Ghost: arquivo vivo com {'TAPPED_LAND_FIRST_ENABLED': True, 'TAPPED_LAND_FIRST_GHOST': True} (o ensaio roda, o resultado e' ignorado) == arquivo vivo com as chaves {'TAPPED_LAND_FIRST_ENABLED': False}; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['tapped_land_first_plays_total', 'tapped_land_skipped_for_play_total'])
+padrao: N=20000 partidas diferentes=0 -> IDENTICO (o ensaio nao tem efeito colateral)
+resiliencia: N=20000 partidas diferentes=0 -> IDENTICO (o ensaio nao tem efeito colateral)
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1197 (59.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0660       0.0640      -0.0020 ±0.0031  
+  *commander_cast_turn__ate_T3                  0.1210       0.1350      +0.0140 ±0.0076  
+  *commander_cast_turn__ate_T4                  0.4830       0.5265      +0.0435 ±0.0119  
+  *commander_cast_turn__ate_T5                  0.7260       0.7450      +0.0190 ±0.0077  
+  *attacks_total                                4.6085       4.6870      +0.0785 ±0.0214  
+  *earthbend_applications                       6.1840       6.3170      +0.1330 ±0.0363  
+  *motor16_recursions                           1.9545       2.0535      +0.0990 ±0.0356  
+  *landfall_triggers_fired                     14.6930      15.0100      +0.3170 ±0.1229  
+  *bf_version                                  71.4900      74.0940      +2.6040 ±1.0489  
+  *spells_cast_total                           11.1405      11.3125      +0.1720 ±0.0717  
+  *len_names_cache                             18.2955      18.5215      +0.2260 ±0.0967  
+  *mana_spent_total                            45.0425      46.3390      +1.2965 ±0.5606  
+  *next_uid                                    49.1480      51.0480      +1.9000 ±0.8568  
+  *len_earthbend_by_source                      2.3700       2.4045      +0.0345 ±0.0173  
+  *len_battlefield                             41.2820      42.8695      +1.5875 ±0.7974  
+  *tokens_created                              26.5395      28.1045      +1.5650 ±0.7922  
+  *urza_saga_chapter2_tokens                    0.1665       0.1840      +0.0175 ±0.0089  
+  *lethal_turn__nunca                           0.7500       0.7350      -0.0150 ±0.0082  
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1198 (59.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0975       0.0895      -0.0080 ±0.0050  
+  *commander_cast_turn__ate_T3                  0.1080       0.1195      +0.0115 ±0.0071  
+  *commander_cast_turn__ate_T4                  0.4325       0.4720      +0.0395 ±0.0120  
+  *commander_cast_turn__ate_T5                  0.6520       0.6725      +0.0205 ±0.0099  
+  *attacks_total                                4.1765       4.2650      +0.0885 ±0.0269  
+  *earthbend_applications                       5.0185       5.1675      +0.1490 ±0.0476  
+  *spells_cast_total                            9.7375       9.9360      +0.1985 ±0.0782  
+  *motor16_recursions                           2.4225       2.5505      +0.1280 ±0.0520  
+  *landfall_triggers_fired                     12.5785      12.8995      +0.3210 ±0.1443  
+  *bf_version                                  71.3590      74.5705      +3.2115 ±1.6406  
+  *mana_spent_total                            34.6235      36.0380      +1.4145 ±0.7537  
+  *next_uid                                    36.8885      38.2685      +1.3800 ±0.7463  
+  *coffin_activations                           0.0950       0.1135      +0.0185 ±0.0100  
+  *commander_cast_turn__ate_T6                  0.7795       0.7935      +0.0140 ±0.0078  
+  *len_earthbend_by_source                      2.0320       2.0705      +0.0385 ±0.0224  
+  *first_finisher_turn__ate_T6                  0.3145       0.3290      +0.0145 ±0.0086  
+  *first_finisher_turn__ate_T5                  0.1810       0.1930      +0.0120 ±0.0072  
+  *urza_saga_chapter2_tokens                    0.1610       0.1775      +0.0165 ±0.0099  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 6031 (60.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0484       0.0476      -0.0008 ±0.0012  
+  *commander_cast_turn__ate_T3                  0.1263       0.1441      +0.0178 ±0.0033  
+  *commander_cast_turn__ate_T4                  0.4900       0.5391      +0.0491 ±0.0055  
+  *commander_cast_turn__ate_T5                  0.7373       0.7555      +0.0182 ±0.0038  
+  *attacks_total                                4.5931       4.6745      +0.0814 ±0.0093  
+  *first_finisher_turn__ate_T6                  0.3769       0.3953      +0.0184 ±0.0035  
+  *lethal_turn__nunca                           0.7569       0.7396      -0.0173 ±0.0039  
+  *urza_saga_chapter2_tokens                    0.1881       0.2026      +0.0145 ±0.0035  
+  *earthbend_applications                       6.3734       6.4999      +0.1265 ±0.0316  
+  *first_finisher_turn__ate_T5                  0.1942       0.2060      +0.0118 ±0.0031  
+  *landfall_triggers_fired                     15.0311      15.2555      +0.2244 ±0.0642  
+  *len_names_cache                             18.5404      18.6903      +0.1499 ±0.0458  
+  *spells_cast_total                           11.2779      11.3776      +0.0997 ±0.0312  
+  *sword_untaps                                 0.2572       0.2726      +0.0154 ±0.0055  
+  *first_finisher_turn__ate_T4                  0.0839       0.0904      +0.0065 ±0.0023  
+  *next_uid                                    48.0013      49.1781      +1.1768 ±0.4209  
+  *first_finisher_turn__ate_T3                  0.0340       0.0392      +0.0052 ±0.0019  
+  *lander_activations                           0.6022       0.6234      +0.0212 ±0.0077  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 6032 (60.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0871       0.0857      -0.0014 ±0.0023  
+  *commander_cast_turn__ate_T3                  0.1172       0.1336      +0.0164 ±0.0032  
+  *commander_cast_turn__ate_T4                  0.4367       0.4835      +0.0468 ±0.0056  
+  *commander_cast_turn__ate_T5                  0.6639       0.6843      +0.0204 ±0.0046  
+  *attacks_total                                4.1703       4.2543      +0.0840 ±0.0117  
+  *urza_saga_chapter2_tokens                    0.1761       0.1903      +0.0142 ±0.0035  
+  *first_finisher_turn__ate_T6                  0.3136       0.3278      +0.0142 ±0.0037  
+  *first_finisher_turn__ate_T5                  0.1731       0.1831      +0.0100 ±0.0031  
+  *first_finisher_turn__ate_T4                  0.0804       0.0876      +0.0072 ±0.0024  
+  *first_finisher_turn__ate_T3                  0.0339       0.0391      +0.0052 ±0.0019  
+  *landfall_triggers_fired                     12.7723      12.9223      +0.1500 ±0.0579  
+  *earthbend_applications                       5.1902       5.2883      +0.0981 ±0.0404  
+  *spells_cast_total                            9.8796       9.9449      +0.0653 ±0.0278  
+  *lethal_turn__nunca                           0.8873       0.8796      -0.0077 ±0.0034  
+  *commander_cast_turn__ate_T6                  0.7974       0.8053      +0.0079 ±0.0035  
+  *commander_damage_dealt                      56.4611      56.7413      +0.2802 ±0.1280  
+  *mana_spent_total                            35.7732      36.2308      +0.4576 ±0.2123  
+  *talon_gates_protections                      0.0250       0.0208      -0.0042 ±0.0020  
+Regressao: N=20000 por configuracao/modo, sementes 5_000_000+i; excecoes + invariantes genericas (carta acima do baralho em alguma zona; contadores negativos)
+depois (repositorio)   padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=5941 | campos negativos={}
+depois (repositorio)   resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=3017 | campos negativos={}
+chave_desligada        padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=5829 | campos negativos={}
+chave_desligada        resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=2957 | campos negativos={}

@@ -1,0 +1,22 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1197 (59.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__nunca                   0.0660       0.0640      -0.0020 ±0.0031  
+  *commander_cast_turn__ate_T3                  0.1210       0.1350      +0.0140 ±0.0076  
+  *commander_cast_turn__ate_T4                  0.4830       0.5265      +0.0435 ±0.0119  
+  *commander_cast_turn__ate_T5                  0.7260       0.7450      +0.0190 ±0.0077  
+  *attacks_total                                4.6085       4.6870      +0.0785 ±0.0214  
+  *earthbend_applications                       6.1840       6.3170      +0.1330 ±0.0363  
+  *motor16_recursions                           1.9545       2.0535      +0.0990 ±0.0356  
+  *landfall_triggers_fired                     14.6930      15.0100      +0.3170 ±0.1229  
+  *bf_version                                  71.4900      74.0940      +2.6040 ±1.0489  
+  *spells_cast_total                           11.1405      11.3125      +0.1720 ±0.0717  
+  *len_names_cache                             18.2955      18.5215      +0.2260 ±0.0967  
+  *mana_spent_total                            45.0425      46.3390      +1.2965 ±0.5606  
+  *next_uid                                    49.1480      51.0480      +1.9000 ±0.8568  
+  *len_earthbend_by_source                      2.3700       2.4045      +0.0345 ±0.0173  
+  *len_battlefield                             41.2820      42.8695      +1.5875 ±0.7974  
+  *tokens_created                              26.5395      28.1045      +1.5650 ±0.7922  
+  *urza_saga_chapter2_tokens                    0.1665       0.1840      +0.0175 ±0.0089  
+  *lethal_turn__nunca                           0.7500       0.7350      -0.0150 ±0.0082  
