@@ -69,8 +69,6 @@ Simplificacoes documentadas (nao inventadas -- omissoes explicitas):
   simuladores desta biblioteca). Sem bloqueio real modelado.
 """
 
-import collections
-import copy
 import json
 import random
 import statistics
@@ -208,19 +206,13 @@ add("Mountain", 0, "land", set(), produces={"R"})
 LAND_NAMES = {n for n, c in CARD_DB.items() if c.ctype == "land"}
 
 
-# Correcao de 2026-10-05 (varredura de entrada de terrenos contra o oraculo, Regra 12): Izzet Boilerworks ("This land enters tapped. When this land enters, return a land you control to its
-# owner's hand.") so' tinha a tag `bounceland_ur`, que `enters_tapped` nunca lia -> entrava DESVIRADO e produzia mana no proprio turno. E sem outro terreno em campo o oraculo manda devolver ELE MESMO
-# (o codigo antigo nao devolvia nada). Com a chave em False o comportamento antigo volta bit a bit.
-BOUNCELAND_ENTRY_ENABLED = True
-
-
 def enters_tapped(name: str) -> bool:
     # Achado real (varredura de tags orfas): `"etb_tapped" in tags` e' um
     # match EXATO de string num frozenset -- "etb_tapped_gain1" (Swiftwater
     # Cliffs) e "etb_tapped_scry1" (Temple of Epiphany) nunca batiam,
     # entao essas 2 lands entravam destapadas (errado -- oraculo real diz
     # "enters tapped" nas duas). Corrigido com prefixo.
-    return any(t.startswith("etb_tapped") for t in CARD_DB[name].tags) or name == "Silverbluff Bridge" or (BOUNCELAND_ENTRY_ENABLED and "bounceland_ur" in CARD_DB[name].tags)
+    return any(t.startswith("etb_tapped") for t in CARD_DB[name].tags) or name == "Silverbluff Bridge"
 EQUIPMENT_NAMES = {n for n, c in CARD_DB.items() if "equipment" in c.tags}
 ARTIFACT_LAND_NAMES = {n for n, c in CARD_DB.items() if "artifact_land" in c.tags}
 
@@ -273,8 +265,6 @@ class GameState:
 
     lands_played_this_turn: int = 0
     tapped_land_this_turn: Optional[int] = None
-    tapped_land_first_plays_total: int = 0   # correcao de 2026-10-05: vezes em que T1/T2 jogou o terreno virado primeiro
-    tapped_land_skipped_for_play_total: int = 0   # ... e vezes em que o ensaio mostrou que isso custaria uma jogada e jogou o desvirado
     mana_spent_this_turn: int = 0
     bonus_mana_pool: int = 0
     hand_size_no_max: bool = False
@@ -710,10 +700,6 @@ def resolve_etb(state: GameState, perm: Permanent, log: list):
             bounced = other_lands[0]
             state.battlefield.remove(bounced)
             state.hand.append(bounced.card)
-        elif BOUNCELAND_ENTRY_ENABLED and perm in state.battlefield:
-            # "return a land you control": sem outro terreno, o unico que voce controla e' o proprio bounceland
-            state.battlefield.remove(perm)
-            state.hand.append(perm.card)
 
 
 def create_map_tokens(state: GameState, log: list, n: int):
@@ -1265,76 +1251,6 @@ def try_cast_loop(state: GameState, log: list):
         changed = True
 
 
-# ---------------------------------------------------------------------------
-# Terreno virado primeiro em T1/T2 -- correcao de 2026-10-05 (mesma regra do Vihaan/Megatron)
-# ---------------------------------------------------------------------------
-# Antes: `play_land` jogava SEMPRE o primeiro terreno da ordem propria do deck (desvirado antes de virado); a mana de um turno sem jogada era desperdicada e o
-# terreno virado ficava pra um turno em que ele custa desenvolvimento. Agora, em T1..TAPPED_LAND_FIRST_MAX_TURN, havendo terreno virado E desvirado na mao, joga o
-# virado, salvo se isso custar desenvolvimento: o teste e' um ENSAIO a seco da propria fase de conjuracao pre-combate (copia profunda do estado), comparando o MV
-# total das cartas que saem da mao com cada candidato. Empate -> o virado. Com a chave em False o comportamento e' o antigo, bit a bit.
-TAPPED_LAND_FIRST_ENABLED = True
-TAPPED_LAND_FIRST_MAX_TURN = 2
-TAPPED_LAND_FIRST_GHOST = False   # so' validacao: roda o ensaio mas ignora o resultado (joga o padrao). Com a chave ligada + GHOST == chave desligada prova que o ensaio nao tem efeito colateral
-_TL_FORCED = None   # terreno imposto a play_land durante o ensaio a seco
-_TL_BUSY = False    # trava de recursao: o ensaio chama play_land de novo
-
-
-def _tl_is_tapped(state, name: str) -> bool:
-    return enters_tapped(name)
-
-
-def _tl_develop(sim, log: list):
-    """Fase de conjuracao pre-combate do turno: a mesma sequencia que o turno roda logo depois de `play_land`."""
-    try_cast_commander(sim, log)
-    convert_treasures_to_mana(sim)
-    try_cast_loop(sim, log)
-    try_activated_abilities(sim, log)
-    convert_treasures_to_mana(sim)
-    try_cast_loop(sim, log)
-    try_cast_commander(sim, log)
-
-
-def _tl_dry_run_mv(state, land: str) -> int:
-    """MV total das cartas que SAEM da mao se `land` for o terreno jogado e o resto da fase pre-combate rodar. Copia profunda (CARD_DB compartilhado; RNG do estado
-    copiado e `random` global restaurado): nao muta `state`."""
-    global _TL_FORCED, _TL_BUSY
-    memo = {id(c): c for c in CARD_DB.values()}
-    saved = random.getstate()
-    sim = copy.deepcopy(state, memo)
-    ficam = collections.Counter(sim.hand)
-    ficam[land] -= 1
-    _TL_FORCED, _TL_BUSY = land, True
-    try:
-        play_land(sim, [])
-        _tl_develop(sim, [])
-    finally:
-        _TL_FORCED, _TL_BUSY = None, False
-        random.setstate(saved)
-    saiu = ficam - collections.Counter(sim.hand)
-    return sum(CARD_DB[c].mv for c in saiu.elements() if c in CARD_DB)
-
-
-def tapped_first_pick(state, lands_in_hand: list) -> str:
-    """`lands_in_hand` ja' vem ordenada pelo criterio do proprio deck: a 1a e' o padrao (comportamento antigo)."""
-    if _TL_FORCED is not None and _TL_FORCED in lands_in_hand:
-        return _TL_FORCED
-    default = lands_in_hand[0]
-    if not TAPPED_LAND_FIRST_ENABLED or _TL_BUSY or state.turn > TAPPED_LAND_FIRST_MAX_TURN:
-        return default
-    tapped = [n for n in lands_in_hand if _tl_is_tapped(state, n)]
-    untapped = [n for n in lands_in_hand if not _tl_is_tapped(state, n)]
-    if not tapped or not untapped:
-        return default
-    mv_virado, mv_desvirado = _tl_dry_run_mv(state, tapped[0]), _tl_dry_run_mv(state, untapped[0])
-    if TAPPED_LAND_FIRST_GHOST:
-        return default
-    if mv_virado >= mv_desvirado:
-        state.tapped_land_first_plays_total += 1
-        return tapped[0]
-    state.tapped_land_skipped_for_play_total += 1
-    return untapped[0]
-
-
 def play_land(state: GameState, log: list):
     if state.lands_played_this_turn >= 1:
         return
@@ -1346,16 +1262,12 @@ def play_land(state: GameState, log: list):
         return 1 if enters_tapped(n) else 0
 
     hand_lands.sort(key=score)
-    pool = hand_lands
-    if TAPPED_LAND_FIRST_ENABLED and not any(p.card in LAND_NAMES for p in state.battlefield):
-        # bounceland sem outro terreno em campo devolve a si mesmo: nao e' candidato a 'jogar o virado primeiro'
-        pool = [n for n in hand_lands if "bounceland_ur" not in CARD_DB[n].tags] or hand_lands
-    pick = tapped_first_pick(state, pool)
+    pick = hand_lands[0]
     state.hand.remove(pick)
     state.lands_played_this_turn += 1
     tapped = enters_tapped(pick)
     perm = enter_battlefield(state, pick, log, tapped=tapped)
-    if tapped and perm in state.battlefield:   # bounceland sem outro terreno devolve a si mesmo: nada fica virado em campo
+    if tapped:
         state.tapped_land_this_turn = perm.uid
 
 
