@@ -1,0 +1,1159 @@
+"""Testes dirigidos do simulador do Mothman: cada um monta um estado, dispara UMA habilidade e confere o efeito (Regra #1 de CLAUDE.md: 'teste unitario dirigido confirmando
+que cada correcao especifica dispara de verdade'). Um teste que passa em vazio e' bug: cada um confere que o numero esperado e' > 0.
+Uso: cd wise-mothman-sultai && python3 testes/testes_dirigidos.py"""
+import importlib.util, os, sys, traceback, random, collections
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+os.chdir(os.path.dirname(HERE))
+spec = importlib.util.spec_from_file_location("mm", os.path.join(os.path.dirname(HERE), "mothman_goldfish_v1.py"))
+m = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(m)
+
+RESULTS = []
+
+
+def fresh(seed=1, hand=(), bf=(), gy=(), lib=None, turn=5, life=40, opps_lib=None, rad=0):
+    st = m.new_state(seed)
+    st.turn = turn
+    st.hand = list(hand)
+    st.graveyard = list(gy)
+    st.battlefield = []
+    st.exile = []
+    st.life = life
+    st.life_min = life
+    st.rad = rad
+    st.library = list(lib) if lib is not None else ["Forest"] * 25 + ["Island"] * 5 + ["Swamp"] * 5 + ["Fathom Mage", "Ruin Crab", "Sol Ring"] * 10
+    st.library_min = len(st.library)
+    for name in bf:
+        add(st, name)
+    for o in st.opps:
+        o.library = list(opps_lib) if opps_lib is not None else (["N", "C", "L"] * 30)
+        o.life = 40
+        o.rad = 0
+    return st
+
+
+def add(st, name, counters=0, tapped=False, sick=False, **ctr):
+    p = m.mk_perm(st, name)
+    p.counters = counters
+    p.tapped = tapped
+    p.entered_turn = st.turn if sick else st.turn - 2
+    for k, v in ctr.items():
+        p.ctr[k] = v
+    st.battlefield.append(p)
+    return p
+
+
+def teste(f):
+    def run():
+        try:
+            f()
+            RESULTS.append((f.__name__, True, ""))
+        except AssertionError as e:
+            RESULTS.append((f.__name__, False, "ASSERT: " + str(e)))
+        except Exception as e:
+            RESULTS.append((f.__name__, False, "EXC: " + "".join(traceback.format_exception_only(type(e), e)).strip() + " @ " + str(traceback.extract_tb(e.__traceback__)[-1].lineno)))
+    run.__name__ = f.__name__
+    TESTS.append(run)
+    return run
+
+
+TESTS = []
+
+
+# ============================================================== Mothman: o gatilho central
+@teste
+def mothman_mill_oponente_poe_X_contadores():
+    st = fresh(bf=[m.COMMANDER, "Gyre Sage", "Evolution Witness", "Walking Ballista"])
+    cs = m.creatures(st)
+    before = sum(p.counters for p in cs)
+    m.mill_event(st, [(1, 3)], source="teste")           # lib do oponente: N C L -> 2 nao-terrenos
+    assert st.mothman_triggers_total == 1, st.mothman_triggers_total
+    assert st.mothman_x_total == 2, st.mothman_x_total
+    assert sum(p.counters for p in cs) - before == 2
+
+
+@teste
+def mothman_so_terrenos_nao_dispara():
+    st = fresh(bf=[m.COMMANDER, "Gyre Sage"], opps_lib=["L"] * 20)
+    m.mill_event(st, [(1, 3)], source="teste")
+    assert st.mothman_triggers_total == 0
+    assert st.mill_events_total == 1
+
+
+@teste
+def mothman_varios_jogadores_um_gatilho():
+    st = fresh(bf=[m.COMMANDER, "Gyre Sage", "Evolution Witness", "Six", "Ruin Crab"], lib=["Fathom Mage"] * 20, opps_lib=["N"] * 20)
+    m.mill_event(st, [(0, 2), (1, 2), (2, 2)], source="teste")       # 6 nao-terrenos, 3 jogadores, UM evento
+    assert st.mothman_triggers_total == 1, st.mothman_triggers_total
+    assert st.mothman_x_total == 6, st.mothman_x_total
+
+
+@teste
+def mothman_X_maior_que_alvos_nao_desperdica_excesso():
+    st = fresh(bf=[m.COMMANDER], opps_lib=["N"] * 20)
+    m.mill_event(st, [(1, 5)], source="teste")
+    p = st.battlefield[0]
+    assert p.counters == 1, p.counters                  # cada alvo recebe UM contador; X=5 mas so' 1 criatura
+
+
+@teste
+def mothman_hardened_scales_soma_um():
+    st = fresh(bf=[m.COMMANDER, "Hardened Scales"], opps_lib=["N"] * 20)
+    m.mill_event(st, [(1, 1)], source="teste")
+    assert st.battlefield[0].counters == 2, st.battlefield[0].counters
+
+
+@teste
+def mothman_scales_constrictor_kami_somam():
+    st = fresh(bf=[m.COMMANDER, "Hardened Scales", "Winding Constrictor", "Kami of Whispered Hopes"], opps_lib=["N"] * 20)
+    mm = st.battlefield[0]
+    n = m.place_counters(st, mm, 1)
+    assert n == 4, n                                    # 1 + Scales + Constrictor + Kami
+
+
+@teste
+def mothman_rad_oponente_no_main_dele():
+    st = fresh(bf=[m.COMMANDER, "Gyre Sage"], opps_lib=["N", "N", "L", "N", "N", "L", "N", "N"] * 5)
+    o = st.opps[0]
+    o.rad = 3
+    m.rad_trigger_opp(st, o)
+    # mila 3 (N,N,L) -> 2 nao-terrenos: perde 2, remove 2 rad
+    assert o.life == 38, o.life
+    assert o.rad == 1, o.rad
+    assert st.mothman_triggers_total == 1 and st.mothman_x_total == 2
+
+
+@teste
+def rad_proprio_milla_e_perde_vida():
+    st = fresh(lib=["Fathom Mage", "Forest", "Ruin Crab", "Island"] * 10, rad=3)
+    m.rad_trigger_self(st)
+    # 3 cartas: Fathom Mage, Forest, Ruin Crab -> 2 nao-terrenos
+    assert st.life == 38, st.life
+    assert st.rad == 1, st.rad
+    assert st.rad_triggers_self == 1
+
+
+@teste
+def mothman_etb_da_rad_em_todos():
+    st = fresh(hand=[m.COMMANDER])
+    st.commander_in_cz = True
+    st.pool = {}
+    for p in [None]:
+        pass
+    # 4 mana de Forest/Island/Swamp
+    for n in ("Forest", "Island", "Swamp", "Forest"):
+        add(st, n)
+    assert m.cast_commander(st)
+    assert st.rad == 1 and all(o.rad == 1 for o in st.opps), (st.rad, [o.rad for o in st.opps])
+
+
+@teste
+def constrictor_dobra_rad_proprio():
+    st = fresh(bf=["Winding Constrictor"])
+    m.give_rad(st, 0, 1)
+    assert st.rad == 2, st.rad
+
+
+@teste
+def mothman_ataque_da_rad():
+    st = fresh(bf=[m.COMMANDER])
+    st.battlefield[0].entered_turn = 1
+    m.combat_step(st)
+    assert st.mothman_attacks_total == 1
+    assert st.rad == 1 and all(o.rad >= 1 for o in st.opps)
+
+
+@teste
+def danny_pink_compra_uma_vez_por_turno_por_criatura():
+    st = fresh(bf=[m.COMMANDER, "Danny Pink"])
+    h0 = len(st.hand)
+    mm = st.battlefield[0]
+    m.place_counters(st, mm, 1)
+    m.place_counters(st, mm, 1)
+    assert len(st.hand) - h0 == 1, len(st.hand) - h0
+    st.turn += 1
+    m.place_counters(st, mm, 1)
+    assert len(st.hand) - h0 == 2
+
+
+@teste
+def fathom_mage_compra_por_contador():
+    st = fresh(bf=["Fathom Mage", "Hardened Scales", "Winding Constrictor"])
+    fm = st.battlefield[0]
+    h0 = len(st.hand)
+    n = m.place_counters(st, fm, 1)      # 1 + Scales + Constrictor = 3 contadores -> 3 compras (ruling: uma por contador)
+    assert n == 3 and len(st.hand) - h0 == 3, (n, len(st.hand) - h0)
+
+
+@teste
+def gitrog_compra_uma_vez_por_evento_de_terrenos():
+    st = fresh(bf=["The Gitrog Monster"], lib=["Forest", "Forest", "Island", "Fathom Mage"] * 10)
+    h0 = len(st.hand)
+    m.mill_event(st, [(0, 3)], source="teste")          # 3 terrenos: UM evento -> 1 compra
+    assert len(st.hand) - h0 == 1 and st.gitrog_draws_total == 1
+
+
+@teste
+def hedge_shredder_poe_terrenos_milados_em_campo_virados():
+    st = fresh(bf=["Hedge Shredder"], lib=["Forest", "Island", "Fathom Mage", "Swamp"] * 10)
+    n0 = m.n_lands(st)
+    m.mill_event(st, [(0, 3)], source="teste")          # Forest, Island, Fathom Mage
+    assert m.n_lands(st) - n0 == 2, m.n_lands(st) - n0
+    assert all(p.tapped for p in st.battlefield if "land" in p.card.types)
+    assert "Forest" not in st.graveyard and "Island" not in st.graveyard
+
+
+@teste
+def mirelurk_queen_uma_vez_por_turno():
+    st = fresh(bf=["Mirelurk Queen"], opps_lib=["N"] * 20)
+    h0 = len(st.hand)
+    m.mill_event(st, [(1, 1)], source="teste")
+    m.mill_event(st, [(1, 1)], source="teste")
+    assert len(st.hand) - h0 == 1
+    assert st.battlefield[0].counters == 1
+
+
+@teste
+def zellix_horror_por_criatura_milada_de_qualquer_jogador():
+    st = fresh(bf=["Zellix, Sanity Flayer"], opps_lib=["C"] * 10)
+    n0 = len(m.creatures(st))
+    m.mill_event(st, [(1, 2)], source="teste")           # 2 criaturas num evento -> UMA ficha (gatilho 'one or more')
+    assert len(m.creatures(st)) - n0 == 1, len(m.creatures(st)) - n0
+    assert st.horror_tokens_total == 1
+
+
+@teste
+def syr_konrad_dano_por_carta_de_criatura_milada():
+    st = fresh(bf=["Syr Konrad, the Grim"], opps_lib=["C", "C", "N", "L"] * 5)
+    o = st.opps[0]
+    m.mill_event(st, [(1, 3)], source="teste")           # 2 criaturas -> 2 pings em CADA oponente
+    assert o.life == 38, o.life
+    assert st.opps[1].life == 38
+
+
+@teste
+def syr_konrad_carta_sai_do_meu_cemiterio():
+    st = fresh(bf=["Syr Konrad, the Grim"], gy=["Gyre Sage", "Fathom Mage", "Forest"])
+    m.graveyard_leave(st, ["Gyre Sage", "Forest", "Fathom Mage"])
+    assert st.opps[0].life == 38 and st.konrad_graveyard_leave_pings == 2
+
+
+@teste
+def undead_alchemist_exila_criatura_do_oponente_e_cria_zumbi():
+    st = fresh(bf=["Undead Alchemist"], opps_lib=["C", "C", "N"] * 10)
+    n0 = len(m.creatures(st))
+    m.mill_event(st, [(1, 3)], source="teste")
+    assert len(m.creatures(st)) - n0 == 2 and st.zombie_tokens_total == 2
+    assert st.opps[0].graveyard.count("C") == 0
+
+
+@teste
+def ascension_com_mindcrank_e_combo():
+    st = fresh(bf=["Bloodchief Ascension", "Mindcrank"], opps_lib=["N"] * 60)
+    asc = st.battlefield[0]
+    asc.ctr["quest"] = 3
+    m.mill_event(st, [(1, 1)], source="teste")
+    assert st.opps[0].eliminated and st.opps[0].elim_reason == "decked"
+    assert st.combo_win == "ascension_mindcrank"
+
+
+@teste
+def ascension_sem_mindcrank_perde_2_e_ganho_2():
+    st = fresh(bf=["Bloodchief Ascension"], opps_lib=["N"] * 20)
+    st.battlefield[0].ctr["quest"] = 3
+    l0 = st.life
+    m.mill_event(st, [(1, 2)], source="teste")
+    assert st.opps[0].life == 36 and st.life == l0 + 4
+
+
+@teste
+def ascension_nao_ativa_com_menos_de_3_marcadores():
+    st = fresh(bf=["Bloodchief Ascension"], opps_lib=["N"] * 20)
+    st.battlefield[0].ctr["quest"] = 2
+    m.mill_event(st, [(1, 2)], source="teste")
+    assert st.opps[0].life == 40
+
+
+@teste
+def ascension_marcador_no_fim_do_turno_se_oponente_perdeu_2():
+    st = fresh(bf=["Bloodchief Ascension"])
+    st.opps[0].lost_life_this_turn = 2
+    m.ascension_end_step(st)
+    assert st.battlefield[0].ctr.get("quest") == 1
+    st.opps[0].lost_life_this_turn = 1
+    m.ascension_end_step(st)
+    assert st.battlefield[0].ctr.get("quest") == 1
+
+
+@teste
+def kozilek_milado_embaralha_cemiterio():
+    st = fresh(gy=["Forest", "Island", "Gyre Sage"], lib=["Kozilek, Butcher of Truth", "Forest", "Island"])
+    m.mill_event(st, [(0, 1)], source="teste")
+    assert st.kozilek_shuffles_total == 1
+    assert len(st.graveyard) == 0 and len(st.library) == 6, (len(st.graveyard), len(st.library))     # 2 que sobraram + 3 do cemiterio + o proprio Kozilek
+
+
+@teste
+def kozilek_descartado_embaralha_cemiterio():
+    st = fresh(hand=["Kozilek, Butcher of Truth"] + ["Forest"] * 7, gy=["Island", "Swamp"])
+    lib0 = len(st.library)
+    m.discard_to_hand_size(st)
+    assert len(st.hand) == 7 and st.kozilek_shuffles_total == 1       # sem terrenos em campo o Kozilek e' a carta de menor valor: descartado, embaralha o cemiterio
+    assert st.graveyard == [] and len(st.library) == lib0 + 3
+
+
+@teste
+def kozilek_conjurado_compra_4():
+    st = fresh(hand=["Kozilek, Butcher of Truth"], bf=["Sol Ring", "Forest"] * 1, lib=["Forest"] * 30)
+    for _ in range(9):
+        add(st, "Island")
+    h0 = len(st.hand)
+    assert m.cast_card(st, "Kozilek, Butcher of Truth")
+    assert len(st.hand) - h0 == 4 - 1, len(st.hand) - h0       # -1 porque a propria Kozilek saiu da mao
+
+
+@teste
+def orb_untap_milla_por_permanente_virado():
+    st = fresh(bf=["Mesmeric Orb", "Forest", "Forest", "Island", "Sol Ring"], lib=["Forest"] * 30)
+    for p in st.battlefield[1:]:
+        p.tapped = True
+    l0 = len(st.library)
+    m.untap_my_permanents(st)
+    assert l0 - len(st.library) == 4, l0 - len(st.library)
+    assert st.orb_untap_triggers == 4
+
+
+@teste
+def orb_oponente_milla_ao_desvirar():
+    st = fresh(bf=["Mesmeric Orb"])
+    o = st.opps[0]
+    o.tapped_last_turn = 5
+    l0 = len(o.library)
+    m.opp_untap_and_orb(st, o)
+    assert l0 - len(o.library) == 5
+
+
+@teste
+def mindcrank_dano_vira_mill():
+    st = fresh(bf=["Mindcrank"])
+    l0 = len(st.opps[0].library)
+    m.lose_life_opp(st, 1, 4, "teste")
+    assert l0 - len(st.opps[0].library) == 4
+
+
+@teste
+def psychic_corrosion_compra_milla_cada_oponente_2():
+    st = fresh(bf=["Psychic Corrosion"])
+    l0 = [len(o.library) for o in st.opps]
+    m.draw_cards(st, 1, "teste")
+    assert all(a - len(o.library) == 2 for a, o in zip(l0, st.opps))
+
+
+@teste
+def memory_erosion_e_pollywog_no_turno_do_oponente():
+    st = fresh(bf=["Memory Erosion", "Pollywog Prodigy"])
+    st.battlefield[1].counters = 5                     # poder 6: qualquer nao-criatura com MV < 6 compra
+    o = st.opps[0]
+    o.turns_taken = 3
+    o.lands = 10
+    o.hand_size = 5
+    o.library = ["N"] * 20
+    seen = {"me": 0, "pw": 0}
+    rng = m.opp_rng(st, o)
+    for sd in range(40):
+        st2 = fresh(seed=sd + 1, bf=["Memory Erosion", "Pollywog Prodigy"])
+        st2.battlefield[1].counters = 5
+        oo = st2.opps[0]
+        oo.turns_taken = 3; oo.lands = 10; oo.hand_size = 5
+        h0 = len(st2.hand)
+        m.opponent_turn(st2, oo)
+        seen["me"] += st2.memory_erosion_mills
+        seen["pw"] += st2.pollywog_draws
+    assert seen["me"] > 0, seen
+    assert seen["pw"] > 0, seen
+
+
+@teste
+def ruin_crab_landfall_milla_3_cada_oponente():
+    st = fresh(bf=["Ruin Crab"])
+    l0 = [len(o.library) for o in st.opps]
+    m.put_land_onto_battlefield(st, "Forest", source="play")
+    assert all(a - len(o.library) == 3 for a, o in zip(l0, st.opps))
+
+
+@teste
+def icetill_landfall_milla_1_e_permite_terreno_do_cemiterio():
+    st = fresh(bf=["Icetill Explorer"], gy=["Forest"], hand=[], lib=["Fathom Mage"] * 30)
+    l0 = len(st.library)
+    m.play_land_phase(st)
+    assert m.n_lands(st) == 1 and "Forest" not in st.graveyard
+    assert l0 - len(st.library) == 1                         # landfall: mila 1 (nao-terreno: nao da' 2o terreno)
+    assert m.land_drops_available(st) == 2 and st.icetill_replays == 1
+    # com terrenos na biblioteca, o terreno milado e' rejogavel do cemiterio com a 2a jogada de terreno
+    st2 = fresh(bf=["Icetill Explorer"], gy=["Forest"], hand=[], lib=["Island"] * 30)
+    m.play_land_phase(st2)
+    assert m.n_lands(st2) == 2 and st2.icetill_replays == 2
+
+
+@teste
+def gitrog_terreno_extra_e_upkeep_sacrifica_terreno():
+    st = fresh(bf=["The Gitrog Monster", "Forest", "Forest", "Island", "Swamp", "Forest"])
+    assert m.land_drops_available(st) == 2
+    n0 = m.n_lands(st)
+    m.gitrog_upkeep(st)
+    assert m.n_lands(st) == n0 - 1 and m.has_perm(st, "The Gitrog Monster")
+    st2 = fresh(bf=["The Gitrog Monster", "Forest", "Island"])
+    m.gitrog_upkeep(st2)
+    assert not m.has_perm(st2, "The Gitrog Monster")
+
+
+@teste
+def deepmuck_crime_milla_3_uma_vez_por_turno():
+    st = fresh(bf=["Deepmuck Desperado"])
+    l0 = len(st.opps[0].library)
+    m.commit_crime(st, "t")
+    m.commit_crime(st, "t")
+    assert l0 - len(st.opps[0].library) == 3, l0 - len(st.opps[0].library)
+    assert st.crimes_total == 2
+
+
+@teste
+def freestrider_olha_5_poe_terreno_virado():
+    st = fresh(bf=["Freestrider Lookout"], lib=["Fathom Mage", "Forest", "Ruin Crab", "Island", "Sol Ring"] + ["Swamp"] * 20)
+    m.commit_crime(st, "t")
+    assert m.n_lands(st) == 1
+    assert [p for p in st.battlefield if "land" in p.card.types][0].tapped
+    assert len(st.library) == 24
+
+
+@teste
+def generous_patron_apoia_2_outras_criaturas():
+    st = fresh(bf=["Gyre Sage", "Evolution Witness", "Six"], hand=["Generous Patron"])
+    for n in ("Forest", "Forest", "Forest"):
+        add(st, n)
+    c0 = sum(p.counters for p in m.creatures(st))
+    assert m.cast_card(st, "Generous Patron")
+    assert sum(p.counters for p in m.creatures(st)) - c0 >= 2
+
+
+@teste
+def ouroboroid_poe_X_em_cada_criatura():
+    st = fresh(bf=["Ouroboroid", "Gyre Sage", "Six"])
+    ou = st.battlefield[0]
+    ou.counters = 2                                      # poder 3
+    c0 = sum(p.counters for p in m.creatures(st))
+    m.beginning_of_combat(st)
+    assert sum(p.counters for p in m.creatures(st)) - c0 == 9, sum(p.counters for p in m.creatures(st)) - c0   # 3 criaturas x 3
+
+
+@teste
+def herd_baloth_ficha_besta_com_contador():
+    st = fresh(bf=["Herd Baloth"])
+    n0 = len(m.creatures(st))
+    m.place_counters(st, st.battlefield[0], 1)
+    assert len(m.creatures(st)) - n0 == 1
+
+
+@teste
+def broodscale_spawn_e_adapt():
+    st = fresh(bf=["Basking Broodscale", "Forest", "Forest"])
+    assert m.act_adapt(st)
+    assert st.battlefield[0].counters == 1
+    assert any("spawn" in p.card.tags for p in st.battlefield)
+
+
+@teste
+def evolution_witness_adapt_devolve_permanente():
+    st = fresh(bf=["Evolution Witness", "Forest", "Forest"], gy=["Sol Ring"])
+    assert m.act_adapt(st)
+    assert st.battlefield[0].counters == 2
+    assert "Sol Ring" in st.hand
+
+
+@teste
+def evolve_dispara_com_criatura_maior():
+    st = fresh(bf=["Gyre Sage"], hand=["Icetill Explorer"])
+    for n in ("Forest", "Forest", "Forest", "Forest"):
+        add(st, n)
+    gs = st.battlefield[0]
+    assert m.cast_card(st, "Icetill Explorer")
+    assert gs.counters >= 1
+
+
+@teste
+def kodama_dano_de_combate_modificada_busca_basico():
+    st = fresh(bf=["Kodama of the West Tree", "Six"])
+    for p in st.battlefield:
+        p.entered_turn = 1
+    gs = st.battlefield[1]
+    gs.counters = 2        # modificada
+    st.battlefield[0].tapped = True
+    n0 = m.n_lands(st)
+    m.combat_step(st)
+    assert st.kodama_lands_total >= 1 and m.n_lands(st) > n0
+
+
+@teste
+def frogantua_ganha_10_por_jogador_que_perdeu():
+    st = fresh(bf=["Rampant Frogantua"])
+    p = st.battlefield[0]
+    assert m.power(st, p) == 3
+    st.opps[0].eliminated = True
+    assert m.power(st, p) == 13
+    st.decked = True
+    assert m.power(st, p) == 23
+
+
+@teste
+def frogantua_dano_milla_e_poe_terrenos():
+    st = fresh(bf=["Rampant Frogantua"], lib=["Forest", "Island", "Swamp", "Fathom Mage", "Ruin Crab"] + ["Forest"] * 40)
+    st.battlefield[0].entered_turn = 1
+    n0 = m.n_lands(st)
+    m.combat_step(st)
+    assert m.n_lands(st) > n0
+
+
+@teste
+def selkie_compra_igual_ao_dano():
+    st = fresh(bf=["Cold-Eyed Selkie"])
+    st.battlefield[0].entered_turn = 1
+    st.battlefield[0].counters = 2
+    h0 = len(st.hand)
+    m.combat_step(st)
+    assert len(st.hand) - h0 == 3, len(st.hand) - h0
+
+
+@teste
+def danny_mentor_poe_contador_em_atacante_menor():
+    st = fresh(bf=["Danny Pink", "Six", "Gyre Sage"])
+    for p in st.battlefield:
+        p.entered_turn = 1
+    c0 = sum(p.counters for p in st.battlefield)
+    m.combat_step(st)
+    assert sum(p.counters for p in st.battlefield) > c0
+
+
+@teste
+def six_ataque_milla_3_e_pega_terreno():
+    st = fresh(bf=["Six"], lib=["Forest", "Island", "Fathom Mage"] + ["Sol Ring"] * 30)
+    st.battlefield[0].entered_turn = 1
+    h0 = len(st.hand)
+    m.combat_step(st)
+    assert st.self_mill_by_source.get("six") == 3
+    assert len(st.hand) > h0
+
+
+@teste
+def hedge_shredder_crew_e_ataque():
+    st = fresh(bf=["Hedge Shredder", "Gyre Sage"])
+    for p in st.battlefield:
+        p.entered_turn = 1
+    st.battlefield[1].entered_turn = st.turn          # a tripulante esta doente: so' pode tripular
+    m.combat_step(st)
+    assert st.self_mill_by_source.get("hedge_shredder_attack") == 2
+    assert st.proxy_damage_total >= 5
+
+
+@teste
+def undead_alchemist_zumbi_causa_mill_em_vez_de_dano():
+    st = fresh(bf=["Undead Alchemist"], opps_lib=["N"] * 50)
+    st.battlefield[0].entered_turn = 1
+    m.combat_step(st)
+    assert st.opp_mill_by_source.get("undead_alchemist") == 4
+    assert all(o.life == 40 for o in st.opps)
+
+
+@teste
+def commander_damage_21_elimina():
+    st = fresh(bf=[m.COMMANDER])
+    st.battlefield[0].entered_turn = 1
+    st.battlefield[0].counters = 20
+    for o in st.opps[1:]:
+        o.life = 100
+    st.opps[0].life = 100
+    m.combat_step(st)
+    assert any(o.elim_reason == "commander" for o in st.opps), [o.cmd_damage for o in st.opps]
+
+
+@teste
+def palantir_marcador_scry_e_escolha_do_oponente():
+    got = collections.Counter()
+    for sd in range(60):
+        st = fresh(seed=sd + 1, bf=["Palantír of Orthanc"])
+        m.palantir_end_step(st)
+        got["draw"] += st.palantir_draws
+        got["mill"] += st.palantir_mills
+        assert st.battlefield[0].ctr["influence"] == 1
+    assert got["draw"] > 0 and got["mill"] > 0, got
+
+
+@teste
+def altar_of_the_brood_milla_ao_entrar_outro_permanente():
+    st = fresh(bf=["Altar of the Brood"], hand=["Sol Ring"])
+    add(st, "Forest")
+    l0 = [len(o.library) for o in st.opps]
+    assert m.cast_card(st, "Sol Ring")
+    assert all(a - len(o.library) == 1 for a, o in zip(l0, st.opps))
+
+
+@teste
+def great_henge_contador_e_compra_em_criatura_nao_ficha():
+    st = fresh(bf=["The Great Henge"], hand=["Six"])
+    for n in ("Forest", "Forest", "Forest"):
+        add(st, n)
+    h0 = len(st.hand)
+    assert m.cast_card(st, "Six")
+    six = [p for p in st.battlefield if p.card.name == "Six"][0]
+    assert six.counters == 1 and len(st.hand) - h0 == 0     # -1 (Six) +1 (compra)
+
+
+@teste
+def great_henge_custa_X_menos_pelo_maior_poder():
+    st = fresh(bf=["Six"])
+    st.battlefield[0].counters = 7                       # poder 9
+    g, pips = m.effective_cost(st, "The Great Henge")
+    assert g == 0 and len(pips) == 2, (g, pips)
+
+
+@teste
+def comandante_imposto_conta_conjuracao():
+    st = fresh(hand=[])
+    st.commander_cast_count = 2
+    g, pips = m.effective_cost(st, m.COMMANDER)
+    assert g == 1 + 4, g
+
+
+@teste
+def kami_mana_igual_ao_poder_de_uma_cor():
+    st = fresh(bf=["Kami of Whispered Hopes"])
+    st.battlefield[0].counters = 3
+    # poder 1 + 3 + 1 (a propria Kami: +1 extra no contador)
+    srcs = m.mana_sources(st)
+    assert srcs and srcs[0].bundle and srcs[0].amount == 4, [(s.bundle, s.amount) for s in srcs]
+
+
+@teste
+def gyre_sage_mana_por_contador():
+    st = fresh(bf=["Gyre Sage"])
+    st.battlefield[0].counters = 3
+    srcs = m.mana_sources(st)
+    assert srcs[0].amount == 3
+
+
+@teste
+def sol_ring_da_dois_incolores():
+    st = fresh(bf=["Sol Ring"])
+    assert m.available_mana(st) == 2
+
+
+@teste
+def plaza_cor_dos_lendarios():
+    st = fresh(bf=["Plaza of Heroes", "Kodama of the West Tree"])
+    s = [x for x in m.mana_sources(st) if x.plaza][0]
+    assert "G" in s.colors and "C" in s.colors
+    st2 = fresh(bf=["Plaza of Heroes"])
+    s2 = [x for x in m.mana_sources(st2) if x.plaza][0]
+    assert s2.colors == frozenset({"C"}), s2.colors
+
+
+@teste
+def waterlogged_grove_paga_1_de_vida():
+    st = fresh(bf=["Waterlogged Grove"])
+    l0 = st.life
+    assert m.pay_mana(st, 0, (frozenset("G"),))
+    assert st.life == l0 - 1
+
+
+@teste
+def shocklands_pagam_2_de_vida_ou_entram_virados():
+    st = fresh(life=40)
+    p = m.put_land_onto_battlefield(st, "Breeding Pool", source="play")
+    assert st.life == 38 and not p.tapped
+    st2 = fresh(life=8)
+    p2 = m.put_land_onto_battlefield(st2, "Breeding Pool", source="play")
+    assert st2.life == 8 and p2.tapped
+
+
+@teste
+def slowland_entra_desvirada_com_2_oponentes():
+    st = fresh()
+    p = m.put_land_onto_battlefield(st, "Morphic Pool", source="play")
+    assert not p.tapped
+    st.opps[0].eliminated = True
+    st.opps[1].eliminated = True
+    p2 = m.put_land_onto_battlefield(st, "Rejuvenating Springs", source="play")
+    assert p2.tapped
+
+
+@teste
+def fetch_real_sacrifica_paga_vida_e_vai_ao_cemiterio():
+    st = fresh(bf=["Verdant Catacombs"], lib=["Overgrown Tomb", "Forest", "Swamp"] + ["Island"] * 10)
+    l0 = st.life
+    assert m.crack_fetch(st, st.battlefield[0])
+    assert "Verdant Catacombs" in st.graveyard and st.life <= l0 - 1
+    lands = [p for p in st.battlefield if "land" in p.card.types]
+    assert len(lands) == 1 and lands[0].card.name in ("Overgrown Tomb", "Forest", "Swamp")
+
+
+@teste
+def fetch_com_gitrog_busca_depois_da_compra():
+    st = fresh(bf=["The Gitrog Monster", "Misty Rainforest"], lib=["Forest"] + ["Island"] * 30)
+    assert m.crack_fetch(st, [p for p in st.battlefield if p.card.name == "Misty Rainforest"][0])
+    assert m.n_lands(st) == 1
+
+
+@teste
+def fabled_passage_desvira_com_4_terrenos():
+    st = fresh(bf=["Forest", "Island", "Swamp", "Fabled Passage"], lib=["Forest"] * 10)
+    fp = st.battlefield[-1]
+    assert m.crack_fetch(st, fp)
+    new = [p for p in st.battlefield if p.card.name == "Forest" and m.n_lands(st) == 4][-1]
+    assert not new.tapped
+
+
+@teste
+def zagoth_triome_e_bojuka_entram_virados():
+    st = fresh()
+    assert m.put_land_onto_battlefield(st, "Zagoth Triome", source="play").tapped
+    assert m.put_land_onto_battlefield(st, "Bojuka Bog", source="play").tapped
+
+
+@teste
+def bojuka_bog_exila_cemiterio_de_oponente_e_e_crime():
+    st = fresh(bf=["Deepmuck Desperado"])
+    st.opps[0].graveyard = ["C", "N", "L"]
+    l0 = len(st.opps[1].library)
+    m.put_land_onto_battlefield(st, "Bojuka Bog", source="play")
+    assert st.opps[0].graveyard == [] and st.crimes_total == 1
+    assert l0 - len(st.opps[1].library) == 3                  # Deepmuck disparou
+
+
+@teste
+def shifting_woodland_entra_virado_sem_floresta():
+    st = fresh()
+    assert m.put_land_onto_battlefield(st, "Shifting Woodland", source="play").tapped
+    st2 = fresh(bf=["Forest"])
+    assert not m.put_land_onto_battlefield(st2, "Shifting Woodland", source="play").tapped
+
+
+@teste
+def urza_saga_capitulos():
+    st = fresh(lib=["Sol Ring", "Forest"] * 20)
+    p = m.put_land_onto_battlefield(st, "Urza's Saga", source="play")
+    assert p.ctr["lore"] == 1
+    m.saga_lore_step(st)
+    assert p.ctr["lore"] == 2
+    st.turn += 1
+    m.saga_lore_step(st)
+    assert m.has_perm(st, "Sol Ring") and p not in st.battlefield and "Urza's Saga" in st.graveyard
+
+
+@teste
+def urza_saga_constroi_construct_com_poder_por_artefato():
+    st = fresh(bf=["Sol Ring", "Forest", "Forest"])
+    saga = add(st, "Urza's Saga")
+    saga.ctr["lore"] = 2
+    assert m.act_saga_construct(st)
+    c = [p for p in st.battlefield if "construct" in p.card.tags][0]
+    assert m.power(st, c) == 2, m.power(st, c)               # Sol Ring + o proprio Construct
+
+
+@teste
+def ashiok_menos_1_milla_4_e_exila_cemiterios():
+    st = fresh(bf=["Ashiok, Dream Render"], ashiok_loyalty=5) if False else fresh(bf=["Ashiok, Dream Render"])
+    st.battlefield[0].ctr["loyalty"] = 5
+    st.opps[0].graveyard = ["C"]
+    assert m.act_ashiok(st)
+    assert st.battlefield[0].ctr["loyalty"] == 4
+    assert all(o.graveyard == [] for o in st.opps)
+    assert sum(st.opp_mill_by_source.values()) == 4
+
+
+@teste
+def cauldron_exila_criatura_de_oponente_e_poe_contador():
+    st = fresh(bf=["Agatha's Soul Cauldron", "Gyre Sage"])
+    st.opps[1].graveyard = ["C", "N"]
+    c0 = st.battlefield[1].counters
+    assert m.act_cauldron(st)
+    assert st.battlefield[1].counters > c0 and st.opps[1].graveyard == ["N"]
+
+
+@teste
+def cauldron_concede_habilidade_a_criaturas_com_contador():
+    st = fresh(bf=["Agatha's Soul Cauldron", "Six"])
+    st.cauldron_exiled.append("Kami of Whispered Hopes")
+    six = st.battlefield[1]
+    six.counters = 2
+    srcs = [s for s in m.mana_sources(st) if s.perm is six]
+    assert srcs and srcs[0].bundle, srcs
+
+
+@teste
+def cauldron_mana_de_qualquer_cor_so_para_habilidade_de_criatura():
+    st = fresh(bf=["Agatha's Soul Cauldron", "Forest", "Forest", "Syr Konrad, the Grim"])
+    assert m.afford(st, 1, (frozenset("B"),), creature=True)
+    assert not m.afford(st, 1, (frozenset("B"),), creature=False)
+
+
+@teste
+def zellix_ativada_milla_3_e_e_crime():
+    st = fresh(bf=["Zellix, Sanity Flayer", "Forest", "Deepmuck Desperado"])
+    assert m.act_zellix(st)
+    assert sum(st.opp_mill_by_source.values()) >= 3 and st.crimes_total == 1 and st.zellix_activations == 1
+
+
+@teste
+def zellix_nao_ativa_com_doenca_de_invocacao():
+    st = fresh(bf=["Forest"])
+    add(st, "Zellix, Sanity Flayer", sick=True)
+    assert not m.act_zellix(st)
+
+
+@teste
+def minamo_desvira_zellix_segunda_ativacao():
+    st = fresh(bf=["Zellix, Sanity Flayer", "Forest", "Island", "Island", "Forest", "Minamo, School at Water's Edge"], lib=["Fathom Mage"] * 30)
+    assert m.act_zellix(st)
+    assert m.act_zellix_minamo(st)
+    assert m.act_zellix(st)
+    assert st.zellix_activations == 2 and st.minamo_untaps == 1
+
+
+@teste
+def konrad_ativada_cada_jogador_milla_uma():
+    st = fresh(bf=["Syr Konrad, the Grim", "Swamp", "Forest"])
+    l0 = len(st.library)
+    assert m.act_konrad(st)
+    assert l0 - len(st.library) == 1 and sum(st.opp_mill_by_source.values()) == 3
+    assert st.mill_events_total == 1                       # UM evento (4 jogadores)
+
+
+@teste
+def cankerbloom_sacrifica_e_prolifera():
+    st = fresh(bf=["Cankerbloom", "Gyre Sage", "Evolution Witness", "Forest", "Forest"])
+    st.battlefield[1].counters = 2
+    st.battlefield[2].counters = 2
+    for o in st.opps:
+        o.rad = 3
+    assert m.act_cankerbloom(st)
+    assert not m.has_perm(st, "Cankerbloom")
+    assert st.battlefield[0].counters == 3 and all(o.rad == 4 for o in st.opps)
+
+
+@teste
+def proliferate_nao_poe_rad_no_proprio_por_padrao():
+    st = fresh(rad=2)
+    m.proliferate(st)
+    assert st.rad == 2
+
+
+@teste
+def swiftfoot_boots_da_haste_e_equipa():
+    st = fresh(bf=["Swiftfoot Boots", "Forest"])
+    add(st, "Six", sick=True)
+    six = [p for p in st.battlefield if p.card.name == "Six"][0]
+    six.counters = 2
+    assert m.act_equip_boots(st)
+    assert m.has_haste(st, six) and m.can_attack(st, six)
+
+
+@teste
+def ballista_enters_com_X_contadores_e_pinga_para_matar():
+    st = fresh(hand=["Walking Ballista"])
+    for n in ("Forest",) * 4:
+        add(st, n)
+    assert m.cast_card(st, "Walking Ballista", x=2)
+    b = m.perms_named(st, "Walking Ballista")[0]
+    assert b.counters == 2
+    st.opps[0].life = 2
+    assert m.act_ballista_ping(st)
+    assert st.opps[0].eliminated
+
+
+@teste
+def altar_of_dementia_mata_com_o_poder():
+    st = fresh(bf=["Altar of Dementia", "Six"])
+    st.battlefield[1].counters = 20
+    st.opps[0].library = ["N"] * 20
+    assert m.act_altar_finisher(st)
+    assert len(st.opps[0].library) == 0
+
+
+@teste
+def altar_henge_glen_laco():
+    st = fresh(bf=["Altar of Dementia", "The Great Henge", "Glen Elendra Archmage"], lib=["Fathom Mage"] * 40)
+    for o in st.opps:
+        o.library = ["N"] * 12
+    assert m.act_altar_loop(st)
+    assert st.altar_loop_iters >= 2 and st.persist_returns >= 2
+    assert m.has_perm(st, "Glen Elendra Archmage")
+    assert any(len(o.library) == 0 for o in st.opps)
+
+
+@teste
+def glen_persist_volta_com_menos_um_menos_um():
+    st = fresh(bf=["Glen Elendra Archmage"])
+    g = st.battlefield[0]
+    m.remove_permanent(st, g, "dies")
+    g2 = m.perms_named(st, "Glen Elendra Archmage")[0]
+    assert g2.ctr.get("minus1") == 1 and m.power(st, g2) == 1
+    m.remove_permanent(st, g2, "dies")
+    assert not m.has_perm(st, "Glen Elendra Archmage")
+
+
+@teste
+def takenuma_canal_milla_3_e_devolve_criatura():
+    st = fresh(hand=["Takenuma, Abandoned Mire"] + ["Forest"] * 3, bf=["Swamp", "Swamp", "Swamp", "Swamp", "Forest", "Forest"], gy=["Gyre Sage"])
+    h0 = len(st.hand)
+    assert m.act_takenuma(st)
+    assert "Takenuma, Abandoned Mire" in st.graveyard and st.channel_total == 1
+    assert any(c in st.hand for c in ("Gyre Sage",)) or any("creature" in m.CARD_DB[c].types for c in st.hand)
+
+
+@teste
+def boseiju_canal_e_interacao_proxy():
+    st = fresh(hand=["Boseiju, Who Endures", "Forest"], bf=["Forest"] * 7, turn=6)
+    got = 0
+    for sd in range(30):
+        s2 = fresh(seed=sd + 1, hand=["Boseiju, Who Endures", "Forest"], bf=["Forest"] * 7, turn=6)
+        if m.act_boseiju(s2):
+            got += 1
+            assert "Boseiju, Who Endures" in s2.graveyard and s2.interaction_plays == 1
+    assert got > 0
+
+
+@teste
+def triome_ciclo_compra():
+    st = fresh(hand=["Zagoth Triome"], bf=["Forest"] * 7)
+    h0 = len(st.hand)
+    assert m.act_triome_cycle(st)
+    assert "Zagoth Triome" in st.graveyard and len(st.hand) == h0 - 1 + 1
+
+
+@teste
+def waterlogged_grove_sacrifica_e_compra():
+    st = fresh(bf=["Waterlogged Grove", "The Gitrog Monster"] + ["Forest"] * 7)
+    h0 = len(st.hand)
+    assert m.act_waterlogged_grove(st)
+    assert "Waterlogged Grove" in st.graveyard and len(st.hand) - h0 == 2     # compra do Grove + da Gitrog
+
+
+@teste
+def strip_mine_proxy_com_pagador_de_crime():
+    got = 0
+    for sd in range(40):
+        st = fresh(seed=sd + 1, bf=["Strip Mine", "Icetill Explorer", "Deepmuck Desperado"] + ["Forest"] * 6, turn=7)
+        if m.act_strip_mine(st):
+            got += 1
+            assert "Strip Mine" in st.graveyard and st.crimes_total == 1
+    assert got > 0
+
+
+@teste
+def lantern_sacrifica_e_compra():
+    st = fresh(bf=["Soul-Guide Lantern", "Forest"])
+    h0 = len(st.hand)
+    assert m.act_lantern(st)
+    assert len(st.hand) - h0 == 1 and not m.has_perm(st, "Soul-Guide Lantern")
+
+
+@teste
+def woodland_delirio_copia_muldrotha():
+    st = fresh(bf=["Shifting Woodland", "Forest", "Forest", "Forest", "Forest"], gy=["Muldrotha, the Gravetide", "Gyre Sage", "Forest", "Sol Ring", "Mindcrank", "Negate", "Nature's Lore"])
+    assert m.card_types_in_graveyard(st) >= 4
+    assert m.act_woodland(st)
+    w = m.perms_named(st, "Muldrotha, the Gravetide")
+    assert w and st.shifting_woodland_copies == 1
+    assert m.graveyard_cast_options(st)             # a copia de Muldrotha permite conjurar do cemiterio
+
+
+@teste
+def muldrotha_um_de_cada_tipo_por_turno():
+    st = fresh(bf=["Muldrotha, the Gravetide"] + ["Forest"] * 6, gy=["Gyre Sage", "Evolution Witness", "Mindcrank", "Sol Ring"])
+    m.cast_loop(st)
+    types_used = list(st.muldrotha_used)
+    assert "creature" in types_used and "artifact" in types_used and len(set(types_used)) == len(types_used)
+    assert st.muldrotha_plays >= 2
+
+
+@teste
+def six_retrace_descarta_terreno():
+    st = fresh(bf=["Six"] + ["Forest"] * 4, hand=["Forest"], gy=["Mindcrank"])
+    m.cast_loop(st)
+    assert st.six_retraces == 1 and "Forest" in st.graveyard
+
+
+@teste
+def agadeem_feitico_devolve_criaturas_de_mv_diferentes():
+    st = fresh(bf=["Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], hand=[m.AGADEEM], gy=["Gyre Sage", "Six", "Danny Pink"])
+    st.battlefield += [m.mk_perm(st, "Forest") for _ in range(0)]
+    assert m.act_agadeem(st)
+    assert len([p for p in m.creatures(st)]) >= 2
+
+
+@teste
+def smugglers_surprise_modo_a_milla_4_e_pega_criatura_ou_terreno():
+    st = fresh(hand=["Smuggler's Surprise"], bf=["Forest"] * 4, lib=["Gyre Sage", "Forest", "Fathom Mage", "Six"] + ["Sol Ring"] * 30)
+    h0 = len(st.hand)
+    assert m.act_smugglers(st)
+    assert st.self_mill_by_source.get("smugglers_surprise") == 4
+    assert len(st.hand) - h0 >= 1
+
+
+@teste
+def fetch_quest_milla_7_e_poe_criatura_ou_terreno_em_campo():
+    st = fresh(hand=["Bramble Familiar // Fetch Quest"], bf=["Forest"] * 7, lib=["Gyre Sage", "Forest", "Fathom Mage", "Six", "Sol Ring", "Island", "Swamp"] + ["Sol Ring"] * 30)
+    assert m.cast_card(st, "Bramble Familiar // Fetch Quest", face="adventure")
+    assert st.self_mill_by_source.get("fetch_quest") == 7 and st.adventure_casts == 1
+    assert "Bramble Familiar // Fetch Quest" in st.adventure_exile
+    assert any(p.card.name in ("Gyre Sage", "Fathom Mage", "Six", "Forest", "Island", "Swamp") for p in st.battlefield if p.uid not in [])
+
+
+@teste
+def nature_lore_busca_floresta_em_campo_desvirada():
+    st = fresh(hand=["Nature's Lore"], bf=["Forest", "Forest"], lib=["Overgrown Tomb", "Forest"] + ["Island"] * 20)
+    assert m.cast_card(st, "Nature's Lore")
+    new = m.lands_in_play(st)[-1]
+    assert new.card.name in ("Overgrown Tomb", "Forest") and not new.tapped
+
+
+@teste
+def nuclear_fallout_da_X_rad_a_cada_jogador():
+    st = fresh(bf=["Swamp", "Swamp", "Swamp", "Swamp", "Swamp"], hand=["Nuclear Fallout"])
+    assert m.act_fallout(st)
+    assert st.rad >= 1 and all(o.rad >= 1 for o in st.opps) and st.wipes_cast == 1
+
+
+@teste
+def toxic_deluge_e_wave_goodbye_proxies():
+    got = collections.Counter()
+    for sd in range(80):
+        st = fresh(seed=sd + 1, hand=["Toxic Deluge", "Wave Goodbye"], bf=["Swamp", "Swamp", "Swamp", "Island", "Island", "Gyre Sage", "Six"], turn=6)
+        st.battlefield[-1].counters = 3
+        st.battlefield[-2].counters = 3
+        if m.act_wipe_proxy(st):
+            got["wipe"] += st.wipes_cast
+    assert got["wipe"] > 0, got
+
+
+@teste
+def repulsive_mutation_poe_X_contadores():
+    st = fresh(bf=["Six"] + ["Forest"] * 3 + ["Island"] * 3, hand=["Repulsive Mutation"])
+    c0 = st.battlefield[0].counters
+    assert m.act_repulsive(st)
+    assert st.battlefield[0].counters - c0 >= 2
+
+
+@teste
+def tear_asunder_e_vats_so_com_alvo_e_contam_interacao():
+    got = collections.Counter()
+    for sd in range(60):
+        st = fresh(seed=sd + 1, hand=["Tear Asunder", "V.A.T.S."], bf=["Swamp", "Swamp", "Forest", "Forest", "Forest", "Swamp"], turn=6)
+        if m.act_removal_proxy(st):
+            got["i"] += st.interaction_plays
+    assert got["i"] > 0, got
+
+
+@teste
+def contramagicas_respondem_a_magia_de_oponente():
+    got = collections.Counter()
+    for sd in range(60):
+        st = fresh(seed=sd + 1, hand=["Negate", "Didn't Say Please", "Arcane Denial"], bf=["Island", "Island", "Island", "Island"], turn=6)
+        o = st.opps[0]
+        if m.respond_to_opp_spell(st, o, noncreature=True, mv=4):
+            got["c"] += st.counterspells_cast
+            assert st.crimes_total >= 1
+    assert got["c"] > 0
+
+
+@teste
+def fierce_guardianship_gratis_com_comandante():
+    st = fresh(hand=["Fierce Guardianship"], bf=[m.COMMANDER])
+    o = st.opps[0]
+    assert m.respond_to_opp_spell(st, o, noncreature=True, mv=5)
+    assert "Fierce Guardianship" in st.graveyard
+
+
+@teste
+def didnt_say_please_milla_3_do_controlador():
+    st = fresh(hand=["Didn't Say Please"], bf=["Island", "Island", "Island"])
+    o = st.opps[0]
+    l0 = len(o.library)
+    assert m.respond_to_opp_spell(st, o, noncreature=False, mv=4)
+    assert l0 - len(o.library) == 3
+
+
+@teste
+def glen_elendra_contramagica_com_persist():
+    st = fresh(bf=["Glen Elendra Archmage", "Island", "Island"])
+    o = st.opps[0]
+    assert m.respond_to_opp_spell(st, o, noncreature=True, mv=4)
+    assert m.has_perm(st, "Glen Elendra Archmage") and st.persist_returns == 1
+
+
+@teste
+def hollowmurk_sultai_compra_uma_vez_por_turno():
+    st = fresh(bf=["Hollowmurk Siege", m.COMMANDER, "Six"])
+    st.battlefield[0].ctr["sultai"] = 1
+    h0 = len(st.hand)
+    m.place_counters(st, st.battlefield[1], 1)
+    m.place_counters(st, st.battlefield[2], 1)
+    assert len(st.hand) - h0 == 1
+
+
+@teste
+def hollowmurk_abzan_poe_contador_no_atacante():
+    st = fresh(bf=["Hollowmurk Siege", "Six"])
+    st.battlefield[0].ctr["abzan"] = 1
+    st.battlefield[1].entered_turn = 1
+    c0 = st.battlefield[1].counters
+    m.combat_step(st)
+    assert st.battlefield[1].counters > c0
+
+
+@teste
+def mulligan_escolhe_o_fundo_e_primeiro_e_gratis():
+    pen = collections.Counter()
+    for sd in range(200):
+        st = m.new_state(sd + 1)
+        assert len(st.hand) == 7 - max(0, st.mulligans - 1), (len(st.hand), st.mulligans)
+        pen[st.mulligans] += 1
+    assert pen[0] > 0 and pen[1] > 0, pen
+
+
+@teste
+def decking_ao_comprar_de_biblioteca_vazia():
+    st = fresh(lib=[])
+    m.draw_cards(st, 1)
+    assert st.decked and st.game_over
+
+
+@teste
+def oponente_perde_ao_comprar_de_biblioteca_vazia():
+    st = fresh()
+    o = st.opps[0]
+    o.library = []
+    m.opponent_turn(st, o)
+    assert o.eliminated and o.elim_reason == "decked"
+
+
+@teste
+def opp_rad_zero_nao_faz_nada():
+    st = fresh(bf=[m.COMMANDER])
+    o = st.opps[0]
+    m.rad_trigger_opp(st, o)
+    assert st.mothman_triggers_total == 0
+
+
+def main():
+    for t in TESTS:
+        t()
+    falhas = [(n, msg) for n, ok, msg in RESULTS if not ok]
+    for n, ok, msg in RESULTS:
+        print(("OK   " if ok else "FALHA"), n, msg)
+    print(f"\n{len(RESULTS) - len(falhas)}/{len(RESULTS)} passaram")
+    sys.exit(1 if falhas else 0)
+
+
+if __name__ == "__main__":
+    main()
