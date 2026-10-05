@@ -307,9 +307,6 @@ class GameState:
     bonus_mana_pool: int = 0
     next_uid: int = 1
     tapped_land_this_turn: Optional[int] = None  # uid do land que entrou tapped este turno (nao conta pra mana)
-    fetches_cracked_total: int = 0   # correcao de 2026-10-05: Windswept Heath quebrada com busca real por subtipo
-    fetch_no_target_total: int = 0   # ... e sem alvo na biblioteca (fica em campo)
-    fotd_extra_checks_total: int = 0   # ... e checagens da Field of the Dead em terrenos que entraram fora do play_land (fetch, Fenrir)
     tapped_land_first_plays_total: int = 0   # correcao de 2026-10-05: vezes em que T1/T2 jogou o terreno virado primeiro
     tapped_land_skipped_for_play_total: int = 0   # ... e vezes em que o ensaio mostrou que isso custaria uma jogada e jogou o desvirado
 
@@ -923,9 +920,6 @@ def do_saga_fenrir_chapter(state: GameState, perm: Permanent, log: list):
             land_perm.tapped = True
             enter_battlefield(state, land_perm, log, from_cast=False)
             log.append(f"  [Summon: Fenrir I] busca {found} tapped")
-            if LAND_ENTER_TRIGGERS_ALL_ENABLED:
-                state.fotd_extra_checks_total += 1
-                field_of_the_dead_check(state, log)
     elif ch == 2:
         state.fenrir_chapter2_pending = True
         log.append("  [Summon: Fenrir II] proxima criatura conjurada este turno entra com +1/+1 extra")
@@ -1545,32 +1539,6 @@ def tapped_first_pick(state, lands_in_hand: list) -> str:
     return untapped[0]
 
 
-# Correcao de 2026-10-05 (varredura de fetches/terrenos, `varredura-2026-10-05/`):
-# (a) Windswept Heath ("{T}, Pay 1 life, Sacrifice: Search your library for a Forest or Plains card, put it onto the battlefield, then shuffle") so' buscava terreno BASICO,
-#     pulava o Temple Garden e o Canopy Vista (tipo Forest Plains) e nao pagava a vida. Agora busca por SUBTIPO, paga 1 de vida, manda a Heath pro cemiterio e o terreno entra
-#     pelas regras de entrada do deck (`land_enters_tapped`). Politica: o terreno que cobre a cor que falta (<2 fontes) > o nao-basico (cobre as duas cores e conta como nome
-#     distinto pra Field of the Dead) > o que entra desvirado. O "shuffle" nao e' modelado (a biblioteca ja' e' uma permutacao aleatoria e nada poe carta no topo entre a compra e o main).
-# (b) Field of the Dead ("Whenever Field of the Dead or ANOTHER land enters under your control, if you control seven or more lands with different names, create a 2/2 Zombie") so' era
-#     checada no `play_land`; o terreno buscado pela Heath e o da Summon: Fenrir (capitulo I) entravam sem gatilho. Agora todo terreno que entra dispara a checagem.
-# Com as duas chaves em False o comportamento antigo volta bit a bit.
-FETCH_LANDS_ENABLED = True
-LAND_ENTER_TRIGGERS_ALL_ENABLED = True
-FETCH_TYPES = {"Windswept Heath": {"Forest", "Plains"}}
-LAND_BASIC_TYPES = {"Forest": {"Forest"}, "Plains": {"Plains"}, "Snow-Covered Forest": {"Forest"}, "Snow-Covered Plains": {"Plains"},
-                    "Temple Garden": {"Forest", "Plains"}, "Canopy Vista": {"Forest", "Plains"}}
-
-
-def field_of_the_dead_check(state: GameState, log: list):
-    """"Whenever Field of the Dead or another land enters under your control, if you control seven or more lands with different names, create a 2/2 black Zombie." """
-    if any(p.card.name == "Field of the Dead" for p in state.battlefield):
-        distinct_names = len(set(p.card.name for p in state.battlefield if is_land_card(p.card.name) or p.card.name in MDFC_LAND_SPELLS))
-        if distinct_names >= 7:
-            token = mk_perm(state, "Zombie Token", is_token=True)
-            state.battlefield.append(token)
-            state.tokens_created += 1
-            log.append("  [Field of the Dead] 7+ terrenos com nomes diferentes -> Zombie Token 2/2")
-
-
 def play_land(state: GameState, log: list):
     if state.lands_played_this_turn >= 1:
         return
@@ -1599,7 +1567,13 @@ def play_land(state: GameState, log: list):
     state.lands_played_this_turn += 1
     log.append(f"  [land] {choice}{' (tapped)' if tapped else ''}")
 
-    field_of_the_dead_check(state, log)
+    if any(p.card.name == "Field of the Dead" for p in state.battlefield):
+        distinct_names = len(set(p.card.name for p in state.battlefield if is_land_card(p.card.name) or p.card.name in MDFC_LAND_SPELLS))
+        if distinct_names >= 7:
+            token = mk_perm(state, "Zombie Token", is_token=True)
+            state.battlefield.append(token)
+            state.tokens_created += 1
+            log.append("  [Field of the Dead] 7+ terrenos com nomes diferentes -> Zombie Token 2/2")
 
 
 def try_windswept_heath(state: GameState, log: list):
@@ -1607,29 +1581,6 @@ def try_windswept_heath(state: GameState, log: list):
         return
     perm = next((p for p in state.battlefield if p.card.name == "Windswept Heath" and not p.tapped), None)
     if perm is None:
-        return
-    if FETCH_LANDS_ENABLED:
-        pool = [c for c in state.library if c in LAND_BASIC_TYPES and (LAND_BASIC_TYPES[c] & FETCH_TYPES["Windswept Heath"])]
-        if not pool:
-            state.fetch_no_target_total += 1
-            return
-        def falta(c):   # cores G/W com menos de 2 fontes que este terreno cobre
-            return sum(1 for color in ("G", "W") if color_sources(state, color) < 2 and color in CARD_DB[c].produces)
-        found = min(pool, key=lambda c: (-falta(c), c in BASIC_LAND_NAMES, land_enters_tapped(state, c)))
-        state.life_total -= 1
-        state.library.remove(found)
-        state.battlefield.remove(perm)
-        state.graveyard.append("Windswept Heath")
-        found_perm = mk_perm(state, found)
-        found_perm.tapped = land_enters_tapped(state, found)
-        if found_perm.tapped:
-            state.tapped_land_this_turn = found_perm.uid
-        state.battlefield.append(found_perm)
-        state.fetches_cracked_total += 1
-        log.append(f"  [Windswept Heath] paga 1 de vida, sacrifica, busca {found}{' (tapped)' if found_perm.tapped else ''}")
-        if LAND_ENTER_TRIGGERS_ALL_ENABLED:
-            state.fotd_extra_checks_total += 1
-            field_of_the_dead_check(state, log)
         return
     basics = [c for c in state.library if c in ("Forest", "Plains", "Snow-Covered Forest", "Snow-Covered Plains")]
     if not basics:
@@ -1640,9 +1591,6 @@ def try_windswept_heath(state: GameState, log: list):
     found_perm = mk_perm(state, found)
     state.battlefield.append(found_perm)
     log.append(f"  [Windswept Heath] sacrifica, busca {found}")
-    if LAND_ENTER_TRIGGERS_ALL_ENABLED:
-        state.fotd_extra_checks_total += 1
-        field_of_the_dead_check(state, log)
 
 
 # =========================================================

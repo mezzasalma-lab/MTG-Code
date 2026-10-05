@@ -1,0 +1,246 @@
+DEPOIS (arquivo vivo): cartas na biblioteca=99 | distintas=94 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+ANTES (snapshot): cartas na biblioteca=99 | distintas=94 | desconhecidas (fora do CARD_DB)=[] | duplicadas nao-basicas=[]
+   200 partidas modo padrao: excecoes=0
+   200 partidas modo resiliencia: excecoes=0
+chaves da correcao no arquivo vivo: FETCH_LANDS_ENABLED=True, LAND_ENTER_TRIGGERS_ALL_ENABLED=True
+Bit-identidade: arquivo vivo com as chaves {'FETCH_LANDS_ENABLED': False, 'LAND_ENTER_TRIGGERS_ALL_ENABLED': False} == snapshot codigo/kutzil_goldfish_v1_ANTES_99fde54.py; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['fetches_cracked_total', 'fetch_no_target_total', 'fotd_extra_checks_total'])
+padrao: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+resiliencia: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1591 (79.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0265       0.0240      -0.0025 ±0.0022  
+   commander_cast_turn__ate_T3                  0.7965       0.7955      -0.0010 ±0.0037  
+  *commander_cast_turn__ate_T4                  0.9110       0.9150      +0.0040 ±0.0028  
+  *commander_cast_turn__ate_T5                  0.9315       0.9355      +0.0040 ±0.0028  
+  *life_total                                  39.6710      39.4735      -0.1975 ±0.0188  
+  *len_graveyard                                0.1325       0.2990      +0.1665 ±0.0164  
+  *next_uid                                    18.5955      18.6820      +0.0865 ±0.0326  
+  *len_battlefield                             16.8815      16.9665      +0.0850 ±0.0322  
+  *tokens_created                               0.8060       0.8260      +0.0200 ±0.0088  
+  *len_library                                 76.1670      76.1180      -0.0490 ±0.0260  
+  *kutzil_draws_total                           4.3390       4.3605      +0.0215 ±0.0141  
+  *commander_cast_turn__ate_T6                  0.9500       0.9530      +0.0030 ±0.0024  
+  *commander_cast_count                         0.9735       0.9760      +0.0025 ±0.0022  
+  *commander_in_play                            0.9735       0.9760      +0.0025 ±0.0022  
+  *commander_uid                                5.3085       5.3275      +0.0190 ±0.0175  
+  *warp_plot_free_casts_total                   0.0605       0.0585      -0.0020 ±0.0020  
+   saddle_activations_total                     1.0220       1.0265      +0.0045 ±0.0058  
+   len_hand                                     3.2185       3.2060      -0.0125 ±0.0167  
+
+[so_fetch_lands - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1609 (80.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0265       0.0240      -0.0025 ±0.0022  
+   commander_cast_turn__ate_T3                  0.7965       0.7955      -0.0010 ±0.0037  
+  *commander_cast_turn__ate_T4                  0.9110       0.9150      +0.0040 ±0.0028  
+  *commander_cast_turn__ate_T5                  0.9315       0.9355      +0.0040 ±0.0028  
+  *life_total                                  39.6710      39.4735      -0.1975 ±0.0188  
+  *len_graveyard                                0.1325       0.2990      +0.1665 ±0.0164  
+  *next_uid                                    18.5955      18.6655      +0.0700 ±0.0319  
+  *len_battlefield                             16.8815      16.9505      +0.0690 ±0.0315  
+  *len_library                                 76.1670      76.1180      -0.0490 ±0.0260  
+  *kutzil_draws_total                           4.3390       4.3605      +0.0215 ±0.0141  
+  *commander_cast_turn__ate_T6                  0.9500       0.9530      +0.0030 ±0.0024  
+  *commander_cast_count                         0.9735       0.9760      +0.0025 ±0.0022  
+  *commander_in_play                            0.9735       0.9760      +0.0025 ±0.0022  
+  *commander_uid                                5.3085       5.3275      +0.0190 ±0.0175  
+  *warp_plot_free_casts_total                   0.0605       0.0585      -0.0020 ±0.0020  
+   saddle_activations_total                     1.0220       1.0265      +0.0045 ±0.0058  
+   len_hand                                     3.2185       3.2060      -0.0125 ±0.0167  
+   len_exile_warp                               0.0115       0.0105      -0.0010 ±0.0014  
+
+[so_land_enter_triggers_all - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1972 (98.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *next_uid                                    18.5955      18.6095      +0.0140 ±0.0052  
+  *tokens_created                               0.8060       0.8200      +0.0140 ±0.0052  
+  *len_battlefield                             16.8815      16.8955      +0.0140 ±0.0053  
+  *proxy_damage_total                         138.5480     138.6525      +0.1045 ±0.0718  
+  *counters_placed_total                       64.4615      64.5080      +0.0465 ±0.0411  
+   commander_damage_dealt                      43.3875      43.3930      +0.0055 ±0.0064  
+   fenrir_chapter2_pending                      0.0080       0.0085      +0.0005 ±0.0010  
+   interaction_plays                            1.1770       1.1765      -0.0005 ±0.0010  
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1632 (81.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0435       0.0410      -0.0025 ±0.0022  
+   commander_cast_turn__ate_T3                  0.7460       0.7455      -0.0005 ±0.0035  
+   commander_cast_turn__ate_T4                  0.8595       0.8630      +0.0035 ±0.0035  
+  *commander_cast_turn__ate_T5                  0.9080       0.9120      +0.0040 ±0.0034  
+  *life_total                                  38.0955      37.9305      -0.1650 ±0.0274  
+  *graveyard_wipe_used                          0.2285       0.2485      +0.0200 ±0.0080  
+  *len_smart_graveyard_wipe_log                 0.2285       0.2485      +0.0200 ±0.0080  
+  *smart_graveyard_wipes_total                  0.2285       0.2485      +0.0200 ±0.0080  
+  *len_graveyard                                3.7160       3.8160      +0.1000 ±0.0560  
+  *commander_cast_turn__ate_T6                  0.9295       0.9335      +0.0040 ±0.0028  
+  *next_uid                                    16.5055      16.5610      +0.0555 ±0.0407  
+  *kutzil_draws_total                           3.0345       3.0580      +0.0235 ±0.0184  
+  *commander_in_play                            0.6715       0.6795      +0.0080 ±0.0076  
+   warp_plot_free_casts_total                   0.0645       0.0630      -0.0015 ±0.0017  
+   len_smart_discard_log                        1.1115       1.0965      -0.0150 ±0.0179  
+   smart_discards_total                         1.1115       1.0965      -0.0150 ±0.0179  
+   commander_uid                                6.8860       6.9725      +0.0865 ±0.1156  
+   saddle_activations_total                     0.5915       0.5970      +0.0055 ±0.0074  
+
+[so_fetch_lands - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1646 (82.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0435       0.0410      -0.0025 ±0.0022  
+   commander_cast_turn__ate_T3                  0.7460       0.7455      -0.0005 ±0.0035  
+   commander_cast_turn__ate_T4                  0.8595       0.8630      +0.0035 ±0.0035  
+  *commander_cast_turn__ate_T5                  0.9080       0.9120      +0.0040 ±0.0034  
+  *life_total                                  38.0955      37.9355      -0.1600 ±0.0269  
+  *graveyard_wipe_used                          0.2285       0.2495      +0.0210 ±0.0080  
+  *len_smart_graveyard_wipe_log                 0.2285       0.2495      +0.0210 ±0.0080  
+  *smart_graveyard_wipes_total                  0.2285       0.2495      +0.0210 ±0.0080  
+  *len_graveyard                                3.7160       3.8115      +0.0955 ±0.0553  
+  *commander_cast_turn__ate_T6                  0.9295       0.9335      +0.0040 ±0.0028  
+  *kutzil_draws_total                           3.0345       3.0585      +0.0240 ±0.0184  
+  *tokens_created                               0.5460       0.5385      -0.0075 ±0.0069  
+  *commander_in_play                            0.6715       0.6790      +0.0075 ±0.0074  
+  *next_uid                                    16.5055      16.5460      +0.0405 ±0.0402  
+   warp_plot_free_casts_total                   0.0645       0.0630      -0.0015 ±0.0017  
+   len_smart_discard_log                        1.1115       1.0965      -0.0150 ±0.0177  
+   smart_discards_total                         1.1115       1.0965      -0.0150 ±0.0177  
+   saddle_activations_total                     0.5915       0.5970      +0.0055 ±0.0074  
+
+[so_land_enter_triggers_all - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1977 (98.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *tokens_created                               0.5460       0.5580      +0.0120 ±0.0050  
+  *next_uid                                    16.5055      16.5185      +0.0130 ±0.0055  
+   commander_cast_count                         1.5560       1.5570      +0.0010 ±0.0014  
+   life_total                                  38.0955      38.0930      -0.0025 ±0.0035  
+   len_hand                                     2.3930       2.3910      -0.0020 ±0.0031  
+   commander_damage_dealt                      22.9470      22.9385      -0.0085 ±0.0143  
+   len_graveyard                                3.7160       3.7220      +0.0060 ±0.0114  
+   craterhoof_cast                              0.0350       0.0355      +0.0005 ±0.0010  
+   damning_verdict_cast_total                   0.0125       0.0130      +0.0005 ±0.0010  
+   fenrir_chapter2_pending                      0.0050       0.0055      +0.0005 ±0.0010  
+   finisher_resolved_total                      0.0360       0.0365      +0.0005 ±0.0010  
+   first_finisher_turn__nunca                   0.9650       0.9645      -0.0005 ±0.0010  
+   graveyard_wipe_used                          0.2285       0.2280      -0.0005 ±0.0010  
+   len_smart_attack_log                         1.0480       1.0490      +0.0010 ±0.0020  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8005 (80.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0223       0.0212      -0.0011 ±0.0006  
+   commander_cast_turn__ate_T3                  0.8035       0.8030      -0.0005 ±0.0013  
+  *commander_cast_turn__ate_T4                  0.9150       0.9175      +0.0025 ±0.0010  
+  *commander_cast_turn__ate_T5                  0.9394       0.9419      +0.0025 ±0.0010  
+  *life_total                                  39.7154      39.5241      -0.1913 ±0.0086  
+  *len_graveyard                                0.1460       0.3074      +0.1614 ±0.0073  
+  *next_uid                                    18.7242      18.8030      +0.0788 ±0.0135  
+  *len_battlefield                             17.0057      17.0822      +0.0765 ±0.0134  
+  *tokens_created                               0.8207       0.8411      +0.0204 ±0.0037  
+  *len_library                                 76.0373      75.9913      -0.0460 ±0.0114  
+  *kutzil_draws_total                           4.3890       4.4002      +0.0112 ±0.0048  
+  *len_hand                                     3.2492       3.2359      -0.0133 ±0.0070  
+  *commander_cast_turn__ate_T6                  0.9575       0.9590      +0.0015 ±0.0008  
+  *commander_uid                                5.3689       5.3803      +0.0114 ±0.0064  
+  *tapped_land_first_plays_total                0.3450       0.3429      -0.0021 ±0.0012  
+  *commander_cast_count                         0.9777       0.9788      +0.0011 ±0.0006  
+  *commander_in_play                            0.9777       0.9788      +0.0011 ±0.0006  
+  *warp_plot_free_casts_total                   0.0598       0.0588      -0.0010 ±0.0007  
+
+[so_fetch_lands - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8085 (80.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0223       0.0212      -0.0011 ±0.0006  
+   commander_cast_turn__ate_T3                  0.8035       0.8030      -0.0005 ±0.0013  
+  *commander_cast_turn__ate_T4                  0.9150       0.9175      +0.0025 ±0.0010  
+  *commander_cast_turn__ate_T5                  0.9394       0.9419      +0.0025 ±0.0010  
+  *life_total                                  39.7154      39.5241      -0.1913 ±0.0086  
+  *len_graveyard                                0.1460       0.3074      +0.1614 ±0.0073  
+  *next_uid                                    18.7242      18.7865      +0.0623 ±0.0132  
+  *len_battlefield                             17.0057      17.0658      +0.0601 ±0.0131  
+  *len_library                                 76.0373      75.9914      -0.0459 ±0.0114  
+  *kutzil_draws_total                           4.3890       4.4001      +0.0111 ±0.0048  
+  *len_hand                                     3.2492       3.2358      -0.0134 ±0.0070  
+  *commander_cast_turn__ate_T6                  0.9575       0.9590      +0.0015 ±0.0008  
+  *commander_uid                                5.3689       5.3803      +0.0114 ±0.0064  
+  *tapped_land_first_plays_total                0.3450       0.3429      -0.0021 ±0.0012  
+  *commander_cast_count                         0.9777       0.9788      +0.0011 ±0.0006  
+  *commander_in_play                            0.9777       0.9788      +0.0011 ±0.0006  
+  *tokens_created                               0.8207       0.8246      +0.0039 ±0.0026  
+  *warp_plot_free_casts_total                   0.0598       0.0588      -0.0010 ±0.0007  
+
+[so_land_enter_triggers_all - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9859 (98.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *next_uid                                    18.7242      18.7389      +0.0147 ±0.0025  
+  *tokens_created                               0.8207       0.8354      +0.0147 ±0.0025  
+  *len_battlefield                             17.0057      17.0203      +0.0146 ±0.0024  
+  *proxy_damage_total                         138.4894     138.6091      +0.1197 ±0.0634  
+  *counters_placed_total                       65.8685      65.9440      +0.0755 ±0.0461  
+  *commander_damage_dealt                      42.8281      42.8339      +0.0058 ±0.0045  
+   cards_drawn_extra                           14.0625      14.0626      +0.0001 ±0.0002  
+   commander_damage_win                         0.7130       0.7131      +0.0001 ±0.0002  
+   kutzil_draws_total                           4.3890       4.3891      +0.0001 ±0.0002  
+   len_hand                                     3.2492       3.2493      +0.0001 ±0.0002  
+   len_library                                 76.0373      76.0372      -0.0001 ±0.0002  
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8158 (81.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0378       0.0369      -0.0009 ±0.0008  
+   commander_cast_turn__ate_T3                  0.7562       0.7558      -0.0004 ±0.0013  
+  *commander_cast_turn__ate_T4                  0.8664       0.8687      +0.0023 ±0.0011  
+  *commander_cast_turn__ate_T5                  0.9115       0.9136      +0.0021 ±0.0011  
+  *life_total                                  38.1272      37.9563      -0.1709 ±0.0130  
+  *len_graveyard                                3.7790       3.9064      +0.1274 ±0.0241  
+  *graveyard_wipe_used                          0.2314       0.2461      +0.0147 ±0.0033  
+  *len_smart_graveyard_wipe_log                 0.2314       0.2461      +0.0147 ±0.0033  
+  *smart_graveyard_wipes_total                  0.2314       0.2461      +0.0147 ±0.0033  
+  *tokens_created                               0.5387       0.5539      +0.0152 ±0.0042  
+  *next_uid                                    16.5990      16.6495      +0.0505 ±0.0160  
+  *tapped_land_first_plays_total                0.3450       0.3429      -0.0021 ±0.0012  
+  *len_hand                                     2.4042       2.3881      -0.0161 ±0.0094  
+  *commander_cast_count                         1.5627       1.5686      +0.0059 ±0.0036  
+  *len_battlefield                             10.4577      10.5009      +0.0432 ±0.0286  
+  *warp_plot_free_casts_total                   0.0635       0.0622      -0.0013 ±0.0010  
+  *ramp_pieces_in_play                          1.1447       1.1415      -0.0032 ±0.0025  
+  *tapped_land_skipped_for_play_total           0.4675       0.4686      +0.0011 ±0.0010  
+
+[so_fetch_lands - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8210 (82.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0378       0.0369      -0.0009 ±0.0008  
+   commander_cast_turn__ate_T3                  0.7562       0.7558      -0.0004 ±0.0013  
+  *commander_cast_turn__ate_T4                  0.8664       0.8687      +0.0023 ±0.0011  
+  *commander_cast_turn__ate_T5                  0.9115       0.9136      +0.0021 ±0.0011  
+  *life_total                                  38.1272      37.9560      -0.1712 ±0.0130  
+  *len_graveyard                                3.7790       3.9066      +0.1276 ±0.0240  
+  *graveyard_wipe_used                          0.2314       0.2460      +0.0146 ±0.0033  
+  *len_smart_graveyard_wipe_log                 0.2314       0.2460      +0.0146 ±0.0033  
+  *smart_graveyard_wipes_total                  0.2314       0.2460      +0.0146 ±0.0033  
+  *next_uid                                    16.5990      16.6388      +0.0398 ±0.0159  
+  *tapped_land_first_plays_total                0.3450       0.3429      -0.0021 ±0.0012  
+  *len_hand                                     2.4042       2.3888      -0.0154 ±0.0094  
+  *commander_cast_count                         1.5627       1.5682      +0.0055 ±0.0036  
+  *warp_plot_free_casts_total                   0.0635       0.0622      -0.0013 ±0.0010  
+  *len_battlefield                             10.4577      10.4952      +0.0375 ±0.0284  
+  *tokens_created                               0.5387       0.5434      +0.0047 ±0.0036  
+  *ramp_pieces_in_play                          1.1447       1.1415      -0.0032 ±0.0025  
+  *tapped_land_skipped_for_play_total           0.4675       0.4686      +0.0011 ±0.0010  
+
+[so_land_enter_triggers_all - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9911 (99.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *tokens_created                               0.5387       0.5481      +0.0094 ±0.0020  
+  *next_uid                                    16.5990      16.6088      +0.0098 ±0.0021  
+  *commander_uid                                6.7682       6.7732      +0.0050 ±0.0046  
+  *len_battlefield                             10.4577      10.4615      +0.0038 ±0.0036  
+  *commander_cast_count                         1.5627       1.5631      +0.0004 ±0.0004  
+  *kutzil_draws_total                           3.1166       3.1162      -0.0004 ±0.0004  
+   cards_drawn_extra                           12.0213      12.0207      -0.0006 ±0.0006  
+   len_library                                 78.9506      78.9512      +0.0006 ±0.0006  
+   len_smart_wipe_log                           0.9135       0.9139      +0.0004 ±0.0005  
+   smart_wipes_total                            0.9135       0.9139      +0.0004 ±0.0005  
+   saddle_activations_total                     0.5921       0.5919      -0.0002 ±0.0003  
+   proxy_damage_total                          65.7092      65.7483      +0.0391 ±0.0577  
+   counters_placed_total                       28.0031      28.0291      +0.0260 ±0.0395  
+   bonus_mana_pool                              0.1234       0.1246      +0.0012 ±0.0024  
+Regressao: N=20000 por configuracao/modo, sementes 5_000_000+i; excecoes + invariantes genericas (carta acima do baralho em alguma zona; contadores negativos)
+depois (repositorio)   padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+depois (repositorio)   resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}

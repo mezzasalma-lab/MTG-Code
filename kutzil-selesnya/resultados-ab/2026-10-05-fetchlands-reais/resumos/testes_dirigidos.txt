@@ -1,0 +1,13 @@
+   padrao: 73 Heaths quebradas em 300 partidas
+   resiliencia: 67 Heaths quebradas em 300 partidas
+PASS KF1 a Heath quebra: cemiterio, biblioteca -1, terreno em campo, vida -1, contador +1
+PASS KF2 busca por subtipo: so' o Temple Garden (Forest Plains) na biblioteca, a Heath o busca
+PASS KF3 terrenos sem subtipo Forest/Plains, antes na biblioteca, nao sao buscados
+PASS KF4 sem alvo: a Heath fica em campo e conta sem-alvo
+PASS KF5 politica: faltando a cor W, busca o que a cobre (Plains/Temple Garden), nao o Forest
+PASS KF6 Field of the Dead dispara no terreno buscado pela Heath (e nao dispara com a chave desligada)
+PASS KF7 Field of the Dead dispara no terreno da Summon: Fenrir cap. I (e nao com a chave desligada)
+PASS KF8 FETCH_LANDS_ENABLED desligada: so' basico, sem vida, sem cemiterio (caminho antigo)
+PASS KF9 integracao: 300 partidas por modo, sem excecao, a Heath quebra de fato
+
+9/9 testes passaram

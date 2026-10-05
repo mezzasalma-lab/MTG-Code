@@ -1,12 +1,99 @@
 # Goldfish Compilado — Kutzil, Malamet Exemplar
 
+> **Rodada 2026-10-05 (Windswept Heath real e Field of the Dead em todo terreno que entra (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-fetchlands-reais/LEIAME.md`](resultados-ab/2026-10-05-fetchlands-reais/LEIAME.md)
+
+## Windswept Heath real e Field of the Dead em todo terreno que entra (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-fetchlands-reais/` (`LEIAME.md`).
+
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada. Modo padrão, N=10.000: comandante em campo até T3 80,3% → 80,3% (-0,05 ± 0,13 pp), até T4 +0,25 ± 0,10 pp, até T5 +0,25 ± 0,10 pp; comandante que nunca entra -0,11 ± 0,06 pp. Modo resiliência: comandante em campo até T3 75,6% → 75,6% (-0,04 ± 0,13 pp), até T4 +0,23 ± 0,11 pp, até T5 +0,21 ± 0,11 pp; comandante que nunca entra -0,09 ± 0,08 pp. Fetches de fato quebradas por partida: 0,19 (N=10.000, padrão); sem alvo na biblioteca: 0,00 por partida. Biblioteca no fim da partida: -0,046 ± 0,011 cartas (o thinning).
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **Fetchland ficava em campo como terreno dual estático.** O oráculo da fetch é "{T}, Pay 1 life, Sacrifice this land: Search your library for a [tipo] or [tipo] card, put it onto the battlefield, then shuffle". O simulador deixava a fetch em campo produzindo mana das duas cores, sem sacrifício, sem busca (a biblioteca nunca afinava), sem ir pro cemitério e sem a vida do custo. Mesma classe do Megatron (Evolving Wilds / Terramorphic Expanse / Rocky Tar Pit, corrigido em 2026-10-03). Achado pela varredura mecânica de fetches (`varredura-2026-10-05/resumos/audit_fetch_ANTES.txt`).
+- **Windswept Heath buscava só terreno BÁSICO** (e não pagava a vida): o oráculo manda buscar "a Forest or Plains card", que inclui Temple Garden e Canopy Vista (tipo Forest Plains). 
+- **Field of the Dead só era checada no `play_land`.** Oráculo: "Whenever Field of the Dead or another land enters under your control, if you control seven or more lands with different names, create a 2/2 black Zombie". O terreno buscado pela Heath e o da Summon: Fenrir (capítulo I) entravam em campo sem a checagem (gatilho compartilhado ligado só em parte dos pontos de entrada: taxonomia da Regra #1).
+
+**O que mudou:**
+- `FETCH_LANDS_ENABLED` (padrão `True`): ao jogar a fetch, `crack_fetch` a manda pro cemitério, paga 1 de vida e busca na biblioteca um terreno com subtipo compatível com o texto da fetch (básico OU dual tipada, por SUBTIPO do `type_line` do oráculo, não por nome); o terreno buscado entra em campo pelas regras de entrada do deck. Escolha: o que cobre a cor G/W com menos de 2 fontes, depois o não-básico (Temple Garden/Canopy Vista: duas cores e nome distinto pra Field of the Dead), depois o que entra desvirado. Sem alvo na biblioteca a fetch fica em campo como antes (contado em `fetch_no_target_total`). Contadores novos: `fetches_cracked_total`, `fetch_no_target_total`. Com a chave em `False` o caminho antigo volta bit a bit.
+- `LAND_ENTER_TRIGGERS_ALL_ENABLED` (padrão `True`): `field_of_the_dead_check` (extraída do `play_land`, mesmo comportamento) passa a rodar também no terreno buscado pela Heath e no da Summon: Fenrir. Contador novo: `fotd_extra_checks_total`.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8005 (80.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0223       0.0212      -0.0011 ±0.0006  
+   commander_cast_turn__ate_T3                  0.8035       0.8030      -0.0005 ±0.0013  
+  *commander_cast_turn__ate_T4                  0.9150       0.9175      +0.0025 ±0.0010  
+  *commander_cast_turn__ate_T5                  0.9394       0.9419      +0.0025 ±0.0010  
+  *life_total                                  39.7154      39.5241      -0.1913 ±0.0086  
+  *len_graveyard                                0.1460       0.3074      +0.1614 ±0.0073  
+  *next_uid                                    18.7242      18.8030      +0.0788 ±0.0135  
+  *len_battlefield                             17.0057      17.0822      +0.0765 ±0.0134  
+  *tokens_created                               0.8207       0.8411      +0.0204 ±0.0037  
+  *len_library                                 76.0373      75.9913      -0.0460 ±0.0114  
+  *kutzil_draws_total                           4.3890       4.4002      +0.0112 ±0.0048  
+  *len_hand                                     3.2492       3.2359      -0.0133 ±0.0070  
+  *commander_cast_turn__ate_T6                  0.9575       0.9590      +0.0015 ±0.0008  
+  *commander_uid                                5.3689       5.3803      +0.0114 ±0.0064  
+  *tapped_land_first_plays_total                0.3450       0.3429      -0.0021 ±0.0012  
+  *commander_cast_count                         0.9777       0.9788      +0.0011 ±0.0006  
+  *commander_in_play                            0.9777       0.9788      +0.0011 ±0.0006  
+  *warp_plot_free_casts_total                   0.0598       0.0588      -0.0010 ±0.0007
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8158 (81.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0378       0.0369      -0.0009 ±0.0008  
+   commander_cast_turn__ate_T3                  0.7562       0.7558      -0.0004 ±0.0013  
+  *commander_cast_turn__ate_T4                  0.8664       0.8687      +0.0023 ±0.0011  
+  *commander_cast_turn__ate_T5                  0.9115       0.9136      +0.0021 ±0.0011  
+  *life_total                                  38.1272      37.9563      -0.1709 ±0.0130  
+  *len_graveyard                                3.7790       3.9064      +0.1274 ±0.0241  
+  *graveyard_wipe_used                          0.2314       0.2461      +0.0147 ±0.0033  
+  *len_smart_graveyard_wipe_log                 0.2314       0.2461      +0.0147 ±0.0033  
+  *smart_graveyard_wipes_total                  0.2314       0.2461      +0.0147 ±0.0033  
+  *tokens_created                               0.5387       0.5539      +0.0152 ±0.0042  
+  *next_uid                                    16.5990      16.6495      +0.0505 ±0.0160  
+  *tapped_land_first_plays_total                0.3450       0.3429      -0.0021 ±0.0012  
+  *len_hand                                     2.4042       2.3881      -0.0161 ±0.0094  
+  *commander_cast_count                         1.5627       1.5686      +0.0059 ±0.0036  
+  *len_battlefield                             10.4577      10.5009      +0.0432 ±0.0286  
+  *warp_plot_free_casts_total                   0.0635       0.0622      -0.0013 ±0.0010  
+  *ramp_pieces_in_play                          1.1447       1.1415      -0.0032 ±0.0025  
+  *tapped_land_skipped_for_play_total           0.4675       0.4686      +0.0011 ±0.0010
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** a biblioteca afina (−1 terreno por fetch, ligeiramente mais cartas úteis nos próximos draws), o terreno buscado entra pelas regras de entrada do deck (virado quando o oráculo manda) e cada fetch custa 1 de vida e põe uma carta no cemitério; o efeito no comandante em T3–T5 é de segunda ordem.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `kutzil_goldfish_v1_ANTES_99fde54.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 9/9 (`resumos/testes_dirigidos.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Fetch real:** leitura de `play_land` (e do caminho de entrada de terreno) + testes dirigidos FT1–FT8 (a fetch vai pro cemitério, a biblioteca perde exatamente 1 carta, o buscado tem subtipo compatível — varre TODAS as fetches do deck —, custo de 1 de vida, sem alvo → fica em campo, escolhe o que entra desvirado, thinning, chave desligada = caminho antigo, 300 partidas completas por modo); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Bit-identidade** com a chave desligada × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro (contadores novos ignorados).
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+- **Field of the Dead:** testes dirigidos KF6/KF7 (dispara no terreno buscado e no da Fenrir com a chave ligada; não dispara desligada). Os testes do Kutzil são KF1–KF9 (`orquestracao/testes_dirigidos.py`), não FT1–FT8.
+
+**Escopo — NÃO verificado:**
+- **O "then shuffle" do oráculo NÃO é modelado:** o estado deste simulador não tem RNG próprio na biblioteca (a biblioteca já é uma permutação aleatória). Embaralhar de novo só mudaria algo se um tutor ou scry tivesse posto uma carta específica no topo entre a compra e a jogada de terreno; a ordem do turno impede isso nas linhas modeladas.
+- **Landfall:** varri o `oracle_text` das cartas da lista procurando gatilhos de "whenever a land enters"/Landfall: neste deck nenhuma carta além dos terrenos tem esse gatilho, então o terreno buscado não deixa gatilho sem disparar.
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão, sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada.
+- **Oponente real:** o goldfish não modela (convenção do repositório).
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
+
+---
+
 > **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
 
 ## Terreno virado primeiro em T1/T2 (varredura de 2026-10-05) — 2026-10-05
 
 **Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-terreno-virado-primeiro/` (`LEIAME.md`).
 
-**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada e com o ensaio sem efeito colateral (modo GHOST). Modo padrão, N=10.000: (campos do comandante ausentes). Modo resiliência: comandante em campo até T3 75,2% → 75,6% (+0,37 ± 0,45 pp), até T4 +0,00 ± 0,19 pp, até T5 +0,02 ± 0,14 pp; comandante que nunca chega a entrar na partida +0,08 ± 0,09 pp. A correção joga o terreno virado primeiro em média 0,34 vez(es) por partida (N=10.000, padrão) e o ensaio impede 0,47 vez(es) por partida (teria custado uma jogada).
+**Veredito:** um erro real, um conserto, bit-idêntico com a chave desligada e com o ensaio sem efeito colateral (modo GHOST). Modo padrão, N=10.000: comandante em campo até T3 79,8% → 80,3% (+0,52 ± 0,44 pp), até T4 -0,02 ± 0,04 pp, até T5 sem diferença pareada, comandante que nunca entra: sem diferença pareada. Modo resiliência: comandante em campo até T3 75,2% → 75,6% (+0,37 ± 0,45 pp), até T4 +0,00 ± 0,19 pp, até T5 +0,02 ± 0,14 pp, comandante que nunca entra +0,08 ± 0,09 pp. A correção joga o terreno virado primeiro em média 0,34 vez(es) por partida (N=10.000, padrão) e o ensaio impede 0,47 vez(es) por partida (teria custado uma jogada).
 
 **Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
 - **Terreno que entra virado nunca é jogado primeiro.** `play_land` jogava sempre o primeiro terreno da ordem própria do deck (desvirado antes de virado). Em T1/T2, sem nada pra conjurar, a mana do turno era desperdiçada enquanto o terreno que entra virado ficava na mão pra um turno em que ele custa desenvolvimento. Mesmo erro achado e corrigido no Vihaan e no Megatron (2026-10-03/04).

@@ -1,0 +1,34 @@
+{
+ "flags_off": {
+  "FETCH_LANDS_ENABLED": false,
+  "LAND_ENTER_TRIGGERS_ALL_ENABLED": false
+ },
+ "ignora_campos": [
+  "fetches_cracked_total",
+  "fetch_no_target_total",
+  "fotd_extra_checks_total"
+ ],
+ "sensibilidade": {
+  "so_fetch_lands": {
+   "LAND_ENTER_TRIGGERS_ALL_ENABLED": false
+  },
+  "so_land_enter_triggers_all": {
+   "FETCH_LANDS_ENABLED": false
+  }
+ },
+ "turns": 8,
+ "extra": null,
+ "destaque": [
+  "fetches_cracked_total",
+  "fetch_no_target_total",
+  "fotd_extra_checks_total",
+  "lands_played_total",
+  "commander_cast_turn__nunca",
+  "commander_cast_turn__ate_T3",
+  "commander_cast_turn__ate_T4",
+  "commander_cast_turn__ate_T5"
+ ],
+ "deck": "kutzil-selesnya",
+ "sim": "kutzil_goldfish_v1.py",
+ "snapshot": "codigo/kutzil_goldfish_v1_ANTES_99fde54.py"
+}
