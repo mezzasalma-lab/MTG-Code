@@ -9,6 +9,7 @@ import collections, copy, dataclasses, hashlib, importlib.util, math, os, random
 from multiprocessing import Pool
 
 IGNORA = {"rng", "interaction_rng", "log", "game_log"}
+TETO_NUMERICO = 10 ** 15
 
 
 def _eh_cache(k):
@@ -82,7 +83,8 @@ def numericos(o):
         if isinstance(v, bool):
             out[k] = float(v)
         elif isinstance(v, (int, float)):
-            out[k] = float(v)
+            # inteiros astronomicos (PB: `all_will_be_one_face_damage_total` chega a 10**200 em loops de dobradores) estouram o float: limita a 1e15 so' pra poder tirar a media (a impressao digital usa o valor exato)
+            out[k] = float(max(-TETO_NUMERICO, min(v, TETO_NUMERICO))) if isinstance(v, int) else float(v)
         elif isinstance(v, (list, set, frozenset, dict, tuple)):
             out["len_" + k] = float(len(v))
     return out
@@ -113,7 +115,8 @@ def ic(a, b):
 
 def tabela_pareada(base, var, destaque=(), limite=14, rotulo=""):
     """Diferenca pareada (var - base) de cada campo numerico: mostra os `destaque` e os campos mais movidos (|dif|/IC alto). Devolve o texto."""
-    campos = sorted(set(base[0][1]) & set(var[0][1]))
+    # uniao dos campos de TODAS as partidas (campo Optional que e' None na partida 0 mas nao nas outras tambem entra): e' o que `salvar_raw` grava, entao a tabela e' funcao so' do bruto arquivado
+    campos = sorted(set().union(*(x[1].keys() for x in base)) & set().union(*(x[1].keys() for x in var)))
     linhas = []
     for c in campos:
         a = [x[1].get(c, 0.0) for x in base]
