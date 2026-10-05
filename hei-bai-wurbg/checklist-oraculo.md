@@ -1,5 +1,22 @@
 # Checklist cláusula-a-cláusula — Hei Bai, Forest Guardian
 
+## Mulligan com escolha do fundo + imposto de comandante + ordem de set determinística (varredura de 2026-10-05) — 2026-10-05
+
+**Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
+
+| cláusula / conceito | situação |
+|---|---|
+| London Mulligan, CR 103.5 (escolher as cartas do fundo) | 🐛 corrigido: `choose_bottom`, atrás de `MULLIGAN_SMART_BOTTOM_ENABLED` |
+| 1º mulligan grátis em multiplayer, CR 103.5c | ✅ já estava (`penalty = max(0, mulls - 1)`) |
+| Imposto de comandante, CR 903.8 | 🐛 corrigido: `commander_cast_count` + `effective_cost`, atrás de `COMMANDER_TAX_ENABLED` (conta cast anulado) |
+| Determinismo entre processos (`set` de str iterado em ordem de hash) | 🐛 corrigido: `DETERMINISTIC_SET_ORDER_ENABLED` (laço de reações de Shrine) |
+| Upkeep antes do draw (CR 503/504) | ✅ já estava: `play_turn` chama `upkeep_step` antes de comprar |
+| Ordem de terrenos / entrada virada (T1/T2); fetchlands (8 no deck) | não tratado nesta seção |
+
+**Regra permanente aplicada:** a correção entra atrás de chave; com ela desligada o simulador é bit-idêntico ao anterior (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`.
+
+---
+
 ## CR 903.9a: comandante passa pelo cemitério de verdade antes da zona de comando — 2026-09-21
 
 **Gatilho:** mesmo achado do usuário aplicado a todos os 9 decks desta

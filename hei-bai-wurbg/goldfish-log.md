@@ -1,6 +1,94 @@
 # Goldfish Log — Hei-Bai, Forest Guardian
 
+> **Rodada 2026-10-05 (Mulligan com escolha do fundo + imposto de comandante + ordem de set determinística (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`](resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md)
+
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
+
+---
+
+## Mulligan com escolha do fundo + imposto de comandante + ordem de set determinística (varredura de 2026-10-05) — 2026-10-05
+
+**Pedido do usuário:** *"Com base nos erros encontrados nas ultimas revisões, reanálise todos os outros decks em busca de erros semelhantes, e os corrija"*. Arquivo bruto/auditável: `resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/` (`LEIAME.md`).
+
+**Veredito:** três erros reais, três consertos, todos atrás de chave e bit-idênticos com a chave desligada. O mulligan escolhido **melhora** a abertura (comandante em campo até T4: +1,16 ± 0,24 pp; nunca em 8 turnos: −0,39 ± 0,13 pp, modo padrão, N=10.000). O imposto só aparece no modo de resiliência (único em que o comandante morre ou é anulado) e **piora** o que antes era otimista demais: comandante em campo no fim: −6,4 ± 0,7 pp (−6,8 ± 0,6 pp isolando só o imposto). No modo padrão o imposto não muda nenhuma partida (100,0% idênticas). A ordem de set só muda a ORDEM da lista `battlefield` (nenhum número do jogo) e existe pra a mesma semente dar o mesmo resultado em processos diferentes.
+
+**Achado (varredura das classes de erro do Vihaan/Megatron neste simulador):**
+- **London Mulligan com as cartas do fundo SORTEADAS** (`rng.shuffle(hand); bottom = hand[:penalty]`). CR 103.5: depois de comprar a mão nova o jogador "puts a number of those cards ... on the bottom of their library in any order", ou seja, ESCOLHE quais. O arquivo devolvia, com a mesma chance, uma carta-chave ou um terreno que faltava. Mesma classe do erro achado e corrigido no Megatron e no Vihaan (2026-10-03/04).
+- **Imposto de comandante ausente.** O próprio arquivo dizia "sem taxa de comandante neste deck", mas a Hei-Bai é criatura e, no modo de resiliência, morre (CR 903.9a, modelado desde 2026-09-21) ou é anulada e volta a ser conjurada da zona de comando pelo mesmo custo. CR 903.8: "costs an additional {2} for each previous time the player casting it has cast it from the command zone" — conta o CAST, resolvendo ou não. O comentário "sem taxa" valia só para quando o comandante nunca saía de campo, o que no goldfish padrão é verdade; no modo de resiliência não.
+- **Ordem de iteração de `set` dependia de `PYTHONHASHSEED`.** `for reactor in set(state.battlefield)` (reações de Shrines quando uma Shrine entra) iterava em ordem de hash: a mesma semente dava ordens diferentes de entrada em campo em processos diferentes. Medido (3 `PYTHONHASHSEED`, 1.500 sementes × 2 modos, estado final campo a campo, `resumos/determinismo.txt`): controle 4 sementes divergentes (padrão) e 1 (resiliência), **só** no campo `battlefield` (ordem; o conjunto de permanentes é o mesmo); com a correção, 0. Efeito prático: o `cmp` dos brutos re-simulados em outro processo falhava (9/15 saídas iguais na 1ª verificação, antes da correção).
+
+**O que mudou:**
+- `MULLIGAN_SMART_BOTTOM_ENABLED` (padrão `True`) + `choose_bottom(hand, n)`: só devolve terreno quando sobram MAIS de 4 na mão (e então o que entra virado primeiro, se o `CARD_DB` marcar `etb_tapped`); fora isso devolve a carta não-terreno de MAIOR custo, poupando `MULLIGAN_PROTECTED` (as cartas que `should_keep` já trata como boa abertura). A regra do mulligan grátis do 1º mulligan (CR 103.5c, multiplayer) já estava modelada e não mudou. Com a chave em `False` o caminho antigo (sorteio) volta bit a bit.
+- `COMMANDER_TAX_ENABLED` (padrão `True`) + `GameState.commander_cast_count`: `effective_cost` soma `2 × commander_cast_count` quando a carta é o comandante; `cast_card` incrementa o contador logo após pagar (antes de `try_smart_opponent_counter`, então um cast anulado também conta). O contador é um campo novo do estado (ignorado na comparação de bit-identidade, o snapshot não o tem).
+- `DETERMINISTIC_SET_ORDER_ENABLED` (padrão `True`): o laço sobre `set(state.battlefield)` passa a iterar `dict.fromkeys(state.battlefield)` (deduplicado na ordem do campo). Com a chave em `False` o laço antigo volta.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8330 (83.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0091       0.0052      -0.0039 ±0.0013  
+  *commander_cast_turn__ate_T3                  0.4696       0.4785      +0.0089 ±0.0023  
+  *commander_cast_turn__ate_T4                  0.9083       0.9199      +0.0116 ±0.0024  
+  *commander_cast_turn__ate_T5                  0.9591       0.9670      +0.0079 ±0.0019  
+  *commander_cast_turn__ate_T6                  0.9759       0.9830      +0.0071 ±0.0017  
+  *commander_in_play                            0.9909       0.9948      +0.0039 ±0.0013  
+  *len_hand                                     4.0244       3.9828      -0.0416 ±0.0136  
+  *ramp_pieces_cast                             1.5448       1.5650      +0.0202 ±0.0076  
+  *mind_stone_harnessed                         0.1748       0.1780      +0.0032 ±0.0019  
+  *tutors_used_total                            0.9162       0.9253      +0.0091 ±0.0059  
+  *len_creature_cast_turn                       5.8278       5.8626      +0.0348 ±0.0226  
+  *cards_drawn_extra                           14.0437      14.1694      +0.1257 ±0.1083  
+  *len_library                                 65.6313      65.4931      -0.1382 ±0.1191  
+  *tapped_lands_this_turn                       0.5760       0.5652      -0.0108 ±0.0101  
+   len_graveyard                                9.4703       9.5405      +0.0702 ±0.0703  
+   life_origin_reanimates_total                 0.0241       0.0249      +0.0008 ±0.0010  
+   ephemerate_rebound_pending                   0.0681       0.0692      +0.0011 ±0.0018  
+   blinks_total                                 5.2574       5.3139      +0.0565 ±0.0980
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 4561 (45.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *commander_cast_turn__nunca                   0.0110       0.0142      +0.0032 ±0.0021  
+  *commander_cast_turn__ate_T3                  0.4458       0.4549      +0.0091 ±0.0023  
+  *commander_cast_turn__ate_T4                  0.8736       0.8671      -0.0065 ±0.0036  
+  *commander_cast_turn__ate_T5                  0.9486       0.9295      -0.0191 ±0.0037  
+  *commander_in_play                            0.7763       0.7121      -0.0642 ±0.0069  
+  *len_library                                 73.4051      73.9128      +0.5077 ±0.1111  
+  *cards_drawn_extra                            6.6634       6.3413      -0.3221 ±0.0978  
+  *len_smart_wipe_log                           0.7855       0.7626      -0.0229 ±0.0077  
+  *smart_wipes_total                            0.7855       0.7626      -0.0229 ±0.0077  
+  *commander_cast_turn__ate_T6                  0.9716       0.9632      -0.0084 ±0.0029  
+  *len_creature_cast_turn                       4.6573       4.6015      -0.0558 ±0.0199  
+  *len_hand                                     2.9082       2.8506      -0.0576 ±0.0239  
+  *len_smart_removal_log                        0.7690       0.7495      -0.0195 ±0.0087  
+  *smart_removals_total                         0.7690       0.7495      -0.0195 ±0.0087  
+  *len_smart_counter_log                        0.1169       0.1074      -0.0095 ±0.0044  
+  *smart_counters_total                         0.1169       0.1074      -0.0095 ±0.0044  
+  *len_smart_discard_log                        1.3947       1.3694      -0.0253 ±0.0117  
+  *smart_discards_total                         1.3947       1.3694      -0.0253 ±0.0117
+```
+Os lotes de N=2.000 (`ab_2000*.txt`) e as variantes de sensibilidade (uma correção por vez) estão em `resumos/`.
+
+**Raciocinado (não medido):** o efeito do imposto no modo de resiliência era previsível: cada recast depois de uma morte/anulação custa {2} a mais, e o goldfish reconquista o comandante mais tarde ou nunca. No modo padrão o comandante só é conjurado uma vez por partida (nunca morre, nunca é anulado), por isso 0 partidas mudam.
+
+**Validação:** smoke (99 cartas, 0 desconhecidas, 0 duplicadas não-básicas, 200 partidas × 2 modos sem exceção); bit-identidade com as chaves desligadas × `heibai_goldfish_v1_ANTES_67ac5f4.py`, 20.000 partidas × 2 modos (`resumos/bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações, 0 exceções (`resumos/regressao_20000.txt`); testes dirigidos 13/13 (`resumos/testes_dirigidos.txt`); reprodutibilidade por `cmp` (`resumos/verificacao_reproducao.txt`).
+
+**Escopo — verificado:**
+- **Mulligan:** leitura de `mulligan` e `should_keep`; teste dirigido (M1–M8: escolha do fundo, conservação das cartas, caminho antigo com a chave desligada); A/B pareado 2.000 e 10.000 nos dois modos.
+- **Bit-identidade** com as chaves desligadas × snapshot: 20.000 partidas × 2 modos, impressão digital do resultado inteiro.
+- **Regressão** 20.000 × 2 modos × 2 configurações: 0 exceções.
+- **Imposto:** testes dirigidos T1–T5 (1º cast sem taxa; 2º cast com +{2}; cast anulado conta; ordem de contagem; chave desligada = custo antigo).
+- **Determinismo:** 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos, controle (chave desligada) × correção (`resumos/determinismo.txt`); varredura estática (AST) de laços/compreensões sobre `set` nos 18 simuladores (`varredura-2026-10-05/`).
+
+**Escopo — NÃO verificado:**
+- **Jogada de terreno virado em T1/T2 ("tapped-first")** e **condições de entrada dos terrenos** (checkland/fastland/slow/reveal): não são tratadas nesta seção; quando houver correção, ela tem seção própria.
+- **Resto da taxonomia da Regra #1 neste arquivo** (caminhos de conjuração fora da mão e "whenever you cast", sacrifício × destroy, cascade, contadores `_sick` agregados, fórmulas dinâmicas achatadas): varrido na triagem de 2026-10-05 por `grep` e leitura pontual das funções, **sem** leitura integral do arquivo e **sem** instrumentação em runtime nesta rodada. "Sem achado" aí significa "o `grep` não achou", não "não existe".
+- **Oponente real:** o goldfish não modela (convenção do repositório); nada aqui mede interação além do proxy já existente.
+
+**Observação:** 0 exceções em 20.000 × 2 modos × 2 configurações; os invariantes genéricos (carta acima do número no baralho; contadores negativos) deram 0 violações.
 
 ---
 

@@ -1,0 +1,57 @@
+== azula-grixis/azula_goldfish_v1.py  (atributos-set: 3) hits: 1
+   L 1623 for sobre set                  for _card_name in set(BASE_LIBRARY):
+== beorn-fierce/beorn_goldfish_v1.py  (atributos-set: 4) hits: 0
+== captain-storm-izzet/captainstorm_goldfish_v1.py  (atributos-set: 3) hits: 2
+   L  215 compreensao sobre set          return any(t.startswith("etb_tapped") for t in CARD_DB[name].tags) or name == "Silverbluff Bridge"
+   L 1423 for sobre set                  for _card_name in set(BASE_LIBRARY):
+== edgar-markov-mardu/edgar_markov_goldfish_v1.py  (atributos-set: 4) hits: 4
+   L 1192 compreensao sobre set          if swamp_count(state) <= 0 and not any(m in state.battlefield for m in MOUNTAIN_TYPED_LANDS):
+   L 1217 for sobre set                  for color in C(card).colors:
+   L 1269 compreensao sobre set          has_legendary_creature = any(n in state.battlefield for n in LEGENDARY_CREATURE_NAMES)
+   L 1664 for sobre set                  for payoff in DEATH_PAYOFFS:
+== hei-bai-wurbg/heibai_goldfish_v1.py  (atributos-set: 1) hits: 3
+   L  245 for sobre set                  for n in FETCH_NAMES:
+   L  649 for sobre set                  for reactor in set(state.battlefield):
+   L 1225 compreensao sobre set          return shrine_count(state) + sum(1 for n in OTHER_LEGENDARY_ENCHANTMENTS if n in state.battlefield)
+== kutzil-selesnya/kutzil_goldfish_v1.py  (atributos-set: 4) hits: 0
+== maralen-sultai/maralen_goldfish_v1.py  (atributos-set: 2) hits: 2
+   L  715 for sobre set                  for n in ready:
+   L 1744 compreensao sobre set          flash_universal = any(n in state.battlefield for n in FLASH_SOURCES)
+== megatron-tyrant-mardu/megatron_goldfish_v1.py  (atributos-set: 3) hits: 1
+   L 2504 compreensao sobre set          if any(t.startswith("rock") for t in card.tags):
+== ms-bumbleflower-bant/bumbleflower_goldfish_v1.py  (atributos-set: 3) hits: 2
+   L 1150 for sobre set                  for eq_name in EQUIPMENT_NAMES:
+   L 1608 for sobre set                  for _card_name in set(BASE_LIBRARY):
+== nekusar-grixis/nekusar_goldfish_v1.py  (atributos-set: 2) hits: 1
+   L  131 for sobre set                  for n in FETCH_NAMES:
+== prismatic-bridge-wurbg/prismatic_bridge_goldfish_v1.py  (atributos-set: 10) hits: 9
+   L  896 for sobre set                  for c in set(state.battlefield):
+   L  920 compreensao sobre set          colors_in_play = {cc for c in set(state.battlefield) for cc in permanent_colors(c)}
+   L  951 compreensao sobre set          colors_in_play = {cc for c in set(state.battlefield) for cc in permanent_colors(c)}
+   L 1073 for sobre set                  for color in C(card).colors:
+   L 1132 compreensao sobre set          if all(color_sources(state, col, legendary_spell=legendary, pw_spell=pw_spell) >= 1 for col in C(c).colors):
+   L 1784 for sobre set                  for color in C(COMMANDER).colors:
+   L 2686 compreensao sobre set          dorks.append(len({cc for x in set(state.battlefield) for cc in permanent_colors(x)}) if has_tag(c, "bloom_tender") else 1)
+   L 3127 compreensao sobre set          ready = [p for p in animated if state.pw_enter_turn.get(p, -1) < state.turn]
+   L 5259 compreensao sobre set          ours_nontoken = [n for n in set(state.battlefield)
+== rat-king-verminister/ratking_goldfish_v1.py  (atributos-set: 3) hits: 1
+   L  442 compreensao sobre set          untapped_swamp_taps = swamps - len([n for n in state.tapped_lands_this_turn if n in LAND_NAMES])
+== thranduil-sultai/thranduil_goldfish_v1.py  (atributos-set: 5) hits: 3
+   L  868 compreensao sobre set          for c in C(other).produces}
+   L  934 for sobre set                  for color in C(card).colors:
+   L 1943 list(set)                      for card in list(state.battlefield) + list(gy_borrow_sources):
+== tom-bombadil-wubrg/tom_goldfish_v1.py  (atributos-set: 5) hits: 4
+   L  265 compreensao sobre set          produces = {TYPE_COLOR[t] for t in basic_types}
+   L  309 compreensao sobre set          assert all(k in {t for c in CARD_DB.values() for t in c.tags} for k in KEYWORDS_NO_EFFECT_IN_GOLDFISH)
+   L  309 compreensao sobre set          assert all(k in {t for c in CARD_DB.values() for t in c.tags} for k in KEYWORDS_NO_EFFECT_IN_GOLDFISH)
+   L 3147 for sobre set                  for _card_name in set(BASE_LIBRARY):
+== toph-naya/toph_goldfish_v1.py  (atributos-set: 2) hits: 2
+   L 1989 next(iter(set))                choice = min(basics, key=lambda n: color_sources(state, COLOR_OF_TYPE[next(iter(CARD_DB[n].subtypes & BASIC_TYPES))]))
+   L 1989 iter(set)                      choice = min(basics, key=lambda n: color_sources(state, COLOR_OF_TYPE[next(iter(CARD_DB[n].subtypes & BASIC_TYPES))]))
+== ulalek-wurbg/ulalek_goldfish_v1.py  (atributos-set: 1) hits: 1
+   L  818 for sobre set                  for tag in CARD_DB[name].tags:
+== ur-dragon-wurbg/urdragon_goldfish_v1.py  (atributos-set: 3) hits: 2
+   L 1493 compreensao sobre set          if sum(need[c] for c in sub) > sum(1 for src in sets if src & sub):
+   L 2537 compreensao sobre set          if sum(pips[c] for c in sub) > sum(1 for src in sets if src & sub):
+== vihaan-goldwaker-mardu/vihaan_goldfish_v1.py  (atributos-set: 3) hits: 0
+TOTAL 38

@@ -1,0 +1,7 @@
+Determinismo entre processos: mesma semente, 3 PYTHONHASHSEED diferentes (11, 22, 33), N=1500 sementes (1_000_000+i), modos padrao e resiliencia; compara campo a campo o estado final.
+CONTROLE (DETERMINISTIC_SET_ORDER_ENABLED=False, o iterador antigo):
+thranduil-sultai           padrao       N=1500 sementes divergentes entre 3 hash seeds: 14 [1000110, 1000127, 1000230, 1000477, 1000490] campos: [('cards_milled_total', 9), ('trystan_transforms_total', 9), ('battlefield_count', 8), ('trystan_drain_events', 7), ('elves_milled_to_gy', 5)]
+thranduil-sultai           resiliencia  N=1500 sementes divergentes entre 3 hash seeds: 36 [1000049, 1000110, 1000127, 1000154, 1000194] campos: [('finishers_activated', 36), ('mana_spent_this_turn', 14), ('battlefield', 6), ('library', 6), ('creature_cast_turn', 5)]
+CORRECAO (arquivo vivo, DETERMINISTIC_SET_ORDER_ENABLED=True):
+thranduil-sultai           padrao       N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
+thranduil-sultai           resiliencia  N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []

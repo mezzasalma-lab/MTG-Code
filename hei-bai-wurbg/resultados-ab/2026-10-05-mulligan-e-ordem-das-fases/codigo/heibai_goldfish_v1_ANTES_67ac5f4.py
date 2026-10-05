@@ -461,7 +461,6 @@ class GameState:
 
     commander_in_play: bool = False
     commander_cast_turn: Optional[int] = None
-    commander_cast_count: int = 0   # CR 903.8: casts da zona de comando (imposto de {2} por cast anterior); correcao de 2026-10-05
 
     ephemerate_rebound_pending: bool = False
     mind_stone_harnessed: bool = False
@@ -647,7 +646,7 @@ def shrine_enters(state: GameState, name: str, is_token: bool = False):
     # aqui e' seguro porque SHRINE_OTHER_REACT so tem chaves de Shrines
     # NOMEADAS (singleton neste formato — nunca duplicam), nunca "Shrine
     # Token"/"Spirit Token"/"Monk Token". Deduplicar nao muda o resultado.
-    for reactor in (dict.fromkeys(state.battlefield) if DETERMINISTIC_SET_ORDER_ENABLED else set(state.battlefield)):   # dedup na ordem do campo, nao do hash
+    for reactor in set(state.battlefield):
         if reactor == name:
             continue
         fn2 = SHRINE_OTHER_REACT.get(reactor)
@@ -922,15 +921,10 @@ def remaining_mana(state: GameState) -> int:
     return max(0, total_mana(state) - state.mana_spent_this_turn)
 
 
-COMMANDER_TAX_ENABLED = True   # CR 903.8: o comandante recastado paga {2} a mais por cast anterior (antes: "sem taxa neste deck"; so' aparece no modo de resiliencia, onde ele morre)
-
-
 def effective_cost(state: GameState, name: str) -> int:
     mv = CARD_DB[name].mv
     if is_enchantment_card(name) and "Herald of the Pantheon" in state.battlefield:
         mv = max(0, mv - 1)
-    if COMMANDER_TAX_ENABLED and name == COMMANDER:
-        mv += 2 * state.commander_cast_count
     return mv
 
 
@@ -1148,14 +1142,13 @@ def cast_card(state: GameState, name: str, pay_cost: bool = True):
         state.ramp_pieces_cast += 1
     if pay_cost:
         spend_mana(state, cost)
-    if COMMANDER_TAX_ENABLED and name == COMMANDER:
-        # CR 903.8: a taxa conta o CAST da zona de comando, resolvendo ou nao (anulado tambem aumenta). Correcao de 2026-10-05: o comentario antigo dizia
-        # "sem taxa de comandante neste deck", mas a Hei Bai e' criatura, morre no modo de resiliencia, volta a zona de comando e e' recastada.
-        state.commander_cast_count += 1
     # Modo opcional de resiliencia (counterspell, 2026-09-20): mana ja'
     # foi gasta (cast real aconteceu) -- checa AQUI, antes de qualquer
-    # resolucao (hand.remove/enter_battlefield/etc). Sem `interaction_rng`
-    # (goldfish padrao), retorna False sempre, 0 impacto.
+    # resolucao (hand.remove/enter_battlefield/etc). Sem taxa de
+    # comandante neste deck (diferente do Megatron/Ur-Dragon), entao
+    # nao ha' nada extra pra contabilizar num cast contra-atacado. Sem
+    # `interaction_rng` (goldfish padrao), retorna False sempre, 0
+    # impacto.
     if name == COMMANDER and try_smart_opponent_counter(state):
         return
     if name != COMMANDER and name in state.hand:
@@ -2061,33 +2054,6 @@ def build_library():
 BASE_LIBRARY = build_library()
 
 
-# Correcao de 2026-10-05 (varredura das classes de erro das rodadas do Vihaan/Megatron nos outros decks): o London Mulligan deste arquivo SORTEAVA as cartas do fundo
-# (`rng.shuffle(hand)`), devolvendo com a mesma chance uma carta-chave e um terreno sobrando. Com a chave em False o arquivo se comporta bit-a-bit como antes.
-# Correcao de 2026-10-05 (varredura de determinismo entre processos): iterar um `set`/`frozenset` de str segue a ordem do hash, que muda com PYTHONHASHSEED; a mesma semente dava
-# resultados diferentes em processos diferentes. Com a chave em False o laco antigo (ordem do hash) volta.
-DETERMINISTIC_SET_ORDER_ENABLED = True
-MULLIGAN_SMART_BOTTOM_ENABLED = True   # o jogador ESCOLHE as cartas do fundo (mesma regra do Vihaan/Megatron)
-MULLIGAN_PROTECTED = frozenset({"Sol Ring", "Arcane Signet", "Birds of Paradise", "Farseek", "Nature's Lore", "Three Visits", COMMANDER})   # as cartas que `should_keep` ja' trata como "boa abertura": nao sao devolvidas se houver outra
-
-
-def choose_bottom(hand: list, n: int) -> list:
-    """London Mulligan: o jogador ESCOLHE as `n` cartas do fundo. So' desfaz de terreno quando sobram MAIS de 4 (e entao o que entra tapped primeiro, se o CARD_DB marcar);
-    fora isso devolve a carta nao-terreno de MAIOR custo, protegendo `MULLIGAN_PROTECTED`."""
-    hand = list(hand)
-    bottom = []
-    for _ in range(n):
-        lands = [c for c in hand if c in LAND_NAMES]
-        nonlands = [c for c in hand if c not in LAND_NAMES]
-        if len(lands) > 4 or not nonlands:
-            pick = min(lands, key=lambda c: (0 if "etb_tapped" in CARD_DB[c].tags else 1))
-        else:
-            pool = [c for c in nonlands if c not in MULLIGAN_PROTECTED] or nonlands
-            pick = max(pool, key=lambda c: CARD_DB[c].mv)
-        hand.remove(pick)
-        bottom.append(pick)
-    return bottom
-
-
 def mulligan(rng: random.Random, max_mulls: int = 3):
     # Achado real 2026-09-18 (mesma convencao dos goldfishes manuais do
     # usuario no Archidekt): 1o mulligan e' GRATIS -- so' a partir do 2o
@@ -2102,14 +2068,9 @@ def mulligan(rng: random.Random, max_mulls: int = 3):
         if should_keep(hand) or mulls == max_mulls - 1:
             penalty = max(0, mulls - 1)
             if penalty > 0:
-                if MULLIGAN_SMART_BOTTOM_ENABLED:
-                    bottom = choose_bottom(hand, penalty)
-                    for c in bottom:
-                        hand.remove(c)
-                else:
-                    rng.shuffle(hand)
-                    bottom = hand[:penalty]
-                    hand = hand[penalty:]
+                rng.shuffle(hand)
+                bottom = hand[:penalty]
+                hand = hand[penalty:]
                 lib = lib + bottom
             return hand, lib, mulls
         mulls += 1
