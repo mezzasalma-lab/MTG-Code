@@ -14,6 +14,8 @@ sys.path.insert(0, AQUI)
 import abgen as A
 
 cfg = json.load(open(sys.argv[1] if len(sys.argv) > 1 else os.path.join(AQUI, "config.json")))
+for _v in cfg["variantes"].values():
+    _v.setdefault("LANDFALL_PAYOFF_FIRST", False)   # estes lotes sao do simulador 91b1a3d (ordem antiga: terreno antes do payoff de landfall); a chave nasceu em 2026-10-06 e o padrao do simulador agora e' True
 ETAPA = sys.argv[2] if len(sys.argv) > 2 else "tudo"
 NREG = int(sys.argv[3]) if len(sys.argv) > 3 else 20000
 ARQ = os.path.abspath(os.path.join(AQUI, ".."))

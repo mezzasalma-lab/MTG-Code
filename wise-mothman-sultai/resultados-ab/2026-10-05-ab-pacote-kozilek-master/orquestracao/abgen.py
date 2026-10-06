@@ -9,6 +9,7 @@ import collections, copy, dataclasses, hashlib, importlib.util, math, os, random
 from multiprocessing import Pool
 
 IGNORA = {"rng", "interaction_rng", "log", "game_log"}
+IGNORA = set(IGNORA) | {"payoff_first_casts"}   # campo criado em 2026-10-06 (LANDFALL_PAYOFF_FIRST): estes lotes sao anteriores; ignora-lo mantem a re-simulacao identica aos brutos arquivados
 TETO_NUMERICO = 10 ** 15
 
 

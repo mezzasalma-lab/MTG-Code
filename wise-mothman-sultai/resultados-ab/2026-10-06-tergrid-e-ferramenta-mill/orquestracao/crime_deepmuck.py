@@ -5,6 +5,8 @@ import importlib.util, os, sys
 DECK = "/home/user/MTG-Code/wise-mothman-sultai"
 os.chdir(DECK)
 spec = importlib.util.spec_from_file_location("mm", f"{DECK}/mothman_goldfish_v1.py"); m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+if hasattr(m, "LANDFALL_PAYOFF_FIRST"):
+    m.LANDFALL_PAYOFF_FIRST = False        # estes numeros foram gerados ANTES da chave (simulador 91b1a3d); False e' bit-identico a ele (resultados-ab/2026-10-06-landfall-payoff-primeiro)
 N = int(sys.argv[1]); modo = sys.argv[2]
 fn = m.simulate_one if modo == "padrao" else m.simulate_one_with_interaction
 orig = m.play_turn

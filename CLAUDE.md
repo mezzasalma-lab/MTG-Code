@@ -504,6 +504,9 @@ no `play_land`/`play_turn`/mulligan):**
    `audit_fetch.py` (sacrifício, 1 de vida, busca por subtipo, thinning),
    `audit_terreno_nao_e_magia.py` (jogar terreno não conta como magia/storm),
    `audit_landfall.py` (todo terreno que entra dispara o landfall do deck),
+   `audit_landfall_ordem.py` (o terreno do turno é jogado ANTES do payoff de
+   landfall, como o Ruin Crab/Icetill do Mothman, achado em 2026-10-06; só
+   lista candidatos: a ordem do turno de cada simulador é lida à mão),
    `colisao_nome.py` (estado por NOME em vez de por instância). Ler à mão cada
    divergência antes de corrigir ou de classificar como falso positivo.
 2. **Conferir a lista de classes do motor** (todas já tiveram erro real): o
@@ -514,7 +517,10 @@ no `play_land`/`play_turn`/mulligan):**
    colateral); fetch real, **inclusive a fetch devolvida do cemitério**; todo
    gatilho de "whenever a land enters" (Field of the Dead, landfall) em TODO
    ponto de entrada (`play_land`, fetch, ramp, blink, saga), não só no
-   `play_land`.
+   `play_land`; **a ORDEM terreno × payoff de landfall**: com um terreno por
+   jogar, conjurar antes o payoff que o mana de agora já paga (o comandante tem
+   prioridade), senão o terreno do turno nunca dispara o landfall (Mothman:
+   `LANDFALL_PAYOFF_FIRST`, +21% de gatilhos do Ruin Crab).
 3. **Determinismo entre processos.** Os `driver.py` das pastas de resultados
    fixam `PYTHONHASHSEED=0` (senão nada reproduz byte a byte), e por isso **não
    enxergam** dependência de ordem de hash. A única checagem que enxerga é

@@ -1,0 +1,159 @@
+LOTE N=10000 sementes 3000000..3009999, 12 turnos, modo resiliencia
+
+[payoff_primeiro - base] N=10000 | partidas com resultado IDENTICO ao da base: 7505 (75.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cards_milled_opp_total                      69.4422      70.2452      +0.8030 ±0.3991  
+  *nonland_milled_opp_total                    42.4359      42.9574      +0.5215 ±0.2394  
+   mothman_counters_placed_total               54.0751      54.2355      +0.1604 ±0.4349  
+  *ruin_crab_mills                              1.0053       1.2263      +0.2210 ±0.0252  
+  *payoff_first_casts                           0.0000       0.2870      +0.2870 ±0.0104  
+   opps_eliminated_total                        2.5491       2.5501      +0.0010 ±0.0044  
+  *cleared_T8                                   0.2352       0.2433      +0.0081 ±0.0028  
+   cleared_T10                                  0.5813       0.5824      +0.0011 ±0.0030  
+   self_lost                                    0.0153       0.0155      +0.0002 ±0.0019  
+  *cards_milled_self_total                     15.9905      16.1940      +0.2035 ±0.0774  
+  *lands_entered_total                         11.8515      11.9078      +0.0563 ±0.0312  
+  *icetill_replays                              0.7103       0.8326      +0.1223 ±0.0167  
+  *landfall_events_total                       11.8515      11.9078      +0.0563 ±0.0312  
+   library_min                                 54.5821      54.5293      -0.0528 ±0.1392  
+  *life_min                                    29.7049      29.6465      -0.0584 ±0.0278  
+  *fetches_cracked_total                        1.3016       1.3462      +0.0446 ±0.0126  
+  *mothman_trigger_my_mill                      6.7540       6.9057      +0.1517 ±0.0481  
+  *muldrotha_plays                              0.7611       0.7195      -0.0416 ±0.0143  
+  *rad_triggers_self                            4.3874       4.3660      -0.0214 ±0.0077  
+  *opp_spells_total                            22.2757      22.2289      -0.0468 ±0.0170  
+  *opp_noncreature_spells_total                12.2621      12.2349      -0.0272 ±0.0104  
+  *turn_id                                     34.8019      34.7422      -0.0597 ±0.0238  
+  *opp_turns_total                             24.8524      24.8088      -0.0436 ±0.0175  
+  *rad_counters_given_opp_total                14.2352      14.1739      -0.0613 ±0.0249  
+  *len_cards_in_hand_by_turn                    9.2201       9.2004      -0.0197 ±0.0081  
+  *len_counters_on_board_by_turn                9.2201       9.2004      -0.0197 ±0.0081  
+  *len_creature_count_by_turn                   9.2201       9.2004      -0.0197 ±0.0081  
+  *len_lands_in_play_by_turn                    9.2201       9.2004      -0.0197 ±0.0081  
+  *len_library_by_turn                          9.2201       9.2004      -0.0197 ±0.0081  
+
+[pacote5 - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   cards_milled_opp_total                      69.4422      70.1246      +0.6824 ±1.6275  
+   nonland_milled_opp_total                    42.4359      42.7849      +0.3490 ±0.9816  
+   mothman_counters_placed_total               54.0751      53.5325      -0.5426 ±1.3552  
+   ruin_crab_mills                              1.0053       0.9597      -0.0456 ±0.0697  
+  *opps_eliminated_total                        2.5491       2.5845      +0.0354 ±0.0239  
+  *cleared_T8                                   0.2352       0.2564      +0.0212 ±0.0112  
+   cleared_T10                                  0.5813       0.5904      +0.0091 ±0.0126  
+   self_lost                                    0.0153       0.0143      -0.0010 ±0.0033  
+  *cards_milled_self_total                     15.9905      15.4481      -0.5424 ±0.3529  
+  *lands_entered_total                         11.8515      11.6392      -0.2123 ±0.1349  
+   icetill_replays                              0.7103       0.6667      -0.0436 ±0.0457  
+  *landfall_events_total                       11.8515      11.6392      -0.2123 ±0.1349  
+  *library_min                                 54.5821      55.5549      +0.9728 ±0.5519  
+   life_min                                    29.7049      29.6785      -0.0264 ±0.1308  
+  *lantern_draws                                0.1577       0.0000      -0.1577 ±0.0071  
+  *proliferates_total                           0.1435       0.9723      +0.8288 ±0.0461  
+  *interaction_plays                            0.5085       0.2479      -0.2606 ±0.0167  
+  *rad_life_lost_opp_total                     10.0154      10.8533      +0.8379 ±0.1212  
+  *counterspells_cast                           0.6892       0.5486      -0.1406 ±0.0214  
+  *opp_spells_countered_total                   0.6892       0.5486      -0.1406 ±0.0214  
+  *crimes_total                                 3.6540       3.0388      -0.6152 ±0.0949  
+  *rad_counters_given_opp_total                14.2352      15.1072      +0.8720 ±0.1458  
+  *counter_events_total                        47.2604      50.6141      +3.3537 ±0.9216  
+  *protection_used_total                        0.1827       0.1444      -0.0383 ±0.0111  
+  *len_protections_by_kind                      0.1745       0.1390      -0.0355 ±0.0104  
+  *len_opp_mill_by_source                       2.8416       2.7482      -0.0934 ±0.0332  
+  *deepmuck_triggers                            0.1992       0.1530      -0.0462 ±0.0180  
+  *len_draws_by_source                          3.0278       2.9140      -0.1138 ±0.0444  
+
+[pacote5+payoff_primeiro - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   cards_milled_opp_total                      69.4422      71.0023      +1.5601 ±1.6267  
+   nonland_milled_opp_total                    42.4359      43.3947      +0.9588 ±0.9827  
+   mothman_counters_placed_total               54.0751      53.4638      -0.6113 ±1.3461  
+  *ruin_crab_mills                              1.0053       1.1692      +0.1639 ±0.0729  
+  *payoff_first_casts                           0.0000       0.4183      +0.4183 ±0.0131  
+  *opps_eliminated_total                        2.5491       2.5909      +0.0418 ±0.0239  
+  *cleared_T8                                   0.2352       0.2651      +0.0299 ±0.0113  
+  *cleared_T10                                  0.5813       0.5950      +0.0137 ±0.0127  
+   self_lost                                    0.0153       0.0132      -0.0021 ±0.0033  
+  *cards_milled_self_total                     15.9905      15.6030      -0.3875 ±0.3518  
+  *lands_entered_total                         11.8515      11.6624      -0.1891 ±0.1355  
+  *icetill_replays                              0.7103       0.7733      +0.0630 ±0.0476  
+  *landfall_events_total                       11.8515      11.6624      -0.1891 ±0.1355  
+  *library_min                                 54.5821      55.6772      +1.0951 ±0.5481  
+   life_min                                    29.7049      29.6556      -0.0493 ±0.1311  
+  *lantern_draws                                0.1577       0.0000      -0.1577 ±0.0071  
+  *proliferates_total                           0.1435       1.2038      +1.0603 ±0.0505  
+  *interaction_plays                            0.5085       0.2423      -0.2662 ±0.0167  
+  *rad_life_lost_opp_total                     10.0154      10.8577      +0.8423 ±0.1216  
+  *rad_counters_given_opp_total                14.2352      15.2540      +1.0188 ±0.1481  
+  *counterspells_cast                           0.6892       0.5436      -0.1456 ±0.0213  
+  *opp_spells_countered_total                   0.6892       0.5436      -0.1456 ±0.0213  
+  *crimes_total                                 3.6540       3.0190      -0.6350 ±0.0952  
+  *counter_events_total                        47.2604      51.7764      +4.5160 ±0.9389  
+  *protection_used_total                        0.1827       0.1426      -0.0401 ±0.0111  
+  *len_protections_by_kind                      0.1745       0.1378      -0.0367 ±0.0104  
+  *len_draws_by_source                          3.0278       2.8831      -0.1447 ±0.0442  
+  *deepmuck_triggers                            0.1992       0.1485      -0.0507 ±0.0178  
+  *counters_placed_total                       77.7445      85.1331      +7.3886 ±3.0298  
+
+[pacote5+master - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cards_milled_opp_total                      69.4422      82.3549     +12.9127 ±1.6833  
+  *nonland_milled_opp_total                    42.4359      49.8187      +7.3828 ±1.0146  
+  *mothman_counters_placed_total               54.0751      56.9220      +2.8469 ±1.3707  
+   ruin_crab_mills                              1.0053       0.9492      -0.0561 ±0.0695  
+  *opps_eliminated_total                        2.5491       2.5855      +0.0364 ±0.0243  
+  *cleared_T8                                   0.2352       0.2716      +0.0364 ±0.0115  
+  *cleared_T10                                  0.5813       0.6051      +0.0238 ±0.0130  
+   self_lost                                    0.0153       0.0146      -0.0007 ±0.0034  
+  *cards_milled_self_total                     15.9905      15.6113      -0.3792 ±0.3473  
+  *lands_entered_total                         11.8515      11.5594      -0.2921 ±0.1343  
+   icetill_replays                              0.7103       0.6690      -0.0413 ±0.0461  
+  *landfall_events_total                       11.8515      11.5594      -0.2921 ±0.1343  
+  *library_min                                 54.5821      55.4681      +0.8860 ±0.5474  
+   life_min                                    29.7049      29.8280      +0.1231 ±0.1309  
+  *lantern_draws                                0.1577       0.0000      -0.1577 ±0.0071  
+  *proliferates_total                           0.1435       0.9274      +0.7839 ±0.0448  
+  *interaction_plays                            0.5085       0.2428      -0.2657 ±0.0167  
+  *counterspells_cast                           0.6892       0.4212      -0.2680 ±0.0204  
+  *opp_spells_countered_total                   0.6892       0.4212      -0.2680 ±0.0204  
+  *crimes_total                                 3.6540       2.9317      -0.7223 ±0.0984  
+  *mothman_x_total                             45.7189      52.6850      +6.9661 ±1.0299  
+  *counter_events_total                        47.2604      53.0984      +5.8380 ±0.9254  
+  *protection_used_total                        0.1827       0.1204      -0.0623 ±0.0107  
+  *len_protections_by_kind                      0.1745       0.1170      -0.0575 ±0.0100  
+  *rad_life_lost_opp_total                     10.0154      10.6866      +0.6712 ±0.1184  
+  *rad_counters_given_opp_total                14.2352      14.8634      +0.6282 ±0.1414  
+  *counters_placed_total                       77.7445      86.6061      +8.8616 ±2.6083  
+  *turn                                         9.9495       9.8313      -0.1182 ±0.0435  
+
+[pacote5+master+payoff_primeiro - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cards_milled_opp_total                      69.4422      83.2298     +13.7876 ±1.6848  
+  *nonland_milled_opp_total                    42.4359      50.3872      +7.9513 ±1.0144  
+  *mothman_counters_placed_total               54.0751      56.8507      +2.7756 ±1.3567  
+  *ruin_crab_mills                              1.0053       1.1548      +0.1495 ±0.0725  
+  *payoff_first_casts                           0.0000       0.4153      +0.4153 ±0.0132  
+  *opps_eliminated_total                        2.5491       2.5902      +0.0411 ±0.0243  
+  *cleared_T8                                   0.2352       0.2810      +0.0458 ±0.0116  
+  *cleared_T10                                  0.5813       0.6109      +0.0296 ±0.0130  
+   self_lost                                    0.0153       0.0132      -0.0021 ±0.0033  
+   cards_milled_self_total                     15.9905      15.7461      -0.2444 ±0.3476  
+  *lands_entered_total                         11.8515      11.5611      -0.2904 ±0.1350  
+  *icetill_replays                              0.7103       0.7614      +0.0511 ±0.0475  
+  *landfall_events_total                       11.8515      11.5611      -0.2904 ±0.1350  
+  *library_min                                 54.5821      55.5846      +1.0025 ±0.5448  
+   life_min                                    29.7049      29.8239      +0.1190 ±0.1313  
+  *lantern_draws                                0.1577       0.0000      -0.1577 ±0.0071  
+  *proliferates_total                           0.1435       1.1307      +0.9872 ±0.0484  
+  *interaction_plays                            0.5085       0.2399      -0.2686 ±0.0167  
+  *counterspells_cast                           0.6892       0.4236      -0.2656 ±0.0204  
+  *opp_spells_countered_total                   0.6892       0.4236      -0.2656 ±0.0204  
+  *crimes_total                                 3.6540       2.9295      -0.7245 ±0.0986  
+  *counter_events_total                        47.2604      53.8927      +6.6323 ±0.9276  
+  *mothman_x_total                             45.7189      52.9729      +7.2540 ±1.0282  
+  *protection_used_total                        0.1827       0.1192      -0.0635 ±0.0106  
+  *len_protections_by_kind                      0.1745       0.1157      -0.0588 ±0.0100  
+  *rad_life_lost_opp_total                     10.0154      10.6917      +0.6763 ±0.1186  
+  *rad_counters_given_opp_total                14.2352      14.9987      +0.7635 ±0.1436  
+  *counters_placed_total                       77.7445      87.0567      +9.3122 ±2.5923  
+  *turn                                         9.9495       9.8045      -0.1450 ±0.0436  

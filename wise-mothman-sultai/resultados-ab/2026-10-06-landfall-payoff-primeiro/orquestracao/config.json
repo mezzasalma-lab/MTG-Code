@@ -1,0 +1,188 @@
+{
+ "sim": "mothman_goldfish_v1.py",
+ "turns": 12,
+ "destaque": [
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "ruin_crab_mills",
+  "payoff_first_casts",
+  "opps_eliminated_total",
+  "cleared_T8",
+  "cleared_T10",
+  "self_lost",
+  "cards_milled_self_total",
+  "lands_entered_total",
+  "icetill_replays",
+  "landfall_events_total",
+  "library_min",
+  "life_min"
+ ],
+ "compacto": [
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_trigger_opp_mill",
+  "mothman_counters_placed_total",
+  "ruin_crab_mills",
+  "payoff_first_casts",
+  "lands_entered_total",
+  "icetill_replays",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total"
+ ],
+ "variantes": {
+  "base": {
+   "LANDFALL_PAYOFF_FIRST": false
+  },
+  "payoff_primeiro": {
+   "LANDFALL_PAYOFF_FIRST": true
+  },
+  "pacote5": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Evolution Sage"
+    ],
+    [
+     "Swarmyard",
+     "Karn's Bastion"
+    ],
+    [
+     "Soul-Guide Lantern",
+     "Bruvac the Grandiloquent"
+    ],
+    [
+     "An Offer You Can't Refuse",
+     "Garruk's Uprising"
+    ],
+    [
+     "Bojuka Bog",
+     "Opulent Palace"
+    ]
+   ],
+   "LANDFALL_PAYOFF_FIRST": false
+  },
+  "pacote5+payoff_primeiro": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Evolution Sage"
+    ],
+    [
+     "Swarmyard",
+     "Karn's Bastion"
+    ],
+    [
+     "Soul-Guide Lantern",
+     "Bruvac the Grandiloquent"
+    ],
+    [
+     "An Offer You Can't Refuse",
+     "Garruk's Uprising"
+    ],
+    [
+     "Bojuka Bog",
+     "Opulent Palace"
+    ]
+   ],
+   "LANDFALL_PAYOFF_FIRST": true
+  },
+  "pacote5+master": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Evolution Sage"
+    ],
+    [
+     "Swarmyard",
+     "Karn's Bastion"
+    ],
+    [
+     "Soul-Guide Lantern",
+     "Bruvac the Grandiloquent"
+    ],
+    [
+     "An Offer You Can't Refuse",
+     "Garruk's Uprising"
+    ],
+    [
+     "Bojuka Bog",
+     "Opulent Palace"
+    ],
+    [
+     "Negate",
+     "The Master of Lake-town"
+    ]
+   ],
+   "LANDFALL_PAYOFF_FIRST": false
+  },
+  "pacote5+master+payoff_primeiro": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Evolution Sage"
+    ],
+    [
+     "Swarmyard",
+     "Karn's Bastion"
+    ],
+    [
+     "Soul-Guide Lantern",
+     "Bruvac the Grandiloquent"
+    ],
+    [
+     "An Offer You Can't Refuse",
+     "Garruk's Uprising"
+    ],
+    [
+     "Bojuka Bog",
+     "Opulent Palace"
+    ],
+    [
+     "Negate",
+     "The Master of Lake-town"
+    ]
+   ],
+   "LANDFALL_PAYOFF_FIRST": true
+  },
+  "K_sem_embaralhar": {
+   "KOZILEK_SHUFFLE_ENABLED": false,
+   "LANDFALL_PAYOFF_FIRST": false
+  },
+  "K_sem_embaralhar+payoff_primeiro": {
+   "KOZILEK_SHUFFLE_ENABLED": false,
+   "LANDFALL_PAYOFF_FIRST": true
+  },
+  "guarda_desligada": {
+   "SELF_MILL_GUARD_ENABLED": false,
+   "LANDFALL_PAYOFF_FIRST": false
+  },
+  "guarda_desligada+payoff_primeiro": {
+   "SELF_MILL_GUARD_ENABLED": false,
+   "LANDFALL_PAYOFF_FIRST": true
+  },
+  "orb_sem_limite+payoff_primeiro": {
+   "ORB_CAST_MIN_LIBRARY": 0,
+   "LANDFALL_PAYOFF_FIRST": true
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "payoff_primeiro",
+  "pacote5",
+  "pacote5+payoff_primeiro",
+  "pacote5+master",
+  "pacote5+master+payoff_primeiro"
+ ],
+ "regressao": [
+  "payoff_primeiro",
+  "pacote5+master+payoff_primeiro",
+  "guarda_desligada+payoff_primeiro",
+  "orb_sem_limite+payoff_primeiro"
+ ]
+}

@@ -1360,6 +1360,91 @@ def swaps_trocam_cartas_na_biblioteca():
         m.SWAPS = ()
 
 
+# ---------- ordem terreno x payoff de landfall (partida manual #1, 2026-10-06) ----------
+def _com_chave(valor, f):
+    ant = m.LANDFALL_PAYOFF_FIRST
+    m.LANDFALL_PAYOFF_FIRST = valor
+    try:
+        return f()
+    finally:
+        m.LANDFALL_PAYOFF_FIRST = ant
+
+
+def _cena_crab(hand, bf, gy=(), comandante_em_campo=True):
+    st = fresh(hand=hand, bf=list(bf) + ([m.COMMANDER] if comandante_em_campo else []), gy=gy, lib=["Fathom Mage"] * 40)
+    st.commander_in_cz = not comandante_em_campo       # nos testes que nao sao sobre o comandante ele ja' esta em campo (nao compete pelo mana)
+    for p in st.battlefield:
+        p.tapped = False
+    return st
+
+
+@teste
+def payoff_primeiro_ruin_crab_antes_do_terreno_dispara_o_landfall():
+    def roda():
+        st = _cena_crab(["Ruin Crab", "Forest"], ["Island", "Forest", "Swamp", "Swamp"])
+        m.main_phase(st, "main1")
+        return st.ruin_crab_mills, st.payoff_first_casts, "Ruin Crab" in [p.card.name for p in st.battlefield]
+    on = _com_chave(True, roda)
+    off = _com_chave(False, roda)
+    assert on == (1, 1, True), on                      # Crab primeiro: o Forest que entra dispara o landfall (3 de cada oponente)
+    assert off == (0, 0, True), off                    # ordem antiga: terreno primeiro, Crab depois, sem gatilho
+    assert on[0] > 0
+
+
+@teste
+def payoff_primeiro_icetill_da_landfall_nos_dois_terrenos():
+    def roda():
+        st = _cena_crab(["Icetill Explorer", "Forest", "Island"], ["Forest", "Forest", "Swamp", "Swamp"])
+        mills = []
+        orig = m.mill_event
+        def w(state, parts, *a, **k):
+            if k.get("source") == "icetill":
+                mills.append(1)
+            return orig(state, parts, *a, **k)
+        m.mill_event = w
+        try:
+            m.main_phase(st, "main1")
+        finally:
+            m.mill_event = orig
+        return len(mills), st.payoff_first_casts, m.n_lands(st)
+    on = _com_chave(True, roda)
+    off = _com_chave(False, roda)
+    assert on == (2, 1, 6), on                         # Icetill primeiro: os 2 terrenos (a 2a jogada dele) disparam o mill dele
+    assert off[0] == 1 and off[1] == 0, off            # antes: so' o 2o terreno entrava com o Icetill em campo
+    assert on[0] > off[0] > 0
+
+
+@teste
+def payoff_primeiro_nao_desloca_o_comandante():
+    def roda():
+        st = _cena_crab(["Ruin Crab", "Forest"], ["Island", "Forest", "Swamp"], comandante_em_campo=False)      # 3 de mana agora + terreno = 4 = exatamente o comandante
+        m.main_phase(st, "main1")
+        return st.payoff_first_casts, m.COMMANDER in [p.card.name for p in st.battlefield]
+    on = _com_chave(True, roda)
+    assert on == (0, True), on                         # o Crab nao entra na frente: o comandante (4) tem prioridade
+
+
+@teste
+def payoff_primeiro_nao_dispara_sem_terreno_para_jogar():
+    def roda():
+        st = _cena_crab(["Ruin Crab"], ["Island", "Forest", "Swamp", "Swamp"])
+        m.main_phase(st, "main1")
+        return st.payoff_first_casts, "Ruin Crab" in [p.card.name for p in st.battlefield]
+    assert _com_chave(True, roda) == (0, True)         # sem terreno a jogar a ordem nao importa: o laco normal conjura o Crab
+
+
+@teste
+def payoff_primeiro_retrace_da_six_so_com_dois_terrenos_na_mao():
+    def roda(maos):
+        st = _cena_crab(maos, ["Six", "Island", "Island", "Forest", "Swamp"], gy=["Ruin Crab"])
+        m.main_phase(st, "main1")
+        return st.payoff_first_casts, st.ruin_crab_mills
+    dois = _com_chave(True, lambda: roda(["Forest", "Island"]))
+    um = _com_chave(True, lambda: roda(["Forest"]))
+    assert dois[0] == 1 and dois[1] >= 1, dois         # retrace do Crab (descarta 1 terreno) e o outro terreno dispara o landfall
+    assert um[0] == 0, um                              # com 1 terreno so', descartar para o retrace tiraria a jogada de terreno: nao antecipa
+
+
 def main():
     for t in TESTS:
         t()

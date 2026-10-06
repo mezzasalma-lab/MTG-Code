@@ -42,3 +42,7 @@ Inválido: nenhum. Superado: ver "Execuções NÃO arquivadas".
 `bash orquestracao/verificar_reproducao.sh --tudo` em 2026-10-05, no commit `91b1a3d`: **12 de 12 saídas byte a byte iguais** (`cmp`): as 4 tabelas `ab_*.txt` e as 4 `compacto_*.txt` refeitas **só** dos `.json.xz`, e, **re-simulando** o lote de 2.000 nos dois modos (pasta temporária), as 2 tabelas e os 2 **brutos** (descomprimidos) idênticos aos arquivados (saída: `resumos/verificacao_reproducao.txt`).
 Isso também prova o determinismo do simulador entre processos nesse lote.
 **Não conferido:** os lotes de 10.000 foram verificados só das tabelas a partir do bruto (não re-simulados: ~25 min cada); `smoke.txt` e `regressao_20000.txt` não foram refeitos pelo script (saídas das execuções originais); `log_*.txt` ficam fora do git.
+
+## Atualização (2026-10-06): a ordem terreno × payoff de landfall mudou no simulador; estes lotes são da ordem ANTIGA
+O padrão do simulador passou a ligar `LANDFALL_PAYOFF_FIRST` (payoff de landfall conjurado antes do terreno; `../2026-10-06-landfall-payoff-primeiro/`). Os lotes desta pasta são do simulador `91b1a3d` = chave **desligada**. Para que a re-execução continue idêntica aos brutos arquivados, `orquestracao/driver_mm.py` fixa `LANDFALL_PAYOFF_FIRST = False` em toda variante (`setdefault`) e `orquestracao/abgen.py` ignora o campo novo `payoff_first_casts` (sempre 0 com a chave desligada). `bash orquestracao/verificar_reproducao.sh --tudo` refeito em 2026-10-06: **12 de 12 iguais** (`resumos/verificacao_reproducao.txt`).
+

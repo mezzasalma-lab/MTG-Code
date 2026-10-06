@@ -15,7 +15,7 @@ for m in padrao resiliencia; do
   cmp_ok "$T/$m.txt" "$T/${m}_arq.txt" "tabela $m refeita so' do bruto"
 done
 if [ "${1:-}" = "--tudo" ]; then
-  PYTHONHASHSEED=777 python3 "$DECK/ferramentas/mill_oponentes.py" -n 5000 --modo resiliencia -v base -v pacote5+master -o "$T/resim.txt" --bruto "$T/resim.json.xz" > /dev/null
+  PYTHONHASHSEED=777 python3 "$DECK/ferramentas/mill_oponentes.py" --fixa LANDFALL_PAYOFF_FIRST=false -n 5000 --modo resiliencia -v base -v pacote5+master -o "$T/resim.txt" --bruto "$T/resim.json.xz" > /dev/null
   xz -dc "$AQUI/dados/mill_oponentes_resiliencia_5000.json.xz" > "$T/arq.json"; xz -dc "$T/resim.json.xz" > "$T/resim.json"
   [ -s "$T/resim.json" ] || { echo "VACUO: bruto re-simulado vazio"; falha=$((falha+1)); }
   cmp_ok "$T/resim.json" "$T/arq.json" "bruto da resiliencia RE-SIMULADO (PYTHONHASHSEED=777)"

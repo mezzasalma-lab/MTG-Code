@@ -88,6 +88,8 @@ def trabalho(args):
         state, snaps = rodar(m, sd, turns, resil)
         num = {k: (float(v) if isinstance(v, (int, float)) and not isinstance(v, bool) else float(v) if isinstance(v, bool) else None) for k, v in vars(state).items()}
         num = {k: v for k, v in num.items() if v is not None}
+        if flags.get("LANDFALL_PAYOFF_FIRST") is False:
+            num.pop("payoff_first_casts", None)        # campo de 2026-10-06; com a chave desligada ele e' sempre 0: sem ele o bruto fica identico ao dos lotes anteriores a ele
         out.append({"seed": sd, "snaps": snaps, "num": num, "src_total": dict(state.opp_mill_by_source), "casts": dict(state.casts_by_card), "decked_opps": sum(1 for o in state.opps if o.elim_reason == "decked"),
                     "elim": [o.elim_reason or "vivo" for o in state.opps]})
     return out
@@ -218,6 +220,7 @@ def main():
     ap.add_argument("--procs", type=int, default=4)
     ap.add_argument("-o", "--saida", help="grava o texto neste arquivo alem de imprimir")
     ap.add_argument("--bruto", help="grava o bruto por partida (json comprimido .xz) para auditoria")
+    ap.add_argument("--fixa", action="append", default=[], help="NOME=valor(json) aplicado a TODAS as variantes na execucao, sem entrar no bruto (ex.: --fixa LANDFALL_PAYOFF_FIRST=false reproduz o simulador anterior ao commit que ligou essa chave)")
     ap.add_argument("--do-bruto", help="NAO simula: refaz o texto so' a partir de um bruto gravado por --bruto (sem as linhas de auto-verificacao, que exigem o simulador)")
     a = ap.parse_args()
     if a.do_bruto:
@@ -239,9 +242,11 @@ def main():
         return
     resil = a.modo == "resiliencia"
     vs = [parse_variante(v) for v in (a.variante or ["base"])]
+    fixa = {k: json.loads(v) for k, v in (x.split("=", 1) for x in a.fixa)}
+    vs_exec = [(n, {**f, **fixa}) for n, f in vs]             # o bruto guarda os flags da variante; o que e' fixado so' vale na execucao
     out = [f"Ferramenta mill_oponentes: {len(vs)} variante(s), N={a.n}, sementes {a.semente0}..{a.semente0 + a.n - 1}, modo {a.modo}"]
     resultados = {}
-    for nome, flags in vs:
+    for nome, flags in vs_exec:
         k = autoverifica(flags, a.turnos, resil)
         out.append(f"auto-verificacao `{nome}`: {k} sementes identicas ao simulador (> 0)")
         seeds = list(range(a.semente0, a.semente0 + a.n))

@@ -14,8 +14,6 @@ sys.path.insert(0, AQUI)
 import abgen as A
 
 cfg = json.load(open(sys.argv[1] if len(sys.argv) > 1 else os.path.join(AQUI, "config.json")))
-for _v in cfg["variantes"].values():
-    _v.setdefault("LANDFALL_PAYOFF_FIRST", False)   # estes lotes sao do simulador 91b1a3d (ordem antiga: terreno antes do payoff de landfall); a chave nasceu em 2026-10-06 e o padrao do simulador agora e' True
 ETAPA = sys.argv[2] if len(sys.argv) > 2 else "tudo"
 NREG = int(sys.argv[3]) if len(sys.argv) > 3 else 20000
 ARQ = os.path.abspath(os.path.join(AQUI, ".."))
@@ -106,7 +104,7 @@ def soma():
             out(f"ab_{N}{suf}.txt", tabelas(res, N, seed0, modo))
 
 
-COMPACTO = ["cleared_T7", "cleared_T8", "cleared_T9", "cleared_T10", "first_elim_T6", "first_elim_T8", "self_lost", "decked", "opps_eliminated_total", "mothman_triggers_total", "counters_placed_total", "library_min", "kozilek_shuffles_total"]
+COMPACTO = cfg.get("compacto") or ["cleared_T7", "cleared_T8", "cleared_T9", "cleared_T10", "first_elim_T6", "first_elim_T8", "self_lost", "decked", "opps_eliminated_total", "mothman_triggers_total", "counters_placed_total", "library_min", "kozilek_shuffles_total"]
 
 
 def compacto():
@@ -117,6 +115,7 @@ def compacto():
             suf = "" if modo == "padrao" else "_resiliencia"
             res = A.carregar_raw(os.path.join(ARQ, "dados", f"raw_ab_{N}{suf}"))
             base = res["base"]
+            assert all(any(c in x[1] for x in base) for c in COMPACTO), [c for c in COMPACTO if not any(c in x[1] for x in base)]   # campo inexistente daria 0 em vazio
             linhas = [f"COMPACTO N={N} modo {modo}: media da base e, por variante, diferenca pareada (variante - base) +- IC95%. '*' = |dif| > IC."]
             linhas.append("%-52s " % "variante" + " ".join("%22s" % c for c in COMPACTO))
             medias = {c: st.mean(x[1].get(c, 0.0) for x in base) for c in COMPACTO}

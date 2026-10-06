@@ -188,3 +188,20 @@ Arquivo: `resultados-ab/2026-10-06-partida-manual-1/`. **O simulador (`91b1a3d`)
 | Wave Goodbye: "return each creature without a +1/+1 counter" | devolveu Patron e Shredder; ficaram as 5 com contador | ✅ |
 | Evacuation (oponente simulado): "return all creatures to their owners' hands" | devolveu Ruin Crab, Mothman, Six, Kami, Icetill | ✅ (Mothman à mão, sem imposto; legal) |
 
+## 8. Orquestração do turno (Regra #6), 2026-10-06: ordem terreno × payoff de landfall
+
+🐛 **achado (partida manual #1):** `main_phase` fazia `play_land_phase` → `cast_loop`, então Ruin Crab / Icetill Explorer / Evolution Sage (landfall) entravam depois do terreno do turno e não disparavam com ele. **Corrigido** atrás de `LANDFALL_PAYOFF_FIRST` (`cast_landfall_payoffs_first`, antes de `play_land_phase`; testes `payoff_primeiro_*`). O código de cada carta já estava certo: o bug morava na ORDEM das chamadas de `main_phase`, a mesma classe do Megatron (Regra #6). Validação e A/B: `resultados-ab/2026-10-06-landfall-payoff-primeiro/`. Classe varrida nos outros 18 simuladores por `varredura-2026-10-05/scripts/audit_landfall_ordem.py`: candidato Toph; Beorn, Maralen, Thranduil e Prismatic Bridge a ler à mão.
+
+## 9. Partida manual #2 (2026-10-06): o que o log contradiz das regras (aguardando o usuário)
+
+Arquivo: `resultados-ab/2026-10-06-partida-manual-2/`. Escopo declarado (Regra #7): varridas = mana T2-T6, contadores com Kami/Constrictor/Henge/Ouroboroid, compras do Henge, rad com o Constrictor, jogadas de terreno, rulings de 16 cartas lidas ao vivo; **não varridas** = vida, rad como marcador, ordem da pilha, o T7 depois do gatilho de combate.
+
+| cláusula (oráculo) | o log mostra | status |
+|---|---|---|
+| Gyre Sage: "{T}: Add {G} for each +1/+1 counter on this creature" | T3 (0 contadores) e T4 (1) pagos como se desse 1 e 2 | 🐛 do jogo manual (aguarda resposta); o simulador acerta |
+| The Great Henge: custa `{X}` a menos, X = maior poder; "nontoken creature enters: +1/+1 counter and draw" | T4: custo 5 com 4 fontes; compra da Broodscale ausente | 🐛 / ❓ |
+| Kami: "that many plus one" e Winding Constrictor: "that many plus one" em artefato/criatura | T5 Constrictor 1 (2), Kami 2 (3); T6 Ouroboroid 2 (3), gatilho +2 (+3), combate +6 (+7) por criatura, ficha sem contador; T5 Mothman +3 e T7 +13 certos | 🐛 do jogo manual; o simulador acerta |
+| Ouroboroid: X = poder no gatilho (ruling: calculado uma vez), em CADA criatura | T6: fichas Eldrazi Spawn sem contador | 🐛 do jogo manual; o simulador inclui fichas |
+| Winding Constrictor: "if you would get one or more counters, you get that many plus one" (rad) | mills do T6 e T7 ≥ 1 abaixo do exigido | ❓ (rad não está no log) |
+| Gyre Sage: evolve (condição "if" checada na entrada, ruling 2013-04-15) | +2 no T5 sem criatura que dispare | ❓ |
+
