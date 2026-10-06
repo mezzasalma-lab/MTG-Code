@@ -184800,5 +184800,116 @@
     "set": "trk",
     "toughness": null,
     "type_line": "Enchantment"
+  },
+  "Evacuation": {
+    "cmc": 5.0,
+    "collector_number": "156",
+    "color_identity": [
+      "U"
+    ],
+    "colors": [
+      "U"
+    ],
+    "keywords": [],
+    "legalities": {
+      "alchemy": "not_legal",
+      "brawl": "not_legal",
+      "commander": "legal",
+      "competitivebrawl": "not_legal",
+      "duel": "legal",
+      "future": "not_legal",
+      "gladiator": "not_legal",
+      "historic": "not_legal",
+      "legacy": "legal",
+      "modern": "legal",
+      "oathbreaker": "legal",
+      "oldschool": "not_legal",
+      "pauper": "not_legal",
+      "paupercommander": "not_legal",
+      "penny": "legal",
+      "pioneer": "not_legal",
+      "predh": "legal",
+      "premodern": "legal",
+      "standard": "not_legal",
+      "standardbrawl": "not_legal",
+      "timeless": "not_legal",
+      "tlr": "not_legal",
+      "vintage": "legal"
+    },
+    "loyalty": null,
+    "mana_cost": "{3}{U}{U}",
+    "name": "Evacuation",
+    "oracle_text": "Return all creatures to their owners' hands.",
+    "power": null,
+    "prices": {
+      "eur": "0.35",
+      "eur_foil": null,
+      "tix": "0.18",
+      "usd": "0.30",
+      "usd_etched": null,
+      "usd_foil": null
+    },
+    "released_at": "2023-11-17",
+    "scryfall_uri": "https://scryfall.com/card/lcc/156/evacuation?utm_source=api",
+    "set": "lcc",
+    "toughness": null,
+    "type_line": "Instant"
+  },
+  "Aven Mindcensor": {
+    "cmc": 3.0,
+    "collector_number": "688",
+    "color_identity": [
+      "W"
+    ],
+    "colors": [
+      "W"
+    ],
+    "keywords": [
+      "Flying",
+      "Flash"
+    ],
+    "legalities": {
+      "alchemy": "not_legal",
+      "brawl": "legal",
+      "commander": "legal",
+      "competitivebrawl": "legal",
+      "duel": "legal",
+      "future": "not_legal",
+      "gladiator": "legal",
+      "historic": "legal",
+      "legacy": "legal",
+      "modern": "legal",
+      "oathbreaker": "legal",
+      "oldschool": "not_legal",
+      "pauper": "not_legal",
+      "paupercommander": "not_legal",
+      "penny": "legal",
+      "pioneer": "legal",
+      "predh": "legal",
+      "premodern": "not_legal",
+      "standard": "not_legal",
+      "standardbrawl": "not_legal",
+      "timeless": "legal",
+      "tlr": "legal",
+      "vintage": "legal"
+    },
+    "loyalty": null,
+    "mana_cost": "{2}{W}",
+    "name": "Aven Mindcensor",
+    "oracle_text": "Flash\nFlying\nIf an opponent would search a library, that player searches the top four cards of that library instead.",
+    "power": "2",
+    "prices": {
+      "eur": "0.33",
+      "eur_foil": null,
+      "tix": null,
+      "usd": "1.73",
+      "usd_etched": null,
+      "usd_foil": null
+    },
+    "released_at": "2022-06-10",
+    "scryfall_uri": "https://scryfall.com/card/clb/688/aven-mindcensor?utm_source=api",
+    "set": "clb",
+    "toughness": "1",
+    "type_line": "Creature — Bird Wizard"
   }
 }

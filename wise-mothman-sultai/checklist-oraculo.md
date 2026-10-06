@@ -171,3 +171,20 @@ Arquivo: `resultados-ab/2026-10-06-tergrid-e-ferramenta-mill/`. **O simulador (`
 Rulings lidas ANTES de concluir (Regra #3, `dados/tergrid_rulings.json`): permanent card = artefato/criatura/encantamento/terreno/planeswalker; qualquer cemitério; custo pago com sacrifício/descarte também dispara; o alvo da Lantern escolhe.
 
 🐛 **Achados da ferramenta `mill_oponentes.py` (corrigidos antes de arquivar; os brutos não mudam):** (1) a linha "por fonte (dif)" ordenava um `set` de nomes por −|dif|: o desempate dependia de `PYTHONHASHSEED` (classe da Regra #10; achado ao refazer a tabela do bruto em outro processo); (2) a soma por fonte não fechava com o total de cartas milladas (80,9 × 83,9): o loop do combo Ascension + Mindcrank/Master (`ascension_hit`) mila a biblioteca inteira fora de `mill_event`. Correção: linha `ascension_loop` + asserção (resíduo ≥ 0 e só com `ascension_loops > 0`; soma = total; total > 0).
+
+## 7. Partida manual #1 (2026-10-06): o que o log contradiz das regras (aguardando o usuário)
+
+Arquivo: `resultados-ab/2026-10-06-partida-manual-1/`. **O simulador (`91b1a3d`) não foi alterado nesta rodada de auditoria.** Escopo declarado (Regra #7): varridas = mana por turno, jogadas de terreno, retraces, contadores do Mothman com Kami/Scales, mill meu por fonte, rulings de 23 cartas lidas ao vivo; **não varridas** = vida, marcadores de rad, ordem da pilha, escolhas de alvo fora do log, o que o oponente simulado milou.
+
+| cláusula (oráculo) | o log mostra | status |
+|---|---|---|
+| Kami: "if one or more +1/+1 counters would be put on a permanent you control, that many plus one" | 7 colocações (T5 ×1, T6 ×3, T7 ×3) com o Kami em campo, todas com +1 | 🐛 do jogo manual (aguarda resposta); o simulador aplica (`counter_modifiers`) |
+| Mothman: "whenever one or more nonland cards are milled, +1/+1 counter on each of up to X target creatures" (ruling 2024-03-08: 1 gatilho por evento simultâneo) | gatilhos de mill meu sem contador: T4 (X = 2), T7 (Siege), T8 (Palantír) | ❓ pode ser "até X" = 0 |
+| rad (CR 728.1: no início da fase principal 1, mila N = marcadores; cada não-terreno tira 1) | T6 ≥ 1 e T8 ≥ 1 mill meu a menos que o exigido (limite inferior firme) | ❓ rad ou landfall do Icetill |
+| Icetill: "play an additional land" e "play lands from your graveyard" | usado em T5 (2 jogadas) e T8 (Saga do cemitério); T6 1 de 2, T7 0 de 2, T8 1 de 2, T9 0 de 2 | ❓ escolha ou esquecimento; 6 gatilhos do Crab perdidos |
+| Ruin Crab: landfall, cada oponente mila 3 | 2 gatilhos reconstruídos (T7 pelo Shredder, T8 pela Saga); não estão no log | 📊 mill de oponente fora do log (aviso do usuário) |
+| Memory Erosion: oponente conjura, mila 2 | 2 eventos reconstruídos (T6 Aven Mindcensor, T7 Evacuation) | 📊 idem |
+| Hedge Shredder: "land cards put into your graveyard from your library → battlefield tapped" | T7: Forest milada entrou em campo; sem o landfall do Icetill depois | ✅ a entrada; ❓ o mill do Icetill que ela devia disparar |
+| Wave Goodbye: "return each creature without a +1/+1 counter" | devolveu Patron e Shredder; ficaram as 5 com contador | ✅ |
+| Evacuation (oponente simulado): "return all creatures to their owners' hands" | devolveu Ruin Crab, Mothman, Six, Kami, Icetill | ✅ (Mothman à mão, sem imposto; legal) |
+

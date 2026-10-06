@@ -1,6 +1,6 @@
 # The Wise Mothman — log do goldfish (simulador `mothman_goldfish_v1.py`)
 
-> **Dados brutos, scripts e como refazer cada tabela:** `resultados-ab/2026-10-05-ab-pacote-kozilek-master/` (pacote, Master, Kozilek, controles) · `resultados-ab/2026-10-05-ab-kozilek-self-deck/` (Kozilek × estilo de jogo) · `resultados-ab/2026-10-05-simulador-v1-validacao/` (testes, varreduras, determinismo, regressão) · `resultados-ab/2026-10-06-tergrid-e-ferramenta-mill/` (ferramenta de mill nos oponentes + Tergrid).
+> **Dados brutos, scripts e como refazer cada tabela:** `resultados-ab/2026-10-05-ab-pacote-kozilek-master/` (pacote, Master, Kozilek, controles) · `resultados-ab/2026-10-05-ab-kozilek-self-deck/` (Kozilek × estilo de jogo) · `resultados-ab/2026-10-05-simulador-v1-validacao/` (testes, varreduras, determinismo, regressão) · `resultados-ab/2026-10-06-tergrid-e-ferramenta-mill/` (ferramenta de mill nos oponentes + Tergrid) · `resultados-ab/2026-10-06-partida-manual-1/` (partida manual #1: log, ledger, ensaio).
 > Auditoria cláusula-a-cláusula: `checklist-oraculo.md`. Simulador no commit `91b1a3d` (código congelado durante as baterias).
 > **Premissas e o que NÃO se mede:** mesa de 4 com **3 oponentes passivos** (sem tabuleiro, todo atacante conecta; mill/vida/rad/biblioteca deles são reais; `OPP_TARGET_PROB` 0,7 para efeitos que precisam de alvo); a IA do jogador é uma heurística declarada (checklist §5), **evidência de apoio, não a fonte da verdade** (Regra #5 de `CLAUDE.md`). Todos os números abaixo são paridos por semente, com IC95%; "*" = a diferença excede o IC.
 
@@ -81,3 +81,13 @@ Cartas Tier 2 (Terrasymbiosis, Corpsejack, Loading Zone, Mutational Advantage, C
 - **Não verificado / limites:** oponentes passivos (sem tabuleiro, sem escolha, sem interação com o mill: um oponente real com Bruvac na mesa ou fetchland muda os números); a ferramenta mede mill de oponente, não o auto-mill (`self_lost`, §2).
 
 **Tergrid (candidata):** não implementada no motor. Oráculo + rulings + enumeração por script + Spellbook + tetos medidos em `candidatas-pos-eoe.md` §12: o mill **não** dispara a Tergrid (só sacrifício/descarte do oponente); a lista tem 1 fonte de sacrifício (Kozilek, ataca em 2% das partidas) e 0 de descarte.
+
+## 7. Partida manual #1 (2026-10-06, 9 turnos, Archidekt playtester)
+
+Dados, scripts e como refazer: `resultados-ab/2026-10-06-partida-manual-1/LEIAME.md` (**aguardando respostas do usuário**; nada foi tratado como erro do usuário ainda). O usuário avisou que o log **não contém o mill de oponente** (Memory Erosion por magia; Ruin Crab quando entram terrenos, até 2 vezes por turno com o Icetill).
+- **Legal:** mana viável em T2-T9 (por script), retraces da Six pagos (Icetill, Ruin Crab, Hardened Scales), Wave Goodbye devolveu só as criaturas sem contador, Evacuation devolveu as outras 5.
+- **O log prova:** (1) a substituição do **Kami of Whispered Hopes nunca foi aplicada** (7 colocações com ele em campo, todas +1 onde a regra manda +2); (2) 3 gatilhos do Mothman por mill meu **sem contador** (T4 X = 2; T7 Siege; T8 Palantír); (3) **≥ 1 mill meu a menos** em T6 e em T8; (4) **jogadas de terreno do Icetill não usadas**: T6 1 de 2, T7 0 de 2, T8 1 de 2, T9 0 de 2, com o Ruin Crab em campo (6 gatilhos do Crab perdidos); (5) a Six não atacou em T5-T7.
+- **Reconstruído:** 4 eventos de mill de oponente (Erosion T6 e T7; Crab T7 e T8) = 22 cartas, ~13,8 não-terrenos; contadores esperados pelas regras 45,3 contra 7 no log (23,3 dependem do mill de oponente).
+- **Ensaio no simulador (apoio, Regra #5):** o mesmo campo no início do T7 rende em média 7,0 terrenos entrando, 7,0 gatilhos do Crab e 64 cartas milladas de oponente (manual: 1 terreno e 1 gatilho).
+- **Gap do simulador achado (a corrigir, atrás de chave):** o simulador joga o terreno **antes** de conjurar o Ruin Crab/Icetill (100% das sementes em 4 cenários dirigidos), enquanto o jogador real conjura o payoff e só depois joga o terreno (foi o T8 do usuário). Ver o commit seguinte.
+- **Não verificado:** vida, rad, ordem da pilha, quais cartas o oponente milou, o que veio depois do ataque do T9.

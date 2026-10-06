@@ -1,0 +1,6 @@
+IGUAL  trace.md
+IGUAL  estado_por_turno.txt
+IGUAL  ledger_mill.md
+IGUAL  mana_por_turno.md
+IGUAL  ensaio_simulador.txt (300 sementes x 4 turnos, simulador FIXADO no commit 91b1a3d)
+5 iguais, 0 diferentes
