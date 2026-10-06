@@ -157,3 +157,17 @@ Cada linha: cláusula do oráculo → onde está no código → **status** → t
 
 ## 5. Política do jogador (a IA é heurística; nada disto é regra do jogo)
 Prioridade de conjuração `CAST_PRIORITY`; comandante primeiro; terreno com a melhor cor faltante; T1/T2: terreno virado primeiro se o ensaio a seco mostra que não custa conjuração; ataque com tudo exceto dorks de mana e Zellix; Zumbis (Alchemist) → oponente com mais biblioteca, o resto → o de menor vida; guarda de biblioteca (§1). **Isto é evidência de apoio, não a fonte da verdade (Regra #5):** uma linha de jogo humana pode ser melhor que a da IA (p.ex. segurar mais mana, atacar só com o necessário contra o Orb).
+
+## 6. Rodada 2026-10-06: ferramenta de mill nos oponentes e Tergrid (candidata, NÃO implementada)
+
+Arquivo: `resultados-ab/2026-10-06-tergrid-e-ferramenta-mill/`. **O simulador (`91b1a3d`) não foi alterado.** Escopo declarado (Regra #7): varridas = o oráculo e as rulings da Tergrid (leitura ao vivo), a enumeração por script das cláusulas "oponente sacrifica / descarta" nas 91 cartas distintas da lista, o Spellbook antes/depois com controles, a frequência do Annihilator e o teto crime/Deepmuck; **não varridas** = qualquer A/B da Tergrid, o comportamento de oponente real.
+
+| cláusula da Tergrid (candidata) | status | evidência |
+|---|---|---|
+| frente: "whenever an opponent sacrifices a nontoken permanent or discards a permanent card, you may put that card from a graveyard onto the battlefield" | 📊 **estrutural**: depende de sacrifício/descarte do OPONENTE (Regra #1); proxy medido = o Kozilek (única fonte, Annihilator 4) ataca em 2,02% (padrão) / 2,24% (resiliência) das partidas | `resumos/frequencia_annihilator.txt`; `enumera_tergrid.txt` (0 fontes de descarte) |
+| verso: "{T}: target player loses 3 life unless they sacrifice a nonland permanent of their choice or discard a card" | 📊 a escolha é do alvo (ruling: pode escolher perder vida mesmo tendo o que sacrificar); a parte **mensurável sem fabricar oponente** é o crime (mirar oponente): teto 0,27 turno/partida de espaço com Deepmuck em campo | `resumos/crime_deepmuck.txt` |
+| verso: "{3}{B}: untap Tergrid's Lantern" | não simulado | — |
+
+Rulings lidas ANTES de concluir (Regra #3, `dados/tergrid_rulings.json`): permanent card = artefato/criatura/encantamento/terreno/planeswalker; qualquer cemitério; custo pago com sacrifício/descarte também dispara; o alvo da Lantern escolhe.
+
+🐛 **Achados da ferramenta `mill_oponentes.py` (corrigidos antes de arquivar; os brutos não mudam):** (1) a linha "por fonte (dif)" ordenava um `set` de nomes por −|dif|: o desempate dependia de `PYTHONHASHSEED` (classe da Regra #10; achado ao refazer a tabela do bruto em outro processo); (2) a soma por fonte não fechava com o total de cartas milladas (80,9 × 83,9): o loop do combo Ascension + Mindcrank/Master (`ascension_hit`) mila a biblioteca inteira fora de `mill_event`. Correção: linha `ascension_loop` + asserção (resíduo ≥ 0 e só com `ascension_loops > 0`; soma = total; total > 0).

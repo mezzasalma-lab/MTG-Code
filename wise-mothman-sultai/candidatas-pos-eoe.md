@@ -179,3 +179,30 @@ Se o usuário escolher cortes, a ordem de menos ligados (por `motores_por_script
   curva e fontes antes/depois; rulings; preços (menor impressão do Scryfall).
 - **Raciocinado:** quanto cada carta "vale" no jogo (compra/Mothman/proliferate com os três "+1"); quais cartas saem; riscos de auto-mill; escolha entre Garruk's Uprising e as demais; ordem de substituições.
 - **Não verificado:** taxa de vitória, velocidade, necessidade de mana turno-a-turno, comportamento com oponentes reais, Bracket pelo texto oficial do dia, preço no mercado local, e, **para o §1–§10**, nenhum A/B (o §0b, escrito depois, mede o pacote de 5, o Master e o Kozilek no simulador; ver `goldfish-log.md` §5 para o que continua sem medir).
+
+## 12. Tergrid, God of Fright // Tergrid's Lantern (pergunta do usuário, 2026-10-06)
+
+> Pergunta: *"ela aproveita muito o mill, não? Ou apenas sacrifício e discard?"* Dados, scripts e como refazer: `resultados-ab/2026-10-06-tergrid-e-ferramenta-mill/LEIAME.md`.
+> **A Tergrid NÃO foi implementada no motor do simulador**: abaixo só há oráculo, rulings, enumeração por script, Commander Spellbook e dois tetos medidos.
+
+**Veredito (lido do oráculo; raciocinado): o mill NÃO dispara a Tergrid.** A frente só reage a "oponente **sacrifica** um permanente não-ficha ou **descarta** uma carta de permanente"; milar leva carta do topo da biblioteca ao cemitério, que não é sacrifício nem descarte. O que ela aproveita é sacrifício e descarte do oponente.
+
+**Oráculo (Scryfall ao vivo, `dados/tergrid_carta.json`):** frente `{3}{B}{B}`, 4/5, Menace: *"Whenever an opponent sacrifices a nontoken permanent or discards a permanent card, you may put that card from a graveyard onto the battlefield under your control."* Verso `{3}{B}`, artefato lendário (Lantern): *"{T}: Target player loses 3 life unless they sacrifice a nonland permanent of their choice or discard a card. {3}{B}: Untap Tergrid's Lantern."*
+**Rulings (`dados/tergrid_rulings.json`, lidas antes de concluir):** "permanent card" = artefato, criatura, encantamento, terreno ou planeswalker; vale qualquer cemitério; sacrificar/descartar **como custo** também dispara (o gatilho resolve antes); se a carta sair do cemitério antes, não volta; **o alvo da Lantern pode escolher perder 3 de vida mesmo tendo o que sacrificar ou descartar**.
+
+**Cláusula × lista (script `enumera_tergrid.py`, 91 cartas distintas lidas do oráculo do repositório, não de memória):**
+
+| a Tergrid precisa de… | cartas da lista que fazem isso | observação |
+|---|---|---|
+| oponente **sacrificar** | **1**: Kozilek, Butcher of Truth (Annihilator 4) | o script também listou Altar of Dementia: é sacrifício **meu** de criatura (falso positivo, conferido à mão) |
+| oponente **descartar** | **0** | os 5 "discard" da lista (Boseiju, Bramble Familiar, Six, Takenuma, Zagoth Triome) são descartes meus |
+| **mill** | 14 fontes (§3) | **não dispara** a frente |
+
+- **Medido:** o Kozilek ataca ao menos 1 vez em **2,02%** das partidas no padrão (N = 10.000) e **2,24%** na resiliência, 1,33–1,40 ataques por partida em que ataca. É o **teto** das partidas em que a frente dispararia por sacrifício vindo do próprio deck (e ainda exigiria a Tergrid em campo: 5 + 10 de mana). O sacrifício/descarte que o oponente faz **por conta própria** (fetchland, Treasure, mão cheia) é jogo real e **não é modelado** (oponentes passivos).
+- **O elo possível com o mill é só o verso (Lantern):** (1) se o alvo **escolher** perder vida, isso alimenta Mindcrank / Master of Lake-town / Ascension; a escolha é dele (ruling). (2) Mirar oponente é **crime** (ruling 2024-04): dispara Deepmuck Desperado (mila 3 em cada oponente) e Freestrider Lookout, 1×/turno cada. **Medido** (`crime_deepmuck.py`, N = 5.000): Deepmuck em campo em 14,7% das partidas (15,9% resiliência) e **57,0%** (64,0%) dos turnos dele sem crime. Isso é espaço de **0,27 turno por partida** para a Lantern: no máximo ≈ 0,27 × 3 cartas × oponentes vivos (≤ 3) ≈ **2,4 cartas por partida** contra 83,9 milladas no total (≤ ~3%; ≤ ~4% na resiliência), **mesmo que a Lantern estivesse sempre em campo junto** (ela é 1 carta entre 99 e custa `{3}{B}`; raciocinado: o ganho real fica uma fração disso).
+- **Spellbook** (`dados/spellbook_tergrid.json`; nomes resolvidos, controle positivo Thassa's Oracle + Demonic Consultation apareceu, controles de corte derrubaram Ascension + Mindcrank e Altar of Dementia + Great Henge): Tergrid no lugar de Negate / Strip Mine / Yavimaya Hollow / Cold-Eyed Selkie → base 2 combos, **2 em todos**, **0 novo, 0 some**, 0 combo "quase" com Tergrid.
+- **Bracket:** a Tergrid é **Game Changer** (campo `game_changer` do Scryfall); a lista passa de 1 (Fierce Guardianship) para 2. O limite de Game Changers por Bracket eu **não reli** no texto oficial hoje.
+
+**Contra os motores do deck (Regra #4, raciocinado):** mill (não aciona a frente); contadores (a frente é só mais um corpo 4/5 que recebe contador, sem trample); rad/perda de vida (só a Lantern, se o alvo preferir perder vida); crime (Lantern, teto acima); Kozilek (Annihilator 4 + Tergrid em campo reanimaria os 4 permanentes não-ficha sacrificados, mas em ≤ ~2% das partidas; o Kozilek não tem haste, então só ataca no turno seguinte ao da conjuração). **Eu não recomendo incluí-la por causa do mill** (nenhum dos números acima sustenta isso). Se a ideia é a Tergrid contra mesas reais com fetchland, Treasure e descarte, essa é uma decisão de mesa que este goldfish não mede. Nada foi cortado ou adicionado.
+
+**Medido × raciocinado × NÃO verificado:** medido = enumeração, frequência do Kozilek, teto do Deepmuck, Spellbook, `game_changer`. Raciocinado = a leitura do oráculo (mill ≠ sacrifício/descarte), o valor da Lantern, a recomendação. **Não verificado** = um A/B pareado da Tergrid (exigiria implementar a frente e o verso e uma chave `TERGRID_OPP_CHOICE` com o teto "o oponente sempre perde 3 de vida" e o piso "sempre sacrifica/descarta"), o comportamento de oponentes reais e o limite de Game Changers do Bracket.

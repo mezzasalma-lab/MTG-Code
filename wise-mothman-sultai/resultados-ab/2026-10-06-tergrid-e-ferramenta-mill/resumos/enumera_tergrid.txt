@@ -1,0 +1,37 @@
+cartas distintas lidas: 91 (> 0)
+
+== oponente/jogador-alvo SACRIFICA: 2 cartas
+  - Altar of Dementia: Sacrifice a creature: Target player mills cards equal to the sacrificed creature's power.
+  - Kozilek, Butcher of Truth: Annihilator 4 (Whenever this creature attacks, defending player sacrifices four permanents of their choice.)
+
+== oponente DESCARTA: 0 cartas
+
+== annihilator: 1 cartas
+  - Kozilek, Butcher of Truth: Annihilator 4 (Whenever this creature attacks, defending player sacrifices four permanents of their choice.)
+
+== 'discard' em qualquer lugar: 5 cartas
+  - Boseiju, Who Endures: Channel — {1}{G}, Discard this card: Destroy target artifact, enchantment, or nonbasic land an opponent controls. That player may search their library
+  - Bramble Familiar // Fetch Quest: {1}{G}, {T}, Discard a card: Return this creature to its owner's hand. // Mill seven cards. Then put a creature, enchantment, or land card from among 
+  - Six: During your turn, nonland permanent cards in your graveyard have retrace. (You may cast permanent cards from your graveyard by discarding a land card 
+  - Takenuma, Abandoned Mire: Channel — {3}{B}, Discard this card: Mill three cards, then return a creature or planeswalker card from your graveyard to your hand. This ability cost
+  - Zagoth Triome: Cycling {3} ({3}, Discard this card: Draw a card.)
+
+== 'sacrifice' em qualquer lugar: 15 cartas
+  - Altar of Dementia: Sacrifice a creature: Target player mills cards equal to the sacrificed creature's power.
+  - An Offer You Can't Refuse: Counter target noncreature spell. Its controller creates two Treasure tokens. (They're artifacts with "{T}, Sacrifice this token: Add one mana of any 
+  - Basking Broodscale: Whenever one or more +1/+1 counters are put on this creature, you may create a 0/1 colorless Eldrazi Spawn creature token with "Sacrifice this token: 
+  - Cankerbloom: {1}, Sacrifice this creature: Choose one —
+  - Fabled Passage: {T}, Sacrifice this land: Search your library for a basic land card, put it onto the battlefield tapped, then shuffle. Then if you control four or mor
+  - Glen Elendra Archmage: {U}, Sacrifice this creature: Counter target noncreature spell.
+  - Kozilek, Butcher of Truth: Annihilator 4 (Whenever this creature attacks, defending player sacrifices four permanents of their choice.)
+  - Misty Rainforest: {T}, Pay 1 life, Sacrifice this land: Search your library for a Forest or Island card, put it onto the battlefield, then shuffle.
+  - Polluted Delta: {T}, Pay 1 life, Sacrifice this land: Search your library for an Island or Swamp card, put it onto the battlefield, then shuffle.
+  - Soul-Guide Lantern: {T}, Sacrifice this artifact: Exile each opponent's graveyard.
+  - Strip Mine: {T}, Sacrifice this land: Destroy target land.
+  - The Gitrog Monster: At the beginning of your upkeep, sacrifice The Gitrog Monster unless you sacrifice a land.
+  - Urza's Saga: (As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)
+  - Verdant Catacombs: {T}, Pay 1 life, Sacrifice this land: Search your library for a Swamp or Forest card, put it onto the battlefield, then shuffle.
+  - Waterlogged Grove: {1}, {T}, Sacrifice this land: Draw a card.
+
+== Game Changers na lista atual (campo `game_changer` do Scryfall): 1: ['Fierce Guardianship']
+Tergrid game_changer: True

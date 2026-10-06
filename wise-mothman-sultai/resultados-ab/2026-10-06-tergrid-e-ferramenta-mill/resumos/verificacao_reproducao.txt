@@ -1,0 +1,7 @@
+IGUAL  tabela padrao refeita so' do bruto
+IGUAL  tabela resiliencia refeita so' do bruto
+IGUAL  bruto da resiliencia RE-SIMULADO (PYTHONHASHSEED=777)
+IGUAL  texto da resiliencia re-simulado (inclui auto-verificacao)
+IGUAL  frequencia do annihilator re-simulada (10.000 x 2 modos)
+IGUAL  teto Lantern->crime->Deepmuck re-simulado (5.000 x 2 modos)
+6 iguais, 0 diferentes

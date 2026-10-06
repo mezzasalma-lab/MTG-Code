@@ -1,6 +1,6 @@
 # The Wise Mothman — log do goldfish (simulador `mothman_goldfish_v1.py`)
 
-> **Dados brutos, scripts e como refazer cada tabela:** `resultados-ab/2026-10-05-ab-pacote-kozilek-master/` (pacote, Master, Kozilek, controles) · `resultados-ab/2026-10-05-ab-kozilek-self-deck/` (Kozilek × estilo de jogo) · `resultados-ab/2026-10-05-simulador-v1-validacao/` (testes, varreduras, determinismo, regressão).
+> **Dados brutos, scripts e como refazer cada tabela:** `resultados-ab/2026-10-05-ab-pacote-kozilek-master/` (pacote, Master, Kozilek, controles) · `resultados-ab/2026-10-05-ab-kozilek-self-deck/` (Kozilek × estilo de jogo) · `resultados-ab/2026-10-05-simulador-v1-validacao/` (testes, varreduras, determinismo, regressão) · `resultados-ab/2026-10-06-tergrid-e-ferramenta-mill/` (ferramenta de mill nos oponentes + Tergrid).
 > Auditoria cláusula-a-cláusula: `checklist-oraculo.md`. Simulador no commit `91b1a3d` (código congelado durante as baterias).
 > **Premissas e o que NÃO se mede:** mesa de 4 com **3 oponentes passivos** (sem tabuleiro, todo atacante conecta; mill/vida/rad/biblioteca deles são reais; `OPP_TARGET_PROB` 0,7 para efeitos que precisam de alvo); a IA do jogador é uma heurística declarada (checklist §5), **evidência de apoio, não a fonte da verdade** (Regra #5 de `CLAUDE.md`). Todos os números abaixo são paridos por semente, com IC95%; "*" = a diferença excede o IC.
 
@@ -67,3 +67,17 @@ Controle positivo do medidor de deck-out: guarda desligada → `self_lost` +4,85
 ## 5. O que NÃO foi feito (Regra #7)
 
 Cartas Tier 2 (Terrasymbiosis, Corpsejack, Loading Zone, Mutational Advantage, Contentious Plan, Tekuthal, Lo and Li, Oko, Grist, Trystan, Rancor, Biosynthic Burst, Drix, Thrummingbird, Vraska) **não** implementadas; oponentes reais/politicas de mesa; Commander Spellbook **não** foi rodado de novo (nenhuma carta foi trocada na lista); o corte do Master não foi decidido pelo usuário.
+
+## 6. Ferramenta de mill nos oponentes (2026-10-06)
+
+`python3 ferramentas/mill_oponentes.py -n 5000 [--modo resiliencia] -v base -v pacote5 -v "meu:Negate=>The Master of Lake-town"` (uso completo no cabeçalho do arquivo). Mostra por turno, por fonte e "o que o mill rende", e com 2+ variantes a diferença pareada com IC95%. Dados brutos, tabelas e verificação: `resultados-ab/2026-10-06-tergrid-e-ferramenta-mill/` (6 de 6 saídas idênticas no `cmp`).
+**Medido (N = 5.000, mesma semente; padrão, com a resiliência entre parênteses; combina com o §1, N = 10.000):**
+
+- **83,9 cartas milladas dos oponentes por partida (68,7)**, 50,7 não-terreno (42,1). Só **30%** da biblioteca de cada oponente está milada em T12 (25%); o mill concentra-se em T6–T8 (14,4 / 19,8 / 16,9 cartas por rodada nos 3 oponentes, padrão).
+- **Fontes (cartas/partida, padrão):** Mindcrank 18,8 · rad 13,1 · Altar of the Brood 11,9 · Psychic Corrosion 11,9 · Ruin Crab 9,3 · Mesmeric Orb 4,1 · Undead Alchemist 4,1 · combo Ascension 3,0 · Ashiok 2,6 · Deepmuck 1,5 · Zellix 1,1 · Memory Erosion 1,0 · Altar of Dementia 0,9 · Konrad 0,6 · Didn't Say Please 0,2. Na resiliência o rad passa a primeiro (16,0) e o Mindcrank cai para 13,0.
+- **O mill é motor de contadores e de rad, não a forma de matar:** 0,10 oponente por partida sai por biblioteca vazia (0,06); pelo menos 1 oponente decka em **6,2%** das partidas (4,1%). Os 2,9 oponentes eliminados saem por perda de vida (2,50) e comandante (0,26). Mesa limpa até T8: 51,4% (24,1%) · T10: 85,3% (58,6%).
+- **Pareado (padrão, diferença sobre a lista atual; * = excede o IC):** pacote de 5 trocas: cartas milladas −1,0 ± 2,7 (sem efeito), rad +1,5 cartas (proliferate), mesa limpa T8 +4,3 ± 1,9 pontos *; **pacote + Master ← Negate: +14,7 ± 2,8 cartas** (o Master sozinho responde por +13,8) *; Bruvac sozinho +2,3 ± 2,2 (Mindcrank +1,0); sem o embaralhar do Kozilek −0,6 ± 0,5 (0,7%, efeito colateral: o Kozilek não é fonte de mill do oponente). Resiliência, pacote + Master: +13,5 ± 2,4 cartas *.
+- **Achados da ferramenta (corrigidos antes de arquivar, não afetam os brutos):** a ordem de desempate de uma linha dependia de `PYTHONHASHSEED`; e a soma por fonte não fechava com o total (80,9 contra 83,9) porque o loop do combo Ascension + Mindcrank mila a biblioteca inteira fora de `mill_event`. Agora há a linha `ascension_loop` e uma asserção de que a soma das fontes é o total.
+- **Não verificado / limites:** oponentes passivos (sem tabuleiro, sem escolha, sem interação com o mill: um oponente real com Bruvac na mesa ou fetchland muda os números); a ferramenta mede mill de oponente, não o auto-mill (`self_lost`, §2).
+
+**Tergrid (candidata):** não implementada no motor. Oráculo + rulings + enumeração por script + Spellbook + tetos medidos em `candidatas-pos-eoe.md` §12: o mill **não** dispara a Tergrid (só sacrifício/descarte do oponente); a lista tem 1 fonte de sacrifício (Kozilek, ataca em 2% das partidas) e 0 de descarte.

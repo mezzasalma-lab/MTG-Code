@@ -1,0 +1,4 @@
+modo padrao: N=5000 | Deepmuck em campo em 14.70% das partidas: 2382 turnos-com-Deepmuck, dos quais 1358 SEM crime (57.0%) = 0.272 turnos/partida em que a Lantern teria espaco (3 cartas x oponentes vivos cada)
+modo padrao: Freestrider em campo em 13.56% das partidas: 2071 turnos-com-Freestrider, dos quais 1182 SEM crime (57.1%)
+modo resiliencia: N=5000 | Deepmuck em campo em 15.90% das partidas: 2217 turnos-com-Deepmuck, dos quais 1418 SEM crime (64.0%) = 0.284 turnos/partida em que a Lantern teria espaco (3 cartas x oponentes vivos cada)
+modo resiliencia: Freestrider em campo em 14.78% das partidas: 2190 turnos-com-Freestrider, dos quais 1453 SEM crime (66.3%)
