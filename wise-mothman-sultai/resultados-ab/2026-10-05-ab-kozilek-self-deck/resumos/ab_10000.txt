@@ -1,0 +1,257 @@
+LOTE N=10000 sementes 3000000..3009999, 12 turnos, modo padrao
+
+[K_sem_embaralhar - base] N=10000 | partidas com resultado IDENTICO ao da base: 7258 (72.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *self_lost                                    0.0329       0.0573      +0.0244 ±0.0036  
+  *decked                                       0.0329       0.0573      +0.0244 ±0.0036  
+  *cleared_T8                                   0.5073       0.5019      -0.0054 ±0.0029  
+  *cleared_T10                                  0.8497       0.8282      -0.0215 ±0.0036  
+  *opps_eliminated_total                        2.8620       2.8336      -0.0284 ±0.0055  
+  *library_min                                 50.0767      47.5015      -2.5752 ±0.1800  
+  *library_at_end                              51.8723      47.4125      -4.4598 ±0.2407  
+  *kozilek_shuffles_total                       0.3580       0.0000      -0.3580 ±0.0143  
+   kozilek_cast_turn__nunca                     0.9597       0.9586      -0.0011 ±0.0015  
+  *draws_total                                 26.3049      24.9065      -1.3984 ±0.1931  
+  *cards_milled_self_total                     16.8011      16.4991      -0.3020 ±0.0968  
+  *decked_turn__nunca                           0.9671       0.9427      -0.0244 ±0.0036  
+   decked_turn__ate_T6                          0.0019       0.0022      +0.0003 ±0.0003  
+  *life_min                                    31.8539      31.9018      +0.0479 ±0.0245  
+   self_mill_blocked_total                      0.2765       0.2804      +0.0039 ±0.0220  
+  *len_graveyard                               15.5115      20.8789      +5.3674 ±0.2397  
+  *len_library                                 51.8723      47.4125      -4.4598 ±0.2407  
+  *cards_drawn_extra                           18.6017      17.2198      -1.3819 ±0.1917  
+  *turn_library_emptied                         0.3296       0.5580      +0.2284 ±0.0340  
+  *table_cleared_turn__nunca                    0.0741       0.0989      +0.0248 ±0.0038  
+  *len_hand                                    11.0201      10.1800      -0.8401 ±0.1282  
+  *muldrotha_plays                              0.8126       0.8876      +0.0750 ±0.0147  
+  *len_muldrotha_used                           0.4539       0.5124      +0.0585 ±0.0119  
+  *cleared_T9                                   0.7545       0.7387      -0.0158 ±0.0033  
+  *konrad_graveyard_leave_pings                 0.1653       0.0870      -0.0783 ±0.0163  
+  *recursion_events_total                       1.9370       2.0655      +0.1285 ±0.0273  
+  *opps_burned_total                            2.4996       2.4726      -0.0270 ±0.0059  
+  *icetill_replays                              0.8544       0.9044      +0.0500 ±0.0117  
+  *len_attackers_this_turn                      6.7612       6.4733      -0.2879 ±0.0676  
+
+[K_cortado_por_forest - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *self_lost                                    0.0329       0.0597      +0.0268 ±0.0057  
+  *decked                                       0.0329       0.0597      +0.0268 ±0.0057  
+  *cleared_T8                                   0.5073       0.5287      +0.0214 ±0.0134  
+  *cleared_T10                                  0.8497       0.8373      -0.0124 ±0.0099  
+   opps_eliminated_total                        2.8620       2.8497      -0.0123 ±0.0144  
+  *library_min                                 50.0767      46.7812      -3.2955 ±0.6064  
+  *library_at_end                              51.8723      46.6947      -5.1776 ±0.6025  
+  *kozilek_shuffles_total                       0.3580       0.0000      -0.3580 ±0.0143  
+  *kozilek_cast_turn__nunca                     0.9597       1.0000      +0.0403 ±0.0039  
+  *draws_total                                 26.3049      25.2891      -1.0158 ±0.5351  
+   cards_milled_self_total                     16.8011      16.7811      -0.0200 ±0.3887  
+  *decked_turn__nunca                           0.9671       0.9403      -0.0268 ±0.0057  
+   decked_turn__ate_T6                          0.0019       0.0016      -0.0003 ±0.0011  
+   life_min                                    31.8539      31.9289      +0.0750 ±0.1154  
+   self_mill_blocked_total                      0.2765       0.3114      +0.0349 ±0.0383  
+  *len_graveyard                               15.5115      21.1377      +5.6262 ±0.3752  
+  *len_library                                 51.8723      46.6947      -5.1776 ±0.6025  
+  *turn_library_emptied                         0.3296       0.5954      +0.2658 ±0.0543  
+  *konrad_graveyard_leave_pings                 0.1653       0.0774      -0.0879 ±0.0205  
+  *kozilek_cast_turn__ate_T6                    0.0027       0.0000      -0.0027 ±0.0010  
+  *table_cleared_turn__nunca                    0.0741       0.0937      +0.0196 ±0.0076  
+  *len_mana_by_turn                             8.7015       8.6093      -0.0922 ±0.0370  
+  *len_woodland_copy_as                         0.0242       0.0365      +0.0123 ±0.0050  
+  *shifting_woodland_copies                     0.0299       0.0459      +0.0160 ±0.0067  
+  *len_hand                                    11.0201      10.2569      -0.7632 ±0.3277  
+  *len_muldrotha_used                           0.4539       0.5149      +0.0610 ±0.0269  
+  *turn_id                                     29.8888      29.5457      -0.3431 ±0.1520  
+  *opp_turns_total                             21.1758      20.9124      -0.2634 ±0.1167  
+  *opp_spells_total                            18.8563      18.6072      -0.2491 ±0.1143  
+
+[guarda_desligada - base] N=10000 | partidas com resultado IDENTICO ao da base: 8699 (87.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *self_lost                                    0.0329       0.0814      +0.0485 ±0.0044  
+  *decked                                       0.0329       0.0814      +0.0485 ±0.0044  
+  *cleared_T8                                   0.5073       0.4913      -0.0160 ±0.0029  
+  *cleared_T10                                  0.8497       0.8102      -0.0395 ±0.0041  
+  *opps_eliminated_total                        2.8620       2.7970      -0.0650 ±0.0063  
+  *library_min                                 50.0767      49.5013      -0.5754 ±0.0564  
+  *library_at_end                              51.8723      51.1714      -0.7009 ±0.0903  
+  *kozilek_shuffles_total                       0.3580       0.3370      -0.0210 ±0.0075  
+   kozilek_cast_turn__nunca                     0.9597       0.9595      -0.0002 ±0.0005  
+  *draws_total                                 26.3049      26.5543      +0.2494 ±0.1068  
+  *cards_milled_self_total                     16.8011      16.6352      -0.1659 ±0.0683  
+  *decked_turn__nunca                           0.9671       0.9186      -0.0485 ±0.0044  
+  *decked_turn__ate_T6                          0.0019       0.0024      +0.0005 ±0.0004  
+  *life_min                                    31.8539      31.9011      +0.0472 ±0.0088  
+  *self_mill_blocked_total                      0.2765       0.0000      -0.2765 ±0.0279  
+  *table_cleared_turn__nunca                    0.0741       0.1198      +0.0457 ±0.0043  
+  *turn_library_emptied                         0.3296       0.7471      +0.4175 ±0.0399  
+  *len_hand                                    11.0201      11.8996      +0.8795 ±0.0873  
+  *mothman_attacks_total                        3.6314       3.5889      -0.0425 ±0.0042  
+  *opps_burned_total                            2.4996       2.4450      -0.0546 ±0.0060  
+  *rad_counters_got_self_total                  5.5182       5.4438      -0.0744 ±0.0082  
+  *cleared_T9                                   0.7545       0.7233      -0.0312 ±0.0037  
+  *len_opp_mill_by_source                       2.9250       2.8598      -0.0652 ±0.0080  
+  *opp_lost_life_this_turn                      0.9255       0.8921      -0.0334 ±0.0041  
+  *len_library                                 51.8723      51.1714      -0.7009 ±0.0903  
+  *crimes_total                                 3.6882       3.5951      -0.0931 ±0.0122  
+  *rad                                          1.7811       1.7255      -0.0556 ±0.0074  
+  *ashiok_uses                                  0.6300       0.6079      -0.0221 ±0.0031  
+  *cards_milled_opp_total                      84.1843      82.7624      -1.4219 ±0.2088  
+
+[guarda_desligada+K_sem_embaralhar - base] N=10000 | partidas com resultado IDENTICO ao da base: 6606 (66.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *self_lost                                    0.0329       0.1091      +0.0762 ±0.0055  
+  *decked                                       0.0329       0.1091      +0.0762 ±0.0055  
+  *cleared_T8                                   0.5073       0.4820      -0.0253 ±0.0040  
+  *cleared_T10                                  0.8497       0.7850      -0.0647 ±0.0053  
+  *opps_eliminated_total                        2.8620       2.7651      -0.0969 ±0.0082  
+  *library_min                                 50.0767      46.9381      -3.1386 ±0.1914  
+  *library_at_end                              51.8723      46.8525      -5.0198 ±0.2492  
+  *kozilek_shuffles_total                       0.3580       0.0000      -0.3580 ±0.0143  
+   kozilek_cast_turn__nunca                     0.9597       0.9585      -0.0012 ±0.0015  
+  *draws_total                                 26.3049      25.6254      -0.6795 ±0.1910  
+  *cards_milled_self_total                     16.8011      16.3520      -0.4491 ±0.1040  
+  *decked_turn__nunca                           0.9671       0.8909      -0.0762 ±0.0055  
+  *decked_turn__ate_T6                          0.0019       0.0027      +0.0008 ±0.0006  
+  *life_min                                    31.8539      31.9473      +0.0934 ±0.0253  
+  *self_mill_blocked_total                      0.2765       0.0000      -0.2765 ±0.0279  
+  *len_graveyard                               15.5115      20.4861      +4.9746 ±0.2325  
+  *len_library                                 51.8723      46.8525      -5.0198 ±0.2492  
+  *table_cleared_turn__nunca                    0.0741       0.1480      +0.0739 ±0.0056  
+  *turn_library_emptied                         0.3296       0.9957      +0.6661 ±0.0501  
+  *opps_burned_total                            2.4996       2.4120      -0.0876 ±0.0082  
+  *cleared_T9                                   0.7545       0.7037      -0.0508 ±0.0049  
+  *opp_lost_life_this_turn                      0.9255       0.8713      -0.0542 ±0.0054  
+  *mothman_attacks_total                        3.6314       3.5664      -0.0650 ±0.0072  
+  *rad_counters_got_self_total                  5.5182       5.4135      -0.1047 ±0.0139  
+  *proxy_damage_total                         153.0316     146.0478      -6.9838 ±0.9340  
+  *len_opp_mill_by_source                       2.9250       2.8526      -0.0724 ±0.0124  
+  *len_mana_by_turn                             8.7015       8.6700      -0.0315 ±0.0057  
+  *konrad_graveyard_leave_pings                 0.1653       0.0796      -0.0857 ±0.0163  
+  *mill_events_total                           41.4112      40.1833      -1.2279 ±0.2354  
+
+[guarda_desligada+K_cortado_por_forest - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *self_lost                                    0.0329       0.1164      +0.0835 ±0.0070  
+  *decked                                       0.0329       0.1164      +0.0835 ±0.0070  
+   cleared_T8                                   0.5073       0.5080      +0.0007 ±0.0135  
+  *cleared_T10                                  0.8497       0.7905      -0.0592 ±0.0104  
+  *opps_eliminated_total                        2.8620       2.7729      -0.0891 ±0.0156  
+  *library_min                                 50.0767      46.1296      -3.9471 ±0.6190  
+  *library_at_end                              51.8723      46.0471      -5.8252 ±0.6152  
+  *kozilek_shuffles_total                       0.3580       0.0000      -0.3580 ±0.0143  
+  *kozilek_cast_turn__nunca                     0.9597       1.0000      +0.0403 ±0.0039  
+   draws_total                                 26.3049      26.0979      -0.2070 ±0.5486  
+   cards_milled_self_total                     16.8011      16.6319      -0.1692 ±0.3859  
+  *decked_turn__nunca                           0.9671       0.8836      -0.0835 ±0.0070  
+   decked_turn__ate_T6                          0.0019       0.0024      +0.0005 ±0.0013  
+  *life_min                                    31.8539      31.9730      +0.1191 ±0.1151  
+  *self_mill_blocked_total                      0.2765       0.0000      -0.2765 ±0.0279  
+  *len_graveyard                               15.5115      20.6737      +5.1622 ±0.3628  
+  *turn_library_emptied                         0.3296       1.0640      +0.7344 ±0.0644  
+  *len_library                                 51.8723      46.0471      -5.8252 ±0.6152  
+  *table_cleared_turn__nunca                    0.0741       0.1478      +0.0737 ±0.0085  
+  *opp_lost_life_this_turn                      0.9255       0.8700      -0.0555 ±0.0082  
+  *konrad_graveyard_leave_pings                 0.1653       0.0736      -0.0917 ±0.0204  
+  *proxy_damage_total                         153.0316     145.8798      -7.1518 ±1.9826  
+  *opps_burned_total                            2.4996       2.4216      -0.0780 ±0.0226  
+  *cleared_T9                                   0.7545       0.7147      -0.0398 ±0.0119  
+  *len_mana_by_turn                             8.7015       8.5921      -0.1094 ±0.0370  
+  *finisher_resolved_total                      0.8066       0.7460      -0.0606 ±0.0213  
+  *len_cards_in_hand_by_turn                    7.8319       7.7219      -0.1100 ±0.0393  
+  *len_counters_on_board_by_turn                7.8319       7.7219      -0.1100 ±0.0393  
+  *len_creature_count_by_turn                   7.8319       7.7219      -0.1100 ±0.0393  
+
+[palantir_sempre_recusa+guarda_desligada - base] N=10000 | partidas com resultado IDENTICO ao da base: 7555 (75.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *self_lost                                    0.0329       0.0757      +0.0428 ±0.0044  
+  *decked                                       0.0329       0.0757      +0.0428 ±0.0044  
+  *cleared_T8                                   0.5073       0.4959      -0.0114 ±0.0038  
+  *cleared_T10                                  0.8497       0.8136      -0.0361 ±0.0044  
+  *opps_eliminated_total                        2.8620       2.8043      -0.0577 ±0.0067  
+  *library_min                                 50.0767      49.7220      -0.3547 ±0.1255  
+  *library_at_end                              51.8723      51.4044      -0.4679 ±0.1554  
+  *kozilek_shuffles_total                       0.3580       0.3330      -0.0250 ±0.0087  
+   kozilek_cast_turn__nunca                     0.9597       0.9586      -0.0011 ±0.0015  
+  *draws_total                                 26.3049      25.7306      -0.5743 ±0.1583  
+  *cards_milled_self_total                     16.8011      17.2911      +0.4900 ±0.1108  
+  *decked_turn__nunca                           0.9671       0.9243      -0.0428 ±0.0044  
+   decked_turn__ate_T6                          0.0019       0.0024      +0.0005 ±0.0005  
+  *life_min                                    31.8539      31.9724      +0.1185 ±0.0220  
+  *self_mill_blocked_total                      0.2765       0.0000      -0.2765 ±0.0279  
+  *palantir_draws                               0.2831       0.0000      -0.2831 ±0.0159  
+  *palantir_mills                               0.8848       1.7152      +0.8304 ±0.0685  
+  *palantir_life_loss_total                     1.8501       3.5381      +1.6880 ±0.1419  
+  *len_draws_by_source                          3.1877       3.0283      -0.1594 ±0.0135  
+  *len_casts_by_card                           12.6428      12.2656      -0.3772 ±0.0402  
+  *mothman_attacks_total                        3.6314       3.5642      -0.0672 ±0.0072  
+  *table_cleared_turn__nunca                    0.0741       0.1151      +0.0410 ±0.0045  
+  *rad_counters_got_self_total                  5.5182       5.4045      -0.1137 ±0.0126  
+  *turn_library_emptied                         0.3296       0.6905      +0.3609 ±0.0400  
+  *len_opp_mill_by_source                       2.9250       2.8338      -0.0912 ±0.0112  
+  *next_uid                                    34.3384      33.3180      -1.0204 ±0.1348  
+  *proxy_damage_total                         153.0316     146.6758      -6.3558 ±0.8533  
+  *cards_milled_opp_total                      84.1843      81.3381      -2.8462 ±0.4065  
+  *mothman_trigger_opp_mill                    19.9619      19.2032      -0.7587 ±0.1086  
+
+[palantir_sempre_recusa+guarda_desligada+K_sem_embaralhar - base] N=10000 | partidas com resultado IDENTICO ao da base: 5781 (57.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *self_lost                                    0.0329       0.1037      +0.0708 ±0.0055  
+  *decked                                       0.0329       0.1037      +0.0708 ±0.0055  
+  *cleared_T8                                   0.5073       0.4862      -0.0211 ±0.0047  
+  *cleared_T10                                  0.8497       0.7884      -0.0613 ±0.0054  
+  *opps_eliminated_total                        2.8620       2.7722      -0.0898 ±0.0084  
+  *library_min                                 50.0767      47.0802      -2.9965 ±0.2155  
+  *library_at_end                              51.8723      46.9952      -4.8771 ±0.2662  
+  *kozilek_shuffles_total                       0.3580       0.0000      -0.3580 ±0.0143  
+  *kozilek_cast_turn__nunca                     0.9597       0.9577      -0.0020 ±0.0020  
+  *draws_total                                 26.3049      24.8594      -1.4455 ±0.2154  
+  *cards_milled_self_total                     16.8011      17.0399      +0.2388 ±0.1281  
+  *decked_turn__nunca                           0.9671       0.8963      -0.0708 ±0.0055  
+  *decked_turn__ate_T6                          0.0019       0.0027      +0.0008 ±0.0006  
+  *life_min                                    31.8539      32.0141      +0.1602 ±0.0312  
+  *self_mill_blocked_total                      0.2765       0.0000      -0.2765 ±0.0279  
+  *len_graveyard                               15.5115      20.9887      +5.4772 ±0.2390  
+  *len_library                                 51.8723      46.9952      -4.8771 ±0.2662  
+  *palantir_draws                               0.2831       0.0000      -0.2831 ±0.0159  
+  *table_cleared_turn__nunca                    0.0741       0.1435      +0.0694 ±0.0056  
+  *turn_library_emptied                         0.3296       0.9424      +0.6128 ±0.0498  
+  *palantir_mills                               0.8848       1.7114      +0.8266 ±0.0684  
+  *palantir_life_loss_total                     1.8501       3.5198      +1.6697 ±0.1409  
+  *mothman_attacks_total                        3.6314       3.5428      -0.0886 ±0.0091  
+  *opp_lost_life_this_turn                      0.9255       0.8748      -0.0507 ±0.0055  
+  *cleared_T9                                   0.7545       0.7069      -0.0476 ±0.0051  
+  *len_draws_by_source                          3.1877       3.0322      -0.1555 ±0.0170  
+  *proxy_damage_total                         153.0316     144.0153      -9.0163 ±1.0178  
+  *rad_counters_got_self_total                  5.5182       5.3767      -0.1415 ±0.0164  
+  *opps_burned_total                            2.4996       2.4261      -0.0735 ±0.0090  
+
+[palantir_sempre_recusa+guarda_desligada+K_cortado_por_forest - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *self_lost                                    0.0329       0.1107      +0.0778 ±0.0069  
+  *decked                                       0.0329       0.1107      +0.0778 ±0.0069  
+   cleared_T8                                   0.5073       0.5115      +0.0042 ±0.0135  
+  *cleared_T10                                  0.8497       0.7952      -0.0545 ±0.0103  
+  *opps_eliminated_total                        2.8620       2.7791      -0.0829 ±0.0155  
+  *library_min                                 50.0767      46.2531      -3.8236 ±0.6148  
+  *library_at_end                              51.8723      46.1710      -5.7013 ±0.6111  
+  *kozilek_shuffles_total                       0.3580       0.0000      -0.3580 ±0.0143  
+  *kozilek_cast_turn__nunca                     0.9597       1.0000      +0.0403 ±0.0039  
+  *draws_total                                 26.3049      25.2942      -1.0107 ±0.5430  
+  *cards_milled_self_total                     16.8011      17.3658      +0.5647 ±0.3931  
+  *decked_turn__nunca                           0.9671       0.8893      -0.0778 ±0.0069  
+   decked_turn__ate_T6                          0.0019       0.0023      +0.0004 ±0.0012  
+  *life_min                                    31.8539      32.0357      +0.1818 ±0.1151  
+  *self_mill_blocked_total                      0.2765       0.0000      -0.2765 ±0.0279  
+  *palantir_draws                               0.2831       0.0000      -0.2831 ±0.0159  
+  *len_graveyard                               15.5115      21.2036      +5.6921 ±0.3669  
+  *turn_library_emptied                         0.3296       1.0083      +0.6787 ±0.0630  
+  *len_library                                 51.8723      46.1710      -5.7013 ±0.6111  
+  *table_cleared_turn__nunca                    0.0741       0.1436      +0.0695 ±0.0084  
+  *palantir_mills                               0.8848       1.7364      +0.8516 ±0.1257  
+  *palantir_life_loss_total                     1.8501       3.4580      +1.6079 ±0.2457  
+  *opp_lost_life_this_turn                      0.9255       0.8753      -0.0502 ±0.0081  
+  *konrad_graveyard_leave_pings                 0.1653       0.0732      -0.0921 ±0.0204  
+  *proxy_damage_total                         153.0316     144.1291      -8.9025 ±2.0209  
+  *finisher_resolved_total                      0.8066       0.7300      -0.0766 ±0.0212  
+  *len_draws_by_source                          3.1877       3.0378      -0.1499 ±0.0426  
+  *len_opp_mill_by_source                       2.9250       2.8155      -0.1095 ±0.0323  
+  *len_mana_by_turn                             8.7015       8.5883      -0.1132 ±0.0370  

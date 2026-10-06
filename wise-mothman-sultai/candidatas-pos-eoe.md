@@ -3,8 +3,8 @@
 > Pedido do usuário: *"analise em todas as coleções após Edge of Eternities o que podemos adicionar para melhorar o deck, especialmente em termos de mill e
 > proliferate. Algo que dê trample para o comandante também seria muito útil."* Auditoria do deck: `auditoria.md`.
 > Dados brutos, scripts e como refazer cada número: `resultados-ab/2026-10-05-candidatas-pos-eoe/LEIAME.md`.
-> **Não existe simulador deste deck.** Tudo abaixo é oráculo + rulings + Commander Spellbook + contas de probabilidade; onde é raciocínio, está marcado
-> **(raciocinado)**. Nada foi cortado ou adicionado na lista do usuário: são sugestões.
+> **O corpo deste documento (§1–§10) é anterior ao simulador** (oráculo + rulings + Commander Spellbook + contas de probabilidade; onde é raciocínio, está marcado
+> **(raciocinado)**). **O §0b abaixo traz o que o simulador mediu depois** (A/B pareado, `goldfish-log.md`). Nada foi cortado ou adicionado na lista do usuário: são sugestões.
 
 ## 0. Veredito
 
@@ -12,7 +12,7 @@
 
 > **Correção (2026-10-05, usuário): o Kozilek NÃO é corte.** Eu tinha proposto Kozilek ← Master tratando o "embaralha o cemitério na biblioteca" como custo (zera Six/Muldrotha/Icetill).
 > O usuário lembrou que ele é **o seguro contra morrer por auto-mill**: o deck tem 8+ fontes de auto-mill e nenhum outro efeito que devolva cartas à biblioteca. Sobra a pergunta
-> "a quantas partidas isso salva?", que só um simulador responde — e o simulador do Mothman (em construção) mede a taxa de self-deck com e sem Kozilek.
+> "a quantas partidas isso salva?", que só um simulador responde — **respondido no §0b**: ≈ 2,4 pontos de deck-out (5,7% → 3,3%) jogando cuidadoso.
 > O Master fica **sem corte designado** (candidatos a medir: Negate, Strip Mine, Yavimaya Hollow); números do pacote antigo de 6 trocas ficam em `resumos/` marcados como SUPERADOS.
 
 | entra | sai | por quê entra (motor do deck) | por quê sai |
@@ -31,8 +31,21 @@
 - **Mill:** o deck já tem 14 fontes de mill no oponente. O que faltava não era mais mill, era **multiplicador** (Bruvac) e **conversor de vida em mill** (Master of Lake-town).
 - **Trample no comandante:** o deck **já tem** Kodama + (qualquer contador ou a Swiftfoot Boots, que já está na lista). O que falta é redundância: **Garruk's Uprising**
   (não é criatura, então sobrevive a remoção de criatura).
-- **Mais do que o pacote?** Há mais 14 candidatas boas (§9). Eu **não** escolhi cortes para elas sem simulador: os próximos cortes menos ligados são Negate, Yavimaya Hollow e Strip Mine
+- **Mais do que o pacote?** Há mais 14 candidatas boas (§9). Eu **não** escolhi cortes para elas (o simulador mediu só o pacote de 5 e o Master, §0b): os próximos cortes menos ligados são Negate, Yavimaya Hollow e Strip Mine
   (os dois últimos são terreno e baixariam os 36 slots).
+
+## 0b. O que o simulador mediu (2026-10-05, depois de escrever o §0)
+
+Simulador: `mothman_goldfish_v1.py` (commit `91b1a3d`), 3 oponentes **passivos**, N = 10.000 pareado, IC95%; detalhes, tabelas e limites em `goldfish-log.md`; dados brutos e como refazer em `resultados-ab/2026-10-05-ab-pacote-kozilek-master/` e `…-ab-kozilek-self-deck/`.
+
+| pergunta | medido (modo padrão; resiliência na mesma direção, menor) |
+|---|---|
+| **Kozilek evita morrer por self-mill?** | **Sim.** Deck-out: 3,3% com ele, 5,7% com ele **sem o embaralhar** (+2,4 ± 0,4), 6,0% com ele cortado (+2,7 ± 0,6). Joga-se descuidado: 8,1% → 10,9% / 11,6%. Ele embaralha em 27% das partidas (milado/descartado) e é conjurado em só 4%. **Disciplina de biblioteca (+4,9 pontos) vale o dobro do Kozilek.** |
+| pacote de 5 trocas | mesa limpa até T8: **+4,6 ± 1,4** pontos (50,7% → 55,3%); até T10: +2,3 ± 0,9; deck-out −0,7 ± 0,5. Maior contribuição individual: Evolution Sage (+2,4) e Opulent Palace (+2,0); Bastion e Uprising não se distinguem de zero. As trocas **não se somam** (individuais somam +7,7). |
+| **Master of Lake-town** (sem designar o corte) | ← Negate **+3,6 ± 1,3** (T8) · ← Strip Mine +2,2 ± 1,2 · ← Yavimaya Hollow +1,8 ± 0,7. O corte menos custoso, **em velocidade**, é Negate; o simulador não mede o valor de uma contramágica contra oponente real. Combo da Ascension: 2,2% → 3,4–4,2% das partidas. |
+| **pacote de 5 + Master ← Negate** | T8 **+6,9 ± 1,4**, T10 +2,6 ± 0,9; resiliência T8 +3,6 ± 1,2. |
+
+**Limite do medidor:** a mesa passiva cai por perda de vida (rad + Mindcrank/Konrad/Palantír + combate), não pelo tamanho das criaturas: cortar o Hardened Scales moveu os contadores em −7,5 mas **não** a velocidade (+0,3 ± 1,4). Por isso **este A/B não valoriza cartas de crescer contadores** (Terrasymbiosis, Corpsejack, Mutational Advantage…), e a lista Tier 2 **não foi simulada**.
 
 ## 1. Escopo e método
 
@@ -112,7 +125,7 @@ Hoje: **3 efeitos "+1"** (Scales, Kami, Constrictor) e **0 dobradores**. Com um 
 | Doubling Season / Primal Vigor / Shang-Chi / Doc Samson / High Score / Solid Ground / Michelangelo | | | 28,36 · 6,09 · 0,65 · 0,28 · 1,25 · 1,78 · 2,35 — ver `candidatas_por_etiqueta.md`. Doc Samson e Solid Ground são "+1" + mana/corpo. |
 | Berta, Wise Extrapolator / Ant-Man, Colony Commander / Innkeeper's Talent | | | Berta (mana ao receber contador + token com X contadores), Ant-Man (Inseto por contador, 1×/turno), Innkeeper's Talent (nível 3 dobra contadores **em jogador também**, US$ 24). |
 
-Nenhum dos três principais entra no pacote **porque não achei um corte com o mesmo critério** (poucos vínculos de motor); eles são a primeira fila quando houver simulador ou quando o usuário apontar o corte.
+Nenhum dos três principais entra no pacote **porque não achei um corte com o mesmo critério** (poucos vínculos de motor); eles são a primeira fila quando o usuário apontar o corte (o simulador de hoje não os valoriza: ver o limite do medidor no §0b).
 
 ## 6. Terrenos
 
@@ -149,7 +162,7 @@ Ouroboroid + Sage of Hours = turnos infinitos; Psychic Corrosion + Peer into the
 
 Terrasymbiosis, Corpsejack Menace, Mutational Advantage, Contentious Plan, Lo and Li, Oko, Grist, Rancor, Biosynthic Burst, Tekuthal, Vraska, Drix Fatemaker, Trystan, Thrummingbird.
 Se o usuário escolher cortes, a ordem de menos ligados (por `motores_por_script.txt`): Negate (1, a 5ª contramágica), Strip Mine (1), Yavimaya Hollow (1), Plaza of Heroes (1), Wave Goodbye (2).
-**Eu não recomendo cortar terreno por mágica sem simulador** (36 slots, 14 efeitos de terreno).
+**Eu não recomendo cortar terreno por mágica** (o §0b mediu só trocas terreno-por-terreno e o Master por Strip Mine/Hollow) (36 slots, 14 efeitos de terreno).
 
 ## 10. Ainda não lançadas (spoiler de hoje; texto pode mudar; ver `dados/pre_lancamento_cartas.json.xz`)
 
@@ -165,5 +178,4 @@ Se o usuário escolher cortes, a ordem de menos ligados (por `motores_por_script
 - **Medido (script/API):** tudo de §1 (contagens, filtros, listas); auditoria; Spellbook (base, cada candidata, cada troca, pacote, controles); probabilidades hipergeométricas;
   curva e fontes antes/depois; rulings; preços (menor impressão do Scryfall).
 - **Raciocinado:** quanto cada carta "vale" no jogo (compra/Mothman/proliferate com os três "+1"); quais cartas saem; riscos de auto-mill; escolha entre Garruk's Uprising e as demais; ordem de substituições.
-- **Não verificado:** taxa de vitória, velocidade, necessidade de mana turno-a-turno, comportamento com oponentes reais, Bracket pelo texto oficial do dia, preço no mercado local, e **nenhum A/B** (não há simulador do Mothman).
-  Para fechar a ordem de corte com número, falta construir o simulador (Regra #1: todas as habilidades das 100 cartas) — não foi pedido hoje.
+- **Não verificado:** taxa de vitória, velocidade, necessidade de mana turno-a-turno, comportamento com oponentes reais, Bracket pelo texto oficial do dia, preço no mercado local, e, **para o §1–§10**, nenhum A/B (o §0b, escrito depois, mede o pacote de 5, o Master e o Kozilek no simulador; ver `goldfish-log.md` §5 para o que continua sem medir).

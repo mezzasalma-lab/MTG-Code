@@ -7,7 +7,7 @@ Cada linha: cláusula do oráculo → onde está no código → **status** → t
 ## 0. Escopo desta auditoria (Regra #7 — nada de "completo")
 
 **Varrido, com método:** (a) as 91 cartas distintas da lista + 6 candidatas do pacote, cláusula a cláusula contra o oráculo e as rulings, com teste dirigido por cláusula (134 testes, cada um confere que o número esperado é > 0); (b) conceitos compartilhados (§3); (c) ordem de fases do turno (§4, Regra #6);
-(d) varreduras mecânicas da Regra #10 (`resultados-ab/2026-10-05-simulador-v1-validacao/`): entrada de cada um dos 27 terrenos contra o oráculo, fetch real, jogar terreno ≠ magia, landfall em todo ponto de entrada (7.299 terrenos = 7.299 chamadas), estado por instância, AST de sets (5 candidatos lidos; 1 correção), determinismo (3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos: 0 divergentes); (e) regressão 20.000 × 2 modos sem exceção.
+(d) varreduras mecânicas da Regra #10 (`resultados-ab/2026-10-05-simulador-v1-validacao/`): entrada de cada um dos 29 terrenos contra o oráculo, fetch real, jogar terreno ≠ magia, landfall em todo ponto de entrada (7.275 terrenos = 7.275 chamadas), estado por instância, AST de sets (5 candidatos lidos; 1 correção), determinismo (3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos: 0 divergentes); (e) regressão 20.000 × 2 modos em 12 configurações sem exceção (código `91b1a3d`).
 **NÃO varrido:** caminhos de conjuração fora da mão além de Muldrotha/Six/aventura (não há outros no deck); interação entre **combinações** de redutores de custo (só The Great Henge reduz); política de jogo contra um humano real (a IA é uma heurística declarada, §5); oponentes reais (convenção do repositório: passivos no modo padrão; modo de resiliência é uma amostra estatística, não uma mesa real).
 
 ## 1. Convenções declaradas (premissas, não ausência de checagem)
@@ -33,7 +33,7 @@ Cada linha: cláusula do oráculo → onde está no código → **status** → t
 | | alvo = criatura de oponente (crime; Generous Patron compra) | `OPP_CREATURE_TARGETS` (padrão 0) | 📊 "target creatures" do oponente: tabuleiro não simulado | — |
 | (inerente) | rad counters: no main 1 de cada jogador, mila N; por cada não-terreno: −1 vida, −1 rad (CR 728.1) | `rad_trigger_self`, `rad_trigger_opp` (via `before_triggers`: a perda de vida vem antes dos gatilhos de "milled") | ✅ | `mothman_rad_oponente_no_main_dele`, `rad_proprio_milla_e_perde_vida`, `opp_rad_zero_nao_faz_nada` |
 
-### Terrenos (27 do `CARD_DB`; entrada de cada um conferida contra o oráculo por script: `varredura_mecanica.txt`, 0 divergências)
+### Terrenos (29 do `CARD_DB`, 27 da lista; entrada de cada um conferida contra o oráculo por script: `varredura_mecanica.txt`, 0 divergências)
 | carta | cláusulas | código | status | teste |
 |---|---|---|---|---|
 | Forest / Island / Swamp | `{T}: add` | `produces` | ✅ | varredura de entrada |
@@ -146,7 +146,7 @@ Cada linha: cláusula do oráculo → onde está no código → **status** → t
 | "carta vai ao meu cemitério" fora do mill | `put_card_into_graveyard` | Gitrog, Konrad, Kozilek | descarte, sacrifício, fetch, canal, ciclar |
 | "carta sai do meu cemitério" | `graveyard_leave` | Konrad | Kozilek, Witness, Takenuma, Smuggler's, Fetch Quest, Agadeem, Six, Muldrotha, Cauldron |
 | "contador posto" | `counter_modifiers` → `place_counters` → `on_counters_placed` | Scales, Kami, Constrictor, Danny, Fathom, Hollowmurk, Terrasymbiosis, Baloth, Broodscale, Witness | aditivos antes de multiplicadores (CR 616.1); "entra com contadores" também chama `on_counters_placed` |
-| "terreno entra" | `put_land_onto_battlefield` → `land_enters` → `landfall` | Crab, Icetill, Sage, Altar of the Brood, Bog, Saga | varredura: 7.299 entradas = 7.299 chamadas, por 8 origens |
+| "terreno entra" | `put_land_onto_battlefield` → `land_enters` → `landfall` | Crab, Icetill, Sage, Altar of the Brood, Bog, Saga | varredura: 7.275 entradas = 7.275 chamadas, por 8 origens |
 | "criatura" | `is_creature` (Veículo tripulado; cópia do Woodland) | tudo | — |
 | "modificada" | `is_modified` (contador de qualquer tipo, Equipamento) | Kodama | ruling 2022-02-18 |
 | "Inseto" / "legendário" | `eff_card(p).subtypes/legendary` | Swarmyard, Minamo, Cauldron, Plaza, canais | `legendary_colors` por pips |

@@ -1,6 +1,6 @@
 # The Wise Mothman — Sultai — auditoria (2026-10-05; escopo verificado e não verificado no §8)
 
-> Deck novo informado pelo usuário em 2026-10-05 (100 cartas, a montar; **ainda sem simulador** — ver "O que NÃO foi verificado").
+> Deck novo informado pelo usuário em 2026-10-05 (100 cartas; **o simulador foi construído depois desta auditoria** — `mothman_goldfish_v1.py`, `goldfish-log.md`; esta auditoria é anterior a ele e não foi reescrita).
 > Lista: `lista.md` (nomes reais do Scryfall; original do usuário em `lista-original-usuario.txt`; nomes de capa em `nomes-de-capa.md`).
 > Candidatas pós-EOE: `candidatas-pos-eoe.md`. Dados brutos, scripts e como refazer tudo:
 > `resultados-ab/2026-10-05-candidatas-pos-eoe/LEIAME.md`.
@@ -37,7 +37,7 @@
   Shifting Woodland sem Forest. **Pagam vida:** Misty/Delta/Verdant (1), Waterlogged Grove (1 por uso), shocks (2), Agadeem (3).
 - **Triagem de pips (NÃO é necessidade turno-a-turno, Regra 8):** cartas que exigem U = 21, B = 11, G = 29; com custo ≤ 2: U 6, B 4, G 13.
   Razão fontes/cartas: U 0,76 · B 1,45 · G 0,62. **(raciocinado)** G e U são as cores apertadas e B tem sobra: trocar um terreno só-B (Bojuka Bog) por
-  um terreno G/U ou tricolor vai na direção certa. Não medido turno-a-turno (sem simulador).
+  um terreno G/U ou tricolor vai na direção certa. Não medido turno-a-turno na época desta auditoria (o simulador veio depois).
 - Mesmo com 36 slots, o deck tem muita razão de ser **land-heavy**: 14 efeitos além da jogada normal botam terreno em campo (§5). Não recomendo cortar terreno.
 
 ## 3. Curva (não-terrenos, X = 0)
@@ -99,7 +99,7 @@ e no §7 de `candidatas-pos-eoe.md`.
      põe +1/+1 e compra, o −1/−1 se cancela). Com Syr Konrad em campo vira dano infinito.
 - **Probabilidade real (Regra 7)**, só compras normais, 99 cartas, 7 + 1 por turno: Ascension + Mindcrank **1,6% até T6 · 2,2% T8 · 2,8% T10 · 3,5% T12**;
   Altar + Henge + Glen Elendra **0,2% · 0,3% · 0,4% · 0,6%**. Nenhum é combo cedo: **não muda o Bracket**. (Antes disso: mana, 3 contadores na Ascension, sobreviver.)
-- O simulador **não executa** estes combos (não existe simulador deste deck): o valor deles aqui é só teórico.
+- Na época desta auditoria o deck não tinha simulador; **hoje o simulador executa** Ascension + Mindcrank/Master (≈ 2,2% das partidas, ver `goldfish-log.md` §1) e o laço Altar + Henge + Glen (limitado pela biblioteca, ≈ 0,7%).
 - **Armadilhas de Bracket** (Spellbook "quase": uma carta pós-EOE completaria um combo de 2 peças com uma carta que já está na lista) estão no §8 de `candidatas-pos-eoe.md`.
 
 ## 7. Riscos e fraquezas
@@ -111,15 +111,14 @@ Medido (por script/Spellbook): proliferate = 1 efeito; amplificadores = 3 (todos
   Os rad counters **seus** também milam e tiram vida (1 por não-terreno).
 - **Kozilek é o seguro contra morrer por auto-mill** (correção do usuário, 2026-10-05): ao ir ao cemitério de qualquer lugar (milado, descartado, morto, contramagicado) ele embaralha o cemitério
   na biblioteca. Num deck de auto-mill ele é milado com probabilidade ≈ cartas milladas/99 (15 → 15%, 30 → 30%, 45 → 45%, 60 → 61%), justamente quando o risco de decking sobe. O custo (zera Six/Muldrotha/Icetill/Agatha)
-  existe, mas é o preço do seguro. **Não é corte.** Quanto ele salva é medido no simulador (`../mothman_goldfish_v1.py`, taxa de self-deck com/sem Kozilek).
+  existe, mas é o preço do seguro. **Não é corte.** Quanto ele salva foi medido no simulador (`mothman_goldfish_v1.py`): o embaralhar tira ≈ 2,4 pontos de 5,7% de deck-out (jogando cuidadoso) — `goldfish-log.md` §2.
 - **Proteção do comandante**: Swiftfoot Boots (hexproof), Heroic Intervention, Smuggler's Surprise (só poder ≥ 4), Glen Elendra (contra mágica). Nada contra varredor que exila / −X/−X
   além dos counters do próprio deck.
 - **Dois pontos únicos de falha**: Kodama (trample) e Hardened Scales/Constrictor/Kami (amplificação) — redundância baixa.
 
 ## 8. O que NÃO foi verificado (Regra 7: escopo declarado, nada de "completo")
 
-- **Sem simulador.** Nada aqui é taxa de vitória, turno médio, nem "colocar a carta X melhora Y%". Regra 10 da skill manda rodar o simulador do deck antes de recomendar corte/troca;
-  não existe simulador do Mothman — **as trocas propostas em `candidatas-pos-eoe.md` são raciocínio sobre oráculo + motores + Spellbook + probabilidade, não A/B medido.**
+- **Esta auditoria é anterior ao simulador.** Nada nela é taxa de vitória nem "colocar a carta X melhora Y%"; as medições estão em `goldfish-log.md` (A/B pareado do pacote de 5 trocas, do Master e do Kozilek) e `candidatas-pos-eoe.md` §0b.
 - Pips: só triagem agregada; **não** foi calculada a necessidade de mana turno-a-turno.
 - Sem oponente real: rad counters/mill dos oponentes, bloqueios e remoção deles não entram.
 - Bracket: tabela da skill, não o texto oficial do dia.

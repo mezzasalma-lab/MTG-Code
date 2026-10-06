@@ -1,0 +1,2 @@
+wise-mothman-sultai        padrao       N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
+wise-mothman-sultai        resiliencia  N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []

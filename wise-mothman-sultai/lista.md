@@ -1,6 +1,6 @@
 # The Wise Mothman — Sultai (mill + rad + contadores)
 
-> Lista informada pelo usuário em 2026-10-05 (deck a ser montado; ainda sem simulador).
+> Lista informada pelo usuário em 2026-10-05 (simulador construído em 2026-10-05: `mothman_goldfish_v1.py`; números em `goldfish-log.md`).
 > Nomes abaixo são os **reais** do Scryfall (resolvidos por set + nº de colecionador, Regra #2);
 > nomes de capa diferentes estão em `nomes-de-capa.md`. Lista original em `lista-original-usuario.txt`.
 

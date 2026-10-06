@@ -8,9 +8,11 @@
   OK  Fabled Passage                                          esperado_virado=False simulador_virado=False | {t}, sacrifice this land: search your library for a basic land card, put it onto the battl
   OK  Forest                                                  esperado_virado=False simulador_virado=False | ({t}: add {g}.)
   OK  Island                                                  esperado_virado=False simulador_virado=False | ({t}: add {u}.)
+  OK  Karn's Bastion                                          esperado_virado=False simulador_virado=False | {t}: add {c}. / {4}, {t}: proliferate. (choose any number of permanents and/or players, then
   OK  Minamo, School at Water's Edge                          esperado_virado=False simulador_virado=False | {t}: add {u}. / {u}, {t}: untap target legendary permanent.
   OK  Misty Rainforest                                        esperado_virado=False simulador_virado=False | {t}, pay 1 life, sacrifice this land: search your library for a forest or island card, put
   OK  Morphic Pool                                            esperado_virado=False simulador_virado=False | this land enters tapped unless you have two or more opponents. / {t}: add {u} or {b}.
+  OK  Opulent Palace                                          esperado_virado=True  simulador_virado=True  | this land enters tapped. / {t}: add {b}, {g}, or {u}.
   OK  Overgrown Tomb                                          esperado_virado=False simulador_virado=False | ({t}: add {b} or {g}.) / as this land enters, you may pay 2 life. if you don't, it enters ta
   OK  Plaza of Heroes                                         esperado_virado=False simulador_virado=False | {t}: add {c}. / {t}: add one mana of any color. spend this mana only to cast a legendary spe
   OK  Polluted Delta                                          esperado_virado=False simulador_virado=False | {t}, pay 1 life, sacrifice this land: search your library for an island or swamp card, put
@@ -27,7 +29,7 @@
   OK  Watery Grave                                            esperado_virado=False simulador_virado=False | ({t}: add {u} or {b}.) / as this land enters, you may pay 2 life. if you don't, it enters ta
   OK  Yavimaya Hollow                                         esperado_virado=False simulador_virado=False | {t}: add {c}. / {g}, {t}: regenerate target creature.
   OK  Zagoth Triome                                           esperado_virado=True  simulador_virado=True  | ({t}: add {b}, {g}, or {u}.) / this land enters tapped. / cycling {3} ({3}, discard this card:
-  terrenos conferidos: 27 (> 0), divergencias: 0
+  terrenos conferidos: 29 (> 0), divergencias: 0
 ====================================================================================================
 1b) CONDICOES: Shifting Woodland com/sem Floresta; slowlands com 3/2/1 oponentes; choques com vida 40 e vida 8
   Woodland com Forest virado? False (esperado False)
@@ -49,7 +51,7 @@
   100 partidas, 0 contagens indevidas
 ====================================================================================================
 4) LANDFALL EM TODO PONTO DE ENTRADA: total de terrenos que entram x chamadas de landfall (300 partidas, 2 modos)
-  terrenos entraram: 7299 (> 0) | chamadas de landfall: 7299 | por origem: {'play': 4913, 'fetch': 608, 'kodama': 520, 'hedge_shredder': 400, 'ramp': 345, 'fabled_passage': 208, 'frogantua': 199, 'freestrider': 106}
+  terrenos entraram: 7275 (> 0) | chamadas de landfall: 7275 | por origem: {'play': 4888, 'fetch': 610, 'kodama': 537, 'hedge_shredder': 352, 'ramp': 348, 'fabled_passage': 227, 'frogantua': 213, 'freestrider': 100}
   OK: entradas == chamadas
 ====================================================================================================
 5) ESTADO POR NOME x POR INSTANCIA: o simulador marca terreno virado por uid/atributo do Permanent (nao por nome)?

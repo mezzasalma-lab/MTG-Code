@@ -1,0 +1,6 @@
+== wise-mothman-sultai/mothman_goldfish_v1.py  (atributos-set: 6) hits: 4
+   L 1529 for sobre set                  for col in eff_card(p).produces:
+   L 1779 for sobre set                  for col in eff_card(lp).produces:
+   L 2253 for sobre set                  for col in eff_card(p).produces & ANY_BGU:
+   L 3553 for sobre set                  for t in CARD_DB[c].types:
+TOTAL 41
