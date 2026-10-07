@@ -56,10 +56,12 @@ assert (FIM[6]["The Wise Mothman"] - FIM[5]["The Wise Mothman"], FIM[6]["Basking
 print(f"\nNo T7 o log mostra **as duas substituicoes** (11 + 1 + 1 = 13); no T6 mostra so' **uma** (5 + 1 = 6) e nenhuma ficha recebeu contador. Colocacoes com a conta errada (so' as que o log permite provar): "
       f"T5 Constrictor (-1), T5 Kami (-1), T6 Ouroboroid entrando (-1), T6 gatilho do Mothman (-1) e T6 combate (-1 em 5 criaturas, -2 na Broodscale, -{esp} na ficha). "
       "O gatilho do Mothman do T5 (+3 no Mothman) esta CERTO.")
-print("**Sem fonte pelas regras:** Gyre Sage ganhou +2 no T5 (1 -> 3): a evolve nao dispara com o Constrictor (2/3) nem com o Kami (1/1) entrando (a condicao 'if' e' checada na entrada, antes dos contadores do Henge), e so' houve 1 gatilho do Mothman, no Mothman.")
+print("**Fonte declarada pelo usuario (2026-10-07):** a Gyre Sage ganhou +2 no T5 (1 -> 3). A evolve nao dispara com o Constrictor (2/3) nem com o Kami (1/1) entrando (a condicao 'if' e' checada na entrada, antes dos contadores do Henge), e no meu ledger so' ha 1 gatilho do Mothman, no Mothman. "
+      "O usuario respondeu que os +2 vieram **do mill do rad e do Mothman** (gatilhos 'whenever one or more nonland cards are milled'). O Mothman da rad a CADA jogador ('each player gets a rad counter'), entao o mill do rad dos oponentes, que acontece nos turnos deles e que o log nao registra, tambem dispara o Mothman: e' a explicacao compativel, mas **de quem foi o mill nao consta no log** (inferencia, nao prova). O achado anterior 'sem fonte' esta RETIRADO.")
 # replay estrito (a partir do inicio de T5 do log, com as ESCOLHAS de alvo do usuario)
 print("\n### Como o erro se compoe (replay estrito, mesmas escolhas de alvo do usuario, base = fim do T4 do log)\n")
 M, G, B, C, K, O = 1, 1, 1, 0, 0, 0
+G += 2                                 # T5: +2 na Gyre Sage, fonte declarada pelo usuario (2026-10-07): gatilhos do Mothman por mill de rad, antes do Constrictor/Kami
 R = 0
 C = 1 + 1; R = 1                       # T5 Constrictor
 K = 1 + 2; R = 2                       # T5 Kami
@@ -69,7 +71,7 @@ O += 1 + R                             # T6 Fierce Guardianship -> Ouroboroid
 x6 = 1 + O
 M += x6 + R; G += x6 + R; B += x6 + R; C += x6 + R; K += x6 + R; O += x6 + R; ficha6 = x6 + R
 x7 = 1 + O
-print(f"- fim do T6 pelas regras: Mothman {M}, Gyre Sage {G} (sem o +2 sem fonte), Broodscale {B}, Constrictor {C}, Kami {K}, Ouroboroid {O}, ficha Spawn {ficha6}; no log: Mothman 10, Gyre Sage 9, Broodscale 6, Constrictor 7, Kami 8, Ouroboroid 10, ficha 0.")
+print(f"- fim do T6 pelas regras: Mothman {M}, Gyre Sage {G} (com o +2 declarado pelo usuario no T5), Broodscale {B}, Constrictor {C}, Kami {K}, Ouroboroid {O}, ficha Spawn {ficha6}; no log: Mothman 10, Gyre Sage 9, Broodscale 6, Constrictor 7, Kami 8, Ouroboroid 10, ficha 0.")
 print(f"- gatilho do T7 pelas regras: X = poder do Ouroboroid = 1 + {O} = {x7}, cada criatura +{x7 + R} (o log: X = 11, +13).")
 assert O > 10 and x7 > 11
 # ---------- 2. compras do Henge ----------

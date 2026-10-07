@@ -21,11 +21,11 @@ Colocacao de `n` contadores num permanente seu com Kami e/ou Constrictor em camp
 | T7 | combate: Ouroboroid (poder 11) poe X em cada criatura (so' o Ouroboroid foi registrado) | 11 | 1/1 | 13 | +13 (10 -> 23) | ok |
 
 No T7 o log mostra **as duas substituicoes** (11 + 1 + 1 = 13); no T6 mostra so' **uma** (5 + 1 = 6) e nenhuma ficha recebeu contador. Colocacoes com a conta errada (so' as que o log permite provar): T5 Constrictor (-1), T5 Kami (-1), T6 Ouroboroid entrando (-1), T6 gatilho do Mothman (-1) e T6 combate (-1 em 5 criaturas, -2 na Broodscale, -7 na ficha). O gatilho do Mothman do T5 (+3 no Mothman) esta CERTO.
-**Sem fonte pelas regras:** Gyre Sage ganhou +2 no T5 (1 -> 3): a evolve nao dispara com o Constrictor (2/3) nem com o Kami (1/1) entrando (a condicao 'if' e' checada na entrada, antes dos contadores do Henge), e so' houve 1 gatilho do Mothman, no Mothman.
+**Fonte declarada pelo usuario (2026-10-07):** a Gyre Sage ganhou +2 no T5 (1 -> 3). A evolve nao dispara com o Constrictor (2/3) nem com o Kami (1/1) entrando (a condicao 'if' e' checada na entrada, antes dos contadores do Henge), e no meu ledger so' ha 1 gatilho do Mothman, no Mothman. O usuario respondeu que os +2 vieram **do mill do rad e do Mothman** (gatilhos 'whenever one or more nonland cards are milled'). O Mothman da rad a CADA jogador ('each player gets a rad counter'), entao o mill do rad dos oponentes, que acontece nos turnos deles e que o log nao registra, tambem dispara o Mothman: e' a explicacao compativel, mas **de quem foi o mill nao consta no log** (inferencia, nao prova). O achado anterior 'sem fonte' esta RETIRADO.
 
 ### Como o erro se compoe (replay estrito, mesmas escolhas de alvo do usuario, base = fim do T4 do log)
 
-- fim do T6 pelas regras: Mothman 13, Gyre Sage 10 (sem o +2 sem fonte), Broodscale 10, Constrictor 11, Kami 12, Ouroboroid 15, ficha Spawn 9; no log: Mothman 10, Gyre Sage 9, Broodscale 6, Constrictor 7, Kami 8, Ouroboroid 10, ficha 0.
+- fim do T6 pelas regras: Mothman 13, Gyre Sage 12 (com o +2 declarado pelo usuario no T5), Broodscale 10, Constrictor 11, Kami 12, Ouroboroid 15, ficha Spawn 9; no log: Mothman 10, Gyre Sage 9, Broodscale 6, Constrictor 7, Kami 8, Ouroboroid 10, ficha 0.
 - gatilho do T7 pelas regras: X = poder do Ouroboroid = 1 + 15 = 16, cada criatura +18 (o log: X = 11, +13).
 
 ## 2. Compras do The Great Henge ("whenever a nontoken creature you control enters, put a +1/+1 counter on it and draw a card")
