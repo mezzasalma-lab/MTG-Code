@@ -1,2 +1,5 @@
 IGUAL  tabela_final.md (refeita so' dos brutos)
 re-simulando o lote 1 inteiro (sem editar o simulador!)...
+IGUAL  raw_final_1_10000.json.xz (bruto re-simulado identico)
+IGUAL  raw_final_1_10000_resiliencia.json.xz (bruto re-simulado identico)
+3/3 saidas byte a byte iguais

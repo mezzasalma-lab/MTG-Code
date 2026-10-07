@@ -101,6 +101,7 @@ e no §7 de `candidatas-pos-eoe.md`.
   Altar + Henge + Glen Elendra **0,2% · 0,3% · 0,4% · 0,6%**. Nenhum é combo cedo: **não muda o Bracket**. (Antes disso: mana, 3 contadores na Ascension, sobreviver.)
 - Na época desta auditoria o deck não tinha simulador; **hoje o simulador executa** Ascension + Mindcrank/Master (≈ 2,2% das partidas, ver `goldfish-log.md` §1) e o laço Altar + Henge + Glen (limitado pela biblioteca, ≈ 0,7%).
 - **Riverchurn Monument (2026-10-07):** não cria combo novo; 8 combos de 2 peças "quase" (Traumatize, Maddening Cacophony, Jidoor, Singularity Rupture, Cut Your Losses, Terisian Mindbreaker, Fleet Swallower, Kitsune's Technique), nenhuma na lista. Pasta: `resultados-ab/2026-10-07-riverchurn-monument/`.
+- **Jace, Wielder of Mysteries (2026-10-07):** não cria combo novo; 12 combos de 2 peças "quase" (Demonic Consultation, Divining Witch, Enter the Infinite, Griselbrand, Hermit Druid, Leveler, Mirror of Fate, Oath of Druids, Paradigm Shift, Phyrexian Devourer, Tainted Pact, Thought Lash), nenhuma peça na lista. Pasta: `resultados-ab/2026-10-07-jace-no-lugar-do-kozilek/`.
 - **Armadilhas de Bracket** (Spellbook "quase": uma carta pós-EOE completaria um combo de 2 peças com uma carta que já está na lista) estão no §8 de `candidatas-pos-eoe.md`.
 
 ## 7. Riscos e fraquezas

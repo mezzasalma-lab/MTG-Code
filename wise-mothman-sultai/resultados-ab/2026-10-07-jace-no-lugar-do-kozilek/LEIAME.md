@@ -49,3 +49,6 @@ Arquivo da Regra #8 (`CLAUDE.md`). Pergunta do usuário: *"Vale incluir no Mothm
 - Validação: `bash orquestracao/lanca_validacao.sh` (≈ 45 min em 4 núcleos; **não edite o simulador enquanto roda**).
 - Dados brutos: `bash descomprimir.sh`; índice: `python3 indice_dados.py > resumos/indice_dados.md`.
 - Verificação: `bash orquestracao/verificar_reproducao.sh [--tudo]` (**não edite o simulador enquanto roda**).
+
+## Verificação de reprodutibilidade (feita ANTES de declarar arquivado)
+`bash orquestracao/verificar_reproducao.sh --tudo` (2026-10-07): **3 de 3 saídas byte a byte iguais** (`cmp`): `resumos/tabela_final.md` refeito só dos `.json.xz` e, **re-simulando o lote 1 inteiro** (10.000 × 2 modos × 6 variantes) com o arquivo vivo numa pasta temporária, os dois brutos descomprimidos idênticos aos arquivados. **Não conferido:** o lote 2 (mesmo código e mesmo driver; só a tabela dele foi refeita dos brutos, dentro de `tabela_final.md`), a regressão, a bit-identidade e o determinismo (saídas das execuções originais, não re-executadas).
