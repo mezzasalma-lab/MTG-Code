@@ -15,7 +15,7 @@
 > "a quantas partidas isso salva?", que só um simulador responde — **respondido no §0b**: ≈ 2,4 pontos de deck-out (5,7% → 3,3%) jogando cuidadoso.
 > O Master fica **sem corte designado** (candidatos a medir: Negate, Strip Mine, Yavimaya Hollow); números do pacote antigo de 6 trocas ficam em `resumos/` marcados como SUPERADOS.
 
-> **Atualização 2026-10-07 — Riverchurn Monument** (pedido do usuário: inclusão + 5 cortes): `resultados-ab/2026-10-07-riverchurn-monument/LEIAME.md` e `goldfish-log.md` §11. Cortes sugeridos, do menos ao mais importante: Offer, Negate, Muldrotha, Toxic Deluge, Arcane Denial. **Conflito:** Offer e Negate já estão reservados neste documento (Garruk's Uprising e Master); o Monument mede +0,3 a +0,9 ponto de T8 por cima do pacote.
+> **Atualização 2026-10-07 — Riverchurn Monument** (pedido do usuário: inclusão + 5 cortes): `resultados-ab/2026-10-07-riverchurn-monument/LEIAME.md` e `goldfish-log.md` §11. Cortes sugeridos, do menos ao mais importante: Offer, Negate, Cold-Eyed Selkie, Toxic Deluge, Arcane Denial (a Muldrotha **saiu** da lista em 2026-10-07: é a recursão mais forte do deck, ver `goldfish-log.md` §11). **Conflito:** Offer, Negate e Selkie já estão reservados neste documento (Garruk's Uprising, Master e Evolution Sage); o Monument mede +0,3 a +0,9 ponto de T8 por cima do pacote.
 
 | entra | sai | por quê entra (motor do deck) | por quê sai |
 |---|---|---|---|
