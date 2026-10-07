@@ -717,3 +717,9 @@ feito 10000 resiliencia frank__arcane_denial
 feito 10000 resiliencia frank__toxic_deluge
 feito 10000 resiliencia frank__coldeyed_selkie
 feito 10000 resiliencia frank__didnt_say_please
+feito 10000 resiliencia frank__wave_goodbye
+feito 10000 resiliencia frank__tear_asunder
+feito 10000 resiliencia frank__kozilek_butcher_of_truth
+feito 10000 resiliencia master__tear_asunder
+feito 10000 resiliencia master__an_offer_you_cant_refuse
+feito 10000 resiliencia master__negate
