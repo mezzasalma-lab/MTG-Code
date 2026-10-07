@@ -23,3 +23,6 @@ feito 10000 padrao frank__negate
 feito 10000 padrao frank__arcane_denial
 feito 10000 padrao frank__toxic_deluge
 feito 10000 padrao frank__coldeyed_selkie
+feito 10000 padrao frank__didnt_say_please
+feito 10000 padrao frank__wave_goodbye
+feito 10000 padrao frank__tear_asunder
