@@ -1,40 +1,3 @@
-feito 2000 padrao base
-feito 2000 padrao fractured__an_offer_you_cant_refuse
-feito 2000 padrao fractured__negate
-feito 2000 padrao fractured__arcane_denial
-feito 2000 padrao fractured__toxic_deluge
-feito 2000 padrao fractured__coldeyed_selkie
-feito 2000 padrao fractured__didnt_say_please
-feito 2000 padrao scorch__an_offer_you_cant_refuse
-feito 2000 padrao scorch__negate
-feito 2000 padrao scorch__arcane_denial
-feito 2000 padrao scorch__toxic_deluge
-feito 2000 padrao scorch__coldeyed_selkie
-feito 2000 padrao scorch__didnt_say_please
-feito 2000 padrao tide__an_offer_you_cant_refuse
-feito 2000 padrao tide__negate
-feito 2000 padrao tide__arcane_denial
-feito 2000 padrao tide__toxic_deluge
-feito 2000 padrao tide__coldeyed_selkie
-feito 2000 padrao tide__didnt_say_please
-feito 2000 padrao branching__an_offer_you_cant_refuse
-feito 2000 padrao branching__negate
-feito 2000 padrao branching__arcane_denial
-feito 2000 padrao branching__toxic_deluge
-feito 2000 padrao branching__coldeyed_selkie
-feito 2000 padrao branching__didnt_say_please
-feito 2000 padrao loading__an_offer_you_cant_refuse
-feito 2000 padrao loading__negate
-feito 2000 padrao loading__arcane_denial
-feito 2000 padrao loading__toxic_deluge
-feito 2000 padrao loading__coldeyed_selkie
-feito 2000 padrao loading__didnt_say_please
-feito 2000 padrao crystal__an_offer_you_cant_refuse
-feito 2000 padrao crystal__negate
-feito 2000 padrao crystal__arcane_denial
-feito 2000 padrao crystal__toxic_deluge
-feito 2000 padrao crystal__coldeyed_selkie
-feito 2000 padrao crystal__didnt_say_please
 LOTE N=2000 sementes 1000000..1001999, 12 turnos, modo padrao
 
 [fractured__an_offer_you_cant_refuse - base] N=2000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
@@ -1336,18 +1299,3 @@ LOTE N=2000 sementes 1000000..1001999, 12 turnos, modo padrao
   *len_counters_on_board_by_turn                7.7720       7.7375      -0.0345 ±0.0135  
   *len_creature_count_by_turn                   7.7720       7.7375      -0.0345 ±0.0135  
   *len_lands_in_play_by_turn                    7.7720       7.7375      -0.0345 ±0.0135  
-feito 2000 resiliencia base
-feito 2000 resiliencia fractured__an_offer_you_cant_refuse
-feito 2000 resiliencia fractured__negate
-feito 2000 resiliencia fractured__arcane_denial
-feito 2000 resiliencia fractured__toxic_deluge
-feito 2000 resiliencia fractured__coldeyed_selkie
-feito 2000 resiliencia fractured__didnt_say_please
-feito 2000 resiliencia scorch__an_offer_you_cant_refuse
-feito 2000 resiliencia scorch__negate
-feito 2000 resiliencia scorch__arcane_denial
-feito 2000 resiliencia scorch__toxic_deluge
-feito 2000 resiliencia scorch__coldeyed_selkie
-feito 2000 resiliencia scorch__didnt_say_please
-feito 2000 resiliencia tide__an_offer_you_cant_refuse
-feito 2000 resiliencia tide__negate
