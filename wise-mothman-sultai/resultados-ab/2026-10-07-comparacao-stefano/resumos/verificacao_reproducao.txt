@@ -1,1 +1,2 @@
 IGUAL  rank_triagem.txt (refeito so' dos brutos)
+IGUAL  tabela_final.md (refeita so' dos brutos)

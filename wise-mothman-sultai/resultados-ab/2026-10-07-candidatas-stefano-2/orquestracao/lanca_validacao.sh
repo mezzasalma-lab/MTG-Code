@@ -2,6 +2,7 @@
 # Validacao das 6 candidatas NO ARQUIVO VIVO: (1) bit-identidade 20.000 x 2 modos em 4 fatias de 5.000 (9.000.000..9.019.999), (2) regressao 20.000 x 2 modos das 4 variantes,
 # (3) determinismo entre processos (3 PYTHONHASHSEED x 1.500 sementes x 2 modos). Sinal: ../dados/validacao.done. NAO edite o simulador enquanto roda.
 cd "$(dirname "$0")"
+renice -n 10 -p $$ >/dev/null 2>&1
 : > ../resumos/bitident_20000.txt; : > ../resumos/log_validacao.txt
 for k in 0 1 2 3; do
   ( PYTHONHASHSEED=0 python3 bitident_c2.py 5000 $((9000000 + k * 5000)) > ../resumos/bitident_fatia_$k.txt 2>&1; echo "rc=$?" >> ../resumos/bitident_fatia_$k.txt ) &

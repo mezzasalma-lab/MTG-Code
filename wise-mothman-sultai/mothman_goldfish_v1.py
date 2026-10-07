@@ -247,11 +247,18 @@ add("Jace, Wielder of Mysteries", "{1}{U}{U}{U}", {"planeswalker"}, {"jace_wom"}
 add("Riverchurn Monument", "{1}{U}", {"artifact"}, {"riverchurn"})      # candidata de 2026-10-07 (oraculo ao vivo: resultados-ab/2026-10-07-riverchurn-monument)
 add("Agent Frank Horrigan", "{5}{B}{G}", {"creature"}, {"horrigan", "trample"}, 8, 6, legendary=True, subtypes={"Mutant", "Warrior"})      # candidata de 2026-10-07 (resultados-ab/2026-10-07-comparacao-stefano)
 add("The Master, Transcendent", "{1}{B}{G}{U}", {"artifact", "creature"}, {"master_t"}, 2, 4, legendary=True, subtypes={"Mutant"})        # candidata de 2026-10-07 (resultados-ab/2026-10-07-comparacao-stefano)
+add("Fractured Sanity", "{U}{U}{U}", {"sorcery"}, {"fractured_sanity"})        # candidatas de 2026-10-07 (lista do Stefano): resultados-ab/2026-10-07-candidatas-stefano-2
+add("Screeching Scorchbeast", "{4}{B}{B}", {"creature"}, {"scorchbeast", "flying", "menace"}, 5, 5, subtypes={"Bat", "Mutant"})
+add("Inexorable Tide", "{3}{U}{U}", {"enchantment"}, {"inex_tide"})
+add("Branching Evolution", "{2}{G}", {"enchantment"}, {"branching_evo"})
+add("Loading Zone", "{3}{G}", {"enchantment"}, {"loading_zone"})
+add("The Earth Crystal", "{2}{G}{G}", {"artifact"}, {"earth_crystal"}, legendary=True)
 add("Opponent Creature Card", "", {"creature"}, {"opp_card"}, 3, 3, subtypes={"Mutant"})   # ficticia: a carta de criatura de oponente que a Master levou (corpo 3/3 generico; volta ao cemiterio dele)
 
 # --- Fichas -----------------------------------------------------------------------
 add("Horror Token", "", {"creature"}, {"token"}, 1, 1, token=True, subtypes={"Horror"})
 add("Zombie Token", "", {"creature"}, {"token"}, 2, 2, token=True, subtypes={"Zombie"})
+add("Zombie Mutant Token", "", {"creature"}, {"token"}, 2, 2, token=True, subtypes={"Zombie", "Mutant"})
 add("Beast Token", "", {"creature"}, {"token"}, 4, 4, token=True, subtypes={"Beast"})
 add("Eldrazi Spawn Token", "", {"creature"}, {"token", "spawn"}, 0, 1, token=True, subtypes={"Eldrazi", "Spawn"})
 add("Construct Token", "", {"artifact", "creature"}, {"token", "construct"}, 0, 0, token=True, subtypes={"Construct"})
@@ -285,6 +292,7 @@ class Permanent:
     base_pt: Optional[tuple] = None    # The Master, Transcendent: "base power and toughness 3/3" (sobrepoe CDA, ruling 2024-03-08)
     mutant: bool = False               # The Master: "It's a green Mutant ... It loses its other colors and creature types"
     owner_idx: int = 0                 # Opponent Creature Card: de qual oponente veio (volta ao cemiterio dele)
+    warped: bool = False               # Loading Zone conjurada com Warp {G}: exila no proximo end step
 
 
 @dataclass
@@ -468,6 +476,27 @@ class GameState:
     milled_mine: list = field(default_factory=list)            # [(nome, turn_id)]: criaturas MINHAS milladas (alvo legal da Master no mesmo turno)
     milled_opp_creatures: dict = field(default_factory=dict)   # {idx: (turn_id, n)}: criaturas milladas do oponente neste turn_id
     prolif_by_source: dict = field(default_factory=dict)
+    fractured_casts: int = 0
+    fractured_cycles: int = 0
+    scorch_enter_turn: Optional[int] = None
+    scorch_attacks: int = 0
+    scorch_rad_self: int = 0
+    scorch_token_events: int = 0
+    scorch_tokens: int = 0
+    scorch_skipped: int = 0
+    scorch_used: dict = field(default_factory=dict)            # uid -> turn_id em que criou os Zumbis ("only once each turn")
+    tide_enter_turn: Optional[int] = None
+    tide_triggers: int = 0
+    branching_enter_turn: Optional[int] = None
+    loading_enter_turn: Optional[int] = None
+    crystal_enter_turn: Optional[int] = None
+    crystal_activations: int = 0
+    crystal_counters: int = 0
+    crystal_discount_total: int = 0
+    warp_casts: int = 0
+    warp_exiled: int = 0
+    warp_recasts: int = 0
+    warp_exile: list = field(default_factory=list)             # [(nome, turno em que foi exilada)]: pode ser conjurada do exilio em turno posterior
     prolif_counters_by_source: dict = field(default_factory=dict)
     prolif_rad_by_source: dict = field(default_factory=dict)
     riverchurn_enter_turn: Optional[int] = None   # turno em que o Monument entrou em campo pela 1a vez (indicadores ate' T3..T6)
@@ -486,6 +515,7 @@ class GameState:
     six_retraces: int = 0
     icetill_replays: int = 0
     persist_returns: int = 0
+    persist_zero_deaths: int = 0
     combo_loops: int = 0
     wipes_cast: int = 0
     pending_denial_me: int = 0               # Arcane Denial: "You draw a card at the beginning of the next turn's upkeep"
@@ -1254,6 +1284,22 @@ def mill_event(state: GameState, parts: list, source: str = "", before_triggers=
             state.queen_triggered_this_turn = True
             draw_cards(state, 1, source="mirelurk_queen")
             place_counters(state, queens[0], 1, source="mirelurk_queen")
+    # --- Screeching Scorchbeast: "Whenever one or more nonland cards are milled, you may create that many 2/2 black Zombie Mutant creature tokens. Do this only once each turn." (qualquer jogador;
+    #     ruling: "you may" na resolucao: se nao criar, o gatilho volta a disparar; politica: crio quando o evento tem >= SCORCH_MIN_X cartas)
+    if nonland_total > 0:
+        for sb in perms_named(state, "Screeching Scorchbeast"):
+            if state.scorch_used.get(sb.uid) == state.turn_id:
+                continue
+            if nonland_total >= SCORCH_MIN_X:
+                state.scorch_used[sb.uid] = state.turn_id
+                state.scorch_token_events += 1
+                for _ in range(nonland_total):
+                    if state.game_over:
+                        break
+                    create_token(state, "Zombie Mutant Token")
+                    state.scorch_tokens += 1
+            else:
+                state.scorch_skipped += 1
     # --- Zellix: "Whenever a player mills one or more creature cards, you create a 1/1 black Horror creature token."
     if creature_cards > 0:
         for _ in range(count_named(state, "Zellix, Sanity Flayer")):
@@ -1366,7 +1412,8 @@ def counter_modifiers(state: GameState, perm: Permanent, kind: str):
         if artcre:
             plus += count_named(state, "Winding Constrictor") + count_named(state, "Ozolith, the Shattered Spire")
         if creature:
-            mult *= 2 ** (count_named(state, "Corpsejack Menace") + count_named(state, "Loading Zone") + count_named(state, "Primal Vigor") + count_named(state, "Shang-Chi, Martial Mentor"))
+            mult *= 2 ** (count_named(state, "Corpsejack Menace") + count_named(state, "Loading Zone") + count_named(state, "Primal Vigor") + count_named(state, "Shang-Chi, Martial Mentor")
+                           + count_named(state, "Branching Evolution") + count_named(state, "The Earth Crystal"))
         mult *= 2 ** count_named(state, "Doubling Season")
     else:
         if artcre:
@@ -1841,6 +1888,9 @@ def apply_etb(state: GameState, p: Permanent):
         state.horrigan_etb_prolifs += 1
         if HORRIGAN_PROLIF_TIMES > 0:
             proliferate(state, "horrigan_etb", times=HORRIGAN_PROLIF_TIMES)
+    for _tag, _campo in (("scorchbeast", "scorch_enter_turn"), ("inex_tide", "tide_enter_turn"), ("branching_evo", "branching_enter_turn"), ("loading_zone", "loading_enter_turn"), ("earth_crystal", "crystal_enter_turn")):
+        if _tag in t and getattr(state, _campo) is None:
+            setattr(state, _campo, state.turn)
     if "master_t" in t:
         # "When The Master enters, target player gets two rad counters."
         if state.master_enter_turn is None:
@@ -2003,10 +2053,14 @@ def remove_permanent(state: GameState, perm: Permanent, reason: str = "dies", sa
     if "persist" in perm.card.tags and not had_minus and name in state.graveyard:
         state.graveyard.remove(name)
         q = mk_perm(state, name)
-        q.ctr["minus1"] = 1 + count_named(state, "Winding Constrictor")      # Constrictor: +1 de cada tipo de contador
+        _pl, _mu = counter_modifiers(state, q, "-1/-1")
+        q.ctr["minus1"] = (1 + _pl) * _mu      # Constrictor: +1 de cada tipo de contador; Loading Zone: dobra (igual a 1 + Constrictor sem esse dobrador)
         state.battlefield.append(q)
         state.persist_returns += 1
         on_counters_placed(state, q, q.ctr["minus1"], "-1/-1", "persist")     # Hollowmurk Sultai / Danny: 'a counter is put on a creature you control' (de qualquer tipo)
+        if PERSIST_ZERO_TOUGHNESS_DIES and toughness(state, q) <= 0:
+            state.persist_zero_deaths += 1
+            remove_permanent(state, q, "dies")                                 # 0/0: morre como ESB, antes dos gatilhos de entrada (Henge ainda compra; o contador +1/+1 se perde)
         enter_permanent_triggers(state, q, from_cast=False)
 
 
@@ -2024,6 +2078,7 @@ CAST_PRIORITY = {
     "Walking Ballista": 48, "Agatha's Soul Cauldron": 58, "Altar of Dementia": 40, "Soul-Guide Lantern": 30, "Swiftfoot Boots": 45, "Ashiok, Dream Render": 63,
     "Palantír of Orthanc": 64, "Bloodchief Ascension": 60, "Altar of the Brood": 50, "Gyre Sage": 62, "Freestrider Lookout": 52,
     "Riverchurn Monument": 57, "Jace, Wielder of Mysteries": 66, "Agent Frank Horrigan": 71, "The Master, Transcendent": 67,
+    "Fractured Sanity": 64, "Screeching Scorchbeast": 70, "Inexorable Tide": 60, "Branching Evolution": 70, "Loading Zone": 58, "The Earth Crystal": 61,
     "Evolution Sage": 70, "Terrasymbiosis": 66, "Corpsejack Menace": 71, "Bruvac the Grandiloquent": 63, "The Master of Lake-town": 62, "Garruk's Uprising": 61,
 }
 FINISHERS = frozenset({"Kozilek, Butcher of Truth", "Rampant Frogantua", "Syr Konrad, the Grim", "Mindcrank", "Bloodchief Ascension"})
@@ -2040,6 +2095,8 @@ def effective_cost(state: GameState, name: str, x: int = 0, face: str = "front")
     g, pips = c.generic, c.pips
     if face == "adventure":                                  # Fetch Quest {5}{G}{G}
         g, pips = 5, (frozenset("G"), frozenset("G"))
+    elif face == "warp":                                     # Loading Zone: Warp {G}
+        g, pips = 0, (frozenset("G"),)
     if c.is_x and face != "adventure":
         g += x * c.x_mult
     if "commander" in c.tags:
@@ -2047,6 +2104,10 @@ def effective_cost(state: GameState, name: str, x: int = 0, face: str = "front")
     if "henge" in c.tags:
         red = max([power(state, p) for p in creatures(state)] + [0])
         g = max(0, g - red)
+    n_ec = count_named(state, "The Earth Crystal")
+    if n_ec and g > 0 and any("G" in pp for pp in pips):
+        # "Green spells you cast cost {1} less to cast." (ruling 2025-06-06: so' o generico do custo total; uma carta com pip hibrido {G/U} e' verde)
+        g = max(0, g - n_ec)
     return g, pips
 
 
@@ -2110,6 +2171,7 @@ def cast_commander(state: GameState) -> bool:
     state.commander_cast_count += 1
     state.commander_in_cz = False
     state.spells_cast_this_turn += 1
+    on_my_spell_cast(state, name)
     state.casts_by_card[name] = state.casts_by_card.get(name, 0) + 1
     if state.interaction_rng is not None and try_smart_opponent_counter(state):
         state.commander_countered_total += 1
@@ -2137,7 +2199,8 @@ def cast_card(state: GameState, name: str, x: int = 0, free: bool = False, face:
         if name in state.hand:
             state.hand.remove(name)
     state.spells_cast_this_turn += 1
-    key = name if face == "front" else name + " [aventura]"
+    on_my_spell_cast(state, name)
+    key = name if face == "front" else name + (" [warp]" if face == "warp" else " [aventura]")
     state.casts_by_card[key] = state.casts_by_card.get(key, 0) + 1
     resolve_spell(state, name, x=x, face=face, zone=zone)
     if name in FINISHERS and face == "front":
@@ -2170,6 +2233,9 @@ def resolve_spell(state: GameState, name: str, x: int = 0, face: str = "front", 
         return
     # permanente
     p = mk_perm(state, name)
+    if face == "warp":
+        p.warped = True
+        state.warp_casts += 1
     if "ballista" in tags:
         plus, mult = counter_modifiers(state, p, "+1/+1")
         p.counters = (x + plus) * mult if x > 0 else 0
@@ -2196,6 +2262,13 @@ def resolve_spell(state: GameState, name: str, x: int = 0, face: str = "front", 
 
 def resolve_instant_sorcery(state: GameState, name: str, x: int):
     tags = CARD_DB[name].tags
+    if "fractured_sanity" in tags:
+        # "Each opponent mills fourteen cards." (nao mira: nao e' crime) - UM evento de mill simultaneo (um gatilho do Mothman, uma do Scorchbeast...)
+        state.fractured_casts += 1
+        parts = [(o.idx, 14) for o in alive_opps(state)]
+        if parts:
+            mill_event(state, parts, source="fractured_sanity")
+        return
     if "natures_lore" in tags or "three_visits" in tags:
         t = forest_search(state)
         if t:
@@ -2568,6 +2641,8 @@ def castable_candidates(state: GameState, phase: str) -> list:
             continue
         if can_cast_name(state, name):
             cands.append((name, "hand", "front"))
+        elif "loading_zone" in tags and creatures(state) and can_pay(state, 0, (frozenset("G"),), c):
+            cands.append((name, "hand", "warp"))                  # Warp {G} (politica: so' quando o custo cheio nao cabe e ha criatura para receber contador)
         if "bramble" in tags and safe_self_mill(state, 7):
             g, pips = effective_cost(state, name, 0, "adventure")        # Fetch Quest {5}{G}{G}: mila 7 e poe criatura/encantamento/terreno em campo
             if can_pay(state, g, pips, c) and n_lands(state) >= 6:
@@ -2577,6 +2652,9 @@ def castable_candidates(state: GameState, phase: str) -> list:
     for name in state.adventure_exile:
         if can_cast_name(state, name):
             cands.append((name, "exile", "front"))
+    for name, t_exiled in state.warp_exile:
+        if t_exiled < state.turn and can_cast_name(state, name):
+            cands.append((name, "warpexile", "front"))             # Warp: "you may cast it from exile on a later turn" (custo cheio)
     for name, perm, slot in graveyard_cast_options(state):
         g, pips = effective_cost(state, name)
         if can_pay(state, g, pips, CARD_DB[name]):
@@ -2606,6 +2684,8 @@ def cast_score(state: GameState, name: str, zone: str, face: str = "front") -> f
         return 200.0
     if face == "adventure":
         return 58.0
+    if face == "warp":
+        return 44.0
     sc = float(CAST_PRIORITY.get(name, 20))
     c = CARD_DB[name]
     ramp = {"sol_ring", "natures_lore", "three_visits", "kami", "bramble", "gyre_sage", "henge"}
@@ -2634,7 +2714,7 @@ def cast_loop(state: GameState, phase: str = "main1"):
         for t in sorted(cands, key=lambda t: (-cast_score(state, t[0], t[1], t[2]), t[0], t[2])):
             name, zone, face = t
             sc = cast_score(state, name, zone, face)
-            g, pips = effective_cost(state, name, choose_x(state, name) if (CARD_DB[name].is_x and face != "adventure") else 0, "adventure" if face == "adventure" else "front")
+            g, pips = effective_cost(state, name, choose_x(state, name) if (CARD_DB[name].is_x and face != "adventure") else 0, face if face in ("adventure", "warp") else "front")
             if res and sc < 60 and available_mana(state, CARD_DB[name]) - g - len(pips) < res:
                 continue
             best = t
@@ -2650,9 +2730,17 @@ def execute_cast(state: GameState, best: tuple) -> bool:
     name, zone, face = best
     ok = False
     if zone == "hand":
-        ok = cast_card(state, name, x=choose_x(state, name) if CARD_DB[name].is_x else 0, zone="hand", face=face if face == "adventure" else "front")
+        ok = cast_card(state, name, x=choose_x(state, name) if CARD_DB[name].is_x else 0, zone="hand", face=face if face in ("adventure", "warp") else "front")
     elif zone == "cz":
         ok = cast_commander(state)
+    elif zone == "warpexile":
+        item = next(i for i in state.warp_exile if i[0] == name)
+        state.warp_exile.remove(item)
+        ok = cast_card(state, name, zone="exile")
+        if ok:
+            state.warp_recasts += 1
+        else:
+            state.warp_exile.append(item)
     elif zone == "exile":
         state.adventure_exile.remove(name)
         ok = cast_card(state, name, zone="exile")
@@ -3003,6 +3091,10 @@ def discard_to_hand_size(state: GameState):
 
 
 def end_step(state: GameState):
+    for _w in [q for q in state.battlefield if q.warped]:
+        state.battlefield.remove(_w)                                      # "Exile this permanent at the beginning of the next end step"
+        state.warp_exile.append((_w.card.name, state.turn))
+        state.warp_exiled += 1
     palantir_end_step(state)
     if state.game_over:
         return
@@ -3072,6 +3164,7 @@ def respond_to_opp_spell(state: GameState, o: Opp, noncreature: bool, mv: int) -
             pay_mana(state, g, pips, CARD_DB[name])
         state.hand.remove(name)
         state.spells_cast_this_turn += 1
+        on_my_spell_cast(state, name)
         if name == "Repulsive Mutation":
             tgt = max(creatures(state), key=lambda q: (counter_target_value(state, q), -q.uid))
             place_counters(state, tgt, xr, source="repulsive_mutation")
@@ -3404,6 +3497,65 @@ def act_master(state: GameState) -> bool:
     state.battlefield.append(q)
     enter_permanent_triggers(state, q, from_cast=False)
     return True
+
+
+PERSIST_ZERO_TOUGHNESS_DIES = True   # Glen Elendra volta do persist com tenacidade 0 (Constrictor: 2 contadores; Loading Zone: 2): morre (CR 704.5f). False = o 0/0 ficava em campo (antigo)
+SCORCH_MIN_X = 3             # Scorchbeast: cria os Zumbis no 1o evento de mill do turno com >= X cartas nao-terreno (senao espera: o gatilho volta)
+
+
+def on_my_spell_cast(state: GameState, name: str):
+    """"Whenever you cast a spell": Inexorable Tide ("proliferate"); o gatilho resolve ANTES da magia (ruling 2011-01-01). Chamada nos 4 pontos de conjuracao."""
+    for _ in range(count_named(state, "Inexorable Tide")):
+        state.tide_triggers += 1
+        proliferate(state, "inexorable_tide")
+
+
+def act_fractured_cycle(state: GameState) -> bool:
+    """Fractured Sanity: Cycling {1}{U}; "When you cycle this card, each opponent mills four cards." (resolve ANTES da compra, ruling 2021-06-18). Politica: cicla quando o UUU nao fecha
+    (menos de 3 fontes de {U} em campo) e ha mana de sobra; senao a conjuro (sorcery) no loop de conjuracao."""
+    if "Fractured Sanity" not in state.hand or not alive_opps(state) or state.game_over:
+        return False
+    if can_cast_name(state, "Fractured Sanity"):
+        return False
+    n_u = sum(1 for q in lands_in_play(state) if "U" in eff_card(q).produces)
+    if n_u >= 3 and state.turn < 9:
+        return False
+    if SELF_MILL_GUARD_ENABLED and library_budget(state) < 1:
+        return False
+    U = frozenset("U")
+    if not afford(state, 1, (U,)):
+        return False
+    spend(state, 1, (U,))
+    state.hand.remove("Fractured Sanity")
+    state.fractured_cycles += 1
+    put_card_into_graveyard(state, "Fractured Sanity", "hand")
+    mill_event(state, [(o.idx, 4) for o in alive_opps(state)], source="fractured_cycle")
+    if not state.game_over:
+        draw_cards(state, 1, source="cycling")
+    return True
+
+
+def act_earth_crystal(state: GameState) -> bool:
+    """The Earth Crystal: "{4}{G}{G}, {T}: Distribute two +1/+1 counters among one or two target creatures you control." (cada alvo recebe pelo menos 1; ruling 2025-06-06).
+    Dois alvos quando ha (cada um passa pelos amplificadores/dobradores), um so' se so' ha uma criatura."""
+    for c in perms_named(state, "The Earth Crystal"):
+        if c.tapped or not creatures(state):
+            continue
+        G = frozenset("G")
+        c.tapped = True
+        if not afford(state, 4, (G, G)):
+            c.tapped = False
+            continue
+        spend(state, 4, (G, G))
+        alvos = sorted(creatures(state), key=lambda q: (-counter_target_value(state, q), q.uid))[:2]
+        state.crystal_activations += 1
+        if len(alvos) == 1:
+            state.crystal_counters += place_counters(state, alvos[0], 2, source="earth_crystal")
+        else:
+            for q in alvos:
+                state.crystal_counters += place_counters(state, q, 1, source="earth_crystal")
+        return True
+    return False
 
 
 def jace_removal_roll(state: GameState):
@@ -4027,7 +4179,7 @@ def act_karns_bastion(state: GameState) -> bool:
 
 
 # --- Fim das acoes: prioridade --------------------------------------------------------------------------------
-ACTIONS = (act_saga_construct, act_ashiok, act_jace, act_master, act_cauldron, act_altar_loop, act_cauldron_minamo, act_zellix, act_zellix_minamo, act_ballista_ping, act_cankerbloom,
+ACTIONS = (act_saga_construct, act_ashiok, act_jace, act_master, act_fractured_cycle, act_earth_crystal, act_cauldron, act_altar_loop, act_cauldron_minamo, act_zellix, act_zellix_minamo, act_ballista_ping, act_cankerbloom,
            act_takenuma, act_boseiju, act_adapt, act_equip_boots, act_woodland, act_konrad, act_triome_cycle, act_waterlogged_grove, act_strip_mine,
            act_altar_finisher, act_lantern, act_ballista_pump)
 
@@ -4171,6 +4323,13 @@ def combat_step(state: GameState):
         if p not in state.battlefield:
             continue
         t = eff_card(p).tags
+        if "scorchbeast" in t:
+            # "Whenever this creature attacks, each player gets two rad counters." (eu tambem: Constrictor soma +1 nos MEUS)
+            state.scorch_attacks += 1
+            give_rad(state, 0, 2)
+            state.scorch_rad_self += 2
+            for o in alive_opps(state):
+                give_rad(state, o.idx, 2)
         if "horrigan" in t:
             # "Whenever Agent Frank Horrigan enters or attacks, proliferate twice." + "has indestructible as long as it attacked this turn" (vale desde que e' declarado atacante, ruling)
             p.attacked_turn_id = state.turn_id
@@ -4586,6 +4745,7 @@ def cast_custom(state: GameState, name: str, generic: int, pips: tuple, x: int =
     if name in state.hand:
         state.hand.remove(name)
     state.spells_cast_this_turn += 1
+    on_my_spell_cast(state, name)
     state.casts_by_card[name] = state.casts_by_card.get(name, 0) + 1
     resolve_spell(state, name, x=x)
     return True
@@ -4730,7 +4890,7 @@ TOTAL_WIPE_CHANCE_FACTOR = sum(WIPE_TYPE_WEIGHTS.values())
 GRAVEYARD_WIPE_CHANCE_FACTOR = 0.4
 GRAVEYARD_SNIPE_CHANCE_FACTOR = 0.5
 COUNTERSPELL_CHANCE_FACTOR = 0.5
-INTERACTION_ENGINE_PRIORITY = ["Fathom Mage", "Danny Pink", "Winding Constrictor", "Hardened Scales", "Ouroboroid", "Mirelurk Queen", "Kami of Whispered Hopes", "Muldrotha, the Gravetide", "The Master, Transcendent", "Agent Frank Horrigan",
+INTERACTION_ENGINE_PRIORITY = ["Fathom Mage", "Danny Pink", "Winding Constrictor", "Hardened Scales", "Ouroboroid", "Mirelurk Queen", "Kami of Whispered Hopes", "Muldrotha, the Gravetide", "The Master, Transcendent", "Agent Frank Horrigan", "Screeching Scorchbeast", "Branching Evolution", "The Earth Crystal", "Loading Zone", "Inexorable Tide",
                                "The Gitrog Monster", "Icetill Explorer", "Syr Konrad, the Grim", "Zellix, Sanity Flayer", "Hollowmurk Siege", "Mindcrank", "Mesmeric Orb",
                                "Psychic Corrosion", "Memory Erosion", "The Great Henge", "Palantír of Orthanc", "Agatha's Soul Cauldron", "Altar of Dementia",
                                "Bloodchief Ascension", "Ruin Crab", "Altar of the Brood", "Deepmuck Desperado"]
