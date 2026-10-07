@@ -184911,5 +184911,62 @@
     "set": "clb",
     "toughness": "1",
     "type_line": "Creature — Bird Wizard"
+  },
+  "Riverchurn Monument": {
+    "cmc": 2.0,
+    "collector_number": "57",
+    "color_identity": [
+      "U"
+    ],
+    "colors": [
+      "U"
+    ],
+    "keywords": [
+      "Exhaust",
+      "Mill"
+    ],
+    "legalities": {
+      "standard": "legal",
+      "future": "legal",
+      "historic": "legal",
+      "timeless": "legal",
+      "gladiator": "legal",
+      "pioneer": "legal",
+      "modern": "legal",
+      "legacy": "legal",
+      "pauper": "not_legal",
+      "vintage": "legal",
+      "penny": "legal",
+      "commander": "legal",
+      "oathbreaker": "legal",
+      "standardbrawl": "legal",
+      "brawl": "legal",
+      "competitivebrawl": "legal",
+      "alchemy": "legal",
+      "paupercommander": "not_legal",
+      "duel": "legal",
+      "oldschool": "not_legal",
+      "premodern": "not_legal",
+      "predh": "not_legal",
+      "tlr": "legal"
+    },
+    "loyalty": null,
+    "mana_cost": "{1}{U}",
+    "name": "Riverchurn Monument",
+    "oracle_text": "{1}, {T}: Any number of target players each mill two cards. (Each of them puts the top two cards of their library into their graveyard.)\nExhaust — {2}{U}{U}, {T}: Any number of target players each mill cards equal to the number of cards in their graveyard. (Activate each exhaust ability only once.)",
+    "power": null,
+    "prices": {
+      "usd": "1.58",
+      "usd_foil": "2.76",
+      "usd_etched": null,
+      "eur": "0.82",
+      "eur_foil": "0.91",
+      "tix": "0.02"
+    },
+    "released_at": "2025-02-14",
+    "scryfall_uri": "https://scryfall.com/card/dft/57/riverchurn-monument?utm_source=api",
+    "set": "dft",
+    "toughness": null,
+    "type_line": "Artifact"
   }
 }

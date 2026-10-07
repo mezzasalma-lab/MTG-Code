@@ -138,6 +138,7 @@ Cada linha: cláusula do oráculo → onde está no código → **status** → t
 | The Master of Lake-town | jogador perde vida: mila tanto; morre: compra por cemitério com 7+ | `lose_life_self/opp`, `remove_permanent` | `candidata_master_...` (3 testes) |
 | Garruk's Uprising | ETB: compra se controlo poder ≥ 4; trample; criatura poder ≥ 4 entra: compra | `apply_etb`, `has_trample`, `enter_permanent_triggers` | `candidata_garruk_...` |
 | Opulent Palace | entra virado; BGU | `land_enters_tapped` | `candidata_opulent_palace_...` |
+| **Riverchurn Monument** (2026-10-07) | `{1},{T}`: qualquer nº de jogadores-alvo milam 2; **Exhaust** `{2}{U}{U},{T}`: milam tantas quanto o cemitério (uma vez por objeto) | `act_riverchurn_tap`, `act_riverchurn_exhaust`, `riverchurn_opp_end_step`, `Permanent.exhausted` | `monument_...` (16 testes), ver §11 |
 
 ## 3. Conceitos compartilhados (Regra #3: o bug mora na função auxiliar, não na carta)
 | conceito | função | quem lê | verificação |
@@ -208,3 +209,22 @@ Arquivo: `resultados-ab/2026-10-06-partida-manual-2/`. Escopo declarado (Regra #
 ## 10. Orquestração do turno (Regra #6), 2026-10-07: a guarda do payoff antes do terreno
 
 🐛 **achado:** a guarda do comandante em `cast_landfall_payoffs_first` (`custo <= mana de agora + 1`) é cega a cor, a mana de landfall em campo e a land drops extras; no Mothman o Ruin Crab `{U}` gastava o único Island e o comandante `{1}{B}{G}{U}` não saía. ✅ ensaio a seco (`LANDFALL_GUARD_DRYRUN`, padrão). Escopo declarado (Regra #7): **varrido** = a guarda nos 3 payoffs (Ruin Crab, Icetill Explorer, Evolution Sage) com teste dirigido, A/B 2.000 e 10.000 (guarda aritmética × ensaio × base), regressão, bit-identidade e determinismo; **NÃO varrido** = magia que põe terreno em campo antes do payoff (Kodama's Reach etc.), Altar of the Brood, 2ª fase principal. Pasta: `resultados-ab/2026-10-07-guarda-ensaio-a-seco/`.
+
+## 11. Riverchurn Monument (2026-10-07): cláusula a cláusula, rulings lidas ANTES do código
+
+Pasta: `resultados-ab/2026-10-07-riverchurn-monument/`. Oráculo e rulings: `dados/riverchurn_scryfall.json` (Scryfall ao vivo; `flavor_name`: nenhum), cache `scryfall-cache/oracle-cache.json`. Rulings de 2025-02-07 (3): (R1) exhaust a qualquer momento em que se pode ativar habilidade; (R2) sai e volta = objeto novo, o exhaust pode ser ativado de novo; (R3) gatilho de "ativar exhaust" resolve antes. Rulings do Mothman que valem aqui: um evento de mill simultâneo de vários jogadores dispara o gatilho **uma vez** (2024-03-08).
+
+| cláusula (oráculo / ruling) | código | status | teste |
+|---|---|---|---|
+| `{1}{U}`, artefato | `add("Riverchurn Monument", "{1}{U}", {"artifact"}, {"riverchurn"})`, `CAST_PRIORITY` 57 | ✅ (prioridade é convenção, sem sensibilidade: **não verificado**) | `monument_main_phase_ativa_com_mana_sobrando_e_swaps_...` |
+| `{1},{T}`: "any number of target players each mill two cards" | `act_riverchurn_tap`: alvos = todo oponente vivo com biblioteca (+ eu só com `RIVERCHURN_SELF` e `safe_self_mill`); **um** `mill_event` (um gatilho do Mothman, ruling 2024-03-08); Bruvac dobra por substituição | ✅ | `monument_tap_cada_oponente_mila_2_...`, `monument_tap_sem_mana_ou_virado_...` |
+| artefato: sem doença de invocação para `{T}` (só criatura tem, CR 302.6) | `perms_named(...)` sem checar `entered_turn` | ✅ | `monument_artefato_sem_doenca_de_invocacao` |
+| Exhaust `{2}{U}{U},{T}`: "mill cards equal to the number of cards in their graveyard" | `act_riverchurn_exhaust`: N lido **na resolução**, antes de milar, por jogador-alvo; custo `{2}{U}{U}` pago de verdade (`spend`) | ✅ | `monument_exhaust_mila_o_tamanho_...`, `monument_exhaust_exige_UU_...` |
+| "(Activate each exhaust ability only once.)" + R2 | `Permanent.exhausted` por instância: sair e voltar cria `Permanent` novo (`exhausted=False`) | ✅ | `monument_exhaust_...uma_vez_so`, `monument_novo_objeto_...` |
+| R1: "any time you could activate an ability" | padrão: só com mana sobrando na minha fase principal (limite inferior); chaves `RIVERCHURN_TAP_FIRST` (antes das conjurações) e `RIVERCHURN_OPP_END_STEP` (fim do último turno de oponente, ignora a reserva das contramágicas) | ✅ (3 políticas medidas) | `monument_tap_first_...`, `monument_fim_do_turno_do_oponente_...` |
+| R3: gatilho de "ativar exhaust" resolve antes | nenhuma carta da lista tem esse gatilho (varredura do oráculo: `resumos/confere_gatilho_de_ativar.txt`) | 📊 N/A: nada na lista dispara por ativar habilidade | — |
+| é artefato: Altar of the Brood ("another permanent you control enters"), Mesmeric Orb ("a permanent becomes untapped": o Monument virado me mila 1 ao desvirar), Construct da Urza's Saga (+1/+1 por artefato), recastável por Muldrotha/Six | ganchos genéricos já existentes (`enter_permanent_triggers`, `untap_my_permanents`, `is_artifact`, `graveyard_cast_options`) | ✅ | `monument_altar_of_the_brood_e_orb_e_artefato_...` |
+| "Any number of target players" inclui o controlador | `RIVERCHURN_SELF` (padrão desligado; medido: +1,31 × +1,03 ponto de T8) | ✅ (política) | `monument_alvo_eu_so_com_chave_...` |
+| cada carta posta no cemitério de oponente com a Ascension armada (3+): "perde 2" | `mill_event` já trata por carta; Exhaust grande vira dano real | ✅ | `monument_exhaust_com_ascension_armada_...` |
+
+**Achado de modelagem (Regra #5):** com `remove+append` nenhuma partida da variante era idêntica à da base, então o "pareamento por semente" de todos os A/B anteriores com `SWAPS` era quase só nominal; `SWAP_IN_PLACE` (padrão `False`, números arquivados intactos) deixa 79% idênticas. **Pergunta aberta (não mudei o código):** Zellix, "Whenever a **player** mills one or more creature cards": num mill simultâneo de 3 oponentes (Monument, Altar of the Brood, Psychic Corrosion…) o gatilho pode ser **por jogador** (até 3 Horrors) e o simulador conta **1 por evento**. Nem as rulings do Scryfall nem uma busca na web decidiram; o Mothman/Queen ("one or more nonland cards are milled") são por evento (ruling). Efeito esperado: Zellix subestimado; o resultado do Monument não muda de sinal (o corte do Zellix é lateral).

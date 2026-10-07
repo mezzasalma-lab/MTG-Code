@@ -2,6 +2,8 @@
 
 > **Atualização 2026-10-07 (§10):** a guarda do payoff antes do terreno que o §8 arquivou (aritmética) era cega a cor e superestimou o efeito (Ruin Crab +21% → **+13%**; mesa limpa até T8 +0,9 → **+0,6 ponto**). O padrão agora é o ensaio a seco, igual aos outros 5 simuladores: [`resultados-ab/2026-10-07-guarda-ensaio-a-seco/LEIAME.md`](resultados-ab/2026-10-07-guarda-ensaio-a-seco/LEIAME.md). Os lotes do §8 ficam como estavam (guarda aritmética, **superados em magnitude**).
 
+> **Atualização 2026-10-07 (§11): Riverchurn Monument** (inclusão + 5 cortes; simulador com as duas ativadas; método `SWAP_IN_PLACE`): [`resultados-ab/2026-10-07-riverchurn-monument/`](resultados-ab/2026-10-07-riverchurn-monument/LEIAME.md).
+
 > **Dados brutos, scripts e como refazer cada tabela:** `resultados-ab/2026-10-05-ab-pacote-kozilek-master/` (pacote, Master, Kozilek, controles) · `resultados-ab/2026-10-05-ab-kozilek-self-deck/` (Kozilek × estilo de jogo) · `resultados-ab/2026-10-05-simulador-v1-validacao/` (testes, varreduras, determinismo, regressão) · `resultados-ab/2026-10-06-tergrid-e-ferramenta-mill/` (ferramenta de mill nos oponentes + Tergrid) · `resultados-ab/2026-10-06-partida-manual-1/` (partida manual #1: log, ledger, ensaio) · `resultados-ab/2026-10-06-landfall-payoff-primeiro/` (correção da ordem terreno × payoff de landfall) · `resultados-ab/2026-10-06-partida-manual-2/` (partida manual #2).
 > Auditoria cláusula-a-cláusula: `checklist-oraculo.md`. Simulador no commit `91b1a3d` (código congelado durante as baterias).
 > **Atenção (2026-10-06):** os números dos §1–§6 foram gerados com a ordem antiga (terreno antes do Ruin Crab/Icetill), que é `LANDFALL_PAYOFF_FIRST = False` e bit-idêntica a `91b1a3d`. O padrão do simulador agora é `True` (§8): a linha de base muda pouco (mesa limpa até T8 de 50,7% para 51,6%; deck-out sem diferença).
@@ -126,3 +128,70 @@ Pasta: `resultados-ab/2026-10-07-guarda-ensaio-a-seco/` (`LEIAME.md` completo; t
 - **Nova linha de base** (padrão; resiliência), mesa limpa até T8: 50,7% (ordem antiga) → **51,3%** (ensaio a seco; era 51,6% com a guarda aritmética).
 - **Validação:** testes dirigidos 141/141; bit-identidade com `LANDFALL_PAYOFF_FIRST` desligada == `91b1a3d` 20.000 × 2 modos com o código final; regressão 20.000 × 2 modos da variante `ensaio` (0 exceções); determinismo 3 `PYTHONHASHSEED` × 1.500 × 2 modos; a pasta `2026-10-06-landfall-payoff-primeiro` continua reproduzindo byte a byte (configs e `bitident.py` fixam `LANDFALL_GUARD_DRYRUN = false`).
 - **Não verificado:** o critério do ensaio a seco é conservador (no Mothman recusa cerca de metade dos payoffs que a guarda aritmética deixava passar, parte por efeito colateral benigno do landfall): o número do ensaio é um limite **inferior** do payoff-primeiro e o da guarda aritmética, **superior**.
+
+## 11. Riverchurn Monument: inclusão e 5 cortes (2026-10-07)
+
+Pasta: `resultados-ab/2026-10-07-riverchurn-monument/` (`LEIAME.md` completo: como foi gerado, mapa arquivo → status, comandos, verificação). Pergunta do usuário: avaliar a inclusão e elencar 5 trocas, do menos para o mais importante ao gameplan.
+- **Carta (oráculo ao vivo, rulings 2025-02-07):** `{1}{U}` artefato; `{1},{T}`: qualquer número de jogadores-alvo milam 2; **Exhaust** `{2}{U}{U},{T}`: milam tantas cartas quanto o próprio cemitério (uma vez por objeto). Implementada com as duas cláusulas, o artefato (Altar of the Brood, Mesmeric Orb, Construct da Urza's Saga) e as rulings; chaves `RIVERCHURN_*`; testes dirigidos 157/157 (16 novos).
+- **Spellbook** (nomes reconhecidos 91/91, controles positivo e de corte passaram): o Monument **não cria combo novo**; 8 combos de 2 peças "quase" (Traumatize, Maddening Cacophony, Jidoor, Singularity Rupture, Cut Your Losses, Terisian Mindbreaker, Fleet Swallower, Kitsune's Technique), **nenhuma na lista**: nada muda no Bracket. Os únicos cortes que derrubam combo são as 5 peças dos 2 combos da lista (fora das candidatas).
+- **Medido (Monument ← Negate, N = 10.000 pareado, no lugar):** mesa limpa até T8 **+1,03 ± 0,28 ponto** (padrão: 51,4% → 52,4%), **+0,36 ± 0,24** (resiliência: 24,0% → 24,4%); cartas milladas dos oponentes +1,9 por partida (de 85,4); eu perco por deck-out −0,12 ± 0,19 (sem efeito). **Todo o ganho vem das ativadas** (só o corpo: +0,02 ± 0,21). A carta entra em campo em 18,7% das partidas (12 turnos), entra até T4 em 5,4%; nas partidas em que entra, tap 1,73× e Exhaust 0,17× por partida; **entrando até T4: +10,5 ± 3,3 pontos de mesa limpa até T8** (`resumos/condicional.txt`).
+- **Políticas (sensibilidade, plataforma ← Negate):** o limiar do Exhaust quase não importa (só letal +0,97, 12 cartas +1,01, 48 +0,98); **incluir a mim como alvo** (quando a biblioteca deixa) +1,31 ± 0,33; **pagar o tap ANTES das conjurações piora o T8** (+0,64) apesar de milar mais (+3,5 cartas): o `{1}` compete com o desenvolvimento; a janela do fim do turno do oponente (mana que sobrou/segurada pras contramágicas) fica igual ao padrão (+1,03) e dá +0,2 carta milada. A política padrão (só com mana sobrando) é a melhor em velocidade.
+- **Sinergia medida, rara:** Exhaust com a Bloodchief Ascension armada (3 marcadores; cada carta milada tira 2 de vida) acontece em 0,2% das partidas; é uma linha real, não um motor.
+- **Antissinergia (por script):** 4 cartas da lista exilam cemitério (Bojuka Bog, Soul-Guide Lantern, Agatha's Soul Cauldron, Ashiok), e o Exhaust lê o tamanho do cemitério dos oponentes.
+- **Sobre o pacote de 5 trocas + Master ← Negate (pendente):** o Monument continua positivo por cima dele (Bruvac dobra o mill dele): ← Muldrotha +0,87 ± 0,35, ← Arcane Denial +0,79 ± 0,29, ← Fallout +0,66 ± 0,24, ← Wave Goodbye +0,63 ± 0,25, ← Toxic Deluge +0,53 ± 0,23, ← V.A.T.S. +0,30 ± 0,26 pontos de T8 (padrão). **Conflito de cortes:** Offer (Garruk's Uprising), Negate (Master), Lantern, Bog, Selkie e Swarmyard já estão reservados por esse pacote.
+- **5 cortes, do menos importante para o mais importante ao gameplan** (pelo papel real; o simulador só confirma que o Monument não perde para nenhum deles além do ruído): **1. An Offer You Can't Refuse** (3ª "counter noncreature" com Negate e Fierce Guardianship; dá 2 Treasures a um oponente em mesa de 4) · **2. Negate** (mesma função) · **3. Muldrotha** (6 de mana, recursão redundante com Six, Icetill, Evolution Witness e Agadeem; o plano é milar oponente, não se reciclar) · **4. Toxic Deluge** (3º varredor, simétrico e pago com vida; Wave Goodbye é unilateral pelos contadores e Fallout dá rad) · **5. Arcane Denial** (dá até 2 cartas ao oponente em mesa de 4; empata com o Monument na resiliência, +0,03 ± 0,26, mas é uma das duas contras de criatura). A ordem **entre 3, 4 e 5 não é separável estatisticamente** (ICs sobrepostos); é por papel.
+- **O que o simulador acha barato mas NÃO é corte (Regra #5, o simulador não modela o oponente real):** Generous Patron (o Mothman mira até X criaturas de **qualquer** jogador e o Patron compra ao pôr contador em criatura que não é sua), Agatha's Soul Cauldron (exila criatura do cemitério que o Monument enche e dá contador + as habilidades dela), Tear Asunder e V.A.T.S. (as 2 remoções pontuais, a lacuna estrutural do §7 da auditoria), Didn't Say Please (contra qualquer mágica + mill 3: motor E1), Zellix (ΔT8 +0,05 ± 0,34: troca lateral, é o outro mill repetível), Bojuka Bog e Lantern (hate de cemitério que um deck de mill precisa porque entrega cemitério ao oponente).
+- **Não verificado:** criaturas e tabuleiro de oponente; decks de oponente que usam o cemitério; a prioridade de conjuração do Monument (fixa em 57, sem sensibilidade); a ordem humana real das ativações além das 4 políticas; o pacote aplicado junto (só o Monument por cima); a pergunta aberta do Zellix (gatilho por jogador × por evento no mill simultâneo de 3 oponentes; sem ruling achada, o simulador conta 1 por evento).
+- **Validação:** testes 157/157; bit-identidade 80.000/80.000 (`SWAPS=()` == `cd5d453`) e 32.444/32.444 (Monument fora de campo, `ACTIVATE` ligado × desligado), 0 divergências; regressão 20.000 × 2 modos × 3 variantes, 0 exceções; determinismo 3 `PYTHONHASHSEED` × 1.500 × 2 modos × 2 conjuntos de chaves, 0 divergências.
+- **Método novo (`SWAP_IN_PLACE`, padrão `False`):** a carta que entra ocupa o lugar da que sai antes do embaralhamento: 79% das partidas ficam idênticas à base (com `remove+append`: 0%) e o IC95% cai cerca de 5×. A triagem de 84 cortes com `remove+append` (N = 2.000) ficou **SUPERADA** (arquivada, marcada).
+
+#### Cortes: `Monument ← X` (N = 10.000 pareado, no lugar; diferença em PONTOS percentuais de partidas; `*` = excede o IC95%)
+
+| # | corte (X) | mesa limpa T8 padrão | T8 resiliência | T10 padrão | T10 resiliência | contadores +1/+1 (padrão) | eu perco por deck-out (padrão) |
+|---|---|---|---|---|---|---|---|
+| 1 | An Offer You Can't Refuse | +1.00 ± 0.30 * | +0.42 ± 0.25 * | +0.13 ± 0.25 | -0.24 ± 0.34 | +0.86 ± 0.45 * | +0.08 ± 0.19 |
+| 2 | Didn't Say Please | +0.98 ± 0.29 * | +0.44 ± 0.23 * | +0.46 ± 0.24 * | +0.75 ± 0.32 * | +0.71 ± 0.43 * | -0.03 ± 0.18 |
+| 3 | Negate | +1.03 ± 0.28 * | +0.36 ± 0.24 * | +0.29 ± 0.24 * | +0.13 ± 0.32 | +0.73 ± 0.44 * | -0.12 ± 0.19 |
+| 4 | Muldrotha, the Gravetide | +0.65 ± 0.36 * | +0.44 ± 0.30 * | -0.12 ± 0.30 | +0.20 ± 0.37 | +0.15 ± 0.57 | +0.34 ± 0.28 * |
+| 5 | Tear Asunder | +0.52 ± 0.27 * | +0.28 ± 0.24 * | +0.00 ± 0.21 | +0.27 ± 0.30 | +0.23 ± 0.39 | +0.01 ± 0.17 |
+| 6 | Generous Patron | +0.39 ± 0.31 * | +0.41 ± 0.26 * | -0.23 ± 0.26 | +0.19 ± 0.34 | +1.43 ± 0.49 * | +0.22 ± 0.21 * |
+| 7 | Agatha's Soul Cauldron | +0.48 ± 0.28 * | +0.30 ± 0.24 * | +0.55 ± 0.25 * | +0.47 ± 0.32 * | +0.06 ± 0.46 | -0.25 ± 0.19 * |
+| 8 | Nuclear Fallout | +0.60 ± 0.26 * | +0.18 ± 0.23 | +0.04 ± 0.21 | +0.18 ± 0.29 | +0.46 ± 0.40 * | -0.15 ± 0.17 |
+| 9 | Toxic Deluge | +0.55 ± 0.25 * | +0.22 ± 0.24 | +0.30 ± 0.20 * | +0.24 ± 0.30 | +0.36 ± 0.35 * | -0.07 ± 0.15 |
+| 10 | Arcane Denial | +0.61 ± 0.27 * | +0.03 ± 0.26 | +0.04 ± 0.24 | +0.07 ± 0.31 | -0.11 ± 0.45 | -0.05 ± 0.20 |
+| 11 | Wave Goodbye | +0.43 ± 0.26 * | +0.19 ± 0.23 | +0.14 ± 0.19 | +0.24 ± 0.31 | +0.04 ± 0.38 | -0.06 ± 0.15 |
+| 12 | Hedge Shredder | +0.38 ± 0.30 * | +0.21 ± 0.24 | -0.05 ± 0.23 | -0.19 ± 0.32 | +0.05 ± 0.41 | -0.12 ± 0.20 |
+| 13 | Heroic Intervention | +0.43 ± 0.26 * | +0.13 ± 0.22 | +0.07 ± 0.20 | -0.26 ± 0.30 | +0.04 ± 0.37 | +0.01 ± 0.17 |
+| 14 | Zellix, Sanity Flayer | +0.05 ± 0.34 | +0.36 ± 0.28 * | -0.25 ± 0.28 | +0.96 ± 0.39 * | -2.06 ± 0.54 * | +0.06 ± 0.23 |
+| 15 | V.A.T.S. | +0.24 ± 0.26 | +0.09 ± 0.22 | +0.26 ± 0.21 * | +0.30 ± 0.31 | -0.10 ± 0.37 | -0.12 ± 0.16 |
+| 16 | Bojuka Bog | +0.11 ± 0.44 | +0.20 ± 0.35 | -0.12 ± 0.37 | -0.19 ± 0.45 | -0.36 ± 0.60 | -0.38 ± 0.24 * |
+| 17 | Yavimaya Hollow | +0.11 ± 0.43 | +0.14 ± 0.34 | -0.14 ± 0.36 | +0.08 ± 0.43 | -0.57 ± 0.59 | -0.07 ± 0.26 |
+| 18 | Evolution Witness | +0.21 ± 0.30 | +0.02 ± 0.26 | +0.06 ± 0.24 | -0.20 ± 0.35 | +0.12 ± 0.47 | -0.12 ± 0.19 |
+| 19 | Cold-Eyed Selkie | +0.13 ± 0.26 | -0.04 ± 0.23 | -0.09 ± 0.22 | -0.21 ± 0.31 | -0.76 ± 0.40 * | -0.14 ± 0.17 |
+| 20 | Soul-Guide Lantern | +0.12 ± 0.31 | -0.08 ± 0.27 | -0.24 ± 0.25 | -0.03 ± 0.35 | -0.45 ± 0.47 | -0.05 ± 0.19 |
+
+#### Sensibilidades do próprio Monument (plataforma `Monument ← Negate`)
+
+| variante | T8 padrão | T8 resiliência | T10 padrão | cartas milladas dos oponentes (padrão) | tap/partida | Exhaust/partida |
+|---|---|---|---|---|---|---|
+| padrão (Negate) | +1.03 ± 0.28 * | +0.36 ± 0.24 * | +0.29 ± 0.24 * | +1.94 ± 0.39 * | 0.324 | 0.031 |
+| sens_sem_ativar | +0.02 ± 0.21 | -0.20 ± 0.21 | +0.05 ± 0.22 | -0.14 ± 0.32 | 0.000 | 0.000 |
+| sens_exhaust_so_letal | +0.97 ± 0.28 * | +0.33 ± 0.24 * | +0.29 ± 0.24 * | +1.23 ± 0.37 * | 0.350 | 0.006 |
+| sens_exhaust_12 | +1.01 ± 0.29 * | +0.38 ± 0.24 * | +0.27 ± 0.24 * | +2.04 ± 0.39 * | 0.308 | 0.047 |
+| sens_exhaust_48 | +0.98 ± 0.28 * | +0.32 ± 0.24 * | +0.29 ± 0.24 * | +1.45 ± 0.38 * | 0.345 | 0.011 |
+| sens_eu_tambem | +1.31 ± 0.33 * | +0.48 ± 0.26 * | +0.30 ± 0.26 * | +1.78 ± 0.42 * | 0.324 | 0.028 |
+| sens_tap_primeiro | +0.64 ± 0.29 * | +0.24 ± 0.24 | +0.36 ± 0.25 * | +3.47 ± 0.43 * | 0.419 | 0.089 |
+| sens_fim_do_oponente | +1.03 ± 0.28 * | +0.38 ± 0.24 * | +0.30 ± 0.24 * | +2.13 ± 0.40 * | 0.359 | 0.032 |
+| sens_otimista | +0.40 ± 0.30 * | +0.11 ± 0.25 | +0.35 ± 0.25 * | +3.49 ± 0.43 * | 0.408 | 0.125 |
+
+#### Monument sobre o pacote de 5 trocas + Master ← Negate (pendente; base = o pacote; N = 10.000)
+
+| corte (Monument entra) | T8 padrão | T8 resiliência | T10 padrão | cartas milladas dos oponentes (padrão) |
+|---|---|---|---|---|
+| Muldrotha, the Gravetide | +0.87 ± 0.35 * | +0.40 ± 0.30 * | +0.11 ± 0.29 | +2.52 ± 0.50 * |
+| Toxic Deluge | +0.53 ± 0.23 * | +0.48 ± 0.24 * | +0.20 ± 0.19 * | +1.43 ± 0.36 * |
+| Arcane Denial | +0.79 ± 0.29 * | +0.25 ± 0.27 | +0.04 ± 0.23 | +1.82 ± 0.44 * |
+| Wave Goodbye | +0.63 ± 0.25 * | +0.31 ± 0.24 * | +0.15 ± 0.18 | +1.15 ± 0.38 * |
+| Nuclear Fallout | +0.66 ± 0.24 * | +0.28 ± 0.23 * | +0.01 ± 0.18 | +1.69 ± 0.40 * |
+| V.A.T.S. | +0.30 ± 0.26 * | +0.16 ± 0.22 | +0.19 ± 0.20 | +1.43 ± 0.38 * |
+

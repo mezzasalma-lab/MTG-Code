@@ -1,0 +1,282 @@
+{
+ "sim": "mothman_goldfish_v1.py",
+ "turns": 12,
+ "destaque": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "riverchurn_exhaust_cards_opp",
+  "riverchurn_exhaust_lethal",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays",
+  "lands_entered_total",
+  "library_min",
+  "life_min",
+  "riverchurn_tap_cards_opp",
+  "riverchurn_exhaust_ascension",
+  "riverchurn_enter_turn__ate_T4",
+  "riverchurn_enter_turn__ate_T6"
+ ],
+ "compacto": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays"
+ ],
+ "variantes": {
+  "base": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Evolution Sage"
+    ],
+    [
+     "Swarmyard",
+     "Karn's Bastion"
+    ],
+    [
+     "Soul-Guide Lantern",
+     "Bruvac the Grandiloquent"
+    ],
+    [
+     "An Offer You Can't Refuse",
+     "Garruk's Uprising"
+    ],
+    [
+     "Bojuka Bog",
+     "Opulent Palace"
+    ],
+    [
+     "Negate",
+     "The Master of Lake-town"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "pacote_cut_Muldrotha, the Gravetide": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Evolution Sage"
+    ],
+    [
+     "Swarmyard",
+     "Karn's Bastion"
+    ],
+    [
+     "Soul-Guide Lantern",
+     "Bruvac the Grandiloquent"
+    ],
+    [
+     "An Offer You Can't Refuse",
+     "Garruk's Uprising"
+    ],
+    [
+     "Bojuka Bog",
+     "Opulent Palace"
+    ],
+    [
+     "Negate",
+     "The Master of Lake-town"
+    ],
+    [
+     "Muldrotha, the Gravetide",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "pacote_cut_Toxic Deluge": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Evolution Sage"
+    ],
+    [
+     "Swarmyard",
+     "Karn's Bastion"
+    ],
+    [
+     "Soul-Guide Lantern",
+     "Bruvac the Grandiloquent"
+    ],
+    [
+     "An Offer You Can't Refuse",
+     "Garruk's Uprising"
+    ],
+    [
+     "Bojuka Bog",
+     "Opulent Palace"
+    ],
+    [
+     "Negate",
+     "The Master of Lake-town"
+    ],
+    [
+     "Toxic Deluge",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "pacote_cut_Arcane Denial": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Evolution Sage"
+    ],
+    [
+     "Swarmyard",
+     "Karn's Bastion"
+    ],
+    [
+     "Soul-Guide Lantern",
+     "Bruvac the Grandiloquent"
+    ],
+    [
+     "An Offer You Can't Refuse",
+     "Garruk's Uprising"
+    ],
+    [
+     "Bojuka Bog",
+     "Opulent Palace"
+    ],
+    [
+     "Negate",
+     "The Master of Lake-town"
+    ],
+    [
+     "Arcane Denial",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "pacote_cut_Wave Goodbye": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Evolution Sage"
+    ],
+    [
+     "Swarmyard",
+     "Karn's Bastion"
+    ],
+    [
+     "Soul-Guide Lantern",
+     "Bruvac the Grandiloquent"
+    ],
+    [
+     "An Offer You Can't Refuse",
+     "Garruk's Uprising"
+    ],
+    [
+     "Bojuka Bog",
+     "Opulent Palace"
+    ],
+    [
+     "Negate",
+     "The Master of Lake-town"
+    ],
+    [
+     "Wave Goodbye",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "pacote_cut_Nuclear Fallout": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Evolution Sage"
+    ],
+    [
+     "Swarmyard",
+     "Karn's Bastion"
+    ],
+    [
+     "Soul-Guide Lantern",
+     "Bruvac the Grandiloquent"
+    ],
+    [
+     "An Offer You Can't Refuse",
+     "Garruk's Uprising"
+    ],
+    [
+     "Bojuka Bog",
+     "Opulent Palace"
+    ],
+    [
+     "Negate",
+     "The Master of Lake-town"
+    ],
+    [
+     "Nuclear Fallout",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "pacote_cut_V.A.T.S.": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Evolution Sage"
+    ],
+    [
+     "Swarmyard",
+     "Karn's Bastion"
+    ],
+    [
+     "Soul-Guide Lantern",
+     "Bruvac the Grandiloquent"
+    ],
+    [
+     "An Offer You Can't Refuse",
+     "Garruk's Uprising"
+    ],
+    [
+     "Bojuka Bog",
+     "Opulent Palace"
+    ],
+    [
+     "Negate",
+     "The Master of Lake-town"
+    ],
+    [
+     "V.A.T.S.",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "pacote_cut_Muldrotha, the Gravetide",
+  "pacote_cut_Toxic Deluge",
+  "pacote_cut_Arcane Denial",
+  "pacote_cut_Wave Goodbye",
+  "pacote_cut_Nuclear Fallout",
+  "pacote_cut_V.A.T.S."
+ ],
+ "regressao": []
+}

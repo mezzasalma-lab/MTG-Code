@@ -1,0 +1,85 @@
+{
+ "sim": "mothman_goldfish_v1.py",
+ "turns": 12,
+ "destaque": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "riverchurn_exhaust_cards_opp",
+  "riverchurn_exhaust_lethal",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays",
+  "lands_entered_total",
+  "library_min",
+  "life_min",
+  "riverchurn_tap_cards_opp",
+  "riverchurn_exhaust_ascension",
+  "riverchurn_enter_turn__ate_T4",
+  "riverchurn_enter_turn__ate_T6"
+ ],
+ "compacto": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays"
+ ],
+ "variantes": {
+  "monument_padrao": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "monument_todas_as_chaves": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "RIVERCHURN_SELF": true,
+   "RIVERCHURN_TAP_FIRST": true,
+   "RIVERCHURN_OPP_END_STEP": true,
+   "RIVERCHURN_EXHAUST_MIN": 12
+  },
+  "monument_remove_append": {
+   "SWAPS": [
+    [
+     "Yavimaya Hollow",
+     "Riverchurn Monument"
+    ]
+   ]
+  }
+ },
+ "variantes_10000": [
+  "monument_padrao",
+  "monument_todas_as_chaves",
+  "monument_remove_append"
+ ],
+ "regressao": [
+  "monument_padrao",
+  "monument_todas_as_chaves",
+  "monument_remove_append"
+ ]
+}

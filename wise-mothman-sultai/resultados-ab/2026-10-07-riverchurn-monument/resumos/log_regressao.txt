@@ -1,0 +1,8 @@
+Regressao: N=20000 por variante/modo, sementes 5_000_000+i; excecoes + invariantes genericas (carta acima do baralho em alguma zona; contadores negativos)
+monument_padrao                    padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+monument_padrao                    resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+monument_todas_as_chaves           padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+monument_todas_as_chaves           resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+monument_remove_append             padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+monument_remove_append             resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+reg rc=0

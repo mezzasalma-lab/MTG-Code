@@ -1479,6 +1479,260 @@ def payoff_primeiro_guarda_por_ensaio_a_seco_nao_desloca_o_comandante():
     assert on == (0, True), on                                   # ensaio a seco: nao desloca; o comandante e' conjurado
 
 
+# ============================================================== Riverchurn Monument (candidata de 2026-10-07; oraculo ao vivo + rulings 2025-02-07)
+def _cena_monument(lands=("Island", "Island", "Swamp", "Forest"), gy_opp=(0, 0, 0), extra_bf=(), criaturas=("Gyre Sage", "Evolution Witness", "Walking Ballista"), **kw):
+    st = fresh(bf=[m.COMMANDER, *criaturas, *extra_bf], **kw)
+    st.commander_in_cz = False                                  # o comandante ja' esta em campo (senao main_phase conjura um segundo e come a mana)
+    mon = add(st, "Riverchurn Monument")
+    for l in lands:
+        add(st, l)
+    for o, k in zip(st.opps, gy_opp):
+        o.graveyard = ["N"] * k
+    return st, mon
+
+
+@teste
+def monument_tap_cada_oponente_mila_2_em_UM_evento_e_um_gatilho_do_mothman():
+    st, mon = _cena_monument()
+    libs = [len(o.library) for o in st.opps]
+    gatilhos = st.mothman_triggers_total
+    assert m.act_riverchurn_tap(st) is True
+    assert [l - len(o.library) for l, o in zip(libs, st.opps)] == [2, 2, 2], [l - len(o.library) for l, o in zip(libs, st.opps)]
+    assert st.opp_mill_by_source.get("riverchurn_tap") == 6, st.opp_mill_by_source
+    assert st.mothman_triggers_total - gatilhos == 1, "tres jogadores milando numa habilidade so' = um evento = um gatilho"
+    assert st.mothman_x_total == 6, st.mothman_x_total         # topo N,C de cada biblioteca = 6 nao-terrenos
+    assert mon.tapped and st.riverchurn_tap_activations == 1
+    assert st.mana_spent_total == 1, st.mana_spent_total        # {1}
+
+
+@teste
+def monument_tap_sem_mana_ou_virado_nao_ativa():
+    st, mon = _cena_monument(lands=())
+    assert m.act_riverchurn_tap(st) is False and st.riverchurn_tap_activations == 0 and not mon.tapped
+    st2, mon2 = _cena_monument()
+    assert m.act_riverchurn_tap(st2) is True
+    assert m.act_riverchurn_tap(st2) is False, "um {T} so' por desvirar"
+    assert st2.riverchurn_tap_activations == 1
+
+
+@teste
+def monument_artefato_sem_doenca_de_invocacao():
+    st = fresh(bf=[m.COMMANDER])
+    p = add(st, "Riverchurn Monument", sick=True)
+    for l in ("Island", "Swamp"):
+        add(st, l)
+    assert p.entered_turn == st.turn
+    assert m.act_riverchurn_tap(st) is True, "artefato nao-criatura: {T} no turno em que entra (CR 302.6 so' vale pra criatura)"
+
+
+@teste
+def monument_exhaust_mila_o_tamanho_do_cemiterio_de_cada_um_e_uma_vez_so():
+    st, mon = _cena_monument(gy_opp=(10, 20, 30))
+    libs = [len(o.library) for o in st.opps]
+    g0 = st.mothman_triggers_total
+    assert m.act_riverchurn_exhaust(st) is True
+    assert [l - len(o.library) for l, o in zip(libs, st.opps)] == [10, 20, 30]
+    assert st.opp_mill_by_source.get("riverchurn_exhaust") == 60, st.opp_mill_by_source
+    assert st.mothman_triggers_total - g0 == 1
+    assert st.riverchurn_exhaust_activations == 1 and st.riverchurn_exhaust_cards_opp == 60 and st.riverchurn_exhaust_turn == st.turn
+    assert mon.exhausted and mon.tapped and st.mana_spent_total == 4, st.mana_spent_total      # {2}{U}{U}
+    mon.tapped = False
+    for l in ("Island", "Island", "Swamp", "Forest"):
+        add(st, l)
+    assert m.act_riverchurn_exhaust(st) is False, "Exhaust: 'Activate each exhaust ability only once'"
+    assert m.act_riverchurn_tap(st) is True, "a primeira habilidade continua disponivel depois do Exhaust"
+
+
+@teste
+def monument_exhaust_exige_UU_e_so_na_hora_certa():
+    st, mon = _cena_monument(lands=("Island", "Swamp", "Swamp", "Forest"), gy_opp=(10, 20, 30))
+    assert m.act_riverchurn_exhaust(st) is False and not mon.exhausted, "so' um {U}: {2}{U}{U} nao paga"
+    st2, mon2 = _cena_monument(gy_opp=(3, 3, 3))
+    assert m.act_riverchurn_exhaust(st2) is False, "soma dos cemiterios < RIVERCHURN_EXHAUST_MIN e ninguem morre: guardo"
+    st3, mon3 = _cena_monument(gy_opp=(3, 3, 3))
+    st3.opps[0].library = ["N", "N"]                        # cemiterio (3) >= biblioteca (2): mata
+    assert m.act_riverchurn_exhaust(st3) is True and st3.riverchurn_exhaust_lethal == 1
+    assert st3.opps[0].library == [] and len(st3.opps[0].graveyard) == 5
+
+
+@teste
+def monument_novo_objeto_pode_usar_o_exhaust_de_novo():
+    st, mon = _cena_monument(gy_opp=(30, 30, 30))
+    assert m.act_riverchurn_exhaust(st) is True and mon.exhausted
+    st.battlefield.remove(mon)
+    novo = add(st, "Riverchurn Monument")
+    assert novo is not mon and novo.exhausted is False, "ruling 2025-02-07: sai e volta = objeto novo, Exhaust de novo"
+    for o in st.opps:
+        o.graveyard = ["N"] * 30
+    for l in ("Island", "Island", "Swamp", "Forest"):
+        add(st, l)
+    assert m.act_riverchurn_exhaust(st) is True and st.riverchurn_exhaust_activations == 2
+
+
+@teste
+def monument_exhaust_com_ascension_armada_cada_carta_milada_tira_2_de_vida():
+    st, mon = _cena_monument(gy_opp=(10, 0, 0), extra_bf=["Bloodchief Ascension"])
+    st.opps[0].graveyard = ["N"] * 30                          # passa do limiar (24)
+    for p in m.perms_named(st, "Bloodchief Ascension"):
+        p.ctr["quest"] = 3
+    vida_eu = st.life
+    assert m.act_riverchurn_exhaust(st) is True
+    assert st.opps[0].life < 40, st.opps[0].life              # 30 cartas -> 30 gatilhos de 2: 40 vidas acabam (ou o oponente ja' foi eliminado)
+    assert st.life > vida_eu
+
+
+@teste
+def monument_altar_of_the_brood_e_orb_e_artefato_leem_o_monument():
+    st = fresh(bf=[m.COMMANDER, "Altar of the Brood", "Mesmeric Orb", "Urza's Saga"])
+    st.hand = ["Riverchurn Monument"]
+    for l in ("Island", "Island", "Swamp"):
+        add(st, l)
+    libs = [len(o.library) for o in st.opps]
+    assert m.cast_card(st, "Riverchurn Monument") is True
+    assert st.altar_brood_mills == 1 and all(l - len(o.library) == 1 for l, o in zip(libs, st.opps)), "Altar of the Brood: 'another permanent you control enters'"
+    mon = m.perms_named(st, "Riverchurn Monument")[0]
+    assert m.is_artifact(mon) if hasattr(m, "is_artifact") else "artifact" in mon.card.types
+    mon.tapped = True
+    orb0 = st.orb_untap_triggers
+    m.untap_my_permanents(st)
+    assert st.orb_untap_triggers - orb0 >= 1, "Mesmeric Orb: o Monument desvirando tambem me mila 1"
+
+
+@teste
+def monument_chave_desligada_nao_ativa():
+    antigo = m.RIVERCHURN_ACTIVATE
+    try:
+        m.RIVERCHURN_ACTIVATE = False
+        st, mon = _cena_monument(gy_opp=(30, 30, 30))
+        assert m.act_riverchurn_tap(st) is False and m.act_riverchurn_exhaust(st) is False
+        assert st.riverchurn_tap_activations == 0 and st.riverchurn_exhaust_activations == 0
+    finally:
+        m.RIVERCHURN_ACTIVATE = antigo
+
+
+@teste
+def monument_alvo_eu_so_com_chave_e_biblioteca_segura():
+    antigo = m.RIVERCHURN_SELF
+    try:
+        m.RIVERCHURN_SELF = True
+        st, mon = _cena_monument(gy_opp=(30, 30, 30))
+        st.graveyard = ["Forest"] * 5
+        lib = len(st.library)
+        assert m.act_riverchurn_exhaust(st) is True
+        assert lib - len(st.library) == 5 and st.cards_milled_self_total == 5, "Exhaust me mila tantas quanto o MEU cemiterio"
+        st2, mon2 = _cena_monument(gy_opp=(30, 30, 30))
+        st2.graveyard = ["Forest"] * 5
+        st2.library = ["Forest"] * 10                          # reserva (8) violada: nao me incluo
+        assert m.act_riverchurn_exhaust(st2) is True and st2.cards_milled_self_total == 0 and len(st2.library) == 10
+    finally:
+        m.RIVERCHURN_SELF = antigo
+
+
+@teste
+def monument_main_phase_ativa_com_mana_sobrando_e_swaps_poem_na_biblioteca():
+    antigo = m.SWAPS
+    try:
+        m.SWAPS = (("Negate", "Riverchurn Monument"),)
+        lib = m.current_library()
+        assert lib.count("Riverchurn Monument") == 1 and lib.count("Negate") == 0 and len(lib) == 99
+    finally:
+        m.SWAPS = antigo
+    st, mon = _cena_monument(lands=("Island", "Island", "Swamp", "Forest", "Forest"))
+    st.hand = []
+    m.main_phase(st, "main1")
+    assert st.riverchurn_tap_activations == 1, st.riverchurn_tap_activations
+
+
+@teste
+def monument_tap_first_troca_a_conjuracao_pelo_mill_e_o_padrao_nao():
+    def roda(flag):
+        antigo = m.RIVERCHURN_TAP_FIRST
+        m.RIVERCHURN_TAP_FIRST = flag
+        try:
+            st, mon = _cena_monument(lands=("Island", "Swamp"), criaturas=())      # sem Gyre Sage: os contadores do mill do Monument lhe dariam mana e esconderiam a troca
+            st.hand = ["Mindcrank"]                           # {2}: com so' 2 terrenos, ou conjuro o Mindcrank ou pago o {1} do Monument
+            m.main_phase(st, "main1")
+            return st.riverchurn_tap_activations, ("Mindcrank" in [p.card.name for p in st.battlefield])
+        finally:
+            m.RIVERCHURN_TAP_FIRST = antigo
+    assert roda(False) == (0, True), roda(False)            # padrao: so' mana sobrando (limite inferior)
+    assert roda(True) == (1, False), roda(True)             # tap-first: paga o {1} antes (limite superior)
+
+
+@teste
+def swap_no_lugar_preserva_a_posicao_e_o_padrao_continua_remove_append():
+    antigo, antigo_ip = m.SWAPS, m.SWAP_IN_PLACE
+    try:
+        base = list(m.BASE_LIBRARY)
+        i = base.index("Negate")
+        m.SWAPS = (("Negate", "Riverchurn Monument"),)
+        m.SWAP_IN_PLACE = True
+        lib = m.current_library()
+        assert lib[i] == "Riverchurn Monument" and lib[:i] == base[:i] and lib[i + 1:] == base[i + 1:] and len(lib) == 99, "no lugar: so' a posicao de Negate muda"
+        m.SWAP_IN_PLACE = False
+        lib2 = m.current_library()
+        assert lib2[-1] == "Riverchurn Monument" and "Negate" not in lib2 and len(lib2) == 99, "padrao arquivado: remove + append"
+        assert lib2 != lib
+    finally:
+        m.SWAPS, m.SWAP_IN_PLACE = antigo, antigo_ip
+
+
+@teste
+def monument_registra_turno_de_entrada_e_cartas_do_tap_e_exhaust_com_ascension():
+    st, mon = _cena_monument(gy_opp=(30, 30, 30), extra_bf=["Bloodchief Ascension"])
+    for p in m.perms_named(st, "Bloodchief Ascension"):
+        p.ctr["quest"] = 3
+    assert m.act_riverchurn_exhaust(st) is True and st.riverchurn_exhaust_ascension == 1
+    st2 = fresh(bf=[m.COMMANDER])
+    st2.hand = ["Riverchurn Monument"]
+    for l in ("Island", "Swamp"):
+        add(st2, l)
+    assert st2.riverchurn_enter_turn is None
+    assert m.cast_card(st2, "Riverchurn Monument") is True and st2.riverchurn_enter_turn == st2.turn
+    st3, mon3 = _cena_monument()
+    assert m.act_riverchurn_tap(st3) is True and st3.riverchurn_tap_cards_opp == 6
+
+
+@teste
+def monument_fim_do_turno_do_oponente_usa_a_mana_segurada_pras_contramagicas():
+    def cena():
+        st, mon = _cena_monument(lands=("Island", "Island"), criaturas=())
+        st.hand = ["Negate"]                                # reserva de 2 pra contramagica: o {1} do Monument nao cabe na minha fase principal
+        return st, mon
+    st, mon = cena()
+    m.main_phase(st, "main1")
+    assert st.riverchurn_tap_activations == 0 and not mon.tapped, "com a reserva da Negate, a fase principal nao gasta o {1}"
+    antigo = m.RIVERCHURN_OPP_END_STEP
+    try:
+        m.RIVERCHURN_OPP_END_STEP = False
+        m.riverchurn_opp_end_step(st)
+        assert st.riverchurn_tap_activations == 0, "chave desligada: nada"
+        m.RIVERCHURN_OPP_END_STEP = True
+        m.riverchurn_opp_end_step(st)
+        assert st.riverchurn_tap_activations == 1 and mon.tapped, "fim do turno do oponente: a mana que sobrou paga o Monument (instante)"
+        assert st.mana_spent_total == 1
+        m.riverchurn_opp_end_step(st)
+        assert st.riverchurn_tap_activations == 1, "desvirado so' uma vez"
+    finally:
+        m.RIVERCHURN_OPP_END_STEP = antigo
+
+
+@teste
+def monument_partidas_completas_com_todas_as_chaves_ligadas_nao_dao_excecao_e_ativam():
+    antigos = (m.SWAPS, m.SWAP_IN_PLACE, m.RIVERCHURN_SELF, m.RIVERCHURN_TAP_FIRST, m.RIVERCHURN_OPP_END_STEP, m.RIVERCHURN_EXHAUST_MIN)
+    try:
+        m.SWAPS = (("Negate", "Riverchurn Monument"),); m.SWAP_IN_PLACE = True
+        m.RIVERCHURN_SELF = m.RIVERCHURN_TAP_FIRST = m.RIVERCHURN_OPP_END_STEP = True; m.RIVERCHURN_EXHAUST_MIN = 12
+        taps = exh = 0
+        for sd in range(1_000_000, 1_000_060):
+            for f in (m.simulate_one, m.simulate_one_with_interaction):
+                st = f(sd, 12)
+                taps += st.riverchurn_tap_activations; exh += st.riverchurn_exhaust_activations
+        assert taps > 0, "verificacao vacua: nenhuma ativada em 120 partidas"
+    finally:
+        (m.SWAPS, m.SWAP_IN_PLACE, m.RIVERCHURN_SELF, m.RIVERCHURN_TAP_FIRST, m.RIVERCHURN_OPP_END_STEP, m.RIVERCHURN_EXHAUST_MIN) = antigos
+
+
 def main():
     for t in TESTS:
         t()

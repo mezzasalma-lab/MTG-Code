@@ -243,6 +243,7 @@ add("Bruvac the Grandiloquent", "{2}{U}", {"creature"}, {"bruvac"}, 1, 4, legend
 add("The Master of Lake-town", "{1}{B}{B}", {"creature"}, {"master", "deathtouch"}, 3, 2, legendary=True, subtypes={"Human", "Advisor"})
 add("Garruk's Uprising", "{2}{G}", {"enchantment"}, {"garruk"})
 add("Opulent Palace", "", {"land"}, {"etb_tapped", "palace"}, produces={"B", "G", "U"})
+add("Riverchurn Monument", "{1}{U}", {"artifact"}, {"riverchurn"})      # candidata de 2026-10-07 (oraculo ao vivo: resultados-ab/2026-10-07-riverchurn-monument)
 
 # --- Fichas -----------------------------------------------------------------------
 add("Horror Token", "", {"creature"}, {"token"}, 1, 1, token=True, subtypes={"Horror"})
@@ -429,6 +430,14 @@ class GameState:
     palantir_life_loss_total: int = 0
     altar_dementia_sacs: int = 0
     altar_brood_mills: int = 0
+    riverchurn_tap_activations: int = 0
+    riverchurn_exhaust_activations: int = 0
+    riverchurn_exhaust_cards_opp: int = 0         # cartas milladas dos oponentes pelo Exhaust (soma dos cemiterios no momento)
+    riverchurn_exhaust_lethal: int = 0            # oponentes cujo cemiterio >= biblioteca quando o Exhaust foi ativado
+    riverchurn_exhaust_turn: Optional[int] = None
+    riverchurn_enter_turn: Optional[int] = None   # turno em que o Monument entrou em campo pela 1a vez (indicadores ate' T3..T6)
+    riverchurn_tap_cards_opp: int = 0
+    riverchurn_exhaust_ascension: int = 0         # ativacoes do Exhaust com a Bloodchief Ascension armada (3+ marcadores): cada carta milada tira 2 de vida
     memory_erosion_mills: int = 0
     psychic_corrosion_mills: int = 0
     ruin_crab_mills: int = 0
@@ -1692,6 +1701,8 @@ def mothman_trigger(state: GameState, x: int, my_mill: bool = False, opp_mill: b
 def enter_permanent_triggers(state: GameState, p: Permanent, from_cast: bool = True):
     """Gatilhos de 'um permanente entra' (nao-terreno; terrenos usam land_enters) + ETB proprio."""
     c = eff_card(p)
+    if "riverchurn" in c.tags and state.riverchurn_enter_turn is None:
+        state.riverchurn_enter_turn = state.turn
     for alt in list(state.battlefield):
         if alt is not p and "altar_brood" in alt.card.tags:
             parts = [(o.idx, 1) for o in alive_opps(state)]
@@ -1919,6 +1930,7 @@ CAST_PRIORITY = {
     "Cold-Eyed Selkie": 40, "Cankerbloom": 35, "Rampant Frogantua": 50, "Glen Elendra Archmage": 45, "Angel of Suffering": 52, "Kozilek, Butcher of Truth": 30,
     "Walking Ballista": 48, "Agatha's Soul Cauldron": 58, "Altar of Dementia": 40, "Soul-Guide Lantern": 30, "Swiftfoot Boots": 45, "Ashiok, Dream Render": 63,
     "Palantír of Orthanc": 64, "Bloodchief Ascension": 60, "Altar of the Brood": 50, "Gyre Sage": 62, "Freestrider Lookout": 52,
+    "Riverchurn Monument": 57,
     "Evolution Sage": 70, "Terrasymbiosis": 66, "Corpsejack Menace": 71, "Bruvac the Grandiloquent": 63, "The Master of Lake-town": 62, "Garruk's Uprising": 61,
 }
 FINISHERS = frozenset({"Kozilek, Butcher of Truth", "Rampant Frogantua", "Syr Konrad, the Grim", "Mindcrank", "Bloodchief Ascension"})
@@ -2660,6 +2672,11 @@ SELF_MILL_GUARD_ENABLED = True
 SELF_MILL_RESERVE = 8                 # nao fazer mill VOLUNTARIO que deixe menos que isso na biblioteca
 ORB_CAST_MIN_LIBRARY = 30             # nao conjurar Mesmeric Orb com biblioteca menor que isso (ele me mila a cada untap)
 PALANTIR_OPP_SMART = True             # oponente recusa o Palantir quando o X deixaria minha biblioteca vazia
+RIVERCHURN_ACTIVATE = True            # False: o Monument so' entra em campo (artefato, Altar of the Brood, Mesmeric Orb); nenhuma das duas ativadas e' usada
+RIVERCHURN_SELF = False               # alvos: tambem EU (so' quando `safe_self_mill` deixa); "any number of target players" inclui o proprio controlador
+RIVERCHURN_OPP_END_STEP = False       # linha real: a mana que SOBROU do meu turno (inclusive a segurada pras contramagicas) paga o Monument no fim do ultimo turno de oponente, antes do meu untap (instante)
+RIVERCHURN_TAP_FIRST = False         # limite SUPERIOR: o {1} do Monument e' pago ANTES do laco de conjuracao (so' com o comandante ja' em campo); padrao: so' com mana sobrando (limite inferior)
+RIVERCHURN_EXHAUST_MIN = 24           # Exhaust (uma vez por objeto): so' quando a soma dos cemiterios dos oponentes vivos >= isto, ou quando algum oponente morre (cemiterio >= biblioteca)
 
 
 def library_budget(state: GameState) -> int:
@@ -3640,6 +3657,82 @@ def act_lantern(state: GameState) -> bool:
     return True
 
 
+# --- Riverchurn Monument (2026-10-07) -------------------------------------------------------------------------------------
+def _riverchurn_parts(state: GameState, n_opp, n_self) -> list:
+    """Alvos de 'any number of target players': todo oponente vivo com biblioteca (n_opp(o) cartas); eu so' com RIVERCHURN_SELF e `safe_self_mill`. UM evento de mill (um gatilho do Mothman)."""
+    parts = [(o.idx, n_opp(o)) for o in alive_opps(state) if o.library and n_opp(o) > 0]
+    if parts and RIVERCHURN_SELF:
+        k = n_self()
+        if k > 0 and len(state.library) >= k and safe_self_mill(state, k):
+            parts.append((0, k))
+    return parts
+
+
+def act_riverchurn_exhaust(state: GameState, ignore_reserve: bool = False) -> bool:
+    """Exhaust -- {2}{U}{U}, {T}: 'Any number of target players each mill cards equal to the number of cards in their graveyard. (Activate each exhaust ability only once.)'
+    Uma vez POR OBJETO (ruling 2025-02-07: se sair e voltar e' objeto novo; aqui `Permanent.exhausted`). Qualquer momento em que eu poderia ativar uma habilidade. Politica: gasto quando a soma dos cemiterios dos oponentes
+    vivos chega a RIVERCHURN_EXHAUST_MIN ou quando algum oponente morreria (cemiterio >= biblioteca); o numero e' lido na resolucao (antes de milar)."""
+    if not RIVERCHURN_ACTIVATE:
+        return False
+    ms = [p for p in perms_named(state, "Riverchurn Monument") if not p.tapped and not p.exhausted]
+    if not ms:
+        return False
+    al = [o for o in alive_opps(state) if o.library and o.graveyard]
+    if not al:
+        return False
+    lethal = sum(1 for o in al if len(o.graveyard) >= len(o.library))
+    if not lethal and sum(len(o.graveyard) for o in al) < RIVERCHURN_EXHAUST_MIN:
+        return False
+    pips = (frozenset("U"), frozenset("U"))
+    if not afford(state, 2, pips, ignore_reserve=ignore_reserve):
+        return False
+    m = ms[0]
+    m.tapped = True
+    if not spend(state, 2, pips):
+        m.tapped = False
+        return False
+    m.exhausted = True
+    state.riverchurn_exhaust_activations += 1
+    state.riverchurn_exhaust_lethal += lethal
+    if any(q.ctr.get("quest", 0) >= 3 for q in perms_named(state, "Bloodchief Ascension")):
+        state.riverchurn_exhaust_ascension += 1
+    if state.riverchurn_exhaust_turn is None:
+        state.riverchurn_exhaust_turn = state.turn
+    parts = _riverchurn_parts(state, lambda o: len(o.graveyard), lambda: len(state.graveyard))
+    state.riverchurn_exhaust_cards_opp += sum(n for pl, n in parts if pl != 0)
+    mill_event(state, parts, source="riverchurn_exhaust")
+    return True
+
+
+def act_riverchurn_tap(state: GameState, ignore_reserve: bool = False) -> bool:
+    """{1}, {T}: 'Any number of target players each mill two cards.' Artefato: sem doenca de invocacao. Um {T} por desvirar: o Exhaust (acima) tem prioridade quando vale a pena."""
+    if not RIVERCHURN_ACTIVATE:
+        return False
+    ms = [p for p in perms_named(state, "Riverchurn Monument") if not p.tapped]
+    if not ms:
+        return False
+    parts = _riverchurn_parts(state, lambda o: 2, lambda: 2)
+    if not parts or not afford(state, 1, ignore_reserve=ignore_reserve):
+        return False
+    m = ms[0]
+    m.tapped = True
+    if not spend(state, 1):
+        m.tapped = False
+        return False
+    state.riverchurn_tap_activations += 1
+    state.riverchurn_tap_cards_opp += sum(n for pl, n in parts if pl != 0)
+    mill_event(state, parts, source="riverchurn_tap")
+    return True
+
+
+def riverchurn_opp_end_step(state: GameState):
+    """Fim do ultimo turno de oponente da rodada (instante, antes do meu untap): sobrou mana (a que eu segurava pras contramagicas ja' nao tem pra que servir)? Paga o Exhaust ou a 1a ativada, se o
+    Monument ainda esta desvirado. So' com RIVERCHURN_OPP_END_STEP (linha real que o padrao do simulador nao joga)."""
+    if not RIVERCHURN_OPP_END_STEP or state.game_over or not has_perm(state, "Riverchurn Monument"):
+        return
+    act_riverchurn_exhaust(state, ignore_reserve=True) or act_riverchurn_tap(state, ignore_reserve=True)
+
+
 # --- Shifting Woodland --------------------------------------------------------------------------------------------
 def card_types_in_graveyard(state: GameState) -> int:
     ts = set()
@@ -3958,6 +4051,8 @@ def main_phase(state: GameState, phase: str):
         if state.game_over:
             return
         fp = _fingerprint(state)
+        if RIVERCHURN_TAP_FIRST and not state.commander_in_cz:
+            act_riverchurn_exhaust(state) or act_riverchurn_tap(state)
         cast_loop(state, phase)
         play_land_phase(state)
         use_spare_mana(state, phase)
@@ -4179,13 +4274,17 @@ def parse_decklist(text: str) -> list:
 
 BASE_LIBRARY = parse_decklist(DECKLIST_TEXT)       # 99 cartas (o comandante fica na zona de comando)
 SWAPS = ()                                          # variante de A/B: tupla de (carta_que_sai, carta_que_entra)
+SWAP_IN_PLACE = False                               # True: a carta que entra ocupa o LUGAR da que sai (mesma permutacao da semente => partida em que nenhuma das duas aparece e' IDENTICA: pareamento muito mais forte). Padrao False = remove+append (todos os numeros ja' arquivados)
 
 
 def current_library() -> list:
     lib = list(BASE_LIBRARY)
     for out_c, in_c in SWAPS:
-        lib.remove(out_c)
-        lib.append(in_c)
+        if SWAP_IN_PLACE:
+            lib[lib.index(out_c)] = in_c
+        else:
+            lib.remove(out_c)
+            lib.append(in_c)
     return lib
 
 
@@ -4234,6 +4333,7 @@ def simulate_one(seed: int, turns: int = 12) -> GameState:
                 break
         if state.game_over:
             break
+        riverchurn_opp_end_step(state)
     finalize(state)
     return state
 
@@ -4376,6 +4476,8 @@ def act_wipe_proxy(state: GameState) -> bool:
 
 
 ACTIONS = ACTIONS[:-1] + (act_karns_bastion, act_agadeem, act_smugglers, act_fallout, act_repulsive, act_removal_proxy, act_wipe_proxy, act_minamo_henge, act_lantern_exile) + ACTIONS[-1:]
+_i_lantern = ACTIONS.index(act_lantern)
+ACTIONS = ACTIONS[:_i_lantern] + (act_riverchurn_exhaust, act_riverchurn_tap) + ACTIONS[_i_lantern:]      # antes da compra do Lantern (que e' uso unico) e do ping do Ballista
 
 
 # =========================================================
@@ -4620,5 +4722,6 @@ def simulate_one_with_interaction(seed: int, turns: int = 12) -> GameState:
                 break
         if state.game_over:
             break
+        riverchurn_opp_end_step(state)
     finalize(state)
     return state

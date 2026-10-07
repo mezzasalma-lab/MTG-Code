@@ -1,0 +1,186 @@
+{
+ "sim": "mothman_goldfish_v1.py",
+ "turns": 12,
+ "destaque": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "riverchurn_exhaust_cards_opp",
+  "riverchurn_exhaust_lethal",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays",
+  "lands_entered_total",
+  "library_min",
+  "life_min"
+ ],
+ "compacto": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays"
+ ],
+ "variantes": {
+  "base": {},
+  "cut_Nature's Lore": {
+   "SWAPS": [
+    [
+     "Nature's Lore",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Nuclear Fallout": {
+   "SWAPS": [
+    [
+     "Nuclear Fallout",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Ouroboroid": {
+   "SWAPS": [
+    [
+     "Ouroboroid",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Overgrown Tomb": {
+   "SWAPS": [
+    [
+     "Overgrown Tomb",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Palantír of Orthanc": {
+   "SWAPS": [
+    [
+     "Palantír of Orthanc",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Plaza of Heroes": {
+   "SWAPS": [
+    [
+     "Plaza of Heroes",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Polluted Delta": {
+   "SWAPS": [
+    [
+     "Polluted Delta",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Pollywog Prodigy": {
+   "SWAPS": [
+    [
+     "Pollywog Prodigy",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Psychic Corrosion": {
+   "SWAPS": [
+    [
+     "Psychic Corrosion",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Rampant Frogantua": {
+   "SWAPS": [
+    [
+     "Rampant Frogantua",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Rejuvenating Springs": {
+   "SWAPS": [
+    [
+     "Rejuvenating Springs",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Repulsive Mutation": {
+   "SWAPS": [
+    [
+     "Repulsive Mutation",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Ruin Crab": {
+   "SWAPS": [
+    [
+     "Ruin Crab",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "cut_Nature's Lore",
+  "cut_Negate",
+  "cut_Nuclear Fallout",
+  "cut_Ouroboroid",
+  "cut_Overgrown Tomb",
+  "cut_Palantír of Orthanc",
+  "cut_Plaza of Heroes",
+  "cut_Polluted Delta",
+  "cut_Pollywog Prodigy",
+  "cut_Psychic Corrosion",
+  "cut_Rampant Frogantua",
+  "cut_Rejuvenating Springs",
+  "cut_Repulsive Mutation",
+  "cut_Ruin Crab"
+ ],
+ "regressao": []
+}

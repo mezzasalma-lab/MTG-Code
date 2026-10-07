@@ -1,0 +1,120 @@
+{
+ "sim": "mothman_goldfish_v1.py",
+ "turns": 12,
+ "destaque": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "riverchurn_exhaust_cards_opp",
+  "riverchurn_exhaust_lethal",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays",
+  "lands_entered_total",
+  "library_min",
+  "life_min",
+  "riverchurn_tap_cards_opp",
+  "riverchurn_exhaust_ascension",
+  "riverchurn_enter_turn__ate_T4",
+  "riverchurn_enter_turn__ate_T6"
+ ],
+ "compacto": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays"
+ ],
+ "variantes": {
+  "base": {},
+  "cut_An Offer You Can't Refuse": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Generous Patron": {
+   "SWAPS": [
+    [
+     "Generous Patron",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Tear Asunder": {
+   "SWAPS": [
+    [
+     "Tear Asunder",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Toxic Deluge": {
+   "SWAPS": [
+    [
+     "Toxic Deluge",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Wave Goodbye": {
+   "SWAPS": [
+    [
+     "Wave Goodbye",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Muldrotha, the Gravetide": {
+   "SWAPS": [
+    [
+     "Muldrotha, the Gravetide",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "cut_An Offer You Can't Refuse",
+  "cut_Negate",
+  "cut_Generous Patron",
+  "cut_Tear Asunder",
+  "cut_Toxic Deluge",
+  "cut_Wave Goodbye",
+  "cut_Muldrotha, the Gravetide"
+ ],
+ "regressao": []
+}

@@ -1,0 +1,2 @@
+N = 5000 x 2 modos (sementes 6005000..6009999): (1) SWAPS=() identico ao snapshot ANTES (cd5d453) em 20000 de 20000 comparacoes (2 conjuntos de chaves); divergencias 0 | (2) Monument no baralho: 8078 partidas em que ele nunca entrou em campo, identicas com ACTIVATE ligado/desligado (divergencias 0); 1922 partidas em que ele entrou (podem diferir)
+rc=0

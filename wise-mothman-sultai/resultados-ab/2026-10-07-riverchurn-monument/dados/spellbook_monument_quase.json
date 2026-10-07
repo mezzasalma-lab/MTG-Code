@@ -1,0 +1,122 @@
+[
+ {
+  "cartas": [
+   "Riverchurn Monument",
+   "Maddening Cacophony"
+  ],
+  "produz": [
+   "Infinite mill"
+  ],
+  "bracket": "E",
+  "id": "5080-6285",
+  "popularidade": 24648,
+  "faltam": [],
+  "mana": "{6}{U}{U}{U}{U}",
+  "descricao": "Cast Maddening Cacophony with kicker by paying {4}{U}{U}, causing each opponent to mill half their library, rounded up.\nActivate Riverchurn Monument's exhaust ability by paying {2}{U}{U} and tapping it, causing each opponent to mill the remainder of their library."
+ },
+ {
+  "cartas": [
+   "Riverchurn Monument",
+   "Jidoor, Aristocratic Capital // Overture"
+  ],
+  "produz": [
+   "Infinite mill for target opponent"
+  ],
+  "bracket": "E",
+  "id": "6285-6590",
+  "popularidade": 17821,
+  "faltam": [],
+  "mana": "{6}{U}{U}{U}{U}",
+  "descricao": "Cast Overture by paying {4}{U}{U}, causing each opponent to mill half their library, rounded down.\nActivate Riverchurn Monument's exhaust ability by paying {2}{U}{U} and tapping it, causing each opponent to mill the remainder of their library."
+ },
+ {
+  "cartas": [
+   "Riverchurn Monument",
+   "Traumatize"
+  ],
+  "produz": [
+   "Infinite mill for target opponent"
+  ],
+  "bracket": "E",
+  "id": "781-6285",
+  "popularidade": 12561,
+  "faltam": [],
+  "mana": "{5}{U}{U}{U}{U}",
+  "descricao": "Cast Traumatize by paying {3}{U}{U}, causing a player to mill half their library, rounded down.\nActivate Riverchurn Monument's exhaust ability by paying {2}{U}{U} and tapping it, causing each player to mill cards equal to the number of cards in their graveyard, thus causing the player targeted by Traumatize to mill the rest of their library."
+ },
+ {
+  "cartas": [
+   "Riverchurn Monument",
+   "Singularity Rupture"
+  ],
+  "produz": [
+   "Infinite mill"
+  ],
+  "bracket": "E",
+  "id": "6285-6746",
+  "popularidade": 12526,
+  "faltam": [],
+  "mana": "{6}{U}{U}{U}{U}",
+  "descricao": "Cast Singularity Rupture with kicker by paying {4}{U}{U}, causing each opponent to mill half their library, rounded up.\nActivate Riverchurn Monument's exhaust ability by paying {2}{U}{U} and tapping it, causing each opponent to mill the remainder of their library."
+ },
+ {
+  "cartas": [
+   "Riverchurn Monument",
+   "Cut Your Losses"
+  ],
+  "produz": [
+   "Infinite mill for up to two target players"
+  ],
+  "bracket": "E",
+  "id": "1861-6285",
+  "popularidade": 12165,
+  "faltam": [],
+  "mana": "{6}{U}{U}{U}{U}",
+  "descricao": "Cast Cut Your Losses by paying {4}{U}{U}, causing a player to mill half their library, rounded up.\nActivate Riverchurn Monument's exhaust ability by paying {2}{U}{U} and tapping it, causing each player to mill cards equal to the number of cards in their graveyard, thus causing the player targeted by Cut Your Losses to mill the rest of their library."
+ },
+ {
+  "cartas": [
+   "Riverchurn Monument",
+   "Terisian Mindbreaker"
+  ],
+  "produz": [
+   "Infinite mill for target opponent"
+  ],
+  "bracket": "S",
+  "id": "5230-6285",
+  "popularidade": 9719,
+  "faltam": [],
+  "mana": "{2}{U}{U}",
+  "descricao": "Declare Terisian Mindbreaker as an attacker, triggering its ability, causing an opponent to mill half their library, rounded up.\nActivate Riverchurn Monument's exhaust ability by paying {2}{U}{U} and tapping it, causing each player to mill cards equal to the number of cards in their graveyard, thus causing the player attacked by Terisian Mindbreaker to mill the rest of their library."
+ },
+ {
+  "cartas": [
+   "Riverchurn Monument",
+   "Fleet Swallower"
+  ],
+  "produz": [
+   "Infinite mill for target opponent"
+  ],
+  "bracket": "S",
+  "id": "1848-6285",
+  "popularidade": 7413,
+  "faltam": [],
+  "mana": "{2}{U}{U}",
+  "descricao": "Declare Fleet Swallower as an attacker, triggering its ability, causing a player to mill half their library, rounded up.\nActivate Riverchurn Monument's exhaust ability by paying {2}{U}{U} and tapping it, causing each player to mill cards equal to the number of cards in their graveyard, thus causing the player targeted by Fleet Swallower's ability to mill the remainder of their library."
+ },
+ {
+  "cartas": [
+   "Riverchurn Monument",
+   "Kitsune's Technique"
+  ],
+  "produz": [
+   "Infinite mill for target opponent"
+  ],
+  "bracket": "E",
+  "id": "6285-7268",
+  "popularidade": 5214,
+  "faltam": [],
+  "mana": "{6}{U}{U}{U}{U} at most",
+  "descricao": "Cast Kitsune's Technique by paying {4}{U}{U}, causing an opponent to mill half their library, rounded up.\nActivate Riverchurn Monument's exhaust ability by paying {2}{U}{U} and tapping it, causing the opponent to mill the remainder of their library."
+ }
+]

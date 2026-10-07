@@ -1,0 +1,340 @@
+{
+ "sim": "mothman_goldfish_v1.py",
+ "turns": 12,
+ "destaque": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "riverchurn_exhaust_cards_opp",
+  "riverchurn_exhaust_lethal",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays",
+  "lands_entered_total",
+  "library_min",
+  "life_min",
+  "riverchurn_tap_cards_opp",
+  "riverchurn_exhaust_ascension",
+  "riverchurn_enter_turn__ate_T4",
+  "riverchurn_enter_turn__ate_T6"
+ ],
+ "compacto": [
+  "riverchurn_tap_activations",
+  "riverchurn_exhaust_activations",
+  "cards_milled_opp_total",
+  "nonland_milled_opp_total",
+  "mothman_counters_placed_total",
+  "opps_eliminated_total",
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "cards_milled_self_total",
+  "interaction_plays"
+ ],
+ "variantes": {
+  "base": {},
+  "cut_An Offer You Can't Refuse": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Generous Patron": {
+   "SWAPS": [
+    [
+     "Generous Patron",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Tear Asunder": {
+   "SWAPS": [
+    [
+     "Tear Asunder",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Toxic Deluge": {
+   "SWAPS": [
+    [
+     "Toxic Deluge",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Wave Goodbye": {
+   "SWAPS": [
+    [
+     "Wave Goodbye",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Muldrotha, the Gravetide": {
+   "SWAPS": [
+    [
+     "Muldrotha, the Gravetide",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Evolution Witness": {
+   "SWAPS": [
+    [
+     "Evolution Witness",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Didn't Say Please": {
+   "SWAPS": [
+    [
+     "Didn't Say Please",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Zellix, Sanity Flayer": {
+   "SWAPS": [
+    [
+     "Zellix, Sanity Flayer",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Agatha's Soul Cauldron": {
+   "SWAPS": [
+    [
+     "Agatha's Soul Cauldron",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Arcane Denial": {
+   "SWAPS": [
+    [
+     "Arcane Denial",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Nuclear Fallout": {
+   "SWAPS": [
+    [
+     "Nuclear Fallout",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Cold-Eyed Selkie": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_V.A.T.S.": {
+   "SWAPS": [
+    [
+     "V.A.T.S.",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Soul-Guide Lantern": {
+   "SWAPS": [
+    [
+     "Soul-Guide Lantern",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Hedge Shredder": {
+   "SWAPS": [
+    [
+     "Hedge Shredder",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Heroic Intervention": {
+   "SWAPS": [
+    [
+     "Heroic Intervention",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Bojuka Bog": {
+   "SWAPS": [
+    [
+     "Bojuka Bog",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "cut_Yavimaya Hollow": {
+   "SWAPS": [
+    [
+     "Yavimaya Hollow",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "sens_sem_ativar__Negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "RIVERCHURN_ACTIVATE": false
+  },
+  "sens_exhaust_so_letal__Negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "RIVERCHURN_EXHAUST_MIN": 1000000000
+  },
+  "sens_exhaust_12__Negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "RIVERCHURN_EXHAUST_MIN": 12
+  },
+  "sens_exhaust_48__Negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "RIVERCHURN_EXHAUST_MIN": 48
+  },
+  "sens_eu_tambem__Negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "RIVERCHURN_SELF": true
+  },
+  "sens_tap_primeiro__Negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "RIVERCHURN_TAP_FIRST": true
+  },
+  "sens_fim_do_oponente__Negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "RIVERCHURN_OPP_END_STEP": true
+  },
+  "sens_otimista__Negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Riverchurn Monument"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "RIVERCHURN_TAP_FIRST": true,
+   "RIVERCHURN_OPP_END_STEP": true,
+   "RIVERCHURN_EXHAUST_MIN": 12
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "cut_An Offer You Can't Refuse",
+  "cut_Negate",
+  "cut_Generous Patron",
+  "cut_Tear Asunder",
+  "cut_Toxic Deluge",
+  "cut_Wave Goodbye",
+  "cut_Muldrotha, the Gravetide",
+  "cut_Evolution Witness",
+  "cut_Didn't Say Please",
+  "cut_Zellix, Sanity Flayer",
+  "cut_Agatha's Soul Cauldron",
+  "cut_Arcane Denial",
+  "cut_Nuclear Fallout",
+  "cut_Cold-Eyed Selkie",
+  "cut_V.A.T.S.",
+  "cut_Soul-Guide Lantern",
+  "cut_Hedge Shredder",
+  "cut_Heroic Intervention",
+  "cut_Bojuka Bog",
+  "cut_Yavimaya Hollow",
+  "sens_sem_ativar__Negate",
+  "sens_exhaust_so_letal__Negate",
+  "sens_exhaust_12__Negate",
+  "sens_exhaust_48__Negate",
+  "sens_eu_tambem__Negate",
+  "sens_tap_primeiro__Negate",
+  "sens_fim_do_oponente__Negate",
+  "sens_otimista__Negate"
+ ],
+ "regressao": []
+}

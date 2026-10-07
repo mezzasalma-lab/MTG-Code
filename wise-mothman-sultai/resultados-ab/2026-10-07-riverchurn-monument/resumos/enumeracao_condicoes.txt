@@ -1,0 +1,125 @@
+cartas lidas de lista.md: comandante + 90 = 91
+sem oraculo no cache (deve ser vazio): []
+
+## artefato (type_line)  [12]
+  - Agatha's Soul Cauldron | Legendary Artifact
+  - Altar of Dementia | Artifact
+  - Altar of the Brood | Artifact
+  - Hedge Shredder | Artifact — Vehicle
+  - Mesmeric Orb | Artifact
+  - Mindcrank | Artifact
+  - Palantír of Orthanc | Legendary Artifact
+  - Sol Ring | Artifact
+  - Soul-Guide Lantern | Artifact
+  - Swiftfoot Boots | Artifact — Equipment
+  - The Great Henge | Legendary Artifact
+  - Walking Ballista | Artifact Creature — Construct
+
+## oraculo cita "artifact"  [8]
+  - An Offer You Can't Refuse | Instant
+  - Boseiju, Who Endures | Legendary Land
+  - Cankerbloom | Creature — Phyrexian Fungus
+  - Hedge Shredder | Artifact — Vehicle
+  - Soul-Guide Lantern | Artifact
+  - Tear Asunder | Instant
+  - Urza's Saga | Enchantment Land — Urza's Saga
+  - Winding Constrictor | Creature — Snake
+
+## oraculo cita "mill"/"milled"  [24]
+  - The Wise Mothman | Legendary Creature — Insect Mutant
+  - Altar of Dementia | Artifact
+  - Altar of the Brood | Artifact
+  - Angel of Suffering | Creature — Nightmare Angel
+  - Ashiok, Dream Render | Legendary Planeswalker — Ashiok
+  - Bramble Familiar // Fetch Quest | Creature — Elemental Raccoon // Sorcery — Adventure
+  - Deepmuck Desperado | Creature — Homarid Mercenary
+  - Didn't Say Please | Instant
+  - Hedge Shredder | Artifact — Vehicle
+  - Icetill Explorer | Creature — Insect Scout
+  - Memory Erosion | Enchantment
+  - Mesmeric Orb | Artifact
+  - Mindcrank | Artifact
+  - Mirelurk Queen | Creature — Crab Mutant
+  - Palantír of Orthanc | Legendary Artifact
+  - Psychic Corrosion | Enchantment
+  - Rampant Frogantua | Creature — Frog
+  - Ruin Crab | Creature — Crab
+  - Six | Legendary Creature — Treefolk
+  - Smuggler's Surprise | Instant
+  - Syr Konrad, the Grim | Legendary Creature — Human Knight
+  - Takenuma, Abandoned Mire | Legendary Land
+  - Undead Alchemist | Creature — Zombie
+  - Zellix, Sanity Flayer | Legendary Creature — Horror
+
+## oraculo cita "graveyard"  [20]
+  - Agadeem's Awakening // Agadeem, the Undercrypt | Sorcery // Land
+  - Agatha's Soul Cauldron | Legendary Artifact
+  - Ashiok, Dream Render | Legendary Planeswalker — Ashiok
+  - Bloodchief Ascension | Enchantment
+  - Bojuka Bog | Land
+  - Deepmuck Desperado | Creature — Homarid Mercenary
+  - Evolution Witness | Creature — Elf Shaman Mutant
+  - Freestrider Lookout | Creature — Human Rogue
+  - Hedge Shredder | Artifact — Vehicle
+  - Icetill Explorer | Creature — Insect Scout
+  - Kozilek, Butcher of Truth | Legendary Creature — Eldrazi
+  - Muldrotha, the Gravetide | Legendary Creature — Elemental Avatar
+  - Ruin Crab | Creature — Crab
+  - Shifting Woodland | Land
+  - Six | Legendary Creature — Treefolk
+  - Soul-Guide Lantern | Artifact
+  - Syr Konrad, the Grim | Legendary Creature — Human Knight
+  - Takenuma, Abandoned Mire | Legendary Land
+  - The Gitrog Monster | Legendary Creature — Frog Horror
+  - Undead Alchemist | Creature — Zombie
+
+## oraculo cita "untap"/"untaps"/"becomes untapped"  [3]
+  - Fabled Passage | Land
+  - Mesmeric Orb | Artifact
+  - Minamo, School at Water's Edge | Legendary Land
+
+## oraculo cita "activate"/"activated"  [5]
+  - Agatha's Soul Cauldron | Legendary Artifact
+  - Boseiju, Who Endures | Legendary Land
+  - Shifting Woodland | Land
+  - Takenuma, Abandoned Mire | Legendary Land
+  - V.A.T.S. | Instant
+
+## oraculo cita "enters" (gatilho de entrada de permanente)  [1]
+  - Altar of the Brood | Artifact
+
+## devolve ao campo / flicker / blink  [1]
+  - Glen Elendra Archmage | Creature — Faerie Wizard
+
+## conjura do cemiterio (Muldrotha/Six/Kozilek-like)  [3]
+  - Icetill Explorer | Creature — Insect Scout
+  - Muldrotha, the Gravetide | Legendary Creature — Elemental Avatar
+  - Six | Legendary Creature — Treefolk
+
+## conta contadores/rad  [26]
+  - The Wise Mothman | Legendary Creature — Insect Mutant
+  - Agatha's Soul Cauldron | Legendary Artifact
+  - Basking Broodscale | Creature — Eldrazi Lizard
+  - Bloodchief Ascension | Enchantment
+  - Cankerbloom | Creature — Phyrexian Fungus
+  - Danny Pink | Legendary Creature — Human Soldier Advisor
+  - Evolution Witness | Creature — Elf Shaman Mutant
+  - Fathom Mage | Creature — Human Wizard
+  - Generous Patron | Creature — Elf Advisor
+  - Gyre Sage | Creature — Elf Druid
+  - Hardened Scales | Enchantment
+  - Herd Baloth | Creature — Beast
+  - Hollowmurk Siege | Enchantment
+  - Kami of Whispered Hopes | Creature — Spirit
+  - Kodama of the West Tree | Legendary Creature — Spirit
+  - Mirelurk Queen | Creature — Crab Mutant
+  - Nuclear Fallout | Sorcery
+  - Ouroboroid | Creature — Plant Wurm
+  - Palantír of Orthanc | Legendary Artifact
+  - Pollywog Prodigy | Creature — Frog Wizard
+  - Repulsive Mutation | Instant
+  - The Great Henge | Legendary Artifact
+  - Urza's Saga | Enchantment Land — Urza's Saga
+  - Walking Ballista | Artifact Creature — Construct
+  - Wave Goodbye | Sorcery
+  - Winding Constrictor | Creature — Snake
