@@ -1,2 +1,5 @@
 IGUAL  rank_triagem.txt (refeito so' dos brutos)
 IGUAL  tabela_final.md (refeita so' dos brutos)
+IGUAL  condicional.txt (refeito so' dos brutos)
+IGUAL  resumo_spellbook.md (refeito so' do JSON da API)
+re-simulando a triagem inteira com o simulador congelado (sem editar codigo/!)...
