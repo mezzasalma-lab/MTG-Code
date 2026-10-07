@@ -7,4 +7,3 @@ ambos_no_lugar                     padrao       partidas ok=20000 | excecoes=0  
 ambos_no_lugar                     resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
 ambos_chaves_extremas_remove_append padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
 ambos_chaves_extremas_remove_append resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
-reg rc=0 21:26:26

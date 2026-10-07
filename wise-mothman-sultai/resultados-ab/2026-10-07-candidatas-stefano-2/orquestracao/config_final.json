@@ -1,0 +1,215 @@
+{
+ "sim": "resultados-ab/2026-10-07-candidatas-stefano-2/codigo/mothman_goldfish_v1_C2.py",
+ "turns": 12,
+ "destaque": [
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "decked",
+  "opps_eliminated_total",
+  "fractured_casts",
+  "fractured_cycles",
+  "scorch_attacks",
+  "scorch_token_events",
+  "scorch_tokens",
+  "scorch_skipped",
+  "scorch_rad_self",
+  "tide_triggers",
+  "crystal_activations",
+  "crystal_counters",
+  "warp_casts",
+  "warp_exiled",
+  "warp_recasts",
+  "persist_zero_deaths",
+  "proliferates_total",
+  "rad_counters_given_opp_total",
+  "mothman_counters_placed_total",
+  "counters_placed_total",
+  "cards_milled_opp_total",
+  "cards_milled_self_total",
+  "library_min",
+  "draws_total",
+  "tokens_created"
+ ],
+ "compacto": [
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "scorch_tokens",
+  "tide_triggers",
+  "fractured_casts",
+  "crystal_activations",
+  "warp_casts",
+  "proliferates_total",
+  "rad_counters_given_opp_total",
+  "mothman_counters_placed_total",
+  "cards_milled_opp_total"
+ ],
+ "variantes": {
+  "base": {},
+  "fractured__negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Fractured Sanity"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "scorch__negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Screeching Scorchbeast"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "tide__negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Inexorable Tide"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "branching__negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Branching Evolution"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "loading__negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Loading Zone"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "crystal__negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "The Earth Crystal"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "fractured__didnt_say_please": {
+   "SWAPS": [
+    [
+     "Didn't Say Please",
+     "Fractured Sanity"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "scorch__didnt_say_please": {
+   "SWAPS": [
+    [
+     "Didn't Say Please",
+     "Screeching Scorchbeast"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "tide__didnt_say_please": {
+   "SWAPS": [
+    [
+     "Didn't Say Please",
+     "Inexorable Tide"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "branching__didnt_say_please": {
+   "SWAPS": [
+    [
+     "Didn't Say Please",
+     "Branching Evolution"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "seis_juntas_no_lugar_das_seis": {
+   "SWAPS": [
+    [
+     "An Offer You Can't Refuse",
+     "Fractured Sanity"
+    ],
+    [
+     "Negate",
+     "Screeching Scorchbeast"
+    ],
+    [
+     "Arcane Denial",
+     "Inexorable Tide"
+    ],
+    [
+     "Toxic Deluge",
+     "Branching Evolution"
+    ],
+    [
+     "Cold-Eyed Selkie",
+     "Loading Zone"
+    ],
+    [
+     "Didn't Say Please",
+     "The Earth Crystal"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "sens_scorch_min1__negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Screeching Scorchbeast"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "SCORCH_MIN_X": 1
+  },
+  "sens_scorch_min6__negate": {
+   "SWAPS": [
+    [
+     "Negate",
+     "Screeching Scorchbeast"
+    ]
+   ],
+   "SWAP_IN_PLACE": true,
+   "SCORCH_MIN_X": 6
+  },
+  "sens_base_persist_antigo": {
+   "PERSIST_ZERO_TOUGHNESS_DIES": false
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "fractured__negate",
+  "scorch__negate",
+  "tide__negate",
+  "branching__negate",
+  "loading__negate",
+  "crystal__negate",
+  "fractured__didnt_say_please",
+  "scorch__didnt_say_please",
+  "tide__didnt_say_please",
+  "branching__didnt_say_please",
+  "seis_juntas_no_lugar_das_seis",
+  "sens_scorch_min1__negate",
+  "sens_scorch_min6__negate",
+  "sens_base_persist_antigo"
+ ],
+ "regressao": []
+}
