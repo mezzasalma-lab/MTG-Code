@@ -245,6 +245,9 @@ add("Garruk's Uprising", "{2}{G}", {"enchantment"}, {"garruk"})
 add("Opulent Palace", "", {"land"}, {"etb_tapped", "palace"}, produces={"B", "G", "U"})
 add("Jace, Wielder of Mysteries", "{1}{U}{U}{U}", {"planeswalker"}, {"jace_wom"}, legendary=True)      # candidata de 2026-10-07 (oraculo ao vivo: resultados-ab/2026-10-07-jace-no-lugar-do-kozilek)
 add("Riverchurn Monument", "{1}{U}", {"artifact"}, {"riverchurn"})      # candidata de 2026-10-07 (oraculo ao vivo: resultados-ab/2026-10-07-riverchurn-monument)
+add("Agent Frank Horrigan", "{5}{B}{G}", {"creature"}, {"horrigan", "trample"}, 8, 6, legendary=True, subtypes={"Mutant", "Warrior"})      # candidata de 2026-10-07 (resultados-ab/2026-10-07-comparacao-stefano)
+add("The Master, Transcendent", "{1}{B}{G}{U}", {"artifact", "creature"}, {"master_t"}, 2, 4, legendary=True, subtypes={"Mutant"})        # candidata de 2026-10-07 (resultados-ab/2026-10-07-comparacao-stefano)
+add("Opponent Creature Card", "", {"creature"}, {"opp_card"}, 3, 3, subtypes={"Mutant"})   # ficticia: a carta de criatura de oponente que a Master levou (corpo 3/3 generico; volta ao cemiterio dele)
 
 # --- Fichas -----------------------------------------------------------------------
 add("Horror Token", "", {"creature"}, {"token"}, 1, 1, token=True, subtypes={"Horror"})
@@ -278,6 +281,10 @@ class Permanent:
     used_ability_turn: int = -1        # ativadas "uma vez por turno" (Muldrotha etc. nao usam)
     level: int = 0
     exhausted: bool = False
+    attacked_turn_id: int = -1         # Horrigan: "indestructible as long as it attacked this turn"
+    base_pt: Optional[tuple] = None    # The Master, Transcendent: "base power and toughness 3/3" (sobrepoe CDA, ruling 2024-03-08)
+    mutant: bool = False               # The Master: "It's a green Mutant ... It loses its other colors and creature types"
+    owner_idx: int = 0                 # Opponent Creature Card: de qual oponente veio (volta ao cemiterio dele)
 
 
 @dataclass
@@ -445,6 +452,24 @@ class GameState:
     riverchurn_exhaust_cards_opp: int = 0         # cartas milladas dos oponentes pelo Exhaust (soma dos cemiterios no momento)
     riverchurn_exhaust_lethal: int = 0            # oponentes cujo cemiterio >= biblioteca quando o Exhaust foi ativado
     riverchurn_exhaust_turn: Optional[int] = None
+    horrigan_enter_turn: Optional[int] = None     # turno em que o Horrigan entrou pela 1a vez (indicadores ate' T6..T8)
+    horrigan_etb_prolifs: int = 0
+    horrigan_attack_prolifs: int = 0
+    horrigan_attacks: int = 0
+    horrigan_attack_damage: int = 0
+    master_enter_turn: Optional[int] = None
+    master_activations: int = 0
+    master_act_mine: int = 0                      # alvo: criatura MINHA milada neste turno
+    master_act_opp: int = 0                       # alvo: criatura de OPONENTE milada neste turno (corpo generico 3/3)
+    master_act_on_opp_phase: int = 0
+    master_etb_rad: int = 0
+    master_no_target_checks: int = 0              # varreduras da habilidade sem alvo (Master pronta, nada milado)
+    master_names: dict = field(default_factory=dict)
+    milled_mine: list = field(default_factory=list)            # [(nome, turn_id)]: criaturas MINHAS milladas (alvo legal da Master no mesmo turno)
+    milled_opp_creatures: dict = field(default_factory=dict)   # {idx: (turn_id, n)}: criaturas milladas do oponente neste turn_id
+    prolif_by_source: dict = field(default_factory=dict)
+    prolif_counters_by_source: dict = field(default_factory=dict)
+    prolif_rad_by_source: dict = field(default_factory=dict)
     riverchurn_enter_turn: Optional[int] = None   # turno em que o Monument entrou em campo pela 1a vez (indicadores ate' T3..T6)
     riverchurn_tap_cards_opp: int = 0
     riverchurn_exhaust_ascension: int = 0         # ativacoes do Exhaust com a Bloodchief Ascension armada (3+ marcadores): cada carta milada tira 2 de vida
@@ -612,9 +637,16 @@ def players_lost(state: GameState) -> int:
     return sum(1 for o in state.opps if o.eliminated) + (1 if state.died_life or state.decked else 0)
 
 
+def perm_subtypes(p: Permanent):
+    """Subtipos de criatura do permanente: a Master, Transcendent troca todos por Mutant."""
+    return {"Mutant"} if p.mutant else eff_card(p).subtypes
+
+
 def power(state: GameState, p: Permanent) -> int:
     c = eff_card(p)
     m1 = p.ctr.get("minus1", 0)
+    if p.base_pt is not None:
+        return max(0, p.base_pt[0] + p.counters + p.temp_power - m1)
     if "construct" in c.tags:
         base = sum(1 for q in state.battlefield if is_artifact(q))
         return max(0, base + p.counters + p.temp_power - m1)
@@ -626,6 +658,8 @@ def power(state: GameState, p: Permanent) -> int:
 def toughness(state: GameState, p: Permanent) -> int:
     c = eff_card(p)
     m1 = p.ctr.get("minus1", 0)
+    if p.base_pt is not None:
+        return max(0, p.base_pt[1] + p.counters - m1)
     if "construct" in c.tags:
         base = sum(1 for q in state.battlefield if is_artifact(q))
         return max(0, base + p.counters - m1)
@@ -1162,6 +1196,9 @@ def mill_event(state: GameState, parts: list, source: str = "", before_triggers=
             state.nonland_milled_self_total += nl
             nonland_total += nl
             creature_cards += sum(1 for c in cards if "creature" in CARD_DB[c].types)
+            for c in cards:
+                if "creature" in CARD_DB[c].types and not CARD_DB[c].token:
+                    state.milled_mine.append((c, state.turn_id))
             state.library_min = min(state.library_min, len(state.library))
             if not state.library and state.turn_library_emptied is None and cards:
                 state.turn_library_emptied = state.turn
@@ -1180,6 +1217,9 @@ def mill_event(state: GameState, parts: list, source: str = "", before_triggers=
             cc = sum(1 for c in cards if c == "C")
             creature_cards += cc
             opp_creature_cards += cc
+            if cc:
+                tid, n0 = state.milled_opp_creatures.get(pl, (-1, 0))
+                state.milled_opp_creatures[pl] = (state.turn_id, (n0 if tid == state.turn_id else 0) + cc)
             opp_cards_total += len(cards)
             state.opp_cards_milled_by_turn[state.turn] = state.opp_cards_milled_by_turn.get(state.turn, 0) + len(cards)
     if not result:
@@ -1417,17 +1457,19 @@ def create_token(state: GameState, name: str, tapped: bool = False, counters: in
     return p
 
 
-def proliferate(state: GameState, source: str = ""):
+def proliferate(state: GameState, source: str = "", times: int = 1):
     """CR 701.34a: escolho qualquer numero de permanentes e/ou jogadores com contador e dou +1 de cada tipo. Politica: tudo que me ajuda;
     NAO os rad counters PROPRIOS (a menos que SAGE_PROLIFERATE_OWN_RAD), nem lore da Urza's Saga, nem -1/-1 do persist."""
     state.proliferates_total += 1
-    times = 1 + count_named(state, "Tekuthal, Inquiry Dominus")      # candidata: "proliferate twice"
+    state.prolif_by_source[source] = state.prolif_by_source.get(source, 0) + 1
+    times = times * (1 + count_named(state, "Tekuthal, Inquiry Dominus"))      # Tekuthal (candidata): "proliferate twice instead"; Horrigan: "proliferate twice" (2 escolhas independentes, ruling 2024-03-08)
     for _ in range(times):
         for p in list(state.battlefield):
             if p not in state.battlefield:
                 continue
             if p.counters > 0 and is_creature(p):
-                place_counters(state, p, 1, source="proliferate")
+                k = place_counters(state, p, 1, source="proliferate")
+                state.prolif_counters_by_source[source] = state.prolif_counters_by_source.get(source, 0) + k
             for kind in ("quest", "influence", "loyalty", "charge"):
                 if p.ctr.get(kind, 0) > 0:
                     if kind == "loyalty" and "planeswalker" in p.card.types:
@@ -1438,6 +1480,7 @@ def proliferate(state: GameState, source: str = ""):
             if o.rad > 0:
                 o.rad += 1
                 state.rad_counters_given_opp_total += 1
+                state.prolif_rad_by_source[source] = state.prolif_rad_by_source.get(source, 0) + 1
         if SAGE_PROLIFERATE_OWN_RAD and state.rad > 0:
             give_rad(state, 0, 1)
 
@@ -1791,6 +1834,22 @@ def apply_etb(state: GameState, p: Permanent):
         p.ctr["loyalty"] = 5
     if "jace_wom" in t:
         p.ctr["loyalty"] = 4
+    if "horrigan" in t:
+        # "Whenever Agent Frank Horrigan enters or attacks, proliferate twice."
+        if state.horrigan_enter_turn is None:
+            state.horrigan_enter_turn = state.turn
+        state.horrigan_etb_prolifs += 1
+        if HORRIGAN_PROLIF_TIMES > 0:
+            proliferate(state, "horrigan_etb", times=HORRIGAN_PROLIF_TIMES)
+    if "master_t" in t:
+        # "When The Master enters, target player gets two rad counters."
+        if state.master_enter_turn is None:
+            state.master_enter_turn = state.turn
+        o = pick_rad_target(state)
+        if o is not None:
+            commit_crime(state, "master_t_etb")
+            give_rad(state, o.idx, 2)
+            state.master_etb_rad += 1
     if "urzas_saga" in t:
         pass
     if "boseiju" in t or "minamo" in t:
@@ -1932,6 +1991,9 @@ def remove_permanent(state: GameState, perm: Permanent, reason: str = "dies", sa
         return
     if was_creature:
         creature_dies(state, perm, sacrificed)
+    if "opp_card" in perm.card.tags:
+        state.opps[max(0, perm.owner_idx - 1)].graveyard.append("C")        # a carta e' DO OPONENTE: vai ao cemiterio dele, nao ao meu
+        return
     had_minus = perm.ctr.get("minus1", 0) > 0
     put_card_into_graveyard(state, name, "battlefield", sacrificed=sacrificed)
     if "master" in perm.card.tags:
@@ -1961,7 +2023,7 @@ CAST_PRIORITY = {
     "Cold-Eyed Selkie": 40, "Cankerbloom": 35, "Rampant Frogantua": 50, "Glen Elendra Archmage": 45, "Angel of Suffering": 52, "Kozilek, Butcher of Truth": 30,
     "Walking Ballista": 48, "Agatha's Soul Cauldron": 58, "Altar of Dementia": 40, "Soul-Guide Lantern": 30, "Swiftfoot Boots": 45, "Ashiok, Dream Render": 63,
     "Palantír of Orthanc": 64, "Bloodchief Ascension": 60, "Altar of the Brood": 50, "Gyre Sage": 62, "Freestrider Lookout": 52,
-    "Riverchurn Monument": 57, "Jace, Wielder of Mysteries": 66,
+    "Riverchurn Monument": 57, "Jace, Wielder of Mysteries": 66, "Agent Frank Horrigan": 71, "The Master, Transcendent": 67,
     "Evolution Sage": 70, "Terrasymbiosis": 66, "Corpsejack Menace": 71, "Bruvac the Grandiloquent": 63, "The Master of Lake-town": 62, "Garruk's Uprising": 61,
 }
 FINISHERS = frozenset({"Kozilek, Butcher of Truth", "Rampant Frogantua", "Syr Konrad, the Grim", "Mindcrank", "Bloodchief Ascension"})
@@ -2157,7 +2219,10 @@ def resolve_instant_sorcery(state: GameState, name: str, x: int):
     if "wave_goodbye" in tags:
         state.wipes_cast += 1
         for p in list(creatures(state)):
-            if p.counters == 0 and not p.is_token and "commander" not in p.card.tags:
+            if p.counters == 0 and "opp_card" in p.card.tags:
+                state.battlefield.remove(p)
+                state.opps[max(0, p.owner_idx - 1)].hand_size += 1            # "to its owner's hand": o dono e' o oponente
+            elif p.counters == 0 and not p.is_token and "commander" not in p.card.tags:
                 state.battlefield.remove(p)
                 state.hand.append(p.card.name)
             elif p.counters == 0 and "commander" in p.card.tags:
@@ -3072,6 +3137,8 @@ def opponent_turn(state: GameState, o: Opp):
     rad_trigger_opp(state, o)
     if o.eliminated or state.game_over:
         return
+    if MASTER_OPP_TURN and has_perm(state, "The Master, Transcendent") and act_master(state):
+        state.master_act_on_opp_phase += 1
     # terreno
     if o.hand_size > 0 and rng.random() < (0.8 if o.turns_taken <= 8 else 0.35):
         o.lands += 1
@@ -3276,6 +3343,67 @@ def act_jace(state: GameState) -> bool:
         state.jace_draws += 1
         return True
     return False
+
+
+HORRIGAN_PROLIF_TIMES = 2    # "proliferate twice" (oraculo). 0 = sensibilidade: so' o corpo (8/6 trample, indestrutivel ao atacar), sem proliferate
+MASTER_OPP_TURN = True       # usa a habilidade tambem no turno dos oponentes (instante; a Master so' desvira no meu untap)
+MASTER_TAKE_OPP = True       # pode levar criatura milada do cemiterio de OPONENTE (corpo generico 3/3 sem habilidades: piso)
+
+
+def master_ready(state: GameState, p: Permanent) -> bool:
+    if p.tapped or p not in state.battlefield or not is_creature(p):
+        return False
+    return p.entered_turn < state.turn or has_haste(state, p)       # criatura com {T}: doenca de invocacao (Swiftfoot Boots da' haste)
+
+
+def master_candidates(state: GameState) -> list:
+    out = []
+    for name, tid in state.milled_mine:
+        if tid == state.turn_id and name in state.graveyard:
+            out.append(("mine", name, graveyard_value(state, name)))
+    if MASTER_TAKE_OPP:
+        for pl, (tid, n) in sorted(state.milled_opp_creatures.items()):
+            if tid == state.turn_id and state.opps[pl - 1].graveyard.count("C") > 0 and n > 0 and not state.opps[pl - 1].eliminated:
+                out.append(("opp", pl, 50.0))
+    return out
+
+
+def act_master(state: GameState) -> bool:
+    """The Master, Transcendent: "{T}: Put target creature card in a graveyard that was milled this turn onto the battlefield under your control. It's a green Mutant with base
+    power and toughness 3/3. (It loses its other colors and creature types.)" Alvo em QUALQUER cemiterio; so' 'mill' (ruling 2024-03-08)."""
+    ms = [p for p in perms_named(state, "The Master, Transcendent") if master_ready(state, p)]
+    if not ms or state.game_over:
+        return False
+    cands = master_candidates(state)
+    if not cands:
+        state.master_no_target_checks += 1
+        return False
+    kind, who, _ = max(cands, key=lambda c: (c[2], str(c[1])))
+    m_perm = ms[0]
+    m_perm.tapped = True
+    state.master_activations += 1
+    if state.turn_id != getattr(state, "_my_turn_id", state.turn_id):
+        pass
+    if kind == "mine":
+        state.graveyard.remove(who)
+        graveyard_leave(state, [who])
+        q = mk_perm(state, who)
+        state.master_act_mine += 1
+        state.master_names[who] = state.master_names.get(who, 0) + 1
+    else:
+        o = state.opps[who - 1]
+        o.graveyard.remove("C")
+        tid, n = state.milled_opp_creatures[who]
+        state.milled_opp_creatures[who] = (tid, n - 1)
+        q = mk_perm(state, "Opponent Creature Card")
+        q.owner_idx = who
+        state.master_act_opp += 1
+        state.master_names["(oponente)"] = state.master_names.get("(oponente)", 0) + 1
+    q.base_pt = (3, 3)
+    q.mutant = True
+    state.battlefield.append(q)
+    enter_permanent_triggers(state, q, from_cast=False)
+    return True
 
 
 def jace_removal_roll(state: GameState):
@@ -3899,7 +4027,7 @@ def act_karns_bastion(state: GameState) -> bool:
 
 
 # --- Fim das acoes: prioridade --------------------------------------------------------------------------------
-ACTIONS = (act_saga_construct, act_ashiok, act_jace, act_cauldron, act_altar_loop, act_cauldron_minamo, act_zellix, act_zellix_minamo, act_ballista_ping, act_cankerbloom,
+ACTIONS = (act_saga_construct, act_ashiok, act_jace, act_master, act_cauldron, act_altar_loop, act_cauldron_minamo, act_zellix, act_zellix_minamo, act_ballista_ping, act_cankerbloom,
            act_takenuma, act_boseiju, act_adapt, act_equip_boots, act_woodland, act_konrad, act_triome_cycle, act_waterlogged_grove, act_strip_mine,
            act_altar_finisher, act_lantern, act_ballista_pump)
 
@@ -4005,7 +4133,7 @@ def assign_targets(state: GameState, attackers: list) -> dict:
     zomb = has_perm(state, "Undead Alchemist")
     ml = best_opp_library(state)
     for p in sorted(attackers, key=lambda q: (-power(state, q), q.uid)):
-        if zomb and "Zombie" in eff_card(p).subtypes and ml is not None:
+        if zomb and "Zombie" in perm_subtypes(p) and ml is not None:
             out[p.uid] = ml.idx
             continue
         alive_rem = [o for o in al if rem[o.idx] > 0]
@@ -4043,6 +4171,16 @@ def combat_step(state: GameState):
         if p not in state.battlefield:
             continue
         t = eff_card(p).tags
+        if "horrigan" in t:
+            # "Whenever Agent Frank Horrigan enters or attacks, proliferate twice." + "has indestructible as long as it attacked this turn" (vale desde que e' declarado atacante, ruling)
+            p.attacked_turn_id = state.turn_id
+            state.horrigan_attacks += 1
+            state.horrigan_attack_prolifs += 1
+            if HORRIGAN_PROLIF_TIMES > 0:
+                proliferate(state, "horrigan_attack", times=HORRIGAN_PROLIF_TIMES)
+            if state.game_over or p not in state.battlefield:
+                continue
+            state.horrigan_attack_damage += power(state, p)
         if "mentor" in t:
             lesser = [q for q in attackers if q is not p and q in state.battlefield and power(state, q) < power(state, p)]
             if lesser:
@@ -4080,7 +4218,7 @@ def combat_step(state: GameState):
         idx = targets.get(p.uid)
         if idx is None:
             continue
-        if has_perm(state, "Undead Alchemist") and "Zombie" in eff_card(p).subtypes:
+        if has_perm(state, "Undead Alchemist") and "Zombie" in perm_subtypes(p):
             zombie_mill[idx] += pw                 # 'instead that player mills that many cards'
             dealers.append((p, idx, pw, True))
             continue
@@ -4592,7 +4730,7 @@ TOTAL_WIPE_CHANCE_FACTOR = sum(WIPE_TYPE_WEIGHTS.values())
 GRAVEYARD_WIPE_CHANCE_FACTOR = 0.4
 GRAVEYARD_SNIPE_CHANCE_FACTOR = 0.5
 COUNTERSPELL_CHANCE_FACTOR = 0.5
-INTERACTION_ENGINE_PRIORITY = ["Fathom Mage", "Danny Pink", "Winding Constrictor", "Hardened Scales", "Ouroboroid", "Mirelurk Queen", "Kami of Whispered Hopes", "Muldrotha, the Gravetide",
+INTERACTION_ENGINE_PRIORITY = ["Fathom Mage", "Danny Pink", "Winding Constrictor", "Hardened Scales", "Ouroboroid", "Mirelurk Queen", "Kami of Whispered Hopes", "Muldrotha, the Gravetide", "The Master, Transcendent", "Agent Frank Horrigan",
                                "The Gitrog Monster", "Icetill Explorer", "Syr Konrad, the Grim", "Zellix, Sanity Flayer", "Hollowmurk Siege", "Mindcrank", "Mesmeric Orb",
                                "Psychic Corrosion", "Memory Erosion", "The Great Henge", "Palantír of Orthanc", "Agatha's Soul Cauldron", "Altar of Dementia",
                                "Bloodchief Ascension", "Ruin Crab", "Altar of the Brood", "Deepmuck Desperado"]
@@ -4621,7 +4759,22 @@ def regenerate_sources(state: GameState) -> list:
     return out
 
 
+def is_indestructible(state: GameState, p: Permanent) -> bool:
+    """Horrigan: indestrutivel enquanto atacou NESTE turno (turn_id); nos turnos dos oponentes nao vale (ele atacou no meu)."""
+    return "horrigan" in eff_card(p).tags and p.attacked_turn_id == state.turn_id
+
+
 def try_protect_from_destroy(state: GameState, victims: list, spell_mv: int, noncreature: bool = True) -> set:
+    indestr = {p.uid for p in victims if is_indestructible(state, p)}
+    if not indestr:
+        return _try_protect_from_destroy(state, victims, spell_mv, noncreature)
+    rest = [p for p in victims if p.uid not in indestr]
+    if not rest:
+        return indestr
+    return _try_protect_from_destroy(state, rest, spell_mv, noncreature) | indestr
+
+
+def _try_protect_from_destroy(state: GameState, victims: list, spell_mv: int, noncreature: bool = True) -> set:
     """Devolve o conjunto de uids que SOBREVIVEM a um 'destroy' do oponente: 1) anular a magia; 2) Heroic Intervention; 3) Smuggler's (+{1}): so' poder >= 4;
     4) Plaza of Heroes: 1 lendaria; 5) regeneracao (Swarmyard so' Inseto; Hollow qualquer)."""
     saved = set()
@@ -4657,7 +4810,7 @@ def try_protect_from_destroy(state: GameState, victims: list, spell_mv: int, non
                 break
     for kind, src in regenerate_sources(state):
         if kind == "swarmyard":
-            cands = [p for p in victims if "Insect" in eff_card(p).subtypes and p.uid not in saved and is_creature(p)]
+            cands = [p for p in victims if "Insect" in perm_subtypes(p) and p.uid not in saved and is_creature(p)]
         else:
             cands = [p for p in victims if is_creature(p) and p.uid not in saved]
         if not cands:

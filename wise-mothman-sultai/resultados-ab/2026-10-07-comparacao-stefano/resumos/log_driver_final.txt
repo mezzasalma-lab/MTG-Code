@@ -26,3 +26,11 @@ feito 10000 padrao frank__coldeyed_selkie
 feito 10000 padrao frank__didnt_say_please
 feito 10000 padrao frank__wave_goodbye
 feito 10000 padrao frank__tear_asunder
+feito 10000 padrao frank__kozilek_butcher_of_truth
+feito 10000 padrao master__tear_asunder
+feito 10000 padrao master__an_offer_you_cant_refuse
+feito 10000 padrao master__negate
+feito 10000 padrao master__wave_goodbye
+feito 10000 padrao ambos__offer_frank__negate_master
+feito 10000 padrao ambos__offer_frank__tear_master
+feito 10000 padrao sens_frank_sem_proliferate__negate
