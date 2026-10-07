@@ -1,0 +1,2 @@
+N = 5000 x 2 modos (sementes 9010000..9014999): (1) SWAPS=() identico ao snapshot ANTES (HM) em 20000 de 20000 comparacoes (chaves nos 2 extremos); divergencias 0 | (2) as seis no baralho: 1027 partidas em que nenhuma das seis foi vista (mao/campo/cemiterio/exilio), identicas com as chaves nos 2 extremos (divergencias 0); 8973 partidas em que alguma apareceu (podem diferir)
+rc=0

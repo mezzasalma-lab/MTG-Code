@@ -1,33 +1,3 @@
-base                               cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-fractured__negate                  cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-scorch__negate                     cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-tide__negate                       cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-branching__negate                  cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-loading__negate                    cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-crystal__negate                    cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-fractured__didnt_say_please        cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-scorch__didnt_say_please           cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-tide__didnt_say_please             cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-branching__didnt_say_please        cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-seis_juntas_no_lugar_das_seis      cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-sens_scorch_min1__negate           cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-sens_scorch_min6__negate           cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-sens_base_persist_antigo           cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-feito 10000 padrao base
-feito 10000 padrao fractured__negate
-feito 10000 padrao scorch__negate
-feito 10000 padrao tide__negate
-feito 10000 padrao branching__negate
-feito 10000 padrao loading__negate
-feito 10000 padrao crystal__negate
-feito 10000 padrao fractured__didnt_say_please
-feito 10000 padrao scorch__didnt_say_please
-feito 10000 padrao tide__didnt_say_please
-feito 10000 padrao branching__didnt_say_please
-feito 10000 padrao seis_juntas_no_lugar_das_seis
-feito 10000 padrao sens_scorch_min1__negate
-feito 10000 padrao sens_scorch_min6__negate
-feito 10000 padrao sens_base_persist_antigo
 LOTE N=10000 sementes 3000000..3009999, 12 turnos, modo padrao
 
 [fractured__negate - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
