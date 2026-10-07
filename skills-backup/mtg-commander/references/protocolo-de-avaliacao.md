@@ -78,14 +78,15 @@ Alterou esta skill (ou um espelho): `bash skills-backup/sincronizar-skill.sh` e 
 
 Auditoria carta-a-carta não pega erro de motor (a varredura de 2026-10-05 achou erro em 14 dos 18 decks e nenhum seria pego assim). Antes de declarar pronto:
 1. **Scripts** de `varredura-2026-10-05/scripts/` (o `LEIAME.md` da pasta lista os falsos positivos já verificados): `audit_entrada.py` / `audit_entrada2.py` (terreno entra virado quando o oráculo manda; "unless you control…" por
-   SUBTIPO), `audit_fetch.py` (sacrifício, 1 de vida, busca por subtipo, thinning), `audit_terreno_nao_e_magia.py`, `audit_landfall.py` (entradas × chamadas de landfall), `colisao_nome.py` (estado por nome). Ler cada divergência à mão.
+   SUBTIPO), `audit_fetch.py` (sacrifício, 1 de vida, busca por subtipo, thinning), `audit_terreno_nao_e_magia.py`, `audit_landfall.py` (entradas × chamadas de landfall), `audit_landfall_ordem.py` (terreno jogado antes do payoff de landfall; hoje 0 candidatos), `colisao_nome.py` (estado por nome). Ler cada divergência à mão.
 2. **Classes do motor:** mulligan ESCOLHE o fundo (CR 103.5); imposto do comandante no cast (CR 903.8); upkeep antes do draw; terreno virado jogado primeiro em T1/T2 quando não custa jogada (ensaio a seco + modo GHOST);
    fetch real (inclusive a devolvida do cemitério); "whenever a land enters" em TODO ponto de entrada (play_land, fetch, ramp, blink, saga).
+   Ordem terreno × payoff de landfall: com um terreno por jogar, conjurar antes o payoff que o mana de agora já paga, só se um ensaio a seco do resto da fase pré-combate mostrar que o turno não perde nenhuma jogada (a fórmula "mana de agora + 1" falhou: não conta mana de landfall em campo nem 2º land drop; chave `LANDFALL_PAYOFF_FIRST` nos 6 simuladores com payoff: Mothman, Toph, Beorn, Thranduil, Maralen, Prismatic Bridge).
 3. **Determinismo:** os `driver.py` fixam `PYTHONHASHSEED=0` e NÃO enxergam dependência de hash; rodar `det_check.sh`/`det_wide2.sh` (3 hash seeds × 1.500 sementes × 2 modos) quando mexer em iteração de `set`/`dict` de strings.
 4. **Verificação vazia é vácua:** conferir que contagens são > 0 (smoke de simulador baseado em dict contava 0 cartas); tabela publicada = função só do bruto (`driver.py sum` × re-execução); conferir `Traceback` no log, não o `rc`
    (`$(date)` no mesmo `echo` zera `$?`).
 5. **Operação:** verificação completa re-simula o arquivo VIVO (não editar o simulador enquanto roda); commitar e enviar cada deck quando fecha (o contêiner pode reiniciar).
-Não coberto (declarar na Regra #7): conjuração fora da mão, sacrifício × destroy, `_sick` agregados, fórmulas achatadas, choque que não deduz vida (Kutzil, Edgar), oponente real.
+Não coberto (declarar na Regra #7): magia que põe terreno em campo antes do payoff de landfall, conjuração fora da mão, sacrifício × destroy, `_sick` agregados, fórmulas achatadas, choque que não deduz vida (Kutzil, Edgar), oponente real.
 
 ## 8. Erros que já cometi e o que fiz para não repetir (checklist rápido)
 

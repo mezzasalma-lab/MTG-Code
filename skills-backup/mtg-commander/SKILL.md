@@ -21,7 +21,7 @@ Antes de qualquer resposta, leia:
 
 **Repositório de trabalho:** `mezzasalma-lab/MTG-Code` (GitHub), branch `claude/goldfish-simulator-vjg1ey`. Cada deck tem a própria pasta (lista, auditoria, checklist do oráculo, log do goldfish, simulador). **Ao citar um arquivo, sempre dar o caminho completo com a pasta do deck** (18 decks têm um `goldfish-log.md`).
 
-**Simulador novo ou alterado (Regra #10 do repositório):** rodar as varreduras mecânicas de `varredura-2026-10-05/scripts/` (entrada de terreno, fetch, terreno ≠ magia, landfall, colisão por nome), conferir as classes do motor (mulligan escolhe o fundo, imposto, upkeep × draw, terreno virado primeiro, gatilho de land enters em todo ponto de entrada) e checar determinismo com 3 `PYTHONHASHSEED` (os `driver.py` fixam o hash e não enxergam isso); detalhes em `references/protocolo-de-avaliacao.md` §7.
+**Simulador novo ou alterado (Regra #10 do repositório):** rodar as varreduras mecânicas de `varredura-2026-10-05/scripts/` (entrada de terreno, fetch, terreno ≠ magia, landfall, ordem terreno × payoff de landfall, colisão por nome), conferir as classes do motor (mulligan escolhe o fundo, imposto, upkeep × draw, terreno virado primeiro, gatilho de land enters em todo ponto de entrada, payoff de landfall conjurado antes do terreno) e checar determinismo com 3 `PYTHONHASHSEED` (os `driver.py` fixam o hash e não enxergam isso); detalhes em `references/protocolo-de-avaliacao.md` §7.
 
 **Backup desta skill:** `skills-backup/mtg-commander/` no repositório; alterou a skill, rode `bash skills-backup/sincronizar-skill.sh` e commite junto (Regra #9).
 

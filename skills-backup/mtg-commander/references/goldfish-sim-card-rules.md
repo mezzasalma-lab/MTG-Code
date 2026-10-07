@@ -708,3 +708,20 @@ mudar a conclusão. Fazer a medição do teto antes de reclamar que o simulador 
 <!-- Adicionar novas entradas abaixo conforme surgirem cartas com efeitos
      estruturais que exigem implementação explícita (não só tag) em qualquer
      simulador que as inclua. -->
+
+
+## Payoff de landfall antes do terreno
+
+Achado real (Mothman, partida manual #1, 2026-10-06; estendido a 5 decks em 2026-10-07). O usuário conjurou Ruin Crab, Mothman e Icetill Explorer e só depois jogou o terreno; os simuladores jogavam
+SEMPRE o terreno antes de conjurar (`play_land` antes de `main_phase`/`cast_loop`), então o payoff de landfall nunca estava em campo quando o terreno do turno entrava (100% das sementes em 4 cenários
+dirigidos no Mothman). É convenção de ordem do motor, não limite da carta (Regra #5): virou chave `LANDFALL_PAYOFF_FIRST`.
+- **Regra de jogo:** com um terreno ainda por jogar, conjurar antes o payoff de landfall que o mana de AGORA já paga (o terreno do turno e os de efeito seguinte disparam). A guarda tem de ser um
+  ENSAIO A SECO (cópia profunda do estado; roda o resto da fase pré-combate na ordem antiga e na nova; o payoff só passa se nada que a ordem antiga conjuraria/jogaria deixar de acontecer, comandante e rochas de mana
+  incluídos). A 1ª versão usava a fórmula `custo do comandante <= mana de agora + 1` e **estava errada**: não conta o mana de landfall já em campo (Lotus Cobra, Provisioner), os land drops extras (Company) nem
+  a rocha de mana de prioridade maior; atrasou o comandante do Beorn de T3 para T4 em 38 de 2.000 partidas pareadas e foi achada só no A/B; no Mothman era cega a COR (Ruin Crab `{U}` gastava o único Island do comandante) e inflou o efeito do payoff-primeiro em cerca de um terço (Ruin Crab +21% → +13%, mesa limpa até T8 +0,9 → +0,6 ponto). Só muda a ORDEM do que o turno já conjuraria.
+- **Efeito além do landfall:** Thranduil's Company ("you may play an additional land") só libera o 2º land drop se entrar ANTES dos terrenos; com a ordem antiga o 2º drop nunca era usado no turno em que ela entra.
+- **Como validar (Regra #1/#10):** chave desligada == snapshot anterior em 20.000 × 2 modos; testes dirigidos (payoff antes do terreno dispara o landfall; chave desligada não; comandante não é deslocado; sem terreno
+  na mão ou terreno já jogado não dispara); A/B pareado 2.000 e 10.000; regressão 20.000 × 2 modos; determinismo com 3 `PYTHONHASHSEED`. Script de varredura: `audit_landfall_ordem.py`.
+- **Cuidado ao implementar:** `copy.deepcopy(state, memo)` com o MESMO `memo` em duas cópias devolve os mesmos objetos da 1ª (a 2ª cópia aliasa a 1ª): criar o `memo` novo a cada cópia (Toph). Usar o MESMO caminho de conjuração do loop da fase principal (no Prismatic Bridge foi preciso extrair `_cast_hand_spell` e `_main_phase_reserved` do `main_phase`, sem mudar nada);
+  funções que só LEEM o estado não podem mexer em contador de estatística (a 1ª versão do Mothman mexia em `self_mill_blocked_total` e a bit-identidade acusou).
+- **Não coberto:** magia que põe terreno em campo (Cultivate, Farseek, Three Visits) conjurada antes de um payoff que o mana também pagaria depois do terreno; terreno que volta ao campo; várias fases principais.

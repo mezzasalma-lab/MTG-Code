@@ -1,7 +1,7 @@
 # Backup versionado da skill `mtg-commander`
 
 Cópia de segurança da skill **`mtg-commander`** (especialista em Commander/EDH, com as regras permanentes do usuário e o protocolo de avaliação de cartas/simuladores).
-Criada em **2026-09-30**; atualizada em **2026-10-05** (Regra #10). Regra de manutenção: Regra #9 do `CLAUDE.md` (raiz do repositório).
+Criada em **2026-09-30**; atualizada em **2026-10-05** (Regra #10) e em **2026-10-07** (ordem terreno × payoff de landfall). Regra de manutenção: Regra #9 do `CLAUDE.md` (raiz do repositório).
 
 > **Este backup é a cópia durável.** A pasta viva da skill (`/root/.claude/skills/synced/<id>/mtg-commander/`) é sincronizada com a conta do usuário, mas
 > **alterações feitas nela durante uma sessão não são gravadas na conta** e o próximo sync pode sobrescrevê-las. Para a skill da conta refletir a versão
@@ -39,6 +39,14 @@ Estado anterior da skill (2026-09-26): `SKILL.md` + 3 referências. Agora:
 - `mtg-commander/references/protocolo-de-avaliacao.md`: nova §7 (varredura mecânica do motor) e 3 linhas no checklist de erros (agora §8).
 - `mtg-commander/SKILL.md`: parágrafo "Simulador novo ou alterado" e uma linha em "Tom e abordagem".
 - **Aviso (Regra #9):** a pasta viva da skill é sincronizada com a conta do usuário, mas alterações feitas nela durante uma sessão NÃO são gravadas na conta; este backup é a cópia durável e a skill da conta só reflete a mudança se for reinstalada a partir daqui.
+
+## O que mudou na atualização de 2026-10-07 (ordem terreno × payoff de landfall)
+
+- `CLAUDE.md` (e o espelho `references/CLAUDE-repositorio.md`): Regra #10 passa a listar `audit_landfall_ordem.py` (agora lê também a `lista.md` do deck e reconhece `main_phase(`; **0 candidatos**) e a classe "ordem terreno × payoff de landfall" com a
+  chave `LANDFALL_PAYOFF_FIRST` nos 6 simuladores com payoff (Mothman, Toph, Beorn, Thranduil, Maralen, Prismatic Bridge) e o que NÃO cobre (magia que põe terreno em campo, terreno que volta ao campo).
+- `references/user-standing-rules.md` §21, `references/goldfish-sim-card-rules.md` (nova seção "Payoff de landfall antes do terreno"), `mtg-commander/references/protocolo-de-avaliacao.md` §7 e `mtg-commander/SKILL.md`: mesma classe.
+- A **pasta viva** da skill (`/root/.claude/skills/synced/<id>/mtg-commander/`) só tinha o `SKILL.md` (sem `references/`); foi **reposta inteira a partir deste backup** em 2026-10-07. Como sempre, isso **não grava nada na conta**: a skill da conta só reflete a mudança
+  se `mtg-commander.zip` for enviado de novo (passo 2 abaixo, que só o usuário consegue fazer).
 
 ## Como restaurar / reinstalar
 

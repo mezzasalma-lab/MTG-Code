@@ -820,8 +820,12 @@ Pedido do usuário (2026-10-05): *"Sim, adicione a Regra #10 e sincronize a skil
 - A varredura de 2026-10-05 achou erro em 14 dos 18 decks e nenhum seria pego por auditoria carta-a-carta: o erro mora no motor (mulligan que sorteava o fundo, terreno virado nunca jogado primeiro,
   terreno que entra desvirado contra o oráculo, fetchland que ficava em campo como dual, gatilho de "a land enters" só em parte dos pontos de entrada, resultado que dependia de `PYTHONHASHSEED`).
 - Antes de declarar pronto um simulador novo ou alterado: rodar os scripts de `varredura-2026-10-05/scripts/` (`audit_entrada`, `audit_entrada2`, `audit_fetch`, `audit_terreno_nao_e_magia`,
-  `audit_landfall`, `colisao_nome`), conferir a lista de classes do motor e checar determinismo com 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos (`det_check.sh`/`det_wide2.sh`): os `driver.py` fixam
+  `audit_landfall`, `audit_landfall_ordem`, `colisao_nome`), conferir a lista de classes do motor e checar determinismo com 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos (`det_check.sh`/`det_wide2.sh`): os `driver.py` fixam
   o hash em 0 e por isso não enxergam esse bug. Texto integral e o que a regra NÃO cobre: Regra #10 do `CLAUDE.md`.
+- **Ordem terreno × payoff de landfall (achada em 2026-10-06 no Mothman, estendida em 2026-10-07):** com um terreno ainda por jogar, o simulador conjura antes o payoff de landfall que o mana de agora já paga
+  **só se um ensaio a seco do resto da fase pré-combate mostrar que o turno não perde nenhuma jogada** (comandante, rocha de mana; a fórmula "mana de agora + 1" falhou: atrasou o comandante do Beorn em 38 de 2.000 partidas e, no Mothman, ignorava a cor e superestimou o efeito, Ruin Crab +21% → +13%), senão o terreno do turno nunca dispara o landfall e a Company (Thranduil/Maralen) nunca libera o 2º land drop no turno em que entra. Chave `LANDFALL_PAYOFF_FIRST` nos 6 simuladores com
+  payoff de landfall (Mothman, Toph, Beorn, Thranduil, Maralen, Prismatic Bridge); `audit_landfall_ordem.py` tem de dar 0 candidatos. Pedido do usuário (2026-10-07): *"Corrige os simuladores com erro no script para
+  automatizar a ordem de jogadas para o landfall"*. Não coberto: magia que põe terreno em campo antes do payoff, terreno que volta ao campo, várias fases principais.
 - Verificação que dá vazio/zero é vácua (conferir que o número é > 0); a tabela publicada tem que ser função só do bruto arquivado; resultado de bateria longa se confere por `Traceback` no log, não pelo `rc`.
 - Comitar e enviar cada deck assim que a verificação fecha (o contêiner pode reiniciar no meio da rodada); não editar o simulador enquanto a verificação completa re-simula o arquivo vivo.
 

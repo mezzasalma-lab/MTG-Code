@@ -505,8 +505,10 @@ no `play_land`/`play_turn`/mulligan):**
    `audit_terreno_nao_e_magia.py` (jogar terreno não conta como magia/storm),
    `audit_landfall.py` (todo terreno que entra dispara o landfall do deck),
    `audit_landfall_ordem.py` (o terreno do turno é jogado ANTES do payoff de
-   landfall, como o Ruin Crab/Icetill do Mothman, achado em 2026-10-06; só
-   lista candidatos: a ordem do turno de cada simulador é lida à mão),
+   landfall, como o Ruin Crab/Icetill do Mothman, achado em 2026-10-06; lê o
+   oráculo do cache, o arquivo do simulador e a `lista.md` do deck; só lista
+   candidatos, e a ordem do turno de cada simulador é lida à mão; **hoje 0
+   candidatos: os 6 simuladores com payoff de landfall têm a política**),
    `colisao_nome.py` (estado por NOME em vez de por instância). Ler à mão cada
    divergência antes de corrigir ou de classificar como falso positivo.
 2. **Conferir a lista de classes do motor** (todas já tiveram erro real): o
@@ -518,9 +520,23 @@ no `play_land`/`play_turn`/mulligan):**
    gatilho de "whenever a land enters" (Field of the Dead, landfall) em TODO
    ponto de entrada (`play_land`, fetch, ramp, blink, saga), não só no
    `play_land`; **a ORDEM terreno × payoff de landfall**: com um terreno por
-   jogar, conjurar antes o payoff que o mana de agora já paga (o comandante tem
-   prioridade), senão o terreno do turno nunca dispara o landfall (Mothman:
-   `LANDFALL_PAYOFF_FIRST`, +21% de gatilhos do Ruin Crab).
+   jogar, conjurar antes o payoff que o mana de agora já paga, **só se um ensaio a seco do resto
+   da fase pré-combate mostrar que o turno não perde nenhuma jogada** (comandante, rocha de
+   mana, qualquer jogada de prioridade maior; a fórmula "mana de agora + 1" falhou: não conta
+   o mana de landfall já em campo nem o 2º land drop, e atrasou o comandante em 38 de 2.000
+   partidas do Beorn e, no Mothman, gastava o único Island do comandante), senão o terreno do turno nunca dispara o landfall, e a Company
+   do Thranduil/Maralen nunca libera o 2º land drop no turno em que entra.
+   Chave `LANDFALL_PAYOFF_FIRST` (padrão ligada; desligada = ordem antiga, bit
+   a bit) em **Mothman, Toph, Beorn, Thranduil, Maralen e Prismatic Bridge**
+   (Mothman: +13% de gatilhos do Ruin Crab com o ensaio a seco, +21% com a guarda aritmética, que
+   era cega a cor e superestimou o efeito; pedido do usuário em 2026-10-07:
+   *"Corrige os simuladores com erro no script para automatizar a ordem de
+   jogadas para o landfall"*). **Todo simulador novo, ou carta nova com landfall
+   num simulador existente, precisa da política** e o `audit_landfall_ordem.py`
+   tem de continuar dando 0 candidatos. **Não coberto (declarar na Regra #7):**
+   magia que põe terreno em campo (Cultivate, Farseek, Three Visits...) conjurada
+   antes de um payoff que o mana também pagaria depois do terreno; terreno que
+   volta ao campo (blink, Lander); ordem de várias fases principais.
 3. **Determinismo entre processos.** Os `driver.py` das pastas de resultados
    fixam `PYTHONHASHSEED=0` (senão nada reproduz byte a byte), e por isso **não
    enxergam** dependência de ordem de hash. A única checagem que enxerga é
