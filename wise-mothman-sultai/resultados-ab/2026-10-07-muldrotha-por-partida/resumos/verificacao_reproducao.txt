@@ -1,0 +1,5 @@
+IGUAL  muldrotha.md (refeito so' dos brutos)
+IGUAL  raw_muldrotha_10000.json.xz (bruto re-simulado identico)
+IGUAL  raw_muldrotha_10000_resiliencia.json.xz (bruto re-simulado identico)
+IGUAL  recasts_por_nome.json (re-simulado)
+4/4 saidas byte a byte iguais
