@@ -1,5 +1,8 @@
 # Mothman: o simulador jogava o terreno ANTES do Ruin Crab / Icetill Explorer (correção `LANDFALL_PAYOFF_FIRST`, 2026-10-06)
 
+> **Superado em magnitude (2026-10-07):** os lotes desta pasta usam a **guarda aritmética** do comandante, que era cega a cor e superestimou o efeito (Ruin Crab +21% → +13%; mesa limpa até T8 +0,9 → +0,6 ponto com o ensaio a seco, o padrão atual do simulador). Mesma direção, conclusões qualitativas iguais. Ver `../2026-10-07-guarda-ensaio-a-seco/LEIAME.md`. Para reproduzir estes brutos, `config.json` e `bitident.py` fixam `LANDFALL_GUARD_DRYRUN = false`.
+
+
 Arquivo da Regra #8 (`CLAUDE.md`). Achado no ensaio da partida manual #1 (`../2026-10-06-partida-manual-1/`): o usuário conjurou Ruin Crab, Mothman e Icetill **e só depois** jogou o terreno (Urza's Saga do cemitério); o simulador chamava `play_land_phase` **antes** de `cast_loop` em todo `main_phase`, então o payoff de landfall nunca estava em campo quando o terreno do turno entrava (**100% das sementes em 4 cenários dirigidos**). É uma convenção de ordem do motor, não um limite da carta (Regra #5): virou correção.
 Simulador: `../../mothman_goldfish_v1.py` (commit desta pasta). Código **anterior** fixado em `codigo/mothman_goldfish_v1_ANTES_91b1a3d.py` (idêntico ao commit `91b1a3d`).
 
@@ -48,7 +51,7 @@ Simulador: `../../mothman_goldfish_v1.py` (commit desta pasta). Código **anteri
 | `orquestracao/driver_mm.py`, `abgen.py`, `config.json`, `bitident.py`, `verificar_reproducao.sh` | código | apoio |
 | `codigo/mothman_goldfish_v1_ANTES_91b1a3d.py` | simulador anterior (para a bit-identidade) | referência |
 
-## A classe, nos outros simuladores (Regra #10; NÃO corrigida aqui)
+## A classe, nos outros simuladores (Regra #10; NÃO corrigida aqui; **corrigida em 2026-10-07**, ver `<deck>/resultados-ab/2026-10-07-landfall-payoff-primeiro/`)
 `resumos/audit_landfall_ordem.txt`: **1 candidato claro, o Toph** (`main_phase`: `play_land` antes de `cast_loop`, com 16 cartas de landfall no arquivo: Lotus Cobra, Tireless Provisioner, Springheart Nantuko, Felidar Retreat, Scute Swarm, Nissa, Resurgent Animist e outras). O script **não consegue ler** a ordem de Beorn, Maralen, Thranduil e Prismatic Bridge (estrutura de turno diferente; têm payoffs de landfall no arquivo): precisam de leitura à mão. Os demais simuladores não têm payoff de landfall no arquivo. **Falsos positivos possíveis:** carta no arquivo que não está na lista; payoff para o qual a ordem não importa. Nada disso foi corrigido nesta rodada.
 
 ## Verificação de reprodutibilidade (feita ANTES de declarar arquivado)

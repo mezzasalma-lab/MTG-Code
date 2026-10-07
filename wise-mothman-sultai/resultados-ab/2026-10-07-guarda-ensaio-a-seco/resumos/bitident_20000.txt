@@ -1,0 +1,6 @@
+Bit-identidade com o CODIGO FINAL (guarda por ensaio a seco como padrao): arquivo vivo x `codigo/mothman_goldfish_v1_ANTES_91b1a3d.py`, 4 fatias de 5.000 sementes (5_000_000..5_019_999) x 2 modos, 12 turnos (`orquestracao/bitident.py N semente0`)
+N = 5000 x 2 modos (sementes 5000000..5004999): chave DESLIGADA identica ao 91b1a3d em 10000 partidas; chave LIGADA: 8216 sem disparo e identicas, 1784 com disparo (podem diferir); divergencias: 0
+N = 5000 x 2 modos (sementes 5005000..5009999): chave DESLIGADA identica ao 91b1a3d em 10000 partidas; chave LIGADA: 8235 sem disparo e identicas, 1765 com disparo (podem diferir); divergencias: 0
+N = 5000 x 2 modos (sementes 5010000..5014999): chave DESLIGADA identica ao 91b1a3d em 10000 partidas; chave LIGADA: 8170 sem disparo e identicas, 1830 com disparo (podem diferir); divergencias: 0
+N = 5000 x 2 modos (sementes 5015000..5019999): chave DESLIGADA identica ao 91b1a3d em 10000 partidas; chave LIGADA: 8238 sem disparo e identicas, 1762 com disparo (podem diferir); divergencias: 0
+TOTAL N = 20.000 x 2 modos: chave DESLIGADA identica ao 91b1a3d em 40000 de 40.000 partidas; chave LIGADA (guarda ensaio a seco): 32859 sem disparo e identicas, 7141 com disparo (as unicas que podem diferir); divergencias: 0

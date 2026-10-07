@@ -1,4 +1,4 @@
-bash orquestracao/verificar_reproducao.sh --tudo, refeita em 2026-10-07 depois de fixar LANDFALL_GUARD_DRYRUN=false nos configs/bitident.py (padrao do simulador passou a ser o ensaio a seco)
+bash orquestracao/verificar_reproducao.sh --tudo (2026-10-07)
 IGUAL  ab_2000.txt
 IGUAL  ab_10000.txt
 IGUAL  ab_2000_resiliencia.txt
@@ -7,7 +7,7 @@ IGUAL  compacto_2000.txt
 IGUAL  compacto_10000.txt
 IGUAL  compacto_2000_resiliencia.txt
 IGUAL  compacto_10000_resiliencia.txt
-IGUAL  bitident.py 300: N = 300 x 2 modos (sementes 5000000..5000299): chave DESLIGADA identica ao 91b1a3d em 600 partidas; chave LIGADA: 448 sem disparo e identicas, 152 com disparo (podem diferir); divergencias: 0
+IGUAL  resumo_guarda.md
 IGUAL  ab_2000.txt (re-execucao)
 IGUAL  raw_ab_2000.json.xz (bruto re-simulado identico)
 IGUAL  ab_2000_resiliencia.txt (re-execucao)

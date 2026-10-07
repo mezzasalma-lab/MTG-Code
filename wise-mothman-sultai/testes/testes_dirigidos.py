@@ -1398,7 +1398,7 @@ def payoff_primeiro_icetill_da_landfall_nos_dois_terrenos():
         mills = []
         orig = m.mill_event
         def w(state, parts, *a, **k):
-            if k.get("source") == "icetill":
+            if k.get("source") == "icetill" and state is st:     # so' o estado real: o ensaio a seco da guarda roda copias profundas que tambem passam por aqui
                 mills.append(1)
             return orig(state, parts, *a, **k)
         m.mill_event = w
@@ -1443,6 +1443,40 @@ def payoff_primeiro_retrace_da_six_so_com_dois_terrenos_na_mao():
     um = _com_chave(True, lambda: roda(["Forest"]))
     assert dois[0] == 1 and dois[1] >= 1, dois         # retrace do Crab (descarta 1 terreno) e o outro terreno dispara o landfall
     assert um[0] == 0, um                              # com 1 terreno so', descartar para o retrace tiraria a jogada de terreno: nao antecipa
+
+
+@teste
+def payoff_primeiro_guarda_por_ensaio_a_seco_deixa_passar_quando_nada_se_perde():
+    def roda(dry):
+        antigo = m.LANDFALL_GUARD_DRYRUN
+        m.LANDFALL_GUARD_DRYRUN = dry
+        try:
+            st = _cena_crab(["Ruin Crab", "Forest"], ["Island", "Forest", "Swamp", "Swamp"])
+            m.main_phase(st, "main1")
+            return st.ruin_crab_mills, st.payoff_first_casts
+        finally:
+            m.LANDFALL_GUARD_DRYRUN = antigo
+    assert _com_chave(True, lambda: roda(False)) == (1, 1)
+    assert _com_chave(True, lambda: roda(True)) == (1, 1)       # com o ensaio a seco o Crab continua indo na frente (nada deixa de ser conjurado)
+
+
+@teste
+def payoff_primeiro_guarda_por_ensaio_a_seco_nao_desloca_o_comandante():
+    def roda(dry):
+        antigo = m.LANDFALL_GUARD_DRYRUN
+        m.LANDFALL_GUARD_DRYRUN = dry
+        try:
+            st = _cena_crab(["Ruin Crab", "Forest"], ["Island", "Forest", "Swamp", "Swamp"], comandante_em_campo=False)
+            m.main_phase(st, "main1")
+            return st.payoff_first_casts, (not st.commander_in_cz)
+        finally:
+            m.LANDFALL_GUARD_DRYRUN = antigo
+    on = _com_chave(True, lambda: roda(True))
+    ar = _com_chave(True, lambda: roda(False))
+    # Ruin Crab custa {U} (1) e o comandante {1}{B}{G}{U} (4): 1 + 4 = 5 = mana de agora (4) + 1, a guarda aritmetica deixa o Crab passar; mas ele gasta o UNICO Island e o comandante
+    # perde o {U} (a formula e' cega a cor): o ensaio a seco ve' isso
+    assert ar == (1, False), ar                                  # guarda aritmetica (padrao arquivado): o Crab entra na frente e o comandante NAO e' conjurado
+    assert on == (0, True), on                                   # ensaio a seco: nao desloca; o comandante e' conjurado
 
 
 def main():

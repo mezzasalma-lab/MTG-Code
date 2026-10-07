@@ -39,91 +39,15 @@
   "base": {
    "LANDFALL_PAYOFF_FIRST": false
   },
-  "payoff_primeiro": {
+  "aritmetica": {
    "LANDFALL_PAYOFF_FIRST": true,
    "LANDFALL_GUARD_DRYRUN": false
   },
-  "pacote5": {
-   "SWAPS": [
-    [
-     "Cold-Eyed Selkie",
-     "Evolution Sage"
-    ],
-    [
-     "Swarmyard",
-     "Karn's Bastion"
-    ],
-    [
-     "Soul-Guide Lantern",
-     "Bruvac the Grandiloquent"
-    ],
-    [
-     "An Offer You Can't Refuse",
-     "Garruk's Uprising"
-    ],
-    [
-     "Bojuka Bog",
-     "Opulent Palace"
-    ]
-   ],
-   "LANDFALL_PAYOFF_FIRST": false
-  },
-  "pacote5+payoff_primeiro": {
-   "SWAPS": [
-    [
-     "Cold-Eyed Selkie",
-     "Evolution Sage"
-    ],
-    [
-     "Swarmyard",
-     "Karn's Bastion"
-    ],
-    [
-     "Soul-Guide Lantern",
-     "Bruvac the Grandiloquent"
-    ],
-    [
-     "An Offer You Can't Refuse",
-     "Garruk's Uprising"
-    ],
-    [
-     "Bojuka Bog",
-     "Opulent Palace"
-    ]
-   ],
+  "ensaio": {
    "LANDFALL_PAYOFF_FIRST": true,
-   "LANDFALL_GUARD_DRYRUN": false
+   "LANDFALL_GUARD_DRYRUN": true
   },
-  "pacote5+master": {
-   "SWAPS": [
-    [
-     "Cold-Eyed Selkie",
-     "Evolution Sage"
-    ],
-    [
-     "Swarmyard",
-     "Karn's Bastion"
-    ],
-    [
-     "Soul-Guide Lantern",
-     "Bruvac the Grandiloquent"
-    ],
-    [
-     "An Offer You Can't Refuse",
-     "Garruk's Uprising"
-    ],
-    [
-     "Bojuka Bog",
-     "Opulent Palace"
-    ],
-    [
-     "Negate",
-     "The Master of Lake-town"
-    ]
-   ],
-   "LANDFALL_PAYOFF_FIRST": false
-  },
-  "pacote5+master+payoff_primeiro": {
+  "pacote5+master+aritmetica": {
    "SWAPS": [
     [
      "Cold-Eyed Selkie",
@@ -153,42 +77,43 @@
    "LANDFALL_PAYOFF_FIRST": true,
    "LANDFALL_GUARD_DRYRUN": false
   },
-  "K_sem_embaralhar": {
-   "KOZILEK_SHUFFLE_ENABLED": false,
-   "LANDFALL_PAYOFF_FIRST": false
-  },
-  "K_sem_embaralhar+payoff_primeiro": {
-   "KOZILEK_SHUFFLE_ENABLED": false,
+  "pacote5+master+ensaio": {
+   "SWAPS": [
+    [
+     "Cold-Eyed Selkie",
+     "Evolution Sage"
+    ],
+    [
+     "Swarmyard",
+     "Karn's Bastion"
+    ],
+    [
+     "Soul-Guide Lantern",
+     "Bruvac the Grandiloquent"
+    ],
+    [
+     "An Offer You Can't Refuse",
+     "Garruk's Uprising"
+    ],
+    [
+     "Bojuka Bog",
+     "Opulent Palace"
+    ],
+    [
+     "Negate",
+     "The Master of Lake-town"
+    ]
+   ],
    "LANDFALL_PAYOFF_FIRST": true,
-   "LANDFALL_GUARD_DRYRUN": false
-  },
-  "guarda_desligada": {
-   "SELF_MILL_GUARD_ENABLED": false,
-   "LANDFALL_PAYOFF_FIRST": false
-  },
-  "guarda_desligada+payoff_primeiro": {
-   "SELF_MILL_GUARD_ENABLED": false,
-   "LANDFALL_PAYOFF_FIRST": true,
-   "LANDFALL_GUARD_DRYRUN": false
-  },
-  "orb_sem_limite+payoff_primeiro": {
-   "ORB_CAST_MIN_LIBRARY": 0,
-   "LANDFALL_PAYOFF_FIRST": true,
-   "LANDFALL_GUARD_DRYRUN": false
+   "LANDFALL_GUARD_DRYRUN": true
   }
  },
  "variantes_10000": [
   "base",
-  "payoff_primeiro",
-  "pacote5",
-  "pacote5+payoff_primeiro",
-  "pacote5+master",
-  "pacote5+master+payoff_primeiro"
+  "aritmetica",
+  "ensaio"
  ],
  "regressao": [
-  "payoff_primeiro",
-  "pacote5+master+payoff_primeiro",
-  "guarda_desligada+payoff_primeiro",
-  "orb_sem_limite+payoff_primeiro"
+  "ensaio"
  ]
 }

@@ -1,4 +1,4 @@
-"""Bit-identidade da correcao LANDFALL_PAYOFF_FIRST (Regra #1 de CLAUDE.md): (1) com a chave DESLIGADA o simulador novo == o commit 91b1a3d, campo a campo, N sementes x 2 modos;
+"""[2026-10-07: versao com a guarda PADRAO (ensaio a seco); a de 2026-10-06 fixa a guarda aritmetica] Bit-identidade da correcao LANDFALL_PAYOFF_FIRST (Regra #1 de CLAUDE.md): (1) com a chave DESLIGADA o simulador novo == o commit 91b1a3d, campo a campo, N sementes x 2 modos;
 (2) com a chave LIGADA, toda partida em que NENHUM payoff foi conjurado antes do terreno (`payoff_first_casts == 0`) e' IDENTICA a' do 91b1a3d; so' as que disparam podem diferir.
 Uso: python3 bitident.py N [semente0]   (sai com codigo != 0 se algo diverge; confere que ha > 0 partidas em cada grupo)"""
 import importlib.util, os, sys
@@ -28,7 +28,6 @@ for resil in (False, True):
             bad += 1; print("DIVERGE (chave desligada)", sd, resil, [k for k in a if a[k] != b.get(k)][:5]); continue
         off_ok += 1
         NOVO.LANDFALL_PAYOFF_FIRST = True
-        NOVO.LANDFALL_GUARD_DRYRUN = False   # estes lotes sao da guarda aritmetica (2026-10-06); o padrao passou a ser o ensaio a seco em 2026-10-07
         st = run(NOVO, sd, resil)
         c = snap(st)
         if st.payoff_first_casts > 0:

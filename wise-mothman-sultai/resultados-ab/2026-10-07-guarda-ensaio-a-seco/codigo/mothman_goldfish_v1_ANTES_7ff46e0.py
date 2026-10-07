@@ -77,7 +77,6 @@ ALL_ATTACKERS_COMBAT = True
 KOZILEK_SHUFFLE_ENABLED = True        # chave de teste do "seguro contra self-mill": False = Kozilek sem o embaralhar
 LANDFALL_PAYOFF_FIRST = True          # conjura Ruin Crab / Icetill Explorer / Evolution Sage ANTES de jogar o terreno quando o mana de agora ja' paga (o terreno entao dispara o landfall); False = ordem do commit 91b1a3d (terreno primeiro)
 LANDFALL_PAYOFFS = frozenset({"Ruin Crab", "Icetill Explorer", "Evolution Sage"})
-LANDFALL_GUARD_DRYRUN = True             # True (padrao desde 2026-10-07) = o payoff so' passa na frente do terreno se um ensaio a seco do resto da fase mostrar que nenhuma jogada nao-terreno se perde (comandante, rocha, ...), como nos outros 5 simuladores; False = guarda ARITMETICA do comandante (custo <= mana de agora + 1), cega a cor/landfall/land drop extra: foi a arquivada em 2026-10-06 e superestimou o efeito (Ruin Crab +21% contra +13%)
 
 # =========================================================
 # CARD DATABASE
@@ -2589,35 +2588,6 @@ def landfall_payoff_options(state: GameState) -> list:
     return opts
 
 
-def _hoist_loses_a_play(state: GameState, t: tuple, phase: str) -> bool:
-    """Ensaio a seco (copia profunda; `random` global restaurado) do RESTO da fase nas duas ordens: ANTIGA (terreno, depois o loop de conjuracao) e NOVA (`t` conjurado antes do terreno, depois o mesmo resto).
-    Perde jogada se algo que a ordem antiga tiraria da mao (terrenos nao contam: o Icetill troca terreno da mao pelo do cemiterio) deixa de sair na nova, ou se o comandante deixa de ser conjurado."""
-    def resto(s):
-        play_land_phase(s)
-        for _ in range(12):
-            if s.game_over:
-                return
-            fp = _fingerprint(s)
-            cast_loop(s, phase)
-            play_land_phase(s)
-            use_spare_mana(s, phase)
-            if _fingerprint(s) == fp:
-                break
-    saved = random.getstate()
-    try:
-        mao0 = collections.Counter(state.hand)
-        antiga = copy.deepcopy(state)
-        resto(antiga)
-        nova = copy.deepcopy(state)
-        execute_cast(nova, t)
-        resto(nova)
-        sai_a, sai_n = mao0 - collections.Counter(antiga.hand), mao0 - collections.Counter(nova.hand)
-        perdeu = {c: k for c, k in (sai_a - sai_n).items() if "Land" not in CARD_DB[c].types}
-        return bool(perdeu) or (not antiga.commander_in_cz and nova.commander_in_cz)
-    finally:
-        random.setstate(saved)
-
-
 def cast_landfall_payoffs_first(state: GameState, phase: str):
     """Ordem real de jogo: com um terreno ainda por jogar, conjura ANTES o payoff de landfall (Ruin Crab, Icetill Explorer, Evolution Sage) se o mana de AGORA ja' o paga,
     para que o terreno do turno (e o buscado por ele, e os do cemiterio) dispare o landfall. Achado na partida manual #1 (2026-10-06): o simulador jogava sempre o terreno primeiro.
@@ -2638,10 +2608,7 @@ def cast_landfall_payoffs_first(state: GameState, phase: str):
         if not opts:
             return
         t = max(opts, key=lambda t: (cast_score(state, t[0], t[1], t[2]), t[0]))
-        if LANDFALL_GUARD_DRYRUN:
-            if _hoist_loses_a_play(state, t, phase):
-                return                    # o payoff antes do terreno faria o turno perder uma jogada nao-terreno (comandante, rocha, ...): fica na ordem antiga
-        elif state.commander_in_cz:
+        if state.commander_in_cz:
             g_c, pips_c = effective_cost(state, COMMANDER)
             g_p, pips_p = effective_cost(state, t[0])
             cmd_cost, pay_cost, mana_now = g_c + len(pips_c), g_p + len(pips_p), available_mana(state)

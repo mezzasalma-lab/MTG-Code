@@ -75,9 +75,6 @@ CAULDRON_ABILITIES_ENABLED = True
 SAGE_PROLIFERATE_OWN_RAD = False      # proliferate nos rad counters PROPRIOS? (padrao: nao; so' os dos oponentes)
 ALL_ATTACKERS_COMBAT = True
 KOZILEK_SHUFFLE_ENABLED = True        # chave de teste do "seguro contra self-mill": False = Kozilek sem o embaralhar
-LANDFALL_PAYOFF_FIRST = True          # conjura Ruin Crab / Icetill Explorer / Evolution Sage ANTES de jogar o terreno quando o mana de agora ja' paga (o terreno entao dispara o landfall); False = ordem do commit 91b1a3d (terreno primeiro)
-LANDFALL_PAYOFFS = frozenset({"Ruin Crab", "Icetill Explorer", "Evolution Sage"})
-LANDFALL_GUARD_DRYRUN = True             # True (padrao desde 2026-10-07) = o payoff so' passa na frente do terreno se um ensaio a seco do resto da fase mostrar que nenhuma jogada nao-terreno se perde (comandante, rocha, ...), como nos outros 5 simuladores; False = guarda ARITMETICA do comandante (custo <= mana de agora + 1), cega a cor/landfall/land drop extra: foi a arquivada em 2026-10-06 e superestimou o efeito (Ruin Crab +21% contra +13%)
 
 # =========================================================
 # CARD DATABASE
@@ -432,7 +429,6 @@ class GameState:
     memory_erosion_mills: int = 0
     psychic_corrosion_mills: int = 0
     ruin_crab_mills: int = 0
-    payoff_first_casts: int = 0       # vezes em que um payoff de landfall foi conjurado ANTES do terreno do turno (LANDFALL_PAYOFF_FIRST)
     zellix_activations: int = 0
     minamo_untaps: int = 0
     shifting_woodland_copies: int = 0
@@ -2350,32 +2346,26 @@ def graveyard_land_candidates(state: GameState) -> list:
     return out
 
 
-def land_play_candidates(state: GameState):
-    """(terrenos da mao jogaveis, todos os candidatos = mao + cemiterio via Icetill/Muldrotha). Usado por `play_land_phase` e por `cast_landfall_payoffs_first`."""
-    hand_lands = []
-    for c in state.hand:
-        cc = CARD_DB[c]
-        if "land" not in cc.types:
-            continue
-        if "mdfc" in cc.tags:
-            # MDFC: so' como terreno se estou curto de terrenos (senao fica como feiticio)
-            if n_lands(state) >= 6:
-                continue
-            if n_lands(state) >= 5 and any("land" in CARD_DB[x].types and "mdfc" not in CARD_DB[x].tags for x in state.hand):
-                continue
-        if c not in hand_lands:
-            hand_lands.append(c)
-    gy = graveyard_land_candidates(state)
-    cands = list(hand_lands)
-    for g in gy:
-        if g not in cands:
-            cands.append(g)
-    return hand_lands, cands
-
-
 def play_land_phase(state: GameState):
     while state.lands_played_this_turn < land_drops_available(state) and not state.game_over:
-        hand_lands, cands = land_play_candidates(state)
+        hand_lands = []
+        for c in state.hand:
+            cc = CARD_DB[c]
+            if "land" not in cc.types:
+                continue
+            if "mdfc" in cc.tags:
+                # MDFC: so' como terreno se estou curto de terrenos (senao fica como feiticio)
+                if n_lands(state) >= 6:
+                    continue
+                if n_lands(state) >= 5 and any("land" in CARD_DB[x].types and "mdfc" not in CARD_DB[x].tags for x in state.hand):
+                    continue
+            if c not in hand_lands:
+                hand_lands.append(c)
+        gy = graveyard_land_candidates(state)
+        cands = list(hand_lands)
+        for g in gy:
+            if g not in cands:
+                cands.append(g)
         if not cands:
             break
         pick = None
@@ -2533,124 +2523,40 @@ def cast_loop(state: GameState, phase: str = "main1"):
             break
         if best is None:
             return
-        if not execute_cast(state, best):
-            failed.append(best[0] + best[1] + str(best[2]))
-
-
-def execute_cast(state: GameState, best: tuple) -> bool:
-    """Executa UMA conjuracao escolhida (name, zone, face) de `castable_candidates`: mao, comandante, exilio de aventura, retrace da Six ou Muldrotha. Devolve se resolveu."""
-    name, zone, face = best
-    ok = False
-    if zone == "hand":
-        ok = cast_card(state, name, x=choose_x(state, name) if CARD_DB[name].is_x else 0, zone="hand", face=face if face == "adventure" else "front")
-    elif zone == "cz":
-        ok = cast_commander(state)
-    elif zone == "exile":
-        state.adventure_exile.remove(name)
-        ok = cast_card(state, name, zone="exile")
-        if not ok:
-            state.adventure_exile.append(name)
-    elif zone.startswith("graveyard"):
-        perm = zone.split(":")[1]
-        g, pips = effective_cost(state, name)
-        if perm == "six":
-            lands_h = [h for h in state.hand if "land" in CARD_DB[h].types and "mdfc" not in CARD_DB[h].tags]
-            if lands_h and can_pay(state, g, pips, CARD_DB[name]):
-                d = min(lands_h, key=lambda h: land_play_score(state, h))
-                state.graveyard.remove(name)              # CR 601.2a: a carta vai pra pilha ANTES de pagar o custo (descartar o terreno nao pode devolve-la)
-                graveyard_leave(state, [name])
-                state.hand.remove(d)
-                put_card_into_graveyard(state, d, "hand")
-                ok = cast_card(state, name, zone="graveyard")
-                state.six_retraces += 1
-                state.recursion_events_total += 1
-        else:
-            state.graveyard.remove(name)
-            graveyard_leave(state, [name])
-            state.muldrotha_used.append(face)
-            state.muldrotha_plays += 1
-            state.recursion_events_total += 1
-            ok = cast_card(state, name, zone="graveyard")
-    return ok
-
-
-def landfall_payoff_options(state: GameState) -> list:
-    """Payoffs de landfall que posso conjurar AGORA (mao, ou retrace da Six/Muldrotha), no formato de `castable_candidates`. Funcao pura: nao mexe em nenhum contador de estatistica
-    (por isso nao chama `castable_candidates`, que conta mills voluntarios bloqueados)."""
-    opts = []
-    for name in sorted(LANDFALL_PAYOFFS):
-        if name in state.hand and can_cast_name(state, name):
-            opts.append((name, "hand", "front"))
-    for name, perm, slot in graveyard_cast_options(state):
-        if name in LANDFALL_PAYOFFS:
+        name, zone, face = best
+        ok = False
+        if zone == "hand":
+            ok = cast_card(state, name, x=choose_x(state, name) if CARD_DB[name].is_x else 0, zone="hand", face=face if face == "adventure" else "front")
+        elif zone == "cz":
+            ok = cast_commander(state)
+        elif zone == "exile":
+            state.adventure_exile.remove(name)
+            ok = cast_card(state, name, zone="exile")
+            if not ok:
+                state.adventure_exile.append(name)
+        elif zone.startswith("graveyard"):
+            perm = zone.split(":")[1]
             g, pips = effective_cost(state, name)
-            if can_pay(state, g, pips, CARD_DB[name]):
-                opts.append((name, "graveyard:" + perm, slot))
-    return opts
-
-
-def _hoist_loses_a_play(state: GameState, t: tuple, phase: str) -> bool:
-    """Ensaio a seco (copia profunda; `random` global restaurado) do RESTO da fase nas duas ordens: ANTIGA (terreno, depois o loop de conjuracao) e NOVA (`t` conjurado antes do terreno, depois o mesmo resto).
-    Perde jogada se algo que a ordem antiga tiraria da mao (terrenos nao contam: o Icetill troca terreno da mao pelo do cemiterio) deixa de sair na nova, ou se o comandante deixa de ser conjurado."""
-    def resto(s):
-        play_land_phase(s)
-        for _ in range(12):
-            if s.game_over:
-                return
-            fp = _fingerprint(s)
-            cast_loop(s, phase)
-            play_land_phase(s)
-            use_spare_mana(s, phase)
-            if _fingerprint(s) == fp:
-                break
-    saved = random.getstate()
-    try:
-        mao0 = collections.Counter(state.hand)
-        antiga = copy.deepcopy(state)
-        resto(antiga)
-        nova = copy.deepcopy(state)
-        execute_cast(nova, t)
-        resto(nova)
-        sai_a, sai_n = mao0 - collections.Counter(antiga.hand), mao0 - collections.Counter(nova.hand)
-        perdeu = {c: k for c, k in (sai_a - sai_n).items() if "Land" not in CARD_DB[c].types}
-        return bool(perdeu) or (not antiga.commander_in_cz and nova.commander_in_cz)
-    finally:
-        random.setstate(saved)
-
-
-def cast_landfall_payoffs_first(state: GameState, phase: str):
-    """Ordem real de jogo: com um terreno ainda por jogar, conjura ANTES o payoff de landfall (Ruin Crab, Icetill Explorer, Evolution Sage) se o mana de AGORA ja' o paga,
-    para que o terreno do turno (e o buscado por ele, e os do cemiterio) dispare o landfall. Achado na partida manual #1 (2026-10-06): o simulador jogava sempre o terreno primeiro.
-    NAO mexe no que o jogador conjuraria no turno: so' muda a ORDEM de um payoff que o turno ja' pagaria com o mana de agora; o comandante tem prioridade (nao o deslocamos);
-    o retrace da Six so' conta se sobra outro terreno para jogar depois do descarte."""
-    if not LANDFALL_PAYOFF_FIRST:
-        return
-    failed = []
-    for _ in range(4):
-        if state.game_over or state.lands_played_this_turn >= land_drops_available(state):
-            return
-        hand_lands, cands = land_play_candidates(state)
-        if not cands:
-            return
-        opts = [t for t in landfall_payoff_options(state)
-                if t[0] + t[1] + str(t[2]) not in failed and not cast_blocked(state, t[0], t[2])
-                and not (t[1].startswith("graveyard") and len(hand_lands) < 2)]
-        if not opts:
-            return
-        t = max(opts, key=lambda t: (cast_score(state, t[0], t[1], t[2]), t[0]))
-        if LANDFALL_GUARD_DRYRUN:
-            if _hoist_loses_a_play(state, t, phase):
-                return                    # o payoff antes do terreno faria o turno perder uma jogada nao-terreno (comandante, rocha, ...): fica na ordem antiga
-        elif state.commander_in_cz:
-            g_c, pips_c = effective_cost(state, COMMANDER)
-            g_p, pips_p = effective_cost(state, t[0])
-            cmd_cost, pay_cost, mana_now = g_c + len(pips_c), g_p + len(pips_p), available_mana(state)
-            if cmd_cost <= mana_now + 1 and pay_cost + cmd_cost > mana_now + 1:
-                return                    # o comandante seria conjurado neste turno e o payoff o impediria: nao desloca o comandante
-        if execute_cast(state, t):
-            state.payoff_first_casts += 1
-        else:
-            failed.append(t[0] + t[1] + str(t[2]))
+            if perm == "six":
+                lands_h = [h for h in state.hand if "land" in CARD_DB[h].types and "mdfc" not in CARD_DB[h].tags]
+                if lands_h and can_pay(state, g, pips, CARD_DB[name]):
+                    d = min(lands_h, key=lambda h: land_play_score(state, h))
+                    state.graveyard.remove(name)              # CR 601.2a: a carta vai pra pilha ANTES de pagar o custo (descartar o terreno nao pode devolve-la)
+                    graveyard_leave(state, [name])
+                    state.hand.remove(d)
+                    put_card_into_graveyard(state, d, "hand")
+                    ok = cast_card(state, name, zone="graveyard")
+                    state.six_retraces += 1
+                    state.recursion_events_total += 1
+            else:
+                state.graveyard.remove(name)
+                graveyard_leave(state, [name])
+                state.muldrotha_used.append(face)
+                state.muldrotha_plays += 1
+                state.recursion_events_total += 1
+                ok = cast_card(state, name, zone="graveyard")
+        if not ok:
+            failed.append(name + zone + str(face))
 
 
 # =========================================================
@@ -3952,7 +3858,6 @@ def _fingerprint(state: GameState):
 def main_phase(state: GameState, phase: str):
     if state.game_over:
         return
-    cast_landfall_payoffs_first(state, phase)
     play_land_phase(state)
     for _ in range(12):
         if state.game_over:
