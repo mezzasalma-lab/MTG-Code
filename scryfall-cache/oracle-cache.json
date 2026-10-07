@@ -184968,5 +184968,61 @@
     "set": "dft",
     "toughness": null,
     "type_line": "Artifact"
+  },
+  "Jace, Wielder of Mysteries": {
+    "cmc": 4.0,
+    "collector_number": "54",
+    "color_identity": [
+      "U"
+    ],
+    "colors": [
+      "U"
+    ],
+    "keywords": [
+      "Mill"
+    ],
+    "legalities": {
+      "standard": "not_legal",
+      "future": "not_legal",
+      "historic": "legal",
+      "timeless": "legal",
+      "gladiator": "legal",
+      "pioneer": "legal",
+      "modern": "legal",
+      "legacy": "legal",
+      "pauper": "not_legal",
+      "vintage": "legal",
+      "penny": "legal",
+      "commander": "legal",
+      "oathbreaker": "legal",
+      "standardbrawl": "not_legal",
+      "brawl": "legal",
+      "competitivebrawl": "legal",
+      "alchemy": "not_legal",
+      "paupercommander": "not_legal",
+      "duel": "legal",
+      "oldschool": "not_legal",
+      "premodern": "not_legal",
+      "predh": "not_legal",
+      "tlr": "not_legal"
+    },
+    "loyalty": "4",
+    "mana_cost": "{1}{U}{U}{U}",
+    "name": "Jace, Wielder of Mysteries",
+    "oracle_text": "If you would draw a card while your library has no cards in it, you win the game instead.\n+1: Target player mills two cards. Draw a card.\n−8: Draw seven cards. Then if your library has no cards in it, you win the game.",
+    "power": null,
+    "prices": {
+      "usd": "11.00",
+      "usd_foil": "10.69",
+      "usd_etched": null,
+      "eur": "4.66",
+      "eur_foil": "7.92",
+      "tix": "0.02"
+    },
+    "released_at": "2019-05-03",
+    "scryfall_uri": "https://scryfall.com/card/war/54/jace-wielder-of-mysteries?utm_source=api",
+    "set": "war",
+    "toughness": null,
+    "type_line": "Legendary Planeswalker — Jace"
   }
 }

@@ -1733,6 +1733,144 @@ def monument_partidas_completas_com_todas_as_chaves_ligadas_nao_dao_excecao_e_at
         (m.SWAPS, m.SWAP_IN_PLACE, m.RIVERCHURN_SELF, m.RIVERCHURN_TAP_FIRST, m.RIVERCHURN_OPP_END_STEP, m.RIVERCHURN_EXHAUST_MIN) = antigos
 
 
+# ============================================================== Jace, Wielder of Mysteries (candidata de 2026-10-07; oraculo ao vivo + 5 rulings de 2019-05-03)
+JACE = "Jace, Wielder of Mysteries"
+
+
+def _cena_jace(lib=35, loyalty=4, extra_bf=(), lands=("Island", "Island", "Island", "Swamp")):
+    st = fresh(bf=[m.COMMANDER, "Gyre Sage", "Evolution Witness", *extra_bf])
+    st.commander_in_cz = False
+    st.library = ["Forest"] * lib
+    st.library_min = lib
+    jc = add(st, JACE, loyalty=loyalty)
+    for l in lands:
+        add(st, l)
+    return st, jc
+
+
+@teste
+def jace_estatico_comprar_com_biblioteca_vazia_vence_e_sem_ele_perco():
+    st, jc = _cena_jace(lib=0)
+    m.draw_cards(st, 1, source="normal")
+    assert st.jace_wins == 1 and st.game_over and not st.decked, (st.jace_wins, st.game_over, st.decked)
+    assert all(o.eliminated for o in st.opps) and st.table_cleared_turn == st.turn, "vencer = os oponentes saem: a mesa fica limpa neste turno"
+    st2 = fresh(bf=[m.COMMANDER])
+    st2.library = []
+    m.draw_cards(st2, 1, source="normal")
+    assert st2.decked and st2.game_over and st2.jace_wins == 0, "sem o Jace comprar da biblioteca vazia perde"
+    st3, _ = _cena_jace(lib=0)
+    m.draw_step(st3)
+    assert st3.jace_wins == 1, "a compra do meu proprio turno tambem e' substituida"
+
+
+@teste
+def jace_mais1_oponente_mila_2_um_gatilho_do_mothman_e_compro_1():
+    st, jc = _cena_jace()
+    hand0, g0 = len(st.hand), st.mothman_triggers_total
+    libs = [len(o.library) for o in st.opps]
+    assert m.act_jace(st) is True
+    assert sum(l - len(o.library) for l, o in zip(libs, st.opps)) == 2, "so' UM jogador-alvo mila 2"
+    assert st.opp_mill_by_source.get("jace") == 2 and st.mothman_triggers_total - g0 == 1
+    assert len(st.hand) - hand0 == 1 and len(st.library) == 34, "depois de milar, compro 1"
+    assert jc.ctr["loyalty"] == 5 and st.jace_plus_uses == 1 and st.jace_draws == 1
+    assert m.act_jace(st) is False, "uma habilidade de lealdade por turno"
+
+
+@teste
+def jace_mais1_em_mim_com_biblioteca_ate_2_esvazia_e_a_compra_vence():
+    st, jc = _cena_jace(lib=2)
+    assert m.act_jace(st) is True
+    assert st.jace_plus_self == 1 and st.jace_wins == 1 and st.game_over and not st.decked and len(st.library) == 0
+    st2, _ = _cena_jace(lib=3)
+    assert m.act_jace(st2) is True and st2.jace_plus_self == 0 and st2.jace_wins == 0, "com 3 cartas ainda mira oponente (a biblioteca nao esvazia)"
+
+
+@teste
+def jace_menos8_vence_com_biblioteca_ate_7_e_sai_de_campo():
+    st, jc = _cena_jace(lib=7, loyalty=8)
+    assert m.act_jace(st) is True
+    assert st.jace_minus8_uses == 1 and st.jace_wins == 1 and jc not in st.battlefield and JACE in st.graveyard
+    assert st.jace_draws == 7
+    st2, jc2 = _cena_jace(lib=5, loyalty=8)
+    assert m.act_jace(st2) is True and st2.jace_wins == 1, "ruling: com menos de 7 cartas compro o que der e venco"
+    st3, jc3 = _cena_jace(lib=8, loyalty=8)
+    assert m.act_jace(st3) is True and st3.jace_minus8_uses == 0 and jc3 in st3.battlefield and jc3.ctr["loyalty"] == 9, "com 8 cartas o -8 nao vence: faz o +1"
+
+
+@teste
+def jace_sem_a_linha_de_vitoria_so_motor_e_o_estatico_continua_valendo():
+    antigo = m.JACE_WIN_LINE
+    try:
+        m.JACE_WIN_LINE = False
+        st, jc = _cena_jace(lib=2)
+        assert m.act_jace(st) is False, "sem a linha: biblioteca <= reserva (8), nao ativo o +1"
+        assert m.library_budget(st) == 2 - 8, "a reserva continua 8"
+        st.library = []
+        m.draw_cards(st, 1, source="normal")
+        assert st.jace_wins == 1, "o estatico e' regra da carta, vale com a linha desligada"
+    finally:
+        m.JACE_WIN_LINE = antigo
+
+
+@teste
+def jace_em_campo_a_reserva_de_biblioteca_cai_a_zero_e_o_kozilek_nao_e_descartado():
+    st, jc = _cena_jace(lib=20)
+    assert m.library_budget(st) == 20
+    kz = m.CARD_DB["Kozilek, Butcher of Truth"]
+    assert m.discard_value(st, "Kozilek, Butcher of Truth") == 90.0
+    st.battlefield.remove(jc)
+    assert m.library_budget(st) == 12 and m.discard_value(st, "Kozilek, Butcher of Truth") == -10.0, "sem o Jace: reserva 8 e descartar o Kozilek e' o seguro"
+    st2, _ = _cena_jace(lib=10)
+    st2.hand = ["Kozilek, Butcher of Truth"]
+    st2.battlefield = [p for p in st2.battlefield if not p.card.name.startswith("Bramble")]
+    assert m.act_bramble_refill(st2) is False
+
+
+@teste
+def jace_custa_UUU_entra_com_lealdade_4_e_a_magia_entra_pelo_cast():
+    st = fresh(bf=[m.COMMANDER], hand=[JACE])
+    st.commander_in_cz = False
+    for l in ("Island", "Island", "Swamp", "Swamp"):
+        add(st, l)
+    assert not m.can_cast_name(st, JACE), "so' 2 fontes de {U}: {1}{U}{U}{U} nao paga"
+    st2 = fresh(bf=[m.COMMANDER], hand=[JACE])
+    st2.commander_in_cz = False
+    for l in ("Island", "Island", "Island", "Swamp"):
+        add(st2, l)
+    assert m.cast_card(st2, JACE) is True
+    p = m.perms_named(st2, JACE)[0]
+    assert p.ctr["loyalty"] == 4 and sum(1 for q in st2.battlefield if "land" in q.card.types and q.tapped) == 4, "custo {1}{U}{U}{U} = 4 terrenos virados"
+
+
+@teste
+def jace_removal_prob_tira_o_jace_so_com_a_chave():
+    antigo = m.JACE_REMOVAL_PROB
+    try:
+        st, jc = _cena_jace()
+        m.jace_removal_roll(st)
+        assert jc in st.battlefield and st.jace_removed == 0, "padrao 0: nunca"
+        m.JACE_REMOVAL_PROB = 1.0
+        m.jace_removal_roll(st)
+        assert jc not in st.battlefield and st.jace_removed == 1 and JACE in st.graveyard
+    finally:
+        m.JACE_REMOVAL_PROB = antigo
+
+
+@teste
+def jace_partidas_completas_nao_dao_excecao_e_vencem_algumas():
+    antigos = (m.SWAPS, m.SWAP_IN_PLACE)
+    try:
+        m.SWAPS = (("Kozilek, Butcher of Truth", JACE),); m.SWAP_IN_PLACE = True
+        ativ = wins = 0
+        for sd in range(1_000_000, 1_000_150):
+            for f in (m.simulate_one, m.simulate_one_with_interaction):
+                st = f(sd, 12)
+                ativ += st.jace_plus_uses; wins += st.jace_wins
+        assert ativ > 0, "verificacao vacua: o Jace nunca ativou em 300 partidas"
+    finally:
+        m.SWAPS, m.SWAP_IN_PLACE = antigos
+
+
 def main():
     for t in TESTS:
         t()

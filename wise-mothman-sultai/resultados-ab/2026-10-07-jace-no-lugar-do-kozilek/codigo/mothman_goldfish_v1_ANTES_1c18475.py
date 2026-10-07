@@ -243,7 +243,6 @@ add("Bruvac the Grandiloquent", "{2}{U}", {"creature"}, {"bruvac"}, 1, 4, legend
 add("The Master of Lake-town", "{1}{B}{B}", {"creature"}, {"master", "deathtouch"}, 3, 2, legendary=True, subtypes={"Human", "Advisor"})
 add("Garruk's Uprising", "{2}{G}", {"enchantment"}, {"garruk"})
 add("Opulent Palace", "", {"land"}, {"etb_tapped", "palace"}, produces={"B", "G", "U"})
-add("Jace, Wielder of Mysteries", "{1}{U}{U}{U}", {"planeswalker"}, {"jace_wom"}, legendary=True)      # candidata de 2026-10-07 (oraculo ao vivo: resultados-ab/2026-10-07-jace-no-lugar-do-kozilek)
 add("Riverchurn Monument", "{1}{U}", {"artifact"}, {"riverchurn"})      # candidata de 2026-10-07 (oraculo ao vivo: resultados-ab/2026-10-07-riverchurn-monument)
 
 # --- Fichas -----------------------------------------------------------------------
@@ -431,15 +430,6 @@ class GameState:
     palantir_life_loss_total: int = 0
     altar_dementia_sacs: int = 0
     altar_brood_mills: int = 0
-    jace_plus_uses: int = 0                       # Jace +1 (alvo mila 2, depois compro)
-    jace_plus_self: int = 0                       # ... das quais mirando EU (biblioteca <= 2: a compra seguinte e' vitoria)
-    jace_minus8_uses: int = 0
-    jace_draws: int = 0
-    jace_wins: int = 0                            # partidas vencidas por comprar com a biblioteca vazia (estatico) ou pelo -8
-    jace_win_turn: Optional[int] = None
-    jace_win_T8: int = 0
-    jace_win_T10: int = 0
-    jace_removed: int = 0                         # sensibilidade JACE_REMOVAL_PROB
     riverchurn_tap_activations: int = 0
     riverchurn_exhaust_activations: int = 0
     riverchurn_exhaust_cards_opp: int = 0         # cartas milladas dos oponentes pelo Exhaust (soma dos cemiterios no momento)
@@ -1051,35 +1041,16 @@ def eliminate_opp(state: GameState, o: Opp, reason: str):
         state.game_over = True
 
 
-def jace_line(state: GameState) -> bool:
-    """Jace em campo e a linha de vitoria por biblioteca vazia ligada (JACE_WIN_LINE)."""
-    return JACE_WIN_LINE and JACE_STATIC_ENABLED and has_perm(state, "Jace, Wielder of Mysteries")
-
-
-def jace_win(state: GameState):
-    """Eu venci: os oponentes vivos perdem (`eliminate_opp`, motivo "jace"): a mesa fica limpa neste turno, como nas outras vitorias por combo."""
-    state.jace_wins += 1
-    if state.jace_win_turn is None:
-        state.jace_win_turn = state.turn
-    state.combo_win = state.combo_win or "jace"
-    for o in list(alive_opps(state)):
-        eliminate_opp(state, o, "jace")
-    state.game_over = True
-
-
 OPTIONAL_DRAW_SOURCES = frozenset({"fathom_mage", "selkie", "terrasymbiosis", "lantern", "waterlogged_grove", "cycling"})   # 'you may draw': nao compro com a biblioteca no fim
 
 
 def draw_cards(state: GameState, n: int, source: str = "normal"):
-    if source in OPTIONAL_DRAW_SOURCES and SELF_MILL_GUARD_ENABLED and not jace_line(state):
+    if source in OPTIONAL_DRAW_SOURCES and SELF_MILL_GUARD_ENABLED:
         n = max(0, min(n, library_budget(state)))
     for _ in range(n):
         if state.game_over:
             return
         if not state.library:
-            if JACE_STATIC_ENABLED and has_perm(state, "Jace, Wielder of Mysteries"):
-                jace_win(state)                                  # comprar com a biblioteca vazia = vitoria (a compra e' substituida; ruling 2019-05-03)
-                return
             state.decked = True
             state.decked_turn = state.turn
             state.game_over = True
@@ -1789,8 +1760,6 @@ def apply_etb(state: GameState, p: Permanent):
             p.ctr["sultai"] = 1
     if "ashiok" in t:
         p.ctr["loyalty"] = 5
-    if "jace_wom" in t:
-        p.ctr["loyalty"] = 4
     if "urzas_saga" in t:
         pass
     if "boseiju" in t or "minamo" in t:
@@ -1961,7 +1930,7 @@ CAST_PRIORITY = {
     "Cold-Eyed Selkie": 40, "Cankerbloom": 35, "Rampant Frogantua": 50, "Glen Elendra Archmage": 45, "Angel of Suffering": 52, "Kozilek, Butcher of Truth": 30,
     "Walking Ballista": 48, "Agatha's Soul Cauldron": 58, "Altar of Dementia": 40, "Soul-Guide Lantern": 30, "Swiftfoot Boots": 45, "Ashiok, Dream Render": 63,
     "Palantír of Orthanc": 64, "Bloodchief Ascension": 60, "Altar of the Brood": 50, "Gyre Sage": 62, "Freestrider Lookout": 52,
-    "Riverchurn Monument": 57, "Jace, Wielder of Mysteries": 66,
+    "Riverchurn Monument": 57,
     "Evolution Sage": 70, "Terrasymbiosis": 66, "Corpsejack Menace": 71, "Bruvac the Grandiloquent": 63, "The Master of Lake-town": 62, "Garruk's Uprising": 61,
 }
 FINISHERS = frozenset({"Kozilek, Butcher of Truth", "Rampant Frogantua", "Syr Konrad, the Grim", "Mindcrank", "Bloodchief Ascension"})
@@ -2703,9 +2672,6 @@ SELF_MILL_GUARD_ENABLED = True
 SELF_MILL_RESERVE = 8                 # nao fazer mill VOLUNTARIO que deixe menos que isso na biblioteca
 ORB_CAST_MIN_LIBRARY = 30             # nao conjurar Mesmeric Orb com biblioteca menor que isso (ele me mila a cada untap)
 PALANTIR_OPP_SMART = True             # oponente recusa o Palantir quando o X deixaria minha biblioteca vazia
-JACE_STATIC_ENABLED = True            # "If you would draw a card while your library has no cards in it, you win the game instead." (regra da carta; so' age com o Jace em campo)
-JACE_WIN_LINE = True                  # linha de jogo com o Jace em campo: reserva de auto-mill vira 0, +1 em MIM com biblioteca <= 2, -8 com biblioteca <= 7, Kozilek nao e' descartado/embaralhado. False = Jace so' como motor (guarda de biblioteca intacta, +1 so' em oponente)
-JACE_REMOVAL_PROB = 0.0               # sensibilidade: chance por rodada de oponentes do Jace sair (ataque/remocao de oponente nao e' simulado); 0 = nunca
 RIVERCHURN_ACTIVATE = True            # False: o Monument so' entra em campo (artefato, Altar of the Brood, Mesmeric Orb); nenhuma das duas ativadas e' usada
 RIVERCHURN_SELF = False               # alvos: tambem EU (so' quando `safe_self_mill` deixa); "any number of target players" inclui o proprio controlador
 RIVERCHURN_OPP_END_STEP = False       # linha real: a mana que SOBROU do meu turno (inclusive a segurada pras contramagicas) paga o Monument no fim do ultimo turno de oponente, antes do meu untap (instante)
@@ -2722,7 +2688,7 @@ def library_budget(state: GameState) -> int:
     pend += state.rad
     for pal in perms_named(state, "Palantír of Orthanc"):
         pend += pal.ctr.get("influence", 0) + 1
-    return len(state.library) - (0 if jace_line(state) else SELF_MILL_RESERVE) - pend
+    return len(state.library) - SELF_MILL_RESERVE - pend
 
 
 def safe_self_mill(state: GameState, n: int) -> bool:
@@ -2921,8 +2887,6 @@ def ascension_end_step(state: GameState):
 def discard_value(state: GameState, c: str) -> float:
     cc = CARD_DB[c]
     if "kozilek" in cc.tags:
-        if jace_line(state):
-            return 90.0                                   # com o Jace em campo o embaralhar do Kozilek DESFAZ a biblioteca vazia: nao descarto
         # descartar o Kozilek e' o seguro: ele embaralha o cemiterio na biblioteca
         return -10.0 if len(state.library) < 25 else (10.0 if n_lands(state) < 9 else 55.0)
     if "land" in cc.types and "mdfc" not in cc.tags:
@@ -3228,65 +3192,6 @@ def act_ashiok(state: GameState) -> bool:
             put_card_into_graveyard(state, p.card.name, "battlefield")
         return True
     return False
-
-
-# --- Jace, Wielder of Mysteries (2026-10-07) ---------------------------------------------------------------------------
-def act_jace(state: GameState) -> bool:
-    """Uma habilidade de lealdade por turno (sorcery speed). +1: "Target player mills two cards. Draw a card." (ordem do texto: mila, depois compro; alvo ilegal = nao resolve e nao compro, ruling 2019-05-03).
-    -8: "Draw seven cards. Then if your library has no cards in it, you win the game." (Jace ja' saiu de campo quando resolve: compro o que der e venco, ruling; vence com biblioteca <= 7).
-    Linha de vitoria (JACE_WIN_LINE): com biblioteca <= 2 o +1 em MIM esvazia a biblioteca e a compra seguinte vence; sem a linha, so' mirando oponente e so' com biblioteca acima da reserva."""
-    for p in perms_named(state, "Jace, Wielder of Mysteries"):
-        if p.used_ability_turn == state.turn or p.ctr.get("loyalty", 0) <= 0:
-            continue
-        lib = len(state.library)
-        if JACE_WIN_LINE and p.ctr.get("loyalty", 0) >= 8 and lib <= 7:
-            p.used_ability_turn = state.turn
-            p.ctr["loyalty"] -= 8
-            state.jace_minus8_uses += 1
-            if p in state.battlefield and p.ctr["loyalty"] <= 0:
-                state.battlefield.remove(p)
-                put_card_into_graveyard(state, p.card.name, "battlefield")      # sai antes de resolver: o estatico nao vale mais, quem vence e' o proprio -8
-            k = min(7, len(state.library))
-            for _ in range(k):
-                draw_cards(state, 1, source="jace")
-                state.jace_draws += 1
-                if state.game_over:
-                    return True
-            if not state.library:
-                jace_win(state)
-            return True
-        self_target = JACE_WIN_LINE and lib <= 2
-        if self_target:
-            parts = [(0, 2)]
-        else:
-            tgt = best_opp_library(state)
-            if tgt is None or (not JACE_WIN_LINE and lib <= SELF_MILL_RESERVE):
-                continue
-            parts = [(tgt.idx, 2)]
-            commit_crime(state, "jace")                                     # "Target player" = oponente
-        p.used_ability_turn = state.turn
-        p.ctr["loyalty"] = p.ctr.get("loyalty", 0) + 1
-        state.jace_plus_uses += 1
-        if self_target:
-            state.jace_plus_self += 1
-        mill_event(state, parts, source="jace")
-        if state.game_over:
-            return True
-        draw_cards(state, 1, source="jace")                                  # biblioteca vazia + Jace em campo: vitoria (draw_cards)
-        state.jace_draws += 1
-        return True
-    return False
-
-
-def jace_removal_roll(state: GameState):
-    """Sensibilidade JACE_REMOVAL_PROB: depois da rodada dos oponentes, chance de o Jace sair (ataque/remocao nao simulados). Usa `proxy_rng` so' com a chave > 0 e o Jace em campo."""
-    if JACE_REMOVAL_PROB <= 0 or state.game_over:
-        return
-    for p in perms_named(state, "Jace, Wielder of Mysteries"):
-        if state.proxy_rng.random() < JACE_REMOVAL_PROB:
-            state.battlefield.remove(p)
-            put_card_into_graveyard(state, p.card.name, "battlefield")
-            state.jace_removed += 1
 
 
 # --- Cauldron (+ Minamo) -------------------------------------------------------------
@@ -3899,7 +3804,7 @@ def act_karns_bastion(state: GameState) -> bool:
 
 
 # --- Fim das acoes: prioridade --------------------------------------------------------------------------------
-ACTIONS = (act_saga_construct, act_ashiok, act_jace, act_cauldron, act_altar_loop, act_cauldron_minamo, act_zellix, act_zellix_minamo, act_ballista_ping, act_cankerbloom,
+ACTIONS = (act_saga_construct, act_ashiok, act_cauldron, act_altar_loop, act_cauldron_minamo, act_zellix, act_zellix_minamo, act_ballista_ping, act_cankerbloom,
            act_takenuma, act_boseiju, act_adapt, act_equip_boots, act_woodland, act_konrad, act_triome_cycle, act_waterlogged_grove, act_strip_mine,
            act_altar_finisher, act_lantern, act_ballista_pump)
 
@@ -3920,7 +3825,7 @@ def use_spare_mana(state: GameState, phase: str = "main1"):
 # --- Kozilek como seguro: devolver o cemiterio pra biblioteca ---------------------------------------------------------
 def act_bramble_refill(state: GameState) -> bool:
     """Bramble Familiar: '{1}{G}, {T}, Discard a card: Return this creature to its owner's hand.' Descartar o Kozilek poe ele no cemiterio -> embaralha o cemiterio na biblioteca."""
-    if len(state.library) >= 14 or jace_line(state):
+    if len(state.library) >= 14:
         return False
     koz = [c for c in state.hand if "kozilek" in CARD_DB[c].tags]
     if not koz:
@@ -4412,8 +4317,6 @@ def finalize(state: GameState):
     state.first_elim_T6 = 1 if (f is not None and f <= 6) else 0
     state.first_elim_T8 = 1 if (f is not None and f <= 8) else 0
     state.self_lost = 1 if (state.decked or state.died_life) else 0
-    state.jace_win_T8 = 1 if (state.jace_win_turn is not None and state.jace_win_turn <= 8) else 0
-    state.jace_win_T10 = 1 if (state.jace_win_turn is not None and state.jace_win_turn <= 10) else 0
 
 
 def simulate_one(seed: int, turns: int = 12) -> GameState:
@@ -4430,7 +4333,6 @@ def simulate_one(seed: int, turns: int = 12) -> GameState:
                 break
         if state.game_over:
             break
-        jace_removal_roll(state)
         riverchurn_opp_end_step(state)
     finalize(state)
     return state
@@ -4820,7 +4722,6 @@ def simulate_one_with_interaction(seed: int, turns: int = 12) -> GameState:
                 break
         if state.game_over:
             break
-        jace_removal_roll(state)
         riverchurn_opp_end_step(state)
     finalize(state)
     return state

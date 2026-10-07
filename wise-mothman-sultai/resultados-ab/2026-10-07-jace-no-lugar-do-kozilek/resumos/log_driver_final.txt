@@ -1,0 +1,410 @@
+base                               cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+kozilek_por_jace                   cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+kozilek_por_jace_so_motor          cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+kozilek_por_jace_remocao_20        cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+kozilek_por_jace_remocao_50        cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+kozilek_por_forest                 cartas=99 distintas=89 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+feito 10000 padrao base
+feito 10000 padrao kozilek_por_jace
+feito 10000 padrao kozilek_por_jace_so_motor
+feito 10000 padrao kozilek_por_jace_remocao_20
+feito 10000 padrao kozilek_por_jace_remocao_50
+feito 10000 padrao kozilek_por_forest
+LOTE N=10000 sementes 3000000..3009999, 12 turnos, modo padrao
+
+[kozilek_por_jace - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *jace_wins                                    0.0000       0.0408      +0.0408 ±0.0039  
+  *jace_win_T8                                  0.0000       0.0167      +0.0167 ±0.0025  
+  *jace_win_T10                                 0.0000       0.0374      +0.0374 ±0.0037  
+  *jace_plus_uses                               0.0000       0.3726      +0.3726 ±0.0178  
+  *jace_plus_self                               0.0000       0.0072      +0.0072 ±0.0017  
+  *jace_draws                                   0.0000       0.3650      +0.3650 ±0.0176  
+  *self_lost                                    0.0325       0.0380      +0.0055 ±0.0035  
+  *decked                                       0.0325       0.0380      +0.0055 ±0.0035  
+   cleared_T7                                   0.1513       0.1502      -0.0011 ±0.0026  
+   cleared_T8                                   0.5136       0.5124      -0.0012 ±0.0037  
+   cleared_T10                                  0.8502       0.8471      -0.0031 ±0.0036  
+   first_elim_T6                                0.3906       0.3913      +0.0007 ±0.0015  
+   opps_eliminated_total                        2.8634       2.8582      -0.0052 ±0.0058  
+  *opps_decked_total                            0.1002       0.0906      -0.0096 ±0.0037  
+  *cards_milled_self_total                     16.8633      16.5507      -0.3126 ±0.1060  
+  *cards_milled_opp_total                      85.4023      84.0565      -1.3458 ±0.4816  
+  *library_min                                 50.0003      47.0352      -2.9651 ±0.2056  
+  *mothman_counters_placed_total               75.8195      73.8147      -2.0048 ±0.6348  
+  *kozilek_shuffles_total                       0.3605       0.0000      -0.3605 ±0.0149  
+  *draws_total                                 26.2869      25.2901      -0.9968 ±0.2169  
+  *len_graveyard                               15.5609      20.9523      +5.3914 ±0.2432  
+  *len_library                                 51.8606      46.9546      -4.9060 ±0.2603  
+  *library_at_end                              51.8606      46.9546      -4.9060 ±0.2603  
+  *kozilek_cast_turn__nunca                     0.9590       1.0000      +0.0410 ±0.0039  
+  *jace_win_turn__nunca                         1.0000       0.9592      -0.0408 ±0.0039  
+  *turn_library_emptied                         0.3229       0.7364      +0.4135 ±0.0423  
+  *len_opp_mill_by_source                       2.9516       3.0894      +0.1378 ±0.0154  
+  *len_draws_by_source                          3.1837       3.3093      +0.1256 ±0.0159  
+  *crimes_total                                 3.6825       3.9584      +0.2759 ±0.0369  
+  *finisher_resolved_total                      0.8052       0.7428      -0.0624 ±0.0092  
+  *opps_burned_total                            2.4995       2.4483      -0.0512 ±0.0079  
+  *opp_lost_life_this_turn                      0.9246       0.8945      -0.0301 ±0.0047  
+  *len_attackers_this_turn                      6.7773       6.2999      -0.4774 ±0.0788  
+  *konrad_graveyard_leave_pings                 0.1637       0.0794      -0.0843 ±0.0162  
+
+[kozilek_por_jace_so_motor - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *jace_wins                                    0.0000       0.0177      +0.0177 ±0.0026  
+  *jace_win_T8                                  0.0000       0.0066      +0.0066 ±0.0016  
+  *jace_win_T10                                 0.0000       0.0163      +0.0163 ±0.0025  
+  *jace_plus_uses                               0.0000       0.3643      +0.3643 ±0.0177  
+  *jace_draws                                   0.0000       0.3600      +0.3600 ±0.0176  
+  *self_lost                                    0.0325       0.0379      +0.0054 ±0.0035  
+  *decked                                       0.0325       0.0379      +0.0054 ±0.0035  
+   cleared_T7                                   0.1513       0.1495      -0.0018 ±0.0025  
+   cleared_T8                                   0.5136       0.5117      -0.0019 ±0.0037  
+   cleared_T10                                  0.8502       0.8466      -0.0036 ±0.0036  
+   first_elim_T6                                0.3906       0.3913      +0.0007 ±0.0015  
+   opps_eliminated_total                        2.8634       2.8585      -0.0049 ±0.0058  
+  *opps_decked_total                            0.1002       0.0920      -0.0082 ±0.0036  
+  *cards_milled_self_total                     16.8633      16.5730      -0.2903 ±0.1060  
+  *cards_milled_opp_total                      85.4023      84.6464      -0.7559 ±0.4761  
+  *library_min                                 50.0003      47.2321      -2.7682 ±0.2019  
+  *mothman_counters_placed_total               75.8195      74.4887      -1.3308 ±0.6258  
+  *kozilek_shuffles_total                       0.3605       0.0000      -0.3605 ±0.0149  
+  *draws_total                                 26.2869      25.0697      -1.2172 ±0.2165  
+  *len_graveyard                               15.5609      21.0088      +5.4479 ±0.2446  
+  *len_library                                 51.8606      47.1506      -4.7100 ±0.2575  
+  *library_at_end                              51.8606      47.1506      -4.7100 ±0.2575  
+  *kozilek_cast_turn__nunca                     0.9590       1.0000      +0.0410 ±0.0039  
+  *len_opp_mill_by_source                       2.9516       3.1142      +0.1626 ±0.0156  
+  *crimes_total                                 3.6825       3.9942      +0.3117 ±0.0371  
+  *len_draws_by_source                          3.1837       3.3015      +0.1178 ±0.0157  
+  *jace_win_turn__nunca                         1.0000       0.9823      -0.0177 ±0.0026  
+  *finisher_resolved_total                      0.8052       0.7472      -0.0580 ±0.0092  
+  *turn_library_emptied                         0.3229       0.5382      +0.2153 ±0.0357  
+  *len_hand                                    10.9693      10.1587      -0.8106 ±0.1434  
+  *cards_drawn_extra                           18.5955      17.3898      -1.2057 ±0.2150  
+  *konrad_graveyard_leave_pings                 0.1637       0.0795      -0.0842 ±0.0160  
+  *muldrotha_plays                              0.7951       0.8821      +0.0870 ±0.0170  
+
+[kozilek_por_jace_remocao_20 - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *jace_wins                                    0.0000       0.0379      +0.0379 ±0.0037  
+  *jace_win_T8                                  0.0000       0.0161      +0.0161 ±0.0025  
+  *jace_win_T10                                 0.0000       0.0348      +0.0348 ±0.0036  
+  *jace_plus_uses                               0.0000       0.3310      +0.3310 ±0.0157  
+  *jace_plus_self                               0.0000       0.0071      +0.0071 ±0.0016  
+  *jace_draws                                   0.0000       0.3239      +0.3239 ±0.0156  
+  *jace_removed                                 0.0000       0.0337      +0.0337 ±0.0036  
+  *self_lost                                    0.0325       0.0395      +0.0070 ±0.0035  
+  *decked                                       0.0325       0.0395      +0.0070 ±0.0035  
+   cleared_T7                                   0.1513       0.1499      -0.0014 ±0.0025  
+   cleared_T8                                   0.5136       0.5115      -0.0021 ±0.0037  
+  *cleared_T10                                  0.8502       0.8455      -0.0047 ±0.0037  
+   first_elim_T6                                0.3906       0.3912      +0.0006 ±0.0015  
+  *opps_eliminated_total                        2.8634       2.8559      -0.0075 ±0.0058  
+  *opps_decked_total                            0.1002       0.0906      -0.0096 ±0.0037  
+  *cards_milled_self_total                     16.8633      16.5659      -0.2974 ±0.1061  
+  *cards_milled_opp_total                      85.4023      83.8918      -1.5105 ±0.4819  
+  *library_min                                 50.0003      47.1228      -2.8775 ±0.2044  
+  *mothman_counters_placed_total               75.8195      73.6420      -2.1775 ±0.6385  
+  *kozilek_shuffles_total                       0.3605       0.0000      -0.3605 ±0.0149  
+  *draws_total                                 26.2869      25.1919      -1.0950 ±0.2156  
+  *len_graveyard                               15.5609      20.9809      +5.4200 ±0.2429  
+  *len_library                                 51.8606      47.0413      -4.8193 ±0.2595  
+  *library_at_end                              51.8606      47.0413      -4.8193 ±0.2595  
+  *kozilek_cast_turn__nunca                     0.9590       1.0000      +0.0410 ±0.0039  
+  *jace_win_turn__nunca                         1.0000       0.9621      -0.0379 ±0.0037  
+  *turn_library_emptied                         0.3229       0.7234      +0.4005 ±0.0418  
+  *len_opp_mill_by_source                       2.9516       3.0845      +0.1329 ±0.0153  
+  *len_draws_by_source                          3.1837       3.3032      +0.1195 ±0.0156  
+  *finisher_resolved_total                      0.8052       0.7406      -0.0646 ±0.0091  
+  *opps_burned_total                            2.4995       2.4485      -0.0510 ±0.0079  
+  *crimes_total                                 3.6825       3.9133      +0.2308 ±0.0359  
+  *opp_lost_life_this_turn                      0.9246       0.8958      -0.0288 ±0.0047  
+  *len_attackers_this_turn                      6.7773       6.2958      -0.4815 ±0.0787  
+  *konrad_graveyard_leave_pings                 0.1637       0.0796      -0.0841 ±0.0161  
+
+[kozilek_por_jace_remocao_50 - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *jace_wins                                    0.0000       0.0339      +0.0339 ±0.0035  
+  *jace_win_T8                                  0.0000       0.0146      +0.0146 ±0.0024  
+  *jace_win_T10                                 0.0000       0.0312      +0.0312 ±0.0034  
+  *jace_plus_uses                               0.0000       0.2775      +0.2775 ±0.0128  
+  *jace_plus_self                               0.0000       0.0067      +0.0067 ±0.0016  
+  *jace_draws                                   0.0000       0.2709      +0.2709 ±0.0127  
+  *jace_removed                                 0.0000       0.0764      +0.0764 ±0.0054  
+  *self_lost                                    0.0325       0.0413      +0.0088 ±0.0035  
+  *decked                                       0.0325       0.0413      +0.0088 ±0.0035  
+   cleared_T7                                   0.1513       0.1496      -0.0017 ±0.0025  
+  *cleared_T8                                   0.5136       0.5095      -0.0041 ±0.0036  
+  *cleared_T10                                  0.8502       0.8436      -0.0066 ±0.0037  
+   first_elim_T6                                0.3906       0.3910      +0.0004 ±0.0015  
+  *opps_eliminated_total                        2.8634       2.8538      -0.0096 ±0.0058  
+  *opps_decked_total                            0.1002       0.0904      -0.0098 ±0.0036  
+  *cards_milled_self_total                     16.8633      16.5620      -0.3013 ±0.1053  
+  *cards_milled_opp_total                      85.4023      83.7336      -1.6687 ±0.4805  
+  *library_min                                 50.0003      47.2291      -2.7712 ±0.2036  
+  *mothman_counters_placed_total               75.8195      73.3864      -2.4331 ±0.6323  
+  *kozilek_shuffles_total                       0.3605       0.0000      -0.3605 ±0.0149  
+  *draws_total                                 26.2869      25.0920      -1.1949 ±0.2151  
+  *len_graveyard                               15.5609      21.0005      +5.4396 ±0.2427  
+  *len_library                                 51.8606      47.1458      -4.7148 ±0.2591  
+  *library_at_end                              51.8606      47.1458      -4.7148 ±0.2591  
+  *kozilek_cast_turn__nunca                     0.9590       1.0000      +0.0410 ±0.0039  
+  *jace_win_turn__nunca                         1.0000       0.9661      -0.0339 ±0.0035  
+  *turn_library_emptied                         0.3229       0.7009      +0.3780 ±0.0411  
+  *len_opp_mill_by_source                       2.9516       3.0798      +0.1282 ±0.0151  
+  *len_draws_by_source                          3.1837       3.2992      +0.1155 ±0.0156  
+  *finisher_resolved_total                      0.8052       0.7383      -0.0669 ±0.0091  
+  *opps_burned_total                            2.4995       2.4515      -0.0480 ±0.0078  
+  *len_attackers_this_turn                      6.7773       6.3087      -0.4686 ±0.0783  
+  *opp_lost_life_this_turn                      0.9246       0.8977      -0.0269 ±0.0046  
+  *cards_drawn_extra                           18.5955      17.4088      -1.1867 ±0.2135  
+  *konrad_graveyard_leave_pings                 0.1637       0.0787      -0.0850 ±0.0161  
+
+[kozilek_por_forest - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *self_lost                                    0.0325       0.0579      +0.0254 ±0.0040  
+  *decked                                       0.0325       0.0579      +0.0254 ±0.0040  
+  *cleared_T7                                   0.1513       0.1551      +0.0038 ±0.0032  
+   cleared_T8                                   0.5136       0.5169      +0.0033 ±0.0050  
+  *cleared_T10                                  0.8502       0.8384      -0.0118 ±0.0048  
+  *first_elim_T6                                0.3906       0.3997      +0.0091 ±0.0035  
+  *opps_eliminated_total                        2.8634       2.8449      -0.0185 ±0.0070  
+   opps_decked_total                            0.1002       0.0971      -0.0031 ±0.0046  
+   cards_milled_self_total                     16.8633      16.7645      -0.0988 ±0.1302  
+   cards_milled_opp_total                      85.4023      84.9130      -0.4893 ±0.6141  
+  *library_min                                 50.0003      47.2703      -2.7300 ±0.2420  
+  *mothman_counters_placed_total               75.8195      74.9139      -0.9056 ±0.7454  
+  *kozilek_shuffles_total                       0.3605       0.0000      -0.3605 ±0.0149  
+  *draws_total                                 26.2869      24.8223      -1.4646 ±0.2436  
+  *len_graveyard                               15.5609      21.0438      +5.4829 ±0.2538  
+  *len_library                                 51.8606      47.1824      -4.6782 ±0.2894  
+  *library_at_end                              51.8606      47.1824      -4.6782 ±0.2894  
+  *kozilek_cast_turn__nunca                     0.9590       1.0000      +0.0410 ±0.0039  
+  *turn_library_emptied                         0.3229       0.5744      +0.2515 ±0.0385  
+  *decked_turn__nunca                           0.9675       0.9421      -0.0254 ±0.0040  
+  *len_mana_by_turn                             8.6898       8.6191      -0.0707 ±0.0113  
+  *len_hand                                    10.9693      10.0415      -0.9278 ±0.1597  
+  *cards_drawn_extra                           18.5955      17.2013      -1.3942 ±0.2416  
+  *turn_id                                     29.8491      29.6057      -0.2434 ±0.0443  
+  *opp_turns_total                             21.1484      20.9627      -0.1857 ±0.0341  
+  *turn                                         8.7007       8.6430      -0.0577 ±0.0112  
+  *opp_spells_total                            18.8263      18.6568      -0.1695 ±0.0330  
+  *mulligans                                    0.3015       0.2811      -0.0204 ±0.0040  
+feito 10000 resiliencia base
+feito 10000 resiliencia kozilek_por_jace
+feito 10000 resiliencia kozilek_por_jace_so_motor
+feito 10000 resiliencia kozilek_por_jace_remocao_20
+feito 10000 resiliencia kozilek_por_jace_remocao_50
+feito 10000 resiliencia kozilek_por_forest
+LOTE N=10000 sementes 3000000..3009999, 12 turnos, modo resiliencia
+
+[kozilek_por_jace - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *jace_wins                                    0.0000       0.0217      +0.0217 ±0.0029  
+  *jace_win_T8                                  0.0000       0.0042      +0.0042 ±0.0013  
+  *jace_win_T10                                 0.0000       0.0150      +0.0150 ±0.0024  
+  *jace_plus_uses                               0.0000       0.4215      +0.4215 ±0.0220  
+  *jace_plus_self                               0.0000       0.0059      +0.0059 ±0.0015  
+   jace_minus8_uses                             0.0000       0.0002      +0.0002 ±0.0003  
+  *jace_draws                                   0.0000       0.4188      +0.4188 ±0.0220  
+  *self_lost                                    0.0156       0.0203      +0.0047 ±0.0027  
+  *decked                                       0.0156       0.0203      +0.0047 ±0.0027  
+   cleared_T7                                   0.0607       0.0599      -0.0008 ±0.0016  
+   cleared_T8                                   0.2399       0.2379      -0.0020 ±0.0029  
+   cleared_T10                                  0.5812       0.5797      -0.0015 ±0.0038  
+   first_elim_T6                                0.2348       0.2350      +0.0002 ±0.0014  
+   opps_eliminated_total                        2.5498       2.5498      +0.0000 ±0.0071  
+  *opps_decked_total                            0.0683       0.0627      -0.0056 ±0.0034  
+   cards_milled_self_total                     16.0715      16.0009      -0.0706 ±0.1022  
+   cards_milled_opp_total                      70.1830      70.0859      -0.0971 ±0.4632  
+  *library_min                                 54.5584      51.7156      -2.8428 ±0.1945  
+   mothman_counters_placed_total               54.3347      54.1850      -0.1497 ±0.4807  
+  *kozilek_shuffles_total                       0.3230       0.0000      -0.3230 ±0.0130  
+   draws_total                                 21.6100      21.4550      -0.1550 ±0.1699  
+  *len_graveyard                               15.0805      19.5261      +4.4456 ±0.2225  
+  *len_library                                 56.4956      51.6285      -4.8671 ±0.2493  
+  *library_at_end                              56.4956      51.6285      -4.8671 ±0.2493  
+  *len_opp_mill_by_source                       2.8643       3.0210      +0.1567 ±0.0147  
+  *kozilek_cast_turn__nunca                     0.9622       1.0000      +0.0378 ±0.0037  
+  *crimes_total                                 3.6613       4.0493      +0.3880 ±0.0414  
+  *len_draws_by_source                          3.0165       3.1617      +0.1452 ±0.0162  
+  *jace_win_turn__nunca                         1.0000       0.9783      -0.0217 ±0.0029  
+  *turn_library_emptied                         0.1715       0.4275      +0.2560 ±0.0351  
+  *finisher_resolved_total                      0.8184       0.7664      -0.0520 ±0.0090  
+  *konrad_graveyard_leave_pings                 0.1924       0.0953      -0.0971 ±0.0185  
+  *muldrotha_plays                              0.7347       0.8139      +0.0792 ±0.0187  
+  *recursion_events_total                       1.7279       1.8523      +0.1244 ±0.0310  
+  *shifting_woodland_copies                     0.0678       0.0838      +0.0160 ±0.0040  
+
+[kozilek_por_jace_so_motor - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *jace_wins                                    0.0000       0.0095      +0.0095 ±0.0019  
+  *jace_win_T8                                  0.0000       0.0016      +0.0016 ±0.0008  
+  *jace_win_T10                                 0.0000       0.0063      +0.0063 ±0.0016  
+  *jace_plus_uses                               0.0000       0.4136      +0.4136 ±0.0219  
+  *jace_draws                                   0.0000       0.4110      +0.4110 ±0.0218  
+  *self_lost                                    0.0156       0.0203      +0.0047 ±0.0027  
+  *decked                                       0.0156       0.0203      +0.0047 ±0.0027  
+   cleared_T7                                   0.0607       0.0598      -0.0009 ±0.0016  
+   cleared_T8                                   0.2399       0.2375      -0.0024 ±0.0028  
+   cleared_T10                                  0.5812       0.5791      -0.0021 ±0.0038  
+   first_elim_T6                                0.2348       0.2350      +0.0002 ±0.0014  
+   opps_eliminated_total                        2.5498       2.5496      -0.0002 ±0.0071  
+  *opps_decked_total                            0.0683       0.0631      -0.0052 ±0.0034  
+   cards_milled_self_total                     16.0715      16.0044      -0.0671 ±0.1024  
+   cards_milled_opp_total                      70.1830      70.2988      +0.1158 ±0.4610  
+  *library_min                                 54.5584      51.8227      -2.7357 ±0.1929  
+   mothman_counters_placed_total               54.3347      54.4294      +0.0947 ±0.4802  
+  *kozilek_shuffles_total                       0.3230       0.0000      -0.3230 ±0.0130  
+  *draws_total                                 21.6100      21.3439      -0.2661 ±0.1695  
+  *len_graveyard                               15.0805      19.5584      +4.4779 ±0.2229  
+  *len_library                                 56.4956      51.7351      -4.7605 ±0.2479  
+  *library_at_end                              56.4956      51.7351      -4.7605 ±0.2479  
+  *len_opp_mill_by_source                       2.8643       3.0292      +0.1649 ±0.0148  
+  *kozilek_cast_turn__nunca                     0.9622       1.0000      +0.0378 ±0.0037  
+  *crimes_total                                 3.6613       4.0663      +0.4050 ±0.0418  
+  *len_draws_by_source                          3.0165       3.1564      +0.1399 ±0.0161  
+  *finisher_resolved_total                      0.8184       0.7686      -0.0498 ±0.0090  
+  *konrad_graveyard_leave_pings                 0.1924       0.0966      -0.0958 ±0.0186  
+  *jace_win_turn__nunca                         1.0000       0.9905      -0.0095 ±0.0019  
+  *turn_library_emptied                         0.1715       0.3176      +0.1461 ±0.0316  
+  *muldrotha_plays                              0.7347       0.8189      +0.0842 ±0.0187  
+  *recursion_events_total                       1.7279       1.8617      +0.1338 ±0.0311  
+  *shifting_woodland_copies                     0.0678       0.0846      +0.0168 ±0.0041  
+
+[kozilek_por_jace_remocao_20 - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *jace_wins                                    0.0000       0.0189      +0.0189 ±0.0027  
+  *jace_win_T8                                  0.0000       0.0037      +0.0037 ±0.0012  
+  *jace_win_T10                                 0.0000       0.0132      +0.0132 ±0.0022  
+  *jace_plus_uses                               0.0000       0.3480      +0.3480 ±0.0181  
+  *jace_plus_self                               0.0000       0.0054      +0.0054 ±0.0014  
+  *jace_draws                                   0.0000       0.3442      +0.3442 ±0.0180  
+  *jace_removed                                 0.0000       0.0462      +0.0462 ±0.0042  
+  *self_lost                                    0.0156       0.0217      +0.0061 ±0.0028  
+  *decked                                       0.0156       0.0217      +0.0061 ±0.0028  
+   cleared_T7                                   0.0607       0.0599      -0.0008 ±0.0016  
+  *cleared_T8                                   0.2399       0.2365      -0.0034 ±0.0029  
+   cleared_T10                                  0.5812       0.5778      -0.0034 ±0.0038  
+   first_elim_T6                                0.2348       0.2348      +0.0000 ±0.0014  
+   opps_eliminated_total                        2.5498       2.5460      -0.0038 ±0.0071  
+  *opps_decked_total                            0.0683       0.0622      -0.0061 ±0.0034  
+   cards_milled_self_total                     16.0715      16.0055      -0.0660 ±0.1025  
+   cards_milled_opp_total                      70.1830      69.8218      -0.3612 ±0.4575  
+  *library_min                                 54.5584      51.8584      -2.7000 ±0.1921  
+   mothman_counters_placed_total               54.3347      53.9488      -0.3859 ±0.4716  
+  *kozilek_shuffles_total                       0.3230       0.0000      -0.3230 ±0.0130  
+  *draws_total                                 21.6100      21.3160      -0.2940 ±0.1680  
+  *len_graveyard                               15.0805      19.5584      +4.4779 ±0.2227  
+  *len_library                                 56.4956      51.7701      -4.7255 ±0.2473  
+  *library_at_end                              56.4956      51.7701      -4.7255 ±0.2473  
+  *len_opp_mill_by_source                       2.8643       3.0126      +0.1483 ±0.0144  
+  *kozilek_cast_turn__nunca                     0.9622       1.0000      +0.0378 ±0.0037  
+  *len_draws_by_source                          3.0165       3.1550      +0.1385 ±0.0160  
+  *crimes_total                                 3.6613       3.9695      +0.3082 ±0.0391  
+  *jace_win_turn__nunca                         1.0000       0.9811      -0.0189 ±0.0027  
+  *turn_library_emptied                         0.1715       0.4149      +0.2434 ±0.0347  
+  *finisher_resolved_total                      0.8184       0.7631      -0.0553 ±0.0089  
+  *konrad_graveyard_leave_pings                 0.1924       0.0954      -0.0970 ±0.0185  
+  *muldrotha_plays                              0.7347       0.8184      +0.0837 ±0.0188  
+  *shifting_woodland_copies                     0.0678       0.0839      +0.0161 ±0.0041  
+  *recursion_events_total                       1.7279       1.8480      +0.1201 ±0.0307  
+
+[kozilek_por_jace_remocao_50 - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *jace_wins                                    0.0000       0.0159      +0.0159 ±0.0025  
+  *jace_win_T8                                  0.0000       0.0032      +0.0032 ±0.0011  
+  *jace_win_T10                                 0.0000       0.0109      +0.0109 ±0.0020  
+  *jace_plus_uses                               0.0000       0.2703      +0.2703 ±0.0135  
+  *jace_plus_self                               0.0000       0.0050      +0.0050 ±0.0014  
+  *jace_draws                                   0.0000       0.2668      +0.2668 ±0.0134  
+  *jace_removed                                 0.0000       0.0899      +0.0899 ±0.0059  
+  *self_lost                                    0.0156       0.0232      +0.0076 ±0.0029  
+  *decked                                       0.0156       0.0232      +0.0076 ±0.0029  
+   cleared_T7                                   0.0607       0.0598      -0.0009 ±0.0016  
+  *cleared_T8                                   0.2399       0.2359      -0.0040 ±0.0028  
+  *cleared_T10                                  0.5812       0.5755      -0.0057 ±0.0038  
+   first_elim_T6                                0.2348       0.2346      -0.0002 ±0.0014  
+  *opps_eliminated_total                        2.5498       2.5413      -0.0085 ±0.0071  
+  *opps_decked_total                            0.0683       0.0625      -0.0058 ±0.0034  
+   cards_milled_self_total                     16.0715      16.0054      -0.0661 ±0.1025  
+  *cards_milled_opp_total                      70.1830      69.4976      -0.6854 ±0.4525  
+  *library_min                                 54.5584      51.9716      -2.5868 ±0.1919  
+  *mothman_counters_placed_total               54.3347      53.6543      -0.6804 ±0.4661  
+  *kozilek_shuffles_total                       0.3230       0.0000      -0.3230 ±0.0130  
+  *draws_total                                 21.6100      21.2075      -0.4025 ±0.1670  
+  *len_graveyard                               15.0805      19.5906      +4.5101 ±0.2224  
+  *len_library                                 56.4956      51.8815      -4.6141 ±0.2472  
+  *library_at_end                              56.4956      51.8815      -4.6141 ±0.2472  
+  *kozilek_cast_turn__nunca                     0.9622       1.0000      +0.0378 ±0.0037  
+  *len_opp_mill_by_source                       2.8643       3.0040      +0.1397 ±0.0142  
+  *len_draws_by_source                          3.0165       3.1499      +0.1334 ±0.0160  
+  *turn_library_emptied                         0.1715       0.3992      +0.2277 ±0.0341  
+  *finisher_resolved_total                      0.8184       0.7593      -0.0591 ±0.0089  
+  *jace_win_turn__nunca                         1.0000       0.9841      -0.0159 ±0.0025  
+  *crimes_total                                 3.6613       3.8950      +0.2337 ±0.0393  
+  *konrad_graveyard_leave_pings                 0.1924       0.0942      -0.0982 ±0.0184  
+  *muldrotha_plays                              0.7347       0.8210      +0.0863 ±0.0192  
+  *first_finisher_turn__nunca                   0.4080       0.4314      +0.0234 ±0.0055  
+  *shifting_woodland_copies                     0.0678       0.0836      +0.0158 ±0.0041  
+
+[kozilek_por_forest - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *self_lost                                    0.0156       0.0322      +0.0166 ±0.0033  
+  *decked                                       0.0156       0.0322      +0.0166 ±0.0033  
+   cleared_T7                                   0.0607       0.0621      +0.0014 ±0.0021  
+   cleared_T8                                   0.2399       0.2435      +0.0036 ±0.0039  
+   cleared_T10                                  0.5812       0.5832      +0.0020 ±0.0052  
+  *first_elim_T6                                0.2348       0.2406      +0.0058 ±0.0029  
+   opps_eliminated_total                        2.5498       2.5584      +0.0086 ±0.0097  
+   opps_decked_total                            0.0683       0.0676      -0.0007 ±0.0041  
+  *cards_milled_self_total                     16.0715      16.2479      +0.1764 ±0.1245  
+   cards_milled_opp_total                      70.1830      70.2796      +0.0966 ±0.5774  
+  *library_min                                 54.5584      51.8181      -2.7403 ±0.2357  
+   mothman_counters_placed_total               54.3347      54.4863      +0.1516 ±0.5889  
+  *kozilek_shuffles_total                       0.3230       0.0000      -0.3230 ±0.0130  
+  *draws_total                                 21.6100      21.0863      -0.5237 ±0.2026  
+  *len_graveyard                               15.0805      19.6657      +4.5852 ±0.2307  
+  *len_library                                 56.4956      51.7228      -4.7728 ±0.2817  
+  *library_at_end                              56.4956      51.7228      -4.7728 ±0.2817  
+  *kozilek_cast_turn__nunca                     0.9622       1.0000      +0.0378 ±0.0037  
+  *landfall_events_total                       11.8576      12.1500      +0.2924 ±0.0530  
+  *lands_entered_total                         11.8576      12.1500      +0.2924 ±0.0530  
+  *mulligans                                    0.3015       0.2811      -0.0204 ±0.0040  
+  *decked_turn__nunca                           0.9844       0.9678      -0.0166 ±0.0033  
+  *turn_library_emptied                         0.1715       0.3381      +0.1666 ±0.0330  
+  *konrad_graveyard_leave_pings                 0.1924       0.1033      -0.0891 ±0.0191  
+  *opp_turns_total                             24.8300      24.6250      -0.2050 ±0.0450  
+  *shifting_woodland_copies                     0.0678       0.0897      +0.0219 ±0.0048  
+  *turn_id                                     34.7706      34.5153      -0.2553 ±0.0571  
+  *opp_spells_total                            22.2518      22.0668      -0.1850 ±0.0417  
+COMPACTO N=10000 modo padrao: media da base e, por variante, diferenca pareada (variante - base) +- IC95%. '*' = |dif| > IC.
+variante                                                          jace_wins            jace_win_T8              self_lost             cleared_T7             cleared_T8            cleared_T10          first_elim_T6      opps_decked_total cards_milled_self_total cards_milled_opp_total mothman_counters_placed_total kozilek_shuffles_total
+base (media)                                                         0.0000                 0.0000                 0.0325                 0.1513                 0.5136                 0.8502                 0.3906                 0.1002                16.8633                85.4023                75.8195                 0.3605
+kozilek_por_jace                                          +0.0408±0.0039  *      +0.0167±0.0025  *      +0.0055±0.0035  *      -0.0011±0.0026         -0.0012±0.0037         -0.0031±0.0036         +0.0007±0.0015         -0.0096±0.0037  *      -0.3126±0.1060  *      -1.3458±0.4816  *      -2.0048±0.6348  *      -0.3605±0.0149  *
+kozilek_por_jace_so_motor                                 +0.0177±0.0026  *      +0.0066±0.0016  *      +0.0054±0.0035  *      -0.0018±0.0025         -0.0019±0.0037         -0.0036±0.0036         +0.0007±0.0015         -0.0082±0.0036  *      -0.2903±0.1060  *      -0.7559±0.4761  *      -1.3308±0.6258  *      -0.3605±0.0149  *
+kozilek_por_jace_remocao_20                               +0.0379±0.0037  *      +0.0161±0.0025  *      +0.0070±0.0035  *      -0.0014±0.0025         -0.0021±0.0037         -0.0047±0.0037  *      +0.0006±0.0015         -0.0096±0.0037  *      -0.2974±0.1061  *      -1.5105±0.4819  *      -2.1775±0.6385  *      -0.3605±0.0149  *
+kozilek_por_jace_remocao_50                               +0.0339±0.0035  *      +0.0146±0.0024  *      +0.0088±0.0035  *      -0.0017±0.0025         -0.0041±0.0036  *      -0.0066±0.0037  *      +0.0004±0.0015         -0.0098±0.0036  *      -0.3013±0.1053  *      -1.6687±0.4805  *      -2.4331±0.6323  *      -0.3605±0.0149  *
+kozilek_por_forest                                        +0.0000±0.0000         +0.0000±0.0000         +0.0254±0.0040  *      +0.0038±0.0032  *      +0.0033±0.0050         -0.0118±0.0048  *      +0.0091±0.0035  *      -0.0031±0.0046         -0.0988±0.1302         -0.4893±0.6141         -0.9056±0.7454  *      -0.3605±0.0149  *
+COMPACTO N=10000 modo resiliencia: media da base e, por variante, diferenca pareada (variante - base) +- IC95%. '*' = |dif| > IC.
+variante                                                          jace_wins            jace_win_T8              self_lost             cleared_T7             cleared_T8            cleared_T10          first_elim_T6      opps_decked_total cards_milled_self_total cards_milled_opp_total mothman_counters_placed_total kozilek_shuffles_total
+base (media)                                                         0.0000                 0.0000                 0.0156                 0.0607                 0.2399                 0.5812                 0.2348                 0.0683                16.0715                70.1830                54.3347                 0.3230
+kozilek_por_jace                                          +0.0217±0.0029  *      +0.0042±0.0013  *      +0.0047±0.0027  *      -0.0008±0.0016         -0.0020±0.0029         -0.0015±0.0038         +0.0002±0.0014         -0.0056±0.0034  *      -0.0706±0.1022         -0.0971±0.4632         -0.1497±0.4807         -0.3230±0.0130  *
+kozilek_por_jace_so_motor                                 +0.0095±0.0019  *      +0.0016±0.0008  *      +0.0047±0.0027  *      -0.0009±0.0016         -0.0024±0.0028         -0.0021±0.0038         +0.0002±0.0014         -0.0052±0.0034  *      -0.0671±0.1024         +0.1158±0.4610         +0.0947±0.4802         -0.3230±0.0130  *
+kozilek_por_jace_remocao_20                               +0.0189±0.0027  *      +0.0037±0.0012  *      +0.0061±0.0028  *      -0.0008±0.0016         -0.0034±0.0029  *      -0.0034±0.0038         +0.0000±0.0014         -0.0061±0.0034  *      -0.0660±0.1025         -0.3612±0.4575         -0.3859±0.4716         -0.3230±0.0130  *
+kozilek_por_jace_remocao_50                               +0.0159±0.0025  *      +0.0032±0.0011  *      +0.0076±0.0029  *      -0.0009±0.0016         -0.0040±0.0028  *      -0.0057±0.0038  *      -0.0002±0.0014         -0.0058±0.0034  *      -0.0661±0.1025         -0.6854±0.4525  *      -0.6804±0.4661  *      -0.3230±0.0130  *
+kozilek_por_forest                                        +0.0000±0.0000         +0.0000±0.0000         +0.0166±0.0033  *      +0.0014±0.0021         +0.0036±0.0039         +0.0020±0.0052         +0.0058±0.0029  *      -0.0007±0.0041         +0.1764±0.1245  *      +0.0966±0.5774         +0.1516±0.5889         -0.3230±0.0130  *
+lote 1 rc=0 17:05:00
+base                               cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+offer_por_jace                     cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+negate_por_jace                    cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+selkie_por_jace                    cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+deluge_por_jace                    cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+arcane_denial_por_jace             cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+negate_por_jace_remocao_33         cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+feito 10000 padrao base
+feito 10000 padrao offer_por_jace
+feito 10000 padrao negate_por_jace
+feito 10000 padrao selkie_por_jace
+feito 10000 padrao deluge_por_jace
