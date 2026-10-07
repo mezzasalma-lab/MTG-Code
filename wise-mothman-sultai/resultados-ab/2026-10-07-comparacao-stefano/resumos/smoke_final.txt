@@ -17,7 +17,3 @@ ambos__offer_frank__tear_master    cartas=99 distintas=90 desconhecidas=[] dupli
 sens_frank_sem_proliferate__negate cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
 sens_master_sem_criatura_de_oponente__negate cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
 sens_master_so_no_meu_turno__negate cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-feito 10000 padrao base
-feito 10000 padrao frank__an_offer_you_cant_refuse
-feito 10000 padrao frank__negate
-feito 10000 padrao frank__arcane_denial

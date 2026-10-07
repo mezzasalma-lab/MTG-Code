@@ -7,4 +7,3 @@ negate_por_jace_todas_as_chaves    padrao       partidas ok=20000 | excecoes=0  
 negate_por_jace_todas_as_chaves    resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
 yavimaya_por_jace_remove_append_sem_linha padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
 yavimaya_por_jace_remove_append_sem_linha resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
-reg rc=0 18:49:15
