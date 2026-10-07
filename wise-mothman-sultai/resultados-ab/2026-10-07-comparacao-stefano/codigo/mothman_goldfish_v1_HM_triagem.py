@@ -461,7 +461,7 @@ class GameState:
     master_activations: int = 0
     master_act_mine: int = 0                      # alvo: criatura MINHA milada neste turno
     master_act_opp: int = 0                       # alvo: criatura de OPONENTE milada neste turno (corpo generico 3/3)
-    master_act_on_opp_phase: int = 0
+    master_act_on_opp_turn: int = 0
     master_etb_rad: int = 0
     master_no_target_checks: int = 0              # varreduras da habilidade sem alvo (Master pronta, nada milado)
     master_names: dict = field(default_factory=dict)
@@ -1839,8 +1839,7 @@ def apply_etb(state: GameState, p: Permanent):
         if state.horrigan_enter_turn is None:
             state.horrigan_enter_turn = state.turn
         state.horrigan_etb_prolifs += 1
-        if HORRIGAN_PROLIF_TIMES > 0:
-            proliferate(state, "horrigan_etb", times=HORRIGAN_PROLIF_TIMES)
+        proliferate(state, "horrigan_etb", times=2)
     if "master_t" in t:
         # "When The Master enters, target player gets two rad counters."
         if state.master_enter_turn is None:
@@ -3138,7 +3137,7 @@ def opponent_turn(state: GameState, o: Opp):
     if o.eliminated or state.game_over:
         return
     if MASTER_OPP_TURN and has_perm(state, "The Master, Transcendent") and act_master(state):
-        state.master_act_on_opp_phase += 1
+        state.master_act_on_opp_turn += 1
     # terreno
     if o.hand_size > 0 and rng.random() < (0.8 if o.turns_taken <= 8 else 0.35):
         o.lands += 1
@@ -3345,7 +3344,6 @@ def act_jace(state: GameState) -> bool:
     return False
 
 
-HORRIGAN_PROLIF_TIMES = 2    # "proliferate twice" (oraculo). 0 = sensibilidade: so' o corpo (8/6 trample, indestrutivel ao atacar), sem proliferate
 MASTER_OPP_TURN = True       # usa a habilidade tambem no turno dos oponentes (instante; a Master so' desvira no meu untap)
 MASTER_TAKE_OPP = True       # pode levar criatura milada do cemiterio de OPONENTE (corpo generico 3/3 sem habilidades: piso)
 
@@ -4176,8 +4174,7 @@ def combat_step(state: GameState):
             p.attacked_turn_id = state.turn_id
             state.horrigan_attacks += 1
             state.horrigan_attack_prolifs += 1
-            if HORRIGAN_PROLIF_TIMES > 0:
-                proliferate(state, "horrigan_attack", times=HORRIGAN_PROLIF_TIMES)
+            proliferate(state, "horrigan_attack", times=2)
             if state.game_over or p not in state.battlefield:
                 continue
             state.horrigan_attack_damage += power(state, p)

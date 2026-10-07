@@ -196,7 +196,7 @@ def master_no_turno_do_oponente_usa_o_mill_do_rad_dele():
     o = st.opps[0]; o.rad = 3; o.library = ["C"] * 40
     for x in st.opps[1:]: x.rad = 0
     m.opponent_turn(st, o)
-    assert st.master_act_on_opp_turn == 1 and st.master_act_opp == 1 and mp.tapped, (st.master_act_on_opp_turn, st.master_act_opp)
+    assert st.master_act_on_opp_phase == 1 and st.master_act_opp == 1 and mp.tapped, (st.master_act_on_opp_phase, st.master_act_opp)
     assert st.milled_opp_creatures[1][0] == st.turn_id
 
 
@@ -209,6 +209,23 @@ def master_reanimando_o_Horrigan_milado_ele_prolifera_e_vira_3_3():
     assert m.act_master(st) is True
     h = next(p for p in st.battlefield if p.card.name == HORR)
     assert (m.power(st, h), m.toughness(st, h)) == (3, 3) and gs.counters == 3 and st.horrigan_etb_prolifs == 1, (m.power(st, h), gs.counters)
+
+
+@teste
+def horrigan_chave_sem_proliferate_so_o_corpo():
+    antigo = m.HORRIGAN_PROLIF_TIMES
+    m.HORRIGAN_PROLIF_TIMES = 0
+    try:
+        st = _cena_hm(bf=["Walking Ballista"])
+        gs = next(p for p in st.battlefield if p.card.name == "Walking Ballista"); gs.counters = 1
+        p = m.mk_perm(st, HORR); st.battlefield.append(p)
+        m.enter_permanent_triggers(st, p, from_cast=True)
+        assert gs.counters == 1 and st.horrigan_etb_prolifs == 1, "chave 0: nao prolifera"
+    finally:
+        m.HORRIGAN_PROLIF_TIMES = antigo
+    st = _cena_hm(bf=["Walking Ballista"]); gs = next(p for p in st.battlefield if p.card.name == "Walking Ballista"); gs.counters = 1
+    p = m.mk_perm(st, HORR); st.battlefield.append(p); m.enter_permanent_triggers(st, p, from_cast=True)
+    assert gs.counters == 3, "chave padrao 2: prolifera duas vezes"
 
 
 @teste

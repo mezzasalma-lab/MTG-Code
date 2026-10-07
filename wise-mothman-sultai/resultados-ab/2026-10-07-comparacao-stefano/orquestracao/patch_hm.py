@@ -68,7 +68,7 @@ sub('''    riverchurn_enter_turn: Optional[int] = None''', '''    horrigan_enter
     master_activations: int = 0
     master_act_mine: int = 0                      # alvo: criatura MINHA milada neste turno
     master_act_opp: int = 0                       # alvo: criatura de OPONENTE milada neste turno (corpo generico 3/3)
-    master_act_on_opp_turn: int = 0
+    master_act_on_opp_phase: int = 0
     master_etb_rad: int = 0
     master_no_target_checks: int = 0              # varreduras da habilidade sem alvo (Master pronta, nada milado)
     master_names: dict = field(default_factory=dict)
@@ -272,7 +272,7 @@ sub('''    # rad no inicio da fase principal 1
     if o.eliminated or state.game_over:
         return
     if MASTER_OPP_TURN and has_perm(state, "The Master, Transcendent") and act_master(state):
-        state.master_act_on_opp_turn += 1
+        state.master_act_on_opp_phase += 1
 ''')
 open(p, "w", encoding="utf-8").write(s)
 print("ok", len(s))
