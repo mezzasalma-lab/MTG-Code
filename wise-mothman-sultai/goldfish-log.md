@@ -2,6 +2,8 @@
 
 > **Atualização 2026-10-07 (§10):** a guarda do payoff antes do terreno que o §8 arquivou (aritmética) era cega a cor e superestimou o efeito (Ruin Crab +21% → **+13%**; mesa limpa até T8 +0,9 → **+0,6 ponto**). O padrão agora é o ensaio a seco, igual aos outros 5 simuladores: [`resultados-ab/2026-10-07-guarda-ensaio-a-seco/LEIAME.md`](resultados-ab/2026-10-07-guarda-ensaio-a-seco/LEIAME.md). Os lotes do §8 ficam como estavam (guarda aritmética, **superados em magnitude**).
 
+> **Atualização 2026-10-07 (§15): as seis candidatas do Stefano** (Fractured Sanity, Screeching Scorchbeast, Inexorable Tide, Branching Evolution, Loading Zone, The Earth Crystal; +0,95 a +1,88 ponto de T8; a Glen Elendra voltava 0/0 viva no persist): [`resultados-ab/2026-10-07-candidatas-stefano-2/`](resultados-ab/2026-10-07-candidatas-stefano-2/LEIAME.md).
+
 > **Atualização 2026-10-07 (§14): comparação com a lista do Stefano + Agent Frank Horrigan e The Master, Transcendent** (Horrigan +2,4 ponto de T8; Master neutra): [`resultados-ab/2026-10-07-comparacao-stefano/`](resultados-ab/2026-10-07-comparacao-stefano/LEIAME.md).
 
 > **Atualização 2026-10-07 (§13): Jace, Wielder of Mysteries no lugar do Kozilek** (e no lugar de cada contramágica/Deluge/Selkie; estático de vitória, +1 e −8 implementados): [`resultados-ab/2026-10-07-jace-no-lugar-do-kozilek/`](resultados-ab/2026-10-07-jace-no-lugar-do-kozilek/LEIAME.md).
@@ -259,3 +261,25 @@ Pasta: `resultados-ab/2026-10-07-comparacao-stefano/` (`LEIAME.md`; o documento 
 
 - **Leitura (raciocinada):** o Horrigan funciona porque a lista já tem os três amplificadores e a mesa cai por rad + perda de vida; os melhores cortes são os que menos mexem nesses motores (Offer, Didn't Say Please, Negate, Wave Goodbye). O Kozilek não é corte. A Master serve como recursão de mill, não como velocidade.
 - **Não verificado (Regra #7):** o valor real da criatura de oponente que a Master leva, o Horrigan junto com Monument/Jace (mesmas vagas), as prioridades de conjuração (71 e 67), o Undead Alchemist exilando a criatura milada antes de a Master agir, e as outras cartas da lista dele (as seis mais promissoras: `resultados-ab/2026-10-07-candidatas-stefano-2/`).
+
+## 15. As seis candidatas do Stefano: Fractured Sanity, Screeching Scorchbeast, Inexorable Tide, Branching Evolution, Loading Zone, The Earth Crystal (2026-10-07, pedido do usuário)
+
+Pasta: `resultados-ab/2026-10-07-candidatas-stefano-2/` (`LEIAME.md`). Oráculo e rulings lidos ANTES do código (`checklist-oraculo.md` §14); Spellbook: nenhuma cria combo, as seis juntas também não (controles ok). N = 10.000 por variante e modo, pareado, `no lugar`, sementes 3.000.000+i, 12 turnos. Base: mesa limpa T8 51,3% (padrão) / 24,0% (resiliência), deck-out 3,25% / 1,56%.
+
+| carta ← Negate (padrão / resiliência, pontos de T8, `*` = excede o IC95%) | T8 | T10 | entra em campo (ou é conjurada) | quando entra até T6 |
+|---|---|---|---|---|
+| **Branching Evolution** | **+1,88 ± 0,38 \* / +0,93 ± 0,31 \*** | +0,48 \* / +0,40 \* | contadores +9,6 por partida | +13,8 ± 2,5 \* (n = 1.164) |
+| Loading Zone | +1,25 ± 0,30 \* / +0,69 ± 0,26 \* | +0,34 \* / +0,31 | Warp em 10,6% das partidas, recasta 4,5% | +9,5 ± 2,6 \* (n = 894) |
+| The Earth Crystal | +1,18 ± 0,30 \* / +0,49 ± 0,26 \* | +0,14 / +0,28 | ativa 0,09 vez por partida | +13,3 ± 3,7 \* (n = 504) |
+| Fractured Sanity | +1,17 ± 0,33 \* / +0,59 ± 0,27 \* | +0,63 \* / +0,36 \* | conjurada em 13%, ciclada em 7% | +5,7 ± 1,6 \* (conjurada ou ciclada, n = 2.001) |
+| Inexorable Tide | +1,12 ± 0,29 \* / +0,29 ± 0,23 \* | +0,19 / +0,28 | 0,60 gatilho por partida | +11,5 ± 4,6 \* (n = 355) |
+| Screeching Scorchbeast | +0,95 ± 0,33 \* / +0,20 ± 0,27 | +0,64 \* / +0,05 | 0,21 ataque e 1,85 Zumbi por partida | +14,0 ± 4,2 \* (n = 479) |
+
+- **No lugar do Didn't Say Please** (a outra vaga barata): Branching +1,78 / +0,91, Tide +1,18 / +0,34, Fractured +1,18 / +0,50, Scorchbeast +0,98 / +0,12: o corte quase não muda o resultado.
+- **Scorchbeast é sensível à política do "you may… once each turn":** criar os Zumbis no 1º evento de mill do turno (`SCORCH_MIN_X = 1`) dá **+1,42 ± 0,34** / +0,40; esperar um evento com ≥ 3 cartas (padrão) +0,95; ≥ 6, +0,67 ± 0,32.
+- **Não se somam:** as seis juntas no lugar das seis (Offer, Negate, Arcane Denial, Toxic Deluge, Selkie, Didn't Say Please) dão **+5,47 ± 0,65** / +2,43 ± 0,56 (T10 +1,75 / +1,97, deck-out −0,40 ± 0,38), contra +7,55 se somasse as individuais. **Atenção:** esse pacote tira 4 das 6 contramágicas da lista; o valor de interação contra oponente real NÃO está medido.
+- **Contra o Horrigan** (← Negate +2,25 / +1,03, §14): só a Branching Evolution chega perto; as outras cinco ficam em +0,95 a +1,25. Nenhuma foi medida junto com o Horrigan, o Monument ou o Jace (as mesmas vagas).
+- **Correção ao §0b de `candidatas-pos-eoe.md`:** lá se dizia que o A/B "não valoriza cartas de crescer contadores" (cortar o Hardened Scales moveu os contadores em −7,5 e a velocidade em +0,3 ± 1,4). Aqui os dobradores movem os contadores (+5,6 a +9,6 por partida) **e** a mesa limpa até T8 (+1,2 a +1,9, e +1,49 ponto no primeiro oponente fora até T6): o medidor valoriza, o teste antigo tinha IC de ±1,4.
+- **Achado do baseline (Regra #3):** a Glen Elendra voltava do persist como um **0/0 vivo** quando havia Winding Constrictor ou Loading Zone em campo (o −1/−1 vira 2). Pelas regras (CR 704.5f) ela morre antes dos gatilhos de entrada e não volta. Corrigido atrás de `PERSIST_ZERO_TOUGHNESS_DIES` (padrão ligado). **Efeito medido na lista atual: +0,02 ± 0,03 (padrão) e +0,01 ± 0,03 (resiliência), 0,4% das partidas afetadas:** nulo.
+- **Não verificado (Regra #7):** as prioridades de conjuração (Fractured 64, Scorchbeast 70, Tide 60, Branching 70, Loading Zone 58, Crystal 61); o Zumbi Mutant atacando contra oponentes reais; esperar um evento de mill maior para o Scorchbeast (só `SCORCH_MIN_X` 1/3/6); o Warp de um turno do oponente; a ordem humana de ciclar a Fractured Sanity; nenhuma interação com os Bracket 3 de oponentes reais; as cartas somadas com Horrigan/Monument/Jace.
+- **Validação do código:** testes dirigidos **194/194**; bit-identidade (`SWAPS=()` == `ANTES_HM` com a chave do persist desligada) **80.000 de 80.000**, 3.944 partidas sem nenhuma das seis idênticas; regressão 20.000 × 2 modos × 4 variantes **0 exceções**; determinismo entre 3 `PYTHONHASHSEED` **0 divergências**.

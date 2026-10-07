@@ -1,1 +1,3 @@
 bitident fim 22:43:33
+reg fim 23:33:29
+determinismo fim 23:39:11

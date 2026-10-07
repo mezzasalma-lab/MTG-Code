@@ -7,4 +7,3 @@ seis_remove_append_scorch1         padrao       partidas ok=20000 | excecoes=0  
 seis_remove_append_scorch1         resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
 base_persist_antigo                padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
 base_persist_antigo                resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
-reg rc=0 23:33:29

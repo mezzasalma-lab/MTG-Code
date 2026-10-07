@@ -15,6 +15,8 @@
 > "a quantas partidas isso salva?", que só um simulador responde — **respondido no §0b**: ≈ 2,4 pontos de deck-out (5,7% → 3,3%) jogando cuidadoso.
 > O Master fica **sem corte designado** (candidatos a medir: Negate, Strip Mine, Yavimaya Hollow); números do pacote antigo de 6 trocas ficam em `resumos/` marcados como SUPERADOS.
 
+> **Atualização 2026-10-07 — as seis candidatas do Stefano** (Fractured Sanity, Scorchbeast, Inexorable Tide, Branching Evolution, Loading Zone, Earth Crystal): +0,95 a +1,88 ponto de T8 ← Negate (Branching Evolution a melhor); **os dobradores movem a velocidade, ao contrário do que o §0b dizia**. `resultados-ab/2026-10-07-candidatas-stefano-2/LEIAME.md` e `goldfish-log.md` §15.
+
 > **Atualização 2026-10-07 — Agent Frank Horrigan e The Master, Transcendent (lista do Stefano):** Horrigan **+2,37 ± 0,37 ponto de T8** ← Offer (+2,25 ← Negate; o valor é o proliferate: sem ele +0,15); Master neutra (+0,36 ← Negate). `resultados-ab/2026-10-07-comparacao-stefano/LEIAME.md` e `goldfish-log.md` §14.
 
 > **Atualização 2026-10-07 — Jace, Wielder of Mysteries** (pedido do usuário: no lugar do Kozilek?): **não vale trocar o Kozilek** (mesa limpa T8 −0,12 ± 0,37, deck-out +0,55 ± 0,35; controle Kozilek → Forest +2,54); no lugar de Offer/Negate o Jace dá +1,3 ponto de T8 e −1,3 de deck-out, mas disputa as mesmas vagas do Monument. `resultados-ab/2026-10-07-jace-no-lugar-do-kozilek/LEIAME.md` e `goldfish-log.md` §13.
