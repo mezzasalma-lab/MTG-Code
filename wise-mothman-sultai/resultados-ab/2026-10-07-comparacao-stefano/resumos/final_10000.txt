@@ -1,41 +1,3 @@
-base                               cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-frank__an_offer_you_cant_refuse    cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-frank__negate                      cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-frank__arcane_denial               cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-frank__toxic_deluge                cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-frank__coldeyed_selkie             cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-frank__didnt_say_please            cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-frank__wave_goodbye                cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-frank__tear_asunder                cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-frank__kozilek_butcher_of_truth    cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-master__tear_asunder               cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-master__an_offer_you_cant_refuse   cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-master__negate                     cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-master__wave_goodbye               cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-ambos__offer_frank__negate_master  cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-ambos__offer_frank__tear_master    cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-sens_frank_sem_proliferate__negate cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-sens_master_sem_criatura_de_oponente__negate cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-sens_master_so_no_meu_turno__negate cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
-feito 10000 padrao base
-feito 10000 padrao frank__an_offer_you_cant_refuse
-feito 10000 padrao frank__negate
-feito 10000 padrao frank__arcane_denial
-feito 10000 padrao frank__toxic_deluge
-feito 10000 padrao frank__coldeyed_selkie
-feito 10000 padrao frank__didnt_say_please
-feito 10000 padrao frank__wave_goodbye
-feito 10000 padrao frank__tear_asunder
-feito 10000 padrao frank__kozilek_butcher_of_truth
-feito 10000 padrao master__tear_asunder
-feito 10000 padrao master__an_offer_you_cant_refuse
-feito 10000 padrao master__negate
-feito 10000 padrao master__wave_goodbye
-feito 10000 padrao ambos__offer_frank__negate_master
-feito 10000 padrao ambos__offer_frank__tear_master
-feito 10000 padrao sens_frank_sem_proliferate__negate
-feito 10000 padrao sens_master_sem_criatura_de_oponente__negate
-feito 10000 padrao sens_master_so_no_meu_turno__negate
 LOTE N=10000 sementes 3000000..3009999, 12 turnos, modo padrao
 
 [frank__an_offer_you_cant_refuse - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
@@ -710,10 +672,3 @@ LOTE N=10000 sementes 3000000..3009999, 12 turnos, modo padrao
   *master_enter_turn__ate_T4                    0.0000       0.0041      +0.0041 ±0.0013  
   *len_battlefield                             29.4493      29.8183      +0.3690 ±0.1228  
   *len_pool                                     0.5451       0.5663      +0.0212 ±0.0072  
-feito 10000 resiliencia base
-feito 10000 resiliencia frank__an_offer_you_cant_refuse
-feito 10000 resiliencia frank__negate
-feito 10000 resiliencia frank__arcane_denial
-feito 10000 resiliencia frank__toxic_deluge
-feito 10000 resiliencia frank__coldeyed_selkie
-feito 10000 resiliencia frank__didnt_say_please
