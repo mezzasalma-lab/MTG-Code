@@ -1,0 +1,3368 @@
+{
+ "reconhece": {
+  "Agadeem's Awakening // Agadeem, the Undercrypt": "Agadeem's Awakening // Agadeem, the Undercrypt",
+  "Agatha's Soul Cauldron": "Agatha's Soul Cauldron",
+  "Agent Frank Horrigan": "Agent Frank Horrigan",
+  "Altar of Dementia": "Altar of Dementia",
+  "Altar of the Brood": "Altar of the Brood",
+  "An Offer You Can't Refuse": "An Offer You Can't Refuse",
+  "Angel of Suffering": "Angel of Suffering",
+  "Arcane Denial": "Arcane Denial",
+  "Arcane Signet": "Arcane Signet",
+  "Ashiok, Dream Render": "Ashiok, Dream Render",
+  "Assassin's Trophy": "Assassin's Trophy",
+  "Atomize": "Atomize",
+  "Basking Broodscale": "Basking Broodscale",
+  "Beast Within": "Beast Within",
+  "Biomass Mutation": "Biomass Mutation",
+  "Bloatfly Swarm": "Bloatfly Swarm",
+  "Bloodchief Ascension": "Bloodchief Ascension",
+  "Bojuka Bog": "Bojuka Bog",
+  "Boseiju, Who Endures": "Boseiju, Who Endures",
+  "Bramble Familiar // Fetch Quest": "Bramble Familiar // Fetch Quest",
+  "Branching Evolution": "Branching Evolution",
+  "Breeding Pool": "Breeding Pool",
+  "Cankerbloom": "Cankerbloom",
+  "Casualties of War": "Casualties of War",
+  "Chromatic Lantern": "Chromatic Lantern",
+  "Cold-Eyed Selkie": "Cold-Eyed Selkie",
+  "Command Tower": "Command Tower",
+  "Contaminated Drink": "Contaminated Drink",
+  "Counterspell": "Counterspell",
+  "Crucible of Worlds": "Crucible of Worlds",
+  "Cultivate": "Cultivate",
+  "Danny Pink": "Danny Pink",
+  "Darkwater Catacombs": "Darkwater Catacombs",
+  "Deadly Rollick": "Deadly Rollick",
+  "Deepmuck Desperado": "Deepmuck Desperado",
+  "Demonic Consultation": "Demonic Consultation",
+  "Didn't Say Please": "Didn't Say Please",
+  "Drown in the Loch": "Drown in the Loch",
+  "Evolution Witness": "Evolution Witness",
+  "Evolving Wilds": "Evolving Wilds",
+  "Exotic Orchard": "Exotic Orchard",
+  "Experimental Augury": "Experimental Augury",
+  "Fabled Passage": "Fabled Passage",
+  "Fathom Mage": "Fathom Mage",
+  "Fellwar Stone": "Fellwar Stone",
+  "Feral Ghoul": "Feral Ghoul",
+  "Fierce Guardianship": "Fierce Guardianship",
+  "Find // Finality": "Find // Finality",
+  "Fire Nation Salvagers": "Fire Nation Salvagers",
+  "Fractured Sanity": "Fractured Sanity",
+  "Freestrider Lookout": "Freestrider Lookout",
+  "Generous Patron": "Generous Patron",
+  "Glen Elendra Archmage": "Glen Elendra Archmage",
+  "Glowing One": "Glowing One",
+  "Gyre Sage": "Gyre Sage",
+  "Hardened Scales": "Hardened Scales",
+  "Hedge Shredder": "Hedge Shredder",
+  "Herd Baloth": "Herd Baloth",
+  "Heroic Intervention": "Heroic Intervention",
+  "Hinterland Harbor": "Hinterland Harbor",
+  "Hollowmurk Siege": "Hollowmurk Siege",
+  "Icetill Explorer": "Icetill Explorer",
+  "Inexorable Tide": "Inexorable Tide",
+  "Infesting Radroach": "Infesting Radroach",
+  "Inspiring Call": "Inspiring Call",
+  "Kami of Whispered Hopes": "Kami of Whispered Hopes",
+  "Karn's Bastion": "Karn's Bastion",
+  "Kodama of the West Tree": "Kodama of the West Tree",
+  "Kodama's Reach": "Kodama's Reach",
+  "Kozilek, Butcher of Truth": "Kozilek, Butcher of Truth",
+  "Loading Zone": "Loading Zone",
+  "Mariposa Military Base": "Mariposa Military Base",
+  "Memory Erosion": "Memory Erosion",
+  "Mesmeric Orb": "Mesmeric Orb",
+  "Minamo, School at Water's Edge": "Minamo, School at Water's Edge",
+  "Mindcrank": "Mindcrank",
+  "Mirelurk Queen": "Mirelurk Queen",
+  "Mistrise Village": "Mistrise Village",
+  "Misty Rainforest": "Misty Rainforest",
+  "Morphic Pool": "Morphic Pool",
+  "Mortuary Mire": "Mortuary Mire",
+  "Muldrotha, the Gravetide": "Muldrotha, the Gravetide",
+  "Mutational Advantage": "Mutational Advantage",
+  "Nature's Lore": "Nature's Lore",
+  "Negate": "Negate",
+  "Nephalia Drownyard": "Nephalia Drownyard",
+  "Nesting Grounds": "Nesting Grounds",
+  "Nuclear Fallout": "Nuclear Fallout",
+  "Opulent Palace": "Opulent Palace",
+  "Ouroboroid": "Ouroboroid",
+  "Overflowing Basin": "Overflowing Basin",
+  "Overgrown Tomb": "Overgrown Tomb",
+  "Palantír of Orthanc": "Palantír of Orthanc",
+  "Path of Ancestry": "Path of Ancestry",
+  "Plaza of Heroes": "Plaza of Heroes",
+  "Polluted Delta": "Polluted Delta",
+  "Pollywog Prodigy": "Pollywog Prodigy",
+  "Psychic Corrosion": "Psychic Corrosion",
+  "Putrefy": "Putrefy",
+  "Radstorm": "Radstorm",
+  "Rampant Frogantua": "Rampant Frogantua",
+  "Rampant Growth": "Rampant Growth",
+  "Raul, Trouble Shooter": "Raul, Trouble Shooter",
+  "Reanimate": "Reanimate",
+  "Rejuvenating Springs": "Rejuvenating Springs",
+  "Repulsive Mutation": "Repulsive Mutation",
+  "Ripples of Potential": "Ripples of Potential",
+  "Rise of the Dark Realms": "Rise of the Dark Realms",
+  "Ruin Crab": "Ruin Crab",
+  "Screeching Scorchbeast": "Screeching Scorchbeast",
+  "Shifting Woodland": "Shifting Woodland",
+  "Singularity Rupture": "Singularity Rupture",
+  "Six": "Six",
+  "Smuggler's Surprise": "Smuggler's Surprise",
+  "Sol Ring": "Sol Ring",
+  "Soul-Guide Lantern": "Soul-Guide Lantern",
+  "Strength Bobblehead": "Strength Bobblehead",
+  "Strip Mine": "Strip Mine",
+  "Struggle for Project Purity": "Struggle for Project Purity",
+  "Swarmyard": "Swarmyard",
+  "Swiftfoot Boots": "Swiftfoot Boots",
+  "Syr Konrad, the Grim": "Syr Konrad, the Grim",
+  "Tainted Isle": "Tainted Isle",
+  "Tainted Wood": "Tainted Wood",
+  "Takenuma, Abandoned Mire": "Takenuma, Abandoned Mire",
+  "Talisman of Curiosity": "Talisman of Curiosity",
+  "Talisman of Dominance": "Talisman of Dominance",
+  "Talisman of Resilience": "Talisman of Resilience",
+  "Tato Farmer": "Tato Farmer",
+  "Tear Asunder": "Tear Asunder",
+  "Terramorphic Expanse": "Terramorphic Expanse",
+  "Terrasymbiosis": "Terrasymbiosis",
+  "Tezzeret's Gambit": "Tezzeret's Gambit",
+  "Thassa's Oracle": "Thassa's Oracle",
+  "The Earth Crystal": "The Earth Crystal",
+  "The Gitrog Monster": "The Gitrog Monster",
+  "The Great Henge": "The Great Henge",
+  "The Master, Transcendent": "The Master, Transcendent",
+  "The Wise Mothman": "The Wise Mothman",
+  "Three Visits": "Three Visits",
+  "Toxic Deluge": "Toxic Deluge",
+  "Undead Alchemist": "Undead Alchemist",
+  "Undergrowth Stadium": "Undergrowth Stadium",
+  "Urza's Saga": "Urza's Saga",
+  "V.A.T.S.": "V.A.T.S.",
+  "Verdant Catacombs": "Verdant Catacombs",
+  "Vexing Radgull": "Vexing Radgull",
+  "Viridescent Bog": "Viridescent Bog",
+  "Walking Ballista": "Walking Ballista",
+  "Waterlogged Grove": "Waterlogged Grove",
+  "Watery Grave": "Watery Grave",
+  "Wave Goodbye": "Wave Goodbye",
+  "Winding Constrictor": "Winding Constrictor",
+  "Woodland Cemetery": "Woodland Cemetery",
+  "Yavimaya Hollow": "Yavimaya Hollow",
+  "Zagoth Triome": "Zagoth Triome",
+  "Zellix, Sanity Flayer": "Zellix, Sanity Flayer"
+ },
+ "nao_reconhecidos": [],
+ "base": {
+  "incluidos": {
+   "Bloodchief Ascension + Mindcrank": {
+    "produz": [
+     "Infinite mill",
+     "Near-infinite lifegain",
+     "Near-infinite lifegain triggers",
+     "Near-infinite lifeloss"
+    ],
+    "id": "936-1290",
+    "bracket": "S",
+    "popularidade": 62879
+   },
+   "Altar of Dementia + The Great Henge": {
+    "produz": [
+     "Infinite self-mill",
+     "Infinite creature ETB",
+     "Infinite creature LTB",
+     "Infinite death triggers"
+    ],
+    "id": "3139-5256--5",
+    "bracket": "E",
+    "popularidade": 8856
+   }
+  },
+  "quase_n": 134,
+  "quase": [
+   "Agatha's Soul Cauldron + Blech, Loafing Pest + Walking Ballista",
+   "Agatha's Soul Cauldron + Blood Researcher + Walking Ballista",
+   "Agatha's Soul Cauldron + Bloodbond Vampire + Walking Ballista",
+   "Agatha's Soul Cauldron + Bloodthirsty Aerialist + Walking Ballista",
+   "Agatha's Soul Cauldron + Butcher Ghoul + Walking Ballista",
+   "Agatha's Soul Cauldron + Christine Chapel, Combat Medic + Walking Ballista",
+   "Agatha's Soul Cauldron + Evernight Shade + Walking Ballista",
+   "Agatha's Soul Cauldron + Evolution Witness + Psychic Frog",
+   "Agatha's Soul Cauldron + Gilder Bairn + Gyre Sage",
+   "Agatha's Soul Cauldron + Gilder Bairn + Kami of Whispered Hopes",
+   "Agatha's Soul Cauldron + Kami of Whispered Hopes + Sleep-Cursed Faerie",
+   "Agatha's Soul Cauldron + Kraven the Hunter + Walking Ballista",
+   "Agatha's Soul Cauldron + Pest Mascot + Walking Ballista",
+   "Agatha's Soul Cauldron + Scion of the Swarm + Walking Ballista",
+   "Agatha's Soul Cauldron + Sengir, the Dark Baron + Walking Ballista",
+   "Agatha's Soul Cauldron + Strangleroot Geist + Walking Ballista",
+   "Agatha's Soul Cauldron + Strong, the Brutish Thespian + Walking Ballista",
+   "Agatha's Soul Cauldron + The Thing, Ben Grimm + Walking Ballista",
+   "Agatha's Soul Cauldron + Tigra, Feline Fury + Walking Ballista",
+   "Agatha's Soul Cauldron + Titanbones, Towering Heart + Walking Ballista",
+   "Agatha's Soul Cauldron + Vampire Scrivener + Walking Ballista",
+   "Agatha's Soul Cauldron + Walking Ballista + Wall of Limbs",
+   "Agatha's Soul Cauldron + Walking Ballista + Yahenni, Undying Partisan",
+   "Agatha's Soul Cauldron + Walking Ballista + Young Wolf",
+   "Altar of Dementia + Arwen, Weaver of Hope",
+   "Altar of Dementia + Bioengineered Future",
+   "Altar of Dementia + Blade of the Bloodchief + Herd Baloth",
+   "Altar of Dementia + Bloodspore Thrinax",
+   "Altar of Dementia + Body of Research",
+   "Altar of Dementia + Captain Kathryn Janeway",
+   "Altar of Dementia + Combine Guildmage",
+   "Altar of Dementia + Death's Presence + Herd Baloth",
+   "Altar of Dementia + Dominion Saboteur",
+   "Altar of Dementia + Gorma, the Gullet",
+   "Altar of Dementia + Herd Baloth + Long Feng, Grand Secretariat",
+   "Altar of Dementia + Herd Baloth + Mazirek, Kraul Death Priest",
+   "Altar of Dementia + Herd Baloth + Moss-Pit Skeleton + The Wise Mothman",
+   "Altar of Dementia + Herd Baloth + Necrosynthesis",
+   "Altar of Dementia + Herd Baloth + Sadistic Glee",
+   "Altar of Dementia + Herd Baloth + Tarrian's Soulcleaver",
+   "Altar of Dementia + Jumbo Cactuar",
+   "Altar of Dementia + Master Biomancer",
+   "Altar of Dementia + Master Chef",
+   "Altar of Dementia + Melira, Sylvok Outcast",
+   "Altar of Dementia + Metallic Mimic",
+   "Altar of Dementia + Mikaeus, the Unhallowed",
+   "Altar of Dementia + Moritte of the Frost",
+   "Altar of Dementia + Muldrotha, the Gravetide + Ultimecia, Time Sorceress // Ultimecia, Omnipotent",
+   "Altar of Dementia + Railway Brawler",
+   "Altar of Dementia + Renata, Called to the Hunt",
+   "Altar of Dementia + Rocksteady, Mutant Marauder",
+   "Altar of Dementia + Stalwart Successor",
+   "Altar of Dementia + Support Mission",
+   "Altar of Dementia + Surrak and Goreclaw",
+   "Altar of Dementia + Thran Vigil",
+   "Altar of Dementia + Thunderous Velocipede",
+   "Altar of Dementia + Tromell, Seymour's Butler",
+   "Altar of Dementia + Warden of the Grove",
+   "Altar of Dementia + Young Necromancer",
+   "Altar of Dementia + Zameck Guildmage",
+   "Aphetto Alchemist + Mesmeric Orb",
+   "Ashnod's Altar + The Great Henge",
+   "Basalt Monolith + Mesmeric Orb",
+   "Basking Broodscale + Blade of the Bloodchief",
+   "Basking Broodscale + Donatello, the Brains",
+   "Basking Broodscale + Ghost Lantern // Bind Spirit",
+   "Basking Broodscale + Long Feng, Grand Secretariat",
+   "Basking Broodscale + Mazirek, Kraul Death Priest",
+   "Basking Broodscale + Necrosynthesis",
+   "Basking Broodscale + Sadistic Glee",
+   "Basking Broodscale + Tarrian's Soulcleaver",
+   "Blasting Station + The Great Henge",
+   "Bloodchief Ascension + The Master of Lake-town",
+   "Bloodchief Ascension + Zur's Weirding",
+   "Bloodflow Connoisseur + The Great Henge",
+   "Carrion Feeder + The Great Henge",
+   "Crab Umbra + Kami of Whispered Hopes",
+   "Dakmor Salvage + The Gitrog Monster",
+   "Duskmantle Guildmage + Mindcrank",
+   "Enter the Infinite + Psychic Corrosion",
+   "Evolution Witness + Long Feng, Grand Secretariat + Walking Ballista",
+   "Evolution Witness + Rocksteady, Mutant Marauder + Walking Ballista",
+   "Fathom Mage + Iron Man, Armored Avenger",
+   "Fathom Mage + Lyla, Holographic Assistant",
+   "Fathom Mage + Stark's Ingenuity",
+   "Fathom Mage + Wizard Class",
+   "Freed from the Real + Kami of Whispered Hopes",
+   "Generous Patron + Iron Man, Armored Avenger",
+   "Generous Patron + Lyla, Holographic Assistant",
+   "Glacial Chasm + Icetill Explorer",
+   "Gyre Sage + Ringing Strike Mastery",
+   "Gyre Sage + Staff of Domination",
+   "Gyre Sage + Sword of the Paruns",
+   "Gyre Sage + Umbral Mantle",
+   "Hardened Scales + Rite of Passage + Walking Ballista",
+   "Hardened Scales + Strength of Will + Walking Ballista",
+   "Hardened Scales + Vigor + Walking Ballista",
+   "Hedge Shredder + Homer, the Hermit",
+   "Hedge Shredder + Icetill Explorer + Scouting Trek",
+   "Herd Baloth + Ivy Lane Denizen",
+   "Heroic Feast + Walking Ballista",
+   "Hullbreaker Horror + Sol Ring",
+   "Kami of Whispered Hopes + Pemmin's Aura",
+   "Kami of Whispered Hopes + Ringing Strike Mastery",
+   "Kami of Whispered Hopes + Rite of Passage + Walking Ballista",
+   "Kami of Whispered Hopes + Singing Bell Strike",
+   "Kami of Whispered Hopes + Staff of Domination",
+   "Kami of Whispered Hopes + Strength of Will + Walking Ballista",
+   "Kami of Whispered Hopes + Sword of the Paruns",
+   "Kami of Whispered Hopes + Umbral Mantle",
+   "Kami of Whispered Hopes + Vigean Graftmage",
+   "Kami of Whispered Hopes + Vigor + Walking Ballista",
+   "Kozilek, Butcher of Truth + Morality Shift + Syr Konrad, the Grim",
+   "Mephidross Vampire + Walking Ballista",
+   "Mesmeric Orb + Seeker of Skybreak",
+   "Mesmeric Orb + Tidewater Minion",
+   "Mikaeus, the Unhallowed + Walking Ballista",
+   "Mindslaver + Muldrotha, the Gravetide",
+   "Muldrotha, the Gravetide + Second Chance",
+   "Ouroboroid + Sage of Hours",
+   "Peer into the Abyss + Psychic Corrosion",
+   "Phyrexian Altar + The Great Henge",
+   "Rite of Passage + Walking Ballista + Winding Constrictor",
+   "Shifting Woodland + Time Vault",
+   "Sol Ring + Tidespout Tyrant",
+   "Strength of Will + Walking Ballista + Winding Constrictor",
+   "Sway of the Stars + Syr Konrad, the Grim",
+   "Syr Konrad, the Grim + The Mindskinner",
+   "The Great Henge + Viscera Seer",
+   "The Great Henge + Woe Strider",
+   "The Great Henge + Yahenni, Undying Partisan",
+   "Urban Daggertooth + Walking Ballista",
+   "Vigor + Walking Ballista + Winding Constrictor",
+   "Vraska, Swarm's Eminence + Walking Ballista"
+  ]
+ },
+ "stefano": {
+  "incluidos": {},
+  "quase_n": 15,
+  "quase": [
+   "Aphetto Alchemist + Mesmeric Orb",
+   "Basalt Monolith + Mesmeric Orb",
+   "Bloodchief Ascension + Mindcrank",
+   "Body of Research + Terrasymbiosis",
+   "Bruvac the Grandiloquent + Singularity Rupture",
+   "Doomsday Excruciator + Fractured Sanity",
+   "Duskmantle Guildmage + Mindcrank",
+   "Hullbreaker Horror + Sol Ring",
+   "Karn's Bastion + Magosi, the Waterveil + Nesting Grounds",
+   "Mesmeric Orb + Seeker of Skybreak",
+   "Mesmeric Orb + Tidewater Minion",
+   "Riverchurn Monument + Singularity Rupture",
+   "Sol Ring + Tidespout Tyrant",
+   "Sway of the Stars + Syr Konrad, the Grim",
+   "Syr Konrad, the Grim + The Mindskinner"
+  ]
+ },
+ "por_corte": {
+  "Agent Frank Horrigan": {
+   "Agadeem's Awakening // Agadeem, the Undercrypt": {
+    "n_main": 99,
+    "sai": [
+     "Agadeem's Awakening // Agadeem, the Undercrypt"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Agatha's Soul Cauldron": {
+    "n_main": 99,
+    "sai": [
+     "Agatha's Soul Cauldron"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Agatha's Soul Cauldron + Blech, Loafing Pest + Walking Ballista",
+     "Agatha's Soul Cauldron + Blood Researcher + Walking Ballista",
+     "Agatha's Soul Cauldron + Bloodbond Vampire + Walking Ballista",
+     "Agatha's Soul Cauldron + Bloodthirsty Aerialist + Walking Ballista",
+     "Agatha's Soul Cauldron + Butcher Ghoul + Walking Ballista",
+     "Agatha's Soul Cauldron + Christine Chapel, Combat Medic + Walking Ballista",
+     "Agatha's Soul Cauldron + Evernight Shade + Walking Ballista",
+     "Agatha's Soul Cauldron + Evolution Witness + Psychic Frog",
+     "Agatha's Soul Cauldron + Gilder Bairn + Gyre Sage",
+     "Agatha's Soul Cauldron + Gilder Bairn + Kami of Whispered Hopes",
+     "Agatha's Soul Cauldron + Kami of Whispered Hopes + Sleep-Cursed Faerie",
+     "Agatha's Soul Cauldron + Kraven the Hunter + Walking Ballista",
+     "Agatha's Soul Cauldron + Pest Mascot + Walking Ballista",
+     "Agatha's Soul Cauldron + Scion of the Swarm + Walking Ballista",
+     "Agatha's Soul Cauldron + Sengir, the Dark Baron + Walking Ballista",
+     "Agatha's Soul Cauldron + Strangleroot Geist + Walking Ballista",
+     "Agatha's Soul Cauldron + Strong, the Brutish Thespian + Walking Ballista",
+     "Agatha's Soul Cauldron + The Thing, Ben Grimm + Walking Ballista",
+     "Agatha's Soul Cauldron + Tigra, Feline Fury + Walking Ballista",
+     "Agatha's Soul Cauldron + Titanbones, Towering Heart + Walking Ballista",
+     "Agatha's Soul Cauldron + Vampire Scrivener + Walking Ballista",
+     "Agatha's Soul Cauldron + Walking Ballista + Wall of Limbs",
+     "Agatha's Soul Cauldron + Walking Ballista + Yahenni, Undying Partisan",
+     "Agatha's Soul Cauldron + Walking Ballista + Young Wolf"
+    ]
+   },
+   "Altar of Dementia": {
+    "n_main": 99,
+    "sai": [
+     "Altar of Dementia"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [
+     "Altar of Dementia + The Great Henge"
+    ],
+    "quase_novos": [
+     "Altar of Dementia + The Great Henge"
+    ],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Altar of Dementia + Arwen, Weaver of Hope",
+     "Altar of Dementia + Bioengineered Future",
+     "Altar of Dementia + Blade of the Bloodchief + Herd Baloth",
+     "Altar of Dementia + Bloodspore Thrinax",
+     "Altar of Dementia + Body of Research",
+     "Altar of Dementia + Captain Kathryn Janeway",
+     "Altar of Dementia + Combine Guildmage",
+     "Altar of Dementia + Death's Presence + Herd Baloth",
+     "Altar of Dementia + Dominion Saboteur",
+     "Altar of Dementia + Gorma, the Gullet",
+     "Altar of Dementia + Herd Baloth + Long Feng, Grand Secretariat",
+     "Altar of Dementia + Herd Baloth + Mazirek, Kraul Death Priest",
+     "Altar of Dementia + Herd Baloth + Moss-Pit Skeleton + The Wise Mothman",
+     "Altar of Dementia + Herd Baloth + Necrosynthesis",
+     "Altar of Dementia + Herd Baloth + Sadistic Glee",
+     "Altar of Dementia + Herd Baloth + Tarrian's Soulcleaver",
+     "Altar of Dementia + Jumbo Cactuar",
+     "Altar of Dementia + Master Biomancer",
+     "Altar of Dementia + Master Chef",
+     "Altar of Dementia + Melira, Sylvok Outcast",
+     "Altar of Dementia + Metallic Mimic",
+     "Altar of Dementia + Mikaeus, the Unhallowed",
+     "Altar of Dementia + Moritte of the Frost",
+     "Altar of Dementia + Muldrotha, the Gravetide + Ultimecia, Time Sorceress // Ultimecia, Omnipotent",
+     "Altar of Dementia + Railway Brawler",
+     "Altar of Dementia + Renata, Called to the Hunt",
+     "Altar of Dementia + Rocksteady, Mutant Marauder",
+     "Altar of Dementia + Stalwart Successor",
+     "Altar of Dementia + Support Mission",
+     "Altar of Dementia + Surrak and Goreclaw",
+     "Altar of Dementia + Thran Vigil",
+     "Altar of Dementia + Thunderous Velocipede",
+     "Altar of Dementia + Tromell, Seymour's Butler",
+     "Altar of Dementia + Warden of the Grove",
+     "Altar of Dementia + Young Necromancer",
+     "Altar of Dementia + Zameck Guildmage"
+    ]
+   },
+   "Altar of the Brood": {
+    "n_main": 99,
+    "sai": [
+     "Altar of the Brood"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "An Offer You Can't Refuse": {
+    "n_main": 99,
+    "sai": [
+     "An Offer You Can't Refuse"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Angel of Suffering": {
+    "n_main": 99,
+    "sai": [
+     "Angel of Suffering"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Arcane Denial": {
+    "n_main": 99,
+    "sai": [
+     "Arcane Denial"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Ashiok, Dream Render": {
+    "n_main": 99,
+    "sai": [
+     "Ashiok, Dream Render"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Basking Broodscale": {
+    "n_main": 99,
+    "sai": [
+     "Basking Broodscale"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Basking Broodscale + Blade of the Bloodchief",
+     "Basking Broodscale + Donatello, the Brains",
+     "Basking Broodscale + Ghost Lantern // Bind Spirit",
+     "Basking Broodscale + Long Feng, Grand Secretariat",
+     "Basking Broodscale + Mazirek, Kraul Death Priest",
+     "Basking Broodscale + Necrosynthesis",
+     "Basking Broodscale + Sadistic Glee",
+     "Basking Broodscale + Tarrian's Soulcleaver"
+    ]
+   },
+   "Bloodchief Ascension": {
+    "n_main": 99,
+    "sai": [
+     "Bloodchief Ascension"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [
+     "Bloodchief Ascension + Mindcrank"
+    ],
+    "quase_novos": [
+     "Bloodchief Ascension + Mindcrank"
+    ],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Bloodchief Ascension + The Master of Lake-town",
+     "Bloodchief Ascension + Zur's Weirding"
+    ]
+   },
+   "Bojuka Bog": {
+    "n_main": 99,
+    "sai": [
+     "Bojuka Bog"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Boseiju, Who Endures": {
+    "n_main": 99,
+    "sai": [
+     "Boseiju, Who Endures"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Bramble Familiar // Fetch Quest": {
+    "n_main": 99,
+    "sai": [
+     "Bramble Familiar // Fetch Quest"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Breeding Pool": {
+    "n_main": 99,
+    "sai": [
+     "Breeding Pool"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Cankerbloom": {
+    "n_main": 99,
+    "sai": [
+     "Cankerbloom"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Cold-Eyed Selkie": {
+    "n_main": 99,
+    "sai": [
+     "Cold-Eyed Selkie"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Command Tower": {
+    "n_main": 99,
+    "sai": [
+     "Command Tower"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Danny Pink": {
+    "n_main": 99,
+    "sai": [
+     "Danny Pink"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Deepmuck Desperado": {
+    "n_main": 99,
+    "sai": [
+     "Deepmuck Desperado"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Didn't Say Please": {
+    "n_main": 99,
+    "sai": [
+     "Didn't Say Please"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Evolution Witness": {
+    "n_main": 99,
+    "sai": [
+     "Evolution Witness"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Agatha's Soul Cauldron + Evolution Witness + Psychic Frog",
+     "Evolution Witness + Long Feng, Grand Secretariat + Walking Ballista",
+     "Evolution Witness + Rocksteady, Mutant Marauder + Walking Ballista"
+    ]
+   },
+   "Fabled Passage": {
+    "n_main": 99,
+    "sai": [
+     "Fabled Passage"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Fathom Mage": {
+    "n_main": 99,
+    "sai": [
+     "Fathom Mage"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Fathom Mage + Iron Man, Armored Avenger",
+     "Fathom Mage + Lyla, Holographic Assistant",
+     "Fathom Mage + Stark's Ingenuity",
+     "Fathom Mage + Wizard Class"
+    ]
+   },
+   "Fierce Guardianship": {
+    "n_main": 99,
+    "sai": [
+     "Fierce Guardianship"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Freestrider Lookout": {
+    "n_main": 99,
+    "sai": [
+     "Freestrider Lookout"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Generous Patron": {
+    "n_main": 99,
+    "sai": [
+     "Generous Patron"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Generous Patron + Iron Man, Armored Avenger",
+     "Generous Patron + Lyla, Holographic Assistant"
+    ]
+   },
+   "Glen Elendra Archmage": {
+    "n_main": 99,
+    "sai": [
+     "Glen Elendra Archmage"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [
+     "Altar of Dementia + The Great Henge"
+    ],
+    "quase_novos": [
+     "Altar of Dementia + The Great Henge"
+    ],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Altar of Dementia + Arwen, Weaver of Hope",
+     "Altar of Dementia + Bioengineered Future",
+     "Altar of Dementia + Bloodspore Thrinax",
+     "Altar of Dementia + Captain Kathryn Janeway",
+     "Altar of Dementia + Combine Guildmage",
+     "Altar of Dementia + Dominion Saboteur",
+     "Altar of Dementia + Gorma, the Gullet",
+     "Altar of Dementia + Master Biomancer",
+     "Altar of Dementia + Master Chef",
+     "Altar of Dementia + Melira, Sylvok Outcast",
+     "Altar of Dementia + Metallic Mimic",
+     "Altar of Dementia + Mikaeus, the Unhallowed",
+     "Altar of Dementia + Moritte of the Frost",
+     "Altar of Dementia + Railway Brawler",
+     "Altar of Dementia + Renata, Called to the Hunt",
+     "Altar of Dementia + Rocksteady, Mutant Marauder",
+     "Altar of Dementia + Stalwart Successor",
+     "Altar of Dementia + Support Mission",
+     "Altar of Dementia + Surrak and Goreclaw",
+     "Altar of Dementia + Thran Vigil",
+     "Altar of Dementia + Thunderous Velocipede",
+     "Altar of Dementia + Tromell, Seymour's Butler",
+     "Altar of Dementia + Warden of the Grove",
+     "Altar of Dementia + Zameck Guildmage",
+     "Ashnod's Altar + The Great Henge",
+     "Blasting Station + The Great Henge",
+     "Bloodflow Connoisseur + The Great Henge",
+     "Carrion Feeder + The Great Henge",
+     "Phyrexian Altar + The Great Henge",
+     "The Great Henge + Viscera Seer",
+     "The Great Henge + Woe Strider",
+     "The Great Henge + Yahenni, Undying Partisan"
+    ]
+   },
+   "Gyre Sage": {
+    "n_main": 99,
+    "sai": [
+     "Gyre Sage"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Agatha's Soul Cauldron + Gilder Bairn + Gyre Sage",
+     "Gyre Sage + Ringing Strike Mastery",
+     "Gyre Sage + Staff of Domination",
+     "Gyre Sage + Sword of the Paruns",
+     "Gyre Sage + Umbral Mantle"
+    ]
+   },
+   "Hardened Scales": {
+    "n_main": 99,
+    "sai": [
+     "Hardened Scales"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Hardened Scales + Rite of Passage + Walking Ballista",
+     "Hardened Scales + Strength of Will + Walking Ballista",
+     "Hardened Scales + Vigor + Walking Ballista"
+    ]
+   },
+   "Hedge Shredder": {
+    "n_main": 99,
+    "sai": [
+     "Hedge Shredder"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Hedge Shredder + Homer, the Hermit",
+     "Hedge Shredder + Icetill Explorer + Scouting Trek"
+    ]
+   },
+   "Herd Baloth": {
+    "n_main": 99,
+    "sai": [
+     "Herd Baloth"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Altar of Dementia + Blade of the Bloodchief + Herd Baloth",
+     "Altar of Dementia + Death's Presence + Herd Baloth",
+     "Altar of Dementia + Herd Baloth + Long Feng, Grand Secretariat",
+     "Altar of Dementia + Herd Baloth + Mazirek, Kraul Death Priest",
+     "Altar of Dementia + Herd Baloth + Moss-Pit Skeleton + The Wise Mothman",
+     "Altar of Dementia + Herd Baloth + Necrosynthesis",
+     "Altar of Dementia + Herd Baloth + Sadistic Glee",
+     "Altar of Dementia + Herd Baloth + Tarrian's Soulcleaver",
+     "Herd Baloth + Ivy Lane Denizen"
+    ]
+   },
+   "Heroic Intervention": {
+    "n_main": 99,
+    "sai": [
+     "Heroic Intervention"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Hollowmurk Siege": {
+    "n_main": 99,
+    "sai": [
+     "Hollowmurk Siege"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Icetill Explorer": {
+    "n_main": 99,
+    "sai": [
+     "Icetill Explorer"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Glacial Chasm + Icetill Explorer",
+     "Hedge Shredder + Icetill Explorer + Scouting Trek"
+    ]
+   },
+   "Kami of Whispered Hopes": {
+    "n_main": 99,
+    "sai": [
+     "Kami of Whispered Hopes"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Agatha's Soul Cauldron + Gilder Bairn + Kami of Whispered Hopes",
+     "Agatha's Soul Cauldron + Kami of Whispered Hopes + Sleep-Cursed Faerie",
+     "Crab Umbra + Kami of Whispered Hopes",
+     "Freed from the Real + Kami of Whispered Hopes",
+     "Kami of Whispered Hopes + Pemmin's Aura",
+     "Kami of Whispered Hopes + Ringing Strike Mastery",
+     "Kami of Whispered Hopes + Rite of Passage + Walking Ballista",
+     "Kami of Whispered Hopes + Singing Bell Strike",
+     "Kami of Whispered Hopes + Staff of Domination",
+     "Kami of Whispered Hopes + Strength of Will + Walking Ballista",
+     "Kami of Whispered Hopes + Sword of the Paruns",
+     "Kami of Whispered Hopes + Umbral Mantle",
+     "Kami of Whispered Hopes + Vigean Graftmage",
+     "Kami of Whispered Hopes + Vigor + Walking Ballista"
+    ]
+   },
+   "Kodama of the West Tree": {
+    "n_main": 99,
+    "sai": [
+     "Kodama of the West Tree"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Kozilek, Butcher of Truth": {
+    "n_main": 99,
+    "sai": [
+     "Kozilek, Butcher of Truth"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Kozilek, Butcher of Truth + Morality Shift + Syr Konrad, the Grim"
+    ]
+   },
+   "Memory Erosion": {
+    "n_main": 99,
+    "sai": [
+     "Memory Erosion"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Mesmeric Orb": {
+    "n_main": 99,
+    "sai": [
+     "Mesmeric Orb"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Aphetto Alchemist + Mesmeric Orb",
+     "Basalt Monolith + Mesmeric Orb",
+     "Mesmeric Orb + Seeker of Skybreak",
+     "Mesmeric Orb + Tidewater Minion"
+    ]
+   },
+   "Minamo, School at Water's Edge": {
+    "n_main": 99,
+    "sai": [
+     "Minamo, School at Water's Edge"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Mindcrank": {
+    "n_main": 99,
+    "sai": [
+     "Mindcrank"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [
+     "Bloodchief Ascension + Mindcrank"
+    ],
+    "quase_novos": [
+     "Bloodchief Ascension + Mindcrank"
+    ],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Duskmantle Guildmage + Mindcrank"
+    ]
+   },
+   "Mirelurk Queen": {
+    "n_main": 99,
+    "sai": [
+     "Mirelurk Queen"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Misty Rainforest": {
+    "n_main": 99,
+    "sai": [
+     "Misty Rainforest"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Morphic Pool": {
+    "n_main": 99,
+    "sai": [
+     "Morphic Pool"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Muldrotha, the Gravetide": {
+    "n_main": 99,
+    "sai": [
+     "Muldrotha, the Gravetide"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Altar of Dementia + Muldrotha, the Gravetide + Ultimecia, Time Sorceress // Ultimecia, Omnipotent",
+     "Mindslaver + Muldrotha, the Gravetide",
+     "Muldrotha, the Gravetide + Second Chance"
+    ]
+   },
+   "Nature's Lore": {
+    "n_main": 99,
+    "sai": [
+     "Nature's Lore"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Negate": {
+    "n_main": 99,
+    "sai": [
+     "Negate"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Nuclear Fallout": {
+    "n_main": 99,
+    "sai": [
+     "Nuclear Fallout"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Ouroboroid": {
+    "n_main": 99,
+    "sai": [
+     "Ouroboroid"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Ouroboroid + Sage of Hours"
+    ]
+   },
+   "Overgrown Tomb": {
+    "n_main": 99,
+    "sai": [
+     "Overgrown Tomb"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Palantír of Orthanc": {
+    "n_main": 99,
+    "sai": [
+     "Palantír of Orthanc"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Plaza of Heroes": {
+    "n_main": 99,
+    "sai": [
+     "Plaza of Heroes"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Polluted Delta": {
+    "n_main": 99,
+    "sai": [
+     "Polluted Delta"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Pollywog Prodigy": {
+    "n_main": 99,
+    "sai": [
+     "Pollywog Prodigy"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Psychic Corrosion": {
+    "n_main": 99,
+    "sai": [
+     "Psychic Corrosion"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Enter the Infinite + Psychic Corrosion",
+     "Peer into the Abyss + Psychic Corrosion"
+    ]
+   },
+   "Rampant Frogantua": {
+    "n_main": 99,
+    "sai": [
+     "Rampant Frogantua"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Rejuvenating Springs": {
+    "n_main": 99,
+    "sai": [
+     "Rejuvenating Springs"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Repulsive Mutation": {
+    "n_main": 99,
+    "sai": [
+     "Repulsive Mutation"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Ruin Crab": {
+    "n_main": 99,
+    "sai": [
+     "Ruin Crab"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Shifting Woodland": {
+    "n_main": 99,
+    "sai": [
+     "Shifting Woodland"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Shifting Woodland + Time Vault"
+    ]
+   },
+   "Six": {
+    "n_main": 99,
+    "sai": [
+     "Six"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Smuggler's Surprise": {
+    "n_main": 99,
+    "sai": [
+     "Smuggler's Surprise"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Sol Ring": {
+    "n_main": 99,
+    "sai": [
+     "Sol Ring"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Hullbreaker Horror + Sol Ring",
+     "Sol Ring + Tidespout Tyrant"
+    ]
+   },
+   "Soul-Guide Lantern": {
+    "n_main": 99,
+    "sai": [
+     "Soul-Guide Lantern"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Strip Mine": {
+    "n_main": 99,
+    "sai": [
+     "Strip Mine"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Swarmyard": {
+    "n_main": 99,
+    "sai": [
+     "Swarmyard"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Swiftfoot Boots": {
+    "n_main": 99,
+    "sai": [
+     "Swiftfoot Boots"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Syr Konrad, the Grim": {
+    "n_main": 99,
+    "sai": [
+     "Syr Konrad, the Grim"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Kozilek, Butcher of Truth + Morality Shift + Syr Konrad, the Grim",
+     "Sway of the Stars + Syr Konrad, the Grim",
+     "Syr Konrad, the Grim + The Mindskinner"
+    ]
+   },
+   "Takenuma, Abandoned Mire": {
+    "n_main": 99,
+    "sai": [
+     "Takenuma, Abandoned Mire"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Tear Asunder": {
+    "n_main": 99,
+    "sai": [
+     "Tear Asunder"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "The Gitrog Monster": {
+    "n_main": 99,
+    "sai": [
+     "The Gitrog Monster"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Dakmor Salvage + The Gitrog Monster"
+    ]
+   },
+   "The Great Henge": {
+    "n_main": 99,
+    "sai": [
+     "The Great Henge"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [
+     "Altar of Dementia + The Great Henge"
+    ],
+    "quase_novos": [
+     "Altar of Dementia + The Great Henge"
+    ],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Ashnod's Altar + The Great Henge",
+     "Blasting Station + The Great Henge",
+     "Bloodflow Connoisseur + The Great Henge",
+     "Carrion Feeder + The Great Henge",
+     "Phyrexian Altar + The Great Henge",
+     "The Great Henge + Viscera Seer",
+     "The Great Henge + Woe Strider",
+     "The Great Henge + Yahenni, Undying Partisan"
+    ]
+   },
+   "Three Visits": {
+    "n_main": 99,
+    "sai": [
+     "Three Visits"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Toxic Deluge": {
+    "n_main": 99,
+    "sai": [
+     "Toxic Deluge"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Undead Alchemist": {
+    "n_main": 99,
+    "sai": [
+     "Undead Alchemist"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Undergrowth Stadium": {
+    "n_main": 99,
+    "sai": [
+     "Undergrowth Stadium"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Urza's Saga": {
+    "n_main": 99,
+    "sai": [
+     "Urza's Saga"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "V.A.T.S.": {
+    "n_main": 99,
+    "sai": [
+     "V.A.T.S."
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Verdant Catacombs": {
+    "n_main": 99,
+    "sai": [
+     "Verdant Catacombs"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Walking Ballista": {
+    "n_main": 99,
+    "sai": [
+     "Walking Ballista"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Agatha's Soul Cauldron + Blech, Loafing Pest + Walking Ballista",
+     "Agatha's Soul Cauldron + Blood Researcher + Walking Ballista",
+     "Agatha's Soul Cauldron + Bloodbond Vampire + Walking Ballista",
+     "Agatha's Soul Cauldron + Bloodthirsty Aerialist + Walking Ballista",
+     "Agatha's Soul Cauldron + Butcher Ghoul + Walking Ballista",
+     "Agatha's Soul Cauldron + Christine Chapel, Combat Medic + Walking Ballista",
+     "Agatha's Soul Cauldron + Evernight Shade + Walking Ballista",
+     "Agatha's Soul Cauldron + Kraven the Hunter + Walking Ballista",
+     "Agatha's Soul Cauldron + Pest Mascot + Walking Ballista",
+     "Agatha's Soul Cauldron + Scion of the Swarm + Walking Ballista",
+     "Agatha's Soul Cauldron + Sengir, the Dark Baron + Walking Ballista",
+     "Agatha's Soul Cauldron + Strangleroot Geist + Walking Ballista",
+     "Agatha's Soul Cauldron + Strong, the Brutish Thespian + Walking Ballista",
+     "Agatha's Soul Cauldron + The Thing, Ben Grimm + Walking Ballista",
+     "Agatha's Soul Cauldron + Tigra, Feline Fury + Walking Ballista",
+     "Agatha's Soul Cauldron + Titanbones, Towering Heart + Walking Ballista",
+     "Agatha's Soul Cauldron + Vampire Scrivener + Walking Ballista",
+     "Agatha's Soul Cauldron + Walking Ballista + Wall of Limbs",
+     "Agatha's Soul Cauldron + Walking Ballista + Yahenni, Undying Partisan",
+     "Agatha's Soul Cauldron + Walking Ballista + Young Wolf",
+     "Evolution Witness + Long Feng, Grand Secretariat + Walking Ballista",
+     "Evolution Witness + Rocksteady, Mutant Marauder + Walking Ballista",
+     "Hardened Scales + Rite of Passage + Walking Ballista",
+     "Hardened Scales + Strength of Will + Walking Ballista",
+     "Hardened Scales + Vigor + Walking Ballista",
+     "Heroic Feast + Walking Ballista",
+     "Kami of Whispered Hopes + Rite of Passage + Walking Ballista",
+     "Kami of Whispered Hopes + Strength of Will + Walking Ballista",
+     "Kami of Whispered Hopes + Vigor + Walking Ballista",
+     "Mephidross Vampire + Walking Ballista",
+     "Mikaeus, the Unhallowed + Walking Ballista",
+     "Rite of Passage + Walking Ballista + Winding Constrictor",
+     "Strength of Will + Walking Ballista + Winding Constrictor",
+     "Urban Daggertooth + Walking Ballista",
+     "Vigor + Walking Ballista + Winding Constrictor",
+     "Vraska, Swarm's Eminence + Walking Ballista"
+    ]
+   },
+   "Waterlogged Grove": {
+    "n_main": 99,
+    "sai": [
+     "Waterlogged Grove"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Watery Grave": {
+    "n_main": 99,
+    "sai": [
+     "Watery Grave"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Wave Goodbye": {
+    "n_main": 99,
+    "sai": [
+     "Wave Goodbye"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Winding Constrictor": {
+    "n_main": 99,
+    "sai": [
+     "Winding Constrictor"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Rite of Passage + Walking Ballista + Winding Constrictor",
+     "Strength of Will + Walking Ballista + Winding Constrictor",
+     "Vigor + Walking Ballista + Winding Constrictor"
+    ]
+   },
+   "Yavimaya Hollow": {
+    "n_main": 99,
+    "sai": [
+     "Yavimaya Hollow"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Zagoth Triome": {
+    "n_main": 99,
+    "sai": [
+     "Zagoth Triome"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Zellix, Sanity Flayer": {
+    "n_main": 99,
+    "sai": [
+     "Zellix, Sanity Flayer"
+    ],
+    "entra": [
+     "Agent Frank Horrigan"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   }
+  },
+  "The Master, Transcendent": {
+   "Agadeem's Awakening // Agadeem, the Undercrypt": {
+    "n_main": 99,
+    "sai": [
+     "Agadeem's Awakening // Agadeem, the Undercrypt"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Agatha's Soul Cauldron": {
+    "n_main": 99,
+    "sai": [
+     "Agatha's Soul Cauldron"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Agatha's Soul Cauldron + Blech, Loafing Pest + Walking Ballista",
+     "Agatha's Soul Cauldron + Blood Researcher + Walking Ballista",
+     "Agatha's Soul Cauldron + Bloodbond Vampire + Walking Ballista",
+     "Agatha's Soul Cauldron + Bloodthirsty Aerialist + Walking Ballista",
+     "Agatha's Soul Cauldron + Butcher Ghoul + Walking Ballista",
+     "Agatha's Soul Cauldron + Christine Chapel, Combat Medic + Walking Ballista",
+     "Agatha's Soul Cauldron + Evernight Shade + Walking Ballista",
+     "Agatha's Soul Cauldron + Evolution Witness + Psychic Frog",
+     "Agatha's Soul Cauldron + Gilder Bairn + Gyre Sage",
+     "Agatha's Soul Cauldron + Gilder Bairn + Kami of Whispered Hopes",
+     "Agatha's Soul Cauldron + Kami of Whispered Hopes + Sleep-Cursed Faerie",
+     "Agatha's Soul Cauldron + Kraven the Hunter + Walking Ballista",
+     "Agatha's Soul Cauldron + Pest Mascot + Walking Ballista",
+     "Agatha's Soul Cauldron + Scion of the Swarm + Walking Ballista",
+     "Agatha's Soul Cauldron + Sengir, the Dark Baron + Walking Ballista",
+     "Agatha's Soul Cauldron + Strangleroot Geist + Walking Ballista",
+     "Agatha's Soul Cauldron + Strong, the Brutish Thespian + Walking Ballista",
+     "Agatha's Soul Cauldron + The Thing, Ben Grimm + Walking Ballista",
+     "Agatha's Soul Cauldron + Tigra, Feline Fury + Walking Ballista",
+     "Agatha's Soul Cauldron + Titanbones, Towering Heart + Walking Ballista",
+     "Agatha's Soul Cauldron + Vampire Scrivener + Walking Ballista",
+     "Agatha's Soul Cauldron + Walking Ballista + Wall of Limbs",
+     "Agatha's Soul Cauldron + Walking Ballista + Yahenni, Undying Partisan",
+     "Agatha's Soul Cauldron + Walking Ballista + Young Wolf"
+    ]
+   },
+   "Altar of Dementia": {
+    "n_main": 99,
+    "sai": [
+     "Altar of Dementia"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [
+     "Altar of Dementia + The Great Henge"
+    ],
+    "quase_novos": [
+     "Altar of Dementia + The Great Henge"
+    ],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Altar of Dementia + Arwen, Weaver of Hope",
+     "Altar of Dementia + Bioengineered Future",
+     "Altar of Dementia + Blade of the Bloodchief + Herd Baloth",
+     "Altar of Dementia + Bloodspore Thrinax",
+     "Altar of Dementia + Body of Research",
+     "Altar of Dementia + Captain Kathryn Janeway",
+     "Altar of Dementia + Combine Guildmage",
+     "Altar of Dementia + Death's Presence + Herd Baloth",
+     "Altar of Dementia + Dominion Saboteur",
+     "Altar of Dementia + Gorma, the Gullet",
+     "Altar of Dementia + Herd Baloth + Long Feng, Grand Secretariat",
+     "Altar of Dementia + Herd Baloth + Mazirek, Kraul Death Priest",
+     "Altar of Dementia + Herd Baloth + Moss-Pit Skeleton + The Wise Mothman",
+     "Altar of Dementia + Herd Baloth + Necrosynthesis",
+     "Altar of Dementia + Herd Baloth + Sadistic Glee",
+     "Altar of Dementia + Herd Baloth + Tarrian's Soulcleaver",
+     "Altar of Dementia + Jumbo Cactuar",
+     "Altar of Dementia + Master Biomancer",
+     "Altar of Dementia + Master Chef",
+     "Altar of Dementia + Melira, Sylvok Outcast",
+     "Altar of Dementia + Metallic Mimic",
+     "Altar of Dementia + Mikaeus, the Unhallowed",
+     "Altar of Dementia + Moritte of the Frost",
+     "Altar of Dementia + Muldrotha, the Gravetide + Ultimecia, Time Sorceress // Ultimecia, Omnipotent",
+     "Altar of Dementia + Railway Brawler",
+     "Altar of Dementia + Renata, Called to the Hunt",
+     "Altar of Dementia + Rocksteady, Mutant Marauder",
+     "Altar of Dementia + Stalwart Successor",
+     "Altar of Dementia + Support Mission",
+     "Altar of Dementia + Surrak and Goreclaw",
+     "Altar of Dementia + Thran Vigil",
+     "Altar of Dementia + Thunderous Velocipede",
+     "Altar of Dementia + Tromell, Seymour's Butler",
+     "Altar of Dementia + Warden of the Grove",
+     "Altar of Dementia + Young Necromancer",
+     "Altar of Dementia + Zameck Guildmage"
+    ]
+   },
+   "Altar of the Brood": {
+    "n_main": 99,
+    "sai": [
+     "Altar of the Brood"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "An Offer You Can't Refuse": {
+    "n_main": 99,
+    "sai": [
+     "An Offer You Can't Refuse"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Angel of Suffering": {
+    "n_main": 99,
+    "sai": [
+     "Angel of Suffering"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Arcane Denial": {
+    "n_main": 99,
+    "sai": [
+     "Arcane Denial"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Ashiok, Dream Render": {
+    "n_main": 99,
+    "sai": [
+     "Ashiok, Dream Render"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Basking Broodscale": {
+    "n_main": 99,
+    "sai": [
+     "Basking Broodscale"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Basking Broodscale + Blade of the Bloodchief",
+     "Basking Broodscale + Donatello, the Brains",
+     "Basking Broodscale + Ghost Lantern // Bind Spirit",
+     "Basking Broodscale + Long Feng, Grand Secretariat",
+     "Basking Broodscale + Mazirek, Kraul Death Priest",
+     "Basking Broodscale + Necrosynthesis",
+     "Basking Broodscale + Sadistic Glee",
+     "Basking Broodscale + Tarrian's Soulcleaver"
+    ]
+   },
+   "Bloodchief Ascension": {
+    "n_main": 99,
+    "sai": [
+     "Bloodchief Ascension"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [
+     "Bloodchief Ascension + Mindcrank"
+    ],
+    "quase_novos": [
+     "Bloodchief Ascension + Mindcrank"
+    ],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Bloodchief Ascension + The Master of Lake-town",
+     "Bloodchief Ascension + Zur's Weirding"
+    ]
+   },
+   "Bojuka Bog": {
+    "n_main": 99,
+    "sai": [
+     "Bojuka Bog"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Boseiju, Who Endures": {
+    "n_main": 99,
+    "sai": [
+     "Boseiju, Who Endures"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Bramble Familiar // Fetch Quest": {
+    "n_main": 99,
+    "sai": [
+     "Bramble Familiar // Fetch Quest"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Breeding Pool": {
+    "n_main": 99,
+    "sai": [
+     "Breeding Pool"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Cankerbloom": {
+    "n_main": 99,
+    "sai": [
+     "Cankerbloom"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Cold-Eyed Selkie": {
+    "n_main": 99,
+    "sai": [
+     "Cold-Eyed Selkie"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Command Tower": {
+    "n_main": 99,
+    "sai": [
+     "Command Tower"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Danny Pink": {
+    "n_main": 99,
+    "sai": [
+     "Danny Pink"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Deepmuck Desperado": {
+    "n_main": 99,
+    "sai": [
+     "Deepmuck Desperado"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Didn't Say Please": {
+    "n_main": 99,
+    "sai": [
+     "Didn't Say Please"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Evolution Witness": {
+    "n_main": 99,
+    "sai": [
+     "Evolution Witness"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Agatha's Soul Cauldron + Evolution Witness + Psychic Frog",
+     "Evolution Witness + Long Feng, Grand Secretariat + Walking Ballista",
+     "Evolution Witness + Rocksteady, Mutant Marauder + Walking Ballista"
+    ]
+   },
+   "Fabled Passage": {
+    "n_main": 99,
+    "sai": [
+     "Fabled Passage"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Fathom Mage": {
+    "n_main": 99,
+    "sai": [
+     "Fathom Mage"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Fathom Mage + Iron Man, Armored Avenger",
+     "Fathom Mage + Lyla, Holographic Assistant",
+     "Fathom Mage + Stark's Ingenuity",
+     "Fathom Mage + Wizard Class"
+    ]
+   },
+   "Fierce Guardianship": {
+    "n_main": 99,
+    "sai": [
+     "Fierce Guardianship"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Freestrider Lookout": {
+    "n_main": 99,
+    "sai": [
+     "Freestrider Lookout"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Generous Patron": {
+    "n_main": 99,
+    "sai": [
+     "Generous Patron"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Generous Patron + Iron Man, Armored Avenger",
+     "Generous Patron + Lyla, Holographic Assistant"
+    ]
+   },
+   "Glen Elendra Archmage": {
+    "n_main": 99,
+    "sai": [
+     "Glen Elendra Archmage"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [
+     "Altar of Dementia + The Great Henge"
+    ],
+    "quase_novos": [
+     "Altar of Dementia + The Great Henge"
+    ],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Altar of Dementia + Arwen, Weaver of Hope",
+     "Altar of Dementia + Bioengineered Future",
+     "Altar of Dementia + Bloodspore Thrinax",
+     "Altar of Dementia + Captain Kathryn Janeway",
+     "Altar of Dementia + Combine Guildmage",
+     "Altar of Dementia + Dominion Saboteur",
+     "Altar of Dementia + Gorma, the Gullet",
+     "Altar of Dementia + Master Biomancer",
+     "Altar of Dementia + Master Chef",
+     "Altar of Dementia + Melira, Sylvok Outcast",
+     "Altar of Dementia + Metallic Mimic",
+     "Altar of Dementia + Mikaeus, the Unhallowed",
+     "Altar of Dementia + Moritte of the Frost",
+     "Altar of Dementia + Railway Brawler",
+     "Altar of Dementia + Renata, Called to the Hunt",
+     "Altar of Dementia + Rocksteady, Mutant Marauder",
+     "Altar of Dementia + Stalwart Successor",
+     "Altar of Dementia + Support Mission",
+     "Altar of Dementia + Surrak and Goreclaw",
+     "Altar of Dementia + Thran Vigil",
+     "Altar of Dementia + Thunderous Velocipede",
+     "Altar of Dementia + Tromell, Seymour's Butler",
+     "Altar of Dementia + Warden of the Grove",
+     "Altar of Dementia + Zameck Guildmage",
+     "Ashnod's Altar + The Great Henge",
+     "Blasting Station + The Great Henge",
+     "Bloodflow Connoisseur + The Great Henge",
+     "Carrion Feeder + The Great Henge",
+     "Phyrexian Altar + The Great Henge",
+     "The Great Henge + Viscera Seer",
+     "The Great Henge + Woe Strider",
+     "The Great Henge + Yahenni, Undying Partisan"
+    ]
+   },
+   "Gyre Sage": {
+    "n_main": 99,
+    "sai": [
+     "Gyre Sage"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Agatha's Soul Cauldron + Gilder Bairn + Gyre Sage",
+     "Gyre Sage + Ringing Strike Mastery",
+     "Gyre Sage + Staff of Domination",
+     "Gyre Sage + Sword of the Paruns",
+     "Gyre Sage + Umbral Mantle"
+    ]
+   },
+   "Hardened Scales": {
+    "n_main": 99,
+    "sai": [
+     "Hardened Scales"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Hardened Scales + Rite of Passage + Walking Ballista",
+     "Hardened Scales + Strength of Will + Walking Ballista",
+     "Hardened Scales + Vigor + Walking Ballista"
+    ]
+   },
+   "Hedge Shredder": {
+    "n_main": 99,
+    "sai": [
+     "Hedge Shredder"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Hedge Shredder + Homer, the Hermit",
+     "Hedge Shredder + Icetill Explorer + Scouting Trek"
+    ]
+   },
+   "Herd Baloth": {
+    "n_main": 99,
+    "sai": [
+     "Herd Baloth"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Altar of Dementia + Blade of the Bloodchief + Herd Baloth",
+     "Altar of Dementia + Death's Presence + Herd Baloth",
+     "Altar of Dementia + Herd Baloth + Long Feng, Grand Secretariat",
+     "Altar of Dementia + Herd Baloth + Mazirek, Kraul Death Priest",
+     "Altar of Dementia + Herd Baloth + Moss-Pit Skeleton + The Wise Mothman",
+     "Altar of Dementia + Herd Baloth + Necrosynthesis",
+     "Altar of Dementia + Herd Baloth + Sadistic Glee",
+     "Altar of Dementia + Herd Baloth + Tarrian's Soulcleaver",
+     "Herd Baloth + Ivy Lane Denizen"
+    ]
+   },
+   "Heroic Intervention": {
+    "n_main": 99,
+    "sai": [
+     "Heroic Intervention"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Hollowmurk Siege": {
+    "n_main": 99,
+    "sai": [
+     "Hollowmurk Siege"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Icetill Explorer": {
+    "n_main": 99,
+    "sai": [
+     "Icetill Explorer"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Glacial Chasm + Icetill Explorer",
+     "Hedge Shredder + Icetill Explorer + Scouting Trek"
+    ]
+   },
+   "Kami of Whispered Hopes": {
+    "n_main": 99,
+    "sai": [
+     "Kami of Whispered Hopes"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Agatha's Soul Cauldron + Gilder Bairn + Kami of Whispered Hopes",
+     "Agatha's Soul Cauldron + Kami of Whispered Hopes + Sleep-Cursed Faerie",
+     "Crab Umbra + Kami of Whispered Hopes",
+     "Freed from the Real + Kami of Whispered Hopes",
+     "Kami of Whispered Hopes + Pemmin's Aura",
+     "Kami of Whispered Hopes + Ringing Strike Mastery",
+     "Kami of Whispered Hopes + Rite of Passage + Walking Ballista",
+     "Kami of Whispered Hopes + Singing Bell Strike",
+     "Kami of Whispered Hopes + Staff of Domination",
+     "Kami of Whispered Hopes + Strength of Will + Walking Ballista",
+     "Kami of Whispered Hopes + Sword of the Paruns",
+     "Kami of Whispered Hopes + Umbral Mantle",
+     "Kami of Whispered Hopes + Vigean Graftmage",
+     "Kami of Whispered Hopes + Vigor + Walking Ballista"
+    ]
+   },
+   "Kodama of the West Tree": {
+    "n_main": 99,
+    "sai": [
+     "Kodama of the West Tree"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Kozilek, Butcher of Truth": {
+    "n_main": 99,
+    "sai": [
+     "Kozilek, Butcher of Truth"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Kozilek, Butcher of Truth + Morality Shift + Syr Konrad, the Grim"
+    ]
+   },
+   "Memory Erosion": {
+    "n_main": 99,
+    "sai": [
+     "Memory Erosion"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Mesmeric Orb": {
+    "n_main": 99,
+    "sai": [
+     "Mesmeric Orb"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Aphetto Alchemist + Mesmeric Orb",
+     "Basalt Monolith + Mesmeric Orb",
+     "Mesmeric Orb + Seeker of Skybreak",
+     "Mesmeric Orb + Tidewater Minion"
+    ]
+   },
+   "Minamo, School at Water's Edge": {
+    "n_main": 99,
+    "sai": [
+     "Minamo, School at Water's Edge"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Mindcrank": {
+    "n_main": 99,
+    "sai": [
+     "Mindcrank"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [
+     "Bloodchief Ascension + Mindcrank"
+    ],
+    "quase_novos": [
+     "Bloodchief Ascension + Mindcrank"
+    ],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Duskmantle Guildmage + Mindcrank"
+    ]
+   },
+   "Mirelurk Queen": {
+    "n_main": 99,
+    "sai": [
+     "Mirelurk Queen"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Misty Rainforest": {
+    "n_main": 99,
+    "sai": [
+     "Misty Rainforest"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Morphic Pool": {
+    "n_main": 99,
+    "sai": [
+     "Morphic Pool"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Muldrotha, the Gravetide": {
+    "n_main": 99,
+    "sai": [
+     "Muldrotha, the Gravetide"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Altar of Dementia + Muldrotha, the Gravetide + Ultimecia, Time Sorceress // Ultimecia, Omnipotent",
+     "Mindslaver + Muldrotha, the Gravetide",
+     "Muldrotha, the Gravetide + Second Chance"
+    ]
+   },
+   "Nature's Lore": {
+    "n_main": 99,
+    "sai": [
+     "Nature's Lore"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Negate": {
+    "n_main": 99,
+    "sai": [
+     "Negate"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Nuclear Fallout": {
+    "n_main": 99,
+    "sai": [
+     "Nuclear Fallout"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Ouroboroid": {
+    "n_main": 99,
+    "sai": [
+     "Ouroboroid"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Ouroboroid + Sage of Hours"
+    ]
+   },
+   "Overgrown Tomb": {
+    "n_main": 99,
+    "sai": [
+     "Overgrown Tomb"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Palantír of Orthanc": {
+    "n_main": 99,
+    "sai": [
+     "Palantír of Orthanc"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Plaza of Heroes": {
+    "n_main": 99,
+    "sai": [
+     "Plaza of Heroes"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Polluted Delta": {
+    "n_main": 99,
+    "sai": [
+     "Polluted Delta"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Pollywog Prodigy": {
+    "n_main": 99,
+    "sai": [
+     "Pollywog Prodigy"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Psychic Corrosion": {
+    "n_main": 99,
+    "sai": [
+     "Psychic Corrosion"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Enter the Infinite + Psychic Corrosion",
+     "Peer into the Abyss + Psychic Corrosion"
+    ]
+   },
+   "Rampant Frogantua": {
+    "n_main": 99,
+    "sai": [
+     "Rampant Frogantua"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Rejuvenating Springs": {
+    "n_main": 99,
+    "sai": [
+     "Rejuvenating Springs"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Repulsive Mutation": {
+    "n_main": 99,
+    "sai": [
+     "Repulsive Mutation"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Ruin Crab": {
+    "n_main": 99,
+    "sai": [
+     "Ruin Crab"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Shifting Woodland": {
+    "n_main": 99,
+    "sai": [
+     "Shifting Woodland"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Shifting Woodland + Time Vault"
+    ]
+   },
+   "Six": {
+    "n_main": 99,
+    "sai": [
+     "Six"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Smuggler's Surprise": {
+    "n_main": 99,
+    "sai": [
+     "Smuggler's Surprise"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Sol Ring": {
+    "n_main": 99,
+    "sai": [
+     "Sol Ring"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Hullbreaker Horror + Sol Ring",
+     "Sol Ring + Tidespout Tyrant"
+    ]
+   },
+   "Soul-Guide Lantern": {
+    "n_main": 99,
+    "sai": [
+     "Soul-Guide Lantern"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Strip Mine": {
+    "n_main": 99,
+    "sai": [
+     "Strip Mine"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Swarmyard": {
+    "n_main": 99,
+    "sai": [
+     "Swarmyard"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Swiftfoot Boots": {
+    "n_main": 99,
+    "sai": [
+     "Swiftfoot Boots"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Syr Konrad, the Grim": {
+    "n_main": 99,
+    "sai": [
+     "Syr Konrad, the Grim"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Kozilek, Butcher of Truth + Morality Shift + Syr Konrad, the Grim",
+     "Sway of the Stars + Syr Konrad, the Grim",
+     "Syr Konrad, the Grim + The Mindskinner"
+    ]
+   },
+   "Takenuma, Abandoned Mire": {
+    "n_main": 99,
+    "sai": [
+     "Takenuma, Abandoned Mire"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Tear Asunder": {
+    "n_main": 99,
+    "sai": [
+     "Tear Asunder"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "The Gitrog Monster": {
+    "n_main": 99,
+    "sai": [
+     "The Gitrog Monster"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Dakmor Salvage + The Gitrog Monster"
+    ]
+   },
+   "The Great Henge": {
+    "n_main": 99,
+    "sai": [
+     "The Great Henge"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [
+     "Altar of Dementia + The Great Henge"
+    ],
+    "quase_novos": [
+     "Altar of Dementia + The Great Henge"
+    ],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Ashnod's Altar + The Great Henge",
+     "Blasting Station + The Great Henge",
+     "Bloodflow Connoisseur + The Great Henge",
+     "Carrion Feeder + The Great Henge",
+     "Phyrexian Altar + The Great Henge",
+     "The Great Henge + Viscera Seer",
+     "The Great Henge + Woe Strider",
+     "The Great Henge + Yahenni, Undying Partisan"
+    ]
+   },
+   "Three Visits": {
+    "n_main": 99,
+    "sai": [
+     "Three Visits"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Toxic Deluge": {
+    "n_main": 99,
+    "sai": [
+     "Toxic Deluge"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Undead Alchemist": {
+    "n_main": 99,
+    "sai": [
+     "Undead Alchemist"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Undergrowth Stadium": {
+    "n_main": 99,
+    "sai": [
+     "Undergrowth Stadium"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Urza's Saga": {
+    "n_main": 99,
+    "sai": [
+     "Urza's Saga"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "V.A.T.S.": {
+    "n_main": 99,
+    "sai": [
+     "V.A.T.S."
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Verdant Catacombs": {
+    "n_main": 99,
+    "sai": [
+     "Verdant Catacombs"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Walking Ballista": {
+    "n_main": 99,
+    "sai": [
+     "Walking Ballista"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Agatha's Soul Cauldron + Blech, Loafing Pest + Walking Ballista",
+     "Agatha's Soul Cauldron + Blood Researcher + Walking Ballista",
+     "Agatha's Soul Cauldron + Bloodbond Vampire + Walking Ballista",
+     "Agatha's Soul Cauldron + Bloodthirsty Aerialist + Walking Ballista",
+     "Agatha's Soul Cauldron + Butcher Ghoul + Walking Ballista",
+     "Agatha's Soul Cauldron + Christine Chapel, Combat Medic + Walking Ballista",
+     "Agatha's Soul Cauldron + Evernight Shade + Walking Ballista",
+     "Agatha's Soul Cauldron + Kraven the Hunter + Walking Ballista",
+     "Agatha's Soul Cauldron + Pest Mascot + Walking Ballista",
+     "Agatha's Soul Cauldron + Scion of the Swarm + Walking Ballista",
+     "Agatha's Soul Cauldron + Sengir, the Dark Baron + Walking Ballista",
+     "Agatha's Soul Cauldron + Strangleroot Geist + Walking Ballista",
+     "Agatha's Soul Cauldron + Strong, the Brutish Thespian + Walking Ballista",
+     "Agatha's Soul Cauldron + The Thing, Ben Grimm + Walking Ballista",
+     "Agatha's Soul Cauldron + Tigra, Feline Fury + Walking Ballista",
+     "Agatha's Soul Cauldron + Titanbones, Towering Heart + Walking Ballista",
+     "Agatha's Soul Cauldron + Vampire Scrivener + Walking Ballista",
+     "Agatha's Soul Cauldron + Walking Ballista + Wall of Limbs",
+     "Agatha's Soul Cauldron + Walking Ballista + Yahenni, Undying Partisan",
+     "Agatha's Soul Cauldron + Walking Ballista + Young Wolf",
+     "Evolution Witness + Long Feng, Grand Secretariat + Walking Ballista",
+     "Evolution Witness + Rocksteady, Mutant Marauder + Walking Ballista",
+     "Hardened Scales + Rite of Passage + Walking Ballista",
+     "Hardened Scales + Strength of Will + Walking Ballista",
+     "Hardened Scales + Vigor + Walking Ballista",
+     "Heroic Feast + Walking Ballista",
+     "Kami of Whispered Hopes + Rite of Passage + Walking Ballista",
+     "Kami of Whispered Hopes + Strength of Will + Walking Ballista",
+     "Kami of Whispered Hopes + Vigor + Walking Ballista",
+     "Mephidross Vampire + Walking Ballista",
+     "Mikaeus, the Unhallowed + Walking Ballista",
+     "Rite of Passage + Walking Ballista + Winding Constrictor",
+     "Strength of Will + Walking Ballista + Winding Constrictor",
+     "Urban Daggertooth + Walking Ballista",
+     "Vigor + Walking Ballista + Winding Constrictor",
+     "Vraska, Swarm's Eminence + Walking Ballista"
+    ]
+   },
+   "Waterlogged Grove": {
+    "n_main": 99,
+    "sai": [
+     "Waterlogged Grove"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Watery Grave": {
+    "n_main": 99,
+    "sai": [
+     "Watery Grave"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Wave Goodbye": {
+    "n_main": 99,
+    "sai": [
+     "Wave Goodbye"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Winding Constrictor": {
+    "n_main": 99,
+    "sai": [
+     "Winding Constrictor"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": [
+     "Rite of Passage + Walking Ballista + Winding Constrictor",
+     "Strength of Will + Walking Ballista + Winding Constrictor",
+     "Vigor + Walking Ballista + Winding Constrictor"
+    ]
+   },
+   "Yavimaya Hollow": {
+    "n_main": 99,
+    "sai": [
+     "Yavimaya Hollow"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Zagoth Triome": {
+    "n_main": 99,
+    "sai": [
+     "Zagoth Triome"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   },
+   "Zellix, Sanity Flayer": {
+    "n_main": 99,
+    "sai": [
+     "Zellix, Sanity Flayer"
+    ],
+    "entra": [
+     "The Master, Transcendent"
+    ],
+    "novos": {},
+    "sumiram": [],
+    "quase_novos": [],
+    "quase_novos_com_peca": [],
+    "quase_sumiram": []
+   }
+  }
+ },
+ "sem_cortar": {
+  "Frank": {
+   "n_main": 100,
+   "sai": [],
+   "entra": [
+    "Agent Frank Horrigan"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [],
+   "quase_novos_com_peca": [],
+   "quase_sumiram": []
+  },
+  "Master": {
+   "n_main": 100,
+   "sai": [],
+   "entra": [
+    "The Master, Transcendent"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [],
+   "quase_novos_com_peca": [],
+   "quase_sumiram": []
+  },
+  "Frank+Master": {
+   "n_main": 101,
+   "sai": [],
+   "entra": [
+    "Agent Frank Horrigan",
+    "The Master, Transcendent"
+   ],
+   "novos": {},
+   "sumiram": [],
+   "quase_novos": [],
+   "quase_novos_com_peca": [],
+   "quase_sumiram": []
+  }
+ },
+ "controle_positivo": {
+  "n_main": 99,
+  "sai": [
+   "Negate",
+   "Swiftfoot Boots"
+  ],
+  "entra": [
+   "Thassa's Oracle",
+   "Demonic Consultation"
+  ],
+  "achou_thassa_consultation": true
+ },
+ "controle_corte": {
+  "n_main": 99,
+  "sai": [
+   "Mindcrank"
+  ],
+  "entra": [
+   "Fathom Mage"
+  ],
+  "combo_ascension_mindcrank_sumiu": true,
+  "base_tem_ascension_mindcrank": true
+ }
+}

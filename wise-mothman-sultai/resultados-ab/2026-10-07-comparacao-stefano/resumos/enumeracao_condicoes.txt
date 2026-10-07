@@ -1,0 +1,213 @@
+# NOSSA lista (91 nomes, 88 nao-basicos) -- condicoes de Horrigan e Master
+
+## CRIATURA (tipo no cemiterio vira alvo da habilidade do Master; Artifact Creature conta; Vehicle NAO e criatura no cemiterio) [32]
+  - Angel of Suffering | Creature — Nightmare Angel
+  - Basking Broodscale | Creature — Eldrazi Lizard
+  - Bramble Familiar // Fetch Quest | Creature — Elemental Raccoon // Sorcery — Adventure
+  - Cankerbloom | Creature — Phyrexian Fungus
+  - Cold-Eyed Selkie | Creature — Merfolk Rogue
+  - Danny Pink | Legendary Creature — Human Soldier Advisor
+  - Deepmuck Desperado | Creature — Homarid Mercenary
+  - Evolution Witness | Creature — Elf Shaman Mutant
+  - Fathom Mage | Creature — Human Wizard
+  - Freestrider Lookout | Creature — Human Rogue
+  - Generous Patron | Creature — Elf Advisor
+  - Glen Elendra Archmage | Creature — Faerie Wizard
+  - Gyre Sage | Creature — Elf Druid
+  - Herd Baloth | Creature — Beast
+  - Icetill Explorer | Creature — Insect Scout
+  - Kami of Whispered Hopes | Creature — Spirit
+  - Kodama of the West Tree | Legendary Creature — Spirit
+  - Kozilek, Butcher of Truth | Legendary Creature — Eldrazi
+  - Mirelurk Queen | Creature — Crab Mutant
+  - Muldrotha, the Gravetide | Legendary Creature — Elemental Avatar
+  - Ouroboroid | Creature — Plant Wurm
+  - Pollywog Prodigy | Creature — Frog Wizard
+  - Rampant Frogantua | Creature — Frog
+  - Ruin Crab | Creature — Crab
+  - Six | Legendary Creature — Treefolk
+  - Syr Konrad, the Grim | Legendary Creature — Human Knight
+  - The Gitrog Monster | Legendary Creature — Frog Horror
+  - The Wise Mothman | Legendary Creature — Insect Mutant
+  - Undead Alchemist | Creature — Zombie
+  - Walking Ballista | Artifact Creature — Construct
+  - Winding Constrictor | Creature — Snake
+  - Zellix, Sanity Flayer | Legendary Creature — Horror
+
+## Tem o subtipo Mutant (Master torna o alvo um Mutant verde 3/3; cartas da lista que se importam com 'Mutant' no oraculo: ver a classe abaixo) [3]
+  - Evolution Witness | Creature — Elf Shaman Mutant
+  - Mirelurk Queen | Creature — Crab Mutant
+  - The Wise Mothman | Legendary Creature — Insect Mutant
+
+## Oraculo cita 'Mutant' (alguem se importa com o tipo?) [0]
+
+## Gatilho de ENTRAR em campo (valor ao ser reanimado pelo Master ou quando o Horrigan/Henge entra): 'enters' [9]
+  - Fathom Mage | Creature — Human Wizard
+  - Generous Patron | Creature — Elf Advisor
+  - Gyre Sage | Creature — Elf Druid
+  - Icetill Explorer | Creature — Insect Scout
+  - Mirelurk Queen | Creature — Crab Mutant
+  - Pollywog Prodigy | Creature — Frog Wizard
+  - Ruin Crab | Creature — Crab
+  - The Wise Mothman | Legendary Creature — Insect Mutant
+  - Walking Ballista | Artifact Creature — Construct
+
+## CONTADOR +1/+1 em criatura/artefato (proliferate x2 do Horrigan dobra o ganho; Scales/Kami/Constrictor somam) [19]
+  - Agatha's Soul Cauldron | Legendary Artifact
+  - Basking Broodscale | Creature — Eldrazi Lizard
+  - Danny Pink | Legendary Creature — Human Soldier Advisor
+  - Evolution Witness | Creature — Elf Shaman Mutant
+  - Fathom Mage | Creature — Human Wizard
+  - Generous Patron | Creature — Elf Advisor
+  - Gyre Sage | Creature — Elf Druid
+  - Hardened Scales | Enchantment
+  - Herd Baloth | Creature — Beast
+  - Hollowmurk Siege | Enchantment
+  - Kami of Whispered Hopes | Creature — Spirit
+  - Mirelurk Queen | Creature — Crab Mutant
+  - Ouroboroid | Creature — Plant Wurm
+  - Pollywog Prodigy | Creature — Frog Wizard
+  - Repulsive Mutation | Instant
+  - The Great Henge | Legendary Artifact
+  - The Wise Mothman | Legendary Creature — Insect Mutant
+  - Walking Ballista | Artifact Creature — Construct
+  - Wave Goodbye | Sorcery
+
+## RAD counter (proliferate do Horrigan em jogadores) [3]
+  - Mirelurk Queen | Creature — Crab Mutant
+  - Nuclear Fallout | Sorcery
+  - The Wise Mothman | Legendary Creature — Insect Mutant
+
+## Outros contadores proliferaveis (quest, loyalty, lore, charge, ...) [4]
+  - Ashiok, Dream Render | Legendary Planeswalker — Ashiok
+  - Bloodchief Ascension | Enchantment
+  - Glen Elendra Archmage | Creature — Faerie Wizard
+  - Urza's Saga | Enchantment Land — Urza's Saga
+
+## AMPLIFICADOR de contador (replacement 'would be put') [3]
+  - Hardened Scales | Enchantment
+  - Kami of Whispered Hopes | Creature — Spirit
+  - Winding Constrictor | Creature — Snake
+
+## Gatilho de PODER / 'greatest power' / poder >= (Horrigan 8/6 e Master 2/4 alimentam) [4]
+  - Hedge Shredder | Artifact — Vehicle
+  - Repulsive Mutation | Instant
+  - Smuggler's Surprise | Instant
+  - The Great Henge | Legendary Artifact
+
+## TRAMPLE no texto (dar/ter trample) [2]
+  - Kodama of the West Tree | Legendary Creature — Spirit
+  - Rampant Frogantua | Creature — Frog
+
+## INDESTRUCTIBLE no texto [3]
+  - Heroic Intervention | Instant
+  - Plaza of Heroes | Land
+  - Smuggler's Surprise | Instant
+
+## MILL no OPONENTE (alimenta o 'milled this turn' do Master nos cemiterios dele) [10]
+  - Altar of the Brood | Artifact
+  - Deepmuck Desperado | Creature — Homarid Mercenary
+  - Memory Erosion | Enchantment
+  - Mindcrank | Artifact
+  - Mirelurk Queen | Creature — Crab Mutant
+  - Nuclear Fallout | Sorcery
+  - Psychic Corrosion | Enchantment
+  - Ruin Crab | Creature — Crab
+  - The Wise Mothman | Legendary Creature — Insect Mutant
+  - Undead Alchemist | Creature — Zombie
+
+## AUTO-MILL (alimenta o 'milled this turn' no MEU cemiterio) [10]
+  - Altar of Dementia | Artifact
+  - Deepmuck Desperado | Creature — Homarid Mercenary
+  - Didn't Say Please | Instant
+  - Hedge Shredder | Artifact — Vehicle
+  - Memory Erosion | Enchantment
+  - Palantír of Orthanc | Legendary Artifact
+  - Psychic Corrosion | Enchantment
+  - Ruin Crab | Creature — Crab
+  - Six | Legendary Creature — Treefolk
+  - Zellix, Sanity Flayer | Legendary Creature — Horror
+
+## REANIMA / devolve do cemiterio ao campo (concorrem com o Master ou formam combo) [4]
+  - Agadeem's Awakening // Agadeem, the Undercrypt | Sorcery // Land
+  - Icetill Explorer | Creature — Insect Scout
+  - Muldrotha, the Gravetide | Legendary Creature — Elemental Avatar
+  - Six | Legendary Creature — Treefolk
+
+## COMPRA quando criatura ENTRA (Henge) -- reanimar com o Master dispara [4]
+  - Fathom Mage | Creature — Human Wizard
+  - Gyre Sage | Creature — Elf Druid
+  - Pollywog Prodigy | Creature — Frog Wizard
+  - The Great Henge | Legendary Artifact
+
+## Custo >= 6 (concorrentes de slot de topo do Horrigan {5}{B}{G}=7) [3]
+  - Kozilek, Butcher of Truth | Legendary Creature — Eldrazi
+  - Muldrotha, the Gravetide | Legendary Creature — Elemental Avatar
+  - The Great Henge | Legendary Artifact
+
+## RAMP/Fontes de mana nao-terreno (ramparia o Horrigan) [7]
+  - Basking Broodscale | Creature — Eldrazi Lizard
+  - Bramble Familiar // Fetch Quest | Creature — Elemental Raccoon // Sorcery — Adventure
+  - Freestrider Lookout | Creature — Human Rogue
+  - Gyre Sage | Creature — Elf Druid
+  - Kodama of the West Tree | Legendary Creature — Spirit
+  - Sol Ring | Artifact
+  - The Great Henge | Legendary Artifact
+
+# CLASSES FUNCIONAIS (nossa x Stefano; triagem por regex, so' nao-basicos)
+| classe | nossa | Stefano |
+|---|---|---|
+| terreno | 24 | 26 |
+| rampa/pedra de mana | 2 | 8 |
+| contramagica | 6 | 5 |
+| remocao pontual | 4 | 6 |
+| varredor | 2 | 3 |
+| compra | 16 | 10 |
+| mill (qualquer) | 19 | 10 |
+| rad counters | 3 | 14 |
+| proliferate | 1 | 10 |
+| amplificador/dobrador de contador | 3 | 5 |
+| +1/+1 counter | 19 | 13 |
+| reanimacao/recursao | 9 | 8 |
+| criatura | 32 | 16 |
+
+### rampa/pedra de mana
+- nossa: Sol Ring, The Great Henge
+- Stefano: Arcane Signet, Chromatic Lantern, Fellwar Stone, Sol Ring, Strength Bobblehead, Talisman of Curiosity, Talisman of Dominance, Talisman of Resilience
+### contramagica
+- nossa: An Offer You Can't Refuse, Arcane Denial, Didn't Say Please, Fierce Guardianship, Glen Elendra Archmage, Negate
+- Stefano: An Offer You Can't Refuse, Arcane Denial, Counterspell, Drown in the Loch, Negate
+### remocao pontual
+- nossa: Boseiju, Who Endures, Cankerbloom, Strip Mine, Tear Asunder
+- Stefano: Assassin's Trophy, Atomize, Beast Within, Casualties of War, Drown in the Loch, Putrefy
+### varredor
+- nossa: Nuclear Fallout, Toxic Deluge
+- Stefano: Find // Finality, Nuclear Fallout, Singularity Rupture
+### compra
+- nossa: Arcane Denial, Cold-Eyed Selkie, Danny Pink, Fathom Mage, Generous Patron, Hollowmurk Siege, Kozilek, Butcher of Truth, Mirelurk Queen, Palantír of Orthanc, Pollywog Prodigy, Psychic Corrosion, Soul-Guide Lantern, The Gitrog Monster, The Great Henge, Waterlogged Grove, Zagoth Triome
+- Stefano: Arcane Denial, Contaminated Drink, Fractured Sanity, Inspiring Call, Mariposa Military Base, Mirelurk Queen, Struggle for Project Purity, Terrasymbiosis, Tezzeret's Gambit, Zagoth Triome
+### mill (qualquer)
+- nossa: Altar of Dementia, Altar of the Brood, Angel of Suffering, Ashiok, Dream Render, Deepmuck Desperado, Didn't Say Please, Hedge Shredder, Icetill Explorer, Memory Erosion, Mesmeric Orb, Mindcrank, Palantír of Orthanc, Psychic Corrosion, Rampant Frogantua, Ruin Crab, Six, Syr Konrad, the Grim, Undead Alchemist, Zellix, Sanity Flayer
+- Stefano: Fractured Sanity, Glowing One, Infesting Radroach, Mesmeric Orb, Mindcrank, Nephalia Drownyard, Raul, Trouble Shooter, Ruin Crab, Singularity Rupture, Syr Konrad, the Grim
+### rad counters
+- nossa: Mirelurk Queen, Nuclear Fallout, The Wise Mothman
+- Stefano: Bloatfly Swarm, Contaminated Drink, Feral Ghoul, Glowing One, Infesting Radroach, Mariposa Military Base, Mirelurk Queen, Nuclear Fallout, Screeching Scorchbeast, Struggle for Project Purity, Tato Farmer, The Master, Transcendent, The Wise Mothman, Vexing Radgull
+### proliferate
+- nossa: Cankerbloom
+- Stefano: Agent Frank Horrigan, Atomize, Experimental Augury, Inexorable Tide, Karn's Bastion, Mutational Advantage, Radstorm, Ripples of Potential, Tezzeret's Gambit, Vexing Radgull
+### amplificador/dobrador de contador
+- nossa: Hardened Scales, Kami of Whispered Hopes, Winding Constrictor
+- Stefano: Branching Evolution, Hardened Scales, Loading Zone, The Earth Crystal, Winding Constrictor
+### +1/+1 counter
+- nossa: Agatha's Soul Cauldron, Basking Broodscale, Danny Pink, Evolution Witness, Fathom Mage, Generous Patron, Gyre Sage, Hardened Scales, Herd Baloth, Hollowmurk Siege, Kami of Whispered Hopes, Mirelurk Queen, Ouroboroid, Pollywog Prodigy, Repulsive Mutation, The Great Henge, The Wise Mothman, Walking Ballista, Wave Goodbye
+- Stefano: Bloatfly Swarm, Branching Evolution, Feral Ghoul, Find // Finality, Fire Nation Salvagers, Hardened Scales, Inspiring Call, Mirelurk Queen, Strength Bobblehead, Terrasymbiosis, The Earth Crystal, The Wise Mothman, Wave Goodbye
+### reanimacao/recursao
+- nossa: Agadeem's Awakening // Agadeem, the Undercrypt, Agatha's Soul Cauldron, Evolution Witness, Hedge Shredder, Icetill Explorer, Muldrotha, the Gravetide, Six, Soul-Guide Lantern, Takenuma, Abandoned Mire
+- Stefano: Crucible of Worlds, Find // Finality, Fire Nation Salvagers, Mortuary Mire, Reanimate, Rise of the Dark Realms, Tato Farmer, The Master, Transcendent
+### criatura
+- nossa: Angel of Suffering, Basking Broodscale, Bramble Familiar // Fetch Quest, Cankerbloom, Cold-Eyed Selkie, Danny Pink, Deepmuck Desperado, Evolution Witness, Fathom Mage, Freestrider Lookout, Generous Patron, Glen Elendra Archmage, Gyre Sage, Herd Baloth, Icetill Explorer, Kami of Whispered Hopes, Kodama of the West Tree, Kozilek, Butcher of Truth, Mirelurk Queen, Muldrotha, the Gravetide, Ouroboroid, Pollywog Prodigy, Rampant Frogantua, Ruin Crab, Six, Syr Konrad, the Grim, The Gitrog Monster, The Wise Mothman, Undead Alchemist, Walking Ballista, Winding Constrictor, Zellix, Sanity Flayer
+- Stefano: Agent Frank Horrigan, Bloatfly Swarm, Feral Ghoul, Fire Nation Salvagers, Glowing One, Infesting Radroach, Mirelurk Queen, Raul, Trouble Shooter, Ruin Crab, Screeching Scorchbeast, Syr Konrad, the Grim, Tato Farmer, The Master, Transcendent, The Wise Mothman, Vexing Radgull, Winding Constrictor
+
+# Cmc medio dos nao-terrenos (X=0)
+nossa nao-terrenos: 64 cmc medio: 2.95 | terrenos (slots, incl. basicos): 36
+Stefano nao-terrenos: 64 cmc medio: 3.19 | terrenos (slots, incl. basicos): 36

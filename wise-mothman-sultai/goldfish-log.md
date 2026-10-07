@@ -2,6 +2,8 @@
 
 > **Atualização 2026-10-07 (§10):** a guarda do payoff antes do terreno que o §8 arquivou (aritmética) era cega a cor e superestimou o efeito (Ruin Crab +21% → **+13%**; mesa limpa até T8 +0,9 → **+0,6 ponto**). O padrão agora é o ensaio a seco, igual aos outros 5 simuladores: [`resultados-ab/2026-10-07-guarda-ensaio-a-seco/LEIAME.md`](resultados-ab/2026-10-07-guarda-ensaio-a-seco/LEIAME.md). Os lotes do §8 ficam como estavam (guarda aritmética, **superados em magnitude**).
 
+> **Atualização 2026-10-07 (§13): Jace, Wielder of Mysteries no lugar do Kozilek** (e no lugar de cada contramágica/Deluge/Selkie; estático de vitória, +1 e −8 implementados): [`resultados-ab/2026-10-07-jace-no-lugar-do-kozilek/`](resultados-ab/2026-10-07-jace-no-lugar-do-kozilek/LEIAME.md).
+
 > **Atualização 2026-10-07 (§12): Muldrotha por partida** (quanto ela rende e o valor da habilidade): [`resultados-ab/2026-10-07-muldrotha-por-partida/`](resultados-ab/2026-10-07-muldrotha-por-partida/LEIAME.md).
 
 > **Atualização 2026-10-07 (§11): Riverchurn Monument** (inclusão + 5 cortes; simulador com as duas ativadas; método `SWAP_IN_PLACE`): [`resultados-ab/2026-10-07-riverchurn-monument/`](resultados-ab/2026-10-07-riverchurn-monument/LEIAME.md).
@@ -208,3 +210,35 @@ Pasta: `resultados-ab/2026-10-07-muldrotha-por-partida/` (`LEIAME.md` completo; 
 - **Custo medido:** entrando até T6 no padrão, eu perco por deck-out **+2,03 ± 1,75 ponto** (no limite do IC): recomprar Henge/Danny/Constrictor gasta biblioteca. Em todas as partidas: +0,16 ± 0,20 (sem efeito).
 - **Leitura (raciocinada):** a média pequena (+0,6 ponto) é uma carta que chega tarde em 70% das partidas; o valor dela está concentrado em **chegar cedo contra uma mesa que reage** (resiliência +10,9 pontos em T8 com entrada até T6, o dobro do padrão). O Monument, na mesma régua, vale +1,03 ponto nas partidas todas (§11), mas é velocidade; a Muldrotha é resiliência. **Os dois medem coisas diferentes e a Muldrotha não é corte.**
 - **Não verificado:** o valor das outras recursões isoladas (Six, Icetill, Evolution Witness, Agadeem) para uma comparação por presença; `sem_habilidade` mede só a habilidade (o corpo 6/6 continua no baralho, não é "cortar a carta"); a política de recast do simulador (pega a primeira opção livre por tipo, sem escolher a melhor) é um piso; vida e rad contra oponente real.
+
+## 13. Jace, Wielder of Mysteries: no lugar do Kozilek ou no lugar de outra carta (2026-10-07, pedido do usuário)
+
+Pasta: `resultados-ab/2026-10-07-jace-no-lugar-do-kozilek/` (`LEIAME.md` completo; tabelas em `resumos/tabela_final.md`). Pergunta: *"Vale incluir no Mothman, no lugar do Kozilek? Ou é melhor ter a garantia contra decking out, até pq o Kozilek funciona ao ser millado?"* Oráculo e 5 rulings lidos ANTES do código (`checklist-oraculo.md` §12); estático de vitória, `+1` e `−8` implementados; N = 10.000 por variante e modo, pareado, **no lugar** (`SWAP_IN_PLACE`), sementes 3.000.000+i, 12 turnos.
+
+**Kozilek → Jace (padrão / resiliência, pontos percentuais de partidas, `*` = excede o IC95%):**
+
+| | mesa limpa T8 | T10 | eu perco por deck-out | Jace vence |
+|---|---|---|---|---|
+| Kozilek → Jace | −0,12 ± 0,37 / −0,20 ± 0,29 | −0,31 ± 0,36 / −0,15 ± 0,38 | **+0,55 ± 0,35 \* / +0,47 ± 0,27 \*** | 4,08% / 2,17% das partidas |
+| Kozilek → Jace, sem a política de vitória (`JACE_WIN_LINE = False`) | −0,19 ± 0,37 / −0,24 ± 0,28 | −0,36 ± 0,36 / −0,21 ± 0,38 | +0,54 ± 0,35 \* / +0,47 ± 0,27 \* | 1,77% / 0,95% |
+| … com o Jace saindo 20% por rodada de oponentes | −0,21 ± 0,37 / −0,34 ± 0,29 \* | −0,47 ± 0,37 \* / −0,34 ± 0,38 | +0,70 ± 0,35 \* / +0,61 ± 0,28 \* | 3,79% / 1,89% |
+| … 50% por rodada | −0,41 ± 0,36 \* / −0,40 ± 0,28 \* | −0,66 ± 0,37 \* / −0,57 ± 0,38 \* | +0,88 ± 0,35 \* / +0,76 ± 0,29 \* | 3,39% / 1,59% |
+| **controle:** Kozilek → Forest (nada no lugar) | +0,33 ± 0,50 / +0,36 ± 0,39 | −1,18 ± 0,48 \* / +0,20 ± 0,52 | **+2,54 ± 0,40 \* / +1,66 ± 0,33 \*** | — |
+
+- **Leitura (medida):** trocar o Kozilek pelo Jace é **neutro na velocidade** (a mesa limpa até T8/T10 fica dentro do ruído) e **piora o deck-out em +0,55 ponto** (base 3,25% → 3,80%; resiliência 1,56% → 2,03%). O controle mostra a escala: tirar o Kozilek e botar nada custa +2,54 pontos de deck-out; o Jace devolve a maior parte (+0,55) **(raciocinado, não isolado por ensaio próprio)** porque, com ele em campo, comprar com a biblioteca vazia é vitória em vez de derrota. O seguro do Jace só existe com ele em campo (UUU, 4 de mana, 16 de 36 terrenos dão `{U}`, e precisa sobreviver); o do Kozilek é automático ao ir ao cemitério de qualquer lugar (milado, descartado, morto, contramagicado) e não custa mana.
+- **O que o Jace de fato faz neste deck (padrão):** o `+1` é usado em **19,4%** das partidas (1,92 vezes quando usado), o `+1` em MIM só em 0,7% (a "linha" de esvaziar a própria biblioteca é rara), o `−8` em 0,00% (nunca chega a 8 de lealdade). A vitória vem sobretudo do estático: **4,08%** das partidas com a política de afrouxar a reserva de biblioteca (a reserva de 8 cartas cai a 0 com o Jace em campo), 1,77% sem a política. Em 74 das 325 partidas que a base perdia por deck-out o Jace vence; 131 deixam de perder, e 186 partidas que a base ganhava ou empatava passam a perder por falta do Kozilek (saldo +55 em 10.000).
+- **Pareado:** 96,5% das partidas têm a mesa limpa até T8 idêntica à da base (182 só na base, 170 só na variante).
+
+**Jace no lugar de outra carta (o Kozilek fica; padrão / resiliência):**
+
+| sai | mesa limpa T8 | T10 | eu perco por deck-out | Jace vence |
+|---|---|---|---|---|
+| An Offer You Can't Refuse | **+1,32 ± 0,33 \*** / +0,35 ± 0,25 \* | +1,40 ± 0,28 \* / +0,33 ± 0,33 \* | −1,24 ± 0,23 \* / −0,49 ± 0,16 \* | 3,51% / 1,85% |
+| Negate | **+1,25 ± 0,33 \*** / +0,35 ± 0,25 \* | +1,44 ± 0,28 \* / +0,58 ± 0,33 \* | −1,33 ± 0,25 \* / −0,43 ± 0,15 \* | 3,41% / 1,58% |
+| Negate, Jace saindo 33% por rodada | +0,97 ± 0,32 \* / +0,21 ± 0,25 | +1,18 ± 0,29 \* / +0,29 ± 0,32 | −1,17 ± 0,26 \* / −0,33 ± 0,16 \* | 2,97% / 1,39% |
+| Toxic Deluge | +0,77 ± 0,28 \* / +0,10 ± 0,21 | +1,23 ± 0,25 \* / +0,75 ± 0,27 \* | −1,15 ± 0,22 \* / −0,45 ± 0,14 \* | 3,62% / 1,68% |
+| Arcane Denial | +0,78 ± 0,31 \* / +0,07 ± 0,27 | +1,09 ± 0,30 \* / +0,51 ± 0,32 \* | −1,25 ± 0,24 \* / −0,49 ± 0,16 \* | 3,43% / 1,78% |
+| Cold-Eyed Selkie | +0,13 ± 0,28 / −0,19 ± 0,24 | +0,78 ± 0,26 \* / +0,29 ± 0,31 | −1,26 ± 0,23 \* / −0,53 ± 0,16 \* | 3,43% / 1,64% |
+
+- **Leitura (medida):** o Jace **entra bem no lugar de uma contramágica** (+1,3 ponto de T8 no padrão, +0,35 na resiliência, e o deck-out **cai** 1,2–1,3 ponto, o que é compatível com o estático converter decking em vitória **(raciocinado)**): é do tamanho do Monument (§11, +1,03). A parte do T8 que vem da política de afrouxar a reserva de biblioteca **não foi isolada** nestes cortes (o ensaio sem a política só foi feito contra o Kozilek, onde a diferença de T8 foi +0,07 ponto, dentro do ruído). **Conflito de vagas:** Offer, Negate, Deluge, Arcane Denial e Selkie são os mesmos cinco cortes do Monument; os dois competem pelas mesmas vagas (a soma NÃO foi medida junto).
+- **Não verificado (Regra #7):** ataque e remoção de oponente contra o planeswalker (só o proxy `JACE_REMOVAL_PROB`, sem calibração), oponentes reais contra a linha de decking (um jogador que comprasse do próprio deck contra o Jace), prioridade de conjuração do Jace (66, sem sensibilidade), a política de afrouxar a reserva de biblioteca (a que gera os 4,08%), o `−8` (nunca disparou), o comportamento de alvo ilegal do `+1` (R3, sem teste dirigido), o Jace junto com o Monument, a ordem humana real de ativar o `+1` no turno do oponente (é só no meu turno). Validação do código (bit-identidade, regressão 20.000, determinismo, testes dirigidos 166/166): `LEIAME.md` da pasta.

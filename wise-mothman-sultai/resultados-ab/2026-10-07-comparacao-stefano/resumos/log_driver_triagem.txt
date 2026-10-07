@@ -1,0 +1,7 @@
+feito 2000 padrao base
+feito 2000 padrao frank__an_offer_you_cant_refuse
+feito 2000 padrao master__an_offer_you_cant_refuse
+feito 2000 padrao frank__didnt_say_please
+feito 2000 padrao master__didnt_say_please
+feito 2000 padrao frank__negate
+feito 2000 padrao master__negate
