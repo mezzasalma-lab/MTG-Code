@@ -1,0 +1,10 @@
+
+## 5. Agent Frank Horrigan e The Master, Transcendent no nosso deck (oráculo + rulings lidos ANTES do código; `dados/rulings_candidatas.json`)
+
+**Spellbook** (`resumos/resumo_spellbook.md`; 157 nomes reconhecidos, controle positivo e de corte passaram): nenhuma das duas cria combo novo nem "quase" novo; só as 5 peças dos dois combos da lista (Altar of Dementia, Bloodchief Ascension, The Great Henge, Mindcrank, Glen Elendra Archmage) derrubam combo se cortadas.
+
+**Implementação (todas as cláusulas):** Horrigan: 7 de mana 8/6 trample; entrar OU atacar: `proliferate` ×2 (duas escolhas independentes; política: tudo que ajuda, nunca rad nem lore da Urza's Saga próprios); indestrutível só no turno em que atacou (ruling: vale desde declarado atacante, não vale se entrou atacando); The Great Henge fica em `{G}{G}`. Master: `{1}{B}{G}{U}` 2/4 artefato-criatura; entrar: 2 rad num oponente; `{T}`: criatura **milada neste turno** (só "mill", não descarte; qualquer cemitério) volta ao campo sob meu controle como Mutant verde com **base 3/3** (sobrepõe a CDA; contadores continuam valendo; perde os outros tipos, `Zombie`/`Insect` incluídos), com doença de invocação (Swiftfoot Boots dá haste) e também no turno do oponente depois do rad dele. **Conceitos compartilhados auditados (Regra #3):** `power()`/`toughness()` (2 pontos), checagens de subtipo (3 pontos: Alchemist ×2, Swarmyard), Wave Goodbye (a criatura de oponente volta à mão DELE), `remove_permanent` (volta ao cemitério DELE), lista de alvos da remoção de oponente na resiliência. 182 testes dirigidos passam (16 novos).
+
+**Estrutural (📊):** a criatura de OPONENTE que a Master leva é, no simulador, um corpo genérico 3/3 sem habilidades (as cartas do oponente são só "terreno / criatura / outra"): "It's a green Mutant with base power and toughness 3/3" mantém as **habilidades** da carta, que não são modeladas. O valor medido da Master é, portanto, **piso**.
+
+### Triagem (N = 2.000 pareado, `no lugar`, 21 cortes; padrão / resiliência; pontos percentuais de mesa limpa; `*` = excede o IC95%)

@@ -21,3 +21,5 @@ feito 10000 padrao base
 feito 10000 padrao frank__an_offer_you_cant_refuse
 feito 10000 padrao frank__negate
 feito 10000 padrao frank__arcane_denial
+feito 10000 padrao frank__toxic_deluge
+feito 10000 padrao frank__coldeyed_selkie
