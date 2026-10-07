@@ -472,6 +472,15 @@ carta, contra o oráculo real:
 
 ---
 
+## 🐛 Payoff de landfall antes do terreno (2026-10-07)
+
+Classe do motor (Regra #6/#10), não da carta: `maralen_goldfish_v1.py` jogava o terreno antes de conjurar. Arquivo: `resultados-ab/2026-10-07-landfall-payoff-primeiro/`. Escopo declarado (Regra #7): **varrido** = a ordem terreno × payoff de landfall nos 2 payoff(s) abaixo, com teste dirigido, A/B pareado 2.000 e 10.000, bit-identidade, regressão e determinismo; **NÃO varrido** = magia que põe terreno em campo antes do payoff, terreno que volta ao campo, 2ª fase principal.
+
+| carta | cláusula de oráculo (landfall) | achado / status | onde |
+|---|---|---|---|
+| Thranduil's Company | As long as you control another Elf, you may play an additional land on each of your turns; Landfall — dois +1/+1 counters (modelado só em Marwyn: único alvo com efeito numérico) | 🐛 o terreno do turno entrava ANTES da carta; ✅ `LANDFALL_PAYOFF_FIRST` | `cast_landfall_payoffs_first` (testes dirigidos) |
+| Thranduil, Sindarin Liege // Silvan Rally | Landfall — Elfo 1/1 | 🐛 o terreno do turno entrava ANTES da carta; ✅ `LANDFALL_PAYOFF_FIRST` | `cast_landfall_payoffs_first` (testes dirigidos) |
+
 ## Resumo numérico
 
 - **92 cartas.**

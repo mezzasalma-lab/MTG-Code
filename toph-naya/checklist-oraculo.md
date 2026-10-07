@@ -1088,6 +1088,25 @@ real no Scryfall, N/A por definição.
 
 ---
 
+## 🐛 Payoff de landfall antes do terreno (2026-10-07)
+
+Classe do motor (Regra #6/#10), não da carta: `toph_goldfish_v1.py` jogava o terreno antes de conjurar. Arquivo: `resultados-ab/2026-10-07-landfall-payoff-primeiro/`. Escopo declarado (Regra #7): **varrido** = a ordem terreno × payoff de landfall nos 12 payoff(s) abaixo, com teste dirigido, A/B pareado 2.000 e 10.000, bit-identidade, regressão e determinismo; **NÃO varrido** = magia que põe terreno em campo antes do payoff, terreno que volta ao campo, 2ª fase principal.
+
+| carta | cláusula de oráculo (landfall) | achado / status | onde |
+|---|---|---|---|
+| Lotus Cobra | Landfall — add one mana of any color | 🐛 o terreno do turno entrava ANTES da carta; ✅ `LANDFALL_PAYOFF_FIRST` | `cast_landfall_payoffs_first` (testes dirigidos) |
+| Nissa, Resurgent Animist | Landfall — add one mana of any color; 2ª resolução do turno: revela até um Elfo/Elemental | 🐛 o terreno do turno entrava ANTES da carta; ✅ `LANDFALL_PAYOFF_FIRST` | `cast_landfall_payoffs_first` (testes dirigidos) |
+| Tireless Provisioner | Landfall — Food ou Treasure | 🐛 o terreno do turno entrava ANTES da carta; ✅ `LANDFALL_PAYOFF_FIRST` | `cast_landfall_payoffs_first` (testes dirigidos) |
+| Bristly Bill, Spine Sower | Landfall — +1/+1 counter em criatura | 🐛 o terreno do turno entrava ANTES da carta; ✅ `LANDFALL_PAYOFF_FIRST` | `cast_landfall_payoffs_first` (testes dirigidos) |
+| Mossborn Hydra | Landfall — dobra os +1/+1 counters | 🐛 o terreno do turno entrava ANTES da carta; ✅ `LANDFALL_PAYOFF_FIRST` | `cast_landfall_payoffs_first` (testes dirigidos) |
+| Tannuk, Memorial Ensign | Landfall — 1 de dano a cada oponente; 2ª resolução: compra | 🐛 o terreno do turno entrava ANTES da carta; ✅ `LANDFALL_PAYOFF_FIRST` | `cast_landfall_payoffs_first` (testes dirigidos) |
+| Toph, Earthbending Master | Landfall — experience counter | 🐛 o terreno do turno entrava ANTES da carta; ✅ `LANDFALL_PAYOFF_FIRST` | `cast_landfall_payoffs_first` (testes dirigidos) |
+| Earthbender Ascension | Landfall — quest counter; com 4, +1/+1 counter e trample | 🐛 o terreno do turno entrava ANTES da carta; ✅ `LANDFALL_PAYOFF_FIRST` | `cast_landfall_payoffs_first` (testes dirigidos) |
+| Scute Swarm | Landfall — token 1/1 (cópia dele com 6+ terrenos) | 🐛 o terreno do turno entrava ANTES da carta; ✅ `LANDFALL_PAYOFF_FIRST` | `cast_landfall_payoffs_first` (testes dirigidos) |
+| Sapling Nursery | Landfall — Treefolk 3/4 com reach | 🐛 o terreno do turno entrava ANTES da carta; ✅ `LANDFALL_PAYOFF_FIRST` | `cast_landfall_payoffs_first` (testes dirigidos) |
+| Springheart Nantuko | Landfall — paga {1}{G} e copia a criatura encantada, senão Inseto 1/1 | 🐛 o terreno do turno entrava ANTES da carta; ✅ `LANDFALL_PAYOFF_FIRST` | `cast_landfall_payoffs_first` (testes dirigidos) |
+| Felidar Retreat | Landfall — Cat Beast 2/2 ou +1/+1 em todas as criaturas | 🐛 o terreno do turno entrava ANTES da carta; ✅ `LANDFALL_PAYOFF_FIRST` | `cast_landfall_payoffs_first` (testes dirigidos) |
+
 ## Resumo numérico
 
 - **189 cláusulas** cobertas (contagem por linha da tabela; algumas linhas agrupam 2-4 cláusulas do oráculo, então os totais abaixo são por linha marcada, não por cláusula individual).

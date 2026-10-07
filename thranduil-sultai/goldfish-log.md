@@ -1,8 +1,43 @@
 # Goldfish Log — Thranduil (Sultai)
 
+> **Rodada 2026-10-07 (Payoff de landfall antes do terreno) — dados brutos e reprodução:** [`resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md`](resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md)
+
 > **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 + ordem das habilidades emprestadas determinística (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
 
 > **Dados brutos e como reproduzir as tabelas da seção The Pride of Hull Clade (2026-10-03):** [`resultados-ab/2026-10-03-pride-of-hull-clade/LEIAME.md`](resultados-ab/2026-10-03-pride-of-hull-clade/LEIAME.md) — brutos `.json.xz` por partida, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
+
+---
+
+## Payoff de landfall antes do terreno (`LANDFALL_PAYOFF_FIRST`) — 2026-10-07
+
+**Pedido do usuário:** *"Corrige os simuladores com erro no script para automatizar a ordem de jogadas para o landfall"*. Arquivo bruto/auditável: `resultados-ab/2026-10-07-landfall-payoff-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real de ordem, um conserto atrás de chave, bit-idêntico com a chave desligada. O payoff entra antes dos terrenos em **19,3%** das partidas (14,0% na resiliência). Efeito pequeno: **+0,14 tokens de Elfo por partida (+48%)** e **+0,35 contadores da Company (+49%)**; neutro em magias, comandante e finishers.
+
+**Achado:** o simulador jogava o terreno do turno ANTES de conjurar o payoff de landfall (`play_land` antes da fase de conjuração; a ordem completa do turno está no `LEIAME.md` da pasta). Com a ordem antiga o terreno do turno nunca disparava o landfall do payoff que o mana de agora já pagava.
+
+**Correção:** chave `LANDFALL_PAYOFF_FIRST` + `cast_landfall_payoffs_first`, com guarda por ensaio a seco (nada que a ordem antiga conjuraria/jogaria pode deixar de acontecer). Detalhes e a 1ª guarda aritmética que estava errada: `LEIAME.md` da pasta.
+
+**Números (N=10.000 pareado, `*` = excede o IC95%):**
+
+| campo (N=10.000 pareado) | padrao: base -> depois (dif ± IC95%) | resiliencia: base -> depois (dif ± IC95%) |
+|---|---|---|
+| `lands_played_total` | 6.987 -> 7.037 (+0.050 ± 0.006) * | 6.519 -> 6.546 (+0.027 ± 0.005) * |
+| `landfall_elf_tokens` | 0.291 -> 0.431 (+0.140 ± 0.010) * | 0.141 -> 0.231 (+0.090 ± 0.008) * |
+| `thranduils_company_counters` | 0.710 -> 1.061 (+0.350 ± 0.025) * | 0.315 -> 0.548 (+0.232 ± 0.019) * |
+| `spells_cast` | 11.837 -> 11.854 (+0.017 ± 0.013) * | 10.031 -> 10.030 (-0.001 ± 0.009) |
+| `extra_draws` | 12.316 -> 12.336 (+0.021 ± 0.048) | 6.730 -> 6.725 (-0.005 ± 0.030) |
+| `commander_cast_turn__ate_T3` | - | 0.057 -> 0.058 (+0.000 ± 0.001) |
+| `commander_cast_turn__ate_T4` | - | 0.288 -> 0.289 (+0.000 ± 0.002) |
+| `commander_cast_turn__ate_T5` | - | 0.516 -> 0.516 (+0.000 ± 0.002) |
+| `finisher_turn__ate_T6` | 0.213 -> 0.215 (+0.002 ± 0.002) * | 0.117 -> 0.117 (+0.001 ± 0.001) |
+| `finisher_turn__nunca` | 0.391 -> 0.391 (-0.000 ± 0.002) | 0.658 -> 0.658 (-0.000 ± 0.002) |
+| `finishers_activated` | 1.862 -> 1.871 (+0.009 ± 0.007) * | - |
+| partidas com resultado idêntico ao da base | 80.7% | 86.0% |
+
+**Validação:** testes dirigidos 7/7; bit-identidade 20.000 × 2 modos com a chave desligada (0 divergências); regressão 20.000 × 2 modos × 2 configurações (0 exceções); determinismo 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos (0 divergências); smoke 99 cartas.
+
+**Não coberto / não verificado:** magia que põe terreno em campo antes do payoff, terreno que volta ao campo, política de jogador humano; o A/B mede o simulador (3 oponentes passivos), não a mesa real.
 
 ---
 

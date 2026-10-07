@@ -17,7 +17,7 @@ completa.
 """
 
 from __future__ import annotations
-import random, json, statistics
+import copy, random, json, statistics
 from collections import Counter
 from dataclasses import dataclass, field
 from typing import Dict, List, Set, Optional
@@ -368,6 +368,7 @@ class GameState:
 
     turn: int = 0
     land_played: bool = False
+    payoff_first_casts: int = 0   # correcao de 2026-10-07 (LANDFALL_PAYOFF_FIRST): vezes em que um payoff de landfall foi conjurado ANTES do terreno do turno
     beorn_host_exiled: bool = False  # Till and Tend conjurada, criatura esperando no exilio
     max_hand_size: int = 7
     mana_spent_this_turn: int = 0
@@ -1109,6 +1110,60 @@ def try_bala_ged_recovery(state: GameState, log: List[Dict]):
     state.hand.append(best)
     state.bala_ged_recovery_returned = best
     log.append({"action": "bala_ged_recovery_cast", "returned": best, "turn": state.turn})
+
+# ---------------------------------------------------------------------------
+# Payoff de landfall ANTES do terreno -- correcao de 2026-10-07 (classe achada no Mothman em 2026-10-06, ordem terreno x payoff)
+# ---------------------------------------------------------------------------
+# Antes: `play_turn` jogava o terreno (`play_land`) ANTES de `main_phase`, entao Lotus Cobra / Tireless Provisioner / Tireless Tracker / Dancing from Dark to Dawn etc. so'
+# entravam DEPOIS do terreno do turno e esse terreno nunca disparava o landfall deles (Cobra: nenhuma mana extra do terreno do turno). O jogador real conjura o payoff
+# primeiro quando o mana de AGORA ja' o paga. Agora, com o terreno do turno ainda por jogar, conjura antes (na ordem de `priority`) os payoffs que o mana de agora paga.
+# So' muda a ORDEM de cartas que o turno ja' conjuraria; o comandante tem prioridade (nao o deslocamos). Com a chave em False o comportamento e' o antigo, bit a bit.
+LANDFALL_PAYOFF_FIRST = True
+LANDFALL_PAYOFFS = frozenset({
+    "Lotus Cobra", "Tireless Provisioner", "Tireless Tracker", "Beorn's Hospitality", "Dancing from Dark to Dawn", "Necklace of Girion",
+})   # as cartas que `on_land_enters` trata
+
+
+def _hoist_loses_a_play(state: GameState, choice: str) -> bool:
+    """Ensaio a seco (copia profunda; `random` global restaurado) do RESTO da fase pre-combate nas duas ordens: na ANTIGA (terreno, depois o resto do turno) e na NOVA (`choice` conjurado ANTES do terreno, depois o
+    mesmo resto). O payoff so' passa na frente se nada que a ordem antiga conjuraria/jogaria neste turno (inclusive o comandante) deixar de acontecer na nova: protege o comandante, as rochas de mana e qualquer jogada
+    de prioridade maior que a do payoff, contando o mana de landfall que ja' esta em campo e os land drops extras (o que a formula `mana de agora + 1` nao conta)."""
+    def resto(s):
+        play_land(s, [])
+        try_use_own_interaction(s, [])
+        main_phase(s, [])
+    saved = random.getstate()
+    try:
+        mao0 = Counter(state.hand)
+        antiga = copy.deepcopy(state)
+        resto(antiga)
+        nova = copy.deepcopy(state)
+        cast_spell(nova, choice, [])
+        resto(nova)
+        perdeu = (mao0 - Counter(antiga.hand)) - (mao0 - Counter(nova.hand))
+        return bool(perdeu) or (antiga.commander_in_play and not nova.commander_in_play)
+    finally:
+        random.setstate(saved)
+
+
+def cast_landfall_payoffs_first(state: GameState, log: List[Dict]):
+    """Com o terreno do turno ainda por jogar, conjura ANTES os payoffs de landfall que o mana de agora paga (ordem de `priority`), para o terreno disparar o landfall deles.
+    Nao perde jogada: verificado por ensaio a seco (`_hoist_loses_a_play`; protege o comandante e as rochas de mana)."""
+    if not LANDFALL_PAYOFF_FIRST:
+        return
+    for _ in range(4):
+        if state.land_played or choose_land_to_play(state) is None:
+            return
+        cands = [c for c in state.hand if c in LANDFALL_PAYOFFS and is_spell(c) and can_cast(state, c)]
+        if not cands:
+            return
+        cands.sort(key=lambda c: priority(state, c))
+        choice = cands[0]
+        if _hoist_loses_a_play(state, choice):
+            return                        # o payoff antes do terreno faria o turno perder uma jogada (comandante, rocha de mana...): fica na ordem antiga
+        cast_spell(state, choice, log)
+        state.payoff_first_casts += 1
+
 
 def play_land(state: GameState, log: List[Dict]):
     card = choose_land_to_play(state)
@@ -2125,6 +2180,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.draw(1, source="normal")
 
     try_bala_ged_recovery(state, log)
+    cast_landfall_payoffs_first(state, log)   # 2026-10-07: payoff de landfall antes do terreno (chave LANDFALL_PAYOFF_FIRST)
     play_land(state, log)
     try_use_own_interaction(state, log)
     main_phase(state, log)
@@ -2614,6 +2670,7 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "allosaurus_shepherd_activations": state.allosaurus_shepherd_activations,
         "return_of_wildspeaker_cast": state.return_of_wildspeaker_cast,
         "obscuring_haze_cast_free": state.obscuring_haze_cast_free,
+        "payoff_first_casts": state.payoff_first_casts,
     }
 
 def run_batch(n=500, turns=8, out_jsonl="beorn_v1_runs.jsonl", seed_base=91000):

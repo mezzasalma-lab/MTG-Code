@@ -1,10 +1,41 @@
 # Goldfish Log — Toph (Naya)
 
+> **Rodada 2026-10-07 (Payoff de landfall antes do terreno) — dados brutos e reprodução:** [`resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md`](resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md)
+
 > **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
 
 > **Rodada 2026-10-05 (Mulligan com escolha do fundo (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`](resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md)
 
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
+
+---
+
+## Payoff de landfall antes do terreno (`LANDFALL_PAYOFF_FIRST`) — 2026-10-07
+
+**Pedido do usuário:** *"Corrige os simuladores com erro no script para automatizar a ordem de jogadas para o landfall"*. Arquivo bruto/auditável: `resultados-ab/2026-10-07-landfall-payoff-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real de ordem, um conserto atrás de chave, bit-idêntico com a chave desligada. O payoff entra antes do terreno em **56,9%** das partidas (0,87 por partida no padrão, 0,73 na resiliência). Efeito moderado e na direção esperada: **+0,26 gatilhos de landfall por partida (+1,7%)**, **+0,23 magias conjuradas**, e a fração de partidas que **nunca** chega ao dano letal-proxy cai de 74,0% para 70,6% (**−3,4 pontos ± 0,4**); o comandante sai um pouco mais cedo (T4 +0,4 ponto, T5 +1,1 na resiliência).
+
+**Achado:** o simulador jogava o terreno do turno ANTES de conjurar o payoff de landfall (`play_land` antes da fase de conjuração; a ordem completa do turno está no `LEIAME.md` da pasta). Com a ordem antiga o terreno do turno nunca disparava o landfall do payoff que o mana de agora já pagava.
+
+**Correção:** chave `LANDFALL_PAYOFF_FIRST` + `cast_landfall_payoffs_first`, com guarda por ensaio a seco (nada que a ordem antiga conjuraria/jogaria pode deixar de acontecer). Detalhes e a 1ª guarda aritmética que estava errada: `LEIAME.md` da pasta.
+
+**Números (N=10.000 pareado, `*` = excede o IC95%):**
+
+| campo (N=10.000 pareado) | padrao: base -> depois (dif ± IC95%) | resiliencia: base -> depois (dif ± IC95%) |
+|---|---|---|
+| `landfall_triggers_fired` | 15.255 -> 15.518 (+0.262 ± 0.087) * | 12.922 -> 13.142 (+0.220 ± 0.064) * |
+| `spells_cast_total` | 11.378 -> 11.612 (+0.234 ± 0.043) * | 9.945 -> 10.120 (+0.175 ± 0.033) * |
+| `lethal_turn__nunca` | 0.740 -> 0.706 (-0.034 ± 0.004) * | 0.880 -> 0.851 (-0.028 ± 0.004) * |
+| `lethal_turn__ate_T6` | 0.008 -> 0.013 (+0.005 ± 0.002) * | 0.005 -> 0.008 (+0.003 ± 0.001) * |
+| `commander_cast_turn__ate_T3` | 0.144 -> 0.144 (+0.000 ± 0.001) | 0.134 -> 0.134 (+0.000 ± 0.001) |
+| `commander_cast_turn__ate_T4` | 0.539 -> 0.543 (+0.004 ± 0.002) * | 0.483 -> 0.489 (+0.005 ± 0.002) * |
+| `commander_cast_turn__ate_T5` | - | 0.684 -> 0.695 (+0.011 ± 0.003) * |
+| partidas com resultado idêntico ao da base | 43.1% | 48.4% |
+
+**Validação:** testes dirigidos 67/67 (61 anteriores + 6 novos); bit-identidade 20.000 × 2 modos com a chave desligada (0 divergências); regressão 20.000 × 2 modos × 2 configurações (0 exceções); determinismo 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos (0 divergências); smoke 99 cartas.
+
+**Não coberto / não verificado:** magia que põe terreno em campo antes do payoff, terreno que volta ao campo, política de jogador humano; o A/B mede o simulador (3 oponentes passivos), não a mesa real.
 
 ---
 

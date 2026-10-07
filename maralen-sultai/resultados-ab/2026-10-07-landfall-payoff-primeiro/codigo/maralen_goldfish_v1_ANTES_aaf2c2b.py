@@ -1,0 +1,2359 @@
+"""
+Goldfish simulator — Maralen, Fae Ascendant (Sultai, B/G/U)
+
+Construido do zero em 2026-08-23. Passo 0 (regra de
+`references/goldfish-sim-card-rules.md`): varredura mecanica no oraculo
+completo achou os gatilhos reais listados abaixo. Cada um tem o efeito
+real implementado, exceto onde depende de um oponente real (vida/mao/
+biblioteca/permanente alheio) — documentado como simplificacao
+explicita, nunca fingido.
+
+Mecanica central: o proprio gatilho da comandante — "Whenever Maralen
+or another Elf or Faerie you control enters, exile the top two cards
+of target opponent's library. Once each turn, you may cast a spell
+with mana value <= Elfos+Fadas voce controla dentre as cartas exiladas
+com Maralen neste turno sem pagar o custo de mana." Como nao ha
+biblioteca de oponente real num goldfish solo, a exilada vem da PROPRIA
+biblioteca (mesma aproximacao ja usada pro Grenzo/Laughing Jasper Flint
+no simulador do Vihaan) — documentado, nao inventado como se fosse
+"roubo" real.
+
+Roaming Throne: tipo escolhido = **Faerie** (nao Elfo). Motivo: Maralen
+e ela mesma Elf Faerie Noble, entao ela conta como "outra criatura do
+tipo escolhido" pra qualquer um dos dois tipos — o proprio gatilho dela
+dobra de qualquer forma. Faerie foi escolhido porque tem mais criaturas
+com gatilho relevante (Bitterbloom Bearer, Obyra, Tegwyll, Faerie
+Harbinger, Spellstutter Sprite, Mistbind Clique) do que Elfo (so Marwyn
+e Elvish Warmaster tem gatilho de ETB relevante).
+ATENCAO (achado real 2026-08-31, reanalise pedida pelo usuario): o
+oraculo real e' "If a triggered ability of another creature you control
+OF THE CHOSEN TYPE triggers" — a condicao e' sobre o tipo da criatura
+DONA da habilidade (a fonte do gatilho: Maralen, Tegwyll, Faerie
+Harbinger), nunca sobre o tipo do que entrou/morreu pra causar o
+gatilho. Uma versao anterior deste simulador calculava a dobra a partir
+do tipo do que ENTRAVA (so' dobrava a Maralen quando uma Fada entrava,
+nunca quando um Elfo entrava — a maioria real dos gatilhos do deck,
+todos os dorks/Elvish Warmaster/Imperious Perfect/etc.) — corrigido:
+`_maralen_resolve()` agora dobra sempre que Roaming Throne esta em
+campo, sem depender do que entrou. Tegwyll (dobra ao morrer outra Fada)
+e Faerie Harbinger (dobra o tutor no ETB) tambem foram implementados de
+verdade (existiam so' na lista acima, nunca no codigo). Mistbind Clique
+(Champion) continua fora de proposito — ver comentario junto de
+`champion_faerie` em `resolve_etb()`.
+
+Combo real de 2 pecas (documentado na auditoria, secao 4): Umbral
+Mantle (Equip {0}, "{3},{Q}: +2/+2") equipado num dork que produza 4+
+mana por ativacao (Priest of Titania, Elvish Archdruid, Marwyn com
+poder 4+, Circle of Dreams Druid com 4+ criaturas) gera mana verde
+infinita. Staff of Domination converte isso em compra infinita (limite
+defensivo: para de comprar quando a biblioteca fica vazia, sem fingir
+"vencer o jogo" por deck-out) ou exercito infinito de Elfo via
+Imperious Perfect, se disponivel.
+
+Simplificacoes documentadas (nao inventadas — omissoes explicitas):
+- Sem oponente real: Rhystic Study, Mystic Remora, Faerie Mastermind
+  (gatilho passivo), Alela (goad e token por 1a magica no turno do
+  oponente), Bojuka Bog (exila cemiterio de oponente) ficam "disponiveis"
+  mas sem efeito numerico solo.
+- Removal/contra-magica (Pongify, Rapid Hybridization, Reality Shift,
+  Assassin's Trophy, Cyclonic Rift, Toxic Deluge, Counterspell, Arcane
+  Denial, Swan Song, Spellstutter Sprite, Glen Elendra Archmage) sao
+  conjuradas quando ha alvo hipotetico disponivel (mesma convencao dos
+  outros simuladores desta biblioteca), mas nao tem efeito de combate
+  real — so consomem mana e contam como "conjuradas".
+- Bloom Tender: aproximacao documentada — produz mana igual ao numero
+  de cores entre B/G/U que ja tem permanente em campo (nunca mais que
+  3), nao rastreio cor exata de cada permanente.
+- Joraga Treespeaker: nivel real 0-5 implementado (achado real 2026-08-30 -
+  a versao anterior era binaria 0/1 e nunca alcancava o nivel 5 de jeito
+  nenhum, 0% estrutural, nao "raro" como o comentario antigo sugeria).
+  Nivela greedy com mana sobrando (5 ativacoes = 10 mana total investido
+  pro nivel 5, que da' "{T}: Add {G}{G}" pra TODOS os Elfos) — ver
+  `joraga_level_up()`.
+- Heritage Druid / Birchlore Rangers: aproximacao documentada — a
+  habilidade delas tapa OUTROS Elfos como custo (nao a si mesmas), o
+  que ignora summoning sickness desses Elfos (CR 302.6, tapar como
+  custo de habilidade de OUTRO permanente nao e bloqueado por sickness).
+  Modelado como: se houver Elfos "sick" (recem-conjurados) disponiveis
+  em quantidade suficiente, eles alimentam Heritage Druid/Birchlore
+  Rangers por mana extra que normalmente nao existiria ainda naquele
+  turno — sem duplicar a contagem de mana desses Elfos caso eles NAO
+  estivessem sick (nesse caso already contam via sua propria habilidade).
+- Devoted Druid: self-untap via -1/-1 counter modelado com um teto
+  defensivo de 3 ativacoes extras por turno (toughness base 1, evita
+  looping sem fim — ela morre antes de virar looping infinito sem
+  outra peca de untap).
+- Mistbind Clique (Champion a Faerie): se houver outra Fada em campo
+  pra exilar, ela fica; senao e sacrificada no ETB (Champion falhou).
+  A Fada exilada retorna quando Mistbind sai de campo — nao simulado
+  em detalhe (Mistbind raramente sai de campo neste modelo).
+- Combate: "ataca" = nao esta com summoning sickness. Nenhum bloqueio,
+  nenhum dano/vida de oponente real.
+- Seedborn Muse ("untap all permanents you control during EACH OTHER
+  PLAYER'S untap step"): genuinamente N/A neste modelo - so' os PROPRIOS
+  turnos sao simulados (goldfish solo), nunca ha um "outro jogador" cujo
+  untap step aconteca pra gerar o gatilho. Nao e' omissao, e' ausencia
+  real do evento que a habilidade escuta.
+- Murkfiend Liege: alem do "untap step de outro jogador" (mesmo N/A do
+  Seedborn Muse acima), tem um segundo modo estatico real ("Other green
+  creatures you control get +1/+1. Other blue creatures you control get
+  +1/+1.") que E' modelado (soma em `marwyn_effective_power()`, ja que
+  Marwyn e' Elfo E verde - achado real 2026-08-28).
+- Spellstutter Sprite: "counter target spell with mana value X or less"
+  (X = Faeries) precisa de uma magica real de oponente pra mirar - mesma
+  convencao ja documentada pras outras contra-magicas do deck (Counterspell,
+  Swan Song, Arcane Denial etc.), disponivel mas sem efeito de combate real
+  num goldfish solo.
+- Familia "untap target creature/Elf/permanente" (Wirewood Symbiote,
+  Scryb Ranger, Wirewood Lodge, Formidable Speaker) — IMPLEMENTADA (achado
+  real 2026-09-01, leitura linha-a-linha completa do oraculo, pedida pelo
+  usuario apos o mesmo trabalho no Toph). Wirewood Symbiote/Scryb Ranger
+  estavam deferidas com linguagem de julgamento de valor proibida;
+  Wirewood Lodge e Formidable Speaker nem tinham a propria ativada
+  mencionada em lugar nenhum (so' a mana generica do terreno / o ETB de
+  tutor da criatura). Ver `try_untap_effects()`: as 4 somam a saida do
+  melhor dork ESCALAVEL pronto DE NOVO neste turno, cada uma com seu
+  custo real (bounce de Elfo/Forest pras 2 primeiras; {G}+tap do proprio
+  terreno pra Wirewood Lodge, so' se o alvo for um Elfo de verdade;
+  {1}+tap do proprio corpo pra Formidable Speaker). Simplificacoes reais
+  que permanecem: Scryb Ranger so reconhece a basica "Forest" por nome
+  (nao duais com o tipo Forest), consistente com o modelo de mana
+  total/nao pip-a-pip do resto do arquivo; o melhor dork e' calculado
+  uma vez por turno, nao recalculado apos cada ativacao individual.
+
+Auditoria oraculo-por-oraculo completa (2026-09-13): oraculo real das 88
+cartas nao-terreno/nao-MDFC + 3 MDFC/Adventure + comandante buscado ao
+vivo via Scryfall (2 lotes de POST /cards/collection + /cards/named?fuzzy=
+pros 3 multi-face), comparado clausula a clausula contra este arquivo (ja
+o deck mais auditado da sessao - 6+ rodadas anteriores, ver
+checklist-oraculo.md e goldfish-log.md). 4 gaps reais encontrados e
+corrigidos, apesar da maturidade do arquivo:
+
+1. **marwyn_effective_power() faltava 2 dos 4 anthems reais de Elfo.**
+   Imperious Perfect e Thranduil, Sindarin Liege TEM a mesma clausula
+   estatica ja corrigida pro Elvish Archdruid numa rodada anterior
+   ("Other Elves you control get +1/+1") - Marwyn e' Elfo, deveria receber
+   +1/+1 de cada uma tambem. So' Archdruid e Murkfiend Liege eram
+   somados. Mesma classe de bug ja achada no Beorn (estatica aplicada
+   nalgum lugar, nao propagada pra toda funcao que le poder de criatura) -
+   aqui a funcao ja existia e ja tinha 2/4 anthems certos.
+2. **Faerie Mastermind: so' a metade opponent-dependent estava sequer
+   considerada.** Oraculo real tem 2 habilidades - a passiva ("whenever
+   an opponent draws their second card...") genuinamente N/A (ja
+   documentado), MAS TAMBEM "{3}{U}: Each player draws a card" (ativada,
+   repetivel, sem {T}) - te da' 1 compra real garantida so' por pagar
+   mana, sem depender do oponente. A carta inteira estava rotulada
+   'opponent_dependent' e ignorada por completo; so' metade merecia isso.
+3. **Staff of Domination 100% inerte fora do combo infinito.** So' o
+   ramo `infinite_mana_this_turn` existia - o motor de compra NORMAL
+   ("{5},{T}: Draw a card" + "{1}: Untap this artifact" pra repetir, 6
+   mana por compra extra a partir da 2a) nunca disparava com mana finita,
+   mesmo num deck com ramp pesado onde 5+ mana sobrando e' comum sem
+   montar o combo.
+4. **Elven Chorus / Realmwalker: tag 'cast_from_top' 100% morta desde a
+   criacao do arquivo.** Ambas tem "You may cast creature spells [do tipo
+   escolhido] from the top of your library" no oraculo real - cadastradas
+   com a tag desde o inicio, nunca despachada em lugar nenhum (ghost tag
+   genuina, escapou da varredura automatica por aparecer 2x como literal
+   de string). Realmwalker escolhe Elfo (heuristica documentada no
+   codigo, espelhando a escolha de Faerie ja feita pro Roaming Throne).
+
+Confirmado sem gap adicional (checado e descartado, nao e' bug): Tegwyll
+tem um segundo anthem real ("Other Faeries you control get +1/+1") sem
+nenhum hook numerico no motor (nenhuma mecanica de Fada escala por
+poder, ao contrario do caso da Marwyn/Elfo acima) - N/A genuino, mesma
+classe do Ezuri/Allosaurus Shepherd (bonus de combate sem combate
+modelado). Wirewood Lodge ("{G},{T}: Untap target Elf" + "{T}: Add {C}"
+- 2 habilidades com {T} sobrepondo, mesma classe de bug ja achada no Hei
+Bai) foi lido linha a linha de novo e confirmado CORRETO - o custo real
+ja e' pago via `tapped_lands_this_turn` (remove a propria mana do land)
++ `spend_mana(1)` (paga o {G} do resto do pool), sem dupla contagem.
+
+**Validacao:** smoke test (CARD_DB/BASE_LIBRARY sem duplicata/desconhecida)
++ 2.000 partidas antes/depois (mesma seed 5555000) + 20.000 partidas de
+regressao, 0 excecoes em todas.
+"""
+
+import collections
+import copy
+import json
+import random
+import re
+import signal
+import statistics
+from dataclasses import dataclass, field
+from typing import Optional
+
+
+# ---------------------------------------------------------------------------
+# Card database
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class Card:
+    name: str
+    mv: int
+    ctype: str  # 'land','artifact','creature','artifact_creature','enchantment','sorcery','instant'
+    tags: frozenset = field(default_factory=frozenset)
+
+
+CARD_DB: dict[str, Card] = {}
+
+
+def add(name, mv, ctype, tags=()):
+    CARD_DB[name] = Card(name=name, mv=mv, ctype=ctype, tags=frozenset(tags))
+
+
+COMMANDER = "Maralen, Fae Ascendant"
+add(COMMANDER, 5, "creature", {"commander", "elf", "faerie"})
+
+ROAMING_THRONE_TYPE = "faerie"  # ver docstring — escolhido sobre "elf"
+
+# --- Lands (35) --------------------------------------------------------------
+add("Alchemist's Refuge", 0, "land", {"flash_enabler"})
+add("Bayou", 0, "land", set())
+add("Bojuka Bog", 0, "land", {"etb_tapped"})
+add("Boseiju, Who Endures", 0, "land", set())
+add("Breeding Pool", 0, "land", set())
+add("Cavern of Souls", 0, "land", set())
+add("Command Tower", 0, "land", set())
+add("Darkwater Catacombs", 0, "land", set())
+add("Drowned Catacomb", 0, "land", set())
+add("Exotic Orchard", 0, "land", set())
+add("Gilt-Leaf Palace", 0, "land", set())
+add("Hinterland Harbor", 0, "land", set())
+add("Morphic Pool", 0, "land", set())
+add("Overgrown Tomb", 0, "land", set())
+add("Path of Ancestry", 0, "land", {"etb_tapped"})
+add("Reflecting Pool", 0, "land", set())
+add("Secluded Courtyard", 0, "land", set())
+add("Sunken Hollow", 0, "land", set())
+add("Tropical Island", 0, "land", set())
+add("Undergrowth Stadium", 0, "land", set())
+add("Underground River", 0, "land", set())
+add("Underground Sea", 0, "land", set())
+add("Watery Grave", 0, "land", set())
+add("Wirewood Lodge", 0, "land", set())
+add("Woodland Cemetery", 0, "land", set())
+add("Yavimaya Coast", 0, "land", set())
+add("Zagoth Triome", 0, "land", {"etb_tapped"})
+add("Forest", 0, "land", set())
+add("Island", 0, "land", set())
+add("Swamp", 0, "land", set())
+
+# --- Motor de flash universal ------------------------------------------------
+add("Leyline of Anticipation", 4, "enchantment", {"universal_flash"})
+add("Vedalken Orrery", 4, "artifact", {"universal_flash"})
+add("High Fae Trickster", 4, "creature", {"faerie", "universal_flash"})
+add("Radagast of Rhosgobel", 4, "creature", {"first_creature_discount_flash"})
+# Nao esta na lista atual (saiu na troca por Radagast) -- cadastrada so pra
+# permitir montar a biblioteca da variante de comparacao "sem Radagast".
+add("Elves of Deep Shadow", 1, "creature", {"elf", "dork_flat1"})
+
+# --- Motor de ramp elfico -----------------------------------------------------
+add("Birds of Paradise", 1, "creature", {"dork_flat1"})
+add("Bloom Tender", 2, "creature", {"elf", "dork_bloomtender"})
+add("Elvish Mystic", 1, "creature", {"elf", "dork_flat1"})
+add("Llanowar Elves", 1, "creature", {"elf", "dork_flat1"})
+add("Joraga Treespeaker", 1, "creature", {"elf", "dork_joraga"})
+add("Heritage Druid", 1, "creature", {"elf", "dork_heritage"})
+add("Birchlore Rangers", 1, "creature", {"elf", "dork_birchlore"})
+add("Priest of Titania", 2, "creature", {"elf", "dork_per_elf"})
+add("Elvish Archdruid", 3, "creature", {"elf", "dork_per_elf_controlled"})
+add("Marwyn, the Nurturer", 3, "creature", {"elf", "dork_marwyn", "elf_etb_counter"})
+add("Circle of Dreams Druid", 3, "creature", {"elf", "dork_per_creature"})
+# Devoted Druid: NAO esta mais em lista.md (achado real 2026-08-30,
+# reanalise pedida pelo usuario - foi trocada por Thranduil, Sindarin
+# Liege/Thranduil's Company, ver goldfish-log.md). Cadastro + toda a
+# mecanica dela (devoted_druid_pump() etc) ficaram no arquivo sem uso -
+# inofensivo (build_library() so' le nomes de lista.md, nunca entra no
+# baralho de verdade), mantido documentado aqui em vez de removido pra
+# nao arriscar quebrar algo tocando em varios pontos do arquivo por um
+# corte de baixo risco.
+add("Devoted Druid", 2, "creature", {"elf", "dork_devoted"})
+add("Elvish Harbinger", 3, "creature", {"elf", "dork_flat1_any", "tutor_elf_top"})
+add("Wirewood Symbiote", 1, "creature", {"bounce_untap"})
+add("Cryptolith Rite", 2, "enchantment", {"mana_any_creature"})
+add("Elven Chorus", 4, "enchantment", {"mana_any_creature", "cast_from_top"})
+add("Arcane Signet", 2, "artifact", {"rock1"})
+add("Sol Ring", 1, "artifact", {"rock2"})
+add("Umbral Mantle", 3, "artifact", {"umbral_mantle"})
+add("Staff of Domination", 3, "artifact", {"staff"})
+add("Roaming Throne", 4, "artifact_creature", {ROAMING_THRONE_TYPE, "roaming_throne"})
+
+# --- Elfo — corpo/utilidade --------------------------------------------------
+add("Allosaurus Shepherd", 1, "creature", {"elf"})
+add("Elvish Warmaster", 2, "creature", {"elf", "elf_etb_token"})
+add("Imperious Perfect", 3, "creature", {"elf", "elf_token_maker"})
+add("Fauna_placeholder_never_used", 0, "creature", set())  # nunca referenciada
+add("Fauna Shaman", 2, "creature", {"elf", "tutor_creature_repeat"})
+add("Formidable Speaker", 3, "creature", {"elf", "tutor_creature_etb"})
+add("Growing Rites of Itlimoc // Itlimoc, Cradle of the Sun", 3, "enchantment", {"itlimoc"})
+add("Green Sun's Zenith", 1, "sorcery", {"gsz"})
+add("Realmwalker", 3, "creature", {"elf", "faerie", "changeling", "cast_from_top"})
+add("Ezuri, Renegade Leader", 3, "creature", {"elf"})
+add("Thranduil, Sindarin Liege // Silvan Rally", 4, "creature", {"elf", "landfall_source"})
+add("Thranduil's Company", 4, "creature", {"elf", "landfall_source"})
+
+# --- Fada — token e drain -----------------------------------------------------
+add("Alela, Cunning Conqueror", 4, "creature", {"faerie"})
+add("Bitterblossom", 2, "enchantment", {"faerie_token_upkeep"})
+add("Bitterbloom Bearer", 2, "creature", {"faerie", "faerie_token_upkeep"})
+add("Faerie Harbinger", 4, "creature", {"faerie", "tutor_faerie_top"})
+add("Faerie Mastermind", 2, "creature", {"faerie", "opponent_dependent"})
+add("Mistbind Clique", 4, "creature", {"faerie", "champion_faerie"})
+add("Obyra, Dreaming Duelist", 2, "creature", {"faerie", "faerie_etb_drain"})
+add("Spellstutter Sprite", 2, "creature", {"faerie", "etb_counter_unused"})
+add("Tegwyll, Duke of Splendor", 3, "creature", {"faerie", "faerie_death_draw"})
+add("Scryb Ranger", 2, "creature", {"faerie", "bounce_untap"})
+add("Brazen Borrower // Petty Theft", 3, "creature", {"faerie"})
+# Cloud of Faeries: mesmo caso do Devoted Druid acima - NAO esta mais em
+# lista.md (achado real 2026-08-30), cadastro mantido sem uso, inofensivo.
+add("Cloud of Faeries", 2, "creature", {"faerie", "etb_untap_lands"})
+add("Glen Elendra Archmage", 4, "creature", {"faerie"})
+
+# --- Card draw / interacao ---------------------------------------------------
+add("Seedborn Muse", 5, "creature", {"untap_all"})
+add("Wilderness Reclamation", 4, "enchantment", {"untap_lands_endstep"})
+add("Murkfiend Liege", 5, "creature", {"untap_gu"})
+add("Arcane Denial", 2, "instant", {"interaction"})
+add("Counterspell", 2, "instant", {"interaction"})
+add("Swan Song", 1, "instant", {"interaction"})
+add("Pongify", 1, "instant", {"interaction"})
+add("Rapid Hybridization", 1, "instant", {"interaction"})
+add("Reality Shift", 2, "instant", {"interaction"})
+add("Assassin's Trophy", 2, "instant", {"interaction"})
+add("Cyclonic Rift", 2, "instant", {"interaction"})
+add("Toxic Deluge", 3, "sorcery", {"interaction"})
+add("Rhystic Study", 3, "enchantment", {"opponent_dependent"})
+add("Mystic Remora", 1, "enchantment", {"opponent_dependent"})
+add("Heroic Intervention", 2, "instant", {"interaction"})
+add("Black Market Connections", 3, "enchantment", {"modal_treasure_draw"})
+add("Kindred Discovery", 5, "enchantment", {"kindred_discovery"})
+
+# Token sintetico "Hire a Mercenary" do Black Market Connections (achado
+# real 2026-08-30, reanalise pedida pelo usuario) - "Create a 3/2
+# colorless Shapeshifter creature token with changeling" - Changeling
+# significa que ela E' Elfo e Fada ao mesmo tempo pra toda sinergia do
+# deck (gatilho da Maralen, contador da Marwyn, Kindred Discovery,
+# Elvish Warmaster). Nao existe em lista.md, so' e' criada em jogo -
+# mesma convencao dos tokens sinteticos do simulador do Ulalek.
+add("Mercenary Token", 0, "creature", {"elf", "faerie", "changeling"})
+
+del CARD_DB["Fauna_placeholder_never_used"]
+
+ARTIFACT_ISH = {"artifact", "artifact_creature"}
+CREATURE_ISH = {"creature", "artifact_creature"}
+LAND_NAMES = {n for n, c in CARD_DB.items() if c.ctype == "land"}
+
+# Usado so' pra metrica RAMP (categoria 10 do checklist) - qualquer permanente
+# que produza mana alem dos terrenos normais.
+RAMP_TAGS = {
+    "dork_flat1", "dork_bloomtender", "dork_flat1_any", "dork_joraga",
+    "dork_heritage", "dork_birchlore", "dork_per_elf", "dork_per_elf_controlled",
+    "dork_marwyn", "dork_per_creature", "dork_devoted", "rock1", "rock2",
+    "mana_any_creature", "itlimoc",
+}
+
+
+def is_creature_card(name: str) -> bool:
+    return CARD_DB[name].ctype in CREATURE_ISH
+
+
+def is_artifact_card(name: str) -> bool:
+    return CARD_DB[name].ctype in ARTIFACT_ISH
+
+
+def is_enchantment_card(name: str) -> bool:
+    return CARD_DB[name].ctype == "enchantment"
+
+
+def is_elf(name: str) -> bool:
+    return "elf" in CARD_DB[name].tags
+
+
+def is_faerie(name: str) -> bool:
+    return "faerie" in CARD_DB[name].tags
+
+# Criaturas verdes reais na decklist (color, Scryfall) - usado por Green
+# Sun's Zenith ("search for a green creature card"). Achado real
+# 2026-08-28 (auditoria de checklist): o pool anterior filtrava por tag
+# "elf" em vez de cor real, excluindo Birds of Paradise/Wirewood Symbiote/
+# Realmwalker/Radagast of Rhosgobel (verdes, nao-Elfo).
+GREEN_CREATURE_NAMES = {
+    "Radagast of Rhosgobel", "Elves of Deep Shadow", "Birds of Paradise", "Bloom Tender",
+    "Elvish Mystic", "Llanowar Elves", "Joraga Treespeaker", "Heritage Druid", "Birchlore Rangers",
+    "Priest of Titania", "Elvish Archdruid", "Marwyn, the Nurturer", "Circle of Dreams Druid",
+    "Devoted Druid", "Elvish Harbinger", "Wirewood Symbiote", "Allosaurus Shepherd",
+    "Elvish Warmaster", "Imperious Perfect", "Fauna Shaman", "Formidable Speaker", "Realmwalker",
+    "Ezuri, Renegade Leader", "Thranduil, Sindarin Liege // Silvan Rally", "Thranduil's Company",
+    "Scryb Ranger", "Seedborn Muse", "Murkfiend Liege",
+}
+
+def is_green_creature(name: str) -> bool:
+    return name in GREEN_CREATURE_NAMES
+
+
+def is_roaming_type(name: str) -> bool:
+    return ROAMING_THRONE_TYPE in CARD_DB[name].tags
+
+
+# ---------------------------------------------------------------------------
+# Game state
+# ---------------------------------------------------------------------------
+
+@dataclass
+class GameState:
+    turn: int = 0
+    hand: list = field(default_factory=list)
+    battlefield: list = field(default_factory=list)
+    graveyard: list = field(default_factory=list)
+    library: list = field(default_factory=list)
+    exile_maralen: list = field(default_factory=list)  # limpa a cada turno
+    mulligans: int = 0
+
+    lands_played_this_turn: int = 0
+    lands_played_total: int = 0
+    mana_spent_this_turn: int = 0
+    maralen_free_cast_used_this_turn: bool = False
+    devoted_druid_extra_untaps: int = 0  # so' vale no turno em que foi setado (ver devoted_druid_pump)
+    tapped_lands_this_turn: set = field(default_factory=set)  # Bojuka Bog/Path of Ancestry/Zagoth Triome ("enters tapped"), resetado em play_turn()
+    tapped_land_first_plays_total: int = 0   # correcao de 2026-10-05: vezes em que T1/T2 jogou o terreno virado primeiro
+    tapped_land_skipped_for_play_total: int = 0   # ... e vezes em que o ensaio mostrou que isso custaria uma jogada e jogou o desvirado
+    devoted_druid_counters: int = 0  # -1/-1 counters permanentes, morre ao chegar em 2 (toughness real = 2)
+    joraga_level: int = 0
+    mistbind_exiled: list = field(default_factory=list)  # Fadas exiladas pelo Champion do Mistbind Clique
+    black_market_treasures_total: int = 0
+    black_market_mercenaries_total: int = 0
+    marwyn_power: int = 1  # base 1/1 (achado real 2026-08-28: oraculo real e' 1/1, nao 2/2 - contadores permanentes somados aqui a partir da base certa)
+    fauna_shaman_used_this_turn: bool = False
+    heritage_used_this_turn: bool = False
+    birchlore_used_this_turn: bool = False
+    radagast_discount_used_this_turn: bool = False
+    umbral_equipped_on: Optional[str] = None
+    infinite_mana_this_turn: bool = False
+
+    # Wirewood Symbiote / Scryb Ranger: "Return an Elf/Forest you control
+    # to its owner's hand: Untap target creature. Activate only once each
+    # turn." Achado real 2026-09-01 (leitura linha-a-linha, "compile
+    # TUDO"): reclassificado de "risco de bug > valor esperado" (julgamento
+    # de valor proibido) pra implementacao real, ver `try_untap_effects()`.
+    bounce_untap_used: dict = field(default_factory=dict)  # nome da fonte -> ja usada neste turno
+    bounce_untap_bonus_this_turn: int = 0
+    bounce_untap_activations_total: int = 0
+
+    commander_in_play: bool = False
+    commander_cast_count: int = 0
+    commander_cast_turn: Optional[int] = None
+    creature_cast_turn: dict = field(default_factory=dict)
+
+    elf_tokens: int = 0
+    faerie_tokens: int = 0
+    life: int = 40
+
+    # metrics ----------------------------------------------------------------
+    maralen_triggers_total: int = 0
+    maralen_free_casts_total: int = 0
+    cards_exiled_total: int = 0
+    tokens_created_total: int = 0
+    tutors_used_total: int = 0
+    infinite_combo_assembled: bool = False
+    infinite_combo_turn: Optional[int] = None
+    staff_infinite_draws: int = 0
+    roaming_throne_doubles_total: int = 0
+    landfall_elf_tokens_total: int = 0
+    landfall_counters_total: int = 0
+    cards_drawn_extra: int = 0
+    library_emptied: bool = False
+    flash_universal_by_turn: dict = field(default_factory=dict)
+    flash_with_radagast_by_turn: dict = field(default_factory=dict)
+    ramp_pieces_cast_total: int = 0
+    interaction_spells_cast_total: int = 0
+
+    # Growing Rites of Itlimoc // Itlimoc, Cradle of the Sun (achado real
+    # 2026-08-28, auditoria de checklist categoria 11 - layout real
+    # "transform" confirmado via Scryfall: so' a face da frente e' conjuravel
+    # da mao; a carta estava cadastrada com tag morta, sem ETB, sem gatilho
+    # de transformacao e sem a habilidade de mana real da face de tras).
+    itlimoc_transformed: bool = False
+    itlimoc_transform_turn: Optional[int] = None
+    itlimoc_creatures_found_total: int = 0
+
+    # Achados reais da auditoria 2026-09-13 (ver docstring do topo do
+    # arquivo): 3 mecanicas com clausula real 100% ausente do codigo ate
+    # agora, cada uma com metrica propria pra auditar o impacto.
+    staff_finite_draws_total: int = 0
+    faerie_mastermind_draws_total: int = 0
+    cast_from_top_total: int = 0
+
+    # --- Modo de resiliencia (interacao de oponente), 2026-09-20 -------------
+    # Porte do mesmo protocolo ja validado em Megatron/Ur-Dragon/Hei Bai/
+    # Edgar Markov/Ulalek/Toph/Prismatic Bridge. `interaction_rng` fica
+    # `None` em modo padrao (`simulate_one`/`run_batch`) -- toda funcao
+    # `try_smart_opponent_*` abaixo checa isso primeiro e retorna sem
+    # efeito, garantindo que o modo padrao continua bit-identico.
+    interaction_rng: Optional[random.Random] = None
+    wiped_this_round: bool = False
+    smart_removals_total: int = 0
+    smart_removal_log: list = field(default_factory=list)
+    smart_attacks_taken_total: int = 0
+    smart_attack_log: list = field(default_factory=list)
+    smart_discards_total: int = 0
+    smart_discard_log: list = field(default_factory=list)
+    smart_wipes_total: int = 0
+    smart_wipe_log: list = field(default_factory=list)
+    smart_artifact_wipes_total: int = 0
+    smart_artifact_wipe_log: list = field(default_factory=list)
+    smart_enchantment_wipes_total: int = 0
+    smart_enchantment_wipe_log: list = field(default_factory=list)
+    smart_counters_total: int = 0
+    smart_counter_log: list = field(default_factory=list)
+    smart_graveyard_wipes_total: int = 0
+    smart_graveyard_wipe_log: list = field(default_factory=list)
+    graveyard_wipe_used: bool = False
+    smart_graveyard_snipes_total: int = 0
+    smart_graveyard_snipe_log: list = field(default_factory=list)
+
+
+def draw_cards(state: GameState, n: int):
+    for _ in range(n):
+        if state.library:
+            state.hand.append(state.library.pop(0))
+            state.cards_drawn_extra += 1
+        else:
+            state.library_emptied = True
+
+
+# ---------------------------------------------------------------------------
+# Motor central — Maralen: exila 2 do topo a cada Elfo/Fada que entra,
+# 1x/turno pode conjurar de graca uma exilada com CMV <= Elfos+Fadas
+# ---------------------------------------------------------------------------
+
+def elf_faerie_count(state: GameState) -> int:
+    return (sum(1 for n in state.battlefield if is_elf(n) or is_faerie(n))
+            + state.elf_tokens + state.faerie_tokens)
+
+
+def _maralen_resolve(state: GameState):
+    if not state.commander_in_play:
+        return
+    # Achado real 2026-08-31 (reanalise pedida pelo usuario): oraculo real do
+    # Roaming Throne e' "If a triggered ability of ANOTHER CREATURE YOU
+    # CONTROL OF THE CHOSEN TYPE triggers, it triggers an additional time" -
+    # a condicao e' sobre o tipo da criatura DONA da habilidade (a fonte do
+    # gatilho), nao sobre o tipo do que entrou em campo pra causar o
+    # gatilho. A fonte aqui e' sempre a propria Maralen (Elf Faerie Noble),
+    # que bate com o tipo escolhido (Faerie) o tempo todo, independente do
+    # que entrou - exatamente como o docstring do arquivo ja raciocinava
+    # ("o proprio gatilho dela dobra de qualquer forma"), mas a versao
+    # anterior calculava um `roaming_match` a partir do tipo da criatura
+    # ENTRANTE (`is_roaming_type(entering_name)` / `kind == ROAMING_THRONE_TYPE`),
+    # entao so' dobrava quando uma Fada entrava - todo Elfo/token de Elfo
+    # entrando (a maioria dos gatilhos reais do deck: dorks, Elvish
+    # Warmaster, Imperious Perfect, Priest of Titania, etc.) nunca dobrava,
+    # quando deveria sempre dobrar assim que o Roaming Throne resolve.
+    times = 2 if "Roaming Throne" in state.battlefield else 1
+    if times == 2:
+        state.roaming_throne_doubles_total += 1
+    for _ in range(times):
+        state.maralen_triggers_total += 1
+        # Sem biblioteca de oponente real: exila da PROPRIA biblioteca (documentado).
+        for _ in range(2):
+            if state.library:
+                state.exile_maralen.append(state.library.pop(0))
+                state.cards_exiled_total += 1
+
+
+def maralen_trigger(state: GameState, entering_name: str):
+    if entering_name != COMMANDER and not (is_elf(entering_name) or is_faerie(entering_name)):
+        return
+    _maralen_resolve(state)
+
+
+def maralen_trigger_token(state: GameState, kind: str):
+    """Mesmo gatilho da Maralen, mas pra um TOKEN Elfo/Fada entrando (sem nome
+    de carta — landfall do Sindarin Liege, Elvish Warmaster, Imperious
+    Perfect, Bitterblossom/Bitterbloom Bearer)."""
+    _maralen_resolve(state)
+
+
+def maralen_try_free_cast(state: GameState):
+    if state.maralen_free_cast_used_this_turn or not state.exile_maralen:
+        return
+    cap = elf_faerie_count(state)
+    candidates = [c for c in state.exile_maralen if CARD_DB[c].mv <= cap and c not in LAND_NAMES]
+    if not candidates:
+        return
+    candidates.sort(key=lambda n: -CARD_DB[n].mv)
+    choice = candidates[0]
+    state.exile_maralen.remove(choice)
+    state.maralen_free_cast_used_this_turn = True
+    state.maralen_free_casts_total += 1
+    resolve_cast(state, choice, free=True)
+
+
+# ---------------------------------------------------------------------------
+# Mana — ramp elfico + rocks + Umbral Mantle
+# ---------------------------------------------------------------------------
+
+def ready_creatures(state: GameState):
+    return [n for n in state.battlefield if is_creature_card(n)
+            and (state.creature_cast_turn.get(n, -1) < state.turn)]
+
+
+def marwyn_effective_power(state: GameState) -> int:
+    """marwyn_power guarda so' os +1/+1 counters PERMANENTES (um por Elfo
+    que entra, oraculo real). Elvish Archdruid da' +1/+1 a "other Elf
+    creatures you control" e Murkfiend Liege da' +1/+1 a "other green
+    creatures you control" (Marwyn e' Elfo E verde - os dois se somam,
+    "other" so' exclui a propria fonte) - sao estaticas DINAMICAS (somem
+    se a fonte sair de campo), entao nao podem ser somadas direto em
+    marwyn_power (que representa contadores de verdade). Achado real
+    2026-08-28 (auditoria de checklist): esses bonus nunca eram
+    aplicados, subestimando a mana da Marwyn sempre que Archdruid e/ou
+    Murkfiend Liege tambem estavam em campo."""
+    # Achado real (auditoria 2026-09-13): Imperious Perfect ("Other Elves
+    # you control get +1/+1") e Thranduil, Sindarin Liege ("Other Elves you
+    # control get +1/+1") tem a MESMA clausula estatica do Elvish Archdruid
+    # ja tratado acima, e Marwyn e' Elfo - deveriam somar +1/+1 cada uma
+    # tambem, mas nenhuma das duas era checada aqui (mesma classe de bug ja
+    # achada no Beorn nesta sessao - estatica aplicada num lugar, nunca
+    # propagada pra toda funcao que le poder de criatura; aqui a funcao ja
+    # tinha 2 dos 4 anthems reais corretos, faltavam estas 2).
+    bonus = 0
+    if "Elvish Archdruid" in state.battlefield and "Marwyn, the Nurturer" in state.battlefield:
+        bonus += 1
+    if "Murkfiend Liege" in state.battlefield and "Marwyn, the Nurturer" in state.battlefield:
+        bonus += 1
+    if "Imperious Perfect" in state.battlefield and "Marwyn, the Nurturer" in state.battlefield:
+        bonus += 1
+    if ("Thranduil, Sindarin Liege // Silvan Rally" in state.battlefield
+            and "Marwyn, the Nurturer" in state.battlefield):
+        bonus += 1
+    return state.marwyn_power + bonus
+
+def dork_mana(state: GameState) -> int:
+    elves_in_play = sum(1 for n in state.battlefield if is_elf(n)) + state.elf_tokens
+    creatures_in_play = (sum(1 for n in state.battlefield if is_creature_card(n))
+                          + state.elf_tokens + state.faerie_tokens)
+    ready = set(ready_creatures(state))
+    total = 0
+    best_scaling_output = 0
+    best_scaling_name = None
+
+    for n in state.battlefield:
+        if n not in ready:
+            continue
+        tags = CARD_DB[n].tags
+        if "dork_flat1" in tags:
+            total += 1
+        elif "dork_bloomtender" in tags:
+            total += 2  # aproximacao documentada (2-3 cores em jogo tipicamente)
+        elif "dork_flat1_any" in tags:
+            total += 1
+        elif "dork_joraga" in tags:
+            total += 2 if state.joraga_level >= 1 else 0
+        elif "dork_per_elf" in tags:
+            out = elves_in_play
+            total += out
+            if out > best_scaling_output:
+                best_scaling_output, best_scaling_name = out, n
+        elif "dork_per_elf_controlled" in tags:
+            out = elves_in_play
+            total += out
+            if out > best_scaling_output:
+                best_scaling_output, best_scaling_name = out, n
+        elif "dork_marwyn" in tags:
+            out = marwyn_effective_power(state)
+            total += out
+            if out > best_scaling_output:
+                best_scaling_output, best_scaling_name = out, n
+        elif "dork_per_creature" in tags:
+            out = creatures_in_play
+            total += out
+            if out > best_scaling_output:
+                best_scaling_output, best_scaling_name = out, n
+        elif "dork_devoted" in tags:
+            total += 1 + min(2, state.devoted_druid_extra_untaps)
+
+    # Heritage Druid / Birchlore Rangers: convertem elfos "sick" (que ainda nao
+    # contribuiriam nada) em mana extra, tapando-os como custo (CR 302.6 nao
+    # bloqueia isso). Nao duplica elfos ja contados acima.
+    #
+    # Achado real 2026-08-30 (reanalise pedida pelo usuario): a versao
+    # anterior tambem exigia "Heritage Druid"/"Birchlore Rangers" IN
+    # `ready` (nao pode estar com doenca de invocacao) antes de liberar a
+    # propria habilidade - restricao que o oraculo real nao pede. Nenhuma
+    # das duas tem {T} no proprio custo ("Tap three/two untapped Elves you
+    # control: Add..."), so tapam OUTROS elfos - CR 302.6 so bloqueia
+    # ativar habilidade com {T}/{Q} do PROPRIO permanente quando ele esta
+    # sick, entao a doenca de invocacao da propria Heritage Druid/Birchlore
+    # Rangers nao impede ativar essa habilidade especifica no turno em que
+    # ela mesma entra.
+    sick_elves = [n for n in state.battlefield
+                  if is_elf(n) and n not in ready and n != "Heritage Druid" and n != "Birchlore Rangers"]
+    if "Heritage Druid" in state.battlefield and len(sick_elves) >= 3:
+        total += 3
+    if "Birchlore Rangers" in state.battlefield and len(sick_elves) >= 2:
+        total += 1
+
+    # Cryptolith Rite / Elven Chorus: da "T: add 1 any" a toda criatura.
+    # Joraga Treespeaker nivel 5+: "Elves you control have '{T}: Add
+    # {G}{G}.'" (achado real 2026-08-30, reanalise pedida pelo usuario -
+    # nivel 5 nunca era alcancavel na versao anterior, ver
+    # joraga_level_up()). As duas concedem uma habilidade de mana EXTRA a
+    # criaturas que ja tapam por outra coisa - uma criatura so' tapa 1 vez,
+    # entao usa o MAIOR bonus concedido por criatura em vez de somar os
+    # dois (senao seria tapar a mesma criatura duas vezes). So conta
+    # criaturas que ainda NAO produziram mana pela propria habilidade
+    # nomeada acima (dork_* tags), pra nao duplicar.
+    DORK_TAGS = {
+        "dork_flat1", "dork_bloomtender", "dork_flat1_any", "dork_joraga",
+        "dork_per_elf", "dork_per_elf_controlled", "dork_marwyn",
+        "dork_per_creature", "dork_devoted",
+    }
+    already_dorks = {n for n in state.battlefield if CARD_DB[n].tags & DORK_TAGS}
+    cryptolith_active = "Cryptolith Rite" in state.battlefield or "Elven Chorus" in state.battlefield
+    joraga_team_active = state.joraga_level >= 5
+    if cryptolith_active or joraga_team_active:
+        for n in ready:
+            if n in already_dorks or not is_creature_card(n):
+                continue
+            granted = 0
+            if cryptolith_active:
+                granted = max(granted, 1)
+            if joraga_team_active and is_elf(n):
+                granted = max(granted, 2)
+            total += granted
+
+    # Umbral Mantle: se equipada num dork escalavel com saida >=4, mana infinita.
+    if state.umbral_equipped_on and state.umbral_equipped_on in ready:
+        if best_scaling_name == state.umbral_equipped_on and best_scaling_output >= 4:
+            state.infinite_mana_this_turn = True
+            if not state.infinite_combo_assembled:
+                state.infinite_combo_assembled = True
+                state.infinite_combo_turn = state.turn
+
+    return total
+
+
+def best_scaling_dork_output(state: GameState) -> tuple:
+    """Melhor dork ESCALAVEL (Priest of Titania/Elvish Archdruid/Marwyn/
+    Circle of Dreams Druid) pronto pra ativar, e quanto produz - extraido
+    pra ser reusado por `try_untap_effects()` sem duplicar/arriscar a
+    logica ja testada de `dork_mana()` (achado real 2026-09-01)."""
+    elves_in_play = sum(1 for n in state.battlefield if is_elf(n)) + state.elf_tokens
+    creatures_in_play = (sum(1 for n in state.battlefield if is_creature_card(n))
+                          + state.elf_tokens + state.faerie_tokens)
+    ready = set(ready_creatures(state))
+    best_output, best_name = 0, None
+    for n in state.battlefield:
+        if n not in ready:
+            continue
+        tags = CARD_DB[n].tags
+        out = 0
+        if "dork_per_elf" in tags or "dork_per_elf_controlled" in tags:
+            out = elves_in_play
+        elif "dork_marwyn" in tags:
+            out = marwyn_effective_power(state)
+        elif "dork_per_creature" in tags:
+            out = creatures_in_play
+        if out > best_output:
+            best_output, best_name = out, n
+    return best_name, best_output
+
+
+def try_untap_effects(state: GameState):
+    """Familia de 4 fontes reais de 'untap target creature/Elf/permanente'
+    neste deck - achado real 2026-09-01 (leitura linha-a-linha completa do
+    oraculo, pedida pelo usuario apos o mesmo trabalho no Toph): Wirewood
+    Symbiote/Scryb Ranger estavam deferidas com a justificativa 'risco de
+    bug > valor esperado' (julgamento de valor proibido); Wirewood Lodge
+    e Formidable Speaker nem tinham a propria ativada mencionada em lugar
+    nenhum (so' a mana generica do terreno / o ETB de tutor da criatura).
+    Corrigido: as 4 somam a saida do melhor dork ESCALAVEL pronto DE NOVO
+    neste turno (2a ativacao real da habilidade de mana), cada uma com seu
+    custo real:
+    - Wirewood Symbiote: bounce de outro Elfo (sem custo de mana).
+    - Scryb Ranger: bounce de uma 'Forest' (sem custo de mana;
+      simplificacao documentada - so' reconhece a basica por nome, nao
+      duais com o tipo Forest, mesma convencao de 'so a basica' ja usada
+      noutros simuladores quando o motor de mana nao rastreia terreno
+      pip a pip).
+    - Wirewood Lodge: {G} + tapar o proprio terreno (perde a mana
+      generica normal dele nesse turno) - so' se o alvo for um Elfo de
+      verdade (oraculo real: 'untap target ELF', nao qualquer criatura).
+    - Formidable Speaker: {1} + tapar o proprio corpo (CR 302.6 - {T} e'
+      custo da PROPRIA habilidade aqui, diferente de Heritage
+      Druid/Birchlore Rangers que tapam outros Elfos como custo).
+    Simplificacao: o melhor dork e' calculado UMA vez no topo da funcao,
+    nao recalculado apos cada bounce/tap (bouncar um Elfo pode reduzir
+    levemente a saida real de dorks 'per elf' pras fontes seguintes no
+    mesmo turno) - aproximacao conservadora documentada, nao um bug."""
+    best_name, best_output = best_scaling_dork_output(state)
+    if best_output <= 0:
+        return
+
+    for source, kind in (("Wirewood Symbiote", "elf"), ("Scryb Ranger", "forest")):
+        if source not in state.battlefield or state.bounce_untap_used.get(source):
+            continue
+        # Nao faz sentido devolver pra mao a MESMA criatura que estamos
+        # tentando destapar (perderia o permanente inteiro, nao so'
+        # destaparia) - exclui o alvo do untap do pool de bounce.
+        if kind == "elf":
+            # Achado real 2026-09-01 (debug de hang em seed 2000026): Maralen
+            # e' ela mesma "Elf Faerie Noble" (is_elf == True) - sem excluir
+            # o comandante do pool de bounce, ela podia ser devolvida pra
+            # mao por engano, expondo um bug latente de re-cast do
+            # comandante via o loop generico (nao removia de state.hand
+            # corretamente, board explodia sem fim). Nenhum piloto racional
+            # bounca o proprio comandante de 5 mana com um Elfo de 1 mana
+            # quando ha fodder mais barato disponivel de qualquer forma -
+            # excluido do pool por ser a jogada correta E por seguranca.
+            fodder = [n for n in state.battlefield
+                      if n != source and n != best_name and n != COMMANDER and is_elf(n)]
+        else:
+            fodder = [n for n in state.battlefield if n == "Forest" and n != best_name]
+        if not fodder:
+            continue
+        bounced = fodder[0]
+        state.battlefield.remove(bounced)
+        state.hand.append(bounced)
+        state.bounce_untap_used[source] = True
+        state.bounce_untap_bonus_this_turn += best_output
+        state.bounce_untap_activations_total += 1
+
+    if ("Wirewood Lodge" in state.battlefield and is_elf(best_name)
+            and not state.bounce_untap_used.get("Wirewood Lodge")
+            and "Wirewood Lodge" not in state.tapped_lands_this_turn
+            and remaining_mana(state) >= 1):
+        spend_mana(state, 1)
+        state.tapped_lands_this_turn.add("Wirewood Lodge")
+        state.bounce_untap_used["Wirewood Lodge"] = True
+        state.bounce_untap_bonus_this_turn += best_output
+        state.bounce_untap_activations_total += 1
+
+    ready = set(ready_creatures(state))
+    if ("Formidable Speaker" in state.battlefield and "Formidable Speaker" in ready
+            and not state.bounce_untap_used.get("Formidable Speaker")
+            and remaining_mana(state) >= 1):
+        spend_mana(state, 1)
+        state.bounce_untap_used["Formidable Speaker"] = True
+        state.bounce_untap_bonus_this_turn += best_output
+        state.bounce_untap_activations_total += 1
+
+
+def rocks_mana(state: GameState) -> int:
+    total = 0
+    if "Sol Ring" in state.battlefield:
+        total += 2
+    if "Arcane Signet" in state.battlefield:
+        total += 1
+    return total
+
+
+def itlimoc_mana(state: GameState) -> int:
+    """Itlimoc, Cradle of the Sun (face de tras, so' ativa apos transformar):
+    real oraculo e' '{T}: Add {G}.' OU '{T}: Add {G} for each creature you
+    control.' — duas habilidades de mana distintas, escolha do jogador a
+    cada ativacao. Um piloto racional sempre escolhe a de maior producao;
+    modelado como max(1, criaturas em campo) pra nunca ficar abaixo da
+    habilidade fixa."""
+    if not state.itlimoc_transformed:
+        return 0
+    creatures_in_play = (sum(1 for n in state.battlefield if is_creature_card(n))
+                          + state.elf_tokens + state.faerie_tokens)
+    return max(1, creatures_in_play)
+
+
+def total_mana(state: GameState) -> int:
+    lands = sum(1 for n in state.battlefield if n in LAND_NAMES) - len(state.tapped_lands_this_turn)
+    if state.infinite_mana_this_turn:
+        return 999  # ja confirmado infinito neste turno; nao precisa somar o resto
+    return (lands + rocks_mana(state) + dork_mana(state) + itlimoc_mana(state)
+            + state.bounce_untap_bonus_this_turn)
+
+
+def remaining_mana(state: GameState) -> int:
+    if state.infinite_mana_this_turn:
+        return 999
+    return max(0, total_mana(state) - state.mana_spent_this_turn)
+
+
+def can_cast(state: GameState, name: str) -> bool:
+    cost = CARD_DB[name].mv
+    if (is_creature_card(name) and "Radagast of Rhosgobel" in state.battlefield
+            and not state.radagast_discount_used_this_turn):
+        cost = max(0, cost - 2)
+    return remaining_mana(state) >= cost
+
+
+def spend_mana(state: GameState, n: int):
+    if not state.infinite_mana_this_turn:
+        state.mana_spent_this_turn += n
+
+
+# ---------------------------------------------------------------------------
+# Resolucao de ETB / cast
+# ---------------------------------------------------------------------------
+
+def resolve_etb(state: GameState, name: str):
+    tags = CARD_DB[name].tags
+
+    if "elf_etb_counter" in tags:
+        pass  # Marwyn nao ganha contador ao entrar ela mesma
+
+    if "tutor_elf_top" in tags:
+        elves = [n for n in state.library if is_elf(n)]
+        if elves:
+            best = max(elves, key=lambda n: CARD_DB[n].mv)
+            state.library.remove(best)
+            state.library.insert(0, best)
+            state.tutors_used_total += 1
+
+    if "tutor_faerie_top" in tags:
+        # Faerie Harbinger e' ela mesma Fada, entao a propria fonte do
+        # gatilho (achado real 2026-08-31, mesmo caso do fix da Maralen
+        # acima) bate com o tipo escolhido do Roaming Throne - dobra a
+        # busca (procura e poe no topo uma 2a vez, empilhando sobre a 1a).
+        times = 2 if ("Roaming Throne" in state.battlefield and is_roaming_type(name)) else 1
+        if times == 2:
+            state.roaming_throne_doubles_total += 1
+        for _ in range(times):
+            # Achado real 2026-09-14: Roaming Throne so' E' Faerie enquanto
+            # esta na BATALHA ("as this creature enters, choose a creature
+            # type" - a escolha e' um efeito de ETB, nao uma caracteristica
+            # impressa como Changeling, que valeria em qualquer zona). A tag
+            # ROAMING_THRONE_TYPE fica cravada em CARD_DB pra facilitar as
+            # checagens de battlefield (elf_faerie_count, Mistbind Clique,
+            # Tegwyll), mas isso faz is_faerie() achar Roaming Throne mesmo
+            # parada na biblioteca - "search for a Faerie card" nao deveria
+            # achar ela ali (ainda nao escolheu tipo nenhum). Excluida
+            # explicitamente desta busca (a unica library-scoped que usa
+            # is_faerie no arquivo).
+            faeries = [n for n in state.library if is_faerie(n) and n != "Roaming Throne"]
+            if faeries:
+                best = max(faeries, key=lambda n: CARD_DB[n].mv)
+                state.library.remove(best)
+                state.library.insert(0, best)
+                state.tutors_used_total += 1
+
+    if "tutor_creature_etb" in tags:
+        # Formidable Speaker: descarta 1 pra buscar criatura pra mao.
+        discardable = [c for c in state.hand if c != name]
+        if discardable and state.library:
+            worst = min(discardable, key=lambda n: CARD_DB[n].mv)
+            state.hand.remove(worst)
+            state.graveyard.append(worst)
+            creatures = [n for n in state.library if is_creature_card(n)]
+            if creatures:
+                best = best_missing_dork(state, creatures)
+                state.library.remove(best)
+                state.hand.append(best)
+                state.tutors_used_total += 1
+
+    if "etb_untap_lands" in tags:
+        state.mana_spent_this_turn = max(0, state.mana_spent_this_turn - 2)
+
+    if "faerie_etb_drain" in tags:
+        pass  # Obyra: opponent-dependent (perde vida), sem efeito solo
+
+    if "champion_faerie" in tags:
+        # Oraculo real (Mistbind Clique): "Champion a Faerie (When this
+        # enters, sacrifice it unless you exile another Faerie you
+        # control...) When a Faerie is championed with this creature, tap
+        # all lands target player controls." Achado real 2026-08-30
+        # (reanalise pedida pelo usuario): quando havia outra Fada
+        # disponivel, o codigo mantinha a Mistbind em campo mas NUNCA
+        # exilava a Fada "campea" - ela continuava contando em campo junto
+        # com a Mistbind, quando so' 1 corpo deveria estar presente (a
+        # segunda Fada volta so' quando a Mistbind sai de campo -
+        # simplificacao documentada, ela raramente sai de campo neste
+        # modelo). Corrigido: exila de verdade, preferindo um token (menor
+        # perda real) a uma carta nomeada, e nunca a propria comandante
+        # (Maralen tambem e' Fada por tipo). O efeito de "tap all lands"
+        # (mira oponente) continua sem efeito numerico - Regra 1.
+        #
+        # Roaming Throne NAO dobra este Champion (decisao documentada,
+        # achado real 2026-08-31, revisado junto do fix de dobra da
+        # Maralen/Tegwyll/Faerie Harbinger acima): Mistbind Clique tambem e'
+        # Fada, entao em tese bateria com o tipo escolhido - mas "sacrifice
+        # IT unless you exile another Faerie" se refere a propria Mistbind
+        # Clique (uma unica permanente); disparar esse gatilho "mais uma
+        # vez" nao tem um efeito de jogo bem definido (nao ha uma 2a copia
+        # da Mistbind pra sacrificar OU deixar de sacrificar de novo -
+        # regra 603.2 trata cada instancia do gatilho como independente,
+        # mas a condicao "unless you exile ANOTHER Faerie" da 2a instancia
+        # exigiria uma 2a Fada disponivel so' pra essa dobra, empilhado
+        # sobre a checagem normal). Diferente do Wirewood Symbiote/Scryb
+        # Ranger (implementados 2026-09-01, ver acima) - aqui o obstaculo
+        # nao e' valor esperado baixo, e' a regra em si nao ter um
+        # resultado bem definido pra modelar (nao existe uma "2a Mistbind"
+        # fisica pra aplicar a condicao de novo) - deixado de fora por
+        # ambiguidade de regra genuina, nao fingido.
+        if state.faerie_tokens > 0:
+            state.faerie_tokens -= 1
+            state.mistbind_exiled.append("Faerie Token")
+        else:
+            other_faeries = [n for n in state.battlefield
+                              if is_faerie(n) and n != name and n != COMMANDER]
+            if other_faeries:
+                cheapest = min(other_faeries, key=lambda n: CARD_DB[n].mv)
+                state.battlefield.remove(cheapest)
+                state.mistbind_exiled.append(cheapest)
+            else:
+                leave_battlefield(state, name, to_graveyard=True)
+
+    if "itlimoc" in tags:
+        # Growing Rites of Itlimoc (face da frente) - oraculo real: "When
+        # Growing Rites of Itlimoc enters, look at the top four cards of
+        # your library. You may reveal a creature card from among them and
+        # put it into your hand. Put the rest on the bottom of your library
+        # in any order."
+        top4 = state.library[:4]
+        del state.library[:4]
+        creatures = [c for c in top4 if is_creature_card(c)]
+        if creatures:
+            best = best_missing_dork(state, creatures)
+            top4.remove(best)
+            state.hand.append(best)
+            state.itlimoc_creatures_found_total += 1
+        state.library.extend(top4)
+
+    # Elvish Warmaster: token 1x/turno quando OUTRO elfo entra (checado no caller)
+
+
+def elvish_warmaster_check(state: GameState, entering_name: str):
+    if entering_name == "Elvish Warmaster":
+        return
+    if "Elvish Warmaster" not in state.battlefield:
+        return
+    if not is_elf(entering_name):
+        return
+    if state.warmaster_used_this_turn:
+        return
+    state.warmaster_used_this_turn = True
+    create_token(state, "elf", source="Elvish Warmaster")
+
+
+def create_token(state: GameState, kind: str, source: str = ""):
+    """Token Elfo ou Fada entrando em campo (Elvish Warmaster, Imperious
+    Perfect, Bitterblossom, Bitterbloom Bearer, landfall do Thranduil,
+    Sindarin Liege). Dispara os mesmos efeitos colaterais de uma carta
+    nomeada entrando: gatilho da Maralen, contador da Marwyn, e o proprio
+    Elvish Warmaster (se for outro Elfo entrando, nao ele mesmo)."""
+    if kind == "elf":
+        state.elf_tokens += 1
+    elif kind == "faerie":
+        state.faerie_tokens += 1
+    state.tokens_created_total += 1
+    if kind == "elf" and "Marwyn, the Nurturer" in state.battlefield:
+        state.marwyn_power += 1
+    if kind == "elf" and "Kindred Discovery" in state.battlefield:
+        draw_cards(state, 1)
+    maralen_trigger_token(state, kind)
+    if kind == "elf" and "Elvish Warmaster" in state.battlefield and not state.warmaster_used_this_turn:
+        state.warmaster_used_this_turn = True
+        create_token(state, "elf", source="Elvish Warmaster")
+
+
+def best_missing_dork(state: GameState, pool: list) -> str:
+    priority_names = [
+        "Priest of Titania", "Elvish Archdruid", "Marwyn, the Nurturer",
+        "Circle of Dreams Druid", "Umbral Mantle", "Staff of Domination",
+        "Fauna Shaman", COMMANDER,
+    ]
+    for p in priority_names:
+        if p in pool:
+            return p
+    return min(pool, key=lambda n: CARD_DB[n].mv)
+
+
+def enter_battlefield(state: GameState, name: str, from_hand: bool = True):
+    if from_hand and name in state.hand:
+        state.hand.remove(name)
+    state.battlefield.append(name)
+    if name == COMMANDER:
+        state.commander_in_play = True
+        state.commander_cast_count += 1
+        if state.commander_cast_turn is None:
+            state.commander_cast_turn = state.turn
+    if is_creature_card(name):
+        state.creature_cast_turn[name] = state.turn
+    if CARD_DB[name].tags & RAMP_TAGS:
+        state.ramp_pieces_cast_total += 1
+    if "elf_etb_counter" not in CARD_DB[name].tags:
+        pass
+    if is_elf(name) and "Marwyn, the Nurturer" in state.battlefield and name != "Marwyn, the Nurturer":
+        state.marwyn_power += 1
+    if is_elf(name) and "Kindred Discovery" in state.battlefield:
+        # Achado real 2026-08-28 (auditoria de checklist de mecanica):
+        # "As this enchantment enters, choose a creature type. Whenever a
+        # creature you control of the chosen type enters or attacks, draw
+        # a card." Tipo escolhido: Elfo (tema tribal central do deck, mesma
+        # convencao ja usada pro Roaming Throne). Tag existia, nunca era
+        # despachada - metade ETB implementada aqui, metade "attacks" em
+        # combat_step().
+        draw_cards(state, 1)
+    resolve_etb(state, name)
+    elvish_warmaster_check(state, name)
+    maralen_trigger(state, name)
+
+
+def leave_battlefield(state: GameState, name: str, to_graveyard: bool = True):
+    """Achado real (porte do modo de resiliencia, 2026-09-20): unico call
+    site pre-existente desta funcao (Champion do Mistbind Clique) nunca
+    passava um token de verdade, entao o caso nunca era exercitado -- mas
+    `remove_permanent()` do modo de resiliencia agora pode atingir
+    "Mercenary Token" (Black Market Connections, unico token nomeado que
+    vive em `state.battlefield` neste arquivo, os demais -- Elfo/Fada --
+    sao contadores agregados sem nome individual). CR 111.7: token que
+    deixa do campo de batalha deixa de existir, nunca vai pro cemiterio
+    de verdade.
+
+    CORRIGIDO 2026-09-21 (achado real do usuario, CR 903.9a -- ver
+    `rules-cache/comprehensive-rules.txt` linhas 6888-6896, Regra 18 de
+    `references/user-standing-rules.md`; mesmo achado do Toph nesta
+    sessao -- Regra #6 do CLAUDE.md, o tratamento do comandante tem que
+    morar no CHOKEPOINT central, nao no caller): tratamento do
+    comandante movido pra AQUI, nao mais especial-casado so' dentro de
+    `remove_permanent()`. Achado real NUMERICO: Maralen e' ela mesma
+    "Elf Faerie Noble" (Fada de verdade) -- se ela morrer, Tegwyll, Duke
+    of Splendor (draw+lose 1 life "whenever a Faerie enters... or
+    another Faerie you control dies") e o clear de Umbral Mantle
+    (`state.umbral_equipped_on`) DEVERIAM disparar normalmente, mas a
+    versao anterior pulava esta funcao inteira pro comandante,
+    silenciando os 2. Comandante vai pro cemiterio/fica sem zona
+    rastreada (exilio, `to_graveyard=False`) DE VERDADE primeiro (CR
+    700.4, disparando Tegwyll/Umbral Mantle ACIMA, antes deste ponto),
+    so' DEPOIS o dono PODE escolher move-la pra zona de comando."""
+    if name in state.battlefield:
+        state.battlefield.remove(name)
+    if to_graveyard and not name.endswith("Token"):
+        state.graveyard.append(name)
+    if is_faerie(name) and "Tegwyll, Duke of Splendor" in state.battlefield and name != "Tegwyll, Duke of Splendor":
+        # Oraculo real: "you draw a card AND you lose 1 life" - achado real
+        # 2026-08-30 (reanalise pedida pelo usuario), so' a compra estava
+        # implementada, faltava a perda de vida.
+        # Tegwyll e' ele mesmo Fada, entao a fonte do gatilho bate com o
+        # tipo escolhido do Roaming Throne (achado real 2026-08-31, mesmo
+        # caso do fix da Maralen/Faerie Harbinger acima) - dobra compra e
+        # perda de vida quando outra Fada morre com os dois em campo.
+        times = 2 if ("Roaming Throne" in state.battlefield and is_roaming_type("Tegwyll, Duke of Splendor")) else 1
+        if times == 2:
+            state.roaming_throne_doubles_total += 1
+        for _ in range(times):
+            draw_cards(state, 1)
+            state.life -= 1
+    if state.umbral_equipped_on == name:
+        state.umbral_equipped_on = None
+        state.infinite_mana_this_turn = False
+    if name == COMMANDER:
+        if name in state.graveyard:
+            state.graveyard.remove(name)
+        state.commander_in_play = False
+
+
+def remove_permanent(state: GameState, name: str, source: str = "opponent"):
+    """Ponto central de remocao de permanente do CAMPO por acao de
+    OPONENTE (wipe/remocao do modo de resiliencia, 2026-09-20 -- porte
+    do Megatron/Ur-Dragon/Hei Bai/Markov/Ulalek/Toph/Prismatic Bridge).
+    Reaproveita `leave_battlefield()` ja existente (mesmos gatilhos
+    reais de Tegwyll/Umbral Mantle que uma morte por qualquer causa
+    dispara, e agora tambem o tratamento correto de token via CR 111.7,
+    ver comentario la).
+
+    Comandante: CORRIGIDO 2026-09-21 (CR 903.9a -- ver docstring de
+    `leave_battlefield`). Uma 1a versao deste fix tratava o comandante
+    so' AQUI, especial-casada -- errado (mesmo achado do Toph nesta
+    sessao): o tratamento agora mora DENTRO de `leave_battlefield`, o
+    chokepoint central de verdade, entao delega direto sem nenhum caso
+    especial aqui -- `commander_in_play` vira False la',
+    `commander_cast_count` ja existente calcula a taxa de recast."""
+    if name not in state.battlefield:
+        return
+    leave_battlefield(state, name, to_graveyard=True)
+
+
+def resolve_cast(state: GameState, name: str, free: bool = False):
+    if not free and name != COMMANDER:
+        state.hand.remove(name)
+    if name in LAND_NAMES:
+        state.battlefield.append(name)
+        return
+    if CARD_DB[name].ctype == "sorcery" and "gsz" in CARD_DB[name].tags:
+        return  # tratado em cast_green_sun_zenith
+    if CARD_DB[name].ctype in ("instant", "sorcery"):
+        # Achado real 2026-08-28 (auditoria de checklist): instantes e
+        # feiticarias (Counterspell, Toxic Deluge, etc.) resolvem e vao pro
+        # cemiterio - antes ficavam presos em "battlefield" pra sempre
+        # (nunca corrompia is_creature_card/is_elf/is_faerie/LAND_NAMES,
+        # que filtram por tipo/tag, mas era estado incorreto mesmo assim).
+        if "interaction" in CARD_DB[name].tags:
+            state.interaction_spells_cast_total += 1
+        state.graveyard.append(name)
+        return
+    enter_battlefield(state, name, from_hand=False)
+
+
+# ---------------------------------------------------------------------------
+# Cast principal
+# ---------------------------------------------------------------------------
+
+def cast_green_sun_zenith(state: GameState):
+    """X escolhido pro melhor dork verde ainda nao em campo que a mana bancar."""
+    budget = remaining_mana(state) - 1  # {G} fixo + {X}
+    if budget < 0:
+        return False
+    pool = [n for n in state.library if is_creature_card(n) and is_green_creature(n)
+            and CARD_DB[n].mv <= (999 if state.infinite_mana_this_turn else budget)]
+    if not pool:
+        return False
+    best = best_missing_dork(state, pool)
+    x = CARD_DB[best].mv
+    spend_mana(state, x + 1)
+    state.hand.remove("Green Sun's Zenith")
+    state.graveyard.append("Green Sun's Zenith")
+    state.library.remove(best)
+    enter_battlefield(state, best, from_hand=False)
+    state.tutors_used_total += 1
+    return True
+
+
+def cast_fauna_shaman_activation(state: GameState):
+    if "Fauna Shaman" not in state.battlefield or state.fauna_shaman_used_this_turn:
+        return
+    if "Fauna Shaman" not in ready_creatures(state):
+        return
+    if remaining_mana(state) < 1:
+        return
+    discardable = [c for c in state.hand if is_creature_card(c)]
+    if not discardable or not state.library:
+        return
+    worst = min(discardable, key=lambda n: CARD_DB[n].mv)
+    state.hand.remove(worst)
+    state.graveyard.append(worst)
+    creatures = [n for n in state.library if is_creature_card(n)]
+    if not creatures:
+        return
+    best = best_missing_dork(state, creatures)
+    state.library.remove(best)
+    state.hand.append(best)
+    spend_mana(state, 1)
+    state.fauna_shaman_used_this_turn = True
+    state.tutors_used_total += 1
+
+
+def cast_card(state: GameState, name: str):
+    card = CARD_DB[name]
+    cost = card.mv + 2 * state.commander_cast_count if name == COMMANDER else card.mv
+    # Radagast of Rhosgobel (achado real 2026-08-28, auditoria de checklist
+    # categoria 9): oraculo real "The first creature spell you cast each
+    # turn costs {2} less to cast and can be cast as though it had flash."
+    # So' o lado do flash estava implementado (flash_with_radagast_by_turn);
+    # o desconto de custo nunca era aplicado.
+    if (is_creature_card(name) and "Radagast of Rhosgobel" in state.battlefield
+            and not state.radagast_discount_used_this_turn):
+        cost = max(0, cost - 2)
+        state.radagast_discount_used_this_turn = True
+    spend_mana(state, cost)
+    resolve_cast(state, name)
+
+
+def landfall_trigger(state: GameState):
+    """Dispara toda vez que UM terreno seu entra em campo."""
+    if "Thranduil, Sindarin Liege // Silvan Rally" in state.battlefield:
+        create_token(state, "elf", source="Thranduil, Sindarin Liege (landfall)")
+        state.landfall_elf_tokens_total += 1
+    if "Thranduil's Company" in state.battlefield:
+        # "put two +1/+1 counters on target creature you control" — modelado
+        # quando ha alvo com valor numerico real (Marwyn, cujo poder escala
+        # a propria mana que ela produz); outros alvos nao tem efeito
+        # numerico modelado nesta simulacao (documentado, nao fingido).
+        if "Marwyn, the Nurturer" in state.battlefield:
+            state.marwyn_power += 2
+        state.landfall_counters_total += 1
+
+
+# ---------------------------------------------------------------------------
+# Terreno virado primeiro em T1/T2 -- correcao de 2026-10-05 (mesma regra do Vihaan/Megatron)
+# ---------------------------------------------------------------------------
+# Antes: `play_land` jogava SEMPRE o primeiro terreno da ordem propria do deck (desvirado antes de virado); a mana de um turno sem jogada era desperdicada e o
+# terreno virado ficava pra um turno em que ele custa desenvolvimento. Agora, em T1..TAPPED_LAND_FIRST_MAX_TURN, havendo terreno virado E desvirado na mao, joga o
+# virado, salvo se isso custar desenvolvimento: o teste e' um ENSAIO a seco da propria fase de conjuracao pre-combate (copia profunda do estado), comparando o MV
+# total das cartas que saem da mao com cada candidato. Empate -> o virado. Com a chave em False o comportamento e' o antigo, bit a bit.
+TAPPED_LAND_FIRST_ENABLED = True
+TAPPED_LAND_FIRST_MAX_TURN = 2
+TAPPED_LAND_FIRST_GHOST = False   # so' validacao: roda o ensaio mas ignora o resultado (joga o padrao). Com a chave ligada + GHOST == chave desligada prova que o ensaio nao tem efeito colateral
+_TL_FORCED = None   # terreno imposto a play_land durante o ensaio a seco
+_TL_BUSY = False    # trava de recursao: o ensaio chama play_land de novo
+
+
+def _tl_is_tapped(state, name: str) -> bool:
+    return land_enters_tapped(state, name)
+
+
+def _tl_develop(sim, log: list):
+    """Fase de conjuracao pre-combate do turno: a mesma sequencia que o turno roda logo depois de `play_land`."""
+    main_phase(sim, is_first_main=True)
+
+
+def _tl_dry_run_mv(state, land: str) -> int:
+    """MV total das cartas que SAEM da mao se `land` for o terreno jogado e o resto da fase pre-combate rodar. Copia profunda (CARD_DB compartilhado; RNG do estado
+    copiado e `random` global restaurado): nao muta `state`."""
+    global _TL_FORCED, _TL_BUSY
+    memo = {id(c): c for c in CARD_DB.values()}
+    saved = random.getstate()
+    sim = copy.deepcopy(state, memo)
+    ficam = collections.Counter(sim.hand)
+    ficam[land] -= 1
+    _TL_FORCED, _TL_BUSY = land, True
+    try:
+        play_land(sim)
+        _tl_develop(sim, None)
+    finally:
+        _TL_FORCED, _TL_BUSY = None, False
+        random.setstate(saved)
+    saiu = ficam - collections.Counter(sim.hand)
+    return sum(CARD_DB[c].mv for c in saiu.elements() if c in CARD_DB)
+
+
+def tapped_first_pick(state, lands_in_hand: list) -> str:
+    """`lands_in_hand` ja' vem ordenada pelo criterio do proprio deck: a 1a e' o padrao (comportamento antigo)."""
+    if _TL_FORCED is not None and _TL_FORCED in lands_in_hand:
+        return _TL_FORCED
+    default = lands_in_hand[0]
+    if not TAPPED_LAND_FIRST_ENABLED or _TL_BUSY or state.turn > TAPPED_LAND_FIRST_MAX_TURN:
+        return default
+    tapped = [n for n in lands_in_hand if _tl_is_tapped(state, n)]
+    untapped = [n for n in lands_in_hand if not _tl_is_tapped(state, n)]
+    if not tapped or not untapped:
+        return default
+    mv_virado, mv_desvirado = _tl_dry_run_mv(state, tapped[0]), _tl_dry_run_mv(state, untapped[0])
+    if TAPPED_LAND_FIRST_GHOST:
+        return default
+    if mv_virado >= mv_desvirado:
+        state.tapped_land_first_plays_total += 1
+        return tapped[0]
+    state.tapped_land_skipped_for_play_total += 1
+    return untapped[0]
+
+
+# Correcao de 2026-10-05 (varredura de entrada de terrenos contra o oraculo, Regra 12): so' Bojuka Bog/Path of Ancestry/Zagoth Triome (tag `etb_tapped`) entravam virados. Faltavam as condicoes reais
+# (oraculo, conferido em scryfall-cache): Drowned Catacomb ("tapped unless you control an Island or a Swamp"), Hinterland Harbor (Forest or Island), Woodland Cemetery (Swamp or Forest),
+# Sunken Hollow ("unless you control two or more basic lands"), Gilt-Leaf Palace ("you may reveal an Elf card from your hand. If you don't, this land enters tapped"). "Island/Swamp/Forest" aqui e'
+# SUBTIPO de terreno (Bayou, Tropical Island, Underground Sea, Breeding Pool, Watery Grave, Overgrown Tomb, Sunken Hollow e Zagoth Triome contam). Choque (Breeding Pool/Watery Grave/Overgrown Tomb)
+# segue a convencao do repositorio (paga 2 de vida, desvirado); Morphic Pool/Undergrowth Stadium ("unless you have two or more opponents") entram desvirados em mesa de 4.
+# Com a chave em False o comportamento antigo volta bit a bit (so' a tag `etb_tapped`).
+LAND_ENTRY_CONDITIONS_ENABLED = True
+LAND_BASIC_SUBTYPES = {"Bayou": {"Forest", "Swamp"}, "Breeding Pool": {"Forest", "Island"}, "Overgrown Tomb": {"Forest", "Swamp"}, "Sunken Hollow": {"Island", "Swamp"},
+                       "Tropical Island": {"Forest", "Island"}, "Underground Sea": {"Island", "Swamp"}, "Watery Grave": {"Island", "Swamp"}, "Zagoth Triome": {"Forest", "Island", "Swamp"},
+                       "Forest": {"Forest"}, "Island": {"Island"}, "Swamp": {"Swamp"}}
+CHECKLAND_SUBTYPES = {"Drowned Catacomb": {"Island", "Swamp"}, "Hinterland Harbor": {"Forest", "Island"}, "Woodland Cemetery": {"Forest", "Swamp"}}
+
+
+def land_enters_tapped(state: GameState, name: str) -> bool:
+    """Fonte unica de 'entra virado'. Chamada ANTES de o terreno sair da mao/entrar em campo."""
+    if "etb_tapped" in CARD_DB[name].tags:
+        return True
+    if not LAND_ENTRY_CONDITIONS_ENABLED:
+        return False
+    if name in CHECKLAND_SUBTYPES:
+        return not any(CHECKLAND_SUBTYPES[name] & LAND_BASIC_SUBTYPES.get(n, set()) for n in state.battlefield)
+    if name == "Sunken Hollow":
+        return sum(1 for n in state.battlefield if n in ("Forest", "Island", "Swamp")) < 2
+    if name == "Gilt-Leaf Palace":
+        return not any(is_elf(n) for n in state.hand if n != name)
+    return False
+
+
+def play_land(state: GameState):
+    max_lands = 1
+    if "Thranduil's Company" in state.battlefield:
+        other_elves = (sum(1 for n in state.battlefield if is_elf(n) and n != "Thranduil's Company")
+                       + state.elf_tokens)
+        if other_elves > 0:
+            max_lands = 2
+    while state.lands_played_this_turn < max_lands:
+        lands_in_hand = [n for n in state.hand if n in LAND_NAMES]
+        if not lands_in_hand:
+            return
+        choice = tapped_first_pick(state, lands_in_hand)
+        tapped_entry = land_enters_tapped(state, choice)   # avaliado ANTES de entrar (a condicao olha o campo/mao sem o proprio terreno)
+        state.hand.remove(choice)
+        state.battlefield.append(choice)
+        state.lands_played_this_turn += 1
+        state.lands_played_total += 1
+        if tapped_entry:
+            # Achado real 2026-08-28 (auditoria de checklist): Bojuka Bog/
+            # Path of Ancestry/Zagoth Triome tinham a tag mas ela nunca era
+            # lida em lugar nenhum - produziam mana no proprio turno em que
+            # entravam, apesar do "enters tapped" real.
+            state.tapped_lands_this_turn.add(choice)
+        landfall_trigger(state)
+
+
+def equip_umbral_mantle(state: GameState):
+    if "Umbral Mantle" not in state.battlefield:
+        return
+    creatures = ready_creatures(state)
+    if not creatures:
+        return
+    elves_in_play = sum(1 for n in state.battlefield if is_elf(n)) + state.elf_tokens
+    creatures_in_play = (sum(1 for n in state.battlefield if is_creature_card(n))
+                          + state.elf_tokens + state.faerie_tokens)
+
+    def scaling_output(n):
+        tags = CARD_DB[n].tags
+        if "dork_per_elf" in tags or "dork_per_elf_controlled" in tags:
+            return elves_in_play
+        if "dork_marwyn" in tags:
+            return marwyn_effective_power(state)
+        if "dork_per_creature" in tags:
+            return creatures_in_play
+        return 0
+
+    best = max(creatures, key=scaling_output)
+    if scaling_output(best) > 0:
+        state.umbral_equipped_on = best
+
+
+def joraga_level_up(state: GameState):
+    """Oraculo real: "Level up {1}{G} (Level up only as a sorcery.) LEVEL
+    1-4: {T}: Add {G}{G}. LEVEL 5+: Elves you control have '{T}: Add
+    {G}{G}.'" Achado real 2026-08-30 (reanalise pedida pelo usuario): a
+    versao anterior era binaria (0 ou 1, nunca progredia mais), e o
+    docstring do arquivo dizia "raramente alcanca nivel 5" como se fosse
+    probabilistico quando na verdade era estruturalmente impossivel (0%,
+    nao raro) - o nivel 5+ (bonus de equipe pra TODOS os Elfos) nunca
+    existia no modelo. Corrigido: nivel real 0-5, sobe quantas vezes a
+    mana sobrando permitir (sem restricao de "1x por turno" no oraculo,
+    so' o custo real de {1}{G} por nivel). Chamado DEPOIS do loop
+    principal de conjuracao (so' usa mana que sobrou - nivelar Joraga
+    nunca deveria competir com conjurar spells de verdade)."""
+    if "Joraga Treespeaker" not in state.battlefield:
+        return
+    while state.joraga_level < 5 and remaining_mana(state) >= 2:
+        spend_mana(state, 2)
+        state.joraga_level += 1
+
+
+def devoted_druid_pump(state: GameState):
+    """Achado real 2026-08-28 (auditoria de checklist de mecanica): oraculo
+    real e' 'Put a -1/-1 counter on this creature: Untap this creature'
+    (SEM restricao de quantas vezes) - mas ela e' 0/2, entao morre (regra
+    de estado, toughness 0) depois do 2o contador. A versao anterior dava
+    +3 ativacoes extras TODO turno pra sempre, sem nunca remover a criatura
+    do campo - superproducao indefinida. Corrigido: maximo 2 ativacoes na
+    vida inteira (contadores permanentes em devoted_druid_counters), usadas
+    de uma vez no primeiro turno em que fica pronta (premissa: maximiza
+    mana imediata, mesma filosofia agressiva ja usada no resto do motor),
+    depois ela morre e some do campo pro resto do jogo."""
+    if "Devoted Druid" not in state.battlefield:
+        state.devoted_druid_extra_untaps = 0
+        return
+    if state.devoted_druid_counters >= 2:
+        state.battlefield.remove("Devoted Druid")
+        state.devoted_druid_extra_untaps = 0
+        return
+    if "Devoted Druid" not in ready_creatures(state):
+        state.devoted_druid_extra_untaps = 0
+        return
+    extra = 2 - state.devoted_druid_counters
+    state.devoted_druid_extra_untaps = extra
+    state.devoted_druid_counters += extra
+
+
+def use_staff_of_domination_v2(state: GameState):
+    """{1}: destapa. {5},{T}: compra 1. Com mana infinita, repete ate a
+    biblioteca esvaziar (limite defensivo: nunca finge vencer por deck-out,
+    so registra quantas compras aconteceram).
+
+    Achado real (auditoria 2026-09-13): fora do combo infinito, o Staff
+    ficava 100% inerte - so' o ramo `infinite_mana_this_turn` existia. Mas
+    o oraculo real e' um motor de compra REPETIVEL mesmo com mana finita:
+    {5},{T}: Draw a card (1a compra) + {1}: Untap this artifact (destapa,
+    permite pagar {5},{T} de novo - 6 mana por compra extra a partir da
+    2a). Staff e' artefato nao-criatura, sem doenca de invocacao pro seu
+    {T}. Corrigido: fora do combo infinito, com 5+ mana sobrando, compra
+    real acontece (1a compra por 5, cada compra extra por 6), sem inventar
+    nada - e' literalmente o texto impresso da carta."""
+    if "Staff of Domination" not in state.battlefield:
+        return
+    if state.infinite_mana_this_turn:
+        while state.library:
+            card = state.library.pop(0)
+            state.hand.append(card)
+            state.cards_drawn_extra += 1
+            state.staff_infinite_draws += 1
+        if not state.library:
+            state.library_emptied = True
+        return
+    if remaining_mana(state) < 5:
+        return
+    spend_mana(state, 5)
+    draw_cards(state, 1)
+    state.staff_finite_draws_total += 1
+    # CORRIGIDO 2026-09-21 (bug pre-existente achado durante a validacao do
+    # fix de CR 903.9a, ao rodar 20k regressao -- hang de verdade, nao
+    # relacionado ao comandante): `remaining_mana()` -> `total_mana()` ->
+    # `dork_mana()` NAO e' pura -- `dork_mana()` pode setar
+    # `state.infinite_mana_this_turn = True` como efeito colateral (combo
+    # Umbral Mantle + dork escalavel, linha ~728) na hora que e' avaliada.
+    # Uma vez que isso acontece DENTRO deste while (cada iteracao reavalia
+    # `remaining_mana`), `total_mana` passa a retornar 999 pra sempre E
+    # `spend_mana` vira no-op (guarda o mesmo flag) -- a condicao `>= 6`
+    # nunca mais fica falsa, loop infinito de verdade (reproduzido ao vivo,
+    # seed 8010333, travava indefinidamente). O loop irmao de Faerie
+    # Mastermind (linha ~1435) ja' se defende disso (`and not state.
+    # infinite_mana_this_turn`) -- padrao replicado aqui.
+    while remaining_mana(state) >= 6 and not state.infinite_mana_this_turn:
+        spend_mana(state, 6)
+        draw_cards(state, 1)
+        state.staff_finite_draws_total += 1
+
+
+def try_faerie_mastermind(state: GameState):
+    """Achado real (auditoria 2026-09-13): oraculo real tem DUAS habilidades
+    - "Whenever an opponent draws their second card each turn, you draw a
+    card" (passiva, opponent-dependent, ja documentada como N/A) E
+    "{3}{U}: Each player draws a card" (ativada). A carta inteira estava
+    rotulada com a tag 'opponent_dependent' e 100% ignorada no codigo, mas
+    so' a passiva de fato depende do oponente - a ativada te da' 1 compra
+    real e garantida so' por pagar mana, symmetric mas com beneficio real
+    pro seu lado (mesma convencao ja usada noutras cartas simetricas desta
+    sessao: modela seu proprio ganho, nao o do oponente que nao existe
+    neste goldfish). Sem {T} no custo - repetivel, sem limite no oraculo."""
+    if "Faerie Mastermind" not in state.battlefield:
+        return
+    if state.infinite_mana_this_turn:
+        return  # evita loop infinito de verdade - ja convertido via Staff
+    # Achado real 2026-09-14 (bug de hang de verdade, achado validando a
+    # correcao da Roaming Throne - confirmado pre-existente via git stash,
+    # nao introduzido por ela): dork_mana() (chamada por total_mana() a
+    # cada remaining_mana()) tem um EFEITO COLATERAL - ela seta
+    # state.infinite_mana_this_turn = True assim que detecta o combo do
+    # Umbral Mantle pronto, so' de ser CONSULTADA (nao precisa de nada ser
+    # de fato ativado). Isso pode acontecer no MEIO deste loop (entre uma
+    # iteracao e outra, sem nada externo mudar): a partir dai
+    # remaining_mana() trava em 999 pra sempre e spend_mana() vira no-op
+    # (guardado pelo mesmo flag) - o loop nunca mais termina, sempre
+    # tentando comprar a biblioteca inteira infinitamente. Reproduzido de
+    # forma isolada e determinstica na seed 6713530 (trava em <10ms real,
+    # mas o `while` puro nunca sai). Corrigido rechecando o flag a cada
+    # iteracao, nao so' na entrada da funcao.
+    while remaining_mana(state) >= 4 and not state.infinite_mana_this_turn:
+        spend_mana(state, 4)
+        draw_cards(state, 1)
+        state.faerie_mastermind_draws_total += 1
+
+
+def can_cast_from_top(state: GameState) -> Optional[str]:
+    """Elven Chorus ("You may cast creature spells from the top of your
+    library") / Realmwalker ("...of the chosen type...") - achado real
+    (auditoria 2026-09-13): a tag 'cast_from_top' estava cadastrada nas 2
+    cartas desde a criacao do arquivo, mas NUNCA era lida em lugar nenhum -
+    ghost tag genuina (escapou da varredura automatica de tags mortas por
+    aparecer 2x como literal de string, 1x por carta, mas nunca
+    DESPACHADA). Realmwalker escolhe o tipo ao entrar - sem um 2o alvo de
+    valor bem definido pra Roaming Throne (que ja escolheu Faerie, ver
+    docstring do topo), Elfo foi escolhido aqui pra cobrir o outro lado da
+    tribal (19 Elfos vs 12 Fadas - mais chance real de bater no topo), a
+    mesma logica de heuristica defensavel ja documentada pro Roaming
+    Throne, so' que pro lado Elfo."""
+    if not state.library:
+        return None
+    top = state.library[0]
+    if not is_creature_card(top):
+        return None
+    if "Elven Chorus" in state.battlefield:
+        pass
+    elif "Realmwalker" in state.battlefield and is_elf(top):
+        pass
+    else:
+        return None
+    if not can_cast(state, top):
+        return None
+    return top
+
+
+def do_cast_from_top(state: GameState, name: str):
+    cost = CARD_DB[name].mv
+    if (is_creature_card(name) and "Radagast of Rhosgobel" in state.battlefield
+            and not state.radagast_discount_used_this_turn):
+        cost = max(0, cost - 2)
+        state.radagast_discount_used_this_turn = True
+    spend_mana(state, cost)
+    state.library.pop(0)
+    enter_battlefield(state, name, from_hand=False)
+    state.cast_from_top_total += 1
+
+
+def main_phase(state: GameState, is_first_main: bool = True):
+    if is_first_main:
+        # Oraculo real: "At the beginning of your first main phase" -
+        # achado real 2026-08-30, disparava no upkeep antes (passo errado).
+        black_market_connections_step(state)
+
+    if not state.commander_in_play and can_cast(state, COMMANDER):
+        # Contraataque (`try_smart_opponent_counter`, categoria do modo de
+        # resiliencia -- so' faz sentido no exato momento do cast, mesmo
+        # padrao ja' validado nos outros 7 decks): mana e taxa contam
+        # ANTES do counter (CR 903.10a conta "cast", nao "resolved") --
+        # mesma formula de custo/desconto do Radagast que `cast_card` ja'
+        # usava, replicada aqui pra poder interceptar entre o pagamento e
+        # a entrada em campo. So' entra em campo se NAO for counterada.
+        cost = CARD_DB[COMMANDER].mv + 2 * state.commander_cast_count
+        if ("Radagast of Rhosgobel" in state.battlefield
+                and not state.radagast_discount_used_this_turn):
+            cost = max(0, cost - 2)
+            state.radagast_discount_used_this_turn = True
+        spend_mana(state, cost)
+        if try_smart_opponent_counter(state):
+            # CR 903.10a: a taxa aumenta a cada CONJURACAO, resolvendo ou
+            # nao -- `enter_battlefield()` so' incrementa `commander_cast_
+            # count` no caminho de sucesso (nunca chamado aqui), entao o
+            # incremento pelo counter precisa ser manual.
+            state.commander_cast_count += 1
+        else:
+            resolve_cast(state, COMMANDER)  # enter_battlefield() incrementa commander_cast_count
+            maralen_try_free_cast(state)
+
+    devoted_druid_pump(state)
+    equip_umbral_mantle(state)
+    try_untap_effects(state)
+    # reavalia infinito apos equipar (dork_mana ja seta a flag)
+    dork_mana(state)
+
+    while True:
+        castables = [n for n in state.hand if n not in LAND_NAMES
+                     and n != "Green Sun's Zenith" and can_cast(state, n)]
+        if castables:
+            castables.sort(key=lambda n: CARD_DB[n].mv)
+            cast_card(state, castables[0])
+            maralen_try_free_cast(state)
+            equip_umbral_mantle(state)
+            dork_mana(state)
+            continue
+        if "Green Sun's Zenith" in state.hand and cast_green_sun_zenith(state):
+            maralen_try_free_cast(state)
+            equip_umbral_mantle(state)
+            dork_mana(state)
+            continue
+        top_castable = can_cast_from_top(state)
+        if top_castable:
+            do_cast_from_top(state, top_castable)
+            maralen_try_free_cast(state)
+            equip_umbral_mantle(state)
+            dork_mana(state)
+            continue
+        break
+
+    cast_fauna_shaman_activation(state)
+    if "Imperious Perfect" in state.battlefield and "Imperious Perfect" in ready_creatures(state) and remaining_mana(state) >= 1:
+        spend_mana(state, 1)
+        if state.infinite_mana_this_turn:
+            # mana infinita + Imperious Perfect = exercito infinito (registrado, nao expandido de fato)
+            state.tokens_created_total += 10_000
+            state.elf_tokens += 10_000
+        else:
+            create_token(state, "elf", source="Imperious Perfect")
+
+    # Joraga Treespeaker: level up e' "as a sorcery" (qualquer main phase
+    # com prioridade, sem restricao de 1a/2a) - movido pra depois do loop
+    # de conjuracao (achado real 2026-08-30, reanalise pedida pelo
+    # usuario): rodava ANTES do loop principal, competindo por mana com
+    # spells de verdade - agora so' usa mana que sobrou, mesma filosofia
+    # ja aplicada ao Fauna Shaman/Imperious Perfect acima.
+    joraga_level_up(state)
+
+    # Ordem: Faerie Mastermind (4 mana/compra) antes do Staff (5-6
+    # mana/compra) - maximiza total de compras pro mesmo orcamento de mana
+    # sobrando, heuristica gulosa simples (mesma filosofia "usa o que sobrou"
+    # ja aplicada ao Joraga/Imperious Perfect acima).
+    try_faerie_mastermind(state)
+    use_staff_of_domination_v2(state)
+
+
+def combat_step(state: GameState):
+    # Kindred Discovery: "...or attacks, draw a card." Unico gatilho de
+    # ataque real no deck (achado 2026-08-28) - modelado com a mesma
+    # premissa ja usada noutros decks desta sessao pra combate sem
+    # oponente real: toda criatura pronta (sem summoning sickness) ataca
+    # desimpedida. So' Elfos contam (tipo escolhido).
+    if "Kindred Discovery" in state.battlefield:
+        attacking_elves = [n for n in ready_creatures(state) if is_elf(n)]
+        # elf_tokens e' um contador agregado (sem nome/turno individual por
+        # token) - tratados como sempre prontos, mesma aproximacao ja usada
+        # noutros pontos deste arquivo pra pools de token compartilhados.
+        draw_cards(state, len(attacking_elves) + state.elf_tokens)
+
+
+def end_step(state: GameState):
+    if "Wilderness Reclamation" in state.battlefield:
+        state.mana_spent_this_turn = 0  # untap all lands (aproximado: reseta gasto)
+    if ("Growing Rites of Itlimoc // Itlimoc, Cradle of the Sun" in state.battlefield
+            and not state.itlimoc_transformed):
+        # Oraculo real: "At the beginning of your end step, if you control
+        # four or more creatures, transform Growing Rites of Itlimoc."
+        creatures_in_play = (sum(1 for n in state.battlefield if is_creature_card(n))
+                              + state.elf_tokens + state.faerie_tokens)
+        if creatures_in_play >= 4:
+            state.itlimoc_transformed = True
+            state.itlimoc_transform_turn = state.turn
+
+
+def upkeep_step(state: GameState):
+    # Achado real 2026-08-30 (pergunta direta do usuario apos a reanalise):
+    # Bitterblossom disparava no end_step() por engano - oraculo real e'
+    # "At the beginning of your upkeep", igual ao Bitterbloom Bearer logo
+    # abaixo (que ja estava no passo certo). Isso atrasava o token de 1
+    # turno inteiro pra fins de elf_faerie_count() (o cap do free-cast da
+    # Maralen durante as main phases do MESMO turno nao via esse token).
+    if "Bitterblossom" in state.battlefield:
+        state.life -= 1
+        create_token(state, "faerie", source="Bitterblossom")
+        # Bitterblossom e Enchantment, nao Criatura — Roaming Throne nao dobra o proprio gatilho dela.
+    times = 1
+    if "Bitterbloom Bearer" in state.battlefield:
+        if "Roaming Throne" in state.battlefield and is_roaming_type("Bitterbloom Bearer"):
+            times = 2
+            state.roaming_throne_doubles_total += 1
+        for _ in range(times):
+            state.life -= 1
+            create_token(state, "faerie", source="Bitterbloom Bearer")
+
+def black_market_connections_step(state: GameState):
+    """Oraculo real: "At the beginning of your FIRST MAIN PHASE, choose one
+    or more — Sell Contraband (Treasure, perde 1) / Buy Information
+    (compra 1, perde 2) / Hire a Mercenary (token 3/2 Changeling, perde 3)."
+    Achado real 2026-08-30 (reanalise pedida pelo usuario), 3 problemas
+    empilhados na versao anterior: (1) disparava no upkeep, passo errado;
+    (2) pagava o custo de vida do Sell Contraband SEM criar o Treasure
+    correspondente (pior que nao escolher o modo); (3) Hire a Mercenary
+    nunca era modelado. Corrigido: dispara aqui (1a main phase), escolhe
+    os 3 modos (mesma filosofia agressiva do resto do motor - sem
+    oponente real ameacando a vida, maximizar valor e' sempre a escolha
+    certa). Treasure tratado como mana avulsa disponivel NO PROPRIO
+    TURNO (mesma convencao de refund ja usada pro "etb_untap_lands" do
+    Cloud of Faeries) - simplificacao documentada, nao rastreado como
+    token persistente pra turnos futuros."""
+    if "Black Market Connections" not in state.battlefield:
+        return
+    state.life -= 1
+    state.mana_spent_this_turn = max(0, state.mana_spent_this_turn - 1)
+    state.black_market_treasures_total += 1
+    state.life -= 2
+    draw_cards(state, 1)
+    state.life -= 3
+    enter_battlefield(state, "Mercenary Token", from_hand=False)
+    state.black_market_mercenaries_total += 1
+
+
+def should_keep(hand: list) -> bool:
+    lands = sum(1 for n in hand if n in LAND_NAMES)
+    good_early = {"Sol Ring", "Arcane Signet", "Elvish Mystic", "Llanowar Elves", "Birds of Paradise",
+                  "Bloom Tender", COMMANDER}
+    if lands >= 3:
+        return True
+    if lands == 2 and any(n in good_early for n in hand):
+        return True
+    return False
+
+
+def build_library(names_override=None):
+    if names_override is not None:
+        for n in names_override:
+            assert n in CARD_DB, f"faltando no CARD_DB: {n}"
+        assert len(names_override) == 99, len(names_override)
+        return list(names_override)
+    lib = []
+    lines = open("lista.md").read().split("## Lista completa")[1].strip().split("\n")
+    for l in lines:
+        l = l.strip()
+        if not l:
+            continue
+        m = re.match(r"^(\d+)\s+(.+)$", l)
+        qty, name = int(m.group(1)), m.group(2).strip()
+        assert name in CARD_DB, f"faltando no CARD_DB: {name}"
+        for _ in range(qty):
+            lib.append(name)
+    assert len(lib) == 99, len(lib)
+    return lib
+
+
+BASE_LIBRARY = build_library()
+
+FLASH_SOURCES = {"Leyline of Anticipation", "Vedalken Orrery", "High Fae Trickster", "Alchemist's Refuge"}
+
+
+# Correcao de 2026-10-05 (varredura das classes de erro das rodadas do Vihaan/Megatron nos outros decks): o London Mulligan deste arquivo SORTEAVA as cartas do fundo
+# (`rng.shuffle(hand)`), devolvendo com a mesma chance uma carta-chave e um terreno sobrando. Com a chave em False o arquivo se comporta bit-a-bit como antes.
+MULLIGAN_SMART_BOTTOM_ENABLED = True   # o jogador ESCOLHE as cartas do fundo (mesma regra do Vihaan/Megatron)
+MULLIGAN_PROTECTED = frozenset({"Sol Ring", "Arcane Signet", "Elvish Mystic", "Llanowar Elves", "Birds of Paradise", "Bloom Tender", COMMANDER})   # as cartas que `should_keep` ja' trata como "boa abertura": nao sao devolvidas se houver outra
+
+
+def choose_bottom(hand: list, n: int) -> list:
+    """London Mulligan: o jogador ESCOLHE as `n` cartas do fundo. So' desfaz de terreno quando sobram MAIS de 4 (e entao o que entra tapped primeiro, se o CARD_DB marcar);
+    fora isso devolve a carta nao-terreno de MAIOR custo, protegendo `MULLIGAN_PROTECTED`."""
+    hand = list(hand)
+    bottom = []
+    for _ in range(n):
+        lands = [c for c in hand if c in LAND_NAMES]
+        nonlands = [c for c in hand if c not in LAND_NAMES]
+        if len(lands) > 4 or not nonlands:
+            pick = min(lands, key=lambda c: (0 if "etb_tapped" in CARD_DB[c].tags else 1))
+        else:
+            pool = [c for c in nonlands if c not in MULLIGAN_PROTECTED] or nonlands
+            pick = max(pool, key=lambda c: CARD_DB[c].mv)
+        hand.remove(pick)
+        bottom.append(pick)
+    return bottom
+
+
+def mulligan(rng: random.Random, max_mulls: int = 3, library=None):
+    base = library if library is not None else BASE_LIBRARY
+    mulls = 0
+    hand, lib = [], []
+    while mulls < max_mulls:
+        lib = base[:]
+        rng.shuffle(lib)
+        hand = lib[:7]
+        lib = lib[7:]
+        if should_keep(hand) or mulls == max_mulls - 1:
+            # Achado real 2026-09-18 (mesma convencao dos goldfishes
+            # manuais do usuario no Archidekt): 1o mulligan e' GRATIS.
+            penalty = max(0, mulls - 1)
+            if penalty > 0:
+                if MULLIGAN_SMART_BOTTOM_ENABLED:
+                    bottom = choose_bottom(hand, penalty)
+                    for c in bottom:
+                        hand.remove(c)
+                else:
+                    rng.shuffle(hand)
+                    bottom = hand[:penalty]
+                    hand = hand[penalty:]
+                lib = lib + bottom
+            return hand, lib, mulls
+        mulls += 1
+    return hand, lib, mulls
+
+
+UPKEEP_BEFORE_DRAW_ENABLED = True   # CR 502-504: upkeep antes do draw step (antes: comprava e so' depois rodava o upkeep)
+
+
+def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
+    state.turn += 1
+    state.lands_played_this_turn = 0
+    state.mana_spent_this_turn = 0
+    state.tapped_lands_this_turn = set()
+    state.maralen_free_cast_used_this_turn = False
+    state.exile_maralen = []
+    state.fauna_shaman_used_this_turn = False
+    state.warmaster_used_this_turn = False
+    state.infinite_mana_this_turn = False
+    state.radagast_discount_used_this_turn = False
+    state.bounce_untap_used = {}
+    state.bounce_untap_bonus_this_turn = 0
+
+    # Achado real 2026-09-18: "skip the draw step" no 1o turno so' existe
+    # na regra 1x1 (CR 103.8a). Commander e' sempre multiplayer.
+    # Correcao de 2026-10-05 (Regra #6, ordem das fases): o upkeep vem ANTES do draw step (CR 502-504); o codigo comprava primeiro.
+    if UPKEEP_BEFORE_DRAW_ENABLED:
+        upkeep_step(state)
+    if state.library:
+        state.hand.append(state.library.pop(0))
+    else:
+        state.library_emptied = True
+
+    if not UPKEEP_BEFORE_DRAW_ENABLED:
+        upkeep_step(state)
+    play_land(state)
+    main_phase(state, is_first_main=True)
+    combat_step(state)
+    main_phase(state, is_first_main=False)
+    end_step(state)
+
+    flash_universal = any(n in state.battlefield for n in FLASH_SOURCES)
+    state.flash_universal_by_turn[state.turn] = flash_universal
+    state.flash_with_radagast_by_turn[state.turn] = flash_universal or ("Radagast of Rhosgobel" in state.battlefield)
+
+
+def simulate_one(seed: int, turns: int = 8, library=None):
+    rng = random.Random(seed)
+    hand, lib, mulls = mulligan(rng, library=library)
+    state = GameState(hand=hand, library=lib, mulligans=mulls)
+    state.warmaster_used_this_turn = False
+    for t in range(turns):
+        play_turn(state, is_first_turn=(t == 0), on_play=True)
+        if state.infinite_combo_assembled and state.staff_infinite_draws > 0:
+            break
+    return state
+
+
+def run_batch(n: int, seed_base: int, turns: int = 8):
+    states = [simulate_one(seed_base + i, turns=turns) for i in range(n)]
+
+    def avg(vals):
+        return sum(vals) / len(vals) if vals else 0.0
+
+    print(f"n={n}, seed_base={seed_base}, turns={turns}")
+    print(f"Avg mulligans: {avg([s.mulligans for s in states]):.2f}")
+    cmd_turn = [s.commander_cast_turn for s in states if s.commander_cast_turn is not None]
+    print(f"Turno medio de conjuracao da Maralen: {avg(cmd_turn):.2f} | mediana: {statistics.median(cmd_turn) if cmd_turn else float('nan'):.1f}")
+    print(f"Nunca conjurada em {turns} turnos: {100*sum(1 for s in states if s.commander_cast_turn is None)/n:.1f}%")
+    print(f"Avg gatilhos de Maralen (exila 2): {avg([s.maralen_triggers_total for s in states]):.2f}")
+    print(f"Avg cartas exiladas total: {avg([s.cards_exiled_total for s in states]):.2f}")
+    print(f"Avg casts gratis via Maralen: {avg([s.maralen_free_casts_total for s in states]):.2f}")
+    print(f"Avg tutores usados: {avg([s.tutors_used_total for s in states]):.2f}")
+    print(f"Avg tokens criados (exclui explosao infinita): {avg([min(s.tokens_created_total, 100) for s in states]):.2f}")
+    print(f"Avg dobras via Roaming Throne: {avg([s.roaming_throne_doubles_total for s in states]):.2f}")
+    print(f"Avg terrenos jogados (total no jogo, inclui land drop extra do Thranduil's Company): {avg([s.lands_played_total for s in states]):.2f}")
+    print(f"Avg tokens de Elfo via landfall (Thranduil, Sindarin Liege): {avg([s.landfall_elf_tokens_total for s in states]):.2f}")
+    print(f"Avg gatilhos de contadores via landfall (Thranduil's Company): {avg([s.landfall_counters_total for s in states]):.2f}")
+    print(f"Avg Treasures via Black Market Connections (Sell Contraband): {avg([s.black_market_treasures_total for s in states]):.2f}")
+    print(f"Avg Mercenary Tokens via Black Market Connections (Hire a Mercenary): {avg([s.black_market_mercenaries_total for s in states]):.2f}")
+    print(f"Avg nivel final do Joraga Treespeaker: {avg([s.joraga_level for s in states]):.2f} | atingiu nivel 5: {100*sum(1 for s in states if s.joraga_level >= 5)/n:.1f}%")
+    print(f"Avg Fadas exiladas pelo Champion do Mistbind Clique: {avg([len(s.mistbind_exiled) for s in states]):.2f}")
+    print(f"Avg ativacoes da familia 'untap' (Wirewood Symbiote/Scryb Ranger/Wirewood Lodge/Formidable Speaker, achado 2026-09-01): "
+          f"{avg([s.bounce_untap_activations_total for s in states]):.2f} | % jogos com pelo menos 1: "
+          f"{100*sum(1 for s in states if s.bounce_untap_activations_total > 0)/n:.1f}%")
+    combo_hits = sum(1 for s in states if s.infinite_combo_assembled)
+    print(f"Combo Umbral Mantle (mana infinita) montado: {100*combo_hits/n:.1f}% dos jogos"
+          + (f" | turno medio: {avg([s.infinite_combo_turn for s in states if s.infinite_combo_turn is not None]):.2f}" if combo_hits else ""))
+    staff_hits = sum(1 for s in states if s.staff_infinite_draws > 0)
+    print(f"Staff of Domination converteu em compra infinita: {100*staff_hits/n:.1f}% dos jogos")
+    print(f"Avg cartas compradas extra (motores de draw, exclui staff infinito): {avg([s.cards_drawn_extra - s.staff_infinite_draws for s in states]):.2f}")
+    print(f"Avg mao final: {avg([len(s.hand) for s in states]):.2f}")
+
+    itlimoc_hits = sum(1 for s in states if s.itlimoc_transformed)
+    print(f"Growing Rites of Itlimoc transformou em Itlimoc, Cradle of the Sun: {100*itlimoc_hits/n:.1f}% dos jogos"
+          + (f" | turno medio: {avg([s.itlimoc_transform_turn for s in states if s.itlimoc_transform_turn is not None]):.2f}" if itlimoc_hits else ""))
+    print(f"Avg criaturas encontradas via ETB do Growing Rites of Itlimoc: {avg([s.itlimoc_creatures_found_total for s in states]):.2f}")
+
+    print(f"Avg compras via Staff of Domination modo finito (achado 2026-09-13, {{5}},{{T}} + {{1}} untap fora do combo infinito): {avg([s.staff_finite_draws_total for s in states]):.2f}")
+    print(f"Avg compras via Faerie Mastermind ativado (achado 2026-09-13, {{3}}{{U}}: each player draws): {avg([s.faerie_mastermind_draws_total for s in states]):.2f}")
+    print(f"Avg criaturas conjuradas do topo da biblioteca (achado 2026-09-13, Elven Chorus/Realmwalker): {avg([s.cast_from_top_total for s in states]):.2f}")
+
+    # --- Metricas basicas (checklist obrigatorio, categoria 10) --------------
+    # Reportadas explicitamente mesmo quando 0, pra deixar auditavel de
+    # relance sem precisar somar manualmente.
+    print("--- Metricas basicas (checklist obrigatorio) ---")
+    print(f"RAMP: avg pecas de rampa conjuradas (dorks elficos, Sol Ring/Arcane Signet, Cryptolith Rite/"
+          f"Elven Chorus, Itlimoc pos-transformacao): {avg([s.ramp_pieces_cast_total for s in states]):.2f}")
+    print(f"DRAW: avg compras extras totais (Kindred Discovery, Cloud of Faeries, Staff modo finito, Faerie "
+          f"Mastermind ativado, biblioteca via mulligan nao contada aqui - exclui staff infinito): "
+          f"{avg([s.cards_drawn_extra - s.staff_infinite_draws for s in states]):.2f}")
+    print(f"INTERACTION: avg spells de interacao conjurados (Arcane Denial, Counterspell, Swan Song, "
+          f"Pongify, Rapid Hybridization, Reality Shift, Assassin's Trophy, Cyclonic Rift, Toxic Deluge, "
+          f"Heroic Intervention - conjurados quando ha mana sobrando, sem efeito de combate real por ser "
+          f"goldfish solo sem oponente): {avg([s.interaction_spells_cast_total for s in states]):.2f}")
+    print(f"RECURSION: 0.00 (N/A - esta decklist nao tem nenhuma carta que devolva permanente do cemiterio "
+          f"pro campo/mao; Fauna Shaman/Elvish Harbinger/Faerie Harbinger/Formidable Speaker/Green Sun's "
+          f"Zenith sao tutores de BIBLIOTECA, categoria diferente por definicao)")
+    print(f"FINISHER/LETHALITY: combo infinito (Umbral Mantle em dork escalavel 4+) monta em "
+          f"{100*combo_hits/n:.1f}% dos jogos, convertido em compra infinita via Staff of Domination em "
+          f"{100*staff_hits/n:.1f}% ou exercito infinito de Elfo via Imperious Perfect quando disponivel "
+          f"(sem dano de combate real medido - goldfish solo sem oponente/vida alheia)")
+    return states
+
+
+# ---------------------------------------------------------------------------
+# Modo de resiliencia (interacao de oponente) -- 2026-09-20
+# ---------------------------------------------------------------------------
+# Porte do protocolo ja' validado em Megatron/Ur-Dragon/Hei Bai/Edgar Markov/
+# Ulalek/Toph/Prismatic Bridge (nesta ordem, mesma sessao). Camada 100%
+# ADITIVA/OPCIONAL: `simulate_one`/`run_batch` continuam bit-identicos porque
+# `state.interaction_rng` fica `None` em modo padrao e toda funcao
+# `try_smart_opponent_*` abaixo checa isso primeiro.
+#
+# Achado real ESPECIFICO deste deck (unico dos 8 com essa particularidade):
+# Elfo/Fada TOKEN nao vive como entrada nomeada em `state.battlefield` --
+# sao contadores agregados (`state.elf_tokens`/`state.faerie_tokens`, sem
+# nome/turno individual por token, documentado no topo do arquivo desde a
+# criacao). Um "destroy all creatures" de verdade acerta esses tokens
+# tambem (sao criaturas reais na mesa), entao `try_smart_opponent_wipe`
+# abaixo tem que zerar os 2 contadores quando o tipo escolhido for
+# "creature" -- nao so' remover as entradas nomeadas de `state.battlefield`
+# como os outros 7 decks fazem. "Mercenary Token" (Black Market Connections)
+# e' o UNICO token deste deck que vive nomeado em battlefield (ver CARD_DB) -
+# esse sim passa pelo caminho normal de `remove_permanent`.
+
+NUM_OPPONENTS = 3  # premissa declarada (mesa de 4), mesma convencao dos outros 7 decks
+
+INTERACTION_SETUP_TURNS = 2
+# Turnos 1-2 sao sempre setup, sem chance de reacao nenhuma -- o
+# oponente ainda nao tem motivo/mana pra reagir.
+
+
+def interaction_chance(state: GameState) -> float:
+    """Formula compartilhada de 'chance do oponente reagir esse turno' --
+    identica aos outros 7 decks: escala com o impacto do meu proprio
+    board (permanentes nao-terreno em campo). Tokens agregados (elf_
+    tokens/faerie_tokens) somam ao impacto tambem -- sao permanentes
+    reais na mesa, so' nao tem entrada nomeada em `state.battlefield`."""
+    board_impact = (sum(1 for n in state.battlefield if n not in LAND_NAMES)
+                     + state.elf_tokens + state.faerie_tokens)
+    return min(0.10 + 0.03 * board_impact, 0.75)
+
+
+OPPONENT_ATTENTION_CHANCE = 1.0 / NUM_OPPONENTS
+# Gate de "esse oponente esta' de olho em mim esse turno" (achado real
+# do usuario nos outros 7 decks, 2026-09-20: "se sempre for 3 contra 1,
+# ai' nao consigo fazer nada, nunca!") -- chance BASE de que um turno de
+# oponente qualquer seja sobre MIM, antes de qualquer ajuste por ameaca
+# de board (que ja' fica dentro de `interaction_chance()`). Rolado 1x no
+# INICIO de `try_smart_opponent_turn`, antes de qualquer categoria.
+
+POST_WIPE_ATTACK_HASTE_FACTOR = 0.15
+# Board wipe e' SIMETRICO -- acerta TODA criatura da mesa, nao so' as
+# minhas. Se um wipe ja' aconteceu NESTA RODADA (`state.wiped_this_
+# round`), TODOS os turnos de oponente restantes na mesma rodada tambem
+# ficam sem criaturas de verdade pra atacar -- exceto por haste (Regra
+# #1 do CLAUDE.md: so' impossibilidade estrutural justifica nao
+# modelar, nunca zerar por completo).
+
+BOARD_WIPE_CHANCE_FACTOR = 0.4
+ARTIFACT_WIPE_CHANCE_FACTOR = 0.2
+ENCHANTMENT_WIPE_CHANCE_FACTOR = 0.15
+GRAVEYARD_WIPE_CHANCE_FACTOR = 0.4
+GRAVEYARD_SNIPE_CHANCE_FACTOR = 0.5
+COUNTERSPELL_CHANCE_FACTOR = 0.5
+# Pesos relativos de cada TIPO de sweeper (criatura/artefato/
+# encantamento) -- design final ja' corrigido nos outros 7 decks
+# (achado real do usuario 2026-09-20: rolagens INDEPENDENTES permitiam
+# 2 sweepers no mesmo turno de oponente, irreal, e tratavam os 3 tipos
+# como igualmente provaveis quando wipe de criatura e' muito mais comum
+# numa lista real). `try_smart_opponent_wipe` rola 1x se ALGUM wipe
+# acontece (soma dos 3 pesos) e SO' DEPOIS escolhe 1 TIPO, ponderado.
+WIPE_TYPE_WEIGHTS = {
+    "creature": BOARD_WIPE_CHANCE_FACTOR,
+    "artifact": ARTIFACT_WIPE_CHANCE_FACTOR,
+    "enchantment": ENCHANTMENT_WIPE_CHANCE_FACTOR,
+}
+TOTAL_WIPE_CHANCE_FACTOR = sum(WIPE_TYPE_WEIGHTS.values())
+
+ITLIMOC_NAME = "Growing Rites of Itlimoc // Itlimoc, Cradle of the Sun"
+# Achado real deste deck: a face de TRAS (Itlimoc, Cradle of the Sun,
+# pos-transformacao) e' TERRENO, nao encantamento (confirmado via
+# Scryfall: "Legendary Enchantment // Legendary Land"). `CARD_DB` fixa
+# ctype="enchantment" pra carta inteira (so' a face da frente e'
+# conjuravel da mao, mesma convencao documentada no topo do arquivo) --
+# mas depois de `state.itlimoc_transformed=True`, a permanente real na
+# mesa e' um TERRENO, e um wipe de encantamento nao deveria mais
+# alcanca-la. Excluida explicitamente dos candidatos de wipe de
+# encantamento quando ja' transformou.
+
+INTERACTION_ENGINE_PRIORITY = [
+    "Roaming Throne",
+    "Kindred Discovery",
+    "Umbral Mantle",
+    "Staff of Domination",
+    "Elven Chorus",
+    "Cryptolith Rite",
+    "Black Market Connections",
+    "Rhystic Study",
+    "Priest of Titania",
+    "Wilderness Reclamation",
+]
+# Lista curada por prioridade (a mais critica primeiro) -- so' cartas
+# que sao motor RECORRENTE de valor (dobra gatilho/draw todo turno ou
+# ataque/mana repetivel/combo), nao corpos grandes isolados. A propria
+# Maralen fica DE FORA de proposito -- ja' tem categoria dedicada
+# (`try_smart_opponent_counter`, mira o CAST dela especificamente) e
+# remocao nao a mata de verdade mesmo (vai pra zona de comando via
+# `remove_permanent`), entao um oponente esperto prefere gastar a
+# remocao pontual numa peca irrecuperavel.
+
+OPPONENT_ATTACKER_PROFILES = [
+    ("Knight Token", 2), ("Saproling Token", 1), ("Vampire Token", 1),
+    ("Zombie Token", 2), ("Soldier Token", 1), ("Goblin Token", 1),
+    ("Elemental Token", 3),
+]
+# Mesmos perfis genericos ja' validados nos outros 7 decks -- sem
+# toughness, este arquivo nao modela combate/bloqueio real (ver nota
+# estrutural no topo do arquivo). Todo ataque conecta.
+
+
+def try_smart_opponent_removal(state: GameState) -> Optional[str]:
+    """Remocao 'inteligente' -- mira sempre a peca-motor de maior
+    prioridade presente em campo (`INTERACTION_ENGINE_PRIORITY`), nunca
+    aleatorio."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    present = [n for n in INTERACTION_ENGINE_PRIORITY if n in state.battlefield]
+    if not present:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state):
+        return None
+    target = present[0]
+    remove_permanent(state, target, source="opponent_removal")
+    state.smart_removals_total += 1
+    state.smart_removal_log.append((state.turn, target))
+    return target
+
+
+def try_smart_opponent_attack(state: GameState) -> Optional[str]:
+    """Ataque de oponente -- SEM bloqueio (limitacao estrutural: este
+    arquivo nao modela combate/bloqueio de nenhum tipo). Sempre conecta
+    em `state.life`.
+
+    Se `state.wiped_this_round` (algum wipe ja' disparou nesta rodada,
+    de qualquer oponente, incluindo este mesmo turno) a chance cai pra
+    `POST_WIPE_ATTACK_HASTE_FACTOR` -- representa so' um atacante com
+    haste conjurado DEPOIS do wipe."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    chance = interaction_chance(state) * (POST_WIPE_ATTACK_HASTE_FACTOR if state.wiped_this_round else 1.0)
+    if state.interaction_rng.random() >= chance:
+        return None
+    name, power = state.interaction_rng.choice(OPPONENT_ATTACKER_PROFILES)
+    state.life -= power
+    state.smart_attacks_taken_total += 1
+    state.smart_attack_log.append((state.turn, name))
+    return name
+
+
+def try_smart_opponent_discard(state: GameState) -> Optional[str]:
+    """Discard aleatorio -- mesma logica dos outros 7 decks (alvo
+    puramente ao acaso na mao, sem filtro nenhum)."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    if not state.hand:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state):
+        return None
+    target = state.interaction_rng.choice(state.hand)
+    state.hand.remove(target)
+    state.graveyard.append(target)
+    state.smart_discards_total += 1
+    state.smart_discard_log.append((state.turn, target))
+    return target
+
+
+def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
+    """Board wipe ('destroy all creatures'/'destroy all artifacts'/
+    'destroy all enchantments') -- destroi TODOS os meus permanentes do
+    tipo escolhido de uma vez via `remove_permanent`. Maralen nunca e'
+    artefato/encantamento (Legendary Creature -- Elf Faerie Noble,
+    confirmado via Scryfall), entao nunca e' alvo dos 2 tipos novos.
+
+    Design de 2 passos (nao 3 rolagens independentes -- ver comentario
+    de `WIPE_TYPE_WEIGHTS` acima): 1) rola 1x se ALGUM wipe acontece
+    esse turno de oponente, chance = `interaction_chance() *
+    TOTAL_WIPE_CHANCE_FACTOR`; 2) SO' se isso disparar, escolhe qual
+    TIPO de sweeper via escolha ponderada (`state.interaction_rng.
+    choices`) restrita aos tipos que tem pelo menos 1 alvo legal em
+    campo.
+
+    Achado real deste deck: um wipe de CRIATURA tambem tem que zerar os
+    contadores agregados `elf_tokens`/`faerie_tokens` (ver comentario no
+    topo da secao) -- sao criaturas reais na mesa, so' sem entrada
+    nomeada em `state.battlefield`. Um wipe de ENCANTAMENTO nunca
+    alcanca `ITLIMOC_NAME` depois de transformado (a face de tras e'
+    TERRENO, nao encantamento -- ver comentario de `ITLIMOC_NAME`). Se
+    o tipo escolhido nao for 'creature' mas algum alvo destruido TAMBEM
+    for uma criatura de verdade (Roaming Throne, artifact_creature),
+    `state.wiped_this_round` e' setado igual -- perdi poder de ataque
+    real nesta rodada. Sem nenhum alvo legal de tipo nenhum (incluindo
+    tokens), retorna None sem fazer nada."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * TOTAL_WIPE_CHANCE_FACTOR:
+        return None
+    has_token_creatures = (state.elf_tokens + state.faerie_tokens) > 0
+    candidates = {
+        "creature": [n for n in state.battlefield if is_creature_card(n)],
+        "artifact": [n for n in state.battlefield if is_artifact_card(n)],
+        "enchantment": [n for n in state.battlefield if is_enchantment_card(n)
+                         and not (n == ITLIMOC_NAME and state.itlimoc_transformed)],
+    }
+    available = [t for t in candidates if candidates[t]]
+    if has_token_creatures and "creature" not in available:
+        available.append("creature")
+    if not available:
+        return None
+    wipe_type = state.interaction_rng.choices(available, weights=[WIPE_TYPE_WEIGHTS[t] for t in available])[0]
+    targets = candidates[wipe_type]
+    hit_creature = wipe_type == "creature" or any(is_creature_card(n) for n in targets)
+    for n in targets:
+        remove_permanent(state, n, source=f"opponent_{wipe_type}_wipe")
+    log_targets = targets
+    if wipe_type == "creature" and has_token_creatures:
+        tokens_wiped = state.elf_tokens + state.faerie_tokens
+        log_targets = targets + [f"{tokens_wiped} token(s)"]
+        state.elf_tokens = 0
+        state.faerie_tokens = 0
+    if wipe_type == "creature":
+        state.smart_wipes_total += 1
+        state.smart_wipe_log.append((state.turn, log_targets))
+    elif wipe_type == "artifact":
+        state.smart_artifact_wipes_total += 1
+        state.smart_artifact_wipe_log.append((state.turn, log_targets))
+    else:
+        state.smart_enchantment_wipes_total += 1
+        state.smart_enchantment_wipe_log.append((state.turn, log_targets))
+    if hit_creature:
+        state.wiped_this_round = True
+    return log_targets
+
+
+def try_smart_opponent_graveyard_wipe(state: GameState) -> Optional[list]:
+    """Graveyard hate, modelo MASS EXILE (Bojuka Bog/Soul-Guide
+    Lantern-style) -- dispara NO MAXIMO 1x por partida inteira
+    (`state.graveyard_wipe_used`)."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    if state.graveyard_wipe_used or not state.graveyard:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * GRAVEYARD_WIPE_CHANCE_FACTOR:
+        return None
+    exiled = state.graveyard[:]
+    state.graveyard.clear()
+    state.graveyard_wipe_used = True
+    state.smart_graveyard_wipes_total += 1
+    state.smart_graveyard_wipe_log.append((state.turn, exiled))
+    return exiled
+
+
+def try_smart_opponent_graveyard_snipe(state: GameState) -> Optional[str]:
+    """Graveyard hate, modelo EXILIO DE CARTA UNICA (Scavenging
+    Ooze/Cease-style) -- repetivel todo turno. Alvo SMART: maior MV
+    entre criatura no cemiterio (unico criterio real de recursao que
+    faz sentido mirar neste deck -- nao ha nenhum motor de reanimacao
+    de cemiterio aqui, mas um oponente esperto ainda prioriza a maior
+    ameaca potencial la' dentro)."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return None
+    candidates = [c for c in state.graveyard if is_creature_card(c)]
+    if not candidates:
+        return None
+    if state.interaction_rng.random() >= interaction_chance(state) * GRAVEYARD_SNIPE_CHANCE_FACTOR:
+        return None
+    target = max(candidates, key=lambda n: CARD_DB[n].mv)
+    state.graveyard.remove(target)
+    state.smart_graveyard_snipes_total += 1
+    state.smart_graveyard_snipe_log.append((state.turn, target))
+    return target
+
+
+def try_smart_opponent_counter(state: GameState) -> bool:
+    """Counterspell -- so' mira a conjuracao da propria Maralen (mesma
+    logica dos outros 7 decks: o motor inteiro do deck depende do
+    comandante resolver). Chamada de dentro de `main_phase()`, nao do
+    loop de `simulate_one_with_interaction` -- so' faz sentido no exato
+    momento do cast, dentro do MEU turno."""
+    if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
+        return False
+    if state.interaction_rng.random() >= interaction_chance(state) * COUNTERSPELL_CHANCE_FACTOR:
+        return False
+    state.smart_counters_total += 1
+    state.smart_counter_log.append(state.turn)
+    return True
+
+
+def try_smart_opponent_turn(state: GameState):
+    """Simula O TURNO DE UM oponente dentro da rodada entre os meus
+    turnos (mesmo design final ja' validado nos outros 7 decks, Regra
+    #6 do CLAUDE.md: bug de orquestracao de turno que auditoria
+    carta-a-carta nao pega). Chamada `NUM_OPPONENTS` vezes por rodada --
+    um wipe de um oponente ANTERIOR na rodada continua afetando
+    corretamente o ataque de um oponente POSTERIOR na MESMA rodada
+    (chamadas em sequencia, mesmo `state`).
+
+    Gate de atencao: antes de rolar QUALQUER categoria, este turno de
+    oponente precisa passar em `OPPONENT_ATTENTION_CHANCE`. Wipe e
+    ataque nao precisam de exclusao mutua manual aqui: `try_smart_
+    opponent_attack` ja' se auto-regula via `state.wiped_this_round`
+    (setado por `try_smart_opponent_wipe`, que roda antes, dentro desta
+    mesma chamada)."""
+    if state.turn > INTERACTION_SETUP_TURNS and state.interaction_rng.random() >= OPPONENT_ATTENTION_CHANCE:
+        return
+    try_smart_opponent_wipe(state)
+    try_smart_opponent_attack(state)
+    try_smart_opponent_graveyard_wipe(state)
+    try_smart_opponent_graveyard_snipe(state)
+    try_smart_opponent_removal(state)
+    try_smart_opponent_discard(state)
+
+
+def simulate_one_with_interaction(seed: int, turns: int = 8) -> GameState:
+    """Mesmo goldfish de `simulate_one`, mas com `NUM_OPPONENTS` turnos
+    de oponente de verdade simulados (`try_smart_opponent_turn`) a cada
+    rodada entre os meus turnos. Counterspell (7a categoria) NAO mora
+    neste loop -- ver `try_smart_opponent_counter`, chamada de dentro de
+    `main_phase` no exato momento do cast do comandante.
+
+    NUNCA chamado por `run_batch`/`simulate_one` padrao (nem o loop
+    aqui, nem o counter dentro de `main_phase` -- ambos ficam inertes
+    sem `interaction_rng`). Retorna o `GameState` bruto (nao um
+    resumo), mesma convencao dos outros 7 decks."""
+    rng = random.Random(seed)
+    hand, lib, mulls = mulligan(rng)
+    state = GameState(hand=hand, library=lib, mulligans=mulls,
+                       interaction_rng=random.Random(seed + 999_999))
+    for t in range(turns):
+        play_turn(state, is_first_turn=(t == 0), on_play=True)
+        state.wiped_this_round = False
+        for _ in range(NUM_OPPONENTS):
+            try_smart_opponent_turn(state)
+        if state.infinite_combo_assembled and state.staff_infinite_draws > 0:
+            break
+    return state
+
+
+def run_batch_with_interaction(n=2000, turns=8, seed_base=6000000):
+    """Batch do modo de resiliencia -- reporta so' as metricas
+    relevantes pra 'o motor aguenta perder a peca central?', nao
+    duplica o relatorio inteiro do `run_batch` padrao."""
+    states = [simulate_one_with_interaction(seed_base + i, turns=turns) for i in range(n)]
+
+    def avg(vals):
+        return sum(vals) / len(vals) if vals else 0.0
+
+    print(f"n={n}, seed_base={seed_base}, turns={turns} (MODO RESILIENCIA)")
+    print(f"Avg counterspells sofridos (so' mira a conjuracao da Maralen): "
+          f"{avg([s.smart_counters_total for s in states]):.2f}")
+    maralen_cast = [s.commander_cast_turn for s in states if s.commander_cast_turn is not None]
+    print(f"  -- Turno medio de conjuracao da Maralen QUE RESOLVEU: "
+          f"{avg(maralen_cast):.2f} | nunca resolveu em {turns} turnos: "
+          f"{100*(n-len(maralen_cast))/n:.1f}%")
+    print(f"Avg board wipes sofridos: {avg([s.smart_wipes_total for s in states]):.2f}")
+    print(f"Avg artifact wipes sofridos: {avg([s.smart_artifact_wipes_total for s in states]):.2f}")
+    print(f"Avg enchantment wipes sofridos: {avg([s.smart_enchantment_wipes_total for s in states]):.2f}")
+    gy_wiped = sum(1 for s in states if s.smart_graveyard_wipes_total > 0)
+    print(f"Partidas com graveyard wipe sofrido (no maximo 1x/partida): {100*gy_wiped/n:.1f}%")
+    print(f"Avg graveyard snipes sofridos: {avg([s.smart_graveyard_snipes_total for s in states]):.2f}")
+    print(f"Avg remocoes inteligentes sofridas: {avg([s.smart_removals_total for s in states]):.2f}")
+    hit_counts = {}
+    for s in states:
+        for _, target in s.smart_removal_log:
+            hit_counts[target] = hit_counts.get(target, 0) + 1
+    for name in INTERACTION_ENGINE_PRIORITY:
+        pct = 100 * hit_counts.get(name, 0) / n
+        if pct > 0:
+            print(f"  -- {name} removido em {pct:.1f}% dos jogos")
+    print(f"Avg ataques de oponente sofridos: {avg([s.smart_attacks_taken_total for s in states]):.2f}")
+    print(f"Avg descartes forcados sofridos: {avg([s.smart_discards_total for s in states]):.2f}")
+    print(f"Avg vida final: {avg([s.life for s in states]):.2f}")
+    return states
+
+
+if __name__ == "__main__":
+    import os
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    states = run_batch(n=3000, seed_base=8000000, turns=8)
+
+    with open("maralen_v1_runs.jsonl", "w") as f:
+        for s in states:
+            f.write(json.dumps({
+                "mulligans": s.mulligans,
+                "commander_cast_turn": s.commander_cast_turn,
+                "maralen_triggers_total": s.maralen_triggers_total,
+                "maralen_free_casts_total": s.maralen_free_casts_total,
+                "tutors_used_total": s.tutors_used_total,
+                "infinite_combo_assembled": s.infinite_combo_assembled,
+                "infinite_combo_turn": s.infinite_combo_turn,
+                "staff_infinite_draws": s.staff_infinite_draws,
+                "cards_drawn_extra": s.cards_drawn_extra,
+            }) + "\n")

@@ -861,6 +861,7 @@ class GameState:
     commander_cast_count: int = 0
     tapped_land_first_plays_total: int = 0   # correcao de 2026-10-05: vezes em que T1/T2 jogou o terreno virado primeiro
     tapped_land_skipped_for_play_total: int = 0   # ... e vezes em que o ensaio mostrou que isso custaria uma jogada e jogou o desvirado
+    payoff_first_casts: int = 0   # correcao de 2026-10-07 (LANDFALL_PAYOFF_FIRST): vezes em que um payoff de landfall foi conjurado ANTES do terreno do turno
 
     lands_played_this_turn: int = 0
     extra_land_drops: int = 0
@@ -2075,6 +2076,94 @@ def land_drops_allowed(state: GameState) -> int:
     return 1 + state.extra_land_drops + count_card(state, "Dryad of the Ilysian Grove")
 
 
+# ---------------------------------------------------------------------------
+# Payoff de landfall ANTES do terreno -- correcao de 2026-10-07 (classe achada no Mothman em 2026-10-06, ordem terreno x payoff)
+# ---------------------------------------------------------------------------
+# Antes: `main_phase(first=True)` jogava o terreno (`play_land`) ANTES de `cast_loop`, entao Lotus Cobra / Tireless Provisioner / Scute Swarm / Felidar Retreat etc.
+# so' entravam DEPOIS do terreno do turno e esse terreno nunca disparava o landfall. O jogador real conjura o payoff primeiro quando o mana de AGORA ja' o paga.
+# Agora, com um terreno ainda por jogar, conjura antes (na ordem do proprio `cast_loop`: o mais barato primeiro) os payoffs que o mana de agora paga. So' muda a ORDEM
+# de cartas que o turno ja' conjuraria; o comandante tem prioridade (nao o deslocamos). Com a chave em False o comportamento e' o antigo, bit a bit.
+LANDFALL_PAYOFF_FIRST = True
+LANDFALL_PAYOFFS = frozenset({
+    "Lotus Cobra", "Nissa, Resurgent Animist", "Tireless Provisioner", "Bristly Bill, Spine Sower", "Mossborn Hydra", "Tannuk, Memorial Ensign",
+    "Toph, Earthbending Master", "Earthbender Ascension", "Scute Swarm", "Sapling Nursery", "Springheart Nantuko", "Felidar Retreat",
+})   # as cartas que `landfall()` trata (Field of the Dead e' terreno: nao e' payoff conjuravel)
+
+
+def _land_to_play_available(state: GameState) -> bool:
+    """Mesma condicao com que `play_land` acharia um terreno para jogar agora (mao, ou cemiterio com Crucible/Conduit/emblema do Wrenn)."""
+    if state.lands_played_this_turn >= land_drops_allowed(state):
+        return False
+    if any(n in LAND_NAMES for n in state.hand):
+        return True
+    if has_card(state, "Crucible of Worlds") or has_card(state, "Conduit of Worlds") or state.wrenn_emblem:
+        return any(n in LAND_NAMES for n in state.graveyard)
+    return False
+
+
+def _kodama_held(state: GameState) -> Optional[str]:
+    """A mesma carta que `main_phase` segura para o Kodama of the East Tree (calculada de novo: a mao so' perde terreno entre os dois pontos)."""
+    if KODAMA_HOLD_POLICY and has_card(state, "Kodama of the East Tree"):
+        perms = [n for n in state.hand if CARD_DB[n].ctype not in ("instant", "sorcery", "land") and not CARD_DB[n].mdfc_front]
+        if perms:
+            return min(perms, key=lambda n: CARD_DB[n].mv)
+    return None
+
+
+def _cast_payoff(state: GameState, n: str, log: list) -> bool:
+    """O mesmo cast que `cast_loop` faria para `n` (Springheart Nantuko com bestow quando ha' hospedeiro)."""
+    if n == "Springheart Nantuko" and best_bestow_host(state) is not None:
+        return cast_spell(state, n, log, "bestow")
+    return cast_spell(state, n, log)
+
+
+def _copia_do_estado(state: GameState) -> GameState:
+    """Copia profunda com `CARD_DB` compartilhado. O `memo` e' NOVO a cada copia: reaproveitar o mesmo faria a 2a copia devolver os mesmos objetos da 1a."""
+    return copy.deepcopy(state, {id(c): c for c in CARD_DB.values()})
+
+
+def _hoist_loses_a_play(state: GameState, n: str) -> bool:
+    """Ensaio a seco (copia profunda; `CARD_DB` compartilhado; `random` global restaurado) do RESTO da fase pre-combate nas duas ordens: na ANTIGA (terreno, depois o resto do turno) e na NOVA (`choice` conjurado ANTES do terreno, depois o
+    mesmo resto). O payoff so' passa na frente se nada que a ordem antiga conjuraria/jogaria neste turno (inclusive o comandante) deixar de acontecer na nova: protege o comandante, as rochas de mana e qualquer jogada
+    de prioridade maior que a do payoff, contando o mana de landfall que ja' esta em campo e os land drops extras (o que a formula `mana de agora + 1` nao conta)."""
+    global LANDFALL_PAYOFF_FIRST
+    saved, flag = random.getstate(), LANDFALL_PAYOFF_FIRST
+    LANDFALL_PAYOFF_FIRST = False        # dentro do ensaio nao ha' novo payoff antes do terreno (sem recursao): o resto do turno roda como a ordem antiga
+    try:
+        mao0 = collections.Counter(state.hand)
+        antiga = _copia_do_estado(state)
+        main_phase(antiga, [], True)
+        nova = _copia_do_estado(state)
+        _cast_payoff(nova, n, [])
+        main_phase(nova, [], True)
+        perdeu = (mao0 - collections.Counter(antiga.hand)) - (mao0 - collections.Counter(nova.hand))
+        return bool(perdeu) or (antiga.commander_in_play and not nova.commander_in_play)
+    finally:
+        LANDFALL_PAYOFF_FIRST = flag
+        random.setstate(saved)
+
+
+def cast_landfall_payoffs_first(state: GameState, log: list):
+    """Ordem real de jogo: com um terreno ainda por jogar, conjura ANTES os payoffs de landfall que o mana de agora paga (o mais barato primeiro, como o `cast_loop`),
+    para que o terreno do turno dispare o landfall deles. O comandante tem prioridade: se ele seria conjurado neste turno e o payoff o impediria, nao desloca."""
+    if not LANDFALL_PAYOFF_FIRST or state.conduit_lockout:
+        return
+    for _ in range(4):
+        if not _land_to_play_available(state):
+            return
+        held = _kodama_held(state)
+        cands = [n for n in castable_names(state, held) if n in LANDFALL_PAYOFFS]
+        if not cands:
+            return
+        n = cands[0]
+        if _hoist_loses_a_play(state, n):
+            return                        # o payoff antes do terreno faria o turno perder uma jogada (comandante, rocha de mana...): fica na ordem antiga
+        ok = _cast_payoff(state, n, log)
+        if not ok:
+            return
+        state.payoff_first_casts += 1
+
+
 def play_land(state: GameState, log: list):
     while state.lands_played_this_turn < land_drops_allowed(state):
         lands_in_hand = [n for n in state.hand if n in LAND_NAMES]
@@ -2770,6 +2859,7 @@ def main_phase(state: GameState, log: list, first: bool):
         for c in [c for c in bf(state) if is_creature_type(c, state)]:
             add_counters(state, c, 2, log)
     if first:
+        cast_landfall_payoffs_first(state, log)   # 2026-10-07: payoff de landfall antes do terreno (chave LANDFALL_PAYOFF_FIRST)
         play_land(state, log)
     if not first:
         sacrifice_engine(state, log)

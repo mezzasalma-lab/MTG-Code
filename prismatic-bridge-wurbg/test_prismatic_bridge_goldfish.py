@@ -1998,6 +1998,79 @@ def test_sisay_runs_full_games_without_exceptions():
 # Runner
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# Payoff de landfall antes do terreno (2026-10-07, LANDFALL_PAYOFF_FIRST)
+# ---------------------------------------------------------------------------
+
+def _com_chave(valor, f):
+    antigo = pb.LANDFALL_PAYOFF_FIRST
+    pb.LANDFALL_PAYOFF_FIRST = valor
+    try:
+        return f()
+    finally:
+        pb.LANDFALL_PAYOFF_FIRST = antigo
+
+
+def _turno_de_terreno(s):
+    """O trecho de `play_turn` entre a compra e a fase principal: payoff primeiro (se ligado), `play_land`."""
+    s.land_played = False
+    s.mana_spent_this_turn = 0
+    s.tapped_lands_this_turn = set()
+    pb.cast_landfall_payoffs_first(s, [])
+    pb.play_land(s, [])
+    return s
+
+
+def _cena_sage(hand, lands=3, bridge=True, land=FILLER):
+    s = fresh(turn=5, hand=hand)
+    s.interaction_rng = None
+    s.bridge_in_play = bridge
+    s.battlefield += [land] * lands
+    pw(s, "Elspeth, Sun's Champion", 3)
+    return s
+
+
+def test_payoff_primeiro_evolution_sage_antes_do_terreno_prolifera_o_planeswalker():
+    def rodar():
+        return _turno_de_terreno(_cena_sage(["Evolution Sage", FILLER]))
+    s = _com_chave(True, rodar)
+    assert s.payoff_first_casts == 1 and "Evolution Sage" in s.battlefield
+    assert s.evolution_sage_proliferates == 1                       # o terreno do turno disparou o landfall da Sage
+    assert s.loyalty["Elspeth, Sun's Champion"] == 5                # 3 + 1 (+1 da Elspeth ativando ao fim do cast, CR 606.3) + 1 (proliferate)
+    s0 = _com_chave(False, rodar)   # ordem antiga: o terreno entra primeiro, a Sage so' e' conjurada depois (na fase principal)
+    assert s0.payoff_first_casts == 0 and "Evolution Sage" not in s0.battlefield and s0.evolution_sage_proliferates == 0
+
+
+def test_payoff_primeiro_nao_desloca_a_bridge():
+    def rodar():
+        s = _cena_sage(["Evolution Sage", FILLER], lands=4, bridge=False, land="Command Tower")
+        return _turno_de_terreno(s)
+    s = _com_chave(True, rodar)    # Bridge (5) cabe com o terreno do turno (4 + 1); a Sage (3) a impediria
+    assert s.payoff_first_casts == 0 and "Evolution Sage" not in s.battlefield
+    sem_cores = _com_chave(True, lambda: _turno_de_terreno(_cena_sage(["Evolution Sage", FILLER], lands=4, bridge=False)))
+    assert sem_cores.payoff_first_casts == 1   # 4 Snow-Covered Forest nao pagam as 5 cores da Bridge nem com o terreno: nada a proteger, a Sage sai antes
+
+
+def test_payoff_primeiro_nao_dispara_sem_terreno_nem_com_terreno_ja_jogado():
+    s = _com_chave(True, lambda: _turno_de_terreno(_cena_sage(["Evolution Sage"])))
+    assert s.payoff_first_casts == 0
+    s2 = _cena_sage(["Evolution Sage", FILLER])
+    s2.land_played = True
+    _com_chave(True, lambda: pb.cast_landfall_payoffs_first(s2, []))
+    assert s2.payoff_first_casts == 0 and "Evolution Sage" in s2.hand
+
+
+def test_payoff_primeiro_respeita_a_mana_de_agora():
+    s = _com_chave(True, lambda: _turno_de_terreno(_cena_sage(["Evolution Sage", FILLER], lands=2)))
+    assert s.payoff_first_casts == 0   # 2 de mana nao paga a Sage (3): o terreno vem primeiro como antes
+
+
+def test_main_phase_extraido_continua_conjurando_o_resto_da_mao():
+    s = _cena_sage(["Evolution Sage"], lands=3)
+    _com_chave(False, lambda: pb.main_phase(s, []))
+    assert "Evolution Sage" in s.battlefield and s.mana_spent_this_turn == 3   # o loop generico usa `_cast_hand_spell`
+
+
 def run_all():
     tests = [(n, f) for n, f in sorted(globals().items()) if n.startswith("test_") and callable(f)]
     failed = 0

@@ -1,0 +1,27 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 4841 (48.4%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *landfall_triggers_fired                     12.9223      13.1424      +0.2201 ±0.0638  
+  *spells_cast_total                            9.9449      10.1203      +0.1754 ±0.0334  
+   table_damage_total                     72919756759684968608237596180480.0000 48000852674570684281342163681280.0000 -24918904085114284326895432499200.0000 ±48841053949826197877592118263808.0000
+  *lethal_turn__nunca                           0.8796       0.8512      -0.0284 ±0.0040  
+  *lethal_turn__ate_T5                          0.0006       0.0011      +0.0005 ±0.0004  
+  *lethal_turn__ate_T6                          0.0051       0.0076      +0.0025 ±0.0012  
+  *commander_cast_turn__nunca                   0.0857       0.0820      -0.0037 ±0.0018  
+   commander_cast_turn__ate_T3                  0.1336       0.1337      +0.0001 ±0.0005  
+  *commander_cast_turn__ate_T4                  0.4835       0.4889      +0.0054 ±0.0017  
+  *first_finisher_turn__ate_T5                  0.1831       0.2031      +0.0200 ±0.0029  
+  *first_finisher_turn__ate_T6                  0.3278       0.3501      +0.0223 ±0.0033  
+  *next_uid                                    36.9436      39.5319      +2.5883 ±0.4824  
+  *len_smart_counter_log                        0.1204       0.0968      -0.0236 ±0.0045  
+  *smart_counters_total                         0.1204       0.0968      -0.0236 ±0.0045  
+  *first_finisher_turn__ate_T4                  0.0876       0.0973      +0.0097 ±0.0019  
+  *tokens_created                              15.8229      18.1139      +2.2910 ±0.4541  
+  *bf_version                                  71.6285      77.4471      +5.8186 ±1.1915  
+  *first_finisher_turn__nunca                   0.4120       0.3961      -0.0159 ±0.0035  
+  *commander_cast_turn__ate_T5                  0.6843       0.6954      +0.0111 ±0.0025  
+  *len_earthbend_by_source                      2.0984       2.1356      +0.0372 ±0.0091  
+  *len_library                                 78.6202      78.3583      -0.2619 ±0.0662  
+  *mana_spent_total                            36.2308      37.2970      +1.0662 ±0.2797  
+  *cards_drawn_extra                            2.8780       3.0920      +0.2140 ±0.0619  

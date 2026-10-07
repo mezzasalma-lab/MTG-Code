@@ -1,8 +1,46 @@
 # Goldfish Compilado — Beorn the Fierce
 
+> **Rodada 2026-10-07 (Payoff de landfall antes do terreno) — dados brutos e reprodução:** [`resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md`](resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md)
+
 > **Rodada 2026-10-05 (varredura de classes de erro; nenhuma correção de código aqui):** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
 
 Compilação de todos os goldfish rodados na sessão. Cada jogo foi registrado turno a turno a partir dos logs reais (imagens de opening hand + JSON de jogadas), com as correções apontadas ao longo do processo já aplicadas.
+
+---
+
+## Payoff de landfall antes do terreno (`LANDFALL_PAYOFF_FIRST`) — 2026-10-07
+
+**Pedido do usuário:** *"Corrige os simuladores com erro no script para automatizar a ordem de jogadas para o landfall"*. Arquivo bruto/auditável: `resultados-ab/2026-10-07-landfall-payoff-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real de ordem, um conserto atrás de chave, bit-idêntico com a chave desligada. O payoff entra antes do terreno em **57,4%** das partidas (0,87 por partida; 45,9% e 0,62 na resiliência). Efeito claro: **+0,26 magias (+2,0%)**, **+0,39 Ursos**, **+2,3 contadores em campo** (+13,8%), **+0,71 compras extras**; o comandante **não muda** (T3 +0,0, T4 +0,1 ponto) e a fração sem finisher até o T8 cai 1,2 ponto (56,6% → 55,4%).
+
+**Achado:** o simulador jogava o terreno do turno ANTES de conjurar o payoff de landfall (`play_land` antes da fase de conjuração; a ordem completa do turno está no `LEIAME.md` da pasta). Com a ordem antiga o terreno do turno nunca disparava o landfall do payoff que o mana de agora já pagava.
+
+**Correção:** chave `LANDFALL_PAYOFF_FIRST` + `cast_landfall_payoffs_first`, com guarda por ensaio a seco (nada que a ordem antiga conjuraria/jogaria pode deixar de acontecer). Detalhes e a 1ª guarda aritmética que estava errada: `LEIAME.md` da pasta.
+
+**Números (N=10.000 pareado, `*` = excede o IC95%):**
+
+| campo (N=10.000 pareado) | padrao: base -> depois (dif ± IC95%) | resiliencia: base -> depois (dif ± IC95%) |
+|---|---|---|
+| `lands_played_total` | 6.963 -> 6.982 (+0.019 ± 0.004) * | 6.572 -> 6.593 (+0.021 ± 0.004) * |
+| `spells_cast` | 13.144 -> 13.401 (+0.257 ± 0.019) * | 11.065 -> 11.213 (+0.148 ± 0.017) * |
+| `bear_count_final` | 8.430 -> 8.816 (+0.387 ± 0.045) * | - |
+| `counters_on_board_final` | 16.567 -> 18.854 (+2.288 ± 0.326) * | - |
+| `counters_on_board` | - | 8.097 -> 9.144 (+1.048 ± 0.171) * |
+| `extra_draws` | 20.429 -> 21.142 (+0.713 ± 0.095) * | 10.698 -> 11.052 (+0.354 ± 0.076) * |
+| `battlefield_count` | 21.493 -> 22.055 (+0.562 ± 0.056) * | - |
+| `finishers_resolved` | 0.572 -> 0.595 (+0.024 ± 0.005) * | - |
+| `commander_cast_turn__ate_T3` | 0.174 -> 0.174 (+0.000 ± 0.000) | 0.085 -> 0.084 (-0.001 ± 0.001) * |
+| `commander_cast_turn__ate_T4` | 0.619 -> 0.620 (+0.001 ± 0.001) * | 0.337 -> 0.336 (-0.001 ± 0.002) |
+| `commander_cast_turn__ate_T5` | 0.896 -> 0.896 (+0.000 ± 0.000) | 0.557 -> 0.557 (-0.000 ± 0.003) |
+| `finisher_turn__ate_T6` | 0.175 -> 0.181 (+0.005 ± 0.002) * | 0.134 -> 0.136 (+0.003 ± 0.002) * |
+| `finisher_turn__nunca` | 0.566 -> 0.554 (-0.012 ± 0.004) * | 0.667 -> 0.662 (-0.005 ± 0.003) * |
+| `clues` | - | 0.108 -> 0.166 (+0.058 ± 0.007) * |
+| partidas com resultado idêntico ao da base | 54.0% | 56.9% |
+
+**Validação:** testes dirigidos 8/8; bit-identidade 20.000 × 2 modos com a chave desligada (0 divergências); regressão 20.000 × 2 modos × 2 configurações (0 exceções); determinismo 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos (0 divergências); smoke 99 cartas.
+
+**Não coberto / não verificado:** magia que põe terreno em campo antes do payoff, terreno que volta ao campo, política de jogador humano; o A/B mede o simulador (3 oponentes passivos), não a mesa real.
 
 ---
 

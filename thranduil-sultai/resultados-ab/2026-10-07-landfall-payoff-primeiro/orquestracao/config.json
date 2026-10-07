@@ -1,0 +1,32 @@
+{
+ "flags_off": {
+  "LANDFALL_PAYOFF_FIRST": false
+ },
+ "ignora_campos": [
+  "payoff_first_casts"
+ ],
+ "sensibilidade": {},
+ "turns": 8,
+ "extra": null,
+ "deck": "thranduil-sultai",
+ "sim": "thranduil_goldfish_v1.py",
+ "snapshot": "codigo/thranduil_goldfish_v1_ANTES_4d76ae0.py",
+ "destaque": [
+  "payoff_first_casts",
+  "lands_played_total",
+  "landfall_elf_tokens",
+  "thranduils_company_counters",
+  "spells_cast",
+  "extra_draws",
+  "commander_cast_turn__nunca",
+  "commander_cast_turn__ate_T3",
+  "commander_cast_turn__ate_T4",
+  "commander_cast_turn__ate_T5",
+  "commander_cast_turn__ate_T6",
+  "finisher_turn__nunca",
+  "finisher_turn__ate_T3",
+  "finisher_turn__ate_T4",
+  "finisher_turn__ate_T5",
+  "finisher_turn__ate_T6"
+ ]
+}

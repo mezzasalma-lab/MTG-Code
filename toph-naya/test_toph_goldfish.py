@@ -569,6 +569,94 @@ def test_greaves_shroud_blocks_removal_target():
     assert not tg.is_targetable_by_opponent(ul, s)
 
 
+# --- payoff de landfall antes do terreno (2026-10-07, LANDFALL_PAYOFF_FIRST) -------------
+
+def _com_chave(valor, f):
+    antigo = tg.LANDFALL_PAYOFF_FIRST
+    tg.LANDFALL_PAYOFF_FIRST = valor
+    try:
+        return f()
+    finally:
+        tg.LANDFALL_PAYOFF_FIRST = antigo
+
+
+def _tokens_de_landfall(s):
+    return sum(1 for p in s.battlefield if p.card.name in ("Treasure", "Food"))
+
+
+def test_payoff_primeiro_provisioner_antes_do_terreno_dispara_o_landfall():
+    def rodar():
+        s = fresh(turn=5, hand=["Tireless Provisioner", "Forest"])
+        put(s, tg.COMMANDER, "Forest", "Forest", "Forest")   # comandante em campo: nao disputa o mana
+        tg.main_phase(s, [], first=True)
+        return s
+    s = _com_chave(True, rodar)
+    assert s.payoff_first_casts == 1 and any(p.card.name == "Tireless Provisioner" for p in s.battlefield)
+    assert _tokens_de_landfall(s) == 1      # o terreno do turno disparou o landfall do Provisioner
+    s0 = _com_chave(False, rodar)           # ordem antiga: terreno primeiro, o Provisioner entra depois dele
+    assert s0.payoff_first_casts == 0 and any(p.card.name == "Tireless Provisioner" for p in s0.battlefield)
+    assert _tokens_de_landfall(s0) == 0
+
+
+def test_payoff_primeiro_cobra_paga_a_mana_do_terreno_do_mesmo_turno():
+    def rodar():
+        s = fresh(turn=5, hand=["Lotus Cobra", "Forest", "Tireless Provisioner"])
+        put(s, tg.COMMANDER, "Forest", "Forest", "Forest")
+        tg.main_phase(s, [], first=True)
+        return s
+    s = _com_chave(True, rodar)   # Cobra (2) com 3 de mana, terreno -> +1 do Cobra: 1 + 1 + 1 = 3 paga o Provisioner
+    assert {"Lotus Cobra", "Tireless Provisioner"} <= {p.card.name for p in s.battlefield}
+    s0 = _com_chave(False, rodar)  # terreno primeiro: 4 de mana, Cobra (2) e sobram 2 < 3
+    assert "Lotus Cobra" in {p.card.name for p in s0.battlefield} and "Tireless Provisioner" not in {p.card.name for p in s0.battlefield}
+
+
+def test_payoff_primeiro_nao_desloca_o_comandante():
+    def rodar():
+        s = fresh(turn=5, hand=["Lotus Cobra", "Forest"])
+        put(s, "Mountain", "Forest", "Plains")
+        tg.main_phase(s, [], first=True)
+        return s
+    s = _com_chave(True, rodar)    # comandante (4) cabe com o terreno do turno (3 + 1); o Cobra (2) o impediria
+    assert s.commander_in_play and s.payoff_first_casts == 0
+    assert "Lotus Cobra" not in {p.card.name for p in s.battlefield}
+
+
+def test_payoff_primeiro_conta_o_mana_de_landfall_que_ja_esta_em_campo_para_nao_atrasar_o_comandante():
+    def rodar():
+        # Cobra em campo + Mountain/Forest: o terreno do turno (Plains, 3) + o landfall do Cobra (+1) = 4 paga o comandante (R G W); o Bristly Bill (2) antes do terreno o impediria
+        s = fresh(turn=4, hand=["Bristly Bill, Spine Sower", "Plains"])
+        put(s, "Lotus Cobra", "Mountain", "Forest")
+        tg.main_phase(s, [], first=True)
+        return s
+    s = _com_chave(True, rodar)
+    assert s.commander_in_play and s.payoff_first_casts == 0     # a formula antiga (mana de agora + 1 = 3 < 4) deixava o Bill passar e atrasava o comandante
+    assert _com_chave(False, rodar).commander_in_play
+
+
+def test_payoff_primeiro_nao_dispara_sem_terreno_para_jogar_nem_com_o_terreno_ja_jogado():
+    def sem_terreno():
+        s = fresh(turn=5, hand=["Lotus Cobra"])
+        put(s, tg.COMMANDER, "Forest", "Forest", "Forest")
+        tg.main_phase(s, [], first=True)
+        return s
+    s = _com_chave(True, sem_terreno)
+    assert s.payoff_first_casts == 0 and "Lotus Cobra" in {p.card.name for p in s.battlefield}   # o cast_loop conjura do mesmo jeito
+    def ja_jogou():
+        s = fresh(turn=5, hand=["Lotus Cobra", "Forest"])
+        put(s, tg.COMMANDER, "Forest", "Forest", "Forest")
+        s.lands_played_this_turn = 1
+        tg.main_phase(s, [], first=True)
+        return s
+    s2 = _com_chave(True, ja_jogou)
+    assert s2.payoff_first_casts == 0 and "Forest" in s2.hand
+
+
+def test_payoff_primeiro_so_na_primeira_fase_principal():
+    s = fresh(turn=5, hand=["Tireless Provisioner", "Forest"])
+    put(s, tg.COMMANDER, "Forest", "Forest", "Forest")
+    _com_chave(True, lambda: tg.main_phase(s, [], first=False))
+    assert s.payoff_first_casts == 0 and "Forest" in s.hand   # a 2a fase principal nunca joga terreno
+
 # --- reprodutibilidade ---------------------------------------------------------
 
 def test_simulate_deterministic():

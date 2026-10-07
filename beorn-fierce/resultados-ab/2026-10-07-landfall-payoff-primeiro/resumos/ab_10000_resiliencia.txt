@@ -1,0 +1,33 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 5685 (56.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.5715       6.5925      +0.0210 ±0.0042  
+  *spells_cast                                 11.0650      11.2130      +0.1480 ±0.0167  
+  *counters_on_board                            8.0968       9.1443      +1.0475 ±0.1706  
+  *extra_draws                                 10.6985      11.0521      +0.3536 ±0.0759  
+  *ramp_pieces_in_play                          2.6329       2.6621      +0.0292 ±0.0062  
+  *commander_cast_turn__nunca                   0.0335       0.0319      -0.0016 ±0.0008  
+  *commander_cast_turn__ate_T3                  0.0852       0.0838      -0.0014 ±0.0012  
+   commander_cast_turn__ate_T4                  0.3371       0.3362      -0.0009 ±0.0021  
+   commander_cast_turn__ate_T5                  0.5569       0.5568      -0.0001 ±0.0026  
+   commander_cast_turn__ate_T6                  0.6578       0.6576      -0.0002 ±0.0028  
+  *finisher_turn__nunca                         0.6674       0.6624      -0.0050 ±0.0032  
+   finisher_turn__ate_T3                        0.0027       0.0028      +0.0001 ±0.0002  
+  *finisher_turn__ate_T4                        0.0161       0.0171      +0.0010 ±0.0007  
+  *finisher_turn__ate_T5                        0.0587       0.0616      +0.0029 ±0.0013  
+  *finisher_turn__ate_T6                        0.1335       0.1364      +0.0029 ±0.0018  
+  *clues                                        0.1080       0.1662      +0.0582 ±0.0069  
+  *len_dork_entered_turn                        1.5581       1.6050      +0.0469 ±0.0056  
+  *len_creature_entered_turn                    6.1926       6.3200      +0.1274 ±0.0162  
+  *beorn_bear_draws                             2.1975       2.2369      +0.0394 ±0.0071  
+  *mana_spent_this_turn                         8.6180       8.8178      +0.1998 ±0.0381  
+  *len_library                                 71.7191      71.3361      -0.3830 ±0.0771  
+  *len_battlefield                             14.0256      14.2380      +0.2124 ±0.0440  
+  *len_smart_counter_log                        0.1088       0.0972      -0.0116 ±0.0027  
+  *smart_counters_total                         0.1088       0.0972      -0.0116 ±0.0027  
+  *len_graveyard                                4.9063       5.0306      +0.1243 ±0.0351  
+  *lightning_greaves_equip_count                0.4582       0.4695      +0.0113 ±0.0032  
+  *land_played                                  0.7332       0.7418      +0.0086 ±0.0026  
+  *bonus_mana_this_turn                         0.8056       0.8794      +0.0738 ±0.0251  
+  *tapped_green_this_turn                       0.8130       0.8278      +0.0148 ±0.0054  

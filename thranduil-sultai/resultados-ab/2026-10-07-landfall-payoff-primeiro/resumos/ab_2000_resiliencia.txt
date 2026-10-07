@@ -1,0 +1,31 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1727 (86.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           6.5065       6.5315      +0.0250 ±0.0096  
+  *landfall_elf_tokens                          0.1485       0.2315      +0.0830 ±0.0172  
+  *thranduils_company_counters                  0.3400       0.5730      +0.2330 ±0.0441  
+   spells_cast                                  9.9640       9.9775      +0.0135 ±0.0157  
+   extra_draws                                  6.6565       6.7010      +0.0445 ±0.0446  
+   commander_cast_turn__nunca                   0.0765       0.0750      -0.0015 ±0.0022  
+   commander_cast_turn__ate_T3                  0.0575       0.0575      +0.0000 ±0.0014  
+   commander_cast_turn__ate_T4                  0.2790       0.2815      +0.0025 ±0.0029  
+   commander_cast_turn__ate_T5                  0.5195       0.5220      +0.0025 ±0.0040  
+   commander_cast_turn__ate_T6                  0.6045       0.6085      +0.0040 ±0.0044  
+   finisher_turn__nunca                         0.6590       0.6595      +0.0005 ±0.0038  
+   finisher_turn__ate_T5                        0.0400       0.0405      +0.0005 ±0.0017  
+  *finisher_turn__ate_T6                        0.1045       0.1065      +0.0020 ±0.0020  
+  *len_smart_counter_log                        0.1105       0.1050      -0.0055 ±0.0038  
+  *smart_counters_total                         0.1105       0.1050      -0.0055 ±0.0038  
+  *len_library                                 72.2260      72.0990      -0.1270 ±0.0973  
+  *cards_milled_total                           4.7085       4.7910      +0.0825 ±0.0674  
+  *elves_milled_to_gy                           0.7900       0.8030      +0.0130 ±0.0112  
+  *devoted_druid_bursts                         0.0540       0.0565      +0.0025 ±0.0022  
+  *commander_cast_count                         1.2935       1.2880      -0.0055 ±0.0049  
+  *len_battlefield                             11.7075      11.7630      +0.0555 ±0.0510  
+  *len_hand                                     2.5710       2.5540      -0.0170 ±0.0163  
+  *edric_death_turn__nunca                      0.8685       0.8665      -0.0020 ±0.0020  
+   len_graveyard                                9.8620       9.9535      +0.0915 ±0.0917  
+   graveyard_wipe_used                          0.3470       0.3505      +0.0035 ±0.0038  
+   len_smart_graveyard_wipe_log                 0.3470       0.3505      +0.0035 ±0.0038  
+   smart_graveyard_wipes_total                  0.3470       0.3505      +0.0035 ±0.0038  

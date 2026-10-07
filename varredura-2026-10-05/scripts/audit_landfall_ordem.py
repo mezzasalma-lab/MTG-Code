@@ -8,7 +8,7 @@ Uso (da raiz do repositorio): python3 varredura-2026-10-05/scripts/audit_landfal
 import glob, json, os, re, sys
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 CACHE = json.load(open(os.path.join(ROOT, "scryfall-cache", "oracle-cache.json")))
-LF = re.compile(r"(?i)\blandfall\b|whenever (a|one or more|another) lands? (you control )?(enters?|enter)|whenever a land enters")
+LF = re.compile(r"(?i)\blandfall\b|whenever (a|an|another|one or more) (basic |nonbasic |other )?(land|forest|island|swamp|mountain|plains|gate|desert|cave|lair|locus|town)s?( or [a-z]+)?( you control)? (enters?|enter)|whenever a land enters|whenever you play a land")
 def texto(c):
     t = c.get("oracle_text") or ""
     return t + " " + " ".join(f.get("oracle_text") or "" for f in c.get("card_faces", []))
@@ -16,7 +16,7 @@ PAYOFFS = sorted(n for n, c in CACHE.items() if LF.search(texto(c)) and ("Creatu
 print(f"cartas com gatilho de landfall no cache (permanentes nao-terreno): {len(PAYOFFS)} (> 0)")
 assert len(PAYOFFS) > 0
 TERRENO = re.compile(r"\b(\w*(?:play_land|put_land|land_drop|land_phase)\w*)\s*\(")
-CONJURA = re.compile(r"\b(\w*(?:cast_loop|cast_phase|cast_spells|cast_all|cast_what|castable|main_cast|cast_step|spend_mana)\w*)\s*\(")
+CONJURA = re.compile(r"\b(\w*(?:cast_loop|cast_phase|cast_spells|cast_all|cast_what|castable|main_cast|cast_step|spend_mana|main_phase)\w*)\s*\(")
 FUNCS = re.compile(r"^def (\w*(?:main|turn|phase|step)\w*)\(.*?(?=^def |\Z)", re.S | re.M)
 res = []
 for f in sorted(glob.glob(os.path.join(ROOT, "*", "*goldfish*v*.py"))):
@@ -25,6 +25,14 @@ for f in sorted(glob.glob(os.path.join(ROOT, "*", "*goldfish*v*.py"))):
         continue
     src = open(f, encoding="utf-8").read()
     achados = sorted(n for n in PAYOFFS if re.search(r'["\']' + re.escape(n) + r'["\']', src))
+    lista = os.path.join(os.path.dirname(f), "lista.md")
+    na_lista = set()
+    if os.path.exists(lista):
+        for l in open(lista, encoding="utf-8"):
+            m = re.match(r"^\d+\s+(.+)$", l.strip())
+            if m:
+                na_lista.add(m.group(1).strip())
+    achados = sorted(set(achados) | {n for n in PAYOFFS if n in na_lista})
     ordens = []
     for m in FUNCS.finditer(src):
         corpo = m.group(0)

@@ -1,0 +1,27 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 809 (40.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *landfall_triggers_fired                     15.0100      15.4190      +0.4090 ±0.1903  
+  *spells_cast_total                           11.3125      11.6445      +0.3320 ±0.1123  
+   table_damage_total                     210624583386160226148636239531304170572705095048915257967771648.0000 1684996667089281809189089916250433364581640760391322063742173184.0000 +1474372083703121446024675176946980612413482598190873713030725632.0000 ±2889769284058118078053412466743169546440970873942603067218198528.0000
+  *lethal_turn__nunca                           0.7350       0.6890      -0.0460 ±0.0106  
+   lethal_turn__ate_T5                          0.0010       0.0015      +0.0005 ±0.0010  
+  *lethal_turn__ate_T6                          0.0080       0.0130      +0.0050 ±0.0034  
+   commander_cast_turn__nunca                   0.0640       0.0615      -0.0025 ±0.0026  
+   commander_cast_turn__ate_T3                  0.1350       0.1360      +0.0010 ±0.0014  
+  *commander_cast_turn__ate_T4                  0.5265       0.5320      +0.0055 ±0.0038  
+  *first_finisher_turn__ate_T6                  0.4010       0.4300      +0.0290 ±0.0075  
+  *len_names_cache                             18.5215      18.9815      +0.4600 ±0.1430  
+  *next_uid                                    51.0480      54.9425      +3.8945 ±1.2897  
+  *bf_version                                  74.0940      79.0150      +4.9210 ±1.7077  
+  *len_battlefield                             42.8695      46.2835      +3.4140 ±1.1897  
+  *first_finisher_turn__ate_T5                  0.2180       0.2350      +0.0170 ±0.0060  
+  *tokens_created                              28.1045      31.5000      +3.3955 ±1.2082  
+  *mana_spent_total                            46.3390      48.7440      +2.4050 ±1.0131  
+  *len_library                                 75.9520      75.4820      -0.4700 ±0.2085  
+  *obelisk_activations                          0.1230       0.1415      +0.0185 ±0.0083  
+  *commander_damage_win                         0.0735       0.0880      +0.0145 ±0.0065  
+  *first_finisher_turn__nunca                   0.2780       0.2660      -0.0120 ±0.0059  
+  *bristly_bill_doubles                         0.2745       0.3165      +0.0420 ±0.0219  
+  *experience_counters                          1.2080       1.4325      +0.2245 ±0.1170  

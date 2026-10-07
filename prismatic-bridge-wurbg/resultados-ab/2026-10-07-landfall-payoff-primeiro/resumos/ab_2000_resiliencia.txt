@@ -1,0 +1,35 @@
+LOTE N=2000 sementes 1000000..1001999, 8 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1876 (93.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *evolution_sage_proliferates                  0.7510       0.8555      +0.1045 ±0.0452  
+   lands_played_total                           6.1965       6.1985      +0.0020 ±0.0054  
+  *pw_activations_total                         9.5095       9.7170      +0.2075 ±0.1627  
+  *pw_ultimates_used_total                      1.5755       1.6450      +0.0695 ±0.0609  
+   pw_draws_total                               5.8050       5.9750      +0.1700 ±0.1845  
+  *first_ult_turn__nunca                        0.7635       0.7570      -0.0065 ±0.0040  
+   first_ult_turn__ate_T3                       0.0000       0.0005      +0.0005 ±0.0010  
+   first_ult_turn__ate_T4                       0.0010       0.0015      +0.0005 ±0.0010  
+   first_ult_turn__ate_T5                       0.0115       0.0120      +0.0005 ±0.0010  
+   first_ult_turn__ate_T6                       0.0405       0.0420      +0.0015 ±0.0017  
+   first_pw_hit_turn__nunca                     0.2675       0.2670      -0.0005 ±0.0029  
+   first_pw_hit_turn__ate_T5                    0.2195       0.2190      -0.0005 ±0.0017  
+   first_pw_hit_turn__ate_T6                    0.4775       0.4775      +0.0000 ±0.0020  
+   bridge_first_cast_turn__nunca                0.1425       0.1410      -0.0015 ±0.0022  
+   bridge_first_cast_turn__ate_T4               0.3420       0.3415      -0.0005 ±0.0010  
+   bridge_first_cast_turn__ate_T5               0.6625       0.6615      -0.0010 ±0.0024  
+   bridge_first_cast_turn__ate_T6               0.7550       0.7565      +0.0015 ±0.0022  
+  *late_pw_activations_total                    1.9995       2.0945      +0.0950 ±0.0372  
+  *turns_with_ult                               0.3570       0.3660      +0.0090 ±0.0059  
+  *len_token_counters                           0.7980       0.8140      +0.0160 ±0.0108  
+  *urza_chapter                                 0.2035       0.2125      +0.0090 ±0.0069  
+  *_ults_seen                                   1.1680       1.2435      +0.0755 ±0.0584  
+  *blinks_total                                 0.5330       0.5555      +0.0225 ±0.0182  
+  *pw_tokens_created_total                      2.5130       2.5460      +0.0330 ±0.0272  
+  *len_library                                 74.4110      74.2730      -0.1380 ±0.1146  
+  *pw_life_lost_opponent_total                  0.9045       0.9480      +0.0435 ±0.0363  
+  *len_smart_enchantment_wipe_log               0.2235       0.2280      +0.0045 ±0.0038  
+  *len_tapped_lands_this_turn                   0.1460       0.1505      +0.0045 ±0.0038  
+  *smart_enchantment_wipes_total                0.2235       0.2280      +0.0045 ±0.0038  
+  *len_pw_activated_this_turn                   2.8835       2.9140      +0.0305 ±0.0261  
+  *len_creature_cast_turn                       2.4860       2.5025      +0.0165 ±0.0142  

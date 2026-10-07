@@ -616,6 +616,7 @@ class GameState:
     tapped_land_first_plays_total: int = 0   # correcao de 2026-10-05: vezes em que T1/T2 jogou o terreno virado primeiro
     tapped_land_skipped_for_play_total: int = 0   # ... e vezes em que o ensaio mostrou que isso custaria uma jogada e jogou o desvirado
     evolution_sage_proliferates: int = 0
+    payoff_first_casts: int = 0   # correcao de 2026-10-07 (LANDFALL_PAYOFF_FIRST): vezes em que um payoff de landfall foi conjurado ANTES do terreno do turno
     returned_land_landfall_total: int = 0   # correcao de 2026-10-05: terrenos que voltaram ao campo (blink) e dispararam landfall
     mana_held_back: int = 0  # mana nao gasta no ultimo turno, disponivel pra flash no end step alheio (untap so acontece no MEU untap step - CR 500.1 - entao isso NAO reseta pra total_mana entre meus turnos)
     lands_played_total: int = 0
@@ -3923,6 +3924,135 @@ def instant_speed_pw_window(state: GameState, log: List[Dict]):
 # TURNO
 # =========================================================
 
+def _main_phase_reserved(state: GameState) -> int:
+    """Mana que o `main_phase` reserva (linha de flash da Bridge; resposta barata no modo de resiliencia). Extraida em 2026-10-07 sem mudar nada, para o payoff de landfall respeitar a mesma reserva."""
+    reserved = 0
+    if not state.bridge_in_play:
+        enabler = choose_flash_enabler(state)
+        if enabler is not None:
+            reserved = FLASH_ENABLER_COST[enabler] + spell_cost(state, COMMANDER)
+
+    # Modo de resiliencia: segura mana pra resposta mais barata na mao
+    # (contramagica/protecao) quando ha' algo pra proteger.
+    if state.interaction_rng is not None and (state.bridge_in_play or state.loyalty):
+        costs = [RESPONSE_COUNTERS[c][0] for c in state.hand if c in RESPONSE_COUNTERS]
+        costs += [cost for n, cost, _ in PROTECTIVE_INSTANTS if n in state.hand]
+        if costs:
+            reserved += min(costs)
+    return reserved
+
+
+def _cast_hand_spell(state: GameState, choice: str, log: List[Dict]):
+    """Conjura `choice` da mao (corpo do loop generico de `main_phase`, extraido em 2026-10-07 sem mudar nada, para o payoff de landfall poder usar o MESMO caminho de cast)."""
+    cost = spell_cost(state, choice)
+    wiz = _wizard_used(state, choice)
+    if wiz:
+        state.wizard_pool -= wiz
+        _cs(state, "guff_wizard_mana", wiz)
+    state.tam_mana_saved_total += tam_discount(state, choice)
+    state.hand.remove(choice)
+    state.mana_spent_this_turn += cost
+
+    # Achados reais 2026-09-01 (leitura linha-a-linha, "compile TUDO" -
+    # a nota antiga do docstring listava estas 5 fontes de proliferate
+    # como deferidas por volume; implementadas aqui reusando
+    # `proliferate_loyalty()`, ja testada pro Evolution Sage/Vraska):
+    # Flux Channeler/Inexorable Tide ("whenever you cast a
+    # noncreature/any spell, proliferate") + Mutational
+    # Advantage/Ripples of Potential (proliferate no proprio efeito ao
+    # serem conjuradas). Ichormoon Gauntlet permanece fora de escopo -
+    # concede uma habilidade de lealdade NOVA a cada um dos 17
+    # planeswalkers (exigiria reestruturar a logica hardcoded por-PW
+    # de `resolve_planeswalker()`, escopo desproporcional ao resto
+    # desta rodada), ver docstring.
+    # Fontes independentes (permanentes DIFERENTES) - proliferam
+    # separadamente se ambas estiverem em campo, nao mutuamente exclusivas.
+    on_spell_cast(state, choice, log)
+    if choice in ("Mutational Advantage", "Ripples of Potential"):
+        proliferate_loyalty(state, log, source=choice.lower().replace(" ", "_").replace(",", ""))
+
+    if has_tag(choice, "removal") or has_tag(choice, "counterspell") or has_tag(choice, "wipe"):
+        # Achado real: essas 11 cartas nunca contavam pra metrica de
+        # interacao (Regra 1 ja corretamente nao aplica o efeito
+        # destrutivo/de contramagia sem alvo/spell de oponente real,
+        # mas nem o "foi conjurada" era contado, ao contrario de todos
+        # os outros decks desta sessao).
+        state.interaction_spells_cast_total += 1
+
+    if choice == "Entrust the Spark":
+        resolve_entrust_the_spark(state, log)
+    if C(choice).type in ("Instant", "Sorcery"):
+        state.graveyard.append(choice)
+    else:
+        state.battlefield.append(choice)
+        if C(choice).type == "Creature":
+            creature_enters(state, choice, log)
+        elif C(choice).type != "Planeswalker":
+            noncreature_etb(state, choice, log)
+        if C(choice).type == "Planeswalker":
+            # CORRIGIDO 2026-09-24 (achado da rodada de gaps): planeswalker
+            # CONJURADO da mao entrava no campo sem lealdade nenhuma -- so'
+            # os postos pela Bridge/Urza/Ugin/Tamiyo tinham. Medido antes
+            # da correcao: 57% dos PWs em campo no fim da partida estavam
+            # sem lealdade (nunca ativaram nada).
+            planeswalker_enters(state, choice, log)
+    if choice in LAND_FETCH_SPELLS:
+        do_land_fetch_spell(state, choice, log)
+    log.append({"action": "cast", "card": choice, "turn": state.turn})
+    # CR 606.3: PW que acabou de entrar (conjurado, Entrust, capitulo II
+    # por proliferate...) ativa JA' neste main phase.
+    activate_unactivated_planeswalkers(state, log)
+
+# ---------------------------------------------------------------------------
+# Payoff de landfall ANTES do terreno -- correcao de 2026-10-07 (classe achada no Mothman em 2026-10-06, ordem terreno x payoff)
+# ---------------------------------------------------------------------------
+# Antes: `play_turn` jogava o terreno (`play_land`) ANTES de `main_phase`, entao a Evolution Sage ("Landfall - proliferate") so' entrava DEPOIS do terreno do turno e esse terreno
+# nunca a disparava (nem o terreno buscado pelo Farseek/Nature's Lore/Three Visits, que e' conjurado depois). O jogador real conjura o payoff primeiro quando o mana de AGORA ja' o paga.
+# Agora, com o terreno do turno ainda por jogar, conjura antes a Evolution Sage se o loop generico de `main_phase` a conjuraria com o mana de agora (mesmas travas: reserva de
+# flash/resposta, remocao segurada, `can_cast`), pelo MESMO caminho de cast (`_cast_hand_spell`). A Bridge (comandante) tem prioridade: nao a deslocamos. Chave em False = ordem antiga, bit a bit.
+LANDFALL_PAYOFF_FIRST = True
+LANDFALL_PAYOFFS = frozenset({"Evolution Sage"})   # a unica carta com gatilho de landfall que `on_land_enters` trata
+
+
+def _hoist_loses_a_play(state: GameState, choice: str) -> bool:
+    """Ensaio a seco (copia profunda; `random` global restaurado) do RESTO da fase pre-combate nas duas ordens: na ANTIGA (terreno, depois o resto do turno) e na NOVA (`choice` conjurado ANTES do terreno, depois o
+    mesmo resto). O payoff so' passa na frente se nada que a ordem antiga conjuraria/jogaria neste turno (inclusive o comandante) deixar de acontecer na nova: protege o comandante, as rochas de mana e qualquer jogada
+    de prioridade maior que a do payoff, contando o mana de landfall que ja' esta em campo e os land drops extras (o que a formula `mana de agora + 1` nao conta)."""
+    def resto(s):
+        play_land(s, [])
+        main_phase(s, [])
+    saved = random.getstate()
+    try:
+        mao0 = collections.Counter(state.hand)
+        antiga = copy.deepcopy(state)
+        resto(antiga)
+        nova = copy.deepcopy(state)
+        _cast_hand_spell(nova, choice, [])
+        resto(nova)
+        perdeu = (mao0 - collections.Counter(antiga.hand)) - (mao0 - collections.Counter(nova.hand))
+        return bool(perdeu) or (antiga.bridge_in_play and not nova.bridge_in_play)
+    finally:
+        random.setstate(saved)
+
+
+def cast_landfall_payoffs_first(state: GameState, log: List[Dict]):
+    if not LANDFALL_PAYOFF_FIRST:
+        return
+    for _ in range(2):
+        if state.land_played or not any(is_land(c) for c in state.hand):
+            return
+        budget = remaining_mana(state) - _main_phase_reserved(state)
+        cands = [c for c in state.hand if c in LANDFALL_PAYOFFS and can_cast(state, c) and spell_cost(state, c) <= budget
+                 and not (attack_model_on(state) and _held_for_threat(c)) and not _held_for_response(state, c)]
+        if not cands:
+            return
+        choice = min(cands, key=lambda c: spell_cost(state, c))
+        if _hoist_loses_a_play(state, choice):
+            return                        # o payoff antes do terreno faria o turno perder uma jogada (Bridge, rocha de mana...): fica na ordem antiga
+        _cast_hand_spell(state, choice, log)
+        state.payoff_first_casts += 1
+
+
 def main_phase(state: GameState, log: List[Dict]):
     # Subir de nivel a Innkeeper's Talent primeiro (sorcery speed, pilha
     # vazia) - se alcancar nivel 3 neste turno, o dobro de counter so vale
@@ -3979,19 +4109,7 @@ def main_phase(state: GameState, log: List[Dict]):
     # o jogador segura mana de proposito pra linha de flash no end step
     # alheio (plano de jogo explicito do usuario) - nao gasta tudo no
     # resto da mao.
-    reserved = 0
-    if not state.bridge_in_play:
-        enabler = choose_flash_enabler(state)
-        if enabler is not None:
-            reserved = FLASH_ENABLER_COST[enabler] + spell_cost(state, COMMANDER)
-
-    # Modo de resiliencia: segura mana pra resposta mais barata na mao
-    # (contramagica/protecao) quando ha' algo pra proteger.
-    if state.interaction_rng is not None and (state.bridge_in_play or state.loyalty):
-        costs = [RESPONSE_COUNTERS[c][0] for c in state.hand if c in RESPONSE_COUNTERS]
-        costs += [cost for n, cost, _ in PROTECTIVE_INSTANTS if n in state.hand]
-        if costs:
-            reserved += min(costs)
+    reserved = _main_phase_reserved(state)
 
     # Modelo de combate: remocao/wipe so' sai com alvo real (criatura de
     # oponente ameacando), nunca "de graca" -- e com efeito de verdade dos 2
@@ -4019,64 +4137,7 @@ def main_phase(state: GameState, log: List[Dict]):
             break
         castables.sort(key=lambda c: spell_cost(state, c))
         choice = castables[0]
-        cost = spell_cost(state, choice)
-        wiz = _wizard_used(state, choice)
-        if wiz:
-            state.wizard_pool -= wiz
-            _cs(state, "guff_wizard_mana", wiz)
-        state.tam_mana_saved_total += tam_discount(state, choice)
-        state.hand.remove(choice)
-        state.mana_spent_this_turn += cost
-
-        # Achados reais 2026-09-01 (leitura linha-a-linha, "compile TUDO" -
-        # a nota antiga do docstring listava estas 5 fontes de proliferate
-        # como deferidas por volume; implementadas aqui reusando
-        # `proliferate_loyalty()`, ja testada pro Evolution Sage/Vraska):
-        # Flux Channeler/Inexorable Tide ("whenever you cast a
-        # noncreature/any spell, proliferate") + Mutational
-        # Advantage/Ripples of Potential (proliferate no proprio efeito ao
-        # serem conjuradas). Ichormoon Gauntlet permanece fora de escopo -
-        # concede uma habilidade de lealdade NOVA a cada um dos 17
-        # planeswalkers (exigiria reestruturar a logica hardcoded por-PW
-        # de `resolve_planeswalker()`, escopo desproporcional ao resto
-        # desta rodada), ver docstring.
-        # Fontes independentes (permanentes DIFERENTES) - proliferam
-        # separadamente se ambas estiverem em campo, nao mutuamente exclusivas.
-        on_spell_cast(state, choice, log)
-        if choice in ("Mutational Advantage", "Ripples of Potential"):
-            proliferate_loyalty(state, log, source=choice.lower().replace(" ", "_").replace(",", ""))
-
-        if has_tag(choice, "removal") or has_tag(choice, "counterspell") or has_tag(choice, "wipe"):
-            # Achado real: essas 11 cartas nunca contavam pra metrica de
-            # interacao (Regra 1 ja corretamente nao aplica o efeito
-            # destrutivo/de contramagia sem alvo/spell de oponente real,
-            # mas nem o "foi conjurada" era contado, ao contrario de todos
-            # os outros decks desta sessao).
-            state.interaction_spells_cast_total += 1
-
-        if choice == "Entrust the Spark":
-            resolve_entrust_the_spark(state, log)
-        if C(choice).type in ("Instant", "Sorcery"):
-            state.graveyard.append(choice)
-        else:
-            state.battlefield.append(choice)
-            if C(choice).type == "Creature":
-                creature_enters(state, choice, log)
-            elif C(choice).type != "Planeswalker":
-                noncreature_etb(state, choice, log)
-            if C(choice).type == "Planeswalker":
-                # CORRIGIDO 2026-09-24 (achado da rodada de gaps): planeswalker
-                # CONJURADO da mao entrava no campo sem lealdade nenhuma -- so'
-                # os postos pela Bridge/Urza/Ugin/Tamiyo tinham. Medido antes
-                # da correcao: 57% dos PWs em campo no fim da partida estavam
-                # sem lealdade (nunca ativaram nada).
-                planeswalker_enters(state, choice, log)
-        if choice in LAND_FETCH_SPELLS:
-            do_land_fetch_spell(state, choice, log)
-        log.append({"action": "cast", "card": choice, "turn": state.turn})
-        # CR 606.3: PW que acabou de entrar (conjurado, Entrust, capitulo II
-        # por proliferate...) ativa JA' neste main phase.
-        activate_unactivated_planeswalkers(state, log)
+        _cast_hand_spell(state, choice, log)
     activate_unactivated_planeswalkers(state, log)
     # Sisay: a mana que sobrou depois da mao paga a busca (qualquer alvo); o PW buscado ativa no mesmo main phase.
     if sisay_activate(state, log, reserved, min_mv=0):
@@ -4200,6 +4261,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]], skip_lega
         n_draw = sum(state.opp_alive) * state.teferi_sunset_emblem  # so' oponentes ainda no jogo tem draw step
         state.draw(n_draw)
         state.pw_draws_total += n_draw
+    cast_landfall_payoffs_first(state, log)   # 2026-10-07: payoff de landfall antes do terreno (chave LANDFALL_PAYOFF_FIRST)
     play_land(state, log)
     main_phase(state, log)
     # Fase de combate (depois do main 1): gatilho "at the beginning of
@@ -4418,6 +4480,7 @@ def simulate_one(seed: int, turns: int, with_greater_auramancy: bool, swap=None)
         "all_will_be_one_face_damage_total": state.all_will_be_one_face_damage_total,
         "returned_land_landfall_total": state.returned_land_landfall_total,   # correcao de 2026-10-05
         "evolution_sage_proliferates": state.evolution_sage_proliferates,
+        "payoff_first_casts": state.payoff_first_casts,
         "opp_eliminated_total": state.opp_eliminated_total,
         # Rodada Reality Fracture (2026-09-25):
         "late_pw_activations_total": state.late_pw_activations_total,

@@ -1,0 +1,34 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8828 (88.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *lands_played_total                           5.8224       5.8342      +0.0118 ±0.0051  
+  *landfall_elf_tokens_total                    0.0898       0.1656      +0.0758 ±0.0071  
+  *landfall_counters_total                      0.1256       0.2118      +0.0862 ±0.0080  
+   tokens_created_total                       254.7245     258.8006      +4.0761 ±17.0867 
+   elf_tokens                                 140.3941     146.4313      +6.0372 ±13.8586 
+   ramp_pieces_cast_total                       3.7247       3.7300      +0.0053 ±0.0112  
+   staff_infinite_draws                         0.5745       0.5964      +0.0219 ±0.0446  
+   commander_cast_turn__nunca                   0.0476       0.0478      +0.0002 ±0.0004  
+   commander_cast_turn__ate_T3                  0.1400       0.1399      -0.0001 ±0.0002  
+   commander_cast_turn__ate_T4                  0.4176       0.4180      +0.0004 ±0.0006  
+   commander_cast_turn__ate_T5                  0.7584       0.7582      -0.0002 ±0.0006  
+   commander_cast_turn__ate_T6                  0.8747       0.8753      +0.0006 ±0.0007  
+   infinite_combo_turn__nunca                   0.9430       0.9429      -0.0001 ±0.0015  
+   infinite_combo_turn__ate_T4                  0.0024       0.0027      +0.0003 ±0.0003  
+   infinite_combo_turn__ate_T5                  0.0113       0.0117      +0.0004 ±0.0006  
+  *infinite_combo_turn__ate_T6                  0.0234       0.0241      +0.0007 ±0.0006  
+  *len_smart_counter_log                        0.1327       0.1186      -0.0141 ±0.0028  
+  *smart_counters_total                         0.1327       0.1186      -0.0141 ±0.0028  
+  *commander_cast_count                         1.4974       1.4837      -0.0137 ±0.0037  
+  *cards_exiled_total                          14.6914      14.7956      +0.1042 ±0.0395  
+  *marwyn_power                                 1.5909       1.6284      +0.0375 ±0.0153  
+  *maralen_triggers_total                       7.6161       7.6829      +0.0668 ±0.0284  
+  *len_library                                 66.1662      65.9999      -0.1663 ±0.0721  
+  *len_graveyard                                6.0639       6.0991      +0.0352 ±0.0255  
+  *len_smart_wipe_log                           0.8227       0.8265      +0.0038 ±0.0028  
+  *smart_wipes_total                            0.8227       0.8265      +0.0038 ±0.0028  
+  *maralen_free_cast_used_this_turn             0.5097       0.5056      -0.0041 ±0.0032  
+  *roaming_throne_doubles_total                 0.5320       0.5472      +0.0152 ±0.0119  
+  *itlimoc_transform_turn__ate_T6               0.0882       0.0895      +0.0013 ±0.0010  
+  *len_creature_cast_turn                       8.2744       8.3003      +0.0259 ±0.0215  

@@ -1,0 +1,34 @@
+{
+ "flags_off": {
+  "LANDFALL_PAYOFF_FIRST": false
+ },
+ "ignora_campos": [
+  "payoff_first_casts"
+ ],
+ "sensibilidade": {},
+ "turns": 8,
+ "extra": null,
+ "deck": "beorn-fierce",
+ "sim": "beorn_goldfish_v1.py",
+ "snapshot": "codigo/beorn_goldfish_v1_ANTES_0ee4972.py",
+ "destaque": [
+  "payoff_first_casts",
+  "lands_played_total",
+  "spells_cast",
+  "bear_count_final",
+  "counters_on_board_final",
+  "counters_on_board",
+  "extra_draws",
+  "ramp_pieces_in_play",
+  "commander_cast_turn__nunca",
+  "commander_cast_turn__ate_T3",
+  "commander_cast_turn__ate_T4",
+  "commander_cast_turn__ate_T5",
+  "commander_cast_turn__ate_T6",
+  "finisher_turn__nunca",
+  "finisher_turn__ate_T3",
+  "finisher_turn__ate_T4",
+  "finisher_turn__ate_T5",
+  "finisher_turn__ate_T6"
+ ]
+}

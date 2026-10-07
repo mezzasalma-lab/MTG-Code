@@ -1,6 +1,40 @@
 # Goldfish Log — Esika, God of the Tree // The Prismatic Bridge
 
+> **Rodada 2026-10-07 (Payoff de landfall antes do terreno) — dados brutos e reprodução:** [`resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md`](resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md)
+
 > **Rodada 2026-10-05 (Landfall no terreno devolvido ao campo (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-landfall-terreno-devolvido/LEIAME.md`](resultados-ab/2026-10-05-landfall-terreno-devolvido/LEIAME.md)
+
+## Payoff de landfall antes do terreno (`LANDFALL_PAYOFF_FIRST`) — 2026-10-07
+
+**Pedido do usuário:** *"Corrige os simuladores com erro no script para automatizar a ordem de jogadas para o landfall"*. Arquivo bruto/auditável: `resultados-ab/2026-10-07-landfall-payoff-primeiro/` (`LEIAME.md`).
+
+**Veredito:** um erro real de ordem, um conserto atrás de chave, bit-idêntico com a chave desligada. O efeito é **pequeníssimo por construção**: a Evolution Sage é 1 carta de 99 e só importa com planeswalker em campo; o payoff entra antes do terreno em **7,0%** das partidas. **+0,09 proliferates da Sage (+8%)**, +0,11 ativações de planeswalker; a Bridge **não muda** (T4/T5 +0,0).
+
+**Achado:** o simulador jogava o terreno do turno ANTES de conjurar o payoff de landfall (`play_land` antes da fase de conjuração; a ordem completa do turno está no `LEIAME.md` da pasta). Com a ordem antiga o terreno do turno nunca disparava o landfall do payoff que o mana de agora já pagava.
+
+**Correção:** chave `LANDFALL_PAYOFF_FIRST` + `cast_landfall_payoffs_first`, com guarda por ensaio a seco (nada que a ordem antiga conjuraria/jogaria pode deixar de acontecer). Detalhes e a 1ª guarda aritmética que estava errada: `LEIAME.md` da pasta.
+
+**Números (N=10.000 pareado, `*` = excede o IC95%):**
+
+| campo (N=10.000 pareado) | padrao: base -> depois (dif ± IC95%) | resiliencia: base -> depois (dif ± IC95%) |
+|---|---|---|
+| `evolution_sage_proliferates` | 1.155 -> 1.245 (+0.090 ± 0.018) * | 0.738 -> 0.833 (+0.095 ± 0.019) * |
+| `lands_played_total` | 6.240 -> 6.240 (+0.001 ± 0.002) | 6.145 -> 6.147 (+0.002 ± 0.002) |
+| `pw_activations_total` | 10.770 -> 10.877 (+0.108 ± 0.056) * | 9.240 -> 9.409 (+0.169 ± 0.060) * |
+| `pw_ultimates_used_total` | 2.382 -> 2.403 (+0.021 ± 0.024) | 1.549 -> 1.609 (+0.060 ± 0.026) * |
+| `pw_draws_total` | 7.320 -> 7.373 (+0.052 ± 0.064) | 5.880 -> 6.033 (+0.153 ± 0.070) * |
+| `first_ult_turn__nunca` | 0.631 -> 0.629 (-0.002 ± 0.001) * | 0.764 -> 0.761 (-0.003 ± 0.002) * |
+| `first_ult_turn__ate_T6` | 0.056 -> 0.060 (+0.004 ± 0.001) * | 0.036 -> 0.037 (+0.002 ± 0.001) * |
+| `bridge_first_cast_turn__ate_T4` | 0.351 -> 0.351 (+0.000 ± 0.000) | 0.337 -> 0.337 (+0.000 ± 0.000) |
+| `bridge_first_cast_turn__ate_T5` | 0.691 -> 0.690 (-0.001 ± 0.001) * | 0.650 -> 0.650 (+0.000 ± 0.001) |
+| `bridge_first_cast_turn__nunca` | 0.109 -> 0.110 (+0.000 ± 0.000) | 0.147 -> 0.146 (-0.000 ± 0.001) |
+| partidas com resultado idêntico ao da base | 93.0% | 93.2% |
+
+**Validação:** testes dirigidos 142/142 (137 anteriores + 5 novos); bit-identidade 20.000 × 2 modos com a chave desligada (0 divergências); regressão 20.000 × 2 modos × 2 configurações (0 exceções); determinismo 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos (0 divergências); smoke 99 cartas.
+
+**Não coberto / não verificado:** magia que põe terreno em campo antes do payoff, terreno que volta ao campo, política de jogador humano; o A/B mede o simulador (3 oponentes passivos), não a mesa real.
+
+---
 
 ## Landfall no terreno devolvido ao campo (varredura de 2026-10-05) — 2026-10-05
 

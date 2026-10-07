@@ -413,6 +413,7 @@ class GameState:
     mulligans: int = 0
 
     lands_played_this_turn: int = 0
+    payoff_first_casts: int = 0   # correcao de 2026-10-07 (LANDFALL_PAYOFF_FIRST): vezes em que um payoff de landfall foi conjurado ANTES do terreno do turno
     lands_played_total: int = 0
     mana_spent_this_turn: int = 0
     maralen_free_cast_used_this_turn: bool = False
@@ -1367,6 +1368,65 @@ def land_enters_tapped(state: GameState, name: str) -> bool:
     return False
 
 
+# ---------------------------------------------------------------------------
+# Payoff de landfall ANTES do terreno -- correcao de 2026-10-07 (classe achada no Mothman em 2026-10-06, ordem terreno x payoff)
+# ---------------------------------------------------------------------------
+# Antes: `play_turn` jogava o terreno (`play_land`) ANTES de `main_phase`, entao Thranduil's Company e Thranduil, Sindarin Liege so' entravam DEPOIS dos terrenos do turno:
+# o terreno nunca disparava o landfall deles (token de Elfo / contadores) e o 2o land drop que a Company concede nunca era usado no turno em que ela entra. O jogador real
+# conjura o payoff primeiro quando o mana de AGORA ja' o paga. Agora, com o terreno do turno ainda por jogar, conjura antes (o mais barato primeiro, como o loop de `main_phase`)
+# os payoffs que o mana de agora paga, e repete depois de cada cast a mesma sequencia do loop (Maralen gratis, Umbral Mantle, dorks). So' muda a ORDEM de cartas que o turno
+# ja' conjuraria; o comandante tem prioridade (nao o deslocamos). Com a chave em False o comportamento e' o antigo, bit a bit.
+LANDFALL_PAYOFF_FIRST = True
+LANDFALL_PAYOFFS = frozenset({"Thranduil's Company", "Thranduil, Sindarin Liege // Silvan Rally"})   # as cartas com gatilho de landfall que `landfall_trigger` trata
+
+
+def _hoist_loses_a_play(state: GameState, choice: str) -> bool:
+    """Ensaio a seco (copia profunda; `random` global restaurado) do RESTO da fase pre-combate nas duas ordens: na ANTIGA (terreno, depois o resto do turno) e na NOVA (`choice` conjurado ANTES do terreno, depois o
+    mesmo resto). O payoff so' passa na frente se nada que a ordem antiga conjuraria/jogaria neste turno (inclusive o comandante) deixar de acontecer na nova: protege o comandante, as rochas de mana e qualquer jogada
+    de prioridade maior que a do payoff, contando o mana de landfall que ja' esta em campo e os land drops extras (o que a formula `mana de agora + 1` nao conta)."""
+    def resto(s):
+        play_land(s)
+        main_phase(s, is_first_main=True)
+    saved = random.getstate()
+    try:
+        mao0 = collections.Counter(state.hand)
+        antiga = copy.deepcopy(state)
+        resto(antiga)
+        nova = copy.deepcopy(state)
+        cast_card(nova, choice)
+        maralen_try_free_cast(nova)
+        equip_umbral_mantle(nova)
+        dork_mana(nova)
+        resto(nova)
+        perdeu = (mao0 - collections.Counter(antiga.hand)) - (mao0 - collections.Counter(nova.hand))
+        return bool(perdeu) or (antiga.commander_in_play and not nova.commander_in_play)
+    finally:
+        random.setstate(saved)
+
+
+def cast_landfall_payoffs_first(state: GameState):
+    """Com o primeiro terreno do turno ainda por jogar, conjura ANTES os payoffs de landfall que o mana de agora paga (o mais barato primeiro), para que os terrenos do turno
+    disparem o landfall deles (e a Company libere o 2o land drop). O comandante (conjurado no inicio de `main_phase`) tem prioridade: se ele seria conjurado neste turno e o
+    payoff o impediria, nao desloca."""
+    if not LANDFALL_PAYOFF_FIRST:
+        return
+    for _ in range(4):
+        if state.lands_played_this_turn >= 1 or not any(n in LAND_NAMES for n in state.hand):
+            return
+        cands = [n for n in state.hand if n in LANDFALL_PAYOFFS and can_cast(state, n)]
+        if not cands:
+            return
+        cands.sort(key=lambda n: CARD_DB[n].mv)
+        choice = cands[0]
+        if _hoist_loses_a_play(state, choice):
+            return                        # o payoff antes do terreno faria o turno perder uma jogada (comandante, rocha de mana...): fica na ordem antiga
+        cast_card(state, choice)
+        maralen_try_free_cast(state)
+        equip_umbral_mantle(state)
+        dork_mana(state)
+        state.payoff_first_casts += 1
+
+
 def play_land(state: GameState):
     max_lands = 1
     if "Thranduil's Company" in state.battlefield:
@@ -1868,6 +1928,7 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
 
     if not UPKEEP_BEFORE_DRAW_ENABLED:
         upkeep_step(state)
+    cast_landfall_payoffs_first(state)   # 2026-10-07: payoff de landfall antes do terreno (chave LANDFALL_PAYOFF_FIRST)
     play_land(state)
     main_phase(state, is_first_main=True)
     combat_step(state)

@@ -1,0 +1,34 @@
+{
+ "flags_off": {
+  "LANDFALL_PAYOFF_FIRST": false
+ },
+ "ignora_campos": [
+  "payoff_first_casts"
+ ],
+ "sensibilidade": {},
+ "turns": 8,
+ "extra": null,
+ "deck": "maralen-sultai",
+ "sim": "maralen_goldfish_v1.py",
+ "snapshot": "codigo/maralen_goldfish_v1_ANTES_aaf2c2b.py",
+ "destaque": [
+  "payoff_first_casts",
+  "lands_played_total",
+  "landfall_elf_tokens_total",
+  "landfall_counters_total",
+  "tokens_created_total",
+  "elf_tokens",
+  "ramp_pieces_cast_total",
+  "staff_infinite_draws",
+  "commander_cast_turn__nunca",
+  "commander_cast_turn__ate_T3",
+  "commander_cast_turn__ate_T4",
+  "commander_cast_turn__ate_T5",
+  "commander_cast_turn__ate_T6",
+  "infinite_combo_turn__nunca",
+  "infinite_combo_turn__ate_T3",
+  "infinite_combo_turn__ate_T4",
+  "infinite_combo_turn__ate_T5",
+  "infinite_combo_turn__ate_T6"
+ ]
+}
