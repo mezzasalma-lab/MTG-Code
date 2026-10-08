@@ -5,3 +5,6 @@ wise-mothman-sultai        resiliencia  N=1500 sementes divergentes entre 3 hash
 ## s4, remove+append (SWAP_IN_PLACE falso)
 wise-mothman-sultai        padrao       N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
 wise-mothman-sultai        resiliencia  N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
+## lista APLICADA (simulador vivo, SWAPS=()), 3 hash seeds x 1.500 sementes x 2 modos
+wise-mothman-sultai        padrao       N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
+wise-mothman-sultai        resiliencia  N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []

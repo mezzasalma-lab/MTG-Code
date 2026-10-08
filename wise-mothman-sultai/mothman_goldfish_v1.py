@@ -4592,12 +4592,15 @@ def mulligan(state: GameState):
 # =========================================================
 # LISTA DO DECK (fonte: lista.md; nomes REAIS do Scryfall, Regra #2) E BIBLIOTECA
 # =========================================================
+# 2026-10-08 (pedido do usuario): lista ATUALIZADA com as cinco entradas (Agent Frank Horrigan, Branching Evolution, Atomize, Casualties of War, Assassin's Trophy) no lugar de An Offer You Can't Refuse,
+# Negate, V.A.T.S., Wave Goodbye e Didn't Say Please (conjunto s4 de resultados-ab/2026-10-08-cinco-entradas-remocao). As linhas foram trocadas NO LUGAR (a ordem da biblioteca e' a do A/B: o novo `SWAPS=()`
+# e' bit-identico ao s4 `no lugar`). A lista anterior esta em lista-anterior-2026-10-05.md; os simuladores congelados em resultados-ab/*/codigo/ guardam a lista de quando rodaram.
 DECKLIST_TEXT = """
 1 Agadeem's Awakening // Agadeem, the Undercrypt
 1 Agatha's Soul Cauldron
 1 Altar of Dementia
 1 Altar of the Brood
-1 An Offer You Can't Refuse
+1 Agent Frank Horrigan
 1 Angel of Suffering
 1 Arcane Denial
 1 Ashiok, Dream Render
@@ -4612,7 +4615,7 @@ DECKLIST_TEXT = """
 1 Command Tower
 1 Danny Pink
 1 Deepmuck Desperado
-1 Didn't Say Please
+1 Assassin's Trophy
 1 Evolution Witness
 1 Fabled Passage
 1 Fathom Mage
@@ -4641,7 +4644,7 @@ DECKLIST_TEXT = """
 1 Morphic Pool
 1 Muldrotha, the Gravetide
 1 Nature's Lore
-1 Negate
+1 Branching Evolution
 1 Nuclear Fallout
 1 Ouroboroid
 1 Overgrown Tomb
@@ -4673,12 +4676,12 @@ DECKLIST_TEXT = """
 1 Undead Alchemist
 1 Undergrowth Stadium
 1 Urza's Saga
-1 V.A.T.S.
+1 Atomize
 1 Verdant Catacombs
 1 Walking Ballista
 1 Waterlogged Grove
 1 Watery Grave
-1 Wave Goodbye
+1 Casualties of War
 1 Winding Constrictor
 1 Yavimaya Hollow
 1 Zagoth Triome

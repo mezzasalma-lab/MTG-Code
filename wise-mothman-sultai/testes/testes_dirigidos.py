@@ -1632,9 +1632,9 @@ def monument_alvo_eu_so_com_chave_e_biblioteca_segura():
 def monument_main_phase_ativa_com_mana_sobrando_e_swaps_poem_na_biblioteca():
     antigo = m.SWAPS
     try:
-        m.SWAPS = (("Negate", "Riverchurn Monument"),)
+        m.SWAPS = (("Arcane Denial", "Riverchurn Monument"),)
         lib = m.current_library()
-        assert lib.count("Riverchurn Monument") == 1 and lib.count("Negate") == 0 and len(lib) == 99
+        assert lib.count("Riverchurn Monument") == 1 and lib.count("Arcane Denial") == 0 and len(lib) == 99
     finally:
         m.SWAPS = antigo
     st, mon = _cena_monument(lands=("Island", "Island", "Swamp", "Forest", "Forest"))
@@ -1664,14 +1664,14 @@ def swap_no_lugar_preserva_a_posicao_e_o_padrao_continua_remove_append():
     antigo, antigo_ip = m.SWAPS, m.SWAP_IN_PLACE
     try:
         base = list(m.BASE_LIBRARY)
-        i = base.index("Negate")
-        m.SWAPS = (("Negate", "Riverchurn Monument"),)
+        i = base.index("Arcane Denial")
+        m.SWAPS = (("Arcane Denial", "Riverchurn Monument"),)
         m.SWAP_IN_PLACE = True
         lib = m.current_library()
-        assert lib[i] == "Riverchurn Monument" and lib[:i] == base[:i] and lib[i + 1:] == base[i + 1:] and len(lib) == 99, "no lugar: so' a posicao de Negate muda"
+        assert lib[i] == "Riverchurn Monument" and lib[:i] == base[:i] and lib[i + 1:] == base[i + 1:] and len(lib) == 99, "no lugar: so' a posicao do Arcane Denial muda"
         m.SWAP_IN_PLACE = False
         lib2 = m.current_library()
-        assert lib2[-1] == "Riverchurn Monument" and "Negate" not in lib2 and len(lib2) == 99, "padrao arquivado: remove + append"
+        assert lib2[-1] == "Riverchurn Monument" and "Arcane Denial" not in lib2 and len(lib2) == 99, "padrao arquivado: remove + append"
         assert lib2 != lib
     finally:
         m.SWAPS, m.SWAP_IN_PLACE = antigo, antigo_ip
@@ -1721,7 +1721,7 @@ def monument_fim_do_turno_do_oponente_usa_a_mana_segurada_pras_contramagicas():
 def monument_partidas_completas_com_todas_as_chaves_ligadas_nao_dao_excecao_e_ativam():
     antigos = (m.SWAPS, m.SWAP_IN_PLACE, m.RIVERCHURN_SELF, m.RIVERCHURN_TAP_FIRST, m.RIVERCHURN_OPP_END_STEP, m.RIVERCHURN_EXHAUST_MIN)
     try:
-        m.SWAPS = (("Negate", "Riverchurn Monument"),); m.SWAP_IN_PLACE = True
+        m.SWAPS = (("Arcane Denial", "Riverchurn Monument"),); m.SWAP_IN_PLACE = True
         m.RIVERCHURN_SELF = m.RIVERCHURN_TAP_FIRST = m.RIVERCHURN_OPP_END_STEP = True; m.RIVERCHURN_EXHAUST_MIN = 12
         taps = exh = 0
         for sd in range(1_000_000, 1_000_060):
@@ -2105,7 +2105,7 @@ def horrigan_chave_sem_proliferate_so_o_corpo():
 def horrigan_e_master_partidas_completas_nao_dao_excecao_e_ativam():
     antigos = (m.SWAPS, m.SWAP_IN_PLACE)
     try:
-        m.SWAPS = (("Negate", HORR), ("An Offer You Can't Refuse", MAST)); m.SWAP_IN_PLACE = True
+        m.SWAPS = (("Arcane Denial", MAST),); m.SWAP_IN_PLACE = True
         et = ma = at = 0
         for sd in range(1_000_000, 1_000_150):
             for f in (m.simulate_one, m.simulate_one_with_interaction):
@@ -2342,7 +2342,7 @@ def persist_da_Glen_Elendra_com_dobrador_ou_Constrictor_volta_0_0_e_morre_sem_pe
 def seis_candidatas_partidas_completas_nao_dao_excecao_e_ativam():
     antigos = (m.SWAPS, m.SWAP_IN_PLACE)
     try:
-        m.SWAPS = (("An Offer You Can't Refuse", FS), ("Negate", SCB), ("Arcane Denial", TIDE), ("Toxic Deluge", BRE), ("Cold-Eyed Selkie", LZ), ("Didn't Say Please", EC)); m.SWAP_IN_PLACE = True
+        m.SWAPS = (("Arcane Denial", FS), ("Toxic Deluge", SCB), ("Cold-Eyed Selkie", TIDE), ("Tear Asunder", LZ), ("Fierce Guardianship", EC)); m.SWAP_IN_PLACE = True
         tot = collections.Counter()
         for sd in range(1_000_000, 1_000_150):
             for f in (m.simulate_one, m.simulate_one_with_interaction):
@@ -2443,7 +2443,7 @@ def removal_proxy_prefere_Casualties_depois_Atomize_depois_Trophy_e_so_uma_por_t
 def cinco_entradas_partidas_completas_nao_dao_excecao_e_as_tres_novas_disparam():
     antigos = (m.SWAPS, m.SWAP_IN_PLACE)
     try:
-        m.SWAPS = (("An Offer You Can't Refuse", "Agent Frank Horrigan"), ("Negate", BRE), ("Didn't Say Please", ATZ), ("Arcane Denial", COW), ("Toxic Deluge", TRO)); m.SWAP_IN_PLACE = True
+        m.SWAPS = (); m.SWAP_IN_PLACE = False      # lista atual: as cinco entradas ja' estao na biblioteca base
         tot = collections.Counter()
         for sd in range(1_000_000, 1_000_300):
             for f in (m.simulate_one, m.simulate_one_with_interaction):
