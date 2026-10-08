@@ -186412,5 +186412,171 @@
     "toughness": null,
     "type_line": "Enchantment",
     "name": "Rite of Passage"
+  },
+  "Maelstrom Pulse": {
+    "cmc": 3.0,
+    "collector_number": "244",
+    "color_identity": [
+      "B",
+      "G"
+    ],
+    "colors": [
+      "B",
+      "G"
+    ],
+    "keywords": [],
+    "legalities": {
+      "standard": "legal",
+      "future": "legal",
+      "historic": "legal",
+      "timeless": "legal",
+      "gladiator": "legal",
+      "pioneer": "legal",
+      "modern": "legal",
+      "legacy": "legal",
+      "pauper": "not_legal",
+      "vintage": "legal",
+      "penny": "legal",
+      "commander": "legal",
+      "oathbreaker": "legal",
+      "standardbrawl": "legal",
+      "brawl": "legal",
+      "competitivebrawl": "legal",
+      "alchemy": "legal",
+      "paupercommander": "not_legal",
+      "duel": "legal",
+      "oldschool": "not_legal",
+      "premodern": "not_legal",
+      "predh": "legal",
+      "tlr": "legal"
+    },
+    "loyalty": null,
+    "mana_cost": "{1}{B}{G}",
+    "oracle_text": "Destroy target nonland permanent and all other permanents with the same name as that permanent.",
+    "power": null,
+    "prices": {
+      "usd": "0.35",
+      "usd_foil": "0.37",
+      "usd_etched": null,
+      "eur": "0.28",
+      "eur_foil": "0.52",
+      "tix": "0.08"
+    },
+    "released_at": "2025-01-24",
+    "scryfall_uri": "https://scryfall.com/card/inr/244/maelstrom-pulse?utm_source=api",
+    "set": "inr",
+    "toughness": null,
+    "type_line": "Sorcery",
+    "name": "Maelstrom Pulse"
+  },
+  "Abrupt Decay": {
+    "cmc": 2.0,
+    "collector_number": "146",
+    "color_identity": [
+      "B",
+      "G"
+    ],
+    "colors": [
+      "B",
+      "G"
+    ],
+    "keywords": [],
+    "legalities": {
+      "standard": "not_legal",
+      "future": "not_legal",
+      "historic": "legal",
+      "timeless": "legal",
+      "gladiator": "legal",
+      "pioneer": "legal",
+      "modern": "legal",
+      "legacy": "legal",
+      "pauper": "not_legal",
+      "vintage": "legal",
+      "penny": "not_legal",
+      "commander": "legal",
+      "oathbreaker": "legal",
+      "standardbrawl": "not_legal",
+      "brawl": "legal",
+      "competitivebrawl": "legal",
+      "alchemy": "not_legal",
+      "paupercommander": "not_legal",
+      "duel": "legal",
+      "oldschool": "not_legal",
+      "premodern": "not_legal",
+      "predh": "not_legal",
+      "tlr": "legal"
+    },
+    "loyalty": null,
+    "mana_cost": "{B}{G}",
+    "oracle_text": "This spell can't be countered.\nDestroy target nonland permanent with mana value 3 or less.",
+    "power": null,
+    "prices": {
+      "usd": "2.59",
+      "usd_foil": "7.88",
+      "usd_etched": null,
+      "eur": "1.81",
+      "eur_foil": "7.60",
+      "tix": "0.41"
+    },
+    "released_at": "2017-03-17",
+    "scryfall_uri": "https://scryfall.com/card/mm3/146/abrupt-decay?utm_source=api",
+    "set": "mm3",
+    "toughness": null,
+    "type_line": "Instant",
+    "name": "Abrupt Decay"
+  },
+  "Vraska's Contempt": {
+    "cmc": 4.0,
+    "collector_number": "129",
+    "color_identity": [
+      "B"
+    ],
+    "colors": [
+      "B"
+    ],
+    "keywords": [],
+    "legalities": {
+      "standard": "not_legal",
+      "future": "not_legal",
+      "historic": "legal",
+      "timeless": "legal",
+      "gladiator": "legal",
+      "pioneer": "legal",
+      "modern": "legal",
+      "legacy": "legal",
+      "pauper": "not_legal",
+      "vintage": "legal",
+      "penny": "legal",
+      "commander": "legal",
+      "oathbreaker": "legal",
+      "standardbrawl": "not_legal",
+      "brawl": "legal",
+      "competitivebrawl": "legal",
+      "alchemy": "not_legal",
+      "paupercommander": "not_legal",
+      "duel": "legal",
+      "oldschool": "not_legal",
+      "premodern": "not_legal",
+      "predh": "not_legal",
+      "tlr": "not_legal"
+    },
+    "loyalty": null,
+    "mana_cost": "{2}{B}{B}",
+    "oracle_text": "Exile target creature or planeswalker. You gain 2 life.",
+    "power": null,
+    "prices": {
+      "usd": "0.37",
+      "usd_foil": "1.13",
+      "usd_etched": null,
+      "eur": "0.31",
+      "eur_foil": "1.25",
+      "tix": "0.02"
+    },
+    "released_at": "2017-09-29",
+    "scryfall_uri": "https://scryfall.com/card/xln/129/vraskas-contempt?utm_source=api",
+    "set": "xln",
+    "toughness": null,
+    "type_line": "Instant",
+    "name": "Vraska's Contempt"
   }
 }

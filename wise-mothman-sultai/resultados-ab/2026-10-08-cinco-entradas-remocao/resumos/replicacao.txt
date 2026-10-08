@@ -1,0 +1,5 @@
+padrao       base         (aqui) == base             (pacote-e-interacao): 10000/10000 partidas identicas (todos os campos numericos do antigo; campos novos = 0)
+padrao       p1_so_o_par  (aqui) == p1_offer_negate  (pacote-e-interacao): 10000/10000 partidas identicas (todos os campos numericos do antigo; campos novos = 0)
+resiliencia  base         (aqui) == base             (pacote-e-interacao): 10000/10000 partidas identicas (todos os campos numericos do antigo; campos novos = 0)
+resiliencia  p1_so_o_par  (aqui) == p1_offer_negate  (pacote-e-interacao): 10000/10000 partidas identicas (todos os campos numericos do antigo; campos novos = 0)
+4/4 series bit-identicas

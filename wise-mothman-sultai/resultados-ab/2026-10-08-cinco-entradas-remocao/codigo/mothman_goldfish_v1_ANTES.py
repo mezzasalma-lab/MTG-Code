@@ -253,9 +253,6 @@ add("Inexorable Tide", "{3}{U}{U}", {"enchantment"}, {"inex_tide"})
 add("Branching Evolution", "{2}{G}", {"enchantment"}, {"branching_evo"})
 add("Loading Zone", "{3}{G}", {"enchantment"}, {"loading_zone"})
 add("The Earth Crystal", "{2}{G}{G}", {"artifact"}, {"earth_crystal"}, legendary=True)
-add("Atomize", "{2}{B}{G}", {"instant"}, {"atomize"})      # candidatas de 2026-10-08 (pedido do usuario): resultados-ab/2026-10-08-cinco-entradas-remocao
-add("Casualties of War", "{2}{B}{B}{G}{G}", {"sorcery"}, {"casualties"})
-add("Assassin's Trophy", "{B}{G}", {"instant"}, {"trophy"})
 add("Opponent Creature Card", "", {"creature"}, {"opp_card"}, 3, 3, subtypes={"Mutant"})   # ficticia: a carta de criatura de oponente que a Master levou (corpo 3/3 generico; volta ao cemiterio dele)
 
 # --- Fichas -----------------------------------------------------------------------
@@ -398,10 +395,6 @@ class GameState:
     cards_drawn_extra: int = 0
     draws_total: int = 0
     interaction_plays: int = 0
-    atomize_casts: int = 0
-    casualties_casts: int = 0
-    trophy_casts: int = 0
-    trophy_lands_given: int = 0
     counterspells_cast: int = 0
     recursion_events_total: int = 0
     ramp_pieces_in_play: int = 0
@@ -2322,32 +2315,6 @@ def resolve_instant_sorcery(state: GameState, name: str, x: int):
         state.interaction_plays += 1
         commit_crime(state, "removal")
         return
-    if "atomize" in tags:
-        # "Destroy target nonland permanent. Proliferate.": o destroy mira permanente de OPONENTE (estrutural: crime + metrica proxy); o proliferate e' REAL (o crime vem antes: o gatilho do Deepmuck resolve antes da magia)
-        state.atomize_casts += 1
-        state.interaction_plays += 1
-        commit_crime(state, "removal")
-        proliferate(state, "atomize")
-        return
-    if "casualties" in tags:
-        # "Choose one or more": artefato / criatura / encantamento / terreno / planeswalker, alvos de OPONENTE (estrutural); uma magia que mira = UM crime; sem inventar quantos modos haveria
-        state.casualties_casts += 1
-        state.interaction_plays += 1
-        commit_crime(state, "removal")
-        return
-    if "trophy" in tags:
-        # "Destroy target permanent an opponent controls. Its controller may search their library for a basic land card, put it onto the battlefield, then shuffle."
-        # destroy: estrutural (crime + metrica proxy). A busca e' REAL no que o simulador rastreia: o oponente alvo (o 1o vivo) tira 1 terreno da biblioteca (-1 carta) e ganha 1 terreno em campo (`Opp.lands`);
-        # o embaralhar nao tem efeito observavel (a biblioteca ja' e' uma permutacao aleatoria e nada aqui depende de ordem conhecida).
-        state.trophy_casts += 1
-        state.interaction_plays += 1
-        commit_crime(state, "removal")
-        al = alive_opps(state)
-        if al and "L" in al[0].library:
-            al[0].library.remove("L")
-            al[0].lands += 1
-            state.trophy_lands_given += 1
-        return
     if "heroic_intervention" in tags:
         state.protection_used_total += 1
         return
@@ -2661,7 +2628,7 @@ def castable_candidates(state: GameState, phase: str) -> list:
         if name in INSTANT_HOLD:
             continue
         tags = c.tags
-        if tags & {"wipe", "tear_asunder", "vats", "repulsive_mutation", "smugglers_surprise", "agadeem", "atomize", "casualties", "trophy"}:
+        if tags & {"wipe", "tear_asunder", "vats", "repulsive_mutation", "smugglers_surprise", "agadeem"}:
             continue          # tratadas em `use_spare_mana` / modos
         if "kozilek" in tags and len(state.library) <= 6:
             continue          # 'When you cast this spell, draw four cards': nao conjuro com a biblioteca no fim
@@ -4858,10 +4825,10 @@ def act_fallout(state: GameState) -> bool:
 
 
 def act_removal_proxy(state: GameState) -> bool:
-    """Tear Asunder / V.A.T.S. (+ candidatas Atomize / Casualties of War / Assassin's Trophy): precisam de alvo no tabuleiro do oponente (nao simulado) -> metrica proxy `interaction_plays` + crime, so' quando `target_available`."""
+    """Tear Asunder / V.A.T.S.: precisam de alvo no tabuleiro do oponente (nao simulado) -> metrica proxy `interaction_plays` + crime, so' quando `target_available`."""
     if state.crime_this_turn.get("removal_proxy"):
         return False
-    for name in ("Casualties of War", "Atomize", "Assassin's Trophy", "Tear Asunder", "V.A.T.S."):
+    for name in ("Tear Asunder", "V.A.T.S."):
         if name not in state.hand:
             continue
         g, pips = effective_cost(state, name, 0)

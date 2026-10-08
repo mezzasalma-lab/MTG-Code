@@ -2355,6 +2355,108 @@ def seis_candidatas_partidas_completas_nao_dao_excecao_e_ativam():
 
 
 
+# ---------------------------------------------------------------------------------------------------------------------------
+# 2026-10-08 (pedido do usuario): Atomize, Casualties of War, Assassin's Trophy (oraculo e rulings lidos antes: dados/rulings_remocoes.json e rulings_casualties.json)
+ATZ, COW, TRO = "Atomize", "Casualties of War", "Assassin's Trophy"
+LANDS_REM = ("Swamp", "Swamp", "Forest", "Forest", "Island", "Island", "Swamp", "Forest", "Island", "Forest")
+
+
+class _alvo:
+    """Forca `target_available` (o tabuleiro do oponente e' estrutural) dentro de um `with`."""
+    def __init__(self, v): self.v = v
+    def __enter__(self): self.old = m.target_available; m.target_available = lambda st, v=self.v: v
+    def __exit__(self, *a): m.target_available = self.old
+
+
+@teste
+def atomize_custa_2BG_prolifera_de_verdade_comete_crime_e_conta_interacao():
+    c = m.CARD_DB[ATZ]
+    assert c.mv == 4 and "instant" in c.types and c.generic == 2 and sorted(next(iter(q)) for q in c.pips) == ["B", "G"]
+    st = _cena_c2(bf=["Walking Ballista", "Gyre Sage"], hand=[ATZ], lands=LANDS_REM)
+    bal = next(p for p in st.battlefield if p.card.name == "Walking Ballista"); bal.counters = 2
+    st.opps[0].rad = 3; st.opps[1].rad = 1
+    antes = (bal.counters, st.opps[0].rad, st.opps[1].rad, st.opps[2].rad)
+    g, pips = m.effective_cost(st, ATZ, 0)
+    assert m.cast_custom(st, ATZ, g, pips) is True
+    assert bal.counters == antes[0] + 1 and st.opps[0].rad == antes[1] + 1 and st.opps[1].rad == antes[2] + 1 and st.opps[2].rad == 0, "proliferate real: +1 contador, +1 rad so' em quem tem"
+    assert st.atomize_casts == 1 and st.interaction_plays == 1 and st.crimes_total == 1 and st.proliferates_total == 1 and ATZ in st.graveyard and ATZ not in st.hand
+
+
+@teste
+def atomize_com_Hardened_Scales_e_Branching_o_proliferate_poe_mais_contadores_e_o_crime_do_Deepmuck_vem_antes():
+    st = _cena_c2(bf=["Walking Ballista", "Hardened Scales", BRE], hand=[ATZ], lands=LANDS_REM)
+    bal = next(p for p in st.battlefield if p.card.name == "Walking Ballista"); bal.counters = 2
+    k0 = bal.counters
+    g, pips = m.effective_cost(st, ATZ, 0)
+    m.cast_custom(st, ATZ, g, pips)
+    assert bal.counters - k0 == 4, ("+1 -> Scales (+1) -> Branching (x2) = 4", bal.counters - k0)
+    st2 = _cena_c2(bf=["Deepmuck Desperado", "Walking Ballista"], hand=[ATZ], lands=LANDS_REM, opp_cards=["N", "C", "L"] * 30)
+    g, pips = m.effective_cost(st2, ATZ, 0)
+    m.cast_custom(st2, ATZ, g, pips)
+    assert st2.deepmuck_triggers == 1 and sum(len(o.graveyard) for o in st2.opps) >= 9, "o crime dispara o Deepmuck (3 cartas em cada oponente) antes do proliferate"
+
+
+@teste
+def casualties_custa_2BBGG_so_conjura_com_BB_e_GG_e_com_alvo_um_crime_um_conta_interacao():
+    c = m.CARD_DB[COW]
+    assert c.mv == 6 and "sorcery" in c.types and c.generic == 2 and sorted(next(iter(q)) for q in c.pips) == ["B", "B", "G", "G"]
+    with _alvo(True):
+        st = _cena_c2(hand=[COW], lands=("Swamp", "Forest", "Forest", "Island", "Island", "Island", "Island", "Island"))      # so' 1 B: nao paga BB
+        assert m.act_removal_proxy(st) is False and COW in st.hand
+        st = _cena_c2(hand=[COW], lands=LANDS_REM)
+        assert m.act_removal_proxy(st) is True
+        assert st.casualties_casts == 1 and st.interaction_plays == 1 and st.crimes_total == 1 and COW in st.graveyard
+    with _alvo(False):
+        st = _cena_c2(hand=[COW], lands=LANDS_REM)
+        assert m.act_removal_proxy(st) is False and COW in st.hand, "sem alvo no tabuleiro do oponente nao conjura"
+
+
+@teste
+def trophy_custa_BG_oponente_alvo_tira_1_terreno_da_biblioteca_e_ganha_1_em_campo():
+    c = m.CARD_DB[TRO]
+    assert c.mv == 2 and "instant" in c.types
+    st = _cena_c2(hand=[TRO], lands=LANDS_REM, opp_cards=["L", "N", "C"] * 20)
+    o = st.opps[0]; lib0 = len(o.library); l0 = o.library.count("L"); lands0 = o.lands; other = [len(x.library) for x in st.opps[1:]]
+    g, pips = m.effective_cost(st, TRO, 0)
+    assert m.cast_custom(st, TRO, g, pips) is True
+    assert len(o.library) == lib0 - 1 and o.library.count("L") == l0 - 1 and o.lands == lands0 + 1 and st.trophy_lands_given == 1, "a busca: -1 terreno na biblioteca, +1 em campo"
+    assert [len(x.library) for x in st.opps[1:]] == other, "so' o oponente alvo"
+    assert st.trophy_casts == 1 and st.interaction_plays == 1 and st.crimes_total == 1
+    st2 = _cena_c2(hand=[TRO], lands=LANDS_REM, opp_cards=["N", "C"] * 20)
+    g, pips = m.effective_cost(st2, TRO, 0); m.cast_custom(st2, TRO, g, pips)
+    assert st2.trophy_lands_given == 0 and st2.opps[0].lands == 0 and len(st2.opps[0].library) == 40, "sem terreno basico na biblioteca nao ha' o que buscar"
+
+
+@teste
+def removal_proxy_prefere_Casualties_depois_Atomize_depois_Trophy_e_so_uma_por_turno():
+    with _alvo(True):
+        st = _cena_c2(hand=[ATZ, TRO, COW, "Tear Asunder"], lands=LANDS_REM + ("Swamp", "Forest"))
+        assert m.act_removal_proxy(st) is True and st.casualties_casts == 1 and COW not in st.hand
+        assert m.act_removal_proxy(st) is False, "uma remocao proxy por turno"
+        st.crime_this_turn = {}
+        assert m.act_removal_proxy(st) is True and st.atomize_casts == 1
+        st.crime_this_turn = {}
+        assert m.act_removal_proxy(st) is True and st.trophy_casts == 1
+
+
+@teste
+def cinco_entradas_partidas_completas_nao_dao_excecao_e_as_tres_novas_disparam():
+    antigos = (m.SWAPS, m.SWAP_IN_PLACE)
+    try:
+        m.SWAPS = (("An Offer You Can't Refuse", "Agent Frank Horrigan"), ("Negate", BRE), ("Didn't Say Please", ATZ), ("Arcane Denial", COW), ("Toxic Deluge", TRO)); m.SWAP_IN_PLACE = True
+        tot = collections.Counter()
+        for sd in range(1_000_000, 1_000_300):
+            for f in (m.simulate_one, m.simulate_one_with_interaction):
+                s = f(sd, 12)
+                for k in ("atomize_casts", "casualties_casts", "trophy_casts", "trophy_lands_given", "interaction_plays", "crimes_total"):
+                    tot[k] += getattr(s, k)
+                tot["prolif_atomize"] += s.prolif_by_source.get("atomize", 0)
+        assert all(tot[k] > 0 for k in ("atomize_casts", "casualties_casts", "trophy_casts", "trophy_lands_given", "prolif_atomize")), ("verificacao vacua", dict(tot))
+    finally:
+        m.SWAPS, m.SWAP_IN_PLACE = antigos
+
+
+
 
 def main():
     for t in TESTS:

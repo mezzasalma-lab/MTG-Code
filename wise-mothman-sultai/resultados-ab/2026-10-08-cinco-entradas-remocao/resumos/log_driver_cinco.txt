@@ -1,0 +1,847 @@
+base                               cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+p1_so_o_par                        cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+rem3_vats_wave_deluge              cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+s1_vats_wave_deluge                cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+s2_vats_arcane_dsp                 cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+s3_vats_wave_arcane                cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+s4_vats_wave_dsp                   cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+s5_vats_deluge_arcane              cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+s6_vats_deluge_dsp                 cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+s7_tear_wave_deluge                cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+feito 10000 padrao base
+feito 10000 padrao p1_so_o_par
+feito 10000 padrao rem3_vats_wave_deluge
+feito 10000 padrao s1_vats_wave_deluge
+feito 10000 padrao s2_vats_arcane_dsp
+feito 10000 padrao s3_vats_wave_arcane
+feito 10000 padrao s4_vats_wave_dsp
+feito 10000 padrao s5_vats_deluge_arcane
+feito 10000 padrao s6_vats_deluge_dsp
+feito 10000 padrao s7_tear_wave_deluge
+LOTE N=10000 sementes 3000000..3009999, 12 turnos, modo padrao
+
+[p1_so_o_par - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T7                                   0.1511       0.1695      +0.0184 ±0.0036  
+  *cleared_T8                                   0.5134       0.5536      +0.0402 ±0.0050  
+  *cleared_T10                                  0.8501       0.8610      +0.0109 ±0.0038  
+  *first_elim_T6                                0.3906       0.4111      +0.0205 ±0.0031  
+  *self_lost                                    0.0325       0.0284      -0.0041 ±0.0032  
+  *decked                                       0.0325       0.0284      -0.0041 ±0.0032  
+  *opps_eliminated_total                        2.8633       2.8728      +0.0095 ±0.0057  
+  *proliferates_total                           0.1783       0.5157      +0.3374 ±0.0195  
+  *rad_counters_given_opp_total                12.8050      13.4415      +0.6365 ±0.0542  
+  *mothman_counters_placed_total               75.6756      81.6412      +5.9656 ±1.0296  
+  *counters_placed_total                      111.7111     133.3277     +21.6166 ±2.3637  
+  *cards_milled_opp_total                      85.3213      81.7929      -3.5284 ±0.5989  
+  *cards_milled_self_total                     16.8685      16.1810      -0.6875 ±0.1192  
+  *library_min                                 50.0244      51.5778      +1.5534 ±0.2113  
+  *draws_total                                 26.2583      25.1659      -1.0924 ±0.2280  
+  *interaction_plays                            0.4845       0.4599      -0.0246 ±0.0078  
+  *crimes_total                                 3.6490       3.2638      -0.3852 ±0.0364  
+  *deepmuck_triggers                            0.2437       0.2102      -0.0335 ±0.0063  
+  *counterspells_cast                           0.5362       0.3447      -0.1915 ±0.0093  
+  *opp_spells_countered_total                   0.5362       0.3447      -0.1915 ±0.0093  
+  *wipes_cast                                   0.1532       0.1438      -0.0094 ±0.0039  
+  *branching_enter_turn__nunca                  1.0000       0.7205      -0.2795 ±0.0088  
+  *horrigan_enter_turn__nunca                   1.0000       0.7877      -0.2123 ±0.0080  
+  *horrigan_etb_prolifs                         0.0000       0.2125      +0.2125 ±0.0080  
+  *len_prolif_by_source                         0.1100       0.4204      +0.3104 ±0.0130  
+  *len_prolif_counters_by_source                0.1060       0.4151      +0.3091 ±0.0130  
+  *len_prolif_rad_by_source                     0.1005       0.3496      +0.2491 ±0.0119  
+  *branching_enter_turn__ate_T6                 0.0000       0.1149      +0.1149 ±0.0063  
+  *horrigan_attack_prolifs                      0.0000       0.1425      +0.1425 ±0.0090  
+  *horrigan_attacks                             0.0000       0.1425      +0.1425 ±0.0090  
+  *branching_enter_turn__ate_T5                 0.0000       0.0844      +0.0844 ±0.0054  
+  *horrigan_attack_damage                       0.0000       2.1655      +2.1655 ±0.1555  
+  *branching_enter_turn__ate_T4                 0.0000       0.0543      +0.0543 ±0.0044  
+  *len_cards_in_hand_by_turn                    7.8202       7.7243      -0.0959 ±0.0088  
+  *len_counters_on_board_by_turn                7.8202       7.7243      -0.0959 ±0.0088  
+
+[rem3_vats_wave_deluge - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T7                                   0.1511       0.1532      +0.0021 ±0.0013  
+  *cleared_T8                                   0.5134       0.5157      +0.0023 ±0.0016  
+   cleared_T10                                  0.8501       0.8509      +0.0008 ±0.0014  
+   first_elim_T6                                0.3906       0.3907      +0.0001 ±0.0009  
+   self_lost                                    0.0325       0.0323      -0.0002 ±0.0010  
+   decked                                       0.0325       0.0323      -0.0002 ±0.0010  
+   opps_eliminated_total                        2.8633       2.8640      +0.0007 ±0.0021  
+  *proliferates_total                           0.1783       0.2300      +0.0517 ±0.0089  
+  *rad_counters_given_opp_total                12.8050      12.8433      +0.0383 ±0.0122  
+  *mothman_counters_placed_total               75.6756      75.9844      +0.3088 ±0.2401  
+  *counters_placed_total                      111.7111     112.5545      +0.8434 ±0.5073  
+   cards_milled_opp_total                      85.3213      85.4422      +0.1209 ±0.1871  
+   cards_milled_self_total                     16.8685      16.8789      +0.0104 ±0.0495  
+   library_min                                 50.0244      50.0508      +0.0264 ±0.0777  
+   draws_total                                 26.2583      26.2199      -0.0384 ±0.0789  
+  *atomize_casts                                0.0000       0.0461      +0.0461 ±0.0041  
+  *casualties_casts                             0.0000       0.0349      +0.0349 ±0.0036  
+  *trophy_casts                                 0.0000       0.0817      +0.0817 ±0.0054  
+  *trophy_lands_given                           0.0000       0.0797      +0.0797 ±0.0053  
+  *interaction_plays                            0.4845       0.5943      +0.1098 ±0.0076  
+  *crimes_total                                 3.6490       3.7551      +0.1061 ±0.0117  
+  *deepmuck_triggers                            0.2437       0.2483      +0.0046 ±0.0029  
+   counterspells_cast                           0.5362       0.5362      +0.0000 ±0.0023  
+   opp_spells_countered_total                   0.5362       0.5362      +0.0000 ±0.0023  
+  *wipes_cast                                   0.1532       0.0659      -0.0873 ±0.0059  
+  *len_prolif_by_source                         0.1100       0.1557      +0.0457 ±0.0043  
+  *len_prolif_counters_by_source                0.1060       0.1497      +0.0437 ±0.0042  
+  *len_prolif_rad_by_source                     0.1005       0.1345      +0.0340 ±0.0038  
+  *life_min                                    31.8560      32.0388      +0.1828 ±0.0207  
+  *life                                        36.2879      36.5198      +0.2319 ±0.0411  
+  *len_battlefield                             29.4349      29.6829      +0.2480 ±0.0812  
+  *rad_triggers_self                            3.7206       3.7123      -0.0083 ±0.0033  
+  *turn                                         8.7013       8.6936      -0.0077 ±0.0031  
+  *freestrider_triggers                         0.2012       0.2087      +0.0075 ±0.0030  
+  *mothman_attacks_total                        3.6233       3.6151      -0.0082 ±0.0033  
+  *len_mana_by_turn                             8.6904       8.6829      -0.0075 ±0.0031  
+  *len_attackers_this_turn                      6.7782       6.8758      +0.0976 ±0.0402  
+  *max_creatures_in_play                       10.2188      10.3349      +0.1161 ±0.0480  
+  *turn_id                                     29.8503      29.8283      -0.0220 ±0.0094  
+
+[s1_vats_wave_deluge - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T7                                   0.1511       0.1715      +0.0204 ±0.0038  
+  *cleared_T8                                   0.5134       0.5567      +0.0433 ±0.0052  
+  *cleared_T10                                  0.8501       0.8616      +0.0115 ±0.0039  
+  *first_elim_T6                                0.3906       0.4114      +0.0208 ±0.0032  
+  *self_lost                                    0.0325       0.0278      -0.0047 ±0.0032  
+  *decked                                       0.0325       0.0278      -0.0047 ±0.0032  
+  *opps_eliminated_total                        2.8633       2.8741      +0.0108 ±0.0059  
+  *proliferates_total                           0.1783       0.5629      +0.3846 ±0.0206  
+  *rad_counters_given_opp_total                12.8050      13.4799      +0.6749 ±0.0551  
+  *mothman_counters_placed_total               75.6756      81.8535      +6.1779 ±1.0441  
+  *counters_placed_total                      111.7111     133.7361     +22.0250 ±2.3407  
+  *cards_milled_opp_total                      85.3213      81.8870      -3.4343 ±0.6153  
+  *cards_milled_self_total                     16.8685      16.1928      -0.6757 ±0.1253  
+  *library_min                                 50.0244      51.6041      +1.5797 ±0.2203  
+  *draws_total                                 26.2583      25.1435      -1.1148 ±0.2336  
+  *atomize_casts                                0.0000       0.0416      +0.0416 ±0.0039  
+  *casualties_casts                             0.0000       0.0318      +0.0318 ±0.0035  
+  *trophy_casts                                 0.0000       0.0781      +0.0781 ±0.0053  
+  *trophy_lands_given                           0.0000       0.0770      +0.0770 ±0.0052  
+  *interaction_plays                            0.4845       0.5627      +0.0782 ±0.0104  
+  *crimes_total                                 3.6490       3.3649      -0.2841 ±0.0376  
+  *deepmuck_triggers                            0.2437       0.2162      -0.0275 ±0.0068  
+  *counterspells_cast                           0.5362       0.3451      -0.1911 ±0.0095  
+  *opp_spells_countered_total                   0.5362       0.3451      -0.1911 ±0.0095  
+  *wipes_cast                                   0.1532       0.0623      -0.0909 ±0.0063  
+  *branching_enter_turn__nunca                  1.0000       0.7217      -0.2783 ±0.0088  
+  *horrigan_enter_turn__nunca                   1.0000       0.7873      -0.2127 ±0.0080  
+  *horrigan_etb_prolifs                         0.0000       0.2127      +0.2127 ±0.0080  
+  *len_prolif_by_source                         0.1100       0.4644      +0.3544 ±0.0136  
+  *len_prolif_counters_by_source                0.1060       0.4574      +0.3514 ±0.0135  
+  *len_prolif_rad_by_source                     0.1005       0.3821      +0.2816 ±0.0124  
+  *branching_enter_turn__ate_T6                 0.0000       0.1152      +0.1152 ±0.0063  
+  *horrigan_attack_prolifs                      0.0000       0.1434      +0.1434 ±0.0090  
+  *horrigan_attacks                             0.0000       0.1434      +0.1434 ±0.0090  
+  *branching_enter_turn__ate_T5                 0.0000       0.0842      +0.0842 ±0.0054  
+  *horrigan_attack_damage                       0.0000       2.1769      +2.1769 ±0.1562  
+  *branching_enter_turn__ate_T4                 0.0000       0.0543      +0.0543 ±0.0044  
+  *len_cards_in_hand_by_turn                    7.8202       7.7188      -0.1014 ±0.0092  
+  *len_counters_on_board_by_turn                7.8202       7.7188      -0.1014 ±0.0092  
+
+[s2_vats_arcane_dsp - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T7                                   0.1511       0.1756      +0.0245 ±0.0042  
+  *cleared_T8                                   0.5134       0.5628      +0.0494 ±0.0058  
+  *cleared_T10                                  0.8501       0.8653      +0.0152 ±0.0045  
+  *first_elim_T6                                0.3906       0.4195      +0.0289 ±0.0038  
+  *self_lost                                    0.0325       0.0288      -0.0037 ±0.0035  
+  *decked                                       0.0325       0.0288      -0.0037 ±0.0035  
+  *opps_eliminated_total                        2.8633       2.8728      +0.0095 ±0.0070  
+  *proliferates_total                           0.1783       0.5623      +0.3840 ±0.0219  
+  *rad_counters_given_opp_total                12.8050      13.4200      +0.6150 ±0.0589  
+  *mothman_counters_placed_total               75.6756      82.0186      +6.3430 ±1.1371  
+  *counters_placed_total                      111.7111     133.6893     +21.9782 ±2.8206  
+  *cards_milled_opp_total                      85.3213      83.0230      -2.2983 ±0.7431  
+  *cards_milled_self_total                     16.8685      16.4373      -0.4312 ±0.1484  
+  *library_min                                 50.0244      51.6509      +1.6265 ±0.2530  
+  *draws_total                                 26.2583      24.8978      -1.3605 ±0.2693  
+  *atomize_casts                                0.0000       0.0463      +0.0463 ±0.0041  
+  *casualties_casts                             0.0000       0.0324      +0.0324 ±0.0035  
+  *trophy_casts                                 0.0000       0.0808      +0.0808 ±0.0054  
+  *trophy_lands_given                           0.0000       0.0798      +0.0798 ±0.0053  
+  *interaction_plays                            0.4845       0.5945      +0.1100 ±0.0119  
+  *crimes_total                                 3.6490       3.2705      -0.3785 ±0.0470  
+  *deepmuck_triggers                            0.2437       0.2175      -0.0262 ±0.0083  
+  *counterspells_cast                           0.5362       0.1774      -0.3588 ±0.0120  
+  *opp_spells_countered_total                   0.5362       0.1774      -0.3588 ±0.0120  
+   wipes_cast                                   0.1532       0.1530      -0.0002 ±0.0052  
+  *branching_enter_turn__nunca                  1.0000       0.7252      -0.2748 ±0.0088  
+  *len_prolif_by_source                         0.1100       0.4677      +0.3577 ±0.0136  
+  *horrigan_enter_turn__nunca                   1.0000       0.7921      -0.2079 ±0.0080  
+  *horrigan_etb_prolifs                         0.0000       0.2082      +0.2082 ±0.0080  
+  *len_prolif_counters_by_source                0.1060       0.4593      +0.3533 ±0.0135  
+  *len_prolif_rad_by_source                     0.1005       0.3864      +0.2859 ±0.0125  
+  *branching_enter_turn__ate_T6                 0.0000       0.1149      +0.1149 ±0.0063  
+  *horrigan_attack_prolifs                      0.0000       0.1373      +0.1373 ±0.0088  
+  *horrigan_attacks                             0.0000       0.1373      +0.1373 ±0.0088  
+  *branching_enter_turn__ate_T5                 0.0000       0.0848      +0.0848 ±0.0055  
+  *horrigan_attack_damage                       0.0000       2.0725      +2.0725 ±0.1490  
+  *branching_enter_turn__ate_T4                 0.0000       0.0544      +0.0544 ±0.0044  
+  *len_draws_by_source                          3.1843       2.9562      -0.2281 ±0.0194  
+  *len_cards_in_hand_by_turn                    7.8202       7.6945      -0.1257 ±0.0112  
+
+[s3_vats_wave_arcane - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T7                                   0.1511       0.1723      +0.0212 ±0.0040  
+  *cleared_T8                                   0.5134       0.5555      +0.0421 ±0.0055  
+  *cleared_T10                                  0.8501       0.8618      +0.0117 ±0.0042  
+  *first_elim_T6                                0.3906       0.4136      +0.0230 ±0.0035  
+  *self_lost                                    0.0325       0.0283      -0.0042 ±0.0034  
+  *decked                                       0.0325       0.0283      -0.0042 ±0.0034  
+  *opps_eliminated_total                        2.8633       2.8699      +0.0066 ±0.0066  
+  *proliferates_total                           0.1783       0.5516      +0.3733 ±0.0215  
+  *rad_counters_given_opp_total                12.8050      13.4416      +0.6366 ±0.0571  
+  *mothman_counters_placed_total               75.6756      81.1965      +5.5209 ±1.0893  
+  *counters_placed_total                      111.7111     132.3279     +20.6168 ±2.5324  
+  *cards_milled_opp_total                      85.3213      81.9796      -3.3417 ±0.6800  
+  *cards_milled_self_total                     16.8685      16.2499      -0.6186 ±0.1370  
+  *library_min                                 50.0244      51.7582      +1.7338 ±0.2384  
+  *draws_total                                 26.2583      24.9046      -1.3537 ±0.2575  
+  *atomize_casts                                0.0000       0.0426      +0.0426 ±0.0040  
+  *casualties_casts                             0.0000       0.0323      +0.0323 ±0.0035  
+  *trophy_casts                                 0.0000       0.0831      +0.0831 ±0.0054  
+  *trophy_lands_given                           0.0000       0.0824      +0.0824 ±0.0054  
+  *interaction_plays                            0.4845       0.5749      +0.0904 ±0.0111  
+  *crimes_total                                 3.6490       3.2729      -0.3761 ±0.0408  
+  *deepmuck_triggers                            0.2437       0.2127      -0.0310 ±0.0075  
+  *counterspells_cast                           0.5362       0.2415      -0.2947 ±0.0111  
+  *opp_spells_countered_total                   0.5362       0.2415      -0.2947 ±0.0111  
+  *wipes_cast                                   0.1532       0.1147      -0.0385 ±0.0055  
+  *branching_enter_turn__nunca                  1.0000       0.7256      -0.2744 ±0.0087  
+  *horrigan_enter_turn__nunca                   1.0000       0.7899      -0.2101 ±0.0080  
+  *horrigan_etb_prolifs                         0.0000       0.2101      +0.2101 ±0.0080  
+  *len_prolif_by_source                         0.1100       0.4610      +0.3510 ±0.0135  
+  *len_prolif_counters_by_source                0.1060       0.4534      +0.3474 ±0.0134  
+  *len_prolif_rad_by_source                     0.1005       0.3805      +0.2800 ±0.0124  
+  *branching_enter_turn__ate_T6                 0.0000       0.1146      +0.1146 ±0.0062  
+  *horrigan_attack_prolifs                      0.0000       0.1383      +0.1383 ±0.0088  
+  *horrigan_attacks                             0.0000       0.1383      +0.1383 ±0.0088  
+  *branching_enter_turn__ate_T5                 0.0000       0.0842      +0.0842 ±0.0054  
+  *horrigan_attack_damage                       0.0000       2.0823      +2.0823 ±0.1508  
+  *len_draws_by_source                          3.1843       2.9560      -0.2283 ±0.0181  
+  *branching_enter_turn__ate_T4                 0.0000       0.0543      +0.0543 ±0.0044  
+  *rad_triggers_self                            3.7206       3.6192      -0.1014 ±0.0100  
+
+[s4_vats_wave_dsp - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T7                                   0.1511       0.1740      +0.0229 ±0.0039  
+  *cleared_T8                                   0.5134       0.5598      +0.0464 ±0.0055  
+  *cleared_T10                                  0.8501       0.8657      +0.0156 ±0.0042  
+  *first_elim_T6                                0.3906       0.4159      +0.0253 ±0.0035  
+  *self_lost                                    0.0325       0.0286      -0.0039 ±0.0033  
+  *decked                                       0.0325       0.0286      -0.0039 ±0.0033  
+  *opps_eliminated_total                        2.8633       2.8763      +0.0130 ±0.0064  
+  *proliferates_total                           0.1783       0.5627      +0.3844 ±0.0202  
+  *rad_counters_given_opp_total                12.8050      13.4606      +0.6556 ±0.0566  
+  *mothman_counters_placed_total               75.6756      82.3731      +6.6975 ±1.0908  
+  *counters_placed_total                      111.7111     133.5769     +21.8658 ±2.5101  
+  *cards_milled_opp_total                      85.3213      82.6881      -2.6332 ±0.6716  
+  *cards_milled_self_total                     16.8685      16.3777      -0.4908 ±0.1337  
+  *library_min                                 50.0244      51.5166      +1.4922 ±0.2313  
+  *draws_total                                 26.2583      25.0921      -1.1662 ±0.2417  
+  *atomize_casts                                0.0000       0.0439      +0.0439 ±0.0040  
+  *casualties_casts                             0.0000       0.0322      +0.0322 ±0.0035  
+  *trophy_casts                                 0.0000       0.0791      +0.0791 ±0.0053  
+  *trophy_lands_given                           0.0000       0.0781      +0.0781 ±0.0053  
+  *interaction_plays                            0.4845       0.5800      +0.0955 ±0.0110  
+  *crimes_total                                 3.6490       3.3510      -0.2980 ±0.0390  
+  *deepmuck_triggers                            0.2437       0.2203      -0.0234 ±0.0075  
+  *counterspells_cast                           0.5362       0.2822      -0.2540 ±0.0105  
+  *opp_spells_countered_total                   0.5362       0.2822      -0.2540 ±0.0105  
+  *wipes_cast                                   0.1532       0.1131      -0.0401 ±0.0054  
+  *branching_enter_turn__nunca                  1.0000       0.7236      -0.2764 ±0.0088  
+  *horrigan_enter_turn__nunca                   1.0000       0.7895      -0.2105 ±0.0080  
+  *horrigan_etb_prolifs                         0.0000       0.2105      +0.2105 ±0.0080  
+  *len_prolif_by_source                         0.1100       0.4665      +0.3565 ±0.0136  
+  *len_prolif_counters_by_source                0.1060       0.4588      +0.3528 ±0.0135  
+  *len_prolif_rad_by_source                     0.1005       0.3848      +0.2843 ±0.0125  
+  *branching_enter_turn__ate_T6                 0.0000       0.1148      +0.1148 ±0.0062  
+  *horrigan_attack_prolifs                      0.0000       0.1414      +0.1414 ±0.0089  
+  *horrigan_attacks                             0.0000       0.1414      +0.1414 ±0.0089  
+  *branching_enter_turn__ate_T5                 0.0000       0.0845      +0.0845 ±0.0055  
+  *horrigan_attack_damage                       0.0000       2.1373      +2.1373 ±0.1531  
+  *len_cards_in_hand_by_turn                    7.8202       7.6967      -0.1235 ±0.0100  
+  *len_counters_on_board_by_turn                7.8202       7.6967      -0.1235 ±0.0100  
+  *len_creature_count_by_turn                   7.8202       7.6967      -0.1235 ±0.0100  
+
+[s5_vats_deluge_arcane - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T7                                   0.1511       0.1732      +0.0221 ±0.0040  
+  *cleared_T8                                   0.5134       0.5573      +0.0439 ±0.0055  
+  *cleared_T10                                  0.8501       0.8621      +0.0120 ±0.0043  
+  *first_elim_T6                                0.3906       0.4144      +0.0238 ±0.0036  
+  *self_lost                                    0.0325       0.0286      -0.0039 ±0.0034  
+  *decked                                       0.0325       0.0286      -0.0039 ±0.0034  
+  *opps_eliminated_total                        2.8633       2.8702      +0.0069 ±0.0066  
+  *proliferates_total                           0.1783       0.5529      +0.3746 ±0.0215  
+  *rad_counters_given_opp_total                12.8050      13.4393      +0.6343 ±0.0575  
+  *mothman_counters_placed_total               75.6756      81.5224      +5.8468 ±1.0943  
+  *counters_placed_total                      111.7111     132.9995     +21.2884 ±2.5460  
+  *cards_milled_opp_total                      85.3213      82.2383      -3.0830 ±0.6937  
+  *cards_milled_self_total                     16.8685      16.2675      -0.6010 ±0.1416  
+  *library_min                                 50.0244      51.7476      +1.7232 ±0.2423  
+  *draws_total                                 26.2583      24.9064      -1.3519 ±0.2603  
+  *atomize_casts                                0.0000       0.0430      +0.0430 ±0.0040  
+  *casualties_casts                             0.0000       0.0317      +0.0317 ±0.0034  
+  *trophy_casts                                 0.0000       0.0825      +0.0825 ±0.0054  
+  *trophy_lands_given                           0.0000       0.0819      +0.0819 ±0.0054  
+  *interaction_plays                            0.4845       0.5727      +0.0882 ±0.0110  
+  *crimes_total                                 3.6490       3.2740      -0.3750 ±0.0410  
+  *deepmuck_triggers                            0.2437       0.2128      -0.0309 ±0.0075  
+  *counterspells_cast                           0.5362       0.2420      -0.2942 ±0.0112  
+  *opp_spells_countered_total                   0.5362       0.2420      -0.2942 ±0.0112  
+  *wipes_cast                                   0.1532       0.0998      -0.0534 ±0.0057  
+  *branching_enter_turn__nunca                  1.0000       0.7242      -0.2758 ±0.0088  
+  *horrigan_enter_turn__nunca                   1.0000       0.7890      -0.2110 ±0.0080  
+  *horrigan_etb_prolifs                         0.0000       0.2112      +0.2112 ±0.0080  
+  *len_prolif_by_source                         0.1100       0.4614      +0.3514 ±0.0135  
+  *len_prolif_counters_by_source                0.1060       0.4538      +0.3478 ±0.0135  
+  *len_prolif_rad_by_source                     0.1005       0.3812      +0.2807 ±0.0125  
+  *branching_enter_turn__ate_T6                 0.0000       0.1149      +0.1149 ±0.0063  
+  *horrigan_attack_prolifs                      0.0000       0.1382      +0.1382 ±0.0089  
+  *horrigan_attacks                             0.0000       0.1382      +0.1382 ±0.0089  
+  *branching_enter_turn__ate_T5                 0.0000       0.0847      +0.0847 ±0.0055  
+  *horrigan_attack_damage                       0.0000       2.0889      +2.0889 ±0.1512  
+  *len_draws_by_source                          3.1843       2.9577      -0.2266 ±0.0184  
+  *branching_enter_turn__ate_T4                 0.0000       0.0546      +0.0546 ±0.0045  
+  *rad_triggers_self                            3.7206       3.6162      -0.1044 ±0.0103  
+
+[s6_vats_deluge_dsp - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T7                                   0.1511       0.1748      +0.0237 ±0.0040  
+  *cleared_T8                                   0.5134       0.5616      +0.0482 ±0.0055  
+  *cleared_T10                                  0.8501       0.8662      +0.0161 ±0.0043  
+  *first_elim_T6                                0.3906       0.4167      +0.0261 ±0.0035  
+  *self_lost                                    0.0325       0.0287      -0.0038 ±0.0034  
+  *decked                                       0.0325       0.0287      -0.0038 ±0.0034  
+  *opps_eliminated_total                        2.8633       2.8764      +0.0131 ±0.0065  
+  *proliferates_total                           0.1783       0.5633      +0.3850 ±0.0202  
+  *rad_counters_given_opp_total                12.8050      13.4576      +0.6526 ±0.0571  
+  *mothman_counters_placed_total               75.6756      82.7475      +7.0719 ±1.0994  
+  *counters_placed_total                      111.7111     134.5849     +22.8738 ±2.5839  
+  *cards_milled_opp_total                      85.3213      82.9045      -2.4168 ±0.6846  
+  *cards_milled_self_total                     16.8685      16.3954      -0.4731 ±0.1380  
+  *library_min                                 50.0244      51.5028      +1.4784 ±0.2347  
+  *draws_total                                 26.2583      25.0849      -1.1734 ±0.2461  
+  *atomize_casts                                0.0000       0.0445      +0.0445 ±0.0040  
+  *casualties_casts                             0.0000       0.0313      +0.0313 ±0.0034  
+  *trophy_casts                                 0.0000       0.0783      +0.0783 ±0.0053  
+  *trophy_lands_given                           0.0000       0.0774      +0.0774 ±0.0053  
+  *interaction_plays                            0.4845       0.5782      +0.0937 ±0.0110  
+  *crimes_total                                 3.6490       3.3564      -0.2926 ±0.0395  
+  *deepmuck_triggers                            0.2437       0.2208      -0.0229 ±0.0077  
+  *counterspells_cast                           0.5362       0.2835      -0.2527 ±0.0105  
+  *opp_spells_countered_total                   0.5362       0.2835      -0.2527 ±0.0105  
+  *wipes_cast                                   0.1532       0.0995      -0.0537 ±0.0057  
+  *branching_enter_turn__nunca                  1.0000       0.7221      -0.2779 ±0.0088  
+  *horrigan_enter_turn__nunca                   1.0000       0.7889      -0.2111 ±0.0080  
+  *horrigan_etb_prolifs                         0.0000       0.2114      +0.2114 ±0.0080  
+  *len_prolif_by_source                         0.1100       0.4670      +0.3570 ±0.0137  
+  *len_prolif_counters_by_source                0.1060       0.4593      +0.3533 ±0.0136  
+  *len_prolif_rad_by_source                     0.1005       0.3851      +0.2846 ±0.0125  
+  *branching_enter_turn__ate_T6                 0.0000       0.1152      +0.1152 ±0.0063  
+  *horrigan_attack_prolifs                      0.0000       0.1412      +0.1412 ±0.0089  
+  *horrigan_attacks                             0.0000       0.1412      +0.1412 ±0.0089  
+  *branching_enter_turn__ate_T5                 0.0000       0.0850      +0.0850 ±0.0055  
+  *horrigan_attack_damage                       0.0000       2.1399      +2.1399 ±0.1531  
+  *len_cards_in_hand_by_turn                    7.8202       7.6907      -0.1295 ±0.0104  
+  *len_counters_on_board_by_turn                7.8202       7.6907      -0.1295 ±0.0104  
+  *len_creature_count_by_turn                   7.8202       7.6907      -0.1295 ±0.0104  
+
+[s7_tear_wave_deluge - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T7                                   0.1511       0.1714      +0.0203 ±0.0038  
+  *cleared_T8                                   0.5134       0.5572      +0.0438 ±0.0053  
+  *cleared_T10                                  0.8501       0.8603      +0.0102 ±0.0040  
+  *first_elim_T6                                0.3906       0.4122      +0.0216 ±0.0034  
+  *self_lost                                    0.0325       0.0282      -0.0043 ±0.0032  
+  *decked                                       0.0325       0.0282      -0.0043 ±0.0032  
+  *opps_eliminated_total                        2.8633       2.8739      +0.0106 ±0.0058  
+  *proliferates_total                           0.1783       0.5690      +0.3907 ±0.0209  
+  *rad_counters_given_opp_total                12.8050      13.4839      +0.6789 ±0.0554  
+  *mothman_counters_placed_total               75.6756      81.8525      +6.1769 ±1.0507  
+  *counters_placed_total                      111.7111     134.3730     +22.6619 ±2.4444  
+  *cards_milled_opp_total                      85.3213      81.9196      -3.4017 ±0.6345  
+  *cards_milled_self_total                     16.8685      16.1906      -0.6779 ±0.1274  
+  *library_min                                 50.0244      51.6022      +1.5778 ±0.2265  
+  *draws_total                                 26.2583      25.1579      -1.1004 ±0.2409  
+  *atomize_casts                                0.0000       0.0468      +0.0468 ±0.0041  
+  *casualties_casts                             0.0000       0.0315      +0.0315 ±0.0034  
+  *trophy_casts                                 0.0000       0.0783      +0.0783 ±0.0053  
+  *trophy_lands_given                           0.0000       0.0772      +0.0772 ±0.0052  
+  *interaction_plays                            0.4845       0.5115      +0.0270 ±0.0111  
+  *crimes_total                                 3.6490       3.3150      -0.3340 ±0.0389  
+  *deepmuck_triggers                            0.2437       0.2131      -0.0306 ±0.0069  
+  *counterspells_cast                           0.5362       0.3455      -0.1907 ±0.0096  
+  *opp_spells_countered_total                   0.5362       0.3455      -0.1907 ±0.0096  
+  *wipes_cast                                   0.1532       0.0623      -0.0909 ±0.0063  
+  *branching_enter_turn__nunca                  1.0000       0.7213      -0.2787 ±0.0088  
+  *horrigan_enter_turn__nunca                   1.0000       0.7881      -0.2119 ±0.0080  
+  *horrigan_etb_prolifs                         0.0000       0.2119      +0.2119 ±0.0080  
+  *len_prolif_by_source                         0.1100       0.4700      +0.3600 ±0.0136  
+  *len_prolif_counters_by_source                0.1060       0.4620      +0.3560 ±0.0135  
+  *len_prolif_rad_by_source                     0.1005       0.3864      +0.2859 ±0.0124  
+  *branching_enter_turn__ate_T6                 0.0000       0.1149      +0.1149 ±0.0063  
+  *horrigan_attack_prolifs                      0.0000       0.1436      +0.1436 ±0.0090  
+  *horrigan_attacks                             0.0000       0.1436      +0.1436 ±0.0090  
+  *branching_enter_turn__ate_T5                 0.0000       0.0841      +0.0841 ±0.0054  
+  *horrigan_attack_damage                       0.0000       2.1875      +2.1875 ±0.1565  
+  *branching_enter_turn__ate_T4                 0.0000       0.0543      +0.0543 ±0.0044  
+  *len_cards_in_hand_by_turn                    7.8202       7.7186      -0.1016 ±0.0096  
+  *len_counters_on_board_by_turn                7.8202       7.7186      -0.1016 ±0.0096  
+feito 10000 resiliencia base
+feito 10000 resiliencia p1_so_o_par
+feito 10000 resiliencia rem3_vats_wave_deluge
+feito 10000 resiliencia s1_vats_wave_deluge
+feito 10000 resiliencia s2_vats_arcane_dsp
+feito 10000 resiliencia s3_vats_wave_arcane
+feito 10000 resiliencia s4_vats_wave_dsp
+feito 10000 resiliencia s5_vats_deluge_arcane
+feito 10000 resiliencia s6_vats_deluge_dsp
+feito 10000 resiliencia s7_tear_wave_deluge
+LOTE N=10000 sementes 3000000..3009999, 12 turnos, modo resiliencia
+
+[p1_so_o_par - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T7                                   0.0606       0.0655      +0.0049 ±0.0023  
+  *cleared_T8                                   0.2398       0.2583      +0.0185 ±0.0042  
+  *cleared_T10                                  0.5813       0.5915      +0.0102 ±0.0048  
+  *first_elim_T6                                0.2348       0.2470      +0.0122 ±0.0029  
+   self_lost                                    0.0156       0.0149      -0.0007 ±0.0022  
+   decked                                       0.0156       0.0149      -0.0007 ±0.0022  
+  *opps_eliminated_total                        2.5500       2.5619      +0.0119 ±0.0086  
+  *proliferates_total                           0.1435       0.4581      +0.3146 ±0.0199  
+  *rad_counters_given_opp_total                14.2218      14.8825      +0.6607 ±0.0638  
+  *mothman_counters_placed_total               54.2803      56.9807      +2.7004 ±0.7544  
+  *counters_placed_total                       77.8705      88.7593     +10.8888 ±1.6381  
+  *cards_milled_opp_total                      70.1327      67.5434      -2.5893 ±0.5808  
+  *cards_milled_self_total                     16.0764      15.6213      -0.4551 ±0.1172  
+  *library_min                                 54.5677      55.6142      +1.0465 ±0.2060  
+  *draws_total                                 21.5933      20.9372      -0.6561 ±0.1950  
+  *interaction_plays                            0.5148       0.5023      -0.0125 ±0.0076  
+  *crimes_total                                 3.6434       3.2710      -0.3724 ±0.0345  
+  *deepmuck_triggers                            0.2001       0.1771      -0.0230 ±0.0068  
+  *counterspells_cast                           0.6892       0.4361      -0.2531 ±0.0108  
+  *opp_spells_countered_total                   0.6892       0.4361      -0.2531 ±0.0108  
+  *protection_used_total                        0.1822       0.1289      -0.0533 ±0.0058  
+   commander_countered_total                    0.1232       0.1220      -0.0012 ±0.0035  
+  *smart_removals_total                         0.8382       0.8734      +0.0352 ±0.0091  
+  *smart_wipes_total                            0.6538       0.6413      -0.0125 ±0.0067  
+  *wipes_cast                                   0.1967       0.1880      -0.0087 ±0.0048  
+  *branching_enter_turn__nunca                  1.0000       0.7509      -0.2491 ±0.0085  
+  *horrigan_enter_turn__nunca                   1.0000       0.8127      -0.1873 ±0.0076  
+  *horrigan_etb_prolifs                         0.0000       0.1889      +0.1889 ±0.0078  
+  *len_prolif_by_source                         0.0985       0.3752      +0.2767 ±0.0125  
+  *len_prolif_counters_by_source                0.0936       0.3648      +0.2712 ±0.0124  
+  *len_prolif_rad_by_source                     0.0922       0.3192      +0.2270 ±0.0115  
+  *branching_enter_turn__ate_T6                 0.0000       0.1047      +0.1047 ±0.0060  
+  *branching_enter_turn__ate_T5                 0.0000       0.0805      +0.0805 ±0.0053  
+  *horrigan_attack_prolifs                      0.0000       0.1374      +0.1374 ±0.0093  
+  *horrigan_attacks                             0.0000       0.1374      +0.1374 ±0.0093  
+  *horrigan_attack_damage                       0.0000       2.0302      +2.0302 ±0.1501  
+  *branching_enter_turn__ate_T4                 0.0000       0.0539      +0.0539 ±0.0044  
+  *branching_enter_turn__ate_T3                 0.0000       0.0358      +0.0358 ±0.0036  
+  *len_protections_by_kind                      0.1739       0.1242      -0.0497 ±0.0055  
+
+[rem3_vats_wave_deluge - base] N=10000 | partidas com resultado IDENTICO ao da base: 19 (0.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+   cleared_T7                                   0.0606       0.0605      -0.0001 ±0.0009  
+  *cleared_T8                                   0.2398       0.2413      +0.0015 ±0.0014  
+   cleared_T10                                  0.5813       0.5824      +0.0011 ±0.0020  
+   first_elim_T6                                0.2348       0.2348      +0.0000 ±0.0009  
+   self_lost                                    0.0156       0.0159      +0.0003 ±0.0011  
+   decked                                       0.0156       0.0159      +0.0003 ±0.0011  
+   opps_eliminated_total                        2.5500       2.5524      +0.0024 ±0.0041  
+  *proliferates_total                           0.1435       0.2056      +0.0621 ±0.0061  
+  *rad_counters_given_opp_total                14.2218      14.2765      +0.0547 ±0.0184  
+  *mothman_counters_placed_total               54.2803      54.6314      +0.3511 ±0.2574  
+  *counters_placed_total                       77.8705      78.4328      +0.5623 ±0.4337  
+  *cards_milled_opp_total                      70.1327      70.4173      +0.2846 ±0.2301  
+   cards_milled_self_total                     16.0764      16.0453      -0.0311 ±0.0470  
+   library_min                                 54.5677      54.5051      -0.0626 ±0.0769  
+  *draws_total                                 21.5933      21.6717      +0.0784 ±0.0685  
+  *atomize_casts                                0.0000       0.0615      +0.0615 ±0.0047  
+  *casualties_casts                             0.0000       0.0415      +0.0415 ±0.0039  
+  *trophy_casts                                 0.0000       0.0994      +0.0994 ±0.0059  
+  *trophy_lands_given                           0.0000       0.0980      +0.0980 ±0.0058  
+  *interaction_plays                            0.5148       0.6498      +0.1350 ±0.0081  
+  *crimes_total                                 3.6434       3.7827      +0.1393 ±0.0121  
+  *deepmuck_triggers                            0.2001       0.2057      +0.0056 ±0.0030  
+   counterspells_cast                           0.6892       0.6892      +0.0000 ±0.0032  
+   opp_spells_countered_total                   0.6892       0.6892      +0.0000 ±0.0032  
+   protection_used_total                        0.1822       0.1812      -0.0010 ±0.0027  
+   commander_countered_total                    0.1232       0.1228      -0.0004 ±0.0012  
+   smart_removals_total                         0.8382       0.8364      -0.0018 ±0.0034  
+   smart_wipes_total                            0.6538       0.6535      -0.0003 ±0.0028  
+  *wipes_cast                                   0.1967       0.0811      -0.1156 ±0.0067  
+  *len_prolif_by_source                         0.0985       0.1601      +0.0616 ±0.0049  
+  *len_prolif_counters_by_source                0.0936       0.1496      +0.0560 ±0.0047  
+  *len_prolif_rad_by_source                     0.0922       0.1372      +0.0450 ±0.0043  
+  *life_min                                    29.6947      29.9209      +0.2262 ±0.0249  
+  *life                                        32.7960      33.0869      +0.2909 ±0.0497  
+  *freestrider_triggers                         0.1818       0.1930      +0.0112 ±0.0036  
+  *counter_events_total                        47.4449      47.8505      +0.4056 ±0.1464  
+  *len_battlefield                             23.2911      23.4959      +0.2048 ±0.0786  
+  *len_attackers_this_turn                      5.0040       5.0870      +0.0830 ±0.0319  
+  *cleared_T9                                   0.4310       0.4357      +0.0047 ±0.0020  
+  *max_creatures_in_play                        8.1513       8.2627      +0.1114 ±0.0557  
+  *turn                                         9.9407       9.9318      -0.0089 ±0.0049  
+  *len_casts_by_card                           12.1455      12.1802      +0.0347 ±0.0198  
+  *len_mana_by_turn                             9.9348       9.9265      -0.0083 ±0.0049  
+
+[s1_vats_wave_deluge - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T7                                   0.0606       0.0651      +0.0045 ±0.0025  
+  *cleared_T8                                   0.2398       0.2605      +0.0207 ±0.0044  
+  *cleared_T10                                  0.5813       0.5930      +0.0117 ±0.0051  
+  *first_elim_T6                                0.2348       0.2470      +0.0122 ±0.0030  
+   self_lost                                    0.0156       0.0147      -0.0009 ±0.0023  
+   decked                                       0.0156       0.0147      -0.0009 ±0.0023  
+  *opps_eliminated_total                        2.5500       2.5661      +0.0161 ±0.0093  
+  *proliferates_total                           0.1435       0.5175      +0.3740 ±0.0209  
+  *rad_counters_given_opp_total                14.2218      14.9252      +0.7034 ±0.0659  
+  *mothman_counters_placed_total               54.2803      57.5047      +3.2244 ±0.8037  
+  *counters_placed_total                       77.8705      89.9405     +12.0700 ±1.8075  
+  *cards_milled_opp_total                      70.1327      67.8377      -2.2950 ±0.6138  
+  *cards_milled_self_total                     16.0764      15.6155      -0.4609 ±0.1232  
+  *library_min                                 54.5677      55.5714      +1.0037 ±0.2148  
+  *draws_total                                 21.5933      20.9921      -0.6012 ±0.2036  
+  *atomize_casts                                0.0000       0.0590      +0.0590 ±0.0046  
+  *casualties_casts                             0.0000       0.0394      +0.0394 ±0.0038  
+  *trophy_casts                                 0.0000       0.1002      +0.1002 ±0.0059  
+  *trophy_lands_given                           0.0000       0.0989      +0.0989 ±0.0059  
+  *interaction_plays                            0.5148       0.6397      +0.1249 ±0.0110  
+  *crimes_total                                 3.6434       3.4135      -0.2299 ±0.0360  
+  *deepmuck_triggers                            0.2001       0.1846      -0.0155 ±0.0073  
+  *counterspells_cast                           0.6892       0.4367      -0.2525 ±0.0111  
+  *opp_spells_countered_total                   0.6892       0.4367      -0.2525 ±0.0111  
+  *protection_used_total                        0.1822       0.1286      -0.0536 ±0.0063  
+   commander_countered_total                    0.1232       0.1223      -0.0009 ±0.0037  
+  *smart_removals_total                         0.8382       0.8703      +0.0321 ±0.0095  
+  *smart_wipes_total                            0.6538       0.6410      -0.0128 ±0.0071  
+  *wipes_cast                                   0.1967       0.0785      -0.1182 ±0.0073  
+  *branching_enter_turn__nunca                  1.0000       0.7498      -0.2502 ±0.0085  
+  *len_prolif_by_source                         0.0985       0.4356      +0.3371 ±0.0133  
+  *len_prolif_counters_by_source                0.0936       0.4192      +0.3256 ±0.0131  
+  *horrigan_enter_turn__nunca                   1.0000       0.8114      -0.1886 ±0.0077  
+  *horrigan_etb_prolifs                         0.0000       0.1900      +0.1900 ±0.0078  
+  *len_prolif_rad_by_source                     0.0922       0.3611      +0.2689 ±0.0121  
+  *branching_enter_turn__ate_T6                 0.0000       0.1049      +0.1049 ±0.0060  
+  *branching_enter_turn__ate_T5                 0.0000       0.0803      +0.0803 ±0.0053  
+  *horrigan_attack_prolifs                      0.0000       0.1365      +0.1365 ±0.0092  
+  *horrigan_attacks                             0.0000       0.1365      +0.1365 ±0.0092  
+  *horrigan_attack_damage                       0.0000       1.9997      +1.9997 ±0.1485  
+  *branching_enter_turn__ate_T4                 0.0000       0.0539      +0.0539 ±0.0044  
+  *branching_enter_turn__ate_T3                 0.0000       0.0358      +0.0358 ±0.0036  
+  *len_protections_by_kind                      0.1739       0.1240      -0.0499 ±0.0058  
+
+[s2_vats_arcane_dsp - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T7                                   0.0606       0.0677      +0.0071 ±0.0028  
+  *cleared_T8                                   0.2398       0.2587      +0.0189 ±0.0050  
+  *cleared_T10                                  0.5813       0.5935      +0.0122 ±0.0060  
+  *first_elim_T6                                0.2348       0.2507      +0.0159 ±0.0036  
+   self_lost                                    0.0156       0.0158      +0.0002 ±0.0026  
+   decked                                       0.0156       0.0158      +0.0002 ±0.0026  
+  *opps_eliminated_total                        2.5500       2.5644      +0.0144 ±0.0113  
+  *proliferates_total                           0.1435       0.5239      +0.3804 ±0.0221  
+  *rad_counters_given_opp_total                14.2218      14.9361      +0.7143 ±0.0715  
+  *mothman_counters_placed_total               54.2803      57.9616      +3.6813 ±0.9068  
+  *counters_placed_total                       77.8705      90.2601     +12.3896 ±2.0154  
+  *cards_milled_opp_total                      70.1327      68.4409      -1.6918 ±0.7366  
+  *cards_milled_self_total                     16.0764      15.8560      -0.2204 ±0.1510  
+  *library_min                                 54.5677      55.4170      +0.8493 ±0.2521  
+  *draws_total                                 21.5933      20.9696      -0.6237 ±0.2313  
+  *atomize_casts                                0.0000       0.0651      +0.0651 ±0.0049  
+  *casualties_casts                             0.0000       0.0401      +0.0401 ±0.0039  
+  *trophy_casts                                 0.0000       0.1023      +0.1023 ±0.0059  
+  *trophy_lands_given                           0.0000       0.1018      +0.1018 ±0.0059  
+  *interaction_plays                            0.5148       0.6604      +0.1456 ±0.0124  
+  *crimes_total                                 3.6434       3.2568      -0.3866 ±0.0473  
+  *deepmuck_triggers                            0.2001       0.1738      -0.0263 ±0.0087  
+  *counterspells_cast                           0.6892       0.2255      -0.4637 ±0.0139  
+  *opp_spells_countered_total                   0.6892       0.2255      -0.4637 ±0.0139  
+  *protection_used_total                        0.1822       0.1094      -0.0728 ±0.0071  
+   commander_countered_total                    0.1232       0.1225      -0.0007 ±0.0044  
+  *smart_removals_total                         0.8382       0.8821      +0.0439 ±0.0114  
+  *smart_wipes_total                            0.6538       0.6374      -0.0164 ±0.0088  
+   wipes_cast                                   0.1967       0.1972      +0.0005 ±0.0063  
+  *branching_enter_turn__nunca                  1.0000       0.7545      -0.2455 ±0.0084  
+  *len_prolif_by_source                         0.0985       0.4414      +0.3429 ±0.0135  
+  *len_prolif_counters_by_source                0.0936       0.4217      +0.3281 ±0.0133  
+  *horrigan_enter_turn__nunca                   1.0000       0.8147      -0.1853 ±0.0076  
+  *horrigan_etb_prolifs                         0.0000       0.1869      +0.1869 ±0.0077  
+  *len_prolif_rad_by_source                     0.0922       0.3650      +0.2728 ±0.0123  
+  *branching_enter_turn__ate_T6                 0.0000       0.1046      +0.1046 ±0.0060  
+  *branching_enter_turn__ate_T5                 0.0000       0.0806      +0.0806 ±0.0053  
+  *horrigan_attack_prolifs                      0.0000       0.1328      +0.1328 ±0.0090  
+  *horrigan_attacks                             0.0000       0.1328      +0.1328 ±0.0090  
+  *horrigan_attack_damage                       0.0000       1.9388      +1.9388 ±0.1446  
+  *branching_enter_turn__ate_T4                 0.0000       0.0539      +0.0539 ±0.0044  
+  *len_protections_by_kind                      0.1739       0.1061      -0.0678 ±0.0065  
+  *len_draws_by_source                          3.0166       2.8120      -0.2046 ±0.0203  
+
+[s3_vats_wave_arcane - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T7                                   0.0606       0.0659      +0.0053 ±0.0026  
+  *cleared_T8                                   0.2398       0.2576      +0.0178 ±0.0047  
+  *cleared_T10                                  0.5813       0.5876      +0.0063 ±0.0056  
+  *first_elim_T6                                0.2348       0.2484      +0.0136 ±0.0033  
+   self_lost                                    0.0156       0.0151      -0.0005 ±0.0025  
+   decked                                       0.0156       0.0151      -0.0005 ±0.0025  
+   opps_eliminated_total                        2.5500       2.5580      +0.0080 ±0.0103  
+  *proliferates_total                           0.1435       0.5094      +0.3659 ±0.0203  
+  *rad_counters_given_opp_total                14.2218      14.8993      +0.6775 ±0.0690  
+  *mothman_counters_placed_total               54.2803      57.0623      +2.7820 ±0.8356  
+  *counters_placed_total                       77.8705      89.4304     +11.5599 ±1.9595  
+  *cards_milled_opp_total                      70.1327      67.5870      -2.5457 ±0.6716  
+  *cards_milled_self_total                     16.0764      15.6686      -0.4078 ±0.1363  
+  *library_min                                 54.5677      55.6763      +1.1086 ±0.2362  
+  *draws_total                                 21.5933      20.8506      -0.7427 ±0.2226  
+  *atomize_casts                                0.0000       0.0603      +0.0603 ±0.0047  
+  *casualties_casts                             0.0000       0.0388      +0.0388 ±0.0038  
+  *trophy_casts                                 0.0000       0.0969      +0.0969 ±0.0058  
+  *trophy_lands_given                           0.0000       0.0960      +0.0960 ±0.0058  
+  *interaction_plays                            0.5148       0.6383      +0.1235 ±0.0116  
+  *crimes_total                                 3.6434       3.2903      -0.3531 ±0.0468  
+  *deepmuck_triggers                            0.2001       0.1714      -0.0287 ±0.0083  
+  *counterspells_cast                           0.6892       0.3124      -0.3768 ±0.0128  
+  *opp_spells_countered_total                   0.6892       0.3124      -0.3768 ±0.0128  
+  *protection_used_total                        0.1822       0.1159      -0.0663 ±0.0067  
+   commander_countered_total                    0.1232       0.1231      -0.0001 ±0.0041  
+  *smart_removals_total                         0.8382       0.8733      +0.0351 ±0.0105  
+  *smart_wipes_total                            0.6538       0.6400      -0.0138 ±0.0080  
+  *wipes_cast                                   0.1967       0.1454      -0.0513 ±0.0066  
+  *branching_enter_turn__nunca                  1.0000       0.7539      -0.2461 ±0.0084  
+  *len_prolif_by_source                         0.0985       0.4330      +0.3345 ±0.0133  
+  *len_prolif_counters_by_source                0.0936       0.4153      +0.3217 ±0.0131  
+  *horrigan_enter_turn__nunca                   1.0000       0.8138      -0.1862 ±0.0076  
+  *horrigan_etb_prolifs                         0.0000       0.1876      +0.1876 ±0.0077  
+  *len_prolif_rad_by_source                     0.0922       0.3602      +0.2680 ±0.0122  
+  *branching_enter_turn__ate_T6                 0.0000       0.1039      +0.1039 ±0.0060  
+  *branching_enter_turn__ate_T5                 0.0000       0.0801      +0.0801 ±0.0053  
+  *horrigan_attack_prolifs                      0.0000       0.1343      +0.1343 ±0.0091  
+  *horrigan_attacks                             0.0000       0.1343      +0.1343 ±0.0091  
+  *horrigan_attack_damage                       0.0000       1.9600      +1.9600 ±0.1466  
+  *branching_enter_turn__ate_T4                 0.0000       0.0539      +0.0539 ±0.0044  
+  *len_draws_by_source                          3.0166       2.8072      -0.2094 ±0.0193  
+  *branching_enter_turn__ate_T3                 0.0000       0.0357      +0.0357 ±0.0036  
+
+[s4_vats_wave_dsp - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T7                                   0.0606       0.0667      +0.0061 ±0.0026  
+  *cleared_T8                                   0.2398       0.2599      +0.0201 ±0.0046  
+  *cleared_T10                                  0.5813       0.5975      +0.0162 ±0.0055  
+  *first_elim_T6                                0.2348       0.2493      +0.0145 ±0.0032  
+   self_lost                                    0.0156       0.0146      -0.0010 ±0.0024  
+   decked                                       0.0156       0.0146      -0.0010 ±0.0024  
+  *opps_eliminated_total                        2.5500       2.5745      +0.0245 ±0.0101  
+  *proliferates_total                           0.1435       0.5339      +0.3904 ±0.0216  
+  *rad_counters_given_opp_total                14.2218      14.9782      +0.7564 ±0.0677  
+  *mothman_counters_placed_total               54.2803      57.9870      +3.7067 ±0.8421  
+  *counters_placed_total                       77.8705      90.2969     +12.4264 ±1.7902  
+  *cards_milled_opp_total                      70.1327      68.5442      -1.5885 ±0.6613  
+  *cards_milled_self_total                     16.0764      15.8231      -0.2533 ±0.1379  
+  *library_min                                 54.5677      55.3443      +0.7766 ±0.2313  
+  *draws_total                                 21.5933      21.0654      -0.5279 ±0.2136  
+  *atomize_casts                                0.0000       0.0638      +0.0638 ±0.0048  
+  *casualties_casts                             0.0000       0.0409      +0.0409 ±0.0039  
+  *trophy_casts                                 0.0000       0.0984      +0.0984 ±0.0058  
+  *trophy_lands_given                           0.0000       0.0976      +0.0976 ±0.0058  
+  *interaction_plays                            0.5148       0.6539      +0.1391 ±0.0116  
+  *crimes_total                                 3.6434       3.3836      -0.2598 ±0.0424  
+  *deepmuck_triggers                            0.2001       0.1845      -0.0156 ±0.0078  
+  *counterspells_cast                           0.6892       0.3527      -0.3365 ±0.0123  
+  *opp_spells_countered_total                   0.6892       0.3527      -0.3365 ±0.0123  
+  *protection_used_total                        0.1822       0.1228      -0.0594 ±0.0065  
+   commander_countered_total                    0.1232       0.1219      -0.0013 ±0.0040  
+  *smart_removals_total                         0.8382       0.8740      +0.0358 ±0.0103  
+  *smart_wipes_total                            0.6538       0.6414      -0.0124 ±0.0078  
+  *wipes_cast                                   0.1967       0.1444      -0.0523 ±0.0064  
+  *branching_enter_turn__nunca                  1.0000       0.7525      -0.2475 ±0.0085  
+  *len_prolif_by_source                         0.0985       0.4449      +0.3464 ±0.0134  
+  *len_prolif_counters_by_source                0.0936       0.4259      +0.3323 ±0.0132  
+  *horrigan_enter_turn__nunca                   1.0000       0.8108      -0.1892 ±0.0077  
+  *horrigan_etb_prolifs                         0.0000       0.1907      +0.1907 ±0.0078  
+  *len_prolif_rad_by_source                     0.0922       0.3692      +0.2770 ±0.0123  
+  *branching_enter_turn__ate_T6                 0.0000       0.1047      +0.1047 ±0.0060  
+  *branching_enter_turn__ate_T5                 0.0000       0.0806      +0.0806 ±0.0053  
+  *horrigan_attack_prolifs                      0.0000       0.1366      +0.1366 ±0.0092  
+  *horrigan_attacks                             0.0000       0.1366      +0.1366 ±0.0092  
+  *horrigan_attack_damage                       0.0000       2.0131      +2.0131 ±0.1490  
+  *branching_enter_turn__ate_T4                 0.0000       0.0538      +0.0538 ±0.0044  
+  *branching_enter_turn__ate_T3                 0.0000       0.0357      +0.0357 ±0.0036  
+  *len_protections_by_kind                      0.1739       0.1182      -0.0557 ±0.0061  
+
+[s5_vats_deluge_arcane - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T7                                   0.0606       0.0663      +0.0057 ±0.0027  
+  *cleared_T8                                   0.2398       0.2581      +0.0183 ±0.0048  
+  *cleared_T10                                  0.5813       0.5882      +0.0069 ±0.0057  
+  *first_elim_T6                                0.2348       0.2487      +0.0139 ±0.0033  
+   self_lost                                    0.0156       0.0161      +0.0005 ±0.0025  
+   decked                                       0.0156       0.0161      +0.0005 ±0.0025  
+   opps_eliminated_total                        2.5500       2.5538      +0.0038 ±0.0105  
+  *proliferates_total                           0.1435       0.5109      +0.3674 ±0.0211  
+  *rad_counters_given_opp_total                14.2218      14.8881      +0.6663 ±0.0701  
+  *mothman_counters_placed_total               54.2803      57.4186      +3.1383 ±0.8484  
+  *counters_placed_total                       77.8705      90.0102     +12.1397 ±2.0788  
+  *cards_milled_opp_total                      70.1327      67.8707      -2.2620 ±0.6811  
+  *cards_milled_self_total                     16.0764      15.6323      -0.4441 ±0.1389  
+  *library_min                                 54.5677      55.6628      +1.0951 ±0.2386  
+  *draws_total                                 21.5933      20.8777      -0.7156 ±0.2249  
+  *atomize_casts                                0.0000       0.0597      +0.0597 ±0.0047  
+  *casualties_casts                             0.0000       0.0401      +0.0401 ±0.0038  
+  *trophy_casts                                 0.0000       0.0953      +0.0953 ±0.0058  
+  *trophy_lands_given                           0.0000       0.0948      +0.0948 ±0.0057  
+  *interaction_plays                            0.5148       0.6382      +0.1234 ±0.0117  
+  *crimes_total                                 3.6434       3.2925      -0.3509 ±0.0472  
+  *deepmuck_triggers                            0.2001       0.1724      -0.0277 ±0.0083  
+  *counterspells_cast                           0.6892       0.3122      -0.3770 ±0.0129  
+  *opp_spells_countered_total                   0.6892       0.3122      -0.3770 ±0.0129  
+  *protection_used_total                        0.1822       0.1148      -0.0674 ±0.0067  
+   commander_countered_total                    0.1232       0.1238      +0.0006 ±0.0042  
+  *smart_removals_total                         0.8382       0.8736      +0.0354 ±0.0106  
+  *smart_wipes_total                            0.6538       0.6395      -0.0143 ±0.0082  
+  *wipes_cast                                   0.1967       0.1280      -0.0687 ±0.0067  
+  *branching_enter_turn__nunca                  1.0000       0.7536      -0.2464 ±0.0084  
+  *len_prolif_by_source                         0.0985       0.4324      +0.3339 ±0.0133  
+  *len_prolif_counters_by_source                0.0936       0.4147      +0.3211 ±0.0131  
+  *horrigan_enter_turn__nunca                   1.0000       0.8147      -0.1853 ±0.0076  
+  *horrigan_etb_prolifs                         0.0000       0.1872      +0.1872 ±0.0078  
+  *len_prolif_rad_by_source                     0.0922       0.3587      +0.2665 ±0.0122  
+  *branching_enter_turn__ate_T6                 0.0000       0.1044      +0.1044 ±0.0060  
+  *branching_enter_turn__ate_T5                 0.0000       0.0806      +0.0806 ±0.0053  
+  *horrigan_attack_prolifs                      0.0000       0.1339      +0.1339 ±0.0091  
+  *horrigan_attacks                             0.0000       0.1339      +0.1339 ±0.0091  
+  *horrigan_attack_damage                       0.0000       1.9524      +1.9524 ±0.1463  
+  *branching_enter_turn__ate_T4                 0.0000       0.0542      +0.0542 ±0.0044  
+  *len_draws_by_source                          3.0166       2.8068      -0.2098 ±0.0194  
+  *len_protections_by_kind                      0.1739       0.1118      -0.0621 ±0.0062  
+
+[s6_vats_deluge_dsp - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T7                                   0.0606       0.0672      +0.0066 ±0.0027  
+  *cleared_T8                                   0.2398       0.2604      +0.0206 ±0.0047  
+  *cleared_T10                                  0.5813       0.5978      +0.0165 ±0.0056  
+  *first_elim_T6                                0.2348       0.2496      +0.0148 ±0.0032  
+   self_lost                                    0.0156       0.0156      +0.0000 ±0.0025  
+   decked                                       0.0156       0.0156      +0.0000 ±0.0025  
+  *opps_eliminated_total                        2.5500       2.5704      +0.0204 ±0.0103  
+  *proliferates_total                           0.1435       0.5363      +0.3928 ±0.0224  
+  *rad_counters_given_opp_total                14.2218      14.9663      +0.7445 ±0.0687  
+  *mothman_counters_placed_total               54.2803      58.1935      +3.9132 ±0.8272  
+  *counters_placed_total                       77.8705      90.8546     +12.9841 ±1.9264  
+  *cards_milled_opp_total                      70.1327      68.7712      -1.3615 ±0.6668  
+  *cards_milled_self_total                     16.0764      15.7941      -0.2823 ±0.1405  
+  *library_min                                 54.5677      55.3126      +0.7449 ±0.2329  
+  *draws_total                                 21.5933      21.1084      -0.4849 ±0.2162  
+  *atomize_casts                                0.0000       0.0636      +0.0636 ±0.0048  
+  *casualties_casts                             0.0000       0.0391      +0.0391 ±0.0038  
+  *trophy_casts                                 0.0000       0.0979      +0.0979 ±0.0058  
+  *trophy_lands_given                           0.0000       0.0972      +0.0972 ±0.0058  
+  *interaction_plays                            0.5148       0.6521      +0.1373 ±0.0116  
+  *crimes_total                                 3.6434       3.3860      -0.2574 ±0.0428  
+  *deepmuck_triggers                            0.2001       0.1866      -0.0135 ±0.0079  
+  *counterspells_cast                           0.6892       0.3528      -0.3364 ±0.0124  
+  *opp_spells_countered_total                   0.6892       0.3528      -0.3364 ±0.0124  
+  *protection_used_total                        0.1822       0.1210      -0.0612 ±0.0065  
+   commander_countered_total                    0.1232       0.1230      -0.0002 ±0.0040  
+  *smart_removals_total                         0.8382       0.8744      +0.0362 ±0.0105  
+  *smart_wipes_total                            0.6538       0.6419      -0.0119 ±0.0080  
+  *wipes_cast                                   0.1967       0.1323      -0.0644 ±0.0066  
+  *branching_enter_turn__nunca                  1.0000       0.7521      -0.2479 ±0.0085  
+  *len_prolif_by_source                         0.0985       0.4442      +0.3457 ±0.0135  
+  *len_prolif_counters_by_source                0.0936       0.4247      +0.3311 ±0.0132  
+  *horrigan_enter_turn__nunca                   1.0000       0.8117      -0.1883 ±0.0077  
+  *horrigan_etb_prolifs                         0.0000       0.1901      +0.1901 ±0.0078  
+  *len_prolif_rad_by_source                     0.0922       0.3685      +0.2763 ±0.0123  
+  *branching_enter_turn__ate_T6                 0.0000       0.1052      +0.1052 ±0.0060  
+  *branching_enter_turn__ate_T5                 0.0000       0.0811      +0.0811 ±0.0054  
+  *horrigan_attack_prolifs                      0.0000       0.1362      +0.1362 ±0.0092  
+  *horrigan_attacks                             0.0000       0.1362      +0.1362 ±0.0092  
+  *horrigan_attack_damage                       0.0000       2.0057      +2.0057 ±0.1488  
+  *branching_enter_turn__ate_T4                 0.0000       0.0541      +0.0541 ±0.0044  
+  *branching_enter_turn__ate_T3                 0.0000       0.0360      +0.0360 ±0.0037  
+  *len_protections_by_kind                      0.1739       0.1169      -0.0570 ±0.0061  
+
+[s7_tear_wave_deluge - base] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T7                                   0.0606       0.0663      +0.0057 ±0.0026  
+  *cleared_T8                                   0.2398       0.2622      +0.0224 ±0.0045  
+  *cleared_T10                                  0.5813       0.5943      +0.0130 ±0.0053  
+  *first_elim_T6                                0.2348       0.2481      +0.0133 ±0.0031  
+   self_lost                                    0.0156       0.0143      -0.0013 ±0.0023  
+   decked                                       0.0156       0.0143      -0.0013 ±0.0023  
+  *opps_eliminated_total                        2.5500       2.5666      +0.0166 ±0.0096  
+  *proliferates_total                           0.1435       0.5171      +0.3736 ±0.0208  
+  *rad_counters_given_opp_total                14.2218      14.9060      +0.6842 ±0.0666  
+  *mothman_counters_placed_total               54.2803      57.3295      +3.0492 ±0.8056  
+  *counters_placed_total                       77.8705      89.6448     +11.7743 ±1.7891  
+  *cards_milled_opp_total                      70.1327      67.8673      -2.2654 ±0.6336  
+  *cards_milled_self_total                     16.0764      15.5972      -0.4792 ±0.1261  
+  *library_min                                 54.5677      55.5985      +1.0308 ±0.2214  
+  *draws_total                                 21.5933      20.9831      -0.6102 ±0.2100  
+  *atomize_casts                                0.0000       0.0589      +0.0589 ±0.0046  
+  *casualties_casts                             0.0000       0.0399      +0.0399 ±0.0038  
+  *trophy_casts                                 0.0000       0.1004      +0.1004 ±0.0059  
+  *trophy_lands_given                           0.0000       0.0994      +0.0994 ±0.0059  
+  *interaction_plays                            0.5148       0.5791      +0.0643 ±0.0115  
+  *crimes_total                                 3.6434       3.3522      -0.2912 ±0.0369  
+  *deepmuck_triggers                            0.2001       0.1825      -0.0176 ±0.0074  
+  *counterspells_cast                           0.6892       0.4379      -0.2513 ±0.0113  
+  *opp_spells_countered_total                   0.6892       0.4379      -0.2513 ±0.0113  
+  *protection_used_total                        0.1822       0.1305      -0.0517 ±0.0065  
+   commander_countered_total                    0.1232       0.1220      -0.0012 ±0.0037  
+  *smart_removals_total                         0.8382       0.8687      +0.0305 ±0.0099  
+  *smart_wipes_total                            0.6538       0.6409      -0.0129 ±0.0074  
+  *wipes_cast                                   0.1967       0.0779      -0.1188 ±0.0073  
+  *branching_enter_turn__nunca                  1.0000       0.7497      -0.2503 ±0.0085  
+  *len_prolif_by_source                         0.0985       0.4355      +0.3370 ±0.0133  
+  *len_prolif_counters_by_source                0.0936       0.4175      +0.3239 ±0.0131  
+  *horrigan_enter_turn__nunca                   1.0000       0.8116      -0.1884 ±0.0077  
+  *horrigan_etb_prolifs                         0.0000       0.1899      +0.1899 ±0.0078  
+  *len_prolif_rad_by_source                     0.0922       0.3630      +0.2708 ±0.0122  
+  *branching_enter_turn__ate_T6                 0.0000       0.1050      +0.1050 ±0.0060  
+  *branching_enter_turn__ate_T5                 0.0000       0.0803      +0.0803 ±0.0053  
+  *horrigan_attack_prolifs                      0.0000       0.1362      +0.1362 ±0.0092  
+  *horrigan_attacks                             0.0000       0.1362      +0.1362 ±0.0092  
+  *horrigan_attack_damage                       0.0000       1.9960      +1.9960 ±0.1490  
+  *branching_enter_turn__ate_T4                 0.0000       0.0539      +0.0539 ±0.0044  
+  *branching_enter_turn__ate_T3                 0.0000       0.0357      +0.0357 ±0.0036  
+  *len_protections_by_kind                      0.1739       0.1257      -0.0482 ±0.0060  
+COMPACTO N=10000 modo padrao: media da base e, por variante, diferenca pareada (variante - base) +- IC95%. '*' = |dif| > IC.
+variante                                                         cleared_T7             cleared_T8            cleared_T10          first_elim_T6              self_lost          atomize_casts       casualties_casts           trophy_casts      interaction_plays     counterspells_cast  protection_used_total   smart_removals_total     proliferates_total mothman_counters_placed_total
+base (media)                                                         0.1511                 0.5134                 0.8501                 0.3906                 0.0325                 0.0000                 0.0000                 0.0000                 0.4845                 0.5362                 0.0000                 0.0000                 0.1783                75.6756
+p1_so_o_par                                               +0.0184±0.0036  *      +0.0402±0.0050  *      +0.0109±0.0038  *      +0.0205±0.0031  *      -0.0041±0.0032  *      +0.0000±0.0000         +0.0000±0.0000         +0.0000±0.0000         -0.0246±0.0078  *      -0.1915±0.0093  *      +0.0000±0.0000         +0.0000±0.0000         +0.3374±0.0195  *      +5.9656±1.0296  *
+rem3_vats_wave_deluge                                     +0.0021±0.0013  *      +0.0023±0.0016  *      +0.0008±0.0014         +0.0001±0.0009         -0.0002±0.0010         +0.0461±0.0041  *      +0.0349±0.0036  *      +0.0817±0.0054  *      +0.1098±0.0076  *      +0.0000±0.0023         +0.0000±0.0000         +0.0000±0.0000         +0.0517±0.0089  *      +0.3088±0.2401  *
+s1_vats_wave_deluge                                       +0.0204±0.0038  *      +0.0433±0.0052  *      +0.0115±0.0039  *      +0.0208±0.0032  *      -0.0047±0.0032  *      +0.0416±0.0039  *      +0.0318±0.0035  *      +0.0781±0.0053  *      +0.0782±0.0104  *      -0.1911±0.0095  *      +0.0000±0.0000         +0.0000±0.0000         +0.3846±0.0206  *      +6.1779±1.0441  *
+s2_vats_arcane_dsp                                        +0.0245±0.0042  *      +0.0494±0.0058  *      +0.0152±0.0045  *      +0.0289±0.0038  *      -0.0037±0.0035  *      +0.0463±0.0041  *      +0.0324±0.0035  *      +0.0808±0.0054  *      +0.1100±0.0119  *      -0.3588±0.0120  *      +0.0000±0.0000         +0.0000±0.0000         +0.3840±0.0219  *      +6.3430±1.1371  *
+s3_vats_wave_arcane                                       +0.0212±0.0040  *      +0.0421±0.0055  *      +0.0117±0.0042  *      +0.0230±0.0035  *      -0.0042±0.0034  *      +0.0426±0.0040  *      +0.0323±0.0035  *      +0.0831±0.0054  *      +0.0904±0.0111  *      -0.2947±0.0111  *      +0.0000±0.0000         +0.0000±0.0000         +0.3733±0.0215  *      +5.5209±1.0893  *
+s4_vats_wave_dsp                                          +0.0229±0.0039  *      +0.0464±0.0055  *      +0.0156±0.0042  *      +0.0253±0.0035  *      -0.0039±0.0033  *      +0.0439±0.0040  *      +0.0322±0.0035  *      +0.0791±0.0053  *      +0.0955±0.0110  *      -0.2540±0.0105  *      +0.0000±0.0000         +0.0000±0.0000         +0.3844±0.0202  *      +6.6975±1.0908  *
+s5_vats_deluge_arcane                                     +0.0221±0.0040  *      +0.0439±0.0055  *      +0.0120±0.0043  *      +0.0238±0.0036  *      -0.0039±0.0034  *      +0.0430±0.0040  *      +0.0317±0.0034  *      +0.0825±0.0054  *      +0.0882±0.0110  *      -0.2942±0.0112  *      +0.0000±0.0000         +0.0000±0.0000         +0.3746±0.0215  *      +5.8468±1.0943  *
+s6_vats_deluge_dsp                                        +0.0237±0.0040  *      +0.0482±0.0055  *      +0.0161±0.0043  *      +0.0261±0.0035  *      -0.0038±0.0034  *      +0.0445±0.0040  *      +0.0313±0.0034  *      +0.0783±0.0053  *      +0.0937±0.0110  *      -0.2527±0.0105  *      +0.0000±0.0000         +0.0000±0.0000         +0.3850±0.0202  *      +7.0719±1.0994  *
+s7_tear_wave_deluge                                       +0.0203±0.0038  *      +0.0438±0.0053  *      +0.0102±0.0040  *      +0.0216±0.0034  *      -0.0043±0.0032  *      +0.0468±0.0041  *      +0.0315±0.0034  *      +0.0783±0.0053  *      +0.0270±0.0111  *      -0.1907±0.0096  *      +0.0000±0.0000         +0.0000±0.0000         +0.3907±0.0209  *      +6.1769±1.0507  *
+COMPACTO N=10000 modo resiliencia: media da base e, por variante, diferenca pareada (variante - base) +- IC95%. '*' = |dif| > IC.
+variante                                                         cleared_T7             cleared_T8            cleared_T10          first_elim_T6              self_lost          atomize_casts       casualties_casts           trophy_casts      interaction_plays     counterspells_cast  protection_used_total   smart_removals_total     proliferates_total mothman_counters_placed_total
+base (media)                                                         0.0606                 0.2398                 0.5813                 0.2348                 0.0156                 0.0000                 0.0000                 0.0000                 0.5148                 0.6892                 0.1822                 0.8382                 0.1435                54.2803
+p1_so_o_par                                               +0.0049±0.0023  *      +0.0185±0.0042  *      +0.0102±0.0048  *      +0.0122±0.0029  *      -0.0007±0.0022         +0.0000±0.0000         +0.0000±0.0000         +0.0000±0.0000         -0.0125±0.0076  *      -0.2531±0.0108  *      -0.0533±0.0058  *      +0.0352±0.0091  *      +0.3146±0.0199  *      +2.7004±0.7544  *
+rem3_vats_wave_deluge                                     -0.0001±0.0009         +0.0015±0.0014  *      +0.0011±0.0020         +0.0000±0.0009         +0.0003±0.0011         +0.0615±0.0047  *      +0.0415±0.0039  *      +0.0994±0.0059  *      +0.1350±0.0081  *      +0.0000±0.0032         -0.0010±0.0027         -0.0018±0.0034         +0.0621±0.0061  *      +0.3511±0.2574  *
+s1_vats_wave_deluge                                       +0.0045±0.0025  *      +0.0207±0.0044  *      +0.0117±0.0051  *      +0.0122±0.0030  *      -0.0009±0.0023         +0.0590±0.0046  *      +0.0394±0.0038  *      +0.1002±0.0059  *      +0.1249±0.0110  *      -0.2525±0.0111  *      -0.0536±0.0063  *      +0.0321±0.0095  *      +0.3740±0.0209  *      +3.2244±0.8037  *
+s2_vats_arcane_dsp                                        +0.0071±0.0028  *      +0.0189±0.0050  *      +0.0122±0.0060  *      +0.0159±0.0036  *      +0.0002±0.0026         +0.0651±0.0049  *      +0.0401±0.0039  *      +0.1023±0.0059  *      +0.1456±0.0124  *      -0.4637±0.0139  *      -0.0728±0.0071  *      +0.0439±0.0114  *      +0.3804±0.0221  *      +3.6813±0.9068  *
+s3_vats_wave_arcane                                       +0.0053±0.0026  *      +0.0178±0.0047  *      +0.0063±0.0056  *      +0.0136±0.0033  *      -0.0005±0.0025         +0.0603±0.0047  *      +0.0388±0.0038  *      +0.0969±0.0058  *      +0.1235±0.0116  *      -0.3768±0.0128  *      -0.0663±0.0067  *      +0.0351±0.0105  *      +0.3659±0.0203  *      +2.7820±0.8356  *
+s4_vats_wave_dsp                                          +0.0061±0.0026  *      +0.0201±0.0046  *      +0.0162±0.0055  *      +0.0145±0.0032  *      -0.0010±0.0024         +0.0638±0.0048  *      +0.0409±0.0039  *      +0.0984±0.0058  *      +0.1391±0.0116  *      -0.3365±0.0123  *      -0.0594±0.0065  *      +0.0358±0.0103  *      +0.3904±0.0216  *      +3.7067±0.8421  *
+s5_vats_deluge_arcane                                     +0.0057±0.0027  *      +0.0183±0.0048  *      +0.0069±0.0057  *      +0.0139±0.0033  *      +0.0005±0.0025         +0.0597±0.0047  *      +0.0401±0.0038  *      +0.0953±0.0058  *      +0.1234±0.0117  *      -0.3770±0.0129  *      -0.0674±0.0067  *      +0.0354±0.0106  *      +0.3674±0.0211  *      +3.1383±0.8484  *
+s6_vats_deluge_dsp                                        +0.0066±0.0027  *      +0.0206±0.0047  *      +0.0165±0.0056  *      +0.0148±0.0032  *      +0.0000±0.0025         +0.0636±0.0048  *      +0.0391±0.0038  *      +0.0979±0.0058  *      +0.1373±0.0116  *      -0.3364±0.0124  *      -0.0612±0.0065  *      +0.0362±0.0105  *      +0.3928±0.0224  *      +3.9132±0.8272  *
+s7_tear_wave_deluge                                       +0.0057±0.0026  *      +0.0224±0.0045  *      +0.0130±0.0053  *      +0.0133±0.0031  *      -0.0013±0.0023         +0.0589±0.0046  *      +0.0399±0.0038  *      +0.1004±0.0059  *      +0.0643±0.0115  *      -0.2513±0.0113  *      -0.0517±0.0065  *      +0.0305±0.0099  *      +0.3736±0.0208  *      +3.0492±0.8056  *
+ab rc=0 17:21:33
+Regressao: N=20000 por variante/modo, sementes 5_000_000+i; excecoes + invariantes genericas (carta acima do baralho em alguma zona; contadores negativos)
+s1_vats_wave_deluge                padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+s1_vats_wave_deluge                resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+s2_vats_arcane_dsp                 padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+s2_vats_arcane_dsp                 resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+reg rc=0 17:33:40

@@ -1,0 +1,12 @@
+IGUAL  tabela_cinco.md (refeita so' dos brutos)
+IGUAL  conjuntos_entre_si.md (refeito so' dos brutos)
+IGUAL  castabilidade.md (refeito so' dos brutos)
+IGUAL  replicacao.txt (refeito so' dos brutos)
+IGUAL  indice_dados.md (refeito so' dos brutos)
+re-simulando base e s4 (1.000 sementes x 2 modos) com o simulador congelado...
+padrao       base              : 1000/1000 identicas
+padrao       s4_vats_wave_dsp  : 1000/1000 identicas
+resiliencia  base              : 1000/1000 identicas
+resiliencia  s4_vats_wave_dsp  : 1000/1000 identicas
+IGUAL  amostra re-simulada == bruto (4/4 series)
+6/6 saidas iguais
