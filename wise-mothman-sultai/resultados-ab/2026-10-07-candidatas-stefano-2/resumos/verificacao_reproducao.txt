@@ -2,4 +2,6 @@ IGUAL  rank_triagem.txt (refeito so' dos brutos)
 IGUAL  tabela_final.md (refeita so' dos brutos)
 IGUAL  condicional.txt (refeito so' dos brutos)
 re-simulando a triagem inteira com o simulador congelado (sem editar codigo/!)...
-[2026-10-08] INTERROMPIDO pelo reinicio do worker durante a re-simulacao; as 3 tabelas refeitas so' dos brutos batem (3/3). A re-simulacao completa (--tudo) ainda precisa ser refeita antes de fechar SHA256SUMS desta pasta.
+IGUAL  raw_triagem_2000.json.xz (bruto re-simulado identico)
+IGUAL  raw_triagem_2000_resiliencia.json.xz (bruto re-simulado identico)
+5/5 saidas byte a byte iguais
