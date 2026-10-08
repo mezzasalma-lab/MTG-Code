@@ -304,3 +304,18 @@ Pasta: `resultados-ab/2026-10-07-candidatas-stefano-2/`. Oráculo e rulings: `da
 | todas | prioridade de conjuração: Fractured 64, Scorchbeast 70, Tide 60, Branching 70, Loading Zone 58, Crystal 61 | `CAST_PRIORITY` | ✅ convenção, **sem sensibilidade: NÃO verificado** | — |
 
 **Não coberto (declarar na Regra #7):** o Zumbi Mutant que ataca contra oponentes reais (a mesa é passiva), a política de esperar um evento de mill maior para o Scorchbeast (só `SCORCH_MIN_X` em 1/3/6), o Warp de um turno do oponente, Loading Zone em Spacecraft/Planet (a lista não tem), e a ordem humana real de ciclar a Fractured Sanity.
+
+## 15. Remoções candidatas (2026-10-08, pergunta "interação por remoção?"): oráculo e rulings lidos ANTES de recomendar
+
+Fonte: Scryfall ao vivo em 2026-10-08, `resultados-ab/2026-10-08-pacote-e-interacao/dados/rulings_remocoes.json` (15 rulings). **Nenhuma destas cartas está no simulador nem na lista**; esta seção registra o que se leu, não uma implementação.
+
+| carta | oráculo (resumo) | rulings relevantes | no simulador? |
+|---|---|---|---|
+| **Drown in the Loch** `{U}{B}` | escolha: anula magia com MV ≤ cartas no cemitério **do controlador dela**, ou destrói criatura com MV ≤ cartas no cemitério **do controlador dela** | 2019-10-04: `{X}` na pilha usa o X escolhido; em campo X = 0 | ❌ (não implementada; o cemitério do oponente está medido em `resumos/gy_oponentes.md`) |
+| **Atomize** `{2}{B}{G}` | destrói permanente não-terreno alvo; proliferate | 2024-03-08: escolhe qualquer número de permanentes e jogadores com contador (zero inclusive); cada um recebe 1 de CADA tipo que já tem | ❌ (o proliferate já está modelado em `proliferate()`; o "destroy" é estrutural) |
+| **Deadly Rollick** `{3}{B}` | com comandante, pode ser conjurada sem pagar; exila criatura alvo | 2020-04-17: qualquer comandante seu serve; ninguém pode agir durante a conjuração | ❌ |
+| **Assassin's Trophy** `{B}{G}` | destrói permanente de oponente; ele pode buscar um básico | 2018/2024: se não for destruído (indestrutível), ele ainda busca; alvo ilegal: não resolve, ninguém busca | ❌ |
+| **Putrefy, Beast Within, Casualties of War** | oráculos no `scryfall-cache` (já estavam) | rulings não lidas | ❌ |
+
+**Conceito compartilhado (Regra #3) conferido para a recomendação:** quais cartas da lista só pegam magia **não-criatura** (Offer, Negate, Fierce Guardianship, Glen Elendra — oráculos no cache): 4 de 6 contramágicas; só Arcane Denial e Didn't Say Please pegam qualquer magia (Repulsive Mutation é "anula a menos que pague"). O argumento "redundância" do corte Offer + Negate vem daí (raciocinado).
+**Não coberto (Regra #7):** as rulings de Putrefy, Beast Within e Casualties of War.

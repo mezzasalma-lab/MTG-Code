@@ -186358,5 +186358,59 @@
     "set": "pip",
     "toughness": "2",
     "type_line": "Creature — Bird Mutant"
+  },
+  "Rite of Passage": {
+    "cmc": 3.0,
+    "collector_number": "91",
+    "color_identity": [
+      "G"
+    ],
+    "colors": [
+      "G"
+    ],
+    "keywords": [],
+    "legalities": {
+      "standard": "not_legal",
+      "future": "not_legal",
+      "historic": "not_legal",
+      "timeless": "not_legal",
+      "gladiator": "not_legal",
+      "pioneer": "not_legal",
+      "modern": "legal",
+      "legacy": "legal",
+      "pauper": "not_legal",
+      "vintage": "legal",
+      "penny": "legal",
+      "commander": "legal",
+      "oathbreaker": "legal",
+      "standardbrawl": "not_legal",
+      "brawl": "not_legal",
+      "competitivebrawl": "not_legal",
+      "alchemy": "not_legal",
+      "paupercommander": "not_legal",
+      "duel": "legal",
+      "oldschool": "not_legal",
+      "premodern": "not_legal",
+      "predh": "legal",
+      "tlr": "legal"
+    },
+    "loyalty": null,
+    "mana_cost": "{2}{G}",
+    "oracle_text": "Whenever a creature you control is dealt damage, put a +1/+1 counter on it. (It must survive the damage to get the counter.)",
+    "power": null,
+    "prices": {
+      "usd": "4.91",
+      "usd_foil": "15.00",
+      "usd_etched": null,
+      "eur": "1.67",
+      "eur_foil": "6.68",
+      "tix": "0.02"
+    },
+    "released_at": "2004-06-04",
+    "scryfall_uri": "https://scryfall.com/card/5dn/91/rite-of-passage?utm_source=api",
+    "set": "5dn",
+    "toughness": null,
+    "type_line": "Enchantment",
+    "name": "Rite of Passage"
   }
 }

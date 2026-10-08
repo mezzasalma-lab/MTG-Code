@@ -1,0 +1,6 @@
+Regressao: N=20000 por variante/modo, sementes 5_000_000+i; excecoes + invariantes genericas (carta acima do baralho em alguma zona; contadores negativos)
+p1_offer_negate                    padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+p1_offer_negate                    resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+p3_offer_wave                      padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+p3_offer_wave                      resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+reg rc=0 14:30:31
