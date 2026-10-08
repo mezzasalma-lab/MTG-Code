@@ -1,0 +1,6 @@
+base                               cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+l1_lantern_swamp                   cartas=99 distintas=89 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+l2_boots_swamp                     cartas=99 distintas=89 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+l3_heroic_swamp                    cartas=99 distintas=89 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+l4_selkie_swamp                    cartas=99 distintas=89 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+l5_lantern_swamp_boots_forest      cartas=99 distintas=88 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
