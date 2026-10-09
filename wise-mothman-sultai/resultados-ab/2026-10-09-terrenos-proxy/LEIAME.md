@@ -1,5 +1,7 @@
 # 2026-10-09 — Mothman: terrenos com proxy (Underground Sea, Bayou, Tropical Island, Prismatic Vista) e a Swarmyard que fica
 
+> **Atualização (mesmo dia): a Swarmyard saiu por Tropical Island a pedido do usuário** (`../2026-10-09-swarmyard-tropical/LEIAME.md`). Tudo abaixo continua válido como o que foi medido e aplicado ATÉ essa troca; "a Swarmyard fica" foi revogado.
+
 Pedidos do usuário (2026-10-09): *"Farei proxies, o que vc sugere"* e, depois da minha sugestão: *"Quero sim, a Swarmyard é para regenerar o comandante, que é mutant e insect"*. **Lista APLICADA** em `lista.md` e no `DECKLIST_TEXT` do simulador: **Yavimaya Hollow → Bayou** e **Fabled Passage → Prismatic Vista**; **a Swarmyard fica** (decisão do usuário: regenera o The Wise Mothman, que é Inseto Mutante). A lista anterior está em `../../lista-anterior-2026-10-08.md`. **Não aplicado (precisa de um "sim" do usuário):** Bojuka Bog → Underground Sea e, opcionalmente, Minamo ou Shifting Woodland → Tropical Island.
 
 ## Conclusão (medido × raciocinado)

@@ -1,0 +1,6 @@
+nomes verificados: 92 | NAO reconhecidos: []
+base: 2 combos, 136 quase
+e1_swarmyard_tropical | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0 | quase que sumiram: 0
+e2_e1_mais_bog_sea | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0 | quase que sumiram: 0
+lista viva == e1 (multiconjunto de nomes): True
+controle positivo: True | controle de corte: True

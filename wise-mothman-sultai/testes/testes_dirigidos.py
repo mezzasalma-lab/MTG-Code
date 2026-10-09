@@ -1350,10 +1350,10 @@ def candidata_opulent_palace_entra_virado_e_da_bgu():
 
 @teste
 def swaps_trocam_cartas_na_biblioteca():
-    m.SWAPS = (("Cold-Eyed Selkie", "Evolution Sage"), ("Swarmyard", "Karn's Bastion"))
+    m.SWAPS = (("Cold-Eyed Selkie", "Evolution Sage"), ("Bojuka Bog", "Karn's Bastion"))
     try:
         lib = m.current_library()
-        assert len(lib) == 99 and "Evolution Sage" in lib and "Cold-Eyed Selkie" not in lib and "Karn's Bastion" in lib and "Swarmyard" not in lib
+        assert len(lib) == 99 and "Evolution Sage" in lib and "Cold-Eyed Selkie" not in lib and "Karn's Bastion" in lib and "Bojuka Bog" not in lib
         st = m.new_state(5)
         assert len(st.library) + len(st.hand) == 99
     finally:
@@ -2550,7 +2550,7 @@ def chave_remocao_no_comandante_desligada_nao_mira_ligada_mira_e_a_Swarmyard_reg
 def terrenos_proxy_partidas_completas_nao_dao_excecao_e_a_vista_e_os_duais_aparecem():
     antigos = (m.SWAPS, m.SWAP_IN_PLACE, m.COMMANDER_REMOVAL_SHARE)
     try:
-        m.SWAPS = (("Swarmyard", USEA), ("Bojuka Bog", TROP)); m.SWAP_IN_PLACE = True      # Bayou e Prismatic Vista ja' estao na lista (2026-10-09); os outros dois duais entram por SWAPS
+        m.SWAPS = (("Bojuka Bog", USEA),); m.SWAP_IN_PLACE = True      # Bayou, Prismatic Vista e Tropical Island ja' estao na lista (2026-10-09); so' o Underground Sea entra por SWAPS
         m.COMMANDER_REMOVAL_SHARE = 0.5
         vistos = collections.Counter()
         for sd in range(1_000_000, 1_000_200):
@@ -2563,6 +2563,27 @@ def terrenos_proxy_partidas_completas_nao_dao_excecao_e_a_vista_e_os_duais_apare
         m.SWAPS, m.SWAP_IN_PLACE, m.COMMANDER_REMOVAL_SHARE = antigos
 
 
+
+@teste
+def lista_viva_troca_swarmyard_por_tropical_e_os_insetos_continuam_dois():
+    lib = list(m.current_library())
+    assert len(lib) == 99 and "Tropical Island" in lib and "Swarmyard" not in lib, "a lista viva tem de ter a Tropical Island e nao a Swarmyard (2026-10-09)"
+    for n in ("Bayou", "Prismatic Vista"):
+        assert n in lib
+    for n in ("Yavimaya Hollow", "Fabled Passage"):
+        assert n not in lib
+    insetos = sorted(n for n in set(lib) | {m.COMMANDER} if "Insect" in (m.CARD_DB[n].subtypes or set()))
+    assert insetos == ["Icetill Explorer", "The Wise Mothman"], insetos          # levantamento por script no Scryfall ao vivo (resultados-ab/2026-10-09-terrenos-proxy/resumos/insetos_da_lista.txt)
+    # a Swarmyard continua no CARD_DB e a regeneracao dela segue implementada (volta por SWAPS)
+    assert "Swarmyard" in m.CARD_DB and "swarmyard" in m.CARD_DB["Swarmyard"].tags
+    trop = m.CARD_DB["Tropical Island"]
+    assert trop.produces == {"G", "U"} and trop.land_types == {"Forest", "Island"} and "etb_tapped" not in trop.tags
+    m.SWAPS = (("Tropical Island", "Swarmyard"),)
+    try:
+        lib2 = m.current_library()
+        assert "Swarmyard" in lib2 and "Tropical Island" not in lib2 and len(lib2) == 99
+    finally:
+        m.SWAPS = ()
 
 
 def main():

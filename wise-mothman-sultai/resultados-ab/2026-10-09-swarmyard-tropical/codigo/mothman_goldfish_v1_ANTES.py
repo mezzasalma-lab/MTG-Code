@@ -4602,8 +4602,6 @@ def mulligan(state: GameState):
 # e' bit-identico ao s4 `no lugar`). A lista anterior esta em lista-anterior-2026-10-05.md; os simuladores congelados em resultados-ab/*/codigo/ guardam a lista de quando rodaram.
 # 2026-10-09 (pedido do usuario, terrenos com proxy; a Swarmyard FICA: regenera o comandante, Inseto Mutante): Yavimaya Hollow -> Bayou e Fabled Passage -> Prismatic Vista, trocados NO LUGAR (a ordem da biblioteca e' a do A/B:
 # o novo `SWAPS=()` e' bit-identico ao d1 `no lugar` de resultados-ab/2026-10-09-terrenos-proxy). Lista anterior: lista-anterior-2026-10-08.md.
-# 2026-10-09 (pedido do usuario: "Troca o Swarmyard pela Tropical"): Swarmyard -> Tropical Island, trocados NO LUGAR (o novo `SWAPS=()` e' bit-identico ao e1 `no lugar` de resultados-ab/2026-10-09-swarmyard-tropical).
-# Lista anterior: lista-anterior-2026-10-09.md. A Swarmyard continua no CARD_DB e a regeneracao dela segue implementada (basta uma `SWAPS` para ela voltar).
 DECKLIST_TEXT = """
 1 Agadeem's Awakening // Agadeem, the Undercrypt
 1 Agatha's Soul Cauldron
@@ -4673,7 +4671,7 @@ DECKLIST_TEXT = """
 1 Soul-Guide Lantern
 1 Strip Mine
 3 Swamp
-1 Tropical Island
+1 Swarmyard
 1 Swiftfoot Boots
 1 Syr Konrad, the Grim
 1 Takenuma, Abandoned Mire

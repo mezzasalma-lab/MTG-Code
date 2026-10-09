@@ -1,0 +1,6 @@
+Bit-identidade da lista atual: vivo (SWAPS=()) == ANTES congelado + e1 'no lugar' (Swarmyard -> Tropical Island); 4 fatias x 5.000 sementes (9.400.000..9.419.999) x 2 modos
+vivo (SWAPS=()) == ANTES + e1 no lugar: 10000 identicas, 0 divergencias
+vivo (SWAPS=()) == ANTES + e1 no lugar: 10000 identicas, 0 divergencias
+vivo (SWAPS=()) == ANTES + e1 no lugar: 10000 identicas, 0 divergencias
+vivo (SWAPS=()) == ANTES + e1 no lugar: 10000 identicas, 0 divergencias
+total: 40000 identicas, 0 divergencias

@@ -355,3 +355,17 @@ Fonte: Scryfall ao vivo em 2026-10-09 (`resultados-ab/2026-10-09-terrenos-proxy/
 **Não coberto (Regra #7):** (a) remoção de terreno não básico do oponente (Wasteland, Strip Mine do oponente) contra os duais originais; (b) `regenerations_used` não separa o alvo da regeneração: The Wise Mothman e Icetill Explorer são os ÚNICOS dois Insetos da lista (enumerados por script no Scryfall ao vivo em 2026-10-09; nenhum Rato, Aranha, Esquilo, Changeling nem ficha desses tipos), e o simulador protege os dois; (c) a escolha do básico da Vista segue a política já usada pela Fabled Passage.
 
 **Status (2026-10-09):** Bayou e Prismatic Vista fazem parte da lista oficial (`lista.md` e `DECKLIST_TEXT`); saíram Yavimaya Hollow e Fabled Passage (continuam no `CARD_DB`); Underground Sea e Tropical Island estão implementadas e medidas (d2 / d3 / d4), **não aplicadas**.
+
+## 18. Swarmyard → Tropical Island (2026-10-09, pedido do usuário)
+
+Oráculo e rulings: os de §17 (Tropical Island: 2 rulings de 2008-10-01 lidas ANTES do código; Swarmyard: sem rulings). Nenhuma cláusula nova entra no simulador.
+
+| carta | cláusula do oráculo | código | status | teste |
+|---|---|---|---|---|
+| **Tropical Island** (já implementada, §17) | "({T}: Add {G} or {U}.)" | `produces={"G","U"}`, `land_types={"Forest","Island"}`, sem `etb_tapped`; agora está na lista | ✅ | `lista_viva_troca_swarmyard_por_tropical_e_os_insetos_continuam_dois` + as do §17 |
+| **Swarmyard** (SAIU da lista; segue no `CARD_DB`) | "{T}: Add {C}." e "{T}: Regenerate target Insect, Rat, Spider, or Squirrel." | inalterada (§17); volta por `SWAPS=(("Tropical Island","Swarmyard"),)` | ✅ (implementada, fora da lista) | `chave_remocao_no_comandante_...` e o teste novo (volta por `SWAPS`) |
+
+**Conceito compartilhado (Regra #3) conferido:** os únicos Insetos da lista são The Wise Mothman e Icetill Explorer (script no Scryfall ao vivo, `resultados-ab/2026-10-09-terrenos-proxy/resumos/insetos_da_lista.txt`); o teste novo trava isso. Sem a Swarmyard e sem a Yavimaya Hollow, `regenerate_sources` devolve lista vazia e `regenerations_used` = 0 na lista aplicada (confirmado em `base_nova.md`).
+**Não coberto (Regra #7):** valor da regeneração contra remoção real do comandante; separação comandante × Icetill em `regenerations_used`.
+
+**Status (2026-10-09):** Tropical Island faz parte da lista oficial; Swarmyard saiu (continua no `CARD_DB`). Underground Sea segue medida e **não aplicada** (e2).
