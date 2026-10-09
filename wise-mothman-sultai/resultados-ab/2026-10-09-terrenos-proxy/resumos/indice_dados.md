@@ -7,4 +7,5 @@
 | `raw_terrenos4_10000_resiliencia.json.xz` | bruto por partida: 5 variantes × N=10000; 317 campos numéricos. Variantes: `base`; `d1_hollow_bayou_passage_vista`; `d2_d1_mais_bog_sea`; `d3_d2_mais_minamo_tropical`; `d4_d2_mais_woodland_tropical` |
 | `raw_z50_10000_resiliencia.json.xz` | bruto por partida: 3 variantes × N=10000; 317 campos numéricos. Variantes: `base`; `d1_hollow_bayou_passage_vista`; `d2_d1_mais_bog_sea` |
 | `rulings_terrenos.json` | oráculo + rulings ao vivo (Scryfall) de 5 cartas (Prismatic Vista, Underground Sea, Bayou, Tropical Island, Swarmyard; 6 rulings), lidos em 2026-10-09 antes de escrever o código |
+| `scryfall_lista_2026-10-09.json.xz` | resposta bruta do Scryfall (ao vivo, 2026-10-09) das 91 cartas distintas da lista aplicada; base do levantamento de Insetos (`resumos/insetos_da_lista.txt`, `orquestracao/insetos.py`) |
 | `spellbook_proxy.json` | Commander Spellbook: 94 nomes resolvidos (não reconhecidos: []), 2 combos da base, 10 variantes, controle positivo=True, controle de corte=True, lista viva == d1: True |

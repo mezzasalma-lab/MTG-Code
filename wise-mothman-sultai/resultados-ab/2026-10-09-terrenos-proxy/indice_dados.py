@@ -14,6 +14,8 @@ for f in sorted(glob.glob(os.path.join(aqui, "dados", "*"))):
         print(f"| `{nome}` | bruto por partida: {len(v)} variantes × N={'/'.join(map(str, ns))}; {len(campos)} campos numéricos. Variantes: " + "; ".join(f"`{k}`" for k in v) + " |")
     elif nome == "spellbook_proxy.json":
         print(f"| `{nome}` | Commander Spellbook: {len(d['reconhece'])} nomes resolvidos (não reconhecidos: {d['nao_reconhecidos']}), {len(d['base']['incluidos'])} combos da base, {len(d['por_variante'])} variantes, controle positivo={d['controle_positivo_thassa_consultation']}, controle de corte={d['controle_de_corte_ascension_mindcrank_sumiu']}, lista viva == d1: {d.get('lista_viva_igual_d1')} |")
+    elif nome == "scryfall_lista_2026-10-09.json.xz":
+        print(f"| `{nome}` | resposta bruta do Scryfall (ao vivo, 2026-10-09) das {len(d)} cartas distintas da lista aplicada; base do levantamento de Insetos (`resumos/insetos_da_lista.txt`, `orquestracao/insetos.py`) |")
     elif nome == "rulings_terrenos.json":
         print(f"| `{nome}` | oráculo + rulings ao vivo (Scryfall) de {len(d)} cartas ({', '.join(d)}; {sum(len(v['rulings']) for v in d.values())} rulings), lidos em 2026-10-09 antes de escrever o código |")
     else:
