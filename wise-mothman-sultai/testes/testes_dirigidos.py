@@ -2457,6 +2457,113 @@ def cinco_entradas_partidas_completas_nao_dao_excecao_e_as_tres_novas_disparam()
 
 
 
+# ---------------------------------------------------------------------------------------------------------------------------
+# 2026-10-09 (pedido do usuario, terrenos com proxy): Underground Sea, Bayou, Tropical Island, Prismatic Vista e a chave COMMANDER_REMOVAL_SHARE.
+# Oraculo lido ao vivo: Underground Sea / Bayou / Tropical Island "({T}: Add ...)" sem ETB; Prismatic Vista "{T}, Pay 1 life, Sacrifice: Search your library for a basic land card, put it onto the battlefield, then shuffle."
+USEA, BAYOU, TROP, VISTA = "Underground Sea", "Bayou", "Tropical Island", "Prismatic Vista"
+
+
+@teste
+def duais_originais_entram_desvirados_sem_custo_produzem_as_duas_cores_e_tem_os_dois_tipos():
+    for nome, cores, tipos in ((USEA, {"U", "B"}, {"Island", "Swamp"}), (BAYOU, {"B", "G"}, {"Swamp", "Forest"}), (TROP, {"G", "U"}, {"Forest", "Island"})):
+        c = m.CARD_DB[nome]
+        assert "land" in c.types and set(c.produces) == cores and set(c.land_types) == tipos and not c.tags, nome
+        st = fresh(life=30)
+        assert m.land_enters_tapped(st, nome) is False and m.land_cost_life(st, nome, False) == 0, nome
+        st = fresh(life=5)
+        assert m.land_enters_tapped(st, nome) is False, "sem condicao de vida (diferente do shock)"
+        p = m.put_land_onto_battlefield(st, nome, source="teste")
+        assert p.tapped is False and st.life == 5, nome
+
+
+@teste
+def as_tres_fetches_encontram_os_duais_originais_pelos_tipos_certos():
+    # cada dual original tem 2 dos 3 tipos basicos e cada fetch cobre 2 dos 3: qualquer par se cruza com qualquer par, entao as 3 fetches acham os 3 duais; o controle negativo e' o basico de UM so' tipo fora do par da fetch
+    for fetch in ("Verdant Catacombs", "Polluted Delta", "Misty Rainforest"):
+        for alvo in (USEA, BAYOU, TROP):
+            st = fresh(lib=[alvo] + ["Fathom Mage"] * 10)
+            p = add(st, fetch)
+            assert m.crack_fetch(st, p) is True and any(q.card.name == alvo for q in st.battlefield), (fetch, alvo)
+    for fetch, fora in (("Verdant Catacombs", "Island"), ("Polluted Delta", "Forest"), ("Misty Rainforest", "Swamp")):
+        st = fresh(lib=[fora] + ["Fathom Mage"] * 10)
+        p = add(st, fetch)
+        assert m.crack_fetch(st, p) is False and any(q.card.name == fetch for q in st.battlefield), ("controle negativo", fetch, fora)
+
+
+@teste
+def prismatic_vista_paga_1_de_vida_acha_qualquer_basico_desvirado_e_embaralha_sem_fabled():
+    c = m.CARD_DB[VISTA]
+    assert "fetch" in c.tags and "vista" in c.tags and "fabled_passage" not in c.tags and not c.produces
+    st = fresh(life=30, lib=["Swamp", "Island", "Forest", "Bayou", "Fathom Mage"] * 3)
+    p = add(st, VISTA)
+    lib0 = len(st.library)
+    assert m.crack_fetch(st, p) is True
+    assert st.life == 29, "1 de vida (diferente da Fabled Passage)"
+    assert VISTA in st.graveyard and all(q.card.name != VISTA for q in st.battlefield)
+    novo = [q for q in st.battlefield if "basic" in q.card.tags]
+    assert len(novo) == 1 and novo[0].tapped is False, "o basico buscado entra DESVIRADO (a Fabled Passage o poe virado com < 4 terrenos)"
+    assert len(st.library) == lib0 - 1
+    st2 = fresh(life=30, lib=["Bayou", "Fathom Mage"] * 3)           # sem basico: nao quebra
+    p2 = add(st2, VISTA)
+    assert m.crack_fetch(st2, p2) is False and st2.life == 30
+    st3 = fresh(life=30, lib=["Forest", "Fathom Mage"] * 3)
+    p3 = add(st3, "Fabled Passage"); add(st3, "Forest"); m.crack_fetch(st3, p3)
+    assert st3.life == 30 and any(q.card.name == "Forest" and q.tapped for q in st3.battlefield), "Fabled Passage continua igual: sem vida, entra virado com < 4 terrenos"
+
+
+@teste
+def chave_remocao_no_comandante_desligada_nao_mira_ligada_mira_e_a_Swarmyard_regenera_so_inseto():
+    antigo = (m.COMMANDER_REMOVAL_SHARE, m.INTERACTION_SETUP_TURNS)
+    try:
+        m.INTERACTION_SETUP_TURNS = 0
+        def cena(share, regen=True, rng_seed=1):
+            m.COMMANDER_REMOVAL_SHARE = share
+            st = fresh(turn=6, bf=["The Wise Mothman", "Swamp", "Swamp", "Forest", "Island"] + (["Swarmyard"] if regen else []))
+            st.interaction_rng = random.Random(rng_seed)
+            return st
+        # (a) desligada: o comandante nunca e' o alvo da remocao pontual (so' ele em campo -> nada a mirar)
+        alvo_antes = 0
+        for sd in range(300):
+            st = cena(0.0, regen=False, rng_seed=sd); m.interaction_chance = m.interaction_chance
+            if m.try_smart_opponent_removal(st) == "The Wise Mothman": alvo_antes += 1
+        assert alvo_antes == 0
+        # (b) ligada em 1.0: com so' o comandante em campo ele e' mirado sempre que a chance de interacao sai
+        mirou = 0; salvo = 0
+        for sd in range(400):
+            st = cena(1.0, regen=False, rng_seed=sd)
+            r = m.try_smart_opponent_removal(st)
+            if r == "The Wise Mothman": mirou += 1
+        assert mirou > 0, "verificacao vacua"
+        # (c) com a Swarmyard desvirada o Mothman (Inseto) regenera em vez de morrer; sem ela morre
+        mortos_sem = mortos_com = 0
+        for sd in range(400):
+            a = cena(1.0, regen=False, rng_seed=sd); m.try_smart_opponent_removal(a)
+            b = cena(1.0, regen=True, rng_seed=sd); m.try_smart_opponent_removal(b)
+            mortos_sem += int(not any(p.card.name == "The Wise Mothman" for p in a.battlefield))
+            mortos_com += int(not any(p.card.name == "The Wise Mothman" for p in b.battlefield))
+        assert mortos_sem > 0 and mortos_com < mortos_sem, ("a Swarmyard tem de salvar o comandante", mortos_sem, mortos_com)
+    finally:
+        m.COMMANDER_REMOVAL_SHARE, m.INTERACTION_SETUP_TURNS = antigo
+
+
+@teste
+def terrenos_proxy_partidas_completas_nao_dao_excecao_e_a_vista_e_os_duais_aparecem():
+    antigos = (m.SWAPS, m.SWAP_IN_PLACE, m.COMMANDER_REMOVAL_SHARE)
+    try:
+        m.SWAPS = (("Swarmyard", USEA), ("Bojuka Bog", TROP)); m.SWAP_IN_PLACE = True      # Bayou e Prismatic Vista ja' estao na lista (2026-10-09); os outros dois duais entram por SWAPS
+        m.COMMANDER_REMOVAL_SHARE = 0.5
+        vistos = collections.Counter()
+        for sd in range(1_000_000, 1_000_200):
+            for f in (m.simulate_one, m.simulate_one_with_interaction):
+                s = f(sd, 12)
+                for n in (USEA, BAYOU, TROP, VISTA):
+                    vistos[n] += int(n in s.hand or n in s.graveyard or any(p.card.name == n for p in s.battlefield))
+        assert all(vistos[n] > 0 for n in (USEA, BAYOU, TROP, VISTA)), ("verificacao vacua", dict(vistos))
+    finally:
+        m.SWAPS, m.SWAP_IN_PLACE, m.COMMANDER_REMOVAL_SHARE = antigos
+
+
+
 
 def main():
     for t in TESTS:

@@ -164,10 +164,6 @@ add("Waterlogged Grove", "", {"land"}, {"waterlogged_grove"}, produces={"G", "U"
 add("Watery Grave", "", {"land"}, {"shock"}, produces={"U", "B"}, land_types={"Island", "Swamp"})
 add("Yavimaya Hollow", "", {"land"}, {"yavimaya_hollow"}, produces={"C"}, legendary=True)
 add("Zagoth Triome", "", {"land"}, {"etb_tapped", "triome", "cycling3"}, produces={"B", "G", "U"}, land_types={"Swamp", "Forest", "Island"})
-add("Underground Sea", "", {"land"}, set(), produces={"U", "B"}, land_types={"Island", "Swamp"})      # candidatas de 2026-10-09 (terrenos com proxy): resultados-ab/2026-10-09-terrenos-proxy
-add("Bayou", "", {"land"}, set(), produces={"B", "G"}, land_types={"Swamp", "Forest"})
-add("Tropical Island", "", {"land"}, set(), produces={"G", "U"}, land_types={"Forest", "Island"})
-add("Prismatic Vista", "", {"land"}, {"fetch", "vista"})
 # MDFC verdadeiro (layout modal_dfc): as duas faces sao jogaveis da mao. Chave = nome completo, como no cache.
 add("Agadeem's Awakening // Agadeem, the Undercrypt", "{X}{B}{B}{B}", {"sorcery", "land"}, {"mdfc", "agadeem"}, produces={"B"}, mv=3)
 
@@ -1713,8 +1709,7 @@ def crack_fetch(state: GameState, perm: Permanent) -> bool:
     A busca e' depois dos gatilhos do cemiterio (a compra da Gitrog pode tirar o alvo da biblioteca). So' quebro se existe alvo agora (politica)."""
     name = perm.card.name
     fabled = "fabled_passage" in perm.card.tags
-    vista = "vista" in perm.card.tags       # Prismatic Vista: qualquer basico, 1 de vida, o terreno buscado entra DESVIRADO
-    if fabled or vista:
+    if fabled:
         pred = lambda c: "basic" in CARD_DB[c].tags
     else:
         types = FETCH_TYPES[name]
@@ -1740,7 +1735,7 @@ def crack_fetch(state: GameState, perm: Permanent) -> bool:
         if n_lands(state) >= 4:
             newp.tapped = False           # ruling: o terreno buscado conta pras 4; entra virado e desvira
     else:
-        put_land_onto_battlefield(state, target, source="vista" if vista else "fetch")
+        put_land_onto_battlefield(state, target, source="fetch")
     return True
 
 
@@ -4600,8 +4595,6 @@ def mulligan(state: GameState):
 # 2026-10-08 (pedido do usuario): lista ATUALIZADA com as cinco entradas (Agent Frank Horrigan, Branching Evolution, Atomize, Casualties of War, Assassin's Trophy) no lugar de An Offer You Can't Refuse,
 # Negate, V.A.T.S., Wave Goodbye e Didn't Say Please (conjunto s4 de resultados-ab/2026-10-08-cinco-entradas-remocao). As linhas foram trocadas NO LUGAR (a ordem da biblioteca e' a do A/B: o novo `SWAPS=()`
 # e' bit-identico ao s4 `no lugar`). A lista anterior esta em lista-anterior-2026-10-05.md; os simuladores congelados em resultados-ab/*/codigo/ guardam a lista de quando rodaram.
-# 2026-10-09 (pedido do usuario, terrenos com proxy; a Swarmyard FICA: regenera o comandante, Inseto Mutante): Yavimaya Hollow -> Bayou e Fabled Passage -> Prismatic Vista, trocados NO LUGAR (a ordem da biblioteca e' a do A/B:
-# o novo `SWAPS=()` e' bit-identico ao d1 `no lugar` de resultados-ab/2026-10-09-terrenos-proxy). Lista anterior: lista-anterior-2026-10-08.md.
 DECKLIST_TEXT = """
 1 Agadeem's Awakening // Agadeem, the Undercrypt
 1 Agatha's Soul Cauldron
@@ -4624,7 +4617,7 @@ DECKLIST_TEXT = """
 1 Deepmuck Desperado
 1 Assassin's Trophy
 1 Evolution Witness
-1 Prismatic Vista
+1 Fabled Passage
 1 Fathom Mage
 1 Fierce Guardianship
 5 Forest
@@ -4690,7 +4683,7 @@ DECKLIST_TEXT = """
 1 Watery Grave
 1 Casualties of War
 1 Winding Constrictor
-1 Bayou
+1 Yavimaya Hollow
 1 Zagoth Triome
 1 Zellix, Sanity Flayer
 """
@@ -4926,7 +4919,6 @@ ACTIONS = ACTIONS[:_i_lantern] + (act_riverchurn_exhaust, act_riverchurn_tap) + 
 # Smuggler's Surprise (modo +{1}), Swiftfoot Boots (hexproof), regeneracao (Swarmyard, Yavimaya Hollow), Plaza of Heroes, Angel of Suffering (previne e mila).
 # =========================================================
 INTERACTION_SETUP_TURNS = 2
-COMMANDER_REMOVAL_SHARE = 0.0           # [2026-10-09] fracao das remocoes pontuais do oponente que mira o COMANDANTE quando ele esta em campo (0.0 = comportamento anterior, bit-identico)
 OPPONENT_ATTENTION_CHANCE = 1.0 / 3
 POST_WIPE_ATTACK_HASTE_FACTOR = 0.15
 WIPE_TYPE_WEIGHTS = {"creature": 0.4, "artifact": 0.2, "enchantment": 0.15}
@@ -5035,14 +5027,9 @@ def try_smart_opponent_removal(state: GameState) -> Optional[str]:
     if state.interaction_rng is None or state.turn <= INTERACTION_SETUP_TURNS:
         return None
     target_name = next((n for n in INTERACTION_ENGINE_PRIORITY if any(eff_name(p) == n for p in state.battlefield)), None)
-    cmd_em_jogo = COMMANDER_REMOVAL_SHARE > 0 and any(eff_name(p) == COMMANDER for p in state.battlefield)       # [2026-10-09] chave desligada (0.0): nenhum sorteio novo, bit-identico
-    if target_name is None and not cmd_em_jogo:
+    if target_name is None:
         return None
     if state.interaction_rng.random() >= interaction_chance(state):
-        return None
-    if cmd_em_jogo and state.interaction_rng.random() < COMMANDER_REMOVAL_SHARE:
-        target_name = COMMANDER
-    if target_name is None:
         return None
     perm = next(p for p in state.battlefield if eff_name(p) == target_name)
     # Swiftfoot Boots: a criatura equipada tem hexproof (remocao pontual nao pode mira-la)

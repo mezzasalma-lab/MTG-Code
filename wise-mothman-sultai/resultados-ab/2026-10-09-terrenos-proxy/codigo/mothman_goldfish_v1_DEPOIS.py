@@ -4600,8 +4600,6 @@ def mulligan(state: GameState):
 # 2026-10-08 (pedido do usuario): lista ATUALIZADA com as cinco entradas (Agent Frank Horrigan, Branching Evolution, Atomize, Casualties of War, Assassin's Trophy) no lugar de An Offer You Can't Refuse,
 # Negate, V.A.T.S., Wave Goodbye e Didn't Say Please (conjunto s4 de resultados-ab/2026-10-08-cinco-entradas-remocao). As linhas foram trocadas NO LUGAR (a ordem da biblioteca e' a do A/B: o novo `SWAPS=()`
 # e' bit-identico ao s4 `no lugar`). A lista anterior esta em lista-anterior-2026-10-05.md; os simuladores congelados em resultados-ab/*/codigo/ guardam a lista de quando rodaram.
-# 2026-10-09 (pedido do usuario, terrenos com proxy; a Swarmyard FICA: regenera o comandante, Inseto Mutante): Yavimaya Hollow -> Bayou e Fabled Passage -> Prismatic Vista, trocados NO LUGAR (a ordem da biblioteca e' a do A/B:
-# o novo `SWAPS=()` e' bit-identico ao d1 `no lugar` de resultados-ab/2026-10-09-terrenos-proxy). Lista anterior: lista-anterior-2026-10-08.md.
 DECKLIST_TEXT = """
 1 Agadeem's Awakening // Agadeem, the Undercrypt
 1 Agatha's Soul Cauldron
@@ -4624,7 +4622,7 @@ DECKLIST_TEXT = """
 1 Deepmuck Desperado
 1 Assassin's Trophy
 1 Evolution Witness
-1 Prismatic Vista
+1 Fabled Passage
 1 Fathom Mage
 1 Fierce Guardianship
 5 Forest
@@ -4690,7 +4688,7 @@ DECKLIST_TEXT = """
 1 Watery Grave
 1 Casualties of War
 1 Winding Constrictor
-1 Bayou
+1 Yavimaya Hollow
 1 Zagoth Triome
 1 Zellix, Sanity Flayer
 """

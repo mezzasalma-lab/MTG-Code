@@ -1,0 +1,14 @@
+nomes verificados: 94 | NAO reconhecidos: []
+base: 2 combos, 136 quase
+base+Underground Sea | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Bayou | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Tropical Island | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+base+Prismatic Vista | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+c1_hollow_sea_bog_bayou | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+v1_passage_vista | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+d1_hollow_bayou_passage_vista | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+d2_d1_mais_bog_sea | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+d3_d2_mais_minamo_tropical | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+d4_d2_mais_woodland_tropical | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0
+lista viva == d1 (como multiconjunto de nomes): True
+controle positivo: True | controle de corte: True

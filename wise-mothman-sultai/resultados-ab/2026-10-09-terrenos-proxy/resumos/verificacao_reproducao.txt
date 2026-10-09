@@ -1,0 +1,17 @@
+IGUAL  tabela_x.md (refeita so' dos brutos)
+IGUAL  tabela_y.md (refeita so' dos brutos)
+IGUAL  tabela_z.md (refeita so' dos brutos)
+IGUAL  tabela_z50.md (refeita so' dos brutos)
+IGUAL  base_aplicada.md (refeita so' dos brutos)
+IGUAL  replicacao.txt (refeito so' dos brutos)
+IGUAL  indice_dados.md (refeito so' dos brutos)
+re-simulando base e d1 (1.000 sementes) com o simulador congelado...
+config_z.json    padrao       base                          : 1000/1000 identicas
+config_z.json    padrao       d1_hollow_bayou_passage_vista : 1000/1000 identicas
+config_z.json    resiliencia  base                          : 1000/1000 identicas
+config_z.json    resiliencia  d1_hollow_bayou_passage_vista : 1000/1000 identicas
+config_z50.json  resiliencia  base                          : 1000/1000 identicas
+config_z50.json  resiliencia  d1_hollow_bayou_passage_vista : 1000/1000 identicas
+6/6 series identicas ao bruto
+IGUAL  amostra re-simulada == bruto (6/6 series)
+8/8 saidas iguais

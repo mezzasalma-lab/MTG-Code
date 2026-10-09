@@ -1,0 +1,10 @@
+| arquivo | conteúdo |
+|---|---|
+| `raw_cmd50_10000_resiliencia.json.xz` | bruto por partida: 6 variantes × N=10000; 317 campos numéricos. Variantes: `base`; `a1_hollow_sea`; `a2_hollow_bayou`; `a3_swarmyard_sea`; `c1_hollow_sea_bog_bayou`; `c2_hollow_sea_woodland_bayou` |
+| `raw_terrenos3_10000.json.xz` | bruto por partida: 13 variantes × N=10000; 317 campos numéricos. Variantes: `base`; `a1_hollow_sea`; `a2_hollow_bayou`; `a3_swarmyard_sea`; `s1_bog_swamp`; `s2_woodland_forest`; `s3_grove_island`; `s4_minamo_island`; `v1_passage_vista`; `c1_hollow_sea_bog_bayou`; `c2_hollow_sea_woodland_bayou`; `c3_hollow_sea_grove_bayou`; `c4_hollow_sea_minamo_bayou` |
+| `raw_terrenos3_10000_resiliencia.json.xz` | bruto por partida: 13 variantes × N=10000; 317 campos numéricos. Variantes: `base`; `a1_hollow_sea`; `a2_hollow_bayou`; `a3_swarmyard_sea`; `s1_bog_swamp`; `s2_woodland_forest`; `s3_grove_island`; `s4_minamo_island`; `v1_passage_vista`; `c1_hollow_sea_bog_bayou`; `c2_hollow_sea_woodland_bayou`; `c3_hollow_sea_grove_bayou`; `c4_hollow_sea_minamo_bayou` |
+| `raw_terrenos4_10000.json.xz` | bruto por partida: 5 variantes × N=10000; 317 campos numéricos. Variantes: `base`; `d1_hollow_bayou_passage_vista`; `d2_d1_mais_bog_sea`; `d3_d2_mais_minamo_tropical`; `d4_d2_mais_woodland_tropical` |
+| `raw_terrenos4_10000_resiliencia.json.xz` | bruto por partida: 5 variantes × N=10000; 317 campos numéricos. Variantes: `base`; `d1_hollow_bayou_passage_vista`; `d2_d1_mais_bog_sea`; `d3_d2_mais_minamo_tropical`; `d4_d2_mais_woodland_tropical` |
+| `raw_z50_10000_resiliencia.json.xz` | bruto por partida: 3 variantes × N=10000; 317 campos numéricos. Variantes: `base`; `d1_hollow_bayou_passage_vista`; `d2_d1_mais_bog_sea` |
+| `rulings_terrenos.json` | oráculo + rulings ao vivo (Scryfall) de 5 cartas (Prismatic Vista, Underground Sea, Bayou, Tropical Island, Swarmyard; 6 rulings), lidos em 2026-10-09 antes de escrever o código |
+| `spellbook_proxy.json` | Commander Spellbook: 94 nomes resolvidos (não reconhecidos: []), 2 combos da base, 10 variantes, controle positivo=True, controle de corte=True, lista viva == d1: True |

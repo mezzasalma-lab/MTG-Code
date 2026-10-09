@@ -1,0 +1,129 @@
+{
+ "sim": "resultados-ab/2026-10-09-terrenos-proxy/codigo/mothman_goldfish_v1_DEPOIS.py",
+ "turns": 12,
+ "destaque": [
+  "cleared_T7",
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "decked",
+  "commander_cast_turn__ate_T3",
+  "commander_cast_turn__ate_T4",
+  "commander_cast_turn__ate_T5",
+  "commander_cast_turn__ate_T6",
+  "commander_cast_turn__nunca",
+  "casualties_casts",
+  "atomize_casts",
+  "trophy_casts",
+  "regenerations_used",
+  "protection_used_total",
+  "smart_removals_total",
+  "smart_wipes_total",
+  "commander_countered_total",
+  "interaction_plays",
+  "lands_entered_total",
+  "mana_spent_total",
+  "life_min",
+  "mothman_counters_placed_total",
+  "cards_milled_opp_total",
+  "rad_counters_given_opp_total",
+  "fetches_cracked_total"
+ ],
+ "compacto": [
+  "cleared_T8",
+  "cleared_T10",
+  "first_elim_T6",
+  "self_lost",
+  "commander_cast_turn__ate_T4",
+  "commander_cast_turn__ate_T5",
+  "regenerations_used",
+  "smart_removals_total",
+  "protection_used_total"
+ ],
+ "variantes": {
+  "base": {},
+  "d1_hollow_bayou_passage_vista": {
+   "SWAPS": [
+    [
+     "Yavimaya Hollow",
+     "Bayou"
+    ],
+    [
+     "Fabled Passage",
+     "Prismatic Vista"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "d2_d1_mais_bog_sea": {
+   "SWAPS": [
+    [
+     "Yavimaya Hollow",
+     "Bayou"
+    ],
+    [
+     "Fabled Passage",
+     "Prismatic Vista"
+    ],
+    [
+     "Bojuka Bog",
+     "Underground Sea"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "d3_d2_mais_minamo_tropical": {
+   "SWAPS": [
+    [
+     "Yavimaya Hollow",
+     "Bayou"
+    ],
+    [
+     "Fabled Passage",
+     "Prismatic Vista"
+    ],
+    [
+     "Bojuka Bog",
+     "Underground Sea"
+    ],
+    [
+     "Minamo, School at Water's Edge",
+     "Tropical Island"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  },
+  "d4_d2_mais_woodland_tropical": {
+   "SWAPS": [
+    [
+     "Yavimaya Hollow",
+     "Bayou"
+    ],
+    [
+     "Fabled Passage",
+     "Prismatic Vista"
+    ],
+    [
+     "Bojuka Bog",
+     "Underground Sea"
+    ],
+    [
+     "Shifting Woodland",
+     "Tropical Island"
+    ]
+   ],
+   "SWAP_IN_PLACE": true
+  }
+ },
+ "variantes_10000": [
+  "base",
+  "d1_hollow_bayou_passage_vista",
+  "d2_d1_mais_bog_sea",
+  "d3_d2_mais_minamo_tropical",
+  "d4_d2_mais_woodland_tropical"
+ ],
+ "regressao": [
+  "d3_d2_mais_minamo_tropical"
+ ]
+}

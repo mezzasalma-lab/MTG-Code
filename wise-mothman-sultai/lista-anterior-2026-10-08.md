@@ -1,6 +1,5 @@
 # The Wise Mothman — Sultai (mill + rad + contadores)
 
-> **Atualizada em 2026-10-09 (terrenos com proxy; Swarmyard mantida): Yavimaya Hollow → Bayou e Fabled Passage → Prismatic Vista** (`resultados-ab/2026-10-09-terrenos-proxy/LEIAME.md`; lista anterior `lista-anterior-2026-10-08.md`).
 > **Atualizada em 2026-10-08 a pedido do usuário** (cinco entradas: Agent Frank Horrigan, Branching Evolution, Atomize, Casualties of War, Assassin's Trophy; saem An Offer You Can't Refuse, Negate, V.A.T.S., Wave Goodbye, Didn't Say Please; Toxic Deluge fica): `resultados-ab/2026-10-08-cinco-entradas-remocao/LEIAME.md`. Lista anterior: `lista-anterior-2026-10-05.md`.
 > Lista informada pelo usuário em 2026-10-05 (simulador construído em 2026-10-05: `mothman_goldfish_v1.py`; números em `goldfish-log.md`).
 > Nomes abaixo são os **reais** do Scryfall (resolvidos por set + nº de colecionador, Regra #2);
@@ -23,7 +22,6 @@
 1 Assassin's Trophy
 1 Atomize
 1 Basking Broodscale
-1 Bayou
 1 Bloodchief Ascension
 1 Bojuka Bog
 1 Boseiju, Who Endures
@@ -37,6 +35,7 @@
 1 Danny Pink
 1 Deepmuck Desperado
 1 Evolution Witness
+1 Fabled Passage
 1 Fathom Mage
 1 Fierce Guardianship
 5 Forest
@@ -70,7 +69,6 @@
 1 Plaza of Heroes
 1 Polluted Delta
 1 Pollywog Prodigy
-1 Prismatic Vista
 1 Psychic Corrosion
 1 Rampant Frogantua
 1 Rejuvenating Springs
@@ -100,5 +98,6 @@
 1 Waterlogged Grove
 1 Watery Grave
 1 Winding Constrictor
+1 Yavimaya Hollow
 1 Zagoth Triome
 1 Zellix, Sanity Flayer
