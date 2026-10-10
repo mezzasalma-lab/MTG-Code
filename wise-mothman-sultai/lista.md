@@ -1,5 +1,6 @@
 # The Wise Mothman — Sultai (mill + rad + contadores)
 
+> **Atualizada em 2026-10-10 (a pedido do usuário: "Troca o Swamp pelo Underground Sea"): 1 Swamp → Underground Sea** (`resultados-ab/2026-10-10-swamp-por-underground-sea/LEIAME.md`; lista anterior `lista-anterior-2026-10-10.md`).
 > **Atualizada em 2026-10-09 (a pedido do usuário: "Troca o Swarmyard pela Tropical"): Swarmyard → Tropical Island** (`resultados-ab/2026-10-09-swarmyard-tropical/LEIAME.md`; lista anterior `lista-anterior-2026-10-09.md`).
 > **Atualizada em 2026-10-09 (terrenos com proxy; Swarmyard mantida): Yavimaya Hollow → Bayou e Fabled Passage → Prismatic Vista** (`resultados-ab/2026-10-09-terrenos-proxy/LEIAME.md`; lista anterior `lista-anterior-2026-10-08.md`).
 > **Atualizada em 2026-10-08 a pedido do usuário** (cinco entradas: Agent Frank Horrigan, Branching Evolution, Atomize, Casualties of War, Assassin's Trophy; saem An Offer You Can't Refuse, Negate, V.A.T.S., Wave Goodbye, Didn't Say Please; Toxic Deluge fica): `resultados-ab/2026-10-08-cinco-entradas-remocao/LEIAME.md`. Lista anterior: `lista-anterior-2026-10-05.md`.
@@ -83,7 +84,7 @@
 1 Sol Ring
 1 Soul-Guide Lantern
 1 Strip Mine
-3 Swamp
+2 Swamp
 1 Swiftfoot Boots
 1 Syr Konrad, the Grim
 1 Takenuma, Abandoned Mire
@@ -94,6 +95,7 @@
 1 Toxic Deluge
 1 Tropical Island
 1 Undead Alchemist
+1 Underground Sea
 1 Undergrowth Stadium
 1 Urza's Saga
 1 Verdant Catacombs

@@ -4604,6 +4604,8 @@ def mulligan(state: GameState):
 # o novo `SWAPS=()` e' bit-identico ao d1 `no lugar` de resultados-ab/2026-10-09-terrenos-proxy). Lista anterior: lista-anterior-2026-10-08.md.
 # 2026-10-09 (pedido do usuario: "Troca o Swarmyard pela Tropical"): Swarmyard -> Tropical Island, trocados NO LUGAR (o novo `SWAPS=()` e' bit-identico ao e1 `no lugar` de resultados-ab/2026-10-09-swarmyard-tropical).
 # Lista anterior: lista-anterior-2026-10-09.md. A Swarmyard continua no CARD_DB e a regeneracao dela segue implementada (basta uma `SWAPS` para ela voltar).
+# 2026-10-10 (pedido do usuario: "Troca o Swamp pelo Underground Sea"): UM Swamp -> Underground Sea, trocado NO LUGAR (a linha `3 Swamp` virou `1 Underground Sea` + `2 Swamp` na mesma posicao: `lib.index('Swamp')` da `SWAPS` em
+# lugar acha a 1a copia, entao o novo `SWAPS=()` e' bit-identico ao u3 `no lugar` de resultados-ab/2026-10-10-underground-sea-sem-bojuka). Lista anterior: lista-anterior-2026-10-10.md.
 DECKLIST_TEXT = """
 1 Agadeem's Awakening // Agadeem, the Undercrypt
 1 Agatha's Soul Cauldron
@@ -4672,7 +4674,8 @@ DECKLIST_TEXT = """
 1 Sol Ring
 1 Soul-Guide Lantern
 1 Strip Mine
-3 Swamp
+1 Underground Sea
+2 Swamp
 1 Tropical Island
 1 Swiftfoot Boots
 1 Syr Konrad, the Grim

@@ -384,3 +384,5 @@ Fonte: Scryfall ao vivo em 2026-10-10 (`resultados-ab/2026-10-10-underground-sea
 | Minamo, Strip Mine, Zagoth Triome, Bojuka Bog, Swamp, Island, Underground Sea | sem ruling relevante (Sea: as 2 de 2008-10-01 do §17) | já auditados nos §anteriores | ✅ |
 
 **Não coberto (Regra #7):** o valor de ser terreno não básico contra Wasteland / Blood Moon / Back to Basics (estado de oponente).
+
+**Status (2026-10-10, pedido do usuário "Troca o Swamp pelo Underground Sea"):** Underground Sea faz parte da lista oficial (1 Swamp saiu, restam 2; Bojuka Bog, Watery Grave, Morphic Pool e os demais candidatos do §19 ficam). Oráculo e rulings do Sea: os do §17 (2008-10-01); nenhuma cláusula nova. Teste: `lista_viva_tem_underground_sea_no_lugar_de_um_swamp_e_ele_conta_como_swamp_e_island`.

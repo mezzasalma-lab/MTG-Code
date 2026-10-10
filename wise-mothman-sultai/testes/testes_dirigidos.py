@@ -2586,6 +2586,25 @@ def lista_viva_troca_swarmyard_por_tropical_e_os_insetos_continuam_dois():
         m.SWAPS = ()
 
 
+@teste
+def lista_viva_tem_underground_sea_no_lugar_de_um_swamp_e_ele_conta_como_swamp_e_island():
+    lib = list(m.current_library())
+    assert len(lib) == 99 and lib.count("Underground Sea") == 1 and lib.count("Swamp") == 2, (lib.count("Underground Sea"), lib.count("Swamp"))
+    sea = m.CARD_DB["Underground Sea"]
+    assert sea.produces == {"U", "B"} and sea.land_types == {"Island", "Swamp"} and "etb_tapped" not in sea.tags and "basic" not in sea.tags
+    # a Prismatic Vista so' acha basico (2 Swamps, 5 Forests, 4 Islands); a Polluted Delta e a Verdant Catacombs acham o Sea pelo tipo
+    basicos = [n for n in set(lib) if "basic" in m.CARD_DB[n].tags]
+    assert "Underground Sea" not in basicos and sorted(basicos) == ["Forest", "Island", "Swamp"]
+    for fetch_tipos in ({"Island", "Swamp"}, {"Swamp", "Forest"}, {"Forest", "Island"}):
+        assert m.CARD_DB["Underground Sea"].land_types & fetch_tipos
+    m.SWAPS = (("Underground Sea", "Swamp"),)
+    try:
+        lib2 = m.current_library()
+        assert lib2.count("Swamp") == 3 and "Underground Sea" not in lib2
+    finally:
+        m.SWAPS = ()
+
+
 def main():
     for t in TESTS:
         t()
