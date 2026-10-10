@@ -1,0 +1,12 @@
+base                               cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+u0_bojuka_bog                      cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+u1_watery_grave                    cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+u2_morphic_pool                    cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+u3_swamp                           cartas=99 distintas=91 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+u4_island                          cartas=99 distintas=91 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+u5_minamo                          cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+u6_shifting_woodland               cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+u7_zagoth_triome                   cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+u8_strip_mine                      cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+u9_takenuma                        cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+u10_boseiju                        cartas=99 distintas=90 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}

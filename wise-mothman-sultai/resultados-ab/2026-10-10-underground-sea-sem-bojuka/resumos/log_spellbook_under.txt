@@ -1,0 +1,15 @@
+nomes verificados: 93 | NAO reconhecidos: []
+base: 2 combos, 136 quase
+Bojuka Bog                         -> Underground Sea | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0 | quase que sumiram: 0
+Watery Grave                       -> Underground Sea | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0 | quase que sumiram: 0
+Morphic Pool                       -> Underground Sea | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0 | quase que sumiram: 0
+Swamp                              -> Underground Sea | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0 | quase que sumiram: 0
+Island                             -> Underground Sea | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0 | quase que sumiram: 0
+Minamo, School at Water's Edge     -> Underground Sea | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0 | quase que sumiram: 0
+Shifting Woodland                  -> Underground Sea | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0 | quase que sumiram: 1
+Zagoth Triome                      -> Underground Sea | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0 | quase que sumiram: 0
+Strip Mine                         -> Underground Sea | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0 | quase que sumiram: 0
+Takenuma, Abandoned Mire           -> Underground Sea | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0 | quase que sumiram: 0
+Boseiju, Who Endures               -> Underground Sea | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0 | quase que sumiram: 0
+Urza's Saga                        -> Underground Sea | combos: 2 | novos: [] | sumiram: [] | quase novos com a peca: 0 | quase que sumiram: 0
+controle positivo: True | controle de corte: True

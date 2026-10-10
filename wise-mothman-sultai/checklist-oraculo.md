@@ -369,3 +369,18 @@ Oráculo e rulings: os de §17 (Tropical Island: 2 rulings de 2008-10-01 lidas A
 **Não coberto (Regra #7):** valor da regeneração contra remoção real do comandante; separação comandante × Icetill em `regenerations_used`.
 
 **Status (2026-10-09):** Tropical Island faz parte da lista oficial; Swarmyard saiu (continua no `CARD_DB`). Underground Sea segue medida e **não aplicada** (e2).
+
+## 19. Terrenos candidatos a sair pelo Underground Sea (2026-10-10, pergunta do usuário): rulings lidas ANTES de recomendar
+
+Fonte: Scryfall ao vivo em 2026-10-10 (`resultados-ab/2026-10-10-underground-sea-sem-bojuka/dados/rulings_candidatos.json`). Nenhuma é Game Changer. **Nada foi implementado nem alterado** (só medição); as cláusulas abaixo foram conferidas contra o `land_enters_tapped` / `land_cost_life` existentes.
+
+| carta | ruling relevante | o simulador | status |
+|---|---|---|---|
+| **Watery Grave** | 2018-10-05: dois tipos básicos, não é básico; se um efeito põe o terreno virado, pode-se pagar 2 de vida mas ele entra virado | `shock`: paga 2 se a vida ≥ 10, senão entra virado; efeito que põe virado não paga (`forced_tapped`) | ✅ |
+| **Morphic Pool** | 2018-06-08: começou com 2+ oponentes e só resta 1 → entra virado | `slow_opp`: virado se `len(alive_opps) < 2` | ✅ |
+| **Shifting Woodland** | 2024-06-07: precisa JÁ controlar uma Forest ao entrar; se entra junto com a Forest e não há outra, entra virado; ao virar cópia não entra no campo (sem ETB); X = 0 | `shifting_woodland`: virado sem Forest (`forests()` por tipo) | ✅ |
+| **Takenuma** | 2022-02-18: a criatura / planeswalker devolvida é escolhida DEPOIS do mill; descartar é custo; canal exige alvo quando tem | `act_takenuma` (ver §anterior) | ✅ |
+| **Boseiju** | 2022-02-18: descartar é custo; sem alvo não se ativa | `act_boseiju`: só com alvo | ✅ |
+| Minamo, Strip Mine, Zagoth Triome, Bojuka Bog, Swamp, Island, Underground Sea | sem ruling relevante (Sea: as 2 de 2008-10-01 do §17) | já auditados nos §anteriores | ✅ |
+
+**Não coberto (Regra #7):** o valor de ser terreno não básico contra Wasteland / Blood Moon / Back to Basics (estado de oponente).
