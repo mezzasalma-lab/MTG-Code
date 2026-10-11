@@ -1,0 +1,12 @@
+IGUAL  tabela_w.md (refeita so' dos brutos)
+IGUAL  base_nova.md (refeita so' dos brutos)
+IGUAL  replicacao.txt (refeito so' dos brutos)
+IGUAL  indice_dados.md (refeito so' dos brutos)
+re-simulando base e w1 (1.000 sementes x 2 modos) com o simulador congelado...
+padrao       base              : 1000/1000 identicas
+padrao       w1_vista_fabled   : 1000/1000 identicas
+resiliencia  base              : 1000/1000 identicas
+resiliencia  w1_vista_fabled   : 1000/1000 identicas
+4/4 series identicas ao bruto
+IGUAL  amostra re-simulada == bruto (4/4 series)
+5/5 saidas iguais

@@ -1,0 +1,2 @@
+base                               cartas=99 distintas=91 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}
+w1_vista_fabled                    cartas=99 distintas=91 desconhecidas=[] duplicadas_nao_basicas=[] excecoes_200: {'padrao': 0, 'resiliencia': 0}

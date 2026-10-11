@@ -1,5 +1,6 @@
 # The Wise Mothman — Sultai (mill + rad + contadores)
 
+> **Atualizada em 2026-10-11 (a pedido do usuário: "Sim" à volta da Fabled Passage): Prismatic Vista → Fabled Passage** (`resultados-ab/2026-10-11-vista-volta-fabled/LEIAME.md`; lista anterior `lista-anterior-2026-10-11.md`).
 > **Atualizada em 2026-10-10 (a pedido do usuário: "Troca o Swamp pelo Underground Sea"): 1 Swamp → Underground Sea** (`resultados-ab/2026-10-10-swamp-por-underground-sea/LEIAME.md`; lista anterior `lista-anterior-2026-10-10.md`).
 > **Atualizada em 2026-10-09 (a pedido do usuário: "Troca o Swarmyard pela Tropical"): Swarmyard → Tropical Island** (`resultados-ab/2026-10-09-swarmyard-tropical/LEIAME.md`; lista anterior `lista-anterior-2026-10-09.md`).
 > **Atualizada em 2026-10-09 (terrenos com proxy; Swarmyard mantida): Yavimaya Hollow → Bayou e Fabled Passage → Prismatic Vista** (`resultados-ab/2026-10-09-terrenos-proxy/LEIAME.md`; lista anterior `lista-anterior-2026-10-08.md`).
@@ -39,6 +40,7 @@
 1 Danny Pink
 1 Deepmuck Desperado
 1 Evolution Witness
+1 Fabled Passage
 1 Fathom Mage
 1 Fierce Guardianship
 5 Forest
@@ -72,7 +74,6 @@
 1 Plaza of Heroes
 1 Polluted Delta
 1 Pollywog Prodigy
-1 Prismatic Vista
 1 Psychic Corrosion
 1 Rampant Frogantua
 1 Rejuvenating Springs

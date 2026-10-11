@@ -4606,6 +4606,8 @@ def mulligan(state: GameState):
 # Lista anterior: lista-anterior-2026-10-09.md. A Swarmyard continua no CARD_DB e a regeneracao dela segue implementada (basta uma `SWAPS` para ela voltar).
 # 2026-10-10 (pedido do usuario: "Troca o Swamp pelo Underground Sea"): UM Swamp -> Underground Sea, trocado NO LUGAR (a linha `3 Swamp` virou `1 Underground Sea` + `2 Swamp` na mesma posicao: `lib.index('Swamp')` da `SWAPS` em
 # lugar acha a 1a copia, entao o novo `SWAPS=()` e' bit-identico ao u3 `no lugar` de resultados-ab/2026-10-10-underground-sea-sem-bojuka). Lista anterior: lista-anterior-2026-10-10.md.
+# 2026-10-11 (pedido do usuario, depois de eu mostrar que a Vista so' acelera os primeiros turnos: "Sim", voltar a Fabled Passage): Prismatic Vista -> Fabled Passage, trocados NO LUGAR (o novo `SWAPS=()` e' bit-identico ao w1 `no lugar`
+# de resultados-ab/2026-10-11-vista-volta-fabled). Lista anterior: lista-anterior-2026-10-11.md. A Prismatic Vista continua no CARD_DB e implementada (volta por `SWAPS`).
 DECKLIST_TEXT = """
 1 Agadeem's Awakening // Agadeem, the Undercrypt
 1 Agatha's Soul Cauldron
@@ -4628,7 +4630,7 @@ DECKLIST_TEXT = """
 1 Deepmuck Desperado
 1 Assassin's Trophy
 1 Evolution Witness
-1 Prismatic Vista
+1 Fabled Passage
 1 Fathom Mage
 1 Fierce Guardianship
 5 Forest

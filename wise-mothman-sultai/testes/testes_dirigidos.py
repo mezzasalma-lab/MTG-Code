@@ -2550,7 +2550,7 @@ def chave_remocao_no_comandante_desligada_nao_mira_ligada_mira_e_a_Swarmyard_reg
 def terrenos_proxy_partidas_completas_nao_dao_excecao_e_a_vista_e_os_duais_aparecem():
     antigos = (m.SWAPS, m.SWAP_IN_PLACE, m.COMMANDER_REMOVAL_SHARE)
     try:
-        m.SWAPS = (("Bojuka Bog", USEA),); m.SWAP_IN_PLACE = True      # Bayou, Prismatic Vista e Tropical Island ja' estao na lista (2026-10-09); so' o Underground Sea entra por SWAPS
+        m.SWAPS = (("Fabled Passage", VISTA),); m.SWAP_IN_PLACE = True      # Bayou, Tropical Island e Underground Sea ja' estao na lista (2026-10-09/10); a Fabled Passage voltou em 2026-10-11, entao a Vista entra por SWAPS
         m.COMMANDER_REMOVAL_SHARE = 0.5
         vistos = collections.Counter()
         for sd in range(1_000_000, 1_000_200):
@@ -2568,10 +2568,10 @@ def terrenos_proxy_partidas_completas_nao_dao_excecao_e_a_vista_e_os_duais_apare
 def lista_viva_troca_swarmyard_por_tropical_e_os_insetos_continuam_dois():
     lib = list(m.current_library())
     assert len(lib) == 99 and "Tropical Island" in lib and "Swarmyard" not in lib, "a lista viva tem de ter a Tropical Island e nao a Swarmyard (2026-10-09)"
-    for n in ("Bayou", "Prismatic Vista"):
+    for n in ("Bayou", "Fabled Passage"):
         assert n in lib
-    for n in ("Yavimaya Hollow", "Fabled Passage"):
-        assert n not in lib
+    for n in ("Yavimaya Hollow", "Prismatic Vista"):
+        assert n not in lib          # a Vista saiu em 2026-10-11 (a Fabled Passage voltou); continua no CARD_DB e volta por SWAPS
     insetos = sorted(n for n in set(lib) | {m.COMMANDER} if "Insect" in (m.CARD_DB[n].subtypes or set()))
     assert insetos == ["Icetill Explorer", "The Wise Mothman"], insetos          # levantamento por script no Scryfall ao vivo (resultados-ab/2026-10-09-terrenos-proxy/resumos/insetos_da_lista.txt)
     # a Swarmyard continua no CARD_DB e a regeneracao dela segue implementada (volta por SWAPS)
@@ -2603,6 +2603,20 @@ def lista_viva_tem_underground_sea_no_lugar_de_um_swamp_e_ele_conta_como_swamp_e
         assert lib2.count("Swamp") == 3 and "Underground Sea" not in lib2
     finally:
         m.SWAPS = ()
+
+
+@teste
+def lista_viva_tem_fabled_passage_e_nao_a_vista_e_a_vista_volta_por_swaps():
+    lib = list(m.current_library())
+    assert len(lib) == 99 and lib.count("Fabled Passage") == 1 and "Prismatic Vista" not in lib, "2026-10-11: a Fabled Passage voltou no lugar da Vista"
+    assert "Prismatic Vista" in m.CARD_DB and "vista" in m.CARD_DB["Prismatic Vista"].tags and "fabled_passage" in m.CARD_DB["Fabled Passage"].tags
+    m.SWAPS = (("Fabled Passage", "Prismatic Vista"),); m.SWAP_IN_PLACE = True
+    try:
+        lib2 = m.current_library()
+        assert "Prismatic Vista" in lib2 and "Fabled Passage" not in lib2 and len(lib2) == 99
+        assert lib2.index("Prismatic Vista") == lib.index("Fabled Passage"), "a troca tem de ser no lugar (mesma posicao na biblioteca)"
+    finally:
+        m.SWAPS = (); m.SWAP_IN_PLACE = False
 
 
 def main():
