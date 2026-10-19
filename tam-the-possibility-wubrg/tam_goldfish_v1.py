@@ -5403,7 +5403,12 @@ def finalize(state: GameState):
     for n in (6, 8, 10, 12):
         setattr(state, f"died_T{n}", 1 if (d is not None and d <= n) else 0)
     state.died_any = 1 if state.died_life else 0
-    state.commander_cast_turn_v = state.commander_cast_turn
+    c = state.commander_cast_turn
+    for n in (3, 4, 5, 6):
+        setattr(state, f"tam_cast_by_T{n}", 1 if (c is not None and c <= n) else 0)         # Tam conjurada ate' o turno N (indicador; o turno cru pode ser None)
+    for k, n in (("first_tam_activation", 6), ("first_tam_activation", 8), ("first_ultimate", 8), ("first_ultimate", 10), ("first_pw", 3), ("first_pw", 4)):
+        v = state.first_turn.get(k)
+        setattr(state, f"{k}_by_T{n}", 1 if (v is not None and v <= n) else 0)
     for T in (3, 4, 5, 6, 8, 10):
         bt = state.by_turn.get(T) or state.by_turn.get(max(state.by_turn)) if state.by_turn else {}
         setattr(state, f"pws_T{T}", (state.by_turn.get(T, {}) or {}).get("pws", 0))
