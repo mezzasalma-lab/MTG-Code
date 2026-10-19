@@ -1,0 +1,13 @@
+Replay do goldfish manual #1, modo resiliencia, N=300 ordens do resto do baralho (mesmas 18 cartas iniciais do usuario)
+turno | PWs mediana [Q1-Q3] | usuario | lealdade total mediana | mana no inicio mediana
+  T 1 |  0.0 [0-0] | 0 |   0.0 |  0.0
+  T 2 |  1.0 [1-1] | 0 |   3.0 |  1.0
+  T 3 |  1.0 [1-1] | 1 |   4.0 |  2.0
+  T 4 |  0.5 [0-1] | 1 |   0.5 |  3.0
+  T 5 |  0.0 [0-1] | 1 |   0.0 |  5.0
+  T 6 |  1.0 [0-1] | 2 |   3.0 |  9.0
+  T 7 |  1.0 [0-2] | 2 |   3.0 | 10.0
+  T 8 |  1.0 [1-2] | 3 |   4.0 | 12.0
+  T 9 |  1.0 [1-2] | 3 |   3.5 | 12.0
+  T10 |  1.0 [1-3] | 3 |   4.5 | 12.0
+Tam conjurada: mediana T3.0 (usuario: T4); 1a ultimate: em 148/300 partidas, mediana T8.0 (usuario: T9, Vronos -7)
