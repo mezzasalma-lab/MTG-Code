@@ -1,11 +1,22 @@
 {
- "fetched_at": "2026-09-24",
+ "fetched_at": "2026-10-19",
  "fra": {
   "name": "Reality Fracture",
   "released_at": "2026-10-02",
   "set_type": "expansion",
   "printings": 461,
   "cards": [
+   {
+    "collector_number": "1",
+    "name": "Emrakul, the Exigent Doom",
+    "mana_cost": "{10}",
+    "type_line": "Legendary Creature — Eldrazi",
+    "rarity": "mythic",
+    "reprint": false,
+    "loyalty": null,
+    "planeswalker": false,
+    "pw_related": false
+   },
    {
     "collector_number": "2",
     "name": "Academic Ascent",
@@ -205,6 +216,17 @@
     "pw_related": true
    },
    {
+    "collector_number": "20",
+    "name": "Return to the Light Realms",
+    "mana_cost": "{7}{W}{W}",
+    "type_line": "Sorcery",
+    "rarity": "mythic",
+    "reprint": false,
+    "loyalty": null,
+    "planeswalker": false,
+    "pw_related": false
+   },
+   {
     "collector_number": "21",
     "name": "Shatterwing Pegasus",
     "mana_cost": "{2}{W}",
@@ -392,6 +414,17 @@
     "pw_related": true
    },
    {
+    "collector_number": "38",
+    "name": "Seasoned Cryomancer",
+    "mana_cost": "{1}{U}{U}",
+    "type_line": "Creature — Human Wizard",
+    "rarity": "mythic",
+    "reprint": false,
+    "loyalty": null,
+    "planeswalker": false,
+    "pw_related": false
+   },
+   {
     "collector_number": "39",
     "name": "Semester Foreseer // Peer Review",
     "mana_cost": "{3}{U} // {2}{W/U}",
@@ -540,6 +573,17 @@
     "mana_cost": "{B}",
     "type_line": "Creature — Human Warlock",
     "rarity": "rare",
+    "reprint": false,
+    "loyalty": null,
+    "planeswalker": false,
+    "pw_related": false
+   },
+   {
+    "collector_number": "53",
+    "name": "Darklight Phoenix",
+    "mana_cost": "{3}{B}",
+    "type_line": "Creature — Phoenix",
+    "rarity": "mythic",
     "reprint": false,
     "loyalty": null,
     "planeswalker": false,
@@ -1160,6 +1204,17 @@
     "loyalty": null,
     "planeswalker": false,
     "pw_related": true
+   },
+   {
+    "collector_number": "110",
+    "name": "Omnipresence",
+    "mana_cost": "{5}{G}{G}{G}",
+    "type_line": "Enchantment",
+    "rarity": "mythic",
+    "reprint": false,
+    "loyalty": null,
+    "planeswalker": false,
+    "pw_related": false
    },
    {
     "collector_number": "111",
@@ -3081,61 +3136,6 @@
     "mana_cost": "",
     "type_line": "Basic Land — Forest",
     "rarity": "common",
-    "reprint": true,
-    "loyalty": null,
-    "planeswalker": false,
-    "pw_related": false
-   },
-   {
-    "collector_number": "438",
-    "name": "Emrakul, the Exigent Doom",
-    "mana_cost": "{10}",
-    "type_line": "Legendary Creature — Eldrazi",
-    "rarity": "mythic",
-    "reprint": true,
-    "loyalty": null,
-    "planeswalker": false,
-    "pw_related": false
-   },
-   {
-    "collector_number": "440",
-    "name": "Return to the Light Realms",
-    "mana_cost": "{7}{W}{W}",
-    "type_line": "Sorcery",
-    "rarity": "mythic",
-    "reprint": true,
-    "loyalty": null,
-    "planeswalker": false,
-    "pw_related": false
-   },
-   {
-    "collector_number": "441",
-    "name": "Seasoned Cryomancer",
-    "mana_cost": "{1}{U}{U}",
-    "type_line": "Creature — Human Wizard",
-    "rarity": "mythic",
-    "reprint": true,
-    "loyalty": null,
-    "planeswalker": false,
-    "pw_related": false
-   },
-   {
-    "collector_number": "444",
-    "name": "Darklight Phoenix",
-    "mana_cost": "{3}{B}",
-    "type_line": "Creature — Phoenix",
-    "rarity": "mythic",
-    "reprint": true,
-    "loyalty": null,
-    "planeswalker": false,
-    "pw_related": false
-   },
-   {
-    "collector_number": "448",
-    "name": "Omnipresence",
-    "mana_cost": "{5}{G}{G}{G}",
-    "type_line": "Enchantment",
-    "rarity": "mythic",
     "reprint": true,
     "loyalty": null,
     "planeswalker": false,

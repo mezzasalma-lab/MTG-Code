@@ -1,12 +1,10 @@
 # Reality Fracture + Reality Fracture Commander
 
-Gerado por `scryfall-cache/sets/fetch_set.py fra frc --slug fra-reality-fracture` em 2026-09-24, direto da API do Scryfall. Todas as cartas abaixo estao no `scryfall-cache/oracle-cache.json`.
-
-> **FRA ainda nao lancou** (lancamento 2026-10-02): lista de spoiler, pode crescer e o texto pode mudar. Rodar o script de novo antes de analisar cartas deste set.
+Gerado por `scryfall-cache/sets/fetch_set.py fra frc --slug fra-reality-fracture` em 2026-10-19, direto da API do Scryfall. Todas as cartas abaixo estao no `scryfall-cache/oracle-cache.json`.
 
 | Set | Nome | Tipo | Lancamento | Cartas unicas | Impressoes | Reimpressoes | Planeswalkers | Outras que citam planeswalker/lealdade |
 |---|---|---|---|---|---|---|---|---|
-| FRA | Reality Fracture | expansion | 2026-10-02 | 285 | 461 | 22 | 8 | 77 |
+| FRA | Reality Fracture | expansion | 2026-10-02 | 285 | 461 | 17 | 8 | 77 |
 | FRC | Reality Fracture Commander | commander | 2026-10-02 | 87 | 103 | 69 | 2 | 1 |
 
 ## Mecanicas novas (FRA)
@@ -385,6 +383,7 @@ Gerado por `scryfall-cache/sets/fetch_set.py fra frc --slug fra-reality-fracture
 
 | # | Carta | Custo | Tipo | Raridade | Reimpressao |
 |---|---|---|---|---|---|
+| 1 | Emrakul, the Exigent Doom | {10} | Legendary Creature — Eldrazi | mythic |  |
 | 2 | Academic Ascent | {1}{W} | Instant | common |  |
 | 3 | Blossom-Blessed Angel // Seed Suture | {3}{W} // {G/W} | Creature — Angel Cleric // Sorcery | common |  |
 | 4 | Campus Crier | {1}{W} | Creature — Human Advisor | common |  |
@@ -403,6 +402,7 @@ Gerado por `scryfall-cache/sets/fetch_set.py fra frc --slug fra-reality-fracture
 | 17 | Prophesied End | {1}{W} | Instant | uncommon |  |
 | 18 | Refute Destiny | {1}{W} | Sorcery | uncommon |  |
 | 19 | Repurposed Enforcer | {1}{W} | Creature — Human Soldier | rare |  |
+| 20 | Return to the Light Realms | {7}{W}{W} | Sorcery | mythic |  |
 | 21 | Shatterwing Pegasus | {2}{W} | Creature — Pegasus | common |  |
 | 22 | Surgical Precision | {1}{W} | Sorcery | common |  |
 | 23 | Unflinching Hortimancer | {1}{W} | Creature — Human Cleric | common |  |
@@ -420,6 +420,7 @@ Gerado por `scryfall-cache/sets/fetch_set.py fra frc --slug fra-reality-fracture
 | 35 | Plan for All Outcomes | {3}{U} | Enchantment | uncommon |  |
 | 36 | Precise Redaction | {1}{U} | Instant | uncommon |  |
 | 37 | Protege's Awakening | {3}{U} | Sorcery | common |  |
+| 38 | Seasoned Cryomancer | {1}{U}{U} | Creature — Human Wizard | mythic |  |
 | 39 | Semester Foreseer // Peer Review | {3}{U} // {2}{W/U} | Creature — Human Wizard // Sorcery | common |  |
 | 40 | Sphinx of False Conclusions | {2}{U}{U} | Creature — Sphinx Illusion | rare |  |
 | 41 | Sphinx's Approach | {1}{U}{U} | Instant | common |  |
@@ -434,6 +435,7 @@ Gerado por `scryfall-cache/sets/fetch_set.py fra frc --slug fra-reality-fracture
 | 50 | Break Under Pressure | {2}{B} | Instant | uncommon |  |
 | 51 | Cast Away Doubt | {2}{B} | Sorcery | common |  |
 | 52 | Dark Matter Manipulator | {B} | Creature — Human Warlock | rare |  |
+| 53 | Darklight Phoenix | {3}{B} | Creature — Phoenix | mythic |  |
 | 54 | Extended Absence | {3}{B} | Instant | common |  |
 | 55 | Extrapolate the Impossible | {1}{B} | Sorcery | rare |  |
 | 56 | Last Gasp | {1}{B} | Instant | common | sim |
@@ -490,6 +492,7 @@ Gerado por `scryfall-cache/sets/fetch_set.py fra frc --slug fra-reality-fracture
 | 107 | Hungering Puppetbeast | {3}{G}{G} | Artifact Creature — Beast Construct | rare |  |
 | 108 | Hunter's Axe | {G} | Artifact — Equipment | uncommon |  |
 | 109 | Inspired Tethermage | {2}{G} | Creature — Elf Warrior | common |  |
+| 110 | Omnipresence | {5}{G}{G}{G} | Enchantment | mythic |  |
 | 111 | Puppet Crafting | {1}{G} | Enchantment — Aura | rare |  |
 | 112 | Restore with Empathy | {2}{G} | Instant | uncommon |  |
 | 113 | Simulacrum Shaper | {1}{G}{G} | Creature — Elf Druid | rare |  |
@@ -665,11 +668,6 @@ Gerado por `scryfall-cache/sets/fetch_set.py fra frc --slug fra-reality-fracture
 | 285 | Swamp |  | Basic Land — Swamp | common | sim |
 | 287 | Mountain |  | Basic Land — Mountain | common | sim |
 | 289 | Forest |  | Basic Land — Forest | common | sim |
-| 438 | Emrakul, the Exigent Doom | {10} | Legendary Creature — Eldrazi | mythic | sim |
-| 440 | Return to the Light Realms | {7}{W}{W} | Sorcery | mythic | sim |
-| 441 | Seasoned Cryomancer | {1}{U}{U} | Creature — Human Wizard | mythic | sim |
-| 444 | Darklight Phoenix | {3}{B} | Creature — Phoenix | mythic | sim |
-| 448 | Omnipresence | {5}{G}{G}{G} | Enchantment | mythic | sim |
 
 ## FRC — Reality Fracture Commander
 
