@@ -1,0 +1,408 @@
+{
+ "787-1124": {
+  "id": "787-1124",
+  "of": [
+   {
+    "id": 1785
+   }
+  ],
+  "salt": null,
+  "uses": [
+   {
+    "card": {
+     "id": 787,
+     "name": "Teferi, Temporal Archmage",
+     "faces": 1,
+     "spoiler": false,
+     "oracleId": "07d0b06b-80cb-4518-92c9-84ea87a7e08a",
+     "typeLine": "Legendary Planeswalker — Teferi",
+     "imageUriBackPng": null,
+     "imageUriFrontPng": "https://cards.scryfall.io/png/front/3/6/368c6e60-804c-447c-bc2b-ac9dc4cab5e7.png?1783915687",
+     "imageUriBackLarge": null,
+     "imageUriBackSmall": null,
+     "imageUriBackNormal": null,
+     "imageUriFrontLarge": "https://cards.scryfall.io/display/front/3/6/368c6e60-804c-447c-bc2b-ac9dc4cab5e7.webp?1783915687",
+     "imageUriFrontSmall": "https://cards.scryfall.io/thumb/front/3/6/368c6e60-804c-447c-bc2b-ac9dc4cab5e7.webp?1783915687",
+     "layoutRotationFront": null,
+     "imageUriFrontNormal": "https://cards.scryfall.io/grid/front/3/6/368c6e60-804c-447c-bc2b-ac9dc4cab5e7.webp?1783915687",
+     "imageUriBackArtCrop": null,
+     "imageUriFrontArtCrop": "https://cards.scryfall.io/art/front/3/6/368c6e60-804c-447c-bc2b-ac9dc4cab5e7.webp?1783915687"
+    },
+    "quantity": 1,
+    "usedFace": null,
+    "zoneLocations": [
+     "B"
+    ],
+    "exileCardState": "",
+    "mustBeCommander": false,
+    "libraryCardState": "",
+    "graveyardCardState": "",
+    "battlefieldCardState": ""
+   },
+   {
+    "card": {
+     "id": 1124,
+     "name": "The Chain Veil",
+     "faces": 1,
+     "spoiler": false,
+     "oracleId": "fb88fb3d-6a85-4bb1-b316-7f759b45a0fa",
+     "typeLine": "Legendary Artifact",
+     "imageUriBackPng": null,
+     "imageUriFrontPng": "https://cards.scryfall.io/png/front/1/c/1ca66955-d900-45b6-9a40-38467689a68d.png?1783915410",
+     "imageUriBackLarge": null,
+     "imageUriBackSmall": null,
+     "imageUriBackNormal": null,
+     "imageUriFrontLarge": "https://cards.scryfall.io/display/front/1/c/1ca66955-d900-45b6-9a40-38467689a68d.webp?1783915410",
+     "imageUriFrontSmall": "https://cards.scryfall.io/thumb/front/1/c/1ca66955-d900-45b6-9a40-38467689a68d.webp?1783915410",
+     "layoutRotationFront": null,
+     "imageUriFrontNormal": "https://cards.scryfall.io/grid/front/1/c/1ca66955-d900-45b6-9a40-38467689a68d.webp?1783915410",
+     "imageUriBackArtCrop": null,
+     "imageUriFrontArtCrop": "https://cards.scryfall.io/art/front/1/c/1ca66955-d900-45b6-9a40-38467689a68d.webp?1783915410"
+    },
+    "quantity": 1,
+    "usedFace": null,
+    "zoneLocations": [
+     "B"
+    ],
+    "exileCardState": "",
+    "mustBeCommander": false,
+    "libraryCardState": "",
+    "graveyardCardState": "",
+    "battlefieldCardState": ""
+   }
+  ],
+  "notes": "",
+  "prices": {
+   "tcgplayer": "19.33",
+   "cardmarket": "9.60",
+   "cardkingdom": "19.48"
+  },
+  "status": "OK",
+  "spoiler": false,
+  "identity": "U",
+  "includes": [
+   {
+    "id": 1785
+   },
+   {
+    "id": 26876
+   }
+  ],
+  "produces": [
+   {
+    "feature": {
+     "id": 24,
+     "name": "Infinite card draw",
+     "status": "S",
+     "uncountable": true
+    },
+    "quantity": 1
+   },
+   {
+    "feature": {
+     "id": 5,
+     "name": "Infinite colored mana",
+     "status": "S",
+     "uncountable": true
+    },
+    "quantity": 1
+   },
+   {
+    "feature": {
+     "id": 11,
+     "name": "Infinite colorless mana",
+     "status": "S",
+     "uncountable": true
+    },
+    "quantity": 1
+   },
+   {
+    "feature": {
+     "id": 261,
+     "name": "Infinite planeswalker activations",
+     "status": "S",
+     "uncountable": true
+    },
+    "quantity": 1
+   }
+  ],
+  "requires": [],
+  "legalities": {
+   "brawl": false,
+   "predh": false,
+   "legacy": true,
+   "modern": false,
+   "pauper": false,
+   "alchemy": false,
+   "pioneer": false,
+   "vintage": true,
+   "standard": false,
+   "commander": true,
+   "premodern": false,
+   "oathbreaker": true,
+   "standardBrawl": false,
+   "pauperCommander": false,
+   "competitiveBrawl": false,
+   "pauperCommanderMain": false
+  },
+  "popularity": 25221,
+  "bracketTag": "S",
+  "description": "Activate The Chain Veil by paying {4} and tapping it, allowing all planeswalkers you control to activate their loyalty abilities and additional time this turn.\nActivate Teferi's second loyalty ability by removing a loyalty counter from it, untapping the Chain Veil and the three mana-producing permanents.\nRepeat from step 1 until Teferi dies due to having zero loyalty.\nCast Teferi from your command zone.\nActivate Teferi's first loyalty ability by adding a loyalty counter to it, looking at the top two cards of your library and putting one card from the top of your library into your hand and the other onto the bottom of your library.\nDo this x times, where x is equal to one half times the number of times you activated The Chain Veil this turn minus four, rounded down.\nActivate Teferi's second loyalty ability, untapping the Chain Veil and the three mana-producing permanents.\nRepeat step 7 an additional time.\nActivate Teferi's second loyalty ability by untapping the three mana producing permanents and the additional mana producing permanent, adding {4}{U}.\nRepeat step 9 until Teferi dies due to having zero loyalty.\nRepeat from step 4.",
+  "manaNeeded": "",
+  "variantCount": 1,
+  "saltVoteCount": 2,
+  "manaValueNeeded": 0,
+  "easyPrerequisites": "",
+  "notablePrerequisites": "Teferi has at least five loyalty counters on it.\nYou control a combination of up to three permanents on the battlefield with the ability to produce a total of at least {4}.\nYou control an additional permanent that can be tapped to add at least {U}.You have enough mana to recast Teferi from your command zone minus four."
+ },
+ "1124-1283-2495": {
+  "id": "1124-1283-2495",
+  "of": [
+   {
+    "id": 4271
+   }
+  ],
+  "salt": null,
+  "uses": [
+   {
+    "card": {
+     "id": 2495,
+     "name": "Tezzeret the Seeker",
+     "faces": 1,
+     "spoiler": false,
+     "oracleId": "4aeafdf3-7828-4114-8c74-3bd46357caec",
+     "typeLine": "Legendary Planeswalker — Tezzeret",
+     "imageUriBackPng": null,
+     "imageUriFrontPng": "https://cards.scryfall.io/png/front/c/f/cf339735-eb1a-46f0-8c3e-eae06f278eca.png?1783938417",
+     "imageUriBackLarge": null,
+     "imageUriBackSmall": null,
+     "imageUriBackNormal": null,
+     "imageUriFrontLarge": "https://cards.scryfall.io/display/front/c/f/cf339735-eb1a-46f0-8c3e-eae06f278eca.webp?1783938417",
+     "imageUriFrontSmall": "https://cards.scryfall.io/thumb/front/c/f/cf339735-eb1a-46f0-8c3e-eae06f278eca.webp?1783938417",
+     "layoutRotationFront": null,
+     "imageUriFrontNormal": "https://cards.scryfall.io/grid/front/c/f/cf339735-eb1a-46f0-8c3e-eae06f278eca.webp?1783938417",
+     "imageUriBackArtCrop": null,
+     "imageUriFrontArtCrop": "https://cards.scryfall.io/art/front/c/f/cf339735-eb1a-46f0-8c3e-eae06f278eca.webp?1783938417"
+    },
+    "quantity": 1,
+    "usedFace": null,
+    "zoneLocations": [
+     "B"
+    ],
+    "exileCardState": "",
+    "mustBeCommander": false,
+    "libraryCardState": "",
+    "graveyardCardState": "",
+    "battlefieldCardState": ""
+   },
+   {
+    "card": {
+     "id": 1283,
+     "name": "Chromatic Orrery",
+     "faces": 1,
+     "spoiler": false,
+     "oracleId": "95c3976c-33f3-490b-bfd3-7f1af2fe0416",
+     "typeLine": "Legendary Artifact",
+     "imageUriBackPng": null,
+     "imageUriFrontPng": "https://cards.scryfall.io/png/front/3/a/3af78d76-ad5c-44ba-880d-b834bcde5398.png?1783930659",
+     "imageUriBackLarge": null,
+     "imageUriBackSmall": null,
+     "imageUriBackNormal": null,
+     "imageUriFrontLarge": "https://cards.scryfall.io/display/front/3/a/3af78d76-ad5c-44ba-880d-b834bcde5398.webp?1783930659",
+     "imageUriFrontSmall": "https://cards.scryfall.io/thumb/front/3/a/3af78d76-ad5c-44ba-880d-b834bcde5398.webp?1783930659",
+     "layoutRotationFront": null,
+     "imageUriFrontNormal": "https://cards.scryfall.io/grid/front/3/a/3af78d76-ad5c-44ba-880d-b834bcde5398.webp?1783930659",
+     "imageUriBackArtCrop": null,
+     "imageUriFrontArtCrop": "https://cards.scryfall.io/art/front/3/a/3af78d76-ad5c-44ba-880d-b834bcde5398.webp?1783930659"
+    },
+    "quantity": 1,
+    "usedFace": null,
+    "zoneLocations": [
+     "B"
+    ],
+    "exileCardState": "",
+    "mustBeCommander": false,
+    "libraryCardState": "",
+    "graveyardCardState": "",
+    "battlefieldCardState": ""
+   },
+   {
+    "card": {
+     "id": 1124,
+     "name": "The Chain Veil",
+     "faces": 1,
+     "spoiler": false,
+     "oracleId": "fb88fb3d-6a85-4bb1-b316-7f759b45a0fa",
+     "typeLine": "Legendary Artifact",
+     "imageUriBackPng": null,
+     "imageUriFrontPng": "https://cards.scryfall.io/png/front/1/c/1ca66955-d900-45b6-9a40-38467689a68d.png?1783915410",
+     "imageUriBackLarge": null,
+     "imageUriBackSmall": null,
+     "imageUriBackNormal": null,
+     "imageUriFrontLarge": "https://cards.scryfall.io/display/front/1/c/1ca66955-d900-45b6-9a40-38467689a68d.webp?1783915410",
+     "imageUriFrontSmall": "https://cards.scryfall.io/thumb/front/1/c/1ca66955-d900-45b6-9a40-38467689a68d.webp?1783915410",
+     "layoutRotationFront": null,
+     "imageUriFrontNormal": "https://cards.scryfall.io/grid/front/1/c/1ca66955-d900-45b6-9a40-38467689a68d.webp?1783915410",
+     "imageUriBackArtCrop": null,
+     "imageUriFrontArtCrop": "https://cards.scryfall.io/art/front/1/c/1ca66955-d900-45b6-9a40-38467689a68d.webp?1783915410"
+    },
+    "quantity": 1,
+    "usedFace": null,
+    "zoneLocations": [
+     "B"
+    ],
+    "exileCardState": "",
+    "mustBeCommander": false,
+    "libraryCardState": "",
+    "graveyardCardState": "",
+    "battlefieldCardState": ""
+   }
+  ],
+  "notes": "",
+  "prices": {
+   "tcgplayer": "72.82",
+   "cardmarket": "40.28",
+   "cardkingdom": "94.97"
+  },
+  "status": "OK",
+  "spoiler": false,
+  "identity": "U",
+  "includes": [
+   {
+    "id": 26301
+   },
+   {
+    "id": 26311
+   },
+   {
+    "id": 26876
+   },
+   {
+    "id": 27469
+   },
+   {
+    "id": 27470
+   },
+   {
+    "id": 27471
+   },
+   {
+    "id": 27472
+   },
+   {
+    "id": 27473
+   },
+   {
+    "id": 27549
+   },
+   {
+    "id": 27550
+   },
+   {
+    "id": 27551
+   },
+   {
+    "id": 27552
+   },
+   {
+    "id": 27569
+   },
+   {
+    "id": 27570
+   },
+   {
+    "id": 28137
+   },
+   {
+    "id": 28230
+   },
+   {
+    "id": 28624
+   },
+   {
+    "id": 28625
+   },
+   {
+    "id": 28626
+   },
+   {
+    "id": 28627
+   },
+   {
+    "id": 28628
+   },
+   {
+    "id": 28629
+   },
+   {
+    "id": 4271
+   }
+  ],
+  "produces": [
+   {
+    "feature": {
+     "id": 24,
+     "name": "Infinite card draw",
+     "status": "S",
+     "uncountable": true
+    },
+    "quantity": 1
+   },
+   {
+    "feature": {
+     "id": 5,
+     "name": "Infinite colored mana",
+     "status": "S",
+     "uncountable": true
+    },
+    "quantity": 1
+   },
+   {
+    "feature": {
+     "id": 11,
+     "name": "Infinite colorless mana",
+     "status": "S",
+     "uncountable": true
+    },
+    "quantity": 1
+   },
+   {
+    "feature": {
+     "id": 261,
+     "name": "Infinite planeswalker activations",
+     "status": "S",
+     "uncountable": true
+    },
+    "quantity": 1
+   }
+  ],
+  "requires": [],
+  "legalities": {
+   "brawl": false,
+   "predh": false,
+   "legacy": true,
+   "modern": true,
+   "pauper": false,
+   "alchemy": false,
+   "pioneer": false,
+   "vintage": true,
+   "standard": false,
+   "commander": true,
+   "premodern": false,
+   "oathbreaker": true,
+   "standardBrawl": false,
+   "pauperCommander": false,
+   "competitiveBrawl": false,
+   "pauperCommanderMain": false
+  },
+  "popularity": 894,
+  "bracketTag": "E",
+  "description": "Tap Chromatic Orrery for {5}.\nPay {4} and tap The Chain Veil to allow you to activate Tezzeret's ability.\n+1 Tezzeret to untap Chromatic Orrery and The Chain Veil.\nRepeat.",
+  "manaNeeded": "",
+  "variantCount": 1,
+  "saltVoteCount": 0,
+  "manaValueNeeded": 0,
+  "easyPrerequisites": "",
+  "notablePrerequisites": ""
+ }
+}
