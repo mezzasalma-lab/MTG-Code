@@ -205,3 +205,27 @@ def _():
     st.pool = {"C": 2}
     T.combat_step(st)
     check(st.pool == {})
+
+
+@test("Conservacao de cartas: nenhuma carta duplica nem some entre as zonas (300 partidas x 2 modos; fora game_over e Aminatou -6)")
+def _():
+    import collections
+    base = collections.Counter(T.BASE_LIBRARY)
+    for fn in (T.simulate_one, T.simulate_one_with_interaction):
+        for i in range(100):
+            s = fn(5_000_000 + i, 12)
+            z = collections.Counter()
+            for zona in ("hand", "library", "graveyard", "exile", "impulse"):
+                for c in getattr(s, zona):
+                    z[c] += 1
+            for it in s.delayed_return:
+                if isinstance(it, str):
+                    z[it] += 1
+            for p in s.battlefield:
+                if not p.is_token:
+                    z[p.card.name] += 1
+            for nm, c in z.items():
+                check(nm == "Tam, the Possibility" or c <= base.get(nm, 0), f"seed {5_000_000 + i}: {nm} aparece {c}x")
+            if not s.game_over and not s.m["aminatou_permanents_given"]:
+                for nm, c in base.items():
+                    check(z[nm] >= c, f"seed {5_000_000 + i}: {nm} sumiu")

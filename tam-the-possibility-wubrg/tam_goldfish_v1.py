@@ -3304,7 +3304,12 @@ def _kasmina_ult(state, host, x):
     state.m["kasmina_tutor"] += 1
     state.exile.append(pick)
     state.cast_zone = "exile"
-    on_cast(state, pick)
+    on_cast(state, pick)                    # 'You may cast that card without paying its mana cost': sai do exilio ao ser conjurada (achado 2026-10-19: ficava no exilio E ia pro cemiterio)
+    state.exile.remove(pick)
+    if counterspell_check(state, pick):
+        state.graveyard.append(pick)
+        state.m["our_spells_countered"] += 1
+        return
     resolve_spell(state, pick)
 
 
@@ -4155,7 +4160,9 @@ def act_ripples(state: GameState) -> bool:
 
 
 def act_cast_impulse(state: GameState) -> bool:
-    """Chandra 0: cartas exiladas jogaveis neste turno (terreno, magia)."""
+    """Chandra 0: cartas exiladas jogaveis neste turno (terreno, magia). Magia de permanente so' no meu main (timing de feitico); o resto do impulso nao jogado fica exilado pra sempre."""
+    if state.phase not in ("main1", "main2"):
+        return False
     for c in list(state.impulse):
         if "land" not in CARD_DB[c].types and can_cast_name(state, c) and cast_gate(state, c):
             return cast_card(state, c, zone="impulse")
@@ -4546,6 +4553,8 @@ def upkeep_step(state: GameState):
     state.attackers_this_turn = []
     state.pool = {}
     state.riot_pool = 0
+    if state.impulse:
+        state.exile.extend(state.impulse)
     state.impulse = []
     state.m["_veil_extra"] = 0
     for p in state.battlefield:
@@ -4622,6 +4631,9 @@ def end_step(state: GameState):
         return
     use_spare_mana(state)
     empty_pool(state)
+    if state.impulse:                                  # 'You may play them this turn' acabou: as cartas que sobraram ficam exiladas (antes sumiam do jogo)
+        state.exile.extend(state.impulse)
+        state.impulse = []
     while len(state.hand) > 7:
         c = min(state.hand, key=lambda x: (discard_value(state, x), x))
         state.hand.remove(c)
