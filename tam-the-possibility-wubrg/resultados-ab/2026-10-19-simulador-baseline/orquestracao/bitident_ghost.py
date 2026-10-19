@@ -15,7 +15,10 @@ def job(args):
     modo, seeds, k = args
     mA = A.carrega(SIM, f"g_off_{modo}_{k}", DECK); mA.TAPPED_LAND_FIRST_ENABLED = False
     mB = A.carrega(SIM, f"g_ghost_{modo}_{k}", DECK); mB.TAPPED_LAND_FIRST_ENABLED = True; mB.TAPPED_LAND_FIRST_GHOST = True
-    return [sd for sd in seeds if A.impressao(A.chama(mA, modo, sd, 12)) != A.impressao(A.chama(mB, modo, sd, 12))]
+    # o ensaio a seco INCREMENTA 2 contadores de metrica (`tapped_land_first_plays`, `tapped_land_skipped_for_play`) mesmo no modo ghost; eles (e o Counter `m` que os contem) ficam fora da comparacao:
+    # o resto do estado (campo, mao, cemiterio, biblioteca, vida, todos os outros m_*) tem que ser IDENTICO
+    ign = ("m", "ghost", "m_tapped_land_first_plays", "m_tapped_land_skipped_for_play")
+    return [sd for sd in seeds if A.impressao(A.chama(mA, modo, sd, 12), ign) != A.impressao(A.chama(mB, modo, sd, 12), ign)]
 
 
 if __name__ == "__main__":

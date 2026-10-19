@@ -5379,6 +5379,7 @@ def new_state(seed: int) -> GameState:
     st.opp_rngs = [None] + [random.Random(seed * 1_000_037 + i * 104729 + 7) for i in range(1, NUM_OPPONENTS + 1)]
     st.life = 40
     st.life_min = 40
+    st.ghost = TAPPED_LAND_FIRST_GHOST          # so' validacao (bit-identidade do ensaio a seco): roda o ensaio mas joga o padrao
     mulligan(st)
     return st
 
