@@ -2093,10 +2093,7 @@ def activate_ability(state: GameState, host: Permanent, src: str, key: str, x: i
         state.m["pw_activations_opp_turn"] += 1
     # gatilhos
     for _ in range(count_named(state, "Ajani Unrelenting")):
-        cad = create_token(state, "Cadet Token", 1, haste=(src == "Ajani Unrelenting" and key == "+1"), src="ajani")
-        if src == "Ajani Unrelenting" and key == "+1":
-            for t in cad:
-                t.temp_p += 1
+        create_token(state, "Cadet Token", 1, src="ajani")           # entra ANTES da habilidade resolver: a +1 (que atinge 'creatures you control' na resolucao) ja' o inclui, uma vez so'
         state.m["ajani_cadets"] += 1
     for _ in range(count_named(state, "Way of the Paradox")):
         gain_life(state, 1, "way_paradox")
