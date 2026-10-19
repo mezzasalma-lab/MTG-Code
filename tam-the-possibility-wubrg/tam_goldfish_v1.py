@@ -424,7 +424,8 @@ def creatures(state: GameState) -> list:
 
 
 def is_artifact(p: Permanent) -> bool:
-    return "artifact" in p.card.types and not p.phased
+    """Oko +1 (ruling 2019-10-04): o alvo perde os outros tipos de carta (artefato) e vira so' um Elk verde."""
+    return "artifact" in p.card.types and not p.phased and not p.ctr.get("elk")
 
 
 def artifacts(state: GameState) -> list:
@@ -1712,6 +1713,7 @@ def counterspell_check(state: GameState, name: str) -> bool:
     if state.interaction_rng.random() >= interaction_chance(state) * COUNTERSPELL_CHANCE_FACTOR * (0.0 if "narset" in state.emblems else 1.0):
         return False
     state.m["smart_counters"] += 1
+    opp_crime(state, "counterspell")                  # 'counter target spell': mira a minha magia
     return True
 
 
@@ -2664,9 +2666,16 @@ def _dellian_ult_s(state, host):
 # ---------- Tamiyo, Field Researcher ----------
 @eff("Tamiyo, Field Researcher", "+1")
 def _tamiyo_plus1(state, host, x):
+    """'Choose up to two target creatures. Until your next turn, whenever either of those creatures deals combat damage, you draw a card.' Ruling 2025-01-24: pode mirar criaturas de OPONENTE (EU compro).
+    Politica: primeiro as minhas que atacam (dano garantido); a vaga que sobrar vai pra maior ameaca de oponente (compro quando ela atacar, no turno dele)."""
     ours = sorted(untapped_attackers(state) or creatures(state), key=lambda p: (-power(state, p), p.uid))[:2]
     state.tamiyo_marked = [p.uid for p in ours]
     state.m["tamiyo_marks"] += len(ours)
+    if state.resilience and len(ours) < 2:
+        cands = sorted([c for o in alive_opps(state) for c in o.board], key=lambda c: (-c["p"], -c["t"]))[: 2 - len(ours)]
+        for c in cands:
+            c["tamiyo"] = True
+            state.m["tamiyo_opp_marks"] += 1
 
 
 @sc("Tamiyo, Field Researcher", "+1")
@@ -3285,15 +3294,26 @@ def _kasmina_ult_s(state, host):
 
 
 # ---------- Saheeli, Sublime Artificer ----------
+def printed_pt(p: Permanent) -> tuple:
+    """Valores copiaveis (ruling 2019-05-03 da Saheeli: copia os valores IMPRESSOS + efeitos de copia; nao copia contadores nem efeitos que mudam P/T). Ficha de Horror: o X/X dado na criacao."""
+    if p.card.name == "Horror Token" and p.base_pt is not None:
+        return p.base_pt
+    return (p.card.power, p.card.toughness)
+
+
+def saheeli_sources(state: GameState) -> list:
+    return sorted([p for p in creatures(state) if p.card.name not in ("Tam, the Possibility", "Faeburrow Elder", "Fractal Token") and printed_pt(p)[0] > 0], key=lambda p: (-printed_pt(p)[0], p.uid))
+
+
 @eff("Saheeli, Sublime Artificer", "-2")
 def _saheeli_minus2(state, host, x):
     arts = [p for p in artifacts(state) if p.card.name in ("Servo Token", "Food Token", "Treasure Token") and not sick(state, p) and not p.tapped and p.base_pt is None]
-    big = sorted([p for p in creatures(state) if p.card.name not in ("Tam, the Possibility",)], key=lambda p: (-power(state, p), p.uid))
+    big = saheeli_sources(state)
     if not arts or not big:
         return
     t = arts[0]
     src = big[0]
-    t.base_pt = (power(state, src), toughness(state, src))
+    t.base_pt = printed_pt(src)
     t.anim = "eot"
     state.m["saheeli_copies"] += 1
 
@@ -3301,7 +3321,7 @@ def _saheeli_minus2(state, host, x):
 @sc("Saheeli, Sublime Artificer", "-2")
 def _saheeli_minus2_s(state, host):
     arts = [p for p in artifacts(state) if p.card.name in ("Servo Token", "Food Token", "Treasure Token") and not sick(state, p) and not p.tapped and p.base_pt is None]
-    big = [p for p in creatures(state) if power(state, p) >= 5 and p.card.name != "Tam, the Possibility"]
+    big = [p for p in saheeli_sources(state) if printed_pt(p)[0] >= 5]
     if arts and big and loyalty(host) >= 4 and state.phase == "main1":
         return 30
     return None
@@ -3343,11 +3363,13 @@ def _vronos_minus2_s(state, host):
     return 24 if state.target_ok else None
 
 
-VRONOS_ARTIFACT_PREF = ("Arcane Signet", "Fellwar Stone", "Sol Ring", "Food Token", "Treasure Token", "Staff of Compleation", "Ichormoon Gauntlet", "The Chain Veil", "Chromatic Orrery")
+VRONOS_ARTIFACT_PREF = ("Servo Token", "Arcane Signet", "Fellwar Stone", "Sol Ring", "Food Token", "Treasure Token", "Staff of Compleation", "Ichormoon Gauntlet", "The Chain Veil", "Chromatic Orrery",
+                        "Patrolling Peacemaker")
 
 
 def vronos_artifact(state: GameState) -> Optional[Permanent]:
-    cands = [p for p in artifacts(state) if not p.anim and p.base_pt is None and not is_creature(p)]
+    """-7: 'Target artifact you control becomes a 9/9 Construct artifact creature...' Pode ser um artefato que ja' e' criatura (ruling 2023-07-28: base 9/9 sobrescreve); so' nao escolho o que ja' e' Construct."""
+    cands = [p for p in artifacts(state) if p.anim != "forever"]
     if not cands:
         return None
     def key(p):
@@ -3408,14 +3430,76 @@ def _aminatou_minus1_s(state, host):
     return 40 + v / 3 if v >= 25 else None
 
 
+def aminatou_swap_target(state: GameState) -> Optional[Opp]:
+    """'Choose left or right. Each player gains control of all nonland permanents other than Aminatou controlled by the next player in the chosen direction.' Numa mesa de 4 'esquerda' e 'direita' sao dois
+    oponentes diferentes: escolho o lado cujo oponente tem o maior tabuleiro de criaturas (so' elas existem no modelo de resiliencia; no padrao os oponentes nao tem permanentes simulados)."""
+    best = None
+    for o in alive_opps(state):
+        v = sum(c["p"] + c["t"] for c in o.board)
+        if best is None or v > best[0]:
+            best = (v, o)
+    return best[1] if best else None
+
+
+def my_board_value(state: GameState, exclude: Optional[Permanent] = None) -> float:
+    v = 0.0
+    for p in vis(state):
+        if p is exclude or "land" in p.card.types:
+            continue
+        if is_pw(p):
+            v += 10 + loyalty(p)
+        elif is_creature(p):
+            v += power(state, p) + toughness(state, p)
+        else:
+            v += 6
+    return v
+
+
 @eff("Aminatou, the Fateshifter", "-6")
 def _aminatou_ult(state, host, x):
+    """O efeito real, no modo de resiliencia: o oponente escolhido recebe todos os meus permanentes nao-terreno (menos a Aminatou) — as criaturas entram no tabuleiro dele com o mesmo P/T, o resto some do modelo —
+    e eu recebo as criaturas dele como fichas genericas do mesmo P/T. No modo padrao nao ha' permanente de oponente simulado: so' registra."""
     state.m["aminatou_ult_swaps"] += 1
+    if not state.resilience:
+        return
+    o = aminatou_swap_target(state)
+    if o is None:
+        return
+    given = [p for p in list(vis(state)) if p is not host and "land" not in p.card.types and not (p.card.name == "Tam, the Possibility")]
+    theirs = list(o.board)
+    for p in given:
+        if is_creature(p):
+            o.board.append(new_opp_creature(power(state, p), toughness(state, p), flying=T_has_flying(state, p), trample="trample" in p.card.tags, token=p.is_token, cmc=p.card.mv))
+        if p in state.battlefield:
+            state.battlefield.remove(p)
+            for a in [q for q in state.battlefield if q.attached_to == p.uid]:
+                state.battlefield.remove(a)
+    for c in theirs:
+        if c in o.board:
+            o.board.remove(c)
+        q = mk_perm(state, "Cadet Token", token=True)
+        q.base_pt = (c["p"], c["t"])
+        q.entered_turn = state.turn - 1
+        state.battlefield.append(q)
+    state.m["aminatou_permanents_given"] += len(given)
+    state.m["aminatou_creatures_taken"] += len(theirs)
+
+
+def T_has_flying(state: GameState, p: Permanent) -> bool:
+    return has_flying(state, p)
 
 
 @sc("Aminatou, the Fateshifter", "-6")
 def _aminatou_ult_s(state, host):
-    return None            # troca TODOS os meus permanentes nao-terreno pelos do vizinho: sem tabuleiro de oponente a troca so' me custa o campo (checklist)
+    """So' no modo de resiliencia e quando o meu campo (sem a Aminatou) vale muito menos que o tabuleiro de criaturas de um oponente (depois de um wipe, por exemplo): trocar entrega TUDO o que eu tenho."""
+    if not state.resilience:
+        return None
+    o = aminatou_swap_target(state)
+    if o is None:
+        return None
+    theirs = sum(c["p"] + c["t"] for c in o.board)
+    mine = my_board_value(state, exclude=host)
+    return 58 if theirs >= 2.5 * mine + 16 else None
 
 
 # ---------- Tezzeret the Seeker ----------
@@ -3475,10 +3559,12 @@ def _tezzeret_minusx_s(state, host, x):
 
 @eff("Tezzeret the Seeker", "-5")
 def _tezzeret_ult(state, host, x):
+    """'Artifacts you control become artifact creatures with base power and toughness 5/5 until end of turn.' Ruling 2008-10-01: afeta TODOS os artefatos, inclusive os que ja' sao criaturas (Servo, Peacemaker,
+    Construct do Vronos: o 9/9 vira 5/5 ate' o fim do turno); guardo o valor anterior pra restaurar no end step."""
     for p in artifacts(state):
-        if not is_creature(p):
-            p.base_pt = (5, 5)
-            p.anim = "eot"
+        p.ctr["_tez_prev"] = (p.base_pt, p.anim)
+        p.base_pt = (5, 5)
+        p.anim = "eot"
     state.m["tezzeret_ults_artifacts"] += len(artifacts(state))
 
 
@@ -4246,6 +4332,14 @@ def begin_any_turn(state: GameState):
     state.spells_this_turn_by_player = {}
 
 
+def opp_crime(state: GameState, why: str):
+    """Patrolling Peacemaker: 'Whenever an opponent commits a crime, proliferate.' Crime = magia/habilidade dele que mira a mim, algo meu ou cartas do meu cemiterio (ruling 2025-07-25)."""
+    state.m["opp_crimes_total"] += 1
+    state.m["opp_crimes_" + why] += 1
+    for _ in range(count_named(state, "Patrolling Peacemaker")):
+        proliferate(state, "peacemaker")
+
+
 def opp_spell_cast(state: GameState, o: Opp, noncreature: bool, mv: int):
     """Gatilhos de 'quando um jogador conjura a sua 2a magia no turno' (Dreamtide Whale: qualquer jogador) e crime de oponente (Patrolling Peacemaker)."""
     o.spells_this_turn += 1
@@ -4304,7 +4398,7 @@ def opponent_turn(state: GameState, o: Opp):
         if state.game_over:
             return
     if state.resilience:
-        opponent_combat(state, o)
+        try_smart_opponent_turn(state, o)       # ordem real do turno dele (como no Prismatic Bridge): gate de atencao -> wipe (main 1) -> combate -> remocao/descarte (main 2)
     end_step_any(state, mine=False)
 
 
@@ -4428,9 +4522,10 @@ def upkeep_step(state: GameState):
         p.temp_t = 0
         p.ctr.pop("trample_eot", None)
     for o in state.opps:
-        for c in o.board:                                  # fim do -4/-1 da Garruk, Veiled Butcher ('until your next turn')
+        for c in o.board:                                  # fim do -4/-1 da Garruk, Veiled Butcher e da marca da Tamiyo ('until your next turn')
             c["p"] += c.pop("dp_applied", 0)
             c["t"] += c.pop("dt_applied", 0)
+            c.pop("tamiyo", None)
     expire_effects_upkeep(state)
     # Minsc & Boo: 'at the beginning of your upkeep, you may create Boo'
     for _ in range(count_named(state, "Minsc & Boo, Timeless Heroes")):
@@ -4500,8 +4595,8 @@ def end_step(state: GameState):
         state.graveyard.append(c)
     for p in state.battlefield:
         if p.anim == "eot":
-            p.anim = None
-            p.base_pt = None
+            prev = p.ctr.pop("_tez_prev", None)
+            p.base_pt, p.anim = (prev if prev is not None else (None, None))
         p.temp_p = 0
         p.temp_t = 0
         p.haste_until_eot = False if not p.ctr.get("elk") else p.haste_until_eot
@@ -5048,6 +5143,7 @@ def opponent_combat(state: GameState, o: Opp):
             blocks[id(c)] = b
             avail.remove(b)
     pw_damage = collections.defaultdict(int)
+    pw_dealers = collections.defaultdict(list)          # uid do planeswalker -> atacantes que DERAM dano nele (Liliana's Talent: so' esses morrem)
     face = 0
     dead_attackers, dead_blockers = [], []
     for c, tgt in assign:
@@ -5057,6 +5153,8 @@ def opponent_combat(state: GameState, o: Opp):
                 face += c["p"]
             else:
                 pw_damage[tgt.uid] += c["p"]
+                if c["p"] > 0:
+                    pw_dealers[tgt.uid].append(c)
             continue
         state.m["blocks_total"] += 1
         bp, bt = power(state, b), toughness(state, b)
@@ -5077,6 +5175,7 @@ def opponent_combat(state: GameState, o: Opp):
                         face += excess
                     else:
                         pw_damage[tgt.uid] += excess
+                        pw_dealers[tgt.uid].append(c)
             if dt or bp * (2 if ds else 1) >= c["t"]:
                 attacker_dead = True
         if attacker_dead:
@@ -5085,6 +5184,10 @@ def opponent_combat(state: GameState, o: Opp):
     if any(d >= loyalty(find_perm(state, uid)) for uid, d in pw_damage.items() if find_perm(state, uid) is not None):
         try_protective_ripples(state)
         pw_damage = {uid: d for uid, d in pw_damage.items() if (find_perm(state, uid) is not None and not find_perm(state, uid).phased)}
+    for c, tgt in assign:
+        if c.get("tamiyo") and c["p"] > 0:                    # criatura de oponente marcada pela Tamiyo deu dano de combate (a mim, a um planeswalker ou a um bloqueador): eu compro
+            draw_cards(state, 1, "tamiyo_opp_creature")
+            state.m["tamiyo_opp_draws"] += 1
     lose_life(state, face, "opponent_attack")
     state.m["face_combat_damage_total"] += face
     for uid, d in pw_damage.items():
@@ -5095,9 +5198,9 @@ def opponent_combat(state: GameState, o: Opp):
         remove_loyalty(state, p, d)
         for a in state.battlefield:
             if a.card.name == "Liliana's Talent" and a.attached_to == p.uid and not a.phased:
-                state.m["lilianas_talent_kills"] += sum(1 for c, t in assign if t is p)
-                for c, t in assign:
-                    if t is p and c not in dead_attackers:
+                for c in pw_dealers.get(p.uid, []):               # 'Whenever a creature deals damage to enchanted planeswalker, destroy that creature'
+                    state.m["lilianas_talent_kills"] += 1
+                    if c not in dead_attackers:
                         dead_attackers.append(c)
     for c in dead_attackers:
         opp_remove_creature(state, o, c, "combat")
@@ -5166,9 +5269,7 @@ def try_smart_opponent_removal(state: GameState, o: Optional[Opp] = None) -> Opt
             return None
     remove_permanent(state, target, "opp_removal")
     state.m["smart_removals"] += 1
-    state.m["opp_crimes_total"] += 1
-    for _ in range(count_named(state, "Patrolling Peacemaker")):
-        proliferate(state, "peacemaker")
+    opp_crime(state, "removal")
     return target.card.name
 
 
@@ -5181,6 +5282,7 @@ def try_smart_opponent_discard(state: GameState) -> Optional[str]:
     state.hand.remove(c)
     state.graveyard.append(c)
     state.m["smart_discards"] += 1
+    opp_crime(state, "discard")                       # premissa: o descarte mira o jogador ('target opponent discards')
     return c
 
 
@@ -5197,6 +5299,20 @@ def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
         return None
     wt = state.interaction_rng.choices(avail, weights=[WIPE_TYPE_WEIGHTS[t] for t in avail])[0]
     victims = list(cands[wt])
+    if wt == "creature":
+        victims = [p for p in victims if p.uid != state.dihada_shield]           # Dihada +2: indestrutivel ate' meu proximo turno ('destroy all' nao leva)
+        for p in list(victims):
+            if p.card.legendary and not p.is_token and has_perm(state, "Plaza of Heroes") and can_pay(state, 3, (), CTX_ABILITY):
+                pz = perms_named(state, "Plaza of Heroes")[0]
+                if not pz.tapped:
+                    pay_mana(state, 3, (), CTX_ABILITY)
+                    state.battlefield.remove(pz)
+                    state.exile.append("Plaza of Heroes")
+                    victims.remove(p)
+                    state.m["plaza_protections"] += 1
+                    break
+    if not victims:
+        return None
     # Ripples de resposta: protege so' o que ganha contador (criaturas com +1/+1, tempo)
     if "Ripples of Potential" in state.hand and can_cast_name(state, "Ripples of Potential") and wt == "creature":
         cast_card(state, "Ripples of Potential")
@@ -5213,6 +5329,9 @@ def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
     state.m[key] += 1
     if wt == "creature":
         state.wiped_this_round = True
+        for oo in state.opps:                                  # wipe de criatura e' SIMETRICO: limpa o campo de TODOS os oponentes
+            for c in list(oo.board):
+                opp_remove_creature(state, oo, c, "destroy")
     sba(state)
     return names
 
@@ -5227,14 +5346,20 @@ def try_smart_opponent_graveyard_wipe(state: GameState) -> Optional[list]:
     state.exile.extend(ex)
     state.m["graveyard_wipe_used"] = 1
     state.m["smart_graveyard_hate"] += 1
+    opp_crime(state, "graveyard")                     # mira cartas do meu cemiterio
     return ex
 
 
 def try_smart_opponent_turn(state: GameState, o: Opp):
+    """O turno de UM oponente (so' o que mira a mim). O campo dele ja' cresceu (`opp_turn_start`, todo turno, antes do gate); aqui: gate de atencao (1/3 dos turnos dele a partir do T3) e, se passar,
+    wipe -> combate -> wipe de cemiterio -> remocao -> descarte. Um wipe de um oponente anterior da MESMA rodada afeta o ataque dos seguintes (chamadas em sequencia, mesmo `state`)."""
     state.attention = state.turn <= INTERACTION_SETUP_TURNS or state.interaction_rng.random() < OPPONENT_ATTENTION_CHANCE
     if not state.attention:
         return
     try_smart_opponent_wipe(state)
+    opponent_combat(state, o)
+    if state.game_over:
+        return
     try_smart_opponent_graveyard_wipe(state)
     try_smart_opponent_removal(state, o)
     try_smart_opponent_discard(state)
@@ -5299,12 +5424,17 @@ def finalize(state: GameState):
 
 
 def play_rounds(state: GameState, turns: int):
-    for _ in range(turns):
+    """`turns` = orcamento de turnos MEUS (o turno extra do Gauntlet conta nele, como no Prismatic Bridge); depois de cada turno meu (e dos extras) os oponentes vivos jogam o turno deles em sequencia."""
+    played = 0
+    while played < turns:
         play_turn(state)
-        while state.extra_turn_pending and not state.game_over:
+        played += 1
+        while state.extra_turn_pending and not state.game_over and played < turns:
             state.extra_turn_pending = False
             state.m["extra_turns_played"] += 1
             play_turn(state)
+            played += 1
+        state.extra_turn_pending = False
         if state.game_over:
             break
         state.wiped_this_round = False
@@ -5314,10 +5444,6 @@ def play_rounds(state: GameState, turns: int):
             opponent_turn(state, o)
             if state.game_over:
                 break
-            if state.resilience:
-                try_smart_opponent_turn(state, o)
-                if state.game_over:
-                    break
         if state.game_over:
             break
 

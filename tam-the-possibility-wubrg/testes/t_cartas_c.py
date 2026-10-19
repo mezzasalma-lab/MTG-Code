@@ -113,8 +113,8 @@ def _():
     st = mk(bf=["Ichormoon Gauntlet", P("Garruk Wildspeaker", loyalty=12)], turn=5)
     st.extra_turn_pending = True
     t0 = st.turn
-    T.play_rounds(st, 1)
-    check(st.turn == t0 + 2 and st.m["extra_turns_played"] == 1, f"turnos jogados: {st.turn - t0}")
+    T.play_rounds(st, 2)
+    check(st.turn == t0 + 2 and st.m["extra_turns_played"] == 1, f"turnos jogados: {st.turn - t0} (o turno extra conta no orcamento de turnos)")
 
 
 # ======================= Teferi's Talent / Liliana's Talent =======================
