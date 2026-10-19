@@ -345,6 +345,9 @@ class GameState:
     tamiyo_marked: list = field(default_factory=list)      # uids marcados pela Tamiyo +1: compra ao causar dano de combate
     extra_turn_pending: bool = False
     delayed_return_wanderer: bool = False
+    riot_flag: bool = False                                # a criatura em resolucao foi paga com mana da Domri: ganha riot
+    cast_zone: str = "hand"                                # zona de onde a magia em resolucao foi conjurada (rebound so' vale da mao)
+    _pool_used: int = 0
 
 
 def mark(state: GameState, key: str):
@@ -842,6 +845,7 @@ def pay_mana(state: GameState, generic: int, pips: tuple, ctx: Ctx = CTX_SPELL) 
         src = units[i][0]
         if src is not None:
             srcs_tapped.setdefault(id(src), (src, 0, False))
+    state._pool_used = sum(pool_used.values())
     for col, n in list(pool_used.items()) + list(fed_pool.items()):
         state.pool[col] = state.pool.get(col, 0) - n
     for sid, (src, _n, is_conv) in srcs_tapped.items():
@@ -1655,9 +1659,12 @@ def effective_cost(state: GameState, name: str, life_pips: int = 0):
     return g, tuple(pips)
 
 
-def cast_cost_option(state: GameState, name: str):
-    """Primeira forma viavel de pagar: tudo em mana; senao pago os pips phyrexianos com vida (so' se a vida >= 2k + 12)."""
+def cast_cost_option(state: GameState, name: str, zone: str = "hand"):
+    """Primeira forma viavel de pagar: tudo em mana; senao pago os pips phyrexianos com vida (so' se a vida >= 2k + 12). Emblema da Tamiyo (-7): 'You may cast spells from your hand without paying
+    their mana costs' (so' da MAO: a Tam na zona de comando, a Wrenn do cemiterio e a Chandra do exilio pagam o custo normal)."""
     c = CARD_DB[name]
+    if "tamiyo" in state.emblems and zone == "hand" and "land" not in c.types:
+        return (0, (), 0)
     ctx = ctx_for(name)
     for k in range(0, c.phy + 1):
         if k and state.life < 2 * k + 12:
@@ -1671,7 +1678,7 @@ def cast_cost_option(state: GameState, name: str):
 def aura_host(state: GameState, name: str) -> Optional[Permanent]:
     """Alvo da aura: Leyline Immersion -> criatura lendaria (a Tam; senao a Kiora); Teferi's/Liliana's Talent -> planeswalker."""
     if name == "Leyline Immersion":
-        for nm in ("Tam, the Possibility", "Kiora of Salt and Sand"):
+        for nm in ("Tam, the Possibility", "Kiora of Salt and Sand", "Boo Token"):
             for p in perms_named(state, nm):
                 if not any(a.attached_to == p.uid and a.card.name == name for a in state.battlefield):
                     return p
@@ -1695,7 +1702,7 @@ def can_cast_name(state: GameState, name: str, zone: str = "hand") -> bool:
         return False
     if "aura" in c.tags and aura_host(state, name) is None:
         return False
-    return cast_cost_option(state, name) is not None
+    return cast_cost_option(state, name, zone) is not None
 
 
 def counterspell_check(state: GameState, name: str) -> bool:
@@ -1790,12 +1797,21 @@ def cast_card(state: GameState, name: str, zone: str = "hand", free: bool = Fals
     c = CARD_DB[name]
     life_pips = 0
     if not free:
-        opt = cast_cost_option(state, name)
+        opt = cast_cost_option(state, name, zone)
         if opt is None:
             return False
         g, pips, life_pips = opt
+        state._pool_used = 0
         if not pay_mana(state, g, pips, ctx_for(name)):
             return False
+        if "tamiyo" in state.emblems and zone == "hand":
+            state.m["tamiyo_free_casts"] += 1
+        # Domri +1: 'If that mana is spent on a creature spell, it gains riot.' O mana da Domri e' rastreado como contagem (`riot_pool`) dentro do mana flutuante
+        if state._pool_used > 0 and state.riot_pool > 0:
+            if "creature" in c.types:
+                state.riot_flag = True
+                state.m["riot_creatures"] += 1
+            state.riot_pool = max(0, state.riot_pool - state._pool_used)
         if life_pips:
             lose_life(state, 2 * life_pips, "phyrexian")
             state.m["compleated_casts"] += 1
@@ -1812,6 +1828,7 @@ def cast_card(state: GameState, name: str, zone: str = "hand", free: bool = Fals
         if state.commander_cast_turn is None:
             state.commander_cast_turn = state.turn
     log(state, f"  conjura: {name} ({zone}{', gratis' if free else ''})")
+    state.cast_zone = zone
     on_cast(state, name, zone)
     if state.game_over:
         return True
@@ -1843,6 +1860,16 @@ def resolve_spell(state: GameState, name: str, life_pips: int = 0):
     state.battlefield.append(p)
     if "commander" in c.tags:
         state.commander_uid = p.uid
+    if state.riot_flag:
+        state.riot_flag = False
+        if "creature" in c.types:
+            # riot: 'enters with your choice of a +1/+1 counter or haste': haste pro mana-dork e pra criatura grande (ataca ja'); contador nos demais (e dispara All Will Be One)
+            if "dork" in c.tags or c.power >= 5:
+                p.haste_until_eot = True
+                state.m["riot_haste"] += 1
+            else:
+                put_counters(state, p, "p1p1", 1, "riot")
+                state.m["riot_counters"] += 1
     if name in ("Sol Ring", "Arcane Signet", "Fellwar Stone", "Birds of Paradise", "Bloom Tender", "Faeburrow Elder", "Noble Hierarch", "Ignoble Hierarch", "Chromatic Orrery", "Leyline Immersion"):
         state.m["ramp_pieces"] += 1
     enter_permanent(state, p, from_cast=True)
@@ -2385,12 +2412,23 @@ def legendary_card(c: str) -> bool:
     return CARD_DB[c].legendary
 
 
+def dihada_target(state: GameState) -> Optional[Permanent]:
+    """+2: 'Up to one target legendary creature gains vigilance, lifelink, and indestructible until your next turn.' Alvo: no modo de resiliencia a Tam (protege o motor da remocao); senao o legendario que ataca
+    (Boo com contadores: o lifelink vira vida, que alimenta o emblema da Dellian)."""
+    leg = [p for p in creatures(state) if is_legendary(p)]
+    if not leg:
+        return None
+    def v(p):
+        return (50 if (p.card.name == "Tam, the Possibility" and state.resilience) else 0) + (power(state, p) if can_attack(state, p) or p.card.name == "Boo Token" else 0)
+    return max(leg, key=lambda p: (v(p), -p.uid))
+
+
 @eff("Dihada, Binder of Wills", "+2")
 def _dihada_plus2(state, host, x):
-    tgt = [p for p in creatures(state) if is_legendary(p)]
-    state.m["dihada_shields"] += 1 if tgt else 0
-    if tgt:
-        state.dihada_shield = tgt[0].uid
+    t = dihada_target(state)
+    if t is not None:
+        state.dihada_shield = t.uid
+        state.m["dihada_shields"] += 1
 
 
 @sc("Dihada, Binder of Wills", "+2")
@@ -2779,7 +2817,27 @@ def _teferi_ta_ult_s(state, host):
 # ---------- Garruk, Veiled Butcher ----------
 @eff("Garruk, Veiled Butcher", "+2")
 def _garruk_vb_plus2(state, host, x):
-    freeze_threats(state, 1, "garruk_vb")
+    """'Up to one target creature gets -4/-1 until your next turn.' No modo de resiliencia: a maior ameaca perde 4 de poder e 1 de resistencia ate' o meu proximo upkeep (restaurado la'); com resistencia 1
+    ela morre (exilada: estatico da propria Garruk). No padrao: proxy (alvo no tabuleiro do oponente)."""
+    if state.resilience:
+        o, c = biggest_threat(state)
+        if c is None:
+            return
+        dp = min(4, c["p"])
+        c["p"] -= dp
+        c["t"] -= 1
+        c["dp_applied"] = c.get("dp_applied", 0) + dp
+        c["dt_applied"] = c.get("dt_applied", 0) + 1
+        state.m["garruk_vb_debuffs"] += 1
+        state.m["interaction_plays"] += 1
+        if c["t"] <= 0:
+            c["t"] += c.pop("dt_applied", 0)
+            c["p"] += c.pop("dp_applied", 0)
+            opp_remove_creature(state, o, c, "damage")
+            state.m["garruk_vb_kills"] += 1
+    elif state.target_ok:
+        state.m["proxy_garruk_vb"] += 1
+        state.m["interaction_plays"] += 1
 
 
 @sc("Garruk, Veiled Butcher", "+2")
@@ -2797,9 +2855,11 @@ def sacrifice_fodder(state: GameState) -> Optional[Permanent]:
 
 @eff("Garruk, Veiled Butcher", "-2")
 def _garruk_vb_minus2(state, host, x):
-    f = sacrifice_fodder(state)
+    """'Each player sacrifices a creature of their choice. If you sacrificed a creature this way, create a 4/4 green Beast creature token with trample.' EU tambem sacrifico (a de menor valor: ficha primeiro)."""
+    mine = creatures(state)
     ours = False
-    if f is not None:
+    if mine:
+        f = sacrifice_fodder(state) or min(mine, key=lambda p: (0 if p.is_token else 1, power(state, p) + toughness(state, p), p.uid))
         remove_permanent(state, f, "sacrificed")
         ours = True
     if state.resilience:
@@ -2821,8 +2881,8 @@ def _garruk_vb_minus2_s(state, host):
         return None
     if sacrifice_fodder(state) is not None:
         return 58
-    if state.resilience and any(o.board for o in alive_opps(state)):
-        return 52
+    if state.resilience and any(o.board for o in alive_opps(state)) and not creatures(state):
+        return 52                                 # eu nao controlo criatura: so' eles sacrificam
     return None
 
 
@@ -3014,7 +3074,11 @@ def _wanderer_minus4(state, host, x):
     if state.resilience:
         for o in alive_opps(state):
             if o.board:
-                keepc = max(o.board, key=lambda c: (c["p"], c["t"]))
+                keepc = min(o.board, key=lambda c: (c["p"], c["t"]))      # 'For each player, choose a creature that player controls': EU escolho, a mais fraca fica
+                for c in o.board:
+                    if c is not keepc:
+                        state.m["opp_creatures_removed"] += 1
+                        state.m["opp_creatures_removed_sacrifice"] += 1
                 o.board = [keepc]
     state.m["wanderer_wipes"] += 1
 
@@ -3115,9 +3179,11 @@ def _ajani_minus3(state, host, x):
 def _ajani_minus3_s(state, host):
     if not state.resilience or loyalty(host) < 4:
         return None
-    lost = sum(1 for p in creatures(state) if not p.is_token and toughness(state, p) <= 4 and p.card.name not in ("Tam, the Possibility",))
+    lost = sum(1 for p in creatures(state) if not p.is_token and toughness(state, p) <= 4)      # inclui a Tam (2/4: morre, volta pra zona de comando e o proximo cast paga +2)
     gain = sum(c["p"] for o in alive_opps(state) for c in o.board if c["t"] <= 4)
-    return 50 if gain >= 8 and lost <= 1 else None
+    if lost == 0 and gain >= 8:
+        return 50
+    return 44 if (lost <= 1 and gain >= 14) else None
 
 
 # ---------- Elspeth, Sun's Champion ----------
@@ -3209,10 +3275,9 @@ def _kasmina_ult(state, host, x):
     state.library.remove(pick)
     state.m["kasmina_tutor"] += 1
     state.exile.append(pick)
+    state.cast_zone = "exile"
     on_cast(state, pick)
     resolve_spell(state, pick)
-    if pick in state.graveyard:
-        pass
 
 
 @sc(KASMINA, "-8")
@@ -3303,6 +3368,7 @@ def _vronos_ult(state, host, x):
         a.base_pt = (9, 9)
         a.anim = "forever"
         a.ctr["indestructible"] = 1
+        a.ctr["vigilance"] = 1
         a.unblockable = True
         state.m["vronos_constructs"] += 1
 
@@ -3752,7 +3818,7 @@ def resolve_instant_sorcery(state: GameState, name: str):
                 if b is not None and (p.ctr.get("loyalty", 0), p.ctr.get("p1p1", 0), p.ctr.get("time", 0)) != b and is_pw(p):
                     phase_out(state, p)
             state.m["ripples_phase_outs"] += 1
-    if state.rebound_armed and name in ("Entrust the Spark", "Ripples of Potential", "Overwrite the Multiverse", "Blasphemous Act", "Promise of Loyalty") and name not in state.rebound_pending:
+    if state.rebound_armed and state.cast_zone == "hand" and name in ("Entrust the Spark", "Ripples of Potential", "Overwrite the Multiverse", "Blasphemous Act", "Promise of Loyalty") and name not in state.rebound_pending:
         state.rebound_armed = False
         state.rebound_pending.append(name)
         state.exile.append(name)
@@ -3827,24 +3893,40 @@ def ability_options_ignoring_used(state: GameState, host: Permanent) -> list:
     return ability_options(state, host)
 
 
+def staff_use_kind(state: GameState) -> Optional[str]:
+    """Qual ativacao do Staff vale agora: proliferate (3 de vida: >= 4 permanentes com contador), compra (4 de vida: com folga de vida e biblioteca) ou nenhuma."""
+    n = sum(1 for p in vis(state) if (is_pw(p) and loyalty(p) >= 1) or p.ctr.get("p1p1", 0) > 0)
+    if n >= 4 and state.life >= 18:
+        return "proliferate"
+    if state.life >= 22 and len(state.library) > 20:
+        return "draw"
+    return None
+
+
 def act_staff(state: GameState) -> bool:
+    """Staff of Compleation: '{T}, Pay 3 life: Proliferate.' / '{T}, Pay 4 life: Draw a card.' e '{5}: Untap this artifact.' (o {5} liga uma ativacao na outra enquanto houver mana ociosa e vida)."""
+    if state.phase != "main2":
+        return False
     for s in perms_named(state, "Staff of Compleation"):
-        if s.tapped or state.life < 16 or state.phase not in ("main2",):
+        kind = staff_use_kind(state)
+        if kind is None or state.life < 16:
             continue
-        # proliferate (3 de vida)
-        n = sum(1 for p in vis(state) if (is_pw(p) and loyalty(p) >= 1) or p.ctr.get("p1p1", 0) > 0)
-        if n >= 4 and state.life >= 18:
-            s.tapped = True
+        if s.tapped:
+            if not can_pay(state, 5, (), CTX_ABILITY):
+                continue
+            pay_mana(state, 5, (), CTX_ABILITY)
+            s.tapped = False
+            state.m["staff_untaps"] += 1
+        s.tapped = True
+        if kind == "proliferate":
             lose_life(state, 3, "staff")
             proliferate(state, "staff")
             state.m["staff_proliferates"] += 1
-            return True
-        if state.life >= 22 and len(state.library) > 20:
-            s.tapped = True
+        else:
             lose_life(state, 4, "staff")
             draw_cards(state, 1, "staff")
             state.m["staff_draws"] += 1
-            return True
+        return True
     return False
 
 
@@ -4268,8 +4350,10 @@ def opp_remove_creature(state: GameState, o: Opp, c: dict, how: str = "destroy")
         return
     state.m["opp_creatures_removed"] += 1
     state.m["opp_creatures_removed_" + how] += 1
-    if how in ("destroy", "damage", "combat"):
-        o.cgy += 1
+    if how in ("destroy", "damage", "combat") and not has_perm(state, "Garruk, Veiled Butcher"):
+        o.cgy += 1                                       # Garruk, Veiled Butcher: 'If a creature an opponent controls would die, exile it instead' (nao vai pro cemiterio dele)
+    elif how in ("destroy", "damage", "combat"):
+        state.m["opp_creatures_exiled_by_garruk_vb"] += 1
     if c.get("cmd"):
         o.cmd_cooldown = 1
         o.cmd_bonus = max(0, (c["p"] - 3) // 2)
@@ -4346,6 +4430,10 @@ def upkeep_step(state: GameState):
         p.temp_p = 0
         p.temp_t = 0
         p.ctr.pop("trample_eot", None)
+    for o in state.opps:
+        for c in o.board:                                  # fim do -4/-1 da Garruk, Veiled Butcher ('until your next turn')
+            c["p"] += c.pop("dp_applied", 0)
+            c["t"] += c.pop("dt_applied", 0)
     expire_effects_upkeep(state)
     # Minsc & Boo: 'at the beginning of your upkeep, you may create Boo'
     for _ in range(count_named(state, "Minsc & Boo, Timeless Heroes")):
@@ -4362,6 +4450,7 @@ def upkeep_step(state: GameState):
         state.rebound_pending.remove(name)
         if name in state.exile:
             state.exile.remove(name)
+        state.cast_zone = "exile"
         on_cast(state, name)
         resolve_spell(state, name)
         state.m["rebounds_cast"] += 1
@@ -4568,7 +4657,7 @@ def combat_step(state: GameState):
             state.m["exalted_triggers"] += n_ex
     state.attackers_this_turn = list(attackers)
     for p in attackers:
-        if "vigilance" not in p.card.tags and not p.ctr.get("vigilance"):
+        if "vigilance" not in p.card.tags and not p.ctr.get("vigilance") and p.uid != state.dihada_shield:
             p.tapped = True
     if state.activated_loyalty_this_turn:
         for k in perms_named(state, "Kiora of Salt and Sand"):
@@ -4591,6 +4680,9 @@ def combat_step(state: GameState):
         if pw <= 0:
             continue
         dmg[targets.get(p.uid)] += pw
+        if p.uid == state.dihada_shield:
+            gain_life(state, pw, "dihada_lifelink")                # lifelink concedido pela Dihada +2
+            state.m["dihada_lifelink_total"] += pw
         if p.uid in state.tamiyo_marked:
             draw_cards(state, 2 if "double_strike" in p.card.tags else 1, "tamiyo_marked")
             state.m["tamiyo_combat_draws"] += 1
@@ -4803,6 +4895,7 @@ VOLTRON_BASE = 3
 VOLTRON_CAP = 20
 TAX_BUDGET_FRACTION = 0.5
 COMMANDER_REMOVAL_SHARE = 0.15              # fracao das remocoes pontuais do oponente que mira a TAM quando ela esta em campo (e' a peca de motor: desconto e proliferate)
+WARD_MIN_LANDS = 4                          # premissa: a remocao tem custo ~2 e o ward {2} da Leyline Immersion exige mais 2: o oponente precisa de >= 4 terrenos (rastreados em `Opp.lands`)
 PW_REMOVAL_SHARE = 0.6                      # fracao que mira o planeswalker de maior valor
 WIPE_TYPE_WEIGHTS = {"creature": 0.4, "artifact": 0.2, "enchantment": 0.15}
 TOTAL_WIPE_CHANCE_FACTOR = sum(WIPE_TYPE_WEIGHTS.values())
@@ -4973,6 +5066,10 @@ def opponent_combat(state: GameState, o: Opp):
         ds = "double_strike" in b.card.tags
         dt = "deathtouch" in b.card.tags
         attacker_dead = ds and (bp >= c["t"] or dt)
+        if b.uid in state.tamiyo_marked and bp > 0:
+            n_steps = 2 if ds and not attacker_dead else 1          # Tamiyo +1: 'whenever either of those creatures deals combat damage, you draw a card' (duplo se da' dano nos 2 passos)
+            draw_cards(state, n_steps, "tamiyo_marked_block")
+            state.m["tamiyo_block_draws"] += n_steps
         if not attacker_dead:
             if c["p"] >= bt and not b.ctr.get("indestructible"):
                 dead_blockers.append(b)
@@ -5025,7 +5122,7 @@ def try_protective_ripples(state: GameState) -> bool:
     return True
 
 
-def try_smart_opponent_removal(state: GameState) -> Optional[str]:
+def try_smart_opponent_removal(state: GameState, o: Optional[Opp] = None) -> Optional[str]:
     if state.turn <= INTERACTION_SETUP_TURNS:
         return None
     pw_cands = [p for p in pws(state) if p.card.name != "Jace Token"] or [p for p in pws(state)]
@@ -5046,6 +5143,12 @@ def try_smart_opponent_removal(state: GameState) -> Optional[str]:
         target = max(pw_cands, key=lambda p: (CARD_PRIORITY.get(p.card.name, 20) + loyalty(p) * 1.5, -p.uid))
     else:
         target = tam[0]
+    # ward {2} (Leyline Immersion): o oponente que mira o criatura encantada tem que pagar {2} a mais
+    if o is not None and any(a.card.name == "Leyline Immersion" and a.attached_to == target.uid and not a.phased for a in state.battlefield):
+        if o.lands < WARD_MIN_LANDS:
+            state.m["ward_blocked_removals"] += 1
+            return None
+        state.m["ward_paid_removals"] += 1
     # protecao
     if is_legendary(target) and is_creature(target):
         for pz in perms_named(state, "Plaza of Heroes"):
@@ -5136,7 +5239,7 @@ def try_smart_opponent_turn(state: GameState, o: Opp):
         return
     try_smart_opponent_wipe(state)
     try_smart_opponent_graveyard_wipe(state)
-    try_smart_opponent_removal(state)
+    try_smart_opponent_removal(state, o)
     try_smart_opponent_discard(state)
 
 
