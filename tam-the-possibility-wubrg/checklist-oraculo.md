@@ -1,0 +1,121 @@
+# Tam, the Possibility (WUBRG) — checklist de oráculo do simulador `tam_goldfish_v1.py`
+
+Construído em 2026-10-19 a pedido direto (*"crie o simulador do deck e primeiro rode as simulações para ver como o deck assim roda!"*). A lista simulada é a `lista.md` **como está** (99 cartas + Tam na zona de comando); nenhuma troca foi aplicada.
+
+## Método (CLAUDE.md Regras #1, #3, #7) e o que cada passo cobre
+
+1. **Oráculo e rulings ao vivo, não de memória.** Texto de cada carta: `tam_cartas.json` (recorte de `scryfall-cache/oracle-cache.json`; custo, tipos, P/T e lealdade vêm só dele). Rulings: `resultados-ab/2026-10-19-simulador-baseline/dados/rulings_deck.json` (campo `rulings_uri` do Scryfall; 427 linhas lidas por inteiro, conferidas na seção "Rulings" abaixo).
+2. **Arquivo `.py` lido inteiro** (5.300 linhas) e comparado cláusula a cláusula com o oráculo: ✅ já certo, 🐛 corrigido nesta rodada, 📊 estrutural (cláusula citada).
+3. **Teste dirigido por cláusula:** `testes/` (`python3 testes/rodar_testes.py`): 132 testes, cada um monta um `GameState` determinístico e confirma que a cláusula dispara de verdade (efeito, custo, limite de ativação, fase). Cada correção abaixo tem teste. Só o achado 5 (Ajani, Cadet em dobro) foi **pego pelo teste** (falhou antes de eu corrigir); nos demais o teste foi escrito junto da correção, sem rodar contra a versão antiga, então prova que o comportamento certo existe agora, não que o errado existia.
+4. **Varreduras de classe sistêmica (Regra #10):** ver "Escopo" no fim.
+
+## Achados desta rodada (todos corrigidos antes de qualquer número de baseline)
+
+| # | achado | classe da taxonomia | correção | teste |
+|---|---|---|---|---|
+| 1 | Dihada +2 só dava indestrutível: faltavam **vigilância** e **lifelink**, e o alvo era o 1º legendário da lista | cláusula extra ignorada | `dihada_target` + vigilância (não vira o atacante) + lifelink vira vida no combate | `Dihada +2` |
+| 2 | Emblema da Tamiyo (−7) "cast spells from your hand without paying mana costs": só guardava o emblema | habilidade nunca lida | `cast_cost_option(zone)`: da MÃO custa 0; Tam (zona de comando), Wrenn (cemitério) e Chandra (exílio) pagam | `Emblema da Tamiyo` |
+| 3 | Staff of Compleation: faltava `{5}: Untap` | cláusula extra ignorada | `act_staff` desvira com mana ociosa e repete proliferate/compra | `Staff of Compleation` |
+| 4 | Eternal Wanderer −4: **eu** escolho a criatura que fica de cada jogador, o código deixava a MELHOR do oponente | leitura de cláusula | fica a mais fraca dos oponentes | `Eternal Wanderer 0/-4` |
+| 5 | Ajani Unrelenting: o Cadet criado pela +1 recebia o bônus **duas vezes** (no gatilho e na resolução) | contagem em dois pontos | só a resolução da +1 aplica (ruling 2026-08-21) | `Ajani` (pego pelo teste) |
+| 6 | Domri +1: o `riot` nunca era consumido | habilidade nunca lida | mana da Domri é rastreado (`riot_pool`); criatura paga com ele ganha +1/+1 (dispara All Will Be One) ou haste (mana-dork e criatura de poder ≥ 5) | `Domri riot` |
+| 7 | Garruk VB: faltava o estático "if a creature an opponent controls would die, exile it instead", e o +2 (−4/−1) era modelado como "congelar" | cláusula extra / fórmula achatada | oponente exilado não vai pro cemitério dele (afeta o −8 da Liliana's Talent); −4/−1 de verdade (restaura no meu upkeep; resistência 1 morre) | `Garruk VB +2/-2` |
+| 8 | Garruk VB −2: eu só sacrificava se tivesse ficha, mas "**each player** sacrifices" me obriga | leitura de cláusula | sacrifico a criatura de menor valor (ficha primeiro); a IA só escolhe se isso não custa a Tam | `Garruk VB -2` |
+| 9 | Ajani −3 podia matar a **Tam** (2/4 leva 4 de dano) de graça | efeito colateral no conceito "criatura minha" | a IA conta a Tam entre as perdas | `Ajani -3 nao e' escolhido...` |
+| 10 | Rebound da Narset (−2): armava com qualquer magia, mas o oráculo diz "**from your hand**" | cláusula | `state.cast_zone`: só da mão consome | `Narset -2 ... da mao` |
+| 11 | Leyline Immersion: **ward {2}** nunca cobrado contra a remoção do oponente | cláusula extra | oponente precisa de ≥ 4 terrenos (premissa `WARD_MIN_LANDS`) | `Leyline Immersion` |
+| 12 | Vronos −7: o Construct não tinha **vigilância** | cláusula | `ctr["vigilance"]` | `Vronos` |
+| 13 | Tamiyo +1: criatura marcada que **bloqueia** e dá dano de combate não comprava (o efeito dura até o meu próximo turno) | timing de fase | compra no combate do oponente | `Tamiyo +1` |
+| 14 | **Ordem do turno do oponente (Regra #6):** o ataque dele rodava ANTES da rolagem do gate de atenção (usava a rolagem do oponente anterior); o wipe de criatura não limpava os outros oponentes; Dihada/Plaza não protegiam do wipe | orquestração de turno | `try_smart_opponent_turn`: gate → wipe → combate → wipe de cemitério → remoção → descarte (igual ao Prismatic Bridge); wipe simétrico; Dihada e Plaza | `Ordem das fases`, `Eternal Wanderer limite de ataque` |
+| 15 | Turno extra do Ichormoon Gauntlet não contava no orçamento de turnos | convenção do repositório | conta (como no Prismatic) | `Gauntlet -12 ... turno extra` |
+| 16 | `lose_life` encerrava a partida com vida ≤ 0: truncava toda métrica de mesa (derrota minha em 50% das partidas de resiliência, número **sem** significado) | convenção do repositório | só marca `died_turn`; a partida continua (Prismatic/Mothman) | `Vida <= 0 so' MARCA` |
+| 17 | **Rulings** (seção abaixo): Liliana's Talent matava atacante **bloqueado**; Tamiyo não mirava criatura de oponente; Oko deixava o Elk como artefato; Saheeli copiava P/T com contadores; Peacemaker só via a remoção como crime; Vronos −7 excluía artefato-criatura; Tezzeret −5 excluía artefato-criatura e Aminatou −6 nem tinha efeito | leitura de ruling | corrigidos | `t_rulings.py` |
+
+## Legenda por carta
+
+✅ implementado e testado · 🐛 corrigido nesta rodada (número acima) · 📊 estrutural (a cláusula está citada; o motivo é estado de OPONENTE real que o goldfish não modela; vira **métrica proxy** `interaction_plays`/`proxy_*` quando `OPP_TARGET_PROB` diz que existe alvo, ou efeito real no modo de resiliência).
+
+## Terrenos (36)
+
+| carta | cláusulas do oráculo | status |
+|---|---|---|
+| Baxter Building | `{T}: {C}`; `{4},{T}`: 4 mana de qualquer cor; `{4},{T}`: comprar 1 se controlo criatura de resistência ≥ 4 | ✅ conversor (fixa cor, 0 líquido), compra só com Tam 2/4, Whale 7/5, Fera 4/4, Kiora 2/4, Onakke 0/4 etc. (`toughness()`) |
+| Boseiju, Who Endures | `{T}: {G}`; canal `{1}{G}` (−1 por criatura lendária) | ✅ canal com ≥ 7 terrenos; alvo "artifact, enchantment, or nonbasic land an opponent controls" = 📊 proxy |
+| Bountiful Promenade, Rejuvenating Springs, Spire Garden, Undergrowth Stadium | entra virado a menos que haja 2+ oponentes (conta os de AGORA, ruling 2018/2020) | ✅ `alive_opps` |
+| Breeding Pool, Hallowed Fountain, Overgrown Tomb, Steam Vents, Stomping Ground, Temple Garden, Watery Grave | choque: 2 de vida ou entra virado (se um efeito põe virado, ainda pode pagar mas continua virado) | ✅ paga com vida ≥ 10; testado nos 7 |
+| City of Brass | 1 de dano ao ficar virada; `{T}`: qualquer cor | ✅ dano pago no `pay_mana` |
+| Command Tower, Arcane Signet | qualquer cor da identidade (WUBRG = todas) | ✅ |
+| Exotic Orchard, Fellwar Stone | qualquer cor que um terreno de OPONENTE possa produzir (nunca incolor, ruling) | ✅ `Opp.land_colors` |
+| Fire-Lit Thicket, Flooded Grove, Twilight Mire, Wooded Bastion | `{T}: {C}`; `{X/Y},{T}`: dois mana nas duas cores | ✅ conversor (usa 1 mana de entrada da cor, entrega 2) |
+| Great Hall of the Citadel | `{T}: {C}`; `{1},{T}`: 2 mana de qualquer cor **só pra magia lendária** | ✅ restrição por `Ctx.legendary` (todo planeswalker e Way é lendário) |
+| Indatha, Jetmir's, Ketria, Spara's, Zagoth (triomes) | entra virado; ciclo `{3}` | ✅ + `act_cycle_triome` |
+| Misty Rainforest, Verdant Catacombs, Windswept Heath, Wooded Foothills | `{T}`, 1 de vida, sacrifica: busca por SUBTIPO, entra desvirado, embaralha | ✅ (alvos 12/10/10/10 conferidos); a Yavimaya **não** faz carta da biblioteca virar Forest (ruling 2021-06-18) |
+| Mossfire Valley, Overflowing Basin | `{1},{T}`: `{R}{G}` / `{G}{U}` | ✅ |
+| Plaza of Heroes | `{T}: {C}`; qualquer cor só pra lendária; cor entre meus lendários; `{3},{T}`, exila: hexproof+indestrutível pra lendária | ✅ as 4 cláusulas (a 4ª protege a Tam de remoção/wipe no modo de resiliência) |
+| Starting Town | entra virado a partir do 4º turno; `{T}`, 1 de vida: qualquer cor | ✅ |
+| The World Tree | entra virado; `{G}`; com 6+ terrenos qualquer cor; `{W}{W}{U}{U}{B}{B}{R}{R}{G}{G}`... busca "any number of God cards" | ✅ as 3 primeiras; a 4ª: 📊 **0 cartas God na lista** ("Search your library for any number of God cards": nada a buscar) |
+| Yavimaya, Cradle of Growth | todo terreno é Forest | ✅ todo terreno em campo toca `{G}`, conta pro Nissa −7 |
+
+## Ramp e mana (16)
+
+| carta | status |
+|---|---|
+| Sol Ring `{C}{C}`; Birds (voo, qualquer cor); Noble Hierarch (GWU, exalted); Ignoble Hierarch (BRG, exalted); Bloom Tender (vivid: 1 mana por cor entre permanentes, só W U B R G); Faeburrow Elder (vigilância, +1/+1 por cor, mesmo mana) | ✅ (doença de invocação bloqueia o `{T}`; exalted só atacando sozinho) |
+| Chromatic Orrery `{C}x5`, gasta como qualquer cor, `{5},{T}`: compra 1 por cor | ✅ |
+| Leyline Immersion (enchant legendary creature; ward {2}; `{T}`: 5 mana de qualquer cor, só pra magia) | ✅ 🐛11; hospedeiros: Tam, Kiora, Boo |
+| Way of the Paradox / Pyromancer | ✅ |
+| Chandra, Legacy of Fire | ✅ end step X dano; +1; 0 (impulso jogável) |
+| Domri, Chaos Bringer | ✅ 🐛6 |
+| Garruk Wildspeaker | ✅ |
+| Wrenn and Realmbreaker | ✅ estático (terrenos qualquer cor), +1, −2 (mill 3, 1 permanente), −7 (emblema: terreno e permanente do cemitério) |
+
+## Compra, remoção, proliferate, fichas, proteção, blink, tutores
+
+Cada uma das cartas abaixo tem ao menos um teste por cláusula em `testes/` (arquivo e nome do teste batem com o nome da carta):
+
+Dack Fayden (+1 ✅; −2 📊 "Gain control of target artifact"; −6 📊 emblema: **nenhuma magia da lista mira permanente de oponente**, as Auras miram o meu), Dihada (🐛1; −11 efeito real no modo de resiliência, proxy no padrão), Garruk Curse Breaker (estático + 3 habilidades ✅), Minsc & Boo (ETB/upkeep Boo, +1, −2 com compra ✅), Narset Transcendent (🐛10; −9 ✅ efeito medido: oponente sem magia não-criatura), Oath of Nissa ✅, Professor Dellian Fel ✅, Tamiyo (🐛2 🐛13), Teferi Hero (emblema: exila alvo de oponente a cada compra, real na resiliência) ✅, Teferi Temporal Archmage (emblema: 1 ativação por PW por turno de oponente) ✅, Way of the Mind Sculptor ✅, All Will Be One ✅ (um gatilho por EVENTO), Blasphemous Act ✅, Garruk Veiled Butcher (🐛7 🐛8; −3: 70% de eu comprar = 📊 mão de oponente não modelada), Nissa Ascended Animist ✅ (X fixo na resolução; Compleated), Oko ✅ (🐛17), Overwrite the Multiverse ✅, Promise of Loyalty ✅ (aproximação: o oponente mantém 1 criatura neutralizada), The Eternal Wanderer (🐛4; estático "no more than one creature can attack" ✅), Way of the Warlord ✅, Dreamtide Whale ✅, Flux Channeler ✅, Ichormoon Gauntlet ✅ (🐛15), Patrolling Peacemaker ✅ (🐛17), Staff of Compleation ✅ (🐛3), Teferi's Talent / Liliana's Talent ✅ (🐛17), The Chain Veil ✅, Vraska ✅, Way of the Necromancer ✅, Ajani Unrelenting (🐛5, 🐛9), Elspeth Sun's Champion ✅, Kasmina ✅, Kiora of Salt and Sand ✅, Saheeli ✅ (🐛17), Way of the Deathbringer / Healer / Wildspeaker ✅, Onakke Oathkeeper ✅, Ripples of Potential ✅, Sanctum Lurker ✅, Vronos (🐛12, 🐛17), Aminatou (🐛17; +1/−1 ✅; −6 efeito real só na resiliência, ver abaixo), Displacer Kitten ✅, Oath of Teferi ✅, Entrust the Spark ✅, Tezzeret the Seeker (🐛17), **Tam** ✅ (desconto só no genérico, imposto +2 por conjuração, `{W}{U}{B}{R}{G},{T}` X vezes onde X = tipos distintos: Jace token é Jace, The Eternal Wanderer não tem tipo).
+
+**Aminatou −6** (não é "estrutural": é política, e está implementado): no modo padrão os oponentes não têm permanentes simulados, então trocar só entrega o meu campo; no modo de resiliência o efeito é real (o oponente recebe meus permanentes não-terreno menos a Aminatou; eu recebo as criaturas dele como fichas do mesmo P/T) e a IA só escolhe quando o tabuleiro dele vale ≥ 2,5× o meu + 16.
+
+## Rulings do Scryfall conferidas (427 linhas lidas)
+
+| carta | ruling | código |
+|---|---|---|
+| Tam | X só é determinado uma vez; proliferate várias vezes; custo total = custo + aumentos − reduções | ✅ `act_tam_proliferate`, `effective_cost` |
+| Yavimaya | cartas na biblioteca não são Forest | ✅ `fetch_targets`; errata em `auditoria.md`, `avaliacao-moxfield.md` e `resultados-ab/2026-10-19-registro/LEIAME.md` |
+| Domri | riot é substituição; sem contador possível → haste; haste vale pra sempre | ✅ 🐛6 |
+| Garruk W | +3/+3 só nas criaturas de quando resolve | ✅ |
+| Nissa | X fixo na resolução; bônus do −7 só nas criaturas de quando resolve; Compleated | ✅ |
+| Oko | Elk perde os outros tipos (deixa de ser artefato) | ✅ 🐛17 |
+| Tamiyo | pode mirar criatura de oponente (eu compro); gatilho vale se ela sair | ✅ 🐛17 |
+| Teferi H | os 2 terrenos são escolhidos só no end step | ✅ |
+| Teferi TA | emblema: 1 ativação por PW por turno de oponente (+ Chain Veil) | ✅ (Veil + emblema: ver "não varrido") |
+| Way of the Mind Sculptor | compro antes da habilidade resolver | ✅ |
+| Flux Channeler / Saheeli | gatilho resolve antes da magia, mesmo anulada | ✅ (`on_cast` antes de `counterspell_check`) |
+| Saheeli | copia valores impressos | ✅ 🐛17 |
+| Ajani | o token entra antes da habilidade resolver e recebe o bônus da +1 | ✅ 🐛5 |
+| Kasmina | outros PWs ganham as habilidades; −8 busca cor do PW que ativou | ✅ |
+| Liliana's Talent | qualquer dano de criatura no encantado destrói a criatura | ✅ combate (🐛17); dano não-combate de criatura: 📊 não modelado |
+| Chain Veil | vale pra PWs que entram depois; cada resolução soma uma ativação | ✅ |
+| Sanctum Lurker | PW com 0 fica; pode ativar `[0]` e `[+N]` | ✅ |
+| Vronos | fase fora/dentro; −7 em artefato já criatura; ataca no mesmo turno se já estava em campo | ✅ 🐛17 |
+| Tezzeret | afeta todos os artefatos, sobrescreve P/T anterior | ✅ 🐛17 |
+| Eternal Wanderer | sem tipo; retorna no end step; ficha some; −4 não mira | ✅ 🐛4 |
+| Peacemaker | crime = mirar oponente/permanente/magia/cemitério | ✅ 🐛17 |
+| Ripples | fase dentro no untap, sem gatilho de entrada | ✅ |
+| Vraska | veneno até 9; Compleated | ✅ |
+| Empower Jace (todas as Ways) | não cria 2ª ficha de Jace | ✅ |
+
+## Conceitos compartilhados (Regra #3), enumerados por script
+
+`pw_types()` (X da Tam): 25 planeswalkers, **21 tipos distintos** (teste `Tipos de planeswalker da lista`), Jace token = Jace, Eternal Wanderer = 0. `is_legendary()` (Great Hall, Plaza, Dihada, Boseiju, Immersion): Tam, Kiora, Boo, os 25 PWs, 8 Ways, Chain Veil, Orrery. `colors_among()` (Bloom Tender, Faeburrow Elder, Orrery): só W U B R G; fichas coloridas contam; terreno é incolor. `is_artifact()` (Vronos, Tezzeret, Saheeli): Peacemaker e Servo são artefato-criatura; Elk de Oko não. `noncreature spell` (Flux, Gauntlet, Saheeli, Kitten): Peacemaker é criatura. Resistência ≥ 4 (Baxter): `toughness()` (Tam, Kiora, Whale, Onakke, tokens 4/4 e 8/8).
+
+## Premissas e convenções declaradas (não são ausência de checagem)
+
+Mesa de 4 (3 oponentes, 40 de vida); no modo padrão os oponentes são passivos e **todo atacante conecta**; T1 sem compra (convenção herdada dos outros simuladores; no Commander multiplayer a regra real é comprar, e isso é uma pergunta pendente pro usuário); `OPP_TARGET_PROB = 0.7` a partir do T3; crime por magia de oponente `OPP_CRIME_PROB_PER_NONCREATURE_SPELL = 0.25` (padrão); resiliência = o modelo do Prismatic Bridge (arquétipos go-wide / voltron / low, gate de atenção 1/3, remoção/wipe/descarte/anulação de magia/wipe de cemitério), com `WARD_MIN_LANDS = 4` e a remoção mirando a Tam em 15% das vezes.
+
+## Escopo (Regra #7): o que foi e o que NÃO foi varrido
+
+**Varrido, com método:** leitura integral do `.py`; cláusula a cláusula das 100 cartas contra o oráculo; as 427 linhas de rulings; 132 testes dirigidos (terrenos, mana, custos, 25 PWs, Ways, permanentes, motor, rulings); smoke (99 cartas, 0 desconhecidas, 0 duplicadas, 0 exceções em 200 × 2 modos); varredura AST de iteração de `set` (4 candidatos no Tam, todos sem ordem relevante: `len`, contagem comutativa e `any`); determinismo entre `PYTHONHASHSEED` e regressão (números nos arquivos de `resultados-ab/2026-10-19-simulador-baseline/`).
+
+**NÃO varrido neste arquivo:** interação do emblema do Teferi TA com a Chain Veil (ativações extras no turno do oponente); dano de criatura que não é de combate na Liliana's Talent; Oath of Teferi / Eternal Wanderer em Aura (nenhuma carta da lista é Aura exilável além das Talents e da Immersion, que caem do PW/criatura); cópia de habilidades pela Saheeli (a cópia só pega P/T, não as habilidades da criatura copiada); "whenever you cast" fora da mão está coberto só pelos testes da Tamiyo/Narset/Chandra; combinações de condições de entrada de terreno; estado de oponente real (convenção do repositório).
