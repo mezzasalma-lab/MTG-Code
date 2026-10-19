@@ -229,3 +229,18 @@ def _():
             if not s.game_over and not s.m["aminatou_permanents_given"]:
                 for nm, c in base.items():
                     check(z[nm] >= c, f"seed {5_000_000 + i}: {nm} sumiu")
+
+
+@test("Commander multijogador: NINGUEM pula a compra do 1o turno (usuario, 2026-10-19): T1 comeca com 7 + 1 = 8 cartas")
+def _():
+    st = T.new_state(1_000_001)
+    n0 = len(st.hand)
+    T.play_turn(st)
+    check(st.draws_by_source.get("normal") == 1, "comprou no T1")
+    T.FIRST_TURN_SKIPS_DRAW = True
+    try:
+        st2 = T.new_state(1_000_001)
+        T.play_turn(st2)
+        check(st2.draws_by_source.get("normal", 0) == 0, "com a chave do jogo de 2 jogadores, pula")
+    finally:
+        T.FIRST_TURN_SKIPS_DRAW = False
