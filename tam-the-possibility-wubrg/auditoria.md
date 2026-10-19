@@ -2,6 +2,7 @@
 
 > Auditoria feita ao registrar o deck (Regra 2 de `user-standing-rules.md`: "sempre que eu adicionar um deck aqui RODE A AUDITORIA COMPLETA"). **Simulador: NÃO feito, a pedido do usuário** ("Registra ele e não faça o simulador ainda"). Tudo abaixo vem de consulta ao vivo (Scryfall, Commander Spellbook, EDHREC) e de contas sobre esses dados; nada foi simulado.
 > Tabelas completas e a lista de cartas por varredura: `resultados-ab/2026-10-19-registro/resumos/analise_estatica.md`. Dados brutos, scripts e como refazer: `resultados-ab/2026-10-19-registro/LEIAME.md`.
+> **Avaliação contra os decks do Moxfield com a mesma comandante (2026-10-19, só proposta, nada aplicado): `avaliacao-moxfield.md`**; dados e scripts em `resultados-ab/2026-10-19-avaliacao-decks-tam/LEIAME.md`.
 
 ## 1. Resumo
 

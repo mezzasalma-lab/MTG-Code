@@ -1,0 +1,859 @@
+{
+ "Tam, the Possibility": {
+  "oracle_id": "c92c7744-0c92-4a36-9ada-4ffca812009e",
+  "oracle_text": "Planeswalker spells you cast cost {1} less to cast.\n{W}{U}{B}{R}{G}, {T}: Proliferate X times, where X is the number of planeswalker types among planeswalkers you control. (To proliferate, choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2026-08-21",
+    "The value of X is determined only once, as Tam's last ability resolves."
+   ],
+   [
+    "2026-08-21",
+    "If a player or permanent has more than one kind of counter on it, and you choose for it to get additional counters, it must get one of each kind of counter it already has. You can't have it get just one kind of counter it already has and not the others."
+   ],
+   [
+    "2026-08-21",
+    "While proliferating multiple times, players can't respond between proliferating the first time and proliferating the second time, and so on."
+   ],
+   [
+    "2026-08-21",
+    "To proliferate, you can choose any permanent that has a counter, including ones controlled by opponents. You can choose any player who has a counter, including opponents. You can't choose cards in any zone other than the battlefield, even if they have counters on them."
+   ],
+   [
+    "2026-08-21",
+    "You don't have to choose every permanent or player that has a counter, only the ones you want to add another counter to. Since \"any number\" includes zero, you don't have to choose any permanents at all, and you don't have to choose any players at all."
+   ],
+   [
+    "2026-08-21",
+    "Players can respond to a spell or ability whose effect includes proliferating. Once that spell or ability starts to resolve, however, and its controller chooses which permanents and players will get new counters, it's too late for anyone to respond."
+   ],
+   [
+    "2026-08-21",
+    "To determine the total cost of a spell, start with the mana cost or alternative cost you're paying, add any cost increases, then apply any cost reductions. The mana value of the spell remains unchanged, no matter what the total cost to cast it was."
+   ],
+   [
+    "2026-08-21",
+    "An ability that triggers \"Whenever you proliferate\" triggers even if you chose no permanents or players while doing so."
+   ],
+   [
+    "2026-08-21",
+    "If a permanent ever has both +1/+1 counters and -1/-1 counters on it at the same time, they're removed in pairs as a state-based action so that the permanent has only one of those kinds of counters on it."
+   ],
+   [
+    "2026-08-21",
+    "If you proliferate multiple times, you don't have to choose the same set of players and/or permanents to get additional counters each time."
+   ]
+  ]
+ },
+ "Carth the Lion": {
+  "oracle_id": "e0709843-0a91-4a21-9512-d7481707f3c9",
+  "oracle_text": "Whenever Carth enters or a planeswalker you control dies, look at the top seven cards of your library. You may reveal a planeswalker card from among them and put it into your hand. Put the rest on the bottom of your library in a random order.\nPlaneswalkers' loyalty abilities you activate cost an additional [+1] to activate.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2021-06-18",
+    "If a planeswalker's loyalty ability normally has a cost of [+1], Carth's ability makes it cost [+2] instead. A cost of [0] would become [+1], and a cost of [-6] would become [-5]."
+   ],
+   [
+    "2021-06-18",
+    "If you somehow manage to control two Carths (perhaps because of Spark Double), the cost-changing effect is cumulative. In total, loyalty abilities will cost an additional [+2] to activate."
+   ],
+   [
+    "2021-06-18",
+    "The total cost of a planeswalker's loyalty ability is calculated before any counters are added or removed. If a loyalty ability normally costs [-3] to activate, you do not remove three counters from it and then put one counter on it. You remove two counters at one time when you pay the cost."
+   ],
+   [
+    "2021-06-18",
+    "If an effect replaces the number of counters that would be placed on a planeswalker, such as that of Vorinclex, Monstrous Raider, that replacement happens only once, at the time payment is made."
+   ]
+  ]
+ },
+ "Nicol Bolas, Dragon-God": {
+  "oracle_id": "581eedc4-efe4-4ae4-baf2-88071e7e6f6d",
+  "oracle_text": "Nicol Bolas has all loyalty abilities of all other planeswalkers on the battlefield.\n+1: You draw a card. Each opponent exiles a card from their hand or a permanent they control.\n−3: Destroy target creature or planeswalker.\n−8: Each opponent who doesn't control a legendary creature or planeswalker loses the game.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2024-01-12",
+    "Nicol Bolas doesn't remove loyalty abilities from the other planeswalkers."
+   ],
+   [
+    "2024-01-12",
+    "Nicol Bolas doesn't gain any static or triggered abilities of other planeswalkers or any activated abilities they may have that aren't loyalty abilities."
+   ],
+   [
+    "2024-01-12",
+    "While Nicol Bolas may end up with an astonishing number of loyalty abilities, you can still activate only one loyalty ability of Nicol Bolas, Dragon-God during each of your turns."
+   ],
+   [
+    "2024-01-12",
+    "If a loyalty ability of a planeswalker references the card it's printed on by name, treat Nicol Bolas's instance of that ability as though it referenced Nicol Bolas, Dragon-God by name instead. For instance, if Ral Zarek is on the battlefield, Nicol Bolas deals the damage if you activate the second ability he gained from Ral."
+   ],
+   [
+    "2024-01-12",
+    "If an ability of a planeswalker exiles cards and another loyalty ability of that planeswalker references the exiled cards, those abilities are linked. If Nicol Bolas gains both abilities from the same planeswalker, the instances he has are similarly linked. Cards exiled by any other abilities Nicol Bolas has (such as his own first loyalty ability) won't be seen by those linked abilities."
+   ],
+   [
+    "2024-01-12",
+    "If any abilities trigger as you draw a card while resolving Nicol Bolas's first loyalty ability, those abilities don't resolve until after your opponents have exiled a card or permanent."
+   ],
+   [
+    "2024-01-12",
+    "After you draw a card as Nicol Bolas's first loyalty ability resolves, the next opponent in turn order (or, if it's somehow an opponent's turn, that opponent) chooses a permanent they control or chooses a card in hand without revealing that card. Then each other opponent in turn order does the same, knowing the choices made before them. Finally, all of the chosen permanents and cards are exiled simultaneously."
+   ],
+   [
+    "2024-01-12",
+    "In a Two-Headed Giant game, if one player on a team loses the game, the entire team loses the game, even if the other player controls a legendary creature or planeswalker."
+   ]
+  ]
+ },
+ "Doubling Season": {
+  "oracle_id": "01546b7d-a233-4176-8843-d732074dc5b6",
+  "oracle_text": "If an effect would create one or more tokens under your control, it creates twice that many of those tokens instead.\nIf an effect would put one or more counters on a permanent you control, it puts twice that many of those counters on that permanent instead.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2024-11-08",
+    "Planeswalkers will enter with double the normal number of loyalty counters. However, if you activate an ability whose cost has you put loyalty counters on a planeswalker, the number you put on isn't doubled. This is because those counters are put on as a cost, not as an effect."
+   ],
+   [
+    "2024-11-08",
+    "Everything that is specified by the effect creating the original token or tokens will also be true about the additional token or tokens created by Doubling Season's replacement effect. For example, if an effect tells you to create a token \"tapped and attacking,\" the additional tokens will also be tapped and attacking."
+   ],
+   [
+    "2024-11-08",
+    "Doubling Season affects permanents that enter with counters."
+   ],
+   [
+    "2024-11-08",
+    "Battles will enter with double the normal number of defense counters."
+   ],
+   [
+    "2024-11-08",
+    "If there are two Doubling Seasons on the battlefield, then the number of tokens or counters is four times the original number. If there are three on the battlefield, then the number of tokens or counters is eight times the original number, and so on."
+   ]
+  ]
+ },
+ "Teferi, Master of Time": {
+  "oracle_id": "e802fb53-7cf5-46bc-8a0b-f99cf5c20f74",
+  "oracle_text": "You may activate loyalty abilities of Teferi on any player's turn any time you could cast an instant.\n+1: Draw a card, then discard a card.\n−3: Target creature you don't control phases out. (Treat it and anything attached to it as though they don't exist until its controller's next turn.)\n−10: Take two extra turns after this one.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2020-06-23",
+    "Teferi's first ability doesn't change how many of his abilities you can activate during each turn."
+   ],
+   [
+    "2020-06-23",
+    "You draw a card and discard a card all while Teferi's first loyalty ability is resolving. Nothing can happen between the two, and no player may choose to take actions."
+   ],
+   [
+    "2020-06-23",
+    "While a permanent is phased out, it's treated as though it doesn't exist. It can't be the target of spells or abilities, its static abilities have no effect on the game, its triggered abilities can't trigger, it can't attack or block, and so on."
+   ],
+   [
+    "2020-06-23",
+    "An attacking creature that phases out is removed from combat."
+   ],
+   [
+    "2020-06-23",
+    "Phasing out doesn't cause any \"leaves the battlefield\" abilities to trigger. Similarly, phasing in won't cause any \"enters the battlefield\" abilities to trigger."
+   ],
+   [
+    "2020-06-23",
+    "Any one-shot effects that are waiting \"until [this] leaves the battlefield,\" such as that of Kitesail Freebooter, won't happen when a permanent phases out."
+   ],
+   [
+    "2020-06-23",
+    "Any continuous effects with a \"for as long as\" duration such as that of Awakener Druid ignore phased-out objects. Any such effects will expire if their conditions are no longer met after ignoring the phased-out objects."
+   ],
+   [
+    "2020-06-23",
+    "Each Aura and Equipment attached to a permanent that's phasing out also phases out. They will phase in with that permanent and still be attached to it. Similarly, permanents that phase out with counters phase in with those counters."
+   ],
+   [
+    "2020-06-23",
+    "Choices made for permanents as they entered the battlefield are remembered when they phase in."
+   ],
+   [
+    "2020-06-23",
+    "Any creatures that phase in during their controller's untap step will be able to attack and pay a cost of {T} during that turn."
+   ],
+   [
+    "2020-06-23",
+    "If an opponent gains control of your creature and it phases out and the duration of the control-change effect expires before it phases in, that permanent phases in under your control as that opponent's next untap step begins. If they leave the game before their next untap step, it phases in as the next untap step begins after their turn would have begun."
+   ]
+  ]
+ },
+ "Oath of Ajani": {
+  "oracle_id": "1ec39c8f-eb1e-4881-a749-0c188788b612",
+  "oracle_text": "When Oath of Ajani enters, put a +1/+1 counter on each creature you control.\nPlaneswalker spells you cast cost {1} less to cast.",
+  "game_changer": false,
+  "rulings": []
+ },
+ "Deepglow Skate": {
+  "oracle_id": "debce64a-18bd-42f5-9e85-158c2242e9e9",
+  "oracle_text": "When this creature enters, double the number of each kind of counter on any number of target permanents.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2020-08-07",
+    "To double the number of each kind of counter on a permanent, put another counter on it for each counter it already has. Effects that interact with counters being put onto permanents apply as appropriate."
+   ],
+   [
+    "2020-08-07",
+    "You can choose no targets if you don't want to double the counters on any permanents."
+   ],
+   [
+    "2020-08-07",
+    "As Deepglow Skate's ability resolves, you must double each kind of counter on the permanents it targets."
+   ]
+  ]
+ },
+ "Commodore Guff": {
+  "oracle_id": "7e5a7a1d-dcfb-4ab8-b773-f521cb4d3fa6",
+  "oracle_text": "At the beginning of your end step, put a loyalty counter on another target planeswalker you control.\n+1: Create a 1/1 red Wizard creature token with \"{T}: Add {R}. Spend this mana only to cast a planeswalker spell.\"\n−3: You draw X cards and Commodore Guff deals X damage to each opponent, where X is the number of planeswalkers you control.\nCommodore Guff can be your commander.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2023-07-28",
+    "The value of X is determined as Commodore Guff's third ability resolves."
+   ]
+  ]
+ },
+ "Spark Double": {
+  "oracle_id": "8dcb35e5-ae44-455f-86e3-4a77d496ff34",
+  "oracle_text": "You may have this creature enter as a copy of a creature or planeswalker you control, except it enters with an additional +1/+1 counter on it if it's a creature, it enters with an additional loyalty counter on it if it's a planeswalker, and it isn't legendary.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2019-05-03",
+    "Spark Double copies exactly what was printed on the original permanent (unless that permanent is copying something else or is a token; see below). It doesn’t copy whether that permanent is tapped or untapped, whether it has any counters on it or any Auras and Equipment attached to it, or any non-copy effects that have changed its power, toughness, types, color, or so on."
+   ],
+   [
+    "2019-05-03",
+    "Spark Double isn’t legendary if it copies a legendary permanent, and this exception is copiable. If something else copies Spark Double later, that copy also won’t be legendary. If you control two or more permanents with the same name but only one is legendary, the “legend rule” doesn’t apply."
+   ],
+   [
+    "2019-05-03",
+    "If the copied permanent has {X} in its mana cost, X is considered to be 0."
+   ],
+   [
+    "2019-05-03",
+    "If the chosen permanent is copying something else (for example, if the chosen permanent is another Spark Double), then Spark Double enters the battlefield as whatever the chosen permanent copied."
+   ],
+   [
+    "2019-05-03",
+    "If the chosen permanent is a token, Spark Double copies the original characteristics of that token as stated by the effect that created the token. Spark Double doesn’t become a token in this case."
+   ],
+   [
+    "2019-05-03",
+    "Any enters-the-battlefield abilities of the copied permanent will trigger when Spark Double enters the battlefield. Any “as [this permanent] enters the battlefield” or “[this permanent] enters the battlefield with” abilities of the chosen permanent will also work."
+   ],
+   [
+    "2019-05-03",
+    "If it copies a planeswalker, Spark Double enters with the appropriate number of loyalty counters as printed on the card plus one. If it copies a creature, Spark Double enters with a +1/+1 counter on it, plus any counters that will be put on it from abilities it copied and other abilities of other objects."
+   ],
+   [
+    "2019-05-03",
+    "If the copied permanent is affected by a type-changing effect, Spark Double may enter the battlefield with different permanent types than the copied permanent currently has. Use the characteristics of Spark Double as it enters the battlefield, not of the copied permanent, to determine whether it enters with an additional counter on it. Notably, if Spark Double copies a Gideon planeswalker that’s a creature because its loyalty ability caused it to become a planeswalker creature, Spark Double enters as a noncreature planeswalker and doesn’t get a +1/+1 counter. On the other hand, if Spark Double copies Gideon Blackblade during your turn, Spark Double enters as a planeswalker creature and gets both kinds of counters."
+   ],
+   [
+    "2019-05-03",
+    "If Spark Double somehow enters the battlefield at the same time as another permanent, it can’t become a copy of that permanent. You may choose only a creature or planeswalker that’s already on the battlefield."
+   ]
+  ]
+ },
+ "The Chain Veil": {
+  "oracle_id": "fb88fb3d-6a85-4bb1-b316-7f759b45a0fa",
+  "oracle_text": "At the beginning of your end step, if you didn't activate a loyalty ability of a planeswalker this turn, you lose 2 life.\n{4}, {T}: For each planeswalker you control, you may activate one of its loyalty abilities once this turn as though none of its loyalty abilities have been activated this turn.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2014-07-18",
+    "For the first ability, it doesn’t matter whether the planeswalker is still on the battlefield as your end step begins. If you activated one of its loyalty abilities that turn, The Chain Veil’s triggered ability won’t trigger."
+   ],
+   [
+    "2014-07-18",
+    "Because the last ability modifies the rules of the game, it affects not only planeswalkers you control when it resolves, but also planeswalkers that come under your control later in the turn."
+   ],
+   [
+    "2014-07-18",
+    "After the last ability resolves, you’ll essentially be able to activate a loyalty ability of each planeswalker you control a total of twice during your turn. The timing rules for when you can activate loyalty abilities apply each time; it must be your main phase and the stack must be empty."
+   ],
+   [
+    "2014-07-18",
+    "The second loyalty ability you activate doesn’t have to be the same as the first ability. For example, you could activate a planeswalker’s first ability twice, or you could activate a planeswalker’s first ability, then activate its second ability."
+   ],
+   [
+    "2014-07-18",
+    "Each additional time The Chain Veil’s last ability resolves will allow you to activate a loyalty ability of each planeswalker you control an additional time. For example, if you activate The Chain Veil’s last ability, untap it, then activate it again, you can activate a loyalty ability of a planeswalker you control three times that turn."
+   ]
+  ]
+ },
+ "Oath of Teferi": {
+  "oracle_id": "ee00a42d-6ee4-4e46-92d6-62e8e5910880",
+  "oracle_text": "When Oath of Teferi enters, exile another target permanent you control. Return it to the battlefield under its owner's control at the beginning of the next end step.\nYou may activate the loyalty abilities of planeswalkers you control twice each turn rather than only once.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2018-04-27",
+    "If a token is exiled this way, it ceases to exist and won’t return to the battlefield."
+   ],
+   [
+    "2018-04-27",
+    "The exiled card will return to the battlefield at the beginning of the next end step even if Oath of Teferi is no longer on the battlefield at that time."
+   ],
+   [
+    "2018-04-27",
+    "If the exiled card is an Aura, that card’s owner chooses what it will enchant as it returns to the battlefield. An Aura put onto the battlefield this way doesn’t target anything (so it could be attached to an opponent’s permanent with hexproof, for example), but the Aura’s enchant ability restricts what it can be attached to. If the Aura can’t legally be attached to anything, it remains exiled."
+   ],
+   [
+    "2018-04-27",
+    "For Oath of Teferi’s second ability, you may activate the same ability of a planeswalker twice, or you may activate two different abilities of that planeswalker."
+   ],
+   [
+    "2018-04-27",
+    "If you somehow control more than one Oath of Teferi, you won’t be able to activate abilities of planeswalkers you control more than twice in one turn."
+   ]
+  ]
+ },
+ "Teferi, Temporal Archmage": {
+  "oracle_id": "07d0b06b-80cb-4518-92c9-84ea87a7e08a",
+  "oracle_text": "+1: Look at the top two cards of your library. Put one of them into your hand and the other on the bottom of your library.\n−1: Untap up to four target permanents.\n−10: You get an emblem with \"You may activate loyalty abilities of planeswalkers you control on any player's turn any time you could cast an instant.\"\nTeferi, Temporal Archmage can be your commander.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2014-11-07",
+    "If you control Teferi’s emblem, the rule that says you can activate a loyalty ability only if none of that permanent’s loyalty abilities have been activated that turn still applies. In other words, you could activate a planeswalker’s loyalty ability once on your turn and once on each of your opponents’ turns."
+   ],
+   [
+    "2014-11-07",
+    "If you control The Chain Veil (from the Magic 2015 core set) and its activated ability has resolved, and you also control Teferi’s emblem, for each planeswalker you control, you can activate one of its loyalty abilities during that turn any time you could cast an instant, and then you may activate a loyalty ability again that turn (choosing the same loyalty ability or a different one) any time you could cast an instant."
+   ]
+  ]
+ },
+ "Aminatou, the Fateshifter": {
+  "oracle_id": "3a30089d-cd2d-49be-9b06-7a2454117692",
+  "oracle_text": "+1: Draw a card, then put a card from your hand on top of your library.\n−1: Exile another target permanent you own, then return it to the battlefield under your control.\n−6: Choose left or right. Each player gains control of all nonland permanents other than Aminatou controlled by the next player in the chosen direction.\nAminatou, the Fateshifter can be your commander.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2018-07-13",
+    "You draw a card and put one back all while Aminatou's first ability is resolving. Nothing can happen between the two, and no player may choose to take actions."
+   ],
+   [
+    "2018-07-13",
+    "Aminatou's second ability can target any permanent you own, including those another player controls."
+   ],
+   [
+    "2018-07-13",
+    "Once the exiled permanent returns, it's considered a new object with no relation to the object that it was. Auras attached to the exiled permanent will be put into their owners' graveyards. Equipment attached to the exiled permanent will become unattached and remain on the battlefield. Any counters on the exiled permanent will cease to exist."
+   ],
+   [
+    "2018-07-13",
+    "If a token is exiled this way, it will cease to exist and won't return to the battlefield."
+   ],
+   [
+    "2018-07-13",
+    "As Aminatou's third ability resolves, you choose a direction, then each player takes control of their new permanents at the same time."
+   ],
+   [
+    "2018-07-13",
+    "The effect of Aminatou's third ability lasts indefinitely. It continues to apply after Aminatou (or her controller) leaves the game."
+   ],
+   [
+    "2018-07-13",
+    "In a two-player game, each player gains control of each permanent the other controls (aside from Aminatou) no matter which direction you choose."
+   ],
+   [
+    "2018-07-13",
+    "In a multiplayer game, if a player leaves the game, all cards that player owns leave as well. The effect of Aminatou's third ability stops applying to all permanents that player controlled and control of them reverts to their previous controller."
+   ]
+  ]
+ },
+ "Way of the Paradox": {
+  "oracle_id": "76771cd1-6b74-49bb-9421-8845fe344567",
+  "oracle_text": "When Way of the Paradox enters, empower Jace 5. (Put five loyalty counters on a Jace token you control. If you don't control one, first create a blue Jace planeswalker token with \"[−1]: Surveil 1\" and \"[−3]: Draw a card.\")\nWhenever you activate a loyalty ability, you gain 1 life. You may play an additional land this turn.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2026-08-21",
+    "Empower Jace won't let you put loyalty counters on nontoken Jace planeswalkers. However, if you control a Jace planeswalker token that you got another way (such as an effect that creates a token that's a copy of a permanent), empower Jace will put loyalty counters on that."
+   ],
+   [
+    "2026-08-21",
+    "Some spells and abilities that empower Jace may require targets. If each target chosen is an illegal target as that spell or ability tries to resolve, it won't resolve. You won't empower Jace."
+   ],
+   [
+    "2026-08-21",
+    "To empower Jace N, if you don't control a Jace planeswalker token, create a blue Jace planeswalker token with 0 loyalty, \"[−1]: Surveil 1,\" and \"[−3]: Draw a card.\" Choose a Jace planeswalker token you control. Put N loyalty counters on it."
+   ],
+   [
+    "2026-08-21",
+    "If you control a Jace planeswalker token, you can't choose to create a new one when you empower Jace. You have to put the loyalty counters on your existing Jace planeswalker token. In the rare case that you control multiple Jace planeswalker tokens, you'll choose one of those tokens to put the loyalty counters on."
+   ]
+  ]
+ },
+ "Sanctum Lurker": {
+  "oracle_id": "3ebd64d2-c178-45a2-a51f-9869754baa0f",
+  "oracle_text": "When this creature enters, empower Jace 1.\nPlaneswalkers you control aren't put into their owners' graveyards for having 0 loyalty.\nPlaneswalkers you control have \"[+2]: This planeswalker deals 1 damage to each opponent and you gain 1 life.\"",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2026-08-21",
+    "Empower Jace won't let you put loyalty counters on nontoken Jace planeswalkers. However, if you control a Jace planeswalker token that you got another way (such as an effect that creates a token that's a copy of a permanent), empower Jace will put loyalty counters on that."
+   ],
+   [
+    "2026-08-21",
+    "Some spells and abilities that empower Jace may require targets. If each target chosen is an illegal target as that spell or ability tries to resolve, it won't resolve. You won't empower Jace."
+   ],
+   [
+    "2026-08-21",
+    "If a planeswalker you control has zero loyalty counters while you control Sanctum Lurker, it will not be put into its owner's graveyard. You may still activate abilities of that planeswalker that cost [0] or that add counters to it as a cost, such as the one granted by Sanctum Lurker."
+   ],
+   [
+    "2026-08-21",
+    "If you control a Jace planeswalker token, you can't choose to create a new one when you empower Jace. You have to put the loyalty counters on your existing Jace planeswalker token. In the rare case that you control multiple Jace planeswalker tokens, you'll choose one of those tokens to put the loyalty counters on."
+   ],
+   [
+    "2026-08-21",
+    "Only one loyalty ability of each planeswalker may be activated per turn, no matter how many it has gained."
+   ],
+   [
+    "2026-08-21",
+    "To empower Jace N, if you don't control a Jace planeswalker token, create a blue Jace planeswalker token with 0 loyalty, \"[−1]: Surveil 1,\" and \"[−3]: Draw a card.\" Choose a Jace planeswalker token you control. Put N loyalty counters on it."
+   ]
+  ]
+ },
+ "Overwrite the Multiverse": {
+  "oracle_id": "d0372cde-bf30-4a1b-93bb-9ff4ac1c116d",
+  "oracle_text": "Exile all creatures. Empower Jace X, where X is the number of creatures exiled this way. (Put that many loyalty counters on a Jace token you control. If you don't control one, first create a blue Jace planeswalker token with \"[−1]: Surveil 1\" and \"[−3]: Draw a card.\")",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2026-08-21",
+    "If you control a Jace planeswalker token, you can't choose to create a new one when you empower Jace. You have to put the loyalty counters on your existing Jace planeswalker token. In the rare case that you control multiple Jace planeswalker tokens, you'll choose one of those tokens to put the loyalty counters on."
+   ],
+   [
+    "2026-08-21",
+    "Some spells and abilities that empower Jace may require targets. If each target chosen is an illegal target as that spell or ability tries to resolve, it won't resolve. You won't empower Jace."
+   ],
+   [
+    "2026-08-21",
+    "To empower Jace N, if you don't control a Jace planeswalker token, create a blue Jace planeswalker token with 0 loyalty, \"[−1]: Surveil 1,\" and \"[−3]: Draw a card.\" Choose a Jace planeswalker token you control. Put N loyalty counters on it."
+   ],
+   [
+    "2026-08-21",
+    "Empower Jace won't let you put loyalty counters on nontoken Jace planeswalkers. However, if you control a Jace planeswalker token that you got another way (such as an effect that creates a token that's a copy of a permanent), empower Jace will put loyalty counters on that."
+   ]
+  ]
+ },
+ "Displacer Kitten": {
+  "oracle_id": "09ef446c-a13d-49d9-a94c-cd5f5a2d440b",
+  "oracle_text": "Avoidance — Whenever you cast a noncreature spell, exile up to one target nonland permanent you control, then return that card to the battlefield under its owner's control.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2022-06-10",
+    "If a token is exiled this way, it will cease to exist and won't return to the battlefield."
+   ],
+   [
+    "2022-06-10",
+    "When the card returns to the battlefield, it will be a new object with no connection to the card that was exiled. Auras attached to the exiled creature will be put into their owners' graveyards. Any Equipment will become unattached and remain on the battlefield. Any counters on the exiled permanent will cease to exist."
+   ]
+  ]
+ },
+ "Teferi, Time Raveler": {
+  "oracle_id": "ae7604bb-4818-45a3-960c-cf3d83f15964",
+  "oracle_text": "Each opponent can cast spells only any time they could cast a sorcery.\n+1: Until your next turn, you may cast sorcery spells as though they had flash.\n−3: Return up to one target artifact, creature, or enchantment to its owner's hand. Draw a card.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2024-01-12",
+    "If an effect allows opponents to cast a spell as though it had flash (for example, if your opponent also controls a Teferi, Time Raveler and activates his +1 loyalty ability), the restriction of Teferi's first ability takes precedence over that permission."
+   ],
+   [
+    "2024-01-12",
+    "You may activate Teferi's last ability without choosing any target. You'll just draw a card. However, if you do choose a target and the target permanent is an illegal target by the time Teferi's last ability tries to resolve, the ability doesn't resolve. You don't draw a card."
+   ]
+  ]
+ },
+ "Leyline Immersion": {
+  "oracle_id": "aa6c4079-72e1-4b2e-bd26-9399298c6105",
+  "oracle_text": "Enchant legendary creature\nEnchanted creature has ward {2} and \"{T}: Add five mana in any combination of colors. Spend this mana only to cast spells.\"",
+  "game_changer": false,
+  "rulings": []
+ },
+ "Ichormoon Gauntlet": {
+  "oracle_id": "9fc7aba7-eda2-4134-9c10-31ee35201b72",
+  "oracle_text": "Planeswalkers you control have \"[0]: Proliferate\" and \"[−12]: Take an extra turn after this one.\"\nWhenever you cast a noncreature spell, choose a counter on target permanent. Put an additional counter of that kind on that permanent.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2023-02-04",
+    "Only one loyalty ability of each planeswalker may be activated per turn, no matter how many it has gained."
+   ]
+  ]
+ },
+ "Loyal Tutor": {
+  "oracle_id": "7e52f151-d1f6-4fcb-9b21-1baecae27da6",
+  "oracle_text": "Search your library for a planeswalker card, reveal it, then shuffle and put that card on top.",
+  "game_changer": false,
+  "rulings": []
+ },
+ "The Theorist, Jace Beleren": {
+  "oracle_id": "89a6e876-0b00-4671-9652-766fd7ef9bf2",
+  "oracle_text": "At the beginning of each opponent's draw step, you draw a card.\n+1: Create a 1/1 blue Illusion creature token.\n−2: For each opponent, return up to one target artifact or creature that player controls to its owner's hand.\n−6: Draw three cards. Then put X +1/+1 counters on each creature you control, where X is the number of cards in your hand.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2026-08-21",
+    "Your opponent will draw the card they normally draw in their draw step before you draw a card from Jace's first ability."
+   ]
+  ]
+ },
+ "Karn's Bastion": {
+  "oracle_id": "9fb8cd81-403a-4988-8f1c-b8eccf8abd9c",
+  "oracle_text": "{T}: Add {C}.\n{4}, {T}: Proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2023-02-04",
+    "To proliferate, you can choose any permanent that has a counter, including ones controlled by opponents. You can choose any player who has a counter, including opponents. You can't choose cards in any zone other than the battlefield, even if they have counters on them."
+   ],
+   [
+    "2023-02-04",
+    "You don't have to choose every permanent or player that has a counter, only the ones you want to add another counter to. Since \"any number\" includes zero, you don't have to choose any permanents at all, and you don't have to choose any players at all."
+   ],
+   [
+    "2023-02-04",
+    "If a player or permanent has more than one kind of counter on it, and you choose for it to get additional counters, it must get one of each kind of counter it already has. You can't have it get just one kind of counter it already has and not the others."
+   ],
+   [
+    "2023-02-04",
+    "An ability that triggers \"Whenever you proliferate\" triggers even if you chose no permanents or players while doing so."
+   ],
+   [
+    "2023-02-04",
+    "Players can respond to a spell or ability whose effect includes proliferating. Once that spell or ability starts to resolve, however, and its controller chooses which permanents and players will get new counters, it's too late for anyone to respond."
+   ],
+   [
+    "2023-02-04",
+    "If a permanent ever has both +1/+1 counters and -1/-1 counters on it at the same time, they're removed in pairs as a state-based action so that the permanent has only one of those kinds of counters on it."
+   ]
+  ]
+ },
+ "Interplanar Beacon": {
+  "oracle_id": "073169f2-da3a-4a93-8c01-b3fd8558d225",
+  "oracle_text": "Whenever you cast a planeswalker spell, you gain 1 life.\n{T}: Add {C}.\n{1}, {T}: Add two mana of different colors. Spend this mana only to cast planeswalker spells.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2019-05-03",
+    "Interplanar Beacon’s first ability resolves before the spell that caused it to trigger. It resolves even if that spell is countered."
+   ],
+   [
+    "2019-05-03",
+    "Both mana produced by Interplanar Beacon’s last ability may be spent on the same planeswalker spell, or each may be spent on different planeswalker spells."
+   ]
+  ]
+ },
+ "Swords to Plowshares": {
+  "oracle_id": "b1544f21-7e98-461b-aed5-e748b0168c52",
+  "oracle_text": "Exile target creature. Its controller gains life equal to its power.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2022-12-08",
+    "Use the power of the creature from when it was last on the battlefield to determine how much life is gained."
+   ]
+  ]
+ },
+ "Path to Exile": {
+  "oracle_id": "d683d985-9888-4d21-8b5f-69e69ce4a03b",
+  "oracle_text": "Exile target creature. Its controller may search their library for a basic land card, put that card onto the battlefield tapped, then shuffle.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2026-01-27",
+    "The controller of the exiled creature isn't required to search their library for a basic land. If that player doesn't, the player won't shuffle their library."
+   ],
+   [
+    "2026-01-27",
+    "If the target creature is an illegal target by the time Path to Exile tries to resolve, it won't resolve and none of its effects will happen. The creature's controller won't search for a basic land card."
+   ]
+  ]
+ },
+ "Vraska, Betrayal's Sting": {
+  "oracle_id": "05d09c55-f551-4cb4-a8d2-4811dccc848d",
+  "oracle_text": "Compleated ({B/P} can be paid with {B} or 2 life. If life was paid, this planeswalker enters with two fewer loyalty counters.)\n0: You draw a card and lose 1 life. Proliferate.\n−2: Target creature becomes a Treasure artifact with \"{T}, Sacrifice this artifact: Add one mana of any color\" and loses all other card types and abilities.\n−9: If target player has fewer than nine poison counters, they get a number of poison counters equal to the difference.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2023-02-04",
+    "A Phyrexian mana symbol contributes 1 toward the mana value of a card, even if life is paid for it. Specifically, Vraska's mana value is always 6."
+   ],
+   [
+    "2023-02-04",
+    "In most cases, the target of Vraska's last loyalty ability will end up with nine poison counters. However, once you calculate what the difference is, replacement effects can change how many poison counters the player actually gets. For example, if the player controls Melira, the Living Cure, they will end up getting one poison counter if they had eight or fewer to begin with."
+   ],
+   [
+    "2023-02-04",
+    "Other replacement effects that would change the number of loyalty counters Vraska enters with will apply as normal."
+   ],
+   [
+    "2023-02-04",
+    "The target of Vraska's second loyalty ability will lose any other subtypes and card types it previously had and will be only a Treasure artifact. It will retain any supertypes it had."
+   ],
+   [
+    "2023-02-04",
+    "The compleated ability looks only at whether a player chose to pay 2 life for a Phyrexian mana symbol as they were casting the spell. If a player paid life for some other reason while casting the spell, that will not reduce the number of loyalty counters the planeswalker enters the battlefield with."
+   ]
+  ]
+ },
+ "Vorinclex, Monstrous Raider": {
+  "oracle_id": "5a3fdf5a-bff8-4896-b288-3f43f9a72d9b",
+  "oracle_text": "Trample, haste\nIf you would put one or more counters on a permanent or player, put twice that many of each of those kinds of counters on that permanent or player instead.\nIf an opponent would put one or more counters on a permanent or player, they put half that many of each of those kinds of counters on that permanent or player instead, rounded down.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2021-02-05",
+    "Unlike many similar effects, Vorinclex cares deeply about who is putting the counters on the permanent or player to determine which of its two last abilities applies."
+   ],
+   [
+    "2021-02-05",
+    "If a permanent enters the battlefield with counters on it, the effect causing the permanent to be given counters may specify which player puts those counters on it. If the effect doesn’t specify a player, the object’s controller puts those counters on it."
+   ],
+   [
+    "2021-02-05",
+    "If two or more effects attempt to modify how many counters would be put onto a permanent you control, you choose the order to apply those effects, no matter who controls the sources of those effects."
+   ]
+  ]
+ },
+ "Tekuthal, Inquiry Dominus": {
+  "oracle_id": "4716ab91-30e6-4c63-8389-a9db8f9414d8",
+  "oracle_text": "Flying\nIf you would proliferate, proliferate twice instead.\n{1}{U/P}{U/P}, Remove three counters from among other artifacts, creatures, and planeswalkers you control: Put an indestructible counter on Tekuthal. ({U/P} can be paid with either {U} or 2 life.)",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2023-02-04",
+    "To proliferate, you can choose any permanent that has a counter, including ones controlled by opponents. You can choose any player who has a counter, including opponents. You can't choose cards in any zone other than the battlefield, even if they have counters on them."
+   ],
+   [
+    "2023-02-04",
+    "You don't have to choose every permanent or player that has a counter, only the ones you want to add another counter to. Since \"any number\" includes zero, you don't have to choose any permanents at all, and you don't have to choose any players at all."
+   ],
+   [
+    "2023-02-04",
+    "If a player or permanent has more than one kind of counter on it, and you choose for it to get additional counters, it must get one of each kind of counter it already has. You can't have it get just one kind of counter it already has and not the others."
+   ],
+   [
+    "2023-02-04",
+    "An ability that triggers \"Whenever you proliferate\" triggers even if you chose no permanents or players while doing so."
+   ],
+   [
+    "2023-02-04",
+    "Players can respond to a spell or ability whose effect includes proliferating. Once that spell or ability starts to resolve, however, and its controller chooses which permanents and players will get new counters, it's too late for anyone to respond."
+   ],
+   [
+    "2023-02-04",
+    "If a permanent ever has both +1/+1 counters and -1/-1 counters on it at the same time, they're removed in pairs as a state-based action so that the permanent has only one of those kinds of counters on it."
+   ]
+  ]
+ },
+ "Lae'zel, Vlaakith's Champion": {
+  "oracle_id": "c066f921-e349-45d1-8ec3-0955d10bbf19",
+  "oracle_text": "If you would put one or more counters on a creature or planeswalker you control or on yourself, put that many plus one of each of those kinds of counters on that permanent or player instead.\nChoose a Background (You can have a Background as a second commander.)",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2022-06-10",
+    "Choose a Background is a variant of the partner ability. You may have two commanders if one of them is a legendary creature with the choose a background ability and the other is a legendary Background enchantment. Backgrounds and cards with choose a Background do not interact with cards which have any other partner ability."
+   ],
+   [
+    "2022-06-10",
+    "If your Commander deck has two commanders, you can include only cards whose own color identities are also found in your commanders' combined color identities."
+   ],
+   [
+    "2022-06-10",
+    "Both commanders start in the command zone, and the remaining 98 cards (or 58 cards in a Commander Draft game) of your deck are shuffled to become your library."
+   ],
+   [
+    "2022-06-10",
+    "If your commander loses the choose a Background ability or stops being a Background during the game, as appropriate, it is still your commander."
+   ],
+   [
+    "2022-06-10",
+    "Once the game begins, your two commanders are tracked separately. If you cast one, you won't have to pay an additional {2} the first time you cast the other. A player loses the game after having been dealt 21 combat damage from any one of them, not from both of them combined (although your Background won't usually be a creature anyway)."
+   ],
+   [
+    "2022-06-10",
+    " If something refers to your commander while you have two commanders, it refers to one of them of your choice. If you are instructed to perform an action on your commander (e.g. put it from the command zone into your hand due to Command Beacon), you choose one of your commanders at the time the effect happens."
+   ],
+   [
+    "2022-06-10",
+    "An effect that checks whether you control your commander is satisfied if you control one or both of your two commanders."
+   ],
+   [
+    "2022-06-10",
+    "You can choose two commanders that are the same color or colors."
+   ],
+   [
+    "2022-06-10",
+    "If a card refers to a commander creature you own, a Background won't usually be counted or included for that effect. If another spell or ability causes your Background to become a creature, however, it will be included. Any effect that refers to your commander or a commander you own or control without specifying creature will apply to a Background that is your commander, as appropriate."
+   ],
+   [
+    "2022-06-10",
+    "If you control a Background that grants an ability to commander creatures you own, and you own more than one commander creature, each of them will have that ability."
+   ]
+  ]
+ },
+ "Mutational Advantage": {
+  "oracle_id": "2daa5b89-e772-4a2b-ad52-bbbf148c7b2f",
+  "oracle_text": "Permanents you control with counters on them gain hexproof and indestructible until end of turn. Prevent all damage that would be dealt to those permanents this turn. Proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2024-03-08",
+    "The set of permanents affected by Mutational Advantage is determined at the time Mutational Advantage resolves. Permanents that gain counters later in the turn won’t become affected by this effect, and permanents that lose all of their counters later in the turn won’t stop being affected."
+   ],
+   [
+    "2024-03-08",
+    "You can choose any permanent that has a counter, including ones controlled by opponents. You can choose any player who has a counter, including opponents. You can’t choose cards in any zone other than the battlefield, even if they have counters on them."
+   ],
+   [
+    "2024-03-08",
+    "You don’t have to choose every permanent or player that has a counter—only the ones you want to add counters to. Since “any number” includes zero, you don’t have to choose any permanents at all, and you don’t have to choose any players at all."
+   ],
+   [
+    "2024-03-08",
+    "If a player or permanent has more than one kind of counter on it, and you choose for it to get additional counters, it must get one of each kind of counter it already has. You can’t have it get just one kind of counter it already has and not the others."
+   ],
+   [
+    "2024-03-08",
+    "Players can respond to a spell or ability whose effect includes proliferating. Once that spell or ability starts to resolve, however, and its controller chooses which permanents and players will get new counters, it’s too late for anyone to respond."
+   ],
+   [
+    "2024-03-08",
+    "Some spells and abilities that cause you to proliferate may require targets. If each target chosen is an illegal target as that spell or ability tries to resolve, it won’t resolve. You won’t proliferate."
+   ]
+  ]
+ },
+ "Countersculpt": {
+  "oracle_id": "fc3353e9-fe24-4ca7-bff8-9da767f2903a",
+  "oracle_text": "As an additional cost to cast this spell, behold a Jace or pay {1}. (To behold a Jace, choose a Jace you control or reveal a Jace card from your hand.)\nCounter target spell. Empower Jace 1. (Put a loyalty counter on a Jace token you control. If you don't control one, first create a blue Jace planeswalker token with \"[−1]: Surveil 1\" and \"[−3]: Draw a card.\")",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2026-08-21",
+    "If you control a Jace planeswalker token, you can't choose to create a new one when you empower Jace. You have to put the loyalty counters on your existing Jace planeswalker token. In the rare case that you control multiple Jace planeswalker tokens, you'll choose one of those tokens to put the loyalty counters on."
+   ],
+   [
+    "2026-08-21",
+    "To empower Jace N, if you don't control a Jace planeswalker token, create a blue Jace planeswalker token with 0 loyalty, \"[−1]: Surveil 1,\" and \"[−3]: Draw a card.\" Choose a Jace planeswalker token you control. Put N loyalty counters on it."
+   ],
+   [
+    "2026-08-21",
+    "Some spells and abilities that empower Jace may require targets. If each target chosen is an illegal target as that spell or ability tries to resolve, it won't resolve. You won't empower Jace."
+   ],
+   [
+    "2026-08-21",
+    "Empower Jace won't let you put loyalty counters on nontoken Jace planeswalkers. However, if you control a Jace planeswalker token that you got another way (such as an effect that creates a token that's a copy of a permanent), empower Jace will put loyalty counters on that."
+   ]
+  ]
+ },
+ "Jace's Machinations": {
+  "oracle_id": "89bd056d-8f5b-4d0e-b80a-58a984e21100",
+  "oracle_text": "Until end of turn, you may activate loyalty abilities of Jace planeswalkers you control on any player's turn any time you could cast an instant.\nEmpower Jace 8. (Put eight loyalty counters on a Jace token you control. If you don't control one, first create a blue Jace planeswalker token with \"[−1]: Surveil 1\" and \"[−3]: Draw a card.\")",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2026-08-21",
+    "To empower Jace N, if you don't control a Jace planeswalker token, create a blue Jace planeswalker token with 0 loyalty, \"[−1]: Surveil 1,\" and \"[−3]: Draw a card.\" Choose a Jace planeswalker token you control. Put N loyalty counters on it."
+   ],
+   [
+    "2026-08-21",
+    "If you control a Jace planeswalker token, you can't choose to create a new one when you empower Jace. You have to put the loyalty counters on your existing Jace planeswalker token. In the rare case that you control multiple Jace planeswalker tokens, you'll choose one of those tokens to put the loyalty counters on."
+   ],
+   [
+    "2026-08-21",
+    "You may still activate only one loyalty ability of each permanent you control during the turn you cast Jace's Machinations."
+   ],
+   [
+    "2026-08-21",
+    "Some spells and abilities that empower Jace may require targets. If each target chosen is an illegal target as that spell or ability tries to resolve, it won't resolve. You won't empower Jace."
+   ],
+   [
+    "2026-08-21",
+    "Empower Jace won't let you put loyalty counters on nontoken Jace planeswalkers. However, if you control a Jace planeswalker token that you got another way (such as an effect that creates a token that's a copy of a permanent), empower Jace will put loyalty counters on that."
+   ]
+  ]
+ },
+ "Staff of Compleation": {
+  "oracle_id": "11c7662f-e688-40a6-98fd-6ae89d231b44",
+  "oracle_text": "{T}, Pay 1 life: Destroy target permanent you own.\n{T}, Pay 2 life: Add one mana of any color.\n{T}, Pay 3 life: Proliferate.\n{T}, Pay 4 life: Draw a card.\n{5}: Untap this artifact.",
+  "game_changer": false,
+  "rulings": []
+ },
+ "Baxter Building": {
+  "oracle_id": "71bc69a5-7cec-4abd-b97d-13f8e1f9afac",
+  "oracle_text": "{T}: Add {C}.\n{4}, {T}: Add four mana in any combination of colors.\n{4}, {T}: Draw a card. Activate only if you control a creature with toughness 4 or greater.",
+  "game_changer": false,
+  "rulings": []
+ },
+ "Liliana's Talent": {
+  "oracle_id": "8c55039d-1303-420c-8547-ebdffb63bf89",
+  "oracle_text": "Enchant planeswalker\nEnchanted planeswalker has \"[−8]: Put all creature cards from all graveyards onto the battlefield under your control.\"\nWhenever a creature deals damage to enchanted planeswalker, destroy that creature.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2023-04-14",
+    "You can activate one loyalty ability of each planeswalker you control during each of your turns, whether that ability is one it always has or the one it gains because of Liliana's Talent."
+   ],
+   [
+    "2023-04-14",
+    "The last ability of Liliana's Talent will trigger whenever a creature deals any damage to the enchanted planeswalker, not just combat damage."
+   ]
+  ]
+ },
+ "Teferi's Talent": {
+  "oracle_id": "efc23669-1bbb-487f-94b3-cc07f3cd35f6",
+  "oracle_text": "Enchant planeswalker\nEnchanted planeswalker has \"[−12]: You get an emblem with 'You may activate loyalty abilities of planeswalkers you control on any player's turn any time you could cast an instant.'\"\nWhenever you draw a card, put a loyalty counter on enchanted planeswalker.",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2023-04-14",
+    "You can activate one loyalty ability of each planeswalker you control during each of your turns, whether that ability is one it always has or the one it gains because of Teferi's Talent."
+   ]
+  ]
+ },
+ "Domri, Chaos Bringer": {
+  "oracle_id": "2a5408ed-8b47-4896-97e4-aa102a4b85c9",
+  "oracle_text": "+1: Add {R} or {G}. If that mana is spent on a creature spell, it gains riot. (It enters with your choice of a +1/+1 counter or haste.)\n−3: Look at the top four cards of your library. You may reveal up to two creature cards from among them and put them into your hand. Put the rest on the bottom of your library in a random order.\n−8: You get an emblem with \"At the beginning of each end step, create a 4/4 red and green Beast creature token with trample.\"",
+  "game_changer": false,
+  "rulings": [
+   [
+    "2019-01-25",
+    "Because it’s a loyalty ability, Domri’s first ability isn’t a mana ability. It can be activated only any time you could cast a sorcery. It uses the stack and can be responded to."
+   ],
+   [
+    "2019-01-25",
+    "Riot is a replacement effect. Players can’t respond to your choice of +1/+1 counter or haste, and they can’t take actions while the creature is on the battlefield without one or the other."
+   ],
+   [
+    "2019-01-25",
+    "If a creature entering the battlefield has riot but can’t have a +1/+1 counter put onto it, it gains haste."
+   ],
+   [
+    "2019-01-25",
+    "If you choose for the creature to gain haste, it gains haste indefinitely. It won’t lose it as the turn ends or as another player gains control of it."
+   ],
+   [
+    "2019-01-25",
+    "If a creature enters the battlefield with two instances of riot, you may choose to have it get two +1/+1 counters, one +1/+1 counter and haste, or two instances of haste. Multiple instances of haste on the same creature are redundant, but we’re not going to tell the Gruul how to live their lives."
+   ]
+  ]
+ }
+}
