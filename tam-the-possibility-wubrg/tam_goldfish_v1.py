@@ -70,6 +70,11 @@ SELF_LIFE_FLOOR = 10                     # nao pago vida opcional (choque, Staff
 TAM_ACTIVATE = True                      # chave: False = a Tam nunca usa a habilidade de proliferate (sensibilidade)
 COMBO_EXECUTE = True                     # executa Orrery + Tezzeret + Chain Veil (loop infinito) quando ha' um pagamento de dano em campo (All Will Be One / Sanctum Lurker)
 BASE_TURNS = 12
+# Tetos por turno (premissa declarada): laco infinito de verdade existe no deck (Orrery + Tezzeret + Chain Veil reativam todos os planeswalkers sem fim; Wrenn + Gauntlet recasta do cemiterio). O motor
+# nao simula "infinito": o combo so' FECHA a partida com pagamento em campo (`try_infinite_combo`); sem pagamento, o teto abaixo encerra o laco. Cada vez que um teto aperta e' contado em
+# `m["turn_cap_activations"]` / `m["turn_cap_spells"]`: se aparecer com frequencia, o numero da partida e' piso, nao valor real.
+MAX_LOYALTY_ACTS_PER_TURN = 80
+MAX_SPELLS_PER_TURN = 60
 
 # =========================================================
 # CARD DATABASE (do recorte do cache; tags e comportamento por NOME)
@@ -707,12 +712,24 @@ def _src_sort(s: Src):
     return (n * 10 - (5 if s.perm is not None and is_creature(s.perm) else 0) - (3 if len(s.units) > 1 else 0) + cost, s.name, s.perm.uid if s.perm else 0)
 
 
+class KS(frozenset):
+    """Conjunto de cores de uma unidade de mana FLUTUANTE que lembra a chave de origem (`.key`: C/W/U/B/R/G/A). Achado 2026-10-19: com o Chromatic Orrery em campo ('spend mana as though any
+    color') o conjunto virava ANYC e `pay_mana` descontava a chave 'A' em vez da chave real: o `{C}` flutuante nunca saia do pool e 'A' ia a -119 (mana fantasma, Wrenn reconjurada do cemiterio em laco)."""
+    key = None
+
+
+def keyed(colors, key: str) -> "KS":
+    k = KS(colors)
+    k.key = key
+    return k
+
+
 def pool_units(state: GameState) -> list:
     """Mana flutuante da fase (src None). 'A' = qualquer cor, so' pra magia (sobra da Leyline Immersion)."""
     out = []
     for col in ("C", "W", "U", "B", "R", "G", "A"):
-        for _ in range(state.pool.get(col, 0)):
-            out.append((None, ALL5 if col == "A" else frozenset({col}), "spell" if col == "A" else None))
+        for _ in range(max(0, state.pool.get(col, 0))):
+            out.append((None, keyed(ALL5 if col == "A" else frozenset({col}), col), "spell" if col == "A" else None))
     return out
 
 
@@ -766,7 +783,7 @@ def _plan(state: GameState, generic: int, pips: tuple, ctx: Ctx = CTX_SPELL, src
     if srcs is None:
         srcs = mana_sources(state, ctx)
     any_pay = _any_color_pay(state, ctx)
-    base = [(None, ANYC if any_pay else u[1], u[2]) for u in pool_units(state) if _ok_restr(u[2], ctx)]
+    base = [(None, keyed(ANYC, u[1].key) if any_pay else u[1], u[2]) for u in pool_units(state) if _ok_restr(u[2], ctx)]
     for s in srcs:
         base.extend(_units_of(s, any_pay, ctx))
     r = _match(base, generic, pips)
@@ -827,7 +844,7 @@ def pay_mana(state: GameState, generic: int, pips: tuple, ctx: Ctx = CTX_SPELL) 
     for i in used:
         src, cols, restr = units[i]
         if src is None:
-            pool_used[_pool_key(cols)] += 1
+            pool_used[getattr(cols, "key", None) or _pool_key(cols)] += 1
         else:
             cnt_used[id(src)] += 1
             if src.life_colored and i in matched:
@@ -838,7 +855,7 @@ def pay_mana(state: GameState, generic: int, pips: tuple, ctx: Ctx = CTX_SPELL) 
         srcs_tapped[id(cs)] = (cs, cnt_used.get(id(cs), 0), True)
         for u in fed:
             if u[0] is None:
-                fed_pool[_pool_key(u[1])] += 1
+                fed_pool[getattr(u[1], "key", None) or _pool_key(u[1])] += 1
             else:
                 cnt_used[id(u[0])] += 1
                 srcs_tapped.setdefault(id(u[0]), (u[0], 0, False))
@@ -849,6 +866,8 @@ def pay_mana(state: GameState, generic: int, pips: tuple, ctx: Ctx = CTX_SPELL) 
     state._pool_used = sum(pool_used.values())
     for col, n in list(pool_used.items()) + list(fed_pool.items()):
         state.pool[col] = state.pool.get(col, 0) - n
+        if state.pool[col] < 0:
+            raise RuntimeError(f"mana fantasma: pool[{col}] = {state.pool[col]}")      # invariante: o pool nunca fica negativo (a regressao mostra como excecao)
     for sid, (src, _n, is_conv) in srcs_tapped.items():
         total_taken = cnt_used.get(sid, 0)
         if src.perm is not None and not src.sac:
@@ -2018,6 +2037,9 @@ def pw_acts_used(state: GameState, p: Permanent) -> int:
 
 def pw_can_activate(state: GameState, p: Permanent, window: str = "main") -> bool:
     if not is_pw(p):
+        return False
+    if state.loyalty_acts_this_turn >= MAX_LOYALTY_ACTS_PER_TURN:
+        state.m["turn_cap_activations"] += 1
         return False
     if window == "opp":
         return "teferi_ta" in state.emblems and pw_acts_used(state, p) < 1
@@ -4236,6 +4258,9 @@ def activate_planeswalkers(state: GameState, pre: bool = False, window: str = "m
 
 def cast_candidates(state: GameState) -> list:
     out = []
+    if state.spells_cast_this_turn >= MAX_SPELLS_PER_TURN:
+        state.m["turn_cap_spells"] += 1
+        return out
     seen = []
     for name in state.hand:
         if name in seen:
@@ -4505,6 +4530,12 @@ def expire_effects_upkeep(state: GameState):
     state.dihada_shield = None
 
 
+def empty_pool(state: GameState):
+    """CR 500.4: o mana flutuante (e a marca de riot da Domri) some no fim de cada etapa e fase. Antes so' o upkeep esvaziava: o mana do main 1 sobrava pro main 2 e ate' pro turno dos oponentes."""
+    state.pool = {}
+    state.riot_pool = 0
+
+
 def upkeep_step(state: GameState):
     state.lands_played_this_turn = 0
     state.extra_land_drops = 0
@@ -4559,6 +4590,7 @@ def end_step(state: GameState):
     """Fim do MEU turno: Chandra (X de dano a CADA oponente, X = planeswalkers), Teferi Hero (desvira 2 terrenos), Vronos (planeswalkers saem de fase), devolucoes atrasadas (Oath of Teferi /
     Eternal Wanderer), emblema do Domri, The Chain Veil (perde 2 de vida se nao ativei lealdade), limite de mao."""
     state.phase = "end"
+    empty_pool(state)
     for _ in range(count_named(state, "Chandra, Legacy of Fire")):
         x = len(pws(state))
         damage_each_opp(state, x, "chandra_end_step")
@@ -4589,6 +4621,7 @@ def end_step(state: GameState):
     if state.game_over:
         return
     use_spare_mana(state)
+    empty_pool(state)
     while len(state.hand) > 7:
         c = min(state.hand, key=lambda x: (discard_value(state, x), x))
         state.hand.remove(c)
@@ -4603,6 +4636,13 @@ def end_step(state: GameState):
 
 
 def main_phase(state: GameState, phase: str):
+    try:
+        _main_phase(state, phase)
+    finally:
+        empty_pool(state)
+
+
+def _main_phase(state: GameState, phase: str):
     if state.game_over:
         return
     state.phase = phase
@@ -4736,6 +4776,7 @@ def combat_step(state: GameState):
     if state.game_over:
         return
     state.phase = "combat"
+    empty_pool(state)
     # Kiora of Salt and Sand: 'Whenever you attack, if you've activated a loyalty ability this turn, untap target attacking creature. It can't be blocked this turn.'
     attackers = pick_attackers(state)
     if not attackers or not alive_opps(state):

@@ -161,3 +161,47 @@ def _():
     for n in names:
         types |= set(T.CARD_DB[n].subtypes)
     check(len(names) == 25 and len(types) == 21, f"{len(names)} planeswalkers, {len(types)} tipos")
+
+
+@test("Mana flutuante com o Chromatic Orrery em campo: pagar com {C} do pool DESCONTA o {C} (achado 2026-10-19: antes descontava a chave 'A' e o {C} nunca saia: mana fantasma)")
+def _():
+    st = mk(bf=["Chromatic Orrery"])
+    st.pool = {"C": 5}
+    st.battlefield[0].tapped = True                       # so' o pool paga
+    check(T.pay_mana(st, 3, ()))
+    check(st.pool.get("C") == 2 and st.pool.get("A", 0) == 0, str(st.pool))
+    check(T.pay_mana(st, 0, (frozenset("G"), frozenset("U"))) and st.pool.get("C") == 0, "Orrery: o {C} paga pips coloridos e sai do pool")
+    check(not T.pay_mana(st, 1, ()), "pool vazio: nao paga")
+    st = mk(bf=["Oath of Nissa", "Garruk Wildspeaker" if False else "Sol Ring"])
+    st.pool = {"C": 2, "R": 1}
+    check(T.pay_mana(st, 0, (frozenset("W"), frozenset("W")), T.ctx_for("Garruk Wildspeaker")) and st.pool.get("C") == 0, "Oath of Nissa (so' PW): idem")
+
+
+@test("Invariante: o pool nunca fica negativo (pay_mana levanta erro se isso ocorrer)")
+def _():
+    st = mk(bf=["Sol Ring", "Chromatic Orrery", "Arcane Signet", "Command Tower", "Ignoble Hierarch", "Faeburrow Elder", "Oko, Thief of Crowns"])
+    for i in range(60):
+        st.pool = {"C": 3, "G": 1, "A": 2}
+        for n in ("Garruk Wildspeaker", "Elspeth, Sun's Champion", "Sol Ring", "Tam, the Possibility"):
+            if T.can_pay(st, *T.effective_cost(st, n), T.ctx_for(n)):
+                T.pay_mana(st, *T.effective_cost(st, n), T.ctx_for(n))
+        check(all(v >= 0 for v in st.pool.values()), str(st.pool))
+        for p in st.battlefield:
+            p.tapped = False
+
+
+@test("O mana flutuante some no fim de cada fase (CR 500.4): o do main 1 NAO sobra pro main 2, nem pro turno do oponente")
+def _():
+    st = mk(bf=["Sol Ring", "Chromatic Orrery"], turn=7)
+    st.phase = "main1"
+    st.pool = {"R": 3, "C": 2}
+    T.main_phase(st, "main1")
+    check(st.pool == {} and st.riot_pool == 0, str(st.pool))
+    st = mk(bf=["Sol Ring"], turn=7)
+    st.pool = {"C": 2}
+    T.end_step(st)
+    check(st.pool == {})
+    st = mk(bf=["Sol Ring"], turn=7)
+    st.pool = {"C": 2}
+    T.combat_step(st)
+    check(st.pool == {})
