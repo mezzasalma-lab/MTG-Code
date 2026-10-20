@@ -76,6 +76,7 @@ SAGE_PROLIFERATE_OWN_RAD = False      # proliferate nos rad counters PROPRIOS? (
 ALL_ATTACKERS_COMBAT = True
 KOZILEK_SHUFFLE_ENABLED = True        # chave de teste do "seguro contra self-mill": False = Kozilek sem o embaralhar
 LANDFALL_PAYOFF_FIRST = True          # conjura Ruin Crab / Icetill Explorer / Evolution Sage ANTES de jogar o terreno quando o mana de agora ja' paga (o terreno entao dispara o landfall); False = ordem do commit 91b1a3d (terreno primeiro)
+FIRST_TURN_SKIPS_DRAW = False         # Commander e' multijogador: ninguem pula a compra do T1 (so' o 1o jogador no 1x1, CR 103.8a). True = o comportamento ate' 2026-10-20 (commit 4d85fbc), so' pra A/B e bit-identidade
 LANDFALL_PAYOFFS = frozenset({"Ruin Crab", "Icetill Explorer", "Evolution Sage"})
 LANDFALL_GUARD_DRYRUN = True             # True (padrao desde 2026-10-07) = o payoff so' passa na frente do terreno se um ensaio a seco do resto da fase mostrar que nenhuma jogada nao-terreno se perde (comandante, rocha, ...), como nos outros 5 simuladores; False = guarda ARITMETICA do comandante (custo <= mana de agora + 1), cega a cor/landfall/land drop extra: foi a arquivada em 2026-10-06 e superestimou o efeito (Ruin Crab +21% contra +13%)
 
@@ -2981,7 +2982,7 @@ def land_play_score_perm(state: GameState, p: Permanent) -> float:
 
 
 def draw_step(state: GameState):
-    if state.turn == 1 and state.on_play:
+    if FIRST_TURN_SKIPS_DRAW and state.turn == 1 and state.on_play:
         return
     draw_cards(state, 1, source="normal")
 

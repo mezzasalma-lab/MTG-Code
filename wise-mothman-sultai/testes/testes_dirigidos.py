@@ -2619,6 +2619,29 @@ def lista_viva_tem_fabled_passage_e_nao_a_vista_e_a_vista_volta_por_swaps():
         m.SWAPS = (); m.SWAP_IN_PLACE = False
 
 
+@teste
+def compra_no_turno_1_commander_multijogador():
+    """2026-10-20: ninguem pula a compra do T1 em Commander (so' o 1o jogador no 1x1, CR 103.8a). Antes o draw_step retornava no T1 (on_play=True)."""
+    assert m.FIRST_TURN_SKIPS_DRAW is False
+    for seed in (1, 2, 3, 7, 11):
+        r0 = m.simulate_one(seed, 0)
+        r1 = m.simulate_one(seed, 1)
+        d = len(r0.library) - len(r1.library)
+        assert d >= 1, f"seed {seed}: a biblioteca tem de cair >= 1 no T1 (compra), caiu {d}"
+        assert r1.draws_by_source.get("normal", 0) == 1, f"seed {seed}: draws_by_source={dict(r1.draws_by_source)}"
+    # chave ligada = comportamento antigo: nenhuma compra normal no T1
+    m.FIRST_TURN_SKIPS_DRAW = True
+    try:
+        for seed in (1, 2, 3):
+            r1 = m.simulate_one(seed, 1)
+            assert r1.draws_by_source.get("normal", 0) == 0, f"seed {seed}: com a chave ligada nao deveria comprar no T1"
+    finally:
+        m.FIRST_TURN_SKIPS_DRAW = False
+    # o T2 compra nos dois casos
+    r2 = m.simulate_one(1, 2)
+    assert r2.draws_by_source.get("normal", 0) == 2
+
+
 def main():
     for t in TESTS:
         t()
