@@ -1,0 +1,70 @@
+Bit-identidade: arquivo vivo com as chaves {'FIRST_TURN_SKIPS_DRAW': True} == snapshot codigo/mothman_goldfish_v1_ANTES_4d85fbc.py; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: [])
+padrao: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+resiliencia: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+Regressao: N=20000 por configuracao/modo, sementes 5_000_000+i; excecoes + invariantes genericas (carta acima do baralho em alguma zona; contadores negativos)
+depois (repositorio)   padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+depois (repositorio)   resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+LOTE N=2000 sementes 1000000..1001999, 12 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T8                                   0.6220       0.7030      +0.0810 ±0.0217  
+  *cleared_T10                                  0.8915       0.9205      +0.0290 ±0.0139  
+  *first_elim_T6                                0.4830       0.5525      +0.0695 ±0.0208  
+   opps_eliminated_total                        2.9110       2.9300      +0.0190 ±0.0194  
+   cards_milled_opp_total                      79.5575      82.3095      +2.7520 ±2.9326  
+   nonland_milled_opp_total                    47.5610      49.0380      +1.4770 ±1.7313  
+  *mothman_counters_placed_total               76.6955      83.3830      +6.6875 ±3.7942  
+  *ruin_crab_mills                              1.5030       1.7005      +0.1975 ±0.1288  
+  *lands_entered_total                         11.3225      11.6615      +0.3390 ±0.2098  
+   cards_milled_self_total                     15.9825      16.2235      +0.2410 ±0.5386  
+  *library_min                                 52.8665      51.1060      -1.7605 ±0.9526  
+  *life_min                                    33.1050      32.9300      -0.1750 ±0.1548  
+   self_lost                                    0.0270       0.0255      -0.0015 ±0.0094  
+  *turn_id                                     28.6570      27.6310      -1.0260 ±0.1658  
+  *opp_turns_total                             20.2575      19.4995      -0.7580 ±0.1247  
+  *opp_spells_total                            18.0280      17.2450      -0.7830 ±0.1311  
+  *turn                                         8.3995       8.1315      -0.2680 ±0.0455  
+  *len_mana_by_turn                             8.3875       8.1215      -0.2660 ±0.0455  
+  *len_cards_in_hand_by_turn                    7.4970       7.2345      -0.2625 ±0.0468  
+  *len_counters_on_board_by_turn                7.4970       7.2345      -0.2625 ±0.0468  
+  *len_creature_count_by_turn                   7.4970       7.2345      -0.2625 ±0.0468  
+  *len_lands_in_play_by_turn                    7.4970       7.2345      -0.2625 ±0.0468  
+  *len_library_by_turn                          7.4970       7.2345      -0.2625 ±0.0468  
+  *len_mothman_power_turn                       7.4970       7.2345      -0.2625 ±0.0468  
+  *opp_noncreature_spells_total                 9.9435       9.5295      -0.4140 ±0.0805  
+  *cleared_T7                                   0.2080       0.2925      +0.0845 ±0.0202  
+  *commander_cast_turn__ate_T4                  0.6805       0.7510      +0.0705 ±0.0171  
+LOTE N=2000 sementes 1000000..1001999, 12 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T8                                   0.2915       0.3645      +0.0730 ±0.0220  
+  *cleared_T10                                  0.6305       0.6820      +0.0515 ±0.0231  
+  *first_elim_T6                                0.2895       0.3405      +0.0510 ±0.0192  
+  *opps_eliminated_total                        2.6385       2.7270      +0.0885 ±0.0383  
+  *cards_milled_opp_total                      66.1760      71.6205      +5.4445 ±2.8266  
+  *nonland_milled_opp_total                    40.2435      43.6280      +3.3845 ±1.7011  
+  *mothman_counters_placed_total               55.7040      63.6390      +7.9350 ±3.2181  
+  *ruin_crab_mills                              1.0650       1.3100      +0.2450 ±0.1274  
+  *lands_entered_total                         11.5200      11.9185      +0.3985 ±0.2265  
+   cards_milled_self_total                     16.0245      16.6225      +0.5980 ±0.6043  
+  *library_min                                 55.8925      53.3865      -2.5060 ±0.9827  
+   life_min                                    30.8830      30.7410      -0.1420 ±0.2008  
+  *self_lost                                    0.0130       0.0215      +0.0085 ±0.0079  
+  *len_cards_in_hand_by_turn                    8.9470       8.6120      -0.3350 ±0.0802  
+  *len_counters_on_board_by_turn                8.9470       8.6120      -0.3350 ±0.0802  
+  *len_creature_count_by_turn                   8.9470       8.6120      -0.3350 ±0.0802  
+  *len_lands_in_play_by_turn                    8.9470       8.6120      -0.3350 ±0.0802  
+  *len_library_by_turn                          8.9470       8.6120      -0.3350 ±0.0802  
+  *len_mothman_power_turn                       8.9470       8.6120      -0.3350 ±0.0802  
+  *len_mana_by_turn                             9.7160       9.4195      -0.2965 ±0.0710  
+  *turn                                         9.7225       9.4270      -0.2955 ±0.0710  
+  *turn_id                                     33.6705      32.5015      -1.1690 ±0.2851  
+  *opp_turns_total                             23.9480      23.0745      -0.8735 ±0.2208  
+  *opp_spells_total                            21.4630      20.6385      -0.8245 ±0.2116  
+  *commander_cast_turn__ate_T4                  0.6315       0.6945      +0.0630 ±0.0179  
+  *opp_noncreature_spells_total                11.7980      11.3725      -0.4255 ±0.1227  
+  *commander_cast_turn__ate_T5                  0.7380       0.7910      +0.0530 ±0.0165  
