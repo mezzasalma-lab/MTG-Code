@@ -71,7 +71,8 @@ TAM_ACTIVATE = True                      # chave: False = a Tam nunca usa a habi
 COMBO_EXECUTE = True                     # executa Orrery + Tezzeret + Chain Veil (loop infinito) quando ha' um pagamento de dano em campo (All Will Be One / Sanctum Lurker)
 BASE_TURNS = 12
 FIRST_TURN_SKIPS_DRAW = False            # Commander com 3+ jogadores: NINGUEM pula a compra do 1o turno (so' o jogador que comeca num jogo de 2 pula, CR 103.8). Confirmado pelo usuario em 2026-10-19
-                                         # ("no commander sempre ha' compra no 1o turno"; a mao de 8 do goldfish manual #1 = 7 + a compra do T1). Os outros simuladores do repositorio herdam o `on_play` que pula: ver goldfish-log.md.
+                                         # ("no commander sempre ha' compra no 1o turno"; a mao de 8 do goldfish manual #1 = 7 + a compra do T1). Maralen, Kutzil, Hei Bai, Megatron, Nekusar, Rat King, Ulalek, Ur-Dragon e Vihaan
+                                         # ja' compram (achado de 2026-09-18); o Mothman AINDA pula (confirmado por execucao em 2026-10-19); os demais nao foram verificados: ver goldfish-log.md, secao 5.
 # Tetos por turno (premissa declarada): laco infinito de verdade existe no deck (Orrery + Tezzeret + Chain Veil reativam todos os planeswalkers sem fim; Wrenn + Gauntlet recasta do cemiterio). O motor
 # nao simula "infinito": o combo so' FECHA a partida com pagamento em campo (`try_infinite_combo`); sem pagamento, o teto abaixo encerra o laco. Cada vez que um teto aperta e' contado em
 # `m["turn_cap_activations"]` / `m["turn_cap_spells"]`: se aparecer com frequencia, o numero da partida e' piso, nao valor real.

@@ -19,6 +19,7 @@ Arquivado conforme a Regra #8 da CLAUDE.md. **O que é:** o log que o usuário c
 |---|---|---|
 | `dados/mensagem_usuario_original.txt` | a mensagem inteira como chegou (texto + JSON + a frase final) | bruto, intocado |
 | `dados/goldfish_manual_1_bruto.json` | só o JSON do log: 10 blocos (um por turno), cada evento = movimento de carta/contador no playtester | bruto, intocado |
+| `dados/fichas_do_oponente_scryfall.json` | Scryfall: **Golem** e **Doombot** do log são FICHAS 3/3 de artefato (não cartas; o cache do repositório não guarda fichas), as outras 4 cartas de oponente (Nature's Claim, Assassin's Trophy, Witness Protection, Aetherize) já estão no `oracle-cache.json` | bruto |
 | `orquestracao/linha_do_tempo.py` → `resumos/linha_do_tempo.md` | resumo por turno, **só do bruto** (compras, terreno, magias, buscas, saídas, cartas do oponente, última lealdade do bloco) | usado |
 | `orquestracao/replay_manual_1.py`, `replay_stats.py` → `resumos/replay_padrao_300.txt`, `replay_resiliencia_300.txt` | o simulador jogando as MESMAS 18 cartas na MESMA ordem (resto do baralho em 300 ordens) | usado |
 | `testes/t_manual1.py` (na pasta do deck) | 9 testes que reproduzem as jogadas dele | 9/9 passam |

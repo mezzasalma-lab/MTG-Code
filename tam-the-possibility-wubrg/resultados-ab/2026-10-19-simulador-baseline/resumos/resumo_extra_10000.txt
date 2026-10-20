@@ -1,0 +1,32 @@
+
+== modo padrao, N=10000 ==
+partidas em que o teto de ativacoes de lealdade por turno apertou: 39 (0.39%); teto de magias: 0
+combo Orrery+Tezzeret+Chain Veil montado: 307 partidas; fechou a partida (com pagamento em campo): 91
+mesa limpa ate' T12: 8907 partidas; turno da mesa limpa (mediana / Q1-Q3): 10.0 / 9.0-11.0
+   pws_T4             mediana    1.0  Q1-Q3 0.0-1.0  max 5.0
+   pws_T6             mediana    3.0  Q1-Q3 2.0-4.0  max 19.0
+   pws_T8             mediana    5.0  Q1-Q3 4.0-7.0  max 24.0
+   pws_T10            mediana    6.0  Q1-Q3 5.0-8.0  max 24.0
+   mana_T4            mediana    4.0  Q1-Q3 3.0-5.0  max 11.0
+   mana_T6            mediana    7.0  Q1-Q3 5.0-8.0  max 24.0
+   mana_T8            mediana   10.0  Q1-Q3 8.0-14.0  max 48.0
+   loyalty_T8         mediana   32.0  Q1-Q3 22.0-48.0  max 1543.0
+   m_pw_entered       mediana    9.0  Q1-Q3 6.0-12.0  max 60.0
+   m_ultimates_used   mediana    4.0  Q1-Q3 2.0-7.0  max 49.0
+mulligans: 0.409 por partida; maos sem Tam ate' T6: 1.2%
+
+== modo resiliencia, N=10000 ==
+partidas em que o teto de ativacoes de lealdade por turno apertou: 7 (0.07%); teto de magias: 0
+combo Orrery+Tezzeret+Chain Veil montado: 105 partidas; fechou a partida (com pagamento em campo): 21
+mesa limpa ate' T12: 1703 partidas; turno da mesa limpa (mediana / Q1-Q3): 11.0 / 10.0-12.0
+   pws_T4             mediana    1.0  Q1-Q3 0.0-1.0  max 4.0
+   pws_T6             mediana    1.0  Q1-Q3 1.0-2.0  max 8.0
+   pws_T8             mediana    2.0  Q1-Q3 1.0-3.0  max 16.0
+   pws_T10            mediana    2.0  Q1-Q3 1.0-4.0  max 20.0
+   mana_T4            mediana    4.0  Q1-Q3 3.0-4.0  max 11.0
+   mana_T6            mediana    6.0  Q1-Q3 5.0-7.0  max 19.0
+   mana_T8            mediana    8.0  Q1-Q3 6.0-9.0  max 32.0
+   loyalty_T8         mediana    8.0  Q1-Q3 3.0-16.0  max 451.0
+   m_pw_entered       mediana    5.0  Q1-Q3 4.0-8.0  max 45.0
+   m_ultimates_used   mediana    1.0  Q1-Q3 0.0-2.0  max 41.0
+mulligans: 0.409 por partida; maos sem Tam ate' T6: 1.5%

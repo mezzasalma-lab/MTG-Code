@@ -1,0 +1,166 @@
+
+=== LINHA DE BASE DO TAM, modo padrao, N=10000 (baseline) ===
+Mesa limpa (todos os oponentes fora) ate' o turno
+   cleared_T6                             0.0008 ±  0.0006   (  0.1%)
+   cleared_T7                             0.0201 ±  0.0028   (  2.0%)
+   cleared_T8                             0.1312 ±  0.0066   ( 13.1%)
+   cleared_T9                             0.3870 ±  0.0095   ( 38.7%)
+   cleared_T10                            0.6474 ±  0.0094   ( 64.7%)
+   cleared_T12                            0.8907 ±  0.0061   ( 89.1%)
+1o oponente fora ate' o turno
+   first_elim_T6                          0.0241 ±  0.0030   (  2.4%)
+   first_elim_T8                          0.5431 ±  0.0098   ( 54.3%)
+Eu morri (vida <= 0; a partida continua) ate' o turno / deck-out
+   died_T6                             (sempre 0 nesta bateria)
+   died_T8                             (sempre 0 nesta bateria)
+   died_T10                            (sempre 0 nesta bateria)
+   died_T12                            (sempre 0 nesta bateria)
+   died_any                            (sempre 0 nesta bateria)
+   self_lost                              0.0107 ±  0.0020   (  1.1%)
+Tam em campo / combo
+   tam_cast_by_T3                         0.8101 ±  0.0077   ( 81.0%)
+   tam_cast_by_T4                         0.9545 ±  0.0041   ( 95.5%)
+   tam_cast_by_T5                         0.9761 ±  0.0030   ( 97.6%)
+   tam_cast_by_T6                         0.9880 ±  0.0021   ( 98.8%)
+   first_pw_by_T3                         0.0698 ±  0.0050   (  7.0%)
+   first_pw_by_T4                         0.5659 ±  0.0097   ( 56.6%)
+   first_tam_activation_by_T6             0.0468 ±  0.0041   (  4.7%)
+   first_tam_activation_by_T8             0.3042 ±  0.0090   ( 30.4%)
+   first_ultimate_by_T8                   0.7132 ±  0.0089   ( 71.3%)
+   first_ultimate_by_T10                  0.8927 ±  0.0061   ( 89.3%)
+   m_tam_activations                      1.1778 ±  0.0273
+   m_tam_x_total                          6.7475 ±  0.1660
+   m_combo_assembled                      0.0307 ±  0.0034   (  3.1%)
+   m_combo_wins                           0.0091 ±  0.0019   (  0.9%)
+Planeswalkers (T3/T4/T5/T6/T8/T10)
+   pws_T3                                 0.1698 ±  0.0079
+   pws_T4                                 0.9312 ±  0.0152
+   pws_T5                                 1.9912 ±  0.0208
+   pws_T6                                 3.1341 ±  0.0288
+   pws_T8                                 5.4092 ±  0.0483
+   pws_T10                                6.5798 ±  0.0566
+   m_pw_entered                          10.0640 ±  0.1097
+   m_pw_died                              1.2056 ±  0.0279
+   m_ultimates_used                       5.3048 ±  0.1007
+Lealdade total / tipos de PW (T6/T8)
+   loyalty_T6                            17.0447 ±  0.2619
+   loyalty_T8                            46.2959 ±  1.2887
+   pw_types_T6                            3.0055 ±  0.0278
+   pw_types_T8                            5.0532 ±  0.0444
+Mana disponivel (T3/T4/T5/T6/T8)
+   mana_T3                                2.7249 ±  0.0168
+   mana_T4                                3.9895 ±  0.0230
+   mana_T5                                5.5634 ±  0.0359
+   mana_T6                                7.1145 ±  0.0511
+   mana_T8                               11.3674 ±  0.0924
+   lands_T4                               3.7531 ±  0.0118
+   lands_T6                               5.3557 ±  0.0238
+   lands_T8                               7.2299 ±  0.0464
+Fontes de dano ao oponente (total por partida)
+   m_opp_damage_total                   143.4416 ±  1.1200
+   m_combat_damage_total                107.7531 ±  1.3891
+   m_awbo_triggers                       11.4970 ±  0.4458
+Interacao do oponente (resiliencia)
+   m_smart_removals                    (sempre 0 nesta bateria)
+   m_smart_wipes                       (sempre 0 nesta bateria)
+   m_smart_counters                    (sempre 0 nesta bateria)
+   m_smart_discards                    (sempre 0 nesta bateria)
+   m_pw_combat_deaths                  (sempre 0 nesta bateria)
+   m_opp_attackers_total               (sempre 0 nesta bateria)
+   m_face_combat_damage_total          (sempre 0 nesta bateria)
+   life_min                              31.7785 ±  0.1166
+   m_turn_cap_activations                 0.3799 ±  0.1419
+   m_turn_cap_spells                   (sempre 0 nesta bateria)
+Proliferate por fonte
+   m_proliferates_total                  20.5841 ±  0.4811
+   m_prolif_by_tam                        6.5481 ±  0.1650
+   m_prolif_by_flux_channeler             2.6837 ±  0.0994
+   m_prolif_by_vraska                     1.2536 ±  0.0485
+   m_prolif_by_gauntlet_zero              9.1337 ±  0.3396
+   m_prolif_by_peacemaker                 0.1082 ±  0.0091
+   m_prolif_by_dreamtide_whale            0.3647 ±  0.0228
+   m_prolif_by_staff                      0.2343 ±  0.0193
+   m_prolif_by_ripples                    0.2578 ±  0.0086
+
+=== LINHA DE BASE DO TAM, modo resiliencia, N=10000 (baseline) ===
+Mesa limpa (todos os oponentes fora) ate' o turno
+   cleared_T6                          (sempre 0 nesta bateria)
+   cleared_T7                             0.0005 ±  0.0004   (  0.1%)
+   cleared_T8                             0.0041 ±  0.0013   (  0.4%)
+   cleared_T9                             0.0166 ±  0.0025   (  1.7%)
+   cleared_T10                            0.0480 ±  0.0042   (  4.8%)
+   cleared_T12                            0.1703 ±  0.0074   ( 17.0%)
+1o oponente fora ate' o turno
+   first_elim_T6                          0.0016 ±  0.0008   (  0.2%)
+   first_elim_T8                          0.0650 ±  0.0048   (  6.5%)
+Eu morri (vida <= 0; a partida continua) ate' o turno / deck-out
+   died_T6                                0.0053 ±  0.0014   (  0.5%)
+   died_T8                                0.0417 ±  0.0039   (  4.2%)
+   died_T10                               0.0886 ±  0.0056   (  8.9%)
+   died_T12                               0.1292 ±  0.0066   ( 12.9%)
+   died_any                               0.1292 ±  0.0066   ( 12.9%)
+   self_lost                              0.0043 ±  0.0013   (  0.4%)
+Tam em campo / combo
+   tam_cast_by_T3                         0.8101 ±  0.0077   ( 81.0%)
+   tam_cast_by_T4                         0.9524 ±  0.0042   ( 95.2%)
+   tam_cast_by_T5                         0.9737 ±  0.0031   ( 97.4%)
+   tam_cast_by_T6                         0.9852 ±  0.0024   ( 98.5%)
+   first_pw_by_T3                         0.0625 ±  0.0047   (  6.2%)
+   first_pw_by_T4                         0.4555 ±  0.0098   ( 45.6%)
+   first_tam_activation_by_T6             0.0116 ±  0.0021   (  1.2%)
+   first_tam_activation_by_T8             0.0780 ±  0.0053   (  7.8%)
+   first_ultimate_by_T8                   0.1641 ±  0.0073   ( 16.4%)
+   first_ultimate_by_T10                  0.3554 ±  0.0094   ( 35.5%)
+   m_tam_activations                      0.5699 ±  0.0196
+   m_tam_x_total                          2.3465 ±  0.0882
+   m_combo_assembled                      0.0105 ±  0.0020   (  1.1%)
+   m_combo_wins                           0.0021 ±  0.0009   (  0.2%)
+Planeswalkers (T3/T4/T5/T6/T8/T10)
+   pws_T3                                 0.1594 ±  0.0076
+   pws_T4                                 0.7131 ±  0.0140
+   pws_T5                                 1.1991 ±  0.0193
+   pws_T6                                 1.6329 ±  0.0237
+   pws_T8                                 2.2276 ±  0.0334
+   pws_T10                                2.7906 ±  0.0438
+   m_pw_entered                           6.4711 ±  0.0845
+   m_pw_died                              2.7899 ±  0.0319
+   m_ultimates_used                       1.8413 ±  0.0648
+Lealdade total / tipos de PW (T6/T8)
+   loyalty_T6                             7.1537 ±  0.1270
+   loyalty_T8                            11.5697 ±  0.2817
+   pw_types_T6                            1.5872 ±  0.0231
+   pw_types_T8                            2.1312 ±  0.0319
+Mana disponivel (T3/T4/T5/T6/T8)
+   mana_T3                                2.7249 ±  0.0168
+   mana_T4                                3.9073 ±  0.0220
+   mana_T5                                5.1870 ±  0.0312
+   mana_T6                                6.2192 ±  0.0404
+   mana_T8                                8.1785 ±  0.0596
+   lands_T4                               3.7367 ±  0.0116
+   lands_T6                               5.0982 ±  0.0220
+   lands_T8                               6.3721 ±  0.0309
+Fontes de dano ao oponente (total por partida)
+   m_opp_damage_total                    57.7374 ±  1.0594
+   m_combat_damage_total                 45.6029 ±  0.9556
+   m_awbo_triggers                        3.5137 ±  0.2705
+Interacao do oponente (resiliencia)
+   m_smart_removals                       2.1657 ±  0.0273
+   m_smart_wipes                          1.2141 ±  0.0200
+   m_smart_counters                       2.3225 ±  0.0401
+   m_smart_discards                       1.8937 ±  0.0257
+   m_pw_combat_deaths                     1.3808 ±  0.0296
+   m_opp_attackers_total                 17.1445 ±  0.3105
+   m_face_combat_damage_total            14.6121 ±  0.3901
+   life_min                              17.8778 ±  0.3760
+   m_turn_cap_activations                 0.0420 ±  0.0349
+   m_turn_cap_spells                   (sempre 0 nesta bateria)
+Proliferate por fonte
+   m_proliferates_total                   6.9250 ±  0.2079
+   m_prolif_by_tam                        2.3149 ±  0.0871
+   m_prolif_by_flux_channeler             1.0060 ±  0.0610
+   m_prolif_by_vraska                     0.7404 ±  0.0381
+   m_prolif_by_gauntlet_zero              1.9411 ±  0.1188
+   m_prolif_by_peacemaker                 0.4147 ±  0.0282
+   m_prolif_by_dreamtide_whale            0.2527 ±  0.0193
+   m_prolif_by_staff                      0.0597 ±  0.0072
+   m_prolif_by_ripples                    0.1955 ±  0.0078
