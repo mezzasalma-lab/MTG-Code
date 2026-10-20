@@ -1,0 +1,3 @@
+COMPACTO N=10000 modo resiliencia: media da base e, por variante, diferenca pareada (variante - base) +- IC95%. '*' = |dif| > IC.
+variante                                                         cleared_T6             cleared_T8            cleared_T10            cleared_T12          first_elim_T6          first_elim_T8               died_any              self_lost                 pws_T6                mana_T6
+base (media)                                                         0.0000                 0.0041                 0.0480                 0.1703                 0.0016                 0.0650                 0.1292                 0.0043                 1.6329                 6.2192
