@@ -509,7 +509,10 @@ no `play_land`/`play_turn`/mulligan):**
    oráculo do cache, o arquivo do simulador e a `lista.md` do deck; só lista
    candidatos, e a ordem do turno de cada simulador é lida à mão; **hoje 0
    candidatos: os 6 simuladores com payoff de landfall têm a política**),
-   `colisao_nome.py` (estado por NOME em vez de por instância). Ler à mão cada
+   `colisao_nome.py` (estado por NOME em vez de por instância),
+   `audit_compra_t1.py` (a compra do 1º turno, **por execução**: a queda da
+   biblioteca entre `turns=0` e `turns=1` tem de ser ≥ 1 em toda partida; veredito
+   COMPRA, PULA ou VÁCUO; **hoje 20 de 20 COMPRA**). Ler à mão cada
    divergência antes de corrigir ou de classificar como falso positivo.
 2. **Conferir a lista de classes do motor** (todas já tiveram erro real): o
    mulligan ESCOLHE o fundo (CR 103.5); o imposto do comandante conta no cast,
@@ -525,7 +528,15 @@ no `play_land`/`play_turn`/mulligan):**
    mana, qualquer jogada de prioridade maior; a fórmula "mana de agora + 1" falhou: não conta
    o mana de landfall já em campo nem o 2º land drop, e atrasou o comandante em 38 de 2.000
    partidas do Beorn e, no Mothman, gastava o único Island do comandante), senão o terreno do turno nunca dispara o landfall, e a Company
-   do Thranduil/Maralen nunca libera o 2º land drop no turno em que entra.
+   do Thranduil/Maralen nunca libera o 2º land drop no turno em que entra;
+   **a compra do 1º turno**: Commander com 3+ jogadores NÃO pula a compra (a regra de
+   pular é do 1x1, CR 103.8a; pedido do usuário em 2026-10-20: *"Corrija todos os
+   simuladores por conta da compra no turno 1"*). O Mothman era o único dos 20
+   simuladores que pulava (queda da biblioteca 0 em 71 de 80 partidas), e o do Tam
+   tinha herdado a convenção; chave `FIRST_TURN_SKIPS_DRAW` (padrão `False`;
+   `True` = comportamento antigo, bit a bit); efeito no Mothman: comandante até T4
+   +9,1 pontos e mesa limpa até T8 +9,6 pontos. A varredura por grep de `on_play` NÃO
+   serve (Hei Bai passa `on_play=True` e compra); só a execução decide.
    Chave `LANDFALL_PAYOFF_FIRST` (padrão ligada; desligada = ordem antiga, bit
    a bit) em **Mothman, Toph, Beorn, Thranduil, Maralen e Prismatic Bridge**
    (Mothman: +13% de gatilhos do Ruin Crab com o ensaio a seco, +21% com a guarda aritmética, que

@@ -86,6 +86,8 @@ Auditoria carta-a-carta não pega erro de motor (a varredura de 2026-10-05 achou
 4. **Verificação vazia é vácua:** conferir que contagens são > 0 (smoke de simulador baseado em dict contava 0 cartas); tabela publicada = função só do bruto (`driver.py sum` × re-execução); conferir `Traceback` no log, não o `rc`
    (`$(date)` no mesmo `echo` zera `$?`).
 5. **Operação:** verificação completa re-simula o arquivo VIVO (não editar o simulador enquanto roda); commitar e enviar cada deck quando fecha (o contêiner pode reiniciar).
+Compra do 1º turno (2026-10-20): Commander multijogador não pula a compra; `audit_compra_t1.py` mede por execução a queda da biblioteca entre `turns=0` e `turns=1` (deve ser ≥ 1 em toda partida; hoje 20 de 20 COMPRA; o Mothman pulava e foi corrigido com `FIRST_TURN_SKIPS_DRAW`); grep de `on_play` não serve.
+
 Não coberto (declarar na Regra #7): magia que põe terreno em campo antes do payoff de landfall, conjuração fora da mão, sacrifício × destroy, `_sick` agregados, fórmulas achatadas, choque que não deduz vida (Kutzil, Edgar), oponente real.
 
 ## 8. Erros que já cometi e o que fiz para não repetir (checklist rápido)

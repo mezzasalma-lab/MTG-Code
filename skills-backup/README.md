@@ -48,6 +48,12 @@ Estado anterior da skill (2026-09-26): `SKILL.md` + 3 referências. Agora:
 - A **pasta viva** da skill (`/root/.claude/skills/synced/<id>/mtg-commander/`) só tinha o `SKILL.md` (sem `references/`); foi **reposta inteira a partir deste backup** em 2026-10-07. Como sempre, isso **não grava nada na conta**: a skill da conta só reflete a mudança
   se `mtg-commander.zip` for enviado de novo (passo 2 abaixo, que só o usuário consegue fazer).
 
+## O que mudou na atualização de 2026-10-20 (compra no 1º turno)
+
+- `CLAUDE.md` (e o espelho `references/CLAUDE-repositorio.md`): Regra #10 passa a listar `audit_compra_t1.py` (por **execução**: a queda da biblioteca entre `turns=0` e `turns=1` ≥ 1 em toda partida; **20 de 20 COMPRA**) e a classe "compra do 1º turno" (Commander multijogador não pula; o Mothman era o único que pulava; chave `FIRST_TURN_SKIPS_DRAW`).
+- `references/user-standing-rules.md` §21, `mtg-commander/references/protocolo-de-avaliacao.md` §7 e `mtg-commander/SKILL.md`: mesma classe. `mtg-commander.zip` e `SHA256SUMS` refeitos.
+- **Cuidado ao rodar o script:** nesta sessão a pasta viva da skill (`/root/.claude/skills/synced/<id>/mtg-commander/`) só tinha um `SKILL.md` ANTIGO (sem `references/`, sem a Regra #10). `sincronizar-skill.sh --para-backup` teria **apagado** este backup e o substituído por essa cópia velha. Por isso a atualização foi feita **direto no backup** (edição dos arquivos + `sha256sum` + `--zip`), sem `--para-backup`. Antes de usar `--para-backup`, rode `--status` e confira que a skill viva é a mais nova; se não for, restaure primeiro a partir do backup (item 1 abaixo). Como sempre, nada disso é gravado na conta: a skill da conta só reflete a mudança se `mtg-commander.zip` for enviado de novo.
+
 ## Como restaurar / reinstalar
 
 1. **Claude Code (pasta de skills):** copie `skills-backup/mtg-commander/` inteira para `~/.claude/skills/mtg-commander/`.
