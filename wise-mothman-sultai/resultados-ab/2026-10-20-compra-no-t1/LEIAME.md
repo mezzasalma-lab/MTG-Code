@@ -45,7 +45,7 @@ Teste dirigido novo `compra_no_turno_1_commander_multijogador` em `testes/testes
 | determinismo: 3 `PYTHONHASHSEED` (11, 22, 33) × 1.500 sementes × 2 modos, campo a campo, padrão e chave ligada | 0 sementes divergentes nos 4 casos | `resumos/determinismo.txt` |
 | varredura em runtime dos 20 simuladores (positivo: o ANTES acusa PULA no Mothman; negativo: o DEPOIS dá 20 COMPRA) | ver acima | `varredura-2026-10-05/resumos/audit_compra_t1_*.txt` |
 | A/B pareado `antes` × `depois`, N = 2.000 e 10.000 × 2 modos | tabela acima | `resumos/ab_*.txt`, `base_nova.md` |
-| reprodutibilidade (`orquestracao/verificar_reproducao.sh --tudo`) | ver `resumos/verificacao_reproducao.txt` | idem |
+| reprodutibilidade (`orquestracao/verificar_reproducao.sh --tudo`, simulador vivo, sem edição durante a execução) | **17/17** saídas byte a byte iguais com `cmp`: 6 tabelas refeitas dos brutos, smoke, bit-identidade e regressão re-executados, e os 4 lotes do A/B re-simulados (tabela e bruto `.json.xz` idênticos) | `resumos/verificacao_reproducao.txt` |
 
 ## Mapa arquivo → o que é → status
 
