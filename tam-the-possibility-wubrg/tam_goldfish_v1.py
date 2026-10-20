@@ -5465,15 +5465,18 @@ def finalize(state: GameState):
     for k, n in (("first_tam_activation", 6), ("first_tam_activation", 8), ("first_ultimate", 8), ("first_ultimate", 10), ("first_pw", 3), ("first_pw", 4)):
         v = state.first_turn.get(k)
         setattr(state, f"{k}_by_T{n}", 1 if (v is not None and v <= n) else 0)
+    def ultimo(T, campo):
+        """Valor do campo no turno T; se a partida acabou antes (mesa limpa), o do ultimo turno que registrou o campo (senao as partidas encerradas entrariam como 0 e o numero de T10 ficaria abaixo do de T8)."""
+        ks = [k for k, d in state.by_turn.items() if k <= T and campo in d]
+        return state.by_turn[max(ks)][campo] if ks else 0
     for T in (3, 4, 5, 6, 8, 10):
-        bt = state.by_turn.get(T) or state.by_turn.get(max(state.by_turn)) if state.by_turn else {}
-        setattr(state, f"pws_T{T}", (state.by_turn.get(T, {}) or {}).get("pws", 0))
-        setattr(state, f"loyalty_T{T}", (state.by_turn.get(T, {}) or {}).get("loyalty", 0))
-        setattr(state, f"mana_T{T}", (state.by_turn.get(T, {}) or {}).get("mana", 0))
-        setattr(state, f"lands_T{T}", (state.by_turn.get(T, {}) or {}).get("lands", 0))
-        setattr(state, f"pw_types_T{T}", (state.by_turn.get(T, {}) or {}).get("pw_types", 0))
-        setattr(state, f"creatures_T{T}", (state.by_turn.get(T, {}) or {}).get("creatures", 0))
-        setattr(state, f"hand_T{T}", (state.by_turn.get(T, {}) or {}).get("hand", 0))
+        setattr(state, f"pws_T{T}", ultimo(T, "pws"))
+        setattr(state, f"loyalty_T{T}", ultimo(T, "loyalty"))
+        setattr(state, f"mana_T{T}", ultimo(T, "mana"))
+        setattr(state, f"lands_T{T}", ultimo(T, "lands"))
+        setattr(state, f"pw_types_T{T}", ultimo(T, "pw_types"))
+        setattr(state, f"creatures_T{T}", ultimo(T, "creatures"))
+        setattr(state, f"hand_T{T}", ultimo(T, "hand"))
     for k, v in list(state.m.items()):
         if isinstance(k, str) and not k.startswith("_"):
             setattr(state, "m_" + k, v)
