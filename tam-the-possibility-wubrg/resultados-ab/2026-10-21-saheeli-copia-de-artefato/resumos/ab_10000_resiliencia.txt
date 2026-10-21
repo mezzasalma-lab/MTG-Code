@@ -1,0 +1,26 @@
+LOTE N=10000 sementes 3000000..3009999, 12 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9798 (98.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   cleared_T8                                   0.0041       0.0042      +0.0001 ±0.0002  
+   cleared_T10                                  0.0480       0.0480      +0.0000 ±0.0006  
+   died_any                                     0.1292       0.1294      +0.0002 ±0.0003  
+  *m_pw_entered                                 6.4711       6.4613      -0.0098 ±0.0078  
+   pws_T6                                       1.6329       1.6337      +0.0008 ±0.0009  
+   pws_T8                                       2.2276       2.2250      -0.0026 ±0.0028  
+   mana_T6                                      6.2192       6.2197      +0.0005 ±0.0011  
+   mana_T8                                      8.1785       8.1792      +0.0007 ±0.0033  
+  *m_pw_act_by_Saheeli, Sublime Artificer       0.3849       0.4034      +0.0185 ±0.0064  
+  *m_permanents_to_graveyard                    5.9889       6.0016      +0.0127 ±0.0082  
+  *hand_T6                                      4.0752       4.0735      -0.0017 ±0.0012  
+  *m_saheeli_copies                             0.0168       0.0152      -0.0016 ±0.0011  
+  *m_loyalty_counters_by_enters                28.2719      28.2183      -0.0536 ±0.0391  
+  *m_prolif_loyalty_flux_channeler              4.1145       4.0205      -0.0940 ±0.0714  
+  *m_prolif_by_flux_channeler                   1.0060       0.9963      -0.0097 ±0.0078  
+  *hand_T5                                      4.6633       4.6622      -0.0011 ±0.0009  
+  *len_battlefield                             23.3655      23.3147      -0.0508 ±0.0415  
+  *m_riot_creatures                             0.0836       0.0826      -0.0010 ±0.0008  
+  *creatures_T5                                 2.0524       2.0538      +0.0014 ±0.0012  
+  *m_riot_counters                              0.0567       0.0560      -0.0007 ±0.0006  
+  *m_pw_died                                    2.7899       2.7944      +0.0045 ±0.0039  
+  *len_m                                       81.2359      81.2685      +0.0326 ±0.0279  

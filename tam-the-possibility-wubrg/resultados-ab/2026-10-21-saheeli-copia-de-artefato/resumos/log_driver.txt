@@ -115,3 +115,108 @@ LOTE N=10000 sementes 3000000..3009999, 12 turnos, modo resiliencia
   *m_riot_counters                              0.0567       0.0560      -0.0007 ±0.0006  
   *m_pw_died                                    2.7899       2.7944      +0.0045 ±0.0039  
   *len_m                                       81.2359      81.2685      +0.0326 ±0.0279  
+Bit-identidade: arquivo vivo com as chaves {'SAHEELI_COPY_MANA_ARTIFACT': False} == snapshot codigo/tam_goldfish_v1_ANTES_e01054f.py; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['m_saheeli_mana_copies', 'm_saheeli_mana_copy_extra'])
+padrao: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+resiliencia: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+LOTE N=2000 sementes 1000000..1001999, 12 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1949 (97.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+   cleared_T8                                   0.1365       0.1365      +0.0000 ±0.0020  
+   cleared_T10                                  0.6525       0.6515      -0.0010 ±0.0020  
+   self_lost                                    0.0110       0.0115      +0.0005 ±0.0010  
+   m_pw_entered                                10.0355      10.0425      +0.0070 ±0.0227  
+   pws_T6                                       3.1170       3.1175      +0.0005 ±0.0022  
+   pws_T8                                       5.4120       5.4160      +0.0040 ±0.0087  
+  *mana_T8                                     11.2190      11.2315      +0.0125 ±0.0109  
+  *len_m                                       72.8395      72.9355      +0.0960 ±0.0661  
+  *m_pw_act_by_Saheeli, Sublime Artificer       0.9560       0.9745      +0.0185 ±0.0132  
+  *len_first_turn                               3.4240       3.4280      +0.0040 ±0.0031  
+  *m_pw_act_by_Ajani Unrelenting                1.1990       1.2065      +0.0075 ±0.0061  
+  *len_hand                                     4.9330       4.9955      +0.0625 ±0.0526  
+  *m_pw_act_by_Jace Token                       5.2950       5.3110      +0.0160 ±0.0135  
+  *m_tokens_created                            20.0785      20.2055      +0.1270 ±0.1073  
+  *len_library                                 59.7235      59.6130      -0.1105 ±0.0951  
+  *m_tamiyo_combat_draws                        0.5395       0.5460      +0.0065 ±0.0056  
+  *len_activations                             13.3730      13.4030      +0.0300 ±0.0260  
+  *m_tokens_Cadet Token                         7.3315       7.4145      +0.0830 ±0.0727  
+  *m_ajani_cadets                               7.2420       7.3245      +0.0825 ±0.0731  
+  *next_uid                                    56.3050      56.4975      +0.1925 ±0.1747  
+  *life_min                                    31.6270      31.6110      -0.0160 ±0.0146  
+LOTE N=2000 sementes 1000000..1001999, 12 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1956 (97.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+   cleared_T10                                  0.0525       0.0530      +0.0005 ±0.0010  
+   died_any                                     0.1240       0.1250      +0.0010 ±0.0014  
+   m_pw_entered                                 6.6260       6.6260      +0.0000 ±0.0217  
+   pws_T6                                       1.6475       1.6500      +0.0025 ±0.0032  
+   pws_T8                                       2.2775       2.2820      +0.0045 ±0.0055  
+   mana_T8                                      8.2140       8.2100      -0.0040 ±0.0066  
+  *m_pw_act_by_Saheeli, Sublime Artificer       0.3930       0.4270      +0.0340 ±0.0161  
+  *m_creatures_died                             7.6315       7.7470      +0.1155 ±0.0846  
+  *len_attackers_this_turn                      3.4155       3.3420      -0.0735 ±0.0546  
+  *len_activations                              9.7245       9.7450      +0.0205 ±0.0157  
+  *len_dmg_by_source                            1.5565       1.5625      +0.0060 ±0.0048  
+  *len_m                                       81.8400      81.9115      +0.0715 ±0.0576  
+  *m_attacks_total                             11.8530      11.7530      -0.1000 ±0.0847  
+  *m_combat_damage_total                       46.7760      46.4495      -0.3265 ±0.2779  
+  *m_smart_wipes                                1.1990       1.2050      +0.0060 ±0.0052  
+  *m_boo_created                                0.4930       0.4955      +0.0025 ±0.0022  
+  *m_tokens_Boo Token                           0.4930       0.4955      +0.0025 ±0.0022  
+  *m_pw_activations                            23.8990      23.9585      +0.0595 ±0.0525  
+  *m_life_lost_starting_town                    0.3815       0.3845      +0.0030 ±0.0028  
+  *hand_T8                                      3.2640       3.2590      -0.0050 ±0.0048  
+LOTE N=10000 sementes 3000000..3009999, 12 turnos, modo padrao
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9706 (97.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+   cleared_T8                                   0.1312       0.1319      +0.0007 ±0.0008  
+  *cleared_T10                                  0.6474       0.6484      +0.0010 ±0.0010  
+   first_elim_T6                                0.0241       0.0243      +0.0002 ±0.0004  
+   self_lost                                    0.0107       0.0106      -0.0001 ±0.0003  
+   m_pw_entered                                10.0640      10.0698      +0.0058 ±0.0105  
+  *pws_T6                                       3.1341       3.1370      +0.0029 ±0.0014  
+   pws_T8                                       5.4092       5.4099      +0.0007 ±0.0036  
+  *mana_T6                                      7.1145       7.1166      +0.0021 ±0.0021  
+   mana_T8                                     11.3674      11.3681      +0.0007 ±0.0055  
+  *m_pw_act_by_Saheeli, Sublime Artificer       0.9397       0.9569      +0.0172 ±0.0057  
+  *creatures_T6                                 4.5111       4.5189      +0.0078 ±0.0031  
+  *creatures_T5                                 2.8884       2.8916      +0.0032 ±0.0014  
+  *hand_T6                                      4.3322       4.3280      -0.0042 ±0.0019  
+  *pws_T5                                       1.9912       1.9929      +0.0017 ±0.0008  
+  *pw_types_T6                                  3.0055       3.0082      +0.0027 ±0.0014  
+  *len_m                                       72.7894      72.8512      +0.0618 ±0.0317  
+  *pw_types_T5                                  1.9442       1.9458      +0.0016 ±0.0008  
+  *len_activations                             13.3758      13.3990      +0.0232 ±0.0121  
+  *hand_T5                                      4.7599       4.7582      -0.0017 ±0.0011  
+  *m_attack_turns                               4.5291       4.5254      -0.0037 ±0.0024  
+  *m_saheeli_copies                             0.0249       0.0221      -0.0028 ±0.0021  
+  *m_mana_spent_total                          63.8938      63.9480      +0.0542 ±0.0405  
+  *m_pw_died                                    1.2056       1.2106      +0.0050 ±0.0039  
+LOTE N=10000 sementes 3000000..3009999, 12 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9798 (98.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   cleared_T8                                   0.0041       0.0042      +0.0001 ±0.0002  
+   cleared_T10                                  0.0480       0.0480      +0.0000 ±0.0006  
+   died_any                                     0.1292       0.1294      +0.0002 ±0.0003  
+  *m_pw_entered                                 6.4711       6.4613      -0.0098 ±0.0078  
+   pws_T6                                       1.6329       1.6337      +0.0008 ±0.0009  
+   pws_T8                                       2.2276       2.2250      -0.0026 ±0.0028  
+   mana_T6                                      6.2192       6.2197      +0.0005 ±0.0011  
+   mana_T8                                      8.1785       8.1792      +0.0007 ±0.0033  
+  *m_pw_act_by_Saheeli, Sublime Artificer       0.3849       0.4034      +0.0185 ±0.0064  
+  *m_permanents_to_graveyard                    5.9889       6.0016      +0.0127 ±0.0082  
+  *hand_T6                                      4.0752       4.0735      -0.0017 ±0.0012  
+  *m_saheeli_copies                             0.0168       0.0152      -0.0016 ±0.0011  
+  *m_loyalty_counters_by_enters                28.2719      28.2183      -0.0536 ±0.0391  
+  *m_prolif_loyalty_flux_channeler              4.1145       4.0205      -0.0940 ±0.0714  
+  *m_prolif_by_flux_channeler                   1.0060       0.9963      -0.0097 ±0.0078  
+  *hand_T5                                      4.6633       4.6622      -0.0011 ±0.0009  
+  *len_battlefield                             23.3655      23.3147      -0.0508 ±0.0415  
+  *m_riot_creatures                             0.0836       0.0826      -0.0010 ±0.0008  
+  *creatures_T5                                 2.0524       2.0538      +0.0014 ±0.0012  
+  *m_riot_counters                              0.0567       0.0560      -0.0007 ±0.0006  
+  *m_pw_died                                    2.7899       2.7944      +0.0045 ±0.0039  
+  *len_m                                       81.2359      81.2685      +0.0326 ±0.0279  

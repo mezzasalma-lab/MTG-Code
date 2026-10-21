@@ -9,6 +9,8 @@ tmp=$(mktemp -d)
 cmpf() { total=$((total+1)); if cmp -s "$tmp/resumos/$1" "../resumos/$1"; then echo "IGUAL  $1$2"; ok=$((ok+1)); else echo "DIFERE $1$2"; fi; }
 DRIVER_OUT="$tmp" python3 driver.py config.json sum > /dev/null
 for f in ab_2000.txt ab_10000.txt ab_2000_resiliencia.txt ab_10000_resiliencia.txt; do cmpf $f; done
+mkdir -p "$tmp/resumos"; python3 resumo_saheeli.py > "$tmp/resumos/resumo_saheeli.md"; cmpf resumo_saheeli.md
+(cd .. && python3 indice_dados.py) > "$tmp/resumos/indice_dados.md"; cmpf indice_dados.md
 if [ "$1" == "--tudo" ]; then
   for etapa in smoke bitid ghost reg; do DRIVER_OUT="$tmp" python3 driver.py config.json $etapa > /dev/null; done
   cmpf smoke.txt; cmpf bitident_20000.txt; [ -f ../resumos/ghost_20000.txt ] && cmpf ghost_20000.txt; cmpf regressao_20000.txt

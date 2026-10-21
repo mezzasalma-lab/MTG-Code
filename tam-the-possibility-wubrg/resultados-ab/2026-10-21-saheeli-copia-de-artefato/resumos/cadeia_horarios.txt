@@ -7,3 +7,6 @@
 2026-10-21T17:54:15Z inicio ab
 2026-10-21T18:11:39Z fim ab rc=0
 2026-10-21T18:14:29Z inicio bitid 20000 (2a cadeia)
+2026-10-21T18:40:57Z fim bitid 20000 rc=0 (2a cadeia)
+2026-10-21T18:40:57Z inicio ab (2a cadeia)
+2026-10-21T18:58:06Z fim ab rc=0 (2a cadeia)
