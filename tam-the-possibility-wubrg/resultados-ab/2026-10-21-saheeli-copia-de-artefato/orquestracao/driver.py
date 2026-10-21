@@ -13,6 +13,7 @@ if os.environ.get("PYTHONHASHSEED") != "0":
 AQUI = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, AQUI)
 import abgen as A
+A.IGNORA |= set(json.load(open(sys.argv[1] if len(sys.argv) > 1 else os.path.join(AQUI, 'config.json'))).get('ignora_profundo', []))   # campos NOVOS que o snapshot antigo nao tem, a ignorar em QUALQUER profundidade da impressao digital (ex.: `copy_of`, atributo novo de todo Permanent)
 
 cfg = json.load(open(sys.argv[1] if len(sys.argv) > 1 else os.path.join(AQUI, "config.json")))
 ETAPA = sys.argv[2] if len(sys.argv) > 2 else "tudo"
