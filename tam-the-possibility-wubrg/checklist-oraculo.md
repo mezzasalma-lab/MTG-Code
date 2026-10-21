@@ -120,6 +120,8 @@ Dack Fayden (+1 ✅; −2 📊 "Gain control of target artifact"; −6 📊 embl
 
 ## Premissas e convenções declaradas (não são ausência de checagem)
 
+- **Cores dos terrenos de oponente (decidido pelo usuário em 2026-10-21: *"Decida os terrenos dos oponentes de forma aleatória"*):** aleatórias por semente (identidade de 2 cores por oponente; cada terreno produz uma delas); a Exotic Orchard e o Fellwar Stone só produzem cores de terreno de oponente em campo (P({G}) no início do T2 = 40,9%, T3 = 58,5%). Medição e limites: `resultados-ab/2026-10-21-cores-terrenos-oponentes/LEIAME.md`.
+
 Mesa de 4 (3 oponentes, 40 de vida); no modo padrão os oponentes são passivos e **todo atacante conecta**; **compra no T1** (Commander multijogador: ninguém pula a compra do 1º turno; o simulador pulava por eu ter herdado o `on_play` do Mothman, e o usuário corrigiu em 2026-10-19; chave `FIRST_TURN_SKIPS_DRAW = False`); `OPP_TARGET_PROB = 0.7` a partir do T3; crime por magia de oponente `OPP_CRIME_PROB_PER_NONCREATURE_SPELL = 0.25` (padrão); resiliência = o modelo do Prismatic Bridge (arquétipos go-wide / voltron / low, gate de atenção 1/3, remoção/wipe/descarte/anulação de magia/wipe de cemitério), com `WARD_MIN_LANDS = 4` e a remoção mirando a Tam em 15% das vezes.
 
 ## Escopo (Regra #7): o que foi e o que NÃO foi varrido
