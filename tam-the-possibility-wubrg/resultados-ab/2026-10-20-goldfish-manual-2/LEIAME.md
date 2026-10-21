@@ -28,6 +28,8 @@ Arquivado conforme a Regra #8 da CLAUDE.md. **O que é:** o log que o usuário c
 | `orquestracao/replay_manual_2.py`, `replay_stats2.py` → `resumos/replay_padrao_300.txt`, `replay_resiliencia_300.txt`, `replay_semente_{1,2,3}.txt` | o simulador jogando as MESMAS 20 cartas na MESMA ordem (resto do baralho em 300 ordens) | usado |
 | `testes/t_manual2.py` (na pasta do deck) | 16 testes: as jogadas dele, já com as correções, mais a nova copia de artefato de mana da Saheeli | 16/16 passam (162/162 no total) |
 
+**Reprodutibilidade (verificada com `cmp`, 6 de 6 idênticos):** `linha_do_tempo.md` refeita só do bruto, `replay_padrao_300.txt`, `replay_resiliencia_300.txt` e `replay_semente_{1,2,3}.txt` refeitos pelo simulador vivo. Integridade: `sha256sum -c SHA256SUMS`.
+
 Reproduzir: `python3 orquestracao/linha_do_tempo.py`; `python3 orquestracao/replay_stats2.py 300 padrao` (e `resiliencia`); `python3 testes/rodar_testes.py` na pasta do deck. O código do simulador usado nos replays é o do commit que fecha a rodada da Saheeli (`../2026-10-21-saheeli-copia-de-artefato/LEIAME.md`).
 
 ## O jogo do usuário (da `resumos/linha_do_tempo.md`, com as correções acima)
