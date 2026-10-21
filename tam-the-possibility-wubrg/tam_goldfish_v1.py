@@ -78,6 +78,7 @@ FIRST_TURN_SKIPS_DRAW = False            # Commander com 3+ jogadores: NINGUEM p
 # `m["turn_cap_activations"]` / `m["turn_cap_spells"]`: se aparecer com frequencia, o numero da partida e' piso, nao valor real.
 MAX_LOYALTY_ACTS_PER_TURN = 80
 MAX_SPELLS_PER_TURN = 60
+SAHEELI_COPY_MANA_ARTIFACT = True     # Saheeli -2: "target artifact you control becomes a copy of another target artifact or creature you control": um Servo/Food vira copia de Sol Ring / Arcane Signet / Fellwar Stone ate' o fim do turno e rende o mana da copia (goldfish manual #2 do usuario, T6). False = so' a copia de P/T de criatura (comportamento ate' 2026-10-21)
 
 # =========================================================
 # CARD DATABASE (do recorte do cache; tags e comportamento por NOME)
@@ -249,6 +250,7 @@ class Permanent:
     exalted_pending: int = 0
     unblockable: bool = False
     first_ult_done: bool = False
+    copy_of: Optional[str] = None                  # Saheeli -2: nome da carta de que este artefato virou COPIA ate' o fim do turno (so' artefatos de mana nao lendarios)
 
 
 @dataclass
@@ -422,6 +424,8 @@ def pws(state: GameState) -> list:
 def is_creature(p: Permanent) -> bool:
     if p.phased:
         return False
+    if p.copy_of is not None:
+        return "creature" in CARD_DB[p.copy_of].types      # copia de artefato nao-criatura: deixa de ser criatura (CR 707.2: valores copiaveis); so' vale ate' o fim do turno
     if p.anim is not None or p.base_pt is not None:
         return True
     return "creature" in p.card.types
@@ -665,7 +669,7 @@ def mana_sources(state: GameState, ctx: Ctx = CTX_SPELL) -> list:
         if p.phased or p.tapped:
             continue
         c = p.card
-        nm = c.name
+        nm = p.copy_of or c.name
         if "land" in c.types:
             s = land_src(state, p, ctx, forest, anyl, ocols, life_ok)
             if s is not None:
@@ -3335,8 +3339,57 @@ def saheeli_sources(state: GameState) -> list:
     return sorted([p for p in creatures(state) if p.card.name not in ("Tam, the Possibility", "Faeburrow Elder", "Fractal Token") and printed_pt(p)[0] > 0], key=lambda p: (-printed_pt(p)[0], p.uid))
 
 
+SAHEELI_MANA_SOURCES = {"Sol Ring": 2, "Arcane Signet": 1, "Fellwar Stone": 1}     # artefatos de mana NAO lendarios que o Servo pode copiar (Chromatic Orrery e The Chain Veil sao lendarios: a copia violaria a regra da lenda e eu perderia um dos dois)
+
+
+def saheeli_mana_choice(state: GameState):
+    """-2 da Saheeli como COPIA DE ARTEFATO DE MANA (goldfish manual #2, T6: o Servo virou copia do Fellwar Stone e pagou o Teferi). Alvo: Servo/Food desvirado (uma copia nao-criatura nao tem doenca de
+    invocacao: so' criatura tem, CR 302.6); fonte: o artefato de mana que mais rende. Devolve (alvo, fonte, mana extra) ou None."""
+    if not SAHEELI_COPY_MANA_ARTIFACT or state.phase not in ("main1", "main2"):
+        return None
+    tgts = sorted([p for p in artifacts(state) if p.card.name in ("Servo Token", "Food Token") and not p.tapped and p.copy_of is None and p.base_pt is None and not p.lost_abilities], key=lambda p: p.uid)
+    if not tgts:
+        return None
+    ocols = opp_land_colors(state)
+    best = None
+    for q in artifacts(state):
+        g = SAHEELI_MANA_SOURCES.get(q.card.name)
+        if g is None or q.lost_abilities or q.copy_of is not None or (q.card.name == "Fellwar Stone" and not ocols):
+            continue
+        if best is None or (g, -q.uid) > (best[2], -best[1].uid):
+            best = (tgts[0], q, g)
+    return best
+
+
+def saheeli_mana_wanted(state: GameState):
+    """So' gasta 2 de lealdade se, com a copia, uma carta valiosa da mao (prioridade >= 40) que nao cabe agora passa a caber (ensaio a seco: marca a copia, testa e desmarca; sem efeito colateral)."""
+    ch = saheeli_mana_choice(state)
+    if ch is None:
+        return None
+    tgt, src, _g = ch
+    cand = [h for h in sorted(set(state.hand)) if "land" not in CARD_DB[h].types and CARD_PRIORITY.get(h, 20) >= 40 and not can_cast_name(state, h)]
+    if not cand:
+        return None
+    tgt.copy_of = src.card.name
+    try:
+        ok = any(can_cast_name(state, h) for h in cand)
+    finally:
+        tgt.copy_of = None
+    return ch if ok else None
+
+
+def saheeli_mana_pre(state: GameState, best) -> bool:
+    return SAHEELI_COPY_MANA_ARTIFACT and best[1:3] == ("Saheeli, Sublime Artificer", "-2") and saheeli_mana_wanted(state) is not None
+
+
 @eff("Saheeli, Sublime Artificer", "-2")
 def _saheeli_minus2(state, host, x):
+    ch = saheeli_mana_wanted(state)
+    if ch is not None:
+        ch[0].copy_of = ch[1].card.name
+        state.m["saheeli_mana_copies"] += 1
+        state.m["saheeli_mana_copy_extra"] += ch[2]
+        return
     arts = [p for p in artifacts(state) if p.card.name in ("Servo Token", "Food Token", "Treasure Token") and not sick(state, p) and not p.tapped and p.base_pt is None]
     big = saheeli_sources(state)
     if not arts or not big:
@@ -3350,6 +3403,8 @@ def _saheeli_minus2(state, host, x):
 
 @sc("Saheeli, Sublime Artificer", "-2")
 def _saheeli_minus2_s(state, host):
+    if loyalty(host) >= 2 and saheeli_mana_wanted(state) is not None:
+        return 64
     arts = [p for p in artifacts(state) if p.card.name in ("Servo Token", "Food Token", "Treasure Token") and not sick(state, p) and not p.tapped and p.base_pt is None]
     big = [p for p in saheeli_sources(state) if printed_pt(p)[0] >= 5]
     if arts and big and loyalty(host) >= 4 and state.phase == "main1":
@@ -4223,7 +4278,7 @@ def activation_pick(state: GameState, host: Permanent, pre: bool = False, window
     if not opts:
         return None
     best = opts[0]
-    if pre and (best[1], best[2]) not in PRE_ABILITIES:
+    if pre and (best[1], best[2]) not in PRE_ABILITIES and not saheeli_mana_pre(state, best):
         return None
     if best[0] <= 0:
         return None
@@ -4642,6 +4697,7 @@ def end_step(state: GameState):
         state.hand.remove(c)
         state.graveyard.append(c)
     for p in state.battlefield:
+        p.copy_of = None
         if p.anim == "eot":
             prev = p.ctr.pop("_tez_prev", None)
             p.base_pt, p.anim = (prev if prev is not None else (None, None))

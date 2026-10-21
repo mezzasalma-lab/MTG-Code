@@ -1,0 +1,9 @@
+T 1: PWs 0 [] | terrenos 1 | mana(ini) 0 | Tam nao | mao 7 | outros []
+T 2: PWs 0 [] | terrenos 2 | mana(ini) 1 | Tam nao | mao 6 | outros ['Fellwar Stone']
+T 3: PWs 0 [] | terrenos 3 | mana(ini) 3 | Tam sim | mao 6 | outros ['Fellwar Stone', 'Tam, the Possibility']
+T 4: PWs 1 [('Chandra', 4)] | terrenos 4 | mana(ini) 4 | Tam sim | mao 5 | outros ['Fellwar Stone', 'Tam, the Possibility']
+T 5: PWs 4 [('Jacetok', 2), ('Aminatou', 2), ('Chandra', 4), ('Saheeli', 5)] | terrenos 5 | mana(ini) 5 | Tam sim | mao 3 | outros ['Fellwar Stone', 'Tam, the Possibility', 'Way of the Deathbringer']
+T 6: PWs 6 [('Jacetok', 7), ('Aminatou', 7), ('Chandra', 9), ('Saheeli', 8), ('Teferi', 11), ('Wrenn', 8)] | terrenos 6 | mana(ini) 6 | Tam sim | mao 4 | outros ['Fellwar Stone', 'Tam, the Possibility', 'Way of the Deathbringer', 'Beast Token', 'Servo Token']
+T 7: PWs 9 [('Jacetok', 7), ('Aminatou', 9), ('Chandra', 13), ('Saheeli', 9), ('Wrenn', 4), ('Elspeth', 8), ('Teferi', 8), ('Teferi', 7), ('The', 8)] | terrenos 7 | mana(ini) 7 | Tam sim | mao 2 | outros ['Fellwar Stone', 'Tam, the Possibility', 'Way of the Deathbringer', 'Beast Token', 'Servo Token', 'Soldier Token', 'Soldier Token', 'Soldier Token', 'Beast Token']
+T 8: PWs 11 [('Jacetok', 7), ('Aminatou', 8), ('Chandra', 13), ('Wrenn', 4), ('Elspeth', 3), ('Teferi', 2), ('Dihada', 4), ('The', 5), ('Saheeli', 1), ('Ajani', 7), ('Domri', 4)] | terrenos 8 | mana(ini) 8 | Tam sim | mao 4 | outros ['Fellwar Stone', 'Tam, the Possibility', 'Way of the Deathbringer', 'Beast Token', 'Beast Token', 'Servo Token', 'Servo Token', 'Samurai Token', 'Dreamtide Whale']
+FIM da partida: mesa limpa no turno 8

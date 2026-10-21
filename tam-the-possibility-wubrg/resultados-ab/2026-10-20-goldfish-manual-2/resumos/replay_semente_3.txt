@@ -1,0 +1,8 @@
+T 1: PWs 0 [] | terrenos 1 | mana(ini) 0 | Tam nao | mao 7 | outros []
+T 2: PWs 0 [] | terrenos 2 | mana(ini) 1 | Tam nao | mao 6 | outros ['Fellwar Stone']
+T 3: PWs 0 [] | terrenos 3 | mana(ini) 3 | Tam sim | mao 6 | outros ['Fellwar Stone', 'Tam, the Possibility']
+T 4: PWs 2 [('Chandra', 4), ('Saheeli', 5)] | terrenos 4 | mana(ini) 4 | Tam sim | mao 4 | outros ['Fellwar Stone', 'Tam, the Possibility']
+T 5: PWs 4 [('Chandra', 5), ('Saheeli', 3), ('Jacetok', 2), ('The', 5)] | terrenos 5 | mana(ini) 5 | Tam sim | mao 3 | outros ['Fellwar Stone', 'Tam, the Possibility', 'Way of the Deathbringer', 'Beast Token', 'Servo Token', 'Samurai Token']
+T 6: PWs 6 [('Chandra', 4), ('Saheeli', 2), ('Jacetok', 1), ('The', 5), ('Wrenn', 2), ('Teferi', 5)] | terrenos 6 | mana(ini) 6 | Tam sim | mao 4 | outros ['Fellwar Stone', 'Tam, the Possibility', 'Way of the Deathbringer', 'Beast Token', 'Servo Token', 'Samurai Token', 'Servo Token', 'Samurai Token', 'Servo Token']
+T 7: PWs 7 [('Chandra', 6), ('Saheeli', 1), ('Jacetok', 1), ('The', 6), ('Wrenn', 1), ('Aminatou', 2), ('Teferi', 5)] | terrenos 7 | mana(ini) 7 | Tam sim | mao 3 | outros ['Fellwar Stone', 'Tam, the Possibility', 'Way of the Deathbringer', 'Beast Token', 'Samurai Token', 'Servo Token', 'Samurai Token', 'Servo Token', 'Servo Token']
+T 8: PWs 8 [('Chandra', 8), ('Saheeli', 3), ('The', 10), ('Wrenn', 6), ('Aminatou', 5), ('Teferi', 10), ('Vraska', 8), ('Nissa', 8)] | terrenos 8 | mana(ini) 11 | Tam sim | mao 5 | outros ['Fellwar Stone', 'Tam, the Possibility', 'Way of the Deathbringer', 'Beast Token', 'Samurai Token', 'Samurai Token', 'Servo Token', 'Arcane Signet', 'Flux Channeler']
