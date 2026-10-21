@@ -1,0 +1,12 @@
+Replay do goldfish manual #4, modo padrao, N=300 ordens do resto do baralho (mesmas 18 cartas do usuario)
+turno | PWs mediana [Q1-Q3] | usuario | lealdade total mediana | mana no inicio mediana
+  T 1 |  0.0 [0-0] | 0 |   0.0 |  0.0
+  T 2 |  0.0 [0-0] | 0 |   0.0 |  1.0
+  T 3 |  0.0 [0-0] | 0 |   0.0 |  2.0
+  T 4 |  1.0 [1-1] | 0 |   4.0 |  3.0
+  T 5 |  1.0 [1-1] | 1 |   5.0 |  4.0
+  T 6 |  2.0 [2-2] | 1 |  12.0 |  5.0
+  T 7 |  4.0 [4-4] | 3 |  29.0 |  7.0
+  T 8 |  4.0 [4-4] | 3 |  29.0 |  9.0
+  T 9 |  4.0 [4-4] | 4 |  58.0 | 11.0
+Tam conjurada: mediana T3.0 (usuario: T3); 1a ultimate: em 300/300 partidas, mediana T8.0 (usuario: nenhuma; so' o -12 da Nissa, que e' o turno extra); partidas com copia de mana da Saheeli: 0/300

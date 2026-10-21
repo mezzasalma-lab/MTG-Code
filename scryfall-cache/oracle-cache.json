@@ -302886,5 +302886,59 @@
     "set": "tpr",
     "toughness": "1",
     "type_line": "Artifact Creature — Sliver"
+  },
+  "Vex": {
+    "cmc": 3.0,
+    "collector_number": "36",
+    "color_identity": [
+      "U"
+    ],
+    "colors": [
+      "U"
+    ],
+    "keywords": [],
+    "legalities": {
+      "standard": "not_legal",
+      "future": "not_legal",
+      "historic": "not_legal",
+      "timeless": "not_legal",
+      "gladiator": "not_legal",
+      "pioneer": "not_legal",
+      "modern": "legal",
+      "legacy": "legal",
+      "pauper": "legal",
+      "vintage": "legal",
+      "penny": "legal",
+      "commander": "legal",
+      "oathbreaker": "legal",
+      "standardbrawl": "not_legal",
+      "brawl": "not_legal",
+      "competitivebrawl": "not_legal",
+      "alchemy": "not_legal",
+      "paupercommander": "legal",
+      "duel": "legal",
+      "oldschool": "not_legal",
+      "premodern": "not_legal",
+      "predh": "legal",
+      "tlr": "legal"
+    },
+    "loyalty": null,
+    "mana_cost": "{2}{U}",
+    "name": "Vex",
+    "oracle_text": "Counter target spell. That spell's controller may draw a card.",
+    "power": null,
+    "prices": {
+      "usd": "0.06",
+      "usd_foil": "0.60",
+      "usd_etched": null,
+      "eur": "0.10",
+      "eur_foil": "0.27",
+      "tix": "0.04"
+    },
+    "released_at": "2004-02-06",
+    "scryfall_uri": "https://scryfall.com/card/dst/36/vex?utm_source=api",
+    "set": "dst",
+    "toughness": null,
+    "type_line": "Instant"
   }
 }
