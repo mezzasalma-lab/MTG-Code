@@ -40,7 +40,7 @@ Origem: o goldfish manual #2 do usuário (`../2026-10-20-goldfish-manual-2/LEIAM
 | regressão 20.000 × 2 modos, `depois` e `chave_desligada` | 0 exceções, 0 carta acima do baralho, 0 campo negativo (4 configurações) | `resumos/regressao_20000.txt` |
 | determinismo: 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos, campo a campo (chave ligada e desligada) | 0 divergências nos 4 casos | `resumos/determinismo.txt` |
 | A/B pareado `antes` × `depois`, N = 2.000 e 10.000 × 2 modos | tabela acima | `resumos/ab_*.txt`, `resumo_saheeli.md` |
-| reprodutibilidade (`orquestracao/verificar_reproducao.sh --tudo`) | ver `resumos/verificacao_reproducao.txt` | idem |
+| reprodutibilidade (`orquestracao/verificar_reproducao.sh --tudo`, simulador vivo, sem edição durante a execução) | **17/17** saídas byte a byte iguais com `cmp`: 6 tabelas refeitas dos brutos (A/B ×4, `resumo_saheeli`, índice), smoke, bit-identidade e regressão re-executados, e os 4 lotes do A/B re-simulados (tabela e bruto `.json.xz` idênticos) | `resumos/verificacao_reproducao.txt` |
 
 ### 1ª rodada INVÁLIDA (guardada e marcada, Regra #8)
 
