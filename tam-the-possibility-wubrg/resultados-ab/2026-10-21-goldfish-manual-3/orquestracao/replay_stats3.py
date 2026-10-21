@@ -1,6 +1,6 @@
 """Replay do goldfish manual #3 em N ordens do RESTO do baralho (a mesma mao e as mesmas 6 compras do usuario, na mesma ordem): mediana e quartis, por turno (1 a 7, o log dele termina no T7), de planeswalkers
 em campo, lealdade total e mana no inicio do turno; turno em que a Tam entra; 1a ultimate. Compara com o jogo do usuario (do log).
-Uso: python3 replay_stats3.py [N] [modo: padrao|resiliencia]"""
+Uso: python3 replay_stats3.py [N] [modo: padrao|resiliencia] [cores_livres]"""
 import os, sys, statistics as st
 AQUI = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, AQUI)
@@ -12,7 +12,7 @@ USUARIO_PW = {1: 0, 2: 0, 3: 0, 4: 0, 5: 1, 6: 3, 7: 4}
 USUARIO_TAM_T = 4
 
 
-def um(seed, modo):
+def um(seed, modo, livres=False):
     s = R.estado(seed, resiliencia=(modo == "resiliencia"))
     rows = {}
     for t in range(1, 8):
@@ -20,6 +20,8 @@ def um(seed, modo):
         for o in list(s.opps):
             if not o.eliminated:
                 T.opponent_turn(s, o)
+        if livres and t == 1:
+            R.liberar_cores(s)
         rows[t] = (len(T.pws(s)), sum(T.loyalty(p) for p in T.pws(s)), s.by_turn.get(t, {}).get("mana", 0))
         if s.game_over:
             for u in range(t + 1, 8):
@@ -31,8 +33,9 @@ def um(seed, modo):
 if __name__ == "__main__":
     N = int(sys.argv[1]) if len(sys.argv) > 1 else 300
     modo = sys.argv[2] if len(sys.argv) > 2 else "padrao"
-    res = [um(1_000_000 + i, modo) for i in range(N)]
-    print(f"Replay do goldfish manual #3, modo {modo}, N={N} ordens do resto do baralho (mesmas 14 cartas do usuario)")
+    livres = len(sys.argv) > 3 and sys.argv[3] == "cores_livres"
+    res = [um(1_000_000 + i, modo, livres) for i in range(N)]
+    print(f"Replay do goldfish manual #3, modo {modo}{' + terrenos de oponente com as 5 cores a partir do T2 (cores_livres)' if livres else ''}, N={N} ordens do resto do baralho (mesmas 14 cartas do usuario)")
     print("turno | PWs mediana [Q1-Q3] | usuario | lealdade total mediana | mana no inicio mediana")
     for t in range(1, 8):
         a = sorted(r[0][t][0] for r in res); b = sorted(r[0][t][1] for r in res); c = sorted(r[0][t][2] for r in res)

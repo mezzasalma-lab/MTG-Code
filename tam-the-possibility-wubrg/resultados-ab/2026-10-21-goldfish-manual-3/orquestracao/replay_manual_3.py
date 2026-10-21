@@ -19,6 +19,13 @@ class SemEmbaralhar(random.Random):
         return None
 
 
+def liberar_cores(st):
+    """Os terrenos dos 3 oponentes passam a produzir as 5 cores (como no playtester do Archidekt, onde a Exotic Orchard do usuario tocou {G} no T2). Chamado DEPOIS dos primeiros turnos de oponente: no T1 do jogador
+    os oponentes ainda nao jogaram terreno, e a Orchard nao produz nada (oraculo: 'a land an opponent controls could produce')."""
+    for o in st.opps:
+        o.land_colors = ["W", "U", "B", "R", "G"]
+
+
 def estado(seed: int, resiliencia: bool = False):
     st = T.GameState(rng=random.Random(seed))
     st.proxy_rng = random.Random(seed * 1_000_033 + 17)
