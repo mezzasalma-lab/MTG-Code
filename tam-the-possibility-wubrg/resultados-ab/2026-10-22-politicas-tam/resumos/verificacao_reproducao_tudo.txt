@@ -4,3 +4,6 @@ IGUAL  ab_2000_resiliencia.txt
 IGUAL  ab_10000_resiliencia.txt
 IGUAL  resumo_politicas.md
 IGUAL  indice_dados.md
+IGUAL  smoke.txt
+IGUAL  bitident_20000.txt
+IGUAL  regressao_20000.txt
