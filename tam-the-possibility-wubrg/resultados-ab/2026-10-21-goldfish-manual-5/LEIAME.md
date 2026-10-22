@@ -93,3 +93,8 @@ Mão de 5 (a do log depois do mulligan) e as compras na ordem do log (as que fic
 
 **Comparado:** a linha do tempo inteira (T1–T10) contra as regras do simulador (os testes de `t_manual5.py`), as 8 dúvidas acima como premissas, e o desenvolvimento de mesa com as mesmas cartas.
 **Não comparado / não resolvido:** vida e dano de oponente (o log não tem); a ordem exata das ~130 ações do bloco T11 (4 turnos num bloco só: os turnos extras foram reconstruídos pelas ativações de `−12` e pelo untap); quais proliferates e gatilhos do Gauntlet ele fez (os `0` não aparecem); o que mais ele faria depois do T11 (o log termina no Aminatou, que ele jogou no 4º turno extra).
+
+## Reprodutibilidade (2026-10-22)
+
+`bash orquestracao/verificar_reproducao.sh` refaz os 6 resumos (`linha_do_tempo.md`, `eventos_compactos.txt`, `deltas_lealdade.txt`, `replay_semente_{1,2,3}.txt`) e compara com `cmp`: **6/6 byte a byte iguais** (`resumos/verificacao_reproducao.txt`). Os 3 primeiros dependem só do bruto; **os 3 replays dependem do simulador vivo** (`tam_goldfish_v1.py` da pasta do deck, que hoje é o da rodada 2): se o simulador mudar, eles mudam.
+**Correção desta verificação:** os arquivos `replay_semente_1.txt` e `replay_semente_3.txt` que estavam salvos não tinham a última linha "FIM da partida: mesa limpa no turno 10" (as 10 primeiras linhas, T1 a T10, eram idênticas às de agora); não sei por que a linha faltava. Foram refeitos com o script commitado. A semente 2 não termina até o T10 e não tem essa linha. `SHA256SUMS` na pasta confere os arquivos (`sha256sum -c SHA256SUMS`).
