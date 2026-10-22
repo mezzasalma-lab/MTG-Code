@@ -44,6 +44,7 @@ Cada variante de uma chave só (`so_tam_ataca`, `so_pisca_mana`, `so_saheeli_cri
 | determinismo: 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos, campo a campo, chaves ligadas | 0 divergências | `resumos/determinismo.txt` |
 | A/B pareado `antes` × `depois` + 3 variantes de uma chave só, N = 2.000 e 10.000 × 2 modos | tabela acima | `resumos/ab_*.txt`, `resumo_politicas.md` |
 | reprodutibilidade (tabelas refeitas só dos brutos `.json.xz`, `cmp`) | 6/6 saídas byte a byte iguais | `resumos/verificacao_reproducao.txt` |
+| **reprodutibilidade completa (`verificar_reproducao.sh --tudo`)**: re-simula smoke, bit-identidade, regressão 20.000 × 2 e os 4 lotes do A/B (2026-10-22, 21:42 a 23:11 UTC, com o `config.json` apontando para `codigo/…DEPOIS_rodada1.py`) | **17/17 saídas byte a byte iguais**, inclusive os 4 brutos `.json.xz` re-simulados (decomprimidos) | `resumos/verificacao_reproducao_tudo.txt` |
 
 ## Mapa arquivo → o que é → status
 
@@ -62,6 +63,6 @@ bash descomprimir.sh                                                  # .json.xz
 cd orquestracao
 python3 resumo_politicas.py | cmp - ../resumos/resumo_politicas.md    # a frequência de cada mudança, só dos brutos
 bash verificar_reproducao.sh                                          # tabelas do A/B, resumo e índice: cmp byte a byte
-bash verificar_reproducao.sh --tudo                                   # re-simula smoke, bit-identidade, regressão e os 4 lotes do A/B (~90 min; não mude o `config.json`)
+bash verificar_reproducao.sh --tudo                                   # re-simula smoke, bit-identidade, regressão e os 4 lotes do A/B (~90 min; não mude o `config.json`); rodado em 2026-10-22: 17/17 iguais
 sha256sum -c ../SHA256SUMS                                            # integridade (rodar na pasta do arquivo)
 ```

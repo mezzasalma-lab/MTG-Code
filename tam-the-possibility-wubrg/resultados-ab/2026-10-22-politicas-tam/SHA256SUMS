@@ -1,4 +1,5 @@
-92d4db453a5a0fbeb1f33d0a3892bcc3ea1874e8c825854e2abf49a206d03ec1  ./LEIAME.md
+c2d87ebdacc5a3d630b208eb4be329d5c740ce62da7bba71b0e86b8b0f00a6d6  ./.gitignore
+c5800f4f168bd7a84b9322c1e91fe242f2194ebbe5636f56dd76bdb890a85d92  ./LEIAME.md
 7c1818852ae1e498bf469743fa5b1543a39b9fb7af95ae2861c7e16b8b3c9c9d  ./codigo/tam_cartas.json
 3b6a7d95881674773519a3c8ceb7f4d471030a02e18934992dc301d1af9eb3c6  ./codigo/tam_goldfish_v1_ANTES_2380566.py
 e2d53ea20064c9d0be9cf4e14b6fa826352bac6c8ac05591f60fdd4604044d80  ./codigo/tam_goldfish_v1_DEPOIS_rodada1.py
@@ -27,3 +28,4 @@ e589560750ce8a0ee3b95d6d09d65429f073ddd64298ca6394445c7b252ea5f4  ./resumos/ab_2
 958464975bb5d1911061e9edb08a11f00faf13f8ec4371889325e2f5754fa0e7  ./resumos/resumo_politicas.md
 03104230f16ca22543a43e9ba5deef153d3170158d96f6b87162c046357bd1cb  ./resumos/smoke.txt
 1bf5c93130b345c7073ed74449abc9a205c1dee10e38a742c770acce941818d4  ./resumos/verificacao_reproducao.txt
+198c2de0cbdd1394b39125ec0548786d2db1734a5e4b637b248f6fcb168bceab  ./resumos/verificacao_reproducao_tudo.txt
