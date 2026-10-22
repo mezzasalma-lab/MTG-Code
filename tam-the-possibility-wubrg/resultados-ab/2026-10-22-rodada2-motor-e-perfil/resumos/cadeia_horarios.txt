@@ -3,3 +3,5 @@
 2026-10-22T19:57:02Z inicio bitid 20000
 2026-10-22T20:23:19Z fim bitid 20000 rc=0
 2026-10-22T20:23:19Z inicio ab
+2026-10-22T21:23:40Z fim ab rc=0
+2026-10-22T21:23:40Z inicio reg 20000

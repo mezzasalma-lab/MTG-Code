@@ -1,0 +1,131 @@
+LOTE N=10000, modo padrao
+[tetos_altos - depois] N=10000 | partidas com resultado IDENTICO ao da base: 9962 (99.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T8                                   0.1537       0.1532      -0.0005 ±0.0004  
+  *cleared_T9                                   0.4310       0.4304      -0.0006 ±0.0005  
+  *cleared_T10                                  0.6866       0.6859      -0.0007 ±0.0005  
+   first_elim_T6                                0.0445       0.0444      -0.0001 ±0.0002  
+   first_elim_T8                                0.6450       0.6448      -0.0002 ±0.0003  
+  *self_lost                                    0.0087       0.0094      +0.0007 ±0.0005  
+   m_pw_entered                                 9.9215       9.9305      +0.0090 ±0.0127  
+   pws_T8                                       5.3938       5.3949      +0.0011 ±0.0051  
+   mana_T8                                     11.4279      11.4277      -0.0002 ±0.0004  
+  *m_combo_assembled                            0.0287       0.0279      -0.0008 ±0.0006  
+  *m_combo_wins                                 0.0098       0.0094      -0.0004 ±0.0004  
+   m_combo_payoff_cast_from_hand                0.0019       0.0018      -0.0001 ±0.0002  
+   game_turns                                   9.8438       9.8438      +0.0000 ±0.0003  
+  *m_pw_activations                            39.2070      39.2693      +0.0623 ±0.0300  
+  *m_prolif_by_gauntlet_zero                    8.4431       8.4823      +0.0392 ±0.0219  
+  *m_pw_act_by_Jace Token                       5.0884       5.0907      +0.0023 ±0.0013  
+  *m_tokens_created                            19.1172      19.1599      +0.0427 ±0.0247  
+  *m_proliferates_total                        19.3741      19.4144      +0.0403 ±0.0236  
+  *m_life_gained_way_paradox                   10.4364      10.4711      +0.0347 ±0.0214  
+  *m_paradox_triggers                          10.4364      10.4711      +0.0347 ±0.0214  
+  *life                                        40.8136      40.8507      +0.0371 ±0.0231  
+  *life_final                                  40.8136      40.8507      +0.0371 ±0.0231  
+  *m_prolif_loyalty_gauntlet_zero              69.6242      70.3265      +0.7023 ±0.4466  
+  *m_pw_act_by_Dack Fayden                      1.1554       1.1571      +0.0017 ±0.0011  
+  *m_tokens_Cadet Token                         6.8413       6.8720      +0.0307 ±0.0199  
+  *m_ajani_cadets                               6.7613       6.7919      +0.0306 ±0.0198  
+  *m_pw_act_by_Chandra, Legacy of Fire          1.2389       1.2412      +0.0023 ±0.0015  
+
+LOTE N=10000, modo padrao
+[perfil_playtester - depois] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T8                                   0.1537       0.1514      -0.0023 ±0.0022  
+   cleared_T9                                   0.4310       0.4291      -0.0019 ±0.0031  
+  *cleared_T10                                  0.6866       0.6901      +0.0035 ±0.0031  
+  *first_elim_T6                                0.0445       0.0435      -0.0010 ±0.0010  
+   first_elim_T8                                0.6450       0.6448      -0.0002 ±0.0023  
+   self_lost                                    0.0087       0.0082      -0.0005 ±0.0012  
+   m_pw_entered                                 9.9215       9.9361      +0.0146 ±0.0372  
+   pws_T4                                       0.9391       0.9394      +0.0003 ±0.0010  
+   pws_T6                                       3.1499       3.1524      +0.0025 ±0.0041  
+   pws_T8                                       5.3938       5.3991      +0.0053 ±0.0129  
+   mana_T6                                      7.1387       7.1350      -0.0037 ±0.0046  
+   mana_T8                                     11.4279      11.4198      -0.0081 ±0.0184  
+  *m_extra_turns_taken                          1.3729       1.3512      -0.0217 ±0.0200  
+  *m_extra_turns_played                         0.4821       0.4761      -0.0060 ±0.0049  
+   m_combo_assembled                            0.0287       0.0287      +0.0000 ±0.0016  
+   m_combo_wins                                 0.0098       0.0108      +0.0010 ±0.0012  
+   m_combo_payoff_cast_from_hand                0.0019       0.0024      +0.0005 ±0.0006  
+   m_turn_cap_activations                       0.3014       0.3023      +0.0009 ±0.1005  
+   game_turns                                   9.8438       9.8431      -0.0007 ±0.0067  
+  *m_opp_spells_total                          21.1564       5.9035     -15.2529 ±0.0713  
+  *m_prolif_by_dreamtide_whale                  0.3491       0.2281      -0.1210 ±0.0127  
+  *m_opp_crimes_total                           0.1015       0.0287      -0.0728 ±0.0078  
+  *m_prolif_by_peacemaker                       0.1015       0.0287      -0.0728 ±0.0078  
+  *m_prolif_loyalty_peacemaker                  0.3837       0.1107      -0.2730 ±0.0337  
+  *m_opp_spells_blocked_narset                  0.1197       0.0320      -0.0877 ±0.0109  
+  *m_opp_discards                               0.2317       0.3242      +0.0925 ±0.0117  
+  *m_prolif_loyalty_dreamtide_whale             1.6110       1.1488      -0.4622 ±0.0589  
+  *len_spells_this_turn_by_player               0.8842       0.8462      -0.0380 ±0.0054  
+  *m_garruk_vb_draws                            0.1588       0.2251      +0.0663 ±0.0103  
+  *m_whale_vanished                             0.0043       0.0106      +0.0063 ±0.0016  
+  *m_proxy_garruk_vb                            0.0963       0.0731      -0.0232 ±0.0065  
+  *first_ultimate_turn__ate_T6                  0.1366       0.1332      -0.0034 ±0.0015  
+  *m_life_lost_dellian_draw                     0.6463       0.6604      +0.0141 ±0.0073  
+
+LOTE N=10000, modo resiliencia
+[tetos_altos - depois] N=10000 | partidas com resultado IDENTICO ao da base: 9986 (99.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+   cleared_T10                                  0.0499       0.0498      -0.0001 ±0.0002  
+   self_lost                                    0.0045       0.0047      +0.0002 ±0.0003  
+   m_pw_entered                                 6.5532       6.5552      +0.0020 ±0.0033  
+   pws_T8                                       2.2359       2.2365      +0.0006 ±0.0012  
+   m_combo_assembled                            0.0103       0.0102      -0.0001 ±0.0002  
+   game_turns                                  11.8221      11.8214      -0.0007 ±0.0007  
+  *m_pw_act_by_Garruk, Curse Breaker            0.9070       0.9086      +0.0016 ±0.0013  
+  *m_pw_act_by_Teferi, Temporal Archmage        0.8867       0.8880      +0.0013 ±0.0011  
+  *loyalty_acts_this_turn                       5.1862       5.2511      +0.0649 ±0.0569  
+  *m_pw_act_by_Saheeli, Sublime Artificer       0.4375       0.4386      +0.0011 ±0.0010  
+  *m_ajani_cadets                               2.7060       2.7130      +0.0070 ±0.0063  
+  *m_tokens_Cadet Token                         2.8827       2.8897      +0.0070 ±0.0063  
+  *m_teferi_ta_looks                            0.5283       0.5291      +0.0008 ±0.0007  
+  *m_pw_act_by_Domri, Chaos Bringer             0.8355       0.8362      +0.0007 ±0.0006  
+  *life                                        20.6410      20.6466      +0.0056 ±0.0053  
+  *life_final                                  20.6410      20.6466      +0.0056 ±0.0053  
+  *m_loyalty_counters_by_cost_+2                5.1042       5.1068      +0.0026 ±0.0025  
+   turn                                        11.8221      11.8214      -0.0007 ±0.0007  
+   m_opp_spells_total                          29.4916      29.4897      -0.0019 ±0.0019  
+   m_teferi_ta_untaps                           0.2035       0.2041      +0.0006 ±0.0006  
+
+LOTE N=10000, modo resiliencia
+[perfil_playtester - depois] N=10000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T8                                   0.0041       0.0579      +0.0538 ±0.0046  
+  *cleared_T9                                   0.0177       0.1943      +0.1766 ±0.0078  
+  *cleared_T10                                  0.0499       0.4016      +0.3517 ±0.0099  
+  *first_elim_T6                                0.0017       0.0169      +0.0152 ±0.0025  
+  *first_elim_T8                                0.0682       0.3419      +0.2737 ±0.0096  
+  *self_lost                                    0.0045       0.0129      +0.0084 ±0.0025  
+  *died_any                                     0.1286       0.0000      -0.1286 ±0.0066  
+  *m_pw_entered                                 6.5532       9.9297      +3.3765 ±0.1330  
+  *pws_T4                                       0.7195       0.8554      +0.1359 ±0.0105  
+  *pws_T6                                       1.6390       2.5454      +0.9064 ±0.0283  
+  *pws_T8                                       2.2359       4.1262      +1.8903 ±0.0491  
+  *mana_T4                                      3.9103       3.9559      +0.0456 ±0.0082  
+  *mana_T6                                      6.2181       6.7844      +0.5663 ±0.0343  
+  *mana_T8                                      8.1795      10.1425      +1.9630 ±0.0734  
+  *m_extra_turns_taken                          0.4059       1.2303      +0.8244 ±0.0629  
+  *m_extra_turns_played                         0.1362       0.4288      +0.2926 ±0.0201  
+  *m_combo_assembled                            0.0103       0.0291      +0.0188 ±0.0037  
+  *m_combo_wins                                 0.0023       0.0084      +0.0061 ±0.0020  
+   m_combo_payoff_cast_from_hand                0.0009       0.0012      +0.0003 ±0.0009  
+  *m_turn_cap_activations                       0.0827       0.3994      +0.3167 ±0.1619  
+  *game_turns                                  11.8221      10.7209      -1.1012 ±0.0254  
+  *m_opp_spells_total                          29.4916       6.8178     -22.6738 ±0.0866  
+  *m_opp_creatures_removed                     18.1058       1.6410     -16.4648 ±0.2458  
+  *turn_id                                     45.1539      37.5023      -7.6516 ±0.1178  
+  *m_tam_attacks                                0.2127       2.6437      +2.4310 ±0.0395  
+  *m_pw_combat_damage_total                    11.6923       0.3037     -11.3886 ±0.1855  
+  *m_opp_crimes_total                           7.0629       2.9746      -4.0883 ±0.0674  
+  *m_blocks_total                               4.6082       0.4020      -4.2062 ±0.0695  
+  *m_opps_eliminated_total                      0.9378       2.5049      +1.5671 ±0.0261  
+  *m_opps_elim_life                             0.8797       2.3510      +1.4713 ±0.0261  
+  *m_opp_attacks_on_pw                          8.2243       0.4848      -7.7395 ±0.1425  
+  *m_opp_creatures_removed_combat               3.8815       0.3381      -3.5434 ±0.0654  
+  *game_over                                    0.1824       0.7511      +0.5687 ±0.0105  
+  *m_opp_attackers_total                       17.0539       0.5555     -16.4984 ±0.3085  
+  *cleared_T12                                  0.1779       0.7382      +0.5603 ±0.0106  
+
