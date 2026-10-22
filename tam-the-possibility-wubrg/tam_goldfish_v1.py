@@ -82,6 +82,19 @@ SAHEELI_COPY_MANA_ARTIFACT = True     # Saheeli -2: "target artifact you control
 TAM_ATTACKS = True                    # a Tam ataca quando a habilidade de proliferate dela NAO e' possivel agora (sem {W}{U}{B}{R}{G} sobrando ou sem alvos pra proliferate): atacar e' de graca (goldfish manual #2 do usuario, T4: "atacou com ela quando nao tinha mana WUBRG"; Tamiyo +1 compra quando ela da' dano). False = a Tam nunca ataca (comportamento ate' 2026-10-21)
 BLINK_UNTAP_MANA = True               # Aminatou -1 e Displacer Kitten: piscar um permanente de mana VIRADO (rocha, terreno que entra desvirado) devolve-o desvirado: mana de novo no mesmo turno (goldfish manual #2, T7: o usuario piscou o Fellwar pra pagar a Wrenn). Ensaio a seco: so' se uma carta valiosa da mao passa a caber. False = nunca (comportamento ate' 2026-10-21)
 SAHEELI_COPY_CREATURES = True         # Saheeli -2 como copia de CRIATURA com habilidade (nao so' P/T): mana (Birds, Bloom Tender, Faeburrow Elder, Hierarchs), gatilho de magia nao-criatura (Flux Channeler, Displacer Kitten) e Staff of Compleation. False = como ate' 2026-10-21
+EXTRA_TURNS_STACK = True              # cada `-12: Take an extra turn after this one` da Ichormoon Gauntlet da UM turno extra: duas ativacoes no mesmo turno = dois turnos extras (goldfish manual #5, T11: Domri e Vronos ativaram o -12 no mesmo turno). False = um turno extra por turno, como ate' 2026-10-22
+VIVID_LAST = True                     # pagar com terrenos/rochas ANTES de virar um Bloom Tender / Faeburrow Elder: o mana deles e' 1 por COR entre meus permanentes, e a magia que paga pode trazer cor nova (goldfish manual #5, T4: Pyromancer com 2 terrenos, depois o Bloom Tender rende 3, nao 2). False = como ate' 2026-10-22
+SIBLING_FIRST = True                  # pagar o generico com a unidade que sobra de uma fonte que ja' toca (2a unidade do filtro Fire-Lit Thicket / Sol Ring / Bloom Tender) antes de tocar outra fonte. False = ordem de antes (menos flexivel primeiro, sem olhar fontes ja' tocadas)
+COMBO_CAST_PAYOFF_FROM_HAND = True    # combo Orrery + Tezzeret + Chain Veil montado = mana infinito: o pagamento (All Will Be One / Sanctum Lurker) que esta na MAO e' conjurado e fecha a partida. False = so' fecha com o pagamento ja' em campo (como ate' 2026-10-22)
+OPP_PLAYTESTER = False                # perfil do oponente do playtester do Archidekt, calibrado nas taxas dos 5 goldfish manuais do usuario (resultados-ab/2026-10-22-calibracao-playtester/): criatura de oponente de vez em quando em vez de arquetipo, magias raras, atencao baixa. False = o oponente de sempre
+OPP_PLAYTESTER_DEV_PROB = 0.118       # P(o oponente poe 1 criatura em campo) por turno dele, a partir do 3o turno dele (11 criaturas em 31 turnos do usuario x 3 oponentes)
+OPP_PLAYTESTER_CAP = 4
+OPP_PLAYTESTER_SIZES = ((1, 1, 0.30), (2, 2, 0.35), (3, 3, 0.15), (4, 4, 0.12), (5, 5, 0.08))
+OPP_CARD_MIX = False                  # as cartas de oponente que o playtester mostrou: efeito em massa em 4 variantes (Cleansing Nova: todas; Split Up: so' viradas OU so' desviradas, a que mata mais; Damning Verdict: so' sem contador; Promise of Loyalty: sacrifico todas menos 1 com contador Vow) e anulacao que me deixa comprar (Vex, 50%). False = o oponente de sempre (wipe de todas as criaturas, anulacao seca)
+OPP_PLAYTESTER_ATTENTION = 0.143      # gate de atencao do oponente (de 1/3 dos turnos dele): ajustado pra que as interacoes nao-criatura (remocao, anulacao, efeito em massa, descarte) somem ~3,8 por partida, como nos 5 logs
+OPP_PLAYTESTER_SPELLS_PROB = {0: 0.74, 1: 0.24, 2: 0.02}     # P(0, 1, 2 magias por turno dele): ~0,28 por turno (24 cartas de oponente em 46 turnos do usuario, 3 oponentes)
+OPP_PLAYTESTER_COUNTER_FACTOR = 0.125 # fator da anulacao (de 0,5): a anulacao nao passa pelo gate de atencao; ajustado pra ~0,95 por partida (observado 0,58, IC95% 0,07-2,10)
+PERFIL_PLAYTESTER = {"OPP_PLAYTESTER": True, "OPP_CARD_MIX": True}      # chaves ligadas por `aplica_perfil("playtester")` (e pela variante do harness); os numeros do perfil sao as constantes OPP_PLAYTESTER_* acima
 
 # =========================================================
 # CARD DATABASE (do recorte do cache; tags e comportamento por NOME)
@@ -357,10 +370,12 @@ class GameState:
     cb_buff: bool = False                                  # Garruk, Curse Breaker -4: atacantes ganham +2/+2 e trample ate' meu proximo turno
     tamiyo_marked: list = field(default_factory=list)      # uids marcados pela Tamiyo +1: compra ao causar dano de combate
     extra_turn_pending: bool = False
+    extra_turns_queued: int = 0                            # EXTRA_TURNS_STACK: turnos extras pedidos (um por -12 ativado)
     delayed_return_wanderer: bool = False
     riot_flag: bool = False                                # a criatura em resolucao foi paga com mana da Domri: ganha riot
     cast_zone: str = "hand"                                # zona de onde a magia em resolucao foi conjurada (rebound so' vale da mao)
     _pool_used: int = 0
+    _vivid_defer: bool = False                             # VIVID_LAST: a magia em pagamento traz cor nova (os Bloom Tender/Elder esperam)
 
 
 def mark(state: GameState, key: str):
@@ -770,6 +785,9 @@ def _units_of(src: Src, any_pay: bool, ctx: Ctx) -> list:
     return [(src, ANYC if any_pay else colors, restr) for colors, restr in src.units if _ok_restr(restr, ctx)]
 
 
+VIVID_NAMES = ("Bloom Tender", "Faeburrow Elder")      # mana = 1 por cor entre meus permanentes: so' rende o maximo depois que a magia que paga entrou
+
+
 def _match(units: list, generic: int, pips: tuple):
     """Kuhn: cada pip -> uma unidade que produz alguma das cores aceitas; o generico sai das unidades que sobram (as MENOS flexiveis primeiro).
     Devolve (indices usados, indices casados com pip) ou None."""
@@ -792,6 +810,10 @@ def _match(units: list, generic: int, pips: tuple):
         if not try_pip(i, set()):
             return None
     free = [j for j in range(n) if match_u[j] == -1]
+    if SIBLING_FIRST and generic:
+        # o generico sai primeiro das unidades FLUTUANTES e das irmas de uma fonte que ja' vai tocar (a 2a unidade de um filtro/Sol Ring/Bloom Tender): tocar outra fonte so' pra isso desperdica mana
+        tocadas = {id(su[j][0]) for j in range(n) if match_u[j] != -1 and su[j][0] is not None}
+        free.sort(key=lambda j: 0 if su[j][0] is None else (1 if id(su[j][0]) in tocadas else 2))
     if len(free) < generic:
         return None
     matched = [order[j] for j in range(n) if match_u[j] != -1]
@@ -856,7 +878,12 @@ def _pool_key(colors: frozenset) -> str:
 def pay_mana(state: GameState, generic: int, pips: tuple, ctx: Ctx = CTX_SPELL) -> bool:
     """Paga: toca as fontes escolhidas; o que sobra de fonte multimana (Sol Ring, Orrery, Bloom Tender, Leyline) vai pro `state.pool` (vale ate' o fim da fase).
     Custos de vida/dano das fontes (City of Brass, Staff, Starting Town colorido) sao pagos aqui."""
-    plan = _plan(state, generic, pips, ctx)
+    plan = None
+    if VIVID_LAST and state._vivid_defer:
+        # a magia que estou pagando traz uma COR nova: o Bloom Tender / Faeburrow Elder rende mais DEPOIS dela (1 por cor); se o resto das fontes paga sozinho, eles ficam desvirados
+        plan = _plan(state, generic, pips, ctx, srcs=[s for s in mana_sources(state, ctx) if s.name not in VIVID_NAMES])
+    if plan is None:
+        plan = _plan(state, generic, pips, ctx)
     if plan is None:
         return False
     units, used, matched, feeds = plan["units"], plan["used"], set(plan["matched"]), plan["feeds"]
@@ -1808,10 +1835,13 @@ def counterspell_check(state: GameState, name: str) -> bool:
     """Modo de resiliencia: um oponente pode anular a magia (MV >= 3). Devolve True se foi anulada."""
     if not state.resilience or state.turn <= INTERACTION_SETUP_TURNS or CARD_DB[name].mv < COUNTER_MIN_MV:
         return False
-    if state.interaction_rng.random() >= interaction_chance(state) * COUNTERSPELL_CHANCE_FACTOR * (0.0 if "narset" in state.emblems else 1.0):
+    if state.interaction_rng.random() >= interaction_chance(state) * (OPP_PLAYTESTER_COUNTER_FACTOR if OPP_PLAYTESTER else COUNTERSPELL_CHANCE_FACTOR) * (0.0 if "narset" in state.emblems else 1.0):
         return False
     state.m["smart_counters"] += 1
     opp_crime(state, "counterspell")                  # 'counter target spell': mira a minha magia
+    if OPP_CARD_MIX and state.interaction_rng.random() < 0.5:
+        state.m["opp_vex_draws"] += 1
+        draw_cards(state, 1, "vex")                   # Vex: 'That spell's controller may draw a card.'
     return True
 
 
@@ -1904,7 +1934,12 @@ def cast_card(state: GameState, name: str, zone: str = "hand", free: bool = Fals
             return False
         g, pips, life_pips = opt
         state._pool_used = 0
-        if not pay_mana(state, g, pips, ctx_for(name)):
+        state._vivid_defer = bool(c.colors - set(colors_among(state)))
+        try:
+            paid = pay_mana(state, g, pips, ctx_for(name))
+        finally:
+            state._vivid_defer = False
+        if not paid:
             return False
         if "tamiyo" in state.emblems and zone == "hand":
             state.m["tamiyo_free_casts"] += 1
@@ -3924,6 +3959,7 @@ def _gauntlet_zero_s(state, host):
 def _gauntlet_extra_turn(state, host, x):
     state.m["extra_turns_taken"] += 1
     state.extra_turn_pending = True
+    state.extra_turns_queued += 1
 
 
 @sc("Ichormoon Gauntlet", "-12")
@@ -4632,7 +4668,8 @@ def opponent_turn(state: GameState, o: Opp):
         nspells = 1 if rng.random() < 0.15 else 0
     else:
         r = rng.random()
-        nspells = 0 if r < OPP_SPELLS_PROB[0] else (1 if r < OPP_SPELLS_PROB[0] + OPP_SPELLS_PROB[1] else 2)
+        probs = OPP_PLAYTESTER_SPELLS_PROB if OPP_PLAYTESTER else OPP_SPELLS_PROB
+        nspells = 0 if r < probs[0] else (1 if r < probs[0] + probs[1] else 2)
     mana = o.lands
     spent = 0
     for _ in range(nspells):
@@ -4927,6 +4964,14 @@ def try_infinite_combo(state: GameState):
         state.combo_assembled_turn = state.turn
         state.m["combo_assembled"] += 1
     payoff = has_perm(state, "All Will Be One") or has_perm(state, "Sanctum Lurker")
+    if not payoff and COMBO_CAST_PAYOFF_FROM_HAND:
+        for nm in ("All Will Be One", "Sanctum Lurker"):          # mana infinito (Orrery {C}x5 - Veil {4} + Tezzeret +1 desvira os dois: +1 por volta): o pagamento que esta na MAO e' conjurado
+            if nm in state.hand and not state.game_over:
+                state.m["combo_payoff_cast_from_hand"] += 1
+                cast_card(state, nm, free=True)
+                payoff = has_perm(state, "All Will Be One") or has_perm(state, "Sanctum Lurker")
+                if payoff:
+                    break
     if payoff and not state.game_over:
         state.combo_win = "orrery_tezzeret_veil"
         for o in list(alive_opps(state)):
@@ -5286,7 +5331,35 @@ def new_opp_creature(p: int, t: int, flying: bool = False, haste: bool = False, 
     return {"p": p, "t": t, "flying": flying, "trample": trample, "cmd": cmd, "token": token, "sick": not haste, "frozen": 0, "frozen_now": False, "cmc": 0 if token else cmc}
 
 
+def develop_playtester(state: GameState, o: Opp):
+    """Perfil do playtester do Archidekt: de vez em quando UMA criatura (tamanho sorteado), nenhum arquetipo (11 criaturas de oponente em 31 turnos do usuario, nos 5 goldfish manuais)."""
+    rng = state.interaction_rng
+    if o.turns_taken < 3 or len(o.board) >= OPP_PLAYTESTER_CAP or rng.random() >= OPP_PLAYTESTER_DEV_PROB:
+        return
+    r = rng.random()
+    acc = 0.0
+    size = OPP_PLAYTESTER_SIZES[-1][0]
+    for sz, _t, w in OPP_PLAYTESTER_SIZES:
+        acc += w
+        if r < acc:
+            size = sz
+            break
+    o.board.append(new_opp_creature(size, size, flying=rng.random() < 0.15, haste=rng.random() < 0.05, cmc=size))
+
+
+def aplica_perfil(nome: str):
+    """Aplica um perfil de oponente (chaves do modulo). `playtester`: o oponente do playtester do Archidekt (ver PERFIL_PLAYTESTER). Usado pelos scripts de replay; o harness de A/B usa as mesmas chaves como variante."""
+    g = globals()
+    if nome == "playtester":
+        for k, v in PERFIL_PLAYTESTER.items():
+            g[k] = v
+    else:
+        raise ValueError(nome)
+
+
 def develop_opponent_board(state: GameState, o: Opp):
+    if OPP_PLAYTESTER:
+        return develop_playtester(state, o)
     rng = state.interaction_rng
     t = o.turns_taken
     b = o.board
@@ -5582,6 +5655,19 @@ def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
     victims = list(cands[wt])
     if wt == "creature":
         victims = [p for p in victims if p.uid != state.dihada_shield]           # Dihada +2: indestrutivel ate' meu proximo turno ('destroy all' nao leva)
+        if OPP_CARD_MIX and victims:
+            variant = state.interaction_rng.choice(("nova", "split_up", "verdict", "promise"))
+            state.m["opp_wipe_" + variant] += 1
+            if variant == "split_up":                                               # 'Choose one: destroy all tapped creatures / destroy all untapped creatures': o oponente escolhe o modo que mata mais
+                tp = [p for p in victims if p.tapped]
+                un = [p for p in victims if not p.tapped]
+                victims = tp if len(tp) >= len(un) else un
+            elif variant == "verdict":                                              # 'Destroy all creatures with no counters on them'
+                victims = [p for p in victims if not p.ctr]
+            elif variant == "promise":                                              # 'Each player puts a vow counter on a creature they control and sacrifices the rest': fico com a melhor
+                keep = max(victims, key=lambda p: (power(state, p) + toughness(state, p), -p.uid))
+                keep.ctr["vow"] = 1
+                victims = [p for p in victims if p is not keep]
         for p in list(victims):
             if p.card.legendary and not p.is_token and has_perm(state, "Plaza of Heroes") and can_pay(state, 3, (), CTX_ABILITY):
                 pz = perms_named(state, "Plaza of Heroes")[0]
@@ -5634,7 +5720,7 @@ def try_smart_opponent_graveyard_wipe(state: GameState) -> Optional[list]:
 def try_smart_opponent_turn(state: GameState, o: Opp):
     """O turno de UM oponente (so' o que mira a mim). O campo dele ja' cresceu (`opp_turn_start`, todo turno, antes do gate); aqui: gate de atencao (1/3 dos turnos dele a partir do T3) e, se passar,
     wipe -> combate -> wipe de cemiterio -> remocao -> descarte. Um wipe de um oponente anterior da MESMA rodada afeta o ataque dos seguintes (chamadas em sequencia, mesmo `state`)."""
-    state.attention = state.turn <= INTERACTION_SETUP_TURNS or state.interaction_rng.random() < OPPONENT_ATTENTION_CHANCE
+    state.attention = state.turn <= INTERACTION_SETUP_TURNS or state.interaction_rng.random() < (OPP_PLAYTESTER_ATTENTION if OPP_PLAYTESTER else OPPONENT_ATTENTION_CHANCE)
     if not state.attention:
         return
     try_smart_opponent_wipe(state)
@@ -5719,12 +5805,14 @@ def play_rounds(state: GameState, turns: int):
     while played < turns:
         play_turn(state)
         played += 1
-        while state.extra_turn_pending and not state.game_over and played < turns:
+        while ((state.extra_turns_queued > 0) if EXTRA_TURNS_STACK else state.extra_turn_pending) and not state.game_over and played < turns:
             state.extra_turn_pending = False
+            state.extra_turns_queued = max(0, state.extra_turns_queued - 1)
             state.m["extra_turns_played"] += 1
             play_turn(state)
             played += 1
         state.extra_turn_pending = False
+        state.extra_turns_queued = 0
         if state.game_over:
             break
         state.wiped_this_round = False

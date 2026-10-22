@@ -1,0 +1,73 @@
+{
+ "flags_off": {
+  "EXTRA_TURNS_STACK": false,
+  "VIVID_LAST": false,
+  "SIBLING_FIRST": false,
+  "COMBO_CAST_PAYOFF_FROM_HAND": false
+ },
+ "ignora_campos": [
+  "m_combo_payoff_cast_from_hand",
+  "m_opp_wipe_nova",
+  "m_opp_wipe_split_up",
+  "m_opp_wipe_verdict",
+  "m_opp_wipe_promise",
+  "m_opp_vex_draws"
+ ],
+ "sensibilidade": {
+  "so_turnos_extras": {
+   "VIVID_LAST": false,
+   "SIBLING_FIRST": false,
+   "COMBO_CAST_PAYOFF_FROM_HAND": false
+  },
+  "so_pagamento": {
+   "EXTRA_TURNS_STACK": false,
+   "COMBO_CAST_PAYOFF_FROM_HAND": false
+  },
+  "so_combo_mao": {
+   "EXTRA_TURNS_STACK": false,
+   "VIVID_LAST": false,
+   "SIBLING_FIRST": false
+  },
+  "tetos_altos": {
+   "MAX_LOYALTY_ACTS_PER_TURN": 400,
+   "MAX_SPELLS_PER_TURN": 300
+  },
+  "perfil_playtester": {
+   "OPP_PLAYTESTER": true,
+   "OPP_CARD_MIX": true
+  }
+ },
+ "turns": 12,
+ "extra": null,
+ "destaque": [
+  "cleared_T8",
+  "cleared_T9",
+  "cleared_T10",
+  "first_elim_T6",
+  "first_elim_T8",
+  "self_lost",
+  "died_any",
+  "m_pw_entered",
+  "pws_T4",
+  "pws_T6",
+  "pws_T8",
+  "mana_T4",
+  "mana_T6",
+  "mana_T8",
+  "m_extra_turns_taken",
+  "m_extra_turns_played",
+  "m_combo_assembled",
+  "m_combo_wins",
+  "m_combo_payoff_cast_from_hand",
+  "m_turn_cap_activations",
+  "m_turn_cap_spells",
+  "game_turns"
+ ],
+ "deck": "tam-the-possibility-wubrg",
+ "sim": "resultados-ab/2026-10-22-rodada2-motor-e-perfil/codigo/tam_goldfish_v1_DEPOIS_rodada2.py",
+ "snapshot": "codigo/tam_goldfish_v1_ANTES_b7c0e19.py",
+ "ignora_profundo": [
+  "extra_turns_queued",
+  "_vivid_defer"
+ ]
+}

@@ -249,3 +249,115 @@ def _():
             for k in tot:
                 tot[k] += getattr(r, k, 0)
     check(tot["m_tam_attacks"] > 0, "a Tam ataca em partidas inteiras: %s" % tot)
+
+
+# ---------------- rodada 2 (2026-10-22): turnos extras empilhados, mana vivid, combo, perfil do playtester ----------------
+@test("EXTRA_TURNS_STACK: partida inteira — 2 ativacoes de -12 no mesmo turno rendem 2 turnos extras seguidos (play_rounds); com a chave desligada rende 1")
+def _():
+    def joga(flag):
+        with Flag(EXTRA_TURNS_STACK=flag):
+            st = mk(turn=11, bf=["Ichormoon Gauntlet", P("Jace Token", loyalty=14, token=True), P("Domri, Chaos Bringer", loyalty=13)], phase="main1")
+            st.turn = 0
+            st.turn_id = 0
+            st.library = T.current_library()[:60]
+            act(st, "Jace Token", "Ichormoon Gauntlet", "-12")
+            act(st, "Domri, Chaos Bringer", "Ichormoon Gauntlet", "-12")
+            T.play_rounds(st, 4)
+            return st.m["extra_turns_played"]
+    check(joga(True) == 2 and joga(False) == 1, "2 turnos extras vs 1: %s %s" % (joga(True), joga(False)))
+
+
+@test("VIVID_LAST: a magia que traz COR NOVA (Pyromancer, R) e' paga pelos terrenos se eles bastam: o Bloom Tender fica desvirado e rende 1 mana por cor DEPOIS (G, U, R = 3, nao 2); a magia sem cor nova (Paradox) paga normal")
+def _():
+    st = mk(turn=4, hand=["Way of the Pyromancer", "Way of the Paradox", "Way of the Necromancer"], bf=["Tam, the Possibility", "Bountiful Promenade", "Fire-Lit Thicket", "Watery Grave", "Bloom Tender"])
+    bt = perm(st, "Bloom Tender")
+    check(T.cast_card(st, "Way of the Pyromancer") and not bt.tapped, "Bloom Tender nao foi tocado pra Pyromancer (R e' cor nova)")
+    check(len([s for s in T.mana_sources(st) if s.perm is bt][0].units) == 3, "agora rende 3 (G, U, R)")
+    with Flag(VIVID_LAST=False, SIBLING_FIRST=False):
+        st = mk(turn=4, hand=["Way of the Pyromancer"], bf=["Tam, the Possibility", "Bountiful Promenade", "Fire-Lit Thicket", "Watery Grave", "Bloom Tender"])
+        T.cast_card(st, "Way of the Pyromancer")
+        check(perm(st, "Bloom Tender").tapped, "chaves desligadas: o comportamento de antes (Bloom Tender tocado com so' 2 cores)")
+    # quando o resto das fontes NAO paga, o Bloom Tender toca normalmente
+    st = mk(turn=4, hand=["Way of the Pyromancer"], bf=["Tam, the Possibility", "Fire-Lit Thicket", "Bloom Tender"])
+    check(T.cast_card(st, "Way of the Pyromancer") and perm(st, "Bloom Tender").tapped, "so' Thicket + Bloom Tender: o Bloom Tender paga")
+
+
+@test("SIBLING_FIRST: o generico sai da 2a unidade do filtro (Fire-Lit Thicket) antes de tocar outro terreno (nao desperdica o Watery Grave)")
+def _():
+    st = mk(turn=4, hand=["Way of the Pyromancer"], bf=["Bountiful Promenade", "Fire-Lit Thicket", "Watery Grave"])
+    check(T.cast_card(st, "Way of the Pyromancer"))
+    check(not perm(st, "Watery Grave").tapped and perm(st, "Fire-Lit Thicket").tapped, "Promenade + Thicket (RR) pagam: o Grave fica")
+
+
+@test("COMBO_CAST_PAYOFF_FROM_HAND: Orrery + Tezzeret + Chain Veil montados (mana infinito) e Sanctum Lurker NA MAO: o simulador conjura o Lurker e fecha a partida; sem o pagamento na mao so' registra a montagem; chave desligada = como antes")
+def _():
+    bf = ["Chromatic Orrery", "The Chain Veil", P("Tezzeret the Seeker", loyalty=4)]
+    st = mk(turn=8, hand=["Sanctum Lurker"], bf=bf)
+    T.try_infinite_combo(st)
+    check(st.game_over and st.combo_win == "orrery_tezzeret_veil" and st.m["combo_payoff_cast_from_hand"] == 1, "fechou com o Lurker da mao")
+    st = mk(turn=8, hand=["Sol Ring"], bf=bf)
+    T.try_infinite_combo(st)
+    check(not st.game_over and st.m["combo_assembled"] == 1, "sem pagamento: so' montou")
+    with Flag(COMBO_CAST_PAYOFF_FROM_HAND=False):
+        st = mk(turn=8, hand=["Sanctum Lurker"], bf=bf)
+        T.try_infinite_combo(st)
+        check(not st.game_over, "chave desligada: nao conjura da mao")
+
+
+@test("OPP_PLAYTESTER (perfil calibrado nos 5 goldfish do usuario): criaturas de oponente raras (so' a partir do 3o turno dele, no maximo 4), nenhum arquetipo; aplica_perfil muda as chaves do modulo")
+def _():
+    old = {k: getattr(T, k) for k in T.PERFIL_PLAYTESTER}
+    try:
+        T.aplica_perfil("playtester")
+        check(T.OPP_PLAYTESTER and T.OPP_CARD_MIX and T.OPP_PLAYTESTER_ATTENTION < 0.2 and T.OPP_PLAYTESTER_SPELLS_PROB[0] > 0.5)
+        total = 0
+        for sd in range(1, 41):
+            st = T.new_state(sd)
+            T.setup_resilience(st, sd)
+            for t in range(1, 11):
+                T.play_turn(st)
+                for o in list(st.opps):
+                    if not o.eliminated:
+                        T.opponent_turn(st, o)
+            total += sum(len(o.board) for o in st.opps)
+        check(total / 40 < 4.0, "criaturas de oponente em campo no T10 (3 oponentes): %.2f por partida" % (total / 40))
+    finally:
+        for k, v in old.items():
+            setattr(T, k, v)
+    check(not T.OPP_PLAYTESTER, "restaurado")
+
+
+@test("OPP_CARD_MIX: Damning Verdict ('destroy all creatures with no counters') poupa a criatura com contador; Split Up mata so' as viradas OU so' as desviradas (a maior turma); Promise of Loyalty deixa so' a melhor (contador Vow); Cleansing Nova leva todas; Vex deixa comprar; sem a chave o wipe leva tudo")
+def _():
+    class FakeRng:
+        def __init__(self, v): self.v = v
+        def random(self): return 0.0          # sempre passa os gates
+        def choice(self, seq): return self.v if self.v in seq else seq[0]
+        def choices(self, seq, weights=None): return [seq[0]]
+    def wipe(variant, tap=(), mix=True):
+        with Flag(OPP_CARD_MIX=mix):
+            st = mk(turn=8, res=True, bf=["Tam, the Possibility", P("Beast Token", token=True), P("Bloom Tender", ctr={"Vow": 1}), P("Patrolling Peacemaker", ctr={"p1p1": 2})])
+            st.interaction_rng = FakeRng(variant)
+            st.opps[0].board.append(T.new_opp_creature(3, 3))
+            for p in st.battlefield:
+                if p.card.name in tap:
+                    p.tapped = True
+            T.try_smart_opponent_wipe(st)
+            return st
+    vivos = lambda st: sorted(p.card.name for p in st.battlefield if T.is_creature(p))
+    check(vivos(wipe("verdict")) == ["Bloom Tender", "Patrolling Peacemaker"], "Verdict: so' as sem contador morrem: %s" % vivos(wipe("verdict")))
+    check(vivos(wipe("split_up", tap=("Tam, the Possibility",))) == ["Tam, the Possibility"], "Split Up: 1 virada x 3 desviradas: mata as desviradas, a Tam virada fica: %s" % vivos(wipe("split_up", tap=("Tam, the Possibility",))))
+    check(vivos(wipe("split_up", tap=("Tam, the Possibility", "Beast Token", "Bloom Tender"))) == ["Patrolling Peacemaker"], "3 viradas x 1 desvirada: mata as viradas")
+    st = wipe("promise")
+    check(len(vivos(st)) == 1 and st.m["opp_wipe_promise"] == 1 and [p for p in st.battlefield if p.ctr.get("vow")], "Promise: 1 sobra, com Vow: %s" % vivos(st))
+    check(vivos(wipe("nova")) == [], "Nova: todas, ate' as com contador: %s" % vivos(wipe("nova")))
+    check(vivos(wipe("verdict", mix=False)) == [], "chave desligada: o wipe leva tudo (como antes)")
+    with Flag(OPP_CARD_MIX=True):
+        st = mk(turn=8, res=True, hand=["Teferi, Hero of Dominaria"], lib=["Sol Ring", "Command Tower"])
+        st.interaction_rng = FakeRng("x")
+        n = len(st.hand)
+        check(T.counterspell_check(st, "Teferi, Hero of Dominaria") and len(st.hand) == n + 1 and st.m["opp_vex_draws"] == 1, "Vex: compro 1")
+    st = mk(turn=8, res=True, hand=["Teferi, Hero of Dominaria"], lib=["Sol Ring", "Command Tower"])
+    st.interaction_rng = FakeRng("x")
+    n = len(st.hand)
+    check(T.counterspell_check(st, "Teferi, Hero of Dominaria") and len(st.hand) == n and st.m["opp_vex_draws"] == 0, "sem a chave: anulacao seca")

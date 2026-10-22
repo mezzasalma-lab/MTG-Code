@@ -1,6 +1,7 @@
 """Cada clausula operacional do relato do usuario (goldfish manual #5, 2026-10-21; 11 blocos, o T11 contem 4 turnos extras) e' uma afirmacao testavel sobre o simulador (CLAUDE.md Regra #6).
 O usuario NAO respondeu as duvidas antes da compilacao (pediu *"Termine tudo que falta!"*): onde a leitura do log e' ambigua o teste diz qual premissa foi usada (LEIAME da pasta do jogo, 'Duvidas em aberto')."""
 from harness import *
+from t_politicas import Flag
 
 
 def P(name, **kw):
@@ -181,5 +182,9 @@ def _():
     st = mk(turn=11, bf=["Ichormoon Gauntlet", P("Jace Token", loyalty=14, token=True), P("Domri, Chaos Bringer", loyalty=13)])
     check(act(st, "Jace Token", "Ichormoon Gauntlet", "-12") and loy(st, "Jace Token") == 2)
     check(act(st, "Domri, Chaos Bringer", "Ichormoon Gauntlet", "-12") and loy(st, "Domri, Chaos Bringer") == 1)
-    n = getattr(st, "extra_turn_pending", None)
-    check(n is not None and int(n) == 2, "extra_turn_pending=%r: 2 ativacoes do -12 no mesmo turno devem render 2 turnos extras (hoje um booleano)" % (n,))
+    check(st.extra_turns_queued == 2, "extra_turns_queued=%r: 2 ativacoes do -12 no mesmo turno rendem 2 turnos extras" % (st.extra_turns_queued,))
+    with Flag(EXTRA_TURNS_STACK=False):
+        st = mk(turn=11, bf=["Ichormoon Gauntlet", P("Jace Token", loyalty=14, token=True), P("Domri, Chaos Bringer", loyalty=13)])
+        act(st, "Jace Token", "Ichormoon Gauntlet", "-12")
+        act(st, "Domri, Chaos Bringer", "Ichormoon Gauntlet", "-12")
+        check(st.extra_turn_pending is True, "chave desligada: o booleano de antes")
