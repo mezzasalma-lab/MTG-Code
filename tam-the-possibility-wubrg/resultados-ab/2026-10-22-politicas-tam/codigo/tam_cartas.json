@@ -1,0 +1,1460 @@
+{
+ "Ajani Unrelenting": {
+  "cmc": 6.0,
+  "color_identity": [
+   "R"
+  ],
+  "colors": [
+   "R"
+  ],
+  "loyalty": "5",
+  "mana_cost": "{4}{R}{R}",
+  "oracle_text": "Whenever you activate a loyalty ability, create a 2/2 colorless Wizard Soldier creature token named Cadet.\n+1: Creatures you control get +1/+0 and gain haste until end of turn.\n−2: Discard your hand, then draw a card for each creature you control.\n−3: Ajani deals 4 damage to each creature except for tokens you control.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Ajani"
+ },
+ "All Will Be One": {
+  "cmc": 5.0,
+  "color_identity": [
+   "R"
+  ],
+  "colors": [
+   "R"
+  ],
+  "loyalty": null,
+  "mana_cost": "{3}{R}{R}",
+  "oracle_text": "Whenever you put one or more counters on a permanent or player, this enchantment deals that much damage to target opponent, creature an opponent controls, or planeswalker an opponent controls.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Enchantment"
+ },
+ "Aminatou, the Fateshifter": {
+  "cmc": 3.0,
+  "color_identity": [
+   "B",
+   "U",
+   "W"
+  ],
+  "colors": [
+   "B",
+   "U",
+   "W"
+  ],
+  "loyalty": "3",
+  "mana_cost": "{W}{U}{B}",
+  "oracle_text": "+1: Draw a card, then put a card from your hand on top of your library.\n−1: Exile another target permanent you own, then return it to the battlefield under your control.\n−6: Choose left or right. Each player gains control of all nonland permanents other than Aminatou controlled by the next player in the chosen direction.\nAminatou, the Fateshifter can be your commander.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Aminatou"
+ },
+ "Arcane Signet": {
+  "cmc": 2.0,
+  "color_identity": [],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "{2}",
+  "oracle_text": "{T}: Add one mana of any color in your commander's color identity.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Artifact"
+ },
+ "Baxter Building": {
+  "cmc": 0.0,
+  "color_identity": [],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "{T}: Add {C}.\n{4}, {T}: Add four mana in any combination of colors.\n{4}, {T}: Draw a card. Activate only if you control a creature with toughness 4 or greater.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land"
+ },
+ "Birds of Paradise": {
+  "cmc": 1.0,
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "loyalty": null,
+  "mana_cost": "{G}",
+  "oracle_text": "Flying\n{T}: Add one mana of any color.",
+  "power": "0",
+  "toughness": "1",
+  "type_line": "Creature — Bird"
+ },
+ "Blasphemous Act": {
+  "cmc": 9.0,
+  "color_identity": [
+   "R"
+  ],
+  "colors": [
+   "R"
+  ],
+  "loyalty": null,
+  "mana_cost": "{8}{R}",
+  "oracle_text": "This spell costs {1} less to cast for each creature on the battlefield.\nBlasphemous Act deals 13 damage to each creature.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Sorcery"
+ },
+ "Bloom Tender": {
+  "cmc": 2.0,
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "loyalty": null,
+  "mana_cost": "{1}{G}",
+  "oracle_text": "Vivid — {T}: For each color among permanents you control, add one mana of that color.",
+  "power": "1",
+  "toughness": "1",
+  "type_line": "Creature — Elf Druid"
+ },
+ "Boseiju, Who Endures": {
+  "cmc": 0.0,
+  "color_identity": [
+   "G"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "{T}: Add {G}.\nChannel — {1}{G}, Discard this card: Destroy target artifact, enchantment, or nonbasic land an opponent controls. That player may search their library for a land card with a basic land type, put it onto the battlefield, then shuffle. This ability costs {1} less to activate for each legendary creature you control.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Land"
+ },
+ "Bountiful Promenade": {
+  "cmc": 0.0,
+  "color_identity": [
+   "G",
+   "W"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "This land enters tapped unless you have two or more opponents.\n{T}: Add {G} or {W}.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land"
+ },
+ "Breeding Pool": {
+  "cmc": 0.0,
+  "color_identity": [
+   "G",
+   "U"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "({T}: Add {G} or {U}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land — Forest Island"
+ },
+ "Chandra, Legacy of Fire": {
+  "cmc": 5.0,
+  "color_identity": [
+   "R"
+  ],
+  "colors": [
+   "R"
+  ],
+  "loyalty": "3",
+  "mana_cost": "{4}{R}",
+  "oracle_text": "At the beginning of your end step, Chandra deals X damage to each opponent, where X is the number of planeswalkers you control.\n+1: Add {R} for each planeswalker you control.\n0: Remove a loyalty counter from each of any number of permanents you control. Exile that many cards from the top of your library. You may play them this turn.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Chandra"
+ },
+ "Chromatic Orrery": {
+  "cmc": 7.0,
+  "color_identity": [],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "{7}",
+  "oracle_text": "You may spend mana as though it were mana of any color.\n{T}: Add {C}{C}{C}{C}{C}.\n{5}, {T}: Draw a card for each color among permanents you control.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Artifact"
+ },
+ "City of Brass": {
+  "cmc": 0.0,
+  "color_identity": [],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "Whenever this land becomes tapped, it deals 1 damage to you.\n{T}: Add one mana of any color.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land"
+ },
+ "Command Tower": {
+  "cmc": 0.0,
+  "color_identity": [],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "{T}: Add one mana of any color in your commander's color identity.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land"
+ },
+ "Dack Fayden": {
+  "cmc": 3.0,
+  "color_identity": [
+   "R",
+   "U"
+  ],
+  "colors": [
+   "R",
+   "U"
+  ],
+  "loyalty": "3",
+  "mana_cost": "{1}{U}{R}",
+  "oracle_text": "+1: Target player draws two cards, then discards two cards.\n−2: Gain control of target artifact.\n−6: You get an emblem with \"Whenever you cast a spell that targets one or more permanents, gain control of those permanents.\"",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Dack"
+ },
+ "Dihada, Binder of Wills": {
+  "cmc": 4.0,
+  "color_identity": [
+   "B",
+   "R",
+   "W"
+  ],
+  "colors": [
+   "B",
+   "R",
+   "W"
+  ],
+  "loyalty": "5",
+  "mana_cost": "{1}{R}{W}{B}",
+  "oracle_text": "+2: Up to one target legendary creature gains vigilance, lifelink, and indestructible until your next turn.\n−3: Reveal the top four cards of your library. Put any number of legendary cards from among them into your hand and the rest into your graveyard. Create a Treasure token for each card put into your graveyard this way.\n−11: Gain control of all nonland permanents until end of turn. Untap them. They gain haste until end of turn.\nDihada, Binder of Wills can be your commander.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Dihada"
+ },
+ "Displacer Kitten": {
+  "cmc": 4.0,
+  "color_identity": [
+   "U"
+  ],
+  "colors": [
+   "U"
+  ],
+  "loyalty": null,
+  "mana_cost": "{3}{U}",
+  "oracle_text": "Avoidance — Whenever you cast a noncreature spell, exile up to one target nonland permanent you control, then return that card to the battlefield under its owner's control.",
+  "power": "2",
+  "toughness": "2",
+  "type_line": "Creature — Cat Beast"
+ },
+ "Domri, Chaos Bringer": {
+  "cmc": 4.0,
+  "color_identity": [
+   "G",
+   "R"
+  ],
+  "colors": [
+   "G",
+   "R"
+  ],
+  "loyalty": "5",
+  "mana_cost": "{2}{R}{G}",
+  "oracle_text": "+1: Add {R} or {G}. If that mana is spent on a creature spell, it gains riot. (It enters with your choice of a +1/+1 counter or haste.)\n−3: Look at the top four cards of your library. You may reveal up to two creature cards from among them and put them into your hand. Put the rest on the bottom of your library in a random order.\n−8: You get an emblem with \"At the beginning of each end step, create a 4/4 red and green Beast creature token with trample.\"",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Domri"
+ },
+ "Dreamtide Whale": {
+  "cmc": 3.0,
+  "color_identity": [
+   "U"
+  ],
+  "colors": [
+   "U"
+  ],
+  "loyalty": null,
+  "mana_cost": "{2}{U}",
+  "oracle_text": "Vanishing 2 (This creature enters with two time counters on it. At the beginning of your upkeep, remove a time counter from it. When the last is removed, sacrifice it.)\nWhenever a player casts their second spell each turn, proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+  "power": "7",
+  "toughness": "5",
+  "type_line": "Creature — Whale"
+ },
+ "Elspeth, Sun's Champion": {
+  "cmc": 6.0,
+  "color_identity": [
+   "W"
+  ],
+  "colors": [
+   "W"
+  ],
+  "loyalty": "4",
+  "mana_cost": "{4}{W}{W}",
+  "oracle_text": "+1: Create three 1/1 white Soldier creature tokens.\n−3: Destroy all creatures with power 4 or greater.\n−7: You get an emblem with \"Creatures you control get +2/+2 and have flying.\"",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Elspeth"
+ },
+ "Entrust the Spark": {
+  "cmc": 5.0,
+  "color_identity": [
+   "G",
+   "U"
+  ],
+  "colors": [
+   "G",
+   "U"
+  ],
+  "loyalty": null,
+  "mana_cost": "{3}{G}{U}",
+  "oracle_text": "You may sacrifice a planeswalker. If you do, search your library for a planeswalker card, put it onto the battlefield, then shuffle.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Sorcery"
+ },
+ "Exotic Orchard": {
+  "cmc": 0.0,
+  "color_identity": [],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "{T}: Add one mana of any color that a land an opponent controls could produce.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land"
+ },
+ "Faeburrow Elder": {
+  "cmc": 3.0,
+  "color_identity": [
+   "G",
+   "W"
+  ],
+  "colors": [
+   "G",
+   "W"
+  ],
+  "loyalty": null,
+  "mana_cost": "{1}{G}{W}",
+  "oracle_text": "Vigilance\nThis creature gets +1/+1 for each color among permanents you control.\n{T}: For each color among permanents you control, add one mana of that color.",
+  "power": "0",
+  "toughness": "0",
+  "type_line": "Creature — Treefolk Druid"
+ },
+ "Fellwar Stone": {
+  "cmc": 2.0,
+  "color_identity": [],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "{2}",
+  "oracle_text": "{T}: Add one mana of any color that a land an opponent controls could produce.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Artifact"
+ },
+ "Fire-Lit Thicket": {
+  "cmc": 0.0,
+  "color_identity": [
+   "G",
+   "R"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "{T}: Add {C}.\n{R/G}, {T}: Add {R}{R}, {R}{G}, or {G}{G}.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land"
+ },
+ "Flooded Grove": {
+  "cmc": 0.0,
+  "color_identity": [
+   "G",
+   "U"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "{T}: Add {C}.\n{G/U}, {T}: Add {G}{G}, {G}{U}, or {U}{U}.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land"
+ },
+ "Flux Channeler": {
+  "cmc": 3.0,
+  "color_identity": [
+   "U"
+  ],
+  "colors": [
+   "U"
+  ],
+  "loyalty": null,
+  "mana_cost": "{2}{U}",
+  "oracle_text": "Whenever you cast a noncreature spell, proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+  "power": "2",
+  "toughness": "2",
+  "type_line": "Creature — Human Wizard"
+ },
+ "Garruk Wildspeaker": {
+  "cmc": 4.0,
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "loyalty": "3",
+  "mana_cost": "{2}{G}{G}",
+  "oracle_text": "+1: Untap two target lands.\n−1: Create a 3/3 green Beast creature token.\n−4: Creatures you control get +3/+3 and gain trample until end of turn.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Garruk"
+ },
+ "Garruk, Curse Breaker": {
+  "cmc": 5.0,
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "loyalty": "5",
+  "mana_cost": "{3}{G}{G}",
+  "oracle_text": "Whenever a creature you control with power 4 or greater enters, draw a card.\n+2: Untap up to two target lands.\n−3: Create a 4/4 green Beast creature token with trample.\n−4: Until your next turn, whenever one or more creatures attack one of your opponents, those creatures get +2/+2 and gain trample until end of turn.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Garruk"
+ },
+ "Garruk, Veiled Butcher": {
+  "cmc": 5.0,
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "loyalty": "5",
+  "mana_cost": "{3}{B}{B}",
+  "oracle_text": "If a creature an opponent controls would die, exile it instead.\n+2: Up to one target creature gets -4/-1 until your next turn.\n−2: Each player sacrifices a creature of their choice. If you sacrificed a creature this way, create a 4/4 green Beast creature token with trample.\n−3: Each opponent discards two cards. For each opponent who didn't discard two nonland cards this way, you draw a card.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Garruk"
+ },
+ "Great Hall of the Citadel": {
+  "cmc": 0.0,
+  "color_identity": [],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "{T}: Add {C}.\n{1}, {T}: Add two mana in any combination of colors. Spend this mana only to cast legendary spells.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land"
+ },
+ "Hallowed Fountain": {
+  "cmc": 0.0,
+  "color_identity": [
+   "U",
+   "W"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "({T}: Add {W} or {U}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land — Plains Island"
+ },
+ "Ichormoon Gauntlet": {
+  "cmc": 3.0,
+  "color_identity": [
+   "U"
+  ],
+  "colors": [
+   "U"
+  ],
+  "loyalty": null,
+  "mana_cost": "{2}{U}",
+  "oracle_text": "Planeswalkers you control have \"[0]: Proliferate\" and \"[−12]: Take an extra turn after this one.\"\nWhenever you cast a noncreature spell, choose a counter on target permanent. Put an additional counter of that kind on that permanent.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Artifact"
+ },
+ "Ignoble Hierarch": {
+  "cmc": 1.0,
+  "color_identity": [
+   "B",
+   "G",
+   "R"
+  ],
+  "colors": [
+   "G"
+  ],
+  "loyalty": null,
+  "mana_cost": "{G}",
+  "oracle_text": "Exalted (Whenever a creature you control attacks alone, that creature gets +1/+1 until end of turn.)\n{T}: Add {B}, {R}, or {G}.",
+  "power": "0",
+  "toughness": "1",
+  "type_line": "Creature — Goblin Shaman"
+ },
+ "Indatha Triome": {
+  "cmc": 0.0,
+  "color_identity": [
+   "B",
+   "G",
+   "W"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "({T}: Add {W}, {B}, or {G}.)\nThis land enters tapped.\nCycling {3} ({3}, Discard this card: Draw a card.)",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land — Plains Swamp Forest"
+ },
+ "Jetmir's Garden": {
+  "cmc": 0.0,
+  "color_identity": [
+   "G",
+   "R",
+   "W"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "({T}: Add {R}, {G}, or {W}.)\nThis land enters tapped.\nCycling {3} ({3}, Discard this card: Draw a card.)",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land — Mountain Forest Plains"
+ },
+ "Kasmina, Enigma Sage": {
+  "cmc": 3.0,
+  "color_identity": [
+   "G",
+   "U"
+  ],
+  "colors": [
+   "G",
+   "U"
+  ],
+  "loyalty": "2",
+  "mana_cost": "{1}{G}{U}",
+  "oracle_text": "Each other planeswalker you control has the loyalty abilities of Kasmina.\n+2: Scry 1.\n−X: Create a 0/0 green and blue Fractal creature token. Put X +1/+1 counters on it.\n−8: Search your library for an instant or sorcery card that shares a color with this planeswalker, exile that card, then shuffle. You may cast that card without paying its mana cost.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Kasmina"
+ },
+ "Ketria Triome": {
+  "cmc": 0.0,
+  "color_identity": [
+   "G",
+   "R",
+   "U"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "({T}: Add {G}, {U}, or {R}.)\nThis land enters tapped.\nCycling {3} ({3}, Discard this card: Draw a card.)",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land — Forest Island Mountain"
+ },
+ "Kiora of Salt and Sand": {
+  "cmc": 3.0,
+  "color_identity": [
+   "G",
+   "U"
+  ],
+  "colors": [
+   "G",
+   "U"
+  ],
+  "loyalty": null,
+  "mana_cost": "{1}{G}{U}",
+  "oracle_text": "Whenever you attack, if you've activated a loyalty ability this turn, untap target attacking creature. It can't be blocked this turn.\nPlaneswalkers you control have \"[−8]: Create an 8/8 blue Leviathan creature token with hexproof.\"",
+  "power": "2",
+  "toughness": "4",
+  "type_line": "Legendary Creature — Merfolk Noble"
+ },
+ "Leyline Immersion": {
+  "cmc": 4.0,
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "loyalty": null,
+  "mana_cost": "{3}{G}",
+  "oracle_text": "Enchant legendary creature\nEnchanted creature has ward {2} and \"{T}: Add five mana in any combination of colors. Spend this mana only to cast spells.\"",
+  "power": null,
+  "toughness": null,
+  "type_line": "Enchantment — Aura"
+ },
+ "Liliana's Talent": {
+  "cmc": 2.0,
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "loyalty": null,
+  "mana_cost": "{B}{B}",
+  "oracle_text": "Enchant planeswalker\nEnchanted planeswalker has \"[−8]: Put all creature cards from all graveyards onto the battlefield under your control.\"\nWhenever a creature deals damage to enchanted planeswalker, destroy that creature.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Enchantment — Aura"
+ },
+ "Minsc & Boo, Timeless Heroes": {
+  "cmc": 4.0,
+  "color_identity": [
+   "G",
+   "R"
+  ],
+  "colors": [
+   "G",
+   "R"
+  ],
+  "loyalty": "3",
+  "mana_cost": "{2}{R}{G}",
+  "oracle_text": "When Minsc & Boo enters and at the beginning of your upkeep, you may create Boo, a legendary 1/1 red Hamster creature token with trample and haste.\n+1: Put three +1/+1 counters on up to one target creature with trample or haste.\n−2: Sacrifice a creature. When you do, Minsc & Boo deals X damage to any target, where X is that creature's power. If the sacrificed creature was a Hamster, draw X cards.\nMinsc & Boo, Timeless Heroes can be your commander.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Minsc"
+ },
+ "Misty Rainforest": {
+  "cmc": 0.0,
+  "color_identity": [],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "{T}, Pay 1 life, Sacrifice this land: Search your library for a Forest or Island card, put it onto the battlefield, then shuffle.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land"
+ },
+ "Mossfire Valley": {
+  "cmc": 0.0,
+  "color_identity": [
+   "G",
+   "R"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "{1}, {T}: Add {R}{G}.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land"
+ },
+ "Narset Transcendent": {
+  "cmc": 4.0,
+  "color_identity": [
+   "U",
+   "W"
+  ],
+  "colors": [
+   "U",
+   "W"
+  ],
+  "loyalty": "6",
+  "mana_cost": "{2}{W}{U}",
+  "oracle_text": "+1: Look at the top card of your library. If it's a noncreature, nonland card, you may reveal it and put it into your hand.\n−2: When you next cast an instant or sorcery spell from your hand this turn, it gains rebound. (Exile the spell as it resolves. At the beginning of your next upkeep, you may cast that card from exile without paying its mana cost.)\n−9: You get an emblem with \"Your opponents can't cast noncreature spells.\"",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Narset"
+ },
+ "Nissa, Ascended Animist": {
+  "cmc": 7.0,
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "loyalty": "7",
+  "mana_cost": "{3}{G}{G}{G/P}{G/P}",
+  "oracle_text": "Compleated ({G/P} can be paid with {G} or 2 life. For each {G/P} paid with life, this planeswalker enters with two fewer loyalty counters.)\n+1: Create an X/X green Phyrexian Horror creature token, where X is Nissa's loyalty.\n−1: Destroy target artifact or enchantment.\n−7: Until end of turn, creatures you control get +1/+1 for each Forest you control and gain trample.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Nissa"
+ },
+ "Noble Hierarch": {
+  "cmc": 1.0,
+  "color_identity": [
+   "G",
+   "U",
+   "W"
+  ],
+  "colors": [
+   "G"
+  ],
+  "loyalty": null,
+  "mana_cost": "{G}",
+  "oracle_text": "Exalted (Whenever a creature you control attacks alone, that creature gets +1/+1 until end of turn.)\n{T}: Add {G}, {W}, or {U}.",
+  "power": "0",
+  "toughness": "1",
+  "type_line": "Creature — Human Druid"
+ },
+ "Oath of Nissa": {
+  "cmc": 1.0,
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "loyalty": null,
+  "mana_cost": "{G}",
+  "oracle_text": "When Oath of Nissa enters, look at the top three cards of your library. You may reveal a creature, land, or planeswalker card from among them and put it into your hand. Put the rest on the bottom of your library in any order.\nYou may spend mana as though it were mana of any color to cast planeswalker spells.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Enchantment"
+ },
+ "Oath of Teferi": {
+  "cmc": 5.0,
+  "color_identity": [
+   "U",
+   "W"
+  ],
+  "colors": [
+   "U",
+   "W"
+  ],
+  "loyalty": null,
+  "mana_cost": "{3}{W}{U}",
+  "oracle_text": "When Oath of Teferi enters, exile another target permanent you control. Return it to the battlefield under its owner's control at the beginning of the next end step.\nYou may activate the loyalty abilities of planeswalkers you control twice each turn rather than only once.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Enchantment"
+ },
+ "Oko, Thief of Crowns": {
+  "cmc": 3.0,
+  "color_identity": [
+   "G",
+   "U"
+  ],
+  "colors": [
+   "G",
+   "U"
+  ],
+  "loyalty": "4",
+  "mana_cost": "{1}{G}{U}",
+  "oracle_text": "+2: Create a Food token. (It's an artifact with \"{2}, {T}, Sacrifice this token: You gain 3 life.\")\n+1: Target artifact or creature loses all abilities and becomes a green Elk creature with base power and toughness 3/3.\n−5: Exchange control of target artifact or creature you control and target creature an opponent controls with power 3 or less.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Oko"
+ },
+ "Onakke Oathkeeper": {
+  "cmc": 2.0,
+  "color_identity": [
+   "W"
+  ],
+  "colors": [
+   "W"
+  ],
+  "loyalty": null,
+  "mana_cost": "{1}{W}",
+  "oracle_text": "Creatures can't attack planeswalkers you control unless their controller pays {1} for each creature they control that's attacking a planeswalker you control.\n{4}{W}{W}, Exile this card from your graveyard: Return target planeswalker card from your graveyard to the battlefield.",
+  "power": "0",
+  "toughness": "4",
+  "type_line": "Creature — Ogre Spirit"
+ },
+ "Overflowing Basin": {
+  "cmc": 0.0,
+  "color_identity": [
+   "G",
+   "U"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "{1}, {T}: Add {G}{U}.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land"
+ },
+ "Overgrown Tomb": {
+  "cmc": 0.0,
+  "color_identity": [
+   "B",
+   "G"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "({T}: Add {B} or {G}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land — Swamp Forest"
+ },
+ "Overwrite the Multiverse": {
+  "cmc": 6.0,
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "loyalty": null,
+  "mana_cost": "{4}{B}{B}",
+  "oracle_text": "Exile all creatures. Empower Jace X, where X is the number of creatures exiled this way. (Put that many loyalty counters on a Jace token you control. If you don't control one, first create a blue Jace planeswalker token with \"[−1]: Surveil 1\" and \"[−3]: Draw a card.\")",
+  "power": null,
+  "toughness": null,
+  "type_line": "Sorcery"
+ },
+ "Patrolling Peacemaker": {
+  "cmc": 3.0,
+  "color_identity": [
+   "W"
+  ],
+  "colors": [
+   "W"
+  ],
+  "loyalty": null,
+  "mana_cost": "{2}{W}",
+  "oracle_text": "This creature enters with two +1/+1 counters on it.\nWhenever an opponent commits a crime, proliferate. (They commit a crime if they target an opponent, anything an opponent controls, and/or cards in an opponent's graveyard. To proliferate, you choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+  "power": "0",
+  "toughness": "0",
+  "type_line": "Artifact Creature — Robot Soldier"
+ },
+ "Plaza of Heroes": {
+  "cmc": 0.0,
+  "color_identity": [],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "{T}: Add {C}.\n{T}: Add one mana of any color. Spend this mana only to cast a legendary spell.\n{T}: Add one mana of any color among legendary permanents you control.\n{3}, {T}, Exile this land: Target legendary creature gains hexproof and indestructible until end of turn.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land"
+ },
+ "Professor Dellian Fel": {
+  "cmc": 4.0,
+  "color_identity": [
+   "B",
+   "G"
+  ],
+  "colors": [
+   "B",
+   "G"
+  ],
+  "loyalty": "5",
+  "mana_cost": "{2}{B}{G}",
+  "oracle_text": "+2: You gain 3 life.\n0: You draw a card and lose 1 life.\n−3: Destroy target creature.\n−6: You get an emblem with \"Whenever you gain life, target opponent loses that much life.\"",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Dellian"
+ },
+ "Promise of Loyalty": {
+  "cmc": 5.0,
+  "color_identity": [
+   "W"
+  ],
+  "colors": [
+   "W"
+  ],
+  "loyalty": null,
+  "mana_cost": "{4}{W}",
+  "oracle_text": "Each player puts a vow counter on a creature they control and sacrifices the rest. Each of those creatures can't attack you or planeswalkers you control for as long as it has a vow counter on it.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Sorcery"
+ },
+ "Rejuvenating Springs": {
+  "cmc": 0.0,
+  "color_identity": [
+   "G",
+   "U"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "This land enters tapped unless you have two or more opponents.\n{T}: Add {G} or {U}.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land"
+ },
+ "Ripples of Potential": {
+  "cmc": 2.0,
+  "color_identity": [
+   "U"
+  ],
+  "colors": [
+   "U"
+  ],
+  "loyalty": null,
+  "mana_cost": "{1}{U}",
+  "oracle_text": "Proliferate, then choose any number of permanents you control that had a counter put on them this way. Those permanents phase out. (To proliferate, choose any number of permanents and/or players, then give each another counter of each kind already there. Treat phased-out permanents and anything attached to them as though they don't exist until their controller's next turn.)",
+  "power": null,
+  "toughness": null,
+  "type_line": "Instant"
+ },
+ "Saheeli, Sublime Artificer": {
+  "cmc": 3.0,
+  "color_identity": [
+   "R",
+   "U"
+  ],
+  "colors": [
+   "R",
+   "U"
+  ],
+  "loyalty": "5",
+  "mana_cost": "{1}{U/R}{U/R}",
+  "oracle_text": "Whenever you cast a noncreature spell, create a 1/1 colorless Servo artifact creature token.\n−2: Target artifact you control becomes a copy of another target artifact or creature you control until end of turn, except it's an artifact in addition to its other types.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Saheeli"
+ },
+ "Sanctum Lurker": {
+  "cmc": 3.0,
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "loyalty": null,
+  "mana_cost": "{2}{B}",
+  "oracle_text": "When this creature enters, empower Jace 1.\nPlaneswalkers you control aren't put into their owners' graveyards for having 0 loyalty.\nPlaneswalkers you control have \"[+2]: This planeswalker deals 1 damage to each opponent and you gain 1 life.\"",
+  "power": "3",
+  "toughness": "2",
+  "type_line": "Creature — Horror"
+ },
+ "Sol Ring": {
+  "cmc": 1.0,
+  "color_identity": [],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "{1}",
+  "oracle_text": "{T}: Add {C}{C}.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Artifact"
+ },
+ "Spara's Headquarters": {
+  "cmc": 0.0,
+  "color_identity": [
+   "G",
+   "U",
+   "W"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "({T}: Add {G}, {W}, or {U}.)\nThis land enters tapped.\nCycling {3} ({3}, Discard this card: Draw a card.)",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land — Forest Plains Island"
+ },
+ "Spire Garden": {
+  "cmc": 0.0,
+  "color_identity": [
+   "G",
+   "R"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "This land enters tapped unless you have two or more opponents.\n{T}: Add {R} or {G}.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land"
+ },
+ "Staff of Compleation": {
+  "cmc": 3.0,
+  "color_identity": [],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "{3}",
+  "oracle_text": "{T}, Pay 1 life: Destroy target permanent you own.\n{T}, Pay 2 life: Add one mana of any color.\n{T}, Pay 3 life: Proliferate.\n{T}, Pay 4 life: Draw a card.\n{5}: Untap this artifact.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Artifact"
+ },
+ "Starting Town": {
+  "cmc": 0.0,
+  "color_identity": [],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "This land enters tapped unless it's your first, second, or third turn of the game.\n{T}: Add {C}.\n{T}, Pay 1 life: Add one mana of any color.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land — Town"
+ },
+ "Steam Vents": {
+  "cmc": 0.0,
+  "color_identity": [
+   "R",
+   "U"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "({T}: Add {U} or {R}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land — Island Mountain"
+ },
+ "Stomping Ground": {
+  "cmc": 0.0,
+  "color_identity": [
+   "G",
+   "R"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "({T}: Add {R} or {G}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land — Mountain Forest"
+ },
+ "Tam, the Possibility": {
+  "cmc": 3.0,
+  "color_identity": [
+   "B",
+   "G",
+   "R",
+   "U",
+   "W"
+  ],
+  "colors": [
+   "G",
+   "U"
+  ],
+  "loyalty": null,
+  "mana_cost": "{1}{G}{U}",
+  "oracle_text": "Planeswalker spells you cast cost {1} less to cast.\n{W}{U}{B}{R}{G}, {T}: Proliferate X times, where X is the number of planeswalker types among planeswalkers you control. (To proliferate, choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+  "power": "2",
+  "toughness": "4",
+  "type_line": "Legendary Creature — Gorgon Wizard"
+ },
+ "Tamiyo, Field Researcher": {
+  "cmc": 4.0,
+  "color_identity": [
+   "G",
+   "U",
+   "W"
+  ],
+  "colors": [
+   "G",
+   "U",
+   "W"
+  ],
+  "loyalty": "4",
+  "mana_cost": "{1}{G}{W}{U}",
+  "oracle_text": "+1: Choose up to two target creatures. Until your next turn, whenever either of those creatures deals combat damage, you draw a card.\n−2: Tap up to two target nonland permanents. They don't untap during their controller's next untap step.\n−7: Draw three cards. You get an emblem with \"You may cast spells from your hand without paying their mana costs.\"",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Tamiyo"
+ },
+ "Teferi's Talent": {
+  "cmc": 5.0,
+  "color_identity": [
+   "U"
+  ],
+  "colors": [
+   "U"
+  ],
+  "loyalty": null,
+  "mana_cost": "{3}{U}{U}",
+  "oracle_text": "Enchant planeswalker\nEnchanted planeswalker has \"[−12]: You get an emblem with 'You may activate loyalty abilities of planeswalkers you control on any player's turn any time you could cast an instant.'\"\nWhenever you draw a card, put a loyalty counter on enchanted planeswalker.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Enchantment — Aura"
+ },
+ "Teferi, Hero of Dominaria": {
+  "cmc": 5.0,
+  "color_identity": [
+   "U",
+   "W"
+  ],
+  "colors": [
+   "U",
+   "W"
+  ],
+  "loyalty": "4",
+  "mana_cost": "{3}{W}{U}",
+  "oracle_text": "+1: Draw a card. At the beginning of the next end step, untap up to two lands.\n−3: Put target nonland permanent into its owner's library third from the top.\n−8: You get an emblem with \"Whenever you draw a card, exile target permanent an opponent controls.\"",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Teferi"
+ },
+ "Teferi, Temporal Archmage": {
+  "cmc": 6.0,
+  "color_identity": [
+   "U"
+  ],
+  "colors": [
+   "U"
+  ],
+  "loyalty": "5",
+  "mana_cost": "{4}{U}{U}",
+  "oracle_text": "+1: Look at the top two cards of your library. Put one of them into your hand and the other on the bottom of your library.\n−1: Untap up to four target permanents.\n−10: You get an emblem with \"You may activate loyalty abilities of planeswalkers you control on any player's turn any time you could cast an instant.\"\nTeferi, Temporal Archmage can be your commander.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Teferi"
+ },
+ "Temple Garden": {
+  "cmc": 0.0,
+  "color_identity": [
+   "G",
+   "W"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "({T}: Add {G} or {W}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land — Forest Plains"
+ },
+ "Tezzeret the Seeker": {
+  "cmc": 5.0,
+  "color_identity": [
+   "U"
+  ],
+  "colors": [
+   "U"
+  ],
+  "loyalty": "4",
+  "mana_cost": "{3}{U}{U}",
+  "oracle_text": "+1: Untap up to two target artifacts.\n−X: Search your library for an artifact card with mana value X or less, put it onto the battlefield, then shuffle.\n−5: Artifacts you control become artifact creatures with base power and toughness 5/5 until end of turn.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Tezzeret"
+ },
+ "The Chain Veil": {
+  "cmc": 4.0,
+  "color_identity": [],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "{4}",
+  "oracle_text": "At the beginning of your end step, if you didn't activate a loyalty ability of a planeswalker this turn, you lose 2 life.\n{4}, {T}: For each planeswalker you control, you may activate one of its loyalty abilities once this turn as though none of its loyalty abilities have been activated this turn.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Artifact"
+ },
+ "The Eternal Wanderer": {
+  "cmc": 6.0,
+  "color_identity": [
+   "W"
+  ],
+  "colors": [
+   "W"
+  ],
+  "loyalty": "5",
+  "mana_cost": "{4}{W}{W}",
+  "oracle_text": "No more than one creature can attack The Eternal Wanderer each combat.\n+1: Exile up to one target artifact or creature. Return that card to the battlefield under its owner's control at the beginning of that player's next end step.\n0: Create a 2/2 white Samurai creature token with double strike.\n−4: For each player, choose a creature that player controls. Each player sacrifices all creatures they control not chosen this way.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker"
+ },
+ "The World Tree": {
+  "cmc": 0.0,
+  "color_identity": [
+   "B",
+   "G",
+   "R",
+   "U",
+   "W"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "This land enters tapped.\n{T}: Add {G}.\nAs long as you control six or more lands, lands you control have \"{T}: Add one mana of any color.\"\n{W}{W}{U}{U}{B}{B}{R}{R}{G}{G}, {T}, Sacrifice this land: Search your library for any number of God cards, put them onto the battlefield, then shuffle.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land"
+ },
+ "Twilight Mire": {
+  "cmc": 0.0,
+  "color_identity": [
+   "B",
+   "G"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "{T}: Add {C}.\n{B/G}, {T}: Add {B}{B}, {B}{G}, or {G}{G}.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land"
+ },
+ "Undergrowth Stadium": {
+  "cmc": 0.0,
+  "color_identity": [
+   "B",
+   "G"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "This land enters tapped unless you have two or more opponents.\n{T}: Add {B} or {G}.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land"
+ },
+ "Verdant Catacombs": {
+  "cmc": 0.0,
+  "color_identity": [],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "{T}, Pay 1 life, Sacrifice this land: Search your library for a Swamp or Forest card, put it onto the battlefield, then shuffle.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land"
+ },
+ "Vraska, Betrayal's Sting": {
+  "cmc": 6.0,
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "loyalty": "6",
+  "mana_cost": "{4}{B}{B/P}",
+  "oracle_text": "Compleated ({B/P} can be paid with {B} or 2 life. If life was paid, this planeswalker enters with two fewer loyalty counters.)\n0: You draw a card and lose 1 life. Proliferate.\n−2: Target creature becomes a Treasure artifact with \"{T}, Sacrifice this artifact: Add one mana of any color\" and loses all other card types and abilities.\n−9: If target player has fewer than nine poison counters, they get a number of poison counters equal to the difference.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Vraska"
+ },
+ "Vronos, Masked Inquisitor": {
+  "cmc": 5.0,
+  "color_identity": [
+   "U"
+  ],
+  "colors": [
+   "U"
+  ],
+  "loyalty": "5",
+  "mana_cost": "{3}{U}{U}",
+  "oracle_text": "+1: Up to two other target planeswalkers you control phase out at the beginning of the next end step. (Treat them and anything attached to them as though they don't exist until your next turn.)\n−2: For each opponent, return up to one target nonland permanent that player controls to its owner's hand.\n−7: Target artifact you control becomes a 9/9 Construct artifact creature and gains vigilance, indestructible, and \"This creature can't be blocked.\"",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Vronos"
+ },
+ "Watery Grave": {
+  "cmc": 0.0,
+  "color_identity": [
+   "B",
+   "U"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "({T}: Add {U} or {B}.)\nAs this land enters, you may pay 2 life. If you don't, it enters tapped.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land — Island Swamp"
+ },
+ "Way of the Deathbringer": {
+  "cmc": 3.0,
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "loyalty": null,
+  "mana_cost": "{2}{B}",
+  "oracle_text": "When Way of the Deathbringer enters, empower Jace 5. (Put five loyalty counters on a Jace token you control. If you don't control one, first create a blue Jace planeswalker token with \"[−1]: Surveil 1\" and \"[−3]: Draw a card.\")\nPlaneswalkers you control have \"[−2]: You may sacrifice a creature. If you do, create a 4/4 green Beast creature token with trample.\"",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Enchantment"
+ },
+ "Way of the Healer": {
+  "cmc": 4.0,
+  "color_identity": [
+   "W"
+  ],
+  "colors": [
+   "W"
+  ],
+  "loyalty": null,
+  "mana_cost": "{3}{W}",
+  "oracle_text": "When Way of the Healer enters, empower Jace 5. (Put five loyalty counters on a Jace token you control. If you don't control one, first create a blue Jace planeswalker token with \"[−1]: Surveil 1\" and \"[−3]: Draw a card.\")\nPlaneswalkers you control have \"[−2]: Create a 2/2 colorless Wizard Soldier creature token named Cadet. Surveil 1.\"",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Enchantment"
+ },
+ "Way of the Mind Sculptor": {
+  "cmc": 5.0,
+  "color_identity": [
+   "U"
+  ],
+  "colors": [
+   "U"
+  ],
+  "loyalty": null,
+  "mana_cost": "{4}{U}",
+  "oracle_text": "When Way of the Mind Sculptor enters, empower Jace 5. (Put five loyalty counters on a Jace token you control. If you don't control one, first create a blue Jace planeswalker token with \"[−1]: Surveil 1\" and \"[−3]: Draw a card.\")\nWhenever you activate a loyalty ability, if you removed two or more loyalty counters to activate it, draw a card.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Enchantment"
+ },
+ "Way of the Necromancer": {
+  "cmc": 2.0,
+  "color_identity": [
+   "B"
+  ],
+  "colors": [
+   "B"
+  ],
+  "loyalty": null,
+  "mana_cost": "{1}{B}",
+  "oracle_text": "When Way of the Necromancer enters, empower Jace 2. (Put two loyalty counters on a Jace token you control. If you don't control one, first create a blue Jace planeswalker token with \"[−1]: Surveil 1\" and \"[−3]: Draw a card.\")\nWhenever a creature you control dies, put a loyalty counter on each planeswalker you control.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Enchantment"
+ },
+ "Way of the Paradox": {
+  "cmc": 3.0,
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "loyalty": null,
+  "mana_cost": "{2}{G}",
+  "oracle_text": "When Way of the Paradox enters, empower Jace 5. (Put five loyalty counters on a Jace token you control. If you don't control one, first create a blue Jace planeswalker token with \"[−1]: Surveil 1\" and \"[−3]: Draw a card.\")\nWhenever you activate a loyalty ability, you gain 1 life. You may play an additional land this turn.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Enchantment"
+ },
+ "Way of the Pyromancer": {
+  "cmc": 2.0,
+  "color_identity": [
+   "R"
+  ],
+  "colors": [
+   "R"
+  ],
+  "loyalty": null,
+  "mana_cost": "{1}{R}",
+  "oracle_text": "When Way of the Pyromancer enters, empower Jace 2. (Put two loyalty counters on a Jace token you control. If you don't control one, first create a blue Jace planeswalker token with \"[−1]: Surveil 1\" and \"[−3]: Draw a card.\")\nPlaneswalkers you control have \"[+1]: Add {R}.\"",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Enchantment"
+ },
+ "Way of the Warlord": {
+  "cmc": 3.0,
+  "color_identity": [
+   "R"
+  ],
+  "colors": [
+   "R"
+  ],
+  "loyalty": null,
+  "mana_cost": "{2}{R}",
+  "oracle_text": "When Way of the Warlord enters, empower Jace 5. (Put five loyalty counters on a Jace token you control. If you don't control one, first create a blue Jace planeswalker token with \"[−1]: Surveil 1\" and \"[−3]: Draw a card.\")\nPlaneswalkers you control have \"[−4]: This planeswalker deals 2 damage to up to one target creature or planeswalker and 2 damage to target player.\"",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Enchantment"
+ },
+ "Way of the Wildspeaker": {
+  "cmc": 5.0,
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "loyalty": null,
+  "mana_cost": "{4}{G}",
+  "oracle_text": "When Way of the Wildspeaker enters, empower Jace 7. (Put seven loyalty counters on a Jace token you control. If you don't control one, first create a blue Jace planeswalker token with \"[−1]: Surveil 1\" and \"[−3]: Draw a card.\")\nPlaneswalkers you control have \"[−4]: Create a 4/4 green Beast creature token with trample.\"",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Enchantment"
+ },
+ "Windswept Heath": {
+  "cmc": 0.0,
+  "color_identity": [],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "{T}, Pay 1 life, Sacrifice this land: Search your library for a Forest or Plains card, put it onto the battlefield, then shuffle.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land"
+ },
+ "Wooded Bastion": {
+  "cmc": 0.0,
+  "color_identity": [
+   "G",
+   "W"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "{T}: Add {C}.\n{G/W}, {T}: Add {G}{G}, {G}{W}, or {W}{W}.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land"
+ },
+ "Wooded Foothills": {
+  "cmc": 0.0,
+  "color_identity": [],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "{T}, Pay 1 life, Sacrifice this land: Search your library for a Mountain or Forest card, put it onto the battlefield, then shuffle.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land"
+ },
+ "Wrenn and Realmbreaker": {
+  "cmc": 3.0,
+  "color_identity": [
+   "G"
+  ],
+  "colors": [
+   "G"
+  ],
+  "loyalty": "4",
+  "mana_cost": "{1}{G}{G}",
+  "oracle_text": "Lands you control have \"{T}: Add one mana of any color.\"\n+1: Up to one target land you control becomes a 3/3 Elemental creature with vigilance, hexproof, and haste until your next turn. It's still a land.\n−2: Mill three cards. You may put a permanent card from among the milled cards into your hand.\n−7: You get an emblem with \"You may play lands and cast permanent spells from your graveyard.\"",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Planeswalker — Wrenn"
+ },
+ "Yavimaya, Cradle of Growth": {
+  "cmc": 0.0,
+  "color_identity": [],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "Each land is a Forest in addition to its other land types.",
+  "power": null,
+  "toughness": null,
+  "type_line": "Legendary Land"
+ },
+ "Zagoth Triome": {
+  "cmc": 0.0,
+  "color_identity": [
+   "B",
+   "G",
+   "U"
+  ],
+  "colors": [],
+  "loyalty": null,
+  "mana_cost": "",
+  "oracle_text": "({T}: Add {B}, {G}, or {U}.)\nThis land enters tapped.\nCycling {3} ({3}, Discard this card: Draw a card.)",
+  "power": null,
+  "toughness": null,
+  "type_line": "Land — Swamp Forest Island"
+ }
+}

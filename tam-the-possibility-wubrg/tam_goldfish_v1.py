@@ -79,6 +79,9 @@ FIRST_TURN_SKIPS_DRAW = False            # Commander com 3+ jogadores: NINGUEM p
 MAX_LOYALTY_ACTS_PER_TURN = 80
 MAX_SPELLS_PER_TURN = 60
 SAHEELI_COPY_MANA_ARTIFACT = True     # Saheeli -2: "target artifact you control becomes a copy of another target artifact or creature you control": um Servo/Food vira copia de Sol Ring / Arcane Signet / Fellwar Stone ate' o fim do turno e rende o mana da copia (goldfish manual #2 do usuario, T6). False = so' a copia de P/T de criatura (comportamento ate' 2026-10-21)
+TAM_ATTACKS = True                    # a Tam ataca quando a habilidade de proliferate dela NAO e' possivel agora (sem {W}{U}{B}{R}{G} sobrando ou sem alvos pra proliferate): atacar e' de graca (goldfish manual #2 do usuario, T4: "atacou com ela quando nao tinha mana WUBRG"; Tamiyo +1 compra quando ela da' dano). False = a Tam nunca ataca (comportamento ate' 2026-10-21)
+BLINK_UNTAP_MANA = True               # Aminatou -1 e Displacer Kitten: piscar um permanente de mana VIRADO (rocha, terreno que entra desvirado) devolve-o desvirado: mana de novo no mesmo turno (goldfish manual #2, T7: o usuario piscou o Fellwar pra pagar a Wrenn). Ensaio a seco: so' se uma carta valiosa da mao passa a caber. False = nunca (comportamento ate' 2026-10-21)
+SAHEELI_COPY_CREATURES = True         # Saheeli -2 como copia de CRIATURA com habilidade (nao so' P/T): mana (Birds, Bloom Tender, Faeburrow Elder, Hierarchs), gatilho de magia nao-criatura (Flux Channeler, Displacer Kitten) e Staff of Compleation. False = como ate' 2026-10-21
 
 # =========================================================
 # CARD DATABASE (do recorte do cache; tags e comportamento por NOME)
@@ -393,6 +396,15 @@ def count_named(state: GameState, name: str) -> int:
     return sum(1 for p in state.battlefield if p.card.name == name and not p.phased)
 
 
+def perms_eff(state: GameState, name: str) -> list:
+    """Permanentes que SAO `name` agora: o proprio + as copias da Saheeli (`copy_of`) ate' o fim do turno. So' a copia de uma habilidade de criatura/Staff passa por aqui (o resto do arquivo le o nome impresso)."""
+    return [p for p in state.battlefield if not p.phased and (p.card.name == name if p.copy_of is None else (p.copy_of == name and not p.lost_abilities))]
+
+
+def count_eff(state: GameState, name: str) -> int:
+    return len(perms_eff(state, name))
+
+
 def has_tag(state: GameState, tag: str) -> bool:
     return any(tag in p.card.tags and not p.phased for p in state.battlefield)
 
@@ -519,7 +531,10 @@ def can_attack(state: GameState, p: Permanent) -> bool:
     if sick(state, p):
         return False
     if p.card.name in NON_ATTACKERS:
-        return False
+        # a Tam ataca so' quando o {T} dela nao tem uso neste turno (a habilidade de proliferate nao e' possivel agora): atacar e' de graca; os dorks de mana ficam em casa (o {T} de mana vale mais)
+        # (e, na resiliencia, so' se nenhum oponente tem criatura com poder: com ameaca em campo a Tam fica em casa de bloqueadora, como o usuario fez no goldfish manual #3)
+        return (TAM_ATTACKS and p.card.name == "Tam, the Possibility" and not tam_activation_check(state)
+                and not (state.resilience and opp_threat_power(state) > 0))
     return True
 
 
@@ -1341,6 +1356,63 @@ def best_blink_target(state: GameState, exclude=None) -> Optional[Permanent]:
     return best
 
 
+UNLOCK_BLINK_VALUE = 50.0
+
+
+def blink_unlock_options(state: GameState, exclude=None, allow_lands: bool = True) -> list:
+    """Piscar um permanente de MANA VIRADO devolve-o DESVIRADO (objeto novo): mana de novo no mesmo turno (goldfish manual #2, T7: o usuario piscou o Fellwar Stone pra pagar a Wrenn). Criatura volta com
+    doenca de invocacao (sem {T}); terreno que entra virado (triome, choque sem vida) nao rende. Ensaio a seco (desvira, testa, vira de novo; sem efeito colateral): so' conta se uma carta valiosa da mao
+    (prioridade >= 40) que nao cabe agora passa a caber. Devolve [(mana a mais, permanente)]."""
+    if not BLINK_UNTAP_MANA or state.phase not in ("main1", "main2"):
+        return []
+    cand = [h for h in sorted(set(state.hand)) if "land" not in CARD_DB[h].types and CARD_PRIORITY.get(h, 20) >= 40 and not can_cast_name(state, h)]
+    if not cand:
+        return []
+    out = []
+    for p in state.battlefield:
+        if p.phased or not p.tapped or p.is_token or p is exclude or p.lost_abilities or p.copy_of is not None:
+            continue
+        if "land" in p.card.types:
+            if not allow_lands or land_enters_tapped(state, p.card.name):
+                continue
+        elif is_creature(p):
+            continue
+        p.tapped = False
+        try:
+            mine = [s for s in mana_sources(state) if s.perm is p]
+            ok = bool(mine) and any(can_cast_name(state, h) for h in cand)
+            extra = sum(len(s.units) for s in mine)
+        finally:
+            p.tapped = True
+        if ok:
+            out.append((extra, p))
+    return out
+
+
+def blink_choice(state: GameState, exclude=None, allow_lands: bool = True):
+    """(alvo, valor, desvira_mana): o melhor piscar — o de sempre (best_blink_target) ou o permanente de mana virado que paga uma carta valiosa (valor fixo 50: abaixo de um Way, acima do resto)."""
+    t = best_blink_target(state, exclude=exclude)
+    v = blink_value(state, t) if t is not None else 0.0
+    if BLINK_UNTAP_MANA:
+        ul = blink_unlock_options(state, exclude, allow_lands)
+        if ul and (t is None or v < UNLOCK_BLINK_VALUE):
+            return max(ul, key=lambda x: (x[0], -x[1].uid))[1], UNLOCK_BLINK_VALUE, True
+    return t, v, False
+
+
+def blink_any(state: GameState, perm: Permanent, src: str = "") -> Optional[Permanent]:
+    """Piscar de terreno entra pelo MESMO ponto de entrada de terreno (virado/desvirado, vida do choque); o resto, pelo `blink` de sempre."""
+    if "land" in perm.card.types:
+        if perm not in state.battlefield or perm.is_token:
+            return None
+        nm = perm.card.name
+        state.battlefield.remove(perm)
+        state.m["blinks_total"] += 1
+        state.m["blink_by_" + src] += 1
+        return put_land_onto_battlefield(state, nm, source="blink_" + src)
+    return blink(state, perm, src)
+
+
 def blink_value(state: GameState, p: Permanent) -> float:
     c = p.card
     nm = c.name
@@ -1758,20 +1830,20 @@ def on_cast(state: GameState, name: str, source_zone: str = "hand"):
     if state.spells_this_turn_by_player[0] == 2:
         whale_trigger(state)
     if nc:
-        for _ in range(count_named(state, "Flux Channeler")):
+        for _ in range(count_eff(state, "Flux Channeler")):
             proliferate(state, "flux_channeler")
         for g in perms_named(state, "Ichormoon Gauntlet"):
             gauntlet_cast_trigger(state)
         for _ in range(count_named(state, "Saheeli, Sublime Artificer")):
             create_token(state, "Servo Token", 1, src="saheeli")
-        for k in perms_named(state, "Displacer Kitten"):
+        for k in perms_eff(state, "Displacer Kitten"):
             kitten_trigger(state, name)
     if "pw" in c.tags:
         state.m["pw_spells_cast"] += 1
 
 
 def whale_trigger(state: GameState):
-    for _ in range(count_named(state, "Dreamtide Whale")):
+    for _ in range(count_eff(state, "Dreamtide Whale")):
         proliferate(state, "dreamtide_whale")
 
 
@@ -1793,10 +1865,12 @@ def gauntlet_cast_trigger(state: GameState):
 
 def kitten_trigger(state: GameState, cast_name: str):
     """Displacer Kitten (Avoidance): 'Whenever you cast a noncreature spell, exile up to one target nonland permanent you control, then return that card to the battlefield under its owner's control.'"""
-    t = best_blink_target(state)
-    if t is None or blink_value(state, t) < 14:
+    t, v, unl = blink_choice(state, allow_lands=False)          # 'nonland permanent'
+    if t is None or v < 14:
         return
     state.m["kitten_blinks"] += 1
+    if unl:
+        state.m["kitten_mana_blinks"] += 1
     blink(state, t, "kitten")
 
 
@@ -3340,46 +3414,110 @@ def saheeli_sources(state: GameState) -> list:
 
 
 SAHEELI_MANA_SOURCES = {"Sol Ring": 2, "Arcane Signet": 1, "Fellwar Stone": 1}     # artefatos de mana NAO lendarios que o Servo pode copiar (Chromatic Orrery e The Chain Veil sao lendarios: a copia violaria a regra da lenda e eu perderia um dos dois)
+SAHEELI_MANA_CREATURES = ("Bloom Tender", "Faeburrow Elder", "Birds of Paradise", "Noble Hierarch", "Ignoble Hierarch")     # criaturas de mana nao lendarias (a copia vira criatura: o Servo precisa estar em campo desde o inicio do turno, senao tem doenca de invocacao)
 
 
-def saheeli_mana_choice(state: GameState):
-    """-2 da Saheeli como COPIA DE ARTEFATO DE MANA (goldfish manual #2, T6: o Servo virou copia do Fellwar Stone e pagou o Teferi). Alvo: Servo/Food desvirado (uma copia nao-criatura nao tem doenca de
-    invocacao: so' criatura tem, CR 302.6); fonte: o artefato de mana que mais rende. Devolve (alvo, fonte, mana extra) ou None."""
+def saheeli_servos(state: GameState) -> list:
+    return sorted([p for p in artifacts(state) if p.card.name in ("Servo Token", "Food Token") and p.copy_of is None and p.base_pt is None and not p.lost_abilities], key=lambda p: p.uid)
+
+
+def saheeli_mana_choices(state: GameState) -> list:
+    """-2 da Saheeli como COPIA DE UM PERMANENTE DE MANA (goldfish manual #2, T6: o Servo virou copia do Fellwar Stone e pagou o Teferi). Alvo: Servo/Food desvirado (uma copia nao-criatura nao tem doenca de
+    invocacao: so' criatura tem, CR 302.6; copia de CRIATURA so' toca se o alvo ja' estava em campo no inicio do turno); fonte: artefato de mana ou (SAHEELI_COPY_CREATURES) criatura de mana. Devolve
+    [(alvo, fonte, mana extra)] do que mais rende ao que menos rende."""
     if not SAHEELI_COPY_MANA_ARTIFACT or state.phase not in ("main1", "main2"):
-        return None
-    tgts = sorted([p for p in artifacts(state) if p.card.name in ("Servo Token", "Food Token") and not p.tapped and p.copy_of is None and p.base_pt is None and not p.lost_abilities], key=lambda p: p.uid)
+        return []
+    tgts = [p for p in saheeli_servos(state) if not p.tapped]
     if not tgts:
-        return None
+        return []
     ocols = opp_land_colors(state)
-    best = None
+    out = []
     for q in artifacts(state):
         g = SAHEELI_MANA_SOURCES.get(q.card.name)
         if g is None or q.lost_abilities or q.copy_of is not None or (q.card.name == "Fellwar Stone" and not ocols):
             continue
-        if best is None or (g, -q.uid) > (best[2], -best[1].uid):
-            best = (tgts[0], q, g)
-    return best
+        out.append((tgts[0], q, g))
+    if SAHEELI_COPY_CREATURES:
+        ready = [p for p in tgts if not sick(state, p)]
+        if ready:
+            for q in creatures(state):
+                nm = q.card.name
+                if nm not in SAHEELI_MANA_CREATURES or q.lost_abilities or q.copy_of is not None or q.phased:
+                    continue
+                out.append((ready[0], q, len(colors_among(state)) if nm in ("Bloom Tender", "Faeburrow Elder") else 1))
+    out.sort(key=lambda c: (-c[2], c[1].uid))
+    return out
+
+
+def saheeli_mana_choice(state: GameState):
+    ch = saheeli_mana_choices(state)
+    return ch[0] if ch else None
 
 
 def saheeli_mana_wanted(state: GameState):
     """So' gasta 2 de lealdade se, com a copia, uma carta valiosa da mao (prioridade >= 40) que nao cabe agora passa a caber (ensaio a seco: marca a copia, testa e desmarca; sem efeito colateral)."""
-    ch = saheeli_mana_choice(state)
-    if ch is None:
+    chs = saheeli_mana_choices(state)
+    if not chs:
         return None
-    tgt, src, _g = ch
     cand = [h for h in sorted(set(state.hand)) if "land" not in CARD_DB[h].types and CARD_PRIORITY.get(h, 20) >= 40 and not can_cast_name(state, h)]
     if not cand:
         return None
-    tgt.copy_of = src.card.name
-    try:
-        ok = any(can_cast_name(state, h) for h in cand)
-    finally:
-        tgt.copy_of = None
-    return ch if ok else None
+    for ch in (chs if SAHEELI_COPY_CREATURES else chs[:1]):
+        tgt, src, _g = ch
+        tgt.copy_of = src.card.name
+        try:
+            ok = any(can_cast_name(state, h) for h in cand)
+        finally:
+            tgt.copy_of = None
+        if ok:
+            return ch
+    return None
+
+
+def saheeli_trigger_wanted(state: GameState):
+    """Copia de uma criatura de GATILHO de magia nao-criatura (Flux Channeler: proliferate; Displacer Kitten: piscar) ANTES de conjurar: cada magia nao-criatura que eu ainda conjurar neste turno dispara tambem a
+    copia. So' com uma magia nao-criatura valiosa (prioridade >= 40) que cabe agora na mao e com efeito a render (>= 2 permanentes com contador pro proliferate; um alvo de piscar com valor >= 14). Devolve (alvo, fonte)."""
+    if not SAHEELI_COPY_CREATURES or state.phase not in ("main1", "main2"):
+        return None
+    tgts = saheeli_servos(state)
+    if not tgts:
+        return None
+    pend = [h for h in sorted(set(state.hand)) if not (CARD_DB[h].types & {"land", "creature"}) and CARD_PRIORITY.get(h, 20) >= 40 and can_cast_name(state, h)]
+    if not pend:
+        return None
+    for nm in ("Flux Channeler", "Displacer Kitten"):
+        src = [q for q in creatures(state) if q.card.name == nm and q.copy_of is None and not q.lost_abilities and not q.phased]
+        if not src:
+            continue
+        if nm == "Flux Channeler":
+            n = sum(1 for p in vis(state) if (is_pw(p) and loyalty(p) >= 1) or p.ctr.get("p1p1", 0) > 0 or p.ctr.get("time", 0) > 0)
+            if n < 2:
+                continue
+        else:
+            t, v, _u = blink_choice(state, allow_lands=False)
+            if t is None or v < 14:
+                continue
+        return tgts[0], src[0]
+    return None
+
+
+def saheeli_staff_wanted(state: GameState):
+    """Copia do Staff of Compleation (artefato nao lendario) num Servo/Food desvirado no 2o main: a copia tem as 5 habilidades ('{T}, pay 3 life: proliferate' / '{T}, pay 4 life: draw a card'); so' se o `act_staff`
+    usaria o Staff agora (mesma condicao: vida e quantidade de permanentes com contador)."""
+    if not SAHEELI_COPY_CREATURES or state.phase != "main2" or state.life < 16 or staff_use_kind(state) is None:
+        return None
+    src = [q for q in artifacts(state) if q.card.name == "Staff of Compleation" and q.copy_of is None and not q.lost_abilities]
+    tgts = [p for p in saheeli_servos(state) if not p.tapped]
+    if not src or not tgts:
+        return None
+    return tgts[0], src[0]
 
 
 def saheeli_mana_pre(state: GameState, best) -> bool:
-    return SAHEELI_COPY_MANA_ARTIFACT and best[1:3] == ("Saheeli, Sublime Artificer", "-2") and saheeli_mana_wanted(state) is not None
+    """A ativacao do -2 pode ocorrer ANTES de conjurar (como o +1 da Chandra): so' quando a copia (mana ou gatilho de magia) muda o que eu conjuro."""
+    if best[1:3] != ("Saheeli, Sublime Artificer", "-2"):
+        return False
+    return (SAHEELI_COPY_MANA_ARTIFACT and saheeli_mana_wanted(state) is not None) or saheeli_trigger_wanted(state) is not None
 
 
 @eff("Saheeli, Sublime Artificer", "-2")
@@ -3389,6 +3527,18 @@ def _saheeli_minus2(state, host, x):
         ch[0].copy_of = ch[1].card.name
         state.m["saheeli_mana_copies"] += 1
         state.m["saheeli_mana_copy_extra"] += ch[2]
+        if ch[1].card.name in SAHEELI_MANA_CREATURES:
+            state.m["saheeli_creature_mana_copies"] += 1
+        return
+    tr = saheeli_trigger_wanted(state)
+    if tr is not None:
+        tr[0].copy_of = tr[1].card.name
+        state.m["saheeli_trigger_copies"] += 1
+        return
+    st = saheeli_staff_wanted(state)
+    if st is not None:
+        st[0].copy_of = st[1].card.name
+        state.m["saheeli_staff_copies"] += 1
         return
     arts = [p for p in artifacts(state) if p.card.name in ("Servo Token", "Food Token", "Treasure Token") and not sick(state, p) and not p.tapped and p.base_pt is None]
     big = saheeli_sources(state)
@@ -3405,6 +3555,10 @@ def _saheeli_minus2(state, host, x):
 def _saheeli_minus2_s(state, host):
     if loyalty(host) >= 2 and saheeli_mana_wanted(state) is not None:
         return 64
+    if loyalty(host) >= 2 and saheeli_trigger_wanted(state) is not None:
+        return 58
+    if loyalty(host) >= 2 and saheeli_staff_wanted(state) is not None:
+        return 36
     arts = [p for p in artifacts(state) if p.card.name in ("Servo Token", "Food Token", "Treasure Token") and not sick(state, p) and not p.tapped and p.base_pt is None]
     big = [p for p in saheeli_sources(state) if printed_pt(p)[0] >= 5]
     if arts and big and loyalty(host) >= 4 and state.phase == "main1":
@@ -3499,19 +3653,22 @@ def _aminatou_plus1_s(state, host):
 
 @eff("Aminatou, the Fateshifter", "-1")
 def _aminatou_minus1(state, host, x):
-    t = best_blink_target(state, exclude=host)
+    t, v, unl = blink_choice(state, exclude=host)
     if t is not None:
-        blink(state, t, "aminatou")
+        if unl:
+            state.m["aminatou_mana_blinks"] += 1
+        blink_any(state, t, "aminatou")
 
 
 @sc("Aminatou, the Fateshifter", "-1")
 def _aminatou_minus1_s(state, host):
     if loyalty(host) < 2:
         return None
-    t = best_blink_target(state, exclude=host)
+    t, v, unl = blink_choice(state, exclude=host)
     if t is None:
         return None
-    v = blink_value(state, t)
+    if unl:
+        return 62
     return 40 + v / 3 if v >= 25 else None
 
 
@@ -4007,20 +4164,30 @@ def tam_ready(state: GameState) -> Optional[Permanent]:
     return None
 
 
-def act_tam_proliferate(state: GameState) -> bool:
-    """Tam: '{W}{U}{B}{R}{G}, {T}: Proliferate X times, where X is the number of planeswalker types among planeswalkers you control.' Vale a pena com X >= 2 e lealdade pra dar."""
+def tam_activation_check(state: GameState) -> int:
+    """X (numero de proliferates) que a Tam faria AGORA; 0 = nao faria (sem {W}{U}{B}{R}{G} pagavel, ou X < 2, ou poucos alvos). So' le: nada e' pago."""
     if not TAM_ACTIVATE:
-        return False
+        return 0
     tam = tam_ready(state)
     if tam is None:
-        return False
+        return 0
     X = pw_types(state)
     targets = sum(1 for p in vis(state) if (is_pw(p) and loyalty(p) >= 1) or p.ctr.get("p1p1", 0) > 0 or p.ctr.get("time", 0) > 0) + sum(1 for o in alive_opps(state) if o.poison > 0)
     if X < 2 or targets < 2 or X * targets < 6:
-        return False
+        return 0
     pips = tuple(frozenset({c}) for c in COLORS5)
     if not can_pay(state, 0, pips, CTX_ABILITY):
+        return 0
+    return X
+
+
+def act_tam_proliferate(state: GameState) -> bool:
+    """Tam: '{W}{U}{B}{R}{G}, {T}: Proliferate X times, where X is the number of planeswalker types among planeswalkers you control.' Vale a pena com X >= 2 e lealdade pra dar."""
+    X = tam_activation_check(state)
+    if not X:
         return False
+    tam = tam_ready(state)
+    pips = tuple(frozenset({c}) for c in COLORS5)
     pay_mana(state, 0, pips, CTX_ABILITY)
     tam.tapped = True
     state.m["tam_activations"] += 1
@@ -4075,7 +4242,7 @@ def act_staff(state: GameState) -> bool:
     """Staff of Compleation: '{T}, Pay 3 life: Proliferate.' / '{T}, Pay 4 life: Draw a card.' e '{5}: Untap this artifact.' (o {5} liga uma ativacao na outra enquanto houver mana ociosa e vida)."""
     if state.phase != "main2":
         return False
-    for s in perms_named(state, "Staff of Compleation"):
+    for s in perms_eff(state, "Staff of Compleation"):
         kind = staff_use_kind(state)
         if kind is None or state.life < 16:
             continue
@@ -4234,7 +4401,7 @@ def act_staff_necromancer(state: GameState) -> bool:
     f = sacrifice_fodder(state)
     if f is None:
         return False
-    for s in perms_named(state, "Staff of Compleation"):
+    for s in perms_eff(state, "Staff of Compleation"):
         if not s.tapped and len(pws(state)) >= 2:
             s.tapped = True
             lose_life(state, 1, "staff")
@@ -4426,7 +4593,7 @@ def opp_crime(state: GameState, why: str):
     """Patrolling Peacemaker: 'Whenever an opponent commits a crime, proliferate.' Crime = magia/habilidade dele que mira a mim, algo meu ou cartas do meu cemiterio (ruling 2025-07-25)."""
     state.m["opp_crimes_total"] += 1
     state.m["opp_crimes_" + why] += 1
-    for _ in range(count_named(state, "Patrolling Peacemaker")):
+    for _ in range(count_eff(state, "Patrolling Peacemaker")):
         proliferate(state, "peacemaker")
 
 
@@ -4884,6 +5051,8 @@ def combat_step(state: GameState):
         if pw <= 0:
             continue
         dmg[targets.get(p.uid)] += pw
+        if p.card.name == "Tam, the Possibility":
+            state.m["tam_attacks"] += 1
         if p.uid == state.dihada_shield:
             gain_life(state, pw, "dihada_lifelink")                # lifelink concedido pela Dihada +2
             state.m["dihada_lifelink_total"] += pw

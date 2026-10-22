@@ -33,7 +33,7 @@ def _():
     check(act(st, "Jace Token", "Jace Token", "-3") and len(st.hand) == n + 1 and loy(st, "Jace Token") == 2)
     tam = perm(st, "Tam, the Possibility")
     check(T.is_creature(tam) and not T.sick(st, tam), "a Tam foi conjurada no T3: sem doenca de invocacao no T4 (REGRA: ela pode atacar)")
-    check("Tam, the Possibility" in T.NON_ATTACKERS, "POLITICA do simulador: a Tam nunca ataca (reservada ao {T} de proliferate); o usuario atacou com ela no T4 sem mana WUBRG pra ativar")
+    check(T.can_attack(st, tam), "O usuario atacou com a Tam no T4 sem mana WUBRG pra ativar; desde 2026-10-22 (TAM_ATTACKS) o simulador tambem ataca quando o {T} dela nao tem uso (antes: NON_ATTACKERS, nunca)")
 
 
 @test("Manual #2 T5: com a Tam, Saheeli custa 2 e Aminatou 3 (a reducao so' abate generico); Town + Fellwar + Triome + Plaza (so' lendaria) + City pagam as duas; Saheeli em campo faz Servo na Aminatou")
