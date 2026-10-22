@@ -8,3 +8,378 @@ chaves da correcao no arquivo vivo: EXTRA_TURNS_STACK=True, VIVID_LAST=True, SIB
 Bit-identidade: arquivo vivo com as chaves {'EXTRA_TURNS_STACK': False, 'VIVID_LAST': False, 'SIBLING_FIRST': False, 'COMBO_CAST_PAYOFF_FROM_HAND': False} == snapshot codigo/tam_goldfish_v1_ANTES_b7c0e19.py; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['m_combo_payoff_cast_from_hand', 'm_opp_wipe_nova', 'm_opp_wipe_split_up', 'm_opp_wipe_verdict', 'm_opp_wipe_promise', 'm_opp_vex_draws'])
 padrao: N=20000 partidas diferentes=0 -> BIT-IDENTICO
 resiliencia: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+LOTE N=2000 sementes 1000000..1001999, 12 turnos, modo padrao
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1557 (77.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T8                                   0.1575       0.1680      +0.0105 ±0.0054  
+   cleared_T9                                   0.4270       0.4300      +0.0030 ±0.0055  
+   cleared_T10                                  0.6930       0.6960      +0.0030 ±0.0059  
+  *first_elim_T6                                0.0380       0.0415      +0.0035 ±0.0029  
+   first_elim_T8                                0.6520       0.6570      +0.0050 ±0.0052  
+   self_lost                                    0.0100       0.0105      +0.0005 ±0.0010  
+   m_pw_entered                                 9.8700       9.8715      +0.0015 ±0.0705  
+  *pws_T4                                       0.9385       0.9515      +0.0130 ±0.0062  
+  *pws_T6                                       3.1285       3.1425      +0.0140 ±0.0114  
+   pws_T8                                       5.3615       5.3530      -0.0085 ±0.0242  
+   mana_T4                                      3.9825       3.9860      +0.0035 ±0.0038  
+   mana_T6                                      7.0075       7.0230      +0.0155 ±0.0172  
+   mana_T8                                     11.1810      11.1755      -0.0055 ±0.0378  
+   m_extra_turns_taken                          1.3450       1.3245      -0.0205 ±0.0537  
+  *m_extra_turns_played                         0.4210       0.4655      +0.0445 ±0.0164  
+   m_combo_assembled                            0.0250       0.0240      -0.0010 ±0.0028  
+   m_combo_wins                                 0.0060       0.0060      +0.0000 ±0.0014  
+  *game_turns                                   9.8325       9.8140      -0.0185 ±0.0141  
+  *turn_id                                     33.4765      33.3210      -0.1555 ±0.0457  
+  *m_opp_spells_total                          21.2380      21.1280      -0.1100 ±0.0369  
+  *hand_T3                                      6.1685       6.1555      -0.0130 ±0.0055  
+  *_pool_used                                   0.4705       0.4095      -0.0610 ±0.0273  
+  *first_pw_by_T3                               0.0715       0.0815      +0.0100 ±0.0048  
+  *first_pw_turn__ate_T3                        0.0715       0.0815      +0.0100 ±0.0048  
+  *loyalty_T3                                   0.5705       0.6215      +0.0510 ±0.0248  
+  *pw_types_T4                                  0.9265       0.9390      +0.0125 ±0.0063  
+  *pw_types_T3                                  0.1735       0.1830      +0.0095 ±0.0051  
+  *pws_T3                                       0.1745       0.1840      +0.0095 ±0.0051  
+  *creatures_T4                                 1.9130       1.9260      +0.0130 ±0.0073  
+  *loyalty_T4                                   3.9345       3.9890      +0.0545 ±0.0312  
+  *pws_T5                                       1.9985       2.0135      +0.0150 ±0.0090  
+  *m_attack_turns                               6.2565       6.2310      -0.0255 ±0.0160  
+
+[so_turnos_extras - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1914 (95.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+   m_pw_entered                                 9.8700       9.8690      -0.0010 ±0.0050  
+   m_extra_turns_taken                          1.3450       1.3415      -0.0035 ±0.0069  
+  *m_extra_turns_played                         0.4210       0.4745      +0.0535 ±0.0118  
+  *game_turns                                   9.8325       9.8345      +0.0020 ±0.0020  
+  *turn_id                                     33.4765      33.3800      -0.0965 ±0.0240  
+  *m_opp_spells_total                          21.2380      21.1505      -0.0875 ±0.0227  
+  *m_pw_act_by_Teferi, Temporal Archmage        1.4050       1.3825      -0.0225 ±0.0124  
+  *m_pw_activations                            38.9960      38.7765      -0.2195 ±0.1218  
+  *m_pw_act_by_Jace Token                       5.1485       5.1245      -0.0240 ±0.0135  
+  *m_prolif_by_gauntlet_zero                    8.1435       7.9395      -0.2040 ±0.1194  
+  *m_proliferates_total                        19.1895      18.9935      -0.1960 ±0.1242  
+  *m_prolif_loyalty_gauntlet_zero              65.3860      63.5900      -1.7960 ±1.1776  
+  *m_pw_act_by_Oko, Thief of Crowns             2.4915       2.4820      -0.0095 ±0.0067  
+  *m_counter_events                           187.1045     185.2640      -1.8405 ±1.3225  
+  *m_counters_loyalty                         229.1925     227.4165      -1.7760 ±1.2923  
+  *m_loyalty_counters_by_proliferate          139.5460     137.7885      -1.7575 ±1.2820  
+  *m_pw_act_by_Tamiyo, Field Researcher         1.0940       1.0790      -0.0150 ±0.0121  
+  *len_emblems                                  2.0330       2.0275      -0.0055 ±0.0045  
+
+[so_pagamento - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1624 (81.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T8                                   0.1575       0.1680      +0.0105 ±0.0054  
+   cleared_T9                                   0.4270       0.4300      +0.0030 ±0.0055  
+   cleared_T10                                  0.6930       0.6960      +0.0030 ±0.0059  
+  *first_elim_T6                                0.0380       0.0415      +0.0035 ±0.0029  
+   first_elim_T8                                0.6520       0.6570      +0.0050 ±0.0052  
+   self_lost                                    0.0100       0.0105      +0.0005 ±0.0010  
+   m_pw_entered                                 9.8700       9.8770      +0.0070 ±0.0701  
+  *pws_T4                                       0.9385       0.9515      +0.0130 ±0.0062  
+  *pws_T6                                       3.1285       3.1425      +0.0140 ±0.0114  
+   pws_T8                                       5.3615       5.3530      -0.0085 ±0.0242  
+   mana_T4                                      3.9825       3.9860      +0.0035 ±0.0038  
+   mana_T6                                      7.0075       7.0230      +0.0155 ±0.0172  
+   mana_T8                                     11.1810      11.1795      -0.0015 ±0.0370  
+   m_extra_turns_taken                          1.3450       1.3265      -0.0185 ±0.0522  
+   m_extra_turns_played                         0.4210       0.4150      -0.0060 ±0.0119  
+   m_combo_assembled                            0.0250       0.0240      -0.0010 ±0.0028  
+   m_combo_wins                                 0.0060       0.0055      -0.0005 ±0.0010  
+  *game_turns                                   9.8325       9.8125      -0.0200 ±0.0140  
+  *hand_T3                                      6.1685       6.1555      -0.0130 ±0.0055  
+  *_pool_used                                   0.4705       0.4095      -0.0610 ±0.0269  
+  *first_pw_by_T3                               0.0715       0.0815      +0.0100 ±0.0048  
+  *first_pw_turn__ate_T3                        0.0715       0.0815      +0.0100 ±0.0048  
+  *loyalty_T3                                   0.5705       0.6215      +0.0510 ±0.0248  
+  *pw_types_T4                                  0.9265       0.9390      +0.0125 ±0.0063  
+  *pw_types_T3                                  0.1735       0.1830      +0.0095 ±0.0051  
+  *pws_T3                                       0.1745       0.1840      +0.0095 ±0.0051  
+  *creatures_T4                                 1.9130       1.9260      +0.0130 ±0.0073  
+  *loyalty_T4                                   3.9345       3.9890      +0.0545 ±0.0312  
+  *pws_T5                                       1.9985       2.0135      +0.0150 ±0.0090  
+  *m_attack_turns                               6.2565       6.2305      -0.0260 ±0.0158  
+  *turn_id                                     33.4765      33.4140      -0.0625 ±0.0397  
+  *creatures_T5                                 2.9070       2.9260      +0.0190 ±0.0122  
+
+[so_combo_mao - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1998 (99.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+   m_pw_entered                                 9.8700       9.8675      -0.0025 ±0.0049  
+   mana_T8                                     11.1810      11.1770      -0.0040 ±0.0078  
+   m_combo_wins                                 0.0060       0.0065      +0.0005 ±0.0010  
+   game_turns                                   9.8325       9.8320      -0.0005 ±0.0010  
+   m_attack_turns                               6.2565       6.2555      -0.0010 ±0.0014  
+   m_tam_attacks                                5.0085       5.0075      -0.0010 ±0.0014  
+   len_library                                 60.4440      60.4495      +0.0055 ±0.0077  
+   m_mana_spent_total                          61.2570      61.2365      -0.0205 ±0.0286  
+   m_draws_total                               24.7195      24.7160      -0.0035 ±0.0049  
+   m_pw_activations                            38.9960      38.9890      -0.0070 ±0.0101  
+   len_m                                       72.8415      72.8330      -0.0085 ±0.0123  
+   m_cards_drawn_extra                         14.8870      14.8840      -0.0030 ±0.0044  
+   len_activations                             13.1075      13.1040      -0.0035 ±0.0053  
+   len_battlefield                             44.2075      44.1950      -0.0125 ±0.0189  
+   next_uid                                    54.5750      54.5615      -0.0135 ±0.0208  
+   len_casts_by_card                           19.0050      19.0010      -0.0040 ±0.0062  
+   m_attacks_total                             27.9490      27.9350      -0.0140 ±0.0217  
+   m_lands_entered_total                       11.2455      11.2435      -0.0020 ±0.0031  
+
+[tetos_altos - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1551 (77.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T8                                   0.1575       0.1680      +0.0105 ±0.0054  
+   cleared_T9                                   0.4270       0.4300      +0.0030 ±0.0055  
+   cleared_T10                                  0.6930       0.6960      +0.0030 ±0.0059  
+  *first_elim_T6                                0.0380       0.0415      +0.0035 ±0.0029  
+   first_elim_T8                                0.6520       0.6570      +0.0050 ±0.0052  
+   self_lost                                    0.0100       0.0110      +0.0010 ±0.0014  
+   m_pw_entered                                 9.8700       9.8785      +0.0085 ±0.0716  
+  *pws_T4                                       0.9385       0.9515      +0.0130 ±0.0062  
+  *pws_T6                                       3.1285       3.1425      +0.0140 ±0.0114  
+   pws_T8                                       5.3615       5.3530      -0.0085 ±0.0242  
+   mana_T4                                      3.9825       3.9860      +0.0035 ±0.0038  
+   mana_T6                                      7.0075       7.0230      +0.0155 ±0.0172  
+   mana_T8                                     11.1810      11.1755      -0.0055 ±0.0378  
+   m_extra_turns_taken                          1.3450       1.3245      -0.0205 ±0.0537  
+  *m_extra_turns_played                         0.4210       0.4655      +0.0445 ±0.0164  
+   m_combo_assembled                            0.0250       0.0235      -0.0015 ±0.0029  
+   m_combo_wins                                 0.0060       0.0060      +0.0000 ±0.0014  
+  *game_turns                                   9.8325       9.8135      -0.0190 ±0.0142  
+  *turn_id                                     33.4765      33.3195      -0.1570 ±0.0458  
+  *m_opp_spells_total                          21.2380      21.1280      -0.1100 ±0.0369  
+  *hand_T3                                      6.1685       6.1555      -0.0130 ±0.0055  
+  *_pool_used                                   0.4705       0.4095      -0.0610 ±0.0273  
+  *first_pw_by_T3                               0.0715       0.0815      +0.0100 ±0.0048  
+  *first_pw_turn__ate_T3                        0.0715       0.0815      +0.0100 ±0.0048  
+  *loyalty_T3                                   0.5705       0.6215      +0.0510 ±0.0248  
+  *pw_types_T4                                  0.9265       0.9390      +0.0125 ±0.0063  
+  *pw_types_T3                                  0.1735       0.1830      +0.0095 ±0.0051  
+  *pws_T3                                       0.1745       0.1840      +0.0095 ±0.0051  
+  *creatures_T4                                 1.9130       1.9260      +0.0130 ±0.0073  
+  *loyalty_T4                                   3.9345       3.9890      +0.0545 ±0.0312  
+  *m_attack_turns                               6.2565       6.2290      -0.0275 ±0.0161  
+  *pws_T5                                       1.9985       2.0135      +0.0150 ±0.0090  
+
+[perfil_playtester - antes] N=2000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T8                                   0.1575       0.1690      +0.0115 ±0.0067  
+   cleared_T9                                   0.4270       0.4270      +0.0000 ±0.0082  
+   cleared_T10                                  0.6930       0.6895      -0.0035 ±0.0097  
+   first_elim_T6                                0.0380       0.0415      +0.0035 ±0.0035  
+   first_elim_T8                                0.6520       0.6525      +0.0005 ±0.0079  
+   self_lost                                    0.0100       0.0105      +0.0005 ±0.0026  
+   m_pw_entered                                 9.8700       9.9060      +0.0360 ±0.1228  
+  *pws_T4                                       0.9385       0.9530      +0.0145 ±0.0067  
+   pws_T6                                       3.1285       3.1415      +0.0130 ±0.0139  
+   pws_T8                                       5.3615       5.3555      -0.0060 ±0.0330  
+   mana_T4                                      3.9825       3.9860      +0.0035 ±0.0038  
+   mana_T6                                      7.0075       7.0205      +0.0130 ±0.0181  
+   mana_T8                                     11.1810      11.1745      -0.0065 ±0.0500  
+   m_extra_turns_taken                          1.3450       1.3150      -0.0300 ±0.0677  
+  *m_extra_turns_played                         0.4210       0.4645      +0.0435 ±0.0192  
+   m_combo_assembled                            0.0250       0.0230      -0.0020 ±0.0050  
+   m_combo_wins                                 0.0060       0.0075      +0.0015 ±0.0029  
+   m_turn_cap_activations                       0.5060       0.3235      -0.1825 ±0.2942  
+   game_turns                                   9.8325       9.8240      -0.0085 ±0.0200  
+  *m_opp_spells_total                          21.2380       5.8930     -15.3450 ±0.1539  
+  *m_opp_crimes_total                           0.1120       0.0330      -0.0790 ±0.0196  
+  *m_prolif_by_peacemaker                       0.1120       0.0330      -0.0790 ±0.0196  
+  *m_prolif_by_dreamtide_whale                  0.3510       0.2250      -0.1260 ±0.0315  
+  *m_opp_discards                               0.2420       0.3680      +0.1260 ±0.0318  
+  *m_opp_spells_blocked_narset                  0.1420       0.0405      -0.1015 ±0.0278  
+  *m_garruk_vb_draws                            0.1690       0.2535      +0.0845 ±0.0252  
+  *m_prolif_loyalty_peacemaker                  0.3725       0.1095      -0.2630 ±0.0783  
+  *m_prolif_loyalty_dreamtide_whale             1.5680       1.1235      -0.4445 ±0.1326  
+  *hand_T3                                      6.1685       6.1555      -0.0130 ±0.0055  
+  *m_whale_vanished                             0.0050       0.0135      +0.0085 ±0.0040  
+  *first_pw_by_T3                               0.0715       0.0815      +0.0100 ±0.0048  
+  *first_pw_turn__ate_T3                        0.0715       0.0815      +0.0100 ±0.0048  
+  *pw_types_T4                                  0.9265       0.9405      +0.0140 ±0.0068  
+LOTE N=2000 sementes 1000000..1001999, 12 turnos, modo resiliencia
+
+[depois - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1682 (84.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+   cleared_T8                                   0.0055       0.0055      +0.0000 ±0.0020  
+   cleared_T9                                   0.0160       0.0170      +0.0010 ±0.0024  
+   cleared_T10                                  0.0535       0.0550      +0.0015 ±0.0055  
+   first_elim_T6                                0.0035       0.0045      +0.0010 ±0.0014  
+   first_elim_T8                                0.0750       0.0790      +0.0040 ±0.0050  
+   self_lost                                    0.0070       0.0075      +0.0005 ±0.0022  
+   died_any                                     0.1240       0.1225      -0.0015 ±0.0040  
+   m_pw_entered                                 6.7020       6.6900      -0.0120 ±0.0865  
+  *pws_T4                                       0.7285       0.7370      +0.0085 ±0.0070  
+   pws_T6                                       1.6465       1.6450      -0.0015 ±0.0154  
+   pws_T8                                       2.2875       2.2980      +0.0105 ±0.0227  
+   mana_T4                                      3.9025       3.9050      +0.0025 ±0.0056  
+   mana_T6                                      6.1640       6.1580      -0.0060 ±0.0268  
+   mana_T8                                      8.2180       8.1960      -0.0220 ±0.0534  
+   m_extra_turns_taken                          0.4740       0.4720      -0.0020 ±0.0272  
+   m_extra_turns_played                         0.1460       0.1535      +0.0075 ±0.0092  
+   m_combo_assembled                            0.0125       0.0120      -0.0005 ±0.0022  
+   m_combo_wins                                 0.0025       0.0035      +0.0010 ±0.0020  
+   game_turns                                  11.8135      11.8045      -0.0090 ±0.0120  
+  *hand_T3                                      6.1675       6.1560      -0.0115 ±0.0053  
+  *m_pw_act_by_Oko, Thief of Crowns             1.1165       1.1695      +0.0530 ±0.0279  
+  *first_pw_by_T3                               0.0645       0.0725      +0.0080 ±0.0044  
+  *first_pw_turn__ate_T3                        0.0645       0.0725      +0.0080 ±0.0044  
+  *loyalty_T3                                   0.5315       0.5720      +0.0405 ±0.0231  
+  *m_tokens_Food Token                          0.4185       0.4380      +0.0195 ±0.0119  
+  *hand_T5                                      4.6645       4.6470      -0.0175 ±0.0110  
+  *hand_T4                                      5.3620       5.3505      -0.0115 ±0.0075  
+  *pw_types_T3                                  0.1650       0.1720      +0.0070 ±0.0046  
+  *pws_T3                                       0.1660       0.1730      +0.0070 ±0.0046  
+  *creatures_T4                                 1.5775       1.5875      +0.0100 ±0.0080  
+  *m_oko_elks                                   0.5090       0.5295      +0.0205 ±0.0164  
+  *m_kiora_triggers                             0.2740       0.2920      +0.0180 ±0.0148  
+  *pw_types_T4                                  0.7230       0.7315      +0.0085 ±0.0070  
+
+[so_turnos_extras - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1981 (99.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   cleared_T8                                   0.0055       0.0050      -0.0005 ±0.0010  
+   first_elim_T8                                0.0750       0.0745      -0.0005 ±0.0010  
+   self_lost                                    0.0070       0.0065      -0.0005 ±0.0010  
+   m_pw_entered                                 6.7020       6.6960      -0.0060 ±0.0095  
+   mana_T8                                      8.2180       8.2185      +0.0005 ±0.0010  
+  *m_extra_turns_taken                          0.4740       0.4815      +0.0075 ±0.0074  
+  *m_extra_turns_played                         0.1460       0.1580      +0.0120 ±0.0059  
+   game_turns                                  11.8135      11.8140      +0.0005 ±0.0010  
+  *turn_id                                     45.0610      45.0320      -0.0290 ±0.0158  
+  *m_opp_spells_total                          29.4020      29.3770      -0.0250 ±0.0148  
+  *len_m                                       82.2265      82.1800      -0.0465 ±0.0351  
+  *m_opp_crimes_total                           7.2170       7.1995      -0.0175 ±0.0134  
+  *m_blocks_total                               4.6265       4.6190      -0.0075 ±0.0058  
+  *m_opp_creatures_removed_combat               3.8660       3.8595      -0.0065 ±0.0051  
+  *m_opp_crimes_discard                         1.9320       1.9275      -0.0045 ±0.0038  
+  *m_smart_discards                             1.9320       1.9275      -0.0045 ±0.0038  
+  *m_opp_attackers_total                       17.4385      17.4050      -0.0335 ±0.0301  
+  *len_draws_by_source                          3.8155       3.8105      -0.0050 ±0.0048  
+  *m_spells_cast_total                         18.4540      18.4360      -0.0180 ±0.0176  
+  *spells_cast_this_turn                        2.6810       2.6625      -0.0185 ±0.0182  
+   len_activations                              9.7995       9.7840      -0.0155 ±0.0157  
+   len_casts_by_card                           16.4665      16.4510      -0.0155 ±0.0157  
+
+[so_pagamento - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1696 (84.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+   cleared_T8                                   0.0055       0.0060      +0.0005 ±0.0017  
+   cleared_T9                                   0.0160       0.0170      +0.0010 ±0.0024  
+   cleared_T10                                  0.0535       0.0550      +0.0015 ±0.0055  
+   first_elim_T6                                0.0035       0.0045      +0.0010 ±0.0014  
+   first_elim_T8                                0.0750       0.0795      +0.0045 ±0.0049  
+   self_lost                                    0.0070       0.0080      +0.0010 ±0.0020  
+   died_any                                     0.1240       0.1225      -0.0015 ±0.0040  
+   m_pw_entered                                 6.7020       6.6970      -0.0050 ±0.0860  
+  *pws_T4                                       0.7285       0.7370      +0.0085 ±0.0070  
+   pws_T6                                       1.6465       1.6450      -0.0015 ±0.0154  
+   pws_T8                                       2.2875       2.2980      +0.0105 ±0.0227  
+   mana_T4                                      3.9025       3.9050      +0.0025 ±0.0056  
+   mana_T6                                      6.1640       6.1580      -0.0060 ±0.0268  
+   mana_T8                                      8.2180       8.1955      -0.0225 ±0.0534  
+   m_extra_turns_taken                          0.4740       0.4635      -0.0105 ±0.0257  
+   m_extra_turns_played                         0.1460       0.1430      -0.0030 ±0.0071  
+   m_combo_assembled                            0.0125       0.0120      -0.0005 ±0.0022  
+   m_combo_wins                                 0.0025       0.0030      +0.0005 ±0.0017  
+   game_turns                                  11.8135      11.8040      -0.0095 ±0.0120  
+  *hand_T3                                      6.1675       6.1560      -0.0115 ±0.0053  
+  *m_pw_act_by_Oko, Thief of Crowns             1.1165       1.1685      +0.0520 ±0.0272  
+  *first_pw_by_T3                               0.0645       0.0725      +0.0080 ±0.0044  
+  *first_pw_turn__ate_T3                        0.0645       0.0725      +0.0080 ±0.0044  
+  *loyalty_T3                                   0.5315       0.5720      +0.0405 ±0.0231  
+  *m_tokens_Food Token                          0.4185       0.4385      +0.0200 ±0.0118  
+  *hand_T5                                      4.6645       4.6470      -0.0175 ±0.0110  
+  *hand_T4                                      5.3620       5.3505      -0.0115 ±0.0075  
+  *pw_types_T3                                  0.1650       0.1720      +0.0070 ±0.0046  
+  *pws_T3                                       0.1660       0.1730      +0.0070 ±0.0046  
+  *m_oko_elks                                   0.5090       0.5295      +0.0205 ±0.0159  
+  *creatures_T4                                 1.5775       1.5875      +0.0100 ±0.0080  
+  *m_kiora_triggers                             0.2740       0.2920      +0.0180 ±0.0148  
+  *pw_types_T4                                  0.7230       0.7315      +0.0085 ±0.0070  
+
+[so_combo_mao - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1999 (100.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   m_pw_entered                                 6.7020       6.7000      -0.0020 ±0.0039  
+   m_extra_turns_taken                          0.4740       0.4735      -0.0005 ±0.0010  
+   m_combo_wins                                 0.0025       0.0030      +0.0005 ±0.0010  
+   m_combat_damage_total                       46.9070      46.8925      -0.0145 ±0.0284  
+   m_counter_events                            65.7215      65.6995      -0.0220 ±0.0431  
+   m_counters_loyalty                          95.8445      95.8130      -0.0315 ±0.0617  
+   m_gauntlet_counters                          1.1200       1.1175      -0.0025 ±0.0049  
+   m_loyalty_counters_by_enters                29.2690      29.2605      -0.0085 ±0.0167  
+   m_loyalty_counters_by_gauntlet               1.1125       1.1100      -0.0025 ±0.0049  
+   m_loyalty_counters_by_proliferate           33.8485      33.8315      -0.0170 ±0.0333  
+   m_noncreature_spells_total                  12.5210      12.5185      -0.0025 ±0.0049  
+   m_opp_damage_total                          59.2120      59.1940      -0.0180 ±0.0353  
+   m_pw_spells_cast                             6.8850       6.8825      -0.0025 ±0.0049  
+   noncreature_spells_this_turn                 2.0055       2.0030      -0.0025 ±0.0049  
+   activated_loyalty_this_turn                  0.8950       0.8945      -0.0005 ±0.0010  
+   cleared_T12                                  0.1725       0.1730      +0.0005 ±0.0010  
+   game_over                                    0.1795       0.1800      +0.0005 ±0.0010  
+
+[tetos_altos - antes] N=2000 | partidas com resultado IDENTICO ao da base: 1678 (83.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+   cleared_T8                                   0.0055       0.0055      +0.0000 ±0.0020  
+   cleared_T9                                   0.0160       0.0170      +0.0010 ±0.0024  
+   cleared_T10                                  0.0535       0.0550      +0.0015 ±0.0055  
+   first_elim_T6                                0.0035       0.0045      +0.0010 ±0.0014  
+   first_elim_T8                                0.0750       0.0790      +0.0040 ±0.0050  
+   self_lost                                    0.0070       0.0080      +0.0010 ±0.0024  
+   died_any                                     0.1240       0.1225      -0.0015 ±0.0040  
+   m_pw_entered                                 6.7020       6.7110      +0.0090 ±0.0920  
+  *pws_T4                                       0.7285       0.7370      +0.0085 ±0.0070  
+   pws_T6                                       1.6465       1.6450      -0.0015 ±0.0154  
+   pws_T8                                       2.2875       2.2980      +0.0105 ±0.0227  
+   mana_T4                                      3.9025       3.9050      +0.0025 ±0.0056  
+   mana_T6                                      6.1640       6.1580      -0.0060 ±0.0268  
+   mana_T8                                      8.2180       8.1960      -0.0220 ±0.0534  
+   m_extra_turns_taken                          0.4740       0.4720      -0.0020 ±0.0272  
+   m_extra_turns_played                         0.1460       0.1535      +0.0075 ±0.0092  
+   m_combo_assembled                            0.0125       0.0120      -0.0005 ±0.0022  
+   m_combo_wins                                 0.0025       0.0035      +0.0010 ±0.0020  
+   game_turns                                  11.8135      11.8045      -0.0090 ±0.0120  
+  *hand_T3                                      6.1675       6.1560      -0.0115 ±0.0053  
+  *m_pw_act_by_Oko, Thief of Crowns             1.1165       1.1700      +0.0535 ±0.0279  
+  *first_pw_by_T3                               0.0645       0.0725      +0.0080 ±0.0044  
+  *first_pw_turn__ate_T3                        0.0645       0.0725      +0.0080 ±0.0044  
+  *loyalty_T3                                   0.5315       0.5720      +0.0405 ±0.0231  
+  *m_tokens_Food Token                          0.4185       0.4380      +0.0195 ±0.0119  
+  *hand_T5                                      4.6645       4.6470      -0.0175 ±0.0110  
+  *hand_T4                                      5.3620       5.3505      -0.0115 ±0.0075  
+  *pw_types_T3                                  0.1650       0.1720      +0.0070 ±0.0046  
+  *pws_T3                                       0.1660       0.1730      +0.0070 ±0.0046  
+  *m_oko_elks                                   0.5090       0.5300      +0.0210 ±0.0164  
+  *creatures_T4                                 1.5775       1.5875      +0.0100 ±0.0080  
+  *m_tokens_Leviathan Token                     0.1130       0.1375      +0.0245 ±0.0199  
+  *pw_types_T4                                  0.7230       0.7315      +0.0085 ±0.0070  
+
+[perfil_playtester - antes] N=2000 | partidas com resultado IDENTICO ao da base: 0 (0.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *cleared_T8                                   0.0055       0.0665      +0.0610 ±0.0107  
+  *cleared_T9                                   0.0160       0.2010      +0.1850 ±0.0176  
+  *cleared_T10                                  0.0535       0.3925      +0.3390 ±0.0221  
+  *first_elim_T6                                0.0035       0.0170      +0.0135 ±0.0056  
+  *first_elim_T8                                0.0750       0.3435      +0.2685 ±0.0214  
+   self_lost                                    0.0070       0.0120      +0.0050 ±0.0060  
+  *died_any                                     0.1240       0.0000      -0.1240 ±0.0144  
+  *m_pw_entered                                 6.7020       9.9305      +3.2285 ±0.3165  
+  *pws_T4                                       0.7285       0.8780      +0.1495 ±0.0237  
+  *pws_T6                                       1.6465       2.5055      +0.8590 ±0.0642  
+  *pws_T8                                       2.2875       3.9715      +1.6840 ±0.1094  
+  *mana_T4                                      3.9025       3.9470      +0.0445 ±0.0189  
+  *mana_T6                                      6.1640       6.6695      +0.5055 ±0.0749  
+  *mana_T8                                      8.2180       9.9320      +1.7140 ±0.1630  
+  *m_extra_turns_taken                          0.4740       1.2375      +0.7635 ±0.1451  
+  *m_extra_turns_played                         0.1460       0.4135      +0.2675 ±0.0443  
+  *m_combo_assembled                            0.0125       0.0280      +0.0155 ±0.0082  
+   m_combo_wins                                 0.0025       0.0060      +0.0035 ±0.0040  
+   m_turn_cap_activations                       0.1520       0.4155      +0.2635 ±0.3896  
+  *game_turns                                  11.8135      10.7155      -1.0980 ±0.0578  
+  *m_opp_spells_total                          29.4020       6.7935     -22.6085 ±0.1957  
+  *m_opp_creatures_removed                     18.2180       1.6080     -16.6100 ±0.5535  
+  *turn_id                                     45.0610      37.4990      -7.5620 ±0.2636  
+  *m_tam_attacks                                0.1875       2.6420      +2.4545 ±0.0887  
+  *m_opps_eliminated_total                      0.9385       2.5130      +1.5745 ±0.0576  
+  *m_opp_crimes_total                           7.2170       2.9585      -4.2585 ±0.1560  
+  *m_blocks_total                               4.6265       0.3440      -4.2825 ±0.1577  
+  *m_pw_combat_damage_total                    12.0835       0.3140     -11.7695 ±0.4350  
+  *m_opps_elim_life                             0.8810       2.3555      +1.4745 ±0.0583  
+  *m_opp_attacks_on_pw                          8.5040       0.4380      -8.0660 ±0.3262  
+  *m_opp_attackers_total                       17.4385       0.4945     -16.9440 ±0.6868  
+  *m_opp_creatures_removed_combat               3.8660       0.2870      -3.5790 ±0.1459  
+  *game_over                                    0.1795       0.7540      +0.5745 ±0.0234  
+  *cleared_T12                                  0.1725       0.7420      +0.5695 ±0.0236  
