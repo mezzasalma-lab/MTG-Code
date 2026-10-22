@@ -59,9 +59,9 @@ Consequência de timing que a política usa e que **não** vem de ruling, e sim 
 | **bit-identidade:** vivo com as 4 chaves de motor = `False` == snapshot `b7c0e19` (sementes 5.000.000+i, impressão digital do resultado inteiro; campos novos ignorados) | **20.000 / 20.000 por modo, 0 diferenças** | `resumos/bitident_20000.txt` |
 | A/B pareado `antes` × `depois` + 5 variantes (`so_turnos_extras`, `so_pagamento`, `so_combo_mao`, `tetos_altos`, `perfil_playtester`), N = 2.000 e 10.000 × 2 modos | tabelas acima; mesmas direções em N = 2.000 | `resumos/ab_*.txt` |
 | descritivas da linha de base e do perfil, extras (tetos, combo, turnos extras) e comparações `tetos_altos` / `perfil_playtester` × `depois`, só dos brutos | usado | `resumos/resumo_descritivo_*`, `resumo_extra_*`, `comparacoes_entre_variantes.txt` |
-| regressão 20.000 × 2 modos, `depois` e `chave_desligada` | ver `resumos/regressao_20000.txt` (preenchido ao fim da cadeia; a conferência do `Traceback` é em `log_driver.txt`) | `resumos/regressao_20000.txt` |
-| determinismo: 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos | ver `resumos/determinismo.txt` | `resumos/determinismo.txt` |
-| reprodutibilidade (tabelas refeitas só dos brutos `.json.xz`, `cmp`) | ver `resumos/verificacao_reproducao.txt` | idem |
+| regressão 20.000 × 2 modos, `depois` e `chave_desligada` | **0 exceções, 0 carta acima do baralho, 0 campo negativo** nas 4 configurações; `Traceback` no `log_driver.txt`: 0 | `resumos/regressao_20000.txt` |
+| determinismo: 3 `PYTHONHASHSEED` (11, 22, 33) × 1.500 sementes × 2 modos, campo a campo no estado final, **chaves de motor ligadas** e **com o perfil `playtester` ligado** (as duas baterias) | **0 sementes divergentes** nas 4 combinações; controle positivo: com as `FLAGS` do perfil o resultado de 40 sementes muda, então a 2ª bateria não é vácua | `resumos/determinismo.txt` |
+| reprodutibilidade (tabelas refeitas só dos brutos `.json.xz`, `cmp`) | **10 de 10 saídas byte a byte iguais** (4 tabelas do A/B, 4 descritivas/extras, comparações entre variantes, índice). **`--tudo` (re-simulação de tudo, ~2 h) NÃO foi rodado nesta rodada** | `resumos/verificacao_reproducao.txt` |
 
 ## Mapa arquivo → o que é → status
 

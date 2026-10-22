@@ -1,0 +1,11 @@
+IGUAL  ab_2000.txt
+IGUAL  ab_10000.txt
+IGUAL  ab_2000_resiliencia.txt
+IGUAL  ab_10000_resiliencia.txt
+IGUAL  resumo_descritivo_depois_10000.txt
+IGUAL  resumo_extra_depois_10000.txt
+IGUAL  resumo_descritivo_perfil_playtester_10000.txt
+IGUAL  resumo_extra_perfil_playtester_10000.txt
+IGUAL  comparacoes_entre_variantes.txt
+IGUAL  indice_dados.md
+10/10 saidas byte a byte iguais
