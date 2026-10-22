@@ -93,5 +93,5 @@ for n in sorted(M.CARD_DB):
         print(f"  {n}: {orc[:140]!r}")
 print(f"  total de cartas com gatilho de terreno: {len(achou)} (o simulador declara N/A em `land_enters`; `audit_landfall_ordem.py` fica sem candidato)" if not achou else f"  total: {len(achou)} -> CONFERIR se o simulador trata (land_enters)")
 extra = [n for n in sorted(M.CARD_DB) if re.search(r"additional land", oraculo(n), re.I)]
-print(f"  cartas que mudam as jogadas de terreno por turno ('additional land'): {extra} -> tratadas por `extra_land_drops` -> `land_drops_available` (teste dirigido: tam-the-possibility-wubrg/testes/t_manual1.py, "Manual #1 T7")")
+print(f"  cartas que mudam as jogadas de terreno por turno ('additional land'): {extra} -> tratadas por `extra_land_drops` -> `land_drops_available` (teste dirigido: tam-the-possibility-wubrg/testes/t_manual1.py, 'Manual #1 T7')")
 print("\nFALHAS:", FALHAS or "nenhuma")
