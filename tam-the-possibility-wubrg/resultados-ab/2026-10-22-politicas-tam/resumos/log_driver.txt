@@ -334,3 +334,113 @@ LOTE N=10000 sementes 3000000..3009999, 12 turnos, modo padrao
   *m_counters_loyalty                         245.6746     248.4349      +2.7603 ±1.1397  
   *m_proliferates_total                        20.5906      20.7759      +0.1853 ±0.0785  
   *m_deathbringer_beasts                        0.1518       0.1440      -0.0078 ±0.0034  
+LOTE N=10000 sementes 3000000..3009999, 12 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8045 (80.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+   cleared_T8                                   0.0042       0.0041      -0.0001 ±0.0005  
+  *cleared_T10                                  0.0480       0.0496      +0.0016 ±0.0011  
+   self_lost                                    0.0043       0.0047      +0.0004 ±0.0006  
+   died_any                                     0.1294       0.1295      +0.0001 ±0.0009  
+  *m_pw_entered                                 6.4613       6.5266      +0.0653 ±0.0285  
+  *pws_T4                                       0.7130       0.7137      +0.0007 ±0.0005  
+   pws_T6                                       1.6337       1.6352      +0.0015 ±0.0016  
+   pws_T8                                       2.2250       2.2292      +0.0042 ±0.0050  
+   mana_T4                                      3.9073       3.9069      -0.0004 ±0.0006  
+   mana_T6                                      6.2197       6.2188      -0.0009 ±0.0021  
+   mana_T8                                      8.1792       8.1834      +0.0042 ±0.0050  
+  *m_tamiyo_combat_draws                        0.2925       0.2979      +0.0054 ±0.0036  
+  *m_attack_turns                               4.3246       4.4080      +0.0834 ±0.0083  
+  *len_m                                       81.2685      81.5755      +0.3070 ±0.0540  
+  *m_attacks_total                             11.7819      12.0221      +0.2402 ±0.0529  
+  *m_saheeli_mana_copy_extra                    0.0399       0.0783      +0.0384 ±0.0100  
+  *m_saheeli_mana_copies                        0.0266       0.0361      +0.0095 ±0.0028  
+  *m_combat_damage_total                       45.5635      46.3498      +0.7863 ±0.2517  
+  *turn_id                                     45.2457      45.2104      -0.0353 ±0.0118  
+  *m_pw_act_by_Saheeli, Sublime Artificer       0.4034       0.4360      +0.0326 ±0.0112  
+  *m_opp_damage_total                          57.6983      58.4363      +0.7380 ±0.2570  
+  *m_dihada_lifelink_total                      0.0048       0.0198      +0.0150 ±0.0053  
+  *m_life_gained_dihada_lifelink                0.0048       0.0198      +0.0150 ±0.0053  
+  *m_opp_spells_total                          29.5581      29.5335      -0.0246 ±0.0089  
+  *m_blink_by_aminatou                          0.3827       0.3982      +0.0155 ±0.0058  
+  *m_opps_eliminated_total                      0.9153       0.9260      +0.0107 ±0.0041  
+
+[so_tam_ataca - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8381 (83.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+   cleared_T8                                   0.0042       0.0044      +0.0002 ±0.0004  
+  *cleared_T10                                  0.0480       0.0492      +0.0012 ±0.0008  
+   self_lost                                    0.0043       0.0043      +0.0000 ±0.0003  
+   died_any                                     0.1294       0.1291      -0.0003 ±0.0003  
+   m_pw_entered                                 6.4613       6.4636      +0.0023 ±0.0067  
+   pws_T6                                       1.6337       1.6342      +0.0005 ±0.0008  
+   pws_T8                                       2.2250       2.2266      +0.0016 ±0.0025  
+   mana_T8                                      8.1792       8.1807      +0.0015 ±0.0022  
+  *m_tamiyo_combat_draws                        0.2925       0.2970      +0.0045 ±0.0023  
+  *m_attack_turns                               4.3246       4.4073      +0.0827 ±0.0066  
+  *m_attacks_total                             11.7819      11.9946      +0.2127 ±0.0279  
+  *len_m                                       81.2685      81.4641      +0.1956 ±0.0270  
+  *m_combat_damage_total                       45.5635      46.0949      +0.5314 ±0.1080  
+  *m_opp_damage_total                          57.6983      58.1766      +0.4783 ±0.1119  
+  *m_opp_spells_total                          29.5581      29.5356      -0.0225 ±0.0053  
+  *turn_id                                     45.2457      45.2171      -0.0286 ±0.0071  
+  *len_attackers_this_turn                      3.4804       3.5600      +0.0796 ±0.0212  
+  *m_opps_elim_life                             0.8582       0.8670      +0.0088 ±0.0026  
+  *m_opps_eliminated_total                      0.9153       0.9238      +0.0085 ±0.0026  
+  *len_dmg_by_source                            1.5452       1.5526      +0.0074 ±0.0023  
+  *m_exalted_triggers                           0.5165       0.5270      +0.0105 ±0.0035  
+  *m_dihada_lifelink_total                      0.0048       0.0196      +0.0148 ±0.0053  
+  *m_life_gained_dihada_lifelink                0.0048       0.0196      +0.0148 ±0.0053  
+
+[so_pisca_mana - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9860 (98.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+   cleared_T10                                  0.0480       0.0480      +0.0000 ±0.0003  
+   died_any                                     0.1294       0.1296      +0.0002 ±0.0007  
+   m_pw_entered                                 6.4613       6.4663      +0.0050 ±0.0098  
+  *pws_T4                                       0.7130       0.7137      +0.0007 ±0.0005  
+   pws_T6                                       1.6337       1.6348      +0.0011 ±0.0013  
+   pws_T8                                       2.2250       2.2268      +0.0018 ±0.0026  
+   mana_T4                                      3.9073       3.9069      -0.0004 ±0.0006  
+   mana_T6                                      6.2197       6.2193      -0.0004 ±0.0018  
+   mana_T8                                      8.1792       8.1801      +0.0009 ±0.0032  
+   m_tamiyo_combat_draws                        0.2925       0.2938      +0.0013 ±0.0016  
+  *m_blink_by_aminatou                          0.3827       0.3958      +0.0131 ±0.0046  
+  *m_blinks_total                               0.9677       0.9869      +0.0192 ±0.0078  
+  *hand_T5                                      4.6622       4.6600      -0.0022 ±0.0011  
+  *creatures_T8                                 3.8454       3.8551      +0.0097 ±0.0058  
+  *hand_T4                                      5.3397       5.3385      -0.0012 ±0.0008  
+  *hand_T8                                      3.1789       3.1745      -0.0044 ±0.0029  
+  *m_attacks_total                             11.7819      11.8096      +0.0277 ±0.0187  
+  *lands_T6                                     5.0982       5.0971      -0.0011 ±0.0008  
+  *m_combat_damage_total                       45.5635      45.6456      +0.0821 ±0.0606  
+  *pw_types_T4                                  0.7078       0.7085      +0.0007 ±0.0005  
+  *len_attackers_this_turn                      3.4804       3.4950      +0.0146 ±0.0110  
+  *m_delayed_returns                            0.1281       0.1289      +0.0008 ±0.0006  
+  *first_empower_turn__ate_T6                   0.5045       0.5054      +0.0009 ±0.0007  
+  *len_m                                       81.2685      81.3076      +0.0391 ±0.0309  
+
+[so_saheeli_criatura - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9725 (97.2%)
+   campo                                          base     variante dif. pareada (IC95%)
+   cleared_T8                                   0.0042       0.0039      -0.0003 ±0.0003  
+   cleared_T10                                  0.0480       0.0484      +0.0004 ±0.0008  
+   self_lost                                    0.0043       0.0047      +0.0004 ±0.0005  
+   died_any                                     0.1294       0.1296      +0.0002 ±0.0003  
+  *m_pw_entered                                 6.4613       6.5220      +0.0607 ±0.0270  
+   pws_T6                                       1.6337       1.6337      +0.0000 ±0.0005  
+   pws_T8                                       2.2250       2.2257      +0.0007 ±0.0035  
+   mana_T6                                      6.2197       6.2192      -0.0005 ±0.0010  
+   mana_T8                                      8.1792       8.1805      +0.0013 ±0.0033  
+   m_tamiyo_combat_draws                        0.2925       0.2921      -0.0004 ±0.0022  
+  *m_saheeli_mana_copy_extra                    0.0399       0.0773      +0.0374 ±0.0097  
+  *m_saheeli_mana_copies                        0.0266       0.0359      +0.0093 ±0.0027  
+  *m_pw_act_by_Saheeli, Sublime Artificer       0.4034       0.4362      +0.0328 ±0.0110  
+  *len_activations                              9.6874       9.7160      +0.0286 ±0.0118  
+  *m_loyalty_counters_by_enters                28.2183      28.5062      +0.2879 ±0.1323  
+  *len_m                                       81.2685      81.3435      +0.0750 ±0.0347  
+  *m_blinks_total                               0.9677       1.0581      +0.0904 ±0.0438  
+  *m_prolif_by_flux_channeler                   0.9963       1.0410      +0.0447 ±0.0218  
+  *m_blink_by_kitten                            0.5850       0.6733      +0.0883 ±0.0432  
+  *m_kitten_blinks                              0.5850       0.6733      +0.0883 ±0.0432  
+  *m_empower_loyalty                           11.0186      11.2493      +0.2307 ±0.1204  
+  *m_empower_events                             2.4989       2.5398      +0.0409 ±0.0219  
+  *m_loyalty_counters_by_empower_way           10.3956      10.6163      +0.2207 ±0.1187  
+  *next_uid                                    40.6429      40.8001      +0.1572 ±0.0845  
