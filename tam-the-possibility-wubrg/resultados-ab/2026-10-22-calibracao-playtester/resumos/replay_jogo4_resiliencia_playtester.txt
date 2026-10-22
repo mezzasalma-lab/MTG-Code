@@ -1,0 +1,12 @@
+Replay do goldfish manual #4 | modo resiliencia | perfil playtester | N=300 ordens do resto do baralho
+turno | planeswalkers: mediana [Q1-Q3] | usuario | P(sim >= usuario)
+  T 1 |  0.0 [0-0] | 0 | 100.0%
+  T 2 |  0.0 [0-0] | 0 | 100.0%
+  T 3 |  0.0 [0-0] | 0 | 100.0%
+  T 4 |  1.0 [1-1] | 0 | 100.0%
+  T 5 |  1.0 [1-1] | 1 |  80.7%
+  T 6 |  2.0 [1-2] | 1 |  96.3%
+  T 7 |  3.0 [2-4] | 3 |  65.0%
+  T 8 |  4.0 [3-4] | 3 |  81.7%
+  T 9 |  4.0 [3-4] | 4 |  60.7%
+Tam conjurada: mediana T3.0 (300/300 partidas)

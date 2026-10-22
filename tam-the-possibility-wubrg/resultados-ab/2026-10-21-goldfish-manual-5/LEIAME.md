@@ -28,7 +28,7 @@ No #1 ele pediu *"me pergunte qq dúvida antes de começar a compilar qq coisa"*
 | `dados/mensagem_usuario_original.txt` | a mensagem inteira como chegou (texto + JSON + a nota final), extraída do transcript da sessão, sem retocar | bruto, intocado |
 | `dados/goldfish_manual_5_bruto.json` | só o JSON do log: 11 blocos (11, 5, 8, 14, 14, 20, 28, 29, 34, 59, 128 eventos), cada evento = movimento de carta/contador/virada no playtester | bruto, intocado |
 | `orquestracao/linha_do_tempo.py` → `resumos/linha_do_tempo.md`; `orquestracao/eventos_compactos.py` → `resumos/eventos_compactos.txt`; `orquestracao/deltas_lealdade.py` → `resumos/deltas_lealdade.txt` | resumos por turno e por evento e a sequência de mudanças de lealdade, **só do bruto** | usado |
-| `orquestracao/replay_manual_5.py`, `replay_stats5.py` → `resumos/replay_*` | o simulador jogando as MESMAS 14+ cartas na MESMA ordem | usado |
+| `orquestracao/replay_manual_5.py` → `resumos/replay_semente_{1,2,3}.txt` (+ `../2026-10-22-calibracao-playtester/orquestracao/replay_perfil.py`, que faz o replay em 300 ordens) | o simulador jogando as MESMAS cartas na MESMA ordem | usado |
 | `testes/t_manual5.py` (na pasta do deck) | os testes das jogadas dele pelas regras | ver abaixo |
 
 O oráculo de **Ertai's Scorn, Goblin Wizard e Eldrazi Angel** (cartas/fichas de oponente do T5, T6 e T10) entrou em `scryfall-cache/oracle-cache.json` (Regra 15); Loran of the Third Path, Damning Verdict, Promise of Loyalty já estavam.
@@ -77,7 +77,17 @@ O log **não tem vida de oponente**: não há "vitória" nem dano registrado; s�
 
 ## O simulador jogando as mesmas cartas (não é validação: a IA joga diferente do usuário)
 
-@@REPLAY@@
+Mão de 5 (a do log depois do mulligan) e as compras na ordem do log (as que ficaram com ele, inclusive as de habilidade), resto do baralho em 300 ordens (`orquestracao/replay_manual_5.py`; o replay em escala e a comparação com os modos de oponente estão em `../2026-10-22-calibracao-playtester/` (`replay_perfil.py`, `resumos/replay_jogo5_*`); `resumos/replay_semente_{1,2,3}.txt` mostram 3 partidas inteiras do modo padrão). Planeswalkers em campo no fim de cada turno (mediana de 300; entre parênteses P(simulador ≥ usuário)):
+
+| turno | T4 | T5 | T6 | T7 | T8 | T9 | T10 |
+|---|---|---|---|---|---|---|---|
+| **usuário** | 1 | 2 | 2 | 2 | 4 | 5 | 7 |
+| simulador, modo padrão (oponente passivo) | 1 | 2 | 4 | 7 | 11 | 13 | 16 |
+| simulador, resiliência de sempre | 1 (62%) | 1 (19%) | 1 (24%) | 1 (36%) | 2 (24%) | 3 (21%) | 3 (15%) |
+| **simulador, resiliência com o perfil `playtester`** | 1 (93%) | 2 (67%) | 2 (66%) | 4 (80%) | 4 (52%) | 8 (86%) | 10 (80%) |
+| Tam em campo (mediana) | usuário T3 | | | | | | simulador T3 (todos os modos) |
+
+**Leitura (limites):** (1) o **modo padrão** corre muito além do usuário (16 contra 7 no T10): a IA do simulador joga todas as cartas que o mana paga e usa as compras de habilidade na hora; o usuário jogou com 7 terrenos, **teve a Tam anulada no T7**, deixou a Necromancer na mão no T4 e, pelas palavras dele, esqueceu muitos gatilhos do Ichormoon. (2) A **resiliência de sempre** fica abaixo do usuário (mediana 3 contra 7 no T10): é uma mesa mais hostil do que a do playtester dele (ver a calibração). (3) Com o **perfil `playtester`** a trajetória do simulador **acompanha a do usuário nos T4–T8** (medianas 1/2/2/4/4 contra 1/2/2/2/4) e fica **acima** nos T9–T10 (8 e 10 contra 5 e 7): coerente com o que ele disse (esqueceu gatilhos) e com os erros de regra do relato (Teferi TA `−1` ×2, Necromancer +1 em vez de +3). (4) **Isto não valida o simulador**: é 1 jogo humano contra 300 ordens do resto do baralho, e o perfil foi ajustado nas taxas de oponente dos 5 logs, inclusive este.
 
 ## Escopo (Regra #7)
 

@@ -5,3 +5,6 @@ ANTES (snapshot): cartas na biblioteca=99 | distintas=99 | desconhecidas (fora d
    200 partidas modo padrao: excecoes=0
    200 partidas modo resiliencia: excecoes=0
 chaves da correcao no arquivo vivo: EXTRA_TURNS_STACK=True, VIVID_LAST=True, SIBLING_FIRST=True, COMBO_CAST_PAYOFF_FROM_HAND=True
+Bit-identidade: arquivo vivo com as chaves {'EXTRA_TURNS_STACK': False, 'VIVID_LAST': False, 'SIBLING_FIRST': False, 'COMBO_CAST_PAYOFF_FROM_HAND': False} == snapshot codigo/tam_goldfish_v1_ANTES_b7c0e19.py; N=20000 por modo, sementes 5_000_000+i; impressao digital do resultado INTEIRO (campos novos ignorados: ['m_combo_payoff_cast_from_hand', 'm_opp_wipe_nova', 'm_opp_wipe_split_up', 'm_opp_wipe_verdict', 'm_opp_wipe_promise', 'm_opp_vex_draws'])
+padrao: N=20000 partidas diferentes=0 -> BIT-IDENTICO
+resiliencia: N=20000 partidas diferentes=0 -> BIT-IDENTICO
