@@ -1,0 +1,5 @@
+Determinismo entre processos (varredura-2026-10-05/scripts/det_check.sh tam-the-possibility-wubrg tam_goldfish_v1.py 12 1500): 3 PYTHONHASHSEED (11, 22, 33) x 1.500 sementes (1.000.000+i) x 2 modos, campo a campo, estado final.
+== chaves da rodada 2 LIGADAS (padrao do arquivo vivo; == codigo/tam_goldfish_v1_DEPOIS_rodada2.py)
+tam-the-possibility-wubrg  padrao       N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
+tam-the-possibility-wubrg  resiliencia  N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
+== perfil playtester LIGADO (OPP_PLAYTESTER + OPP_CARD_MIX, FLAGS)
