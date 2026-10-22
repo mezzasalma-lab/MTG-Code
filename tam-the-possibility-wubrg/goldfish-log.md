@@ -4,9 +4,46 @@
 
 > **Atualização 2026-10-21 (§6): goldfish manual #2 do usuário + Saheeli −2 como cópia de artefato de mana** (o usuário jogou no T6 o Servo copiando o Fellwar Stone para pagar o Teferi; o simulador só copiava P/T de criatura; implementado e validado: bit-idêntico com a chave desligada em 20.000 × 2 modos, a cópia dispara em 2,9% / 2,0% das partidas e a linha de base muda ≤ 0,1 ponto): [`resultados-ab/2026-10-20-goldfish-manual-2/`](resultados-ab/2026-10-20-goldfish-manual-2/LEIAME.md) e [`resultados-ab/2026-10-21-saheeli-copia-de-artefato/`](resultados-ab/2026-10-21-saheeli-copia-de-artefato/LEIAME.md). **Goldfish manual #4** (2026-10-21; Nissa, Teferi TA, Ajani, Garruk e Gauntlet; nenhuma regra mudou; erros de regra do relato: Teferi `+1` ×3 e `−1` ×2, Ajani `−2` com 7 compras (a regra dá 8); a Elspeth foi anulada pela Vex): [`resultados-ab/2026-10-21-goldfish-manual-4/`](resultados-ab/2026-10-21-goldfish-manual-4/LEIAME.md). **Goldfish manual #3** (2026-10-21; nenhuma regra mudou; a diferença para o simulador é a convenção de cor da Exotic Orchard: com os terrenos de oponente produzindo as 5 cores a partir do T2 o simulador reproduz a mediana do usuário, 1 / 3 / 4 planeswalkers em T5 / T6 / T7): [`resultados-ab/2026-10-21-goldfish-manual-3/`](resultados-ab/2026-10-21-goldfish-manual-3/LEIAME.md).
 
+> **Atualização 2026-10-22 (§1 NOVO, §9, §10): o simulador mudou depois de 5 goldfish do usuário e a linha de base do modo padrão foi refeita.** Tam atacando (+3,7 pontos de mesa limpa até T10 no padrão, ~0 na resiliência), piscar de mana virado, Saheeli copiando criatura de mana / Staff, turnos extras empilhados, ordem de pagamento do mana "vivid", combo Orrery+Tezzeret+Chain Veil fechando com o pagamento na mão, e o perfil `playtester` da resiliência (calibrado nas taxas dos 5 logs). **O §1 antigo (2026-10-19) deixou de valer no modo padrão** e foi mantido como §1b. Pastas: [`resultados-ab/2026-10-22-politicas-tam/`](resultados-ab/2026-10-22-politicas-tam/LEIAME.md) (rodada 1), [`resultados-ab/2026-10-22-rodada2-motor-e-perfil/`](resultados-ab/2026-10-22-rodada2-motor-e-perfil/LEIAME.md) (rodada 2 e linha de base nova), [`resultados-ab/2026-10-22-calibracao-playtester/`](resultados-ab/2026-10-22-calibracao-playtester/LEIAME.md) (perfil) e [`resultados-ab/2026-10-21-goldfish-manual-5/`](resultados-ab/2026-10-21-goldfish-manual-5/LEIAME.md) (goldfish #5).
+
 > **Arquivo dos dados (Regra #8):** [`resultados-ab/2026-10-19-simulador-baseline/`](resultados-ab/2026-10-19-simulador-baseline/LEIAME.md) (brutos `.json.xz`, regressão, conservação, bit-identidade, determinismo, como reproduzir cada tabela) e [`resultados-ab/2026-10-19-goldfish-manual-1/`](resultados-ab/2026-10-19-goldfish-manual-1/LEIAME.md) (o goldfish manual do usuário, compilado). Auditoria de oráculo: [`checklist-oraculo.md`](checklist-oraculo.md). Simulador: `tam_goldfish_v1.py`; testes: `python3 testes/rodar_testes.py` (146).
 
-## 1. Linha de base (2026-10-19): a `lista.md` COMO ESTÁ, nenhuma troca aplicada
+## 1. Linha de base ATUAL (2026-10-22): a `lista.md` COMO ESTÁ, nenhuma troca aplicada, simulador da rodada 2
+
+Mesmo pedido e mesma configuração do §1b (12 turnos, mesa de 4, 3 oponentes de 40 de vida, N = 10.000 por modo, sementes 3.000.000+i, compra no T1; IC95%), mas com o simulador de hoje (`tam_goldfish_v1.py` == `resultados-ab/2026-10-22-rodada2-motor-e-perfil/codigo/tam_goldfish_v1_DEPOIS_rodada2.py`). Tabelas só dos brutos: `resumos/resumo_descritivo_depois_10000.txt` e `resumo_descritivo_perfil_playtester_10000.txt` da pasta da rodada 2. A coluna nova é a **resiliência com o perfil `playtester`**: o oponente do Archidekt que o usuário enfrenta nos goldfish (1 criatura de vez em quando, ~0,28 magia por turno dele, efeito em massa em 4 variantes, anulação que deixa comprar); **não é a mesa de 3 humanos dele**.
+
+| métrica | modo padrão (oponente passivo, todo atacante conecta) | resiliência de sempre (arquétipos do Prismatic Bridge) | resiliência com perfil `playtester` |
+|---|---|---|---|
+| mesa limpa até T8 / T9 / T10 / T12 | 15,4% ± 0,7 / 43,1% / **68,7% ± 0,9** / 90,3% ± 0,6 | 0,4% / 1,8% / **5,0% ± 0,4** / 17,8% ± 0,7 | 5,8% ± 0,5 / 19,4% / **40,2% ± 1,0** / 73,8% ± 0,9 |
+| turno da mesa limpa (entre as que limparam) | mediana **T10** (Q1–Q3: T9–T10) | mediana T11 (T10–T12) | mediana T10 (T9–T11) |
+| 1º oponente fora até T6 / T8 | 4,5% / 64,5% | 0,2% / 6,8% | 1,7% / 34,2% |
+| Tam conjurada até T3 / T4 / T6 | 81,0% / 95,5% / 98,8% | 81,0% / 95,2% / 98,5% | 81,0% / 95,4% / 98,8% |
+| 1º planeswalker (de carta) até T3 / T4 | 7,4% / 56,8% | 6,6% / 45,8% | 7,2% / 52,9% |
+| planeswalkers em campo (média) no fim de T4 / T6 / T8 / T10 | 0,94 / 3,15 / 5,39 / 6,45 | 0,72 / 1,64 / 2,24 / 2,81 | 0,86 / 2,55 / 4,13 / 5,38 |
+| mana disponível no início de T4 / T6 / T8 (média) | 3,99 / 7,14 / 11,43 | 3,91 / 6,22 / 8,18 | 3,96 / 6,78 / 10,14 |
+| entradas de planeswalker de carta por partida / planeswalkers que morrem | 9,9 / 1,2 | 6,6 / 2,8 | 9,9 / 1,7 |
+| ultimates usadas por partida; 1ª ultimate até T8 | 5,0; 71,8% | 1,9; 16,6% | 4,8; 55,9% |
+| ativações da Tam por partida; 1ª ativação até T6 / T8 | **1,09**; 4,4% / 29,3% | 0,58; 1,3% / 8,2% | 1,10; 3,3% / 22,1% |
+| proliferates por partida (total / Gauntlet `0` / Tam / Flux Channeler / Vraska) | 19,4 / 8,4 / 6,1 / 2,7 / 1,2 | 7,0 / 1,9 / 2,4 / 1,0 / 0,7 | 17,4 / 7,0 / 5,7 / 2,5 / 1,2 |
+| combo Orrery + Tezzeret + Chain Veil: montado / **fecha** (agora com o pagamento na mão) | 2,9% / 1,0% | 1,0% / 0,2% | 2,9% / 0,8% |
+| eu cheguei a vida ≤ 0 até T12 (a partida continua, convenção do repositório) | — | **12,9%** (até T8: 4,1%) | 0,0% |
+| remoções / wipes / anulações / descartes do oponente por partida | — | 2,2 / 1,2 / 2,3 / 1,9 | 0,9 / 0,5 / 0,9 / 0,8 |
+| deck-out (comprar com a biblioteca vazia) | 0,9% | 0,4% | 1,3% |
+
+**O que mudou em relação ao §1b (todo o resto do §1b sobre política continua valendo, salvo o que está dito aqui):**
+- **Modo padrão: +3,5 pontos de mesa limpa até T10 (64,7% → 68,7%)**, quase tudo da **Tam atacando** (rodada 1: ela ataca em 99,7% das partidas, ~5 ataques por partida, e a Tamiyo compra +0,11 carta por partida; custo: 0,09 ativação a menos da Tam). A 2ª rodada (turnos extras, pagamento, combo da mão) soma décimos de ponto, dentro do ruído, exceto os turnos extras jogados (0,434 → 0,482 por partida).
+- **Resiliência de sempre: praticamente igual** (mesa limpa até T10 4,8% → 5,0%): com criatura de oponente em campo a Tam fica em casa de bloqueadora.
+- **A política (c) do §1b mudou:** o combo Orrery + Tezzeret + Chain Veil **conjura o pagamento da mão** (All Will Be One, Sanctum Lurker) e fecha; fechava em 0,82% e agora em 0,98% (padrão); a (b) também mudou na parte de ataque: a Tam deixa de ficar parada quando não ativa.
+- **Perfil `playtester`:** a mesa do playtester é **muito mais quieta** do que a resiliência de sempre (24 cartas de oponente em 31 turnos do usuário contra ~9 interações + ~8,5 criaturas por partida na de sempre), e por isso a mesa limpa até T10 vai de 5,0% para 40,2%. O modo de sempre continua sendo a referência para uma mesa hostil; o `playtester` é a referência para "o que o bot do Archidekt faz".
+
+**Limites (Regra #7):** (1) nenhuma das três colunas é a taxa de vitória; (2) o perfil foi **ajustado** nas taxas dos mesmos 5 logs em que é comparado (a tabela de replay do #3, #4 e #5 não é validação independente); (3) o IC95% da taxa de eventos de oponente dos logs é largo (0,50–1,15 por turno); (4) uma só família de sementes por lote.
+
+## 1b. Linha de base de 2026-10-19 (**SUPERADA no modo padrão**; mantida como registro)
+
+> O simulador do §1b é o commit `e265cb5`. No modo padrão a Tam não atacava; hoje ataca (§1). A coluna de resiliência continua válida como referência da resiliência de sempre (4,8% → 5,0% hoje). Os números abaixo não foram refeitos.
+
+### (tabela de 2026-10-19)
+
 
 Pedido: *"crie o simulador do deck e primeiro rode as simulações para ver como o deck assim roda!"*. 12 turnos, mesa de 4 (3 oponentes, 40 de vida), N = 10.000 por modo (sementes 3.000.000+i; o lote de 2.000 com sementes 1.000.000+i está em `resumos/`). Intervalos = IC95%. **Compra no T1** (Commander multijogador, confirmado pelo usuário).
 
@@ -48,6 +85,8 @@ Resumo (detalhe em `resultados-ab/2026-10-19-goldfish-manual-1/LEIAME.md`): as 9
 
 ## 5. Pendências e perguntas
 
+> **Atualização 2026-10-22: o estado das pendências está no §10.** Os itens abaixo são o registro de 2026-10-19/20; o item 2(b) e a política (c) do §1b mudaram (Tam ataca; combo fecha com pagamento da mão).
+
 1. **Nenhuma troca foi aplicada.** O pacote de 6 trocas da avaliação do Moxfield continua só proposta; medir o efeito dele no simulador exige implementar as cartas candidatas (Swords to Plowshares, Oath of Ajani, Doubling Season, Commodore Guff, Karn's Bastion, Mutational Advantage), e só faço isso se você pedir.
 2. **Política para discutir:** (a) a ultimate que mata o planeswalker (Vronos `-7` com 7) é decisão do simulador; no seu goldfish você esperou a Vronos chegar a 12. (b) a Tam ativa pouco no simulador (1,18 por partida), e no seu goldfish ela nem ativou (os proliferates vieram do Gauntlet `0`). Qual é a sua regra de jogo para cada uma?
 3. **Compra no T1 nos outros decks: RESOLVIDO em 2026-10-20.** Varredura por execução nos 20 simuladores (`varredura-2026-10-05/scripts/audit_compra_t1.py`): só o Mothman pulava; corrigido (`../wise-mothman-sultai/resultados-ab/2026-10-20-compra-no-t1/`); hoje 20 de 20 compram.
@@ -75,3 +114,34 @@ Pasta: `resultados-ab/2026-10-21-goldfish-manual-4/` (`LEIAME.md`: log bruto, fo
 **Replay (300 ordens, mesmas 18 cartas, T1 a T9, planeswalkers no fim de T4 / T5 / T6 / T7 / T8 / T9, mediana):** usuário 0 / 1 / 1 / 3 / 3 / 4; simulador padrão **1 / 1 / 2 / 4 / 4 / 4**; resiliência 1 / 0 / 1 / 1 / 2 / 2. A convenção de cor de terreno de oponente (Orchard) **não pesa nesta mão** (a variante com 5 cores dá os mesmos números).
 **Diferenças de política (nenhuma alterada):** o simulador paga 4 de vida nos dois `{G/P}` da Nissa já no T4 (o usuário pagou 2 no T5); escolhe o alvo do contador do Gauntlet pelo valor do `+1` (o usuário pôs na Nissa). **Não modelado (estado de oponente):** a carta que a Vex deixa comprar; Split Up distingue viradas × desviradas (o simulador destrói todas).
 **Não comparado:** vida e dano de oponente; qual mana pagou o quê. **O Twilight Mire e o Ketria Triome descartados no T6** são lidos (releitura de 2026-10-22, inferência não confirmada) como o descarte do **Junji, the Midnight Sky** (*"When Junji dies... each opponent discards two cards and loses 2 life"*; 2 cartas, logo depois do Junji no log; mão de 5, então não é o limite de 7).
+
+## 9. Goldfish manual #5 (2026-10-21/22)
+
+Log do playtester do Archidekt: 11 blocos (T1–T11), `lista.md` sem troca, sem foto. Pasta: [`resultados-ab/2026-10-21-goldfish-manual-5/`](resultados-ab/2026-10-21-goldfish-manual-5/LEIAME.md). O usuário comentou: *"Nesse esqueci muitos gatilhos da Ichormoon, mas depois do 3o emblema no campo fica impossível perder proliferando e jogando turnos extras!"*.
+
+- **O jogo:** mão de 5 depois de mulligan, só 7 terrenos jogados no jogo todo (o desenvolvimento veio do Bloom Tender e dos planeswalkers), Tam no T3, **anulada no T7 pela Ertai's Scorn** (imposto 2), 2 planeswalkers no T6, 4 no T8, 5 no T9, 7 no T10, **4 turnos extras no T11** pelos `−12` do Gauntlet e 3 emblemas (Teferi, Hero; Teferi, Temporal Archmage; Tamiyo); lealdades até 16 (Vronos).
+- **Oito dúvidas NÃO respondidas** (o usuário mandou *"Termine tudo que falta!"*); cada uma ficou marcada no LEIAME com a premissa usada (mulligan até 5 com 2 cartas no fundo; Necromancer deixada na mão no T4 por escolha; Tam anulada pela Ertai's Scorn; cliques desfeitos; passo do contador da interface; Teferi TA `−1` ×2 por engano; Necromancer +1 em vez de +3; `0: Proliferate` do Gauntlet não registrado).
+- **Erros de regra do relato** (não do simulador): Teferi, Temporal Archmage `−1` ×2 no T10 (só uma ativação por turno); Necromancer com +1 por planeswalker quando 3 criaturas morreram (a regra dá +3).
+- **15 testes dirigidos** (`testes/t_manual5.py`): 13 passaram de primeira; **2 revelaram lacunas reais do simulador**, não do usuário: (1) **turnos extras eram booleano** (dois `−12` no mesmo turno rendiam 1 turno extra); (2) **ordem de pagamento** (o Bloom Tender era tocado com 2 cores antes da Pyromancer, e o Watery Grave era desperdiçado em vez da 2ª unidade do filtro). Ambas corrigidas na rodada 2 (`EXTRA_TURNS_STACK`, `VIVID_LAST`, `SIBLING_FIRST`).
+- **Replay** (mesma mão, mesmas compras, 300 ordens do resto do baralho; planeswalkers no fim de T10): usuário 7; padrão 16; resiliência de sempre 3; **resiliência com `playtester` 10** (P(simulador ≥ usuário) de 52% a 93% nos turnos T4–T10). Não é validação: o perfil foi ajustado nos mesmos logs.
+- **O que o log não tem:** vida e dano de oponente; a ordem exata das ~130 ações do T11; quais proliferates e gatilhos do Gauntlet ele fez.
+
+## 10. Estado das pendências em 2026-10-22 (substitui o §5 onde diferir)
+
+**Resolvido nesta rodada** (cada item com a pasta que o fecha):
+1. **Tam atacando** e a política de ataque → rodada 1 (`TAM_ATTACKS`).
+2. **Aminatou `−1` e Displacer Kitten em permanente de mana virado** → rodada 1 (`BLINK_UNTAP_MANA`); rara no baralho todo (0,74% / 0,26% das partidas).
+3. **Saheeli copiando criatura de mana, Flux Channeler, Displacer Kitten e o Staff of Compleation** → rodada 1 (`SAHEELI_COPY_CREATURES`).
+4. **Turnos extras empilhados, ordem de pagamento, combo com o pagamento na mão** → rodada 2.
+5. **Tetos de 80 ativações / 60 magias por turno:** medidos; apertam em 0,38% / 0% das partidas (padrão) e 0,14% / 0% (resiliência); subir para 400 / 300 muda 0,4% das partidas e a mesa limpa até T10 em −0,07 ± 0,05 pontos. Ficam em 80 / 60.
+6. **Resiliência calibrada com os logs do usuário** → perfil `playtester` (`resultados-ab/2026-10-22-calibracao-playtester/`).
+7. **Os 2 descartes do T6 do #4, sem explicação:** explicados como o gatilho de morte do **Junji** ("each opponent discards two cards"), por **inferência** (os 2 descartes aparecem logo depois do Junji; ver §8 e o LEIAME do #4).
+8. **Regra #10 adaptada ao Tam:** `varredura-2026-10-05/scripts/audit_tam_terrenos.py` (36 terrenos: entrada virada/desvirada contra o oráculo, alvo do fetch contra os subtipos do oráculo, terreno ≠ magia, landfall): 0 falhas.
+
+**Segue aberto** (declarado, nenhum medido como importante):
+1. **Nenhuma troca de carta aplicada** (o pacote de 6 trocas do Moxfield é só proposta; item 1 do §5).
+2. **Dorks de mana (Birds, Bloom Tender, Hierarchs) e a Kiora não atacam** por decisão de política (o `{T}` de mana vale mais); a Tam não tem lógica de "ficar em casa" além de: na resiliência, só ataca se nenhum oponente tem criatura com poder.
+3. **Piscar da Chain Veil virada** e de criatura de mana (Kitten pisca só não-terreno e a criatura volta com doença de invocação) não entram; **cópias da Saheeli de Whale, Peacemaker, Kiora, Oathkeeper e Lurker**: a política nunca as escolhe.
+4. **Perfil `playtester`:** ajustado e comparado nos mesmos 5 logs; **não é a mesa de 3 humanos do usuário**; o alvo da remoção do oponente não foi calibrado (3 das 5 remoções observadas miram artefato/encantamento; a resiliência de sempre mira planeswalker em 60%); a categoria de cada carta de oponente é minha (pelo oráculo).
+5. **As 8 dúvidas do #5** (§9) seguem sem resposta do usuário.
+6. **Ordem de pagamento:** só a classe "mana vivid" e "unidade irmã de fonte já tocada" foi tratada; outras fontes cujo valor depende da ordem (filtros que dependem de cor já no pool, terrenos de 2 cores tocados antes de um "any color" mais barato) não foram varridas.
