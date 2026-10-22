@@ -1,7 +1,7 @@
 # Backup versionado da skill `mtg-commander`
 
 Cópia de segurança da skill **`mtg-commander`** (especialista em Commander/EDH, com as regras permanentes do usuário e o protocolo de avaliação de cartas/simuladores).
-Criada em **2026-09-30**; atualizada em **2026-10-05** (Regra #10) e em **2026-10-07** (ordem terreno × payoff de landfall). Regra de manutenção: Regra #9 do `CLAUDE.md` (raiz do repositório).
+Criada em **2026-09-30**; atualizada em **2026-10-05** (Regra #10), em **2026-10-07** (ordem terreno × payoff de landfall) e em **2026-10-22** (classes novas do Tam). Regra de manutenção: Regra #9 do `CLAUDE.md` (raiz do repositório).
 
 > **Este backup é a cópia durável.** A pasta viva da skill (`/root/.claude/skills/synced/<id>/mtg-commander/`) é sincronizada com a conta do usuário, mas
 > **alterações feitas nela durante uma sessão não são gravadas na conta** e o próximo sync pode sobrescrevê-las. Para a skill da conta refletir a versão
@@ -53,6 +53,12 @@ Estado anterior da skill (2026-09-26): `SKILL.md` + 3 referências. Agora:
 - `CLAUDE.md` (e o espelho `references/CLAUDE-repositorio.md`): Regra #10 passa a listar `audit_compra_t1.py` (por **execução**: a queda da biblioteca entre `turns=0` e `turns=1` ≥ 1 em toda partida; **20 de 20 COMPRA**) e a classe "compra do 1º turno" (Commander multijogador não pula; o Mothman era o único que pulava; chave `FIRST_TURN_SKIPS_DRAW`).
 - `references/user-standing-rules.md` §21, `mtg-commander/references/protocolo-de-avaliacao.md` §7 e `mtg-commander/SKILL.md`: mesma classe. `mtg-commander.zip` e `SHA256SUMS` refeitos.
 - **Cuidado ao rodar o script:** nesta sessão a pasta viva da skill (`/root/.claude/skills/synced/<id>/mtg-commander/`) só tinha um `SKILL.md` ANTIGO (sem `references/`, sem a Regra #10). `sincronizar-skill.sh --para-backup` teria **apagado** este backup e o substituído por essa cópia velha. Por isso a atualização foi feita **direto no backup** (edição dos arquivos + `sha256sum` + `--zip`), sem `--para-backup`. Antes de usar `--para-backup`, rode `--status` e confira que a skill viva é a mais nova; se não for, restaure primeiro a partir do backup (item 1 abaixo). Como sempre, nada disso é gravado na conta: a skill da conta só reflete a mudança se `mtg-commander.zip` for enviado de novo.
+
+## O que mudou na atualização de 2026-10-22 (Tam: classes novas na Regra #10)
+
+- `CLAUDE.md` (e o espelho `references/CLAUDE-repositorio.md`): Regra #10 passa a listar `audit_tam_terrenos.py` (as varreduras de terreno para o simulador do Tam; 0 falhas; `audit_compra_t1` reexecutado: 20 de 20 COMPRA), duas classes de erro novas (contador acumulado lido como flag: turnos extras da Ichormoon Gauntlet; **ordem de pagamento do mana**: Bloom Tender / Faeburrow Elder e unidade irmã de fonte já tocada), o aviso de que um script de varredura que não roda também é vácuo, e o que NÃO cobre (a ordem de pagamento nos outros simuladores com Bloom Tender; perfil de oponente calibrado só no Tam).
+- `references/user-standing-rules.md` §21, `mtg-commander/references/protocolo-de-avaliacao.md` §7 e §8 (2 linhas novas no checklist de erros) e `mtg-commander/SKILL.md`: mesma classe. `mtg-commander.zip` e `SHA256SUMS` refeitos.
+- **Como foi feito (Regra #9):** os espelhos (`CLAUDE.md`, `user-standing-rules.md`) foram copiados do repositório para cá; `protocolo-de-avaliacao.md`, `SKILL.md` e este README foram editados **direto no backup**. Eu **não** rodei `sincronizar-skill.sh --para-backup`: a pasta viva da skill nesta sessão é mais antiga que este backup e o comando a copiaria por cima dele. A pasta viva não foi atualizada nesta sessão e **nada foi gravado na skill da conta**; para a conta refletir, é preciso enviar `mtg-commander.zip` de novo (passo 2 abaixo, que só o usuário consegue fazer).
 
 ## Como restaurar / reinstalar
 

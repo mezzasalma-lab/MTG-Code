@@ -2,7 +2,7 @@
 
 Destilado operacional das Regras #1–#10 do `CLAUDE.md` do repositório `mezzasalma-lab/MTG-Code` (texto integral em
 `references/CLAUDE-repositorio.md` desta skill) e das preferências que o usuário repetiu. **Em caso de dúvida, vale o texto integral.**
-Atualizado em 2026-10-05 (Regra #10: varredura mecânica de erros do motor).
+Atualizado em 2026-10-22 (Regra #10: varredura mecânica de erros do motor; classes novas do Tam: contador como flag, ordem de pagamento).
 
 ## 0. Onde estão as coisas (repositório `mezzasalma-lab/MTG-Code`, branch de trabalho `claude/goldfish-simulator-vjg1ey`)
 
@@ -78,7 +78,7 @@ Alterou esta skill (ou um espelho): `bash skills-backup/sincronizar-skill.sh` e 
 
 Auditoria carta-a-carta não pega erro de motor (a varredura de 2026-10-05 achou erro em 14 dos 18 decks e nenhum seria pego assim). Antes de declarar pronto:
 1. **Scripts** de `varredura-2026-10-05/scripts/` (o `LEIAME.md` da pasta lista os falsos positivos já verificados): `audit_entrada.py` / `audit_entrada2.py` (terreno entra virado quando o oráculo manda; "unless you control…" por
-   SUBTIPO), `audit_fetch.py` (sacrifício, 1 de vida, busca por subtipo, thinning), `audit_terreno_nao_e_magia.py`, `audit_landfall.py` (entradas × chamadas de landfall), `audit_landfall_ordem.py` (terreno jogado antes do payoff de landfall; hoje 0 candidatos), `colisao_nome.py` (estado por nome). Ler cada divergência à mão.
+   SUBTIPO), `audit_fetch.py` (sacrifício, 1 de vida, busca por subtipo, thinning), `audit_terreno_nao_e_magia.py`, `audit_landfall.py` (entradas × chamadas de landfall), `audit_landfall_ordem.py` (terreno jogado antes do payoff de landfall; hoje 0 candidatos), `colisao_nome.py` (estado por nome), `audit_tam_terrenos.py` (as de terreno para o simulador do Tam, que não tem `play_land`; 0 falhas). Ler cada divergência à mão.
 2. **Classes do motor:** mulligan ESCOLHE o fundo (CR 103.5); imposto do comandante no cast (CR 903.8); upkeep antes do draw; terreno virado jogado primeiro em T1/T2 quando não custa jogada (ensaio a seco + modo GHOST);
    fetch real (inclusive a devolvida do cemitério); "whenever a land enters" em TODO ponto de entrada (play_land, fetch, ramp, blink, saga).
    Ordem terreno × payoff de landfall: com um terreno por jogar, conjurar antes o payoff que o mana de agora já paga, só se um ensaio a seco do resto da fase pré-combate mostrar que o turno não perde nenhuma jogada (a fórmula "mana de agora + 1" falhou: não conta mana de landfall em campo nem 2º land drop; chave `LANDFALL_PAYOFF_FIRST` nos 6 simuladores com payoff: Mothman, Toph, Beorn, Thranduil, Maralen, Prismatic Bridge).
@@ -87,6 +87,8 @@ Auditoria carta-a-carta não pega erro de motor (a varredura de 2026-10-05 achou
    (`$(date)` no mesmo `echo` zera `$?`).
 5. **Operação:** verificação completa re-simula o arquivo VIVO (não editar o simulador enquanto roda); commitar e enviar cada deck quando fecha (o contêiner pode reiniciar).
 Compra do 1º turno (2026-10-20): Commander multijogador não pula a compra; `audit_compra_t1.py` mede por execução a queda da biblioteca entre `turns=0` e `turns=1` (deve ser ≥ 1 em toda partida; hoje 20 de 20 COMPRA; o Mothman pulava e foi corrigido com `FIRST_TURN_SKIPS_DRAW`); grep de `on_play` não serve.
+
+Duas classes novas (Tam, 2026-10-22; ambas no motor, não na carta): contador acumulado lido como flag (turnos extras da Ichormoon Gauntlet) e ordem de pagamento do mana (Bloom Tender / Faeburrow Elder e unidade irmã de fonte já tocada; `VIVID_LAST`, `SIBLING_FIRST`); a ordem de pagamento NÃO foi varrida nos outros simuladores com Bloom Tender (Hei Bai, Maralen, Prismatic Bridge, Thranduil, Tom Bombadil). Rodar o script commitado e salvar a saída antes de citar o resultado (`audit_tam_terrenos.py` foi commitado com `SyntaxError`).
 
 Não coberto (declarar na Regra #7): magia que põe terreno em campo antes do payoff de landfall, conjuração fora da mão, sacrifício × destroy, `_sick` agregados, fórmulas achatadas, choque que não deduz vida (Kutzil, Edgar), oponente real.
 
@@ -98,6 +100,8 @@ Não coberto (declarar na Regra #7): magia que põe terreno em campo antes do pa
 | doc antigo dizia "a lista não tem outlet de sacrifício" e eu reusei | refazer a varredura ao vivo; grepar `NENHUM\|nunca\|não tem` nos docs |
 | regex por "each creature" perdeu o Damn (overload) | 2ª varredura por alvo e por modo alternativo |
 | recomendei corte sem ver o combo registrado no `auditoria.md` | ler a documentação do deck ANTES de listar motores |
+| li as rulings do Ichormoon Gauntlet / Bloom Tender só no fechamento da rodada (Regra #3 manda ler ANTES de escrever o código) e citei uma regra de turno extra de memória no rascunho | baixar `rulings_uri` antes de implementar; citar regra só com fonte lida |
+| cheguei a escrever "4 planeswalkers diferentes" no LEIAME dos turnos extras do #5 sem conferir o log (era Jace, Domri, Vronos e Jace de novo, 2 no mesmo turno) | reler o log antes de afirmar quem fez o quê |
 | métrica do simulador refletia convenção da IA (atacar com tudo) | Regra #5: linha deliberada, medir o teto |
 | declarei "auditoria completa" e apareceram bugs | Regra #7: escopo verificado e não verificado |
 | citei `goldfish-log.md` sem pasta e abriu o da Azula | caminho completo sempre |

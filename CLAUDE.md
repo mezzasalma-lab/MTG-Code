@@ -512,7 +512,10 @@ no `play_land`/`play_turn`/mulligan):**
    `colisao_nome.py` (estado por NOME em vez de por instância),
    `audit_compra_t1.py` (a compra do 1º turno, **por execução**: a queda da
    biblioteca entre `turns=0` e `turns=1` tem de ser ≥ 1 em toda partida; veredito
-   COMPRA, PULA ou VÁCUO; **hoje 20 de 20 COMPRA**). Ler à mão cada
+   COMPRA, PULA ou VÁCUO; **hoje 20 de 20 COMPRA**, reexecutado em 2026-10-22
+   com o Tam alterado), `audit_tam_terrenos.py` (as varreduras de terreno
+   acima para o simulador do Tam, que não tem `play_land`: entrada contra o
+   oráculo, fetch, terreno ≠ magia e landfall; **0 falhas**). Ler à mão cada
    divergência antes de corrigir ou de classificar como falso positivo.
 2. **Conferir a lista de classes do motor** (todas já tiveram erro real): o
    mulligan ESCOLHE o fundo (CR 103.5); o imposto do comandante conta no cast,
@@ -548,6 +551,18 @@ no `play_land`/`play_turn`/mulligan):**
    magia que põe terreno em campo (Cultivate, Farseek, Three Visits...) conjurada
    antes de um payoff que o mana também pagaria depois do terreno; terreno que
    volta ao campo (blink, Lander); ordem de várias fases principais.
+   Duas classes novas, achadas no goldfish #5 do Tam (2026-10-22), nenhuma
+   delas mora na carta: (a) **contador acumulado lido como flag**: os turnos
+   extras da Ichormoon Gauntlet eram um booleano, e dois `−12` no mesmo turno
+   rendiam um só turno extra (agora `EXTRA_TURNS_STACK`, um contador); (b)
+   **ordem de pagamento do mana**: fonte cujo valor depende do tabuleiro
+   DEPOIS da magia (Bloom Tender / Faeburrow Elder: 1 mana por cor entre os
+   meus permanentes) era tocada antes de a magia trazer a cor nova, e o
+   genérico tocava outra fonte em vez da 2ª unidade de uma fonte já tocada
+   (filtro, Sol Ring) (agora `VIVID_LAST` e `SIBLING_FIRST`). **Não coberto
+   (declarar na Regra #7):** a ordem de pagamento nos outros simuladores com
+   Bloom Tender (`grep` de 2026-10-22: Hei Bai, Maralen, Prismatic Bridge,
+   Thranduil, Tom Bombadil); só o Tam foi tratado.
 3. **Determinismo entre processos.** Os `driver.py` das pastas de resultados
    fixam `PYTHONHASHSEED=0` (senão nada reproduz byte a byte), e por isso **não
    enxergam** dependência de ordem de hash. A única checagem que enxerga é
@@ -565,7 +580,11 @@ no `play_land`/`play_turn`/mulligan):**
    publicada tem que ser função só do bruto arquivado** (comparar `driver.py sum`
    com a re-execução), e o resultado de uma bateria longa se confere pelo
    `Traceback` no `log_driver.txt`, nunca pelo `rc` de um `echo` (`$(date)` no
-   mesmo `echo` zera o `$?`).
+   mesmo `echo` zera o `$?`). **Um script de varredura que não roda também é
+   vácuo:** `audit_tam_terrenos.py` ficou commitado com `SyntaxError` (uma edição
+   depois da última execução que relatei); só descobri ao arquivar a saída.
+   Antes de citar o resultado de uma varredura, rodar o arquivo commitado e
+   salvar a saída em `resumos/`.
 5. **Cada correção** segue a Regra #1 (chave, bit-identidade com a chave
    desligada em 20.000 × 2 modos, regressão 20.000 × 2 modos com 0 exceções, A/B
    pareado 2.000 e 10.000, teste dirigido), a Regra #7 (declarar o que foi e o
@@ -581,6 +600,10 @@ no `play_land`/`play_turn`/mulligan):**
 caminhos de conjuração fora da mão e "whenever you cast"; sacrifício × destroy;
 contadores `_sick` agregados; fórmulas dinâmicas achatadas; combinação de
 condições de entrada de terreno; choque que não deduz os 2 de vida (Kutzil e
-Edgar confirmados; vida só importa onde algo a lê); estado de oponente real.
+Edgar confirmados; vida só importa onde algo a lê); estado de oponente real;
+perfil de oponente calibrado contra a mesa real do usuário (só o Tam tem o perfil
+`playtester`, calibrado nos 5 logs do bot do Archidekt; não verifiquei de onde vem
+o modelo de oponente dos outros simuladores com modo de resiliência, e nenhum
+deles passou por essa calibração).
 Esta lista é o piso, não o teto: classe nova achada vira script em
 `varredura-2026-10-05/scripts/` e linha nesta regra.
