@@ -444,3 +444,8 @@ LOTE N=10000 sementes 3000000..3009999, 12 turnos, modo resiliencia
   *m_empower_events                             2.4989       2.5398      +0.0409 ±0.0219  
   *m_loyalty_counters_by_empower_way           10.3956      10.6163      +0.2207 ±0.1187  
   *next_uid                                    40.6429      40.8001      +0.1572 ±0.0845  
+Regressao: N=20000 por configuracao/modo, sementes 5_000_000+i; excecoes + invariantes genericas (carta acima do baralho em alguma zona; contadores negativos)
+depois (repositorio)   padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+depois (repositorio)   resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        padrao       partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}
+chave_desligada        resiliencia  partidas ok=20000 | excecoes=0  | carta acima do baralho=0 | campos negativos={}

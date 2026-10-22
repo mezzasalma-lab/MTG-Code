@@ -1,0 +1,7 @@
+IGUAL  ab_2000.txt
+IGUAL  ab_10000.txt
+IGUAL  ab_2000_resiliencia.txt
+IGUAL  ab_10000_resiliencia.txt
+IGUAL  resumo_politicas.md
+IGUAL  indice_dados.md
+6/6 saidas byte a byte iguais

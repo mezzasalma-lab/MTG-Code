@@ -50,7 +50,7 @@
   "m_saheeli_staff_copies"
  ],
  "deck": "tam-the-possibility-wubrg",
- "sim": "tam_goldfish_v1.py",
+ "sim": "resultados-ab/2026-10-22-politicas-tam/codigo/tam_goldfish_v1_DEPOIS_rodada1.py",
  "snapshot": "codigo/tam_goldfish_v1_ANTES_2380566.py",
  "ignora_profundo": []
 }
