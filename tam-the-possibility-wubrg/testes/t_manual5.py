@@ -68,18 +68,22 @@ def _():
     check(T.can_cast_name(st, "Vronos, Masked Inquisitor") and T.cast_card(st, "Vronos, Masked Inquisitor") and loy(st, "Vronos, Masked Inquisitor") == 5)
 
 
-@test("Manual #5 T6: Way of the Necromancer empower 2 (Jace 5 -> 7); Vronos `-2` (6 -> 4) e Jace `-3` (7 -> 4) compram; a Teferi, Hero of Dominaria ({3}{W}{U} - 1) so' cabe com {W}: a Promenade (unica fonte de {W}) ja' estava virada")
+@test("Manual #5 T6: Way of the Necromancer empower 2 (Jace 5 -> 7); Vronos `-2` (6 -> 4) e Jace `-3` (7 -> 4, compra); a Teferi, Hero ({3}{W}{U} - 1 da Tam) nao cabe sem {W}: a Promenade (unica fonte de {W}) estava virada e nenhum permanente e' branco")
 def _():
     st = mk(turn=6, hand=["Way of the Necromancer", "Teferi, Hero of Dominaria"], lib=["Sol Ring", "Command Tower", "Forest"],
-            bf=["Tam, the Possibility", "Bountiful Promenade", "Fire-Lit Thicket", "Watery Grave", "Ketria Triome", "Bloom Tender", "Way of the Pyromancer", "Way of the Paradox",
+            bf=["Tam, the Possibility", P("Bountiful Promenade", tapped=True), "Fire-Lit Thicket", "Watery Grave", "Ketria Triome", "Bloom Tender", "Way of the Pyromancer", "Way of the Paradox",
                 P("Jace Token", loyalty=5, token=True), P("Vronos, Masked Inquisitor", loyalty=6)])
     opp_all_colors(st)
-    for nm in ("Bountiful Promenade", "Fire-Lit Thicket", "Watery Grave"):
-        perm(st, nm).tapped = True
-    check(T.cast_card(st, "Way of the Necromancer") is False or True)
-    st2 = mk(turn=6, hand=["Teferi, Hero of Dominaria"], bf=["Tam, the Possibility", P("Bountiful Promenade", tapped=True), "Fire-Lit Thicket", "Watery Grave", "Ketria Triome", "Bloom Tender", "Way of the Necromancer"])
-    check(T.colors_among(st2) and "W" not in T.colors_among(st2), "sem permanente branco: o Bloom Tender nao da' {W}")
-    check(not T.can_cast_name(st2, "Teferi, Hero of Dominaria"), "sem {W} (Promenade virada): Teferi nao cabe")
+    check(T.cast_card(st, "Way of the Necromancer") and loy(st, "Jace Token") == 7, "Necromancer: empower 2, Jace %s" % loy(st, "Jace Token"))
+    check(act(st, "Vronos, Masked Inquisitor", "Vronos, Masked Inquisitor", "-2") and loy(st, "Vronos, Masked Inquisitor") == 4)
+    n = len(st.hand)
+    check(act(st, "Jace Token", "Jace Token", "-3") and loy(st, "Jace Token") == 4 and len(st.hand) == n + 1)
+    check("W" not in T.colors_among(st), "nenhum permanente branco: o Bloom Tender nao da' {W}")
+    for p in st.battlefield:
+        if "land" in p.card.types or p.card.name == "Bloom Tender":
+            p.tapped = p.card.name in ("Bountiful Promenade", "Bloom Tender") or p.tapped
+    st.pool.clear()
+    check(not T.can_cast_name(st, "Teferi, Hero of Dominaria"), "Teferi nao cabe: sem {W}")
 
 
 @test("Manual #5 T6 (opp): Promise of Loyalty do oponente ('each player puts a vow counter on a creature they control and sacrifices the rest'): a Tam (comandante) e' sacrificada e vai para a zona de comando; o Bloom Tender fica com o contador Vow")
@@ -93,7 +97,7 @@ def _():
     check(T.is_creature(bt) and bt in st.battlefield)
 
 
-@test("Manual #5 T7: Tam da zona de comando custa {2} a mais POR conjuracao anterior (CR 903.8: 0, depois +2, depois +4 de generico); o playtester mostra `commandTax` 0, 1, 2 = numero de vezes, e o usuario pagou 4 (1a: 3) com o imposto 1")
+@test("Manual #5 T7/T11: o imposto da Tam na zona de comando e' {2} POR conjuracao anterior (CR 903.8: 0, depois +2, depois +4 de generico); o playtester mostra `commandTax` 0, 1, 2 = numero de vezes (a Tam do T7 foi a 2a conjuracao, a do T11 a 3a)")
 def _():
     st = mk(turn=7, bf=["Bountiful Promenade", "Fire-Lit Thicket", "Watery Grave", "Ketria Triome", "City of Brass", "Plaza of Heroes", "Overflowing Basin"], cz=True)
     base = T.CARD_DB["Tam, the Possibility"].generic
@@ -103,7 +107,7 @@ def _():
         check(g == base + 2 * k, "conjuracao #%d: generico %d (base %d)" % (k + 1, g, base))
 
 
-@test("Manual #5 T8: Garruk ({3}{G}{G}) `-3` (5 -> 2): Beast 4/4 trample; o Garruk COMPRA (poder 4 entrando); Domri ({2}{R}{G}) com o Bloom Tender (cores G,U,R,B = 4 mana)")
+@test("Manual #5 T8: Garruk ({3}{G}{G}) `-3` (5 -> 2): Beast 4/4 trample; o Garruk COMPRA (poder 4 entrando) e a carta e' a Domri; a Domri ({2}{R}{G}) cabe so' com o Bloom Tender (4 cores entre os permanentes: G, U, R, B)")
 def _():
     st = mk(turn=8, hand=["Garruk, Curse Breaker"], lib=["Domri, Chaos Bringer", "Sol Ring", "Command Tower"],
             bf=["Bountiful Promenade", "Fire-Lit Thicket", "Watery Grave", "Ketria Triome", "Overflowing Basin", "City of Brass", "Bloom Tender", "Way of the Pyromancer", "Way of the Necromancer",
@@ -112,9 +116,16 @@ def _():
     n = len(st.hand)
     check(act(st, "Garruk, Curse Breaker", "Garruk, Curse Breaker", "-3") and loy(st, "Garruk, Curse Breaker") == 2)
     check(count(st, "Beast Token") == 1 and len(st.hand) == n + 1 and st.hand[-1] == "Domri, Chaos Bringer", "Garruk compra com o Beast: " + str(st.hand))
+    for p in st.battlefield:
+        if "land" in p.card.types:
+            p.tapped = True                      # os 5 terrenos pagaram o Garruk (5 mana, sem a Tam)
+    perm(st, "Bloom Tender").tapped = False      # o Bloom Tender ficou de fora (o usuario so' o tocou pra Domri)
+    st.pool.clear()
+    check(sorted(T.colors_among(st)) == ["B", "G", "R", "U"], "cores entre os permanentes: %s" % T.colors_among(st))
+    check(T.can_cast_name(st, "Domri, Chaos Bringer") and T.cast_card(st, "Domri, Chaos Bringer") and loy(st, "Domri, Chaos Bringer") == 5, "so' o Bloom Tender (4 mana) paga a Domri")
 
 
-@test("Manual #5 T9: Displacer Kitten + Teferi, Hero of Dominaria (nao-criatura): o gatilho do Kitten pisca o Garruk (que ja' usou o -3 no T8... no T9 o Garruk esta em 2): volta com 5 (objeto novo) e PODE ativar de novo: -3 (5 -> 2) cria o 2o Beast e compra")
+@test("Manual #5 T9: Displacer Kitten + Teferi, Hero (magia nao-criatura): o gatilho do Kitten pisca o Garruk (em 2, depois do -3 do T8): objeto novo com 5, que PODE ativar de novo: `-3` (5 -> 2) cria o 2o Beast e compra")
 def _():
     st = mk(turn=9, hand=["Teferi, Hero of Dominaria"], lib=["Teferi, Temporal Archmage", "Sol Ring", "Command Tower"],
             bf=["Displacer Kitten", "Bountiful Promenade", "Fire-Lit Thicket", "Watery Grave", "Ketria Triome", "Overflowing Basin", "City of Brass", "Bloom Tender", P("Garruk, Curse Breaker", loyalty=2), "Way of the Pyromancer"])

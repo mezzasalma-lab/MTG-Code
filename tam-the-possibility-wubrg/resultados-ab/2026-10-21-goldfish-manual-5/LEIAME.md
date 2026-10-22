@@ -55,7 +55,25 @@ O log **não tem vida de oponente**: não há "vitória" nem dano registrado; s�
 
 ## Cada cláusula operacional do relato é uma afirmação testável (Regra #6)
 
-@@TESTES@@
+| o que o usuário fez | teste em `testes/t_manual5.py` | resultado |
+|---|---|---|
+| T2: Promenade desvirada (3 oponentes); Promenade + Thicket (filtro) pagam o Bloom Tender | `Manual #5 T2` | ✅ |
+| T3: Tam com Promenade + Thicket + Watery Grave (2 de vida) | `Manual #5 T3` | ✅ |
+| T4: Pyromancer (Jace 2), Jace `+1` ({R}), Bloom Tender com 3 cores, Paradox (Jace 8) | `Manual #5 T4: Pyromancer ...` | ✅ |
+| T4: sobrava mana para a Necromancer (Watery Grave + 1 flutuante) e ela ficou na mão | `Manual #5 T4 (DUVIDA)` | ✅ **só depois da rodada 2** (`SIBLING_FIRST`): o simulador antigo pagava a Pyromancer tocando o Bloom Tender com 2 cores e deixava 1 mana flutuando; a ordem de pagamento era a lacuna |
+| T5: Jace `−3` compra; Vronos (4 com a Tam) com Bloom Tender + Grave | `Manual #5 T5` | ✅ |
+| T6: Necromancer (Jace +2), Vronos `−2`, Jace `−3`; Teferi, Hero não cabia (sem `{W}`) | `Manual #5 T6: Way of the Necromancer ...` | ✅ |
+| T6 (oponente): Promise of Loyalty sacrifica a Tam (zona de comando) e o Bloom Tender fica com Vow | `Manual #5 T6 (opp)` | ✅ (o efeito do oponente é imposto na mão do teste; o simulador modela a variante Promise do wipe só no perfil `playtester`) |
+| T7/T11: imposto do comandante = {2} por conjuração anterior | `Manual #5 T7/T11` | ✅ |
+| T8: Garruk (5), `−3`: Beast 4/4, o Garruk compra (a Domri); Domri só com o Bloom Tender | `Manual #5 T8` | ✅ |
+| T9: Kitten + Teferi, Hero: pisca o Garruk (5, objeto novo), `−3` de novo, compra | `Manual #5 T9: Displacer Kitten ...` | ✅ |
+| T9 (oponente): Damning Verdict poupa o Bloom Tender (Vow); Necromancer dá +1 por criatura morta em cada planeswalker | `Manual #5 T9 (opp)` | ✅ pela regra (3 mortes = +3; o log tem +1) |
+| T10: Teferi TA `−1` desvira 4; uma ativação por turno | `Manual #5 T10: Teferi, Temporal Archmage ...` | ✅ (o log tem 2 cliques: erro do relato) |
+| T10: Gauntlet: um gatilho por magia não-criatura (3 de 3) e `0: Proliferate` em cada planeswalker | `Manual #5 T10: Ichormoon Gauntlet ...` | ✅ |
+| T11: 3 emblemas (Teferi, Hero `−8`; Teferi TA `−10`; Tamiyo `−7` com 3 compras e magia grátis) | `Manual #5 T11: emblemas` | ✅ |
+| T11: 4 turnos extras pelos `−12` (2 no mesmo turno) | `Manual #5 T11: cada -12 ...` | ✅ **só depois da rodada 2** (`EXTRA_TURNS_STACK`): o simulador antigo guardava um booleano e dava 1 turno extra por turno |
+
+**Duas lacunas reais do simulador vieram deste log** (Regra #1/#5, nenhuma é do usuário): a ordem em que o Bloom Tender e o filtro são tocados (`SIBLING_FIRST`, `VIVID_LAST`) e o empilhamento dos turnos extras do `−12` (`EXTRA_TURNS_STACK`); ver `../2026-10-22-rodada2-motor-e-perfil/LEIAME.md`.
 
 ## O simulador jogando as mesmas cartas (não é validação: a IA joga diferente do usuário)
 
