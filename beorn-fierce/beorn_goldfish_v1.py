@@ -72,7 +72,7 @@ DECKLIST_TEXT = r"""
 1 Defiler of Vigor
 1 Return of the Wildspeaker
 1 Roaming Throne
-1 Ram Through
+1 Herd Heirloom
 1 Selvala, Heart of the Wilds
 1 Shamanic Revelation
 1 Sol Ring
@@ -95,6 +95,26 @@ DECKLIST_TEXT = r"""
 1 Boseiju, Who Endures
 31 Forest
 """
+
+# ---------------------------------------------------------------------------
+# Chaves da rodada de 2026-10-23 (troca Ram Through -> Herd Heirloom, pedida pelo usuario: "troquei o Ram Through por Herd Heirloom para dar Trample e compra de cartas")
+# ---------------------------------------------------------------------------
+# `HERD_HEIRLOOM_IN_DECK`: composicao do baralho. True = a lista de hoje (Herd Heirloom); False = a lista de antes (Ram Through, NA MESMA posicao do DECKLIST_TEXT, para o embaralhamento
+#   da mesma semente cair igual: o A/B fica pareado carta-a-carta).
+# `HERD_HEIRLOOM_MANA` (habilidade 1: "{T}: Add one mana of any color. Spend this mana only to cast a creature spell.") e `HERD_HEIRLOOM_DRAW` (habilidade 2: "{T}: Until end of turn, target creature you
+#   control with power 4 or greater gains trample and 'Whenever this creature deals combat damage to a player, draw a card.'"): as duas usam o MESMO {T}, uma por turno. False = a habilidade nao existe.
+# `BEORN_TRIGGER_AT_BEGINNING_OF_COMBAT` (achado de leitura de clausula, 2026-10-23, nao e' da troca): o gatilho da Beorn e' "At the beginning of combat on your turn" (oraculo + ruling 2026-06-29),
+#   NAO "whenever Beorn attacks": dispara com a Beorn em campo mesmo doente de invocacao e mesmo sem atacar. O codigo exigia `can_attack(Beorn)`. False = o comportamento de antes.
+HERD_HEIRLOOM_IN_DECK = True
+HERD_HEIRLOOM_MANA = True
+HERD_HEIRLOOM_DRAW = True
+BEORN_TRIGGER_AT_BEGINNING_OF_COMBAT = True
+
+
+def current_decklist() -> List[str]:
+    """Lista de 99 do jogo. Com HERD_HEIRLOOM_IN_DECK=False troca a linha do Herd Heirloom pela do Ram Through (mesma posicao => mesma permutacao da semente)."""
+    text = DECKLIST_TEXT if HERD_HEIRLOOM_IN_DECK else DECKLIST_TEXT.replace("1 Herd Heirloom", "1 Ram Through")
+    return parse_decklist(text)
 
 # =========================================================
 # CARD MODEL
@@ -172,6 +192,13 @@ ramp_defs = [
     ("Solemn Simulacrum", 4, {"Creature"}, {"ramp","land_ramp","draw_on_death"}),
     ("Emerald Medallion", 2, {"Artifact"}, {"cost_reducer"}),
     ("Radagast of Rhosgobel", 4, {"Creature"}, {"cost_reducer","legendary"}),
+    # Herd Heirloom {1}{G} Artifact (oraculo + ruling lidos ao vivo em 2026-10-23, dados/scryfall_oraculo_rulings_2026-10-23.json):
+    #   "{T}: Add one mana of any color. Spend this mana only to cast a creature spell."
+    #   "{T}: Until end of turn, target creature you control with power 4 or greater gains trample and 'Whenever this creature deals combat damage to a player, draw a card.'"
+    #   ruling 2025-04-04: depois que a 2a habilidade resolve, baixar o poder da criatura abaixo de 4 nao tira as habilidades.
+    # NAO leva a tag "ramp": o mana dela so' paga magia de CRIATURA (`creature_mana_bonus`, `can_cast`, `spend_for_spell`), nao entra em total_mana(). As 2 habilidades dividem o mesmo {T}.
+    # Artefato nao-criatura: sem doenca de invocacao (CR 302.6 so' vale para criatura).
+    ("Herd Heirloom", 2, {"Artifact"}, {"creature_mana_rock", "combat_draw_enabler"}),
 ]
 for name, mv, typ, tags in ramp_defs:
     add(name, mv, typ, tags, g_pips=(1 if "green_source" in tags and "green_source_any" not in tags else 0))
@@ -195,6 +222,8 @@ for name, mv, typ, tags in draw_defs:
 removal_defs = [
     ("Beast Within", 3, {"Instant"}, {"removal"}),
     ("Song of the Dryads", 3, {"Enchantment"}, {"removal"}),
+    # [2026-10-23] Ram Through saiu da lista (o usuario o trocou pelo Herd Heirloom); a entrada fica no CARD_DB so' para o baralho de ANTES
+    # (HERD_HEIRLOOM_IN_DECK=False, bit-identidade com o snapshot e A/B).
     # Ram Through (achado real 2026-08-31, troca pedida pelo usuario no lugar
     # do Sakura-Tribe Elder - reforca o pacote de remocao, 5->6 efeitos, sem
     # mudar Bracket): "{1}{G} instant - target creature you control deals
@@ -329,7 +358,7 @@ REAL_G_PIPS = {
     "Lightning Greaves": 0, "Little Bear": 1, "Llanowar Elves": 1, "Lotus Cobra": 1,
     "Managorger Hydra": 1, "Maskwood Nexus": 0, "Necklace of Girion": 1,
     "Natural Order": 2, "Obscuring Haze": 1, "Ohran Frostfang": 2,
-    "Patchwork Banner": 0, "Radagast of Rhosgobel": 2, "Defiler of Vigor": 2,
+    "Patchwork Banner": 0, "Radagast of Rhosgobel": 2, "Defiler of Vigor": 2, "Herd Heirloom": 1,
     "Return of the Wildspeaker": 1, "Roaming Throne": 0, "Sakura-Tribe Elder": 1,
     "Selvala, Heart of the Wilds": 2, "Shamanic Revelation": 2, "Sol Ring": 0,
     "Solemn Simulacrum": 0, "Song of the Dryads": 1, "Thought Vessel": 0,
@@ -369,6 +398,15 @@ class GameState:
     turn: int = 0
     land_played: bool = False
     payoff_first_casts: int = 0   # correcao de 2026-10-07 (LANDFALL_PAYOFF_FIRST): vezes em que um payoff de landfall foi conjurado ANTES do terreno do turno
+    # Herd Heirloom (2026-10-23). As 2 habilidades dividem o MESMO {T}: `heirloom_tapped_this_turn` marca que o {T} ja' foi usado (mana OU habilidade de compra) e
+    # `heirloom_mana_armed` que o mana (1, qualquer cor, so' para magia de criatura) esta' disponivel agora. Os dois voltam a False no comeco de cada turno (play_turn).
+    heirloom_tapped_this_turn: bool = False
+    heirloom_mana_armed: bool = False
+    heirloom_cast_turn: Optional[int] = None
+    heirloom_mana_uses: int = 0            # vezes em que o mana do Heirloom pagou parte de uma magia de criatura
+    heirloom_draw_activations: int = 0     # vezes em que a habilidade 2 (trample + compra por dano de combate) foi ativada
+    heirloom_draws: int = 0                # cartas compradas pelo gatilho concedido pelo Heirloom (inclui a dobra do Roaming Throne)
+    heirloom_mana_turns_reserved_for_draw: int = 0   # turnos em que o {T} foi guardado para a habilidade 2 em vez do mana
     beorn_host_exiled: bool = False  # Till and Tend conjurada, criatura esperando no exilio
     max_hand_size: int = 7
     mana_spent_this_turn: int = 0
@@ -712,6 +750,83 @@ def green_sources(state: GameState) -> int:
 def remaining_mana(state: GameState) -> int:
     return total_mana(state) + state.bonus_mana_this_turn - state.mana_spent_this_turn
 
+# ---------------------------------------------------------------------------
+# Herd Heirloom (2026-10-23): mana restrito (so' magia de criatura) + compra por dano de combate. As 2 habilidades dividem o mesmo {T}.
+# ---------------------------------------------------------------------------
+
+def creature_mana_bonus(state: GameState) -> int:
+    """1 se o mana do Herd Heirloom ("one mana of any color. Spend this mana only to cast a creature spell") esta' disponivel agora, senao 0. Nunca entra em
+    remaining_mana(): so' `can_cast`/`spend_for_spell` o usam, e so' para magia de CRIATURA (habilidades ativadas e magias nao-criatura nao podem gasta-lo)."""
+    return 1 if state.heirloom_mana_armed else 0
+
+
+def spend_for_spell(state: GameState, card: str, cost: int):
+    """Paga `cost` de uma magia. Se o mana restrito do Heirloom esta' disponivel e a magia e' de criatura, ele paga 1 primeiro (e' o melhor uso do mana restrito: poupa o mana livre
+    para o que vier depois) e o {T} do Heirloom fica gasto neste turno. Sem Heirloom em jogo e' exatamente `mana_spent_this_turn += cost`."""
+    if state.heirloom_mana_armed and cost >= 1 and is_creature(card):
+        state.heirloom_mana_armed = False
+        state.heirloom_tapped_this_turn = True
+        state.heirloom_mana_uses += 1
+        cost -= 1
+    state.mana_spent_this_turn += cost
+
+
+def heirloom_target_power(state: GameState, card: str) -> int:
+    """Poder para a regra "power 4 or greater" da habilidade 2: poder efetivo (impresso + anthems de Bear) mais os contadores agregados SE a criatura e' uma das de maior poder em campo
+    (mesma convencao de `greatest_power_in_play`: o simulador nao atribui contador por criatura; assume que foram para a maior)."""
+    p = effective_power(state, card)
+    top = max(effective_power(state, c) for c in state.battlefield if is_creature(c))
+    return p + (state.counters_on_board if p == top else 0)
+
+
+def heirloom_draw_target(state: GameState) -> Optional[str]:
+    """Alvo da habilidade 2: criatura minha, apta a atacar (sem doenca de invocacao, ou com haste/Greaves) e com poder >= 4. Entre as elegiveis, prefere a que o Roaming Throne dobra
+    (Urso que nao e' o proprio Throne: o gatilho concedido e' "a triggered ability of another creature you control of the chosen type"), depois o maior poder, depois o nome."""
+    cands = [c for c in state.battlefield if is_creature(c) and can_attack(state, c) and heirloom_target_power(state, c) >= 4]
+    if not cands:
+        return None
+    return max(cands, key=lambda c: (bear_trigger_times(state, c), heirloom_target_power(state, c), c))
+
+
+def arm_heirloom(state: GameState):
+    """Decide para que o {T} do Heirloom serve neste turno (chamada no inicio do turno e quando o Heirloom entra em jogo). Habilidade 2 (compra) vale mais que 1 mana restrito: se ja' ha uma criatura
+    elegivel para atacar, guarda o {T} para ela, EXCETO se a Beorn (comandante, motor do deck) ainda nao esta' em jogo, o turno ja' e' >= 3 e ela so' cabe com o mana do Heirloom.
+    Sem alvo elegivel, o mana fica disponivel para a primeira magia de criatura do turno (`spend_for_spell`)."""
+    if not HERD_HEIRLOOM_MANA or not state.has("Herd Heirloom") or state.heirloom_tapped_this_turn:
+        return
+    reserve = HERD_HEIRLOOM_DRAW and heirloom_draw_target(state) is not None
+    if reserve and not state.commander_in_play and state.turn >= 3:
+        state.heirloom_mana_armed = True
+        cabe_com = commander_can_be_cast(state)
+        state.heirloom_mana_armed = False
+        cabe_sem = commander_can_be_cast(state)
+        if cabe_com and not cabe_sem:
+            reserve = False
+    if reserve:
+        state.heirloom_mana_turns_reserved_for_draw += 1
+        return
+    state.heirloom_mana_armed = True
+
+
+def try_heirloom_draw(state: GameState, log: List[Dict]):
+    """Habilidade 2 do Herd Heirloom, ativada no inicio do combate (depois do gatilho da Beorn, que pode transformar uma criatura em Urso +2/+2 e leva-la a poder >= 4): a criatura alvo ganha
+    trample (sem bloqueio modelado, nao muda nada neste goldfish) e "whenever this creature deals combat damage to a player, draw a card". Toda criatura apta a atacar conecta (convencao do
+    arquivo, igual a Ohran/Toski), entao compra 1; sob Roaming Throne o gatilho concedido (de OUTRA criatura Urso minha) dispara uma vez a mais (`bear_trigger_times`)."""
+    if not HERD_HEIRLOOM_DRAW or not state.has("Herd Heirloom") or state.heirloom_tapped_this_turn:
+        return
+    target = heirloom_draw_target(state)
+    if target is None:
+        return
+    state.heirloom_tapped_this_turn = True
+    state.heirloom_mana_armed = False
+    times = bear_trigger_times(state, target)
+    if times == 2:
+        state.roaming_throne_doublings += 1
+    state.heirloom_draw_activations += 1
+    state.heirloom_draws += times
+    state.draw(times, source="Herd Heirloom combat damage")
+    log.append({"trigger": "herd_heirloom_draw", "target": target, "draws": times, "turn": state.turn})
+
 # Poder base real (P/T impresso, sem contar +1/+1 counters - o sim so rastreia
 # counters_on_board como um total agregado, nao por criatura). Usado pra Garruk's
 # Uprising, Tribute to the World Tree e Selvala (comparacoes de "poder >= X").
@@ -810,6 +925,10 @@ def bear_trigger_times(state: GameState, source_card: str) -> int:
     if not state.roaming_throne_active():
         return 1
     if not is_creature(source_card):
+        return 1
+    # "another creature you control": o proprio Roaming Throne (Artifact Creature, escolhe Bear) nunca dobra o gatilho dele mesmo. Nenhum chamador antigo passava a Throne
+    # como fonte (so' Ayula/Beorn/Selvala/...), entao isto nao muda nenhum resultado anterior; passou a importar com o gatilho concedido pelo Herd Heirloom (2026-10-23).
+    if source_card == "Roaming Throne":
         return 1
     if not is_bear(state, source_card):
         return 1
@@ -1017,13 +1136,15 @@ def can_cast(state: GameState, card: str) -> bool:
         # verdade - nao so uma questao de mana.
         if not any(is_creature(c) for c in state.battlefield if c != card and C(c).g_pips >= 1):
             return False
-    if remaining_mana(state) < effective_cost(state, card):
+    # Herd Heirloom: o mana restrito (1, qualquer cor, so' magia de criatura) soma para criatura e para ela so'. Sem o Heirloom armado `extra` e' 0 e nada muda.
+    extra = creature_mana_bonus(state) if is_creature(card) else 0
+    if remaining_mana(state) + extra < effective_cost(state, card):
         return False
     pips = C(card).g_pips
     if pips >= 2:
-        return green_sources(state) >= pips
+        return green_sources(state) + extra >= pips
     if pips == 1:
-        return green_sources(state) >= 1
+        return green_sources(state) + extra >= 1
     return True
 
 def commander_can_be_cast(state: GameState) -> bool:
@@ -1216,9 +1337,9 @@ def try_cast_beorn_host_from_exile(state: GameState, log: List[Dict]):
     name = "Beorn, Reluctant Host // Till and Tend"
     if not state.beorn_host_exiled:
         return
-    if remaining_mana(state) < 5:
+    if remaining_mana(state) + creature_mana_bonus(state) < 5:
         return
-    state.mana_spent_this_turn += 5
+    spend_for_spell(state, name, 5)
     state.spells_cast += 1
     if state.managorger_in_play:
         state.managorger_counters += 1
@@ -1239,6 +1360,8 @@ def try_cast_beorn_host_from_exile(state: GameState, log: List[Dict]):
 def priority(state: GameState, card: str) -> tuple:
     if card == "Sol Ring":
         return (0, 0)
+    if card == "Herd Heirloom":
+        return (1, C(card).mv)          # rocha de mana barata: entra cedo, junto com os dorks de 1-2 mana (a tag "ramp" nao se aplica: o mana dela e' restrito)
     if has_tag(card, "ramp") and C(card).mv <= 2:
         return (1, C(card).mv)
     if card == COMMANDER:
@@ -1276,7 +1399,7 @@ def main_phase(state: GameState, log: List[Dict]):
     if not state.commander_in_play and state.turn >= 3:
         if commander_can_be_cast(state):
             state.spells_cast += 1
-            state.mana_spent_this_turn += effective_cost(state, COMMANDER)
+            spend_for_spell(state, COMMANDER, effective_cost(state, COMMANDER))
             state.commander_cast_count += 1
             # Contra-ataque (`try_smart_opponent_counter`, 7a categoria do modo
             # de resiliencia -- so' faz sentido no exato momento do cast, mesma
@@ -1326,7 +1449,7 @@ def main_phase(state: GameState, log: List[Dict]):
 
         if not state.commander_in_play and state.turn >= 3 and commander_can_be_cast(state):
             state.spells_cast += 1
-            state.mana_spent_this_turn += effective_cost(state, COMMANDER)
+            spend_for_spell(state, COMMANDER, effective_cost(state, COMMANDER))
             state.commander_cast_count += 1
             # Contra-ataque -- mesmo tratamento do outro ponto de cast do
             # comandante (ver comentario acima).
@@ -1748,7 +1871,7 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
 
     state.hand.remove(card)
     state.spells_cast += 1
-    state.mana_spent_this_turn += cost
+    spend_for_spell(state, card, cost)
 
     if "Instant" in C(card).types or "Sorcery" in C(card).types:
         if card != "Germination Practicum":  # ela e exilada, nao vai pro cemiterio
@@ -1784,6 +1907,12 @@ def cast_spell(state: GameState, card: str, log: List[Dict]):
         state.ramp_pieces_in_play += 1
         if "Creature" in C(card).types:
             state.dork_entered_turn[card] = state.turn
+
+    if card == "Herd Heirloom":
+        # Rocha de mana (restrita) do deck: conta como peca de rampa; artefato sem doenca de invocacao, entao o {T} ja' serve neste turno.
+        state.ramp_pieces_in_play += 1
+        state.heirloom_cast_turn = state.turn
+        arm_heirloom(state)
 
     if has_tag(card, "removal"):
         state.removal_cast += 1
@@ -2072,10 +2201,12 @@ def combat_step(state: GameState, log: List[Dict]):
     # Beorn e do tipo Bear - Roaming Throne (tipo escolhido: Bear) dispara o
     # gatilho de combate dela uma segunda vez completa (converte outra criatura
     # em Urso, recheca 3+ Ursos de novo). Ver references/goldfish-sim-card-rules.md.
-    # Gatilho e "Whenever Beorn attacks" - so dispara se a Beorn pode atacar de
-    # verdade (nao doente de invocacao no turno em que foi conjurada). Correcao:
-    # antes disparava mesmo no turno do cast, o que e ilegal (CR 302.6).
-    if state.commander_in_play and can_attack(state, COMMANDER):
+    # [2026-10-23, BEORN_TRIGGER_AT_BEGINNING_OF_COMBAT] LEITURA DE CLAUSULA CORRIGIDA: o oraculo real e' "At the beginning of combat on your turn, put a trample counter on up to one
+    # target creature you control. It becomes a Bear in addition to its other types. Then if you control three or more Bears, draw two cards." (ruling 2026-06-29: o tipo dura para
+    # sempre). E' gatilho de INICIO DE COMBATE, nao "Whenever Beorn attacks": dispara com a Beorn em campo, doente de invocacao ou nao, e mesmo que ela nao ataque; a doenca de invocacao
+    # (CR 302.6) so' impede atacar/usar {T}. O comentario antigo ("Whenever Beorn attacks ... ilegal no turno do cast") confundia os dois e custava o 1o gatilho (conversao + compra de 2).
+    # Com a chave em False o comportamento e' o de antes (exige can_attack), bit a bit.
+    if state.commander_in_play and (BEORN_TRIGGER_AT_BEGINNING_OF_COMBAT or can_attack(state, COMMANDER)):
         times = bear_trigger_times(state, COMMANDER)
         if times == 2:
             state.roaming_throne_doublings += 1
@@ -2104,6 +2235,9 @@ def combat_step(state: GameState, log: List[Dict]):
                 state.draw(2, source="Beorn 3+ Bears")
                 state.beorn_bear_draws += 1
                 log.append({"trigger":"Beorn draw2","bear_count":bears_in_play(state)})
+
+    # Herd Heirloom, habilidade 2: depois do gatilho da Beorn (que pode levar uma criatura a poder >= 4 ao vira-la Urso, +2/+2) e antes do dano.
+    try_heirloom_draw(state, log)
 
     # Ohran Frostfang / Toski, Bearer of Secrets: "Whenever a creature you control
     # deals combat damage to a player, draw a card." Gap 100% ausente ate essa
@@ -2171,6 +2305,8 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     state.radagast_discount_available = True
     state.war_room_used_this_turn = False
     state.nykthos_used_this_turn = False
+    state.heirloom_tapped_this_turn = False
+    state.heirloom_mana_armed = False
 
     log = [{"turn": turn, "phase": "start", "hand_size": len(state.hand),
             "battlefield_count": len(state.battlefield), "mana_est": total_mana(state)}]
@@ -2179,6 +2315,7 @@ def play_turn(state: GameState, turn: int, game_log: List[List[Dict]]):
     # comeca (CR 103.8a) so vale em jogos de 2 jogadores. Aqui sempre compra, mesmo no T1.
     state.draw(1, source="normal")
 
+    arm_heirloom(state)                       # 2026-10-23: para que serve o {T} do Herd Heirloom neste turno (mana de criatura ou compra por dano de combate)
     try_bala_ged_recovery(state, log)
     cast_landfall_payoffs_first(state, log)   # 2026-10-07: payoff de landfall antes do terreno (chave LANDFALL_PAYOFF_FIRST)
     play_land(state, log)
@@ -2518,7 +2655,7 @@ def simulate_one_with_interaction(seed: int, turns: int = 8) -> GameState:
     resumido como `simulate_one`), mesma convencao dos outros 12 decks,
     pra inspecao detalhada das metricas de resiliencia."""
     rng = random.Random(seed)
-    deck = parse_decklist(DECKLIST_TEXT)
+    deck = current_decklist()
     assert len(deck) == 99, f"Mainboard deveria ser 99, deu {len(deck)}"
     rng.shuffle(deck)
     state = GameState(rng=rng, library=deck, interaction_rng=random.Random(seed + 999_999))
@@ -2588,7 +2725,7 @@ def run_batch_with_interaction(n=2000, turns=8, seed_base=6000000):
 
 def simulate_one(seed: int, turns: int = 8) -> Dict:
     rng = random.Random(seed)
-    deck = parse_decklist(DECKLIST_TEXT)
+    deck = current_decklist()
     assert len(deck) == 99, f"Mainboard deveria ser 99, deu {len(deck)}"
 
     rng.shuffle(deck)
@@ -2671,6 +2808,12 @@ def simulate_one(seed: int, turns: int = 8) -> Dict:
         "return_of_wildspeaker_cast": state.return_of_wildspeaker_cast,
         "obscuring_haze_cast_free": state.obscuring_haze_cast_free,
         "payoff_first_casts": state.payoff_first_casts,
+        # Herd Heirloom (2026-10-23)
+        "heirloom_cast_turn": state.heirloom_cast_turn,
+        "heirloom_mana_uses": state.heirloom_mana_uses,
+        "heirloom_draw_activations": state.heirloom_draw_activations,
+        "heirloom_draws": state.heirloom_draws,
+        "heirloom_mana_turns_reserved_for_draw": state.heirloom_mana_turns_reserved_for_draw,
     }
 
 def run_batch(n=500, turns=8, out_jsonl="beorn_v1_runs.jsonl", seed_base=91000):
@@ -2800,6 +2943,13 @@ def run_batch(n=500, turns=8, out_jsonl="beorn_v1_runs.jsonl", seed_base=91000):
     oh_games = [r for r in results if r["obscuring_haze_cast_free"]]
     print(f"Obscuring Haze conjurada de graca (comandante em campo) em {100*len(oh_games)/n:.1f}% dos jogos")
 
+    hh_games = [r for r in results if r["heirloom_cast_turn"] is not None]
+    if hh_games:
+        print()
+        print(f"Herd Heirloom conjurado em {100*len(hh_games)/n:.1f}% dos jogos (turno medio {statistics.mean([r['heirloom_cast_turn'] for r in hh_games]):.2f}); "
+              f"mana de criatura usado {avg('heirloom_mana_uses'):.2f}x/partida, compra por dano de combate ativada {avg('heirloom_draw_activations'):.2f}x/partida "
+              f"({avg('heirloom_draws'):.2f} cartas/partida), {{T}} guardado para a compra em {avg('heirloom_mana_turns_reserved_for_draw'):.2f} turnos/partida")
+
     print(f"Avg mao final: {avg('hand_size'):.2f}")
     print(f"Avg terrenos jogados: {avg('lands_played_total'):.2f}")
 
@@ -2822,7 +2972,7 @@ def run_batch(n=500, turns=8, out_jsonl="beorn_v1_runs.jsonl", seed_base=91000):
     print(f"RAMP: avg pecas de rampa em campo: {avg('ramp_pieces_in_play'):.2f}")
     print(f"DRAW: avg compras extras totais (soma de todos os motores): {avg('extra_draws'):.2f}")
     print(f"INTERACTION: avg remocao conjurada (Beast Within, Song of the Dryads, Ezuri's Predation, "
-          f"Haywire Mite, Ram Through - Archdruid's Charm excluida, nunca remove de verdade nesse motor, so tutora): "
+          f"Haywire Mite, Ram Through (so' no baralho de antes da troca de 2026-10-23) - Archdruid's Charm excluida, nunca remove de verdade nesse motor, so tutora): "
           f"{avg('removal_cast'):.2f}")
     recursion_vals = [(1 if r["eternal_witness_returned"] else 0) + r["lumra_lands_returned_total"]
                        + (1 if r["bala_ged_recovery_cast"] else 0) for r in results]

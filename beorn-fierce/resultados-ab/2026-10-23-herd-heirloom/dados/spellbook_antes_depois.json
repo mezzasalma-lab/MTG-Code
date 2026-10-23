@@ -1,0 +1,444 @@
+{
+ "reconhece": {
+  "Allosaurus Shepherd": "Allosaurus Shepherd",
+  "Ambush Viper": "Ambush Viper",
+  "Archdruid's Charm": "Archdruid's Charm",
+  "Ayula's Influence": "Ayula's Influence",
+  "Ayula, Queen Among Bears": "Ayula, Queen Among Bears",
+  "Bala Ged Recovery // Bala Ged Sanctuary": "Bala Ged Recovery // Bala Ged Sanctuary",
+  "Basalt Monolith": "Basalt Monolith",
+  "Beast Whisperer": "Beast Whisperer",
+  "Beast Within": "Beast Within",
+  "Beorn the Fierce": "Beorn the Fierce",
+  "Beorn's Hospitality": "Beorn's Hospitality",
+  "Beorn, Reluctant Host // Till and Tend": "Beorn, Reluctant Host // Till and Tend",
+  "Birds of Paradise": "Birds of Paradise",
+  "Boseiju, Who Endures": "Boseiju, Who Endures",
+  "Chameleon Colossus": "Chameleon Colossus",
+  "Chronicle of Victory": "Chronicle of Victory",
+  "Craterhoof Behemoth": "Craterhoof Behemoth",
+  "Cultivate": "Cultivate",
+  "Dancing from Dark to Dawn": "Dancing from Dark to Dawn",
+  "Defiler of Vigor": "Defiler of Vigor",
+  "Emerald Medallion": "Emerald Medallion",
+  "Eternal Witness": "Eternal Witness",
+  "Ezuri's Predation": "Ezuri's Predation",
+  "Firdoch Core": "Firdoch Core",
+  "Forest": "Forest",
+  "Forgotten Ancient": "Forgotten Ancient",
+  "Garruk's Uprising": "Garruk's Uprising",
+  "Genji Glove": "Genji Glove",
+  "Germination Practicum": "Germination Practicum",
+  "Ghalta, Primal Hunger": "Ghalta, Primal Hunger",
+  "Gigantic Big Bear": "Gigantic Big Bear",
+  "Goreclaw, Terror of Qal Sisma": "Goreclaw, Terror of Qal Sisma",
+  "Haywire Mite": "Haywire Mite",
+  "Herd Heirloom": "Herd Heirloom",
+  "Heroic Intervention": "Heroic Intervention",
+  "Last March of the Ents": "Last March of the Ents",
+  "Lightning Greaves": "Lightning Greaves",
+  "Little Bear": "Little Bear",
+  "Llanowar Elves": "Llanowar Elves",
+  "Lotus Cobra": "Lotus Cobra",
+  "Lumra, Bellow of the Woods": "Lumra, Bellow of the Woods",
+  "Managorger Hydra": "Managorger Hydra",
+  "Maskwood Nexus": "Maskwood Nexus",
+  "Mind Stone": "Mind Stone",
+  "Natural Order": "Natural Order",
+  "Necklace of Girion": "Necklace of Girion",
+  "Nykthos, Shrine to Nyx": "Nykthos, Shrine to Nyx",
+  "Obscuring Haze": "Obscuring Haze",
+  "Ohran Frostfang": "Ohran Frostfang",
+  "Patchwork Banner": "Patchwork Banner",
+  "Radagast of Rhosgobel": "Radagast of Rhosgobel",
+  "Ram Through": "Ram Through",
+  "Reliquary Tower": "Reliquary Tower",
+  "Return of the Wildspeaker": "Return of the Wildspeaker",
+  "Rings of Brighthearth": "Rings of Brighthearth",
+  "Roaming Throne": "Roaming Throne",
+  "Scavenger Grounds": "Scavenger Grounds",
+  "Selvala, Heart of the Wilds": "Selvala, Heart of the Wilds",
+  "Shamanic Revelation": "Shamanic Revelation",
+  "Sol Ring": "Sol Ring",
+  "Solemn Simulacrum": "Solemn Simulacrum",
+  "Song of the Dryads": "Song of the Dryads",
+  "Springleaf Parade": "Springleaf Parade",
+  "The Great Henge": "The Great Henge",
+  "Thought Vessel": "Thought Vessel",
+  "Three Visits": "Three Visits",
+  "Tireless Provisioner": "Tireless Provisioner",
+  "Tireless Tracker": "Tireless Tracker",
+  "Titania's Command": "Titania's Command",
+  "Toski, Bearer of Secrets": "Toski, Bearer of Secrets",
+  "Tribute to the World Tree": "Tribute to the World Tree",
+  "Unnatural Growth": "Unnatural Growth",
+  "War Room": "War Room",
+  "Yavimaya, Cradle of Growth": "Yavimaya, Cradle of Growth"
+ },
+ "nao_reconhecidos": [],
+ "antes_ram_through": {
+  "incluidos": {},
+  "quase": {
+   "Selvala, Heart of the Wilds + Staff of Domination": {
+    "produz": [
+     "Infinite card draw",
+     "Infinite colored mana",
+     "Infinite draw triggers"
+    ],
+    "id": "527-2645",
+    "bracket": "S"
+   },
+   "Selvala, Heart of the Wilds + Umbral Mantle": {
+    "produz": [
+     "Infinite colored mana",
+     "Infinitely large creature until end of turn",
+     "Infinite untap of creatures you control"
+    ],
+    "id": "527-2816",
+    "bracket": "S"
+   },
+   "Jumbo Cactuar + Selvala, Heart of the Wilds": {
+    "produz": [
+     "Near-infinite colored mana"
+    ],
+    "id": "527-6323",
+    "bracket": "R"
+   },
+   "Maskwood Nexus + Realmbreaker, the Invasion Tree": {
+    "produz": [
+     "Put all creature cards from your library onto the battlefield"
+    ],
+    "id": "643-3850",
+    "bracket": "E"
+   },
+   "Lightning Greaves + Selvala, Heart of the Wilds + Temur Sabertooth": {
+    "produz": [
+     "Infinite creature LTB",
+     "Infinite creature ETB",
+     "Infinite colored mana"
+    ],
+    "id": "215-527-876",
+    "bracket": "E"
+   },
+   "Selvala, Heart of the Wilds + Sword of the Paruns": {
+    "produz": [
+     "Infinite colored mana",
+     "Infinite mana creatures you control can produce",
+     "Infinite untap of creatures you control"
+    ],
+    "id": "527-5200",
+    "bracket": "S"
+   },
+   "Crackdown Construct + Lightning Greaves": {
+    "produz": [
+     "Infinitely large creature until end of turn"
+    ],
+    "id": "876-4944",
+    "bracket": "O"
+   },
+   "Maskwood Nexus + Turntimber Ranger": {
+    "produz": [
+     "Infinite creature tokens",
+     "Infinite creature ETB",
+     "Infinitely large creature"
+    ],
+    "id": "643-3638",
+    "bracket": "R"
+   },
+   "Lumra, Bellow of the Woods + Song of the Dryads + Vesuva": {
+    "produz": [
+     "Infinite creature ETB",
+     "Infinite creature LTB",
+     "Infinite death triggers"
+    ],
+    "id": "2098-5531-7812",
+    "bracket": "S"
+   },
+   "Maskwood Nexus + Wirewood Symbiote": {
+    "produz": [
+     "Infinite creature ETB",
+     "Infinite creature LTB",
+     "Infinite storm count"
+    ],
+    "id": "643-1909",
+    "bracket": "E"
+   },
+   "Ezuri's Predation + Natural Affinity": {
+    "produz": [
+     "Destroy some creatures opponents control",
+     "Mass Land Denial",
+     "Near-infinite creature ETB"
+    ],
+    "id": "1660-7779",
+    "bracket": "R"
+   },
+   "Aerie Ouphes + Tribute to the World Tree": {
+    "produz": [
+     "Infinite death triggers",
+     "Infinite creature ETB",
+     "Infinite creature LTB"
+    ],
+    "id": "2127-3575",
+    "bracket": "E"
+   },
+   "Nykthos, Shrine to Nyx + Silvanus's Invoker": {
+    "produz": [
+     "Infinite mana lands you control can produce",
+     "Infinite untap of lands you control"
+    ],
+    "id": "4249-4954",
+    "bracket": "S"
+   },
+   "Nykthos, Shrine to Nyx + Wakeroot Elemental": {
+    "produz": [
+     "Infinite mana lands you control can produce"
+    ],
+    "id": "192-4249",
+    "bracket": "S"
+   },
+   "Dino DNA + Lightning Greaves + Selvala, Heart of the Wilds": {
+    "produz": [
+     "Infinite colored mana",
+     "Infinite copies of cards exiled with Dino DNA",
+     "Infinite death triggers"
+    ],
+    "id": "527-876-4790",
+    "bracket": "E"
+   },
+   "Ayula, Queen Among Bears + Herd Baloth + Maskwood Nexus": {
+    "produz": [
+     "Infinite +1/+1 counters on a creature",
+     "Infinite creature tokens",
+     "Infinite creature ETB"
+    ],
+    "id": "643-3197-4304",
+    "bracket": "S"
+   },
+   "Ayula, Queen Among Bears + Maskwood Nexus + Scurry Oak": {
+    "produz": [
+     "Infinite +1/+1 counters on a creature",
+     "Infinite creature tokens",
+     "Infinite creature ETB"
+    ],
+    "id": "643-4186-4304",
+    "bracket": "S"
+   },
+   "Ayula, Queen Among Bears + Basking Broodscale + Maskwood Nexus": {
+    "produz": [
+     "Infinite creature LTB",
+     "Infinite creature ETB",
+     "Infinite creature sacrifice triggers"
+    ],
+    "id": "643-4304-5641",
+    "bracket": "S"
+   },
+   "Dancing from Dark to Dawn + Perilous Forays + Tireless Provisioner": {
+    "produz": [
+     "Put all lands with a basic land type from your library onto the battlefield tapped"
+    ],
+    "id": "880-3875-7889",
+    "bracket": "E"
+   },
+   "Dancing from Dark to Dawn + Lotus Cobra + Perilous Forays": {
+    "produz": [
+     "Put all lands with a basic land type from your library onto the battlefield tapped"
+    ],
+    "id": "880-3470-7889",
+    "bracket": "E"
+   },
+   "Ayula, Queen Among Bears + Maskwood Nexus + Sekki, Seasons' Guide": {
+    "produz": [
+     "Destroy all creatures opponents control whenever a creature enters the battlefield under your control",
+     "Lock"
+    ],
+    "id": "643-1724-4304",
+    "bracket": "S"
+   }
+  }
+ },
+ "depois_herd_heirloom": {
+  "incluidos": {},
+  "quase": {
+   "Selvala, Heart of the Wilds + Staff of Domination": {
+    "produz": [
+     "Infinite card draw",
+     "Infinite colored mana",
+     "Infinite draw triggers"
+    ],
+    "id": "527-2645",
+    "bracket": "S"
+   },
+   "Selvala, Heart of the Wilds + Umbral Mantle": {
+    "produz": [
+     "Infinite colored mana",
+     "Infinitely large creature until end of turn",
+     "Infinite untap of creatures you control"
+    ],
+    "id": "527-2816",
+    "bracket": "S"
+   },
+   "Jumbo Cactuar + Selvala, Heart of the Wilds": {
+    "produz": [
+     "Near-infinite colored mana"
+    ],
+    "id": "527-6323",
+    "bracket": "R"
+   },
+   "Maskwood Nexus + Realmbreaker, the Invasion Tree": {
+    "produz": [
+     "Put all creature cards from your library onto the battlefield"
+    ],
+    "id": "643-3850",
+    "bracket": "E"
+   },
+   "Lightning Greaves + Selvala, Heart of the Wilds + Temur Sabertooth": {
+    "produz": [
+     "Infinite creature LTB",
+     "Infinite creature ETB",
+     "Infinite colored mana"
+    ],
+    "id": "215-527-876",
+    "bracket": "E"
+   },
+   "Selvala, Heart of the Wilds + Sword of the Paruns": {
+    "produz": [
+     "Infinite colored mana",
+     "Infinite mana creatures you control can produce",
+     "Infinite untap of creatures you control"
+    ],
+    "id": "527-5200",
+    "bracket": "S"
+   },
+   "Crackdown Construct + Lightning Greaves": {
+    "produz": [
+     "Infinitely large creature until end of turn"
+    ],
+    "id": "876-4944",
+    "bracket": "O"
+   },
+   "Maskwood Nexus + Turntimber Ranger": {
+    "produz": [
+     "Infinite creature tokens",
+     "Infinite creature ETB",
+     "Infinitely large creature"
+    ],
+    "id": "643-3638",
+    "bracket": "R"
+   },
+   "Lumra, Bellow of the Woods + Song of the Dryads + Vesuva": {
+    "produz": [
+     "Infinite creature ETB",
+     "Infinite creature LTB",
+     "Infinite death triggers"
+    ],
+    "id": "2098-5531-7812",
+    "bracket": "S"
+   },
+   "Maskwood Nexus + Wirewood Symbiote": {
+    "produz": [
+     "Infinite creature ETB",
+     "Infinite creature LTB",
+     "Infinite storm count"
+    ],
+    "id": "643-1909",
+    "bracket": "E"
+   },
+   "Ezuri's Predation + Natural Affinity": {
+    "produz": [
+     "Destroy some creatures opponents control",
+     "Mass Land Denial",
+     "Near-infinite creature ETB"
+    ],
+    "id": "1660-7779",
+    "bracket": "R"
+   },
+   "Aerie Ouphes + Tribute to the World Tree": {
+    "produz": [
+     "Infinite death triggers",
+     "Infinite creature ETB",
+     "Infinite creature LTB"
+    ],
+    "id": "2127-3575",
+    "bracket": "E"
+   },
+   "Nykthos, Shrine to Nyx + Silvanus's Invoker": {
+    "produz": [
+     "Infinite mana lands you control can produce",
+     "Infinite untap of lands you control"
+    ],
+    "id": "4249-4954",
+    "bracket": "S"
+   },
+   "Nykthos, Shrine to Nyx + Wakeroot Elemental": {
+    "produz": [
+     "Infinite mana lands you control can produce"
+    ],
+    "id": "192-4249",
+    "bracket": "S"
+   },
+   "Dino DNA + Lightning Greaves + Selvala, Heart of the Wilds": {
+    "produz": [
+     "Infinite colored mana",
+     "Infinite copies of cards exiled with Dino DNA",
+     "Infinite death triggers"
+    ],
+    "id": "527-876-4790",
+    "bracket": "E"
+   },
+   "Ayula, Queen Among Bears + Herd Baloth + Maskwood Nexus": {
+    "produz": [
+     "Infinite +1/+1 counters on a creature",
+     "Infinite creature tokens",
+     "Infinite creature ETB"
+    ],
+    "id": "643-3197-4304",
+    "bracket": "S"
+   },
+   "Ayula, Queen Among Bears + Maskwood Nexus + Scurry Oak": {
+    "produz": [
+     "Infinite +1/+1 counters on a creature",
+     "Infinite creature tokens",
+     "Infinite creature ETB"
+    ],
+    "id": "643-4186-4304",
+    "bracket": "S"
+   },
+   "Ayula, Queen Among Bears + Basking Broodscale + Maskwood Nexus": {
+    "produz": [
+     "Infinite creature LTB",
+     "Infinite creature ETB",
+     "Infinite creature sacrifice triggers"
+    ],
+    "id": "643-4304-5641",
+    "bracket": "S"
+   },
+   "Dancing from Dark to Dawn + Perilous Forays + Tireless Provisioner": {
+    "produz": [
+     "Put all lands with a basic land type from your library onto the battlefield tapped"
+    ],
+    "id": "880-3875-7889",
+    "bracket": "E"
+   },
+   "Dancing from Dark to Dawn + Lotus Cobra + Perilous Forays": {
+    "produz": [
+     "Put all lands with a basic land type from your library onto the battlefield tapped"
+    ],
+    "id": "880-3470-7889",
+    "bracket": "E"
+   },
+   "Ayula, Queen Among Bears + Maskwood Nexus + Sekki, Seasons' Guide": {
+    "produz": [
+     "Destroy all creatures opponents control whenever a creature enters the battlefield under your control",
+     "Lock"
+    ],
+    "id": "643-1724-4304",
+    "bracket": "S"
+   }
+  }
+ },
+ "diferenca_combos_incluidos": [],
+ "diferenca_quase": [],
+ "controle_positivo_basalt_rings": true,
+ "controle_de_corte_combo_sumiu_sem_o_rings": true,
+ "controle_positivo_n_combos": 1
+}
