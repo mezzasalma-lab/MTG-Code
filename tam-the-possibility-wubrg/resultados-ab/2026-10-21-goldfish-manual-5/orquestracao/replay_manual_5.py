@@ -1,7 +1,7 @@
 """Replay do goldfish manual #5 do usuario (2026-10-21) no simulador: a MESMA ordem de cartas, a IA do simulador joga.
-Mao inicial: o bloco 1 do log tem 7 compras da abertura, 2 devolvidas ao fundo da biblioteca (The Chain Veil e Narset Transcendent: mulligan; quantos mulligans foi, o log nao diz) e a compra do T1 (Way of the Paradox).
+Mao inicial: o bloco 1 do log tem 7 compras da abertura, 2 devolvidas ao fundo da biblioteca (The Chain Veil e Narset Transcendent; o usuario respondeu em 2026-10-23 que NAO houve mulligan e o que foram as 2 devolucoes esta em aberto, ver LEIAME: mulligan; quantos mulligans foi, o log nao diz) e a compra do T1 (Way of the Paradox).
 Mao de 5 cartas: Way of the Pyromancer, Bloom Tender, Fire-Lit Thicket, Ripples of Potential, Bountiful Promenade. Compras seguintes: TODA carta `library -> hand` do log depois da compra do T1, na ordem do log
-(inclui as de habilidade: Jace -3, Garruk, Teferi +1...). As 2 cartas do mulligan ficam no fundo. Nenhuma busca (library -> battlefield).
+(inclui as de habilidade: Jace -3, Garruk, Teferi +1...). As 2 cartas devolvidas ficam no fundo (premissa; o destino real delas esta em aberto). Nenhuma busca (library -> battlefield).
 Uso: python3 replay_manual_5.py [semente]  (saida: linha por turno)."""
 import os, sys, json, random
 AQUI = os.path.dirname(os.path.abspath(__file__))
@@ -12,7 +12,7 @@ import tam_goldfish_v1 as T
 _LOG = json.load(open(os.path.join(AQUI, "..", "dados", "goldfish_manual_5_bruto.json")))
 _B1 = _LOG[0]
 _ini = [e["name"] for e in _B1[:7]]                                     # 7 library->hand da abertura
-_fundo = [e["name"] for e in _B1[7:9] if e["fromZone"] == "hand" and e["toZone"] == "library"]   # mulligan: vao pro fundo
+_fundo = [e["name"] for e in _B1[7:9] if e["fromZone"] == "hand" and e["toZone"] == "library"]   # devolvidas: vao pro fundo (premissa)
 FUNDO = _fundo
 MAO = [c for c in _ini if c not in _fundo]                               # 5 cartas
 COMPRAS = [e["name"] for b in _LOG for e in b[(9 if b is _B1 else 0):] if e["fromZone"] == "library" and e["toZone"] == "hand"]

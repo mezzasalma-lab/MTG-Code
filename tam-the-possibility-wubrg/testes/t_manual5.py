@@ -45,7 +45,7 @@ def _():
     check(T.cast_card(st, "Way of the Paradox") and loy(st, "Jace Token") == 8, "Paradox {2}{G}: R do Jace + 3 do Bloom Tender; Jace %s" % loy(st, "Jace Token"))
 
 
-@test("Manual #5 T4 (DUVIDA): seguindo a linha do usuario (Pyromancer, Jace `+1` {R}, Paradox) sobra mana: Watery Grave desvirado ({B}) + 1 mana flutuante pagam a Way of the Necromancer ({1}{B}); o usuario deixou a Necromancer na mao")
+@test("Manual #5 T4 (escolha do usuario, confirmada em 2026-10-23): seguindo a linha do usuario (Pyromancer, Jace `+1` {R}, Paradox) sobra mana: Watery Grave desvirado ({B}) + 1 mana flutuante pagam a Way of the Necromancer ({1}{B}); o usuario deixou a Necromancer na mao")
 def _():
     st = mk(turn=4, hand=["Way of the Pyromancer", "Way of the Paradox", "Way of the Necromancer", "Ripples of Potential"], bf=["Tam, the Possibility", "Bountiful Promenade", "Fire-Lit Thicket", "Watery Grave", "Bloom Tender"])
     check(T.cast_card(st, "Way of the Pyromancer"))

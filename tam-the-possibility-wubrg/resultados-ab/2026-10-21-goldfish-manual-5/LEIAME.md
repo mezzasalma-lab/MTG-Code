@@ -6,20 +6,20 @@ Arquivado conforme a Regra #8 da CLAUDE.md. **O que é:** o log que o usuário c
 
 > *"Nesse esqueci muitos gatilhos da Ichormoon, mas depois do 3o emblema no campo fica impossível perder proliferando e jogando turnos extras!"*
 
-## Dúvidas NÃO respondidas (o usuário mandou *"Termine tudo que falta!"* em vez de responder)
+## As 8 dúvidas e as respostas do usuário (2026-10-23)
 
-No #1 ele pediu *"me pergunte qq dúvida antes de começar a compilar qq coisa"*. Eu ia perguntar; ele respondeu **"Termine tudo que falta!"**, então **compilei sem as respostas** e deixei cada ambiguidade marcada abaixo com a premissa usada. Se alguma premissa estiver errada, é só dizer: nenhuma conclusão depende dela.
+No #1 ele pediu *"me pergunte qq dúvida antes de começar a compilar qq coisa"*. Eu ia perguntar; ele respondeu **"Termine tudo que falta!"**, então compilei com premissas declaradas. **Em 2026-10-23 ele respondeu** (texto literal em `dados/respostas_usuario_2026-10-23.txt`). Resultado: **4 premissas confirmadas (2, 3, 5, 6), 2 refutadas (1, 4), 1 pergunta dele de volta (7), 1 esclarecida (8)**; nenhuma conclusão numérica da pasta dependia delas.
 
-| # | o que o log mostra | premissa que usei | onde pesa |
-|---|---|---|---|
-| 1 | T1: 7 cartas na abertura, **2 devolvidas à biblioteca** (The Chain Veil, Narset Transcendent), compra do T1 (Way of the Paradox) | mulligan até **5 cartas**; as 2 foram para o **fundo**; o log não diz quantos mulligans foram (2, ou 3 contando o 1º grátis) | o replay começa com a mão de 5 |
-| 2 | T4: com Promenade, Thicket, Watery Grave e Bloom Tender sobravam **7 mana** (teste `Manual #5 T4`): Pyromancer (2) + Paradox (3) + **Way of the Necromancer** ({1}{B}), e a Necromancer ficou na mão | foi **escolha** dele (ou esquecimento); não é limite de regra | só descrição |
-| 3 | T7: Tam conjurada com imposto 1 e **de volta à zona de comando** na hora (imposto 2); a carta de oponente **Ertai's Scorn** (`Counter target spell`) aparece no bloco anterior (T6), o mesmo padrão da Vex do #4 (aparece no bloco antes da magia anulada) | a Tam foi **anulada** pela Ertai's Scorn | o Garruk (5) ficou sem o desconto da Tam e só entrou no T8 |
-| 4 | T7: Vronos 4→5→4→3→4 (líquido 0); City of Brass e Promenade viradas e desviradas | cliques **desfeitos**, nenhuma ativação | só descrição |
-| 5 | T10: Jace 5→**1**→10; T11: Jace 13→1 (−12)→**10** | o `1` é um passo do contador da interface (adicionar contador); o valor final (10) é o que vale | só descrição |
-| 6 | T10: Teferi, Temporal Archmage 5→4→3 (`−1` duas vezes) | o mesmo erro do #4 (esperava `−2`; o Teferi TA só tem `−1`): uma ativação por turno, o certo é 4 | erro de regra do relato |
-| 7 | T9: o Damning Verdict do oponente ("destroy all creatures with no counters") matou o Kitten e 2 Beasts (3 criaturas); a Way of the Necromancer deu **+1** em cada planeswalker | pela regra seriam **+3** (uma por criatura morta); ele esqueceu 2 | erro de regra do relato |
-| 8 | T10 e T11: os `0: Proliferate` do Gauntlet não aparecem no log (custo 0); o comentário dele diz que **esqueceu muitos gatilhos do Ichormoon** | não sei quais proliferates e quais contadores de gatilho (a cada magia não-criatura) ele deixou de fazer | só descrição |
+| # | o que o log mostra | premissa que usei | resposta do usuário | situação agora |
+|---|---|---|---|---|
+| 1 | T1: 7 compradas, **2 devolvidas à biblioteca** (The Chain Veil, Narset Transcendent), 1 compra (Way of the Paradox), Fire-Lit Thicket | mulligan até 5 cartas, as 2 foram para o fundo | *"Nenhum Mulligan"* | **premissa refutada.** O log literal continua sendo 7 → 2 devolvidas → 1 compra, e não sei o que foram essas 2 devoluções (**pergunta aberta**). O replay usa a mesma mão (as 5 que ficaram + a compra do T1), que é o que o log mostra; só o destino das 2 cartas na biblioteca (fundo, no replay) é incerto, e nenhuma das duas foi comprada nas 11 compras do log |
+| 2 | T4: sobravam 7 mana; a Way of the Necromancer ficou na mão | escolha dele | *"sim, por escolha"* | ✅ confirmada |
+| 3 | T7: Tam conjurada com imposto 1 e de volta à zona de comando (imposto 2); Ertai's Scorn no bloco anterior | a Tam foi anulada pela Ertai's Scorn | *"FOi sim"* | ✅ confirmada |
+| 4 | T7: Vronos 4→5, 5→4, 4→3, 3→4 (líquido 0) | cliques desfeitos, nenhuma ativação | *"Não, eu ativei ele e depois ele ganhou marcadores pro proliferate"* | **premissa refutada: houve ativação.** Mas o log do T7 não tem fonte de proliferate (a Tam foi anulada e a Gauntlet só entra no T10), e as quatro mudanças são 1 aumento, 2 reduções e 1 aumento: **qual habilidade do Vronos (`+1` ou `−2`) e qual proliferate foi (pergunta aberta)** |
+| 5 | T10: Jace 5→1→10; T11: 13→1 (−12)→10 | passo do contador da interface | *"Sim, cliquei até chegar no numero de marcadores de lealdade"* | ✅ confirmada |
+| 6 | T10: Teferi, Temporal Archmage 5→4→3 (`−1` duas vezes) | engano | *"Foi engano"* | ✅ confirmada |
+| 7 | T9: Damning Verdict do oponente; o log mostra o **Displacer Kitten** indo ao cemitério e **+1** em cada um dos 5 planeswalkers | pela Way of the Necromancer seriam +3 (3 criaturas: Kitten e 2 Beasts); ele esqueceu 2 | *"Qual necromancer?"* | **a pergunta dele, respondida:** é a **Way of the Necromancer** ({1}{B}, conjurada no T6): *"Whenever a creature you control dies, put a loyalty counter on each planeswalker you control."* Os 2 Beasts (4/4 do Garruk `−3`, ids `lh9k9s` do T8 e `ikUHE4` do T9) não têm contador, então o Verdict os destrói; o log não registra a saída de ficha. **Premissa "ele esqueceu 2" NÃO confirmada, e o rótulo "erro de regra do relato" foi retirado:** a dúvida agora é se os 2 Beasts morreram (pergunta aberta) |
+| 8 | T10 e T11: sem `0: Proliferate` no log (custo 0) e o comentário de que esqueceu gatilhos da Ichormoon | quais ele esqueceu | *"Esqueci de acrescentar um marcador de um tipo já existente ao conjurar um noncreature spell, esse gatilho!"* | ✅ **esclarecida:** é o gatilho de conjuração da Ichormoon Gauntlet (*"Whenever you cast a noncreature spell, choose a counter on target permanent. Put an additional counter of that kind on that permanent."*). Efeito: as lealdades dele nos T10–T11 são **menores** do que numa linha com todos os gatilhos; o simulador faz o gatilho em toda magia não-criatura (teste `Manual #5 T10: Ichormoon Gauntlet`) |
 
 ## Arquivos
 
@@ -60,14 +60,14 @@ O log **não tem vida de oponente**: não há "vitória" nem dano registrado; s�
 | T2: Promenade desvirada (3 oponentes); Promenade + Thicket (filtro) pagam o Bloom Tender | `Manual #5 T2` | ✅ |
 | T3: Tam com Promenade + Thicket + Watery Grave (2 de vida) | `Manual #5 T3` | ✅ |
 | T4: Pyromancer (Jace 2), Jace `+1` ({R}), Bloom Tender com 3 cores, Paradox (Jace 8) | `Manual #5 T4: Pyromancer ...` | ✅ |
-| T4: sobrava mana para a Necromancer (Watery Grave + 1 flutuante) e ela ficou na mão | `Manual #5 T4 (DUVIDA)` | ✅ **só depois da rodada 2** (`SIBLING_FIRST`): o simulador antigo pagava a Pyromancer tocando o Bloom Tender com 2 cores e deixava 1 mana flutuando; a ordem de pagamento era a lacuna |
+| T4: sobrava mana para a Necromancer (Watery Grave + 1 flutuante) e ela ficou na mão | `Manual #5 T4 (escolha do usuario, confirmada em 2026-10-23)` | ✅ **só depois da rodada 2** (`SIBLING_FIRST`): o simulador antigo pagava a Pyromancer tocando o Bloom Tender com 2 cores e deixava 1 mana flutuando; a ordem de pagamento era a lacuna |
 | T5: Jace `−3` compra; Vronos (4 com a Tam) com Bloom Tender + Grave | `Manual #5 T5` | ✅ |
 | T6: Necromancer (Jace +2), Vronos `−2`, Jace `−3`; Teferi, Hero não cabia (sem `{W}`) | `Manual #5 T6: Way of the Necromancer ...` | ✅ |
 | T6 (oponente): Promise of Loyalty sacrifica a Tam (zona de comando) e o Bloom Tender fica com Vow | `Manual #5 T6 (opp)` | ✅ (o efeito do oponente é imposto na mão do teste; o simulador modela a variante Promise do wipe só no perfil `playtester`) |
 | T7/T11: imposto do comandante = {2} por conjuração anterior | `Manual #5 T7/T11` | ✅ |
 | T8: Garruk (5), `−3`: Beast 4/4, o Garruk compra (a Domri); Domri só com o Bloom Tender | `Manual #5 T8` | ✅ |
 | T9: Kitten + Teferi, Hero: pisca o Garruk (5, objeto novo), `−3` de novo, compra | `Manual #5 T9: Displacer Kitten ...` | ✅ |
-| T9 (oponente): Damning Verdict poupa o Bloom Tender (Vow); Necromancer dá +1 por criatura morta em cada planeswalker | `Manual #5 T9 (opp)` | ✅ pela regra (3 mortes = +3; o log tem +1) |
+| T9 (oponente): Damning Verdict poupa o Bloom Tender (Vow); Necromancer dá +1 por criatura morta em cada planeswalker | `Manual #5 T9 (opp)` | ✅ pela regra (uma criatura sua que morre = +1 em cada planeswalker; o log tem +1, o que cabe com só o Kitten ter morrido: se os 2 Beasts também morreram eram +3 — **pergunta aberta**, não é erro comprovado do relato) |
 | T10: Teferi TA `−1` desvira 4; uma ativação por turno | `Manual #5 T10: Teferi, Temporal Archmage ...` | ✅ (o log tem 2 cliques: erro do relato) |
 | T10: Gauntlet: um gatilho por magia não-criatura (3 de 3) e `0: Proliferate` em cada planeswalker | `Manual #5 T10: Ichormoon Gauntlet ...` | ✅ |
 | T11: 3 emblemas (Teferi, Hero `−8`; Teferi TA `−10`; Tamiyo `−7` com 3 compras e magia grátis) | `Manual #5 T11: emblemas` | ✅ |
@@ -91,7 +91,7 @@ Mão de 5 (a do log depois do mulligan) e as compras na ordem do log (as que fic
 
 ## Escopo (Regra #7)
 
-**Comparado:** a linha do tempo inteira (T1–T10) contra as regras do simulador (os testes de `t_manual5.py`), as 8 dúvidas acima como premissas, e o desenvolvimento de mesa com as mesmas cartas.
+**Comparado:** a linha do tempo inteira (T1–T10) contra as regras do simulador (os testes de `t_manual5.py`), as 8 dúvidas acima (respondidas em 2026-10-23; ficam abertas a 1, a 4 e a 7), e o desenvolvimento de mesa com as mesmas cartas.
 **Não comparado / não resolvido:** vida e dano de oponente (o log não tem); a ordem exata das ~130 ações do bloco T11 (4 turnos num bloco só: os turnos extras foram reconstruídos pelas ativações de `−12` e pelo untap); quais proliferates e gatilhos do Gauntlet ele fez (os `0` não aparecem); o que mais ele faria depois do T11 (o log termina no Aminatou, que ele jogou no 4º turno extra).
 
 ## Reprodutibilidade (2026-10-22)
