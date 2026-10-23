@@ -515,7 +515,10 @@ no `play_land`/`play_turn`/mulligan):**
    COMPRA, PULA ou VÁCUO; **hoje 20 de 20 COMPRA**, reexecutado em 2026-10-22
    com o Tam alterado), `audit_tam_terrenos.py` (as varreduras de terreno
    acima para o simulador do Tam, que não tem `play_land`: entrada contra o
-   oráculo, fetch, terreno ≠ magia e landfall; **0 falhas**). Ler à mão cada
+   oráculo, fetch, terreno ≠ magia e landfall; **0 falhas**),
+   `audit_inicio_de_combate.py` (gatilho "at the beginning of combat" preso a
+   `can_attack`/doença de invocação; só triagem: 21 cartas em 10 decks, a leitura
+   é à mão). Ler à mão cada
    divergência antes de corrigir ou de classificar como falso positivo.
 2. **Conferir a lista de classes do motor** (todas já tiveram erro real): o
    mulligan ESCOLHE o fundo (CR 103.5); o imposto do comandante conta no cast,
@@ -562,7 +565,16 @@ no `play_land`/`play_turn`/mulligan):**
    (filtro, Sol Ring) (agora `VIVID_LAST` e `SIBLING_FIRST`). **Não coberto
    (declarar na Regra #7):** a ordem de pagamento nos outros simuladores com
    Bloom Tender (`grep` de 2026-10-22: Hei Bai, Maralen, Prismatic Bridge,
-   Thranduil, Tom Bombadil); só o Tam foi tratado.
+   Thranduil, Tom Bombadil); só o Tam foi tratado. Terceira classe, achada no
+   Beorn (2026-10-23, ao implementar o Herd Heirloom): (c) **gatilho de fase
+   nomeada preso a `can_attack`**: o gatilho da Beorn é "At the beginning of
+   combat on your turn" e o código exigia que ela pudesse atacar, com um
+   comentário citando "whenever Beorn attacks" e a doença de invocação (CR
+   302.6); a doença só impede atacar e usar `{T}`, não um gatilho de fase. Custava
+   o 1º gatilho de toda partida (+1,64 carta extra por partida depois da
+   correção). O Toph tivera a mesma classe (Avatar Kyoshi). **Não coberto:** o mesmo
+   gate em gatilhos de upkeep/end step; The Ozolith em Captain Storm, Bumbleflower
+   e Toph não foi lido à mão.
 3. **Determinismo entre processos.** Os `driver.py` das pastas de resultados
    fixam `PYTHONHASHSEED=0` (senão nada reproduz byte a byte), e por isso **não
    enxergam** dependência de ordem de hash. A única checagem que enxerga é
