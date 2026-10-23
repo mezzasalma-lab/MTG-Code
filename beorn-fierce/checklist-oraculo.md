@@ -589,7 +589,7 @@ Validado com 7 testes unitários isolados (1 por gap) + regressão de
 ## Beorn the Fierce (comandante) {3}{G}{G}
 1. Trample — 📊 combate.
 2. Other Bears +2/+2 — ✅ `effective_power()` (🐛 corrigido: antes só local em on_creature_enters, não propagado pro resto do arquivo).
-3. Início de combate: trample counter + vira Bear + 3+ Bears→draw 2 — ✅ `combat_step()`.
+3. Início de combate: trample counter + vira Bear + 3+ Bears→draw 2 — 🐛 **corrigido em 2026-10-23** (`BEORN_TRIGGER_AT_BEGINNING_OF_COMBAT`): o código exigia `can_attack(Beorn)` (lia "whenever Beorn attacks"); o oráculo é "At the beginning of combat on your turn", dispara com a Beorn doente de invocação e sem atacar. Ruling 2026-06-29: o tipo Urso dura para sempre ✅ (`converted_to_bear`). O contador de trample é 📊 (sem bloqueio modelado).
 
 ## Beorn's Hospitality {1}{G}
 1. Landfall: +1/+1 counter em criatura alvo — ✅ `on_land_enters()`.
@@ -682,6 +682,15 @@ Validado com 7 testes unitários isolados (1 por gap) + regressão de
 1. Morre: ganha 2 vida — 📊 vida não rastreada neste modelo (mono-verde, documentado no header do arquivo).
 2. `{G}`, Sac: exile artefato/encantamento não-criatura — 📝 sem restrição de "do oponente" no oráculo, mas sem alvo próprio valioso (Regra 1) nem alvo de oponente modelado — excluída explicitamente de `try_use_own_interaction` (comentário na linha ~1506).
 
+## Herd Heirloom {1}{G} — **entrou em 2026-10-23** (oráculo e ruling lidos ao vivo, `resultados-ab/2026-10-23-herd-heirloom/dados/scryfall_oraculo_rulings_2026-10-23.json`)
+Artefato. Duas habilidades ativadas que **dividem o mesmo `{T}`** (uma por turno, a menos que desvire).
+1. `{T}`: Add one mana of any color. **Spend this mana only to cast a creature spell.** — ✅ `creature_mana_bonus()` / `can_cast()` / `spend_for_spell()`: o mana restrito soma só para magia de criatura (comandante incluído, e a criatura do exílio da Beorn, Reluctant Host), nunca entra em `total_mana()`/`remaining_mana()`, não paga magia que não seja de criatura nem habilidade ativada (testes `…nao_paga_magia_que_nao_e_de_criatura_nem_ativacao`). Qualquer cor ⇒ também paga um `{G}`.
+2. `{T}`: Until end of turn, target creature you control with power 4 or greater gains trample and "Whenever this creature deals combat damage to a player, draw a card." — ✅ `try_heirloom_draw()` (início do combate, **depois** do gatilho da Beorn, que pode levar uma criatura a poder ≥ 4): alvo = criatura apta a atacar com poder ≥ 4 (`heirloom_target_power`: poder impresso + anthems de Bear + contadores agregados só se for a de maior poder); compra 1; **Roaming Throne dobra o gatilho concedido** quando o alvo é OUTRO Urso (`bear_trigger_times`; o próprio Throne não dobra: "another creature"). Trample: 📊 sem bloqueio modelado (contagem em `heirloom_draw_activations`).
+3. Ruling 2025-04-04 (única): *"Once Herd Heirloom's last ability has resolved, lowering the affected creature's power below 4 won't cause it to lose those abilities."* — ✅ a compra é concedida uma vez na ativação; este simulador não reduz poder durante o combate.
+4. Sem doença de invocação (artefato não-criatura, CR 302.6 só vale para criatura): o `{T}` serve no turno em que entra (`arm_heirloom` é chamado em `cast_spell`).
+5. Interações lidas por script em `lista.md` (`resumos/enumera_condicoes_lista_depois.txt`): Emerald Medallion (custa 1), Defiler of Vigor (magia permanente verde: desconto e contador em cada criatura), Necklace of Girion, Forgotten Ancient e Managorger Hydra (qualquer magia) ✅ por `g_pips`/`cast_spell`; Beast Whisperer, Dancing from Dark to Dawn e Chronicle of Victory **não** disparam (não é criatura nem Urso) ✅; devoção do Nykthos conta o `{G}` do custo ✅.
+6. Política (não é regra): o `{T}` é guardado para a compra se já há alvo elegível; vira mana só sem alvo, ou se a Beorn (comandante) só cabe com ele (`arm_heirloom`). O Heirloom **não** é peça de mulligan (`KEEPERS`) e não entra em `INTERACTION_ENGINE_PRIORITY`.
+
 ## Heroic Intervention {1}{G}
 1. Permanentes ganham hexproof/indestructible até o fim do turno — 📊 proteção reativa, sem remoção de oponente modelada pra proteger contra.
 
@@ -745,7 +754,7 @@ Validado com 7 testes unitários isolados (1 por gap) + regressão de
 1. 1º creature spell do turno custa {2} menos — ✅ `effective_cost()`.
 2. ...e pode ser conjurado com flash — 📝 sem instant-speed/janela de turno adversário modelada (documentado).
 
-## Ram Through {1}{G}
+## Ram Through {1}{G}  *(saiu da lista em 2026-10-23: o usuário a trocou pelo Herd Heirloom; a entrada fica no `CARD_DB` só para o baralho de antes, `HERD_HEIRLOOM_IN_DECK=False`)*
 1. Criatura sua causa dano = seu poder numa criatura do oponente (excesso c/ trample vai na cara) — ✅ tag "removal", `try_use_own_interaction()` (efeito numérico exato do combate é 📊, mas a conjuração conta como interação real).
 
 ## Reliquary Tower
