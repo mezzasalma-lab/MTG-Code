@@ -1,5 +1,7 @@
 # Goldfish Compilado — Beorn the Fierce
 
+> **Rodada 2026-10-23 (Ram Through → Herd Heirloom, pedido do usuário; e o gatilho da Beorn no início do combate) — dados brutos e reprodução:** [`resultados-ab/2026-10-23-herd-heirloom/LEIAME.md`](resultados-ab/2026-10-23-herd-heirloom/LEIAME.md)
+
 > **Rodada 2026-10-07 (Payoff de landfall antes do terreno) — dados brutos e reprodução:** [`resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md`](resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md)
 
 > **Rodada 2026-10-05 (varredura de classes de erro; nenhuma correção de código aqui):** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
@@ -7,6 +9,16 @@
 Compilação de todos os goldfish rodados na sessão. Cada jogo foi registrado turno a turno a partir dos logs reais (imagens de opening hand + JSON de jogadas), com as correções apontadas ao longo do processo já aplicadas.
 
 ---
+
+## Troca Ram Through → Herd Heirloom e gatilho da Beorn no início do combate — 2026-10-23
+
+Pedido do usuário: *"troquei o Ram Through por Herd Heirloom para dar Trample e compra de cartas"*. **`lista.md` atualizada** (mesma posição; 100 cartas). Detalhe, rulings, tabelas e como refazer: [`resultados-ab/2026-10-23-herd-heirloom/LEIAME.md`](resultados-ab/2026-10-23-herd-heirloom/LEIAME.md). N = 10.000 pareado, 8 turnos.
+
+- **Spellbook:** 0 combos antes e depois; 21 "quase" iguais; controles passaram. Nenhum combo some nem aparece; Bracket 3 não muda.
+- **Herd Heirloom** `{1}{G}`, 2 habilidades que dividem o mesmo `{T}`: (1) 1 mana de qualquer cor **só para magia de criatura**; (2) criatura com poder ≥ 4 ganha trample e "compra 1 quando causa dano de combate a um jogador" (a Roaming Throne dobra o gatilho concedido a outro Urso). As duas estão implementadas; o trample é 📊 (sem bloqueio modelado) e redundante com Beorn, Garruk's Uprising, Chronicle of Victory e outras.
+- **Efeito da troca no simulador** (padrão, `depois` − `só gatilho corrigido`): Beorn até T4 **62,0% → 66,5%** (+4,5 ± 0,4 pts), cartas extras **22,78 → 23,91** (+1,13 ± 0,12), magias +0,32, finisher dentro do ruído. **Remoção própria conjurada (proxy) 0,71 → 0,57**: o custo da troca. Parte do ganho de tempo (+1,1 pt até T4) é convenção do simulador (a remoção própria é conjurada nos turnos 3 e 6 antes da fase principal).
+- **Achado fora da troca (leitura de cláusula):** o gatilho da Beorn é **"At the beginning of combat on your turn"** e o código o exigia ligado a `can_attack(Beorn)`; corrigido (`BEORN_TRIGGER_AT_BEGINNING_OF_COMBAT`). Efeito isolado: **+1,64 ± 0,15 carta extra por partida**, +0,43 compras de 2 da Beorn, +0,38 conversões em Urso. **Os números das rodadas anteriores deste log subestimam o deck** nessas métricas; nenhum deles foi refeito aqui.
+- **Validação:** 22/22 testes (14 novos); bit-identidade 20.000 × 2 modos sem divergência; regressão 20.000 × 2 com 0 exceções; determinismo (3 `PYTHONHASHSEED` × 1.500 × 2) sem divergência; varreduras da Regra #10 (`audit_landfall_ordem` 0 candidatos, `audit_compra_t1` 20/20, `ast_sets` 0 hits).
 
 ## Payoff de landfall antes do terreno (`LANDFALL_PAYOFF_FIRST`) — 2026-10-07
 

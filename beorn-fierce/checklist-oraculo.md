@@ -842,6 +842,20 @@ Artefato. Duas habilidades ativadas que **dividem o mesmo `{T}`** (uma por turno
 
 ---
 
+## 🐛 Troca Ram Through → Herd Heirloom e gatilho da Beorn no início do combate (2026-10-23)
+
+Pasta: `resultados-ab/2026-10-23-herd-heirloom/`. **Achados:**
+
+| # | achado | classe da taxonomia | correção | teste |
+|---|---|---|---|---|
+| 1 | **Herd Heirloom** entrou na lista (o usuário trocou o Ram Through): 2 habilidades ativadas que dividem o mesmo `{T}` (mana de qualquer cor só para criatura; trample + compra por dano de combate a criatura de poder ≥ 4) | carta nova, **as duas** habilidades (Regra #1); "`{T}` compartilhado" é item da taxonomia | `creature_mana_bonus` / `spend_for_spell` / `try_heirloom_draw` / `arm_heirloom`; chaves `HERD_HEIRLOOM_IN_DECK`, `_MANA`, `_DRAW` | `test_heirloom_*` (11) |
+| 2 | **O gatilho da Beorn estava preso a `can_attack(Beorn)`**: o oráculo é *"At the beginning of combat on your turn…"*; o código lia "whenever Beorn attacks" e perdia o 1º gatilho (conversão em Urso + compra de 2 com 3+ Ursos) de toda partida, porque a Beorn entra doente de invocação | leitura de cláusula + timing de fase nomeado (Regras #6/#7) | `BEORN_TRIGGER_AT_BEGINNING_OF_COMBAT`: `combat_step` não exige `can_attack` | `test_beorn_gatilho_no_inicio_do_combate_dispara_mesmo_doente_de_invocacao` |
+| 3 | `bear_trigger_times("Roaming Throne")` devolveria 2 (ela é Artifact Creature e Urso): o oráculo diz "**another** creature you control of the chosen type" | conceito compartilhado (Regra #3) | a Throne nunca dobra o gatilho dela mesma; nenhum chamador antigo passava a Throne (sem mudança de resultado) | `…roaming_throne_dobra_o_gatilho_concedido_a_outro_urso_nao_a_propria_throne` |
+
+**Rulings lidas ANTES do código** (`dados/scryfall_oraculo_rulings_2026-10-23.json`): Herd Heirloom (2025-04-04: baixar o poder abaixo de 4 depois de resolver não tira as habilidades ✅), Beorn (2026-06-29: o tipo Urso dura para sempre ✅ `converted_to_bear`), Roaming Throne (2023-11-10: não copia a habilidade, dispara uma vez a mais; alvos e escolhas por instância ✅), Ram Through (4), Ohran (2), Toski (2), Goreclaw (3). Spellbook: 0 combos antes e depois, controles ok.
+**Validação:** 22/22 testes; bit-identidade 20.000 × 2; regressão 20.000 × 2 com 0 exceções; determinismo 0; A/B pareado 2.000 e 10.000 × 2 modos.
+**Escopo (Regra #7):** trample 📊 (sem bloqueio modelado); Genji Glove (combate extra, dano duplo) não repete nenhuma compra por dano de combate (piso); política do `{T}` minha e não otimizada; `--tudo` da reprodução não rodado. Entrada da carta: ver "## Herd Heirloom" acima; "## Ram Through" fica só para o baralho de antes.
+
 ## 🐛 Payoff de landfall antes do terreno (2026-10-07)
 
 Classe do motor (Regra #6/#10), não da carta: `beorn_goldfish_v1.py` jogava o terreno antes de conjurar. Arquivo: `resultados-ab/2026-10-07-landfall-payoff-primeiro/`. Escopo declarado (Regra #7): **varrido** = a ordem terreno × payoff de landfall nos 6 payoff(s) abaixo, com teste dirigido, A/B pareado 2.000 e 10.000, bit-identidade, regressão e determinismo; **NÃO varrido** = magia que põe terreno em campo antes do payoff, terreno que volta ao campo, 2ª fase principal.
