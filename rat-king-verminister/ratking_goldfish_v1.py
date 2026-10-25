@@ -18,13 +18,10 @@ nesta mesma lista pra Emeritus of Woe/Demonic Tutor):
   verdadeira, Instant // Land -- o nome sem o verso nao e' o nome real
   completo da carta).
 
-ATENCAO -- lista incompleta, NAO inventado aqui: `lista.md` tem uma nota
-propria no topo avisando que a lista esta em 99/100 cartas (98 de
-biblioteca + comandante, falta 1 carta que o usuario ainda vai escolher).
-Este simulador reflete a lista REAL como ela esta hoje -- `BASE_LIBRARY`
-tem 98 cartas, nao 99 -- documentado explicitamente aqui e checado em
-`build_library()` (assert len==98, nao 99, pra nao mascarar o buraco real
-fingindo uma carta que nao existe).
+Lista: 100/100 desde 2026-08-31 (o Damnation foi a 100a carta, ver
+auditoria.md secao 14). `BASE_LIBRARY` tem 99 cartas, o comandante fica
+de fora, e `build_library()` faz `assert len==99`. (Ate 2026-08-31 a lista
+tinha 99/100, `BASE_LIBRARY` tinha 98 e o assert era 98; ver goldfish-log.md.)
 
 Mecanica central do comandante: Rat King, Verminister -- {1}{B}, 1/1.
 "Disappear -- At the beginning of your end step, if a permanent left the
@@ -1545,10 +1542,8 @@ def build_library(names_override=None):
         assert name in CARD_DB, f"faltando no CARD_DB: {name}"
         for _ in range(qty):
             lib.append(name)
-    # ATENCAO: lista.md esta com 98 cartas de biblioteca (99 incluindo o
-    # comandante), nao 99 -- 1 carta faltando por decisao do usuario
-    # (ver docstring do arquivo e nota no topo de lista.md). Assert
-    # reflete a realidade atual, nao inventa a 100a carta.
+    # lista.md tem 100 cartas: o comandante (fora da biblioteca) + 99 de
+    # biblioteca (100a carta = Damnation, 2026-08-31; auditoria.md secao 14).
     assert len(lib) == 99, f"esperado 99 (lista completa desde 2026-08-31, Damnation adicionado), achou {len(lib)}"
     return lib
 

@@ -418,6 +418,7 @@ verdade e não disfarce de omissão):
 - **53 cartas únicas** (comandante + 51 cartas de biblioteca não-Swamp +
   Swamp) — lista confirmada em 99/100 (falta 1 carta que o usuário ainda
   vai escolher, `BASE_LIBRARY` reflete isso corretamente com 98 cartas).
+  **[SUPERADO: a lista fechou em 100/100 em 2026-08-31 com o Damnation (`auditoria.md` §14); `BASE_LIBRARY` tem 99 e o assert é `len == 99`. Registro histórico mantido; corrigido em 2026-10-25.]**
 - **🐛 Corrigido nesta rodada:** 3 cartas (Species Specialist, Deadly
   Rollick, Takenuma, Abandoned Mire).
 - **📊 Estrutural confirmado (sem oponente real / sem combate — não

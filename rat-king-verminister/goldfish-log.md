@@ -409,6 +409,8 @@ via Scryfall, não presumidas):
   verdadeira (`layout: modal_dfc`, Instant // Land), o nome sem o verso
   não é o nome completo real da carta.
 
+**[SUPERADO em 2026-08-31 e corrigido em 2026-10-25: a lista tem 100/100 (a 100ª foi o Damnation, `auditoria.md` §14), `BASE_LIBRARY` tem 99 e o assert é `len == 99`. O parágrafo abaixo é o registro histórico da rodada original, mantido sem edição.]**
+
 **⚠️ Lista ainda incompleta — não inventado aqui:** `lista.md` já tinha
 uma nota própria avisando que a lista está em 99/100 cartas (98 de
 biblioteca + comandante, falta 1 carta que o usuário ainda vai escolher).
