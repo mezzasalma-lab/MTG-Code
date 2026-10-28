@@ -1,0 +1,1807 @@
+{
+ "Rat King, Verminister": {
+  "secao": "Comandante",
+  "qtd": 1,
+  "resolvido": "Rat King, Verminister",
+  "como": "exact",
+  "oracle_id": "a5656dab-5ce6-48fd-9eae-2c06969bb8df",
+  "layout": "normal",
+  "type_line": "Legendary Creature — Rat Avatar",
+  "keywords": [
+   "Disappear"
+  ],
+  "mana_cost": "{1}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Rat King, Verminister",
+    "type_line": "Legendary Creature — Rat Avatar",
+    "oracle_text": "Disappear — At the beginning of your end step, if a permanent left the battlefield under your control this turn, create a 1/1 black Rat creature token and put a +1/+1 counter on Rat King.\n{T}, Sacrifice three Rats: Return target creature card and all other cards with the same name as that card from your graveyard to the battlefield tapped.",
+    "power": "1",
+    "toughness": "1"
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2026-01-27",
+    "comment": "Some disappear abilities, such as those of the above cards, are triggered abilities with intervening if clauses. If a permanent hasn't left the battlefield under your control that turn by the time the disappear ability would trigger, it won't trigger at all."
+   }
+  ]
+ },
+ "Rat Colony": {
+  "secao": "Deck",
+  "qtd": 24,
+  "resolvido": "Rat Colony",
+  "como": "exact",
+  "oracle_id": "ec77d23b-0165-450d-9aae-73b755163753",
+  "layout": "normal",
+  "type_line": "Creature — Rat",
+  "keywords": [],
+  "mana_cost": "{1}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Rat Colony",
+    "type_line": "Creature — Rat",
+    "oracle_text": "This creature gets +1/+0 for each other Rat you control.\nA deck can have any number of cards named Rat Colony.",
+    "power": "2",
+    "toughness": "1"
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2024-07-26",
+    "comment": "Rat Colony's last ability lets you ignore only the \"four-of\" rule. It doesn't let you ignore format legality. For example, during a Bloomburrow Limited event, you can't add Rat Colonies from your personal collection."
+   }
+  ]
+ },
+ "Ashcoat of the Shadow Swarm": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Ashcoat of the Shadow Swarm",
+  "como": "exact",
+  "oracle_id": "9cc69ea5-42a2-4306-ac6d-cff5adb20bcb",
+  "layout": "normal",
+  "type_line": "Legendary Creature — Rat Warlock",
+  "keywords": [
+   "Mill"
+  ],
+  "mana_cost": "{3}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Ashcoat of the Shadow Swarm",
+    "type_line": "Legendary Creature — Rat Warlock",
+    "oracle_text": "Whenever Ashcoat attacks or blocks, other Rats you control get +X/+X until end of turn, where X is the number of Rats you control.\nAt the beginning of your end step, you may mill four cards. If you do, return up to two Rat creature cards from your graveyard to your hand. (To mill a card, put the top card of your library into your graveyard.)",
+    "power": "3",
+    "toughness": "4"
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2022-12-02",
+    "comment": "You choose which Rat creature cards to return to your hand as the last ability resolves. You may choose Rat creature cards milled with this ability."
+   },
+   {
+    "published_at": "2022-12-02",
+    "comment": "The value of X is locked in as the first ability resolves. The bonus it grants won't change after that point, even if the number of Rats you control does."
+   }
+  ]
+ },
+ "Marrow-Gnawer": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Marrow-Gnawer",
+  "como": "exact",
+  "oracle_id": "2b934761-5720-477b-94b7-d1d91dc581a6",
+  "layout": "normal",
+  "type_line": "Legendary Creature — Rat Rogue",
+  "keywords": [],
+  "mana_cost": "{3}{B}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Marrow-Gnawer",
+    "type_line": "Legendary Creature — Rat Rogue",
+    "oracle_text": "All Rats have fear.\n{T}, Sacrifice a Rat: Create X 1/1 black Rat creature tokens, where X is the number of Rats you control.",
+    "power": "2",
+    "toughness": "3"
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2004-12-01",
+    "comment": "Marrow-Gnawer's ability counts the number of Rats on the battlefield when it resolves, so you don't count the sacrificed Rat."
+   }
+  ]
+ },
+ "Lord Skitter, Sewer King": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Lord Skitter, Sewer King",
+  "como": "exact",
+  "oracle_id": "f5bed085-bb7a-4250-9599-b2a8a95e6b6f",
+  "layout": "normal",
+  "type_line": "Legendary Creature — Rat Noble",
+  "keywords": [],
+  "mana_cost": "{2}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Lord Skitter, Sewer King",
+    "type_line": "Legendary Creature — Rat Noble",
+    "oracle_text": "Whenever another Rat you control enters, exile up to one target card from an opponent's graveyard.\nAt the beginning of combat on your turn, create a 1/1 black Rat creature token with \"This token can't block.\"",
+    "power": "3",
+    "toughness": "3"
+   }
+  ],
+  "rulings": []
+ },
+ "Karumonix, the Rat King": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Karumonix, the Rat King",
+  "como": "exact",
+  "oracle_id": "c017f54c-e4c0-411e-b8c1-eb20b1b86c56",
+  "layout": "normal",
+  "type_line": "Legendary Creature — Phyrexian Rat",
+  "keywords": [
+   "Toxic"
+  ],
+  "mana_cost": "{1}{B}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Karumonix, the Rat King",
+    "type_line": "Legendary Creature — Phyrexian Rat",
+    "oracle_text": "Toxic 1 (Players dealt combat damage by this creature also get a poison counter.)\nOther Rats you control have toxic 1.\nWhen Karumonix enters, look at the top five cards of your library. You may reveal any number of Rat cards from among them and put the revealed cards into your hand. Put the rest on the bottom of your library in a random order.",
+    "power": "3",
+    "toughness": "3"
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2023-02-04",
+    "comment": "A player with ten or more poison counters loses the game. This is a state-based action and doesn't use the stack. In other words, it happens immediately and players can't respond to it, just like a player losing the game due to having 0 or less life."
+   },
+   {
+    "published_at": "2023-02-04",
+    "comment": "Toxic doesn't change the amount of combat damage a creature deals. For example, if a 2/2 creature with toxic 1 deals combat damage to a player, that creature will deal 2 damage. The results of that damage are the player loses 2 life and gets a poison counter."
+   },
+   {
+    "published_at": "2023-02-04",
+    "comment": "Any other effects of that damage, such as life gain from lifelink, still apply."
+   },
+   {
+    "published_at": "2023-02-04",
+    "comment": "If a creature with toxic deals combat damage to a creature or planeswalker, or if it deals noncombat damage, toxic has no effect and no player gets poison counters."
+   },
+   {
+    "published_at": "2023-02-04",
+    "comment": "Damage dealt by a creature with toxic grants the same number of counters regardless of how much damage is dealt. Notably, if a replacement effect modifies the damage in some way (such as that of Gratuitous Violence), the number of counters given remains unchanged."
+   },
+   {
+    "published_at": "2023-02-04",
+    "comment": "Conversely, replacement effects that apply to the number of counters put on a player can modify the counters placed this way. For example, Vorinclex, Monstrous Raider's last two abilities can apply to counters placed this way."
+   },
+   {
+    "published_at": "2023-02-04",
+    "comment": "Multiple instances of toxic are cumulative. For example, if a creature has toxic 2 and gains toxic 1 due to another effect, combat damage that creature deals to a player will cause that player to get 3 poison counters."
+   }
+  ]
+ },
+ "Piper of the Swarm": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Piper of the Swarm",
+  "como": "exact",
+  "oracle_id": "a6c5c5ea-0bd0-4d5a-bd3f-6217f14c9939",
+  "layout": "normal",
+  "type_line": "Creature — Human Warlock",
+  "keywords": [],
+  "mana_cost": "{1}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Piper of the Swarm",
+    "type_line": "Creature — Human Warlock",
+    "oracle_text": "Rats you control have menace.\n{1}{B}, {T}: Create a 1/1 black Rat creature token.\n{2}{B}{B}, {T}, Sacrifice three Rats: Gain control of target creature.",
+    "power": "1",
+    "toughness": "3"
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2019-10-04",
+    "comment": "The control-change effect of Piper of the Swarm's last ability lasts indefinitely. It doesn't wear off during the cleanup step, and it doesn't expire if Piper of the Swarm leaves the battlefield. In a multiplayer game, it does expire if you leave the game."
+   }
+  ]
+ },
+ "Ratcatcher": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Ratcatcher",
+  "como": "exact",
+  "oracle_id": "acba24c1-168c-473b-96bb-1ba836c69f22",
+  "layout": "normal",
+  "type_line": "Creature — Ogre Rogue",
+  "keywords": [
+   "Fear"
+  ],
+  "mana_cost": "{4}{B}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Ratcatcher",
+    "type_line": "Creature — Ogre Rogue",
+    "oracle_text": "Fear (This creature can't be blocked except by artifact creatures and/or black creatures.)\nAt the beginning of your upkeep, you may search your library for a Rat card, reveal it, put it into your hand, then shuffle.",
+    "power": "4",
+    "toughness": "4"
+   }
+  ],
+  "rulings": []
+ },
+ "Species Specialist": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Species Specialist",
+  "como": "exact",
+  "oracle_id": "51feda69-0ae8-4df3-bb50-a4bb9deb965d",
+  "layout": "normal",
+  "type_line": "Creature — Human Warrior",
+  "keywords": [],
+  "mana_cost": "{2}{B}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Species Specialist",
+    "type_line": "Creature — Human Warrior",
+    "oracle_text": "As this creature enters, choose a creature type.\nWhenever a creature of the chosen type dies, you may draw a card.",
+    "power": "2",
+    "toughness": "3"
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2020-04-17",
+    "comment": "You must choose an existing creature type, such as Human or Warrior. Card types such as artifact and supertypes such as legendary can’t be chosen."
+   },
+   {
+    "published_at": "2020-04-17",
+    "comment": "If a creature of the chosen type dies at the same time as Species Specialist, its ability triggers for that creature."
+   },
+   {
+    "published_at": "2020-04-17",
+    "comment": "If Species Specialist happens to have the chosen creature type, its ability triggers when it dies."
+   }
+  ]
+ },
+ "Valley Rotcaller": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Valley Rotcaller",
+  "como": "exact",
+  "oracle_id": "8da0599a-8f63-4dba-857f-b4e10b7191b6",
+  "layout": "normal",
+  "type_line": "Creature — Squirrel Warlock",
+  "keywords": [
+   "Menace"
+  ],
+  "mana_cost": "{1}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Valley Rotcaller",
+    "type_line": "Creature — Squirrel Warlock",
+    "oracle_text": "Menace\nWhenever this creature attacks, each opponent loses X life and you gain X life, where X is the number of other Squirrels, Bats, Lizards, and Rats you control.",
+    "power": "1",
+    "toughness": "3"
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2024-07-26",
+    "comment": "The value of X is determined as Valley Rotcaller’s triggered ability resolves."
+   }
+  ]
+ },
+ "Gray Merchant of Asphodel": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Gray Merchant of Asphodel",
+  "como": "exact",
+  "oracle_id": "38f3b157-0df4-409b-89cc-086e1531cd5b",
+  "layout": "normal",
+  "type_line": "Creature — Zombie",
+  "keywords": [],
+  "mana_cost": "{3}{B}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Gray Merchant of Asphodel",
+    "type_line": "Creature — Zombie",
+    "oracle_text": "When this creature enters, each opponent loses X life, where X is your devotion to black. You gain life equal to the life lost this way. (Each {B} in the mana costs of permanents you control counts toward your devotion to black.)",
+    "power": "2",
+    "toughness": "4"
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2021-03-19",
+    "comment": "The amount of life you gain is the total amount of life lost, not simply the value of X."
+   },
+   {
+    "published_at": "2020-01-24",
+    "comment": "Hybrid mana symbols, monocolored hybrid mana symbols, and Phyrexian mana symbols do count toward your devotion to their color(s)."
+   },
+   {
+    "published_at": "2020-01-24",
+    "comment": "Colorless and generic mana symbols ({C}, {0}, {1}, {2}, {X}, and so on) in mana costs of permanents you control don't count toward your devotion to any color."
+   },
+   {
+    "published_at": "2020-01-24",
+    "comment": "Mana symbols in the text boxes of permanents you control don't count toward your devotion to any color."
+   },
+   {
+    "published_at": "2020-01-24",
+    "comment": "If an activated ability or triggered ability has an effect that depends on your devotion to a color, you count the number of mana symbols of that color among the mana costs of permanents you control as the ability resolves. The permanent with that ability will be counted if it's still on the battlefield at that time."
+   },
+   {
+    "published_at": "2020-01-24",
+    "comment": "If you put an Aura on an opponent's permanent, you still control the Aura, and mana symbols in its mana cost count towards your devotion."
+   }
+  ]
+ },
+ "Syr Konrad, the Grim": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Syr Konrad, the Grim",
+  "como": "exact",
+  "oracle_id": "14c3ff84-1e82-4606-a433-869fc52cc382",
+  "layout": "normal",
+  "type_line": "Legendary Creature — Human Knight",
+  "keywords": [
+   "Mill"
+  ],
+  "mana_cost": "{3}{B}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Syr Konrad, the Grim",
+    "type_line": "Legendary Creature — Human Knight",
+    "oracle_text": "Whenever another creature dies, or a creature card is put into a graveyard from anywhere other than the battlefield, or a creature card leaves your graveyard, Syr Konrad deals 1 damage to each opponent.\n{1}{B}: Each player mills a card. (They each put the top card of their library into their graveyard.)",
+    "power": "5",
+    "toughness": "4"
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2019-10-04",
+    "comment": "If one or more creatures die at the same time as Syr Konrad, its first ability triggers for each of those creatures."
+   },
+   {
+    "published_at": "2019-10-04",
+    "comment": "In a Two-Headed Giant game, Syr Konrad's first ability causes it to deal 1 damage twice."
+   }
+  ]
+ },
+ "Crypt Ghast": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Crypt Ghast",
+  "como": "exact",
+  "oracle_id": "a3c8d817-7949-4dae-b9f5-f9d952479270",
+  "layout": "normal",
+  "type_line": "Creature — Spirit",
+  "keywords": [
+   "Extort"
+  ],
+  "mana_cost": "{3}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Crypt Ghast",
+    "type_line": "Creature — Spirit",
+    "oracle_text": "Extort (Whenever you cast a spell, you may pay {W/B}. If you do, each opponent loses 1 life and you gain that much life.)\nWhenever you tap a Swamp for mana, add an additional {B}.",
+    "power": "2",
+    "toughness": "2"
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2024-01-12",
+    "comment": "You may pay {W/B} a maximum of one time for each extort triggered ability. You decide whether to pay when the ability resolves."
+   },
+   {
+    "published_at": "2024-01-12",
+    "comment": "The amount of life you gain from extort is based on the total amount of life lost, not necessarily the number of opponents you have. For example, if your opponent's life total can't change (perhaps because that player controls Platinum Emperion), you won't gain any life."
+   },
+   {
+    "published_at": "2024-01-12",
+    "comment": "The extort ability doesn't target any player."
+   },
+   {
+    "published_at": "2024-01-12",
+    "comment": "The extort ability resolves before the spell that caused it to trigger. The ability resolves even if that spell is countered."
+   }
+  ]
+ },
+ "Zulaport Cutthroat": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Zulaport Cutthroat",
+  "como": "exact",
+  "oracle_id": "76b003e0-15af-4f22-bdf2-1ade5430964a",
+  "layout": "normal",
+  "type_line": "Creature — Human Rogue Ally",
+  "keywords": [],
+  "mana_cost": "{1}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Zulaport Cutthroat",
+    "type_line": "Creature — Human Rogue Ally",
+    "oracle_text": "Whenever this creature or another creature you control dies, each opponent loses 1 life and you gain 1 life.",
+    "power": "1",
+    "toughness": "1"
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2021-03-19",
+    "comment": "If another creature you control dies at the same time as Zulaport Cutthroat, its ability triggers for that creature."
+   }
+  ]
+ },
+ "Priest of Forgotten Gods": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Priest of Forgotten Gods",
+  "como": "exact",
+  "oracle_id": "2ad8ff62-d090-4835-9274-3b755ba0f8e6",
+  "layout": "normal",
+  "type_line": "Creature — Human Cleric",
+  "keywords": [],
+  "mana_cost": "{1}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Priest of Forgotten Gods",
+    "type_line": "Creature — Human Cleric",
+    "oracle_text": "{T}, Sacrifice two other creatures: Any number of target players each lose 2 life and sacrifice a creature of their choice. You add {B}{B} and draw a card. (Activate only as an instant.)",
+    "power": "1",
+    "toughness": "2"
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2019-01-25",
+    "comment": "You may target players who can't sacrifice a creature. Those players still lose 2 life."
+   },
+   {
+    "published_at": "2019-01-25",
+    "comment": "Because it may have targets, the ability of Priest of Forgotten Gods isn't a mana ability. It uses the stack and can be responded to, even if no targets were chosen."
+   },
+   {
+    "published_at": "2019-01-25",
+    "comment": "You can activate the ability of Priest of Forgotten Gods without choosing any targets if you wish. You'll still add {B}{B} and draw a card."
+   }
+  ]
+ },
+ "Ayara, First of Locthwain": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Ayara, First of Locthwain",
+  "como": "exact",
+  "oracle_id": "388168b3-ec68-4af2-b88c-6a5ec88c15f6",
+  "layout": "normal",
+  "type_line": "Legendary Creature — Elf Noble",
+  "keywords": [],
+  "mana_cost": "{B}{B}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Ayara, First of Locthwain",
+    "type_line": "Legendary Creature — Elf Noble",
+    "oracle_text": "Whenever Ayara or another black creature you control enters, each opponent loses 1 life and you gain 1 life.\n{T}, Sacrifice another black creature: Draw a card.",
+    "power": "2",
+    "toughness": "3"
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2019-10-04",
+    "comment": "In a Two-Headed Giant game, Ayara's first ability causes the opposing team to lose 1 life twice, and you gain 1 life once."
+   }
+  ]
+ },
+ "Emeritus of Woe // Demonic Tutor": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Emeritus of Woe // Demonic Tutor",
+  "como": "exact",
+  "oracle_id": "93056597-b964-421f-be2f-e92abef1c2a4",
+  "layout": "prepare",
+  "type_line": "Creature — Vampire Warlock // Sorcery",
+  "keywords": [
+   "Prepared"
+  ],
+  "mana_cost": "{3}{B} // {1}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Emeritus of Woe",
+    "type_line": "Creature — Vampire Warlock",
+    "oracle_text": "This creature enters prepared. (While it's prepared, you may cast a copy of its spell. Doing so unprepares it.)\nAt the beginning of your end step, if two or more creatures died this turn, this creature becomes prepared.",
+    "power": "5",
+    "toughness": "4"
+   },
+   {
+    "name": "Demonic Tutor",
+    "type_line": "Sorcery",
+    "oracle_text": "Search your library for a card, put that card into your hand, then shuffle.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2026-03-20",
+    "comment": "If a prepared creature loses all abilities, it won't stop being prepared, and nothing will happen to its alternative characteristics or to the copy of its prepare spell in exile."
+   },
+   {
+    "published_at": "2026-03-20",
+    "comment": "A creature with a prepare spell can't become prepared more than once at the same time. For example, Emeritus of Ideation is on the battlefield and is prepared. When it attacks, its last ability triggers. When that ability resolves, its controller may still exile eight cards from their graveyard, but doing so won't cause Emeritus of Ideation to become prepared a second time or create a second copy of Ancestral Recall in exile."
+   },
+   {
+    "published_at": "2026-03-20",
+    "comment": "Preparation cards can only be cast with their base characteristics."
+   },
+   {
+    "published_at": "2026-03-20",
+    "comment": "Only the current controller of a prepared creature can cast the copy of its prepare spell in exile. It doesn't matter who owns that creature or who controlled it when it became prepared."
+   },
+   {
+    "published_at": "2026-03-20",
+    "comment": "Creating a copy of a creature's prepare spell in exile ignores copy exceptions applied to that creature that would affect the copiable values of that spell. For example, say a player casts Croaking Counterpart (a sorcery that says \"Create a token that's a copy of target non-Frog creature, except it's a 1/1 green Frog.\") targeting Goblin Glasswright. The token copy of Goblin Glasswright will enter prepared as a 1/1 green Frog creature, but the copy of Craft with Pride in exile will still be a red sorcery. The copy of Craft with Pride won't be green, a creature, or a Frog, and it won't have power or toughness."
+   },
+   {
+    "published_at": "2026-03-20",
+    "comment": "A creature without a prepare spell can't become prepared."
+   },
+   {
+    "published_at": "2026-03-20",
+    "comment": "Being prepared isn't a copiable value. If a permanent becomes a copy of a prepared creature, it won't be prepared. That permanent will have the alternative characteristics, though, and some other effect could cause it to become prepared later."
+   },
+   {
+    "published_at": "2026-03-20",
+    "comment": "If an effect instructs you to choose a card name, you may choose the alternative prepare spell's name. Consider only the alternative characteristics to determine whether that is an appropriate name to choose."
+   },
+   {
+    "published_at": "2026-03-20",
+    "comment": "Emeritus of Woe's last ability will check as your end step starts to see if two or more creatures have died this turn. If they haven't, the ability won't trigger at all. It's not possible to cause creatures to die during your end step in time to have the ability trigger."
+   },
+   {
+    "published_at": "2026-03-20",
+    "comment": "As an effect causes a creature with a prepare spell to become prepared (including effects that state that a creature \"enters prepared\"), that creature's controller creates a copy of that creature's prepare spell in exile. That copy remains in exile for as long as that permanent is on the battlefield and is prepared. That creature's controller may cast that copy as long as it remains in exile. As they cast it, that creature stops being prepared."
+   },
+   {
+    "published_at": "2026-03-20",
+    "comment": "A preparation card is a creature card in every zone. For example, while it's in your graveyard, Emeritus of Ideation is a blue creature whose mana value is 5. It can't be the target of Zealous Lorecaster's triggered ability (\"When this creature enters, return target instant or sorcery card from your graveyard to your hand.\")."
+   },
+   {
+    "published_at": "2026-03-20",
+    "comment": "While copies of spells in zones other than the stack cease to exist when state-based actions are checked, this does not apply to copies of prepare spells in exile that were created as a creature became prepared."
+   },
+   {
+    "published_at": "2026-03-20",
+    "comment": "If a prepared creature stops being a creature, it will still be prepared, and the copy of its prepare spell will remain in exile. That permanent's controller will still be able to cast it. The same is true if a prepared creature becomes a copy of something else, even if it's then a permanent without a prepare spell."
+   },
+   {
+    "published_at": "2026-03-20",
+    "comment": "If an effect causes a creature to become unprepared, a prepared creature stops being prepared and the associated copy of its prepare spell in exile ceases to exist. If it wasn't prepared at that time, nothing happens."
+   },
+   {
+    "published_at": "2026-03-20",
+    "comment": "If a prepare spell with one or more targets has no legal targets when it tries to resolve, it won't resolve and none of its effects will happen. Since the spell was cast, the associated permanent will still not be prepared."
+   },
+   {
+    "published_at": "2026-03-20",
+    "comment": "Casting a copy of a prepare spell from exile isn't casting it for an alternative cost. Effects that allow you to cast a spell for an alternative cost or without paying its mana cost may allow you to apply those to a copy of a prepare spell cast from exile."
+   }
+  ]
+ },
+ "Pitiless Plunderer": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Pitiless Plunderer",
+  "como": "exact",
+  "oracle_id": "a784481f-eccb-4112-bb38-04a659319660",
+  "layout": "normal",
+  "type_line": "Creature — Human Pirate",
+  "keywords": [
+   "Treasure"
+  ],
+  "mana_cost": "{3}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Pitiless Plunderer",
+    "type_line": "Creature — Human Pirate",
+    "oracle_text": "Whenever another creature you control dies, create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+    "power": "1",
+    "toughness": "4"
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2018-01-19",
+    "comment": "If Pitiless Plunderer dies at the same time as one or more other creatures you control, its ability will still trigger for each of those other creatures."
+   }
+  ]
+ },
+ "Sol Ring": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Sol Ring",
+  "como": "exact",
+  "oracle_id": "6ad8011d-3471-4369-9d68-b264cc027487",
+  "layout": "normal",
+  "type_line": "Artifact",
+  "keywords": [],
+  "mana_cost": "{1}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Sol Ring",
+    "type_line": "Artifact",
+    "oracle_text": "{T}: Add {C}{C}.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": []
+ },
+ "Skullclamp": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Skullclamp",
+  "como": "exact",
+  "oracle_id": "65986c1b-8e51-4604-b685-d82fa7d1263a",
+  "layout": "normal",
+  "type_line": "Artifact — Equipment",
+  "keywords": [
+   "Equip"
+  ],
+  "mana_cost": "{1}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Skullclamp",
+    "type_line": "Artifact — Equipment",
+    "oracle_text": "Equipped creature gets +1/-1.\nWhenever equipped creature dies, draw two cards.\nEquip {1}",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": []
+ },
+ "Jet Medallion": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Jet Medallion",
+  "como": "exact",
+  "oracle_id": "bccb06f1-8839-4104-9ffa-c79a817f8378",
+  "layout": "normal",
+  "type_line": "Artifact",
+  "keywords": [],
+  "mana_cost": "{2}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Jet Medallion",
+    "type_line": "Artifact",
+    "oracle_text": "Black spells you cast cost {1} less to cast.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2023-07-28",
+    "comment": "The ability doesn't change the mana cost or mana value of any spell. It changes only the total cost you pay."
+   },
+   {
+    "published_at": "2023-07-28",
+    "comment": "The ability can't reduce the amount of colored mana you pay for a spell. It reduces only the generic mana component of that cost."
+   },
+   {
+    "published_at": "2023-07-28",
+    "comment": "If there are additional costs to cast a spell, or if the cost to cast a spell is increased by an effect (such as the one created by Thalia, Guardian of Thraben's ability), apply those increases before applying cost reductions."
+   },
+   {
+    "published_at": "2023-07-28",
+    "comment": "The cost reduction can apply to alternative costs such as flashback costs."
+   },
+   {
+    "published_at": "2023-07-28",
+    "comment": "If a spell you cast has {X} in its mana cost, you choose the value of X before calculating the spell's total cost."
+   }
+  ]
+ },
+ "Bontu's Monument": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Bontu's Monument",
+  "como": "exact",
+  "oracle_id": "940ba435-7abc-40f8-a5af-c1c653b3284e",
+  "layout": "normal",
+  "type_line": "Legendary Artifact",
+  "keywords": [],
+  "mana_cost": "{3}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Bontu's Monument",
+    "type_line": "Legendary Artifact",
+    "oracle_text": "Black creature spells you cast cost {1} less to cast.\nWhenever you cast a creature spell, each opponent loses 1 life and you gain 1 life.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2017-04-18",
+    "comment": "In a Two-Headed Giant game, the triggered ability of Bontu's Monument causes the opposing team to lose 2 life and you gain 1 life."
+   },
+   {
+    "published_at": "2017-04-18",
+    "comment": "Each Monument has one ability that reduces the cost of creature spells of a certain color, and a triggered ability that triggers whenever you cast any creature spell—not just a creature spell of that color."
+   },
+   {
+    "published_at": "2017-04-18",
+    "comment": "A creature spell that's multiple colors is each of those colors. For example, Ahn-Crop Champion is a white creature and a green creature, so it can benefit from either Oketra's Monument or Rhonas's Monument—or both at once."
+   },
+   {
+    "published_at": "2017-04-18",
+    "comment": "To determine the total cost of a creature spell, start with the mana cost or alternative cost you're paying, add any cost increases, then apply any cost reductions. The mana value of the creature remains unchanged, no matter what the total cost to cast it was."
+   },
+   {
+    "published_at": "2017-04-18",
+    "comment": "Each Monument's triggered ability triggers as the creature spell is cast and resolves before that creature spell resolves. The ability will resolve even if that creature spell is countered."
+   }
+  ]
+ },
+ "Thornbite Staff": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Thornbite Staff",
+  "como": "exact",
+  "oracle_id": "dae4815e-9025-4993-ab46-52a3f1a7219e",
+  "layout": "normal",
+  "type_line": "Kindred Artifact — Shaman Equipment",
+  "keywords": [
+   "Equip"
+  ],
+  "mana_cost": "{2}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Thornbite Staff",
+    "type_line": "Kindred Artifact — Shaman Equipment",
+    "oracle_text": "Equipped creature has \"{2}, {T}: This creature deals 1 damage to any target\" and \"Whenever a creature dies, untap this creature.\"\nWhenever a Shaman creature enters, you may attach this Equipment to it.\nEquip {4}",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2024-06-07",
+    "comment": "This cards was originally printed with the \"tribal\" card type. That card type has been replaced with \"kindred\". This change does not affect the gameplay function of this card."
+   },
+   {
+    "published_at": "2024-06-07",
+    "comment": "Kindred is a card type that allows noncreature cards to have creature types. For example, Echoes of Eternity is an Eldrazi (although not a creature) while on the battlefield and an Eldrazi card (although not a creature card) in zones other than the battlefield."
+   },
+   {
+    "published_at": "2024-06-07",
+    "comment": "While it appears only on cards that already have other card types, kindred is a card type and will be counted by effects that refer to the number of card types among cards in a zone."
+   },
+   {
+    "published_at": "2008-04-01",
+    "comment": "Each of these Equipment has two subtypes listed on its type line. The first one is a creature type, which in this case is also a subtype of kindred. The second one is Equipment, which is a subtype of artifact."
+   },
+   {
+    "published_at": "2008-04-01",
+    "comment": "Each of these Equipment has a triggered ability that says \"Whenever a [creature type] creature enters, you may attach [this Equipment] to it.\" This triggers whenever any creature of the specified creature type enters, no matter who controls it. You may attach your Equipment to another player's creature this way, even though you can't do so with the equip ability."
+   },
+   {
+    "published_at": "2008-04-01",
+    "comment": "If you attach an Equipment you control to another player's creature, you retain control of the Equipment, but you don't control the creature. Only you can activate the Equipment's equip ability, and if the Equipment's ability triggers again, you choose whether to move the Equipment. Only the creature's controller can activate any activated abilities the Equipment grants to the creature, and \"you\" in any abilities granted to the creature refers to that player."
+   }
+  ]
+ },
+ "Thrumming Stone": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Thrumming Stone",
+  "como": "exact",
+  "oracle_id": "b2bd40a1-1857-4f4c-aed6-d4e224ac0ef7",
+  "layout": "normal",
+  "type_line": "Legendary Artifact",
+  "keywords": [],
+  "mana_cost": "{5}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Thrumming Stone",
+    "type_line": "Legendary Artifact",
+    "oracle_text": "Spells you cast have ripple 4. (Whenever you cast a spell, you may reveal the top four cards of your library. You may cast spells with the same name as that spell from among the revealed cards without paying their mana costs. Put the rest on the bottom of your library.)",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2006-07-15",
+    "comment": "If you cast a spell that already has ripple (such as Surging Flame, which has ripple 4) while Thrumming Stone is on the battlefield, both ripple abilities will trigger separately. Assuming you choose to do all \"you may\" actions, when the first instance of ripple resolves, you reveal the top four cards of your library, cast all Surging Flames, and put the rest of the cards on the bottom of your library. Any new Surging Flames are on the stack on top of the other instance of ripple, so they'll resolve next. Each of them also has two instances of ripple, which trigger separately, and the process continues until the ripple abilities don't reveal any Surging Flames."
+   },
+   {
+    "published_at": "2006-07-15",
+    "comment": "If you cast half of a split card (for example, Hit) and reveal another one of those split cards when the ripple ability resolves (for example, Hit // Run), you may cast either half of that split card (Hit or Run) without paying its mana cost."
+   }
+  ]
+ },
+ "The Soul Stone": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "The Soul Stone",
+  "como": "exact",
+  "oracle_id": "92cfba68-12f6-4f97-9187-0f6a39656a0f",
+  "layout": "normal",
+  "type_line": "Legendary Artifact — Infinity Stone",
+  "keywords": [
+   "Indestructible"
+  ],
+  "mana_cost": "{1}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "The Soul Stone",
+    "type_line": "Legendary Artifact — Infinity Stone",
+    "oracle_text": "Indestructible\n{T}: Add {B}.\n{6}{B}, {T}, Exile a creature you control: Harness The Soul Stone. (Once harnessed, its ∞ ability is active.)\n∞ — At the beginning of your upkeep, return target creature card from your graveyard to the battlefield.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2025-09-19",
+    "comment": "Being harnessed isn't copiable. If something else becomes a copy of The Soul Stone, it must be harnessed separately. Similarly, if The Soul Stone is already harnessed and becomes a copy of something else, it stays harnessed, though it's very likely that won't be relevant until that copy effect ends."
+   },
+   {
+    "published_at": "2025-09-19",
+    "comment": "\"Harnessed\" is a designation that the permanent has once an ability instructs you to harness it. It has no special rules meaning other than being a designation that the ∞ ability (and, theoretically, other effects) can see."
+   },
+   {
+    "published_at": "2025-09-19",
+    "comment": "Until it is harnessed, The Soul Stone doesn't have the ability listed after the infinity symbol. It also doesn't have that ability in zones other than the battlefield."
+   }
+  ]
+ },
+ "Black Market Connections": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Black Market Connections",
+  "como": "exact",
+  "oracle_id": "d2664f28-49e1-46f8-a863-b217e961a57c",
+  "layout": "normal",
+  "type_line": "Enchantment",
+  "keywords": [
+   "Hire a Mercenary",
+   "Treasure",
+   "Sell Contraband",
+   "Buy Information"
+  ],
+  "mana_cost": "{2}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Black Market Connections",
+    "type_line": "Enchantment",
+    "oracle_text": "At the beginning of your first main phase, choose one or more —\n• Sell Contraband — Create a Treasure token. You lose 1 life.\n• Buy Information — Draw a card. You lose 2 life.\n• Hire a Mercenary — Create a 3/2 colorless Shapeshifter creature token with changeling. You lose 3 life. (It is every creature type.)",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": []
+ },
+ "Cover of Darkness": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Cover of Darkness",
+  "como": "exact",
+  "oracle_id": "d78654fc-7d90-40ce-9c36-a211424d1a88",
+  "layout": "normal",
+  "type_line": "Enchantment",
+  "keywords": [],
+  "mana_cost": "{1}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Cover of Darkness",
+    "type_line": "Enchantment",
+    "oracle_text": "As this enchantment enters, choose a creature type.\nCreatures of the chosen type have fear. (They can't be blocked except by artifact creatures and/or black creatures.)",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": []
+ },
+ "Dictate of Erebos": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Dictate of Erebos",
+  "como": "exact",
+  "oracle_id": "7c777a41-e40a-4b40-96bf-8ddd5c12924c",
+  "layout": "normal",
+  "type_line": "Enchantment",
+  "keywords": [
+   "Flash"
+  ],
+  "mana_cost": "{3}{B}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Dictate of Erebos",
+    "type_line": "Enchantment",
+    "oracle_text": "Flash\nWhenever a creature you control dies, each opponent sacrifices a creature of their choice.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2014-04-26",
+    "comment": "When the triggered ability resolves, first the player whose turn it is (if that player is an opponent) chooses which creature they will sacrifice, then each other opponent in turn order does the same, then all chosen creatures are sacrificed at the same time."
+   },
+   {
+    "published_at": "2014-04-26",
+    "comment": "None of the opponents are targeted. An opponent with hexproof would still sacrifice a creature."
+   },
+   {
+    "published_at": "2014-04-26",
+    "comment": "If multiple creatures you control die at the same time, Dictate of Erebos's triggered ability will trigger that many times."
+   },
+   {
+    "published_at": "2014-04-26",
+    "comment": "If you control more than one Dictate of Erebos and a creature you control dies, each of the triggered abilities will trigger. Each opponent will sacrifice a creature each time one of those abilities resolves."
+   },
+   {
+    "published_at": "2014-04-26",
+    "comment": "If you and an opponent each control a Dictate of Erebos and a creature dies, a chain reaction happens. First the ability of one player's Dictate of Erebos will trigger, causing each opponent to sacrifice a creature. That sacrifice causes the ability of the other player's Dictate of Erebos to trigger, and so on."
+   }
+  ]
+ },
+ "Ripples of Undeath": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Ripples of Undeath",
+  "como": "exact",
+  "oracle_id": "2acf8e34-9215-4a72-a24f-09d3bdd0083a",
+  "layout": "normal",
+  "type_line": "Enchantment",
+  "keywords": [
+   "Mill"
+  ],
+  "mana_cost": "{1}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Ripples of Undeath",
+    "type_line": "Enchantment",
+    "oracle_text": "At the beginning of your first main phase, mill three cards. Then you may pay {1} and 3 life. If you do, put a card from among those cards into your hand.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": []
+ },
+ "Ninja Teen": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Ninja Teen",
+  "como": "exact",
+  "oracle_id": "2c5044ff-a303-4276-8e23-7caac30a275b",
+  "layout": "class",
+  "type_line": "Enchantment — Class",
+  "keywords": [],
+  "mana_cost": "{2}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Ninja Teen",
+    "type_line": "Enchantment — Class",
+    "oracle_text": "(Gain the next level as a sorcery to add its ability.)\nWhenever a creature you control leaves the battlefield, each opponent loses 1 life.\n{1}{B}: Level 2\nCreatures you control get +1/+0 and have menace.\n{B}: Level 3\nCreature cards in your graveyard have sneak {3}{B}.\nYou may cast creature spells from your graveyard using their sneak abilities.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2026-01-27",
+    "comment": "If a creature spell's sneak cost was paid, the creature it becomes enters tapped and attacking the same player, planeswalker, or battle as the creature that was returned to its owner's hand to pay its sneak cost. This is a rule specific to sneak; in other cases, when a creature is put onto the battlefield attacking, that creature's controller chooses which player, planeswalker, or battle it's attacking."
+   },
+   {
+    "published_at": "2026-01-27",
+    "comment": "Each Class starts at level 1 and has the abilities in the top section of its text box. Once a Class advances to level 2 or level 3, it has all of the abilities listed in the associated section of its text box as well."
+   },
+   {
+    "published_at": "2026-01-27",
+    "comment": "You can't activate an ability that advances a Class to a particular level if that Class is already that level or higher. For example, if a Class is already level 2, you can't activate the ability that advances it to level 2 again."
+   },
+   {
+    "published_at": "2026-01-27",
+    "comment": "Class cards have multiple text box sections. Other than the top section, each section contains a class level bar that includes a cost and a level number. Each represents an activated ability with the listed cost that advances the Class to the level listed in that bar."
+   },
+   {
+    "published_at": "2026-01-27",
+    "comment": "If a creature card in your graveyard has multiple sneak abilities, you can cast it from your graveyard using any of those sneak abilities with the permission granted by Ninja Teen's second level 3 ability."
+   },
+   {
+    "published_at": "2026-01-27",
+    "comment": "Gaining a level won't remove abilities that a Class had at a previous level."
+   },
+   {
+    "published_at": "2026-01-27",
+    "comment": "An ability that advances a Class to a higher level is a normal activated ability. It uses the stack and can be responded to."
+   },
+   {
+    "published_at": "2026-01-27",
+    "comment": "Spells can only be cast for their sneak costs any time you could play an instant during the declare blockers step on your turn (after your opponent has decided whether to block)."
+   },
+   {
+    "published_at": "2026-01-27",
+    "comment": "Casting creature spells from your graveyard using their sneak abilities with the permission granted by Ninja Teen's first level 3 ability doesn't change when you can cast them. You'll only be able to cast them this way during the declare blockers step on your turn when you could play an instant, and you'll still have to pay the sneak cost, including returning an unblocked attacking creature you control to its owner's hand."
+   },
+   {
+    "published_at": "2026-01-27",
+    "comment": "There's no restriction on how many Class permanents you can control, whether they're the same or different classes. Each Class permanent tracks its own level separately."
+   },
+   {
+    "published_at": "2026-01-27",
+    "comment": "Although a creature put onto the battlefield this way is attacking, it was never declared as an attacking creature. Abilities that trigger whenever a creature attacks won't trigger when that creature enters attacking."
+   }
+  ]
+ },
+ "Deadly Dispute": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Deadly Dispute",
+  "como": "exact",
+  "oracle_id": "457af74a-02b3-4659-846d-63e482667f34",
+  "layout": "normal",
+  "type_line": "Instant",
+  "keywords": [
+   "Treasure"
+  ],
+  "mana_cost": "{1}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Deadly Dispute",
+    "type_line": "Instant",
+    "oracle_text": "As an additional cost to cast this spell, sacrifice an artifact or creature.\nDraw two cards and create a Treasure token. (It's an artifact with \"{T}, Sacrifice this token: Add one mana of any color.\")",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": []
+ },
+ "Culling the Weak": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Culling the Weak",
+  "como": "exact",
+  "oracle_id": "6385fd0d-256d-4400-9319-afa8170024db",
+  "layout": "normal",
+  "type_line": "Instant",
+  "keywords": [],
+  "mana_cost": "{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Culling the Weak",
+    "type_line": "Instant",
+    "oracle_text": "As an additional cost to cast this spell, sacrifice a creature.\nAdd {B}{B}{B}{B}.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2013-04-15",
+    "comment": "You must sacrifice exactly one creature to cast this spell; you cannot cast it without sacrificing a creature, and you cannot sacrifice additional creatures."
+   },
+   {
+    "published_at": "2013-04-15",
+    "comment": "Players can only respond once this spell has been cast and all its costs have been paid. No one can try to destroy the creature you sacrificed to prevent you from casting this spell."
+   }
+  ]
+ },
+ "Dark Ritual": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Dark Ritual",
+  "como": "exact",
+  "oracle_id": "53f7c868-b03e-4fc2-8dcf-a75bbfa3272b",
+  "layout": "normal",
+  "type_line": "Instant",
+  "keywords": [],
+  "mana_cost": "{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Dark Ritual",
+    "type_line": "Instant",
+    "oracle_text": "Add {B}{B}{B}.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": []
+ },
+ "Deadly Rollick": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Deadly Rollick",
+  "como": "exact",
+  "oracle_id": "0456ec64-2c81-4763-a352-8ff64a4c3d6b",
+  "layout": "normal",
+  "type_line": "Instant",
+  "keywords": [],
+  "mana_cost": "{3}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Deadly Rollick",
+    "type_line": "Instant",
+    "oracle_text": "If you control a commander, you may cast this spell without paying its mana cost.\nExile target creature.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2020-04-17",
+    "comment": "It doesn't matter whose commander you control. Any one will do. If you have two commanders, you just need to control one of them."
+   },
+   {
+    "published_at": "2020-04-17",
+    "comment": "Once you begin casting this spell, players can't take any other actions until you're done casting it. Notably, they can't try to remove the commander you control to make you pay its cost."
+   }
+  ]
+ },
+ "Withering Torment": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Withering Torment",
+  "como": "exact",
+  "oracle_id": "ffce81c5-1b58-4882-a4e7-6f8d7cb170de",
+  "layout": "normal",
+  "type_line": "Instant",
+  "keywords": [],
+  "mana_cost": "{2}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Withering Torment",
+    "type_line": "Instant",
+    "oracle_text": "Destroy target creature or enchantment. You lose 2 life.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2024-09-20",
+    "comment": "If the target creature or enchantment is an illegal target as Withering Torment tries to resolve, it won't resolve and none of its effects will happen. You won't lose life."
+   }
+  ]
+ },
+ "Reanimate": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Reanimate",
+  "como": "exact",
+  "oracle_id": "a044474a-cd72-4e9d-bd8d-a08f2de9cdc0",
+  "layout": "normal",
+  "type_line": "Sorcery",
+  "keywords": [],
+  "mana_cost": "{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Reanimate",
+    "type_line": "Sorcery",
+    "oracle_text": "Put target creature card from a graveyard onto the battlefield under your control. You lose life equal to that card's mana value.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2025-09-19",
+    "comment": "The amount of life you lose is determined by the mana value of the card in your graveyard, not the creature once it's on the battlefield."
+   },
+   {
+    "published_at": "2025-09-19",
+    "comment": "If a card in a graveyard has {X} in its mana cost, X is 0."
+   },
+   {
+    "published_at": "2025-09-19",
+    "comment": "In a multiplayer game, if a player leaves the game, all cards that player owns leave as well. If you leave the game, the creature you control from Reanimate is exiled."
+   },
+   {
+    "published_at": "2025-09-19",
+    "comment": "You lose life after the creature is already on the battlefield. Any abilities it has that interact with loss of life, such as that of Platinum Emperion, apply to that loss of life."
+   },
+   {
+    "published_at": "2025-09-19",
+    "comment": "If any abilities trigger on the creature entering the battlefield, those abilities resolve after you lose life. If losing life results in you losing the game, those abilities won't resolve."
+   }
+  ]
+ },
+ "Echoing Return": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Echoing Return",
+  "como": "exact",
+  "oracle_id": "591fe685-767e-4e6e-905e-cc8b423caa19",
+  "layout": "normal",
+  "type_line": "Sorcery",
+  "keywords": [],
+  "mana_cost": "{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Echoing Return",
+    "type_line": "Sorcery",
+    "oracle_text": "Return target creature card and all other cards with the same name as that card from your graveyard to your hand.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2021-06-18",
+    "comment": "If the target is illegal as Echoing Return tries to resolve (most likely because it is no longer in your graveyard), it will be removed from the stack and do nothing, even if there are cards with the same name in your graveyard."
+   }
+  ]
+ },
+ "Secret Salvage": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Secret Salvage",
+  "como": "exact",
+  "oracle_id": "f42fa525-dd17-448a-b0c3-29b90db2e30e",
+  "layout": "normal",
+  "type_line": "Sorcery",
+  "keywords": [],
+  "mana_cost": "{3}{B}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Secret Salvage",
+    "type_line": "Sorcery",
+    "oracle_text": "Exile target nonland card from your graveyard. Search your library for any number of cards with the same name as that card, reveal them, put them into your hand, then shuffle.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": []
+ },
+ "Kindred Dominance": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Kindred Dominance",
+  "como": "exact",
+  "oracle_id": "ccaa44f2-96be-44e2-884f-c31baa3908d5",
+  "layout": "normal",
+  "type_line": "Sorcery",
+  "keywords": [],
+  "mana_cost": "{5}{B}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Kindred Dominance",
+    "type_line": "Sorcery",
+    "oracle_text": "Choose a creature type. Destroy all creatures that aren't of the chosen type.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2017-08-25",
+    "comment": "Once Kindred Dominance begins to resolve, no players may take other actions until it's done. Notably, players can't try to save their creatures after you've chosen a creature type."
+   },
+   {
+    "published_at": "2017-08-25",
+    "comment": "You must choose an existing creature type, such as Vampire or Cat. Card types such as \"artifact\" can't be chosen."
+   },
+   {
+    "published_at": "2017-08-25",
+    "comment": "You can't choose multiple creature types, such as \"Cat Warrior.\" A Cat Warrior is both a Cat and a Warrior. It's affected by anything that affects either type and unaffected by things that affect non-Cat or non-Warrior creatures."
+   }
+  ]
+ },
+ "Swarmyard Massacre": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Swarmyard Massacre",
+  "como": "exact",
+  "oracle_id": "50e7ae38-2a66-4e32-bfb3-fefbae0caa61",
+  "layout": "normal",
+  "type_line": "Sorcery",
+  "keywords": [],
+  "mana_cost": "{3}{B}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Swarmyard Massacre",
+    "type_line": "Sorcery",
+    "oracle_text": "Create two 1/1 green Squirrel creature tokens. Then each creature that isn't an Insect, Rat, Spider, or Squirrel gets -1/-1 until end of turn for each creature you control that's an Insect, Rat, Spider, or Squirrel.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2024-07-26",
+    "comment": "If you control a creature that has more than one of the listed types (for example, Daggerfang Duo, which is a Rat Squirrel), it's only counted once for Swarmyard Massacre."
+   }
+  ]
+ },
+ "Plague of Vermin": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Plague of Vermin",
+  "como": "exact",
+  "oracle_id": "efc12acf-ffef-40a6-b2ce-fe93e89ad840",
+  "layout": "normal",
+  "type_line": "Sorcery",
+  "keywords": [],
+  "mana_cost": "{6}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Plague of Vermin",
+    "type_line": "Sorcery",
+    "oracle_text": "Starting with you, each player may pay any amount of life. Repeat this process until no one pays life. Each player creates a 1/1 black Rat creature token for each 1 life they paid this way.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2008-05-01",
+    "comment": "In a game of N players, the process ends when all N players in sequence (starting with you) choose not to pay life. It doesn't end the first time a player chooses not to pay life. If a player chooses not to pay life but the process continues, that player may pay life the next time the process gets around to them."
+   },
+   {
+    "published_at": "2008-05-01",
+    "comment": "The amount of life a player may spend must be equal to or less than that player's life total; you can't spend life you haven't got."
+   },
+   {
+    "published_at": "2008-05-01",
+    "comment": "If a player chooses to spend life, their life total goes down immediately. This will affect how much life that player can spend the next time the process gets around to them. If a player chooses to pay life three different times during this process, for example, that counts as three separate instances of losing life, not as one."
+   },
+   {
+    "published_at": "2008-05-01",
+    "comment": "After the process stops, the total amount of life each player paid this way is calculated. That's how many tokens each player gets. All the tokens enter at the same time."
+   },
+   {
+    "published_at": "2008-05-01",
+    "comment": "In a Two-Headed Giant game, each player on a team gets a chance to pay life. The team's life total is adjusted in between."
+   }
+  ]
+ },
+ "Fell the Profane // Fell Mire": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Fell the Profane // Fell Mire",
+  "como": "exact",
+  "oracle_id": "053a69d8-2b5e-4f14-8b02-ca405891dc4a",
+  "layout": "modal_dfc",
+  "type_line": "Instant // Land",
+  "keywords": [],
+  "mana_cost": "{2}{B}{B} // ",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Fell the Profane",
+    "type_line": "Instant",
+    "oracle_text": "Destroy target creature or planeswalker.",
+    "power": null,
+    "toughness": null
+   },
+   {
+    "name": "Fell Mire",
+    "type_line": "Land",
+    "oracle_text": "As this land enters, you may pay 3 life. If you don't, it enters tapped.\n{T}: Add {B}.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2024-06-07",
+    "comment": "To determine whether it is legal to play a modal double-faced card, consider only the characteristics of the face you're playing and ignore the other face's characteristics. For example, if an effect stops you from casting creature spells, you can't cast Disciple of Freyalise, but you can still play Garden of Freyalise."
+   },
+   {
+    "published_at": "2024-06-07",
+    "comment": "If an effect allows you to play a specific modal double-faced card, you may cast it as a spell or play it as a land, as determined by which face you choose to play. If an effect allows you to cast (rather than \"play\") a specific modal double-faced card, you can't play it as a land."
+   },
+   {
+    "published_at": "2024-06-07",
+    "comment": "If an effect allows you to play a land or cast a spell from among a group of cards, you may play or cast a modal double-faced card with any face that fits the criteria of that effect. For example, if an effect allows you to play lands from your graveyard, you can play Garden of Freyalise, but you can't cast Disciple of Freyalise."
+   },
+   {
+    "published_at": "2024-06-07",
+    "comment": "If an effect allows you to put a card with particular characteristics onto the battlefield without instructing you to play or cast it, you consider only the characteristics of a modal double-faced card's front face to see if that card qualifies. If it does, it enters the battlefield with its front face up. For example, if an effect allows you to put a creature card from your graveyard onto the battlefield, you can put Disciple of Freyalise onto the battlefield. However, an effect that lets you return a land card from your graveyard to your hand won't let you return Garden of Freyalise to your hand, as that card has only its front face's characteristics while in the graveyard."
+   },
+   {
+    "published_at": "2024-06-07",
+    "comment": "The mana value of a modal double-faced card is based on the characteristics of the face that's being considered. On the stack or the battlefield, consider whichever face is up. In all other zones, consider only the front face. This is different than how the mana value of a transforming double-faced card is determined."
+   },
+   {
+    "published_at": "2024-06-07",
+    "comment": "A modal double-faced card can't be transformed or be put onto the battlefield transformed. Ignore any instruction to transform a modal double-faced card or to put one onto the battlefield transformed."
+   }
+  ]
+ },
+ "Damnation": {
+  "secao": "Deck",
+  "qtd": 1,
+  "resolvido": "Damnation",
+  "como": "exact",
+  "oracle_id": "d57a8f0b-7989-4db5-8756-6f2690097252",
+  "layout": "normal",
+  "type_line": "Sorcery",
+  "keywords": [],
+  "mana_cost": "{2}{B}{B}",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Damnation",
+    "type_line": "Sorcery",
+    "oracle_text": "Destroy all creatures. They can't be regenerated.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": []
+ },
+ "Cabal Coffers": {
+  "secao": "Terrenos",
+  "qtd": 1,
+  "resolvido": "Cabal Coffers",
+  "como": "exact",
+  "oracle_id": "7358e164-5704-4e78-9b21-6a9bf2a968ce",
+  "layout": "normal",
+  "type_line": "Land",
+  "keywords": [],
+  "mana_cost": "",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Cabal Coffers",
+    "type_line": "Land",
+    "oracle_text": "{2}, {T}: Add {B} for each Swamp you control.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2021-06-18",
+    "comment": "The mana ability of Cabal Coffers counts each land you control with the subtype Swamp, not just ones named Swamp."
+   }
+  ]
+ },
+ "Urborg, Tomb of Yawgmoth": {
+  "secao": "Terrenos",
+  "qtd": 1,
+  "resolvido": "Urborg, Tomb of Yawgmoth",
+  "como": "exact",
+  "oracle_id": "db6174d7-211d-4817-b8e4-8384594c83f9",
+  "layout": "normal",
+  "type_line": "Legendary Land",
+  "keywords": [],
+  "mana_cost": "",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Urborg, Tomb of Yawgmoth",
+    "type_line": "Legendary Land",
+    "oracle_text": "Each land is a Swamp in addition to its other land types.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2021-03-19",
+    "comment": "Urborg, Tomb of Yawgmoth isn't a Swamp while it's not on the battlefield."
+   },
+   {
+    "published_at": "2021-03-19",
+    "comment": "Land cards not on the battlefield aren't Swamps while Urborg is on the battlefield."
+   },
+   {
+    "published_at": "2021-03-19",
+    "comment": "Urborg's ability causes each land on the battlefield to have the land type Swamp. Any land that's a Swamp has the ability \"{T}: Add {B}.\" Nothing else changes about those lands, including their names, other subtypes, other abilities, and whether they're legendary, basic, or snow."
+   },
+   {
+    "published_at": "2021-03-19",
+    "comment": "If an effect such as that of Magus of the Moon causes Urborg to lose its abilities by setting it to a basic land type not in addition to its other types, it won't turn lands into Swamps, no matter in what order those effects started to apply."
+   }
+  ]
+ },
+ "Nykthos, Shrine to Nyx": {
+  "secao": "Terrenos",
+  "qtd": 1,
+  "resolvido": "Nykthos, Shrine to Nyx",
+  "como": "exact",
+  "oracle_id": "84dc18f0-8225-4b40-a165-b10321e41769",
+  "layout": "normal",
+  "type_line": "Legendary Land",
+  "keywords": [],
+  "mana_cost": "",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Nykthos, Shrine to Nyx",
+    "type_line": "Legendary Land",
+    "oracle_text": "{T}: Add {C}.\n{2}, {T}: Choose a color. Add an amount of mana of that color equal to your devotion to that color. (Your devotion to a color is the number of mana symbols of that color in the mana costs of permanents you control.)",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2013-09-15",
+    "comment": "The second ability is a mana ability. It doesn't use the stack and can't be responded to."
+   },
+   {
+    "published_at": "2013-09-15",
+    "comment": "Numeric mana symbols ({0}, {1}, and so on) in mana costs of permanents you control don't count toward your devotion to any color."
+   },
+   {
+    "published_at": "2013-09-15",
+    "comment": "Mana symbols in the text boxes of permanents you control don't count toward your devotion to any color."
+   },
+   {
+    "published_at": "2013-09-15",
+    "comment": "Hybrid mana symbols, monocolored hybrid mana symbols, and Phyrexian mana symbols do count toward your devotion to their color(s)."
+   },
+   {
+    "published_at": "2013-09-15",
+    "comment": "If an activated ability or triggered ability has an effect that depends on your devotion to a color, you count the number of mana symbols of that color among the mana costs of permanents you control as the ability resolves. The permanent with that ability will be counted if it's still on the battlefield at that time."
+   }
+  ]
+ },
+ "Castle Locthwain": {
+  "secao": "Terrenos",
+  "qtd": 1,
+  "resolvido": "Castle Locthwain",
+  "como": "exact",
+  "oracle_id": "be811e70-aaaa-41f3-bf9e-5d3f9f719b49",
+  "layout": "normal",
+  "type_line": "Land",
+  "keywords": [],
+  "mana_cost": "",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Castle Locthwain",
+    "type_line": "Land",
+    "oracle_text": "This land enters tapped unless you control a Swamp.\n{T}: Add {B}.\n{1}{B}{B}, {T}: Draw a card, then you lose life equal to the number of cards in your hand.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2019-10-04",
+    "comment": "No player may take actions between the time you draw a card and the time you lose life."
+   },
+   {
+    "published_at": "2019-10-04",
+    "comment": "Once the common lands (such as Mystic Sanctuary) enter the battlefield tapped, there's no way to untap them with a spell or ability to make their last ability trigger."
+   },
+   {
+    "published_at": "2019-10-04",
+    "comment": "Although the common lands have basic land types, they aren't basic lands."
+   }
+  ]
+ },
+ "Crypt of Agadeem": {
+  "secao": "Terrenos",
+  "qtd": 1,
+  "resolvido": "Crypt of Agadeem",
+  "como": "exact",
+  "oracle_id": "4fe8af73-c84a-44bd-9739-ee5c8b027874",
+  "layout": "normal",
+  "type_line": "Land",
+  "keywords": [],
+  "mana_cost": "",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Crypt of Agadeem",
+    "type_line": "Land",
+    "oracle_text": "This land enters tapped.\n{T}: Add {B}.\n{2}, {T}: Add {B} for each black creature card in your graveyard.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": []
+ },
+ "Takenuma, Abandoned Mire": {
+  "secao": "Terrenos",
+  "qtd": 1,
+  "resolvido": "Takenuma, Abandoned Mire",
+  "como": "exact",
+  "oracle_id": "ac2dd694-d2f1-4025-8400-12332bdc882a",
+  "layout": "normal",
+  "type_line": "Legendary Land",
+  "keywords": [
+   "Mill",
+   "Channel"
+  ],
+  "mana_cost": "",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Takenuma, Abandoned Mire",
+    "type_line": "Legendary Land",
+    "oracle_text": "{T}: Add {B}.\nChannel — {3}{B}, Discard this card: Mill three cards, then return a creature or planeswalker card from your graveyard to your hand. This ability costs {1} less to activate for each legendary creature you control.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2022-02-18",
+    "comment": "The creature or planeswalker card you return to your hand is not chosen until after you mill three cards. You may choose a creature or planeswalker card from among all the cards in your graveyard, including the milled cards."
+   },
+   {
+    "published_at": "2022-02-18",
+    "comment": "Discarding the card is part of the cost to activate a channel ability."
+   },
+   {
+    "published_at": "2022-02-18",
+    "comment": "If a channel ability requires a target, you may not activate it without a target just to discard the card."
+   }
+  ]
+ },
+ "Swarmyard": {
+  "secao": "Terrenos",
+  "qtd": 1,
+  "resolvido": "Swarmyard",
+  "como": "exact",
+  "oracle_id": "4b508087-99da-4eb1-8b12-29162f2ec85d",
+  "layout": "normal",
+  "type_line": "Land",
+  "keywords": [
+   "Heal",
+   "Regenerate"
+  ],
+  "mana_cost": "",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Swarmyard",
+    "type_line": "Land",
+    "oracle_text": "{T}: Add {C}.\n{T}: Regenerate target Insect, Rat, Spider, or Squirrel. (The next time it would be destroyed this turn, instead tap it, remove it from combat, and heal all damage on it.)",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": []
+ },
+ "Three Tree City": {
+  "secao": "Terrenos",
+  "qtd": 1,
+  "resolvido": "Three Tree City",
+  "como": "exact",
+  "oracle_id": "da3b17a2-e1e1-44e9-b9b1-ae54a92037db",
+  "layout": "normal",
+  "type_line": "Legendary Land",
+  "keywords": [],
+  "mana_cost": "",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Three Tree City",
+    "type_line": "Legendary Land",
+    "oracle_text": "As Three Tree City enters, choose a creature type.\n{T}: Add {C}.\n{2}, {T}: Choose a color. Add an amount of mana of that color equal to the number of creatures you control of the chosen type.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": [
+   {
+    "published_at": "2024-07-26",
+    "comment": "To choose a creature type, you must choose an existing creature type, such as Lizard or Wizard. You can’t choose multiple creature types, such as “Lizard Wizard.” Card types such as artifact can’t be chosen, nor can subtypes that aren’t creature types, such as Jace, Vehicle, or Treasure."
+   }
+  ]
+ },
+ "Bojuka Bog": {
+  "secao": "Terrenos",
+  "qtd": 1,
+  "resolvido": "Bojuka Bog",
+  "como": "exact",
+  "oracle_id": "04b7362d-0490-4cb0-b5d7-2a7732f659ce",
+  "layout": "normal",
+  "type_line": "Land",
+  "keywords": [],
+  "mana_cost": "",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Bojuka Bog",
+    "type_line": "Land",
+    "oracle_text": "This land enters tapped.\nWhen this land enters, exile target player's graveyard.\n{T}: Add {B}.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": []
+ },
+ "Big Apple, 3 a.m.": {
+  "secao": "Terrenos",
+  "qtd": 1,
+  "resolvido": "Big Apple, 3 a.m.",
+  "como": "exact",
+  "oracle_id": "dd01ef1f-f6be-498f-82e0-dc04833e685f",
+  "layout": "normal",
+  "type_line": "Land",
+  "keywords": [],
+  "mana_cost": "",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Big Apple, 3 a.m.",
+    "type_line": "Land",
+    "oracle_text": "This land enters tapped. As it enters, choose a color.\n{T}: Add one mana of the chosen color.\n{5}, {T}: Create a 1/1 black Rat creature token for each opponent you have.",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": []
+ },
+ "Swamp": {
+  "secao": "Terrenos",
+  "qtd": 24,
+  "resolvido": "Swamp",
+  "como": "exact",
+  "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+  "layout": "normal",
+  "type_line": "Basic Land — Swamp",
+  "keywords": [],
+  "mana_cost": "",
+  "game_changer": false,
+  "faces": [
+   {
+    "name": "Swamp",
+    "type_line": "Basic Land — Swamp",
+    "oracle_text": "({T}: Add {B}.)",
+    "power": null,
+    "toughness": null
+   }
+  ],
+  "rulings": []
+ }
+}

@@ -1,0 +1,10 @@
+== (1) forma fechada: P(as duas cartas entre as primeiras 7+N, deck de 99, na compra, sem tutor)
+   T4: 1.13%  T5: 1.36%  T6: 1.61%  T7: 1.88%  T8: 2.16%  T10: 2.80%  T12: 3.53%
+== (2) simulador (arquivo vivo, padrao), N=20000, 12 turnos, sementes 5_000_000+i
+   Marrow-Gnawer + Thornbite Staff (2178-3126)
+      pecas ja' ao alcance (mao/campo, acumulado) ate T:T4: 1.09%  T5: 1.54%  T6: 2.41%  T7: 4.03%  T8: 6.72%  T10:17.32%  T12:31.22%
+      combo EXECUTADO ate T:                       T4: 0.01%  T5: 0.02%  T6: 0.12%  T7: 0.53%  T8: 1.43%  T10: 4.25%  T12: 6.75%
+   Ayara + Plague of Vermin (884-5035)
+      pecas ja' ao alcance (mao/campo, acumulado) ate T:T4: 1.06%  T5: 1.40%  T6: 1.90%  T7: 2.57%  T8: 4.07%  T10:10.81%  T12:21.46%
+      combo EXECUTADO ate T:                       T4: 0.01%  T5: 0.08%  T6: 0.29%  T7: 0.56%  T8: 1.14%  T10: 4.99%  T12:12.62%
+   qualquer um dos dois executado ate T:            T4: 0.01%  T5: 0.10%  T6: 0.41%  T7: 1.06%  T8: 2.51%  T10: 8.53%  T12:17.56%

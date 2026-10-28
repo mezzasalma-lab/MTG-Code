@@ -1,0 +1,7 @@
+nomes verificados: 57 | NAO reconhecidos pelo Spellbook: []
+combos incluidos: 2 | quase (1 carta de distancia): 9
+  COMBO: Ayara, First of Locthwain + Plague of Vermin | ['Near-infinite creature tokens for all players', 'Near-infinite creature ETB', 'Near-infinite lifegain', 'Near-infinite lifegain triggers'] | bracket O
+  COMBO: Marrow-Gnawer + Thornbite Staff | ['Infinite creature tokens', 'Infinite creature ETB', 'Infinite creature LTB', 'Infinite creature sacrifice triggers'] | bracket R
+estimate-bracket: {"bracketTag": "R", "game_changers_na_lista": [], "banidas": [], "mass_land_denial": [], "extra_turn": [], "combos_classificados": [{"combo": "Marrow-Gnawer + Thornbite Staff", "relevant": true, "borderlineRelevant": true, "definitelyTwoCard": true, "arguablyTwoCard": true, "speed": 5, "lock": false, "bracketTag_do_combo": "R"}, {"combo": "Ayara, First of Locthwain + Plague of Vermin", "relevant": true, "borderlineRelevant": true, "definitelyTwoCard": false, "arguablyTwoCard": true, "speed": 3, "lock": false, "bracketTag_do_combo": "O"}]}
+controle positivo do estimate-bracket (trocar Sol Ring por Necropotence, Game Changer conhecida): ['Necropotence'] -> R
+controle positivo (Basalt Monolith + Rings aparece): True | controle de corte (sem o Rings some): True

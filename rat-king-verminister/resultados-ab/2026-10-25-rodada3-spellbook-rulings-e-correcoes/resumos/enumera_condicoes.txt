@@ -1,0 +1,51 @@
+== FICHAS que a lista cria (frase literal do oraculo -> cartas)
+  '1/1 black Rat creature token'  <-  Piper of the Swarm
+  '1/1 black Rat creature token and put a +1/+1 counter on Rat King'  <-  Rat King, Verminister
+  '1/1 black Rat creature token for each opponent you have'  <-  Big Apple, 3 a.m.
+  '1/1 black Rat creature token with "This token can't block'  <-  Lord Skitter, Sewer King
+  '1/1 black Rat creature tokens, where X is the number of Rats you control'  <-  Marrow-Gnawer
+  '1/1 green Squirrel creature tokens'  <-  Swarmyard Massacre
+  '3/2 colorless Shapeshifter creature token with changeling'  <-  Black Market Connections
+  'Treasure token'  <-  Black Market Connections, Deadly Dispute, Pitiless Plunderer
+
+[Rat]  tipo impresso (type_line): ['Rat King, Verminister', 'Rat Colony', 'Ashcoat of the Shadow Swarm', 'Marrow-Gnawer', 'Lord Skitter, Sewer King', 'Karumonix, the Rat King'] | changeling impresso em carta: ['Black Market Connections'] | fichas que contam: ['Rat (1/1 preta)', 'Mercenary (3/2 incolor, Shapeshifter, changeling = todo tipo)']
+      LEEM a condicao (13): ['Rat King, Verminister', 'Rat Colony', 'Ashcoat of the Shadow Swarm', 'Marrow-Gnawer', 'Lord Skitter, Sewer King', 'Karumonix, the Rat King', 'Piper of the Swarm', 'Ratcatcher', 'Valley Rotcaller', 'Swarmyard Massacre', 'Plague of Vermin', 'Swarmyard', 'Big Apple, 3 a.m.']
+
+[Squirrel]  tipo impresso (type_line): ['Valley Rotcaller'] | changeling impresso em carta: ['Black Market Connections'] | fichas que contam: ['Squirrel (1/1 verde)', 'Mercenary (3/2 incolor, Shapeshifter, changeling = todo tipo)']
+      LEEM a condicao (3): ['Valley Rotcaller', 'Swarmyard Massacre', 'Swarmyard']
+
+[Shaman]  tipo impresso (type_line): ['Thornbite Staff'] | changeling impresso em carta: ['Black Market Connections'] | fichas que contam: ['Mercenary (3/2 incolor, Shapeshifter, changeling = todo tipo)']
+      LEEM a condicao (1): ['Thornbite Staff']
+
+[Bat]  tipo impresso (type_line): - | changeling impresso em carta: ['Black Market Connections'] | fichas que contam: ['Mercenary (3/2 incolor, Shapeshifter, changeling = todo tipo)']
+      LEEM a condicao (1): ['Valley Rotcaller']
+
+[Lizard]  tipo impresso (type_line): - | changeling impresso em carta: ['Black Market Connections'] | fichas que contam: ['Mercenary (3/2 incolor, Shapeshifter, changeling = todo tipo)']
+      LEEM a condicao (1): ['Valley Rotcaller']
+
+[Insect]  tipo impresso (type_line): - | changeling impresso em carta: ['Black Market Connections'] | fichas que contam: ['Mercenary (3/2 incolor, Shapeshifter, changeling = todo tipo)']
+      LEEM a condicao (2): ['Swarmyard Massacre', 'Swarmyard']
+
+[Spider]  tipo impresso (type_line): - | changeling impresso em carta: ['Black Market Connections'] | fichas que contam: ['Mercenary (3/2 incolor, Shapeshifter, changeling = todo tipo)']
+      LEEM a condicao (2): ['Swarmyard Massacre', 'Swarmyard']
+
+[black creature]  criaturas pretas por mana_cost (18): ['Rat King, Verminister', 'Rat Colony', 'Ashcoat of the Shadow Swarm', 'Marrow-Gnawer', 'Lord Skitter, Sewer King', 'Karumonix, the Rat King', 'Piper of the Swarm', 'Ratcatcher', 'Species Specialist', 'Valley Rotcaller', 'Gray Merchant of Asphodel', 'Syr Konrad, the Grim', 'Crypt Ghast', 'Zulaport Cutthroat', 'Priest of Forgotten Gods', 'Ayara, First of Locthwain', 'Emeritus of Woe // Demonic Tutor', 'Pitiless Plunderer'] | fichas pretas: Rat | NAO pretas: Squirrel (verde), Mercenary (incolor)
+      LEEM a condicao (4): ['Ratcatcher', 'Ayara, First of Locthwain', 'Cover of Darkness', 'Crypt of Agadeem']
+
+[artifact]  cartas (7): ['Sol Ring', 'Skullclamp', 'Jet Medallion', "Bontu's Monument", 'Thornbite Staff', 'Thrumming Stone', 'The Soul Stone'] | fichas: Treasure
+      LEEM a condicao (4): ['Ratcatcher', 'Pitiless Plunderer', 'Cover of Darkness', 'Deadly Dispute']
+
+[Treasure]  
+      LEEM a condicao (3): ['Pitiless Plunderer', 'Black Market Connections', 'Deadly Dispute']
+
+[legendary creature]  7: ['Rat King, Verminister', 'Ashcoat of the Shadow Swarm', 'Marrow-Gnawer', 'Lord Skitter, Sewer King', 'Karumonix, the Rat King', 'Syr Konrad, the Grim', 'Ayara, First of Locthwain']
+      LEEM a condicao (1): ['Takenuma, Abandoned Mire']
+
+[Swamp]  
+      LEEM a condicao (4): ['Crypt Ghast', 'Cabal Coffers', 'Urborg, Tomb of Yawgmoth', 'Castle Locthwain']
+
+[creature type (escolhido)]  
+      LEEM a condicao (3): ['Species Specialist', 'Cover of Darkness', 'Three Tree City']
+
+Cartas com 'Shaman' no type_line: ['Thornbite Staff'] (Thornbite Staff e' Kindred: tem o tipo, nao e' criatura)
+Fichas Shaman: so' o Mercenary (changeling = todo tipo de criatura, inclusive Shaman) -> Thornbite Staff: 'Whenever a Shaman creature enters, you may attach' DISPARA nele.

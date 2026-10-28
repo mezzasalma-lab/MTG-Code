@@ -148,6 +148,43 @@ def add(name, mv, ctype, tags=(), pips_b=0, base_power=0):
 
 
 COMMANDER = "Rat King, Verminister"
+
+# =====================================================================================================================================================
+# RODADA 3 (2026-10-25) -- conceitos compartilhados (Rat/Squirrel/Shaman por changeling, "black creature", Treasure, "each opponent"), rulings e os 2 combos que o
+# Commander Spellbook acha na lista (Marrow-Gnawer + Thornbite Staff; Ayara + Plague of Vermin). Achados e provas em resultados-ab/2026-10-25-rodada3-spellbook-rulings-e-correcoes/.
+# Cada chave DESLIGADA devolve o comportamento anterior, bit a bit (provado em 20.000 x 2 modos).
+# =====================================================================================================================================================
+TREASURE_MANA_ENABLED = True          # Treasure ("{T}, Sacrifice: Add one mana of any color") nunca era gasta como mana; gastar tambem dispara o Disappear do Rat King
+THORNBITE_STAFF_ENABLED = True        # Equip {4}, ping {2},{T}, untap quando uma criatura morre, auto-attach em Shaman (o Mercenary de changeling E' Shaman) e o combo com Marrow-Gnawer
+ROTCALLER_EXACT_X = True              # X = outros Squirrels/Bats/Lizards/Rats que voce controla (sem o "-1" que tirava um Rat de verdade; sem filtro de "pronto"; conta os Esquilos)
+MARROW_X_AFTER_SACRIFICE = True       # ruling 2004-12-01: X conta os Rats quando resolve, sem o Rat sacrificado
+BIG_APPLE_PER_OPPONENT = True         # "a 1/1 Rat for EACH OPPONENT you have": NUM_OPPONENTS fichas, nao 1
+AYARA_TOKEN_TRIGGER = True            # "Whenever Ayara or another black creature you control enters": ficha de Rat e' preta (o codigo estava morto: `... if False else None`)
+AYARA_SACRIFICE_TOKENS = True         # "Sacrifice another black creature": ficha de Rat primeiro (antes sacrificava carta nomeada mesmo havendo ficha)
+PLAGUE_PAYS_WITH_AYARA = True         # com Ayara em campo cada ficha devolve 1 de vida: paga tudo menos 1 (combo Ayara + Plague of Vermin do Spellbook)
+JET_MEDALLION_BLACK_SPELLS = True     # "Black spells you cast cost {1} less": instant/sorcery preto tambem (o CARD_DB tem pips_b=0 nas magias)
+COST_REDUCTION_COLORED_FLOOR = True   # rulings Jet Medallion/Bontu's: a reducao so' tira mana GENERICA; Rat Colony {1}{B} com os dois em campo custava 0
+GRAY_MERCHANT_ETB = True              # "each opponent loses X life, X = devotion to black; you gain life equal to the life lost": o ETB nao existia (so' o Nykthos lia a devocao)
+NINJA_TEEN_LEVELS_AND_DRAIN = True    # entra no nivel 1 SEM pagar (o codigo cobrava {1}{B} fantasma) + nivel 1: "creature you control leaves the battlefield: each opponent loses 1"
+RAT_KING_REANIMATE_COST = True        # "Sacrifice three Rats": o comandante entrava na conta dos 3, mas nunca e' sacrificado: pagava 2
+SOUL_STONE_SHARED_TAP = True          # Harness custa {6}{B} + {T} da propria pedra: a pedra nao pode tambem render o {B} do mesmo turno
+PRIEST_EXACT = True                   # "Any number of target players": sem a perda de 2 de vida PROPRIA; "sacrifice two OTHER creatures": nunca o proprio Priest
+EMERITUS_ENTERS_PREPARED = True       # "This creature enters prepared": pode conjurar a copia do Demonic Tutor logo que entra
+EXTORT_ENABLED = True                 # Crypt Ghast: "Whenever you cast a spell, you may pay {W/B}": 1 mana -> cada oponente perde 1 e voce ganha o total perdido
+ZULAPORT_SELF_DEATH = True            # "Whenever this creature OR another creature you control dies": a morte do proprio Zulaport tambem dispara
+SACRIFICE_COST_NEEDS_FODDER = True    # Deadly Dispute / Culling the Weak so' sao conjuradas com algo pra sacrificar (antes pagavam o custo adicional "de graca")
+BONTU_TRIGGER_ONCE = True             # "Whenever you cast a creature spell": disparava 2x por criatura conjurada da mao (cast_card E resolve_cast chamavam creature_cast_trigger)
+NINJA_TEEN_SNEAK_RULING = True        # CR 702.190a + rulings 2026-01-27: sneak so' no declare blockers, devolve um atacante nao bloqueado a mao, o custo {3}{B} substitui o custo de mana, entra virada e atacando
+MARROW_STAFF_LOOP_RAT_TARGET = 40    # combo infinito: para quando ha tantos Rats (o loop real e' infinito; o simulador precisa de um teto)
+MARROW_STAFF_LOOP_MAX_ITERS = 12
+PLAGUE_COMBO_CAP = 60                 # teto de fichas do Plague of Vermin pago com Ayara em campo
+
+# Pips {B} reais das MAGIAS (instant/sorcery): o `pips_b` do CARD_DB so' vale pra permanentes (devocao). Lidos do oraculo ao vivo (carddb_vs_oraculo.py).
+BLACK_SPELL_PIPS = {
+    "Deadly Dispute": 1, "Culling the Weak": 1, "Dark Ritual": 1, "Deadly Rollick": 1, "Withering Torment": 1, "Reanimate": 1, "Echoing Return": 1,
+    "Secret Salvage": 2, "Kindred Dominance": 2, "Swarmyard Massacre": 2, "Plague of Vermin": 1, "Fell the Profane // Fell Mire": 2, "Damnation": 2,
+}
+
 add(COMMANDER, 2, "creature", {"commander", "rat", "disappear_engine"}, pips_b=1, base_power=1)
 
 # --- Rats / corpo tribal -------------------------------------------------
@@ -310,6 +347,29 @@ class GameState:
 
     soul_stone_harnessed: bool = False
 
+    # --- Rodada 3 (2026-10-25): campos novos (todos neutros com as chaves desligadas) ---
+    treasures_spent_this_turn: int = 0     # Treasures gastas como mana neste turno (continuam contando em total_mana, pra remaining_mana nao pular)
+    treasure_mana_used_total: int = 0
+    staff_holder: Optional[str] = None     # None | nome da criatura-carta equipada | "__mercenary__" (ficha de changeling)
+    staff_attach_turn: int = -1
+    staff_tapped: bool = False             # so' pro holder-ficha; pro holder-carta vale tapped_creatures_this_turn
+    staff_equips_total: int = 0
+    staff_auto_attach_total: int = 0
+    staff_pings_total: int = 0
+    marrow_staff_loop_iters_total: int = 0
+    combo_marrow_staff_turn: Optional[int] = None
+    combo_ayara_plague_turn: Optional[int] = None
+    combo_any_turn: Optional[int] = None
+    soul_stone_tapped: bool = False
+    extort_paid_total: int = 0
+    gray_merchant_drain_total: int = 0
+    ayara_token_triggers_total: int = 0
+    ninja_teen_drain_total: int = 0
+    rotcaller_x_total: int = 0
+    big_apple_activations_total: int = 0
+    rat_tokens_created_this_turn: int = 0      # fichas de Rat que entraram NESTE turno (doentes de invocacao: nao atacam, nao podem ser devolvidas pelo sneak)
+    sneak_casts_total: int = 0
+
     piper_used_this_turn: bool = False
     # Achado real 2026-09-13: main_phase() roda 2x por turno (pre- e
     # pos-combate), entao qualquer habilidade "{T}: ..." sem essa guarda
@@ -421,7 +481,7 @@ def rocks_mana(state: GameState) -> int:
     total = 0
     if "Sol Ring" in state.battlefield:
         total += 2
-    if "The Soul Stone" in state.battlefield:
+    if "The Soul Stone" in state.battlefield and not (SOUL_STONE_SHARED_TAP and state.soul_stone_tapped):
         total += 1
     return total
 
@@ -468,9 +528,20 @@ def lands_mana(state: GameState) -> int:
     return total
 
 
+def colored_pips(name: str) -> int:
+    """Mana COLORIDA do custo (a lista e' mono-preta: so' {B}). Permanentes: pips_b do CARD_DB; magias: BLACK_SPELL_PIPS."""
+    c = CARD_DB[name]
+    if c.ctype in ("instant", "sorcery"):
+        return BLACK_SPELL_PIPS.get(name, 0)
+    return c.pips_b
+
+
 def cost_reduction(state: GameState, name: str) -> int:
     d = 0
-    if "Jet Medallion" in state.battlefield and CARD_DB[name].ctype not in ("land",):
+    if JET_MEDALLION_BLACK_SPELLS and "Jet Medallion" in state.battlefield and CARD_DB[name].ctype in ("instant", "sorcery"):
+        if BLACK_SPELL_PIPS.get(name, 0) > 0:
+            d += 1
+    elif "Jet Medallion" in state.battlefield and CARD_DB[name].ctype not in ("land",):
         # "Black spells you cast" -- toda carta desta lista e' preta
         # (mono-B), exceto artefatos incolores (Sol Ring/Skullclamp/Jet
         # Medallion/Thornbite Staff/Thrumming Stone/Soul Stone nao tem
@@ -483,7 +554,10 @@ def cost_reduction(state: GameState, name: str) -> int:
 
 
 def total_mana(state: GameState) -> int:
-    return lands_mana(state) + rocks_mana(state)
+    t = lands_mana(state) + rocks_mana(state)
+    if TREASURE_MANA_ENABLED:
+        t += state.treasure_tokens + state.treasures_spent_this_turn
+    return t
 
 
 def remaining_mana(state: GameState) -> int:
@@ -500,6 +574,8 @@ def effective_cost(state: GameState, name: str) -> int:
         # Scryfall que o texto NAO exige alvo atacando/bloqueando (so
         # "target creature").
         return 0
+    if COST_REDUCTION_COLORED_FLOOR:
+        return max(colored_pips(name), CARD_DB[name].mv - cost_reduction(state, name))
     return max(0, CARD_DB[name].mv - cost_reduction(state, name))
 
 
@@ -507,8 +583,24 @@ def can_cast(state: GameState, name: str) -> bool:
     return remaining_mana(state) >= effective_cost(state, name)
 
 
+def _consume_treasures(state: GameState):
+    """Treasure: '{T}, Sacrifice this artifact: Add one mana of any color'. A mana dos terrenos/pedras gasta primeiro; o que passar disso sai das Treasures (que SAEM do campo:
+    o Disappear do Rat King dispara). `treasures_spent_this_turn` continua em total_mana, entao remaining_mana nao muda ao consumir."""
+    base = lands_mana(state) + rocks_mana(state)
+    novas = (state.mana_spent_this_turn - base) - state.treasures_spent_this_turn
+    if novas > 0:
+        novas = min(novas, state.treasure_tokens)
+        if novas > 0:
+            state.treasure_tokens -= novas
+            state.treasures_spent_this_turn += novas
+            state.treasure_mana_used_total += novas
+            state.permanent_left_battlefield_this_turn = True
+
+
 def spend_mana(state: GameState, n: int):
     state.mana_spent_this_turn += n
+    if TREASURE_MANA_ENABLED:
+        _consume_treasures(state)
 
 
 # ---------------------------------------------------------------------------
@@ -522,6 +614,12 @@ def on_creature_dies(state: GameState, n: int = 1, is_token: bool = False, dying
     if n <= 0:
         return
     state.creatures_died_this_turn += n
+    if NINJA_TEEN_LEVELS_AND_DRAIN and "Ninja Teen" in state.battlefield:
+        # nivel 1: "Whenever a creature you control leaves the battlefield, each opponent loses 1 life."
+        state.proxy_damage_total += n
+        state.ninja_teen_drain_total += n
+    if THORNBITE_STAFF_ENABLED:
+        staff_untap_on_death(state)
     if "Zulaport Cutthroat" in state.battlefield:
         state.life += n
         state.proxy_damage_total += n
@@ -613,6 +711,9 @@ def leave_battlefield(state: GameState, name: str, to_graveyard: bool = True, is
         state.graveyard.append(name)
     if is_creature_card(name) and to_graveyard:
         on_creature_dies(state, 1, is_token=is_token, dying_is_rat=is_rat(name))
+        if ZULAPORT_SELF_DEATH and name == "Zulaport Cutthroat":
+            state.life += 1                      # a morte do proprio Zulaport: ja saiu do campo antes do despacho acima
+            state.proxy_damage_total += 1
     if name == COMMANDER:
         if name in state.graveyard:
             state.graveyard.remove(name)
@@ -660,7 +761,7 @@ def sacrifice_rats(state: GameState, n: int) -> int:
     return done
 
 
-def sacrifice_any_creature(state: GameState, n: int) -> int:
+def sacrifice_any_creature(state: GameState, n: int, exclude: Optional[str] = None) -> int:
     """Sacrifica ate N criaturas (token generico primeiro, depois carta
     nomeada mais barata) -- usado por Deadly Dispute/Culling the
     Weak/Priest of Forgotten Gods."""
@@ -684,7 +785,7 @@ def sacrifice_any_creature(state: GameState, n: int) -> int:
             on_creature_dies(state, 1, is_token=True)
             done += 1
             continue
-        creatures = [x for x in state.battlefield if is_creature_card(x) and x != COMMANDER]
+        creatures = [x for x in state.battlefield if is_creature_card(x) and x != COMMANDER and x != exclude]
         if not creatures:
             break
         cheapest = min(creatures, key=lambda x: CARD_DB[x].mv)
@@ -735,6 +836,13 @@ def resolve_etb(state: GameState, name: str):
     if "choose_type_etb" in tags:
         pass  # Species Specialist: tipo escolhido = Rat (documentado, tema tribal central)
 
+    if GRAY_MERCHANT_ETB and "devotion_drain" in tags:
+        # Gray Merchant: "each opponent loses X life, where X is your devotion to black. You gain life equal to the life lost this way." (ruling 2021-03-19: o TOTAL perdido)
+        x = devotion_black(state)
+        state.proxy_damage_total += x
+        state.life += x * NUM_OPPONENTS
+        state.gray_merchant_drain_total += x
+
 
 def black_etb_trigger(state: GameState, entering_name: str):
     if "Ayara, First of Locthwain" not in state.battlefield:
@@ -755,8 +863,21 @@ def creature_cast_trigger(state: GameState, name: str):
 
 def create_rat_token(state: GameState, source: str = ""):
     state.rat_tokens += 1
+    state.rat_tokens_created_this_turn += 1
     state.tokens_created_total += 1
-    black_etb_trigger(state, "__rat_token__") if False else None  # Rat tokens sao pretos mas sem pip {B} -- devocao nao conta tokens (Regra: so' mana COSTS de permanentes contam)
+    black_etb_trigger(state, "__rat_token__") if False else None  # (devocao nao conta tokens: so' mana COSTS de permanentes contam. Isso NAO vale pra Ayara: ver abaixo)
+    if AYARA_TOKEN_TRIGGER and "Ayara, First of Locthwain" in state.battlefield:
+        # a ficha de Rat e' uma criatura PRETA: Ayara dispara (o Squirrel e' verde e o Mercenary e' incolor: nao disparam)
+        state.life += 1
+        state.proxy_damage_total += 1
+        state.ayara_token_triggers_total += 1
+
+
+def note_combo(state: GameState, campo: str):
+    if getattr(state, campo) is None:
+        setattr(state, campo, state.turn)
+    if state.combo_any_turn is None:
+        state.combo_any_turn = state.turn
 
 
 def create_squirrel_tokens(state: GameState, n: int, source: str = ""):
@@ -780,14 +901,20 @@ def enter_battlefield(state: GameState, name: str, from_hand: bool = True, tappe
         state.ramp_pieces_cast_total += 1
     black_etb_trigger(state, name)
     resolve_etb(state, name)
+    if EMERITUS_ENTERS_PREPARED and name == "Emeritus of Woe // Demonic Tutor":
+        state.emeritus_prepared = True       # "This creature enters prepared."
+    if THORNBITE_STAFF_ENABLED and state.staff_holder == name:
+        state.staff_holder = None            # o holder saiu e voltou: e' um objeto novo, o Staff nao continua preso a ele
 
 
-def resolve_cast(state: GameState, name: str, free: bool = False):
+def resolve_cast(state: GameState, name: str, free: bool = False, trigger_done: bool = False):
     if not free and name in state.hand:
         state.hand.remove(name)
     if name in LAND_NAMES:
         state.battlefield.append(name)
         return
+    if EXTORT_ENABLED and "Crypt Ghast" in state.battlefield:
+        extort_trigger(state)
     ctype = CARD_DB[name].ctype
     if ctype in ("instant", "sorcery"):
         if "interaction" in CARD_DB[name].tags:
@@ -795,10 +922,25 @@ def resolve_cast(state: GameState, name: str, free: bool = False):
         resolve_instant_sorcery(state, name)
         state.graveyard.append(name)
         return
-    if is_creature_card(name):
+    if is_creature_card(name) and not trigger_done:
         creature_cast_trigger(state, name)
     enter_battlefield(state, name, from_hand=False)
     thrumming_stone_ripple(state, name, free=free)
+
+
+def extort_trigger(state: GameState):
+    """Crypt Ghast: 'Whenever you cast a spell, you may pay {W/B}. If you do, each opponent loses 1 life and you gain that much life.' O gatilho resolve ANTES da magia.
+    Politica: paga se o mana restante ainda cobre a proxima jogada que a mao tem (pagar nao tira uma conjuracao)."""
+    rem = remaining_mana(state)
+    if rem < 1:
+        return
+    prox = [effective_cost(state, n) for n in state.hand if n not in LAND_NAMES and can_cast(state, n)]
+    if prox and rem - 1 < min(prox):
+        return
+    spend_mana(state, 1)
+    state.life += NUM_OPPONENTS              # ruling 2024-01-12: o ganho e' o TOTAL perdido por todos os oponentes
+    state.proxy_damage_total += 1
+    state.extort_paid_total += 1
 
 
 def thrumming_stone_ripple(state: GameState, name: str, free: bool):
@@ -885,6 +1027,11 @@ def resolve_instant_sorcery(state: GameState, name: str):
 
     elif "life_for_rats" in tags:  # Plague of Vermin
         pay = min(10, max(0, state.life - 20))  # paga vida sobrando acima de 20, teto defensivo de 10
+        if PLAGUE_PAYS_WITH_AYARA and AYARA_TOKEN_TRIGGER and "Ayara, First of Locthwain" in state.battlefield:
+            # combo (Commander Spellbook 884-5035): cada ficha de Rat dispara Ayara (+1 de vida): paga tudo menos 1 e a vida volta
+            pay = min(PLAGUE_COMBO_CAP, max(0, state.life - 1))
+            if pay > 0:
+                note_combo(state, "combo_ayara_plague_turn")
         if pay > 0:
             state.life -= pay
             for _ in range(pay):
@@ -965,6 +1112,8 @@ def ninja_teen_level_up(state: GameState):
         return
     # Nivel 1 -> 2 custa {1}{B} (mv=2), nivel 2 -> 3 custa {B} (mv=1) --
     # "as a sorcery", qualquer main phase com prioridade e mana sobrando.
+    if NINJA_TEEN_LEVELS_AND_DRAIN and state.ninja_teen_level == 0:
+        state.ninja_teen_level = 1           # a Classe entra no nivel 1, sem pagar nada
     if state.ninja_teen_level == 0 and remaining_mana(state) >= 2:
         spend_mana(state, 2)
         state.ninja_teen_level = 1
@@ -983,6 +1132,8 @@ def ninja_teen_sneak(state: GameState):
     {3}{B} (nao de graca)."""
     if state.ninja_teen_level < 3:
         return
+    if NINJA_TEEN_SNEAK_RULING:
+        return                               # (novo) o sneak so' existe no declare blockers: ninja_teen_sneak_combat, chamado por combat_step
     pool = [n for n in state.graveyard if is_creature_card(n)]
     while pool and remaining_mana(state) >= 4:
         best = max(pool, key=lambda n: CARD_DB[n].mv)
@@ -992,6 +1143,52 @@ def ninja_teen_sneak(state: GameState):
         state.recursion_events_total += 1
         konrad_gy_left(state, 1)
         pool = [n for n in state.graveyard if is_creature_card(n)]
+
+
+def sneak_returnable(state: GameState) -> Optional[str]:
+    """Atacante NAO bloqueado (goldfish: ninguem bloqueia) que posso devolver a mao: ficha de Rat que nao entrou neste turno (a ficha de agora tem doenca de invocacao e nao ataca);
+    senao a carta nomeada pronta mais barata (nunca o comandante)."""
+    if state.rat_tokens - state.rat_tokens_created_this_turn > 0:
+        return "__rat_token__"
+    cands = [n for n in ready_creatures(state) if n != COMMANDER]
+    return min(cands, key=lambda n: CARD_DB[n].mv) if cands else None
+
+
+def ninja_teen_sneak_combat(state: GameState):
+    """Ninja Teen nivel 3 + CR 702.190a: 'Sneak {3}{B}: any time you could cast an instant during your declare blockers step, you may cast this spell by paying {3}{B} and RETURNING AN
+    UNBLOCKED CREATURE you control to its owner's hand rather than paying its mana cost.' Rulings 2026-01-27: so' no declare blockers do meu turno, tem de pagar o custo inteiro (inclusive
+    devolver o atacante); a criatura entra virada e atacando (702.190b). A magia e' CONJURADA (Bontu's, extort e ripple disparam) e o atacante devolvido 'leaves the battlefield' (Disappear, Ninja Teen)."""
+    if state.ninja_teen_level < 3 or "Ninja Teen" not in state.battlefield:
+        return
+    guard = 0
+    while guard < 20:
+        guard += 1
+        pool = [n for n in state.graveyard if is_creature_card(n)]
+        if not pool:
+            return
+        ret = sneak_returnable(state)
+        if ret is None:
+            return
+        best = max(pool, key=lambda n: CARD_DB[n].mv)
+        cost = max(1, 4 - cost_reduction(state, best))        # {3}{B}: as reducoes cortam so' o generico; o piso e' o {B}
+        if remaining_mana(state) < cost:
+            return
+        spend_mana(state, cost)
+        if ret == "__rat_token__":
+            state.rat_tokens -= 1                              # a ficha devolvida a mao deixa de existir
+        else:
+            state.battlefield.remove(ret)
+            state.hand.append(ret)
+            state.creature_cast_turn.pop(ret, None)
+        state.permanent_left_battlefield_this_turn = True
+        if NINJA_TEEN_LEVELS_AND_DRAIN:
+            state.proxy_damage_total += 1                      # Ninja Teen nivel 1: a criatura devolvida saiu do campo
+            state.ninja_teen_drain_total += 1
+        state.graveyard.remove(best)
+        konrad_gy_left(state, 1)
+        resolve_cast(state, best, free=True)                   # conjura (gatilhos de conjuracao) e entra em campo
+        state.recursion_events_total += 1
+        state.sneak_casts_total += 1
 
 
 # ---------------------------------------------------------------------------
@@ -1009,7 +1206,7 @@ def rat_king_reanimate(state: GameState):
         return
     if COMMANDER in state.tapped_creatures_this_turn:
         return
-    if rat_count(state) < 3:
+    if (rat_count(state) - (1 if (RAT_KING_REANIMATE_COST and COMMANDER in state.battlefield and is_rat(COMMANDER)) else 0)) < 3:
         return
     pool = [n for n in state.graveyard if is_creature_card(n)]
     if not pool:
@@ -1035,7 +1232,7 @@ def rat_king_reanimate(state: GameState):
 def try_harness_soul_stone(state: GameState):
     if state.soul_stone_harnessed or "The Soul Stone" not in state.battlefield:
         return
-    if remaining_mana(state) < 7:
+    if remaining_mana(state) < (8 if SOUL_STONE_SHARED_TAP else 7):    # {6}{B} + {T} da propria pedra: ela nao rende o {B} do turno
         return
     if state.rat_tokens == 0 and state.squirrel_tokens == 0 and state.mercenary_tokens == 0 \
             and not [n for n in state.battlefield if is_creature_card(n) and n != COMMANDER]:
@@ -1053,6 +1250,11 @@ def try_harness_soul_stone(state: GameState):
         state.battlefield.remove(cheapest)  # exilada, nao vai pro cemiterio
     state.permanent_left_battlefield_this_turn = True
     state.soul_stone_harnessed = True
+    if SOUL_STONE_SHARED_TAP:
+        state.soul_stone_tapped = True
+    if NINJA_TEEN_LEVELS_AND_DRAIN and "Ninja Teen" in state.battlefield:
+        state.proxy_damage_total += 1        # a criatura exilada "leaves the battlefield"
+        state.ninja_teen_drain_total += 1
 
 
 def try_takenuma_channel(state: GameState):
@@ -1116,7 +1318,8 @@ def cast_rituals(state: GameState):
         state.mana_spent_this_turn -= 3  # ritual adiciona 3 B liquido (custou 1)
         state.ramp_pieces_cast_total += 1
     if "Culling the Weak" in state.hand and can_cast(state, "Culling the Weak") \
-            and (sum(1 for x in state.battlefield if is_creature_card(x) and x != COMMANDER) + state.rat_tokens + state.squirrel_tokens) > 2:
+            and (sum(1 for x in state.battlefield if is_creature_card(x) and x != COMMANDER) + state.rat_tokens + state.squirrel_tokens
+                 + (state.mercenary_tokens if SACRIFICE_COST_NEEDS_FODDER else 0)) > 2:
         spend_mana(state, effective_cost(state, "Culling the Weak"))
         resolve_cast(state, "Culling the Weak")
         state.mana_spent_this_turn -= 4
@@ -1184,10 +1387,11 @@ def priest_activation(state: GameState):
         return
     if creature_count(state) - 1 < 2:  # precisa de 2 OUTRAS criaturas
         return
-    sacrifice_any_creature(state, 2)
+    sacrifice_any_creature(state, 2, exclude="Priest of Forgotten Gods" if PRIEST_EXACT else None)
     state.mana_spent_this_turn = max(0, state.mana_spent_this_turn - 2)  # {B}{B} liquido
     draw_cards(state, 1)
-    state.life -= 2
+    if not PRIEST_EXACT:
+        state.life -= 2                      # (antigo) perda de vida PROPRIA que o oraculo nao tem: "any number of target players"
     state.proxy_damage_total += 2
     state.tapped_creatures_this_turn.add("Priest of Forgotten Gods")
 
@@ -1200,6 +1404,13 @@ def ayara_activation(state: GameState):
     if "Ayara, First of Locthwain" not in ready_creatures(state):
         return
     if "Ayara, First of Locthwain" in state.tapped_creatures_this_turn:
+        return
+    if AYARA_SACRIFICE_TOKENS and state.rat_tokens > 0:
+        state.rat_tokens -= 1                # "Sacrifice another black creature": a ficha de Rat e' preta e custa menos que uma carta
+        state.permanent_left_battlefield_this_turn = True
+        on_creature_dies(state, 1, is_token=True)
+        draw_cards(state, 1)
+        state.tapped_creatures_this_turn.add("Ayara, First of Locthwain")
         return
     other_black = [n for n in state.battlefield if is_black_creature(n) and n != "Ayara, First of Locthwain" and n != COMMANDER]
     if other_black:
@@ -1218,8 +1429,18 @@ def marrow_gnawer_activation(state: GameState):
         return
     if rat_count(state) < 2:
         return
-    x = rat_count(state)
-    sacrifice_rats(state, 1)
+    if THORNBITE_STAFF_ENABLED and state.staff_holder == "Marrow-Gnawer" and staff_valid(state):
+        marrow_staff_loop(state)
+        return
+    if MARROW_X_AFTER_SACRIFICE:
+        outros = state.rat_tokens + state.mercenary_tokens + sum(1 for n in state.battlefield if is_rat(n) and n != COMMANDER and n != "Marrow-Gnawer")
+        if outros < 1:
+            return                           # so' restaria sacrificar o proprio Marrow-Gnawer ou o comandante
+        sacrifice_rats(state, 1)
+        x = rat_count(state)                 # ruling 2004-12-01: conta os Rats quando resolve, SEM o sacrificado
+    else:
+        x = rat_count(state)
+        sacrifice_rats(state, 1)
     for _ in range(x):
         create_rat_token(state, source="Marrow-Gnawer")
     state.tapped_creatures_this_turn.add("Marrow-Gnawer")
@@ -1249,8 +1470,91 @@ def big_apple_activation(state: GameState):
         return
     if remaining_mana(state) >= 5:
         spend_mana(state, 5)
-        create_rat_token(state, source="Big Apple, 3 a.m.")
+        for _ in range(NUM_OPPONENTS if BIG_APPLE_PER_OPPONENT else 1):     # "for each opponent you have"
+            create_rat_token(state, source="Big Apple, 3 a.m.")
+        state.big_apple_activations_total += 1
         state.tapped_lands_this_turn.add("Big Apple, 3 a.m.")
+
+
+def staff_valid(state: GameState) -> bool:
+    """O Staff esta em campo e o holder ainda existe. Os tokens sao contadores agregados: o holder-ficha vale enquanto houver Mercenary."""
+    if state.staff_holder is None:
+        return False
+    if "Thornbite Staff" not in state.battlefield:
+        state.staff_holder = None
+        return False
+    h = state.staff_holder
+    if (h == "__mercenary__" and state.mercenary_tokens <= 0) or (h != "__mercenary__" and h not in state.battlefield):
+        state.staff_holder = None
+        return False
+    return True
+
+
+def staff_untap_on_death(state: GameState):
+    """'Equipped creature has: Whenever a creature dies, untap this creature.'"""
+    if state.staff_holder is not None and staff_valid(state):
+        if state.staff_holder == "__mercenary__":
+            state.staff_tapped = False
+        else:
+            state.tapped_creatures_this_turn.discard(state.staff_holder)
+
+
+def staff_holder_ready_to_tap(state: GameState) -> bool:
+    if not staff_valid(state):
+        return False
+    if state.staff_holder == "__mercenary__":
+        return (not state.staff_tapped) and state.staff_attach_turn < state.turn      # a ficha tem doenca de invocacao no turno em que entra
+    h = state.staff_holder
+    return h in ready_creatures(state) and h not in state.tapped_creatures_this_turn
+
+
+def staff_equip_policy(state: GameState):
+    """Equip {4}. Politica (minha): o unico alvo de Equip e' o Marrow-Gnawer (a peca do combo do Spellbook), se ele esta em campo e o Staff ainda nao esta nele."""
+    if "Thornbite Staff" not in state.battlefield or "Marrow-Gnawer" not in state.battlefield:
+        return
+    if state.staff_holder == "Marrow-Gnawer" and staff_valid(state):
+        return
+    if remaining_mana(state) < 4:
+        return
+    spend_mana(state, 4)
+    state.staff_holder = "Marrow-Gnawer"
+    state.staff_attach_turn = state.turn
+    state.staff_equips_total += 1
+
+
+def staff_ping_policy(state: GameState):
+    """'{2},{T}: This creature deals 1 damage to any target' com o mana que sobrou na 2a fase principal (proxy de dano; nunca tira jogada). Um ping por chamada: as desviradas por morte
+    acontecem em outros pontos do turno."""
+    if staff_holder_ready_to_tap(state) and remaining_mana(state) >= 2:
+        spend_mana(state, 2)
+        state.proxy_damage_total += 1
+        state.staff_pings_total += 1
+        if state.staff_holder == "__mercenary__":
+            state.staff_tapped = True
+        else:
+            state.tapped_creatures_this_turn.add(state.staff_holder)
+
+
+def marrow_staff_loop(state: GameState):
+    """Combo Marrow-Gnawer + Thornbite Staff (Spellbook 2178-3126; prerequisito: "um Rat adicional"): {T}, sacrifica um Rat -> o Rat morre -> o Staff desvira o Marrow -> X fichas.
+    Cada volta faz R -> 2R-2: com R=2 o numero de Rats nao cresce (mas cada volta e' uma morte + uma entrada: payoffs infinitos), com 3+ cresce. O loop real e' infinito;
+    o simulador para em MARROW_STAFF_LOOP_RAT_TARGET Rats (ou MARROW_STAFF_LOOP_MAX_ITERS voltas)."""
+    iters = 0
+    while iters < MARROW_STAFF_LOOP_MAX_ITERS and rat_count(state) < MARROW_STAFF_LOOP_RAT_TARGET:
+        if "Marrow-Gnawer" not in state.battlefield or "Marrow-Gnawer" in state.tapped_creatures_this_turn:
+            break
+        outros = state.rat_tokens + state.mercenary_tokens + sum(1 for n in state.battlefield if is_rat(n) and n != COMMANDER and n != "Marrow-Gnawer")
+        if outros < 1 or rat_count(state) < 2:
+            break
+        state.tapped_creatures_this_turn.add("Marrow-Gnawer")
+        sacrifice_rats(state, 1)             # on_creature_dies -> staff_untap_on_death: o Marrow desvira
+        x = rat_count(state)
+        for _ in range(x):
+            create_rat_token(state, source="Marrow-Gnawer + Thornbite Staff")
+        iters += 1
+        state.marrow_staff_loop_iters_total += 1
+        if iters >= 2:
+            note_combo(state, "combo_marrow_staff_turn")      # uma volta so' = a ativacao normal do Marrow-Gnawer; a 2a so' acontece porque o Staff desvirou
 
 
 def black_market_connections_step(state: GameState):
@@ -1264,6 +1568,12 @@ def black_market_connections_step(state: GameState):
     state.life -= 3
     state.mercenary_tokens += 1
     state.tokens_created_total += 1
+    if THORNBITE_STAFF_ENABLED and "Thornbite Staff" in state.battlefield and not staff_valid(state):
+        # Thornbite Staff: "Whenever a Shaman creature enters, you may attach this Equipment to it." O Mercenary tem changeling (todo tipo de criatura): e' Shaman.
+        state.staff_holder = "__mercenary__"
+        state.staff_attach_turn = state.turn
+        state.staff_tapped = False
+        state.staff_auto_attach_total += 1
 
 
 def ripples_of_undeath_step(state: GameState):
@@ -1318,7 +1628,7 @@ def cast_card(state: GameState, name: str):
     spend_mana(state, cost)
     if is_creature_card(name):
         creature_cast_trigger(state, name)
-    resolve_cast(state, name)
+    resolve_cast(state, name, trigger_done=BONTU_TRIGGER_ONCE)
     if is_rat(name):
         pass  # Lord Skitter ETB-exile ja tratado em resolve_etb
 
@@ -1363,19 +1673,26 @@ def main_phase(state: GameState, is_first_main: bool = True):
             # incremento pelo counter precisa ser manual.
             state.commander_cast_count += 1
         else:
-            resolve_cast(state, COMMANDER)  # enter_battlefield() incrementa commander_cast_count
+            resolve_cast(state, COMMANDER, trigger_done=BONTU_TRIGGER_ONCE)  # enter_battlefield() incrementa commander_cast_count
 
     cast_rituals(state)
     emeritus_demonic_tutor(state)
 
     while True:
         castables = [n for n in state.hand if n not in LAND_NAMES and can_cast(state, n)]
+        if SACRIFICE_COST_NEEDS_FODDER:
+            # custo adicional "sacrifice": sem o que sacrificar a magica nao pode ser conjurada; Culling the Weak so' vale como ritual (cast_rituals)
+            castables = [n for n in castables if not (n == "Culling the Weak" or (n == "Deadly Dispute" and not dispute_fodder(state)))]
         if not castables:
             break
         # Prioriza motores baratos primeiro (curva real, maximiza corpos em campo cedo).
         castables.sort(key=lambda n: effective_cost(state, n))
         cast_card(state, castables[0])
 
+    if THORNBITE_STAFF_ENABLED:
+        staff_equip_policy(state)            # linha de vitoria: Equip {4} no Marrow-Gnawer antes de gastar o mana em utilidades (o combo pode sair na mesma fase)
+    if EMERITUS_ENTERS_PREPARED:
+        emeritus_demonic_tutor(state)        # Emeritus recem-conjurado "enters prepared": a copia do Demonic Tutor ja pode ser conjurada
     skullclamp_loop(state)
     piper_activations(state)
     priest_activation(state)
@@ -1389,6 +1706,13 @@ def main_phase(state: GameState, is_first_main: bool = True):
     try_harness_soul_stone(state)
     try_takenuma_channel(state)
     syr_konrad_mill_activation(state)
+    if THORNBITE_STAFF_ENABLED and not is_first_main:
+        staff_ping_policy(state)             # so' na 2a fase principal: o mana que sobrou de verdade
+
+
+def dispute_fodder(state: GameState) -> bool:
+    return state.treasure_tokens > 0 or state.rat_tokens > 0 or state.squirrel_tokens > 0 or state.mercenary_tokens > 0 \
+        or any(is_creature_card(n) and n != COMMANDER for n in state.battlefield)
 
 
 def combat_step(state: GameState):
@@ -1397,10 +1721,16 @@ def combat_step(state: GameState):
     n_rat_attackers = len(attackers_rats) + state.rat_tokens + state.mercenary_tokens
     if "Valley Rotcaller" in ready_creatures(state):
         x = max(0, n_rat_attackers - 1)
+        if ROTCALLER_EXACT_X:
+            # "X is the number of OTHER Squirrels, Bats, Lizards, and Rats you control": todos os Rats que controlo (nao so' os prontos), mais os Esquilos; o Mercenary conta uma vez
+            x = rat_count(state) + state.squirrel_tokens
+            state.rotcaller_x_total += x
         state.life += x
         state.proxy_damage_total += x
     if "Karumonix, the Rat King" in ready_creatures(state):
         pass  # toxic -- sem oponente real, sem efeito numerico (Regra 1)
+    if NINJA_TEEN_SNEAK_RULING:
+        ninja_teen_sneak_combat(state)       # declare blockers: ninguem bloqueia no goldfish
 
 
 # ---------------------------------------------------------------------------
@@ -1614,6 +1944,10 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.tapped_creatures_this_turn = set()
     state.permanent_left_battlefield_this_turn = False
     state.creatures_died_this_turn = 0
+    state.treasures_spent_this_turn = 0
+    state.rat_tokens_created_this_turn = 0
+    state.soul_stone_tapped = False
+    state.staff_tapped = False
 
     # Achado real 2026-09-18: "skip the draw step" no 1o turno de quem
     # comeca so' existe na regra 1x1 (CR 103.8a). Commander e' sempre
@@ -2001,6 +2335,9 @@ def try_smart_opponent_wipe(state: GameState) -> Optional[list]:
         if zulaport_present and total_dying:
             state.life += total_dying
             state.proxy_damage_total += total_dying
+        if NINJA_TEEN_LEVELS_AND_DRAIN and total_dying and "Ninja Teen" in state.battlefield:
+            state.proxy_damage_total += total_dying      # nivel 1: cada criatura que sai do campo (aqui, num wipe simultaneo) drena 1
+            state.ninja_teen_drain_total += total_dying
         if plunderer_present:
             other_dying = total_dying - (1 if "Pitiless Plunderer" in named_dying_real_deaths else 0)
             if other_dying:
