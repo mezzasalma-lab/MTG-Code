@@ -1,5 +1,40 @@
 # Checklist cláusula-a-cláusula — Rat King, Verminister
 
+## Rodada 3 (2026-10-25): conceitos compartilhados (Rat/Shaman/changeling, "black creature", Treasure, "each opponent"), rulings e combos do Spellbook
+
+**Origem:** o usuário respondeu "Quero sim" ao meu relatório "O quê falta para terminar o deck do Verminister?" (itens 1 e 3). Ao rodar o Spellbook pela primeira vez neste deck (`resultados-ab/2026-10-25-rodada3-spellbook-rulings-e-correcoes/`) apareceram 2 combos que a lista já tinha e o simulador não executava; a leitura dos rulings (Regra #3) e a varredura de conceitos abriram o resto. **Oráculo e rulings foram baixados e lidos ANTES de qualquer linha de código.** Todas as correções entram atrás de chave (21), bit-idênticas com as chaves desligadas (20.000 × 2 modos).
+
+**Esta rodada contradiz a anterior.** As seções de 2026-08-31/09-14 abaixo marcam várias destas cartas como "✅ implementada" ou "📊 estrutural". As linhas abaixo as sobrepõem.
+
+| cláusula / conceito | situação |
+|---|---|
+| Thornbite Staff: "Whenever a Shaman creature enters, you may attach"; Equip {4}; "{2},{T}: 1 damage"; "whenever a creature dies, untap" | 🐛 era carta inerte, com a nota "nenhuma criatura Shaman na lista (type_line das 53 cartas)". O **Mercenary** de Black Market Connections (changeling = todo tipo) é Shaman. Corrigido: `THORNBITE_STAFF_ENABLED` |
+| **Combo Marrow-Gnawer + Thornbite Staff** (Spellbook 2178-3126, 2 cartas, "infinite creature tokens/ETB/LTB/sacrifice triggers") | 🐛 o simulador não executava. Agora: Equip {4} no Marrow, loop `{T}, sacrifica um Rat → morre → o Staff desvira → X fichas`, teto de 40 Rats / 12 voltas |
+| **Combo Ayara + Plague of Vermin** (Spellbook 884-5035, "near-infinite") | 🐛 não executava (a ficha de Rat não disparava Ayara: código morto `... if False else None`). Agora: `AYARA_TOKEN_TRIGGER`, `PLAGUE_PAYS_WITH_AYARA` |
+| Treasure: "{T}, Sacrifice: Add one mana of any color" (Pitiless Plunderer, Black Market Connections, Deadly Dispute criam) | 🐛 nunca era mana; gastar também deveria disparar o Disappear. `TREASURE_MANA_ENABLED` |
+| Gray Merchant of Asphodel: ETB "each opponent loses X... you gain life equal to the life lost" | 🐛 o ETB não existia (só o Nykthos lia a devoção). Teste dirigido mostrou +0 de dreno ao conjurar. `GRAY_MERCHANT_ETB` |
+| Emeritus of Woe: "This creature enters prepared" | 🐛 só o gatilho do end step ligava o estado. `EMERITUS_ENTERS_PREPARED` |
+| Crypt Ghast: Extort | 🐛 tag órfã; a docstring dizia "N/A estrutural". Pagar {W/B} e ganhar vida é do meu lado. `EXTORT_ENABLED` |
+| Ninja Teen: nível 1 (dreno), custo dos níveis, sneak do nível 3 | 🐛 cobrava {1}{B} fantasma · dreno inexistente · o sneak rodava na main phase, sem devolver atacante, entrando desvirada (CR 702.190a/b + rulings 2026-01-27). `NINJA_TEEN_LEVELS_AND_DRAIN`, `NINJA_TEEN_SNEAK_RULING` |
+| Bontu's Monument: "Whenever you cast a creature spell" | 🐛 disparava 2× por criatura da mão (`cast_card` e `resolve_cast`). `BONTU_TRIGGER_ONCE` |
+| Jet Medallion / Bontu's: só reduzem o genérico (rulings) | 🐛 magia preta nunca recebia o Jet (`pips_b=0`); com os dois em campo Rat Colony {1}{B} custava 0. `JET_MEDALLION_BLACK_SPELLS`, `COST_REDUCTION_COLORED_FLOOR` |
+| Valley Rotcaller: X = outros Squirrels/Bats/Lizards/Rats | 🐛 `Rats prontos + fichas − 1` (tirava um Rat real, ignorava Esquilos e Rats doentes). `ROTCALLER_EXACT_X` |
+| Marrow-Gnawer: X conta os Rats quando resolve, sem o sacrificado (ruling 2004-12-01) | 🐛 `MARROW_X_AFTER_SACRIFICE` |
+| Big Apple, 3 a.m.: "for each opponent you have" | 🐛 1 ficha em vez de `NUM_OPPONENTS` (que o arquivo já define = 3). `BIG_APPLE_PER_OPPONENT` |
+| Ayara: "another black creature" entra / sacrifica "another black creature" | 🐛 ficha de Rat (preta) não disparava nem era fodder. `AYARA_TOKEN_TRIGGER`, `AYARA_SACRIFICE_TOKENS` |
+| Rat King: "Sacrifice three Rats" | 🐛 contava o comandante entre os 3 mas nunca o sacrifica: pagava 2. `RAT_KING_REANIMATE_COST` |
+| The Soul Stone: Harness {6}{B}, {T} | 🐛 o {B} da própria pedra contava no mesmo turno (mesma classe de `{T}` compartilhado). `SOUL_STONE_SHARED_TAP` |
+| Priest of Forgotten Gods: "any number of target players"; "two OTHER creatures" | 🐛 perdia 2 de vida própria; podia sacrificar a si mesmo. `PRIEST_EXACT` |
+| Zulaport Cutthroat: "this creature OR another creature you control dies" | 🐛 a própria morte não contava. `ZULAPORT_SELF_DEATH` |
+| Deadly Dispute / Culling the Weak: custo adicional "sacrifice" | 🐛 conjuradas sem nada a sacrificar. `SACRIFICE_COST_NEEDS_FODDER` |
+| Plague of Vermin, Ashcoat, Takenuma, Three Tree City, Cabal Coffers, Urborg, Nykthos, Castle Locthwain, Reanimate, Echoing Return, Species Specialist, Syr Konrad, Pitiless Plunderer, Thrumming Stone, Deadly Rollick | ✅ conferidos contra o ruling (tabela completa em `resultados-ab/2026-10-25-.../resumos/rulings_vs_codigo.md`) |
+| Dictate of Erebos ("each opponent sacrifices"), Piper (roubo), Karumonix (toxic), Lord Skitter (exila do cemitério do oponente), Bojuka Bog (exila o cemitério de um jogador), Withering Torment/Deadly Rollick (alvo de oponente), fear de Marrow-Gnawer/Ratcatcher/Cover of Darkness | 📊 estrutural, cláusula citada na tabela de rulings |
+| Kindred Dominance, Swarmyard Massacre (−1/−1 no próprio campo), Damnation, Fell the Profane // **Fell Mire** (face de terreno) | ⏸ **decisão do usuário pendente.** O código justifica o "sem efeito" com "nenhum piloto racional conjuraria / remoção é o gap real" = julgamento de valor, vedado pela Regra #1. Não mexi |
+
+**Escopo (Regra #7).** Varrido: conceitos de tipo/cor/changeling/Kindred (enumeração por script sobre o oráculo ao vivo); `CARD_DB` × oráculo (54 cartas, 0 divergências em mv/tipo/pips/poder/tag Rat); "each opponent"; Treasure/artefato; gatilho ligado em só alguns pontos (Disappear, Staff, Ninja Teen, Zulaport); reduções de custo × cor; `{T}` compartilhado; ETB/feitiço sem efeito e gatilho sem reação (`varredura-2026-10-05/scripts/audit_etb_sem_efeito.py`, 6 eventos-padrão); leitura das funções de estado, mana, custo, cast/ETB, morte e sacrifício, fases do turno, mulligan/terreno, combate e das ativadas (Skullclamp, Ninja Teen, Soul Stone, Takenuma, Piper, Priest, Ayara, Marrow-Gnawer, Big Apple, Rat King), mais o trecho do wipe do oponente. **NÃO varrido:** o modo de resiliência (`try_smart_*`, `simulate_one_with_interaction`) cláusula a cláusula, exceto o wipe; o cabeçalho/docstring de ~200 linhas só por leitura rápida; a política de Black Market Connections (escolhe sempre os 3 modos e a vida pode ficar ≤ 0 sem perder); a política de mulligan/keep; Ripples of Undeath e Black Market Connections como "gatilho de início da 1ª main" no scanner (não exercitados); os outros 19 decks (o scanner novo só roda no Rat King).
+
+---
+
 ## Terreno virado primeiro em T1/T2 (varredura de 2026-10-05) — 2026-10-05
 
 **Origem:** erros achados nas rodadas do Vihaan e do Megatron (mulligan que devolvia cartas ao fundo por sorteio; ordem upkeep × draw; imposto de comandante; jogada de terreno que entra virado) varridos neste simulador, por leitura do código (`grep` + leitura da função) e por teste dirigido/instrumentação em runtime.
