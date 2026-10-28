@@ -66,6 +66,12 @@ Estado anterior da skill (2026-09-26): `SKILL.md` + 3 referências. Agora:
 - `references/user-standing-rules.md` §21, `mtg-commander/references/protocolo-de-avaliacao.md` (§7 e uma linha nova no checklist de erros) e `mtg-commander/SKILL.md`: mesma classe. `mtg-commander.zip` e `SHA256SUMS` refeitos.
 - **Como foi feito (Regra #9):** espelhos copiados do repositório; `protocolo-de-avaliacao.md`, `SKILL.md` e este README editados **direto no backup**; **não** rodei `sincronizar-skill.sh --para-backup` (a pasta viva da skill é mais antiga que o backup e o comando a copiaria por cima). A skill da conta **não** foi atualizada; só o usuário consegue reenviar `mtg-commander.zip`.
 
+## O que mudou na atualização de 2026-10-28 (Rat King: Spellbook, rulings e classes novas na Regra #10)
+
+- `CLAUDE.md` (e o espelho `references/CLAUDE-repositorio.md`): Regra #10 passa a listar `audit_etb_sem_efeito.py` (ETB/feitiço sem efeito e gatilho sem reação; controle positivo no Rat King), as classes (d)–(j) achadas no Rat King (tipo/cor conferido só nas cartas esquecendo as fichas, ETB fantasma, redução de custo abaixo da mana colorida e `pips_b=0` em magias, gatilho de conjuração 2×, fórmula "X" do ruling, custo "sacrifice" e `{T}` da própria fonte, sneak CR 702.190, combo do Spellbook que o simulador não executa), a lição de que **variante de A/B que não difere das outras é vácua**, e o que NÃO cobre (Spellbook: só 9 dos 47 decks têm registro; ETB fantasma nos outros 19 simuladores).
+- `references/user-standing-rules.md` §21 e `mtg-commander/references/protocolo-de-avaliacao.md` (4 linhas novas no checklist de erros): mesma classe. `mtg-commander.zip` e `SHA256SUMS` refeitos.
+- **Como foi feito (Regra #9):** espelhos copiados do repositório; `protocolo-de-avaliacao.md` e este README editados **direto no backup**; **não** rodei `sincronizar-skill.sh --para-backup` (a pasta viva da skill é mais antiga que o backup e o comando a copiaria por cima). A skill da conta **não** foi atualizada; só o usuário consegue reenviar `mtg-commander.zip`.
+
 ## Como restaurar / reinstalar
 
 1. **Claude Code (pasta de skills):** copie `skills-backup/mtg-commander/` inteira para `~/.claude/skills/mtg-commander/`.

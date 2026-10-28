@@ -1,0 +1,494 @@
+LOTE N=10000 sementes 3000000..3009999, 8 turnos, modo resiliencia
+
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 1753 (17.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__ate_T3                  0.9874       0.9874      +0.0000 ±0.0003  
+   commander_cast_turn__ate_T4                  0.9963       0.9962      -0.0001 ±0.0002  
+  *len_battlefield                             10.7820      10.8739      +0.0919 ±0.0662  
+  *rat_tokens                                   1.0603       1.3600      +0.2997 ±0.1020  
+  *tokens_created_total                         4.1762       4.9214      +0.7452 ±0.1558  
+  *proxy_damage_total                           4.1637       7.3157      +3.1520 ±0.2863  
+  *life                                        36.6281      41.0522      +4.4241 ±0.2869  
+  *cards_drawn_extra                            1.9800       2.1924      +0.2124 ±0.0702  
+  *treasure_tokens                              0.7524       0.4334      -0.3190 ±0.0540  
+  *ninja_teen_level                             0.2084       0.3005      +0.0921 ±0.0091  
+  *recursion_events_total                       3.4212       2.8391      -0.5821 ±0.0516  
+  *rat_king_reanimations_total                  2.9462       2.3316      -0.6146 ±0.0484  
+  *ramp_pieces_cast_total                       0.6315       0.7308      +0.0993 ±0.0084  
+  *tapped_land_skipped_for_play_total           0.1405       0.1247      -0.0158 ±0.0026  
+  *interaction_spells_cast_total                0.5673       0.6103      +0.0430 ±0.0071  
+  *len_library                                 78.6707      78.0099      -0.6608 ±0.1104  
+  *mana_spent_this_turn                         5.8601       6.3589      +0.4988 ±0.0975  
+  *tutors_used_total                            0.8607       1.1147      +0.2540 ±0.0571  
+  *len_graveyard                                5.8706       6.1983      +0.3277 ±0.0741  
+  *len_tapped_creatures_this_turn               0.5516       0.5070      -0.0446 ±0.0119  
+  *tapped_land_first_plays_total                0.3318       0.3377      +0.0059 ±0.0016  
+  *len_creature_cast_turn                       4.0665       4.1187      +0.0522 ±0.0157  
+  *len_hand                                     2.5785       2.7769      +0.1984 ±0.0712  
+  *len_smart_artifact_wipe_log                  0.1963       0.1821      -0.0142 ±0.0055  
+  *smart_artifact_wipes_total                   0.1963       0.1821      -0.0142 ±0.0055  
+
+[so_tesouro - antes] N=10000 | partidas com resultado IDENTICO ao da base: 7952 (79.5%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *len_battlefield                             10.7820      10.9408      +0.1588 ±0.0366  
+  *rat_tokens                                   1.0603       1.1614      +0.1011 ±0.0272  
+  *tokens_created_total                         4.1762       4.4550      +0.2788 ±0.0483  
+  *proxy_damage_total                           4.1637       4.3891      +0.2254 ±0.0659  
+  *life                                        36.6281      36.6845      +0.0564 ±0.0489  
+  *cards_drawn_extra                            1.9800       2.0883      +0.1083 ±0.0313  
+  *treasure_tokens                              0.7524       0.4050      -0.3474 ±0.0367  
+  *ninja_teen_level                             0.2084       0.2156      +0.0072 ±0.0042  
+  *recursion_events_total                       3.4212       3.4901      +0.0689 ±0.0187  
+  *rat_king_counters                            1.4893       1.6135      +0.1242 ±0.0097  
+  *len_creature_cast_turn                       4.0665       4.1261      +0.0596 ±0.0085  
+  *mana_spent_this_turn                         5.8601       6.2158      +0.3557 ±0.0536  
+  *permanent_left_battlefield_this_turn         0.5717       0.5971      +0.0254 ±0.0044  
+  *interaction_spells_cast_total                0.5673       0.5897      +0.0224 ±0.0043  
+  *len_library                                 78.6707      78.3847      -0.2860 ±0.0566  
+  *len_smart_artifact_wipe_log                  0.1963       0.1803      -0.0160 ±0.0035  
+  *smart_artifact_wipes_total                   0.1963       0.1803      -0.0160 ±0.0035  
+  *soul_stone_harnessed                         0.0298       0.0348      +0.0050 ±0.0016  
+  *len_graveyard                                5.8706       5.9931      +0.1225 ±0.0400  
+  *len_smart_discard_log                        1.1408       1.1228      -0.0180 ±0.0061  
+  *smart_discards_total                         1.1408       1.1228      -0.0180 ±0.0061  
+  *ramp_pieces_cast_total                       0.6315       0.6420      +0.0105 ±0.0036  
+  *len_tapped_lands_this_turn                   0.1642       0.1723      +0.0081 ±0.0031  
+
+[so_staff - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9897 (99.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   len_battlefield                             10.7820      10.7824      +0.0004 ±0.0056  
+  *rat_tokens                                   1.0603       1.1833      +0.1230 ±0.0653  
+  *tokens_created_total                         4.1762       4.4459      +0.2697 ±0.0970  
+  *proxy_damage_total                           4.1637       4.2119      +0.0482 ±0.0327  
+  *life                                        36.6281      36.6588      +0.0307 ±0.0237  
+   cards_drawn_extra                            1.9800       1.9899      +0.0099 ±0.0118  
+   treasure_tokens                              0.7524       0.7613      +0.0089 ±0.0116  
+   ninja_teen_level                             0.2084       0.2080      -0.0004 ±0.0006  
+   recursion_events_total                       3.4212       3.4198      -0.0014 ±0.0022  
+  *mana_spent_this_turn                         5.8601       5.9039      +0.0438 ±0.0200  
+  *len_tapped_creatures_this_turn               0.5516       0.5492      -0.0024 ±0.0011  
+  *rat_king_counters                            1.4893       1.4878      -0.0015 ±0.0008  
+  *creatures_died_this_turn                     2.8495       2.9508      +0.1013 ±0.0633  
+  *len_tapped_lands_this_turn                   0.1642       0.1632      -0.0010 ±0.0007  
+  *emeritus_prepared                            0.0491       0.0496      +0.0005 ±0.0004  
+  *len_library                                 78.6707      78.6527      -0.0180 ±0.0159  
+  *len_smart_artifact_wipe_log                  0.1963       0.1967      +0.0004 ±0.0004  
+  *smart_artifact_wipes_total                   0.1963       0.1967      +0.0004 ±0.0004  
+   permanent_left_battlefield_this_turn         0.5717       0.5711      -0.0006 ±0.0006  
+   len_graveyard                                5.8706       5.8789      +0.0083 ±0.0088  
+   tutors_used_total                            0.8607       0.8665      +0.0058 ±0.0065  
+   graveyard_wipe_used                          0.3755       0.3758      +0.0003 ±0.0003  
+   len_smart_graveyard_wipe_log                 0.3755       0.3758      +0.0003 ±0.0003  
+
+[so_rotcaller - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8797 (88.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+   rat_tokens                                   1.0603       1.0606      +0.0003 ±0.0004  
+   tokens_created_total                         4.1762       4.1779      +0.0017 ±0.0022  
+  *proxy_damage_total                           4.1637       5.0775      +0.9138 ±0.0635  
+  *life                                        36.6281      37.5405      +0.9124 ±0.0631  
+   cards_drawn_extra                            1.9800       1.9802      +0.0002 ±0.0004  
+   treasure_tokens                              0.7524       0.7526      +0.0002 ±0.0004  
+   creatures_died_this_turn                     2.8495       2.8507      +0.0012 ±0.0020  
+   len_hand                                     2.5785       2.5787      +0.0002 ±0.0004  
+   len_library                                 78.6707      78.6705      -0.0002 ±0.0004  
+
+[so_marrow_x - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9413 (94.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+   len_battlefield                             10.7820      10.7865      +0.0045 ±0.0096  
+  *rat_tokens                                   1.0603       0.9958      -0.0645 ±0.0309  
+  *tokens_created_total                         4.1762       4.0339      -0.1423 ±0.0336  
+  *proxy_damage_total                           4.1637       4.1348      -0.0289 ±0.0212  
+   life                                        36.6281      36.6145      -0.0136 ±0.0181  
+  *cards_drawn_extra                            1.9800       1.9711      -0.0089 ±0.0087  
+   treasure_tokens                              0.7524       0.7490      -0.0034 ±0.0073  
+   ninja_teen_level                             0.2084       0.2086      +0.0002 ±0.0009  
+  *recursion_events_total                       3.4212       3.4154      -0.0058 ±0.0040  
+  *creatures_died_this_turn                     2.8495       2.8118      -0.0377 ±0.0166  
+  *rat_king_counters                            1.4893       1.4861      -0.0032 ±0.0016  
+  *skullclamp_draws_total                       0.3104       0.3032      -0.0072 ±0.0040  
+  *len_smart_wipe_log                           0.8391       0.8374      -0.0017 ±0.0012  
+  *smart_wipes_total                            0.8391       0.8374      -0.0017 ±0.0012  
+  *len_tapped_creatures_this_turn               0.5516       0.5483      -0.0033 ±0.0024  
+  *rat_king_reanimations_total                  2.9462       2.9409      -0.0053 ±0.0040  
+  *len_hand                                     2.5785       2.5684      -0.0101 ±0.0090  
+  *mana_spent_this_turn                         5.8601       5.8469      -0.0132 ±0.0121  
+  *emeritus_prepared                            0.0491       0.0485      -0.0006 ±0.0006  
+  *permanent_left_battlefield_this_turn         0.5717       0.5706      -0.0011 ±0.0010  
+  *commander_cast_count                         1.7097       1.7087      -0.0010 ±0.0010  
+  *len_smart_enchantment_wipe_log               0.0911       0.0907      -0.0004 ±0.0004  
+  *smart_enchantment_wipes_total                0.0911       0.0907      -0.0004 ±0.0004  
+
+[so_big_apple - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9491 (94.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+   len_battlefield                             10.7820      10.7791      -0.0029 ±0.0100  
+  *rat_tokens                                   1.0603       1.1251      +0.0648 ±0.0158  
+  *tokens_created_total                         4.1762       4.3398      +0.1636 ±0.0212  
+  *proxy_damage_total                           4.1637       4.2064      +0.0427 ±0.0144  
+  *life                                        36.6281      36.6622      +0.0341 ±0.0143  
+   cards_drawn_extra                            1.9800       1.9872      +0.0072 ±0.0111  
+   treasure_tokens                              0.7524       0.7603      +0.0079 ±0.0111  
+   ninja_teen_level                             0.2084       0.2087      +0.0003 ±0.0009  
+   recursion_events_total                       3.4212       3.4214      +0.0002 ±0.0058  
+  *creatures_died_this_turn                     2.8495       2.9025      +0.0530 ±0.0191  
+  *len_smart_wipe_log                           0.8391       0.8437      +0.0046 ±0.0017  
+  *smart_wipes_total                            0.8391       0.8437      +0.0046 ±0.0017  
+  *commander_in_play                            0.8180       0.8152      -0.0028 ±0.0013  
+  *wiped_this_round                             0.1694       0.1722      +0.0028 ±0.0013  
+  *permanent_left_battlefield_this_turn         0.5717       0.5744      +0.0027 ±0.0015  
+  *commander_cast_count                         1.7097       1.7115      +0.0018 ±0.0010  
+  *ramp_pieces_cast_total                       0.6315       0.6327      +0.0012 ±0.0008  
+  *len_smart_removal_log                        0.5213       0.5238      +0.0025 ±0.0018  
+  *smart_removals_total                         0.5213       0.5238      +0.0025 ±0.0018  
+  *skullclamp_draws_total                       0.3104       0.3150      +0.0046 ±0.0040  
+  *graveyard_wipe_used                          0.3755       0.3767      +0.0012 ±0.0011  
+  *len_smart_graveyard_wipe_log                 0.3755       0.3767      +0.0012 ±0.0011  
+  *smart_graveyard_wipes_total                  0.3755       0.3767      +0.0012 ±0.0011  
+
+[so_ayara_fichas - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8859 (88.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *len_battlefield                             10.7820      10.7961      +0.0141 ±0.0119  
+   rat_tokens                                   1.0603       1.0635      +0.0032 ±0.0074  
+  *tokens_created_total                         4.1762       4.1952      +0.0190 ±0.0162  
+  *proxy_damage_total                           4.1637       4.5071      +0.3434 ±0.0598  
+  *life                                        36.6281      36.9552      +0.3271 ±0.0515  
+   cards_drawn_extra                            1.9800       1.9784      -0.0016 ±0.0093  
+   treasure_tokens                              0.7524       0.7523      -0.0001 ±0.0085  
+   ninja_teen_level                             0.2084       0.2089      +0.0005 ±0.0013  
+  *recursion_events_total                       3.4212       3.3513      -0.0699 ±0.0112  
+  *rat_king_reanimations_total                  2.9462       2.8759      -0.0703 ±0.0109  
+  *len_tapped_creatures_this_turn               0.5516       0.5418      -0.0098 ±0.0030  
+  *rat_king_counters                            1.4893       1.4918      +0.0025 ±0.0014  
+  *mercenary_tokens                             0.0682       0.0698      +0.0016 ±0.0010  
+  *len_smart_graveyard_snipe_log                0.2684       0.2668      -0.0016 ±0.0012  
+  *smart_graveyard_snipes_total                 0.2684       0.2668      -0.0016 ±0.0012  
+  *creatures_died_this_turn                     2.8495       2.8275      -0.0220 ±0.0180  
+   len_creature_cast_turn                       4.0665       4.0684      +0.0019 ±0.0020  
+   tutors_used_total                            0.8607       0.8540      -0.0067 ±0.0071  
+   emeritus_prepared                            0.0491       0.0482      -0.0009 ±0.0010  
+   len_smart_discard_log                        1.1408       1.1423      +0.0015 ±0.0018  
+   smart_discards_total                         1.1408       1.1423      +0.0015 ±0.0018  
+   ramp_pieces_cast_total                       0.6315       0.6323      +0.0008 ±0.0010  
+   graveyard_wipe_used                          0.3755       0.3761      +0.0006 ±0.0008  
+
+[so_ayara_plague - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8859 (88.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+   len_battlefield                             10.7820      10.7787      -0.0033 ±0.0071  
+  *rat_tokens                                   1.0603       1.1194      +0.0591 ±0.0289  
+  *tokens_created_total                         4.1762       4.3024      +0.1262 ±0.0480  
+  *proxy_damage_total                           4.1637       4.6726      +0.5089 ±0.0869  
+  *life                                        36.6281      37.0116      +0.3835 ±0.0523  
+   cards_drawn_extra                            1.9800       1.9891      +0.0091 ±0.0098  
+   treasure_tokens                              0.7524       0.7634      +0.0110 ±0.0169  
+   ninja_teen_level                             0.2084       0.2084      +0.0000 ±0.0008  
+   recursion_events_total                       3.4212       3.4230      +0.0018 ±0.0036  
+  *len_smart_graveyard_snipe_log                0.2684       0.2676      -0.0008 ±0.0006  
+  *smart_graveyard_snipes_total                 0.2684       0.2676      -0.0008 ±0.0006  
+  *creatures_died_this_turn                     2.8495       2.8930      +0.0435 ±0.0317  
+  *len_library                                 78.6707      78.6561      -0.0146 ±0.0128  
+   commander_in_play                            0.8180       0.8177      -0.0003 ±0.0003  
+   graveyard_wipe_used                          0.3755       0.3758      +0.0003 ±0.0003  
+   len_smart_graveyard_wipe_log                 0.3755       0.3758      +0.0003 ±0.0003  
+   smart_graveyard_wipes_total                  0.3755       0.3758      +0.0003 ±0.0003  
+   wiped_this_round                             0.1694       0.1697      +0.0003 ±0.0003  
+   mana_spent_this_turn                         5.8601       5.8722      +0.0121 ±0.0137  
+   len_tapped_creatures_this_turn               0.5516       0.5520      +0.0004 ±0.0005  
+   ramp_pieces_cast_total                       0.6315       0.6319      +0.0004 ±0.0005  
+   skullclamp_draws_total                       0.3104       0.3202      +0.0098 ±0.0120  
+   len_hand                                     2.5785       2.5882      +0.0097 ±0.0133  
+
+[so_jet_magias_e_piso - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9356 (93.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+   len_battlefield                             10.7820      10.7761      -0.0059 ±0.0173  
+   rat_tokens                                   1.0603       1.0591      -0.0012 ±0.0105  
+   tokens_created_total                         4.1762       4.1782      +0.0020 ±0.0207  
+  *proxy_damage_total                           4.1637       4.0887      -0.0750 ±0.0358  
+  *life                                        36.6281      36.5544      -0.0737 ±0.0345  
+   cards_drawn_extra                            1.9800       1.9643      -0.0157 ±0.0176  
+   treasure_tokens                              0.7524       0.7539      +0.0015 ±0.0132  
+   ninja_teen_level                             0.2084       0.2082      -0.0002 ±0.0018  
+   recursion_events_total                       3.4212       3.4149      -0.0063 ±0.0103  
+  *interaction_spells_cast_total                0.5673       0.5801      +0.0128 ±0.0027  
+  *len_creature_cast_turn                       4.0665       4.0557      -0.0108 ±0.0040  
+  *len_smart_discard_log                        1.1408       1.1353      -0.0055 ±0.0031  
+  *smart_discards_total                         1.1408       1.1353      -0.0055 ±0.0031  
+  *rat_king_counters                            1.4893       1.4843      -0.0050 ±0.0035  
+  *soul_stone_harnessed                         0.0298       0.0290      -0.0008 ±0.0006  
+  *tutors_used_total                            0.8607       0.8864      +0.0257 ±0.0200  
+  *len_smart_counter_log                        0.0540       0.0532      -0.0008 ±0.0007  
+  *smart_counters_total                         0.0540       0.0532      -0.0008 ±0.0007  
+  *squirrel_tokens                              0.0690       0.0708      +0.0018 ±0.0018  
+  *len_tapped_lands_this_turn                   0.1642       0.1656      +0.0014 ±0.0014  
+   rat_king_reanimations_total                  2.9462       2.9382      -0.0080 ±0.0095  
+   emeritus_prepared                            0.0491       0.0483      -0.0008 ±0.0010  
+   mercenary_tokens                             0.0682       0.0691      +0.0009 ±0.0013  
+
+[so_piso - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9763 (97.6%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *len_battlefield                             10.7820      10.7699      -0.0121 ±0.0120  
+   rat_tokens                                   1.0603       1.0639      +0.0036 ±0.0069  
+   tokens_created_total                         4.1762       4.1770      +0.0008 ±0.0141  
+  *proxy_damage_total                           4.1637       4.1068      -0.0569 ±0.0295  
+  *life                                        36.6281      36.5748      -0.0533 ±0.0256  
+   cards_drawn_extra                            1.9800       1.9648      -0.0152 ±0.0153  
+   treasure_tokens                              0.7524       0.7539      +0.0015 ±0.0111  
+   ninja_teen_level                             0.2084       0.2082      -0.0002 ±0.0013  
+  *recursion_events_total                       3.4212       3.4144      -0.0068 ±0.0056  
+  *len_creature_cast_turn                       4.0665       4.0599      -0.0066 ±0.0030  
+  *rat_king_reanimations_total                  2.9462       2.9390      -0.0072 ±0.0049  
+  *rat_king_counters                            1.4893       1.4866      -0.0027 ±0.0019  
+  *soul_stone_harnessed                         0.0298       0.0292      -0.0006 ±0.0005  
+  *interaction_spells_cast_total                0.5673       0.5662      -0.0011 ±0.0011  
+  *len_smart_counter_log                        0.0540       0.0536      -0.0004 ±0.0004  
+  *smart_counters_total                         0.0540       0.0536      -0.0004 ±0.0004  
+   len_library                                 78.6707      78.6896      +0.0189 ±0.0205  
+   mercenary_tokens                             0.0682       0.0687      +0.0005 ±0.0006  
+   commander_cast_count                         1.7097       1.7090      -0.0007 ±0.0009  
+   thrumming_stone_free_casts_total             0.1374       0.1340      -0.0034 ±0.0046  
+   len_smart_removal_log                        0.5213       0.5200      -0.0013 ±0.0018  
+   smart_removals_total                         0.5213       0.5200      -0.0013 ±0.0018  
+   lands_played_total                           5.6596       5.6588      -0.0008 ±0.0011  
+
+[so_gray_merchant - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9094 (90.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+   rat_tokens                                   1.0603       1.0650      +0.0047 ±0.0049  
+  *tokens_created_total                         4.1762       4.1832      +0.0070 ±0.0064  
+  *proxy_damage_total                           4.1637       4.8731      +0.7094 ±0.0505  
+  *life                                        36.6281      38.7518      +2.1237 ±0.1512  
+   cards_drawn_extra                            1.9800       1.9802      +0.0002 ±0.0004  
+   creatures_died_this_turn                     2.8495       2.8517      +0.0022 ±0.0039  
+   len_graveyard                                5.8706       5.8707      +0.0001 ±0.0002  
+   len_library                                 78.6707      78.6705      -0.0002 ±0.0004  
+   len_smart_discard_log                        1.1408       1.1409      +0.0001 ±0.0002  
+   mercenary_tokens                             0.0682       0.0683      +0.0001 ±0.0002  
+   smart_discards_total                         1.1408       1.1409      +0.0001 ±0.0002  
+   len_hand                                     2.5785       2.5786      +0.0001 ±0.0004  
+
+[so_ninja_teen - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8869 (88.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+   len_battlefield                             10.7820      10.7831      +0.0011 ±0.0097  
+   rat_tokens                                   1.0603       1.0586      -0.0017 ±0.0066  
+   tokens_created_total                         4.1762       4.1722      -0.0040 ±0.0053  
+  *proxy_damage_total                           4.1637       4.7868      +0.6231 ±0.0552  
+  *life                                        36.6281      36.6362      +0.0081 ±0.0073  
+   cards_drawn_extra                            1.9800       1.9757      -0.0043 ±0.0092  
+   treasure_tokens                              0.7524       0.7517      -0.0007 ±0.0051  
+  *ninja_teen_level                             0.2084       0.2870      +0.0786 ±0.0061  
+  *recursion_events_total                       3.4212       3.4278      +0.0066 ±0.0054  
+  *mana_spent_this_turn                         5.8601       5.8426      -0.0175 ±0.0125  
+  *len_creature_cast_turn                       4.0665       4.0684      +0.0019 ±0.0015  
+   len_tapped_lands_this_turn                   0.1642       0.1647      +0.0005 ±0.0005  
+   soul_stone_harnessed                         0.0298       0.0301      +0.0003 ±0.0003  
+   len_hand                                     2.5785       2.5710      -0.0075 ±0.0086  
+   interaction_spells_cast_total                0.5673       0.5668      -0.0005 ±0.0006  
+   commander_cast_count                         1.7097       1.7101      +0.0004 ±0.0005  
+   graveyard_wipe_used                          0.3755       0.3759      +0.0004 ±0.0005  
+   len_smart_graveyard_wipe_log                 0.3755       0.3759      +0.0004 ±0.0005  
+   smart_graveyard_wipes_total                  0.3755       0.3759      +0.0004 ±0.0005  
+   len_tapped_creatures_this_turn               0.5516       0.5505      -0.0011 ±0.0013  
+   len_smart_removal_log                        0.5213       0.5224      +0.0011 ±0.0014  
+   smart_removals_total                         0.5213       0.5224      +0.0011 ±0.0014  
+   emeritus_prepared                            0.0491       0.0487      -0.0004 ±0.0006  
+
+[so_ninja_sneak - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9807 (98.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *len_battlefield                             10.7820      10.7709      -0.0111 ±0.0091  
+   rat_tokens                                   1.0603       1.0531      -0.0072 ±0.0085  
+   tokens_created_total                         4.1762       4.1791      +0.0029 ±0.0057  
+   proxy_damage_total                           4.1637       4.1600      -0.0037 ±0.0164  
+   life                                        36.6281      36.6297      +0.0016 ±0.0111  
+   cards_drawn_extra                            1.9800       1.9796      -0.0004 ±0.0099  
+   treasure_tokens                              0.7524       0.7538      +0.0014 ±0.0042  
+   recursion_events_total                       3.4212       3.4165      -0.0047 ±0.0065  
+  *rat_king_counters                            1.4893       1.4956      +0.0063 ±0.0018  
+  *rat_king_reanimations_total                  2.9462       2.9645      +0.0183 ±0.0058  
+  *len_tapped_creatures_this_turn               0.5516       0.5567      +0.0051 ±0.0017  
+  *permanent_left_battlefield_this_turn         0.5717       0.5739      +0.0022 ±0.0011  
+  *len_creature_cast_turn                       4.0665       4.0626      -0.0039 ±0.0020  
+  *mana_spent_this_turn                         5.8601       5.8308      -0.0293 ±0.0170  
+  *soul_stone_harnessed                         0.0298       0.0307      +0.0009 ±0.0006  
+  *len_graveyard                                5.8706       5.8812      +0.0106 ±0.0084  
+  *len_smart_graveyard_snipe_log                0.2684       0.2694      +0.0010 ±0.0009  
+  *smart_graveyard_snipes_total                 0.2684       0.2694      +0.0010 ±0.0009  
+  *mercenary_tokens                             0.0682       0.0671      -0.0011 ±0.0010  
+  *len_smart_attack_log                         1.2703       1.2688      -0.0015 ±0.0014  
+  *smart_attacks_taken_total                    1.2703       1.2688      -0.0015 ±0.0014  
+   creatures_died_this_turn                     2.8495       2.8572      +0.0077 ±0.0101  
+
+[so_rk_reanimar - antes] N=10000 | partidas com resultado IDENTICO ao da base: 6481 (64.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *len_battlefield                             10.7820      10.6348      -0.1472 ±0.0420  
+  *rat_tokens                                   1.0603       0.9824      -0.0779 ±0.0297  
+  *tokens_created_total                         4.1762       3.8590      -0.3172 ±0.0460  
+  *proxy_damage_total                           4.1637       3.7576      -0.4061 ±0.0681  
+  *life                                        36.6281      36.4543      -0.1738 ±0.0603  
+  *cards_drawn_extra                            1.9800       1.8786      -0.1014 ±0.0321  
+  *treasure_tokens                              0.7524       0.7045      -0.0479 ±0.0235  
+   ninja_teen_level                             0.2084       0.2101      +0.0017 ±0.0038  
+  *recursion_events_total                       3.4212       2.6631      -0.7581 ±0.0398  
+  *rat_king_reanimations_total                  2.9462       2.1733      -0.7729 ±0.0381  
+  *rat_king_counters                            1.4893       1.2344      -0.2549 ±0.0127  
+  *len_tapped_creatures_this_turn               0.5516       0.4764      -0.0752 ±0.0088  
+  *permanent_left_battlefield_this_turn         0.5717       0.5283      -0.0434 ±0.0064  
+  *len_creature_cast_turn                       4.0665       4.0056      -0.0609 ±0.0091  
+  *creatures_died_this_turn                     2.8495       2.6353      -0.2142 ±0.0552  
+  *len_smart_wipe_log                           0.8391       0.8215      -0.0176 ±0.0054  
+  *smart_wipes_total                            0.8391       0.8215      -0.0176 ±0.0054  
+  *emeritus_prepared                            0.0491       0.0409      -0.0082 ±0.0027  
+  *len_smart_removal_log                        0.5213       0.5040      -0.0173 ±0.0062  
+  *smart_removals_total                         0.5213       0.5040      -0.0173 ±0.0062  
+  *len_smart_graveyard_snipe_log                0.2684       0.2827      +0.0143 ±0.0052  
+  *smart_graveyard_snipes_total                 0.2684       0.2827      +0.0143 ±0.0052  
+  *ramp_pieces_cast_total                       0.6315       0.6217      -0.0098 ±0.0036  
+
+[so_soul_stone - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9914 (99.1%)
+   campo                                          base     variante dif. pareada (IC95%)
+   len_battlefield                             10.7820      10.7804      -0.0016 ±0.0048  
+   rat_tokens                                   1.0603       1.0600      -0.0003 ±0.0010  
+  *tokens_created_total                         4.1762       4.1743      -0.0019 ±0.0014  
+  *proxy_damage_total                           4.1637       4.1547      -0.0090 ±0.0084  
+   life                                        36.6281      36.6255      -0.0026 ±0.0045  
+   cards_drawn_extra                            1.9800       1.9796      -0.0004 ±0.0025  
+   treasure_tokens                              0.7524       0.7531      +0.0007 ±0.0011  
+   ninja_teen_level                             0.2084       0.2086      +0.0002 ±0.0006  
+   recursion_events_total                       3.4212       3.4181      -0.0031 ±0.0040  
+  *soul_stone_harnessed                         0.0298       0.0250      -0.0048 ±0.0014  
+  *rat_king_counters                            1.4893       1.4868      -0.0025 ±0.0013  
+  *len_creature_cast_turn                       4.0665       4.0650      -0.0015 ±0.0010  
+  *len_smart_discard_log                        1.1408       1.1399      -0.0009 ±0.0006  
+  *smart_discards_total                         1.1408       1.1399      -0.0009 ±0.0006  
+  *mana_spent_this_turn                         5.8601       5.8485      -0.0116 ±0.0089  
+  *skullclamp_draws_total                       0.3104       0.3094      -0.0010 ±0.0009  
+  *lands_played_this_turn                       0.4557       0.4553      -0.0004 ±0.0004  
+   len_smart_attack_log                         1.2703       1.2696      -0.0007 ±0.0008  
+   smart_attacks_taken_total                    1.2703       1.2696      -0.0007 ±0.0008  
+   commander_cast_count                         1.7097       1.7100      +0.0003 ±0.0003  
+   ramp_pieces_cast_total                       0.6315       0.6311      -0.0004 ±0.0006  
+   lands_played_total                           5.6596       5.6593      -0.0003 ±0.0006  
+   len_smart_counter_log                        0.0540       0.0541      +0.0001 ±0.0002  
+
+[so_priest - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8868 (88.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *len_battlefield                             10.7820      10.8281      +0.0461 ±0.0232  
+   rat_tokens                                   1.0603       1.0666      +0.0063 ±0.0187  
+   tokens_created_total                         4.1762       4.1882      +0.0120 ±0.0282  
+  *proxy_damage_total                           4.1637       4.3012      +0.1375 ±0.0526  
+  *life                                        36.6281      36.9447      +0.3166 ±0.0493  
+  *cards_drawn_extra                            1.9800       2.0485      +0.0685 ±0.0187  
+   treasure_tokens                              0.7524       0.7598      +0.0074 ±0.0127  
+   ninja_teen_level                             0.2084       0.2097      +0.0013 ±0.0026  
+   recursion_events_total                       3.4212       3.4261      +0.0049 ±0.0186  
+  *len_smart_removal_log                        0.5213       0.5374      +0.0161 ±0.0039  
+  *smart_removals_total                         0.5213       0.5374      +0.0161 ±0.0039  
+  *rat_king_counters                            1.4893       1.5052      +0.0159 ±0.0048  
+  *len_library                                 78.6707      78.5713      -0.0994 ±0.0305  
+  *lands_played_total                           5.6596       5.6678      +0.0082 ±0.0031  
+  *len_tapped_creatures_this_turn               0.5516       0.5610      +0.0094 ±0.0046  
+  *lands_played_this_turn                       0.4557       0.4599      +0.0042 ±0.0023  
+  *ramp_pieces_cast_total                       0.6315       0.6348      +0.0033 ±0.0021  
+  *interaction_spells_cast_total                0.5673       0.5709      +0.0036 ±0.0024  
+  *permanent_left_battlefield_this_turn         0.5717       0.5747      +0.0030 ±0.0022  
+  *len_creature_cast_turn                       4.0665       4.0720      +0.0055 ±0.0044  
+  *thrumming_stone_free_casts_total             0.1374       0.1491      +0.0117 ±0.0095  
+  *len_smart_enchantment_wipe_log               0.0911       0.0926      +0.0015 ±0.0014  
+  *smart_enchantment_wipes_total                0.0911       0.0926      +0.0015 ±0.0014  
+
+[so_emeritus - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9072 (90.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *len_battlefield                             10.7820      10.8238      +0.0418 ±0.0253  
+  *rat_tokens                                   1.0603       1.0910      +0.0307 ±0.0254  
+  *tokens_created_total                         4.1762       4.3064      +0.1302 ±0.0458  
+  *proxy_damage_total                           4.1637       4.2675      +0.1038 ±0.0468  
+  *life                                        36.6281      36.7260      +0.0979 ±0.0350  
+  *cards_drawn_extra                            1.9800       2.0552      +0.0752 ±0.0347  
+   treasure_tokens                              0.7524       0.7674      +0.0150 ±0.0184  
+  *ninja_teen_level                             0.2084       0.2060      -0.0024 ±0.0022  
+  *recursion_events_total                       3.4212       3.4506      +0.0294 ±0.0107  
+  *tutors_used_total                            0.8607       0.9687      +0.1080 ±0.0169  
+  *len_creature_cast_turn                       4.0665       4.1066      +0.0401 ±0.0066  
+  *emeritus_prepared                            0.0491       0.0648      +0.0157 ±0.0030  
+  *rat_king_counters                            1.4893       1.5106      +0.0213 ±0.0043  
+  *mana_spent_this_turn                         5.8601       6.0361      +0.1760 ±0.0376  
+  *len_library                                 78.6707      78.4706      -0.2001 ±0.0473  
+  *len_smart_removal_log                        0.5213       0.5338      +0.0125 ±0.0033  
+  *smart_removals_total                         0.5213       0.5338      +0.0125 ±0.0033  
+  *len_tapped_creatures_this_turn               0.5516       0.5681      +0.0165 ±0.0045  
+  *permanent_left_battlefield_this_turn         0.5717       0.5794      +0.0077 ±0.0025  
+  *len_hand                                     2.5785       2.6703      +0.0918 ±0.0306  
+  *len_smart_discard_log                        1.1408       1.1523      +0.0115 ±0.0039  
+  *smart_discards_total                         1.1408       1.1523      +0.0115 ±0.0039  
+  *rat_king_reanimations_total                  2.9462       2.9729      +0.0267 ±0.0092  
+
+[so_extort - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9177 (91.8%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *len_battlefield                             10.7820      10.7625      -0.0195 ±0.0112  
+  *rat_tokens                                   1.0603       1.0443      -0.0160 ±0.0134  
+  *tokens_created_total                         4.1762       4.1438      -0.0324 ±0.0170  
+  *proxy_damage_total                           4.1637       4.3406      +0.1769 ±0.0292  
+  *life                                        36.6281      37.3058      +0.6777 ±0.0635  
+  *cards_drawn_extra                            1.9800       1.9617      -0.0183 ±0.0097  
+   treasure_tokens                              0.7524       0.7466      -0.0058 ±0.0118  
+  *ninja_teen_level                             0.2084       0.2065      -0.0019 ±0.0014  
+  *recursion_events_total                       3.4212       3.4128      -0.0084 ±0.0058  
+  *mana_spent_this_turn                         5.8601       5.9152      +0.0551 ±0.0194  
+  *len_library                                 78.6707      78.7144      +0.0437 ±0.0159  
+  *len_creature_cast_turn                       4.0665       4.0607      -0.0058 ±0.0027  
+  *skullclamp_draws_total                       0.3104       0.3030      -0.0074 ±0.0044  
+  *len_tapped_lands_this_turn                   0.1642       0.1624      -0.0018 ±0.0012  
+  *interaction_spells_cast_total                0.5673       0.5657      -0.0016 ±0.0012  
+  *rat_king_counters                            1.4893       1.4872      -0.0021 ±0.0017  
+  *len_smart_removal_log                        0.5213       0.5193      -0.0020 ±0.0019  
+  *smart_removals_total                         0.5213       0.5193      -0.0020 ±0.0019  
+   rat_king_reanimations_total                  2.9462       2.9415      -0.0047 ±0.0048  
+   len_tapped_creatures_this_turn               0.5516       0.5503      -0.0013 ±0.0014  
+   len_smart_wipe_log                           0.8391       0.8400      +0.0009 ±0.0011  
+   smart_wipes_total                            0.8391       0.8400      +0.0009 ±0.0011  
+   thrumming_stone_free_casts_total             0.1374       0.1334      -0.0040 ±0.0048  
+
+[so_zulaport - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9395 (94.0%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *proxy_damage_total                           4.1637       4.2349      +0.0712 ±0.0058  
+  *life                                        36.6281      36.6993      +0.0712 ±0.0058  
+
+[so_fodder - antes] N=10000 | partidas com resultado IDENTICO ao da base: 8374 (83.7%)
+   campo                                          base     variante dif. pareada (IC95%)
+   commander_cast_turn__ate_T3                  0.9874       0.9874      +0.0000 ±0.0003  
+   commander_cast_turn__ate_T4                  0.9963       0.9962      -0.0001 ±0.0002  
+   len_battlefield                             10.7820      10.7976      +0.0156 ±0.0316  
+  *rat_tokens                                   1.0603       1.1064      +0.0461 ±0.0235  
+  *tokens_created_total                         4.1762       4.3611      +0.1849 ±0.0398  
+  *proxy_damage_total                           4.1637       4.2403      +0.0766 ±0.0547  
+   life                                        36.6281      36.5951      -0.0330 ±0.0486  
+   cards_drawn_extra                            1.9800       2.0018      +0.0218 ±0.0269  
+  *treasure_tokens                              0.7524       0.7793      +0.0269 ±0.0182  
+  *ninja_teen_level                             0.2084       0.2129      +0.0045 ±0.0038  
+  *recursion_events_total                       3.4212       3.6151      +0.1939 ±0.0267  
+  *ramp_pieces_cast_total                       0.6315       0.7301      +0.0986 ±0.0067  
+  *rat_king_counters                            1.4893       1.5989      +0.1096 ±0.0114  
+  *rat_king_reanimations_total                  2.9462       3.1299      +0.1837 ±0.0251  
+  *tapped_land_skipped_for_play_total           0.1405       0.1247      -0.0158 ±0.0026  
+  *tapped_land_first_plays_total                0.3318       0.3377      +0.0059 ±0.0016  
+  *len_creature_cast_turn                       4.0665       4.0863      +0.0198 ±0.0071  
+  *interaction_spells_cast_total                0.5673       0.5754      +0.0081 ±0.0035  
+  *graveyard_wipe_used                          0.3755       0.3687      -0.0068 ±0.0035  
+  *len_smart_graveyard_wipe_log                 0.3755       0.3687      -0.0068 ±0.0035  
+  *smart_graveyard_wipes_total                  0.3755       0.3687      -0.0068 ±0.0035  
+  *len_smart_removal_log                        0.5213       0.5304      +0.0091 ±0.0051  
+  *smart_removals_total                         0.5213       0.5304      +0.0091 ±0.0051  
+  *len_library                                 78.6707      78.5836      -0.0871 ±0.0509  
+  *len_smart_graveyard_snipe_log                0.2684       0.2758      +0.0074 ±0.0044  
+
+[so_bontu - antes] N=10000 | partidas com resultado IDENTICO ao da base: 9090 (90.9%)
+   campo                                          base     variante dif. pareada (IC95%)
+   len_battlefield                             10.7820      10.7818      -0.0002 ±0.0004  
+   rat_tokens                                   1.0603       1.0594      -0.0009 ±0.0011  
+   tokens_created_total                         4.1762       4.1719      -0.0043 ±0.0051  
+  *proxy_damage_total                           4.1637       3.8663      -0.2974 ±0.0266  
+  *life                                        36.6281      36.3335      -0.2946 ±0.0263  
+   cards_drawn_extra                            1.9800       1.9791      -0.0009 ±0.0016  
+   treasure_tokens                              0.7524       0.7512      -0.0012 ±0.0024  
+   creatures_died_this_turn                     2.8495       2.8475      -0.0020 ±0.0028  
+   len_hand                                     2.5785       2.5776      -0.0009 ±0.0016  
+   len_library                                 78.6707      78.6716      +0.0009 ±0.0016  
+   len_graveyard                                5.8706       5.8708      +0.0002 ±0.0004  
+   len_tapped_lands_this_turn                   0.1642       0.1641      -0.0001 ±0.0002  
+   mana_spent_this_turn                         5.8601       5.8598      -0.0003 ±0.0006  

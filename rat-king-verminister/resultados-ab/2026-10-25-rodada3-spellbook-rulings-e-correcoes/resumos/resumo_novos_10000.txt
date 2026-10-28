@@ -1,0 +1,142 @@
+=== raw_ab_10000
+[depois] N=10000
+  treasure_mana_used_total=0.8131
+  staff_equips_total=0.0281
+  staff_auto_attach_total=0.0257
+  staff_pings_total=0.0194
+  marrow_staff_loop_iters_total=0.0558
+  extort_paid_total=0.6423
+  gray_merchant_drain_total=1.3893
+  ayara_token_triggers_total=1.7380
+  ninja_teen_drain_total=0.7599
+  rotcaller_x_total=3.2624
+  big_apple_activations_total=0.1109
+  P(combo_marrow_staff_turn montado em 8 turnos)=1.45% | ate T3=0.00% T4=0.00% T5=0.02% T6=0.12%
+  P(combo_ayara_plague_turn montado em 8 turnos)=1.29% | ate T3=0.00% T4=0.00% T5=0.01% T6=0.22%
+  P(combo_any_turn montado em 8 turnos)=2.72% | ate T3=0.00% T4=0.00% T5=0.03% T6=0.34%
+[so_tesouro] N=10000
+  treasure_mana_used_total=0.6865
+  big_apple_activations_total=0.1142
+[so_staff] N=10000
+  staff_equips_total=0.0216
+  staff_auto_attach_total=0.0242
+  staff_pings_total=0.0159
+  marrow_staff_loop_iters_total=0.0427
+  big_apple_activations_total=0.1052
+  P(combo_marrow_staff_turn montado em 8 turnos)=1.19% | ate T3=0.00% T4=0.00% T5=0.02% T6=0.10%
+  P(combo_any_turn montado em 8 turnos)=1.19% | ate T3=0.00% T4=0.00% T5=0.02% T6=0.10%
+[so_rotcaller] N=10000
+  rotcaller_x_total=2.8677
+  big_apple_activations_total=0.1061
+[so_marrow_x] N=10000
+  big_apple_activations_total=0.1058
+[so_big_apple] N=10000
+  big_apple_activations_total=0.1061
+[so_ayara_fichas] N=10000
+  ayara_token_triggers_total=0.9091
+  big_apple_activations_total=0.1064
+[so_ayara_plague] N=10000
+  ayara_token_triggers_total=1.4106
+  big_apple_activations_total=0.1061
+  P(combo_ayara_plague_turn montado em 8 turnos)=1.11% | ate T3=0.00% T4=0.00% T5=0.00% T6=0.20%
+  P(combo_any_turn montado em 8 turnos)=1.11% | ate T3=0.00% T4=0.00% T5=0.00% T6=0.20%
+[so_jet_magias_e_piso] N=10000
+  big_apple_activations_total=0.1053
+[so_piso] N=10000
+  big_apple_activations_total=0.1052
+[so_gray_merchant] N=10000
+  gray_merchant_drain_total=1.2406
+  big_apple_activations_total=0.1061
+[so_ninja_teen] N=10000
+  ninja_teen_drain_total=0.5123
+  big_apple_activations_total=0.1061
+[so_ninja_sneak] N=10000
+  big_apple_activations_total=0.1060
+[so_rk_reanimar] N=10000
+  big_apple_activations_total=0.1059
+[so_soul_stone] N=10000
+  big_apple_activations_total=0.1061
+[so_priest] N=10000
+  big_apple_activations_total=0.1088
+[so_emeritus] N=10000
+  big_apple_activations_total=0.1044
+[so_extort] N=10000
+  extort_paid_total=0.5478
+  big_apple_activations_total=0.1045
+[so_zulaport] N=10000
+  big_apple_activations_total=0.1061
+[so_fodder] N=10000
+  big_apple_activations_total=0.1086
+[so_bontu] N=10000
+  big_apple_activations_total=0.1061
+=== raw_ab_10000_resiliencia
+[depois] N=10000
+  treasure_mana_used_total=0.5067
+  staff_equips_total=0.0126
+  staff_auto_attach_total=0.0150
+  staff_pings_total=0.0068
+  marrow_staff_loop_iters_total=0.0239
+  extort_paid_total=0.2565
+  gray_merchant_drain_total=0.7942
+  ayara_token_triggers_total=0.5413
+  ninja_teen_drain_total=0.7463
+  rotcaller_x_total=1.4929
+  big_apple_activations_total=0.0819
+  P(combo_marrow_staff_turn montado em 8 turnos)=0.63% | ate T3=0.00% T4=0.00% T5=0.01% T6=0.07%
+  P(combo_ayara_plague_turn montado em 8 turnos)=0.32% | ate T3=0.00% T4=0.00% T5=0.00% T6=0.08%
+  P(combo_any_turn montado em 8 turnos)=0.91% | ate T3=0.00% T4=0.00% T5=0.01% T6=0.15%
+[so_tesouro] N=10000
+  treasure_mana_used_total=0.5049
+  big_apple_activations_total=0.0861
+[so_staff] N=10000
+  staff_equips_total=0.0106
+  staff_auto_attach_total=0.0148
+  staff_pings_total=0.0065
+  marrow_staff_loop_iters_total=0.0193
+  big_apple_activations_total=0.0790
+  P(combo_marrow_staff_turn montado em 8 turnos)=0.53% | ate T3=0.00% T4=0.00% T5=0.02% T6=0.07%
+  P(combo_any_turn montado em 8 turnos)=0.53% | ate T3=0.00% T4=0.00% T5=0.02% T6=0.07%
+[so_rotcaller] N=10000
+  rotcaller_x_total=1.4556
+  big_apple_activations_total=0.0793
+[so_marrow_x] N=10000
+  big_apple_activations_total=0.0790
+[so_big_apple] N=10000
+  big_apple_activations_total=0.0780
+[so_ayara_fichas] N=10000
+  ayara_token_triggers_total=0.3762
+  big_apple_activations_total=0.0791
+[so_ayara_plague] N=10000
+  ayara_token_triggers_total=0.4809
+  big_apple_activations_total=0.0793
+  P(combo_ayara_plague_turn montado em 8 turnos)=0.32% | ate T3=0.00% T4=0.00% T5=0.00% T6=0.07%
+  P(combo_any_turn montado em 8 turnos)=0.32% | ate T3=0.00% T4=0.00% T5=0.00% T6=0.07%
+[so_jet_magias_e_piso] N=10000
+  big_apple_activations_total=0.0797
+[so_piso] N=10000
+  big_apple_activations_total=0.0787
+[so_gray_merchant] N=10000
+  gray_merchant_drain_total=0.7094
+  big_apple_activations_total=0.0793
+[so_ninja_teen] N=10000
+  ninja_teen_drain_total=0.6008
+  big_apple_activations_total=0.0793
+[so_ninja_sneak] N=10000
+  big_apple_activations_total=0.0795
+[so_rk_reanimar] N=10000
+  big_apple_activations_total=0.0774
+[so_soul_stone] N=10000
+  big_apple_activations_total=0.0793
+[so_priest] N=10000
+  big_apple_activations_total=0.0804
+[so_emeritus] N=10000
+  big_apple_activations_total=0.0777
+[so_extort] N=10000
+  extort_paid_total=0.2276
+  big_apple_activations_total=0.0783
+[so_zulaport] N=10000
+  big_apple_activations_total=0.0793
+[so_fodder] N=10000
+  big_apple_activations_total=0.0818
+[so_bontu] N=10000
+  big_apple_activations_total=0.0793

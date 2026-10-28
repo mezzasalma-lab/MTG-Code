@@ -1,10 +1,68 @@
 # Goldfish Log — Rat King, Verminister
 
+> **Rodada 3 de 2026-10-25 (Spellbook, rulings dos conceitos compartilhados e 21 correções de simulador) — dados brutos e reprodução:** [`resultados-ab/2026-10-25-rodada3-spellbook-rulings-e-correcoes/LEIAME.md`](resultados-ab/2026-10-25-rodada3-spellbook-rulings-e-correcoes/LEIAME.md)
+
 > **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
 
 > **Rodada 2026-10-05 (Mulligan com escolha do fundo + upkeep antes do draw (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`](resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md)
 
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
+
+---
+
+## Rodada 3 (2026-10-25): o Spellbook acha 2 combos que a lista já tinha, e 21 divergências do simulador contra o oráculo
+
+**Pedido do usuário:** *"Quero sim"* (itens 1 e 3 do relatório "O quê falta para terminar o deck do Verminister?"). Arquivo bruto/auditável: `resultados-ab/2026-10-25-rodada3-spellbook-rulings-e-correcoes/LEIAME.md`.
+
+**Veredito:** a lista continua fechada (100/100) e a auditoria anterior estava errada em vários pontos. **(1) O Commander Spellbook acha 2 combos que o deck já roda** (nunca tinha sido consultado neste deck): Marrow-Gnawer + Thornbite Staff (infinito, 2 cartas) e Ayara + Plague of Vermin (quase infinito). O simulador não executava nenhum dos dois. **(2) Ler os rulings e os conceitos compartilhados achou 21 divergências do simulador**, todas contra o oráculo e nenhuma de julgamento meu: a Treasure nunca era mana, o ETB do Gray Merchant não existia, "enters prepared" do Emeritus e o extort do Crypt Ghast eram fantasmas, o Bontu's disparava 2× por criatura, o sneak do Ninja Teen rodava na fase errada sem o custo de devolver um atacante, Rat Colony saía de graça com Jet Medallion + Bontu's, etc. Todas entram atrás de chave (21), e **com as chaves desligadas o simulador é bit-idêntico ao anterior (20.000 partidas × 2 modos)**.
+
+**Combos do Spellbook (`resumos/spellbook.txt`; 57 nomes resolvidos, 0 não reconhecidos; controle positivo e de corte passaram):**
+
+| combo | peças | o que produz (Spellbook) | tag do Spellbook | no simulador (padrão, 20.000 partidas, 12 turnos) |
+|---|---|---|---|---|
+| 2178-3126 | Marrow-Gnawer + Thornbite Staff (Staff preso ao Marrow; "um Rat adicional") | fichas, ETB, LTB e gatilhos de sacrifício infinitos | R (Ruthless); `definitelyTwoCard`, `speed` 5 | executado até T6 **0,12%**, T8 **1,43%**, T10 4,25%, T12 6,75% |
+| 884-5035 | Ayara + Plague of Vermin ({6}{B}, paga tudo menos 1 de vida; "você tem mais vida que os oponentes") | quase infinitas fichas, ETB e vida | O (Oddball); `arguablyTwoCard`, `speed` 3 | executado até T6 **0,29%**, T8 **1,14%**, T10 4,99%, T12 12,62% |
+| qualquer um | | | | até T6 0,41%, T8 2,51%, T10 8,53%, T12 17,56% |
+
+Forma fechada (compra do T1, 99 cartas, sem tutor): P(as duas peças entre as primeiras 7+N cartas) = T6 1,61%, T8 2,16%, T10 2,80%, T12 3,53% (`resumos/prob_combos.txt`). O simulador executa **menos** que isso até o T8 (mana: o Marrow custa 5, o Staff 2 e o Equip 4) e **mais** depois, porque o deck compra e tutora bastante (Emeritus // Demonic Tutor, Ratcatcher, Karumonix, Skullclamp, Black Market Connections). A política de Equip do simulador (só no Marrow-Gnawer) e o teto do loop (40 Rats / 12 voltas) são **minhas**, não do oráculo.
+
+**Consequência pro Bracket (decisão sua, não alterei a lista nem o Bracket declarado).** A seção 11 da `auditoria.md` dizia "combo de 2 peças antes do turno 6: não há" e confirmava o Bracket 2. O Spellbook mostra que **existe** um combo infinito de 2 cartas na lista e o `estimate-bracket` dele devolve `bracketTag = R` para o deck, com esse combo marcado `relevant`. Pela regra 7 de `user-standing-rules.md` o que decide é a velocidade e a probabilidade: 0,12% até o T6 (goldfish) é evento de cauda, mas **não é zero e não está documentado como combo no deck**. Não verifiquei o texto oficial atual do critério de Bracket nesta rodada. Ver `auditoria.md` §15.
+
+**As 21 correções (resumo; cláusula do oráculo de cada uma no LEIAME da pasta e em `checklist-oraculo.md`):** `TREASURE_MANA_ENABLED`, `THORNBITE_STAFF_ENABLED`, `ROTCALLER_EXACT_X`, `MARROW_X_AFTER_SACRIFICE`, `BIG_APPLE_PER_OPPONENT`, `AYARA_TOKEN_TRIGGER`, `AYARA_SACRIFICE_TOKENS`, `PLAGUE_PAYS_WITH_AYARA`, `JET_MEDALLION_BLACK_SPELLS`, `COST_REDUCTION_COLORED_FLOOR`, `GRAY_MERCHANT_ETB`, `NINJA_TEEN_LEVELS_AND_DRAIN`, `NINJA_TEEN_SNEAK_RULING`, `RAT_KING_REANIMATE_COST`, `SOUL_STONE_SHARED_TAP`, `PRIEST_EXACT`, `EMERITUS_ENTERS_PREPARED`, `EXTORT_ENABLED`, `ZULAPORT_SELF_DEATH`, `SACRIFICE_COST_NEEDS_FODDER`, `BONTU_TRIGGER_ONCE`.
+
+**Medido (pareado, mesmas sementes; IC95% = 1,96·dp/√N da diferença; `depois` = as 21 chaves ligadas):**
+
+Modo padrão, N=10.000 (`resumos/ab_10000.txt`; por correção em `resumos/resumo_variantes_10000.md`):
+```
+[depois - antes] N=10000 | partidas com resultado IDENTICO ao da base: 1929 (19.3%)
+   campo                                          base     variante dif. pareada (IC95%)
+  *len_battlefield                             16.2165      16.6925      +0.4760 ±0.0661
+  *rat_tokens                                   3.3417       4.7651      +1.4234 ±0.1806
+  *tokens_created_total                         6.2123       8.3111      +2.0988 ±0.2101
+  *proxy_damage_total                           6.5698      12.9698      +6.4000 ±0.4313
+  *life                                        38.7115      47.8034      +9.0919 ±0.4698
+  *cards_drawn_extra                            3.0050       3.6275      +0.6225 ±0.0939
+  *treasure_tokens                              0.9737       0.3939      -0.5798 ±0.0468
+  *recursion_events_total                       3.3246       3.1293      -0.1953 ±0.0497
+  *rat_king_reanimations_total                  2.7075       2.4832      -0.2243 ±0.0471
+  *tutors_used_total                            0.9053       1.2414      +0.3361 ±0.0553
+```
+Modo resiliência, N=10.000 (`resumos/ab_10000_resiliencia.txt`): drenos proxy +3,15 ±0,29, vida +4,42 ±0,29, fichas criadas +0,75 ±0,16, eventos de recursão **−0,58** ±0,05, reanimações do Rat King **−0,61** ±0,05. A chegada do comandante até T3/T4 **não mudou** (−0,0001 ±0,0002).
+
+**Leitura por correção (N=10.000, modo padrão; todas as direções batem com o que o oráculo manda):**
+- **Mais efeito do deck do que o simulador mostrava:** Gray Merchant (vida +3,7, dreno +1,2), Valley Rotcaller (dreno +1,5 e vida +1,5), Extort (vida +1,6), Treasure como mana (+0,2 cartas extras, +0,4 de dreno, −0,57 Treasures paradas), Ayara × ficha (dreno +0,8), Ninja Teen nível 1 (dreno +0,53), Priest sem a vida fantasma (vida +0,6), Emeritus preparado (+0,2 compras).
+- **Menos efeito:** Bontu's disparando 1× (dreno −0,48), Marrow-Gnawer sem contar o sacrificado (−0,28 fichas), Rat King pagando os 3 Rats de verdade (**−0,35 eventos de recursão**, −0,28 de dreno; no modo resiliência −0,76 de recursão e só 64,8% das partidas idênticas), piso de cor do custo (−0,13 de dreno).
+- **Efeito pequeno ou nulo:** Soul Stone `{T}` compartilhado (Soul Stone harnessed −0,0057 ±0,0015; os demais campos dentro do IC), sneak do Ninja Teen sozinho (dreno e vida dentro do IC; −0,04 ±0,015 fichas), Zulaport na própria morte (+0,035 ±0,004 de dreno e de vida), Thornbite Staff (+0,36 ±0,09 fichas; a única fonte de fichas do Staff no código é o loop do combo com o Marrow-Gnawer; 97,7% das partidas idênticas).
+
+**Como cada número se lê:** o `antes` era o simulador da rodada de 2026-10-05; ele *subestimava* o dreno e a vida do deck e *superestimava* a recursão. Os números históricos deste log (seções abaixo) valem para aquele simulador e não são comparáveis com os desta seção.
+
+**Validação:** bit-identidade 20.000 × 2 modos com as 21 chaves desligadas (`resumos/bitident_20000.txt`: 0 partidas diferentes); regressão 20.000 × 2 modos × 2 configurações com **0 exceções** e 0 cartas acima do baralho (`resumos/regressao_20000.txt`; o invariante "contador negativo" acusa `mana_spent_this_turn` negativo em 60/49 partidas com as chaves desligadas e 80/74 com elas ligadas: é a mana líquida de Dark Ritual/Culling, que o contador soma como gasto negativo; não investiguei por que sobe); determinismo entre processos com 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos: **0 divergentes** (`resumos/determinismo.txt`); 37 testes dirigidos passam (`orquestracao/testes_dirigidos.py`), cada um com a chave ligada e desligada.
+
+**Primeira versão do A/B estava errada e foi refeita:** as variantes `so_*` (uma correção por vez) deixavam as outras chaves no padrão do arquivo (ligadas), então todas eram iguais a `depois`; o config passou a listar as 21 chaves em cada variante. Os números acima são da versão corrigida (variantes distintas entre si: de 76% a 99% das partidas idênticas ao `antes` no modo padrão e de 65% a 99% na resiliência).
+
+**Varredura sistêmica nova** (`varredura-2026-10-05/scripts/audit_etb_sem_efeito.py`): conjura cada carta num estado neutro e lista as que o oráculo diz ter ETB/feitiço mas não mudam nada no simulador, mais as que não reagem a nenhum de 6 eventos-padrão. Parte 1 (ETB/feitiço sem mudança de estado): no snapshot ANTES ela lista Gray Merchant e Emeritus (controle positivo, achados reais desta rodada); no DEPOIS não lista mais nenhum dos dois (27 → 25 cartas sem mudança). Parte 2 (reação a 6 eventos-padrão): no ANTES lista Crypt Ghast e Ninja Teen; no DEPOIS não lista mais (11 → 9). Gray Merchant e Emeritus continuam aparecendo na parte 2 porque só têm efeito de entrada, que esses eventos não exercitam (limite do scanner). Ver `resumos/audit_etb_sem_efeito_{ANTES,DEPOIS}.txt` para as demais; a leitura é à mão: Skullclamp, Soul Stone, Thornbite Staff, Black Market Connections e Ripples agem por outros pontos do turno que o scanner não exercita; Dictate, Karumonix e Lord Skitter são 📊.
+
+**Não coberto nesta rodada (Regra #7):** o modo de resiliência cláusula a cláusula (só o wipe do oponente foi lido); a política de Black Market Connections (escolhe sempre os 3 modos; a vida pode passar de 0 sem perder); mulligan/keep; **os 3 itens ⏸ que esperam o usuário:** wipes sem efeito no próprio campo (Kindred Dominance, Swarmyard Massacre, Damnation), a face de terreno de Fell the Profane // Fell Mire, e o Bracket; os outros 19 decks (o scanner novo só roda no Rat King e a mesma classe de erro pode existir neles).
 
 ---
 

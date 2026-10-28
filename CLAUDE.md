@@ -518,7 +518,13 @@ no `play_land`/`play_turn`/mulligan):**
    oráculo, fetch, terreno ≠ magia e landfall; **0 falhas**),
    `audit_inicio_de_combate.py` (gatilho "at the beginning of combat" preso a
    `can_attack`/doença de invocação; só triagem: 21 cartas em 10 decks, a leitura
-   é à mão). Ler à mão cada
+   é à mão), `audit_etb_sem_efeito.py` (**ETB/feitiço sem efeito e gatilho sem
+   reação**: conjura cada carta num estado neutro e lista as que o oráculo diz ter
+   efeito de entrada mas não mudam nada no simulador, mais as permanentes que não
+   reagem a 6 eventos-padrão; controle positivo no Rat King: Gray Merchant,
+   Emeritus, Crypt Ghast e Ninja Teen aparecem no snapshot ANTES; só roda em
+   simuladores com `GameState{battlefield,hand,library,graveyard}` +
+   `resolve_cast`, hoje só o Rat King). Ler à mão cada
    divergência antes de corrigir ou de classificar como falso positivo.
 2. **Conferir a lista de classes do motor** (todas já tiveram erro real): o
    mulligan ESCOLHE o fundo (CR 103.5); o imposto do comandante conta no cast,
@@ -575,6 +581,31 @@ no `play_land`/`play_turn`/mulligan):**
    correção). O Toph tivera a mesma classe (Avatar Kyoshi). **Não coberto:** o mesmo
    gate em gatilhos de upkeep/end step; The Ozolith em Captain Storm, Bumbleflower
    e Toph não foi lido à mão.
+   **Classes novas, achadas no Rat King (2026-10-25, 21 correções; as auditorias
+   carta-a-carta de 2026-08-31 e 09-14 do mesmo deck não as acharam e marcavam
+   várias dessas cartas como ✅ ou 📊):**
+   (d) **tipo/cor conferido só nas CARTAS, esquecendo as FICHAS**: o Thornbite
+   Staff foi dado como "N/A: nenhuma criatura Shaman na lista (type_line das 53
+   cartas)", mas o Mercenary de Black Market Connections tem changeling e é Shaman;
+   a ficha de Rat é preta e não disparava a Ayara (código morto `if False else
+   None`); a Treasure nunca era mana. Antes de declarar um conceito "N/A",
+   enumerar por script os satisfazedores **incluindo toda ficha que a lista cria**
+   (`enumera_condicoes.py`, lendo o oráculo ao vivo); (e) **ETB/gatilho fantasma
+   com comentário dizendo "real e rastreado"** (Gray Merchant, Emeritus "enters
+   prepared", extort, dreno do Ninja Teen): só um teste que EXECUTA a carta e mede
+   a mudança de estado pega (`audit_etb_sem_efeito.py`); (f) **redução de custo
+   abaixo da mana colorida** (Jet Medallion/Bontu's só tiram genérico; Rat Colony
+   custava 0) e **cost-reducer que nunca vê as magias** (`pips_b=0` em instant/
+   sorcery); (g) **gatilho de conjuração disparado 2×** por dois helpers que
+   ambos o chamavam (`cast_card` e `resolve_cast`: Bontu's); (h) **fórmula "X"
+   que o ruling define com precisão** (Marrow-Gnawer conta sem o sacrificado;
+   Rotcaller conta todos os Rats e os Esquilos, não só os prontos e sem o "−1");
+   (i) **custo adicional "sacrifice" ignorado** (Deadly Dispute/Culling) e **`{T}`
+   da própria fonte também contado como mana** (Soul Stone); (j) **sneak (CR
+   702.190)**: só no declare blockers, devolve um atacante, entra virada e
+   atacando; o simulador fazia na main phase de graça. **Combos do Commander
+   Spellbook que o simulador não executava (Marrow + Staff; Ayara + Plague) são
+   erro do simulador, não curiosidade (Regra #4, adendo, item 3).**
 3. **Determinismo entre processos.** Os `driver.py` das pastas de resultados
    fixam `PYTHONHASHSEED=0` (senão nada reproduz byte a byte), e por isso **não
    enxergam** dependência de ordem de hash. A única checagem que enxerga é
@@ -596,7 +627,13 @@ no `play_land`/`play_turn`/mulligan):**
    vácuo:** `audit_tam_terrenos.py` ficou commitado com `SyntaxError` (uma edição
    depois da última execução que relatei); só descobri ao arquivar a saída.
    Antes de citar o resultado de uma varredura, rodar o arquivo commitado e
-   salvar a saída em `resumos/`.
+   salvar a saída em `resumos/`. **Variante de A/B que não difere das outras
+   também é vácua** (Rat King, 2026-10-25): as variantes `sensibilidade` do
+   `config.json` herdam do arquivo as chaves que o dicionário não cita, e o
+   padrão do arquivo é LIGADO, então 20 variantes "uma correção por vez" eram
+   todas iguais a `depois`. Cada variante lista as chaves TODAS (as outras
+   `False`) e se confere que as variantes diferem entre si e do `antes` (fração de
+   partidas idênticas) antes de ler a tabela.
 5. **Cada correção** segue a Regra #1 (chave, bit-identidade com a chave
    desligada em 20.000 × 2 modos, regressão 20.000 × 2 modos com 0 exceções, A/B
    pareado 2.000 e 10.000, teste dirigido), a Regra #7 (declarar o que foi e o
@@ -616,6 +653,13 @@ Edgar confirmados; vida só importa onde algo a lê); estado de oponente real;
 perfil de oponente calibrado contra a mesa real do usuário (só o Tam tem o perfil
 `playtester`, calibrado nos 5 logs do bot do Archidekt; não verifiquei de onde vem
 o modelo de oponente dos outros simuladores com modo de resiliência, e nenhum
-deles passou por essa calibração).
+deles passou por essa calibração); **Commander Spellbook com a lista atual**:
+`grep -rli spellbook <deck>/` em 2026-10-25 acha menção em só 9 dos 47 decks com
+`lista.md` (Beorn, Megatron, Prismatic Bridge, Rat King, Tam, Thranduil, Ur-Dragon,
+Vihaan, Mothman); os outros **38 não têm nenhum registro** (pode ter sido feito e
+não arquivado, mas não há evidência). O Rat King, que estava nesse grupo, tinha 2
+combos infinitos na lista e um simulador que não executava nenhum; **a mesma classe
+de erro pode estar nos outros 38 (não varridos)**; **ETB/gatilho fantasma** nos
+outros 19 simuladores (o scanner só roda no Rat King).
 Esta lista é o piso, não o teto: classe nova achada vira script em
 `varredura-2026-10-05/scripts/` e linha nesta regra.

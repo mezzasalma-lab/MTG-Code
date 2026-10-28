@@ -1,6 +1,6 @@
 # Rulings do Scryfall × código do simulador — Rat King, Verminister (2026-10-25)
 
-Fonte: `dados/scryfall_oraculo_rulings_2026-10-25.json` (baixado AO VIVO por `orquestracao/scry_rulings.py`: 54 cartas únicas, 0 não resolvidas, **131 rulings** em 32 cartas; as outras 22 cartas não têm ruling).
+Fonte: `dados/scryfall_oraculo_rulings_2026-10-25.json` (baixado AO VIVO por `orquestracao/scry_rulings.py`: 54 cartas únicas, 0 não resolvidas, **131 rulings** em 38 cartas; as outras 16 não têm ruling).
 Ordem de trabalho desta rodada: oráculo e rulings lidos **antes** de escrever qualquer linha de código (Regra #3), depois comparados com o código; nada foi decidido de memória.
 Legenda: ✅ o código já respeitava · 🐛 divergia e foi corrigido nesta rodada (chave entre parênteses) · 📊 estrutural (estado de oponente real; cláusula citada) · ⏸ decisão sua pendente · ➖ ruling sem efeito neste modelo (motivo).
 
@@ -43,4 +43,4 @@ Legenda: ✅ o código já respeitava · 🐛 divergia e foi corrigido nesta rod
 
 Divergências de **dados** (não de regra): `orquestracao/carddb_vs_oraculo.py` compara `mv`, `ctype`, `pips_b`, `base_power` e a tag `rat` do `CARD_DB` com o oráculo ao vivo para as 54 cartas: **0 divergências** (a 1ª versão do script marcou 13 magias com `pips_b=0`; falso positivo verificado à mão: `pips_b` só é lido pela devoção, que soma permanentes; as magias entram agora numa tabela própria, `BLACK_SPELL_PIPS`, só para o Jet Medallion e o piso de custo).
 
-Divergência entre o texto em cache e o oráculo ao vivo: 2 cartas de duas faces (`Emeritus of Woe // Demonic Tutor`, `Fell the Profane // Fell Mire`): o cache guarda as duas faces com um separador próprio, o arquivo ao vivo guarda por face; conferi a olho e o texto de regras é o mesmo.
+Divergência entre o texto em cache e o oráculo ao vivo: o script marcou 2 cartas de duas faces (`Emeritus of Woe // Demonic Tutor`, `Fell the Profane // Fell Mire`) só por formato: o cache junta as faces com nome, custo e separador, o arquivo ao vivo guarda por face. Conferido por script: o texto de cada face ao vivo (espaços normalizados) está contido literalmente no texto do cache, nas duas cartas. As outras 52 cartas têm texto idêntico ao cache.
