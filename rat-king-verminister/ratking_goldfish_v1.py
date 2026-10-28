@@ -77,19 +77,11 @@ Simplificacoes documentadas (nao inventadas -- omissoes explicitas):
   oponente -- mesma convencao ja usada em todos os outros simuladores
   desta sessao. O GANHO de vida do proprio jogador (Zulaport, Ayara,
   Valley Rotcaller, Gray Merchant) e' real e rastreado.
-- Wipes de campo inteiro (Kindred Dominance, Swarmyard Massacre, Damnation
-  -- achado real 2026-08-31, revisado ao adicionar o Damnation como 100a
-  carta): nenhum dos tres destroi de verdade as proprias criaturas do
-  jogador neste modelo. Diferente de remocao com alvo (que so' "nao tem
-  efeito" por falta de oponente pra mirar), esses tres SAO efeitos de
-  campo inteiro que, sem oponente real, so' teriam algo pra destruir no
-  proprio lado -- e nenhum piloto racional conjura um wipe (simetrico ou
-  assimetrico) sem um board de oponente real pra justificar, ja que
-  destruir o proprio motor de valor pra ganho zero e' estritamente pior
-  que nao fazer nada. Contam pra metrica de interacao (foram "conjurados"
-  de verdade, pagando o custo), mas o efeito destrutivo em si nao e'
-  aplicado ao proprio board. O token de Esquilo do Swarmyard Massacre
-  (beneficio incondicional, nao depende de oponente) continua real.
+- Wipes (Kindred Dominance, Swarmyard Massacre, Damnation): SUPERADO em 2026-10-28 (rodada 5, pedido do usuario "Opcao B nos wipes, e meca no A/B"). A convencao antiga (paga o custo,
+  conta como interacao, nenhum efeito no proprio campo, com a justificativa "nenhum piloto racional conjuraria") era julgamento de valor, vedado pela Regra #1. Hoje o efeito e' aplicado
+  no MEU campo, com mortes simultaneas (CR 603.10), e o wipe so' e' conjurado quando a perda propria (criaturas minhas que morrem) fica <= WIPE_CAST_MAX_OWN_LOSS (politica minha,
+  com sensibilidade no A/B). A metade do OPONENTE (as criaturas dele) continua N/A estrutural: "Destroy all creatures that aren't of the chosen type" / "-1/-1 to each creature that
+  isn't an Insect, Rat, Spider, or Squirrel" / "Destroy all creatures" so' tem alvo do oponente num jogo com oponente; a conjuracao continua contando como interacao (proxy).
 - Fell the Profane // Fell Mire: MDFC modal (layout `modal_dfc`, Scryfall
   confirmado). SUPERADO em 2026-10-28 (rodada 4, pedido do usuario "Modela
   sim ambas as faces"): a decisao antiga ("so' a face Instant, porque remocao
@@ -194,6 +186,19 @@ BMC_MODES_NEED_LIFEGAIN = True        # Black Market Connections: Sell Contraban
 LIFEGAIN_ENGINES = frozenset({        # permanentes com gatilho de ganho de vida REPETIVEL (oraculo ao vivo: "you gain ... life" em habilidade que nao e' so' de ETB). Gray Merchant (so' ETB) fica fora
     "Ayara, First of Locthwain", "Zulaport Cutthroat", "Bontu's Monument", "Crypt Ghast", "Valley Rotcaller"})
 
+# =====================================================================================================================================================
+# RODADA 5 (2026-10-28) -- pedido do usuario: "Opcao B nos wipes, e meca no A/B" (Kindred Dominance, Swarmyard Massacre, Damnation). Antes: pagos e contados como interacao, sem efeito
+# no proprio campo (justificativa de valor, vedada pela Regra #1). Agora o efeito e' aplicado no MEU campo, simultaneamente (LKI, CR 603.10), e o wipe so' e' conjurado quando a perda
+# propria (criaturas minhas que morrem, cartas e fichas) fica <= WIPE_CAST_MAX_OWN_LOSS. Cada chave DESLIGADA devolve o comportamento da rodada 4, bit a bit.
+# =====================================================================================================================================================
+WIPE_EFFECT_KINDRED = True            # Kindred Dominance: "Choose a creature type. Destroy all creatures that aren't of the chosen type." (escolho o tipo que poupa mais; o Mercenary de changeling sempre sobrevive)
+WIPE_EFFECT_SWARMYARD = True          # Swarmyard Massacre: 2 Esquilos, "then each creature that isn't an Insect, Rat, Spider, or Squirrel gets -1/-1 ... for each creature you control that's an Insect, Rat, Spider, or Squirrel"
+WIPE_EFFECT_DAMNATION = True          # Damnation: "Destroy all creatures." (o comandante inclusive: morre e volta a zona de comando, CR 903.9a)
+WIPE_CAST_MAX_OWN_LOSS = 0            # POLITICA MINHA ("conjurando so' quando o resultado compensa"): so' conjura se no maximo N das minhas criaturas morrem; None = conjura sempre (comportamento antigo). So' vale p/ o wipe com efeito ligado
+WIPE_GATE_NET_OF_NEW_TOKENS = True    # POLITICA MINHA: a perda que o limite compara e' LIQUIDA (mortes minhas menos os corpos que o proprio wipe cria: os 2 Esquilos do Swarmyard); False = so' as mortes (1a versao, mediu -0,114 Esquilos por partida)
+WIPE_CARDS = frozenset({"Kindred Dominance", "Swarmyard Massacre", "Damnation"})
+SWARMYARD_PROTECTED_TYPES = frozenset({"Insect", "Rat", "Spider", "Squirrel"})
+
 # Pips {B} reais das MAGIAS (instant/sorcery): o `pips_b` do CARD_DB so' vale pra permanentes (devocao). Lidos do oraculo ao vivo (carddb_vs_oraculo.py).
 BLACK_SPELL_PIPS = {
     "Deadly Dispute": 1, "Culling the Weak": 1, "Dark Ritual": 1, "Deadly Rollick": 1, "Withering Torment": 1, "Reanimate": 1, "Echoing Return": 1,
@@ -297,6 +302,49 @@ LEGENDARY_CREATURES = {
     "Syr Konrad, the Grim", "Ayara, First of Locthwain",
 }
 
+# Tipos de criatura e tenacidade das criaturas da lista (type_line / toughness da face da frente, oraculo ao vivo arquivado em
+# resultados-ab/2026-10-25-rodada3-spellbook-rulings-e-correcoes/dados/scryfall_oraculo_rulings_2026-10-25.json; o teste WP0 compara com o JSON). Fichas: Rat 1/1, Squirrel 1/1, Mercenary 3/2 changeling.
+CREATURE_TYPES = {
+    'Rat King, Verminister': ('Rat', 'Avatar'),
+    'Rat Colony': ('Rat',),
+    'Ashcoat of the Shadow Swarm': ('Rat', 'Warlock'),
+    'Marrow-Gnawer': ('Rat', 'Rogue'),
+    'Lord Skitter, Sewer King': ('Rat', 'Noble'),
+    'Karumonix, the Rat King': ('Phyrexian', 'Rat'),
+    'Piper of the Swarm': ('Human', 'Warlock'),
+    'Ratcatcher': ('Ogre', 'Rogue'),
+    'Species Specialist': ('Human', 'Warrior'),
+    'Valley Rotcaller': ('Squirrel', 'Warlock'),
+    'Gray Merchant of Asphodel': ('Zombie',),
+    'Syr Konrad, the Grim': ('Human', 'Knight'),
+    'Crypt Ghast': ('Spirit',),
+    'Zulaport Cutthroat': ('Human', 'Rogue', 'Ally'),
+    'Priest of Forgotten Gods': ('Human', 'Cleric'),
+    'Ayara, First of Locthwain': ('Elf', 'Noble'),
+    'Emeritus of Woe // Demonic Tutor': ('Vampire', 'Warlock'),
+    'Pitiless Plunderer': ('Human', 'Pirate'),
+}
+CREATURE_TOUGHNESS = {
+    'Rat King, Verminister': 1,
+    'Rat Colony': 1,
+    'Ashcoat of the Shadow Swarm': 4,
+    'Marrow-Gnawer': 3,
+    'Lord Skitter, Sewer King': 3,
+    'Karumonix, the Rat King': 3,
+    'Piper of the Swarm': 3,
+    'Ratcatcher': 4,
+    'Species Specialist': 3,
+    'Valley Rotcaller': 3,
+    'Gray Merchant of Asphodel': 4,
+    'Syr Konrad, the Grim': 4,
+    'Crypt Ghast': 2,
+    'Zulaport Cutthroat': 1,
+    'Priest of Forgotten Gods': 2,
+    'Ayara, First of Locthwain': 3,
+    'Emeritus of Woe // Demonic Tutor': 4,
+    'Pitiless Plunderer': 4,
+}
+
 
 def is_creature_card(name: str) -> bool:
     return CARD_DB[name].ctype in CREATURE_ISH
@@ -396,6 +444,15 @@ class GameState:
     bmc_mode2_total: int = 0                   # Buy Information: compra 1, -2 vida
     bmc_mode3_total: int = 0                   # Hire a Mercenary: ficha 3/2 changeling, -3 vida
     bmc_modes_skipped_total: int = 0           # modos 2/3 nao escolhidos (sem lifegain em campo, ou vida insuficiente)
+
+    # --- Rodada 5 (2026-10-28): wipes no proprio campo (todos neutros com as chaves desligadas) ---
+    wipe_casts_total: int = 0                  # wipes conjurados (os 3), com ou sem efeito ligado
+    wipe_kindred_total: int = 0
+    wipe_swarmyard_total: int = 0
+    wipe_damnation_total: int = 0
+    wipe_own_creatures_lost_total: int = 0     # criaturas MINHAS (cartas + fichas) mortas por wipe meu
+    wipe_held_total: int = 0                   # turnos-carta em que um wipe estava conjuravel mas o limite de perda propria o reteve
+    wipes_held_this_turn: set = field(default_factory=set)
 
     piper_used_this_turn: bool = False
     # Achado real 2026-09-13: main_phase() roda 2x por turno (pre- e
@@ -912,6 +969,100 @@ def create_squirrel_tokens(state: GameState, n: int, source: str = ""):
     state.tokens_created_total += n
 
 
+def _types_of(name: str) -> tuple:
+    return CREATURE_TYPES.get(name, ())
+
+
+def _wipe_effect_on(name: str) -> bool:
+    return {"Kindred Dominance": WIPE_EFFECT_KINDRED, "Swarmyard Massacre": WIPE_EFFECT_SWARMYARD, "Damnation": WIPE_EFFECT_DAMNATION}.get(name, False)
+
+
+def wipe_plan(state: GameState, name: str) -> dict:
+    """Quem das MINHAS criaturas morre se `name` resolver agora (nao muta o estado). Devolve `named` (cartas em campo que morrem), `rat`/`sq`/`mc` (fichas de Rat, Esquilo e Mercenary que morrem),
+    `loss` (total que morre), `new_squirrels` (Esquilos que o Swarmyard cria ANTES do -1/-1) e `type` (tipo escolhido pelo Kindred Dominance).
+    - Damnation: "Destroy all creatures": tudo morre (o comandante tambem).
+    - Kindred Dominance: "Choose a creature type. Destroy all creatures that aren't of the chosen type." Escolho o tipo que menos mata (empate: menos MV perdido, depois Rat, depois ordem alfabetica);
+      o Mercenary (changeling = todo tipo) nunca morre.
+    - Swarmyard Massacre: cria 2 Esquilos, depois cada criatura que nao e' Insect/Rat/Spider/Squirrel recebe -1/-1 por criatura MINHA que e' (cada criatura conta uma vez, ruling 2024-07-26).
+      Morre a carta nao protegida com tenacidade <= N. Todas as fichas (Rat, Squirrel, Mercenary changeling) sao protegidas."""
+    named = [n for n in state.battlefield if is_creature_card(n)]
+    rt, sq, mc = state.rat_tokens, state.squirrel_tokens, state.mercenary_tokens
+    if name == "Damnation":
+        return {"named": named, "rat": rt, "sq": sq, "mc": mc, "loss": len(named) + rt + sq + mc, "new_squirrels": 0, "type": None}
+    if name == "Kindred Dominance":
+        best = None
+        for t in sorted({x for n in named for x in _types_of(n)} | {"Rat", "Squirrel"}):
+            dn = [n for n in named if t not in _types_of(n)]
+            r = rt if t != "Rat" else 0
+            q = sq if t != "Squirrel" else 0
+            key = (len(dn) + r + q, sum(CARD_DB[n].mv for n in dn), t != "Rat", t)
+            if best is None or key < best[0]:
+                best = (key, t, dn, r, q)
+        _, t, dn, r, q = best
+        return {"named": dn, "rat": r, "sq": q, "mc": 0, "loss": len(dn) + r + q, "new_squirrels": 0, "type": t}
+    if name == "Swarmyard Massacre":
+        prot = [n for n in named if SWARMYARD_PROTECTED_TYPES & set(_types_of(n))]
+        n_prot = len(prot) + rt + (sq + 2) + mc
+        dn = [n for n in named if not (SWARMYARD_PROTECTED_TYPES & set(_types_of(n))) and CREATURE_TOUGHNESS.get(n, 99) <= n_prot]
+        return {"named": dn, "rat": 0, "sq": 0, "mc": 0, "loss": len(dn), "new_squirrels": 2, "type": None}
+    raise KeyError(name)
+
+
+def wipe_held(state: GameState, name: str) -> bool:
+    """True se o wipe, com o efeito proprio ligado, tem perda propria (liquida dos corpos que ele cria, se WIPE_GATE_NET_OF_NEW_TOKENS) acima de WIPE_CAST_MAX_OWN_LOSS: nao e' conjurado (e conta 1 retencao por turno)."""
+    if WIPE_CAST_MAX_OWN_LOSS is None or name not in WIPE_CARDS or not _wipe_effect_on(name):
+        return False
+    plan = wipe_plan(state, name)
+    if plan["loss"] - (plan["new_squirrels"] if WIPE_GATE_NET_OF_NEW_TOKENS else 0) <= WIPE_CAST_MAX_OWN_LOSS:
+        return False
+    if name not in state.wipes_held_this_turn:
+        state.wipes_held_this_turn.add(name)
+        state.wipe_held_total += 1
+    return True
+
+
+def apply_own_wipe(state: GameState, name: str):
+    """Resolve o efeito do wipe no MEU campo. As mortes sao SIMULTANEAS (CR 603.10, last known information): cada fonte de gatilho de morte (Zulaport, Pitiless Plunderer, Syr Konrad,
+    Species Specialist, Ninja Teen) ve o campo de ANTES, mesmo se ela propria morrer junto; mesma contabilidade de `try_smart_opponent_wipe`."""
+    plan = wipe_plan(state, name)
+    if plan["new_squirrels"]:
+        create_squirrel_tokens(state, plan["new_squirrels"], source=name)
+    named_dying, rt, sq, mc = plan["named"], plan["rat"], plan["sq"], plan["mc"]
+    total_dying = len(named_dying) + rt + sq + mc
+    total_rat_dying = sum(1 for n in named_dying if is_rat(n)) + rt + mc
+    zulaport_present = "Zulaport Cutthroat" in state.battlefield
+    plunderer_present = "Pitiless Plunderer" in state.battlefield
+    konrad_present = "Syr Konrad, the Grim" in state.battlefield
+    species_present = "Species Specialist" in state.battlefield
+    for n in named_dying:
+        _wipe_remove_creature_no_trigger(state, n)
+    state.rat_tokens -= rt
+    state.squirrel_tokens -= sq
+    state.mercenary_tokens -= mc
+    if not total_dying:
+        return
+    state.permanent_left_battlefield_this_turn = True          # Disappear: "left the battlefield" (mais amplo que "dies")
+    state.creatures_died_this_turn += total_dying
+    state.wipe_own_creatures_lost_total += total_dying
+    if zulaport_present:
+        state.life += total_dying
+        state.proxy_damage_total += total_dying
+    if NINJA_TEEN_LEVELS_AND_DRAIN and "Ninja Teen" in state.battlefield:
+        state.proxy_damage_total += total_dying
+        state.ninja_teen_drain_total += total_dying
+    if plunderer_present:
+        other = total_dying - (1 if "Pitiless Plunderer" in named_dying else 0)
+        if other:
+            state.treasure_tokens += other
+            state.tokens_created_total += other
+    if konrad_present:
+        other = total_dying - (1 if "Syr Konrad, the Grim" in named_dying else 0)
+        if other:
+            state.proxy_damage_total += other
+    if species_present and total_rat_dying:
+        draw_cards(state, total_rat_dying)
+
+
 def enter_battlefield(state: GameState, name: str, from_hand: bool = True, tapped: bool = False):
     if from_hand and name in state.hand:
         state.hand.remove(name)
@@ -1011,46 +1162,25 @@ def resolve_instant_sorcery(state: GameState, name: str):
         state.life -= 2
 
     elif "wipe_asymmetric_type" in tags:  # Kindred Dominance
-        # Achado real 2026-08-31 (revisao ao adicionar o Damnation --
-        # forcou reconsiderar a mesma logica aqui): a versao anterior
-        # desta funcao destruia de verdade as proprias criaturas nao-Rat
-        # do jogador (Ayara, Gray Merchant, Syr Konrad, Species
-        # Specialist etc.) toda vez que a carta era conjurada -- mas
-        # NENHUM oponente real existe neste goldfish solo pra essa
-        # destruicao "limpar" de verdade. Um piloto racional nunca
-        # conjura um wipe (mesmo assimetrico) sem um board de oponente
-        # real pra justificar -- destruir o proprio motor de valor sem
-        # nenhum ganho equivalente e' estritamente pior que nao fazer
-        # nada. Corrigido pra seguir a MESMA convencao ja usada em
-        # Withering Torment/Deadly Rollick (Regra 1): a magica e'
-        # "conjuravel" e conta pra metrica de interacao, mas sem efeito
-        # de destruicao real no proprio board -- documentado, nao
-        # fingido como se limpasse um board de oponente que nao existe.
-        pass
+        state.wipe_casts_total += 1
+        state.wipe_kindred_total += 1
+        if WIPE_EFFECT_KINDRED:
+            apply_own_wipe(state, name)
+        # chave desligada: so' "conjuravel"/metrica de interacao, sem efeito no proprio board (rodada 4 e anteriores; ver a justificativa antiga no git)
 
     elif "squirrel_tokens_wipe_asymmetric" in tags:  # Swarmyard Massacre
-        # Mesmo achado acima: o token de Esquilo criado e' beneficio real
-        # incondicional (sempre acontece, nao depende de oponente), mas
-        # o "-1/-1 pra criaturas nao-tribais" destruindo o PROPRIO board
-        # sem oponente real pra limpar foi removido pelo mesmo motivo do
-        # Kindred Dominance acima -- nunca seria a escolha racional de um
-        # piloto de verdade.
-        create_squirrel_tokens(state, 2, source="Swarmyard Massacre")
+        state.wipe_casts_total += 1
+        state.wipe_swarmyard_total += 1
+        if WIPE_EFFECT_SWARMYARD:
+            apply_own_wipe(state, name)           # os 2 Esquilos primeiro, depois o -1/-1
+        else:
+            create_squirrel_tokens(state, 2, source="Swarmyard Massacre")
 
     elif "wipe_symmetric_no_target" in tags:  # Damnation
-        # Achado real 2026-08-31 (adicionado como 100a carta, pedido
-        # direto do usuario -- reforca o pacote de remocao, ver
-        # auditoria.md secao 7/12): "Destroy all creatures. They can't
-        # be regenerated." Sem excecao nenhuma (nem pros proprios Rats),
-        # diferente do Kindred Dominance/Swarmyard Massacre (que ao menos
-        # poupam Rats). Num goldfish solo sem oponente real, conjurar
-        # isso destruiria o proprio board inteiro pra ganho zero -- pior
-        # ainda que os 2 wipes assimetricos acima. Mesma convencao:
-        # conta como "conjuravel"/metrica de interacao, sem destruir o
-        # proprio board (Regra 1 -- nao fingir um oponente que nao
-        # existe, mas tambem nao fingir uma jogada irracional que nenhum
-        # piloto real faria).
-        pass
+        state.wipe_casts_total += 1
+        state.wipe_damnation_total += 1
+        if WIPE_EFFECT_DAMNATION:
+            apply_own_wipe(state, name)
 
     elif "life_for_rats" in tags:  # Plague of Vermin
         pay = min(10, max(0, state.life - 20))  # paga vida sobrando acima de 20, teto defensivo de 10
@@ -1755,6 +1885,8 @@ def main_phase(state: GameState, is_first_main: bool = True):
         if SACRIFICE_COST_NEEDS_FODDER:
             # custo adicional "sacrifice": sem o que sacrificar a magica nao pode ser conjurada; Culling the Weak so' vale como ritual (cast_rituals)
             castables = [n for n in castables if not (n == "Culling the Weak" or (n == "Deadly Dispute" and not dispute_fodder(state)))]
+        if WIPE_CAST_MAX_OWN_LOSS is not None:
+            castables = [n for n in castables if not wipe_held(state, n)]     # wipe so' quando a perda propria compensa (rodada 5)
         if not castables:
             break
         # Prioriza motores baratos primeiro (curva real, maximiza corpos em campo cedo).
@@ -2084,6 +2216,7 @@ def play_turn(state: GameState, is_first_turn: bool, on_play: bool):
     state.creatures_died_this_turn = 0
     state.treasures_spent_this_turn = 0
     state.rat_tokens_created_this_turn = 0
+    state.wipes_held_this_turn = set()
     state.soul_stone_tapped = False
     state.staff_tapped = False
 

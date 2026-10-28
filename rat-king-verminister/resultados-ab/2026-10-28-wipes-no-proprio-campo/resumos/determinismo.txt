@@ -1,0 +1,2 @@
+rat-king-verminister       padrao       N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []
+rat-king-verminister       resiliencia  N=1500 sementes divergentes entre 3 hash seeds: 0 [] campos: []

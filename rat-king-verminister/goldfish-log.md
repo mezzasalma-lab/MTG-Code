@@ -1,5 +1,7 @@
 # Goldfish Log — Rat King, Verminister
 
+> **Rodada 5 de 2026-10-28 (os 3 wipes aplicam o efeito no próprio campo — Opção B — e o A/B com limites de perda própria) — dados brutos e reprodução:** [`resultados-ab/2026-10-28-wipes-no-proprio-campo/LEIAME.md`](resultados-ab/2026-10-28-wipes-no-proprio-campo/LEIAME.md)
+
 > **Rodada 4 de 2026-10-28 (Fell Mire como terreno, Black Market Connections com lifegain e um erro do ensaio do terreno virado que escondia o comandante do T2) — dados brutos e reprodução:** [`resultados-ab/2026-10-28-fell-mire-e-black-market-connections/LEIAME.md`](resultados-ab/2026-10-28-fell-mire-e-black-market-connections/LEIAME.md)
 
 > **Rodada 3 de 2026-10-25 (Spellbook, rulings dos conceitos compartilhados e 21 correções de simulador) — dados brutos e reprodução:** [`resultados-ab/2026-10-25-rodada3-spellbook-rulings-e-correcoes/LEIAME.md`](resultados-ab/2026-10-25-rodada3-spellbook-rulings-e-correcoes/LEIAME.md)
@@ -9,6 +11,46 @@
 > **Rodada 2026-10-05 (Mulligan com escolha do fundo + upkeep antes do draw (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`](resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md)
 
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
+
+---
+
+## Rodada 5 (2026-10-28): os 3 wipes passam a valer no próprio campo (Opção B) e o A/B mede o custo de cada limite
+
+**Pedido do usuário:** *"Opção B nos wipes, e meça no A/B"* (a Opção B do meu relatório: aplicar o efeito no seu campo, conjurando só quando o resultado compensa). Arquivo bruto/auditável: `resultados-ab/2026-10-28-wipes-no-proprio-campo/LEIAME.md`.
+
+**Veredito:** com a Opção B no padrão que escolhi (limite 0, perda líquida), o seu campo praticamente não muda e o que se perde é a contagem proxy de interação. Antes, os 3 wipes eram pagos e conjurados sem efeito nenhum, gastando mana à toa; agora só são conjurados quando custam no máximo 0 criaturas líquidas.
+- **Conjurados por partida (10.000, padrão):** 0,116 (Kindred Dominance 0,014; Swarmyard Massacre 0,102; **Damnation 0,000**: com qualquer criatura minha em campo ela custa pelo menos uma). Retidos por falta de compensar: 0,83 turnos-carta por partida. Criaturas minhas mortas por wipe meu: 0,096 por partida (só o Swarmyard, que cria 2 Esquilos e pode matar até 2 criaturas minhas sem perda líquida).
+- **Efeito pareado contra o `antes` (padrão, 10.000; 75,3% das partidas idênticas):** campo +0,005 ± 0,033 (nada), fichas criadas +0,258 ± 0,101, vida +0,07 ± 0,19 (nada), compras +0,05 ± 0,05 (nada), recursão +0,128 ± 0,019, **interação conjurada −0,205 ± 0,009** (é o custo: o proxy de interação cai porque os wipes deixam de ser conjurados à toa). Comandante até T3/T4: nenhuma diferença. Modo resiliência: os mesmos sinais (campo +0,001 ± 0,029; interação −0,125 ± 0,007; perda própria 0,050 por partida).
+- **Por que o campo não piora:** o Damnation e o Kindred Dominance antigos gastavam 4 e 7 de mana sem efeito; deixar de conjurá-los devolve esse mana a outras jogadas (o Damnation sozinho dá campo +0,100 ± 0,020). O Swarmyard com efeito isolado custa campo −0,112 ± 0,025 (mata criaturas minhas não protegidas: Zulaport, Konrad, Gray Merchant...).
+
+**A 1ª versão do limite estava errada e a medi antes de adotar a certa.** O limite comparava só as mortes (bruto): o Swarmyard deixava de ser conjurado sempre que matasse qualquer criatura minha, e eu perdia os 2 Esquilos grátis (−0,114 ± 0,009 Esquilos por partida; interação −0,272). Passei a comparar a perda **líquida** (mortes menos os corpos que o próprio wipe cria): `WIPE_GATE_NET_OF_NEW_TOKENS`. As duas versões estão no A/B (`limite_0_bruto` e `depois`); os brutos da 1ª execução ficam em `superado-1a-execucao/`.
+
+**O que o limite compra (vs `antes`, padrão, 10.000; "perda" = criaturas minhas mortas por wipe meu por partida):**
+
+| variante | wipes conjurados | perda | campo | fichas criadas | vida | dano proxy | interação |
+|---|---|---|---|---|---|---|---|
+| **limite 0, líquido (padrão)** | 0,116 | 0,096 | +0,005 (ns) | +0,258 | +0,07 (ns) | +0,16 (ns) | −0,205 |
+| limite 0, bruto (1ª versão) | 0,047 | 0,000 | +0,129 | +0,257 | +0,23 | +0,49 | −0,272 |
+| limite 1 | 0,148 | 0,146 | −0,055 | +0,221 | +0,04 (ns) | +0,03 (ns) | −0,175 |
+| limite 2 | 0,176 | 0,209 | −0,119 | +0,143 | −0,02 (ns) | −0,17 (ns) | −0,148 |
+| limite 5 | 0,248 | 0,513 | −0,443 | −0,237 | −0,55 | −0,89 | −0,082 |
+| conjura sempre, com efeito (Opção C) | 0,310 | 1,271 | −1,055 | −0,600 | −1,36 | −1,67 | −0,024 |
+
+Ler assim: cada ponto a mais de limite devolve interação proxy e custa campo, fichas, vida e dreno. **A escolha do limite depende do tabuleiro do oponente, que o goldfish não tem**; 0 é o piso defensável (o wipe sai quando é de graça ou pago por corpos novos), e a Opção C custa 1,06 permanente e 1,67 de dreno por partida.
+
+**O que mudou no simulador (5 chaves/constantes; desligadas = bit-idêntico ao commit `3635578`):** `WIPE_EFFECT_KINDRED`, `WIPE_EFFECT_SWARMYARD`, `WIPE_EFFECT_DAMNATION` (efeito no meu campo, mortes simultâneas por last known information, mesmos 4 payoffs de aristocrata do wipe do oponente: Zulaport, Pitiless Plunderer, Syr Konrad, Species Specialist, mais o dreno do Ninja Teen), `WIPE_CAST_MAX_OWN_LOSS = 0` (política minha) e `WIPE_GATE_NET_OF_NEW_TOKENS = True` (política minha).
+- **Kindred Dominance:** escolho o tipo que menos mata (empate: menos MV perdido, depois Rat); o Mercenary de changeling nunca morre; fichas de Esquilo morrem se o tipo é Rat.
+- **Swarmyard Massacre:** 2 Esquilos primeiro, depois −1/−1 por criatura minha Insect/Rat/Spider/Squirrel (cada criatura conta uma vez, ruling 2024-07-26); morre a carta não protegida com tenacidade ≤ N. As tenacidades e os tipos vêm do oráculo ao vivo arquivado (tabela conferida por teste).
+- **Damnation:** tudo morre, o comandante inclusive (morre e volta à zona de comando, CR 903.9a; recast com imposto: teste WP7).
+- **Disappear:** se o Rat King sobrevive e algo meu morre, o end step cria o Rat (teste WP6).
+
+**Validação (`resumos/`):** 10 testes dirigidos (`testes_dirigidos.txt`, incluindo partidas inteiras com contagem > 0 e controle positivo); smoke 99 cartas; bit-identidade com as 5 chaves desligadas == commit `3635578`, 20.000 × 2 modos: 0 diferentes; regressão 20.000 × 2 modos × 2 configurações: 0 exceções, 0 carta acima do baralho (`mana_spent_this_turn` negativo em 80/86 ligadas e 76/80 desligadas, o mesmo invariante de rituais); determinismo com 3 `PYTHONHASHSEED` × 1.500 × 2 modos: 0 divergentes; as 8 variantes do A/B diferem entre si e do `antes` (`diferem_entre_variantes.txt`); `audit_etb_sem_efeito.py` sem mudança de saída (os wipes nunca apareciam nele: a própria conjuração muda o contador de interação).
+
+**Não coberto nesta rodada (Regra #7):**
+- **Oponente real:** as criaturas do oponente continuam sem modelo ("Destroy all creatures", "that aren't of the chosen type" e o −1/−1 só têm alvo do oponente num jogo com oponente); a conjuração conta como interação (proxy). **O limite é política minha**, não do oráculo: nenhum número de "perda aceitável" existe sem um tabuleiro de oponente.
+- Skullclamp equipado e outros bônus de tenacidade não entram na conta do −1/−1 do Swarmyard; fichas de Esquilo e Rat contam como 1/1 sem bônus; a escolha do tipo do Kindred olha só os tipos das minhas criaturas.
+- Não varri as classes da Regra #10 que não mudam (entrada de terreno, compra do T1, landfall): o código novo só toca a resolução dos 3 feitiços e o filtro de conjuração.
+- Provas de uma execução só: determinismo e o scanner.
 
 ---
 

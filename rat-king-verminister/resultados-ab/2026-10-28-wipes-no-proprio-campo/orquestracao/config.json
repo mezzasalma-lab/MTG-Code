@@ -1,0 +1,103 @@
+{
+ "flags_off": {
+  "WIPE_EFFECT_KINDRED": false,
+  "WIPE_EFFECT_SWARMYARD": false,
+  "WIPE_EFFECT_DAMNATION": false,
+  "WIPE_CAST_MAX_OWN_LOSS": null,
+  "WIPE_GATE_NET_OF_NEW_TOKENS": false
+ },
+ "ignora_campos": [
+  "wipe_casts_total",
+  "wipe_kindred_total",
+  "wipe_swarmyard_total",
+  "wipe_damnation_total",
+  "wipe_own_creatures_lost_total",
+  "wipe_held_total",
+  "wipes_held_this_turn"
+ ],
+ "sensibilidade": {
+  "so_kindred": {
+   "WIPE_EFFECT_KINDRED": true,
+   "WIPE_EFFECT_SWARMYARD": false,
+   "WIPE_EFFECT_DAMNATION": false,
+   "WIPE_CAST_MAX_OWN_LOSS": 0,
+   "WIPE_GATE_NET_OF_NEW_TOKENS": true
+  },
+  "so_swarmyard": {
+   "WIPE_EFFECT_KINDRED": false,
+   "WIPE_EFFECT_SWARMYARD": true,
+   "WIPE_EFFECT_DAMNATION": false,
+   "WIPE_CAST_MAX_OWN_LOSS": 0,
+   "WIPE_GATE_NET_OF_NEW_TOKENS": true
+  },
+  "so_damnation": {
+   "WIPE_EFFECT_KINDRED": false,
+   "WIPE_EFFECT_SWARMYARD": false,
+   "WIPE_EFFECT_DAMNATION": true,
+   "WIPE_CAST_MAX_OWN_LOSS": 0,
+   "WIPE_GATE_NET_OF_NEW_TOKENS": true
+  },
+  "limite_0_bruto": {
+   "WIPE_EFFECT_KINDRED": true,
+   "WIPE_EFFECT_SWARMYARD": true,
+   "WIPE_EFFECT_DAMNATION": true,
+   "WIPE_CAST_MAX_OWN_LOSS": 0,
+   "WIPE_GATE_NET_OF_NEW_TOKENS": false
+  },
+  "limite_1": {
+   "WIPE_EFFECT_KINDRED": true,
+   "WIPE_EFFECT_SWARMYARD": true,
+   "WIPE_EFFECT_DAMNATION": true,
+   "WIPE_CAST_MAX_OWN_LOSS": 1,
+   "WIPE_GATE_NET_OF_NEW_TOKENS": true
+  },
+  "limite_2": {
+   "WIPE_EFFECT_KINDRED": true,
+   "WIPE_EFFECT_SWARMYARD": true,
+   "WIPE_EFFECT_DAMNATION": true,
+   "WIPE_CAST_MAX_OWN_LOSS": 2,
+   "WIPE_GATE_NET_OF_NEW_TOKENS": true
+  },
+  "limite_5": {
+   "WIPE_EFFECT_KINDRED": true,
+   "WIPE_EFFECT_SWARMYARD": true,
+   "WIPE_EFFECT_DAMNATION": true,
+   "WIPE_CAST_MAX_OWN_LOSS": 5,
+   "WIPE_GATE_NET_OF_NEW_TOKENS": true
+  },
+  "sempre_conjura_com_efeito": {
+   "WIPE_EFFECT_KINDRED": true,
+   "WIPE_EFFECT_SWARMYARD": true,
+   "WIPE_EFFECT_DAMNATION": true,
+   "WIPE_CAST_MAX_OWN_LOSS": null,
+   "WIPE_GATE_NET_OF_NEW_TOKENS": true
+  }
+ },
+ "turns": 8,
+ "extra": null,
+ "destaque": [
+  "commander_cast_turn__ate_T3",
+  "commander_cast_turn__ate_T4",
+  "len_battlefield",
+  "rat_tokens",
+  "squirrel_tokens",
+  "mercenary_tokens",
+  "tokens_created_total",
+  "proxy_damage_total",
+  "life",
+  "cards_drawn_extra",
+  "treasure_tokens",
+  "interaction_spells_cast_total",
+  "creatures_died_this_turn",
+  "recursion_events_total",
+  "wipe_casts_total",
+  "wipe_own_creatures_lost_total",
+  "wipe_held_total",
+  "wipe_kindred_total",
+  "wipe_swarmyard_total",
+  "wipe_damnation_total"
+ ],
+ "deck": "rat-king-verminister",
+ "sim": "ratking_goldfish_v1.py",
+ "snapshot": "codigo/ratking_goldfish_v1_ANTES_3635578.py"
+}
