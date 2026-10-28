@@ -1,0 +1,12 @@
+turno | planeswalkers em campo no fim do turno (so' do bruto; premissa: Jace Yap1mo saiu no fim do T4)
+T 1 | 0 | 
+T 2 | 0 | 
+T 3 | 0 | 
+T 4 | 0 | 
+T 5 | 1 | Oko, Thief of Crowns
+T 6 | 2 | Oko, Thief of Crowns, Wrenn and Realmbreaker
+T 7 | 3 | Domri, Chaos Bringer, Oko, Thief of Crowns, Wrenn and Realmbreaker
+T 8 | 4 | Domri, Chaos Bringer, Jace, Oko, Thief of Crowns, Wrenn and Realmbreaker
+T 9 | 4 | Domri, Chaos Bringer, Jace, Oko, Thief of Crowns, Wrenn and Realmbreaker
+T10 | 5 | Domri, Chaos Bringer, Jace, Oko, Thief of Crowns, Tezzeret the Seeker, Wrenn and Realmbreaker
+T11 | 6 | Dihada, Binder of Wills, Domri, Chaos Bringer, Jace, Oko, Thief of Crowns, Tezzeret the Seeker, Wrenn and Realmbreaker

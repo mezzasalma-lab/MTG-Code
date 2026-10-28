@@ -303101,5 +303101,61 @@
     "toughness": "4",
     "type_line": "Token Creature — Eldrazi Angel",
     "loyalty": null
+  },
+  "Forceful Denial": {
+    "cmc": 5.0,
+    "collector_number": "69",
+    "color_identity": [
+      "U"
+    ],
+    "colors": [
+      "U"
+    ],
+    "keywords": [
+      "Cascade"
+    ],
+    "legalities": {
+      "alchemy": "not_legal",
+      "brawl": "not_legal",
+      "commander": "legal",
+      "competitivebrawl": "not_legal",
+      "duel": "legal",
+      "future": "not_legal",
+      "gladiator": "not_legal",
+      "historic": "not_legal",
+      "legacy": "legal",
+      "modern": "not_legal",
+      "oathbreaker": "legal",
+      "oldschool": "not_legal",
+      "pauper": "legal",
+      "paupercommander": "legal",
+      "penny": "not_legal",
+      "pioneer": "not_legal",
+      "predh": "not_legal",
+      "premodern": "not_legal",
+      "standard": "not_legal",
+      "standardbrawl": "not_legal",
+      "timeless": "not_legal",
+      "tlr": "not_legal",
+      "vintage": "legal"
+    },
+    "loyalty": null,
+    "mana_cost": "{3}{U}{U}",
+    "name": "Forceful Denial",
+    "oracle_text": "Cascade (When you cast this spell, exile cards from the top of your library until you exile a nonland card that costs less. You may cast it without paying its mana cost. Put the exiled cards on the bottom in a random order.)\nCounter target spell.",
+    "power": null,
+    "released_at": "2020-11-20",
+    "scryfall_uri": "https://scryfall.com/card/cmr/69/forceful-denial?utm_source=api",
+    "set": "cmr",
+    "toughness": null,
+    "type_line": "Instant",
+    "prices": {
+      "eur": "0.08",
+      "eur_foil": "0.26",
+      "tix": "0.04",
+      "usd": "0.27",
+      "usd_etched": null,
+      "usd_foil": "0.36"
+    }
   }
 }

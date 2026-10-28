@@ -1,0 +1,12 @@
+T 1: PWs 0 [] | terrenos 1 | mana(ini) 0 | Tam nao | mao 7 | outros []
+T 2: PWs 0 [] | terrenos 2 | mana(ini) 1 | Tam nao | mao 7 | outros []
+T 3: PWs 0 [] | terrenos 3 | mana(ini) 2 | Tam sim | mao 7 | outros ['Tam, the Possibility']
+T 4: PWs 1 [('Oko', 6)] | terrenos 3 | mana(ini) 3 | Tam sim | mao 7 | outros ['Tam, the Possibility', 'Food Token']
+T 5: PWs 2 [('Oko', 7), ('Jacetok', 2)] | terrenos 4 | mana(ini) 3 | Tam sim | mao 7 | outros ['Tam, the Possibility', 'Food Token', 'Way of the Paradox']
+T 6: PWs 3 [('Oko', 9), ('Jacetok', 2), ('Wrenn', 5)] | terrenos 5 | mana(ini) 4 | Tam sim | mao 5 | outros ['Tam, the Possibility', 'Food Token', 'Way of the Paradox', 'Food Token', 'Sanctum Lurker']
+T 7: PWs 3 [('Oko', 10), ('Jacetok', 4), ('Wrenn', 7)] | terrenos 7 | mana(ini) 7 | Tam sim | mao 5 | outros ['Tam, the Possibility', 'Food Token', 'Way of the Paradox', 'Food Token', 'Sanctum Lurker', 'Way of the Mind Sculptor']
+T 8: PWs 6 [('Oko', 13), ('Jacetok', 2), ('Wrenn', 0), ('Domri', 7), ('Dihada', 3), ('Vronos', 7)] | terrenos 14 | mana(ini) 9 | Tam sim | mao 6 | outros ['Tam, the Possibility', 'Food Token', 'Way of the Paradox', 'Food Token', 'Sanctum Lurker', 'Way of the Mind Sculptor', 'Fellwar Stone', 'Food Token', 'Flux Channeler']
+T 9: PWs 10 [('Oko', 16), ('Jacetok', 17), ('Wrenn', 0), ('Domri', 14), ('Dihada', 0), ('Vronos', 15), ('Tezzeret', 16), ('Kasmina', 11), ('Teferi', 12), ('Dack', 7)] | terrenos 21 | mana(ini) 17 | Tam sim | mao 2 | outros ['Tam, the Possibility', 'Food Token', 'Way of the Paradox', 'Food Token', 'Sanctum Lurker', 'Way of the Mind Sculptor', 'Fellwar Stone', 'Food Token', 'Flux Channeler']
+T10: PWs 10 [('Oko', 52), ('Jacetok', 60), ('Wrenn', 0), ('Domri', 50), ('Dihada', 0), ('Vronos', 51), ('Tezzeret', 52), ('Kasmina', 47), ('Teferi', 48), ('Dack', 43)] | terrenos 21 | mana(ini) 31 | Tam sim | mao 1 | outros ['Tam, the Possibility', 'Food Token', 'Food Token', 'Sanctum Lurker', 'Way of the Mind Sculptor', 'Fellwar Stone', 'Food Token', 'Flux Channeler', 'Treasure Token']
+T11: PWs 10 [('Oko', 82), ('Jacetok', 90), ('Wrenn', 0), ('Domri', 80), ('Dihada', 0), ('Vronos', 81), ('Tezzeret', 82), ('Kasmina', 77), ('Teferi', 78), ('Dack', 73)] | terrenos 22 | mana(ini) 31 | Tam sim | mao 1 | outros ['Tam, the Possibility', 'Food Token', 'Food Token', 'Sanctum Lurker', 'Way of the Mind Sculptor', 'Fellwar Stone', 'Food Token', 'Flux Channeler', 'Treasure Token']
+FIM da partida: mesa limpa no turno 11
