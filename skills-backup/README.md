@@ -72,6 +72,12 @@ Estado anterior da skill (2026-09-26): `SKILL.md` + 3 referências. Agora:
 - `references/user-standing-rules.md` §21 e `mtg-commander/references/protocolo-de-avaliacao.md` (4 linhas novas no checklist de erros): mesma classe. `mtg-commander.zip` e `SHA256SUMS` refeitos.
 - **Como foi feito (Regra #9):** espelhos copiados do repositório; `protocolo-de-avaliacao.md` e este README editados **direto no backup**; **não** rodei `sincronizar-skill.sh --para-backup` (a pasta viva da skill é mais antiga que o backup e o comando a copiaria por cima). A skill da conta **não** foi atualizada; só o usuário consegue reenviar `mtg-commander.zip`.
 
+## O que mudou na atualização de 2026-10-28 (Rat King, rodada 4: Fell Mire, Black Market Connections, ensaio do terreno virado; Spellbook em todos os decks)
+
+- `CLAUDE.md` (e o espelho `references/CLAUDE-repositorio.md`): Regra #10 ganha a classe (k) (**ensaio a seco que mede só o que sai da mão ignora o comandante**: Rat King, comandante até T2 87,2% → 97,9%; 13 simuladores com a mesma função, não medidos) e troca a frase sobre o Spellbook (rodado nos 46 decks em 2026-10-28; falta conferir se cada simulador executa os combos).
+- `references/user-standing-rules.md` §21 (novo bullet do Rat King de 2026-10-28) e `mtg-commander/references/protocolo-de-avaliacao.md` (§7 e 4 linhas novas no checklist de erros) e `mtg-commander/SKILL.md`: mesma classe. `mtg-commander.zip` e `SHA256SUMS` refeitos.
+- **Como foi feito (Regra #9):** espelhos copiados do repositório; `protocolo-de-avaliacao.md` e este README editados **direto no backup**; **não** rodei `sincronizar-skill.sh --para-backup` (a pasta viva da skill é mais antiga que o backup e o comando a copiaria por cima). A skill da conta **não** foi atualizada; só o usuário consegue reenviar `mtg-commander.zip`.
+
 ## Como restaurar / reinstalar
 
 1. **Claude Code (pasta de skills):** copie `skills-backup/mtg-commander/` inteira para `~/.claude/skills/mtg-commander/`.

@@ -606,6 +606,20 @@ no `play_land`/`play_turn`/mulligan):**
    atacando; o simulador fazia na main phase de graça. **Combos do Commander
    Spellbook que o simulador não executava (Marrow + Staff; Ayara + Plague) são
    erro do simulador, não curiosidade (Regra #4, adendo, item 3).**
+   **Classe nova, achada no Rat King (2026-10-28), ao pôr o ensaio a seco do
+   Fell Mire:** (k) **ensaio a seco que mede só o que sai da MÃO** (o
+   `_tl_dry_run_mv` do "terreno virado primeiro", rodada de 2026-10-05) ignora o
+   **comandante, que sai da zona de comando**: com virado e desvirado empatados em
+   0 jogava o virado e o Rat King perdia o T2. Comandante em campo até T2 no Rat
+   King: **87,2% → 97,9%** (+10,66 ±0,61 pontos, N=10.000; sem a política nenhuma:
+   93,9%). Escapou porque o A/B de 2026-10-05 só tinha indicadores de T3 em diante
+   (o `abgen` agora gera T2). Chave `TAPPED_FIRST_COUNTS_MANA` (mede
+   `mana_spent_this_turn`). **13 simuladores têm a mesma função (mesmo corpo, por
+   `grep`) e NÃO foram medidos:** Azula, Bumbleflower, Captain Storm, Edgar, Hei Bai,
+   Kutzil, Maralen, Nekusar, Prismatic Bridge, Thranduil, Toph, Ulalek, Ur-Dragon;
+   Megatron, Mothman, Tam e Vihaan têm a chave com outra função (não li); Beorn e Tom
+   não têm a chave. Antes de declarar "terreno virado primeiro" certo num simulador,
+   medir o comandante até T2 (`commander_cast_turn__ate_T2`) com e sem a política.
 3. **Determinismo entre processos.** Os `driver.py` das pastas de resultados
    fixam `PYTHONHASHSEED=0` (senão nada reproduz byte a byte), e por isso **não
    enxergam** dependência de ordem de hash. A única checagem que enxerga é
@@ -654,12 +668,15 @@ perfil de oponente calibrado contra a mesa real do usuário (só o Tam tem o per
 `playtester`, calibrado nos 5 logs do bot do Archidekt; não verifiquei de onde vem
 o modelo de oponente dos outros simuladores com modo de resiliência, e nenhum
 deles passou por essa calibração); **Commander Spellbook com a lista atual**:
-`grep -rli spellbook <deck>/` em 2026-10-25 acha menção em só 9 dos 47 decks com
-`lista.md` (Beorn, Megatron, Prismatic Bridge, Rat King, Tam, Thranduil, Ur-Dragon,
-Vihaan, Mothman); os outros **38 não têm nenhum registro** (pode ter sido feito e
-não arquivado, mas não há evidência). O Rat King, que estava nesse grupo, tinha 2
-combos infinitos na lista e um simulador que não executava nenhum; **a mesma classe
-de erro pode estar nos outros 38 (não varridos)**; **ETB/gatilho fantasma** nos
+rodado em 2026-10-28 nos 46 decks com `lista.md` fora o Rat King (que tem a rodada
+própria de 2026-10-25), pedido *"Quero todos os Spellbooks sim, e salvos no
+repositório"*: 2.510 nomes únicos resolvidos antes, 0 não reconhecidos, controle
+positivo e de corte passaram nos 46 (`spellbook-todos-os-decks-2026-10-28/RESUMO.md`;
+bruto da API em `<deck>/resultados-ab/2026-10-28-spellbook/dados/`). **NÃO feito:**
+conferir, deck a deck, se o simulador EXECUTA os combos achados (Regra #4, adendo,
+item 3: o Rat King tinha 2 combos e um simulador que não executava nenhum; Toph tem
+29 combos, Prismatic Bridge 12, Maralen 9, Ulalek 5; **a mesma classe de erro pode
+estar em todos esses**), nem a probabilidade por turno; **ETB/gatilho fantasma** nos
 outros 19 simuladores (o scanner só roda no Rat King).
 Esta lista é o piso, não o teto: classe nova achada vira script em
 `varredura-2026-10-05/scripts/` e linha nesta regra.

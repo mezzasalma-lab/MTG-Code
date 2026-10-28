@@ -72,8 +72,7 @@ Simplificacoes documentadas (nao inventadas -- omissoes explicitas):
 - Sem oponente real: qualquer efeito que exija "opponent"/"target
   player" (drenos de vida contra oponente real, edicts do Dictate of
   Erebos, toxic/poison do Karumonix, extort do Crypt Ghast, Lord
-  Skitter exilar cemiterio do oponente, Fell Mire como land nao
-  modelado nesta versao) fica "disponivel" com um contador de "quantas
+  Skitter exilar cemiterio do oponente) fica "disponivel" com um contador de "quantas
   vezes disparou" mas sem efeito numerico de vida/poison do lado do
   oponente -- mesma convencao ja usada em todos os outros simuladores
   desta sessao. O GANHO de vida do proprio jogador (Zulaport, Ayara,
@@ -92,21 +91,22 @@ Simplificacoes documentadas (nao inventadas -- omissoes explicitas):
   aplicado ao proprio board. O token de Esquilo do Swarmyard Massacre
   (beneficio incondicional, nao depende de oponente) continua real.
 - Fell the Profane // Fell Mire: MDFC modal (layout `modal_dfc`, Scryfall
-  confirmado) registrada só pelo lado Instant (a face de remocao real,
-  {2}{B}{B} destroy creature/planeswalker) -- decisao documentada, nao a
-  face de land, porque remocao e' o gap real do deck (auditoria.md,
-  secao 7, "6 efeitos, abaixo do recomendado") e a manabase ja tem 35
-  terrenos suficientes -- mesma convencao ja usada pro Shatterskull
-  Smashing/Sundering Eruption no Megatron ("registradas so pela face de
-  feiticaria").
+  confirmado). SUPERADO em 2026-10-28 (rodada 4, pedido do usuario "Modela
+  sim ambas as faces"): a decisao antiga ("so' a face Instant, porque remocao
+  e' o gap real") era julgamento de valor, vedado pela Regra #1. Hoje as DUAS
+  faces existem: o feitico {2}{B}{B} (conta como interacao, sem alvo de
+  oponente: proxy) e o terreno Fell Mire ("As this land enters, you may pay 3
+  life. If you don't, it enters tapped. {T}: Add {B}"), jogado por `play_land`
+  quando nao ha outro terreno na mao (chaves FELL_MIRE_*; politica numerica
+  declarada, com variante de sensibilidade no A/B).
 - Toxic 1 (Karumonix) -- sem oponente real recebendo dano de combate,
   contadores de veneno nunca acontecem neste modelo (N/A estrutural, nao
   omissao).
-- Thornbite Staff -- equipamento real, mas a lista nao tem NENHUMA
-  criatura do tipo Shaman (conferido via `type_line` de todas as 53
-  cartas unicas), entao o auto-attach ("Whenever a Shaman creature
-  enters, you may attach") nunca dispara nesta lista -- documentado como
-  N/A estrutural, nao bug.
+- Thornbite Staff -- SUPERADO em 2026-10-25 (rodada 3): a conferencia antiga
+  ("nenhuma criatura Shaman na lista", so' pelo `type_line` das cartas)
+  esquecia a FICHA: o Mercenary do Black Market Connections tem changeling
+  (todo tipo de criatura) e e' Shaman. Hoje o auto-attach, o Equip {4}, o ping
+  e o combo com Marrow-Gnawer sao modelados (chave THORNBITE_STAFF_ENABLED).
 - Combate: "ataca" = nao esta com summoning sickness. Nenhum bloqueio,
   nenhum dano de combate real contra oponente -- mesma convencao de
   todos os simuladores desta sessao. Metricas de dano/dreno sao proxy
@@ -177,7 +177,22 @@ BONTU_TRIGGER_ONCE = True             # "Whenever you cast a creature spell": di
 NINJA_TEEN_SNEAK_RULING = True        # CR 702.190a + rulings 2026-01-27: sneak so' no declare blockers, devolve um atacante nao bloqueado a mao, o custo {3}{B} substitui o custo de mana, entra virada e atacando
 MARROW_STAFF_LOOP_RAT_TARGET = 40    # combo infinito: para quando ha tantos Rats (o loop real e' infinito; o simulador precisa de um teto)
 MARROW_STAFF_LOOP_MAX_ITERS = 12
-PLAGUE_COMBO_CAP = 60                 # teto de fichas do Plague of Vermin pago com Ayara em campo
+PLAGUE_COMBO_CAP = 60                 # teto de fichas do Plague of Vermin paga com Ayara em campo
+
+# =====================================================================================================================================================
+# RODADA 4 (2026-10-28) -- pedidos do usuario: (a) "Modela sim ambas as faces" do Fell the Profane // Fell Mire; (b) Black Market Connections: "o modo mais importante e' o 1o,
+# com custo 1 de vida; os demais so' entram em cena se eu tiver algum mecanismo de lifegain rodando: Ayara, ou outro qq". Cada chave DESLIGADA devolve o comportamento da
+# rodada 3, bit a bit. As constantes numericas sao POLITICA MINHA (o usuario nao as definiu): ficam declaradas e com variante de sensibilidade no A/B.
+# =====================================================================================================================================================
+FELL_MIRE_LAND_ENABLED = True         # a face de terreno: "As this land enters, you may pay 3 life. If you don't, it enters tapped. {T}: Add {B}." Jogada como terreno quando nao ha outro terreno na mao
+FELL_MIRE_COUNTS_FOR_KEEP = True      # o 1o `should_keep` conta a MDFC como terreno (ela e' jogavel como terreno): 3 terrenos, ou 2 + uma abertura boa
+FELL_MIRE_MAX_LANDS_IN_PLAY = 6       # politica minha: so' vira terreno enquanto ha menos de 6 terrenos em campo (depois disso a face de feitico e' mais util)
+FELL_MIRE_LIFE_FLOOR = 10             # politica minha: so' paga os 3 de vida se a vida depois de pagar fica >= 10 (e so' se o ensaio a seco mostrar que o terreno desvirado gasta mais mana neste turno)
+TAPPED_FIRST_COUNTS_MANA = True       # ACHADO desta rodada: o ensaio do "terreno virado primeiro" (T1/T2) media so' o MV que sai da MAO e ignorava o comandante (zona de comando): empate 0 x 0 => jogava o terreno virado e perdia o comandante no T2. Agora mede o mana gasto
+FELL_MIRE_GHOST = False               # so' validacao: roda o ensaio a seco mas ignora o resultado (nunca paga). Com a chave ligada + GHOST == FELL_MIRE_LIFE_FLOOR=99 (que nem roda o ensaio) prova que o ensaio nao tem efeito colateral
+BMC_MODES_NEED_LIFEGAIN = True        # Black Market Connections: Sell Contraband (-1 vida) sempre; Buy Information (-2) e Hire a Mercenary (-3) so' com um mecanismo de lifegain em campo; politica minha: nunca escolhe um modo que leve a vida a 0 ou menos
+LIFEGAIN_ENGINES = frozenset({        # permanentes com gatilho de ganho de vida REPETIVEL (oraculo ao vivo: "you gain ... life" em habilidade que nao e' so' de ETB). Gray Merchant (so' ETB) fica fora
+    "Ayara, First of Locthwain", "Zulaport Cutthroat", "Bontu's Monument", "Crypt Ghast", "Valley Rotcaller"})
 
 # Pips {B} reais das MAGIAS (instant/sorcery): o `pips_b` do CARD_DB so' vale pra permanentes (devocao). Lidos do oraculo ao vivo (carddb_vs_oraculo.py).
 BLACK_SPELL_PIPS = {
@@ -223,8 +238,7 @@ add("Sol Ring", 1, "artifact", {"rock2"})
 add("Skullclamp", 1, "artifact", {"equipment_clamp"})
 add("Jet Medallion", 2, "artifact", {"black_cost_reduction"})
 add("Bontu's Monument", 3, "artifact", {"black_creature_cost_reduction", "creature_cast_drain"})
-# Thornbite Staff: auto-attach em Shaman nunca dispara nesta lista (N/A
-# estrutural, ver docstring) -- registrada so' como equipamento generico.
+# Thornbite Staff: equipamento; o auto-attach dispara no Mercenary de changeling (Shaman) do Black Market Connections (rodada 3, ver docstring).
 add("Thornbite Staff", 2, "artifact", {"equipment_generic"})
 add("Thrumming Stone", 5, "artifact", {"ripple4"})
 add("The Soul Stone", 2, "artifact", {"soul_stone"}, pips_b=1)
@@ -242,9 +256,8 @@ add("Culling the Weak", 1, "instant", {"sac_ritual4"})
 add("Dark Ritual", 1, "instant", {"ritual3"})
 add("Deadly Rollick", 4, "instant", {"free_removal_commander", "interaction"})
 add("Withering Torment", 3, "instant", {"removal_life_loss", "interaction"})
-# Fell the Profane // Fell Mire: registrada so' pela face Instant (decisao
-# documentada, ver docstring) -- nome completo mantido no CARD_DB pra
-# bater com o nome real usado em `lista.md`.
+# Fell the Profane // Fell Mire: na mao/biblioteca/cemiterio vale so' a face da frente (Instant, MV 4; ruling 2024-06-07). Nome completo mantido no CARD_DB pra
+# bater com o nome real usado em `lista.md`. A face de terreno ("Fell Mire") e' registrada logo abaixo, junto dos terrenos (rodada 4).
 add("Fell the Profane // Fell Mire", 4, "instant", {"interaction"})
 
 # --- Feiticarias ---------------------------------------------------------------
@@ -268,6 +281,10 @@ add("Three Tree City", 0, "land", {"three_tree_city"})
 add("Bojuka Bog", 0, "land", {"etb_tapped"})
 add("Big Apple, 3 a.m.", 0, "land", {"etb_tapped", "big_apple"})
 add("Swamp", 0, "land", {"swamp_type"})
+# Face de terreno do Fell the Profane // Fell Mire (rodada 4). So' entra em campo por `play_land`; na mao/biblioteca/cemiterio a carta continua sendo
+# "Fell the Profane // Fell Mire" (ruling 2024-06-07: fora da pilha e do campo vale so' a face da frente). Nunca esta na biblioteca (a lista nao a cita).
+FELL_CARD = "Fell the Profane // Fell Mire"
+add("Fell Mire", 0, "land", {"fell_mire"})
 
 ARTIFACT_ISH = {"artifact"}
 CREATURE_ISH = {"creature"}
@@ -369,6 +386,16 @@ class GameState:
     big_apple_activations_total: int = 0
     rat_tokens_created_this_turn: int = 0      # fichas de Rat que entraram NESTE turno (doentes de invocacao: nao atacam, nao podem ser devolvidas pelo sneak)
     sneak_casts_total: int = 0
+
+    # --- Rodada 4 (2026-10-28): campos novos (todos neutros com as chaves desligadas) ---
+    fell_mire_land_plays_total: int = 0        # vezes em que a MDFC entrou como terreno
+    fell_mire_paid_total: int = 0              # ... pagando 3 de vida (entra desvirada)
+    fell_mire_tapped_total: int = 0            # ... sem pagar (entra virada)
+    bmc_triggers_total: int = 0                # turnos em que o Black Market Connections disparou (so' conta com a chave nova ligada)
+    bmc_mode1_total: int = 0                   # Sell Contraband: Treasure, -1 vida
+    bmc_mode2_total: int = 0                   # Buy Information: compra 1, -2 vida
+    bmc_mode3_total: int = 0                   # Hire a Mercenary: ficha 3/2 changeling, -3 vida
+    bmc_modes_skipped_total: int = 0           # modos 2/3 nao escolhidos (sem lifegain em campo, ou vida insuficiente)
 
     piper_used_this_turn: bool = False
     # Achado real 2026-09-13: main_phase() roda 2x por turno (pre- e
@@ -1557,8 +1584,53 @@ def marrow_staff_loop(state: GameState):
             note_combo(state, "combo_marrow_staff_turn")      # uma volta so' = a ativacao normal do Marrow-Gnawer; a 2a so' acontece porque o Staff desvirou
 
 
+def lifegain_engine_in_play(state: GameState) -> bool:
+    return any(n in LIFEGAIN_ENGINES for n in state.battlefield)
+
+
+def mercenary_enters(state: GameState):
+    """A ficha 3/2 changeling entra: e' Shaman (changeling), entao o Thornbite Staff se anexa a ela."""
+    state.mercenary_tokens += 1
+    state.tokens_created_total += 1
+    if THORNBITE_STAFF_ENABLED and "Thornbite Staff" in state.battlefield and not staff_valid(state):
+        # Thornbite Staff: "Whenever a Shaman creature enters, you may attach this Equipment to it." O Mercenary tem changeling (todo tipo de criatura): e' Shaman.
+        state.staff_holder = "__mercenary__"
+        state.staff_attach_turn = state.turn
+        state.staff_tapped = False
+        state.staff_auto_attach_total += 1
+
+
+def black_market_connections_policy_step(state: GameState):
+    """Black Market Connections (oraculo ao vivo): "At the beginning of your first main phase, choose one or more -- Sell Contraband: create a Treasure. You lose 1 life. / Buy Information:
+    draw a card. You lose 2 life. / Hire a Mercenary: create a 3/2 colorless Shapeshifter with changeling. You lose 3 life." A perda de vida e' EFEITO do modo, nao custo (CR 119.4 nao se aplica;
+    nao ha ruling). Pedido do usuario (2026-10-28): o modo 1 e' o que importa; 2 e 3 so' com um mecanismo de lifegain em campo. POLITICA MINHA (nao do oraculo): nunca escolher um modo que leve
+    a vida a 0 ou menos (a regra permitiria; um jogador real nao faria)."""
+    state.bmc_triggers_total += 1
+    engine = lifegain_engine_in_play(state)
+    if state.life - 1 >= 1:
+        state.life -= 1
+        state.treasure_tokens += 1
+        state.tokens_created_total += 1
+        state.bmc_mode1_total += 1
+    if engine and state.life - 2 >= 1:
+        state.life -= 2
+        draw_cards(state, 1)
+        state.bmc_mode2_total += 1
+    else:
+        state.bmc_modes_skipped_total += 1
+    if engine and state.life - 3 >= 1:
+        state.life -= 3
+        mercenary_enters(state)
+        state.bmc_mode3_total += 1
+    else:
+        state.bmc_modes_skipped_total += 1
+
+
 def black_market_connections_step(state: GameState):
     if "Black Market Connections" not in state.battlefield:
+        return
+    if BMC_MODES_NEED_LIFEGAIN:
+        black_market_connections_policy_step(state)
         return
     state.life -= 1
     state.treasure_tokens += 1
@@ -1776,6 +1848,22 @@ def _tl_dry_run_mv(state, land: str) -> int:
     return sum(CARD_DB[c].mv for c in saiu.elements() if c in CARD_DB)
 
 
+def _tl_dry_run_mana(state, land: str) -> int:
+    """Como `_tl_dry_run_mv`, mas devolve o MANA GASTO no turno (`mana_spent_this_turn`): conta o comandante (que nao esta na mao) e as habilidades pagas com mana."""
+    global _TL_FORCED, _TL_BUSY
+    memo = {id(c): c for c in CARD_DB.values()}
+    saved = random.getstate()
+    sim = copy.deepcopy(state, memo)
+    _TL_FORCED, _TL_BUSY = land, True
+    try:
+        play_land(sim)
+        _tl_develop(sim, None)
+    finally:
+        _TL_FORCED, _TL_BUSY = None, False
+        random.setstate(saved)
+    return sim.mana_spent_this_turn
+
+
 def tapped_first_pick(state, lands_in_hand: list) -> str:
     """`lands_in_hand` ja' vem ordenada pelo criterio do proprio deck: a 1a e' o padrao (comportamento antigo)."""
     if _TL_FORCED is not None and _TL_FORCED in lands_in_hand:
@@ -1787,7 +1875,8 @@ def tapped_first_pick(state, lands_in_hand: list) -> str:
     untapped = [n for n in lands_in_hand if not _tl_is_tapped(state, n)]
     if not tapped or not untapped:
         return default
-    mv_virado, mv_desvirado = _tl_dry_run_mv(state, tapped[0]), _tl_dry_run_mv(state, untapped[0])
+    dry = _tl_dry_run_mana if TAPPED_FIRST_COUNTS_MANA else _tl_dry_run_mv
+    mv_virado, mv_desvirado = dry(state, tapped[0]), dry(state, untapped[0])
     if TAPPED_LAND_FIRST_GHOST:
         return default
     if mv_virado >= mv_desvirado:
@@ -1797,11 +1886,58 @@ def tapped_first_pick(state, lands_in_hand: list) -> str:
     return untapped[0]
 
 
+_FM_FORCED_PAY = None   # durante o ensaio a seco do Fell Mire: True/False impoe a decisao de pagar os 3 de vida
+
+
+def _fm_dry_run_mv(state, pay: bool) -> int:
+    """Ensaio a seco da decisao de pagar (ou nao) os 3 de vida do Fell Mire: roda o resto da fase pre-combate numa copia profunda e devolve o MANA GASTO no turno
+    (`mana_spent_this_turn`). Nao e' o MV que sai da mao, como em `_tl_dry_run_mv`: o comandante vem da zona de comando (nao esta na mao), e conjura-lo no T2 e' justamente o que
+    um terreno desvirado compra."""
+    global _FM_FORCED_PAY, _TL_BUSY
+    memo = {id(c): c for c in CARD_DB.values()}
+    saved = random.getstate()
+    sim = copy.deepcopy(state, memo)
+    _FM_FORCED_PAY, _TL_BUSY = pay, True
+    try:
+        play_land(sim)
+        _tl_develop(sim, None)
+    finally:
+        _FM_FORCED_PAY, _TL_BUSY = None, False
+        random.setstate(saved)
+    return sim.mana_spent_this_turn
+
+
+def play_fell_mire(state: GameState):
+    """Joga a MDFC pela face de terreno. Paga os 3 de vida so' quando (a) a vida depois de pagar fica >= FELL_MIRE_LIFE_FLOOR e (b) o ensaio a seco mostra que entrar desvirado
+    gasta MAIS mana neste turno do que entrar virado (empate: nao paga)."""
+    pay = _FM_FORCED_PAY
+    if pay is None:
+        pay = False
+        if not _TL_BUSY and state.life - 3 >= FELL_MIRE_LIFE_FLOOR:
+            pay = _fm_dry_run_mv(state, True) > _fm_dry_run_mv(state, False)
+            if FELL_MIRE_GHOST:
+                pay = False
+    state.hand.remove(FELL_CARD)
+    state.battlefield.append("Fell Mire")
+    state.lands_played_this_turn += 1
+    state.lands_played_total += 1
+    state.fell_mire_land_plays_total += 1
+    if pay:
+        state.life -= 3
+        state.fell_mire_paid_total += 1
+    else:
+        state.tapped_lands_this_turn.add("Fell Mire")
+        state.fell_mire_tapped_total += 1
+
+
 def play_land(state: GameState):
     if state.lands_played_this_turn >= 1:
         return
     lands_in_hand = [n for n in state.hand if n in LAND_NAMES]
     if not lands_in_hand:
+        if (FELL_MIRE_LAND_ENABLED and FELL_CARD in state.hand
+                and sum(1 for n in state.battlefield if n in LAND_NAMES) < FELL_MIRE_MAX_LANDS_IN_PLAY):
+            play_fell_mire(state)
         return
     priority = ["Urborg, Tomb of Yawgmoth", "Cabal Coffers", "Nykthos, Shrine to Nyx",
                 "Castle Locthwain", "Swamp"]
@@ -1844,6 +1980,8 @@ def end_step(state: GameState):
 
 def should_keep(hand: list) -> bool:
     lands = sum(1 for n in hand if n in LAND_NAMES)
+    if FELL_MIRE_COUNTS_FOR_KEEP and FELL_CARD in hand:
+        lands += 1          # MDFC jogavel como terreno (Fell Mire)
     good_early = {"Sol Ring", COMMANDER, "Dark Ritual", "Rat Colony"}
     if lands >= 3:
         return True

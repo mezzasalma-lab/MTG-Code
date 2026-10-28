@@ -23,6 +23,8 @@ Antes de qualquer resposta, leia:
 
 **Simulador novo ou alterado (Regra #10 do repositório):** rodar as varreduras mecânicas de `varredura-2026-10-05/scripts/` (entrada de terreno, fetch, terreno ≠ magia, landfall, ordem terreno × payoff de landfall, colisão por nome, compra do 1º turno por execução, terrenos do Tam, gatilho de início de combate), conferir as classes do motor (mulligan escolhe o fundo, compra no T1 em Commander, imposto, upkeep × draw, terreno virado primeiro, gatilho de land enters em todo ponto de entrada, payoff de landfall conjurado antes do terreno, contador acumulado lido como flag, ordem de pagamento do mana, gatilho de fase preso a can_attack) e checar determinismo com 3 `PYTHONHASHSEED` (os `driver.py` fixam o hash e não enxergam isso); detalhes em `references/protocolo-de-avaliacao.md` §7.
 
+**Classe (k) do motor (Rat King, 2026-10-28):** o ensaio a seco do terreno virado primeiro que mede só o MV que sai da mão ignora o comandante (zona de comando); medir o comandante até T2 com e sem a política (13 simuladores com a mesma função, não medidos).
+
 **Backup desta skill:** `skills-backup/mtg-commander/` no repositório; alterou a skill, rode `bash skills-backup/sincronizar-skill.sh` e commite junto (Regra #9).
 
 ---

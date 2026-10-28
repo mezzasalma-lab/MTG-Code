@@ -1,0 +1,1 @@
+rat-king-verminister padrao N=400: marcacoes=605 colisoes_por_nome=0 partidas_com_colisao=0 nomes={}

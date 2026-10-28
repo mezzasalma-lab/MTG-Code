@@ -1,0 +1,23 @@
+PASS FM1 sem outro terreno na mao e com poucos terrenos em campo, a MDFC entra como terreno (Fell Mire); chave desligada: fica na mao
+PASS FM2 com outro terreno na mao, joga o terreno de verdade e guarda a MDFC (face de feitico)
+PASS FM3 com FELL_MIRE_MAX_LANDS_IN_PLAY terrenos em campo a MDFC NAO vira terreno; com um a menos, vira
+PASS FM4 paga os 3 de vida (entra desvirado) quando isso deixa conjurar o que a versao virada nao conjuraria: (a) comandante em campo, 2 Swamps + MDFC + Black Market Connections {2}{B}; (b) T2, 1 Swamp + MDFC, comandante na zona de comando ({1}{B})
+PASS FM5 nao paga quando a vida depois de pagar ficaria abaixo do piso (vida 12, piso 10): entra virado
+PASS FM6 nao paga quando entrar desvirado nao rende nada (so' a MDFC na mao, empate no ensaio): vida intacta, entra virado
+PASS FM7 Fell Mire rende {B} desvirado; nao e' Swamp (Castle Locthwain entra virado), mas e' Swamp sob Urborg (swamp_count)
+PASS FM8 should_keep: MDFC + 2 terrenos + 4 magias = mantem (3); chave desligada = descarta; MDFC + 1 terreno + 5 magias nao mantem de jeito nenhum
+PASS FM9 a face de feitico segue existindo: instant {2}{B}{B} conta como interacao; no cemiterio/mao/biblioteca a carta NAO e' terreno (ruling 2024-06-07)
+PASS FM10 o ensaio a seco do Fell Mire nao muta o estado nem o RNG global
+PASS FM11 partidas inteiras (3.000, modo padrao): a MDFC e' UMA carta (nunca em campo como terreno E em outra zona) e a regra de pagamento so' roda com vida >= piso + 3
+PASS BM1 sem lifegain em campo so' o modo 1: Treasure +1, vida -1, sem compra e sem Mercenary
+PASS BM2 com Ayara em campo os 3 modos: Treasure, compra 1, Mercenary; vida -6
+PASS BM3 cada permanente de LIFEGAIN_ENGINES liga os modos 2 e 3; Gray Merchant (so' ETB) e Syr Konrad (sem ganho) nao
+PASS BM4 LIFEGAIN_ENGINES == permanentes da lista cujo oraculo (ao vivo, arquivado) tem ganho de vida REPETIVEL: lido do JSON, nao de memoria
+PASS BM5 nunca escolhe modo que leve a vida a 0 ou menos (politica minha): vida 4 + lifegain -> modos 1 e 2 (4->3->1), modo 3 nao; vida 1 -> nenhum modo
+PASS BM6 chave desligada = o caminho antigo: os 3 modos sempre, mesmo sem lifegain e mesmo ate a vida ficar negativa
+PASS BM7 o Mercenary do modo 3 recebe o Thornbite Staff (changeling = Shaman); sem lifegain nao ha Mercenary, entao o Staff fica solto
+PASS BM8 partidas inteiras (3.000): modo 2/3 so' acontecem com lifegain em campo NO MOMENTO do passo (instrumentado), e o modo 1 acontece sempre que a vida permite
+PASS TF1 T2, 1 Swamp em campo, mao [Bojuka Bog (entra virado), Swamp]: com a chave o Swamp entra e o Rat King e' conjurado; sem a chave (MV da mao) joga o virado e perde o T2
+PASS TF2 quando nenhuma jogada depende do terreno desvirado (nada a conjurar, comandante ja' em campo) o virado continua sendo jogado primeiro
+
+21/21 testes passaram

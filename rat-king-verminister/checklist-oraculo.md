@@ -1,5 +1,37 @@
 # Checklist cláusula-a-cláusula — Rat King, Verminister
 
+## Rodada 4 (2026-10-28): Fell the Profane // Fell Mire (as duas faces), Black Market Connections com lifegain e o ensaio do terreno virado
+
+**Origem:** o usuário respondeu o relatório da rodada 3: *"Modela sim ambas as faces"*, e definiu a política do Black Market Connections (*"Acho que o modo mais importante do Black Market Connections é o 1o, com custo 1 de vida. Os demais só entram em cena se eu tiver algum mecanismo de lifegain rodando: Ayara, ou outro qq"*). **Oráculo e rulings lidos do arquivo ao vivo (`resultados-ab/2026-10-25-.../dados/scryfall_oraculo_rulings_2026-10-25.json`) ANTES de editar o simulador** (Regra #3). Tudo atrás de chave, bit-idêntico com as chaves desligadas (20.000 × 2 modos). Dados e reprodução: `resultados-ab/2026-10-28-fell-mire-e-black-market-connections/`.
+
+**Fell the Profane // Fell Mire** (`modal_dfc`, `Instant // Land`, `{2}{B}{B} //`):
+
+| cláusula / ruling (2024-06-07) | situação |
+|---|---|
+| Fell the Profane — "Destroy target creature or planeswalker." | 📊 alvo de oponente: a carta é conjurada e paga, conta como interação (convenção do arquivo); não há efeito no tabuleiro do oponente (goldfish solo) |
+| Fell Mire — "As this land enters, you may pay 3 life. If you don't, it enters tapped." | ✅ `play_fell_mire`: paga os 3 de vida só se a vida depois fica ≥ `FELL_MIRE_LIFE_FLOOR` **e** o ensaio a seco da fase pré-combate gasta mais mana desvirado (empate: não paga). Testes FM4–FM6 |
+| Fell Mire — "{T}: Add {B}." | ✅ entra em `lands_mana` (todo terreno em `LAND_NAMES`); teste FM7 |
+| Ruling: "to determine whether it is legal to play a modal DFC, consider only the characteristics of the face you're playing" | ✅ joga-se como terreno (`play_land`, conta como a jogada de terreno do turno, não é magia) ou conjura-se como instant (`resolve_cast`); a mesma carta nunca fica nas duas zonas (teste FM11, 3.000 partidas) |
+| Ruling: "if an effect lets you return a land card from your graveyard to your hand, it won't let you return [the MDFC]" / "mana value ... in all other zones, consider only the front face" | ✅ `FELL_CARD` não está em `LAND_NAMES` (na mão/cemitério/biblioteca é Instant MV 4); só o `"Fell Mire"` em campo é terreno (teste FM9) |
+| Ruling: "an MDFC can't be transformed" | ➖ nenhuma carta da lista transforma terrenos |
+| Política de quando virar terreno | ⏸→✅ **política minha** (não do oráculo): só sem outro terreno na mão e com < 6 terrenos em campo (`FELL_MIRE_MAX_LANDS_IN_PLAY`); sensibilidade 4 e 99 no A/B. Na abertura, `should_keep` conta a MDFC como terreno (`FELL_MIRE_COUNTS_FOR_KEEP`); no fundo do mulligan e no `try_takenuma_channel` **não** (declarado) |
+
+**Black Market Connections** (oráculo ao vivo, 0 rulings): "At the beginning of your **first main phase**, choose one or more — Sell Contraband: Create a Treasure. You lose 1 life. · Buy Information: Draw a card. You lose 2 life. · Hire a Mercenary: Create a 3/2 colorless Shapeshifter with changeling. You lose 3 life."
+
+| cláusula | situação |
+|---|---|
+| "first main phase" | ✅ `main_phase(is_first_main=True)` chama o passo antes de qualquer conjuração da fase (conferi `play_turn` inteiro, Regra #6) |
+| "choose one or more" (cada modo uma vez) | ✅ a política escolhe o modo 1 sempre; 2 e 3 só com `lifegain_engine_in_play` (Ayara, Zulaport, Bontu's, Crypt Ghast, Valley Rotcaller); teste BM1–BM3 |
+| "You lose N life" | ✅ efeito do modo, não custo (CR 119.4 não se aplica). **Política minha:** não escolher modo que leve a vida a 0 ou menos (BM5) |
+| Mercenary: "colorless Shapeshifter with changeling" | ✅ conta como Rat/Shaman (changeling); recebe o Thornbite Staff no auto-attach (BM7); não é preto, então não dispara Ayara |
+| Conjunto `LIFEGAIN_ENGINES` | ✅ derivado do oráculo ao vivo arquivado (BM4): linhas com "you gain"/"gain that much"/lifelink/extort que não são só de entrada. O Gray Merchant (só ETB) fica de fora |
+
+**Conceito compartilhado (Regra #3) achado por acaso e corrigido:** o ensaio a seco do terreno virado primeiro (`_tl_dry_run_mv`) media o MV que sai da **mão**; o comandante sai da zona de comando. Quem lê "cartas conjuradas" tem de contar também o que vem de fora da mão (comandante, e potencialmente qualquer carta conjurável de outra zona). `TAPPED_FIRST_COUNTS_MANA` (mana gasto no turno); testes TF1–TF2. **13 outros simuladores têm a mesma função e não foram medidos.**
+
+**Escopo (Regra #7).** Varrido: as cláusulas acima por teste dirigido (21), `play_turn` lido inteiro, scripts da Regra #10 (entrada, `unless you control`, terreno ≠ magia, colisão de nome, compra do T1, ordem de landfall, ETB sem efeito) rodados e arquivados. **NÃO varrido:** a MDFC não está na lista de entrada dos scripts (só a `BASE_LIBRARY`); o modo de resiliência cláusula a cláusula; os outros 19 simuladores; "lifegain rodando" olha só presença, não se o gatilho dispara no turno; os 3 wipes continuam pendentes de decisão.
+
+---
+
 ## Rodada 3 (2026-10-25): conceitos compartilhados (Rat/Shaman/changeling, "black creature", Treasure, "each opponent"), rulings e combos do Spellbook
 
 **Origem:** o usuário respondeu "Quero sim" ao meu relatório "O quê falta para terminar o deck do Verminister?" (itens 1 e 3). Ao rodar o Spellbook pela primeira vez neste deck (`resultados-ab/2026-10-25-rodada3-spellbook-rulings-e-correcoes/`) apareceram 2 combos que a lista já tinha e o simulador não executava; a leitura dos rulings (Regra #3) e a varredura de conceitos abriram o resto. **Oráculo e rulings foram baixados e lidos ANTES de qualquer linha de código.** Todas as correções entram atrás de chave (21), bit-idênticas com as chaves desligadas (20.000 × 2 modos).
@@ -29,7 +61,7 @@
 | Deadly Dispute / Culling the Weak: custo adicional "sacrifice" | 🐛 conjuradas sem nada a sacrificar. `SACRIFICE_COST_NEEDS_FODDER` |
 | Plague of Vermin, Ashcoat, Takenuma, Three Tree City, Cabal Coffers, Urborg, Nykthos, Castle Locthwain, Reanimate, Echoing Return, Species Specialist, Syr Konrad, Pitiless Plunderer, Thrumming Stone, Deadly Rollick | ✅ conferidos contra o ruling (tabela completa em `resultados-ab/2026-10-25-.../resumos/rulings_vs_codigo.md`) |
 | Dictate of Erebos ("each opponent sacrifices"), Piper (roubo), Karumonix (toxic), Lord Skitter (exila do cemitério do oponente), Bojuka Bog (exila o cemitério de um jogador), Withering Torment/Deadly Rollick (alvo de oponente), fear de Marrow-Gnawer/Ratcatcher/Cover of Darkness | 📊 estrutural, cláusula citada na tabela de rulings |
-| Kindred Dominance, Swarmyard Massacre (−1/−1 no próprio campo), Damnation, Fell the Profane // **Fell Mire** (face de terreno) | ⏸ **decisão do usuário pendente.** O código justifica o "sem efeito" com "nenhum piloto racional conjuraria / remoção é o gap real" = julgamento de valor, vedado pela Regra #1. Não mexi |
+| Kindred Dominance, Swarmyard Massacre (−1/−1 no próprio campo), Damnation, Fell the Profane // **Fell Mire** (face de terreno) | ⏸ **decisão do usuário pendente.** O código justifica o "sem efeito" com "nenhum piloto racional conjuraria / remoção é o gap real" = julgamento de valor, vedado pela Regra #1. Não mexi. **ATUALIZAÇÃO 2026-10-28:** a face de terreno do Fell Mire foi decidida ("Modela sim ambas as faces") e modelada na rodada 4 (seção acima). Os 3 wipes seguem pendentes |
 
 **Escopo (Regra #7).** Varrido: conceitos de tipo/cor/changeling/Kindred (enumeração por script sobre o oráculo ao vivo); `CARD_DB` × oráculo (54 cartas, 0 divergências em mv/tipo/pips/poder/tag Rat); "each opponent"; Treasure/artefato; gatilho ligado em só alguns pontos (Disappear, Staff, Ninja Teen, Zulaport); reduções de custo × cor; `{T}` compartilhado; ETB/feitiço sem efeito e gatilho sem reação (`varredura-2026-10-05/scripts/audit_etb_sem_efeito.py`, 6 eventos-padrão); leitura das funções de estado, mana, custo, cast/ETB, morte e sacrifício, fases do turno, mulligan/terreno, combate e das ativadas (Skullclamp, Ninja Teen, Soul Stone, Takenuma, Piper, Priest, Ayara, Marrow-Gnawer, Big Apple, Rat King), mais o trecho do wipe do oponente. **NÃO varrido:** o modo de resiliência (`try_smart_*`, `simulate_one_with_interaction`) cláusula a cláusula, exceto o wipe; o cabeçalho/docstring de ~200 linhas só por leitura rápida; a política de Black Market Connections (escolhe sempre os 3 modos e a vida pode ficar ≤ 0 sem perder); a política de mulligan/keep; Ripples of Undeath e Black Market Connections como "gatilho de início da 1ª main" no scanner (não exercitados); os outros 19 decks (o scanner novo só roda no Rat King).
 

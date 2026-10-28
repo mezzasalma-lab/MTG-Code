@@ -1,5 +1,7 @@
 # Goldfish Log — Rat King, Verminister
 
+> **Rodada 4 de 2026-10-28 (Fell Mire como terreno, Black Market Connections com lifegain e um erro do ensaio do terreno virado que escondia o comandante do T2) — dados brutos e reprodução:** [`resultados-ab/2026-10-28-fell-mire-e-black-market-connections/LEIAME.md`](resultados-ab/2026-10-28-fell-mire-e-black-market-connections/LEIAME.md)
+
 > **Rodada 3 de 2026-10-25 (Spellbook, rulings dos conceitos compartilhados e 21 correções de simulador) — dados brutos e reprodução:** [`resultados-ab/2026-10-25-rodada3-spellbook-rulings-e-correcoes/LEIAME.md`](resultados-ab/2026-10-25-rodada3-spellbook-rulings-e-correcoes/LEIAME.md)
 
 > **Rodada 2026-10-05 (Terreno virado primeiro em T1/T2 (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md`](resultados-ab/2026-10-05-terreno-virado-primeiro/LEIAME.md)
@@ -7,6 +9,58 @@
 > **Rodada 2026-10-05 (Mulligan com escolha do fundo + upkeep antes do draw (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md`](resultados-ab/2026-10-05-mulligan-e-ordem-das-fases/LEIAME.md)
 
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
+
+---
+
+## Rodada 4 (2026-10-28): as duas faces do Fell the Profane // Fell Mire, o Black Market Connections com lifegain, e o comandante do T2 que o ensaio do terreno virado escondia
+
+**Pedido do usuário:** *"Modela sim ambas as faces"*; *"Acho que o modo mais importante do Black Market Connections é o 1o, com custo 1 de vida. Os demais só entram em cena se eu tiver algum mecanismo de lifegain rodando: Ayara, ou outro qq"*; *"Bracket 2"* (decisão sobre o combo Marrow + Staff). Arquivo bruto/auditável: `resultados-ab/2026-10-28-fell-mire-e-black-market-connections/LEIAME.md`.
+
+**Veredito:**
+1. **Fell the Profane // Fell Mire agora tem as duas faces.** A face de terreno ("As this land enters, you may pay 3 life. If you don't, it enters tapped. {T}: Add {B}") é jogada quando não há outro terreno na mão e há menos de 6 terrenos em campo. Entra como terreno em 11,1% das partidas (0,111 por partida; em 5,1% pagando os 3 de vida). Isolada, sobe os terrenos jogados em +0,101 ±0,007 e tira 0,044 ±0,005 conjurações do feitiço de interação por partida (a carta que virou terreno não é conjurada).
+2. **Black Market Connections segue o que você pediu:** Sell Contraband (Treasure, −1 de vida) sempre; Buy Information (compra 1, −2) e Hire a Mercenary (Mercenary 3/2 changeling, −3) só com um permanente de lifegain repetível em campo. Isolada: compras extras −0,319 ±0,048, Mercenary −0,110 ±0,010, fichas −0,293 ±0,074, vida final +0,698 ±0,138. O motor "lifegain" estava ligado em 39% dos disparos do BMC (modo 2 em 0,131 de 0,335 disparos por partida).
+3. **Achado que não foi pedido (importante):** o ensaio a seco do "terreno virado primeiro" em T1/T2 (rodada de 2026-10-05) media só o MV que **sai da mão** e ignorava o **comandante, que sai da zona de comando**. Com tapped e untapped empatados em 0, jogava o virado e o Rat King perdia o T2. **Comandante em campo até T2: 87,2% antes → 97,9% depois da correção (+10,66 ±0,61 pontos, N=10.000)**; sem a política de 2026-10-05 nenhuma, o número é 93,9%. Ou seja, aquela política custou 6,7 pontos de comandante no T2 e a versão corrigida fica 3,9 pontos acima de não ter política. Escapou na rodada de 2026-10-05 porque a tabela daquele A/B só tinha indicadores do comandante de T3 em diante (o `abgen` gerava T3 a T6; agora gera T2 também): ela registrou −0,49 ±0,16 pp até T3 no modo resiliência e nenhuma coluna de T2, onde o efeito (−6,7 pp contra não ter a política) aparece. Chave `TAPPED_FIRST_COUNTS_MANA`.
+4. **Os outros 13 simuladores com a mesma função `_tl_dry_run_mv` (mesmo corpo, por `grep`: Azula, Bumbleflower, Captain Storm, Edgar, Hei Bai, Kutzil, Maralen, Nekusar, Prismatic Bridge, Thranduil, Toph, Ulalek, Ur-Dragon) NÃO foram medidos.** Megatron, Mothman, Tam e Vihaan têm a chave `TAPPED_LAND_FIRST_ENABLED` com outra função e não li; Beorn e Tom não têm a chave. Está na lista de pendências abaixo.
+
+**O que mudou no simulador (4 chaves; desligadas = bit-idêntico ao commit `7639380`):**
+- `FELL_MIRE_LAND_ENABLED` + `FELL_MIRE_MAX_LANDS_IN_PLAY = 6` + `FELL_MIRE_LIFE_FLOOR = 10`: face de terreno ("Fell Mire" no `CARD_DB`; a carta na mão/biblioteca/cemitério continua sendo a face da frente, ruling 2024-06-07). Paga os 3 de vida só se a vida depois fica ≥ 10 **e** um ensaio a seco da fase pré-combate mostra que entrar desvirado gasta **mais mana** no turno (empate: não paga).
+- `FELL_MIRE_COUNTS_FOR_KEEP`: `should_keep` conta a MDFC como terreno (3 terrenos, ou 2 + abertura boa). No fundo do mulligan (`choose_bottom`) ela continua contando como feitiço.
+- `BMC_MODES_NEED_LIFEGAIN` + `LIFEGAIN_ENGINES` = {Ayara, Zulaport Cutthroat, Bontu's Monument, Crypt Ghast, Valley Rotcaller} (conferido contra o oráculo ao vivo arquivado: teste BM4; o Gray Merchant fica de fora porque o ganho de vida dele é só de entrada).
+- `TAPPED_FIRST_COUNTS_MANA`: o ensaio do terreno virado primeiro passa a medir o mana gasto no turno (inclui o comandante).
+- **Políticas minhas, não do oráculo (você não as definiu):** 6 terrenos como limite para a MDFC virar terreno; piso de vida 10 para pagar os 3; nunca escolher modo do BMC que leve a vida a 0 ou menos (o oráculo diz "You lose N life", efeito e não custo; a regra permitiria). Variantes de sensibilidade no A/B: limite 4 e 99; nunca pagar vida; piso 4.
+
+**Medido (pareado, mesmas sementes, 8 turnos; diferença variante − antes ± IC95%).** Modo padrão, N=10.000 (`resumos/ab_10000.txt`, `resumos/resumo_variantes_10000.md`); 71,3% das partidas ficam idênticas ao `antes`:
+
+| campo | tudo ligado | só Fell Mire (terreno) | só BMC | só ensaio com mana |
+|---|---|---|---|---|
+| comandante até T2 | **+0,107 ±0,006** | +0,001 ±0,000 | +0,000 (ns) | **+0,106 ±0,006** |
+| comandante até T3 | +0,001 ±0,001 | +0,000 | +0,000 (ns) | +0,000 (ns) |
+| vida final | +0,879 ±0,206 | +0,157 ±0,080 | +0,698 ±0,138 | +0,157 ±0,099 |
+| compras extras | −0,182 ±0,063 | +0,085 ±0,019 | −0,319 ±0,048 | +0,071 ±0,030 |
+| Mercenary (ficha) | −0,108 ±0,011 | +0,002 ±0,002 | −0,110 ±0,010 | +0,003 ±0,002 |
+| interação conjurada | −0,051 ±0,007 | −0,044 ±0,005 | −0,012 ±0,004 | +0,002 (ns) |
+| terrenos jogados | +0,065 ±0,011 | +0,101 ±0,007 | −0,028 ±0,004 | +0,005 ±0,003 |
+| fichas criadas | +0,015 ±0,131 (ns) | +0,191 ±0,047 | −0,293 ±0,074 | +0,141 ±0,068 |
+| mulligans | −0,029 ±0,004 | +0,000 (ns) | +0,000 (ns) | +0,000 (ns) |
+
+O modo resiliência (N=10.000) dá os mesmos sinais (comandante até T2 +0,107 ±0,006; compras −0,164 ±0,051; Mercenary −0,057 ±0,007). Os mulligans caem 0,029 ±0,004 porque a MDFC passa a contar como terreno na abertura (`FELL_MIRE_COUNTS_FOR_KEEP`; só essa chave mexe nele).
+
+**Comandante até T2, N=10.000 (mesmas sementes):** `antes` 87,23% · sem a política de terreno virado primeiro 93,90% · só `TAPPED_FIRST_COUNTS_MANA` 97,81% · tudo ligado 97,89% · tudo ligado mas nunca pagando os 3 de vida do Fell Mire 97,10%.
+
+**Sensibilidade das políticas minhas (N=10.000, padrão; fração de partidas idênticas a "tudo ligado"):** limite 99 em vez de 6: 99,04% idênticas (sem efeito mensurável); limite 4: 94,97% (terrenos jogados +0,011 em vez de +0,065; interação −0,019 em vez de −0,051); nunca pagar vida: 94,89% (comandante até T2 +0,099 em vez de +0,107); **piso de vida 4 em vez de 10: 10.000 de 10.000 idênticas, ou seja, o piso nunca decide** (a vida sempre sobra; ele só existe como proteção).
+
+**Validação (`resumos/`):** 21 testes dirigidos passam (`testes_dirigidos.txt`); smoke: 99 cartas, 0 desconhecidas; bit-identidade com as 4 chaves desligadas == commit `7639380` em 20.000 partidas × 2 modos: 0 diferentes (`bitident_20000.txt`); regressão 20.000 × 2 modos × 2 configurações: 0 exceções, 0 carta acima do baralho (`regressao_20000.txt`; `mana_spent_this_turn` negativo em 76/80 de 20.000 ligadas e 80/74 desligadas, o mesmo invariante de rituais da rodada 3); ensaio a seco do Fell Mire sem efeito colateral: com o ensaio rodando e o resultado ignorado == com o ensaio nem rodando, 20.000 × 2 modos idênticas (`ghost_20000.txt`), com prova de que o ensaio de fato rodou (642 execuções em 3.000 partidas, `ghost_vacuidade.txt`); a primeira versão desse teste era vácua (as duas pontas tinham piso 99 e o ensaio nunca rodava) e ficou marcada como `ghost_20000_INVALIDO_vacuo.txt`; determinismo com 3 `PYTHONHASHSEED` × 1.500 sementes × 2 modos: 0 divergentes (`determinismo.txt`); varreduras da Regra #10 (`resumos/regra10_*.txt`): entrada de terreno 0 divergências (11 terrenos), `unless you control` 0 falhas, terreno ≠ magia sem alteração, colisão de nome 0 em 400 partidas (padrão e resiliência), compra do T1 COMPRA (queda 1 em 80 de 80), sem payoff de landfall, scanner de ETB igual ao da rodada 3.
+
+**Regra #3 (conceitos compartilhados que a Fell Mire toca), por teste dirigido (FM7):** o Urborg a transforma em Swamp (conta no Cabal Coffers e no Crypt Ghast); sem Urborg ela **não** é Swamp, então o Castle Locthwain ainda entra virado ao lado dela; o `{T}: Add {B}` conta na mana; a marca "entrou virada" é por nome e só há uma cópia (singleton).
+
+**Não coberto nesta rodada (Regra #7):**
+- **Os outros 13 simuladores com `_tl_dry_run_mv` de mesmo corpo e os 4 com a chave e outra função (Megatron, Mothman, Tam, Vihaan):** o erro do comandante pode estar neles; não medi nenhum.
+- `audit_entrada.py`/`audit_entrada2.py` só varrem os 11 terrenos da lista (a MDFC não está na biblioteca); a regra "paga 3 de vida ou entra virado" é coberta só pelos testes dirigidos FM4–FM6.
+- Wipes (Kindred Dominance, Swarmyard Massacre, Damnation): **decisão sua pendente** (você perguntou qual é a convenção; resposta na conversa).
+- `choose_bottom` do mulligan trata a MDFC como feitiço (só `should_keep` a conta como terreno); `try_takenuma_channel` não a conta como "outro terreno na mão".
+- Modos 2 e 3 do BMC: o "lifegain em campo" olha só a presença do permanente no começo da fase principal, não se o gatilho vai disparar neste turno (Crypt Ghast sem magia para pagar extort, Rotcaller sem atacar).
+- O modo de resiliência não foi lido cláusula a cláusula (só pelos mesmos testes e tabelas acima).
+- Provas de uma execução só: determinismo (3 hash seeds), varreduras da Regra #10.
 
 ---
 
