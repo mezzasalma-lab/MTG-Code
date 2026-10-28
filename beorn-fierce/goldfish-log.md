@@ -1,5 +1,7 @@
 # Goldfish Compilado — Beorn the Fierce
 
+> **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
+
 > **Rodada 2026-10-23 (Ram Through → Herd Heirloom, pedido do usuário; e o gatilho da Beorn no início do combate) — dados brutos e reprodução:** [`resultados-ab/2026-10-23-herd-heirloom/LEIAME.md`](resultados-ab/2026-10-23-herd-heirloom/LEIAME.md)
 
 > **Rodada 2026-10-07 (Payoff de landfall antes do terreno) — dados brutos e reprodução:** [`resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md`](resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md)

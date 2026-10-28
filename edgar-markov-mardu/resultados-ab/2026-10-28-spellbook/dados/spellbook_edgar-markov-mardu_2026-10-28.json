@@ -1,0 +1,1742 @@
+{
+ "deck": "edgar-markov-mardu",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Edgar Markov",
+   "incluidos": {
+    "Exquisite Blood + Vito, Thorn of the Dusk Rose": {
+     "id": "314-3966",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifeloss",
+      "Infinite lifegain"
+     ],
+     "usa": [
+      "Vito, Thorn of the Dusk Rose",
+      "Exquisite Blood"
+     ],
+     "prerequisitos": ""
+    },
+    "Bloodthirsty Conqueror + Vito, Thorn of the Dusk Rose": {
+     "id": "314-6191",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifeloss",
+      "Infinite lifegain"
+     ],
+     "usa": [
+      "Vito, Thorn of the Dusk Rose",
+      "Bloodthirsty Conqueror"
+     ],
+     "prerequisitos": ""
+    },
+    "Enduring Tenacity + Exquisite Blood": {
+     "id": "3966-5755",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifeloss",
+      "Infinite lifegain"
+     ],
+     "usa": [
+      "Exquisite Blood",
+      "Enduring Tenacity"
+     ],
+     "prerequisitos": ""
+    },
+    "Bloodthirsty Conqueror + Enduring Tenacity": {
+     "id": "5755-6191",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifeloss",
+      "Infinite lifegain"
+     ],
+     "usa": [
+      "Enduring Tenacity",
+      "Bloodthirsty Conqueror"
+     ],
+     "prerequisitos": ""
+    }
+   },
+   "quase": {
+    "Exquisite Blood + Sanguine Bond": {
+     "id": "690-3966",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifeloss",
+      "Infinite lifegain"
+     ]
+    },
+    "Bloodthirsty Conqueror + Sanguine Bond": {
+     "id": "690-6191",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifeloss",
+      "Infinite lifegain"
+     ]
+    },
+    "Gravecrawler + Phyrexian Altar": {
+     "id": "2577-4050",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Ashnod's Altar + Pitiless Plunderer + Reassembling Skeleton": {
+     "id": "1580-2034-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Exquisite Blood + Marauding Blight-Priest": {
+     "id": "110-3966",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifeloss",
+      "Infinite lifegain"
+     ]
+    },
+    "Aetherflux Reservoir + Exquisite Blood": {
+     "id": "3966-4740",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Bloodthirsty Conqueror + Marauding Blight-Priest": {
+     "id": "110-6191",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifeloss",
+      "Infinite lifegain"
+     ]
+    },
+    "Phyrexian Altar + Pitiless Plunderer + Reassembling Skeleton": {
+     "id": "1580-4050-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Ashnod's Altar + Gravecrawler + Pitiless Plunderer": {
+     "id": "2034-2577-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Aetherflux Reservoir + Bloodthirsty Conqueror": {
+     "id": "4740-6191",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Gravecrawler + Pitiless Plunderer + Viscera Seer": {
+     "id": "2292-2577-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Exquisite Blood + Starscape Cleric": {
+     "id": "3966-5867",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifeloss",
+      "Infinite lifegain"
+     ]
+    },
+    "Bloodthirsty Conqueror + Starscape Cleric": {
+     "id": "5867-6191",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifeloss",
+      "Infinite lifegain"
+     ]
+    },
+    "Blood Artist + Forsaken Miner + Phyrexian Altar": {
+     "id": "2842-4050-5544",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite lifegain"
+     ]
+    },
+    "Beacon of Immortality + Vito, Thorn of the Dusk Rose": {
+     "id": "314-4996",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite lifegain",
+      "Near-infinite lifeloss for target opponent"
+     ]
+    },
+    "Blood Tribute + Vito, Thorn of the Dusk Rose": {
+     "id": "314-4141",
+     "bracketTag": "R",
+     "produz": [
+      "Target opponent loses the game",
+      "Infinite lifeloss for target opponent"
+     ]
+    },
+    "Bloodletter of Aclazotz + Peer into the Abyss": {
+     "id": "1561-5342",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Bloodletter of Aclazotz + Unstoppable Slasher": {
+     "id": "5342-5944",
+     "bracketTag": "S",
+     "produz": [
+      "Target opponent loses the game",
+      "Infinite lifeloss for target opponent"
+     ]
+    },
+    "Cliffhaven Vampire + Exquisite Blood": {
+     "id": "3966-4789",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifeloss",
+      "Infinite lifegain"
+     ]
+    },
+    "Revival // Revenge + Vito, Thorn of the Dusk Rose": {
+     "id": "314-4624",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite lifegain",
+      "Near-infinite lifeloss for up to two target opponents"
+     ]
+    },
+    "Beacon of Immortality + Enduring Tenacity": {
+     "id": "4996-5755",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite lifegain",
+      "Near-infinite lifeloss for target opponent"
+     ]
+    },
+    "Exquisite Blood + Vizkopa Guildmage": {
+     "id": "92-3966",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifeloss",
+      "Infinite lifegain"
+     ]
+    },
+    "Defiant Bloodlord + Exquisite Blood": {
+     "id": "2939-3966",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifeloss",
+      "Infinite lifegain"
+     ]
+    },
+    "Blood Tribute + Bloodletter of Aclazotz": {
+     "id": "4141-5342",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Near-infinite lifegain",
+      "Target opponent loses the game"
+     ]
+    },
+    "Bloodletter of Aclazotz + Tree of Perdition": {
+     "id": "2615-5342",
+     "bracketTag": "S",
+     "produz": [
+      "Near-infinite lifeloss for target opponent"
+     ]
+    },
+    "Bloodthirsty Conqueror + Cliffhaven Vampire": {
+     "id": "4789-6191",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifeloss",
+      "Infinite lifegain"
+     ]
+    },
+    "Enduring Tenacity + Revival // Revenge": {
+     "id": "4624-5755",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite lifegain",
+      "Near-infinite lifeloss for up to two target opponents"
+     ]
+    },
+    "Bloodthirsty Conqueror + Defiant Bloodlord": {
+     "id": "2939-6191",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifeloss",
+      "Infinite lifegain"
+     ]
+    },
+    "Bloodletter of Aclazotz + Grievous Wound": {
+     "id": "5342-6004",
+     "bracketTag": "S",
+     "produz": [
+      "Target opponent loses the game",
+      "Infinite lifeloss for target opponent"
+     ]
+    },
+    "Ashnod's Altar + Bloodsoaked Champion + Pitiless Plunderer": {
+     "id": "1263-2034-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Epicure of Blood + Exquisite Blood": {
+     "id": "3966-4912",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifeloss",
+      "Infinite lifegain"
+     ]
+    },
+    "Ad Nauseam + Teferi's Protection": {
+     "id": "335-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw"
+     ]
+    },
+    "Shard of the Nightbringer + Vito, Thorn of the Dusk Rose": {
+     "id": "314-1612",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Bloodthirsty Conqueror + Vizkopa Guildmage": {
+     "id": "92-6191",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifeloss",
+      "Infinite lifegain"
+     ]
+    },
+    "Approach of the Second Sun + Vampiric Tutor": {
+     "id": "553-1827",
+     "bracketTag": "P",
+     "produz": [
+      "Win the game"
+     ]
+    },
+    "Bloodletter of Aclazotz + Rush of Dread": {
+     "id": "5342-5460",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Blood Artist + Tombstone Stairwell": {
+     "id": "2842-6215",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite lifeloss",
+      "Near-infinite creature ETB",
+      "Near-infinite creature LTB"
+     ]
+    },
+    "Anointed Procession + Gleaming Splendor + Smothering Tithe": {
+     "id": "1308-4682-7890",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite card draw for any number of players",
+      "Infinite draw triggers for any number of players",
+      "Near-infinite Treasure tokens"
+     ]
+    },
+    "Bloodletter of Aclazotz + Shard of the Nightbringer": {
+     "id": "1612-5342",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Near-infinite lifegain",
+      "Target opponent loses the game"
+     ]
+    },
+    "Gleaming Splendor + Mondrak, Glory Dominus + Smothering Tithe": {
+     "id": "4365-4682-7890",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite card draw for any number of players",
+      "Infinite draw triggers for any number of players",
+      "Near-infinite Treasure tokens"
+     ]
+    },
+    "Bloodthirsty Conqueror + Epicure of Blood": {
+     "id": "4912-6191",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifeloss",
+      "Infinite lifegain"
+     ]
+    },
+    "Enduring Tenacity + Shard of the Nightbringer": {
+     "id": "1612-5755",
+     "bracketTag": "P",
+     "produz": [
+      "Target opponent loses the game",
+      "Infinite lifeloss for target opponent"
+     ]
+    },
+    "Liliana, Untouched by Death + Phyrexian Altar": {
+     "id": "598-4050",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Bloodsoaked Champion + Phyrexian Altar + Pitiless Plunderer": {
+     "id": "1263-4050-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Elspeth, Storm Slayer + Gleaming Splendor + Smothering Tithe": {
+     "id": "4682-6441-7890",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite card draw for any number of players",
+      "Infinite draw triggers for any number of players",
+      "Near-infinite Treasure tokens"
+     ]
+    },
+    "Exquisite Blood + South Wind Avatar": {
+     "id": "3966-7286",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain",
+      "Infinite lifegain triggers",
+      "Infinite lifeloss"
+     ]
+    },
+    "Edgar Markov + Oathsworn Vampire + Phyrexian Altar": {
+     "id": "3054-3416-4050",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Bloodletter of Aclazotz + Quietus Spike": {
+     "id": "5136-5342",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Ashnod's Altar + Cult Conscript + Pitiless Plunderer": {
+     "id": "2034-2946-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Bloodletter of Aclazotz + Revival // Revenge": {
+     "id": "4624-5342",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Near-infinite lifegain",
+      "Target opponent loses the game"
+     ]
+    },
+    "Goblin Bombardment + Gravecrawler + Pitiless Plunderer": {
+     "id": "2577-4871-5147",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Forsaken Miner + Goblin Bombardment + Pitiless Plunderer": {
+     "id": "4871-5147-5544",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Bloodthirsty Conqueror + South Wind Avatar": {
+     "id": "6191-7286",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain",
+      "Infinite lifegain triggers",
+      "Infinite lifeloss"
+     ]
+    },
+    "Ashnod's Altar + Pitiless Plunderer + Stridehangar Automaton": {
+     "id": "2034-4871-6291",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Dualcaster Mage + Goblin Bombardment + Sevinne's Reclamation": {
+     "id": "147-1465-5147",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Bloodletter of Aclazotz + Fraying Omnipotence": {
+     "id": "4794-5342",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game",
+      "Infinite lifeloss"
+     ]
+    },
+    "Bloodletter of Aclazotz + Shredder, Shadow Master": {
+     "id": "5342-7319",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game",
+      "Infinite lifeloss"
+     ]
+    },
+    "Bloodletter of Aclazotz + Scourge of the Skyclaves": {
+     "id": "156-5342",
+     "bracketTag": "O",
+     "produz": [
+      "Each opponent loses the game",
+      "Infinite lifeloss"
+     ]
+    },
+    "Cult Conscript + Phyrexian Altar + Pitiless Plunderer": {
+     "id": "2946-4050-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Bloodletter of Aclazotz + Virtus the Veiled": {
+     "id": "4843-5342",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Ashnod's Altar + Ozox, the Clattering King + Pitiless Plunderer": {
+     "id": "2034-4871-6115",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Bartolomé del Presidio + Gravecrawler + Pitiless Plunderer": {
+     "id": "2577-2921-4871",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Blood Artist + Oathsworn Vampire + Pitiless Plunderer": {
+     "id": "2034-2842-3054-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Oathsworn Vampire + Phyrexian Altar + Pitiless Plunderer": {
+     "id": "3054-4050-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Bloodletter of Aclazotz + Pox Plague": {
+     "id": "5342-7450",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite lifeloss for all players"
+     ]
+    },
+    "Obliterate + Teferi's Protection": {
+     "id": "2548-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Mass Land Denial",
+      "Destroy all lands, creatures, and artifacts your opponents control"
+     ]
+    },
+    "Phyrexian Altar + Pitiless Plunderer + Stridehangar Automaton": {
+     "id": "4050-4871-6291",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Ozox, the Clattering King + Phyrexian Altar": {
+     "id": "2034-4050-6115",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Pitiless Plunderer + Stridehangar Automaton + Viscera Seer": {
+     "id": "2292-4871-6291",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Oathsworn Vampire + Pitiless Plunderer + Zulaport Cutthroat": {
+     "id": "1385-2034-3054-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colorless mana",
+      "Infinite death triggers"
+     ]
+    },
+    "Teferi's Protection + Worldfire": {
+     "id": "3765-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Each opponent's life total becomes 1",
+      "Exile all cards in hands and graveyards",
+      "Exile all permanents opponents control"
+     ]
+    },
+    "Serra Avatar + Swords to Plowshares + Vito, Thorn of the Dusk Rose": {
+     "id": "314-1738-3779",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite lifegain",
+      "Near-infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Ozox, the Clattering King + Phyrexian Altar + Pitiless Plunderer": {
+     "id": "4050-4871-6115",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Alpharael, Stonechosen + Bloodletter of Aclazotz": {
+     "id": "5342-6765",
+     "bracketTag": "R",
+     "produz": [
+      "Target opponent loses the game",
+      "Infinite lifeloss for target opponent"
+     ]
+    },
+    "Ashnod's Altar + Elenda, the Dusk Rose + Nim Deathmantle": {
+     "id": "2034-2876-5003",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite colorless mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Ashnod's Altar + Pitiless Plunderer + Tenacious Dead": {
+     "id": "2034-2738-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Storm Herd + Warleader's Call": {
+     "id": "2067-5905",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite creature ETB",
+      "Near-infinite creature tokens",
+      "Near-infinite damage"
+     ]
+    },
+    "Dualcaster Mage + Phyrexian Altar + Sevinne's Reclamation": {
+     "id": "147-1465-4050",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Bloodletter of Aclazotz + Dark Leo & Shredder": {
+     "id": "5342-7276",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite lifeloss for target opponent"
+     ]
+    },
+    "Dualcaster Mage + Sevinne's Reclamation + Viscera Seer": {
+     "id": "147-1465-2292",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Enduring Renewal": {
+     "id": "678-2034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Charismatic Conqueror + Silverquill Lecturer": {
+     "id": "5344-5869",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Infinite creature ETB for target opponent"
+     ]
+    },
+    "Forsaken Miner + Phyrexian Altar + Vein Ripper": {
+     "id": "4050-5544-5708",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Spellbinder + Teferi's Protection": {
+     "id": "1328-5141",
+     "bracketTag": "S",
+     "produz": [
+      "Permanents you control phase out during your opponents' turns",
+      "You have protection from everything during your opponents' turns",
+      "Your life total can't change during your opponents' turns"
+     ]
+    },
+    "Bloodletter of Aclazotz + Scytheclaw": {
+     "id": "2129-5342",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Ashnod's Altar + Spawnsire of Ulamog": {
+     "id": "2034-2143",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Purphoros, God of the Forge + Storm Herd": {
+     "id": "366-2067",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite creature ETB",
+      "Near-infinite creature tokens",
+      "Near-infinite damage"
+     ]
+    },
+    "Animation Module + Ashnod's Altar + Elenda, the Dusk Rose": {
+     "id": "2034-2876-3490",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Enduring Angel // Angelic Enforcer + Vito, Thorn of the Dusk Rose": {
+     "id": "314-1162",
+     "bracketTag": "S",
+     "produz": [
+      "Near-infinite lifegain",
+      "Near-infinite lifeloss for target opponent"
+     ]
+    },
+    "Anointed Procession + Pitiless Plunderer + Spawning Pit": {
+     "id": "1308-3899-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Goblin Bombardment + Pitiless Plunderer + Stridehangar Automaton": {
+     "id": "4871-5147-6291",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Dualcaster Mage + Sevinne's Reclamation": {
+     "id": "147-1465-2034",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Ashnod's Altar + Haunt of the Dead Marshes + Pitiless Plunderer": {
+     "id": "2034-4871-6116",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Pashalik Mons + Pitiless Plunderer": {
+     "id": "2034-2967-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Elenda, the Dusk Rose + Nim Deathmantle + Phyrexian Altar": {
+     "id": "2876-4050-5003",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Phyrexian Altar + Pitiless Plunderer + Tenacious Dead": {
+     "id": "2738-4050-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Chthonian Nightmare + Mondrak, Glory Dominus + Pitiless Plunderer": {
+     "id": "4365-4871-5626",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Enduring Renewal + Phyrexian Altar": {
+     "id": "678-4050",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Anointed Procession + Spawnsire of Ulamog": {
+     "id": "1308-2143",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Anointed Procession + Phyrexian Altar + Twilight Drover": {
+     "id": "1308-3996-4050",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite creature tokens",
+      "Infinite death triggers"
+     ]
+    },
+    "Ashnod's Altar + Phyrexian Altar + Twilight Drover": {
+     "id": "2034-3996-4050",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Cloudstone Curio + Edgar Markov + Phyrexian Altar": {
+     "id": "2232-3416-4050",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Enduring Angel // Angelic Enforcer + Enduring Tenacity": {
+     "id": "1162-5755",
+     "bracketTag": "S",
+     "produz": [
+      "Near-infinite lifegain",
+      "Target opponent loses the game",
+      "Near-infinite lifeloss for target opponent"
+     ]
+    },
+    "Tombstone Stairwell + Vein Ripper": {
+     "id": "5708-6215",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite lifeloss",
+      "Near-infinite creature ETB",
+      "Near-infinite creature LTB"
+     ]
+    },
+    "Ashnod's Altar + Hildibrand Manderville // Gentleman's Rise + Pitiless Plunderer": {
+     "id": "2034-4871-6564",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Phyrexian Altar + Pitiless Plunderer + Undead Sprinter": {
+     "id": "4050-4871-5920",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Mondrak, Glory Dominus + Spawnsire of Ulamog": {
+     "id": "2143-4365",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Mondrak, Glory Dominus + Phyrexian Altar + Twilight Drover": {
+     "id": "3996-4050-4365",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite creature tokens",
+      "Infinite death triggers"
+     ]
+    },
+    "Goblin Bombardment + Krenko, Baron of Tin Street + Pitiless Plunderer": {
+     "id": "4871-5147-5433",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Bloodletter of Aclazotz + Torgaar, Famine Incarnate": {
+     "id": "5342-5605",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Balancing Act + Teferi's Protection": {
+     "id": "70-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Each opponent sacrifices all permanents they control",
+      "Mass Land Denial"
+     ]
+    },
+    "Animation Module + Bartolomé del Presidio + Pitiless Plunderer": {
+     "id": "2921-3490-4871",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Ojer Taq, Deepest Foundation // Temple of Civilization + Phyrexian Altar + Spawning Pit": {
+     "id": "1270-3899-4050",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Ashnod's Altar + Pitiless Plunderer + Summoning Station": {
+     "id": "2034-3764-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Anointed Procession + Chthonian Nightmare + Pitiless Plunderer": {
+     "id": "1308-4871-5626",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Apocalypse + Teferi's Protection": {
+     "id": "4274-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Discard your hand",
+      "Exile all permanents opponents control",
+      "Mass Land Denial"
+     ]
+    },
+    "Ashnod's Altar + Krenko, Baron of Tin Street + Pitiless Plunderer": {
+     "id": "2034-4871-5433",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Phyrexian Altar + Timeline Culler + Vein Ripper": {
+     "id": "4050-5708-6742",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Chthonian Nightmare + Elspeth, Storm Slayer + Pitiless Plunderer": {
+     "id": "4871-5626-6441",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Ojer Taq, Deepest Foundation // Temple of Civilization + Spawnsire of Ulamog": {
+     "id": "1270-2143",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Pitiless Plunderer + Reassembling Skeleton + Roaming Throne + Viscera Seer": {
+     "id": "1580-2292-4871-5334",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Krenko, Baron of Tin Street + Phyrexian Altar + Pitiless Plunderer": {
+     "id": "4050-4871-5433",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Elspeth, Storm Slayer + Phyrexian Altar + Twilight Drover": {
+     "id": "3996-4050-6441",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Phyrexian Altar + Pitiless Plunderer + Razorlash Transmogrant": {
+     "id": "4050-4871-6429",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Soul of Eternity + Swords to Plowshares + Vito, Thorn of the Dusk Rose": {
+     "id": "314-3779-4658",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite lifegain",
+      "Near-infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Elspeth, Storm Slayer + Spawnsire of Ulamog": {
+     "id": "2143-6441",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Pitiless Plunderer + Summoning Station + Viscera Seer": {
+     "id": "2292-3764-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Ojer Taq, Deepest Foundation // Temple of Civilization + Phyrexian Altar + Twilight Drover": {
+     "id": "1270-3996-4050",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Pitiless Plunderer + Spawnsire of Ulamog": {
+     "id": "2143-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Anointed Procession + Tooth and Claw": {
+     "id": "1245-1308",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Bartolomé del Presidio + Pitiless Plunderer + Stridehangar Automaton": {
+     "id": "2921-4871-6291",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Phyrexian Altar + Pitiless Plunderer + Summoning Station": {
+     "id": "3764-4050-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Krenko, Baron of Tin Street + Pitiless Plunderer + Viscera Seer": {
+     "id": "2292-4871-5433",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Mondrak, Glory Dominus + Tooth and Claw": {
+     "id": "1245-4365",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Animation Module + Ashnod's Altar + Indulgent Aristocrat": {
+     "id": "2034-2848-3490",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on certain creatures",
+      "Infinite colorless mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Bloodletter of Aclazotz + Ebonblade Reaper": {
+     "id": "5342-5377",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifeloss for target opponent",
+      "Target opponent loses the game"
+     ]
+    },
+    "Goblin Bombardment + Raptor Hatchling": {
+     "id": "5147-5191",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Elspeth, Storm Slayer + Tooth and Claw": {
+     "id": "1245-6441",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Dino DNA + Ojer Taq, Deepest Foundation // Temple of Civilization": {
+     "id": "1270-2034-4790",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Ojer Taq, Deepest Foundation // Temple of Civilization + Tooth and Claw": {
+     "id": "1245-1270",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Ashnod's Altar + Oathkeeper, Takeno's Daisho": {
+     "id": "2034-4640",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Elenda, the Dusk Rose + Haakon, Stromgald Scourge + Phyrexian Altar": {
+     "id": "1374-2876-4050",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite colored mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Bartolomé del Presidio + Pitiless Plunderer + Reassembling Skeleton + Roaming Throne": {
+     "id": "1580-2921-4871-5334",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Draconic Visitor + Pitiless Plunderer": {
+     "id": "2034-4871-8168",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Goblin Bombardment + Pitiless Plunderer + Reassembling Skeleton + Roaming Throne": {
+     "id": "1580-4871-5147-5334",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Bartolomé del Presidio + Dualcaster Mage + Sevinne's Reclamation": {
+     "id": "147-1465-2921",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Vito, Thorn of the Dusk Rose + Volcano Hellion": {
+     "id": "314-5109",
+     "bracketTag": "C",
+     "produz": [
+      "Infinite lifegain",
+      "Infinite lifeloss for target opponent"
+     ]
+    },
+    "Anointed Procession + Ashnod's Altar + Thopter Squadron": {
+     "id": "1308-2034-2762",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Mondrak, Glory Dominus + Thopter Squadron": {
+     "id": "2034-2762-4365",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Draconic Visitor + Goblin Bombardment + Pitiless Plunderer": {
+     "id": "4871-5147-8168",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Mondrak, Glory Dominus + Pentavus": {
+     "id": "1183-2034-4365",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Draconic Visitor + Pitiless Plunderer + Viscera Seer": {
+     "id": "2292-4871-8168",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Draconic Visitor + Phyrexian Altar + Pitiless Plunderer": {
+     "id": "4050-4871-8168",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Ashnod's Altar + Ojer Taq, Deepest Foundation // Temple of Civilization + Thopter Squadron": {
+     "id": "1270-2034-2762",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Anointed Procession + Ashnod's Altar + Sorcerer's Broom": {
+     "id": "1308-2034-5320",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Goblin Bombardment + Pitiless Plunderer + Summoning Station": {
+     "id": "3764-4871-5147",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Ashnod's Altar + Mondrak, Glory Dominus + Sorcerer's Broom": {
+     "id": "2034-4365-5320",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Myr Matrix + Ojer Taq, Deepest Foundation // Temple of Civilization": {
+     "id": "291-1270-2034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite creature tokens",
+      "Infinite death triggers"
+     ]
+    },
+    "Ashnod's Altar + Elspeth, Storm Slayer + Thopter Squadron": {
+     "id": "2034-2762-6441",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Elspeth, Storm Slayer + Sorcerer's Broom": {
+     "id": "2034-5320-6441",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Ojer Taq, Deepest Foundation // Temple of Civilization + Sorcerer's Broom": {
+     "id": "1270-2034-5320",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Mondrak, Glory Dominus + Phyrexian Altar + Sacred Mesa": {
+     "id": "4050-4365-4573",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Mondrak, Glory Dominus + Nim Devourer + Pitiless Plunderer": {
+     "id": "4365-4871-6074",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Bartolomé del Presidio + Pitiless Plunderer + Summoning Station": {
+     "id": "2921-3764-4871",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Ashnod's Altar + Dino DNA + Elenda, the Dusk Rose": {
+     "id": "2034-2876-4790",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Anointed Procession + Nim Devourer + Pitiless Plunderer": {
+     "id": "1308-4871-6074",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Anointed Procession + Goblin Warrens + Phyrexian Altar": {
+     "id": "1308-2316-4050",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite creature tokens",
+      "Infinite death triggers"
+     ]
+    },
+    "Anointed Procession + Phyrexian Altar + Summon the School": {
+     "id": "1308-1923-4050",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Dino DNA + Elenda, the Dusk Rose + Phyrexian Altar": {
+     "id": "2876-4050-4790",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Goblin Warrens + Mondrak, Glory Dominus + Phyrexian Altar": {
+     "id": "2316-4050-4365",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Goblin Warrens + Pitiless Plunderer + Roaming Throne": {
+     "id": "2316-4871-5334",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Goblin Warrens + Mondrak, Glory Dominus + Pitiless Plunderer": {
+     "id": "2316-4365-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Antler Skulkin + Ashnod's Altar + Cordial Vampire": {
+     "id": "1404-2034-3374",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on certain creatures",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Goblin Warrens + Ojer Taq, Deepest Foundation // Temple of Civilization + Phyrexian Altar": {
+     "id": "1270-2316-4050",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Anointed Procession + Goblin Warrens + Pitiless Plunderer": {
+     "id": "1308-2316-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Mondrak, Glory Dominus + Phyrexian Altar + Summon the School": {
+     "id": "1923-4050-4365",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Elspeth, Storm Slayer + Nim Devourer + Pitiless Plunderer": {
+     "id": "4871-6074-6441",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Elspeth, Storm Slayer + Goblin Warrens + Pitiless Plunderer": {
+     "id": "2316-4871-6441",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Bartolomé del Presidio + Krenko, Baron of Tin Street + Pitiless Plunderer": {
+     "id": "2921-4871-5433",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Elspeth, Storm Slayer + Goblin Warrens + Phyrexian Altar": {
+     "id": "2316-4050-6441",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite colored mana"
+     ]
+    },
+    "Anointed Procession + Ashnod's Altar + Pitiless Plunderer + Weirding Shaman": {
+     "id": "1308-1392-2034-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Bartolomé del Presidio + Draconic Visitor + Pitiless Plunderer": {
+     "id": "2921-4871-8168",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Ashnod's Altar + Fire Nation Archers + Ojer Taq, Deepest Foundation // Temple of Civilization": {
+     "id": "1270-2034-6873",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "S",
+    "game_changers": [
+     "Smothering Tithe",
+     "Teferi's Protection",
+     "Vampiric Tutor"
+    ],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": [
+     {
+      "combo": "Bloodthirsty Conqueror + Vito, Thorn of the Dusk Rose",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Bloodthirsty Conqueror + Enduring Tenacity",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Enduring Tenacity + Exquisite Blood",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Exquisite Blood + Vito, Thorn of the Dusk Rose",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     }
+    ]
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [
+  "1",
+  "3",
+  "4"
+ ],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

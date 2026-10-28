@@ -1,0 +1,381 @@
+{
+ "deck": "enduring-enchantments-abzan",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Anikthea, Hand of Erebos",
+   "incluidos": {},
+   "quase": {
+    "Ondu Spiritdancer + Secret Arcade // Dusty Parlor": {
+     "id": "3729-6023",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens"
+     ]
+    },
+    "Abundance + Cultivator Colossus": {
+     "id": "1525-3819",
+     "bracketTag": "O",
+     "produz": [
+      "Arrange your library in any order",
+      "Put all lands from your hand and library onto the battlefield"
+     ]
+    },
+    "Archon of Sun's Grace + Secret Arcade // Dusty Parlor": {
+     "id": "3560-6023",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Draw the game"
+     ]
+    },
+    "Felidar Retreat + Kodama of the East Tree + Selesnya Sanctuary": {
+     "id": "907-1479-2692",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Eidolon of Blossoms + Myrkul, Lord of Bones + Ondu Spiritdancer": {
+     "id": "1758-2144-3729",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite copies of a specific creature"
+     ]
+    },
+    "Starfield of Nyx + Touch the Spirit Realm": {
+     "id": "1917-4608",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB"
+     ]
+    },
+    "Myrkul, Lord of Bones + Ondu Spiritdancer + Setessan Champion": {
+     "id": "263-2144-3729",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Sanctum Weaver + Staff of Domination": {
+     "id": "1355-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Gauntlets of Light + Sanctum Weaver": {
+     "id": "1355-1995",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Archon of Sun's Grace + Myrkul, Lord of Bones + Ondu Spiritdancer": {
+     "id": "2144-3560-3729",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite copies of a specific creature"
+     ]
+    },
+    "Felidar Retreat + Golgari Rot Farm + Kodama of the East Tree": {
+     "id": "280-1479-2692",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Sanctum Weaver + Seedcradle Witch": {
+     "id": "1355-2024",
+     "bracketTag": "S",
+     "produz": [
+      "Infinitely large creatures you control until end of turn",
+      "Infinite colored mana",
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Parallax Wave + Starfield of Nyx": {
+     "id": "2517-4608",
+     "bracketTag": "E",
+     "produz": [
+      "Exile all creatures opponents control",
+      "Exile all creatures that enter the battlefield under an opponent's control",
+      "Infinite blinking"
+     ]
+    },
+    "Felidar Retreat + Kodama of the East Tree + Orzhov Basilica": {
+     "id": "1479-2692-3861",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Sanctum Weaver + Umbral Mantle": {
+     "id": "1355-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Cloudstone Curio + Composer of Spring": {
+     "id": "2232-2929",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Sanctum Weaver + Sword of the Paruns": {
+     "id": "1355-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Magus of the Moat + Sandwurm Convergence": {
+     "id": "2027-5339",
+     "bracketTag": "S",
+     "produz": [
+      "You can't be attacked",
+      "Lock"
+     ]
+    },
+    "Moat + Sandwurm Convergence": {
+     "id": "992-5339",
+     "bracketTag": "S",
+     "produz": [
+      "You can't be attacked",
+      "Lock"
+     ]
+    },
+    "Doomwake Giant + Living Plane": {
+     "id": "4221-4670",
+     "bracketTag": "R",
+     "produz": [
+      "Destroy all lands opponents control",
+      "Mass Land Denial"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  },
+  {
+   "comandante": "Narci, Fable Singer",
+   "incluidos": {},
+   "quase": {
+    "Ondu Spiritdancer + Secret Arcade // Dusty Parlor": {
+     "id": "3729-6023",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens"
+     ]
+    },
+    "Abundance + Cultivator Colossus": {
+     "id": "1525-3819",
+     "bracketTag": "O",
+     "produz": [
+      "Arrange your library in any order",
+      "Put all lands from your hand and library onto the battlefield"
+     ]
+    },
+    "Archon of Sun's Grace + Secret Arcade // Dusty Parlor": {
+     "id": "3560-6023",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature tokens",
+      "Draw the game"
+     ]
+    },
+    "Felidar Retreat + Kodama of the East Tree + Selesnya Sanctuary": {
+     "id": "907-1479-2692",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Eidolon of Blossoms + Myrkul, Lord of Bones + Ondu Spiritdancer": {
+     "id": "1758-2144-3729",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite copies of a specific creature"
+     ]
+    },
+    "Starfield of Nyx + Touch the Spirit Realm": {
+     "id": "1917-4608",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB"
+     ]
+    },
+    "Myrkul, Lord of Bones + Ondu Spiritdancer + Setessan Champion": {
+     "id": "263-2144-3729",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Sanctum Weaver + Staff of Domination": {
+     "id": "1355-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Gauntlets of Light + Sanctum Weaver": {
+     "id": "1355-1995",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Archon of Sun's Grace + Myrkul, Lord of Bones + Ondu Spiritdancer": {
+     "id": "2144-3560-3729",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite copies of a specific creature"
+     ]
+    },
+    "Felidar Retreat + Golgari Rot Farm + Kodama of the East Tree": {
+     "id": "280-1479-2692",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Sanctum Weaver + Seedcradle Witch": {
+     "id": "1355-2024",
+     "bracketTag": "S",
+     "produz": [
+      "Infinitely large creatures you control until end of turn",
+      "Infinite colored mana",
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Parallax Wave + Starfield of Nyx": {
+     "id": "2517-4608",
+     "bracketTag": "E",
+     "produz": [
+      "Exile all creatures opponents control",
+      "Exile all creatures that enter the battlefield under an opponent's control",
+      "Infinite blinking"
+     ]
+    },
+    "Felidar Retreat + Kodama of the East Tree + Orzhov Basilica": {
+     "id": "1479-2692-3861",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature tokens",
+      "Infinite creature ETB",
+      "Infinite landfall triggers"
+     ]
+    },
+    "Sanctum Weaver + Umbral Mantle": {
+     "id": "1355-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Cloudstone Curio + Composer of Spring": {
+     "id": "2232-2929",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Sanctum Weaver + Sword of the Paruns": {
+     "id": "1355-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Magus of the Moat + Sandwurm Convergence": {
+     "id": "2027-5339",
+     "bracketTag": "S",
+     "produz": [
+      "You can't be attacked",
+      "Lock"
+     ]
+    },
+    "Moat + Sandwurm Convergence": {
+     "id": "992-5339",
+     "bracketTag": "S",
+     "produz": [
+      "You can't be attacked",
+      "Lock"
+     ]
+    },
+    "Doomwake Giant + Living Plane": {
+     "id": "4221-4670",
+     "bracketTag": "R",
+     "produz": [
+      "Destroy all lands opponents control",
+      "Mass Land Denial"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "E",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

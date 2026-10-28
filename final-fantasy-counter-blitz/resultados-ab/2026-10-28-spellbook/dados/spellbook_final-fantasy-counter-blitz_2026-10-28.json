@@ -1,0 +1,1157 @@
+{
+ "deck": "final-fantasy-counter-blitz",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Tidus, Yuna's Guardian",
+   "incluidos": {
+    "Gatta and Luzzu + Hardened Scales + Walking Ballista": {
+     "id": "2265-3693-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ],
+     "usa": [
+      "Gatta and Luzzu",
+      "Hardened Scales",
+      "Walking Ballista"
+     ],
+     "prerequisitos": ""
+    }
+   },
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Heliod, Sun-Crowned + Walking Ballista": {
+     "id": "1274-3693",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Freed from the Real + Incubation Druid": {
+     "id": "3990-4222",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana lands you control can produce"
+     ]
+    },
+    "Archangel of Thune + Walking Ballista": {
+     "id": "2919-3693",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Fathom Mage + Wizard Class": {
+     "id": "589-1017",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Cleric Class + Walking Ballista": {
+     "id": "104-3693",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Incubation Druid + Pemmin's Aura": {
+     "id": "3525-3990",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana lands you control can produce"
+     ]
+    },
+    "Gatta and Luzzu + Kami of Whispered Hopes + Walking Ballista": {
+     "id": "81-3693-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Hardened Scales + Vigor + Walking Ballista": {
+     "id": "2265-3693-4120",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Gatta and Luzzu + The Earth Crystal + Walking Ballista": {
+     "id": "3693-6593-6627",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Gyre Sage + Staff of Domination": {
+     "id": "1597-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Incubation Druid + Umbral Mantle": {
+     "id": "2816-3990",
+     "bracketTag": "S",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Freed from the Real + Yuna, Grand Summoner": {
+     "id": "4222-6566",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Branching Evolution + Gatta and Luzzu + Walking Ballista": {
+     "id": "2445-3693-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Gatta and Luzzu + Innkeeper's Talent + Walking Ballista": {
+     "id": "3693-5902-6593",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Gatta and Luzzu + Ozolith, the Shattered Spire + Walking Ballista": {
+     "id": "3693-4565-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Pemmin's Aura + Yuna, Grand Summoner": {
+     "id": "3525-6566",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Gyre Sage + Umbral Mantle": {
+     "id": "1597-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Incubation Druid + Vigean Graftmage": {
+     "id": "3990-4019",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana lands you control can produce"
+     ]
+    },
+    "Fathom Mage + Lyla, Holographic Assistant": {
+     "id": "589-6822",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Doubling Season + Gatta and Luzzu + Walking Ballista": {
+     "id": "3693-4772-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Light of Promise + Walking Ballista": {
+     "id": "338-3693",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Maester Seymour + Sage of Hours": {
+     "id": "1494-6599",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Altered Ego + Felidar Guardian": {
+     "id": "2781-4264",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB"
+     ]
+    },
+    "Hardened Scales + Strength of Will + Walking Ballista": {
+     "id": "2265-3693-6919",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Lulu, Stern Guardian + Magistrate's Scepter": {
+     "id": "3609-6995",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Gatta and Luzzu + Loading Zone + Walking Ballista": {
+     "id": "3693-6593-6774",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Conclave Mentor + Gatta and Luzzu + Walking Ballista": {
+     "id": "2313-3693-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "The Destined White Mage + Walking Ballista": {
+     "id": "3693-6996",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Hardened Scales + Rite of Passage + Walking Ballista": {
+     "id": "292-2265-3693",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Gyre Sage + Sword of the Paruns": {
+     "id": "1597-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control",
+      "Infinite green mana"
+     ]
+    },
+    "Sunbond + Walking Ballista": {
+     "id": "3693-4017",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Gatta and Luzzu + Lae'zel, Vlaakith's Champion + Walking Ballista": {
+     "id": "3334-3693-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Gatta and Luzzu + Vorinclex, Monstrous Raider + Walking Ballista": {
+     "id": "1887-3693-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Fathom Mage + Iron Man, Armored Avenger": {
+     "id": "589-7811",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Spider-Man, Peter Parker + Walking Ballista": {
+     "id": "3693-6824",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Gatta and Luzzu + Michelangelo, Weirdness to 11 + Walking Ballista": {
+     "id": "3693-6593-7267",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite damage"
+     ]
+    },
+    "Enduring Renewal + Walking Ballista": {
+     "id": "678-3693",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Approach of the Second Sun + Endless Detour": {
+     "id": "553-4586",
+     "bracketTag": "E",
+     "produz": [
+      "Win the game"
+     ]
+    },
+    "Gatta and Luzzu + High Score + Walking Ballista": {
+     "id": "3693-6593-7315",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite damage"
+     ]
+    },
+    "Urban Daggertooth + Walking Ballista": {
+     "id": "3693-5017",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite proliferate"
+     ]
+    },
+    "Generous Patron + Lyla, Holographic Assistant": {
+     "id": "6822-7600",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters on a creature an opponent controls"
+     ]
+    },
+    "Gatta and Luzzu + Hardened Scales + Triskelion": {
+     "id": "1495-2265-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Benevolent Hydra + Gatta and Luzzu + Walking Ballista": {
+     "id": "3693-4029-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Heroic Feast + Walking Ballista": {
+     "id": "3693-7743",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Gatta and Luzzu + Primal Vigor + Walking Ballista": {
+     "id": "3129-3693-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Luminous Broodmoth + Solemnity + Walking Ballista": {
+     "id": "2018-3693-4053",
+     "bracketTag": "E",
+     "produz": [
+      "Draw the game",
+      "Infinite creature LTB",
+      "Infinite creature ETB"
+     ]
+    },
+    "Gatta and Luzzu + Pir, Imaginative Rascal + Walking Ballista": {
+     "id": "3062-3693-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Altered Ego + Enduring Scalelord": {
+     "id": "2808-4264",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on certain creatures"
+     ]
+    },
+    "Bellowing Aegisaur + Walking Ballista": {
+     "id": "1617-3693",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on most creatures you control"
+     ]
+    },
+    "Generous Patron + Iron Man, Armored Avenger": {
+     "id": "7600-7811",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters on a creature an opponent controls"
+     ]
+    },
+    "Delaying Shield + Resourceful Defense": {
+     "id": "1761-4153",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "Lock"
+     ]
+    },
+    "Doc Samson, Super Psychiatrist + Gatta and Luzzu + Walking Ballista": {
+     "id": "3693-6593-7704",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite damage"
+     ]
+    },
+    "Caradora, Heart of Alacria + Gatta and Luzzu + Walking Ballista": {
+     "id": "3693-6260-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Fathom Mage + Stark's Ingenuity": {
+     "id": "589-7737",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Gatta and Luzzu + Solid Ground + Walking Ballista": {
+     "id": "3693-6593-7061",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Gyre Sage + Ringing Strike Mastery": {
+     "id": "1597-7500",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite green mana"
+     ]
+    },
+    "Gatta and Luzzu + Shang-Chi, Martial Mentor + Walking Ballista": {
+     "id": "3693-6593-7741",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite damage"
+     ]
+    },
+    "Altered Ego + Wispweaver Angel": {
+     "id": "1621-4264",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Chasm Skulker + Mind Over Matter + O'aka, Traveling Merchant": {
+     "id": "4067-4842-6609",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite self-discard triggers",
+      "Infinite draw triggers",
+      "Infinite looting"
+     ]
+    },
+    "Altered Ego + Mirror-Mad Phantasm": {
+     "id": "2084-4264",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Flourishing Defenses + Resourceful Defense": {
+     "id": "1084-4153",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Cryptic Trilobite + Together Forever + Tromell, Seymour's Butler": {
+     "id": "4929-5224-6602",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Brad Boimler, Eager Ensign + Gatta and Luzzu + Walking Ballista": {
+     "id": "3693-6593-7803",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite damage"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "P",
+    "game_changers": [
+     "Farewell"
+    ],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": [
+     {
+      "combo": "Gatta and Luzzu + Hardened Scales + Walking Ballista",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     }
+    ]
+   }
+  },
+  {
+   "comandante": "Yuna, Grand Summoner",
+   "incluidos": {
+    "Gatta and Luzzu + Hardened Scales + Walking Ballista": {
+     "id": "2265-3693-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ],
+     "usa": [
+      "Gatta and Luzzu",
+      "Hardened Scales",
+      "Walking Ballista"
+     ],
+     "prerequisitos": ""
+    }
+   },
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Heliod, Sun-Crowned + Walking Ballista": {
+     "id": "1274-3693",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Freed from the Real + Incubation Druid": {
+     "id": "3990-4222",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana lands you control can produce"
+     ]
+    },
+    "Archangel of Thune + Walking Ballista": {
+     "id": "2919-3693",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Fathom Mage + Wizard Class": {
+     "id": "589-1017",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Cleric Class + Walking Ballista": {
+     "id": "104-3693",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Incubation Druid + Pemmin's Aura": {
+     "id": "3525-3990",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana lands you control can produce"
+     ]
+    },
+    "Gatta and Luzzu + Kami of Whispered Hopes + Walking Ballista": {
+     "id": "81-3693-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Hardened Scales + Vigor + Walking Ballista": {
+     "id": "2265-3693-4120",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Gatta and Luzzu + The Earth Crystal + Walking Ballista": {
+     "id": "3693-6593-6627",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Gyre Sage + Staff of Domination": {
+     "id": "1597-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Incubation Druid + Umbral Mantle": {
+     "id": "2816-3990",
+     "bracketTag": "S",
+     "produz": [
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Freed from the Real + Yuna, Grand Summoner": {
+     "id": "4222-6566",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Branching Evolution + Gatta and Luzzu + Walking Ballista": {
+     "id": "2445-3693-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Gatta and Luzzu + Innkeeper's Talent + Walking Ballista": {
+     "id": "3693-5902-6593",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Gatta and Luzzu + Ozolith, the Shattered Spire + Walking Ballista": {
+     "id": "3693-4565-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Pemmin's Aura + Yuna, Grand Summoner": {
+     "id": "3525-6566",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Gyre Sage + Umbral Mantle": {
+     "id": "1597-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite green mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Incubation Druid + Vigean Graftmage": {
+     "id": "3990-4019",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana lands you control can produce"
+     ]
+    },
+    "Fathom Mage + Lyla, Holographic Assistant": {
+     "id": "589-6822",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Doubling Season + Gatta and Luzzu + Walking Ballista": {
+     "id": "3693-4772-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Light of Promise + Walking Ballista": {
+     "id": "338-3693",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Maester Seymour + Sage of Hours": {
+     "id": "1494-6599",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Altered Ego + Felidar Guardian": {
+     "id": "2781-4264",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB"
+     ]
+    },
+    "Hardened Scales + Strength of Will + Walking Ballista": {
+     "id": "2265-3693-6919",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Lulu, Stern Guardian + Magistrate's Scepter": {
+     "id": "3609-6995",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Gatta and Luzzu + Loading Zone + Walking Ballista": {
+     "id": "3693-6593-6774",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Conclave Mentor + Gatta and Luzzu + Walking Ballista": {
+     "id": "2313-3693-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "The Destined White Mage + Walking Ballista": {
+     "id": "3693-6996",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Hardened Scales + Rite of Passage + Walking Ballista": {
+     "id": "292-2265-3693",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Gyre Sage + Sword of the Paruns": {
+     "id": "1597-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control",
+      "Infinite green mana"
+     ]
+    },
+    "Sunbond + Walking Ballista": {
+     "id": "3693-4017",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Gatta and Luzzu + Lae'zel, Vlaakith's Champion + Walking Ballista": {
+     "id": "3334-3693-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Gatta and Luzzu + Vorinclex, Monstrous Raider + Walking Ballista": {
+     "id": "1887-3693-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Fathom Mage + Iron Man, Armored Avenger": {
+     "id": "589-7811",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Spider-Man, Peter Parker + Walking Ballista": {
+     "id": "3693-6824",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Gatta and Luzzu + Michelangelo, Weirdness to 11 + Walking Ballista": {
+     "id": "3693-6593-7267",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite damage"
+     ]
+    },
+    "Enduring Renewal + Walking Ballista": {
+     "id": "678-3693",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Approach of the Second Sun + Endless Detour": {
+     "id": "553-4586",
+     "bracketTag": "E",
+     "produz": [
+      "Win the game"
+     ]
+    },
+    "Gatta and Luzzu + High Score + Walking Ballista": {
+     "id": "3693-6593-7315",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite damage"
+     ]
+    },
+    "Urban Daggertooth + Walking Ballista": {
+     "id": "3693-5017",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite proliferate"
+     ]
+    },
+    "Generous Patron + Lyla, Holographic Assistant": {
+     "id": "6822-7600",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters on a creature an opponent controls"
+     ]
+    },
+    "Gatta and Luzzu + Hardened Scales + Triskelion": {
+     "id": "1495-2265-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Benevolent Hydra + Gatta and Luzzu + Walking Ballista": {
+     "id": "3693-4029-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Heroic Feast + Walking Ballista": {
+     "id": "3693-7743",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Gatta and Luzzu + Primal Vigor + Walking Ballista": {
+     "id": "3129-3693-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Luminous Broodmoth + Solemnity + Walking Ballista": {
+     "id": "2018-3693-4053",
+     "bracketTag": "E",
+     "produz": [
+      "Draw the game",
+      "Infinite creature LTB",
+      "Infinite creature ETB"
+     ]
+    },
+    "Gatta and Luzzu + Pir, Imaginative Rascal + Walking Ballista": {
+     "id": "3062-3693-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Altered Ego + Enduring Scalelord": {
+     "id": "2808-4264",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on certain creatures"
+     ]
+    },
+    "Bellowing Aegisaur + Walking Ballista": {
+     "id": "1617-3693",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on most creatures you control"
+     ]
+    },
+    "Generous Patron + Iron Man, Armored Avenger": {
+     "id": "7600-7811",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters on a creature an opponent controls"
+     ]
+    },
+    "Delaying Shield + Resourceful Defense": {
+     "id": "1761-4153",
+     "bracketTag": "S",
+     "produz": [
+      "Prevent all damage that would be dealt to you",
+      "Lock"
+     ]
+    },
+    "Doc Samson, Super Psychiatrist + Gatta and Luzzu + Walking Ballista": {
+     "id": "3693-6593-7704",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite damage"
+     ]
+    },
+    "Caradora, Heart of Alacria + Gatta and Luzzu + Walking Ballista": {
+     "id": "3693-6260-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Fathom Mage + Stark's Ingenuity": {
+     "id": "589-7737",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Gatta and Luzzu + Solid Ground + Walking Ballista": {
+     "id": "3693-6593-7061",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Gyre Sage + Ringing Strike Mastery": {
+     "id": "1597-7500",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite green mana"
+     ]
+    },
+    "Gatta and Luzzu + Shang-Chi, Martial Mentor + Walking Ballista": {
+     "id": "3693-6593-7741",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite damage"
+     ]
+    },
+    "Altered Ego + Wispweaver Angel": {
+     "id": "1621-4264",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Chasm Skulker + Mind Over Matter + O'aka, Traveling Merchant": {
+     "id": "4067-4842-6609",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite self-discard triggers",
+      "Infinite draw triggers",
+      "Infinite looting"
+     ]
+    },
+    "Altered Ego + Mirror-Mad Phantasm": {
+     "id": "2084-4264",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-mill"
+     ]
+    },
+    "Flourishing Defenses + Resourceful Defense": {
+     "id": "1084-4153",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite death triggers"
+     ]
+    },
+    "Cryptic Trilobite + Together Forever + Tromell, Seymour's Butler": {
+     "id": "4929-5224-6602",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Brad Boimler, Eager Ensign + Gatta and Luzzu + Walking Ballista": {
+     "id": "3693-6593-7803",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite damage"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "P",
+    "game_changers": [
+     "Farewell"
+    ],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": [
+     {
+      "combo": "Gatta and Luzzu + Hardened Scales + Walking Ballista",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     }
+    ]
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

@@ -1,0 +1,733 @@
+{
+ "deck": "azula-grixis",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Fire Lord Azula",
+   "incluidos": {
+    "Reiterate + Seething Song + Storm-Kiln Artist": {
+     "id": "3368-4036-5195",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers",
+      "Infinite artifact tokens"
+     ],
+     "usa": [
+      "Storm-Kiln Artist",
+      "Seething Song",
+      "Reiterate"
+     ],
+     "prerequisitos": ""
+    },
+    "Fire Lord Azula + Frantic Search + Narset's Reversal": {
+     "id": "11-2196-7089",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite self-discard triggers",
+      "Infinite draw triggers",
+      "Infinite looting",
+      "Near-infinite storm count"
+     ],
+     "usa": [
+      "Fire Lord Azula",
+      "Narset's Reversal",
+      "Frantic Search"
+     ],
+     "prerequisitos": "You control up to three lands that can tap to produce at least {U}{U}{U}."
+    },
+    "Fire Lord Azula + Narset's Reversal + Storm-Kiln Artist": {
+     "id": "11-5195-7089",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers",
+      "Infinite artifact tokens"
+     ],
+     "usa": [
+      "Fire Lord Azula",
+      "Narset's Reversal",
+      "Storm-Kiln Artist"
+     ],
+     "prerequisitos": "You have another instant or sorcery in hand that can be cast using at most four colored mana, with valid targets (as applicable).\nYou have enough mana to cast the additional instant or sorcery minus {R}{R}."
+    },
+    "Narset's Reversal + Reiterate": {
+     "id": "11-3368",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ],
+     "usa": [
+      "Narset's Reversal",
+      "Reiterate"
+     ],
+     "prerequisitos": "You have an additional instant or sorcery card in hand with valid targets as applicable."
+    }
+   },
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Jeska's Will + Reiterate": {
+     "id": "1878-3368",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite red mana",
+      "Infinite storm count"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Mana Geyser + Reiterate": {
+     "id": "2091-3368",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite red mana",
+      "Infinite storm count"
+     ]
+    },
+    "Haze of Rage + Storm-Kiln Artist": {
+     "id": "3940-5195",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Narset's Reversal + Twinning Staff": {
+     "id": "11-2539",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Narset's Reversal + Storm-Kiln Artist + Thousand-Year Storm": {
+     "id": "11-3584-5195",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Birgi, God of Storytelling // Harnfel, Horn of Bounty + Reiterate + Seething Song": {
+     "id": "392-3368-4036",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite storm count"
+     ]
+    },
+    "Narset's Reversal + Reverberate": {
+     "id": "11-5026",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Reiterate + Ruby Medallion + Seething Song": {
+     "id": "3368-4036-4833",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite storm count"
+     ]
+    },
+    "Expansion // Explosion + Narset's Reversal": {
+     "id": "11-60",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Narset's Reversal + Return the Favor": {
+     "id": "11-5940",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Increasing Vengeance + Narset's Reversal": {
+     "id": "11-4285",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Narset's Reversal + Twincast": {
+     "id": "11-1534",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Dualcaster Mage + Fire Lord Azula + Snap": {
+     "id": "147-802-7089",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite untap of lands you control",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Reiterate + Thousand-Year Storm": {
+     "id": "3368-3584",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Bonus Round + Reiterate + Seething Song": {
+     "id": "2492-3368-4036",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite red mana",
+      "Infinite storm count"
+     ]
+    },
+    "Fury Storm + Storm-Kiln Artist": {
+     "id": "2655-5195",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Frantic Search + Narset's Reversal + Primal Amulet // Primal Wellspring": {
+     "id": "11-1484-2196",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite draw triggers",
+      "Infinite looting",
+      "Near-infinite magecraft triggers"
+     ]
+    },
+    "Reiterate + Seething Song + Urabrask // The Great Work": {
+     "id": "2633-3368-4036",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite damage",
+      "Infinite magecraft triggers",
+      "Infinite storm count"
+     ]
+    },
+    "Brass's Bounty + Reiterate": {
+     "id": "3368-5211",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite magecraft triggers",
+      "Infinite storm count"
+     ]
+    },
+    "Pyromancer's Goggles + Reiterate": {
+     "id": "3368-6790",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Blightsteel Colossus + Chandra's Ignition": {
+     "id": "1571-2560",
+     "bracketTag": "R",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Flare of Duplication + Narset's Reversal": {
+     "id": "11-5938",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Fire Lord Azula + Frantic Search + Underworld Breach": {
+     "id": "1368-2196-7089",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite draw triggers",
+      "Infinite looting",
+      "Infinite self-discard triggers"
+     ]
+    },
+    "Chain of Smog + Storm-Kiln Artist": {
+     "id": "326-5195",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Bonus Round + Narset's Reversal + Storm-Kiln Artist": {
+     "id": "11-2492-5195",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Grafted Exoskeleton + Kediss, Emberclaw Familiar": {
+     "id": "2822-3681",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Frantic Search + Narset's Reversal + Swarm Intelligence": {
+     "id": "11-1980-2196",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite draw triggers",
+      "Infinite looting",
+      "Near-infinite magecraft triggers"
+     ]
+    },
+    "Battle Hymn + Reiterate": {
+     "id": "3368-4739",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite red mana",
+      "Infinite storm count"
+     ]
+    },
+    "Blazing Firesinger // Seething Song + Displacer Kitten": {
+     "id": "1170-7494",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Archmage Emeritus + Fury Storm": {
+     "id": "610-2655",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Near-infinite magecraft triggers"
+     ]
+    },
+    "Reiterate + Turnabout": {
+     "id": "3368-4276",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite magecraft triggers",
+      "Infinite storm count"
+     ]
+    },
+    "Narset's Reversal + Storm-Kiln Artist + Swarm Intelligence": {
+     "id": "11-1980-5195",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Insidious Will + Narset's Reversal": {
+     "id": "11-469",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Prismari, the Inspiration + Reiterate": {
+     "id": "3368-7683",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Frantic Search + Mizzix of the Izmagnus + Reiterate": {
+     "id": "2196-3075-3368",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite draw triggers",
+      "Infinite looting",
+      "Infinite self-discard triggers"
+     ]
+    },
+    "Frantic Search + Primal Amulet // Primal Wellspring + Reiterate": {
+     "id": "1484-2196-3368",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite draw triggers",
+      "Infinite looting",
+      "Infinite self-discard triggers"
+     ]
+    },
+    "Mizzix of the Izmagnus + Reiterate + Seething Song": {
+     "id": "3075-3368-4036",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite red mana",
+      "Infinite storm count"
+     ]
+    },
+    "Reiterate + Rousing Refrain": {
+     "id": "1397-3368",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite red mana",
+      "Infinite storm count"
+     ]
+    },
+    "Fork + Narset's Reversal": {
+     "id": "11-109",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Kediss, Emberclaw Familiar + Tainted Strike": {
+     "id": "1218-2822",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Narset's Reversal + Wild Ricochet": {
+     "id": "11-5941",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Archmage Emeritus + Chain of Smog": {
+     "id": "326-610",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite draw triggers",
+      "Infinite self-discard triggers",
+      "Near-infinite magecraft triggers"
+     ]
+    },
+    "Fire Lord Azula + Narset's Reversal + Turnabout": {
+     "id": "11-4276-7089",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite untap of permanents you control",
+      "Infinite magecraft triggers",
+      "Infinite mana permanents you control can produce"
+     ]
+    },
+    "Alania, Divergent Storm + Reiterate": {
+     "id": "3368-5959",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Dual Strike + Reiterate": {
+     "id": "3368-3407",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Reiterate + Swarm Intelligence": {
+     "id": "1980-3368",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Molten-Core Maestro + Reiterate": {
+     "id": "3368-7420",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite copies of the casted instant or sorcery",
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Kediss, Emberclaw Familiar + Phyresis": {
+     "id": "2822-4651",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Invoke Calamity + Narset's Reversal + Thousand-Year Storm": {
+     "id": "11-2802-3584",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite copies of all instants and sorceries with mana value 6 or less in your hand and graveyard",
+      "Infinite magecraft triggers",
+      "Infinite storm count"
+     ]
+    },
+    "Brightstone Ritual + Reiterate": {
+     "id": "3298-3368",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite red mana",
+      "Infinite storm count"
+     ]
+    },
+    "Burnt Offering + Reiterate": {
+     "id": "1777-3368",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite black mana",
+      "Infinite magecraft triggers",
+      "Infinite red mana"
+     ]
+    },
+    "Bonus Round + Invoke Calamity + Narset's Reversal": {
+     "id": "11-2492-2802",
+     "bracketTag": "E",
+     "produz": [
+      "Cast all instants and sorceries with mana value 4 or less from your hand and graveyard",
+      "Infinite magecraft triggers",
+      "Infinite storm count"
+     ]
+    },
+    "Seething Anger + Storm-Kiln Artist + Zada, Hedron Grinder": {
+     "id": "1811-2871-5195",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Reality Spasm + Reiterate": {
+     "id": "3368-4697",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite magecraft triggers",
+      "Infinite storm count"
+     ]
+    },
+    "Mizzix of the Izmagnus + Reiterate + Unexpected Windfall": {
+     "id": "3075-3368-4539",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite magecraft triggers"
+     ]
+    },
+    "Chain of Smog + Veyran, Voice of Duality": {
+     "id": "326-4280",
+     "bracketTag": "S",
+     "produz": [
+      "Infinitely large creature until end of turn",
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Storm-Kiln Artist + Veyran, Voice of Duality + View from Above": {
+     "id": "1858-4280-5195",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Adaptive Training Post + Reiterate": {
+     "id": "3368-6452",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Reiterate + Reset": {
+     "id": "2320-3368",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite magecraft triggers",
+      "Infinite storm count"
+     ]
+    },
+    "Glistening Oil + Kediss, Emberclaw Familiar": {
+     "id": "386-2822",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Dragon's Desire + Reiterate": {
+     "id": "3368-7840",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite red mana",
+      "Infinite storm count"
+     ]
+    },
+    "Nivix Guildmage + Seething Song + Storm-Kiln Artist": {
+     "id": "352-4036-5195",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Corrupted Conscience + Kediss, Emberclaw Familiar": {
+     "id": "731-2822",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Electrodominance + Reiterate + Rowan, Scion of War": {
+     "id": "140-3368-4309",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite magecraft triggers",
+      "Infinite storm count"
+     ]
+    },
+    "Chandra's Ignition + Hidetsugu Consumes All // Vessel of the All-Consuming": {
+     "id": "2560-3531",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent loses the game"
+     ]
+    },
+    "Invoke Calamity + Narset's Reversal + Swarm Intelligence": {
+     "id": "11-1980-2802",
+     "bracketTag": "E",
+     "produz": [
+      "Cast all instants and sorceries with mana value 4 or less from your hand and graveyard",
+      "Infinite magecraft triggers",
+      "Infinite storm count"
+     ]
+    },
+    "Memory Crystal + Reiterate + Seething Song": {
+     "id": "1387-3368-4036",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite red mana",
+      "Infinite storm count"
+     ]
+    },
+    "Leyline of Anticipation + Rootha, Mercurial Artist + Seething Song + Storm-Kiln Artist": {
+     "id": "2634-4036-5049-5195",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Borne Upon a Wind + Rootha, Mercurial Artist + Seething Song + Storm-Kiln Artist": {
+     "id": "1066-2634-4036-5195",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Emergence Zone + Rootha, Mercurial Artist + Seething Song + Storm-Kiln Artist": {
+     "id": "1860-2634-4036-5195",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Blinkmoth Infusion + Reiterate": {
+     "id": "3368-3401",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite mana artifacts you control can produce",
+      "Infinite storm count"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "R",
+    "game_changers": [],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": [
+     {
+      "combo": "Narset's Reversal + Reiterate",
+      "relevant": false,
+      "borderlineRelevant": false,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": true,
+      "speed": 3,
+      "lock": false,
+      "tag": "E"
+     },
+     {
+      "combo": "Fire Lord Azula + Narset's Reversal + Storm-Kiln Artist",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": true,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Fire Lord Azula + Frantic Search + Narset's Reversal",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": true,
+      "arguablyTwoCard": true,
+      "speed": 5,
+      "lock": false,
+      "tag": "S"
+     },
+     {
+      "combo": "Reiterate + Seething Song + Storm-Kiln Artist",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 3,
+      "lock": false,
+      "tag": "E"
+     }
+    ]
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [
+  "2",
+  "3"
+ ],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

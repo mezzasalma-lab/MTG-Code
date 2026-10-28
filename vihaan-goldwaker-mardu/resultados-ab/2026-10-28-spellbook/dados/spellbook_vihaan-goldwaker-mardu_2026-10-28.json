@@ -1,0 +1,983 @@
+{
+ "deck": "vihaan-goldwaker-mardu",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Vihaan, Goldwaker",
+   "incluidos": {
+    "Ashnod's Altar + Mahadi, Emporium Master + Revel in Riches": {
+     "id": "865-2034-2429",
+     "bracketTag": "E",
+     "produz": [
+      "Win the game at the beginning of your next upkeep"
+     ],
+     "usa": [
+      "Mahadi, Emporium Master",
+      "Revel in Riches",
+      "Ashnod's Altar"
+     ],
+     "prerequisitos": ""
+    },
+    "Anointed Procession + Gleaming Splendor + Smothering Tithe": {
+     "id": "1308-4682-7890",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite card draw for any number of players",
+      "Infinite draw triggers for any number of players",
+      "Near-infinite Treasure tokens",
+      "Near-infinite colored mana"
+     ],
+     "usa": [
+      "Gleaming Splendor",
+      "Smothering Tithe",
+      "Anointed Procession"
+     ],
+     "prerequisitos": ""
+    },
+    "Gleaming Splendor + Goldspan Dragon + Smothering Tithe": {
+     "id": "3809-4682-7890",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite card draw for any number of players",
+      "Infinite draw triggers for any number of players",
+      "Near-infinite Treasure tokens",
+      "Near-infinite colored mana"
+     ],
+     "usa": [
+      "Gleaming Splendor",
+      "Smothering Tithe",
+      "Goldspan Dragon"
+     ],
+     "prerequisitos": ""
+    },
+    "Gleaming Splendor + Smothering Tithe + Xorn": {
+     "id": "4682-5184-7890",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite card draw for any number of players",
+      "Infinite draw triggers for any number of players",
+      "Near-infinite Treasure tokens",
+      "Near-infinite colored mana"
+     ],
+     "usa": [
+      "Gleaming Splendor",
+      "Smothering Tithe",
+      "Xorn"
+     ],
+     "prerequisitos": ""
+    }
+   },
+   "quase": {
+    "Ashnod's Altar + Pitiless Plunderer + Reassembling Skeleton": {
+     "id": "1580-2034-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Aggravated Assault + The Reaver Cleaver": {
+     "id": "3750-5039",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Gravecrawler + Pitiless Plunderer": {
+     "id": "2034-2577-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Blasphemous Act + Repercussion": {
+     "id": "2484-4083",
+     "bracketTag": "C",
+     "produz": [
+      "Near-infinite damage to all players"
+     ]
+    },
+    "Blasphemous Act + Toralf, God of Fury // Toralf's Hammer": {
+     "id": "1775-2484",
+     "bracketTag": "P",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Academy Manufactor + Krark-Clan Ironworks + Nuka-Cola Vending Machine": {
+     "id": "1575-4231-4659",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact tokens",
+      "Infinite colorless mana"
+     ]
+    },
+    "Brass's Bounty + Revel in Riches": {
+     "id": "2429-5211",
+     "bracketTag": "O",
+     "produz": [
+      "Win the game at the beginning of your next upkeep"
+     ]
+    },
+    "Blasphemous Act + Fall of Cair Andros": {
+     "id": "1823-2484",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Near-infinite damage to creatures"
+     ]
+    },
+    "Boros Charm + Boros Reckoner": {
+     "id": "3422-3587",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Mayhem Devil + Smaug the Impenetrable": {
+     "id": "1678-7839",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite artifact ETB",
+      "Infinite artifact LTB"
+     ]
+    },
+    "Ashnod's Altar + Bloodsoaked Champion + Pitiless Plunderer": {
+     "id": "1263-2034-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Ad Nauseam + Teferi's Protection": {
+     "id": "335-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw"
+     ]
+    },
+    "Academy Manufactor + Ashnod's Altar + Cauldron Familiar + Pitiless Plunderer": {
+     "id": "856-2034-4231-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Hellkite Charger + The Reaver Cleaver": {
+     "id": "3398-5039",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Mirkwood Bats + Plague of Vermin": {
+     "id": "2612-5035",
+     "bracketTag": "O",
+     "produz": [
+      "Each opponent loses the game",
+      "Near-infinite creature tokens",
+      "Near-infinite creature ETB"
+     ]
+    },
+    "Gleaming Splendor + Mondrak, Glory Dominus + Smothering Tithe": {
+     "id": "4365-4682-7890",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite card draw for any number of players",
+      "Infinite draw triggers for any number of players",
+      "Near-infinite Treasure tokens"
+     ]
+    },
+    "Elspeth, Storm Slayer + Gleaming Splendor + Smothering Tithe": {
+     "id": "4682-6441-7890",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite card draw for any number of players",
+      "Infinite draw triggers for any number of players",
+      "Near-infinite Treasure tokens"
+     ]
+    },
+    "Academy Manufactor + Mirkwood Bats + There and Back Again": {
+     "id": "974-2612-4231",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite lifeloss"
+     ]
+    },
+    "Ashnod's Altar + Marionette Master + Nim Deathmantle": {
+     "id": "2034-3121-5003",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact tokens",
+      "Infinite death triggers"
+     ]
+    },
+    "Blasphemous Act + Expedited Inheritance": {
+     "id": "2484-7502",
+     "bracketTag": "O",
+     "produz": [
+      "Each player may exile a portion of their library with the ability to play the exiled cards until the end of their next turn",
+      "Exile your library with the ability to play the exiled cards until the end of your next turn"
+     ]
+    },
+    "Ashnod's Altar + Cult Conscript + Pitiless Plunderer": {
+     "id": "2034-2946-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Professional Face-Breaker + Prosper, Tome-Bound + Sensei's Divining Top + Xorn": {
+     "id": "967-2815-5078-5184",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite storm count"
+     ]
+    },
+    "Ashnod's Altar + Pitiless Plunderer + Stridehangar Automaton": {
+     "id": "2034-4871-6291",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Mahadi, Emporium Master + Revel in Riches + Viscera Seer": {
+     "id": "865-2292-2429",
+     "bracketTag": "E",
+     "produz": [
+      "Win the game at the beginning of your next upkeep"
+     ]
+    },
+    "Exalted Sunborn + Gleaming Splendor + Smothering Tithe": {
+     "id": "4682-6753-7890",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite card draw for any number of players",
+      "Infinite draw triggers for any number of players",
+      "Near-infinite Treasure tokens"
+     ]
+    },
+    "Mahadi, Emporium Master + Phyrexian Altar + Revel in Riches": {
+     "id": "865-2429-4050",
+     "bracketTag": "E",
+     "produz": [
+      "Win the game at the beginning of your next upkeep"
+     ]
+    },
+    "Breath of Fury + Urabrask's Forge": {
+     "id": "1347-3259",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite combat damage",
+      "Infinite combat phases",
+      "Infinite death triggers"
+     ]
+    },
+    "Ashnod's Altar + Ozox, the Clattering King + Pitiless Plunderer": {
+     "id": "2034-4871-6115",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Obliterate + Teferi's Protection": {
+     "id": "2548-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Mass Land Denial",
+      "Destroy all lands, creatures, and artifacts your opponents control"
+     ]
+    },
+    "Ashnod's Altar + Oathsworn Vampire + Pitiless Plunderer + Zulaport Cutthroat": {
+     "id": "1385-2034-3054-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite colorless mana",
+      "Infinite death triggers"
+     ]
+    },
+    "Teferi's Protection + Worldfire": {
+     "id": "3765-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Each opponent's life total becomes 1",
+      "Exile all cards in hands and graveyards",
+      "Exile all permanents opponents control"
+     ]
+    },
+    "Ashnod's Altar + Eldrazi Displacer + Marionette Master": {
+     "id": "2034-3121-4013",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite blinking",
+      "Infinite colorless mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Aggravated Assault + Pitiless Plunderer + Vihaan, Goldwaker": {
+     "id": "3750-4871-5549",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite death triggers",
+      "Infinite creature LTB"
+     ]
+    },
+    "Mayhem Devil + Silverclad Ferocidons": {
+     "id": "1678-4767",
+     "bracketTag": "R",
+     "produz": [
+      "Each opponent sacrifices all permanents they control",
+      "Near-infinite damage",
+      "Mass Land Denial"
+     ]
+    },
+    "Eldrazi Displacer + Krark-Clan Ironworks + Marionette Master": {
+     "id": "3121-4013-4659",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite blinking",
+      "Infinite colorless mana",
+      "Infinite creature tokens"
+     ]
+    },
+    "Ashnod's Altar + Pitiless Plunderer + Tenacious Dead": {
+     "id": "2034-2738-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Krark-Clan Ironworks + Pitiless Plunderer + Stridehangar Automaton": {
+     "id": "4659-4871-6291",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Enduring Renewal": {
+     "id": "678-2034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Spellbinder + Teferi's Protection": {
+     "id": "1328-5141",
+     "bracketTag": "S",
+     "produz": [
+      "Permanents you control phase out during your opponents' turns",
+      "You have protection from everything during your opponents' turns",
+      "Your life total can't change during your opponents' turns"
+     ]
+    },
+    "Carrion Feeder + Mahadi, Emporium Master + Revel in Riches": {
+     "id": "865-2429-2438",
+     "bracketTag": "E",
+     "produz": [
+      "Win the game at the beginning of your next upkeep"
+     ]
+    },
+    "Ashnod's Altar + Spawnsire of Ulamog": {
+     "id": "2034-2143",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Academy Manufactor + Chrome Dome + Krark-Clan Ironworks": {
+     "id": "4231-4659-7282",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Anointed Procession + Pitiless Plunderer + Spawning Pit": {
+     "id": "1308-3899-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Dualcaster Mage + Sevinne's Reclamation": {
+     "id": "147-1465-2034",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Ashnod's Altar + Haunt of the Dead Marshes + Pitiless Plunderer": {
+     "id": "2034-4871-6116",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Gleaming Splendor + Smothering Tithe + Zirda, the Dawnwaker": {
+     "id": "2713-4682-7890",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite card draw for any number of players",
+      "Infinite draw triggers for any number of players",
+      "Near-infinite Treasure tokens"
+     ]
+    },
+    "Ashnod's Altar + Pashalik Mons + Pitiless Plunderer": {
+     "id": "2034-2967-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Ashnod's Altar + Dictate of Erebos + Overseer of the Damned": {
+     "id": "2034-4733-5038",
+     "bracketTag": "S",
+     "produz": [
+      "Each opponent sacrifices any creature that enters under their control",
+      "Each opponent sacrifices all creatures they control",
+      "Lock"
+     ]
+    },
+    "Anointed Procession + Spawnsire of Ulamog": {
+     "id": "1308-2143",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Nadier's Nightblade + Tombstone Stairwell": {
+     "id": "5104-6215",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite lifeloss",
+      "Near-infinite creature ETB",
+      "Near-infinite creature LTB"
+     ]
+    },
+    "Ashnod's Altar + Hildibrand Manderville // Gentleman's Rise + Pitiless Plunderer": {
+     "id": "2034-4871-6564",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Chthonian Nightmare + Pitiless Plunderer + Xorn": {
+     "id": "4871-5184-5626",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Crown of Flames + Goldspan Dragon": {
+     "id": "1645-3809",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite storm count"
+     ]
+    },
+    "Balancing Act + Teferi's Protection": {
+     "id": "70-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Each opponent sacrifices all permanents they control",
+      "Mass Land Denial"
+     ]
+    },
+    "Magmatic Galleon + Mayhem Devil": {
+     "id": "1527-1678",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Ashnod's Altar + Pitiless Plunderer + Summoning Station": {
+     "id": "2034-3764-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Mahadi, Emporium Master + Revel in Riches + Woe Strider": {
+     "id": "865-997-2429",
+     "bracketTag": "E",
+     "produz": [
+      "Win the game at the beginning of your next upkeep"
+     ]
+    },
+    "Anointed Procession + Chthonian Nightmare + Pitiless Plunderer": {
+     "id": "1308-4871-5626",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Apocalypse + Teferi's Protection": {
+     "id": "4274-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Discard your hand",
+      "Exile all permanents opponents control",
+      "Mass Land Denial"
+     ]
+    },
+    "Jan Jansen, Chaos Crafter + Krark-Clan Ironworks + Thornbite Staff": {
+     "id": "2178-4659-4917",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Krenko, Baron of Tin Street + Pitiless Plunderer": {
+     "id": "2034-4871-5433",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Ashnod's Altar + Jan Jansen, Chaos Crafter + Thornbite Staff": {
+     "id": "2034-2178-4917",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Nadier's Nightblade + Plague of Vermin": {
+     "id": "2034-5035-5104",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite creature ETB",
+      "Near-infinite creature LTB",
+      "Near-infinite creature tokens for all players"
+     ]
+    },
+    "Pitiless Plunderer + Spawnsire of Ulamog": {
+     "id": "2143-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Anointed Procession + Tooth and Claw": {
+     "id": "1245-1308",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Altar of Dementia + Mahadi, Emporium Master + Revel in Riches": {
+     "id": "865-2429-5256",
+     "bracketTag": "E",
+     "produz": [
+      "Win the game at the beginning of your next upkeep"
+     ]
+    },
+    "Ashnod's Altar + Oathkeeper, Takeno's Daisho": {
+     "id": "2034-4640",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Ashnod's Altar + Jan Jansen, Chaos Crafter + Pitiless Plunderer + Staff of Domination": {
+     "id": "2034-2645-4871-4917",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Jan Jansen, Chaos Crafter + Krark-Clan Ironworks + Pitiless Plunderer + Staff of Domination": {
+     "id": "2645-4659-4871-4917",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite card draw"
+     ]
+    },
+    "Gleaming Splendor + Kaya, Geist Hunter + Smothering Tithe": {
+     "id": "4094-4682-7890",
+     "bracketTag": "P",
+     "produz": [
+      "Infinite card draw for any number of players",
+      "Infinite draw triggers for any number of players",
+      "Near-infinite Treasure tokens"
+     ]
+    },
+    "Flickering Ward + Goldspan Dragon": {
+     "id": "3389-3809",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite storm count"
+     ]
+    },
+    "Hellkite Charger + Pitiless Plunderer + Vihaan, Goldwaker": {
+     "id": "3398-4871-5549",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite combat phases",
+      "Infinite death triggers",
+      "Infinite creature LTB"
+     ]
+    },
+    "Ashnod's Altar + Draconic Visitor + Pitiless Plunderer": {
+     "id": "2034-4871-8168",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Anointed Procession + Ashnod's Altar + Thopter Squadron": {
+     "id": "1308-2034-2762",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Bloodsoaked Champion + Life Insurance + Zulaport Cutthroat": {
+     "id": "1263-1385-2034-3479",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite death triggers",
+      "Infinite creature ETB"
+     ]
+    },
+    "Goldspan Dragon + Jan Jansen, Chaos Crafter + Umbral Mantle + Xorn": {
+     "id": "2816-3809-4917-5184",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Breath of Fury + Pitiless Plunderer + Vihaan, Goldwaker": {
+     "id": "3259-4871-5549",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Goldspan Dragon + Olivia Voldaren + Revel in Riches": {
+     "id": "2429-3193-3809",
+     "bracketTag": "S",
+     "produz": [
+      "Destroy all creatures opponents control",
+      "Destroy each creature that enters the battlefield under an opponent's control",
+      "Lock"
+     ]
+    },
+    "Olivia Voldaren + Revel in Riches + Xorn": {
+     "id": "2429-3193-5184",
+     "bracketTag": "S",
+     "produz": [
+      "Destroy all creatures opponents control",
+      "Destroy each creature that enters the battlefield under an opponent's control",
+      "Lock"
+     ]
+    },
+    "Breath of Fury + Professional Face-Breaker + Vihaan, Goldwaker": {
+     "id": "2815-3259-5549",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Anointed Procession + Ganax, Astral Hunter + Magda, the Hoardmaster": {
+     "id": "1308-2972-5456",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Anointed Procession + Krark-Clan Ironworks + Thopter Squadron": {
+     "id": "1308-2762-4659",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Anointed Procession + Ashnod's Altar + Sorcerer's Broom": {
+     "id": "1308-2034-5320",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Eirdu, Carrier of Dawn // Isilu, Carrier of Twilight + Marionette Master": {
+     "id": "2034-3121-6972",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Anointed Procession + Olivia Voldaren + Revel in Riches": {
+     "id": "1308-2429-3193",
+     "bracketTag": "S",
+     "produz": [
+      "Destroy all creatures opponents control",
+      "Destroy each creature that enters the battlefield under an opponent's control",
+      "Lock"
+     ]
+    },
+    "Jan Jansen, Chaos Crafter + Krark-Clan Ironworks + Pitiless Plunderer + Sword of the Paruns": {
+     "id": "4659-4871-4917-5200",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite creature tokens",
+      "Infinite death triggers"
+     ]
+    },
+    "Ashnod's Altar + Jan Jansen, Chaos Crafter + Pitiless Plunderer + Sword of the Paruns": {
+     "id": "2034-4871-4917-5200",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Nim Devourer + Pitiless Plunderer + Xorn": {
+     "id": "4871-5184-6074",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Goldspan Dragon + Jan Jansen, Chaos Crafter + Sword of the Paruns + Xorn": {
+     "id": "3809-4917-5184-5200",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Goblin Warrens + Pitiless Plunderer + Xorn": {
+     "id": "2316-4871-5184",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Anointed Procession + Nim Devourer + Pitiless Plunderer": {
+     "id": "1308-4871-6074",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Anointed Procession + Krark-Clan Ironworks + Sorcerer's Broom": {
+     "id": "1308-4659-5320",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Gauntlets of Light + Goldspan Dragon + Jan Jansen, Chaos Crafter + Xorn": {
+     "id": "1995-3809-4917-5184",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Anointed Procession + Goblin Warrens + Pitiless Plunderer": {
+     "id": "1308-2316-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Ashnod's Altar + Gauntlets of Light + Jan Jansen, Chaos Crafter + Pitiless Plunderer": {
+     "id": "1995-2034-4871-4917",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Gauntlets of Light + Jan Jansen, Chaos Crafter + Krark-Clan Ironworks + Pitiless Plunderer": {
+     "id": "1995-4659-4871-4917",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite creature sacrifice triggers"
+     ]
+    },
+    "Anointed Procession + Ashnod's Altar + Pitiless Plunderer + Weirding Shaman": {
+     "id": "1308-1392-2034-4871",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Dockside Extortionist + Revel in Riches": {
+     "id": "914-2429",
+     "bracketTag": "B",
+     "produz": [
+      "Win the game at the beginning of your next upkeep"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "P",
+    "game_changers": [
+     "Smothering Tithe",
+     "Teferi's Protection"
+    ],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": [
+     {
+      "combo": "Gleaming Splendor + Goldspan Dragon + Smothering Tithe",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 4,
+      "lock": false,
+      "tag": "P"
+     },
+     {
+      "combo": "Anointed Procession + Gleaming Splendor + Smothering Tithe",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 4,
+      "lock": false,
+      "tag": "P"
+     },
+     {
+      "combo": "Gleaming Splendor + Smothering Tithe + Xorn",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 4,
+      "lock": false,
+      "tag": "P"
+     },
+     {
+      "combo": "Ashnod's Altar + Mahadi, Emporium Master + Revel in Riches",
+      "relevant": true,
+      "borderlineRelevant": true,
+      "definitelyTwoCard": false,
+      "arguablyTwoCard": false,
+      "speed": 5,
+      "lock": false,
+      "tag": "E"
+     }
+    ]
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [
+  "3",
+  "4"
+ ],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

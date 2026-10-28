@@ -1,0 +1,1522 @@
+[
+ {
+  "deck": "azula-grixis",
+  "total": 100,
+  "comandantes": [
+   "Fire Lord Azula"
+  ],
+  "n_combos": [
+   4
+  ],
+  "n_quase": [
+   73
+  ],
+  "bracket_estimado": [
+   "R"
+  ],
+  "game_changers": [],
+  "combos": [
+   "Fire Lord Azula + Frantic Search + Narset's Reversal",
+   "Fire Lord Azula + Narset's Reversal + Storm-Kiln Artist",
+   "Narset's Reversal + Reiterate",
+   "Reiterate + Seething Song + Storm-Kiln Artist"
+  ],
+  "combos_2_cartas": [
+   "Narset's Reversal + Reiterate"
+  ],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [
+   "2",
+   "3"
+  ],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "beorn-fierce",
+  "total": 100,
+  "comandantes": [
+   "Beorn the Fierce"
+  ],
+  "n_combos": [
+   0
+  ],
+  "n_quase": [
+   21
+  ],
+  "bracket_estimado": [
+   "P"
+  ],
+  "game_changers": [
+   "Natural Order"
+  ],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [
+   "3",
+   "4"
+  ],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "captain-storm-izzet",
+  "total": 99,
+  "comandantes": [
+   "Captain Storm, Cosmium Raider"
+  ],
+  "n_combos": [
+   0
+  ],
+  "n_quase": [
+   44
+  ],
+  "bracket_estimado": [
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [
+   "2"
+  ],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "edgar-markov-mardu",
+  "total": 100,
+  "comandantes": [
+   "Edgar Markov"
+  ],
+  "n_combos": [
+   4
+  ],
+  "n_quase": [
+   183
+  ],
+  "bracket_estimado": [
+   "S"
+  ],
+  "game_changers": [
+   "Smothering Tithe",
+   "Teferi's Protection",
+   "Vampiric Tutor"
+  ],
+  "combos": [
+   "Bloodthirsty Conqueror + Enduring Tenacity",
+   "Bloodthirsty Conqueror + Vito, Thorn of the Dusk Rose",
+   "Enduring Tenacity + Exquisite Blood",
+   "Exquisite Blood + Vito, Thorn of the Dusk Rose"
+  ],
+  "combos_2_cartas": [
+   "Bloodthirsty Conqueror + Enduring Tenacity",
+   "Bloodthirsty Conqueror + Vito, Thorn of the Dusk Rose",
+   "Enduring Tenacity + Exquisite Blood",
+   "Exquisite Blood + Vito, Thorn of the Dusk Rose"
+  ],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [
+   "1",
+   "3",
+   "4"
+  ],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "edge-of-eternities-counter-intelligence",
+  "total": 100,
+  "comandantes": [
+   "Inspirit, Flagship Vessel"
+  ],
+  "n_combos": [
+   0
+  ],
+  "n_quase": [
+   43
+  ],
+  "bracket_estimado": [
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "edge-of-eternities-world-shaper",
+  "total": 100,
+  "comandantes": [
+   "Hearthhull, the Worldseed"
+  ],
+  "n_combos": [
+   1
+  ],
+  "n_quase": [
+   33
+  ],
+  "bracket_estimado": [
+   "S"
+  ],
+  "game_changers": [],
+  "combos": [
+   "Dakmor Salvage + The Gitrog Monster"
+  ],
+  "combos_2_cartas": [
+   "Dakmor Salvage + The Gitrog Monster"
+  ],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "enduring-enchantments-abzan",
+  "total": 100,
+  "comandantes": [
+   "Anikthea, Hand of Erebos",
+   "Narci, Fable Singer"
+  ],
+  "n_combos": [
+   0,
+   0
+  ],
+  "n_quase": [
+   20,
+   20
+  ],
+  "bracket_estimado": [
+   "E",
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "final-fantasy-counter-blitz",
+  "total": 100,
+  "comandantes": [
+   "Tidus, Yuna's Guardian",
+   "Yuna, Grand Summoner"
+  ],
+  "n_combos": [
+   1,
+   1
+  ],
+  "n_quase": [
+   65,
+   65
+  ],
+  "bracket_estimado": [
+   "P",
+   "P"
+  ],
+  "game_changers": [
+   "Farewell"
+  ],
+  "combos": [
+   "Gatta and Luzzu + Hardened Scales + Walking Ballista"
+  ],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "final-fantasy-limit-break",
+  "total": 100,
+  "comandantes": [
+   "Cloud, Ex-SOLDIER",
+   "Tifa, Martial Artist"
+  ],
+  "n_combos": [
+   0,
+   0
+  ],
+  "n_quase": [
+   6,
+   6
+  ],
+  "bracket_estimado": [
+   "E",
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "final-fantasy-revival-trance",
+  "total": 100,
+  "comandantes": [
+   "Terra, Herald of Hope",
+   "Celes, Rune Knight"
+  ],
+  "n_combos": [
+   0,
+   0
+  ],
+  "n_quase": [
+   3,
+   3
+  ],
+  "bracket_estimado": [
+   "E",
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "final-fantasy-scions-spellcraft",
+  "total": 100,
+  "comandantes": [
+   "Y'shtola, Night's Blessed",
+   "G'raha Tia, Scion Reborn"
+  ],
+  "n_combos": [
+   0,
+   0
+  ],
+  "n_quase": [
+   8,
+   8
+  ],
+  "bracket_estimado": [
+   "E",
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "hei-bai-wurbg",
+  "total": 100,
+  "comandantes": [
+   "Hei Bai, Forest Guardian"
+  ],
+  "n_combos": [
+   0
+  ],
+  "n_quase": [
+   94
+  ],
+  "bracket_estimado": [
+   "P"
+  ],
+  "game_changers": [
+   "Aura Shards",
+   "Seedborn Muse",
+   "Teferi's Protection"
+  ],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [
+   "3",
+   "4"
+  ],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "kutzil-selesnya",
+  "total": 100,
+  "comandantes": [
+   "Kutzil, Malamet Exemplar"
+  ],
+  "n_combos": [
+   0
+  ],
+  "n_quase": [
+   45
+  ],
+  "bracket_estimado": [
+   "P"
+  ],
+  "game_changers": [
+   "Field of the Dead",
+   "Teferi's Protection"
+  ],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [
+   "3"
+  ],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "lorwyn-eclipsed-blight-curse",
+  "total": 100,
+  "comandantes": [
+   "Auntie Ool, Cursewretch"
+  ],
+  "n_combos": [
+   2
+  ],
+  "n_quase": [
+   40
+  ],
+  "bracket_estimado": [
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [
+   "Blowfly Infestation + Flourishing Defenses",
+   "Blowfly Infestation + Hapatra, Vizier of Poisons"
+  ],
+  "combos_2_cartas": [
+   "Blowfly Infestation + Flourishing Defenses",
+   "Blowfly Infestation + Hapatra, Vizier of Poisons"
+  ],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "lorwyn-eclipsed-dance-of-elements",
+  "total": 100,
+  "comandantes": [
+   "Ashling, the Limitless"
+  ],
+  "n_combos": [
+   0
+  ],
+  "n_quase": [
+   87
+  ],
+  "bracket_estimado": [
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "lotr-elven-council",
+  "total": 100,
+  "comandantes": [
+   "Galadriel, Elven-Queen",
+   "Gandalf, Westward Voyager"
+  ],
+  "n_combos": [
+   0,
+   0
+  ],
+  "n_quase": [
+   11,
+   11
+  ],
+  "bracket_estimado": [
+   "C",
+   "C"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "lotr-food-and-fellowship",
+  "total": 100,
+  "comandantes": [
+   "Frodo, Adventurous Hobbit",
+   "Sam, Loyal Attendant"
+  ],
+  "n_combos": [
+   0,
+   0
+  ],
+  "n_quase": [
+   16,
+   16
+  ],
+  "bracket_estimado": [
+   "E",
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "lotr-hosts-of-mordor",
+  "total": 100,
+  "comandantes": [
+   "Sauron, Lord of the Rings",
+   "Saruman, the White Hand"
+  ],
+  "n_combos": [
+   0,
+   0
+  ],
+  "n_quase": [
+   19,
+   19
+  ],
+  "bracket_estimado": [
+   "P",
+   "P"
+  ],
+  "game_changers": [
+   "Notion Thief"
+  ],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "lotr-riders-of-rohan",
+  "total": 100,
+  "comandantes": [
+   "Éowyn, Shieldmaiden",
+   "Aragorn, King of Gondor"
+  ],
+  "n_combos": [
+   1,
+   1
+  ],
+  "n_quase": [
+   24,
+   24
+  ],
+  "bracket_estimado": [
+   "S",
+   "S"
+  ],
+  "game_changers": [],
+  "combos": [
+   "Gilraen, Dúnedain Protector + Village Bell-Ringer"
+  ],
+  "combos_2_cartas": [
+   "Gilraen, Dúnedain Protector + Village Bell-Ringer"
+  ],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "maralen-sultai",
+  "total": 100,
+  "comandantes": [
+   "Maralen, Fae Ascendant"
+  ],
+  "n_combos": [
+   9
+  ],
+  "n_quase": [
+   95
+  ],
+  "bracket_estimado": [
+   "S"
+  ],
+  "game_changers": [
+   "Cyclonic Rift",
+   "Rhystic Study",
+   "Seedborn Muse"
+  ],
+  "combos": [
+   "Bloom Tender + Staff of Domination",
+   "Circle of Dreams Druid + Staff of Domination",
+   "Circle of Dreams Druid + Umbral Mantle",
+   "Elvish Archdruid + Staff of Domination",
+   "Elvish Archdruid + Umbral Mantle",
+   "Marwyn, the Nurturer + Staff of Domination",
+   "Marwyn, the Nurturer + Umbral Mantle",
+   "Priest of Titania + Staff of Domination",
+   "Priest of Titania + Umbral Mantle"
+  ],
+  "combos_2_cartas": [
+   "Bloom Tender + Staff of Domination",
+   "Circle of Dreams Druid + Staff of Domination",
+   "Circle of Dreams Druid + Umbral Mantle",
+   "Elvish Archdruid + Staff of Domination",
+   "Elvish Archdruid + Umbral Mantle",
+   "Marwyn, the Nurturer + Staff of Domination",
+   "Marwyn, the Nurturer + Umbral Mantle",
+   "Priest of Titania + Staff of Domination",
+   "Priest of Titania + Umbral Mantle"
+  ],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [
+   "3",
+   "4"
+  ],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "marvel-avengers-assemble",
+  "total": 100,
+  "comandantes": [
+   "Captain America, Team Leader",
+   "Director Nick Fury"
+  ],
+  "n_combos": [
+   0,
+   0
+  ],
+  "n_quase": [
+   7,
+   7
+  ],
+  "bracket_estimado": [
+   "E",
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "marvel-doom-prevails",
+  "total": 100,
+  "comandantes": [
+   "Doctor Doom, King of Latveria",
+   "Loki, the Deceiver"
+  ],
+  "n_combos": [
+   0,
+   0
+  ],
+  "n_quase": [
+   17,
+   17
+  ],
+  "bracket_estimado": [
+   "E",
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "marvel-fantastic-four",
+  "total": 100,
+  "comandantes": [
+   "Invisible Woman",
+   "Mister Fantastic",
+   "Human Torch",
+   "The Thing"
+  ],
+  "n_combos": [
+   0,
+   0,
+   0,
+   0
+  ],
+  "n_quase": [
+   16,
+   16,
+   16,
+   16
+  ],
+  "bracket_estimado": [
+   "E",
+   "E",
+   "E",
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "marvel-wakanda-forever",
+  "total": 100,
+  "comandantes": [
+   "T'Challa, the Black Panther",
+   "Shuri, the Black Panther"
+  ],
+  "n_combos": [
+   0,
+   0
+  ],
+  "n_quase": [
+   3,
+   3
+  ],
+  "bracket_estimado": [
+   "E",
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "megatron-tyrant-mardu",
+  "total": 100,
+  "comandantes": [
+   "Megatron, Tyrant"
+  ],
+  "n_combos": [
+   2
+  ],
+  "n_quase": [
+   27
+  ],
+  "bracket_estimado": [
+   "R"
+  ],
+  "game_changers": [],
+  "combos": [
+   "Blightsteel Colossus + Chandra's Ignition",
+   "Cursed Mirror + Daretti, Rocketeer Engineer + Genesis Chamber"
+  ],
+  "combos_2_cartas": [
+   "Blightsteel Colossus + Chandra's Ignition"
+  ],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "ms-bumbleflower-bant",
+  "total": 100,
+  "comandantes": [
+   "Ms. Bumbleflower"
+  ],
+  "n_combos": [
+   2
+  ],
+  "n_quase": [
+   67
+  ],
+  "bracket_estimado": [
+   "S"
+  ],
+  "game_changers": [
+   "Cyclonic Rift",
+   "Rhystic Study",
+   "Smothering Tithe"
+  ],
+  "combos": [
+   "Devoted Druid + Swift Reconfiguration",
+   "Heliod, Sun-Crowned + Walking Ballista"
+  ],
+  "combos_2_cartas": [
+   "Devoted Druid + Swift Reconfiguration",
+   "Heliod, Sun-Crowned + Walking Ballista"
+  ],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "nekusar-grixis",
+  "total": 100,
+  "comandantes": [
+   "Nekusar, the Mindrazer"
+  ],
+  "n_combos": [
+   1
+  ],
+  "n_quase": [
+   96
+  ],
+  "bracket_estimado": [
+   "R"
+  ],
+  "game_changers": [
+   "Cyclonic Rift",
+   "Demonic Tutor",
+   "Force of Will",
+   "Imperial Seal",
+   "Orcish Bowmasters",
+   "The One Ring",
+   "Underworld Breach",
+   "Vampiric Tutor"
+  ],
+  "combos": [
+   "Bloodchief Ascension + Mindcrank"
+  ],
+  "combos_2_cartas": [
+   "Bloodchief Ascension + Mindcrank"
+  ],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "prismatic-bridge-wurbg",
+  "total": 100,
+  "comandantes": [
+   "Esika, God of the Tree // The Prismatic Bridge"
+  ],
+  "n_combos": [
+   12
+  ],
+  "n_quase": [
+   92
+  ],
+  "bracket_estimado": [
+   "R"
+  ],
+  "game_changers": [
+   "Farewell",
+   "Narset, Parter of Veils",
+   "Rhystic Study"
+  ],
+  "combos": [
+   "Aminatou, the Fateshifter + Doubling Season + Ichormoon Gauntlet + Liliana, Dreadhorde General",
+   "Aminatou, the Fateshifter + Doubling Season + Ichormoon Gauntlet + Ugin, the Spirit Dragon",
+   "Aminatou, the Fateshifter + Ichormoon Gauntlet + Liliana, Dreadhorde General + Vorinclex, Monstrous Raider",
+   "Aminatou, the Fateshifter + Ichormoon Gauntlet + Ugin, the Spirit Dragon + Vorinclex, Monstrous Raider",
+   "Aminatou, the Fateshifter + Nicol Bolas, Dragon-God + Oath of Teferi",
+   "Aminatou, the Fateshifter + Nicol Bolas, Dragon-God + The Chain Veil",
+   "Carth the Lion + Teferi, Temporal Archmage + The Chain Veil",
+   "Innkeeper's Talent + Vraska, Betrayal's Sting",
+   "Teferi, Temporal Archmage + The Chain Veil",
+   "Teferi, Who Slows the Sunset + The Chain Veil",
+   "Teferi, Who Slows the Sunset + The Peregrine Dynamo",
+   "Vorinclex, Monstrous Raider + Vraska, Betrayal's Sting"
+  ],
+  "combos_2_cartas": [
+   "Innkeeper's Talent + Vraska, Betrayal's Sting",
+   "Teferi, Temporal Archmage + The Chain Veil",
+   "Teferi, Who Slows the Sunset + The Chain Veil",
+   "Teferi, Who Slows the Sunset + The Peregrine Dynamo",
+   "Vorinclex, Monstrous Raider + Vraska, Betrayal's Sting"
+  ],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [
+   "3"
+  ],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "secrets-strixhaven-lorehold",
+  "total": 100,
+  "comandantes": [
+   "Quintorius, History Chaser",
+   "Excava, the Risen Past"
+  ],
+  "n_combos": [
+   0,
+   0
+  ],
+  "n_quase": [
+   0,
+   0
+  ],
+  "bracket_estimado": [
+   "E",
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "secrets-strixhaven-prismari",
+  "total": 100,
+  "comandantes": [
+   "Rootha, Mastering the Moment",
+   "Muddle, the Ever-Changing"
+  ],
+  "n_combos": [
+   0,
+   0
+  ],
+  "n_quase": [
+   75,
+   75
+  ],
+  "bracket_estimado": [
+   "E",
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "secrets-strixhaven-quandrix",
+  "total": 100,
+  "comandantes": [
+   "Zimone, Infinite Analyst",
+   "Primo, the Unbounded"
+  ],
+  "n_combos": [
+   0,
+   0
+  ],
+  "n_quase": [
+   16,
+   16
+  ],
+  "bracket_estimado": [
+   "E",
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "secrets-strixhaven-silverquill",
+  "total": 100,
+  "comandantes": [
+   "Killian, Decisive Mentor",
+   "Scriv, the Obligator"
+  ],
+  "n_combos": [
+   0,
+   0
+  ],
+  "n_quase": [
+   9,
+   9
+  ],
+  "bracket_estimado": [
+   "E",
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "secrets-strixhaven-witherbloom",
+  "total": 100,
+  "comandantes": [
+   "Dina, Essence Brewer",
+   "Gorma, the Gullet"
+  ],
+  "n_combos": [
+   0,
+   0
+  ],
+  "n_quase": [
+   33,
+   33
+  ],
+  "bracket_estimado": [
+   "E",
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "tam-the-possibility-wubrg",
+  "total": 100,
+  "comandantes": [
+   "Tam, the Possibility"
+  ],
+  "n_combos": [
+   2
+  ],
+  "n_quase": [
+   92
+  ],
+  "bracket_estimado": [
+   "S"
+  ],
+  "game_changers": [],
+  "combos": [
+   "Chromatic Orrery + Tezzeret the Seeker + The Chain Veil",
+   "Teferi, Temporal Archmage + The Chain Veil"
+  ],
+  "combos_2_cartas": [
+   "Teferi, Temporal Archmage + The Chain Veil"
+  ],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [
+   "3"
+  ],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "tarkir-dragonstorm-sultai-arisen",
+  "total": 100,
+  "comandantes": [
+   "Teval, the Balanced Scale",
+   "Kotis, Sibsig Champion"
+  ],
+  "n_combos": [
+   0,
+   0
+  ],
+  "n_quase": [
+   49,
+   49
+  ],
+  "bracket_estimado": [
+   "E",
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "thranduil-sultai",
+  "total": 100,
+  "comandantes": [
+   "Thranduil, the Elvenking"
+  ],
+  "n_combos": [
+   4
+  ],
+  "n_quase": [
+   98
+  ],
+  "bracket_estimado": [
+   "R"
+  ],
+  "game_changers": [
+   "Rhystic Study"
+  ],
+  "combos": [
+   "Agatha's Soul Cauldron + Devoted Druid + Immaculate Magistrate",
+   "Agatha's Soul Cauldron + Devoted Druid + Incubation Druid",
+   "Devoted Druid + Immaculate Magistrate + Thranduil, the Elvenking",
+   "Devoted Druid + Tyvar, the Pummeler"
+  ],
+  "combos_2_cartas": [
+   "Devoted Druid + Tyvar, the Pummeler"
+  ],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [
+   "3",
+   "4"
+  ],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "tom-bombadil-wubrg",
+  "total": 100,
+  "comandantes": [
+   "Tom Bombadil"
+  ],
+  "n_combos": [
+   1
+  ],
+  "n_quase": [
+   83
+  ],
+  "bracket_estimado": [
+   "P"
+  ],
+  "game_changers": [
+   "Enlightened Tutor",
+   "Serra's Sanctum",
+   "Teferi's Protection"
+  ],
+  "combos": [
+   "Clockspinning + There and Back Again"
+  ],
+  "combos_2_cartas": [
+   "Clockspinning + There and Back Again"
+  ],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [
+   "3"
+  ],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "toph-naya",
+  "total": 100,
+  "comandantes": [
+   "Toph, the First Metalbender"
+  ],
+  "n_combos": [
+   29
+  ],
+  "n_quase": [
+   377
+  ],
+  "bracket_estimado": [
+   "R"
+  ],
+  "game_changers": [
+   "Enlightened Tutor",
+   "Field of the Dead",
+   "Teferi's Protection"
+  ],
+  "combos": [
+   "Ashaya, Soul of the Wild + Badgermole Cub + Zuran Orb",
+   "Ashaya, Soul of the Wild + Bumi, Eclectic Earthbender + Zuran Orb",
+   "Ashaya, Soul of the Wild + Earth Kingdom General + Zuran Orb",
+   "Ashaya, Soul of the Wild + Earthbending Student + Zuran Orb",
+   "Dryad of the Ilysian Grove + Gruul Turf + Horizon Explorer + Springheart Nantuko",
+   "Dryad of the Ilysian Grove + Gruul Turf + Spelunking + Springheart Nantuko",
+   "Dryad of the Ilysian Grove + Horizon Explorer + Selesnya Sanctuary + Springheart Nantuko",
+   "Dryad of the Ilysian Grove + Selesnya Sanctuary + Spelunking + Springheart Nantuko",
+   "Felidar Retreat + Gruul Turf + Kodama of the East Tree",
+   "Felidar Retreat + Kodama of the East Tree + Selesnya Sanctuary",
+   "Field of the Dead + Gruul Turf + Kodama of the East Tree",
+   "Field of the Dead + Kodama of the East Tree + Selesnya Sanctuary",
+   "Gruul Turf + Kodama of the East Tree + Sapling Nursery",
+   "Gruul Turf + Kodama of the East Tree + Scute Swarm",
+   "Gruul Turf + Kodama of the East Tree + Springheart Nantuko",
+   "Gruul Turf + Kodama of the East Tree + Tireless Provisioner",
+   "Kodama of the East Tree + Sapling Nursery + Selesnya Sanctuary",
+   "Kodama of the East Tree + Scute Swarm + Selesnya Sanctuary",
+   "Kodama of the East Tree + Selesnya Sanctuary + Springheart Nantuko",
+   "Kodama of the East Tree + Selesnya Sanctuary + Tireless Provisioner",
+   "Krark-Clan Ironworks + Mycosynth Lattice + Toph, the First Metalbender",
+   "Lotus Cobra + Springheart Nantuko",
+   "Lotus Cobra + Springheart Nantuko + Toph, the First Metalbender",
+   "Mycosynth Lattice + Toph, the First Metalbender + Zuran Orb",
+   "Nissa, Resurgent Animist + Springheart Nantuko",
+   "Nissa, Resurgent Animist + Springheart Nantuko + Toph, the First Metalbender",
+   "Springheart Nantuko + Tireless Provisioner",
+   "Springheart Nantuko + Tireless Provisioner + Toph, the First Metalbender",
+   "The Stasis Coffin + Toph, the First Metalbender"
+  ],
+  "combos_2_cartas": [
+   "Lotus Cobra + Springheart Nantuko",
+   "Nissa, Resurgent Animist + Springheart Nantuko",
+   "Springheart Nantuko + Tireless Provisioner",
+   "The Stasis Coffin + Toph, the First Metalbender"
+  ],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [
+   "3"
+  ],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "ulalek-wurbg",
+  "total": 100,
+  "comandantes": [
+   "Ulalek, Fused Atrocity"
+  ],
+  "n_combos": [
+   5
+  ],
+  "n_quase": [
+   58
+  ],
+  "bracket_estimado": [
+   "R"
+  ],
+  "game_changers": [
+   "Ancient Tomb",
+   "Rhystic Study",
+   "The One Ring"
+  ],
+  "combos": [
+   "Echoes of Eternity + Glaring Fleshraker + Ulalek, Fused Atrocity",
+   "Echoes of Eternity + Kozilek's Unsealing + Ulalek, Fused Atrocity",
+   "Echoes of Eternity + Ulalek, Fused Atrocity + Writhing Chrysalis",
+   "Eldritch Immunity + Ulalek, Fused Atrocity + Writhing Chrysalis",
+   "Glaring Fleshraker + Roaming Throne + Ulalek, Fused Atrocity"
+  ],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [
+   "3"
+  ],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "ur-dragon-wurbg",
+  "total": 100,
+  "comandantes": [
+   "The Ur-Dragon"
+  ],
+  "n_combos": [
+   3
+  ],
+  "n_quase": [
+   148
+  ],
+  "bracket_estimado": [
+   "S"
+  ],
+  "game_changers": [
+   "Ancient Tomb",
+   "Smothering Tithe",
+   "Teferi's Protection"
+  ],
+  "combos": [
+   "Ancient Gold Dragon + Dragon Tempest",
+   "Bladewing the Risen + Miirym, Sentinel Wyrm + Terror of the Peaks",
+   "Hellkite Charger + Old Gnawbone"
+  ],
+  "combos_2_cartas": [
+   "Ancient Gold Dragon + Dragon Tempest",
+   "Hellkite Charger + Old Gnawbone"
+  ],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [
+   "2",
+   "3",
+   "4"
+  ],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "vihaan-goldwaker-mardu",
+  "total": 100,
+  "comandantes": [
+   "Vihaan, Goldwaker"
+  ],
+  "n_combos": [
+   4
+  ],
+  "n_quase": [
+   98
+  ],
+  "bracket_estimado": [
+   "P"
+  ],
+  "game_changers": [
+   "Smothering Tithe",
+   "Teferi's Protection"
+  ],
+  "combos": [
+   "Anointed Procession + Gleaming Splendor + Smothering Tithe",
+   "Ashnod's Altar + Mahadi, Emporium Master + Revel in Riches",
+   "Gleaming Splendor + Goldspan Dragon + Smothering Tithe",
+   "Gleaming Splendor + Smothering Tithe + Xorn"
+  ],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [
+   "3",
+   "4"
+  ],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "wh40k-forces-of-imperium",
+  "total": 100,
+  "comandantes": [
+   "Inquisitor Greyfax",
+   "Marneus Calgar"
+  ],
+  "n_combos": [
+   0,
+   0
+  ],
+  "n_quase": [
+   6,
+   6
+  ],
+  "bracket_estimado": [
+   "E",
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "wh40k-necron-dynasties",
+  "total": 100,
+  "comandantes": [
+   "Szarekh, the Silent King",
+   "Imotekh the Stormlord"
+  ],
+  "n_combos": [
+   0,
+   0
+  ],
+  "n_quase": [
+   26,
+   26
+  ],
+  "bracket_estimado": [
+   "E",
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "wh40k-ruinous-powers",
+  "total": 100,
+  "comandantes": [
+   "Abaddon the Despoiler",
+   "Be'lakor, the Dark Master"
+  ],
+  "n_combos": [
+   0,
+   0
+  ],
+  "n_quase": [
+   47,
+   47
+  ],
+  "bracket_estimado": [
+   "E",
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "wh40k-tyranid-swarm",
+  "total": 100,
+  "comandantes": [
+   "The Swarmlord",
+   "Magus Lucea Kane"
+  ],
+  "n_combos": [
+   0,
+   0
+  ],
+  "n_quase": [
+   5,
+   5
+  ],
+  "bracket_estimado": [
+   "E",
+   "E"
+  ],
+  "game_changers": [],
+  "combos": [],
+  "combos_2_cartas": [],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [],
+  "controles": [
+   true,
+   true
+  ]
+ },
+ {
+  "deck": "wise-mothman-sultai",
+  "total": 100,
+  "comandantes": [
+   "The Wise Mothman"
+  ],
+  "n_combos": [
+   2
+  ],
+  "n_quase": [
+   138
+  ],
+  "bracket_estimado": [
+   "S"
+  ],
+  "game_changers": [
+   "Fierce Guardianship"
+  ],
+  "combos": [
+   "Altar of Dementia + The Great Henge",
+   "Bloodchief Ascension + Mindcrank"
+  ],
+  "combos_2_cartas": [
+   "Altar of Dementia + The Great Henge",
+   "Bloodchief Ascension + Mindcrank"
+  ],
+  "nao_reconhecidos": [],
+  "bracket_mencionado": [
+   "3"
+  ],
+  "controles": [
+   true,
+   true
+  ]
+ }
+]

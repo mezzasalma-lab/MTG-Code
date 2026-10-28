@@ -1,5 +1,7 @@
 # The Wise Mothman — log do goldfish (simulador `mothman_goldfish_v1.py`)
 
+> **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
+
 > **Atualização 2026-10-20 (§24): compra no 1º turno (Commander multijogador: ninguém pula).** O Mothman era o ÚNICO dos 20 simuladores que pulava (varredura em execução, 80 sementes: queda da biblioteca 0 em 71/80). Corrigido (`FIRST_TURN_SKIPS_DRAW = False`; `True` = comportamento antigo, bit-idêntico em 20.000 × 2 modos): comandante até T4 **+9,09 \* (padrão) / +8,46 \* (resiliência)**, mesa limpa até T8 **+9,60 \* / +6,92 \***; **nova linha de base T8 69,6% / 35,0%**. **Os números dos §1 a §23 abaixo foram medidos SEM a compra do T1 e estão superados em magnitude (não refeitos)**: [`resultados-ab/2026-10-20-compra-no-t1/`](resultados-ab/2026-10-20-compra-no-t1/LEIAME.md).
 
 > **Atualização 2026-10-11 (§23): a Fabled Passage voltou no lugar da Prismatic Vista** (pergunta do usuário *"Pq a Vista é melhor que a Fabled?"* e "Sim" à volta; custo medido: comandante até T3 **−0,44 \* / −0,41 \***, mesa limpa T8 −0,36 \* / −0,07 (ruído); ganho: vida mínima **+0,32 / +0,33**; **nova linha de base T8 60,0% / 28,1%**): [`resultados-ab/2026-10-11-vista-volta-fabled/`](resultados-ab/2026-10-11-vista-volta-fabled/LEIAME.md).

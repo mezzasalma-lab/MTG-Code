@@ -1,0 +1,403 @@
+{
+ "deck": "kutzil-selesnya",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Kutzil, Malamet Exemplar",
+   "incluidos": {},
+   "quase": {
+    "Heliod, Sun-Crowned + Walking Ballista": {
+     "id": "1274-3693",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Selvala, Heart of the Wilds + Staff of Domination": {
+     "id": "527-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Gatta and Luzzu + Hardened Scales + Walking Ballista": {
+     "id": "2265-3693-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Selvala, Heart of the Wilds + Umbral Mantle": {
+     "id": "527-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Archangel of Thune + Walking Ballista": {
+     "id": "2919-3693",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Jumbo Cactuar + Swords to Plowshares": {
+     "id": "3779-6323",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite lifegain"
+     ]
+    },
+    "Jumbo Cactuar + Selvala, Heart of the Wilds": {
+     "id": "527-6323",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite colored mana"
+     ]
+    },
+    "Cleric Class + Walking Ballista": {
+     "id": "104-3693",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Hardened Scales + Vigor + Walking Ballista": {
+     "id": "2265-3693-4120",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Gatta and Luzzu + The Earth Crystal + Walking Ballista": {
+     "id": "3693-6593-6627",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Branching Evolution + Gatta and Luzzu + Walking Ballista": {
+     "id": "2445-3693-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Branching Evolution + Vigor + Walking Ballista": {
+     "id": "2445-3693-4120",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Gatta and Luzzu + Innkeeper's Talent + Walking Ballista": {
+     "id": "3693-5902-6593",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Ozolith, the Shattered Spire + Vigor + Walking Ballista": {
+     "id": "3693-4120-4565",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Gatta and Luzzu + Ozolith, the Shattered Spire + Walking Ballista": {
+     "id": "3693-4565-6593",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Selvala, Heart of the Wilds + Sword of the Paruns": {
+     "id": "527-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Innkeeper's Talent + Vigor + Walking Ballista": {
+     "id": "3693-4120-5902",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "The Earth Crystal + Vigor + Walking Ballista": {
+     "id": "3693-4120-6627",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Light of Promise + Walking Ballista": {
+     "id": "338-3693",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Hardened Scales + Strength of Will + Walking Ballista": {
+     "id": "2265-3693-6919",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Evolution Witness + Metastatic Evangel + Walking Ballista": {
+     "id": "3693-5660-5684",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Spellbinder + Teferi's Protection": {
+     "id": "1328-5141",
+     "bracketTag": "S",
+     "produz": [
+      "Permanents you control phase out during your opponents' turns",
+      "You have protection from everything during your opponents' turns",
+      "Your life total can't change during your opponents' turns"
+     ]
+    },
+    "The Destined White Mage + Walking Ballista": {
+     "id": "3693-6996",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Hardened Scales + Rite of Passage + Walking Ballista": {
+     "id": "292-2265-3693",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Ozolith, the Shattered Spire + Strength of Will + Walking Ballista": {
+     "id": "3693-4565-6919",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Sunbond + Walking Ballista": {
+     "id": "3693-4017",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Michelangelo, Weirdness to 11 + Vigor + Walking Ballista": {
+     "id": "3693-4120-7267",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on creatures you control",
+      "Infinite damage"
+     ]
+    },
+    "Innkeeper's Talent + Strength of Will + Walking Ballista": {
+     "id": "3693-5902-6919",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on a creature"
+     ]
+    },
+    "Branching Evolution + Rite of Passage + Walking Ballista": {
+     "id": "292-2445-3693",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Spider-Man, Peter Parker + Walking Ballista": {
+     "id": "3693-6824",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain triggers",
+      "Infinite lifegain"
+     ]
+    },
+    "Balancing Act + Teferi's Protection": {
+     "id": "70-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Each opponent sacrifices all permanents they control",
+      "Mass Land Denial"
+     ]
+    },
+    "Gatta and Luzzu + Michelangelo, Weirdness to 11 + Walking Ballista": {
+     "id": "3693-6593-7267",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite damage"
+     ]
+    },
+    "Ozolith, the Shattered Spire + Rite of Passage + Walking Ballista": {
+     "id": "292-3693-4565",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Enduring Renewal + Walking Ballista": {
+     "id": "678-3693",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Evolution Witness + Metastatic Evangel + Stonecoil Serpent": {
+     "id": "1182-5660-5684",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite death triggers"
+     ]
+    },
+    "Urban Daggertooth + Walking Ballista": {
+     "id": "3693-5017",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite proliferate"
+     ]
+    },
+    "Seedcradle Witch + Selvala, Heart of the Wilds": {
+     "id": "527-2024",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinitely large creatures you control until end of turn",
+      "Infinite mana creatures you control can produce"
+     ]
+    },
+    "Innkeeper's Talent + Rite of Passage + Walking Ballista": {
+     "id": "292-3693-5902",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Michelangelo, Weirdness to 11 + Strength of Will + Walking Ballista": {
+     "id": "3693-6919-7267",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on a creature",
+      "Infinite damage"
+     ]
+    },
+    "Heroic Feast + Walking Ballista": {
+     "id": "3693-7743",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite damage",
+      "Infinite lifegain",
+      "Infinite lifegain triggers"
+     ]
+    },
+    "Rite of Passage + The Earth Crystal + Walking Ballista": {
+     "id": "292-3693-6627",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite damage",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Gauntlets of Light + Selvala, Heart of the Wilds": {
+     "id": "527-1995",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Bellowing Aegisaur + Walking Ballista": {
+     "id": "1617-3693",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite +1/+1 counters on most creatures you control"
+     ]
+    },
+    "Enduring Renewal + Stonecoil Serpent": {
+     "id": "678-1182",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite death triggers",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Michelangelo, Weirdness to 11 + Rite of Passage + Walking Ballista": {
+     "id": "292-3693-7267",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite +1/+1 counters on creatures you control",
+      "Infinite damage"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "P",
+    "game_changers": [
+     "Field of the Dead",
+     "Teferi's Protection"
+    ],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [
+  "3"
+ ],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

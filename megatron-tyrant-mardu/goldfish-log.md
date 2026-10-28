@@ -1,5 +1,7 @@
 # Goldfish Log — Megatron, Tyrant
 
+> **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
+
 > **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: London Mulligan e fetch lands (2026-10-03, 2ª rodada):** [`resultados-ab/2026-10-03-mulligan-e-fetches/LEIAME.md`](resultados-ab/2026-10-03-mulligan-e-fetches/LEIAME.md) — brutos `.json.xz` por partida, código antes/depois, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
 > **Dados brutos e como reproduzir as tabelas da seção Correção do simulador: Myriad Landscape e terreno tapped em T1/T2 (2026-10-03):** [`resultados-ab/2026-10-03-myriad-e-tapped-t1t2/LEIAME.md`](resultados-ab/2026-10-03-myriad-e-tapped-t1t2/LEIAME.md) — brutos `.json.xz` por partida, código antes/depois, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).

@@ -1,0 +1,840 @@
+{
+ "deck": "hei-bai-wurbg",
+ "data": "2026-10-28",
+ "total_cartas_parseadas": 100,
+ "nomes_nao_reconhecidos": [],
+ "opcoes_de_comandante": [
+  {
+   "comandante": "Hei Bai, Forest Guardian",
+   "incluidos": {},
+   "quase": {
+    "Hullbreaker Horror + Sol Ring": {
+     "id": "513-5034--46",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Deadeye Navigator + Peregrine Drake": {
+     "id": "1409-3821",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite blinking",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Displacer Kitten + Sol Ring + Teferi, Time Raveler": {
+     "id": "1170-4761-5034",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite draw triggers",
+      "Near-infinite colorless mana"
+     ]
+    },
+    "Sol Ring + Tidespout Tyrant": {
+     "id": "542-5034",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colorless mana",
+      "Infinite storm count"
+     ]
+    },
+    "Bloom Tender + Freed from the Real": {
+     "id": "4222-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-blue mana of colors among permanents you control",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Cloud of Faeries + Deadeye Navigator": {
+     "id": "1409-1741",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Bloom Tender + Staff of Domination": {
+     "id": "2645-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite lifegain triggers",
+      "Infinite lifegain",
+      "Infinite card draw"
+     ]
+    },
+    "Bloom Tender + Pemmin's Aura": {
+     "id": "3525-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-blue mana of colors among permanents you control",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Jumbo Cactuar + Swords to Plowshares": {
+     "id": "3779-6323",
+     "bracketTag": "R",
+     "produz": [
+      "Near-infinite lifegain"
+     ]
+    },
+    "Freed from the Real + Sanctum Weaver": {
+     "id": "1355-4222",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Ad Nauseam + Teferi's Protection": {
+     "id": "335-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite card draw"
+     ]
+    },
+    "Dualcaster Mage + Ephemerate": {
+     "id": "147-5144",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Purphoros, God of the Forge + The World Tree": {
+     "id": "366-4218",
+     "bracketTag": "C",
+     "produz": [
+      "Near-infinite damage"
+     ]
+    },
+    "Deadeye Navigator + Palinchron": {
+     "id": "1409-3542",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite mana lands you control can produce"
+     ]
+    },
+    "Pemmin's Aura + Sanctum Weaver": {
+     "id": "1355-3525",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Aggravated Assault + Sanctum Weaver": {
+     "id": "1355-3750",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite combat phases",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Deadeye Navigator + Intruder Alarm": {
+     "id": "1409-1636",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite untap of most creatures you control",
+      "Infinite blinking",
+      "Infinite creature ETB"
+     ]
+    },
+    "Aggravated Assault + Enduring Vitality": {
+     "id": "3750-6006",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite combat phases",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Deadeye Navigator + Loot, the Pathfinder": {
+     "id": "1409-6253",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB"
+     ]
+    },
+    "Blazing Firesinger // Seething Song + Displacer Kitten": {
+     "id": "1170-7494",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Abdel Adrian, Gorion's Ward + Deadeye Navigator": {
+     "id": "372-1409",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite blinking",
+      "Infinite creature tokens",
+      "Infinite creature ETB"
+     ]
+    },
+    "Deadeye Navigator + Tivit, Seller of Secrets": {
+     "id": "1409-1977",
+     "bracketTag": "O",
+     "produz": [
+      "Infinite colored mana if your opponent allows it",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Deadeye Navigator + Great Whale": {
+     "id": "1409-2792",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite mana lands you control can produce"
+     ]
+    },
+    "Starfield of Nyx + Touch the Spirit Realm": {
+     "id": "1917-4608",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB"
+     ]
+    },
+    "Sanctum Weaver + Staff of Domination": {
+     "id": "1355-2645",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "Gauntlets of Light + Sanctum Weaver": {
+     "id": "1355-1995",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Displacer Kitten + Neera, Wild Mage": {
+     "id": "1170-4987",
+     "bracketTag": "O",
+     "produz": [
+      "Cast any spell of your choice from your library",
+      "Infinite cast triggers for all spells in your library",
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Obliterate + Teferi's Protection": {
+     "id": "2548-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Mass Land Denial",
+      "Destroy all lands, creatures, and artifacts your opponents control"
+     ]
+    },
+    "Teferi's Protection + Zethi, Arcane Blademaster": {
+     "id": "249-5141",
+     "bracketTag": "S",
+     "produz": [
+      "Permanents you control phase out during your opponents' turns",
+      "Your life total can't change during your opponents' turns",
+      "Lock"
+     ]
+    },
+    "Teferi's Protection + Worldfire": {
+     "id": "3765-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Each opponent's life total becomes 1",
+      "Exile all cards in hands and graveyards",
+      "Exile all permanents opponents control"
+     ]
+    },
+    "Ephemerate + Naru Meha, Master Wizard": {
+     "id": "141-5144",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite magecraft triggers"
+     ]
+    },
+    "Displacer Kitten + Goblin Glasswright // Craft with Pride": {
+     "id": "1170-7520",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite creature ETB"
+     ]
+    },
+    "Sanctum Weaver + Seedcradle Witch": {
+     "id": "1355-2024",
+     "bracketTag": "S",
+     "produz": [
+      "Infinitely large creatures you control until end of turn",
+      "Infinite colored mana",
+      "Infinitely large creature until end of turn"
+     ]
+    },
+    "Bloom Tender + Deadeye Navigator + Derevi, Empyrial Tactician": {
+     "id": "1409-2608-5168",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite green mana",
+      "Infinite creature LTB"
+     ]
+    },
+    "Deadeye Navigator + Vivi Ornitier": {
+     "id": "1409-6586",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite red mana"
+     ]
+    },
+    "Bloom Tender + Sword of the Paruns": {
+     "id": "5168-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite untap of creatures you control",
+      "Infinite mana creatures you control can produce",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Spellbinder + Teferi's Protection": {
+     "id": "1328-5141",
+     "bracketTag": "S",
+     "produz": [
+      "Permanents you control phase out during your opponents' turns",
+      "You have protection from everything during your opponents' turns",
+      "Your life total can't change during your opponents' turns"
+     ]
+    },
+    "Purphoros, God of the Forge + Storm Herd": {
+     "id": "366-2067",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite creature ETB",
+      "Near-infinite creature tokens",
+      "Near-infinite damage"
+     ]
+    },
+    "Elesh Norn, Mother of Machines + Palinchron": {
+     "id": "1770-3542",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB",
+      "Infinite mana lands you control can produce"
+     ]
+    },
+    "Sanctum Weaver + Umbral Mantle": {
+     "id": "1355-2816",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Bloom Tender + Vigean Graftmage": {
+     "id": "4019-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-blue mana of colors among permanents you control"
+     ]
+    },
+    "Bloom Tender + High Alert": {
+     "id": "4896-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite red mana",
+      "Infinite green mana",
+      "Infinite black mana"
+     ]
+    },
+    "Azor, the Lawbringer + Teleportation Circle": {
+     "id": "205-2963",
+     "bracketTag": "S",
+     "produz": [
+      "Opponents can't cast instant spells during their turns",
+      "Opponents can't cast sorcery spells",
+      "Lock"
+     ]
+    },
+    "Virtue of Loyalty // Ardenvale Fealty + Weaver of Harmony": {
+     "id": "1300-5855",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite untap of creatures you control",
+      "Infinite mana creatures you control can produce",
+      "Infinite +1/+1 counters on creatures you control"
+     ]
+    },
+    "Balancing Act + Teferi's Protection": {
+     "id": "70-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Each opponent sacrifices all permanents they control",
+      "Mass Land Denial"
+     ]
+    },
+    "Azor, the Lawbringer + Thassa, Deep-Dwelling": {
+     "id": "205-4428",
+     "bracketTag": "S",
+     "produz": [
+      "Opponents can't cast instant spells during their turns",
+      "Opponents can't cast sorcery spells",
+      "Lock"
+     ]
+    },
+    "Azor, the Lawbringer + Deadeye Navigator": {
+     "id": "205-1409",
+     "bracketTag": "S",
+     "produz": [
+      "Opponents can't cast instant spells during their turns",
+      "Opponents can't cast sorcery spells",
+      "Lock"
+     ]
+    },
+    "Hall of Heliod's Generosity + Second Chance": {
+     "id": "1530-3208",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Skip your draw steps",
+      "Lock"
+     ]
+    },
+    "Deadeye Navigator + Rapacious Dragon": {
+     "id": "1409-3456",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Crab Umbra + Sanctum Weaver": {
+     "id": "1268-1355",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Deadeye Navigator + Elesh Norn, Mother of Machines + Urza, Lord High Artificer": {
+     "id": "457-1409-1770",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite creature LTB",
+      "Infinite creature ETB",
+      "Infinite tapped creature tokens"
+     ]
+    },
+    "Apocalypse + Teferi's Protection": {
+     "id": "4274-5141",
+     "bracketTag": "R",
+     "produz": [
+      "Discard your hand",
+      "Exile all permanents opponents control",
+      "Mass Land Denial"
+     ]
+    },
+    "Freed from the Real + Sanctum of Fruitful Harvest + Weaver of Harmony": {
+     "id": "1300-2826-4222",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Bloom Tender + Chain Stasis": {
+     "id": "195-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite magecraft triggers",
+      "Infinite non-blue mana of colors among permanents you control"
+     ]
+    },
+    "Deadeye Navigator + Village Bell-Ringer": {
+     "id": "1409-2059",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite blinking",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Opalescence + Touch the Spirit Realm": {
+     "id": "1917-5299",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Sanctum Weaver + Sword of the Paruns": {
+     "id": "1355-5200",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Intruder Alarm + Weaver of Harmony": {
+     "id": "1300-1636",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures"
+     ]
+    },
+    "Chancellor of the Spires + Displacer Kitten": {
+     "id": "1170-6513",
+     "bracketTag": "E",
+     "produz": [
+      "Near-infinite magecraft triggers",
+      "Near-infinite creature ETB",
+      "Near-infinite creature LTB"
+     ]
+    },
+    "Deadeye Navigator + Prosperous Pirates": {
+     "id": "1409-4685",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Deadeye Navigator + Elesh Norn, Mother of Machines + Sailor of Means": {
+     "id": "1409-1770-5424",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Curse of Bounty + Weaver of Harmony": {
+     "id": "806-1300",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana nonland permanents you control can produce",
+      "Infinite untap of nonland permanents you control"
+     ]
+    },
+    "Boommobile + Deadeye Navigator": {
+     "id": "1409-6252",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite creature ETB"
+     ]
+    },
+    "Bloom Tender + Gauntlets of Light": {
+     "id": "1995-5168",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite non-white mana of colors among permanents you control",
+      "Infinite mana of colors among permanents you control"
+     ]
+    },
+    "Deadeye Navigator + Sky Hussar": {
+     "id": "1409-3562",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite blinking",
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Go-Shintai of Life's Origin + Second Chance": {
+     "id": "747-1530",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite turns",
+      "Lock"
+     ]
+    },
+    "Awakening + Weaver of Harmony": {
+     "id": "1300-3906",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite mana creatures you control can produce",
+      "Infinite mana for opponents that creatures they control can produce",
+      "Infinite mana for opponents that lands they control can produce"
+     ]
+    },
+    "Pemmin's Aura + Sanctum of Fruitful Harvest + Weaver of Harmony": {
+     "id": "1300-2826-3525",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana"
+     ]
+    },
+    "Sanctum Weaver + Thassa's Ire": {
+     "id": "403-1355",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Deadeye Navigator + Elesh Norn, Mother of Machines + Prosperous Innkeeper": {
+     "id": "1409-1770-4716",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Sanctum of Fruitful Harvest + Staff of Domination + Weaver of Harmony": {
+     "id": "1300-2645-2826",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite card draw",
+      "Infinite colored mana",
+      "Infinite draw triggers"
+     ]
+    },
+    "High Alert + Sanctum Weaver": {
+     "id": "1355-4896",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite untap of creatures you control",
+      "Infinite mana creatures you control can produce"
+     ]
+    },
+    "Ringing Strike Mastery + Sanctum Weaver": {
+     "id": "1355-7500",
+     "bracketTag": "S",
+     "produz": [
+      "Infinite colored mana",
+      "Infinite mana creatures you control can produce",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Charming Scoundrel + Deadeye Navigator + Elesh Norn, Mother of Machines": {
+     "id": "1409-1770-2208",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Casey & Raph, Hotheads + Deadeye Navigator": {
+     "id": "1409-7332",
+     "bracketTag": "R",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Sanctum of Fruitful Harvest + Umbral Mantle + Weaver of Harmony": {
+     "id": "1300-2816-2826",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite colored mana",
+      "Infinitely large creature until end of turn",
+      "Infinite untap of creatures you control"
+     ]
+    },
+    "Burdened Aerialist + Deadeye Navigator + Elesh Norn, Mother of Machines": {
+     "id": "1409-1770-1780",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Corsair Captain + Deadeye Navigator + Elesh Norn, Mother of Machines": {
+     "id": "1409-1770-2307",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Deadeye Navigator + Elesh Norn, Mother of Machines + Jewel Thief": {
+     "id": "775-1409-1770",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Deadeye Navigator + Elesh Norn, Mother of Machines + Plundering Barbarian": {
+     "id": "1409-1449-1770",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Deadeye Navigator + Morselhoarder": {
+     "id": "1409-5007",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite creature ETB",
+      "Infinite creature LTB"
+     ]
+    },
+    "Deadeye Navigator + Elesh Norn, Mother of Machines + Patron of the Arts": {
+     "id": "1409-1652-1770",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Deadeye Navigator + Elesh Norn, Mother of Machines + Skullport Merchant": {
+     "id": "1409-1770-3128",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Deadeye Navigator + Elesh Norn, Mother of Machines + Galazeth Prismari": {
+     "id": "773-1409-1770",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Deadeye Navigator + Elesh Norn, Mother of Machines + Wily Goblin": {
+     "id": "1409-1770-3671",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Deadeye Navigator + Elesh Norn, Mother of Machines + The Third Doctor": {
+     "id": "1409-1770-5422",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Deadeye Navigator + Elesh Norn, Mother of Machines + Kalain, Reclusive Painter": {
+     "id": "1409-1770-5419",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Deadeye Navigator + Elesh Norn, Mother of Machines + Swashbuckler Extraordinaire": {
+     "id": "1409-1770-5423",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Deadeye Navigator + Elesh Norn, Mother of Machines + Exhibition Magician": {
+     "id": "1409-1770-5418",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Deadeye Navigator + Dockside Extortionist": {
+     "id": "914-1409",
+     "bracketTag": "B",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Deadeye Navigator + Elesh Norn, Mother of Machines + Redcap Thief": {
+     "id": "1409-1770-5421",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Deadeye Navigator + Elesh Norn, Mother of Machines + Plundering Pirate": {
+     "id": "1409-1770-5420",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Deadeye Navigator + Elesh Norn, Mother of Machines + Meticulous Artisan": {
+     "id": "1409-1770-6463",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    },
+    "Brazen Freebooter + Deadeye Navigator + Elesh Norn, Mother of Machines": {
+     "id": "582-1409-1770",
+     "bracketTag": "E",
+     "produz": [
+      "Infinite artifact ETB",
+      "Infinite artifact LTB",
+      "Infinite artifact sacrifice triggers"
+     ]
+    }
+   },
+   "estimate_bracket": {
+    "bracketTag": "P",
+    "game_changers": [
+     "Seedborn Muse",
+     "Aura Shards",
+     "Teferi's Protection"
+    ],
+    "banidas": [],
+    "mass_land_denial": [],
+    "extra_turn": [],
+    "combos": []
+   }
+  }
+ ],
+ "bracket_mencionado_em_lista_ou_auditoria_(grep)": [
+  "3",
+  "4"
+ ],
+ "controle_positivo_basalt_rings_apareceu": true,
+ "controle_de_corte_sumiu": true
+}

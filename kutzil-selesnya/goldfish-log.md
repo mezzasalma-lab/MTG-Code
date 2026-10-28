@@ -1,5 +1,7 @@
 # Goldfish Compilado — Kutzil, Malamet Exemplar
 
+> **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
+
 > **Rodada 2026-10-05 (Windswept Heath real e Field of the Dead em todo terreno que entra (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-fetchlands-reais/LEIAME.md`](resultados-ab/2026-10-05-fetchlands-reais/LEIAME.md)
 
 ## Windswept Heath real e Field of the Dead em todo terreno que entra (varredura de 2026-10-05) — 2026-10-05

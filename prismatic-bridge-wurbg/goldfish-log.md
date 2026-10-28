@@ -1,5 +1,7 @@
 # Goldfish Log — Esika, God of the Tree // The Prismatic Bridge
 
+> **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
+
 > **Rodada 2026-10-07 (Payoff de landfall antes do terreno) — dados brutos e reprodução:** [`resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md`](resultados-ab/2026-10-07-landfall-payoff-primeiro/LEIAME.md)
 
 > **Rodada 2026-10-05 (Landfall no terreno devolvido ao campo (varredura de 2026-10-05)) — dados brutos e reprodução:** [`resultados-ab/2026-10-05-landfall-terreno-devolvido/LEIAME.md`](resultados-ab/2026-10-05-landfall-terreno-devolvido/LEIAME.md)

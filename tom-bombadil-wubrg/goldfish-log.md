@@ -1,5 +1,7 @@
 # Tom Bombadil — goldfish log
 
+> **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
+
 > **Rodada 2026-10-05 (varredura de classes de erro; nenhuma correção de código aqui):** [`varredura-2026-10-05/LEIAME.md`](../varredura-2026-10-05/LEIAME.md)
 
 

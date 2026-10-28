@@ -1,5 +1,7 @@
 # Goldfish Log — Vihaan, Goldwaker
 
+> **Spellbook de 2026-10-28 (todos os decks) — respostas cruas da API e reprodução:** [`resultados-ab/2026-10-28-spellbook/LEIAME.md`](resultados-ab/2026-10-28-spellbook/LEIAME.md)
+
 > **Dados brutos e como reproduzir as tabelas da seção Mythos of Snapdax no lugar do Blood Money (2026-10-04):** [`resultados-ab/2026-10-04-mythos-no-lugar-do-blood-money/LEIAME.md`](resultados-ab/2026-10-04-mythos-no-lugar-do-blood-money/LEIAME.md) — brutos `.json.xz` por partida, código antes, resumos, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
 
 > **Dados brutos e como reproduzir as tabelas da seção Make an Example, Slaughter the Strong e Mythos of Snapdax: as 3 que o usuário escolheu (2026-10-04):** [`resultados-ab/2026-10-04-make-an-example-slaughter-mythos/LEIAME.md`](resultados-ab/2026-10-04-make-an-example-slaughter-mythos/LEIAME.md) — Commander Spellbook cru, oráculo e rulings ao vivo, tabelas por fase, comandos, hashes e verificação de reprodutibilidade (Regra #8 do `CLAUDE.md`).
