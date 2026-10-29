@@ -13,5 +13,6 @@ python3 -I pws_por_turno.py --premissa-fracture > $T/e; cmpf e pws_por_turno_pre
 for n in 1 2 3; do PYTHONHASHSEED=0 python3 -I replay_manual_6.py $n > $T/r$n 2>&1; cmpf r$n replay_semente_$n.txt; done
 for cfg in "padrao default" "resiliencia default" "resiliencia playtester"; do set -- $cfg; PYTHONHASHSEED=0 python3 -I replay_escala_6.py 300 $1 $2 > $T/s_$1_$2 2>&1; cmpf s_$1_$2 replay_escala_300_$1_$2.txt; done
 (cd ../../../testes && PYTHONHASHSEED=0 python3 -I rodar_testes.py 2>&1 | tail -1) > $T/t; cmpf t testes_tam_todos.txt
+PYTHONHASHSEED=0 python3 -I lista_testes_manual6.py > $T/l 2>&1; cmpf l testes_manual6_lista.txt      # uma linha por teste: pega troca de teste que falha por um que passa
 rm -rf $T
 echo "$ok/$total saidas byte a byte iguais"

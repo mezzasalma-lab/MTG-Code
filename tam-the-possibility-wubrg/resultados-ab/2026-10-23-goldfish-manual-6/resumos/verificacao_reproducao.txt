@@ -10,4 +10,5 @@ IGUAL  replay_escala_300_padrao_default.txt
 IGUAL  replay_escala_300_resiliencia_default.txt
 IGUAL  replay_escala_300_resiliencia_playtester.txt
 IGUAL  testes_tam_todos.txt
-12/12 saidas byte a byte iguais
+IGUAL  testes_manual6_lista.txt
+13/13 saidas byte a byte iguais

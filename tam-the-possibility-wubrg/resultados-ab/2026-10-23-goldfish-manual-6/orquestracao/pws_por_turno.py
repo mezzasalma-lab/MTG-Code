@@ -3,6 +3,8 @@ entra num evento `* -> battlefield`, sai num evento `battlefield -> <outra zona>
 nao ficou). Ficha de Jace = nome "Jace" com token=True. Sem a premissa nenhuma: o que o log permite concluir.
 Sobre a ficha de Jace do T4 (id Yap1mo...): NAO tem evento de saida, mas no T8 o Sanctum Lurker (empower Jace 1) cria uma ficha NOVA (outro id): pela regra (so' se cria ficha se nao se controla uma) ela ja'
 nao estava em campo no T8. Sem a flag, conto a ficha ate' o T7; `--premissa-fracture` conta a saida no T4 (a Fracture do oponente e' o unico evento de oponente que pode te-la tirado; o usuario nao lembra o alvo).
+Este script e' ESPECIFICO deste log (prefixo de id `Yap1mo` e turno de saida 4/8 da ficha de Jace do T4 estao fixos de proposito).
+Nota de 2026-10-29: o bloco T11 contem DOIS inicios de turno (o turno extra do Oko, jogado a mao; ver `testes/t_manual6.py`, duvida 6); a contagem "T11" e' a do FIM do bloco, isto e, do fim do turno extra.
 Uso: python3 pws_por_turno.py [--premissa-fracture]"""
 import json, os, sys, collections
 AQUI = os.path.dirname(os.path.abspath(__file__))

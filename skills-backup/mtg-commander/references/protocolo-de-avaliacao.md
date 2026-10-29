@@ -105,6 +105,7 @@ Não coberto (declarar na Regra #7): magia que põe terreno em campo antes do pa
 | li o comentário do código ("whenever Beorn attacks … ilegal no turno do cast") em vez do oráculo ("at the beginning of combat") e deixei o gate de ataque por semanas | comparar a CLÁUSULA do oráculo com a condição do `if`, não com o comentário; ler o gatilho de fase antes de aceitar `can_attack` |
 | li as rulings do Ichormoon Gauntlet / Bloom Tender só no fechamento da rodada (Regra #3 manda ler ANTES de escrever o código) e citei uma regra de turno extra de memória no rascunho | baixar `rulings_uri` antes de implementar; citar regra só com fonte lida |
 | cheguei a escrever "4 planeswalkers diferentes" no LEIAME dos turnos extras do #5 sem conferir o log (era Jace, Domri, Vronos e Jace de novo, 2 no mesmo turno) | reler o log antes de afirmar quem fez o quê |
+| li a resposta do usuário *"só não usei o botão de passar turno"* como "o turno extra não foi jogado" e dei o Dack Fayden como "sem fonte no log"; o bruto tinha um 2º início de turno (desvirar + comprar) dentro do bloco | toda resposta que diz o que o usuário NÃO fez se confere contra o bruto antes de virar texto; procurar a assinatura de turno (desvirar tudo + `library → hand`) por bloco; teste com controle de corte |
 | métrica do simulador refletia convenção da IA (atacar com tudo) | Regra #5: linha deliberada, medir o teto |
 | declarei "auditoria completa" e apareceram bugs | Regra #7: escopo verificado e não verificado |
 | citei `goldfish-log.md` sem pasta e abriu o da Azula | caminho completo sempre |

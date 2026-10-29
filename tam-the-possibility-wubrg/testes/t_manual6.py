@@ -1,5 +1,5 @@
 """Cada clausula operacional do relato do usuario (goldfish manual #6, 2026-10-23; 11 blocos T1..T11, com foto da mao inicial) e' uma afirmacao testavel sobre o simulador (CLAUDE.md Regra #6).
-Respostas do usuario de 2026-10-28 em `resultados-ab/2026-10-23-goldfish-manual-6/dados/respostas_usuario_2026-10-28.txt`: 2 e 7 CONFIRMADAS; 3 ("Lurker") e 9 respondidas; 1 e 6 "nao me lembro"; 4 respondida com uma
+Respostas do usuario de 2026-10-28 em `resultados-ab/2026-10-23-goldfish-manual-6/dados/respostas_usuario_2026-10-28.txt`: 2 e 7 CONFIRMADAS (a 7 foi relida em 2026-10-29: o turno extra do Oko FOI jogado a mao, ver o teste da duvida 6); 3 ("Lurker") e 9 respondidas; 1 e 6 "nao me lembro" (a 6 se explica pelo log); 4 respondida com uma
 explicacao que o proprio log refuta para o T9 (o Gauntlet so' entra no T10 e o Flux Channeler no T11). Estes testes reproduzem as jogadas PELAS REGRAS (oraculo do cache do Scryfall), nao a leitura do usuario.
 Os testes M6-T9 e M6-T4b documentam DIVERGENCIAS entre o relato e as regras (o simulador esta certo nos dois: a Tam proliferaria 4 vezes; o Oko do T4 nao cabe no mana)."""
 from harness import *
@@ -19,7 +19,6 @@ def _():
     st = mk(turn=3, bf=["Plaza of Heroes", "Steam Vents", "Hallowed Fountain"])
     check(T.can_cast_name(st, "Tam, the Possibility", "cz") and T.cast_card(st, "Tam, the Possibility", "cz") and perm(st, "Tam, the Possibility") is not None)
     st = mk(turn=3, bf=["Steam Vents", "Hallowed Fountain", "Watery Grave"])
-    opp_all_colors(st)
     for o in st.opps:
         o.land_colors = ["W", "U", "B", "R"]
     check(not T.can_cast_name(st, "Tam, the Possibility", "cz"), "sem fonte de {G}: nao conjura")
@@ -94,13 +93,17 @@ def _():
     check(act(st, "Jace Token", "Sanctum Lurker", "+2") and loy(st, "Jace Token") == 3 and st.life == life + 1, "o +2 concedido pelo Lurker vale pra ficha de Jace: L3, +1 de vida")
 
 
-@test("Manual #6 T8: o Prismari Command do oponente (`2 damage to any target`) mata o Sanctum Lurker: o Lurker e' 3/2 no oraculo (resposta 9: 'Prismari matou pelo 2 de dano'); a ficha de Jace fica em campo com o Lurker fora? (o texto estatico dele so' vale com ele em campo)")
+@test("Manual #6 T8: o Prismari Command do oponente (`2 damage to any target`) mata o Sanctum Lurker: o Lurker e' 3/2 no oraculo (resposta 9: 'Prismari matou pelo 2 de dano'), o dano 2 basta, e a ficha de Jace (L2) FICA em campo com o Lurker fora (o log mostra a ficha viva nos T9-T11)")
 def _():
     lurker = T.CARD_DB["Sanctum Lurker"]
     check((lurker.power, lurker.toughness) == (3, 2), "Lurker %s/%s" % (lurker.power, lurker.toughness))
     st = mk(turn=8, bf=["Tam, the Possibility", "Sanctum Lurker", P("Jace Token", loyalty=2, token=True)])
     lk = perm(st, "Sanctum Lurker")
-    check(T.toughness(st, lk) == 2)
+    check(T.toughness(st, lk) == 2, "resistencia 2: o dano 2 do Prismari mata")
+    T.remove_permanent(st, lk, "opp_removal")
+    check(perm(st, "Sanctum Lurker") is None and "Sanctum Lurker" in st.graveyard, "Lurker morreu e foi ao cemiterio")
+    T.sba(st)
+    check(perm(st, "Jace Token") is not None and loy(st, "Jace Token") == 2, "a ficha de Jace sobrevive a morte do Lurker (L2): %s" % loy(st, "Jace Token"))
 
 
 @test("Manual #6 T9 (DIVERGENCIA DO RELATO): Tam `{W}{U}{B}{R}{G},{T}: Proliferate X times`, X = tipos de planeswalker (Oko, Domri, Wrenn, Jace = 4): proliferaria 4 VEZES (+4 em cada um); o log do usuario tem UMA onda de +1")
@@ -173,7 +176,7 @@ def _():
         T.interaction_chance = old
 
 
-@test("Manual #6 T11: Ichormoon Gauntlet `[0]: Proliferate` em 3 planeswalkers (Wrenn, Tezzeret, Domri) = 3 proliferates: +3 em TODOS os planeswalkers; Oko `-12` (Gauntlet) 15 -> 3 enfileira o turno extra (resposta 7: CONFERE; ele nao passou o turno)")
+@test("Manual #6 T11: Ichormoon Gauntlet `[0]: Proliferate` em 3 planeswalkers (Wrenn, Tezzeret, Domri) = 3 proliferates: +3 em TODOS os planeswalkers; Oko `-12` (Gauntlet) 15 -> 3 enfileira o turno extra (resposta 7: CONFERE; ele nao apertou o botao de passar turno)")
 def _():
     st = mk(turn=11, bf=["Tam, the Possibility", "Ichormoon Gauntlet", P("Wrenn and Realmbreaker", loyalty=1), P("Tezzeret the Seeker", loyalty=1), P("Domri, Chaos Bringer", loyalty=10), P("Oko, Thief of Crowns", loyalty=14), P("Jace Token", loyalty=4, token=True)])
     for n in ("Wrenn and Realmbreaker", "Tezzeret the Seeker", "Domri, Chaos Bringer"):
@@ -191,16 +194,53 @@ def _():
     check(act(st, "Dihada, Binder of Wills", "Ichormoon Gauntlet", "0") and loy(st, "Dihada, Binder of Wills") == 6, "[0]: proliferate no proprio Dihada: L6")
 
 
-@test("Manual #6 (apoio a duvida 6): dos 11 turnos so' 2 compras de Jace (-3) no T10 e no T11 + 1 do WotMS cada; o Dack Fayden do T11 (library -> hand) NAO tem fonte de compra no log: o Staff of Compleation ({T}, 4 de vida: compra) nunca foi conjurado")
-def _():
+def _inicios_de_turno_no_bruto():
+    """Por bloco do log: lista de (indice_do_inicio, tamanho_da_corrida_de_desvirar, carta_comprada_logo_depois). Desvirar = evento em campo, sem mudanca de zona, tapped True (ultimo visto do mesmo id) -> False.
+    Assinatura de inicio de turno no playtester: desvirar tudo e, em seguida, `library -> hand`. Tolera ate' 2 eventos de ruido (Food que vira e desvira) entre a corrida e a compra."""
     import json, os
     log = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "resultados-ab", "2026-10-23-goldfish-manual-6", "dados", "goldfish_manual_6_bruto.json")))
+    tap, out = {}, {}
+    for bi, blk in enumerate(log, 1):
+        runs, cur = [], []
+        for i, e in enumerate(blk):
+            un = tap.get(e["id"]) is True and e["tapped"] is False and e["zone"] == "battlefield" and not e["fromZone"] and not e["toZone"]
+            if un:
+                cur.append(i)
+            elif cur:
+                runs.append(cur); cur = []
+            tap[e["id"]] = e["tapped"]
+        if cur:
+            runs.append(cur)
+        res = []
+        for r in runs:
+            nxt = r[-1] + 1
+            compra = None
+            for j in (nxt, nxt + 1, nxt + 2):           # a compra vem logo depois da corrida (no T11, depois de 2 eventos de Food: vira e desvira)
+                if j < len(blk) and blk[j]["fromZone"] == "library" and blk[j]["toZone"] == "hand":
+                    compra = blk[j]["name"]; break
+            res.append((r[0], len(r), compra))
+        out[bi] = res
+    return log, out
+
+
+@test("Manual #6 T11 (duvida 6, INFERENCIA DO LOG, nao resposta do usuario): o bloco T11 tem DOIS inicios de turno (desvirar tudo + `library -> hand`): o 1o abre o bloco (Kiora) e o 2o (7 permanentes desvirados) termina no Dack Fayden. Nenhum outro bloco tem uma 2a corrida >= 5. O Dack e' a compra do 2o inicio, nao de um efeito de carta")
+def _():
+    log, ini = _inicios_de_turno_no_bruto()
+    for b in range(2, 12):                                # todo bloco T2..T11 abre com desvirar + compra no indice 0
+        check(ini[b] and ini[b][0][0] == 0 and ini[b][0][2] is not None, "T%d abre com desvirar + compra: %s" % (b, ini[b][:1]))
+    grandes = {b: [r for r in ini[b] if r[1] >= 5] for b in ini}
+    check([b for b, g in grandes.items() if len(g) >= 2] == [11], "so' o T11 tem 2 corridas de desvirar >= 5: %s" % {b: g for b, g in grandes.items() if g})
+    seg = grandes[11][1]
+    check(seg[1] == 7 and seg[2] == "Dack Fayden", "2a corrida do T11: %s desvirados e a compra logo depois e' o Dack: %s" % (seg[1], seg))
     t11 = log[10]
-    nomes_t11 = [e["name"] for e in t11]
-    check("Dack Fayden" in nomes_t11 and "Staff of Compleation" in nomes_t11)
+    nomes = [e["name"] for e in t11]
+    i_dack = nomes.index("Dack Fayden")
+    check(grandes[11][0][2] == "Kiora of Salt and Sand" and grandes[11][0][0] == 0 and i_dack > 50, "a 1a corrida e' a Kiora no indice 0; o Dack so' vem no indice %d" % i_dack)
+    # as outras fontes de compra do T11 NAO explicam o Dack (descartadas na compilacao)
     staff = [e for e in t11 if e["name"] == "Staff of Compleation"]
-    check(all(e["toZone"] != "battlefield" for e in staff), "Staff: library -> hand e mais nada")
-    check(all(e["name"] != "Dihada, Binder of Wills" or e["toZone"] == "battlefield" for e in t11 if e["fromZone"] == "hand"), "o Dihada so' entra DEPOIS do Dack no log (indice)")
-    i_dack = next(i for i, e in enumerate(t11) if e["name"] == "Dack Fayden")
+    check(all(e["toZone"] != "battlefield" for e in staff), "Staff: library -> hand e mais nada (nunca conjurada)")
     i_dihada = next(i for i, e in enumerate(t11) if e["name"] == "Dihada, Binder of Wills" and e["toZone"] == "battlefield")
     check(i_dack < i_dihada, "o -3 do Dihada (revela 4 e pega as lendarias) nao explica o Dack: ele ja' estava na mao antes da conjuracao do Dihada")
+    # cada terreno jogado do cemiterio/biblioteca no T11 cabe em 2 turnos de 1 jogada de terreno (Foothills -> Jetmir's Garden; Foothills -> Zagoth Triome)
+    jogadas = [i for i, e in enumerate(t11) if e["name"] == "Wooded Foothills" and e["fromZone"] == "graveyard" and e["toZone"] == "battlefield"]
+    check(len(jogadas) == 2 and jogadas[0] < seg[0] < jogadas[1], "Wooded Foothills do cemiterio: 1 antes e 1 depois do 2o inicio de turno: %s" % jogadas)

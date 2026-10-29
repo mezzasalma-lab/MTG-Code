@@ -80,6 +80,10 @@ Estado anterior da skill (2026-09-26): `SKILL.md` + 3 referências. Agora:
 
 **Acréscimo do mesmo dia (rodada 5 do Rat King e goldfish #6 da Tam):** `references/user-standing-rules.md` §21 ganha mais um bullet (wipes no próprio campo, limite de perda líquida como política minha, gravar a saída de cada teste antes da verificação completa, pergunta aberta × confirmada no goldfish manual) e `mtg-commander/references/protocolo-de-avaliacao.md` §8, três linhas novas no checklist de erros. `CLAUDE.md` não mudou nesta rodada. Mesmo procedimento da Regra #9 (espelhos copiados do repositório, protocolo e README editados direto no backup, `--para-backup` não rodado); `mtg-commander.zip` e `SHA256SUMS` refeitos. A skill da conta **não** foi atualizada; só o usuário consegue reenviar `mtg-commander.zip`.
 
+## O que mudou na atualização de 2026-10-29 (revisão de código do PR #1: turno extra do Tam #6)
+
+- `references/user-standing-rules.md` §21 ganha o item (d) no bullet do Rat King/Tam #6 (**resposta do usuário que afirma o que ele NÃO fez se confere contra o bruto**: o turno extra do Oko foi jogado à mão e eu li o contrário) e `mtg-commander/references/protocolo-de-avaliacao.md` §8 ganha uma linha no checklist de erros. `CLAUDE.md`, `goldfish-sim-card-rules.md` e `pod-simulator-design.md` não mudaram. `mtg-commander.zip` e `SHA256SUMS` refeitos.
+- **Como foi feito (Regra #9):** `user-standing-rules.md` copiado do repositório; `protocolo-de-avaliacao.md` e este README editados **direto no backup**; **não** rodei `sincronizar-skill.sh --para-backup` (a pasta viva da skill é mais antiga que o backup e o comando a copiaria por cima). A skill da conta **não** foi atualizada; só o usuário consegue reenviar `mtg-commander.zip`.
 
 ## Como restaurar / reinstalar
 
