@@ -1,0 +1,54 @@
+{
+ "flags_off": {
+  "WIPE_UNTAPS_STAFF": false,
+  "FELL_MIRE_PROTECTED_IN_BOTTOM": false,
+  "TAPPED_FIRST_TIEBREAK_DEV": false
+ },
+ "ignora_campos": [
+  "wipe_staff_untaps_total"
+ ],
+ "sensibilidade": {
+  "so_staff": {
+   "WIPE_UNTAPS_STAFF": true,
+   "FELL_MIRE_PROTECTED_IN_BOTTOM": false,
+   "TAPPED_FIRST_TIEBREAK_DEV": false
+  },
+  "so_bottom": {
+   "WIPE_UNTAPS_STAFF": false,
+   "FELL_MIRE_PROTECTED_IN_BOTTOM": true,
+   "TAPPED_FIRST_TIEBREAK_DEV": false
+  },
+  "so_tiebreak": {
+   "WIPE_UNTAPS_STAFF": false,
+   "FELL_MIRE_PROTECTED_IN_BOTTOM": false,
+   "TAPPED_FIRST_TIEBREAK_DEV": true
+  }
+ },
+ "turns": 8,
+ "extra": null,
+ "destaque": [
+  "commander_cast_turn__ate_T2",
+  "commander_cast_turn__ate_T3",
+  "commander_cast_turn__ate_T4",
+  "len_battlefield",
+  "rat_tokens",
+  "squirrel_tokens",
+  "tokens_created_total",
+  "proxy_damage_total",
+  "life",
+  "cards_drawn_extra",
+  "interaction_spells_cast_total",
+  "creatures_died_this_turn",
+  "wipe_casts_total",
+  "wipe_own_creatures_lost_total",
+  "wipe_staff_untaps_total",
+  "tapped_land_first_plays_total",
+  "tapped_land_skipped_for_play_total",
+  "mulligans",
+  "lands_played_total",
+  "ramp_pieces_cast_total"
+ ],
+ "deck": "rat-king-verminister",
+ "sim": "ratking_goldfish_v1.py",
+ "snapshot": "codigo/ratking_goldfish_v1_ANTES_a052820.py"
+}
