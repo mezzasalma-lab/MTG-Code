@@ -196,6 +196,10 @@ WIPE_EFFECT_SWARMYARD = True          # Swarmyard Massacre: 2 Esquilos, "then ea
 WIPE_EFFECT_DAMNATION = True          # Damnation: "Destroy all creatures." (o comandante inclusive: morre e volta a zona de comando, CR 903.9a)
 WIPE_CAST_MAX_OWN_LOSS = 0            # POLITICA MINHA ("conjurando so' quando o resultado compensa"): so' conjura se no maximo N das minhas criaturas morrem; None = conjura sempre (comportamento antigo). So' vale p/ o wipe com efeito ligado
 WIPE_GATE_NET_OF_NEW_TOKENS = True    # POLITICA MINHA: a perda que o limite compara e' LIQUIDA (mortes minhas menos os corpos que o proprio wipe cria: os 2 Esquilos do Swarmyard); False = so' as mortes (1a versao, mediu -0,114 Esquilos por partida)
+# Rodada 6 (revisao de codigo do PR #1, 2026-10-29). Cada chave em False = comportamento da rodada 5, bit a bit.
+WIPE_UNTAPS_STAFF = True              # apply_own_wipe tambem dispara o gatilho do Thornbite Staff ("Whenever a creature dies, untap this creature"), como `on_creature_dies` faz em toda morte normal; o holder que SOBREVIVE ao wipe desvira
+FELL_MIRE_PROTECTED_IN_BOTTOM = True  # `choose_bottom` nao devolve ao fundo a MDFC que `should_keep` contou como terreno, quando ela e' o 3o terreno da mao (antes: era a carta nao-terreno de maior MV e ia primeiro)
+TAPPED_FIRST_TIEBREAK_DEV = False     # MEDIDO E REJEITADO (2026-10-29): o liquido do Dark Ritual (-3) empata 0 x 0 o ensaio do terreno virado quando o desvirado deixaria Ritual + magia sair no T1 (1,7% das partidas); desempatar por MV da mao + comandante joga o desvirado e CUSTA o comandante no T2: -0,31 +-0,11 pontos (N=10.000, resultados-ab/2026-10-29-revisao-codigo-pr1). True = a variante rejeitada, para reproduzir a medida
 WIPE_CARDS = frozenset({"Kindred Dominance", "Swarmyard Massacre", "Damnation"})
 SWARMYARD_PROTECTED_TYPES = frozenset({"Insect", "Rat", "Spider", "Squirrel"})
 
@@ -452,6 +456,7 @@ class GameState:
     wipe_damnation_total: int = 0
     wipe_own_creatures_lost_total: int = 0     # criaturas MINHAS (cartas + fichas) mortas por wipe meu
     wipe_held_total: int = 0                   # turnos-carta em que um wipe estava conjuravel mas o limite de perda propria o reteve
+    wipe_staff_untaps_total: int = 0           # vezes em que um wipe MEU matou criaturas e o Thornbite Staff desvirou o holder que sobreviveu (WIPE_UNTAPS_STAFF)
     wipes_held_this_turn: set = field(default_factory=set)
 
     piper_used_this_turn: bool = False
@@ -1044,6 +1049,12 @@ def apply_own_wipe(state: GameState, name: str):
     state.permanent_left_battlefield_this_turn = True          # Disappear: "left the battlefield" (mais amplo que "dies")
     state.creatures_died_this_turn += total_dying
     state.wipe_own_creatures_lost_total += total_dying
+    if WIPE_UNTAPS_STAFF and THORNBITE_STAFF_ENABLED:
+        h = state.staff_holder
+        estava_virado = staff_valid(state) and ((h == "__mercenary__" and state.staff_tapped) or (h != "__mercenary__" and h in state.tapped_creatures_this_turn))
+        staff_untap_on_death(state)                            # o holder que sobreviveu viu as mortes; desvirar e' idempotente (staff_valid ja' descarta o holder que morreu junto)
+        if estava_virado:
+            state.wipe_staff_untaps_total += 1
     if zulaport_present:
         state.life += total_dying
         state.proxy_damage_total += total_dying
@@ -1996,6 +2007,30 @@ def _tl_dry_run_mana(state, land: str) -> int:
     return sim.mana_spent_this_turn
 
 
+def _tl_dry_run_dev(state, land: str) -> int:
+    """Desempate do ensaio do terreno virado: MV das cartas que SAEM da mao + o MV do comandante se ele foi conjurado no ensaio. Existe porque `mana_spent_this_turn` e' LIQUIDO do Dark Ritual
+    (-3) e do Culling the Weak (-4): Ritual + magia no T1 deixa 0, igual a jogar so' o terreno virado. Copia profunda; nao muta `state`."""
+    global _TL_FORCED, _TL_BUSY
+    memo = {id(c): c for c in CARD_DB.values()}
+    saved = random.getstate()
+    sim = copy.deepcopy(state, memo)
+    ficam = collections.Counter(sim.hand)
+    ficam[land] -= 1
+    cast0 = sim.commander_cast_count
+    _TL_FORCED, _TL_BUSY = land, True
+    try:
+        play_land(sim)
+        _tl_develop(sim, None)
+    finally:
+        _TL_FORCED, _TL_BUSY = None, False
+        random.setstate(saved)
+    saiu = ficam - collections.Counter(sim.hand)
+    mv = sum(CARD_DB[c].mv for c in saiu.elements() if c in CARD_DB)
+    if sim.commander_cast_count > cast0:
+        mv += CARD_DB[COMMANDER].mv
+    return mv
+
+
 def tapped_first_pick(state, lands_in_hand: list) -> str:
     """`lands_in_hand` ja' vem ordenada pelo criterio do proprio deck: a 1a e' o padrao (comportamento antigo)."""
     if _TL_FORCED is not None and _TL_FORCED in lands_in_hand:
@@ -2009,6 +2044,8 @@ def tapped_first_pick(state, lands_in_hand: list) -> str:
         return default
     dry = _tl_dry_run_mana if TAPPED_FIRST_COUNTS_MANA else _tl_dry_run_mv
     mv_virado, mv_desvirado = dry(state, tapped[0]), dry(state, untapped[0])
+    if TAPPED_FIRST_TIEBREAK_DEV and TAPPED_FIRST_COUNTS_MANA and mv_virado == mv_desvirado:
+        mv_virado, mv_desvirado = _tl_dry_run_dev(state, tapped[0]), _tl_dry_run_dev(state, untapped[0])
     if TAPPED_LAND_FIRST_GHOST:
         return default
     if mv_virado >= mv_desvirado:
@@ -2149,6 +2186,9 @@ def build_library(names_override=None):
 
 
 BASE_LIBRARY = build_library()
+# Guarda (revisao do PR #1, 2026-10-29): `wipe_plan` cai em tipos () e tenacidade 99 se uma criatura nao estiver nas tabelas, e o Kindred/Swarmyard erraria em silencio.
+assert all(n in CREATURE_TYPES and n in CREATURE_TOUGHNESS for n in CARD_DB if is_creature_card(n)), \
+    f"criatura fora de CREATURE_TYPES/CREATURE_TOUGHNESS: {[n for n in CARD_DB if is_creature_card(n) and (n not in CREATURE_TYPES or n not in CREATURE_TOUGHNESS)]}"
 
 
 # Correcao de 2026-10-05 (varredura das classes de erro das rodadas do Vihaan/Megatron nos outros decks): o London Mulligan deste arquivo SORTEAVA as cartas do fundo
@@ -2168,7 +2208,10 @@ def choose_bottom(hand: list, n: int) -> list:
         if len(lands) > 4 or not nonlands:
             pick = min(lands, key=lambda c: (0 if "etb_tapped" in CARD_DB[c].tags else 1))
         else:
-            pool = [c for c in nonlands if c not in MULLIGAN_PROTECTED] or nonlands
+            protegidas = MULLIGAN_PROTECTED
+            if FELL_MIRE_PROTECTED_IN_BOTTOM and FELL_MIRE_COUNTS_FOR_KEEP and len(lands) < 3:
+                protegidas = MULLIGAN_PROTECTED | {FELL_CARD}      # `should_keep` contou a MDFC como o 3o terreno: devolve-la deixaria a mao abaixo do que foi mantido
+            pool = [c for c in nonlands if c not in protegidas] or nonlands
             pick = max(pool, key=lambda c: CARD_DB[c].mv)
         hand.remove(pick)
         bottom.append(pick)
