@@ -620,6 +620,25 @@ no `play_land`/`play_turn`/mulligan):**
    Megatron, Mothman, Tam e Vihaan têm a chave com outra função (não li); Beorn e Tom
    não têm a chave. Antes de declarar "terreno virado primeiro" certo num simulador,
    medir o comandante até T2 (`commander_cast_turn__ate_T2`) com e sem a política.
+   **Classes novas, achadas na revisão de código do PR #1 (2026-10-29), todas no Rat King;
+   a revisão automática (`code-review`, nível *high*) deu 10 apontamentos, 2 eram defeito:**
+   (l) **métrica LÍQUIDA no ensaio a seco**: `mana_spent_this_turn` é líquido do Dark Ritual
+   (−3) e do Culling the Weak (−4), então Ritual + magia no T1 mede 0, igual a só jogar o
+   terreno virado, e o empate vai para o virado (52 de 3.000 partidas, 1,7%); o revisor
+   suspeitou de "sorvedouro de mana" e a hipótese NÃO apareceu na medição; a correção
+   óbvia (desempatar por MV da mão + comandante) **piora o comandante no T2 (−0,32 ± 0,11
+   pontos, N=10.000)**, então ficou desligada (`TAPPED_FIRST_TIEBREAK_DEV`) e o defeito
+   fica registrado **sem correção**; (m) **duas funções da mesma política com definições
+   diferentes de "terreno"**: `should_keep` contava a MDFC Fell Mire e `choose_bottom` a
+   devolvia como magia (corrigido, `FELL_MIRE_PROTECTED_IN_BOTTOM`); (n) **gatilho
+   compartilhado fora de um dos pontos de morte**: o wipe que eu conjuro não desvirava o
+   Thornbite Staff (corrigido, `WIPE_UNTAPS_STAFF`; **latente**: o holder nunca está virado
+   quando o wipe resolve, 0 em 20.000 partidas, então só o teste dirigido prova). **Lição
+   de método:** apontamento de revisor é hipótese; ler o código, medir o defeito e medir a
+   correção antes de comitar. **Não coberto:** a revisão olhou só `ratking_goldfish_v1.py`
+   (rodadas 4 e 5); os outros 18 simuladores, a rodada 3 e anteriores e os ~1.060 `.py` de
+   resultados não foram revistos; a classe (l) só vale onde o ensaio usa o mana líquido
+   (hoje só o Rat King).
 3. **Determinismo entre processos.** Os `driver.py` das pastas de resultados
    fixam `PYTHONHASHSEED=0` (senão nada reproduz byte a byte), e por isso **não
    enxergam** dependência de ordem de hash. A única checagem que enxerga é
@@ -639,7 +658,10 @@ no `play_land`/`play_turn`/mulligan):**
    `Traceback` no `log_driver.txt`, nunca pelo `rc` de um `echo` (`$(date)` no
    mesmo `echo` zera o `$?`). **Um script de varredura que não roda também é
    vácuo:** `audit_tam_terrenos.py` ficou commitado com `SyntaxError` (uma edição
-   depois da última execução que relatei); só descobri ao arquivar a saída.
+   depois da última execução que relatei); só descobri ao arquivar a saída. O `det_check.sh`
+   também: rodado da raiz do repositório (ele chama `det_fields.py` por caminho relativo)
+   deu `JSONDecodeError` em 0,06 s, "0 divergentes" de mentira; roda de dentro de
+   `varredura-2026-10-05/scripts/` (2026-10-29).
    Antes de citar o resultado de uma varredura, rodar o arquivo commitado e
    salvar a saída em `resumos/`. **Variante de A/B que não difere das outras
    também é vácua** (Rat King, 2026-10-25): as variantes `sensibilidade` do
