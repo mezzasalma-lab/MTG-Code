@@ -6,6 +6,8 @@ Pedido do usuário (2026-10-28), resposta ao relatório da rodada 4: *"Opção B
 
 > **STATUS DESTA PASTA:** fechada em 2026-10-28. Verificação de reprodutibilidade: `bash orquestracao/verificar_reproducao.sh --tudo` → **19/19 saídas byte a byte iguais** (tabelas do A/B, resumos derivados dos brutos, smoke, bit-identidade, regressão, testes dirigidos e os 4 brutos re-simulados, comparados com `cmp`; `resumos/verificacao_reproducao.txt`). **A 1ª execução deu 18/19** (`resumos/verificacao_reproducao_1a_execucao_18_de_19.txt`): o `testes_dirigidos.txt` nunca tinha sido gravado, então o `cmp` não tinha com o que comparar; gravei o arquivo e refiz a verificação inteira. **Não conferidos por `cmp`:** `determinismo.txt`, `audit_etb_sem_efeito_DEPOIS.txt`, `indice_dados.md` e `log_driver.txt`; o determinismo e o scanner foram rodados uma vez cada.
 
+> **Nota de 2026-10-29 (rodada 6):** o arquivo vivo `ratking_goldfish_v1.py` mudou depois desta pasta (3 chaves novas, ver `../2026-10-29-revisao-codigo-pr1/LEIAME.md`). Por isso `verificar_reproducao.sh --tudo` **desta pasta passa a DIFERIR** (compara contra o vivo; não reexecutei). Sem `--tudo` (tabelas derivadas dos brutos) continua valendo. Para reproduzir o `--tudo`, use o arquivo desta rodada: `codigo/ratking_goldfish_v1_DEPOIS.py` no lugar do vivo, ou o commit `a052820`.
+
 ## Em 1 minuto
 
 | Quero… | Faça |

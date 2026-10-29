@@ -1,5 +1,9 @@
 # Checklist cláusula-a-cláusula — Rat King, Verminister
 
+## Rodada 6 (2026-10-29): revisão de código do PR #1 (sem cláusula de oráculo nova)
+
+Sem carta nova nem ruling novo: a rodada corrige DECISÕES do motor (Regra #10), não texto de carta. Cláusulas já listadas que ganham código: **Thornbite Staff** — *"Equipped creature has: Whenever a creature dies, untap this creature."* — passa a valer também quando a morte vem de um wipe meu (`apply_own_wipe`; chave `WIPE_UNTAPS_STAFF`, latente: o holder nunca está virado no wipe, 0 em 20.000 partidas); **Fell the Profane // Fell Mire** — a face de terreno (já modelada) agora é protegida de ir ao fundo do mulligan quando é o 3º terreno que `should_keep` contou (`FELL_MIRE_PROTECTED_IN_BOTTOM`). Tabela dos 10 apontamentos, testes (R6-1 a R6-5) e a medida rejeitada do ensaio do terreno virado: `resultados-ab/2026-10-29-revisao-codigo-pr1/LEIAME.md`.
+
 ## Rodada 5 (2026-10-28): Kindred Dominance, Swarmyard Massacre e Damnation no próprio campo (Opção B)
 
 **Origem:** o usuário respondeu *"Opção B nos wipes, e meça no A/B"* ao relatório da rodada 4. **Oráculo e rulings lidos do arquivo ao vivo (`resultados-ab/2026-10-25-.../dados/scryfall_oraculo_rulings_2026-10-25.json`) ANTES de editar o simulador** (Regra #3). Tipos e tenacidades das 18 criaturas da lista vêm do mesmo arquivo (tabela conferida pelo teste WP0 contra o JSON e contra o `CARD_DB`). Dados e reprodução: `resultados-ab/2026-10-28-wipes-no-proprio-campo/`.

@@ -1,5 +1,7 @@
 # Goldfish Log — Rat King, Verminister
 
+> **Rodada 6 de 2026-10-29 (revisão de código do PR #1: Staff após wipe, MDFC no fundo do mulligan e um desempate do ensaio do terreno virado medido e rejeitado) — dados brutos e reprodução:** [`resultados-ab/2026-10-29-revisao-codigo-pr1/LEIAME.md`](resultados-ab/2026-10-29-revisao-codigo-pr1/LEIAME.md)
+
 > **Rodada 5 de 2026-10-28 (os 3 wipes aplicam o efeito no próprio campo — Opção B — e o A/B com limites de perda própria) — dados brutos e reprodução:** [`resultados-ab/2026-10-28-wipes-no-proprio-campo/LEIAME.md`](resultados-ab/2026-10-28-wipes-no-proprio-campo/LEIAME.md)
 
 > **Rodada 4 de 2026-10-28 (Fell Mire como terreno, Black Market Connections com lifegain e um erro do ensaio do terreno virado que escondia o comandante do T2) — dados brutos e reprodução:** [`resultados-ab/2026-10-28-fell-mire-e-black-market-connections/LEIAME.md`](resultados-ab/2026-10-28-fell-mire-e-black-market-connections/LEIAME.md)
@@ -13,6 +15,17 @@
 Registro de partidas de goldfishing (testes solo) e partidas reais com este deck.
 
 ---
+
+## Rodada 6 (2026-10-29): revisão de código do PR #1 — 2 correções, 1 medida rejeitada, 1 guarda
+
+**Pedido do usuário:** *"Revise tudo e salve no GitHub e aqui tb"*, com *"corrigir o que achar e relatar"*. A revisão automática (`code-review`, nível *high*) sobre `ratking_goldfish_v1.py` (rodadas 4 e 5) devolveu 10 apontamentos; li cada um contra o código antes de mexer. Arquivo bruto/auditável e a tabela dos 10: `resultados-ab/2026-10-29-revisao-codigo-pr1/LEIAME.md`.
+
+**Veredito:** o comportamento do Rat King quase não muda (99,91% das partidas idênticas ao `antes`; comandante até T2/T3/T4 +0,0001 ± 0,0002). O que a revisão achou de útil foi pequeno e uma das minhas correções-candidatas piorou o jogo.
+- **Corrigido, `WIPE_UNTAPS_STAFF`:** o wipe que eu conjuro no meu campo não disparava o desvirar do Thornbite Staff (todas as outras mortes disparam). **Latente:** em 20.000 partidas o holder nunca estava virado quando o wipe resolvia (0 de 89 holders equipados, 6.332 wipes); provado por teste dirigido, não pelo A/B.
+- **Corrigido, `FELL_MIRE_PROTECTED_IN_BOTTOM`:** `should_keep` contava a MDFC como terreno e `choose_bottom` a devolvia como magia de MV 4. Agora ela é protegida quando é o 3º "terreno". Muda 9 de 10.000 partidas.
+- **Medido e rejeitado, `TAPPED_FIRST_TIEBREAK_DEV = False`:** o revisor suspeitou que o ensaio do terreno virado era enganado por "sorvedouros de mana". Não é: os 8 casos "mana maior sem desenvolvimento maior" são o comandante contra Ritual + Rat Colony no T2, onde a métrica acerta. Mas a medição achou outro defeito: o mana gasto é **líquido do Dark Ritual**, então Ritual + magia no T1 empata 0 × 0 com jogar o terreno virado (52 de 3.000 partidas, 1,7%). Desempatar por MV da mão + comandante joga o desvirado e **custa o comandante no T2: −0,32 ± 0,11 pontos** (N=10.000). O defeito fica registrado e **sem correção**.
+- **Guarda de importação** nas tabelas `CREATURE_TYPES`/`CREATURE_TOUGHNESS` (hoje cobrem as 18 criaturas).
+- **6 apontamentos não eram defeito** (política escolhida por você, manutenção, ou caso inalcançável: `wipe_plan` mata todas as fichas de Rat ou nenhuma). **Não revi:** a rodada 3 e anteriores do arquivo, os outros 17 simuladores, o resto dos ~1.060 `.py` do PR.
 
 ## Rodada 5 (2026-10-28): os 3 wipes passam a valer no próprio campo (Opção B) e o A/B mede o custo de cada limite
 

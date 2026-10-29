@@ -6,6 +6,8 @@ Pedido do usuário (2026-10-28), em resposta ao relatório da rodada 3: *"Bracke
 
 > **STATUS DESTA PASTA:** fechada em 2026-10-28. Verificação de reprodutibilidade: `bash orquestracao/verificar_reproducao.sh --tudo` → **22/22 saídas byte a byte iguais** (tabelas do A/B, resumos derivados dos brutos, smoke, bit-identidade, ghost, regressão, testes dirigidos, prova de não-vacuidade do ghost e os 4 brutos re-simulados, comparados com `cmp`; `resumos/verificacao_reproducao.txt`). **Não conferidos por `cmp`:** `determinismo.txt`, `regra10_*.txt`, `indice_dados.md` e os logs (`log_driver*.txt`); o determinismo e as varreduras foram rodados uma vez cada.
 
+> **Nota de 2026-10-29:** o arquivo vivo `ratking_goldfish_v1.py` mudou nas rodadas 5 e 6 depois desta pasta. `verificar_reproducao.sh --tudo` **desta pasta DIFERE** do vivo (não reexecutei); sem `--tudo` (tabelas derivadas dos brutos) continua valendo. Para reproduzir o `--tudo`, use `codigo/ratking_goldfish_v1_DEPOIS.py` no lugar do vivo, ou o commit `3635578`.
+
 ## Em 1 minuto
 
 | Quero… | Faça |
